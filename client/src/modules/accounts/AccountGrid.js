@@ -1,7 +1,10 @@
 angular.module('bhima.services')
   .service('AccountGridService', AccountGridService);
 
-AccountGridService.$inject = ['AccountStoreService', 'AccountService', 'Store'];
+AccountGridService.$inject = [
+  'AccountStoreService', 'AccountService', 'Store',
+  'LanguageService', '$httpParamSerializer',
+];
 
 /**
  * @class AccountGridService
@@ -11,7 +14,7 @@ AccountGridService.$inject = ['AccountStoreService', 'AccountService', 'Store'];
  * Account Management module, it also provides helper methods for dynamically
  * adding and removing data.
  */
-function AccountGridService(AccountStore, Accounts, Store, Notify) {
+function AccountGridService(AccountStore, Accounts, Store, Languages, $httpParamSerializer) {
 
   /**
    * @constructor
@@ -33,20 +36,35 @@ function AccountGridService(AccountStore, Accounts, Store, Notify) {
    * Requests the latest account list from the AccountStore service and updates loading variables
    */
   AccountGrid.prototype.settup = function settup() {
+    // handle account store
+    function handleAccountStore(result) {
+      this._store = result;
+
+      // order and expose data made available through the store
+      // this.data = Accounts.order(this._store.data);
+      this.formatStore();
+
+      // update exposed store driven data
+      this.data = angular.copy(this._store.data);
+    }
 
     // Fetch initial set of accounts
     return AccountStore.accounts()
-      .then(function (result) {
-        this._store = result;
-
-        // order and expose data made available through the store
-        // this.data = Accounts.order(this._store.data);
-        this.formatStore();
-
-        // update exposed store driven data
-        this.data = angular.copy(this._store.data);
-      }.bind(this));
+      .then(handleAccountStore.bind(this));
   };
+
+
+  AccountGrid.prototype.download = function download(type, filters) {
+    var filterOpts = filters;
+    var defaultOpts = { renderer : type, lang : Languages.key };
+
+    // combine options
+    var options = angular.merge(defaultOpts, filterOpts);
+
+    // return  serialized options
+    return $httpParamSerializer(options);
+  };
+
 
   AccountGrid.prototype.formatStore = function formatStore() {
     // sort underlying data to ensure it is ordered by number - this is how it
@@ -128,6 +146,7 @@ function AccountGridService(AccountStore, Accounts, Store, Notify) {
   };
 
   AccountGrid.prototype.insertDifference = function insertDifference(account, index) {
+    this.data = this.data || [];
     this.data.splice(index, 0, account);
   };
 

@@ -2,20 +2,21 @@ angular.module('bhima.controllers')
   .controller('InventoryListActionsModalController', InventoryListActionsModalController);
 
 InventoryListActionsModalController.$inject = [
-  'AccountService', 'InventoryService','NotifyService',
-  '$uibModalInstance', '$state', 'util', 'appcache'
+  'AccountService', 'InventoryService', 'NotifyService',
+  '$uibModalInstance', '$state', 'util', 'appcache', 'SessionService',
 ];
 
-function InventoryListActionsModalController(Account, Inventory, Notify, Instance, $state, util, AppCache) {
+function InventoryListActionsModalController(Account, Inventory, Notify, Instance, $state, util, AppCache, SessionService) {
   var vm = this;
   var cache = AppCache('InventoryList');
-  
+
   // this is the model
   vm.item = {};
   vm.stateParams = {};
+  vm.currencySymbol = SessionService.enterprise.currencySymbol;
 
   vm.stateParams = cache.stateParams = $state.params;
-  if($state.params.uuid || $state.params.creating){
+  if ($state.params.uuid || $state.params.creating) {
     vm.stateParams = cache.stateParams = $state.params;
   } else {
     vm.stateParams = cache.stateParams;
@@ -44,7 +45,7 @@ function InventoryListActionsModalController(Account, Inventory, Notify, Instanc
 
     // if no changes were made, simply dismiss the modal
     if (util.isEmptyObject(record)) {
-      cancel();
+      return cancel();
     }
 
     var promise = vm.isCreateState ?
@@ -78,7 +79,6 @@ function InventoryListActionsModalController(Account, Inventory, Notify, Instanc
 
   /** startup */
   function startup() {
-
     // Inventory Group
     Inventory.Groups.read()
       .then(function (groups) {
@@ -108,6 +108,5 @@ function InventoryListActionsModalController(Account, Inventory, Notify, Instanc
         })
         .catch(Notify.handleError);
     }
-
   }
 }

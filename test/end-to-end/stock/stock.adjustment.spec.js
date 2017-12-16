@@ -28,7 +28,7 @@ function StockAdjustmentTests() {
     page.addRows(1);
 
     // increase the QUININE-A for 20
-    page.setItem(0, 'INV0', 'QUININE-A', 20);
+    page.setItem(0, 'Quinine', 'QUININE-A', 20);
 
     // submit
     page.submit();
@@ -45,11 +45,11 @@ function StockAdjustmentTests() {
     page.addRows(1);
 
     // increase the QUININE-A for 20
-    page.setItem(0, 'INV0', 'QUININE-A', 20);
+    page.setItem(0, 'Quinine', 'QUININE-A', 20);
 
     // submit
     page.submit();
   });
 }
 
-describe('Stock Adustment Test', StockAdjustmentTests);
+describe('Stock Adjustment Test', StockAdjustmentTests);

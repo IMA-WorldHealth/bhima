@@ -8,7 +8,7 @@ helpers.configure(chai);
 const components = require('../../shared/components');
 const ReportPage = require('../page.js');
 
-describe('Chart of Accounts Report Generation', () => {
+describe.skip('Chart of Accounts Report Generation', () => {
   let Page;
   const key = 'accounts_chart';
 

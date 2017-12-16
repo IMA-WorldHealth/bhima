@@ -2,115 +2,89 @@ angular.module('bhima.controllers')
 .controller('ServicesController', ServicesController);
 
 ServicesController.$inject = [
-  'ServiceService', '$translate', 'SessionService', 'ModalService', 'util', 'NotifyService'
+  'ServiceService', 'ModalService', 'NotifyService', 'uiGridConstants', '$state',
 ];
 
-function ServicesController(Services, $translate, SessionService, ModalService, util, Notify) {
+function ServicesController(Services, ModalService, Notify, uiGridConstants, $state) {
   var vm = this;
 
-  vm.choosen = {};
-  vm.state = 'default';
-  vm.view = 'default';
-  vm.projectId = SessionService.project.id;
-
-  vm.maxLength = util.maxTextLength;
-
   // bind methods
-  vm.create = create;
-  vm.update = update;
-  vm.cancel = cancel;
-  vm.submit = submit;
-  vm.del    = del;
+  vm.deleteService = deleteService;
+  vm.editService = editService;
+  vm.createService = createService;
+  vm.toggleFilter = toggleFilter;
 
-  // sets the module view state
-  function setState(state) {
-    vm.state = state;
+  // global variables
+  vm.gridApi = {};
+  vm.filterEnabled = false;
+
+  // options for the UI grid
+  vm.gridOptions = {
+    appScopeProvider  : vm,
+    enableColumnMenus : false,
+    fastWatch         : true,
+    flatEntityAccess  : true,
+    enableSorting     : true,
+    onRegisterApi     : onRegisterApiFn,
+    columnDefs : [
+      { field : 'name', displayName : 'FORM.LABELS.SERVICE', headerCellFilter : 'translate' },
+      { field : 'action',
+        width : 80,
+        displayName : '',
+        cellTemplate : '/modules/services/templates/action.tmpl.html',
+        enableSorting : false,
+        enableFiltering : false,
+      },
+    ],
+  };
+
+  function onRegisterApiFn(gridApi) {
+    vm.gridApi = gridApi;
   }
 
-  // fired on startup
-  function startup() {
-    // load Services
-    refreshServices();
-
-    // Cost Center Assignment - not yet implemented in 2.x
-    // Profit Center Assignment - not yet implemented in 2.x
-
-    setState('default');
+  function toggleFilter() {
+    vm.filterEnabled = !vm.filterEnabled;
+    vm.gridOptions.enableFiltering = vm.filterEnabled;
+    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
-  function cancel() {
-    setState('default');
-    vm.view = 'default';
-  }
+  function loadServices() {
+    vm.loading = true;
 
-  function create() {
-    vm.view = 'create';
-    vm.service = {};
-  }
-
-  // switch to update mode
-  // data is an object that contains all the information of a service
-  function update(data) {
-    setState('default');
-    vm.service= data;
-    vm.view = 'update';
+    Services.read(null, { full : 1 })
+    .then(function (data) {
+      vm.gridOptions.data = data;
+    })
+    .catch(Notify.handleError)
+    .finally(function () {
+      vm.loading = false;
+    });
   }
 
   // switch to delete warning mode
-  function del(service) {
+  function deleteService(service) {
     ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
-    .then(function (bool){
-     // if the user clicked cancel, reset the view and return
-       if (!bool) {
-          vm.view = 'default';
-          return;
-       }
+    .then(function (bool) {
+      if (!bool) { return; }
 
-      // if we get there, the user wants to delete a service
-      vm.view = 'delete_confirm';
       Services.delete(service.id)
       .then(function () {
-         vm.view = 'delete_success';
-         return refreshServices();
-      })
-      .catch(function (error) {
-        vm.HTTPError = error;
-        vm.view = 'delete_error';
-      });
-    });
-  }
-
-
-  // refresh the displayed Services
-  function refreshServices() {
-    return Services.read(null, { full : 1 })
-    .then(function (data) {
-      vm.services = data;
-    });
-  }
-
-  // form submission
-  function submit(form) {
-    if (form.$invalid) { return; }
-
-    var promise;
-    var creation = (vm.view === 'create');
-    var service = angular.copy(vm.service);
-
-    promise = (creation) ?
-      Services.create(service) :
-      Services.update(service.id, service);
-
-    promise
-      .then(function (response) {
-        return refreshServices();
-      })
-      .then(function () {
-        update(service.id);
-        vm.view = creation ? 'create_success' : 'update_success';
+        Notify.success('SERVICE.DELETED');
+        loadServices();
       })
       .catch(Notify.handleError);
+    });
   }
 
-  startup();
+  // update an existing service
+  function editService(serviceObject) {
+    $state.go('services.edit', { service : serviceObject });
+  }
+
+  // create a new service
+  function createService() {
+    $state.go('services.create');
+  }
+
+  loadServices();
 }

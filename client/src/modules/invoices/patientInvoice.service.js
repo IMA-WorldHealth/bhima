@@ -2,8 +2,9 @@ angular.module('bhima.services')
   .service('PatientInvoiceService', PatientInvoiceService);
 
 PatientInvoiceService.$inject = [
-  '$uibModal', 'SessionService', 'PrototypeApiService', 'FilterService', 'appcache', 'PeriodService',
-  '$httpParamSerializer', 'LanguageService',
+  '$uibModal', 'SessionService', 'PrototypeApiService', 'FilterService', 'appcache',
+  'PeriodService', '$httpParamSerializer', 'LanguageService', 'bhConstants',
+  'TransactionService',
 ];
 
 /**
@@ -14,7 +15,10 @@ PatientInvoiceService.$inject = [
  * This service wraps the /invoices URL and all CRUD on the underlying tables
  * takes place through this service.
  */
-function PatientInvoiceService(Modal, Session, Api, Filters, AppCache, Periods, $httpParamSerializer, Languages) {
+function PatientInvoiceService(
+  Modal, Session, Api, Filters, AppCache, Periods, $httpParamSerializer,
+  Languages, bhConstants, Transactions
+) {
   var service = new Api('/invoices/');
 
   var invoiceFilters = new Filters();
@@ -25,6 +29,7 @@ function PatientInvoiceService(Modal, Session, Api, Filters, AppCache, Periods, 
   service.openCreditNoteModal = openCreditNoteModal;
   service.balance = balance;
   service.filters = invoiceFilters;
+  service.remove = Transactions.remove;
 
   /**
    * @method create
@@ -34,22 +39,22 @@ function PatientInvoiceService(Modal, Session, Api, Filters, AppCache, Periods, 
    *
    * @returns {Promise} - a promise resolving to the HTTP result.
    */
-  function create(invoice, invoiceItems, billingServices, subsidies, description) {
+  function create(invoice, invoiceItems, invoicingFees, subsidies, description) {
     var cp = angular.copy(invoice);
 
     // add project id from session
     cp.project_id = Session.project.id;
 
-    // a patient invoice is not required to qualify for billing services or subsidies
+    // a patient invoice is not required to qualify for invoicing fees or subsidies
     // default to empty arrays
-    billingServices = billingServices || [];
+    invoicingFees = invoicingFees || [];
     subsidies = subsidies || [];
 
     // concatenate into a single object to send back to the client
     cp.items = invoiceItems.map(filterInventorySource);
 
-    cp.billingServices = billingServices.map(function (billingService) {
-      return billingService.billing_service_id;
+    cp.invoicingFees = invoicingFees.map(function (invoicingFee) {
+      return invoicingFee.invoicing_fee_id;
     });
 
     cp.subsidies = subsidies.map(function (subsidy) {
@@ -117,11 +122,7 @@ function PatientInvoiceService(Modal, Session, Api, Filters, AppCache, Periods, 
     }, true).result;
   }
 
-  invoiceFilters.registerDefaultFilters([
-    { key : 'period', label : 'TABLE.COLUMNS.PERIOD', valueFilter : 'translate' },
-    { key : 'custom_period_start', label : 'PERIODS.START', valueFilter : 'date' },
-    { key : 'custom_period_end', label : 'PERIODS.END', valueFilter : 'date' },
-    { key : 'limit', label : 'FORM.LABELS.LIMIT' }]);
+  invoiceFilters.registerDefaultFilters(bhConstants.defaultFilters);
 
   invoiceFilters.registerCustomFilters([
     { key : 'service_id', label : 'FORM.LABELS.SERVICE' },
@@ -129,10 +130,12 @@ function PatientInvoiceService(Modal, Session, Api, Filters, AppCache, Periods, 
     { key : 'reference', label : 'FORM.LABELS.REFERENCE' },
     { key : 'debtor_uuid', label : 'FORM.LABELS.CLIENT' },
     { key : 'patientReference', label : 'FORM.LABELS.REFERENCE_PATIENT' },
+    { key : 'inventory_uuid', label : 'FORM.LABELS.INVENTORY' },
     { key : 'billingDateFrom', label : 'FORM.LABELS.DATE', comparitor : '>', valueFilter : 'date' },
     { key : 'billingDateTo', label : 'FORM.LABELS.DATE', comparitor : '<', valueFilter : 'date' },
     { key : 'reversed', label : 'FORM.INFO.CREDIT_NOTE' },
     { key : 'defaultPeriod', label : 'TABLE.COLUMNS.PERIOD', valueFilter : 'translate' },
+    { key : 'debtor_group_uuid', label : 'FORM.LABELS.DEBTOR_GROUP' },
     { key : 'cash_uuid', label : 'FORM.INFO.PAYMENT' },
   ]);
 

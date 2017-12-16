@@ -10,15 +10,13 @@
 
       <!-- page title  -->
       <h2 class="text-center text-uppercase">
-        {{translate 'VOUCHERS.GLOBAL.REPORT'}} <br />
-        <small>
-          {{#if dateFrom}} {{date dateFrom}} - {{/if}}
-          {{#if dateTo}} {{date dateTo}} {{/if}}
-        </small>
+        {{translate 'VOUCHERS.GLOBAL.REPORT'}}
       </h2>
 
+      <!-- filters  -->
+      {{> filterbar filters=filters }}
+
       <!-- list of data  -->
-      <!-- voucher info  -->
       <table class="table table-condensed table-bordered table-report">
         <thead>
           <tr>
@@ -39,7 +37,20 @@
               <td>{{voucher.display_name}}</td>
             </tr>
           {{/each}}
+           
+          
         </tbody>
+      </table>
+ 
+      <table 
+        style='width:400px; float:right; margin-top:10px'
+        class="table table-condensed table-bordered table-report">
+        {{#each totals as |total|}}
+            <tr>
+              <td> {{total.numVouchers}} {{translate 'FORM.LABELS.VOUCHERS'}} ({{total.currencySymbol}})</td>
+              <td class="text-right">{{total.totalAmount}} {{total.currencySymbol}}</td>
+            </tr>
+          {{/each}}
       </table>
     </div>
   </div>

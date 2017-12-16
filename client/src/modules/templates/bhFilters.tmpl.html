@@ -7,16 +7,16 @@
     <!--
       TODO: these should be a custom CSS class.  Label is just too small!
     -->
-    <span class="label label-warning">
+    <span class="label label-emphasize">
       <i class="fa fa-filter"></i>
-      <span translate>{{filter._label}}</span> {{ filter.comparitor ? " " + filter.comparitor : ":" }}
+      <span translate>{{filter._label}}</span> {{ filter._comparitor ? " " + filter._comparitor : ":" }}
       {{ filter.displayValue }}
     </span>
   </li>
 </ul>
 
 <!-- Separator between filter types -->
-<div ng-if="$ctrl.filters.customFilters.length" style="display : inline-block; width : 1px; height: 25px; vertical-align : top; background-color : #ccc;"></div>
+<div ng-if="$ctrl.filters.defaultFilters.length && $ctrl.filters.customFilters.length" style="display : inline-block; width : 1px; height: 25px; vertical-align : top; background-color : #ccc;"></div>
 
 <ul ng-if="$ctrl.filters.customFilters.length" class="list-inline filter-list" data-bh-filter-bar-custom-filters>
 
@@ -24,7 +24,7 @@
     <span class="label label-primary">
       <i class="fa fa-filter"></i>
       <span translate>{{filter._label}}</span>
-      {{ filter.comparitor ? " " + filter.comparitor : ":" }}
+      {{ filter._comparitor ? " " + filter._comparitor : ":" }}
       {{ filter.displayValue }}
 
       <a ng-if="!filter.isDefault" href ng-click="$ctrl.onRemoveFilter({ filter : filter._key })"

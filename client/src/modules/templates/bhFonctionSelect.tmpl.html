@@ -1,0 +1,24 @@
+<div bh-fonction-select ng-model-options="{ updateOn: 'default' }">
+  <div
+    class="form-group"
+    ng-class="{ 'has-error' : FonctionForm.$$parent.$submitted && FonctionForm.fonction_id.$invalid }">
+
+    <label class="control-label" translate>
+      FORM.LABELS.PROFESSION
+    </label>
+    
+    <ng-transclude></ng-transclude>
+    <ui-select name="fonction_id" 
+      ng-model="$ctrl.fonctionId"
+      on-select="$ctrl.onSelect($item, $model)">
+      <ui-select-match placeholder="{{ 'FORM.SELECT.PROFESSION' | translate }}"><span>{{$select.selected.fonction_txt}}</span></ui-select-match>
+      <ui-select-choices ui-select-focus-patch repeat="fonction.id as fonction in $ctrl.functions | filter: { 'fonction_txt': $select.search }">
+        <span ng-bind-html="fonction.fonction_txt | highlight:$select.search"></span>
+      </ui-select-choices>
+    </ui-select>
+
+    <div class="help-block" ng-messages="FonctionForm.fonction_id.$error" ng-show="FonctionForm.$$parent.$submitted">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+</div>

@@ -6,22 +6,27 @@
  * This file describes the price list report - it produces the list of prices to
  * be used as a physical reference for invoicing.
  *
- * @requires db
  * @requires lodash
  * @requires ReportManager
+ * @requires inventorycore
  */
 
-const db = require('../../../lib/db');
 const _ = require('lodash');
-
 const ReportManager = require('../../../lib/ReportManager');
+const inventorycore = require('../inventory/core');
 
 module.exports = prices;
 
 const TEMPLATE = './server/controllers/inventory/reports/prices.handlebars';
 
 function prices(req, res, next) {
-  const qs = _.extend(req.query, { csvKey : 'debtors' });
+  const params = _.clone(req.query);
+
+  const qs = _.extend(req.query, {
+    csvKey: 'groups',
+    footerRight: '[page] / [toPage]',
+    footerFontSize: '7',
+  });
   const metadata = _.clone(req.session);
 
   let report;
@@ -33,23 +38,15 @@ function prices(req, res, next) {
     return;
   }
 
-  const sql = `
-    SELECT BUID(inventory.uuid) AS uuid, inventory.default_quantity, inventory.text,
-      inventory.price, inventory_group.name AS groupName, inventory_type.text AS typeName
-    FROM inventory
-      JOIN inventory_group ON inventory.group_uuid = inventory_group.uuid
-      JOIN inventory_type ON inventory.type_id = inventory_type.id
-    ORDER BY inventory.text;
-  `;
 
-  db.exec(sql)
+  inventorycore.getItemsMetadata(params)
     .then(items => {
       // group by inventory group
       let groups = _.groupBy(items, i => i.groupName);
 
       // make sure that they keys are sorted in alphabetical order
       groups = _.mapValues(groups, lines => {
-        _.sortBy(lines, 'text');
+        _.sortBy(lines, 'label');
         return lines;
       });
 

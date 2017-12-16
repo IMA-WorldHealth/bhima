@@ -1,0 +1,113 @@
+<form name="DepotForm" bh-submit="DepotModalCtrl.submit(DepotForm)" novalidate>
+  <div class="modal-header">
+  <ol class="headercrumb">
+    <li ng-if="DepotModalCtrl.isCreating" class="title">
+      <span translate>DEPOT.ADD_DEPOT</span>
+      <label class="badge badge-warning" translate>FORM.LABELS.CREATE</label>
+    </li>
+    <li ng-if="!DepotModalCtrl.isCreating" class="title">
+      <span translate>DEPOT.EDIT_DEPOT</span>
+      <label class="badge badge-warning" translate>FORM.LABELS.UPDATE</label>
+    </li>
+  </ol>
+</div>
+
+  <div class="modal-body">
+
+    <div class="form-group" ng-class="{ 'has-error' : DepotForm.$submitted && DepotForm.text.$invalid }">
+      <label class="control-label" translate>DEPOT.LABEL</label>
+      <input name="text" ng-model="DepotModalCtrl.depot.text" autocomplete="off" class="form-control" required>
+      <div class="help-block" ng-messages="DepotForm.text.$error" ng-show="DepotForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <div class="space-between">
+      <!-- stock entry permissions -->
+      <fieldset>
+        <label translate>STOCK.ENTRY</label>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" name="allow_entry_purchase" ng-true-value="1" ng-false-value="0" ng-model="DepotModalCtrl.depot.allow_entry_purchase">
+            <span translate>STOCK.ENTRY_PURCHASE</span>
+          </label>
+        </div>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" name="allow_entry_donation" ng-true-value="1" ng-false-value="0" ng-model="DepotModalCtrl.depot.allow_entry_donation">
+            <span translate>STOCK.ENTRY_DONATION</span>
+          </label>
+        </div>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" name="allow_entry_integration" ng-true-value="1" ng-false-value="0" ng-model="DepotModalCtrl.depot.allow_entry_integration">
+            <span translate>STOCK.ENTRY_INTEGRATION</span>
+          </label>
+        </div>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" name="allow_entry_transfer" ng-true-value="1" ng-false-value="0" ng-model="DepotModalCtrl.depot.allow_entry_transfer">
+            <span translate>STOCK.ENTRY_TRANSFER</span>
+          </label>
+        </div>
+      </fieldset>
+
+      <!-- stock exit permissions -->
+      <fieldset>
+        <label translate>STOCK.EXIT</label>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" name="allow_exit_debtor" ng-true-value="1" ng-false-value="0" ng-model="DepotModalCtrl.depot.allow_exit_debtor">
+            <span translate>STOCK.EXIT_INDIVIDUAL</span>
+          </label>
+        </div>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" name="allow_exit_service" ng-true-value="1" ng-false-value="0" ng-model="DepotModalCtrl.depot.allow_exit_service">
+            <span translate>STOCK.EXIT_SERVICE</span>
+          </label>
+        </div>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" name="allow_exit_transfer" ng-true-value="1" ng-false-value="0" ng-model="DepotModalCtrl.depot.allow_exit_transfer">
+            <span translate>STOCK.EXIT_DEPOT</span>
+          </label>
+        </div>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" name="allow_exit_loss" ng-true-value="1" ng-false-value="0" ng-model="DepotModalCtrl.depot.allow_exit_loss">
+            <span translate>STOCK.EXIT_LOSS</span>
+          </label>
+        </div>
+      </fieldset>
+    </div>
+
+    <br>
+    
+    <div class="form-group">
+      <label translate>DEPOT.WAREHOUSE_INFO</label>
+      <div class="checkbox">
+        <label>
+          <input
+            type="checkbox"
+            name="is_warehouse"
+            ng-true-value="1"
+            ng-false-value="0"
+            ng-model="DepotModalCtrl.depot.is_warehouse">
+          <span translate>DEPOT.WAREHOUSE</span>
+        </label>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="modal-footer">
+    <button data-method="cancel" type="button" class="btn btn-default" ng-click="DepotModalCtrl.closeModal()">
+      <i class="fa fa-ban"></i> <span translate>FORM.BUTTONS.CANCEL</span>
+    </button>
+
+    <bh-loading-button loading-state="DepotForm.$loading">
+      <i class="fa fa-ok"></i> <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

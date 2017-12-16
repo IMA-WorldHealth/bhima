@@ -18,9 +18,13 @@ function UserService($http, util) {
   service.delete = del;
   service.permissions = permissions;
   service.projects = projects;
+  service.depots = depots;
+  service.cashboxes = cashboxes;
   service.updatePassword = updatePassword;
   service.updatePermissions = updatePermissions;
   service.validatePassword = validatePassword;
+  service.depotManagement = depotManagement;
+  service.cashBoxManagement = cashBoxManagement;
 
   /* ------------------------------------------------------------------------ */
 
@@ -70,9 +74,33 @@ function UserService($http, util) {
     .then(util.unwrapHttpResponse);
   }
 
+  // loads the users's depot permissions
+  function depots(id) {
+    return $http.get('/users/' + id + '/depots')
+    .then(util.unwrapHttpResponse);
+  }
+
+  // loads the users's cashbox permissions
+  function cashboxes(id) {
+    return $http.get('/users/' + id + '/cashboxes')
+    .then(util.unwrapHttpResponse);
+  }
+
   // sets a user's permissions using the public API
   function updatePermissions(id, data) {
     return $http.post('/users/' + id + '/permissions', { permissions : data })
+    .then(util.unwrapHttpResponse);
+  }
+
+  // sets a user's Depot Management using the public API
+  function depotManagement(id, data) {
+    return $http.post('/users/' + id + '/depots', { depots : data })
+    .then(util.unwrapHttpResponse);
+  }
+
+  // sets a user's Cashbox Management using the public API
+  function cashBoxManagement(id, data) {
+    return $http.post('/users/' + id + '/cashboxes', { cashboxes : data })
     .then(util.unwrapHttpResponse);
   }
 

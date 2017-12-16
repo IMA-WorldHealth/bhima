@@ -139,7 +139,7 @@ function login(req, res, next) {
     .done();
 }
 
-  /**
+/**
    * @method logout
    *
    * Destroys the server side session and sets the user as inactive.

@@ -1,9 +1,9 @@
 angular.module('bhima.services')
   .service('VoucherToolkitService', VoucherToolkitService);
 
-VoucherToolkitService.$inject = ['$http', '$uibModal', 'util'];
+VoucherToolkitService.$inject = ['$uibModal'];
 
-function VoucherToolkitService($http, Modal, util) {
+function VoucherToolkitService(Modal) {
   var service = this;
 
   // expose the service
@@ -13,42 +13,64 @@ function VoucherToolkitService($http, Modal, util) {
   service.tools = {
     // this tool help to import transaction rows for a convention payment
     convention_payment : {
-      icon        : 'fa-building',
-      label       : 'VOUCHERS.GLOBAL.CONVENTION_INVOICES',
       controller  : 'ConventionPaymentKitController',
       templateUrl : 'modules/vouchers/toolkit/convention_payment/convention_payment.modal.html',
     },
     generic_income : {
-      icon        : 'fa-level-down',
-      label       : 'VOUCHERS.GLOBAL.GENERIC_INCOME',
       controller  : 'GenericIncomeKitController',
       templateUrl : 'modules/vouchers/toolkit/generic_income/generic_income.html',
     },
     generic_expense : {
-      icon        : 'fa-level-up',
-      label       : 'VOUCHERS.GLOBAL.GENERIC_EXPENSE',
       controller  : 'GenericExpenseKitController',
       templateUrl : 'modules/vouchers/toolkit/generic_expense/generic_expense.html',
     },
     cash_transfer : {
-      icon        : 'fa-reply-all',
-      label       : 'VOUCHERS.GLOBAL.CASH_TRANSFER',
       controller  : 'CashTransferKitController',
       templateUrl : 'modules/vouchers/toolkit/cash_transfer/cash_transfer.html',
     },
     support_patient : {
-      icon        : 'fa-wpforms',
-      label       : 'VOUCHERS.GLOBAL.SUPPORT_FORM',
       controller  : 'SupportPatientKitController',
-      templateUrl : 'modules/vouchers/toolkit/support_patient/support_patient.modal.html'
+      templateUrl : 'modules/vouchers/toolkit/support_patient/support_patient.modal.html',
     },
   };
 
-  // service options
-  service.options = Object.keys(service.tools).map(function (item) {
-    var tool = service.tools[item];
-    return tool;
-  });
+  service.openConventionPaymentModal = function openConventionPaymentModal() {
+    return open(service.tools.convention_payment);
+  };
+
+  service.openGenericIncomeModal = function openGenericIncomeModal() {
+    return open(service.tools.generic_income);
+  };
+
+  service.openGenericExpenseModal = function openGenericExpenseModal() {
+    return open(service.tools.generic_expense);
+  };
+
+  service.openCashTransferModal = function openCashTransferModal() {
+    return open(service.tools.cash_transfer);
+  };
+
+  service.openSupportPatientModal = function openSupportPatientModal() {
+    return open(service.tools.support_patient);
+  };
+
+  /**
+   * @method getBlankVoucherRow
+   *
+   * @description
+   * Generates a new, unfilled voucher row.  This is used in almost every voucher tool.
+   *
+   * @returns {object} - the voucher row object
+   */
+  service.getBlankVoucherRow = function getBlankVoucherRow() {
+    return {
+      account_id     : undefined,
+      debit          : 0,
+      credit         : 0,
+      reference_uuid : undefined,
+      entity_uuid    : undefined,
+    };
+  };
 
   /**
    * @function open
@@ -72,5 +94,4 @@ function VoucherToolkitService($http, Modal, util) {
 
     return instance.result;
   }
-
 }

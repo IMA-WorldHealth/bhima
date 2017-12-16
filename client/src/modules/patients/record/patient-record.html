@@ -75,7 +75,7 @@
                     <span class="glyphicon glyphicon-picture"></span>
                   </div>
                   <div class="crop" ng-if="PatientRecordCtrl.patient.avatar">
-                    <img ng-src="{{ PatientRecordCtrl.patient.avatar }}" style="width: 50%; height: auto" onError="this.src='assets/empty.png';" >
+                    <img ng-src="{{ PatientRecordCtrl.patient.avatar }}"   style="width: 100% !important; height:100%; max-height:200px" onError="this.src='assets/empty.png';" >
                   </div>
                 </div>
 
@@ -83,6 +83,13 @@
                     <span class="glyphicon glyphicon-upload"></span> {{ PatientRecordCtrl.uploadButtonText | translate }}
                     <input type="file" accept="image/*" ngf-max-size="2MB" ngf-select="PatientRecordCtrl.uploadFiles($file, $invalidFiles)" style="display: none;">
                 </label>
+                <a
+                  href
+                  ng-click="PatientRecordCtrl.openWebcam()"
+                  class="btn btn-default btn-block">
+                  <i class="fa fa-camera" aria-hidden="true"></i>
+                  <span translate>FORM.LABELS.TAKE_A_PICTURE</span>
+                </a>
 
                 <a
                   data-method="edit"
@@ -91,6 +98,8 @@
                   <span class="glyphicon glyphicon-edit"></span>
                   <span translate>PATIENT_EDIT.EDIT_DETAILS</span>
                 </a>
+
+                
               </div>
             </div>
           </div>
@@ -119,7 +128,7 @@
 
         <!-- Patient Bill Panel -->
         <div class="col-sm-12">
-          <bh-latest-patient-invoice debtor-uuid="PatientRecordCtrl.patient.debtor_uuid">
+          <bh-latest-patient-invoice patient-uuid="PatientRecordCtrl.patient.uuid">
           </bh-latest-patient-invoice>
         </div>
       </div>

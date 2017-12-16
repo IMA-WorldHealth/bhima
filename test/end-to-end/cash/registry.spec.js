@@ -3,16 +3,18 @@ const helpers = require('../shared/helpers');
 
 const Filters = require('../shared/components/bhFilters');
 const SearchModal = require('../shared/search.page');
+const components = require('../shared/components');
 
 describe('Payments Registry', CashPaymentsRegistryTests);
 
 function CashPaymentsRegistryTests() {
   const PAYMENT_INSIDE_REGISTRY = 3;
   const PAYMENT_PRIMARY_CASHBOX = 0;
+  const DEBTOR_GROUP = 'Church Employees';
   let modal;
   let filters;
 
-  before(() => helpers.navigate('#/payments'));
+  before(() => helpers.navigate('!#/payments'));
 
   beforeEach(() => {
     SearchModal.open();
@@ -24,8 +26,8 @@ function CashPaymentsRegistryTests() {
     filters.resetFilters();
   });
 
-  it('finds only one payment for today', () => {
-    const DEFAULT_PAYMENTS_FOR_TODAY = 1;
+  it('finds only two payment for today', () => {
+    const DEFAULT_PAYMENTS_FOR_TODAY = 2;
     modal.switchToDefaultFilterTab();
     modal.setPeriod('today');
     modal.submit();
@@ -33,14 +35,15 @@ function CashPaymentsRegistryTests() {
   });
 
   it('finds one payments for this last year', () => {
-    const DEFAULT_PAYMENTS_FOR_TODAY = 1;
+    const DEFAULT_PAYMENTS_FOR_TODAY = 2;
     modal.switchToDefaultFilterTab();
     modal.setPeriod('year');
     modal.submit();
     GU.expectRowCount('payment-registry', DEFAULT_PAYMENTS_FOR_TODAY);
   });
 
-  it('finds three payments for all time', () => {
+
+  it(`finds ${PAYMENT_INSIDE_REGISTRY} payments for all time`, () => {
     modal.switchToDefaultFilterTab();
     modal.setPeriod('allTime');
     modal.submit();
@@ -60,7 +63,7 @@ function CashPaymentsRegistryTests() {
   });
 
   it('finds two payments in the primary cashbox', () => {
-    modal.setReference('Test Primary Cashbox A');
+    modal.setReference('Caisse Principale');
     modal.submit();
     GU.expectRowCount('payment-registry', PAYMENT_PRIMARY_CASHBOX);
   });
@@ -71,8 +74,8 @@ function CashPaymentsRegistryTests() {
     GU.expectRowCount('payment-registry', PAYMENT_INSIDE_REGISTRY);
   });
 
-  it('finds all payments for creditor group Second Test Debtor Group', () => {
-    modal.setDebtorGroup('Second Test Debtor Group');
+  it(`finds all payments for debtor group: ${DEBTOR_GROUP}`, () => {
+    components.debtorGroupSelect.set(DEBTOR_GROUP);
     modal.submit();
     GU.expectRowCount('payment-registry', PAYMENT_INSIDE_REGISTRY);
   });

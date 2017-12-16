@@ -2,11 +2,17 @@
 "ADD_USER":"Ajouter utilisateur",
 "DESCRIPTION":"Module de gestion des utilisateur et leurs droits",
 "PERMISSIONS":"Permissions",
+"SET_DEPOT":"Assignation des gestionnaires des dépôts",
+"SET_CASHBOX":"Assignation des gestionnaires des Caisses",
 "SET_PASSWORD":"Definir mot de passe",
-"SUPER":"super utilisateur",
+"SET_PASSWORD_AGAIN":"Saisissez à nouveau le mot de passe",
+"SUPER":"Super utilisateur",
 "TITLE":"Utilisateur et droits",
 "UPDATING_USER":"Mise a jour utilisateur",
 "UPDATED":"Modifie avec succes",
 "CREATE":"Creer",
 "UPDATE":"Editer",
-"CREATED":"Creee avec succes"}}
+"CREATED":"Creee avec succes",
+"PASSWORDPOLICY":"Pour se conformer à notre politique de mot de passe fort, le mot de passe doit avoir plus de 7 caractères contentant au moins un caractère spécial (ex.: @, #) , un ou plusiers chiffres ansi que les lettres majuscules et miniscules",
+"PASSWORD_MISMATCH":"Les mots de passe fournis ne sont pas identiques"
+}}

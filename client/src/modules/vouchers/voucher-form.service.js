@@ -113,10 +113,10 @@ function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes
   VoucherForm.prototype.validate = function validate() {
     var items = this.store.data;
 
+    var err;
+
     // calculate the totals for the data
     this.totals = calculateItemTotals(items);
-
-    var err;
 
     // this array will store unique accounts
     var uniqueAccountsArray = [];
@@ -124,7 +124,6 @@ function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes
     // this will store the validity condition.  We could use array.every() but it
     // seems like Chrome greedily exits if a false condition is it.
     var valid = true;
-
 
     // do validation checks to see if we have a transaction type for a cashbox
     // account
@@ -163,24 +162,27 @@ function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes
       err = ERROR_MISSING_TRANSACTION_TYPE;
     }
 
+    // validate that the number of rows in the grid is > 1
+    var hasEnoughRows = (items.length > 1);
+    if (!hasEnoughRows) {
+      err = ERROR_SINGLE_ROW_TRANSACTION;
+    }
+
     // validate that this uses multiple accounts in the transaction
 
     // To prevent calling the validation function when selecting the transaction type before selecting accounts
     var hasNullAccounts = (uniqueAccountsArray.length === 0);
 
-    if(!hasNullAccounts) {
+    if (!hasNullAccounts) {
       var hasUniqueAccounts = (uniqueAccountsArray.length > 1);
       if (!hasUniqueAccounts) {
         err = ERROR_SINGLE_ACCOUNT_TRANSACTION;
       }
 
-      // validate that the number of rows in the grid is > 1
-      var hasEnoughRows = (items.length > 1);
-      if (!hasEnoughRows) {
-        err = ERROR_SINGLE_ROW_TRANSACTION;
-      }
-
-      var hasBalancedDebitsAndCredits = (this.totals.debit === this.totals.credit);
+      // validate that total debit equals to total credit
+      var totalDebit = Number(this.totals.debit).toFixed(4);
+      var totalCredit = Number(this.totals.credit).toFixed(4);
+      var hasBalancedDebitsAndCredits = (totalDebit === totalCredit);
       if (!hasBalancedDebitsAndCredits) {
         err = ERROR_IMBALANCED_TRANSACTION;
       }
@@ -191,6 +193,11 @@ function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes
       // return the boolean condition to the caller
       return (valid && hasUniqueAccounts && hasEnoughRows && hasBalancedDebitsAndCredits);
     }
+
+    // attach error to the form
+    this._error = err;
+
+    return valid && hasEnoughRows;
   };
 
   /**
@@ -218,11 +225,15 @@ function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes
 
   VoucherForm.prototype.configureRow = function configureRow(row) {
     row.configure(row);
-    this.validate();
   };
 
   VoucherForm.prototype.description = function description(key, options) {
     this.details.description = $translate.instant(key, options);
+  };
+
+  // set account on row
+  VoucherForm.prototype.setAccountOnRow = function setAccountOnRow(row, accountId) {
+    row.configure({ account_id : accountId });
   };
 
   /**
@@ -280,7 +291,6 @@ function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes
     this.clear();
 
     var form = this;
-    var n = rows.length;
 
     rows.forEach(function (row) {
       form.addItems(1);

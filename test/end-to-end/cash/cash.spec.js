@@ -1,19 +1,19 @@
 /* global browser, element, by */
-const chai = require('chai');
-
-const expect = chai.expect;
+const { expect } = require('chai');
 
 // import testing utilities
 const helpers = require('../shared/helpers');
-
-helpers.configure(chai);
 
 const components = require('../shared/components');
 const GU = require('../shared/gridTestUtils.spec.js');
 const FU = require('../shared/FormUtils');
 
+/** loading User pages **/
+const UserPage = require('../user/user.page.js');
+
 describe('Cash Payments', () => {
   const path = '/cash';
+  const userPage = new UserPage();
 
   const cashboxB = {
     id   : 2,
@@ -43,7 +43,7 @@ describe('Cash Payments', () => {
       FU.exists(by.css('[data-cashbox-modal]'), true);
 
       // select a cashbox
-      element(by.id('cashbox-3')).click();
+      element(by.id('cashbox-2')).click();
       element(by.css('[data-cashbox-modal-submit]')).click();
 
       // expect the 'cashbox selection' modal to disappear
@@ -213,6 +213,8 @@ describe('Cash Payments', () => {
   });
 
   describe('Cash Transfer ', CashTransfer);
+
+  describe('Credit Notes', CreditNoteTests);
 });
 
 
@@ -248,6 +250,41 @@ function CashTransfer() {
     $('[data-action="close"]').click();
 
     // make sure we have a success notification shown
+    components.notification.hasSuccess();
+  });
+}
+
+const SearchModal = require('../shared/search.page');
+const GridRow = require('../shared/GridRow');
+
+function CreditNoteTests() {
+  before(() => helpers.navigate('#/payments'));
+
+  it('cancels a payment with a credit note', () => {
+    const row = new GridRow('CP.TPA.3');
+    row.dropdown().click();
+    row.reverse().click();
+
+    FU.input('ModalCtrl.creditNote.description', 'Cancel This Payment');
+    FU.modal.submit();
+    components.notification.hasSuccess();
+  });
+
+  it('deletes a cash payment from the database', () => {
+    SearchModal.open();
+    const modal = new SearchModal('cash-payment-search');
+    modal.switchToDefaultFilterTab();
+    modal.setPeriod('allTime');
+    modal.setLimit(1000);
+    modal.submit();
+
+    const row = new GridRow('CP.TPA.4');
+    row.dropdown().click();
+    row.remove().click();
+
+    // accept the confirm modal
+    FU.modal.submit();
+
     components.notification.hasSuccess();
   });
 }

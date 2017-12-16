@@ -23,11 +23,11 @@ const ROOT_NODE = 0;
  */
 exports.generate = function generate(req, res, next) {
   buildTree(req.session.user.id)
-  .then(treeData => {
-    res.send(treeData);
-  })
-  .catch(next)
-  .done();
+    .then(treeData => {
+      res.send(treeData);
+    })
+    .catch(next)
+    .done();
 };
 
 /**
@@ -82,8 +82,8 @@ function buildTree(userId) {
   `;
 
   return db.exec(sql, [userId])
-  .then(units => {
+    .then(units => {
     // builds a tree of units on the ROOT_NODE
-    return getChildren(units, ROOT_NODE);
-  });
+      return getChildren(units, ROOT_NODE);
+    });
 }

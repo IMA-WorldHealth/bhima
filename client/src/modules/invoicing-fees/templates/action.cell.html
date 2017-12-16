@@ -1,0 +1,21 @@
+<div class="ui-grid-cell-contents text-right" uib-dropdown dropdown-append-to-body uib-dropdown-toggle>
+  <a href>
+    <span data-method="action" translate>FORM.BUTTONS.ACTIONS</span>
+    <span class="caret"></span>
+  </a>
+
+  <ul data-action="{{rowRenderIndex}}"  class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
+    <li>
+      <a data-method="edit" ui-sref="invoicingFees.update({id:row.entity.id})" ui-sref-opts="{ notify: false }" href>
+        <i class="fa fa-edit"></i> <span translate>FORM.BUTTONS.EDIT</span>
+      </a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a data-method="delete" ui-sref="invoicingFees.delete({id:row.entity.id})" ui-sref-opts="{ notify: false }" href>
+        <span class="text-danger"><i class="fa fa-trash-o"></i> <span translate>FORM.BUTTONS.DELETE</span></span>
+      </a>
+    </li>
+  </ul>
+  </span>
+</div>

@@ -1,5 +1,4 @@
-
-const uuid = require('node-uuid');
+const uuid = require('uuid/v4');
 const _ = require('lodash');
 const db = require('../../lib/db');
 const BadRequest = require('../../lib/errors/BadRequest');
@@ -25,7 +24,7 @@ function processCashItems(cashUuid, items) {
 
   items.map((item) => {
     item.cash_uuid = cashUuid;
-    item.uuid = item.uuid || uuid.v4();
+    item.uuid = item.uuid || uuid();
     return db.convert(item, ['uuid', 'invoice_uuid']);
   });
 
@@ -83,27 +82,22 @@ function create(req, res, next) {
 
   // disallow invoice payments with empty items by returning a 400 to the client
   if (isInvoicePayment && !hasItems) {
-    next(
-      new BadRequest('You must submit cash items with the payments against previous invoices.')
-    );
+    next(new BadRequest('You must submit cash items with the payments against previous invoices.'));
 
     return;
   // disallow caution payments with items for more predictable application
   // behavior.
   } else if (!isInvoicePayment && hasItems) {
-    next(
-      new BadRequest(
-        `You must be confused. You submitted payment against items marked as a
+    next(new BadRequest(`You must be confused. You submitted payment against items marked as a
         caution payment.  Please submit either a caution with no items or a payment
-        marked with is_caution = 0.`
-      )
-    );
+        marked with is_caution = 0.`));
 
     return;
   }
 
   // generate a UUID if it not provided.
-  const cashUuid = db.bid(data.uuid || uuid.v4());
+  const cashUuidString = data.uuid || uuid();
+  const cashUuid = db.bid(cashUuidString);
 
   // trust the server's session info over the client's
   data.project_id = req.session.project.id;
@@ -146,14 +140,14 @@ function create(req, res, next) {
 
   transaction.execute()
     .then(() => {
-      res.status(201).json({ uuid : uuid.unparse(cashUuid) });
+      res.status(201).json({ uuid : cashUuidString });
 
       Topic.publish(Topic.channels.FINANCE, {
         event   : Topic.events.CREATE,
         entity  : Topic.entities.PAYMENT,
         user_id : req.session.user.id,
         user    : req.session.user.display_name,
-        uuid    : uuid.unparse(cashUuid),
+        uuid    : cashUuidString,
       });
     })
     .catch(next)

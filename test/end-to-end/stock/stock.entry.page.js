@@ -1,8 +1,10 @@
-/* global element, by, browser */
+/* global by, element */
 
 const FU = require('../shared/FormUtils');
 const GU = require('../shared/GridUtils');
 const components = require('../shared/components');
+
+const SharedStockPage = require('./stock.shared.page');
 
 function StockEntryPage() {
   const page = this;
@@ -11,22 +13,25 @@ function StockEntryPage() {
 
   // the grid id
   page.gridId = gridId;
-
-  /**
-   * @method setDepot
-   * @param {string} label - the depot label
-   */
-  page.setDepot = function setDepot(label) {
-    components.depotDropdown.set(label);
-  };
+  page.setDepot = SharedStockPage.setDepot;
 
   /**
    * @method setPurchase
-   * @param {string} reference - the patient reference
+   * @param {string} rowNumber - the purchase line on the modal
    */
   page.setPurchase = function setPurchase(rowNumber) {
-    element(by.css('[name="btn-purchase"]')).click();
+    components.stockEntryExitType.set('purchase');
     GU.selectRow('PurchaseGrid', rowNumber);
+    FU.modal.submit();
+  };
+
+  /**
+   * @method setTransfer
+   * @param {string} rowNumber - movement line on the modal grid
+   */
+  page.setTransfer = function setTransfer(rowNumber) {
+    components.stockEntryExitType.set('transfer_reception');
+    GU.selectRow('TransferGrid', rowNumber);
     FU.modal.submit();
   };
 
@@ -34,7 +39,7 @@ function StockEntryPage() {
    * @method setIntegration
    */
   page.setIntegration = function setIntegration() {
-    element(by.css('[name="btn-integration"]')).click();
+    components.stockEntryExitType.set('integration');
   };
 
   /**
@@ -57,23 +62,22 @@ function StockEntryPage() {
    * @method addRows
    */
   page.addRows = function addRows(n) {
-    FU.input('StockCtrl.itemIncrement', n);
-    element(by.css('[id="btn-add-rows"]')).click();
+    components.addItem.set(n);
   };
 
   /**
    * @method setItem
    */
   page.setItem = function setInventory(rowNumber, code) {
-
     // inventory code column
     const itemCell = GU.getCell(gridId, rowNumber, 1);
 
     // enter data into the typeahead input.
-    FU.input('row.entity.inventory', code, itemCell);
+    FU.input('row.entity.inventory_uuid', code, itemCell);
 
-    // the typeahead should be open - use an id to click the right item
-    element(by.id(`inv-code-${code}`)).click();
+    const externalAnchor = $('body > ul.dropdown-menu.ng-isolate-scope:not(.ng-hide)');
+    const option = externalAnchor.element(by.cssContainingText('[role="option"]', code));
+    option.click();
   };
 
   /**
@@ -86,7 +90,7 @@ function StockEntryPage() {
    *  { label: '...', quantity: '...', expiration_date: '...' }
    * ]
    */
-  page.setLots = function setLots(inventoryRowNumber, lotsArray, inventoryQuantity, inventoryUnitCost) {
+  page.setLots = function setLots(inventoryRowNumber, lotsArray, isTransferReception, inventoryQuantity, inventoryUnitCost) {
     // lots column
     const launchLots = GU.getCell(gridId, inventoryRowNumber, 3);
 
@@ -99,13 +103,11 @@ function StockEntryPage() {
     let expirationDateCell;
 
     if (inventoryQuantity) {
-      FU.input('$ctrl.inventory.quantity', inventoryQuantity);
+      FU.input('$ctrl.stockLine.quantity', inventoryQuantity);
     }
 
     if (inventoryUnitCost) {
-      FU.input('$ctrl.inventory.unit_cost', inventoryUnitCost);
-
-      $('[data-add-lot]').click();
+      FU.input('$ctrl.stockLine.unit_cost', inventoryUnitCost);
     }
 
     lotsArray.forEach((lot, index) => {
@@ -114,13 +116,17 @@ function StockEntryPage() {
       expirationDateCell = GU.getCell(lotGridId, index, 3);
 
       // enter lot label
-      FU.input('row.entity.lot', lot.label, lotCell);
+      if (!isTransferReception) {
+        FU.input('row.entity.lot', lot.label, lotCell);
+      }
 
       // enter lot quantity
       FU.input('row.entity.quantity', lot.quantity, quantityCell);
 
       // enter lot expiration date
-      components.datePicker.set(lot.expiration_date, expirationDateCell);
+      if (!isTransferReception) {
+        components.datePicker.set(lot.expiration_date, expirationDateCell);
+      }
 
       if (index < lotsArray.length - 1) {
         // Add another lot line

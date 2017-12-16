@@ -4,7 +4,7 @@
  */
 
 // requirements
-const uuid = require('node-uuid');
+const uuid = require('uuid/v4');
 const db = require('../../../lib/db');
 
 // expose module's methods
@@ -28,7 +28,8 @@ function details(identifier) {
 
 /** create new inventory group */
 function create(record) {
-  record.uuid = db.bid(record.uuid || uuid.v4());
+  const recordUuid = record.uuid || uuid();
+  record.uuid = db.bid(recordUuid);
 
   const sql = 'INSERT INTO inventory_group SET ?;';
   /*
@@ -36,7 +37,7 @@ function create(record) {
    * in the main controller (inventory.js)
    */
   return db.exec(sql, [record])
-    .then(() => uuid.unparse(record.uuid));
+    .then(() => recordUuid);
 }
 
 /** update an existing inventory group */
@@ -64,7 +65,7 @@ function getGroups(uid) {
   `;
 
   const id = (uid) ? db.bid(uid) : undefined;
-  return db.exec(sql, [id]);
+  return id ? db.one(sql, [id]) : db.exec(sql);
 }
 
 

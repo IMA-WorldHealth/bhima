@@ -13,6 +13,8 @@ function PatientEdit($stateParams, Patients, util, moment, Notify, ScrollTo, Gro
   vm.patient = null;
   vm.unknownId = false;
 
+  vm.origin = '';
+
   // maxlength field for Patient Registration
   // @todo - move this to a config param
   vm.maxLength = util.maxTextLength;
@@ -56,7 +58,7 @@ function PatientEdit($stateParams, Patients, util, moment, Notify, ScrollTo, Gro
     // 2. Download full patients/details on selection
     return Patients.read(patientId)
       .then(function (patient) {
-
+        vm.origin = patient.hospital_no;
         formatPatientAttributes(patient);
         vm.medical = patient;
       });

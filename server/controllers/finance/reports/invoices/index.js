@@ -1,4 +1,3 @@
-
 /**
  * @overview
  * Invoice Reports
@@ -14,6 +13,7 @@
 const _ = require('lodash');
 const util = require('../../../../lib/util');
 
+const shared = require('../shared');
 const Moment = require('moment');
 
 const db = require('../../../../lib/db');
@@ -43,7 +43,14 @@ function report(req, res, next) {
   let reportInstance;
 
   const query = _.clone(req.query);
-  _.extend(query, { filename : 'INVOICE_REGISTRY.TITLE', csvKey : 'rows' });
+  const filters = shared.formatFilters(query);
+
+  _.extend(query, {
+    filename : 'INVOICE_REGISTRY.TITLE',
+    csvKey : 'rows',
+    footerRight : '[page] / [toPage]',
+    footerFontSize : '8',
+  });
 
   try {
     reportInstance = new ReportManager(REPORT_TEMPLATE, req.session, query);
@@ -66,7 +73,7 @@ function report(req, res, next) {
     WHERE invoice.uuid IN (?);
   `;
 
-  const data = {};
+  const data = { filters };
 
   Invoices.find(query)
     .then(rows => {
@@ -137,6 +144,8 @@ function receipt(req, res, next) {
     })
     .then(headerResult => {
       _.extend(invoiceResponse, headerResult, metadata);
+
+      invoiceResponse.recipient.hasConventionCoverage = invoiceResponse.recipient.is_convention;
 
       if (invoiceResponse.creditNote) {
         invoiceResponse.isCreditNoted = true;

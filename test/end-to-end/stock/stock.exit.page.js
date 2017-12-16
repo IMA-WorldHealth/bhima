@@ -1,8 +1,10 @@
-/* global element, by, browser */
+/* global element, by */
 
 const FU = require('../shared/FormUtils');
 const GU = require('../shared/GridUtils');
 const components = require('../shared/components');
+
+const SharedStockPage = require('./stock.shared.page');
 
 function StockExitPage() {
   const page = this;
@@ -11,21 +13,14 @@ function StockExitPage() {
 
   // the grid id
   page.gridId = gridId;
-
-  /**
-   * @method setDepot
-   * @param {string} label - the depot label
-   */
-  page.setDepot = function setDepot(label) {
-    components.depotDropdown.set(label);
-  };
+  page.setDepot = SharedStockPage.setDepot;
 
   /**
    * @method setPatient
    * @param {string} reference - the patient reference
    */
-  page.setPatient = function setDepot(reference) {
-    element(by.css('[name="btn-patient"]')).click();
+  page.setPatient = function setPatient(reference) {
+    components.stockEntryExitType.set('patient');
     components.findPatient.findById(reference);
     FU.modal.submit();
   };
@@ -35,7 +30,7 @@ function StockExitPage() {
    * @param {string} service - the service name
    */
   page.setService = function setService(service) {
-    element(by.css('[name="btn-service"]')).click();
+    components.stockEntryExitType.set('service');
     const modalContent = element(by.css('[class="modal-content"]'));
     FU.uiSelect('$ctrl.selected', service, modalContent);
     FU.modal.submit();
@@ -46,7 +41,7 @@ function StockExitPage() {
    * @param {string} depot - the depot name
    */
   page.setDestinationDepot = function setDestinationDepot(depot) {
-    element(by.css('[name="btn-depot"]')).click();
+    components.stockEntryExitType.set('depot');
     const modalContent = element(by.css('[class="modal-content"]'));
     FU.uiSelect('$ctrl.selected', depot, modalContent);
     FU.modal.submit();
@@ -56,7 +51,7 @@ function StockExitPage() {
    * @method setLoss
    */
   page.setLoss = function setLoss() {
-    element(by.css('[name="btn-loss"]')).click();
+    components.stockEntryExitType.set('loss');
   };
 
   /**
@@ -79,15 +74,13 @@ function StockExitPage() {
    * @method addRows
    */
   page.addRows = function addRows(n) {
-    FU.input('StockCtrl.itemIncrement', n);
-    element(by.css('[id="btn-add-rows"]')).click();
+    components.addItem.set(n);
   };
 
   /**
    * @method setItem
    */
   page.setItem = function setInventory(rowNumber, code, lot, quantity) {
-
     // inventory code column
     const itemCell = GU.getCell(gridId, rowNumber, 1);
 
@@ -100,8 +93,9 @@ function StockExitPage() {
     // enter data into the typeahead input.
     FU.input('row.entity.inventory', code, itemCell);
 
-    // the typeahead should be open - use an id to click the right item
-    element(by.id(`inv-code-${code}`)).click();
+    const externalAnchor = $('body > ul.dropdown-menu.ng-isolate-scope:not(.ng-hide)');
+    const option = externalAnchor.element(by.cssContainingText('[role="option"]', code));
+    option.click();
 
     // select the inventory lot
     FU.uiSelectAppended('row.entity.lot', lot, lotCell);

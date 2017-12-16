@@ -1,4 +1,4 @@
-/* global expect, chai, agent */
+/* global expect, agent */
 
 const helpers = require('./helpers');
 const SearchTests = require('./purchase.search.js');
@@ -9,7 +9,6 @@ const SearchTests = require('./purchase.search.js');
  * This test suite implements full CRUD on the /purchases HTTP API endpoint.
  */
 describe('(/purchases) Purchases', () => {
-
   // purchase order we will add during this test suite
   const purchaseOrder = {
     cost          : 546.7520,
@@ -18,13 +17,14 @@ describe('(/purchases) Purchases', () => {
     supplier_uuid : '3ac4e83c-65f2-45a1-8357-8b025003d793',
     project_id    : 1,
     user_id       : 2,
+    status_id     : 1,
     items         : [{
-      inventory_uuid : '289cc0a1-b90f-11e5-8c73-159fdc73ab02',
+      inventory_uuid : helpers.data.QUININE,
       quantity       : 200,
       unit_price     : 0.0538,
       total          : 10.7520,
     }, {
-      inventory_uuid : 'c48a3c4b-c07d-4899-95af-411f7708e296',
+      inventory_uuid : helpers.data.PREDNISONE,
       quantity       : 16000,
       unit_price     : 0.0335,
       total          : 536.0000,
@@ -33,7 +33,7 @@ describe('(/purchases) Purchases', () => {
 
   const responseKeys = [
     'uuid', 'reference', 'cost', 'date', 'supplier', 'user_id', 'supplier_uuid', 'note',
-    'is_confirmed', 'is_received', 'is_cancelled',
+    'status_id',
   ];
 
   it('POST /purchases should create a new purchase order', () => {
@@ -72,7 +72,7 @@ describe('(/purchases) Purchases', () => {
 
   it('GET /purchases?detailed=1 returns a complete list of purchase', () => {
     return agent.get('/purchases')
-      .query({ detailed: 1 })
+      .query({ detailed : 1 })
       .then((res) => {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
@@ -90,11 +90,10 @@ describe('(/purchases) Purchases', () => {
 
   it('PUT /purchases/:uuid unable to update an unknown purchase order', () => {
     return agent.put('/purchases/invalid')
-      .send({ note: 'This was canceled a week ago' })
+      .send({ note : 'This was canceled a week ago' })
       .then(res => helpers.api.errored(res, 404))
       .catch(helpers.handler);
   });
 
   describe('/purchases/search', SearchTests);
 });
-

@@ -17,39 +17,11 @@ const moment = require('moment');
 
 const ReportManager = require('../../../lib/ReportManager');
 const db = require('../../../lib/db');
+const shared = require('../../finance/reports/shared');
 
 const Employees = require('../employees');
 
 const TEMPLATE = './server/controllers/payroll/reports/registrations.handlebars';
-
-// translation key mappings for dynamic filters
-// Basically, to show a pretty filter bar, this will translate URL query params
-// into human-readable text to be placed in the report, showing the properties
-// filtered on.
-function formatFilters(qs) {
-  const columns = [
-    { field : 'display_name', displayName : 'FORM.LABELS.NAME' },
-    { field : 'sex', displayName : 'FORM.LABELS.GENDER' },
-    { field : 'code', displayName : 'FORM.LABELS.CODE' },
-    { field : 'dateBirthFrom', displayName : 'FORM.LABELS.DOB', comparitor : '>', isDate : true },
-    { field : 'dateBirthTo', displayName : 'FORM.LABELS.DOB', comparitor : '<', isDate : true },
-    { field : 'dateEmbaucheFrom', displayName : 'FORM.LABELS.DATE_EMBAUCHE', comparitor : '>', isDate : true },
-    { field : 'dateEmbaucheTo', displayName : 'FORM.LABELS.DATE_EMBAUCHE', comparitor : '<', isDate : true },
-    { field : 'grade_id', displayName : 'FORM.LABELS.GRADE' },
-    { field : 'fonction_id', displayName : 'FORM.LABELS.FUNCTION' },
-    { field : 'service_id', displayName : 'FORM.LABELS.SERVICE' },
-  ];
-
-  return columns.filter(column => {
-    const value = qs[column.field];
-
-    if (!_.isUndefined(value)) {
-      column.value = value;
-      return true;
-    }
-    return false;
-  });
-}
 
 /**
  * @method build
@@ -62,15 +34,20 @@ function formatFilters(qs) {
  * GET /reports/payroll/employees
  */
 function build(req, res, next) {
-  const options = _.extend(req.query, { csvKey : 'employees' });
-  let report;
+  const options = _.clone(req.query);
 
-  // for now ReportManager will translate any key provided for filename as well as add a uniform timestamp
-  options.filename = 'EMPLOYEE.TITLE';
+  _.extend(options, { 
+    filename : 'EMPLOYEE.TITLE', 
+    csvKey : 'employees', 
+    orientation : 'landscape',
+    footerRight : '[page] / [toPage]',
+    footerFontSize : '7',
+  });
+
+  let report;
 
   // set up the report with report manager
   try {
-    options.orientation = 'landscape';
     report = new ReportManager(TEMPLATE, req.session, options);
     delete options.orientation;
   } catch (e) {
@@ -78,19 +55,19 @@ function build(req, res, next) {
     return;
   }
 
-  const filters = formatFilters(options);
+  const filters = shared.formatFilters(options);
 
   // enforce detailed columns
   options.detailed = 1;
 
   const sql =
-  `SELECT 
-    COUNT(employee.id) AS numEmployees, SUM(sexe = 'F') AS numFemales, 
-    ROUND(SUM(sexe = 'F') / COUNT(employee.id) * 100) AS percentFemales, 
-    SUM(sexe = 'M') AS numMales, ROUND(SUM(sexe = 'M') / COUNT(employee.id) * 100) AS percentMales
-  FROM 
+  `SELECT
+    COUNT(employee.id) AS numEmployees, SUM(sex = 'F') AS numFemales,
+    ROUND(SUM(sex = 'F') / COUNT(employee.id) * 100) AS percentFemales,
+    SUM(sex = 'M') AS numMales, ROUND(SUM(sex = 'M') / COUNT(employee.id) * 100) AS percentMales
+  FROM
     employee
-  WHERE 
+  WHERE
     employee.id IN (?);`;
 
   const data = { filters };
@@ -108,7 +85,7 @@ function build(req, res, next) {
       // and skip rendering aggregates in the handlbars view
       if (!employees) { return false; }
 
-      // gather the uuids for the aggregate queries
+      // gather the ids for the aggregate queries
       const ids = employees.map(p => p.id);
 
       return db.one(sql, [ids]);

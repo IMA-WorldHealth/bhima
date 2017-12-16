@@ -1,6 +1,9 @@
 <div class="ui-grid-cell-contents">
   <span uib-dropdown dropdown-append-to-body>
-    <a href uib-dropdown-toggle translate>FORM.BUTTONS.ACTIONS</a>
+    <a href uib-dropdown-toggle>
+      <span translate>FORM.BUTTONS.ACTIONS</span>
+      <i class="fa fa-caret-down"></i>
+    </a>
     <ul class="dropdown-menu-right" uib-dropdown-menu>
       <li>
         <a href="/reports/archive/{{row.entity.uuid}}" download>
@@ -8,8 +11,8 @@
         </a>
       </li>
       <li>
-        <a href>
-          <span class="text-muted"><i class="fa fa-envelope"></i> <span translate>TABLE.COLUMNS.EMAIL</span></span>
+        <a href data-action="email" ng-click="grid.appScope.emailReport(row.entity.uuid, row.entity.label)">
+          <i class="fa fa-envelope"></i> <span translate>TABLE.COLUMNS.EMAIL</span>
         </a>
       </li>
       <li>

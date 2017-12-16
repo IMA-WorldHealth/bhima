@@ -20,6 +20,7 @@
             {{translate 'STOCK.RECEIPT.EXIT_PATIENT'}}
           </span> <br>
           <strong>{{details.patient_reference}} - {{details.patient_display_name}}</strong> <br>
+          <span>{{details.document_reference}}</span> <br>
           <small>{{date details.date}}</small> <br>
           <br>
         </h3>
@@ -42,15 +43,8 @@
     </div>
   </header>
 
-  {{#if details.description}}
-  <blockquote>
-    <strong>{{translate 'FORM.LABELS.DESCRIPTION'}}</strong><br>
-    {{details.description}}
-  </blockquote>
-  {{/if}}
-
   <!-- list of data  -->
-  <table class="table table-condensed table-bordered table-striped">
+  <table class="table table-condensed table-bordered table-report">
     <thead>
       <tr>
         <th>{{translate 'STOCK.CODE'}}</th>

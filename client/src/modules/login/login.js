@@ -1,9 +1,9 @@
 angular.module('bhima.controllers')
-.controller('LoginController', LoginController);
+  .controller('LoginController', LoginController);
 
 LoginController.$inject = [
   'appcache', 'SessionService', 'LanguageService', 'ProjectService',
-  'NotifyService'
+  'NotifyService', 'InstallService',
 ];
 
 /**
@@ -11,7 +11,7 @@ LoginController.$inject = [
  *
  * The login controller powers the bhima login page.
  */
-function LoginController(AppCache, Session, Languages, Projects, Notify) {
+function LoginController(AppCache, Session, Languages, Projects, Notify, Install) {
   var vm = this;
 
   // the is the same as the SettingsContoller
@@ -31,21 +31,34 @@ function LoginController(AppCache, Session, Languages, Projects, Notify) {
   // times to login and fails each time.
   vm.excessiveAttempts = false;
 
+  // check basic installation information exist
+  Install.checkBasicInstallExist()
+    .then(handleCheckInstallExist)
+    .catch(Notify.handleError);
+
+  function handleCheckInstallExist(res) {
+    vm.installationExist = res.isInstalled;
+  }
+
   Languages.read()
-  .then(function (languages) {
+    .then(handleLanguages);
+
+  function handleLanguages(languages) {
     vm.languages = languages;
-  });
+  }
 
   // load project dependencies
   Projects.read()
-  .then(function (projects) {
+    .then(handleProjects);
+
+  function handleProjects(projects) {
     vm.projects = projects;
 
     /** @todo - proper error handling in case there are no projects */
     if (vm.projects.length) {
       loadStoredProject();
     }
-  });
+  }
 
   // If the user has logged in previously, the project will
   // be stored in appcache.  We will load it up as the default
@@ -57,31 +70,33 @@ function LoginController(AppCache, Session, Languages, Projects, Notify) {
     // if the project was found in the cache, set it to the default project
     // otherwise, use the defaultProjectIndex to set the default project
     vm.credentials.project = (cache.project) ?
-        cache.project.id :
-        vm.projects[defaultProjectIndex].id;
+      cache.project.id :
+      vm.projects[defaultProjectIndex].id;
   }
 
   // logs the user in, creates the user client session
   function login(form) {
-
     // if the form is not valid, do not generate an $http request
-    if (form.$invalid) { return; }
+    if (form.$invalid) { return null; }
 
     // use the session service to log the user in
     return Session.login(vm.credentials)
-    .then(function (session) {
-      cache.project = session.project;
-    })
-    .catch(function (response) {
+      .then(cacheProject)
+      .catch(handleLoginResponse);
+  }
 
-      // if the user has tried too many times, display a fatal error working for
-      // ten seconds.
-      if (maxAttempts <= attempts++) {
-        return Notify.danger('AUTH.TOO_MANY_TRYS');
-      }
+  function cacheProject(session) {
+    cache.project = session.project;
+  }
 
-      // use growl-notifications to display an error at the top of the window
-      Notify.danger(response.data.code);
-    });
+  function handleLoginResponse(response) {
+    // if the user has tried too many times, display a fatal error working for
+    // ten seconds.
+    if (maxAttempts <= attempts++) {
+      return Notify.danger('AUTH.TOO_MANY_TRYS');
+    }
+
+    // use growl-notifications to display an error at the top of the window
+    return Notify.danger(response.data.code);
   }
 }

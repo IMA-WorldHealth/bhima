@@ -1,0 +1,39 @@
+<form name="UserForm" bh-submit="UsersDepotModalCtrl.submit(UserForm)" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="title">
+        <span translate>USERS.UPDATING_USER</span>
+        <label class="badge badge-warning" translate>USERS.SET_DEPOT</label>
+      </li>
+    </ol>
+  </div>
+
+  <div class="modal-body" style="overflow-y: scroll; max-height:600px; ">
+
+
+    <div class="form-group" ng-class="{ 'has-error' : UserForm.$submitted && UserForm.display_name.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.USERNAME</label>
+      <div>
+        <h4><i> {{ UsersDepotModalCtrl.user.display_name }} </i></h4>
+      </div>
+    </div>
+
+    <span translate> FORM.INFO.USER_DEPOT </span>
+    <bh-multiple-depot-select
+      label="STOCK.DEPOT"
+      depots-uuids = "UsersDepotModalCtrl.depots"
+      on-change="UsersDepotModalCtrl.onDepotChange(depots)">            
+    </bh-multiple-depot-select>
+
+  </div>
+
+  <div class="modal-footer">
+    <button id="user-cancel" type="button" class="btn btn-default" ng-click="UsersDepotModalCtrl.closeModal()">
+      <i class="fa fa-ban"></i> <span translate>FORM.BUTTONS.CANCEL</span>
+    </button>
+
+    <bh-loading-button loading-state="UserForm.$loading">
+      <i class="fa fa-ok"></i> <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

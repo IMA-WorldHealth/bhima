@@ -2,7 +2,8 @@ angular.module('bhima.controllers')
   .controller('VoucherRegistrySearchModalController', VoucherRegistrySearchModalController);
 
 VoucherRegistrySearchModalController.$inject = [
-  '$uibModalInstance', 'filters', 'NotifyService', 'moment', 'bhConstants'
+  '$uibModalInstance', 'filters', 'NotifyService', 'moment', 'PeriodService', 'Store', 'util',
+  'TransactionTypeService', '$translate', 'VoucherService',
 ];
 
 /**
@@ -13,59 +14,106 @@ VoucherRegistrySearchModalController.$inject = [
  * returning it as a JSON object to the parent controller.  The data can be
  * preset by passing in a filters object using filtersProvider().
  */
-function VoucherRegistrySearchModalController(ModalInstance, filters, Notify, moment, bhConstants) {
+function VoucherRegistrySearchModalController(ModalInstance, filters, Notify, moment, Periods, Store, util,
+  TransactionTypes, $translate, Vouchers) {
   var vm = this;
+  var changes = new Store({ identifier : 'key' });
+  var searchQueryOptions = [
+    'reference', 'description', 'user_id', 'type_ids',
+  ];
 
-  // set controller data
-  vm.params = angular.copy(filters || {});
+  vm.filters = filters;
+  // searchQueries is the same id:value pair
+  vm.searchQueries = {};
 
-  // set controller methods
-  vm.submit = submit;
-  vm.clear = clear;
-  vm.cancel = function cancel() { ModalInstance.close(); };
+  vm.defaultQueries = {};
+
+  var lastDisplayValues = Vouchers.filters.getDisplayValueMap();
+
+  // displayValues will be an id:displayValue pair
+  var displayValues = {};
+
+  // assign already defined custom filters to searchQueries object
+  vm.searchQueries = util.maskObjectFromKeys(filters, searchQueryOptions);
+
+  // load all Transaction types
+  TransactionTypes.read()
+    .then(function (types) {
+      types.forEach(function (item) {
+        item.typeText = $translate.instant(item.text);
+      });
+      vm.transactionTypes = types;
+    })
+    .catch(Notify.handleError);
+
+  if (filters.limit) {
+    vm.defaultQueries.limit = filters.limit;
+  }
+
+  vm.onTransactionTypesChange = function onTransactionTypesChange(transactionTypes) {
+    vm.searchQueries.type_ids = transactionTypes;
+    var typeText = '/';
+
+    transactionTypes.forEach(function (typeId) {
+      vm.transactionTypes.forEach(function (type) {
+        if (typeId === type.id) {
+          typeText += type.typeText + ' / ';
+        }
+      });
+    });
+
+    displayValues.type_ids = typeText;
+  };
 
   // custom filter user_id - assign the value to the params object
   vm.onSelectUser = function onSelectUser(user) {
-    vm.params.user_id = user.id;
-  };  
+    vm.searchQueries.user_id = user.id;
+    displayValues.user_id = user.display_name;
+  };
+
+  // default filter period - directly write to changes list
+  vm.onSelectPeriod = function onSelectPeriod(period) {
+    var periodFilters = Periods.processFilterChanges(period);
+
+    periodFilters.forEach(function (filterChange) {
+      changes.post(filterChange);
+    });
+  };
+
+  // default filter limit - directly write to changes list
+  vm.onSelectLimit = function onSelectLimit(value) {
+    // input is type value, this will only be defined for a valid number
+    if (angular.isDefined(value)) {
+      changes.post({ key : 'limit', value : value });
+    }
+  };
+
+  // deletes a filter from the custom filter object, this key will no longer be written to changes on exit
+  vm.clear = function clear(key) {
+    delete vm.searchQueries[key];
+  };
+
+  vm.cancel = function cancel() { ModalInstance.close(); };
 
   // submit the filter object to the parent controller.
-  function submit(form) {
-    var parameters;
-
-    if (form.$invalid) { return; }
-
-    // to get it deleted at the for loop below
-    parameters = angular.copy(vm.params);
-    var formatDB = bhConstants.dates.formatDB;
-
-    // convert dates to strings
-    if (parameters.dateFrom) {
-      parameters.dateFrom = moment(parameters.dateFrom).format(formatDB);
+  vm.submit = function submit(form) {
+    // delete type_ids if there is no transaction type sent
+    if (vm.searchQueries.type_ids && vm.searchQueries.type_ids.length === 0) {
+      vm.clear('type_ids');
     }
 
-    if (parameters.dateTo) {
-      parameters.dateTo = moment(parameters.dateTo).format(formatDB);
-    }
-    
-    // make sure we don't have any undefined or empty parameters
-    angular.forEach(parameters, function (value, key) {
-      if (value === null || value === '') {
-        delete parameters[key];
-      }
+    // push all searchQuery values into the changes array to be applied
+    angular.forEach(vm.searchQueries, function (value, key) {
+      if (angular.isDefined(value)) {
+        // default to the original value if no display value is defined
+        var displayValue = displayValues[key] || lastDisplayValues[key] || value;
+        changes.post({ key: key, value: value, displayValue: displayValue });
+       }
     });
 
-    ModalInstance.close(parameters);
-  }
+    var loggedChanges = changes.getAll();
 
-  // clears search parameters.  Custom logic if a date is used so that we can
-  // clear two properties.
-  function clear(value) {
-    if (value === 'date') {
-      delete vm.params.dateFrom;
-      delete vm.params.dateTo;
-    } else {
-      delete vm.params[value];
-    }
-  }
+    // return values to the voucher controller
+    return ModalInstance.close(loggedChanges);
+  };
 }

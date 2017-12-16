@@ -86,7 +86,8 @@ exports.getInventoryStatusById = getInventoryStatusById;
 
 exports.getInventoryDonations = getInventoryDonations;
 exports.getInventoryDonationsById = getInventoryDonationsById;
-
+//
+exports.deleteInventory = deleteInventory;
 // ======================= inventory metadata =============================
 /**
  * POST /inventory/metadata
@@ -120,21 +121,17 @@ function updateInventoryItems(req, res, next) {
 
 
 /**
-* GET /inventory/metadata/
-* Returns a description all inventory items in the inventory table.
-* Returns a description the inventory items filter by params.
-*
-* @function searchInventoryItems
+  * GET /inventory/metadata/
+  * Returns a description all inventory items in the inventory table.
+  * Returns a description the inventory items filter by params.
+  *
+  * @function searchInventoryItems
 */
 function getInventoryItems(req, res, next) {
   const params = req.query;
 
   core.getItemsMetadata(params)
     .then((row) => {
-      if (!row.length) {
-        throw core.errors.NO_INVENTORY_ITEMS;
-      }
-
       res.status(200).json(row);
     })
     .catch((error) => {
@@ -163,6 +160,19 @@ function getInventoryItemsById(req, res, next) {
     .done();
 }
 
+
+/**
+ * DELETE /inventory/:uuid
+ * delete an inventory group
+ */
+function deleteInventory(req, res, next) {
+
+  core.remove(req.params.uuid)
+    .then(res.sendStatus(204))
+    .catch(error => core.errorHandler(error, req, res, next))
+    .done();
+}
+
 // ======================= inventory group =============================
 
 /**
@@ -171,13 +181,13 @@ function getInventoryItemsById(req, res, next) {
  */
 function createInventoryGroups(req, res, next) {
   groups.create(req.body)
-  .then((identifier) => {
-    res.status(201).json({ uuid : identifier });
-  })
-  .catch((error) => {
-    core.errorHandler(error, req, res, next);
-  })
-  .done();
+    .then((identifier) => {
+      res.status(201).json({ uuid : identifier });
+    })
+    .catch((error) => {
+      core.errorHandler(error, req, res, next);
+    })
+    .done();
 }
 
 /**
@@ -186,13 +196,13 @@ function createInventoryGroups(req, res, next) {
  */
 function updateInventoryGroups(req, res, next) {
   groups.update(req.body, req.params.uuid)
-  .then((rows) => {
-    res.status(201).json(rows);
-  })
-  .catch((error) => {
-    core.errorHandler(error, req, res, next);
-  })
-  .done();
+    .then((rows) => {
+      res.status(201).json(rows);
+    })
+    .catch((error) => {
+      core.errorHandler(error, req, res, next);
+    })
+    .done();
 }
 
 /**
@@ -201,13 +211,13 @@ function updateInventoryGroups(req, res, next) {
  */
 function listInventoryGroups(req, res, next) {
   groups.list(req.query.include_members)
-  .then((rows) => {
-    res.status(200).json(rows);
-  })
-  .catch((error) => {
-    core.errorHandler(error, req, res, next);
-  })
-  .done();
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch((error) => {
+      core.errorHandler(error, req, res, next);
+    })
+    .done();
 }
 
 /**
@@ -216,13 +226,13 @@ function listInventoryGroups(req, res, next) {
  */
 function detailsInventoryGroups(req, res, next) {
   groups.details(req.params.uuid)
-  .then((rows) => {
-    res.status(200).json(rows);
-  })
-  .catch((error) => {
-    core.errorHandler(error, req, res, next);
-  })
-  .done();
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch((error) => {
+      core.errorHandler(error, req, res, next);
+    })
+    .done();
 }
 
 /**
@@ -368,13 +378,13 @@ function updateInventoryUnits(req, res, next) {
  */
 function listInventoryUnits(req, res, next) {
   units.list()
-  .then((rows) => {
-    res.status(200).json(rows);
-  })
-  .catch((error) => {
-    core.errorHandler(error, req, res, next);
-  })
-  .done();
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch((error) => {
+      core.errorHandler(error, req, res, next);
+    })
+    .done();
 }
 
 /**
@@ -383,13 +393,13 @@ function listInventoryUnits(req, res, next) {
  */
 function detailsInventoryUnits(req, res, next) {
   units.details(req.params.id)
-  .then((rows) => {
-    res.status(200).json(rows);
-  })
-  .catch((error) => {
-    core.errorHandler(error, req, res, next);
-  })
-  .done();
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch((error) => {
+      core.errorHandler(error, req, res, next);
+    })
+    .done();
 }
 
 /**
@@ -398,13 +408,13 @@ function detailsInventoryUnits(req, res, next) {
  */
 function deleteInventoryUnits(req, res, next) {
   units.remove(req.params.id)
-  .then(() => {
-    res.sendStatus(204);
-  })
-  .catch((error) => {
-    core.errorHandler(error, req, res, next);
-  })
-  .done();
+    .then(() => {
+      res.sendStatus(204);
+    })
+    .catch((error) => {
+      core.errorHandler(error, req, res, next);
+    })
+    .done();
 }
 
 
@@ -814,13 +824,13 @@ function getInventoryStatusById(req, res, next) {
 */
 function getInventoryDonations(req, res, next) {
   donations.getInventoryDonations()
-  .then((data) => {
-    res.status(200).json(data);
-  })
-  .catch((error) => {
-    core.errorHandler(error, next);
-  })
-  .done();
+    .then((data) => {
+      res.status(200).json(data);
+    })
+    .catch((error) => {
+      core.errorHandler(error, next);
+    })
+    .done();
 }
 
 /**
@@ -832,11 +842,11 @@ function getInventoryDonationsById(req, res, next) {
   const uuid = req.params.uuid;
 
   donations.getInventoryDonationsById(uuid)
-  .then((data) => {
-    res.status(200).json(data);
-  })
-  .catch((error) => {
-    core.errorHandler(error, next);
-  })
-  .done();
+    .then((data) => {
+      res.status(200).json(data);
+    })
+    .catch((error) => {
+      core.errorHandler(error, next);
+    })
+    .done();
 }

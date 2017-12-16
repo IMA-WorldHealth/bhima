@@ -34,6 +34,8 @@ on our designs and testing infrastructure.  If you have any questions or need he
 getting started, please [open an issue](https://github.com/IMA-WorldHealth/bhima-2.X/issues/new) - 
 chances are you are not the only one!
 
+If you just want to jump into to messing with the software, check out [Getting Up And Running](https://github.com/IMA-WorldHealth/bhima-2.X/wiki/Getting-Up-and-Running).
+
 If you are new to git/Github check out our [Getting Started Guide](https://github.com/IMA-WorldHealth/bhima-2.X/wiki/Getting-Started:-Contributing-on-Github).
 
 Want to jump straight into code?  The [First Time Contributor](https://github.com/IMA-WorldHealth/bhima-2.X/issues?q=is%3Aissue+is%3Aopen+label%3A%22first+time+contributor%22)

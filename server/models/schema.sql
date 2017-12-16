@@ -35,17 +35,29 @@ CREATE TABLE `account` (
   FOREIGN KEY (`reference_id`) REFERENCES `reference` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `account_category`;
+CREATE TABLE `account_category` (
+  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `category` VARCHAR(35) NOT NULL,
+  `translation_key` VARCHAR(35) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `account_category_1` (`category`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 DROP TABLE IF EXISTS `account_type`;
 CREATE TABLE `account_type` (
   `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
   `type` VARCHAR(35) NOT NULL,
   `translation_key` VARCHAR(35) NOT NULL,
+  `account_category_id` MEDIUMINT(8) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `account_type_1` (`type`)
+  UNIQUE KEY `account_type_1` (`type`),
+  KEY `account_category_id` (`account_category_id`),
+  FOREIGN KEY (`account_category_id`) REFERENCES `account_category` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `assignation_patient`;
-CREATE TABLE `assignation_patient` (
+DROP TABLE IF EXISTS `patient_assignment`;
+CREATE TABLE `patient_assignment` (
   `uuid`                BINARY(16) NOT NULL,
   `patient_group_uuid`  BINARY(16) NOT NULL,
   `patient_uuid`        BINARY(16) NOT NULL,
@@ -57,8 +69,8 @@ CREATE TABLE `assignation_patient` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-DROP TABLE IF EXISTS billing_service;
-CREATE TABLE billing_service (
+DROP TABLE IF EXISTS invoicing_fee;
+CREATE TABLE invoicing_fee (
   `id`              SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `account_id`      INT(10) UNSIGNED NOT NULL,
   `label`           VARCHAR(200) NOT NULL,
@@ -67,8 +79,8 @@ CREATE TABLE billing_service (
   `created_at`      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`      TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `billing_service_1` (`label`),
-  UNIQUE KEY `billing_service_2` (`account_id`, `label`),
+  UNIQUE KEY `invoicing_fee_1` (`label`),
+  UNIQUE KEY `invoicing_fee_2` (`account_id`, `label`),
   KEY `account_id` (`account_id`),
   FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -102,6 +114,7 @@ CREATE TABLE `cash` (
   `is_caution`      BOOLEAN NOT NULL DEFAULT 0,
   `created_at`      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `reversed`        TINYINT NOT NULL DEFAULT 0,
+  `edited`          TINYINT NOT NULL DEFAULT 0,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `cash_1` (`reference`, `project_id`),
   KEY `project_id` (`project_id`),
@@ -147,7 +160,7 @@ CREATE TABLE `cash_box_account_currency` (
   `currency_id`         TINYINT UNSIGNED NOT NULL,
   `cash_box_id`         MEDIUMINT UNSIGNED NOT NULL,
   `account_id`          INT UNSIGNED NOT NULL,
-  `transfer_account_id` INT UNSIGNED NOT NULL,
+  `transfer_account_id` INT UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `cash_box_account_currency_1` (`currency_id`, `cash_box_id`, `account_id`),
   UNIQUE KEY `cash_box_account_currency_2` (`currency_id`, `cash_box_id`, `transfer_account_id`),
@@ -202,7 +215,7 @@ CREATE TABLE `config_cotisation_item` (
 DROP TABLE IF EXISTS `config_paiement_period`;
 
 CREATE TABLE `config_paiement_period` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int(10) unsigned NOT NULL,
   `paiement_period_id` int(10) unsigned NOT NULL,
   `weekFrom` date NOT NULL,
   `weekTo` date NOT NULL,
@@ -492,7 +505,7 @@ CREATE TABLE `debtor_group` (
   `is_convention` TINYINT(1) NOT NULL DEFAULT 0,
   `price_list_uuid` BINARY(16) DEFAULT NULL,
   `apply_discounts` BOOLEAN NOT NULL DEFAULT TRUE,
-  `apply_billing_services` BOOLEAN NOT NULL DEFAULT TRUE,
+  `apply_invoicing_fees` BOOLEAN NOT NULL DEFAULT TRUE,
   `apply_subsidies` BOOLEAN NOT NULL DEFAULT TRUE,
   `color` VARCHAR(8) NULL,
   `created_at`      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -510,17 +523,17 @@ CREATE TABLE `debtor_group` (
   FOREIGN KEY (`price_list_uuid`) REFERENCES `price_list` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS debtor_group_billing_service;
+DROP TABLE IF EXISTS debtor_group_invoicing_fee;
 
-CREATE TABLE debtor_group_billing_service (
+CREATE TABLE debtor_group_invoicing_fee (
   `id`                      SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `debtor_group_uuid`      BINARY(16) NOT NULL,
-  `billing_service_id`      SMALLINT UNSIGNED NOT NULL,
+  `invoicing_fee_id`      SMALLINT UNSIGNED NOT NULL,
   `created_at`              TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `debtor_group_uuid` (`debtor_group_uuid`),
-  KEY `billing_service_id` (`billing_service_id`),
-  FOREIGN KEY (`billing_service_id`) REFERENCES `billing_service` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  KEY `invoicing_fee_id` (`invoicing_fee_id`),
+  FOREIGN KEY (`invoicing_fee_id`) REFERENCES `invoicing_fee` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`debtor_group_uuid`) REFERENCES `debtor_group` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -564,6 +577,14 @@ CREATE TABLE `depot` (
   `text` VARCHAR(50) NOT NULL,
   `enterprise_id` smallint(5) unsigned NOT NULL,
   `is_warehouse` smallint(5) unsigned NOT NULL DEFAULT 0,
+  `allow_entry_purchase` tinyint(1) unsigned NOT NULL DEFAULT 0,
+  `allow_entry_donation` tinyint(1) unsigned NOT NULL DEFAULT 0,
+  `allow_entry_integration` tinyint(1) unsigned NOT NULL DEFAULT 0,
+  `allow_entry_transfer` tinyint(1) unsigned NOT NULL DEFAULT 0,
+  `allow_exit_debtor` tinyint(1) unsigned NOT NULL DEFAULT 0,
+  `allow_exit_service` tinyint(1) unsigned NOT NULL DEFAULT 0,
+  `allow_exit_transfer` tinyint(1) unsigned NOT NULL DEFAULT 0,
+  `allow_exit_loss` tinyint(1) unsigned NOT NULL DEFAULT 0,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `depot_1` (`text`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -598,35 +619,30 @@ DROP TABLE IF EXISTS `employee`;
 CREATE TABLE `employee` (
   `id`            INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `code`          VARCHAR(20) NOT NULL,
-  `display_name`  TEXT NOT NULL,
-  `sex`           VARCHAR(1) NOT NULL,
-  `dob`           DATETIME NOT NULL,
   `date_embauche` DATETIME DEFAULT NULL,
-  `grade_id`      BINARY(16) NOT NULL,
+  `grade_uuid`      BINARY(16) NOT NULL,
   `nb_spouse`     INT(2) DEFAULT 0,
-  `nb_enfant`     INT(3) DEFAULT 0,  
+  `nb_enfant`     INT(3) DEFAULT 0,
   `daily_salary`  FLOAT DEFAULT 0,
   `bank`          VARCHAR(30) DEFAULT NULL,
   `bank_account`  VARCHAR(30) DEFAULT NULL,
-  `adresse`       VARCHAR(50) DEFAULT NULL,
-  `phone`         VARCHAR(20) DEFAULT NULL,
-  `email`         VARCHAR(70) DEFAULT NULL,
   `fonction_id`   TINYINT(3) UNSIGNED DEFAULT NULL,
   `service_id`    SMALLINT(5) UNSIGNED DEFAULT NULL,
   `creditor_uuid` BINARY(16) DEFAULT NULL,
   `locked`        TINYINT(1) DEFAULT NULL,
   `patient_uuid`  BINARY(16) DEFAULT NULL,
+  `is_medical`    TINYINT(1) DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `employee_1` (`code`),
   KEY `fonction_id` (`fonction_id`),
   KEY `service_id` (`service_id`),
   KEY `creditor_uuid` (`creditor_uuid`),
-  KEY `grade_id` (`grade_id`),
+  KEY `grade_uuid` (`grade_uuid`),
   KEY `patient_uuid` (`patient_uuid`),
   FOREIGN KEY (`fonction_id`) REFERENCES `fonction` (`id`),
   FOREIGN KEY (`service_id`) REFERENCES `service` (`id`),
   FOREIGN KEY (`creditor_uuid`) REFERENCES `creditor` (`uuid`),
-  FOREIGN KEY (`grade_id`) REFERENCES `grade` (`uuid`),
+  FOREIGN KEY (`grade_uuid`) REFERENCES `grade` (`uuid`),
   FOREIGN KEY (`patient_uuid`) REFERENCES `patient` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -843,6 +859,7 @@ CREATE TABLE `inventory` (
   `stock_min` INT(10) UNSIGNED NOT NULL DEFAULT 0,
   `type_id` TINYINT(3) UNSIGNED NOT NULL DEFAULT 0,
   `consumable` TINYINT(1) NOT NULL DEFAULT 0,
+  `locked` TINYINT(1) NOT NULL DEFAULT 0,
   `delay` INT(10) UNSIGNED NOT NULL DEFAULT 1 COMMENT 'Delai de livraison',
   `avg_consumption` DECIMAL(10,4) UNSIGNED NOT NULL DEFAULT 1 COMMENT 'Consommation moyenne' ,
   `purchase_interval` DECIMAL(10,4) UNSIGNED NOT NULL DEFAULT 1 COMMENT 'Intervalle de commande' ,
@@ -911,9 +928,11 @@ DROP TABLE IF EXISTS `inventory_unit`;
 
 CREATE TABLE `inventory_unit` (
   `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
-  `text` varchar(100) NOT NULL,
+  `abbr` varchar(10) NOT NULL,
+  `text` varchar(30) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `inventory_unit_1` (`text`)
+  UNIQUE KEY `inventory_unit_1` (`text`),
+  UNIQUE KEY `inventory_unit_2` (`abbr`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 
@@ -1055,7 +1074,7 @@ CREATE TABLE `price_list_item` (
   `inventory_uuid`      BINARY(16) NOT NULL,
   `price_list_uuid`     BINARY(16) NOT NULL,
   `label`               VARCHAR(250) NOT NULL,
-  `value`               INTEGER NOT NULL,
+  `value`               DOUBLE NOT NULL,
   `is_percentage`       BOOLEAN NOT NULL DEFAULT 0,
   `created_at`          TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`uuid`),
@@ -1158,17 +1177,17 @@ CREATE TABLE `patient_group` (
    FOREIGN KEY (`price_list_uuid`) REFERENCES `price_list` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS patient_group_billing_service;
+DROP TABLE IF EXISTS patient_group_invoicing_fee;
 
-CREATE TABLE patient_group_billing_service (
+CREATE TABLE patient_group_invoicing_fee (
   `id`                      SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `patient_group_uuid`      BINARY(16) NOT NULL,
-  `billing_service_id`      SMALLINT UNSIGNED NOT NULL,
+  `invoicing_fee_id`      SMALLINT UNSIGNED NOT NULL,
   `created_at`              TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `patient_group_uuid` (`patient_group_uuid`),
-  KEY `billing_service_id` (`billing_service_id`),
-  FOREIGN KEY (`billing_service_id`) REFERENCES `billing_service` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  KEY `invoicing_fee_id` (`invoicing_fee_id`),
+  FOREIGN KEY (`invoicing_fee_id`) REFERENCES `invoicing_fee` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`patient_group_uuid`) REFERENCES `patient_group` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -1381,19 +1400,18 @@ CREATE TABLE `purchase` (
   `user_id`         SMALLINT(5) UNSIGNED NOT NULL,
   `payment_method`  TEXT,
   `note`            TEXT,
-  `is_confirmed`    TINYINT(1) DEFAULT 0,
-  `is_received`              TINYINT(1) DEFAULT 0,
-  `is_partially_received`    TINYINT(1) DEFAULT 0,
-  `is_cancelled`    TINYINT(1) DEFAULT 0,
+  `status_id`       TINYINT(3) UNSIGNED NOT NULL DEFAULT 1,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `purchase_1` (`project_id`, `reference`),
   KEY `project_id` (`project_id`),
   KEY `reference` (`reference`),
   KEY `supplier_uuid` (`supplier_uuid`),
   KEY `user_id` (`user_id`),
+  KEY `status_id` (`status_id`),
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
   FOREIGN KEY (`supplier_uuid`) REFERENCES `supplier` (`uuid`),
-  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
+  FOREIGN KEY (`status_id`) REFERENCES `purchase_status` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `purchase_item`;
@@ -1411,6 +1429,15 @@ CREATE TABLE `purchase_item` (
   KEY `inventory_uuid` (`inventory_uuid`),
   FOREIGN KEY (`purchase_uuid`) REFERENCES `purchase` (`uuid`) ON DELETE CASCADE,
   FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `purchase_status`;
+
+CREATE TABLE `purchase_status` (
+  `id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
+  `text` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `purchase_status` (`id`, `text`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `reference`;
@@ -1509,6 +1536,7 @@ CREATE TABLE `invoice` (
   `date`                DATETIME NOT NULL,
   `description`         TEXT NOT NULL,
   `reversed`            TINYINT NOT NULL DEFAULT 0,
+  `edited`              TINYINT NOT NULL DEFAULT 0,
   `created_at`          TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `invoice_1` (`project_id`, `reference`),
@@ -1523,17 +1551,17 @@ CREATE TABLE `invoice` (
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS invoice_billing_service;
-CREATE TABLE invoice_billing_service (
+DROP TABLE IF EXISTS invoice_invoicing_fee;
+CREATE TABLE invoice_invoicing_fee (
   `invoice_uuid`               BINARY(16) NOT NULL,
   `value`                      DECIMAL(10,4) NOT NULL,
-  `billing_service_id`         SMALLINT UNSIGNED NOT NULL,
+  `invoicing_fee_id`         SMALLINT UNSIGNED NOT NULL,
   PRIMARY KEY (`invoice_uuid`, `value`),
-  UNIQUE KEY `invoice_billing_service_1` (`invoice_uuid`, `billing_service_id`),
+  UNIQUE KEY `invoice_invoicing_fee_1` (`invoice_uuid`, `invoicing_fee_id`),
   KEY `invoice_uuid` (`invoice_uuid`),
-  KEY `billing_service_id` (`billing_service_id`),
+  KEY `invoicing_fee_id` (`invoicing_fee_id`),
   FOREIGN KEY (`invoice_uuid`) REFERENCES `invoice` (`uuid`) ON DELETE CASCADE,
-  FOREIGN KEY (`billing_service_id`) REFERENCES `billing_service` (`id`)
+  FOREIGN KEY (`invoicing_fee_id`) REFERENCES `invoicing_fee` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `invoice_item`;
@@ -1785,6 +1813,7 @@ CREATE TABLE IF NOT EXISTS `voucher` (
   `created_at`      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `type_id`         SMALLINT(3) UNSIGNED NULL,
   `reference_uuid`  BINARY(16),
+  `edited`          TINYINT NOT NULL DEFAULT 0,
   KEY `project_id` (`project_id`),
   KEY `currency_id` (`currency_id`),
   KEY `user_id` (`user_id`),
@@ -1852,7 +1881,7 @@ CREATE TABLE `stock_movement` (
   `entity_uuid`     BINARY(16) NULL,
   `description`     TEXT NULL,
   `flux_id`         INT(11) NOT NULL,
-  `date`            DATE NOT NULL,
+  `date`            DATETIME NOT NULL,
   `quantity`        int(11) NOT NULL DEFAULT 0,
   `unit_cost`       DECIMAL(19, 4) UNSIGNED NOT NULL,
   `is_exit`         TINYINT(1) NOT NULL,
@@ -1901,4 +1930,62 @@ CREATE TABLE `integration` (
   `date`            DATE NOT NULL,
   PRIMARY KEY (`reference`),
   UNIQUE KEY `integration_uuid` (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- stock consumption total
+CREATE TABLE `stock_consumption` (
+  `inventory_uuid`  BINARY(16) NOT NULL,
+  `depot_uuid`      BINARY(16) NOT NULL,
+  `period_id`       MEDIUMINT(8) NOT NULL,
+  `quantity`        INT(11) DEFAULT 0,
+  PRIMARY KEY (`inventory_uuid`, `depot_uuid`, `period_id`),
+  KEY `inventory_uuid` (`inventory_uuid`),
+  KEY `depot_uuid` (`depot_uuid`),
+  KEY `period_id` (`period_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+/*
+  The transaction_history table stores the editing history of transactions that
+  have gone through the posting process.  The record_uuid should be the same
+  record_uuid as that found in the posting_journal/general_ledger.
+*/
+CREATE TABLE `transaction_history` (
+  `uuid`  BINARY(16) NOT NULL,
+  `record_uuid`      BINARY(16) NOT NULL,
+  `timestamp`        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `user_id`         SMALLINT(5) UNSIGNED NOT NULL,
+  PRIMARY KEY (`uuid`),
+  KEY `record_uuid` (`record_uuid`),
+  KEY `user_id` (`user_id`),
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+DROP TABLE IF EXISTS `depot_permission`;
+
+CREATE TABLE `depot_permission` (
+  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` smallint(5) unsigned NOT NULL,
+  `depot_uuid`  BINARY(16) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `depot_permission_1` (`user_id`,`depot_uuid`),
+  KEY `user_id` (`user_id`),
+  KEY `depot_uuid` (`depot_uuid`),
+  FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`),
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `cashbox_permission`;
+
+CREATE TABLE `cashbox_permission` (
+  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` smallint(5) unsigned NOT NULL,
+  `cashbox_id`  MEDIUMINT(8) UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `cashbox_permission_1` (`user_id`,`cashbox_id`),
+  KEY `user_id` (`user_id`),
+  KEY `cashbox_id` (`cashbox_id`),
+  FOREIGN KEY (`cashbox_id`) REFERENCES `cash_box` (`id`),
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

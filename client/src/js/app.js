@@ -6,9 +6,9 @@ var bhima = angular.module('bhima', [
   'ui.grid.selection', 'ui.grid.autoResize', 'ui.grid.resizeColumns',
   'ui.grid.edit', 'ui.grid.grouping', 'ui.grid.treeView', 'ui.grid.cellNav',
   'ui.grid.pagination', 'ui.grid.moveColumns', 'ui.grid.exporter',
-  'angularMoment', 'ngMessages',
+  'ui.grid.expandable', 'angularMoment', 'ngMessages',
   'growlNotifications', 'ngAnimate', 'ngSanitize', 'ui.select', 'ngTouch',
-  'ui.router.state.events',
+  'ui.router.state.events', 'webcam'
 ]);
 
 function bhimaConfig($urlMatcherFactoryProvider) {
@@ -35,21 +35,22 @@ function localeConfig(tmhDynamicLocaleProvider) {
 }
 
 // redirect to login if not signed in.
-function startupConfig($rootScope, $state, $uibModalStack, SessionService, amMoment, Notify, $location) {
+function startupConfig($rootScope, $state, $uibModalStack, SessionService, amMoment, Notify, $location, InstallService) {
+  var installStateRegexp = /#!\/install$/;
   var loginStateRegexp = /#!\/login$/;
-  var rootStateRegexp = /#!\/$|\/$|#!$/;
 
   // make sure the user is logged in and allowed to access states when
   // navigating by URL.  This is pure an authentication issue.
-  $rootScope.$on('$locationChangeStart', function (event, next)  {
-    var isLoggedIn = !!SessionService.user;
+  $rootScope.$on('$locationChangeStart', onLocationChangeStart);
 
+  function onLocationChangeStart(event, next) {
+    var isLoggedIn = !!SessionService.user;
     var isLoginState = loginStateRegexp.test(next);
-    var isRootState = rootStateRegexp.test(next);
+    var isInstallState = installStateRegexp.test(next);
 
     // if the user is logged in and trying to access the login state, deny the
     // attempt with a message "Cannot return to login.  Please log out from the
-    // Settings Page."
+    // Settings Page.
     if (isLoggedIn && isLoginState) {
       event.preventDefault();
       Notify.warn('AUTH.CANNOT_RETURN_TO_LOGIN');
@@ -57,18 +58,28 @@ function startupConfig($rootScope, $state, $uibModalStack, SessionService, amMom
     // if the user is not logged in and trying to access any other state, deny
     // the attempt with a message that their session expired and redirect them
     // to the login page.
-    } else if (!isLoggedIn && !isLoginState) {
+    } else if (!isLoggedIn && !isLoginState && !isInstallState) {
+      event.preventDefault();
+      $state.go('login');
+
+      // if user is logged in and trying to access install keep the user in
+      // the current state.
+    } else if (isLoggedIn && isInstallState) {
       event.preventDefault();
 
-      if (!isRootState) {
-        Notify.warn('AUTH.UNAUTHENTICATED');
-      }
+      // goto install state if it is possible
+    } else if (!isLoggedIn && isInstallState) {
+      event.preventDefault();
+      InstallService.checkBasicInstallExist()
+        .then(handleInstallExist);
+    }
 
-      $state.go('login');
+    function handleInstallExist(res) {
+      if (res.isInstalled) { $state.go('login'); }
     }
 
     // else, the user is free to continue as they wish
-  });
+  }
 
   // the above $locationChangeStart is not enough in the case that $state.go()
   // is used (as it is on the /settings page).  If an attacker manages to
@@ -76,9 +87,20 @@ function startupConfig($rootScope, $state, $uibModalStack, SessionService, amMom
   // $locationChangeStart event will only prevent the URL from changing ... not
   // the actual state transition!  So, we need this to stop $stateChange events.
   // TODO - migrate this to $transitions.on()
-  $rootScope.$on('$stateChangeStart', function (event, next) {
+  $rootScope.$on('$stateChangeStart', onStateChangeStart);
+
+  function onStateChangeStart(event, next) {
+    var path;
+    var paths;
+    var publicRoutes;
+    var isPublicPath;
+    var authorized;
+
+    var isErrorState;
+    var isSettingsState;
     var isLoggedIn = !!SessionService.user;
     var isLoginState = next.name.indexOf('login') !== -1;
+
 
     if (isLoggedIn && isLoginState) {
       event.preventDefault();
@@ -87,38 +109,43 @@ function startupConfig($rootScope, $state, $uibModalStack, SessionService, amMom
     }
 
     // check if we are going to an error state;
-    var isErrorState = (
+    isErrorState = (
       next.name.indexOf('404') !== -1 ||
       next.name.indexOf('403') !== -1
     );
 
-    // pass through to error state
-    if (isErrorState) {
+    isSettingsState = next.name.indexOf('settings') !== -1;
+
+    // pass through to error state or settings state
+    if (isErrorState || isSettingsState) {
       return;
     }
 
     // verify that the user is authorized to go to the next state
-    var path = $location.path();
+    path = $location.path();
 
-    var paths = SessionService.paths;
-    var publicRoutes = ['/', '/settings', '/login', '/landing/stats'];
+    paths = SessionService.paths;
 
-    var isPublicPath = publicRoutes.indexOf(path) > -1;
+    publicRoutes = ['/', '/settings', '/login', '/landing/stats', '/install'];
+
+    isPublicPath = publicRoutes.indexOf(path) > -1;
 
     // pass through
     if (!paths || isPublicPath) { return; }
 
     // check if the user is authorized to access this route.
-    var authorized = paths.some(function (data) {
-      return path.indexOf(data.path) === 0 && data.authorized;
-    });
+    authorized = paths.some(checkUserAuthorization);
 
     // if the user is not authorized, go to the 403 state instead
     if (!authorized) {
       event.preventDefault();
       $state.go('403');
     }
-  });
+
+    function checkUserAuthorization(data) {
+      return path.indexOf(data.path) === 0 && data.authorized;
+    }
+  }
 
   // make sure $stateChangeErrors are emitted to the console.
   $rootScope.$on('$stateChangeError', console.log.bind(console));
@@ -179,13 +206,15 @@ function compileConfig($compileProvider) {
 /**
  * Configure global properties about ui-select
  */
-function uiSelectConfig(uiSelectConfig) {
-  uiSelectConfig.theme = 'bootstrap';
+function uiSelectConfig(config) {
+  config.theme = 'bootstrap';
 }
 
-// TODO - remove this
-function qConfig($qProvider) {
-  $qProvider.errorOnUnhandledRejections(false);
+// configures the modals with default values
+function uiModalConfig($uibModalProvider) {
+  $uibModalProvider.options.size = 'md';
+  $uibModalProvider.options.backdrop = 'static';
+  $uibModalProvider.options.keyboard = false;
 }
 
 // configure services, providers, factories
@@ -196,10 +225,11 @@ bhima.config(['tmhDynamicLocaleProvider', localeConfig]);
 bhima.config(['$localStorageProvider', localStorageConfig]);
 bhima.config(['$httpProvider', httpConfig]);
 bhima.config(['$animateProvider', animateConfig]);
+bhima.config(['$uibModalProvider', uiModalConfig]);
 bhima.config(['$compileProvider', compileConfig]);
-bhima.config(['$qProvider', qConfig]);
 
 // run the application
 bhima.run([
-  '$rootScope', '$state', '$uibModalStack', 'SessionService', 'amMoment', 'NotifyService', '$location', startupConfig,
+  '$rootScope', '$state', '$uibModalStack', 'SessionService',
+  'amMoment', 'NotifyService', '$location', 'InstallService', startupConfig,
 ]);

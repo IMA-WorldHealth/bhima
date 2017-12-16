@@ -18,12 +18,14 @@
  * @requires db
  * @requires NotFound
  * @requires accounts/types
+ * @requires accounts/categories
  */
 
 const db = require('../../../lib/db');
 const NotFound = require('../../../lib/errors/NotFound');
 const BadRequest = require('../../../lib/errors/BadRequest');
 const types = require('./types');
+const categories = require('./categories');
 
 
 /**
@@ -88,9 +90,7 @@ function remove(req, res, next) {
   db.exec(sql, [req.params.id])
     .then((rows) => {
       if (rows[0].childrens > 0) {
-        throw new BadRequest(
-          `Could not delete account with id: ${req.params.id}. This account contains child accounts.`
-        );
+        throw new BadRequest(`Could not delete account with id: ${req.params.id}. This account contains child accounts.`);
       }
 
       const sqlDelete = 'DELETE FROM account WHERE id = ?;';
@@ -147,11 +147,11 @@ function list(req, res, next) {
   sql += ` ORDER BY a.number;`;
 
   db.exec(sql)
-  .then((rows) => {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -215,7 +215,9 @@ function getBalance(req, res, next) {
     .then(() => db.exec(sql, params))
     .then((rows) => {
       const response = (rows.length === 0) ?
-        { account_id : id, debit : 0, credit : 0, balance : 0 } :
+        {
+          account_id : id, debit : 0, credit : 0, balance : 0,
+        } :
         rows[0];
 
       res.status(200).json(response);
@@ -325,3 +327,4 @@ exports.lookupAccount = lookupAccount;
 exports.processAccountDepth = processAccountDepth;
 exports.list = list;
 exports.remove = remove;
+exports.categories = categories;

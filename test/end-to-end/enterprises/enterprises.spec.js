@@ -1,14 +1,14 @@
-/* global element, by, inject, browser */
+/* global element, by */
 const chai = require('chai');
 const helpers = require('../shared/helpers');
 
-const expect = chai.expect;
+const { expect } = chai;
 helpers.configure(chai);
 
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 
-describe('Enterprises', function () {
+describe('Enterprises', () => {
   const path = '#!/enterprises';
 
   // enterprise
@@ -18,8 +18,8 @@ describe('Enterprises', function () {
     email           : 'ima@imaworldhealth.com',
     po_box          : 'POBOX USA 1',
     phone           : '01500',
-    gain_account_id : 'Test Gain Account',
-    loss_account_id : 'Test Loss Account',
+    gain_account_id : 'Gain de change',
+    loss_account_id : '67611010', // 67611010 - Différences de change
   };
 
   // default enterprise
@@ -29,8 +29,8 @@ describe('Enterprises', function () {
     email           : 'enterprise@test.org',
     po_box          : 'POBOX USA 1',
     phone           : '243 81 504 0540',
-    gain_account_id : 'Test Gain Account',
-    loss_account_id : 'Test Loss Account',
+    gain_account_id : 'Gain de change',
+    loss_account_id : '67611010', // 67611010 - Différences de change
   };
 
   // project
@@ -54,7 +54,7 @@ describe('Enterprises', function () {
    * The actual enterprise module doesn't need to create new one
    * so we need only to update enterprise informations
    */
-  it('set enterprise data', function () {
+  it('set enterprise data', () => {
     FU.input('EnterpriseCtrl.enterprise.name', enterprise.name);
     FU.input('EnterpriseCtrl.enterprise.abbr', enterprise.abbr);
 
@@ -74,7 +74,7 @@ describe('Enterprises', function () {
     components.notification.hasSuccess();
   });
 
-  it('blocks invalid form submission with relevant error classes', function () {
+  it('blocks invalid form submission with relevant error classes', () => {
     FU.input('EnterpriseCtrl.enterprise.name', '');
     FU.input('EnterpriseCtrl.enterprise.abbr', '');
 
@@ -96,7 +96,7 @@ describe('Enterprises', function () {
   /**
    * Set default enterprise data for others tests
    */
-  it('reset enterprise data to default', function () {
+  it('reset enterprise data to default', () => {
     FU.input('EnterpriseCtrl.enterprise.name', defaultEnterprise.name);
     FU.input('EnterpriseCtrl.enterprise.abbr', defaultEnterprise.abbr);
 
@@ -116,7 +116,7 @@ describe('Enterprises', function () {
     components.notification.hasSuccess();
   });
 
-  it('add a new project for the enterprise', function () {
+  it('add a new project for the enterprise', () => {
     FU.buttons.create();
 
     FU.input('$ctrl.project.name', project.name);
@@ -127,7 +127,7 @@ describe('Enterprises', function () {
     components.notification.hasSuccess();
   });
 
-  it('edit an existing project', function () {
+  it('edit an existing project', () => {
     element(by.css(`[data-update="${abbr}"]`)).click();
 
     FU.input('$ctrl.project.name', projectUpdate.name);
@@ -138,7 +138,7 @@ describe('Enterprises', function () {
     components.notification.hasSuccess();
   });
 
-  it('delete an existing project', function () {
+  it('delete an existing project', () => {
     element(by.css(`[data-delete="${abbrUpdate}"]`)).click();
 
     FU.input('$ctrl.text', projectUpdate.name);

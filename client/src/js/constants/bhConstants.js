@@ -12,7 +12,7 @@ function constantConfig() {
   return {
     accounts : {
       ROOT  : 0,
-      TITLE : 4,
+      TITLE : 6,
     },
     purchase : {
       GRID_HEIGHT : 200,
@@ -65,6 +65,7 @@ function constantConfig() {
       PURCHASES          : 9,
       CREDIT_NOTE        : 10,
       INVOICING          : 11,
+      STOCK_INTEGRATION  : 12,
       INCOME             : 'income',
       EXPENSE            : 'expense',
       OTHER              : 'other',
@@ -111,6 +112,11 @@ function constantConfig() {
         table : 'patient',
       },
     },
+    defaultFilters : [
+      { key : 'period', label : 'TABLE.COLUMNS.PERIOD', valueFilter : 'translate' },
+      { key : 'custom_period_start', label : 'PERIODS.START', comparitor: '>', valueFilter : 'date' },
+      { key : 'custom_period_end', label : 'PERIODS.END', comparitor: '<', valueFilter : 'date' },
+      { key : 'limit', label : 'FORM.LABELS.LIMIT' }],
   };
 }
 

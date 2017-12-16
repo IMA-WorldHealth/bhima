@@ -1,0 +1,44 @@
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static" translate> TREE.ADMIN </li>
+      <li class="title" translate> PROFESSION.TITLE </li>
+    </ol>
+
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <button class="btn btn-default text-capitalize" id="create" ng-click="FunctionCtrl.createFunction()" data-method="create">
+          <span class="fa fa-plus"></span> <span translate>PROFESSION.ADD_PROFESSION</span>
+        </button>
+      </div>
+
+      <div class="toolbar-item">
+        <button
+          type="button"
+          ng-click="FunctionCtrl.toggleFilter()"
+          data-method="filter"
+          class="btn btn-default"
+          ng-class="{ 'btn-info' : FunctionCtrl.filterEnabled }">
+          <i class="fa fa-filter"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- main content -->
+<div class="flex-content">
+  <div class="container-fluid">
+    <div id="function-grid"
+      ui-grid="FunctionCtrl.gridOptions"
+      class="grid-full-height"
+      ui-grid-auto-resize>
+
+      <bh-grid-loading-indicator
+        loading-state="FunctionCtrl.loading"
+        empty-state="FunctionCtrl.gridOptions.data.length === 0"
+        error-state="FunctionCtrl.hasError">
+      </bh-grid-loading-indicator>
+    </div>
+  </div>
+</div>

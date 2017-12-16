@@ -22,10 +22,12 @@ const dates = require('./helpers/dates');
 const finance = require('./helpers/finance');
 const objects = require('./helpers/objects');
 const logic = require('./helpers/logic');
+const presentation = require('./helpers/presentation');
 
 const hbs = exphbs.create({
   helpers : {
     date          : dates.date,
+    month         : dates.month,
     timestamp     : dates.timestamp,
     age           : dates.age,
     multiply      : math.multiply,
@@ -38,6 +40,11 @@ const hbs = exphbs.create({
     look          : objects.look,
     equal         : logic.equal,
     gt            : logic.gt,
+    lt            : logic.lt,
+    getIncomeExpenseTitle : presentation.getTitle,
+    isIncomeViewable : presentation.isIncomeViewable,
+    isExpenseViewable : presentation.isExpenseViewable,
+    isResultViewable : presentation.isResultViewable,
   },
 
   // load partials from the partials sub-directory

@@ -13,10 +13,13 @@
       <table class="table table-condensed table-bordered">
         <thead>
           <tr>
-            <th class="text-center">{{translate "TREE.INVENTORY"}}</th>
-            <th class="text-center">{{translate "FORM.LABELS.TYPE"}}</th>
-            <th class="text-center">{{translate "FORM.LABELS.DEFAULT_QUANTITY"}}</th>
+            <th class="text-center">{{translate "FORM.LABELS.CODE"}}</th>
+            <th class="text-center">{{translate "FORM.LABELS.CONSUMABLE"}}</th>
+            <th class="text-center">{{translate "FORM.LABELS.LABEL"}}</th>
             <th class="text-center">{{translate "FORM.LABELS.UNIT_PRICE"}}</th>
+            <th class="text-center">{{translate "FORM.LABELS.DEFAULT_QUANTITY"}}</th>
+            <th class="text-center">{{translate "FORM.LABELS.TYPE"}}</th>
+            <th class="text-center">{{translate "FORM.LABELS.UNIT"}}</th>
           </tr>
         </thead>
         <tbody>
@@ -26,11 +29,11 @@
 
             <!-- this is the inventory group header -->
             <tr style="border:none">
-              <th style="border:none; border-bottom: solid black 2px;" class="text-uppercase">
+              <th colspan="3" style="border:none; border-bottom: solid black 2px;" class="text-uppercase">
                 {{ name }}
               </th>
 
-              <th colspan="3" style="border:none; border-bottom: solid black 2px;" class="text-right">
+              <th colspan="4" style="border:none; border-bottom: solid black 2px;" class="text-right">
                 ({{ items.length }} {{ translate "TABLE.AGGREGATES.RECORDS" }})
               </th>
             </tr>
@@ -38,14 +41,17 @@
             <!-- these are the items for each group -->
             {{#each items as | item | }}
               <tr>
+                <td>{{item.code}}</div>
+                <td>{{item.consumable}}</div>                                
                 <td style="text-overflow:ellipsis">
-                  <span style="margin-left: 10px;">{{ item.text }}</span>
+                  <span style="margin-left: 10px;">{{ item.label }}</span>
                 </td>
-                <td>{{ item.typeName }}</td>
-                <td class="text-right">{{ item.default_quantity }}</td>
                 <td class="text-right" style="min-width:150px;">
                   {{currency item.price ../../metadata.enterprise.currency_id}}
                 </td>
+                <td class="text-right">{{ item.default_quantity }}</td>
+                <td>{{ item.type }}</td>
+                <td>{{ item.unit }}</td>
               </tr>
             {{/each}}
 
@@ -55,7 +61,6 @@
                 <th style="border:none;"></th>
               </tr>
             {{/unless}}
-
           {{/each}}
         </tbody>
       </table>

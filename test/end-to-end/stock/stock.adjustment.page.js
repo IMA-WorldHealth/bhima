@@ -1,8 +1,10 @@
-/* global element, by, browser */
+/* global by */
 
 const FU = require('../shared/FormUtils');
 const GU = require('../shared/GridUtils');
 const components = require('../shared/components');
+const SharedStockPage = require('./stock.shared.page');
+
 
 function StockAdjustmentPage() {
   const page = this;
@@ -11,14 +13,7 @@ function StockAdjustmentPage() {
 
   // the grid id
   page.gridId = gridId;
-
-  /**
-   * @method setDepot
-   * @param {string} label - the depot label
-   */
-  page.setDepot = function setDepot(label) {
-    components.depotDropdown.set(label);
-  };
+  page.setDepot = SharedStockPage.setDepot;
 
   /**
    * @method setAdjustment
@@ -48,15 +43,13 @@ function StockAdjustmentPage() {
    * @method addRows
    */
   page.addRows = function addRows(n) {
-    FU.input('StockCtrl.itemIncrement', n);
-    element(by.css('[id="btn-add-rows"]')).click();
+    components.addItem.set(n);
   };
 
   /**
    * @method setItem
    */
   page.setItem = function setInventory(rowNumber, code, lot, quantity) {
-
     // inventory code column
     const itemCell = GU.getCell(gridId, rowNumber, 1);
 
@@ -69,8 +62,9 @@ function StockAdjustmentPage() {
     // enter data into the typeahead input.
     FU.input('row.entity.inventory', code, itemCell);
 
-    // the typeahead should be open - use an id to click the right item
-    element(by.id(`inv-code-${code}`)).click();
+    const externalAnchor = $('body > ul.dropdown-menu.ng-isolate-scope:not(.ng-hide)');
+    const option = externalAnchor.element(by.cssContainingText('[role="option"]', code));
+    option.click();
 
     // select the inventory lot
     FU.uiSelectAppended('row.entity.lot', lot, lotCell);

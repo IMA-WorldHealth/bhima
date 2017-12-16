@@ -31,16 +31,16 @@ function StockExiTests() {
     page.addRows(2);
 
     // first item
-    page.setItem(0, 'INV0', 'QUININE-A', 20);
+    page.setItem(0, 'Quinine', 'QUININE-A', 20);
 
     // second item
-    page.setItem(1, 'INV1', 'VITAMINE-A', 10);
+    page.setItem(1, 'Multivitamine', 'VITAMINE-A', 10);
 
     // submit
     page.submit();
   });
 
-  it(`Should distribute the stock to the service ${SERVICE} `, () => {
+  it(`should distribute the stock to the service ${SERVICE} `, () => {
     // select the service
     page.setService(SERVICE);
 
@@ -51,16 +51,16 @@ function StockExiTests() {
     page.addRows(2);
 
     // first item
-    page.setItem(0, 'INV0', 'QUININE-B', 25);
+    page.setItem(0, 'Quinine', 'QUININE-B', 25);
 
     // second item
-    page.setItem(1, 'INV1', 'VITAMINE-B', 5);
+    page.setItem(1, 'Multivitamine', 'VITAMINE-B', 5);
 
     // submit
     page.submit();
   });
 
-  it(`Should distribute the stock to the depot ${DEPOT_SECONDAIRE} `, () => {
+  it(`should distribute the stock to the depot ${DEPOT_SECONDAIRE} `, () => {
     // select the depot of destination
     page.setDestinationDepot(DEPOT_SECONDAIRE);
 
@@ -71,13 +71,13 @@ function StockExiTests() {
     page.addRows(1);
 
     // first item
-    page.setItem(0, 'INV0', 'QUININE-B', 75);
+    page.setItem(0, 'Quinine', 'QUININE-B', 75);
 
     // submit
     page.submit();
   });
 
-  it('Should distribute the stock as a lost ', () => {
+  it('should distribute the stock as a loss ', () => {
     // select the depot of destination
     page.setLoss();
 
@@ -88,7 +88,7 @@ function StockExiTests() {
     page.addRows(1);
 
     // first item
-    page.setItem(0, 'INV1', 'VITAMINE-B', 5);
+    page.setItem(0, 'Multivitamine', 'VITAMINE-B', 5);
 
     // submit
     page.submit();

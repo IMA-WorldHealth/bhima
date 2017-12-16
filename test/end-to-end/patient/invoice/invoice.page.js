@@ -6,6 +6,7 @@ const GU = require('../../shared/GridUtils');
 
 const findPatient = require('../../shared/components/bhFindPatient');
 const dateEditor = require('../../shared/components/bhDateEditor');
+const addItem = require('../../shared/components/bhAddItem'); 
 
 function PatientInvoicePage() {
   const page = this;
@@ -30,8 +31,8 @@ function PatientInvoicePage() {
     // set a patient with id TPA1
     findPatient.findById('PA.TPA.1');
 
-    // set the date to the start of this year
-    dateEditor.set(new Date('2016-01-02'));
+    // set the date to the start of this day
+    dateEditor.set(new Date());
 
     // set a test description
     FU.input(
@@ -60,8 +61,7 @@ function PatientInvoicePage() {
 
   // adds n rows to the grid
   page.addRows = function addRows(n) {
-    FU.input('PatientInvoiceCtrl.itemIncrement', n);
-    btns.add.click();
+    addItem.set(n);
   };
 
   // returns n rows

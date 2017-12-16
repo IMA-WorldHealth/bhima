@@ -1,0 +1,44 @@
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static" translate> TREE.ADMIN </li>
+      <li class="title" translate> GRADE.TITLE </li>
+    </ol>
+
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <button class="btn btn-default text-capitalize" id="create" ng-click="GradeCtrl.createGrade()" data-method="create">
+          <span class="fa fa-plus"></span> <span translate>GRADE.ADD_GRADE</span>
+        </button>
+      </div>
+
+      <div class="toolbar-item">
+        <button
+          type="button"
+          ng-click="GradeCtrl.toggleFilter()"
+          data-method="filter"
+          class="btn btn-default"
+          ng-class="{ 'btn-info' : GradeCtrl.filterEnabled }">
+          <i class="fa fa-filter"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- main content -->
+<div class="flex-content">
+  <div class="container-fluid">
+    <div id="grade-grid"
+      ui-grid="GradeCtrl.gridOptions"
+      class="grid-full-height"
+      ui-grid-auto-resize>
+
+      <bh-grid-loading-indicator
+        loading-state="GradeCtrl.loading"
+        empty-state="GradeCtrl.gridOptions.data.length === 0"
+        error-state="GradeCtrl.hasError">
+      </bh-grid-loading-indicator>
+    </div>
+  </div>
+</div>

@@ -4,10 +4,10 @@
     <span class="caret"></span>
   </a>
 
-  <ul data-action="{{ rowRenderIndex}}"  class="dropdown-menu-right" uib-dropdown-menu>
+  <ul data-action="{{ rowRenderIndex}}"  class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
     <li class="dropdown-header">{{row.entity.reference}}</li>
     <li>
-      <a data-method="record" ui-sref="patientRecord.details({patientID : row.entity.uuid})" href>
+      <a data-method="record" ui-sref="patientRecord.details({ patientID : row.entity.uuid })" href>
         <span class="fa fa-book"></span> <span translate>PATIENT_REGISTRY.RECORD</span>
       </a>
     </li>
@@ -23,13 +23,24 @@
     </li>
     <li class="divider"></li>
     <li>
-      <a data-method="card"  ui-sref="invoiceRegistry({ filters : { patientReference : row.entity.reference } })" href>
+      <a data-method="financialActivities" ng-href="reports/finance/financialPatient/{{row.entity.uuid}}" target="_blank">
+        <span class="fa fa-file-text-o"></span> <span translate>FORM.LABELS.VIEW_FINANCIAL_ACT</span>
+      </a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a data-method="invoice" ui-sref="invoiceRegistry({ filters : [{ key : 'patientReference', value : row.entity.reference }]})" href>
         <span class="fa fa-file-text-o"></span> <span translate>PATIENT_REGISTRY.INVOICES</span>
       </a>
     </li>
     <li>
-    <a data-method="card" ui-sref="cashRegistry({ filters : { identifiers : { patientReference : row.entity.reference }, display : { patientReference : row.entity.reference } }})" href>
+      <a data-method="payment" ui-sref="cashRegistry({ filters : [{ key : 'patientReference', value : row.entity.reference }]})" href>
         <span class="fa fa-money"></span> <span translate>PATIENT_REGISTRY.PAYMENTS</span>
+      </a>
+    </li>
+    <li>
+      <a data-method="voucher" ui-sref="vouchers({ filters : [{ key : 'entity_uuid', value : row.entity.debtor_uuid, displayValue: row.entity.display_name }]})" href>
+        <span class="fa fa-address-card-o"></span> <span translate>PATIENT_REGISTRY.VOUCHERS</span>
       </a>
     </li>
   </ul>

@@ -13,7 +13,7 @@
  * @requires lodash
  * @requires lib/db
  * @requires lib/topic
- * @requires lib/node-uuid
+ * @requires lib/uuid/v4
  * @requires lib/errors/BadRequest
  * @requires lib/errors/NotFound
  * @requires lib/barcode
@@ -32,7 +32,7 @@
 
 const _ = require('lodash');
 const q = require('q');
-const uuid = require('node-uuid');
+const uuid = require('uuid/v4');
 
 const identifiers = require('../../../config/identifiers');
 
@@ -74,7 +74,7 @@ exports.find = find;
 exports.hospitalNumberExists = hospitalNumberExists;
 
 /** @todo discuss if these should be handled by the entity APIs or by patients. */
-exports.billingServices = billingServices;
+exports.invoicingFees = invoicingFees;
 exports.subsidies = subsidies;
 
 /** expose patient detail query internally */
@@ -90,23 +90,20 @@ exports.latestInvoice = latestInvoice;
 function create(req, res, next) {
   const createRequestData = req.body;
 
-  let medical = createRequestData.medical;
-  let finance = createRequestData.finance;
+  let { medical, finance } = createRequestData;
 
   // Debtor group required for financial modelling
   const invalidParameters = !finance || !medical;
   if (invalidParameters) {
-    next(
-      new BadRequest(
-        'Both financial and medical information must be provided to register a patient.'
-      )
-    );
+    next(new BadRequest('Both financial and medical information must be provided to register a patient.'));
     return;
   }
 
   // optionally allow client to specify UUID
-  finance.uuid = finance.uuid || uuid.v4();
-  medical.uuid = medical.uuid || uuid.v4();
+  const financeUuid = finance.uuid || uuid();
+  finance.uuid = financeUuid;
+  const medicalUuid = medical.uuid || uuid();
+  medical.uuid = medicalUuid;
 
   medical.user_id = req.session.user.id;
 
@@ -134,7 +131,7 @@ function create(req, res, next) {
   transaction.execute()
     .then(() => {
       res.status(201).json({
-        uuid : uuid.unparse(medical.uuid),
+        uuid : medicalUuid,
       });
 
       // publish a CREATE event on the medical channel
@@ -142,7 +139,7 @@ function create(req, res, next) {
         event   : topic.events.CREATE,
         entity  : topic.entities.PATIENT,
         user_id : req.session.user.id,
-        uuid    : uuid.unparse(medical.uuid),
+        uuid    : medicalUuid,
       });
     })
     .catch(next)
@@ -194,6 +191,7 @@ function update(req, res, next) {
     'UPDATE patient SET ? WHERE uuid = ?';
 
   db.exec(updatePatientQuery, [data, buid])
+    .then(() => updatePatientDebCred(patientUuid))
     .then(() => lookupPatient(patientUuid))
     .then((updatedPatient) => {
       res.status(200).json(updatedPatient);
@@ -224,6 +222,7 @@ function lookupPatient(patientUuid) {
   // convert uuid to database usable binary uuid
   const buid = db.bid(patientUuid);
 
+  // @FIXME(sfount) ALL patient queries should use the same column selection and gaurantee the same information
   const sql = `
     SELECT BUID(p.uuid) as uuid, p.project_id, BUID(p.debtor_uuid) AS debtor_uuid, p.display_name, p.hospital_no,
       p.sex, p.registration_date, p.email, p.phone, p.dob, p.dob_unknown_date,
@@ -232,9 +231,9 @@ function lookupPatient(patientUuid) {
       p.address_2, p.father_name, p.mother_name, p.religion, p.marital_status, p.profession, p.employer, p.spouse,
       p.spouse_profession, p.spouse_employer, p.notes, p.avatar, proj.abbr, d.text,
       dg.account_id, BUID(dg.price_list_uuid) AS price_list_uuid, dg.is_convention, BUID(dg.uuid) as debtor_group_uuid,
-      dg.locked, dg.name as debtor_group_name, u.username, u.display_name AS userName
-    FROM patient AS p JOIN project AS proj JOIN debtor AS d JOIN debtor_group AS dg JOIN user AS u
-    ON p.debtor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id AND p.user_id = u.id
+      dg.locked, dg.name as debtor_group_name, u.username, u.display_name AS userName, a.number
+    FROM patient AS p JOIN project AS proj JOIN debtor AS d JOIN debtor_group AS dg JOIN user AS u JOIN account AS a
+    ON p.debtor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id AND p.user_id = u.id AND a.id = dg.account_id
     WHERE p.uuid = ?;
   `;
 
@@ -246,6 +245,56 @@ function lookupPatient(patientUuid) {
 
       return patient;
     });
+}
+
+
+/**
+ * @method updatePatientDebCred
+ *
+ * @description
+ * This function is used to update the text value of the creditor
+ * and debitor tables in case the patient's name was changed
+ *
+ * @param {String} patientUuid - the patient's unique id hex string
+ */
+
+function updatePatientDebCred(patientUuid) {
+  // convert uuid to database usable binary uuid
+  const buid = db.bid(patientUuid);
+
+  const sql = `
+    SELECT BUID(debtor.uuid) AS debtorUuid, BUID(employee.creditor_uuid) AS creditorUuid, patient.display_name
+    FROM debtor
+    JOIN patient ON patient.debtor_uuid = debtor.uuid
+    LEFT JOIN employee ON employee.patient_uuid = patient.uuid
+    WHERE patient.uuid = ?
+  `;
+
+  return db.exec(sql, buid)
+    .then((row) => {
+      const debtorUuid = db.bid(row[0].debtorUuid);
+      const creditorUuid =  db.bid(row[0].creditorUuid);
+
+      const debtorText = {
+        text : `Debiteur [${row[0].display_name}]`
+      };
+
+      const creditorText = {
+        text : `Crediteur [${row[0].display_name}]`,
+      };
+
+      const updateCreditor = `UPDATE creditor SET ? WHERE creditor.uuid = ?`;
+      const updateDebtor = `UPDATE debtor SET ? WHERE debtor.uuid = ?`;
+
+      const transaction = db.transaction();
+
+      transaction
+        .addQuery(updateDebtor, [debtorText, debtorUuid])
+        .addQuery(updateCreditor, [creditorText, creditorUuid]);
+
+      return transaction.execute();
+    });
+
 }
 
 /**
@@ -373,24 +422,28 @@ function searchByName(req, res, next) {
  */
 function find(options) {
   // ensure epected options are parsed appropriately as binary
-  db.convert(options, ['patient_group_uuid', 'debtor_group_uuid']);
+  db.convert(options, ['patient_group_uuid', 'debtor_group_uuid', 'debtor_uuid']);
 
   const filters = new FilterParser(options, { tableAlias : 'p' });
   const sql = patientEntityQuery(options.detailed);
 
+  filters.equals('debtor_uuid');
   filters.fullText('display_name');
-  filters.dateFrom('dateRegistrationFrom', 'registration_date');
-  filters.dateTo('dateRegistrationTo', 'registration_date');
   filters.dateFrom('dateBirthFrom', 'dob');
   filters.dateTo('dateBirthTo', 'dob');
 
   // default registration date
-  filters.period('defaultPeriod', 'registration_date');
+  filters.period('period', 'registration_date');
+  filters.dateFrom('custom_period_start', 'registration_date');
+  filters.dateTo('custom_period_end', 'registration_date');
 
   const patientGroupStatement =
-    '(SELECT COUNT(uuid) FROM assignation_patient where patient_uuid = p.uuid AND patient_group_uuid = ?) = 1';
+    '(SELECT COUNT(uuid) FROM patient_assignment where patient_uuid = p.uuid AND patient_group_uuid = ?) = 1';
   filters.custom('patient_group_uuid', patientGroupStatement);
   filters.equals('debtor_group_uuid', 'group_uuid', 'd');
+  filters.equals('sex');
+  filters.equals('hospital_no');
+  filters.equals('user_id');
 
   const referenceStatement =
     `CONCAT_WS('.', '${identifiers.PATIENT.key}', proj.abbr, p.reference) = ?`;
@@ -402,6 +455,7 @@ function find(options) {
   // applies filters and limits to defined sql, get parameters in correct order
   const query = filters.applyQuery(sql);
   const parameters = filters.parameters();
+
   return db.exec(query, parameters);
 }
 
@@ -423,7 +477,7 @@ function patientEntityQuery(detailed) {
   //       _before_selecting.
   // build the main part of the SQL query
   const sql = `
-    SELECT 
+    SELECT
       BUID(p.uuid) AS uuid, p.project_id, CONCAT_WS('.', '${identifiers.PATIENT.key}',
       proj.abbr, p.reference) AS reference, p.display_name, BUID(p.debtor_uuid) as debtor_uuid,
       p.sex, p.dob, p.registration_date, BUID(d.group_uuid) as debtor_group_uuid, p.hospital_no,
@@ -456,46 +510,46 @@ function patientEntityQuery(detailed) {
  */
 function read(req, res, next) {
   find(req.query)
-  .then((rows) => {
+    .then((rows) => {
     // publish a SEARCH event on the medical channel
-    topic.publish(topic.channels.MEDICAL, {
-      event   : topic.events.SEARCH,
-      entity  : topic.entities.PATIENT,
-      user_id : req.session.user.id,
-    });
+      topic.publish(topic.channels.MEDICAL, {
+        event   : topic.events.SEARCH,
+        entity  : topic.entities.PATIENT,
+        user_id : req.session.user.id,
+      });
 
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }
 
 
-function billingServices(req, res, next) {
+function invoicingFees(req, res, next) {
   const uid = db.bid(req.params.uuid);
 
   // @todo (OPTIMISATION) Two additional SELECTs to select group uuids can be written as JOINs.
   const patientsServiceQuery =
 
-    // get the final information needed to apply billing services to an invoice
+    // get the final information needed to apply invoicing fees to an invoice
     'SELECT DISTINCT ' +
-      'billing_service_id, label, description, value, billing_service.created_at ' +
+      'invoicing_fee_id, label, description, value, invoicing_fee.created_at ' +
     'FROM ' +
 
-      // get all of the billing services from patient group subscriptions
+      // get all of the invoicing fees from patient group subscriptions
       '(SELECT * ' +
-      'FROM patient_group_billing_service ' +
-      'WHERE patient_group_billing_service.patient_group_uuid in ' +
+      'FROM patient_group_invoicing_fee ' +
+      'WHERE patient_group_invoicing_fee.patient_group_uuid in ' +
 
         // find all of the patients groups
         '(SELECT patient_group_uuid ' +
-        'FROM assignation_patient ' +
+        'FROM patient_assignment ' +
         'WHERE patient_uuid = ?) ' +
     'UNION ' +
 
-      // get all of the billing services from debtor group subscriptions
+      // get all of the invoicing fees from debtor group subscriptions
       'SELECT * ' +
-      'FROM debtor_group_billing_service ' +
+      'FROM debtor_group_invoicing_fee ' +
       'WHERE debtor_group_uuid = ' +
 
         // find the debtor group uuid
@@ -507,8 +561,8 @@ function billingServices(req, res, next) {
       ') AS patient_services ' +
 
     // apply billing service information to rows retrieved from service subscriptions
-    'LEFT JOIN billing_service ' +
-    'ON billing_service_id = billing_service.id';
+    'LEFT JOIN invoicing_fee ' +
+    'ON invoicing_fee_id = invoicing_fee.id';
 
   db.exec(patientsServiceQuery, [uid, uid])
     .then((result) => {
@@ -535,7 +589,7 @@ function subsidies(req, res, next) {
 
         // find all of the patients groups
         '(SELECT patient_group_uuid ' +
-        'FROM assignation_patient ' +
+        'FROM patient_assignment ' +
         'WHERE patient_uuid = ?) ' +
     'UNION ' +
 
@@ -570,7 +624,7 @@ function loadLatestInvoice(inv) {
   const combinedLedger = `
     (
       (SELECT record_uuid, debit_equiv, credit_equiv, reference_uuid, entity_uuid FROM posting_journal)
-      UNION 
+      UNION
       (SELECT record_uuid, debit_equiv, credit_equiv, reference_uuid, entity_uuid FROM general_ledger)
     ) AS comb`;
 
@@ -637,7 +691,7 @@ function loadLatestInvoice(inv) {
 }
 
 /*
- Search for information about the latest patient Invoice
+ Search for information about the latest patient Invoice - accepts patient UUID
  */
 function latestInvoice(req, res, next) {
   const uid = req.params.uuid;
@@ -648,7 +702,8 @@ function latestInvoice(req, res, next) {
     SELECT invoice.uuid, invoice.debtor_uuid, invoice.date, user.display_name, invoice.cost
     FROM invoice
     JOIN user ON user.id = invoice.user_id
-    WHERE debtor_uuid = ?
+    JOIN patient on patient.debtor_uuid = invoice.debtor_uuid
+    WHERE patient.uuid = ?
     AND invoice.uuid NOT IN (SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = ${REVERSE_TYPE_ID})
     ORDER BY date DESC
     LIMIT 1;

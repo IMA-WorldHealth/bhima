@@ -1,22 +1,26 @@
 angular.module('bhima.controllers')
-.controller('AccountStatementController', AccountStatementController);
+  .controller('AccountStatementController', AccountStatementController);
 
-// DI
 AccountStatementController.$inject = [
-  'GeneralLedgerService', 'NotifyService', 'JournalConfigService',
+  'GeneralLedgerService', 'NotifyService', 'JournalService',
   'GridSortingService', 'GridFilteringService', 'GridColumnService',
   'SessionService', 'bhConstants', 'uiGridConstants', 'AccountStatementService',
-  'Store', 'FilterService', 'ModalService', 'LanguageService',
-  '$filter', 'GridExportService',
+  'FilterService', 'ModalService', 'LanguageService', 'GridExportService',
+  'TransactionService',
 ];
 
 /**
  * @module AccountStatementController
+ *
+ * @description
+ * This controller powers the Account Statement module.  Account Statement is
+ * a module used to analyze the transactions that have hit a particular account.
  */
-function AccountStatementController(GeneralLedger, Notify, Config,
-  Sorting, Filtering, Columns, Session, bhConstants, uiGridConstants,
-  AccountStatement, Store, Filters, Modal, Languages,
-  $filter, GridExport) {
+function AccountStatementController(
+  GeneralLedger, Notify, Journal, Sorting, Filtering, Columns, Session,
+  bhConstants, uiGridConstants, AccountStatement, Filters, Modal, Languages,
+  GridExport, Transactions
+) {
   // global variables
   var vm = this;
   var cacheKey = 'account-statement';
@@ -28,6 +32,7 @@ function AccountStatementController(GeneralLedger, Notify, Config,
   // grid definition ================================================================
   vm.gridApi = {};
 
+  // FIXME(@jniles) - why does this not have fastWatch?
   vm.gridOptions = {
     enableColumnMenus        : false,
     showColumnFooter         : true,
@@ -58,7 +63,7 @@ function AccountStatementController(GeneralLedger, Notify, Config,
     { field                : 'trans_date',
       displayName          : 'TABLE.COLUMNS.DATE',
       headerCellFilter     : 'translate',
-      cellFilter           : 'date:"' + bhConstants.dates.format + '"',
+      cellFilter           : 'date:"'.concat(bhConstants.dates.format, '"'),
       filter               : { condition : filtering.filterByDate },
       editableCellTemplate : 'modules/journal/templates/date.edit.html',
       footerCellTemplate   : '<i></i>' },
@@ -74,23 +79,27 @@ function AccountStatementController(GeneralLedger, Notify, Config,
 
     {
       field            : 'debit_equiv',
+      type : 'number',
       displayName      : 'TABLE.COLUMNS.DEBIT',
       headerCellFilter : 'translate',
       cellFilter       : 'currency:grid.appScope.enterprise.currency_id',
       cellClass        : 'text-right',
       enableFiltering  : true,
       aggregationType  : uiGridConstants.aggregationTypes.sum,
+      aggregationHideLabel : true,
       footerCellFilter : 'currency:grid.appScope.enterprise.currency_id',
       footerCellClass  : 'text-right',
     },
 
     { field            : 'credit_equiv',
+      type : 'number',
       displayName      : 'TABLE.COLUMNS.CREDIT',
       headerCellFilter : 'translate',
       cellFilter       : 'currency:grid.appScope.enterprise.currency_id',
       cellClass        : 'text-right',
       enableFiltering  : true,
       aggregationType  : uiGridConstants.aggregationTypes.sum,
+      aggregationHideLabel : true,
       footerCellFilter : 'currency:grid.appScope.enterprise.currency_id',
       footerCellClass  : 'text-right',
     },
@@ -124,12 +133,14 @@ function AccountStatementController(GeneralLedger, Notify, Config,
       visible          : false },
 
     { field            : 'debit',
+      type : 'number',
       displayName      : 'TABLE.COLUMNS.DEBIT_SOURCE',
       headerCellFilter : 'translate',
       visible          : false,
       cellTemplate     : '/modules/journal/templates/debit.grid.html' },
 
     { field            : 'credit',
+      type : 'number',
       displayName      : 'TABLE.COLUMNS.CREDIT_SOURCE',
       headerCellFilter : 'translate',
       visible          : false,
@@ -138,11 +149,12 @@ function AccountStatementController(GeneralLedger, Notify, Config,
     { field                : 'hrEntity',
       displayName          : 'TABLE.COLUMNS.RECIPIENT',
       headerCellFilter     : 'translate',
-      editableCellTemplate : '/modules/journal/templates/entity.edit.html',
+      cellTemplate         : '<div class="ui-grid-cell-contents"><bh-reference-link ng-if="row.entity.hrEntity" reference="row.entity.hrEntity" /></div>',
       visible              : true },
 
     { field            : 'hrReference',
       displayName      : 'TABLE.COLUMNS.REFERENCE',
+      cellTemplate     : '<div class="ui-grid-cell-contents"><bh-reference-link ng-if="row.entity.hrReference" reference="row.entity.hrReference" /></div>',
       headerCellFilter : 'translate',
       visible          : true },
 
@@ -176,17 +188,17 @@ function AccountStatementController(GeneralLedger, Notify, Config,
   function rowSelectionChanged() {
     vm.selectedRows = vm.gridApi.selection.getSelectedGridRows();
   }
-  // end grid defintion =============================================================
+  // end grid definition =============================================================
 
   // comment selected rows
   vm.commentRows = function commentRows() {
-    AccountStatement.openCommentModal({ rows : vm.selectedRows })
-    .then(function (comment) {
-      if (!comment) { return; }
-      updateGridComment(vm.selectedRows, comment);
-      Notify.success('ACCOUNT_STATEMENT.SUCCESSFULLY_COMMENTED');
-    })
-    .catch(Notify.handleError);
+    Transactions.openCommentModal({ rows : vm.selectedRows })
+      .then(function (comment) {
+        if (!comment) { return; }
+        updateGridComment(vm.selectedRows, comment);
+        Notify.success('ACCOUNT_STATEMENT.SUCCESSFULLY_COMMENTED');
+      })
+      .catch(Notify.handleError);
   };
 
   // update local rows
@@ -205,7 +217,7 @@ function AccountStatementController(GeneralLedger, Notify, Config,
   vm.openSearchModal = function openSearchModal() {
     var filtersSnapshot = AccountStatement.filters.formatHTTP();
 
-    Config.openSearchModal(filtersSnapshot, { hasDefaultAccount : true, title : 'ACCOUNT_STATEMENT.TITLE' })
+    Journal.openSearchModal(filtersSnapshot, { hasDefaultAccount : true, title : 'ACCOUNT_STATEMENT.TITLE' })
       .then(function (changes) {
         AccountStatement.filters.replaceFilters(changes);
 
@@ -236,9 +248,11 @@ function AccountStatementController(GeneralLedger, Notify, Config,
       return;
     }
 
-    var uuids = vm.gridApi.selection.getSelectedGridRows().map(function (row) {
-      return row.entity.uuid;
-    });
+    var uuids = vm.gridApi.selection.getSelectedGridRows()
+      .map(function (row) {
+        return row.entity.uuid;
+      });
+
     return { renderer : type || 'pdf', lang : Languages.key, uuids: uuids };
   }
 
@@ -263,19 +277,48 @@ function AccountStatementController(GeneralLedger, Notify, Config,
     vm.latestViewFilters = AccountStatement.filters.formatView();
   }
 
+  function toggleLoadingIndicator() {
+    vm.loading = !vm.loading;
+  }
+
   // startup
   function load(options) {
-    vm.loading = true;
+    toggleLoadingIndicator();
+
     vm.hasErrors = false;
 
+    vm.gridOptions.gridFooterTemplate = null;
+    vm.gridOptions.showGridFooter = false;
+    vm.balances = {};
+
     GeneralLedger.read(null, options)
-    .then(function (data) {
-      vm.gridOptions.data = data;
-    })
-    .catch(handleError)
-    .finally(function () {
-      vm.loading = false;
-    });
+      .then(function (data) {
+        vm.gridOptions.data = data;
+
+        // compute the difference between the debits and credits
+        // TODO(@jniles) - is there a way to get this from ui grid's aggregation?
+        vm.balances = data.reduce(computeTransactionBalances, {
+          debits : 0,
+          credits : 0,
+          balance : 0,
+        });
+
+        vm.gridOptions.showGridFooter = true;
+        vm.gridOptions.gridFooterTemplate = '/modules/account_statement/grid.footer.html';
+
+        // @TODO investigate why footer totals aren't updated automatically on data change
+        vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
+      })
+      .catch(handleError)
+      .finally(toggleLoadingIndicator);
+  }
+
+  // computes the balances used in the grid footer
+  function computeTransactionBalances(aggregates, row) {
+    aggregates.debits += row.debit_equiv;
+    aggregates.credits += row.credit_equiv;
+    aggregates.balance += (row.debit_equiv - row.credit_equiv);
+    return aggregates;
   }
 
   // catch loading errors

@@ -1,7 +1,10 @@
 angular.module('bhima.controllers')
 .controller('DepotManagementController', DepotManagementController);
 
-DepotManagementController.$inject = ['$translate', 'DepotService', 'SessionService', 'util'];
+DepotManagementController.$inject = [
+  'DepotService', 'ModalService',
+  'NotifyService', 'uiGridConstants', '$state',
+];
 
 /**
  * Depot Management Controller
@@ -9,146 +12,95 @@ DepotManagementController.$inject = ['$translate', 'DepotService', 'SessionServi
  * This controller is about the depot management module in the admin zone
  * It's responsible for creating, editing and updating a depot
  */
-function DepotManagementController($translate, DepotService, SessionService, util) {
-  'use strict';
-
+function DepotManagementController(Depots, ModalService,
+  Notify, uiGridConstants, $state) {
   var vm = this;
 
-  /** breadcrumb configurations */
-  vm.bcPaths = [{
-    label: $translate.instant('DEPOT.MAIN.TITLE'),
-    current: true
-  }];
+  // bind methods
+  vm.deleteDepot = deleteDepot;
+  vm.editDepot = editDepot;
+  vm.createDepot = createDepot;
+  vm.toggleFilter = toggleFilter;
 
-  vm.bcButtons = [{
-    dataMethod : 'create',
-    color  : 'btn-default',
-    icon   : 'glyphicon glyphicon-plus-sign',
-    label  : $translate.instant('DEPOT.ADD_DEPOT'),
-    action : create
-  }];
+  // global variables
+  vm.gridApi = {};
+  vm.filterEnabled = false;
 
-  /* variables */
-  var map = {
-    create : {
-      title : 'DEPOT.ADD_DEPOT',
-      submit : createDepot
-    },
-    update : {
-      title : 'DEPOT.EDIT_DEPOT',
-      submit : updateDepot
-    },
-    remove : {
-      title : 'FORM.DIALOGS.CONFIRM_DELETE',
-      submit : removeDepot
-    }
+  // options for the UI grid
+  vm.gridOptions = {
+    appScopeProvider  : vm,
+    enableColumnMenus : false,
+    fastWatch         : true,
+    flatEntityAccess  : true,
+    enableSorting     : true,
+    onRegisterApi     : onRegisterApiFn,
+    columnDefs : [
+      { field : 'text', displayName : 'DEPOT.LABEL', headerCellFilter : 'translate' },
+      { field : 'is_warehouse',
+        width : 125,
+        displayName : 'DEPOT.WAREHOUSE',
+        headerCellFilter : 'translate',
+        cellTemplate : '/modules/depots/templates/warehouse.tmpl.html',
+        enableSorting : false,
+        enableFiltering : false,
+      },
+      { field : 'action',
+        width : 80,
+        displayName : '',
+        cellTemplate : '/modules/depots/templates/action.tmpl.html',
+        enableSorting : false,
+        enableFiltering : false,
+      },
+    ],
   };
 
-  /** init variables */
-  vm.state = {};
-  vm.depot = {};
+  function onRegisterApiFn(gridApi) {
+    vm.gridApi = gridApi;
+  }
 
-  /** Expose to the view */
-  vm.update = update;
-  vm.cancel = cancel;
-  vm.submit = submit;
-  vm.remove = remove;
-  vm.refreshValidation = refreshValidation;
-  vm.maxLength = util.maxTextLength;
+  function toggleFilter() {
+    vm.filterEnabled = !vm.filterEnabled;
+    vm.gridOptions.enableFiltering = vm.filterEnabled;
+    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+  }
 
-  /** Load depots */
-  depotsList();
+  function loadDepots() {
+    vm.loading = true;
 
-  function depotsList() {
-    DepotService.read()
-    .then(function (list) {
-      vm.depotList = list;
+    Depots.read(null, { full : 1 })
+    .then(function (data) {
+      vm.gridOptions.data = data;
+    })
+    .catch(Notify.handleError)
+    .finally(function () {
+      vm.loading = false;
     });
   }
 
-  function update(uuid) {
-    initialise('action', 'update', uuid);
+  // switch to delete warning mode
+  function deleteDepot(depot) {
+    ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
+    .then(function (bool) {
+      if (!bool) { return; }
+
+      Depots.delete(depot.uuid)
+      .then(function () {
+        Notify.success('DEPOT.DELETED');
+        loadDepots();
+      })
+      .catch(Notify.handleError);
+    });
   }
 
-  function create() {
-    initialise('action', 'create');
+  // update an existing depot
+  function editDepot(depotObject) {
+    $state.go('depots.edit', { depot : depotObject });
   }
 
-  function remove(id) {
-    initialise('action', 'remove', id);
-  }
-
-  function cancel() {
-    initialise('default');
-  }
-
-  function submit(actionForm) {
-    if (actionForm.$invalid) {
-      return;
-    }
-    map[vm.action].submit(vm.depot.uuid);
-  }
-
+  // create a new depot
   function createDepot() {
-    vm.depot.enterprise_id = SessionService.enterprise.id;
-    DepotService.create(vm.depot)
-    .then(function (res) {
-      vm.state.created = true;
-      vm.view = 'success';
-    })
-    .then(depotsList)
-    .catch(errorHandler);
+    $state.go('depots.create');
   }
 
-  function updateDepot(uuid) {
-    DepotService.update(uuid, vm.depot)
-    .then(function (res) {
-      vm.state.updated = true;
-      vm.view = 'success';
-    })
-    .then(depotsList)
-    .catch(errorHandler);
-  }
-
-  function removeDepot(uuid) {
-    DepotService.delete(uuid)
-    .then(function (res) {
-      vm.state.removed = true;
-      vm.view = 'success';
-    })
-    .then(depotsList)
-    .catch(errorHandler);
-  }
-
-  function errorHandler(err) {
-    vm.state.errored = true;
-    console.log(err);
-  }
-
-  function initialise(view, action, uuid) {
-    vm.state.reset();
-    vm.view   = view;
-    vm.action = action;
-    vm.depot  = {};
-
-    vm.actionTitle = map[action].title;
-
-    if (uuid && (action === 'update' || action === 'remove')) {
-      DepotService.read(uuid)
-      .then(function (depot) {
-        vm.depot = depot;
-      });
-    }
-  }
-
-  function refreshValidation() {
-    vm.state.errored = vm.depot.text ? false : true;
-  }
-
-  vm.state.reset = function reset() {
-    vm.state.errored = false;
-    vm.state.updated = false;
-    vm.state.created = false;
-    vm.state.removed = false;
-  };
+  loadDepots();
 }

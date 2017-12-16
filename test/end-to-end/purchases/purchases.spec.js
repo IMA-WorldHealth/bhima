@@ -1,9 +1,9 @@
-/* global element, by, browser */
+/* global by */
 const chai = require('chai');
 const helpers = require('../shared/helpers');
 
 helpers.configure(chai);
-const expect = chai.expect;
+const { expect } = chai;
 
 const FU = require('../shared/FormUtils');
 const PurchaseOrderPage = require('./purchases.page.js');
@@ -22,7 +22,7 @@ describe('Purchase Orders', () => {
     const page = new PurchaseOrderPage();
 
     // prepare the page with default supplier, description, etc
-    FU.uiSelect('PurchaseCtrl.supplier', 'Test Supplier');
+    components.supplierSelect.set('SNEL');
     FU.input('PurchaseCtrl.order.details.note', 'This is a brief description of what is going on');
     components.dateEditor.set(new Date('2016-03-03'));
 
@@ -30,7 +30,13 @@ describe('Purchase Orders', () => {
     $('#other').click();
 
     // add the following inventory item
-    page.addInventoryItem(0, 'INV0');
+    page.addInventoryItem(0, 'Quinine');
+
+    // change the required quantities
+    page.adjustItemQuantity(0, 1);
+
+    // change the prices
+    page.adjustItemPrice(0, 25);
 
     // make sure the submit button is not disabled
     expect(page.btns.submit.isEnabled()).to.eventually.equal(true);
@@ -46,7 +52,7 @@ describe('Purchase Orders', () => {
     const page = new PurchaseOrderPage();
 
     // prepare the page with default supplier, description, etc
-    FU.uiSelect('PurchaseCtrl.supplier', 'Test Supplier');
+    components.supplierSelect.set('SNEL');
     FU.input('PurchaseCtrl.order.details.note', 'We need more penicillin');
     components.dateEditor.set(new Date('2016-03-05'));
 
@@ -60,9 +66,9 @@ describe('Purchase Orders', () => {
     expect(page.getRows().count()).to.eventually.equal(3);
 
     // add two inventory items to each row (0-indexing)
-    page.addInventoryItem(0, 'INV0');
-    page.addInventoryItem(1, 'INV2');
-    page.addInventoryItem(2, 'INV1');
+    page.addInventoryItem(0, 'Quinine');
+    page.addInventoryItem(1, '110016');
+    page.addInventoryItem(2, 'Multivitamine');
 
     // change the required quantities
     page.adjustItemQuantity(0, 7);
@@ -104,7 +110,7 @@ describe('Purchase Orders', () => {
     page.btns.clear.click();
 
     // prepare the page with default supplier, description, etc
-    FU.uiSelect('PurchaseCtrl.supplier', 'Test Supplier');
+    components.supplierSelect.set('SNEL');
     FU.input('PurchaseCtrl.order.details.note', 'We need more purchases.');
     components.dateEditor.set(new Date('2016-03-01'));
 
@@ -118,5 +124,28 @@ describe('Purchase Orders', () => {
 
     // there should be a danger notification
     components.notification.hasDanger();
+  });
+
+
+  it('Block selection if no products require a purchase order', () => {
+    const page = new PurchaseOrderPage();
+    page.btns.clear.click();
+
+    // prepare the page with default supplier, description, etc
+    components.supplierSelect.set('SNEL');
+    FU.input('PurchaseCtrl.order.details.note', 'Optimal Purchase');
+    components.dateEditor.set(new Date('2016-03-01'));
+
+    // set the 'on-purchase' delivery method parameter
+    $('#on-purchase').click();
+
+    // click on buttom Optimal Purchase
+    page.optimalPurchase();
+
+    // there should be a danger notification
+    components.notification.hasWarn();
+
+    // FIX ME : At this point in the E2E testing process, there is no product that requires a purchase order
+    // because they E2E purchase order test precedes the outbound order
   });
 });

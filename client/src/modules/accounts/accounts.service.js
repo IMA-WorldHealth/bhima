@@ -38,34 +38,39 @@ function AccountService(Api, $http, util, bhConstants) {
     var url = baseUrl.concat(id || '');
     return $http.get(url, { params : options })
       .then(util.unwrapHttpResponse)
-      .then(function (accounts) {
-
-        // if we received an array of accounts from the server,
-        // label the accounts with a nice human readable label
-        if (angular.isArray(accounts)) {
-          accounts.forEach(function (account) {
-            account.hrlabel = label(account);
-          });
-        }
-
-        return accounts;
-      });
+      .then(handleAccounts);
   }
 
-  function getBalance(account_id, opt){
-    var url = baseUrl + account_id + '/balance';
+  function handleAccounts(accounts) {
+    // if we received an array of accounts from the server,
+    // label the accounts with a nice human readable label
+    if (angular.isArray(accounts)) {
+      accounts.forEach(humanReadableLabel);
+    }
+
+    return accounts;
+  }
+
+  function humanReadableLabel(account) {
+    account.hrlabel = label(account);
+  }
+
+  function label(account) {
+    return String(account.number).concat(' - ', account.label);
+  }
+
+  function getBalance(accountId, opt) {
+    var url = baseUrl.concat(accountId, '/balance');
     return $http.get(url, opt)
       .then(util.unwrapHttpResponse);
   }
 
-  function label(account) {
-    return account.number + ' - ' + account.label;
+  function filterTitleAccounts(accounts) {
+    return accounts.filter(handleFilterTitleAccount);
   }
 
-  function filterTitleAccounts(accounts) {
-    return accounts.filter(function (account) {
-      return account.type_id !== bhConstants.accounts.TITLE;
-    });
+  function handleFilterTitleAccount(account) {
+    return account.type_id !== bhConstants.accounts.TITLE;
   }
 
   /**
@@ -85,15 +90,19 @@ function AccountService(Api, $http, util, bhConstants) {
 
     // returns all accounts where the parent is the
     // parentId
-    children = accounts.filter(function (account) {
-      return account.parent === parentId;
-    });
+    children = accounts.filter(handleParent);
 
     // recursively call getChildren on all child accounts
     // and attach them as childen of their parent account
-    children.forEach(function (account) {
+    children.forEach(handleChildren);
+
+    function handleParent(account) {
+      return account.parent === parentId;
+    }
+
+    function handleChildren(account) {
       account.children = getChildren(accounts, account.id);
-    });
+    }
 
     return children;
   }
@@ -106,16 +115,18 @@ function AccountService(Api, $http, util, bhConstants) {
    *
    * @returns {Array} - the flattened array
    */
-  function flatten(tree, depth) {
-    depth = isNaN(depth) ? -1 : depth;
+  function flatten(_tree, _depth) {
+    var tree = _tree || [];
+    var depth = isNaN(_depth) ? -1 : _depth;
     depth += 1;
 
-    return tree.reduce(function (array, node) {
-      node.$$treeLevel = depth;
-
+    function handleTreeLevel(array, node) {
       var items = [node].concat(node.children ? flatten(node.children, depth) : []);
+      node.$$treeLevel = depth;
       return array.concat(items);
-    }, []);
+    }
+
+    return tree.reduce(handleTreeLevel, []);
   }
 
   /**

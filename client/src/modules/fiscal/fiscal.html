@@ -9,20 +9,36 @@
         translate>TREE.FISCAL_YEAR
       </li>
 
-      <!-- creditor group list with link -->
+      <!-- fiscal year list with link -->
       <li ng-if="FiscalCtrl.state.current.name !== 'fiscal.list'">
         <a ui-sref="fiscal.list" translate>TREE.FISCAL_YEAR</a>
       </li>
 
-      <!-- edit creditor group -->
+      <!-- edit fiscal year -->
       <li ng-if="FiscalCtrl.state.current.name === 'fiscal.update'" class="title">
         {{ FiscalCtrl.state.params.label }} 
         <span class="label label-info" translate>FORM.LABELS.EDIT</span>
       </li>
 
-      <!-- create creditor group -->
+      <!-- create fiscal year -->
       <li ng-if="FiscalCtrl.state.current.name === 'fiscal.create'" class="title">
         <span class="label label-success" translate>FORM.LABELS.CREATE</span>
+      </li>
+
+      <!-- opening balance -->
+      <li ng-if="FiscalCtrl.state.current.name === 'fiscal.openingBalance'">
+        <a ui-sref="fiscal.update({ id: FiscalCtrl.state.params.id })">{{ FiscalCtrl.state.params.label }}</a>
+      </li>
+      <li ng-if="FiscalCtrl.state.current.name === 'fiscal.openingBalance'" class="title">
+        <span translate>FISCAL.OPENING_BALANCE</span>
+      </li>
+
+      <!-- closing balance -->
+      <li ng-if="FiscalCtrl.state.current.name === 'fiscal.closingBalance'">
+        <a ui-sref="fiscal.update({ id: FiscalCtrl.state.params.id })">{{ FiscalCtrl.state.params.label }}</a>
+      </li>
+      <li ng-if="FiscalCtrl.state.current.name === 'fiscal.closingBalance'" class="title">
+        <span translate>FISCAL.CLOSING_BALANCE</span>
       </li>
     </ol>
 

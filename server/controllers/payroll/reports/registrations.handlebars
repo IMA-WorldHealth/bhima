@@ -1,24 +1,11 @@
 {{> head title="EMPLOYEE.TITLE" }}
 
 <body>
-
   {{> header }}
 
   <h3 class="text-center">{{translate "EMPLOYEE.TITLE"}}</h3>
 
-  <p class="pills">
-    {{#each filters}}
-      <span class="label label-primary text-capitalize">
-        <i class="fa fa-filter"></i> {{translate this.displayName}}
-
-        {{#if this.comparitor}} {{this.comparitor}}
-        {{else}}: {{/if}}
-
-        {{#if this.isDate}} {{date this.value}}
-        {{else}} {{this.value}} {{/if}}
-      </span>
-    {{/each}}
-  </p>
+  {{> filterbar filters=filters }}
 
   <section style="size: 0.75em;">
     <table class="table table-condensed table-bordered ">
@@ -38,9 +25,9 @@
           <tr>
             <td>{{this.code}}</td>
             <td>{{this.display_name}}</td>
-            <td>{{this.sexe}}</td>
+            <td>{{this.sex}}</td>
             <td>{{this.age}} ({{date this.dob}})</td>
-            <td>{{this.grade}}</td>            
+            <td>{{this.code_grade}}</td>            
             <td>{{this.fonction_txt}}</td>
             <td>{{date this.date_embauche}}</td>
           </tr>
@@ -63,7 +50,7 @@
       <div class="row">
         <div class="col-xs-6">
           <!-- summary table -->
-          <table class="table table-condensed table-bordered table-striped">
+          <table class="table table-condensed table-bordered table-report">
             <tbody>
               <tr>
                 <th colspan="2" class="text-center">

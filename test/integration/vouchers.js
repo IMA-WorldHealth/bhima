@@ -1,18 +1,20 @@
-/* global expect, chai, agent */
+/* global expect, agent */
 
 const helpers = require('./helpers');
-const uuid = require('node-uuid');
+const uuid = require('uuid/v4');
 
 /*
  * The /vouchers API endpoint
  *
  * This test suit is about the vouchers table
  */
-describe('(/vouchers) The vouchers HTTP endpoint', function () {
+describe('(/vouchers) The vouchers HTTP endpoint', () => {
   const date = new Date();
 
   const vUuid = 'b140c144-6ca8-47b0-99ba-94732cf6efde';
-  const numVouchers = 6;
+  const numVouchers = 9;
+
+  const TO_DELETE_UUID = '3688e9ce-85ea-4b5c-9144-688177edcb63';
 
   // balanced transaction with two lines (USD)
   const voucher = {
@@ -21,17 +23,17 @@ describe('(/vouchers) The vouchers HTTP endpoint', function () {
     project_id  : 1,
     currency_id : helpers.data.USD,
     amount      : 10,
-    description : 'Voucher Transaction',
+    description : 'Voucher Transaction to BCDC',
     user_id     : 1,
     items       : [{
-      uuid          : uuid.v4(),
-      account_id    : 3631,
+      uuid          : uuid(),
+      account_id    : 184,
       debit         : 10,
       credit        : 0,
-      document_uuid : uuid.v4(),
+      document_uuid : uuid(),
       voucher_uuid  : vUuid,
     }, {
-      account_id   : 3628,
+      account_id   : 217,
       debit        : 0,
       credit       : 10,
       voucher_uuid : vUuid,
@@ -40,10 +42,10 @@ describe('(/vouchers) The vouchers HTTP endpoint', function () {
 
   // NOTE: this voucher does not have any uuids
   const items = [
-    { account_id: 3631, debit: 11, credit: 0, document_uuid: uuid.v4(), entity_uuid: uuid.v4() },
-    { account_id: 3637, debit: 0, credit: 11, document_uuid: uuid.v4(), entity_uuid: uuid.v4() },
-    { account_id: 3631, debit: 0, credit: 12 },
-    { account_id: 3628, debit: 12, credit: 0 },
+    { account_id : 197, debit : 11, credit : 0, document_uuid : uuid(), entity_uuid : uuid() },
+    { account_id : 191, debit : 0, credit : 11, document_uuid : uuid(), entity_uuid : uuid() },
+    { account_id : 197, debit : 0, credit : 12 },
+    { account_id : 190, debit : 12, credit : 0 },
   ];
 
   const secondVoucher = {
@@ -59,14 +61,14 @@ describe('(/vouchers) The vouchers HTTP endpoint', function () {
   // only one item - bad transaction
   const badVoucher = {
     date,
-    uuid        : uuid.v4(),
+    uuid        : uuid(),
     project_id  : 1,
     currency_id : helpers.data.USD,
     amount      : 10,
     description : 'Voucher Transaction',
     items       : [{
-      uuid       : uuid.v4(),
-      account_id : 3631,
+      uuid       : uuid(),
+      account_id : 177,
       debit      : 10,
       credit     : 0,
     }],
@@ -74,7 +76,7 @@ describe('(/vouchers) The vouchers HTTP endpoint', function () {
 
   // this voucher will not have an exchange rate
   const predatedVoucher = {
-    uuid        : uuid.v4(),
+    uuid        : uuid(),
     date        : new Date('2000-01-01'),
     project_id  : 1,
     currency_id : helpers.data.FC,
@@ -82,13 +84,13 @@ describe('(/vouchers) The vouchers HTTP endpoint', function () {
     description : 'Voucher Transaction',
     user_id     : 1,
     items       : [{
-      uuid       : uuid.v4(),
-      account_id : 3627,
+      uuid       : uuid(),
+      account_id : 179,
       debit      : 10,
       credit     : 0,
     }, {
-      uuid       : uuid.v4(),
-      account_id : 3637,
+      uuid       : uuid(),
+      account_id : 191,
       debit      : 0,
       credit     : 10,
     }],
@@ -96,7 +98,7 @@ describe('(/vouchers) The vouchers HTTP endpoint', function () {
 
   let mockVoucher;
 
-  it('POST /vouchers create a new voucher record in voucher and voucher_item tables', function () {
+  it('POST /vouchers create a new voucher record in voucher and voucher_item tables', () => {
     return agent.post('/vouchers')
       .send({ voucher })
       .then((res) => {
@@ -106,17 +108,17 @@ describe('(/vouchers) The vouchers HTTP endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('POST /vouchers create a new voucher record with multiple voucher_items', function () {
+  it('POST /vouchers create a new voucher record with multiple voucher_items', () => {
     return agent.post('/vouchers')
-      .send({ voucher: secondVoucher })
+      .send({ voucher : secondVoucher })
       .then((res) => {
         helpers.api.created(res);
       })
       .catch(helpers.handler);
   });
 
-  it('POST /vouchers doesn\'t register when missing data', function () {
-    const uid = uuid.v4();
+  it('POST /vouchers doesn\'t register when missing data', () => {
+    const uid = uuid();
     mockVoucher = {
       date,
       uuid          : uid,
@@ -124,7 +126,7 @@ describe('(/vouchers) The vouchers HTTP endpoint', function () {
       currency_id   : 1,
       amount        : 10,
       description   : 'Bad Voucher Transaction',
-      document_uuid : uuid.v4(), // technically, this should reference something..
+      document_uuid : uuid(), // technically, this should reference something..
       user_id       : 1,
       items         : [{
         account_id   : 3631,
@@ -142,14 +144,14 @@ describe('(/vouchers) The vouchers HTTP endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('POST /vouchers will reject a voucher will less than two records', function () {
+  it('POST /vouchers will reject a voucher will less than two records', () => {
     // attempt 1 - missing items completely + bad voucher
     return agent.post('/vouchers')
-      .send({ voucher: { uuid: uuid.v4() } })
+      .send({ voucher: { uuid: uuid() } })
       .then((res) => {
         helpers.api.errored(res, 400);
 
-    // attempt 2 - only a single item
+        // attempt 2 - only a single item
         return agent.post('/vouchers')
           .send({ voucher: badVoucher });
       })
@@ -159,17 +161,17 @@ describe('(/vouchers) The vouchers HTTP endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('POST /vouchers will reject a voucher with an invalid exchange rate', function () {
+  it('POST /vouchers will reject a voucher with an invalid exchange rate', () => {
     return agent.post('/vouchers')
-    .send({ voucher: predatedVoucher })
-    .then((res) => {
-      helpers.api.errored(res, 400);
-      expect(res.body.code).to.equal('ERRORS.NO_FISCAL_YEAR');
-    })
-    .catch(helpers.handler);
+      .send({ voucher: predatedVoucher })
+      .then((res) => {
+        helpers.api.errored(res, 400);
+        expect(res.body.code).to.equal('ERRORS.NO_FISCAL_YEAR');
+      })
+      .catch(helpers.handler);
   });
 
-  it('GET /vouchers?detailed=1 returns a list of vouchers', function () {
+  it('GET /vouchers?detailed=1 returns a list of vouchers', () => {
     return agent.get('/vouchers?detailed=1')
       .then((res) => {
         helpers.api.listed(res, numVouchers);
@@ -177,7 +179,7 @@ describe('(/vouchers) The vouchers HTTP endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /vouchers/:uuid returns a detail of a specified vouchers', function () {
+  it('GET /vouchers/:uuid returns a detail of a specified vouchers', () => {
     return agent.get(`/vouchers/${voucher.uuid}`)
       .then((res) => {
         expect(res).to.have.status(200);
@@ -188,7 +190,7 @@ describe('(/vouchers) The vouchers HTTP endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /vouchers/:uuid returns a NOT FOUND (404) when unknown {uuid}', function () {
+  it('GET /vouchers/:uuid returns a NOT FOUND (404) when unknown {uuid}', () => {
     return agent.get('/vouchers/unknown')
       .then((res) => {
         helpers.api.errored(res, 404);
@@ -196,7 +198,7 @@ describe('(/vouchers) The vouchers HTTP endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /vouchers returns a list of vouchers specified by query string', function () {
+  it('GET /vouchers returns a list of vouchers specified by query string', () => {
     return agent.get('/vouchers/?reference=unknown&detailed=1')
       .then((res) => {
         helpers.api.listed(res, 0);
@@ -208,6 +210,19 @@ describe('(/vouchers) The vouchers HTTP endpoint', function () {
       })
       .then((res) => {
         helpers.api.listed(res, 1);
+      })
+      .catch(helpers.handler);
+  });
+
+
+  it('DELETE /transactions/:uuid deletes a voucher', () => {
+    return agent.delete(`/transactions/${TO_DELETE_UUID}`)
+      .then(res => {
+        expect(res).to.have.status(201);
+        return agent.get(`/vouchers/${TO_DELETE_UUID}`);
+      })
+      .then(res => {
+        helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });

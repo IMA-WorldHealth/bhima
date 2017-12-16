@@ -1,23 +1,21 @@
-/* global element, by, browser */
+/* global element, by */
 
 /**
  * This class is represents a user page in term of structure and
  * behaviour so it is a user page object
- **/
+ */
 
-/** loading grid actions **/
+/* loading grid actions */
 const GA = require('../shared/GridAction');
 
 function UserPage() {
-  'use strict';
-
   const page = this;
 
   var userGrid = element(by.id('users-grid'));
   var addUserButon = element(by.css('[data-method="create"]'));
   var actionLinkColumn = 2;
 
-  /** send back the number of user in the grid**/
+  /* send back the number of user in the grid */
   function getUserCount() {
     return userGrid
       .element(by.css('.ui-grid-render-container-body'))
@@ -27,38 +25,59 @@ function UserPage() {
 
   /**
    * simulate the add user button click to show the dialog of creation
-   **/
-  function createUser () {
+   */
+  function createUser() {
     return addUserButon.click();
   }
 
   /**
    * simulate a click to a link tailed to the user
    *  listed in the grid to show the dialog for an editing
-   **/
+   */
   function editUser(n) {
     GA.clickOnMethod(n, actionLinkColumn, 'edit', 'users-grid');
   }
 
   /**
-   * simulte a link clicking on the grid to show permission dialog
-   **/
+   * simulate a link clicking on the grid to show permission dialog
+   */
   function editUserPermission(n) {
     GA.clickOnMethod(n, actionLinkColumn, 'permission', 'users-grid');
   }
 
   /**
-   * simulte a link clicking on the grid to show activation dialog
-   **/
+   * simulate a link clicking on the grid to show depot dialog
+   */
+  function editUserDepot(n) {
+    GA.clickOnMethod(n, actionLinkColumn, 'depot', 'users-grid');
+  }
+
+  /**
+   * simulate a link clicking on the grid to show cashbox dialog
+   */
+  function editUserCashbox(n) {
+    GA.clickOnMethod(n, actionLinkColumn, 'cashbox', 'users-grid');
+  }
+
+  /**
+   * simulate a link clicking on the grid to show activation dialog
+   */
   function activateUser(n) {
-    GA.clickOnMethod(n, actionLinkColumn, 'activated', 'users-grid');
+    GA.clickOnMethod(n, actionLinkColumn, 'activate', 'users-grid');
+  }
+
+  function deactivateUser(n) {
+    GA.clickOnMethod(n, actionLinkColumn, 'deactivate', 'users-grid');
   }
 
   page.getUserCount = getUserCount;
   page.createUser = createUser;
   page.editUser = editUser;
   page.editUserPermission = editUserPermission;
+  page.editUserDepot = editUserDepot;
+  page.editUserCashbox = editUserCashbox;
   page.activateUser = activateUser;
+  page.deactivateUser = deactivateUser;
 }
 
 module.exports = UserPage;

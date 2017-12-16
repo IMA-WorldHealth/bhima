@@ -10,19 +10,21 @@ helpers.configure(chai);
 // These buttons depend on custom data tags to indicate actions.  This seems
 // cleaner than using a whole bunch of ids which may potentially collide.
 // However, this decision can be reviewed
-const buttons =  {
+const buttons = {
   create : function create() { return $('[data-method="create"]').click(); },
   search : function search() { return $('[data-method="search"]').click(); },
   submit : function submit() { return $('[data-method="submit"]').click(); },
   cancel : function cancel() { return $('[data-method="cancel"]').click(); },
+  edit   : function edit() { return $('[data-method="edit"]').click(); },
   clear  : function clear() { return $('[data-method="clear"]').click(); },
+  print  : function print() { return $('[data-method="print"]').click(); },
   back   : function back() { return $('[data-method="back"]').click(); },
   reset  : function reset() { return $('[data-method="reset"]').click(); },
   delete : function delet() { return $('[data-method="delete"]').click(); },
   configure : function configure() { return $('[data-method="configure"]').click(); },
   add : function configure() { return $('[data-method="add"]').click(); },
   save : function configure() { return $('[data-method="save"]').click(); },
-  grouping : function grouping() { return $('[data-method="grouping"]').click(); }
+  grouping : function grouping() { return $('[data-method="grouping"]').click(); },
 };
 
 // This methods are for easily working with modals.  Works with the same custom
@@ -138,6 +140,29 @@ module.exports = {
 
     // select the item of the dropdown menu matching the label
     const option = anchor.element(by.cssContainingText('.dropdown-menu > [role="option"]', label));
+    option.click();
+  },
+
+  /**
+   * @method typeaheadAppended
+   *
+   * @description
+   * Selects an option from the ui-select dropdown
+   * which have the `append-to-body` option set to true
+   *
+   * @param {String} model - the ng-model target to select
+   * @param {String} label - the text of the option element to choose
+   * @param {Element} anchor - a protractor element to search within
+   * @returns {Element} - a protractor option element
+   */
+  typeaheadAppended: function typeaheadAppended(model, label, anchor) {
+    const externalAnchor = $('body > ul.dropdown-menu.ng-isolate-scope:not(.ng-hide)');
+
+    // type into the <input> element the searchable value
+    this.input('$ctrl.account', label, anchor || $('body'));
+
+    // select the item of the dropdown menu matching the label
+    const option = externalAnchor.element(by.cssContainingText('[role="option"]', label));
     option.click();
   },
 

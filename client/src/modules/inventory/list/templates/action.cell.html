@@ -5,13 +5,28 @@
     <span class="caret"></span>
   </a>
 
-  <ul class="dropdown-menu-right" uib-dropdown-menu>
+  <ul class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
     <li>
       <a href
           data-method="edit"
           data-edit-metadata="{{ row.entity.code }}"
           ng-hide="row.groupHeader" ui-sref="inventory.update({uuid : row.entity.uuid })">
           <i class="fa fa-edit"></i> <span translate>FORM.BUTTONS.EDIT</span>
+      </a>
+    </li>
+    <li>
+      <a href
+          data-method="delete"
+          data-delete-metadata="{{ row.entity.code }}"
+          ng-hide="row.groupHeader" ng-click="grid.appScope.remove(row.entity.uuid)">
+          <i class="fa fa-delete"></i> <span class="text-danger" translate>FORM.BUTTONS.DELETE</span>
+      </a>
+    </li>
+
+    <li class="divider"></li>
+    <li>
+      <a data-method="invoice" ui-sref="invoiceRegistry({ filters : [{ key : 'inventory_uuid', value : row.entity.uuid, displayValue: row.entity.label }]})" href>
+        <span class="fa fa-file-text-o"></span> <span translate>PATIENT_REGISTRY.INVOICES</span>
       </a>
     </li>
   </ul>

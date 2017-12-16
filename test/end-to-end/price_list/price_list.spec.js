@@ -69,14 +69,14 @@ describe('Price Lists', () => {
     FU.input('ModalCtrl.data.label', item1.label);
     FU.input('ModalCtrl.data.value', item1.value);
     element(by.id('is_percentage')).click();
-    FU.uiSelect('ModalCtrl.data.inventory_uuid', 'First Test Inventory Item');
+    FU.uiSelect('ModalCtrl.data.inventory_uuid', 'Quinine sulphate 500mg');
 
     element(by.id('submit-price-list')).click();
 
     element(by.id('add_item')).click();
     FU.input('ModalCtrl.data.label', item2.label);
     FU.input('ModalCtrl.data.value', item2.value);
-    FU.uiSelect('ModalCtrl.data.inventory_uuid', 'Second Test Inventory Item');
+    FU.uiSelect('ModalCtrl.data.inventory_uuid', 'Arinate');
 
     element(by.id('submit-price-list')).click();
 
@@ -93,14 +93,14 @@ describe('Price Lists', () => {
     element(by.id('add_item')).click();
     FU.input('ModalCtrl.data.label', item3.label);
     FU.input('ModalCtrl.data.value', item3.value);
-    FU.uiSelect('ModalCtrl.data.inventory_uuid', 'First Test Inventory Item');
+    FU.uiSelect('ModalCtrl.data.inventory_uuid', 'Quinine sulphate 500mg');
     element(by.id('submit-price-list')).click();
 
     element(by.id('add_item')).click();
     FU.input('ModalCtrl.data.label', item4.label);
     FU.input('ModalCtrl.data.value', item4.value);
     element(by.id('is_percentage')).click();
-    FU.uiSelect('ModalCtrl.data.inventory_uuid', 'Second Test Inventory Item');
+    FU.uiSelect('ModalCtrl.data.inventory_uuid', 'Arinate');
 
     element(by.id('submit-price-list')).click();
 
@@ -122,7 +122,7 @@ describe('Price Lists', () => {
     FU.input('ModalCtrl.data.value', item5.value);
 
     // select an inventory item
-    FU.uiSelect('ModalCtrl.data.inventory_uuid', 'First Test Inventory Item');
+    FU.uiSelect('ModalCtrl.data.inventory_uuid', 'Quinine sulphate 500mg');
 
     // saving item
     element(by.id('submit-price-list')).click();

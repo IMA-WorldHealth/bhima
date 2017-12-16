@@ -5,13 +5,13 @@
  * This module provides an API interface for the Purchase API, responsible for
  * making purchase orders and quotes.
  *
- * @requires node-uuid
+ * @requires uuid/v4
  * @requires db
  * @requires NotFound
  * @requires BadRequest
  */
 
-const uuid = require('node-uuid');
+const uuid = require('uuid/v4');
 
 const db = require('../../lib/db');
 const BadRequest = require('../../lib/errors/BadRequest');
@@ -43,6 +43,10 @@ exports.stockStatus = purchaseStatus;
 // purchase balance
 exports.stockBalance = purchaseBalance;
 
+// purchase state
+exports.purchaseState = purchaseState;
+
+exports.find = find;
 
 /**
  * @function linkPurchaseItems
@@ -65,7 +69,7 @@ function linkPurchaseItems(items, purchaseUuid) {
   // loop through each item, making sure we have escapes and orderings correct
   return items.map((item) => {
     // make sure that each item has a uuid by generate
-    item.uuid = db.bid(item.uuid || uuid.v4());
+    item.uuid = db.bid(item.uuid || uuid());
     item.purchase_uuid = purchaseUuid;
     item.inventory_uuid = db.bid(item.inventory_uuid);
 
@@ -93,12 +97,13 @@ function lookupPurchaseOrder(uid) {
       CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', pr.abbr, p.reference) AS reference,
       p.cost, p.date, s.display_name  AS supplier, p.user_id,
       BUID(p.supplier_uuid) as supplier_uuid, p.note, u.display_name AS author,
-      p.is_confirmed, p.is_received, p.is_cancelled, p.is_partially_received
+      p.status_id, ps.text AS status
     FROM purchase AS p
     JOIN project ON p.project_id = project.id
     JOIN supplier AS s ON s.uuid = p.supplier_uuid
     JOIN project AS pr ON p.project_id = pr.id
     JOIN user AS u ON u.id = p.user_id
+    JOIN purchase_status AS ps ON ps.id = p.status_id
     WHERE p.uuid = ?;
   `;
 
@@ -135,13 +140,11 @@ function create(req, res, next) {
   let data = req.body;
 
   if (!data.items) {
-    return next(
-      new BadRequest('Cannot create a purchase order without purchase items.')
-    );
+    return next(new BadRequest('Cannot create a purchase order without purchase items.'));
   }
 
   // default to a new uuid if the client did not provide one
-  const puid = data.uuid || uuid.v4();
+  const puid = data.uuid || uuid();
   data.uuid = db.bid(puid);
 
   data = db.convert(data, ['supplier_uuid']);
@@ -193,35 +196,8 @@ function create(req, res, next) {
  * Returns the details of a single purchase order
  */
 function list(req, res, next) {
-  let sql;
-
-  sql = `
-    SELECT BUID(p.uuid) AS uuid,
-      CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', pr.abbr, p.reference) AS reference,
-      p.cost, p.date, BUID(p.supplier_uuid) as supplier_uuid
-    FROM purchase AS p
-    JOIN supplier AS s ON s.uuid = p.supplier_uuid
-    JOIN project AS pr ON p.project_id = pr.id;
-  `;
-
-  if (req.query.detailed === '1') {
-    sql = `
-      SELECT BUID(p.uuid) AS uuid,
-        CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', pr.abbr, p.reference) AS reference,
-        p.cost, p.date, s.display_name  AS supplier, p.user_id, p.note,
-        BUID(p.supplier_uuid) as supplier_uuid, u.display_name AS author,
-        p.is_confirmed, p.is_received, p.is_cancelled, p.is_partially_received
-      FROM purchase AS p
-      JOIN supplier AS s ON s.uuid = p.supplier_uuid
-      JOIN project AS pr ON p.project_id = pr.id
-      JOIN user AS u ON u.id = p.user_id;
-    `;
-  }
-
-  db.exec(sql)
-    .then((rows) => {
-      res.status(200).json(rows);
-    })
+  find(req.query)
+    .then(rows => res.status(200).json(rows))
     .catch(next)
     .done();
 }
@@ -288,30 +264,44 @@ function search(req, res, next) {
  * filter the purchase orders.
  */
 function find(options) {
+  // ensure epected options are parsed appropriately as binary
+  db.convert(options, ['supplier_uuid']);
   const filters = new FilterParser(options, { tableAlias : 'p' });
+  let statusIds = [];
+
+  if (options.status_id) {
+    statusIds = statusIds.concat(options.status_id);
+  }
+
+  // default purchase date
+  filters.period('period', 'date');
+  filters.dateFrom('custion_period_start', 'date');
+  filters.dateTo('custom_period_end', 'date');
+  filters.equals('user_id');
+
+  filters.custom('status_id', 'p.status_id IN (?)', [statusIds]);
+  filters.equals('supplier_uuid', 'uuid', 's');
 
   const sql = `
     SELECT BUID(p.uuid) AS uuid,
         CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', pr.abbr, p.reference) AS reference,
         p.cost, p.date, s.display_name  AS supplier, p.user_id, p.note,
         BUID(p.supplier_uuid) as supplier_uuid, u.display_name AS author,
-        p.is_confirmed, p.is_received, p.is_cancelled, p.is_partially_received
+        p.status_id, ps.text AS status
       FROM purchase AS p
       JOIN supplier AS s ON s.uuid = p.supplier_uuid
       JOIN project AS pr ON p.project_id = pr.id
       JOIN user AS u ON u.id = p.user_id
+      JOIN purchase_status AS ps ON ps.id = p.status_id
   `;
-
-  filters.dateFrom('dateFrom', 'date');
-  filters.dateTo('dateTo', 'date');
 
   const referenceStatement = `CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', pr.abbr, p.reference) = ?`;
   filters.custom('reference', referenceStatement);
-
   filters.setOrder('ORDER BY p.date DESC');
 
   const query = filters.applyQuery(sql);
   const parameters = filters.parameters();
+
   return db.exec(query, parameters);
 }
 
@@ -335,29 +325,30 @@ function purchaseStatus(req, res, next) {
   `;
 
   db.one(sql, [purchaseUuid, FROM_PURCHASE_ID])
-  .then((row) => {
-    let query = '';
-    status.cost = row.cost;
-    status.movement_cost = row.movement_cost;
+    .then((row) => {
+      let query = '';
+      status.cost = row.cost;
+      status.movement_cost = row.movement_cost;
 
-    if (row.movement_cost === row.cost) {
+      if (row.movement_cost === row.cost) {
       // the purchase is totally delivered
-      status.status = 'full_entry';
-      query = 'UPDATE purchase SET is_partially_received = 0, is_received = 1 WHERE uuid = ?';
-    } else if (row.movement_cost > 0 && row.movement_cost < row.cost) {
+        status.status = 'full_entry';
+        query = 'UPDATE purchase SET status_id = 3 WHERE uuid = ?';
+      } else if (row.movement_cost > 0 && row.movement_cost < row.cost) {
       // the purchase is partially delivered
-      status.status = 'partial_entry';
-      query = 'UPDATE purchase SET is_partially_received = 1, is_received = 0 WHERE uuid = ?';
-    } else if (row.movement_cost === 0) {
+        status.status = 'partial_entry';
+        query = 'UPDATE purchase SET status_id = 4 WHERE uuid = ?';
+      } else if (row.movement_cost === 0) {
       // the purchase is not yet delivered
-      status.status = 'no_entry';
-      query = 'UPDATE purchase SET is_partially_received = 0, is_received = 0 WHERE uuid = ?';
-    }
-    return db.exec(query, [purchaseUuid]);
-  })
-  .then(() => res.status(200).send(status))
-  .catch(next)
-  .done();
+        status.status = 'no_entry';
+        // If there are no movements, the status of the purchase order must remain confirmed
+        query = 'UPDATE purchase SET status_id = 2 WHERE uuid = ?';
+      }
+      return db.exec(query, [purchaseUuid]);
+    })
+    .then(() => res.status(200).send(status))
+    .catch(next)
+    .done();
 }
 
 /**
@@ -395,7 +386,26 @@ function purchaseBalance(req, res, next) {
   `;
 
   db.exec(sql, [FROM_PURCHASE_ID, purchaseUuid, purchaseUuid])
-  .then(rows => res.status(200).json(rows))
-  .catch(next)
-  .done();
+    .then(rows => res.status(200).json(rows))
+    .catch(next)
+    .done();
+}
+
+
+/**
+ * @function purchaseState
+ *
+ * @description
+ * This function allows to select the list of the different Status of a purchase order
+ */
+function purchaseState(req, res, next) {
+  const sql = `
+    SELECT purchase_status.id, purchase_status.text
+    FROM purchase_status
+  `;
+
+  db.exec(sql)
+    .then(rows => res.status(200).json(rows))
+    .catch(next)
+    .done();
 }

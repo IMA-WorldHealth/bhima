@@ -31,6 +31,12 @@ function HomeController(Currencies, Rates, Session, Notify, Fiscal, DashboardSer
   vm.project = Session.project;
   vm.user = Session.user;
   vm.enterprise = Session.enterprise;
+  /*
+    vm.isFirstCurencyLabel is used to check the exchange Rate
+    is lower then 1  the program show display something
+    mutch better for reading
+  */
+  vm.isFirstCurencyLabel = false;
 
   // load exchange rates
   Currencies.read(true)
@@ -38,7 +44,6 @@ function HomeController(Currencies, Rates, Session, Notify, Fiscal, DashboardSer
       vm.currencies = currencies.filter(function (currency) {
         return currency.id !== Session.enterprise.currency_id;
       });
-
       // format the enterprise currency
       vm.enterprise.currencyLabel = Currencies.format(vm.enterprise.currency_id);
 
@@ -48,11 +53,24 @@ function HomeController(Currencies, Rates, Session, Notify, Fiscal, DashboardSer
     .then(function () {
       vm.currencies.forEach(function (currency) {
         currency.rate = Rates.getCurrentRate(currency.id);
+
+
+        /*
+          Let check is the currency rate is lower the 1
+          so that we could format it in a readable way
+        */
+        if (currency.rate < 1) {
+          currency.rate = (1 / currency.rate);
+          vm.isFirstCurencyLabel = true;
+        }
+
+
         currency.formattedDate = new Moment(currency.date).format('LL');
       });
 
       // @TODO Method for selecting primary exchange
       vm.primaryExchange = vm.currencies[0];
+
     })
     .catch(Notify.handleError);
 

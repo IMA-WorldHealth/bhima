@@ -1,23 +1,23 @@
 /**
  * Patient Invoice API Controller
  *
- *@module controllers/finance/patientInvoice
+ * @module controllers/finance/patientInvoice
  *
- * @todo (required) major bug - Invoice items are entered based on order or attributes sent from client
- *      this doesn't seem to be consistent as of 2.X
- * @todo GET /invoices/patient/:uuid - retrieve all patient invoices for a specific patient
- *    - should this be /patients/:uuid/invoices?
- * @todo Factor in subsidies, this depends on price lists and billing services infrastructure
+ * @todo Factor in subsidies, this depends on price lists and
+ * billing services infrastructure
  */
 
-const uuid = require('node-uuid');
-const identifiers = require('../../config/identifiers');
-const db = require('../../lib/db');
-const barcode = require('../../lib/barcode');
-const FilterParser = require('../../lib/filter');
+const uuid = require('uuid/v4');
+
 const BadRequest = require('../../lib/errors/BadRequest');
-const createInvoice = require('./invoice/patientInvoice.create');
 const Debtors = require('./debtors');
+const FilterParser = require('../../lib/filter');
+const barcode = require('../../lib/barcode');
+const createInvoice = require('./invoice/patientInvoice.create');
+const db = require('../../lib/db');
+const identifiers = require('../../config/identifiers');
+
+const shared = require('./shared');
 
 const entityIdentifier = identifiers.INVOICE.key;
 const CREDIT_NOTE_ID = 10;
@@ -36,6 +36,8 @@ exports.create = create;
 exports.lookupInvoice = lookupInvoice;
 
 exports.find = find;
+
+exports.safelyDeleteInvoice = safelyDeleteInvoice;
 
 /** find the balance on an invoice due the particular debtor */
 exports.balance = balance;
@@ -119,13 +121,13 @@ function lookupInvoice(invoiceUuid) {
 
   const invoiceBillingQuery =
     `SELECT
-      invoice_billing_service.value, billing_service.label, billing_service.value AS billing_value,
+      invoice_invoicing_fee.value, invoicing_fee.label, invoicing_fee.value AS billing_value,
       SUM(invoice_item.quantity * invoice_item.transaction_price) AS invoice_cost
-    FROM invoice_billing_service
-    JOIN billing_service ON billing_service.id = invoice_billing_service.billing_service_id
-    JOIN invoice_item ON invoice_item.invoice_uuid = invoice_billing_service.invoice_uuid
-    WHERE invoice_billing_service.invoice_uuid = ?
-    GROUP BY billing_service.id`;
+    FROM invoice_invoicing_fee
+    JOIN invoicing_fee ON invoicing_fee.id = invoice_invoicing_fee.invoicing_fee_id
+    JOIN invoice_item ON invoice_item.invoice_uuid = invoice_invoicing_fee.invoice_uuid
+    WHERE invoice_invoicing_fee.invoice_uuid = ?
+    GROUP BY invoicing_fee.id`;
 
   const invoiceSubsidyQuery = `
     SELECT invoice_subsidy.value, subsidy.label, subsidy.value AS subsidy_value
@@ -170,23 +172,25 @@ function detail(req, res, next) {
 }
 
 function create(req, res, next) {
-  const invoice = req.body.invoice;
+  const { invoice } = req.body;
   invoice.user_id = req.session.user.id;
 
   const hasInvoiceItems = (invoice.items && invoice.items.length > 0);
 
   // detect missing items early and respond with an error
   if (!hasInvoiceItems) {
-    next(
-      new BadRequest(`An invoice must be submitted with invoice items.`)
-    );
+    next(new BadRequest(`An invoice must be submitted with invoice items.`));
     return;
   }
+
+  // cache the uuid to avoid parsing later
+  const invoiceUuid = invoice.uuid || uuid();
+  invoice.uuid = invoiceUuid;
 
   const preparedTransaction = createInvoice(invoice);
   preparedTransaction.execute()
     .then(() => {
-      res.status(201).json({ uuid : uuid.unparse(invoice.uuid) });
+      res.status(201).json({ uuid : invoiceUuid });
     })
     .catch(next)
     .done();
@@ -195,51 +199,55 @@ function create(req, res, next) {
 function find(options) {
   // ensure expected options are parsed as binary
   db.convert(options, [
-    'patientUuid', 'debtor_group_uuid', 'cash_uuid', 'debtor_uuid',
+    'patientUuid', 'debtor_group_uuid', 'cash_uuid', 'debtor_uuid', 'inventory_uuid',
   ]);
 
-  const filters = new FilterParser(options, { tableAlias : 'invoice', autoParseStatements : false });
+  const filters = new FilterParser(options, { tableAlias : 'invoice' });
 
   // @FIXME Remove this with client side filter design
   delete options.patientNames;
 
   const sql = `
     SELECT BUID(invoice.uuid) as uuid, invoice.project_id, invoice.date,
-      patient.display_name as patientName, invoice.cost, BUID(invoice.debtor_uuid) as debtor_uuid,
-      CONCAT_WS('.', '${identifiers.INVOICE.key}', project.abbr, invoice.reference) AS reference,
-      CONCAT_WS('.', '${identifiers.PATIENT.key}', project.abbr, patient.reference) AS patientReference,
-      service.name as serviceName, user.display_name, invoice.user_id, invoice.reversed
+      patient.display_name as patientName, invoice.cost,
+      BUID(invoice.debtor_uuid) as debtor_uuid, dm.text AS reference,
+      em.text AS patientReference, service.name as serviceName,
+      user.display_name, invoice.user_id, invoice.reversed, invoice.edited
     FROM invoice
     LEFT JOIN patient ON invoice.debtor_uuid = patient.debtor_uuid
     JOIN debtor AS d ON invoice.debtor_uuid = d.uuid
+    JOIN entity_map AS em ON em.uuid = patient.uuid
+    JOIN document_map AS dm ON dm.uuid = invoice.uuid
     JOIN service ON service.id = invoice.service_id
     JOIN user ON user.id = invoice.user_id
-    JOIN project ON project.id = invoice.project_id
   `;
 
-  filters.equals('patientUuid', 'uuid', 'patient');
-  filters.equals('user_id');
-  filters.equals('debtor_uuid');
-  filters.equals('reversed');
   filters.equals('cost');
-  filters.equals('service_id');
-  filters.equals('project_id');
   filters.equals('debtor_group_uuid', 'group_uuid', 'd');
+  filters.equals('debtor_uuid');
+  filters.equals('edited');
+  filters.equals('patientUuid', 'uuid', 'patient');
+  filters.equals('project_id');
+  filters.equals('reversed');
+  filters.equals('service_id');
+  filters.equals('user_id');
+
+  filters.equals('reference', 'text', 'dm');
+  filters.equals('patientReference', 'text', 'em');
 
   filters.custom(
     'cash_uuid',
     'invoice.uuid IN (SELECT cash_item.invoice_uuid FROM cash_item WHERE cash_item.cash_uuid = ?)'
   );
 
+  filters.custom(
+    'inventory_uuid',
+    'invoice.uuid IN (SELECT invoice_item.invoice_uuid FROM invoice_item WHERE invoice_item.inventory_uuid = ?)'
+  );
+
   filters.period('period', 'date');
-  filters.dateFrom('custion_period_start', 'date');
+  filters.dateFrom('custom_period_start', 'date');
   filters.dateTo('custom_period_end', 'date');
-
-  const referenceStatement = `CONCAT_WS('.', '${identifiers.INVOICE.key}', project.abbr, invoice.reference) = ?`;
-  filters.custom('reference', referenceStatement);
-
-  const patientReferenceStatement = `CONCAT_WS('.', '${identifiers.PATIENT.key}', project.abbr, patient.reference) = ?`;
-  filters.custom('patientReference', patientReferenceStatement);
 
   // @TODO Support ordering query (reference support for limit)?
   filters.setOrder('ORDER BY invoice.date DESC, invoice.reference DESC');
@@ -274,5 +282,44 @@ function lookupInvoiceCreditNote(invoiceUuid) {
       // db.one throw a critical error when there is not any record
       // and it must be handled
       return null;
+    });
+}
+
+/**
+ * @function safelyDeleteInvoice
+ *
+ * @description
+ * This function deletes the invoice from the system.  It assumes that
+ * checks have already been made for referencing transactions.
+ */
+function safelyDeleteInvoice(guid) {
+  const DELETE_TRANSACTION = `
+    DELETE FROM posting_journal WHERE record_uuid = ?;
+  `;
+
+  const DELETE_INVOICE = `
+    DELETE FROM invoice WHERE uuid = ?;
+  `;
+
+  const DELETE_TRANSACTION_HISTORY = `
+    DELETE FROM transaction_history WHERE record_uuid = ?;
+  `;
+
+  const DELETE_DOCUMENT_MAP = `
+    DELETE FROM document_map WHERE uuid = ?;
+  `;
+
+  return shared.isRemovableTransaction(guid)
+    .then(() => {
+      const binaryUuid = db.bid(guid);
+      const transaction = db.transaction();
+
+      transaction
+        .addQuery(DELETE_TRANSACTION, binaryUuid)
+        .addQuery(DELETE_TRANSACTION_HISTORY, binaryUuid)
+        .addQuery(DELETE_INVOICE, binaryUuid)
+        .addQuery(DELETE_DOCUMENT_MAP, binaryUuid);
+
+      return transaction.execute();
     });
 }

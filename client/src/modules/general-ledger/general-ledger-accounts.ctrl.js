@@ -3,7 +3,8 @@ angular.module('bhima.controllers')
 
 GeneralLedgerAccountsController.$inject = [
   'GeneralLedgerService', 'SessionService', 'NotifyService',
-  'uiGridConstants', 'ReceiptModal', 'ExportService',
+  'uiGridConstants', 'ReceiptModal', 'ExportService', 'GridColumnService', 'AppCache', 'GridStateService',
+  '$state', 'LanguageService', 'ModalService', 'FiscalService',
 ];
 
 /**
@@ -13,12 +14,17 @@ GeneralLedgerAccountsController.$inject = [
  * This controller is responsible for displaying accounts and their balances
  */
 function GeneralLedgerAccountsController(GeneralLedger, Session, Notify,
-  uiGridConstants, Receipts, Export) {
+  uiGridConstants, Receipts, Export, Columns, AppCache, GridState, $state, Languages, Modal, Fiscal) {
   var vm = this;
   var columns;
+  var state;
+  var cacheKey = 'GeneralLedgerAccounts';
+  var cache = AppCache(cacheKey);
 
   vm.enterprise = Session.enterprise;
+  vm.today = new Date();
   vm.filterEnabled = false;
+  vm.openColumnConfiguration = openColumnConfiguration;
 
   columns = [
     { field            : 'number',
@@ -39,6 +45,13 @@ function GeneralLedgerAccountsController(GeneralLedger, Session, Notify,
       headerCellFilter : 'translate',
       headerCellClass  : 'text-center',
       cellTemplate     : '/modules/general-ledger/templates/balance.cell.html' },
+
+    { field            : 'balance0',
+      displayName      : 'FORM.LABELS.OPENING_BALANCE',
+      enableFiltering  : false,
+      headerCellFilter : 'translate',
+      headerCellClass  : 'text-center',
+      cellTemplate     : getCellTemplate('balance0')},
 
     { field            : 'balance1',
       displayName      : 'TABLE.COLUMNS.DATE_MONTH.JANUARY',
@@ -123,7 +136,7 @@ function GeneralLedgerAccountsController(GeneralLedger, Session, Notify,
       enableFiltering  : false,
       headerCellFilter : 'translate',
       headerCellClass  : 'text-center',
-      cellTemplate     : getCellTemplate('balance12') },                                                      
+      cellTemplate     : getCellTemplate('balance12') },
 
     {
       field            : 'action',
@@ -136,9 +149,6 @@ function GeneralLedgerAccountsController(GeneralLedger, Session, Notify,
   ];
 
   vm.gridApi = {};
-  vm.loading = true;
-  vm.slip = slip;
-  vm.slipCsv = slipCsv;
   vm.toggleFilter = toggleFilter;
 
   vm.gridOptions = {
@@ -147,11 +157,16 @@ function GeneralLedgerAccountsController(GeneralLedger, Session, Notify,
     flatEntityAccess  : true,
     enableColumnMenus : false,
     appScopeProvider  : vm,
-    onRegisterApi     : onRegisterApiFn,
+    onRegisterApi     : onRegisterApi,
   };
 
-  function onRegisterApiFn(gridApi) {
-    vm.gridApi = gridApi;
+  var columnConfig = new Columns(vm.gridOptions, cacheKey);
+  state = new GridState(vm.gridOptions, cacheKey);
+
+  vm.saveGridState = state.saveGridState;
+  vm.clearGridState = function clearGridState() {
+    state.clearGridState();
+    $state.reload();
   }
 
   function handleError(err) {
@@ -161,6 +176,15 @@ function GeneralLedgerAccountsController(GeneralLedger, Session, Notify,
 
   function toggleLoadingIndicator() {
     vm.loading = !vm.loading;
+  }
+
+  // API register function
+  function onRegisterApi(gridApi) {
+    vm.gridApi = gridApi;
+  }
+
+  function openColumnConfiguration() {
+    columnConfig.openConfigurationModal();
   }
 
   function toggleFilter() {
@@ -173,26 +197,70 @@ function GeneralLedgerAccountsController(GeneralLedger, Session, Notify,
     vm.gridOptions.data = data;
   }
 
-  function slip(id) {
-    Receipts.accountSlip(id);
-  }
-
-  function slipCsv(id) {
-    var params = { renderer: 'csv' };
-    var url = '/reports/finance/general_ledger/'.concat(id);
-    Export.download(url, params, 'GENERAL_LEDGER.ACCOUNT_SLIP', 'export-'.concat(id));
-  }
-
   function getCellTemplate(key) {
     return '<div class="ui-grid-cell-contents text-right">' +
       '<div ng-show="row.entity.' + key +'" >' +
         '{{ row.entity.' + key +' | currency: grid.appScope.enterprise.currency_id }}' +
-      '</div>' + 
+      '</div>' +
     '</div>';
   }
 
-  GeneralLedger.accounts.read()
-    .then(loadData)
-    .catch(handleError)
-    .finally(toggleLoadingIndicator);
+  // format Export Parameters
+  function formatExportParameters(type) {
+    return { renderer: type || 'pdf', lang: Languages.key };
+  }
+
+  vm.download = GeneralLedger.download;
+  vm.slip = GeneralLedger.slip;
+
+  // open search modal
+  vm.openFiscalYearConfiguration = function openFiscalYearConfiguration() {
+    Modal.openSelectFiscalYear()
+      .then(function (filters) {
+        if (!filters) { return; }
+        vm.fiscalYearLabel = filters.fiscal_year.label;
+        vm.filters.fiscal_year_label = filters.fiscal_year.label;
+
+        vm.filters = {
+          fiscal_year_id : filters.fiscal_year.id,
+          fiscal_year_label : filters.fiscal_year.label
+        };
+
+        vm.filtersSlip = {
+          dateFrom : filters.fiscal_year.start_date,
+          dateTo : filters.fiscal_year.end_date
+        };
+
+        load(vm.filters);
+      })
+      .catch(Notify.handleError);
+  };
+
+  // loads data for the general Ledger
+  function load(options) {
+    vm.loading = true;
+
+    GeneralLedger.accounts.read(null, options)
+      .then(loadData)
+      .catch(handleError)
+      .finally(toggleLoadingIndicator);
+  }
+
+  // runs on startup
+  function startup() {
+    Fiscal.fiscalYearDate({ date : vm.today })
+    .then(function (year) {
+      vm.year = year[0];
+      vm.fiscalYearLabel = vm.year.label;
+      vm.year.fiscal_year_id;
+      vm.filters = {fiscal_year_id : vm.year.fiscal_year_id, fiscal_year_label : vm.year.label};
+      vm.filtersSlip = {dateFrom : vm.year.start_date, dateTo : vm.year.end_date};
+
+      load(vm.filters);
+    })
+    .catch(Notify.handleError);
+  }
+
+  startup();
+
 }

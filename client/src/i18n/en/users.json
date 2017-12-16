@@ -5,8 +5,14 @@
 "DESCRIPTION":"User management unit and rights",
 "PERMISSIONS":"Permissions",
 "SET_PASSWORD":"Set Password",
+"SET_PASSWORD_AGAIN":"Set Password Again",
+"SET_DEPOT":"Depot's permissions to Users",
+"SET_CASHBOX":"Cashboxes permissions to Users",
 "SUPER":"Super User",
 "TITLE":"Users and Permissions Management",
 "UPDATING_USER":"Edits a user's metadata",
 "UPDATED":"Updated",
-"CREATED":"Created"}}
+"CREATED":"Created",
+"PASSWORDPOLICY":"To conform with our Strong Password policy, the password must be more than 7 characters. It must include a special caracter(e.g. @) , one or more numerical digits, both upper-case and lower-case .",
+"PASSWORD_MISMATCH":"Passwords given are not the same"
+}}

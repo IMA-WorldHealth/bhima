@@ -7,7 +7,7 @@ function equal(a, b, options) {
   return options.inverse(this);
 }
 
-// test equality
+// great than
 function gt(a, b, options) {
   if (a >= b) {
     return options.fn(this);
@@ -15,5 +15,14 @@ function gt(a, b, options) {
   return options.inverse(this);
 }
 
+// less than
+function lt(a, b, options) {
+  if (a < b) {
+    return options.fn(this);
+  }
+  return options.inverse(this);
+}
+
 exports.equal = equal;
 exports.gt = gt;
+exports.lt = lt;

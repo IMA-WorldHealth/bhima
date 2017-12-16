@@ -2,9 +2,9 @@ angular.module('bhima.controllers')
   .controller('EmployeeRegistryController', EmployeeRegistryController);
 
 EmployeeRegistryController.$inject = [
-  'EmployeeService', 'NotifyService',
-  'util', 'ReceiptModal', 'uiGridConstants',
-  'GridColumnService', 'bhConstants', 'FilterService'
+  '$state', 'EmployeeService', 'NotifyService', 'AppCache',
+  'util', 'ReceiptModal', 'uiGridConstants', 'GridColumnService', 'bhConstants',
+  'GridStateService',
 ];
 
 /**
@@ -12,25 +12,23 @@ EmployeeRegistryController.$inject = [
  *
  * This module is responsible for the management of Employe Registry.
  */
-function EmployeeRegistryController(Employees, Notify,
-  util, Receipts, uiGridConstants,
-  Columns, bhConstants, Filters) {
+function EmployeeRegistryController(
+  $state, Employees, Notify, AppCache, util, Receipts, uiGridConstants, Columns,
+  bhConstants, GridState
+) {
   var vm = this;
 
-  var filter = new Filters();
-  vm.filter = filter;
-  vm.filtersFmt = [];
-
   var cacheKey = 'EmployeeRegistry';
-  var FILTER_BAR_HEIGHT = bhConstants.grid.FILTER_BAR_HEIGHT;
+  var state;
 
   vm.search = search;
-  vm.onRemoveFilter = onRemoveFilter;
-  vm.openPatientCard = openPatientCard;
-  vm.filterBarHeight = {};
+  vm.employeesCard = employeesCard;
   vm.openColumnConfiguration = openColumnConfiguration;
+  vm.gridApi = {};
+  vm.onRemoveFilter = onRemoveFilter;
+  vm.download = Employees.download;
 
-  // track if module is making a HTTP request for employees
+  // track if module is making a HTTP request for employeess
   vm.loading = false;
 
   var columnDefs = [
@@ -43,6 +41,12 @@ function EmployeeRegistryController(Employees, Notify,
     { field            : 'display_name',
       displayName      : 'TABLE.COLUMNS.NAME',
       headerCellFilter : 'translate',
+      sort: { direction: uiGridConstants.ASC, priority: 1 },
+    },
+    { field            : 'is_medical',
+      displayName      : 'FORM.LABELS.MEDICAL_STAFF',
+      headerCellFilter : 'translate',
+      cellTemplate     : '/modules/employees/templates/medical.cell.html',
     },
     { field            : 'sex',
       displayName      : 'TABLE.COLUMNS.GENDER',
@@ -51,13 +55,15 @@ function EmployeeRegistryController(Employees, Notify,
     { field            : 'dob',
       displayName      : 'TABLE.COLUMNS.DOB',
       headerCellFilter : 'translate',
-      type             : 'date',  
+      type             : 'date',
+      cellFilter : 'date:'.concat(bhConstants.dates.format),
     },
     { field            : 'date_embauche',
       displayName      : 'FORM.LABELS.DATE_EMBAUCHE',
       headerCellFilter : 'translate',
       type             : 'date',
-      visible          : false  
+      visible          : false,
+      cellFilter : 'date:'.concat(bhConstants.dates.format),
     },
     { field            : 'text',
       displayName      : 'TABLE.COLUMNS.GRADE',
@@ -88,49 +94,58 @@ function EmployeeRegistryController(Employees, Notify,
     { field            : 'bank_account',
       displayName      : 'FORM.LABELS.BANK_ACCOUNT',
       headerCellFilter : 'translate',
-      visible          : false 
+      visible          : false
     },
     { field            : 'adresse',
       displayName      : 'FORM.LABELS.ADDRESS',
       headerCellFilter : 'translate',
-      visible          : false 
+      visible          : false
     },
     { field            : 'phone',
       displayName      : 'FORM.LABELS.PHONE',
       headerCellFilter : 'translate',
-      visible          : false 
+      visible          : false
     },
     { field            : 'email',
-      displayName      : 'FORM.LABELS.PHONE',
+      displayName      : 'FORM.LABELS.EMAIL',
       headerCellFilter : 'translate',
-      visible          : false 
+      visible          : false
     },
     { field            : 'fonction_txt',
-      displayName      : 'FORM.LABELS.FUNCTION',
+      displayName      : 'FORM.LABELS.PROFESSION',
       headerCellFilter : 'translate',
-      visible          : false 
+      visible          : false
     },
     { field            : 'service_name',
       displayName      : 'FORM.LABELS.SERVICE',
       headerCellFilter : 'translate',
-      visible          : false 
+      visible          : false
     },
     { name          : 'actions',
       displayName   : '',
-      cellTemplate  : '/modules/employees/templates/action.cell.html'
-    }
+      cellTemplate  : '/modules/employees/templates/action.cell.html',
+    },
   ];
 
+  /** TODO manage column : last_transaction */
   vm.uiGridOptions = {
     appScopeProvider  : vm,
     showColumnFooter  : true,
+    enableSorting     : true,
     enableColumnMenus : false,
     flatEntityAccess  : true,
     fastWatch         : true,
-    columnDefs        : columnDefs
+    columnDefs        : columnDefs,
   };
 
   var columnConfig = new Columns(vm.uiGridOptions, cacheKey);
+  state = new GridState(vm.uiGridOptions, cacheKey);
+
+  vm.saveGridState = state.saveGridState;
+  vm.clearGridState = function clearGridState() {
+    state.clearGridState();
+    $state.reload();
+  };
 
   // error handler
   function handler(error) {
@@ -149,15 +164,15 @@ function EmployeeRegistryController(Employees, Notify,
     vm.hasError = false;
     toggleLoadingIndicator();
 
-    // hook the returned patients up to the grid.
+    // hook the returned employeess up to the grid.
     Employees.read(null, parameters)
       .then(function (employees) {
-          employees.forEach(function (employee) {
-            employee.employeeAge = util.getMomentAge(employee.dob, 'years');
-          });
+        employees.forEach(function (employee) {
+          employee.employeeAge = util.getMomentAge(employee.dob, 'years');
+        });
 
-          // put data in the grid
-          vm.uiGridOptions.data = employees;
+        // put data in the grid
+        vm.uiGridOptions.data = employees;
       })
       .catch(handler)
       .finally(function () {
@@ -165,36 +180,31 @@ function EmployeeRegistryController(Employees, Notify,
       });
   }
 
-  // search and filter data in employee Registry
   function search() {
     var filtersSnapshot = Employees.filters.formatHTTP();
-
     Employees.openSearchModal(filtersSnapshot)
-      .then(function (parameters) {
-        // no parameters means the modal was dismissed.
-        if (!parameters) { return; }
+      .then(function (changes) {
+        //This is very important if changes is undefined, a cache problem occurs
+        if(!changes){return;}
 
-        Employees.filters.replaceFilters(parameters);
+        Employees.filters.replaceFilters(changes);
+
         Employees.cacheFilters();
         vm.latestViewFilters = Employees.filters.formatView();
-
         return load(Employees.filters.formatHTTP(true));
-      })
-      .catch(handler);
-  }
-
-  function openColumnConfiguration() {
-    columnConfig.openConfigurationModal();
+      });
   }
 
   // remove a filter with from the filter object, save the filters and reload
   function onRemoveFilter(key) {
     Employees.removeFilter(key);
-
     Employees.cacheFilters();
     vm.latestViewFilters = Employees.filters.formatView();
-
     return load(Employees.filters.formatHTTP(true));
+  }
+
+  function openColumnConfiguration() {
+    columnConfig.openConfigurationModal();
   }
 
   // toggles the loading indicator on or off
@@ -202,13 +212,18 @@ function EmployeeRegistryController(Employees, Notify,
     vm.loading = !vm.loading;
   }
 
-  // employee patient card
-  function openPatientCard(uuid) {
+  // employee card
+  function employeesCard(uuid) {
     Receipts.patient(uuid);
   }
 
   // startup function. Checks for cached filters and loads them.  This behavior could be changed.
   function startup() {
+    if ($state.params.filters.length) {
+      Employees.filters.replaceFiltersFromState($state.params.filters);
+      Employees.cacheFilters();
+    }
+
     load(Employees.filters.formatHTTP(true));
     vm.latestViewFilters = Employees.filters.formatView();
   }

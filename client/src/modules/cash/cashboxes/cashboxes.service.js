@@ -19,6 +19,7 @@ function CashboxService($http, util) {
   service.create = create;
   service.update = update;
   service.delete = del;
+  service.readPrivileges = readPrivileges;
 
   // cashbox-currency methods
   service.currencies = {};
@@ -54,6 +55,14 @@ function CashboxService($http, util) {
   // DELETE a cashbox in the database
   function del(id) {
     return $http.delete(baseUrl.concat(id))
+      .then(util.unwrapHttpResponse);
+  }
+
+  // Reads the user's privileges to the different cashboxes and also lists those for which the user does not have access rights
+  function readPrivileges() {
+    var url = baseUrl.concat('privileges');
+    
+    return $http.get(url)
       .then(util.unwrapHttpResponse);
   }
 

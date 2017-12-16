@@ -1,0 +1,57 @@
+{{> head title="TREE.PURCHASE_REGISTRY"}}
+
+<body>
+
+  {{> header}}
+
+  <!-- body  -->
+  <div class="row">
+    <div class="col-xs-12">
+
+      <!-- page title  -->
+      <h3 class="text-center text-uppercase">
+        <strong>{{translate 'TREE.PURCHASE_REGISTRY'}}</strong>
+      </h3>
+
+      {{#each filters}}
+        <h4 class="text-center">
+          <strong>
+          <span class="text-capitalize">
+            {{translate this.displayName}} 
+            {{#if this.comparitor}} {{this.comparitor}} {{else}}: {{/if}}
+            {{#if this.isDate}} {{date this.value}} {{else}} {{this.value}} {{/if}}
+          </span>
+          </strong>
+        </h4>
+      {{/each}}
+
+      <!-- invoices listed  -->
+      <table class="table table-condensed table-report table-bordered">
+        <thead>
+          <tr style="background-color: #ddd;">
+            <th>{{translate 'TABLE.COLUMNS.REFERENCE'}}</th>
+            <th>{{translate 'TABLE.COLUMNS.DATE'}}</th>
+            <th>{{translate 'TABLE.COLUMNS.SUPPLIER'}}</th>
+            <th>{{translate 'TABLE.COLUMNS.DESCRIPTION'}}</th>
+            <th>{{translate 'TABLE.COLUMNS.COST'}}</th>
+            <th>{{translate 'TABLE.COLUMNS.STATUS'}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each rows}}
+            <tr class="text-right">
+              <td>{{reference}}</td>
+              <td>{{date date}}</td>
+              <td>{{author}}</td>
+              <td>{{note}}</td>
+              <td>{{currency cost currency_id}}</td>
+              <td><strong>{{translate status}} </strong></td>
+            </tr>
+          {{else}}
+            {{> emptyTable columns=6}}
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>

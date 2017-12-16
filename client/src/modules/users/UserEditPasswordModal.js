@@ -28,7 +28,7 @@ function UsersPasswordModalController($state, Users, Notify) {
     if (!passwordForm.$dirty || !validPassword()) { return; }
 
     // try to update the user's password
-    return Users.updatePassword(vm.user.id, { password : vm.user.password })
+    return Users.updatePassword($state.params.id, { password : vm.user.password })
       .then(function () {
         Notify.success('USERS.UPDATED');
         $state.go('users.edit', {id : vm.user.id, creating : false});

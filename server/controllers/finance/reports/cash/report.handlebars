@@ -14,22 +14,10 @@
       </h2>
 
       <!-- filters  -->
-      {{#if hasFilter}}
-      <br />
-        <div>
-          <i class="fa fa-filter"></i>
-          {{#if display.reference}}{{translate 'TABLE.COLUMNS.REFERENCE'}}: {{look display 'reference'}} /{{/if}}
-          {{#if display.dateFrom}} {{translate 'TABLE.COLUMNS.DATE'}}: {{date (look display 'dateFrom')}} - {{date (look display 'dateTo')}} /{{/if}}
-          {{#if display.debtor_uuid}} {{translate 'TABLE.COLUMNS.PATIENT'}}: {{look display 'debtor_uuid'}} /{{/if}}
-          {{#if display.cashbox_id}} {{translate 'TABLE.COLUMNS.CASHBOX'}}: {{look display 'cashbox_id'}} /{{/if}}
-          {{#if display.user_id}}{{translate 'TABLE.COLUMNS.USER'}}: {{look display 'user_id'}}/{{/if}}
-          {{#if display.is_caution}}{{translate 'FORM.LABELS.CAUTION'}}: <i class="fa fa-check"></i> {{/if}}
-        </div>
-        <br />
-      {{/if}}
+      {{> filterbar filters=filters }}
 
       <!-- list of data  -->
-      <table class="table table-condensed table-bordered table-striped">
+      <table class="table table-condensed table-bordered">
         <thead>
           <tr>
             <th>{{translate 'TABLE.COLUMNS.REFERENCE'}}</th>
@@ -63,7 +51,7 @@
       <div class="col-xs-6">
 
         <!-- summary table -->
-        <table class="table table-condensed table-bordered table-striped">
+        <table class="table table-condensed table-bordered table-report">
           <tbody>
             <tr>
               <th colspan="2" class="text-center">

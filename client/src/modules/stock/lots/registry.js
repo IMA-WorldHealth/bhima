@@ -1,11 +1,11 @@
 angular.module('bhima.controllers')
-.controller('StockLotsController', StockLotsController);
+  .controller('StockLotsController', StockLotsController);
 
 StockLotsController.$inject = [
   'StockService', 'NotifyService',
-  'uiGridConstants', '$translate', 'StockModalService',
-  'SearchFilterFormatService', 'LanguageService',
-  'GridGroupingService',
+  'uiGridConstants', '$translate', 'StockModalService', 'LanguageService',
+  'GridGroupingService', 'GridStateService', 'GridColumnService',
+  'bhConstants', '$state'
 ];
 
 /**
@@ -13,49 +13,66 @@ StockLotsController.$inject = [
  * This module is a registry page for stock lots
  */
 function StockLotsController(Stock, Notify,
-  uiGridConstants, $translate, Modal,
-  SearchFilterFormat, Languages, Grouping) {
+  uiGridConstants, $translate, Modal, Languages, Grouping,
+  GridState, Columns, bhConstants, $state) {
   var vm = this;
+
+  var cacheKey = 'lot-grid';
+  var filterKey = 'lot';
+  var stockLotFilters = Stock.filter.lot;
+  var gridColumns;
+  var state;
 
   // grouping box
   vm.groupingBox = [
     { label: 'STOCK.INVENTORY', value: 'text' },
   ];
 
-  // global variables
-  vm.filters = { lang: Languages.key };
-  vm.formatedFilters = [];
+  vm.download = Stock.download;
+  vm.clearGridState = clearGridState;
 
   // grid columns
   var columns = [
-    { field            : 'depot_text',
-      displayName      : 'STOCK.DEPOT',
-      headerCellFilter : 'translate' },
+    {
+      field: 'depot_text',
+      displayName: 'STOCK.DEPOT',
+      headerCellFilter: 'translate'
+    },
 
-    { field            : 'code',
-      displayName      : 'STOCK.CODE',
-      headerCellFilter : 'translate',
-      aggregationType  : uiGridConstants.aggregationTypes.count },
+    {
+      field: 'code',
+      displayName: 'STOCK.CODE',
+      headerCellFilter: 'translate',
+      aggregationType: uiGridConstants.aggregationTypes.count
+    },
 
-    { field            : 'text',
-      displayName      : 'STOCK.INVENTORY',
-      headerCellFilter : 'translate' },
+    {
+      field: 'text',
+      displayName: 'STOCK.INVENTORY',
+      headerCellFilter: 'translate'
+    },
 
-    { field            : 'label',
-      displayName      : 'STOCK.LOT',
-      headerCellFilter : 'translate' },
+    {
+      field: 'label',
+      displayName: 'STOCK.LOT',
+      headerCellFilter: 'translate'
+    },
 
-    { field            : 'quantity',
-      displayName      : 'STOCK.QUANTITY',
-      headerCellFilter : 'translate',
-      aggregationType  : uiGridConstants.aggregationTypes.sum },
+    {
+      field: 'quantity',
+      displayName: 'STOCK.QUANTITY',
+      headerCellFilter: 'translate',
+      aggregationType: uiGridConstants.aggregationTypes.sum
+    },
 
-    { field            : 'unit_type',
-      width            : 75,
-      displayName      : 'TABLE.COLUMNS.UNIT',
-      headerCellFilter : 'translate',
-      cellTemplate     : 'modules/stock/inventories/templates/unit.tmpl.html' },
-    
+    {
+      field: 'unit_type',
+      width: 75,
+      displayName: 'TABLE.COLUMNS.UNIT',
+      headerCellFilter: 'translate',
+      cellTemplate: 'modules/stock/inventories/templates/unit.tmpl.html'
+    },
+
     { field: 'entry_date', displayName: 'STOCK.ENTRY_DATE', headerCellFilter: 'translate', cellFilter: 'date' },
     { field: 'expiration_date', displayName: 'STOCK.EXPIRATION_DATE', headerCellFilter: 'translate', cellFilter: 'date' },
     { field: 'delay_expiration', displayName: 'STOCK.EXPIRATION', headerCellFilter: 'translate' },
@@ -63,28 +80,26 @@ function StockLotsController(Stock, Notify,
 
   // options for the UI grid
   vm.gridOptions = {
-    appScopeProvider  : vm,
-    enableColumnMenus : false,
-    columnDefs        : columns,
-    enableSorting     : true,
-    showColumnFooter  : true,
-    fastWatch         : true,
-    flatEntityAccess  : true,
+    appScopeProvider: vm,
+    enableColumnMenus: false,
+    columnDefs: columns,
+    enableSorting: true,
+    showColumnFooter: true,
+    fastWatch: true,
+    flatEntityAccess: true,
   };
 
   vm.grouping = new Grouping(vm.gridOptions, true, 'depot_text', vm.grouped, true);
 
   // expose to the view
   vm.search = search;
-  vm.onRemoveFilter = onRemoveFilter;
-  vm.clearFilters = clearFilters;
+  vm.openColumnConfigModal = openColumnConfigModal;
   vm.selectGroup = selectGroup;
   vm.toggleGroup = toggleGroup;
+  vm.loading = false;
 
-  // on remove one filter
-  function onRemoveFilter(key) {
-    SearchFilterFormat.onRemoveFilter(key, vm.filters, reload);
-  }
+  gridColumns = new Columns(vm.gridOptions, cacheKey);
+  state = new GridState(vm.gridOptions, cacheKey);
 
   // select group
   function selectGroup(group) {
@@ -104,56 +119,93 @@ function StockLotsController(Stock, Notify,
     }
   }
 
-  // clear all filters
-  function clearFilters() {
-    SearchFilterFormat.clearFilters(reload);
+  // initialize module
+  function startup() {
+    if ($state.params.filters.length) {
+      stockLotFilters.replaceFiltersFromState($state.params.filters);
+      Stock.cacheFilters(filterKey);
+    }
+
+    load(stockLotFilters.formatHTTP(true));
+    vm.latestViewFilters = stockLotFilters.formatView();
+  }
+
+  /**
+   * @function errorHandler
+   *
+   * @description
+   * Uses Notify to show an error in case the server sends back an information.
+   * Triggers the error state on the grid.
+   */
+  function errorHandler(error) {
+    vm.hasError = true;
+    Notify.handleError(error);
+  }
+
+  /**
+   * @function toggleLoadingIndicator
+   *
+   * @description
+   * Toggles the grid's loading indicator to eliminate the flash when rendering
+   * lots movements and allow a better UX for slow loads.
+   */
+  function toggleLoadingIndicator() {
+    vm.loading = !vm.loading;
   }
 
   // load stock lots in the grid
   function load(filters) {
-    var today = { defaultPeriod: 'today' };
-    var params = filters;
+    vm.hasError = false;
+    toggleLoadingIndicator();
 
-    var noFilter = (!filters);
-    var noAttributes = (noFilter || (Object.keys(filters).length === 0));
-
-    if (noAttributes) {
-      params = today;
-      vm.isToday = true;
-      vm.filters = { display: today, identifiers: today };
-      vm.formatedFilters = SearchFilterFormat.formatDisplayNames(vm.filters.display);
-    }
-
-    vm.loading = true;
-
-    Stock.lots.read(null, params).then(function (lots) {
-      vm.loading = false;
-
-      vm.gridOptions.data = lots;
-
-      vm.grouping.unfoldAllGroups();
-    })
-    .catch(Notify.handleError);
+    Stock.lots.read(null, filters)
+      .then(function (lots) {
+        vm.gridOptions.data = lots;
+        vm.grouping.unfoldAllGroups();
+      })
+      .catch(errorHandler)
+      .finally(function (){
+        toggleLoadingIndicator();
+      });
   }
 
-  // search modal
+  // remove a filter with from the filter object, save the filters and reload
+  vm.onRemoveFilter = function onRemoveFilter(key) {
+    Stock.removeFilter(filterKey, key);
+
+    Stock.cacheFilters(filterKey);
+    vm.latestViewFilters = stockLotFilters.formatView();
+
+    return load(stockLotFilters.formatHTTP(true));
+  }
+
   function search() {
-    Modal.openSearchLots()
-    .then(function (filters) {
-      if (!filters) { return; }
+    var filtersSnapshot = stockLotFilters.formatHTTP();
 
-      vm.isToday = false;
-      reload(filters);
-    })
-    .catch(Notify.handleError);
+    Modal.openSearchLots(filtersSnapshot)
+      .then(function (changes) {
+        stockLotFilters.replaceFilters(changes);
+        Stock.cacheFilters(filterKey);
+        vm.latestViewFilters = stockLotFilters.formatView();
+
+        return load(stockLotFilters.formatHTTP(true));
+      });
   }
 
-  // reload
-  function reload(filters) {
-    vm.filters = filters;
-    vm.formatedFilters = SearchFilterFormat.formatDisplayNames(filters.display);
-    load(filters.identifiers);
-  }
+  // This function opens a modal through column service to let the user toggle
+  // the visibility of the lots registry's columns.
+  function openColumnConfigModal() {
+    // column configuration has direct access to the grid API to alter the current
+    // state of the columns - this will be saved if the user saves the grid configuration
+    gridColumns.openConfigurationModal();
+  };
 
-  load();
+  vm.saveGridState = state.saveGridState;
+  // saves the grid's current configuration
+  function clearGridState() {
+    state.clearGridState();
+    $state.reload();
+  };
+
+  startup();
 }

@@ -8,14 +8,14 @@
  * The /patient_groups HTTP API endpoint
  *
  * @requires db
- * @requires node-uuid
+ * @requires uuid/v4
  * @requires NotFound
  * @requires Topic
  */
 
 
 const db = require('../../lib/db');
-const uuid = require('node-uuid');
+const uuid = require('uuid/v4');
 const NotFound = require('../../lib/errors/NotFound');
 const Topic = require('../../lib/topic');
 
@@ -43,11 +43,11 @@ function list(req, res, next) {
   sql += ' ORDER BY pg.name;';
 
   db.exec(sql)
-  .then(rows => {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+    .then(rows => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -61,22 +61,22 @@ function create(req, res, next) {
   const sql = 'INSERT INTO patient_group SET ?';
 
   // provide UUID if the client has not specified
-  const uid = record.uuid || uuid.v4();
+  const uid = record.uuid || uuid();
   record.uuid = db.bid(uid);
 
   db.exec(sql, [record])
-  .then(() => {
-    Topic.publish(Topic.channels.MEDICAL, {
-      event : Topic.events.CREATE,
-      entity : Topic.entities.PATIENT_GROUP,
-      user_id : req.session.user.id,
-      uuid : uid,
-    });
+    .then(() => {
+      Topic.publish(Topic.channels.MEDICAL, {
+        event : Topic.events.CREATE,
+        entity : Topic.entities.PATIENT_GROUP,
+        user_id : req.session.user.id,
+        uuid : uid,
+      });
 
-    res.status(201).json({ uuid : uid });
-  })
-  .catch(next)
-  .done();
+      res.status(201).json({ uuid : uid });
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -98,25 +98,25 @@ function update(req, res, next) {
   delete data.uuid;
 
   db.exec(sql, [data, db.bid(req.params.uuid)])
-  .then(rows => {
-    if (!rows.affectedRows) {
-      throw new NotFound(`No patient group found with id ${req.params.uuid}`);
-    }
+    .then(rows => {
+      if (!rows.affectedRows) {
+        throw new NotFound(`No patient group found with id ${req.params.uuid}`);
+      }
 
-    return lookupPatientGroup(req.params.uuid);
-  })
-  .then(group => {
-    Topic.publish(Topic.channels.MEDICAL, {
-      event : Topic.events.UPDATE,
-      entity : Topic.entities.PATIENT_GROUP,
-      user_id : req.session.user.id,
-      uuid : req.params.uuid,
-    });
+      return lookupPatientGroup(req.params.uuid);
+    })
+    .then(group => {
+      Topic.publish(Topic.channels.MEDICAL, {
+        event : Topic.events.UPDATE,
+        entity : Topic.entities.PATIENT_GROUP,
+        user_id : req.session.user.id,
+        uuid : req.params.uuid,
+      });
 
-    res.status(200).json(group);
-  })
-  .catch(next)
-  .done();
+      res.status(200).json(group);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -130,14 +130,14 @@ function remove(req, res, next) {
   const sql = 'DELETE FROM patient_group WHERE uuid = ?';
 
   db.exec(sql, [id])
-  .then(rows => {
-    if (!rows.affectedRows) {
-      throw new NotFound(`No patient group found with uuid ${req.params.uuid}`);
-    }
-    res.sendStatus(204);
-  })
-  .catch(next)
-  .done();
+    .then(rows => {
+      if (!rows.affectedRows) {
+        throw new NotFound(`No patient group found with uuid ${req.params.uuid}`);
+      }
+      res.sendStatus(204);
+    })
+    .catch(next)
+    .done();
 }
 
 /**

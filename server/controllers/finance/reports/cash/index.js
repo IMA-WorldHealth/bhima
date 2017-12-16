@@ -1,4 +1,3 @@
-
 /**
  * @overview
  * Cash Reports
@@ -15,6 +14,7 @@ const _ = require('lodash');
 const q = require('q');
 const Moment = require('moment');
 
+const shared = require('../shared');
 const ReportManager = require('../../../../lib/ReportManager');
 
 const pdf = require('../../../../lib/renderers/pdf');
@@ -91,7 +91,14 @@ function receipt(req, res, next) {
       ]);
     })
     .spread((user, patient, enterprise, invoices, totalInvoices) => {
-      _.assign(data, { user, patient, enterprise, invoices, totalInvoices });
+      _.assign(data, {
+        user,
+        patient,
+        enterprise,
+        invoices,
+        totalInvoices,
+      });
+
       return Exchange.getExchangeRate(enterprise.id, data.payment.currency_id, data.payment.date);
     })
     .then((exchange) => {
@@ -134,22 +141,20 @@ function receipt(req, res, next) {
  * GET /reports/finance/cash
  */
 function report(req, res, next) {
-  let options = {};
-  let display = {};
-  let hasFilter = false;
-
   let reportInstance;
-  const optionReport = _.extend(req.query, { filename : 'TREE.CASH_PAYMENT_REGISTRY', orientation : 'landscape' });
+  const query = _.clone(req.query);
+  const filters = shared.formatFilters(req.query);
+
+  _.extend(query, {
+    filename : 'TREE.CASH_PAYMENT_REGISTRY',
+    csvKey : 'rows',
+    footerRight : '[page] / [toPage]',
+    footerFontSize : '7',
+  });
 
   // set up the report with report manager
   try {
-    if (req.query.identifiers && req.query.display) {
-      options = JSON.parse(req.query.identifiers);
-      display = JSON.parse(req.query.display);
-      hasFilter = Object.keys(display).length > 0;
-    }
-
-    reportInstance = new ReportManager(REPORT_TEMPLATE, req.session, optionReport);
+    reportInstance = new ReportManager(REPORT_TEMPLATE, req.session, query);
   } catch (e) {
     next(e);
     return;
@@ -177,18 +182,17 @@ function report(req, res, next) {
     GROUP BY currency_id;
   `;
 
-  const data = {};
+  const data = { filters };
   let uuids;
 
-  CashPayments.listPayment(options)
+  CashPayments.find(query)
     .then(rows => {
       data.rows = rows;
-      data.hasFilter = hasFilter;
-      data.csv = rows;
-      data.display = display;
 
       // map the uuids for aggregate sql consumption
       uuids = rows.map(row => db.bid(row.uuid));
+
+      if (!uuids.length) { return false; }
 
       return db.one(aggregateSql, [uuids]);
     })
@@ -198,6 +202,8 @@ function report(req, res, next) {
       // conditional switches
       data.hasMultipleProjects = aggregates.numProjects > 1;
       data.hasMultipleCashboxes = aggregates.numCashboxes > 1;
+
+      if (!uuids.length) { return false; }
 
       return db.exec(costSql, [uuids]);
     })

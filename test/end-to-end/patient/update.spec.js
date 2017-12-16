@@ -33,7 +33,8 @@ describe('Patient Edit', () => {
   it('updates a patients debtor group subscription', () => {
     // opens update modal
     element(by.css('[data-update-group-debtor]')).click();
-    FU.select('UpdateDebtorGroupCtrl.debtor_group_uuid', 'Second Test Debtor Group');
+    components.debtorGroupSelect.set('NGO IMA World Health');
+
     FU.modal.submit();
     components.notification.hasSuccess();
   });

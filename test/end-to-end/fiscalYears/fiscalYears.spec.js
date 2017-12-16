@@ -1,12 +1,10 @@
-/* global element, by, browser */
+/* global element, by */
 const chai = require('chai');
-
-const expect = chai.expect;
-
 const FU = require('../shared/FormUtils');
 const helpers = require('../shared/helpers');
 const components = require('../shared/components');
 
+const { expect } = chai;
 helpers.configure(chai);
 
 describe('Fiscal Year', () => {
@@ -87,9 +85,9 @@ describe('Fiscal Year', () => {
     element(by.css('[data-action="edit-opening-balance"]')).click();
 
     // actions in the grid
-    const account1 = 3627;
-    const account2 = 3628;
-    const account3 = 3630;
+    const account1 = 85;
+    const account2 = 89;
+    const account3 = 83;
 
     element(by.css(`[data-debit-account="${account1}"]`)).clear().sendKeys(150);
     element(by.css(`[data-debit-account="${account2}"]`)).clear().sendKeys(150);
@@ -113,9 +111,9 @@ describe('Fiscal Year', () => {
     element(by.css('[data-action="edit-opening-balance"]')).click();
 
     // actions in the grid
-    const account1 = 3627;
-    const account2 = 3628;
-    const account3 = 3630;
+    const account1 = 85;
+    const account2 = 89;
+    const account3 = 83;
 
     element(by.css(`[data-debit-account="${account1}"]`)).clear().sendKeys(150);
     element(by.css(`[data-debit-account="${account2}"]`)).clear().sendKeys(150);
@@ -124,33 +122,6 @@ describe('Fiscal Year', () => {
     FU.buttons.submit();
     components.notification.hasDanger();
     expect(element(by.css('[data-status="not-balanced"]')).isPresent()).to.eventually.equal(true);
-  });
-
-  it('forbid negative value for total debit or total credit', () => {
-    helpers.navigate(path);
-
-    // the last in the list is the oldest
-    const updateButton = element.all(by.css('[data-fiscal-entry]'));
-    updateButton.all(by.css('[data-method="update"]')).last().click();
-
-    // click on the opening balance button
-    element(by.css('[data-action="opening-balance"]')).click();
-
-    // activate the edition of the opening balance
-    element(by.css('[data-action="edit-opening-balance"]')).click();
-
-    // actions in the grid
-    const account1 = 3627;
-    const account2 = 3628;
-    const account3 = 3630;
-
-    element(by.css(`[data-debit-account="${account1}"]`)).clear().sendKeys(150);
-    element(by.css(`[data-debit-account="${account2}"]`)).clear().sendKeys(150);
-    element(by.css(`[data-credit-account="${account3}"]`)).clear().sendKeys(-200);
-
-    FU.buttons.submit();
-    components.notification.hasDanger();
-    expect(element(by.css('[data-status="not-positive"]')).isPresent()).to.eventually.equal(true);
   });
 
   it('closing a fiscal year in normal way', () => {
@@ -167,7 +138,7 @@ describe('Fiscal Year', () => {
     element(by.css('[data-action="closing-fiscal-year"]')).click();
 
     // inner constiables
-    const resultAccount = 'Test Capital One';
+    const resultAccount = '13110001'; // 13110001 -Résusltat de l\'exercise
     const fiscalYearPattern = 'Test Fiscal Year 2015';
 
     // set the result account

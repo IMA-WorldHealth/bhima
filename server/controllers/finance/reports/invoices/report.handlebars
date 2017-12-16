@@ -1,7 +1,6 @@
 {{> head title="INVOICE_REGISTRY.TITLE"}}
 
 <body>
-
   {{> header}}
 
   <!-- body  -->
@@ -13,8 +12,10 @@
         {{translate 'INVOICE_REGISTRY.TITLE'}}
       </h2>
 
+      {{> filterbar filters=filters }}
+
       <!-- invoices listed  -->
-      <table class="table table-condensed table-bordered table-striped">
+      <table class="table table-condensed table-bordered">
         <thead>
           <tr>
             <th>{{translate 'TABLE.COLUMNS.REFERENCE'}}</th>
@@ -55,7 +56,7 @@
       <div class="col-xs-6">
 
         <!-- summary table -->
-        <table class="table table-condensed table-bordered table-striped">
+        <table class="table table-condensed table-bordered table-report">
           <tbody>
             <tr>
               <th colspan="2" class="text-center">

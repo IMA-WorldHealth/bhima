@@ -1,22 +1,26 @@
-/* global element, by, browser */
+/* global element, by */
+
 const chai = require('chai');
-const expect = chai.expect;
+
+const { expect } = chai;
 
 const FU = require('../shared/FormUtils');
+
 const helpers = require('../shared/helpers');
+
 helpers.configure(chai);
 
-describe('Sectors Management', function () {
+describe('Sectors Management', () => {
 
   before(() => helpers.navigate('#!/locations/sector'));
 
   const sector = {
-    country :'Test Hook Country',
-    province : 'Test Hook Province',
-    name : 'New Sector'
+    country : 'République Démocratique du Congo',
+    province : 'Kinshasa',
+    name : 'New Sector',
   };
 
-  it('creates a new sector', function () {
+  it('creates a new sector', () => {
     // switch to the create form
     FU.buttons.create();
 
@@ -32,7 +36,7 @@ describe('Sectors Management', function () {
     FU.exists(by.id('create_success'), true);
   });
 
-  it('edits a sector', function () {
+  it('edits a sector', () => {
     $(`[data-sector-name="${sector.name}"]`).click();
 
     FU.select('SectorCtrl.sector.country_uuid', sector.country);
@@ -45,8 +49,7 @@ describe('Sectors Management', function () {
     FU.exists(by.id('update_success'), true);
   });
 
-  it('blocks invalid form submission with relevant error classes', function () {
-
+  it('blocks invalid form submission with relevant error classes', () => {
     // switch to the create form
     FU.buttons.create();
 

@@ -10,8 +10,8 @@ const helpers = require('./helpers');
 describe('(/employees) the employees API endpoint', function () {
   'use strict';
 
-  const numEmployees = 1; 
-  
+  const numEmployees = 1;
+
   // custom dates
   let embaucheDate  = new Date('2016-01-01');
   let dob1 = new Date('1987-04-17');
@@ -26,7 +26,7 @@ describe('(/employees) the employees API endpoint', function () {
     date_embauche : embaucheDate,
     nb_spouse : 0,
     nb_enfant : 0,
-    grade_id : '9ee06e4a-7b59-48e6-812c-c0f8a00cf7d3',
+    grade_uuid : '9ee06e4a-7b59-48e6-812c-c0f8a00cf7d3',
     daily_salary : 50,
     bank : 'BIAC',
     bank_account : '00-99-88-77',
@@ -34,9 +34,10 @@ describe('(/employees) the employees API endpoint', function () {
     fonction_id : 1,
     locked : 0,
     service_id : 1,
+    is_medical : 0,
     hospital_no : 'TP30',
     creditor_group_uuid : 'b0fa5ed2-04f9-4cb3-92f7-61d6404696e7',
-    debtor_group_uuid : '4de0fe47-177f-4d30-b95f-cff8166400b4',    
+    debtor_group_uuid : '4de0fe47-177f-4d30-b95f-cff8166400b4',
     current_location_id: '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
     origin_location_id:  '1f162a10-9f67-4788-9eff-c1fea42fcc9b'
   };
@@ -49,24 +50,30 @@ describe('(/employees) the employees API endpoint', function () {
     date_embauche : embaucheDate,
     nb_spouse : 0,
     nb_enfant : 0,
-    grade_id : '9ee06e4a-7b59-48e6-812c-c0f8a00cf7d3',
+    hospital_no : 'HBB 2017',
+    grade_uuid : '9ee06e4a-7b59-48e6-812c-c0f8a00cf7d3',
     daily_salary : 50,
     bank : 'BIAC',
     bank_account : '00-99-88-77',
     email : 'me@info.com',
     fonction_id : 1,
     service_id : 1,
+    is_medical : 0,
     creditor_group_uuid : 'b0fa5ed2-04f9-4cb3-92f7-61d6404696e7',
-    debtor_group_uuid : '4de0fe47-177f-4d30-b95f-cff8166400b4'
+    debtor_group_uuid : '4de0fe47-177f-4d30-b95f-cff8166400b4',
+    current_location_id: '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
+    origin_location_id:  '1f162a10-9f67-4788-9eff-c1fea42fcc9b',    
   };
+
+  var searchEmployee = "Test 2 Patient";
 
   it('POST /employee should create a new employee', function () {
     return agent.post('/employees')
       .send(employee)
       .then(function (res) {
         helpers.api.created(res);
-
         employee.id = res.body.id;
+        updateEmployee.patient_uuid = res.body.patient_uuid;
       })
       .catch(helpers.handler);
   });
@@ -87,6 +94,8 @@ describe('(/employees) the employees API endpoint', function () {
       })
       .catch(helpers.handler);
   });
+
+
 
   it('GET /employees/:id should return a specific employee', function () {
     return agent.get('/employees/' + employee.id)
@@ -119,7 +128,7 @@ describe('(/employees) the employees API endpoint', function () {
   });
 
   it('GET /employees with \'display_name\' parameter', function () {
-    let conditions = { display_name : 'Dedrick' };
+    let conditions = { display_name : searchEmployee };
     return agent.get('/employees')
       .query(conditions)
       .then(function (res) {
@@ -129,7 +138,7 @@ describe('(/employees) the employees API endpoint', function () {
   });
 
   it('GET /employees should be composable when using parameters', function () {
-    let conditions = { sex: 'M', display_name : 'Dedrick' };
+    let conditions = { sex: 'M', display_name : searchEmployee };
     return agent.get('/employees')
       .query(conditions)
       .then(function (res) {
@@ -139,7 +148,7 @@ describe('(/employees) the employees API endpoint', function () {
   });
 
   it('GET /employees with `name` and `code` parameters for the priority of reference', function () {
-    let conditions = { display_name : 'Dedrick', code : 'E1' };
+    let conditions = { display_name : searchEmployee, code : 'E1' };
     return agent.get('/employees')
       .query(conditions)
       .then(function (res) {
@@ -169,9 +178,9 @@ describe('(/employees) the employees API endpoint', function () {
       .query(conditions)
       .then(function (res) {
         var expected = [
-          'nb_spouse', 'nb_enfant', 'daily_salary', 'bank', 'bank_account', 
+          'nb_spouse', 'nb_enfant', 'daily_salary', 'bank', 'bank_account',
           'adresse', 'phone', 'email', 'fonction_id', 'fonction_txt',
-          'grade_id', 'basic_salary', 'service_id', 
+          'grade_uuid', 'basic_salary', 'service_id',
           'creditor_uuid', 'locked'
         ];
 
@@ -237,9 +246,6 @@ describe('(/employees) the employees API endpoint', function () {
    * @param {object} update The correct employee update
    */
   function checkValidUpdate(employee, update) {
-    // add a missing property due to alias in db query
-    employee.code = employee.code_employee;
-    expect(employee).to.contain.all.keys(update);
     for (let i in update) {
       if (i === 'dob' || i === 'date_embauche') {
         expect(new Date(employee[i])).to.equalDate(new Date(update[i]));

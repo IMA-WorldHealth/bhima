@@ -6,23 +6,28 @@ angular.module('bhima.controllers')
 .controller('DebtorGroupUpdateController', DebtorGroupsUpdateController);
 
 DebtorGroupsUpdateController.$inject = [
-  '$state', 'DebtorGroupService', 'AccountService', 'PriceListService', 'ScrollService', 'util', 'NotifyService', 'ModalService',
+  '$state', 'DebtorGroupService', 'AccountService', 'PriceListService',
+  'ScrollService', 'util', 'NotifyService', 'ModalService',
 ];
 
-function DebtorGroupsUpdateController($state, DebtorGroups, Accounts, Prices, ScrollTo, util, Notify, Modal) {
+function DebtorGroupsUpdateController(
+  $state, DebtorGroups, Accounts, Prices,
+  ScrollTo, util, Notify, Modal) {
   var vm = this;
   var target = $state.params.uuid;
 
   vm.submit = submit;
   vm.state = $state;
-  vm.billingServiceSubscriptions = billingServiceSubscriptions;
+  vm.invoicingFeeSubscriptions = invoicingFeeSubscriptions;
   vm.subsidySubscriptions = subsidySubscriptions;
 
   vm.$loading = true;
   vm.$loaded = false;
   vm.cancel = cancel;
-
   vm.deleteGroup = deleteGroup;
+
+  vm.colors = DebtorGroups.colors;
+
 
   Prices.read()
     .then(function (priceLists) {
@@ -39,7 +44,7 @@ function DebtorGroupsUpdateController($state, DebtorGroups, Accounts, Prices, Sc
       $state.params.label = vm.group.name;
 
       /** @todo work around for checkboxes (use value='' instead) */
-      vm.group.apply_billing_services = Boolean(vm.group.apply_billing_services);
+      vm.group.apply_invoicing_fees = Boolean(vm.group.apply_invoicing_fees);
       vm.group.apply_subsidies = Boolean(vm.group.apply_subsidies);
       vm.group.apply_discounts = Boolean(vm.group.apply_discounts);
     })
@@ -61,30 +66,31 @@ function DebtorGroupsUpdateController($state, DebtorGroups, Accounts, Prices, Sc
     // catch 'nothing has changed' and redirect to list page
     if (debtorGroupForm.$pristine) {
       Notify.warn('FORM.ERRORS.NO_CHANGE');
-      $state.go('debtorGroups.list', null, {reload : true});
+      $state.go('debtorGroups.list', null, { reload : true });
       return;
     }
 
     submitDebtorGroup = util.filterFormElements(debtorGroupForm, true);
 
     DebtorGroups.update(target, submitDebtorGroup)
-      .then(function (result) {
+      .then(function () {
         Notify.success('DEBTOR_GROUP.UPDATED');
-        $state.go('debtorGroups.list', null, {reload : true});
+        $state.go('debtorGroups.list', null, { reload : true });
       })
       .catch(Notify.handleError);
   }
 
-  function cancel(){
+  function cancel() {
     $state.go('debtorGroups.list');
   }
 
-  function billingServiceSubscriptions() {
-    var modal = DebtorGroups.manageBillingServices(vm.group);
+  function invoicingFeeSubscriptions() {
+    console.log('debtor group', vm.group);
+    var modal = DebtorGroups.manageInvoicingFees(vm.group);
     modal.result
       .then(function (results) {
         // update UI
-        vm.group.billingServices = results;
+        vm.group.invoicingFees = results;
         Notify.success('FORM.INFO.UPDATE_SUCCESS');
       });
   }
@@ -114,10 +120,9 @@ function DebtorGroupsUpdateController($state, DebtorGroups, Accounts, Prices, Sc
         return DebtorGroups.remove(groupUuid)
           .then(function () {
             Notify.success('FORM.INFO.DELETE_SUCCESS');
-            $state.go('debtorGroups.list', null, {reload : true});
+            $state.go('debtorGroups.list', null, { reload : true });
           })
           .catch(Notify.handleError);
-      })
+      });
   }
-
 }

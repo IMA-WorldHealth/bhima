@@ -1,0 +1,30 @@
+<div ng-form="CashboxForm" bh-multiple-cashbox-select ng-model-options="{ updateOn: 'default' }">
+  <div
+    class="form-group"
+    ng-class="{ 'has-error' : $ctrl.validationTrigger && CashboxForm.cashbox.$invalid }">
+    <label class="control-label" translate>
+      {{ $ctrl.label }}
+    </label>
+
+    <ui-select
+        multiple
+        name="cashbox"
+        ng-model="$ctrl.cashboxIds"
+        on-select="$ctrl.handleChange($ctrl.cashboxIds)"
+        on-remove="$ctrl.handleChange($ctrl.cashboxIds)"
+        close-on-select="false"
+        append-to-body="true"
+        ng-required="$ctrl.required">
+      <ui-select-match placeholder="{{ 'FORM.SELECT.CASHBOX' | translate }}">
+        <span>{{ $item.label }}</span>
+      </ui-select-match>
+      <ui-select-choices ui-select-focus-patch repeat="cashbox.id as cashbox in ($ctrl.cashboxes | filter: { label : $select.search } | orderBy: 'label')">
+        <span ng-bind-html="cashbox.label | highlight:$select.search"></span>
+      </ui-select-choices>
+    </ui-select>
+
+    <div class="help-block" ng-messages="CashboxForm.$error" ng-show="$ctrl.validationTrigger">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+</div>

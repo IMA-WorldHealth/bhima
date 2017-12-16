@@ -11,7 +11,7 @@ module.exports = function LazyTester(target, keys, params) {
     params = _.clone(params || {});
 
     // renders
-    const invalid = { renderer : 'unknown' };
+    const invalid = _.merge({ renderer : 'unknown' }, params);
     const json = _.merge({ renderer : 'json' }, params);
     const html = _.merge({ renderer : 'html' }, params);
     const pdf = _.merge({ renderer : 'pdf' }, params);

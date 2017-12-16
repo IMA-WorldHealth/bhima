@@ -1,25 +1,22 @@
-/* global expect, chai, agent */
-
-'use strict';
+/* global expect, agent */
 
 const helpers = require('./helpers');
-const uuid = require('node-uuid');
+const uuid = require('uuid/v4');
 
 const _ = require('lodash');
 
 /*
  * The /locations API endpoint
  */
-describe('(/locations) Locations Interface', function () {
-
+describe('(/locations) Locations Interface', () => {
   /*
    * number of test villages, sectors, provinces, and countries in the test
    * dataset.
    */
-  const numVillages = 2;
-  const numSectors  = 2;
-  const numProvinces = 2;
-  const numCountries = 2;
+  const numVillages = 1;
+  const numSectors = 1;
+  const numProvinces = 1;
+  const numCountries = 1;
 
   /*
    * Selected sector, province, and country uuids to test the query string
@@ -39,40 +36,36 @@ describe('(/locations) Locations Interface', function () {
   /* the test enterprise's location uuid */
   const detailUuid = '1f162a10-9f67-4788-9eff-c1fea42fcc9b';
 
-  it('GET /locations/villages should return a list of villages', function () {
+  it('GET /locations/villages should return a list of villages', () => {
     return agent.get('/locations/villages')
       .then(function (res) {
-
         // check that we received the correct number of villages
         helpers.api.listed(res, numVillages);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /locations/villages?sector={uuid} should return a filtered list of villages', function () {
+  it('GET /locations/villages?sector={uuid} should return a filtered list of villages', () => {
     return agent.get(`/locations/villages?sector=${sectorUuid}`)
       .then(function (res) {
-
         // check that we received the correct number of villages
         helpers.api.listed(res, numFilteredVillages);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /locations/sectors should return a list of sectors', function () {
+  it('GET /locations/sectors should return a list of sectors', () => {
     return agent.get('/locations/sectors')
       .then(function (res) {
-
         // check that we received the correct number of sectors
         helpers.api.listed(res, numSectors);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /locations/sectors?province={uuid} should return a filtered list of sectors', function () {
+  it('GET /locations/sectors?province={uuid} should return a filtered list of sectors', () => {
     return agent.get(`/locations/sectors?province=${provinceUuid}`)
       .then(function (res) {
-
         // check that we received the correct number of sectors
         helpers.api.listed(res, numFilteredSectors);
       })
@@ -81,89 +74,85 @@ describe('(/locations) Locations Interface', function () {
 
   it('GET /locations/provinces should return a list of provinces', function () {
     return agent.get('/locations/provinces')
-    .then(function (res) {
-
+      .then(function (res) {
       // check that we received the correct number of provinces
-      helpers.api.listed(res, numProvinces);
-    })
-    .catch(helpers.handler);
+        helpers.api.listed(res, numProvinces);
+      })
+      .catch(helpers.handler);
   });
 
   it('GET /locations/provinces?country={uuid} should return a filtered list of provinces', function () {
     return agent.get(`/locations/provinces?country=${countryUuid}`)
-    .then(function (res) {
-
+      .then(function (res) {
       // check that we received the correct number of provinces
-      helpers.api.listed(res, numFilteredProvinces);
-    })
-    .catch(helpers.handler);
+        helpers.api.listed(res, numFilteredProvinces);
+      })
+      .catch(helpers.handler);
   });
 
   it('GET /locations/countries should return a list of countries', function () {
     return agent.get('/locations/countries')
-    .then(function (res) {
-
+      .then(function (res) {
       // check that we received the correct number of countries
-      helpers.api.listed(res, numCountries);
-    })
-    .catch(helpers.handler);
+        helpers.api.listed(res, numCountries);
+      })
+      .catch(helpers.handler);
   });
 
   it('GET /locations/detail/:uuid should return a JSON description of the location', function () {
     return agent.get('/locations/detail/'.concat(detailUuid))
-    .then(function (res) {
-
+      .then(function (res) {
       // make sure we successfully found the location
-      expect(res).to.have.status(200);
-      expect(res).to.be.json;
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
 
-      expect(res.body).to.have.keys([
-        'villageUuid', 'village', 'sector', 'sectorUuid',
-        'province', 'provinceUuid', 'country', 'countryUuid'
-      ]);
-    })
-    .catch(helpers.handler);
+        expect(res.body).to.have.keys([
+          'villageUuid', 'village', 'sector', 'sectorUuid',
+          'province', 'provinceUuid', 'country', 'countryUuid',
+        ]);
+      })
+      .catch(helpers.handler);
   });
 
 
   it('GET /locations/detail/ Return a Global list of all locations with all information (Country, Province, District and Village) ', function () {
     return agent.get('/locations/detail/')
-    .then(function (res) {
-      expect(res).to.have.status(200);
-      expect(res).to.be.json;
-      expect(res.body).to.have.length(numVillages);
+      .then(function (res) {
+        expect(res).to.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body).to.have.length(numVillages);
 
-      expect(res.body[0]).to.have.keys([
-        'villageUuid', 'village', 'sector', 'sectorUuid',
-        'province', 'provinceUuid', 'country', 'countryUuid'
-      ]);
-    })
-    .catch(helpers.handler);
+        expect(res.body[0]).to.have.keys([
+          'villageUuid', 'village', 'sector', 'sectorUuid',
+          'province', 'provinceUuid', 'country', 'countryUuid',
+        ]);
+      })
+      .catch(helpers.handler);
   });
 
   /* CREATE methods */
 
   const country = {
-    uuid : uuid.v4(),
-    name : 'Test Country'
+    uuid : uuid(),
+    name : 'Test Country',
   };
 
   const province = {
-    uuid : uuid.v4(),
+    uuid : uuid(),
     name : 'Test Province',
-    country_uuid : country.uuid
+    country_uuid : country.uuid,
   };
 
   const sector = {
-    uuid : uuid.v4(),
+    uuid : uuid(),
     name : 'Test Sector',
-    province_uuid : province.uuid
+    province_uuid : province.uuid,
   };
 
   const village = {
-    uuid: uuid.v4(),
-    name: 'Test Village',
-    sector_uuid: sector.uuid
+    uuid : uuid(),
+    name : 'Test Village',
+    sector_uuid : sector.uuid,
   };
 
   it('POST /locations/countries should create a country', function () {
@@ -212,9 +201,9 @@ describe('(/locations) Locations Interface', function () {
   });
 
   it('POST /locations/villages should create the same village name in a different sector', function () {
-    let copy = _.clone(village);
+    const copy = _.clone(village);
     copy.sector_uuid = sectorUuid;
-    copy.uuid = uuid.v4();
+    copy.uuid = uuid();
 
     return agent.post('/locations/villages')
       .send(copy)
@@ -225,9 +214,8 @@ describe('(/locations) Locations Interface', function () {
   });
 
   it('PUT /locations/villages/:uuid should update a Village', function () {
-
-    return agent.put('/locations/villages/' + village.uuid)
-      .send({ name : 'Update Village'})
+    return agent.put(`/locations/villages/${village.uuid}`)
+      .send({ name : 'Update Village' })
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
@@ -238,8 +226,8 @@ describe('(/locations) Locations Interface', function () {
   });
 
   it('PUT /locations/sectors/:uuid should update a Sector', function () {
-    return agent.put('/locations/sectors/' + sector.uuid)
-      .send({ name : 'Update New Sector'})
+    return agent.put(`/locations/sectors/${sector.uuid}`)
+      .send({ name : 'Update New Sector' })
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
@@ -250,8 +238,8 @@ describe('(/locations) Locations Interface', function () {
   });
 
   it('PUT /locations/provinces/:uuid should update a Province', function () {
-    return agent.put('/locations/provinces/' + province.uuid)
-      .send({ name : 'Update New Province'})
+    return agent.put(`/locations/provinces/${province.uuid}`)
+      .send({ name : 'Update New Province' })
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
@@ -262,8 +250,8 @@ describe('(/locations) Locations Interface', function () {
   });
 
   it('PUT /locations/countries/:uuid should update a Country', function () {
-    return agent.put('/locations/countries/' + country.uuid)
-      .send({ name : 'Update New Country'})
+    return agent.put(`/locations/countries/${country.uuid}`)
+      .send({ name : 'Update New Country' })
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
@@ -272,5 +260,4 @@ describe('(/locations) Locations Interface', function () {
       })
       .catch(helpers.handler);
   });
-
 });

@@ -1,17 +1,38 @@
-<div class="ui-grid-cell-contents text-action" uib-dropdown dropdown-append-to-body>
-  <a href uib-dropdown-toggle>
-    <span data-method="action" translate>FORM.BUTTONS.ACTIONS</span>
+<div class="ui-grid-cell-contents text-action" uib-dropdown dropdown-append-to-body ng-if="!row.groupHeader"  data-row="{{ row.entity.reference }}">
+  <a uib-dropdown-toggle href data-action="open-dropdown-menu">
+    <span translate>FORM.BUTTONS.ACTIONS</span>
     <span class="caret"></span>
   </a>
 
-  <ul data-action="{{ rowRenderIndex}}"  class="dropdown-menu-right" uib-dropdown-menu>
+  <ul data-row-menu="{{ row.entity.reference }}" class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
+    <li class="dropdown-header">
+      {{row.entity.reference}}
+      <span ng-show="row.entity.edited" class="text-primary">
+        <i class="fa fa-pencil"></i>
+        <span translate>FORM.INFO.EDITED</span>
+      </span>
+    </li>
     <li>
-      <a href
-        data-method="receipt"
-        ng-if="row.entity.uuid"
-        ng-click="grid.appScope.showReceipt(row.entity.uuid)"
-        data-link-receipt="{{ ::row.entity.uuid }}">
+      <a data-method="receipt" href ng-click="grid.appScope.showReceipt(row.entity.uuid)">
         <i class="fa fa-file-pdf-o"></i> <span translate>TABLE.COLUMNS.RECEIPT</span>
+      </a>
+    </li>
+
+    <li class="divider"></li>
+
+    <!-- view linked records -->
+    <li>
+      <a data-method="view-transaction" href ui-sref="journal({ filters : [{ key : 'period', value : 'allTime' },{ key: 'record_uuid', value : row.entity.uuid, displayValue: row.entity.reference}, { key : 'includeNonPosted', value : 1 }]})">
+        <span class="fa fa-file-text-o"></span> <span translate>TRANSACTIONS.VIEW_TRANSACTIONS</span>
+      </a>
+    </li>
+
+    <li class="divider"></li>
+
+    <!-- delete voucher record -->
+    <li>
+      <a data-method="delete-record" href ng-click="grid.appScope.deleteVoucher(row.entity)">
+        <span class="text-danger"><span class="fa fa-file-text-o"></span> <span translate>FORM.BUTTONS.DELETE_RECORD</span></span>
       </a>
     </li>
   </ul>

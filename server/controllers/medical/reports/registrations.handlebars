@@ -4,24 +4,12 @@
 
   {{> header }}
 
-  <h3 class="text-center">{{translate "PATIENT_REG.PAGE_TITLE"}}</h3>
+  <h3 class="text-center">{{translate "PATIENT_REGISTRY.TITLE"}}</h3>
 
-  <p class="pills">
-    {{#each filters}}
-      <span class="label label-primary text-capitalize">
-        <i class="fa fa-filter"></i> {{translate this.displayName}}
-
-        {{#if this.comparitor}} {{this.comparitor}}
-        {{else}}: {{/if}}
-
-        {{#if this.isDate}} {{date this.value}}
-        {{else}} {{this.value}} {{/if}}
-      </span>
-    {{/each}}
-  </p>
+  {{> filterbar filters=filters }}
 
   <section style="size: 0.75em;">
-    <table class="table table-condensed table-bordered ">
+    <table class="table table-condensed table-bordered table-report">
       <thead>
         <tr class="text-capitalize text-center">
           <th>{{translate "TABLE.COLUMNS.REFERENCE" }}</th>
@@ -66,7 +54,7 @@
         <div class="col-xs-6">
 
           <!-- summary table -->
-          <table class="table table-condensed table-bordered table-striped">
+          <table class="table table-condensed table-bordered table-report">
             <tbody>
               <tr>
                 <th colspan="2" class="text-center">

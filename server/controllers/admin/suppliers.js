@@ -4,11 +4,11 @@
  *
  * @description
  * This controller exposes an API to the client for reading and writing supplier
- **/
+ * */
 
 
 const db = require('../../lib/db');
-const uuid = require('node-uuid');
+const uuid = require('uuid/v4');
 const Topic = require('../../lib/topic');
 
 function lookupSupplier(uid) {
@@ -47,11 +47,11 @@ function list(req, res, next) {
   }
 
   db.exec(sql, params)
-  .then((rows) => {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -64,11 +64,11 @@ function list(req, res, next) {
  */
 function detail(req, res, next) {
   lookupSupplier(req.params.uuid)
-  .then((record) => {
-    res.status(200).json(record);
-  })
-  .catch(next)
-  .done();
+    .then((record) => {
+      res.status(200).json(record);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -84,10 +84,10 @@ function create(req, res, next) {
   const data = req.body;
 
   // provide uuid if the client has not specified
-  const recordUuid = data.uuid || uuid.v4();
+  const recordUuid = data.uuid || uuid();
   const transaction = db.transaction();
 
-  const creditorUuid = db.bid(uuid.v4());
+  const creditorUuid = db.bid(uuid());
   const creditorGroupUuid = db.bid(data.creditor_group_uuid);
 
   delete data.creditor_group_uuid;
@@ -195,11 +195,11 @@ function search(req, res, next) {
   }
 
   db.exec(sql, [req.query.display_name])
-  .then((rows) => {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }
 
 

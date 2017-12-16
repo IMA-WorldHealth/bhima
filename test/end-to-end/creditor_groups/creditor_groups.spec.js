@@ -1,9 +1,9 @@
-/* global browser, element, by */
+/* global element, by */
 const chai = require('chai');
 const helpers = require('../shared/helpers');
 
 helpers.configure(chai);
-const expect = chai.expect;
+const { expect } = chai;
 
 const components = require('../shared/components');
 const FU = require('../shared/FormUtils');
@@ -12,20 +12,19 @@ describe('Creditor Groups Management', () => {
   const path = '#!/creditors/groups';
   before(() => helpers.navigate(path));
 
-  const INITIAL_GROUP = 2;
-  const USED_CREDITOR_GROUP = 'Personnel [Creditor Group Test]';
+  const INITIAL_GROUP = 3;
 
   const currentDate = new Date();
   const uniqueIdentifier = currentDate.getTime().toString();
 
   const group = {
     name         : `E2E Creditor Group ${uniqueIdentifier}`,
-    delete_name  : `Fournisseur [Creditor Group Test]`,
+    delete_name  : 'SNEL',
     updated_name : `E2E Creditor Group Updated ${uniqueIdentifier}`,
-    account      : '41001',
+    account      : '40111000', // 40111000 - SNEL SUPPLIER
   };
 
-  it('Get initial list of creditor groups', () => {
+  it(`has an initial list of ${INITIAL_GROUP} creditor groups`, () => {
     expect(element.all(by.css('[data-group-entry]')).count()).to.eventually.equal(INITIAL_GROUP);
   });
 
@@ -50,23 +49,23 @@ describe('Creditor Groups Management', () => {
     components.notification.hasSuccess();
   });
 
-  it('Delete a creditor group', () => {
+  it('deletes a creditor group', () => {
     element(by.css(`[data-update="${group.updated_name}"]`)).click();
-    
+
     // click the "delete" button
     FU.buttons.delete();
 
-    FU.buttons.submit();
+    FU.modal.submit();
     components.notification.hasSuccess();
   });
 
-  it('Cannot delete a used creditor group', () => {
+  it('blocks deletion of a creditor group used in a transaction', () => {
     element(by.css(`[data-update="${group.delete_name}"]`)).click();
 
     // click the "delete" button
     FU.buttons.delete();
 
-    FU.buttons.submit();
+    FU.modal.submit();
     components.notification.hasError();
   });
 });

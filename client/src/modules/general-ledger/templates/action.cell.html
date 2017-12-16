@@ -7,20 +7,18 @@
 
     <ul class="dropdown-menu-right" uib-dropdown-menu>
       <li>
-        <a href
-          data-method="receipt"
-          ng-click="grid.appScope.slip(row.entity.id)">
-          <i class="fa fa-file-text"></i> <span translate>GENERAL_LEDGER.ACCOUNT_SLIP</span>
+        <a ng-href="/reports/finance/account_report/?{{ grid.appScope.slip('pdf', grid.appScope.filtersSlip, row.entity.id) }}" download="{{GENERAL_LEDGER.ACCOUNT_SLIP | translate }}">
+          <span class="fa fa-file-pdf-o"></span> <span translate>GENERAL_LEDGER.ACCOUNT_SLIP</span>
         </a>
       </li>
+<!-- 
+      FIX ME FOR THE CSV DOWNLOAD
       <li>
-        <a href
-          id="export-{{row.entity.id}}"
-          data-method="export"
-          ng-click="grid.appScope.slipCsv(row.entity.id)">
-          <i class="fa fa-file-excel-o"></i> <span translate>FORM.BUTTONS.CSV_EXPORT</span>
+        <a ng-href="/reports/finance/account_report/?{{ grid.appScope.slip('csv', grid.appScope.filtersSlip, row.entity.id) }}" download="{{FORM.BUTTONS.CSV_EXPORT | translate }}">
+          <span class="fa fa-file-pdf-o"></span> <span translate>FORM.BUTTONS.CSV_EXPORT</span>
         </a>
       </li>
+ -->    
     </ul>
   </span>
 </div>

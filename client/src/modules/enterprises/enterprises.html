@@ -62,7 +62,8 @@
                 account-id="EnterpriseCtrl.enterprise.gain_account_id"
                 label="FORM.LABELS.GAIN_ACCOUNT"
                 name="gain_account_id"
-                on-select-callback="EnterpriseCtrl.onSelectGainAccount(account)">
+                on-select-callback="EnterpriseCtrl.onSelectGainAccount(account)"
+                exclude-title-accounts="true">
               </bh-account-select>
 
               <bh-account-select
@@ -70,11 +71,12 @@
                 account-id="EnterpriseCtrl.enterprise.loss_account_id"
                 label="FORM.LABELS.LOSS_ACCOUNT"
                 name="loss_account_id"
+                exclude-title-accounts="true"
                 on-select-callback="EnterpriseCtrl.onSelectLossAccount(account)">
               </bh-account-select>
             </div>
 
-            <div class="panel-footer text-right">
+            <div class="panel-footer text-right" id="submission">
               <bh-loading-button loading-state="EnterpriseForm.$loading">
                 <span translate>FORM.BUTTONS.UPDATE</span>
               </bh-loading-button>
@@ -94,7 +96,7 @@
                 <label class="control-label" translate>
                   FORM.LABELS.PO_BOX
                 </label>
-                <input type="text" class="form-control" autocomplete="off" name="po_box" ng-maxlength="EnterpriseCtrl.length30" ng-model="EnterpriseCtrl.enterprise.po_box">
+                <input type="text" class="form-control" autocomplete="off" name="po_box" ng-model="EnterpriseCtrl.enterprise.po_box">
                 <div class="help-block" ng-messages="EnterpriseForm.po_box.$error" ng-show="EnterpriseForm.$submitted">
                   <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
                 </div>
@@ -114,7 +116,7 @@
                 <label class="control-label" translate>
                   FORM.LABELS.PHONE
                 </label>
-                <input type="tel" class="form-control" autocomplete="off" name="phone" ng-maxlength="EnterpriseCtrl.length20" ng-model="EnterpriseCtrl.enterprise.phone">
+                <input type="tel" class="form-control" autocomplete="off" name="phone" ng-model="EnterpriseCtrl.enterprise.phone">
                 <div class="help-block" ng-messages="EnterpriseForm.phone.$error" ng-show="EnterpriseForm.$submitted">
                   <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
                 </div>
@@ -122,13 +124,16 @@
 
               <bh-location-select
                 validation-trigger="EnterpriseForm.$submitted"
+                name = 'location_id'
                 location-uuid="EnterpriseCtrl.enterprise.location_id">
               </bh-location-select>
 
+              <p class="text-center text-info">
+                <a href ng-click="EnterpriseCtrl.scrollToSubmission()" id="submissionLink">
+                  <span class="fa fa-arrow-circle-o-up"></span> <span translate>FORM.BUTTONS.LINK_SUBMISSION</span>
+                </a>
+              </p>
 
-              <button class="btn btn-block btn-default" type="button" ng-click="EnterpriseCtrl.submit(EnterpriseForm)">
-                <i class="fa fa-save"></i> <span translate>FORM.BUTTONS.UPDATE</span>
-              </button>
             </div>
           </div>
         </form>

@@ -1,14 +1,14 @@
 angular.module('bhima.services')
-.service('DebtorGroupService', DebtorGroupService);
+  .service('DebtorGroupService', DebtorGroupService);
 
-DebtorGroupService.$inject = ['$http', '$uibModal', 'util', 'SessionService'];
+DebtorGroupService.$inject = ['$http', '$uibModal', 'util', 'SessionService', '$translate'];
 
 /**
 * Debtor Group Service
 *
 * This service implements CRUD operations for the /debtor_groups API endpoint
 */
-function DebtorGroupService($http, Modal, util, SessionService) {
+function DebtorGroupService($http, Modal, util, SessionService, $translate) {
   var service = this;
   var baseUrl = '/debtor_groups/';
 
@@ -16,13 +16,27 @@ function DebtorGroupService($http, Modal, util, SessionService) {
   service.read = read;
   service.create = create;
   service.update = update;
-  service.updateBillingServices = updateBillingServices;
+  service.updateInvoicingFees = updateInvoicingFees;
   service.updateSubsidies = updateSubsidies;
   service.invoices = invoices;
 
-  service.manageBillingServices = manageBillingServices;
+  service.manageInvoicingFees = manageInvoicingFees;
   service.manageSubsidies = manageSubsidies;
   service.remove = remove;
+
+  service.colors = [
+    { name : $translate.instant('COLORS.AQUA'), value : '#00ffff' },
+    { name : $translate.instant('COLORS.GRAY'), value : '#808080' },
+    { name : $translate.instant('COLORS.FORESTGREEN'), value : '#228b22' },
+    { name : $translate.instant('COLORS.LIME'), value : '#00ff00' },
+    { name : $translate.instant('COLORS.RED'), value : '#ff0000' },
+    { name : $translate.instant('COLORS.YELLOW'), value : '#ffff00' },
+    { name : $translate.instant('COLORS.YELLOWGREEN'), value : '#9acd32' },
+    { name : $translate.instant('COLORS.SLATEBLUE'), value : '#6a5acd' },
+    { name : $translate.instant('COLORS.MAROON'), value :'#800000' },
+    { name : $translate.instant('COLORS.CRIMSON'), value :'#dc143c' },
+    { name : $translate.instant('COLORS.BLUEVIOLET'), value: '#8A2BE2' },
+  ];
 
   /**
   * @method read
@@ -64,33 +78,33 @@ function DebtorGroupService($http, Modal, util, SessionService) {
     delete debtorGroup.uuid;
 
     return $http.put(url, debtorGroup)
-    .then(util.unwrapHttpResponse);
+      .then(util.unwrapHttpResponse);
   }
 
   /**
   * @method remove
   * @param {string} uuid The debtor group uuid
   * @description This function is responsible for deleting a debtor group
-  */  
+  */
   function remove(uuid) {
     return $http.delete(baseUrl.concat(uuid))
-    .then(util.unwrapHttpResponse);
+      .then(util.unwrapHttpResponse);
   }
 
 
   /**
-   * @function updateBillingServices
+   * @function updateInvoicingFees
    *
    * @description
-   * Replaces a debtor groups billing services subscriptions with a provided
-   * set of billing service IDs
+   * Replaces a debtor groups invoicing fees subscriptions with a provided
+   * set of invoicing fee IDs
    *
    * @param {string}  debtorGroupUuid   UUID of debtor group that will be updated
-   * @param {Array}   subscriptions     Array of billing service ids that this
+   * @param {Array}   subscriptions     Array of invoicing fee ids that this
    *                                    debtor group will now be subscribed to
    */
-  function updateBillingServices(debtorGroupUuid, subscriptions) {
-    var path = '/groups/debtor_group_billing_service/'.concat(debtorGroupUuid);
+  function updateInvoicingFees(debtorGroupUuid, subscriptions) {
+    var path = '/groups/debtor_group_invoicing_fee/'.concat(debtorGroupUuid);
     var options = { subscriptions : subscriptions };
     return $http.post(path, options)
       .then(util.unwrapHttpResponse);
@@ -103,19 +117,15 @@ function DebtorGroupService($http, Modal, util, SessionService) {
       .then(util.unwrapHttpResponse);
   }
 
-  function manageBillingServices(debtorGroup, subscriptions) {
+  function manageInvoicingFees(debtorGroup, subscriptions) {
     return Modal.open({
       templateUrl : '/modules/debtors/subscriptions.modal.html',
-      controller : 'BillingServiceSubscriptions as SubCtrl',
+      controller : 'InvoicingFeeSubscriptions as SubCtrl',
       size : 'md',
       resolve : {
-        Subscriptions : function Subscriptions() {
-          return subscriptions;
-        },
-        DebtorGroup : function DebtorGroup() {
-          return debtorGroup;
-        }
-      }
+        Subscriptions : function Subscriptions() { return subscriptions; },
+        DebtorGroup : function DebtorGroup() { return debtorGroup; },
+      },
     });
   }
 
@@ -125,13 +135,9 @@ function DebtorGroupService($http, Modal, util, SessionService) {
       controller : 'SubsidySubscriptions as SubCtrl',
       size : 'md',
       resolve : {
-        Subscriptions : function Subscriptions() {
-          return subscriptions;
-        },
-        DebtorGroup : function DebtorGroup() {
-          return debtorGroup;
-        }
-      }
+        Subscriptions : function Subscriptions() { return subscriptions; },
+        DebtorGroup : function DebtorGroup() { return debtorGroup; },
+      },
     });
   }
 

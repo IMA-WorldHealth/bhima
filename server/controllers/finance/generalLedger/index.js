@@ -23,7 +23,6 @@ const Fiscal = require('../fiscal');
 // expose to the api
 exports.list = list;
 exports.listAccounts = listAccounts;
-exports.commentAccountStatement = commentAccountStatement;
 
 // expose to server controllers
 exports.getlistAccounts = getlistAccounts;
@@ -37,7 +36,7 @@ exports.getlistAccounts = getlistAccounts;
  * return all items in the general ledger
  */
 function find(options) {
-  const filters = new FilterParser(options, { tableAlias : 'gl', autoParseStatements : false });
+  const filters = new FilterParser(options, { tableAlias : 'gl' });
 
   const sql = `
     SELECT BUID(gl.uuid) AS uuid, gl.project_id, gl.fiscal_year_id, gl.period_id,
@@ -100,17 +99,17 @@ function list(req, res, next) {
  * list accounts and their solds
  */
 function listAccounts(req, res, next) {
-  const currentDate = new Date();
+  const fiscalYearId = req.query.fiscal_year_id;
 
-  Fiscal.getPeriodCurrent(currentDate)
-  .then((rows) => {
-    return getlistAccounts(rows);
-  })
-  .then((rows) => {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+  Fiscal.getPeriodByFiscal(fiscalYearId)
+    .then((rows) => {
+      return getlistAccounts(rows);
+    })
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -148,26 +147,3 @@ function getlistAccounts(periodsId) {
 
   return db.exec(sql);
 }
-
-/**
- * PUT /general_ledger/comment
- * @param {object} params - { uuids: [...], comment: '' }
- */
-function commentAccountStatement(req, res, next) {
-  const params = req.body.params;
-  const uuids = params.uuids.map((uuid) => {
-    return db.bid(uuid);
-  });
-
-  const sql = 'UPDATE general_ledger SET comment = ? WHERE uuid IN ?';
-  db.exec(sql, [params.comment, [uuids]])
-    .then((rows) => {
-      if (!rows.affectedRows || rows.affectedRows !== uuids.length) {
-        throw new BadRequest('Error on update general ledger comment');
-      }
-      res.sendStatus(200);
-    })
-    .catch(next)
-    .done();
-}
-

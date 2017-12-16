@@ -1,0 +1,29 @@
+<div ng-form="FluxForm" bh-flux-select ng-model-options="{ updateOn: 'default' }">
+  <div
+    class="form-group"
+    ng-class="{ 'has-error' : $ctrl.validationTrigger && FluxForm.flux.$invalid }">
+    <label class="control-label" translate>
+      {{ $ctrl.label }}
+    </label>
+
+    <ui-select
+        multiple
+        name="flux"
+        ng-model="$ctrl.selectedFlux"
+        on-select="$ctrl.handleChange($ctrl.selectedFlux)"
+        on-remove="$ctrl.handleChange($ctrl.selectedFlux)"
+        close-on-select="false"
+        ng-required="$ctrl.required">
+      <ui-select-match placeholder="{{ 'STOCK.FLUX' | translate }}">
+        <span>{{ $item.plainText }}</span>
+      </ui-select-match>
+      <ui-select-choices ui-select-focus-patch repeat="flux.id as flux in ($ctrl.fluxes | filter: { plainText : $select.search } | orderBy: 'plainText')">
+        <span ng-bind-html="flux.plainText | highlight:$select.search"></span>
+      </ui-select-choices>
+    </ui-select>
+
+    <div class="help-block" ng-messages="FluxForm.$error" ng-show="$ctrl.validationTrigger">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+</div>

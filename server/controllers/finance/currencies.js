@@ -18,11 +18,11 @@ exports.list = function list(req, res, next) {
     ON currency.id = latest_rate.currency_id group by currency.id;`;
 
   db.exec(sql)
-  .then((rows) => {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 };
 
 /** get the details of a single currency */
@@ -34,9 +34,9 @@ exports.detail = function detail(req, res, next) {
     WHERE c.id = ?;`;
 
   db.one(sql, [req.params.id])
-  .then((row) => {
-    res.status(200).json(row);
-  })
-  .catch(next)
-  .done();
+    .then((row) => {
+      res.status(200).json(row);
+    })
+    .catch(next)
+    .done();
 };

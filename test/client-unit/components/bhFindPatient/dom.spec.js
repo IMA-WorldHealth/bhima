@@ -39,7 +39,7 @@ function DomTests() {
   let $scope, $compile, $httpBackend, $document;
   let element, controller, bindings;
 
-  beforeEach(module('pascalprecht.translate', 'ngStorage', 'angularMoment', 'ui.bootstrap', 'bhima.services', 'bhima.components', 'templates'));
+  beforeEach(module('pascalprecht.translate', 'ngStorage', 'angularMoment', 'ui.bootstrap', 'bhima.services', 'bhima.components', 'templates', 'webcam'));
 
   // component setup
   beforeEach(inject((_$rootScope_, _$compile_, _$httpBackend_, _$componentController_, _$document_) => {

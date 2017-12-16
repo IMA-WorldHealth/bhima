@@ -1,9 +1,9 @@
 angular.module('bhima.controllers')
-.controller('SimpleJournalVoucherController', SimpleJournalVoucherController);
+  .controller('SimpleJournalVoucherController', SimpleJournalVoucherController);
 
 SimpleJournalVoucherController.$inject = [
-  'VoucherService', 'AccountService', 'SessionService', 'util',
-  'NotifyService',  'ReceiptModal','bhConstants', '$rootScope', 'VoucherForm', '$translate'
+  'VoucherService', 'util', 'NotifyService', 'ReceiptModal', 'bhConstants',
+  '$rootScope', 'VoucherForm',
 ];
 
 /**
@@ -22,7 +22,7 @@ SimpleJournalVoucherController.$inject = [
  * @todo - use VoucherForm
  * forms (via AppCache and the breadcrumb component).
  */
-function SimpleJournalVoucherController(Vouchers, Accounts, Session, util, Notify, Receipts, bhConstants, RS, VoucherForm, $translate) {
+function SimpleJournalVoucherController(Vouchers, util, Notify, Receipts, bhConstants, RS, VoucherForm) {
   var vm = this;
 
   vm.bhConstants = bhConstants;
@@ -31,30 +31,33 @@ function SimpleJournalVoucherController(Vouchers, Accounts, Session, util, Notif
   vm.Voucher = new VoucherForm('SimpleVoucher');
 
   // global variables
+  vm.timestamp = new Date();
   vm.maxLength = util.maxTextLength;
 
   // expose methods to the view
   vm.submit = submit;
   vm.clear = clear;
 
+  vm.onSelectCreditAccount = onSelectCreditAccount;
+  vm.onSelectDebitAccount = onSelectDebitAccount;
+
   // format voucher types and bind to the view
   Vouchers.transactionType()
     .then(function (list) {
-
-      // make sure that the items are translated
-      list.data.forEach(function (item) {
-        item.hrText = $translate.instant(item.text);
-      });
-
       // bind to the view
-      vm.types = list.data;
+      vm.types = list;
     })
     .catch(Notify.handleError);
 
-  vm.timestamp = new Date();
+  function onSelectCreditAccount(account) {
+    vm.Voucher.store.data[1].account_id = account.id;
+  }
+
+  function onSelectDebitAccount(account) {
+    vm.Voucher.store.data[0].account_id = account.id;
+  }
 
   function submit(form) {
-
     // stop submission if the form is invalid
     if (form.$invalid) {
       Notify.danger('FORM.ERRORS.RECORD_ERROR');
@@ -94,7 +97,6 @@ function SimpleJournalVoucherController(Vouchers, Accounts, Session, util, Notif
   }
 
   function clear() {
-
     // current timestamp to limit date
     vm.timestamp = new Date();
 
@@ -105,6 +107,7 @@ function SimpleJournalVoucherController(Vouchers, Accounts, Session, util, Notif
     delete vm.amount;
   }
 
+  // used for scanning barcodes
   RS.$on('voucher:configure', function (evt, data) {
 
     // configure the basics of the transaction type.

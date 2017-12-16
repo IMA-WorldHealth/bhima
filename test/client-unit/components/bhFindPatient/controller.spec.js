@@ -33,6 +33,7 @@ function ControllerTests() {
   beforeEach(inject((_$rootScope_, _$httpBackend_, _$componentController_) => {
     // setup initial imports
     $scope = _$rootScope_.$new();
+
     $httpBackend = _$httpBackend_;
     $componentController = _$componentController_;
 
@@ -62,7 +63,7 @@ function ControllerTests() {
     const response = [patient];
     const id = 'TPA1';
 
-    $httpBackend.expect('GET', `/patients/?limit=1&reference=${id}`)
+    $httpBackend.expect('GET', `/patients/?detailed=1&limit=1&reference=${id}`)
       .respond(200, response);
 
     $controller.selected = $controller.options.findById;

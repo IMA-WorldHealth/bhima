@@ -22,6 +22,7 @@ function FiscalService(Api) {
   service.fiscalYearDate = fiscalYearDate;
   service.periodicBalance = periodicBalance;
   service.setOpeningBalance = setOpeningBalance;
+  service.periodFiscalYear = periodFiscalYear;
 
   /**
    * @method fiscalYearDate
@@ -68,13 +69,24 @@ function FiscalService(Api) {
    *
    * @description closing a fiscal year
    */
- function closing(params) {
+  function closing(params) {
    var url = service.url.concat(params.id, '/closing');
 
    return service.$http.put(url, { params: params })
      .then(service.util.unwrapHttpResponse);
- }
+  }
 
+  /**
+   * @method periodFiscalYear
+   *
+   * @description get all period of all fiscal Year
+   */
+  function periodFiscalYear(params) {
+    var url = service.url.concat('period');
+
+    return service.$http.get(url)
+      .then(service.util.unwrapHttpResponse);
+  }
 
   return service;
 }

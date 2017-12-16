@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('PatientRegistrationController', PatientRegistrationController);
 
 PatientRegistrationController.$inject = [
-  'PatientService', 'DebtorService', 'SessionService', 'util',
+  'PatientService', 'SessionService', 'util',
   'NotifyService', 'ReceiptModal', 'ScrollService', 'bhConstants'
 ];
 
@@ -17,21 +17,25 @@ PatientRegistrationController.$inject = [
  *
  * @module controllers/PatientRegistrationController
  */
-function PatientRegistrationController(Patients, Debtors, Session, util, Notify, Receipts, ScrollTo, bhConstants) {
+function PatientRegistrationController(Patients, Session, util, Notify, 
+  Receipts, ScrollTo, bhConstants) {
   var vm = this;
 
   vm.submit = submit;
   vm.toggleFullDate = toggleFullDate;
   vm.calculateYOB = calculateYOB;
+  vm.dateIndicatorLabel = 'FORM.LABELS.ENTER_BIRTH_YEAR';
+  vm.dateComponentLabel = 'FORM.LABELS.DOB';
+
 
   vm.maxLength = bhConstants.lengths.maxTextLength;
 
   // Set up page elements data (debtor select data)
-  Debtors.groups()
-    .then(function (debtorGroups) {
-      vm.debtorGroups = debtorGroups;
-    })
-    .catch(Notify.handleError);
+  vm.onSelectDebtor = onSelectDebtor;
+
+  function onSelectDebtor(debtorGroup) {
+    vm.finance.debtor_group_uuid = debtorGroup.uuid;
+  }
 
   // define limits for DOB
   vm.datepickerOptions = {
@@ -90,6 +94,8 @@ function PatientRegistrationController(Patients, Debtors, Session, util, Notify,
    */
   function toggleFullDate() {
     vm.fullDateEnabled = !vm.fullDateEnabled;
+    vm.dateIndicatorLabel = vm.fullDateEnabled ? 'FORM.LABELS.ENTER_BIRTH_YEAR' : 'FORM.LABELS.ENTER_BIRTH_DAY';
+    vm.dateComponentLabel = vm.fullDateEnabled ? 'FORM.LABELS.DOB' : 'FORM.LABELS.YOB';
     setDateComponent();
   }
 

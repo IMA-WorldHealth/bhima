@@ -1,15 +1,15 @@
 <form name="ActionForm" bh-submit="$ctrl.submit(ActionForm)" novalidate>
   <div class="modal-header">
     <i class="fa fa-list"></i>
-    <span ng-if="$ctrl.action==='add'">{{ 'INVENTORY.ADD_GROUP' | translate }}</span>
-    <span ng-if="$ctrl.action==='edit'">{{ 'INVENTORY.EDIT_GROUP' | translate }}</span>
+    <span ng-if="$ctrl.action==='add'" translate>INVENTORY.ADD_GROUP</span>
+    <span ng-if="$ctrl.action==='edit'" translate>INVENTORY.EDIT_GROUP</span>
   </div>
 
   <div class="modal-body">
     <div
       class="form-group"
       ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.name.$invalid }">
-      <label class="control-label">{{ 'FORM.LABELS.NAME' | translate }}</label>
+      <label class="control-label" translate>FORM.LABELS.NAME</label>
       <input ng-model="$ctrl.session.name"
         class="form-control"
         type="text"
@@ -24,7 +24,7 @@
 
     <div class="form-group"
       ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.code.$invalid }">
-      <label class="control-label">{{ 'FORM.LABELS.CODE' | translate }}</label>
+      <label class="control-label" translate>FORM.LABELS.CODE</label>
       <input ng-model="$ctrl.session.code"
         class="form-control"
         type="text"
@@ -37,83 +37,47 @@
       </div>
     </div>
 
-    <div class="form-group"
-      ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.salesAccount.$invalid }">
-      <label class="control-label">
-        {{ 'FORM.SELECT.ACCOUNT' | translate }} ({{ 'FORM.LABELS.SALE' | translate }})
-      </label>
+    <bh-account-select
+      name="sales_account"
+      id="sales_account"
+      account-id="$ctrl.session.sales_account"
+      validation-trigger="ActionForm.$submitted"
+      exclude-title-accounts="true"
+      on-select-callback="$ctrl.onSelectSalesAccount(account)">
+      (<span translate>FORM.LABELS.SALE</span>)
+      <bh-clear on-clear="$ctrl.session.sales_account = null;"></bh-clear>
+    </bh-account-select>
 
-      <ui-select
-        name="salesAccount"
-        ng-model="$ctrl.session.salesAccount">
-        <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}" allow-clear="true">
-          <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
-        </ui-select-match>
-        <ui-select-choices
-          ui-select-focus-patch
-          ui-disable-choice="account.type_id === $ctrl.bhConstants.accounts.TITLE"
-          repeat="account in $ctrl.accounts | filter: { 'hrlabel' : $select.search } track by account.id">
-          <strong ng-bind-html="account.number | highlight:$select.search"></strong>
-          <span ng-bind-html="account.label | highlight:$select.search"></span>
-        </ui-select-choices>
-      </ui-select>
+    <bh-account-select
+      name="stock_account"
+      id="stock_account"
+      account-id="$ctrl.session.stock_account"
+      exclude-title-accounts="true"
+      required="false"
+      on-select-callback="$ctrl.onSelectStockAccount(account)">
+      (<span translate>FORM.LABELS.STOCK</span>)
+      <bh-clear on-clear="$ctrl.session.stock_account = null;"></bh-clear>
+    </bh-account-select>
 
-      <div class="help-block" ng-messages="ActionForm.salesAccount.$error" ng-show="ActionForm.$submitted">
-        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label class="control-label">
-        {{ 'FORM.SELECT.ACCOUNT' | translate }} ({{ 'FORM.LABELS.STOCK' | translate }})
-      </label>
-      <ui-select
-        name="stockAccount"
-        ng-model="$ctrl.session.stockAccount">
-        <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}"  allow-clear="true">
-          <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
-        </ui-select-match>
-        <ui-select-choices
-          ui-select-focus-patch
-          ui-disable-choice="account.type_id === $ctrl.bhConstants.accounts.TITLE"
-          repeat="account in $ctrl.accounts | filter: { 'hrlabel' : $select.search } track by account.id">
-          <strong ng-bind-html="account.number | highlight:$select.search"></strong>
-          <span ng-bind-html="account.label | highlight:$select.search"></span>
-        </ui-select-choices>
-      </ui-select>
-    </div>
-
-    <div class="form-group">
-      <label class="control-label">
-        {{ 'FORM.SELECT.ACCOUNT' | translate }} ({{ 'FORM.LABELS.CHARGE' | translate }})
-      </label>
-
-      <ui-select
-        name="cogsAccount"
-        ng-model="$ctrl.session.cogsAccount">
-        <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}" allow-clear="true">
-          <strong>{{$select.selected.number}}</strong> <span>{{$select.selected.label}}</span>
-        </ui-select-match>
-        <ui-select-choices
-          ui-select-focus-patch
-          ui-disable-choice="account.type_id === $ctrl.bhConstants.accounts.TITLE"
-          repeat="account in $ctrl.accounts | filter: { 'hrlabel' : $select.search } track by account.id">
-          <strong ng-bind-html="account.number | highlight:$select.search"></strong>
-          <span ng-bind-html="account.label | highlight:$select.search"></span>
-        </ui-select-choices>
-      </ui-select>
-    </div>
+    <bh-account-select
+      name="cogs_account"
+      id="cogs_account"
+      account-id="$ctrl.session.cogs_account"
+      exclude-title-accounts="true"
+      required="false"
+      on-select-callback="$ctrl.onSelectCOGSAccount(account)">
+      (<span translate>FORM.LABELS.CHARGE</span>)
+      <bh-clear on-clear="$ctrl.session.cogs_account = null;"></bh-clear>
+    </bh-account-select>
   </div>
 
   <div class="modal-footer">
-    <button type="button"
-      class="btn btn-default"
-      ng-click="$ctrl.cancel()">
-      {{ 'FORM.BUTTONS.CANCEL' | translate }}
+    <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" translate>
+      FORM.BUTTONS.CANCEL
     </button>
 
     <bh-loading-button loading-state="ActionForm.$loading">
-      {{ 'FORM.BUTTONS.SUBMIT' | translate }}
+      <span translate>FORM.BUTTONS.SUBMIT </span>
     </bh-loading-button>
   </div>
 </form>

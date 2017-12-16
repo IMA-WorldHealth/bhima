@@ -1,0 +1,26 @@
+<div ng-form="{{ $ctrl.name }}" bh-account-typeahead-inline ng-model-options="{ updateOn: 'default' }">
+  <div
+    class="form-group"
+    style="margin-bottom:0;"
+    ng-class="{ 'has-error' : AccountForm.account.$error && AccountForm.$$parentForm.$submitted }">
+    <input
+      name="account"
+      type="text"
+      class="form-control"
+      placeholder="{{ ::'FORM.PLACEHOLDERS.ACCOUNT' | translate }}"
+      ng-model="$ctrl.account"
+      uib-typeahead="account as account.hrlabel for account in $ctrl.accounts | filter:{ hrlabel: $viewValue } | limitTo:10"
+      typeahead-template-url="bhAccountTypeaheadItem.html"
+      typeahead-on-select="$ctrl.onSelect($item)"
+      typeahead-append-to-body="true"
+      required>
+  </div>
+
+  <script type="text/ng-template" id="bhAccountTypeaheadItem.html">
+    <a id="account-number-{{ match.model.number }}" href>
+      <span ng-bind-html="match.model.hrlabel | uibTypeaheadHighlight:query"></span>
+    </a>
+  </script>
+
+</div>
+

@@ -1,134 +1,108 @@
-{{> head title="TREE.INCOME_EXPENSE" }}
+{{> head title="{{translate (getIncomeExpenseTitle this.type_id)}}" }}
 
 
-<div class="container-fluid">
-  <!-- heading  -->
+<div class="container">
+  {{> header}}
+
+  <!-- body -->
   <div class="row">
-    <div class="col-xs-4">
-      <h3 style="margin:2px;">{{ metadata.enterprise.name }}</h3>
-      <p style="margin:2px;">
-        {{translate 'FORM.LABELS.PROJECT'}}: {{ metadata.project.name }}<br>
-        {{translate 'FORM.LABELS.PHONE'}}: {{ metadata.enterprise.phone }}<br>
-        {{translate 'FORM.LABELS.EMAIL'}}: {{ metadata.enterprise.email }}<br>
-        {{translate 'FORM.LABELS.ADDRESS'}}: {{ metadata.enterprise.location }}
-      </p>
-    </div>
-
-    <div class="col-xs-4">
-      <h1 style="margin:15px; font-weight:bold" class="text-center text-uppercase">
-        {{translate 'TREE.INCOME_EXPENSE'}}<br>
-      </h1>
-      <h2 style="margin:15px; font-weight:bold" class="text-center text-uppercase">
-        {{ incomeExpense.accountNumber}} : {{ incomeExpense.accountName}}<br> 
-        <small>{{date incomeExpense.dateFrom }} - {{date incomeExpense.dateTo }}</small>
-      </h2>
-    </div>
-  </div>
-
-  <div class="row">
-    <!-- the generated report  -->
     <div class="col-xs-12">
-      {{#if incomeExpense.reportIncome }}
-        <table
-          class="table table-bordered table-striped table-condensed"
-          style="border: 2px solid #ccc;">
-          <thead>
-            <tr>
-              <td style="background-color: #ccc; font-weight: bold; text-align: center;" colspan="6">
-                {{ translate 'REPORT.CASH_INCOME' }}
-              </td>
-            </tr>
-          </thead>
+      <!-- page title  -->
+      <h3 class="text-center text-uppercase">
+        <strong>{{translate (getIncomeExpenseTitle this.type_id)}}</strong>
+      </h3>
+      <h5 style="margin:15px; font-weight:bold" class="text-center text-uppercase">
+        {{date this.dateFrom}} - {{date this.dateTo}}
+      </h5>
 
-            <!-- white line -->
-          <tr>
-            <td colspan="6"></td>
-          </tr>
-
-          <tbody>
-            {{#if incomeExpense.sumIncome }}
-            <tr style="background-color: #efefef; font-weight: bold; text-align: center; ">
-              <td style="width: 10%"> {{ translate 'TABLE.COLUMNS.TRANSACTION_ID' }} </td>
-              <td style="width: 45%"> {{ translate 'TABLE.COLUMNS.DESCRIPTION'}} </td>
-              <td style="width: 15%"> {{ translate 'TABLE.COLUMNS.AMOUNT' }} </td>
-              <td style="width: 10%"> {{ translate 'TABLE.COLUMNS.DATE'  }} </td>
-              <td style="width: 10%"> {{ translate 'TABLE.COLUMNS.SOURCE'  }} </td>
-              <td style="width: 10%"> {{ translate 'TABLE.COLUMNS.BY' }} </td>
-            </tr>
-            {{/if}}
-
-            {{#each incomeExpense.incomes}}
-            <tr>
-              <td class="text-left">{{ trans_id }}</td>
-              <td class="text-left">{{ description }}</td>
-              <td class="text-right">
-                {{#if debit}}
-                  {{ currency debit ../metadata.enterprise.currency_id}}
-                {{/if}}  
-              </td>
-              <td class="text-left">{{ date trans_date }}</td>
-              <td class="text-left">{{ translate transactionType }}</td>
-              <td class="text-left">{{ username }}</td>
-            </tr> 
-            {{/each}}
-          </tbody>
-
-          <tfoot>
-            <tr style="background-color: #efefef; font-weight: bold; ">
-              <td style="text-align: right;" colspan="6"> {{ translate 'TABLE.COLUMNS.TOTAL' }} :{{ currency incomeExpense.sumIncome metadata.enterprise.currency_id}}</td>
-            </tr>
-          </tfoot>
-        </table>
-      {{/if}}
-      <br>
-      <br>
-      {{#if incomeExpense.reportExpense }}
-        <table
-          class="table table-bordered table-condensed"
-          style="border: 2px solid #ccc;">
-          <thead>
-            <tr>
-              <td style="background-color: #ccc; font-weight: bold; text-align: center;" colspan="6">
-                {{ translate 'REPORT.CASH_EXPENSE' }}
-              </td>            
-            </tr>
-          </thead>  
-
-            <!-- white line -->
-          <tr>
-            <td colspan="6"></td>
-          </tr>
-
-          <tbody>
-            {{#if incomeExpense.sumExpense }}
-            <tr style="background-color: #efefef; font-weight: bold; text-align: center; ">
-              <td style="width: 10%"> {{ translate 'TABLE.COLUMNS.TRANSACTION_ID' }} </td>
-              <td style="width: 45%"> {{ translate 'TABLE.COLUMNS.DESCRIPTION'}} </td>
-              <td style="width: 15%"> {{ translate 'TABLE.COLUMNS.AMOUNT' }} </td>
-              <td style="width: 10%"> {{ translate 'TABLE.COLUMNS.DATE'  }} </td>
-              <td style="width: 10%"> {{ translate 'TABLE.COLUMNS.SOURCE'  }} </td>
-              <td style="width: 10%"> {{ translate 'TABLE.COLUMNS.BY' }} </td>
-            </tr>
-            {{/if}}
-
-            {{#each incomeExpense.expenses}}
-            <tr>
-              <td class="text-left">{{ trans_id }}</td>
-              <td class="text-left">{{ description }}</td>
-              <td class="text-right">{{ currency credit ../metadata.enterprise.currency_id}}</td>
-              <td class="text-left">{{ date trans_date }}</td>
-              <td class="text-left">{{ translate transactionType }}</td>
-              <td class="text-left">{{ username }}</td>
-            </tr> 
-            {{/each}}
-          </tbody>
-
-          <tfoot>
-            <tr style="background-color: #efefef; font-weight: bold; ">
-              <td style="text-align: right;" colspan="6"> {{ translate 'TABLE.COLUMNS.TOTAL' }} :{{ currency incomeExpense.sumExpense metadata.enterprise.currency_id}}</td>
-            </tr>
-          </tfoot>
-        </table>
+      <!-- If there is no data -->
+      {{#if this.isEmpty}}
+        <div class="text-center">{{translate 'FORM.INFO.NO_RECORDS_DATABASE'}}</div>
+        <!-- if there is data to display -->
+      {{else}}
+          {{#if (isIncomeViewable this.type_id)}}
+            <h6 class="text-center text-uppercase">
+              {{translate 'FORM.LABELS.INCOME'}}
+            </h6>
+            <table class="table table-condensed table-report">
+              <thead>
+                <tr style="background-color:#ddd;">
+                  <th style="width: 10%;">{{translate 'TABLE.COLUMNS.ACCOUNT'}}</th>
+                  <th style="width: 40%;">{{translate 'TABLE.COLUMNS.ACCOUNT_NAME'}}</th>
+                  <th class="text-right" style="width: 25%;">{{translate 'TABLE.COLUMNS.DEBIT'}}</th>
+                  <th class="text-right" style="width: 25%;">{{translate 'TABLE.COLUMNS.CREDIT'}}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {{#each this.incomes}}
+                <tr>
+                  <td>{{number}}</td>
+                  <td>{{label}}</td>
+                  <td class="text-right">{{currency debit ../enterprise.currency_id}}</td>
+                  <td class="text-right">{{currency credit ../enterprise.currency_id}}</td>
+                </tr>
+                {{/each}}
+              </tbody>
+              <tfoot>
+                <tr style="background-color:#ddd; ">
+                  <th>{{translate 'TABLE.COLUMNS.BALANCE'}}</th>
+                  <th colspan="3" class="text-right">
+                    {{currency this.incomeBalance.balance this.enterprise.currency_id}}
+                  </th>
+                </tr>
+              </tfoot>
+            </table>
+          {{/if}} 
+          {{#if (isExpenseViewable this.type_id)}}
+            <h6 class="text-center text-uppercase">
+              {{translate 'FORM.LABELS.EXPENSE'}}
+            </h6>
+            <table class="table table-condensed table-report">
+              <thead>
+                <tr style="background-color:#ddd;">
+                  <th style="width: 10%;">{{translate 'TABLE.COLUMNS.ACCOUNT'}}</th>
+                  <th style="width: 40%;">{{translate 'TABLE.COLUMNS.ACCOUNT_NAME'}}</th>
+                  <th class="text-right" style="width: 25%;">{{translate 'TABLE.COLUMNS.DEBIT'}}</th>
+                  <th class="text-right" style="width: 25%;">{{translate 'TABLE.COLUMNS.CREDIT'}}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {{#each this.expenses}}
+                <tr>
+                  <td>{{number}}</td>
+                  <td>{{label}}</td>
+                  <td class="text-right">{{currency debit ../enterprise.currency_id}}</td>
+                  <td class="text-right">{{currency credit ../enterprise.currency_id}}</td>
+                </tr>
+                {{/each}}
+              </tbody>
+              <tfoot>
+                <tr style="background-color:#ddd;">
+                  <th>{{translate 'TABLE.COLUMNS.BALANCE'}}</th>
+                  <th colspan="2" class="text-right">
+                    {{currency this.expenseBalance.balance this.enterprise.currency_id}}
+                  </th>
+                  <th></th>
+                </tr>
+                <tr>
+                  <th colspan="4"><br/></th>
+                </tr>
+                {{#if (isResultViewable this.type_id)}}
+                <tr style="background-color:#ddd;">
+                  <th>{{translate 'TABLE.COLUMNS.RESULT'}}</th>
+                  {{#if this.isLost}}
+                  <th colspan="2" class="text-right">
+                    {{currency this.overallBalance.balance this.enterprise.currency_id}}
+                  </th>
+                  <th></th>
+                  {{else}}
+                  <th colspan="3" class="text-right">{{currency this.overallBalance.balance this.enterprise.currency_id}}</th>
+                  {{/if}}
+                </tr>
+                {{/if}}
+              </tfoot>
+            </table>
+          {{/if}}
       {{/if}}
     </div>
   </div>

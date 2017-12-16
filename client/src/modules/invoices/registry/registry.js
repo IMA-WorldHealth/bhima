@@ -5,6 +5,7 @@ InvoiceRegistryController.$inject = [
   'PatientInvoiceService', 'bhConstants', 'NotifyService', 'SessionService',
   'ReceiptModal', 'uiGridConstants', 'ModalService', 'CashService',
   'GridSortingService', 'GridColumnService', 'GridStateService', '$state',
+  'ModalService', 'ReceiptModal',
 ];
 
 /**
@@ -14,7 +15,7 @@ InvoiceRegistryController.$inject = [
  */
 function InvoiceRegistryController(
   Invoices, bhConstants, Notify, Session, Receipt, uiGridConstants,
-  ModalService, Cash, Sorting, Columns, GridState, $state
+  ModalService, Cash, Sorting, Columns, GridState, $state, Modals, Receipts
 ) {
   var vm = this;
 
@@ -28,12 +29,13 @@ function InvoiceRegistryController(
   var state;
 
   vm.search = search;
-  vm.openReceiptModal = Receipt.invoice;
   vm.creditNoteReceipt = Receipt.creditNote;
   vm.onRemoveFilter = onRemoveFilter;
   vm.creditNote = creditNote;
   vm.bhConstants = bhConstants;
   vm.download = Invoices.download;
+  vm.deleteInvoice = deleteInvoiceWithConfirmation;
+  vm.Receipts = Receipts;
 
   // track if module is making a HTTP request for invoices
   vm.loading = false;
@@ -62,6 +64,7 @@ function InvoiceRegistryController(
     field : 'cost',
     displayName : 'TABLE.COLUMNS.COST',
     headerCellFilter : 'translate',
+    cellClass : 'text-right',
     cellFilter : 'currency:'.concat(Session.enterprise.currency_id),
     aggregationType : uiGridConstants.aggregationTypes.sum,
     aggregationHideLabel : true,
@@ -120,19 +123,20 @@ function InvoiceRegistryController(
     request = Invoices.read(null, filters);
 
     // hook the returned patients up to the grid.
-    request.then(function (invoices) {
-      invoices.forEach(function (invoice) {
-        invoice._backgroundColor = invoice.reversed ? reversedBackgroundColor : regularBackgroundColor;
-        invoice._is_cancelled = invoice.reversed;
-      });
+    request
+      .then(function (invoices) {
+        invoices.forEach(function (invoice) {
+          invoice._backgroundColor = invoice.reversed ? reversedBackgroundColor : regularBackgroundColor;
+          invoice._is_cancelled = invoice.reversed;
+        });
 
-      // put data in the grid
-      vm.uiGridOptions.data = invoices;
-    })
-    .catch(handler)
-    .finally(function () {
-      toggleLoadingIndicator();
-    });
+        // put data in the grid
+        vm.uiGridOptions.data = invoices;
+      })
+      .catch(handler)
+      .finally(function () {
+        toggleLoadingIndicator();
+      });
   }
 
   // search and filter data in Invoice Registry
@@ -160,6 +164,11 @@ function InvoiceRegistryController(
 
   // startup function. Checks for cached filters and loads them.  This behavior could be changed.
   function startup() {
+    if ($state.params.filters.length) {
+      Invoices.filters.replaceFiltersFromState($state.params.filters);
+      Invoices.cacheFilters();
+    }
+
     load(Invoices.filters.formatHTTP(true));
     vm.latestViewFilters = Invoices.filters.formatView();
   }
@@ -179,13 +188,13 @@ function InvoiceRegistryController(
     $state.reload();
   };
 
- // Call the opening of Modal
+  // Call the opening of Modal
   function openModal(invoice) {
     Invoices.openCreditNoteModal(invoice)
       .then(function (success) {
         if (success) {
           Notify.success('FORM.INFO.TRANSACTION_REVER_SUCCESS');
-          return load(vm.filters);
+          load(vm.filters);
         }
       })
       .catch(Notify.handleError);
@@ -193,6 +202,7 @@ function InvoiceRegistryController(
 
   // Function for Credit Note cancel all Invoice
   function creditNote(invoice) {
+    
     Cash.checkCashPayment(invoice.uuid)
       .then(function (res) {
         var numberPayment = res.length;
@@ -208,6 +218,26 @@ function InvoiceRegistryController(
         }
       })
       .catch(Notify.handleError);
+  }
+
+  function remove(entity) {
+    Invoices.remove(entity.uuid)
+      .then(function () {
+        Notify.success('FORM.INFO.DELETE_RECORD_SUCCESS');
+
+        // load() has it's own error handling.  The absence of return below is
+        // explicit.
+        load(Invoices.filters.formatHTTP(true));
+      })
+      .catch(Notify.handleError);
+  }
+
+  // check if it is okay to remove the entity.
+  function deleteInvoiceWithConfirmation(entity) {
+    Modals.confirm('FORM.DIALOGS.CONFIRM_DELETE')
+      .then(function (isOk) {
+        if (isOk) { remove(entity); }
+      });
   }
 
   // fire up the module

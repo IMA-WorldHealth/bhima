@@ -1,25 +1,26 @@
-/* global element, by, browser */
+/* global element, by */
+
 const chai = require('chai');
-const expect = chai.expect;
+
+const { expect } = chai;
 
 const FU = require('../shared/FormUtils');
 const helpers = require('../shared/helpers');
 
 helpers.configure(chai);
 
-describe('Provinces Management', function () {
+describe('Provinces Management', () => {
 
   const path = '#!/locations/province';
 
   before(() => helpers.navigate(path));
 
   const province = {
-    country : 'Test Hook Country',
-    name : 'New Province'
+    country : 'République Démocratique du Congo',
+    name : 'New Province',
   };
 
-  it('creates a new province', function () {
-
+  it('creates a new province', () => {
     // switch to the create form
     FU.buttons.create();
 
@@ -33,7 +34,7 @@ describe('Provinces Management', function () {
     FU.exists(by.id('create_success'), true);
   });
 
-  it('edits a province', function () {
+  it('edits a province', () => {
     $(`[data-province-name="${province.name}"]`).click();
 
     FU.select('ProvinceCtrl.province.country_uuid', province.country);
@@ -45,8 +46,7 @@ describe('Provinces Management', function () {
     FU.exists(by.id('update_success'), true);
   });
 
-  it('blocks invalid form submission with relevant error classes', function () {
-
+  it('blocks invalid form submission with relevant error classes', () => {
     // switch to the create form
     FU.buttons.create();
 

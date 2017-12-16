@@ -1,11 +1,9 @@
-/* global browser, element, by */
+/* global by */
 const components = require('../shared/components');
 const FU = require('../shared/FormUtils');
 const helpers = require('../shared/helpers');
 
-describe('Simple Vouchers', function () {
-  'use strict';
-
+describe('Simple Vouchers', () => {
   before(() => helpers.navigate('#/vouchers/simple'));
 
   /*
@@ -15,16 +13,15 @@ describe('Simple Vouchers', function () {
   */
 
   const voucher = {
-    date: new Date(),
-    type: 'Transfer',
-    toAccount: 'Test Debtor Group Account',
-    fromAccount: 'First Test Item Account',
-    description: 'Awesome description',
-    amount: 100.12
+    date : new Date(),
+    type : 'Transfer',
+    toAccount : 'NGO',
+    fromAccount : '57110011', // 57110011 - Caisse Auxiliaire CDF
+    description : 'Awesome description',
+    amount : 100.12,
   };
 
-  it('can create a simple voucher', function () {
-
+  it('can create a simple voucher', () => {
     // configure the date to yesterday
     components.dateEditor.set(voucher.date);
 
@@ -32,8 +29,8 @@ describe('Simple Vouchers', function () {
     FU.uiSelect('SimpleVoucherCtrl.Voucher.details.type_id', voucher.type);
 
     // select the appropriate accounts
-    FU.uiSelect('SimpleVoucherCtrl.Voucher.store.data[0].account_id', voucher.fromAccount);
-    FU.uiSelect('SimpleVoucherCtrl.Voucher.store.data[1].account_id', voucher.toAccount);
+    components.accountSelect.set(voucher.fromAccount, 'fromAccount');
+    components.accountSelect.set(voucher.toAccount, 'toAccount');
 
     components.currencySelect.set(2);
     components.currencyInput.set(voucher.amount);

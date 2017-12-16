@@ -9,7 +9,7 @@ DELIMITER $$
 CREATE PROCEDURE zRecomputeEntityMap()
 BEGIN
   DELETE FROM entity_map;
-  
+
   -- patient
   INSERT INTO entity_map
     SELECT patient.uuid, CONCAT_WS('.', 'PA', project.abbr, patient.reference)
@@ -108,15 +108,26 @@ CREATE PROCEDURE zRecalculatePeriodTotals()
 BEGIN
 
   -- wipe the period total table
-  TRUNCATE period_total;
+  DELETE FROM  period_total
+  WHERE period_id IN (
+    SELECT id
+    FROM period
+    WHERE number <> 0
+  );
 
   INSERT INTO period_total (enterprise_id, fiscal_year_id, period_id, account_id, credit, debit)
     SELECT project.enterprise_id, period.fiscal_year_id, period_id, account_id, SUM(credit_equiv) AS credit, SUM(debit_equiv) AS debit
     FROM general_ledger
       JOIN period ON general_ledger.period_id = period.id
       JOIN project ON general_ledger.project_id = project.id
-    GROUP BY account_id, period_id;
+    GROUP BY account_id, period_id, enterprise_id;
 
+END $$
+
+-- compute account class
+CREATE PROCEDURE ComputeAccountClass()
+BEGIN
+  UPDATE account SET classe = LEFT(number, 1);
 END $$
 
 DELIMITER ;

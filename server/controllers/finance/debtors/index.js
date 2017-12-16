@@ -15,7 +15,6 @@
 * @requires lib/errors/BadRequest
 */
 
-const uuid = require('node-uuid');
 const db = require('../../../lib/db');
 const NotFound = require('../../../lib/errors/NotFound');
 
@@ -36,7 +35,7 @@ function list(req, res, next) {
   const sql = `
     SELECT BUID(d.uuid) AS uuid, BUID(d.group_uuid) AS group_uuid,
       d.text, map.text as hr_entity
-    FROM debtor d 
+    FROM debtor d
     JOIN entity_map map ON map.uuid = d.uuid;
   `;
 
@@ -51,9 +50,7 @@ function list(req, res, next) {
  * Detail of debtors
  */
 function detail(req, res, next) {
-  const uid = db.bid(req.params.uuid);
-
-  lookupDebtor(uid)
+  lookupDebtor(req.params.uuid)
     .then((debtor) => {
       res.status(200).json(debtor);
     })
@@ -79,7 +76,7 @@ function update(req, res, next) {
   }
 
   db.exec(sql, [req.body, uid])
-    .then(() => lookupDebtor(uid))
+    .then(() => lookupDebtor(req.params.uuid))
     .then((debtor) => {
       res.status(200).json(debtor);
     })
@@ -103,7 +100,7 @@ function lookupDebtor(uid) {
   return db.exec(sql, [db.bid(uid)])
     .then((rows) => {
       if (!rows.length) {
-        throw new NotFound(`Could not find a debtor with uuid ${uuid.unparse(uid)}`);
+        throw new NotFound(`Could not find a debtor with uuid ${uid}`);
       }
       return rows[0];
     });
@@ -145,8 +142,7 @@ function invoices(req, res, next) {
 /**
  * This function sends back a list of invoices uuids
  * which belong to a particular debtor
- **/
-
+ */
 function getDebtorInvoices(debtorUuid) {
   const debtorUid = db.bid(debtorUuid);
   const reversalVoucherType = 10;
@@ -251,9 +247,7 @@ function balance(debtorUuid) {
     .then(rows => {
       // if the debtor doesn't exist, throw an error
       if (!rows.length) {
-        throw new NotFound(
-          `Could not find a debtor with uuid ${debtorUid}`
-        );
+        throw new NotFound(`Could not find a debtor with uuid ${debtorUid}`);
       }
 
       // select all invoice and payments against invoices from the combined ledger

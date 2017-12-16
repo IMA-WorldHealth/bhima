@@ -1,7 +1,10 @@
 angular.module('bhima.controllers')
   .controller('UserModalController', UserModalController);
 
-UserModalController.$inject = ['$state', 'ProjectService', 'UserService', 'NotifyService', 'appcache'];
+UserModalController.$inject = [
+  '$state', 'ProjectService', 'UserService',
+  'NotifyService', 'appcache',
+];
 
 function UserModalController($state, Projects, Users, Notify, AppCache) {
   var vm = this;
@@ -12,20 +15,18 @@ function UserModalController($state, Projects, Users, Notify, AppCache) {
   vm.user = {};
   vm.stateParams = {};
 
-  if($state.params.creating || $state.params.id){
-    vm.stateParams = cache.stateParams = $state.params;
-  } else {
-    vm.stateParams = cache.stateParams;
-  }
-
-
-  vm.isCreating = vm.stateParams.creating;
-
-  //exposed methods
+  // exposed methods
   vm.submit = submit;
   vm.closeModal = closeModal;
   vm.validPassword = validPassword;
   vm.editPassword = editPassword;
+
+  if ($state.params.creating || $state.params.id) {
+    vm.stateParams = cache.stateParams = $state.params;
+  } else {
+    vm.stateParams = cache.stateParams;
+  }
+  vm.isCreating = vm.stateParams.creating;
 
   Projects.read()
     .then(function (projects) {
@@ -55,14 +56,14 @@ function UserModalController($state, Projects, Users, Notify, AppCache) {
 
     return promise
       .then(function () {
-        var translateKey = (vm.isCreating) ?  'USERS.CREATED' : 'USERS.UPDATED';
+        var translateKey = (vm.isCreating) ? 'USERS.CREATED' : 'USERS.UPDATED';
         Notify.success(translateKey);
-        $state.go('users.list', null, {reload : true});
+        $state.go('users.list', null, { reload : true });
       })
       .catch(Notify.handleError);
   }
 
-  function closeModal () {
+  function closeModal() {
     $state.transitionTo('users.list');
   }
 
@@ -73,8 +74,7 @@ function UserModalController($state, Projects, Users, Notify, AppCache) {
 
   // opens a new modal to let the user set a password
   function editPassword() {
-    $state.go('users.editPassword', {id : vm.user.id}, {reload : true});
+    $state.go('users.editPassword', { id : vm.user.id }, { reload : true });
   }
 }
-
 

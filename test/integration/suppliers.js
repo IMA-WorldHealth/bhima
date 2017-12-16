@@ -3,7 +3,7 @@
 'use strict';
 
 const helpers = require('./helpers');
-const uuid    = require('node-uuid');
+const uuid    = require('uuid/v4');
 
 /*
  * The /supplier API endpoint
@@ -14,7 +14,7 @@ describe('(/suppliers) The supplier API endpoint', function () {
 
   // supplier we will add during this test suite.
   let supplier = {
-    uuid : uuid.v4(),
+    uuid : uuid(),
     creditor_group_uuid : '8bedb6df-6b08-4dcf-97f7-0cfbb07cf9e2',
     display_name : 'SUPPLIER TEST A',
     address_1 : null,

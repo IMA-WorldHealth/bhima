@@ -2,65 +2,128 @@ angular.module('bhima.services')
   .service('InventoryService', InventoryService);
 
 InventoryService.$inject = [
-  'PrototypeApiService', 'InventoryGroupService', 'InventoryUnitService', 'InventoryTypeService', '$uibModal'
+  'PrototypeApiService', 'InventoryGroupService', 'InventoryUnitService', 'InventoryTypeService', '$uibModal',
+  'FilterService', 'appcache', 'LanguageService', '$httpParamSerializer', 'util', '$http',
 ];
 
-function InventoryService(Api, Groups, Units, Types, $uibModal) {
+function InventoryService(Api, Groups, Units, Types, $uibModal, Filters, AppCache, Languages, $httpParamSerializer, util, $http) {
   var service = new Api('/inventory/metadata/');
+
+  var inventoryFilters = new Filters();
+  var filterCache = new AppCache('inventory-filters');
 
   // expose inventory services through a nicer API
   service.Groups = Groups;
   service.Units = Units;
   service.Types = Types;
-  service.openSearchModal = openSearchModal; 
-  service.formatFilterParameters = formatFilterParameters;  
-
+  service.openSearchModal = openSearchModal;
+  service.filters = inventoryFilters;
+  service.remove = remove;
   /**
    * @method openSearchModal
    *
-   * @param {Object} params - an object of filter parameters to be passed to
+   * @param {Object} filters - an object of filter parameters to be passed to
    *   the modal.
    * @returns {Promise} modalInstance
    */
-  function openSearchModal(params) {
+  function openSearchModal(filters) {
     return $uibModal.open({
       templateUrl: 'modules/inventory/list/modals/search.modal.html',
       size: 'md',
       keyboard: false,
       animation: false,
       backdrop: 'static',
-      controller: 'InventoryServiceModalController as ModalCtrl',
-      resolve : {
-        params : function paramsProvider() { return params; }
-      }
+      controller: 'InventorySearchModalController as ModalCtrl',
+      resolve: {
+        filters: function filtersProvider() {
+          return filters;
+        },
+      },
     }).result;
   }
 
-  /**
-   * This function prepares the headers inventory properties which were filtered,
-   * Special treatment occurs when processing data related to the date
-   * @todo - this might be better in it's own service
-   */
-  function formatFilterParameters(params) {
-    var columns = [
-      { field: 'group_uuid', displayName: 'FORM.LABELS.GROUP' },
-      { field: 'text', displayName: 'FORM.LABELS.LABEL' }
-    ];
-    // returns columns from filters
-    return columns.filter(function (column) {
-      var LIMIT_UUID_LENGTH = 6;
-      var value = params[column.field];
+  inventoryFilters.registerDefaultFilters([{
+    key: 'limit',
+    label: 'FORM.LABELS.LIMIT'
+  }, ]);
 
-      if (angular.isDefined(value)) {
-        column.value = value;
-        
-        return true;
-      } else {
-        return false;
-      }
-    });
+  inventoryFilters.registerCustomFilters([{
+      key: 'group_uuid',
+      label: 'FORM.LABELS.GROUP'
+    },
+    {
+      key: 'code',
+      label: 'FORM.LABELS.CODE'
+    },
+    {
+      key: 'consumable',
+      label: 'FORM.LABELS.CONSUMABLE'
+    },
+    {
+      key: 'locked',
+      label: 'FORM.LABELS.LOCKED'
+    },
+    {
+      key: 'text',
+      label: 'FORM.LABELS.LABEL'
+    },
+    {
+      key: 'type_id',
+      label: 'FORM.LABELS.TYPE'
+    },
+    {
+      key: 'price',
+      label: 'FORM.LABELS.PRICE'
+    },
+  ]);
+
+  if (filterCache.filters) {
+    // load cached filter definition if it exists
+    inventoryFilters.loadCache(filterCache.filters);
   }
 
+  assignDefaultFilters();
 
+  function assignDefaultFilters() {
+    // get the keys of filters already assigned - on initial load this will be empty
+    var assignedKeys = Object.keys(inventoryFilters.formatHTTP());
+
+    // assign default limit filter
+    if (assignedKeys.indexOf('limit') === -1) {
+      inventoryFilters.assignFilter('limit', 100);
+    }
+  }
+
+  service.removeFilter = function removeFilter(key) {
+    inventoryFilters.resetFilterState(key);
+  };
+
+  // load filters from cache
+  service.cacheFilters = function cacheFilters() {
+    filterCache.filters = inventoryFilters.formatCache();
+  };
+
+  service.loadCachedFilters = function loadCachedFilters() {
+    inventoryFilters.loadCache(filterCache.filters || {});
+  };
+
+  service.download = function download(type) {
+    var filterOpts = inventoryFilters.formatHTTP();
+    var defaultOpts = {
+      renderer: type,
+      lang: Languages.key
+    };
+
+    // combine options
+    var options = angular.merge(defaultOpts, filterOpts);
+
+    // return  serialized options
+    return $httpParamSerializer(options);
+  };
+
+  // delete an inventory
+  function remove(uuid) {
+    return $http.delete('/inventory/metadata/'.concat(uuid));
+  }
   return service;
 }

@@ -1,5 +1,5 @@
 angular.module('bhima.services')
-.service('StockItemService', StockItemService);
+  .service('StockItemService', StockItemService);
 
 StockItemService.$inject = [];
 
@@ -11,37 +11,21 @@ function StockItemService() {
    * @constructor StockItem
    */
   function StockItem() {
-    var self = this;
+    this.inventory_uuid = null;
+    this.code = null;
+    this.label = null;
+    this.quantity = 0;
+    this.unit_cost = 0;
+    this.expiration_date = new Date();
+    this.lots = [];
+    this.isValid = false;
 
-    // index
-    self.index = 0;
-
-    // inventory
-    self.inventory_uuid = null;
-    self.code = null;
-    self.text = null;
-
-    // lot
-    self.lot_uuid = null;
-    self.label = null;
-    self.quantity = 0;
-    self.available = 0;
-    self.unit_price = 0;
-    self.amount = 0;
-    self.expiration_date = null;
-
-    // lots
-    self.lots = [];
-
-    // validation
-    self.validation = function () {
-      self.no_missing = self.inventory_uuid && self.lot_uuid &&
-      self.quantity && self.expiration_date &&
-      self.quantity <= self.available;
-    };
-
-    self.validation();
+    this.validate();
   }
 
+  StockItem.prototype.validate = function validate() {
+    this.isValid = this.inventory_uuid && this.lots.length > 0 && this.code;
+  }
+  
   return StockItem;
 }

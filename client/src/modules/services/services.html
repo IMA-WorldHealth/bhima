@@ -7,8 +7,19 @@
 
     <div class="toolbar">
       <div class="toolbar-item">
-        <button class="btn btn-default text-capitalize" id="create" ng-click="ServicesCtrl.create()" data-method="create">
+        <button class="btn btn-default text-capitalize" id="create" ng-click="ServicesCtrl.createService()" data-method="create">
           <span class="fa fa-plus"></span> <span translate> SERVICE.ADD_SERVICE </span>
+        </button>
+      </div>
+
+      <div class="toolbar-item">
+        <button
+          type="button"
+          ng-click="ServicesCtrl.toggleFilter()"
+          data-method="filter"
+          class="btn btn-default"
+          ng-class="{ 'btn-info' : ServicesCtrl.filterEnabled }">
+          <i class="fa fa-filter"></i>
         </button>
       </div>
     </div>
@@ -17,141 +28,16 @@
 
 <div class="flex-content">
   <div class="container-fluid">
-    <div class="row">
+    <div id="service-grid"
+      ui-grid="ServicesCtrl.gridOptions"
+      class="grid-full-height"
+      ui-grid-auto-resize>
 
-      <div class="col-xs-6">
-        <div class="panel panel-default" style="overflow: auto; max-height: 500px;">
-          <div class="panel-heading" translate>
-            SERVICE.ALL_SERVICES
-          </div>
-          <table class="table table-condensed table-hover">
-            <thead>
-              <tr>
-                <th translate> TABLE.COLUMNS.SERVICE </th>
-                <th colspan="3" translate> TABLE.COLUMNS.ACTION </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr ng-repeat="service in ServicesCtrl.services | orderBy:'name' track by service.id" ng-class="{'btn-primary' : editService.id==service.id }">
-                <td>{{ service.name }}</td>
-                <td>
-                  <a class="btn btn-xs btn-default" ng-click="ServicesCtrl.update(service)" id="service-upd-{{ $index+1 }}">
-                    <span class="glyphicon glyphicon-pencil"></span>
-                  </a>
-                  <!-- <a class="btn btn-xs btn-default" ng-click="ServicesCtrl.more(service)" id="service-more-{{ $index+1 }}"> -->
-                  <!--   <span class="glyphicon glyphicon-eye-open"></span> -->
-                  <!-- </a> -->
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="col-xs-6" ng-switch="ServicesCtrl.view">
-        <div ng-switch-default>
-          <div class="alert alert-info" id="default">
-            <h4 translate> SERVICE.TITLE </h4>
-            <p translate> SERVICE.DESCRIPTION </p>
-          </div>
-        </div>
-
-        <div ng-switch-when="create_success">
-          <div class="alert alert-success" id="create_success">
-            <h4 translate> FORM.INFO.SAVE_SUCCESS </h4>
-            </p>
-          </div>
-        </div>
-
-        <div ng-switch-when="update_success">
-          <div class="alert alert-success" id="update_success">
-            <h4 translate> FORM.INFO.UPDATE_SUCCESS </h4>
-            </p>
-          </div>
-        </div>
-
-        <div ng-switch-when="delete_success">
-          <div class="alert alert-success" id="delete_success">
-            <h4 translate> FORM.INFO.DELETE_SUCCESS </h4>
-            </p>
-          </div>
-        </div>
-
-        <div ng-switch-when="delete_error">
-          <div class="alert alert-danger" id="delete_error">
-            <h4 translate> {{ ServicesCtrl.HTTPError.data.code }} </h4>
-            </p>
-          </div>
-        </div>
-
-        <div class="panel panel-primary" ng-switch-when="create">
-          <div class="panel-heading" translate> SERVICE.ADDING_SERVICE </div>
-          <div class="panel-body">
-            <form class="panel-body" name="CreateForm" ng-submit="ServicesCtrl.submit(CreateForm)" novalidate>
-
-              <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.name.$invalid }">
-                <label class="control-label" for="bhima-service-name" translate> FORM.LABELS.NAME </label>
-                <input type="text" class="form-control" name="name" autocomplete="off" ng-maxlength="ServicesCtrl.maxLength" id="bhima-service-name" ng-model="ServicesCtrl.service.name" required>
-                <div class="help-block" ng-messages="CreateForm.name.$error" ng-show="CreateForm.$submitted">
-                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-                </div>
-              </div>
-
-              <!-- Cost Center Assignment - not yet implemented in 2.x -->
-              <!-- Profit Center Assignment - not yet implemented in 2.x -->
-
-              <div class="form-group">
-                <button class="btn btn-default" id="submit-service" type="submit" data-method="submit" translate>
-                  FORM.BUTTONS.SUBMIT
-                </button>
-                <button class="btn btn-default" type="button" ng-click="ServicesCtrl.cancel()" data-method="cancel" translate>
-                  FORM.BUTTONS.CANCEL
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-
-        <div class="panel panel-primary" ng-switch-when="update">
-          <div class="panel-heading" translate> SERVICE.EDITING_SERVICE </div>
-          <div class="panel-body">
-            <form class="panel-body" name="UpdateForm" ng-submit="ServicesCtrl.submit(UpdateForm)" novalidate>
-
-              <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.name.$invalid }">
-                <label class="control-label" for="bhima-service-name" translate> FORM.LABELS.NAME </label>
-                <input type="text" class="form-control" name="name" autocomplete="off" id="bhima-service-name" ng-maxlength="ServicesCtrl.maxLength" ng-model="ServicesCtrl.service.name" required>
-                <div class="help-block" ng-messages="UpdateForm.name.$error" ng-show="UpdateForm.$submitted">
-                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-                </div>
-              </div>
-
-              <!-- Cost Center Assignment - not yet implemented in 2.x -->
-              <!-- Profit Center Assignment - not yet implemented in 2.x -->
-
-              <div class="form-group">
-                  <button class="btn btn-default" id="change_service" type="submit" data-method="submit" translate>
-                    FORM.BUTTONS.SUBMIT
-                  </button>
-                  <button class="btn btn-default" type="button" ng-click="ServicesCtrl.cancel()" data-method="cancel" translate>
-                    FORM.BUTTONS.CANCEL
-                  </button>
-              </div>
-            </form>
-          </div>
-        </div>
-
-        <div class="panel panel-warning" ng-switch-when="update">
-          <div class="panel-heading">
-            <span class="glyphicon glyphicon-lock"></span> <span translate> FORM.INFO.DANGER_ZONE </span>
-          </div>
-          <div class="panel-body">
-            <button class="btn btn-danger" type="button" ng-click="ServicesCtrl.del(ServicesCtrl.service)" data-method="delete">
-              <span class="glyphicon glyphicon-trash"></span> <span translate> FORM.BUTTONS.DELETE </span>
-            </button>
-          </div>
-        </div>
-
-      </div>
+      <bh-grid-loading-indicator
+        loading-state="ServicesCtrl.loading"
+        empty-state="ServicesCtrl.gridOptions.data.length === 0"
+        error-state="ServicesCtrl.hasError">
+      </bh-grid-loading-indicator>
     </div>
   </div>
 </div>

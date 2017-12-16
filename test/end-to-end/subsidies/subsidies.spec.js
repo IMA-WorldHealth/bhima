@@ -1,8 +1,8 @@
-/* global element, by, browser */
+/* global element, by */
 const chai = require('chai');
 const helpers = require('../shared/helpers');
 
-const expect = chai.expect;
+const { expect } = chai;
 helpers.configure(chai);
 
 const FU = require('../shared/FormUtils');
@@ -25,7 +25,7 @@ describe('Subsidies', () => {
     FU.buttons.create();
     FU.input('SubsidyCtrl.subsidy.label', subsidy.label);
     FU.input('SubsidyCtrl.subsidy.value', subsidy.value);
-    components.accountSelect.set('Test Debtor Accounts2');
+    components.accountSelect.set('NGO');
     FU.input('SubsidyCtrl.subsidy.description', subsidy.description);
 
     // submit the page to the server

@@ -1,4 +1,5 @@
-{"PATIENT_EDIT":{"FINANCIAL_INFO":"Financial Information",
+{"PATIENT_EDIT":{"ADMIN_DATA":"Administrative Data",
+"FINANCIAL_INFO":"Financial Information",
 "PAGE_TITLE":"Edit Patient Details",
 "RECORD_SAME":"No changes have been made to the form. Update the patients details and then press submit.",
 "REGISTERED":"Registered",

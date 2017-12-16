@@ -1,31 +1,40 @@
-'use strict';
-
-/* global expect, chai, agent */
+/* global expect, agent */
 
 const helpers = require('./helpers');
-const _ = require('lodash');
 
 const CashInvoicePayments = require('./cash.invoices');
 const CashCautionPayments = require('./cash.cautions');
 const CashSearch = require('./cash.search');
 
-describe('(/cash) Cash Payments', function () {
-
-  const NUM_CASH_PAYMENTS = 1;
+describe('(/cash) Cash Payments', () => {
+  const NUM_CASH_PAYMENTS = 2;
+  const TO_DELETE_UUID = '2e1332b7-3e23-411e-527d-42ac585ff517';
 
   // can't find undefined cash payments
-  it('GET /cash/undefined returns an error', function () {
+  it('GET /cash/undefined returns an error', () => {
     return agent.get('/cash/undefined')
-      .then(function (res) {
+      .then(res => {
         helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });
 
-  it ('GET /cash returns the expected number of payments', function () {
+  it('GET /cash returns the expected number of payments', () => {
     return agent.get('/cash')
-      .then(function (res) {
+      .then(res => {
         helpers.api.listed(res, NUM_CASH_PAYMENTS);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('DELETE /transactions/:uuid deletes a cash payment', () => {
+    return agent.delete(`/transactions/${TO_DELETE_UUID}`)
+      .then(res => {
+        expect(res).to.have.status(201);
+        return agent.get(`/cash/${TO_DELETE_UUID}`);
+      })
+      .then(res => {
+        helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });

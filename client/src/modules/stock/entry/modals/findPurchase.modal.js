@@ -23,7 +23,7 @@ function StockFindPurchaseModalController(Instance, Purchase, Notify,
     { field            : 'reference',
       displayName      : 'TABLE.COLUMNS.REFERENCE',
       headerCellFilter : 'translate',
-      cellTemplate     : 'modules/stock/entry/modals/templates/purchase.reference.tmpl.html' },
+      cellTemplate     : 'modules/stock/entry/modals/templates/purchase_reference.tmpl.html' },
     {
       field            : 'date',
       cellFilter       : 'date',
@@ -79,7 +79,7 @@ function StockFindPurchaseModalController(Instance, Purchase, Notify,
 
   /* ======================= End Grid ======================================== */
 
-  Purchase.search({ detailed: 1, is_confirmed: 1, is_received: 0, is_cancelled: 0 })
+  Purchase.search({ detailed: 1, status_id: [2, 4] })
   .then(function (purchases) {
     vm.gridOptions.data = purchases;
   })

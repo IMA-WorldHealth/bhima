@@ -1,58 +1,56 @@
-/* global expect, chai, agent */
+/* global expect, agent */
 
 const helpers = require('./helpers');
 
 /* The /cashboxes API endpoint */
-describe('(/cashboxes) The Cashboxes API endpoint', function () {
-  'use strict';
-
-  const numCashboxes = 3;
-  const numAuxCashboxes = 2;
+describe('(/cashboxes) The Cashboxes API endpoint', () => {
+  const numCashboxes = 2;
+  const numAuxCashboxes = 1;
   const NUMBER_OF_CASHBOX_CURRENCIES = 2;
   const numCashboxCurrencies = 4;
 
   // new cashbox
   const BOX = {
-    label:       'New Cashbox C',
-    project_id:   helpers.data.PROJECT,
+    label : 'New Test Cashbox C',
+    project_id : helpers.data.PROJECT,
     is_auxiliary : 1,
   };
 
   // new cashbox account currency
   const BOX_CURRENCY = {
-    currency_id:         1,
-    account_id:          3631,
-    transfer_account_id: 3631
+    currency_id : 1,
+    account_id : 190, // 57120010 - Caisse Principale USD
+    transfer_account_id : 194, // 58511010 - Virement des fonds Caisse Auxiliaire - Caisse Principale USD
   };
 
-  it('GET /cashboxes returns a list of cashboxes', function () {
+  it('GET /cashboxes returns a list of cashboxes', () => {
     return agent.get('/cashboxes')
-      .then(function (res) {
+      .then(res => {
         helpers.api.listed(res, numCashboxes);
         expect(res.body[0]).to.contain.keys('id', 'label');
       })
       .catch(helpers.handler);
   });
 
-  it('GET /cashboxes?is_auxiliary=1 returns only auxiliary cashboxes', function () {
+  it('GET /cashboxes?is_auxiliary=1 returns only auxiliary cashboxes', () => {
     return agent.get('/cashboxes?is_auxiliary=1')
-      .then(function (res) {
+      .then(res => {
         helpers.api.listed(res, numAuxCashboxes);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /cashboxes?detailed=1 returns a list of cashboxes with expanded properties', function () {
+  it('GET /cashboxes?detailed=1 returns a list of cashboxes with expanded properties', () => {
     return agent.get('/cashboxes?detailed=1')
-      .then(function (res) {
+      .then(res => {
         helpers.api.listed(res, numCashboxCurrencies);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /cashboxes/:id should return a single cashbox with currencies', function () {
+  it('GET /cashboxes/:id should return a single cashbox with currencies', () => {
     return agent.get('/cashboxes/1')
-      .then(function (res) {
+      .then(res => {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
         expect(res.body).to.not.be.empty;
@@ -62,23 +60,23 @@ describe('(/cashboxes) The Cashboxes API endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /cashboxes/:id should return a 404 for invalid cashbox', function () {
+  it('GET /cashboxes/:id should return a 404 for invalid cashbox', () => {
     return agent.get('/cashboxes/invalid')
-      .then(function (res) {
+      .then(res => {
         helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });
 
-  it('POST /cashboxes should create a new cashbox', function () {
+  it('POST /cashboxes should create a new cashbox', () => {
     return agent.post('/cashboxes')
       .send({ cashbox : BOX })
-      .then(function (res) {
+      .then(res => {
         helpers.api.created(res);
         BOX.id = res.body.id;
-        return agent.get('/cashboxes/' + BOX.id);
+        return agent.get(`/cashboxes/${BOX.id}`);
       })
-      .then(function (res) {
+      .then(res => {
         expect(res).to.have.status(200);
         expect(res.body.label).to.equal(BOX.label);
         expect(res.body.is_auxiliary).to.equal(BOX.is_auxiliary);
@@ -86,10 +84,10 @@ describe('(/cashboxes) The Cashboxes API endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('PUT /cashboxes/:id should update the cashbox', function () {
-    return agent.put('/cashboxes/' + BOX.id)
+  it('PUT /cashboxes/:id should update the cashbox', () => {
+    return agent.put(`/cashboxes/${BOX.id}`)
       .send({ is_auxiliary : 0 })
-      .then(function (res) {
+      .then(res => {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
         expect(res.body.label).to.equal(BOX.label);
@@ -98,25 +96,25 @@ describe('(/cashboxes) The Cashboxes API endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('GET /cashboxes/:id/currencies should return an empty list of cashbox currencies', function () {
-    return agent.get('/cashboxes/' + BOX.id + '/currencies')
-      .then(function (res) {
+  it('GET /cashboxes/:id/currencies should return an empty list of cashbox currencies', () => {
+    return agent.get(`/cashboxes/${BOX.id}/currencies`)
+      .then(res => {
         helpers.api.listed(res, 0);
       });
   });
 
-  it('POST /cashboxes/:id/currencies should create a new currency account', function () {
-    return agent.post('/cashboxes/' + BOX.id + '/currencies')
+  it('POST /cashboxes/:id/currencies should create a new currency account', () => {
+    return agent.post(`/cashboxes/${BOX.id}/currencies`)
       .send(BOX_CURRENCY)
-      .then(function (res) {
+      .then(res => {
         helpers.api.created(res);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /cashboxes/:id/currencies/:currencyId should return a single cashbox currency reference', function () {
-    return agent.get('/cashboxes/' + BOX.id + '/currencies/' + BOX_CURRENCY.currency_id)
-      .then(function (res) {
+  it('GET /cashboxes/:id/currencies/:currencyId should return a single cashbox currency reference', () => {
+    return agent.get(`/cashboxes/${BOX.id}/currencies/${BOX_CURRENCY.currency_id}`)
+      .then(res => {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
         expect(res.body).not.to.be.empty;
@@ -125,18 +123,18 @@ describe('(/cashboxes) The Cashboxes API endpoint', function () {
       });
   });
 
-  it('GET /cashboxes/:id/currencies/unknown should return a single cashbox currency reference', function () {
-    return agent.get('/cashboxes/' + BOX.id + '/currencies/unknown')
-      .then(function (res) {
+  it('GET /cashboxes/:id/currencies/unknown should return a single cashbox currency reference', () => {
+    return agent.get(`/cashboxes/${BOX.id}/currencies/unknown`)
+      .then(res => {
         helpers.api.errored(res, 404);
       });
   });
 
 
-  it('PUT /cashboxes/:id/currencies/:currencyId should update a new currency account', function () {
-    return agent.put('/cashboxes/' + BOX.id + '/currencies/' + BOX_CURRENCY.currency_id)
-      .send({ transfer_account_id : 3635 })
-      .then(function (res) {
+  it('PUT /cashboxes/:id/currencies/:currencyId should update a new currency account', () => {
+    return agent.put(`/cashboxes/${BOX.id}/currencies/${BOX_CURRENCY.currency_id}`)
+      .send({ transfer_account_id : 197 })
+      .then(res => {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
         expect(res.body.account_id).to.equal(BOX_CURRENCY.account_id);
@@ -145,10 +143,10 @@ describe('(/cashboxes) The Cashboxes API endpoint', function () {
   });
 
   // why does this route exit?! Why should this not fail???
-  it('PUT /cashboxes/:id/currencies/undefined should successfully return nothing', function () {
-    return agent.put('/cashboxes/' + BOX.id + '/currencies/undefined')
-      .send({ transfer_account_id : 3635 })
-      .then(function (res) {
+  it('PUT /cashboxes/:id/currencies/undefined should successfully return nothing', () => {
+    return agent.put(`/cashboxes/${BOX.id}/currencies/undefined`)
+      .send({ transfer_account_id : 197 })
+      .then(res => {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
         expect(res.body).to.be.empty;
@@ -156,23 +154,32 @@ describe('(/cashboxes) The Cashboxes API endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('DELETE /cashboxes/:id should delete the cashbox and associated currencies', function () {
-    return agent.delete('/cashboxes/' + BOX.id)
-    .then(function (res) {
-      helpers.api.deleted(res);
-      return agent.get('/cashboxes/' + BOX.id);
-    })
-    .then(function (res) {
-      helpers.api.errored(res, 404);
-    })
-    .catch(helpers.handler);
+  it('DELETE /cashboxes/:id should delete the cashbox and associated currencies', () => {
+    return agent.delete(`/cashboxes/${BOX.id}`)
+      .then(res => {
+        helpers.api.deleted(res);
+        return agent.get(`/cashboxes/${BOX.id}`);
+      })
+      .then(res => {
+        helpers.api.errored(res, 404);
+      })
+      .catch(helpers.handler);
   });
 
-  it('DELETE /cashboxes/:id should return a 404 for an unknown cashbox id', function () {
+  it('DELETE /cashboxes/:id should return a 404 for an unknown cashbox id', () => {
     return agent.delete('/cashboxes/unknown')
-    .then(function (res) {
-      helpers.api.errored(res, 404);
-    })
-    .catch(helpers.handler);
+      .then(res => {
+        helpers.api.errored(res, 404);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /cashboxes privileges for the current User On Each Auxiliary Cashboxes', () => {
+    return agent.get('/cashboxes/privileges')
+      .then(res => {
+        helpers.api.listed(res, numAuxCashboxes);
+        expect(res.body[0]).to.contain.keys('id', 'label', 'project_id', 'is_auxiliary', 'user_id');
+      })
+      .catch(helpers.handler);
   });
 });

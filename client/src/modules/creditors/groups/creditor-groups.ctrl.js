@@ -13,18 +13,27 @@ CreditorGroupController.$inject = [
  */
 function CreditorGroupController($state, CreditorGroup, Notify, Modal) {
   var vm = this;
-
   var uuid = $state.params.uuid;
 
   // global variables
   vm.bundle = {};
-  vm.reload = { reload: true };
+  vm.reload = { reload : true };
   vm.state = $state;
+  vm.setOrder = setOrder;
 
   // page state
   vm.isDefaultState = ($state.current.name === 'creditorGroups');
   vm.isUpdateState = ($state.current.name === 'creditorGroups.update' && uuid);
   vm.isCreateState = ($state.current.name === 'creditorGroups.create');
+
+  vm.toggleFilter = toggleFilter;
+  vm.sortOptions = [
+    { attribute : 'name', key : 'TABLE.COLUMNS.SORTING.NAME_ASC', reverse : false },
+    { attribute : 'name', key : 'TABLE.COLUMNS.SORTING.NAME_DSC', reverse : true },
+    { attribute : 'created_at', key : 'TABLE.COLUMNS.SORTING.CREATED_DSC', reverse : true },
+    { attribute : 'created_at', key : 'TABLE.COLUMNS.SORTING.CREATED_ASC', reverse : false },
+    { attribute : 'total_creditors', key : 'TABLE.COLUMNS.SORTING.TOTAL_ASC', reverse : true },
+  ];
 
   // expose to public
   vm.submit = submit;
@@ -42,11 +51,11 @@ function CreditorGroupController($state, CreditorGroup, Notify, Modal) {
   }
 
   // load creditor groups
-  CreditorGroup.read(null, { detailed: 1 })
-  .then(function (list) {
-    vm.creditorGroupList = list;
-  })
-  .catch(Notify.handleError);
+  CreditorGroup.read(null, { detailed : 1 })
+    .then(function (list) {
+      vm.creditorGroupList = list;
+    })
+    .catch(Notify.handleError);
 
   /**
    * @function loadListState
@@ -79,18 +88,17 @@ function CreditorGroupController($state, CreditorGroup, Notify, Modal) {
    */
   function deleteGroup(groupUuid) {
     Modal.confirm()
-    .then(function (ans) {
-      if (!ans) { return false; }
+      .then(function (ans) {
+        if (!ans) { return false; }
+        return CreditorGroup.delete(groupUuid);
+      })
+      .then(function (ans) {
+        if (!ans) { return false; }
 
-      return CreditorGroup.delete(groupUuid);
-    })
-    .then(function (ans) {
-      if (!ans) { return false; }
-
-      Notify.success('FORM.INFO.DELETE_SUCCESS');
-      $state.go('creditorGroups.list', null, vm.reload);
-    })
-    .catch(Notify.handleError);
+        Notify.success('FORM.INFO.DELETE_SUCCESS');
+        $state.go('creditorGroups.list', null, vm.reload);
+      })
+      .catch(Notify.handleError);
   }
 
   /**
@@ -104,13 +112,29 @@ function CreditorGroupController($state, CreditorGroup, Notify, Modal) {
       CreditorGroup.update(uuid, vm.bundle) :
       CreditorGroup.create(vm.bundle);
 
-    return promise.then(function () {
-      Notify.success(vm.isUpdateState ? 'FORM.INFO.UPDATE_SUCCESS' : 'FORM.INFO.CREATE_SUCCESS');
+    return promise
+      .then(function () {
+        Notify.success(vm.isUpdateState ? 'FORM.INFO.UPDATE_SUCCESS' : 'FORM.INFO.CREATE_SUCCESS');
 
-      // navigate back to list view
-      $state.go('creditorGroups.list', null, vm.reload);
-    })
-    .catch(Notify.handleError);
+        // navigate back to list view
+        $state.go('creditorGroups.list', null, vm.reload);
+      })
+      .catch(Notify.handleError);
   }
 
+  // Naive filter toggle - performance analysis should be done on this
+  function toggleFilter() {
+    if (vm.filterActive) {
+      // clear the filter
+      vm.filterActive = false;
+      vm.filter = '';
+    } else {
+      vm.filterActive = true;
+    }
+  }
+
+
+  function setOrder(attribute) {
+    vm.sort = attribute;
+  }
 }

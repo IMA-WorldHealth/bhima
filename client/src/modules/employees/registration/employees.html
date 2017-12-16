@@ -3,13 +3,22 @@
     <ol class="headercrumb">
       <li class="static" translate>TREE.PAYROLL</li>
       <li class="title" translate>EMPLOYEE.TITLE</li>
+      <li ng-if="EmployeeCtrl.isUpdating" class="title">{{ EmployeeCtrl.employee.name }}</li>
     </ol>
+
+    <!-- ng-if to stop flickering on load -->
+    <span
+        ng-if="EmployeeCtrl.isUpdating" 
+        style="margin-left : 5px"
+        class="label label-warning text-uppercase">
+      <span translate>FORM.LABELS.EDIT</span>
+    </span>    
   </div>
 </div>
 
 <div class="flex-content">
   <div class="container-fluid">
-    <form 
+    <form
       name="EmployeeRegistrationForm"
       bh-submit="EmployeeCtrl.submit(EmployeeRegistrationForm)"
       novalidate>
@@ -20,6 +29,9 @@
               <div class="panel-heading" translate>EMPLOYEE.EMPLOYEE_DETAILS</div>
               <div class="panel-body">
                 <div class="form-horizontal" ng-form="DetailForm">
+                  <fieldset>
+                    <label translate>EMPLOYEE.EMPLOYEE_DETAILS</label>
+
                   <!-- Employee names  -->
                   <div
                     class="form-group"
@@ -35,7 +47,7 @@
                         autocomplete="off"
                         required>
                       <div class="help-block" ng-messages="DetailForm.display_name.$error" ng-show="EmployeeRegistrationForm.$submitted">
-                        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
                       </div>
                     </div>
                   </div>
@@ -116,16 +128,12 @@
                     ng-class="{'has-error' : DetailForm.grade.$invalid && EmployeeRegistrationForm.$submitted}">
 
                     <!-- Warning for incomplete data - the page will not be able to continue -->
-                    <uib-alert class="text-danger" type="danger" ng-if="EmployeeCtrl.grades.length === 0">
-                      <i class="fa fa-warning"></i>
-                      <span translate>FORM.LABELS.NO_GRADE</span> <b><span>FORM.LABELS.CONTACT_ADMIN</span></b>
-                    </uib-alert>
 
                     <label class="col-md-3 control-label" translate>FORM.LABELS.GRADE</label>
                     <div class="col-md-9">
                       <ui-select
                         name="grade"
-                        ng-model="EmployeeCtrl.employee.grade_id"
+                        ng-model="EmployeeCtrl.employee.grade_uuid"
                         required>
                         <ui-select-match placeholder="{{ 'FORM.SELECT.GRADE' | translate }}">
                           <span>{{$select.selected.format}}</span>
@@ -135,35 +143,19 @@
                         </ui-select-choices>
                       </ui-select>
 
+                      <uib-alert class="text-danger" type="danger" ng-if="EmployeeCtrl.grades.length === 0">
+                      <i class="fa fa-warning"></i>
+                      <span translate>EMPLOYEE.NO_GRADE</span>,
+                      <b><span translate>FORM.LABELS.CONTACT_ADMIN</span></b>
+                    </uib-alert>
+
                       <div class="help-block" ng-messages="DetailForm.grade.$error" ng-show="EmployeeRegistrationForm.$submitted">
                         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
                       </div>
                     </div>
                   </div>
 
-                  <!-- Employee Hospital File Number -->
-                  <div
-                    class="form-group has-feedback"
-                    ng-class="{'has-error' : DetailForm.hospitalNumber.$invalid && EmployeeRegistrationForm.$submitted || DetailForm.hospitalNumber.$error.unique}">
 
-                    <label class="col-md-3 control-label" translate>FORM.LABELS.HOSPITAL_FILE_NR</label>
-                    <div class="col-md-9">
-                      <input
-                        name="hospitalNumber"
-                        class="form-control"
-                        ng-model="EmployeeCtrl.employee.hospital_no"
-                        bh-unique="/patients/hospital_number"
-                        ng-maxlength="EmployeeCtrl.length20"
-                        autocomplete="off"
-                        required>
-                      <span ng-show="DetailForm.hospitalNumber.$error.unique" class="glyphicon glyphicon-remove form-control-feedback" id="unique-error-icon"></span>
-                      <span ng-show="DetailForm.hospitalNumber.$pending.unique" class="glyphicon glyphicon-hourglass form-control-feedback"></span>
-
-                      <div class="help-block" ng-messages="DetailForm.hospitalNumber.$error" ng-show="DetailForm.$submitted || DetailForm.hospitalNumber.$error.unique">
-                        <p ng-messages-include="modules/templates/messages.tmpl.html"></p>
-                      </div>
-                    </div>
-                  </div>
 
                   <!-- Employee creditor group-->
                   <div class="form-group"
@@ -195,35 +187,51 @@
                     </div>
                   </div>
 
-                  <!-- Employee debtor group-->
-                  <div class="form-group"
-                    ng-class="{'has-error' : DetailForm.debtor_group.$invalid && EmployeeRegistrationForm.$submitted}">
 
-                    <!-- Warning for incomplete data - the page will not be able to continue -->
-                    <uib-alert class="text-danger" type="danger" ng-if="EmployeeCtrl.debtorGroups.length === 0">
-                      <i class="fa fa-warning"></i>
-                      <span translate>FORM.LABELS.NO_DEBTOR_GROUP</span> <b><span translate>FORM.LABELS.CONTACT_ADMIN</span></b>
-                    </uib-alert>
+                  </fieldset>
+                  <hr/>
+                  <fieldset>
+                    <label translate><u>PATIENT_REG.PATIENT_DETAILS</u></label>
 
-                    <label class="col-md-3 control-label" translate>FORM.LABELS.DEBTOR_GROUP</label>
+                     <!-- Employee Hospital File Number -->
+                  <div
+                    class="form-group has-feedback"
+                    ng-class="{'has-error' : (DetailForm.hospitalNumber.$invalid && EmployeeRegistrationForm.$submitted) || DetailForm.hospitalNumber.$error.unique}">
+
+                    <label class="col-md-3 control-label" translate>FORM.LABELS.HOSPITAL_FILE_NR</label>
                     <div class="col-md-9">
-                      <ui-select
-                        name="debtor_group"
-                        ng-model="EmployeeCtrl.employee.debtor_group_uuid"
+                      <input
+                        name="hospitalNumber"
+                        class="form-control"
+                        ng-model="EmployeeCtrl.employee.hospital_no"
+                        bh-unique="/patients/hospital_number"
+                        ng-maxlength="EmployeeCtrl.length20"
+                        autocomplete="off"
+                        origin = {{EmployeeCtrl.origin}}
                         required>
-                        <ui-select-match placeholder="{{ 'FORM.SELECT.DEBTOR_GROUP' | translate }}">
-                          <span>{{$select.selected.name}}</span>
-                        </ui-select-match>
-                        <ui-select-choices ui-select-focus-patch repeat="dg.uuid as dg in EmployeeCtrl.debtorGroups | filter:{name : $select.search} | orderBy:'name'">
-                          <span ng-bind-html="dg.name | highlight:$select.search"></span>
-                        </ui-select-choices>
-                      </ui-select>
+                      <span ng-show="DetailForm.hospitalNumber.$error.unique" class="glyphicon glyphicon-remove form-control-feedback" id="unique-error-icon"></span>
+                      <span ng-show="DetailForm.hospitalNumber.$pending.unique" class="glyphicon glyphicon-hourglass form-control-feedback"></span>
 
-                      <div class="help-block" ng-messages="DetailForm.debtor_group.$error" ng-show="EmployeeRegistrationForm.$submitted">
-                        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                      <div class="help-block" ng-messages="DetailForm.hospitalNumber.$error" ng-show="DetailForm.$submitted || DetailForm.hospitalNumber.$error.unique">
+                        <p ng-messages-include="modules/templates/messages.tmpl.html"></p>
                       </div>
                     </div>
                   </div>
+
+                  <!-- Employee debtor group-->
+                  <div class="row">
+                    <div class="col-md-1 col-md-offset-1">
+                    </div>
+                    <div class="col-md-9 col-md-offset-1">
+                      <bh-debtor-group-select
+                        debtor-group-uuid = "EmployeeCtrl.employee.debtor_group_uuid"
+                        validation-trigger="EmployeeRegistrationForm.$submitted"
+                        on-select-callback = "EmployeeCtrl.onSelectDebtor(debtorGroup)">
+                      </bh-debtor-group-select>
+                    </div>
+                  </div>
+
+
 
                   <!-- Employee location -->
                   <div class="row">
@@ -247,21 +255,24 @@
                         location-uuid="EmployeeCtrl.employee.current_location_id">
                       </bh-location-select>
                     </div>
-                  </div>                  
+                  </div>
+
+                  </fieldset>
                 </div>
-                <!-- submit button-->
+
+              </div>
+               <!-- submit button-->
                 <div class="panel-footer text-right">
                   <bh-loading-button loading-state="EmployeeRegistrationForm.$loading">
                     <span translate>FORM.BUTTONS.REGISTER_EMPLOYEE</span>
                   </bh-loading-button>
                 </div>
-              </div>
-            </div>            
+            </div>
           </div>
           <div class="col-md-5">
             <div class="panel panel-default">
               <div class="panel-heading" translate>FORM.LABELS.OPTIONAL_INFO</div>
-              <div class="panel-body">    
+              <div class="panel-body">
                 <div class="form-horizontal" ng-form="OptionalForm">
                   <!-- Employee hiring date  -->
                   <div class="form-group"
@@ -358,15 +369,15 @@
 
                     <uib-alert class="text-danger" type="danger" ng-if="EmployeeCtrl.fonctions.length === 0">
                       <i class="fa fa-warning"></i>
-                      <span translate>FORM.LABELS.FUNCTION</span> <b><span translate>FORM.LABELS.CONTACT_ADMIN</span></b>
+                      <span translate>FORM.LABELS.PROFESSION</span> <b><span translate>FORM.LABELS.CONTACT_ADMIN</span></b>
                     </uib-alert>
 
-                    <label class="col-md-3 control-label" translate>FORM.LABELS.FUNCTION</label>
+                    <label class="col-md-3 control-label" translate>FORM.LABELS.PROFESSION</label>
                     <div class="col-md-9">
                       <ui-select
                         name="fonction"
                         ng-model="EmployeeCtrl.employee.fonction_id">
-                        <ui-select-match placeholder="{{ 'FORM.SELECT.FUNCTION' | translate }}">
+                        <ui-select-match placeholder="{{ 'FORM.SELECT.PROFESSION' | translate }}">
                           <span>{{$select.selected.fonction_txt}}</span>
                         </ui-select-match>
                         <ui-select-choices ui-select-focus-patch repeat="f.id as f in EmployeeCtrl.functions | filter:{ fonction_txt : $select.search } | orderBy:'fonction_txt'">
@@ -376,7 +387,21 @@
                     </div>
                   </div>
 
-                   <!-- Employee phone -->
+                  <!-- Employee Medical Or Non-Medical -->
+                  <div
+                    class="form-group"
+                    ng-class="{'has-error' : DetailForm.is_medical.$invalid && EmployeeRegistrationForm.$submitted}">
+
+                    <label class="col-md-3 control-label" translate>FORM.LABELS.IS_MEDICAL_STAFF</label>
+                    <div class="col-md-9">
+                      <input type="checkbox" name="is_medical" ng-true-value="1" ng-false-value="0" ng-model="EmployeeCtrl.employee.is_medical">
+                      <div class="help-block" ng-messages="DetailForm.email.$error" ng-show="EmployeeRegistrationForm.$submitted">
+                        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Employee phone -->
                   <div
                     class="form-group"
                     ng-class="{'has-error' : DetailForm.phone.$invalid && EmployeeRegistrationForm.$submitted}">
@@ -445,8 +470,8 @@
                           class="form-control"
                           name="daily_salary"
                           ng-model="EmployeeCtrl.employee.daily_salary"
-                          autocomplete="off">                        
-                      </div>                      
+                          autocomplete="off">
+                      </div>
                       <div class="help-block" ng-messages="DetailForm.daily_salary.$error" ng-show="EmployeeRegistrationForm.$submitted">
                         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
                       </div>
@@ -487,9 +512,9 @@
                         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
                       </div>
                     </div>
-                  </div>                  
+                  </div>
 
-                  <!-- Employee locked state-->
+                  <!-- Employee locked state
                   <div class="form-group"
                     ng-class="{'has-error' : OptionalForm.locked.$invalid && EmployeeRegistrationForm.$submitted}">
                     <label class="control-label">
@@ -499,10 +524,11 @@
                         ng-true-value="1"
                         ng-false-value="0"
                         ng-model="EmployeeCtrl.employee.locked">
-                        <span translate>FORM.LABELS.LOCKED</span>                      
+                        <span translate>FORM.LABELS.LOCKED</span>
                     </label>
                   </div>
-                </div>            
+                  -->
+                </div>
               </div>
             </div>
           </div>

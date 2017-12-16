@@ -31,7 +31,7 @@
         ng-model="$ctrl.idInput"
         ng-if="$ctrl.selected == $ctrl.options.findById"
         ng-keypress="$ctrl.onKeyPress($event)"
-        placeholder="{{ $ctrl.selected.placeholder | translate }}..."
+        translate-attr="{ 'placeholder': '{{$ctrl.selected.placeholder}}' }"
         ng-required="$ctrl.required">
 
       <!-- search by Name  -->
@@ -47,7 +47,7 @@
         typeahead-loading="$ctrl.loadingPatients"
         typeahead-template-url="/modules/templates/patientList.tmpl.html"
         typeahead-on-select="$ctrl.submit($item)"
-        placeholder="{{ $ctrl.selected.placeholder | translate }}..."
+        translate-attr="{ 'placeholder': '{{$ctrl.selected.placeholder}}' }"
         ng-required="$ctrl.required">
 
       <!-- submit button for search by ID -->
@@ -67,10 +67,12 @@
     <!-- inline notification -->
     <p class="help-block text-right" ng-show="$ctrl.showSearchView">
       <span class="text-warning" ng-show="($ctrl.noPatients && $ctrl.nameInput)">
-        <i class="fa fa-info-circle"></i> {{ "FORM.INFO.PATIENT_NOT_FOUND" | translate }}
+        <i class="fa fa-info-circle"></i>
+        <span translate> FORM.INFO.PATIENT_NOT_FOUND</span>
       </span>
       <span class="text-info" ng-show="($ctrl.loadingPatients && $ctrl.nameInput)">
-        <i class="fa fa-hourglass-start fa-spin"></i> {{ "FORM.INFO.LOADING" | translate }}
+        <i class="fa fa-hourglass-start fa-spin"></i>
+        <span translate>FORM.INFO.LOADING</span>
       </span>
     </p>
     <!-- /inline notification -->
@@ -83,8 +85,10 @@
          <i class="fa fa-user"></i>
       </span>
 
-      <input ng-if="$ctrl.loadStatus=='loaded'" readonly class="form-control" value="[{{ $ctrl.patient.reference }}] {{ $ctrl.patient.name }}">
-      <input ng-if="$ctrl.loadStatus=='error'" readonly class="form-control" value="{{ 'FORM.INFO.PATIENT_NOT_FOUND' | translate }}">
+      <input ng-if="$ctrl.loadStatus=='loaded'" readonly class="form-control"
+
+         value="[{{ $ctrl.patient.reference }}] {{ $ctrl.patient.name }}">
+      <input ng-if="$ctrl.loadStatus=='error'" readonly class="form-control" translate-attr="{ 'value': 'FORM.INFO.PATIENT_NOT_FOUND' }" >
 
       <div class="input-group-btn">
         <a

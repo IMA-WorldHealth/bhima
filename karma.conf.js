@@ -1,7 +1,7 @@
 // Karma configuration
 // Generated on Wed Mar 30 2016 15:50:28 GMT+0100 (WAT)
 
-module.exports = function(config) {
+module.exports = function (config) {
   config.set({
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
@@ -9,8 +9,7 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['mocha', 'chai-spies', 'chai'],
-
+    frameworks: ['mocha', 'chai-spies', 'chai-dom', 'chai'],
 
     // list of files / patterns to load in the browser
     files: [
@@ -18,8 +17,16 @@ module.exports = function(config) {
       'client/vendor/angular-mocks/angular-mocks.js',
       'bin/client/js/bhima.min.js',
       'bin/client/modules/**/*.html',
-      'test/client-unit/**/*.spec.js'
+      { pattern : 'bin/client/i18n/locale/*.js', included : false, served : true },
+      'test/client-unit/**/*.spec.js',
     ],
+
+    // Karma serves all files out of the route /base/*.  We must make a proxy to
+    // intercept these requests and rewrite them to the right place.
+    // see: http://karma-runner.github.io/1.0/config/files.html
+    proxies: {
+      '/i18n/' : '/base/bin/client/i18n/',
+    },
 
     // list of files to exclude
     exclude: [],
@@ -27,12 +34,12 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      '**/*.html' : ['ng-html2js']
+      '**/*.html' : ['ng-html2js'],
     },
 
     ngHtml2JsPreprocessor : {
       stripPrefix : 'bin/client/',
-      moduleName : 'templates'
+      moduleName : 'templates',
     },
 
     // test results reporter to use
@@ -63,6 +70,6 @@ module.exports = function(config) {
 
     // Concurrency level
     // how many browser should be started simultaneous
-    concurrency: Infinity
+    concurrency: 1,
   });
 };

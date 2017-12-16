@@ -2,8 +2,9 @@ angular.module('bhima.services')
   .service('VoucherService', VoucherService);
 
 VoucherService.$inject = [
-  'PrototypeApiService', '$http', 'util', 'TransactionTypeStoreService', '$uibModal',
-  'DepricatedFilterService',
+  'PrototypeApiService', 'TransactionTypeStoreService', '$uibModal',
+  'FilterService', 'PeriodService', 'LanguageService', '$httpParamSerializer',
+  'appcache', 'bhConstants', 'TransactionService', '$translate'
 ];
 
 /**
@@ -14,19 +15,79 @@ VoucherService.$inject = [
  * This service manages posting data to the database via the /vouchers/ URL.  It also
  * includes some utilities that are useful for voucher pages.
  */
-function VoucherService(Api, $http, util, TransactionTypeStore, Modal,
-  Filters) {
+function VoucherService(
+  Api, TransactionTypeStore, Modal, Filters, Periods, Languages,
+  $httpParamSerializer, AppCache, bhConstants, Transactions, $translate
+) {
   var service = new Api('/vouchers/');
+  var voucherFilters = new Filters();
+  var filterCache = new AppCache('voucher-filters');
 
   // @todo - remove this reference to baseUrl
   var baseUrl = '/journal/';
-  var filter = new Filters();
 
   service.create = create;
   service.reverse = reverse;
+  service.remove = Transactions.remove;
   service.transactionType = transactionType;
   service.openSearchModal = openSearchModal;
-  service.formatFilterParameters = formatFilterParameters;
+
+  service.filters = voucherFilters;
+  service.cacheFilters = cacheFilters;
+  service.removeFilter = removeFilter;
+  service.loadCachedFilters = loadCachedFilters;
+  service.download = download;
+
+  voucherFilters.registerDefaultFilters(bhConstants.defaultFilters);
+
+  voucherFilters.registerCustomFilters([
+    { key: 'user_id', label: 'FORM.LABELS.USER' },
+    { key: 'reference', label: 'FORM.LABELS.REFERENCE' },
+    { key: 'reversed', label: 'FORM.INFO.ANNULLED' },
+    { key: 'description', label: 'FORM.LABELS.DESCRIPTION' },
+    { key: 'entity_uuid', label: 'FORM.LABELS.ENTITY' },
+    { key: 'cash_uuid', label: 'FORM.INFO.PAYMENT' },
+    { key: 'invoice_uuid', label: 'FORM.LABELS.INVOICE' },
+    { key: 'type_ids', label: 'FORM.LABELS.TRANSACTION_TYPE' }]);
+
+
+  if (filterCache.filters) {
+    voucherFilters.loadCache(filterCache.filters);
+  }
+
+  // once the cache has been loaded - ensure that default filters are provided appropriate values
+  assignDefaultFilters();
+
+  function assignDefaultFilters() {
+    // get the keys of filters already assigned - on initial load this will be empty
+    var assignedKeys = Object.keys(voucherFilters.formatHTTP());
+
+    // assign default period filter
+    var periodDefined =
+      service.util.arrayIncludes(assignedKeys, ['period', 'custom_period_start', 'custom_period_end']);
+
+    if (!periodDefined) {
+      voucherFilters.assignFilters(Periods.defaultFilters());
+    }
+
+    // assign default limit filter
+    if (assignedKeys.indexOf('limit') === -1) {
+      voucherFilters.assignFilter('limit', 100);
+    }
+  }
+
+  function removeFilter(key) {
+    voucherFilters.resetFilterState(key);
+  }
+
+  // load filters from cache
+  function cacheFilters() {
+    filterCache.filters = voucherFilters.formatCache();
+  }
+
+  function loadCachedFilters() {
+    voucherFilters.loadCache(filterCache.filters || {});
+  }
 
   // returns true if the key starts with an underscore
   function isInternalKey(key) {
@@ -50,7 +111,6 @@ function VoucherService(Api, $http, util, TransactionTypeStore, Modal,
    * Wraps the prototype create method.
    */
   function create(voucher) {
-
     var v = angular.copy(voucher);
 
     // format items for posting, removing validation keys and unlinking old objects
@@ -74,7 +134,7 @@ function VoucherService(Api, $http, util, TransactionTypeStore, Modal,
       return sum + row.debit;
     }, 0);
 
-    return Api.create.call(service, { voucher : v });
+    return Api.create.call(service, { voucher: v });
   }
 
   /**
@@ -85,8 +145,8 @@ function VoucherService(Api, $http, util, TransactionTypeStore, Modal,
    * debits and credits switched.
    */
   function reverse(creditNote) {
-    return $http.post(baseUrl.concat(creditNote.uuid, '/reverse'), creditNote)
-      .then(util.unwrapHttpResponse);
+    return service.$http.post(baseUrl.concat(creditNote.uuid, '/reverse'), creditNote)
+      .then(service.util.unwrapHttpResponse);
   }
 
   /**
@@ -95,38 +155,26 @@ function VoucherService(Api, $http, util, TransactionTypeStore, Modal,
    * @return {object} Store transaction type store object { data: array, ...}
    */
   function transactionType() {
-    return TransactionTypeStore.load();
+    return TransactionTypeStore.load()
+      .then(function (transactionTypes) {
+        return transactionTypes.data.map(function (item) {
+          item.hrText = $translate.instant(item.text);
+          return item;
+        });
+      })
+      ;
   }
 
-  /**
-   * @TODO - this should be using a standardized filter service
-   */
-  function formatFilterParameters(params) {
-    var columns = [
-      { field: 'user_id', displayName: 'FORM.LABELS.USER' },
-      { field: 'reference', displayName: 'FORM.LABELS.REFERENCE' },
-      { field: 'dateFrom', displayName: 'FORM.LABELS.DATE', comparitor: '>', ngFilter: 'date' },
-      { field: 'dateTo', displayName: 'FORM.LABELS.DATE', comparitor: '<', ngFilter: 'date' },
-      { field: 'reversed', displayName: 'FORM.INFO.ANNULLED' },
-      { field: 'description', displayname: 'FORM.LABELS.DESCRIPTION' },
-      { field: 'defaultPeriod', displayName : 'TABLE.COLUMNS.PERIOD', ngFilter : 'translate' },
-    ];
+  // downloads a type of report based on the
+  function download(type) {
+    var filterOpts = voucherFilters.formatHTTP();
+    var defaultOpts = { renderer: type, lang: Languages.key };
 
-    // returns columns from filters
-    return columns.filter(function (column) {
-      var value = params[column.field];
-      if (angular.isDefined(value)) {
-        column.value = value;
+    // combine options
+    var options = angular.merge(defaultOpts, filterOpts);
 
-        if (column.field === 'defaultPeriod') {
-          column.value = filter.lookupPeriod(value).label;
-        }
-
-        return true;
-      } else {
-        return false;
-      }
-    });
+    // return  serialized options
+    return $httpParamSerializer(options);
   }
 
   /**
@@ -136,14 +184,14 @@ function VoucherService(Api, $http, util, TransactionTypeStore, Modal,
    */
   function openSearchModal(filters) {
     return Modal.open({
-      templateUrl : 'modules/vouchers/modals/search.modal.html',
-      size        : 'md',
-      animation   : false,
-      keyboard    : false,
-      backdrop    : 'static',
-      controller  : 'VoucherRegistrySearchModalController as ModalCtrl',
-      resolve     : {
-        filters : function filtersProvider() { return filters; },
+      templateUrl: 'modules/vouchers/modals/search.modal.html',
+      size: 'md',
+      animation: false,
+      keyboard: false,
+      backdrop: 'static',
+      controller: 'VoucherRegistrySearchModalController as $ctrl',
+      resolve: {
+        filters: function filtersProvider() { return filters; },
       },
     }).result;
   }

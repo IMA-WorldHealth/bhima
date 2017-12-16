@@ -8,6 +8,7 @@
  */
 
 const _ = require('lodash');
+const shared = require('../shared');
 const ReportManager = require('../../../../lib/ReportManager');
 const Vouchers = require('../../vouchers');
 const pdf = require('../../../../lib/renderers/pdf');
@@ -15,6 +16,8 @@ const pdf = require('../../../../lib/renderers/pdf');
 // dependencies for barcode translation
 const barcode = require('../../../../lib/barcode');
 const identifiers = require('../../../../config/identifiers');
+
+const util = require('../../../../lib/util');
 
 const entityIdentifier = identifiers.VOUCHER.key;
 
@@ -86,7 +89,14 @@ function receipt(req, res, next) {
  */
 function report(req, res, next) {
   const options = _.clone(req.query);
-  _.extend(options, { csvKey : 'rows', filename : 'VOUCHERS.GLOBAL.REPORT', orientation : 'landscape' });
+  const filters = shared.formatFilters(options);
+  _.extend(options, {
+    csvKey : 'rows',
+    filename : 'VOUCHERS.GLOBAL.REPORT',
+    orientation : 'landscape',
+    footerRight : '[page] / [toPage]',
+    footerFontSize : '7',
+  });
 
   let reportInstance;
 
@@ -97,14 +107,15 @@ function report(req, res, next) {
     return next(e);
   }
 
-  return Vouchers.find(options)
-    .then((vouchers) => {
-      const data = {
-        rows     : vouchers,
-        dateFrom : req.query.dateFrom,
-        dateTo   : req.query.dateTo,
-      };
+  const data = { filters };
 
+    return Vouchers.find(options)
+    .then(rows => {
+      _.extend(data, { rows });
+      return Vouchers.totalAmountByCurrency(options);
+    })
+    .then((sumAmount) => {
+      _.extend(data, { totals : sumAmount });
       return reportInstance.render(data);
     })
     .then((result) => {
@@ -113,3 +124,4 @@ function report(req, res, next) {
     .catch(next)
     .done();
 }
+

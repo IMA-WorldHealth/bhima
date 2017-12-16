@@ -25,11 +25,12 @@
             <bh-account-select
               name="account_id"
               account-id="CreditorGroupCtrl.bundle.account_id"
-              on-select-callback="CreditorGroupCtrl.onSelectAccount(account)">
+              on-select-callback="CreditorGroupCtrl.onSelectAccount(account)"
+              exclude-title-accounts="true">
             </bh-account-select>
 
             <!-- is locked ?  -->
-            <div class="checkbox">
+            <div class="checkbox" ng-show="!CreditorGroupCtrl.isCreateState">
               <label>
                 <input type="checkbox" ng-model="CreditorGroupCtrl.bundle.locked" ng-true-value="1" ng-false-value="0">
                 <span translate>FORM.LABELS.LOCKED</span>
@@ -55,8 +56,7 @@
             </button>
           </div>
         </div>
-
-      </form>      
+      </form>
     </div>
   </div>
 </div>
