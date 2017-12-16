@@ -2,8 +2,8 @@ angular.module('bhima.controllers')
   .controller('VoucherRegistrySearchModalController', VoucherRegistrySearchModalController);
 
 VoucherRegistrySearchModalController.$inject = [
-  '$uibModalInstance', 'filters', 'NotifyService', 'moment', 'PeriodService', 'Store', 'util',
-  'TransactionTypeService', '$translate', 'VoucherService',
+  '$uibModalInstance', 'filters', 'NotifyService', 'PeriodService', 'Store',
+  'util', 'VoucherService',
 ];
 
 /**
@@ -14,50 +14,40 @@ VoucherRegistrySearchModalController.$inject = [
  * returning it as a JSON object to the parent controller.  The data can be
  * preset by passing in a filters object using filtersProvider().
  */
-function VoucherRegistrySearchModalController(ModalInstance, filters, Notify, moment, Periods, Store, util,
-  TransactionTypes, $translate, Vouchers) {
+function VoucherRegistrySearchModalController(
+  ModalInstance, filters, Notify, Periods, Store, util,
+  Vouchers
+) {
   var vm = this;
   var changes = new Store({ identifier : 'key' });
   var searchQueryOptions = [
-    'reference', 'description', 'user_id', 'type_ids',
+    'reference', 'description', 'user_id', 'type_ids', 'account_id',
   ];
+
+  // displayValues will be an id:displayValue pair
+  var displayValues = {};
+  var lastDisplayValues = Vouchers.filters.getDisplayValueMap();
 
   vm.filters = filters;
   // searchQueries is the same id:value pair
   vm.searchQueries = {};
-
   vm.defaultQueries = {};
-
-  var lastDisplayValues = Vouchers.filters.getDisplayValueMap();
-
-  // displayValues will be an id:displayValue pair
-  var displayValues = {};
 
   // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(filters, searchQueryOptions);
-
-  // load all Transaction types
-  TransactionTypes.read()
-    .then(function (types) {
-      types.forEach(function (item) {
-        item.typeText = $translate.instant(item.text);
-      });
-      vm.transactionTypes = types;
-    })
-    .catch(Notify.handleError);
 
   if (filters.limit) {
     vm.defaultQueries.limit = filters.limit;
   }
 
   vm.onTransactionTypesChange = function onTransactionTypesChange(transactionTypes) {
-    vm.searchQueries.type_ids = transactionTypes;
     var typeText = '/';
+    vm.searchQueries.type_ids = transactionTypes;
 
     transactionTypes.forEach(function (typeId) {
       vm.transactionTypes.forEach(function (type) {
         if (typeId === type.id) {
-          typeText += type.typeText + ' / ';
+          typeText += type.typeText.concat(' / ');
         }
       });
     });
@@ -81,11 +71,17 @@ function VoucherRegistrySearchModalController(ModalInstance, filters, Notify, mo
   };
 
   // default filter limit - directly write to changes list
-  vm.onSelectLimit = function onSelectLimit(value) {
+  vm.onSelectLimit = function onSelectLimit(_value) {
     // input is type value, this will only be defined for a valid number
-    if (angular.isDefined(value)) {
-      changes.post({ key : 'limit', value : value });
+    if (angular.isDefined(_value)) {
+      changes.post({ key : 'limit', value : _value });
     }
+  };
+
+  // custom filter account_id - assign the value to the searchQueries object
+  vm.onSelectAccount = function onSelectAccount(account) {
+    vm.searchQueries.account_id = account.id;
+    displayValues.account_id = String(account.number).concat(' - ', account.label);
   };
 
   // deletes a filter from the custom filter object, this key will no longer be written to changes on exit
@@ -97,21 +93,26 @@ function VoucherRegistrySearchModalController(ModalInstance, filters, Notify, mo
 
   // submit the filter object to the parent controller.
   vm.submit = function submit(form) {
+    var _displayValue;
+    var loggedChanges;
+
+    if (form.$invalid) { return; }
+
     // delete type_ids if there is no transaction type sent
     if (vm.searchQueries.type_ids && vm.searchQueries.type_ids.length === 0) {
       vm.clear('type_ids');
     }
 
     // push all searchQuery values into the changes array to be applied
-    angular.forEach(vm.searchQueries, function (value, key) {
-      if (angular.isDefined(value)) {
+    angular.forEach(vm.searchQueries, function (_value, _key) {
+      if (angular.isDefined(_value)) {
         // default to the original value if no display value is defined
-        var displayValue = displayValues[key] || lastDisplayValues[key] || value;
-        changes.post({ key: key, value: value, displayValue: displayValue });
-       }
+        _displayValue = displayValues[_key] || lastDisplayValues[_key] || _value;
+        changes.post({ key : _key, value : _value, displayValue : _displayValue });
+      }
     });
 
-    var loggedChanges = changes.getAll();
+    loggedChanges = changes.getAll();
 
     // return values to the voucher controller
     return ModalInstance.close(loggedChanges);

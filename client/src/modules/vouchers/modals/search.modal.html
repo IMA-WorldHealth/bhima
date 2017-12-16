@@ -37,6 +37,15 @@
             <bh-clear on-clear="$ctrl.clear('user_id')"></bh-clear>
           </bh-user-select>
 
+          <bh-account-select
+            account-id="$ctrl.searchQueries.account_id"
+            name="account_id"
+            on-select-callback="$ctrl.onSelectAccount(account)"
+            exclude-title-accounts="true"
+            required="false">
+            <bh-clear on-clear="$ctrl.clear('account_id')"></bh-clear>
+          </bh-account-select>
+
           <bh-transaction-type-select
             on-change="$ctrl.onTransactionTypesChange(transactionTypes)"
             transaction-type-ids="$ctrl.searchQueries.type_ids">
