@@ -5,8 +5,8 @@ AccountStatementController.$inject = [
   'GeneralLedgerService', 'NotifyService', 'JournalService',
   'GridSortingService', 'GridFilteringService', 'GridColumnService',
   'SessionService', 'bhConstants', 'uiGridConstants', 'AccountStatementService',
-  'FilterService', 'ModalService', 'LanguageService', 'GridExportService',
-  'TransactionService',
+  'ModalService', 'LanguageService', 'GridExportService',
+  'TransactionService', 'GridStateService', '$state', 'AccountService',
 ];
 
 /**
@@ -18,12 +18,18 @@ AccountStatementController.$inject = [
  */
 function AccountStatementController(
   GeneralLedger, Notify, Journal, Sorting, Filtering, Columns, Session,
-  bhConstants, uiGridConstants, AccountStatement, Filters, Modal, Languages,
-  GridExport, Transactions
+  bhConstants, uiGridConstants, AccountStatement, Modal, Languages,
+  GridExport, Transactions, GridState, $state, Accounts
 ) {
   // global variables
   var vm = this;
   var cacheKey = 'account-statement';
+  var state;
+
+  var sorting;
+  var filtering;
+  var columnConfig;
+  var exportation;
 
   // expose to the view
   vm.selectedRows = [];
@@ -43,10 +49,11 @@ function AccountStatementController(
   };
 
   // Initialise each of the account statement utilities
-  var sorting = new Sorting(vm.gridOptions);
-  var filtering = new Filtering(vm.gridOptions, cacheKey);
-  var columnConfig = new Columns(vm.gridOptions, cacheKey);
-  var exportation = new GridExport(vm.gridOptions, 'selected', 'visible');
+  sorting = new Sorting(vm.gridOptions);
+  filtering = new Filtering(vm.gridOptions, cacheKey);
+  columnConfig = new Columns(vm.gridOptions, cacheKey);
+  exportation = new GridExport(vm.gridOptions, 'selected', 'visible');
+  state = new GridState(vm.gridOptions, cacheKey);
 
   // attaching the filtering object to the view
   vm.filtering = filtering;
@@ -75,6 +82,7 @@ function AccountStatementController(
 
     { field            : 'account_label',
       displayName      : 'FORM.LABELS.ACCOUNT_TITLE',
+      visible : false,
       headerCellFilter : 'translate' },
 
     {
@@ -82,12 +90,12 @@ function AccountStatementController(
       type : 'number',
       displayName      : 'TABLE.COLUMNS.DEBIT',
       headerCellFilter : 'translate',
-      cellFilter       : 'currency:grid.appScope.enterprise.currency_id',
+      cellFilter       : 'currency:'.concat(vm.enterprise.currency_id),
       cellClass        : 'text-right',
       enableFiltering  : true,
       aggregationType  : uiGridConstants.aggregationTypes.sum,
       aggregationHideLabel : true,
-      footerCellFilter : 'currency:grid.appScope.enterprise.currency_id',
+      footerCellFilter : 'currency:'.concat(vm.enterprise.currency_id),
       footerCellClass  : 'text-right',
     },
 
@@ -107,7 +115,6 @@ function AccountStatementController(
     { field              : 'description',
       displayName        : 'TABLE.COLUMNS.DESCRIPTION',
       headerCellFilter   : 'translate',
-      visible            : false,
       footerCellTemplate : '<i></i>' },
 
     { field            : 'project_name',
@@ -180,25 +187,22 @@ function AccountStatementController(
   // on register api
   function onRegisterApi(api) {
     vm.gridApi = api;
-    vm.gridApi.selection.on.rowSelectionChanged(null, rowSelectionChanged);
-    vm.gridApi.selection.on.rowSelectionChangedBatch(null, rowSelectionChanged);
   }
 
-  // row selection changed
-  function rowSelectionChanged() {
-    vm.selectedRows = vm.gridApi.selection.getSelectedGridRows();
-  }
   // end grid definition =============================================================
 
   // comment selected rows
   vm.commentRows = function commentRows() {
+    vm.selectedRows = vm.gridApi.selection.getSelectedGridRows();
     Transactions.openCommentModal({ rows : vm.selectedRows })
       .then(function (comment) {
         if (!comment) { return; }
         updateGridComment(vm.selectedRows, comment);
         Notify.success('ACCOUNT_STATEMENT.SUCCESSFULLY_COMMENTED');
       })
-      .catch(Notify.handleError);
+      .catch(function (err) {
+        if (err) { Notify.handleError(err); }
+      });
   };
 
   // update local rows
@@ -225,9 +229,8 @@ function AccountStatementController(
         vm.latestViewFilters = AccountStatement.filters.formatView();
 
         vm.loading = false;
-        return load(AccountStatement.filters.formatHTTP(true));
-      })
-      .catch(Notify.handleError);
+        load(AccountStatement.filters.formatHTTP(true));
+      });
   };
 
   // remove a filter with from the filter object, save the filters and reload
@@ -235,7 +238,7 @@ function AccountStatementController(
     AccountStatement.removeFilter(key);
     AccountStatement.cacheFilters();
     vm.latestViewFilters = AccountStatement.filters.formatView();
-    return load(AccountStatement.filters.formatHTTP(true));
+    load(AccountStatement.filters.formatHTTP(true));
   };
 
   // exports zone =====================================================================
@@ -289,19 +292,39 @@ function AccountStatementController(
 
     vm.gridOptions.gridFooterTemplate = null;
     vm.gridOptions.showGridFooter = false;
-    vm.balances = {};
+    vm.balances = {
+      opening : 0,
+      debits : 0,
+      credits : 0,
+      difference : 0,
+    };
+
+    // load the opening balance for the range
+    Accounts.getOpeningBalanceForPeriod(options.account_id, options)
+      .then(function (balances) {
+        vm.balances.opening = balances.balance;
+        vm.balances.ending = vm.balances.opening + vm.balances.difference;
+      })
+      .catch(Notify.handleError);
 
     GeneralLedger.read(null, options)
       .then(function (data) {
+        var balances;
+
         vm.gridOptions.data = data;
 
         // compute the difference between the debits and credits
         // TODO(@jniles) - is there a way to get this from ui grid's aggregation?
-        vm.balances = data.reduce(computeTransactionBalances, {
+        balances = data.reduce(computeTransactionBalances, {
           debits : 0,
           credits : 0,
-          balance : 0,
+          difference : 0,
         });
+
+        vm.balances.debits = balances.debits;
+        vm.balances.credits = balances.credits;
+        vm.balances.difference = balances.difference;
+        vm.balances.ending = vm.balances.opening + balances.difference;
 
         vm.gridOptions.showGridFooter = true;
         vm.gridOptions.gridFooterTemplate = '/modules/account_statement/grid.footer.html';
@@ -309,7 +332,7 @@ function AccountStatementController(
         // @TODO investigate why footer totals aren't updated automatically on data change
         vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
       })
-      .catch(handleError)
+      .catch(Notify.handleError)
       .finally(toggleLoadingIndicator);
   }
 
@@ -317,7 +340,7 @@ function AccountStatementController(
   function computeTransactionBalances(aggregates, row) {
     aggregates.debits += row.debit_equiv;
     aggregates.credits += row.credit_equiv;
-    aggregates.balance += (row.debit_equiv - row.credit_equiv);
+    aggregates.difference += (row.debit_equiv - row.credit_equiv);
     return aggregates;
   }
 
@@ -326,6 +349,12 @@ function AccountStatementController(
     Notify.handleError(err);
     vm.hasErrors = true;
   }
+
+  vm.saveGridState = state.saveGridState;
+  vm.clearGridState = function clearGridState() {
+    state.clearGridState();
+    $state.reload();
+  };
 
   startup();
 }

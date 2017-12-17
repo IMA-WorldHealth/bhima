@@ -15,18 +15,25 @@
  * @todo - move away from calling lookup() before action.  This is an
  * unnecessary database request.
  *
- * @requires db
- * @requires NotFound
+ * @requires q
+ * @requires lib/db
+ * @requires lib/errors/NotFound
+ * @requires lib/errors/BadRequest
  * @requires accounts/types
  * @requires accounts/categories
+ * @requires lib/periods
+ * @requires accounts
  */
 
+const q = require('q');
 const db = require('../../../lib/db');
-const NotFound = require('../../../lib/errors/NotFound');
-const BadRequest = require('../../../lib/errors/BadRequest');
+const { NotFound, BadRequest } = require('../../../lib/errors');
 const types = require('./types');
 const categories = require('./categories');
-
+const Periods = require('../../../lib/period');
+const AccountExtras = require('./extra.js');
+const Fiscal = require('../fiscal.js');
+const debug = require('debug')('accounts');
 
 /**
  * @method create
@@ -60,7 +67,7 @@ function create(req, res, next) {
  * PUT /accounts/:id
  */
 function update(req, res, next) {
-  const id = req.params.id;
+  const { id } = req.params;
   const data = req.body;
   const sql = 'UPDATE account SET ? WHERE id = ?';
 
@@ -137,10 +144,12 @@ function list(req, res, next) {
   // convert locked to a number if it exists
   if (req.query.locked) {
     locked = Number(req.query.locked);
+  } else {
+    locked = 0;
   }
 
   // if locked is a number, filter on it
-  if (!isNaN(locked)) {
+  if (!Number.isNaN(locked)) {
     sql += ` WHERE a.locked = ${locked}`;
   }
 
@@ -183,7 +192,7 @@ function detail(req, res, next) {
  * GET /accounts/:id/balance
  */
 function getBalance(req, res, next) {
-  const id = req.params.id;
+  const { id } = req.params;
   let optional = '';
   const params = [id];
 
@@ -221,6 +230,62 @@ function getBalance(req, res, next) {
         rows[0];
 
       res.status(200).json(response);
+    })
+    .catch(next)
+    .done();
+}
+
+/**
+ * @function getOpeningBalanceForPeriod
+ *
+ * @description
+ * Computes the opening balance for an account based on the default period range
+ * provided by default filters.  This is useful for registries.  If you know
+ * what the date key is, it is better to call getOpeningBalanceForDate() from
+ * the AccountExtras directly with the account id and date.
+ */
+function getOpeningBalanceForPeriod(req, res, next) {
+  const period = new Periods(req.query.client_timestamp);
+  const targetPeriod = period.lookupPeriod(req.query.period);
+  const accountId = req.params.id;
+
+  debug(
+    '#getOpeningBalanceForPeriod() finding opening balance for account %s on  period %s',
+    accountId,
+    req.query.period
+  );
+
+  let promise = q();
+
+  switch (targetPeriod) {
+  case period.periods.allTime:
+    debug('#getOpeningBalanceForPeriod() all time period detected.  Using first fiscal year start date.');
+    promise = promise
+      .then(() => Fiscal.getFirstDateOfFirstFiscalYear(req.session.enterprise.id))
+      .then(fiscal => fiscal.start_date);
+    break;
+
+  case period.periods.custom:
+    debug('#getOpeningBalanceForPeriod() custom period detected.  Using custom_period_start key.');
+    promise = promise
+      .then(() => new Date(req.query.custom_period_start));
+    break;
+
+  default:
+    debug('#getOpeningBalanceForPeriod() %s period detected.  Using computed start date.', req.query.period);
+    promise = promise
+      .then(() => targetPeriod.limit.start());
+    break;
+  }
+
+  promise
+    .then(date => {
+      debug(`#getOpeningBalanceForPeriod() computed ${date} for start date.`);
+      return AccountExtras.getOpeningBalanceForDate(accountId, new Date(date));
+    })
+    .then(balances => {
+      debug('#getOpeningBalanceForPeriod() computed %j balances for account id %s.', balances, accountId);
+      res.status(200).json(balances);
     })
     .catch(next)
     .done();
@@ -307,7 +372,7 @@ function getChildren(accounts, parentId) {
  * @param {number} depth A depth
  */
 function flatten(tree, depth) {
-  let currentDepth = isNaN(depth) ? -1 : depth;
+  let currentDepth = Number.isNaN(depth) ? -1 : depth;
   currentDepth += 1;
 
   return tree.reduce((array, node) => {
@@ -327,4 +392,5 @@ exports.lookupAccount = lookupAccount;
 exports.processAccountDepth = processAccountDepth;
 exports.list = list;
 exports.remove = remove;
+exports.getOpeningBalanceForPeriod = getOpeningBalanceForPeriod;
 exports.categories = categories;

@@ -2,7 +2,7 @@ angular.module('bhima.services')
   .service('AccountService', AccountService);
 
 AccountService.$inject = [
-  'PrototypeApiService', '$http', 'util', 'bhConstants',
+  'PrototypeApiService', 'bhConstants',
 ];
 
 /**
@@ -10,7 +10,7 @@ AccountService.$inject = [
  *
  * A service wrapper for the /accounts HTTP endpoint.
  */
-function AccountService(Api, $http, util, bhConstants) {
+function AccountService(Api, bhConstants) {
   var baseUrl = '/accounts/';
   var service = new Api(baseUrl);
 
@@ -18,11 +18,26 @@ function AccountService(Api, $http, util, bhConstants) {
   service.label = label;
 
   service.getBalance = getBalance;
+  service.getOpeningBalanceForPeriod = getOpeningBalanceForPeriod;
   service.getChildren = getChildren;
   service.filterTitleAccounts = filterTitleAccounts;
 
   service.flatten = flatten;
   service.order = order;
+
+  /**
+   * @method getOpeningBalance
+   *
+   *
+   * @description
+   * This method exists to get the opening balance for parameters like those
+   * used to load a date range.
+   */
+  function getOpeningBalanceForPeriod(id, options) {
+    var url = service.url.concat(id, '/openingBalance');
+    return service.$http.get(url, { params : options })
+      .then(service.util.unwrapHttpResponse);
+  }
 
   /**
    * The read() method loads data from the api endpoint. If an id is provided,
@@ -35,9 +50,7 @@ function AccountService(Api, $http, util, bhConstants) {
    *   an array of JSONs.
    */
   function read(id, options) {
-    var url = baseUrl.concat(id || '');
-    return $http.get(url, { params : options })
-      .then(util.unwrapHttpResponse)
+    return Api.read.call(this, id, options)
       .then(handleAccounts);
   }
 
@@ -61,8 +74,8 @@ function AccountService(Api, $http, util, bhConstants) {
 
   function getBalance(accountId, opt) {
     var url = baseUrl.concat(accountId, '/balance');
-    return $http.get(url, opt)
-      .then(util.unwrapHttpResponse);
+    return service.$http.get(url, opt)
+      .then(service.util.unwrapHttpResponse);
   }
 
   function filterTitleAccounts(accounts) {
@@ -117,7 +130,7 @@ function AccountService(Api, $http, util, bhConstants) {
    */
   function flatten(_tree, _depth) {
     var tree = _tree || [];
-    var depth = isNaN(_depth) ? -1 : _depth;
+    var depth = Number.isNaN(_depth) ? -1 : _depth;
     depth += 1;
 
     function handleTreeLevel(array, node) {
@@ -140,7 +153,6 @@ function AccountService(Api, $http, util, bhConstants) {
    * @returns {Array} - the properly ordered list of account objects
    */
   function order(accounts) {
-
     // NOTE
     // we assume the root node is 0
     var ROOT_NODE = 0;

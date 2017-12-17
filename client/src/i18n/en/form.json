@@ -171,7 +171,7 @@
             "VIEW_BEGINNING_BALANCE": "View Beginning Balance",
             "VIEW_CLOSING_BALANCE": "View Closing Balance"
         },
-        "LABELS": {
+        "LABELS" : {
             "ABBREVIATION": "Abbreviation",
             "ACCOUNT": "Account",
             "ACCOUNT_EXTRACT": "Account Details",
@@ -200,6 +200,8 @@
             "MONTHLY_CONSUMPTION": "Monthly Consumption",
             "BALANCE": "Balance",
             "BALANCE_INTERMEDIATE" : "Intermediate Balance",
+            "BEGINNING_VIEW_BALANCE" : "Beginning View Balance",
+            "ENDING_VIEW_BALANCE" : "Ending View Balance",
             "BALANCE_FINAL" : "Final Balance",
             "BALANCE_SECTION": "Balance Sheet Section",
             "BANK": "Bank",
@@ -256,6 +258,7 @@
             "DATE_REGISTRATION": "Registration Date",
             "DATE_TO": "End",
             "DAYS": "Days",
+            "DIFFERENCE" : "Difference",
             "DEACTIVATE": "Deactivate",
             "DEBIT": "Debit",
             "DEBTOR_GROUP": "Debtor Group",

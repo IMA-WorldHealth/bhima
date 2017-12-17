@@ -42,7 +42,5 @@ function GeneralLedgerService(Api, $httpParamSerializer, Languages) {
     return $httpParamSerializer(options);
   }
 
-
   return service;
 }
-

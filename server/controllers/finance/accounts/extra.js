@@ -95,12 +95,12 @@ function getPeriodAccountBalanceUntilDate(accountId, date, fiscalYearId) {
 function getComputedAccountBalanceUntilDate(accountId, date, periodId, includeMaxDate) {
   const dateOperator = includeMaxDate ? '<=' : '<';
   const sql = `
-    SELECT 
+    SELECT
       IFNULL(SUM(debit), 0) as debit, IFNULL(SUM(credit), 0) as credit,
-      IFNULL(SUM(debit_equiv - credit_equiv), 0) AS balance 
-    FROM 
+      IFNULL(SUM(debit_equiv - credit_equiv), 0) AS balance
+    FROM
       general_ledger
-    WHERE 
+    WHERE
       account_id = ?
       AND DATE(trans_date) ${dateOperator} DATE(?)
       AND period_id = ?;
@@ -129,11 +129,11 @@ function getOpeningBalanceForDate(accountId, date, includeMaxDate = true) {
 
   return getFiscalYearForDate(date)
 
-    // 1. sum period totals up to the current required period
+    // 1. Sum period totals up to the current required period
     .then(fiscalYearId =>
       getPeriodAccountBalanceUntilDate(accountId, date, fiscalYearId))
 
-    // 2. fetch the current dates period
+    // 2. Fetch the current dates period
     .then((previousPeriodClosing) => {
       balance += previousPeriodClosing.balance;
       credit += previousPeriodClosing.credit;
@@ -142,7 +142,7 @@ function getOpeningBalanceForDate(accountId, date, includeMaxDate = true) {
       return getPeriodForDate(date);
     })
 
-    // 3. calculate the sum of all general ledger transaction against this account
+    // 3. Calculate the sum of all general ledger transaction against this account
     //    for the current period up to the current date
     .then(periodId =>
       getComputedAccountBalanceUntilDate(accountId, date, periodId, includeMaxDate))

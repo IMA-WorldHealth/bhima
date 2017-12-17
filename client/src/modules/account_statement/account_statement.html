@@ -19,7 +19,23 @@
                 <i class="fa fa-columns"></i> <span translate>FORM.LABELS.COLUMNS</span>
               </a>
             </li>
+
             <li role="separator" class="divider"></li>
+
+            <li role="menuitem">
+              <a href data-method="save-state" ng-click="AccountStateCtrl.saveGridState()">
+                <i class="fa fa-save"></i> <span translate>FORM.BUTTONS.SAVE_GRID_CONFIGURATION</span>
+              </a>
+            </li>
+
+            <li role="menuitem">
+              <a href data-method="clear-state" ng-click="AccountStateCtrl.clearGridState()">
+                <i class="fa fa-close"></i> <span translate>FORM.BUTTONS.CLEAR_GRID_CONFIGURATION</span>
+              </a>
+            </li>
+
+            <li role="separator" class="divider"></li>
+
             <li role="menuitem">
               <a href data-method="export-pdf" id="export-pdf" ng-click="AccountStateCtrl.exportPdf()">
                 <i class="fa fa-file-pdf-o"></i> <span translate>FORM.BUTTONS.PDF_EXPORT</span>
@@ -78,7 +94,8 @@
           ui-grid-resize-columns
           ui-grid-move-columns
           ui-grid-selection
-          ui-grid-exporter>
+          ui-grid-exporter
+          ui-grid-save-state>
 
           <bh-grid-loading-indicator
             loading-state="AccountStateCtrl.loading"
