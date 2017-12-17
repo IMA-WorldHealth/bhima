@@ -9,7 +9,8 @@ ConventionPaymentKitController.$inject = [
 // Import transaction rows for a convention payment
 function ConventionPaymentKitController(
   Instance, DebtorGroup, Notify, Cashboxes,
-  Session, bhConstants, $translate, ToolKits) {
+  Session, bhConstants, $translate, ToolKits
+) {
   var vm = this;
 
   var MAX_DECIMAL_PRECISION = bhConstants.precision.MAX_DECIMAL_PRECISION;
