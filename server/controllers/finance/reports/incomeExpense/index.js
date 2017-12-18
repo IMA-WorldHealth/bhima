@@ -95,33 +95,35 @@ function document(req, res, next) {
 
 function getQuery(fiscalYearId, periodFromId, periodToId, groupToken = '') {
   // get all of the period IDs between the first periods number and the second periods number (within a fiscal year)
-  const periodCondition =
-    `
-    SELECT
-        id
-    FROM
-        period
-    WHERE
-        fiscal_year_id = ${fiscalYearId} AND
-        number BETWEEN
-        (SELECT number FROM period WHERE id = ${periodFromId}) AND (SELECT number FROM period WHERE id = ${periodToId})
-    `;
-  // Get the absolute value of the balance, if the value is negative a positive value will be returned
+  const periodCondition = `
+  SELECT
+      id
+  FROM
+      period
+  WHERE
+      fiscal_year_id = ${fiscalYearId} AND
+      number BETWEEN
+      (SELECT number FROM period WHERE id = ${periodFromId}) AND
+      (SELECT number FROM period WHERE id = ${periodToId})
+  `;
+
+  // get the absolute value of the balance, if the value is negative a positive value will be returned
   const balanceQuery = `
     SELECT
       account.type_id, account.number, account.label,
       SUM(credit) as credit, SUM(debit) as debit,
       ABS(SUM(credit) - SUM(debit)) as balance
     FROM
-      period_total
-    JOIN
-      account ON period_total.account_id = account.id
+      account
+    LEFT JOIN
+      period_total ON period_total.account_id = account.id
     JOIN
       period ON period.id = period_total.period_id
     WHERE
       period.id IN (${periodCondition}) AND
       account.type_id IN (?)
     ${groupToken}
+    ORDER BY account.number ASC
   `;
 
   return balanceQuery;
@@ -136,7 +138,7 @@ function sumIncomeExpenseAccounts(fiscalYearId, periodFromId, periodToId) {
       // grouping by type_id gives us total income/ expense types balance
       return db.exec(getQuery(fiscalYearId, periodFromId, periodToId, 'GROUP BY type_id'), [types]);
     })
-    .then((typeBalances) => {
+    .then(typeBalances => {
       reportContext.incomeBalance = typeBalances[0];
       reportContext.expenseBalance = typeBalances[1];
 
