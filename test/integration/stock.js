@@ -1,7 +1,6 @@
 /* global expect, agent */
 /* jshint expr : true */
 
-
 const helpers = require('./helpers');
 
 describe('(/stock/) The Stock HTTP API', () => {
@@ -164,7 +163,8 @@ describe('(/stock/) The Stock HTTP API', () => {
       .catch(helpers.handler));
 
   // list all movement relatives to 'Depot Principal'
-  it(`GET /stock/lots/movements?depot_uuid=...
+  it(
+    `GET /stock/lots/movements?depot_uuid=...
     returns movements for Depot Principal (13: 10 IN + 3 OUT)`,
     () => agent.get(`/stock/lots/movements?depot_uuid=${depotPrincipalUuid}`)
       .then((res) => {
@@ -174,30 +174,34 @@ describe('(/stock/) The Stock HTTP API', () => {
   );
 
   // list all stock exit relatives to 'Depot Principal'
-  it(`GET /stock/lots/movements?is_exit=1&depot_uuid=...
+  it(
+    `GET /stock/lots/movements?is_exit=1&depot_uuid=...
     returns exits for Depot Principal (3 OUT)`,
     () => agent.get(`/stock/lots/movements?is_exit=1&depot_uuid=${depotPrincipalUuid}`)
       .then((res) => {
         helpers.api.listed(res, 3);
       })
-      .catch(helpers.handler));
+      .catch(helpers.handler)
+  );
 
   // list all stock entry relatives to 'Depot Principal'
-  it(`
-    GET /stock/lots/movements?is_exit=0&depot_uuid=...
-    returns entries for Depot Principal (10 IN)`,
+  it(
+    `GET /stock/lots/movements?is_exit=0&depot_uuid=... returns entries for Depot Principal (10 IN)`,
     () => agent.get(`/stock/lots/movements?is_exit=0&depot_uuid=${depotPrincipalUuid}`)
       .then((res) => {
         helpers.api.listed(res, 10);
       })
-      .catch(helpers.handler));
+      .catch(helpers.handler)
+  );
 
   // get initial quantity of QUININE-A in 'Depot Principal'
-  it(`
-    GET /stock/lots?lot_uuid=...&depot_uuid=...
-    returns initial quantity of QUININE-A in Depot Principal (100pcs)`,
-    () => agent.get(`/stock/lots?lot_uuid=${lotQuinineUuid}&depot_uuid=${depotPrincipalUuid}`)
-      .then((res) => {
+  it(`GET /stock/lots?lot_uuid=...&depot_uuid=...  returns initial quantity of QUININE-A in Depot Principal (100pcs)`, () =>
+    agent.get('/stock/lots')
+      .query({
+        lot_uuid : lotQuinineUuid,
+        depot_uuid : depotPrincipalUuid,
+      })
+      .then(res => {
         helpers.api.listed(res, 1);
         const lotQuinine = res.body[0];
         expect(lotQuinine.initial_quantity).to.be.equal(100);
@@ -205,10 +209,13 @@ describe('(/stock/) The Stock HTTP API', () => {
       .catch(helpers.handler));
 
   // list exit of QUININE-A from 'Depot Principal'
-  it(`
-    GET /stock/lots/movements?is_exit=1&lot_uuid=...&depot_uuid=...
-    returns exit of QUININE-A from Depot Principal (20pcs)`,
-    () => agent.get(`/stock/lots/movements?is_exit=1&lot_uuid=${lotQuinineUuid}&depot_uuid=${depotPrincipalUuid}`)
+  it(`GET /stock/lots/movements?is_exit=1&lot_uuid=...&depot_uuid=... returns exit of QUININE-A from Depot Principal (20pcs)`, () =>
+    agent.get('/stock/lots/movements')
+      .query({
+        is_exit : 1,
+        lot_uuid : lotQuinineUuid,
+        depot_uuid : depotPrincipalUuid,
+      })
       .then((res) => {
         helpers.api.listed(res, 1);
         let totalExit = 0;
@@ -219,8 +226,19 @@ describe('(/stock/) The Stock HTTP API', () => {
       })
       .catch(helpers.handler));
 
+  it(`GET /stock/lots/movements filters on user`, () =>
+    agent.get('/stock/lots/movements')
+      .query({
+        user_id : 1, // super user
+      })
+      .then(res => {
+        helpers.api.listed(res, 15);
+      })
+      .catch(helpers.handler));
+
   // returns quantity of QUININE-A in 'Depot Principal'
-  it(`
+  it(
+    `
     GET /stock/lots/depots?lot_uuid=...&depot_uuid=...
     returns remaining quantity of QUININE-A in Depot Principal (80pcs)`,
     () => agent.get(`/stock/lots/depots?lot_uuid=${lotQuinineUuid}&depot_uuid=${depotPrincipalUuid}`)
@@ -228,5 +246,6 @@ describe('(/stock/) The Stock HTTP API', () => {
         helpers.api.listed(res, 1);
         expect(res.body[0].quantity).to.be.equal(100 - 20);
       })
-      .catch(helpers.handler));
+      .catch(helpers.handler)
+  );
 });
