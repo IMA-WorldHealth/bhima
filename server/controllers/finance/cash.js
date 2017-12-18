@@ -154,6 +154,7 @@ function find(options) {
   filters.fullText('description');
   filters.period('period', 'date');
 
+  // TODO - re-write these use document maps and entity maps
   const referenceStatement = `CONCAT_WS('.', '${CASH_KEY}', project.abbr, cash.reference) = ?`;
   filters.custom('reference', referenceStatement);
 

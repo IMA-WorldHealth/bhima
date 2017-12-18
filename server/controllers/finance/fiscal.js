@@ -32,6 +32,7 @@ exports.remove = remove;
 exports.getPeriodByFiscal = getPeriodByFiscal;
 exports.lookupFiscalYearByDate = lookupFiscalYearByDate;
 exports.getFirstDateOfFirstFiscalYear = getFirstDateOfFirstFiscalYear;
+exports.getNumberOfFiscalYears = getNumberOfFiscalYears;
 
 /**
  * @method lookupFiscalYear
@@ -450,7 +451,7 @@ const sumDebitsMinusCredits = (aggregate, record) =>
  * @todo - migrate this to a stored procedure
  */
 function closing(req, res, next) {
-  const id = req.params.id;
+  const { id } = req.params;
   const accountId = req.body.params.account_id;
   const exploitation = {};
   const result = {};
@@ -474,7 +475,7 @@ function closing(req, res, next) {
       if (!rows) {
         throw new NotFound(`Could not find the period for the fiscal year with id ${id} and number ${fiscal.number_of_months + 1}.`);
       }
-      period = rows[0];
+      [period] = rows;
     })
     .then(() => {
       const sqlProfitAccounts = `
@@ -689,3 +690,20 @@ function getFirstDateOfFirstFiscalYear(enterpriseId) {
   return db.one(sql, enterpriseId);
 }
 
+/**
+ * @method getNumberOfFiscalYears
+ *
+ * @description
+ * This function returns the number of fiscal years between two dates.
+ *
+ * FIXME(@jniles) - should this not include the enterprise id?
+ */
+function getNumberOfFiscalYears(dateFrom, dateTo) {
+  const sql = `
+    SELECT COUNT(id) AS fiscalYearSpan FROM fiscal_year
+    WHERE
+    start_date >= DATE(?) AND end_date <= DATE(?)
+  `;
+
+  return db.one(sql, [dateFrom, dateTo]);
+}

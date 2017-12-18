@@ -133,6 +133,13 @@
       "PREVIEW":"Aperçu",
       "VIEW_ARCHIVE":"Archives",
       "EMAIL_HELP_TXT" : "L'e-mail ci-dessus recevra le rapport en pièce jointe. Le serveur doit avoir une connexion Internet pour que l'e-mail soit livré avec succès."
+    },
+    "OPTIONS" : {
+      "MORE_OPTIONS" : "Plus d'options",
+      "USE_ORIGINAL_TRANSACTION_CURRENCY" : "Afficher la devise de transaction originale?",
+      "USE_ORIGINAL_TRANSACTION_CURRENCY_HELP" : "Si oui, le rapport affichera la devise de la transaction au lieu de la valeur dans la devise de l'entreprise.",
+      "TOTALS_CURRENCY" : "Sélectionnez la Devise des Totaux",
+      "TOTALS_CURRENCY_HELP" : "Cette option vous permet d'afficher les totaux dans la devise sélectionnée en échangeant les totaux dans la devise sélectionnée en utilisant le taux de change du jour."
     }
   }
 }

@@ -3,17 +3,24 @@ angular.module('bhima.controllers')
 
 AccountReportConfigController.$inject = [
   '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData',
-  '$state', 'moment'
+  '$state', 'moment', 'SessionService',
 ];
 
-function AccountReportConfigController($sce, Notify, SavedReports, AppCache, reportData, $state, Moment) {
+function AccountReportConfigController(
+  $sce, Notify, SavedReports, AppCache, reportData, $state,
+  Moment, Session
+) {
   var vm = this;
   var cache = new AppCache('configure_account_report');
   var reportUrl = 'reports/finance/account_report';
 
   vm.previewGenerated = false;
-  vm.reportDetails = {};
-  vm.dateInterval=1;
+
+  vm.reportDetails = {
+    currency_id : Session.enterprise.currency_id,
+  };
+
+  vm.dateInterval = 1;
 
   checkCachedConfiguration();
 
@@ -30,11 +37,16 @@ function AccountReportConfigController($sce, Notify, SavedReports, AppCache, rep
     vm.previewResult = null;
   };
 
+  vm.setCurrency = function (currencyId) {
+    vm.reportDetails.currency_id = currencyId;
+  };
+
   vm.requestSaveAs = function requestSaveAs() {
+    var options;
     parseDateInterval(vm.reportDetails);
 
     // @FIXME
-    var options = {
+    options = {
       url : reportUrl,
       report : reportData,
       reportOptions : sanitiseDateStrings(vm.reportDetails),
@@ -51,7 +63,6 @@ function AccountReportConfigController($sce, Notify, SavedReports, AppCache, rep
     if (form.$invalid) { return; }
 
     parseDateInterval(vm.reportDetails);
-
 
     // update cached configuration
     cache.reportDetails = angular.copy(vm.reportDetails);
@@ -78,7 +89,8 @@ function AccountReportConfigController($sce, Notify, SavedReports, AppCache, rep
   // @TODO validation on dates - this should be done through a 'period select' component
   function parseDateInterval(reportDetails) {
     if (!vm.dateInterval) {
-      reportDetails.dateTo = reportDetails.dateFrom = null;
+      delete reportDetails.dateTo;
+      delete reportDetails.dateFrom;
     }
   }
 
