@@ -228,9 +228,9 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
       in_stock          : 'STOCK.STATUS.IN_STOCK',
       security_reached  : 'STOCK.STATUS.SECURITY',
       minimum_reached   : 'STOCK.STATUS.MINIMUM',
-      over_maximum      : 'STOCK.STATUS.OVER_MAX',    
+      over_maximum      : 'STOCK.STATUS.OVER_MAX',
     };
-    
+
     return keys[status];
   }
 

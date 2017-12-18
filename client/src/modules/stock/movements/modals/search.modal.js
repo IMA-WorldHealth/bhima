@@ -2,13 +2,12 @@ angular.module('bhima.controllers')
   .controller('SearchMovementsModalController', SearchMovementsModalController);
 
 SearchMovementsModalController.$inject = [
-  'data', 'NotifyService', '$uibModalInstance', 'FluxService',
-  '$translate', 'PeriodService', 'Store', 'util', 'StockService',
+  'data', 'NotifyService', '$uibModalInstance', 'FluxService', '$translate',
+  'PeriodService', 'Store', 'util', 'StockService',
 ];
 
 function SearchMovementsModalController(data, Notify, Instance, Flux, $translate, Periods, Store, util, Stock) {
   var vm = this;
-  var lastViewFilters;
   var lastDisplayValues;
   var displayValues = {};
   var changes = new Store({ identifier : 'key' });
@@ -45,15 +44,8 @@ function SearchMovementsModalController(data, Notify, Instance, Flux, $translate
     });
   };
 
-  lastViewFilters = Stock.filter.movement.formatView().customFilters;
-
   // map key to last display value for lookup in loggedChange
-  lastDisplayValues = lastViewFilters.reduce(handleLastViewFilter, {});
-
-  function handleLastViewFilter(object, filter) {
-    object[filter._key] = filter.displayValue;
-    return object;
-  }
+  lastDisplayValues = Stock.filter.movement.getDisplayValueMap();
 
   // custom filter depot_uuid - assign the value to the params object
   vm.onSelectDepot = function onSelectDepot(depot) {
@@ -88,7 +80,6 @@ function SearchMovementsModalController(data, Notify, Instance, Flux, $translate
     vm.searchQueries.user_id = user.id;
     displayValues.user_id = user.display_name;
   };
-
 
   // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(data, searchQueryOptions);
