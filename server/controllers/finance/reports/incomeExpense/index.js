@@ -80,7 +80,9 @@ function document(req, res, next) {
         type_id : Number(options.type),
         isLost : reportContext.overallBalance.debit > reportContext.overallBalance.credit,
       });
+
       _.merge(reportContext, contents);
+
       delete reportContext.accounts;
       return docReport.render(reportContext);
     })
@@ -96,32 +98,32 @@ function getQuery(fiscalYearId, periodFromId, periodToId, groupToken = '') {
   const periodCondition =
     `
     SELECT
-        id 
-    FROM 
+        id
+    FROM
         period
-    WHERE 
+    WHERE
         fiscal_year_id = ${fiscalYearId} AND
-        number BETWEEN 
+        number BETWEEN
         (SELECT number FROM period WHERE id = ${periodFromId}) AND (SELECT number FROM period WHERE id = ${periodToId})
     `;
   // Get the absolute value of the balance, if the value is negative a positive value will be returned
-  const balanceQuery =
-    `
+  const balanceQuery = `
     SELECT
       account.type_id, account.number, account.label,
-      SUM(credit) as credit, SUM(debit) as debit, 
+      SUM(credit) as credit, SUM(debit) as debit,
       ABS(SUM(credit) - SUM(debit)) as balance
     FROM
-      period_total             
-    JOIN 
+      period_total
+    JOIN
       account ON period_total.account_id = account.id
-    JOIN 
+    JOIN
       period ON period.id = period_total.period_id
-    WHERE 
-      period.id IN (${periodCondition}) AND 
+    WHERE
+      period.id IN (${periodCondition}) AND
       account.type_id IN (?)
     ${groupToken}
-    `;
+  `;
+
   return balanceQuery;
 }
 
@@ -141,7 +143,7 @@ function sumIncomeExpenseAccounts(fiscalYearId, periodFromId, periodToId) {
       // grouping by nothing gives us the overall balance of all types
       return db.one(getQuery(fiscalYearId, periodFromId, periodToId), [types]);
     })
-    .then((overallBalance) => {
+    .then(overallBalance => {
       reportContext.overallBalance = overallBalance;
       return reportContext;
     });
@@ -150,11 +152,11 @@ function sumIncomeExpenseAccounts(fiscalYearId, periodFromId, periodToId) {
 function getDateRange(periodIdFrom, periodIdTo) {
   const sql =
     `
-  SELECT 
+  SELECT
     MIN(start_date) AS dateFrom, MAX(end_date) AS dateTo
-  FROM 
+  FROM
     period
-  WHERE 
+  WHERE
     period.id IN (${periodIdFrom}, ${periodIdTo})`;
 
   return db.one(sql);
