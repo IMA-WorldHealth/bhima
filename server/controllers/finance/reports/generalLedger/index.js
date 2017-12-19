@@ -48,7 +48,7 @@ function renderReport(req, res, next) {
   const fiscalYearId = options.fiscal_year_id;
 
   return Fiscal.getPeriodByFiscal(fiscalYearId)
-    .then((rows) => {
+    .then(rows => {
       return GeneralLedger.getlistAccounts(rows);
     })
     .then((rows) => {
@@ -71,9 +71,11 @@ function renderReport(req, res, next) {
  * GET reports/finance/general_ledger/:account_id
  *
  * @method accountSlip
+ *
+ * FIXME(@jniles) - rewrite this.
  */
 function renderAccountSlip(req, res, next) {
-  const params = req.params;
+  const { params } = req;
   const options = _.extend(req.query, {
     filename : 'GENERAL_LEDGER.ACCOUNT_SLIP',
     csvKey   : 'transactions',
@@ -93,7 +95,7 @@ function renderAccountSlip(req, res, next) {
 
       report = new ReportManager(ACCOUNT_SLIP_TEMPLATE, req.session, options);
 
-      return AccountReport.getAccountTransactions(params.account_id, GENERAL_LEDGER_SOURCE);
+      return AccountReport.getAccountTransactions(params, GENERAL_LEDGER_SOURCE);
     })
     .then((result) => {
       _.extend(data, { transactions : result.transactions, sum : result.sum });

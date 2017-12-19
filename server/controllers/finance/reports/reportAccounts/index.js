@@ -3,39 +3,31 @@ const db = require('../../../../lib/db');
 const ReportManager = require('../../../../lib/ReportManager');
 
 const Accounts = require('../../accounts');
-
-// TODO(@jniles) - merge this into the regular accounts controller
 const AccountsExtra = require('../../accounts/extra');
+const Fiscal = require('../../fiscal');
+const FilterParser = require('../../../../lib/filter');
 
 const TEMPLATE = './server/controllers/finance/reports/reportAccounts/report.handlebars';
-const BadRequest = require('../../../../lib/errors/BadRequest');
 
-/**
- * Expose to controllers
- */
 exports.getAccountTransactions = getAccountTransactions;
 
 /**
  * @method document
  *
  * @description
- * generate Report of accounts as a document
+ * Renders the PDF template with all the
  */
 function document(req, res, next) {
   let report;
   const bundle = {};
 
   const params = req.query;
-
-  if (!params.account_id) {
-    throw new BadRequest('Account ID missing', 'ERRORS.BAD_REQUEST');
-  }
-
-  if (!params.dateFrom || !params.dateTo) {
-    throw new BadRequest('Report must specify date boundaries', 'ERRORS.BAD_REQUEST');
-  }
-
   params.user = req.session.user;
+  params.enterprise_id = req.session.enterprise.id;
+
+  // flag to tell whether we will render the currency values as passed or not
+  bundle.useOriginalTransactionCurrency =
+    params.useOriginalTransactionCurrency === 'true';
 
   try {
     report = new ReportManager(TEMPLATE, req.session, params);
@@ -43,20 +35,20 @@ function document(req, res, next) {
     return next(e);
   }
 
-  const dateFrom = (params.dateFrom) ? new Date(params.dateFrom) : new Date();
+  params.dateFrom = (params.dateFrom) ? new Date(params.dateFrom) : new Date();
 
-  return AccountsExtra.getOpeningBalanceForDate(params.account_id, dateFrom, false)
-    .then((balance) => {
+  return AccountsExtra.getOpeningBalanceForDate(params.account_id, params.dateFrom, false)
+    .then(balance => {
       const openingBalance = {
-        date            : dateFrom,
-        balance         : balance.balance,
-        credit          : balance.credit,
-        debit           : balance.debit,
-        isCreditBalance : balance.balance < 0,
+        date            : params.dateFrom,
+        balance         : Number(balance.balance),
+        credit          : Number(balance.credit),
+        debit           : Number(balance.debit),
+        isCreditBalance : Number(balance.balance) < 0,
       };
 
       _.extend(bundle, { openingBalance });
-      return getAccountTransactions(params.account_id, params.dateFrom, params.dateTo, balance.balance);
+      return getAccountTransactions(params, openingBalance.balance);
     })
     .then((result) => {
       _.extend(bundle, {
@@ -66,10 +58,32 @@ function document(req, res, next) {
         params,
       });
 
-      return getNumberOfFiscalYears(params.dateFrom, params.dateTo);
+      // temp binding to make the period object easier to read
+      const o = bundle.openingBalance;
+      const totals = bundle.sum.footer;
+
+      // contains the period totals (opening balance + grid footer)
+      const period = {
+        debit : totals.debit + o.debit,
+        credit : totals.credit + o.credit,
+        balance : totals.balance + o.balance,
+        exchangedDebit : (totals.debit + o.debit) * totals.rate,
+        exchangedCredit : (totals.credit + o.credit) * totals.rate,
+        exchangedBalance : (totals.balance + o.balance) * totals.rate,
+        exchangedDate : new Date(),
+        currency_id : totals.currency_id,
+        inverted_rate : totals.inverted_rate,
+      };
+
+      period.showExchangeRate = (period.inverted_rate !== 1);
+
+      _.merge(bundle.sum, { period });
+
+      return Fiscal.getNumberOfFiscalYears(params.dateFrom, params.dateTo);
     })
     .then((result) => {
-      // check to see if this statement spans multiple fiscal years AND concerns an income/ expense account
+      // check to see if this statement spans multiple fiscal years AND concerns
+      // an income/ expense account
       // @TODO these constants should be system shared variables
       const incomeAccountId = 4;
       const expenseAccountId = 5;
@@ -92,91 +106,134 @@ function document(req, res, next) {
     .done();
 }
 
-function getNumberOfFiscalYears(dateFrom, dateTo) {
+/**
+ * @function getGeneralLedgerSQL
+ *
+ * @description
+ * Used by the getAccountTransaction() function internally.  The internal SQL
+ * just pulls out the values tied to a particular account.
+ */
+function getGeneralLedgerSQL(options) {
+  const filters = new FilterParser(options);
+
   const sql = `
-    SELECT COUNT(id) as fiscalYearSpan from fiscal_year
-    WHERE
-    start_date >= DATE(?) AND end_date <= DATE(?)
+    SELECT trans_id, description, trans_date, document_reference, debit_equiv, credit_equiv,
+      debit, credit, @cumsum := balance + @cumsum AS cumsum,
+      currency_id FROM (
+      SELECT trans_id, description, trans_date, document_map.text AS document_reference,
+        SUM(debit_equiv) as debit_equiv, SUM(credit_equiv) AS credit_equiv,
+        (SUM(debit_equiv) - SUM(credit_equiv)) AS balance, SUM(debit) AS debit,
+        SUM(credit) AS credit, MAX(currency_id) AS currency_id
+      FROM general_ledger
+      LEFT JOIN document_map ON record_uuid = document_map.uuid
   `;
 
-  return db.one(sql, [dateFrom, dateTo]);
+  filters.equals('account_id');
+  filters.dateFrom('dateFrom', 'trans_date');
+  filters.dateTo('dateTo', 'trans_date');
+  filters.period('period', 'date');
+
+  filters.setGroup('GROUP BY record_uuid');
+  filters.setOrder('ORDER BY trans_date ASC');
+
+  const query = filters.applyQuery(sql);
+  const parameters = filters.parameters();
+
+  return { query, parameters };
 }
+
+// @TODO define standards for displaying and rounding totals, unless numbers are rounded
+//       uniformly they may be displayed differently from what is recorded
+function getTotalsSQL(options) {
+  const currencyId = options.currency_id || options.enterprise_currency_id;
+
+  const sqlTotals = `
+    SELECT
+      IFNULL(getExchangeRate(${options.enterprise_id}, ${currencyId}, NOW()), 1) AS rate,
+      ${currencyId} AS currency_id,
+      SUM(ROUND(debit_equiv, 2)) AS debit, SUM(ROUND(credit_equiv, 2)) AS credit,
+      (SUM(ROUND(debit_equiv, 2)) - SUM(ROUND(credit_equiv, 2))) AS balance
+    FROM general_ledger
+  `;
+
+  const filters = new FilterParser(options);
+
+  filters.equals('account_id');
+  filters.dateFrom('dateFrom', 'trans_date');
+  filters.dateTo('dateTo', 'trans_date');
+  filters.period('period', 'date');
+
+  const totalsQuery = filters.applyQuery(sqlTotals);
+  const totalsParameters = filters.parameters();
+
+  return { totalsQuery, totalsParameters };
+}
+
 
 /**
  * @function getAccountTransactions
- * This feature select all transactions for a specific account
-*/
-function getAccountTransactions(accountId, dateFrom, dateTo, openingBalance) {
-  const params = [accountId];
-  let dateCondition = '';
+ *
+ * @description
+ * This function returns all the transactions for an account,
+ */
+function getAccountTransactions(options, openingBalance = 0) {
+  const { query, parameters } = getGeneralLedgerSQL(options);
 
-  if (dateFrom && dateTo) {
-    dateCondition = 'AND DATE(trans_date) BETWEEN DATE(?) AND DATE(?)';
-    params.push(new Date(dateFrom), new Date(dateTo));
-  }
-
+  // the running balance can only be in the enterprise currency.  It doesn't
+  // make sense to have the running balance in any other currency.
   const sql = `
-    SELECT groups.trans_id, groups.debit, groups.credit, groups.trans_date,
-      groups.document_reference, groups.cumsum, groups.description
-    FROM (
-      SELECT trans_id, description, trans_date, document_reference, debit, credit,
-        @cumsum := balance + @cumsum AS cumsum FROM (
-        SELECT trans_id, description, trans_date, document_map.text AS document_reference,
-          SUM(debit_equiv) as debit, SUM(credit_equiv) as credit, (SUM(debit_equiv) - SUM(credit_equiv)) AS balance
-        FROM general_ledger
-        LEFT JOIN document_map ON record_uuid = document_map.uuid
-        WHERE account_id = ? ${dateCondition}
-        GROUP BY record_uuid
-        ORDER BY trans_date ASC
-      )c, (SELECT @cumsum := ${openingBalance || 0})z
-    ) AS groups
+    SELECT groups.trans_id, groups.debit, groups.credit, groups.debit_equiv,
+      groups.credit_equiv, groups.trans_date, groups.document_reference,
+      ROUND(1 / IFNULL(GetExchangeRate(${options.enterprise_id}, groups.currency_id, groups.trans_date), 0), 2) AS rate,
+      groups.cumsum, groups.description, groups.currency_id
+    FROM (${query})c, (SELECT @cumsum := ${openingBalance || 0})z) AS groups
   `;
 
-  // @TODO define standards for displaying and rounding totals, unless numbers are rounded
-  //       uniformly they may be displayed differently from what is recorded
-  const sqlTotals = `
-    SELECT 
-      SUM(ROUND(debit_equiv, 2)) as debit, SUM(ROUND(credit_equiv, 2)) as credit,
-      (SUM(ROUND(debit_equiv, 2)) - SUM(ROUND(credit_equiv, 2))) as balance
-    FROM 
-      general_ledger
-    WHERE 
-      account_id = ?
-      ${dateCondition}
-  `;
+  const { totalsQuery, totalsParameters } = getTotalsSQL(options);
 
   const bundle = {};
 
-  return Accounts.lookupAccount(accountId)
-    .then((accountDetails) => {
+  return Accounts.lookupAccount(options.account_id)
+    .then(accountDetails => {
       _.extend(bundle, { accountDetails });
-      return db.exec(sql, params);
-    })
-    .then((transactions) => {
-      _.extend(bundle, { transactions });
 
+      return db.exec(sql, parameters);
+    })
+    .then(transactions => {
+      _.extend(bundle, { transactions });
       // get the balance at the final date
-      return AccountsExtra.getOpeningBalanceForDate(accountId, dateTo, true);
+      return AccountsExtra.getOpeningBalanceForDate(options.account_id, options.dateTo, true);
     })
     .then((sum) => {
       // if the sum come back as zero (because there were no lines), set the default sum to the
       // opening balance
-      sum.credit = sum.credit || 0;
-      sum.debit = sum.debit || 0;
+      sum.credit_equiv = sum.credit_equiv || 0;
+      sum.debit_equiv = sum.debit_equiv || 0;
       sum.balance = sum.balance || 0;
       sum.isCreditBalance = sum.balance < 0;
 
       _.extend(bundle, { sum });
       // get totals for this period
-      return db.one(sqlTotals, [accountId, dateFrom, dateTo]);
+      return db.one(totalsQuery, totalsParameters);
     })
-    .then((totals) => {
-      const period = {};
-      period.debit = totals.debit;
-      period.credit = totals.credit;
-      period.balance = totals.balance;
+    .then(totals => {
+      // contains the grid totals for the footer
+      const footer = {
+        date : options.dateTo,
+        debit : totals.debit,
+        credit : totals.credit,
+        balance : totals.balance,
+        exchangedDebit : totals.debit * totals.rate,
+        exchangedCredit : totals.credit * totals.rate,
+        exchangedBalance : totals.balance * totals.rate,
+        currency_id : totals.currency_id,
+        exchangedDate : new Date(),
+        rate : totals.rate,
+        inverted_rate : Math.round(1 / totals.rate),
+      };
 
-      _.merge(bundle.sum, { period });
+      _.merge(bundle.sum, { footer });
+
       return bundle;
     });
 }

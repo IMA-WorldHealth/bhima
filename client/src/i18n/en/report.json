@@ -130,6 +130,13 @@
       "PREVIEW": "Preview",
       "VIEW_ARCHIVE": "Archives",
       "EMAIL_HELP_TXT" : "The email above will receive the report as an attachment.  The server must have an internet connection for the email to be successfully delivered."
+    },
+    "OPTIONS" : {
+      "MORE_OPTIONS" : "More Options",
+      "USE_ORIGINAL_TRANSACTION_CURRENCY" : "Display original transaction currency?",
+      "USE_ORIGINAL_TRANSACTION_CURRENCY_HELP" : "If yes, the report will show the recorded currency of the transaction instead of the value in the enterprise's currency.",
+      "TOTALS_CURRENCY" : "Select Totals Currency",
+      "TOTALS_CURRENCY_HELP" : "This options lets you view the totals in the selected currency by exchanging the totals into the selected currency using today's exchange rate."
     }
   }
 }
