@@ -22,10 +22,10 @@ describe('Account Management', () => {
 
   const account = {
     id : 90,
-    number : 10911010,
+    number : '10911010',
     type : 'Titre',
     label : 'Actionnaire, Capital souscrit, non appelé *',
-    parent : { number : 1091 },
+    parent : { number : '1091' },
   };
 
   const DELETE_ACCOUNT_ID = 87;
@@ -79,16 +79,16 @@ describe('Account Management', () => {
   });
 
   it('creates multiple accounts with the batch option selected', () => {
-    const parentNumber = 7061; // Services vendus dans la Region ohada
+    const parentNumber = '7061'; // Services vendus dans la Region ohada
 
     const accounts = [{
-      number : 70611013,
+      number : '70611013',
       label : 'Pharmacie',
     }, {
-      number : 70611014,
+      number : '70611014',
       label : 'Maternite',
     }, {
-      number : 70611015,
+      number : '70611015',
       label : 'Maternite',
     }];
 
@@ -113,7 +113,7 @@ describe('Account Management', () => {
 
     page.toggleBatchCreate();
 
-    createAccount({ number : 70611016, label : 'Laboratoire' });
+    createAccount({ number : '70611016', label : 'Laboratoire' });
 
     components.notification.hasSuccess();
   });
