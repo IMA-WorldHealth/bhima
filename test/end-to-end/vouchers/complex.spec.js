@@ -187,7 +187,7 @@ describe('Complex Vouchers', () => {
 
     const detail = {
       tool          : 'Prise en Charge',
-      accountNumber : 42210010, // 42210010 - Salaires à payer
+      accountNumber : '42210010', // 42210010 - Salaires à payer
       patientName   : 'Test 2',
       description   : 'Patient Support invoices',
       invoices      : [0, 1],
