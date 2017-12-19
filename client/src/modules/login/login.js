@@ -25,7 +25,16 @@ function LoginController(AppCache, Session, Languages, Projects, Notify, Install
   // contains the values from the login form
   vm.credentials = {};
   vm.login = login;
-  vm.languageService = Languages;
+  vm.languageService = Languages;  
+
+  // vm.finishInstallationChecking help to :
+  // hide loading indicator after checking
+  // decide if the login form or the intallation button can be displayed
+  vm.finishInstallationChecking = false;
+
+  // signal if an error occured while checking(connection error,...)
+  // in the case of error none of (login form and the intallation button) will be displayed
+  vm.installationCheckingError = false; 
 
   // displays a message if the user attempts more than maxCount
   // times to login and fails each time.
@@ -34,7 +43,13 @@ function LoginController(AppCache, Session, Languages, Projects, Notify, Install
   // check basic installation information exist
   Install.checkBasicInstallExist()
     .then(handleCheckInstallExist)
-    .catch(Notify.handleError);
+    .catch(function(err) {
+      vm.installationCheckingError = true;
+      Notify.handleError(err);
+    })
+    .finally(function() {
+      vm.finishInstallationChecking = true;
+    });
 
   function handleCheckInstallExist(res) {
     vm.installationExist = res.isInstalled;
