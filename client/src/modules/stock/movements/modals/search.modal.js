@@ -114,7 +114,7 @@ function SearchMovementsModalController(data, Notify, Instance, Flux, $translate
       if (angular.isDefined(_value)) {
         // default to the original value if no display value is defined
         _displayValue = displayValues[key] || lastDisplayValues[key] || _value;
-        changes.post({ key, value : _value, displayValue : _displayValue });
+        changes.post({ key : key, value : _value, displayValue : _displayValue });
       }
     });
 
