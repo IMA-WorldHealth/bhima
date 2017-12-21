@@ -106,7 +106,7 @@
     "gulp-template": "^4.0.0",
     "gulp-uglify": "^3.0.0",
     "gulp-util": "^3.0.7",
-    "karma": "^1.1.2",
+    "karma": "^2.0.0",
     "karma-chai": "^0.1.0",
     "karma-chai-dom": "^1.1.0",
     "karma-chai-spies": "^0.1.4",
