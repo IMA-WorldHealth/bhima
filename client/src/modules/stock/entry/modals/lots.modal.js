@@ -8,13 +8,13 @@ StockDefineLotsModalController.$inject = [
 
 function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data, Session) {
   var vm = this;
-
+  var current = new Date();
   vm.enterprise = Session.enterprise;
   vm.stockLine = Data.stockLine;
   vm.entryType = Data.entry_type;
   vm.gridApi = {};
   vm.isCostEditable = (vm.entryType !== 'purchase' && vm.entryType !== 'transfer_reception');
-
+  
   vm.gridOptions = {
     appScopeProvider: vm,
     enableSorting: false,
@@ -55,6 +55,7 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
         field: 'expiration_date',
         type: 'date',
         width: 150,
+        visible : (vm.stockLine.expires !== 0),
         displayName: 'TABLE.COLUMNS.EXPIRATION_DATE',
         headerCellFilter: 'translate',
         cellTemplate: 'modules/stock/entry/modals/templates/lot.expiration.tmpl.html'
@@ -64,7 +65,7 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
         field: 'actions',
         width: 25,
         cellTemplate: 'modules/stock/entry/modals/templates/lot.actions.tmpl.html'
-      }
+      },
     ],
     data: vm.stockLine.lots,
     onRegisterApi: onRegisterApi
@@ -121,9 +122,18 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
   }
 
   function checkLine(line, date) {
+       
     if (date) { line.expiration_date = date; }
-
+    
     var isPosterior = new Date(line.expiration_date) >= new Date();
+    // IF this item doesn't expires, we can consider isposterior = true,
+    // no check for the expiration date,
+    // the expiration date can have defaut value, this year + 1000 years.
+      
+    if (vm.stockLine.expires === 0) {
+      isPosterior = true;
+      line.expiration_date = new Date((current.getFullYear() + 1000), current.getMonth());
+    }
     line.isValid = (line.lot && line.quantity > 0 && isPosterior);
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.EDIT);
 

@@ -123,7 +123,7 @@ function getItemsMetadata(params) {
 
   const sql =
     `SELECT BUID(inventory.uuid) as uuid, inventory.code, inventory.text AS label, inventory.price, iu.abbr AS unit,
-      it.text AS type, ig.name AS groupName, BUID(ig.uuid) AS group_uuid, inventory.consumable,inventory.locked, inventory.stock_min,
+      it.text AS type, ig.name AS groupName, BUID(ig.uuid) AS group_uuid, ig.expires, ig.unique_item, inventory.consumable,inventory.locked, inventory.stock_min,
       inventory.stock_max, inventory.created_at AS timestamp, inventory.type_id, inventory.unit_id,
       inventory.unit_weight, inventory.unit_volume, ig.sales_account, ig.stock_account, ig.donation_account,
       ig.cogs_account, inventory.default_quantity
@@ -171,7 +171,7 @@ function remove(uuid) {
 function getItemsMetadataById(uid) {
   const sql =
     `SELECT BUID(i.uuid) as uuid, i.code, i.text AS label, i.price, iu.abbr AS unit,
-      it.text AS type, ig.name AS groupName, BUID(ig.uuid) AS group_uuid, i.consumable, i.locked, i.stock_min,
+      it.text AS type, ig.name AS groupName, BUID(ig.uuid) AS group_uuid, ig.expires, ig.unique_item, i.consumable, i.locked, i.stock_min,
       i.stock_max, i.created_at AS timestamp, i.type_id, i.unit_id, i.unit_weight, i.unit_volume,
       ig.sales_account, i.default_quantity, i.avg_consumption, i.delay, i.purchase_interval
     FROM inventory AS i JOIN inventory_type AS it

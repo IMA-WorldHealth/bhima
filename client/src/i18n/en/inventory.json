@@ -22,6 +22,8 @@
         "LIST_UNIT": "Inventory Unit form",
         "DEFAULT_QUANTITY_DEFINITION": "The default quantity allows you to customize the default quantity invoiced for.  The invoicing module can change this quantity at invoice time.",
         "NO_INVENTORY_REGISTERED": "There is no inventory enregistered yet",
-        "REGISTRY": "Inventories Registry"
+        "REGISTRY": "Inventories Registry",
+        "EXPIRES" : "Expires",
+        "UNIQUE_ITEM" : "Unique item"
     }
 }

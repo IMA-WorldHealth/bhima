@@ -246,7 +246,6 @@ function StockEntryController(
       item.quantity = items[index].quantity;
       item.cost = item.quantity * item.unit_cost;
       item.expiration_date = new Date();
-
       if(vm.movement.entity.type === 'transfer_reception') {
         item.lots.push({
           isValid : true,
@@ -274,6 +273,11 @@ function StockEntryController(
   }
 
   function setLots(stockLine) {
+    // Additionnal information for an inventory Group
+    var inventory = inventoryStore.get(stockLine.inventory_uuid);
+    stockLine.expires = inventory.expires;
+    stockLine.unique_item = inventory.unique_item;
+
     StockModal.openDefineLots({
       stockLine : stockLine,
       entry_type : vm.movement.entry_type,

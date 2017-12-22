@@ -13,6 +13,8 @@ describe('(/inventory) The Inventory HTTP API', () => {
     stock_account : 162, // 31110010 - 'Medicaments en comprimes *'
     sales_account : 242, // 70111010 - Vente Medicaments en comprimes
     cogs_account : 209, // 60310010 - Médicaments en comprimés
+    expires : 1,
+    unique_item : 0,
   };
 
   const updateGroup = {
@@ -21,6 +23,8 @@ describe('(/inventory) The Inventory HTTP API', () => {
     stock_account : 163, // 31110011 - Medicaments en Sirop *
     sales_account : 242, // 70111010 - Vente Medicaments en comprimes
     cogs_account : 209, // 60310010 - Médicaments en comprimés
+    expires : 1,
+    unique_item : 0,
   };
 
   const inventoryType = {

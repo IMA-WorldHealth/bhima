@@ -76,22 +76,29 @@ function InventoryGroupsActionsModalController(InventoryGroups, Notify, Instance
       sales_account : o.sales_account,
       stock_account : o.stock_account,
       cogs_account  : o.cogs_account,
+      expires : o.expires,
+      unique_item : o.unique_item,
     };
   }
 
   /** startup */
   function startup() {
+
     vm.action = Data.action;
     vm.identifier = Data.identifier;
 
-    if (!vm.identifier) { return; }
+    if (vm.identifier) {
+      InventoryGroups.read(vm.identifier)
+        .then(function (groups) {
+          vm.session = groups[0];
+        })
+        .catch(Notify.handleError);
+    }
 
-    InventoryGroups.read(vm.identifier)
-      .then(handleInventoryGroup)
-      .catch(Notify.handleError);
-  }
-
-  function handleInventoryGroup(group) {
-    vm.session = group;
+    if (vm.action === 'add') {
+      // by default all inventory (for a group) expires and doesn't have a unique item
+      vm.session.expires = 1;
+      vm.session.unique_item = 0;
+    }
   }
 }
