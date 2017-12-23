@@ -66,7 +66,7 @@
     "json2xls": "^0.1.2",
     "lodash": "^4.16.2",
     "lzma-native": "^3.0.4",
-    "mailgun-js": "^0.13.1",
+    "mailgun-js": "^0.14.0",
     "mkdirp": "^0.5.1",
     "moment": "^2.15.0",
     "morgan": "^1.6.1",
