@@ -47,7 +47,7 @@
   "dependencies": {
     "accounting-js": "^1.1.1",
     "body-parser": "^1.15.0",
-    "bower-npm-resolver": "^0.7.0",
+    "bower-npm-resolver": "^0.8.2",
     "chai-spies": "^0.7.1",
     "chai-spies-next": "^0.9.3",
     "compression": "^1.7.0",
