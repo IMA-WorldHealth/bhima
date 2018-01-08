@@ -1,7 +1,6 @@
-'use strict';
+/* global element, by */
 
-const chai = require('chai');
-const expect = chai.expect;
+const { expect } = require('chai');
 
 const Filters = require('../shared/components/bhFilters');
 const SearchModal = require('../shared/search.page');
@@ -13,16 +12,16 @@ function PurchaseOrderSearch() {
   let filters;
 
   const parameters = {
-    reference: 'PO.TPA.2',
-    name1: 'Patient',
-    author: 'Super User',
-    status: ['Confirmé'],
+    reference : 'PO.TPA.2',
+    name1 : 'Patient',
+    author : 'Super User',
+    status : ['Confirmé'],
     supplier : 'SNEL',
   };
 
   const grid = element(by.id('purchase-registry'));
   const rows = grid.element(by.css('.ui-grid-render-container-body'))
-    .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'));  
+    .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'));
 
   beforeEach(() => {
     SearchModal.open();
@@ -50,12 +49,12 @@ function PurchaseOrderSearch() {
   });
 
   // demonstrates that filtering works
-  it(`should find one Purchase Order with Reference "${parameters.reference}" for the current year`, () => {
+  it(`should find one Purchase Order with Reference "${parameters.reference}" for all time`, () => {
     const NUM_MATCHING = 1;
     modal.setReference(parameters.reference);
 
     modal.switchToDefaultFilterTab();
-    modal.setPeriod('year');
+    modal.setPeriod('allTime');
     FU.modal.submit();
 
     expectNumberOfGridRows(NUM_MATCHING);
@@ -64,9 +63,9 @@ function PurchaseOrderSearch() {
   it(`should find four Purchases Orders authored By "${parameters.author}" for all time`, () => {
     const NUM_MATCHING = 4;
     modal.setUser(parameters.author);
-    
+
     modal.switchToDefaultFilterTab();
-    modal.setPeriod('allTime');    
+    modal.setPeriod('allTime');
     FU.modal.submit();
 
     expectNumberOfGridRows(NUM_MATCHING);
@@ -75,20 +74,20 @@ function PurchaseOrderSearch() {
   it(`should list all purchase orders ordered to "${parameters.supplier}" for all time`, () => {
     const NUM_MATCHING = 4;
     modal.setSupplier(parameters.supplier);
-    
+
     modal.switchToDefaultFilterTab();
-    modal.setPeriod('allTime');    
+    modal.setPeriod('allTime');
     FU.modal.submit();
 
     expectNumberOfGridRows(NUM_MATCHING);
   });
 
 
-  it(`Choose the status confirmed and should find two Purchases Orders status By "${parameters.status}" for all time`, function () {
+  it(`choose the status confirmed and should find two purchases orders status by "${parameters.status}" for all time`, function () {
     const NUM_MATCHING = 1;
     components.purchaseStatusSelect.set(parameters.status);
     modal.switchToDefaultFilterTab();
-    modal.setPeriod('allTime');       
+    modal.setPeriod('allTime');
     FU.modal.submit();
 
     expectNumberOfGridRows(NUM_MATCHING);

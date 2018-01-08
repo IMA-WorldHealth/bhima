@@ -287,6 +287,9 @@ CALL CreateFiscalYear(1, @fiscalYear2015, @superUser, 'Test Fiscal Year 2016', 1
 SET @fiscalYear2017 = 0;
 CALL CreateFiscalYear(1, @fiscalYear2016, @superUser, 'Test Fiscal Year 2017', 12, DATE('2017-01-01'), DATE('2017-12-31'), 'Note for 2017', @fiscalYear2017);
 
+SET @fiscalYear2018 = 0;
+CALL CreateFiscalYear(1, @fiscalYear2017, @superUser, 'Fiscal Year 2018', 12, DATE('2018-01-01'), DATE('2018-12-31'), 'Notes for 2018', @fiscalYear2018);
+
 -- give test permission to all projects
 INSERT INTO `project_permission` VALUES (1, 1, 1),(2, 1, 2),(3, 2, 1),(4, 4, 1);
 

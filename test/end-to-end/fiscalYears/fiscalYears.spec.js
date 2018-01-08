@@ -16,7 +16,7 @@ describe('Fiscal Year', () => {
   const fiscalYear = {
     label    : 'A Special Fiscal Year',
     note     : 'Note for the new fiscal Year',
-    previous : 'Test Fiscal Year 2016',
+    previous : 'Test Fiscal Year 2017',
   };
 
   it('blocks invalid form submission with relevant error classes', () => {
@@ -42,7 +42,7 @@ describe('Fiscal Year', () => {
     FU.input('FiscalManageCtrl.fiscal.label', fiscalYear.label);
 
     // select the proper date
-    components.dateInterval.range('01/01/2018', '31/12/2018');
+    components.dateInterval.range('01/01/2019', '31/12/2019');
     FU.select('FiscalManageCtrl.fiscal.previous_fiscal_year_id', fiscalYear.previous);
     FU.input('FiscalManageCtrl.fiscal.note', fiscalYear.note);
     FU.buttons.submit();
