@@ -4,7 +4,7 @@ const helpers = require('./helpers');
 
 // cheeky method to duplicate an array
 function clone(array) {
-  return array.filter(() => true);
+  return array.slice();
 }
 
 describe('(/accounts) Accounts', () => {
@@ -186,5 +186,4 @@ describe('(/accounts) Accounts', () => {
       })
       .catch(helpers.handler);
   });
-
 });

@@ -25,7 +25,7 @@ function StockLotsRegistryTests() {
   const depotGroupingRow = 1;
   const LOT_FOR_ALLTIME = 16;
   const LOT_FOR_TODAY = 10;
-  const LOT_FOR_LAST_YEAR = 16;
+  const LOT_FOR_LAST_YEAR = 10;
 
 
   it(`finds ${LOT_FOR_TODAY} lot for today`, () => {

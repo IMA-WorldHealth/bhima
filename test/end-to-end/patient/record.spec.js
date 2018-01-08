@@ -3,7 +3,9 @@
 const path = require('path');
 const chai = require('chai');
 
-const expect = chai.expect;
+const { expect } = chai;
+
+const moment = require('moment');
 
 const components = require('../shared/components');
 const helpers = require('../shared/helpers');
@@ -18,21 +20,15 @@ describe('Patient Record', () => {
   const root = '#!/patients/';
   const id = '274c51ae-efcc-4238-98c6-f402bfb39866';
 
-  // calcul Age dynamically
-  const currentDate = new Date();
-  const currentYear = currentDate.getFullYear();
-
-  // Calculate age and transform ageTestPatient2 to String
-  const ageTestPatient2 = `${(currentYear - 1990)}`;
-
   const patient = {
     name : 'Test 2 Patient',
     id : 'PA.TPA.2',
     hospital_no : '110',
-    age : ageTestPatient2,
+    dob : '1990-06-01',
     gender : 'M',
   };
 
+  const age = (dob) => `${moment().diff(dob, 'years')}`;
   const url = root.concat(id);
 
   before(() => helpers.navigate(url));
@@ -41,7 +37,7 @@ describe('Patient Record', () => {
     FU.hasText(by.id('name'), patient.name);
     FU.hasText(by.id('patientID'), patient.id);
     FU.hasText(by.id('hospitalNo'), patient.hospital_no);
-    FU.hasText(by.id('age'), patient.age);
+    FU.hasText(by.id('age'), age(patient.dob));
     FU.hasText(by.id('gender'), patient.gender);
   });
 
