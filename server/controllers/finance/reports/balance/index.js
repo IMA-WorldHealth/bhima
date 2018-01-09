@@ -19,6 +19,13 @@ const ReportManager = require('../../../../lib/ReportManager');
 // report template
 const TEMPLATE = './server/controllers/finance/reports/balance/report.handlebars';
 
+// TODO(@jniles)
+// Not sure why this is structured this way
+const ASSET_ID = 1;
+const EXPENSE_ID = 5;
+const shouldShowCredit = (typeId) =>
+  [ASSET_ID, EXPENSE_ID].includes(typeId);
+
 // expose to the API
 exports.document = document;
 
@@ -82,8 +89,6 @@ function processAccounts(balances) {
     obj.beginCredit = sold.credit;
     obj.middleDebit = 0;
     obj.middleCredit = 0;
-    obj.is_charge = row.is_charge;
-    obj.is_asset = row.is_asset;
     account[id] = obj;
     return account;
   }, {});
@@ -95,8 +100,6 @@ function processAccounts(balances) {
     account.middleCredit = row.credit;
     account.label = row.label;
     account.number = row.number;
-    account.is_charge = row.is_charge;
-    account.is_asset = row.is_asset;
     accounts[row.number] = account;
   });
 
@@ -145,7 +148,7 @@ function getSold(item) {
   let credit = 0;
   let sold = 0;
 
-  if (item.is_asset === 1 || item.is_charge === 1) {
+  if (shouldShowCredit(item.type_id)) {
     sold = item.debit - item.credit;
     if (sold < 0) {
       credit = sold * -1;
@@ -184,7 +187,7 @@ function balanceReporting(params) {
       fiscal = fiscalYear;
 
       sql = `
-        SELECT a.number, a.id, a.label, a.type_id, a.is_charge, a.is_asset, 
+        SELECT a.number, a.id, a.label, a.type_id,
           SUM(pt.credit) AS credit, SUM(pt.debit) AS debit, SUM(pt.debit - pt.credit) AS balance
         FROM period_total AS pt JOIN account AS a ON pt.account_id = a.id
         JOIN period AS p ON pt.period_id = p.id
@@ -198,8 +201,8 @@ function balanceReporting(params) {
       data.beginning = rows;
 
       sql = `
-        SELECT a.number, a.label, a.id, a.type_id, a.is_charge, a.is_asset,
-          SUM(pt.credit) AS credit, SUM(pt.debit) AS debit, SUM(pt.debit - pt.credit) AS balance
+        SELECT a.number, a.label, a.id, a.type_id,
+        SUM(pt.credit) AS credit, SUM(pt.debit) AS debit, SUM(pt.debit - pt.credit) AS balance
         FROM period_total AS pt JOIN account AS a ON pt.account_id = a.id
         JOIN period AS p ON pt.period_id = p.id
         WHERE (DATE(?) BETWEEN p.start_date AND p.end_date AND pt.enterprise_id = ?)
