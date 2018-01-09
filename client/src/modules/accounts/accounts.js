@@ -141,6 +141,7 @@ function AccountsController($rootScope, $timeout, AccountGrid, Notify, Constants
 
   function bindGridData() {
     vm.gridOptions.data = vm.Accounts.data;
+    console.log('vm.Accounts.data', vm.gridOptions.data);
   }
 
   function toggleLoadingIndicator() {
