@@ -5,7 +5,7 @@ angular.module('bhima.controllers')
 CashPaymentRegistryController.$inject = [
   'CashService', 'bhConstants', 'NotifyService', 'SessionService', 'uiGridConstants',
   'ModalService', 'GridSortingService', '$state', 'FilterService',
-  'GridColumnService', 'GridStateService', 'ModalService',
+  'GridColumnService', 'GridStateService', 'ModalService', 'util',
 ];
 
 /**
@@ -16,7 +16,7 @@ CashPaymentRegistryController.$inject = [
  */
 function CashPaymentRegistryController(
   Cash, bhConstants, Notify, Session, uiGridConstants, Modal, Sorting, $state,
-  Filters, Columns, GridState, Modals
+  Filters, Columns, GridState, Modals, util,
 ) {
   var vm = this;
 
@@ -31,6 +31,7 @@ function CashPaymentRegistryController(
   var filter = new Filters();
 
   vm.filter = filter;
+  vm.format = util.formatDate;
   // global variables
   vm.enterprise = Session.enterprise;
   vm.bhConstants = bhConstants;
@@ -56,7 +57,7 @@ function CashPaymentRegistryController(
     field : 'date',
     displayName : 'TABLE.COLUMNS.DATE',
     headerCellFilter : 'translate',
-    cellFilter : 'date:"mediumDate"',
+    cellTemplate : '/modules/cash/payments/templates/date.cell.html',
     type : 'date',
   }, {
     name : 'patientName',

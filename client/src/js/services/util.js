@@ -1,7 +1,7 @@
 angular.module('bhima.services')
-.service('util', UtilService);
+  .service('util', UtilService);
 
-UtilService.$inject = ['moment' ];
+UtilService.$inject = ['moment'];
 
 /**
  * @class util
@@ -17,6 +17,17 @@ function UtilService(moment) {
   service.unwrapHttpResponse = function unwrapHttpResponse(response) {
     return response.data;
   };
+
+  service.formatDate = function (date, format) {
+    var f = format || 'DD/MM/YYYY HH:mm:ss';
+    if (date) {
+      return moment(date).format(f);
+    } else {
+      return null;
+    }
+  }
+
+
 
   /** @todo comments showing usage */
   service.filterFormElements = function filterFormElements(formDefinition, requireDirty) {
@@ -95,7 +106,9 @@ function UtilService(moment) {
 
     return function () {
 
-      if (!fn) { return; }
+      if (!fn) {
+        return;
+      }
 
       // call the function only once
       result = fn.apply(context || this, arguments);
@@ -176,7 +189,7 @@ function UtilService(moment) {
    * @param {array} array An array in which we want to get only unique values
    * @description return an array which contain only unique values
    */
-  service.uniquelize = function uniquelize (array) {
+  service.uniquelize = function uniquelize(array) {
     return array.filter(function (value, idx, array) {
       return array.indexOf(value) === idx;
     });
@@ -199,7 +212,7 @@ function UtilService(moment) {
    * @returns {Boolean} - the result
    */
   service.xor = function xor(a, b) {
-     return !a !== !b;
+    return !a !== !b;
   };
 
   /**
@@ -219,8 +232,8 @@ function UtilService(moment) {
   service.maskObjectFromKeys = function maskObjectFromKeys(object, mask) {
     return Object.keys(object)
 
-    //  for each key, if the key exists in the mask, add the k/v pair to the
-    //  screened object.
+      //  for each key, if the key exists in the mask, add the k/v pair to the
+      //  screened object.
       .reduce(function (screenedObject, key) {
         if (mask.indexOf(key) >= 0) {
           screenedObject[key] = object[key];
