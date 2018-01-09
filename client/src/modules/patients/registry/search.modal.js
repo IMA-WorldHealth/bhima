@@ -41,8 +41,6 @@ function PatientRegistryModalController(ModalInstance, filters, bhConstants, mom
   // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(filters, searchQueryOptions);
 
-
-
   // bind methods
   vm.submit = submit;
   vm.cancel = cancel;

@@ -221,7 +221,7 @@ function AccountStatementController(
   vm.openSearchModal = function openSearchModal() {
     var filtersSnapshot = AccountStatement.filters.formatHTTP();
 
-    Journal.openSearchModal(filtersSnapshot, { hasDefaultAccount : true, title : 'ACCOUNT_STATEMENT.TITLE' })
+    Journal.openSearchModal(filtersSnapshot, { hasDefaultAccount : true, title : 'ACCOUNT_STATEMENT.TITLE', hidePostedOption : true })
       .then(function (changes) {
         AccountStatement.filters.replaceFilters(changes);
 
