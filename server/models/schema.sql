@@ -153,6 +153,28 @@ CREATE TABLE `cash_box` (
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `rubric_payroll`;
+
+CREATE TABLE `rubric_payroll` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `label` VARCHAR(80) NOT NULL,
+  `abbr` varchar(6) DEFAULT NULL,
+  `is_employee` tinyint(1) DEFAULT 0,
+  `is_percent` tinyint(1) DEFAULT 0,
+  `is_discount` tinyint(1) DEFAULT 0,
+  `is_tax` tinyint(1) DEFAULT 0,
+  `is_social_care` tinyint(1) DEFAULT 0,
+  `third_party_account_id` int(10) unsigned DEFAULT NULL,
+  `costs_account_id` int(10) unsigned DEFAULT NULL,
+  `is_ipr` tinyint(1) DEFAULT 0,
+  `value` float DEFAULT 0,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `rubric_payroll_1` (`label`),
+  KEY `third_party_account_id` (`third_party_account_id`),
+  KEY `costs_account_id` (`costs_account_id`),
+  FOREIGN KEY (`third_party_account_id`) REFERENCES `account` (`id`),
+  FOREIGN KEY (`costs_account_id`) REFERENCES `account` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `cash_box_account_currency`;
 CREATE TABLE `cash_box_account_currency` (
@@ -185,30 +207,6 @@ CREATE TABLE `config_accounting` (
   UNIQUE KEY `config_accounting_2` (`label`, `account_id`),
   KEY `account_id` (`account_id`),
   FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-DROP TABLE IF EXISTS `config_cotisation`;
-CREATE TABLE `config_cotisation` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `label` VARCHAR(100) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `config_cotisation_1` (`label`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-DROP TABLE IF EXISTS `config_cotisation_item`;
-CREATE TABLE `config_cotisation_item` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `config_cotisation_id` int(10) unsigned NOT NULL,
-  `cotisation_id` int(10) unsigned NOT NULL,
-  `payable` tinyint(1) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `config_cotisation_item_1` (`config_cotisation_id`, `cotisation_id`, `payable`),
-  KEY `config_cotisation_id` (`config_cotisation_id`),
-  KEY `cotisation_id` (`cotisation_id`),
-  FOREIGN KEY (`config_cotisation_id`) REFERENCES `config_cotisation` (`id`),
-  FOREIGN KEY (`cotisation_id`) REFERENCES `cotisation` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 

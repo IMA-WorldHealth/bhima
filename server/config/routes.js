@@ -27,6 +27,7 @@ const install = require('../controllers/install');
 const users = require('../controllers/admin/users');
 const projects = require('../controllers/admin/projects');
 const enterprises = require('../controllers/admin/enterprises');
+const rubrics = require('../controllers/payroll/rubrics');
 const services = require('../controllers/admin/services');
 const suppliers = require('../controllers/admin/suppliers');
 const functions = require('../controllers/admin/functions');
@@ -541,6 +542,13 @@ exports.configure = function configure(app) {
   app.post('/functions', functions.create);
   app.put('/functions/:id', functions.update);
   app.delete('/functions/:id', functions.delete);
+
+  // rubrics payroll api
+  app.get('/rubrics', rubrics.list);
+  app.get('/rubrics/:id', rubrics.detail);
+  app.post('/rubrics', rubrics.create);
+  app.put('/rubrics/:id', rubrics.update);
+  app.delete('/rubrics/:id', rubrics.delete);
 
   // grades api
   app.get('/grades', grades.list);
