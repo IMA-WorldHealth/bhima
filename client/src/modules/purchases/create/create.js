@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('PurchaseOrderController', PurchaseOrderController);
+  .controller('PurchaseOrderController', PurchaseOrderController);
 
 PurchaseOrderController.$inject = [
   'PurchaseOrderService', 'PurchaseOrderForm', 'NotifyService',
@@ -14,7 +14,6 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify, Session, util
   vm.order = new PurchaseOrder('PurchaseOrder');
   vm.bhConstants = bhConstants;
 
-  vm.itemIncrement = 1;
   vm.enterprise = Session.enterprise;
   vm.maxLength = util.maxLength;
   vm.maxDate = new Date();
@@ -23,7 +22,7 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify, Session, util
   vm.optimalPurchase = optimalPurchase;
   vm.optimalPO = false;
 
-  function setSupplier (supplier) {
+  function setSupplier(supplier) {
     vm.supplier = supplier;
     vm.order.setSupplier(supplier);
   }
@@ -34,17 +33,17 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify, Session, util
     enableSorting : false,
     enableColumnMenus : false,
     columnDefs : [
-      { field: 'status', width: 25, displayName : '', cellTemplate: 'modules/purchases/create/templates/status.tmpl.html' },
-      { field: 'code', width: 150, displayName: 'TABLE.COLUMNS.CODE', headerCellFilter: 'translate', cellTemplate:  'modules/purchases/create/templates/code.tmpl.html' },
-      { field: 'description', displayName: 'TABLE.COLUMNS.DESCRIPTION', headerCellFilter: 'translate' },
-      { field: 'unit', width:100, displayName: 'TABLE.COLUMNS.UNIT', headerCellFilter: 'translate' },
-      { field: 'quantity', width:100, displayName: 'TABLE.COLUMNS.QUANTITY', headerCellFilter: 'translate', cellTemplate: 'modules/purchases/create/templates/quantity.tmpl.html' },
-      { field: 'unit_price', width: 100, displayName: 'TABLE.COLUMNS.PURCHASE_PRICE', headerCellFilter: 'translate', cellTemplate: 'modules/purchases/create/templates/price.tmpl.html' },
-      { field: 'amount', width:100, displayName: 'TABLE.COLUMNS.AMOUNT', headerCellFilter: 'translate', cellTemplate: 'modules/purchases/create/templates/amount.tmpl.html' },
-      { field: 'actions', width: 25, cellTemplate: 'modules/purchases/create/templates/actions.tmpl.html' }
+      { field : 'status', width : 25, displayName : '', cellTemplate : 'modules/purchases/create/templates/status.tmpl.html' },
+      { field : 'code', width : 150, displayName : 'TABLE.COLUMNS.CODE', headerCellFilter : 'translate', cellTemplate :  'modules/purchases/create/templates/code.tmpl.html' },
+      { field : 'description', displayName : 'TABLE.COLUMNS.DESCRIPTION', headerCellFilter : 'translate' },
+      { field : 'unit', width :100, displayName : 'TABLE.COLUMNS.UNIT', headerCellFilter : 'translate' },
+      { field : 'quantity', width :100, displayName : 'TABLE.COLUMNS.QUANTITY', headerCellFilter : 'translate', cellTemplate : 'modules/purchases/create/templates/quantity.tmpl.html' },
+      { field : 'unit_price', width : 100, displayName : 'TABLE.COLUMNS.PURCHASE_PRICE', headerCellFilter : 'translate', cellTemplate : 'modules/purchases/create/templates/price.tmpl.html' },
+      { field : 'amount', width :100, displayName : 'TABLE.COLUMNS.AMOUNT', headerCellFilter : 'translate', cellTemplate : 'modules/purchases/create/templates/amount.tmpl.html' },
+      { field : 'actions', width : 25, cellTemplate : 'modules/purchases/create/templates/actions.tmpl.html' }
     ],
     onRegisterApi : onRegisterApi,
-    data : vm.order.store.data
+    data : vm.order.store.data,
   };
 
   // this function will be called whenever items change in the grid.
@@ -64,7 +63,6 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify, Session, util
 
   // submits the form
   function submit(form) {
-
     // make sure form validation is triggered
     form.$setSubmitted();
 
@@ -112,7 +110,7 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify, Session, util
   }
 
   // clears the module, resetting it
-  //TODO : Choose a better name for a starting method
+  // TODO : Choose a better name for a starting method
   function clear(form) {
     // remove the data
     delete vm.supplier;
@@ -127,35 +125,35 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify, Session, util
     }
   }
 
-  function optimalPurchase () {
+  function optimalPurchase() {
     vm.optimalPO = true;
 
-    Stock.inventories.read(null, {require_po : 1})
-    .then(function (rows) {
-      if (!rows.length) {
-        return Notify.warn('FORM.INFO.NO_INVENTORY_PO');        
-      }
+    Stock.inventories.read(null, { require_po : 1 })
+      .then(function (rows) {
+        if (!rows.length) {
+          return Notify.warn('FORM.INFO.NO_INVENTORY_PO');
+        }
 
-      // adding items.length line in the Order store, which will be reflected to the grid
-      if (rows.length > 1) {
-        vm.order.addItem(rows.length);
-      }
+        // adding items.length line in the Order store, which will be reflected to the grid
+        if (rows.length > 1) {
+          vm.order.addItem(rows.length);
+        }
 
-      vm.order.store.data.forEach(function (item, index) {
-        item.code = rows[index].code;
-        item.inventory_uuid = rows[index].inventory_uuid;
-        item.description = rows[index].text;
-        item.quantity = rows[index].S_Q;
-        item.unit_price = 0;
-        item.unit = rows[index].unit_type;
-        item._initialised = true;
+        vm.order.store.data.forEach(function (item, index) {
+          item.code = rows[index].code;
+          item.inventory_uuid = rows[index].inventory_uuid;
+          item.description = rows[index].text;
+          item.quantity = rows[index].S_Q;
+          item.unit_price = 0;
+          item.unit = rows[index].unit_type;
+          item._initialised = true;
+        });
+
+      })
+      .catch(Notify.handleError)
+      .finally(function () {
+        vm.loadingState = false;
       });
-
-    })
-    .catch(Notify.handleError)
-    .finally(function () {
-      vm.loadingState = false;
-    });
   }
 
   // bind methods

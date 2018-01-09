@@ -11,15 +11,15 @@
           <a class="btn btn-default" uib-dropdown-toggle>
             <span class="fa fa-bars"></span> <span class="hidden-xs" translate>FORM.LABELS.MENU</span> <span class="caret"></span>
           </a>
-          
+
           <ul uib-dropdown-menu role="menu" class="dropdown-menu-right">
             <li role="menuitem">
               <a href data-method="configure" ng-click="PurchaseListCtrl.openColumnConfiguration()">
                 <i class="fa fa-columns"></i> <span translate>FORM.LABELS.COLUMNS</span>
               </a>
-            </li> 
+            </li>
 
-            <li role="separator" class="divider"></li>  
+            <li role="separator" class="divider"></li>
             <li role="menuitem">
               <a href data-method="save-state" ng-click="PurchaseListCtrl.saveGridState()">
                 <i class="fa fa-save"></i> <span translate>FORM.BUTTONS.SAVE_GRID_CONFIGURATION</span>
@@ -44,12 +44,10 @@
                 <span class="fa fa-file-excel-o"></span> <span translate>DOWNLOADS.CSV</span>
               </a>
             </li>
-                               
           </ul>
-
         </div>
       </div>
-        
+
       <div class="toolbar-item">
         <button
           ng-click="PurchaseListCtrl.search()"
