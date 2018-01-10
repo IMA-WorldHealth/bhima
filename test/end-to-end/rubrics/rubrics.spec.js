@@ -17,9 +17,9 @@ describe('Rubrics Management', () => {
     abbr  : 'CoSynd',
     is_employee : 1,
     is_percent : 1,
-    third_party_account_id : '40111002',
-    costs_account_id : '60310015',
-    is_discount : 1,
+    debtor_account_id : '40111002', //SUPPLIER'S ACCOUNT 1
+    expense_account_id : '60310015', // Achat Produit  de Perfusion
+    is_discount : "D",
     is_tax : 1,
     value : 6.5
   };

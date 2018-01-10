@@ -164,16 +164,16 @@ CREATE TABLE `rubric_payroll` (
   `is_discount` tinyint(1) DEFAULT 0,
   `is_tax` tinyint(1) DEFAULT 0,
   `is_social_care` tinyint(1) DEFAULT 0,
-  `third_party_account_id` int(10) unsigned DEFAULT NULL,
-  `costs_account_id` int(10) unsigned DEFAULT NULL,
+  `debtor_account_id` int(10) unsigned DEFAULT NULL,
+  `expense_account_id` int(10) unsigned DEFAULT NULL,
   `is_ipr` tinyint(1) DEFAULT 0,
   `value` float DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `rubric_payroll_1` (`label`),
-  KEY `third_party_account_id` (`third_party_account_id`),
-  KEY `costs_account_id` (`costs_account_id`),
-  FOREIGN KEY (`third_party_account_id`) REFERENCES `account` (`id`),
-  FOREIGN KEY (`costs_account_id`) REFERENCES `account` (`id`)
+  KEY `debtor_account_id` (`debtor_account_id`),
+  KEY `expense_account_id` (`expense_account_id`),
+  FOREIGN KEY (`debtor_account_id`) REFERENCES `account` (`id`),
+  FOREIGN KEY (`expense_account_id`) REFERENCES `account` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `cash_box_account_currency`;

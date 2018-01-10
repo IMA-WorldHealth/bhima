@@ -1,4 +1,4 @@
-/* global expect, chai, agent */
+/* global expect, agent */
 
 const helpers = require('./helpers');
 
@@ -11,20 +11,22 @@ describe('(/payroll/rubrics) The /payroll/rubrics  API endpoint', function () {
 
   // Rubric we will add during this test suite.
 
-  const cotisation = {
-    label                   : 'Rubric Test',
-    abbr                    : 'RTest',
-    is_employee             : 1,
-    is_percent              : 1,
-    is_discount             : 1,
-    is_tax                  : 1,
-    third_party_account_id  : 175,
-    costs_account_id        : 249,
-    value                   : 3.5 
+  const rubric = {
+    label : 'Rubric Test',
+    abbr : 'RTest',
+    is_employee : 1,
+    is_percent : 1,
+    is_discount : 1,
+    is_tax : 1,
+    debtor_account_id : 175,
+    expense_account_id : 249,
+    value : 3.5,
   };
 
-  const RUBRIC_KEY = ['id', 'label', 'abbr', 'is_employee', 'is_percent', 'is_discount', 'is_tax',
-    'is_social_care', 'third_party_account_id', 'costs_account_id', 'is_ipr', 'value'];
+  const rubricUpdate = {
+    label : 'Rubric Updated',
+  };
+
   const NUM_RUBRICS = 0;
 
   it('GET /RUBRICS returns a list of function ', function () {
@@ -37,9 +39,9 @@ describe('(/payroll/rubrics) The /payroll/rubrics  API endpoint', function () {
 
   it('POST /RUBRICS should create a new Rubric', function () {
     return agent.post('/rubrics')
-    .send(cotisation)
+    .send(rubric)
     .then(function (res) {
-      cotisation.id = res.body.id;
+      rubric.id = res.body.id;
       helpers.api.created(res);
     })
     .catch(helpers.handler);
@@ -54,8 +56,8 @@ describe('(/payroll/rubrics) The /payroll/rubrics  API endpoint', function () {
   });
 
   it('PUT /RUBRICS  should update an existing Rubric ', function () {
-    return agent.put('/rubrics/' + cotisation.id)
-      .send({ label : 'Rubric Updated' })
+    return agent.put('/rubrics/' + rubric.id)
+      .send(rubricUpdate)
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res.body.label).to.equal('Rubric Updated');
@@ -64,10 +66,9 @@ describe('(/payroll/rubrics) The /payroll/rubrics  API endpoint', function () {
   });
 
   it('GET /RUBRICS/:ID returns a single Rubric ', function () {
-    return agent.get('/rubrics/' + cotisation.id)
+    return agent.get('/rubrics/' + rubric.id)
       .then(function (res) {
         expect(res).to.have.status(200);
-        expect(res).to.be.json;
       })
       .catch(helpers.handler);
   });
@@ -81,7 +82,7 @@ describe('(/payroll/rubrics) The /payroll/rubrics  API endpoint', function () {
   });
 
   it('DELETE /RUBRICS/:ID should delete a Rubric ', function () {
-    return agent.delete('/rubrics/' + cotisation.id)
+    return agent.delete('/rubrics/' + rubric.id)
       .then(function (res) {
         helpers.api.deleted(res);
       })

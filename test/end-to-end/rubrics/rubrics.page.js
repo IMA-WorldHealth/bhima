@@ -41,8 +41,8 @@ class RubricPage {
     FU.input('RubricModalCtrl.rubric.label', rubric.label);
     FU.input('RubricModalCtrl.rubric.abbr', rubric.abbr);
 
-    components.accountSelect.set(rubric.third_party_account_id, 'third_party_account_id');
-    components.accountSelect.set(rubric.costs_account_id, 'costs_account_id');
+    components.accountSelect.set(rubric.debtor_account_id, 'debtor_account_id');
+    components.accountSelect.set(rubric.expense_account_id, 'expense_account_id');
 
     FU.input('RubricModalCtrl.rubric.value', rubric.value);
 

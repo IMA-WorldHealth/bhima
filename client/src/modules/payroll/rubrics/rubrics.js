@@ -21,6 +21,7 @@ function RubricManagementController(Rubrics, ModalService,
   vm.editRubric = editRubric;
   vm.createRubric = createRubric;
   vm.toggleFilter = toggleFilter;
+  vm.currencySymbol = Session.enterprise.currencySymbol;
 
   // global variables
   vm.gridApi = {};
@@ -32,12 +33,12 @@ function RubricManagementController(Rubrics, ModalService,
       { field : 'abbr', displayName : 'FORM.LABELS.ABBREVIATION', headerCellFilter : 'translate' },
       { field : 'is_discount', displayName : '', cellTemplate : '/modules/payroll/rubrics/templates/discount.tmpl.html', headerCellFilter : 'translate' },    
       { field : 'value', displayName : 'FORM.LABELS.VALUE', headerCellFilter : 'translate' },  
-      { field : 'is_percent', displayName : 'FORM.LABELS.PERCENTAGE', cellTemplate : '/modules/payroll/rubrics/templates/percent.tmpl.html', headerCellFilter : 'translate' },
+      { field : 'is_percent', displayName : '', cellTemplate : '/modules/payroll/rubrics/templates/percent.tmpl.html', headerCellFilter : 'translate' },
       { field : 'is_social_care', displayName : 'FORM.LABELS.IS_SOCIAL_CARE', cellTemplate : '/modules/payroll/rubrics/templates/social.tmpl.html', headerCellFilter : 'translate' },
       { field : 'is_tax', displayName : 'FORM.LABELS.TAX', cellTemplate : '/modules/payroll/rubrics/templates/tax.tmpl.html', headerCellFilter : 'translate' },
       { field : 'is_ipr', displayName : 'FORM.LABELS.IS_IPR', cellTemplate : '/modules/payroll/rubrics/templates/ipr.tmpl.html', headerCellFilter : 'translate' },
-      { field : 'four_account_id', displayName : 'FORM.LABELS.FOUR_ACCOUNT', cellTemplate : '/modules/payroll/rubrics/templates/four.tmpl.html', headerCellFilter : 'translate' },
-      { field : 'six_account_id', displayName : 'FORM.LABELS.SIX_ACCOUNT', cellTemplate : '/modules/payroll/rubrics/templates/six.tmpl.html', headerCellFilter : 'translate' },
+      { field : 'four_account_id', displayName : 'FORM.LABELS.DEBTOR_ACCOUNT', cellTemplate : '/modules/payroll/rubrics/templates/four.tmpl.html', headerCellFilter : 'translate' },
+      { field : 'six_account_id', displayName : 'FORM.LABELS.EXPENSE_ACCOUNT', cellTemplate : '/modules/payroll/rubrics/templates/six.tmpl.html', headerCellFilter : 'translate' },
       { field : 'action',
         width : 80,
         displayName : '',
@@ -71,7 +72,7 @@ function RubricManagementController(Rubrics, ModalService,
   function loadRubrics() {
     vm.loading = true;
 
-    Rubrics.read(null, { detailed : 1 })
+    Rubrics.read()
     .then(function (data) {
       vm.gridOptions.data = data;
     })

@@ -18,17 +18,18 @@ function RubricModalController($state, Rubrics, ModalService, Notify, AppCache) 
   }
   vm.isCreating = vm.stateParams.creating;
 
-  vm.selectAccountFour = function selectAccountFour(account) {
-    vm.rubric.third_party_account_id = account.id;
+  vm.selectDebtorAccount = function selectDebtorAccount(account) {
+    vm.rubric.debtor_account_id = account.id;
   };
 
-  vm.selectAccountSix = function selectAccountSix(account) {
-    vm.rubric.costs_account_id = account.id;
+  vm.selectExpenseAccount = function selectExpenseAccount(account) {
+    vm.rubric.expense_account_id = account.id;
   };
 
-  vm.setDiscount = function setDiscount(value) {
-    vm.setting = true;
-    vm.rubric.is_discount = value === 1 ? true : false;
+  vm.setMaxPercent = function setMaxPercent() {
+    console.log('LLLLLLLLLlllllll');
+    console.log(vm.rubric.is_percent);
+    vm.maxPercent = vm.rubric.is_percent ? true : false; 
   }
 
   // exposed methods
@@ -38,7 +39,11 @@ function RubricModalController($state, Rubrics, ModalService, Notify, AppCache) 
   if (!vm.isCreating) {
     Rubrics.read(vm.stateParams.id)
       .then(function (rubric) {
+        rubric.is_discount = rubric.is_discount ? 'D' : 'A';
+
         vm.rubric = rubric;
+
+        vm.setting = true;
       })
       .catch(Notify.handleError);
   }
@@ -47,12 +52,14 @@ function RubricModalController($state, Rubrics, ModalService, Notify, AppCache) 
   function submit(rubricForm) {
     var promise;
 
-    if(!vm.rubric.is_discount){
+    if(vm.rubric.is_discount === "A"){
+      vm.rubric.is_discount = 0;
       vm.rubric.is_tax = 0;
       vm.rubric.is_ipr = 0;
     }
 
-    if(vm.rubric.is_discount){
+    if(vm.rubric.is_discount === "D"){
+      vm.rubric.is_discount = 1;
       vm.rubric.is_social_care = 0;
     }
 

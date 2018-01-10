@@ -7,7 +7,7 @@
 
     <div class="toolbar">
       <div class="toolbar-item">
-        <button class="btn btn-default text-capitalize" id="create" ng-click="RubricCtrl.createRubric()" data-method="create">
+        <button class="btn btn-default text-capitalize" id="create" ui-sref="rubrics.create" data-method="create">
           <span class="fa fa-plus"></span> <span translate>PAYROLL_RUBRIC.ADD_PAYROLL_RUBRIC</span>
         </button>
       </div>
@@ -32,7 +32,8 @@
     <div id="rubric-grid"
       ui-grid="RubricCtrl.gridOptions"
       class="grid-full-height"
-      ui-grid-auto-resize>
+      ui-grid-auto-resize
+      ui-grid-resize-columns>
 
       <bh-grid-loading-indicator
         loading-state="RubricCtrl.loading"
