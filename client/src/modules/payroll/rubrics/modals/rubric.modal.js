@@ -27,8 +27,6 @@ function RubricModalController($state, Rubrics, ModalService, Notify, AppCache) 
   };
 
   vm.setMaxPercent = function setMaxPercent() {
-    console.log('LLLLLLLLLlllllll');
-    console.log(vm.rubric.is_percent);
     vm.maxPercent = vm.rubric.is_percent ? true : false; 
   }
 
