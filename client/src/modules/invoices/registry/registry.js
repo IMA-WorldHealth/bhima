@@ -5,7 +5,7 @@ InvoiceRegistryController.$inject = [
   'PatientInvoiceService', 'bhConstants', 'NotifyService', 'SessionService',
   'ReceiptModal', 'uiGridConstants', 'ModalService', 'CashService',
   'GridSortingService', 'GridColumnService', 'GridStateService', '$state',
-  'ModalService', 'ReceiptModal',
+  'ModalService', 'ReceiptModal', 'util',
 ];
 
 /**
@@ -15,7 +15,7 @@ InvoiceRegistryController.$inject = [
  */
 function InvoiceRegistryController(
   Invoices, bhConstants, Notify, Session, Receipt, uiGridConstants,
-  ModalService, Cash, Sorting, Columns, GridState, $state, Modals, Receipts
+  ModalService, Cash, Sorting, Columns, GridState, $state, Modals, Receipts, util
 ) {
   var vm = this;
 
@@ -37,6 +37,9 @@ function InvoiceRegistryController(
   vm.deleteInvoice = deleteInvoiceWithConfirmation;
   vm.Receipts = Receipts;
 
+  // date format function
+  vm.format = util.formatDate;
+
   // track if module is making a HTTP request for invoices
   vm.loading = false;
   vm.enterprise = Session.enterprise;
@@ -56,6 +59,7 @@ function InvoiceRegistryController(
     displayName : 'TABLE.COLUMNS.BILLING_DATE',
     headerCellFilter : 'translate',
     type : 'date',
+    cellTemplate : '/modules/invoices/registry/templates/date.cell.html',
   }, {
     name : 'patientName',
     displayName : 'TABLE.COLUMNS.PATIENT',

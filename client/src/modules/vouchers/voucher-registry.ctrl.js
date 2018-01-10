@@ -6,7 +6,7 @@ VoucherController.$inject = [
   'VoucherService', 'NotifyService', 'uiGridGroupingConstants',
   'TransactionTypeService', 'uiGridConstants', 'bhConstants',
   'GridSortingService', 'GridColumnService', 'GridStateService', '$state',
-  'ModalService',
+  'ModalService', 'util',
 ];
 
 /**
@@ -19,7 +19,7 @@ VoucherController.$inject = [
  */
 function VoucherController(
   Vouchers, Notify, uiGridGroupingConstants, TransactionTypes, uiGridConstants,
-  bhConstants, Sorting, Columns, GridState, $state, Modals
+  bhConstants, Sorting, Columns, GridState, $state, Modals, util
 ) {
   var vm = this;
 
@@ -42,6 +42,9 @@ function VoucherController(
   vm.download = Vouchers.download;
   vm.deleteVoucher = deleteVoucherWithConfirmation;
 
+  // date format function
+  vm.format = util.formatDate;
+  
   vm.loading = false;
 
   // grid default options
@@ -66,7 +69,7 @@ function VoucherController(
     displayName : 'TABLE.COLUMNS.DATE',
     headerCellFilter : 'translate',
     type : 'date',
-    cellFilter : 'date :"mediumDate"',
+    cellTemplate : 'modules/vouchers/templates/date.cell.html',
     groupingShowAggregationMenu : false,
   }, {
     field : 'description',

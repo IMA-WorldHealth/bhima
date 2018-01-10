@@ -5,7 +5,7 @@ JournalController.$inject = [
   'JournalService', 'GridSortingService', 'GridGroupingService', 'GridFilteringService', 'GridColumnService',
   'SessionService', 'NotifyService', 'bhConstants', '$state', 'uiGridConstants', 'ModalService', 'LanguageService',
   'AppCache', 'Store', 'uiGridGroupingConstants', 'ExportService', '$filter', '$translate', 'GridExportService',
-  'GridStateService', 'GridSelectionService', 'TrialBalanceService', '$httpParamSerializer', 'TransactionService',
+  'GridStateService', 'GridSelectionService', 'TrialBalanceService', '$httpParamSerializer', 'TransactionService', 'util',
 ];
 
 /**
@@ -32,7 +32,7 @@ function JournalController(
   Journal, Sorting, Grouping, Filtering, Columns, Session, Notify, bhConstants,
   $state, uiGridConstants, Modal, Languages, AppCache, Store, uiGridGroupingConstants,
   Export, $filter, $translate, GridExport, GridState, GridSelection, TrialBalance,
-  $httpParamSerializer, Transactions
+  $httpParamSerializer, Transactions, util
 ) {
   var sorting;
   var grouping;
@@ -54,6 +54,7 @@ function JournalController(
   var cache = AppCache(cacheKey.concat('-module'));
   var vm = this;
 
+  vm.format = util.formatDate;
   // number of all of the transactions in the system
   Journal.count()
     .then(function (data) {
@@ -139,7 +140,6 @@ function JournalController(
     state.clearGridState();
     $state.reload();
   };
-
   /**
    * Column definitions; specify the configuration and behaviour for each column
    * in the journal grid. Initialise each of the journal utilities,
@@ -182,13 +182,13 @@ function JournalController(
     field                            : 'trans_date',
     displayName                      : 'TABLE.COLUMNS.DATE',
     headerCellFilter                 : 'translate',
+    cellTemplate     : 'modules/journal/templates/date.cell.html',
     cellFilter                       : 'date:"'.concat(bhConstants.dates.format, '"'),
     filter                           : { condition: filtering.filterByDate },
     treeAggregationType              : uiGridGroupingConstants.aggregation.MIN,
     customTreeAggregationFinalizerFn : function (aggregation) {
       aggregation.rendered = $filter('date')(aggregation.value, bhConstants.dates.format);
     },
-
     // note that sort priorities are cached and saved with the grid save state - this default sort will only be applied if the custom settings are cleared
     sort : {
       priority : 0,
