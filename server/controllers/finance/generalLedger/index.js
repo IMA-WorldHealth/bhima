@@ -23,6 +23,7 @@ const Fiscal = require('../fiscal');
 // expose to the api
 exports.list = list;
 exports.listAccounts = listAccounts;
+exports.find = find;
 
 // expose to server controllers
 exports.getlistAccounts = getlistAccounts;
@@ -36,7 +37,9 @@ exports.getlistAccounts = getlistAccounts;
  * return all items in the general ledger
  */
 function find(options) {
-  const filters = new FilterParser(options, { tableAlias : 'gl' });
+  const filters = new FilterParser(options, {
+    tableAlias: 'gl'
+  });
 
   const sql = `
     SELECT BUID(gl.uuid) AS uuid, gl.project_id, gl.fiscal_year_id, gl.period_id,
@@ -72,6 +75,7 @@ function find(options) {
   filters.equals('trans_id');
   filters.equals('origin_id');
 
+  filters.custom('uuids', ' gl.uuid IN (?)', [options.uuids]);
   filters.custom('amount', '(credit_equiv = ? OR debit_equiv = ?)', [options.amount, options.amount]);
 
   filters.setOrder('ORDER BY gl.trans_date DESC');

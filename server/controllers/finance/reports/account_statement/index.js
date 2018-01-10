@@ -9,7 +9,8 @@
 const _ = require('lodash');
 const db = require('../../../../lib/db');
 const ReportManager = require('../../../../lib/ReportManager');
-const Journal = require('../../journal');
+
+const generalLedger = require('../../generalLedger');
 
 const REPORT_TEMPLATE = './server/controllers/finance/reports/account_statement/report.handlebars';
 
@@ -21,12 +22,13 @@ exports.report = report;
  * @method report
  */
 function report(req, res, next) {
+
   const options = _.extend(req.query, {
-    filename                 : 'TREE.ACCOUNT_STATEMENT',
-    orientation              : 'landscape',
-    csvKey                   : 'rows',
-    suppressDefaultFiltering : true,
-    suppressDefaultFormating : false,
+    filename: 'TREE.ACCOUNT_STATEMENT',
+    orientation: 'landscape',
+    csvKey: 'rows',
+    suppressDefaultFiltering: true,
+    suppressDefaultFormating: false,
   });
 
   let rm;
@@ -37,9 +39,12 @@ function report(req, res, next) {
   } catch (e) {
     return next(e);
   }
+  // converting uuids in binary  
+  db.convert(options, ['uuids']);
 
-  return Journal.journalEntryList(options, 'general_ledger')
+  return generalLedger.find(options)
     .then((rows) => {
+
       glb.rows = rows;
 
       const aggregateSql = `
@@ -51,11 +56,15 @@ function report(req, res, next) {
       const transactionIds = rows.map(row => {
         return db.bid(row.uuid);
       });
+
       return db.one(aggregateSql, [transactionIds]);
     })
     .then((result) => {
       glb.aggregate = result;
-      return rm.render({ rows : glb.rows, aggregate : glb.aggregate });
+      return rm.render({
+        rows: glb.rows,
+        aggregate: glb.aggregate
+      });
     })
     .then((result) => {
       res.set(result.headers).send(result.report);
