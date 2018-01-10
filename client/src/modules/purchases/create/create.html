@@ -12,7 +12,7 @@
      <!-- top note panel for the purchase order details inspired by the patient invoice page's ergonomics -->
      <form
         name="PurchaseOrderForm"
-        autocomplete="off" 
+        autocomplete="off"
         autocapitalize="off"
         autocorrect="off"
         ng-submit="PurchaseCtrl.submit(PurchaseOrderForm)"
@@ -22,7 +22,7 @@
           <div class="col-xs-12">
             <div class="panel panel-default">
               <div class="panel-body">
-                <div class="col-md-6">                
+                <div class="col-md-6">
                   <bh-supplier-select
                     supplier-uuid="PurchaseCtrl.order.details.supplier_uuid"
                     required="true"
@@ -57,7 +57,7 @@
                     <div class="radio">
                       <label>
                         <input type="radio" name="paymentMethod" id="other" value="FORM.LABELS.OTHER" ng-model="PurchaseCtrl.order.details.payment_method" required>
-                        <span translate>FORM.LABELS.OTHER</span> 
+                        <span translate>FORM.LABELS.OTHER</span>
                       </label>
                     </div>
 
@@ -108,27 +108,15 @@
                 ng-click="PurchaseCtrl.optimalPurchase()"
                 id="optimal_purchase"
                 ng-disabled="!PurchaseCtrl.supplier">
-                <i class="fa fa-shopping-cart"></i> 
-                <span translate>FORM.BUTTONS.OPTIMAL_PURCHASE_ORDER </span> 
-              </button>
-            </div>
-
-            <!-- "Recover Items" button -->
-            <div class="btn-group pull-right" role="group">
-              <button
-                class="btn btn-default"
-                ng-class="{'btn-primary' : PurchaseCtrl.order.hasCacheAvailable() && PurchaseCtrl.order.details.supplier_uuid }"
-                ng-click="PurchaseCtrl.order.readCache()"
-                ng-disabled="!PurchaseCtrl.order.hasCacheAvailable() || !PurchaseCtrl.supplier">
-                <span class="fa fa-recycle"></span> 
-                <span translate>FORM.BUTTONS.RECOVER_ITEMS</span> 
+                <i class="fa fa-shopping-cart"></i>
+                <span translate>FORM.BUTTONS.OPTIMAL_PURCHASE_ORDER </span>
               </button>
             </div>
 
             <!-- "Add number of grid rows" input-group -->
             <bh-add-item
-              disable = "PurchaseCtrl.supplier && !PurchaseCtrl.optimalPO"
-              callback = "PurchaseCtrl.addItems(numItem)">
+              disable="PurchaseCtrl.supplier && !PurchaseCtrl.optimalPO"
+              callback="PurchaseCtrl.addItems(numItem)">
             </bh-add-item>
 
             <!-- @todo - hacky check for inventory to prevent local variables -->
@@ -137,7 +125,7 @@
               class="text-warning"
               ng-show="PurchaseCtrl.order.inventory.size() > 0 && PurchaseCtrl.order.inventory.available.data.length === 0">
               <span class="fa fa-info-circle"></span>
-              <span translate>FORM.INFO.ITEMS_FULL</span> 
+              <span translate>FORM.INFO.ITEMS_FULL</span>
             </p>
 
             <p
@@ -145,12 +133,12 @@
               class="text-info"
               ng-show="!PurchaseCtrl.supplier">
               <span class="fa fa-info-circle"></span>
-              <span translate>FORM.INFO.NO_SUPPLIER</span> 
+              <span translate>FORM.INFO.NO_SUPPLIER</span>
             </p>
           </div>
         </div>
 
-        <div 
+        <div
             id="purchase-order-grid"
             ui-grid="PurchaseCtrl.gridOptions"
             style="height : {{ ::PurchaseCtrl.bhConstants.GRID_HEIGHT }}px; width : 100%;">
@@ -158,7 +146,7 @@
 
         <div class="row" ng-if="PurchaseCtrl.supplier">
           <h4 class="text-right" style="margin-right: 25px;">
-            <span translate>FORM.LABELS.TOTAL</span> 
+            <span translate>FORM.LABELS.TOTAL</span>
             {{ PurchaseCtrl.order.totals.rows | currency:PurchaseCtrl.enterprise.currency_id }}
           </h4>
         </div>
@@ -183,7 +171,7 @@
               class="text-danger"
               ng-show="PurchaseCtrl.order._invalid && PurchaseOrderForm.$submitted">
               <span class="fa fa-exclamation-circle"></span>
-              <span translate>FORM.ERRORS.INVALID</span> 
+              <span translate>FORM.ERRORS.INVALID</span>
             </p>
           </div>
         </div>

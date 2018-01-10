@@ -57,7 +57,7 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
 
     // the order details
     this.details = {
-      payment_method: 'FORM.LABELS.ON_DELIVERY',
+      payment_method: 'FORM.LABELS.ON_PURCHASE',
       date: new Date(),
       cost: 0,
     };
@@ -226,12 +226,11 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
    * @param {Object} item - the item/row to be configured
    */
   PurchaseOrderForm.prototype.configureItem = function configureItem(item) {
-
     // remove the item from the pool
     var inventoryItem = this.inventory.use(item.inventory_uuid);
 
-    /** 
-    * FIX ME or NEED Discussion, The Purchase Order must Used Purchase Price and not 
+    /**
+    * FIX ME or NEED Discussion, The Purchase Order must Used Purchase Price and not
     * Used Inventory Selling price
     */
     inventoryItem.price = 0;
