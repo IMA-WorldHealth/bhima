@@ -2,10 +2,10 @@ angular.module('bhima.controllers')
   .controller('OffdayModalController', OffdayModalController);
 
 OffdayModalController.$inject = [
-  '$state', 'OffdayService', 'ModalService', 'NotifyService', 'appcache', 'moment',
+  '$state', 'OffdayService', 'NotifyService', 'appcache', 'moment',
 ];
 
-function OffdayModalController($state, Offdays, ModalService, Notify, AppCache, moment) {
+function OffdayModalController($state, Offdays, Notify, AppCache, moment) {
   var vm = this;
   vm.offday = {};
 
@@ -20,7 +20,6 @@ function OffdayModalController($state, Offdays, ModalService, Notify, AppCache, 
 
   // exposed methods
   vm.submit = submit;
-  vm.closeModal = closeModal;
 
   if (!vm.isCreating) {
     Offdays.read(vm.stateParams.id)
@@ -50,9 +49,5 @@ function OffdayModalController($state, Offdays, ModalService, Notify, AppCache, 
         $state.go('offdays', null, { reload : true });
       })
       .catch(Notify.handleError);
-  }
-
-  function closeModal() {
-    $state.go('offdays');
   }
 }

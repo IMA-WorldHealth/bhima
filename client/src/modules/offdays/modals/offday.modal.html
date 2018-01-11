@@ -29,7 +29,7 @@
     </div>
 
     <div class="modal-body" ng-class="{ 'has-error' : OffdayForm.$submitted && OffdayForm.percent_pay.$invalid }">
-      <label class="control-label" translate>FORM.LABELS.PERCENTAGE</label>
+      <label class="control-label" translate>FORM.LABELS.PERCENTAGE</label> (%)
       <input name="percent_pay" type="number" max="100" min="0" ng-model="OffdayModalCtrl.offday.percent_pay" autocomplete="off" class="form-control" required>
       <div class="help-block" ng-messages="OffdayForm.percent_pay.$error" ng-show="OffdayForm.$submitted">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -38,7 +38,7 @@
   </div>
 
   <div class="modal-footer">
-    <button data-method="cancel" type="button" class="btn btn-default" ng-click="OffdayModalCtrl.closeModal()">
+    <button data-method="cancel" type="button" class="btn btn-default" ui-sref="offdays">
       <span translate>FORM.BUTTONS.CANCEL</span>
     </button>
 

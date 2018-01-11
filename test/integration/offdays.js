@@ -1,4 +1,4 @@
-/* global expect, chai, agent */
+/* global expect, agent */
 
 const helpers = require('./helpers');
 
@@ -14,10 +14,9 @@ describe('(/offdays) The /offdays  API endpoint', function () {
   const offday = {
     label           : 'Hero Lumumba',
     date            : '2017-01-17',
-    percent_pay     : 100
+    percent_pay     : 100,
   };
 
-  const OFFDAY_KEY = ['id', 'label', 'date', 'percent_pay'];
   const NUM_OFFDAYS = 2;
 
   it('GET /OFFDAYS returns a list of Offday ', function () {
@@ -60,7 +59,6 @@ describe('(/offdays) The /offdays  API endpoint', function () {
     return agent.get('/offdays/' + offday.id)
       .then(function (res) {
         expect(res).to.have.status(200);
-        expect(res).to.be.json;
       })
       .catch(helpers.handler);
   });

@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 OffdayManagementController.$inject = [
   'OffdayService', 'ModalService',
-  'NotifyService', 'uiGridConstants', '$state', 'SessionService',
+  'NotifyService', 'uiGridConstants', '$state', 'SessionService', 'bhConstants',
 ];
 
 /**
@@ -13,13 +13,12 @@ OffdayManagementController.$inject = [
  * It's responsible for creating, editing and updating a Offday
  */
 function OffdayManagementController(Offdays, ModalService,
-  Notify, uiGridConstants, $state, Session) {
+  Notify, uiGridConstants, $state, Session, bhConstants) {
   var vm = this;
 
   // bind methods
   vm.deleteOffday = deleteOffday;
   vm.editOffday = editOffday;
-  vm.createOffday = createOffday;
   vm.toggleFilter = toggleFilter;
 
   // global variables
@@ -30,7 +29,7 @@ function OffdayManagementController(Offdays, ModalService,
     [
     
       { field : 'label', displayName : 'FORM.LABELS.DESIGNATION', headerCellFilter : 'translate' },
-      { field : 'date', displayName : 'FORM.LABELS.DATE', cellFilter : 'date:"mediumDate"', headerCellFilter : 'translate' },
+      { field : 'date', displayName : 'FORM.LABELS.DATE', cellFilter : 'date', headerCellFilter : 'translate' },
       { field : 'percent_pay', displayName : 'FORM.LABELS.PERCENTAGE', headerCellFilter : 'translate' },
       { field : 'action',
         width : 80,
@@ -65,7 +64,7 @@ function OffdayManagementController(Offdays, ModalService,
   function loadOffdays() {
     vm.loading = true;
 
-    Offdays.read(null, { detailed : 1 })
+    Offdays.read()
     .then(function (data) {
       vm.gridOptions.data = data;
     })
@@ -93,11 +92,6 @@ function OffdayManagementController(Offdays, ModalService,
   // update an existing Offday
   function editOffday(title) {
     $state.go('offdays.edit', { id : title.id });
-  }
-
-  // create a new Offday
-  function createOffday() {
-    $state.go('offdays.create');
   }
 
   loadOffdays();
