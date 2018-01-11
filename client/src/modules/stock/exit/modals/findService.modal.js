@@ -16,10 +16,10 @@ function StockFindServiceModalController(Instance, Service, Notify) {
   vm.cancel = cancel;
 
   Service.read()
-  .then(function (services) {
-    vm.services = services;
-  })
-  .catch(Notify.handleError);
+    .then(function assignServices(services) {
+      vm.services = services;
+    })
+    .catch(Notify.handleError);
 
   // submit
   function submit() {
@@ -28,7 +28,7 @@ function StockFindServiceModalController(Instance, Service, Notify) {
 
   // cancel
   function cancel() {
-    Instance.dismiss();
+    Instance.close();
   }
 
 }

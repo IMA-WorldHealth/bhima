@@ -388,7 +388,7 @@ function getInventoryQuantityAndConsumption(params) {
   let status;
   let delay;
   let purchaseInterval;
-  let require_po;
+  let requirePurchaseOrder;
 
   if (params.status) {
     status = params.status;
@@ -406,7 +406,7 @@ function getInventoryQuantityAndConsumption(params) {
   }
 
   if (params.require_po) {
-    require_po = params.require_po;
+    requirePurchaseOrder = params.require_po;
     delete params.require_po;
   }
 
@@ -461,7 +461,7 @@ function getInventoryQuantityAndConsumption(params) {
         filteredRows = filteredRows.filter(row => row.status === status);
       }
 
-      if (require_po) {
+      if (requirePurchaseOrder) {
         filteredRows = filteredRows.filter(row => row.S_Q > 0);
       }
 

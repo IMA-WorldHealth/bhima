@@ -17,17 +17,17 @@ function StockFindDepotModalController(Instance, Depot, Notify, Data) {
   vm.cancel = cancel;
 
   Depot.read()
-  .then(function (depots) {
-    bundle.depots = depots;
-    return depots.findIndex(function (item) {
-      return item.uuid === Data.depot.uuid;
-    });
-  })
-  .then(function (idx) {
-    bundle.depots.splice(idx, 1);
-    vm.depots = bundle.depots;
-  })
-  .catch(Notify.handleError);
+    .then(function handleDepot(depots) {
+      bundle.depots = depots;
+      return depots.findIndex(function filterFx(item) {
+        return item.uuid === Data.depot.uuid;
+      });
+    })
+    .then(function removeCurrent(idx) {
+      bundle.depots.splice(idx, 1);
+      vm.depots = bundle.depots;
+    })
+    .catch(Notify.handleError);
 
   // submit
   function submit() {
@@ -36,7 +36,7 @@ function StockFindDepotModalController(Instance, Depot, Notify, Data) {
 
   // cancel
   function cancel() {
-    Instance.dismiss();
+    Instance.close();
   }
 
 }
