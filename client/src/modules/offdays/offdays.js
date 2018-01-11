@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 OffdayManagementController.$inject = [
   'OffdayService', 'ModalService',
-  'NotifyService', 'uiGridConstants', '$state', 'SessionService', 'bhConstants',
+  'NotifyService', 'uiGridConstants', '$state', 'SessionService',
 ];
 
 /**
@@ -13,7 +13,7 @@ OffdayManagementController.$inject = [
  * It's responsible for creating, editing and updating a Offday
  */
 function OffdayManagementController(Offdays, ModalService,
-  Notify, uiGridConstants, $state, Session, bhConstants) {
+  Notify, uiGridConstants, $state, Session) {
   var vm = this;
 
   // bind methods
