@@ -8,6 +8,7 @@ angular.module('bhima.components')
       onSelectCallback : '&',
       disable          : '<?',
       required         : '<?',
+      classe           : '@?',
       label            : '@?',
       name             : '@?',
       excludeTitleAccounts : '@?',
@@ -35,6 +36,9 @@ function AccountSelectController(Accounts, AppCache, $timeout, bhConstants, $sco
   $ctrl.$onInit = function $onInit() {
     // cache the title account ID for convenience
     $ctrl.TITLE_ACCOUNT_ID = bhConstants.accounts.TITLE;
+
+    // To filter accounts by class of accounts
+    $ctrl.classe = $ctrl.classe || '';
 
     // translated label for the form input
     $ctrl.label = $ctrl.label || 'FORM.LABELS.ACCOUNT';
@@ -89,8 +93,10 @@ function AccountSelectController(Accounts, AppCache, $timeout, bhConstants, $sco
 
   // loads accounts from the server
   function loadHttpAccounts() {
+    var detailedRequest = $ctrl.classe ? 1 : 0;
+    
     // load accounts
-    Accounts.read()
+     Accounts.read(null, { detailed : detailedRequest, classe : $ctrl.classe})
       .then(function (elements) {
         // bind the accounts to the controller
         var accounts = Accounts.order(elements);

@@ -1,0 +1,186 @@
+<form name="RubricForm" bh-submit="RubricModalCtrl.submit(RubricForm)" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li ng-if="RubricModalCtrl.isCreating" class="title">
+        <span translate>PAYROLL_RUBRIC.ADD_PAYROLL_RUBRIC</span>
+        <label class="badge badge-success" translate>FORM.LABELS.CREATE</label>
+      </li>
+      <li ng-if="!RubricModalCtrl.isCreating" class="title">
+        <span translate>PAYROLL_RUBRIC.EDIT_PAYROLL_RUBRIC</span>
+        <label class="badge badge-success" translate>FORM.LABELS.UPDATE</label>
+      </li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+    <div class="form-group" ng-class="{ 'has-error' : RubricForm.$submitted && RubricForm.label.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.DESIGNATION</label>
+      <input name="label" ng-model="RubricModalCtrl.rubric.label" autocomplete="off" class="form-control" required>
+      <div class="help-block" ng-messages="RubricForm.label.$error" ng-show="RubricForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <div class="form-group" ng-class="{ 'has-error' : RubricForm.$submitted && RubricForm.label.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.ABBREVIATION</label>
+      <input name="abbr" ng-model="RubricModalCtrl.rubric.abbr" ng-maxlength="6" autocomplete="off" class="form-control" required>
+      <div class="help-block" ng-messages="RubricForm.abbr.$error" ng-show="RubricForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <bh-account-select
+      id="debtor_account_id"
+      account-id="RubricModalCtrl.rubric.debtor_account_id"
+      label="FORM.LABELS.DEBTOR_ACCOUNT"
+      classe="4"
+      name="debtor_account_id"
+      on-select-callback="RubricModalCtrl.selectDebtorAccount(account)"
+      exclude-title-accounts="true"
+      required="true"
+      validation-trigger="RubricForm.$submitted">
+    </bh-account-select>
+
+    <bh-account-select
+      id="expense_account_id"
+      account-id="RubricModalCtrl.rubric.expense_account_id"
+      label="FORM.LABELS.EXPENSE_ACCOUNT"
+      classe="6"
+      name="expense_account_id"
+      on-select-callback="RubricModalCtrl.selectExpenseAccount(account)"
+      exclude-title-accounts="true"
+      required="true"
+      validation-trigger="RubricForm.$submitted">
+    </bh-account-select>
+
+    <div ng-if="RubricModalCtrl.rubric.is_percent" class="form-group" ng-class="{ 'has-error' : RubricForm.$submitted && RubricForm.value.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.VALUE</label>
+      <input name="value" type="number" value="0" ng-max="100" ng-min="0" ng-model="RubricModalCtrl.rubric.value" autocomplete="off" class="form-control">
+      <div class="help-block" ng-messages="RubricForm.label.$error" ng-show="RubricForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <div ng-if="!RubricModalCtrl.rubric.is_percent" class="form-group" ng-class="{ 'has-error' : RubricForm.$submitted && RubricForm.value.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.VALUE</label>
+      <input name="value" type="number" value="0" ng-min="0" ng-model="RubricModalCtrl.rubric.value" autocomplete="off" class="form-control">
+      <div class="help-block" ng-messages="RubricForm.label.$error" ng-show="RubricForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label translate>FORM.INFO.IS_PERCENT</label>
+      <div class="checkbox">
+        <label>
+          <input
+            type="checkbox"
+            name="is_percent"
+            ng-true-value="1"
+            ng-false-value="0"
+            ng-model="RubricModalCtrl.rubric.is_percent">
+          <span translate>FORM.LABELS.IS_PERCENT</span>
+        </label>
+      </div>
+    </div> 
+
+
+    <div class="form-group">
+      <label translate>FORM.INFO.IS_DISCOUNT</label>
+      <div class="radio">
+        <label class="radio-inline">
+          <input
+            type="radio"
+            id="deduction"
+            name="is_discount"
+            ng-model="RubricModalCtrl.rubric.is_discount"
+            value="D">
+          <span translate>FORM.LABELS.DEDUCTION</span>
+        </label>
+
+        <label class="radio-inline">
+          <input
+            type="radio"
+            id="addition"
+            name="is_discount"
+            ng-model="RubricModalCtrl.rubric.is_discount"
+            value="A">
+          <span translate>FORM.LABELS.ADDITION</span>
+        </label>
+      </div>
+    </div>
+    
+    <div id="discount" ng-if="RubricModalCtrl.rubric.is_discount === 'D'">
+      <hr>
+      <div class="form-group">
+        <div class="checkbox">
+          <label>
+            <input
+              type="checkbox"
+              name="is_tax"
+              ng-true-value="1"
+              ng-false-value="0"
+              ng-model="RubricModalCtrl.rubric.is_tax">
+            <span translate>FORM.LABELS.TAX</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="checkbox">
+          <label>
+            <input
+              type="checkbox"
+              name="is_ipr"
+              ng-true-value="1"
+              ng-false-value="0"
+              ng-model="RubricModalCtrl.rubric.is_ipr">
+            <span translate>FORM.LABELS.IS_IPR</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group">
+         <label>{{ RubricModalCtrl.rubric.label }}</label> : <label translate>FORM.INFO.SUPPORT_COST</label>
+        <div class="checkbox">
+          <label>
+            <input
+              type="checkbox"
+              name="is_employee"
+              ng-true-value="1"
+              ng-false-value="0"
+              ng-model="RubricModalCtrl.rubric.is_employee">
+            <span translate>FORM.LABELS.STAFF_COST</span>
+          </label>
+        </div>
+      </div>      
+    </div>
+
+    <div id="addition" ng-if="RubricModalCtrl.rubric.is_discount === 'A'">
+      <hr>
+      <div class="form-group">
+        <div class="checkbox">
+          <label>
+            <input
+              type="checkbox"
+              name="is_social_care"
+              ng-true-value="1"
+              ng-false-value="0"
+              ng-model="RubricModalCtrl.rubric.is_social_care">
+            <span translate>FORM.LABELS.IS_SOCIAL_CARE</span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button data-method="cancel" type="button" class="btn btn-default" ng-click="RubricModalCtrl.closeModal()">
+      <span translate>FORM.BUTTONS.CANCEL</span>
+    </button>
+
+    <bh-loading-button loading-state="RubricForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

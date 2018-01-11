@@ -211,6 +211,8 @@ function AccountEditController(
     }
 
     function handleAccountCreateState() {
+      submit.classe = submit.number.substr(0,1);
+      
       return Accounts.create(submit)
         .then(handleAccountCreateResult)
         .catch(handleModalError);
