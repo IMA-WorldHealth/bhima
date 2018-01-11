@@ -10,7 +10,6 @@ angular.module('bhima.routes')
     .state('holidays.create', {
       url : '/create',
       params : {
-        holiday : { value : null },
         creating : { value : true },
       },
       onEnter : ['$uibModal', holidayModal],
@@ -20,7 +19,6 @@ angular.module('bhima.routes')
     .state('holidays.edit', {
       url : '/:id/edit',
       params : {
-        holiday : { value : null },
         creating : { value : false },
       },
       onEnter : ['$uibModal', holidayModal],

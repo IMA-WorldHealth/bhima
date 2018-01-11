@@ -2,8 +2,7 @@ angular.module('bhima.controllers')
 .controller('HolidayManagementController', HolidayManagementController);
 
 HolidayManagementController.$inject = [
-  'HolidayService', 'ModalService',
-  'NotifyService', 'uiGridConstants', '$state', 'SessionService',
+  'HolidayService', 'ModalService', 'NotifyService', 'uiGridConstants', '$state',
 ];
 
 /**
@@ -12,14 +11,12 @@ HolidayManagementController.$inject = [
  * This controller is about the Holiday management module in the admin zone
  * It's responsible for creating, editing and updating a Holiday
  */
-function HolidayManagementController(Holidays, ModalService,
-  Notify, uiGridConstants, $state, Session) {
+function HolidayManagementController(Holidays, ModalService, Notify, uiGridConstants, $state) {
   var vm = this;
 
   // bind methods
   vm.deleteHoliday = deleteHoliday;
   vm.editHoliday = editHoliday;
-  vm.createHoliday = createHoliday;
   vm.toggleFilter = toggleFilter;
 
   // global variables
@@ -94,11 +91,6 @@ function HolidayManagementController(Holidays, ModalService,
   // update an existing Holiday
   function editHoliday(title) {
     $state.go('holidays.edit', { id : title.id });
-  }
-
-  // create a new Holiday
-  function createHoliday() {
-    $state.go('holidays.create');
   }
 
   loadHolidays();

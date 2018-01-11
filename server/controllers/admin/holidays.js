@@ -6,7 +6,7 @@
 
 var db = require('../../lib/db');
 var NotFound = require('../../lib/errors/NotFound');
-var Unauthorized = require('../../lib/errors/Unauthorized');
+const BadRequest = require('../../lib/errors/BadRequest');
 
 // GET /Holiday
 function lookupHoliday(id) {
@@ -78,7 +78,7 @@ function create(req, res, next) {
   checkHoliday(data)
     .then((record) => {
       if (record.length) {
-        throw new Unauthorized('Holiday Nested.', 'ERRORS.HOLIDAY_NESTED');
+        throw new BadRequest('Holiday Nested.', 'ERRORS.HOLIDAY_NESTED');
       }
       
       return db.exec(sql, [data]);
@@ -98,7 +98,7 @@ function update(req, res, next) {
   checkHoliday(req.body)
     .then((record) => {
       if (record.length > 1) {
-        throw new Unauthorized('Holiday Nested.', 'ERRORS.HOLIDAY_NESTED');
+        throw new BadRequest('Holiday Nested.', 'ERRORS.HOLIDAY_NESTED');
       }
       
       return db.exec(sql, [req.body, req.params.id]);
@@ -125,7 +125,7 @@ function del(req, res, next) {
         throw new NotFound(`Could not find a Holiday with id ${req.params.id}`);
       }
 
-      res.status(204).json();
+      res.sendStatus(204);
     })
     .catch(next)
     .done();

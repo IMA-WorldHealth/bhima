@@ -7,41 +7,38 @@ angular.module('bhima.components')
       employeeId           : '<',
       disable          : '<?',
       onSelectCallback : '&',
-      name             : '@?',
-      required         : '<?',      
+      required         : '<?',
+      validateTrigger  : '<?',    
     },
   });
 
 EmployeeSelectController.$inject = [
-  'EmployeeService'
+  'EmployeeService', 'NotifyService',
 ];
 
 /**
  * Employee selection component
  *
  */
-function EmployeeSelectController(Employees) {
+function EmployeeSelectController(Employees, Notify) {
   var $ctrl = this;
 
   $ctrl.$onInit = function onInit() {    
-    // fired when an employee has been selected
-    $ctrl.onSelectCallback = $ctrl.onSelectCallback || angular.noop;
-
-    // default for form name
-    $ctrl.name = $ctrl.name || 'EmployeeForm';
-
     // load all Employee
     Employees.read()
       .then(function (employees) {
         $ctrl.employees = employees;
+      })
+      .catch(Notify.handleError)
+      .finally(function () {
+        $ctrl.loading = false;
       });
 
     $ctrl.valid = true;
-
   };
 
   // fires the onSelectCallback bound to the component boundary
-  $ctrl.onSelect = function ($item, $model) {
+  $ctrl.onSelect = function ($item) {
     $ctrl.onSelectCallback({ employee : $item });
   };
 }

@@ -1,4 +1,4 @@
-/* global expect, chai, agent */
+/* global expect, agent */
 
 const helpers = require('./helpers');
 
@@ -15,10 +15,9 @@ describe('(/holidays) The /holidays  API endpoint', function () {
     label           : 'Conge Maternite',
     employee_id     : 1,
     dateFrom        : '2017-11-01',
-    dateTo          : '2017-11-29'
+    dateTo          : '2017-11-29',
   };
 
-  const HOLIDAY_KEY = ['id', 'label', 'employee_id', 'dateFrom', 'dateTo'];
   const NUM_HOLIDAYS = 0;
 
   it('GET /HOLIDAYS returns a list of function ', function () {
@@ -48,7 +47,7 @@ describe('(/holidays) The /holidays  API endpoint', function () {
   });
 
   it('PUT /HOLIDAYS  should update an existing Holiday ', function () {
-    return agent.put('/holidays/' + holiday.id)
+    return agent.put('/holidays/'.concat(holiday.id))
       .send({ label : 'Holiday Updated' })
       .then(function (res) {
         expect(res).to.have.status(200);
@@ -58,10 +57,9 @@ describe('(/holidays) The /holidays  API endpoint', function () {
   });
 
   it('GET /HOLIDAYS/:ID returns a single Holiday ', function () {
-    return agent.get('/holidays/' + holiday.id)
+    return agent.get('/holidays/'.concat(holiday.id))
       .then(function (res) {
         expect(res).to.have.status(200);
-        expect(res).to.be.json;
       })
       .catch(helpers.handler);
   });
@@ -75,7 +73,7 @@ describe('(/holidays) The /holidays  API endpoint', function () {
   });
 
   it('DELETE /HOLIDAYS/:ID should delete a Holiday ', function () {
-    return agent.delete('/holidays/' + holiday.id)
+    return agent.delete('/holidays/'.concat(holiday.id))
       .then(function (res) {
         helpers.api.deleted(res);
       })

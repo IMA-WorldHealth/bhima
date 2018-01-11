@@ -29,7 +29,7 @@ INSERT INTO unit VALUES
   (26,  'Location Manager','TREE.LOCATION','',1,'/modules/locations/locations.html','/locations'),
   (29,  'Patient Group','TREE.PATIENT_GRP','',1,'/modules/patients/groups/','/patients/groups'),
   (48,  'Service Management','TREE.SERVICE','',1,'modules/services/','/services'),
-  (57,  'Human Ressources','TREE.HUMAN_RESSOURCES','',0,'modules/human_ressources/','/human_ressources/'),
+  (57,  'Humans Ressources','TREE.HUMANS_RESSOURCES','',0,'modules/humans_ressources/','/humans_ressources/'),
   (61,  'Employee','TREE.EMPLOYEE','Employees Registration',57,'modules/employees/register/','/employees/register'),
   (62,  'Employee Registry','TREE.EMPLOYEE_REGISTRY','Employee Registry',57,'/modules/payroll/registry/','/employees'),
   (82,  'Subsidies','TREE.SUBSIDY','Handles the subsidy situation',1,'/modules/subsidies/','/subsidies'),

@@ -16,8 +16,9 @@
     <div class="form-group">
       <bh-employee-select
         employee-id="HolidayModalCtrl.holiday.employee_id"
-        name="employee_id"
-        on-select-callback="HolidayModalCtrl.onSelectEmployee(employee)">
+        on-select-callback="HolidayModalCtrl.onSelectEmployee(employee)"
+        required="true"
+        validate-trigger="HolidayForm.$submitted">
       </bh-employee-select>
     </div>
 
@@ -33,7 +34,6 @@
       <bh-date-interval
         label="FORM.LABELS.PERIODES"
         date-id="holiday-date"
-        validation-trigger="HolidayModalCtrl.$submitted"
         date-from="HolidayModalCtrl.holiday.dateFrom"
         date-to="HolidayModalCtrl.holiday.dateTo">
       </bh-date-interval>

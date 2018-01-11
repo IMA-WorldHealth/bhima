@@ -24,16 +24,6 @@ class HolidayPage {
   }
 
   /**
-   * send back the number of holidays in the grid
-   */
-  getHolidayCount() {
-    return this.holidayGrid
-      .element(by.css('.ui-grid-render-container-body'))
-      .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'))
-      .count();
-  }
-
-  /**
    * simulate the create holiday button click to show the dialog of creation
    */
   createHoliday(holiday) {
