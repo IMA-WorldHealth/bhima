@@ -56,7 +56,7 @@ describe('(/payroll/rubrics) The /payroll/rubrics  API endpoint', function () {
   });
 
   it('PUT /RUBRICS  should update an existing Rubric ', function () {
-    return agent.put('/rubrics/' + rubric.id)
+    return agent.put('/rubrics/'.concat(rubric.id))
       .send(rubricUpdate)
       .then(function (res) {
         expect(res).to.have.status(200);
@@ -66,7 +66,7 @@ describe('(/payroll/rubrics) The /payroll/rubrics  API endpoint', function () {
   });
 
   it('GET /RUBRICS/:ID returns a single Rubric ', function () {
-    return agent.get('/rubrics/' + rubric.id)
+    return agent.get('/rubrics/'.concat(rubric.id))
       .then(function (res) {
         expect(res).to.have.status(200);
       })
@@ -82,7 +82,7 @@ describe('(/payroll/rubrics) The /payroll/rubrics  API endpoint', function () {
   });
 
   it('DELETE /RUBRICS/:ID should delete a Rubric ', function () {
-    return agent.delete('/rubrics/' + rubric.id)
+    return agent.delete('/rubrics/'.concat(rubric.id))
       .then(function (res) {
         helpers.api.deleted(res);
       })
