@@ -46,7 +46,7 @@ describe('(/offdays) The /offdays  API endpoint', function () {
   });
 
   it('PUT /OFFDAYS  should update an existing Offday ', function () {
-    return agent.put('/offdays/' + offday.id)
+    return agent.put('/offdays/'.concat(offday.id))
       .send({ label : 'Offday Updated' })
       .then(function (res) {
         expect(res).to.have.status(200);
@@ -56,7 +56,7 @@ describe('(/offdays) The /offdays  API endpoint', function () {
   });
 
   it('GET /OFFDAYS/:ID returns a single Offday ', function () {
-    return agent.get('/offdays/' + offday.id)
+    return agent.get('/offdays/'.concat(offday.id))
       .then(function (res) {
         expect(res).to.have.status(200);
       })
@@ -72,7 +72,7 @@ describe('(/offdays) The /offdays  API endpoint', function () {
   });
 
   it('DELETE /OFFDAYS/:ID should delete a Offday ', function () {
-    return agent.delete('/offdays/' + offday.id)
+    return agent.delete('/offdays/'.concat(offday.id))
       .then(function (res) {
         helpers.api.deleted(res);
       })
