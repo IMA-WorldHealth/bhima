@@ -1545,9 +1545,16 @@ CREATE TABLE `supplier` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `taxe_ipr`;
-
 CREATE TABLE `taxe_ipr` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id` int(10)      UNSIGNED NOT NULL AUTO_INCREMENT,
+  `label`           VARCHAR(100) NOT NULL,
+  `description`     TEXT,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `taxe_ipr_configuration`;
+CREATE TABLE `taxe_ipr_configuration` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `taux` float NOT NULL,
   `tranche_annuelle_debut` float DEFAULT NULL,
   `tranche_annuelle_fin` float DEFAULT NULL,
@@ -1560,7 +1567,10 @@ CREATE TABLE `taxe_ipr` (
   `cumul_annuel` float DEFAULT NULL,
   `cumul_mensuel` float DEFAULT NULL,
   `currency_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `taxe_ipr_id` int(10) UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `taxe_ipr_id` (`taxe_ipr_id`),
+  FOREIGN KEY (`taxe_ipr_id`) REFERENCES `taxe_ipr` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `transaction_type`;
