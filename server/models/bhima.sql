@@ -29,7 +29,7 @@ INSERT INTO unit VALUES
   (26,  'Location Manager','TREE.LOCATION','',1,'/modules/locations/locations.html','/locations'),
   (29,  'Patient Group','TREE.PATIENT_GRP','',1,'/modules/patients/groups/','/patients/groups'),
   (48,  'Service Management','TREE.SERVICE','',1,'modules/services/','/services'),
-  (57,  'Payroll','TREE.PAYROLL','',0,'modules/payroll/','/payroll/'),
+  (57,  'Human Ressources','TREE.HUMAN_RESSOURCES','',0,'modules/human_ressources/','/human_ressources/'),
   (61,  'Employee','TREE.EMPLOYEE','Employees Registration',57,'modules/employees/register/','/employees/register'),
   (62,  'Employee Registry','TREE.EMPLOYEE_REGISTRY','Employee Registry',57,'/modules/payroll/registry/','/employees'),
   (82,  'Subsidies','TREE.SUBSIDY','Handles the subsidy situation',1,'/modules/subsidies/','/subsidies'),
@@ -74,7 +74,9 @@ INSERT INTO unit VALUES
   (182, 'Stock File Report', 'TREE.STOCK_INVENTORY_REPORT', 'The Report of an inventory in stock', 144, '/modules/reports/inventory_file', '/reports/inventory_file'),
   (183, 'Grade Management','TREE.GRADES','', 1,'/modules/grades/','/grades'),
   (184, 'Job Title Management','TREE.PROFESSION','', 1,'/modules/functions/','/functions'),
-  (185, 'Payroll Rubric Management','TREE.PAYROLL_RUB_MANAGEMENT','', 57,'/modules/payroll/rubrics','/payroll/rubrics');
+  (185, 'Payroll Rubric Management','TREE.PAYROLL_RUB_MANAGEMENT','', 57,'/modules/payroll/rubrics','/payroll/rubrics'),
+  (188, 'Payroll','TREE.PAYROLL','',0,'modules/payroll/','/payroll/');
+
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
