@@ -298,7 +298,10 @@ INSERT INTO permission (unit_id, user_id) VALUES
 (184, 1),
 
 -- Human Ressource Management
-(188, 1);
+(188, 1),
+
+-- Holidays Management
+(189, 1);
 
 -- Fiscal Year 2015
 SET @fiscalYear2015 = 0;

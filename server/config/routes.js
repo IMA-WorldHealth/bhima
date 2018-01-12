@@ -32,6 +32,7 @@ const services = require('../controllers/admin/services');
 const suppliers = require('../controllers/admin/suppliers');
 const functions = require('../controllers/admin/functions');
 const grades = require('../controllers/admin/grades');
+const holidays = require('../controllers/admin/holidays');
 const languages = require('../controllers/admin/languages');
 const locations = require('../controllers/admin/locations');
 const groups = require('../controllers/groups');
@@ -556,6 +557,12 @@ exports.configure = function configure(app) {
   app.post('/grades', grades.create);
   app.put('/grades/:uuid', grades.update);
   app.delete('/grades/:uuid', grades.delete);
+
+  app.get('/holidays', holidays.list);
+  app.get('/holidays/:id', holidays.detail);
+  app.post('/holidays', holidays.create);
+  app.put('/holidays/:id', holidays.update);
+  app.delete('/holidays/:id', holidays.delete);  
 
   // creditor groups API
   app.post('/creditors/groups', creditorGroups.create);

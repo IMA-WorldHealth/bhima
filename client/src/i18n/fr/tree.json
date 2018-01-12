@@ -30,6 +30,7 @@
     "GENERAL_LEDGER":"Grand Livre",
     "GRADES" : "Gestion des Grades",
     "GRADE_EMPLOYERS":"Gestion Grades",
+    "HOLIDAYS_MANAGEMENT" : "Gestion des Vacances",
     "HOSPITAL":"Hôpital",
     "HUMAN_RESSOURCES":"Ressources humaines",
     "INCOME_EXPENSE":"Recettes et dépenses",
