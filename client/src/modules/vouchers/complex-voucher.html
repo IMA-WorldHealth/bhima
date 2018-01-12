@@ -79,7 +79,7 @@
                     class="form-control"
                     name="description"
                     ng-model="ComplexVoucherCtrl.Voucher.details.description"
-                    placeholder="{{ 'FORM.PLACEHOLDERS.DESCRIPTION' | translate }}"
+                    translate-attr="{ placeholder : 'FORM.PLACEHOLDERS.DESCRIPTION' }"
                     required>
                   </textarea>
                   <div class="help-block" ng-messages="ComplexVoucherForm.description.$error" ng-show="ComplexVoucherForm.$submitted">

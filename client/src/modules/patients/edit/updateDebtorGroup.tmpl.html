@@ -3,32 +3,32 @@
   <div class="modal-header">
     <ol class="headercrumb">
       <li class="static">{{UpdateDebtorGroupCtrl.patient.display_name}}</li>
-      <li class="title">{{ "FORM.LABELS.UPDATE_GROUP_DEBTOR" | translate }}</li>
+      <li class="title" translate>FORM.LABELS.UPDATE_GROUP_DEBTOR</li>
     </ol>
   </div>
 
   <div class="modal-body">
 
     <p class="text-info">
-      <i class="fa fa-info-circle"></i> {{ "FORM.INFO.GROUPS_DEBTOR" | translate }}
+      <i class="fa fa-info-circle"></i> <span translate>FORM.INFO.GROUPS_DEBTOR</span>
     </p>
 
     <div class="form-group has-feedback">
       <bh-debtor-group-select
-        debtor-group-uuid = "UpdateDebtorGroupCtrl.patient.debtor_group_uuid"
-        name = "debtorGroup"
-        on-select-callback = "UpdateDebtorGroupCtrl.onSelectDebtor(debtorGroup)">
+        debtor-group-uuid="UpdateDebtorGroupCtrl.patient.debtor_group_uuid"
+        name="debtorGroup"
+        on-select-callback="UpdateDebtorGroupCtrl.onSelectDebtor(debtorGroup)">
       </bh-debtor-group-select>
     </div>
   </div>
 
   <div class="modal-footer">
-    <button type="button" class="btn btn-default" ng-click="UpdateDebtorGroupCtrl.closeModal()">
-      {{ "FORM.BUTTONS.CANCEL" | translate }}
+    <button type="button" class="btn btn-default" ng-click="UpdateDebtorGroupCtrl.closeModal()" translate>
+      FORM.BUTTONS.CANCEL
     </button>
 
     <bh-loading-button loading-state="groupForm.$loading">
-      {{ "FORM.BUTTONS.CONFIRM" | translate }}
+      <span translate>FORM.BUTTONS.CONFIRM</span>
     </bh-loading-button>
   </div>
 </form>

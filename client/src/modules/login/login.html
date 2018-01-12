@@ -3,8 +3,8 @@
     <div class="row">
       <div class="col-md-4 col-md-offset-4 col-xs-12">
 
-        <div 
-          ng-if="!LoginCtrl.installationExist && LoginCtrl.finishInstallationChecking && !LoginCtrl.installationCheckingError" 
+        <div
+          ng-if="!LoginCtrl.installationExist && LoginCtrl.finishInstallationChecking && !LoginCtrl.installationCheckingError"
           class="text-center" style="margin-top : calc(50vh - 190px); max-width: 400px; margin-right: auto; margin-left: auto;">
           <p>
             <span translate>INSTALL.NO_INSTALLATION</span><br>
@@ -13,14 +13,14 @@
         </div>
         <!--loading indicator-->
         <center>
-          <span 
+          <span
             class="fa fa-circle-o-notch fa-spin fa-4x"
             ng-show="!LoginCtrl.finishInstallationChecking"
             style="margin-top : calc(50vh - 190px); max-width: 400px; margin-right: auto; margin-left: auto">
-          </span> 
+          </span>
         </center>
         <!-- /loading indicator-->
-                
+
          <!--@fixme - style hacks for content centering-->
         <div ng-if="LoginCtrl.installationExist && LoginCtrl.finishInstallationChecking" class="panel panel-default" style="margin-top : calc(50vh - 190px); max-width: 400px; margin-right: auto; margin-left: auto">
           <div class="panel-heading clearfix">
@@ -54,7 +54,7 @@
                     type="text"
                     class="form-control"
                     ng-model="LoginCtrl.credentials.username"
-                    placeholder="{{ 'FORM.PLACEHOLDERS.USERNAME' | translate }}"
+                    translate-attr="{ placeholder: 'FORM.PLACEHOLDERS.USERNAME' }"
                     autofocus
                     autocomplete="off"
                     required />
@@ -74,7 +74,7 @@
                     type="password"
                     ng-model="LoginCtrl.credentials.password"
                     class="form-control"
-                    placeholder="{{ 'FORM.PLACEHOLDERS.PASSWORD' | translate }}"
+                    translate-attr="{ placeholder: 'FORM.PLACEHOLDERS.PASSWORD' }"
                     autocomplete="nope"
                     required />
                 </div>

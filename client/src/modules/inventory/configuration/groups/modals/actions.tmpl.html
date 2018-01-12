@@ -15,7 +15,7 @@
         type="text"
         name="name"
         autocomplete="off"
-        placeholder="{{ 'FORM.PLACEHOLDERS.NAME' | translate }}..."
+        translate-attr="{ placeholder: 'FORM.PLACEHOLDERS.NAME' }"
         required>
       <div class="help-block" ng-messages="ActionForm.name.$error" ng-show="ActionForm.$submitted">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -30,7 +30,7 @@
         type="text"
         name="code"
         autocomplete="off"
-        placeholder="{{ 'FORM.PLACEHOLDERS.CODE' | translate }}..."
+        translate-attr="{ placeholder: 'FORM.PLACEHOLDERS.CODE' }"
         required>
       <div class="help-block" ng-messages="ActionForm.code.$error" ng-show="ActionForm.$submitted">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -75,7 +75,7 @@
         <label>
          <input type='checkbox' name="expires" ng-model = '$ctrl.session.expires' ng-true-value="1" ng-false-value="0"/>
          <span translate>INVENTORY.EXPIRES</span>
-        </label> 
+        </label>
       </div>
     </div>
     <div class='form-group'>
@@ -83,10 +83,10 @@
         <label>
          <input type='checkbox' name='unique_item' ng-model = '$ctrl.session.unique_item' ng-true-value="1" ng-false-value="0"/>
          <span translate>INVENTORY.UNIQUE_ITEM</span>
-        </label> 
+        </label>
       </div>
     </div>
-  
+
   </div>
 
   <div class="modal-footer">

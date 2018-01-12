@@ -1,19 +1,19 @@
-<form name="ActionForm" method="post" novalidate>
+<form name="ActionForm" novalidate>
   <div class="modal-header">
     <i class="fa fa-list"></i>
-    <span ng-if="$ctrl.action==='add'">{{ 'INVENTORY.ADD_UNIT' | translate }}</span>
-    <span ng-if="$ctrl.action==='edit'">{{ 'INVENTORY.EDIT_UNIT' | translate }}</span>
+    <span ng-if="$ctrl.action==='add'" translate>INVENTORY.ADD_UNIT</span>
+    <span ng-if="$ctrl.action==='edit'" translate>INVENTORY.EDIT_UNIT</span>
   </div>
 
   <div class="modal-body">
     <div class="form-group"
       ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.text.$invalid }">
-      <label class="control-label">{{ 'FORM.LABELS.LABEL' | translate }}</label>
+      <label class="control-label" translate>FORM.LABELS.LABEL</label>
       <input ng-model="$ctrl.session.text"
         class="form-control"
         type="text"
         name="text"
-        placeholder="{{ 'FORM.PLACEHOLDERS.NAME' | translate }}..."
+        translate-attr="{ placeholder : 'FORM.PLACEHOLDERS.NAME' }"
         required>
       <div class="help-block" ng-messages="ActionForm.text.$error" ng-show="ActionForm.$submitted">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -22,13 +22,13 @@
 
     <div class="form-group"
       ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.abbreviation.$invalid }">
-      <label class="control-label">{{ 'FORM.LABELS.ABBREVIATION' | translate }}</label>
-      <input 
+      <label class="control-label" translate>FORM.LABELS.ABBREVIATION</label>
+      <input
         ng-model="$ctrl.session.abbr"
         class="form-control"
         type="text"
         name="abbreviation"
-        placeholder="{{ 'FORM.PLACEHOLDERS.ABBREVIATION' | translate }}..."
+        translate-attr="{ placeholder : 'FORM.PLACEHOLDERS.ABBREVIATION' }"
         required>
       <div class="help-block" ng-messages="ActionForm.abbreviation.$error" ng-show="ActionForm.$submitted">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -39,14 +39,15 @@
   <div class="modal-footer">
     <button type="button"
       class="btn btn-default btn-sm"
-      ng-click="$ctrl.cancel()">
-      {{ 'FORM.BUTTONS.CANCEL' | translate }}
+      ng-click="$ctrl.cancel()"
+      translate>
+      FORM.BUTTONS.CANCEL
     </button>
     <button type="submit"
       class="btn btn-primary btn-sm"
       ng-click="$ctrl.submit(ActionForm)"
       data-method="submit">
-      {{ 'FORM.BUTTONS.SUBMIT' | translate }}
+      <span translate>FORM.BUTTONS.SUBMIT
     </button>
   </div>
 </form>

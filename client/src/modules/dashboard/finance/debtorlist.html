@@ -1,6 +1,6 @@
 <div class="panel panel-default dash-panel-table" ng-controller="DebtorListDashboardController as DebtorListCtrl">
   <div class="panel-heading">
-    {{ "DASHBOARD.FINANCE.TOP_DEBTORS" | translate }}
+    <span translate>DASHBOARD.FINANCE.TOP_DEBTORS</span>
     <span class="pull-right">
       <select ng-model="DebtorListCtrl.limit" ng-options="value as key for (key, value) in DebtorListCtrl.limits" ng-change="DebtorListCtrl.saveOptions()"></select>
     </span>

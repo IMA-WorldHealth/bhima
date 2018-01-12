@@ -2,15 +2,15 @@
   <div class="modal-header">
     <div class="bhima-title">
       <ol class="headercrumb">
-        <li class="static">{{ "TREE.INVOICE_REGISTRY" | translate }}</li>
-        <li class="title">{{ "FORM.INFO.CANCEL_CASH" | translate }}</li>
+        <li class="static" translate>TREE.INVOICE_REGISTRY</li>
+        <li class="title" translate>FORM.INFO.CANCEL_CASH</li>
       </ol>
     </div>
   </div>
 
   <div class="modal-body">
     <legend>
-      {{ "TABLE.COLUMNS.INVOICE_ID" | translate}} : {{ ModalCtrl.patientInvoice.reference }}
+      <span translate>TABLE.COLUMNS.INVOICE_ID</span> : {{ ModalCtrl.patientInvoice.reference }}
     </legend>
     <fieldset>
       <table class="table table-bordered table-condensed">
@@ -21,10 +21,10 @@
             </th>
           </tr>
           <tr>
-            <th>{{ "TABLE.COLUMNS.REFERENCE" | translate }}</th>
-            <th>{{ "TABLE.COLUMNS.DESCRIPTION" | translate }}</th>
-            <th>{{ "TABLE.COLUMNS.DATE" | translate }}</th>
-            <th>{{ "TABLE.COLUMNS.AMOUNT" | translate }}</th>
+            <th translate>TABLE.COLUMNS.REFERENCE</th>
+            <th translate>TABLE.COLUMNS.DESCRIPTION</th>
+            <th translate>TABLE.COLUMNS.DATE</th>
+            <th translate>TABLE.COLUMNS.AMOUNT</th>
           </tr>
         </thead>
         <tbody>
@@ -37,7 +37,7 @@
           <tr>
             <td colspan="4">
               <div class="form-group" ng-class="{'has-error': ModalForm.$submitted && ModalForm.description.$invalid }">
-                <label class="control-label">{{ "TABLE.COLUMNS.DESCRIPTION" | translate }}</label>
+                <label class="control-label" translate>TABLE.COLUMNS.DESCRIPTION</label>
                 <textarea
                   ng-model="ModalCtrl.creditNote.description"
                   name="description"
@@ -58,11 +58,11 @@
   </div>
 
   <div class="modal-footer">
-    <button type="button" class="btn btn-default" ng-click="ModalCtrl.cancel()">
-      {{ "FORM.BUTTONS.CLOSE" | translate }}
+    <button type="button" class="btn btn-default" ng-click="ModalCtrl.cancel()" translate>
+      FORM.BUTTONS.CLOSE
     </button>
     <bh-loading-button loading-state="ModalForm.$loading">
-      {{ "FORM.BUTTONS.CONFIRM_CANCEL" | translate }}
+      <span translate>FORM.BUTTONS.CONFIRM_CANCEL</span>
     </bh-loading-button>
   </div>
 </form>
