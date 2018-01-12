@@ -23,6 +23,7 @@
     "ER_EMPTY_QUERY" : "Your request seems empty. Are you sure you filled everything in?",
     "ER_NO_DEFAULT_FOR_FIELD" : "You did not include enough information in your submission!  Please check your errors and try again.",
     "ER_DATA_TOO_LONG" : "One of your form values is too long! Please shorten it and resubmit.",
-    "ER_NO_STOCK_DESTINATION" : "No stock destination defined"
+    "ER_NO_STOCK_DESTINATION" : "No stock destination defined",
+    "ER_NO_STOCK_SOURCE" : "No stock origin defined"
   }
 }

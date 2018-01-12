@@ -6,43 +6,55 @@ StockFindPurchaseModalController.$inject = [
   'uiGridConstants', 'GridFilteringService', 'ReceiptModal',
 ];
 
-function StockFindPurchaseModalController(Instance, Purchase, Notify,
-  uiGridConstants, Filtering, Receipts) {
+function StockFindPurchaseModalController(
+  Instance, Purchase, Notify,
+  uiGridConstants, Filtering, Receipts
+) {
   var vm = this;
+  var filtering;
+  var columns;
 
   // global
   vm.selectedRow = {};
 
   /* ======================= Grid configurations ============================ */
   vm.filterEnabled = false;
-  vm.gridOptions = { appScopeProvider: vm };
+  vm.gridOptions = { appScopeProvider : vm };
 
-  var filtering = new Filtering(vm.gridOptions);
+  filtering = new Filtering(vm.gridOptions);
 
-  var columns = [
-    { field            : 'reference',
+  columns = [
+    {
+      field            : 'reference',
       displayName      : 'TABLE.COLUMNS.REFERENCE',
       headerCellFilter : 'translate',
-      cellTemplate     : 'modules/stock/entry/modals/templates/purchase_reference.tmpl.html' },
+      cellTemplate     : 'modules/stock/entry/modals/templates/purchase_reference.tmpl.html',
+    },
+
     {
       field            : 'date',
       cellFilter       : 'date',
-      filter           : { condition: filtering.filterByDate },
+      filter           : { condition : filtering.filterByDate },
       displayName      : 'TABLE.COLUMNS.DATE',
       headerCellFilter : 'translate',
-      sort             : { priority: 0, direction: 'desc' },
+      sort             : { priority : 0, direction : 'desc' },
     },
-    { field            : 'supplier',
-      displayName      : 'FORM.LABELS.SUPPLIER',
-      headerCellFilter : 'translate' },
 
-    { field            : 'cost',
+    {
+      field            : 'supplier',
+      displayName      : 'FORM.LABELS.SUPPLIER',
+      headerCellFilter : 'translate',
+    },
+
+    {
+      field            : 'cost',
       displayName      : 'STOCK.AMOUNT',
       headerCellFilter : 'translate',
       cellFilter       : 'currency: grid.appScope.enterprise.currency_id',
-      cellClass        : 'text-right' },
+      cellClass        : 'text-right',
+    },
 
-    { field: 'author', displayName: 'TABLE.COLUMNS.BY', headerCellFilter: 'translate' },
+    { field : 'author', displayName : 'TABLE.COLUMNS.BY', headerCellFilter : 'translate' },
   ];
 
   vm.gridOptions.columnDefs = columns;
@@ -79,26 +91,25 @@ function StockFindPurchaseModalController(Instance, Purchase, Notify,
 
   /* ======================= End Grid ======================================== */
 
-  Purchase.search({ detailed: 1, status_id: [2, 4] })
-  .then(function (purchases) {
-    vm.gridOptions.data = purchases;
-  })
-  .catch(Notify.errorHandler);
+  Purchase.search({ detailed : 1, status_id : [2, 4] })
+    .then(function fillGrid(purchases) {
+      vm.gridOptions.data = purchases;
+    })
+    .catch(Notify.errorHandler);
 
   // submit
   function submit() {
-    if (!vm.selectedRow) { return; }
+    if (!vm.selectedRow) { return null; }
 
     return Purchase.stockBalance(vm.selectedRow.uuid)
-    .then(function (purchase) {
-      Instance.close(purchase);
-    })
-    .catch(Notify.errorHandler);
+      .then(function close(purchase) {
+        Instance.close(purchase);
+      })
+      .catch(Notify.errorHandler);
   }
 
   // cancel
   function cancel() {
-    Instance.dismiss();
+    Instance.close();
   }
-
 }

@@ -20,6 +20,10 @@ function StockEntryController(
   StockForm, Stock, StockModal, uiGridConstants, Store, AppCache, Uuid, $translate
 ) {
   var vm = this;
+  var inventoryStore;
+  var mapEntry;
+  var gridOptions;
+  var cache = new AppCache('StockEntry');
 
   vm.stockForm = new StockForm('StockEntry');
   vm.movement = {};
@@ -41,15 +45,14 @@ function StockEntryController(
   vm.submit = submit;
   vm.changeDepot = changeDepot;
 
-  var inventoryStore = null;
-  var cache = new AppCache('StockEntry');
-  var mapEntry = {
+  mapEntry = {
     purchase : { find : findPurchase, submit : submitPurchase },
     donation : { find : handleDonationSelection, submit : submitDonation },
     integration : { find : handleIntegrationSelection, submit : submitIntegration },
     transfer_reception : { find : findTransfer, submit : submitTransferReception },
   };
-  var gridOptions = {
+
+  gridOptions = {
     appScopeProvider : vm,
     enableSorting : false,
     enableColumnMenus : false,
@@ -58,7 +61,7 @@ function StockEntryController(
         field : 'status',
         width : 25,
         displayName : '',
-        cellTemplate : 'modules/stock/entry/templates/status.tmpl.html'
+        cellTemplate : 'modules/stock/entry/templates/status.tmpl.html',
       },
 
       {
@@ -66,14 +69,14 @@ function StockEntryController(
         width : 120,
         displayName : 'TABLE.COLUMNS.CODE',
         headerCellFilter : 'translate',
-        cellTemplate : 'modules/stock/entry/templates/code.tmpl.html'
+        cellTemplate : 'modules/stock/entry/templates/code.tmpl.html',
       },
 
       {
         field : 'description',
         displayName : 'TABLE.COLUMNS.DESCRIPTION',
         headerCellFilter : 'translate',
-        cellTemplate : 'modules/stock/entry/templates/description.tmpl.html'
+        cellTemplate : 'modules/stock/entry/templates/description.tmpl.html',
       },
 
       {
@@ -81,7 +84,7 @@ function StockEntryController(
         width : 150,
         displayName : 'TABLE.COLUMNS.LOT',
         headerCellFilter : 'translate',
-        cellTemplate : 'modules/stock/entry/templates/lot.tmpl.html'
+        cellTemplate : 'modules/stock/entry/templates/lot.tmpl.html',
       },
 
       {
@@ -90,13 +93,13 @@ function StockEntryController(
         displayName : 'TABLE.COLUMNS.QUANTITY',
         headerCellFilter : 'translate',
         cellTemplate : 'modules/stock/entry/templates/quantity.tmpl.html',
-        aggregationType : uiGridConstants.aggregationTypes.sum
+        aggregationType : uiGridConstants.aggregationTypes.sum,
       },
 
       {
         field : 'actions',
         width : 25,
-        cellTemplate : 'modules/stock/entry/templates/actions.tmpl.html'
+        cellTemplate : 'modules/stock/entry/templates/actions.tmpl.html',
       },
     ],
     data : vm.stockForm.store.data,
@@ -153,26 +156,49 @@ function StockEntryController(
     // make sure that the depot is loaded if it doesn't exist at startup.
     if (cache.depotUuid) {
       Depots.read(cache.depotUuid)
-      .then(function (depot) {
-        vm.depot = depot;
-        setupStock();
-      });
+        .then(function assignDepot(depot) {
+          vm.depot = depot;
+          setupStock();
+        });
     } else {
       changeDepot().then(setupStock);
     }
   }
 
   function loadInventories() {
-    // by definition, a item is consumable if it is purchasable because it can finish or be full used (amorti)
+    // by definition, an item is consumable if it is purchasable because it can finish or be full used (amorti)
     // an aspirin or a pen are both consumable because they can be purchased
     // we will load only purchasable items
 
     Inventory.read(null, { consumable : 1 })
-      .then(function (inventories) {
+      .then(function assignInventories(inventories) {
         vm.inventories = inventories;
         inventoryStore = new Store({ identifier : 'uuid', data : inventories });
       })
       .catch(Notify.handleError);
+  }
+
+  function resetSelectedEntity() {
+    vm.movement.entity = {};
+    vm.movement.entry_type = null;
+    vm.movement.description = null;
+    vm.reference = null;
+    vm.displayName = null;
+  }
+
+  function handleSelectedEntity(_entities, _type) {
+    if (!_entities || !_entities.length) {
+      resetSelectedEntity();
+      return;
+    }
+
+    vm.movement.entity = {
+      uuid : _entities[0].uuid,
+      type : _type,
+      instance : _entities[0], // just to get common information in every purchase
+    };
+
+    populate(_entities);
   }
 
   // pop up  a modal to let user find a purchase order
@@ -181,16 +207,9 @@ function StockEntryController(
     initSelectedEntity(description);
 
     StockModal.openFindPurchase()
-      .then(function (purchase) {
-        if (!purchase) { return; }
-        vm.movement.entity = {
-          uuid : purchase[0].uuid,
-          type : 'purchase',
-          instance : purchase[0], // just to get common information in every purchase
-        };
-
+      .then(function handlePurchase(purchase) {
+        handleSelectedEntity(purchase, 'purchase');
         setSelectedEntity(vm.movement.entity.instance);
-        populate(purchase);
       })
       .catch(Notify.handleError);
   }
@@ -201,16 +220,14 @@ function StockEntryController(
     initSelectedEntity(description);
 
     StockModal.openFindTansfer({ depot_uuid : vm.depot.uuid })
-      .then(function (transfers) {
-        if (!transfers) { return; }
-        vm.movement.entity = {
-          uuid : transfers[0].uuid,
-          type : 'transfer_reception',
-          instance : transfers[0],
-        };
+      .then(function handleTransfer(transfers) {
+        if (!transfers) {
+          resetSelectedEntity();
+          return;
+        }
 
+        handleSelectedEntity(transfers, 'transfer_reception');
         vm.reference = transfers[0].documentReference;
-        populate(transfers);
         vm.hasValidInput = hasValidInput();
       })
       .catch(Notify.handleError);
@@ -236,7 +253,7 @@ function StockEntryController(
     // adding items.length line in the stockForm store, which will be reflected to the grid
     vm.stockForm.addItems(items.length);
 
-    vm.stockForm.store.data.forEach(function (item, index) {
+    vm.stockForm.store.data.forEach(function handleStockStoreData(item, index) {
       var inventory = inventoryStore.get(items[index].inventory_uuid);
 
       item.code = inventory.code;
@@ -246,7 +263,8 @@ function StockEntryController(
       item.quantity = items[index].quantity;
       item.cost = item.quantity * item.unit_cost;
       item.expiration_date = new Date();
-      if(vm.movement.entity.type === 'transfer_reception') {
+
+      if (vm.movement.entity.type === 'transfer_reception') {
         item.lots.push({
           isValid : true,
           lot : items[index].label,
@@ -282,7 +300,7 @@ function StockEntryController(
       stockLine : stockLine,
       entry_type : vm.movement.entry_type,
     })
-      .then(function (res) {
+      .then(function handleStockLots(res) {
         if (!res) { return; }
         stockLine.lots = res.lots;
         stockLine.givenQuantity = res.quantity;
@@ -293,18 +311,22 @@ function StockEntryController(
 
   // validation
   function hasValidInput() {
-    return vm.stockForm.store.data.every(function (line) {
+    return vm.stockForm.store.data.every(function checkLot(line) {
       return line.lots.length > 0;
     });
   }
 
   function submit(form) {
-    if (form.$invalid) { return; }
-    mapEntry[vm.movement.entry_type].submit();
+    if (form.$invalid) { return null; }
+
+    if (!vm.movement.entry_type) {
+      return Notify.danger('ERRORS.ER_NO_STOCK_SOURCE');
+    }
+
+    return mapEntry[vm.movement.entry_type].submit();
   }
 
   function submitPurchase() {
-
     var movement = {
       depot_uuid : vm.depot.uuid,
       entity_uuid : vm.movement.entity.uuid,
@@ -317,11 +339,11 @@ function StockEntryController(
     movement.lots = Stock.processLotsFromStore(vm.stockForm.store.data, vm.movement.entity.uuid);
 
     Stock.stocks.create(movement)
-      .then(function (document) {
+      .then(function updatePurchaseStatus(document) {
         vm.document = document;
         return Purchase.stockStatus(vm.movement.entity.uuid);
       })
-      .then(function () {
+      .then(function handleReceipt() {
         vm.stockForm.store.clear();
         vm.movement = {};
         ReceiptModal.stockEntryPurchaseReceipt(vm.document.uuid, bhConstants.flux.FROM_PURCHASE);
@@ -342,11 +364,11 @@ function StockEntryController(
 
     var entry = {
       lots : Stock.processLotsFromStore(vm.stockForm.store.data, movement.entity_uuid),
-      movement : movement
+      movement : movement,
     };
 
     Stock.integration.create(entry)
-      .then(function (document) {
+      .then(function handleReceipt(document) {
         vm.stockForm.store.clear();
         vm.movement = {};
         ReceiptModal.stockEntryIntegrationReceipt(document.uuid, bhConstants.flux.FROM_INTEGRATION);
@@ -374,7 +396,7 @@ function StockEntryController(
     movement.lots = Stock.processLotsFromStore(vm.stockForm.store.data, Uuid());
 
     return Stock.stocks.create(movement)
-      .then(function (document) {
+      .then(function handleReceipt(document) {
         vm.stockForm.store.clear();
         vm.movement = {};
         ReceiptModal.stockEntryDonationReceipt(document.uuid, bhConstants.flux.FROM_DONATION);
@@ -397,7 +419,7 @@ function StockEntryController(
     movement.lots = Stock.processLotsFromStore(vm.stockForm.store.data, null);
 
     return Stock.movements.create(movement)
-      .then(function (document) {
+      .then(function handleReceipt(document) {
         vm.stockForm.store.clear();
         vm.movement = {};
         ReceiptModal.stockEntryDepotReceipt(document.uuid, true);
@@ -407,7 +429,7 @@ function StockEntryController(
 
   function changeDepot() {
     return Depots.openSelectionModal(vm.depot)
-      .then(function (depot) {
+      .then(function handleDepotSwitch(depot) {
         vm.depot = depot;
         cache.depotUuid = vm.depot.uuid;
       });
