@@ -10,7 +10,7 @@ var NotFound = require('../../lib/errors/NotFound');
 // GET /Holiday
 function lookupHoliday(id) {
   var sql =`
-    SELECT h.id, h.label, h.employee_id, h.dateFrom, h.dateTo 
+    SELECT h.id, h.label, h.employee_id, h.dateFrom, h.dateTo, h.percentage
     FROM holiday AS h  
     WHERE h.id = ?`;
 
@@ -20,10 +20,10 @@ function lookupHoliday(id) {
 // Lists the Payroll Holidays
 function list(req, res, next) {
   const sql = `
-    SELECT h.id, h.label, h.employee_id, h.dateFrom, h.dateTo, p.display_name
+    SELECT h.id, h.label, h.employee_id, h.dateFrom, h.dateTo, p.display_name, h.percentage
     FROM holiday AS h
     JOIN employee AS e ON e.id = h.employee_id
-    JOIN patient AS p ON p.uuid = e.patient_uuid  
+    JOIN patient AS p ON p.uuid = e.patient_uuid
   ;`;
 
   db.exec(sql)
