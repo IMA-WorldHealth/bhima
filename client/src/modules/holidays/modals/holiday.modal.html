@@ -1,0 +1,60 @@
+<form name="HolidayForm" bh-submit="HolidayModalCtrl.submit(HolidayForm)" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li ng-if="HolidayModalCtrl.isCreating" class="title">
+        <span translate>HOLIDAY.ADD_HOLIDAY</span>
+        <label class="badge badge-success" translate>FORM.LABELS.CREATE</label>
+      </li>
+      <li ng-if="!HolidayModalCtrl.isCreating" class="title">
+        <span translate>HOLIDAY.EDIT_HOLIDAY</span>
+        <label class="badge badge-success" translate>FORM.LABELS.UPDATE</label>
+      </li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+    <div class="form-group">
+      <bh-employee-select
+        employee-id="HolidayModalCtrl.holiday.employee_id"
+        on-select-callback="HolidayModalCtrl.onSelectEmployee(employee)"
+        required="true"
+        validate-trigger="HolidayForm.$submitted">
+      </bh-employee-select>
+    </div>
+
+    <div class="modal-body" ng-class="{ 'has-error' : HolidayForm.$submitted && HolidayForm.label.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.DESIGNATION</label>
+      <input name="label" ng-model="HolidayModalCtrl.holiday.label" autocomplete="off" class="form-control" required>
+      <div class="help-block" ng-messages="HolidayForm.label.$error" ng-show="HolidayForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+    
+    <div class="modal-body">
+      <bh-date-interval
+        label="FORM.LABELS.PERIODES"
+        date-id="holiday-date"
+        date-from="HolidayModalCtrl.holiday.dateFrom"
+        date-to="HolidayModalCtrl.holiday.dateTo">
+      </bh-date-interval>
+    </div>
+
+    <div class="modal-body" ng-class="{ 'has-error' : HolidayForm.$submitted && HolidayForm.percentage.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.PERCENTAGE</label>
+      <input name="percentage" type="number" max="100" min="0" ng-model="HolidayModalCtrl.holiday.percentage" autocomplete="off" class="form-control" required>
+      <div class="help-block" ng-messages="HolidayForm.percentage.$error" ng-show="HolidayForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>  
+  </div>
+
+  <div class="modal-footer">
+    <button data-method="cancel" type="button" class="btn btn-default" ng-click="HolidayModalCtrl.closeModal()">
+      <span translate>FORM.BUTTONS.CANCEL</span>
+    </button>
+
+    <bh-loading-button loading-state="HolidayForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

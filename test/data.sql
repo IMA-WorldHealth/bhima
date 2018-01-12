@@ -274,7 +274,6 @@ INSERT INTO permission (unit_id, user_id) VALUES
 -- Fiscal Year
 (13,2);
 
-
 -- Fiscal Year 2015
 SET @fiscalYear2015 = 0;
 CALL CreateFiscalYear(1, NULL, @superUser, 'Test Fiscal Year 2015', 12, DATE('2015-01-01'), DATE('2015-12-31'), 'Note for 2015', @fiscalYear2015);
