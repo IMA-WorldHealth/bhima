@@ -1,0 +1,49 @@
+<form name="OffdayForm" bh-submit="OffdayModalCtrl.submit(OffdayForm)" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li ng-if="OffdayModalCtrl.isCreating" class="title">
+        <span translate>OFFDAY.ADD_OFFDAY</span>
+        <label class="badge badge-success" translate>FORM.LABELS.CREATE</label>
+      </li>
+      <li ng-if="!OffdayModalCtrl.isCreating" class="title">
+        <span translate>OFFDAY.EDIT_OFFDAY</span>
+        <label class="badge badge-success" translate>FORM.LABELS.UPDATE</label>
+      </li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+    <div class="modal-body" ng-class="{ 'has-error' : OffdayForm.$submitted && OffdayForm.label.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.DESIGNATION</label>
+      <input name="label" ng-model="OffdayModalCtrl.offday.label" autocomplete="off" class="form-control" required>
+      <div class="help-block" ng-messages="OffdayForm.label.$error" ng-show="OffdayForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+    
+    <div class="modal-body">
+      <bh-date-editor
+        date-value="OffdayModalCtrl.offday.date"
+        validation-trigger="OffdayModalCtrl.$submitted">
+      </bh-date-editor>
+    </div>
+
+    <div class="modal-body" ng-class="{ 'has-error' : OffdayForm.$submitted && OffdayForm.percent_pay.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.PERCENTAGE</label>
+      <input name="percent_pay" type="number" max="100" min="0" ng-model="OffdayModalCtrl.offday.percent_pay" autocomplete="off" class="form-control" required>
+      <div class="help-block" ng-messages="OffdayForm.percent_pay.$error" ng-show="OffdayForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>  
+  </div>
+
+  <div class="modal-footer">
+    <button data-method="cancel" type="button" class="btn btn-default" ng-click="OffdayModalCtrl.closeModal()">
+      <span translate>FORM.BUTTONS.CANCEL</span>
+    </button>
+
+    <bh-loading-button loading-state="OffdayForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

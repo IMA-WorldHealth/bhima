@@ -45,6 +45,7 @@
     "INVOICE_REGISTRY":"Registre des factures",
     "JOURNAL_VOUCHER":"Ajout Transactions",
     "LOCATION":"Localisations",
+    "OFFDAYS_MANAGEMENT" : "Gestion des jours fériés",
     "PHARMACY":"Gestion de pharmacie",
     "PATIENT_DOCUMENT":"Documents de Patient",
     "PATIENT_GRP":"Groupe des Patients",

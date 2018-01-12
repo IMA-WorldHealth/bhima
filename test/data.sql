@@ -571,6 +571,11 @@ INSERT INTO `grade` VALUES
   (HUID('71e9f21c-d9b1-11e5-8ab7-78eb2f2a46e0'), 'G1', 'grade 1', 500.0000),
   (HUID('9ee06e4a-7b59-48e6-812c-c0f8a00cf7d3'), 'A1', '1.1', 50.0000);
 
+-- Offday
+INSERT INTO `offday` VALUES
+  (1, 'Martyre', '2017-04-01', 100),
+  (2, 'Independance', '2017-06-30', 100);
+
 INSERT INTO `section_bilan` VALUES (1, 'Section Bilan 1', 1, 1), (2, 'Section Bilan 2', 1, 1);
 INSERT INTO `section_resultat` VALUES (1, 'Section Resultat 1', 1, 1);
 INSERT INTO `reference_group` VALUES (1, 'AA', 'Reference Group 1', 1, 1);
