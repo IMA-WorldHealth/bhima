@@ -895,7 +895,7 @@ CREATE TABLE `offday` (
   `date` date NOT NULL,
   `percent_pay` float DEFAULT '100',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `offday_1` (`label`)
+  UNIQUE KEY `offday_1` (`date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
