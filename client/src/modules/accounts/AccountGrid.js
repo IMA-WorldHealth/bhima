@@ -41,7 +41,6 @@ function AccountGridService(AccountStore, Accounts, Store, Languages, $httpParam
       this._store = result;
 
       // order and expose data made available through the store
-      // this.data = Accounts.order(this._store.data);
       this.formatStore();
 
       // update exposed store driven data

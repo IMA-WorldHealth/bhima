@@ -130,7 +130,7 @@ function AccountService(Api, bhConstants) {
    */
   function flatten(_tree, _depth) {
     var tree = _tree || [];
-    var depth = Number.isNaN(_depth) ? -1 : _depth;
+    var depth = (!angular.isDefined(_depth) || Number.isNaN(_depth)) ? -1 : _depth;
     depth += 1;
 
     function handleTreeLevel(array, node) {

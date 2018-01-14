@@ -18,11 +18,7 @@ describe('(/accounts) Accounts', () => {
     cc_id : null,
     pc_id : null,
     classe : 4,
-    is_asset : 0,
     reference_id : null,
-    is_brut_link : 0,
-    is_charge : 0,
-    is_title : 0,
   };
 
   const FETCHABLE_ACCOUNT_ID = 117;
@@ -31,9 +27,8 @@ describe('(/accounts) Accounts', () => {
   const NUM_ACCOUNTS = 230;
 
   const responseKeys = [
-    'id', 'enterprise_id', 'locked', 'cc_id', 'pc_id', 'created', 'classe', 'is_asset',
-    'reference_id', 'is_brut_link', 'is_charge', 'number',
-    'label', 'parent', 'type_id', 'is_title', 'type', 'translation_key',
+    'id', 'enterprise_id', 'locked', 'cc_id', 'pc_id', 'created', 'classe',
+    'reference_id', 'number', 'label', 'parent', 'type_id', 'type', 'translation_key',
     'cost_center_text', 'profit_center_text',
   ];
 

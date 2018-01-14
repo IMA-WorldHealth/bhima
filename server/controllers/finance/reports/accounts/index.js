@@ -16,9 +16,10 @@ function chart(req, res, next) {
   const params = req.query;
 
   // @TODO Define server constants library
-  const TITLE_ID = 4;
+  const TITLE_ID = 6;
 
   params.user = req.session.user;
+  params.TITLE_ID = TITLE_ID;
 
   const options = _.extend(req.query, {
     csvKey : 'accounts',
@@ -36,13 +37,7 @@ function chart(req, res, next) {
 
   Accounts.lookupAccount()
     .then(Accounts.processAccountDepth)
-    .then(accounts => {
-      accounts.forEach(account => {
-        account.is_title_account = account.type_id === TITLE_ID;
-      });
-
-      return report.render({ accounts });
-    })
+    .then(accounts => report.render({ accounts }))
     .then(result => {
       if (result.headers.type === 'xlsx') {
         res.xls(result.headers.filename, result.report.accounts);
