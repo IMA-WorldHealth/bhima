@@ -21,6 +21,7 @@ function AccountService(Api, bhConstants) {
   service.getOpeningBalanceForPeriod = getOpeningBalanceForPeriod;
   service.getChildren = getChildren;
   service.filterTitleAccounts = filterTitleAccounts;
+  service.filterAccountByType = filterAccountsByType;
 
   service.flatten = flatten;
   service.order = order;
@@ -79,11 +80,13 @@ function AccountService(Api, bhConstants) {
   }
 
   function filterTitleAccounts(accounts) {
-    return accounts.filter(handleFilterTitleAccount);
+    return filterAccountsByType(accounts, bhConstants.accounts.TITLE);
   }
 
-  function handleFilterTitleAccount(account) {
-    return account.type_id !== bhConstants.accounts.TITLE;
+  function filterAccountsByType(accounts, type) {
+    return accounts.filter(function filterFn(account) {
+      return account.type_id !== type;
+    });
   }
 
   /**

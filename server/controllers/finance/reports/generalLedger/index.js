@@ -49,7 +49,7 @@ function renderReport(req, res, next) {
 
   return Fiscal.getPeriodByFiscal(fiscalYearId)
     .then(rows => {
-      return GeneralLedger.getlistAccounts(rows);
+      return GeneralLedger.getAccountTotalsMatrix(rows);
     })
     .then((rows) => {
       data = { rows };

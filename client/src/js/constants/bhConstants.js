@@ -12,6 +12,11 @@ function constantConfig() {
   return {
     accounts : {
       ROOT  : 0,
+      ASSET : 1,
+      LIABILITY : 2,
+      EQUITY : 3,
+      INCOME : 4,
+      EXPENSE : 5,
       TITLE : 6,
     },
     purchase : {

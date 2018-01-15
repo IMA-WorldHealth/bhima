@@ -1,24 +1,16 @@
 <div class="ui-grid-cell-contents text-right">
-  <span uib-dropdown dropdown-append-to-body>
+  <span uib-dropdown dropdown-append-to-body ng-if="!row.entity.isTitleAccount">
     <a href uib-dropdown-toggle>
       <span data-method="action" translate>FORM.BUTTONS.ACTIONS</span>
       <span class="caret"></span>
     </a>
 
-    <ul class="dropdown-menu-right" uib-dropdown-menu>
+    <ul class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
       <li>
-        <a ng-href="/reports/finance/account_report/?{{ grid.appScope.slip('pdf', grid.appScope.filtersSlip, row.entity.id) }}" download="{{GENERAL_LEDGER.ACCOUNT_SLIP | translate }}">
+        <a ng-href="/reports/finance/account_report/?{{ grid.appScope.slip('pdf', grid.appScope.filtersSlip, row.entity.id) }}" download="{{ GENERAL_LEDGER.ACCOUNT_SLIP | translate }}">
           <span class="fa fa-file-pdf-o"></span> <span translate>GENERAL_LEDGER.ACCOUNT_SLIP</span>
         </a>
       </li>
-<!-- 
-      FIX ME FOR THE CSV DOWNLOAD
-      <li>
-        <a ng-href="/reports/finance/account_report/?{{ grid.appScope.slip('csv', grid.appScope.filtersSlip, row.entity.id) }}" download="{{FORM.BUTTONS.CSV_EXPORT | translate }}">
-          <span class="fa fa-file-pdf-o"></span> <span translate>FORM.BUTTONS.CSV_EXPORT</span>
-        </a>
-      </li>
- -->    
     </ul>
   </span>
 </div>
