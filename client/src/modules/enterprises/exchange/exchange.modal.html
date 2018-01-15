@@ -41,9 +41,12 @@
       max-date="ModalCtrl.timestamp">
     </bh-date-editor>
 
+    <p>
+      <span translate>EXCHANGE.CURRENT_RATE</span>: <i>{{ ModalCtrl.currentExchangeRate | currency:ModalCtrl.rate.currency.id }}</i>
+    </p>
+
     <div class="form-group"
-      ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.rate.$invalid }"
-      >
+      ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.rate.$invalid }">
       <label class="control-label">{{ "FORM.LABELS.EXCHANGE_RATE" | translate }}</label>
       <div class="row">
         <div class="col-xs-2">

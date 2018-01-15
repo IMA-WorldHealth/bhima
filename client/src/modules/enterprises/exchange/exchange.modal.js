@@ -2,7 +2,8 @@ angular.module('bhima.controllers')
   .controller('ExchangeRateModalController', ExchangeRateModalController);
 
 ExchangeRateModalController.$inject = [
-  '$uibModalInstance', 'ExchangeRateService', 'CurrencyService', 'SessionService', 'NotifyService'
+  '$uibModalInstance', 'ExchangeRateService', 'CurrencyService',
+  'SessionService', 'NotifyService',
 ];
 
 /**
@@ -25,7 +26,7 @@ function ExchangeRateModalController(ModalInstance, Exchange, Currencies, Sessio
   vm.submit = submit;
   vm.format = Currencies.format;
   vm.symbol = Currencies.symbol;
-  vm.cancel = function () { ModalInstance.dismiss(); };
+  vm.cancel = function cancel() { ModalInstance.dismiss(); };
 
   // this turns on and off the currency select input
   vm.hasMultipleCurrencies = false;
@@ -45,6 +46,8 @@ function ExchangeRateModalController(ModalInstance, Exchange, Currencies, Sessio
       if (vm.currencies.length > 1) {
         vm.hasMultipleCurrencies = true;
       }
+
+      vm.currentExchangeRate = Exchange.getCurrentRate(vm.rate.currency.id);
     })
     .catch(Notify.handleError);
 
