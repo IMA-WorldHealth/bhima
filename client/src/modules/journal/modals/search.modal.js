@@ -2,15 +2,26 @@ angular.module('bhima.controllers')
   .controller('JournalSearchModalController', JournalSearchModalController);
 
 JournalSearchModalController.$inject = [
-  '$uibModalInstance', 'NotifyService',
-  'Store', 'filters', 'options', 'PeriodService', '$translate',
-  'util', 'TransactionTypeService', 'JournalService',
+  '$uibModalInstance', 'NotifyService', 'Store', 'filters', 'options',
+  'PeriodService', '$translate', 'util', 'TransactionTypeService',
+  'JournalService',
 ];
 
 function JournalSearchModalController(Instance, Notify,
   Store, filters, options, Periods, $translate,
   util, TransactionTypes, Journal) {
   var vm = this;
+
+  // displayValues will be an id:displayValue pair
+  var displayValues = {};
+  var lastDisplayValues = Journal.filters.getDisplayValueMap();
+
+  // @TODO ideally these should be passed in when the modal is initialised
+  //       these are known when the filter service is defined
+  var searchQueryOptions = [
+    'description', 'user_id', 'account_id', 'project_id', 'amount', 'trans_id',
+    'origin_id', 'includeNonPosted',
+  ];
 
   var changes = new Store({ identifier : 'key' });
   vm.filters = filters;
@@ -19,22 +30,6 @@ function JournalSearchModalController(Instance, Notify,
   // an object to keep track of all custom filters, assigned in the view
   vm.searchQueries = {};
   vm.defaultQueries = {};
-
-  // displayValues will be an id:displayValue pair
-  var displayValues = {};
-
-  // @TODO ideally these should be passed in when the modal is initialised
-  //       these are known when the filter service is defined
-  var searchQueryOptions = ['description', 'user_id', 'account_id', 'project_id', 'amount', 'trans_id', 'origin_id', 'includeNonPosted'];
-
-  var lastViewFilters = Journal.filters.formatView().customFilters;
-
-  // map key to last display value for lookup in loggedChange
-  var lastDisplayValues = lastViewFilters.reduce(function (object, filter) {
-    object[filter._key] = filter.displayValue;
-    return object;
-  }, {});
-
   // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(filters, searchQueryOptions);
 
@@ -49,6 +44,11 @@ function JournalSearchModalController(Instance, Notify,
    */
   if (options.hasDefaultAccount) {
     vm.hasDefaultAccount = true;
+  }
+
+  // hide the posted toggle when not needed
+  if (options.hidePostedOption) {
+    vm.hidePostedOption = true;
   }
 
   // assign default filters
