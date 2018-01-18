@@ -113,7 +113,7 @@
     "karma-chrome-launcher": "^2.2.0",
     "karma-mocha": "^1.2.0",
     "karma-ng-html2js-preprocessor": "^1.0.0",
-    "mocha": "^4.0.0",
+    "mocha": "^5.0.0",
     "mochawesome-screenshots": "^1.4.1",
     "protractor": "^5.0.0",
     "pump": "^2.0.0",
