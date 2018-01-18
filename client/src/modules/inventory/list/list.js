@@ -97,7 +97,22 @@ function InventoryListController(
     cellClass : 'text-right',
     type : 'number',
     visible : false,
-  }, {
+  },
+  {
+    field : 'is_broken',
+    displayName : 'INVENTORY.IS_BROKEN',
+    headerCellFilter : 'translate',
+    cellTemplate : '/modules/inventory/list/templates/isbroken.cell.html',
+    visible : false,
+  },
+  {
+    field : 'note',
+    displayName : 'FORM.INFO.NOTE',
+    headerCellFilter : 'translate',
+    cellClass : 'text-right',
+    visible : false,
+  },
+  {
     field : 'action',
     displayName : '',
     cellTemplate : '/modules/inventory/list/templates/action.cell.html',
