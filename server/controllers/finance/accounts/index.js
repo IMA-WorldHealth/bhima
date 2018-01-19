@@ -136,9 +136,9 @@ function list(req, res, next) {
   if (req.query.detailed === '1') {
     sql = `
       SELECT a.id, a.enterprise_id, a.locked, a.cc_id, a.pc_id, a.created,
-        a.classe, a.is_asset, a.reference_id, a.is_brut_link, a.is_charge,
-        a.number, a.label, a.parent, a.type_id, a.is_title, at.type,
-        at.translation_key, cc.text AS cost_center_text, pc.text AS profit_center_text
+        a.classe, a.reference_id, a.number, a.label, a.parent,
+        a.type_id, at.type, at.translation_key, cc.text AS cost_center_text,
+        pc.text AS profit_center_text
       FROM account AS a JOIN account_type AS at ON a.type_id = at.id
       LEFT JOIN cost_center AS cc ON a.cc_id = cc.id
       LEFT JOIN profit_center AS pc ON a.pc_id = pc.id
@@ -304,8 +304,7 @@ function getOpeningBalanceForPeriod(req, res, next) {
 function lookupAccount(id) {
   let sql = `
     SELECT a.id, a.enterprise_id, a.locked, a.cc_id, a.pc_id, a.created,
-      a.classe, a.is_asset, a.reference_id, a.is_brut_link, a.is_charge,
-      a.number, a.label, a.parent, a.type_id, a.is_title, at.type,
+      a.classe, a.reference_id, a.number, a.label, a.parent, a.type_id, at.type,
       at.translation_key, cc.text AS cost_center_text, pc.text AS profit_center_text
     FROM account AS a JOIN account_type AS at ON a.type_id = at.id
     LEFT JOIN cost_center AS cc ON a.cc_id = cc.id
@@ -358,7 +357,7 @@ function getChildren(accounts, parentId) {
 
   const children = accounts.filter(account => account.parent === parentId);
 
-  children.forEach((account) => {
+  children.forEach(account => {
     account.children = getChildren(accounts, account.id);
   });
 

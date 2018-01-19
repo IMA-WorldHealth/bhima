@@ -4,9 +4,11 @@
  *  - store to use
  */
 angular.module('bhima.services')
-.service('AccountStoreService', AccountStoreService);
+  .service('AccountStoreService', AccountStoreService);
 
-AccountStoreService.$inject = ['$q', 'AccountService', 'AccountTypeService', 'Store'];
+AccountStoreService.$inject = [
+  '$q', 'AccountService', 'AccountTypeService', 'Store',
+];
 
 // Temporary service until caching API services is well designed
 function AccountStoreService($q, Accounts, AccountTypes, Store) {
@@ -40,6 +42,7 @@ function AccountStoreService($q, Accounts, AccountTypes, Store) {
         return accounts;
       });
     }
+
     return $q.resolve(accounts);
   }
 
@@ -49,6 +52,7 @@ function AccountStoreService($q, Accounts, AccountTypes, Store) {
         return accountTypes;
       });
     }
+
     return $q.resolve(accountTypes);
   }
 }

@@ -18,7 +18,7 @@
         <!-- acting body class="tab-body" -->
         <div class="tab-body">
 
-        <div class="form-group">
+        <div class="form-group" ng-if="!ModalCtrl.hidePostedOption">
           <label class="control-label" translate>TRANSACTIONS.VERIFIED_TRANSACTIONS</label>
           <bh-clear on-clear="ModalCtrl.clear('includeNonPosted')"></bh-clear>
           <div class="checkbox">
@@ -150,24 +150,6 @@
             <div class="help-block" ng-messages="ModalForm.limit.$error">
               <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
             </div>
-          </div>
-          <!-- posted/ non-posted records -->
-          <!-- <div class="form-group"> -->
-          <!--   <label class="form-label">Transactions Limit</label> -->
-
-          <!--   <div class="checkbox"> -->
-          <!--     <label> -->
-          <!--       <input type="checkbox" value=""> -->
-          <!--       Posted transactions -->
-          <!--     </label> -->
-          <!--   </div> -->
-          <!--   <div class="checkbox"> -->
-          <!--     <label> -->
-          <!--       <input type="checkbox" value=""> -->
-          <!--       Non-posted transactions -->
-          <!--     </label> -->
-          <!--   </div> -->
-
           </div>
         </div>
       </uib-tab>

@@ -23,7 +23,7 @@
 
     <tbody>
       {{#each accounts}}
-        {{#if this.is_title}}
+        {{#equal this.type_id ../TITLE_ID}}
           <tr>
             <td class="text-right"><strong>{{ this.number }}</strong></td>
             <td class="text-left">
@@ -49,7 +49,7 @@
             </td>
             <td>{{translate this.translation_key }}</td>
           </tr>
-        {{/if}}
+        {{/equal}}
       {{/each}}
     </tbody>
   </table>
