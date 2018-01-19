@@ -24,6 +24,7 @@
         "NO_INVENTORY_REGISTERED": "There is no inventory enregistered yet",
         "REGISTRY": "Inventories Registry",
         "EXPIRES" : "Expires",
-        "UNIQUE_ITEM" : "Unique item"
+        "UNIQUE_ITEM" : "Unique item",
+        "IS_BROKEN" : "is broken"
     }
 }

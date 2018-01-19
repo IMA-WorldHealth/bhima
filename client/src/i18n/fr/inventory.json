@@ -24,6 +24,7 @@
         "REGISTRY": "Registre des inventaires",
         "NO_INVENTORY_REGISTERED": "Il n'y aucun inventaire enregistré jusque là",
         "EXPIRES" : "Expire",
-        "UNIQUE_ITEM" : "Un seul item"
+        "UNIQUE_ITEM" : "Un seul item",
+        "IS_BROKEN" : "est endommagé"
     }
 }
