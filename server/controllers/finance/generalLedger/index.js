@@ -14,7 +14,6 @@
 
 // module dependencies
 const db = require('../../../lib/db');
-const BadRequest = require('../../../lib/errors/BadRequest');
 const FilterParser = require('../../../lib/filter');
 
 // GET/ CURRENT FISCAL YEAR PERIOD
@@ -26,7 +25,7 @@ exports.listAccounts = listAccounts;
 exports.find = find;
 
 // expose to server controllers
-exports.getlistAccounts = getlistAccounts;
+exports.getAccountTotalsMatrix = getAccountTotalsMatrix;
 
 /**
  * @function find
@@ -38,7 +37,7 @@ exports.getlistAccounts = getlistAccounts;
  */
 function find(options) {
   const filters = new FilterParser(options, {
-    tableAlias: 'gl'
+    tableAlias: 'gl',
   });
 
   const sql = `
@@ -107,7 +106,7 @@ function listAccounts(req, res, next) {
 
   Fiscal.getPeriodByFiscal(fiscalYearId)
     .then((rows) => {
-      return getlistAccounts(rows);
+      return getAccountTotalsMatrix(rows);
     })
     .then((rows) => {
       res.status(200).json(rows);
@@ -117,10 +116,13 @@ function listAccounts(req, res, next) {
 }
 
 /**
- * @function getlistAccounts
- * get list of accounts
+ * @function getAccountTotalsMatrix
+ *
+ * @description
+ * This function gets the period totals for all general ledger accounts from
+ * the period totals table.
  */
-function getlistAccounts(periodsId) {
+function getAccountTotalsMatrix(periodsId) {
   let sqlCase = '';
   let getBalance = '';
   let headSql = '';
@@ -133,15 +135,16 @@ function getlistAccounts(periodsId) {
       signPlus = period.number === 0 ? '' : '+';
       getBalance += `${signPlus} balance${period.number} `;
 
-      sqlCase += `, SUM(CASE
-          WHEN period_total.period_id = ${period.id} THEN period_total.debit - period_total.credit ELSE  0
-        END) AS balance${period.number}
+      sqlCase += `, SUM(
+        IF(period_total.period_id = ${period.id}, period_total.debit - period_total.credit, 0)
+      ) AS balance${period.number}
       `;
     });
   }
 
   const sql =
-    `SELECT account.number, account.label, p.account_id AS id, ( ${getBalance}) AS balance ${headSql}
+    `SELECT account.number, account.type_id, account.label, p.account_id AS id,
+      (${getBalance}) AS balance ${headSql}
       FROM (
         SELECT period_total.account_id ${sqlCase}
           FROM period_total GROUP BY period_total.account_id

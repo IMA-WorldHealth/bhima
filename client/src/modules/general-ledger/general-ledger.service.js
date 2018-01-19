@@ -13,6 +13,7 @@ function GeneralLedgerService(Api, $httpParamSerializer, Languages) {
   var service = new Api('/general_ledger/');
 
   service.accounts = new Api('/general_ledger/accounts');
+
   service.download = download;
   service.slip = slip;
 

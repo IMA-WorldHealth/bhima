@@ -2,9 +2,9 @@ angular.module('bhima.controllers')
   .controller('GeneralLedgerAccountsController', GeneralLedgerAccountsController);
 
 GeneralLedgerAccountsController.$inject = [
-  'GeneralLedgerService', 'SessionService', 'NotifyService',
-  'uiGridConstants', 'ReceiptModal', 'ExportService', 'GridColumnService', 'AppCache', 'GridStateService',
-  '$state', 'LanguageService', 'ModalService', 'FiscalService',
+  'GeneralLedgerService', 'SessionService', 'NotifyService', 'uiGridConstants',
+  'ReceiptModal', 'ExportService', 'GridColumnService', 'GridStateService',
+  '$state', 'LanguageService', 'ModalService', 'FiscalService', 'bhConstants',
 ];
 
 /**
@@ -13,30 +13,34 @@ GeneralLedgerAccountsController.$inject = [
  * @description
  * This controller is responsible for displaying accounts and their balances
  */
-function GeneralLedgerAccountsController(GeneralLedger, Session, Notify,
-  uiGridConstants, Receipts, Export, Columns, AppCache, GridState, $state, Languages, Modal, Fiscal) {
+function GeneralLedgerAccountsController(
+  GeneralLedger, Session, Notify, uiGridConstants, Receipts, Export, Columns,
+  GridState, $state, Languages, Modal, Fiscal, bhConstants
+) {
   var vm = this;
   var columns;
   var state;
   var cacheKey = 'GeneralLedgerAccounts';
-  var cache = AppCache(cacheKey);
 
-  vm.enterprise = Session.enterprise;
   vm.today = new Date();
   vm.filterEnabled = false;
   vm.openColumnConfiguration = openColumnConfiguration;
+
+  function computeAccountCellStyle(grid, row) {
+    return row.entity.isTitleAccount ? 'text-bold' : '';
+  }
 
   columns = [
     { field            : 'number',
       displayName      : 'TABLE.COLUMNS.ACCOUNT',
       enableFiltering  : true,
-      cellTemplate     : '/modules/general-ledger/templates/account_number.cell.html',
+      cellClass        : computeAccountCellStyle,
       headerCellFilter : 'translate' },
 
     { field            : 'label',
       displayName      : 'TABLE.COLUMNS.LABEL',
-      cellTemplate     : '/modules/general-ledger/templates/account_label.cell.html',
       enableFiltering  : true,
+      cellClass        : computeAccountCellStyle,
       headerCellFilter : 'translate' },
 
     { field            : 'balance',
@@ -44,27 +48,31 @@ function GeneralLedgerAccountsController(GeneralLedger, Session, Notify,
       enableFiltering  : false,
       headerCellFilter : 'translate',
       headerCellClass  : 'text-center',
-      cellTemplate     : '/modules/general-ledger/templates/balance.cell.html' },
+      cellClass        : computeAccountCellStyle,
+      cellFilter       : 'currency:'.concat(Session.enterprise.currency_id) },
 
     { field            : 'balance0',
       displayName      : 'FORM.LABELS.OPENING_BALANCE',
       enableFiltering  : false,
       headerCellFilter : 'translate',
       headerCellClass  : 'text-center',
-      cellTemplate     : getCellTemplate('balance0')},
+      cellClass        : computeAccountCellStyle,
+      cellTemplate     : getCellTemplate('balance0') },
 
     { field            : 'balance1',
       displayName      : 'TABLE.COLUMNS.DATE_MONTH.JANUARY',
       enableFiltering  : false,
       headerCellFilter : 'translate',
       headerCellClass  : 'text-center',
-       cellTemplate    : getCellTemplate('balance1')},
+      cellClass        : computeAccountCellStyle,
+       cellTemplate    : getCellTemplate('balance1') },
 
     { field            : 'balance2',
       displayName      : 'TABLE.COLUMNS.DATE_MONTH.FEBRUARY',
       enableFiltering  : false,
       headerCellFilter : 'translate',
       headerCellClass  : 'text-center',
+      cellClass        : computeAccountCellStyle,
       cellTemplate     : getCellTemplate('balance2') },
 
     { field            : 'balance3',
@@ -72,6 +80,7 @@ function GeneralLedgerAccountsController(GeneralLedger, Session, Notify,
       enableFiltering  : false,
       headerCellFilter : 'translate',
       headerCellClass  : 'text-center',
+      cellClass        : computeAccountCellStyle,
       cellTemplate     : getCellTemplate('balance3') },
 
     { field            : 'balance4',
@@ -79,6 +88,7 @@ function GeneralLedgerAccountsController(GeneralLedger, Session, Notify,
       enableFiltering  : false,
       headerCellFilter : 'translate',
       headerCellClass  : 'text-center',
+      cellClass        : computeAccountCellStyle,
       cellTemplate     : getCellTemplate('balance4') },
 
     { field            : 'balance5',
@@ -86,6 +96,7 @@ function GeneralLedgerAccountsController(GeneralLedger, Session, Notify,
       enableFiltering  : false,
       headerCellFilter : 'translate',
       headerCellClass  : 'text-center',
+      cellClass        : computeAccountCellStyle,
       cellTemplate     : getCellTemplate('balance5') },
 
     { field            : 'balance6',
@@ -93,6 +104,7 @@ function GeneralLedgerAccountsController(GeneralLedger, Session, Notify,
       enableFiltering  : false,
       headerCellFilter : 'translate',
       headerCellClass  : 'text-center',
+      cellClass        : computeAccountCellStyle,
       cellTemplate     : getCellTemplate('balance6') },
 
     { field            : 'balance7',
@@ -100,6 +112,7 @@ function GeneralLedgerAccountsController(GeneralLedger, Session, Notify,
       enableFiltering  : false,
       headerCellFilter : 'translate',
       headerCellClass  : 'text-center',
+      cellClass        : computeAccountCellStyle,
       cellTemplate     : getCellTemplate('balance7') },
 
     { field            : 'balance8',
@@ -107,6 +120,7 @@ function GeneralLedgerAccountsController(GeneralLedger, Session, Notify,
       enableFiltering  : false,
       headerCellFilter : 'translate',
       headerCellClass  : 'text-center',
+      cellClass        : computeAccountCellStyle,
       cellTemplate     : getCellTemplate('balance8') },
 
     { field            : 'balance9',
@@ -114,6 +128,7 @@ function GeneralLedgerAccountsController(GeneralLedger, Session, Notify,
       enableFiltering  : false,
       headerCellFilter : 'translate',
       headerCellClass  : 'text-center',
+      cellClass        : computeAccountCellStyle,
       cellTemplate     : getCellTemplate('balance9') },
 
     { field            : 'balance10',
@@ -121,6 +136,7 @@ function GeneralLedgerAccountsController(GeneralLedger, Session, Notify,
       enableFiltering  : false,
       headerCellFilter : 'translate',
       headerCellClass  : 'text-center',
+      cellClass        : computeAccountCellStyle,
       cellTemplate     : getCellTemplate('balance10') },
 
     { field            : 'balance11',
@@ -128,6 +144,7 @@ function GeneralLedgerAccountsController(GeneralLedger, Session, Notify,
       enableFiltering  : false,
       headerCellFilter : 'translate',
       headerCellClass  : 'text-center',
+      cellClass        : computeAccountCellStyle,
       cellTemplate     : getCellTemplate('balance11') },
 
 
@@ -136,6 +153,7 @@ function GeneralLedgerAccountsController(GeneralLedger, Session, Notify,
       enableFiltering  : false,
       headerCellFilter : 'translate',
       headerCellClass  : 'text-center',
+      cellClass        : computeAccountCellStyle,
       cellTemplate     : getCellTemplate('balance12') },
 
     {
@@ -167,9 +185,10 @@ function GeneralLedgerAccountsController(GeneralLedger, Session, Notify,
   vm.clearGridState = function clearGridState() {
     state.clearGridState();
     $state.reload();
-  }
+  };
 
   function handleError(err) {
+    console.log('err:', err);
     vm.hasError = true;
     Notify.handleError(err);
   }
@@ -193,21 +212,23 @@ function GeneralLedgerAccountsController(GeneralLedger, Session, Notify,
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
-  function loadData(data) {
-    vm.gridOptions.data = data;
+  function labelTitleAccounts(account) {
+    account.isTitleAccount = account.type_id === bhConstants.accounts.TITLE;
+  }
+
+  function loadData(accounts) {
+    // make sure the title accounts are identified
+    accounts.forEach(labelTitleAccounts);
+
+    vm.gridOptions.data = accounts;
   }
 
   function getCellTemplate(key) {
     return '<div class="ui-grid-cell-contents text-right">' +
-      '<div ng-show="row.entity.' + key +'" >' +
-        '{{ row.entity.' + key +' | currency: grid.appScope.enterprise.currency_id }}' +
+      '<div ng-show="row.entity.' + key + '" >' +
+        '{{ row.entity.' + key + ' | currency:' + Session.enterprise.currency_id + ' }}' +
       '</div>' +
     '</div>';
-  }
-
-  // format Export Parameters
-  function formatExportParameters(type) {
-    return { renderer: type || 'pdf', lang: Languages.key };
   }
 
   vm.download = GeneralLedger.download;
@@ -223,12 +244,13 @@ function GeneralLedgerAccountsController(GeneralLedger, Session, Notify,
 
         vm.filters = {
           fiscal_year_id : filters.fiscal_year.id,
-          fiscal_year_label : filters.fiscal_year.label
+          fiscal_year_label : filters.fiscal_year.label,
         };
 
         vm.filtersSlip = {
           dateFrom : filters.fiscal_year.start_date,
-          dateTo : filters.fiscal_year.end_date
+          dateTo : filters.fiscal_year.end_date,
+          limit : 1000,
         };
 
         load(vm.filters);
@@ -249,18 +271,25 @@ function GeneralLedgerAccountsController(GeneralLedger, Session, Notify,
   // runs on startup
   function startup() {
     Fiscal.fiscalYearDate({ date : vm.today })
-    .then(function (year) {
-      vm.year = year[0];
-      vm.fiscalYearLabel = vm.year.label;
-      vm.year.fiscal_year_id;
-      vm.filters = {fiscal_year_id : vm.year.fiscal_year_id, fiscal_year_label : vm.year.label};
-      vm.filtersSlip = {dateFrom : vm.year.start_date, dateTo : vm.year.end_date};
+      .then(function (year) {
+        vm.year = year[0];
+        vm.fiscalYearLabel = vm.year.label;
 
-      load(vm.filters);
-    })
-    .catch(Notify.handleError);
+        vm.filters = {
+          fiscal_year_id : vm.year.fiscal_year_id,
+          fiscal_year_label : vm.year.label,
+        };
+
+        vm.filtersSlip = {
+          dateFrom : vm.year.start_date,
+          dateTo : vm.year.end_date,
+          limit : 1000,
+        };
+
+        load(vm.filters);
+      })
+      .catch(Notify.handleError);
   }
 
   startup();
-
 }
