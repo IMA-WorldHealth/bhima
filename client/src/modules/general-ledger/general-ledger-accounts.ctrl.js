@@ -220,6 +220,9 @@ function GeneralLedgerAccountsController(
     // make sure the title accounts are identified
     accounts.forEach(labelTitleAccounts);
 
+    // TODO - finish this
+    GeneralLedger.computeAccountBalances(accounts);
+
     vm.gridOptions.data = accounts;
   }
 

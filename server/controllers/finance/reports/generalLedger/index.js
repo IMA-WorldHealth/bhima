@@ -14,7 +14,6 @@ const Accounts = require('../../accounts');
 
 const REPORT_TEMPLATE = './server/controllers/finance/reports/generalLedger/report.handlebars';
 const ACCOUNT_SLIP_TEMPLATE = './server/controllers/finance/reports/generalLedger/accountSlip.handlebars';
-const Fiscal = require('../../fiscal');
 
 const GENERAL_LEDGER_SOURCE = 1;
 
@@ -47,10 +46,7 @@ function renderReport(req, res, next) {
 
   const fiscalYearId = options.fiscal_year_id;
 
-  return Fiscal.getPeriodByFiscal(fiscalYearId)
-    .then(rows => {
-      return GeneralLedger.getAccountTotalsMatrix(rows);
-    })
+  return GeneralLedger.getAccountTotalsMatrix(fiscalYearId)
     .then((rows) => {
       data = { rows };
       data.fiscal_year_label = options.fiscal_year_label;
