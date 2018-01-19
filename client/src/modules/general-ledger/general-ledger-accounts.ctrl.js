@@ -25,6 +25,7 @@ function GeneralLedgerAccountsController(
   vm.today = new Date();
   vm.filterEnabled = false;
   vm.openColumnConfiguration = openColumnConfiguration;
+  vm.onSelectFiscalYear = onSelectFiscalYear;
 
   function computeAccountCellStyle(grid, row) {
     return row.entity.isTitleAccount ? 'text-bold' : '';
@@ -175,6 +176,8 @@ function GeneralLedgerAccountsController(
     flatEntityAccess  : true,
     enableColumnMenus : false,
     appScopeProvider  : vm,
+    gridFooterTemplate : '/modules/general-ledger/grid.footer.html',
+    showGridFooter     : true,
     onRegisterApi     : onRegisterApi,
   };
 
@@ -188,7 +191,6 @@ function GeneralLedgerAccountsController(
   };
 
   function handleError(err) {
-    console.log('err:', err);
     vm.hasError = true;
     Notify.handleError(err);
   }
@@ -237,30 +239,6 @@ function GeneralLedgerAccountsController(
   vm.download = GeneralLedger.download;
   vm.slip = GeneralLedger.slip;
 
-  // open search modal
-  vm.openFiscalYearConfiguration = function openFiscalYearConfiguration() {
-    Modal.openSelectFiscalYear()
-      .then(function (filters) {
-        if (!filters) { return; }
-        vm.fiscalYearLabel = filters.fiscal_year.label;
-        vm.filters.fiscal_year_label = filters.fiscal_year.label;
-
-        vm.filters = {
-          fiscal_year_id : filters.fiscal_year.id,
-          fiscal_year_label : filters.fiscal_year.label,
-        };
-
-        vm.filtersSlip = {
-          dateFrom : filters.fiscal_year.start_date,
-          dateTo : filters.fiscal_year.end_date,
-          limit : 1000,
-        };
-
-        load(vm.filters);
-      })
-      .catch(Notify.handleError);
-  };
-
   // loads data for the general Ledger
   function load(options) {
     vm.loading = true;
@@ -271,25 +249,33 @@ function GeneralLedgerAccountsController(
       .finally(toggleLoadingIndicator);
   }
 
+  function onSelectFiscalYear(year) {
+    vm.year = year;
+    vm.fiscalYearLabel = vm.year.label;
+
+    vm.filters = {
+      fiscal_year_id : vm.year.id,
+      fiscal_year_label : vm.year.label,
+    };
+
+    vm.filtersSlip = {
+      dateFrom : vm.year.start_date,
+      dateTo : vm.year.end_date,
+      limit : 1000,
+    };
+
+    load(vm.filters);
+  }
+
   // runs on startup
   function startup() {
-    Fiscal.fiscalYearDate({ date : vm.today })
-      .then(function (year) {
-        vm.year = year[0];
-        vm.fiscalYearLabel = vm.year.label;
+    // TODO(@jniles) - cache this date
+    Fiscal.read(null, { detailed : 1 })
+      .then(function (years) {
+        vm.fiscalYears = years;
 
-        vm.filters = {
-          fiscal_year_id : vm.year.fiscal_year_id,
-          fiscal_year_label : vm.year.label,
-        };
-
-        vm.filtersSlip = {
-          dateFrom : vm.year.start_date,
-          dateTo : vm.year.end_date,
-          limit : 1000,
-        };
-
-        load(vm.filters);
+        // get the last year
+        onSelectFiscalYear(years[0]);
       })
       .catch(Notify.handleError);
   }

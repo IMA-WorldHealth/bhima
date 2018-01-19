@@ -66,8 +66,6 @@ function GeneralLedgerService(Api, $httpParamSerializer, Languages, Accounts) {
     // now we need to recursively compute the balances of the
     tree.forEach(function (account) {
       var balance = computeChildrenBalances(account, 'balance');
-      console.log('Account: ', account.number, ' has balance ', balance);
-      console.log('With children:', account.children);
     });
 
     return tree;
