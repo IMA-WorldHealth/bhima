@@ -346,6 +346,8 @@
             "HOME_PAGE": "Page d'accueil par défaut",
             "HOSPITAL_NO": "Numero Fiche",
             "HOSPITAL_FILE_NR": "Numero Fiche",
+            "HEALTH_ZONE":"Zone de santé",
+            "HEALTH_AREA":"Air de santé",
             "ID": "ID",
             "INCOME": "Recettes",
             "INCOME_EXPENSE": "Recettes et dépenses",

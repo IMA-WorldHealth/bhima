@@ -316,6 +316,8 @@
             "FEMALE": "Female",
             "RECORDS": "Records (Rows)",
             "FILE_NAME": "File Name",
+            "HEALTH_ZONE":"Health Zone",
+            "HEALTH_AREA":"Health Area",
             "FISCAL_YEAR": "Fiscal Year",
             "COLS_ALL": "All columns",
             "COLS_VISIBLE": "Visible columns",

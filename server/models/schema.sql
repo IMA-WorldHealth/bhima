@@ -1002,6 +1002,8 @@ CREATE TABLE `patient` (
   `avatar`               VARCHAR(150),
   `user_id`              SMALLINT(5) UNSIGNED NOT NULL,
   `created_at`           DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `health_zone`           VARCHAR(30),
+  `health_area`           VARCHAR(30),
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `patient_1` (`hospital_no`),
   UNIQUE KEY `patient_2` (`project_id`, `reference`),
