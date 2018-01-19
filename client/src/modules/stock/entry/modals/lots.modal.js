@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 
 StockDefineLotsModalController.$inject = [
   '$uibModalInstance', 'NotifyService', 'uiGridConstants', 'data',
-  'SessionService',
+  'SessionService', 'bhConstants',
 ];
 
-function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data, Session) {
+function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data, Session, bhConstants) {
   var vm = this;
   var current = new Date();
   vm.enterprise = Session.enterprise;
@@ -54,6 +54,7 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
       {
         field : 'expiration_date',
         type : 'date',
+        cellFilter : 'date:"'.concat(bhConstants.dates.format, '"'),
         width : 150,
         visible : (vm.stockLine.expires !== 0),
         displayName : 'TABLE.COLUMNS.EXPIRATION_DATE',
@@ -122,22 +123,22 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
   }
 
   function checkLine(line, date) {
-    var isPosterior;
+    var hasFutureExpirationDate;
 
     if (date) { line.expiration_date = date; }
 
-    isPosterior = new Date(line.expiration_date) >= new Date();
+    hasFutureExpirationDate = new Date(line.expiration_date) >= new Date();
 
     // IF this item doesn't expires, we can consider isposterior = true,
     // no check for the expiration date,
     // the expiration date can have defaut value, this year + 1000 years.
 
     if (vm.stockLine.expires === 0) {
-      isPosterior = true;
+      hasFutureExpirationDate = true;
       line.expiration_date = new Date((current.getFullYear() + 1000), current.getMonth());
     }
 
-    line.isValid = (line.lot && line.quantity > 0 && isPosterior);
+    line.isValid = (line.lot && line.quantity > 0 && hasFutureExpirationDate);
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.EDIT);
 
     checkAll();

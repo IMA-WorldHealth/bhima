@@ -3,12 +3,12 @@ angular.module('bhima.controllers')
 
 StockFindTransferModalController.$inject = [
   '$uibModalInstance', 'StockService', 'NotifyService', 'uiGridConstants',
-  'GridFilteringService', 'ReceiptModal', 'data',
+  'GridFilteringService', 'ReceiptModal', 'data', 'bhConstants',
 ];
 
 function StockFindTransferModalController(
   Instance, StockService, Notify,
-  uiGridConstants, Filtering, Receipts, data
+  uiGridConstants, Filtering, Receipts, data, bhConstants
 ) {
   var vm = this;
   var filtering;
@@ -31,7 +31,7 @@ function StockFindTransferModalController(
 
     {
       field : 'date',
-      cellFilter : 'date',
+      cellFilter       : 'date:"'.concat(bhConstants.dates.format, '"'),
       filter : { condition : filtering.filterByDate },
       displayName : 'TABLE.COLUMNS.DATE',
       headerCellFilter : 'translate',
