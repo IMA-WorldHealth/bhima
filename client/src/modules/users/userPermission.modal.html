@@ -2,8 +2,8 @@
   <div class="modal-header">
     <ol class="headercrumb">
       <li class="title">
-        {{ "USERS.PERMISSIONS" | translate }}
-        <label class="badge badge-warning">{{ "USERS.PERMISSIONS" | translate }}</label>
+        <span translate>USERS.PERMISSIONS</span>
+        <label class="badge badge-warning" translate>USERS.PERMISSIONS</label>
         <label class="badge badge-warning">{{ UserPermissionModalCtrl.user.display_name }} ({{ UserPermissionModalCtrl.user.username }})</label>
       </li>
     </ol>
@@ -17,7 +17,7 @@
         <div class="checkbox">
           <label>
             <input type="checkbox" ng-model="UserPermissionModalCtrl.super" ng-change="UserPermissionModalCtrl.toggleSuperUserPermissions(UserPermissionModalCtrl.super)">
-            <b>{{ "USERS.SUPER" | translate }}</b>
+            <b translate>USERS.SUPER</b>
           </label>
         </div>
       </li>
@@ -31,7 +31,7 @@
         <div style="margin:0" class="checkbox" ng-style="UserPermissionModalCtrl.checkboxOffset(unit.depth)">
           <label>
             <input type="checkbox" ng-model="unit.checked" ng-change="UserPermissionModalCtrl.toggleUnitChildren(unit, unit.children)">
-            {{ unit.key | translate }}
+            <span translate>{{ unit.key }}</span>
           </label>
         </div>
       </li>
@@ -40,10 +40,11 @@
 
   <div class="modal-footer">
     <button type="button" class="btn btn-default" ng-click="UserPermissionModalCtrl.closeModal()">
-      <i class="fa fa-ban"></i> {{ 'FORM.BUTTONS.CANCEL' | translate }}
+      <span translate>FORM.BUTTONS.CANCEL</span>
     </button>
+
     <bh-loading-button loading-state="PermissionForm.$loading">
-      <i class="fa fa-floppy-o"></i> {{ "FORM.BUTTONS.SAVE" | translate }}
+      <span translate>FORM.BUTTONS.SAVE</span>
     </bh-loading-button>
   </div>
 </form>

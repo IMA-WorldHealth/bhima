@@ -2,22 +2,22 @@
   <div class="modal-header">
     <ol class="headercrumb">
       <li class="static">{{UpdatePatientGroupsCtrl.patient.display_name}}</li>
-      <li class="title">{{ ::"FORM.LABELS.UPDATE_PATIENT_GROUP" | translate }}</li>
+      <li class="title" translate>"FORM.LABELS.UPDATE_PATIENT_GROUP</li>
     </ol>
   </div>
 
   <div class="modal-body">
     <p class="text-info" ng-if="UpdatePatientGroupsCtrl.patientGroups.length > 0">
-      <i class="fa fa-info-circle"></i>  {{ "FORM.INFO.GROUPS_PATIENT" | translate }}
+      <i class="fa fa-info-circle"></i> <span translate>FORM.INFO.GROUPS_PATIENT</span>
     </p>
 
     <p class="text-warning" ng-if="UpdatePatientGroupsCtrl.patientGroups.length === 0">
-      <i class="fa fa-warning"></i> {{ "PATIENT_EDIT.WARN" | translate }}
+      <i class="fa fa-warning"></i> <span translate>PATIENT_EDIT.WARN</span>
     </p>
 
     <div class="form-group has-feedback" ng-if="UpdatePatientGroupsCtrl.patientGroups.length > 0">
-      <label class="control-label">
-        {{ "FORM.LABELS.GROUPS_PATIENT_TITLE" | translate }}
+      <label class="control-label" translate>
+        FORM.LABELS.GROUPS_PATIENT_TITLE
       </label>
       <div
         class="checkbox"
@@ -35,12 +35,12 @@
   </div>
 
   <div class="modal-footer">
-    <button type="button" class="btn btn-default" ng-click="UpdatePatientGroupsCtrl.closeModal()">
-      {{ "FORM.BUTTONS.CANCEL" | translate }}
+    <button type="button" class="btn btn-default" ng-click="UpdatePatientGroupsCtrl.closeModal()" translate>
+      FORM.BUTTONS.CANCEL
     </button>
 
     <bh-loading-button loading-state="groupForm.$loading">
-      {{ "FORM.BUTTONS.CONFIRM" | translate }}
+      <span translate>FORM.BUTTONS.CONFIRM</span>
     </bh-loading-button>
   </div>
 </form>

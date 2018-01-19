@@ -1,39 +1,42 @@
 angular.module('bhima.components')
-.component('bhPdfPrint', {
-  bindings : {
-    pdfUrl       : '@',
-    disableCache : '@',
-    options      : '<',
-    disabled     : '<',
-  },
-  template :
-    '<bh-loading-button button-class="btn-default" loading-state="$ctrl.$loading" ng-click="$ctrl.print()" disabled="$ctrl.disabled">' +
-      '<span><i class="fa fa-print"></i> {{ "FORM.BUTTONS.PRINT" | translate }}</span>' +
-    '</bh-loading-button>' +
-    '<iframe ng-src="{{$ctrl.src}}" id="{{$ctrl.embeddedContentId}}" style="display : none"></iframe>',
-  controller : bhPDFPrintController,
-});
+  .component('bhPdfPrint', {
+    bindings : {
+      pdfUrl       : '@',
+      disableCache : '@',
+      options      : '<',
+      disabled     : '<',
+    },
+    template :
+      '<bh-loading-button button-class="btn-default" loading-state="$ctrl.$loading" ng-click="$ctrl.print()" disabled="$ctrl.disabled">' +
+        '<span><i class="fa fa-print"></i> <span translate>FORM.BUTTONS.PRINT</span></span>' +
+      '</bh-loading-button>' +
+      '<iframe ng-src="{{$ctrl.src}}" id="{{$ctrl.embeddedContentId}}" style="display : none"></iframe>',
+    controller : bhPDFPrintController,
+  });
 
 angular.module('bhima.components')
-.component('bhPdfLink', {
-  bindings : {
-    pdfUrl       : '@',
-    buttonText   : '@',
-    disableCache : '@',
-    options      : '<',
-  },
-  transclude : true,
-  template   :
-    '<a href ng-click="$ctrl.print()">' +
-      '<span ng-if="!$ctrl.$loading"><i class="fa fa-print"></i> {{ $ctrl.buttonText | translate }}</span>' +
-      '<span ng-if="$ctrl.$loading"><i class="fa fa-spin fa-circle-o-notch"></i> {{ "FORM.INFO.LOADING" | translate }}</span>' +
-    '</a>' +
-    '<iframe ng-src="{{$ctrl.src}}" id="{{$ctrl.embeddedContentId}}" style="display : none"></iframe>',
-  controller : bhPDFPrintController,
-});
+  .component('bhPdfLink', {
+    bindings : {
+      pdfUrl       : '@',
+      buttonText   : '@',
+      disableCache : '@',
+      options      : '<',
+    },
+    transclude : true,
+    template   :
+      '<a href ng-click="$ctrl.print()">' +
+        '<span ng-if="!$ctrl.$loading"><i class="fa fa-print"></i> <span translate>{{ $ctrl.buttonText }}</span></span>' +
+        '<span ng-if="$ctrl.$loading"><i class="fa fa-spin fa-circle-o-notch"></i> <span translate>FORM.INFO.LOADING</span></span>' +
+      '</a>' +
+      '<iframe ng-src="{{$ctrl.src}}" id="{{$ctrl.embeddedContentId}}" style="display : none"></iframe>',
+    controller : bhPDFPrintController,
+  });
 
 
-bhPDFPrintController.$inject = ['$scope', '$window', '$http', '$sce', '$timeout', 'LanguageService', 'NotifyService'];
+bhPDFPrintController.$inject = [
+  '$scope', '$window', '$http', '$sce', '$timeout', 'LanguageService',
+  'NotifyService',
+];
 
 /**
  * @class bhPDFPrintController
