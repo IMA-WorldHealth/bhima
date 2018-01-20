@@ -23,6 +23,8 @@
     "ER_PARSE_ERROR" : "Votre demande n'a pas été comprise. Veuillez modifier votre demande et réessayer.",
     "ER_EMPTY_QUERY" : "Votre demande semble vide. Êtes-vous sûr de remplir tout?",
     "ER_NO_DEFAULT_FOR_FIELD" : "Vous n'avez pas inclus suffisamment d'informations dans votre soumission! Veuillez vérifier vos erreurs et réessayer.",
-    "ER_DATA_TOO_LONG" : "Une de vos valeurs de formulaire est trop longue! Veuillez le raccourcir et le renvoyer."
+    "ER_DATA_TOO_LONG" : "Une de vos valeurs de formulaire est trop longue! Veuillez le raccourcir et le renvoyer.",
+    "ER_NO_STOCK_DESTINATION" : "Aucune destination de stock n'a été définie",
+    "ER_NO_STOCK_SOURCE" : "Aucune source de stock n'a été définie"
   }
 }

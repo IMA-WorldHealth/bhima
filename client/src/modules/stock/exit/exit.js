@@ -22,6 +22,9 @@ function StockExitController(
   StockModal, uiGridGroupingConstants, $translate, AppCache
 ) {
   var vm = this;
+  var cache = new AppCache('StockExit');
+  var mapExit;
+  var gridOptions;
 
   vm.stockForm = new StockForm('StockExit');
   vm.movement = {};
@@ -39,87 +42,86 @@ function StockExitController(
   vm.submit = submit;
   vm.changeDepot = changeDepot;
   vm.checkValidity = checkValidity;
-  
 
-  var cache = new AppCache('StockExit');
-  //delete cache.depotUuid;
+  // delete cache.depotUuid;
 
-  var mapExit = {
-    patient: { description: 'STOCK.EXIT_PATIENT', find: findPatient, submit: submitPatient },
-    service: { description: 'STOCK.EXIT_SERVICE', find: findService, submit: submitService },
-    depot: { description: 'STOCK.EXIT_DEPOT', find: findDepot, submit: submitDepot },
-    loss: { description: 'STOCK.EXIT_LOSS', find: configureLoss, submit: submitLoss },
+  mapExit = {
+    patient : { description : 'STOCK.EXIT_PATIENT', find : findPatient, submit : submitPatient },
+    service : { description : 'STOCK.EXIT_SERVICE', find : findService, submit : submitService },
+    depot : { description : 'STOCK.EXIT_DEPOT', find : findDepot, submit : submitDepot },
+    loss : { description : 'STOCK.EXIT_LOSS', find : configureLoss, submit : submitLoss },
   };
-  var gridOptions = {
-    appScopeProvider: vm,
-    enableSorting: false,
-    enableColumnMenus: false,
-    columnDefs: [
+
+  gridOptions = {
+    appScopeProvider : vm,
+    enableSorting : false,
+    enableColumnMenus : false,
+    columnDefs : [
       {
-        field: 'status',
-        width: 25,
-        displayName: '',
-        cellTemplate: 'modules/stock/exit/templates/status.tmpl.html',
+        field : 'status',
+        width : 25,
+        displayName : '',
+        cellTemplate : 'modules/stock/exit/templates/status.tmpl.html',
       }, {
-        field: 'code',
-        width: 120,
-        displayName: 'INVENTORY.CODE',
-        headerCellFilter: 'translate',
-        cellTemplate: 'modules/stock/exit/templates/code.tmpl.html',
+        field : 'code',
+        width : 120,
+        displayName : 'INVENTORY.CODE',
+        headerCellFilter : 'translate',
+        cellTemplate : 'modules/stock/exit/templates/code.tmpl.html',
       }, {
-        field: 'description',
-        displayName: 'TABLE.COLUMNS.DESCRIPTION',
-        headerCellFilter: 'translate',
-        cellTemplate: 'modules/stock/exit/templates/description.tmpl.html',
+        field : 'description',
+        displayName : 'TABLE.COLUMNS.DESCRIPTION',
+        headerCellFilter : 'translate',
+        cellTemplate : 'modules/stock/exit/templates/description.tmpl.html',
       }, {
-        field: 'lot',
-        width: 150,
-        displayName: 'TABLE.COLUMNS.LOT',
-        headerCellFilter: 'translate',
-        cellTemplate: 'modules/stock/exit/templates/lot.tmpl.html',
+        field : 'lot',
+        width : 150,
+        displayName : 'TABLE.COLUMNS.LOT',
+        headerCellFilter : 'translate',
+        cellTemplate : 'modules/stock/exit/templates/lot.tmpl.html',
       }, {
-        field: 'unit_price',
-        width: 150,
-        displayName: 'TABLE.COLUMNS.UNIT_PRICE',
-        headerCellFilter: 'translate',
-        cellTemplate: 'modules/stock/exit/templates/price.tmpl.html',
+        field : 'unit_price',
+        width : 150,
+        displayName : 'TABLE.COLUMNS.UNIT_PRICE',
+        headerCellFilter : 'translate',
+        cellTemplate : 'modules/stock/exit/templates/price.tmpl.html',
       }, {
-        field: 'quantity',
-        width: 150,
-        displayName: 'TABLE.COLUMNS.QUANTITY',
-        headerCellFilter: 'translate',
-        cellTemplate: 'modules/stock/exit/templates/quantity.tmpl.html',
-        treeAggregationType: uiGridGroupingConstants.aggregation.SUM,
+        field : 'quantity',
+        width : 150,
+        displayName : 'TABLE.COLUMNS.QUANTITY',
+        headerCellFilter : 'translate',
+        cellTemplate : 'modules/stock/exit/templates/quantity.tmpl.html',
+        treeAggregationType : uiGridGroupingConstants.aggregation.SUM,
       }, {
-        field: 'unit_type',
-        width: 75,
-        displayName: 'TABLE.COLUMNS.UNIT',
-        headerCellFilter: 'translate',
-        cellTemplate: 'modules/stock/exit/templates/unit.tmpl.html',
+        field : 'unit_type',
+        width : 75,
+        displayName : 'TABLE.COLUMNS.UNIT',
+        headerCellFilter : 'translate',
+        cellTemplate : 'modules/stock/exit/templates/unit.tmpl.html',
       }, {
-        field: 'available_lot',
-        width: 150,
-        displayName: 'TABLE.COLUMNS.AVAILABLE',
-        headerCellFilter: 'translate',
-        cellTemplate: 'modules/stock/exit/templates/available.tmpl.html',
+        field : 'available_lot',
+        width : 150,
+        displayName : 'TABLE.COLUMNS.AVAILABLE',
+        headerCellFilter : 'translate',
+        cellTemplate : 'modules/stock/exit/templates/available.tmpl.html',
       }, {
-        field: 'amount',
-        width: 150,
-        displayName: 'TABLE.COLUMNS.AMOUNT',
-        headerCellFilter: 'translate',
-        cellTemplate: 'modules/stock/exit/templates/amount.tmpl.html',
+        field : 'amount',
+        width : 150,
+        displayName : 'TABLE.COLUMNS.AMOUNT',
+        headerCellFilter : 'translate',
+        cellTemplate : 'modules/stock/exit/templates/amount.tmpl.html',
       }, {
-        field: 'expiration_date',
-        width: 150,
-        displayName: 'TABLE.COLUMNS.EXPIRE_IN',
-        headerCellFilter: 'translate',
-        cellTemplate: 'modules/stock/exit/templates/expiration.tmpl.html',
+        field : 'expiration_date',
+        width : 150,
+        displayName : 'TABLE.COLUMNS.EXPIRE_IN',
+        headerCellFilter : 'translate',
+        cellTemplate : 'modules/stock/exit/templates/expiration.tmpl.html',
       },
-      { field: 'actions', width: 25, cellTemplate: 'modules/stock/exit/templates/actions.tmpl.html' },
+      { field : 'actions', width : 25, cellTemplate : 'modules/stock/exit/templates/actions.tmpl.html' },
     ],
-    data: vm.stockForm.store.data,
-    fastWatch: true,
-    flatEntityAccess: true,
+    data : vm.stockForm.store.data,
+    fastWatch : true,
+    flatEntityAccess : true,
   };
 
   // exposing the grid options to the view
@@ -152,8 +154,12 @@ function StockExitController(
   function configureItem(item) {
     item._initialised = true;
     // get lots
-    Stock.lots.read(null, { depot_uuid: vm.depot.uuid, inventory_uuid: item.inventory.inventory_uuid, includeEmptyLot: 0 })
-      .then(function (lots) {
+    Stock.lots.read(null, {
+      depot_uuid : vm.depot.uuid,
+      inventory_uuid : item.inventory.inventory_uuid,
+      includeEmptyLot : 0,
+    })
+      .then(function handleLots(lots) {
         item.lots = lots;
       })
       .catch(Notify.handleError);
@@ -165,33 +171,38 @@ function StockExitController(
     vm.hasError = false;
 
     vm.movement = {
-      date: new Date(),
-      entity: {},
+      date : new Date(),
+      entity : {},
     };
 
     // make sure that the depot is loaded if it doesn't exist at startup.
     if (cache.depotUuid) {
       Depots.read(cache.depotUuid)
-      .then(function (depot) {
-        vm.depot = depot;
-        setupStock();
-        loadInventories(vm.depot);
-        checkValidity();
-      });
+        .then(handleCachedDepot);
     } else {
       changeDepot()
-      .then(setupStock)
-      .then(function () {
-        loadInventories(vm.depot);
-        checkValidity();
-      });
+        .then(setupStock)
+        .then(handleNotCachedDepot);
+    }
+
+    function handleCachedDepot(depot) {
+      vm.depot = depot;
+      setupStock();
+      loadInventories(vm.depot);
+      checkValidity();
+    }
+
+    function handleNotCachedDepot() {
+      loadInventories(vm.depot);
+      checkValidity();
     }
   }
 
   function loadInventories(depot) {
     setupStock();
-    Stock.inventories.read(null, { depot_uuid: depot.uuid })
-      .then(function (inventories) {
+
+    Stock.inventories.read(null, { depot_uuid : depot.uuid })
+      .then(function handleInventories(inventories) {
         vm.loading = false;
         vm.selectableInventories = angular.copy(inventories);
         checkValidity();
@@ -201,23 +212,32 @@ function StockExitController(
 
   // check validity
   function checkValidity() {
-    var lotsExists = vm.stockForm.store.data.every(function (item) {
+    var lotsExists = vm.stockForm.store.data.every(function checking(item) {
       return item.quantity > 0 && item.lot.uuid;
     });
     vm.validForSubmit = (lotsExists && vm.stockForm.store.data.length);
   }
 
+  function handleSelectedEntity(_entity, _type) {
+    if (!_entity || !_entity.uuid) {
+      resetSelectedEntity();
+      return;
+    }
+
+    vm.movement.entity = {
+      uuid : _entity.uuid,
+      type : _type,
+      instance : _entity,
+    };
+
+    setSelectedEntity(_entity);
+  }
+
+  // find patient
   function findPatient() {
     StockModal.openFindPatient()
-      .then(function (patient) {
-        if (!patient) { return; }
-        vm.movement.entity = {
-          uuid: patient.uuid,
-          type: 'patient',
-          instance: patient,
-        };
-
-        setSelectedEntity(patient);
+      .then(function handlePatient(patient) {
+        handleSelectedEntity(patient, 'patient');
       })
       .catch(Notify.handleError);
   }
@@ -225,31 +245,17 @@ function StockExitController(
   // find service
   function findService() {
     StockModal.openFindService()
-      .then(function (service) {
-        if (!service) { return; }
-        vm.movement.entity = {
-          uuid: service.uuid,
-          type: 'service',
-          instance: service,
-        };
-
-        setSelectedEntity(service);
+      .then(function handleService(service) {
+        handleSelectedEntity(service, 'service');
       })
       .catch(Notify.handleError);
   }
 
   // find depot
   function findDepot() {
-    StockModal.openFindDepot({ depot: vm.depot })
-      .then(function (depot) {
-        if (!depot) { return; }
-        vm.movement.entity = {
-          uuid: depot.uuid,
-          type: 'depot',
-          instance: depot,
-        };
-
-        setSelectedEntity(depot);
+    StockModal.openFindDepot({ depot : vm.depot })
+      .then(function handleDepot(depot) {
+        handleSelectedEntity(depot, 'depot');
       })
       .catch(Notify.handleError);
   }
@@ -257,9 +263,9 @@ function StockExitController(
   // configure loss
   function configureLoss() {
     vm.movement.entity = {
-      uuid: null,
-      type: 'loss',
-      instance: {},
+      uuid : null,
+      type : 'loss',
+      instance : {},
     };
 
     setSelectedEntity();
@@ -271,11 +277,25 @@ function StockExitController(
     vm.displayName = uniformEntity.displayName;
   }
 
+  function resetSelectedEntity() {
+    vm.movement.entity = {};
+    vm.movement.exit_type = null;
+    vm.movement.description = null;
+    vm.reference = null;
+    vm.displayName = null;
+  }
+
   function submit(form) {
-    if (form.$invalid) { return; }
-    mapExit[vm.movement.exit_type].submit()
-      .then(function () {
+    if (form.$invalid) { return null; }
+
+    if (!vm.movement.entity.uuid && vm.movement.entity.type !== 'loss') {
+      return Notify.danger('ERRORS.ER_NO_STOCK_DESTINATION');
+    }
+
+    return mapExit[vm.movement.exit_type].submit()
+      .then(function reset() {
         vm.validForSubmit = false;
+
         // reseting the form
         vm.movement = {};
         form.$setPristine();
@@ -284,31 +304,37 @@ function StockExitController(
       .catch(Notify.handleError);
   }
 
+  // handle lot function
+  function formatLot(row) {
+    return {
+      inventory_uuid : row.inventory.inventory_uuid, // needed for tracking consumption
+      uuid : row.lot.uuid,
+      quantity : row.quantity,
+      unit_cost : row.lot.unit_cost,
+    };
+  }
+
   // submit patient
   function submitPatient() {
-    var movement = {
-      depot_uuid: vm.depot.uuid,
-      entity_uuid: vm.movement.entity.uuid,
-      date: vm.movement.date,
-      description: vm.movement.description,
-      is_exit: 1,
-      flux_id: bhConstants.flux.TO_PATIENT,
-      user_id: vm.stockForm.details.user_id,
+    var movement;
+    var lots;
+
+    movement = {
+      depot_uuid : vm.depot.uuid,
+      entity_uuid : vm.movement.entity.uuid,
+      date : vm.movement.date,
+      description : vm.movement.description,
+      is_exit : 1,
+      flux_id : bhConstants.flux.TO_PATIENT,
+      user_id : vm.stockForm.details.user_id,
     };
 
-    var lots = vm.stockForm.store.data.map(function (row) {
-      return {
-        inventory_uuid: row.inventory.inventory_uuid, // needed for tracking consumption
-        uuid: row.lot.uuid,
-        quantity: row.quantity,
-        unit_cost: row.lot.unit_cost,
-      };
-    });
+    lots = vm.stockForm.store.data.map(formatLot);
 
     movement.lots = lots;
 
     return Stock.movements.create(movement)
-      .then(function (document) {
+      .then(function handleReceipt(document) {
         vm.stockForm.store.clear();
         ReceiptModal.stockExitPatientReceipt(document.uuid, bhConstants.flux.TO_PATIENT);
       })
@@ -318,28 +344,21 @@ function StockExitController(
   // submit service
   function submitService() {
     var movement = {
-      depot_uuid: vm.depot.uuid,
-      entity_uuid: vm.movement.entity.uuid,
-      date: vm.movement.date,
-      description: vm.movement.description,
-      is_exit: 1,
-      flux_id: bhConstants.flux.TO_SERVICE,
-      user_id: vm.stockForm.details.user_id,
+      depot_uuid : vm.depot.uuid,
+      entity_uuid : vm.movement.entity.uuid,
+      date : vm.movement.date,
+      description : vm.movement.description,
+      is_exit : 1,
+      flux_id : bhConstants.flux.TO_SERVICE,
+      user_id : vm.stockForm.details.user_id,
     };
 
-    var lots = vm.stockForm.store.data.map(function (row) {
-      return {
-        inventory_uuid: row.inventory.inventory_uuid, // needed for tracking consumption
-        uuid: row.lot.uuid,
-        quantity: row.quantity,
-        unit_cost: row.lot.unit_cost,
-      };
-    });
+    var lots = vm.stockForm.store.data.map(formatLot);
 
     movement.lots = lots;
 
     return Stock.movements.create(movement)
-      .then(function (document) {
+      .then(function handleReceipt(document) {
         vm.stockForm.store.clear();
         ReceiptModal.stockExitServiceReceipt(document.uuid, bhConstants.flux.TO_SERVICE);
       })
@@ -349,28 +368,21 @@ function StockExitController(
   // submit depot
   function submitDepot() {
     var movement = {
-      from_depot: vm.depot.uuid,
-      from_depot_is_warehouse: vm.depot.is_warehouse,
-      to_depot: vm.movement.entity.uuid,
-      date: vm.movement.date,
-      description: vm.movement.description,
-      isExit: true,
-      user_id: vm.stockForm.details.user_id,
+      from_depot : vm.depot.uuid,
+      from_depot_is_warehouse : vm.depot.is_warehouse,
+      to_depot : vm.movement.entity.uuid,
+      date : vm.movement.date,
+      description : vm.movement.description,
+      isExit : true,
+      user_id : vm.stockForm.details.user_id,
     };
 
-    var lots = vm.stockForm.store.data.map(function (row) {
-      return {
-        inventory_uuid: row.inventory.inventory_uuid, // needed for tracking consumption
-        uuid: row.lot.uuid,
-        quantity: row.quantity,
-        unit_cost: row.lot.unit_cost,
-      };
-    });
+    var lots = vm.stockForm.store.data.map(formatLot);
 
     movement.lots = lots;
 
     return Stock.movements.create(movement)
-      .then(function (document) {
+      .then(function handleReceipt(document) {
         vm.stockForm.store.clear();
         ReceiptModal.stockExitDepotReceipt(document.uuid, bhConstants.flux.TO_OTHER_DEPOT);
       })
@@ -380,28 +392,21 @@ function StockExitController(
   // submit loss
   function submitLoss() {
     var movement = {
-      depot_uuid: vm.depot.uuid,
-      entity_uuid: vm.movement.entity.uuid,
-      date: vm.movement.date,
-      description: vm.movement.description,
-      is_exit: 1,
-      flux_id: bhConstants.flux.TO_LOSS,
-      user_id: vm.stockForm.details.user_id,
+      depot_uuid : vm.depot.uuid,
+      entity_uuid : vm.movement.entity.uuid,
+      date : vm.movement.date,
+      description : vm.movement.description,
+      is_exit : 1,
+      flux_id : bhConstants.flux.TO_LOSS,
+      user_id : vm.stockForm.details.user_id,
     };
 
-    var lots = vm.stockForm.store.data.map(function (row) {
-      return {
-        inventory_uuid: row.inventory.inventory_uuid, // needed for tracking consumption
-        uuid: row.lot.uuid,
-        quantity: row.quantity,
-        unit_cost: row.lot.unit_cost,
-      };
-    });
+    var lots = vm.stockForm.store.data.map(formatLot);
 
     movement.lots = lots;
 
     return Stock.movements.create(movement)
-      .then(function (document) {
+      .then(function handleReceipt(document) {
         vm.stockForm.store.clear();
         ReceiptModal.stockExitLossReceipt(document.uuid, bhConstants.flux.TO_LOSS);
       })
@@ -413,7 +418,7 @@ function StockExitController(
     var requirement = !cache.depotUuid;
 
     return Depots.openSelectionModal(vm.depot, requirement)
-      .then(function (depot) {
+      .then(function handleDepotSwitch(depot) {
         vm.depot = depot;
         cache.depotUuid = vm.depot.uuid;
         loadInventories(vm.depot);

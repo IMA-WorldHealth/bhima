@@ -17,10 +17,10 @@ function StockFindPatientModalController(Instance, Patient, Notify) {
   vm.cancel = cancel;
 
   Patient.read()
-  .then(function (patients) {
-    vm.patients = patients;
-  })
-  .catch(Notify.handleError);
+    .then(function assignPatients(patients) {
+      vm.patients = patients;
+    })
+    .catch(Notify.handleError);
 
   // set patient
   function setPatient(patient) {
@@ -34,7 +34,7 @@ function StockFindPatientModalController(Instance, Patient, Notify) {
 
   // cancel
   function cancel() {
-    Instance.dismiss();
+    Instance.close();
   }
 
 }
