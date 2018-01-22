@@ -90,7 +90,10 @@ exports.latestInvoice = latestInvoice;
 function create(req, res, next) {
   const createRequestData = req.body;
 
-  let { medical, finance } = createRequestData;
+  let {
+    medical,
+    finance,
+  } = createRequestData;
 
   // Debtor group required for financial modelling
   const invalidParameters = !finance || !medical;
@@ -136,10 +139,10 @@ function create(req, res, next) {
 
       // publish a CREATE event on the medical channel
       topic.publish(topic.channels.MEDICAL, {
-        event   : topic.events.CREATE,
-        entity  : topic.entities.PATIENT,
+        event : topic.events.CREATE,
+        entity : topic.entities.PATIENT,
         user_id : req.session.user.id,
-        uuid    : medicalUuid,
+        uuid : medicalUuid,
       });
     })
     .catch(next)
@@ -198,10 +201,10 @@ function update(req, res, next) {
 
       // publish an UPDATE event on the medical channel
       topic.publish(topic.channels.MEDICAL, {
-        event   : topic.events.UPDATE,
-        entity  : topic.entities.PATIENT,
+        event : topic.events.UPDATE,
+        entity : topic.entities.PATIENT,
         user_id : req.session.user.id,
-        uuid    : patientUuid,
+        uuid : patientUuid,
       });
     })
     .catch(next)
@@ -226,7 +229,7 @@ function lookupPatient(patientUuid) {
   const sql = `
     SELECT BUID(p.uuid) as uuid, p.project_id, BUID(p.debtor_uuid) AS debtor_uuid, p.display_name, p.hospital_no,
       p.sex, p.registration_date, p.email, p.phone, p.dob, p.dob_unknown_date,
-      BUID(p.origin_location_id) as origin_location_id, BUID(p.current_location_id) as current_location_id,
+      p.health_zone, p.health_area, BUID(p.origin_location_id) as origin_location_id, BUID(p.current_location_id) as current_location_id,
       CONCAT_WS('.', '${identifiers.PATIENT.key}', proj.abbr, p.reference) AS reference, p.title, p.address_1,
       p.address_2, p.father_name, p.mother_name, p.religion, p.marital_status, p.profession, p.employer, p.spouse,
       p.spouse_profession, p.spouse_employer, p.notes, p.avatar, proj.abbr, d.text,
@@ -273,10 +276,10 @@ function updatePatientDebCred(patientUuid) {
   return db.exec(sql, buid)
     .then((row) => {
       const debtorUuid = db.bid(row[0].debtorUuid);
-      const creditorUuid =  db.bid(row[0].creditorUuid);
+      const creditorUuid = db.bid(row[0].creditorUuid);
 
       const debtorText = {
-        text : `Debiteur [${row[0].display_name}]`
+        text : `Debiteur [${row[0].display_name}]`,
       };
 
       const creditorText = {
@@ -294,7 +297,6 @@ function updatePatientDebCred(patientUuid) {
 
       return transaction.execute();
     });
-
 }
 
 /**
@@ -424,14 +426,17 @@ function find(options) {
   // ensure epected options are parsed appropriately as binary
   db.convert(options, ['patient_group_uuid', 'debtor_group_uuid', 'debtor_uuid']);
 
-  const filters = new FilterParser(options, { tableAlias : 'p' });
+  const filters = new FilterParser(options, {
+    tableAlias : 'p',
+  });
   const sql = patientEntityQuery(options.detailed);
 
   filters.equals('debtor_uuid');
   filters.fullText('display_name');
   filters.dateFrom('dateBirthFrom', 'dob');
   filters.dateTo('dateBirthTo', 'dob');
-
+  filters.equals('health_zone');
+  filters.equals('health_area');
   // default registration date
   filters.period('period', 'registration_date');
   filters.dateFrom('custom_period_start', 'registration_date');
@@ -481,7 +486,7 @@ function patientEntityQuery(detailed) {
       BUID(p.uuid) AS uuid, p.project_id, CONCAT_WS('.', '${identifiers.PATIENT.key}',
       proj.abbr, p.reference) AS reference, p.display_name, BUID(p.debtor_uuid) as debtor_uuid,
       p.sex, p.dob, p.registration_date, BUID(d.group_uuid) as debtor_group_uuid, p.hospital_no,
-      u.display_name as userName, originVillage.name as originVillageName, dg.color,
+      p.health_zone, p.health_area, u.display_name as userName, originVillage.name as originVillageName, dg.color,
       originSector.name as originSectorName ${detailedColumns}
     FROM patient AS p
       JOIN project AS proj ON p.project_id = proj.id
@@ -511,10 +516,10 @@ function patientEntityQuery(detailed) {
 function read(req, res, next) {
   find(req.query)
     .then((rows) => {
-    // publish a SEARCH event on the medical channel
+      // publish a SEARCH event on the medical channel
       topic.publish(topic.channels.MEDICAL, {
-        event   : topic.events.SEARCH,
-        entity  : topic.entities.PATIENT,
+        event : topic.events.SEARCH,
+        entity : topic.entities.PATIENT,
         user_id : req.session.user.id,
       });
 
@@ -533,32 +538,32 @@ function invoicingFees(req, res, next) {
 
     // get the final information needed to apply invoicing fees to an invoice
     'SELECT DISTINCT ' +
-      'invoicing_fee_id, label, description, value, invoicing_fee.created_at ' +
+    'invoicing_fee_id, label, description, value, invoicing_fee.created_at ' +
     'FROM ' +
 
-      // get all of the invoicing fees from patient group subscriptions
-      '(SELECT * ' +
-      'FROM patient_group_invoicing_fee ' +
-      'WHERE patient_group_invoicing_fee.patient_group_uuid in ' +
+    // get all of the invoicing fees from patient group subscriptions
+    '(SELECT * ' +
+    'FROM patient_group_invoicing_fee ' +
+    'WHERE patient_group_invoicing_fee.patient_group_uuid in ' +
 
-        // find all of the patients groups
-        '(SELECT patient_group_uuid ' +
-        'FROM patient_assignment ' +
-        'WHERE patient_uuid = ?) ' +
+    // find all of the patients groups
+    '(SELECT patient_group_uuid ' +
+    'FROM patient_assignment ' +
+    'WHERE patient_uuid = ?) ' +
     'UNION ' +
 
-      // get all of the invoicing fees from debtor group subscriptions
-      'SELECT * ' +
-      'FROM debtor_group_invoicing_fee ' +
-      'WHERE debtor_group_uuid = ' +
+    // get all of the invoicing fees from debtor group subscriptions
+    'SELECT * ' +
+    'FROM debtor_group_invoicing_fee ' +
+    'WHERE debtor_group_uuid = ' +
 
-        // find the debtor group uuid
-        '(SELECT debtor.group_uuid ' +
-        'FROM patient ' +
-        'LEFT JOIN debtor ' +
-        'ON patient.debtor_uuid = debtor.uuid ' +
-        'WHERE patient.uuid = ?)' +
-      ') AS patient_services ' +
+    // find the debtor group uuid
+    '(SELECT debtor.group_uuid ' +
+    'FROM patient ' +
+    'LEFT JOIN debtor ' +
+    'ON patient.debtor_uuid = debtor.uuid ' +
+    'WHERE patient.uuid = ?)' +
+    ') AS patient_services ' +
 
     // apply billing service information to rows retrieved from service subscriptions
     'LEFT JOIN invoicing_fee ' +
@@ -579,32 +584,32 @@ function subsidies(req, res, next) {
 
     // subsidy information required to apply subsidies to an invoice
     'SELECT DISTINCT ' +
-      'subsidy_id, label, description, value, subsidy.created_at ' +
+    'subsidy_id, label, description, value, subsidy.created_at ' +
     'FROM ' +
 
-      // get all of subsidies from patient group subscriptions
-      '(SELECT * ' +
-      'FROM patient_group_subsidy ' +
-      'WHERE patient_group_subsidy.patient_group_uuid in ' +
+    // get all of subsidies from patient group subscriptions
+    '(SELECT * ' +
+    'FROM patient_group_subsidy ' +
+    'WHERE patient_group_subsidy.patient_group_uuid in ' +
 
-        // find all of the patients groups
-        '(SELECT patient_group_uuid ' +
-        'FROM patient_assignment ' +
-        'WHERE patient_uuid = ?) ' +
+    // find all of the patients groups
+    '(SELECT patient_group_uuid ' +
+    'FROM patient_assignment ' +
+    'WHERE patient_uuid = ?) ' +
     'UNION ' +
 
-      // get all subsidies from debtor group subscriptions
-      'SELECT * ' +
-      'FROM debtor_group_subsidy ' +
-      'WHERE debtor_group_uuid = ' +
+    // get all subsidies from debtor group subscriptions
+    'SELECT * ' +
+    'FROM debtor_group_subsidy ' +
+    'WHERE debtor_group_uuid = ' +
 
-        // find the debtor group uuid
-        '(SELECT group_uuid ' +
-        'FROM patient ' +
-        'JOIN debtor ' +
-        'ON patient.debtor_uuid = debtor.uuid ' +
-        'WHERE patient.uuid = ?)' +
-      ') AS patient_subsidies ' +
+    // find the debtor group uuid
+    '(SELECT group_uuid ' +
+    'FROM patient ' +
+    'JOIN debtor ' +
+    'ON patient.debtor_uuid = debtor.uuid ' +
+    'WHERE patient.uuid = ?)' +
+    ') AS patient_subsidies ' +
 
     // apply subsidy information to rows retrieved from subsidy subscriptions
     'LEFT JOIN subsidy ' +
