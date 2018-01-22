@@ -10,7 +10,7 @@
  *  GET    /accounts/:id/balance/
  *  POST   /accounts
  *  PUT    /accounts/:id
- *  DELETE    /accounts/:id
+ *  DELETE /accounts/:id
  *
  * @todo - move away from calling lookup() before action.  This is an
  * unnecessary database request.
@@ -130,8 +130,6 @@ function list(req, res, next) {
 
   let sql =
     'SELECT a.id, a.number, a.label, a.locked, a.type_id, a.parent FROM account AS a';
-
-  let locked;
 
   if (req.query.detailed === '1') {
     sql = `
