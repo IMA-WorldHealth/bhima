@@ -59,19 +59,45 @@ function flatten(tree, depth, pruneChildren = true) {
   }, []);
 }
 
+/**
+ * @function sumOnProperty
+ *
+ * @description
+ * Computes the value of all parent nodes in the tree as the sum of the values
+ * of their children for a given property.
+ */
+function sumOnProperty(node, prop) {
+  if (node.children.length > 0) {
+    // recursively compute the value of node[prop] by summing all child[prop]s
+    node[prop] = node.children.reduce((value, child) =>
+      value + sumOnProperty(child, prop), 0);
+  }
+
+  return node[prop];
+}
 
 class Tree {
-  constructor(data = [], parentKey = 'parent', rootId = 0) {
+  constructor(data = [], options = {
+    parentKey : 'parent',
+    rootId : 0,
+  }) {
     this._data = data;
-    this._parentKey = parentKey;
-    this._rootId = rootId;
+
+    this._parentKey = options.parentKey;
+    this._rootId = options.rootId;
 
     // build the tree with the provided root id and parentKey
-    this._tree = buildTreeFromArray(_.cloneDeep(data), rootId, parentKey);
+    this._tree = buildTreeFromArray(_.cloneDeep(data), this._rootId, this._parentKey);
   }
 
   toArray() {
     return flatten(this._tree);
+  }
+
+  sumOnProperty(prop) {
+    this._tree.forEach(node => {
+      sumOnProperty(node, prop);
+    });
   }
 }
 

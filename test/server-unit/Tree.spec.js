@@ -7,8 +7,8 @@ function TreeUnitTests() {
    *            ROOT
    *         /    |    \
    *       id:1  id:4  id:6
-   *       /             \
-   *    id:2            id:3
+   *       /           /   \
+   *    id:2          id:7   id:3
    *     /
    *   id:5
    */
@@ -21,15 +21,26 @@ function TreeUnitTests() {
   }, {
     id : 3,
     parent : 6,
+    valueA : 10,
+    valueB : 2,
   }, {
     id : 4,
     parent : 0,
+    valueA : 30,
+    valueB : 4,
   }, {
     id : 5,
     parent : 2,
+    valueA : 9,
+    valueB : 7,
   }, {
     id : 6,
     parent : 0,
+  }, {
+    id : 7,
+    parent : 6,
+    valueA : 10,
+    valueB : 19,
   }];
 
   it('#constructor() should populate private variables', () => {
@@ -64,11 +75,11 @@ function TreeUnitTests() {
     expect(node4.children).to.have.length(0);
   });
 
-  it('#constructor() node id:6 should have one child', () => {
+  it('#constructor() node id:6 should have two children', () => {
     const tree = new Tree(nodes)._tree;
     const node6 = tree[2];
     expect(node6.id).to.equal(6);
-    expect(node6.children).to.have.length(1);
+    expect(node6.children).to.have.length(2);
   });
 
   it('#toArray() should return an array', () => {
@@ -81,6 +92,27 @@ function TreeUnitTests() {
     array.forEach(node => {
       expect(node).to.have.property('depth');
     });
+  });
+
+  it('#sumOnProperty() should compute the balances of level 1 nodes', () => {
+    const tree = new Tree(nodes);
+    const subTree = tree._tree;
+
+    // first level should not be defined
+    expect(subTree[0].valueA).to.be.undefined;
+    expect(subTree[0].valueB).to.be.undefined;
+
+    // this is a level 1 leaf node, so its values are known.
+    expect(subTree[1].valueA).to.equal(30);
+    expect(subTree[1].valueB).to.equal(4);
+
+    tree.sumOnProperty('valueA');
+    expect(subTree[0].valueA).to.equal(9);
+    expect(subTree[0].valueB).to.be.undefined;
+
+    // this condition sums multiple leaves
+    tree.sumOnProperty('valueB');
+    expect(subTree[2].valueB).to.equal(21); // 2 + 19
   });
 }
 
