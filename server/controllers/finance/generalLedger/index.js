@@ -15,9 +15,7 @@
 // module dependencies
 const db = require('../../../lib/db');
 const FilterParser = require('../../../lib/filter');
-
-// GET/ CURRENT FISCAL YEAR PERIOD
-const Fiscal = require('../fiscal');
+const Tree = require('../../../lib/Tree');
 
 // expose to the api
 exports.list = list;
@@ -134,16 +132,27 @@ function getAccountTotalsMatrix(fiscalYearId) {
     ''
   );
 
+  // we want to show every single account, so we do a left join of the account
+  // table
   const sql = `
     SELECT a.id, a.number, a.label, a.type_id, a.label, a.parent,
       SUM(pt.debit - pt.credit) AS balance ${periodColumns}
     FROM account AS a
-      JOIN period_total AS pt ON a.id = pt.account_id
+      LEFT JOIN period_total AS pt ON a.id = pt.account_id
       JOIN period AS p ON p.id = pt.period_id
     WHERE pt.fiscal_year_id = ?
     GROUP BY a.id
     ORDER BY a.number;
   `;
 
-  return db.exec(sql, [fiscalYearId]);
+  return db.exec(sql, [fiscalYearId])
+    .then(accounts => {
+      const accountsTree = new Tree(accounts);
+
+      // compute the values of the title accounts as the values of their children
+      accountsTree.sumOnProperty('balance');
+      periodNumbers.forEach(number => accountsTree.sumOnProperty(`balance${number}`));
+
+      return accountsTree.toArray();
+    });
 }

@@ -1,5 +1,5 @@
 <div class="ui-grid-cell-contents text-right">
-  <span uib-dropdown dropdown-append-to-body ng-if="!row.entity.isTitleAccount">
+  <span uib-dropdown dropdown-append-to-body ng-if="row.entity.type_id !== grid.appScope.Constants.accounts.TITLE">
     <a href uib-dropdown-toggle>
       <span data-method="action" translate>FORM.BUTTONS.ACTIONS</span>
       <span class="caret"></span>
