@@ -51,8 +51,8 @@ function AccountEditController(
   // states that are available as sibling states - these can be used to show and hide
   // relevent components
   vm.states = {
-    create : 'accounts.create',
-    edit : 'accounts.edit',
+    create: 'accounts.create',
+    edit: 'accounts.edit',
   };
 
   vm.state = angular.copy(vm.stateCurrent.name);
@@ -64,17 +64,17 @@ function AccountEditController(
   vm.accountNotFound = null;
 
   vm.rootAccount = {
-    id : 0,
-    number : 0,
-    type_id : Constants.accounts.TITLE,
-    label : 'ROOT ACCOUNT',
+    id: 0,
+    number: 0,
+    type_id: Constants.accounts.TITLE,
+    label: 'ROOT ACCOUNT',
   };
   vm.rootAccount.hrlabel = Accounts.label(vm.rootAccount);
 
   /** @todo design how these are served for stores */
   vm.notFound = {
-    status : 404,
-    code : 'ERRORS.NOT_FOUND',
+    status: 404,
+    code: 'ERRORS.NOT_FOUND',
   };
 
   settupPage()
@@ -196,6 +196,12 @@ function AccountEditController(
       return;
     }
 
+    var number = parseInt(vm.account.number, 10);
+    if (number === 0) {
+      Notify.danger('ACCOUNT.NOT_0_AS_ACCOUNT_NOMBER');
+      return;
+    }
+
     // this will return all elements if requireDirty is set to false
     var submit = util.filterFormElements(accountForm, requireDirty);
 
@@ -211,8 +217,8 @@ function AccountEditController(
     }
 
     function handleAccountCreateState() {
-      submit.classe = submit.number.substr(0,1);
-      
+      submit.classe = submit.number.substr(0, 1);
+
       return Accounts.create(submit)
         .then(handleAccountCreateResult)
         .catch(handleModalError);
@@ -282,7 +288,9 @@ function AccountEditController(
   }
 
   function getTypeTitle(typeId) {
-    if (!typeStore) { return null; }
+    if (!typeStore) {
+      return null;
+    }
     return typeStore.get(typeId).translation_key;
   }
 
