@@ -1,0 +1,54 @@
+<form
+name="permissionForm"
+bh-submit="RolesPermissionsCtrl.getAffected()"
+novalidate>
+<div class="modal-header">
+
+  <span translate>USERS.PERMISSIONS</span> :
+  <span class="text-primary"> {{RolesPermissionsCtrl.role.label}}</span>
+</div>
+<div class="modal-body" style="max-height: 70vh; overflow:auto;">
+
+  <div class='row'>
+    <div class="col-lg-12">
+
+      <div>
+        <label class="radio-inline">
+          <input type='checkbox' ng-change="RolesPermissionsCtrl.selectAll()" ng-model='RolesPermissionsCtrl.allPage' ng-true-value="1"
+            ng-false-value="0" />
+          <span translate>FORM.LABELS.CHECK_ALL</span>
+        </label>
+      </div>
+      <div ng-repeat="module in RolesPermissionsCtrl.tree" class="treeview">
+
+        <h4>
+          <label class="radio-inline">
+            <input type='checkbox' ng-model='module.affected' ng-true-value="1" ng-false-value="0" />
+            <b translate>{{module.key}}</b>
+          </label>
+        </h4>
+
+        <ul class="list-group">
+          <li ng-repeat="page in module.pages" class="list-group-item">
+            <label class="radio-inline">
+              <input type='checkbox' ng-model='page.affected' ng-true-value="1" ng-false-value="0" />
+              <span translate>{{page.key}}</span>
+            </label>
+          </li>
+        </ul>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+<div class="modal-footer">
+
+  <div pull-right>
+    <button class='btn btn-default' ng-click='RolesPermissionsCtrl.close()' translate>FORM.BUTTONS.CANCEL</button>
+
+    <bh-loading-button loading-state="PatientRegistrationForm.$loading">
+      <sapn translate>FORM.BUTTONS.SAVE</sapn>
+    </bh-loading-button>
+  </div>
+</div>

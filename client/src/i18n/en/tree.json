@@ -95,6 +95,7 @@
     "USERS": "User Management",
     "VOUCHER_REGISTRY": "Voucher Registry",
     "AGED_DEBTORS": "Aged Debtors",
-    "WEEKEND_CONFIGURATION":"Weekend Configuration"
+    "WEEKEND_CONFIGURATION":"Weekend Configuration",
+    "ROLE_MANAGEMENT":"Role management"
   }
 }

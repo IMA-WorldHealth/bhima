@@ -1,0 +1,32 @@
+<div class="modal-header">
+  <h4><span translate>FORM.LABELS.ROLES_FOR</span>
+    : <span class="text-primary">
+      {{UsersRolesCtrl.user.display_name}}
+    </span>
+  </h4>
+</div>
+<div class="modal-body">
+
+  <div class="row">
+    <div class="col-lg-12">
+      <ul class="list-group">
+        <li  class="list-group-item" ng-repeat="role in UsersRolesCtrl.roles">
+          <label class="radio-inline">
+            <input type='checkbox' ng-model='role.affected' ng-true-value="1" ng-false-value="0" />
+            <span title="{{role.label}}">{{role.label}}</span>
+          </label>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <div class=" pull-right">
+  <button class='btn inverse' ng-click='UsersRolesCtrl.close()'>Fermer</button>
+ 
+  <button data-method="cancel" type="button" class="btn btn-primary" ng-click="UsersRolesCtrl.assignRolesToUser()">
+      <span translate>FORM.BUTTONS.SAVE</span>
+    </button>
+  </div>
+</div>

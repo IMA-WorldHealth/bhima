@@ -815,3 +815,20 @@ INSERT INTO `config_accounting` (`label`, `account_id`) VALUES ('Configuration C
 -- Payroll Configuration Period
 INSERT INTO `payroll_configuration` (`id`, `label`, `dateFrom`, `dateTo`, `config_rubric_id`, `config_accounting_id`, `config_weekend_id`, `config_ipr_id`) VALUES 
 (1, 'Période de Paiement', '2018-02-01', '2018-02-28', 1, 1, 1, 1);
+
+-- ------------- AFFECTING ALL unit to admin role ----------------------------------------
+-- creates a default role
+
+SET @roleUUID = HUID('5b7dd0d6-9273-4955-a703-126fbd504b61');
+DELETE FROM role;
+INSERT INTO `role`(uuid, label, project_id)
+VALUES(@roleUUID, 'Admin', 1);
+
+
+INSERT INTO role_unit
+ SELECT HUID(uuid()) as uuid,@roleUUID, id FROM unit;
+
+INSERT INTO `user_role`(uuid, user_id, role_uuid) 
+VALUES(HUID(uuid()), 1, @roleUUID);
+
+-- ----------------------------------------------------------------------------------------
