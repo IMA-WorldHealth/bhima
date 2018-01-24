@@ -45,4 +45,5 @@ module.exports = {
   fluxSelect                  : require('./bhFluxSelect'),
   multipleCashBoxSelect       : require('./bhMultipleCashBoxSelect'),
   employeeSelect              : require('./bhEmployeeSelect'),
+  iprScale                    : require('./bhIprScale'),
 };

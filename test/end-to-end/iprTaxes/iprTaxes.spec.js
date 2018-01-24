@@ -6,7 +6,7 @@ const chai = require('chai');
 /** configuring helpers**/
 helpers.configure(chai);
 
-describe.only('Ipr Tax Management', () => {
+describe('Ipr Tax Management', () => {
   // navigate to the page
   before(() => helpers.navigate('#!/ipr_tax'));
 
