@@ -8,6 +8,7 @@
  * in the tree.
  */
 const _ = require('lodash');
+const debug = require('debug')('TreeBuilder');
 
 /**
  * @function buildTreeFromArray
@@ -16,6 +17,8 @@ const _ = require('lodash');
  * This function makes a tree data structure from a properly formatted array.
  */
 function buildTreeFromArray(nodes, parentId, parentKey) {
+  debug(`#builtTreeFromArray() called with (Array(${nodes.length}), ${parentId}, ${parentKey}.`);
+
   // recursion base-case:  return nothing if empty array
   if (nodes.length === 0) { return null; }
 
@@ -67,13 +70,27 @@ function flatten(tree, depth, pruneChildren = true) {
  * of their children for a given property.
  */
 function sumOnProperty(node, prop) {
-  if (node.children.length > 0) {
+  if (hasChildren(node)) {
     // recursively compute the value of node[prop] by summing all child[prop]s
     node[prop] = node.children.reduce((value, child) =>
       value + sumOnProperty(child, prop), 0);
   }
 
   return node[prop];
+}
+
+function hasChildren(node) {
+  return node.children.length > 0;
+}
+
+function markNodeToPrune(node, fn) {
+  if (hasChildren(node)) {
+    node.children.forEach(child => markNodeToPrune(child, fn));
+  }
+
+  if (fn(node)) {
+    node._toPrune = true;
+  }
 }
 
 class Tree {
@@ -86,8 +103,25 @@ class Tree {
     this._parentKey = options.parentKey;
     this._rootId = options.rootId;
 
+
     // build the tree with the provided root id and parentKey
     this._tree = buildTreeFromArray(_.cloneDeep(data), this._rootId, this._parentKey);
+
+    debug(`#constructor() built tree with ${this._data.length} nodes.`);
+  }
+
+  prune(fn) {
+    debug('#prune() called on tree strucure.');
+    // walk down the tree, marking nodes to be pruned.
+    this._tree.forEach(node => markNodeToPrune(node, fn));
+
+    const prev = this.toArray();
+    const pruned = prev.filter(node => !node._toPrune);
+
+    debug(`#prune() removed ${prev.length - pruned.length} nodes from the tree`);
+
+    // return an array missing the pruned values
+    return pruned;
   }
 
   toArray() {

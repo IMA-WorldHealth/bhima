@@ -113,37 +113,47 @@ function listAccounts(req, res, next) {
     .done();
 }
 
+const PERIODS = [
+  0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
+];
+
+
 /**
  * @function getAccountTotalsMatrix
  *
  * @description
- * This function gets the period totals for all general ledger accounts from the
- * period totals table.
+ * This function gets the period totals for all accounts in a single fiscal
+ * year.  Returns only accounts (and their parents) that contain balances.
  */
 function getAccountTotalsMatrix(fiscalYearId) {
-  const periodNumbers = [
-    0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
-  ];
-
   // this creates a series of columns that only sum values if they are in the
-  // correct periodNumber.
-  const periodColumns = periodNumbers.reduce(
+  // correct period.
+  const columns = PERIODS.reduce(
     (q, number) => `${q}, SUM(IF(p.number = ${number}, pt.debit - pt.credit, 0)) AS balance${number}`,
     ''
   );
+
+  const outerColumns =
+    PERIODS.map(number => `IFNULL(s.balance${number}, 0) AS balance${number}`)
+      .join(', ');
 
   // we want to show every single account, so we do a left join of the account
   // table
   const sql = `
     SELECT a.id, a.number, a.label, a.type_id, a.label, a.parent,
-      SUM(pt.debit - pt.credit) AS balance ${periodColumns}
-    FROM account AS a
-      LEFT JOIN period_total AS pt ON a.id = pt.account_id
+      IFNULL(s.balance, 0) AS balance, ${outerColumns}
+    FROM account AS a LEFT JOIN (
+      SELECT SUM(pt.debit - pt.credit) AS balance, pt.account_id ${columns}
+      FROM period_total AS pt
       JOIN period AS p ON p.id = pt.period_id
-    WHERE pt.fiscal_year_id = ?
-    GROUP BY a.id
+      WHERE pt.fiscal_year_id = ?
+      GROUP BY pt.account_id
+    )s ON a.id = s.account_id
     ORDER BY a.number;
   `;
+
+  //  returns true if all the balances are 0
+  const isEmptyRow = (row) => row.balance === 0;
 
   return db.exec(sql, [fiscalYearId])
     .then(accounts => {
@@ -151,8 +161,9 @@ function getAccountTotalsMatrix(fiscalYearId) {
 
       // compute the values of the title accounts as the values of their children
       accountsTree.sumOnProperty('balance');
-      periodNumbers.forEach(number => accountsTree.sumOnProperty(`balance${number}`));
+      PERIODS.forEach(number => accountsTree.sumOnProperty(`balance${number}`));
 
-      return accountsTree.toArray();
+      // prune empty rows
+      return accountsTree.prune(isEmptyRow);
     });
 }
