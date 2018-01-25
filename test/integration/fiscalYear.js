@@ -9,13 +9,15 @@ describe('(/fiscal) Fiscal Year', () => {
     end_date : new Date('2019-12-31 01:00'),
     number_of_months : 12,
     note : 'Fiscal Year for Integration Test',
-    closing_account: 3627, // what is this account?
+    closing_account : 111, // 1311 - Résusltat net : Bénéfice *
   };
 
   const responseKeys = [
     'id', 'enterprise_id', 'number_of_months', 'label', 'start_date',
     'end_date', 'previous_fiscal_year_id', 'locked', 'note',
   ];
+
+  const YEAR_TO_CLOSE = 2;
 
   it('POST /fiscal adds a fiscal year', () => {
     return agent.post('/fiscal')
@@ -78,13 +80,12 @@ describe('(/fiscal) Fiscal Year', () => {
   it('PUT /fiscal/:id/closing closing a fiscal year', () => {
     const closingAccount = { account_id : newFiscalYear.closing_account };
 
-    return agent.put(`/fiscal/${newFiscalYear.id}/closing`)
+    return agent.put(`/fiscal/${YEAR_TO_CLOSE}/closing`)
       .send({ params: closingAccount })
       .then(res => {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
-        const value = parseInt(res.body.id, 10);
-        expect(value).to.be.equal(newFiscalYear.id);
+        expect(res.body.id).to.equal(YEAR_TO_CLOSE);
       })
       .catch(helpers.handler);
   });
