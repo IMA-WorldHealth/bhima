@@ -7,8 +7,8 @@
 
     <ul class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
       <li>
-        <a ng-href="/reports/finance/account_report/?{{ grid.appScope.slip('pdf', grid.appScope.filtersSlip, row.entity.id) }}" download="{{ GENERAL_LEDGER.ACCOUNT_SLIP | translate }}">
-          <span class="fa fa-file-pdf-o"></span> <span translate>GENERAL_LEDGER.ACCOUNT_SLIP</span>
+        <a ng-href="/reports/finance/account_report/?{{ grid.appScope.openAccountReport(row.entity.id) }}" download="{{ TREE.REPORT_ACCOUNTS | translate }}">
+          <span class="fa fa-file-pdf-o"></span> <span translate>TREE.REPORT_ACCOUNTS</span>
         </a>
       </li>
     </ul>

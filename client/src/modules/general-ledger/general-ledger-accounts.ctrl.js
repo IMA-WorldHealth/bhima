@@ -254,7 +254,17 @@ function GeneralLedgerAccountsController(
   }
 
   vm.download = GeneralLedger.download;
-  vm.slip = GeneralLedger.slip;
+  vm.openAccountReport = function openAccountReport(accountId) {
+    var opts = {
+      account_id : accountId,
+      dateFrom : vm.year.start_date,
+      dateTo : vm.year.end_date,
+      limit : 1000,
+      renderer : 'pdf',
+    };
+
+    return GeneralLedger.openAccountReport(opts);
+  };
 
   // loads data for the general Ledger
   function load(options) {
@@ -274,12 +284,6 @@ function GeneralLedgerAccountsController(
     vm.filters = {
       fiscal_year_id : vm.year.id,
       fiscal_year_label : vm.year.label,
-    };
-
-    vm.filtersSlip = {
-      dateFrom : vm.year.start_date,
-      dateTo : vm.year.end_date,
-      limit : 1000,
     };
 
     load(vm.filters);
