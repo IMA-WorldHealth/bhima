@@ -176,7 +176,7 @@ function getItemsMetadataById(uid) {
     `SELECT BUID(i.uuid) as uuid, i.code, i.text AS label, i.price, iu.abbr AS unit,
       it.text AS type, ig.name AS groupName, BUID(ig.uuid) AS group_uuid, ig.expires, ig.unique_item, i.consumable, i.locked, i.stock_min,
       i.stock_max, i.created_at AS timestamp, i.type_id, i.unit_id, i.unit_weight, i.unit_volume,
-      ig.sales_account, i.default_quantity, i.avg_consumption, i.delay, i.purchase_interval
+      ig.sales_account, i.default_quantity, i.avg_consumption, i.delay, i.purchase_interval, i.last_purchase, i.num_purchase
     FROM inventory AS i JOIN inventory_type AS it
       JOIN inventory_unit AS iu JOIN inventory_group AS ig ON
       i.type_id = it.id AND i.group_uuid = ig.uuid AND
