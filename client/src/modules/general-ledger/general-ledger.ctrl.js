@@ -23,6 +23,7 @@ function GeneralLedgerController(
   var state;
   var cacheKey = 'GeneralLedger';
   var columnConfig;
+  var tmpl;
 
   var fields = [
     'balance',
@@ -46,6 +47,14 @@ function GeneralLedgerController(
   vm.onSelectFiscalYear = onSelectFiscalYear;
   vm.Constants = bhConstants;
 
+  vm.indentTitleSpace = 15;
+
+  tmpl =
+    '<div class="ui-grid-cell-contents">' +
+    '<span style="padding-left : {{row.entity.$$treeLevel * grid.appScope.indentTitleSpace}}px;"></span>' +
+    '{{grid.getCellValue(row, col)}}' +
+    '</span>';
+
   columns = [{
     field            : 'number',
     displayName      : 'TABLE.COLUMNS.ACCOUNT',
@@ -58,118 +67,161 @@ function GeneralLedgerController(
     displayName      : 'TABLE.COLUMNS.LABEL',
     enableFiltering  : true,
     headerCellFilter : 'translate',
+    cellTemplate : tmpl,
   }, {
     field            : 'balance',
+    type : 'number',
     displayName      : 'TABLE.COLUMNS.BALANCE',
     enableFiltering  : false,
     headerCellFilter : 'translate',
     headerCellClass  : 'text-center',
     cellFilter       : 'currency:'.concat(Session.enterprise.currency_id),
     cellClass        : 'text-right',
+    aggregationType  : uiGridConstants.aggregationTypes.sum,
+    aggregationHideLabel : true,
   }, {
     field            : 'balance0',
+    type : 'number',
     displayName      : 'FORM.LABELS.OPENING_BALANCE',
     enableFiltering  : false,
     headerCellFilter : 'translate',
     headerCellClass  : 'text-center',
     cellFilter       : 'currency:'.concat(Session.enterprise.currency_id),
     cellClass        : 'text-right',
+    aggregationType  : uiGridConstants.aggregationTypes.sum,
+    aggregationHideLabel : true,
   }, {
     field            : 'balance1',
+    type : 'number',
     displayName      : 'TABLE.COLUMNS.DATE_MONTH.JANUARY',
     enableFiltering  : false,
     headerCellFilter : 'translate',
     headerCellClass  : 'text-center',
     cellFilter       : 'currency:'.concat(Session.enterprise.currency_id),
     cellClass        : 'text-right',
+    aggregationType  : uiGridConstants.aggregationTypes.sum,
+    aggregationHideLabel : true,
   }, {
     field            : 'balance2',
+    type : 'number',
     displayName      : 'TABLE.COLUMNS.DATE_MONTH.FEBRUARY',
     enableFiltering  : false,
     headerCellFilter : 'translate',
     headerCellClass  : 'text-center',
     cellFilter       : 'currency:'.concat(Session.enterprise.currency_id),
     cellClass        : 'text-right',
+    aggregationType  : uiGridConstants.aggregationTypes.sum,
+    aggregationHideLabel : true,
   }, {
     field            : 'balance3',
+    type : 'number',
     displayName      : 'TABLE.COLUMNS.DATE_MONTH.MARCH',
     enableFiltering  : false,
     headerCellFilter : 'translate',
     headerCellClass  : 'text-center',
     cellFilter       : 'currency:'.concat(Session.enterprise.currency_id),
     cellClass        : 'text-right',
+    aggregationType  : uiGridConstants.aggregationTypes.sum,
+    aggregationHideLabel : true,
   }, {
     field            : 'balance4',
+    type : 'number',
     displayName      : 'TABLE.COLUMNS.DATE_MONTH.APRIL',
     enableFiltering  : false,
     headerCellFilter : 'translate',
     headerCellClass  : 'text-center',
     cellFilter       : 'currency:'.concat(Session.enterprise.currency_id),
     cellClass        : 'text-right',
+    aggregationType  : uiGridConstants.aggregationTypes.sum,
+    aggregationHideLabel : true,
   }, {
     field            : 'balance5',
+    type : 'number',
     displayName      : 'TABLE.COLUMNS.DATE_MONTH.MAY',
     enableFiltering  : false,
     headerCellFilter : 'translate',
     headerCellClass  : 'text-center',
     cellFilter       : 'currency:'.concat(Session.enterprise.currency_id),
     cellClass        : 'text-right',
+    aggregationType  : uiGridConstants.aggregationTypes.sum,
+    aggregationHideLabel : true,
   }, {
     field            : 'balance6',
+    type : 'number',
     displayName      : 'TABLE.COLUMNS.DATE_MONTH.JUNE',
     enableFiltering  : false,
     headerCellFilter : 'translate',
     headerCellClass  : 'text-center',
     cellFilter       : 'currency:'.concat(Session.enterprise.currency_id),
     cellClass        : 'text-right',
+    aggregationType  : uiGridConstants.aggregationTypes.sum,
+    aggregationHideLabel : true,
   }, {
     field            : 'balance7',
+    type : 'number',
     displayName      : 'TABLE.COLUMNS.DATE_MONTH.JULY',
     enableFiltering  : false,
     headerCellFilter : 'translate',
     headerCellClass  : 'text-center',
     cellFilter       : 'currency:'.concat(Session.enterprise.currency_id),
     cellClass        : 'text-right',
+    aggregationType  : uiGridConstants.aggregationTypes.sum,
+    aggregationHideLabel : true,
   }, {
     field            : 'balance8',
+    type : 'number',
     displayName      : 'TABLE.COLUMNS.DATE_MONTH.AUGUST',
     enableFiltering  : false,
     headerCellFilter : 'translate',
     headerCellClass  : 'text-center',
     cellFilter       : 'currency:'.concat(Session.enterprise.currency_id),
     cellClass        : 'text-right',
+    aggregationType  : uiGridConstants.aggregationTypes.sum,
+    aggregationHideLabel : true,
   }, {
     field            : 'balance9',
+    type : 'number',
     displayName      : 'TABLE.COLUMNS.DATE_MONTH.SEPTEMBER',
     enableFiltering  : false,
     headerCellFilter : 'translate',
     headerCellClass  : 'text-center',
     cellFilter       : 'currency:'.concat(Session.enterprise.currency_id),
     cellClass        : 'text-right',
+    aggregationType  : uiGridConstants.aggregationTypes.sum,
+    aggregationHideLabel : true,
   }, {
     field            : 'balance10',
+    type : 'number',
     displayName      : 'TABLE.COLUMNS.DATE_MONTH.OCTOBER',
     enableFiltering  : false,
     headerCellFilter : 'translate',
     headerCellClass  : 'text-center',
     cellFilter       : 'currency:'.concat(Session.enterprise.currency_id),
     cellClass        : 'text-right',
+    aggregationType  : uiGridConstants.aggregationTypes.sum,
+    aggregationHideLabel : true,
   }, {
     field            : 'balance11',
+    type : 'number',
     displayName      : 'TABLE.COLUMNS.DATE_MONTH.NOVEMBER',
     enableFiltering  : false,
     headerCellFilter : 'translate',
     headerCellClass  : 'text-center',
     cellFilter       : 'currency:'.concat(Session.enterprise.currency_id),
     cellClass        : 'text-right',
+    aggregationType  : uiGridConstants.aggregationTypes.sum,
+    aggregationHideLabel : true,
   }, {
     field            : 'balance12',
+    type : 'number',
     displayName      : 'TABLE.COLUMNS.DATE_MONTH.DECEMBER',
     enableFiltering  : false,
     headerCellFilter : 'translate',
     headerCellClass  : 'text-center',
     cellFilter       : 'currency:'.concat(Session.enterprise.currency_id),
     cellClass        : 'text-right',
+    aggregationType  : uiGridConstants.aggregationTypes.sum,
+    aggregationHideLabel : true,
   }, {
     field            : 'action',
     displayName      : '',
@@ -192,7 +244,7 @@ function GeneralLedgerController(
     gridFooterTemplate : '/modules/general-ledger/grid.footer.html',
     showGridFooter : true,
     appScopeProvider  : vm,
-    onRegisterApi : onRegisterApi,
+    onRegisterApi : onRegisterApiFn,
   };
 
   columnConfig = new Columns(vm.gridOptions, cacheKey);
@@ -214,7 +266,7 @@ function GeneralLedgerController(
   }
 
   // API register function
-  function onRegisterApi(api) {
+  function onRegisterApiFn(api) {
     vm.gridApi = api;
     api.grid.registerDataChangeCallback(expandOnSetData);
   }
