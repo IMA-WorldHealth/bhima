@@ -54,7 +54,6 @@
       "ASSET":"Actif",
       "LIABILITY":"Passif",
       "EQUITY":"Capital",
-      "REVENUE":"Produit",
       "TIERS":"Tiers"
     },
     "UPDATED": "Les données du compte ont été mis à jour"
