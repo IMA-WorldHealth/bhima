@@ -1823,3 +1823,25 @@ CREATE TABLE `cashbox_permission` (
   FOREIGN KEY (`cashbox_id`) REFERENCES `cash_box` (`id`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+DROP TABLE IF EXISTS `config_rubric`;
+
+CREATE TABLE `config_rubric` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `label` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS `config_rubric_item`;
+
+CREATE TABLE `config_rubric_item` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `config_rubric_id` int(10) unsigned NOT NULL,
+  `rubric_payroll_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `config_rubric_id` (`config_rubric_id`),
+  KEY `rubric_payroll_id` (`rubric_payroll_id`),
+  CONSTRAINT `config_rubric_item_ibfk_1` FOREIGN KEY (`config_rubric_id`) REFERENCES `config_rubric` (`id`),
+  CONSTRAINT `config_rubric_item_ibfk_2` FOREIGN KEY (`rubric_payroll_id`) REFERENCES `rubric_payroll` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
