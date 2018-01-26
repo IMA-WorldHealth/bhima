@@ -183,11 +183,12 @@ gulp.task('client-compile-js', (cb) => {
 gulp.task('client-compile-typescript', (cb) => {
   pump([
     gulp.src(paths.client.javascript),
-    concat('js/bhima.min.js'),
+    concat('js/bhima.js'),
     typescript({
       allowJs : true,
       target : 'es5',
       module : 'none',
+      outFile : 'js/bhima.min.js',
     }),
     gulpif(isProduction, uglify({ mangle : true })),
     iife(),
