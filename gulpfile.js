@@ -30,6 +30,7 @@ const pump = require('pump');
 const rimraf = require('rimraf');
 const less = require('gulp-less');
 const merge = require('gulp-merge-json');
+const typescript = require('gulp-typescript');
 
 // child process for custom scripts
 const exec = require('child_process').exec;
@@ -138,7 +139,7 @@ const paths = {
       '!client/src/i18n/en/*',
       '!client/src/i18n/fr/*',
       '!client/src/i18n/fr/',
-      '!client/src/i18n/en/'
+      '!client/src/i18n/en/',
     ],
     index : 'client/src/index.html',
   },
@@ -171,8 +172,25 @@ const paths = {
 gulp.task('client-compile-js', (cb) => {
   pump([
     gulp.src(paths.client.javascript),
-    gulpif(isProduction, uglify({ mangle: true })),
+    gulpif(isProduction, uglify({ mangle : true })),
     concat('js/bhima.min.js'),
+    iife(),
+    gulp.dest(CLIENT_FOLDER),
+  ], cb);
+});
+
+// compile client javascript with typescript
+gulp.task('client-compile-typescript', (cb) => {
+  pump([
+    gulp.src(paths.client.javascript),
+    concat('js/bhima.js'),
+    typescript({
+      allowJs : true,
+      target : 'es5',
+      module : 'none',
+      outFile : 'js/bhima.min.js',
+    }),
+    gulpif(isProduction, uglify({ mangle : true })),
     iife(),
     gulp.dest(CLIENT_FOLDER),
   ], cb);
@@ -181,10 +199,9 @@ gulp.task('client-compile-js', (cb) => {
 // minify the vendor JS code and compact into a vendor.min.js file.
 gulp.task('client-compile-vendor', () =>
   gulp.src(paths.client.vendorJs)
-    .pipe(gulpif(isProduction, uglify({ mangle: true })))
+    .pipe(gulpif(isProduction, uglify({ mangle : true })))
     .pipe(concat('js/vendor.min.js'))
-    .pipe(gulp.dest(CLIENT_FOLDER))
-);
+    .pipe(gulp.dest(CLIENT_FOLDER)));
 
 
 // minify the client css styles via cssnano
@@ -193,15 +210,13 @@ gulp.task('client-compile-css', () =>
   gulp.src(paths.client.css)
     .pipe(cssnano({ zindex : false }))
     .pipe(concat('css/style.min.css'))
-    .pipe(gulp.dest(CLIENT_FOLDER))
-);
+    .pipe(gulp.dest(CLIENT_FOLDER)));
 
 // move vendor files over to the /vendor directory
 // TODO - separate movement of fonts from the movement of styles
 gulp.task('client-mv-vendor-style', () =>
   gulp.src(paths.client.vendorStyle)
-    .pipe(gulp.dest(`${CLIENT_FOLDER}vendor/`))
-);
+    .pipe(gulp.dest(`${CLIENT_FOLDER}vendor/`)));
 
 gulp.task('client-vendor-build-bootstrap', () =>
   /**
@@ -217,14 +232,12 @@ gulp.task('client-vendor-build-bootstrap', () =>
     .pipe(less({
       paths : ['./client/vendor/bootstrap/less/'],
     }))
-    .pipe(gulp.dest(`${CLIENT_FOLDER}css`))
-);
+    .pipe(gulp.dest(`${CLIENT_FOLDER}css`)));
 
 // move static files to the public directory
 gulp.task('client-mv-static', ['lint-i18n'], () =>
   gulp.src(paths.client.static)
-    .pipe(gulp.dest(CLIENT_FOLDER))
-);
+    .pipe(gulp.dest(CLIENT_FOLDER)));
 
 // custom task: compare the English and French for missing tokens
 gulp.task('lint-i18n', (cb) => {
@@ -239,19 +252,17 @@ gulp.task('lint-i18n', (cb) => {
   });
 });
 
-//compile i18n files english
+// compile i18n files english
 gulp.task('client-compile-i18n-en', () =>
-gulp.src(paths.client.translate_en)
-  .pipe(merge({fileName : 'en.json'}))
-  .pipe(gulp.dest(CLIENT_FOLDER + 'i18n/'))
-);
+  gulp.src(paths.client.translate_en)
+    .pipe(merge({ fileName : 'en.json' }))
+    .pipe(gulp.dest(CLIENT_FOLDER + 'i18n/')));
 
-//compile i18n files french
+// compile i18n files french
 gulp.task('client-compile-i18n-fr', () =>
-gulp.src(paths.client.translate_fr)
-  .pipe(merge({fileName : 'fr.json'}))
-  .pipe(gulp.dest(CLIENT_FOLDER + 'i18n/'))
-);
+  gulp.src(paths.client.translate_fr)
+    .pipe(merge({ fileName : 'fr.json' }))
+    .pipe(gulp.dest(CLIENT_FOLDER + 'i18n/')));
 
 // watches for any change and builds the appropriate route
 gulp.task('watch-client', () => {
@@ -266,20 +277,18 @@ gulp.task('watch-client', () => {
 // gather a list of files to rewrite revisions for
 const toHash = ['**/*.min.js', '**/*.css'].map(file => `${CLIENT_FOLDER}${file}`);
 
-gulp.task('client-compute-hashes', ['client-compile-js', 'client-compile-vendor', 'client-compile-css'], () =>
+gulp.task('client-compute-hashes', ['client-compile-typescript', 'client-compile-vendor', 'client-compile-css'], () =>
   gulp.src(toHash)
     .pipe(rev())
     .pipe(gulp.dest(CLIENT_FOLDER))
     .pipe(rev.manifest(MANIFEST_PATH))
-    .pipe(gulp.dest(CLIENT_FOLDER))
-);
+    .pipe(gulp.dest(CLIENT_FOLDER)));
 
 gulp.task('client-compile-assets', ['client-mv-static', 'client-compute-hashes'], () =>
   gulp.src(paths.client.index)
     .pipe(template({ isProduction, isDevelopment }))
-    .pipe(revReplace({ manifest: gulp.src(`${CLIENT_FOLDER}${MANIFEST_PATH}`) }))
-    .pipe(gulp.dest(CLIENT_FOLDER))
-);
+    .pipe(revReplace({ manifest : gulp.src(`${CLIENT_FOLDER}${MANIFEST_PATH}`) }))
+    .pipe(gulp.dest(CLIENT_FOLDER)));
 
 // TODO - streamline piping so that all the assets - CSS, javascript
 // are built with rev() and then written with rev.manifest({ merge : true });
@@ -307,13 +316,11 @@ gulp.task('build-client', () => {
 // move the server files into /bin/server
 gulp.task('server-mv-files', () =>
   gulp.src(paths.server.files)
-    .pipe(gulp.dest(SERVER_FOLDER))
-);
+    .pipe(gulp.dest(SERVER_FOLDER)));
 
 // build the server
 gulp.task('build-server', () =>
-  gulp.start('server-mv-files')
-);
+  gulp.start('server-mv-files'));
 
 /* -------------------------------------------------------------------------- */
 

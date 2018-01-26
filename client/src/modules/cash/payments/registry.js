@@ -16,7 +16,7 @@ CashPaymentRegistryController.$inject = [
  */
 function CashPaymentRegistryController(
   Cash, bhConstants, Notify, Session, uiGridConstants, Modal, Sorting, $state,
-  Filters, Columns, GridState, Modals, util,
+  Filters, Columns, GridState, Modals, util
 ) {
   var vm = this;
 
@@ -94,14 +94,14 @@ function CashPaymentRegistryController(
     cellTemplate : 'modules/cash/payments/templates/action.cell.html',
   }];
 
-   // grid default options
+  // grid default options
   vm.gridOptions = {
     appScopeProvider  : vm,
     showColumnFooter  : true,
     enableColumnMenus : false,
     flatEntityAccess  : true,
     fastWatch         : true,
-    columnDefs        : columnDefs,
+    columnDefs,
     rowTemplate       : '/modules/cash/payments/templates/grid.canceled.tmpl.html',
   };
 
@@ -121,10 +121,10 @@ function CashPaymentRegistryController(
   }
 
   function search() {
-    var filtersSnapshot = Cash.filters.formatHTTP();
+    const filtersSnapshot = Cash.filters.formatHTTP();
 
     Modal.openSearchCashPayment(filtersSnapshot)
-      .then(function (changes) {
+      .then((changes) => {
         Cash.filters.replaceFilters(changes);
 
         Cash.cacheFilters();
@@ -147,15 +147,15 @@ function CashPaymentRegistryController(
 
   // load cash
   function load(filters) {
+    const request = Cash.read(null, filters);
+
     vm.hasError = false;
     toggleLoadingIndicator();
 
-    var request = Cash.read(null, filters);
-
     request
-      .then(function (rows) {
-        rows.forEach(function (row) {
-          var hasCreditNote = row.reversed;
+      .then((rows) => {
+        rows.forEach((row) => {
+          const hasCreditNote = row.reversed;
           row._backgroundColor = hasCreditNote ? reversedBackgroundColor : regularBackgroundColor;
           row._hasCreditNote = hasCreditNote;
         });
@@ -163,15 +163,13 @@ function CashPaymentRegistryController(
         vm.gridOptions.data = rows;
       })
       .catch(handleError)
-      .finally(function () {
-        toggleLoadingIndicator();
-      });
+      .finally(toggleLoadingIndicator);
   }
 
   // Function for Cancel Cash cancel all Invoice
   function cancelCash(invoice) {
     Cash.openCancelCashModal(invoice)
-      .then(function (success) {
+      .then((success) => {
         if (!success) { return; }
         Notify.success('FORM.INFO.TRANSACTION_REVER_SUCCESS');
         load(Cash.Filters.formatHTTP(true));
@@ -202,7 +200,7 @@ function CashPaymentRegistryController(
 
   function remove(entity) {
     Cash.remove(entity.uuid)
-      .then(function () {
+      .then(() => {
         Notify.success('FORM.INFO.DELETE_RECORD_SUCCESS');
 
         // load() has it's own error handling.  The absence of return below is
@@ -216,7 +214,7 @@ function CashPaymentRegistryController(
   // the database
   function deleteCashPaymentWithConfirmation(entity) {
     Modals.confirm('FORM.DIALOGS.CONFIRM_DELETE')
-      .then(function (isOk) {
+      .then((isOk) => {
         if (isOk) { remove(entity); }
       });
   }
