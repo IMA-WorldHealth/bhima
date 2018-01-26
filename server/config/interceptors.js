@@ -57,7 +57,7 @@ exports.handler = function handler(err, req, res, next) {
   let error = err;
 
   // log the error to the error log (NOTE: in production, this should be 'error')
-  debug('#interceptor() %j', error);
+  debug('#interceptor() %O', error);
 
   // check if it is a database error and format the proper description if so.
   if (error.sqlState) {

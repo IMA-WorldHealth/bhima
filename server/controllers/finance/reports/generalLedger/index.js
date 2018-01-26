@@ -9,17 +9,10 @@
 const _ = require('lodash');
 const ReportManager = require('../../../../lib/ReportManager');
 const GeneralLedger = require('../../generalLedger');
-const AccountReport = require('../reportAccounts');
-const Accounts = require('../../accounts');
 
 const REPORT_TEMPLATE = './server/controllers/finance/reports/generalLedger/report.handlebars';
-const ACCOUNT_SLIP_TEMPLATE = './server/controllers/finance/reports/generalLedger/accountSlip.handlebars';
-
-const GENERAL_LEDGER_SOURCE = 1;
 
 exports.report = renderReport;
-exports.accountSlip = renderAccountSlip;
-
 
 /**
  * GET reports/finance/general_ledger
@@ -45,9 +38,14 @@ function renderReport(req, res, next) {
   }
 
   const fiscalYearId = options.fiscal_year_id;
+  const TITLE_ACCOUNT_ID = 6;
 
   return GeneralLedger.getAccountTotalsMatrix(fiscalYearId)
     .then((rows) => {
+      rows.forEach(row => {
+        row.isTitleAccount = row.type_id === TITLE_ACCOUNT_ID;
+        row.padLeft = row.depth * 15;
+      });
       data = { rows };
       data.fiscal_year_label = options.fiscal_year_label;
       return report.render(data);
@@ -58,50 +56,6 @@ function renderReport(req, res, next) {
       } else {
         res.set(result.headers).send(result.report);
       }
-    })
-    .catch(next)
-    .done();
-}
-
-/**
- * GET reports/finance/general_ledger/:account_id
- *
- * @method accountSlip
- *
- * FIXME(@jniles) - rewrite this.
- */
-function renderAccountSlip(req, res, next) {
-  const { params } = req;
-  const options = _.extend(req.query, {
-    filename : 'GENERAL_LEDGER.ACCOUNT_SLIP',
-    csvKey   : 'transactions',
-    footerRight : '[page] / [toPage]',
-    footerFontSize : '7',
-  });
-
-  let report;
-
-  const data = {};
-
-  return Accounts.lookupAccount(params.account_id)
-    .then((account) => {
-      _.extend(data, { account });
-
-      options.filename = 'Extrait'.concat('_', account.number, '_', account.label);
-
-      report = new ReportManager(ACCOUNT_SLIP_TEMPLATE, req.session, options);
-
-      return AccountReport.getAccountTransactions(params, GENERAL_LEDGER_SOURCE);
-    })
-    .then((result) => {
-      _.extend(data, { transactions : result.transactions, sum : result.sum });
-
-      data.hasDebtorSold = data.sum.balance >= 0;
-
-      return report.render(data);
-    })
-    .then((result) => {
-      res.set(result.headers).send(result.report);
     })
     .catch(next)
     .done();
