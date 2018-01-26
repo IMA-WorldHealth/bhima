@@ -5,5 +5,8 @@ angular.module('bhima.routes')
         url         : '/account_statement',
         controller  : 'AccountStatementController as AccountStateCtrl',
         templateUrl : 'modules/account_statement/account_statement.html',
+        params : {
+          filters : [],
+        },
       });
   }]);

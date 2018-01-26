@@ -292,7 +292,6 @@ function GeneralLedgerController(
   };
 
   function handleError(err) {
-    console.error(err);
     vm.hasError = true;
     Notify.handleError(err);
   }
@@ -324,6 +323,8 @@ function GeneralLedgerController(
   }
 
   function preProcessAccounts(account) {
+    account.hrlabel = Accounts.label(account);
+
     // remove zero values from the matrix to render as empty cells.
     fields.forEach(function (field) {
       if (account[field] === 0) {

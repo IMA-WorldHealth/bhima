@@ -7,6 +7,18 @@
 
     <ul class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
       <li>
+        <a data-method="view-account-statement" ui-sref="accountStatement({ filters : [
+          { key : 'account_id', value : row.entity.id, displayValue : row.entity.hrlabel },
+          { key : 'period', value : 'allTime' },
+          { key : 'custom_period_start', value : grid.appScope.year.start_date },
+          { key : 'custom_period_end', value : grid.appScope.year.end_date },
+          { key : 'limit', value : 1000 },
+          ]})">
+          <span translate>REPORT.VIEW_ACCOUNT_STATEMENT</span>
+        </a>
+      </li>
+      <li class="divider"></li>
+      <li>
         <a ng-href="/reports/finance/account_report/?{{ grid.appScope.openAccountReport(row.entity.id) }}" download="{{ TREE.REPORT_ACCOUNTS | translate }}">
           <span class="fa fa-file-pdf-o"></span> <span translate>TREE.REPORT_ACCOUNTS</span>
         </a>
