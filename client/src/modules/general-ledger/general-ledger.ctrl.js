@@ -46,6 +46,7 @@ function GeneralLedgerController(
   vm.openColumnConfiguration = openColumnConfiguration;
   vm.onSelectFiscalYear = onSelectFiscalYear;
   vm.Constants = bhConstants;
+  vm.aggregates = {};
 
   vm.indentTitleSpace = 15;
 
@@ -54,6 +55,11 @@ function GeneralLedgerController(
     '<span style="padding-left : {{row.entity.$$treeLevel * grid.appScope.indentTitleSpace}}px;"></span>' +
     '{{grid.getCellValue(row, col)}}' +
     '</span>';
+
+
+  function customAggregationFn(columnDefs, column) {
+    return vm.aggregates[column.field] || 0;
+  }
 
   columns = [{
     field            : 'number',
@@ -77,7 +83,9 @@ function GeneralLedgerController(
     headerCellClass  : 'text-center',
     cellFilter       : 'currency:'.concat(Session.enterprise.currency_id),
     cellClass        : 'text-right',
-    aggregationType  : uiGridConstants.aggregationTypes.sum,
+    footerCellClass  : 'text-right',
+    footerCellFilter : 'currency:'.concat(Session.enterprise.currency_id),
+    aggregationType : customAggregationFn,
     aggregationHideLabel : true,
   }, {
     field            : 'balance0',
@@ -88,7 +96,9 @@ function GeneralLedgerController(
     headerCellClass  : 'text-center',
     cellFilter       : 'currency:'.concat(Session.enterprise.currency_id),
     cellClass        : 'text-right',
-    aggregationType  : uiGridConstants.aggregationTypes.sum,
+    footerCellClass  : 'text-right',
+    footerCellFilter : 'currency:'.concat(Session.enterprise.currency_id),
+    aggregationType : customAggregationFn,
     aggregationHideLabel : true,
   }, {
     field            : 'balance1',
@@ -99,7 +109,9 @@ function GeneralLedgerController(
     headerCellClass  : 'text-center',
     cellFilter       : 'currency:'.concat(Session.enterprise.currency_id),
     cellClass        : 'text-right',
-    aggregationType  : uiGridConstants.aggregationTypes.sum,
+    footerCellClass  : 'text-right',
+    footerCellFilter : 'currency:'.concat(Session.enterprise.currency_id),
+    aggregationType : customAggregationFn,
     aggregationHideLabel : true,
   }, {
     field            : 'balance2',
@@ -110,7 +122,9 @@ function GeneralLedgerController(
     headerCellClass  : 'text-center',
     cellFilter       : 'currency:'.concat(Session.enterprise.currency_id),
     cellClass        : 'text-right',
-    aggregationType  : uiGridConstants.aggregationTypes.sum,
+    footerCellClass  : 'text-right',
+    footerCellFilter : 'currency:'.concat(Session.enterprise.currency_id),
+    aggregationType : customAggregationFn,
     aggregationHideLabel : true,
   }, {
     field            : 'balance3',
@@ -121,7 +135,9 @@ function GeneralLedgerController(
     headerCellClass  : 'text-center',
     cellFilter       : 'currency:'.concat(Session.enterprise.currency_id),
     cellClass        : 'text-right',
-    aggregationType  : uiGridConstants.aggregationTypes.sum,
+    footerCellClass  : 'text-right',
+    footerCellFilter : 'currency:'.concat(Session.enterprise.currency_id),
+    aggregationType : customAggregationFn,
     aggregationHideLabel : true,
   }, {
     field            : 'balance4',
@@ -132,7 +148,9 @@ function GeneralLedgerController(
     headerCellClass  : 'text-center',
     cellFilter       : 'currency:'.concat(Session.enterprise.currency_id),
     cellClass        : 'text-right',
-    aggregationType  : uiGridConstants.aggregationTypes.sum,
+    footerCellClass  : 'text-right',
+    footerCellFilter : 'currency:'.concat(Session.enterprise.currency_id),
+    aggregationType : customAggregationFn,
     aggregationHideLabel : true,
   }, {
     field            : 'balance5',
@@ -143,7 +161,9 @@ function GeneralLedgerController(
     headerCellClass  : 'text-center',
     cellFilter       : 'currency:'.concat(Session.enterprise.currency_id),
     cellClass        : 'text-right',
-    aggregationType  : uiGridConstants.aggregationTypes.sum,
+    footerCellClass  : 'text-right',
+    footerCellFilter : 'currency:'.concat(Session.enterprise.currency_id),
+    aggregationType : customAggregationFn,
     aggregationHideLabel : true,
   }, {
     field            : 'balance6',
@@ -154,7 +174,9 @@ function GeneralLedgerController(
     headerCellClass  : 'text-center',
     cellFilter       : 'currency:'.concat(Session.enterprise.currency_id),
     cellClass        : 'text-right',
-    aggregationType  : uiGridConstants.aggregationTypes.sum,
+    footerCellClass  : 'text-right',
+    footerCellFilter : 'currency:'.concat(Session.enterprise.currency_id),
+    aggregationType : customAggregationFn,
     aggregationHideLabel : true,
   }, {
     field            : 'balance7',
@@ -165,7 +187,9 @@ function GeneralLedgerController(
     headerCellClass  : 'text-center',
     cellFilter       : 'currency:'.concat(Session.enterprise.currency_id),
     cellClass        : 'text-right',
-    aggregationType  : uiGridConstants.aggregationTypes.sum,
+    footerCellClass  : 'text-right',
+    footerCellFilter : 'currency:'.concat(Session.enterprise.currency_id),
+    aggregationType : customAggregationFn,
     aggregationHideLabel : true,
   }, {
     field            : 'balance8',
@@ -176,7 +200,9 @@ function GeneralLedgerController(
     headerCellClass  : 'text-center',
     cellFilter       : 'currency:'.concat(Session.enterprise.currency_id),
     cellClass        : 'text-right',
-    aggregationType  : uiGridConstants.aggregationTypes.sum,
+    footerCellClass  : 'text-right',
+    footerCellFilter : 'currency:'.concat(Session.enterprise.currency_id),
+    aggregationType : customAggregationFn,
     aggregationHideLabel : true,
   }, {
     field            : 'balance9',
@@ -187,7 +213,9 @@ function GeneralLedgerController(
     headerCellClass  : 'text-center',
     cellFilter       : 'currency:'.concat(Session.enterprise.currency_id),
     cellClass        : 'text-right',
-    aggregationType  : uiGridConstants.aggregationTypes.sum,
+    footerCellClass  : 'text-right',
+    footerCellFilter : 'currency:'.concat(Session.enterprise.currency_id),
+    aggregationType : customAggregationFn,
     aggregationHideLabel : true,
   }, {
     field            : 'balance10',
@@ -198,7 +226,9 @@ function GeneralLedgerController(
     headerCellClass  : 'text-center',
     cellFilter       : 'currency:'.concat(Session.enterprise.currency_id),
     cellClass        : 'text-right',
-    aggregationType  : uiGridConstants.aggregationTypes.sum,
+    footerCellClass  : 'text-right',
+    footerCellFilter : 'currency:'.concat(Session.enterprise.currency_id),
+    aggregationType : customAggregationFn,
     aggregationHideLabel : true,
   }, {
     field            : 'balance11',
@@ -209,7 +239,9 @@ function GeneralLedgerController(
     headerCellClass  : 'text-center',
     cellFilter       : 'currency:'.concat(Session.enterprise.currency_id),
     cellClass        : 'text-right',
-    aggregationType  : uiGridConstants.aggregationTypes.sum,
+    footerCellClass  : 'text-right',
+    footerCellFilter : 'currency:'.concat(Session.enterprise.currency_id),
+    aggregationType : customAggregationFn,
     aggregationHideLabel : true,
   }, {
     field            : 'balance12',
@@ -220,7 +252,9 @@ function GeneralLedgerController(
     headerCellClass  : 'text-center',
     cellFilter       : 'currency:'.concat(Session.enterprise.currency_id),
     cellClass        : 'text-right',
-    aggregationType  : uiGridConstants.aggregationTypes.sum,
+    footerCellClass  : 'text-right',
+    footerCellFilter : 'currency:'.concat(Session.enterprise.currency_id),
+    aggregationType : customAggregationFn,
     aggregationHideLabel : true,
   }, {
     field            : 'action',
@@ -243,6 +277,7 @@ function GeneralLedgerController(
     rowTemplate : '/modules/accounts/templates/grid.leafRow.tmpl.html',
     gridFooterTemplate : '/modules/general-ledger/grid.footer.html',
     showGridFooter : true,
+    showColumnFooter : true,
     appScopeProvider  : vm,
     onRegisterApi : onRegisterApiFn,
   };
@@ -257,6 +292,7 @@ function GeneralLedgerController(
   };
 
   function handleError(err) {
+    console.error(err);
     vm.hasError = true;
     Notify.handleError(err);
   }
@@ -287,19 +323,29 @@ function GeneralLedgerController(
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
-  function removeZeroes(account) {
+  function preProcessAccounts(account) {
     // remove zero values from the matrix to render as empty cells.
     fields.forEach(function (field) {
       if (account[field] === 0) {
         delete account[field];
+        return;
+      }
+
+      // total all values that are not title account values
+      if (account.type_id !== bhConstants.accounts.TITLE) {
+        vm.aggregates[field] += account[field];
       }
     });
   }
 
   function loadData(accounts) {
-    // make sure the title accounts are identified
-    accounts.forEach(removeZeroes);
+    // make an object of aggregates { column:0 }
+    vm.aggregates = fields.reduce(function (aggregates, field) {
+      aggregates[field] = 0;
+      return aggregates;
+    }, {});
 
+    accounts.forEach(preProcessAccounts);
     Accounts.order(accounts);
 
     vm.gridOptions.data = accounts;
