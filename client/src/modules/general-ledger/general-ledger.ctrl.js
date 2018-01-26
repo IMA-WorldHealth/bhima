@@ -1,7 +1,7 @@
 angular.module('bhima.controllers')
-  .controller('GeneralLedgerAccountsController', GeneralLedgerAccountsController);
+  .controller('GeneralLedgerController', GeneralLedgerController);
 
-GeneralLedgerAccountsController.$inject = [
+GeneralLedgerController.$inject = [
   'GeneralLedgerService', 'SessionService', 'NotifyService', 'uiGridConstants',
   'ReceiptModal', 'GridColumnService', 'GridStateService', '$state',
   'LanguageService', 'ModalService', 'FiscalService', 'bhConstants',
@@ -9,19 +9,19 @@ GeneralLedgerAccountsController.$inject = [
 ];
 
 /**
- * @module GeneralLedgerAccountsController
+ * @module GeneralLedgerController
  *
  * @description
  * This controller is responsible for displaying accounts and their balances
  */
-function GeneralLedgerAccountsController(
+function GeneralLedgerController(
   GeneralLedger, Session, Notify, uiGridConstants, Receipts, Columns,
   GridState, $state, Languages, Modal, Fiscal, bhConstants, Accounts
 ) {
   var vm = this;
   var columns;
   var state;
-  var cacheKey = 'GeneralLedgerAccounts';
+  var cacheKey = 'GeneralLedger';
   var columnConfig;
 
   var fields = [
