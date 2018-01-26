@@ -90,7 +90,7 @@ INSERT INTO `account_type` VALUES
   (1, 'asset', 'ACCOUNT.TYPES.ASSET', 3),
   (2, 'liability', 'ACCOUNT.TYPES.LIABILITY', 3),
   (3, 'equity', 'ACCOUNT.TYPES.EQUITY', 3),
-  (4, 'revenue', 'ACCOUNT.TYPES.REVENUE', 1),
+  (4, 'income', 'ACCOUNT.TYPES.INCOME', 1),
   (5, 'expense', 'ACCOUNT.TYPES.EXPENSE', 2),
   (6, 'title', 'ACCOUNT.TYPES.TITLE', 4);
 

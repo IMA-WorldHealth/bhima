@@ -2,6 +2,10 @@
 # yarn lockfile v1
 
 
+"@types/angular@^1.6.41":
+  version "1.6.41"
+  resolved "https://registry.yarnpkg.com/@types/angular/-/angular-1.6.41.tgz#627fe0206461fd6fb1135dad780fa8257bbee627"
+
 "@types/node@^6.0.46":
   version "6.0.96"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-6.0.96.tgz#7bf0bf40d6ce51e93762cc47d010c8cc5ebb2179"
@@ -1045,9 +1049,9 @@ chai-spies-next@^0.9.3:
   version "0.9.3"
   resolved "https://registry.yarnpkg.com/chai-spies-next/-/chai-spies-next-0.9.3.tgz#672a84f68824af152ea1cbdda5a96f1a066302b9"
 
-chai-spies@^0.7.1:
-  version "0.7.1"
-  resolved "https://registry.yarnpkg.com/chai-spies/-/chai-spies-0.7.1.tgz#343d99f51244212e8b17e64b93996ff7b2c2a9b1"
+chai-spies@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/chai-spies/-/chai-spies-1.0.0.tgz#d16b39336fb316d03abf8c375feb23c0c8bb163d"
 
 chai@>1.9.0, chai@^4.1.2:
   version "4.1.2"
@@ -1632,7 +1636,7 @@ conventional-recommended-bump@^1.0.0:
     meow "^3.3.0"
     object-assign "^4.0.1"
 
-convert-source-map@^1.5.0:
+convert-source-map@^1.1.1, convert-source-map@^1.5.0:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/convert-source-map/-/convert-source-map-1.5.1.tgz#b8278097b9bc229365de5c62cf5fcaed8b5599e5"
 
@@ -3220,6 +3224,13 @@ glob-parent@^2.0.0:
   dependencies:
     is-glob "^2.0.0"
 
+glob-parent@^3.0.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/glob-parent/-/glob-parent-3.1.0.tgz#9e6af6299d8d3bd2bd40430832bd113df906c5ae"
+  dependencies:
+    is-glob "^3.1.0"
+    path-dirname "^1.0.0"
+
 glob-stream@^3.1.5:
   version "3.1.18"
   resolved "https://registry.yarnpkg.com/glob-stream/-/glob-stream-3.1.18.tgz#9170a5f12b790306fdfe598f313f8f7954fd143b"
@@ -3230,6 +3241,19 @@ glob-stream@^3.1.5:
     ordered-read-streams "^0.1.0"
     through2 "^0.6.1"
     unique-stream "^1.0.0"
+
+glob-stream@^5.3.2:
+  version "5.3.5"
+  resolved "https://registry.yarnpkg.com/glob-stream/-/glob-stream-5.3.5.tgz#a55665a9a8ccdc41915a87c701e32d4e016fad22"
+  dependencies:
+    extend "^3.0.0"
+    glob "^5.0.3"
+    glob-parent "^3.0.0"
+    micromatch "^2.3.7"
+    ordered-read-streams "^0.3.0"
+    through2 "^0.6.0"
+    to-absolute-glob "^0.1.1"
+    unique-stream "^2.0.2"
 
 glob-watcher@^0.0.6:
   version "0.0.6"
@@ -3273,6 +3297,16 @@ glob@^4.3.1:
     inherits "2"
     minimatch "^2.0.1"
     once "^1.3.0"
+
+glob@^5.0.3:
+  version "5.0.15"
+  resolved "https://registry.yarnpkg.com/glob/-/glob-5.0.15.tgz#1bc936b9e02f4a603fcc222ecf7633d30b8b93b1"
+  dependencies:
+    inflight "^1.0.4"
+    inherits "2"
+    minimatch "2 || 3"
+    once "^1.3.0"
+    path-is-absolute "^1.0.0"
 
 glob@^6.0.4:
   version "6.0.4"
@@ -3396,7 +3430,7 @@ graceful-fs@^3.0.0:
   dependencies:
     natives "^1.1.0"
 
-graceful-fs@^4.1.11, graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.1.9, graceful-fs@~4.1.11:
+graceful-fs@^4.0.0, graceful-fs@^4.1.11, graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.1.9, graceful-fs@~4.1.11:
   version "4.1.11"
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.1.11.tgz#0e8bdfe4d1ddb8854d64e04ea7c00e2a026e5658"
 
@@ -3497,6 +3531,16 @@ gulp-rev@^8.1.0:
     vinyl "^2.1.0"
     vinyl-file "^3.0.0"
 
+gulp-sourcemaps@1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/gulp-sourcemaps/-/gulp-sourcemaps-1.6.0.tgz#b86ff349d801ceb56e1d9e7dc7bbcb4b7dee600c"
+  dependencies:
+    convert-source-map "^1.1.1"
+    graceful-fs "^4.1.2"
+    strip-bom "^2.0.0"
+    through2 "^2.0.0"
+    vinyl "^1.0.0"
+
 gulp-template@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/gulp-template/-/gulp-template-5.0.0.tgz#9c9598a4fb2cd3ac999104499b65da8c25cc00f3"
@@ -3505,6 +3549,15 @@ gulp-template@^5.0.0:
     plugin-error "^0.1.2"
     safe-buffer "^5.1.1"
     through2 "^2.0.0"
+
+gulp-typescript@^3.2.4:
+  version "3.2.4"
+  resolved "https://registry.yarnpkg.com/gulp-typescript/-/gulp-typescript-3.2.4.tgz#17c6b941078b02c0522974ed6c963ab190920a47"
+  dependencies:
+    gulp-util "~3.0.7"
+    source-map "~0.5.3"
+    through2 "~2.0.1"
+    vinyl-fs "~2.4.3"
 
 gulp-uglify@^3.0.0:
   version "3.0.0"
@@ -3518,7 +3571,7 @@ gulp-uglify@^3.0.0:
     uglify-js "^3.0.5"
     vinyl-sourcemaps-apply "^0.2.0"
 
-gulp-util@^3.0.0, gulp-util@^3.0.6, gulp-util@^3.0.7:
+gulp-util@^3.0.0, gulp-util@^3.0.6, gulp-util@^3.0.7, gulp-util@~3.0.7:
   version "3.0.8"
   resolved "https://registry.yarnpkg.com/gulp-util/-/gulp-util-3.0.8.tgz#0054e1e744502e27c04c187c3ecc505dd54bbb4f"
   dependencies:
@@ -4391,6 +4444,10 @@ is-utf8@^0.2.0, is-utf8@^0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/is-utf8/-/is-utf8-0.2.1.tgz#4b0da1442104d1b336340e80797e865cf39f7d72"
 
+is-valid-glob@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/is-valid-glob/-/is-valid-glob-0.3.0.tgz#d4b55c69f51886f9b65c70d6c2622d37e29f48fe"
+
 is-windows@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/is-windows/-/is-windows-0.2.0.tgz#de1aa6d63ea29dd248737b69f1ff8b8002d2108c"
@@ -4503,7 +4560,7 @@ json-stable-stringify-without-jsonify@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/json-stable-stringify-without-jsonify/-/json-stable-stringify-without-jsonify-1.0.1.tgz#9db7b59496ad3f3cfef30a75142d2d930ad72651"
 
-json-stable-stringify@^1.0.1:
+json-stable-stringify@^1.0.0, json-stable-stringify@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/json-stable-stringify/-/json-stable-stringify-1.0.1.tgz#9a759d39c5f2ff503fd5300646ed445f88c4f9af"
   dependencies:
@@ -4712,6 +4769,12 @@ lazy-cache@^2.0.2:
   dependencies:
     set-getter "^0.1.0"
 
+lazystream@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/lazystream/-/lazystream-1.0.0.tgz#f6995fe0f820392f61396be89462407bb77168e4"
+  dependencies:
+    readable-stream "^2.0.5"
+
 lcid@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/lcid/-/lcid-1.0.0.tgz#308accafa0bc483a3867b4b6f2b9506251d1b835"
@@ -4898,6 +4961,10 @@ lodash.isarray@^3.0.0:
 lodash.isempty@^4.4.0:
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/lodash.isempty/-/lodash.isempty-4.4.0.tgz#6f86cbedd8be4ec987be9aaf33c9684db1b31e7e"
+
+lodash.isequal@^4.0.0:
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/lodash.isequal/-/lodash.isequal-4.5.0.tgz#415c4478f2bcc30120c22ce10ed3226f7d3e18e0"
 
 lodash.keys@^3.0.0:
   version "3.1.2"
@@ -5402,9 +5469,9 @@ mkdirp@0.5.1, "mkdirp@>=0.5 0", mkdirp@^0.5.0, mkdirp@^0.5.1, mkdirp@~0.5.1:
   dependencies:
     minimist "0.0.8"
 
-mocha@^4.0.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/mocha/-/mocha-4.1.0.tgz#7d86cfbcf35cb829e2754c32e17355ec05338794"
+mocha@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/mocha/-/mocha-5.0.0.tgz#cccac988b0bc5477119cba0e43de7af6d6ad8f4e"
   dependencies:
     browser-stdout "1.3.0"
     commander "2.11.0"
@@ -5806,7 +5873,7 @@ object-assign@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-3.0.0.tgz#9bedd5ca0897949bca47e7ff408062d549f587f2"
 
-object-assign@^4.0.1, object-assign@^4.1.0:
+object-assign@^4.0.0, object-assign@^4.0.1, object-assign@^4.1.0:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-4.1.1.tgz#2109adc7965887cfc05cbbd442cac8bfbb360863"
 
@@ -5949,6 +6016,13 @@ orchestrator@^0.3.0:
 ordered-read-streams@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/ordered-read-streams/-/ordered-read-streams-0.1.0.tgz#fd565a9af8eb4473ba69b6ed8a34352cb552f126"
+
+ordered-read-streams@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/ordered-read-streams/-/ordered-read-streams-0.3.0.tgz#7137e69b3298bb342247a1bbee3881c80e2fd78b"
+  dependencies:
+    is-stream "^1.0.1"
+    readable-stream "^2.0.1"
 
 os-browserify@~0.3.0:
   version "0.3.0"
@@ -6202,6 +6276,10 @@ pascalcase@^0.1.1:
 path-browserify@~0.0.0:
   version "0.0.0"
   resolved "https://registry.yarnpkg.com/path-browserify/-/path-browserify-0.0.0.tgz#a0b870729aae214005b7d5032ec2cbbb0fb4451a"
+
+path-dirname@^1.0.0:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/path-dirname/-/path-dirname-1.0.2.tgz#cc33d24d525e099a5388c0336c6e32b9160609e0"
 
 path-exists@2.1.0, path-exists@^2.0.0:
   version "2.1.0"
@@ -8041,6 +8119,13 @@ strip-bom-buf@^1.0.0:
   dependencies:
     is-utf8 "^0.2.1"
 
+strip-bom-stream@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/strip-bom-stream/-/strip-bom-stream-1.0.0.tgz#e7144398577d51a6bed0fa1994fa05f43fd988ee"
+  dependencies:
+    first-chunk-stream "^1.0.0"
+    strip-bom "^2.0.0"
+
 strip-bom-stream@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/strip-bom-stream/-/strip-bom-stream-2.0.0.tgz#f87db5ef2613f6968aa545abfe1ec728b6a829ca"
@@ -8259,14 +8344,21 @@ thenify-all@^1.0.0:
   dependencies:
     any-promise "^1.0.0"
 
-through2@^0.6.1:
+through2-filter@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/through2-filter/-/through2-filter-2.0.0.tgz#60bc55a0dacb76085db1f9dae99ab43f83d622ec"
+  dependencies:
+    through2 "~2.0.0"
+    xtend "~4.0.0"
+
+through2@^0.6.0, through2@^0.6.1:
   version "0.6.5"
   resolved "https://registry.yarnpkg.com/through2/-/through2-0.6.5.tgz#41ab9c67b29d57209071410e1d7a7a968cd3ad48"
   dependencies:
     readable-stream ">=1.0.33-1 <1.1.0-0"
     xtend ">=4.0.0 <4.1.0-0"
 
-through2@^2.0.0, through2@^2.0.1, through2@^2.0.2:
+through2@^2.0.0, through2@^2.0.1, through2@^2.0.2, through2@~2.0.0, through2@~2.0.1:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/through2/-/through2-2.0.3.tgz#0004569b37c7c74ba39c43f3ced78d1ad94140be"
   dependencies:
@@ -8330,6 +8422,12 @@ tmp@^0.0.29:
   resolved "https://registry.yarnpkg.com/tmp/-/tmp-0.0.29.tgz#f25125ff0dd9da3ccb0c2dd371ee1288bb9128c0"
   dependencies:
     os-tmpdir "~1.0.1"
+
+to-absolute-glob@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/to-absolute-glob/-/to-absolute-glob-0.1.1.tgz#1cdfa472a9ef50c239ee66999b662ca0eb39937f"
+  dependencies:
+    extend-shallow "^2.0.1"
 
 to-array@0.1.4:
   version "0.1.4"
@@ -8424,6 +8522,10 @@ type-is@^1.6.4, type-is@~1.6.15:
 typedarray@^0.0.6, typedarray@~0.0.5:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
+
+typescript@^2.6.2:
+  version "2.6.2"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.6.2.tgz#3c5b6fd7f6de0914269027f03c0946758f7673a4"
 
 uglify-js@^2.6, uglify-js@^2.8.22:
   version "2.8.29"
@@ -8529,6 +8631,13 @@ unique-slug@^2.0.0:
 unique-stream@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/unique-stream/-/unique-stream-1.0.0.tgz#d59a4a75427447d9aa6c91e70263f8d26a4b104b"
+
+unique-stream@^2.0.2:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/unique-stream/-/unique-stream-2.2.1.tgz#5aa003cfbe94c5ff866c4e7d668bb1c4dbadb369"
+  dependencies:
+    json-stable-stringify "^1.0.0"
+    through2-filter "^2.0.0"
 
 unique-string@^1.0.0:
   version "1.0.0"
@@ -8661,6 +8770,10 @@ v8flags@^2.0.2:
   dependencies:
     user-home "^1.1.1"
 
+vali-date@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/vali-date/-/vali-date-1.0.0.tgz#1b904a59609fb328ef078138420934f6b86709a6"
+
 validate-npm-package-license@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/validate-npm-package-license/-/validate-npm-package-license-3.0.1.tgz#2804babe712ad3379459acfbe24746ab2c303fbc"
@@ -8713,6 +8826,28 @@ vinyl-fs@^0.3.0:
     through2 "^0.6.1"
     vinyl "^0.4.0"
 
+vinyl-fs@~2.4.3:
+  version "2.4.4"
+  resolved "https://registry.yarnpkg.com/vinyl-fs/-/vinyl-fs-2.4.4.tgz#be6ff3270cb55dfd7d3063640de81f25d7532239"
+  dependencies:
+    duplexify "^3.2.0"
+    glob-stream "^5.3.2"
+    graceful-fs "^4.0.0"
+    gulp-sourcemaps "1.6.0"
+    is-valid-glob "^0.3.0"
+    lazystream "^1.0.0"
+    lodash.isequal "^4.0.0"
+    merge-stream "^1.0.0"
+    mkdirp "^0.5.0"
+    object-assign "^4.0.0"
+    readable-stream "^2.0.4"
+    strip-bom "^2.0.0"
+    strip-bom-stream "^1.0.0"
+    through2 "^2.0.0"
+    through2-filter "^2.0.0"
+    vali-date "^1.0.0"
+    vinyl "^1.0.0"
+
 vinyl-sourcemaps-apply@^0.2.0, vinyl-sourcemaps-apply@^0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/vinyl-sourcemaps-apply/-/vinyl-sourcemaps-apply-0.2.1.tgz#ab6549d61d172c2b1b87be5c508d239c8ef87705"
@@ -8729,6 +8864,14 @@ vinyl@^0.4.0:
 vinyl@^0.5.0:
   version "0.5.3"
   resolved "https://registry.yarnpkg.com/vinyl/-/vinyl-0.5.3.tgz#b0455b38fc5e0cf30d4325132e461970c2091cde"
+  dependencies:
+    clone "^1.0.0"
+    clone-stats "^0.0.1"
+    replace-ext "0.0.1"
+
+vinyl@^1.0.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/vinyl/-/vinyl-1.2.0.tgz#5c88036cf565e5df05558bfc911f8656df218884"
   dependencies:
     clone "^1.0.0"
     clone-stats "^0.0.1"
@@ -8957,7 +9100,7 @@ xregexp@2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/xregexp/-/xregexp-2.0.0.tgz#52a63e56ca0b84a7f3a5f3d61872f126ad7a5943"
 
-"xtend@>=4.0.0 <4.1.0-0", xtend@^4.0.0, xtend@~4.0.1:
+"xtend@>=4.0.0 <4.1.0-0", xtend@^4.0.0, xtend@~4.0.0, xtend@~4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/xtend/-/xtend-4.0.1.tgz#a5c6d532be656e23db820efb943a1f04998d63af"
 

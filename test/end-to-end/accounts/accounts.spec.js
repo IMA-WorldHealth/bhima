@@ -107,7 +107,7 @@ describe('Account Management', () => {
     FU.uiSelect('AccountEditCtrl.account.parent', parentNumber);
 
     // set to income
-    select.element(by.css('[data-key="ACCOUNT.TYPES.REVENUE"]')).click();
+    select.element(by.css('[data-key="ACCOUNT.TYPES.INCOME"]')).click();
 
     accounts.forEach(accnt => createAccount(accnt));
 

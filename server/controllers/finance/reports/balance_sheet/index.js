@@ -23,7 +23,7 @@ const TEMPLATE = './server/controllers/finance/reports/balance_sheet/report.hand
 const ASSET = 1;
 const LIABILITY = 2;
 const EQUITY = 3;
-const REVENUE = 4;
+const INCOME = 4;
 const EXPENSE = 5;
 const DATE_FORMAT = 'YYYY-MM-DD';
 const FC_CURRENCY = 1;
@@ -71,7 +71,7 @@ function document(req, res, next) {
       bundle.assets = result[ASSET] || {};
       bundle.liabilities = result[LIABILITY] || {};
       bundle.equity = result[EQUITY] || {};
-      bundle.revenue = result[REVENUE] || {};
+      bundle.revenue = result[INCOME] || {};
       bundle.expense = result[EXPENSE] || {};
       bundle.result = handleExploitationResult(bundle.revenue, bundle.expense);
       bundle.totals = getTotalBalance(bundle);

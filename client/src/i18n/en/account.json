@@ -48,15 +48,14 @@
     "SUBMIT_UPDATE":"Update Account",
     "TYPE_CHANGE_BLOCKED":"You cannot change the type of a title account with children.",
     "TYPES":{
-      "INCOME":"Income",
       "EXPENSE":"Expense",
       "BALANCE":"Balance",
       "TITLE":"Title",
       "ASSET":"Asset",
       "LIABILITY":"Liability",
       "EQUITY":"Equity",
-      "REVENUE":"Revenue",
-      "TIERS":"Tiers"
+      "INCOME":"Income",
+      "TIERS":"Others"
     }
   }
 }
