@@ -47,14 +47,11 @@ function getChildren(units, parentId) {
   // Return null
   if (units.length === 0) { return null; }
 
-  // Returns all units where the parent is the
-  // parentId
-  const children = units.filter(unit => {
-    return unit.parent === parentId;
-  });
+  // Returns all units where the parent is the parentId
+  const children = units.filter(unit => unit.parent === parentId);
 
   // Recursively call getChildren on all child units
-  // and attach them as childen of their parent unit
+  // and attach them as children of their parent unit
   children.forEach(unit => {
     unit.children = getChildren(units, unit.id);
   });

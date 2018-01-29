@@ -354,7 +354,6 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/account_statement', financeReports.accountStatement.report);
   app.get('/reports/finance/clientsReport', financeReports.clientsReport.document);
   app.get('/reports/finance/general_ledger/', financeReports.generalLedger.report);
-  app.get('/reports/finance/general_ledger/:account_id', financeReports.generalLedger.accountSlip);
   app.get('/reports/finance/creditors/aged', financeReports.creditors.aged);
   app.get('/reports/finance/purchases', financeReports.purchases.report);
 
@@ -564,14 +563,14 @@ exports.configure = function configure(app) {
   app.get('/holidays/:id', holidays.detail);
   app.post('/holidays', holidays.create);
   app.put('/holidays/:id', holidays.update);
-  app.delete('/holidays/:id', holidays.delete);  
+  app.delete('/holidays/:id', holidays.delete);
 
   // Offday api
   app.get('/offdays', offdays.list);
   app.get('/offdays/:id', offdays.detail);
   app.post('/offdays', offdays.create);
   app.put('/offdays/:id', offdays.update);
-  app.delete('/offdays/:id', offdays.delete);  
+  app.delete('/offdays/:id', offdays.delete);
 
   // creditor groups API
   app.post('/creditors/groups', creditorGroups.create);

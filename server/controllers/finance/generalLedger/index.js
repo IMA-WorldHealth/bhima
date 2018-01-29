@@ -15,9 +15,7 @@
 // module dependencies
 const db = require('../../../lib/db');
 const FilterParser = require('../../../lib/filter');
-
-// GET/ CURRENT FISCAL YEAR PERIOD
-const Fiscal = require('../fiscal');
+const Tree = require('../../../lib/Tree');
 
 // expose to the api
 exports.list = list;
@@ -98,16 +96,16 @@ function list(req, res, next) {
 }
 
 /**
+ * @function listAccounts
+ *
+ * @description
+ * List accounts and their balances.
  * GET /general_ledger/accounts
- * list accounts and their solds
  */
 function listAccounts(req, res, next) {
   const fiscalYearId = req.query.fiscal_year_id;
 
-  Fiscal.getPeriodByFiscal(fiscalYearId)
-    .then((rows) => {
-      return getAccountTotalsMatrix(rows);
-    })
+  getAccountTotalsMatrix(fiscalYearId)
     .then((rows) => {
       res.status(200).json(rows);
     })
@@ -115,42 +113,57 @@ function listAccounts(req, res, next) {
     .done();
 }
 
+const PERIODS = [
+  0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
+];
+
+
 /**
  * @function getAccountTotalsMatrix
  *
  * @description
- * This function gets the period totals for all general ledger accounts from
- * the period totals table.
+ * This function gets the period totals for all accounts in a single fiscal
+ * year.  Returns only accounts (and their parents) that contain balances.
  */
-function getAccountTotalsMatrix(periodsId) {
-  let sqlCase = '';
-  let getBalance = '';
-  let headSql = '';
-  let signPlus = '';
+function getAccountTotalsMatrix(fiscalYearId) {
+  // this creates a series of columns that only sum values if they are in the
+  // correct period.
+  const columns = PERIODS.reduce(
+    (q, number) => `${q}, SUM(IF(p.number = ${number}, pt.debit - pt.credit, 0)) AS balance${number}`,
+    ''
+  );
 
-  if (periodsId) {
-    periodsId.forEach((period) => {
-      headSql += `, balance${period.number}`;
+  const outerColumns =
+    PERIODS.map(number => `IFNULL(s.balance${number}, 0) AS balance${number}`)
+      .join(', ');
 
-      signPlus = period.number === 0 ? '' : '+';
-      getBalance += `${signPlus} balance${period.number} `;
+  // we want to show every single account, so we do a left join of the account
+  // table
+  const sql = `
+    SELECT a.id, a.number, a.label, a.type_id, a.label, a.parent,
+      IFNULL(s.balance, 0) AS balance, ${outerColumns}
+    FROM account AS a LEFT JOIN (
+      SELECT SUM(pt.debit - pt.credit) AS balance, pt.account_id ${columns}
+      FROM period_total AS pt
+      JOIN period AS p ON p.id = pt.period_id
+      WHERE pt.fiscal_year_id = ?
+      GROUP BY pt.account_id
+    )s ON a.id = s.account_id
+    ORDER BY a.number;
+  `;
 
-      sqlCase += `, SUM(
-        IF(period_total.period_id = ${period.id}, period_total.debit - period_total.credit, 0)
-      ) AS balance${period.number}
-      `;
+  //  returns true if all the balances are 0
+  const isEmptyRow = (row) => row.balance === 0;
+
+  return db.exec(sql, [fiscalYearId])
+    .then(accounts => {
+      const accountsTree = new Tree(accounts);
+
+      // compute the values of the title accounts as the values of their children
+      accountsTree.sumOnProperty('balance');
+      PERIODS.forEach(number => accountsTree.sumOnProperty(`balance${number}`));
+
+      // prune empty rows
+      return accountsTree.prune(isEmptyRow);
     });
-  }
-
-  const sql =
-    `SELECT account.number, account.type_id, account.label, p.account_id AS id,
-      (${getBalance}) AS balance ${headSql}
-      FROM (
-        SELECT period_total.account_id ${sqlCase}
-          FROM period_total GROUP BY period_total.account_id
-      ) AS p
-      JOIN account ON account.id = p.account_id
-      ORDER BY account.number ASC`;
-
-  return db.exec(sql);
 }

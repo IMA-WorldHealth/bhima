@@ -156,8 +156,7 @@ function AccountService(Api, bhConstants) {
    * @returns {Array} - the properly ordered list of account objects
    */
   function order(accounts) {
-    // NOTE
-    // we assume the root node is 0
+    // NOTE: we assume the root node is 0
     var ROOT_NODE = 0;
 
     // build the account tree

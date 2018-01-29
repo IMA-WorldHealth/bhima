@@ -3,7 +3,7 @@
     <ol class="headercrumb">
       <li class="static" translate>TREE.FINANCE</li>
       <li class="static" translate>GENERAL_LEDGER.TITLE</li>
-      <li class="title">{{ GeneralLedgerAccountsCtrl.fiscalYearLabel }}</li>
+      <li class="title">{{ GeneralLedgerCtrl.fiscalYearLabel }}</li>
     </ol>
 
     <div class="toolbar">
@@ -15,46 +15,39 @@
 
           <ul uib-dropdown-menu role="menu" class="dropdown-menu-right">
             <li role="menuitem">
-              <a href data-method="configure" ng-click="GeneralLedgerAccountsCtrl.openFiscalYearConfiguration()">
-                <i class="fa fa-calendar"></i> <span translate>FISCAL.FISCAL_YEAR</span>
-              </a>
-            </li>
-
-            <li role="separator" class="divider"></li>
-            <li role="menuitem">
-              <a href data-method="configure" ng-click="GeneralLedgerAccountsCtrl.openColumnConfiguration()">
+              <a href data-method="configure" ng-click="GeneralLedgerCtrl.openColumnConfiguration()">
                 <i class="fa fa-columns"></i> <span translate>FORM.LABELS.COLUMNS</span>
               </a>
             </li>
 
             <li role="separator" class="divider"></li>
             <li role="menuitem">
-              <a href data-method="save-state" ng-click="GeneralLedgerAccountsCtrl.saveGridState()">
+              <a href data-method="save-state" ng-click="GeneralLedgerCtrl.saveGridState()">
                 <i class="fa fa-save"></i> <span translate>FORM.BUTTONS.SAVE_GRID_CONFIGURATION</span>
               </a>
             </li>
 
             <li role="menuitem">
-              <a href data-method="clear-state" ng-click="GeneralLedgerAccountsCtrl.clearGridState()">
+              <a href data-method="clear-state" ng-click="GeneralLedgerCtrl.clearGridState()">
                 <i class="fa fa-close"></i> <span translate>FORM.BUTTONS.CLEAR_GRID_CONFIGURATION</span>
               </a>
             </li>
 
             <li role="separator" class="divider"></li>
             <li role="menuitem">
-              <a ng-href="/reports/finance/general_ledger/?{{ GeneralLedgerAccountsCtrl.download('pdf', GeneralLedgerAccountsCtrl.filters) }}" download="{{GeneralLedgerAccountsCtrl.fiscalYearLabel | translate }}">
+              <a ng-href="/reports/finance/general_ledger/?{{ GeneralLedgerCtrl.download('pdf', GeneralLedgerCtrl.filters) }}" download="{{GeneralLedgerCtrl.fiscalYearLabel | translate }}">
                 <span class="fa fa-file-pdf-o"></span> <span translate>DOWNLOADS.PDF</span>
               </a>
             </li>
 
             <li role="menuitem">
-              <a ng-href="/reports/finance/general_ledger/?{{ GeneralLedgerAccountsCtrl.download('xlsx', GeneralLedgerAccountsCtrl.filters) }}" download="{{GeneralLedgerAccountsCtrl.fiscalYearLabel | translate }}">
+              <a ng-href="/reports/finance/general_ledger/?{{ GeneralLedgerCtrl.download('xlsx', GeneralLedgerCtrl.filters) }}" download="{{GeneralLedgerCtrl.fiscalYearLabel | translate }}">
                 <span class="fa fa-file-excel-o"></span> <span translate>DOWNLOADS.EXCEL</span>
               </a>
             </li>
 
             <li role="menuitem">
-              <a ng-href="/reports/finance/general_ledger/?{{ GeneralLedgerAccountsCtrl.download('csv', GeneralLedgerAccountsCtrl.filters) }}" download="{{ GeneralLedgerAccountsCtrl.fiscalYearLabel | translate }}">
+              <a ng-href="/reports/finance/general_ledger/?{{ GeneralLedgerCtrl.download('csv', GeneralLedgerCtrl.filters) }}" download="{{ GeneralLedgerCtrl.fiscalYearLabel | translate }}">
                 <span class="fa fa-file-excel-o"></span> <span translate>DOWNLOADS.CSV</span>
               </a>
             </li>
@@ -65,10 +58,10 @@
       <div class="toolbar-item">
         <button
           type="button"
-          ng-click="GeneralLedgerAccountsCtrl.toggleFilter()"
+          ng-click="GeneralLedgerCtrl.toggleFilter()"
           data-method="filter"
           class="btn btn-default"
-          ng-class="{ 'btn-info' : GeneralLedgerAccountsCtrl.filterEnabled }">
+          ng-class="{ 'btn-info' : GeneralLedgerCtrl.filterEnabled }">
           <i class="fa fa-filter"></i>
         </button>
       </div>
@@ -85,14 +78,16 @@
         <div
           id="generalLedger-grid"
           class="grid-full-height"
+          ui-grid-tree-view
           ui-grid-resize-columns
+          ui-grid-auto-resize
           ui-grid-save-state
-          ui-grid="GeneralLedgerAccountsCtrl.gridOptions">
+          ui-grid="GeneralLedgerCtrl.gridOptions">
 
           <bh-grid-loading-indicator
-            loading-state="GeneralLedgerAccountsCtrl.loading"
-            empty-state="GeneralLedgerAccountsCtrl.gridOptions.data.length === 0"
-            error-state="GeneralLedgerAccountsCtrl.hasError" >
+            loading-state="GeneralLedgerCtrl.loading"
+            empty-state="false"
+            error-state="GeneralLedgerCtrl.hasError" >
           </bh-grid-loading-indicator>
 
         </div>

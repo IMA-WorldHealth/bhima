@@ -3,19 +3,20 @@ angular.module('bhima.services')
 
 GeneralLedgerService.$inject = [
   'PrototypeApiService', '$httpParamSerializer', 'LanguageService',
+  'SessionService',
 ];
 
 /**
  * General Ledger Service
  * This service is responsible of all process with the General ledger
  */
-function GeneralLedgerService(Api, $httpParamSerializer, Languages) {
+function GeneralLedgerService(Api, $httpParamSerializer, Languages, Session) {
   var service = new Api('/general_ledger/');
 
   service.accounts = new Api('/general_ledger/accounts');
 
   service.download = download;
-  service.slip = slip;
+  service.openAccountReport = openAccountReport;
 
   function download(type, filters) {
     var filterOpts = filters;
@@ -28,19 +29,17 @@ function GeneralLedgerService(Api, $httpParamSerializer, Languages) {
     return $httpParamSerializer(options);
   }
 
-  function slip(type, filters, account) {
-    var filterOpts = filters;
+  function openAccountReport(options) {
     var defaultOpts = {
-      renderer : type,
       lang : Languages.key,
-      account_id : account,
-      source : 3,
+      currency_id : Session.enterprise.currency_id,
     };
 
     // combine options
-    var options = angular.merge(defaultOpts, filterOpts);
-    // return  serialized options
-    return $httpParamSerializer(options);
+    var opts = angular.merge(defaultOpts, options);
+
+    // return serialized options
+    return $httpParamSerializer(opts);
   }
 
   return service;

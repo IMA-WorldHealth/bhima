@@ -2,8 +2,8 @@ angular.module('bhima.services')
   .service('AccountGridService', AccountGridService);
 
 AccountGridService.$inject = [
-  'AccountStoreService', 'AccountService', 'Store',
-  'LanguageService', '$httpParamSerializer',
+  'AccountStoreService', 'AccountService', 'Store', 'LanguageService',
+  '$httpParamSerializer',
 ];
 
 /**
@@ -15,7 +15,6 @@ AccountGridService.$inject = [
  * adding and removing data.
  */
 function AccountGridService(AccountStore, Accounts, Store, Languages, $httpParamSerializer) {
-
   /**
    * @constructor
    *

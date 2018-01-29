@@ -26,6 +26,7 @@ function AccountStatementController(
   var cacheKey = 'account-statement';
   var state;
 
+  var columns;
   var sorting;
   var filtering;
   var columnConfig;
@@ -38,14 +39,14 @@ function AccountStatementController(
   // grid definition ================================================================
   vm.gridApi = {};
 
-  // FIXME(@jniles) - why does this not have fastWatch?
   vm.gridOptions = {
     enableColumnMenus        : false,
     showColumnFooter         : true,
     appScopeProvider         : vm,
+    fastWatch : true,
     flatEntityAccess         : true,
     enableRowHeaderSelection : true,
-    onRegisterApi            : onRegisterApi,
+    onRegisterApi            : onRegisterApiFn,
   };
 
   // Initialise each of the account statement utilities
@@ -59,7 +60,7 @@ function AccountStatementController(
   vm.filtering = filtering;
 
   // columns definition
-  var columns = [
+  columns = [
     { field            : 'trans_id',
       displayName      : 'TABLE.COLUMNS.TRANSACTION',
       headerCellFilter : 'translate',
@@ -175,7 +176,6 @@ function AccountStatementController(
       displayName      : 'FORM.LABELS.COMMENT',
       headerCellFilter : 'translate',
       visible          : true },
-
     { field            : 'display_name',
       displayName      : 'TABLE.COLUMNS.RESPONSIBLE',
       headerCellFilter : 'translate',
@@ -185,7 +185,7 @@ function AccountStatementController(
   vm.gridOptions.columnDefs = columns;
 
   // on register api
-  function onRegisterApi(api) {
+  function onRegisterApiFn(api) {
     vm.gridApi = api;
   }
 
@@ -276,6 +276,11 @@ function AccountStatementController(
 
   // runs on startup
   function startup() {
+    var hasStateFilters = $state.params.filters.length > 0;
+    if (hasStateFilters) {
+      AccountStatement.filters.replaceFiltersFromState($state.params.filters);
+    }
+
     load(AccountStatement.filters.formatHTTP(true));
     vm.latestViewFilters = AccountStatement.filters.formatView();
   }
@@ -342,12 +347,6 @@ function AccountStatementController(
     aggregates.credits += row.credit_equiv;
     aggregates.difference += (row.debit_equiv - row.credit_equiv);
     return aggregates;
-  }
-
-  // catch loading errors
-  function handleError(err) {
-    Notify.handleError(err);
-    vm.hasErrors = true;
   }
 
   vm.saveGridState = state.saveGridState;

@@ -28,16 +28,12 @@ function AccountReportConfigController(
     vm.reportDetails.account_id = account.id;
   };
 
-  vm.selectSource = function selectSource(source) {
-    vm.reportDetails.source = source;
-  };
-
   vm.clearPreview = function clearPreview() {
     vm.previewGenerated = false;
     vm.previewResult = null;
   };
 
-  vm.setCurrency = function (currencyId) {
+  vm.setCurrency = function setCurrency(currencyId) {
     vm.reportDetails.currency_id = currencyId;
   };
 
@@ -68,8 +64,6 @@ function AccountReportConfigController(
     cache.reportDetails = angular.copy(vm.reportDetails);
 
     var sendDetails = sanitiseDateStrings(vm.reportDetails);
-    sendDetails.dateTo = Moment(sendDetails.dateTo).format('YYYY-MM-DD');
-    sendDetails.dateFrom = Moment(sendDetails.dateFrom).format('YYYY-MM-DD');
 
     return SavedReports.requestPreview(reportUrl, reportData.id, sendDetails)
       .then(function (result) {
