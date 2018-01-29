@@ -5,6 +5,7 @@ angular.module('bhima.components')
     transclude  : true,
     bindings    : {
       accountId        : '<',
+      accountTypeId :  '<',
       onSelectCallback : '&',
       disable          : '<?',
       required         : '<?',
@@ -25,7 +26,6 @@ AccountSelectController.$inject = [
  */
 function AccountSelectController(Accounts, AppCache, $timeout, bhConstants, $scope) {
   var $ctrl = this;
-
   var hasCachedAccounts = false;
   var cache = new AppCache('bhAccountSelect');
 
@@ -34,6 +34,8 @@ function AccountSelectController(Accounts, AppCache, $timeout, bhConstants, $sco
 
   // fired at the beginning of the account select
   $ctrl.$onInit = function $onInit() {
+
+    $ctrl.classe = $ctrl.accountTypeId || '';
     // cache the title account ID for convenience
     $ctrl.TITLE_ACCOUNT_ID = bhConstants.accounts.TITLE;
 
@@ -94,9 +96,13 @@ function AccountSelectController(Accounts, AppCache, $timeout, bhConstants, $sco
   // loads accounts from the server
   function loadHttpAccounts() {
     var detailedRequest = $ctrl.classe ? 1 : 0;
+    var params = { detailed : detailedRequest, classe : $ctrl.classe };
+    if ($ctrl.accountTypeId) {
+      params.type_id = $ctrl.accountTypeID;
+    }
     
     // load accounts
-     Accounts.read(null, { detailed : detailedRequest, classe : $ctrl.classe})
+    Accounts.read(null, params)
       .then(function (elements) {
         // bind the accounts to the controller
         var accounts = Accounts.order(elements);
