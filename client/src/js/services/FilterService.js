@@ -87,14 +87,18 @@ function FilterService() {
   // return filters for the view - this method will always be compatible with the bhFilter component
   FilterList.prototype.formatView = function formatView() {
     var activeFilters = this._filterActiveFilters();
-    var activeKeys = activeFilters.map(function (filter) { return filter._key; });
+    var activeKeys = activeFilters.map(function (filter) {
+      return filter._key;
+    });
 
-    function keysInActive(filter) { return activeKeys.indexOf(filter._key) !== -1; }
+    function keysInActive(filter) {
+      return activeKeys.indexOf(filter._key) !== -1;
+    }
 
     // parse into two lists
     return {
-      defaultFilters : this._defaultFilters.filter(keysInActive),
-      customFilters : this._customFilters.filter(keysInActive)
+      defaultFilters: this._defaultFilters.filter(keysInActive),
+      customFilters: this._customFilters.filter(keysInActive),
     };
   };
 
@@ -130,6 +134,14 @@ function FilterService() {
   FilterList.prototype.formatCache = function formatCache() {
     return angular.copy(this._filterIndex);
   };
+
+  FilterList.prototype.removeUnCachableFilters = function removeUnCachableFilters(filters) {
+    filters.forEach(filter => {
+      if (filter.cachable === 0) {
+        delete this._filterIndex[filter.key];
+      }
+    });
+  }
 
   // replaces current filters with filters from cache
   FilterList.prototype.loadCache = function loadCache(storedCache) {
