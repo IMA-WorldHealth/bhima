@@ -1,9 +1,12 @@
 {
   "PAYROLL_RUBRIC" : {
-    "ADD_PAYROLL_RUBRIC" : "Add a Payroll Rubric",
-    "ALL_PAYROLL_RUBRICS" : "All Payroll Rubrics",
-    "PAYROLL_RUBRICS_LIST" : "Payroll Rubrics list",
-    "EDIT_PAYROLL_RUBRIC" : "Edit the information of Payroll Rubric",
-    "TITLE" : "Payroll Rubric Management"
+    "ADD_PAYROLL_RUBRIC"    : "Add a Payroll Rubric",
+    "ADD_PAYROLL_RUBRIC_CONFIGURATION" : "Add a Payroll Rubric Configuration",
+    "ALL_PAYROLL_RUBRICS"   : "All Payroll Rubrics",
+    "CONFIGURATION"         : "Payroll Rubric Configuration",
+    "PAYROLL_RUBRICS_LIST"  : "Payroll Rubrics list",
+    "EDIT_PAYROLL_RUBRIC"   : "Edit the information of Payroll Rubric",
+    "EDIT_PAYROLL_RUBRIC_CONFIGURATION"   : "Edit the information of Payroll Rubric Configuration",
+    "TITLE"                 : "Payroll Rubric Management"
   }
 }

@@ -1,9 +1,12 @@
 {
   "PAYROLL_RUBRIC" : {
-    "ADD_PAYROLL_RUBRIC" : "Ajouter une rubrique de paie",
-    "ALL_PAYROLL_RUBRICS" : "Toutes les rubriques de paie",
+    "ADD_PAYROLL_RUBRIC"    : "Ajouter une rubrique de paie",
+    "ADD_PAYROLL_RUBRIC_CONFIGURATION" : "Ajouter une configuration des rubriques",
+    "ALL_PAYROLL_RUBRICS"   : "Toutes les rubriques de paie",
+    "CONFIGURATION"         : "Configuration des rubriques de paie",
     "PAYROLL_RUBRICS_LIST" : "Liste des rubriques de paie",
     "EDIT_PAYROLL_RUBRIC" : "Mettre à jour les informations de rubrique de Paie",
+    "EDIT_PAYROLL_RUBRIC_CONFIGURATION" : "Mettre à jour une configuration des rubriques",
     "TITLE" : "Gestion des rubriques de paie"
   }
 }

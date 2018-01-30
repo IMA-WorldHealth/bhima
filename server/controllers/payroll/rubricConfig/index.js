@@ -9,8 +9,8 @@ var NotFound = require('../../../lib/errors/NotFound');
 
 // GET /RubricConfig
 function lookupRubricConfig(id) {
-  var sql =`
-    SELECT c.id, c.label FROM config_rubric AS c WHERE r.id = ?`;
+  var sql = `
+    SELECT c.id, c.label FROM config_rubric AS c WHERE c.id = ?`;
 
   return db.one(sql, [id]);
 }
@@ -92,6 +92,52 @@ function del(req, res, next) {
     .done();
 }
 
+function listConfig(req, res, next) {
+  const sql = `
+    SELECT config_rubric_item.id, config_rubric_item.config_rubric_id, config_rubric_item.rubric_payroll_id 
+      FROM config_rubric_item
+    WHERE config_rubric_item.config_rubric_id = ?;
+  `;
+
+  db.exec(sql, [req.params.id])
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
+}
+
+
+/**
+ * POST /rubric_config/:id/setting
+ *
+ * Creates and updates a Rubric's Configurations.  This works by completely deleting
+ * the rubric's configuration and then replacing them with the new rubrics set.
+ */
+function createConfig(req, res, next) {
+  const data = req.body.configuration.map((id) => {
+    return [id, req.params.id];
+  });
+
+  const transaction = db.transaction();
+
+  transaction
+    .addQuery('DELETE FROM config_rubric_item WHERE config_rubric_id = ?;', [req.params.id]);
+
+  // if an array of configuration has been sent, add them to an INSERT query
+  if (req.body.configuration.length) {
+    transaction
+      .addQuery('INSERT INTO config_rubric_item (rubric_payroll_id, config_rubric_id) VALUES ?', [data]);
+  }
+
+  transaction.execute()
+    .then(() => {
+      res.sendStatus(201);
+    })
+    .catch(next)
+    .done();
+}
+
 // get list of Rubrics Configurations
 exports.list = list;
 
@@ -106,3 +152,9 @@ exports.update = update;
 
 // Delete a Rubric Configuration
 exports.delete = del;
+
+// Create or Update New Configuration of Payroll Rubrics
+exports.createConfig = createConfig;
+
+// Get list of Rubrics configured by Configuration
+exports.listConfig = listConfig;

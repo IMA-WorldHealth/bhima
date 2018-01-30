@@ -1,0 +1,104 @@
+<form name="RubricForm" bh-submit="RubricConfigModalCtrl.submit(RubricForm)" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="title">
+        <span translate>PAYROLL_RUBRIC.CONFIGURATION</span>
+        <label class="badge badge-success">{{ RubricConfigModalCtrl.config.label }}</label>
+      </li>
+    </ol>
+  </div>
+
+<!--   <div class="modal-body">
+    <div class="form-group" ng-class="{ 'has-error' : RubricForm.$submitted && RubricForm.label.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.DESIGNATION</label>
+      <input name="label" ng-model="RubricConfigModalCtrl.config.label" autocomplete="off" class="form-control" required>
+      <div class="help-block" ng-messages="RubricForm.label.$error" ng-show="RubricForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+  </div> -->
+
+  <div class="modal-body">
+    <ul class="list-group" style="max-height: 70vh; overflow:auto;">
+      <li class="list-group-item">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" ng-model="RubricConfigModalCtrl.all" ng-change="RubricConfigModalCtrl.toggleAllRubrics(RubricConfigModalCtrl.all)">
+            <b translate>PAYROLL_RUBRIC.ALL_PAYROLL_RUBRICS</b>
+          </label>
+        </div>
+      </li>
+      <li class="list-group-item" ng-show="RubricConfigModalCtrl.loading">
+        <div class="msg text-center">
+          <span><span class="fa fa-circle-o-notch  fa-spin"></span>
+          <b> <span translate>TABLE.COLUMNS.LOADING</span></b></span>
+        </div>
+      </li>
+      <li class="list-group-item">
+        <div style="margin:0" class="checkbox">
+          <label style="padding-left: 8%">
+            <input type="checkbox" ng-model="RubricConfigModalCtrl.headSocial" ng-change="RubricConfigModalCtrl.toggleSocialCares(RubricConfigModalCtrl.socialCheck)">
+            <span translate> FORM.LABELS.IS_SOCIAL_CARE </span> 
+          </label> 
+        </div>
+      </li>
+      <li ng-repeat="rubric in RubricConfigModalCtrl.socialCares" class="list-group-item">
+        <div style="margin:0" class="checkbox">
+          <label style="padding-left: 12%">
+            <input type="checkbox" ng-model="rubric.checked">
+            <span>{{ rubric.label }}</span>
+          </label> 
+        </div>
+      </li>
+
+      <li class="list-group-item">
+        <div style="margin:0" class="checkbox">
+          <label style="padding-left: 8%">
+            <input type="checkbox" ng-model="RubricConfigModalCtrl.headTax" ng-change="RubricConfigModalCtrl.toggleTaxes(RubricConfigModalCtrl.taxCheck)">
+            <span translate> FORM.LABELS.TAX </span> 
+          </label> 
+        </div>
+      </li>
+      <li ng-repeat="rubric in RubricConfigModalCtrl.taxes" class="list-group-item">
+        <div style="margin:0" class="checkbox">
+          <label style="padding-left: 12%">
+            <input type="checkbox" ng-model="rubric.checked">
+            <span>{{ rubric.label }}</span>
+          </label> 
+        </div>
+      </li>
+
+      <li class="list-group-item">
+        <div style="margin:0" class="checkbox">
+          <label style="padding-left: 8%">
+            <input type="checkbox" ng-model="RubricConfigModalCtrl.headOther" ng-change="RubricConfigModalCtrl.toggleOthers(RubricConfigModalCtrl.otherCheck)">
+            <span translate> FORM.LABELS.OTHER </span> 
+          </label> 
+        </div>
+      </li>
+      <li ng-repeat="unit in RubricConfigModalCtrl.others" class="list-group-item">
+        <div style="margin:0" class="checkbox">
+          <label style="padding-left: 12%">
+            <input type="checkbox" ng-model="unit.checked">
+            <span>{{ unit.label }}</span>
+          </label> 
+        </div>
+      </li>
+
+
+    </ul>
+  </div>
+
+
+
+
+  <div class="modal-footer">
+    <button data-method="cancel" type="button" class="btn btn-default" ng-click="RubricConfigModalCtrl.closeModal()">
+      <span translate>FORM.BUTTONS.CANCEL</span>
+    </button>
+
+    <bh-loading-button loading-state="RubricForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

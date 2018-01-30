@@ -560,6 +560,8 @@ exports.configure = function configure(app) {
   app.get('/rubric_config/:id', rubricConfig.detail);
   app.post('/rubric_config', rubricConfig.create);
   app.put('/rubric_config/:id', rubricConfig.update);
+  app.get('/rubric_config/:id/setting', rubricConfig.listConfig);
+  app.post('/rubric_config/:id/setting', rubricConfig.createConfig);  
   app.delete('/rubric_config/:id', rubricConfig.delete);
 
   // grades api
