@@ -14,10 +14,9 @@
 
   <div class="modal-body" style="overflow-y: scroll; max-height:600px; ">
 
-
     <div class="form-group" ng-class="{ 'has-error' : UserForm.$submitted && UserForm.display_name.$invalid }">
-      <label class="control-label col-md-12" translate>FORM.LABELS.USERNAME</label>
-      <div class="col-md-12">
+      <label class="control-label" translate>FORM.LABELS.USERNAME</label>
+      <div>
         <input name="display_name" bh-unique="/users/{{UserModalCtrl.user.display_name}}" ng-model="UserModalCtrl.user.display_name" autocomplete="off" ng-maxlength="UserModalCtrl.maxLength" class="form-control" required>
 
         <span ng-show="UserForm.display_name.$error.unique" class="glyphicon glyphicon-remove form-control-feedback" id="unique-error-icon"></span>
