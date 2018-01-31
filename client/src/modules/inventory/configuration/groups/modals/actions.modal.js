@@ -89,8 +89,8 @@ function InventoryGroupsActionsModalController(InventoryGroups, Notify, Instance
 
     if (vm.identifier) {
       InventoryGroups.read(vm.identifier)
-        .then(function (groups) {
-          vm.session = groups[0];
+        .then((groups) => {
+          vm.session = groups;
         })
         .catch(Notify.handleError);
     }

@@ -79,6 +79,7 @@
             "HOSPITAL_FILE_NR": "Hospital File Number",
             "ID": "ID",
             "INVENTORY": "Inventory",
+            "INVENTORY_GROUP":"Inventory Group",
             "INVOICES": "Invoices",
             "INVOICE_ID": "Invoice ID",
             "IS_ASSET": "Is asset ?",
@@ -190,7 +191,8 @@
             "NUM_PATIENTS": "Number of Patients",
             "NUM_DISTINCT_RESIDENCES": "Number of Distinct Residences",
             "NUM_DEBTOR_GROUPS": "Number of Debtor Groups",
-            "NUM_EMPLOYEES": "Number of Employees"
+            "NUM_EMPLOYEES": "Number of Employees",
+            "ROWS":"Row(s)"
         }
     }
 }
