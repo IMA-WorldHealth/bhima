@@ -79,6 +79,7 @@
             "HOSPITAL_FILE_NR": "Numéro Fiche",
             "ID": "ID",
             "INVENTORY": "Inventaire",
+            "INVENTORY_GROUP":"Groupe d'inventaire",
             "INVOICES": "factures",
             "INVOICE_ID": "ID Facture",
             "IS_ASSET": "Actif ?",
@@ -190,7 +191,8 @@
             "RECORDS": "Données",
             "TOTAL_COST": "Cout Totale",
             "TOTAL_AMOUNT": "Mountant Totale",
-            "NUM_EMPLOYEES": "Nombre des Employees"
+            "NUM_EMPLOYEES": "Nombre des Employees",
+            "ROWS":"Ligne(s)"
         }
     }
 }

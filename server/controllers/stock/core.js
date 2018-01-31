@@ -151,16 +151,18 @@ function getLotsDepot(depotUuid, params, finalClause) {
             l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
             i.avg_consumption, i.purchase_interval, i.delay,
             iu.text AS unit_type,
+            ig.name AS group_name, ig.expires, 
             dm.text AS documentReference
         FROM stock_movement m
         JOIN lot l ON l.uuid = m.lot_uuid
         JOIN inventory i ON i.uuid = l.inventory_uuid
         JOIN inventory_unit iu ON iu.id = i.unit_id
+        JOIN inventory_group ig ON ig.uuid = i.group_uuid
         JOIN depot d ON d.uuid = m.depot_uuid
         LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
     `;
 
-  const clause = finalClause || ` GROUP BY l.uuid, m.depot_uuid ${exludeToken}`;
+  const clause = finalClause || ` GROUP BY l.uuid, m.depot_uuid ${exludeToken} ORDER BY i.code, l.label `;
 
   return getLots(sql, params, clause)
     .then(stockManagementProcess)
@@ -427,7 +429,7 @@ function getInventoryQuantityAndConsumption(params) {
     LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
   `;
 
-  const clause = ' GROUP BY l.inventory_uuid, m.depot_uuid ';
+  const clause = ' GROUP BY l.inventory_uuid, m.depot_uuid ORDER BY i.code, i.text ';
 
   return getLots(sql, params, clause)
     .then((rows) => {

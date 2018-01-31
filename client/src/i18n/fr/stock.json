@@ -44,6 +44,8 @@
     "INCREASE"        : "Augmentation",
     "INCREASE_HELP"   : "Ajustement de stock en augmentant la quantité des lots des produits en stock",
     "INVENTORY"       : "Inventaire",
+    "INVENTORY_GROUP" : "Groupe d'inventaire",
+    "INVENTORY_UNIT"  : "Unité",
     "IO"              : "Entrée/Sortie",
     "INPUT"           : "Entrée",
     "INTEGRATION"     : "Integration",

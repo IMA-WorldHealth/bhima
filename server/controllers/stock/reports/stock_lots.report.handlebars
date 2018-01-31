@@ -41,8 +41,10 @@
           <tr>
             <th>{{translate 'STOCK.CODE'}}</th>
             <th>{{translate 'STOCK.INVENTORY'}}</th>
+            <th>{{translate 'STOCK.INVENTORY_GROUP'}}</th>
             <th>{{translate 'STOCK.LOT'}}</th>
             <th>{{translate 'STOCK.QUANTITY'}}</th>
+            <th>{{translate 'STOCK.INVENTORY_UNIT'}}</th>
             <th>{{translate 'STOCK.ENTRY_DATE'}}</th>
             <th>{{translate 'STOCK.EXPIRATION_DATE'}}</th>
             <th>{{translate 'STOCK.EXPIRATION'}}</th>
@@ -58,7 +60,7 @@
                 {{ name }}
               </th>
 
-              <th colspan="6" style="border:none; border-bottom: solid black 2px;" class="text-right">
+              <th colspan="8" style="border:none; border-bottom: solid black 2px;" class="text-right">
                 ({{ items.length }} {{ translate "TABLE.AGGREGATES.RECORDS" }})
               </th>
             </tr>
@@ -68,11 +70,18 @@
               <tr>
                 <td>{{code}}</td>
                 <td>{{text}}</td>
+                <td>{{group_name}}</td>
                 <td>{{label}}</td>
                 <td class="text-right">{{quantity}}</td>
+                <td class="text-right">{{unit_type}}</td>
                 <td class="text-right">{{date entry_date}}</td>
-                <td class="text-right">{{date expiration_date}}</td>
-                <td class="text-right">{{delay_expiration}}</td>
+                {{#if item.expires}}
+                  <td class="text-right">{{date expiration_date}}</td>
+                  <td class="text-right">{{delay_expiration}}</td>
+                {{else}}
+                  <td class="text-center"> - </td>
+                  <td class="text-center"> - </td>
+                {{/if}}
               </tr>
             {{/each}}
 
