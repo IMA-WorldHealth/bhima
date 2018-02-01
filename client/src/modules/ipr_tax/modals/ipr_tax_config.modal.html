@@ -1,0 +1,70 @@
+<form name="IprTaxForm" bh-submit="IprTaxConfigModalCtrl.submit(IprTaxForm)" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li ng-if="IprTaxConfigModalCtrl.isCreating" class="title">
+        <span translate>IPRTAX.ADD_SCALE</span>
+        <label class="badge badge-success" translate> {{ IprTaxConfigModalCtrl.iprTax.label }} </label>
+      </li>
+      <li ng-if="!IprTaxConfigModalCtrl.isCreating" class="title">
+        <span translate>IPRTAX.EDIT_SCALE</span>
+        <label class="badge badge-success" translate> {{ IprTaxConfigModalCtrl.iprTax.label }} </label>
+      </li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+    <div class="modal-body" ng-class="{ 'has-error' : IprTaxForm.$submitted && IprTaxForm.rate.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.RATE</label>
+      <input type="number" name="rate" ng-model="IprTaxConfigModalCtrl.iprTax.rate" ng-max="100" ng-min="0" autocomplete="off" class="form-control" required>
+      <div class="help-block" ng-messages="IprTaxForm.rate.$error" ng-show="IprTaxForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+      
+    <div class="modal-body" ng-class="{ 'has-error' : IprTaxForm.$submitted && IprTaxForm.tranche_annuelle_debut.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.ANNUAL_TRANCH_FROM</label>
+      <div class="input-group">
+        <span class="input-group-addon text-uppercase"> {{ IprTaxConfigModalCtrl.iprTax.symbol }} </span>
+        <input 
+          type="number" 
+          name="tranche_annuelle_debut" 
+          ng-model="IprTaxConfigModalCtrl.iprTax.tranche_annuelle_debut" 
+          ng-min="0" 
+          autocomplete="off" 
+          class="form-control" 
+          required>
+        <div class="help-block" ng-messages="IprTaxForm.tranche_annuelle_debut.$error" ng-show="IprTaxForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+    </div>
+      
+    <div class="modal-body" ng-class="{ 'has-error' : IprTaxForm.$submitted && IprTaxForm.tranche_annuelle_fin.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.ANNUAL_TRANCH_TO</label>
+      <div class="input-group">
+        <span class="input-group-addon text-uppercase"> {{ IprTaxConfigModalCtrl.iprTax.symbol }} </span>
+        <input 
+          type="number" 
+          name="tranche_annuelle_fin" 
+          ng-model="IprTaxConfigModalCtrl.iprTax.tranche_annuelle_fin" 
+          ng-min="0" 
+          autocomplete="off" 
+          class="form-control" 
+          required>
+        <div class="help-block" ng-messages="IprTaxForm.tranche_annuelle_fin.$error" ng-show="IprTaxForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>          
+      </div>
+    </div>      
+  </div>
+
+  <div class="modal-footer">
+    <button data-method="cancel" type="button" class="btn btn-default" ui-sref="configuration">
+      <span translate>FORM.BUTTONS.CANCEL</span>
+    </button>
+
+    <bh-loading-button loading-state="IprTaxForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

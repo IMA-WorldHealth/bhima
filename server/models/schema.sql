@@ -1549,13 +1549,16 @@ CREATE TABLE `taxe_ipr` (
   `id` int(10)      UNSIGNED NOT NULL AUTO_INCREMENT,
   `label`           VARCHAR(100) NOT NULL,
   `description`     TEXT,
-  PRIMARY KEY (`id`)
+  `currency_id`     TINYINT(3) UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `currency_id` (`currency_id`),
+  FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`) ON UPDATE CASCADE  
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `taxe_ipr_configuration`;
 CREATE TABLE `taxe_ipr_configuration` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `taux` float NOT NULL,
+  `rate` float NOT NULL,
   `tranche_annuelle_debut` float DEFAULT NULL,
   `tranche_annuelle_fin` float DEFAULT NULL,
   `tranche_mensuelle_debut` float DEFAULT NULL,
@@ -1566,7 +1569,6 @@ CREATE TABLE `taxe_ipr_configuration` (
   `impot_mensuel` float DEFAULT NULL,
   `cumul_annuel` float DEFAULT NULL,
   `cumul_mensuel` float DEFAULT NULL,
-  `currency_id` int(11) DEFAULT NULL,
   `taxe_ipr_id` int(10) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
   KEY `taxe_ipr_id` (`taxe_ipr_id`),

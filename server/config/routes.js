@@ -34,6 +34,7 @@ const functions = require('../controllers/admin/functions');
 const grades = require('../controllers/admin/grades');
 const holidays = require('../controllers/admin/holidays');
 const offdays = require('../controllers/admin/offdays');
+const iprTax = require('../controllers/admin/iprTax');
 const languages = require('../controllers/admin/languages');
 const locations = require('../controllers/admin/locations');
 const groups = require('../controllers/groups');
@@ -571,6 +572,21 @@ exports.configure = function configure(app) {
   app.post('/offdays', offdays.create);
   app.put('/offdays/:id', offdays.update);
   app.delete('/offdays/:id', offdays.delete);
+
+  // IPR API
+  app.get('/iprTax', iprTax.list);
+  app.get('/iprTax/:id', iprTax.detail);
+  app.post('/iprTax', iprTax.create);
+  app.put('/iprTax/:id', iprTax.update);
+  app.delete('/iprTax/:id', iprTax.delete);
+
+
+  //IPR TAX CONFIG
+  app.get('/iprTaxConfig', iprTax.listConfig);
+  app.get('/iprTaxConfig/:id', iprTax.detailConfig);
+  app.post('/iprTaxConfig', iprTax.createConfig);
+  app.put('/iprTaxConfig/:id', iprTax.updateConfig);
+  app.delete('/iprTaxConfig/:id', iprTax.deleteConfig);
 
   // creditor groups API
   app.post('/creditors/groups', creditorGroups.create);

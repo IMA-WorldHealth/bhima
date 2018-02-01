@@ -44,6 +44,8 @@
     "INVENTORY_UNIT":"Forme Galenique",
     "INVENTORY_VIEW":"Stocks",
     "INVOICE_REGISTRY":"Registre des factures",
+    "IPR_MANAGEMENT":"Gestion de la Taxe IPR",
+    "IPR_TAX_CONFIGURATION": "Configuration de la taxe IPR",
     "JOURNAL_VOUCHER":"Ajout Transactions",
     "LOCATION":"Localisations",
     "OFFDAYS_MANAGEMENT" : "Gestion des jours fériés",
