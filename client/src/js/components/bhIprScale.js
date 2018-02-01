@@ -7,12 +7,12 @@ angular.module('bhima.components')
     },
   });
 
-IprScaleController.$inject = ['IprTaxService', 'AppCache', 'Store'];
+IprScaleController.$inject = ['IprTaxService', 'AppCache', 'Store', 'NotifyService'];
 
 /**
  * Ipr Scale Component
  */
-function IprScaleController(IprTaxes, AppCache, Store) {
+function IprScaleController(IprTaxes, AppCache, Store, Notify) {
   var ctrl = this;
   var cache = new AppCache('iprScale');
 
@@ -21,8 +21,9 @@ function IprScaleController(IprTaxes, AppCache, Store) {
       .then(function (iprTaxes) {
         ctrl.iprTaxes = new Store();
         ctrl.iprTaxes.setData(iprTaxes);
-        loadDefaultCurrency();
-      });
+        loadDefaultScale();
+      })
+      .catch(Notify.handleError);
   };
 
   ctrl.update = function update(scale) {
@@ -35,7 +36,7 @@ function IprScaleController(IprTaxes, AppCache, Store) {
     ctrl.onUpdate({ scaleId : scale.id });
   };
 
-  function loadDefaultCurrency() {
+  function loadDefaultScale() {
     // if the cache exists - use that
     var cached = cache.selectedScaleId;
     if (cached) {

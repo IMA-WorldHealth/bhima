@@ -5,7 +5,7 @@
   <button style="min-width : 30px" class="btn btn-default">
     <span>{{ $ctrl.selectedScale.label || '-' }}</span>
   </button>
-  <ul class="dropdown-menu" uib-dropdown-menu role="menu">
+  <ul class="dropdown-menu" bh-dropdown-menu-auto-dropup uib-dropdown-menu role="menu">
     <li ng-repeat="iprTax in $ctrl.iprTaxes.data track by iprTax.id" role="menuitem">
       <a ng-click="$ctrl.update(iprTax)" href>{{ ::iprTax.label}} </a>
     </li>

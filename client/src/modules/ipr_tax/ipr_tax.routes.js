@@ -7,7 +7,7 @@ angular.module('bhima.routes')
         templateUrl : 'modules/ipr_tax/ipr_tax.html',
       })
 
-      .state('configuration', {
+      .state('iprConfiguration', {
         url         : '/ipr_tax/configuration',
         controller  : 'IprTaxConfigurationController as IprTaxConfigCtrl',
         templateUrl : 'modules/ipr_tax/configuration/iprTaxConfig.html',
@@ -22,7 +22,7 @@ angular.module('bhima.routes')
         onExit : ['$uibModalStack', closeModal],
       })
 
-      .state('configuration.createConfig', {
+      .state('iprConfiguration.createConfig', {
         url : '/:taxIprId/configuration/create',
         params : {
           creating : { value : true },
@@ -40,8 +40,8 @@ angular.module('bhima.routes')
         onExit : ['$uibModalStack', closeModal],
       })
 
-      .state('configuration.editConfig', {
-        url : '/:taxIprId/:id/configuration/edit',
+      .state('iprConfiguration.editConfig', {
+        url : '/:taxIprId/configuration/:id/edit',
         params : {
           creating : { value : false },
         },

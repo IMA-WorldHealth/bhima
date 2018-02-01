@@ -44,7 +44,6 @@ describe('Ipr Tax Configuration Scale Management', () => {
     Page.createIprTaxConfig(iprTaxScale);
   });
 
-
   it('successfully creates a Scale 2 in IPR Scale 2013', () => {
     Page.createIprTaxConfig(iprTaxScale2);
   });

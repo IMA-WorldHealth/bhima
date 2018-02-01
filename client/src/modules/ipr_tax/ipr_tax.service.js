@@ -1,7 +1,7 @@
 angular.module('bhima.services')
   .service('IprTaxService', IprTaxService);
 
-IprTaxService.$inject = ['PrototypeApiService', '$uibModal'];
+IprTaxService.$inject = ['PrototypeApiService'];
 
 /**
  * @class IprTaxService
@@ -10,7 +10,7 @@ IprTaxService.$inject = ['PrototypeApiService', '$uibModal'];
  * @description
  * Encapsulates common requests to the /iprTaxes/ URL.
  */
-function IprTaxService(Api, Modal) {
+function IprTaxService(Api) {
   var service = new Api('/iprTax/');
 
   return service;

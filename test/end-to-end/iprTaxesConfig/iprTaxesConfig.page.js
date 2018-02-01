@@ -41,9 +41,8 @@ class IprTaxConfigPage {
 
     FU.buttons.create();
     FU.input('IprTaxConfigModalCtrl.iprTax.rate', iprTaxConfig.rate);
-    FU.input('IprTaxConfigModalCtrl.iprTax.tranche_annuelle_debut', iprTaxConfig.tranche_annuelle_debut);
-    FU.input('IprTaxConfigModalCtrl.iprTax.tranche_annuelle_fin', iprTaxConfig.tranche_annuelle_fin);
-
+    components.currencyInput.set(iprTaxConfig.tranche_annuelle_debut, 'tranche_annuelle_debut');
+    components.currencyInput.set(iprTaxConfig.tranche_annuelle_fin, 'tranche_annuelle_fin');
     FU.buttons.submit();
     components.notification.hasSuccess();
   }
@@ -71,9 +70,8 @@ class IprTaxConfigPage {
         GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'edit', this.gridId);
 
         FU.input('IprTaxConfigModalCtrl.iprTax.rate', updateIprTaxConfig.rate);
-        FU.input('IprTaxConfigModalCtrl.iprTax.tranche_annuelle_debut', updateIprTaxConfig.tranche_annuelle_debut);
-        FU.input('IprTaxConfigModalCtrl.iprTax.tranche_annuelle_fin', updateIprTaxConfig.tranche_annuelle_fin);
-
+        components.currencyInput.set(updateIprTaxConfig.tranche_annuelle_debut, 'tranche_annuelle_debut');
+        components.currencyInput.set(updateIprTaxConfig.tranche_annuelle_fin, 'tranche_annuelle_fin');
         FU.buttons.submit();
         components.notification.hasSuccess();
       });

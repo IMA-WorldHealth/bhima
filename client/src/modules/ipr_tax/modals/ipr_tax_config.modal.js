@@ -61,7 +61,7 @@ function IprTaxConfigModalController($state, IprTax, IprConfig, Notify, AppCache
       .then(function () {
         var translateKey = (vm.isCreating) ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
         Notify.success(translateKey);
-        $state.go('configuration', null, { reload : true });
+        $state.go('iprConfiguration', null, { reload : true });
       })
       .catch(Notify.handleError);
   }

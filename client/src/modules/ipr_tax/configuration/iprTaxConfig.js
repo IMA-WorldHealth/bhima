@@ -30,25 +30,39 @@ function IprTaxConfigurationController(
 
   var gridColumn =
     [
-      { field : 'rate', displayName : 'FORM.LABELS.RATE', headerCellFilter : 'translate', width : 60, cellTemplate : '/modules/ipr_tax/templates/rate.tmpl.html',},
       {
-        field : 'tranche_annuelle_debut', displayName : 'FORM.LABELS.ANNUAL_TRANCH_FROM', headerCellFilter : 'translate', width : 170, cellTemplate : '/modules/ipr_tax/templates/tranche_annuelle_debut.tmpl.html',
+        field : 'rate', displayName : 'FORM.LABELS.RATE', headerCellFilter : 'translate', width : 60, cellFilter : 'percentage',
       },
       {
-        field : 'tranche_annuelle_fin', displayName : 'FORM.LABELS.ANNUAL_TRANCH_TO', headerCellFilter : 'translate', width : 170, cellTemplate : '/modules/ipr_tax/templates/tranche_annuelle_fin.tmpl.html',
+        field : 'tranche_annuelle_debut', displayName : 'FORM.LABELS.ANNUAL_TRANCH_FROM', headerCellFilter : 'translate', width : 170, cellFilter : 'currency:row.entity.currency_id',
       },
       {
-        field : 'tranche_mensuelle_debut', displayName : 'FORM.LABELS.MONTH_TRANCH_FROM', headerCellFilter : 'translate', width : 170, cellTemplate : '/modules/ipr_tax/templates/tranche_mensuelle_debut.tmpl.html',
+        field : 'tranche_annuelle_fin', displayName : 'FORM.LABELS.ANNUAL_TRANCH_TO', headerCellFilter : 'translate', width : 170, cellFilter : 'currency:row.entity.currency_id',
       },
       {
-        field : 'tranche_mensuelle_fin', displayName : 'FORM.LABELS.MONTH_TRANCH_TO', headerCellFilter : 'translate', width : 170, cellTemplate : '/modules/ipr_tax/templates/tranche_mensuelle_fin.tmpl.html',
+        field : 'tranche_mensuelle_debut', displayName : 'FORM.LABELS.MONTH_TRANCH_FROM', headerCellFilter : 'translate', width : 170, cellFilter : 'currency:row.entity.currency_id',
       },
-      { field : 'ecart_annuel', displayName : 'FORM.LABELS.ANNUAL_ECART', headerCellFilter : 'translate', cellTemplate : '/modules/ipr_tax/templates/ecart_annuel.tmpl.html', },
-      { field : 'ecart_mensuel', displayName : 'FORM.LABELS.MONTH_ECART', headerCellFilter : 'translate', cellTemplate : '/modules/ipr_tax/templates/ecart_mensuel.tmpl.html', },
-      { field : 'impot_annuel', displayName : 'FORM.LABELS.ANNUAL_IMPOT', headerCellFilter : 'translate', cellTemplate : '/modules/ipr_tax/templates/impot_annuel.tmpl.html', },
-      { field : 'impot_mensuel', displayName : 'FORM.LABELS.MONTH_IMPOT', headerCellFilter : 'translate', cellTemplate : '/modules/ipr_tax/templates/impot_mensuel.tmpl.html', },
-      { field : 'cumul_annuel', displayName : 'FORM.LABELS.ANNUAL_CUMUL', headerCellFilter : 'translate', cellTemplate : '/modules/ipr_tax/templates/cumul_annuel.tmpl.html', },
-      { field : 'cumul_mensuel', displayName : 'FORM.LABELS.MONTH_CUMUL', headerCellFilter : 'translate', cellTemplate : '/modules/ipr_tax/templates/cumul_mensuel.tmpl.html', },
+      {
+        field : 'tranche_mensuelle_fin', displayName : 'FORM.LABELS.MONTH_TRANCH_TO', headerCellFilter : 'translate', width : 170, cellFilter : 'currency:row.entity.currency_id',
+      },
+      {
+        field : 'ecart_annuel', displayName : 'FORM.LABELS.ANNUAL_ECART', headerCellFilter : 'translate', cellFilter : 'currency:row.entity.currency_id',
+      },
+      {
+        field : 'ecart_mensuel', displayName : 'FORM.LABELS.MONTH_ECART', headerCellFilter : 'translate', cellFilter : 'currency:row.entity.currency_id',
+      },
+      {
+        field : 'impot_annuel', displayName : 'FORM.LABELS.ANNUAL_IMPOT', headerCellFilter : 'translate', cellFilter : 'currency:row.entity.currency_id',
+      },
+      {
+        field : 'impot_mensuel', displayName : 'FORM.LABELS.MONTH_IMPOT', headerCellFilter : 'translate', cellFilter : 'currency:row.entity.currency_id',
+      },
+      {
+        field : 'cumul_annuel', displayName : 'FORM.LABELS.ANNUAL_CUMUL', headerCellFilter : 'translate', cellFilter : 'currency:row.entity.currency_id',
+      },
+      {
+        field : 'cumul_mensuel', displayName : 'FORM.LABELS.MONTH_CUMUL', headerCellFilter : 'translate', cellFilter : 'currency:row.entity.currency_id',
+      },
       {
         field : 'action',
         width : 80,
@@ -84,7 +98,7 @@ function IprTaxConfigurationController(
     vm.taxIprId = scaleId;
 
     // FIX ME
-    // Load IPR taxes scale only if scale Id is defined 
+    // Load IPR taxes scale only if scale Id is defined
     if (vm.taxIprId) {
       loadIprTaxes();
     }
@@ -120,7 +134,7 @@ function IprTaxConfigurationController(
 
   // update an existing IprTaxConfig
   function editIprTaxConfig(ipr) {
-    $state.go('configuration.editConfig', { taxIprId : vm.taxIprId, id : ipr.id });
+    $state.go('iprConfiguration.editConfig', { taxIprId : vm.taxIprId, id : ipr.id });
   }
 
   iprScaleSelect();

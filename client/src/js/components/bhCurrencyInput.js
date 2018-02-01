@@ -1,15 +1,17 @@
 angular.module('bhima.components')
   .component('bhCurrencyInput', {
     templateUrl : 'modules/templates/bhCurrencyInput.tmpl.html',
-    controller: CurrencyInputController,
+    controller : CurrencyInputController,
     bindings : {
-      currencyId : '<',       // one-way binding
-      model : '=',            // two way binding
-      validationTrigger : '<' // one-way binding
-    }
+      currencyId : '<', // one-way binding
+      model : '=', // two way binding
+      validationTrigger : '<', // one-way binding
+      label : '@?',
+      min   : '@?',
+    },
   });
 
-CurrencyInputController.$inject = [ 'CurrencyService' ];
+CurrencyInputController.$inject = ['CurrencyService'];
 
 /**
  * Currency Input Component
@@ -20,6 +22,9 @@ CurrencyInputController.$inject = [ 'CurrencyService' ];
 function CurrencyInputController(Currencies) {
   var $ctrl = this;
   var isDefined = angular.isDefined;
+
+  // translated label for the form input
+  $ctrl.label = $ctrl.label || 'FORM.LABELS.AMOUNT';
 
   $ctrl.$onChanges = function onChanges(changes) {
     if (changes.currencyId) {
