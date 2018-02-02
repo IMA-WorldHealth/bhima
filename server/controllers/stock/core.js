@@ -65,15 +65,17 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
           BUID(l.uuid) AS uuid, l.label, l.initial_quantity, l.unit_cost, BUID(l.origin_uuid) AS origin_uuid,
           l.expiration_date, BUID(l.inventory_uuid) AS inventory_uuid, i.delay, l.entry_date,
           i.code, i.text, BUID(m.depot_uuid) AS depot_uuid, d.text AS depot_text, iu.text AS unit_type,
+          BUID(ig.uuid) AS group_uuid, ig.name AS group_name,
           dm.text AS documentReference
         FROM lot l
         JOIN inventory i ON i.uuid = l.inventory_uuid
         JOIN inventory_unit iu ON iu.id = i.unit_id
+        JOIN inventory_group ig ON ig.uuid = i.group_uuid
         JOIN stock_movement m ON m.lot_uuid = l.uuid AND m.flux_id = ${flux.FROM_PURCHASE}
         LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
         JOIN depot d ON d.uuid = m.depot_uuid
     `;
-  db.convert(params, ['uuid', 'depot_uuid', 'lot_uuid', 'inventory_uuid', 'document_uuid', 'entity_uuid']);
+  db.convert(params, ['uuid', 'depot_uuid', 'lot_uuid', 'inventory_uuid', 'group_uuid', 'document_uuid', 'entity_uuid']);
 
   const filters = new FilterParser(params);
 
@@ -84,6 +86,7 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
   filters.equals('document_uuid', 'document_uuid', 'm');
   filters.equals('lot_uuid', 'lot_uuid', 'm');
   filters.equals('inventory_uuid', 'uuid', 'i');
+  filters.equals('group_uuid', 'uuid', 'ig');
   filters.equals('text', 'text', 'i');
   filters.equals('label', 'label', 'l');
   filters.equals('is_exit', 'is_exit', 'm');
@@ -420,7 +423,7 @@ function getInventoryQuantityAndConsumption(params) {
         l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
         i.avg_consumption, i.purchase_interval, i.delay,
         iu.text AS unit_type,
-        ig.name AS group_name,
+        BUID(ig.uuid) AS group_uuid, ig.name AS group_name,
         dm.text AS documentReference
     FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
