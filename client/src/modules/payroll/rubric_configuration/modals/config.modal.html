@@ -8,19 +8,12 @@
     </ol>
   </div>
 
-<!--   <div class="modal-body">
-    <div class="form-group" ng-class="{ 'has-error' : RubricForm.$submitted && RubricForm.label.$invalid }">
-      <label class="control-label" translate>FORM.LABELS.DESIGNATION</label>
-      <input name="label" ng-model="RubricConfigModalCtrl.config.label" autocomplete="off" class="form-control" required>
-      <div class="help-block" ng-messages="RubricForm.label.$error" ng-show="RubricForm.$submitted">
-        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-      </div>
-    </div>
-  </div> -->
-
   <div class="modal-body">
     <ul class="list-group" style="max-height: 70vh; overflow:auto;">
-      <li class="list-group-item">
+      <li ng-if="!RubricConfigModalCtrl.rubrics.length" class="list-group-item">      
+        <span translate>TABLE.COLUMNS.EMPTY</span>        
+      </li>
+      <li ng-if="RubricConfigModalCtrl.rubrics.length" class="list-group-item">
         <div class="checkbox">
           <label>
             <input type="checkbox" ng-model="RubricConfigModalCtrl.all" ng-change="RubricConfigModalCtrl.toggleAllRubrics(RubricConfigModalCtrl.all)">
@@ -28,13 +21,7 @@
           </label>
         </div>
       </li>
-      <li class="list-group-item" ng-show="RubricConfigModalCtrl.loading">
-        <div class="msg text-center">
-          <span><span class="fa fa-circle-o-notch  fa-spin"></span>
-          <b> <span translate>TABLE.COLUMNS.LOADING</span></b></span>
-        </div>
-      </li>
-      <li class="list-group-item">
+      <li ng-if="RubricConfigModalCtrl.socialCares.length" class="list-group-item">
         <div style="margin:0" class="checkbox">
           <label style="padding-left: 8%">
             <input type="checkbox" ng-model="RubricConfigModalCtrl.headSocial" ng-change="RubricConfigModalCtrl.toggleSocialCares(RubricConfigModalCtrl.socialCheck)">
@@ -51,7 +38,7 @@
         </div>
       </li>
 
-      <li class="list-group-item">
+      <li ng-if="RubricConfigModalCtrl.taxes.length" class="list-group-item">
         <div style="margin:0" class="checkbox">
           <label style="padding-left: 8%">
             <input type="checkbox" ng-model="RubricConfigModalCtrl.headTax" ng-change="RubricConfigModalCtrl.toggleTaxes(RubricConfigModalCtrl.taxCheck)">
@@ -68,7 +55,7 @@
         </div>
       </li>
 
-      <li class="list-group-item">
+      <li ng-if="RubricConfigModalCtrl.others.length" class="list-group-item">
         <div style="margin:0" class="checkbox">
           <label style="padding-left: 8%">
             <input type="checkbox" ng-model="RubricConfigModalCtrl.headOther" ng-change="RubricConfigModalCtrl.toggleOthers(RubricConfigModalCtrl.otherCheck)">
