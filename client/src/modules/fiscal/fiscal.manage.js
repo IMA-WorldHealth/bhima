@@ -55,6 +55,12 @@ function FiscalManagementController($state, Fiscal, Notify, Modal, util, moment)
     .then(function (previous) {
       if (!previous.length) { return; }
 
+      // remove the current fiscal year in the previous one list
+      if (id && vm.isUpdateState) {
+        previous = previous.filter((fiscYear) => {
+          return parseInt(fiscYear.id, 10) !== parseInt(id, 10);
+        });
+      }
       vm.previous_fiscal_year = previous.map(function (fy) {
         fy.hrLabel = fy.label
           .concat(' (', moment(fy.start_date).format('DD MMM YYYY').toString(), ' - ')
