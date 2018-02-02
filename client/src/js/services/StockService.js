@@ -41,6 +41,7 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
   StockLotFilters.registerCustomFilters([
     { key : 'depot_uuid', label : 'STOCK.DEPOT' },
     { key : 'inventory_uuid', label : 'STOCK.INVENTORY' },
+    { key : 'group_uuid', label : 'STOCK.INVENTORY_GROUP' },
     { key : 'label', label : 'STOCK.LOT' },
     { key : 'entry_date_from', label : 'STOCK.ENTRY_DATE', comparitor : '>', valueFilter : 'date' },
     { key : 'entry_date_to', label : 'STOCK.ENTRY_DATE', comparitor : '<', valueFilter : 'date' },
@@ -62,6 +63,7 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
   StockInventoryFilters.registerCustomFilters([
     { key : 'depot_uuid', label : 'STOCK.DEPOT' },
     { key : 'inventory_uuid', label : 'STOCK.INVENTORY' },
+    { key : 'group_uuid', label : 'STOCK.INVENTORY_GROUP' },
     { key : 'status', label : 'STOCK.STATUS.LABEL', valueFilter : 'translate' },
     { key : 'require_po', label : 'STOCK.REQUIRES_PO' },
   ]);

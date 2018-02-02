@@ -23,6 +23,14 @@
             <bh-clear on-clear="$ctrl.clear('depot_uuid')"></bh-clear>
           </bh-depot-select>
 
+          <!-- inventory group -->
+          <bh-inventory-group-select
+            group-uuid="$ctrl.searchQueries.group_uuid"
+            name="group_uuid"
+            on-select-callback="$ctrl.onSelectGroup(group)">
+            <bh-clear on-clear="$ctrl.clear('group_uuid')"></bh-clear>
+          </bh-inventory-group-select>
+
           <!-- inventory -->
           <bh-inventory-select
             inventory-uuid="$ctrl.searchQueries.inventory_uuid"

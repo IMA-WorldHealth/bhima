@@ -5,7 +5,7 @@ angular.module('bhima.components')
     transclude  : true,
     bindings    : {
       groupUuid        : '<',
-      onSelectCallback : '&',      
+      onSelectCallback : '&',
     },
   });
 
@@ -20,17 +20,16 @@ InventoryGroupSelectController.$inject = [
 function InventoryGroupSelectController(Inventory, Notify) {
   var $ctrl = this;
 
-  $ctrl.$onInit = function onInit() {    
-
+  $ctrl.$onInit = () => {
     Inventory.Groups.read()
-      .then(function (inventoryGroups) {
+      .then((inventoryGroups) => {
         $ctrl.inventoryGroups = inventoryGroups;
       })
       .catch(Notify.handleError);
   };
 
   // fires the onSelectCallback bound to the component boundary
-  $ctrl.onSelect = function ($item, $model) {
+  $ctrl.onSelect = ($item) => {
     $ctrl.onSelectCallback({ group : $item });
   };
 }

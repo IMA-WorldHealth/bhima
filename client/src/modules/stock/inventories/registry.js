@@ -15,14 +15,12 @@ function StockInventoriesController(
   Stock, Notify, uiGridConstants, $translate, Modal, Languages,
   Session, Grouping, bhConstants, GridState, $state, Columns
 ) {
-  var vm = this;
-  var filterKey = 'inventory';
-  var stockInventoryFilters = Stock.filter.inventory;
-  var cacheKey = 'stock-inventory-grid';
-  var state;
-  var gridColumns;
+  const vm = this;
+  const filterKey = 'inventory';
+  const stockInventoryFilters = Stock.filter.inventory;
+  const cacheKey = 'stock-inventory-grid';
 
-  var columns = [
+  const columns = [
     {
       field            : 'depot_text',
       displayName      : 'STOCK.DEPOT',
@@ -128,8 +126,10 @@ function StockInventoriesController(
     },
   ];
 
-  vm.enterprise = Session.enterprise;
-  vm.gridApi = {};
+  // grouping box
+  vm.groupingBox = [
+    { label : 'STOCK.INVENTORY_GROUP', value : 'group_name' },
+  ];
 
   vm.gridOptions = {
     appScopeProvider  : vm,
@@ -141,9 +141,12 @@ function StockInventoriesController(
     onRegisterApi,
   };
 
+  const gridColumns = new Columns(vm.gridOptions, cacheKey);
+  const state = new GridState(vm.gridOptions, cacheKey);
+
   vm.grouping = new Grouping(vm.gridOptions, true, 'depot_text', vm.grouped, true);
-  gridColumns = new Columns(vm.gridOptions, cacheKey);
-  state = new GridState(vm.gridOptions, cacheKey);
+  vm.enterprise = Session.enterprise;
+  vm.gridApi = {};
   vm.saveGridState = state.saveGridState;
 
   function clearGridState() {
@@ -160,7 +163,24 @@ function StockInventoriesController(
   vm.onRemoveFilter = onRemoveFilter;
   vm.openColumnConfigModal = openColumnConfigModal;
   vm.clearGridState = clearGridState;
-  // vm.setStatusFlag = setStatusFlag;
+
+  // select group
+  vm.selectGroup = (group) => {
+    if (!group) { return; }
+
+    vm.selectedGroup = group;
+  };
+
+  // toggle group
+  vm.toggleGroup = (column) => {
+    if (vm.grouped) {
+      vm.grouping.removeGrouping(column);
+      vm.grouped = false;
+    } else {
+      vm.grouping.changeGrouping(column);
+      vm.grouped = true;
+    }
+  };
 
   // This function opens a modal through column service to let the user toggle
   // the visibility of the inventories registry's columns.
