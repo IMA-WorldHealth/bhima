@@ -25,6 +25,9 @@ function InstallApplicationController(InstallService, $state, Notify, Users) {
       vm.badPasswords = true;
       return Notify.warn('USERS.PASSWORD_MISMATCH');
     }
+    // the project informations can be equal to enterprise one if they not provided by the user when installing
+    vm.setup.project.name = vm.setup.project.name || vm.setup.enterprise.name;
+    vm.setup.project.abbr = vm.setup.project.abbr || vm.setup.enterprise.abbr;
 
     return InstallService.proceedInstall(vm.setup)
       .then(notifyInstallSucess)
