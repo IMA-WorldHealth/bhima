@@ -1,10 +1,10 @@
 angular.module('bhima.controllers')
-.controller('StockInventoriesController', StockInventoriesController);
+  .controller('StockInventoriesController', StockInventoriesController);
 
 StockInventoriesController.$inject = [
   'StockService', 'NotifyService',
-  'uiGridConstants', '$translate', 'StockModalService','LanguageService', 'SessionService',
-  'GridGroupingService', 'bhConstants', 'GridStateService', '$state', 'GridColumnService'
+  'uiGridConstants', '$translate', 'StockModalService', 'LanguageService', 'SessionService',
+  'GridGroupingService', 'bhConstants', 'GridStateService', '$state', 'GridColumnService',
 ];
 
 /**
@@ -23,80 +23,109 @@ function StockInventoriesController(
   var gridColumns;
 
   var columns = [
-    { field            : 'depot_text',
+    {
+      field            : 'depot_text',
       displayName      : 'STOCK.DEPOT',
-      headerCellFilter : 'translate' },
-
-    { field            : 'code',
-      displayName      : 'STOCK.CODE',
-      headerCellFilter : 'translate' },
-
-    { field            : 'text',
-      displayName      : 'STOCK.INVENTORY',
       headerCellFilter : 'translate',
-      width            : '20%' },
-
-    { field            : 'quantity',
-      displayName      : 'STOCK.QUANTITY',
-      headerCellFilter : 'translate',
-      cellClass        : 'text-right'
     },
 
-    { field            : 'unit_type',
+    {
+      field            : 'code',
+      displayName      : 'STOCK.CODE',
+      headerCellFilter : 'translate',
+    },
+
+    {
+      field            : 'text',
+      displayName      : 'STOCK.INVENTORY',
+      headerCellFilter : 'translate',
+      width            : '20%',
+    },
+
+    {
+      field            : 'group_name',
+      displayName      : 'STOCK.INVENTORY_GROUP',
+      headerCellFilter : 'translate',
+    },
+
+    {
+      field            : 'quantity',
+      displayName      : 'STOCK.QUANTITY',
+      headerCellFilter : 'translate',
+      cellClass        : 'text-right',
+    },
+
+    {
+      field            : 'unit_type',
       width            : 75,
       displayName      : 'TABLE.COLUMNS.UNIT',
       headerCellFilter : 'translate',
-      cellTemplate     : 'modules/stock/inventories/templates/unit.tmpl.html' },
+      cellTemplate     : 'modules/stock/inventories/templates/unit.tmpl.html',
+    },
 
-    { field            : 'status',
+    {
+      field            : 'status',
       displayName      : 'STOCK.STATUS.LABEL',
       headerCellFilter : 'translate',
       enableFiltering  : false,
       enableSorting    : false,
-      cellTemplate     : 'modules/stock/inventories/templates/status.cell.html' },
+      cellTemplate     : 'modules/stock/inventories/templates/status.cell.html',
+    },
 
-    { field           : 'avg_consumption',
+    {
+      field           : 'avg_consumption',
       displayName     : 'CMM',
       enableFiltering : false,
       enableSorting   : false,
       cellClass       : 'text-right',
-      cellTemplate    : '' },
+      cellTemplate    : '',
+    },
 
-    { field            : 'S_MONTH',
+    {
+      field            : 'S_MONTH',
       displayName      : 'MS',
       enableFiltering  : false,
       enableSorting    : false,
       cellClass        : 'text-right',
-      cellTemplate     : '' },
+      cellTemplate     : '',
+    },
 
-    { field           : 'S_SEC',
+    {
+      field           : 'S_SEC',
       displayName     : 'SS',
       enableFiltering : false,
       enableSorting   : false,
       cellClass       : 'text-right',
-      cellTemplate    : '' },
+      cellTemplate    : '',
+    },
 
-    { field           : 'S_MIN',
+    {
+      field           : 'S_MIN',
       displayName     : 'MIN',
       enableFiltering : false,
       enableSorting   : false,
       cellClass       : 'text-right',
-      cellTemplate    : '' },
+      cellTemplate    : '',
+    },
 
-    { field           : 'S_MAX',
+    {
+      field           : 'S_MAX',
       displayName     : 'MAX',
       enableFiltering : false,
       enableSorting   : false,
       cellClass       : 'text-right',
-      cellTemplate    : '' },
+      cellTemplate    : '',
+    },
 
-    { field            : 'S_Q',
+    {
+      field            : 'S_Q',
       displayName      : 'STOCK.ORDERS',
       headerCellFilter : 'translate',
       enableFiltering  : false,
       enableSorting    : false,
       cellClass        : 'text-right',
-      cellTemplate     : 'modules/stock/inventories/templates/appro.cell.html' },
+      cellTemplate     : 'modules/stock/inventories/templates/appro.cell.html',
+    },
   ];
 
   vm.enterprise = Session.enterprise;
@@ -109,7 +138,7 @@ function StockInventoriesController(
     enableSorting     : true,
     fastWatch         : true,
     flatEntityAccess  : true,
-    onRegisterApi : onRegisterApi,
+    onRegisterApi,
   };
 
   vm.grouping = new Grouping(vm.gridOptions, true, 'depot_text', vm.grouped, true);
@@ -165,9 +194,9 @@ function StockInventoriesController(
     vm.loading = true;
 
     Stock.inventories.read(null, filters)
-      .then(function (rows) {
+      .then((rows) => {
         // set status flags
-        rows.forEach(function (item) {
+        rows.forEach((item) => {
           setStatusFlag(item);
         });
 
@@ -176,7 +205,7 @@ function StockInventoriesController(
         vm.grouping.unfoldAllGroups();
       })
       .catch(Notify.handleError)
-      .finally(function () {
+      .finally(() => {
         vm.loading = false;
       });
   }
@@ -186,7 +215,7 @@ function StockInventoriesController(
     var filtersSnapshot = stockInventoryFilters.formatHTTP();
 
     Modal.openSearchInventories(filtersSnapshot)
-      .then(function (changes) {
+      .then((changes) => {
         stockInventoryFilters.replaceFilters(changes);
         Stock.cacheFilters(filterKey);
         vm.latestViewFilters = stockInventoryFilters.formatView();
