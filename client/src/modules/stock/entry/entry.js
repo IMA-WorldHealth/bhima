@@ -115,6 +115,9 @@ function StockEntryController(
     mapEntry[entryType.label].find();
 
     vm.entryOption = entryType && entryType.label !== 'purchase';
+    if (vm.gridOptions.data.length === 0) {
+      vm.addItems(1);
+    }
   }
 
   // set initialized to true on the passed item
