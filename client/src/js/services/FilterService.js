@@ -137,11 +137,11 @@ function FilterService() {
 
   FilterList.prototype.removeUnCachableFilters = function removeUnCachableFilters(filters) {
     filters.forEach(filter => {
-      if (filter.cachable === 0) {
+      if (angular.isDefined(filter.cacheable) && filter.cachable === 0) {
         delete this._filterIndex[filter.key];
       }
     });
-  }
+  };
 
   // replaces current filters with filters from cache
   FilterList.prototype.loadCache = function loadCache(storedCache) {
