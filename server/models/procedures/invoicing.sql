@@ -238,7 +238,7 @@ BEGIN
   -- variables to store core set-up results
   DECLARE current_fiscal_year_id MEDIUMINT(8) UNSIGNED;
   DECLARE current_period_id MEDIUMINT(8) UNSIGNED;
-  DECLARE current_exchange_rate DECIMAL(19, 4) UNSIGNED;
+  DECLARE current_exchange_rate DECIMAL(19, 8) UNSIGNED;
   DECLARE enterprise_currency_id TINYINT(3) UNSIGNED;
   DECLARE transaction_id VARCHAR(100);
   DECLARE gain_account_id INT UNSIGNED;
