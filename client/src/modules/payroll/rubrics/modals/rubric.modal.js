@@ -37,8 +37,6 @@ function RubricModalController($state, Rubrics, ModalService, Notify, AppCache) 
   if (!vm.isCreating) {
     Rubrics.read(vm.stateParams.id)
       .then(function (rubric) {
-        rubric.is_discount = rubric.is_discount ? 'D' : 'A';
-
         vm.rubric = rubric;
 
         vm.setting = true;
@@ -50,13 +48,13 @@ function RubricModalController($state, Rubrics, ModalService, Notify, AppCache) 
   function submit(rubricForm) {
     var promise;
 
-    if(vm.rubric.is_discount === "A"){
+    if(!vm.rubric.is_discount){
       vm.rubric.is_discount = 0;
       vm.rubric.is_tax = 0;
       vm.rubric.is_ipr = 0;
     }
 
-    if(vm.rubric.is_discount === "D"){
+    if(vm.rubric.is_discount){
       vm.rubric.is_discount = 1;
       vm.rubric.is_social_care = 0;
     }

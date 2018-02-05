@@ -34,7 +34,7 @@ describe('(/payroll/rubrics) The /payroll/rubrics  API endpoint', function () {
     label : 'Configuration 2013 Updated',
   };
 
-  const NUM_RUBRICS = 0;
+  const NUM_RUBRICS = 5;
   const NUM_CONFIG_RUBRICS = 0;
 
   it('GET /RUBRICS returns a list of function ', function () {

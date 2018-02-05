@@ -20,7 +20,7 @@ class RubricPage {
   constructor() {
     this.gridId = 'rubric-grid';
     this.rubricGrid = element(by.id(this.gridId));
-    this.actionLinkColumn = 10;
+    this.actionLinkColumn = 11;
   }
 
   /**
@@ -50,17 +50,17 @@ class RubricPage {
       element(by.css('[name="is_percent"]')).click();
     }
 
-    if (rubric.is_discount) {
-      element(by.css('[name="is_discount"]')).click();
-    }
+    const isDiscount = (rubric.is_discount === 1) ? 'discount' : 'addition';
+    element(by.id(isDiscount)).click();
 
-    if (rubric.is_tax) {
-      element(by.css('[name="is_tax"]')).click();
-    }
+    const isMembershipFee = (rubric.is_membership_fee === 1) ? 'is_membership_fee_yes' : 'is_membership_fee_no';
+    element(by.id(isMembershipFee)).click();
 
-    if (rubric.is_employee) {
-      element(by.css('[name="is_employee"]')).click();
-    }
+    const isTax = (rubric.is_tax === 1) ? 'is_tax_yes' : 'is_tax_no';
+    element(by.id(isTax)).click();
+
+    const isEmployee = (rubric.is_employee === 1) ? 'is_employee_yes' : 'is_employee_no';
+    element(by.id(isEmployee)).click();
 
     FU.buttons.submit();
     components.notification.hasSuccess();
