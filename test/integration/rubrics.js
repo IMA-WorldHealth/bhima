@@ -7,7 +7,7 @@ const helpers = require('./helpers');
  *
  * This test suite implements full CRUD on the /payroll/rubrics  HTTP API endpoint.
  */
-describe.only('(/payroll/rubrics) The /payroll/rubrics  API endpoint', function () {
+describe('(/payroll/rubrics) The /payroll/rubrics  API endpoint', function () {
   // Rubric we will add during this test suite.
 
   const rubric = {

@@ -6,7 +6,7 @@ const chai = require('chai');
 /** configuring helpers**/
 helpers.configure(chai);
 
-describe.only('Rubrics Management', () => {
+describe('Rubrics Management', () => {
   // navigate to the page
   before(() => helpers.navigate('#!/payroll/rubrics'));
 
