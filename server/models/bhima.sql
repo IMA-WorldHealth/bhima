@@ -76,7 +76,9 @@ INSERT INTO unit VALUES
   (184, 'Job Title Management','TREE.PROFESSION','', 1,'/modules/functions/','/functions'),
   (185, 'Payroll Rubric Management','TREE.PAYROLL_RUB_MANAGEMENT','', 57,'/modules/payroll/rubrics','/payroll/rubrics'),
   (186, 'Holidays Management','TREE.HOLIDAYS_MANAGEMENT','Holidays Management',57,'/modules/holidays/','/holidays'),
-  (187, 'Offdays Management','TREE.OFFDAYS_MANAGEMENT','Offdays Management', 1,'/modules/offdays/','/offdays');
+  (187, 'Offdays Management','TREE.OFFDAYS_MANAGEMENT','Offdays Management', 1,'/modules/offdays/','/offdays'),
+  (188, 'Tax IPR Management','TREE.IPR_MANAGEMENT','IPR Management',57,'/modules/ipr_tax/','/ipr_tax'),
+  (189, 'IPR Tax Configuration','TREE.IPR_TAX_CONFIGURATION','IPR Tax Configuration', 57,'/modules/ipr_tax/configuration','/ipr_tax/configuration');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES

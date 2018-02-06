@@ -44,6 +44,8 @@
     "INVENTORY_UNIT": "Dosage Form",
     "INVENTORY_VIEW": "Stock",
     "INVOICE_REGISTRY": "Invoice Registry",
+    "IPR_MANAGEMENT": "IPR Management",
+    "IPR_TAX_CONFIGURATION": "IPR Tax Configuration",
     "JOURNAL_VOUCHER": "Journal Voucher",
     "LOCATION": "Location Management",
     "OFFDAYS_MANAGEMENT" : "Offdays Management",

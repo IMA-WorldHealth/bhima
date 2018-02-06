@@ -1,0 +1,55 @@
+<form name="IprTaxForm" bh-submit="IprTaxModalCtrl.submit(IprTaxForm)" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li ng-if="IprTaxModalCtrl.isCreating" class="title">
+        <span translate>IPRTAX.ADD_IPRTAX</span>
+        <label class="badge badge-success" translate>FORM.LABELS.CREATE</label>
+      </li>
+      <li ng-if="!IprTaxModalCtrl.isCreating" class="title">
+        <span translate>IPRTAX.EDIT_IPRTAX</span>
+        <label class="badge badge-success" translate>FORM.LABELS.UPDATE</label>
+      </li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+    <div class="modal-body" ng-class="{ 'has-error' : IprTaxForm.$submitted && IprTaxForm.label.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.DESIGNATION</label>
+      <input name="label" ng-model="IprTaxModalCtrl.iprTax.label" autocomplete="off" class="form-control" required>
+      <div class="help-block" ng-messages="IprTaxForm.label.$error" ng-show="IprTaxForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <div class="modal-body" ng-class="{ 'has-error' : IprTaxForm.$submitted && IprTaxForm.description.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.DESCRIPTION</label>
+      <textarea
+        ng-model="IprTaxModalCtrl.iprTax.description"
+        name="description"
+        class="form-control"
+        rows="4"
+        required>
+      </textarea>
+      <div class="help-block" ng-messages="IprTaxForm.description.$error" ng-show="IprTaxForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <div class="modal-body">
+      <bh-currency-select
+        currency-id="IprTaxModalCtrl.iprTax.currency_id"
+        validation-trigger="IprTaxForm.$submitted">
+      </bh-currency-select>
+    </div>      
+  </div>
+
+  <div class="modal-footer">
+    <button data-method="cancel" type="button" class="btn btn-default" ui-sref="ipr_tax">
+      <span translate>FORM.BUTTONS.CANCEL</span>
+    </button>
+
+    <bh-loading-button loading-state="IprTaxForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>
