@@ -23,10 +23,12 @@ function RubricConfigModalController($state, Configs, ModalService, Notify, AppC
   vm.socialCheck = false;
   vm.taxCheck = false;
   vm.otherCheck = false;
+  vm.membershipFeeCheck = false;
 
   vm.toggleAllRubrics = toggleAllRubrics;
   vm.toggleSocialCares = toggleSocialCares;
   vm.toggleTaxes = toggleTaxes;
+  vm.toggleMembershipFee = toggleMembershipFee;
   vm.toggleOthers = toggleOthers;
 
   vm.submit = submit;
@@ -49,8 +51,12 @@ function RubricConfigModalController($state, Configs, ModalService, Notify, AppC
         return item.is_tax === 1;
       });
 
+      vm.membershipFee = rubrics.filter(function (item) {
+        return item.is_membership_fee === 1;
+      });
+
       vm.others = rubrics.filter(function (item) {
-        return item.is_tax !== 1 && item.is_social_care !== 1;
+        return item.is_tax !== 1 && item.is_social_care !== 1 && item.is_membership_fee !== 1;
       });
     })
     .catch(Notify.handleError);
@@ -82,6 +88,14 @@ function RubricConfigModalController($state, Configs, ModalService, Notify, AppC
           }
         });
       });
+
+      rubConfig.forEach(function (object) {
+        vm.membershipFee.forEach(function (unit) {
+          if (unit.id === object.rubric_payroll_id) {
+            unit.checked = true;
+          }
+        });
+      });
     })
     .catch(Notify.handleError);
 
@@ -90,6 +104,7 @@ function RubricConfigModalController($state, Configs, ModalService, Notify, AppC
     vm.headSocial = bool;
     vm.headTax = bool;
     vm.headOther = bool;
+    vm.headMembershipFee = bool;
 
     vm.rubrics.forEach(function (rubric) {
       rubric.checked = bool;
@@ -123,11 +138,22 @@ function RubricConfigModalController($state, Configs, ModalService, Notify, AppC
     });
   }
 
+  function toggleMembershipFee(status) {
+    vm.headMembershipFee = !status;
+
+    vm.membershipFee.forEach(function (rubric) {
+      vm.membershipFeeCheck = !status;
+      rubric.checked = !status;
+    });
+  }
+
   // submit the data to the server from all two forms (update, create)
   function submit() {
     var socialChecked,
       taxChecked,
-      otherChecked;
+      otherChecked,
+      membershipChecked;
+
     var rubricChecked = [];
 
     socialChecked = vm.socialCares.filter(function (rubric) {
@@ -151,7 +177,14 @@ function RubricConfigModalController($state, Configs, ModalService, Notify, AppC
         return rubric.id;
       });
 
-    rubricChecked = socialChecked.concat(taxChecked, otherChecked);
+    membershipChecked = vm.membershipFee.filter(function (rubric) {
+      return rubric.checked;
+    })
+      .map(function (rubric) {
+        return rubric.id;
+      });
+
+    rubricChecked = socialChecked.concat(taxChecked, otherChecked, membershipChecked);
 
     return Configs.setRubrics(vm.stateParams.id, rubricChecked)
       .then(function () {

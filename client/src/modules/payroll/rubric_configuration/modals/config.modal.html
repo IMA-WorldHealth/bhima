@@ -13,6 +13,7 @@
       <li ng-if="!RubricConfigModalCtrl.rubrics.length" class="list-group-item">      
         <span translate>TABLE.COLUMNS.EMPTY</span>        
       </li>
+
       <li ng-if="RubricConfigModalCtrl.rubrics.length" class="list-group-item">
         <div class="checkbox">
           <label>
@@ -21,15 +22,33 @@
           </label>
         </div>
       </li>
+      
       <li ng-if="RubricConfigModalCtrl.socialCares.length" class="list-group-item">
         <div style="margin:0" class="checkbox">
           <label style="padding-left: 8%">
             <input type="checkbox" ng-model="RubricConfigModalCtrl.headSocial" ng-change="RubricConfigModalCtrl.toggleSocialCares(RubricConfigModalCtrl.socialCheck)">
-            <span translate> FORM.LABELS.IS_SOCIAL_CARE </span> 
+            <span translate> FORM.LABELS.SOCIAL_CARE </span> 
+          </label> 
+        </div>
+      </li>      
+      <li ng-repeat="rubric in RubricConfigModalCtrl.socialCares" class="list-group-item">
+        <div style="margin:0" class="checkbox">
+          <label style="padding-left: 12%">
+            <input type="checkbox" ng-model="rubric.checked">
+            <span>{{ rubric.label }}</span>
           </label> 
         </div>
       </li>
-      <li ng-repeat="rubric in RubricConfigModalCtrl.socialCares" class="list-group-item">
+
+      <li ng-if="RubricConfigModalCtrl.membershipFee.length" class="list-group-item">
+        <div style="margin:0" class="checkbox">
+          <label style="padding-left: 8%">
+            <input type="checkbox" ng-model="RubricConfigModalCtrl.headMembershipFee" ng-change="RubricConfigModalCtrl.toggleMembershipFee(RubricConfigModalCtrl.membershipFeeCheck)">
+            <span translate> FORM.LABELS.MEMBERSHIP_FEE </span> 
+          </label> 
+        </div>
+      </li>      
+      <li ng-repeat="rubric in RubricConfigModalCtrl.membershipFee" class="list-group-item">
         <div style="margin:0" class="checkbox">
           <label style="padding-left: 12%">
             <input type="checkbox" ng-model="rubric.checked">
@@ -42,10 +61,10 @@
         <div style="margin:0" class="checkbox">
           <label style="padding-left: 8%">
             <input type="checkbox" ng-model="RubricConfigModalCtrl.headTax" ng-change="RubricConfigModalCtrl.toggleTaxes(RubricConfigModalCtrl.taxCheck)">
-            <span translate> FORM.LABELS.TAX </span> 
+            <span translate> FORM.LABELS.TAXES </span> 
           </label> 
         </div>
-      </li>
+      </li>      
       <li ng-repeat="rubric in RubricConfigModalCtrl.taxes" class="list-group-item">
         <div style="margin:0" class="checkbox">
           <label style="padding-left: 12%">
@@ -59,7 +78,7 @@
         <div style="margin:0" class="checkbox">
           <label style="padding-left: 8%">
             <input type="checkbox" ng-model="RubricConfigModalCtrl.headOther" ng-change="RubricConfigModalCtrl.toggleOthers(RubricConfigModalCtrl.otherCheck)">
-            <span translate> FORM.LABELS.OTHER </span> 
+            <span translate> FORM.LABELS.OTHERS </span> 
           </label> 
         </div>
       </li>
