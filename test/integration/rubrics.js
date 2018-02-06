@@ -7,7 +7,7 @@ const helpers = require('./helpers');
  *
  * This test suite implements full CRUD on the /payroll/rubrics  HTTP API endpoint.
  */
-describe('(/payroll/rubrics) The /payroll/rubrics  API endpoint', function () {
+describe.only('(/payroll/rubrics) The /payroll/rubrics  API endpoint', function () {
   // Rubric we will add during this test suite.
 
   const rubric = {
@@ -34,10 +34,13 @@ describe('(/payroll/rubrics) The /payroll/rubrics  API endpoint', function () {
     label : 'Configuration 2013 Updated',
   };
 
+  const configRubric = { configuration : [5, 2, 3, 1, 4] };
+  const configRubricEmpty = { configuration : [] };
+
   const NUM_RUBRICS = 5;
   const NUM_CONFIG_RUBRICS = 0;
 
-  it('GET /RUBRICS returns a list of function ', function () {
+  it('GET /RUBRICS returns a list of Rubrics ', function () {
     return agent.get('/rubrics')
       .then(function (res) {
         helpers.api.listed(res, NUM_RUBRICS);
@@ -147,6 +150,37 @@ describe('(/payroll/rubrics) The /payroll/rubrics  API endpoint', function () {
     return agent.delete('/rubric_config/inknowRubric')
       .then(function (res) {
         helpers.api.errored(res, 404);
+      })
+      .catch(helpers.handler);
+  });
+
+  // INTEGRATION TEST FOR SETTING RUBRICS IN CONFIGURATION
+
+  it('POST /RUBRIC_CONFIG/:ID/SETTING should Set Rubrics in Configuration', function () {
+    return agent.post(`/rubric_config/${rubricConfig.id}/setting`)
+      .send(configRubric)
+      .then(function (res) {
+        expect(res).to.have.status(201);
+        return agent.get(`/rubric_config/${rubricConfig.id}/setting`);
+      })
+      .then(res => {
+        helpers.api.listed(res, 5);
+        expect(res).to.have.status(200);
+        expect(res.body).to.not.be.empty;
+      })
+      .catch(helpers.handler);
+  });
+
+  it('POST /RUBRIC_CONFIG/:ID/SETTING Update Rubrucs Configuration', function () {
+    return agent.post(`/rubric_config/${rubricConfig.id}/setting`)
+      .send(configRubricEmpty)
+      .then(function (res) {
+        expect(res).to.have.status(201);
+        return agent.get(`/rubric_config/${rubricConfig.id}/setting`);
+      })
+      .then(res => {
+        helpers.api.listed(res, 0);
+        expect(res).to.have.status(200);
       })
       .catch(helpers.handler);
   });

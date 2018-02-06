@@ -65,37 +65,45 @@ function RubricConfigModalController($state, Configs, ModalService, Notify, AppC
     .then(function (rubConfig) {
       vm.rubConfig = rubConfig;
 
-      rubConfig.forEach(function (object) {
-        vm.socialCares.forEach(function (unit) {
-          if (unit.id === object.rubric_payroll_id) {
-            unit.checked = true;
-          }
-        });
-      });
+      if (vm.socialCares.length) {
+        rubConfig.forEach(function (object) {
+          vm.socialCares.forEach(function (unit) {
+            if (unit.id === object.rubric_payroll_id) {
+              unit.checked = true;
+            }
+          });
+        });        
+      }
 
-      rubConfig.forEach(function (object) {
-        vm.taxes.forEach(function (unit) {
-          if (unit.id === object.rubric_payroll_id) {
-            unit.checked = true;
-          }
-        });
-      });
+      if (vm.taxes.length) {
+        rubConfig.forEach(function (object) {
+          vm.taxes.forEach(function (unit) {
+            if (unit.id === object.rubric_payroll_id) {
+              unit.checked = true;
+            }
+          });
+        });        
+      }
 
-      rubConfig.forEach(function (object) {
-        vm.others.forEach(function (unit) {
-          if (unit.id === object.rubric_payroll_id) {
-            unit.checked = true;
-          }
-        });
-      });
+      if (vm.others.length) {
+        rubConfig.forEach(function (object) {
+          vm.others.forEach(function (unit) {
+            if (unit.id === object.rubric_payroll_id) {
+              unit.checked = true;
+            }
+          });
+        });        
+      }
 
-      rubConfig.forEach(function (object) {
-        vm.membershipFee.forEach(function (unit) {
-          if (unit.id === object.rubric_payroll_id) {
-            unit.checked = true;
-          }
-        });
-      });
+      if (vm.membershipFee.length) {
+        rubConfig.forEach(function (object) {
+          vm.membershipFee.forEach(function (unit) {
+            if (unit.id === object.rubric_payroll_id) {
+              unit.checked = true;
+            }
+          });
+        });        
+      }
     })
     .catch(Notify.handleError);
 
