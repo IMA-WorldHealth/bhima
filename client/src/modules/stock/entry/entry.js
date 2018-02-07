@@ -127,8 +127,8 @@ function StockEntryController(
     hasValidInput();
   }
 
-  function removeItem(item) {
-    vm.stockForm.removeItem(item.index);
+  function removeItem(index) {
+    vm.stockForm.removeItem(index);
     hasValidInput();
   }
 

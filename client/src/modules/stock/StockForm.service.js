@@ -38,7 +38,7 @@ function StockFormService(StockItem, Store, AppCache, Session, $timeout) {
   StockForm.prototype.setup = function setup() {
     this.details = {
       date: new Date(),
-      user_id: Session.user.id
+      user_id: Session.user.id,
     };
   };
 
@@ -80,14 +80,14 @@ function StockFormService(StockItem, Store, AppCache, Session, $timeout) {
   StockForm.prototype.clear = function clear() {
     this.store.clear();
 
-    $timeout(function () {
+    $timeout(() => {
       this.setup();
 
       // validate() is only set up to test on submission as it checks the validity
       // of individual items which will not have been configured, manually
       // reset error state
       delete this._error;
-    }.bind(this));
+    });
   };
 
   /**
