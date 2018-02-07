@@ -96,7 +96,7 @@ function ModalService(Modal) {
       keyboard : opts.keyboard || true,
       size : opts.size || 'md',
       controller : 'ConfirmModalController as ConfirmModalCtrl',
-      resolve : { prompt : function provider() { return prompt;} },
+      resolve : { prompt : function provider() { return prompt; } },
       templateUrl : '/modules/templates/modals/confirm.modal.html',
     });
 

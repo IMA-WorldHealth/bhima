@@ -13,7 +13,7 @@ ConfirmModalController.$inject = ['$uibModalInstance', 'prompt'];
 function ConfirmModalController(Instance, prompt) {
   var vm = this;
 
-  vm.dismiss = function dismis() { return Instance.close(false); };
+  vm.dismiss = function dismis() { return Instance.dismiss(false); };
   vm.submit = function submit() { return Instance.close(true); };
   vm.prompt = (prompt || 'FORM.DIALOGS.CONFIRM_DELETE');
 }

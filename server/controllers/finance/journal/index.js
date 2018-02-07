@@ -246,7 +246,7 @@ function editTransaction(req, res, next) {
   const UPDATE_JOURNAL_ROW = 'UPDATE posting_journal SET ? WHERE uuid = ?;';
   const INSERT_JOURNAL_ROW = 'INSERT INTO posting_journal SET ?;';
   const UPDATE_TRANSACTION_HISTORY = 'INSERT INTO transaction_history SET ?;';
-  const UPDATE_RECORD_EDITED_FLAG = 'UPDATE ?? SET edited = 1 WHERE uuid = ?;'
+  const UPDATE_RECORD_EDITED_FLAG = 'UPDATE ?? SET edited = 1 WHERE uuid = ?;';
 
   const transaction = db.transaction();
   const recordUuid = req.params.record_uuid;
@@ -367,6 +367,11 @@ function transformColumns(rows, newRecord, transactionToEdit, setFiscalData) {
     JOIN project ON enterprise.id = project.enterprise_id WHERE project.id = ?;
   `;
 
+  const EXCHANGE_RATE_REVERSE_QUERY = `
+    SELECT ? * IF(enterprise.currency_id = ?, 1, (1 / GetExchangeRate(enterprise.id, ?, ?))) AS amount FROM enterprise
+    JOIN project ON enterprise.id = project.enterprise_id WHERE project.id = ?;
+  `;
+
   // these are global/shared properties of the current transaction
   // TODO(@jniles) - define these shared properties in an isomorphic way to share between
   // client and server.
@@ -469,6 +474,27 @@ function transformColumns(rows, newRecord, transactionToEdit, setFiscalData) {
       });
     }
 
+    if (row.debit) {
+      // if the date has been updated, use the new date - otherwise default to the old transaction date
+      const transDate = new Date(row.trans_date ? row.trans_date : transactionDate);
+
+      databaseRequests.push(EXCHANGE_RATE_REVERSE_QUERY);
+      databaseValues.push([row.debit, currencyId, currencyId, transDate, projectId]);
+
+      assignments.push((result) => {
+        const [{ amount }] = result;
+
+        if (!amount) {
+          throw new BadRequest(
+            'Missing or corrupt exchange rate for rows',
+            'POSTING_JOURNAL.ERRORS.MISSING_EXCHANGE_RATE'
+          );
+        }
+
+        row.debit_equiv = amount;
+      });
+    }
+
     if (row.credit_equiv) {
       // if the date has been updated, use the new date - otherwise default to the old transaction date
       const transDate = new Date(row.trans_date ? row.trans_date : transactionDate);
@@ -486,6 +512,26 @@ function transformColumns(rows, newRecord, transactionToEdit, setFiscalData) {
           );
         }
         row.credit = amount;
+      });
+    }
+
+    if (row.credit) {
+      // if the date has been updated, use the new date - otherwise default to the old transaction date
+      const transDate = new Date(row.trans_date ? row.trans_date : transactionDate);
+
+      databaseRequests.push(EXCHANGE_RATE_REVERSE_QUERY);
+      databaseValues.push([row.credit, currencyId, currencyId, transDate, projectId]);
+
+      assignments.push((result) => {
+        const [{ amount }] = result;
+
+        if (!amount) {
+          throw new BadRequest(
+            'Missing or corrupt exchange rate for rows',
+            'POSTING_JOURNAL.ERRORS.MISSING_EXCHANGE_RATE'
+          );
+        }
+        row.credit_equiv = amount;
       });
     }
 

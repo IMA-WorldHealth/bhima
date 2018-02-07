@@ -531,7 +531,6 @@ function JournalController(
   //       updated to keep track of the current grid grouped state
   vm.gridGroupedState = vm.grouping.getCurrentGroupingColumn;
 
- 
   // runs on startup
   function startup() {
     var params = $state.params.filters;
@@ -551,8 +550,8 @@ function JournalController(
       return;
     }
 
-    var selectedTransaction = selection.selected.groups[0];
-    var transactionUuid = lookupIntermediateRecordUuid(selectedTransaction);
+    const selectedTransaction = selection.selected.groups[0];
+    const transactionUuid = lookupIntermediateRecordUuid(selectedTransaction);
 
     // Journal module rules for optimistic updating:
     // 1. If a row in the current dataset has been removed - remove this row
@@ -560,41 +559,62 @@ function JournalController(
     // 3. If a row has been added in the edit session it will be ignored as we cannot know if it fits the current filter
     // 4. A dismissable alert will always be shown to the user reminding them their data may be out of date
     Journal.openTransactionEditModal(transactionUuid, false)
-      .then(function (editSessionResult) {
-        var updatedRows = editSessionResult.updatedTransaction;
-        var changed = angular.isDefined(updatedRows);
-
-        if (!changed) {
-          Notify.warn('FORM.WARNINGS.NO_CHANGES');
-          return;
-        }
-
-        vm.gridApi.selection.clearSelectedRows();
-
-        // update only rows that already existed and have been edited
-        editSessionResult.edited.forEach(function (uuid) {
-          // update record that already exists
-          var currentRow = journalStore.get(uuid);
-          var updatedRow = editSessionResult.updatedTransaction.get(uuid);
-
-          Object.keys(currentRow).forEach(function (key) {
-            currentRow[key] = updatedRow[key];
-          });
-        });
-
-        // remove rows that existed before and have been removed
-        editSessionResult.removed.forEach(function (uuid) {
-          journalStore.remove(uuid);
-        });
-
-        if (editSessionResult.added.length) {
-          // rows have been added, we have no guarantees on filters so display a warning
-          vm.unknownTransactionEditState = true;
-        }
-        vm.gridApi.grid.notifyDataChange(uiGridConstants.dataChange.ALL);
-
-        Notify.success('POSTING_JOURNAL.SAVE_TRANSACTION_SUCCESS');
+      .then((result) => {
+        return result.deleted ?
+          handleDeleteTransactionResult(result) :
+          handleEditTransactionResult(result);
       });
+  }
+
+  // Handle Edit Transaction Result
+  function handleEditTransactionResult(editSessionResult) {
+    const updatedRows = editSessionResult.updatedTransaction;
+    const changed = angular.isDefined(updatedRows);
+
+    if (!changed) {
+      Notify.warn('FORM.WARNINGS.NO_CHANGES');
+      return;
+    }
+
+    vm.gridApi.selection.clearSelectedRows();
+
+    // update only rows that already existed and have been edited
+    editSessionResult.edited.forEach((uuid) => {
+      // update record that already exists
+      var currentRow = journalStore.get(uuid);
+      var updatedRow = editSessionResult.updatedTransaction.get(uuid);
+
+      Object.keys(currentRow).forEach((key) => {
+        currentRow[key] = updatedRow[key];
+      });
+    });
+
+    // remove rows that existed before and have been removed
+    editSessionResult.removed.forEach((uuid) => {
+      journalStore.remove(uuid);
+    });
+
+    if (editSessionResult.added.length) {
+      // rows have been added, we have no guarantees on filters so display a warning
+      vm.unknownTransactionEditState = true;
+    }
+    vm.gridApi.grid.notifyDataChange(uiGridConstants.dataChange.ALL);
+
+    Notify.success('POSTING_JOURNAL.SAVE_TRANSACTION_SUCCESS');
+  }
+
+  // Handle Delete Transaction Result
+  function handleDeleteTransactionResult(deleteSessionResult) {
+    if (!deleteSessionResult.deleted) { return; }
+    vm.gridApi.selection.clearSelectedRows();
+
+    // remove rows that existed before and have been removed
+    deleteSessionResult.removed.forEach((uuid) => {
+      journalStore.remove(uuid);
+    });
+
+    vm.gridApi.grid.notifyDataChange(uiGridConstants.dataChange.ALL);
+    Notify.success('POSTING_JOURNAL.DELETE_TRANSACTION_SUCCESS');
   }
 
   // TODO(@jniles) rename this method and migrate all code to it

@@ -1,9 +1,12 @@
 {
   "POSTING_JOURNAL": {
     "ADD_ROW" : "Ajouter Ligne",
+    "CURRENCY":"Monnaie",
+    "TRANSACTION_CURRENCY":"Monnaie Transaction",
     "REMOVE_ROW" : "Supprimer Ligne(s)",
     "ROWS" : "Ligne(s)",
-    "SAVE_TRANSACTION_SUCCESS" : "La transaction etait enregistré avec succés",
+    "DELETE_TRANSACTION_SUCCESS" : "La transaction a été supprimée avec succés",
+    "SAVE_TRANSACTION_SUCCESS" : "La transaction a été enregistrée avec succés",
     "HAS_PREVIOUS_EDITS" : "Dernière édition par {{ user }} le {{ date }}",
     "JUSTIFICATION" : "Justification",
     "REFRESH" : "Rafraichir",

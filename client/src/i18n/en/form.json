@@ -587,7 +587,8 @@
         "PATTERNS": {
             "DOCUMENT_NAME": "the document name",
             "FISCAL_YEAR_NAME": "the fiscal year name",
-            "PROJECT_NAME": "the project name"
+            "PROJECT_NAME": "the project name",
+            "TRANSACTION_ID": "the transaction number"
         },
         "PLACEHOLDERS": {
             "ABBREVIATION": "Abbreviation",
