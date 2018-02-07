@@ -1,6 +1,8 @@
 {
   "POSTING_JOURNAL": {
     "ADD_ROW" : "Add Row",
+    "CURRENCY":"Currency",
+    "TRANSACTION_CURRENCY":"Transaction Currency",
     "REMOVE_ROW" : "Remove Row(s)",
     "ROWS" : "Row(s)",
     "EDITING" : "Editing",
@@ -9,6 +11,7 @@
     "JUSTIFICATION" : "Justification",
     "REFRESH" : "Refresh",
     "SAVE_TRANSACTION" : "Save Transaction",
+    "DELETE_TRANSACTION_SUCCESS" : "Transaction record was deleted successfully.",
     "SAVE_TRANSACTION_SUCCESS" : "Transaction record was updated successfully.",
     "TRANSACTION" : "Transaction",
     "SHOW_FULL_TRANSACTION_RECORDS" : "Show Full Transactions",

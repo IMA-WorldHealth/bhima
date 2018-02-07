@@ -2,13 +2,14 @@ angular.module('bhima.controllers')
   .controller('JournalEditTransactionController', JournalEditTransactionController);
 
 JournalEditTransactionController.$inject = [
-  'JournalService', 'Store', 'TransactionTypeService', '$uibModalInstance',
+  'JournalService', 'Store', 'TransactionService', 'TransactionTypeService', '$uibModalInstance',
   'transactionUuid', 'readOnly', 'uiGridConstants', 'uuid', 'util', 'moment',
+  'ModalService', 'CurrencyService', 'ExchangeRateService', 'SessionService',
 ];
 
 function JournalEditTransactionController(
-  Journal, Store, TransactionType, Modal, transactionUuid, readOnly, uiGridConstants,
-  uuid, util, moment
+  Journal, Store, TransactionService, TransactionType, Modal, transactionUuid, readOnly, uiGridConstants,
+  uuid, util, moment, ModalService, CurrencyService, ExchangeRateService, SessionService
 ) {
   var gridApi = {};
   var vm = this;
@@ -20,18 +21,25 @@ function JournalEditTransactionController(
   var changes = {};
 
   // must have transaction_type for certain cases
-  var ERROR_MISSING_TRANSACTION_TYPE = 'TRANSACTIONS.MISSING_TRANSACTION_TYPE';
-  var ERROR_IMBALANCED_TRANSACTION = 'TRANSACTIONS.IMBALANCED_TRANSACTION';
-  var ERROR_SINGLE_ACCOUNT_TRANSACTION = 'TRANSACTIONS.SINGLE_ACCOUNT_TRANSACTION';
-  var ERROR_SINGLE_ROW_TRANSACTION = 'TRANSACTIONS.SINGLE_ROW_TRANSACTION';
-  var ERROR_INVALID_DEBITS_AND_CREDITS = 'VOUCHERS.COMPLEX.ERROR_AMOUNT';
+  const ERROR_MISSING_TRANSACTION_TYPE = 'TRANSACTIONS.MISSING_TRANSACTION_TYPE';
+  const ERROR_IMBALANCED_TRANSACTION = 'TRANSACTIONS.IMBALANCED_TRANSACTION';
+  const ERROR_SINGLE_ACCOUNT_TRANSACTION = 'TRANSACTIONS.SINGLE_ACCOUNT_TRANSACTION';
+  const ERROR_SINGLE_ROW_TRANSACTION = 'TRANSACTIONS.SINGLE_ROW_TRANSACTION';
+  const ERROR_INVALID_DEBITS_AND_CREDITS = 'VOUCHERS.COMPLEX.ERROR_AMOUNT';
+  const ERROR_NEGATIVE_NUMBERS = 'VOUCHERS.COMPLEX.ERROR_NEGATIVE_NUMBERS';
 
-  var footerTemplate =
-    '<div class="ui-grid-cell-contents"><span translate>POSTING_JOURNAL.ROWS</span> <span>{{grid.rows.length}}</span></div>';
+  const footerTemplate = `
+    <div class="ui-grid-cell-contents">
+      <span translate>POSTING_JOURNAL.ROWS</span> <span>{{grid.rows.length}}</span> | 
+      <span translate>POSTING_JOURNAL.TRANSACTION_CURRENCY</span> <b>{{grid.appScope.transactionCurrencySymbole()}}</b> | 
+      <bh-exchange-rate></bh-exchange-rate>
+    </div>`;
 
   // @FIXME(sfount) this is only exposed for the UI grid link component - this should be self contained in the future
   vm.loadingTransaction = false;
   vm.setupComplete = false;
+  vm.shared = {};
+  vm.enterprise = SessionService.enterprise;
 
   // @TODO(sfount) apply read only logic to save buttons and grid editing logic
   vm.readOnly = readOnly || false;
@@ -57,22 +65,22 @@ function JournalEditTransactionController(
     allowCellFocus : !vm.readOnly,
     headerCellFilter     : 'translate',
   }, {
-    field                            : 'debit_equiv',
-    displayName                      : 'TABLE.COLUMNS.DEBIT',
-    cellClass                        : 'text-right',
-    footerCellClass                 : 'text-right',
-    headerCellFilter                 : 'translate',
+    field                : 'debit',
+    displayName          : 'TABLE.COLUMNS.DEBIT',
+    cellClass            : 'text-right',
+    footerCellClass      : 'text-right',
+    headerCellFilter     : 'translate',
     type : 'number',
     aggregationHideLabel : true,
     enableCellEdit : !vm.readOnly,
     allowCellFocus : !vm.readOnly,
     aggregationType : uiGridConstants.aggregationTypes.sum,
   }, {
-    field                            : 'credit_equiv',
-    displayName                      : 'TABLE.COLUMNS.CREDIT',
-    cellClass                        : 'text-right',
-    footerCellClass                 : 'text-right',
-    headerCellFilter                 : 'translate',
+    field            : 'credit',
+    displayName      : 'TABLE.COLUMNS.CREDIT',
+    cellClass        : 'text-right',
+    footerCellClass  : 'text-right',
+    headerCellFilter : 'translate',
     enableFiltering : true,
     type : 'number',
     aggregationHideLabel : true,
@@ -103,27 +111,39 @@ function JournalEditTransactionController(
     showGridFooter : true,
     appScopeProvider : vm,
     gridFooterTemplate : footerTemplate,
-    onRegisterApi : function (api) {
-      gridApi = api;
-      gridApi.edit.on.afterCellEdit(null, handleCellEdit);
-    },
+    onRegisterApi,
+  };
+
+  function onRegisterApi(api) {
+    gridApi = api;
+    gridApi.edit.on.afterCellEdit(null, handleCellEdit);
+  }
+
+  vm.transactionCurrencySymbole = () => {
+    if (!vm.shared.currency_id) { return ''; }
+    return CurrencyService.symbol(vm.shared.currency_id);
+  };
+
+  vm.currentExchangeRate = () => {
+    if (!vm.enterprise.currency_id) { return ''; }
+    return ExchangeRateService.getCurrentRate(vm.enterprise.currency_id);
   };
 
   vm.close = Modal.dismiss;
 
   // @TODO(sfount) move to component vm.dateEditorOpen = false;
-  vm.openDateEditor = function openDateEditor() { vm.dateEditorOpen = !vm.dateEditorOpen; };
+  vm.openDateEditor = () => { vm.dateEditorOpen = !vm.dateEditorOpen; };
 
   // module dependencies
   TransactionType.read()
-    .then(function (typeResults) {
+    .then((typeResults) => {
       vm.transactionTypes = new Store({ identifier : 'id' });
       vm.transactionTypes.setData(typeResults);
     });
 
   // this is completely optional - it is just for decoration and interest.
   Journal.getTransactionEditHistory(transactionUuid)
-    .then(function (editHistory) {
+    .then((editHistory) => {
       var hasPreviousEdits = editHistory.length > 0;
       var mostRecentEdit;
       vm.hasPreviousEdits = hasPreviousEdits;
@@ -141,7 +161,7 @@ function JournalEditTransactionController(
 
   vm.loadingTransaction = true;
   Journal.grid(transactionUuid)
-    .then(function (transaction) {
+    .then((transaction) => {
       vm.setupComplete = true;
 
       verifyEditableTransaction(transaction);
@@ -150,14 +170,14 @@ function JournalEditTransactionController(
       vm.rows.setData(transaction);
 
       // @FIXME(sfount) date ng-model hack
-      vm.rows.data.forEach(function (row) { row.trans_date = new Date(row.trans_date); });
+      vm.rows.data.forEach((row) => { row.trans_date = new Date(row.trans_date); });
       vm.shared = sharedDetails(vm.rows.data[0]);
       vm.gridOptions.data = vm.rows.data;
     })
-    .catch(function () {
+    .catch(() => {
       vm.hasError = true;
     })
-    .finally(function () {
+    .finally(() => {
       vm.loadingTransaction = false;
     });
 
@@ -176,52 +196,53 @@ function JournalEditTransactionController(
    * If any of these checks fail, the transaction submission is aborted until the user corrects those mistakes.
    */
   function offlineTransactionValidation(rows) {
-    var hasSingleLine = rows.length < 2;
+    const hasSingleLine = rows.length < 2;
     if (hasSingleLine) {
       return ERROR_SINGLE_ROW_TRANSACTION;
     }
 
-    var debits = 0;
-    var credits = 0;
+    let debits = 0;
+    let credits = 0;
 
-    var i = rows.length;
-    var row;
+    let i = rows.length;
+    let row;
+
     while (i--) {
       row = rows[i];
 
-      var hasTransactionType = typeof row.origin_id === 'number';
+      const hasTransactionType = typeof row.origin_id === 'number';
       if (!hasTransactionType) {
         return ERROR_MISSING_TRANSACTION_TYPE;
       }
 
-      var hasNegativeNumbers = (row.debit_equiv < 0 || row.credit_equiv < 0);
+      const hasNegativeNumbers = (row.debit < 0 || row.credit < 0);
       if (hasNegativeNumbers) {
         return ERROR_NEGATIVE_NUMBERS;
       }
 
-      var hasSingleNumericValue = !util.xor(Boolean(row.debit_equiv), Boolean(row.credit_equiv));
+      const hasSingleNumericValue = !util.xor(Boolean(row.debit), Boolean(row.credit));
       if (hasSingleNumericValue) {
         return ERROR_INVALID_DEBITS_AND_CREDITS;
       }
 
-      credits += row.credit_equiv;
-      debits += row.debit_equiv;
+      credits += row.credit;
+      debits += row.debit;
     }
 
-    var uniqueAccountsArray = rows
-      .map(function (row) {
-        return row.account_id;
+    const uniqueAccountsArray = rows
+      .map((_row) => {
+        return _row.account_id;
       })
-      .filter(function (accountId, index, array) {
+      .filter((accountId, index, array) => {
         return array.indexOf(accountId) === index;
       });
 
-    var hasSingleAccount = uniqueAccountsArray.length === 1;
+    const hasSingleAccount = uniqueAccountsArray.length === 1;
     if (hasSingleAccount) {
       return ERROR_SINGLE_ACCOUNT_TRANSACTION;
     }
 
-    var hasImbalancedTransaction = Number(debits.toFixed('2')) !== Number(credits.toFixed('2'));
+    const hasImbalancedTransaction = Number(debits.toFixed('2')) !== Number(credits.toFixed('2'));
     if (hasImbalancedTransaction) {
       return ERROR_IMBALANCED_TRANSACTION;
     }
@@ -231,14 +252,14 @@ function JournalEditTransactionController(
 
 
   function verifyEditableTransaction(transaction) {
-    var posted = transaction[0].posted;
+    const { posted } = transaction[0];
 
     if (posted) {
       vm.validation.blockedPostedTransactionEdit = true;
       vm.readOnly = true;
 
       // notify the grid of options change - the grid should no longer be editable
-      vm.gridOptions.columnDefs.forEach(function (column) {
+      vm.gridOptions.columnDefs.forEach((column) => {
         column.allowCellFocus = !vm.readOnly;
         column.enableCellEdit = !vm.readOnly;
       });
@@ -257,7 +278,7 @@ function JournalEditTransactionController(
 
   // Edit rows functions
   vm.addRow = function addRow() {
-    var row = { uuid : uuid(), debit_equiv : 0, credit_equiv : 0 };
+    var row = { uuid : uuid(), debit : 0, credit : 0 };
     angular.extend(row, angular.copy(vm.shared));
 
     addedRows.push(row.uuid);
@@ -283,8 +304,8 @@ function JournalEditTransactionController(
     }
   }
 
-  vm.saveTransaction = function saveTransaction() {
-    var noChanges = addedRows.length === 0 && removedRows.length === 0 && Object.keys(changes).length === 0;
+  vm.saveTransaction = () => {
+    const noChanges = addedRows.length === 0 && removedRows.length === 0 && Object.keys(changes).length === 0;
 
     if (noChanges) {
       Modal.close({});
@@ -292,7 +313,7 @@ function JournalEditTransactionController(
     }
 
     // run local validation before submission
-    var offlineErrors = offlineTransactionValidation(vm.rows.data);
+    const offlineErrors = offlineTransactionValidation(vm.rows.data);
     if (offlineErrors) {
       vm.validation.errored = true;
       vm.validation.message = offlineErrors;
@@ -302,7 +323,7 @@ function JournalEditTransactionController(
 
     // building object to conform to legacy API
     // @FIXME(sfount) update journal service API for human readable interface
-    var transactionRequest = {
+    const transactionRequest = {
       uuid : vm.shared.record_uuid,
       newRows : { data : filterRowsByUuid(vm.rows.data, addedRows) },
       removedRows : removedRows.map(mapRowUuids),
@@ -313,20 +334,20 @@ function JournalEditTransactionController(
     vm.validation.message = null;
     vm.saving = true;
 
-    var safeChanges = angular.copy(changes);
+    const safeChanges = angular.copy(changes);
 
     // prune off the human readable references, submitting only raw data to the
     // server
     angular.forEach(safeChanges, pruneHumanReadableReferences);
 
     Journal.saveChanges(transactionRequest, safeChanges)
-      .then(function (resultUpdatedTransaction) {
-        var transaction = new Store({ identifier : 'uuid' });
+      .then((resultUpdatedTransaction) => {
+        const transaction = new Store({ identifier : 'uuid' });
 
         transaction.setData(resultUpdatedTransaction);
 
         // collapse information for the module that might expect to apply optimistic updates
-        var editSessionResult = {
+        const editSessionResult = {
           edited : Object.keys(changes),
           added : addedRows,
           removed : removedRows,
@@ -335,28 +356,49 @@ function JournalEditTransactionController(
 
         Modal.close(editSessionResult);
       })
-      .catch(function (error) {
+      .catch((error) => {
         vm.validation.errored = true;
         vm.validation.message = error.data.code;
       })
-      .finally(function () {
+      .finally(() => {
         vm.saving = false;
       });
   };
 
+  vm.deleteTransaction = () => {
+    ModalService.confirm()
+      .then(ans => {
+        if (!ans) { return null; }
+        return TransactionService.remove(vm.shared.record_uuid);
+      })
+      .then(() => {
+        const deleteTransactionResult = {
+          deleted : true,
+          removed : getGridRowsUuid(),
+        };
+        Modal.close(deleteTransactionResult);
+      });
+  };
+
+  function getGridRowsUuid() {
+    return vm.rows.data.map((row) => {
+      return row.uuid;
+    });
+  }
+
   // rows - array of rows
   // uuids - array of uuids
   function filterRowsByUuid(rows, uuids) {
-    var result = rows.filter(function (row) {
+    const result = rows.filter((row) => {
       return contains(uuids, row.uuid);
     });
     return result;
   }
 
-  vm.removeRows = function removeRows() {
-    var selectedRows = gridApi.selection.getSelectedRows();
+  vm.removeRows = () => {
+    const selectedRows = gridApi.selection.getSelectedRows();
 
-    selectedRows.forEach(function (row) {
+    selectedRows.forEach((row) => {
       var isOriginalRow = !contains(addedRows, row.uuid);
 
       if (isOriginalRow) {
@@ -386,7 +428,7 @@ function JournalEditTransactionController(
 
   // Edit utilities
   function applyAttributeToRows(key, value) {
-    vm.rows.data.forEach(function (row) {
+    vm.rows.data.forEach((row) => {
       handleCellEdit({ uuid : row.uuid }, { field : key }, value, row[key]);
       row[key] = value;
     });
@@ -394,12 +436,6 @@ function JournalEditTransactionController(
 
   function contains(array, value) {
     return array.indexOf(value) !== -1;
-  }
-
-  // @TODO(sfount)
-  function invalidate(message) {
-    vm.validation.errored = true;
-    vm.validation.message = message;
   }
 
   // takes a transaction row and returns all parameters that are shared among the transaction
@@ -412,7 +448,7 @@ function JournalEditTransactionController(
 
     var shared = {};
 
-    columns.forEach(function (column) {
+    columns.forEach((column) => {
       shared[column] = row[column];
     });
 

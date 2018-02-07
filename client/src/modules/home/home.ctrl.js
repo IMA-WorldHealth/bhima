@@ -40,8 +40,8 @@ function HomeController(Currencies, Rates, Session, Notify, Fiscal, DashboardSer
 
   // load exchange rates
   Currencies.read(true)
-    .then(function (currencies) {
-      vm.currencies = currencies.filter(function (currency) {
+    .then((currencies) => {
+      vm.currencies = currencies.filter((currency) => {
         return currency.id !== Session.enterprise.currency_id;
       });
       // format the enterprise currency
@@ -50,8 +50,8 @@ function HomeController(Currencies, Rates, Session, Notify, Fiscal, DashboardSer
       // load supported rates
       return Rates.read(true);
     })
-    .then(function () {
-      vm.currencies.forEach(function (currency) {
+    .then(() => {
+      vm.currencies.forEach((currency) => {
         currency.rate = Rates.getCurrentRate(currency.id);
 
 
