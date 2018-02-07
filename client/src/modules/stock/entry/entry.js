@@ -128,15 +128,7 @@ function StockEntryController(
   }
 
   function removeItem(index) {
-    const data = vm.gridOptions.data.filter((row, i)=>{
-      if(index !== i){
-        return true;
-      }
-      return false;
-    });
-    vm.gridOptions.data = data;
-    vm.stockForm.store.data = data;
-     
+    vm.stockForm.removeItem(index);
     hasValidInput();
   }
 
