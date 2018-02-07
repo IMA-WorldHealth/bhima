@@ -54,14 +54,10 @@ function bhExchangeRateController(Currencies, Rates, Session, Notify, Moment) {
             currency.rate = (1 / currency.rate);
             $ctrl.isFirstCurencyLabel = true;
           }
-
-          currency.formattedDate = new Moment(currency.date).format('LL');
         });
 
         // get the first element of $ctrl.currencies ($ctrl.currencies[0])
         [$ctrl.primaryExchange] = $ctrl.currencies;
-
-        console.log('currency : ', $ctrl.primaryExchange);
       })
       .catch(Notify.handleError);
   }
