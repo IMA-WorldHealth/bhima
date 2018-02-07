@@ -2,6 +2,7 @@
   "TREE": {
     "ACCOUNT": "Account Management",
     "ACCOUNT_STATEMENT": "Account Statement",
+    "ACCOUNT_CONFIGURATION":"Account Configuration",
     "ADMIN": "Admin",
     "AGED_CREDITORS": "Aged Creditors",
     "BALANCE": "Balance",

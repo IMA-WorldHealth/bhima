@@ -2,6 +2,7 @@
   "TREE": {
     "ACCOUNT":"Comptes",
     "ACCOUNT_STATEMENT":"Rélevé de Compte",
+    "ACCOUNT_CONFIGURATION":"Configuration des comptes",
     "ADMIN":"Admin",
     "AGED_CREDITORS":"Balance âgée des Créances",
     "BALANCE":"Balance",

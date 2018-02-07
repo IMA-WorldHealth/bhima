@@ -1,0 +1,46 @@
+<form name="AccountConfigForm" bh-submit="AccountConfigModalCtrl.submit(AccountConfigForm)" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li ng-if="AccountConfigModalCtrl.isCreating" class="title">
+        <span translate>TREE.ACCOUNT_CONFIGURATION</span>
+        <label class="badge badge-success" translate>FORM.LABELS.CREATE</label>
+      </li>
+      <li ng-if="!AccountConfigModalCtrl.isCreating" class="title">
+        <span translate>TREE.ACCOUNT_CONFIGURATION</span>
+        <label class="badge badge-success" translate>FORM.LABELS.UPDATE</label>
+      </li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+    <div class="form-group" ng-class="{ 'has-error' : AccountConfigForm.$submitted && AccountConfigForm.label.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.DESIGNATION</label>
+      <input name="label" ng-model="AccountConfigModalCtrl.accountConfig.label" autocomplete="off" class="form-control" required>
+      <div class="help-block" ng-messages="AccountConfigForm.label.$error" ng-show="AccountConfigForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <bh-account-select
+      id="account_id"
+      account-id="AccountConfigModalCtrl.accountConfig.account_id"
+      label="FORM.LABELS.ACCOUNT"
+      name="account_id"
+      on-select-callback="AccountConfigModalCtrl.selectAccount(account)"
+      exclude-title-accounts="true"
+      required="true"
+      validation-trigger="AccountConfigForm.$submitted">
+    </bh-account-select>
+
+  </div>
+
+  <div class="modal-footer">
+    <button data-method="cancel" type="button" class="btn btn-default" ng-click="AccountConfigModalCtrl.closeModal()">
+      <span translate>FORM.BUTTONS.CANCEL</span>
+    </button>
+
+    <bh-loading-button loading-state="AccountConfigForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>
