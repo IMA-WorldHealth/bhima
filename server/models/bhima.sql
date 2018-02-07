@@ -80,8 +80,8 @@ INSERT INTO unit VALUES
   (188, 'Tax IPR Management','TREE.IPR_MANAGEMENT','IPR Management',57,'/modules/ipr_tax/','/ipr_tax'),
   (189, 'IPR Tax Configuration','TREE.IPR_TAX_CONFIGURATION','IPR Tax Configuration', 57,'/modules/ipr_tax/configuration','/ipr_tax/configuration'),
   (190, 'Payroll Rubric Configuration','TREE.PAYROLL_RUB_CONFIGURATION','',57,'/modules/payroll/rubric_configuration','/payroll/rubric_configuration'),
-  (191, 'Account Configuration','TREE.PAYROLL_ACCOUNT_CONFIGURATION','Account Configuration', 57,'/modules/payroll/account_configuration','/payroll/account_configuration');
-
+  (191, 'Account Configuration','TREE.PAYROLL_ACCOUNT_CONFIGURATION','Account Configuration', 57,'/modules/payroll/account_configuration','/payroll/account_configuration'),
+  (192, 'Operating report', 'TREE.OPERATING_ACCOUNT', 'The Report of operating', 144, '/modules/reports/operating', '/reports/operating');
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
   (1, 'income', 'ACCOUNT.TYPES.INCOME'),
@@ -113,7 +113,8 @@ INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
   (11, 'balance_sheet_report', 'REPORT.BALANCE_SHEET.TITLE'),
   (12, 'cash_report', 'REPORT.CASH_REPORT'),
   (13, 'inventory_report', 'REPORT.STOCK.TITLE'),
-  (14, 'inventory_file', 'REPORT.STOCK.INVENTORY_REPORT');
+  (14, 'inventory_file', 'REPORT.STOCK.INVENTORY_REPORT'),
+  (15, 'operating', 'TREE.OPERATING_ACCOUNT');
 
 
 -- Supported Languages

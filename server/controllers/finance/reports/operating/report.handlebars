@@ -1,0 +1,126 @@
+{{> head title="{{translate 'TREE.OPERATING_ACCOUNT' }}" }}
+
+
+<div class="container">
+  {{> header}}
+
+  <!-- body -->
+  <div class="row">
+    <div class="col-xs-12">
+      <!-- page title  -->
+      <h3 class="text-center text-uppercase">
+        <strong>{{translate 'TREE.OPERATING_ACCOUNT'}}</strong>
+      </h3>
+      
+      <h5 style="margin:15px; font-weight:bold" class="text-center text-uppercase">
+        {{date this.dateFrom}} - {{date this.dateTo}}
+      </h5>
+      <table class="table table-condensed table-report table-bordered">
+        <tbody>
+          <tr>
+            <th class="text-center">
+              {{ translate 'ACCOUNT.TYPES.EXPENSE'}}
+            </th>
+            <th class="text-center">
+              {{ translate 'ACCOUNT.TYPES.INCOME'}}
+            </th>
+          </tr>
+          <tr>
+            <td>
+              <table class="table table-condensed table-report table-bordered">
+                <thead>
+                  <th>{{ translate 'FORM.LABELS.ACCOUNT_NUMBER'}}</th>
+                  <th>{{ translate 'FORM.LABELS.LABEL'}}</th>
+                  <th> {{ translate 'FORM.LABELS.AMOUNT'}}</th>
+                  <th>%</th>
+                </thead>
+                <tbody>
+                  {{#each this.expense}}
+                  <tr>
+                    <td class="text-right">{{number}}</td>
+                    <td>{{label}}</td>
+                    <td class="text-right">{{amount}}</td>
+                    <td class="text-right">{{percent}}</td>
+                  </tr>
+                  {{/each}}
+                </tbody>
+              </table>
+            </td>
+            <td>
+              <table class="table table-condensed table-report table-bordered">
+                <thead>
+                  <th>{{ translate 'FORM.LABELS.ACCOUNT_NUMBER'}}</th>
+                  <th>{{ translate 'FORM.LABELS.LABEL'}}</th>
+                  <th> {{ translate 'FORM.LABELS.AMOUNT'}}</th>
+                  <th>%</th>
+                </thead>
+                <tbody>
+                  {{#each this.revenue}}
+                  <tr>
+                    <td class="text-right">{{number}}</td>
+                    <td>{{label}}</td>
+                    <td class="text-right">{{amount}}</td>
+                    <td class="text-right">{{percent}}</td>
+                    
+                  </tr>
+                  {{/each}}
+                </tbody>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+            <table class="table table-condensed table-report table-bordered">
+              <tr>
+                <th>
+                </th>
+                <th class="text-center">
+                  {{ translate 'ACCOUNT.TYPES.EXPENSE'}}
+                </th>
+                 <th class="text-center">
+                   {{ translate 'ACCOUNT.TYPES.INCOME'}}
+                </th>
+              </tr>
+               <tr>
+                <th class="text-center">
+                  {{ translate 'FORM.LABELS.TOTAL'}}
+                </th>
+                <td class="text-right">
+                  {{this.totalExpense}}
+                </td>
+                 <td class="text-right">
+                    {{this.totalRevenue}}
+                </td>
+              </tr>
+              <tr>
+                <th class="text-center">
+                  {{ translate 'FORM.LABELS.RESULT'}}
+                </th>
+                <td class="text-right">
+                  {{this.leftResult}}
+                </td>
+                <td class="text-right">
+                  {{this.rightResult}}
+                </td>
+              </tr>
+              <tr>
+                <th class="text-center">
+                  {{ translate 'FORM.LABELS.BALANCE'}}
+                </th>
+                <td class="text-right">
+                  {{this.totalRevenue}}
+                </td>
+                 <td class="text-right">
+                    {{this.totalRevenue}}
+                </td>
+              </tr>
+            
+            </table>
+            </td>
+            </tr>
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

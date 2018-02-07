@@ -30,6 +30,8 @@ exports.unlinkp = unlinkp;
 exports.statp = statp;
 exports.format = require('util').format;
 
+exports.roundDecimal = roundDecimal;
+
 /**
  * @function take
  *
@@ -178,4 +180,15 @@ function unlinkp(file) {
   });
 
   return deferred.promise;
+}
+
+/**
+ * arround a decima
+ * @param {*} number 
+ * @param {*} precision 
+ */
+function roundDecimal(number, precision) {
+  var _precision = precision || 4;
+  var tmp = Math.pow(10, _precision);
+  return Math.round(number * tmp) / tmp;
 }
