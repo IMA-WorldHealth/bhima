@@ -4,8 +4,8 @@ angular.module('bhima.services')
 TransactionService.$inject = ['$http', 'util', '$uibModal'];
 
 function TransactionService($http, util, Modal) {
-  var service = this;
-  var baseUrl = '/transactions/';
+  const service = this;
+  const baseUrl = '/transactions/';
 
   service.remove = remove;
   service.comment = comment;
@@ -21,7 +21,7 @@ function TransactionService($http, util, Modal) {
    * payment as necessary.
    */
   function remove(uuid) {
-    var url = baseUrl.concat(uuid);
+    const url = baseUrl.concat(uuid);
     return $http.delete(url)
       .then(util.unwrapHttpResponse);
   }
@@ -29,14 +29,13 @@ function TransactionService($http, util, Modal) {
 
   /**
    * @method comment
-   *
    * @description
    * This function comments on individual lines of a transaction.  It is used by
    * the comment modal to modify, remove or add comments to transactions.
    */
   function comment(params) {
-    var url = baseUrl.concat('comments');
-    return $http.put(url, { params : params })
+    const url = baseUrl.concat('comments');
+    return $http.put(url, { params })
       .then(util.unwrapHttpResponse);
   }
 
@@ -48,12 +47,12 @@ function TransactionService($http, util, Modal) {
    * rows of transactions.
    */
   function openCommentModal(rows) {
-    var config = {
+    const config = {
       templateUrl  : 'modules/journal/modals/comment.modal.html',
       controller   : 'CommentModalController',
       controllerAs : '$ctrl',
       resolve : {
-        params :  function paramsProvider() { return rows; },
+        params :  () => rows,
       },
     };
 
@@ -67,7 +66,7 @@ function TransactionService($http, util, Modal) {
    * This function loads the history of a given transaction from the database.
    */
   function historyFn(uuid) {
-    var url = baseUrl.concat(uuid, '/history');
+    const url = baseUrl.concat(uuid, '/history');
     return $http.get(url)
       .then(util.unwrapHttpResponse);
   }

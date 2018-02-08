@@ -530,11 +530,15 @@ function JournalController(
 
   // runs on startup
   function startup() {
-    const params = $state.params.filters;
-    Journal.filters.replaceFiltersFromState(params);
+    const { filters } = $state.params;
+    if (filters.length > 0) {
+      Journal.filters.replaceFiltersFromState(filters);
+    } else {
+      Journal.loadCachedFilters();
+    }
+
     load(Journal.filters.formatHTTP(true));
     vm.latestViewFilters = Journal.filters.formatView();
-    Journal.filters.removeUnCachableFilters(params);
   }
 
   startup();
