@@ -7,10 +7,15 @@ StockDefineLotsModalController.$inject = [
 ];
 
 function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data, Session, bhConstants) {
-  var vm = this;
-  var current = new Date();
+  const vm = this;
+  const current = new Date();
+
+  vm.hasMissingLotIdentifier = false;
+  vm.hasInvalidLotExpiration = false;
+  vm.hasInvalidLotQuantity = false;
+
   vm.enterprise = Session.enterprise;
-  vm.stockLine = Data.stockLine;
+  vm.stockLine = angular.copy(Data.stockLine);
   vm.entryType = Data.entry_type;
   vm.gridApi = {};
   vm.isCostEditable = (vm.entryType !== 'purchase' && vm.entryType !== 'transfer_reception');
@@ -69,7 +74,7 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
       },
     ],
     data : vm.stockLine.lots,
-    onRegisterApi : onRegisterApi,
+    onRegisterApi,
   };
 
   // exposing method to the view
@@ -80,17 +85,9 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
   vm.checkAll = checkAll;
   vm.removeLot = removeLot;
 
-  function sumLot(x, y) {
-    return x + y.quantity;
-  }
-
   function init() {
-    if (!vm.stockLine.lots.length) {
-      addLot();
-    } else {
-      // if there is at least one lot already, then check only
-      checkAll();
-    }
+    if (vm.stockLine.lots.length) { return; }
+    addLot();
   }
 
   function addLot() {
@@ -98,10 +95,8 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
       isValid : false,
       lot : null,
       expiration_date : new Date(),
-      quantity : 0,
+      quantity : 1,
     });
-
-    checkAll();
   }
 
   function onRegisterApi(api) {
@@ -111,11 +106,15 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
   function checkAll() {
     vm.hasNoLot = !vm.stockLine.lots.length > 0;
 
-    vm.isSomeLineIncorrect = vm.stockLine.lots.some(function check(lot) {
-      return lot.isValid === false;
-    });
+    vm.isSomeLineIncorrect = vm.stockLine.lots.some(lot => lot.isValid === false);
 
-    vm.sum = vm.stockLine.lots.reduce(sumLot, 0);
+    vm.hasMissingLotIdentifier = vm.stockLine.lots.some(lot => lot.hasMissingLotIdentifier === true);
+
+    vm.hasInvalidLotExpiration = vm.stockLine.lots.some(lot => lot.hasInvalidLotExpiration === true);
+
+    vm.hasInvalidLotQuantity = vm.stockLine.lots.some(lot => lot.hasInvalidLotQuantity === true);
+
+    vm.sum = vm.stockLine.lots.reduce((x, y) => x + y.quantity, 0);
 
     vm.isQuantityIncorrect = vm.sum > vm.stockLine.quantity;
 
@@ -138,10 +137,17 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
       line.expiration_date = new Date((current.getFullYear() + 1000), current.getMonth());
     }
 
+    // check missing lot identifier
+    line.hasMissingLotIdentifier = !line.lot;
+
+    // check invalid lot quantity
+    line.hasInvalidLotQuantity = line.quantity <= 0;
+
+    // check invalid lot expiration date
+    line.hasInvalidLotExpiration = !!(!line.expiration_date || !hasFutureExpirationDate);
+
     line.isValid = (line.lot && line.quantity > 0 && hasFutureExpirationDate);
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.EDIT);
-
-    checkAll();
   }
 
   function cancel() {
@@ -154,6 +160,8 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
   }
 
   function submit() {
+    checkAll();
+
     if (!vm.hasInvalidEntries) {
       Instance.close({ lots : vm.stockLine.lots, quantity : vm.sum });
     }
