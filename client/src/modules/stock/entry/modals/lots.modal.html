@@ -25,7 +25,6 @@
         type="number" 
         ng-model="$ctrl.stockLine.quantity" 
         ng-model-options="{ 'debounce' : { 'default' : 150, 'blur' : 0 }}"
-        ng-change="$ctrl.checkAll()"
         min="0">
     </div>
 
@@ -74,21 +73,14 @@
       </div>
     </div>
 
-    <div ng-if="$ctrl.hasInvalidEntries">
-      <div ng-if="$ctrl.hasNoLot" class="alert alert-warning">
-        <i class="fa fa-warning"></i> 
-        <span translate>FORM.WARNINGS.NO_LOT</span>
-      </div>
-
-      <div ng-if="$ctrl.isSomeLineIncorrect" class="alert alert-danger">
-        <i class="fa fa-warning"></i> 
-        <span translate>FORM.ERRORS.STOCK_LINE</span>
-      </div>
-
-      <div ng-if="$ctrl.isQuantityIncorrect" class="alert alert-danger">
-        <i class="fa fa-warning"></i> 
-        <span translate>FORM.ERRORS.LOT_QUANTITY</span>
-      </div>
+    <div ng-if="$ctrl.hasInvalidEntries" class="alert alert-danger clearfix" style="margin-top: 10px;">
+      <ul>
+        <li ng-if="$ctrl.hasMissingLotIdentifier" translate>STOCK.ERRORS.MISSING_LOT_NAME</li>
+        <li ng-if="$ctrl.hasInvalidLotQuantity" translate>STOCK.ERRORS.INVALID_LOT_QUANTITY</li>
+        <li ng-if="$ctrl.hasInvalidLotExpiration" translate>STOCK.ERRORS.INVALID_LOT_EXPIRATION</li>
+        <li ng-if="$ctrl.isQuantityIncorrect" translate>STOCK.ERRORS.INVALID_GLOBAL_QUANTITY</li>
+        <li ng-if="$ctrl.isSomeLineIncorrect" translate>STOCK.ERRORS.LOT_ROW_WITH_ERRORS</li>
+      </ul>
     </div>
 
   </div>
