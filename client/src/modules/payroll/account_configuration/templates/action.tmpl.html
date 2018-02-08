@@ -6,7 +6,7 @@
 
   <ul data-action="{{rowRenderIndex}}"  class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
     <li>
-      <a data-method="edit" ng-click="grid.appScope.editConfig(row.entity)" href>
+      <a data-method="edit" ui-sref="configurationAccount.edit({id : row.entity.id})" href>
         <i class="fa fa-edit"></i> <span translate>FORM.BUTTONS.EDIT</span>
       </a>
     </li>

@@ -4,7 +4,7 @@ angular.module('bhima.services')
 ConfigurationAccountService.$inject = ['PrototypeApiService', '$uibModal'];
 
 /**
- * @class RubricService
+ * @class ConfigurationAccountService
  * @extends PrototypeApiService
  *
  * @description

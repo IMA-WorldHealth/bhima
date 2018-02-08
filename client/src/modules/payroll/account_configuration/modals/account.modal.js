@@ -2,10 +2,10 @@ angular.module('bhima.controllers')
   .controller('AccountConfigModalController', AccountConfigModalController);
 
 AccountConfigModalController.$inject = [
-  '$state', 'ConfigurationAccountService', 'ModalService', 'NotifyService', 'appcache',
+  '$state', 'ConfigurationAccountService', 'NotifyService', 'appcache',
 ];
 
-function AccountConfigModalController($state, Config, ModalService, Notify, AppCache) {
+function AccountConfigModalController($state, Config, Notify, AppCache) {
   var vm = this;
   vm.accountConfig = {};
 

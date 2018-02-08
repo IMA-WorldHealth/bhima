@@ -4,12 +4,12 @@
 * This controller exposes an API to the client for reading and writing Account
 */
 
-var db = require('../../../lib/db');
-var NotFound = require('../../../lib/errors/NotFound');
+const db = require('../../../lib/db');
+const NotFound = require('../../../lib/errors/NotFound');
 
 // GET /ACCOUNT_CONFIG
 function lookupAccountConfig(id) {
-  var sql =`
+  let sql =`
     SELECT c.id, c.label, c.account_id
     FROM config_accounting AS c  
     WHERE c.id = ?`;
@@ -39,7 +39,7 @@ function list(req, res, next) {
 * Returns the detail of a single Account
 */
 function detail(req, res, next) {
-  var id = req.params.id;
+  let id = req.params.id;
 
   lookupAccountConfig(id)
     .then((record) => {

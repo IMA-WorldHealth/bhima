@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('ConfigurationAccountController', ConfigurationAccountController);
+  .controller('ConfigurationAccountController', ConfigurationAccountController);
 
 ConfigurationAccountController.$inject = [
   'ConfigurationAccountService', 'ModalService',
@@ -12,13 +12,14 @@ ConfigurationAccountController.$inject = [
  * This controller is about the Account management module in the admin zone
  * It's responsible for creating, editing and updating a Account
  */
-function ConfigurationAccountController(Configs, ModalService,
-  Notify, uiGridConstants, $state, Session) {
+function ConfigurationAccountController(
+  Configs, ModalService,
+  Notify, uiGridConstants, $state, Session
+) {
   var vm = this;
 
   // bind methods
   vm.deleteConfig = deleteConfig;
-  vm.editConfig = editConfig;
   vm.toggleFilter = toggleFilter;
   vm.currencySymbol = Session.enterprise.currencySymbol;
 
@@ -29,8 +30,9 @@ function ConfigurationAccountController(Configs, ModalService,
   var gridColumn =
     [
       { field : 'label', displayName : 'FORM.LABELS.DESIGNATION', headerCellFilter : 'translate' },
-      { field : 'account_id', displayName : 'FORM.LABELS.ACCOUNT', cellTemplate : '/modules/payroll/account_configuration/templates/account.tmpl.html', headerCellFilter : 'translate' },
-      { field : 'action',
+      { field : 'hrAccountText', displayName : 'FORM.LABELS.ACCOUNT', headerCellFilter : 'translate' },
+      {
+        field : 'action',
         width : 80,
         displayName : '',
         cellTemplate : '/modules/payroll/account_configuration/templates/action.tmpl.html',
@@ -64,33 +66,30 @@ function ConfigurationAccountController(Configs, ModalService,
     vm.loading = true;
 
     Configs.read()
-    .then(function (data) {
-      vm.gridOptions.data = data;
-    })
-    .catch(Notify.handleError)
-    .finally(function () {
-      vm.loading = false;
-    });
+      .then(function (data) {
+        data.forEach(row => row.hrAccountText = `[${row.account_number}] ${row.account_label}`);
+
+        vm.gridOptions.data = data;
+      })
+      .catch(Notify.handleError)
+      .finally(function () {
+        vm.loading = false;
+      });
   }
 
   // switch to delete warning mode
   function deleteConfig(title) {
     ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
-    .then(function (bool) {
-      if (!bool) { return; }
+      .then(function (bool) {
+        if (!bool) { return; }
 
-      Configs.delete(title.id)
-      .then(function () {
-        Notify.success('FORM.INFO.DELETE_SUCCESS');
-        loadConfigs();
-      })
-      .catch(Notify.handleError);
-    });
-  }
-
-  // update an existing Account Configuration
-  function editConfig(title) {
-    $state.go('configurationAccount.edit', { id : title.id });
+        Configs.delete(title.id)
+          .then(function () {
+            Notify.success('FORM.INFO.DELETE_SUCCESS');
+            loadConfigs();
+          })
+          .catch(Notify.handleError);
+      });
   }
 
   loadConfigs();
