@@ -151,6 +151,7 @@ function buildTransactionQuery(options, posted) {
   filters.equals('project_id');
   filters.equals('trans_id');
   filters.equals('record_uuid');
+  filters.equals('currency_id');
 
   filters.custom('origin_id', 'p.origin_id IN (?)', [typeIds]);
 
