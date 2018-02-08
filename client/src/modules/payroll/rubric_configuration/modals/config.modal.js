@@ -2,10 +2,10 @@ angular.module('bhima.controllers')
   .controller('RubricConfigModalController', RubricConfigModalController);
 
 RubricConfigModalController.$inject = [
-  '$state', 'ConfigurationService', 'ModalService', 'NotifyService', 'appcache', 'RubricService',
+  '$state', 'ConfigurationService', 'NotifyService', 'appcache', 'RubricService',
 ];
 
-function RubricConfigModalController($state, Configs, ModalService, Notify, AppCache, Rubrics) {
+function RubricConfigModalController($state, Configs, Notify, AppCache, Rubrics) {
   var vm = this;
   vm.config = {};
 
@@ -43,21 +43,10 @@ function RubricConfigModalController($state, Configs, ModalService, Notify, AppC
   Rubrics.read()
     .then(function (rubrics) {
       vm.rubrics = rubrics;
-      vm.socialCares = rubrics.filter(function (item) {
-        return item.is_social_care === 1;
-      });
-
-      vm.taxes = rubrics.filter(function (item) {
-        return item.is_tax === 1;
-      });
-
-      vm.membershipFee = rubrics.filter(function (item) {
-        return item.is_membership_fee === 1;
-      });
-
-      vm.others = rubrics.filter(function (item) {
-        return item.is_tax !== 1 && item.is_social_care !== 1 && item.is_membership_fee !== 1;
-      });
+      vm.socialCares = rubrics.filter(item => item.is_social_care);
+      vm.taxes = rubrics.filter(item => item.is_tax);
+      vm.membershipFee = rubrics.filter(item => item.is_membership_fee);
+      vm.others = rubrics.filter(item => (item.is_tax !== 1 && item.is_social_care !== 1 && item.is_membership_fee !== 1));
     })
     .catch(Notify.handleError);
 
@@ -72,7 +61,7 @@ function RubricConfigModalController($state, Configs, ModalService, Notify, AppC
               unit.checked = true;
             }
           });
-        });        
+        });
       }
 
       if (vm.taxes.length) {
@@ -82,7 +71,7 @@ function RubricConfigModalController($state, Configs, ModalService, Notify, AppC
               unit.checked = true;
             }
           });
-        });        
+        });
       }
 
       if (vm.others.length) {
@@ -92,7 +81,7 @@ function RubricConfigModalController($state, Configs, ModalService, Notify, AppC
               unit.checked = true;
             }
           });
-        });        
+        });
       }
 
       if (vm.membershipFee.length) {
@@ -102,7 +91,7 @@ function RubricConfigModalController($state, Configs, ModalService, Notify, AppC
               unit.checked = true;
             }
           });
-        });        
+        });
       }
     })
     .catch(Notify.handleError);
@@ -193,7 +182,7 @@ function RubricConfigModalController($state, Configs, ModalService, Notify, AppC
       });
 
     rubricChecked = socialChecked.concat(taxChecked, otherChecked, membershipChecked);
-
+    
     return Configs.setRubrics(vm.stateParams.id, rubricChecked)
       .then(function () {
         Notify.success('FORM.INFO.UPDATE_SUCCESS');

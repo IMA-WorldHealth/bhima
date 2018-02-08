@@ -18,10 +18,8 @@ function ConfigurationController(Configs, ModalService,
 
   // bind methods
   vm.deleteConfig = deleteConfig;
-  vm.editConfig = editConfig;
   vm.toggleFilter = toggleFilter;
   vm.currencySymbol = Session.enterprise.currencySymbol;
-  vm.configRubric = configRubric;
 
   // global variables
   vm.gridApi = {};
@@ -86,16 +84,6 @@ function ConfigurationController(Configs, ModalService,
       })
       .catch(Notify.handleError);
     });
-  }
-
-  // update an existing Rubric Configuration
-  function editConfig(title) {
-    $state.go('configurationRubric.edit', { id : title.id });
-  }
-
-  // Set Configuration Rubric
-  function configRubric(config) {
-    $state.go('configurationRubric.config', { id : config.id });
   }
 
   loadConfigs();
