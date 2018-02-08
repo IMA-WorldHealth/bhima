@@ -7,9 +7,9 @@ angular.module('bhima.controllers')
 
 
 function OperatingConfigController($sce, Notify, SavedReports, AppCache, reportData, $state) {
-  var vm = this;
-  var cache = new AppCache('configure_operating');
-  var reportUrl = 'reports/finance/operating';
+  let vm = this;
+  let cache = new AppCache('configure_operating');
+  const reportUrl = 'reports/finance/operating';
   vm.reportDetails = {};
   vm.previewGenerated = false;
   checkCachedConfiguration();

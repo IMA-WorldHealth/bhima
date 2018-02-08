@@ -2,21 +2,23 @@ const q = require('q');
 const _ = require('lodash');
 const db = require('../../../../lib/db');
 const util = require('../../../../lib/util');
+const Tree = require('../../../../lib/Tree');
 const ReportManager = require('../../../../lib/ReportManager');
+
+const fiscal = require('../../fiscal');
 
 const TEMPLATE = './server/controllers/finance/reports/operating/report.handlebars';
 
 exports.document = document;
 
 function document(req, res, next) {
-
   const params = req.query;
 
   let docReport;
   const options = _.extend(req.query, {
-    filename: 'TREE.OPERATING_ACCOUNT',
-    csvKey: 'rows',
-    user: req.session.user,
+    filename : 'TREE.OPERATING_ACCOUNT',
+    csvKey : 'rows',
+    user : req.session.user,
   });
 
   try {
@@ -28,93 +30,95 @@ function document(req, res, next) {
 
 
   const queries = [];
-  // fiscal year ID
-  const id = params.fiscal;
+  let range;
+  const EXPENSE_ACCOUNT_TYPE = 5;
+  const INCOME_ACCOUNT_TYPE = 4;
+  const DECIMAL_PRECISION = 2; // ex: 12.4567 => 12.46
   
-  getDateRange(params).then(range => {
+  const getQuery = fiscal.accountBanlanceByTypeId;
 
+  const periods = {
+    periodFrom : params.periodFrom,
+    periodTo : params.periodTo,
+  };
+  
+  fiscal.getDateRangeFromPeriods(periods).then(dateRange => {
+    range = dateRange;
 
-    const typeExpense = `ACCOUNT.TYPES.EXPENSE`;
-    const typeRevenue = `ACCOUNT.TYPES.REVENUE`;
-    const totalRevenue = `SELECT SUM(r.amount) as total FROM (${getQuery(typeRevenue, id, range.dateFrom, range.dateTo)}) as r`;
-    const totalExpense = `SELECT SUM(r.amount) as total FROM (${getQuery(typeExpense, id, range.dateFrom, range.dateTo)}) as r`;
+    const totalIncome = `SELECT SUM(r.amount) as total FROM (${getQuery()}) as r`;
+    const totalExpense = `SELECT SUM(r.amount) as total FROM (${getQuery()}) as r`;
+    const expenseParams = [
+      params.fiscal,
+      range.dateFrom,
+      range.dateTo,
+      EXPENSE_ACCOUNT_TYPE,
+    ];
 
-    queries.push(db.exec(getQuery(typeExpense, id, range.dateFrom, range.dateTo)));
-    queries.push(db.exec(getQuery(typeRevenue, id, range.dateFrom, range.dateTo)));
-    queries.push(db.one(totalExpense));
-    queries.push(db.one(totalRevenue));
+    const incomeParams = [
+      params.fiscal,
+      range.dateFrom,
+      range.dateTo,
+      INCOME_ACCOUNT_TYPE,
+    ];
 
-    q.all(queries)
-      .then(results => {
-        const context = {
-          expense: results[0],
-          revenue: results[1],
-          totalRevenue: results[2].total,
-          totalExpense: results[3].total,
-          dateFrom: range.dateFrom,
-          dateTo: range.dateTo,
-        };
+    queries.push(db.exec(getQuery(), expenseParams));
+    queries.push(db.exec(getQuery(), incomeParams));
+    queries.push(db.one(totalExpense, expenseParams));
+    queries.push(db.one(totalIncome, incomeParams));
 
-        setPercent(context.expense, context.totalExpense);
-        setPercent(context.revenue, context.totalRevenue);
+    return q.all(queries);
+  })
+    .spread((expense, revenue, totalExpense, totalIncome) => {
+      const context = {
+        expense,
+        revenue,
+        totalExpense : totalExpense.total,
+        totalIncome : totalIncome.total,
+        dateFrom : range.dateFrom,
+        dateTo : range.dateTo,
+      };
+   
+      const revenueTree = new Tree(context.revenue);
+      revenueTree.filterByLeaf('type_id', INCOME_ACCOUNT_TYPE);
+      revenueTree.sumOnProperty('amount');
+      context.revenue = revenueTree.toArray();
 
-        // diff is the result in the report
-        const diff = (context.totalRevenue - context.totalExpense);
-        const isExpenseHigher = context.totalExpense > context.totalRevenue;
-        context.leftResult = isExpenseHigher ? diff : '';
-        context.rightResult = (!isExpenseHigher) ? diff : '';
+      const expenseTree = new Tree(context.expense);
+      expenseTree.filterByLeaf('type_id', EXPENSE_ACCOUNT_TYPE);
+      expenseTree.sumOnProperty('amount');
+      context.expense = expenseTree.toArray();
 
-        return docReport.render(context);
-      })
-      .then((result) => {
-        res.set(result.headers).send(result.report);
-      })
-      .catch(next)
-      .done();
+     
+      formatData(context.expense, context.totalExpense, DECIMAL_PRECISION);
+      formatData(context.revenue, context.totalIncome, DECIMAL_PRECISION);
 
-  });
+      // diff is the result in the report
+      const diff = util.roundDecimal((context.totalIncome - context.totalExpense), DECIMAL_PRECISION);
+      context.totalIncome = util.roundDecimal(context.totalIncome, DECIMAL_PRECISION);
+      context.totalExpense = util.roundDecimal(context.totalExpense, DECIMAL_PRECISION);
+      const isExpenseHigher = context.totalExpense < context.totalIncome;
+      // the result position is usefull for balancing
+      context.leftResult = isExpenseHigher ? diff : '';
+      context.rightResult = (!isExpenseHigher) ? diff : '';
+
+      return docReport.render(context);
+    })
+    .then((result) => {
+      res.set(result.headers).send(result.report);
+    })
+    .catch(next)
+    .done();
 }
 
-// set the percentage of each amoun's row
-function setPercent(result, total) {
+// set the percentage of each amoun's row,
+// round amounts
+function formatData(result, total, decimalPrecision) {
   const _total = (total === 0) ? 1 : total;
   return result.forEach(row => {
-    row.percent = util.roundDecimal(Math.abs((row.amount / _total) * 100), 2);
+    if (row.depth < 2) {
+      row.percent = util.roundDecimal(Math.abs((row.amount / _total) * 100), decimalPrecision);
+    }
+    row.amount = util.roundDecimal(row.amount, decimalPrecision);
+    row.title = row.depth === 1;
   });
-}
-
-/**
- * this function creates a query to get account amount by a certain type
- * @param {*} type is the account_type translation_key
- */
-function getQuery(type, fiscalId, startDate, endDate) {
-
-  return `
-    SELECT ac.number, ac.label, ac.parent, act.translation_key, SUM(pt.credit - pt.debit) as amount
-    FROM period_total as pt
-    JOIN account as ac ON ac.id = pt.account_id
-    JOIN account_type as act ON act.id = ac.type_id
-    JOIN period as p ON  p.id = pt.period_id
-    JOIN fiscal_year as fy ON fy.id = p.fiscal_year_id
-    WHERE fy.id = ${fiscalId} AND 
-      pt.period_id IN (
-        SELECT id FROM period WHERE start_date>= ${db.escape(startDate)} AND end_date<=${db.escape(endDate)}   
-      )
-      AND act.translation_key = ${db.escape(type)}
-    GROUP BY pt.account_id 
-  `;
-}
-
-
-function getDateRange(params) {
-  const sql =
-    `
-    SELECT
-      MIN(start_date) AS dateFrom, MAX(end_date) AS dateTo
-    FROM
-      period
-    WHERE
-      period.id IN (${params.periodFrom}, ${params.periodTo})`;
-
-  return db.one(sql);
 }

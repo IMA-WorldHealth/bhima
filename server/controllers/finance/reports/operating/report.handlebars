@@ -38,7 +38,9 @@
                   {{#each this.expense}}
                   <tr>
                     <td class="text-right">{{number}}</td>
-                    <td>{{label}}</td>
+                    <td {{#if title}}style="font-weight:bold; text-align:center;"{{/if}}>
+                      {{label}}
+                    </td>
                     <td class="text-right">{{amount}}</td>
                     <td class="text-right">{{percent}}</td>
                   </tr>
@@ -58,10 +60,12 @@
                   {{#each this.revenue}}
                   <tr>
                     <td class="text-right">{{number}}</td>
-                    <td>{{label}}</td>
+                    <td {{#if title}}style="font-weight:bold; text-align:center;"{{/if}}>
+                      {{label}}
+                    </td>
                     <td class="text-right">{{amount}}</td>
                     <td class="text-right">{{percent}}</td>
-                    
+  
                   </tr>
                   {{/each}}
                 </tbody>
@@ -89,7 +93,7 @@
                   {{this.totalExpense}}
                 </td>
                  <td class="text-right">
-                    {{this.totalRevenue}}
+                    {{this.totalIncome}}
                 </td>
               </tr>
               <tr>
@@ -108,10 +112,10 @@
                   {{ translate 'FORM.LABELS.BALANCE'}}
                 </th>
                 <td class="text-right">
-                  {{this.totalRevenue}}
+                  {{this.totalIncome}}
                 </td>
                  <td class="text-right">
-                    {{this.totalRevenue}}
+                    {{this.totalIncome}}
                 </td>
               </tr>
             

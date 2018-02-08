@@ -183,12 +183,11 @@ function unlinkp(file) {
 }
 
 /**
- * arround a decima
+ * arround a decimal
  * @param {*} number 
  * @param {*} precision 
  */
-function roundDecimal(number, precision) {
-  var _precision = precision || 4;
-  var tmp = Math.pow(10, _precision);
-  return Math.round(number * tmp) / tmp;
+function roundDecimal(number, precision = 4) {
+  const base = Math.pow(10, precision);
+  return Math.round(number * base) / base;
 }
