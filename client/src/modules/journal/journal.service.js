@@ -14,8 +14,8 @@ JournalService.$inject = [
  * also includes methods to open associated modals.
  */
 function JournalService(Api, AppCache, Filters, Periods, Modal, bhConstants, Transactions) {
-  var URL = '/journal/';
-  var service = new Api(URL);
+  const URL = '/journal/';
+  const service = new Api(URL);
 
   service.grid = grid;
   service.saveChanges = saveChanges;
@@ -29,7 +29,7 @@ function JournalService(Api, AppCache, Filters, Periods, Modal, bhConstants, Tra
    * this method will always request aggregate information
    */
   function grid(id, parameters) {
-    var gridOptions = angular.extend({ aggregates : 1 }, parameters);
+    const gridOptions = angular.extend({ aggregates : 1 }, parameters);
     return this.read(id, gridOptions);
   }
 
@@ -61,10 +61,10 @@ function JournalService(Api, AppCache, Filters, Periods, Modal, bhConstants, Tra
   //                - new rows (array)
   //                - removed rows (array)
   function saveChanges(entity, changes) {
-    var added = angular.copy(entity.newRows);
+    const added = angular.copy(entity.newRows);
 
     // format request for server
-    var saveRequest = {
+    const saveRequest = {
       changed : changes,
       added   : sanitiseNewRows(added),
       removed : entity.removedRows,
@@ -75,7 +75,7 @@ function JournalService(Api, AppCache, Filters, Periods, Modal, bhConstants, Tra
   }
 
   function sanitiseNewRows(rows) {
-    rows.data.forEach(function (row) {
+    rows.data.forEach((row) => {
       // delete view data required by journal grid
       delete row.transaction;
       delete row.hrRecord;
@@ -84,12 +84,13 @@ function JournalService(Api, AppCache, Filters, Periods, Modal, bhConstants, Tra
       delete row.display_name;
       delete row.posted;
     });
+
     return rows.data;
   }
 
   // set up base filters
-  var filterCache = new AppCache('journal-filters');
-  var journalFilters = new Filters();
+  const filterCache = new AppCache('journal-filters');
+  const journalFilters = new Filters();
 
   service.filters = journalFilters;
 
@@ -122,10 +123,10 @@ function JournalService(Api, AppCache, Filters, Periods, Modal, bhConstants, Tra
 
   function assignDefaultFilters() {
     // get the keys of filters already assigned - on initial load this will be empty
-    var assignedKeys = Object.keys(journalFilters.formatHTTP());
+    const assignedKeys = Object.keys(journalFilters.formatHTTP());
 
     // assign default period filter
-    var periodDefined =
+    const periodDefined =
       service.util.arrayIncludes(assignedKeys, ['period', 'custom_period_start', 'custom_period_end']);
 
     if (!periodDefined) {
@@ -156,7 +157,8 @@ function JournalService(Api, AppCache, Filters, Periods, Modal, bhConstants, Tra
   };
 
   /**
-   * openSearchModal
+   * @method openSearchModal
+   *
    * @param {object} filters
    * @param {object} options - { hasDefaultAccount: true } define other options
    */
@@ -166,14 +168,14 @@ function JournalService(Api, AppCache, Filters, Periods, Modal, bhConstants, Tra
       controller :  'JournalSearchModalController as ModalCtrl',
       backdrop : 'static',
       resolve : {
-        filters : function () { return filters; },
-        options : function () { return options || {}; },
+        filters : () => filters,
+        options : () => options || {},
       },
     }).result;
   }
 
-
-  // @TODO(sfount) move this to a service that can easily be accessed by any module that will show a transactions details
+  // @TODO(sfount) move this to a service that can easily be accessed by any
+  // module that will show a transactions details.
   function openTransactionEditModal(transactionUuid, readOnly) {
     return Modal.open({
       templateUrl : 'modules/journal/modals/editTransaction.modal.html',
@@ -182,8 +184,8 @@ function JournalService(Api, AppCache, Filters, Periods, Modal, bhConstants, Tra
       keyboard : false,
       size : 'lg',
       resolve : {
-        transactionUuid : function () { return transactionUuid; },
-        readOnly : function () { return readOnly; },
+        transactionUuid : () => transactionUuid,
+        readOnly : () => readOnly,
       },
     }).result;
   }

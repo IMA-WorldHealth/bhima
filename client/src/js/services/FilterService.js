@@ -14,23 +14,33 @@ function FilterService() {
   };
 
   FilterList.prototype._resetCustomFilters = function resetCustomFilters() {
-    this._filterActiveFilters().forEach(function (filter) {
+    this._filterActiveFilters().forEach(filter => {
       // only by default remove custom values
       if (!filter._isDefault) {
         this.resetFilterState(filter._key);
       }
-    }.bind(this));
+    });
   };
 
   // @TODO registerDefaultFilter and registerCustomFilter could use the same underlying function
   //       with a toggle between the array to populate and the default value
   FilterList.prototype.registerDefaultFilters = function registerDefaultFilters(filterDefinitions) {
-    var formattedFilters = filterDefinitions.map(function (filterDefinition) {
-      var filter = new Filter(filterDefinition.key, filterDefinition.label, filterDefinition.valueFilter, filterDefinition.comparitor);
+    const formattedFilters = filterDefinitions.map(filterDefinition => {
+      const filter = new Filter(
+        filterDefinition.key,
+        filterDefinition.label,
+        filterDefinition.valueFilter,
+        filterDefinition.comparitor
+      );
+
       filter.setDefault(true);
 
-      if (filterDefinition.defaultValue) {
+      if (angular.isDefined(filterDefinition.defaultValue)) {
         filter.setValue(filterDefinition.defaultValue);
+      }
+
+      if (angular.isDefined(filterDefinition.cacheable)) {
+        filter.setCacheable(filterDefinition.cacheable);
       }
 
       return filter;
@@ -42,9 +52,20 @@ function FilterService() {
   };
 
   FilterList.prototype.registerCustomFilters = function registerCustomFilters(filterDefinitions) {
-    var formattedFilters = filterDefinitions.map(function (filterDefinition) {
-      var filter = new Filter(filterDefinition.key, filterDefinition.label, filterDefinition.valueFilter, filterDefinition.comparitor);
+    const formattedFilters = filterDefinitions.map(filterDefinition => {
+      const filter = new Filter(
+        filterDefinition.key,
+        filterDefinition.label,
+        filterDefinition.valueFilter,
+        filterDefinition.comparitor
+      );
+
       filter.setDefault(false);
+
+      if (angular.isDefined(filterDefinition.cacheable)) {
+        filter.setCacheable(filterDefinition.cacheable);
+      }
+
       return filter;
     });
 
@@ -66,9 +87,9 @@ function FilterService() {
   // { key : value }
   // ]
   FilterList.prototype.assignFilters = function assignFilters(valueList) {
-    valueList.forEach(function (valueMap) {
+    valueList.forEach(valueMap => {
       this.assignFilter(valueMap.key, valueMap.value, valueMap.displayValue, valueMap.comparitor);
-    }.bind(this));
+    });
   };
 
   // alias for `assignFilters`, clears the currently active filters before
@@ -80,25 +101,23 @@ function FilterService() {
 
   // uses angular.copy() to break references to old values
   FilterList.prototype.replaceFiltersFromState = function replaceFiltersFromState(stateFilterList) {
-    var changes = angular.copy(stateFilterList);
+    const changes = angular.copy(stateFilterList);
     this.replaceFilters(changes);
   };
 
   // return filters for the view - this method will always be compatible with the bhFilter component
   FilterList.prototype.formatView = function formatView() {
-    var activeFilters = this._filterActiveFilters();
-    var activeKeys = activeFilters.map(function (filter) {
-      return filter._key;
-    });
+    const activeFilters = this._filterActiveFilters();
+    const activeKeys = activeFilters.map(filter => filter._key);
 
     function keysInActive(filter) {
-      return activeKeys.indexOf(filter._key) !== -1;
+      return activeKeys.includes(filter._key);
     }
 
     // parse into two lists
     return {
-      defaultFilters: this._defaultFilters.filter(keysInActive),
-      customFilters: this._customFilters.filter(keysInActive),
+      defaultFilters : this._defaultFilters.filter(keysInActive),
+      customFilters : this._customFilters.filter(keysInActive),
     };
   };
 
@@ -106,11 +125,11 @@ function FilterService() {
   // sendClientTimestamp - this will send an attribute hidden to the user
   // returns a JSON object with active filters
   FilterList.prototype.formatHTTP = function formatHTTP(hasClientTimestamp) {
-    var clientTimestamp = angular.isDefined(hasClientTimestamp) ? hasClientTimestamp : false;
-    var activeFilters = this._filterActiveFilters();
+    const clientTimestamp = angular.isDefined(hasClientTimestamp) ? hasClientTimestamp : false;
+    const activeFilters = this._filterActiveFilters();
 
     // format current filters correctly
-    var httpFilters = activeFilters.reduce(function (aggregate, filter) {
+    const httpFilters = activeFilters.reduce((aggregate, filter) => {
       aggregate[filter._key] = filter._value;
       return aggregate;
     }, {});
@@ -124,38 +143,36 @@ function FilterService() {
 
   // returns an array of labels and overriden labels that is built for the FilterParser API
   FilterList.prototype.formatHTTPLabels = function formatHTTPLabels() {
-    var activeFilters = this._filterActiveFilters();
-
-    return activeFilters.map(function (filter) {
-      return filter._key.concat(':', filter._label);
-    });
+    const activeFilters = this._filterActiveFilters();
+    return activeFilters.map(filter => `${filter._key}:${filter._label}`);
   };
 
   FilterList.prototype.formatCache = function formatCache() {
-    return angular.copy(this._filterIndex);
-  };
+    const copy = angular.copy(this._filterIndex);
 
-  FilterList.prototype.removeUnCachableFilters = function removeUnCachableFilters(filters) {
-    filters.forEach(filter => {
-      if (angular.isDefined(filter.cacheable) && filter.cachable === 0) {
-        delete this._filterIndex[filter.key];
+    // reset all values of filters that should not be cached
+    Object.values(copy).forEach(filter => {
+      if (!filter.isCacheable()) {
+        filter.setValue(null, null);
       }
     });
+
+    return copy;
   };
 
   // replaces current filters with filters from cache
   FilterList.prototype.loadCache = function loadCache(storedCache) {
-    Object.keys(storedCache).forEach(function (key) {
-      var cached = storedCache[key];
-      var currentFilter = this._filterIndex[key];
+    Object.keys(storedCache).forEach(key => {
+      const cached = storedCache[key];
+      const currentFilter = this._filterIndex[key];
       if (currentFilter) {
         currentFilter.setValue(cached._value, cached._displayValue);
       }
-    }.bind(this));
+    });
   };
 
   FilterList.prototype._indexList = function indexList(index, list) {
-    index = list.reduce(function (aggregateIndex, filterDefinition) {
+    list.reduce((aggregateIndex, filterDefinition) => {
       aggregateIndex[filterDefinition._key] = filterDefinition;
       return aggregateIndex;
     }, index);
@@ -163,15 +180,16 @@ function FilterService() {
 
   // returns a flat array of filters that have values (and should be applied)
   FilterList.prototype._filterActiveFilters = function filterActiveFilters() {
-    var filtered = [];
+    const filtered = [];
 
-    Object.keys(this._filterIndex).forEach(function (key) {
-      var filter = this._filterIndex[key];
+    Object.keys(this._filterIndex).forEach(key => {
+      const filter = this._filterIndex[key];
 
       if (filter._value !== null && filter._value !== undefined && filter._value.length !== '') {
         filtered.push(angular.copy(filter));
       }
-    }.bind(this));
+    });
+
     return filtered;
   };
 
@@ -186,8 +204,8 @@ function FilterService() {
    * @returns {Object} - { key : displayValue }
    */
   FilterList.prototype.getDisplayValueMap = function getDisplayValueMap() {
-    var viewFilters = this.formatView().customFilters;
-    return viewFilters.reduce(function (o, filter) {
+    const viewFilters = this.formatView().customFilters;
+    return viewFilters.reduce((o, filter) => {
       o[filter._key] = filter.displayValue;
       return o;
     }, {});
@@ -210,9 +228,18 @@ function Filter(key, label, valueFilter, comparitor) {
   this._isDefault = null;
   this._displayValue = null;
 
-  this.setDefault = function setDefault(value) {
+  // default to cacheable filters
+  this._isCacheable = true;
+
+  this.setDefault = (value) => {
     this._isDefault = value;
   };
+
+  this.setCacheable = (bool) => {
+    this._isCacheable = bool;
+  };
+
+  this.isCacheable = () => this._isCacheable;
 
   this.setValue = function setValue(value, displayValue) {
     this._value = value;
