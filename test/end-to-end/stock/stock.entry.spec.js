@@ -55,8 +55,6 @@ function StockEntryTests() {
       { label : 'ASP-FIVE', quantity : 500, expiration_date : '2022-09-15' },
     ];
 
-    page.addRows(1);
-
     page.setItem(0, 'Quinine');
 
     page.setLots(0, lots, false, 1500, 0.09);
