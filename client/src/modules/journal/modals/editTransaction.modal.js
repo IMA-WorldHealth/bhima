@@ -5,11 +5,12 @@ JournalEditTransactionController.$inject = [
   'JournalService', 'Store', 'TransactionService', 'TransactionTypeService', '$uibModalInstance',
   'transactionUuid', 'readOnly', 'uiGridConstants', 'uuid', 'util', 'moment',
   'ModalService', 'CurrencyService', 'ExchangeRateService', 'SessionService',
+  'NotifyService',
 ];
 
 function JournalEditTransactionController(
   Journal, Store, TransactionService, TransactionType, Modal, transactionUuid, readOnly, uiGridConstants,
-  uuid, util, moment, ModalService, CurrencyService, ExchangeRateService, SessionService
+  uuid, util, moment, ModalService, CurrencyService, ExchangeRateService, SessionService, Notify
 ) {
   var gridApi = {};
   var vm = this;
@@ -377,6 +378,10 @@ function JournalEditTransactionController(
           removed : getGridRowsUuid(),
         };
         Modal.close(deleteTransactionResult);
+      })
+      .catch((err) => {
+        Notify.handleError(err);
+        Modal.close();
       });
   };
 
