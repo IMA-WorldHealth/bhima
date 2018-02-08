@@ -115,9 +115,6 @@ function StockEntryController(
     mapEntry[entryType.label].find();
 
     vm.entryOption = entryType && entryType.label !== 'purchase';
-    if (vm.gridOptions.data.length === 0) {
-      vm.addItems(1);
-    }
   }
 
   // set initialized to true on the passed item
@@ -239,11 +236,17 @@ function StockEntryController(
   function handleIntegrationSelection() {
     var description = $translate.instant('STOCK.RECEPTION_INTEGRATION');
     initSelectedEntity(description);
+    if (vm.gridOptions.data.length === 0) {
+      vm.addItems(1);
+    }
   }
 
   function handleDonationSelection() {
     var description = $translate.instant('STOCK.RECEPTION_DONATION');
     initSelectedEntity(description);
+    if (vm.gridOptions.data.length === 0) {
+      vm.addItems(1);
+    }
   }
 
   // fill the grid with the inventory contained in the purchase order
