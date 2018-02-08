@@ -8,11 +8,10 @@
  * @todo Pass authenticate and authorize middleware down through controllers,
  * allowing for modules to subscribe to different levels of authority
  *
- * @requires winston
  * @requires uploader
  */
 
-const winston = require('winston');
+const debug = require('debug')('app');
 const upload = require('../lib/uploader');
 
 // unclassified routes
@@ -93,7 +92,7 @@ const referenceLookup = require('../lib/referenceLookup');
 
 // expose routes to the server.
 exports.configure = function configure(app) {
-  winston.debug('Configuring routes');
+  debug('configuring routes.');
 
   // exposed to the outside without authentication
   app.get('/languages', languages.list);

@@ -17,6 +17,7 @@ const _ = require('lodash');
 const helmet = require('helmet');
 
 const debug = require('debug')('app');
+const debugHTTP = require('debug')('http');
 
 const interceptors = require('./interceptors');
 const { Unauthorized } = require('../lib/errors');
@@ -38,7 +39,7 @@ exports.configure = function configure(app) {
   // const isProduction = (process.env.NODE_ENV === 'production');
   const isProduction = false;
 
-  debug('Configuring middleware.');
+  debug('configuring middleware.');
 
   // helmet guards
   app.use(helmet());
@@ -76,13 +77,13 @@ exports.configure = function configure(app) {
   app.use(session(sess));
 
   // provide a stream for morgan to write to
-  winston.stream = {
-    write : message => winston.silly(message.trim()),
+  const stream = {
+    write : message => debugHTTP(message.trim()),
   };
 
   // http logger setup
   // options: combined | common | dev | short | tiny
-  app.use(morgan('combined', { stream : winston.stream }));
+  app.use(morgan('short', { stream }));
 
   // public static directories include the entire client and the uploads
   // directory.

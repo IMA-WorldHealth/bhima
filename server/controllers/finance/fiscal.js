@@ -11,11 +11,11 @@
 
 const q = require('q');
 const _ = require('lodash');
-const uuid = require('uuid/v4');
 const db = require('../../lib/db');
 const Transaction = require('../../lib/db/transaction');
 const NotFound = require('../../lib/errors/NotFound');
-const BadRequest = require('../../lib/errors/BadRequest');
+
+const debug = require('debug')('FiscalYear');
 
 // Account Service
 const AccountService = require('./accounts');
@@ -162,7 +162,9 @@ function create(req, res, next) {
  * Returns the detail of a single Fiscal Year
  */
 function detail(req, res, next) {
-  const id = req.params.id;
+  const { id } = req.params;
+
+  debug(`#detail() looking up FY${id}.`);
 
   lookupFiscalYear(id)
     .then((record) => {
@@ -176,7 +178,7 @@ function detail(req, res, next) {
  * Updates a fiscal year details (particularly id)
  */
 function update(req, res, next) {
-  const id = req.params.id;
+  const { id } = req.params;
   const sql = 'UPDATE fiscal_year SET ? WHERE id = ?';
   const queryData = req.body;
 
@@ -187,6 +189,8 @@ function update(req, res, next) {
 
   // remove the id before updating (if the ID exists)
   delete queryData.id;
+
+  debug(`#update() updating column ${Object.keys(queryData)} on FY${id}.`);
 
   lookupFiscalYear(id)
     .then(() => db.exec(sql, [queryData, id]))
@@ -200,11 +204,13 @@ function update(req, res, next) {
  * Remove a fiscal year details (particularly id)
  */
 function remove(req, res, next) {
-  const id = req.params.id;
+  const { id } = req.params;
   const sqlDelFiscalYear = 'DELETE FROM fiscal_year WHERE id = ?;';
   const sqlDelPeriods = 'DELETE FROM period WHERE fiscal_year_id = ?;';
 
   const transaction = new Transaction(db);
+
+  debug(`#remove() deleting FY${id}.`);
 
   transaction
     .addQuery(sqlDelPeriods, [id])
@@ -230,8 +236,10 @@ function remove(req, res, next) {
  * the period must be given
  */
 function getBalance(req, res, next) {
-  const id = req.params.id;
+  const { id } = req.params;
   const period = req.params.period_number;
+
+  debug(`#getBalance() looking up balance for FY${id} and period ${period}.`);
 
   lookupBalance(id, period)
     .then((rows) => {
@@ -269,7 +277,7 @@ function lookupBalance(fiscalYearId, periodNumber) {
       if (!rows.length) {
         throw new NotFound(`Could not find the period ${periodNumber} for the fiscal year with id ${fiscalYearId}.`);
       }
-      glb.period = rows[0];
+      [glb.period] = rows;
       return db.exec(sql, [fiscalYearId, periodNumber]);
     })
     .then((rows) => {
@@ -307,9 +315,14 @@ function lookupBalance(fiscalYearId, periodNumber) {
  * set the opening balance for a specified fiscal year
  */
 function setOpeningBalance(req, res, next) {
-  const id = req.params.id;
+  const {
+    id,
+  } = req.params;
+
+  const { accounts } = req.body.params;
   const fiscalYear = req.body.params.fiscal;
-  const accounts = req.body.params.accounts;
+
+  debug(`#setOpeningBalance() setting balance for FY${id}.`);
 
   // check for previous fiscal year
   hasPreviousFiscalYear(id)
@@ -438,12 +451,6 @@ function notNullBalance(array, exception) {
   return exception ? array : array.filter(item => (item.debit !== 0 || item.credit !== 0));
 }
 
-const sumCreditsMinusDebits = (aggregate, record) =>
-  aggregate + (record.credit - record.debit);
-
-const sumDebitsMinusCredits = (aggregate, record) =>
-  aggregate + (record.debit - record.credit);
-
 /**
  * @function closing
  * @description closing a fiscal year
@@ -453,178 +460,15 @@ const sumDebitsMinusCredits = (aggregate, record) =>
 function closing(req, res, next) {
   const { id } = req.params;
   const accountId = req.body.params.account_id;
-  const exploitation = {};
-  const result = {};
-  let fiscal;
-  let period;
-  let voucher;
-  let sql;
 
-  // query fiscal year
-  sql = 'SELECT id, number_of_months, end_date FROM fiscal_year WHERE id = ?;';
+  const transaction = db.transaction();
 
-  db.one(sql, [id], id, 'fiscal year')
-    .then((row) => {
-      fiscal = row;
+  transaction
+    .addQuery('CALL CloseFiscalYear(?, ?)', [id, accountId]);
 
-      // query period
-      sql = 'SELECT p.id FROM period p WHERE p.fiscal_year_id = ? AND p.number = ?;';
-      return db.exec(sql, [id, fiscal.number_of_months + 1]);
-    })
-    .then((rows) => {
-      if (!rows) {
-        throw new NotFound(`Could not find the period for the fiscal year with id ${id} and number ${fiscal.number_of_months + 1}.`);
-      }
-      [period] = rows;
-    })
+  transaction.execute()
     .then(() => {
-      const sqlProfitAccounts = `
-        SELECT a.id, SUM(pt.credit) AS credit, SUM(pt.debit) AS debit
-        FROM period_total AS pt
-        JOIN account AS a ON pt.account_id = a.id
-        JOIN account_type AS at ON a.type_id = at.id
-        WHERE (pt.fiscal_year_id = ?) AND at.type = 'revenue'
-        GROUP BY a.id;
-      `;
-
-      const sqlChargeAccounts = `
-        SELECT a.id, SUM(pt.credit) AS credit, SUM(pt.debit) AS debit
-        FROM period_total AS pt
-        JOIN account AS a ON pt.account_id = a.id
-        JOIN account_type AS at ON a.type_id = at.id
-        WHERE (pt.fiscal_year_id = ?) AND at.type = 'expense'
-        GROUP BY a.id;
-      `;
-
-      return q.all([
-        db.exec(sqlProfitAccounts, [id]),
-        db.exec(sqlChargeAccounts, [id]),
-      ]);
-    })
-    .spread((profitAccounts, chargeAccounts) => {
-      exploitation.profit = notNullBalance(profitAccounts);
-      exploitation.charge = notNullBalance(chargeAccounts);
-
-      // profit
-      result.profit = exploitation.profit.reduce(sumCreditsMinusDebits, 0);
-
-      // charge
-      result.charge = exploitation.charge.reduce(sumDebitsMinusCredits, 0);
-
-      // result
-      result.global = result.profit - result.charge;
-    })
-    .then(() => {
-      const sqlInsertVoucherItem = `
-        INSERT INTO voucher_item (uuid, account_id, debit, credit, voucher_uuid, document_uuid)
-        VALUES (?, ?, ?, ?, ?, ?);
-      `;
-
-      // util variables
-      const projectId = req.session.project.id;
-      const currencyId = req.session.enterprise.currency_id;
-      const userId = req.session.user.id;
-      const transaction = db.transaction();
-
-      voucher = {
-        uuid : db.bid(uuid()),
-        date : fiscal.end_date,
-        project_id : projectId,
-        currency_id : currencyId,
-        user_id : userId,
-        type_id : null,
-        description : 'closing fiscal year - Sold Exploitation Accounts',
-        amount : 0, // not necessary
-      };
-
-      const voucherDocumentUuid = db.bid(uuid());
-
-      // insert voucher
-      transaction.addQuery('INSERT INTO voucher SET ?', voucher);
-
-      // sold the profit exploitation
-      exploitation.profit.forEach((item) => {
-        // profit has creditor sold
-        const value = item.credit - item.debit;
-
-        // inverted values for solding
-        const debit = value >= 0 ? Math.abs(value) : 0;
-        const credit = value >= 0 ? 0 : Math.abs(value);
-
-        const profitParams = [
-          db.bid(uuid()),
-          item.id,
-          debit,
-          credit,
-          voucher.uuid,
-          voucherDocumentUuid,
-        ];
-
-        transaction.addQuery(sqlInsertVoucherItem, profitParams);
-      });
-
-      // sold the charge exploitation
-      exploitation.charge.forEach((item) => {
-        // charge has debtor sold
-        const value = item.debit - item.credit;
-
-        // inverted values for solding
-        const debit = value > 0 ? 0 : Math.abs(value);
-        const credit = value > 0 ? Math.abs(value) : 0;
-
-        const chargeParams = [
-          db.bid(uuid()),
-          item.id,
-          debit,
-          credit,
-          voucher.uuid,
-          voucherDocumentUuid,
-        ];
-
-        transaction.addQuery(sqlInsertVoucherItem, chargeParams);
-      });
-
-      // be sure to have accounts to sold, either profit or charge
-      if (exploitation.profit.length || exploitation.charge.length) {
-        // the result: profit - charge
-        const value = result.global;
-
-        // debit if benefits or credit if loss
-        const debit = value >= 0 ? 0 : Math.abs(value);
-        const credit = value >= 0 ? Math.abs(value) : 0;
-
-        const resultParams = [
-          db.bid(uuid()),
-          accountId,
-          debit,
-          credit,
-          voucher.uuid,
-          voucherDocumentUuid,
-        ];
-
-        transaction.addQuery(sqlInsertVoucherItem, resultParams);
-      }
-
-      // update the period to the period N+1 (13)
-      const sqlUpdateJournalPeriod = 'UPDATE posting_journal SET period_id = ? WHERE reference_uuid = ?';
-
-      // post voucher and close the fiscal year
-      transaction
-        .addQuery('CALL PostVoucher(?);', [voucher.uuid]) // post voucher into the journal
-        .addQuery(sqlUpdateJournalPeriod, [period.id, voucherDocumentUuid]) // update the period to 13
-        .addQuery('UPDATE fiscal_year SET locked = 1 WHERE id = ?;', [id]); // lock the fiscal year
-
-      return transaction.execute();
-    })
-    .then((rows) => {
-      const queryUpdateFiscal = rows.pop();
-
-      // Note: changedRows is generated from the server message.
-      // It is not correctly parsed and set in multi-langual environments.
-      if (!queryUpdateFiscal.affectedRows) {
-        throw new BadRequest('FISCAL.FAILURE_CLOSING', 'Failure occurs during the closing of the fiscal year');
-      }
-      res.status(200).json({ id });
+      res.status(200).json({ id : parseInt(id, 10) });
     })
     .catch(next)
     .done();
