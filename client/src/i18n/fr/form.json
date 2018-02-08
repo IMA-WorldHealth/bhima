@@ -3,6 +3,7 @@
         "BUTTONS": {
             "ACTIONS": "Actions",
             "ADD": "Ajouter",
+            "ADD_ACCOUNT_CONFIGURATION": "Ajouter une configuration des comptes",
             "BACK": "Précédent",
             "CANCEL": "Annuler",
             "CANCEL_EDIT": "Annuler Modifier",

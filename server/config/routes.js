@@ -26,7 +26,6 @@ const install = require('../controllers/install');
 const users = require('../controllers/admin/users');
 const projects = require('../controllers/admin/projects');
 const enterprises = require('../controllers/admin/enterprises');
-const rubrics = require('../controllers/payroll/rubrics');
 const services = require('../controllers/admin/services');
 const suppliers = require('../controllers/admin/suppliers');
 const functions = require('../controllers/admin/functions');
@@ -37,6 +36,10 @@ const iprTax = require('../controllers/admin/iprTax');
 const languages = require('../controllers/admin/languages');
 const locations = require('../controllers/admin/locations');
 const groups = require('../controllers/groups');
+
+// payroll routes
+const rubrics = require('../controllers/payroll/rubrics');
+const accountConfig = require('../controllers/payroll/accounts');
 
 // medical routes
 const patients = require('../controllers/medical/patients');
@@ -579,13 +582,19 @@ exports.configure = function configure(app) {
   app.put('/iprTax/:id', iprTax.update);
   app.delete('/iprTax/:id', iprTax.delete);
 
-
   //IPR TAX CONFIG
   app.get('/iprTaxConfig', iprTax.listConfig);
   app.get('/iprTaxConfig/:id', iprTax.detailConfig);
   app.post('/iprTaxConfig', iprTax.createConfig);
   app.put('/iprTaxConfig/:id', iprTax.updateConfig);
   app.delete('/iprTaxConfig/:id', iprTax.deleteConfig);
+
+  // account payroll Configuration api
+  app.get('/account_config', accountConfig.list);
+  app.get('/account_config/:id', accountConfig.detail);
+  app.post('/account_config', accountConfig.create);
+  app.put('/account_config/:id', accountConfig.update);
+  app.delete('/account_config/:id', accountConfig.delete);
 
   // creditor groups API
   app.post('/creditors/groups', creditorGroups.create);

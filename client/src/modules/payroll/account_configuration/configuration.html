@@ -1,0 +1,45 @@
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static" translate> TREE.ADMIN </li>
+      <li class="title" translate> TREE.PAYROLL_ACCOUNT_CONFIGURATION </li>
+    </ol>
+
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <button class="btn btn-default text-capitalize" id="create" ui-sref="configurationAccount.create" data-method="create">
+          <span class="fa fa-plus"></span> <span translate>FORM.BUTTONS.ADD_ACCOUNT_CONFIGURATION</span>
+        </button>
+      </div>
+
+      <div class="toolbar-item">
+        <button
+          type="button"
+          ng-click="ConfigurationCtrl.toggleFilter()"
+          data-method="filter"
+          class="btn btn-default"
+          ng-class="{ 'btn-info' : ConfigurationCtrl.filterEnabled }">
+          <i class="fa fa-filter"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- main content -->
+<div class="flex-content">
+  <div class="container-fluid">
+    <div id="account-config-grid"
+      ui-grid="ConfigurationCtrl.gridOptions"
+      class="grid-full-height"
+      ui-grid-auto-resize
+      ui-grid-resize-columns>
+
+      <bh-grid-loading-indicator
+        loading-state="ConfigurationCtrl.loading"
+        empty-state="ConfigurationCtrl.gridOptions.data.length === 0"
+        error-state="ConfigurationCtrl.hasError">
+      </bh-grid-loading-indicator>
+    </div>
+  </div>
+</div>
