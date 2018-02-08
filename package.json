@@ -1,6 +1,6 @@
 {
   "name": "bhima",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "A rural hospital information management system.",
   "main": "npm run build",
   "scripts": {
@@ -15,7 +15,7 @@
     "test:server-unit": "./node_modules/.bin/mocha --recursive --exit test/server-unit",
     "build": "./node_modules/.bin/gulp build",
     "build:db": "./sh/build-database.sh",
-    "build:clean" : "./sh/build-init-database.sh",
+    "build:clean": "./sh/build-init-database.sh",
     "watch": "./node_modules/.bin/gulp watch-client",
     "release": "./node_modules/.bin/standard-version",
     "snyk-protect": "snyk protect",
