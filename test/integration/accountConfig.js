@@ -7,7 +7,7 @@ const helpers = require('./helpers');
  *
  * This test suite implements full CRUD on the /payroll/account_configuration  HTTP API endpoint.
  */
-describe.only('(/payroll/account_configuration) The /payroll/account_configuration  API endpoint', function () {
+describe('(/payroll/account_configuration) The /payroll/account_configuration  API endpoint', function () {
   // Account Payroll Configuration we will add during this test suite.
 
   const accountConfig = {
