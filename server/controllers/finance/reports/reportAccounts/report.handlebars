@@ -52,9 +52,9 @@
         {{#each transactions}}
           <tr>
             <td>{{date this.trans_date}}</td>
-            <td>{{this.trans_id}}</td>
-            <td>{{this.document_reference}}</td>
-            <td style="max-width : 200px; white-space : nowrap; overflow : hidden; text-overflow : ellipsis;">{{this.description}}</td>
+            <td title="{{this.trans_id}}">{{this.trans_id}}</td>
+            <td title="{{this.document_reference}}">{{this.document_reference}}</td>
+            <td style="max-width : 200px; white-space : nowrap; overflow : hidden; text-overflow : ellipsis;" title="{{this.description}}">{{this.description}}</td>
             <td class="text-right">
               {{#if ../useOriginalTransactionCurrency}}
                 {{#if this.debit}}
