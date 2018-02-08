@@ -2,18 +2,16 @@ angular.module('bhima.controllers')
   .controller('FiscalOpeningBalanceController', FiscalOpeningBalanceController);
 
 FiscalOpeningBalanceController.$inject = [
-  '$state', 'AccountService', 'AccountStoreService', 'FiscalService',
-  'NotifyService', 'util', 'moment', 'uiGridConstants', 'SessionService',
+  '$state', 'AccountService', 'FiscalService', 'NotifyService',
+  'uiGridConstants', 'SessionService', 'bhConstants',
 ];
 
 /**
  * This controller is responsible for handling the opening balance of the new fiscal year.
  */
-function FiscalOpeningBalanceController($state, Accounts, AccountStore, Fiscal,
-  Notify, util, moment, uiGridConstants, Session) {
-  var vm = this;
-
-  var fiscalYearId = $state.params.id;
+function FiscalOpeningBalanceController($state, Accounts, Fiscal, Notify, uiGridConstants, Session, bhConstants) {
+  const vm = this;
+  const fiscalYearId = $state.params.id;
 
   // expose to the view
   vm.enterprise = Session.enterprise;
@@ -27,45 +25,47 @@ function FiscalOpeningBalanceController($state, Accounts, AccountStore, Fiscal,
   vm.indentTitleSpace = 20;
   vm.gridApi = {};
 
-  var columns = [
-    { field : 'number', displayName : '', cellClass : 'text-right', width : 100 },
-    { field : 'label',
-      displayName : 'FORM.LABELS.ACCOUNT',
-      cellTemplate : '/modules/accounts/templates/grid.labelCell.tmpl.html',
-      headerCellFilter : 'translate',
-      enableFiltering : true,
-    },
-    { field : 'debit',
-      displayName : 'FORM.LABELS.DEBIT',
-      headerCellClass : 'text-center',
-      headerCellFilter : 'translate',
-      cellTemplate : '/modules/fiscal/templates/balance.debit.tmpl.html',
-      width : 200,
-      enableFiltering : false,
-    },
-    { field : 'credit',
-      displayName : 'FORM.LABELS.CREDIT',
-      headerCellClass : 'text-center',
-      headerCellFilter : 'translate',
-      cellTemplate : '/modules/fiscal/templates/balance.credit.tmpl.html',
-      width : 200,
-      enableFiltering : false,
-    },
-  ];
+  const columns = [{
+    field : 'number',
+    displayName : '',
+    cellClass : 'text-right',
+    width : 100,
+  }, {
+    field : 'label',
+    displayName : 'FORM.LABELS.ACCOUNT',
+    cellTemplate : '/modules/accounts/templates/grid.labelCell.tmpl.html',
+    headerCellFilter : 'translate',
+    enableFiltering : true,
+  }, {
+    field : 'debit',
+    displayName : 'FORM.LABELS.DEBIT',
+    headerCellClass : 'text-center',
+    headerCellFilter : 'translate',
+    cellTemplate : '/modules/fiscal/templates/balance.debit.tmpl.html',
+    width : 200,
+    enableFiltering : false,
+  }, {
+    field : 'credit',
+    displayName : 'FORM.LABELS.CREDIT',
+    headerCellClass : 'text-center',
+    headerCellFilter : 'translate',
+    cellTemplate : '/modules/fiscal/templates/balance.credit.tmpl.html',
+    width : 200,
+    enableFiltering : false,
+  }];
 
   vm.gridOptions = {
     appScopeProvider : vm,
+    fastWatch : true,
+    flatEntityAccess : true,
     enableSorting : false,
-    enableFiltering : vm.showAccountFilter,
-    showTreeExpandNoChildren : false,
     enableColumnMenus : false,
-    rowTemplate : '/modules/accounts/templates/grid.titleRow.tmpl.html',
+    enableFiltering : vm.showAccountFilter,
     columnDefs : columns,
-    onRegisterApi : onRegisterApi,
+    onRegisterApi,
   };
 
-  // init
-  init();
+  startup();
 
   // API register function
   function onRegisterApi(gridApi) {
@@ -73,16 +73,16 @@ function FiscalOpeningBalanceController($state, Accounts, AccountStore, Fiscal,
   }
 
   // load fiscal year and periodic balance
-  function init() {
+  function startup() {
     Fiscal.read(fiscalYearId)
-    .then(function (fy) {
-      vm.fiscal = fy;
-      $state.params.label = vm.fiscal.label;
-      return fy.previous_fiscal_year_id;
-    })
-    .then(hasPrevious)
-    .then(loadPeriodicBalance)
-    .catch(Notify.handleError);
+      .then(fy => {
+        vm.fiscal = fy;
+        $state.params.label = vm.fiscal.label;
+        return fy.previous_fiscal_year_id;
+      })
+      .then(hasPrevious)
+      .then(loadPeriodicBalance)
+      .catch(Notify.handleError);
   }
 
   // load periodic balance
@@ -91,11 +91,16 @@ function FiscalOpeningBalanceController($state, Accounts, AccountStore, Fiscal,
       id : fiscalYearId,
       period_number : 0,
     })
-    .then(function (list) {
-      vm.accounts = list;
-      vm.balanced = hasBalancedAccount();
-      vm.gridOptions.data = Accounts.order(vm.accounts);
-    });
+      .then(list => {
+        vm.accounts = list;
+        vm.balanced = hasBalancedAccount();
+
+        vm.accounts.forEach(account => {
+          account.isTitleAccount = account.type_id === bhConstants.accounts.TITLE;
+        });
+
+        vm.gridOptions.data = Accounts.order(vm.accounts);
+      });
   }
 
   /**
@@ -116,11 +121,11 @@ function FiscalOpeningBalanceController($state, Accounts, AccountStore, Fiscal,
       fiscal : vm.fiscal,
       accounts : vm.accounts,
     })
-    .then(function () {
-      Notify.success(vm.previousFiscalYearExist ? 'FORM.INFO.IMPORT_SUCCESS' : 'FORM.INFO.SAVE_SUCCESS');
-      init();
-    })
-    .catch(Notify.handleError);
+      .then(() => {
+        Notify.success(vm.previousFiscalYearExist ? 'FORM.INFO.IMPORT_SUCCESS' : 'FORM.INFO.SAVE_SUCCESS');
+        startup();
+      })
+      .catch(Notify.handleError);
   }
 
   /**
@@ -146,7 +151,7 @@ function FiscalOpeningBalanceController($state, Accounts, AccountStore, Fiscal,
    * @description check if accounts are balanced
    */
   function hasBalancedAccount() {
-    var cleanAccounts = vm.accounts.filter(function (item) {
+    const cleanAccounts = vm.accounts.filter(item => {
       return (item.debit !== 0 || item.credit !== 0);
     });
     vm.totalDebit = sumOf(cleanAccounts, 'debit').toFixed(2);
@@ -160,11 +165,10 @@ function FiscalOpeningBalanceController($state, Accounts, AccountStore, Fiscal,
    */
   function hasPrevious(previousFiscalYearId) {
     if (!previousFiscalYearId) { return false; }
-
     return Fiscal.read(previousFiscalYearId)
-    .then(function (fy) {
-      vm.previousFiscalYearExist = !!fy.id;
-    });
+      .then(fiscalYear => {
+        vm.previousFiscalYearExist = !!fiscalYear.id;
+      });
   }
 
   /**
@@ -174,8 +178,6 @@ function FiscalOpeningBalanceController($state, Accounts, AccountStore, Fiscal,
    * @param {string} property The property for the summation
    */
   function sumOf(array, property) {
-    return array.reduce(function (a, b) {
-      return a + b[property];
-    }, 0);
+    return array.reduce((a, b) => a + b[property], 0);
   }
 }
