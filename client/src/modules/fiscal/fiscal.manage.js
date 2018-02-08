@@ -6,24 +6,22 @@ FiscalManagementController.$inject = [
 ];
 
 /**
- * This controller is responsible for creating and updating a fiscal year. It provides
- * utility functions for submission and error handling.
+ * This controller is responsible for creating and updating a fiscal year. It
+ * provides utility functions for submission and error handling.
  */
 function FiscalManagementController($state, Fiscal, Notify, Modal, util, moment) {
-  var vm = this;
-  var id;
-  var isUpdate;
+  const vm = this;
 
-  // state variables
+  // state constiables
   vm.isUpdateState = $state.current.name === 'fiscal.update';
   vm.isListState = $state.current.name === 'fiscal.list';
   vm.isCreateState = $state.current.name === 'fiscal.create';
 
   // identifier
-  id = $state.params.id;
-  isUpdate = (id && vm.isUpdateState);
+  const { id } = $state.params;
+  const isUpdate = (id && vm.isUpdateState);
 
-  // global variables
+  // global constiables
   vm.fiscal = {};
   vm.state = $state;
   vm.submit = submit;
@@ -33,42 +31,42 @@ function FiscalManagementController($state, Fiscal, Notify, Modal, util, moment)
   // expose to the view
   vm.closingFiscalYear = closingFiscalYear;
 
-  /**
-   * @function init
-   * @description init data for the module
-   */
-  function init() {
+  function startup() {
     if (id && vm.isUpdateState) {
       // concerned fiscal year
       Fiscal.read(id)
-      .then(function (fiscalYear) {
-        vm.fiscal = fiscalYear;
-        $state.params.label = vm.fiscal.label;
-        vm.fiscal.start_date = new Date(vm.fiscal.start_date);
-        vm.fiscal.end_date = new Date(vm.fiscal.end_date);
-      })
-      .catch(Notify.handleError);
+        .then(fiscalYear => {
+          vm.fiscal = fiscalYear;
+          $state.params.label = vm.fiscal.label;
+          vm.fiscal.start_date = new Date(vm.fiscal.start_date);
+          vm.fiscal.end_date = new Date(vm.fiscal.end_date);
+        })
+        .catch(Notify.handleError);
     }
 
     // previous fiscal year
-    Fiscal.read(null, { detailed: 1 })
-    .then(function (previous) {
-      if (!previous.length) { return; }
+    Fiscal.read(null, { detailed : 1 })
+      .then((previous) => {
+        if (!previous.length) { return; }
 
-      // remove the current fiscal year in the previous one list
-      if (id && vm.isUpdateState) {
-        previous = previous.filter((fiscYear) => {
-          return parseInt(fiscYear.id, 10) !== parseInt(id, 10);
+        let years = previous;
+
+        // remove the current fiscal year in the previous one list
+        if (id && vm.isUpdateState) {
+          years = years.filter((fiscYear) => {
+            return parseInt(fiscYear.id, 10) !== parseInt(id, 10);
+          });
+        }
+
+        const fmt = (date) => moment(date).format('DD MMM YYYY');
+
+        vm.previous_fiscal_year = years.map(fy => {
+          fy.hrLabel = fy.label
+            .concat(`(${fmt(fy.start_date)} - ${fmt(fy.end_date)}`);
+          return fy;
         });
-      }
-      vm.previous_fiscal_year = previous.map(function (fy) {
-        fy.hrLabel = fy.label
-          .concat(' (', moment(fy.start_date).format('DD MMM YYYY').toString(), ' - ')
-          .concat(moment(fy.end_date).format('DD MMM YYYY').toString(), ')');
-        return fy;
-      });
-    })
-    .catch(Notify.handleError);
+      })
+      .catch(Notify.handleError);
   }
 
   /**
@@ -79,9 +77,9 @@ function FiscalManagementController($state, Fiscal, Notify, Modal, util, moment)
     if (!vm.isUpdateState) { return; }
 
     Modal.openClosingFiscalYear(vm.fiscal)
-      .then(function (res) {
+      .then(res => {
         if (!res) { return; }
-        $state.go('fiscal.list', null, { reload: true });
+        $state.go('fiscal.list', null, { reload : true });
       });
   }
 
@@ -90,40 +88,38 @@ function FiscalManagementController($state, Fiscal, Notify, Modal, util, moment)
    * @description get the number of months between two dates
    */
   function numberOfMonths() {
-    if (!vm.fiscal) { return ; }
-
-    var start_date = moment(vm.fiscal.start_date);
-    var end_date = moment(vm.fiscal.end_date);
-    vm.fiscal.number_of_months = Math.ceil(end_date.diff(start_date, 'months', true));
+    if (!vm.fiscal) { return; }
+    const startDate = moment(vm.fiscal.start_date);
+    const endDate = moment(vm.fiscal.end_date);
+    vm.fiscal.number_of_months = Math.ceil(endDate.diff(startDate, 'months', true));
   }
 
   /**
    * @method submit
+   *
    * @description submit the form
    */
   function submit(form) {
-
-    // ensure all Angular form validation checks have passed
+    // ensure all angular form validation checks have passed
     if (form.$invalid) {
       Notify.danger('FORM.ERRORS.RECORD_ERROR');
-      return;
+      return 0;
     }
 
     // get the number of months
     numberOfMonths();
 
-    var promise = isUpdate ? Fiscal.update(id, vm.fiscal) : Fiscal.create(vm.fiscal);
+    const promise = isUpdate ? Fiscal.update(id, vm.fiscal) : Fiscal.create(vm.fiscal);
 
     return promise
-      .then(function () {
+      .then(() => {
         Notify.success(isUpdate ? 'FORM.INFO.UPDATE_SUCCESS' : 'FORM.INFO.CREATE_SUCCESS');
 
         // navigate back to list view
-        $state.go('fiscal.list', null, { reload: true });
+        $state.go('fiscal.list', null, { reload : true });
       })
       .catch(Notify.handleError);
   }
 
-  // excecute
-  init();
+  startup();
 }

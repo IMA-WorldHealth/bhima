@@ -1,8 +1,6 @@
 <div class="row">
   <div class="col-md-12">
-
     <form name="OpeningAccountForm" bh-submit="FiscalOBCtrl.submit(OpeningAccountForm)" novalidate>
-
       <div class="panel panel-primary">
 
         <!-- heading  -->
@@ -20,7 +18,6 @@
               <span translate>FORM.BUTTONS.EDIT</span> <i class="fa fa-edit"></i>
             </span>
           </div>
-
         </div>
 
         <!-- body  -->
@@ -47,7 +44,7 @@
           </div>
 
           <button type="submit" data-method="submit" ng-disabled="!FiscalOBCtrl.editBalanceEnabled && !FiscalOBCtrl.previousFiscalYearExist" class="btn btn-primary">
-            <span ng-show="!FiscalOBCtrl.previousFiscalYearExist" translate>FORM.BUTTONS.SUBMIT</span>
+            <span ng-hide="FiscalOBCtrl.previousFiscalYearExist" translate>FORM.BUTTONS.SUBMIT</span>
             <span ng-show="FiscalOBCtrl.previousFiscalYearExist" translate>FORM.BUTTONS.IMPORT_PREVIOUS_CLOSING_BALANCE</span>
           </button>
         </div>

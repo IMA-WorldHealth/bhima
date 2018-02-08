@@ -1,7 +1,7 @@
 <form name="FiscalForm" bh-submit="FiscalManageCtrl.submit(FiscalForm)" novalidate>
 
   <div class="row">
-    <div class="col-md-12">
+    <div class=" col-lg-6 col-md-10 col-sm-12 col-xs-12">
       <div class="panel panel-primary">
         <div ng-if="FiscalManageCtrl.isCreateState" class="panel-heading" translate>FISCAL.NEW_FISCAL_YEAR</div>
         <div ng-if="FiscalManageCtrl.isUpdateState" class="panel-heading">
@@ -41,7 +41,7 @@
             <select class="form-control"
               ng-model="FiscalManageCtrl.fiscal.previous_fiscal_year_id"
               ng-options="fy.id as fy.hrLabel for fy in FiscalManageCtrl.previous_fiscal_year">
-              <option value="" disabled>--{{ 'FORM.SELECT.FISCAL_YEAR' | translate }}--</option>
+              <option value="" disabled translate>FORM.SELECT.FISCAL_YEAR</option>
             </select>
           </div>
 
@@ -66,7 +66,7 @@
       <p><strong translate>FORM.INFO.OTHER_ACTIONS</strong></p>
       <p>
         <!-- close the fiscal year  -->
-        <a class="btn btn-danger" data-action="closing-fiscal-year" href ng-click="FiscalManageCtrl.closingFiscalYear()">
+        <a class="btn btn-danger" data-action="closing-fiscal-year" href ng-click="FiscalManageCtrl.closingFiscalYear()" ng-hide="FiscalManageCtrl.fiscal.locked">
           <i class="fa fa-lock"></i>
           <span translate>FORM.INFO.CLOSE_FISCAL_YEAR</span>
         </a>
