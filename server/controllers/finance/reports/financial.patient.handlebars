@@ -24,9 +24,9 @@
         {{#each transactions}}
           <tr>
             <td>{{date this.trans_date}}</td>
-            <td class="text-right">{{this.document}}</td>
-            <td class="text-right">{{this.trans_id}}</td>
-            <td style="max-width : 200px; white-space : nowrap; overflow : hidden; text-overflow : ellipsis;">{{this.description}}</td>
+            <td class="text-right" title="{{this.document}}">{{this.document}}</td>
+            <td class="text-right" title="{{this.trans_id}}">{{this.trans_id}}</td>
+            <td style="max-width : 200px; white-space : nowrap; overflow : hidden; text-overflow : ellipsis;" title="{{this.description}}">{{this.description}}</td>
             <td class="text-right {{#if this.credit}}text-danger{{/if}}">
               {{#if this.credit}}
                 ({{currency this.credit ../metadata.enterprise.currency_id}})

@@ -24,7 +24,7 @@
         {{#each employees}}
           <tr>
             <td>{{this.code}}</td>
-            <td>{{this.display_name}}</td>
+            <td title="{{this.display_name}}">{{this.display_name}}</td>
             <td>{{this.sex}}</td>
             <td>{{this.age}} ({{date this.dob}})</td>
             <td>{{this.code_grade}}</td>            
