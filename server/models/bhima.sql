@@ -79,6 +79,7 @@ INSERT INTO unit VALUES
   (187, 'Offdays Management','TREE.OFFDAYS_MANAGEMENT','Offdays Management', 1,'/modules/offdays/','/offdays'),
   (188, 'Tax IPR Management','TREE.IPR_MANAGEMENT','IPR Management',57,'/modules/ipr_tax/','/ipr_tax'),
   (189, 'IPR Tax Configuration','TREE.IPR_TAX_CONFIGURATION','IPR Tax Configuration', 57,'/modules/ipr_tax/configuration','/ipr_tax/configuration'),
+  (190, 'Payroll Rubric Configuration','TREE.PAYROLL_RUB_CONFIGURATION','',57,'/modules/payroll/rubric_configuration','/payroll/rubric_configuration'),
   (191, 'Account Configuration','TREE.PAYROLL_ACCOUNT_CONFIGURATION','Account Configuration', 57,'/modules/payroll/account_configuration','/payroll/account_configuration');
 
 -- Reserved system account type
