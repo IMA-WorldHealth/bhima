@@ -206,6 +206,13 @@ CREATE TABLE `config_accounting` (
   FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `weekend_config`;
+CREATE TABLE `weekend_config` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `label` VARCHAR(100) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `weekend_config` (`label`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `config_paiement_period`;
 
