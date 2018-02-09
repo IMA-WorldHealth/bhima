@@ -1,8 +1,13 @@
 /* eslint import/no-unresolved:off */
 const _ = require('lodash');
+const path = require('path');
 
-const en = require('../../../client/i18n/en.json');
-const fr = require('../../../client/i18n/fr.json');
+const frPath = '../../../bin/client/i18n/fr.json';
+const enPath =  '../../../bin/client/i18n/en.json';
+
+const en = require(enPath);
+
+const fr = require(frPath);
 
 /**
  * @function getTranslationHelper
@@ -22,7 +27,7 @@ function getTranslationHelper(languageKey) {
   return function translate(translateCode) {
     // lodash's get() method returns an object's value corresponding to the path matched.
     // If the path does not exist, it returns undefined.
-    // See https://lodash.com/docs/4.15.0#at
+    // See https://lodash.com/docs/4.15.0#at 
     return _.get(dictionary, translateCode) || translateCode;
   };
 }
