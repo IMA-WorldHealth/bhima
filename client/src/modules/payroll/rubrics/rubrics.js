@@ -53,10 +53,10 @@ function RubricManagementController(
         field : 'is_ipr', displayName : 'FORM.LABELS.IS_IPR', cellTemplate : '/modules/payroll/rubrics/templates/ipr.tmpl.html', headerCellFilter : 'translate',
       },
       {
-        field : 'four_account_id', displayName : 'FORM.LABELS.DEBTOR_ACCOUNT', cellTemplate : '/modules/payroll/rubrics/templates/four.tmpl.html', headerCellFilter : 'translate',
+        field : 'debtorAccount', displayName : 'FORM.LABELS.DEBTOR_ACCOUNT', headerCellFilter : 'translate',
       },
       {
-        field : 'six_account_id', displayName : 'FORM.LABELS.EXPENSE_ACCOUNT', cellTemplate : '/modules/payroll/rubrics/templates/six.tmpl.html', headerCellFilter : 'translate',
+        field : 'expenseAccount', displayName : 'FORM.LABELS.EXPENSE_ACCOUNT', headerCellFilter : 'translate',
       },
       {
         field : 'action',
@@ -94,6 +94,11 @@ function RubricManagementController(
 
     Rubrics.read()
       .then(function (data) {
+        data.forEach((row) => {
+          row.expenseAccount = `[${row.six_number}] ${row.six_label}`;
+          row.debtorAccount = `[${row.four_number}] ${row.four_label}`;
+        });
+
         vm.gridOptions.data = data;
       })
       .catch(Notify.handleError)
