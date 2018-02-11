@@ -160,10 +160,11 @@ CREATE TABLE `rubric_payroll` (
   `is_discount` tinyint(1) DEFAULT 0,
   `is_tax` tinyint(1) DEFAULT 0,
   `is_social_care` tinyint(1) DEFAULT 0,
+  `is_membership_fee` tinyint(1) DEFAULT 0,  
   `debtor_account_id` int(10) unsigned DEFAULT NULL,
   `expense_account_id` int(10) unsigned DEFAULT NULL,
   `is_ipr` tinyint(1) DEFAULT 0,
-  `value` float DEFAULT 0,
+  `value` float DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `rubric_payroll_1` (`label`),
   KEY `debtor_account_id` (`debtor_account_id`),
@@ -1823,3 +1824,25 @@ CREATE TABLE `cashbox_permission` (
   FOREIGN KEY (`cashbox_id`) REFERENCES `cash_box` (`id`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+DROP TABLE IF EXISTS `config_rubric`;
+
+CREATE TABLE `config_rubric` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `label` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS `config_rubric_item`;
+
+CREATE TABLE `config_rubric_item` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `config_rubric_id` int(10) unsigned NOT NULL,
+  `rubric_payroll_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `config_rubric_id` (`config_rubric_id`),
+  KEY `rubric_payroll_id` (`rubric_payroll_id`),
+  CONSTRAINT `config_rubric_item_ibfk_1` FOREIGN KEY (`config_rubric_id`) REFERENCES `config_rubric` (`id`),
+  CONSTRAINT `config_rubric_item_ibfk_2` FOREIGN KEY (`rubric_payroll_id`) REFERENCES `rubric_payroll` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;

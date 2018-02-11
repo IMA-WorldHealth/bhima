@@ -60,6 +60,7 @@
     "PATIENT_REGISTRY": "Patients Registry",
     "PAYROLL":"Payroll",
     "PAYROLL_ACCOUNT_CONFIGURATION":"Account Configuration",
+    "PAYROLL_RUB_CONFIGURATION" : "Payroll Rubric Configuration",
     "PAYROLL_RUB_MANAGEMENT" : "Payroll Rubric Management",    
     "PHARMACY": "Pharmacy Management",
     "POSTING_JOURNAL": "Journal",

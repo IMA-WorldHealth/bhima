@@ -39,6 +39,7 @@ const groups = require('../controllers/groups');
 
 // payroll routes
 const rubrics = require('../controllers/payroll/rubrics');
+const rubricConfig = require('../controllers/payroll/rubricConfig');
 const accountConfig = require('../controllers/payroll/accounts');
 
 // medical routes
@@ -553,6 +554,15 @@ exports.configure = function configure(app) {
   app.post('/rubrics', rubrics.create);
   app.put('/rubrics/:id', rubrics.update);
   app.delete('/rubrics/:id', rubrics.delete);
+
+  // rubrics payroll Configuration api
+  app.get('/rubric_config', rubricConfig.list);
+  app.get('/rubric_config/:id', rubricConfig.detail);
+  app.post('/rubric_config', rubricConfig.create);
+  app.put('/rubric_config/:id', rubricConfig.update);
+  app.get('/rubric_config/:id/setting', rubricConfig.listConfig);
+  app.post('/rubric_config/:id/setting', rubricConfig.createConfig);  
+  app.delete('/rubric_config/:id', rubricConfig.delete);
 
   // grades api
   app.get('/grades', grades.list);

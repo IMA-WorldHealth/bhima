@@ -13,7 +13,7 @@ angular.module('bhima.routes')
         account : { value : null },
         creating : { value : true },
       },
-      onEnter : ['$uibModal', configurationModal],
+      onEnter : ['$uibModal', configurationAccountModal],
       onExit : ['$uibModalStack', closeModal],
     })
 
@@ -23,7 +23,7 @@ angular.module('bhima.routes')
         account : { value : null },
         creating : { value : false },
       },
-      onEnter : ['$uibModal', configurationModal],
+      onEnter : ['$uibModal', configurationAccountModal],
       onExit : ['$uibModalStack', closeModal],
     })
 
@@ -37,7 +37,7 @@ angular.module('bhima.routes')
     });    
 }]);
 
-function configurationModal($modal) {
+function configurationAccountModal($modal) {
   $modal.open({
     keyboard : false,
     backdrop : 'static',

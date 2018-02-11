@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('RubricManagementController', RubricManagementController);
+  .controller('RubricManagementController', RubricManagementController);
 
 RubricManagementController.$inject = [
   'RubricService', 'ModalService',
@@ -12,8 +12,10 @@ RubricManagementController.$inject = [
  * This controller is about the Rubric management module in the admin zone
  * It's responsible for creating, editing and updating a Rubric
  */
-function RubricManagementController(Rubrics, ModalService,
-  Notify, uiGridConstants, $state, Session) {
+function RubricManagementController(
+  Rubrics, ModalService,
+  Notify, uiGridConstants, $state, Session
+) {
   var vm = this;
 
   // bind methods
@@ -31,15 +33,33 @@ function RubricManagementController(Rubrics, ModalService,
     [
       { field : 'label', displayName : 'FORM.LABELS.DESIGNATION', headerCellFilter : 'translate' },
       { field : 'abbr', displayName : 'FORM.LABELS.ABBREVIATION', headerCellFilter : 'translate' },
-      { field : 'is_discount', displayName : '', cellTemplate : '/modules/payroll/rubrics/templates/discount.tmpl.html', headerCellFilter : 'translate' },    
-      { field : 'value', displayName : 'FORM.LABELS.VALUE', headerCellFilter : 'translate' },  
-      { field : 'is_percent', displayName : '', cellTemplate : '/modules/payroll/rubrics/templates/percent.tmpl.html', headerCellFilter : 'translate' },
-      { field : 'is_social_care', displayName : 'FORM.LABELS.IS_SOCIAL_CARE', cellTemplate : '/modules/payroll/rubrics/templates/social.tmpl.html', headerCellFilter : 'translate' },
-      { field : 'is_tax', displayName : 'FORM.LABELS.TAX', cellTemplate : '/modules/payroll/rubrics/templates/tax.tmpl.html', headerCellFilter : 'translate' },
-      { field : 'is_ipr', displayName : 'FORM.LABELS.IS_IPR', cellTemplate : '/modules/payroll/rubrics/templates/ipr.tmpl.html', headerCellFilter : 'translate' },
-      { field : 'four_account_id', displayName : 'FORM.LABELS.DEBTOR_ACCOUNT', cellTemplate : '/modules/payroll/rubrics/templates/four.tmpl.html', headerCellFilter : 'translate' },
-      { field : 'six_account_id', displayName : 'FORM.LABELS.EXPENSE_ACCOUNT', cellTemplate : '/modules/payroll/rubrics/templates/six.tmpl.html', headerCellFilter : 'translate' },
-      { field : 'action',
+      {
+        field : 'is_discount', displayName : '', cellTemplate : '/modules/payroll/rubrics/templates/discount.tmpl.html', headerCellFilter : 'translate',
+      },
+      { field : 'value', displayName : 'FORM.LABELS.VALUE', headerCellFilter : 'translate' },
+      {
+        field : 'is_percent', displayName : '', cellTemplate : '/modules/payroll/rubrics/templates/percent.tmpl.html', headerCellFilter : 'translate',
+      },
+      {
+        field : 'is_social_care', displayName : 'FORM.LABELS.IS_SOCIAL_CARE', cellTemplate : '/modules/payroll/rubrics/templates/social.tmpl.html', headerCellFilter : 'translate',
+      },
+      {
+        field : 'is_membership_fee', displayName : 'FORM.INFO.IS_MEMBERSHIP_FEE', cellTemplate : '/modules/payroll/rubrics/templates/membership.tmpl.html', headerCellFilter : 'translate',
+      },
+      {
+        field : 'is_tax', displayName : 'FORM.LABELS.TAX', cellTemplate : '/modules/payroll/rubrics/templates/tax.tmpl.html', headerCellFilter : 'translate',
+      },
+      {
+        field : 'is_ipr', displayName : 'FORM.LABELS.IS_IPR', cellTemplate : '/modules/payroll/rubrics/templates/ipr.tmpl.html', headerCellFilter : 'translate',
+      },
+      {
+        field : 'debtorAccount', displayName : 'FORM.LABELS.DEBTOR_ACCOUNT', headerCellFilter : 'translate',
+      },
+      {
+        field : 'expenseAccount', displayName : 'FORM.LABELS.EXPENSE_ACCOUNT', headerCellFilter : 'translate',
+      },
+      {
+        field : 'action',
         width : 80,
         displayName : '',
         cellTemplate : '/modules/payroll/rubrics/templates/action.tmpl.html',
@@ -73,28 +93,33 @@ function RubricManagementController(Rubrics, ModalService,
     vm.loading = true;
 
     Rubrics.read()
-    .then(function (data) {
-      vm.gridOptions.data = data;
-    })
-    .catch(Notify.handleError)
-    .finally(function () {
-      vm.loading = false;
-    });
+      .then(function (data) {
+        data.forEach((row) => {
+          row.expenseAccount = `[${row.six_number}] ${row.six_label}`;
+          row.debtorAccount = `[${row.four_number}] ${row.four_label}`;
+        });
+
+        vm.gridOptions.data = data;
+      })
+      .catch(Notify.handleError)
+      .finally(function () {
+        vm.loading = false;
+      });
   }
 
   // switch to delete warning mode
   function deleteRubric(title) {
     ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
-    .then(function (bool) {
-      if (!bool) { return; }
+      .then(function (bool) {
+        if (!bool) { return; }
 
-      Rubrics.delete(title.id)
-      .then(function () {
-        Notify.success('FORM.INFO.DELETE_SUCCESS');
-        loadRubrics();
-      })
-      .catch(Notify.handleError);
-    });
+        Rubrics.delete(title.id)
+          .then(function () {
+            Notify.success('FORM.INFO.DELETE_SUCCESS');
+            loadRubrics();
+          })
+          .catch(Notify.handleError);
+      });
   }
 
   // update an existing Rubric

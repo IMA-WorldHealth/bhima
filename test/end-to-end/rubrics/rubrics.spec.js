@@ -15,13 +15,14 @@ describe('Rubrics Management', () => {
   const rubric = {
     label : 'Rubric Syndical',
     abbr  : 'CoSynd',
-    is_employee : 1,
     is_percent : 1,
     debtor_account_id : '40111002', //SUPPLIER'S ACCOUNT 1
     expense_account_id : '60310015', // Achat Produit  de Perfusion
-    is_discount : "D",
+    value : 6.5,
+    is_discount : 1,
+    is_membership_fee : 0,
     is_tax : 1,
-    value : 6.5
+    is_employee : 1,
   };
 
   const updateRubric = {

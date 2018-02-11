@@ -759,3 +759,11 @@ INSERT INTO `stock_movement` (`uuid`, `lot_uuid`, `document_uuid`, `depot_uuid`,
   (HUID('d8c83ad9-a3ea-4f9f-96f9-456a435f480d'), HUID('ef24cf1a-d5b9-4846-b70c-520e601c1ea6'), HUID('682e11c0-93a7-49f8-b79b-a4bc8e3e6f47'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), '', 1, '2017-02-02', 50, 2.0000, 0, 1),
   (HUID('f9aa33f1-65e2-4e37-89cb-843d27b2c586'), HUID('064ab1d9-5246-4402-ae8a-958fcdb07b35'), HUID('682e11c0-93a7-49f8-b79b-a4bc8e3e6f47'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), '', 1, '2017-02-02', 100, 1.2000, 0, 1),
   (HUID('e8502c3e-7483-11e7-a8de-507b9dd6de91'), HUID('064ab1d9-5246-4402-ae8a-958fcdb07b35'), HUID('0cc6c435-7484-11e7-a8de-507b9dd6de91'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), HUID('d4bb1452-e4fa-4742-a281-814140246877'), 8, '2017-02-02', 75, 1.2000, 1, 1);
+
+-- Rubric Payroll
+INSERT INTO `rubric_payroll` (`id`, `label`, `abbr`, `is_employee`, `is_percent`, `is_discount`, `is_tax`, `is_social_care`, `is_membership_fee`, `debtor_account_id`, `expense_account_id`, `is_ipr`, `value`) VALUES 
+(1, 'INSS Code part Patronale', 'INSS2', 0, 1, 1, 0, 0, 1, 300, 203, 0, 9),
+(2, 'Impot Professionnel sur le Revenue', 'IPR', 1, 0, 1, 1, 0, 0, 300, 207, 1, NULL),
+(3, 'Institut National de Pratique Professionel', 'INPP', 0, 1, 1, 1, 0, 0, 172, 206, 0, 0.2),
+(4, 'INSS Code Part Ouvriere', 'INSS1', 1, 1, 1, 0, 0, 1, 300, 203, 0, 3.5),
+(5, 'Transport', 'TPR', 0, 0, 0, 0, 1, 0, 285, 204, 0, NULL);
