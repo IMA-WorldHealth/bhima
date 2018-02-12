@@ -7,6 +7,9 @@ FiscalClosingBalanceController.$inject = [
 ];
 
 /**
+ * @function FiscalClosingBalanceController
+ *
+ * @description
  * This controller is responsible for handling the closing balance of a fiscal year.
  */
 function FiscalClosingBalanceController($state, Accounts, Fiscal, Notify, uiGridConstants, bhConstants) {

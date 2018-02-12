@@ -7,7 +7,18 @@ FiscalOpeningBalanceController.$inject = [
 ];
 
 /**
- * This controller is responsible for handling the opening balance of the new fiscal year.
+ * @function FiscalOpeningBalanceController
+ *
+ * @description
+ * This controller allows a user to set the opening balance of a fiscal year.
+ * A fiscal year's opening balance is set in two ways:
+ *  1) If there is a previous fiscal year, the ending balance of that fiscal
+ *    year is automatically imported as the beginning balance of the next year.
+ *  2) If there is no previous fiscal year, it means that this is the first year
+ *    ever created.  A user can manually define the opening balances.
+ *
+ * TODO(@jniles) - use the tree to dynamically compute the title accounts'
+ * balances.
  */
 function FiscalOpeningBalanceController($state, Accounts, Fiscal, Notify, uiGridConstants, Session, bhConstants) {
   const vm = this;
@@ -15,20 +26,25 @@ function FiscalOpeningBalanceController($state, Accounts, Fiscal, Notify, uiGrid
 
   // expose to the view
   vm.enterprise = Session.enterprise;
-  vm.editBalanceEnabled = false;
+  vm.editBalanceEnabled = true;
   vm.showAccountFilter = false;
-  vm.toggleEditBalance = toggleEditBalance;
   vm.toggleAccountFilter = toggleAccountFilter;
   vm.submit = submit;
+  vm.onBalanceChange = onBalanceChange;
 
   // grid options
   vm.indentTitleSpace = 20;
   vm.gridApi = {};
 
+  function computeBoldClass(grid, row) {
+    const boldness = row.entity.isTitleAccount ? 'text-bold' : '';
+    return `text-right ${boldness}`;
+  }
+
   const columns = [{
     field : 'number',
     displayName : '',
-    cellClass : 'text-right',
+    cellClass : computeBoldClass,
     width : 100,
   }, {
     field : 'label',
@@ -42,6 +58,10 @@ function FiscalOpeningBalanceController($state, Accounts, Fiscal, Notify, uiGrid
     headerCellClass : 'text-center',
     headerCellFilter : 'translate',
     cellTemplate : '/modules/fiscal/templates/balance.debit.tmpl.html',
+    aggregationHideLabel : true,
+    aggregationType  : uiGridConstants.aggregationTypes.sum,
+    footerCellClass  : 'text-right',
+    footerCellFilter : 'currency:'.concat(Session.enterprise.currency_id),
     width : 200,
     enableFiltering : false,
   }, {
@@ -50,6 +70,10 @@ function FiscalOpeningBalanceController($state, Accounts, Fiscal, Notify, uiGrid
     headerCellClass : 'text-center',
     headerCellFilter : 'translate',
     cellTemplate : '/modules/fiscal/templates/balance.credit.tmpl.html',
+    aggregationHideLabel : true,
+    aggregationType  : uiGridConstants.aggregationTypes.sum,
+    footerCellClass  : 'text-right',
+    footerCellFilter : 'currency:'.concat(Session.enterprise.currency_id),
     width : 200,
     enableFiltering : false,
   }];
@@ -61,6 +85,7 @@ function FiscalOpeningBalanceController($state, Accounts, Fiscal, Notify, uiGrid
     enableSorting : false,
     enableColumnMenus : false,
     enableFiltering : vm.showAccountFilter,
+    showColumnFooter  : true,
     columnDefs : columns,
     onRegisterApi,
   };
@@ -138,13 +163,6 @@ function FiscalOpeningBalanceController($state, Accounts, Fiscal, Notify, uiGrid
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
   }
 
-  /**
-   * @function toggleEditBalance
-   * @description edit the opening Balance
-   */
-  function toggleEditBalance() {
-    vm.editBalanceEnabled = !vm.editBalanceEnabled;
-  }
 
   /**
    * @function hasBalancedAccount
@@ -169,6 +187,17 @@ function FiscalOpeningBalanceController($state, Accounts, Fiscal, Notify, uiGrid
       .then(fiscalYear => {
         vm.previousFiscalYearExist = !!fiscalYear.id;
       });
+  }
+
+  /**
+   * @function onBalanceChange
+   *
+   * @description
+   * This function tells the ui-grid to sum the values of the debit/credit
+   * columns in the footer.
+   */
+  function onBalanceChange() {
+    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
   /**

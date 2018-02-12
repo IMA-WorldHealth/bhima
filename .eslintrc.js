@@ -10,7 +10,7 @@ module.exports = {
     "mocha" : true
   },
   "rules" : {
-    "padded-blocks": "warn",
+    "padded-blocks": "off",
     "array-bracket-spacing" : "warn",
     "prefer-arrow-callback" : "warn",
     "indent": ["error", 2],
@@ -30,7 +30,7 @@ module.exports = {
       "functions": false
     }],
     "no-param-reassign": ["error", { "props": false }],
-    "no-var" : "off",
+    "no-var" : "warn",
     "no-plusplus" : "off",
     "max-len": ["warn", 120],
     "func-names" : ["warn", "as-needed"],
@@ -40,7 +40,6 @@ module.exports = {
     "quotes" : ["error", "single", { "allowTemplateLiterals": true }],
     "arrow-parens" : "off",
     "arrow-body-style" : "off",
-    "prefer-arrow-callback" : "off",
     "no-underscore-dangle" : "off",
     "no-extra-boolean-cast" : "off",
   },
