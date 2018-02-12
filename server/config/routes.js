@@ -94,6 +94,8 @@ const transactions = require('../controllers/finance/transactions');
 // looking up an entity by it reference
 const referenceLookup = require('../lib/referenceLookup');
 
+const operating = require('../controllers/finance/reports/operating/index');
+
 // expose routes to the server.
 exports.configure = function configure(app) {
   debug('configuring routes.');
@@ -673,4 +675,6 @@ exports.configure = function configure(app) {
   app.post('/install', install.proceedInstall);
 
   app.get('/diagnoses', diagnoses.list);
+
+  app.get('/reports/finance/operating', operating.document);
 };

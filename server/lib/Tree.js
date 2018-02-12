@@ -133,6 +133,46 @@ class Tree {
       sumOnProperty(node, prop);
     });
   }
+
+
+  filterByLeaf(prop, value) {
+    // set the property of the child to the parent up to the top
+    this._tree.forEach(node => {
+      this.interate(node, prop, value, this._tree);
+    });
+    // let filter tree now
+    const data = this.toArray().filter(row => {
+      return row[prop] === value;
+    });
+    this._data = data;
+    this._tree = buildTreeFromArray(_.cloneDeep(data), this._rootId, this._parentKey);
+  }
+
+  // set the child's property to parent recursively up to the top
+  setPropertyToParent(node, prop, value) {
+    node[prop] = value;
+    if (node.parentNode) {
+      this.setPropertyToParent(node.parentNode, prop, value);
+    }
+  }
+
+  // walk arround the tree
+  // search the node by property's value
+  interate(node, prop, value, parent) {
+  
+    node.parentNode = parent;
+
+    if (node[prop] === value && !parent[prop]) {
+      this.setPropertyToParent(parent, prop, value);
+    }
+
+    if (node.children) {
+      node.children.forEach(child => {
+        this.interate(child, prop, value, node);
+      });
+    }
+    delete node.parentNode;
+  }
 }
 
 module.exports = Tree;

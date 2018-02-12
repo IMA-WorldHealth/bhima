@@ -391,3 +391,4 @@ exports.list = list;
 exports.remove = remove;
 exports.getOpeningBalanceForPeriod = getOpeningBalanceForPeriod;
 exports.categories = categories;
+exports.processAccountDepth = processAccountDepth;
