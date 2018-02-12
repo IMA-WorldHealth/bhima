@@ -12,7 +12,7 @@
     <div ng-repeat="days in WeekEndConfigModalCtrl.weekDays" class="form-group">
       <div style="margin:0" class="checkbox">
         <label style="padding-left: 12%">
-          <input type="checkbox" ng-value="days.indice" ng-model="days.checked">
+          <input type="checkbox" name="days" ng-model="days.checked">
           <span translate>{{ days.label }}</span>
         </label> 
       </div>
