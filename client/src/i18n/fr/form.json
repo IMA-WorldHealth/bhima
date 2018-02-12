@@ -4,6 +4,7 @@
             "ACTIONS": "Actions",
             "ADD": "Ajouter",
             "ADD_ACCOUNT_CONFIGURATION": "Ajouter une configuration des comptes",
+            "ADD_WEEKEND_CONFIGURATION": "Ajouter une configuration des week-end",
             "BACK": "Précédent",
             "CANCEL": "Annuler",
             "CANCEL_EDIT": "Annuler Modifier",
@@ -570,6 +571,15 @@
             "WEBCAM_NOT_STARTED": "La webcam n'a pas pu être démarrée. Avez-vous donné accès à cela?",
             "WEEK": "Semaine",
             "WEEKLY_REPORT": "Rapport par semaine",
+            "WEEK_DAYS": {
+              "FRIDAY"    : "Vendredi",
+              "MONDAY"    : "Lundi",
+              "SATURDAY"  : "Samedi",
+              "SUNDAY"    : "Dimanche",
+              "THURSDAY"  : "Jeudi",
+              "TUESDAY"   : "Mardi",
+              "WEDNESDAY" : "Mercredi"   
+            },  
             "WIDTH": "Largeur",
             "YES": "Oui",
             "YOB": "Année de Naissance",

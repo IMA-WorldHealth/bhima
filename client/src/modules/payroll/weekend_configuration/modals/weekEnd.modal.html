@@ -1,0 +1,34 @@
+<form name="WeekEndForm" bh-submit="WeekEndModalCtrl.submit(WeekEndForm)" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li ng-if="WeekEndModalCtrl.isCreating" class="title">
+        <span translate>TREE.WEEKEND_CONFIGURATION</span>
+        <label class="badge badge-success" translate>FORM.LABELS.CREATE</label>
+      </li>
+      <li ng-if="!WeekEndModalCtrl.isCreating" class="title">
+        <span translate>TREE.WEEKEND_CONFIGURATION</span>
+        <label class="badge badge-success" translate>FORM.LABELS.UPDATE</label>
+      </li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+    <div class="form-group" ng-class="{ 'has-error' : WeekEndForm.$submitted && WeekEndForm.label.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.DESIGNATION</label>
+      <input name="label" ng-model="WeekEndModalCtrl.weekend.label" autocomplete="off" class="form-control" required>
+      <div class="help-block" ng-messages="WeekEndForm.label.$error" ng-show="WeekEndForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button data-method="cancel" type="button" class="btn btn-default" ng-click="WeekEndModalCtrl.closeModal()">
+      <span translate>FORM.BUTTONS.CANCEL</span>
+    </button>
+
+    <bh-loading-button loading-state="WeekEndForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

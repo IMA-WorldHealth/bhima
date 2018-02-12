@@ -1,0 +1,31 @@
+<form name="WeekEndForm" bh-submit="WeekEndConfigModalCtrl.submit(WeekEndForm)" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="title">
+        <span translate>TREE.WEEKEND_CONFIGURATION</span>
+        <label class="badge badge-success" translate>{{ WeekEndConfigModalCtrl.weekend.label }}</label>
+      </li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+    <div ng-repeat="days in WeekEndConfigModalCtrl.weekDays" class="form-group">
+      <div style="margin:0" class="checkbox">
+        <label style="padding-left: 12%">
+          <input type="checkbox" ng-value="days.indice" ng-model="days.checked">
+          <span translate>{{ days.label }}</span>
+        </label> 
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button data-method="cancel" type="button" class="btn btn-default" ng-click="WeekEndConfigModalCtrl.closeModal()">
+      <span translate>FORM.BUTTONS.CANCEL</span>
+    </button>
+
+    <bh-loading-button loading-state="WeekEndForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

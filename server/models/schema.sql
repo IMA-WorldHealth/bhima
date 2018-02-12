@@ -214,8 +214,18 @@ CREATE TABLE `weekend_config` (
   UNIQUE KEY `weekend_config` (`label`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `config_paiement_period`;
 
+DROP TABLE IF EXISTS `config_week_days`;
+CREATE TABLE `config_week_days` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `indice` int(10) unsigned NOT NULL,
+  `weekend_config_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `weekend_config_id` (`weekend_config_id`),
+  FOREIGN KEY (`weekend_config_id`) REFERENCES `weekend_config` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `config_paiement_period`;
 CREATE TABLE `config_paiement_period` (
   `id` int(10) unsigned NOT NULL,
   `paiement_period_id` int(10) unsigned NOT NULL,

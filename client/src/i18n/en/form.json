@@ -4,6 +4,7 @@
             "ACTIONS": "Actions",
             "ADD": "Add",
             "ADD_ACCOUNT_CONFIGURATION": "Add Account Configuration",
+            "ADD_WEEKEND_CONFIGURATION": "Add Week-end Configuration",
             "BACK": "Back",
             "CANCEL": "Cancel",
             "CANCEL_EDIT": "Cancel Edit",
@@ -569,6 +570,15 @@
             "WEBCAM_NOT_STARTED": "Webcam could not be started. Did you give access to it?",
             "WEEK": "Week",
             "WEEKLY_REPORT": "Weekly Report",
+            "WEEK_DAYS": {
+              "FRIDAY"    : "Friday",
+              "MONDAY"    : "Monday",
+              "SATURDAY"  : "Saturday",
+              "SUNDAY"    : "Sunday",
+              "THURSDAY"  : "Thursday",
+              "TUESDAY"   : "Tuesday",
+              "WEDNESDAY" : "Wednesday"   
+            },
             "WEIGHT": "Weight",
             "WIDTH": "Width",
             "YES": "Yes",
