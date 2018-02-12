@@ -10,110 +10,60 @@
 const _ = require('lodash');
 const debug = require('debug')('TreeBuilder');
 
-/**
- * @function buildTreeFromArray
- *
- * @description
- * This function makes a tree data structure from a properly formatted array.
- */
-function buildTreeFromArray(nodes, parentId, parentKey) {
-  debug(`#builtTreeFromArray() called with (Array(${nodes.length}), ${parentId}, ${parentKey}.`);
-
-  // recursion base-case:  return nothing if empty array
-  if (nodes.length === 0) { return null; }
-
-  // find nodes which are the children of parentId
-  const children = nodes.filter(node => node[parentKey] === parentId);
-
-  // recurse - for each child node, compute their child-trees using the same
-  // buildTreeFromArray() command
-  children.forEach(node => {
-    node.children = buildTreeFromArray(nodes, node.id, parentKey);
-  });
-
-  // return the list of children
-  return children;
-}
-
-/**
- * @function flatten
- *
- * @description
- * Operates on constructed trees which have "children" attributes holding all
- * child nodes.  It computes the depth of the node and affixes it to the child
- * node.  This function is recursive.
- *
- * @param {Array} tree - tree structure created by the tree constructor
- * @param {Number} depth - depth attribute
- * @param {Boolen} pruneChildren - instructs the function to remove children
- */
-function flatten(tree, depth, pruneChildren = true) {
-  let currentDepth = (Number.isNaN(depth) || _.isUndefined(depth)) ? -1 : depth;
-  currentDepth += 1;
-
-  return tree.reduce((array, node) => {
-    node.depth = currentDepth;
-    const items = [node].concat(node.children ?
-      flatten(node.children, currentDepth, pruneChildren) : []);
-
-    if (pruneChildren) { delete node.children; }
-
-    return array.concat(items);
-  }, []);
-}
-
-/**
- * @function sumOnProperty
- *
- * @description
- * Computes the value of all parent nodes in the tree as the sum of the values
- * of their children for a given property.
- */
-function sumOnProperty(node, prop) {
-  if (hasChildren(node)) {
-    // recursively compute the value of node[prop] by summing all child[prop]s
-    node[prop] = node.children.reduce((value, child) =>
-      value + sumOnProperty(child, prop), 0);
-  }
-
-  return node[prop];
-}
-
-function hasChildren(node) {
-  return node.children.length > 0;
-}
-
-function markNodeToPrune(node, fn) {
-  if (hasChildren(node)) {
-    node.children.forEach(child => markNodeToPrune(child, fn));
-  }
-
-  if (fn(node)) {
-    node._toPrune = true;
-  }
-}
 
 class Tree {
   constructor(data = [], options = {
     parentKey : 'parent',
     rootId : 0,
   }) {
-    this._data = data;
-
     this._parentKey = options.parentKey;
-    this._rootId = options.rootId;
-
+    this._rootNode = {
+      id : options.rootId,
+    };
 
     // build the tree with the provided root id and parentKey
-    this._tree = buildTreeFromArray(_.cloneDeep(data), this._rootId, this._parentKey);
+    this._rootNode.children = this.buildTreeFromArray(_.cloneDeep(data));
+    this.buildNodeIndex();
 
-    debug(`#constructor() built tree with ${this._data.length} nodes.`);
+    // build a node index
+
+    debug(`#constructor() built tree with ${data.length} nodes.`);
+  }
+
+  buildTreeFromArray(nodes, parentId = this._rootNode.id) {
+    debug(`#builtTreeFromArray() called with (Array(${nodes.length}), ${parentId}).`);
+
+    // recursion base-case:  return nothing if empty array
+    if (nodes.length === 0) { return null; }
+
+    // find nodes which are the children of parentId
+    const children = nodes.filter(node => node[this._parentKey] === parentId);
+
+    // recurse - for each child node, compute their child-trees using the same
+    // buildTreeFromArray() command
+    children.forEach(node => {
+      node.children = this.buildTreeFromArray(nodes, node.id);
+    });
+
+    // return the list of children
+    return children;
+  }
+
+  buildNodeIndex() {
+    this._nodeIndex = {};
+    this.walk(node => {
+      this._nodeIndex[node.id] = node;
+    });
   }
 
   prune(fn) {
-    debug('#prune() called on tree strucure.');
-    // walk down the tree, marking nodes to be pruned.
-    this._tree.forEach(node => markNodeToPrune(node, fn));
+    debug('#prune() called on tree structure.');
+
+    const markNodeToPruneFn = (node) => {
+      node._toPrune = fn(node);
+    };
+
+    this.walk(childNode => markNodeToPruneFn(childNode));
 
     const prev = this.toArray();
     const pruned = prev.filter(node => !node._toPrune);
@@ -125,27 +75,88 @@ class Tree {
   }
 
   toArray() {
-    return flatten(this._tree);
+    const array = [];
+    this.walk((node) => array.push(node));
+    return array;
   }
 
-  sumOnProperty(prop) {
-    this._tree.forEach(node => {
-      sumOnProperty(node, prop);
-    });
+  /**
+   * @method isRootNode
+   *
+   * @description
+   * Returns true if the node is the root node.
+   *
+   * @param node {Object} - a tree node to compare.
+   */
+  isRootNode(node) {
+    return node.id === this._rootNode.id;
   }
 
+  /**
+   * @method find
+   *
+   * @description
+   * Gets a node by its id.
+   */
+  find(id) {
+    return this._nodeIndex[id];
+  }
+
+  /**
+   * @method walk
+   *
+   * @description
+   * Internal method to be used to walk through children, calling a function on
+   * each child.  The caller can walk around the tree, calling a passed function
+   * on either the ascending or the descending step.
+   *
+   * @param fn {Function} - the function to call for each node in the tree
+   * @param callFnBeforeRecurse {Boolean} - specify whether to call the function
+   * on the descending or ascending direction of the recursion.  The descending
+   * direction is before recursing through the children.  The ascending direction
+   * is after all children have been looped through.
+   * @param currentNode {Object} - the current node in the walk.
+   * @param parentNode {Object} - the parent of the current node in the walk.
+   */
+  walk(fn, callFnBeforeRecurse = true, currentNode = this._rootNode, parentNode = null) {
+    debug('#walk() called on tree structure.');
+    const callFnAfterRecurse = !callFnBeforeRecurse;
+
+    const recurse = () =>
+      currentNode.children.forEach(childNode =>
+        this.walk(fn, callFnBeforeRecurse, childNode, currentNode));
+
+    // if we start as the root node, then descend immediately.
+    if (this.isRootNode(currentNode)) {
+      recurse();
+      return;
+    }
+
+    // if we are supposed to call the function before recursion, we do that now
+    if (callFnBeforeRecurse) {
+      fn(currentNode, parentNode);
+    }
+
+    // recursive step: walk through children
+    recurse();
+
+    // if we are supposed to call the function after recursion, now is the time
+    if (callFnAfterRecurse) {
+      fn(currentNode, parentNode);
+    }
+  }
 
   filterByLeaf(prop, value) {
     // set the property of the child to the parent up to the top
-    this._tree.forEach(node => {
-      this.interate(node, prop, value, this._tree);
+    this.rootNode.children.forEach(node => {
+      this.interate(node, prop, value, this._rootNode);
     });
+
     // let filter tree now
-    const data = this.toArray().filter(row => {
-      return row[prop] === value;
-    });
-    this._data = data;
-    this._tree = buildTreeFromArray(_.cloneDeep(data), this._rootId, this._parentKey);
+    const data = this.toArray().filter(row => row[prop] === value);
+
+    this.rootNode.children = this.buildTreeFromArray(data);
+    this.buildNodeIndex();
   }
 
   // set the child's property to parent recursively up to the top
@@ -156,10 +167,9 @@ class Tree {
     }
   }
 
-  // walk arround the tree
+  // walk around the tree
   // search the node by property's value
   interate(node, prop, value, parent) {
-  
     node.parentNode = parent;
 
     if (node[prop] === value && !parent[prop]) {
@@ -171,8 +181,22 @@ class Tree {
         this.interate(child, prop, value, node);
       });
     }
+
     delete node.parentNode;
   }
 }
+
+// common functions used throughout the application.
+Tree.common = {
+  computeNodeDepth : (currentNode, parentNode) => {
+    currentNode.depth = (parentNode.depth || 0) + 1;
+  },
+
+  sumOnProperty : (property, defaultValue = 0) =>
+    (currentNode, parentNode) => {
+      parentNode[property] =
+        (parentNode[property] || defaultValue) + currentNode[property];
+    },
+};
 
 module.exports = Tree;

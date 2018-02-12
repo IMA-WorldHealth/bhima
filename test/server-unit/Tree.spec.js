@@ -43,76 +43,93 @@ function TreeUnitTests() {
     valueB : 19,
   }];
 
+  let tree;
+
+  beforeEach(() => {
+    tree = new Tree(nodes);
+  });
+
   it('#constructor() should populate private variables', () => {
-    const tree = new Tree(nodes);
-    expect(tree._data).to.deep.equal(nodes);
-    expect(tree._tree).to.not.be.undefined;
+    expect(tree._rootNode).to.be.an('object');
+    expect(tree._rootNode.children).to.be.an('array');
   });
 
-  it('#constructor() should not have side-effects', () => {
-    const cloned = JSON.parse(JSON.stringify(nodes));
-    const tree = new Tree(nodes);
-    expect(tree._data).to.deep.equal(cloned);
+  it('#constructor() the root node should have three childen', () => {
+    const node = tree._rootNode;
+    expect(node.children).to.have.length(3);
   });
 
-  it('#constructor() node id:0 should have three childen', () => {
-    const tree = new Tree(nodes)._tree;
-    expect(tree).to.have.length(3);
+  it('#walk() should be called for every node in the tree', () => {
+    const size = nodes.length;
+    let counter = 0;
+    tree.walk(() => counter++);
+    expect(counter).to.be.equal(size);
   });
 
-  it('#constructor() nodes should all have "children" arrays', () => {
-    const tree = new Tree(nodes)._tree;
-    tree.forEach(node => {
-      expect(node).to.have.property('children');
-      expect(node.children).to.be.an('array');
-    });
+  it('#walk() should visit every node in the tree', () => {
+    tree.walk(node => { node.visited = tree; });
+    const dump = tree.toArray();
+    const everyNodeVisited = dump.every(node => node.visited);
+    expect(everyNodeVisited).to.equal(true);
   });
 
-  it('#constructor() node id:4 should not have any children', () => {
-    const tree = new Tree(nodes)._tree;
-    const node4 = tree[1];
+  it('#find() should find node with id 4', () => {
+    const node4 = tree.find(4);
     expect(node4.id).to.equal(4);
+    expect(node4.valueA).to.equal(30);
+    expect(node4.valueB).to.equal(4);
     expect(node4.children).to.have.length(0);
   });
 
-  it('#constructor() node id:6 should have two children', () => {
-    const tree = new Tree(nodes)._tree;
-    const node6 = tree[2];
+  it('#find() node id:6 should have two children', () => {
+    const node6 = tree.find(6);
     expect(node6.id).to.equal(6);
     expect(node6.children).to.have.length(2);
   });
 
   it('#toArray() should return an array', () => {
-    const array = new Tree(nodes).toArray();
+    const array = tree.toArray();
     expect(array).to.be.an('array');
+    expect(array).to.have.length(nodes.length);
   });
 
-  it('#toArray() should populate the "depth" key on all nodes', () => {
-    const array = new Tree(nodes).toArray();
-    array.forEach(node => {
-      expect(node).to.have.property('depth');
-    });
+  it('#constructor() tree should have a maximum depth of 3', () => {
+    tree.walk(Tree.common.computeNodeDepth);
+    let max = 0;
+    tree.walk(node => { max = Math.max(max, node.depth); });
+    expect(max).to.equal(3);
   });
 
-  it('#sumOnProperty() should compute the balances of level 1 nodes', () => {
-    const tree = new Tree(nodes);
-    const subTree = tree._tree;
+  it('#walk () should be able to compute the balances of nodes', () => {
+    const node1 = tree.find(1);
+    const node4 = tree.find(4);
+    const node6 = tree.find(6);
 
     // first level should not be defined
-    expect(subTree[0].valueA).to.be.undefined;
-    expect(subTree[0].valueB).to.be.undefined;
+    expect(node1.valueA).to.be.undefined;
+    expect(node1.valueB).to.be.undefined;
 
     // this is a level 1 leaf node, so its values are known.
-    expect(subTree[1].valueA).to.equal(30);
-    expect(subTree[1].valueB).to.equal(4);
+    expect(node4.valueA).to.equal(30);
+    expect(node4.valueB).to.equal(4);
 
-    tree.sumOnProperty('valueA');
-    expect(subTree[0].valueA).to.equal(9);
-    expect(subTree[0].valueB).to.be.undefined;
+    tree.walk(Tree.common.sumOnProperty('valueA'), false);
+
+    expect(node1.valueA).to.equal(9);
+    expect(node1.valueB).to.be.undefined;
+
+    expect(node4.valueA).to.equal(30);
+    expect(node4.valueB).to.equal(4);
 
     // this condition sums multiple leaves
-    tree.sumOnProperty('valueB');
-    expect(subTree[2].valueB).to.equal(21); // 2 + 19
+    tree.walk(Tree.common.sumOnProperty('valueB'), false);
+    expect(node1.valueB).to.equal(7);
+
+    expect(node4.valueA).to.equal(30);
+    expect(node4.valueB).to.equal(4);
+
+    expect(node6.valueA).to.equal(20);
+    expect(node6.valueB).to.equal(21);
   });
 }
 
