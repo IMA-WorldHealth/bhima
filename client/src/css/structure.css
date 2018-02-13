@@ -23,7 +23,12 @@
 /**
  * IMA colors
  */
-.bg-ima-blue { background-color : #085484; color: #fff; }
+:root {
+  --ima-blue : #085484;
+}
+
+.ima-blue { color: var(--ima-blue); }
+.bg-ima-blue { background-color : var(--ima-blue); color: #fff; }
 
 /*
  * Sidebar
@@ -757,9 +762,9 @@ growl-notification.fading.ng-leave.ng-leave-active {
 }
 
 .notification-info {
-  color : #085484;
+  color : var(--ima-blue);
   background-color : #64BDEE;
-  border-left : 5px solid #085484;
+  border-left : 5px solid var(--ima-blue);
 }
 
 .notification-warn {
@@ -870,7 +875,7 @@ growl-notification.fading.ng-leave.ng-leave-active {
 }
 
 .progress-bar.ima-blue {
-  background-color : #085484;
+  background-color : var(--ima-blue);
 }
 
 /* properly deal with ui-selects inside ui-grids */
@@ -929,3 +934,50 @@ a[disabled] {
   z-index : 9999;
 }
 
+.show-on-small-screen {
+  display: none;
+}
+
+@media (max-width: 500px) {
+
+  /*---------------------------
+      show only on small screen
+  -----------------------------*/
+
+  .show-on-small-screen {
+    display: block;
+    color: white;
+    background-color: var(--ima-blue);
+    padding: 10px;
+  }
+}
+
+/* -------------------------------------
+    Grid Toolbar
+--------------------------------------- */
+.grid-toolbar {
+  display: flex;
+  align-items: flex-start;
+}
+
+.grid-toolbar-item {
+  display: inline-flex;
+}
+
+/* -------------------------------------
+    Segment Statistic Card
+--------------------------------------- */
+.ima-stat-card .ui.statistic > .value {
+  color: var(--ima-blue);
+}
+.ima-stat-card .ui.statistic > .ui-hidable-label {
+  color: black;
+}
+
+.ima-stat-card-reversed {
+  background-color: var(--ima-blue);
+}
+.ima-stat-card-reversed .ui.statistic > .value,
+.ima-stat-card-reversed .ui.statistic > .ui-hidable-label {
+  color: white;
+}

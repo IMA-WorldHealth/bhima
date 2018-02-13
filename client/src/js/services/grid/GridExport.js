@@ -10,9 +10,9 @@ function GridExportService(Modal, util) {
    */
   function GridExport(gridOptions, defaultRowKey, defaultColKey) {
 
-    this.gridOptions = gridOptions;
-    this.ROWS = defaultRowKey;
-    this.COLS = defaultColKey;
+    this.options = gridOptions;
+    this.rows = defaultRowKey;
+    this.cols = defaultColKey;
 
     util.after(gridOptions, 'onRegisterApi', function onRegisterApi(api) {
       this.api = api;
@@ -24,16 +24,13 @@ function GridExportService(Modal, util) {
    * @description run the export tool
    */
   GridExport.prototype.run = function run() {
-    var gridApi = this.api;
-    var gridOptions = this.gridOptions;
-    var rows = this.ROWS;
-    var cols = this.COLS;
+    const { api } = this;
+    const { options } = this;
+    const { rows } = this;
+    const { cols } = this;
 
     var request = {
-      api: gridApi,
-      options: gridOptions,
-      rows: rows,
-      cols: cols,
+      api, options, rows, cols,
     };
 
     var params = {
@@ -50,7 +47,7 @@ function GridExportService(Modal, util) {
 
     var instance = Modal.open(params);
     return instance.result;
-  }
+  };
 
   return GridExport;
 }

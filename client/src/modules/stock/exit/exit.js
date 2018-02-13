@@ -7,6 +7,7 @@ StockExitController.$inject = [
   'SessionService', 'util', 'bhConstants', 'ReceiptModal',
   'StockFormService', 'StockService', 'StockModalService',
   'uiGridGroupingConstants', '$translate', 'appcache',
+  'uiGridExporterService', 'moment',
 ];
 
 /**
@@ -19,7 +20,7 @@ StockExitController.$inject = [
  */
 function StockExitController(
   Depots, Inventory, Notify, Session, util, bhConstants, ReceiptModal, StockForm, Stock,
-  StockModal, uiGridGroupingConstants, $translate, AppCache
+  StockModal, uiGridGroupingConstants, $translate, AppCache, uiGridExporterService, moment
 ) {
   var vm = this;
   var cache = new AppCache('StockExit');
@@ -28,6 +29,7 @@ function StockExitController(
 
   vm.stockForm = new StockForm('StockExit');
   vm.movement = {};
+  vm.gridApi = {};
 
   // bind methods
   vm.itemIncrement = 1;
@@ -51,6 +53,13 @@ function StockExitController(
     depot : { description : 'STOCK.EXIT_DEPOT', find : findDepot, submit : submitDepot },
     loss : { description : 'STOCK.EXIT_LOSS', find : configureLoss, submit : submitLoss },
   };
+
+  const gridFooterTemplate = `
+    <div style="margin-left: 10px;">
+      {{ grid.appScope.gridApi.core.getVisibleRows().length }} 
+      <span translate>STOCK.ROWS</span>
+    </div>
+  `;
 
   gridOptions = {
     appScopeProvider : vm,
@@ -117,15 +126,56 @@ function StockExitController(
         headerCellFilter : 'translate',
         cellTemplate : 'modules/stock/exit/templates/expiration.tmpl.html',
       },
-      { field : 'actions', width : 25, cellTemplate : 'modules/stock/exit/templates/actions.tmpl.html' },
+      {
+        field : 'actions',
+        width : 25,
+        cellTemplate : 'modules/stock/exit/templates/actions.tmpl.html',
+      },
     ],
     data : vm.stockForm.store.data,
     fastWatch : true,
     flatEntityAccess : true,
+    showGridFooter : true,
+    gridFooterTemplate,
+    onRegisterApi,
   };
 
   // exposing the grid options to the view
   vm.gridOptions = gridOptions;
+
+  /**
+   * @method exportGrid
+   * @description export the content of the grid to csv.
+   * this function is helpful for handling the export of lot row which are in the grid to a csv file
+   * in a correct format.
+   */
+  vm.exportGrid = () => {
+    const columns = vm.gridOptions.columnDefs
+      .filter(col => col.displayName && col.displayName.length)
+      .map(col => ({ displayName : $translate.instant(col.displayName), width : col.width }));
+
+    const rows = vm.gridOptions.data.map(row => {
+      const code = row.inventory && row.inventory.code ? row.inventory.code : null;
+      const description = row.inventory && row.inventory.text ? row.inventory.text : null;
+      const lot = row.lot && row.lot.label ? row.lot.label : null;
+      const price = row.inventory && row.inventory.unit_cost ? row.inventory.unit_cost : null;
+      const quantity = row.quantity ? row.quantity : null;
+      const type = row.quantity && row.inventory.unit_type ? row.inventory.unit_type : null;
+      const available = row.inventory && row.inventory.quantity ? row.inventory.quantity : null;
+      const amount = row.inventory && row.inventory.unit_cost && row.quantity ? row.inventory.unit_cost * row.quantity : 0;
+      const expiration = row.lot && row.lot.expiration_date ? moment(row.lot.expiration_date).format(bhConstants.dates.formatDB) : null;
+
+      return [code, description, lot, price, quantity, type, available, amount, expiration].map(value => ({ value }));
+    });
+
+    const fileName = `Stock_Exit_${moment().format(bhConstants.dates.formatDB)}.csv`;
+    const fileString = uiGridExporterService.formatAsCsv(columns, rows, ',');
+    uiGridExporterService.downloadFile(fileName, fileString, true, true);
+  };
+
+  function onRegisterApi(gridApi) {
+    vm.gridApi = gridApi;
+  }
 
   function selectExitType(exitType) {
     vm.movement.exit_type = exitType.label;
