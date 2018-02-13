@@ -122,6 +122,14 @@ function constantConfig() {
       { key : 'custom_period_start', label : 'PERIODS.START', comparitor: '>', valueFilter : 'date' },
       { key : 'custom_period_end', label : 'PERIODS.END', comparitor: '<', valueFilter : 'date' },
       { key : 'limit', label : 'FORM.LABELS.LIMIT' }],
+    weekDays : [
+      { id : 0, label : 'FORM.LABELS.WEEK_DAYS.SUNDAY' },
+      { id : 1, label : 'FORM.LABELS.WEEK_DAYS.MONDAY' },
+      { id : 2, label : 'FORM.LABELS.WEEK_DAYS.TUESDAY' },
+      { id : 3, label : 'FORM.LABELS.WEEK_DAYS.WEDNESDAY' },
+      { id : 4, label : 'FORM.LABELS.WEEK_DAYS.THURSDAY' },
+      { id : 5, label : 'FORM.LABELS.WEEK_DAYS.FRIDAY'},
+      { id : 6, label : 'FORM.LABELS.WEEK_DAYS.SATURDAY'}],
   };
 }
 

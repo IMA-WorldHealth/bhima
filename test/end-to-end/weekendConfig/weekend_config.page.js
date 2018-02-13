@@ -24,16 +24,6 @@ class WeekEndConfigPage {
   }
 
   /**
-   * send back the number of weekEnds in the grid
-   */
-  getWeekEndConfigCount() {
-    return this.weekEndGrid
-      .element(by.css('.ui-grid-render-container-body'))
-      .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'))
-      .count();
-  }
-
-  /**
    * simulate the create weekEnd Configuration button click to show the dialog of creation
    */
   createWeekEndConfig(weekEnd) {
