@@ -18,6 +18,7 @@ angular.module('bhima.routes')
       'aged_creditors',
       'cashflow',
       'operating',
+      'hgr_report',
     ];
 
     $stateProvider
