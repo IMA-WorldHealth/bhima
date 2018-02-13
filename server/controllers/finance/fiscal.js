@@ -36,6 +36,8 @@ exports.getNumberOfFiscalYears = getNumberOfFiscalYears;
 exports.getDateRangeFromPeriods = getDateRangeFromPeriods;
 exports.getPeriodIdsFromDateRange = getPeriodIdsFromDateRange;
 exports.accountBanlanceByTypeId = accountBanlanceByTypeId;
+exports.receivables = receivables;
+exports.debts = debts;
 /**
  * @method lookupFiscalYear
  *
@@ -593,5 +595,58 @@ function accountBanlanceByTypeId() {
     GROUP BY pt.account_id 
     )s ON ac.id = s.account_id
     ORDER BY ac.number
+  `;
+}
+
+// client debts by filscal year id and date range
+function receivables() {
+  return `
+    SELECT 
+      a.id, a.number, a.label, a.parent, IFNULL(s.balance, 0) AS amount,
+      IFNULL(s.dgName, '') as dgName, IFNULL(s.debit, 0) as debit, IFNULL(s.credit, 0) as credit,
+      IFNULL(s.concerned, 0) as concerned
+    
+    FROM account as a LEFT JOIN (
+      SELECT
+        pt.account_id, dg.name AS dgName, SUM(pt.debit) AS debit,
+        SUM(pt.credit) AS credit, SUM(pt.debit - pt.credit) AS balance, 1 as concerned
+      FROM
+        debtor_group dg
+      JOIN account ac ON ac.id = dg.account_id
+      JOIN period_total pt ON ac.id = pt.account_id
+      JOIN fiscal_year as fy ON fy.id = pt.fiscal_year_id
+      WHERE fy.id = ? AND 
+        pt.period_id IN (
+          SELECT id FROM period WHERE start_date>= ? AND end_date<= ?   
+        )
+      GROUP BY pt.account_id 
+    )s ON a.id = s.account_id
+    ORDER BY a.number
+  `;
+}
+
+function debts() {
+  return `
+    SELECT 
+      a.id, a.number, a.label, a.parent, IFNULL(s.balance, 0) AS amount,
+      IFNULL(s.dgName, '') as dgName, IFNULL(s.debit, 0) as debit, IFNULL(s.credit, 0) as credit,
+      IFNULL(s.concerned, 0) as concerned
+    
+    FROM account as a LEFT JOIN (
+      SELECT
+        pt.account_id, cg.name AS dgName, SUM(pt.debit) AS debit,
+        SUM(pt.credit) AS credit, SUM(pt.credit - pt.debit) AS balance, 1 as concerned
+      FROM
+        creditor_group cg
+      JOIN account ac ON ac.id = cg.account_id
+      JOIN period_total pt ON ac.id = pt.account_id
+      JOIN fiscal_year as fy ON fy.id = pt.fiscal_year_id
+      WHERE fy.id = ? AND 
+        pt.period_id IN (
+          SELECT id FROM period WHERE start_date>= ? AND end_date <= ?   
+        )
+      GROUP BY pt.account_id 
+    )s ON a.id = s.account_id
+    ORDER BY a.number
   `;
 }
