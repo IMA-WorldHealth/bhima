@@ -63,11 +63,17 @@ class TreeService {
 
     this.walk(childNode => markNodeToPruneFn(childNode));
 
-    const prev = this.toArray();
-    const pruned = prev.filter(node => !node._toPrune);
+    const original = this.toArray();
+    const pruned = original.filter(node => !node._toPrune);
 
-    // return an array missing the pruned values
-    return pruned;
+    // expose the data array for data binding
+    this.data = pruned;
+
+    // build the tree with the provided root id and parentKey
+    this._rootNode.children = this.buildTreeFromArray(pruned);
+    this.buildNodeIndex();
+
+    return original.length - pruned.length;
   }
 
   toArray() {
@@ -143,14 +149,14 @@ class TreeService {
 
   filterByLeaf(prop, value) {
     // set the property of the child to the parent up to the top
-    this.rootNode.children.forEach(node => {
+    this._rootNode.children.forEach(node => {
       this.interate(node, prop, value, this._rootNode);
     });
 
     // let filter tree now
     const data = this.toArray().filter(row => row[prop] === value);
 
-    this.rootNode.children = this.buildTreeFromArray(data);
+    this._rootNode.children = this.buildTreeFromArray(data);
     this.buildNodeIndex();
   }
 
@@ -188,6 +194,7 @@ class TreeService {
    */
   sort(comparisonFn) {
     this.walk((childNode, parentNode) => parentNode.children.sort(comparisonFn));
+    this.data = this.toArray();
   }
 }
 

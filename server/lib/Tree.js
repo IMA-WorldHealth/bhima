@@ -147,14 +147,14 @@ class Tree {
 
   filterByLeaf(prop, value) {
     // set the property of the child to the parent up to the top
-    this.rootNode.children.forEach(node => {
+    this._rootNode.children.forEach(node => {
       this.interate(node, prop, value, this._rootNode);
     });
 
     // let filter tree now
     const data = this.toArray().filter(row => row[prop] === value);
 
-    this.rootNode.children = this.buildTreeFromArray(data);
+    this._rootNode.children = this.buildTreeFromArray(data);
     this.buildNodeIndex();
   }
 

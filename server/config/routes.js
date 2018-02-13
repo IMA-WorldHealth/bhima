@@ -210,6 +210,7 @@ exports.configure = function configure(app) {
   app.get('/fiscal/date', fiscal.getFiscalYearsByDate);
   app.get('/fiscal/:id', fiscal.detail);
   app.get('/fiscal/:id/balance/:period_number', fiscal.getBalance);
+  app.get('/fiscal/:id/opening_balance', fiscal.getOpeningBalance);
   app.post('/fiscal/:id/opening_balance', fiscal.setOpeningBalance);
   app.post('/fiscal', fiscal.create);
   app.put('/fiscal/:id/closing', fiscal.closing);
@@ -572,7 +573,7 @@ exports.configure = function configure(app) {
   app.post('/rubric_config', rubricConfig.create);
   app.put('/rubric_config/:id', rubricConfig.update);
   app.get('/rubric_config/:id/setting', rubricConfig.listConfig);
-  app.post('/rubric_config/:id/setting', rubricConfig.createConfig);  
+  app.post('/rubric_config/:id/setting', rubricConfig.createConfig);
   app.delete('/rubric_config/:id', rubricConfig.delete);
 
   // grades api

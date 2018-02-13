@@ -108,7 +108,7 @@ function FiscalOpeningBalanceController($state, Fiscal, Notify, uiGridConstants,
     vm.gridApi = gridApi;
   }
 
-  // load fiscal year and periodic balance
+  // load the fiscal year and beginning balance
   function startup() {
     Fiscal.read(fiscalYearId)
       .then(fy => {
@@ -117,16 +117,38 @@ function FiscalOpeningBalanceController($state, Fiscal, Notify, uiGridConstants,
         return fy.previous_fiscal_year_id;
       })
       .then(hasPrevious)
-      .then(loadPeriodicBalance)
+      .then(loadOpeningBalance)
       .catch(Notify.handleError);
   }
 
-  // load periodic balance
-  function loadPeriodicBalance() {
-    return Fiscal.periodicBalance({
-      id : fiscalYearId,
-      period_number : 0,
-    })
+  /**
+   * @function pruneUntilSettled
+   *
+   * @description
+   * Tree shaking algorithm that prunes the tree until only accounts with
+   * children remain in the tree.  Highly inefficient!  But this operation
+   * doesn't happen that frequently.
+   *
+   * In practice, the prune function is called 0 - 5 times, depending on how
+   * many title accounts are missing children.
+   */
+  function pruneUntilSettled(tree) {
+    const pruneFn = node => node.isTitleAccount && node.children.length === 0;
+
+    let settled = tree.prune(pruneFn);
+    while (settled > 0) {
+      settled = tree.prune(pruneFn);
+    }
+  }
+
+  /**
+   * @function loadOpeningBalance
+   *
+   * @description
+   * Populates the initial opening balance from the server.
+   */
+  function loadOpeningBalance() {
+    return Fiscal.getOpeningBalance(fiscalYearId)
       .then(accounts => {
         vm.AccountTree = new Tree(accounts);
 
@@ -136,9 +158,13 @@ function FiscalOpeningBalanceController($state, Fiscal, Notify, uiGridConstants,
           child.$$treeLevel = (parent.$$treeLevel || 0) + 1;
         });
 
-        // sort the accounts by their label
-        vm.AccountTree.sort((a, b) => a.label > b.label);
+        // prune all title accounts with empty children
+        pruneUntilSettled(vm.AccountTree);
 
+        // sort the accounts by their label
+        vm.AccountTree.sort((a, b) => a.number > b.number);
+
+        // compute balances
         vm.balanced = hasBalancedAccount();
         onBalanceChange();
 
@@ -208,7 +234,9 @@ function FiscalOpeningBalanceController($state, Fiscal, Notify, uiGridConstants,
 
   /**
    * @function hasPrevious
-   * check if the previous fiscal year exists
+   *
+   * @description
+   * Check if the previous fiscal year exists for this fiscal year
    */
   function hasPrevious(previousFiscalYearId) {
     if (!previousFiscalYearId) { return false; }

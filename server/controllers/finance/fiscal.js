@@ -5,6 +5,8 @@
  * This module is responsible for implementing CRUD on the fiscal table, as
  * well as accompanying period tables.
  *
+ * @requires lodash
+ * @requires q
  * @requires lib/db
  * @requires lib/errors/NotFound
  */
@@ -14,6 +16,7 @@ const _ = require('lodash');
 const db = require('../../lib/db');
 const Transaction = require('../../lib/db/transaction');
 const NotFound = require('../../lib/errors/NotFound');
+const FilterParser = require('../../lib/filter');
 
 const debug = require('debug')('FiscalYear');
 
@@ -36,6 +39,9 @@ exports.getNumberOfFiscalYears = getNumberOfFiscalYears;
 exports.getDateRangeFromPeriods = getDateRangeFromPeriods;
 exports.getPeriodIdsFromDateRange = getPeriodIdsFromDateRange;
 exports.accountBanlanceByTypeId = accountBanlanceByTypeId;
+exports.getOpeningBalance = getOpeningBalance;
+
+
 /**
  * @method lookupFiscalYear
  *
@@ -63,35 +69,38 @@ function lookupFiscalYear(id) {
  * @method list
  *
  * @description
- * Returns a list of all fiscal year in the database.
+ * Returns a list of all fiscal years in the database.
  */
 function list(req, res, next) {
-  let sql = 'SELECT id, label FROM fiscal_year';
-  const params = [];
+  const filters = new FilterParser(req.query, { tableAlias : 'f' });
+  const sql = `
+    SELECT f.id, f.enterprise_id, f.number_of_months, f.label, f.start_date, f.end_date,
+    f.previous_fiscal_year_id, f.locked, f.created_at, f.updated_at, f.note,
+    f.user_id, u.display_name
+    FROM fiscal_year AS f
+    JOIN user AS u ON u.id = f.user_id
+  `;
 
-  // make a complex query
-  if (req.query.detailed === '1') {
-    params.push(req.session.enterprise.id);
+  filters.equals('id');
+  filters.equals('locked');
+  filters.equals('previous_fiscal_year_id');
 
-    sql = `
-      SELECT f.id, f.enterprise_id, f.number_of_months, f.label, f.start_date, f.end_date,
-      f.previous_fiscal_year_id, f.locked, f.created_at, f.updated_at, f.note,
-      f.user_id, u.display_name
-      FROM fiscal_year AS f
-      JOIN user AS u ON u.id = f.user_id
-      WHERE f.enterprise_id = ?
-    `;
-  }
-
+  // TODO(@jniles) - refactor this custom ordering logic.  Can it be done on the
+  // client?
+  let ordering;
   if (req.query.by && req.query.order) {
     const direction = (req.query.order === 'ASC') ? 'ASC' : 'DESC';
-    params.push(req.query.by);
-    sql += ` ORDER BY ?? ${direction} `;
+    ordering = `ORDER BY ${req.query.by} ${direction}`;
   } else {
-    sql += ' ORDER BY start_date DESC';
+    ordering = 'ORDER BY start_date DESC';
   }
 
-  db.exec(sql, params)
+  filters.setOrder(ordering);
+
+  const query = filters.applyQuery(sql);
+  const parameters = filters.parameters();
+
+  db.exec(query, parameters)
     .then((rows) => {
       res.status(200).json(rows);
     })
@@ -161,6 +170,7 @@ function create(req, res, next) {
 /**
  * GET /fiscal/:id
  *
+ * @description
  * Returns the detail of a single Fiscal Year
  */
 function detail(req, res, next) {
@@ -251,6 +261,16 @@ function getBalance(req, res, next) {
     .done();
 }
 
+function getOpeningBalance(req, res, next) {
+  const { id } = req.params;
+  loadOpeningBalance(id)
+    .then(rows => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
+}
+
 /**
  * @function lookupBalance
  * @param {number} fiscalYearId fiscal year id
@@ -262,7 +282,7 @@ function lookupBalance(fiscalYearId, periodNumber) {
   const sql = `
     SELECT t.period_id, a.id, a.label,
       SUM(t.debit) AS debit, SUM(t.credit) AS credit, SUM(t.debit - t.credit) AS balance
-    FROM period_total t
+    FROM period_total AS t
     JOIN account a ON a.id = t.account_id
     JOIN period p ON p.id = t.period_id
     WHERE t.fiscal_year_id = ? AND p.number <= ?
@@ -366,16 +386,31 @@ function hasPreviousFiscalYear(id) {
 }
 
 /**
- * @function load opening balance
- * @description load the opening balance from period N+1 into period 0
+ * @function loadOpeningBalance
+ *
+ * @description
+ * Load the opening balance of a fiscal year from period 0 of that fiscal year.
  */
-function loadOpeningBalance(fiscalYear) {
-  /*
-   * fetch the period 13 balance and insert it into
-   * the period zero of the new fiscal year
-   */
-  return lookupBalance(fiscalYear.previous_fiscal_year_id, fiscalYear.number_of_months + 1)
-    .then(accounts => insertOpeningBalance(fiscalYear, accounts));
+function loadOpeningBalance(fiscalYearId) {
+  const INCOME_TYPE_ID = 4;
+  const EXPENSE_TYPE_ID = 5;
+
+  const sql = `
+    SELECT a.id, a.number, a.label, a.type_id, a.label, a.parent,
+      IFNULL(s.debit, 0) AS debit, IFNULL(s.credit, 0) AS credit
+    FROM account AS a LEFT JOIN (
+      SELECT SUM(pt.debit) AS debit, SUM(pt.credit) AS credit, pt.account_id
+      FROM period_total AS pt
+      JOIN period AS p ON p.id = pt.period_id
+      WHERE pt.fiscal_year_id = ?
+        AND p.number = 0
+      GROUP BY pt.account_id
+    )s ON a.id = s.account_id
+    WHERE a.type_id NOT IN (?, ?)
+    ORDER BY a.number;
+  `;
+
+  return db.exec(sql, [fiscalYearId, INCOME_TYPE_ID, EXPENSE_TYPE_ID]);
 }
 
 /**

@@ -23,6 +23,7 @@ function FiscalService(Api) {
   service.periodicBalance = periodicBalance;
   service.setOpeningBalance = setOpeningBalance;
   service.periodFiscalYear = periodFiscalYear;
+  service.getOpeningBalance = getOpeningBalance;
 
   /**
    * @method fiscalYearDate
@@ -47,6 +48,18 @@ function FiscalService(Api) {
   function periodicBalance(params) {
     const url = service.url.concat(params.id, '/balance/', params.period_number);
 
+    return service.$http.get(url)
+      .then(service.util.unwrapHttpResponse);
+  }
+
+  /**
+   * @function getOpeningBalance
+   *
+   * @description
+   * Returns the opening balance for all accounts in a fiscal year.
+   */
+  function getOpeningBalance(fiscalYearId) {
+    const url = `${service.url}${fiscalYearId}/opening_balance`;
     return service.$http.get(url)
       .then(service.util.unwrapHttpResponse);
   }
