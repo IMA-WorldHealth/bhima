@@ -1,16 +1,16 @@
 /**
- * @class Tree
+ * @class TreeService
  *
  * @description
  * This file contains the generic class definition of a tree. A tree is defined
  * as an array of JSON objects having a parent key referring to another member
  * of the array.  The only exception is the root node, which does not need to be
  * in the tree.
+ *
+ * This code is also found (in a similar form) on the server in /lib/Tree.js
  */
-const _ = require('lodash');
-const debug = require('debug')('TreeBuilder');
 
-class Tree {
+class TreeService {
   constructor(data = [], options = {
     parentKey : 'parent',
     rootId : 0,
@@ -20,18 +20,19 @@ class Tree {
       id : options.rootId,
     };
 
+    // expose the data array for data binding
+    this.data = angular.copy(data);
+
     // build the tree with the provided root id and parentKey
-    this._rootNode.children = this.buildTreeFromArray(_.cloneDeep(data));
+    this._rootNode.children = this.buildTreeFromArray(this.data);
     this.buildNodeIndex();
+  }
 
-    // build a node index
-
-    debug(`#constructor() built tree with ${data.length} nodes.`);
+  getRootNode() {
+    return this._rootNode;
   }
 
   buildTreeFromArray(nodes, parentId = this._rootNode.id) {
-    debug(`#builtTreeFromArray() called with (Array(${nodes.length}), ${parentId}).`);
-
     // recursion base-case:  return nothing if empty array
     if (nodes.length === 0) { return null; }
 
@@ -56,8 +57,6 @@ class Tree {
   }
 
   prune(fn) {
-    debug('#prune() called on tree structure.');
-
     const markNodeToPruneFn = (node) => {
       node._toPrune = fn(node);
     };
@@ -66,8 +65,6 @@ class Tree {
 
     const prev = this.toArray();
     const pruned = prev.filter(node => !node._toPrune);
-
-    debug(`#prune() removed ${prev.length - pruned.length} nodes from the tree`);
 
     // return an array missing the pruned values
     return pruned;
@@ -118,7 +115,6 @@ class Tree {
    * @param parentNode {Object} - the parent of the current node in the walk.
    */
   walk(fn, callFnBeforeRecurse = true, currentNode = this._rootNode, parentNode = null) {
-    debug('#walk() called on tree structure.');
     const callFnAfterRecurse = !callFnBeforeRecurse;
 
     const recurse = () =>
@@ -196,7 +192,7 @@ class Tree {
 }
 
 // common functions used throughout the application.
-Tree.common = {
+TreeService.common = {
   computeNodeDepth : (currentNode, parentNode) => {
     currentNode.depth = (parentNode.depth || 0) + 1;
   },
@@ -208,4 +204,7 @@ Tree.common = {
     },
 };
 
-module.exports = Tree;
+TreeService.$inject = [];
+
+angular.module('bhima.services')
+  .factory('TreeService', () => TreeService);

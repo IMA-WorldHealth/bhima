@@ -1,5 +1,5 @@
 angular.module('bhima.services')
-.service('NodeTreeService', NodeTreeService);
+  .service('NodeTreeService', NodeTreeService);
 
 /**
 * Node Tree Service

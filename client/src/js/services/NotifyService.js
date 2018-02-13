@@ -78,11 +78,15 @@ function NotifyService($translate) {
 
   /**
    * This method is not simply a formatting alias - it accepts an error object
-   * and parses it to show relevent information in the notification.
+   * and parses it to show relevant information in the notification.
    * By default the time to live of an error notification is significantly longer.
    */
   function handleError(error) {
-    setNotification(error.data.code, ERROR_TTL, formatOptions.error);
+    if (error.data && error.data.code) {
+      setNotification(error.data.code, ERROR_TTL, formatOptions.error);
+    } else {
+      console.error(error);
+    }
   }
 
   /** @todo analysis on the heap allocation implications should be done this */

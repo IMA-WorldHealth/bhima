@@ -27,10 +27,10 @@
           <span ng-class="{'text-success': FiscalOBCtrl.balanced, 'text-danger': !FiscalOBCtrl.balanced}"  ng-show="OpeningAccountForm.$submitted">
             <i class="fa" ng-class="{'fa-check': FiscalOBCtrl.balanced, 'fa-warning': !FiscalOBCtrl.balanced}"></i>
             <span data-status="balanced" ng-show="FiscalOBCtrl.balanced" translate>ACCOUNT.BALANCED</span>
-            <span data-status="not-balanced" ng-show="!FiscalOBCtrl.balanced">
+            <span data-status="not-balanced" ng-if="!FiscalOBCtrl.balanced">
               <span translate>ACCOUNT.NOT_BALANCED</span>
-              (<span translate>FORM.LABELS.DEBIT</span>: {{ FiscalOBCtrl.totalDebit | currency: FiscalOBCtrl.enterprise.currency_id }} &nbsp;
-              <span translate>FORM.LABELS.CREDIT</span>: {{ FiscalOBCtrl.totalCredit | currency: FiscalOBCtrl.enterprise.currency_id }})
+              (<span translate>FORM.LABELS.DEBIT</span>: {{ FiscalOBCtrl.AccountTree._rootNode.debit | currency: FiscalOBCtrl.enterprise.currency_id }} &nbsp;
+              <span translate>FORM.LABELS.CREDIT</span>: {{ FiscalOBCtrl.AccountTree._rootNode.credit | currency: FiscalOBCtrl.enterprise.currency_id }})
             </span>
           </span>
 

@@ -2,8 +2,8 @@ angular.module('bhima.controllers')
   .controller('FiscalOpeningBalanceController', FiscalOpeningBalanceController);
 
 FiscalOpeningBalanceController.$inject = [
-  '$state', 'AccountService', 'FiscalService', 'NotifyService',
-  'uiGridConstants', 'SessionService', 'bhConstants',
+  '$state', 'FiscalService', 'NotifyService', 'uiGridConstants',
+  'SessionService', 'bhConstants', 'TreeService',
 ];
 
 /**
@@ -20,7 +20,7 @@ FiscalOpeningBalanceController.$inject = [
  * TODO(@jniles) - use the tree to dynamically compute the title accounts'
  * balances.
  */
-function FiscalOpeningBalanceController($state, Accounts, Fiscal, Notify, uiGridConstants, Session, bhConstants) {
+function FiscalOpeningBalanceController($state, Fiscal, Notify, uiGridConstants, Session, bhConstants, Tree) {
   const vm = this;
   const fiscalYearId = $state.params.id;
 
@@ -41,6 +41,15 @@ function FiscalOpeningBalanceController($state, Accounts, Fiscal, Notify, uiGrid
     return `text-right ${boldness}`;
   }
 
+  function customAggregationFn(columnDefs, column) {
+    if (vm.AccountTree) {
+      const root = vm.AccountTree.getRootNode();
+      return (root[column.field] || 0);
+    }
+
+    return 0;
+  }
+
   const columns = [{
     field : 'number',
     displayName : '',
@@ -57,9 +66,10 @@ function FiscalOpeningBalanceController($state, Accounts, Fiscal, Notify, uiGrid
     displayName : 'FORM.LABELS.DEBIT',
     headerCellClass : 'text-center',
     headerCellFilter : 'translate',
+    type : 'number',
     cellTemplate : '/modules/fiscal/templates/balance.debit.tmpl.html',
     aggregationHideLabel : true,
-    aggregationType  : uiGridConstants.aggregationTypes.sum,
+    aggregationType  : customAggregationFn,
     footerCellClass  : 'text-right',
     footerCellFilter : 'currency:'.concat(Session.enterprise.currency_id),
     width : 200,
@@ -69,9 +79,10 @@ function FiscalOpeningBalanceController($state, Accounts, Fiscal, Notify, uiGrid
     displayName : 'FORM.LABELS.CREDIT',
     headerCellClass : 'text-center',
     headerCellFilter : 'translate',
+    type : 'number',
     cellTemplate : '/modules/fiscal/templates/balance.credit.tmpl.html',
     aggregationHideLabel : true,
-    aggregationType  : uiGridConstants.aggregationTypes.sum,
+    aggregationType  : customAggregationFn,
     footerCellClass  : 'text-right',
     footerCellFilter : 'currency:'.concat(Session.enterprise.currency_id),
     width : 200,
@@ -116,21 +127,30 @@ function FiscalOpeningBalanceController($state, Accounts, Fiscal, Notify, uiGrid
       id : fiscalYearId,
       period_number : 0,
     })
-      .then(list => {
-        vm.accounts = list;
-        vm.balanced = hasBalancedAccount();
+      .then(accounts => {
+        vm.AccountTree = new Tree(accounts);
 
-        vm.accounts.forEach(account => {
-          account.isTitleAccount = account.type_id === bhConstants.accounts.TITLE;
+        // compute properties for rendering pretty indented templates
+        vm.AccountTree.walk((child, parent) => {
+          child.isTitleAccount = child.type_id === bhConstants.accounts.TITLE;
+          child.$$treeLevel = (parent.$$treeLevel || 0) + 1;
         });
 
-        vm.gridOptions.data = Accounts.order(vm.accounts);
+        // sort the accounts by their label
+        vm.AccountTree.sort((a, b) => a.label > b.label);
+
+        vm.balanced = hasBalancedAccount();
+        onBalanceChange();
+
+        vm.gridOptions.data = vm.AccountTree.data;
       });
   }
 
   /**
    * @function submit
-   * @description set the opening balance of the fiscal year
+   *
+   * @description
+   * Record changes to the opening balance of the fiscal year.
    */
   function submit() {
     vm.balanced = hasBalancedAccount();
@@ -140,11 +160,20 @@ function FiscalOpeningBalanceController($state, Accounts, Fiscal, Notify, uiGrid
       return;
     }
 
+    // trim the accounts list for submission to the server
+    const accounts = vm.AccountTree.toArray()
+      .filter(account => !account.isTitleAccount)
+      .map(account => ({
+        id : account.id,
+        debit : account.debit,
+        credit : account.credit,
+      }));
+
     // set the fiscal year opening balance
     Fiscal.setOpeningBalance({
       id : fiscalYearId,
       fiscal : vm.fiscal,
-      accounts : vm.accounts,
+      accounts,
     })
       .then(() => {
         Notify.success(vm.previousFiscalYearExist ? 'FORM.INFO.IMPORT_SUCCESS' : 'FORM.INFO.SAVE_SUCCESS');
@@ -155,7 +184,9 @@ function FiscalOpeningBalanceController($state, Accounts, Fiscal, Notify, uiGrid
 
   /**
    * @function toggleAccountFilter
-   * @description show a filter for finding an account
+   *
+   * @description
+   * Enable or disable the account filter.
    */
   function toggleAccountFilter() {
     vm.showAccountFilter = !vm.showAccountFilter;
@@ -166,15 +197,13 @@ function FiscalOpeningBalanceController($state, Accounts, Fiscal, Notify, uiGrid
 
   /**
    * @function hasBalancedAccount
-   * @description check if accounts are balanced
+   *
+   * @description
+   * Checks if the debits and credits balance
    */
   function hasBalancedAccount() {
-    const cleanAccounts = vm.accounts.filter(item => {
-      return (item.debit !== 0 || item.credit !== 0);
-    });
-    vm.totalDebit = sumOf(cleanAccounts, 'debit').toFixed(2);
-    vm.totalCredit = sumOf(cleanAccounts, 'credit').toFixed(2);
-    return vm.totalDebit === vm.totalCredit;
+    const { debit, credit } = vm.AccountTree.getRootNode();
+    return debit === credit;
   }
 
   /**
@@ -189,6 +218,9 @@ function FiscalOpeningBalanceController($state, Accounts, Fiscal, Notify, uiGrid
       });
   }
 
+  const debitSumFn = Tree.common.sumOnProperty('debit');
+  const creditSumFn = Tree.common.sumOnProperty('credit');
+
   /**
    * @function onBalanceChange
    *
@@ -197,16 +229,16 @@ function FiscalOpeningBalanceController($state, Accounts, Fiscal, Notify, uiGrid
    * columns in the footer.
    */
   function onBalanceChange() {
-    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
-  }
+    vm.AccountTree.walk((node, parent) => {
+      parent.debit = 0;
+      parent.credit = 0;
+    });
 
-  /**
-   * @function sumOf
-   * @description return the sum by a property
-   * @param {array} array An array of objects
-   * @param {string} property The property for the summation
-   */
-  function sumOf(array, property) {
-    return array.reduce((a, b) => a + b[property], 0);
+    vm.AccountTree.walk((childNode, parentNode) => {
+      debitSumFn(childNode, parentNode);
+      creditSumFn(childNode, parentNode);
+    }, false);
+
+    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 }

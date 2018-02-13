@@ -3,12 +3,15 @@
  *
  * @module finance/generalLedger/
  *
- * @description This module is responsible for handling VIEWS (different ways of seeing data) operations
- * against the general ledger table.
+ * @description
+ * This module is responsible for producing the general ledger, which consists
+ * of a giant matrix of the balances of each account for each period in a fiscal
+ * year.  The fiscal year must be provided by the client.
  *
  * @requires lodash
  * @requires lib/db
  * @requires FilterParser
+ * @requires lib/util
  */
 
 
@@ -16,6 +19,7 @@
 const db = require('../../../lib/db');
 const FilterParser = require('../../../lib/filter');
 const Tree = require('../../../lib/Tree');
+const util = require('../../../lib/util');
 
 // expose to the api
 exports.list = list;
@@ -35,7 +39,7 @@ exports.getAccountTotalsMatrix = getAccountTotalsMatrix;
  */
 function find(options) {
   const filters = new FilterParser(options, {
-    tableAlias: 'gl',
+    tableAlias : 'gl',
   });
 
   const sql = `

@@ -58,7 +58,7 @@ function GeneralLedgerController(
 
 
   function customAggregationFn(columnDefs, column) {
-    return vm.aggregates[column.field] || 0;
+    return (vm.aggregates[column.field] || 0);
   }
 
   columns = [{
@@ -345,6 +345,10 @@ function GeneralLedgerController(
       aggregates[field] = 0;
       return aggregates;
     }, {});
+
+    Object.keys(vm.aggregates).forEach(key => {
+      vm.aggregates[key] = Number(vm.aggregates[key].toFixed(bhConstants.precision.MAX_DECIMAL_PRECISION));
+    });
 
     accounts.forEach(preProcessAccounts);
     Accounts.order(accounts);

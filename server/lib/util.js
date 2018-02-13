@@ -184,12 +184,16 @@ function unlinkp(file) {
 }
 
 /**
+<<<<<<< d09180467e8992b138dcaaf3182b0f5d845b38d4
  * arround a decimal
+=======
+ * Round a decimal to a certain precision
+>>>>>>> refactor(fiscal): rewrite opening balance modal
  * @param {*} number
  * @param {*} precision
  */
 function roundDecimal(number, precision = 4) {
-  const base = Math.pow(10, precision);
+  const base = 10 ** precision;
   return Math.round(number * base) / base;
 }
 
