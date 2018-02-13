@@ -1,7 +1,7 @@
 angular.module('bhima.services')
-.service('FiscalService', FiscalService);
+  .service('FiscalService', FiscalService);
 
-FiscalService.$inject = [ 'PrototypeApiService' ];
+FiscalService.$inject = ['PrototypeApiService'];
 
 /**
  * @class FiscalService
@@ -15,7 +15,7 @@ FiscalService.$inject = [ 'PrototypeApiService' ];
 function FiscalService(Api) {
 
   // extend the PrototypeApiService with fiscal routes
-  var service = new Api('/fiscal/');
+  const service = new Api('/fiscal/');
 
   // TODO - rename this something like 'byDate()'
   service.closing = closing;
@@ -31,9 +31,8 @@ function FiscalService(Api) {
    * Find the fiscal year for a given date.
    */
   function fiscalYearDate(params) {
-    var url = service.url.concat('date');
-
-    return service.$http.get(url, { params : params })
+    const url = service.url.concat('date');
+    return service.$http.get(url, { params })
       .then(service.util.unwrapHttpResponse);
   }
 
@@ -46,7 +45,7 @@ function FiscalService(Api) {
    * periodicBalance({id: 1, period_number: 0});
    */
   function periodicBalance(params) {
-    var url = service.url.concat(params.id, '/balance/', params.period_number);
+    const url = service.url.concat(params.id, '/balance/', params.period_number);
 
     return service.$http.get(url)
       .then(service.util.unwrapHttpResponse);
@@ -58,9 +57,8 @@ function FiscalService(Api) {
    * @description set the opening balance for a fiscal year
    */
   function setOpeningBalance(params) {
-    var url = service.url.concat(params.id, '/opening_balance/');
-
-    return service.$http.post(url, { params: params })
+    const url = service.url.concat(params.id, '/opening_balance/');
+    return service.$http.post(url, { params })
       .then(service.util.unwrapHttpResponse);
   }
 
@@ -70,10 +68,9 @@ function FiscalService(Api) {
    * @description closing a fiscal year
    */
   function closing(params) {
-   var url = service.url.concat(params.id, '/closing');
-
-   return service.$http.put(url, { params: params })
-     .then(service.util.unwrapHttpResponse);
+    const url = service.url.concat(params.id, '/closing');
+    return service.$http.put(url, { params })
+      .then(service.util.unwrapHttpResponse);
   }
 
   /**
@@ -81,9 +78,8 @@ function FiscalService(Api) {
    *
    * @description get all period of all fiscal Year
    */
-  function periodFiscalYear(params) {
-    var url = service.url.concat('period');
-
+  function periodFiscalYear() {
+    const url = service.url.concat('period');
     return service.$http.get(url)
       .then(service.util.unwrapHttpResponse);
   }

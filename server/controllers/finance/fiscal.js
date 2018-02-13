@@ -577,7 +577,7 @@ function getDateRangeFromPeriods(periods) {
 function accountBanlanceByTypeId() {
   return `
     SELECT ac.id, ac.number, ac.label, ac.parent, IFNULL(s.amount, 0) AS amount, s.type_id
-    
+
     FROM account as ac LEFT JOIN (
     SELECT SUM(pt.credit - pt.debit) as amount, pt.account_id, act.id as type_id
     FROM period_total as pt
@@ -585,12 +585,12 @@ function accountBanlanceByTypeId() {
     JOIN account_type as act ON act.id = a.type_id
     JOIN period as p ON  p.id = pt.period_id
     JOIN fiscal_year as fy ON fy.id = p.fiscal_year_id
-    WHERE fy.id = ? AND 
+    WHERE fy.id = ? AND
       pt.period_id IN (
-        SELECT id FROM period WHERE start_date>= ? AND end_date<= ?   
+        SELECT id FROM period WHERE start_date>= ? AND end_date<= ?
       )
       AND act.id = ?
-    GROUP BY pt.account_id 
+    GROUP BY pt.account_id
     )s ON ac.id = s.account_id
     ORDER BY ac.number
   `;
