@@ -56,6 +56,8 @@
       "EQUITY":"Equity",
       "INCOME":"Income",
       "TIERS":"Others"
-    }
+    },
+    "RECEIVABLES" : "Receivables",
+    "DEBTS" : "Debts"
   }
 }

@@ -95,7 +95,7 @@ const transactions = require('../controllers/finance/transactions');
 const referenceLookup = require('../lib/referenceLookup');
 
 const operating = require('../controllers/finance/reports/operating/index');
-
+const hgrReport = require('../controllers/finance/reports/hgr_report/index');
 // expose routes to the server.
 exports.configure = function configure(app) {
   debug('configuring routes.');
@@ -677,4 +677,5 @@ exports.configure = function configure(app) {
   app.get('/diagnoses', diagnoses.list);
 
   app.get('/reports/finance/operating', operating.document);
+  app.get('/reports/finance/hgr_report', hgrReport.document);
 };

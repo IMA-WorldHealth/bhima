@@ -56,6 +56,8 @@
       "EQUITY":"Capital",
       "TIERS":"Tiers"
     },
-    "UPDATED": "Les données du compte ont été mis à jour"
+    "UPDATED": "Les données du compte ont été mis à jour",
+    "RECEIVABLES" : "Créances",
+    "DEBTS" : "Dettes"
   }
 }
