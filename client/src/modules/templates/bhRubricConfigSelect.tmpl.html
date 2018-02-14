@@ -1,0 +1,25 @@
+<div bh-rubric-config-select ng-model-options="{ updateOn: 'default' }">
+  <div
+    class="form-group"
+    ng-class="{ 'has-error' : RubricConfigForm.$$parent.$submitted && RubricConfigForm.rubricConfig_id.$invalid }">
+
+    <label class="control-label" translate>
+      PAYROLL_RUBRIC.CONFIGURATION
+    </label>
+    
+    <ng-transclude></ng-transclude>
+    <ui-select name="rubricConfig_id" 
+      ng-model="$ctrl.rubricConfigId"
+      on-select="$ctrl.onSelect($item)"
+      ng-required="true">
+      <ui-select-match placeholder="{{ 'FORM.SELECT.RUBRIC_CONFIGURATION' | translate }}"><span>{{$select.selected.label}}</span></ui-select-match>
+      <ui-select-choices ui-select-focus-patch repeat="rubricConfig.id as rubricConfig in $ctrl.rubricConfigs | filter: { 'label': $select.search }">
+        <span ng-bind-html="rubricConfig.label | highlight:$select.search"></span>
+      </ui-select-choices>
+    </ui-select>
+
+    <div class="help-block" ng-messages="RubricConfigForm.rubricConfig_id.$error" ng-show="RubricConfigForm.$$parent.$submitted">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+</div>

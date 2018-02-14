@@ -10,6 +10,10 @@ function RubricConfigModalController($state, Configs, Notify, AppCache, Rubrics)
   vm.config = {};
 
   var cache = AppCache('RubricConfigModal');
+  var socialCaresLength = 0,
+    taxesLength = 0,
+    membershipFeeLength = 0,
+    otherLength = 0;
 
   if ($state.params.creating || $state.params.id) {
     vm.stateParams = cache.stateParams = $state.params;
@@ -43,18 +47,25 @@ function RubricConfigModalController($state, Configs, Notify, AppCache, Rubrics)
   Rubrics.read()
     .then(function (rubrics) {
       vm.rubrics = rubrics;
+      
       vm.socialCares = rubrics.filter(item => item.is_social_care);
-      vm.taxes = rubrics.filter(item => item.is_tax);
-      vm.membershipFee = rubrics.filter(item => item.is_membership_fee);
-      vm.others = rubrics.filter(item => (item.is_tax !== 1 && item.is_social_care !== 1 && item.is_membership_fee !== 1));
-    })
-    .catch(Notify.handleError);
+      socialCaresLength = vm.socialCares ? vm.socialCares.length : socialCaresLength;
 
-  Configs.getRubrics(vm.stateParams.id)
+      vm.taxes = rubrics.filter(item => item.is_tax);
+      taxesLength = vm.taxes ? vm.taxes.length : taxesLength; 
+
+      vm.membershipFee = rubrics.filter(item => item.is_membership_fee);
+      membershipFeeLength = vm.membershipFee ? vm.membershipFee.length : membershipFeeLength;
+
+      vm.others = rubrics.filter(item => (item.is_tax !== 1 && item.is_social_care !== 1 && item.is_membership_fee !== 1));
+      otherLength = vm.others ? vm.others.length : otherLength;
+
+      return Configs.getRubrics(vm.stateParams.id);
+    })
     .then(function (rubConfig) {
       vm.rubConfig = rubConfig;
 
-      if (vm.socialCares.length) {
+      if (socialCaresLength) {
         rubConfig.forEach(function (object) {
           vm.socialCares.forEach(function (unit) {
             if (unit.id === object.rubric_payroll_id) {
@@ -64,7 +75,7 @@ function RubricConfigModalController($state, Configs, Notify, AppCache, Rubrics)
         });
       }
 
-      if (vm.taxes.length) {
+      if (taxesLength) {
         rubConfig.forEach(function (object) {
           vm.taxes.forEach(function (unit) {
             if (unit.id === object.rubric_payroll_id) {
@@ -74,7 +85,7 @@ function RubricConfigModalController($state, Configs, Notify, AppCache, Rubrics)
         });
       }
 
-      if (vm.others.length) {
+      if (otherLength) {
         rubConfig.forEach(function (object) {
           vm.others.forEach(function (unit) {
             if (unit.id === object.rubric_payroll_id) {
@@ -84,7 +95,7 @@ function RubricConfigModalController($state, Configs, Notify, AppCache, Rubrics)
         });
       }
 
-      if (vm.membershipFee.length) {
+      if (membershipFeeLength) {
         rubConfig.forEach(function (object) {
           vm.membershipFee.forEach(function (unit) {
             if (unit.id === object.rubric_payroll_id) {

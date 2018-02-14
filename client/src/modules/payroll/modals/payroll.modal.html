@@ -36,6 +36,14 @@
         validation-trigger="PayrollConfigurationModalCtrl.$submitted">
       </bh-date-editor>
     </div>  
+
+    <div class="modal-body">
+      <bh-rubric-config-select
+        rubricConfig-id="PayrollConfigurationModalCtrl.payroll.config_rubric_id"
+        on-select-callback="PayrollConfigurationModalCtrl.onSelectRubricConfig(rubricConfig)"
+        required="true">
+      </bh-rubric-config-select>   
+    </div>
   </div>
 
   <div class="modal-footer">
