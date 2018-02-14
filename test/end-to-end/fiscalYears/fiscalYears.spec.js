@@ -81,9 +81,6 @@ describe('Fiscal Year', () => {
     // click on the opening balance button
     element(by.css('[data-action="opening-balance"]')).click();
 
-    // activate the edition of the opening balance
-    element(by.css('[data-action="edit-opening-balance"]')).click();
-
     // actions in the grid
     const account1 = 85;
     const account2 = 89;
@@ -106,9 +103,6 @@ describe('Fiscal Year', () => {
 
     // click on the opening balance button
     element(by.css('[data-action="opening-balance"]')).click();
-
-    // activate the edition of the opening balance
-    element(by.css('[data-action="edit-opening-balance"]')).click();
 
     // actions in the grid
     const account1 = 85;

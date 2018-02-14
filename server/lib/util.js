@@ -193,7 +193,7 @@ function unlinkp(file) {
  * @param {*} precision
  */
 function roundDecimal(number, precision = 4) {
-  const base = 10 ** precision;
+  const base = Math.pow(10, precision);
   return Math.round(number * base) / base;
 }
 
