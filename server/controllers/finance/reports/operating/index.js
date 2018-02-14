@@ -34,14 +34,14 @@ function document(req, res, next) {
   const EXPENSE_ACCOUNT_TYPE = 5;
   const INCOME_ACCOUNT_TYPE = 4;
   const DECIMAL_PRECISION = 2; // ex: 12.4567 => 12.46
-  
+
   const getQuery = fiscal.accountBanlanceByTypeId;
 
   const periods = {
     periodFrom : params.periodFrom,
     periodTo : params.periodTo,
   };
-  
+
   fiscal.getDateRangeFromPeriods(periods).then(dateRange => {
     range = dateRange;
 
@@ -77,18 +77,19 @@ function document(req, res, next) {
         dateFrom : range.dateFrom,
         dateTo : range.dateTo,
       };
-   
+
       const revenueTree = new Tree(context.revenue);
+      revenueTree.walk(Tree.common.computeNodeDepth);
       revenueTree.filterByLeaf('type_id', INCOME_ACCOUNT_TYPE);
-      revenueTree.sumOnProperty('amount');
+      revenueTree.walk(Tree.common.sumOnProperty('amount'), false);
       context.revenue = revenueTree.toArray();
 
       const expenseTree = new Tree(context.expense);
+      expenseTree.walk(Tree.common.computeNodeDepth);
       expenseTree.filterByLeaf('type_id', EXPENSE_ACCOUNT_TYPE);
-      expenseTree.sumOnProperty('amount');
+      expenseTree.walk(Tree.common.sumOnProperty('amount'), false);
       context.expense = expenseTree.toArray();
 
-     
       formatData(context.expense, context.totalExpense, DECIMAL_PRECISION);
       formatData(context.revenue, context.totalIncome, DECIMAL_PRECISION);
 
@@ -110,11 +111,13 @@ function document(req, res, next) {
     .done();
 }
 
-// set the percentage of each amoun's row,
+// set the percentage of each amount's row,
 // round amounts
 function formatData(result, total, decimalPrecision) {
   const _total = (total === 0) ? 1 : total;
+
   return result.forEach(row => {
+    row.depth--;
     if (row.depth < 2) {
       row.percent = util.roundDecimal(Math.abs((row.amount / _total) * 100), decimalPrecision);
     }
