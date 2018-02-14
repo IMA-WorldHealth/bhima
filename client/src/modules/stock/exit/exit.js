@@ -6,8 +6,8 @@ StockExitController.$inject = [
   'DepotService', 'InventoryService', 'NotifyService',
   'SessionService', 'util', 'bhConstants', 'ReceiptModal',
   'StockFormService', 'StockService', 'StockModalService',
-  'uiGridGroupingConstants', '$translate', 'appcache',
-  'uiGridExporterService', 'moment',
+  'uiGridGroupingConstants', '$translate', 'appcache', 'moment',
+  'GridExportService',
 ];
 
 /**
@@ -20,7 +20,7 @@ StockExitController.$inject = [
  */
 function StockExitController(
   Depots, Inventory, Notify, Session, util, bhConstants, ReceiptModal, StockForm, Stock,
-  StockModal, uiGridGroupingConstants, $translate, AppCache, uiGridExporterService, moment
+  StockModal, uiGridGroupingConstants, $translate, AppCache, moment, GridExportService
 ) {
   var vm = this;
   var cache = new AppCache('StockExit');
@@ -143,18 +143,40 @@ function StockExitController(
   // exposing the grid options to the view
   vm.gridOptions = gridOptions;
 
+  const exportation = new GridExportService(vm.gridOptions);
+
   /**
    * @method exportGrid
    * @description export the content of the grid to csv.
-   * this function is helpful for handling the export of lot row which are in the grid to a csv file
-   * in a correct format.
    */
   vm.exportGrid = () => {
-    const columns = vm.gridOptions.columnDefs
+    exportation.exportToCsv('Stock_Exit_', formatExportColumns, formatExportRows);
+  };
+
+  /**
+   * @function formatExportColumns
+   *
+   * @description this function will be apply to grid columns as filter for getting new columns
+   *
+   * @param {array} columns - refer to the grid columns array
+   * @return {array} - return an array of column object in this format : { displayName : ... }
+   */
+  function formatExportColumns(columns) {
+    return (columns || [])
       .filter(col => col.displayName && col.displayName.length)
       .map(col => ({ displayName : $translate.instant(col.displayName), width : col.width }));
+  }
 
-    const rows = vm.gridOptions.data.map(row => {
+  /**
+   * @function formatExportRows
+   *
+   * @description this function will be apply to grid columns as filter for getting new columns
+   *
+   * @param {array} rows - refer to the grid data array
+   * @return {array} - return an array of array with value as an object in this format : { value : ... }
+   */
+  function formatExportRows(rows) {
+    return (rows || []).map(row => {
       const code = row.inventory && row.inventory.code ? row.inventory.code : null;
       const description = row.inventory && row.inventory.text ? row.inventory.text : null;
       const lot = row.lot && row.lot.label ? row.lot.label : null;
@@ -167,11 +189,7 @@ function StockExitController(
 
       return [code, description, lot, price, quantity, type, available, amount, expiration].map(value => ({ value }));
     });
-
-    const fileName = `Stock_Exit_${moment().format(bhConstants.dates.formatDB)}.csv`;
-    const fileString = uiGridExporterService.formatAsCsv(columns, rows, ',');
-    uiGridExporterService.downloadFile(fileName, fileString, true, true);
-  };
+  }
 
   function onRegisterApi(gridApi) {
     vm.gridApi = gridApi;
