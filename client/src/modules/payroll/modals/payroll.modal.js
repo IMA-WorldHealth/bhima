@@ -20,15 +20,28 @@ function PayrollConfigurationModalController($state, PayrollConfigurations, Noti
 
   // exposed methods
   vm.submit = submit;
+  vm.onSelectRubricConfig = onSelectRubricConfig;
+  vm.onSelectAccountConfig = onSelectAccountConfig;
 
   if (!vm.isCreating) {
     PayrollConfigurations.read(vm.stateParams.id)
       .then(function (payroll) {
+
         payroll.dateFrom = new Date(payroll.dateFrom);
         payroll.dateTo = new Date(payroll.dateTo);
         vm.payroll = payroll;
       })
       .catch(Notify.handleError);
+  }
+
+  // callback for Rubric Configuration select
+  function onSelectRubricConfig(rubric) {
+    vm.payroll.config_rubric_id = rubric.id;
+  }
+
+  // callback for Account Configuration select
+  function onSelectAccountConfig(account) {
+    vm.payroll.config_accounting_id = account.id;
   }
 
   // submit the data to the server from all two forms (update, create)

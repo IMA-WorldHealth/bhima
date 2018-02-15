@@ -186,6 +186,7 @@
         "LABELS": {
             "ABBREVIATION": "Abbreviation",
             "ACCOUNT": "Compte",
+            "ACCOUNT_CONFIGURATION" : "Configuration du Compte",
             "ACCOUNT_EXTRACT": "Extrait de compte",
             "NON_POSTED_TRANSACTIONS": "Transactions non-posté",
             "POSTED_TRANSACTIONS": "Transactions posté",
@@ -651,6 +652,7 @@
             "EMPLOYEE": "Sélectionner un Employé",
             "ACCOUNT": "Sélectionner un compte",
             "ACCOUNT_TYPE": "Sélectionner Type de Compte",
+            "ACCOUNT_CONFIGURATION" : "Sélectionner la configuration des comptes",
             "BALANCE_SECTION": "Sélectionner la section du bilan",
             "CASHBOX": "Sélectionner une caisse",
             "COST_CENTER": "Sélectionner centre de cout",

@@ -22,28 +22,38 @@
     </div>
 
     <div class="modal-body">
-      <bh-date-editor
-        label="FORM.LABELS.DATE_FROM"
-        date-value="PayrollConfigurationModalCtrl.payroll.dateFrom"
-        validation-trigger="PayrollConfigurationModalCtrl.$submitted">
-      </bh-date-editor>
+      <bh-date-interval
+        label="FORM.LABELS.PERIODES"
+        date-id="periodes-date"
+        date-from="PayrollConfigurationModalCtrl.payroll.dateFrom"
+        date-to="PayrollConfigurationModalCtrl.payroll.dateTo"
+        required="true"
+        validation-trigger="PayrollModalForm.$submitted">
+      </bh-date-interval>
     </div>
-
-    <div class="modal-body">
-      <bh-date-editor
-        label="FORM.LABELS.DATE_TO"
-        date-value="PayrollConfigurationModalCtrl.payroll.dateTo"
-        validation-trigger="PayrollConfigurationModalCtrl.$submitted">
-      </bh-date-editor>
-    </div>  
 
     <div class="modal-body">
       <bh-rubric-config-select
-        rubricConfig-id="PayrollConfigurationModalCtrl.payroll.config_rubric_id"
+        id="config_rubric_id"
+        config-rubric-id="PayrollConfigurationModalCtrl.payroll.config_rubric_id"
+        name="RubricConfigForm"
         on-select-callback="PayrollConfigurationModalCtrl.onSelectRubricConfig(rubricConfig)"
-        required="true">
-      </bh-rubric-config-select>   
+        required="true"
+        validation-trigger="PayrollModalForm.$submitted">
+      </bh-rubric-config-select>
     </div>
+
+    <div class="modal-body">
+      <bh-account-config-select
+        id="config_accounting_id"
+        config-accounting-id="PayrollConfigurationModalCtrl.payroll.config_accounting_id"
+        name="AccountConfigForm"
+        on-select-callback="PayrollConfigurationModalCtrl.onSelectAccountConfig(accountConfig)"
+        required="true"
+        validation-trigger="PayrollModalForm.$submitted">
+      </bh-account-config-select>
+    </div>
+
   </div>
 
   <div class="modal-footer">

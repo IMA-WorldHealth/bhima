@@ -4,34 +4,63 @@ angular.module('bhima.components')
     controller  : RubricConfigSelectController,
     transclude  : true,
     bindings    : {
-      rubricConfigId : '<',
+      configRubricId : '<',
       onSelectCallback : '&',
-      required : '<?',
+      required         : '<?',
+      label            : '@?',
+      name             : '@?',
+      validationTrigger :  '<?',
     },
   });
 
 RubricConfigSelectController.$inject = [
-  'ConfigurationService', 'NotifyService',
+  'ConfigurationService', '$timeout', '$scope', 'NotifyService',
 ];
 
 /**
- * Rubric Config Select Controller
- *
+ * Rubric Configuration Select Controller
  */
-function RubricConfigSelectController(rubricConfigs, Notify) {
+function RubricConfigSelectController(RubricConfigs, $timeout, $scope, Notify) {
   var $ctrl = this;
 
-  $ctrl.$onInit = function onInit() {    
+  // fired at the beginning of the rubric configuration select
+  $ctrl.$onInit = function $onInit() {
 
-    rubricConfigs.read()
+    // translated label for the form input
+    $ctrl.label = $ctrl.label || 'PAYROLL_RUBRIC.CONFIGURATION';
+
+    // fired when an rubric configuration has been selected
+    $ctrl.onSelectCallback = $ctrl.onSelectCallback || angular.noop;
+
+    // default for form name
+    $ctrl.name = $ctrl.name || 'RubricConfigForm';
+
+    if (!angular.isDefined($ctrl.required)) {
+      $ctrl.required = true;
+    }
+
+    RubricConfigs.read()
       .then(function (rubricConfigs) {
         $ctrl.rubricConfigs = rubricConfigs;
       })
       .catch(Notify.handleError);
+
+
+    // alias the name as RubricConfigForm
+    $timeout(aliasComponentForm);
   };
 
+  // this makes the HTML much more readable by reference RubricConfigForm instead of the name
+  function aliasComponentForm() {
+    $scope.RubricConfigForm = $scope[$ctrl.name];
+  }
+
   // fires the onSelectCallback bound to the component boundary
-  $ctrl.onSelect = function ($item) {
+  $ctrl.onSelect = function onSelect($item) {
     $ctrl.onSelectCallback({ rubricConfig : $item });
+
+    // alias the RubricConfigForm name so that we can find it via filterFormElements
+    $scope[$ctrl.name].$bhValue = $item.id;
   };
+
 }

@@ -186,6 +186,7 @@
         "LABELS" : {
             "ABBREVIATION": "Abbreviation",
             "ACCOUNT": "Account",
+            "ACCOUNT_CONFIGURATION" : "Account Setup",
             "ACCOUNT_EXTRACT": "Account Details",
             "ACCOUNT_NUMBER": "Account Number",
             "ACCOUNT_TITLE": "Account Text",
@@ -651,6 +652,7 @@
             "EMPLOYEE": "Select an Employee",
             "ACCOUNT": "Select an Account",
             "ACCOUNT_TYPE": "Select Account Type",
+            "ACCOUNT_CONFIGURATION" : "Select account configuration",
             "BALANCE_SECTION": "Select Balance Sheet Section",
             "CASHBOX": "Select a cashbox",
             "COST_CENTER": "Select a Cost Center",
