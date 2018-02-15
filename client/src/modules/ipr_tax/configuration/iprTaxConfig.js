@@ -96,9 +96,7 @@ function IprTaxConfigurationController(
 
   function iprScaleSelect(scaleId) {
     vm.taxIprId = scaleId;
-
-    // FIX ME
-    // Load IPR taxes scale only if scale Id is defined
+    
     if (vm.taxIprId) {
       loadIprTaxes();
     }

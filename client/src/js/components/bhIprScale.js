@@ -27,13 +27,15 @@ function IprScaleController(IprTaxes, AppCache, Store, Notify) {
   };
 
   ctrl.update = function update(scale) {
-    ctrl.selectedScale = scale;
+    if(scale){
+      ctrl.selectedScale = scale;
 
-    // update cache with id to select this scale object on next load
-    cache.selectedScaleId = scale.id;
+      // update cache with id to select this scale object on next load
+      cache.selectedScaleId = scale.id;
 
-    // update bindings
-    ctrl.onUpdate({ scaleId : scale.id });
+      // update bindings
+      ctrl.onUpdate({ scaleId : scale.id });
+    }  
   };
 
   function loadDefaultScale() {
