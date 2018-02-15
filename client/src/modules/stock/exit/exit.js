@@ -22,10 +22,10 @@ function StockExitController(
   Depots, Inventory, Notify, Session, util, bhConstants, ReceiptModal, StockForm, Stock,
   StockModal, uiGridGroupingConstants, $translate, AppCache, moment, GridExportService
 ) {
-  var vm = this;
-  var cache = new AppCache('StockExit');
-  var mapExit;
-  var gridOptions;
+  const vm = this;
+  const cache = new AppCache('StockExit');
+  let mapExit = {};
+  let gridOptions = {};
 
   vm.stockForm = new StockForm('StockExit');
   vm.movement = {};
@@ -44,6 +44,7 @@ function StockExitController(
   vm.submit = submit;
   vm.changeDepot = changeDepot;
   vm.checkValidity = checkValidity;
+  vm.onSelectLot = onSelectLot;
 
   // delete cache.depotUuid;
 
@@ -499,5 +500,19 @@ function StockExitController(
       });
   }
 
+  function onSelectLot(row, lot) {
+    let iteration = 0;
+    // let seach if the lot has already been selected some where else
+    vm.stockForm.store.data.forEach(stockItem => {
+      if (stockItem.lot.uuid === lot.uuid) {
+        iteration++;
+      }
+    });
+
+    if (iteration > 1) {
+      row.lot = {};
+      Notify.danger('INVENTORY.LOT_ALREAD_SELECTED');
+    }
+  }
   startup();
 }
