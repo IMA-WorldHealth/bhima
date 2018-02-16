@@ -43,10 +43,18 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
     { key : 'inventory_uuid', label : 'STOCK.INVENTORY' },
     { key : 'group_uuid', label : 'STOCK.INVENTORY_GROUP' },
     { key : 'label', label : 'STOCK.LOT' },
-    { key : 'entry_date_from', label : 'STOCK.ENTRY_DATE', comparitor : '>', valueFilter : 'date' },
-    { key : 'entry_date_to', label : 'STOCK.ENTRY_DATE', comparitor : '<', valueFilter : 'date' },
-    { key : 'expiration_date_from', label : 'STOCK.EXPIRATION_DATE', comparitor : '>', valueFilter : 'date' },
-    { key : 'expiration_date_to', label : 'STOCK.EXPIRATION_DATE', comparitor : '<', valueFilter : 'date' },
+    {
+      key : 'entry_date_from', label : 'STOCK.ENTRY_DATE', comparitor : '>', valueFilter : 'date',
+    },
+    {
+      key : 'entry_date_to', label : 'STOCK.ENTRY_DATE', comparitor : '<', valueFilter : 'date',
+    },
+    {
+      key : 'expiration_date_from', label : 'STOCK.EXPIRATION_DATE', comparitor : '>', valueFilter : 'date',
+    },
+    {
+      key : 'expiration_date_to', label : 'STOCK.EXPIRATION_DATE', comparitor : '<', valueFilter : 'date',
+    },
   ]);
 
   StockMovementFilters.registerCustomFilters([
@@ -55,8 +63,12 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
     { key : 'inventory_uuid', label : 'STOCK.INVENTORY' },
     { key : 'label', label : 'STOCK.LOT' },
     { key : 'flux_id', label : 'STOCK.FLUX' },
-    { key : 'dateFrom', label : 'FORM.LABELS.DATE', comparitor : '>', valueFilter : 'date' },
-    { key : 'dateTo', label : 'FORM.LABELS.DATE', comparitor : '<', valueFilter : 'date' },
+    {
+      key : 'dateFrom', label : 'FORM.LABELS.DATE', comparitor : '>', valueFilter : 'date',
+    },
+    {
+      key : 'dateTo', label : 'FORM.LABELS.DATE', comparitor : '<', valueFilter : 'date',
+    },
     { key : 'user_id', label : 'FORM.LABELS.USER' },
   ]);
 
@@ -87,17 +99,17 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
   assignInventoryDefaultFilters();
 
   // creating an object of filter to avoid method duplication
-  var stockFilter = {
+  const stockFilter = {
     lot : StockLotFilters,
     movement : StockMovementFilters,
-    inventory : StockInventoryFilters
+    inventory : StockInventoryFilters,
   };
 
   // creating an object of filter object to avoid method duplication
-  var filterCache = {
+  const filterCache = {
     lot : filterLotCache,
     movement : filterMovementCache,
-    inventory : filterInventoryCache
+    inventory : filterInventoryCache,
   };
 
   function assignLotDefaultFilters() {
@@ -186,9 +198,9 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
       return {};
     }
 
-    var keys = ['name', 'text', 'display_name'];
+    const keys = ['name', 'text', 'display_name'];
 
-    keys.forEach(function (key) {
+    keys.forEach((key) => {
       if (entity[key]) {
         entity.displayName = entity[key];
       }
@@ -207,8 +219,8 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
    * @returns {Array} - lots in an array.
  */
   function processLotsFromStore(data, uuid) {
-    return data.reduce(function (current, line) {
-      return line.lots.map(function (lot) {
+    return data.reduce((current, line) => {
+      return line.lots.map((lot) => {
         return {
           uuid : lot.uuid || null,
           label : lot.lot,
@@ -223,7 +235,7 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
     }, []);
   }
 
-    /** Get label for purchase Status */
+  /** Get label for purchase Status */
   function statusLabelMap(status) {
     var keys = {
       sold_out          : 'STOCK.STATUS.SOLD_OUT',
@@ -238,19 +250,19 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
 
 
   return {
-    stocks : stocks,
-    lots : lots,
-    movements : movements,
-    inventories : inventories,
-    integration : integration,
-    transfers : transfers,
+    stocks,
+    lots,
+    movements,
+    inventories,
+    integration,
+    transfers,
     filter : stockFilter,
-    cacheFilters : cacheFilters,
-    removeFilter : removeFilter,
-    loadCachedFilters : loadCachedFilters,
-    download : download,
-    uniformSelectedEntity : uniformSelectedEntity,
-    processLotsFromStore : processLotsFromStore,
-    statusLabelMap : statusLabelMap,
+    cacheFilters,
+    removeFilter,
+    loadCachedFilters,
+    download,
+    uniformSelectedEntity,
+    processLotsFromStore,
+    statusLabelMap,
   };
 }

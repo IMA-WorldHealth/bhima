@@ -14,6 +14,7 @@
     "DEPOT"           : "Dépôt",
     "DEPOT_RESPONSIBLE" : "Gestionnaire du dépôt",
     "DETAILS"         : "Details",
+    "DESTINATION"     : "Destination",
     "DOCUMENT"        : "Document",
     "DONATION"        : "Donation",
     "EMPTY"           : "Vous n'avez aucun stock dans votre depot",
@@ -99,6 +100,7 @@
     "RECEPTION_DONATION" : "Entrée de stock en provenance d'une donation",
     "REQUIRES_PO"     : "Nécessitant une commande d'achat",
     "RESPONSIBLE"     : "Gestionnaire du stock",
+    "ROWS"            : "Lignes",
     "SEARCH"          : "Chercher",
     "SECURITY"        : "Stock de securité",
     "STATUS"          : {

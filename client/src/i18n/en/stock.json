@@ -13,6 +13,7 @@
     "DECREASE_HELP"   : "Adjustment of stock by decreasing the quantity of lots of products in stock",
     "DEPOT"           : "Depot",
     "DEPOT_RESPONSIBLE" : "Depot Manager",
+    "DESTINATION"     : "Destination",
     "DETAILS"         : "Details",
     "DOCUMENT"        : "Document",
     "DONATION"        : "Donation",
@@ -99,6 +100,7 @@
     "RECEPTION_DONATION" : "Stock Entry from a donation",
     "REQUIRES_PO"     : "Requires a purchase order",
     "RESPONSIBLE"     : "Stock Manager",
+    "ROWS"            : "Rows",
     "SEARCH"          : "Search",
     "SECURITY"        : "Security Stock",
     "STATUS"          : {
