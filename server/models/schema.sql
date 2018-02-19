@@ -149,8 +149,17 @@ CREATE TABLE `cash_box` (
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `rubric_payroll`;
+DROP TABLE IF EXISTS `payroll_configuration`;
+CREATE TABLE `payroll_configuration` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `label` VARCHAR(100) NOT NULL,
+  `dateFrom` date NOT NULL,
+  `dateTo` date NOT NULL,  
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `payroll_configuration` (`label`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `rubric_payroll`;
 CREATE TABLE `rubric_payroll` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `label` VARCHAR(80) NOT NULL,

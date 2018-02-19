@@ -85,6 +85,7 @@ INSERT INTO unit VALUES
   (193, 'Weekend Configuration','TREE.WEEKEND_CONFIGURATION','Weekend Configuration', 57,'/modules/payroll/weekend_configuration','/payroll/weekend_configuration'),  
   (194, 'Payroll Configuration','TREE.PAYROLL_CONFIGURATION','Payroll Configuration', 57,'/modules/payroll','/payroll');
 
+
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
   (1, 'income', 'ACCOUNT.TYPES.INCOME'),

@@ -1,0 +1,50 @@
+<form name="PayrollModalForm" bh-submit="PayrollConfigurationModalCtrl.submit(PayrollModalForm)" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li ng-if="PayrollConfigurationModalCtrl.isCreating" class="title">
+        <span translate>TREE.PAYROLL_CONFIGURATION</span>
+        <label class="badge badge-success" translate>FORM.LABELS.CREATE</label>
+      </li>
+      <li ng-if="!PayrollConfigurationModalCtrl.isCreating" class="title">
+        <span translate>TREE.PAYROLL_CONFIGURATION</span>
+        <label class="badge badge-success" translate>FORM.LABELS.UPDATE</label>
+      </li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+    <div class="modal-body" ng-class="{ 'has-error' : PayrollModalForm.$submitted && PayrollModalForm.label.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.DESIGNATION</label>
+      <input name="label" ng-model="PayrollConfigurationModalCtrl.payroll.label" autocomplete="off" class="form-control" required>
+      <div class="help-block" ng-messages="PayrollModalForm.label.$error" ng-show="PayrollModalForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <div class="modal-body">
+      <bh-date-editor
+        label="FORM.LABELS.FROM"
+        date-value="PayrollConfigurationModalCtrl.payroll.dateFrom"
+        validation-trigger="PayrollConfigurationModalCtrl.$submitted">
+      </bh-date-editor>
+    </div>
+
+    <div class="modal-body">
+      <bh-date-editor
+        label="FORM.LABELS.TO"
+        date-value="PayrollConfigurationModalCtrl.payroll.dateTo"
+        validation-trigger="PayrollConfigurationModalCtrl.$submitted">
+      </bh-date-editor>
+    </div>  
+  </div>
+
+  <div class="modal-footer">
+    <button data-method="cancel" type="button" class="btn btn-default" ui-sref="payroll">
+      <span translate>FORM.BUTTONS.CANCEL</span>
+    </button>
+
+    <bh-loading-button loading-state="PayrollModalForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

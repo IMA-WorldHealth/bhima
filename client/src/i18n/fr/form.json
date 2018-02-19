@@ -4,6 +4,7 @@
             "ACTIONS": "Actions",
             "ADD": "Ajouter",
             "ADD_ACCOUNT_CONFIGURATION": "Ajouter une configuration des comptes",
+            "ADD_PAYROLL_CONFIGURATION": "Configurer une période de paiement",
             "ADD_WEEKEND_CONFIGURATION": "Ajouter une configuration des weekend",
             "BACK": "Précédent",
             "CANCEL": "Annuler",
