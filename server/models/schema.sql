@@ -154,9 +154,14 @@ CREATE TABLE `payroll_configuration` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `label` VARCHAR(100) NOT NULL,
   `dateFrom` date NOT NULL,
-  `dateTo` date NOT NULL,  
+  `dateTo` date NOT NULL,
+  `config_rubric_id` int(10) unsigned NOT NULL,
+  `config_accounting_id` int(10) unsigned NOT NULL,
+  `taxe_ipr_id`int(10) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `payroll_configuration` (`label`)
+  UNIQUE KEY `payroll_configuration` (`label`),
+  FOREIGN KEY (`config_rubric_id`) REFERENCES `config_rubric` (`id`),
+  FOREIGN KEY (`config_accounting_id`) REFERENCES `config_accounting` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `rubric_payroll`;
@@ -202,7 +207,6 @@ CREATE TABLE `cash_box_account_currency` (
   FOREIGN KEY (`transfer_account_id`) REFERENCES `account` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
 DROP TABLE IF EXISTS `config_accounting`;
 CREATE TABLE `config_accounting` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -247,7 +251,6 @@ CREATE TABLE `config_paiement_period` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `consumption`;
-
 CREATE TABLE `consumption` (
   `uuid`            BINARY(16) NOT NULL,
   `depot_uuid`      BINARY(16) NOT NULL,
