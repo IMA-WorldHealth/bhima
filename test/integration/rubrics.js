@@ -37,8 +37,8 @@ describe('(/payroll/rubrics) The /payroll/rubrics  API endpoint', function () {
   const configRubric = { configuration : [5, 2, 3, 1, 4] };
   const configRubricEmpty = { configuration : [] };
 
-  const NUM_RUBRICS = 5;
-  const NUM_CONFIG_RUBRICS = 0;
+  const NUM_RUBRICS = 6;
+  const NUM_CONFIG_RUBRICS = 1;
 
   it('GET /RUBRICS returns a list of Rubrics ', function () {
     return agent.get('/rubrics')

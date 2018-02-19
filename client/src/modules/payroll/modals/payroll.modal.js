@@ -23,6 +23,8 @@ function PayrollConfigurationModalController($state, PayrollConfigurations, Noti
   vm.onSelectRubricConfig = onSelectRubricConfig;
   vm.onSelectAccountConfig = onSelectAccountConfig;
   vm.onSelectIprConfig = onSelectIprConfig;
+  vm.onSelectWeekendConfig = onSelectWeekendConfig;
+
   vm.clear = clear;
 
   if (!vm.isCreating) {
@@ -51,6 +53,11 @@ function PayrollConfigurationModalController($state, PayrollConfigurations, Noti
     vm.payroll.config_ipr_id = ipr.id;
   }  
 
+  // Callback for weekend configuration select
+  function onSelectWeekendConfig(week){
+    vm.payroll.config_weekend_id = week.id;
+  }
+
   // deletes a filter from the custom filter object
   function clear(key) {
     delete vm.payroll[key];
@@ -59,7 +66,6 @@ function PayrollConfigurationModalController($state, PayrollConfigurations, Noti
   // submit the data to the server from all two forms (update, create)
   function submit(payrollForm) {
     var promise;
-
     if (payrollForm.$invalid) { return 0; }
 
     vm.payroll.dateFrom = moment(vm.payroll.dateFrom).format('YYYY-MM-DD');

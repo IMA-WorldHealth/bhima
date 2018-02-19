@@ -157,11 +157,13 @@ CREATE TABLE `payroll_configuration` (
   `dateTo` date NOT NULL,
   `config_rubric_id` int(10) unsigned NOT NULL,
   `config_accounting_id` int(10) unsigned NOT NULL,
+  `config_weekend_id` int(10) unsigned NOT NULL,
   `config_ipr_id`int(10) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `payroll_configuration` (`label`),
   FOREIGN KEY (`config_rubric_id`) REFERENCES `config_rubric` (`id`),
-  FOREIGN KEY (`config_accounting_id`) REFERENCES `config_accounting` (`id`)
+  FOREIGN KEY (`config_accounting_id`) REFERENCES `config_accounting` (`id`),
+  FOREIGN KEY (`config_weekend_id`) REFERENCES `weekend_config` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `rubric_payroll`;
