@@ -55,6 +55,17 @@
     </div>
 
     <div class="modal-body">
+      <bh-weekend-config-select
+        id="config_weekend_id"
+        config-ipr-id="PayrollConfigurationModalCtrl.payroll.config_weekend_id"
+        name="WeekendConfigForm"
+        on-select-callback="PayrollConfigurationModalCtrl.onSelectWeekendConfig(iprConfig)"
+        required="true"
+        validation-trigger="PayrollModalForm.$submitted">
+      </bh-weekend-config-select>
+    </div>
+
+    <div class="modal-body">
       <bh-ipr-config-select
         id="config_ipr_id"
         config-ipr-id="PayrollConfigurationModalCtrl.payroll.config_ipr_id"
@@ -65,7 +76,6 @@
           <bh-clear on-clear="PayrollConfigurationModalCtrl.clear('config_ipr_id')"></bh-clear>
       </bh-ipr-config-select>
     </div>
-
   </div>
 
   <div class="modal-footer">

@@ -582,6 +582,7 @@
               "TUESDAY"   : "Tuesday",
               "WEDNESDAY" : "Wednesday"   
             },
+            "WEEKEND_CONFIGURATION" : "Weekend Configuration",
             "WEIGHT": "Weight",
             "WIDTH": "Width",
             "YES": "Yes",
@@ -696,6 +697,7 @@
             "TYPE": "Select a Type",
             "USER": "Select User",
             "VILLAGE": "Select a Village/Township",
+            "WEEKEND_CONFIGURATION": "Select a weekend Configuration",
             "ZS": "Select a Health Zone"
         },
         "VALIDATION": {

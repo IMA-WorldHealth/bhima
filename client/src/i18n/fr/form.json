@@ -582,7 +582,8 @@
               "THURSDAY"  : "Jeudi",
               "TUESDAY"   : "Mardi",
               "WEDNESDAY" : "Mercredi"   
-            },  
+            },
+            "WEEKEND_CONFIGURATION" : "Configuration des weekend",
             "WIDTH": "Largeur",
             "YES": "Oui",
             "YOB": "Année de Naissance",
@@ -692,10 +693,11 @@
             "SOURCE": "Sélectionner la source",
             "STATUS": "Sélectionner le status",
             "SUPPLIER": "Selectionner Fournisseur",
-            "TRANSACTION_TYPE": "Selectionner Type de la Transaction",
+            "TRANSACTION_TYPE": "Sélectionner le Type de la Transaction",
             "TYPE": "Sélectionner un Type",
             "USER": "Selectionner Utilisateur",
             "VILLAGE": "Sélectionner Village/Commune",
+            "WEEKEND_CONFIGURATION": "Sélectionner la configuration des weekends",
             "ZS": "Sélectionner zone de sante"
         },
         "VALIDATION": {
