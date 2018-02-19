@@ -666,6 +666,7 @@
             "FISCAL_YEAR": "Select a Fiscal Year",
             "PROFESSION": "Select a Job Title",
             "GRADE": "Select a Grade",
+            "IPR_CONFIGURATION" : "Select IPR Configuration",
             "INVENTORY": "Select an Inventory",
             "INVENTORY_GROUP": "Select an Inventory Group",
             "INVENTORY_TYPE": "Select an Inventory Type",

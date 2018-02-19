@@ -10,7 +10,7 @@ var NotFound = require('../../../lib/errors/NotFound');
 // GET /PAYROLL_CONFIG   
 function lookupPayrollConfig(id) {
   var sql =`
-    SELECT p.id, p.label, p.dateFrom, p.dateTo, p.config_rubric_id, p.config_accounting_id, p.taxe_ipr_id
+    SELECT p.id, p.label, p.dateFrom, p.dateTo, p.config_rubric_id, p.config_accounting_id, p.config_ipr_id
     FROM payroll_configuration AS p
     WHERE p.id = ?`;
 
@@ -20,7 +20,7 @@ function lookupPayrollConfig(id) {
 // Lists the Payroll configurations
 function list(req, res, next) {
   const sql = `
-    SELECT p.id, p.label, p.dateFrom, p.dateTo, p.config_rubric_id, p.config_accounting_id, p.taxe_ipr_id
+    SELECT p.id, p.label, p.dateFrom, p.dateTo, p.config_rubric_id, p.config_accounting_id, p.config_ipr_id
     FROM payroll_configuration AS p;`;
 
   db.exec(sql)

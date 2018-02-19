@@ -28,8 +28,8 @@ function PayrollConfigurationController(PayrollConfigurations, ModalService,
   var gridColumn =
     [    
       { field : 'label', displayName : 'FORM.LABELS.DESIGNATION', headerCellFilter : 'translate' },
-      { field : 'dateFrom', displayName : 'FORM.LABELS.FROM', cellFilter : 'date', headerCellFilter : 'translate' },
-      { field : 'dateTo', displayName : 'FORM.LABELS.TO', cellFilter : 'date', headerCellFilter : 'translate' },
+      { field : 'dateFrom', displayName : 'FORM.LABELS.DATE_FROM', cellFilter : 'date', headerCellFilter : 'translate' },
+      { field : 'dateTo', displayName : 'FORM.LABELS.DATE_TO', cellFilter : 'date', headerCellFilter : 'translate' },
       { field : 'action',
         width : 80,
         displayName : '',

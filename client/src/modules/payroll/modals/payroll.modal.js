@@ -22,6 +22,8 @@ function PayrollConfigurationModalController($state, PayrollConfigurations, Noti
   vm.submit = submit;
   vm.onSelectRubricConfig = onSelectRubricConfig;
   vm.onSelectAccountConfig = onSelectAccountConfig;
+  vm.onSelectIprConfig = onSelectIprConfig;
+  vm.clear = clear;
 
   if (!vm.isCreating) {
     PayrollConfigurations.read(vm.stateParams.id)
@@ -42,6 +44,16 @@ function PayrollConfigurationModalController($state, PayrollConfigurations, Noti
   // callback for Account Configuration select
   function onSelectAccountConfig(account) {
     vm.payroll.config_accounting_id = account.id;
+  }
+
+  // callback for Ipr Configuration select
+  function onSelectIprConfig(ipr) {
+    vm.payroll.config_ipr_id = ipr.id;
+  }  
+
+  // deletes a filter from the custom filter object
+  function clear(key) {
+    delete vm.payroll[key];
   }
 
   // submit the data to the server from all two forms (update, create)

@@ -157,7 +157,7 @@ CREATE TABLE `payroll_configuration` (
   `dateTo` date NOT NULL,
   `config_rubric_id` int(10) unsigned NOT NULL,
   `config_accounting_id` int(10) unsigned NOT NULL,
-  `taxe_ipr_id`int(10) DEFAULT NULL,
+  `config_ipr_id`int(10) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `payroll_configuration` (`label`),
   FOREIGN KEY (`config_rubric_id`) REFERENCES `config_rubric` (`id`),
