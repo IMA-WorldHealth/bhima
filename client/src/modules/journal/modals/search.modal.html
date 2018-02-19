@@ -51,6 +51,33 @@
           </bh-account-select>
         </div>
 
+        <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.hrRecord.$invalid }">
+          <label class="control-label" translate>TABLE.COLUMNS.RECORD</label>
+          <bh-clear on-clear="ModalCtrl.clear('hrRecord')"></bh-clear>
+          <input type="text" class="form-control" name="hrRecord" ng-model="ModalCtrl.searchQueries.hrRecord">
+          <div class="help-block" ng-messages="ModalForm.hrRecord.$error" ng-show="ModalForm.$submitted">
+            <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+          </div>
+        </div>
+
+        <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.hrEntity.$invalid }">
+          <label class="control-label" translate>TABLE.COLUMNS.RECIPIENT</label>
+          <bh-clear on-clear="ModalCtrl.clear('hrEntity')"></bh-clear>
+          <input type="text" class="form-control" name="hrEntity" ng-model="ModalCtrl.searchQueries.hrEntity">
+          <div class="help-block" ng-messages="ModalForm.hrEntity.$error" ng-show="ModalForm.$submitted">
+            <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+          </div>
+        </div>
+
+        <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.hrReference.$invalid }">
+          <label class="control-label" translate>TABLE.COLUMNS.REFERENCE</label>
+          <bh-clear on-clear="ModalCtrl.clear('hrReference')"></bh-clear>
+          <input type="text" class="form-control" name="hrReference" ng-model="ModalCtrl.searchQueries.hrReference">
+          <div class="help-block" ng-messages="ModalForm.hrReference.$error" ng-show="ModalForm.$submitted">
+            <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+          </div>
+        </div>
+
         <bh-transaction-type-select
           on-change="ModalCtrl.onTransactionTypesChange(transactionTypes)"
           transaction-type-ids="ModalCtrl.searchQueries.origin_id">
@@ -66,7 +93,7 @@
             class="form-control"
             name="description"
             ng-model="ModalCtrl.searchQueries.description"
-            rows="4">
+            rows="3">
           </textarea>
           <div class="help-block" ng-messages="ModalForm.description.$error" ng-show="ModalForm.$submitted">
             <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -92,6 +119,21 @@
           <bh-clear on-clear="ModalCtrl.clear('amount')"></bh-clear>
           <input type="number" class="form-control" name="amount" ng-model="ModalCtrl.searchQueries.amount">
           <div class="help-block" ng-messages="ModalForm.amount.$error" ng-show="ModalForm.$submitted">
+            <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+          </div>
+        </div>
+
+        <!-- description fuzzy search -->
+        <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.comment.$invalid }">
+          <label class="control-label" translate>FORM.LABELS.COMMENT</label>
+          <bh-clear on-clear="ModalCtrl.clear('comment')"></bh-clear>
+          <textarea
+            class="form-control"
+            name="comment"
+            ng-model="ModalCtrl.searchQueries.comment"
+            rows="3">
+          </textarea>
+          <div class="help-block" ng-messages="ModalForm.comment.$error" ng-show="ModalForm.$submitted">
             <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
           </div>
         </div>

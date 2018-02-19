@@ -112,12 +112,6 @@ function buildTransactionQuery(options, posted) {
 
   const table = posted ? 'general_ledger' : 'posting_journal';
 
-  let typeIds = [];
-
-  if (options.origin_id) {
-    typeIds = typeIds.concat(options.origin_id);
-  }
-
   const sql = `
     SELECT BUID(p.uuid) AS uuid, ${posted} as posted, p.project_id, p.fiscal_year_id, p.period_id,
       p.trans_id, p.trans_date, BUID(p.record_uuid) AS record_uuid,
@@ -153,7 +147,12 @@ function buildTransactionQuery(options, posted) {
   filters.equals('record_uuid');
   filters.equals('currency_id');
 
-  filters.custom('origin_id', 'p.origin_id IN (?)', [typeIds]);
+  filters.equals('comment');
+  filters.equals('hrEntity', 'text', 'em');
+  filters.equals('hrRecord', 'text', 'dm1');
+  filters.equals('hrReference', 'text', 'dm2');
+
+  filters.custom('origin_id', 'p.origin_id IN (?)', options.origin_id);
 
   filters.custom('uuids', 'p.uuid IN (?)', [options.uuids]);
   filters.custom('record_uuids', 'p.record_uuid IN (?)', [options.record_uuids]);
@@ -266,7 +265,8 @@ function editTransaction(req, res, next) {
   // @FIXME(sfount) this logic needs to be updated when allowing super user editing
   lookupTransaction(recordUuid)
     .then((transactionToEdit) => {
-      const { posted, trans_id, hrRecord } = transactionToEdit[0];
+      const [{ posted, hrRecord }] = transactionToEdit;
+      const transactionId = transactionToEdit[0].trans_id;
 
       // bind the current transaction under edit as "transactionToEdit"
       _transactionToEdit = transactionToEdit;
@@ -278,7 +278,7 @@ function editTransaction(req, res, next) {
       // check the source (posted vs. non-posted) of the first transaction row
       if (posted) {
         throw new BadRequest(
-          `Posted transactions cannot be edited.  Transaction ${trans_id} is already posted.`,
+          `Posted transactions cannot be edited.  Transaction ${transactionId} is already posted.`,
           'POSTING_JOURNAL.ERRORS.TRANSACTION_ALREADY_POSTED'
         );
       }
@@ -289,7 +289,7 @@ function editTransaction(req, res, next) {
       const singleRow = ((rowsAdded.length - rowsRemoved.length) + transactionToEdit.length) === 1;
       if (allRowsRemoved || singleRow) {
         throw new BadRequest(
-          `Transaction ${trans_id} has too few rows!  A valid transaction must contain at least two rows.`,
+          `Transaction ${transactionId} has too few rows!  A valid transaction must contain at least two rows.`,
           'POSTING_JOURNAL.ERRORS.TRANSACTION_MUST_CONTAIN_ROWS'
         );
       }
