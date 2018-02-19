@@ -92,6 +92,7 @@
     "SUBSIDY":"Gestion des subventions",
     "USERS":"Utilisateurs",
     "VOUCHER_REGISTRY":"Registre des Bordereaux",
-    "AGED_DEBTORS":"Les plus anciens débiteurs"
+    "AGED_DEBTORS":"Les plus anciens débiteurs",
+    "WEEKEND_CONFIGURATION":"Configuration des weekend"
   }
 }

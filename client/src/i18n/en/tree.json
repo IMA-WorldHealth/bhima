@@ -93,6 +93,7 @@
     "TRANSACTION_TYPE": "Transaction Type Management",
     "USERS": "User Management",
     "VOUCHER_REGISTRY": "Voucher Registry",
-    "AGED_DEBTORS": "Aged Debtors"
+    "AGED_DEBTORS": "Aged Debtors",
+    "WEEKEND_CONFIGURATION":"Weekend Configuration"
   }
 }

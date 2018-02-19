@@ -41,6 +41,7 @@ const groups = require('../controllers/groups');
 const rubrics = require('../controllers/payroll/rubrics');
 const rubricConfig = require('../controllers/payroll/rubricConfig');
 const accountConfig = require('../controllers/payroll/accounts');
+const weekendConfig = require('../controllers/payroll/weekendConfig');
 
 // medical routes
 const patients = require('../controllers/medical/patients');
@@ -607,6 +608,15 @@ exports.configure = function configure(app) {
   app.post('/account_config', accountConfig.create);
   app.put('/account_config/:id', accountConfig.update);
   app.delete('/account_config/:id', accountConfig.delete);
+
+  // week end payroll Configuration api
+  app.get('/weekend_config', weekendConfig.list);
+  app.get('/weekend_config/:id', weekendConfig.detail);
+  app.post('/weekend_config', weekendConfig.create);
+  app.put('/weekend_config/:id', weekendConfig.update);
+  app.get('/weekend_config/:id/days', weekendConfig.listConfig);
+  app.post('/weekend_config/:id/days', weekendConfig.createConfig);  
+  app.delete('/weekend_config/:id', weekendConfig.delete);
 
   // creditor groups API
   app.post('/creditors/groups', creditorGroups.create);
