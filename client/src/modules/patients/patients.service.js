@@ -216,6 +216,7 @@ function PatientService(
     { key : 'dateRegistrationFrom', label : 'FORM.LABELS.DATE_REGISTRATION', comparitor: '>', valueFilter : 'date' },
     { key : 'dateRegistrationTo', label : 'FORM.LABELS.DATE_REGISTRATION', comparitor: '<', valueFilter : 'date' },
     { key : 'debtor_group_uuid', label : 'FORM.LABELS.DEBTOR_GROUP' },
+    { key : 'debtor_uuid', label : 'FORM.LABELS.PATIENT' },
     { key : 'patient_group_uuid', label : 'PATIENT_GROUP.PATIENT_GROUP' },
     { key : 'user_id', label : 'FORM.LABELS.USER' },
     { key : 'defaultPeriod', label : 'TABLE.COLUMNS.PERIOD' },

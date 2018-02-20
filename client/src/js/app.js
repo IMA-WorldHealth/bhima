@@ -8,7 +8,7 @@ var bhima = angular.module('bhima', [
   'ui.grid.pagination', 'ui.grid.moveColumns', 'ui.grid.exporter',
   'ui.grid.expandable', 'angularMoment', 'ngMessages',
   'growlNotifications', 'ngAnimate', 'ngSanitize', 'ui.select', 'ngTouch',
-  'ui.router.state.events', 'webcam'
+  'ui.router.state.events', 'webcam',
 ]);
 
 function bhimaConfig($urlMatcherFactoryProvider) {
@@ -23,7 +23,7 @@ function translateConfig($translateProvider) {
     suffix : '.json',
   });
 
-  $translateProvider.useSanitizeValueStrategy('escape');
+  $translateProvider.useSanitizeValueStrategy('sce');
 
   $translateProvider.preferredLanguage('fr');
 }
@@ -35,7 +35,10 @@ function localeConfig(tmhDynamicLocaleProvider) {
 }
 
 // redirect to login if not signed in.
-function startupConfig($rootScope, $state, $uibModalStack, SessionService, amMoment, Notify, $location, InstallService) {
+function startupConfig(
+  $rootScope, $state, $uibModalStack, SessionService, amMoment, Notify,
+  $location, InstallService
+) {
   var installStateRegexp = /#!\/install$/;
   var loginStateRegexp = /#!\/login$/;
 

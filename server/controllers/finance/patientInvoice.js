@@ -274,10 +274,8 @@ function lookupInvoiceCreditNote(invoiceUuid) {
     JOIN user u ON u.id = v.user_id
     JOIN invoice i ON i.uuid = v.reference_uuid
     WHERE v.type_id = ${CREDIT_NOTE_ID} AND v.reference_uuid = ?`;
+
   return db.one(sql, [buid])
-    .then(creditNote => {
-      return creditNote;
-    })
     .catch(() => {
       // db.one throw a critical error when there is not any record
       // and it must be handled
