@@ -25,7 +25,6 @@ function WeekConfigSelectController(WeekConfigs, $timeout, $scope, Notify) {
 
   // fired at the beginning of the weekend configuration select
   $ctrl.$onInit = function $onInit() {
-
     // translated label for the form input
     $ctrl.label = $ctrl.label || 'FORM.LABELS.WEEKEND_CONFIGURATION';
 
@@ -63,5 +62,4 @@ function WeekConfigSelectController(WeekConfigs, $timeout, $scope, Notify) {
     // alias the WeekConfigForm name so that we can find it via filterFormElements
     $scope[$ctrl.name].$bhValue = $item.id;
   };
-
 }

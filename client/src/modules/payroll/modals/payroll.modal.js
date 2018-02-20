@@ -30,7 +30,6 @@ function PayrollConfigurationModalController($state, PayrollConfigurations, Noti
   if (!vm.isCreating) {
     PayrollConfigurations.read(vm.stateParams.id)
       .then(function (payroll) {
-
         payroll.dateFrom = new Date(payroll.dateFrom);
         payroll.dateTo = new Date(payroll.dateTo);
         vm.payroll = payroll;
@@ -51,10 +50,10 @@ function PayrollConfigurationModalController($state, PayrollConfigurations, Noti
   // callback for Ipr Configuration select
   function onSelectIprConfig(ipr) {
     vm.payroll.config_ipr_id = ipr.id;
-  }  
+  }
 
   // Callback for weekend configuration select
-  function onSelectWeekendConfig(week){
+  function onSelectWeekendConfig(week) {
     vm.payroll.config_weekend_id = week.id;
   }
 

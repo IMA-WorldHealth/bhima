@@ -27,7 +27,7 @@ function IprScaleController(IprTaxes, AppCache, Store, Notify) {
   };
 
   ctrl.update = function update(scale) {
-    if(scale){
+    if (scale) {
       ctrl.selectedScale = scale;
 
       // update cache with id to select this scale object on next load
@@ -35,7 +35,7 @@ function IprScaleController(IprTaxes, AppCache, Store, Notify) {
 
       // update bindings
       ctrl.onUpdate({ scaleId : scale.id });
-    }  
+    }
   };
 
   function loadDefaultScale() {

@@ -25,7 +25,6 @@ function AccountConfigSelectController(AccountConfigs, $timeout, $scope, Notify)
 
   // fired at the beginning of the account configuration select
   $ctrl.$onInit = function $onInit() {
-
     // translated label for the form input
     $ctrl.label = $ctrl.label || 'FORM.LABELS.ACCOUNT_CONFIGURATION';
 
@@ -63,5 +62,4 @@ function AccountConfigSelectController(AccountConfigs, $timeout, $scope, Notify)
     // alias the AccountConfigForm name so that we can find it via filterFormElements
     $scope[$ctrl.name].$bhValue = $item.id;
   };
-
 }

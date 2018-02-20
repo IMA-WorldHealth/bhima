@@ -1,19 +1,21 @@
 angular.module('bhima.controllers')
-.controller('PayrollConfigurationController', PayrollConfigurationController);
+  .controller('PayrollConfigurationController', PayrollConfigurationController);
 
 PayrollConfigurationController.$inject = [
   'PayrollConfigurationService', 'ModalService',
-  'NotifyService', 'uiGridConstants', '$state', 'SessionService',
+  'NotifyService', 'uiGridConstants', '$state',
 ];
 
 /**
  * Payroll Configuration Controller
  *
- * This controller is about the Payroll Configuration module 
+ * This controller is about the Payroll Configuration module
  * It's responsible for creating, editing and updating a Payroll Configuration
  */
-function PayrollConfigurationController(PayrollConfigurations, ModalService,
-  Notify, uiGridConstants, $state, Session) {
+function PayrollConfigurationController(
+  PayrollConfigurations, ModalService,
+  Notify, uiGridConstants, $state
+) {
   var vm = this;
 
   // bind methods
@@ -26,11 +28,16 @@ function PayrollConfigurationController(PayrollConfigurations, ModalService,
   vm.filterEnabled = false;
 
   var gridColumn =
-    [    
+    [
       { field : 'label', displayName : 'FORM.LABELS.DESIGNATION', headerCellFilter : 'translate' },
-      { field : 'dateFrom', displayName : 'FORM.LABELS.DATE_FROM', cellFilter : 'date', headerCellFilter : 'translate' },
-      { field : 'dateTo', displayName : 'FORM.LABELS.DATE_TO', cellFilter : 'date', headerCellFilter : 'translate' },
-      { field : 'action',
+      {
+        field : 'dateFrom', displayName : 'FORM.LABELS.DATE_FROM', cellFilter : 'date', headerCellFilter : 'translate',
+      },
+      {
+        field : 'dateTo', displayName : 'FORM.LABELS.DATE_TO', cellFilter : 'date', headerCellFilter : 'translate',
+      },
+      {
+        field : 'action',
         width : 80,
         displayName : '',
         cellTemplate : '/modules/payroll/templates/action.tmpl.html',
@@ -64,28 +71,28 @@ function PayrollConfigurationController(PayrollConfigurations, ModalService,
     vm.loading = true;
 
     PayrollConfigurations.read()
-    .then(function (data) {
-      vm.gridOptions.data = data;
-    })
-    .catch(Notify.handleError)
-    .finally(function () {
-      vm.loading = false;
-    });
+      .then(function (data) {
+        vm.gridOptions.data = data;
+      })
+      .catch(Notify.handleError)
+      .finally(function () {
+        vm.loading = false;
+      });
   }
 
   // switch to delete warning mode
   function deletePayrollConfiguration(payroll) {
     ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
-    .then(function (bool) {
-      if (!bool) { return; }
+      .then(function (bool) {
+        if (!bool) { return; }
 
-      PayrollConfigurations.delete(payroll.id)
-      .then(function () {
-        Notify.success('FORM.INFO.DELETE_SUCCESS');
-        loadPayrollConfiguration();
-      })
-      .catch(Notify.handleError);
-    });
+        PayrollConfigurations.delete(payroll.id)
+          .then(function () {
+            Notify.success('FORM.INFO.DELETE_SUCCESS');
+            loadPayrollConfiguration();
+          })
+          .catch(Notify.handleError);
+      });
   }
 
   // update an existing Payroll Configuration

@@ -25,7 +25,6 @@ function IprConfigSelectController(IprConfigs, $timeout, $scope, Notify) {
 
   // fired at the beginning of the ipr configuration select
   $ctrl.$onInit = function $onInit() {
-
     // translated label for the form input
     $ctrl.label = $ctrl.label || 'IPRTAX.CONFIG';
 
@@ -42,12 +41,10 @@ function IprConfigSelectController(IprConfigs, $timeout, $scope, Notify) {
 
     IprConfigs.read()
       .then(function (iprConfigs) {
-
         $ctrl.iprConfigLength = iprConfigs.length;
         $ctrl.iprConfigs = iprConfigs;
       })
       .catch(Notify.handleError);
-
 
     // alias the name as IprConfigForm
     $timeout(aliasComponentForm);
@@ -65,5 +62,4 @@ function IprConfigSelectController(IprConfigs, $timeout, $scope, Notify) {
     // alias the IprConfigForm name so that we can find it via filterFormElements
     $scope[$ctrl.name].$bhValue = $item.id;
   };
-
 }

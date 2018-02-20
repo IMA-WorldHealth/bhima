@@ -7,9 +7,9 @@
 var db = require('../../../lib/db');
 var NotFound = require('../../../lib/errors/NotFound');
 
-// GET /PAYROLL_CONFIG   
+// GET /PAYROLL_CONFIG
 function lookupPayrollConfig(id) {
-  var sql =`
+  const sql = `
     SELECT p.id, p.label, p.dateFrom, p.dateTo, p.config_rubric_id, p.config_accounting_id, p.config_weekend_id, p.config_ipr_id
     FROM payroll_configuration AS p
     WHERE p.id = ?`;
@@ -37,7 +37,7 @@ function list(req, res, next) {
 * Returns the detail of a single Payroll
 */
 function detail(req, res, next) {
-  var id = req.params.id;
+  const id = req.params.id;
 
   lookupPayrollConfig(id)
     .then((record) => {

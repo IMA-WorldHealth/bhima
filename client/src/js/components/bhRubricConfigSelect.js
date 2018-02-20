@@ -25,7 +25,6 @@ function RubricConfigSelectController(RubricConfigs, $timeout, $scope, Notify) {
 
   // fired at the beginning of the rubric configuration select
   $ctrl.$onInit = function $onInit() {
-
     // translated label for the form input
     $ctrl.label = $ctrl.label || 'PAYROLL_RUBRIC.CONFIGURATION';
 
@@ -62,5 +61,4 @@ function RubricConfigSelectController(RubricConfigs, $timeout, $scope, Notify) {
     // alias the RubricConfigForm name so that we can find it via filterFormElements
     $scope[$ctrl.name].$bhValue = $item.id;
   };
-
 }
