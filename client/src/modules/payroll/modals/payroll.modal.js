@@ -19,6 +19,7 @@ function PayrollConfigModalController($state, PayrollConfigurations, Notify, App
   } else {
     vm.stateParams = cache.stateParams;
   }
+
   vm.isCreating = vm.stateParams.creating;
 
   // exposed methods
