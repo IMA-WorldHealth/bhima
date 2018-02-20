@@ -1,83 +1,38 @@
 /* global inject, expect, chai */
+/* eslint no-unused-expressions:off */
 describe('VoucherForm', () => {
-  'use strict';
-
   let VoucherForm;
   let httpBackend;
   let Session;
   let form;
+  let Mocks;
 
-  const mockCashboxes = [{
-    id : 1,
-    label : 'Little Cash Window',
-    account_id : 1100,
-    is_auxiliary : 1,
-    transfer_account_id : 1200,
-    symbol : '$ (USD)',
-    currency_id : 1,
-  }, {
-    id : 2,
-    label : 'Little Cash Window',
-    account_id : 1101,
-    is_auxiliary : 1,
-    transfer_account_id : 1201,
-    symbol : 'EUR',
-    currency_id : 2,
-  }, {
-    id : 3,
-    label : 'Main Coffre',
-    account_id : 1102,
-    is_auxiliary : 0,
-    transfer_account_id : 1202,
-    symbol : '$ (USD)',
-    currency_id : 1,
-  }, {
-    id : 4,
-    label : 'Secondary Coffre',
-    account_id : 1103,
-    is_auxiliary : 0,
-    transfer_account_id : 1203,
-    symbol : 'EUR',
-    currency_id : 2,
-  }];
+  beforeEach(module(
+    'bhima.services',
+    'angularMoment',
+    'ui.bootstrap',
+    'bhima.constants',
+    'ngStorage',
+    'pascalprecht.translate',
+    'tmh.dynamicLocale',
+    'bhima.mocks'
+  ));
 
-  // these accounts aren't really all that important
-  const mockAccounts = [
-    { id : 0, label : 'Mock Root Account', type_id : 1, parent : null },
-    { id : 1, label : 'Mock Account A', type_id : 2, parent : 0 },
-    { id : 2, label : 'Mock Account B', type_id : 2, parent : 0 },
-  ];
-
-  beforeEach(
-    module(
-      'bhima.services',
-      'angularMoment',
-      'ui.bootstrap',
-      'bhima.constants',
-      'ngStorage',
-      'pascalprecht.translate',
-      'tmh.dynamicLocale'
-    )
-  );
-
-  beforeEach(inject((_VoucherForm_, $httpBackend, _SessionService_) => {
+  beforeEach(inject((_VoucherForm_, $httpBackend, _SessionService_, _MockDataService_) => {
     VoucherForm = _VoucherForm_;
     Session = _SessionService_;
+    Mocks = _MockDataService_;
 
     // set up the required properties for the session
-    Session.create(
-      { id : 1 }, // user
-      { currency_id : 2 }, // enterprise
-      { id : 3 }, // project
-    );
+    Session.create(Mocks.user(), Mocks.enterprise(), Mocks.project());
 
     httpBackend = $httpBackend;
 
     httpBackend.when('GET', '/cashboxes/?detailed=1')
-      .respond(200, mockCashboxes);
+      .respond(200, Mocks.cashboxes());
 
     httpBackend.when('GET', '/accounts/')
-      .respond(200, mockAccounts);
+      .respond(200, Mocks.accounts());
 
     form = new VoucherForm('TestKey');
   }));
@@ -163,8 +118,7 @@ describe('VoucherForm', () => {
     expect(form.totals).to.eql({ debit : 0, credit : 0 });
 
     // grab both items and configure them
-    const firstItem = form.store.data[0];
-    const secondItem = form.store.data[1];
+    const [firstItem, secondItem] = form.store.data;
 
     firstItem.debit = 10;
     firstItem.credit = 0;
