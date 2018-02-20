@@ -143,5 +143,75 @@
       type_id : 2,
       parent : 0,
     }];
+
+    service.patient = () => ({
+      uuid : '274c51ae-efcc-4238-98c6-f402bfb39866',
+      project_id : 1,
+      debtor_uuid : '3be232f9-a4b9-4af6-984c-5d3f87d5c107',
+      display_name : 'Test 2 Patient',
+      dob : '1990-06-01 00:00:00',
+      sex : 'M',
+      barcode : 'PA81af634f',
+      current_location_id : '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
+      debtor_group_name : 'Church Employees',
+      debtor_group_uuid : '4de0fe47-177f-4d30-b95f-cff8166400b4',
+      dob_unknown_date : 0,
+      is_convention : 0,
+      locked : 0,
+      number : 41111010,
+      origin_location_id : '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
+      price_list_uuid : '75e09694-dd5c-11e5-a8a2-6c29955775b0',
+      reference : 'PA.TPA.1',
+      registration_date : new Date(),
+      hospital_no : '110',
+    });
+
+    service.priceLists = () => [{
+      uuid : '274c51ae-efcc-4238-98c6-f402bfb39866',
+      enterprise_id : 1,
+      label : 'Test Price List A',
+    }, {
+      uuid : '3be232f9-a4b9-4af6-984c-5d3f87d5c107',
+      enterprise_id : 1,
+      label : 'Test Price List B',
+    }];
+
+    service.priceList = () => ({
+      uuid : '75e09694-dd5c-11e5-a8a2-6c29955775b0',
+      label : 'Test Price List',
+      description : 'Price list for test purposes',
+      items : [{
+        uuid : '33942b06-162d-11e8-8587-000c296b3772',
+        inventory_uuid : '1d9507a7-b6ce-4e80-b63a-ff10c6cda039',
+        label : 'label 1',
+        value : 100,
+        is_percentage : 1,
+      }, {
+        uuid : '33943140-162d-11e8-8587-000c296b3772',
+        inventory_uuid : 'd03e7870-0c8e-47d4-a7a8-a17a9924b3f4',
+        label : 'label 2',
+        value : 100,
+        is_percentage : 1,
+      }],
+    });
+
+    service.subsidies = () => [{
+      subsidy_id : 1,
+      label : 'Test Subsidy',
+      description : 'Subsidy for test purposes',
+      value : 50,
+    }];
+
+    service.invoicingFees = () => [{
+      invoicing_fee_id : 1,
+      label : 'Test Invoicing Fee',
+      description : 'Example Invoicing Fee',
+      value : 20,
+    }, {
+      invoicing_fee_id : 2,
+      label : 'Second Test Invoicing Fee',
+      description : 'Example Invoicing Fee 2',
+      value : 10,
+    }];
   }
 })();

@@ -73,11 +73,6 @@ describe('VoucherForm', () => {
     });
   });
 
-  it.skip('#addItems() adds multiple rows to the store', () => {
-    form.addItems(13);
-    expect(form.store.data).to.have.length(15);
-  });
-
   it('#removeItem() removes a specific uuid from the store', () => {
     // there must be 2 items by default in the store
     const item = form.store.data[1];
@@ -86,6 +81,12 @@ describe('VoucherForm', () => {
     expect(form.store.data).to.have.length(1);
     expect(form.store.get(item.uuid)).to.be.undefined;
   });
+
+  it.skip('#addItems() adds multiple rows to the store', () => {
+    form.addItems(13);
+    expect(form.store.data).to.have.length(15);
+  });
+
 
   it('#clear() removes all data from the internal store', () => {
     form.clear();
