@@ -782,12 +782,15 @@ INSERT INTO `config_rubric_item` (`id`, `config_rubric_id`, `rubric_payroll_id`)
 (6, 1, 4);
 
 -- Configuration of weekend
-INSERT INTO `weekend_config` (`id`, `label`) VALUES (1, 'Configuration Semaine Anglaise');
+INSERT INTO `weekend_config` (`id`, `label`) VALUES 
+(1, 'Configuration Semaine Anglaise'),
+(2, 'Configuration Semaine Normale');
 
 -- Days of weekend configuration
 INSERT INTO `config_week_days` (`id`, `indice`, `weekend_config_id`) VALUES 
 (1, 0, 1),
-(2, 6, 1);
+(2, 6, 1),
+(3, 6, 2);
 
 -- Tax IPR
 INSERT INTO `taxe_ipr` (`id`, `label`, `description`, `currency_id`) VALUES 

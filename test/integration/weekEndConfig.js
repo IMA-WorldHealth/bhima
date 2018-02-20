@@ -22,7 +22,7 @@ describe('(/payroll/weekend_configuration) The /payroll/weekend_configuration  A
     label : 'Configuration Week end 2013 Updated',
   };
 
-  const NUM_CONFIG_WEEKEND = 2;
+  const NUM_CONFIG_WEEKEND = 3;
 
   const configWeekEnd = { configuration : [0, 5, 6] };
   const configWeekEndEmpty = { configuration : [] };
