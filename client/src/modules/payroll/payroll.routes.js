@@ -33,7 +33,7 @@ function payrollModal($modal) {
     keyboard : false,
     backdrop : 'static',
     templateUrl : 'modules/payroll/modals/payroll.modal.html',
-    controller : 'PayrollConfigurationModalController as PayrollConfigurationModalCtrl',
+    controller : 'PayrollConfigModalController as PayrollConfigModalCtrl',
   });
 }
 

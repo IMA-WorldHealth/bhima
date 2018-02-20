@@ -1,18 +1,21 @@
 angular.module('bhima.controllers')
-  .controller('PayrollConfigurationModalController', PayrollConfigurationModalController);
+  .controller('PayrollConfigModalController', PayrollConfigModalController);
 
-PayrollConfigurationModalController.$inject = [
+PayrollConfigModalController.$inject = [
   '$state', 'PayrollConfigurationService', 'NotifyService', 'appcache', 'moment',
 ];
 
-function PayrollConfigurationModalController($state, PayrollConfigurations, Notify, AppCache, moment) {
-  var vm = this;
+function PayrollConfigModalController($state, PayrollConfigurations, Notify, AppCache, moment) {
+  var vm = this,
+    cache;
+
   vm.payroll = {};
 
-  var cache = AppCache('PayrollModal');
+  cache = AppCache('PayrollModal');
 
   if ($state.params.creating || $state.params.id) {
-    vm.stateParams = cache.stateParams = $state.params;
+    vm.stateParams = $state.params;
+    cache.stateParams = $state.params;
   } else {
     vm.stateParams = cache.stateParams;
   }

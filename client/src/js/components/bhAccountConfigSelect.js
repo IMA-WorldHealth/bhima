@@ -40,7 +40,7 @@ function AccountConfigSelectController(AccountConfigs, $timeout, $scope, Notify)
     }
 
     AccountConfigs.read()
-      .then(function (accountConfigs) {
+      .then(accountConfigs => {
         $ctrl.accountConfigs = accountConfigs;
       })
       .catch(Notify.handleError);

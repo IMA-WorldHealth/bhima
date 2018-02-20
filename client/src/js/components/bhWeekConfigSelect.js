@@ -40,7 +40,7 @@ function WeekConfigSelectController(WeekConfigs, $timeout, $scope, Notify) {
     }
 
     WeekConfigs.read()
-      .then(function (weekendConfigs) {
+      .then(weekendConfigs => {
         $ctrl.weekendConfigs = weekendConfigs;
       })
       .catch(Notify.handleError);

@@ -39,7 +39,7 @@ function RubricConfigSelectController(RubricConfigs, $timeout, $scope, Notify) {
     }
 
     RubricConfigs.read()
-      .then(function (rubricConfigs) {
+      .then(rubricConfigs => {
         $ctrl.rubricConfigs = rubricConfigs;
       })
       .catch(Notify.handleError);

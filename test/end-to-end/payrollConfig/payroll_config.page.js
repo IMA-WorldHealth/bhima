@@ -28,7 +28,7 @@ class PayrollConfigPage {
    */
   createPayrollConfig(payrollConfig) {
     FU.buttons.create();
-    FU.input('PayrollConfigurationModalCtrl.payroll.label', payrollConfig.label);
+    FU.input('PayrollConfigModalCtrl.payroll.label', payrollConfig.label);
 
     if (payrollConfig.period) {
       $(`[data-date-range="${payrollConfig.period}"]`).click();
@@ -48,7 +48,7 @@ class PayrollConfigPage {
   errorOnCreatePayrollConfig() {
     FU.buttons.create();
     FU.buttons.submit();
-    FU.validation.error('PayrollConfigurationModalCtrl.payroll.label');
+    FU.validation.error('PayrollConfigModalCtrl.payroll.label');
     FU.buttons.cancel();
   }
 
@@ -60,7 +60,7 @@ class PayrollConfigPage {
       .then(indices => {
         const { rowIndex } = indices;
         GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'edit', this.gridId);
-        FU.input('PayrollConfigurationModalCtrl.payroll.label', updatePayrollConfig.label);
+        FU.input('PayrollConfigModalCtrl.payroll.label', updatePayrollConfig.label);
 
         if (updatePayrollConfig.period) {
           $(`[data-date-range="${updatePayrollConfig.period}"]`).click();

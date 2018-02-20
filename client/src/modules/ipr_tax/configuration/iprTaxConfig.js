@@ -16,7 +16,8 @@ function IprTaxConfigurationController(
   IprTaxes, ModalService,
   Notify, uiGridConstants, $state, Session
 ) {
-  var vm = this;
+  var vm = this,
+    gridColumn;
 
   // bind methods
   vm.deleteIprTax = deleteIprTax;
@@ -28,7 +29,7 @@ function IprTaxConfigurationController(
   vm.gridApi = {};
   vm.filterEnabled = false;
 
-  var gridColumn =
+  gridColumn =
     [
       {
         field : 'rate', displayName : 'FORM.LABELS.RATE', headerCellFilter : 'translate', width : 60, cellFilter : 'percentage',
@@ -96,7 +97,7 @@ function IprTaxConfigurationController(
 
   function iprScaleSelect(scaleId) {
     vm.taxIprId = scaleId;
-    
+
     if (vm.taxIprId) {
       loadIprTaxes();
     }

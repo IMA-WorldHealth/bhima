@@ -2,8 +2,7 @@ angular.module('bhima.controllers')
   .controller('PayrollConfigurationController', PayrollConfigurationController);
 
 PayrollConfigurationController.$inject = [
-  'PayrollConfigurationService', 'ModalService',
-  'NotifyService', 'uiGridConstants', '$state',
+  'PayrollConfigurationService', 'ModalService', 'NotifyService', 'uiGridConstants', '$state',
 ];
 
 /**
@@ -12,11 +11,9 @@ PayrollConfigurationController.$inject = [
  * This controller is about the Payroll Configuration module
  * It's responsible for creating, editing and updating a Payroll Configuration
  */
-function PayrollConfigurationController(
-  PayrollConfigurations, ModalService,
-  Notify, uiGridConstants, $state
-) {
-  var vm = this;
+function PayrollConfigurationController(PayrollConfigurations, ModalService, Notify, uiGridConstants, $state) {
+  var vm = this,
+    gridColumn;
 
   // bind methods
   vm.deletePayrollConfiguration = deletePayrollConfiguration;
@@ -27,7 +24,7 @@ function PayrollConfigurationController(
   vm.gridApi = {};
   vm.filterEnabled = false;
 
-  var gridColumn =
+  gridColumn =
     [
       { field : 'label', displayName : 'FORM.LABELS.DESIGNATION', headerCellFilter : 'translate' },
       {
@@ -71,7 +68,7 @@ function PayrollConfigurationController(
     vm.loading = true;
 
     PayrollConfigurations.read()
-      .then(function (data) {
+      .then(data => {
         vm.gridOptions.data = data;
       })
       .catch(Notify.handleError)
@@ -83,7 +80,7 @@ function PayrollConfigurationController(
   // switch to delete warning mode
   function deletePayrollConfiguration(payroll) {
     ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
-      .then(function (bool) {
+      .then(bool => {
         if (!bool) { return; }
 
         PayrollConfigurations.delete(payroll.id)

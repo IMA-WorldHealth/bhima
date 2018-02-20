@@ -3,7 +3,7 @@ const PayrollConfigPage = require('./payroll_config.page');
 const chai = require('chai');
 
 
-/** configuring helpers**/
+/** configuring helpers* */
 helpers.configure(chai);
 
 describe('Payroll Configuration Management', () => {
@@ -41,5 +41,4 @@ describe('Payroll Configuration Management', () => {
   it('successfully delete a Configuration Payroll Period', () => {
     Page.deletePayrollConfig(updatePayrollConfig.label);
   });
-
 });

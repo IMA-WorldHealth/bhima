@@ -40,7 +40,7 @@ function IprConfigSelectController(IprConfigs, $timeout, $scope, Notify) {
     }
 
     IprConfigs.read()
-      .then(function (iprConfigs) {
+      .then(iprConfigs => {
         $ctrl.iprConfigLength = iprConfigs.length;
         $ctrl.iprConfigs = iprConfigs;
       })
