@@ -12,8 +12,8 @@ PayrollConfigurationController.$inject = [
  * It's responsible for creating, editing and updating a Payroll Configuration
  */
 function PayrollConfigurationController(PayrollConfigurations, ModalService, Notify, uiGridConstants, $state) {
-  var vm = this,
-    gridColumn;
+  var vm = this;
+  var gridColumn;
 
   // bind methods
   vm.deletePayrollConfiguration = deletePayrollConfiguration;
@@ -24,24 +24,23 @@ function PayrollConfigurationController(PayrollConfigurations, ModalService, Not
   vm.gridApi = {};
   vm.filterEnabled = false;
 
-  gridColumn =
-    [
-      { field : 'label', displayName : 'FORM.LABELS.DESIGNATION', headerCellFilter : 'translate' },
-      {
-        field : 'dateFrom', displayName : 'FORM.LABELS.DATE_FROM', cellFilter : 'date', headerCellFilter : 'translate',
-      },
-      {
-        field : 'dateTo', displayName : 'FORM.LABELS.DATE_TO', cellFilter : 'date', headerCellFilter : 'translate',
-      },
-      {
-        field : 'action',
-        width : 80,
-        displayName : '',
-        cellTemplate : '/modules/payroll/templates/action.tmpl.html',
-        enableSorting : false,
-        enableFiltering : false,
-      },
-    ];
+  gridColumn = [
+    { field : 'label', displayName : 'FORM.LABELS.DESIGNATION', headerCellFilter : 'translate' },
+    {
+      field : 'dateFrom', displayName : 'FORM.LABELS.DATE_FROM', cellFilter : 'date', headerCellFilter : 'translate',
+    },
+    {
+      field : 'dateTo', displayName : 'FORM.LABELS.DATE_TO', cellFilter : 'date', headerCellFilter : 'translate',
+    },
+    {
+      field : 'action',
+      width : 80,
+      displayName : '',
+      cellTemplate : '/modules/payroll/templates/action.tmpl.html',
+      enableSorting : false,
+      enableFiltering : false,
+    },
+  ];
 
   // options for the UI grid
   vm.gridOptions = {

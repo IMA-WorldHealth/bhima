@@ -16,8 +16,8 @@ function IprTaxConfigurationController(
   IprTaxes, ModalService,
   Notify, uiGridConstants, $state, Session
 ) {
-  var vm = this,
-    gridColumn;
+  var vm = this;
+  var gridColumn;
 
   // bind methods
   vm.deleteIprTax = deleteIprTax;
@@ -29,50 +29,49 @@ function IprTaxConfigurationController(
   vm.gridApi = {};
   vm.filterEnabled = false;
 
-  gridColumn =
-    [
-      {
-        field : 'rate', displayName : 'FORM.LABELS.RATE', headerCellFilter : 'translate', width : 60, cellFilter : 'percentage',
-      },
-      {
-        field : 'tranche_annuelle_debut', displayName : 'FORM.LABELS.ANNUAL_TRANCH_FROM', headerCellFilter : 'translate', width : 170, cellFilter : 'currency:row.entity.currency_id',
-      },
-      {
-        field : 'tranche_annuelle_fin', displayName : 'FORM.LABELS.ANNUAL_TRANCH_TO', headerCellFilter : 'translate', width : 170, cellFilter : 'currency:row.entity.currency_id',
-      },
-      {
-        field : 'tranche_mensuelle_debut', displayName : 'FORM.LABELS.MONTH_TRANCH_FROM', headerCellFilter : 'translate', width : 170, cellFilter : 'currency:row.entity.currency_id',
-      },
-      {
-        field : 'tranche_mensuelle_fin', displayName : 'FORM.LABELS.MONTH_TRANCH_TO', headerCellFilter : 'translate', width : 170, cellFilter : 'currency:row.entity.currency_id',
-      },
-      {
-        field : 'ecart_annuel', displayName : 'FORM.LABELS.ANNUAL_ECART', headerCellFilter : 'translate', cellFilter : 'currency:row.entity.currency_id',
-      },
-      {
-        field : 'ecart_mensuel', displayName : 'FORM.LABELS.MONTH_ECART', headerCellFilter : 'translate', cellFilter : 'currency:row.entity.currency_id',
-      },
-      {
-        field : 'impot_annuel', displayName : 'FORM.LABELS.ANNUAL_IMPOT', headerCellFilter : 'translate', cellFilter : 'currency:row.entity.currency_id',
-      },
-      {
-        field : 'impot_mensuel', displayName : 'FORM.LABELS.MONTH_IMPOT', headerCellFilter : 'translate', cellFilter : 'currency:row.entity.currency_id',
-      },
-      {
-        field : 'cumul_annuel', displayName : 'FORM.LABELS.ANNUAL_CUMUL', headerCellFilter : 'translate', cellFilter : 'currency:row.entity.currency_id',
-      },
-      {
-        field : 'cumul_mensuel', displayName : 'FORM.LABELS.MONTH_CUMUL', headerCellFilter : 'translate', cellFilter : 'currency:row.entity.currency_id',
-      },
-      {
-        field : 'action',
-        width : 80,
-        displayName : '',
-        cellTemplate : '/modules/ipr_tax/templates/actionConfig.tmpl.html',
-        enableSorting : false,
-        enableFiltering : false,
-      },
-    ];
+  gridColumn = [
+    {
+      field : 'rate', displayName : 'FORM.LABELS.RATE', headerCellFilter : 'translate', width : 60, cellFilter : 'percentage',
+    },
+    {
+      field : 'tranche_annuelle_debut', displayName : 'FORM.LABELS.ANNUAL_TRANCH_FROM', headerCellFilter : 'translate', width : 170, cellFilter : 'currency:row.entity.currency_id',
+    },
+    {
+      field : 'tranche_annuelle_fin', displayName : 'FORM.LABELS.ANNUAL_TRANCH_TO', headerCellFilter : 'translate', width : 170, cellFilter : 'currency:row.entity.currency_id',
+    },
+    {
+      field : 'tranche_mensuelle_debut', displayName : 'FORM.LABELS.MONTH_TRANCH_FROM', headerCellFilter : 'translate', width : 170, cellFilter : 'currency:row.entity.currency_id',
+    },
+    {
+      field : 'tranche_mensuelle_fin', displayName : 'FORM.LABELS.MONTH_TRANCH_TO', headerCellFilter : 'translate', width : 170, cellFilter : 'currency:row.entity.currency_id',
+    },
+    {
+      field : 'ecart_annuel', displayName : 'FORM.LABELS.ANNUAL_ECART', headerCellFilter : 'translate', cellFilter : 'currency:row.entity.currency_id',
+    },
+    {
+      field : 'ecart_mensuel', displayName : 'FORM.LABELS.MONTH_ECART', headerCellFilter : 'translate', cellFilter : 'currency:row.entity.currency_id',
+    },
+    {
+      field : 'impot_annuel', displayName : 'FORM.LABELS.ANNUAL_IMPOT', headerCellFilter : 'translate', cellFilter : 'currency:row.entity.currency_id',
+    },
+    {
+      field : 'impot_mensuel', displayName : 'FORM.LABELS.MONTH_IMPOT', headerCellFilter : 'translate', cellFilter : 'currency:row.entity.currency_id',
+    },
+    {
+      field : 'cumul_annuel', displayName : 'FORM.LABELS.ANNUAL_CUMUL', headerCellFilter : 'translate', cellFilter : 'currency:row.entity.currency_id',
+    },
+    {
+      field : 'cumul_mensuel', displayName : 'FORM.LABELS.MONTH_CUMUL', headerCellFilter : 'translate', cellFilter : 'currency:row.entity.currency_id',
+    },
+    {
+      field : 'action',
+      width : 80,
+      displayName : '',
+      cellTemplate : '/modules/ipr_tax/templates/actionConfig.tmpl.html',
+      enableSorting : false,
+      enableFiltering : false,
+    },
+  ];
 
   // options for the UI grid
   vm.gridOptions = {

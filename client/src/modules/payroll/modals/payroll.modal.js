@@ -6,8 +6,8 @@ PayrollConfigModalController.$inject = [
 ];
 
 function PayrollConfigModalController($state, PayrollConfigurations, Notify, AppCache, moment) {
-  var vm = this,
-    cache;
+  var vm = this;
+  var cache;
 
   vm.payroll = {};
 
@@ -32,7 +32,7 @@ function PayrollConfigModalController($state, PayrollConfigurations, Notify, App
 
   if (!vm.isCreating) {
     PayrollConfigurations.read(vm.stateParams.id)
-      .then(function (payroll) {
+      .then(payroll => {
         payroll.dateFrom = new Date(payroll.dateFrom);
         payroll.dateTo = new Date(payroll.dateTo);
         vm.payroll = payroll;
@@ -78,7 +78,7 @@ function PayrollConfigModalController($state, PayrollConfigurations, Notify, App
       PayrollConfigurations.update(vm.payroll.id, vm.payroll);
 
     return promise
-      .then(function () {
+      .then(() => {
         var translateKey = (vm.isCreating) ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
         Notify.success(translateKey);
         $state.go('payroll', null, { reload : true });
