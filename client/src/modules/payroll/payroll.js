@@ -71,7 +71,7 @@ function PayrollConfigurationController(PayrollConfigurations, ModalService, Not
         vm.gridOptions.data = data;
       })
       .catch(Notify.handleError)
-      .finally(function () {
+      .finally(() => {
         vm.loading = false;
       });
   }
@@ -83,7 +83,7 @@ function PayrollConfigurationController(PayrollConfigurations, ModalService, Not
         if (!bool) { return; }
 
         PayrollConfigurations.delete(payroll.id)
-          .then(function () {
+          .then(() => {
             Notify.success('FORM.INFO.DELETE_SUCCESS');
             loadPayrollConfiguration();
           })
