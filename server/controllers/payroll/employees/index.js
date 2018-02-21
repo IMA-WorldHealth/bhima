@@ -30,6 +30,7 @@ exports.update = update;
 exports.detail = detail;
 exports.search = search;
 exports.find = find;
+exports.patientToEmployee = patientToEmployee;
 
 /**
  * @method list
@@ -241,7 +242,6 @@ function update(req, res, next) {
 
   transaction.execute()
     .then(results => {
-
       if (!results[3].affectedRows) {
         throw new NotFound(`Could not find an employee with id ${req.params.id}.`);
       }
@@ -448,4 +448,79 @@ function find(options) {
   const parameters = filters.parameters();
 
   return db.exec(query, parameters);
+}
+
+/**
+ * @method patientToEmployee
+ *
+ * @description
+ * This function is responsible for transform a Patient to New employee in the database
+ */
+function patientToEmployee(req, res, next) {
+  const data = req.body;
+  const patientID = data.patient_uuid;
+
+  data.creditor_uuid = uuid();
+
+  // convert uuids to binary uuids as necessary
+  const employee = db.convert(data, [
+    'grade_uuid', 'debtor_group_uuid', 'creditor_group_uuid', 'creditor_uuid',
+    'debtor_uuid', 'current_location_id', 'origin_location_id', 'patient_uuid',
+  ]);
+
+  const creditor = {
+    uuid : employee.creditor_uuid,
+    group_uuid : employee.creditor_group_uuid,
+    text : `Crediteur [${employee.display_name}]`,
+  };
+
+  const debtor = {
+    uuid : employee.debtor_uuid,
+    group_uuid : employee.debtor_group_uuid,
+    text : `Debiteur [${employee.display_name}]`,
+  };
+
+  delete employee.debtor_group_uuid;
+  delete employee.creditor_group_uuid;
+  delete employee.current_location_id;
+  delete employee.origin_location_id;
+  delete employee.debtor_uuid;
+  delete employee.hospital_no;
+
+  // Delete not necessary Data for Employee
+  delete employee.display_name;
+  delete employee.dob;
+  delete employee.sex;
+  delete employee.adresse;
+  delete employee.phone;
+  delete employee.email;
+  delete employee.is_patient;
+
+  const writeCreditor = 'INSERT INTO creditor SET ?';
+  const updateDebtor = `UPDATE debtor SET ? WHERE debtor.uuid = ?`;
+  const sql = 'INSERT INTO employee SET ?';
+
+  const transaction = db.transaction();
+
+  transaction
+    .addQuery(writeCreditor, [creditor])
+    .addQuery(updateDebtor, [debtor, employee.debtor_uuid])
+    .addQuery(sql, [employee]);
+
+  transaction.execute()
+    .then(results => {
+      // @todo - why is this not a UUID, but grade_uuid is a uuid?
+      const employeeId = results[2].insertId;
+
+      topic.publish(topic.channels.ADMIN, {
+        event : topic.events.CREATE,
+        entity : topic.entities.EMPLOYEE,
+        user_id : req.session.user.id,
+        id : employeeId,
+      });
+
+      res.status(201).json({ id : employeeId, patient_uuid : patientID });
+    })
+    .catch(next)
+    .done();
 }

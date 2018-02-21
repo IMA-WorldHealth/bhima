@@ -1,10 +1,10 @@
 // TODO Handle HTTP exception errors (displayed contextually on form)
 angular.module('bhima.controllers')
-.controller('EmployeeController', EmployeeController);
+  .controller('EmployeeController', EmployeeController);
 
 EmployeeController.$inject = [
   'EmployeeService', 'ServiceService', 'GradeService', 'FunctionService',
-  'CreditorGroupService', 'util', 'NotifyService','$state',
+  'CreditorGroupService', 'util', 'NotifyService', '$state',
   'bhConstants', 'ReceiptModal', 'SessionService',
 ];
 
@@ -13,35 +13,44 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
   var referenceId = $state.params.id;
 
   vm.enterprise = Session.enterprise;
-  vm.isUpdating = $state.params.id ? true : false;
+  vm.isUpdating = !!$state.params.id;
+  vm.setPatient = setPatient;
 
   vm.origin = '';
 
   if (referenceId) {
     Employees.read(referenceId)
-    .then(function (employee) {
-      formatEmployeeAttributes(employee);
-      vm.origin = employee.hospital_no;
-      vm.employee = employee;
-    })
-    .catch(function (error) {
-
+      .then(function (employee) {
+        formatEmployeeAttributes(employee);
+        vm.origin = employee.hospital_no;
+        vm.employee = employee;
+      })
+      .catch(function (error) {
       // handle error and update view to show no results - this could be improved
-      Notify.handleError(error);
-      vm.unknownId = true;
-    });    
+        Notify.handleError(error);
+        vm.unknownId = true;
+      });
   }
 
   function formatEmployeeAttributes(employee) {
-
     // Sanitise DOB for Date Input
     employee.dob = new Date(employee.dob);
     employee.date_embauche = new Date(employee.date_embauche);
-    
+
     // Assign name
     employee.name = employee.display_name;
     employee.displayGender = employee.sex;
     employee.displayAge = moment().diff(employee.dob, 'years');
+  }
+
+  function setPatient(patient) {
+    vm.employee.display_name = patient.display_name;
+    vm.employee.dob = new Date(patient.dob);
+    vm.employee.sex = patient.sex;
+    vm.employee.hospital_no = patient.hospital_no;
+    vm.employee.is_patient = true;
+    vm.employee.patient_uuid = patient.uuid;
+    vm.employee.debtor_uuid = patient.debtor_uuid;
   }
 
   // Expose lenths from util
@@ -69,7 +78,7 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
   vm.submit = submit;
 
   // Set up page elements data (debtor select data)
-  vm.onSelectDebtor =  function onSelectDebtor(debtorGroup) {
+  vm.onSelectDebtor = function onSelectDebtor(debtorGroup) {
     vm.employee.debtor_group_uuid = debtorGroup.uuid;
   };
 
@@ -88,14 +97,13 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
     vm.employee.dob_unknown_date = !vm.fullDateEnabled;
 
     angular.merge(vm.datepickerOptions, currentOptions);
-  }  
-
+  }
 
 
   // Loading Grades
   Grades.read(null, { detailed : 1 }).then(function (data) {
     data.forEach(function (g) {
-      g.format = g.code + ' - ' + g.text;
+      g.format = `${g.code} - ${g.text}`;
     });
     vm.grades = data;
   }).catch(Notify.handleError);
@@ -115,16 +123,19 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
     vm.functions = data;
   }).catch(Notify.handleError);
 
-
   // submit the data to the server
   function submit(employeeForm) {
     var promise;
 
     if (employeeForm.$invalid) { return Notify.danger('FORM.ERRORS.INVALID'); }
-    
-    promise = (!referenceId) ?
-      Employees.create(vm.employee) :
-      Employees.update(referenceId, vm.employee);
+
+    if (!vm.employee.is_patient) {
+      promise = (!referenceId) ?
+        Employees.create(vm.employee) :
+        Employees.update(referenceId, vm.employee);
+    } else {
+      promise = Employees.patientToEmployee(vm.employee);
+    }
 
     return promise
       .then(function (feedBack) {
@@ -137,7 +148,7 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
           Receipts.patient(feedBack.patient_uuid, true);
         } else {
           Notify.success('FORM.INFO.UPDATE_SUCCESS');
-          $state.go('employeeRegistry', null, { reload : true }); 
+          $state.go('employeeRegistry', null, { reload : true });
         }
       })
       .catch(Notify.handleError);
