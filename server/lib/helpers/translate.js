@@ -1,5 +1,6 @@
 /* eslint import/no-dynamic-require: "off", global-require: "off" */
 const _ = require('lodash');
+const util = require('../util');
 
 // these are resolved at compile time
 const dictionaries = {};
@@ -14,7 +15,7 @@ const dictionaries = {};
  */
 function getTranslationHelper(languageKey) {
   const key = String(languageKey).toLowerCase() === 'fr' ? 'fr' : 'en';
-  const dictionary = loadDictionary(key);
+  const dictionary = util.loadDictionary(key, dictionaries);
 
   /**
    * @function translate
@@ -29,23 +30,6 @@ function getTranslationHelper(languageKey) {
     // See https://lodash.com/docs/4.15.0#at
     return _.get(dictionary, translateCode) || translateCode;
   };
-}
-
-/**
- * @function loadDictionary
- *
- * @description
- * Either returns a cached version of the dictionary, or loads the dictionary
- * into the cache and returns it.
- *
- * @param {String} key - either 'fr' or 'en'
- */
-function loadDictionary(key) {
-  const dictionary = dictionaries[key];
-  if (dictionary) { return dictionary; }
-
-  dictionaries[key] = require(`../../../client/i18n/${key}.json`);
-  return dictionaries[key];
 }
 
 module.exports = getTranslationHelper;

@@ -1,0 +1,6 @@
+{{#if dateItem}}{{date dateItem 'YYYY-MM-DD'}}{{/if}}
+{{#if ageItem}}{{age ageItem}}{{/if}}
+{{#if lookItem}}{{look lookItem 'content'}}{{/if}}
+{{#if equalItem}}{{#equal equalItem 'developer'}}true{{else}}false{{/equal}}{{/if}}
+{{#if gtItem}}{{#gt gtItem gtValue}}true{{else}}false{{/gt}}{{/if}}
+{{#if ltItem}}{{#lt ltItem ltValue}}true{{else}}false{{/lt}}{{/if}}

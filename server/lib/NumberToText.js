@@ -6,14 +6,9 @@
  */
 
 const _ = require('lodash');
-
-const en = require('../../client/i18n/en.json');
-const fr = require('../../client/i18n/fr.json');
+const util = require('./util');
 
 exports.convert = convert;
-
-let dictionary;
-let languageKey;
 
 /**
 *
@@ -31,8 +26,8 @@ function convert(input, lang, currencyName) {
   // Round to at most 2 decimal places
   const number = _.round(input, 2);
 
-  languageKey = lang;
-  dictionary = (String(lang).toLowerCase() === 'fr') ? fr : en;
+  const languageKey = String(lang).toLowerCase() === 'fr' ? 'fr' : 'en';
+  const dictionary = util.loadDictionary(languageKey);
 
   const a = [
     '',
