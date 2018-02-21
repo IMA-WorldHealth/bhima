@@ -185,8 +185,8 @@ function unlinkp(file) {
 
 /**
  * arround a decimal
- * @param {*} number 
- * @param {*} precision 
+ * @param {*} number
+ * @param {*} precision
  */
 function roundDecimal(number, precision = 4) {
   const base = Math.pow(10, precision);

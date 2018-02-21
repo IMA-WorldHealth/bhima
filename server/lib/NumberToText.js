@@ -10,9 +10,6 @@ const util = require('./util');
 
 exports.convert = convert;
 
-let dictionary;
-let languageKey;
-
 /**
 *
 * Source: http://stackoverflow.com/questions/14766951/convert-digits-into-words-with-javascript
