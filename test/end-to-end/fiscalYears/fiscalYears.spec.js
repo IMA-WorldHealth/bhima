@@ -56,7 +56,7 @@ describe('Fiscal Year', () => {
 
     // modify the fiscal year label and note
     FU.input('FiscalManageCtrl.fiscal.label', 'Test Fiscal Year 2017 (update)');
-    FU.input('FiscalManageCtrl.fiscal.note', 'Test 2017 (update)');
+    FU.input('FiscalManageCtrl.fiscal.note', 'Test 2017 [update]');
 
     FU.buttons.submit();
     components.notification.hasSuccess();
@@ -131,7 +131,7 @@ describe('Fiscal Year', () => {
     // click on the opening balance button
     element(by.css('[data-action="closing-fiscal-year"]')).click();
 
-    // inner constiables
+    // inner variables
     const resultAccount = '13110001'; // 13110001 -Résusltat de l\'exercise
     const fiscalYearPattern = 'Test Fiscal Year 2015';
 

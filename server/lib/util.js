@@ -184,11 +184,7 @@ function unlinkp(file) {
 }
 
 /**
-<<<<<<< d09180467e8992b138dcaaf3182b0f5d845b38d4
- * arround a decimal
-=======
  * Round a decimal to a certain precision
->>>>>>> refactor(fiscal): rewrite opening balance modal
  * @param {*} number
  * @param {*} precision
  */
