@@ -7,7 +7,8 @@ angular.module('bhima.components')
       onRegisterApi:     '&',  // expose force refresh API
       required:          '<',  // bind the required (for ng-required)
       validationTrigger: '<',  // bind validation trigger
-      suppressReset:     '<'   // bind the reset
+      suppressReset:     '<',   // bind the reset
+      label:             '@?',
     }
   });
 
@@ -49,6 +50,9 @@ function FindPatientComponent(Patients, AppCache, Notify, SessionService, bhCons
 
   vm.$onInit = function onInit() {
     vm.suppressReset = vm.suppressReset || false;
+
+    // translated label for the form input
+    vm.label = vm.label || 'FORM.LABELS.PATIENT';    
 
     /* supported searches: by name or by id */
     vm.options = {

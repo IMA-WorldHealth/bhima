@@ -5,7 +5,9 @@
       'has-success': !$ctrl.showSearchView && $ctrl.loadStatus=='loaded',
       'has-error': (!$ctrl.showSearchView && $ctrl.loadStatus=='error') || ($ctrl.validationTrigger && $ctrl.loadStatus != 'loaded')
     }">
-    <label class="control-label text-capitalize" translate>FORM.LABELS.PATIENT</label>
+    <label class="control-label text-capitalize" translate>
+      {{$ctrl.label}}
+    </label>
 
     <!-- input zone -->
     <div class="input-group" ng-if="$ctrl.showSearchView">
