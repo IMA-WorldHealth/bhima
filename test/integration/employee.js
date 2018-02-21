@@ -42,6 +42,29 @@ describe('(/employees) the employees API endpoint', function () {
     origin_location_id:  '1f162a10-9f67-4788-9eff-c1fea42fcc9b'
   };
 
+  var patient = {
+    code : 'bcdc2018',
+    patient_uuid : '81af634f-321a-40de-bc6f-ceb1167a9f65',
+    debtor_uuid : 'a11e6b7f-fbbb-432e-ac2a-5312a66dccf4',
+    date_embauche : embaucheDate,
+    nb_spouse : 0,
+    nb_enfant : 0,
+    grade_uuid : '9ee06e4a-7b59-48e6-812c-c0f8a00cf7d3',
+    daily_salary : 500,
+    bank : 'AIG',
+    bank_account : '1986O709',
+    email : 'me@info.com',
+    fonction_id : 1,
+    locked : 0,
+    service_id : 1,
+    is_medical : 0,
+    hospital_no : 'TP30',
+    creditor_group_uuid : 'b0fa5ed2-04f9-4cb3-92f7-61d6404696e7',
+    debtor_group_uuid : '4de0fe47-177f-4d30-b95f-cff8166400b4',
+    current_location_id: '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
+    origin_location_id:  '1f162a10-9f67-4788-9eff-c1fea42fcc9b'
+  };
+
   var updateEmployee = {
     code : 'x500',
     display_name : 'Charle Magne De France',
@@ -78,6 +101,15 @@ describe('(/employees) the employees API endpoint', function () {
       .catch(helpers.handler);
   });
 
+  it('POST /employees/patient_employee Register an employee from a patient', function () {
+    return agent.post('/employees/patient_employee')
+      .send(patient)
+      .then(function (res) {
+        helpers.api.created(res);
+      })
+      .catch(helpers.handler);
+  });
+
   it('POST /employee should return a 400 error for an empty object', function () {
     return agent.post('/employees')
       .send({})
@@ -90,12 +122,10 @@ describe('(/employees) the employees API endpoint', function () {
   it('GET /employees returns a list of all employees', function () {
     return agent.get('/employees')
       .then(function (res) {
-        helpers.api.listed(res, 2);
+        helpers.api.listed(res, 3);
       })
       .catch(helpers.handler);
   });
-
-
 
   it('GET /employees/:id should return a specific employee', function () {
     return agent.get('/employees/' + employee.id)
@@ -164,7 +194,7 @@ describe('(/employees) the employees API endpoint', function () {
     return agent.get('/employees')
       .query(conditions)
       .then(function (res) {
-        helpers.api.listed(res, 1);
+        helpers.api.listed(res, 2);
         expect(res.body[0].service_id).to.exist;
         expect(res.body[0].service_id).to.be.equals(conditions.service_id);
       })

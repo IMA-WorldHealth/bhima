@@ -480,6 +480,10 @@ function patientToEmployee(req, res, next) {
     text : `Debiteur [${employee.display_name}]`,
   };
 
+  if (employee.date_embauche) {
+    employee.date_embauche = new Date(employee.date_embauche);
+  }
+
   delete employee.debtor_group_uuid;
   delete employee.creditor_group_uuid;
   delete employee.current_location_id;
