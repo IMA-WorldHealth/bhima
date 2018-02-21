@@ -31,6 +31,7 @@ exports.statp = statp;
 exports.format = require('util').format;
 
 exports.roundDecimal = roundDecimal;
+exports.loadDictionary = loadDictionary;
 
 /**
  * @function take
@@ -190,4 +191,21 @@ function unlinkp(file) {
 function roundDecimal(number, precision = 4) {
   const base = Math.pow(10, precision);
   return Math.round(number * base) / base;
+}
+
+/**
+ * @function loadDictionary
+ *
+ * @description
+ * Either returns a cached version of the dictionary, or loads the dictionary
+ * into the cache and returns it.
+ *
+ * @param {String} key - either 'fr' or 'en'
+ */
+function loadDictionary(key, dictionaries = {}) {
+  const dictionary = dictionaries[key];
+  if (dictionary) { return dictionary; }
+
+  dictionaries[key] = require(`../../client/i18n/${key}.json`);
+  return dictionaries[key];
 }
