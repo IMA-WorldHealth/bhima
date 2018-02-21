@@ -6,18 +6,13 @@
 
   <ul data-action="{{rowRenderIndex}}"  class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
     <li>
-      <a data-method="edit" ui-sref="configurationRubric.edit({id : row.entity.id})" href>
+      <a data-method="edit" ui-sref="payroll.edit({id : row.entity.id})" href>
         <i class="fa fa-edit"></i> <span translate>FORM.BUTTONS.EDIT</span>
-      </a>
-    </li>
-    <li>
-      <a data-method="config" ui-sref="configurationRubric.config({id : row.entity.id})" href>
-        <i class="fa fa-cog"></i> <span translate>FORM.BUTTONS.CONFIGURE</span>
       </a>
     </li>
     <li class="divider"></li>
     <li>
-      <a data-method="delete" ng-click="grid.appScope.deleteConfig(row.entity)" href>
+      <a data-method="delete" ng-click="grid.appScope.deletePayrollConfiguration(row.entity)" href>
         <span class="text-danger">
           <i class="fa fa-trash"></i> <span translate>FORM.BUTTONS.DELETE</span>
         </span>

@@ -19,13 +19,12 @@ describe('(/payroll/account_configuration) The /payroll/account_configuration  A
     label : 'Account Configuration 2015',
   };
 
-  const NUM_RUBRICS = 0;
-  const NUM_CONFIG_RUBRICS = 0;
+  const NUM_ACCOUNTING = 1;
   
   it('GET /ACCOUNT_CONFIG returns a list of Account Configurations ', function () {
     return agent.get('/account_config')
       .then(function (res) {
-        helpers.api.listed(res, NUM_RUBRICS);
+        helpers.api.listed(res, NUM_ACCOUNTING);
       })
       .catch(helpers.handler);
   });
@@ -41,7 +40,7 @@ describe('(/payroll/account_configuration) The /payroll/account_configuration  A
   });
 
   it('GET /ACCOUNT_CONFIG/:ID should not be found for unknown id', function () {
-    return agent.get('/account_config/unknownRubric')
+    return agent.get('/account_config/unknownAccount')
       .then(function (res) {
         helpers.api.errored(res, 404);
       })

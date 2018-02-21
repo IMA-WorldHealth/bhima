@@ -766,4 +766,52 @@ INSERT INTO `rubric_payroll` (`id`, `label`, `abbr`, `is_employee`, `is_percent`
 (2, 'Impot Professionnel sur le Revenue', 'IPR', 1, 0, 1, 1, 0, 0, 300, 207, 1, NULL),
 (3, 'Institut National de Pratique Professionel', 'INPP', 0, 1, 1, 1, 0, 0, 172, 206, 0, 0.2),
 (4, 'INSS Code Part Ouvriere', 'INSS1', 1, 1, 1, 0, 0, 1, 300, 203, 0, 3.5),
-(5, 'Transport', 'TPR', 0, 0, 0, 0, 1, 0, 285, 204, 0, NULL);
+(5, 'Transport', 'TPR', 0, 0, 0, 0, 1, 0, 285, 204, 0, NULL),
+(6, 'Primes', 'PRI', 0, 0, 0, 0, 0, 0, 172, 204, 0, NULL);
+
+-- Configuration of Rubric
+INSERT INTO `config_rubric` (`id`, `label`) VALUES (1, 'Configuration des rubriques');
+
+-- Configuration of Rubric Items
+INSERT INTO `config_rubric_item` (`id`, `config_rubric_id`, `rubric_payroll_id`) VALUES
+(1, 1, 5),
+(2, 1, 2),
+(3, 1, 3),
+(4, 1, 6),
+(5, 1, 1),
+(6, 1, 4);
+
+-- Configuration of weekend
+INSERT INTO `weekend_config` (`id`, `label`) VALUES 
+(1, 'Configuration Semaine Anglaise'),
+(2, 'Configuration Semaine Normale');
+
+-- Days of weekend configuration
+INSERT INTO `config_week_days` (`id`, `indice`, `weekend_config_id`) VALUES 
+(1, 0, 1),
+(2, 6, 1),
+(3, 6, 2);
+
+-- Tax IPR
+INSERT INTO `taxe_ipr` (`id`, `label`, `description`, `currency_id`) VALUES 
+(1, 'Bareme IPR 2013', 'Barème Impôt Professionnel sur les revenus', 1);
+
+-- Tax IPR Configuration
+INSERT INTO `taxe_ipr_configuration` (`rate`, `tranche_annuelle_debut`, `tranche_annuelle_fin`, `tranche_mensuelle_debut`, `tranche_mensuelle_fin`, `ecart_annuel`, `ecart_mensuel`, `impot_annuel`, `impot_mensuel`, `cumul_annuel`, `cumul_mensuel`, `taxe_ipr_id`) VALUES 
+(0, 0, 524160, 0, 43680, 524160, 43680, 0, 0, 0, 0, 1),
+(15, 524160, 1428000, 43680, 119000, 903840, 75320, 135576, 11298, 135576, 11298, 1),
+(20, 1428000, 2700000, 119000, 225000, 1272000, 106000, 254400, 21200, 0, 0, 1),
+(22.5, 2700000, 4620000, 225000, 385000, 1920000, 160000, 432000, 36000, 0, 0, 1),
+(25, 4620000, 7260000, 385000, 605000, 2640000, 220000, 660000, 55000, 1481980, 123498, 1),
+(30, 7260000, 10260000, 605000, 855000, 3000000, 250000, 900000, 75000, 2381980, 198498, 1),
+(32.5, 10260000, 13908000, 855000, 1159000, 3648000, 304000, 1185600, 98800, 3567580, 297298, 1),
+(35, 13908000, 16824000, 1159000, 1402000, 2916000, 243000, 1020600, 85050, 4588180, 382348, 1),
+(37.5, 16824000, 22956000, 1402000, 1913000, 6132000, 511000, 2299500, 191625, 6887680, 573973, 1),
+(40, 22956000, 22956000, 1913000, 1913000, 0, 0, 0, 0, 6887680, 573973, 1);
+
+-- Configuration Accounting Payroll
+INSERT INTO `config_accounting` (`label`, `account_id`) VALUES ('Configuration Compte Rémunération', 220);
+
+-- Payroll Configuration Period
+INSERT INTO `payroll_configuration` (`id`, `label`, `dateFrom`, `dateTo`, `config_rubric_id`, `config_accounting_id`, `config_weekend_id`, `config_ipr_id`) VALUES 
+(1, 'Période de Paiement', '2018-02-01', '2018-02-28', 1, 1, 1, 1);

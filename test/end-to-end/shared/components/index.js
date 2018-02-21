@@ -46,4 +46,8 @@ module.exports = {
   multipleCashBoxSelect       : require('./bhMultipleCashBoxSelect'),
   employeeSelect              : require('./bhEmployeeSelect'),
   iprScale                    : require('./bhIprScale'),
+  iprConfigSelect             : require('./bhIprConfigSelect'),
+  rubricConfigSelect          : require('./bhRubricConfigSelect'),
+  accountConfigSelect         : require('./bhAccountConfigSelect'),
+  weekConfigSelect            : require('./bhWeekConfigSelect'), 
 };

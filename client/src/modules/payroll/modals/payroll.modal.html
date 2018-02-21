@@ -1,0 +1,90 @@
+<form name="PayrollModalForm" bh-submit="PayrollConfigModalCtrl.submit(PayrollModalForm)" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li ng-if="PayrollConfigModalCtrl.isCreating" class="title">
+        <span translate>TREE.PAYROLL_CONFIGURATION</span>
+        <label class="badge badge-success" translate>FORM.LABELS.CREATE</label>
+      </li>
+      <li ng-if="!PayrollConfigModalCtrl.isCreating" class="title">
+        <span translate>TREE.PAYROLL_CONFIGURATION</span>
+        <label class="badge badge-success" translate>FORM.LABELS.UPDATE</label>
+      </li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+    <div class="modal-body" ng-class="{ 'has-error' : PayrollModalForm.$submitted && PayrollModalForm.label.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.DESIGNATION</label>
+      <input name="label" ng-model="PayrollConfigModalCtrl.payroll.label" autocomplete="off" class="form-control" required>
+      <div class="help-block" ng-messages="PayrollModalForm.label.$error" ng-show="PayrollModalForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <div class="modal-body">
+      <bh-date-interval
+        label="FORM.LABELS.PERIODES"
+        date-id="periodes-date"
+        date-from="PayrollConfigModalCtrl.payroll.dateFrom"
+        date-to="PayrollConfigModalCtrl.payroll.dateTo"
+        required="true"
+        validation-trigger="PayrollModalForm.$submitted">
+      </bh-date-interval>
+    </div>
+
+    <div class="modal-body">
+      <bh-rubric-config-select
+        id="config_rubric_id"
+        config-rubric-id="PayrollConfigModalCtrl.payroll.config_rubric_id"
+        name="RubricConfigForm"
+        on-select-callback="PayrollConfigModalCtrl.onSelectRubricConfig(rubricConfig)"
+        required="true"
+        validation-trigger="PayrollModalForm.$submitted">
+      </bh-rubric-config-select>
+    </div>
+
+    <div class="modal-body">
+      <bh-account-config-select
+        id="config_accounting_id"
+        config-accounting-id="PayrollConfigModalCtrl.payroll.config_accounting_id"
+        name="AccountConfigForm"
+        on-select-callback="PayrollConfigModalCtrl.onSelectAccountConfig(accountConfig)"
+        required="true"
+        validation-trigger="PayrollModalForm.$submitted">
+      </bh-account-config-select>
+    </div>
+
+    <div class="modal-body">
+      <bh-weekend-config-select
+        id="config_weekend_id"
+        config-week-id="PayrollConfigModalCtrl.payroll.config_weekend_id"
+        name="WeekendConfigForm"
+        on-select-callback="PayrollConfigModalCtrl.onSelectWeekendConfig(weekendConfig)"
+        required="true"
+        validation-trigger="PayrollModalForm.$submitted">
+      </bh-weekend-config-select>
+    </div>
+
+    <div class="modal-body">
+      <bh-ipr-config-select
+        id="config_ipr_id"
+        config-ipr-id="PayrollConfigModalCtrl.payroll.config_ipr_id"
+        name="IprConfigForm"
+        on-select-callback="PayrollConfigModalCtrl.onSelectIprConfig(iprConfig)"
+        required="true"
+        validation-trigger="PayrollModalForm.$submitted">
+          <bh-clear on-clear="PayrollConfigModalCtrl.clear('config_ipr_id')"></bh-clear>
+      </bh-ipr-config-select>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button data-method="cancel" type="button" class="btn btn-default" ui-sref="payroll">
+      <span translate>FORM.BUTTONS.CANCEL</span>
+    </button>
+
+    <bh-loading-button loading-state="PayrollModalForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

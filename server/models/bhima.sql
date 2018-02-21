@@ -72,18 +72,20 @@ INSERT INTO unit VALUES
   (180, 'Income Expenses', 'TREE.INCOME_EXPENSE', 'The Report of income and expenses', 144, '/modules/finance/income_expense', '/reports/income_expense'),
   (181, 'Stock Report', 'TREE.STOCK_REPORT', 'The Report of inventories in stock', 144, '/modules/reports/inventory_report', '/reports/inventory_report'),
   (182, 'Stock File Report', 'TREE.STOCK_INVENTORY_REPORT', 'The Report of an inventory in stock', 144, '/modules/reports/inventory_file', '/reports/inventory_file'),
-  (183, 'Grade Management','TREE.GRADES','', 1,'/modules/grades/','/grades'),
+  (183, 'Grade Management','TREE.GRADES','', 57,'/modules/grades/','/grades'),
   (184, 'Job Title Management','TREE.PROFESSION','', 1,'/modules/functions/','/functions'),
   (185, 'Payroll Rubric Management','TREE.PAYROLL_RUB_MANAGEMENT','', 57,'/modules/payroll/rubrics','/payroll/rubrics'),
   (186, 'Holidays Management','TREE.HOLIDAYS_MANAGEMENT','Holidays Management',57,'/modules/holidays/','/holidays'),
-  (187, 'Offdays Management','TREE.OFFDAYS_MANAGEMENT','Offdays Management', 1,'/modules/offdays/','/offdays'),
+  (187, 'Offdays Management','TREE.OFFDAYS_MANAGEMENT','Offdays Management', 57,'/modules/offdays/','/offdays'),
   (188, 'Tax IPR Management','TREE.IPR_MANAGEMENT','IPR Management',57,'/modules/ipr_tax/','/ipr_tax'),
   (189, 'IPR Tax Configuration','TREE.IPR_TAX_CONFIGURATION','IPR Tax Configuration', 57,'/modules/ipr_tax/configuration','/ipr_tax/configuration'),
   (190, 'Payroll Rubric Configuration','TREE.PAYROLL_RUB_CONFIGURATION','',57,'/modules/payroll/rubric_configuration','/payroll/rubric_configuration'),
   (191, 'Account Configuration','TREE.PAYROLL_ACCOUNT_CONFIGURATION','Account Configuration', 57,'/modules/payroll/account_configuration','/payroll/account_configuration'),
   (192, 'Operating report', 'TREE.OPERATING_ACCOUNT', 'The Report of operating', 144, '/modules/reports/operating', '/reports/operating'),
-  (193, 'Weekend Configuration','TREE.WEEKEND_CONFIGURATION','Weekend Configuration', 57,'/modules/payroll/weekend_configuration','/payroll/weekend_configuration');
-  
+  (193, 'Weekend Configuration','TREE.WEEKEND_CONFIGURATION','Weekend Configuration', 57,'/modules/payroll/weekend_configuration','/payroll/weekend_configuration'),  
+  (194, 'Payroll Configuration','TREE.PAYROLL_CONFIGURATION','Payroll Configuration', 57,'/modules/payroll','/payroll');
+
+
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
   (1, 'income', 'ACCOUNT.TYPES.INCOME'),

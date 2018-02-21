@@ -4,6 +4,7 @@
             "ACTIONS": "Actions",
             "ADD": "Add",
             "ADD_ACCOUNT_CONFIGURATION": "Add Account Configuration",
+            "ADD_PAYROLL_CONFIGURATION": "Set up a payment period",
             "ADD_WEEKEND_CONFIGURATION": "Add Weekend Configuration",
             "BACK": "Back",
             "CANCEL": "Cancel",
@@ -56,6 +57,7 @@
             "CLEAR_GRID_CONFIGURATION": "Clear Grid Configuration",
             "SEARCH": "Search",
             "SELECT_INVOICES": "Select Invoices",
+            "SET_UP_PERIOD": "Set up a period",
             "SUBMIT": "Submit",
             "SUBMIT_CHANGES": "Submit Changes",
             "SUBMIT_CREDIT_NOTE": "Submit Credit Note",
@@ -184,6 +186,7 @@
         "LABELS" : {
             "ABBREVIATION": "Abbreviation",
             "ACCOUNT": "Account",
+            "ACCOUNT_CONFIGURATION" : "Account Setup",
             "ACCOUNT_EXTRACT": "Account Details",
             "ACCOUNT_NUMBER": "Account Number",
             "ACCOUNT_TITLE": "Account Text",
@@ -579,6 +582,7 @@
               "TUESDAY"   : "Tuesday",
               "WEDNESDAY" : "Wednesday"   
             },
+            "WEEKEND_CONFIGURATION" : "Weekend Configuration",
             "WEIGHT": "Weight",
             "WIDTH": "Width",
             "YES": "Yes",
@@ -649,6 +653,7 @@
             "EMPLOYEE": "Select an Employee",
             "ACCOUNT": "Select an Account",
             "ACCOUNT_TYPE": "Select Account Type",
+            "ACCOUNT_CONFIGURATION" : "Select account configuration",
             "BALANCE_SECTION": "Select Balance Sheet Section",
             "CASHBOX": "Select a cashbox",
             "COST_CENTER": "Select a Cost Center",
@@ -662,6 +667,7 @@
             "FISCAL_YEAR": "Select a Fiscal Year",
             "PROFESSION": "Select a Job Title",
             "GRADE": "Select a Grade",
+            "IPR_CONFIGURATION" : "Select IPR Configuration",
             "INVENTORY": "Select an Inventory",
             "INVENTORY_GROUP": "Select an Inventory Group",
             "INVENTORY_TYPE": "Select an Inventory Type",
@@ -680,6 +686,7 @@
             "REPORT_TYPE": "Select a Report Type",
             "RESULT_ACCOUNT_SCT": "Select a Result Account section",
             "ROOT_ACCOUNT": "Select a Root Account",
+            "RUBRIC_CONFIGURATION": "Select Rubrics Configuration",
             "SECTOR": "Select a sector",
             "SERVICE": "Select a Service",
             "SEX": "Select a Sex",
@@ -690,6 +697,7 @@
             "TYPE": "Select a Type",
             "USER": "Select User",
             "VILLAGE": "Select a Village/Township",
+            "WEEKEND_CONFIGURATION": "Select a weekend Configuration",
             "ZS": "Select a Health Zone"
         },
         "VALIDATION": {

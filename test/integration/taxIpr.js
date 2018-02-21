@@ -11,14 +11,12 @@ describe('(/ipr_tax) The /ipr_tax  API endpoint', function () {
   // IPR TAX we will add during this test suite.
 
   const iprTax = {
-    id            : 1,
     label         : 'IPR 2012',
     description   : 'Impot Professionnel sur le revenu 2012',
     currency_id   : 1,
   };
 
   const iprTaxConfig = {
-    id      : 1,
     rate    : 0,
     tranche_annuelle_debut    : 0,
     tranche_annuelle_fin      : 524160,
@@ -30,16 +28,15 @@ describe('(/ipr_tax) The /ipr_tax  API endpoint', function () {
     impot_mensuel             : 0,
     cumul_annuel              : 0,
     cumul_mensuel             : 0,
-    taxe_ipr_id               : 1,
   };
 
-  const NUM_OFFDAYS = 0;
-  const NUM_CONFIG = 1;
+  const NUM_IPRTAX = 1;
+  const NUM_CONFIG = 11;
 
   it('GET /IPRTAX returns a list of Ipr tax ', function () {
     return agent.get('/iprTax')
       .then(function (res) {
-        helpers.api.listed(res, NUM_OFFDAYS);
+        helpers.api.listed(res, NUM_IPRTAX);
       })
       .catch(helpers.handler);
   });
@@ -49,6 +46,7 @@ describe('(/ipr_tax) The /ipr_tax  API endpoint', function () {
       .send(iprTax)
       .then(function (res) {
         iprTax.id = res.body.id;
+        iprTaxConfig.taxe_ipr_id = res.body.id; 
         helpers.api.created(res);
       })
       .catch(helpers.handler);

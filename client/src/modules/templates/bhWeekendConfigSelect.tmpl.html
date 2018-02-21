@@ -1,0 +1,30 @@
+<div ng-form="{{ $ctrl.name }}" bh-weekend-config-select ng-model-options="{ updateOn: 'default' }">
+  <div
+    class="form-group"
+    ng-class="{ 'has-error' : $ctrl.validationTrigger && WeekendConfigForm.config_weekend_id.$invalid }">
+
+    <label class="control-label" translate>
+      {{ ::$ctrl.label }}
+    </label>
+    <ng-transclude></ng-transclude>
+        
+    <ui-select
+      name="config_weekend_id"
+      ng-model="$ctrl.configWeekId"
+      on-select="$ctrl.onSelect($item, $model)"
+      ng-required="$ctrl.required">
+      <ui-select-match placeholder="{{ ::'FORM.SELECT.WEEKEND_CONFIGURATION' | translate }}">
+        <span>{{$select.selected.label}}</span>
+      </ui-select-match>
+      <ui-select-choices
+        ui-select-focus-patch
+        repeat="weekendConfig.id as weekendConfig in $ctrl.weekendConfigs | filter: { 'label': $select.search }">        
+        <span ng-bind-html="weekendConfig.label | highlight:$select.search"></span>
+      </ui-select-choices>
+    </ui-select>
+
+    <div class="help-block" ng-messages="WeekendConfigForm.config_weekend_id.$error" ng-show="$ctrl.validationTrigger &&  WeekendConfigForm.config_weekend_id.$invalid">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+</div>
