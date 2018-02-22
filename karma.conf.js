@@ -15,6 +15,7 @@ module.exports = (config) => {
     files : [
       'bin/client/js/vendor.min.js',
       'client/vendor/angular-mocks/angular-mocks.js',
+      'test/client-unit/mocks/data.js',
       'bin/client/js/bhima.min.js',
       'bin/client/modules/**/*.html',
       { pattern : 'bin/client/i18n/locale/*.js', included : false, served : true },
@@ -54,7 +55,8 @@ module.exports = (config) => {
     colors : true,
 
     // level of logging
-    // possible values : config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
+    // possible values : config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN
+    // || config.LOG_INFO || config.LOG_DEBUG
     logLevel : config.LOG_INFO,
 
     // enable / disable watching file and executing tests whenever any file changes
@@ -67,6 +69,8 @@ module.exports = (config) => {
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
     singleRun : false,
+
+    captureConsole : true,
 
     // Concurrency level
     // how many browser should be started simultaneous

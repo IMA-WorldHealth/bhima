@@ -1,49 +1,43 @@
 /* global inject, expect */
-describe('SessionService', function () {
-  'use strict';
-
+/* eslint no-unused-expressions:off */
+describe('SessionService', () => {
   // shared services
   let Session;
   let rootScope;
   let httpBackend;
-
-  // data for login and such
-  const user = {
-    username : 'superuser',
-    password : 'superuser',
-    projectid: 1
-  };
-
-  const project = {
-    id: 1,
-    label : 'Test Project'
-  };
-
-  const enterprise = {
-    id : 1,
-    label : 'Test Enterprise'
-  };
+  let user;
+  let project;
+  let enterprise;
 
   // load bhima.services
-  beforeEach(
-    module('pascalprecht.translate', 'ngStorage', 'angularMoment', 'bhima.services')
-  );
+  beforeEach(module(
+    'pascalprecht.translate',
+    'ngStorage',
+    'angularMoment',
+    'bhima.services',
+    'bhima.mocks'
+  ));
 
   // bind the services as $injects
-  beforeEach(inject((_SessionService_, $rootScope, $httpBackend) => {
+  beforeEach(inject((_SessionService_, $rootScope, $httpBackend, _MockDataService_) => {
     Session = _SessionService_;
     rootScope = $rootScope;
     httpBackend = $httpBackend;
 
+    user = _MockDataService_.user();
+    project = _MockDataService_.project();
+    enterprise = _MockDataService_.enterprise();
+
+
     // mocked responses
     httpBackend.when('POST', '/auth/login')
-      .respond(200, { user : user, project : project, enterprise : enterprise });
+      .respond(200, { user, project, enterprise });
 
     httpBackend.when('GET', '/auth/logout')
       .respond(200);
 
     httpBackend.when('POST', '/auth/reload')
-      .respond(200, { user : user, project : project, enterprise : enterprise });
+      .respond(200, { user, project, enterprise });
   }));
 
   // make sure $http is clean after tests
@@ -61,7 +55,6 @@ describe('SessionService', function () {
   });
 
   it('destroy() destroys the session object', () => {
-
     // destroy the session's variables
     Session.destroy();
 
