@@ -10,7 +10,8 @@ describe('Employees Registry', () => {
   const path = '#!/employees';
   const employeeRegistryPage = new EmployeeRegistryPage();
   const searchModalPage = new SearchModalPage();
-  const employeeCount = 2;
+  const employeeCount = 3;
+  const employeeMaleCount = 2;
   const ONE_EMPLOYEE = 1;
   const parameters = {
     name : 'Dedrick',
@@ -62,7 +63,7 @@ describe('Employees Registry', () => {
     searchModalPage.selectSex('male');
     searchModalPage.submit();
 
-    employeeRegistryPage.employeeCount(employeeCount, `The number of filtered employee should be ${employeeCount}`);
+    employeeRegistryPage.employeeCount(employeeMaleCount, `The number of filtered employee should be ${employeeMaleCount}`);
     employeeRegistryPage.clearFilter();
     employeeRegistryPage.employeeCount(employeeCount, `The number of filtered employee should be ${employeeCount}`);
   });
@@ -75,7 +76,7 @@ describe('Employees Registry', () => {
     searchModalPage.selectGrade('1.1');
     searchModalPage.submit();
 
-    employeeRegistryPage.employeeCount(1, `The number of filtered employee should be 1`);
+    employeeRegistryPage.employeeCount(2, `The number of filtered employee should be 1`);
     employeeRegistryPage.clearFilter();
   });
 });

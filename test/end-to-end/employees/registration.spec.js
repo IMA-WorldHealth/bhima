@@ -25,6 +25,20 @@ describe('Employees', () => {
     hospital_no   : 'TP003',
   };
 
+  const patient = {
+    code           : 'HBB2018',
+    display_name   : 'Test 1 Patient',
+    date_embauche  : '30/06/1990',
+    nb_spouse      : 5,
+    nb_enfant      : 3,
+    bank           : 'BCDC_1909',
+    bank_account   : '00-99-100',
+    email          : 'me@info.com',
+    adresse        : '10011 B1-P455',
+    debtor_group   : 'NGO IMA World Health',
+    creditor_group : 'Employees',
+  };
+
   before(() => helpers.navigate(path));
 
   it('blocks invalid form submission with relevant error classes', () => {
@@ -57,6 +71,28 @@ describe('Employees', () => {
     registrationPage.setAddress(employee.adresse);
     registrationPage.setBank(employee.bank);
     registrationPage.setBankAccount(employee.bank_account);
+
+    registrationPage.createEmployee();
+    registrationPage.isEmpoyeeCreated(true);
+    browser.refresh();
+  });
+
+  it('Register an employee from a patient', () => {
+    registrationPage.findPatientName(patient.display_name);
+    registrationPage.setCode(patient.code);
+    registrationPage.setGrade('A1');
+    registrationPage.setCreditorGroup(patient.creditor_group);
+    registrationPage.setDebtorGroup(patient.debtor_group);
+    registrationPage.setHiringDate(patient.date_embauche);
+    registrationPage.setNumberSpouse(patient.nb_spouse);
+    registrationPage.setNumberChild(patient.nb_enfant);
+    registrationPage.setService('Administration');
+    registrationPage.setFonction('Infirmier');
+    registrationPage.setIsMedical();
+    registrationPage.setEmail(patient.email);
+    registrationPage.setAddress(patient.adresse);
+    registrationPage.setBank(patient.bank);
+    registrationPage.setBankAccount(patient.bank_account);
 
     registrationPage.createEmployee();
     registrationPage.isEmpoyeeCreated(true);
