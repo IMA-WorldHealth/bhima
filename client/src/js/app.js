@@ -23,7 +23,7 @@ function translateConfig($translateProvider) {
     suffix : '.json',
   });
 
-  $translateProvider.useSanitizeValueStrategy('sce');
+  $translateProvider.useSanitizeValueStrategy('escape');
 
   $translateProvider.preferredLanguage('fr');
 }
