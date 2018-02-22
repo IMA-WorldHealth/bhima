@@ -1,19 +1,19 @@
 angular.module('bhima.components')
   .component('bhFindPatient', {
-    controller: FindPatientComponent,
+    controller : FindPatientComponent,
     templateUrl : 'modules/templates/bhFindPatient.tmpl.html',
-    bindings: {
-      onSearchComplete:  '&',  // bind callback to call when data is available
-      onRegisterApi:     '&',  // expose force refresh API
-      required:          '<',  // bind the required (for ng-required)
-      validationTrigger: '<',  // bind validation trigger
-      suppressReset:     '<',   // bind the reset
-      label:             '@?',
-    }
+    bindings : {
+      onSearchComplete :  '&', // bind callback to call when data is available
+      onRegisterApi :     '&', // expose force refresh API
+      required :          '<', // bind the required (for ng-required)
+      validationTrigger : '<', // bind validation trigger
+      suppressReset :     '<', // bind the reset
+      label :             '@?',
+    },
   });
 
 FindPatientComponent.$inject = [
-  'PatientService', 'AppCache', 'NotifyService', 'SessionService', 'bhConstants'
+  'PatientService', 'AppCache', 'NotifyService', 'SessionService', 'bhConstants',
 ];
 
 /**
@@ -52,7 +52,7 @@ function FindPatientComponent(Patients, AppCache, Notify, SessionService, bhCons
     vm.suppressReset = vm.suppressReset || false;
 
     // translated label for the form input
-    vm.label = vm.label || 'FORM.LABELS.PATIENT';    
+    vm.label = vm.label || 'FORM.LABELS.PATIENT';
 
     /* supported searches: by name or by id */
     vm.options = {
@@ -75,7 +75,7 @@ function FindPatientComponent(Patients, AppCache, Notify, SessionService, bhCons
 
     // call the onRegisterApi() callback with the
     vm.onRegisterApi({
-      api : { reset: vm.reset, searchByUuid: searchByUuid },
+      api : { reset : vm.reset, searchByUuid },
     });
   };
 
@@ -127,7 +127,7 @@ function FindPatientComponent(Patients, AppCache, Notify, SessionService, bhCons
     options = {
       reference : isValidNumber ? [bhConstants.identifiers.PATIENT.key, SessionService.project.abbr, reference].join('.') : reference,
       detailed : 1,
-      limit     : 1
+      limit     : 1,
     };
 
     // query the patient's search endpoint for the
@@ -187,7 +187,7 @@ function FindPatientComponent(Patients, AppCache, Notify, SessionService, bhCons
    * between ID or Name option of search
    */
   function findBy(key) {
-    vm.selected  = vm.options[key];
+    vm.selected = vm.options[key];
     resetState();
 
     // save the option for later
@@ -237,7 +237,7 @@ function FindPatientComponent(Patients, AppCache, Notify, SessionService, bhCons
   function selectPatient(patient) {
     vm.showSearchView = false;
 
-    if (patient && typeof(patient) === 'object') {
+    if (patient && typeof (patient) === 'object') {
       vm.loadStatus = 'loaded';
       vm.patient = patient;
 
@@ -246,8 +246,7 @@ function FindPatientComponent(Patients, AppCache, Notify, SessionService, bhCons
       patient.sex = patient.sex.toUpperCase();
 
       // call the external function with patient
-      vm.onSearchComplete({ patient : patient });
-
+      vm.onSearchComplete({ patient });
     } else {
       vm.loadStatus = 'error';
     }
@@ -262,7 +261,6 @@ function FindPatientComponent(Patients, AppCache, Notify, SessionService, bhCons
    * Search by ID or by name
    */
   function loadDefaultOption(optionKey) {
-
     // default to findById
     optionKey = optionKey || 'findById';
 
@@ -280,7 +278,6 @@ function FindPatientComponent(Patients, AppCache, Notify, SessionService, bhCons
    * to do something.
    */
   function onKeyPress(event) {
-
     // submit the find-patient form
     if (event.keyCode === ENTER_KEY) {
       vm.submit();
