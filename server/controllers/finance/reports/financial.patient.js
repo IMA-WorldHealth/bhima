@@ -7,7 +7,6 @@
  * @requires Patients
  * @requires ReportManager
  */
-
 const _ = require('lodash');
 const q = require('q');
 const db = require('../../../lib/db');
@@ -38,7 +37,7 @@ function build(req, res, next) {
 
   return financialActivities(req.params.uuid)
     .then(result => report.render(result))
-    .then((result) => {
+    .then(result => {
       res.set(result.headers).send(result.report);
     })
     .catch(next)
@@ -54,6 +53,7 @@ function financialActivities(patientUuid) {
 
   const sql = `
     SELECT trans_id, entity_uuid, description, record_uuid, trans_date, debit, credit, document,
+      balance,
       (@cumsum := balance + @cumsum) AS cumsum
     FROM (
       SELECT p.trans_id, p.entity_uuid, p.description, p.record_uuid, p.trans_date,
@@ -90,7 +90,7 @@ function financialActivities(patientUuid) {
 
   return Patients.lookupPatient(patientUuid)
     .then((patient) => {
-      data.patient = patient;
+      _.extend(data, { patient });
       const buid = db.bid(patient.debtor_uuid);
       return q.all([
         db.exec(sql, [buid, buid]),
@@ -98,17 +98,14 @@ function financialActivities(patientUuid) {
       ]);
     })
     .spread((transactions, aggs) => {
-      let aggregates = aggs;
-      const patient = data.patient;
-
-      if (!aggregates.length) {
-        aggregates = { balance : 0 };
-      } else {
-        aggregates = aggregates[0];
+      if (!aggs.length) {
+        aggs.push({ balance : 0 });
       }
 
-      _.extend(aggregates, { hasDebitBalance : aggregates.balance > 0 });
-      return { transactions, patient, aggregates };
+      const [aggregates] = aggs;
+
+      _.extend(data, { transactions, aggregates });
+      return data;
     });
 }
 
