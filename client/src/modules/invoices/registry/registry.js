@@ -11,22 +11,19 @@ InvoiceRegistryController.$inject = [
 /**
  * Invoice Registry Controller
  *
- * @description This module is responsible for the management of Invoice Registry.
+ * @description
+ * This module is responsible for the management of Invoice Registry.
  */
 function InvoiceRegistryController(
   Invoices, bhConstants, Notify, Session, Receipt, uiGridConstants,
   ModalService, Cash, Sorting, Columns, GridState, $state, Modals, Receipts, util
 ) {
-  var vm = this;
+  const vm = this;
 
   // Background color for make the difference between the valid and cancel invoice
-  var reversedBackgroundColor = { 'background-color' : '#ffb3b3' };
-  var regularBackgroundColor = { 'background-color' : 'none' };
-  var cacheKey = 'invoice-grid';
-
-  var columnDefs;
-  var gridColumns;
-  var state;
+  const reversedBackgroundColor = { 'background-color' : '#ffb3b3' };
+  const regularBackgroundColor = { 'background-color' : 'none' };
+  const cacheKey = 'invoice-grid';
 
   vm.search = search;
   vm.creditNoteReceipt = Receipt.creditNote;
@@ -44,7 +41,7 @@ function InvoiceRegistryController(
   vm.loading = false;
   vm.enterprise = Session.enterprise;
 
-  columnDefs = [{
+  const columnDefs = [{
     field : 'reference',
     displayName : 'TABLE.COLUMNS.REFERENCE',
     headerCellFilter : 'translate',
@@ -98,12 +95,12 @@ function InvoiceRegistryController(
     enableSorting     : true,
     fastWatch         : true,
     flatEntityAccess  : true,
-    columnDefs        : columnDefs,
     rowTemplate       : '/modules/invoices/templates/grid.creditNote.tmpl.html',
+    columnDefs,
   };
 
-  gridColumns = new Columns(vm.uiGridOptions, cacheKey);
-  state = new GridState(vm.uiGridOptions, cacheKey);
+  const gridColumns = new Columns(vm.uiGridOptions, cacheKey);
+  const state = new GridState(vm.uiGridOptions, cacheKey);
 
   function handler(error) {
     vm.hasError = true;
@@ -117,38 +114,35 @@ function InvoiceRegistryController(
   // this function loads invoices from the database with search parameters
   // if passed in.
   function load(filters) {
-    var request;
-
     // flush error and loading states
     vm.hasError = false;
     toggleLoadingIndicator();
 
     // if we have search parameters and read invoices.
-    request = Invoices.read(null, filters);
+    const request = Invoices.read(null, filters);
 
     // hook the returned patients up to the grid.
     request
-      .then(function (invoices) {
-        invoices.forEach(function (invoice) {
+      .then(invoices => {
+        invoices.forEach(invoice => {
           invoice._backgroundColor = invoice.reversed ? reversedBackgroundColor : regularBackgroundColor;
-          invoice._is_cancelled = invoice.reversed;
         });
 
         // put data in the grid
         vm.uiGridOptions.data = invoices;
       })
       .catch(handler)
-      .finally(function () {
+      .finally(() => {
         toggleLoadingIndicator();
       });
   }
 
   // search and filter data in Invoice Registry
   function search() {
-    var filtersSnapshot = Invoices.filters.formatHTTP();
+    const filtersSnapshot = Invoices.filters.formatHTTP();
 
     Invoices.openSearchModal(filtersSnapshot)
-      .then(function (changes) {
+      .then(changes => {
         Invoices.filters.replaceFilters(changes);
 
         Invoices.cacheFilters();
@@ -195,7 +189,7 @@ function InvoiceRegistryController(
   // Call the opening of Modal
   function openModal(invoice) {
     Invoices.openCreditNoteModal(invoice)
-      .then(function (success) {
+      .then(success => {
         if (success) {
           Notify.success('FORM.INFO.TRANSACTION_REVER_SUCCESS');
           load(vm.filters);
@@ -206,13 +200,12 @@ function InvoiceRegistryController(
 
   // Function for Credit Note cancel all Invoice
   function creditNote(invoice) {
-    
     Cash.checkCashPayment(invoice.uuid)
-      .then(function (res) {
-        var numberPayment = res.length;
+      .then(res => {
+        const numberPayment = res.length;
         if (numberPayment > 0) {
           ModalService.confirm('FORM.DIALOGS.CONFIRM_CREDIT_NOTE')
-            .then(function (bool) {
+            .then(bool => {
               if (bool) {
                 openModal(invoice);
               }
@@ -226,7 +219,7 @@ function InvoiceRegistryController(
 
   function remove(entity) {
     Invoices.remove(entity.uuid)
-      .then(function () {
+      .then(() => {
         Notify.success('FORM.INFO.DELETE_RECORD_SUCCESS');
 
         // load() has it's own error handling.  The absence of return below is
@@ -239,7 +232,7 @@ function InvoiceRegistryController(
   // check if it is okay to remove the entity.
   function deleteInvoiceWithConfirmation(entity) {
     Modals.confirm('FORM.DIALOGS.CONFIRM_DELETE')
-      .then(function (isOk) {
+      .then(isOk => {
         if (isOk) { remove(entity); }
       });
   }

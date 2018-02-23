@@ -63,7 +63,7 @@ function VoucherRegistrySearch() {
   });
 
   it(`filtering by description should return ${NUM_DESCRIPTION_RECORDS} results`, () => {
-    modal.setDescription('REVERSAL');
+    modal.setDescription('CORRECTION');
     modal.submit();
 
     expectNumberOfGridRows(NUM_DESCRIPTION_RECORDS);

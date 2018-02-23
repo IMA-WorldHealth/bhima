@@ -1,78 +1,90 @@
 <form name="ModalForm" bh-submit="ModalCtrl.submit(ModalForm)" novalidate>
   <div class="modal-header">
-    <div class="bhima-title">
-      <ol class="headercrumb">
-        <li class="static">{{ "TREE.INVOICE_REGISTRY" | translate }}</li>
-        <li class="title">{{ "FORM.INFO.CREDIT_NOTE" | translate }}</li>
-      </ol>
-    </div>
+    <ol class="headercrumb">
+      <li class="static" translate>FORM.INFO.CREDIT_NOTE</li>
+      <li class="title">{{ ModalCtrl.invoice.reference }}</li>
+    </ol>
   </div>
 
   <div class="modal-body">
-    <legend class="text-right">
-      {{ "TABLE.COLUMNS.INVOICE_ID" | translate}} : {{ ModalCtrl.patientInvoice.reference }}
-      <small>{{ModalCtrl.patientInvoice.date | date}}</small>
-    </legend>
-    <fieldset>
-      <table class="table table-bordered table-condensed">
-        <thead>
-          <tr>
-            <th colspan="4">
-              {{ "TABLE.COLUMNS.PATIENT" | translate }}: {{ ModalCtrl.patientInvoice.patientName }}, ID : {{ ModalCtrl.patientInvoice.patientReference }}
-            </th>
-          </tr>
-          <tr>
-            <th>{{ "TABLE.COLUMNS.DESCRIPTION" | translate }}</th>
-            <th>{{ "TABLE.COLUMNS.QUANTITY" | translate }}</th>
-            <th>{{ "TABLE.COLUMNS.PRICE" | translate }}</th>
-            <th>{{ "TABLE.COLUMNS.COST" | translate }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr ng-repeat="item in ModalCtrl.patientInvoiceItems track by item.uuid">
-            <td>{{item.text}}</td>
-            <td class="text-right">{{item.quantity}}</td>
-            <td class="text-right">{{item.transaction_price | currency:ModalCtrl.patientInvoice.currency_id }}</td>
-            <td class="text-right">{{item.quantity * item.transaction_price | currency}}</td>
-          </tr>
-          <tr>
-            <td colspan="4"></td>
-          </tr>
-          <tr ng-show="ModalCtrl.billingAmount>0">
-              <td translate>FORM.LABELS.INVOICING_FEES</td>
-              <td class="text-right" colspan="3">+ {{ ModalCtrl.currencySymbol + ModalCtrl.billingAmount }}</td>
-          </tr>
-          <tr ng-show="ModalCtrl.subsidyAmount>0">
-            <td translate>FORM.LABELS.SUBSIDIES</td>
-            <td class="text-right" colspan="3">- {{ ModalCtrl.currencySymbol + ModalCtrl.subsidyAmount }}</td>
-          </tr>
-          
-          <tr>
-            <th colspan="3" class="text-right">{{ "TABLE.COLUMNS.TOTAL" | translate }}</th>
-            <td class="text-right">{{ ModalCtrl.patientInvoice.cost | currency:ModalCtrl.patientInvoice.currency_id }}</td>
-          </tr>
+    <div class="alert alert-warning">
+      <i class="fa fa-exclamation-triangle"></i>
+      <span translate translate-values="ModalCtrl.alertI18nValues" translate-sanitize-strategy="'sce'">PATIENT_INVOICE.ALERT_CREDIT_NOTE</span>
+    </div>
 
-          <tr>
-            <td colspan="4">
-              <div class="form-group" ng-class="{'has-error': ModalForm.$submitted && ModalForm.description.$invalid }">
-                <label class="control-label">{{ "TABLE.COLUMNS.DESCRIPTION" | translate }}</label>
-                <textarea
-                  ng-model="ModalCtrl.creditNote.description"
-                  name="description"
-                  class="form-control"
-                  ng-maxlength="ModalCtrl.maxLength"
-                  rows="4"
-                  required>
-                </textarea>
-                <div class="help-block" ng-messages="ModalForm.description.$error" ng-show="ModalForm.$submitted">
-                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-                </div>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </fieldset>
+    <!-- invoice metadata -->
+    <div class="row">
+      <div class="col-xs-6">
+        <dl>
+          <dt class="text-capitalize" translate>FORM.LABELS.PATIENT</dt>
+          <dd>
+            <span class="text-capitalize">{{ ModalCtrl.invoice.patientName }}</span>
+            (<a href ng-click="ModalCtrl.goToPatientLink()">{{ ModalCtrl.invoice.patientReference }}</a>)
+          </dd>
+        </dl>
+      </div>
+      <div class="col-xs-6">
+        <dl>
+          <dt translate>FORM.LABELS.BILLING_DATE</dt>
+          <dd>{{ ModalCtrl.invoice.date | date:ModalCtrl.Constants.dates.format }}</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- invoice's description -->
+    <dl>
+      <dt translate>FORM.LABELS.DESCRIPTION</dt>
+      <dd>{{ ModalCtrl.invoice.description }}</span></dd>
+    </dl>
+
+    <table class="table table-condensed">
+      <thead>
+        <tr>
+          <th translate>FORM.LABELS.INVENTORY_ITEM</th>
+          <th translate>TABLE.COLUMNS.QUANTITY</th>
+          <th translate>TABLE.COLUMNS.PRICE</th>
+          <th translate>TABLE.COLUMNS.COST</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="item in ModalCtrl.invoiceItems track by item.uuid">
+          <td>{{item.text}}</td>
+          <td class="text-right" style="vertical-align:middle;">{{item.quantity}}</td>
+          <td class="text-right" style="vertical-align:middle;">{{item.transaction_price | currency:ModalCtrl.invoice.currency_id }}</td>
+          <td class="text-right" style="vertical-align:middle;">{{item.quantity * item.transaction_price | currency:ModalCtrl.invoice.currency_id }}</td>
+        </tr>
+        <tr ng-show="ModalCtrl.hasExpandedFooter">
+          <td colspan="4"></td>
+        </tr>
+        <tr ng-show="ModalCtrl.hasBillingServices">
+          <td translate>FORM.LABELS.INVOICING_FEES</td>
+          <td class="text-right" colspan="3">+ {{ ModalCtrl.billingAmount | currency:ModalCtrl.invoice.currency_id }}</td>
+        </tr>
+        <tr ng-show="ModalCtrl.hasSubsidies">
+          <td translate>FORM.LABELS.SUBSIDIES</td>
+          <td class="text-right" colspan="3">- {{ ModalCtrl.subsidyAmount | currency:ModalCtrl.invoice.currency_id }}</td>
+        </tr>
+
+        <tr>
+          <th colspan="3" class="text-right" translate>TABLE.COLUMNS.TOTAL</th>
+          <td class="text-right">{{ ModalCtrl.invoice.cost | currency:ModalCtrl.invoice.currency_id }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="form-group" ng-class="{'has-error': ModalForm.$submitted && ModalForm.description.$invalid }">
+      <label class="control-label" translate>TABLE.COLUMNS.DESCRIPTION</label>
+      <textarea
+        ng-model="ModalCtrl.creditNote.description"
+        name="description"
+        class="form-control"
+        rows="3"
+        required>
+      </textarea>
+      <div class="help-block" ng-messages="ModalForm.description.$error" ng-show="ModalForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
   </div>
 
   <div class="modal-footer">
