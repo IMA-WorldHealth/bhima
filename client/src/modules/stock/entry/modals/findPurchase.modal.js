@@ -11,9 +11,7 @@ function StockFindPurchaseModalController(
   Instance, Purchase, Notify,
   uiGridConstants, Filtering, Receipts, bhConstants
 ) {
-  var vm = this;
-  var filtering;
-  var columns;
+  const vm = this;
 
   // global
   vm.selectedRow = {};
@@ -22,9 +20,9 @@ function StockFindPurchaseModalController(
   vm.filterEnabled = false;
   vm.gridOptions = { appScopeProvider : vm };
 
-  filtering = new Filtering(vm.gridOptions);
+  const filtering = new Filtering(vm.gridOptions);
 
-  columns = [
+  const columns = [
     {
       field            : 'reference',
       displayName      : 'TABLE.COLUMNS.REFERENCE',
@@ -93,7 +91,7 @@ function StockFindPurchaseModalController(
   /* ======================= End Grid ======================================== */
 
   Purchase.search({ detailed : 1, status_id : [2, 4] })
-    .then(function fillGrid(purchases) {
+    .then(purchases => {
       vm.gridOptions.data = purchases;
     })
     .catch(Notify.errorHandler);
@@ -103,10 +101,16 @@ function StockFindPurchaseModalController(
     if (!vm.selectedRow) { return null; }
 
     return Purchase.stockBalance(vm.selectedRow.uuid)
-      .then(function close(purchase) {
-        Instance.close(purchase);
-      })
+      .then(handlePurchaseInformation)
       .catch(Notify.errorHandler);
+  }
+
+  // display the supplier name
+  function handlePurchaseInformation(purchases) {
+    purchases.forEach(purchase => {
+      purchase.display_name = purchase.supplier_name;
+    });
+    Instance.close(purchases);
   }
 
   // cancel

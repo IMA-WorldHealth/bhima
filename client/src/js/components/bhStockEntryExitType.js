@@ -1,15 +1,15 @@
 angular.module('bhima.components')
-    .component('bhStockEntryExitType', {
-      templateUrl : 'modules/templates/bhStockEntryExitType.tmpl.html',
-      controller : StockEntryExitTypeController,
-      bindings : {
-        onEntryExitTypeSelectCallback : '&',
-        reference : '<?',
-        displayName : '<?',
-        isEntry : '@',
-        depot : '<?',
-      },
-    });
+  .component('bhStockEntryExitType', {
+    templateUrl : 'modules/templates/bhStockEntryExitType.tmpl.html',
+    controller : StockEntryExitTypeController,
+    bindings : {
+      onEntryExitTypeSelectCallback : '&',
+      reference : '<?',
+      displayName : '<?',
+      isEntry : '@',
+      depot : '<?',
+    },
+  });
 
 StockEntryExitTypeController.$inject = ['StockEntryExitTypeService'];
 
@@ -17,7 +17,7 @@ StockEntryExitTypeController.$inject = ['StockEntryExitTypeService'];
  * Stock Entry Exit Type component
  */
 function StockEntryExitTypeController(StockEntryExitType) {
-  var $ctrl = this;
+  const $ctrl = this;
 
   $ctrl.$onInit = function onInit() {
     $ctrl.isEntry = $ctrl.isEntry === 'true';
@@ -31,14 +31,12 @@ function StockEntryExitTypeController(StockEntryExitType) {
     }
   };
 
-  $ctrl.display = function () {
-    var list;
+  $ctrl.display = () => {
+    const list = [];
 
     if ($ctrl.isEntry === true) {
       return $ctrl.reference || '';
     }
-
-    list = [];
 
     if ($ctrl.reference) {
       list.push($ctrl.reference);
@@ -51,9 +49,9 @@ function StockEntryExitTypeController(StockEntryExitType) {
     return list.join(' - ');
   };
 
-  $ctrl.selectEntryExitType = function (type) {
+  $ctrl.selectEntryExitType = (type) => {
     $ctrl.selectedEntryExitType = type;
-    $ctrl.onEntryExitTypeSelectCallback({ type : type });
+    $ctrl.onEntryExitTypeSelectCallback({ type });
   };
 
   // reload entry/exit types

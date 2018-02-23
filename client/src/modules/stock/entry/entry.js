@@ -19,11 +19,10 @@ function StockEntryController(
   Depots, Inventory, Notify, Session, util, bhConstants, ReceiptModal, Purchase,
   StockForm, Stock, StockModal, uiGridConstants, Store, AppCache, Uuid, $translate
 ) {
-  var vm = this;
-  var inventoryStore;
-  var mapEntry;
-  var gridOptions;
-  var cache = new AppCache('StockEntry');
+  const vm = this;
+  const cache = new AppCache('StockEntry');
+
+  let inventoryStore;
 
   vm.stockForm = new StockForm('StockEntry');
   vm.movement = {};
@@ -45,14 +44,14 @@ function StockEntryController(
   vm.submit = submit;
   vm.changeDepot = changeDepot;
 
-  mapEntry = {
+  const mapEntry = {
     purchase : { find : findPurchase, submit : submitPurchase },
     donation : { find : handleDonationSelection, submit : submitDonation },
     integration : { find : handleIntegrationSelection, submit : submitIntegration },
     transfer_reception : { find : findTransfer, submit : submitTransferReception },
   };
 
-  gridOptions = {
+  const gridOptions = {
     appScopeProvider : vm,
     enableSorting : false,
     enableColumnMenus : false,
@@ -156,7 +155,7 @@ function StockEntryController(
     // make sure that the depot is loaded if it doesn't exist at startup.
     if (cache.depotUuid) {
       Depots.read(cache.depotUuid)
-        .then(function assignDepot(depot) {
+        .then((depot) => {
           vm.depot = depot;
           setupStock();
         });
@@ -171,7 +170,7 @@ function StockEntryController(
     // we will load only purchasable items
 
     Inventory.read(null, { consumable : 1 })
-      .then(function assignInventories(inventories) {
+      .then((inventories) => {
         vm.inventories = inventories;
         inventoryStore = new Store({ identifier : 'uuid', data : inventories });
       })
@@ -203,11 +202,11 @@ function StockEntryController(
 
   // pop up  a modal to let user find a purchase order
   function findPurchase() {
-    var description = $translate.instant('STOCK.PURCHASE_DESCRIPTION');
+    const description = $translate.instant('STOCK.PURCHASE_DESCRIPTION');
     initSelectedEntity(description);
 
     StockModal.openFindPurchase()
-      .then(function handlePurchase(purchase) {
+      .then((purchase) => {
         handleSelectedEntity(purchase, 'purchase');
         setSelectedEntity(vm.movement.entity.instance);
       })
@@ -216,11 +215,11 @@ function StockEntryController(
 
   // find transfer
   function findTransfer() {
-    var description = $translate.instant('STOCK.RECEPTION_DESCRIPTION');
+    const description = $translate.instant('STOCK.RECEPTION_DESCRIPTION');
     initSelectedEntity(description);
 
     StockModal.openFindTansfer({ depot_uuid : vm.depot.uuid })
-      .then(function handleTransfer(transfers) {
+      .then((transfers) => {
         if (!transfers) {
           resetSelectedEntity();
           return;
@@ -234,7 +233,7 @@ function StockEntryController(
   }
 
   function handleIntegrationSelection() {
-    var description = $translate.instant('STOCK.RECEPTION_INTEGRATION');
+    const description = $translate.instant('STOCK.RECEPTION_INTEGRATION');
     initSelectedEntity(description);
     if (vm.gridOptions.data.length === 0) {
       vm.addItems(1);
@@ -242,7 +241,7 @@ function StockEntryController(
   }
 
   function handleDonationSelection() {
-    var description = $translate.instant('STOCK.RECEPTION_DONATION');
+    const description = $translate.instant('STOCK.RECEPTION_DONATION');
     initSelectedEntity(description);
     if (vm.gridOptions.data.length === 0) {
       vm.addItems(1);
@@ -259,8 +258,8 @@ function StockEntryController(
     // adding items.length line in the stockForm store, which will be reflected to the grid
     vm.stockForm.addItems(items.length);
 
-    vm.stockForm.store.data.forEach(function handleStockStoreData(item, index) {
-      var inventory = inventoryStore.get(items[index].inventory_uuid);
+    vm.stockForm.store.data.forEach((item, index) => {
+      const inventory = inventoryStore.get(items[index].inventory_uuid);
 
       item.code = inventory.code;
       item.inventory_uuid = inventory.uuid;
@@ -291,22 +290,22 @@ function StockEntryController(
   }
 
   function setSelectedEntity(entity) {
-    var uniformEntity = Stock.uniformSelectedEntity(entity);
+    const uniformEntity = Stock.uniformSelectedEntity(entity);
     vm.reference = uniformEntity.reference;
     vm.displayName = uniformEntity.displayName;
   }
 
   function setLots(stockLine) {
     // Additionnal information for an inventory Group
-    var inventory = inventoryStore.get(stockLine.inventory_uuid);
+    const inventory = inventoryStore.get(stockLine.inventory_uuid);
     stockLine.expires = inventory.expires;
     stockLine.unique_item = inventory.unique_item;
 
     StockModal.openDefineLots({
-      stockLine : stockLine,
+      stockLine,
       entry_type : vm.movement.entry_type,
     })
-      .then(function handleStockLots(res) {
+      .then((res) => {
         if (!res) { return; }
         stockLine.lots = res.lots;
         stockLine.givenQuantity = res.quantity;
@@ -317,9 +316,7 @@ function StockEntryController(
 
   // validation
   function hasValidInput() {
-    return vm.stockForm.store.data.every(function checkLot(line) {
-      return line.lots.length > 0;
-    });
+    return vm.stockForm.store.data.every(line => line.lots.length > 0);
   }
 
   function submit(form) {
@@ -333,7 +330,7 @@ function StockEntryController(
   }
 
   function submitPurchase() {
-    var movement = {
+    const movement = {
       depot_uuid : vm.depot.uuid,
       entity_uuid : vm.movement.entity.uuid,
       date : vm.movement.date,
@@ -345,11 +342,11 @@ function StockEntryController(
     movement.lots = Stock.processLotsFromStore(vm.stockForm.store.data, vm.movement.entity.uuid);
 
     Stock.stocks.create(movement)
-      .then(function updatePurchaseStatus(document) {
+      .then((document) => {
         vm.document = document;
         return Purchase.stockStatus(vm.movement.entity.uuid);
       })
-      .then(function handleReceipt() {
+      .then(() => {
         vm.stockForm.store.clear();
         vm.movement = {};
         ReceiptModal.stockEntryPurchaseReceipt(vm.document.uuid, bhConstants.flux.FROM_PURCHASE);
@@ -359,7 +356,7 @@ function StockEntryController(
 
 
   function submitIntegration() {
-    var movement = {
+    const movement = {
       depot_uuid : vm.depot.uuid,
       entity_uuid : null,
       date : vm.movement.date,
@@ -368,13 +365,13 @@ function StockEntryController(
       user_id : vm.stockForm.details.user_id,
     };
 
-    var entry = {
+    const entry = {
       lots : Stock.processLotsFromStore(vm.stockForm.store.data, movement.entity_uuid),
-      movement : movement,
+      movement,
     };
 
     Stock.integration.create(entry)
-      .then(function handleReceipt(document) {
+      .then((document) => {
         vm.stockForm.store.clear();
         vm.movement = {};
         ReceiptModal.stockEntryIntegrationReceipt(document.uuid, bhConstants.flux.FROM_INTEGRATION);
@@ -383,7 +380,7 @@ function StockEntryController(
   }
 
   function submitDonation() {
-    var movement = {
+    const movement = {
       depot_uuid : vm.depot.uuid,
       entity_uuid : null,
       date : vm.movement.date,
@@ -402,7 +399,7 @@ function StockEntryController(
     movement.lots = Stock.processLotsFromStore(vm.stockForm.store.data, Uuid());
 
     return Stock.stocks.create(movement)
-      .then(function handleReceipt(document) {
+      .then((document) => {
         vm.stockForm.store.clear();
         vm.movement = {};
         ReceiptModal.stockEntryDonationReceipt(document.uuid, bhConstants.flux.FROM_DONATION);
@@ -412,7 +409,7 @@ function StockEntryController(
 
   // submit transfer reception
   function submitTransferReception() {
-    var movement = {
+    const movement = {
       from_depot : vm.movement.entity.instance.depot_uuid,
       to_depot : vm.depot.uuid,
       document_uuid : vm.movement.entity.instance.document_uuid,
@@ -425,7 +422,7 @@ function StockEntryController(
     movement.lots = Stock.processLotsFromStore(vm.stockForm.store.data, null);
 
     return Stock.movements.create(movement)
-      .then(function handleReceipt(document) {
+      .then((document) => {
         vm.stockForm.store.clear();
         vm.movement = {};
         ReceiptModal.stockEntryDepotReceipt(document.uuid, true);
@@ -435,14 +432,14 @@ function StockEntryController(
 
   function changeDepot() {
     return Depots.openSelectionModal(vm.depot)
-      .then(function handleDepotSwitch(depot) {
+      .then((depot) => {
         vm.depot = depot;
         cache.depotUuid = vm.depot.uuid;
       });
   }
 
   function buildStockLine(line) {
-    var inventory = inventoryStore.get(line.inventory_uuid);
+    const inventory = inventoryStore.get(line.inventory_uuid);
     line.code = inventory.code;
     line.label = inventory.label;
     line.unit_cost = inventory.price;
