@@ -10,7 +10,6 @@
     "test:integration": "./sh/integration-tests.sh",
     "test:reports": "./sh/report-tests.sh",
     "test:ends": "./sh/test-ends.sh",
-    "test:lint": "./sh/lint.sh",
     "test:client-unit": "./node_modules/.bin/karma start --single-run --no-auto-watch --concurrency 1 karma.conf.js",
     "test:server-unit": "./node_modules/.bin/mocha --recursive --exit test/server-unit",
     "build": "./node_modules/.bin/gulp build",

@@ -16,12 +16,6 @@ function endfold {
   fi
 }
 
-
-# run lint tests
-startfold "Running Lint Tests..." "lint";
-./sh/lint.sh
-endfold "lint" ;
-
 # run integration tests
 startfold "Running Integration Tests..." "test-integration";
 ./sh/integration-tests.sh
