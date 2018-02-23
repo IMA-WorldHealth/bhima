@@ -128,8 +128,9 @@ function constantConfig() {
       { id : 2, label : 'FORM.LABELS.WEEK_DAYS.TUESDAY' },
       { id : 3, label : 'FORM.LABELS.WEEK_DAYS.WEDNESDAY' },
       { id : 4, label : 'FORM.LABELS.WEEK_DAYS.THURSDAY' },
-      { id : 5, label : 'FORM.LABELS.WEEK_DAYS.FRIDAY'},
-      { id : 6, label : 'FORM.LABELS.WEEK_DAYS.SATURDAY'}],
+      { id : 5, label : 'FORM.LABELS.WEEK_DAYS.FRIDAY' },
+      { id : 6, label : 'FORM.LABELS.WEEK_DAYS.SATURDAY' },
+    ],
   };
 }
 

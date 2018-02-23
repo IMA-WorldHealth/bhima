@@ -21,6 +21,7 @@
         "STAT_PAID": "Payés",
         "STAT_NOT_PAID": "En attente de paiement",
         "SUBSIDY_BREAKDOWN": "Subvention disfonctionnelle",
-        "SUCCESS": "Facture des patients enregistrés avec succès."
+        "SUCCESS": "Facture des patients enregistrés avec succès.",
+        "ALERT_CREDIT_NOTE" : "Vous annulez la facture <strong>{{ invoiceReference }}</strong> de <u><span class='text-capitalize'>{{ patientName }}</span> ({{ patientReference }})</u> avec un valeur total de {{ cost }}. Veuillez vous assurer que les informations ci-dessous sont correctes. Cette action n'est pas réversible."
     }
 }
