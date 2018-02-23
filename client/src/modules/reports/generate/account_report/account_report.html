@@ -43,55 +43,12 @@
               validation-trigger="ConfigForm.$submitted">
             </bh-date-interval>
 
-            <bh-hidden-field
-              show-text="REPORT.OPTIONS.MORE_OPTIONS"
-              hide-text="REPORT.OPTIONS.MORE_OPTIONS">
-
-              <div class="radio" ng-class="{ 'has-error': ConfigForm.$submitted && ConfigForm.useOriginalTransactionCurrency.$invalid }">
-                <p class="control-label" style="margin-bottom:5px;">
-                  <strong translate>REPORT.OPTIONS.USE_ORIGINAL_TRANSACTION_CURRENCY</strong>
-                </p>
-
-                <label
-                  class="radio-inline"
-                  translate-attr="{ title : 'FORM.LABELS.YES' }">
-                  <input
-                    name="useOriginalTransactionCurrency"
-                    type="radio"
-                    ng-model="ReportConfigCtrl.reportDetails.useOriginalTransactionCurrency"
-                    ng-value="true"
-                    required>
-                  <span translate>FORM.LABELS.YES</span>
-                </label>
-
-                <label
-                  class="radio-inline"
-                  translate-attr="{ title : 'FORM.LABELS.NO' }">
-                  <input
-                    name="useOriginalTransactionCurrency"
-                    type="radio"
-                    ng-model="ReportConfigCtrl.reportDetails.useOriginalTransactionCurrency"
-                    ng-value="false"
-                    required>
-                  <span translate>FORM.LABELS.NO</span>
-                </label>
-
-                <div class="help-block" ng-messages="ConfigForm.$error" ng-show="ConfigForm.$submitted">
-                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-                </div>
-
-                <p class="help-block" translate>REPORT.OPTIONS.USE_ORIGINAL_TRANSACTION_CURRENCY_HELP</p>
-              </div>
-
-              <!-- the currency to be used in the footer -->
-              <bh-currency-select
-                label="REPORT.OPTIONS.TOTALS_CURRENCY"
-                currency-id="ReportConfigCtrl.reportDetails.currency_id"
-                on-change="ReportConfigCtrl.setCurrency(currency)"
-                validation-trigger="ConfigForm.$submitted">
-              </bh-currency-select>
-              <p class="help-block" translate>REPORT.OPTIONS.TOTALS_CURRENCY_HELP</p>
-            </bh-hidden-field>
+            <!-- the currency to be used in the footer -->
+            <bh-currency-select
+              currency-id="ReportConfigCtrl.reportDetails.currency_id"
+              on-change="ReportConfigCtrl.setCurrency(currency)"
+              validation-trigger="ConfigForm.$submitted">
+            </bh-currency-select>
 
             <bh-loading-button loading-state="ConfigForm.$loading">
               <span translate>REPORT.UTIL.PREVIEW</span>

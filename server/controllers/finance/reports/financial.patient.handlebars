@@ -29,9 +29,9 @@
             <td style="max-width : 200px; white-space : nowrap; overflow : hidden; text-overflow : ellipsis;" title="{{this.description}}">{{this.description}}</td>
             <td class="text-right {{#if this.credit}}text-danger{{/if}}">
               {{#if this.credit}}
-                ({{currency this.credit ../metadata.enterprise.currency_id}})
+                ({{currency this.exchangedCredit ../params.currency_id}})
               {{else}}
-                {{currency this.debit ../metadata.enterprise.currency_id}}
+                {{currency this.exchangedDebit ../params.enterprise.currency_id}}
               {{/if}}
             </td>
             <td class="text-right">{{currency this.cumsum ../metadata.enterprise.currency_id}} </td>
