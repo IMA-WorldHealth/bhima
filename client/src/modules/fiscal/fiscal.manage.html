@@ -54,14 +54,15 @@
           </div>
         </div>
 
-        <div class="panel-footer text-right">
+        <div class="panel-footer text-right" data-modal-footer>
           <bh-loading-button loading-state="FiscalForm.$loading">
             <span translate>FORM.BUTTONS.SUBMIT</span>
           </bh-loading-button>
         </div>
       </div>
     </div>
-
+  </div>
+  <div class="row">
     <div ng-if="FiscalManageCtrl.isUpdateState" class="col-md-12">
       <p><strong translate>FORM.INFO.OTHER_ACTIONS</strong></p>
       <p>
@@ -72,16 +73,16 @@
         </a>
 
         <!-- opening balance  -->
-        <button type="button" class="btn btn-default" data-action="opening-balance" ui-sref="fiscal.openingBalance({ id: FiscalManageCtrl.fiscal.id })">
+        <a class="btn btn-default" data-action="opening-balance" ui-sref="fiscal.openingBalance({ id: FiscalManageCtrl.fiscal.id })">
           <i class="fa fa-balance-scale"></i>
           <span translate>FORM.INFO.VIEW_BEGINNING_BALANCE</span>
-        </button>
+        </a>
 
         <!-- closing balance  -->
-        <button ng-disabled="!FiscalManageCtrl.fiscal.locked" type="button" class="btn btn-default" data-action="closing-balance" ui-sref="fiscal.closingBalance({ id: FiscalManageCtrl.fiscal.id })">
+        <a class="btn btn-default" data-action="closing-balance" ui-sref="fiscal.closingBalance({ id: FiscalManageCtrl.fiscal.id })" ng-disabled="!FiscalManageCtrl.fiscal.locked" >
           <i class="fa fa-adjust"></i>
           <span translate>FORM.INFO.VIEW_CLOSING_BALANCE</span>
-        </button>
+        </a>
       </p>
     </div>
   </div>

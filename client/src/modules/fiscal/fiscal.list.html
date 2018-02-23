@@ -24,11 +24,11 @@
 
               <span class="pull-right">
                 <a style="text-decoration: none; " href data-method="update" ui-sref="fiscal.update({id : fiscal.id})">
-                  <span class="fa fa-pencil-square-o"></span>
+                  <span class="fa fa-pencil-square-o"></span> <span class="hidden-xs" translate>FORM.BUTTONS.EDIT</span>
                 </a>
 
                 <a href data-method="delete" ng-click="FiscalCtrl.del(fiscal)" class="text-danger">
-                  <span class="fa fa-trash-o"></span>
+                  <span class="fa fa-trash-o"></span> <span class="hidden-xs" translate>FORM.BUTTONS.DELETE</span>
                 </a>
               </span>
             </h4>
@@ -40,9 +40,9 @@
             </div>
 
             <div class="row text-lowercase">
-              <i class="fa fa-clock-o"></i> {{ "FORM.INFO.CREATED" | translate }} <span am-time-ago="fiscal.created_at"></span>
+              <i class="fa fa-clock-o"></i> <span translate>FORM.INFO.CREATED</span> <span am-time-ago="fiscal.created_at"></span>
               <span translate> FORM.INFO.BY </span>
-              <a href="">
+              <a href="" ui-sref="users.list({ id : fiscal.user_id })" class="text-capitalize">
                 <i class="fa fa-user"></i> {{ fiscal.display_name }}
               </a>
             </div>
@@ -57,14 +57,13 @@
             <span class="fa fa-circle-o-notch fa-spin"></span>
             <span translate>TABLE.COLUMNS.LOADING</span>
           </span>
-          <p
-            ng-show="(FiscalCtrl.fiscalYears.length == 0) && !FiscalCtrl.loadingError" 
+          <p ng-show="(FiscalCtrl.fiscalYears.length == 0) && !FiscalCtrl.loadingError"
             class="text-center text-danger" translate>
             FORM.LABELS.NO_FISCALYEAR_REGISTERED
           </p>
         </p>
       </div>
-  
+
       <div>
         <uib-pagination
           total-items="FiscalCtrl.fiscalYears.length"
@@ -80,4 +79,4 @@
     </div>
   </div>
 </div>
- 
+

@@ -184,7 +184,7 @@ function unlinkp(file) {
 }
 
 /**
- * arround a decimal
+ * Round a decimal to a certain precision
  * @param {*} number
  * @param {*} precision
  */

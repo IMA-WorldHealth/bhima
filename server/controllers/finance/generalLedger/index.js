@@ -3,12 +3,15 @@
  *
  * @module finance/generalLedger/
  *
- * @description This module is responsible for handling VIEWS (different ways of seeing data) operations
- * against the general ledger table.
+ * @description
+ * This module is responsible for producing the general ledger, which consists
+ * of a giant matrix of the balances of each account for each period in a fiscal
+ * year.  The fiscal year must be provided by the client.
  *
  * @requires lodash
  * @requires lib/db
  * @requires FilterParser
+ * @requires lib/util
  */
 
 
@@ -16,6 +19,7 @@
 const db = require('../../../lib/db');
 const FilterParser = require('../../../lib/filter');
 const Tree = require('../../../lib/Tree');
+const util = require('../../../lib/util');
 
 // expose to the api
 exports.list = list;
@@ -35,7 +39,7 @@ exports.getAccountTotalsMatrix = getAccountTotalsMatrix;
  */
 function find(options) {
   const filters = new FilterParser(options, {
-    tableAlias: 'gl',
+    tableAlias : 'gl',
   });
 
   const sql = `
@@ -160,8 +164,16 @@ function getAccountTotalsMatrix(fiscalYearId) {
       const accountsTree = new Tree(accounts);
 
       // compute the values of the title accounts as the values of their children
-      accountsTree.sumOnProperty('balance');
-      PERIODS.forEach(number => accountsTree.sumOnProperty(`balance${number}`));
+      // takes O(n * m) time, where n is the number of nodes and m is the number
+      // of periods
+      const balanceKeys = ['balance', ...PERIODS.map(p => `balance${p}`)];
+      const bulkSumFn = (currentNode, parentNode) => {
+        balanceKeys.forEach(key => {
+          parentNode[key] = (parentNode[key] || 0) + currentNode[key];
+        });
+      };
+
+      accountsTree.walk(bulkSumFn, false);
 
       // prune empty rows
       return accountsTree.prune(isEmptyRow);
