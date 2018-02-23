@@ -27,7 +27,7 @@ echo "[test] Spawned node process $NODE_PID."
 
 # make sure we have enough time for the server to start
 echo "[test] Sleeping for $TIMEOUT seconds."
-sleep $TIMEOUT
+sleep "$TIMEOUT"
 
 echo "[test] running tests using mocha"
 
