@@ -198,33 +198,36 @@ function create(req, res, next) {
     .then((rows) => {
       const datePurchase = new Date(data.date);
 
-      const transaction = db.transaction();
+      const transactionWrapper = db.transaction();
       rows.forEach((row) => {
         /**
-          * Normally purchase interval is calculated by deducting the gap in months of 
-          * all purchase orders for a product, this form is also very expensive in terms of resources, 
-          * so let's store the date of the last orders and store the results in months in the column Purchase interval, 
+          * Normally purchase interval is calculated by deducting the gap in months of
+          * all purchase orders for a product, this form is also very expensive in terms of resources,
+          * so let's store the date of the last orders and store the results in months in the column Purchase interval,
           * and in the following we would calculate each time the average value Multiply by number of old orders minus
-          * one Add up by the period between the last purchase Order and the date of the current purchase order 
+          * one Add up by the period between the last purchase Order and the date of the current purchase order
           * and divide the results by the number of old orders
         */
-        
+
         let purchaseInterval = row.purchase_interval;
-        let numPurchase = row.num_purchase + 1;
+        const numPurchase = row.num_purchase + 1;
         if (row.last_purchase) {
-          let diff = moment(datePurchase).diff(moment(row.last_purchase));
-          let duration = moment.duration(diff, 'milliseconds');
-          let durationMonth = duration.asMonths();
+          const diff = moment(datePurchase).diff(moment(row.last_purchase));
+          const duration = moment.duration(diff, 'milliseconds');
+          const durationMonth = duration.asMonths();
 
           purchaseInterval = (((row.purchase_interval * (row.num_purchase - 1)) + durationMonth) / row.num_purchase);
         }
 
-        transaction.addQuery('UPDATE inventory SET purchase_interval = ?, last_purchase = ?, num_purchase = ?  WHERE uuid = ?', [purchaseInterval, datePurchase, numPurchase, db.bid(row.inventory_uuid)]);
+        transactionWrapper.addQuery(
+          'UPDATE inventory SET purchase_interval = ?, last_purchase = ?, num_purchase = ?  WHERE uuid = ?',
+          [purchaseInterval, datePurchase, numPurchase, db.bid(row.inventory_uuid)]
+        );
       });
 
-      return transaction.execute();
-    })  
-    .then((result) => {
+      return transactionWrapper.execute();
+    })
+    .then(() => {
       res.status(201).json({ uuid : puid });
     })
     .catch(next)
@@ -374,7 +377,7 @@ function purchaseStatus(req, res, next) {
       let query = '';
       status.cost = row.cost;
       status.movement_cost = row.movement_cost;
-      status.delay = Math.round( (row.delay / 30) * 10 ) / 10;
+      status.delay = Math.round((row.delay / 30) * 10) / 10;
 
       if (row.movement_cost === row.cost) {
       // the purchase is totally delivered
@@ -394,7 +397,8 @@ function purchaseStatus(req, res, next) {
     })
     .then(() => {
       /**
-        * Get all the inventories of a purchase order finally to obtain the average waiting time between the order and the delivery
+        * Get all the inventories of a purchase order finally to obtain the average
+        * waiting time between the order and the delivery
       */
       const getInventory = `
         SELECT BUID(purchase_item.inventory_uuid) AS inventory_uuid, inventory.delay, inventory.num_delivery
@@ -410,20 +414,23 @@ function purchaseStatus(req, res, next) {
 
       rows.forEach((row) => {
         /**
-          * Normally the delay agreement time between the order and the delivery is calculated 
-          * by finding the average duration of agreement of orders of last six months for a product 
-          * this calculation is very expensive in terms of memory, which is the reason why we keep 
+          * Normally the delay agreement time between the order and the delivery is calculated
+          * by finding the average duration of agreement of orders of last six months for a product
+          * this calculation is very expensive in terms of memory, which is the reason why we keep
           * this information in the inventory table for article shovel
         */
-        let numDelivery = row.num_delivery + 1;
+        const numDelivery = row.num_delivery + 1;
 
-        let delay = (((row.delay * (numDelivery - 1)) + status.delay) / numDelivery);
-        
-        transaction.addQuery('UPDATE inventory SET delay = ?, num_delivery = ? WHERE uuid = ?', [delay, numDelivery, db.bid(row.inventory_uuid)]);
+        const delay = (((row.delay * (numDelivery - 1)) + status.delay) / numDelivery);
+
+        transaction.addQuery(
+          'UPDATE inventory SET delay = ?, num_delivery = ? WHERE uuid = ?',
+          [delay, numDelivery, db.bid(row.inventory_uuid)]
+        );
       });
 
       return transaction.execute();
-    })  
+    })
     .then(() => {
       res.status(200).send(status);
     })
@@ -443,7 +450,7 @@ function purchaseBalance(req, res, next) {
   const purchaseUuid = db.bid(req.params.uuid);
   const sql = `
     SELECT
-      s.display_name, u.display_name, BUID(p.uuid) AS uuid,
+      s.display_name AS supplier_name, u.display_name AS user_name, BUID(p.uuid) AS uuid,
       CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', proj.abbr, p.reference) AS reference, p.date,
       BUID(pi.inventory_uuid) AS inventory_uuid, pi.quantity, pi.unit_price,
       IFNULL(distributed.quantity, 0) AS distributed_quantity,
