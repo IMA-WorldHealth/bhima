@@ -190,6 +190,16 @@ CREATE PROCEDURE TrialBalanceSummary()
 BEGIN
   -- this assumes lines have been staged using CALL StageTrialBalanceTransaction()
 
+  -- fiscal year to limit period_total search
+  DECLARE fiscalYearId MEDIUMINT;
+
+  -- get the fiscal year of the oldest record to limit period_total search
+  SET fiscalYearId = (
+    SELECT MIN(fiscal_year_id)
+    FROM posting_journal JOIN stage_trial_balance_transaction
+      ON posting_journal.record_uuid = stage_trial_balance_transaction.record_uuid
+  );
+
   -- gather the staged accounts
   CREATE TEMPORARY TABLE IF NOT EXISTS staged_accounts AS
     SELECT DISTINCT account_id FROM posting_journal JOIN stage_trial_balance_transaction
@@ -197,16 +207,19 @@ BEGIN
 
   -- gather the beginning period_totals
   CREATE TEMPORARY TABLE before_totals AS
-    SELECT u.account_id, IFNULL(SUM(debit - credit), 0) AS balance_before
+    SELECT u.account_id, IFNULL(SUM(totals.debit - totals.credit), 0) AS balance_before
     FROM staged_accounts as u
-    LEFT JOIN period_total ON u.account_id = period_total.account_id
+    LEFT JOIN (
+      SELECT account_id, debit, credit FROM period_total
+      WHERE period_total.fiscal_year_id = fiscalYearId
+    ) totals ON u.account_id = totals.account_id
     GROUP BY u.account_id;
 
   SELECT account_id, account.number AS number, account.label AS label,
     balance_before, debit_equiv, credit_equiv,
     balance_before + debit_equiv - credit_equiv AS balance_final
   FROM (
-    SELECT posting_journal.account_id, SUM(totals.balance_before) AS balance_before, SUM(debit_equiv) AS debit_equiv,
+    SELECT posting_journal.account_id, MAX(totals.balance_before) AS balance_before, SUM(debit_equiv) AS debit_equiv,
       SUM(credit_equiv) AS credit_equiv
     FROM posting_journal JOIN before_totals as totals
     ON posting_journal.account_id = totals.account_id
