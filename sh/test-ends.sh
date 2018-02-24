@@ -27,6 +27,9 @@ NODE_PID=$!
 
 echo "[test] Spawned node process $NODE_PID."
 
+echo "[test] Sleeping for $TIMEOUT seconds."
+sleep "$TIMEOUT"
+
 echo "[test] Running tests using protractor."
 ../node_modules/.bin/protractor ../protractor.conf.js
 
