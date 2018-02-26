@@ -29,6 +29,8 @@ const RECEIPT_TEMPLATE = './server/controllers/finance/reports/invoices/receipt.
 const REPORT_TEMPLATE = './server/controllers/finance/reports/invoices/report.handlebars';
 const CREDIT_NOTE_TEMPLATE = './server/controllers/finance/reports/invoices/creditNote.handlebars';
 
+const xlsx = require('./receipt.xlsx');
+
 exports.report = report;
 exports.receipt = receipt;
 exports.creditNote = creditNote;
@@ -116,6 +118,8 @@ function receipt(req, res, next) {
 
   let template = RECEIPT_TEMPLATE;
 
+  const renderer = req.query.renderer;
+
   if (Boolean(Number(options.posReceipt))) {
     template = POS_RECEIPT_TEMPLATE;
     _.extend(options, pdf.posReceiptOptions);
@@ -162,9 +166,16 @@ function receipt(req, res, next) {
         invoiceResponse.exchangedTotal = _.round(invoiceResponse.cost * invoiceResponse.exchange);
       }
 
+      // render the excel worksheet
+      if (renderer === 'xlsx') {
+        return xlsx.render(invoiceResponse);
+      }
+
       return receiptReport.render(invoiceResponse);
+
     })
     .then(result => {
+
       res.set(result.headers).send(result.report);
     })
     .catch(next)
