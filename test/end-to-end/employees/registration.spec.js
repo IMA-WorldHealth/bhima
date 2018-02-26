@@ -39,6 +39,8 @@ describe('Employees', () => {
     creditor_group : 'Employees',
   };
 
+  const pathPatient = '#!/employees/81af634f-321a-40de-bc6f-ceb1167a9f65/patientAsEmployee';
+
   before(() => helpers.navigate(path));
 
   it('blocks invalid form submission with relevant error classes', () => {
@@ -78,7 +80,8 @@ describe('Employees', () => {
   });
 
   it('Register an employee from a patient', () => {
-    registrationPage.findPatientName(patient.display_name);
+    browser.get(pathPatient);
+
     registrationPage.setCode(patient.code);
     registrationPage.setGrade('A1');
     registrationPage.setCreditorGroup(patient.creditor_group);

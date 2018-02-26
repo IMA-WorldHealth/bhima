@@ -12,9 +12,9 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
   var vm = this;
   var referenceId = $state.params.id;
   var saveAsEmployee = $state.params.saveAsEmployee;
+  var isUpdating = !!$state.params.id && !saveAsEmployee;
 
   vm.enterprise = Session.enterprise;
-  vm.isUpdating = !!$state.params.id;
 
   vm.origin = '';
 
@@ -154,7 +154,7 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
         employeeForm.$setUntouched();
         vm.employee = {};
 
-        if (!referenceId) {
+        if (!isUpdating) {
           Receipts.patient(feedBack.patient_uuid, true);
         } else {
           Notify.success('FORM.INFO.UPDATE_SUCCESS');

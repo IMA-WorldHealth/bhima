@@ -12,11 +12,6 @@ class RegistrationPage {
   createEmployee() {
     FU.buttons.submit();
   }
-  
-  // find Patient By Name
-  findPatientName(patientName) {
-    components.findPatient.findByName(patientName);
-  }
 
   // set display name
   setDisplayName(displayName) {
