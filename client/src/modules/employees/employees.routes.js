@@ -15,7 +15,7 @@ angular.module('bhima.routes')
         url         : '/employees/:id/patientAsEmployee',
         params : {
           saveAsEmployee : { value : true },
-        },        
+        },
         controller  : 'EmployeeController as EmployeeCtrl',
         templateUrl : 'modules/employees/registration/employees.html',
       })
