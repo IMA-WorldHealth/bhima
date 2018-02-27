@@ -104,8 +104,16 @@
           <th>{{date footer.date}}</th>
           <th colspan="3">{{translate "FORM.LABELS.TOTAL"}}</th>
           <th class="text-right">{{footer.invertedRate}}</th>
-          <th></th>
-          <th></th>
+          <th class="text-right">
+            {{#if footer.shouldDisplayDebitCredit}}
+              {{currency footer.debit footer.transactionCurrencyId}}
+            {{/if}}
+          </th>
+          <th class="text-right">
+            {{#if footer.shouldDisplayDebitCredit}}
+              {{currency footer.credit footer.transactionCurrencyId}}
+            {{/if}}
+          </th>
           <th class="text-right">
             {{debcred footer.exchangedBalance footer.currency_id }}
           </th>

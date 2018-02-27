@@ -237,6 +237,9 @@ function getAccountTransactions(options, openingBalance = 0) {
       const lastDate = (lastTransaction && lastTransaction.trans_date) || options.dateTo;
       const lastCumSum = (lastTransaction && lastTransaction.cumsum) || (totals.balance * totals.rate);
 
+      const lastCurrencyId = (lastTransaction && lastTransaction.currency_id) || totals.currency_id;
+      const shouldDisplayDebitCredit = bundle.transactions.every(txn => txn.currency_id === lastCurrencyId);
+
       // contains the grid totals for the footer
       const footer = {
         date : lastDate,
@@ -246,6 +249,8 @@ function getAccountTransactions(options, openingBalance = 0) {
         exchangedCumSum : lastCumSum,
         exchangedDate : new Date(),
         invertedRate : util.roundDecimal(1 / totals.rate, 2),
+        shouldDisplayDebitCredit,
+        transactionCurrencyId : lastCurrencyId,
       };
 
       // combine shared properties
