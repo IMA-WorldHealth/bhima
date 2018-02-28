@@ -6,7 +6,6 @@
  * database.
  */
 
-const s3 = require('s3-client');
 const debug = require('debug')('backups');
 const tmp = require('tempy');
 const util = require('./util');
@@ -14,14 +13,6 @@ const lzma = require('lzma-native');
 const streamToPromise = require('stream-to-promise');
 const fs = require('fs');
 const moment = require('moment');
-const q = require('q');
-
-const client = s3.createClient({
-  s3Options : {
-    accessKeyId : process.env.S3_ACCESS_KEY_ID,
-    secretAccessKey : process.env.S3_SECRET_ACCESS_KEY,
-  },
-});
 
 /**
  * @method backup
@@ -96,6 +87,7 @@ function mysqldump(file, options = {}) {
     flags.push('--no-create-info');
   }
 
+  // make sure stored procedures are dumped with build
   if (options.includeSchema) {
     flags.push('--routines');
   }
@@ -154,32 +146,12 @@ function xz(file) {
  * This function uploads a file to Amazon S3 storage.
  */
 function upload(file, options = {}) {
-  debug(`#upload() uploading backup file ${file} to Amazon S3.`);
+  debug(`#upload() Not Implemented Yet!`);
 
   if (!options.name) {
     options.name =
       `${process.env.DB_NAME}-${moment().format('YYYY-MM-DD')}.sql.xz`;
   }
-
-  const params = {
-    localFile : file,
-    s3Params : {
-      Bucket : process.env.S3_BUCKET_NAME,
-      Key : options.name,
-    },
-  };
-
-  const deferred = q.defer();
-
-  const uploader = client.uploadFile(params);
-
-  uploader.on('error', deferred.reject);
-  uploader.on('end', deferred.resolve);
-
-  return deferred.promise
-    .then((tags) => {
-      debug(`#upload() upload completed. Resource ETag: ${tags.ETag}`);
-    });
 }
 
 exports.backup = backup;
