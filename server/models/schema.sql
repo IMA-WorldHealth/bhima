@@ -176,7 +176,7 @@ CREATE TABLE `rubric_payroll` (
   `is_discount` tinyint(1) DEFAULT 0,
   `is_tax` tinyint(1) DEFAULT 0,
   `is_social_care` tinyint(1) DEFAULT 0,
-  `is_membership_fee` tinyint(1) DEFAULT 0,  
+  `is_membership_fee` tinyint(1) DEFAULT 0,
   `debtor_account_id` int(10) unsigned DEFAULT NULL,
   `expense_account_id` int(10) unsigned DEFAULT NULL,
   `is_ipr` tinyint(1) DEFAULT 0,
@@ -1587,7 +1587,7 @@ CREATE TABLE `taxe_ipr` (
   `currency_id`     TINYINT(3) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
   KEY `currency_id` (`currency_id`),
-  FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`) ON UPDATE CASCADE  
+  FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `taxe_ipr_configuration`;

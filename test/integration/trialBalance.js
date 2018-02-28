@@ -5,7 +5,7 @@ const helpers = require('./helpers');
  * The /trial_balance API endpoint
  */
 describe('(/journal/trialbalance) API endpoint', () => {
-  const GOOD_TXNS = [ 'a5a5f950-a4c9-47f0-9a9a-2bfc3123e534' ] // TPA1
+  const GOOD_TXNS = ['a5a5f950-a4c9-47f0-9a9a-2bfc3123e534']; // TPA1
   const EMPTY_TXNS = [];
   const ERROR_TXNS = ['3688e9ce-85ea-4b5c-9144-688177edcb63']; // TRANS5
   const POSTING_TXNS = ['a5a5f950-a4c9-47f0-9a9a-2bfc3123e534']; // TPA1
