@@ -27,14 +27,12 @@
             <td class="text-right" title="{{this.document}}">{{this.document}}</td>
             <td class="text-right" title="{{this.trans_id}}">{{this.trans_id}}</td>
             <td style="max-width : 200px; white-space : nowrap; overflow : hidden; text-overflow : ellipsis;" title="{{this.description}}">{{this.description}}</td>
-            <td class="text-right {{#if this.credit}}text-danger{{/if}}">
-              {{#if this.credit}}
-                ({{currency this.credit ../metadata.enterprise.currency_id}})
-              {{else}}
-                {{currency this.debit ../metadata.enterprise.currency_id}}
-              {{/if}}
+            <td class="text-right">
+              {{debcred this.balance ../metadata.enterprise.currency_id}}
             </td>
-            <td class="text-right">{{currency this.cumsum ../metadata.enterprise.currency_id}} </td>
+            <td class="text-right">
+              {{debcred this.cumsum ../metadata.enterprise.currency_id}}
+            </td>
           </tr>
         {{else}}
           {{>emptyTable columns=5}}
@@ -58,13 +56,7 @@
             {{translate "FORM.LABELS.TOTAL_BALANCE_REMAINING" }}
           </th>
           <th class="text-right">
-            {{#unless aggregates.hasDebitBalance }}
-              <span class="text-danger">
-                ({{currency aggregates.balance metadata.enterprise.currency_id}})
-              </span>
-            {{else}}
-              {{currency aggregates.balance metadata.enterprise.currency_id}}
-            {{/unless}}
+            {{debcred aggregates.balance metadata.enterprise.currency_id}}
           </th>
         </tr>
       </tfoot>

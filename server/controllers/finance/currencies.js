@@ -9,6 +9,18 @@
 
 const db = require('../../lib/db');
 
+exports.lookupCurrencyById = lookupCurrencyById;
+function lookupCurrencyById(id) {
+  const sql = `
+    SELECT c.id, c.name, c.note, c.format_key,
+      c.symbol, c.min_monentary_unit
+    FROM currency AS c
+    WHERE c.id = ?;
+  `;
+
+  return db.one(sql, id);
+}
+
 /** list currencies in the database */
 exports.list = function list(req, res, next) {
   const sql =
@@ -27,13 +39,7 @@ exports.list = function list(req, res, next) {
 
 /** get the details of a single currency */
 exports.detail = function detail(req, res, next) {
-  const sql =
-    `SELECT c.id, c.name, c.note, c.format_key,
-      c.symbol, c.min_monentary_unit
-    FROM currency AS c
-    WHERE c.id = ?;`;
-
-  db.one(sql, [req.params.id])
+  lookupCurrencyById(req.params.id)
     .then((row) => {
       res.status(200).json(row);
     })

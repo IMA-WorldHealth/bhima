@@ -49,24 +49,24 @@ function AccountReportConfigController(
     };
 
     return SavedReports.saveAsModal(options)
-      .then(function () {
+      .then(() => {
         $state.go('reportsBase.reportsArchive', { key : options.report.report_key });
       })
       .catch(Notify.handleError);
   };
 
   vm.preview = function preview(form) {
-    if (form.$invalid) { return; }
+    if (form.$invalid) { return 0; }
 
     parseDateInterval(vm.reportDetails);
 
     // update cached configuration
     cache.reportDetails = angular.copy(vm.reportDetails);
 
-    var sendDetails = sanitiseDateStrings(vm.reportDetails);
+    const sendDetails = sanitiseDateStrings(vm.reportDetails);
 
     return SavedReports.requestPreview(reportUrl, reportData.id, sendDetails)
-      .then(function (result) {
+      .then(result => {
         vm.previewGenerated = true;
         vm.previewResult = $sce.trustAsHtml(result);
       })
