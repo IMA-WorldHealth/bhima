@@ -8,7 +8,6 @@ const Exchange = require('../../exchange');
 const Currency = require('../../currencies');
 const Fiscal = require('../../fiscal');
 const FilterParser = require('../../../../lib/filter');
-const util = require('../../../../lib/util');
 
 const TEMPLATE = './server/controllers/finance/reports/reportAccounts/report.handlebars';
 
@@ -52,7 +51,7 @@ function document(req, res, next) {
     })
     .then(rate => {
       bundle.rate = rate.rate || 1;
-      bundle.invertedRate = util.roundDecimal(1 / bundle.rate, 2);
+      bundle.invertedRate = Exchange.formatExchangeRateForDisplay(bundle.rate);
       return AccountsExtra.getOpeningBalanceForDate(params.account_id, params.dateFrom, false);
     })
     .then(balance => {
@@ -138,7 +137,7 @@ function getGeneralLedgerSQL(options) {
 
   const sql = `
     SELECT trans_id, description, trans_date, document_reference, debit, credit,
-      debit_equiv, credit_equiv, currency_id, rate, (1 / rate) AS invertedRate,
+      debit_equiv, credit_equiv, currency_id, rate, IF(rate < 1, (1 / rate), rate) AS invertedRate,
       ${columns}
       FROM (
       SELECT trans_id, description, trans_date, document_map.text AS document_reference,
@@ -248,7 +247,7 @@ function getAccountTransactions(options, openingBalance = 0) {
         exchangedBalance : totals.balance * totals.rate,
         exchangedCumSum : lastCumSum,
         exchangedDate : new Date(),
-        invertedRate : util.roundDecimal(1 / totals.rate, 2),
+        invertedRate : Exchange.formatExchangeRateForDisplay(totals.rate),
         shouldDisplayDebitCredit,
         transactionCurrencyId : lastCurrencyId,
       };

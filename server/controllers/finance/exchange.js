@@ -7,8 +7,10 @@
 
 const db = require('../../lib/db');
 const NotFound = require('../../lib/errors/NotFound');
+const util = require('../../lib/util');
 
 exports.getExchangeRate = getExchangeRate;
+exports.formatExchangeRateForDisplay = formatExchangeRateForDisplay;
 
 // uses the mysql function getExchangeRate() to find
 // the correct exchange rate
@@ -17,6 +19,11 @@ function getExchangeRate(enterpriseId, currencyId, date) {
 
   return db.exec(sql, [enterpriseId, currencyId, new Date(date)])
     .then(rows => rows[0]);
+}
+
+// gets a positive number for the exchange rate display.
+function formatExchangeRateForDisplay(value) {
+  return (value < 1) ? util.roundDecimal(1 / value, 2) : value;
 }
 
 /**
@@ -29,7 +36,7 @@ function getExchangeRate(enterpriseId, currencyId, date) {
  * URL: /exchange
  */
 exports.list = function list(req, res, next) {
-  const enterprise = req.session.enterprise;
+  const { enterprise } = req.session;
   const options = req.query;
 
   getExchangeRateList(enterprise.id, options)
@@ -54,7 +61,7 @@ function getExchangeRateList(enterpriseId, opts) {
   const limitQuery = Number.isNaN(limit) ? '' : `LIMIT ${limit}`;
 
   const sql = `
-    SELECT exchange_rate.id, exchange_rate.enterprise_id, exchange_rate.currency_id, 
+    SELECT exchange_rate.id, exchange_rate.enterprise_id, exchange_rate.currency_id,
     exchange_rate.rate, exchange_rate.date, enterprise.currency_id AS 'enterprise_currency_id'
     FROM exchange_rate
     JOIN enterprise ON enterprise.id = exchange_rate.enterprise_id
@@ -90,9 +97,7 @@ exports.create = function create(req, res, next) {
 
 // PUT /exchange/:id
 exports.update = function update(req, res, next) {
-  var sql;
-
-  sql =
+  let sql =
     'UPDATE exchange_rate SET ? WHERE id = ?;';
 
   // should we even be changed the date?
@@ -104,7 +109,7 @@ exports.update = function update(req, res, next) {
     .then(() => {
       sql =
       `SELECT
-        exchange_rate.id, exchange_rate.enterprise_id, exchange_rate.currency_id, 
+        exchange_rate.id, exchange_rate.enterprise_id, exchange_rate.currency_id,
         exchange_rate.rate, exchange_rate.date, enterprise.currency_id AS enterprise_currency_id
       FROM exchange_rate
       JOIN enterprise ON enterprise.id = exchange_rate.enterprise_id
