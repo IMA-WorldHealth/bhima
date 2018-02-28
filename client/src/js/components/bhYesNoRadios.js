@@ -12,8 +12,7 @@ angular.module('bhima.components')
   });
 
 function YesNoRadio() {
-
-  let $ctrl = this;
+  const $ctrl = this;
   $ctrl.$onInit = function onInit() {
     $ctrl.onChangeCallback = $ctrl.onChangeCallback;
     $ctrl.defaultValue = $ctrl.defaultValue;
