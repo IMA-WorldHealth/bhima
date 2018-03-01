@@ -17,6 +17,7 @@ const _ = require('lodash');
 const db = require('../../../../lib/db');
 const ReportManager = require('../../../../lib/ReportManager');
 const identifiers = require('../../../../config/identifiers');
+const BadRequest = require('../../../../lib/errors/BadRequest');
 
 const TEMPLATE = './server/controllers/finance/reports/cashflow/report.handlebars';
 const TEMPLATE_BY_SERVICE = './server/controllers/finance/reports/cashflow/reportByService.handlebars';
@@ -197,6 +198,11 @@ function report(req, res, next) {
   const cashboxesIds = _.values(req.query.cashboxesIds);
 
   _.extend(options, { orientation : 'landscape' });
+
+  // catch missing required parameters
+  if (!dateFrom || !dateTo || !cashboxesIds.length) {
+    throw new BadRequest('ERRORS.BAD_REQUEST');
+  }
 
   try {
     serviceReport = new ReportManager(TEMPLATE, req.session, options);

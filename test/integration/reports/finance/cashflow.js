@@ -1,28 +1,39 @@
 /* global expect, agent */
-'use strict';
 
 const helpers = require('../../helpers');
 
 const target = '/reports/finance/cashflow';
 
-describe(`(${target}) Cashflow Reports`, function () {
+describe(`(${target}) Cashflow Reports`, () => {
   const parameters = {
-    account_id : 3627,
-    dateFrom : '2016-01-01',
-    dateTo : '2016-12-31',
+    cashboxesIds : [1],
+    dateFrom : new Date('2018-01-01'),
+    dateTo : new Date('2018-12-31'),
     renderer : 'json',
   };
 
   const keys = [
-    'dateFrom', 'dateTo', 'weekly', 'incomes', 'expenses', 'summationIncome', 'summationExpense', 'sum_incomes', 'sum_expense',
-    'periodicBalance', 'periodicOpenningBalance', 'incomesLabels', 'expensesLabels', 'totalIncomes', 'totalExpenses', 'periodicData',
-    'openningBalance', 'periodStartArray', 'periodRange', 'metadata'];
+    'metadata',
+    'incomes',
+    'expenses',
+    'transfers',
+    'incomeTextKeys',
+    'expenseTextKeys',
+    'incomeTotalByTextKeys',
+    'expenseTotalByTextKeys',
+    'transferTotalByTextKeys',
+    'incomeTotal',
+    'expenseTotal',
+    'transferTextKeys',
+    'transferTotal',
+    'totalPeriodColumn',
+  ];
 
   const BAD_REQUEST = 'ERRORS.BAD_REQUEST';
 
   const clone = (object) => JSON.parse(JSON.stringify(object));
 
-  it(`GET ${target} should return a BAD_REQUEST response`, function () {
+  it(`GET ${target} should return a BAD_REQUEST response`, () => {
     return agent.get('/reports/finance/cashflow')
       .then(res => {
         expect(res).to.have.status(400);
@@ -32,20 +43,20 @@ describe(`(${target}) Cashflow Reports`, function () {
       .catch(helpers.handler);
   });
 
-  it(`GET ${target} should return JSON data for 'JSON' rendering target`, function () {
+  it(`GET ${target} should return JSON data for 'JSON' rendering target`, () => {
     return agent.get(target)
       .query(parameters)
       .then((res) => {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
         expect(res.body).to.contain.all.keys(keys);
-        expect(res.body.dateFrom).to.be.equal(parameters.dateFrom);
-        expect(res.body.dateTo).to.be.equal(parameters.dateTo);
+        expect(res.body.dateFrom).to.be.equal(parameters.dateFrom.toISOString());
+        expect(res.body.dateTo).to.be.equal(parameters.dateTo.toISOString());
       })
       .catch(helpers.handler);
   });
 
-  it(`GET ${target} should return HTML data for HTML rendering target`, function () {
+  it(`GET ${target} should return HTML data for HTML rendering target`, () => {
     const copy = clone(parameters);
     copy.renderer = 'html';
 
@@ -58,7 +69,7 @@ describe(`(${target}) Cashflow Reports`, function () {
       .catch(helpers.handler);
   });
 
-  it(`GET ${target} should return PDF data for PDF rendering target`, function () {
+  it(`GET ${target} should return PDF data for PDF rendering target`, () => {
     const copy = clone(parameters);
     copy.renderer = 'pdf';
 
