@@ -289,6 +289,7 @@ function report(req, res, next) {
         incomeTextKeys,
         expenseTextKeys,
         incomeTotalByTextKeys,
+        expenseTotalByTextKeys,
         transferTotalByTextKeys,
         incomeTotal,
         expenseTotal,
