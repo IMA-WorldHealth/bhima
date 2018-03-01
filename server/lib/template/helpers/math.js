@@ -11,13 +11,6 @@ function multiply(a, b) {
   return (a * b) || 0;
 }
 
-function absolute(value) {
-  if (value < 0) {
-    return `(${Math.abs(value)})`;
-  }
-  return value;
-}
-
 /**
  * @function sum
  * @desc This function is responsible to calculate the sum of an array given
@@ -48,4 +41,3 @@ exports.multiply = multiply;
 exports.add = add;
 exports.sum = sum;
 exports.substract = substract;
-exports.absolute = absolute;
