@@ -33,8 +33,8 @@ const DEFAULT_UUID_PARTIAL_KEY = 'uuid';
  * Supported Filter Types:
  * * equals - a direct comparison
  * * text - search for text contained within a text field
- * * dateFrom - limit the querry to records from a date
- * * dateTo - limit the querry to records up until a date
+ * * dateFrom - limit the query to records from a date
+ * * dateTo - limit the query to records up until a date
  *
  * @requires lodash
  * @requires moment

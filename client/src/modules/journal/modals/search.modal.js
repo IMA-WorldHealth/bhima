@@ -7,23 +7,25 @@ JournalSearchModalController.$inject = [
   'JournalService',
 ];
 
-function JournalSearchModalController(Instance, Notify,
-  Store, filters, options, Periods, $translate,
-  util, TransactionTypes, Journal) {
-  var vm = this;
+function JournalSearchModalController(
+  Instance, Notify, Store, filters, options, Periods, $translate, util,
+  TransactionTypes, Journal
+) {
+  const vm = this;
 
   // displayValues will be an id:displayValue pair
-  var displayValues = {};
-  var lastDisplayValues = Journal.filters.getDisplayValueMap();
+  const displayValues = {};
+  const lastDisplayValues = Journal.filters.getDisplayValueMap();
 
   // @TODO ideally these should be passed in when the modal is initialised
   //       these are known when the filter service is defined
-  var searchQueryOptions = [
+  const searchQueryOptions = [
     'description', 'user_id', 'account_id', 'project_id', 'amount', 'trans_id',
-    'origin_id', 'includeNonPosted',
+    'origin_id', 'includeNonPosted', 'hrRecord', 'hrEntity', 'comment',
+    'hrReference',
   ];
 
-  var changes = new Store({ identifier : 'key' });
+  const changes = new Store({ identifier : 'key' });
   vm.filters = filters;
   vm.options = options;
 
@@ -39,7 +41,7 @@ function JournalSearchModalController(Instance, Notify,
    * as parameters
    * @example
    * <pre>
-   * Config.openSearchModal(filters, { hasDefaultAccount : true })
+   *   Config.openSearchModal(filters, { hasDefaultAccount : true })
    * </pre>
    */
   if (options.hasDefaultAccount) {
@@ -67,8 +69,8 @@ function JournalSearchModalController(Instance, Notify,
 
   // load all Transaction types
   TransactionTypes.read()
-    .then(function (types) {
-      types.forEach(function (item) {
+    .then(types => {
+      types.forEach(item => {
         item.typeText = $translate.instant(item.text);
       });
       vm.transactionTypes = types;
@@ -96,9 +98,9 @@ function JournalSearchModalController(Instance, Notify,
 
   // deafult filter period - directly write to changes list
   vm.onSelectPeriod = function onSelectPeriod(period) {
-    var periodFilters = Periods.processFilterChanges(period);
+    const periodFilters = Periods.processFilterChanges(period);
 
-    periodFilters.forEach(function (filterChange) {
+    periodFilters.forEach(filterChange => {
       changes.post(filterChange);
     });
   };
@@ -106,31 +108,31 @@ function JournalSearchModalController(Instance, Notify,
   // custom filter origin_id - assign the value to the searchQueries object
   vm.onTransactionTypesChange = function onTransactionTypesChange(transactionTypes) {
     vm.searchQueries.origin_id = transactionTypes;
-    var typeText = '/';
+    const types = [];
 
-    transactionTypes.forEach(function (typeId) {
-      vm.transactionTypes.forEach(function (type) {
+    transactionTypes.forEach(typeId => {
+      vm.transactionTypes.forEach(type => {
         if (typeId === type.id) {
-          typeText += type.typeText + ' / ';
+          types.push(type.typeText);
         }
       });
     });
 
-    displayValues.origin_id = typeText;
+    displayValues.origin_id = types.join(' / ');
   };
 
   // default filter limit - directly write to changes list
   vm.onSelectLimit = function onSelectLimit(value) {
     // input is type value, this will only be defined for a valid number
     if (angular.isDefined(value)) {
-      changes.post({ key : 'limit', value : value });
+      changes.post({ key : 'limit', value });
     }
   };
 
   // default filter to show full transactions
   vm.toggleFullTransaction = function toggleFullTransaction(value) {
     if (angular.isDefined(value)) {
-      changes.post({ key : 'showFullTransactions', value : value });
+      changes.post({ key : 'showFullTransactions', value });
     }
   };
 
@@ -143,16 +145,18 @@ function JournalSearchModalController(Instance, Notify,
 
   // returns the filters to the journal to be used to refresh the page
   vm.submit = function submit(form) {
+    if (form.$invalid) { return 0; }
+
     // push all searchQuery values into the changes array to be applied
-    angular.forEach(vm.searchQueries, function (value, key) {
+    angular.forEach(vm.searchQueries, (value, key) => {
       if (angular.isDefined(value)) {
         // default to the original value if no display value is defined
-        var displayValue = displayValues[key] || lastDisplayValues[key] || value;
-        changes.post({ key: key, value: value, displayValue: displayValue });
-       }
+        const displayValue = displayValues[key] || lastDisplayValues[key] || value;
+        changes.post({ key, value, displayValue });
+      }
     });
 
-    var loggedChanges = changes.getAll();
+    const loggedChanges = changes.getAll();
 
     // return values to the JournalController
     return Instance.close(loggedChanges);
