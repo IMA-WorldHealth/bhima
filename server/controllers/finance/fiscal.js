@@ -630,3 +630,4 @@ function accountBanlanceByTypeId() {
     ORDER BY ac.number
   `;
 }
+
