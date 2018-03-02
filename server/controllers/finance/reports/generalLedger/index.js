@@ -9,6 +9,7 @@
 const _ = require('lodash');
 const ReportManager = require('../../../../lib/ReportManager');
 const GeneralLedger = require('../../generalLedger');
+const Tree = require('../../../../lib/Tree');
 
 const REPORT_TEMPLATE = './server/controllers/finance/reports/generalLedger/report.handlebars';
 
@@ -41,12 +42,29 @@ function renderReport(req, res, next) {
   const TITLE_ACCOUNT_ID = 6;
 
   return GeneralLedger.getAccountTotalsMatrix(fiscalYearId)
-    .then((rows) => {
-      rows.forEach(row => {
-        row.isTitleAccount = row.type_id === TITLE_ACCOUNT_ID;
-        row.padLeft = row.depth * 15;
+    .then(rows => {
+      const tree = new Tree(rows);
+
+      tree.walk((node, parentNode) => {
+        Tree.common.computeNodeDepth(node, parentNode);
+
+        node.isTitleAccount = node.type_id === TITLE_ACCOUNT_ID;
+        node.padLeft = node.depth * 15;
       });
-      data = { rows };
+
+      const keys = _.keys(rows[0])
+        .filter(name => name.includes('balance'));
+
+      const root = tree.getRootNode();
+      const balances = root.children.reduce((aggregates, node) => {
+        keys.forEach(key => {
+          aggregates[key] = (aggregates[key] || 0) + node[key];
+        });
+
+        return aggregates;
+      }, {});
+
+      data = { rows : tree.toArray(), footer : balances };
       data.fiscal_year_label = options.fiscal_year_label;
       return report.render(data);
     })
