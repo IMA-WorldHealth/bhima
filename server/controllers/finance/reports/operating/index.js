@@ -10,6 +10,8 @@ const fiscal = require('../../fiscal');
 const TEMPLATE = './server/controllers/finance/reports/operating/report.handlebars';
 
 exports.document = document;
+exports.formatData = formatData;
+exports.prepareTree = prepareTree;
 
 function document(req, res, next) {
   const params = req.query;
@@ -70,25 +72,13 @@ function document(req, res, next) {
   })
     .spread((expense, revenue, totalExpense, totalIncome) => {
       const context = {
-        expense,
-        revenue,
+        expense : prepareTree(expense, 'type_id', EXPENSE_ACCOUNT_TYPE, 'amount'),
+        revenue : prepareTree(revenue, 'type_id', INCOME_ACCOUNT_TYPE, 'amount'),
         totalExpense : totalExpense.total,
         totalIncome : totalIncome.total,
         dateFrom : range.dateFrom,
         dateTo : range.dateTo,
       };
-
-      const revenueTree = new Tree(context.revenue);
-      revenueTree.walk(Tree.common.computeNodeDepth);
-      revenueTree.filterByLeaf('type_id', INCOME_ACCOUNT_TYPE);
-      revenueTree.walk(Tree.common.sumOnProperty('amount'), false);
-      context.revenue = revenueTree.toArray();
-
-      const expenseTree = new Tree(context.expense);
-      expenseTree.walk(Tree.common.computeNodeDepth);
-      expenseTree.filterByLeaf('type_id', EXPENSE_ACCOUNT_TYPE);
-      expenseTree.walk(Tree.common.sumOnProperty('amount'), false);
-      context.expense = expenseTree.toArray();
 
       formatData(context.expense, context.totalExpense, DECIMAL_PRECISION);
       formatData(context.revenue, context.totalIncome, DECIMAL_PRECISION);
@@ -111,17 +101,31 @@ function document(req, res, next) {
     .done();
 }
 
-// set the percentage of each amount's row,
+// create the tree structure, filter by property and sum nodes' summableProp
+function prepareTree(data, prop, value, summableProp) {
+  const tree = new Tree(data);
+  try {
+    tree.filterByLeaf(prop, value);
+    tree.walk(Tree.common.sumOnProperty(summableProp), false);
+    tree.walk(Tree.common.computeNodeDepth);
+    return tree.toArray();
+  } catch (error) {
+    return [];
+  }
+
+}
+
+// set the percentage of each amoun's row,
 // round amounts
 function formatData(result, total, decimalPrecision) {
-  const _total = (total === 0) ? 1 : total;
 
+  const _total = (total === 0) ? 1 : total;
   return result.forEach(row => {
-    row.depth--;
-    if (row.depth < 2) {
+    row.title = (row.depth < 3);
+
+    if (row.title) {
       row.percent = util.roundDecimal(Math.abs((row.amount / _total) * 100), decimalPrecision);
     }
     row.amount = util.roundDecimal(row.amount, decimalPrecision);
-    row.title = row.depth === 1;
   });
 }
