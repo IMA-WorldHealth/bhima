@@ -1,4 +1,4 @@
-/* global browser, protractor, element, by */
+/* global by */
 
 const chai = require('chai');
 const helpers = require('../shared/helpers');

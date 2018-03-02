@@ -1,4 +1,4 @@
-/* global browser, element, by */
+/* global element, by */
 
 const FU = require('../FormUtils');
 
@@ -10,8 +10,8 @@ module.exports = {
 
     target.click();
 
-    cashboxes.forEach(function (cashboxes){
-    	FU.uiSelect('$ctrl.cashboxIds', cashboxes);
+    (cashboxes || []).forEach(cashbox => {
+      FU.uiSelect('$ctrl.cashboxIds', cashbox);
     });
   },
 };
