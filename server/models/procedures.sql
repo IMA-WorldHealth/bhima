@@ -47,4 +47,9 @@ SOURCE server/models/procedures/trial_balance.sql
 */
 SOURCE server/models/procedures/stock.sql
 
+/*
+  Inventory procedures include: ImportInventory
+*/
+SOURCE server/models/procedures/inventory.sql
+
 DELIMITER ;

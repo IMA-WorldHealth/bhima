@@ -1,0 +1,61 @@
+<form name="ActionForm" bh-submit="$ctrl.submit(ActionForm)" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate>FORM.LABELS.INVENTORY</li>
+      <li class="title text-capitalize" translate>
+        INVENTORY.IMPORT
+      </li>
+    </ol>
+  </div>
+  <div class="modal-body">
+    <div class="alert alert-info">
+      <p translate>INVENTORY.IMPORT_DESCRIPTION</p>
+      <a ng-click="$ctrl.downloadTemplate()" href>
+        <i class="fa fa-cloud-download"></i>
+        <span translate>INVENTORY.DOWNLOAD_TEMPLATE_HERE</span>
+      </a>
+    </div>
+
+    <label translate>INVENTORY.COLUMNS_INFO</label>:
+    <ul>
+      <li translate>INVENTORY.INVENTORY_TYPE_INFO</li>
+      <li translate>INVENTORY.INVENTORY_UNIT_INFO</li>
+      <li translate>INVENTORY.INVENTORY_PRICE_INFO</li>
+    </ul>
+
+    <br>
+
+    <div class="form-group"
+      ng-class="{ 'has-error' : $ctrl.noSelectedFile }">
+      <label translate>INVENTORY.IMPORT_INVENTORIES_FROM_FILE</label>
+      <input 
+        accept=".csv"
+        class="form-control" 
+        type="file" 
+        name="file" 
+        ng-model="$ctrl.file"
+        ngf-select="$ctrl.select($ctrl.file)">
+      
+      <div class="help-block" data-error-message ng-show="$ctrl.noSelectedFile">
+        <i class="fa fa-warning"></i> <span translate>INVENTORY.NO_FILE_SELECTED</span>
+      </div>
+    </div>
+
+    <!-- progress bar  -->
+    <div class="progress" ng-show="$ctrl.file.progress >= 0">
+      <div class="progress-bar progress-bar-success progress-bar-striped active"
+        ng-style="$ctrl.progressStyle"
+        ng-bind="$ctrl.file.progress + '%'">
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-method="cancel" ng-click="$ctrl.cancel()">
+      <span translate>FORM.BUTTONS.CANCEL</span>
+    </button>
+  
+    <bh-loading-button disabled="$ctrl.uploadState === 'uploading'" loading-state="ActionForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

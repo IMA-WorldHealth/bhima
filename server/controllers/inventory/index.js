@@ -40,6 +40,7 @@ const stats = require('./inventory/status');
 const groups = require('./inventory/groups');
 const types = require('./inventory/types');
 const units = require('./inventory/units');
+const importing = require('./import');
 
 // exposed routes
 exports.createInventoryItems = createInventoryItems;
@@ -88,6 +89,10 @@ exports.getInventoryDonations = getInventoryDonations;
 exports.getInventoryDonationsById = getInventoryDonationsById;
 //
 exports.deleteInventory = deleteInventory;
+
+// expose routes for import
+exports.importing = importing;
+
 // ======================= inventory metadata =============================
 /**
  * POST /inventory/metadata

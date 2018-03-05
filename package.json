@@ -54,6 +54,7 @@
     "compression": "^1.7.0",
     "connect-redis": "^3.0.2",
     "cross-env": "^5.1.1",
+    "csvtojson": "^1.1.9",
     "debug": "^3.1.0",
     "dot": "^1.0.3",
     "dotenv": "^5.0.0",

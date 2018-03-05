@@ -25,6 +25,18 @@
         "NO_INVENTORY_REGISTERED": "Il n'y aucun inventaire enregistré jusque là",
         "EXPIRES" : "Expire",
         "UNIQUE_ITEM" : "Un seul item",
-        "IS_BROKEN" : "est endommagé"
+        "IS_BROKEN" : "est endommagé",
+        "DOWNLOAD_IMPORT_MODEL" : "Télécharger Modèle",
+        "IMPORT" : "Importation",
+        "IMPORT_DESCRIPTION" : "Vous êtes sur le point d'importer les inventaires à partir d'un fichier CSV",
+        "DOWNLOAD_TEMPLATE_HERE" : "Cliquez ici pour télécharger le fichier modèle pour l'importation d'inventaire",
+        "IMPORT_INVENTORIES" : "Importer Inventaires",
+        "IMPORT_INVENTORIES_FROM_FILE" : "Importer les inventaires à partir d'un fichier",
+        "UPLOAD_SUCCESS" : "Téléchargement réussi",
+        "NO_FILE_SELECTED" : "Aucun fichier séléctionné",
+        "INVENTORY_TYPE_INFO" : "inventory_type : le type d'inventaire tel que : Article, Service, Assembly ou Autre",
+        "INVENTORY_UNIT_INFO" : "inventory_unit : l'unité d'inventaire telle que : Piece, Tablet, Box, Bottle ou Autre",
+        "INVENTORY_PRICE_INFO" : "inventory_price : le prix de vente de l'inventaire dans la monnaie de l'entreprise",
+        "COLUMNS_INFO" : "Note sur certaines colonnes"
     }
 }

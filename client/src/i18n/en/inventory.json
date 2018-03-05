@@ -25,6 +25,18 @@
         "REGISTRY": "Inventories Registry",
         "EXPIRES" : "Expires",
         "UNIQUE_ITEM" : "Unique item",
-        "IS_BROKEN" : "is broken"
+        "IS_BROKEN" : "is broken",
+        "DOWNLOAD_IMPORT_MODEL" : "Download Template",
+        "IMPORT" : "Import",
+        "IMPORT_DESCRIPTION" : "You are about to import the inventories from a CSV file",
+        "DOWNLOAD_TEMPLATE_HERE" : "Click here to download the template file of inventories",
+        "IMPORT_INVENTORIES" : "Import Inventories",
+        "IMPORT_INVENTORIES_FROM_FILE" : "Import inventories from file",
+        "UPLOAD_SUCCESS" : "Successfully Uploaded",
+        "NO_FILE_SELECTED" : "No file is selected",
+        "INVENTORY_TYPE_INFO" : "inventory_type : the type of inventory such as Article, Service, Assembly or Other",
+        "INVENTORY_UNIT_INFO" : "inventory_unit : the unit of inventory such as Piece, Tablet, Box, Bottle or Other",
+        "INVENTORY_PRICE_INFO" : "inventory_price : the sale price of the inventory in the enterprise currency",
+        "COLUMNS_INFO" : "Note about some columns"
     }
 }

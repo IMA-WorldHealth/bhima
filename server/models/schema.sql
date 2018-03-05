@@ -872,7 +872,7 @@ DROP TABLE IF EXISTS `inventory_type`;
 
 CREATE TABLE `inventory_type` (
   `id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
-  `text` varchar(150) NOT NULL,
+  `text` varchar(30) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `inventory_type_1` (`text`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
