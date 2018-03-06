@@ -19,20 +19,6 @@
             </div>
           </div>
 
-          <div
-            class="form-group has-feedback"
-            ng-class="{'has-error' : !GroupUpdateCtrl.group.color && debtorGroup.$submitted}">
-            <label class="control-label" translate>FORM.LABELS.COLOR</label>
-
-            <ui-select tagging ng-model="GroupUpdateCtrl.group.color">
-              <ui-select-match placeholder="Pick one...">
-                <i class="fa fa-circle" style="color: {{$select.selected.value}}"></i>
-                <span translate>{{$select.selected.name}}</span>
-              </ui-select-match>
-              <ui-select-choices repeat="val.value as val in GroupUpdateCtrl.colors | filter: {'name' :$select.search}">
-                <span><i class="fa fa-circle" style="color: {{val.value}}; font-sze:14px"></i> <span translate>{{ val.name }}</span></span>
-              </ui-select>
-          </div>
 
           <bh-account-select
             name="account_id"
@@ -104,6 +90,23 @@
               location-uuid="GroupUpdateCtrl.group.location_id"
               required></bh-location-select>
           </div>
+
+
+          <div
+            class="form-group has-feedback"
+            ng-class="{'has-error' : !GroupUpdateCtrl.group.color && debtorGroup.$submitted}">
+            <label class="control-label" translate>FORM.LABELS.COLOR</label>
+
+            <ui-select tagging ng-model="GroupUpdateCtrl.group.color">
+              <ui-select-match placeholder="Pick one...">
+                <i class="fa fa-circle" style="color: {{$select.selected.value}}"></i>
+                <span translate>{{$select.selected.name}}</span>
+              </ui-select-match>
+              <ui-select-choices repeat="val.value as val in GroupUpdateCtrl.colors | filter: {'name' :$select.search}">
+                <span><i class="fa fa-circle" style="color: {{val.value}}; font-sze:14px"></i> <span translate>{{ val.name }}</span></span>
+              </ui-select>
+          </div>
+          
         </div>
 
         <div class="clearfix">
