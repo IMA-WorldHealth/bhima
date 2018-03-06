@@ -356,6 +356,7 @@ function report(req, res, next) {
    * @param {date} dateTo
    */
 function getDetailsIdentifiers(cashboxesAccountIds, dateFrom, dateTo) {
+  const CANCELLED_VOUCHER_ID = 10;
   const ids = cashboxesAccountIds;
   const queryTransactions = `
       SELECT gl.trans_id 
@@ -364,7 +365,10 @@ function getDetailsIdentifiers(cashboxesAccountIds, dateFrom, dateTo) {
         AND 
         (DATE(gl.trans_date) >= DATE(?) AND DATE(gl.trans_date) <= DATE(?))
         AND
-        (gl.origin_id <> 10 AND gl.record_uuid NOT IN (SELECT v.uuid FROM voucher v WHERE v.type_id = 10));
+        (
+          gl.origin_id <> ${CANCELLED_VOUCHER_ID} AND 
+          gl.record_uuid NOT IN (SELECT v.uuid FROM voucher v WHERE v.type_id = ${CANCELLED_VOUCHER_ID})
+        );
     `;
 
   return db.exec(queryTransactions, [[ids], dateFrom, dateTo])
