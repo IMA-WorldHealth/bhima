@@ -37,7 +37,7 @@ exports.lookupFiscalYearByDate = lookupFiscalYearByDate;
 exports.getFirstDateOfFirstFiscalYear = getFirstDateOfFirstFiscalYear;
 exports.getNumberOfFiscalYears = getNumberOfFiscalYears;
 exports.getDateRangeFromPeriods = getDateRangeFromPeriods;
-exports.getPeriodIdsFromDateRange = getPeriodIdsFromDateRange;
+exports.getPeriodsFromDateRange = getPeriodsFromDateRange;
 exports.accountBanlanceByTypeId = accountBanlanceByTypeId;
 exports.getOpeningBalance = getOpeningBalance;
 
@@ -589,9 +589,13 @@ function getNumberOfFiscalYears(dateFrom, dateTo) {
   return db.one(sql, [dateFrom, dateTo]);
 }
 
-function getPeriodIdsFromDateRange(startDate, endDate) {
-  const sql = `SELECT id FROM period WHERE start_date>= ? AND end_date<= ?`;
-  return db.one(sql, [startDate, endDate]);
+function getPeriodsFromDateRange(dateFrom, dateTo) {
+  const query = `
+    SELECT id, number, start_date, end_date
+    FROM period WHERE (DATE(start_date) >= DATE(?) AND DATE(end_date) <= DATE(?))
+      OR (DATE(?) BETWEEN DATE(start_date) AND DATE(end_date))
+      OR (DATE(?) BETWEEN DATE(start_date) AND DATE(end_date));`;
+  return db.exec(query, [dateFrom, dateTo, dateFrom, dateTo]);
 }
 
 function getDateRangeFromPeriods(periods) {

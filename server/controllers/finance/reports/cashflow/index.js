@@ -15,6 +15,7 @@
 const _ = require('lodash');
 
 const db = require('../../../../lib/db');
+const Fiscal = require('../../fiscal');
 const ReportManager = require('../../../../lib/ReportManager');
 const identifiers = require('../../../../config/identifiers');
 const BadRequest = require('../../../../lib/errors/BadRequest');
@@ -25,20 +26,6 @@ const TEMPLATE_BY_SERVICE = './server/controllers/finance/reports/cashflow/repor
 // expose to the API
 exports.report = report;
 exports.byService = reportByService;
-
-/**
- * @function getPeriods
- * @param {date} dateFrom A starting date
- * @param {date} dateTo A stop date
- */
-function getPeriods(dateFrom, dateTo) {
-  const query = `
-    SELECT id, number, start_date, end_date
-    FROM period WHERE (DATE(start_date) >= DATE(?) AND DATE(end_date) <= DATE(?))
-      OR (DATE(?) BETWEEN DATE(start_date) AND DATE(end_date))
-      OR (DATE(?) BETWEEN DATE(start_date) AND DATE(end_date));`;
-  return db.exec(query, [dateFrom, dateTo, dateFrom, dateTo]);
-}
 
 /**
  * This function creates a cashflow report by service, reporting the realized income
@@ -195,6 +182,8 @@ function report(req, res, next) {
   const options = _.clone(req.query);
   const data = {};
 
+  // convert cashboxesIds parameters in array format ['', '', ...]
+  // this parameter can be sent as a string or an array we force the conversion into an array
   const cashboxesIds = _.values(req.query.cashboxesIds);
 
   _.extend(options, { orientation : 'landscape' });
@@ -220,9 +209,9 @@ function report(req, res, next) {
 
       data.cashAccountIds = data.cashboxes.map(cashbox => cashbox.account_id);
 
-      data.cashLabels = data.cashboxes.map(cashbox => `${cashbox.label}`);
-
-      data.cashLabels = _.chain(data.cashLabels).uniq().join(' | ').value();
+      data.cashLabels = _.chain(data.cashboxes)
+        .map(cashbox => `${cashbox.label}`).uniq().join(' | ')
+        .value();
 
       data.cashLabelSymbol = _.chain(data.cashboxes)
         .map(cashbox => cashbox.symbol).uniq().join(' + ');
@@ -236,12 +225,17 @@ function report(req, res, next) {
       data.detailsIdentifiers = rows.map(row => row.uuid);
 
       // build periods columns from calculated period
-      return getPeriods(data.dateFrom, data.dateTo);
+      return Fiscal.getPeriodsFromDateRange(data.dateFrom, data.dateTo);
     })
     .then(periods => {
       data.periodDates = periods.map(p => p.start_date);
 
       data.periods = periods.map(p => p.id);
+
+      data.colspan = data.periods.length + 1;
+
+      // skip period matrix if not transactions were identified
+      if (data.detailsIdentifiers.length === 0) { return []; }
 
       // build periods string for query
       const periodString = data.periods.length ? data.periods.map(periodId => {
@@ -267,7 +261,7 @@ function report(req, res, next) {
         ) AS source 
         GROUP BY transaction_type, account_id;
       `;
-      return data.detailsIdentifiers.length ? db.exec(query, [[data.detailsIdentifiers]]) : [];
+      return db.exec(query, [[data.detailsIdentifiers]]);
     })
     .then(rows => {
       // split incomes from expenses
@@ -375,14 +369,18 @@ function getDetailsIdentifiers(cashboxesAccountIds, dateFrom, dateTo) {
 
   return db.exec(queryTransactions, [[ids], dateFrom, dateTo])
     .then(rows => {
+      // skip if there is no transId
+      if (rows.length === 0) { return []; }
+
       const transIds = rows.map(row => row.trans_id);
+
       const queryUuids = `
         SELECT gl.uuid 
         FROM general_ledger gl 
         WHERE gl.trans_id IN ? AND gl.account_id NOT IN ?;
         `;
 
-      return transIds.length ? db.exec(queryUuids, [[transIds], [ids]]) : [];
+      return db.exec(queryUuids, [[transIds], [ids]]);
     });
 }
 
