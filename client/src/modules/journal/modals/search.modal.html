@@ -160,21 +160,13 @@
 
           <!-- Full Transaction applies to the Journal, not the Account Statement -->
           <div ng-if="!ModalCtrl.hasDefaultAccount">
-            <div class="radio">
-              <p class="control-label" style="margin-bottom:5px;">
-                <strong translate>POSTING_JOURNAL.SHOW_FULL_TRANSACTION_RECORDS</strong>
-              </p>
-              <label class="radio-inline">
-                <input type="radio" name="showFullTransactions" ng-value="1" ng-model="ModalCtrl.defaultQueries.showFullTransactions" ng-click="ModalCtrl.toggleFullTransaction(ModalCtrl.defaultQueries.showFullTransactions)">
-                <span translate>FORM.LABELS.YES</span>
-              </label>
-              <label class="radio-inline">
-                <input type="radio" name="showFullTransactions" ng-value="0" ng-model="ModalCtrl.defaultQueries.showFullTransactions" ng-click="ModalCtrl.toggleFullTransaction(ModalCtrl.defaultQueries.showFullTransactions)">
-                <span translate>FORM.LABELS.NO</span>
-              </label>
-            </div>
-
-            <span class="help-block" translate>POSTING_JOURNAL.SHOW_FULL_TRANSACTION_RECORDS_HELP</span>
+            <bh-yes-no-radios
+              default-value="true"
+              value ="ModalCtrl.defaultQueries.showFullTransactions"
+              on-change-callback="ModalCtrl.toggleFullTransaction(ModalCtrl.defaultQueries.showFullTransactions)"
+              label="POSTING_JOURNAL.SHOW_FULL_TRANSACTION_RECORDS"
+              help-text="POSTING_JOURNAL.SHOW_FULL_TRANSACTION_RECORDS_HELP">
+            </bh-yes-no-radios>
           </div>
 
           <!-- period selection -->
