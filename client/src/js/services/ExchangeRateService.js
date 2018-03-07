@@ -41,6 +41,7 @@ function ExchangeRateService($http, util, Currencies, Session) {
   service.convertFromEnterpriseCurrency = convertFromEnterpriseCurrency;
   service.getCurrentRate = getCurrentRate;
   service.getExchangeRate = getExchangeRate;
+  service.getCurrentExchange = getCurrentExchange;
 
 
   /* ------------------------------------------------------------------------ */
@@ -163,6 +164,20 @@ function ExchangeRateService($http, util, Currencies, Session) {
     return getExchangeRate(currencyId, new Date());
   }
 
+  /**
+   * @param {*} currencyId
+   * returs the max(by date) exchange rate
+   */
+  function getCurrentExchange(currencyId) {
+    const exchanges = cMap[currencyId];
+    let max = exchanges[0] || {};
+    for (let i = 1; i < exchanges.length; i++) {
+      if (max.date < exchanges[i].date) {
+        max = exchanges[i];
+      }
+    }
+    return max;
+  }
   // get the rate for a currency on a given date
   function getExchangeRate(currencyId, date) {
 
@@ -174,6 +189,8 @@ function ExchangeRateService($http, util, Currencies, Session) {
     if (currencyId === Session.enterprise.currency_id) { return 1; }
 
     // look up the rates for currencyId via the cMap object.
+
+    // @DOTO investigate in this filter , service.getCurrentExchange can be used instead
     var rates = cMap[currencyId].filter(function (row) {
       return row.date <= date;
     });
