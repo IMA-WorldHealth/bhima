@@ -92,7 +92,7 @@
     "chai-http": "^1.0.0",
     "commitizen": "^2.9.6",
     "cz-conventional-changelog": "^2.0.0",
-    "eslint": "^4.10.0",
+    "eslint": "^4.18.2",
     "eslint-config-airbnb-base": "^12.0.0",
     "eslint-plugin-import": "^2.7.0",
     "gulp": "^3.9.1",
