@@ -12,18 +12,16 @@ TrialBalanceOverviewController.$inject = [
  * This controller is responsible for displaying the Trial Balance data to the user.
  */
 function TrialBalanceOverviewController(Session, TrialBalance, Notify, uiGridConstants, GridExport) {
-  var vm = this;
-  var currencyId = Session.enterprise.currency_id;
+  const vm = this;
+  const currencyId = Session.enterprise.currency_id;
 
-  var columns;
-
-  var GRID_HEADER_ERROR_CLASS = 'ui-grid-header-cell-error';
-  var GRID_HEADER_DEFAULT_CLASS = 'ui-grid-header-cell-primary';
+  const GRID_HEADER_ERROR_CLASS = 'ui-grid-header-cell-error';
+  const GRID_HEADER_DEFAULT_CLASS = 'ui-grid-header-cell-primary';
 
   // default false
   vm.loading = false;
 
-  columns = [{
+  const columns = [{
     field            : 'hrLabel',
     displayName      : 'TABLE.COLUMNS.ACCOUNT',
     headerCellFilter : 'translate',
@@ -79,7 +77,7 @@ function TrialBalanceOverviewController(Session, TrialBalance, Notify, uiGridCon
     flatEntityAccess  : true,
     columnDefs        : columns,
     enableColumnResizing : true,
-    onRegisterApi : onRegisterApi,
+    onRegisterApi,
   };
 
   function onRegisterApi(api) {
@@ -87,9 +85,7 @@ function TrialBalanceOverviewController(Session, TrialBalance, Notify, uiGridCon
   }
 
   // FIXME(@jniles) - this is kind of hacky
-  TrialBalance.bindGridExporter(
-    new GridExport(vm.gridOptions, 'all', 'visible')
-  );
+  TrialBalance.bindGridExporter(new GridExport(vm.gridOptions, 'all', 'visible'));
 
   /**
    * @function errorHandler
@@ -117,22 +113,21 @@ function TrialBalanceOverviewController(Session, TrialBalance, Notify, uiGridCon
 
     // fetch the trial balance summary.
     TrialBalance.summary()
-      .then(function (summary) {
+      .then(summary => {
         vm.gridOptions.data = summary;
       })
       .catch(errorHandler)
       .finally(toggleLoadingIndicator);
 
     TrialBalance.errors()
-      .then(function (errors) {
-        var headerCellClass;
-        var hasErrors = Boolean(errors.length);
+      .then(errors => {
+        const hasErrors = Boolean(errors.length);
 
         // only show the column footer if there are errors in the grid.
         vm.gridOptions.showColumnFooter = hasErrors;
 
-        headerCellClass = hasErrors ? GRID_HEADER_ERROR_CLASS : GRID_HEADER_DEFAULT_CLASS;
-        angular.forEach(columns, function (column) {
+        const headerCellClass = hasErrors ? GRID_HEADER_ERROR_CLASS : GRID_HEADER_DEFAULT_CLASS;
+        angular.forEach(columns, column => {
           column.headerCellClass = headerCellClass;
         });
 
