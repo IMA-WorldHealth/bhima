@@ -20,12 +20,12 @@ const data = {
   lang : 'fr',
 };
 
-const timestamp = new Date().getTime();
+const random = Math.ceil(Math.random() * (10 ** 9));
 
 const fixturesPath = path.resolve('test/fixtures');
 const htmlFile = path.join(fixturesPath, '/pdf-sample.html');
-const generatedFile = path.join(fixturesPath, '/pdf-sample.pdf');
-const temporaryFile = path.join(fixturesPath, `/pdf-${timestamp}.pdf`);
+const pdfFile = path.join(fixturesPath, '/pdf-sample.pdf');
+const temporaryFile = path.join(fixturesPath, `/pdf-${random}.pdf`);
 
 function PDFRenderUnitTest() {
   it('#wkhtmltopdf() creates correctly a PDF file from an HTML', async () => {
@@ -47,7 +47,7 @@ function PDFRenderUnitTest() {
 
     // give the giant string to the render method
     const rendered = await pdf.render({}, tmpl, {});
-    const cached = await fs.readFile(generatedFile);
+    const cached = await fs.readFile(pdfFile);
 
     expect(isBufferInstance(rendered)).to.equal(true);
     expect(isBufferInstance(cached)).to.equal(true);
