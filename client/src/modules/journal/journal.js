@@ -169,13 +169,8 @@ function JournalController(
     headerCellFilter : 'translate',
     visible : false,
     enableCellEdit : false,
-  }, {
-    field : 'period_end',
-    displayName : 'TABLE.COLUMNS.PERIOD',
-    headerCellFilter : 'translate',
-    cellTemplate : 'modules/templates/bhPeriod.tmpl.html',
-    visible : false,
-  }, {
+  },
+  {
     field : 'trans_id',
     displayName : 'TABLE.COLUMNS.TRANSACTION',
     headerCellFilter : 'translate',
