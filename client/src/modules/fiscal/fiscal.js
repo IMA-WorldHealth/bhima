@@ -6,8 +6,8 @@ FiscalController.$inject = [
 ];
 
 function FiscalController($state, Fiscal, ModalService, Notify, $window) {
-  var vm = this;
-  var today = new Date();
+  const vm = this;
+  const today = new Date();
 
   // pagination configuration
   /** @todo this should all be moved to a component */
@@ -32,19 +32,19 @@ function FiscalController($state, Fiscal, ModalService, Notify, $window) {
   // refresh Fiscal Year
   function refreshFiscalYear() {
     return Fiscal.read(null, { detailed : 1 })
-      .then(function (fiscalYears) {
+      .then((fiscalYears) => {
         vm.fiscalYears = fiscalYears;
-      }).catch(function (err) {
+      }).catch((err) => {
         vm.loadingError = true;
         Notify.handleError(err);
-      }).finally(function () {
+      }).finally(() => {
         vm.loadingState = false;
       });
   }
 
   // Get the fiscal Year By Date
   Fiscal.fiscalYearDate({ date : today })
-    .then(function (current) {
+    .then((current) => {
       vm.current = current;
       vm.currentFiscalYearId = vm.current[0].fiscal_year_id;
       vm.previousFiscalYearId = vm.current[0].previous_fiscal_year_id;
@@ -54,15 +54,15 @@ function FiscalController($state, Fiscal, ModalService, Notify, $window) {
   // switch to delete warning mode
   function del(fiscal) {
     ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
-      .then(function (bool) {
+      .then((bool) => {
         // if the user clicked cancel, reset the view and return
         if (!bool) { return; }
         Fiscal.delete(fiscal.id)
-          .then(function () {
+          .then(() => {
             Notify.success('FORM.INFO.DELETE_SUCCESS');
             return refreshFiscalYear();
           })
-          .catch(function (err) {
+          .catch(() => {
             Notify.danger('FISCAL.CAN_NOT_DELETE_FY');
           });
       });
@@ -101,13 +101,13 @@ function FiscalController($state, Fiscal, ModalService, Notify, $window) {
     }
 
     Fiscal.read(null, option)
-      .then(function (fiscalYears) {
+      .then((fiscalYears) => {
         vm.fiscalYears = fiscalYears;
       })
-      .catch(function (err) {
+      .catch((err) => {
         vm.loadingError = true;
         Notify.handleError(err);
-      }).finally(function () {
+      }).finally(() => {
         vm.loadingState = false;
       });
   }

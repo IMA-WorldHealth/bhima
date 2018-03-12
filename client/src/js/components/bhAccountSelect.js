@@ -5,11 +5,11 @@ angular.module('bhima.components')
     transclude  : true,
     bindings    : {
       accountId        : '<',
-      accountTypeId :  '<',
       onSelectCallback : '&',
       disable          : '<?',
       required         : '<?',
       classe           : '@?',
+      accountTypeId :  '<?',
       label            : '@?',
       name             : '@?',
       excludeTitleAccounts : '@?',
@@ -29,18 +29,11 @@ function AccountSelectController(Accounts, AppCache, $timeout, bhConstants, $sco
   var hasCachedAccounts = false;
   var cache = new AppCache('bhAccountSelect');
 
-  // cache accounts locally for three seconds
-  var CACHE_TIMEOUT = 3000;
-
   // fired at the beginning of the account select
   $ctrl.$onInit = function $onInit() {
 
-    $ctrl.classe = $ctrl.accountTypeId || '';
     // cache the title account ID for convenience
     $ctrl.TITLE_ACCOUNT_ID = bhConstants.accounts.TITLE;
-
-    // To filter accounts by class of accounts
-    $ctrl.classe = $ctrl.classe || '';
 
     // translated label for the form input
     $ctrl.label = $ctrl.label || 'FORM.LABELS.ACCOUNT';
@@ -95,17 +88,22 @@ function AccountSelectController(Accounts, AppCache, $timeout, bhConstants, $sco
 
   // loads accounts from the server
   function loadHttpAccounts() {
-    var detailedRequest = $ctrl.classe ? 1 : 0;
-    var params = { detailed : detailedRequest, classe : $ctrl.classe };
-    if ($ctrl.accountTypeId) {
-      params.type_id = $ctrl.accountTypeID;
+    const detail = $ctrl.accountTypeId || $ctrl.classe;
+    const detailedRequest = detail ? 1 : 0;
+    const params = { detailed : detailedRequest };
+
+    if ($ctrl.classe) {
+      params.classe = $ctrl.classe.split(',').map(num => { return parseInt(num, 10); });
     }
-    
+    if ($ctrl.accountTypeId) {
+      params.type_id = $ctrl.accountTypeId.split(',').map(num => { return parseInt(num, 10); });
+    }
+
     // load accounts
     Accounts.read(null, params)
       .then(function (elements) {
         // bind the accounts to the controller
-        var accounts = Accounts.order(elements);
+        let accounts = Accounts.order(elements);
 
         if ($ctrl.excludeTitleAccounts) {
           accounts = Accounts.filterTitleAccounts(accounts);

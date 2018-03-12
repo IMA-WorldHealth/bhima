@@ -128,6 +128,7 @@ function remove(req, res, next) {
 function list(req, res, next) {
   const filters = new FilterParser(req.query, { tableAlias : 'a' });
 
+
   let sql =
     'SELECT a.id, a.number, a.label, a.locked, a.type_id, a.parent FROM account AS a';
 
@@ -143,8 +144,8 @@ function list(req, res, next) {
     `;
   }
 
-  filters.equals('classe');
-
+  filters.equals('classe', 'classe', 'a', true);
+  filters.equals('type_id', 'type_id', 'a', true);
   filters.equals('locked');
 
   filters.setOrder('ORDER BY a.number');

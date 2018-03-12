@@ -1,15 +1,15 @@
 angular.module('bhima.controllers')
-  .controller('ClosingFiscalYearModalController', ClosingFiscalYearModalController);
+  .controller('ClosingFiscalYearModalController', ClosingFYModalCtrl);
 
 // dependencies injection
-ClosingFiscalYearModalController.$inject = [
+ClosingFYModalCtrl.$inject = [
   'NotifyService', 'FiscalService', 'ModalService',
   'SessionService', '$uibModalInstance', 'data',
-  'uiGridGroupingConstants',
+  'uiGridGroupingConstants', '$filter',
 ];
 
 // The closing fiscal year controller
-function ClosingFiscalYearModalController(Notify, Fiscal, Modal, Session, Instance, Data, uiGridGroupingConstants) {
+function ClosingFYModalCtrl(Notify, Fiscal, Modal, Session, Instance, Data, uiGridGroupingConstants, $filter) {
   const vm = this;
 
   // global
@@ -22,39 +22,49 @@ function ClosingFiscalYearModalController(Notify, Fiscal, Modal, Session, Instan
 
   // exploitation grid
   const columns = [{
-    field            : 'type',
-    displayName      : '',
-    cellTemplate     : 'modules/fiscal/templates/exploitation_type.tmpl.html',
-    width            : 25,
+    field : 'number',
+    displayName : 'ACCOUNT.NUMBER',
+    headerCellFilter : 'translate',
+    sort : {
+      direction : 'asc',
+      priority : 0,
+    },
   }, {
-    field            : 'number',
-    displayName      : 'ACCOUNT.NUMBER',
+    field : 'label',
+    displayName : 'TABLE.COLUMNS.ACCOUNT',
     headerCellFilter : 'translate',
   }, {
-    field            : 'label',
-    displayName      : 'TABLE.COLUMNS.ACCOUNT',
-    headerCellFilter : 'translate',
-  }, {
-    field            : 'debit',
-    displayName      : 'TABLE.COLUMNS.DEBIT',
-    headerCellFilter : 'translate',
-    treeAggregationType : uiGridGroupingConstants.aggregation.SUM,
-    aggregationHideLabel : true,
-  }, {
-    field            : 'credit',
-    displayName      : 'TABLE.COLUMNS.CREDIT',
+    field : 'debit',
+    displayName : 'TABLE.COLUMNS.DEBIT',
+    cellClass : 'text-right',
     headerCellFilter : 'translate',
     treeAggregationType : uiGridGroupingConstants.aggregation.SUM,
-    aggregationHideLabel : true,
+    customTreeAggregationFinalizerFn : (aggregation) => {
+      aggregation.rendered = $filter('currency')(aggregation.value, vm.currency_id);
+    },
+  }, {
+    field : 'credit',
+    displayName : 'TABLE.COLUMNS.CREDIT',
+    cellClass : 'text-right',
+    headerCellFilter : 'translate',
+    treeAggregationType : uiGridGroupingConstants.aggregation.SUM,
+    customTreeAggregationFinalizerFn : (aggregation) => {
+      aggregation.rendered = $filter('currency')(aggregation.value, vm.currency_id);
+    },
   }];
 
   vm.gridOptions = {
-    columnDefs        : columns,
+    columnDefs : columns,
     enableColumnMenus : false,
-    showColumnFooter  : true,
-    appScopeProvider  : vm,
-    flatEntityAccess  : true,
-    fastWatch         : true,
+    showColumnFooter : true,
+    appScopeProvider : vm,
+    flatEntityAccess : true,
+    fastWatch : true,
+    enableSorting : true,
+  };
+
+  vm.gridOptions.onRegisterApi = function onRegisterApi(gridApi) {
+    vm.gridApi = gridApi;
   };
 
   function onSelectAccount(account) {
@@ -67,7 +77,7 @@ function ClosingFiscalYearModalController(Notify, Fiscal, Modal, Session, Instan
 
       // get balance until period N of the year to close
       return Fiscal.periodicBalance({
-        id            : vm.fiscal.id,
+        id : vm.fiscal.id,
         period_number : vm.fiscal.number_of_months, // last month
       });
     })
@@ -96,7 +106,9 @@ function ClosingFiscalYearModalController(Notify, Fiscal, Modal, Session, Instan
 
   // step handler
   function stepForward(form) {
-    if (form.$invalid) { return; }
+    if (form.$invalid) {
+      return;
+    }
 
     if (vm.steps !== 'summary') {
       vm.steps = 'summary';
@@ -108,21 +120,26 @@ function ClosingFiscalYearModalController(Notify, Fiscal, Modal, Session, Instan
   // confirm closing
   function confirmClosing() {
     const request = {
-      pattern     : vm.fiscal.label,
+      pattern : vm.fiscal.label,
       patternName : 'FORM.PATTERNS.FISCAL_YEAR_NAME',
+      noText : true,
     };
 
     return Modal.openConfirmDialog(request)
       .then(ans => {
-        if (!ans) { return 0; }
+        if (!ans) {
+          return 0;
+        }
 
         return Fiscal.closing({
-          id         : vm.fiscal.id,
+          id : vm.fiscal.id,
           account_id : vm.resultAccount.id,
         });
       })
       .then(res => {
-        if (!res) { return; }
+        if (!res) {
+          return;
+        }
 
         Instance.close(true);
         Notify.success('FISCAL.CLOSING_SUCCESS');
