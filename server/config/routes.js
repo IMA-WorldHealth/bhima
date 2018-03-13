@@ -430,7 +430,6 @@ exports.configure = function configure(app) {
 
   // misc patients financial routes
   app.get('/patients/:uuid/finance/activity', patients.getFinancialStatus);
-  app.get('/patients/:uuid/invoices/latest', patients.latestInvoice);
   app.get('/patients/:uuid/finance/balance', financialPatient.balance);
 
 

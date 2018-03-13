@@ -16,15 +16,15 @@ function endfold {
   fi
 }
 
-# run integration tests
-startfold "Running Integration Tests..." "test-integration";
-./sh/integration-tests.sh
-endfold "test-integration" ;
-
 # run karma (client unit) tests
 startfold "Running Client Unit Tests..." "test-client-unit";
 ./node_modules/.bin/karma start --single-run --no-auto-watch --concurrency 1 karma.conf.js
 endfold "test-client-unit" ;
+
+# run integration tests
+startfold "Running Integration Tests..." "test-integration";
+./sh/integration-tests.sh
+endfold "test-integration" ;
 
 #run server-unit test
 startfold "Running server Unit Tests ......" "server-unit"

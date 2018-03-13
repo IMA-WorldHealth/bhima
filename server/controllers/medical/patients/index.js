@@ -12,7 +12,6 @@
  * @requires q
  * @requires lodash
  * @requires @ima-worldhealth/topic
- * @requires debug
  * @requires lib/db
  * @requires lib/uuid/v4
  * @requires lib/errors/BadRequest
@@ -29,10 +28,8 @@
  */
 
 const _ = require('lodash');
-const q = require('q');
 const uuid = require('uuid/v4');
 const topic = require('@ima-worldhealth/topic');
-const debug = require('debug')('patients');
 
 const identifiers = require('../../../config/identifiers');
 
@@ -82,9 +79,6 @@ exports.lookupPatient = lookupPatient;
 
 /** expose custom method to lookup patients by their debtor uuid */
 exports.lookupByDebtorUuid = lookupByDebtorUuid;
-
-// Get the latest patient Invoice
-exports.latestInvoice = latestInvoice;
 
 exports.getFinancialStatus = getFinancialStatus;
 
@@ -627,121 +621,6 @@ function subsidies(req, res, next) {
     .catch(next)
     .done();
 }
-
-function loadLatestInvoice(inv) {
-  const debtorID = inv.debtor_uuid;
-  const invoiceID = inv.uuid;
-
-  debug(`#loadLatestInvoice(): debtor_uuid ${debtorID}`);
-  debug(`#loadLatestInvoice(): invoiceID : ${invoiceID}`);
-
-  const combinedLedger = `
-    (
-      (SELECT record_uuid, debit_equiv, credit_equiv, reference_uuid, entity_uuid FROM posting_journal)
-      UNION
-      (SELECT record_uuid, debit_equiv, credit_equiv, reference_uuid, entity_uuid FROM general_ledger)
-    ) AS comb`;
-
-  const sql =
-    `SELECT BUID(i.uuid) as uid, CONCAT_WS('.', '${identifiers.INVOICE.key}', project.abbr, reference) AS reference,
-        credit, debit, (debit - credit) as balance, BUID(entity_uuid) as entity_uuid
-      FROM (
-        SELECT uuid, SUM(debit) as debit, SUM(credit) as credit, entity_uuid
-        FROM (
-          SELECT record_uuid as uuid, debit_equiv as debit, credit_equiv as credit, entity_uuid
-          FROM ${combinedLedger}
-          WHERE record_uuid IN (?) AND entity_uuid = ?
-        UNION ALL
-          SELECT reference_uuid as uuid, debit_equiv as debit, credit_equiv as credit, entity_uuid
-          FROM ${combinedLedger}
-          WHERE reference_uuid IN (?) AND entity_uuid = ?
-        ) AS ledger
-        GROUP BY entity_uuid
-      ) AS i JOIN invoice ON i.uuid = invoice.uuid
-      JOIN project ON invoice.project_id = project.id `;
-
-  const sql2 =
-    `SELECT COUNT(i.uuid) as numberPayment
-      FROM (
-        SELECT uuid,  debit, credit, entity_uuid
-        FROM (
-          SELECT record_uuid as uuid, debit_equiv as debit, credit_equiv as credit, entity_uuid
-          FROM ${combinedLedger}
-          WHERE record_uuid IN (?) AND entity_uuid = ? AND debit_equiv = 0
-        UNION ALL
-          SELECT reference_uuid as uuid, debit_equiv as debit, credit_equiv as credit, entity_uuid
-          FROM ${combinedLedger}
-          WHERE reference_uuid IN (?) AND entity_uuid = ? AND debit_equiv = 0
-        ) AS ledger
-      ) AS i JOIN invoice ON i.uuid = invoice.uuid
-      JOIN project ON invoice.project_id = project.id `;
-
-  const sql3 =
-    `SELECT COUNT(invoice.uuid) as 'invoicesLength'
-       FROM invoice
-       JOIN user ON user.id = invoice.user_id
-       WHERE debtor_uuid = ? AND invoice.reversed = 0
-       ORDER BY date DESC`;
-
-
-  const execSql = db.one(sql, [invoiceID, debtorID, invoiceID, debtorID]);
-  const execSql2 = db.one(sql2, [invoiceID, debtorID, invoiceID, debtorID]);
-  const execSql3 = db.one(sql3, [debtorID]);
-
-  return q.all([execSql, execSql2, execSql3])
-    .spread((invoice, payment, invoicesLength) => {
-      // collapse all returned values into a single object
-      const merged = _.assign({}, invoice, payment, invoicesLength);
-
-      // columns
-      const columns = [
-        'uuid', 'debitor_uuid', 'numberPayment', 'date', 'cost', 'display_name',
-        'reference', 'credit', 'debit', 'balance', 'entity_uuid', 'invoicesLength',
-        'cost', 'debtor_uuid', 'uid',
-      ];
-
-      return _.pick(merged, columns);
-    });
-}
-
-/*
- Search for information about the latest patient Invoice - accepts patient UUID
- */
-function latestInvoice(req, res, next) {
-  const uid = req.params.uuid;
-
-  debug('#latestInvoice(): got query for %s', uid);
-
-  const REVERSE_TYPE_ID = 10;
-
-  const sql = `
-    SELECT invoice.uuid, invoice.debtor_uuid, invoice.date, user.display_name, invoice.cost
-    FROM invoice
-    JOIN user ON user.id = invoice.user_id
-    JOIN patient on patient.debtor_uuid = invoice.debtor_uuid
-    WHERE patient.uuid = ?
-    AND invoice.uuid NOT IN (SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = ${REVERSE_TYPE_ID})
-    ORDER BY date DESC
-    LIMIT 1;
-  `;
-
-  let latestInv;
-
-  db.exec(sql, [db.bid(uid)])
-    .then((results) => {
-      const hasLatestInvoice = results.length > 0;
-      [latestInv] = results;
-      const skip = q({}); // fake promise to simply skip the latest invoice loading.
-      return hasLatestInvoice ? loadLatestInvoice(latestInv) : skip;
-    })
-    .then((invoice) => {
-      latestInv = _.extend(latestInv, invoice);
-      res.status(200).json(latestInv);
-    })
-    .catch(next)
-    .done();
-}
-
 
 /**
  * @function getFinancialStatus

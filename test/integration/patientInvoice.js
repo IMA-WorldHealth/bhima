@@ -16,8 +16,6 @@ describe('(/invoices) Patient Invoices', () => {
   const numDeletedInvoices = 1;
 
   const fetchableInvoiceUuid = '957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6';
-  const debtorUuid = '3be232f9-a4b9-4af6-984c-5d3f87d5c107';
-  const patientUuid = '274c51ae-efcc-4238-98c6-f402bfb39866';
 
   // run the 'InvoicingFeeScenario' test suite
   describe('(POST /invoices)', InvoicingFeeScenario);
@@ -54,25 +52,13 @@ describe('(/invoices) Patient Invoices', () => {
       .catch(helpers.handler);
   });
 
-  it('GET patients/:uuid/invoices/latest shows the most recent bill of a patient', () => {
-    return agent.get(`/patients/${patientUuid}/invoices/latest`)
-      .then(function (result) {
-        expect(result).to.have.status(200);
-        expect(result).to.be.json;
-        expect(result.body).to.have.keys('uid', 'reference', 'credit', 'debit', 'balance', 'entity_uuid', 'uuid', 'display_name', 'debtor_uuid', 'date', 'cost', 'numberPayment', 'invoicesLength');
-        expect(result.body.entity_uuid).to.equal(debtorUuid);
-      })
-      .catch(helpers.handler);
-  });
-
-
   describe('(/invoices) Search interface for the invoices table', () => {
 
     // no parameters provided
     it('GET /invoices/ should return all invoices if no query string provided', () => {
       return agent.get('/invoices')
         .then(res => {
-          helpers.api.listed(res, numInvoices + numCreatedInvoices - numDeletedInvoices);
+          helpers.api.listed(res, (numInvoices + numCreatedInvoices) - numDeletedInvoices);
         })
         .catch(helpers.handler);
     });

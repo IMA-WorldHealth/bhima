@@ -40,7 +40,7 @@
     "FINANCES" : {
       "IN_GOOD_STANDING" : "Tout a l'air normal!",
       "NOT_IN_GOOD_STANDING" : "Il y a quelques irrégularités dans l'activité financière.",
-      "HAS_CREDITOR_BALANCE" : "Le patient a un solde créditeur (négatif) de <b>({{ balance | currency:currency_id}})</b>. Cela peut être intentionnel, mais peut indiquer un problème.",
+      "HAS_CREDITOR_BALANCE" : "Le patient a un solde créditeur de <b>({{ balance | currency:currency_id}})</b>. Cela peut être intentionnel, mais peut indiquer un problème.",
       "HAS_OVERDUE_BALANCE" : "Le patient a une dette de <b>{{date | date}}</b>. Envisager d'annuler la dette ou de suivre avec le patient.",
       "HAS_EXCESS_BALANCE" : "Le patient a une dette de <strong>{{ balance | currency: currency_id}} </strong>. C'est un montant important de dette et peut présenter un problème de recouvrement de la dette.",
       "FIRST_TRANSACTION" : "Première Transaction",
