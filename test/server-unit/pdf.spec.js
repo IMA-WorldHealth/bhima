@@ -23,13 +23,14 @@ const data = {
 const random = Math.ceil(Math.random() * (10 ** 9));
 
 const fixturesPath = path.resolve('test/fixtures');
+const artifactsPath = path.resolve('test/artifacts');
 const htmlFile = path.join(fixturesPath, '/pdf-sample.html');
 const pdfFile = path.join(fixturesPath, '/pdf-sample.pdf');
-const temporaryFile = path.join(fixturesPath, `/pdf-${random}.pdf`);
+const temporaryFile = path.join(artifactsPath, `/pdf-${random}.pdf`);
 
 function PDFRenderUnitTest() {
-  it('#wkhtmltopdf() creates correctly a PDF file from an HTML', async () => {
-    const wk = await exec(`wkhtmltopdf ${htmlFile} ${temporaryFile}`);
+  it('wkhtmltopdf is installed and creates a PDF from an HTML file', async () => {
+    await exec(`wkhtmltopdf ${htmlFile} ${temporaryFile}`);
     fs.unlink(temporaryFile);
   });
 
@@ -40,7 +41,7 @@ function PDFRenderUnitTest() {
     expect(isBuffer && hasValidVersion).to.be.equal(true);
   });
 
-  it('#pdf.render() renders as well #wkhtmltopdf the same PDF file from an HTML', async () => {
+  it('#pdf.render() renders an identical PDF given an HTML template', async () => {
 
     // load the HTML template into memory as a giant string
     const tmpl = await fs.readFile(htmlFile, 'utf8');
@@ -56,7 +57,10 @@ function PDFRenderUnitTest() {
     const slicedRendered = sliceOutCreationDate(rendered);
     const slicedCached = sliceOutCreationDate(cached);
 
-    expect(slicedRendered).to.deep.equal(slicedCached);
+    // write file to artifacts for AWS S3 storage.
+    // await fs.writeFile(path.join(artifactsPath, 'generated.pdf'), rendered);
+
+    expect(sliceOutRandomMetadata(slicedRendered)).to.deep.equal(sliceOutRandomMetadata(slicedCached));
   });
 }
 
@@ -83,6 +87,21 @@ function hasValidPdfVersion(fileInString) {
   const regex = new RegExp(/%PDF-1.[0-7]/); // This Regular Expression is used to check if the file is valid
   const result = pdfHeader.match(regex);
   return !!(result.length);
+}
+
+/**
+ * @function sliceOutRandomMetadata
+ * @description
+ * Slices out random binary data at the end of the PDF.
+ *
+ * @param {Buffer} buffer
+ */
+function sliceOutRandomMetadata(buffer) {
+  const start = buffer.indexOf('\nxref\n0 17');
+  const end = buffer.indexOf('%%EOF');
+  const firstPart = buffer.slice(0, start);
+  const secondPart = buffer.slice(end);
+  return Buffer.concat([firstPart, secondPart]);
 }
 
 /**

@@ -29,6 +29,7 @@ before_script:
   - ./sh/dependencies.sh
 
 script:
+  - mkdir test/artifacts
   - npm run test
 
 git:
