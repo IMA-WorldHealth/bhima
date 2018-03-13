@@ -12,6 +12,7 @@
  * @requires q
  * @requires lodash
  * @requires @ima-worldhealth/topic
+ * @requires debug
  * @requires lib/db
  * @requires lib/uuid/v4
  * @requires lib/errors/BadRequest
@@ -25,15 +26,13 @@
  * @requires medical/patients/documents
  * @requires medical/patients/vists
  * @requires medical/patients/pictures
- *
- * @todo Review naming conventions
- * @todo Remove or refactor methods to fit new API standards
  */
 
 const _ = require('lodash');
 const q = require('q');
 const uuid = require('uuid/v4');
 const topic = require('@ima-worldhealth/topic');
+const debug = require('debug')('patients');
 
 const identifiers = require('../../../config/identifiers');
 
@@ -42,6 +41,7 @@ const db = require('../../../lib/db');
 const FilterParser = require('../../../lib/filter');
 const BadRequest = require('../../../lib/errors/BadRequest');
 const NotFound = require('../../../lib/errors/NotFound');
+const Debtors = require('../../finance/debtors');
 
 const groups = require('./groups');
 const documents = require('./documents');
@@ -85,6 +85,8 @@ exports.lookupByDebtorUuid = lookupByDebtorUuid;
 
 // Get the latest patient Invoice
 exports.latestInvoice = latestInvoice;
+
+exports.getFinancialStatus = getFinancialStatus;
 
 /** @todo Method handles too many operations */
 function create(req, res, next) {
@@ -225,18 +227,21 @@ function lookupPatient(patientUuid) {
   // convert uuid to database usable binary uuid
   const buid = db.bid(patientUuid);
 
-  // @FIXME(sfount) ALL patient queries should use the same column selection and gaurantee the same information
+  // @FIXME(sfount) ALL patient queries should use the same column selection and guarantee the same information
   const sql = `
     SELECT BUID(p.uuid) as uuid, p.project_id, BUID(p.debtor_uuid) AS debtor_uuid, p.display_name, p.hospital_no,
       p.sex, p.registration_date, p.email, p.phone, p.dob, p.dob_unknown_date,
-      p.health_zone, p.health_area, BUID(p.origin_location_id) as origin_location_id, BUID(p.current_location_id) as current_location_id,
+      p.health_zone, p.health_area, BUID(p.origin_location_id) as origin_location_id,
+      BUID(p.current_location_id) as current_location_id,
       CONCAT_WS('.', '${identifiers.PATIENT.key}', proj.abbr, p.reference) AS reference, p.title, p.address_1,
       p.address_2, p.father_name, p.mother_name, p.religion, p.marital_status, p.profession, p.employer, p.spouse,
       p.spouse_profession, p.spouse_employer, p.notes, p.avatar, proj.abbr, d.text,
       dg.account_id, BUID(dg.price_list_uuid) AS price_list_uuid, dg.is_convention, BUID(dg.uuid) as debtor_group_uuid,
       dg.locked, dg.name as debtor_group_name, u.username, u.display_name AS userName, a.number
     FROM patient AS p JOIN project AS proj JOIN debtor AS d JOIN debtor_group AS dg JOIN user AS u JOIN account AS a
-    ON p.debtor_uuid = d.uuid AND d.group_uuid = dg.uuid AND p.project_id = proj.id AND p.user_id = u.id AND a.id = dg.account_id
+      ON p.debtor_uuid = d.uuid AND d.group_uuid = dg.uuid
+      AND p.project_id = proj.id AND p.user_id = u.id
+      AND a.id = dg.account_id
     WHERE p.uuid = ?;
   `;
 
@@ -626,6 +631,10 @@ function subsidies(req, res, next) {
 function loadLatestInvoice(inv) {
   const debtorID = inv.debtor_uuid;
   const invoiceID = inv.uuid;
+
+  debug(`#loadLatestInvoice(): debtor_uuid ${debtorID}`);
+  debug(`#loadLatestInvoice(): invoiceID : ${invoiceID}`);
+
   const combinedLedger = `
     (
       (SELECT record_uuid, debit_equiv, credit_equiv, reference_uuid, entity_uuid FROM posting_journal)
@@ -701,6 +710,8 @@ function loadLatestInvoice(inv) {
 function latestInvoice(req, res, next) {
   const uid = req.params.uuid;
 
+  debug('#latestInvoice(): got query for %s', uid);
+
   const REVERSE_TYPE_ID = 10;
 
   const sql = `
@@ -719,13 +730,38 @@ function latestInvoice(req, res, next) {
   db.exec(sql, [db.bid(uid)])
     .then((results) => {
       const hasLatestInvoice = results.length > 0;
-      latestInv = results[0];
+      [latestInv] = results;
       const skip = q({}); // fake promise to simply skip the latest invoice loading.
       return hasLatestInvoice ? loadLatestInvoice(latestInv) : skip;
     })
     .then((invoice) => {
       latestInv = _.extend(latestInv, invoice);
       res.status(200).json(latestInv);
+    })
+    .catch(next)
+    .done();
+}
+
+
+/**
+ * @function getFinancialStatus
+ *
+ * @description
+ * returns the financial activity of the patient.
+ */
+function getFinancialStatus(req, res, next) {
+  const uid = req.params.uuid;
+  const data = {};
+
+  lookupPatient(uid)
+    .then(patient => {
+      _.extend(data, { patient });
+      return Debtors.getFinancialActivity(patient.debtor_uuid);
+    })
+    .then(({ transactions, aggregates }) => {
+      _.extend(data, { transactions, aggregates });
+
+      res.status(200).send(data);
     })
     .catch(next)
     .done();

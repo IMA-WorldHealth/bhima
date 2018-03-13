@@ -10,11 +10,13 @@
 *
 * @module controllers/finance/debtors
 *
+* @requires q
 * @requires lib/db
 * @requires lib/errors/NotFound
 * @requires lib/errors/BadRequest
 */
 
+const q = require('q');
 const db = require('../../../lib/db');
 const NotFound = require('../../../lib/errors/NotFound');
 
@@ -27,6 +29,7 @@ exports.invoices = invoices;
 exports.invoiceBalances = invoiceBalances;
 exports.getDebtorInvoices = getDebtorInvoices;
 exports.balance = balance;
+exports.getFinancialActivity = getFinancialActivity;
 
 /**
  * List of debtors
@@ -232,42 +235,70 @@ function invoiceBalances(debtorUuid, uuids, options = {}) {
  * over the dataset queried only the debtor
  *
  * @method balance
- *
- * @todo - this function should be replaced by an SQL function stored in
- * procedures.sql for easy lookup
  */
 function balance(debtorUuid) {
   const debtorUid = db.bid(debtorUuid);
 
-  // make sure the debtor exists
-  let sql =
-    'SELECT BUID(uuid) as uuid FROM debtor WHERE uuid = ?;';
+  const sql = `
+    SELECT IFNULL(SUM(ledger.debit_equiv), 0) AS debit, IFNULL(SUM(ledger.credit_equiv), 0) AS credit,
+      IFNULL(SUM(ledger.debit_equiv - ledger.credit_equiv), 0) AS balance, MIN(trans_date) AS since,
+      MAX(trans_date) AS until
+    FROM (
+      SELECT debit_equiv, credit_equiv, entity_uuid, trans_date FROM posting_journal WHERE entity_uuid = ?
+      UNION ALL
+      SELECT debit_equiv, credit_equiv, entity_uuid, trans_date FROM general_ledger WHERE entity_uuid = ?
+    ) AS ledger
+    GROUP BY ledger.entity_uuid;
+  `;
 
-  return db.exec(sql, [debtorUid])
-    .then(rows => {
-      // if the debtor doesn't exist, throw an error
-      if (!rows.length) {
-        throw new NotFound(`Could not find a debtor with uuid ${debtorUid}`);
+  return db.exec(sql, [debtorUid, debtorUid]);
+}
+
+/**
+ * @function getFinancialActivity
+ *
+ * @description
+ * returns all transactions and balances associated with the debtor (or creditor).
+ */
+function getFinancialActivity(debtorUuid) {
+  const uid = db.bid(debtorUuid);
+  const sql = `
+    SELECT trans_id, BUID(entity_uuid) AS entity_uuid, description,
+      BUID(record_uuid) AS record_uuid, trans_date, debit, credit, document, balance,
+      (@cumsum := balance + @cumsum) AS cumsum
+    FROM (
+      SELECT p.trans_id, p.entity_uuid, p.description, p.record_uuid, p.trans_date,
+        SUM(p.debit_equiv) AS debit, SUM(p.credit_equiv) AS credit, dm.text AS document,
+        SUM(p.debit_equiv) - SUM(p.credit_equiv) AS balance, 0 AS posted
+      FROM posting_journal AS p
+        LEFT JOIN document_map AS dm ON dm.uuid = p.record_uuid
+      WHERE p.entity_uuid = ?
+      GROUP BY p.record_uuid
+
+      UNION ALL
+
+      SELECT g.trans_id, g.entity_uuid, g.description, g.record_uuid, g.trans_date,
+        SUM(g.debit_equiv) AS debit, SUM(g.credit_equiv) AS credit, dm.text AS document,
+        SUM(g.debit_equiv) - SUM(g.credit_equiv) AS balance, 1 AS posted
+      FROM general_ledger AS g
+        LEFT JOIN document_map AS dm ON dm.uuid = g.record_uuid
+      WHERE g.entity_uuid = ?
+      GROUP BY g.record_uuid
+    )c, (SELECT @cumsum := 0)z
+    ORDER BY trans_date ASC, trans_id;
+  `;
+
+
+  return q.all([
+    db.exec(sql, [uid, uid]),
+    balance(debtorUuid),
+  ])
+    .spread((transactions, aggs) => {
+      if (!aggs.length) {
+        aggs.push({ debit : 0, credit : 0, balance : 0 });
       }
 
-      // select all invoice and payments against invoices from the combined ledger
-      sql = `
-        SELECT SUM(debit - credit) AS balance, BUID(entity_uuid) as entity_uuid
-        FROM (
-          SELECT entity_uuid, record_uuid as uuid, debit_equiv as debit, credit_equiv as credit
-          FROM posting_journal
-          WHERE entity_uuid = ?
-
-          UNION ALL
-
-          SELECT entity_uuid, record_uuid as uuid, debit_equiv as debit, credit_equiv as credit
-          FROM general_ledger
-          WHERE entity_uuid = ?
-
-        ) AS ledger
-        GROUP BY ledger.entity_uuid;
-      `;
-
-      return db.one(sql, [debtorUid, debtorUid]);
+      const [aggregates] = aggs;
+      return { transactions, aggregates };
     });
 }

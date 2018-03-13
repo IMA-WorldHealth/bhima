@@ -98,8 +98,6 @@
                   <span class="glyphicon glyphicon-edit"></span>
                   <span translate>PATIENT_EDIT.EDIT_DETAILS</span>
                 </a>
-
-                
               </div>
             </div>
           </div>
@@ -125,11 +123,10 @@
       </div>
 
       <div class="row">
-
         <!-- Patient Bill Panel -->
-        <div class="col-sm-12">
-          <bh-latest-patient-invoice patient-uuid="PatientRecordCtrl.patient.uuid">
-          </bh-latest-patient-invoice>
+        <div class="col-xs-12">
+          <bh-patient-financial-activity patient-uuid="PatientRecordCtrl.patient.uuid">
+          </bh-patient-financial-activity>
         </div>
       </div>
     </div>

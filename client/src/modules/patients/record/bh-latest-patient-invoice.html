@@ -2,14 +2,13 @@
 
 <div class="panel panel-default">
   <div class="panel-heading">
-    <span class="glyphicon glyphicon-file"></span>
-    <strong translate> FORM.LABELS.FINANCIAL_STATUS</strong>
+    <span class="fa fa-clipboard"></span>
+    <span translate>FORM.LABELS.FINANCIAL_STATUS</span>
     <span class="pull-right">
       <bh-pdf-link
-        pdf-url="/reports/finance/financialPatient/{{ $ctrl.patientUuid }}"
+        pdf-url="/reports/finance/financialPatient/{{ ::$ctrl.patientUuid }}"
         disable-cache="true"
-        button-text="FORM.BUTTONS.PRINT_FINANCIAL_ACT"
-      >
+        button-text="FORM.BUTTONS.PRINT_FINANCIAL_ACT">
       </bh-pdf-link>
     </span>
   </div>

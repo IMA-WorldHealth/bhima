@@ -26,11 +26,11 @@ function PatientService(
   Session, $uibModal, Documents, Visits, Filters, AppCache, Periods, Api,
   $httpParamSerializer, Languages, bhConstants
 ) {
-  var baseUrl = '/patients/';
-  var service = new Api(baseUrl);
+  const baseUrl = '/patients/';
+  const service = new Api(baseUrl);
 
-  var patientFilters = new Filters();
-  var filterCache = new AppCache('patient-filters');
+  const patientFilters = new Filters();
+  const filterCache = new AppCache('patient-filters');
 
   service.filters = patientFilters;
   service.create = create;
@@ -41,6 +41,8 @@ function PatientService(
   service.subsidies = subsidies;
   service.openSearchModal = openSearchModal;
   service.searchByName = searchByName;
+
+  service.getFinancialActivity = getFinancialActivity;
 
   // document exposition definition
   service.Documents = Documents;
@@ -59,7 +61,7 @@ function PatientService(
    * @param {String} uuid The patient's UUID
    */
   function latest(uuid) {
-    var path = 'patients/:uuid/invoices/latest';
+    const path = 'patients/:uuid/invoices/latest';
     return service.$http.get(path.replace(':uuid', uuid))
       .then(service.util.unwrapHttpResponse);
   }
@@ -73,7 +75,7 @@ function PatientService(
    * @param {String} uuid The patient's UUID
    */
   function balance(uuid) {
-    var path = 'patients/:uuid/finance/balance';
+    const path = 'patients/:uuid/finance/balance';
     return service.$http.get(path.replace(':uuid', uuid))
       .then(service.util.unwrapHttpResponse);
   }
@@ -88,7 +90,7 @@ function PatientService(
    * @returns {Object}          Promise object returning success/failure confirmation.
    */
   function create(medical, finance) {
-    var formatPatientRequest = {
+    const formatPatientRequest = {
       medical : medical,
       finance : finance,
     };
@@ -109,7 +111,7 @@ function PatientService(
    * @return {Object}               Promise object that will return the groups requested
    */
   function groups(patientUuid) {
-    var path;
+    let path;
 
     // if a patient ID has been specified - return only the patient groups for that patient
     if (angular.isDefined(patientUuid)) {
@@ -134,17 +136,17 @@ function PatientService(
    *                                    confiramtion.
    */
   function updateGroups(uuid, subscribedGroups) {
-    var options = formatGroupOptions(subscribedGroups);
-    var path = baseUrl.concat(uuid, '/groups');
+    const options = formatGroupOptions(subscribedGroups);
+    const path = baseUrl.concat(uuid, '/groups');
 
     return service.$http.post(path, options)
       .then(service.util.unwrapHttpResponse);
   }
 
   function searchByName(options) {
-    var opts = angular.copy(options || {});
+    const opts = angular.copy(options || {});
 
-    var target = baseUrl.concat('search/name');
+    const target = baseUrl.concat('search/name');
 
     return service.$http.get(target, { params : opts })
       .then(service.util.unwrapHttpResponse);
@@ -158,7 +160,7 @@ function PatientService(
    *                                  fees
    */
   function invoicingFees(patientUuid) {
-    var path = patientAttributePath('services', patientUuid);
+    const path = patientAttributePath('services', patientUuid);
     return service.$http.get(path)
       .then(service.util.unwrapHttpResponse);
   }
@@ -170,7 +172,7 @@ function PatientService(
    * @return  {Object}                Promise object returning an array of subsidies
    */
   function subsidies(patientUuid) {
-    var path = patientAttributePath('subsidies', patientUuid);
+    const path = patientAttributePath('subsidies', patientUuid);
     return service.$http.get(path)
       .then(service.util.unwrapHttpResponse);
   }
@@ -179,12 +181,10 @@ function PatientService(
   /** Utility Methods */
   /* ----------------------------------------------------------------- */
   function formatGroupOptions(groupFormOptions) {
-    var groupUuids = Object.keys(groupFormOptions);
+    const groupUuids = Object.keys(groupFormOptions);
 
-    var formatted = groupUuids.filter(function (groupUuid) {
-      // Filter out UUIDs without a true subscription
-      return groupFormOptions[groupUuid];
-    });
+    // Filter out UUIDs without a true subscription
+    const formatted = groupUuids.filter(groupUuid => groupFormOptions[groupUuid]);
 
     return {
       assignments : formatted,
@@ -200,7 +200,7 @@ function PatientService(
    * @return  {String}        Formatted URL for patient service
    */
   function patientAttributePath(path, patientUuid) {
-    var root = '/patients/';
+    const root = '/patients/';
     return root.concat(patientUuid, '/', path);
   }
 
@@ -232,10 +232,10 @@ function PatientService(
 
   function assignDefaultFilters() {
     // get the keys of filters already assigned - on initial load this will be empty
-    var assignedKeys = Object.keys(patientFilters.formatHTTP());
+    const assignedKeys = Object.keys(patientFilters.formatHTTP());
 
     // assign default period filter
-    var periodDefined =
+    const periodDefined =
       service.util.arrayIncludes(assignedKeys, ['period', 'custom_period_start', 'custom_period_end']);
 
     if (!periodDefined) {
@@ -283,14 +283,27 @@ function PatientService(
   }
 
   function download(type) {
-    var filterOpts = patientFilters.formatHTTP();
-    var defaultOpts = { renderer : type, lang : Languages.key };
+    const filterOpts = patientFilters.formatHTTP();
+    const defaultOpts = { renderer : type, lang : Languages.key };
 
     // combine options
-    var options = angular.merge(defaultOpts, filterOpts);
+    const options = angular.merge(defaultOpts, filterOpts);
 
     // return  serialized options
     return $httpParamSerializer(options);
+  }
+
+  /**
+   * @method getFinancialActivity()
+   *
+   * @description
+   * downloads the patient's financial activity, including all their transactions
+   * and if they are in good standing with the institution or not.
+   */
+  function getFinancialActivity(uuid) {
+    const path = 'patients/:uuid/finance/activity';
+    return service.$http.get(path.replace(':uuid', uuid))
+      .then(service.util.unwrapHttpResponse);
   }
 
   return service;

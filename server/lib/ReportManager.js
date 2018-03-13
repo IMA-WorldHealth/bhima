@@ -1,3 +1,4 @@
+/* eslint global-require:off */
 /**
  * @overview ReportManager
  *
@@ -128,6 +129,9 @@ class ReportManager {
 
     // set the render timestamp
     metadata.timestamp = new Date();
+
+    // prune extraneous paths
+    delete metadata.paths;
 
     // @TODO fit this better into the code flow
     // sanitise save report option
