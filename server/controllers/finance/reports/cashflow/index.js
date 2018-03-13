@@ -190,7 +190,10 @@ function report(req, res, next) {
 
   // catch missing required parameters
   if (!dateFrom || !dateTo || !cashboxesIds.length) {
-    throw new BadRequest('ERRORS.BAD_REQUEST');
+    throw new BadRequest(
+      'ERRORS.BAD_REQUEST',
+      'There are some missing information among dateFrom, dateTo or cashboxesId'
+    );
   }
 
   try {
