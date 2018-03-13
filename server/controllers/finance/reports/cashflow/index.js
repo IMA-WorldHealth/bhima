@@ -119,7 +119,7 @@ function reportByService(req, res, next) {
         return [];
       }
 
-      const rows = data.rows;
+      const { rows } = data.rows;
       delete data.rows;
 
       // map services to their service names
@@ -238,8 +238,10 @@ function report(req, res, next) {
       if (data.detailsIdentifiers.length === 0) { return []; }
 
       // build periods string for query
+      const periodParams = [];
       const periodString = data.periods.length ? data.periods.map(periodId => {
-        return `SUM(CASE WHEN source.period_id = ${periodId} THEN source.balance ELSE 0 END) AS "${periodId}"`;
+        periodParams.push(periodId, periodId);
+        return `SUM(IF(source.period_id = ?, source.balance, 0)) AS "?"`;
       }).join(',') : '"NO_PERIOD" AS period';
 
       const query = `
@@ -261,7 +263,7 @@ function report(req, res, next) {
         ) AS source 
         GROUP BY transaction_type, account_id;
       `;
-      return db.exec(query, [[data.detailsIdentifiers]]);
+      return db.exec(query, [...periodParams, [data.detailsIdentifiers]]);
     })
     .then(rows => {
       // split incomes from expenses
