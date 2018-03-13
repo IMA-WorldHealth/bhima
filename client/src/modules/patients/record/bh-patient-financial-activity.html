@@ -96,7 +96,15 @@
             <tr>
               <th>
                 <span translate>FORM.LABELS.INVOICES</span>
-                (<a ui-sref="invoiceRegistry({debtor_uuid : $ctrl.patient.debtor_uuid})">{{$ctrl.groups.IV.count}}</a>)
+                (<a href ui-sref="invoiceRegistry({
+                  filters : [
+                    { key : 'patientReference', value : $ctrl.data.patient.reference },
+                    { key : 'limit', value : $ctrl.groups.IV.count },
+                    { key : 'period', value : 'allTime' }
+                  ]
+                })">
+                  {{$ctrl.groups.IV.count}}
+                </a>)
               </th>
               <td>IV</td>
               <td>{{$ctrl.groups.IV.count }}</td>
@@ -108,7 +116,15 @@
             <tr>
               <th>
                 <span translate>FORM.LABELS.CASH_PAYMENTS</span>
-                (<a ui-sref="cashRegistry({debtor_uuid : $ctrl.patient.debtor_uuid })">{{$ctrl.groups.CP.count}}</a>)
+                (<a href ui-sref="cashRegistry({
+                  filters : [
+                    { key : 'patientReference', value : $ctrl.data.patient.reference },
+                    { key : 'limit', value : $ctrl.groups.CP.count },
+                    { key : 'period', value : 'allTime' }
+                  ]
+                })">
+                  {{$ctrl.groups.CP.count}}
+                </a>)
               </th>
               <td>CP</td>
               <td>{{$ctrl.groups.CP.count }}</td>
@@ -120,7 +136,15 @@
             <tr>
               <th>
                 <span translate>FORM.LABELS.VOUCHERS</span>
-                (<a ui-sref="voucherRegistry({debtor_uuid : $ctrl.patient.debtor_uuid })">{{$ctrl.groups.VO.count}}</a>)
+                (<a href ui-sref="vouchers({
+                  filters : [
+                    { key : 'entity_uuid', value : $ctrl.data.patient.debtor_uuid, displayValue: $ctrl.data.patient.display_name },
+                    { key : 'limit', value : $ctrl.groups.VO.count },
+                    { key : 'period', value : 'allTime' }
+                  ]
+                })">
+                  {{$ctrl.groups.VO.count}}
+                </a>)
               </th>
               <td>VO</td>
               <td>{{$ctrl.groups.VO.count }}</td>
