@@ -39,6 +39,7 @@ const renderers = {
   pdf  : require('./renderers/pdf'),
   csv  : require('./renderers/csv'),
   xlsx  : require('./renderers/xlsx'),
+  xlsxReceipt  : require('./renderers/xlsxReceipt'),
 };
 
 // default report configuration

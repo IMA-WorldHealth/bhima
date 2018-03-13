@@ -163,8 +163,10 @@ function receipt(req, res, next) {
       }
 
       return receiptReport.render(invoiceResponse);
+
     })
     .then(result => {
+
       res.set(result.headers).send(result.report);
     })
     .catch(next)
