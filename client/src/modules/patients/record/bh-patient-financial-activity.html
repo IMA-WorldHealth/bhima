@@ -13,11 +13,13 @@
   <div class="panel-body" style="position:relative;">
 
     <bh-panel-overlay ng-if="$ctrl.loading">
-      <span><span class="fa fa-circle-o-notch fa-spin"></span> <span translate>Loading data...</span></span>
+      <span><span class="fa fa-circle-o-notch fa-spin"></span>
+        <span translate>FORM.INFO.LOADING</span>
+      </span>
     </bh-panel-overlay>
 
     <bh-panel-overlay ng-if="$ctrl.noFinancialHistory">
-      <span>The patient doesn't have any activity!</span>
+      <span translate>PATIENT_RECORDS.FINANCES.NO_ACTIVITY</span>
     </bh-panel-overlay>
 
     <div class="row">
@@ -26,36 +28,52 @@
       <div class="col-sm-6 col-xs-12">
         <!-- show good financial standing indicator -->
         <h5 ng-show="$ctrl.status.isInGoodStanding" class="text-success" style="margin-top:0;">
-          <i class="fa fa-check-circle"></i> <span>Everything looks good!</span>
+          <i class="fa fa-check-circle"></i> <span translate>PATIENT_RECORDS.FINANCES.IN_GOOD_STANDING</span>
         </h5>
 
         <h5 ng-show="!$ctrl.status.isInGoodStanding" class="text-danger">
-          <i class="fa fa-exclamation-circle"></i> <span translate>There are some concerns with the activity.</span>
+          <i class="fa fa-exclamation-circle"></i> <span translate>PATIENT_RECORDS.FINANCES.NOT_IN_GOOD_STANDING</span>
         </h5>
 
         <ul style="list-style:none;padding-left:0;" class="text-warning" style="margin-top:0;">
           <li ng-show="$ctrl.status.hasCreditorBalance">
             <i class="fa fa-warning"></i>
-            The patient has a creditor (negative) balance of <b>({{ (-1 * $ctrl.data.aggregates.balance) | currency:$ctrl.enterpriseCurrencyId}})</b>.  It may be intentional, but may indicate a problem.
+            <span
+              translate
+              translate-values="$ctrl.i18nValues"
+              translate-sanitize-strategy="'sce'">
+              PATIENT_RECORDS.FINANCES.HAS_CREDITOR_BALANCE
+            </span>
           </li>
           <li ng-show="$ctrl.status.hasOldDebt">
             <i class="fa fa-warning"></i>
-            The patient has debt from <strong am-time-ago="$ctrl.data.aggregates.until"></strong>.  Consider writing off the debt or following up with the patient.
+            <span
+              translate
+              translate-values="$ctrl.i18nValues"
+              translate-compile
+              translate-sanitize-strategy="'sce'">
+              PATIENT_RECORDS.FINANCES.HAS_OVERDUE_BALANCE
+            </span>
           </li>
           <li ng-show="$ctrl.status.hasExcessiveDebt">
             <i class="fa fa-warning"></i>
-            The patient has a debt of <strong>{{$ctrl.data.aggregates.balance | currency:$ctrl.enterpriseCurrencyId}}</strong>.  This is a large amount of debt and may present a problem recovering the debt.
+            <span
+              translate
+              translate-values="$ctrl.i18nValues"
+              translate-sanitize-strategy="'sce'">
+              PATIENT_RECORDS.FINANCES.HAS_EXCESS_BALANCE
+            </span>
           </li>
         </ul>
 
         <dl class="dl-horizontal">
-          <dt>First Transaction</dt>
+          <dt translate>PATIENT_RECORDS.FINANCES.FIRST_TRANSACTION</dt>
           <dd>
             {{ $ctrl.data.aggregates.since | date:$ctrl.DATE_FORMAT }}
             (<span am-time-ago="$ctrl.data.aggregates.since"></span> <i class="fa fa-clock-o"></i>)
           </dd>
 
-          <dt>Last Transaction</dt>
+          <dt translate>PATIENT_RECORDS.FINANCES.LAST_TRANSACTION</dt>
           <dd>
             {{ $ctrl.data.aggregates.until | date:$ctrl.DATE_FORMAT }}
             (<span am-time-ago="$ctrl.data.aggregates.until"></span> <i class="fa fa-clock-o"></i>)
@@ -100,7 +118,7 @@
               </td>
             </tr>
             <tr>
-              <th>Vouchers
+              <th>
                 <span translate>FORM.LABELS.VOUCHERS</span>
                 (<a ui-sref="voucherRegistry({debtor_uuid : $ctrl.patient.debtor_uuid })">{{$ctrl.groups.VO.count}}</a>)
               </th>

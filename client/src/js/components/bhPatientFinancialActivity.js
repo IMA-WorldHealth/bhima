@@ -48,6 +48,13 @@ function PatientFinancialActivityCtrl(Patients, moment, Session, Constants) {
           $ctrl.status.hasCreditorBalance ||
           $ctrl.status.hasOldDebt
         );
+
+        // used in i18n texts
+        $ctrl.i18nValues = {
+          date : new Date(data.aggregates.until),
+          balance : Math.abs(data.aggregates.balance),
+          currency_id : Session.enterprise.currency_id,
+        };
       })
       .finally(() => {
         $ctrl.loading = false;
