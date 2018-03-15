@@ -50,11 +50,10 @@ function detail(req, res, next) {
 
 // create a new role
 function create(req, res, next) {
-  var sql = `
+  const sql = `
     INSERT INTO  role(uuid, label, project_id)
     VALUES(?, ?,?)
   `;
-
   db.exec(sql, [db.uuid(), req.body.label, req.body.project_id])
     .then((rows) => {
       res.json(rows);

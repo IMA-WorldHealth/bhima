@@ -7,7 +7,7 @@ RolesAddController.$inject = [
 
 function RolesAddController(data, $state, RolesService, Notify, $uibModalInstance) {
 
-  var vm = this;
+  const vm = this;
   vm.close = close;
   vm.submit = submit;
   vm.role = angular.copy(data);
@@ -21,15 +21,15 @@ function RolesAddController(data, $state, RolesService, Notify, $uibModalInstanc
     if (form.$invalid) {
       return false;
     }
-    var operation = (!data.uuid)?RolesService.create(vm.role) : RolesService.update(data.uuid, vm.role);
+    const operation = (!data.uuid) ? RolesService.create(vm.role) : RolesService.update(data.uuid, vm.role);
 
-    return operation.then(function () {
+    return operation.then(() => {
       Notify.success('FORM.INFO.OPERATION_SUCCESS');
       $state.reload();
       vm.close();
       return operation;
     })
-    .catch(Notify.handleError);
+      .catch(Notify.handleError);
 
   }
 
