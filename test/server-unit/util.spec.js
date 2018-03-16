@@ -1,18 +1,19 @@
 const util = require('../../server/lib/util');
-const { expect } = require('chai');
-var _ = require('lodash');
 
-const newLocal = function () {
+const { expect } = require('chai');
+const _ = require('lodash');
+
+describe('util.js', () => {
   it('#take() should take values from one key of each object in an array of objects', () => {
     const objects = [{ id : 1 }, { id : 2 }, { id : 3 }];
     const expected = [1, 2, 3];
-    var filter = util.take('id');
-    var ids = _.flatMap(objects, filter);
+    const filter = util.take('id');
+    const ids = _.flatMap(objects, filter);
     expect(ids).to.deep.equal(expected);
   });
 
   it('#requireModuleIfExists() should require module if it exists', () => {
-    var exists = util.loadModuleIfExists('chai');
+    const exists = util.loadModuleIfExists('chai');
     expect(exists).to.equal(true);
   });
 
@@ -31,8 +32,20 @@ const newLocal = function () {
     expect(formated).to.deep.equal(expected);
   });
 
-// resolveObject
+  it('#roundDecimal() should round a number to the specified number of decimal places', () => {
+    let value = 12.125;
+    expect(util.roundDecimal(value, 2)).to.equal(12.13);
+    expect(util.roundDecimal(value, 3)).to.equal(value);
+    expect(util.roundDecimal(value, 0)).to.equal(12);
 
-};
+    value = 12.00;
+    expect(util.roundDecimal(value, 2)).to.equal(value);
+    expect(util.roundDecimal(value, 3)).to.equal(value);
+    expect(util.roundDecimal(value, 0)).to.equal(value);
+  });
 
-describe('util.js', newLocal);
+  it('#roundDecimal() defaults to 4 decimal places precision', () => {
+    const value = 12.11111;
+    expect(util.roundDecimal(value)).to.equal(12.1111);
+  });
+});
