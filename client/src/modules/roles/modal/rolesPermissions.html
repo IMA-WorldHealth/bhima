@@ -16,7 +16,7 @@ novalidate>
         <label class="radio-inline">
           <input type='checkbox' ng-change="RolesPermissionsCtrl.selectAll()" ng-model='RolesPermissionsCtrl.allPage' ng-true-value="1"
             ng-false-value="0" />
-          <span translate>FORM.LABELS.CHECK_ALL</span>
+          <span id="checkall" translate>FORM.LABELS.CHECK_ALL</span>
         </label>
       </div>
       <div ng-repeat="module in RolesPermissionsCtrl.tree" class="treeview">
