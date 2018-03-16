@@ -26,7 +26,6 @@ exports.loadModuleIfExists = requireModuleIfExists;
 exports.dateFormatter = dateFormatter;
 exports.execp = execp;
 exports.unlinkp = unlinkp;
-exports.statp = statp;
 exports.format = require('util').format;
 
 exports.roundDecimal = roundDecimal;
@@ -120,24 +119,6 @@ function execp(cmd) {
   const child = exec(cmd);
   child.addListener('error', deferred.reject);
   child.addListener('exit', deferred.resolve);
-  return deferred.promise;
-}
-
-/**
- * @method statp
- *
- * @description
- * This method promisifies the stats method.
- */
-function statp(file) {
-  debug(`#statp(): ${file}`);
-  const deferred = q.defer();
-
-  fs.stat(file, (err, stats) => {
-    if (err) { return deferred.reject(err); }
-    return deferred.resolve(stats);
-  });
-
   return deferred.promise;
 }
 
