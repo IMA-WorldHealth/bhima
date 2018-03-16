@@ -109,7 +109,7 @@ exports.update = function update(req, res, next) {
   // no namespace necessary for updates -- allows middleware to catch empty
   // req.body's
   const data = db.convert(req.body, ['inventory_uuid']);
-  const id = req.params.id;
+  const { id } = req.params;
 
   // remove the id if it exists (prevent attacks on data integrity)
   delete data.id;
@@ -145,7 +145,7 @@ exports.update = function update(req, res, next) {
  * a 204 NO CONTENT for a successfully deleted record.
  */
 exports.delete = function del(req, res, next) {
-  const id = req.params.id;
+  const { id } = req.params;
   const sql =
     'DELETE FROM discount WHERE id = ?;';
 

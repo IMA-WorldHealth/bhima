@@ -183,11 +183,11 @@ function create(req, res, next) {
   return transaction.execute()
     .then(() => {
 
-      /**
-        * Finally, for the inventories ordered, to know the average value of purchase intervall, the number of purchase and the date of the last order
-      */
+      // Finally, for the inventories ordered, to know the average value of purchase interval,
+      // the number of purchase and the date of the last order
       const getInventory = `
-        SELECT BUID(purchase_item.inventory_uuid) AS inventory_uuid, inventory.purchase_interval, inventory.last_purchase, inventory.num_purchase
+        SELECT BUID(purchase_item.inventory_uuid) AS inventory_uuid, inventory.purchase_interval,
+          inventory.last_purchase, inventory.num_purchase
         FROM purchase_item
         JOIN inventory ON inventory.uuid = purchase_item.inventory_uuid
         WHERE purchase_item.purchase_uuid = ?

@@ -24,11 +24,11 @@ exports.report = report;
 function report(req, res, next) {
 
   const options = _.extend(req.query, {
-    filename: 'TREE.ACCOUNT_STATEMENT',
-    orientation: 'landscape',
-    csvKey: 'rows',
-    suppressDefaultFiltering: true,
-    suppressDefaultFormating: false,
+    filename : 'TREE.ACCOUNT_STATEMENT',
+    orientation : 'landscape',
+    csvKey : 'rows',
+    suppressDefaultFiltering : true,
+    suppressDefaultFormating : false,
   });
 
   let rm;
@@ -61,8 +61,8 @@ function report(req, res, next) {
     .then((result) => {
       glb.aggregate = result;
       return rm.render({
-        rows: glb.rows,
-        aggregate: glb.aggregate,
+        rows : glb.rows,
+        aggregate : glb.aggregate,
       });
     })
     .then((result) => {

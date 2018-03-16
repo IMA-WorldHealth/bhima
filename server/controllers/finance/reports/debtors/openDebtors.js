@@ -51,12 +51,12 @@ function convertToBoolean(numberString) {
  * Actually builds the open debtor report.
  */
 function build(req, res, next) {
-  const qs = _.extend(req.query, { 
+  const qs = _.extend(req.query, {
     csvKey : 'debtors',
     footerRight : '[page] / [toPage]',
     footerFontSize : '7',
   });
-  
+
   const metadata = _.clone(req.session);
 
   let report;

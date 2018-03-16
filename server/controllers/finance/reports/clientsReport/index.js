@@ -194,7 +194,7 @@ function buildComplexReport(opt) {
  * This function is responsible of returning a correct fiscal year and its period zero Id
  */
 function getFiscalYearByDate(date, periodZeroNumber) {
-  var query =
+  const query =
     `
     SELECT
       fy.id AS fiscal_year_id, fy.previous_fiscal_year_id, fy.start_date, fy.end_date, p.id AS period_id
@@ -325,7 +325,7 @@ function getClientTotalsFromPeriodTotal(options, isInitial) {
     cols = `IFNULL(t.balance, 0) AS balance`;
   } else {
     cols = (isInitial) ?
-      'IFNULL(debit, 0) AS totalInitDebit, IFNULL(credit, 0) AS totalInitCredit, IFNULL(balance, 0) AS totalInitBalance' :
+      'IFNULL(debit, 0) totalInitDebit, IFNULL(credit, 0) totalInitCredit, IFNULL(balance, 0) totalInitBalance' :
       'IFNULL(t.balance, 0) AS totalFinalBalance';
   }
 

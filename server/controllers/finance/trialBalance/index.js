@@ -32,7 +32,7 @@ function validateTransactions(transactions) {
 }
 
 exports.runTrialBalance = function runTrialBalance(req, res, next) {
-  const transactions = req.body.transactions;
+  const { transactions } = req.body;
 
   try {
     validateTransactions(transactions);
@@ -77,7 +77,7 @@ exports.runTrialBalance = function runTrialBalance(req, res, next) {
  * It posts data to the general ledger.
  */
 exports.postToGeneralLedger = function postToGeneralLedger(req, res, next) {
-  const transactions = req.body.transactions;
+  const { transactions } = req.body;
 
   try {
     validateTransactions(transactions);

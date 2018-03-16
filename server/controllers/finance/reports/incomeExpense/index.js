@@ -19,7 +19,6 @@ const ReportManager = require('../../../../lib/ReportManager');
 const BadRequest = require('../../../../lib/errors/BadRequest');
 const fiscalPeriod = require('../../fiscalPeriod');
 
-
 const TEMPLATE = './server/controllers/finance/reports/incomeExpense/report.handlebars';
 const types = [4, 5]; // revenue and expense type
 
@@ -139,8 +138,7 @@ function sumIncomeExpenseAccounts(fiscalYearId, periodFromId, periodToId) {
       return db.exec(getQuery(fiscalYearId, periodFromId, periodToId, 'GROUP BY type_id'), [types]);
     })
     .then(typeBalances => {
-      reportContext.incomeBalance = typeBalances[0];
-      reportContext.expenseBalance = typeBalances[1];
+      [reportContext.incomeBalance, reportContext.expenseBalance] = typeBalances;
 
       // grouping by nothing gives us the overall balance of all types
       return db.one(getQuery(fiscalYearId, periodFromId, periodToId), [types]);

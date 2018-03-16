@@ -5,7 +5,9 @@
  * This module is responsible for setting up a new bhima instance
  * by configuring administrator user, enterprise, project, etc.
  *
- * @requires db
+ * @requires q
+ * @requires lib/db
+ * @requires lib/errors/BadRequest
  */
 
 const Q = require('q');
@@ -16,7 +18,7 @@ const BadRequest = require('../lib/errors/BadRequest');
  * @method basicInstallExist
  *
  * @description
- * check if the basic information for installation exist, in the case
+ * Checks if the basic information for installation exist, in the case
  * it doesn't exist we can perform a new installation
  */
 function basicInstallExist() {

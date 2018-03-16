@@ -75,7 +75,16 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
         LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
         JOIN depot d ON d.uuid = m.depot_uuid
     `;
-  db.convert(params, ['uuid', 'depot_uuid', 'lot_uuid', 'inventory_uuid', 'group_uuid', 'document_uuid', 'entity_uuid']);
+
+  db.convert(params, [
+    'uuid',
+    'depot_uuid',
+    'lot_uuid',
+    'inventory_uuid',
+    'group_uuid',
+    'document_uuid',
+    'entity_uuid',
+  ]);
 
   const filters = new FilterParser(params);
 
@@ -154,7 +163,7 @@ function getLotsDepot(depotUuid, params, finalClause) {
             l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
             i.avg_consumption, i.purchase_interval, i.delay,
             iu.text AS unit_type,
-            ig.name AS group_name, ig.expires, 
+            ig.name AS group_name, ig.expires,
             dm.text AS documentReference
         FROM stock_movement m
         JOIN lot l ON l.uuid = m.lot_uuid
@@ -171,9 +180,7 @@ function getLotsDepot(depotUuid, params, finalClause) {
     .then(stockManagementProcess)
     .then((rows) => {
       if (status) {
-        return rows.filter((row) => {
-          return row.status === status;
-        });
+        return rows.filter(row => row.status === status);
       }
       return rows;
     });
@@ -428,8 +435,8 @@ function getInventoryQuantityAndConsumption(params) {
     FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
-    JOIN inventory_unit iu ON iu.id = i.unit_id 
-    JOIN inventory_group ig ON ig.uuid = i.group_uuid 
+    JOIN inventory_unit iu ON iu.id = i.unit_id
+    JOIN inventory_group ig ON ig.uuid = i.group_uuid
     JOIN depot d ON d.uuid = m.depot_uuid
     LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
   `;
@@ -442,8 +449,8 @@ function getInventoryQuantityAndConsumption(params) {
       return getStockConsumptionAverage(null, params.dateTo);
     })
     .then((rows) => {
-      var sameInventory;
-      var sameDepot;
+      let sameInventory;
+      let sameDepot;
 
       bundle.consumptions = rows;
 
@@ -461,8 +468,8 @@ function getInventoryQuantityAndConsumption(params) {
       return bundle.inventories;
     })
     .then((inventories) => stockManagementProcess(inventories, delay, purchaseInterval))
-    .then((rows) => {
-      var filteredRows = rows;
+    .then(rows => {
+      let filteredRows = rows;
 
       if (status) {
         filteredRows = filteredRows.filter(row => row.status === status);

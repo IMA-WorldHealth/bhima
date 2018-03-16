@@ -25,7 +25,6 @@
 // Workaround - required before 'use-strict'
 const json2xls = require('json2xls');
 
-
 require('use-strict');
 const dotEnv = require('dotenv');
 

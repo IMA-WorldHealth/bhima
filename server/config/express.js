@@ -12,7 +12,6 @@ const session = require('express-session');
 const RedisStore = require('connect-redis')(session);
 const Redis = require('ioredis');
 const morgan = require('morgan');
-const winston = require('winston');
 const _ = require('lodash');
 const helmet = require('helmet');
 
