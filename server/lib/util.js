@@ -19,13 +19,11 @@ const q = require('q');
 const moment = require('moment');
 const debug = require('debug')('util');
 const { exec } = require('child_process');
-const fs = require('fs');
 
 exports.take = take;
 exports.loadModuleIfExists = requireModuleIfExists;
 exports.dateFormatter = dateFormatter;
 exports.execp = execp;
-exports.unlinkp = unlinkp;
 exports.format = require('util').format;
 
 exports.roundDecimal = roundDecimal;
@@ -124,27 +122,13 @@ function execp(cmd) {
 
 
 /**
- * @method statp
+ * @function roundDecimal
  *
  * @description
- * This method promisifies the unlink method.
- */
-function unlinkp(file) {
-  debug(`#unlinkp(): ${file}`);
-  const deferred = q.defer();
-
-  fs.unlink(file, (err) => {
-    if (err) { return deferred.reject(err); }
-    return deferred.resolve();
-  });
-
-  return deferred.promise;
-}
-
-/**
- * Round a decimal to a certain precision
- * @param {*} number
- * @param {*} precision
+ * Round a decimal to a certain precision.
+ *
+ * @param {Number} number
+ * @param {Number} precision
  */
 function roundDecimal(number, precision = 4) {
   const base = Math.pow(10, precision);
