@@ -1,4 +1,4 @@
-/* eslint global-require:off, import/no-dynamic-require:off */
+/* eslint global-require:off, import/no-dynamic-require:off, no-restricted-properties:off */
 
 /**
  * @overview util
@@ -24,7 +24,6 @@ const fs = require('fs');
 exports.take = take;
 exports.loadModuleIfExists = requireModuleIfExists;
 exports.dateFormatter = dateFormatter;
-exports.resolveObject = resolveObject;
 exports.execp = execp;
 exports.unlinkp = unlinkp;
 exports.statp = statp;
@@ -85,28 +84,6 @@ function requireModuleIfExists(moduleName) {
     return false;
   }
   return true;
-}
-
-/**
- * @function resolveObject
- *
- * @description
- * This utility takes in an object of promise queries and returns the object
- * with all values resolved when all promises have settled.  If any one is
- * rejected, the promise is rejected.
- *
- * @param {Object} object - this is the object of keys mapped to promise
- *   values.
- * @returns {Promise} - one all promises resolve, the same object mapped to
- */
-function resolveObject(object) {
-  const settled = {};
-
-  return q.all(_.values(object))
-    .then((results) => {
-      _.keys(object).forEach((key, index) => { settled[key] = results[index]; });
-      return settled;
-    });
 }
 
 /**
