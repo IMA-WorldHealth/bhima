@@ -25,7 +25,6 @@ class Tree {
     this.buildNodeIndex();
 
     // build a node index
-
     debug(`#constructor() built tree with ${data.length} nodes.`);
   }
 
@@ -77,6 +76,10 @@ class Tree {
     const array = [];
     this.walk((node) => array.push(node));
     return array;
+  }
+
+  getRootNode() {
+    return this._rootNode;
   }
 
   /**
