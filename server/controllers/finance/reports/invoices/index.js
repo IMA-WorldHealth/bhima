@@ -11,7 +11,6 @@
  */
 
 const _ = require('lodash');
-const util = require('../../../../lib/util');
 
 const shared = require('../shared');
 const Moment = require('moment');
@@ -135,15 +134,13 @@ function receipt(req, res, next) {
       const recipientUuid = reportResult.patient_uuid;
       _.extend(invoiceResponse, reportResult);
 
-      const queries = {
-        recipient : Patients.lookupPatient(recipientUuid),
-        creditNote : Invoices.lookupInvoiceCreditNote(invoiceUuid),
-      };
-
-      return util.resolveObject(queries);
+      return Promise.all([
+        Patients.lookupPatient(recipientUuid),
+        Invoices.lookupInvoiceCreditNote(invoiceUuid),
+      ]);
     })
-    .then(headerResult => {
-      _.extend(invoiceResponse, headerResult, metadata);
+    .spread((recipient, cNote) => {
+      _.extend(invoiceResponse, { recipient, creditNote : cNote }, metadata);
 
       invoiceResponse.recipient.hasConventionCoverage = invoiceResponse.recipient.is_convention;
 
@@ -205,15 +202,13 @@ function creditNote(req, res, next) {
       const recipientUuid = reportResult.patient_uuid;
       _.extend(invoiceResponse, reportResult);
 
-      const queries = {
-        recipient : Patients.lookupPatient(recipientUuid),
-        creditNote : Invoices.lookupInvoiceCreditNote(invoiceUuid),
-      };
-
-      return util.resolveObject(queries);
+      return Promise.all([
+        Patients.lookupPatient(recipientUuid),
+        Invoices.lookupInvoiceCreditNote(invoiceUuid),
+      ]);
     })
-    .then(headerResult => {
-      _.extend(invoiceResponse, headerResult, metadata);
+    .spread((recipient, cNote) => {
+      _.extend(invoiceResponse, { recipient, creditNote : cNote }, metadata);
       return Exchange.getExchangeRate(enterpriseId, currencyId, new Date());
     })
     .then(exchangeResult => {
@@ -224,13 +219,8 @@ function creditNote(req, res, next) {
       if (invoiceResponse.exchange) {
         invoiceResponse.exchangedTotal = _.round(invoiceResponse.cost * invoiceResponse.exchange);
       }
-
-      // return Invoices.lookupInvoiceCreditNote(invoiceUuid);
     })
-    .then(() => {
-      // invoiceResponse.creditNote = creditNoteResult[0];
-      return creditNoteReport.render(invoiceResponse);
-    })
+    .then(() => creditNoteReport.render(invoiceResponse))
     .then(result => {
       res.set(result.headers).send(result.report);
     })

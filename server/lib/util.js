@@ -1,4 +1,4 @@
-/* eslint global-require:off, import/no-dynamic-require:off */
+/* eslint global-require:off, import/no-dynamic-require:off, no-restricted-properties:off */
 
 /**
  * @overview util
@@ -19,15 +19,11 @@ const q = require('q');
 const moment = require('moment');
 const debug = require('debug')('util');
 const { exec } = require('child_process');
-const fs = require('fs');
 
 exports.take = take;
 exports.loadModuleIfExists = requireModuleIfExists;
 exports.dateFormatter = dateFormatter;
-exports.resolveObject = resolveObject;
 exports.execp = execp;
-exports.unlinkp = unlinkp;
-exports.statp = statp;
 exports.format = require('util').format;
 
 exports.roundDecimal = roundDecimal;
@@ -88,28 +84,6 @@ function requireModuleIfExists(moduleName) {
 }
 
 /**
- * @function resolveObject
- *
- * @description
- * This utility takes in an object of promise queries and returns the object
- * with all values resolved when all promises have settled.  If any one is
- * rejected, the promise is rejected.
- *
- * @param {Object} object - this is the object of keys mapped to promise
- *   values.
- * @returns {Promise} - one all promises resolve, the same object mapped to
- */
-function resolveObject(object) {
-  const settled = {};
-
-  return q.all(_.values(object))
-    .then((results) => {
-      _.keys(object).forEach((key, index) => { settled[key] = results[index]; });
-      return settled;
-    });
-}
-
-/**
  * @method dateFormatter
  *
  * @description
@@ -146,47 +120,15 @@ function execp(cmd) {
   return deferred.promise;
 }
 
+
 /**
- * @method statp
+ * @function roundDecimal
  *
  * @description
- * This method promisifies the stats method.
- */
-function statp(file) {
-  debug(`#statp(): ${file}`);
-  const deferred = q.defer();
-
-  fs.stat(file, (err, stats) => {
-    if (err) { return deferred.reject(err); }
-    return deferred.resolve(stats);
-  });
-
-  return deferred.promise;
-}
-
-
-/**
- * @method statp
+ * Round a decimal to a certain precision.
  *
- * @description
- * This method promisifies the unlink method.
- */
-function unlinkp(file) {
-  debug(`#unlinkp(): ${file}`);
-  const deferred = q.defer();
-
-  fs.unlink(file, (err) => {
-    if (err) { return deferred.reject(err); }
-    return deferred.resolve();
-  });
-
-  return deferred.promise;
-}
-
-/**
- * Round a decimal to a certain precision
- * @param {*} number
- * @param {*} precision
+ * @param {Number} number
+ * @param {Number} precision
  */
 function roundDecimal(number, precision = 4) {
   const base = Math.pow(10, precision);
