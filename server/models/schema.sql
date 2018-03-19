@@ -609,6 +609,14 @@ CREATE TABLE `enterprise` (
   FOREIGN KEY (`loss_account_id`) REFERENCES `account` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `enterprise_setting`;
+CREATE TABLE `enterprise_setting` (
+  `enterprise_id`   SMALLINT(5) UNSIGNED NOT NULL,
+  `enable_price_lock` TINYINT(1) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`enterprise_id`),
+  FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 DROP TABLE IF EXISTS `entity_map`;
 CREATE TABLE `entity_map` (
   `uuid`              BINARY(16) NOT NULL,

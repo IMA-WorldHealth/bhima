@@ -26,6 +26,7 @@ const days = 1000 * 60 * 60 * 24;
 const publicRoutes = [
   '/auth/login',
   '/languages',
+  '/projects',
   '/projects/',
   '/auth/logout',
   '/install',
@@ -94,7 +95,7 @@ exports.configure = function configure(app) {
   app.use(`/${uploads.directory}`, express.static(uploads.directory));
 
   // quick way to find out if a value is in an array
-  function within(value, array) { return array.indexOf(value.trim()) !== -1; }
+  function within(value, array) { return array.includes(value.trim()); }
 
   // Only allow routes to use /login, /projects, /logout, and /languages if a
   // user session does not exists

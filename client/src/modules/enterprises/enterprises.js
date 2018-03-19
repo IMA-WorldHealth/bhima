@@ -2,50 +2,47 @@ angular.module('bhima.controllers')
   .controller('EnterpriseController', EnterpriseController);
 
 EnterpriseController.$inject = [
-  'EnterpriseService', 'CurrencyService', 'util', 'NotifyService', 'ProjectService', 'ModalService',
-  'ScrollService',
+  'EnterpriseService', 'util', 'NotifyService', 'ProjectService', 'ModalService', 'ScrollService',
 ];
 
 /**
- * Enterprise Controller
+ * @function EnterpriseController
+ *
+ * @description
+ * This controller binds the basic CRUD operations on the enterprise.
  */
-function EnterpriseController(Enterprises, Currencies, util, Notify, Projects, Modal, ScrollTo) {
-  var vm = this;
+function EnterpriseController(Enterprises, util, Notify, Projects, Modal, ScrollTo) {
+  const vm = this;
 
-  vm.enterprises = [];
   vm.enterprise = {};
   vm.maxLength = util.maxTextLength;
   vm.length50 = util.length50;
   vm.length100 = util.length100;
   vm.hasEnterprise = false;
 
+  let $touched = false;
+
   // bind methods
   vm.submit = submit;
   vm.onSelectGainAccount = onSelectGainAccount;
   vm.onSelectLossAccount = onSelectLossAccount;
+  vm.enablePriceLockSetting = enablePriceLockSetting;
 
   // fired on startup
   function startup() {
 
     // load enterprises
-    Enterprises.read(null, { detailed: 1 })
-      .then(function (enterprises) {
+    Enterprises.read(null, { detailed : 1 })
+      .then(enterprises => {
         vm.hasEnterprise = (enterprises.length > 0);
         vm.enterprises = vm.hasEnterprise ? enterprises : [];
 
         /**
-         * @note: set the enterprise to the first one
+         * NOTE: set the enterprise to the first one
          * this choice need the team point of view for to setting the default enterprise
          */
         vm.enterprise = vm.hasEnterprise ? vm.enterprises[0] : {};
         return refreshProjects();
-      })
-      .catch(Notify.handleError);
-
-    // load currencies
-    Currencies.read()
-      .then(function (currencies) {
-        vm.currencies = currencies;
       })
       .catch(Notify.handleError);
   }
@@ -66,25 +63,26 @@ function EnterpriseController(Enterprises, Currencies, util, Notify, Projects, M
   function submit(form) {
     if (form.$invalid) {
       Notify.danger('FORM.ERRORS.HAS_ERRORS');
-      return;
+      return 0;
     }
 
     // make sure only fresh data is sent to the server.
-    if (form.$pristine) {
+    if (form.$pristine && !$touched) {
       Notify.warn('FORM.WARNINGS.NO_CHANGES');
-      return;
+      return 0;
     }
 
-    var promise;
-    var creation = (vm.hasEnterprise === false);
-    var changes = util.filterFormElements(form, true);
+    const creation = (vm.hasEnterprise === false);
+    const changes = util.filterFormElements(form, true);
 
-    promise = (creation) ?
+    changes.settings = angular.copy(vm.enterprise.settings);
+
+    const promise = (creation) ?
       Enterprises.create(changes) :
       Enterprises.update(vm.enterprise.id, changes);
 
     return promise
-      .then(function () {
+      .then(() => {
         Notify.success(creation ? 'FORM.INFO.SAVE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS');
       })
       .catch(Notify.handleError);
@@ -98,8 +96,8 @@ function EnterpriseController(Enterprises, Currencies, util, Notify, Projects, M
 
   // refresh the displayed projects
   function refreshProjects() {
-    return Projects.read(null, { complete: 1 })
-      .then(function (projects) {
+    return Projects.read(null, { complete : 1 })
+      .then(projects => {
         vm.projects = projects;
       });
   }
@@ -109,20 +107,20 @@ function EnterpriseController(Enterprises, Currencies, util, Notify, Projects, M
    * @desc launch project modal for editing
    */
   function editProject(id) {
-    var params = {
+    const params = {
       action     : 'edit',
       identifier : id,
       enterprise : vm.enterprise,
     };
 
     Modal.openProjectActions(params)
-    .then(function (value) {
-      if (!value) { return; }
+      .then(value => {
+        if (!value) { return; }
 
-      refreshProjects();
-      Notify.success('FORM.INFO.UPDATE_SUCCESS');
-    })
-    .catch(Notify.handleError);
+        refreshProjects();
+        Notify.success('FORM.INFO.UPDATE_SUCCESS');
+      })
+      .catch(Notify.handleError);
   }
 
   /**
@@ -134,13 +132,13 @@ function EnterpriseController(Enterprises, Currencies, util, Notify, Projects, M
       action     : 'create',
       enterprise : vm.enterprise,
     })
-    .then(function (value) {
-      if (!value) { return; }
+      .then(value => {
+        if (!value) { return; }
 
-      refreshProjects();
-      Notify.success('FORM.INFO.CREATE_SUCCESS');
-    })
-    .catch(Notify.handleError);
+        refreshProjects();
+        Notify.success('FORM.INFO.CREATE_SUCCESS');
+      })
+      .catch(Notify.handleError);
   }
 
   /**
@@ -149,22 +147,27 @@ function EnterpriseController(Enterprises, Currencies, util, Notify, Projects, M
    * @param {number} id The project id
    */
   function deleteProject(id, pattern) {
-    var params = {
-      pattern     : pattern,
+    const params = {
+      pattern,
       patternName : 'FORM.PATTERNS.PROJECT_NAME',
     };
 
     Modal.openConfirmDialog(params)
-      .then(function (bool) {
+      .then(bool => {
         if (!bool) { return; }
 
         Projects.delete(id)
-          .then(function () {
+          .then(() => {
             Notify.success('FORM.INFO.DELETE_SUCCESS');
             return refreshProjects();
           })
           .catch(Notify.handleError);
       });
+  }
+
+  function enablePriceLockSetting(enabled) {
+    vm.enterprise.settings.enable_price_lock = enabled;
+    $touched = true;
   }
 
   startup();

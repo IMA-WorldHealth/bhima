@@ -1,35 +1,34 @@
-<div 
-  ng-form="yesNoRadiosForm"
+<div ng-form="RadioForm"
   class="form-group"
-  ng-class="{'has-error' : yesNoRadiosForm.genderOptions.$invalid && yesNoRadiosForm.$submitted}">
+  ng-class="{'has-error' : RadioForm.$error && RadioForm.$submitted }">
   <label class="control-label" translate>{{$ctrl.label}}</label>
+
   <div class="col-sm-12">
     <label class="radio-inline">
-      <input 
-        type="radio" 
-        name="yesNoOptions"  
-        ng-change="$ctrl.onChangeCallback($ctrl.value)"
-        id="yes"
-        value="1"
-        ng-true
-        checked="checked"
+      <input
+        type="radio"
+        name="choice"
+        data-choice="yes"
+        ng-value="1"
         ng-model="$ctrl.value"
-        required/>
+        ng-change="$ctrl.onChange($ctrl.value)"
+        required>
       <span translate>FORM.LABELS.YES</span>
     </label>
 
     <label class="radio-inline">
       <input
         type="radio"
-        name="yesNoOptions" 
-        id="NO"
-        value="0" 
+        name="choice"
+        data-choice="no"
+        ng-value="0"
         ng-model="$ctrl.value"
-        required/>
+        ng-change="$ctrl.onChange($ctrl.value)"
+        required>
       <span translate>FORM.LABELS.NO</span>
     </label>
 
-    <span class="help-block" translate>{{$ctrl.helpText}}</span>
+    <span class="help-block" ng-show="$ctrl.helpText" translate>{{$ctrl.helpText}}</span>
     <div class="help-block" ng-messages="yesNoRadiosForm.yesNoOptions.$error" ng-show="yesNoRadiosForm.$submitted">
       <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
     </div>

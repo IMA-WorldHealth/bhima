@@ -8,6 +8,9 @@ SET NAMES 'utf8';
 INSERT INTO `enterprise` VALUES
   (1, 'Test Enterprise', 'TE', '243 81 504 0540', 'enterprise@test.org', HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), NULL, 2, 103, NULL, NULL);
 
+INSERT INTO `enterprise_setting` (enterprise_id, enable_price_lock) VALUES
+  (1, 0);
+
 -- Project
 INSERT INTO `project` VALUES
   (1, 'Test Project A', 'TPA', 1, 1, 0),
@@ -761,7 +764,7 @@ INSERT INTO `stock_movement` (`uuid`, `lot_uuid`, `document_uuid`, `depot_uuid`,
   (HUID('e8502c3e-7483-11e7-a8de-507b9dd6de91'), HUID('064ab1d9-5246-4402-ae8a-958fcdb07b35'), HUID('0cc6c435-7484-11e7-a8de-507b9dd6de91'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), HUID('d4bb1452-e4fa-4742-a281-814140246877'), 8, '2017-02-02', 75, 1.2000, 1, 1);
 
 -- Rubric Payroll
-INSERT INTO `rubric_payroll` (`id`, `label`, `abbr`, `is_employee`, `is_percent`, `is_discount`, `is_tax`, `is_social_care`, `is_membership_fee`, `debtor_account_id`, `expense_account_id`, `is_ipr`, `value`) VALUES 
+INSERT INTO `rubric_payroll` (`id`, `label`, `abbr`, `is_employee`, `is_percent`, `is_discount`, `is_tax`, `is_social_care`, `is_membership_fee`, `debtor_account_id`, `expense_account_id`, `is_ipr`, `value`) VALUES
 (1, 'INSS Code part Patronale', 'INSS2', 0, 1, 1, 0, 0, 1, 300, 203, 0, 9),
 (2, 'Impot Professionnel sur le Revenue', 'IPR', 1, 0, 1, 1, 0, 0, 300, 207, 1, NULL),
 (3, 'Institut National de Pratique Professionel', 'INPP', 0, 1, 1, 1, 0, 0, 172, 206, 0, 0.2),
@@ -782,22 +785,22 @@ INSERT INTO `config_rubric_item` (`id`, `config_rubric_id`, `rubric_payroll_id`)
 (6, 1, 4);
 
 -- Configuration of weekend
-INSERT INTO `weekend_config` (`id`, `label`) VALUES 
+INSERT INTO `weekend_config` (`id`, `label`) VALUES
 (1, 'Configuration Semaine Anglaise'),
 (2, 'Configuration Semaine Normale');
 
 -- Days of weekend configuration
-INSERT INTO `config_week_days` (`id`, `indice`, `weekend_config_id`) VALUES 
+INSERT INTO `config_week_days` (`id`, `indice`, `weekend_config_id`) VALUES
 (1, 0, 1),
 (2, 6, 1),
 (3, 6, 2);
 
 -- Tax IPR
-INSERT INTO `taxe_ipr` (`id`, `label`, `description`, `currency_id`) VALUES 
+INSERT INTO `taxe_ipr` (`id`, `label`, `description`, `currency_id`) VALUES
 (1, 'Bareme IPR 2013', 'Barème Impôt Professionnel sur les revenus', 1);
 
 -- Tax IPR Configuration
-INSERT INTO `taxe_ipr_configuration` (`rate`, `tranche_annuelle_debut`, `tranche_annuelle_fin`, `tranche_mensuelle_debut`, `tranche_mensuelle_fin`, `ecart_annuel`, `ecart_mensuel`, `impot_annuel`, `impot_mensuel`, `cumul_annuel`, `cumul_mensuel`, `taxe_ipr_id`) VALUES 
+INSERT INTO `taxe_ipr_configuration` (`rate`, `tranche_annuelle_debut`, `tranche_annuelle_fin`, `tranche_mensuelle_debut`, `tranche_mensuelle_fin`, `ecart_annuel`, `ecart_mensuel`, `impot_annuel`, `impot_mensuel`, `cumul_annuel`, `cumul_mensuel`, `taxe_ipr_id`) VALUES
 (0, 0, 524160, 0, 43680, 524160, 43680, 0, 0, 0, 0, 1),
 (15, 524160, 1428000, 43680, 119000, 903840, 75320, 135576, 11298, 135576, 11298, 1),
 (20, 1428000, 2700000, 119000, 225000, 1272000, 106000, 254400, 21200, 0, 0, 1),
@@ -813,7 +816,7 @@ INSERT INTO `taxe_ipr_configuration` (`rate`, `tranche_annuelle_debut`, `tranche
 INSERT INTO `config_accounting` (`label`, `account_id`) VALUES ('Configuration Compte Rémunération', 220);
 
 -- Payroll Configuration Period
-INSERT INTO `payroll_configuration` (`id`, `label`, `dateFrom`, `dateTo`, `config_rubric_id`, `config_accounting_id`, `config_weekend_id`, `config_ipr_id`) VALUES 
+INSERT INTO `payroll_configuration` (`id`, `label`, `dateFrom`, `dateTo`, `config_rubric_id`, `config_accounting_id`, `config_weekend_id`, `config_ipr_id`) VALUES
 (1, 'Période de Paiement', '2018-02-01', '2018-02-28', 1, 1, 1, 1);
 
 -- ------------- AFFECTING ALL unit to admin role ----------------------------------------

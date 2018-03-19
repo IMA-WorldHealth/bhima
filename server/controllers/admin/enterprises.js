@@ -4,7 +4,7 @@
  * This controller is responsible for creating and updating Enterprises.
  * Each enterprise must necessarily have a name, an abbreviation, a geographical
  * location as well as a currency and it is not possible to remove an enterprise.
- * */
+ */
 
 const db = require('../../lib/db');
 const NotFound = require('../../lib/errors/NotFound');
@@ -17,15 +17,28 @@ exports.list = function list(req, res, next) {
   let sql = 'SELECT id, name, abbr FROM enterprise';
 
   if (req.query.detailed === '1') {
-    sql =
-      `SELECT id, name, abbr, email, po_box, phone,
-      BUID(location_id) AS location_id, logo, currency_id,
-      gain_account_id, loss_account_id
-      FROM enterprise;`;
+    sql = `
+      SELECT id, name, abbr, email, po_box, phone,
+        BUID(location_id) AS location_id, logo, currency_id,
+        gain_account_id, loss_account_id, enable_price_lock
+      FROM enterprise LEFT JOIN enterprise_setting
+        ON enterprise.id = enterprise_setting.enterprise_id
+      ;`;
   }
 
   db.exec(sql)
-    .then((rows) => {
+    .then(rows => {
+
+      // FIXME(@jniles) - this is kinda hacky.  The idea is to keep settings
+      // separate in a JSON file.  This will make more sense as we add enterprise
+      // options.
+      if (req.query.detailed === '1') {
+        rows.forEach(row => {
+          row.settings = { enable_price_lock : row.enable_price_lock };
+          delete row.enable_price_lock;
+        });
+      }
+
       res.status(200).json(rows);
     })
     .catch(next)
@@ -36,7 +49,7 @@ exports.list = function list(req, res, next) {
 // GET /enterprises/:id
 exports.detail = function detail(req, res, next) {
   lookupEnterprise(req.params.id)
-    .then((enterprise) => {
+    .then(enterprise => {
       res.status(200).json(enterprise);
     })
     .catch(next)
@@ -51,7 +64,21 @@ function lookupEnterprise(id) {
     FROM enterprise WHERE id = ?;
   `;
 
-  return db.one(sql, [id], id, 'enterprise');
+  const settingsSQL = `
+    SELECT enable_price_lock FROM enterprise_setting WHERE enterprise_id = ?;
+  `;
+
+  let enterprise;
+
+  return db.one(sql, [id], id, 'enterprise')
+    .then(data => {
+      enterprise = data;
+      return db.exec(settingsSQL, id);
+    })
+    .then(settings => {
+      enterprise.settings = settings[0] || {};
+      return enterprise;
+    });
 }
 
 /**
@@ -94,7 +121,7 @@ exports.create = function create(req, res, next) {
   const sql = 'INSERT INTO enterprise SET ?;';
 
   db.exec(sql, [enterprise])
-    .then((row) => {
+    .then(row => {
       res.status(201).json({ id : row.insertId });
     })
     .catch(next)
@@ -105,16 +132,21 @@ exports.create = function create(req, res, next) {
 exports.update = function update(req, res, next) {
   const sql = 'UPDATE enterprise SET ? WHERE id = ?;';
   const data = db.convert(req.body, ['location_id']);
-  delete data.id;
 
-  db.exec(sql, [data, req.params.id])
+  const { settings } = data;
+  delete data.settings;
+
+  data.id = req.params.id;
+
+  db.exec(sql, [data, data.id])
     .then((row) => {
       if (!row.affectedRows) {
         throw new NotFound(`Could not find an enterprise with id ${req.params.id}`);
       }
 
-      return lookupEnterprise(req.params.id);
+      return db.exec('UPDATE enterprise_setting SET ? WHERE enterprise_id = ?', [settings, req.params.id]);
     })
+    .then(() => lookupEnterprise(req.params.id))
     .then((enterprise) => {
       res.status(200).json(enterprise);
     })

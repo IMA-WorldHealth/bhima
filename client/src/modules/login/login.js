@@ -12,20 +12,20 @@ LoginController.$inject = [
  * The login controller powers the bhima login page.
  */
 function LoginController(AppCache, Session, Languages, Projects, Notify, Install) {
-  var vm = this;
+  const vm = this;
 
   // the is the same as the SettingsContoller
-  var cache = AppCache('preferences');
+  const cache = AppCache('preferences');
 
   // tracks the number of login attempts made by this user to show a
   // "forgot password" message if too many requests are made
-  var attempts = 0;
-  var maxAttempts = 3;
+  let attempts = 0;
+  const maxAttempts = 3;
 
   // contains the values from the login form
   vm.credentials = {};
   vm.login = login;
-  vm.languageService = Languages;  
+  vm.languageService = Languages;
 
   // vm.finishInstallationChecking help to :
   // hide loading indicator after checking
@@ -34,7 +34,7 @@ function LoginController(AppCache, Session, Languages, Projects, Notify, Install
 
   // signal if an error occured while checking(connection error,...)
   // in the case of error none of (login form and the intallation button) will be displayed
-  vm.installationCheckingError = false; 
+  vm.installationCheckingError = false;
 
   // displays a message if the user attempts more than maxCount
   // times to login and fails each time.
@@ -43,11 +43,11 @@ function LoginController(AppCache, Session, Languages, Projects, Notify, Install
   // check basic installation information exist
   Install.checkBasicInstallExist()
     .then(handleCheckInstallExist)
-    .catch(function(err) {
+    .catch(err => {
       vm.installationCheckingError = true;
       Notify.handleError(err);
     })
-    .finally(function() {
+    .finally(() => {
       vm.finishInstallationChecking = true;
     });
 
@@ -80,7 +80,7 @@ function LoginController(AppCache, Session, Languages, Projects, Notify, Install
   // choice.  If the user has not logged in previously, we will
   // select the first project as default.
   function loadStoredProject() {
-    var defaultProjectIndex = 0;
+    const defaultProjectIndex = 0;
 
     // if the project was found in the cache, set it to the default project
     // otherwise, use the defaultProjectIndex to set the default project
