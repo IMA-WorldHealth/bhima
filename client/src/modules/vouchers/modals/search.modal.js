@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 VoucherRegistrySearchModalController.$inject = [
   '$uibModalInstance', 'filters', 'NotifyService', 'PeriodService', 'Store',
-  'util', 'VoucherService',
+  'util', 'VoucherService', 'TransactionTypeService', '$translate',
 ];
 
 /**
@@ -16,17 +16,17 @@ VoucherRegistrySearchModalController.$inject = [
  */
 function VoucherRegistrySearchModalController(
   ModalInstance, filters, Notify, Periods, Store, util,
-  Vouchers
+  Vouchers, TransactionTypeService, $translate,
 ) {
-  var vm = this;
-  var changes = new Store({ identifier : 'key' });
-  var searchQueryOptions = [
+  const vm = this;
+  const changes = new Store({ identifier : 'key' });
+  const searchQueryOptions = [
     'reference', 'description', 'user_id', 'type_ids', 'account_id',
   ];
 
   // displayValues will be an id:displayValue pair
-  var displayValues = {};
-  var lastDisplayValues = Vouchers.filters.getDisplayValueMap();
+  const displayValues = {};
+  const lastDisplayValues = Vouchers.filters.getDisplayValueMap();
 
   vm.filters = filters;
   // searchQueries is the same id:value pair
@@ -40,18 +40,26 @@ function VoucherRegistrySearchModalController(
     vm.defaultQueries.limit = filters.limit;
   }
 
+  TransactionTypeService.read()
+    .then((tts) => {
+      tts.forEach(item => {
+        item.plainText = $translate.instant(item.text);
+      });
+      vm.transactionTypes = tts;
+    })
+    .catch(Notify.handleError);
+
   vm.onTransactionTypesChange = function onTransactionTypesChange(transactionTypes) {
-    var typeText = '/';
+    let typeText = '/';
     vm.searchQueries.type_ids = transactionTypes;
 
-    transactionTypes.forEach(function (typeId) {
-      vm.transactionTypes.forEach(function (type) {
+    transactionTypes.forEach((typeId) => {
+      vm.transactionTypes.forEach(type => {
         if (typeId === type.id) {
-          typeText += type.typeText.concat(' / ');
+          typeText += type.plainText.concat(' / ');
         }
       });
     });
-
     displayValues.type_ids = typeText;
   };
 
@@ -63,9 +71,9 @@ function VoucherRegistrySearchModalController(
 
   // default filter period - directly write to changes list
   vm.onSelectPeriod = function onSelectPeriod(period) {
-    var periodFilters = Periods.processFilterChanges(period);
+    const periodFilters = Periods.processFilterChanges(period);
 
-    periodFilters.forEach(function (filterChange) {
+    periodFilters.forEach((filterChange) => {
       changes.post(filterChange);
     });
   };
@@ -93,8 +101,8 @@ function VoucherRegistrySearchModalController(
 
   // submit the filter object to the parent controller.
   vm.submit = function submit(form) {
-    var _displayValue;
-    var loggedChanges;
+    let _displayValue;
+
 
     if (form.$invalid) { return; }
 
@@ -104,7 +112,7 @@ function VoucherRegistrySearchModalController(
     }
 
     // push all searchQuery values into the changes array to be applied
-    angular.forEach(vm.searchQueries, function (_value, _key) {
+    angular.forEach(vm.searchQueries, (_value, _key) => {
       if (angular.isDefined(_value)) {
         // default to the original value if no display value is defined
         _displayValue = displayValues[_key] || lastDisplayValues[_key] || _value;
@@ -112,9 +120,10 @@ function VoucherRegistrySearchModalController(
       }
     });
 
-    loggedChanges = changes.getAll();
+    const loggedChanges = changes.getAll();
 
     // return values to the voucher controller
-    return ModalInstance.close(loggedChanges);
+    ModalInstance.close(loggedChanges);
   };
+
 }
