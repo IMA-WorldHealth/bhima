@@ -56,7 +56,7 @@ function create(req, res, next) {
   `;
   db.exec(sql, [db.uuid(), req.body.label, req.body.project_id])
     .then((rows) => {
-      res.json(rows);
+      res.status(201).json(rows);
     })
     .catch(next)
     .done();
@@ -69,7 +69,7 @@ function update(req, res, next) {
 
   db.exec(sql, [role, db.bid(req.params.uuid)])
     .then((rows) => {
-      res.json(rows);
+      res.status(200).json(rows);
     })
     .catch(next)
     .done();
