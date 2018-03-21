@@ -176,7 +176,8 @@ function getTotalsSQL(options) {
     SELECT
       IFNULL(GetExchangeRate(${options.enterprise_id}, ${currencyId}, NOW()), 1) AS rate,
       ${currencyId} AS currency_id,
-      SUM(ROUND(debit_equiv, 2)) AS debit, SUM(ROUND(credit_equiv, 2)) AS credit,
+      SUM(ROUND(debit, 2)) AS debit, SUM(ROUND(credit, 2)) AS credit,
+      SUM(ROUND(debit_equiv, 2)) AS debit_equiv, SUM(ROUND(credit_equiv, 2)) AS credit_equiv,
       (SUM(ROUND(debit_equiv, 2)) - SUM(ROUND(credit_equiv, 2))) AS balance
     FROM general_ledger
   `;
@@ -242,8 +243,6 @@ function getAccountTransactions(options, openingBalance = 0) {
       // contains the grid totals for the footer
       const footer = {
         date : lastDate,
-        exchangedDebit : totals.debit * totals.rate,
-        exchangedCredit : totals.credit * totals.rate,
         exchangedBalance : totals.balance * totals.rate,
         exchangedCumSum : lastCumSum,
         exchangedDate : new Date(),
