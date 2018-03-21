@@ -9,7 +9,7 @@ const FC_FMT = {
   precision : 2,
   thousand : '.',
   decimal : ',',
-  format : '%v %s', // value before symbol
+  format : '%v&nbsp;%s', // value before symbol
 };
 
 /** @todo use the currency filter fork written for the client to perform the same behaviour here */
@@ -17,7 +17,7 @@ function currency(value = 0, currencyId) {
   // if currencyId is not defined, defaults to USD.
   // @TODO - super-hardcoded values for the moment.  Can we do better?
   const fmt = (Number(currencyId) === 1) ? FC_FMT : USD_FMT;
-  return accountingjs.formatMoney(value, fmt);
+  return new Handlebars.SafeString(accountingjs.formatMoney(value, fmt));
 }
 
 /**

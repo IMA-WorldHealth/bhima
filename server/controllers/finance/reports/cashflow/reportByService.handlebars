@@ -15,15 +15,15 @@
   <section>
     <div class="row">
       <div class="col-xs-12">
-        <table class="table table-condensed table-bordered table-report table-bordered">
+        <table class="table table-bordered table-condensed table-report table-header-rotated">
           <thead>
-            <tr class="text-capitalize text-center" style="background-color: #ddd;">
-              <th>{{translate 'FORM.LABELS.REFERENCE'}}</th>
-              <th>{{translate 'TABLE.COLUMNS.NAME' }}</th>
+            <tr class="text-capitalize text-center">
+              <th class="text-center">{{translate 'FORM.LABELS.REFERENCE'}}</th>
+              <th class="text-center">{{translate 'TABLE.COLUMNS.NAME' }}</th>
               {{#each services as |service| }}
-                <th>{{ service }}</th>
+                <th class="rotate-45"><div><span style="padding-left:2px;">{{ service }}</span></div></th>
               {{/each}}
-              <th>{{translate "FORM.LABELS.BALANCE"}}</th>
+              <th class="text-center">{{translate "FORM.LABELS.BALANCE"}}</th>
             </tr>
           </thead>
           <tbody>
@@ -32,7 +32,7 @@
                 {{#each row as |value |}}
                   {{! this is the balance calculation }}
                   {{#if @last}}
-                    <th class="text-right">{{currency value metadata.enterprise.currency_id}}</th>
+                    <th class="text-right">{{currency value ../../currencyId}}</th>
 
                   {{! this is the rest of the matrix }}
                   {{else}}
@@ -45,7 +45,7 @@
                         {{/equal}}
                         {{#gt @index 2}}
                           {{#if value}}
-                            {{currency value metadata.enterprise.currency_id}}
+                            {{currency value ../../currencyId}}
                           {{/if}}
                         {{/gt}}
                       {{/if}}
@@ -62,7 +62,7 @@
             <tr class="text-capitalize text-center" style="background-color: #ddd;">
               <th colspan="2">{{translate "TABLE.COLUMNS.TOTAL" }}</th>
               {{#each aggregates as | aggregate |}}
-                <th class="text-right">{{currency aggregate.totalCashIncome metadata.enterprise.currency_id}}</th>
+                <th class="text-right">{{currency aggregate.totalCashIncome ../currencyId}}</th>
               {{/each}}
             </tr>
           </tfoot>
