@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('EnterpriseController', EnterpriseController);
 
 EnterpriseController.$inject = [
-  'EnterpriseService', 'util', 'NotifyService', 'ProjectService', 'ModalService', 'ScrollService',
+  'EnterpriseService', 'util', 'NotifyService', 'ProjectService', 'ModalService', 'ScrollService', 'SessionService',
 ];
 
 /**
@@ -11,7 +11,7 @@ EnterpriseController.$inject = [
  * @description
  * This controller binds the basic CRUD operations on the enterprise.
  */
-function EnterpriseController(Enterprises, util, Notify, Projects, Modal, ScrollTo) {
+function EnterpriseController(Enterprises, util, Notify, Projects, Modal, ScrollTo, Session) {
   const vm = this;
 
   vm.enterprise = {};
@@ -85,6 +85,7 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
       .then(() => {
         Notify.success(creation ? 'FORM.INFO.SAVE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS');
       })
+      .then(() => Session.reload())
       .catch(Notify.handleError);
   }
 

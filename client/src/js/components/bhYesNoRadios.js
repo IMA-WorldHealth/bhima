@@ -3,6 +3,7 @@ angular.module('bhima.components')
     bindings : {
       value : '<',
       label : '@',
+      name : '@',
       helpText : '@?',
       onChangeCallback : '&',
     },
@@ -21,7 +22,6 @@ function YesNoRadioController() {
 
   $ctrl.$onInit = () => {
     $ctrl.value = Number.parseInt($ctrl.value, 10);
-    $ctrl.onChangeCallback = $ctrl.onChangeCallback || angular.noop;
   };
 
   $ctrl.onChange = (value) => {
