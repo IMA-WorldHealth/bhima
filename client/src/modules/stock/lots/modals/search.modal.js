@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 // dependencies injections
 SearchLotsModalController.$inject = [
   'data', 'InventoryService', 'NotifyService',
-  'util', 'Store', '$uibModalInstance', 'PeriodService', 'StockService'
+  'util', 'Store', '$uibModalInstance', 'PeriodService', 'StockService',
 ];
 
 function SearchLotsModalController(data, Inventory, Notify, util, Store, Instance, Periods, Stock) {
@@ -17,7 +17,7 @@ function SearchLotsModalController(data, Inventory, Notify, util, Store, Instanc
   vm.defaultQueries = {};
 
   var searchQueryOptions = [
-    'depot_uuid', 'inventory_uuid', 'label', 'entry_date_from',
+    'depot_uuid', 'inventory_uuid', 'group_uuid', 'label', 'entry_date_from',
     'entry_date_to', 'expiration_date_from', 'expiration_date_to'
   ];
 
@@ -59,6 +59,12 @@ function SearchLotsModalController(data, Inventory, Notify, util, Store, Instanc
     if (angular.isDefined(value)) {
       changes.post({ key: 'limit', value: value });
     }
+  };
+
+  // custom filter group_uuid - assign the value to the params object
+  vm.onSelectGroup = (group) => {
+    vm.searchQueries.group_uuid = group.uuid;
+    displayValues.group_uuid = group.name;
   };
 
   // deletes a filter from the custom filter object,
