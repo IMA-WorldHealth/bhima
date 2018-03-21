@@ -40,7 +40,15 @@ function reportByService(req, res, next) {
   let serviceReport;
 
   const options = _.clone(req.query);
-  _.extend(options, { orientation : 'landscape' });
+
+  _.extend(options, {
+    filename : 'TREE.CASHFLOW_BY_SERVICE',
+    csvKey : 'matrix',
+    orientation : 'landscape',
+    footerRight : '[page] / [toPage]',
+    footerFontSize : '7',
+  });
+
 
   try {
     serviceReport = new ReportManager(TEMPLATE_BY_SERVICE, req.session, options);

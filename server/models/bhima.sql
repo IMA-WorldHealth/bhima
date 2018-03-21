@@ -114,7 +114,7 @@ INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
   (4, 'balance_report', 'REPORT.BALANCE'),
   (5, 'aged_debtors', 'TREE.AGED_DEBTORS'),
   (6, 'account_report', 'REPORT.REPORT_ACCOUNTS.TITLE'),
-  (7, 'cashflowByService', 'REPORT.CASHFLOW_BY_SERVICE.TITLE'),
+  (7, 'cashflowByService', 'TREE.CASHFLOW_BY_SERVICE'),
   (8, 'open_debtors', 'REPORT.OPEN_DEBTORS.TITLE'),
   (9, 'clients_report','REPORT.CLIENTS'),
   (10, 'aged_creditors','TREE.AGED_CREDITORS'),
