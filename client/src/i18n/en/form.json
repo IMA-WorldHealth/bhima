@@ -89,7 +89,8 @@
             "SURE_CONTINUE": "Are you ABSOLUTELY sure?",
             "UNDERSTAND_ACTION": "I accept the consequences of this action",
             "WARNING": "Warning",
-            "CONFIRM_MODAL": "Confirmation Needed"
+            "CONFIRM_MODAL": "Confirmation Needed",
+            "DELETE_ROLE": "Do you really want to delete this role?"
         },
         "ERRORS": {
             "AT_LEAST_1_COL": "At least one column must be selected",
@@ -241,6 +242,7 @@
             "CASH_JOURNAL": "Cash Journal",
             "CASH_SPLITED": "Revenu depenses splited",
             "CASH_PAYMENTS": "Cash Payments",
+            "CHECK_ALL":"Check all",
             "CAUTION": "Caution",
             "CHARGE": "Charge",
             "CLIENT": "Client",
@@ -599,7 +601,10 @@
             "SEPTEMBER": "September",
             "OCTOBER": "October",
             "NOVEMBER": "November",
-            "DECEMBER": "December"
+            "DECEMBER": "December",
+            "PERMISSION_ASSIGNED_SUCCESS":"Permissions successfully affected",
+            "EDIT_ROLE":"Assign role(s)",
+            "ROLES_FOR":"Role(s) for"
         },
         "LEGENDS": {
             "CREATION": "Creation",

@@ -272,6 +272,8 @@ gulp.task('watch-client', () => {
   gulp.watch(paths.client.javascript, ['client-compile-assets']);
   gulp.watch(paths.client.static, ['client-mv-static']);
   gulp.watch(paths.client.vendor, ['client-mv-vendor-style', 'client-compile-vendor']);
+  gulp.watch(paths.client.translate_fr, ['client-compile-i18n-fr']);
+  gulp.watch(paths.client.translate_en, ['client-compile-i18n-en']);
 });
 
 // gather a list of files to rewrite revisions for

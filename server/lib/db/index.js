@@ -2,6 +2,7 @@
 const q = require('q');
 const mysql = require('mysql');
 const uuidParse = require('uuid-parse');
+const uuidv4 = require('uuid/v4');
 const Transaction = require('./transaction');
 const _ = require('lodash');
 
@@ -163,6 +164,14 @@ class DatabaseConnector {
     }
 
     return Buffer.from(uuidParse.parse(hexUuid));
+  }
+
+  /**
+   * @function uuid
+   * generates a uuid(buffer)
+   */
+  uuid() {
+    return this.bid(uuidv4());
   }
 
   /**

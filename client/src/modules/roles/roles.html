@@ -1,0 +1,46 @@
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static" translate> TREE.ADMIN </li>
+      <li class="title" translate>TREE.ROLE_MANAGEMENT</li>
+    </ol>
+    
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <button data-method="add" class="btn btn-default text-capitalize" ng-click="RolesCtrl.add()" data-method="create">
+          <span class="fa fa-plus"></span>
+          <span  translate>FORM.LABELS.ADD</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- main content -->
+<div class="flex-content">
+
+
+  <!-- Row start -->
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="grid-full-height" 
+        id = 'roles-grid'
+        ui-grid-auto-resize 
+        ui-grid-empty-base-layer 
+        ui-grid="RolesCtrl.gridOptions"
+        ui-grid-selection
+        ui-grid-resize-columns
+        ui-grid-move-columns>
+
+        <bh-grid-loading-indicator
+        loading-state="RolesCtrl.loading"
+        empty-state="RolesCtrl.gridOptions.data.length === 0">
+      </bh-grid-loading-indicator>
+
+      </div>
+    </div>
+  </div>
+  <!-- end of row -->
+
+  <!-- Container-fluid ends -->
+</div>
