@@ -47,9 +47,9 @@ function report(req, res, next) {
 
       glb.rows = rows;
       const aggregateSql = `
-        SELECT SUM(debit_equiv) AS debit_equiv, SUM(credit_equiv) AS credit_equiv, 
-          SUM(debit_equiv - credit_equiv) AS balance 
-        FROM general_ledger 
+        SELECT SUM(debit_equiv) AS debit_equiv, SUM(credit_equiv) AS credit_equiv,
+          SUM(debit_equiv - credit_equiv) AS balance
+        FROM general_ledger
         WHERE uuid IN (?);
       `;
       const transactionIds = rows.map(row => {
