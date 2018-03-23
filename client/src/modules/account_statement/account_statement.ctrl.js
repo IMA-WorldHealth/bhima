@@ -6,7 +6,7 @@ AccountStatementController.$inject = [
   'GridSortingService', 'GridFilteringService', 'GridColumnService',
   'SessionService', 'bhConstants', 'uiGridConstants', 'AccountStatementService',
   'ModalService', 'LanguageService', 'GridExportService', 'TransactionService',
-  'GridStateService', '$state', 'AccountService',
+  'GridStateService', '$state', 'AccountService', '$httpParamSerializer',
 ];
 
 /**
@@ -19,7 +19,7 @@ AccountStatementController.$inject = [
 function AccountStatementController(
   GeneralLedger, Notify, Journal, Sorting, Filtering, Columns, Session,
   bhConstants, uiGridConstants, AccountStatement, Modal, Languages,
-  GridExport, Transactions, GridState, $state, Accounts
+  GridExport, Transactions, GridState, $state, Accounts, $httpParamSerializer
 ) {
   // global variables
   const vm = this;
@@ -282,6 +282,18 @@ function AccountStatementController(
     Modal.openReports({ url, params });
   };
 
+  // export excel
+  vm.exportExcel = function exportExcel() {
+    const filterOpts = AccountStatement.filters.formatHTTP();
+    const defaultOpts = {
+      renderer : 'xlsx',
+      lang : Languages.key,
+    };
+    // combine options
+    const options = angular.merge(defaultOpts, filterOpts);
+    // return  serialized options
+    return $httpParamSerializer(options);
+  };
   // export csv
   vm.exportCsv = function exportCsv() {
     exportation.run();

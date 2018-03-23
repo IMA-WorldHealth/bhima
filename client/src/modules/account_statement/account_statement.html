@@ -46,6 +46,12 @@
                 <i class="fa fa-file-excel-o"></i> <span translate>FORM.BUTTONS.CSV_EXPORT</span>
               </a>
             </li>
+
+            <li role="menuitem">
+              <a data-method="export-excel" target='_blank' ng-href="/reports/finance/account_statement?{{AccountStateCtrl.exportExcel()}}" translate-attr="{'download': 'DOWNLOADS.EXCEL'}" >
+                <span class="fa fa-file-excel-o"></span> <span translate>DOWNLOADS.EXCEL</span>
+              </a>
+            </li>
           </ul>
         </div>
       </div>
