@@ -128,7 +128,6 @@ describe('(/stock/) The Stock HTTP API', () => {
     ],
   };
 
-
   // ==============================================================================
 
   const depotPrincipalUuid = 'f9caeb16-1684-43c5-a6c4-47dbac1df296';

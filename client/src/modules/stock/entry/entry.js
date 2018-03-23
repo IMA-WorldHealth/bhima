@@ -19,9 +19,9 @@ function StockEntryController(
   Depots, Inventory, Notify, Session, util, bhConstants, ReceiptModal, Purchase,
   StockForm, Stock, StockModal, uiGridConstants, Store, AppCache, Uuid, $translate
 ) {
+
   const vm = this;
   const cache = new AppCache('StockEntry');
-
   let inventoryStore;
 
   vm.stockForm = new StockForm('StockEntry');
@@ -43,6 +43,7 @@ function StockEntryController(
   vm.setLots = setLots;
   vm.submit = submit;
   vm.changeDepot = changeDepot;
+  vm.reset = reset;
 
   const mapEntry = {
     purchase : { find : findPurchase, submit : submitPurchase },
@@ -106,6 +107,15 @@ function StockEntryController(
     flatEntityAccess : true,
   };
 
+  // reset the form after submission or on clear
+  function reset(form) {
+    const _form = form || mapEntry.form;
+    const _date = vm.movement.date;
+    vm.movement = { date : _date };
+    _form.$setPristine();
+    _form.$setUntouched();
+    vm.stockForm.store.clear();
+  }
   // exposing the grid options to the view
   vm.gridOptions = gridOptions;
 
@@ -325,7 +335,7 @@ function StockEntryController(
     if (!vm.movement.entry_type) {
       return Notify.danger('ERRORS.ER_NO_STOCK_SOURCE');
     }
-
+    mapEntry.form = form;
     return mapEntry[vm.movement.entry_type].submit();
   }
 
@@ -347,8 +357,7 @@ function StockEntryController(
         return Purchase.stockStatus(vm.movement.entity.uuid);
       })
       .then(() => {
-        vm.stockForm.store.clear();
-        vm.movement = {};
+        vm.reset();
         ReceiptModal.stockEntryPurchaseReceipt(vm.document.uuid, bhConstants.flux.FROM_PURCHASE);
       })
       .catch(Notify.handleError);
@@ -372,13 +381,11 @@ function StockEntryController(
 
     Stock.integration.create(entry)
       .then((document) => {
-        vm.stockForm.store.clear();
-        vm.movement = {};
+        vm.reset();
         ReceiptModal.stockEntryIntegrationReceipt(document.uuid, bhConstants.flux.FROM_INTEGRATION);
       })
       .catch(Notify.handleError);
   }
-
   function submitDonation() {
     const movement = {
       depot_uuid : vm.depot.uuid,
@@ -400,8 +407,7 @@ function StockEntryController(
 
     return Stock.stocks.create(movement)
       .then((document) => {
-        vm.stockForm.store.clear();
-        vm.movement = {};
+        vm.reset();
         ReceiptModal.stockEntryDonationReceipt(document.uuid, bhConstants.flux.FROM_DONATION);
       })
       .catch(Notify.handleError);
@@ -423,8 +429,7 @@ function StockEntryController(
 
     return Stock.movements.create(movement)
       .then((document) => {
-        vm.stockForm.store.clear();
-        vm.movement = {};
+        vm.reset();
         ReceiptModal.stockEntryDepotReceipt(document.uuid, true);
       })
       .catch(Notify.handleError);

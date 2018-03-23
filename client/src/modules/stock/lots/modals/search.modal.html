@@ -31,6 +31,15 @@
             <bh-clear on-clear="$ctrl.clear('inventory_uuid')"></bh-clear>
           </bh-inventory-select>
 
+          <!-- inventory group -->
+          <bh-inventory-group-select
+            group-uuid="$ctrl.searchQueries.group_uuid"
+            name="group_uuid"
+            required="false"
+            on-select-callback="$ctrl.onSelectGroup(group)">
+            <bh-clear on-clear="$ctrl.clear('group_uuid')"></bh-clear>
+          </bh-inventory-group-select>
+
           <!-- lot number  -->
           <div class="form-group">
             <label class="control-label" translate>STOCK.LOT</label>
