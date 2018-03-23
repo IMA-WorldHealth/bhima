@@ -27,7 +27,7 @@ function stockEntryIntegrationReceipt(req, res, next) {
   const sql = `
     SELECT i.code, i.text, BUID(m.document_uuid) AS document_uuid,
       m.quantity, m.unit_cost, (m.quantity * m.unit_cost) AS total , m.date, m.description,
-      u.display_name AS user_display_name, 
+      u.display_name AS user_display_name,
       l.label, l.expiration_date, d.text AS depot_name,
       CONCAT_WS('.', '${identifiers.INTEGRATION.key}', proj.abbr, integ.reference) AS integration_reference,
       integ.description, integ.date AS integration_date,

@@ -1,5 +1,5 @@
 const {
-  _, ReportManager, Stock, identifiers, NotFound, db, STOCK_EXIT_LOSS_TEMPLATE,
+  _, ReportManager, Stock, NotFound, db, STOCK_EXIT_LOSS_TEMPLATE,
 } = require('../common');
 
 /**
@@ -35,7 +35,7 @@ function stockExitLossReceipt(req, res, next) {
     JOIN inventory i ON i.uuid = l.inventory_uuid
     JOIN depot d ON d.uuid = m.depot_uuid
     JOIN user u ON u.id = m.user_id
-    JOIN document_map dm ON dm.uuid = m.document_uuid 
+    JOIN document_map dm ON dm.uuid = m.document_uuid
     WHERE m.is_exit = 1 AND m.flux_id = ${Stock.flux.TO_LOSS} AND m.document_uuid = ?
   `;
 

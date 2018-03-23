@@ -4,12 +4,12 @@
 * This controller exposes an API to the client for reading and writing Offday
 */
 
-var db = require('../../lib/db');
-var NotFound = require('../../lib/errors/NotFound');
+const db = require('../../lib/db');
+const NotFound = require('../../lib/errors/NotFound');
 
 // GET /Offday
 function lookupOffday(id) {
-  var sql =`
+  const sql = `
     SELECT o.id, o.label, o.date, o.percent_pay
     FROM offday AS o
     WHERE o.id = ?`;
@@ -36,7 +36,7 @@ function list(req, res, next) {
 * Returns the detail of a single Offday
 */
 function detail(req, res, next) {
-  var id = req.params.id;
+  const id = req.params.id;
 
   lookupOffday(id)
     .then((record) => {

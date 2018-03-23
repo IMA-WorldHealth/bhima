@@ -151,7 +151,7 @@ function create(req, res, next) {
 
 // generate default text for the patient's debtor entity.
 function generatePatientText(patient) {
-  var textLineDefault = 'Patient/';
+  const textLineDefault = 'Patient/';
   return textLineDefault.concat(patient.display_name);
 }
 
@@ -580,7 +580,7 @@ function invoicingFees(req, res, next) {
 function subsidies(req, res, next) {
   const uid = db.bid(req.params.uuid);
 
-  var patientsSubsidyQuery =
+  const patientsSubsidyQuery =
 
     // subsidy information required to apply subsidies to an invoice
     'SELECT DISTINCT ' +

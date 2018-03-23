@@ -606,7 +606,7 @@ exports.configure = function configure(app) {
   app.put('/iprTax/:id', iprTax.update);
   app.delete('/iprTax/:id', iprTax.delete);
 
-  //IPR TAX CONFIG
+  // IPR TAX CONFIG
   app.get('/iprTaxConfig', iprTax.listConfig);
   app.get('/iprTaxConfig/:id', iprTax.detailConfig);
   app.post('/iprTaxConfig', iprTax.createConfig);

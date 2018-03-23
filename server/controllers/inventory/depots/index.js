@@ -40,7 +40,7 @@ exports.listStockExpirations = listStockExpirations;
 * @function create
 */
 function create(req, res, next) {
-  var query = 'INSERT INTO depot SET ?';
+  const query = 'INSERT INTO depot SET ?';
 
   // prevent missing uuid by generating a new one
   const depotUuid = req.body.uuid || uuid();
@@ -64,7 +64,7 @@ function create(req, res, next) {
 * @function remove
 */
 function remove(req, res, next) {
-  var query = 'DELETE FROM depot WHERE uuid = ?';
+  const query = 'DELETE FROM depot WHERE uuid = ?';
   const uid = db.bid(req.params.uuid);
 
   db.exec(query, [uid])
@@ -82,7 +82,7 @@ function remove(req, res, next) {
 * @function update
 */
 function update(req, res, next) {
-  var query = 'UPDATE depot SET ? WHERE uuid = ?';
+  const query = 'UPDATE depot SET ? WHERE uuid = ?';
   const uid = db.bid(req.params.uuid);
 
   // prevent updating the uuid by accident
@@ -157,9 +157,9 @@ function list(req, res, next) {
 * @function detail
 */
 function detail(req, res, next) {
-  var uid = db.bid(req.params.uuid);
+  const uid = db.bid(req.params.uuid);
 
-  var sql = `
+  const sql = `
     SELECT
       BUID(d.uuid) as uuid, d.text, d.is_warehouse,
       allow_entry_purchase, allow_entry_donation, allow_entry_integration, allow_entry_transfer,
@@ -391,7 +391,7 @@ function listAvailableLots(req, res, next) {
   return db.exec(sql, [depot, depot, depot, depot])
     .then((rows) => {
     // @TODO -- this should be in the WHERE/HAVING condition
-      var ans = rows.filter((item) => { return item.quantity > 0; });
+      const ans = rows.filter((item) => { return item.quantity > 0; });
       res.status(200).json(ans);
     })
     .catch(next)
@@ -438,7 +438,7 @@ function detailAvailableLots(req, res, next) {
   return db.exec(sql, [depot, uid, depot, depot, depot, uid])
     .then((rows) => {
       // @TODO -- this should be in the WHERE/HAVING condition
-      var ans = rows.filter((item) => { return item.quantity > 0; });
+      const ans = rows.filter((item) => { return item.quantity > 0; });
       res.status(200).json(ans);
     })
     .catch(next)

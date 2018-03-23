@@ -148,7 +148,7 @@ function getInventoryItems(req, res, next) {
 * @function getInventoryItemsById
 */
 function getInventoryItemsById(req, res, next) {
-  const uuid = req.params.uuid;
+  const { uuid } = req.params;
 
   core.getItemsMetadataById(uuid)
     .then((row) => {
@@ -430,7 +430,7 @@ function deleteInventoryUnits(req, res, next) {
 */
 function getInventoryConsumptionById(req, res, next) {
   let data;
-  const uuid = req.params.uuid;
+  const { uuid } = req.params;
   const options = req.query;
 
   // enforce that both parameters exist or neither exist
@@ -446,7 +446,7 @@ function getInventoryConsumptionById(req, res, next) {
       }
 
       // cache results
-      data = rows[0];
+      [data] = rows;
 
       // query consumption data
       return options.average ?
@@ -545,7 +545,7 @@ function getInventoryConsumption(req, res, next) {
 * single inventory item.
 */
 exports.getInventoryLeadTimesById = function getInventoryLeadTimesById(req, res, next) {
-  const uuid = req.params.uuid;
+  const { uuid } = req.params;
   const options = req.query;
 
   leadtimes.getInventoryLeadTimesById(uuid, options)
@@ -629,7 +629,7 @@ function getInventoryStockLevels(req, res, next) {
 */
 function getInventoryStockLevelsById(req, res, next) {
   const options = req.query;
-  const uuid = req.params.uuid;
+  const { uuid } = req.params;
 
   // enforce that both parameters exist or neither exist
   if (!core.hasBoth(options.start, options.end)) {
@@ -689,7 +689,7 @@ function getInventoryExpirations(req, res, next) {
 */
 function getInventoryExpirationsById(req, res, next) {
   const options = req.query;
-  const uuid = req.params.uuid;
+  const { uuid } = req.params;
 
   // enforce that both parameters exist or neither exist
   if (!core.hasBoth(options.start, options.end)) {
@@ -755,7 +755,7 @@ function getInventoryLots(req, res, next) {
 * @function getInventoryLotsById
 */
 function getInventoryLotsById(req, res, next) {
-  const uuid = req.params.uuid;
+  const { uuid } = req.params;
 
   lots.getInventoryLotsById(uuid)
     .then((rows) => {
@@ -806,7 +806,7 @@ function getInventoryStatus(req, res, next) {
 *   3) shortage (below minimum required level)
 */
 function getInventoryStatusById(req, res, next) {
-  const uuid = req.params.uuid;
+  const { uuid } = req.params;
 
   stats.getInventoryStatusById(uuid)
     .then((data) => {
@@ -839,7 +839,7 @@ function getInventoryDonations(req, res, next) {
 * type.
 */
 function getInventoryDonationsById(req, res, next) {
-  const uuid = req.params.uuid;
+  const { uuid } = req.params;
 
   donations.getInventoryDonationsById(uuid)
     .then((data) => {

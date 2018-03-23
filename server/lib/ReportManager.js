@@ -39,7 +39,7 @@ const renderers = {
   pdf  : require('./renderers/pdf'),
   csv  : require('./renderers/csv'),
   xlsx  : require('./renderers/xlsx'),
-  xlsxReceipt  : require('./renderers/xlsxReceipt'),
+  xlsxReceipt : require('./renderers/xlsxReceipt'),
 };
 
 // default report configuration
@@ -91,7 +91,10 @@ class ReportManager {
     this.renderer = renderers[this.options.renderer || this.defaults.renderer];
 
     if (!this.renderer) {
-      throw new BadRequest(`The application does not support rendering ${options.renderer}.`, 'ERRORS.INVALID_RENDERER');
+      throw new BadRequest(
+        `The application does not support rendering ${options.renderer}.`,
+        'ERRORS.INVALID_RENDERER'
+      );
     }
 
     // @TODO user information could be determined by report manager, removing the need for this check
@@ -121,8 +124,7 @@ class ReportManager {
    *    render() function.
    */
   render(data) {
-    const metadata = this.metadata;
-    const renderer = this.renderer;
+    const { metadata, renderer } = this;
 
     // set the render timestamp
     metadata.timestamp = new Date();
@@ -185,7 +187,7 @@ class ReportManager {
 
     // generate a unique id for the report name
     const reportId = uuid();
-    const options = this.options;
+    const { options } = this;
 
     // make the report name using the
     const fname = reportId + this.renderer.extension;
