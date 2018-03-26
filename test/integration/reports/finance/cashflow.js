@@ -29,7 +29,7 @@ describe(`(${target}) Cashflow Reports`, () => {
     'totalPeriodColumn',
   ];
 
-  const BAD_REQUEST = 'ERRORS.BAD_REQUEST';
+  const BAD_REQUEST_MSG = 'There are some missing information among dateFrom, dateTo or cashboxesId';
 
   const clone = (object) => JSON.parse(JSON.stringify(object));
 
@@ -38,7 +38,7 @@ describe(`(${target}) Cashflow Reports`, () => {
       .then(res => {
         expect(res).to.have.status(400);
         expect(res).to.be.json;
-        expect(res.body.code).to.equal(BAD_REQUEST);
+        expect(res.body.code).to.equal(BAD_REQUEST_MSG);
       })
       .catch(helpers.handler);
   });
