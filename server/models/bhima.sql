@@ -144,7 +144,7 @@ INSERT INTO `transaction_type` (`id`, `text`, `type`, `prefix`, `fixed`) VALUES
   (2, 'VOUCHERS.SIMPLE.CASH_PAYMENT', 'income', 'CASH', 1),
   (3, 'VOUCHERS.SIMPLE.CONVENTION_PAYMENT', 'income', 'CONV', 1),
   (4, 'VOUCHERS.SIMPLE.SUPPORT_INCOME', 'income', 'PEC', 1),
-  (5, 'VOUCHERS.SIMPLE.TRANSFER', 'income', 'TRANSF', 1),
+  (5, 'VOUCHERS.SIMPLE.TRANSFER', 'transfer', 'TRANSF', 1),
   (6, 'VOUCHERS.SIMPLE.GENERIC_EXPENSE', 'expense', 'DEP. GEN', 1),
   (7, 'VOUCHERS.SIMPLE.SALARY_PAYMENT', 'expense', 'SALAIRE', 1),
   (8, 'VOUCHERS.SIMPLE.CASH_RETURN', 'expense', 'PAYBACK', 1),

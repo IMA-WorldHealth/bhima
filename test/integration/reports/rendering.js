@@ -14,30 +14,30 @@ module.exports = function LazyTester(target, keys, options = {}) {
     const html = _.merge({ renderer : 'html' }, params);
     const pdf = _.merge({ renderer : 'pdf' }, params);
 
-    it(`GET ${target} should return Bad Request for invalid renderer`, function () {
+    it(`GET ${target} should return Bad Request for invalid renderer`, () => {
       return agent.get(target)
         .query(invalid)
-        .then(function (result) {
+        .then((result) => {
           helpers.api.errored(result, 400, 'ERRORS.INVALID_RENDERER');
         })
         .catch(helpers.handler);
     });
 
-    it(`GET ${target} should return JSON data for 'json' rendering target`, function () {
+    it(`GET ${target} should return JSON data for 'json' rendering target`, () => {
       return agent.get(target)
         .query(json)
         .then(expectJSONReport)
         .catch(helpers.handler);
     });
 
-    it(`GET ${target} should return HTML data for 'html' rendering target`, function () {
+    it(`GET ${target} should return HTML data for 'html' rendering target`, () => {
       return agent.get(target)
         .query(html)
         .then(expectHTMLReport)
         .catch(helpers.handler);
     });
 
-    it(`GET ${target} should return PDF data for 'pdf' rendering target`, function () {
+    it(`GET ${target} should return PDF data for 'pdf' rendering target`, function renderPdfData() {
       this.timeout(5000);
       return agent.get(target)
         .query(pdf)
@@ -45,7 +45,7 @@ module.exports = function LazyTester(target, keys, options = {}) {
         .catch(helpers.handler);
     });
 
-    it(`GET ${target} should return the default PDF renderer if no rendering target`, function () {
+    it(`GET ${target} should return the default PDF renderer if no rendering target`, function renderDefaultPdf() {
       this.timeout(5000);
       const parameters = _.clone(params);
       delete parameters.renderer;

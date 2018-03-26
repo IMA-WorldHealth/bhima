@@ -25,7 +25,12 @@
     "CASHFLOW" : {
       "TITLE":"Cash Flow Physical Report",
       "DESCRIPTION":"This report shows changes in the accounts and revenues of the balance sheet on cash",
-      "SHOW_WEEKLY_REPORT_HELP":"Enabling this option will allow to view the cash flow report per week"
+      "OPERATION":"Operation",
+      "INCOMES":"Incomes",
+      "EXPENSES":"Expenses",
+      "TRANSFER":"Transfers",
+      "IN":"In",
+      "CONCERNED_ACCOUNT":"This report concerns these accounts"
     },
     "CASH_INCOME":"Incomes",
     "CHART_OF_ACCOUNTS": "Chart of Accounts",

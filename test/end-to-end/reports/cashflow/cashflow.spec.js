@@ -10,15 +10,12 @@ describe('Cashflow Report', () => {
   const key = 'cashflow';
 
   const dataset = {
-    date_range    : 'year',
-    weekly1        : false,
-    cashbox       : 'Caisse Aux',
-    dateFrom      : '01/01/2017',
-    dateTo        : '01/04/2017',
-    cashboxFc     : 'Caisse',
-    report_name   : 'Cashflow Report',
-    renderer      : 'PDF',
-    weekly2       : true,
+    cashboxes       : ['Caisse Auxiliaire'],
+    dateFrom        : '01/01/2018',
+    dateTo          : '31/12/2018',
+    report_name     : 'Cashflow Report',
+    renderer        : 'PDF',
+    previousCashbox : [],
   };
 
   before(() => {
@@ -27,7 +24,7 @@ describe('Cashflow Report', () => {
   });
 
   it('preview a new Cashflow Report', () => {
-    Page.showCashflowReportPreview(dataset.date_range, dataset.weekly1, dataset.cashbox);
+    Page.showCashflowReportPreview(dataset.cashboxes, dataset.dateFrom, dataset.dateTo);
   });
 
   it('close the previewed report', () => {
@@ -35,7 +32,13 @@ describe('Cashflow Report', () => {
   });
 
   it('save a previewed report', () => {
-    Page.saveCashflowReport(dataset.dateFrom, dataset.dateTo, dataset.cashboxFc, dataset.report_name, dataset.renderer);
+    Page.saveCashflowReport(
+      dataset.dateFrom,
+      dataset.dateTo,
+      dataset.previousCashbox,
+      dataset.report_name,
+      dataset.renderer
+    );
   });
 
   it('report has been saved into archive', () => {
@@ -43,6 +46,6 @@ describe('Cashflow Report', () => {
   });
 
   it('print the previewed report', () => {
-    Page.printCashflowReport(dataset.date_range, dataset.weekly2, dataset.cashbox);
+    Page.printCashflowReport(dataset.cashboxes, dataset.dateFrom, dataset.dateTo);
   });
 });
