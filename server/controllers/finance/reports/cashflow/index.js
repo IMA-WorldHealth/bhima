@@ -119,7 +119,7 @@ function reportByService(req, res, next) {
         return [];
       }
 
-      const { rows } = data.rows;
+      const { rows } = data;
       delete data.rows;
 
       // map services to their service names
