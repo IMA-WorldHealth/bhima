@@ -37,7 +37,7 @@ module.exports = function LazyTester(target, keys, options = {}) {
         .catch(helpers.handler);
     });
 
-    it(`GET ${target} should return PDF data for 'pdf' rendering target`, () => {
+    it(`GET ${target} should return PDF data for 'pdf' rendering target`, function renderPdfData() {
       this.timeout(5000);
       return agent.get(target)
         .query(pdf)
@@ -45,7 +45,7 @@ module.exports = function LazyTester(target, keys, options = {}) {
         .catch(helpers.handler);
     });
 
-    it(`GET ${target} should return the default PDF renderer if no rendering target`, () => {
+    it(`GET ${target} should return the default PDF renderer if no rendering target`, function renderDefaultPdf() {
       this.timeout(5000);
       const parameters = _.clone(params);
       delete parameters.renderer;
