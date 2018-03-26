@@ -94,6 +94,7 @@
     "USERS":"Utilisateurs",
     "VOUCHER_REGISTRY":"Registre des Bordereaux",
     "AGED_DEBTORS":"Les plus anciens débiteurs",
-    "WEEKEND_CONFIGURATION":"Configuration des weekend"
+    "WEEKEND_CONFIGURATION":"Configuration des weekend",
+    "ROLE_MANAGEMENT":"Gestion des rôles"
   }
 }

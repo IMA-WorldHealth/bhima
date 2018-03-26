@@ -1,17 +1,18 @@
 angular.module('bhima.controllers')
   .controller('UsersController', UsersController);
 
-UsersController.$inject = ['$state', 'UserService', 'NotifyService', 'ModalService', 'uiGridConstants'];
+UsersController.$inject = ['$state', '$uibModal', 'UserService', 'NotifyService', 'ModalService', 'uiGridConstants'];
 
 /**
  * Users Controller
  * This module is responsible for handling the CRUD operation on the user
  */
-function UsersController($state, Users, Notify, Modal, uiGridConstants) {
+function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstants) {
   var vm = this;
   vm.gridApi = {};
   vm.filterEnabled = false;
   vm.toggleFilter = toggleFilter;
+  vm.editRoles = editRoles;
 
   // this function selectively applies the muted cell classes to
   // disabled user entities
@@ -109,6 +110,20 @@ function UsersController($state, Users, Notify, Modal, uiGridConstants) {
       });
   }
 
+  function editRoles(user) {
+
+    $uibModal.open({
+      keyboard : false,
+      backdrop : 'static',
+      templateUrl : 'modules/roles/modal/userRole.html',
+      controller : 'UsersRolesController as UsersRolesCtrl',
+      resolve : {
+        data : function dataProvider() {
+          return user;
+        },
+      },
+    });
+  }
   function toggleLoadingIndicator() {
     vm.loading = !vm.loading;
   }

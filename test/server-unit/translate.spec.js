@@ -41,6 +41,11 @@ function TranslateUnitTests() {
     const compiled = translate('en')(key);
     expect(compiled).to.equal(key);
   });
+
+  it('#translate() should return undefined for undefined value', () => {
+    const compiled = translate('en')(undefined);
+    expect(compiled).to.equal(undefined);
+  });
 }
 
 describe('lib/helpers/translate.js', TranslateUnitTests);

@@ -1,0 +1,34 @@
+<form name='roleForm' bh-submit="RolesAddCtrl.submit(roleForm)" novalidate>
+
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li>
+        <span translate>TREE.ROLE_MANAGEMENT</span>
+        <label class="label label-warning text-uppercase" translate>{{RolesAddCtrl.action}}</label>
+      </li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+    <div class="row">
+      <div class="form-group" ng-class="{'has-error' : roleForm.label.$invalid && roleForm.$submitted}">
+        <label class="control-label" translate>FORM.LABELS.NAME</label>
+        <input type="text" class="form-control col-md-9" name="label" ng-model="RolesAddCtrl.role.label" required>
+        <div class="help-block" ng-messages="roleForm.label.$error" ng-show="roleForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button data-method="cancel" type="button" class="btn btn-default" ng-click="RolesAddCtrl.close()">
+      <span translate>FORM.BUTTONS.CANCEL</span>
+    </button>
+
+    <bh-loading-button data-method="submit" loading-state="roleForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+
+</form>

@@ -689,7 +689,7 @@ CREATE TABLE `general_ledger` (
   `period_id`         MEDIUMINT(8) UNSIGNED DEFAULT NULL,
   `trans_id`          VARCHAR(100) NOT NULL,
   `trans_date`        DATETIME NOT NULL,
-  `record_uuid`       BINARY(16) NOT NULL, -- previously doc_num
+  `record_uuid`       BINARY(16) NOT NULL,
   `description`       TEXT NOT NULL,
   `account_id`        INT(10) UNSIGNED NOT NULL,
   `debit`             DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.00,
@@ -697,13 +697,15 @@ CREATE TABLE `general_ledger` (
   `debit_equiv`       DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.00,
   `credit_equiv`      DECIMAL(19,4) UNSIGNED NOT NULL DEFAULT 0.00,
   `currency_id`       TINYINT(3) UNSIGNED NOT NULL,
-  `entity_uuid`       BINARY(16),    -- previously deb_cred_uuid
-  `reference_uuid`    BINARY(16),  -- previously inv_po_id
+  `entity_uuid`       BINARY(16),
+  `reference_uuid`    BINARY(16),
   `comment`           TEXT,
   `origin_id`         TINYINT(3) UNSIGNED NULL,
   `user_id`           SMALLINT(5) UNSIGNED NOT NULL,
   `cc_id`             SMALLINT(6),
   `pc_id`             SMALLINT(6),
+  `created_at`        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at`        TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`uuid`),
   KEY `project_id` (`project_id`),
   KEY `fiscal_year_id` (`fiscal_year_id`),
@@ -1212,7 +1214,7 @@ CREATE TABLE `posting_journal` (
   `period_id`         MEDIUMINT(8) UNSIGNED DEFAULT NULL,
   `trans_id`          VARCHAR(100) NOT NULL,
   `trans_date`        DATETIME NOT NULL,
-  `record_uuid`       BINARY(16) NOT NULL, -- previously doc_num
+  `record_uuid`       BINARY(16) NOT NULL,
   `description`       TEXT,
   `account_id`        INT(10) UNSIGNED NOT NULL,
   `debit`             DECIMAL(19,4) NOT NULL DEFAULT 0.00,
@@ -1220,13 +1222,15 @@ CREATE TABLE `posting_journal` (
   `debit_equiv`       DECIMAL(19,4) NOT NULL DEFAULT 0.00,
   `credit_equiv`      DECIMAL(19,4) NOT NULL DEFAULT 0.00,
   `currency_id`       TINYINT(3) UNSIGNED NOT NULL,
-  `entity_uuid`       BINARY(16),    -- previously deb_cred_uuid
-  `reference_uuid`    BINARY(16),  -- previously inv_po_id
+  `entity_uuid`       BINARY(16),
+  `reference_uuid`    BINARY(16),
   `comment`           TEXT,
   `origin_id`         TINYINT(3) UNSIGNED NULL,
   `user_id`           SMALLINT(5) UNSIGNED NOT NULL,
   `cc_id`             SMALLINT(6),
   `pc_id`             SMALLINT(6),
+  `created_at`        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at`        TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`uuid`),
   KEY `project_id` (`project_id`),
   KEY `fiscal_year_id` (`fiscal_year_id`),
@@ -1650,6 +1654,41 @@ CREATE TABLE `user` (
   `last_login`    TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_1` (`username`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+DROP TABLE IF EXISTS `role`;
+CREATE TABLE `role` (
+  `uuid` binary(16) NOT NULL,
+  `label` varchar(50) NOT NULL,
+  `project_id` SMALLINT(5) UNSIGNED NOT NULL,
+  KEY `project_id` (`project_id`),
+  PRIMARY kEY(`uuid`),
+  UNIQUE `project_role_label` (`project_id`,`label`),
+  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `user_role`;
+CREATE TABLE `user_role` (
+  `uuid` binary(16) NOT NULL,
+  `user_id` SMALLINT(5) UNSIGNED NOT NULL,
+  `role_uuid` binary(16) NOT NULL,
+  PRIMARY kEY(`uuid`),
+  UNIQUE `role_for_user` (`user_id`,`role_uuid`),
+  FOREIGN KEY (`role_uuid`) REFERENCES `role` (`uuid`) ON UPDATE CASCADE,
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+DROP TABLE IF EXISTS `role_unit`;
+CREATE TABLE `role_unit` (
+  `uuid` binary(16) NOT NULL,
+  `role_uuid`  binary(16) NOT NULL,
+  `unit_id` SMALLINT(5) UNSIGNED DEFAULT NULL,
+  PRIMARY kEY(`uuid`),
+  FOREIGN KEY (`role_uuid`) REFERENCES `role` (`uuid`) ON UPDATE CASCADE,
+  FOREIGN KEY (`unit_id`) REFERENCES `unit` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 

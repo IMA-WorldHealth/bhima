@@ -1,9 +1,9 @@
 angular.module('bhima.controllers')
-.controller('PatientRegistryModalController', PatientRegistryModalController);
+  .controller('PatientRegistryModalController', PatientRegistryModalController);
 
 PatientRegistryModalController.$inject = [
   '$uibModalInstance', 'filters',
-  'bhConstants', 'moment', 'Store', 'util', 'PeriodService', 'PatientService',
+  'bhConstants', 'moment', 'Store', 'util', 'PeriodService',
 ];
 
 /**
@@ -14,29 +14,27 @@ PatientRegistryModalController.$inject = [
  * search functionality on the patient registry page.  Filters that are already
  * applied to the grid can be passed in via the filters inject.
  */
-function PatientRegistryModalController(ModalInstance, filters, bhConstants, moment, Store, util, Periods, Patients) {
-  var vm = this;
-  var changes = new Store({ identifier : 'key' });
+function PatientRegistryModalController(ModalInstance, filters, bhConstants, moment, Store, util, Periods) {
+  const vm = this;
+  const changes = new Store({ identifier : 'key' });
+  // displayValues will be an id:displayValue pair
+  const displayValues = {};
+  // @TODO ideally these should be passed in when the modal is initialised these are known when the filter service is defined
+  const searchQueryOptions = [
+    'display_name', 'sex', 'hospital_no', 'reference', 'dateBirthFrom', 'dateBirthTo', 'dateRegistrationFrom', 'dateRegistrationTo',
+    'debtor_group_uuid', 'patient_group_uuid', 'user_id', 'defaultPeriod',
+  ];
+
   vm.filters = filters;
 
   vm.today = new Date();
   vm.defaultQueries = {};
   vm.searchQueries = {};
 
-  // displayValues will be an id:displayValue pair
-  var displayValues = {};
-  var lastDisplayValues = Patients.filters.getDisplayValueMap();
-
   // assign default limit filter
   if (filters.limit) {
     vm.defaultQueries.limit = filters.limit;
   }
-
-  // @TODO ideally these should be passed in when the modal is initialised these are known when the filter service is defined
-  var searchQueryOptions = [
-    'display_name', 'sex', 'hospital_no', 'reference', 'dateBirthFrom', 'dateBirthTo', 'dateRegistrationFrom', 'dateRegistrationTo',
-    'debtor_group_uuid', 'patient_group_uuid', 'user_id', 'defaultPeriod'
-  ];
 
   // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(filters, searchQueryOptions);
@@ -63,35 +61,35 @@ function PatientRegistryModalController(ModalInstance, filters, bhConstants, mom
   };
 
   // default filter limit - directly write to changes list
-  vm.onSelectLimit = function onSelectLimit(value) {
+  vm.onSelectLimit = function onSelectLimit(val) {
     // input is type value, this will only be defined for a valid number
-    if (angular.isDefined(value)) {
-      changes.post({ key : 'limit', value : value });
+    if (angular.isDefined(val)) {
+      changes.post({ key : 'limit', value : val });
     }
   };
 
   // default filter period - directly write to changes list
   vm.onSelectPeriod = function onSelectPeriod(period) {
-    var periodFilters = Periods.processFilterChanges(period);
+    const periodFilters = Periods.processFilterChanges(period);
 
-    periodFilters.forEach(function (filterChange) {
+    periodFilters.forEach((filterChange) => {
       changes.post(filterChange);
     });
   };
 
 
   // returns the parameters to the parent controller
-  function submit(form) {
+  function submit() {
     // push all searchQuery values into the changes array to be applied
-    angular.forEach(vm.searchQueries, function (value, key) {
-      if (angular.isDefined(value)) {
+    angular.forEach(vm.searchQueries, (val, _key) => {
+      if (angular.isDefined(val)) {
         // default to the original value if no display value is defined
-        var displayValue = displayValues[key] || lastDisplayValues[key] || value;
-        changes.post({ key: key, value: value, displayValue: displayValue });
+        const displayVal = displayValues[_key] || val;
+        changes.post({ key : _key, value: val, displayValue : displayVal });
       }
     });
 
-    var loggedChanges = changes.getAll();
+    const loggedChanges = changes.getAll();
 
     // return values to the Patient Registry Controller
     return ModalInstance.close(loggedChanges);

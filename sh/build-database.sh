@@ -37,7 +37,7 @@ mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/icd10.sql &> /dev/null
 mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/bhima.sql &> /dev/null
 
 echo "[build] test data"
-mysql -u $DB_USER -p$DB_PASS $DB_NAME < test/data.sql &> /dev/null
+mysql -u $DB_USER -p$DB_PASS $DB_NAME < test/data.sql
 
 echo "[build] compute account class"
 mysql -u $DB_USER -p$DB_PASS $DB_NAME -e "Call ComputeAccountClass();" &> /dev/null

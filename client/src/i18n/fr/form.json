@@ -89,7 +89,8 @@
             "SURE_CONTINUE": "Etes-vous ABSOLUMENT sure ?",
             "UNDERSTAND_ACTION": "J'ACCEPTE les consequences de cette action",
             "WARNING": "Attention",
-            "CONFIRM_MODAL": "La confirmation est nécessaire"
+            "CONFIRM_MODAL": "La confirmation est nécessaire",
+            "DELETE_ROLE": "Voulez-vous vraiment supprimer ce rôle?"
         },
         "ERRORS": {
             "AT_LEAST_1_COL": "Au moins une colonne doit être sélectionnée",
@@ -241,6 +242,7 @@
             "CHARACTERISTICS": "Caractéristiques",
             "CASHBOX": "Caisse",
             "CASHIER": "Caissier",
+            "CHECK_ALL":"Tout cocher",
             "CASH_ACCOUNT": "Compte caisse",
             "CASH_PAYMENTS": "Paiements",
             "CAUTION": "Caution",
@@ -599,7 +601,10 @@
             "SEPTEMBER": "Septembre",
             "OCTOBER": "Octobre",
             "NOVEMBER": "Novembre",
-            "DECEMBER": "Decembre"
+            "DECEMBER": "Decembre",
+            "PERMISSION_ASSIGNED_SUCCESS":"Permission assigné avec succès",
+            "EDIT_ROLE":"Assigner le(s) rôle(s)",
+            "ROLES_FOR":"Rôle(s) pour"
         },
         "LEGENDS": {
             "CREATION": "Creation",

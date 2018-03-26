@@ -9,7 +9,7 @@
 const _ = require('lodash');
 const db = require('../../../../lib/db');
 const ReportManager = require('../../../../lib/ReportManager');
-
+const util = require('../../../../lib/util');
 const generalLedger = require('../../generalLedger');
 
 const REPORT_TEMPLATE = './server/controllers/finance/reports/account_statement/report.handlebars';
@@ -39,18 +39,17 @@ function report(req, res, next) {
   } catch (e) {
     return next(e);
   }
-  // converting uuids in binary  
+  // converting uuids in binary
   db.convert(options, ['uuids']);
 
   return generalLedger.find(options)
     .then((rows) => {
 
       glb.rows = rows;
-
       const aggregateSql = `
-        SELECT SUM(debit_equiv) AS debit_equiv, SUM(credit_equiv) AS credit_equiv, 
-          SUM(debit_equiv - credit_equiv) AS balance 
-        FROM general_ledger 
+        SELECT SUM(debit_equiv) AS debit_equiv, SUM(credit_equiv) AS credit_equiv,
+          SUM(debit_equiv - credit_equiv) AS balance
+        FROM general_ledger
         WHERE uuid IN (?);
       `;
       const transactionIds = rows.map(row => {
@@ -63,11 +62,15 @@ function report(req, res, next) {
       glb.aggregate = result;
       return rm.render({
         rows: glb.rows,
-        aggregate: glb.aggregate
+        aggregate: glb.aggregate,
       });
     })
     .then((result) => {
-      res.set(result.headers).send(result.report);
+      if (result.headers.type === 'xlsx') {
+        res.xls(result.headers.filename, util.dateFormatter(result.report.rows));
+      } else {
+        res.set(result.headers).send(result.report);
+      }
     })
     .catch(next)
     .done();

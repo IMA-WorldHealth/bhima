@@ -70,7 +70,9 @@ class SearchModal {
   setDebtorGroup(name) {
     FU.uiSelect('$ctrl.searchQueries.debtor_group_uuid', name, this.element);
   }
-
+  setInventoryGroup(name) {
+    FU.uiSelect('$ctrl.searchQueries.group_uuid', name, this.element);
+  }
   setPatientGroup(name) {
     FU.uiSelect('$ctrl.searchQueries.patient_group_uuid', name, this.element);
   }

@@ -30,7 +30,7 @@ function StockExitController(
   vm.stockForm = new StockForm('StockExit');
   vm.movement = {};
   vm.gridApi = {};
-
+  vm.reset = reset;
   // bind methods
   vm.itemIncrement = 1;
   vm.maxLength = util.maxLength;
@@ -152,6 +152,16 @@ function StockExitController(
   vm.exportGrid = () => {
     exportation.exportToCsv('Stock_Exit_', formatExportColumns, formatExportRows);
   };
+
+  // reset the form after submission or on clear
+  function reset(form) {
+    const _form = form || mapExit.form;
+    const _date = vm.movement.date;
+    vm.movement = { date : _date };
+    _form.$setPristine();
+    _form.$setUntouched();
+    vm.stockForm.store.clear();
+  }
 
   /**
    * @function formatExportColumns
@@ -359,15 +369,11 @@ function StockExitController(
     if (!vm.movement.entity.uuid && vm.movement.entity.type !== 'loss') {
       return Notify.danger('ERRORS.ER_NO_STOCK_DESTINATION');
     }
-
     return mapExit[vm.movement.exit_type].submit()
-      .then(function reset() {
+      .then(() => {
         vm.validForSubmit = false;
-
         // reseting the form
-        vm.movement = {};
-        form.$setPristine();
-        form.$setUntouched();
+        vm.reset(form);
       })
       .catch(Notify.handleError);
   }

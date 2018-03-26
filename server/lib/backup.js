@@ -11,7 +11,7 @@ const tmp = require('tempy');
 const util = require('./util');
 const lzma = require('lzma-native');
 const streamToPromise = require('stream-to-promise');
-const fs = require('fs');
+const fs = require('mz/fs');
 const moment = require('moment');
 
 /**
@@ -116,7 +116,7 @@ function xz(file) {
   let beforeSizeInMegabytes;
   let afterSizeInMegabytes;
 
-  return util.statp(file)
+  return fs.stat(file)
     .then(stats => {
       beforeSizeInMegabytes = stats.size / 1000000.0;
       debug(`#xz() ${file} is ${beforeSizeInMegabytes}MB`);

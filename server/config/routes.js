@@ -23,6 +23,8 @@ const report = require('../controllers/report');
 const install = require('../controllers/install');
 
 // admin routes
+const rolesCtrl = require('../controllers/admin/roles');
+const unitCtrl = require('../controllers/admin/unit');
 const users = require('../controllers/admin/users');
 const projects = require('../controllers/admin/projects');
 const enterprises = require('../controllers/admin/enterprises');
@@ -696,4 +698,18 @@ exports.configure = function configure(app) {
   app.get('/diagnoses', diagnoses.list);
 
   app.get('/reports/finance/operating', operating.document);
+
+  // roles
+  app.get('/roles', rolesCtrl.list);
+  app.get('/roles/:uuid', rolesCtrl.detail);
+  app.post('/roles', rolesCtrl.create);
+  app.put('/roles/:uuid', rolesCtrl.update);
+  app.delete('/roles/:uuid', rolesCtrl.remove);
+
+  app.post('/roles/affectUnits', rolesCtrl.affectPages);
+  app.post('/roles/assignTouser', rolesCtrl.affectToUser);
+  app.get('/roles/user/:user_id/:project_id', rolesCtrl.listForUser);
+  // unit
+  app.get('/unit/:roleUuid', unitCtrl.list);
+
 };

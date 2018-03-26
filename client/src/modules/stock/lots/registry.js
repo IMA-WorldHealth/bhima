@@ -64,7 +64,6 @@ function StockLotsController(
       field : 'quantity',
       displayName : 'STOCK.QUANTITY',
       headerCellFilter : 'translate',
-      aggregationType : uiGridConstants.aggregationTypes.sum,
     },
 
     {

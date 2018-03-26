@@ -23,7 +23,7 @@
     <!-- view linked records -->
     <li>
       <a data-method="view-transaction" href ui-sref="journal({ filters : [{ key : 'period', value : 'allTime' },{ key: 'record_uuid', value : row.entity.uuid, displayValue: row.entity.reference}, { key : 'includeNonPosted', value : 1 }]})">
-        <span class="fa fa-file-text-o"></span> <span translate>TRANSACTIONS.VIEW_TRANSACTIONS</span>
+        <i class="fa fa-file-text-o"></i> <span translate>TRANSACTIONS.VIEW_TRANSACTIONS</span>
       </a>
     </li>
 
@@ -32,7 +32,7 @@
     <!-- delete voucher record -->
     <li>
       <a data-method="delete-record" href ng-click="grid.appScope.deleteVoucher(row.entity)">
-        <span class="text-danger"><span class="fa fa-file-text-o"></span> <span translate>FORM.BUTTONS.DELETE_RECORD</span></span>
+        <span class="text-danger"><i class="fa fa-trash-o"></i> <span translate>FORM.BUTTONS.DELETE_RECORD</span></span>
       </a>
     </li>
   </ul>

@@ -2,6 +2,8 @@ const GU = require('../shared/GridUtils');
 const helpers = require('../shared/helpers');
 const SearchModal = require('../shared/search.page');
 const Filters = require('../shared/components/bhFilters');
+const components = require('../shared/components');
+const FU = require('../shared/FormUtils');
 
 function StockLotsRegistryTests() {
   let modal;
@@ -26,6 +28,8 @@ function StockLotsRegistryTests() {
   const LOT_FOR_ALLTIME = 16;
   const LOT_FOR_TODAY = 10;
   const LOT_FOR_LAST_YEAR = 10;
+
+  const invetoryGroup = 'Injectable';
 
 
   it(`finds ${LOT_FOR_TODAY} lot for today`, () => {
@@ -79,6 +83,14 @@ function StockLotsRegistryTests() {
     modal.submit();
     GU.expectRowCount(gridId, 1 + depotGroupingRow);
   });
+
+  it('find inventories by group', () => {
+    components.inventoryGroupSelect.set(invetoryGroup);
+    FU.modal.submit();
+    GU.expectRowCount(gridId, 0);
+    filters.resetFilters();
+  });
+
 }
 
 describe('Stock Lots Registry', StockLotsRegistryTests);

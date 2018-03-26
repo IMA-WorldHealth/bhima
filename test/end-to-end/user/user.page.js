@@ -70,6 +70,7 @@ function UserPage() {
     GA.clickOnMethod(n, actionLinkColumn, 'deactivate', 'users-grid');
   }
 
+
   page.getUserCount = getUserCount;
   page.createUser = createUser;
   page.editUser = editUser;
@@ -78,6 +79,7 @@ function UserPage() {
   page.editUserCashbox = editUserCashbox;
   page.activateUser = activateUser;
   page.deactivateUser = deactivateUser;
+
 }
 
 module.exports = UserPage;
