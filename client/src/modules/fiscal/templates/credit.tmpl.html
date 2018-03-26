@@ -1,0 +1,9 @@
+<div class="ui-grid-cell-contents text-right">
+  <span ng-if="row.entity.isTitleAccount" class="text-bold">
+    {{row.entity.credit | currency: grid.appScope.enterprise.currency_id}}
+  </span>
+
+  <span ng-if="!row.entity.isTitleAccount && (row.entity.credit>0)">
+    {{row.entity.credit | currency: grid.appScope.enterprise.currency_id}}
+  </span>
+</div>
