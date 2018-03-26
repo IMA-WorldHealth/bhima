@@ -34,7 +34,6 @@ function StockInventoriesRegistryTests() {
     modal.submit();
     GU.expectRowCount(gridId, 1 + depotGroupingRow);
     filters.resetFilters();
-
   });
 
   it('find inventory by name', () => {
@@ -56,7 +55,7 @@ function StockInventoriesRegistryTests() {
     FU.modal.submit();
     GU.expectRowCount(gridId, 0);
 
-    filters.resetFilters();    
+    filters.resetFilters();
   });
 
   it('find 0 inventory by state (security reached)', () => {
@@ -67,12 +66,12 @@ function StockInventoriesRegistryTests() {
     filters.resetFilters();
   });
 
-  it('find 0 inventories  by state plus one lne for grouping (minimum reached)', () => {
+  it('find 0 inventories  by state plus one line for grouping (minimum reached)', () => {
     FU.radio('$ctrl.searchQueries.status', 3);
     FU.modal.submit();
     // GU.expectRowCount(gridId, 2 + (depotGroupingRow));
     GU.expectRowCount(gridId, 0);
-    filters.resetFilters();        
+    filters.resetFilters();
   });
 
   it('find 4 inventories  by state plus one lne for grouping (over maximum)', () => {
@@ -81,7 +80,7 @@ function StockInventoriesRegistryTests() {
 
     // GU.expectRowCount(gridId, 3 + (2 * depotGroupingRow));
     GU.expectRowCount(gridId, 4);
-    filters.resetFilters();    
+    filters.resetFilters();
   });
 
   it('find 7 inventories For All time ', () => {
@@ -95,7 +94,7 @@ function StockInventoriesRegistryTests() {
     element(by.model('$ctrl.searchQueries.require_po')).click();
     FU.modal.submit();
     GU.expectRowCount(gridId, 3);
-    filters.resetFilters();    
+    filters.resetFilters();
   });
 }
 

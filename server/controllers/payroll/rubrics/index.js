@@ -4,12 +4,12 @@
 * This controller exposes an API to the client for reading and writing Rubric
 */
 
-var db = require('../../../lib/db');
-var NotFound = require('../../../lib/errors/NotFound');
+const db = require('../../../lib/db');
+const NotFound = require('../../../lib/errors/NotFound');
 
 // GET /Rubric
 function lookupRubric(id) {
-  var sql =`
+  const sql = `
     SELECT r.id, r.label, r.abbr, r.is_employee, r.is_percent, r.is_discount, r.is_social_care,
     r.debtor_account_id, r.expense_account_id, r.is_ipr, r.value, r.is_tax, r.is_membership_fee 
     FROM rubric_payroll AS r  
@@ -43,7 +43,7 @@ function list(req, res, next) {
 * Returns the detail of a single Rubric
 */
 function detail(req, res, next) {
-  var id = req.params.id;
+  const id = req.params.id;
 
   lookupRubric(id)
     .then((record) => {

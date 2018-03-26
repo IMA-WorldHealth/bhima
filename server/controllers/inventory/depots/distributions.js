@@ -103,7 +103,7 @@ function createPatientDistribution() {
 
 // create a service distribution
 function createServiceDistribution(depotId, item) {
-  var sql =
+  const sql =
     'INSERT INTO consumption_service VALUES (?, ?, ?);';
 
   return db.exec(sql, [uuid(), item.id, item.service_id]);

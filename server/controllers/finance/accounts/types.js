@@ -73,7 +73,7 @@ function create(req, res, next) {
    * @todo
    * design/ update account types to allow setting a translation_key
    * - the implications of this are system wide
-   * */
+   */
   record.translation_key = '';
 
   db.exec(sql, [record])
@@ -94,7 +94,7 @@ function create(req, res, next) {
  */
 function update(req, res, next) {
   const data = req.body;
-  const id = req.params.id;
+  const { id } = req.params;
   const sql = 'UPDATE account_type SET ? WHERE id = ?';
 
   delete data.id;
@@ -118,7 +118,7 @@ function update(req, res, next) {
  * DELETE /accounts/types/:id
  */
 function remove(req, res, next) {
-  const id = req.params.id;
+  const { id } = req.params;
   const sql = 'DELETE FROM account_type WHERE id = ?';
 
   lookupAccountType(id)

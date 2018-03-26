@@ -65,10 +65,10 @@ exports.list = function list(req, res, next) {
   // provide as more information as necessary, if the client asks for it.
   if (req.query.detailed === '1') {
     sql =
-      `SELECT 
+      `SELECT
         bs.id, bs.label, bs.created_at, bs.updated_at, bs.account_id,
         bs.description, bs.value, a.number
-      FROM invoicing_fee AS bs 
+      FROM invoicing_fee AS bs
       JOIN account AS a
         ON bs.account_id = a.id
       ORDER BY bs.id;`;
@@ -122,7 +122,7 @@ exports.create = function create(req, res, next) {
  * @desc updates an existing invoicing fee with new information
  */
 exports.update = function update(req, res, next) {
-  const id = req.params.id;
+  const { id } = req.params;
   const data = req.body.invoicingFee;
 
   // remove the :id if it exists inside the invoicingFee object

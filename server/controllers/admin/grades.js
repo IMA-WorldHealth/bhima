@@ -75,7 +75,7 @@ function create(req, res, next) {
 
 // PUT /grade /:uuid
 function update(req, res, next) {
-  var sql =
+  const sql =
     'UPDATE grade SET ? WHERE uuid = ?;';
 
   // make sure you cannot update the uuid
@@ -94,7 +94,7 @@ function update(req, res, next) {
 
 // DELETE /grade/:uuid
 function del(req, res, next) {
-  var sql =
+  const sql =
     'DELETE FROM grade WHERE uuid = ?;';
 
   db.exec(sql, [db.bid(req.params.uuid)])

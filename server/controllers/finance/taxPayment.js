@@ -27,7 +27,7 @@ exports.availablePaymentPeriod = function availablePaymentPeriod(req, res, next)
 };
 
 exports.setTaxPayment = function setTaxPayment(req, res, next) {
-  var sql = `
+  const sql = `
     UPDATE tax_paiement SET posted = 1 ' +
     WHERE tax_paiement.paiement_uuid=${db.escape(req.body.paiement_uuid)}
       AND tax_paiement.tax_id = ${db.escape(req.body.tax_id)};

@@ -11,7 +11,6 @@
  * @requires lib/topic
  */
 
-
 const os = require('os');
 const db = require('../lib/db');
 const Topic = require('../lib/topic');
@@ -92,8 +91,9 @@ function info(req, res) {
     numCPUs : os.cpus().length,
     machineUptime : os.uptime() * 1000, // change to milliseconds
     processUptime : process.uptime() * 1000, // change to milliseconds
-    memoryUsage : (1 - (os.freemem() / os.totalmem())) * 100,
+    memoryUsage : (1 - (os.freemem() / os.totalmem())) * 100, // percentage
     version : pkg.version,
+    memory : (os.totalmem() / (1024 ** 2)), // change to  MB
   };
 
   // respond with the system statistics

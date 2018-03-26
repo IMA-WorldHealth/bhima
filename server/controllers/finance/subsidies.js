@@ -116,7 +116,7 @@ function checkData(obj) {
   if (obj.value <= 0) {
     throw new BadRequest(`You sent a bad value for some parameters`, `ERRORS.BAD_VALUE`);
   }
-  if (isNaN(obj.value)) {
+  if (Number.isNaN(obj.value)) {
     throw new BadRequest(`You sent a bad value for some parameters`, `ERRORS.BAD_VALUE`);
   }
 }

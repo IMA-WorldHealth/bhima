@@ -1,7 +1,7 @@
 const db = require('./../../lib/db');
 
 function healthZones(req, res, next) {
-  var sql = 'SELECT id, zone, territoire, province FROM mod_snis_zs';
+  const sql = 'SELECT id, zone, territoire, province FROM mod_snis_zs';
 
   db.exec(sql)
     .then(rows => {

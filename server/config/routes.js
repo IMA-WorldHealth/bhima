@@ -339,7 +339,7 @@ exports.configure = function configure(app) {
   app.get('/payroll_config', payrollConfig.list);
   app.get('/payroll_config/:id', payrollConfig.detail);
   app.post('/payroll_config', payrollConfig.create);
-  app.put('/payroll_config/:id', payrollConfig.update);  
+  app.put('/payroll_config/:id', payrollConfig.update);
   app.delete('/payroll_config/:id', payrollConfig.delete);
 
   // reports API: Invoices (receipts)
@@ -606,7 +606,7 @@ exports.configure = function configure(app) {
   app.put('/iprTax/:id', iprTax.update);
   app.delete('/iprTax/:id', iprTax.delete);
 
-  //IPR TAX CONFIG
+  // IPR TAX CONFIG
   app.get('/iprTaxConfig', iprTax.listConfig);
   app.get('/iprTaxConfig/:id', iprTax.detailConfig);
   app.post('/iprTaxConfig', iprTax.createConfig);
@@ -626,7 +626,7 @@ exports.configure = function configure(app) {
   app.post('/weekend_config', weekendConfig.create);
   app.put('/weekend_config/:id', weekendConfig.update);
   app.get('/weekend_config/:id/days', weekendConfig.listConfig);
-  app.post('/weekend_config/:id/days', weekendConfig.createConfig);  
+  app.post('/weekend_config/:id/days', weekendConfig.createConfig);
   app.delete('/weekend_config/:id', weekendConfig.delete);
 
   // creditor groups API

@@ -62,12 +62,16 @@ function list(req, res, next) {
   if (req.query.detailed === '1') {
     filters.custom(
       'user_id',
-      'cash_box_account_currency.cash_box_id IN (SELECT cashbox_permission.cashbox_id FROM cashbox_permission WHERE cashbox_permission.user_id = ?)'
+      `cash_box_account_currency.cash_box_id IN (
+        SELECT cashbox_permission.cashbox_id FROM cashbox_permission WHERE cashbox_permission.user_id = ?
+      )`
     );
   } else {
     filters.custom(
       'user_id',
-      'cash_box.id IN (SELECT cashbox_permission.cashbox_id FROM cashbox_permission WHERE cashbox_permission.user_id = ?)'
+      `cash_box.id IN (
+        SELECT cashbox_permission.cashbox_id FROM cashbox_permission WHERE cashbox_permission.user_id = ?
+      )`
     );
   }
 
@@ -225,11 +229,12 @@ function remove(req, res, next) {
  *
  * @description
  * GET /cashboxes/privileges
- * List each user's privileges for each Cashbox
+ *
+ * List each user's privileges for each cashbox
  */
 function privileges(req, res, next) {
-  const user_id = req.session.user.id;
-  const is_auxiliary = 1;
+  const userId = req.session.user.id;
+  const isAuxiliary = 1;
 
   const sql = `
     SELECT userCashBox.id, userCashBox.label, userCashBox.project_id, userCashBox.is_auxiliary, userCashBox.user_id
@@ -244,13 +249,15 @@ function privileges(req, res, next) {
         (
           SELECT cash_box.id, cash_box.label, cash_box.project_id, cash_box.is_auxiliary, NULL AS user_id
           FROM cash_box
-          WHERE cash_box.id NOT IN (SELECT cashbox_permission.cashbox_id FROM cashbox_permission WHERE cashbox_permission.user_id = ?) AND cash_box.is_auxiliary = ?
+          WHERE cash_box.id NOT IN (
+            SELECT cashbox_permission.cashbox_id FROM cashbox_permission WHERE cashbox_permission.user_id = ?
+          ) AND cash_box.is_auxiliary = ?
         )
       ) AS userCashBox
       ORDER BY userCashBox.label
   `;
 
-  db.exec(sql, [user_id, is_auxiliary, user_id, is_auxiliary])
+  db.exec(sql, [userId, isAuxiliary, userId, isAuxiliary])
     .then(rows => res.status(200).json(rows))
     .catch(next)
     .done();

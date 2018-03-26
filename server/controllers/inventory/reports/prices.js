@@ -23,9 +23,9 @@ function prices(req, res, next) {
   const params = _.clone(req.query);
 
   const qs = _.extend(req.query, {
-    csvKey: 'groups',
-    footerRight: '[page] / [toPage]',
-    footerFontSize: '7',
+    csvKey : 'groups',
+    footerRight : '[page] / [toPage]',
+    footerFontSize : '7',
   });
   const metadata = _.clone(req.session);
 

@@ -248,7 +248,7 @@ function report(req, res, next) {
       }).join(',') : '"NO_PERIOD" AS period';
 
       const query = `
-        SELECT 
+        SELECT
           source.transaction_text, source.account_label, ${periodString},
           source.transaction_type, source.transaction_id, source.account_id
         FROM (
@@ -261,9 +261,9 @@ function report(req, res, next) {
           FROM general_ledger gl
           JOIN account a ON gl.account_id = a.id
           JOIN transaction_type tt ON gl.origin_id = tt.id
-          WHERE gl.uuid IN ? 
+          WHERE gl.uuid IN ?
           GROUP BY a.id, tt.id
-        ) AS source 
+        ) AS source
         GROUP BY transaction_type, account_id;
       `;
       return db.exec(query, [...periodParams, [data.detailsIdentifiers]]);
@@ -364,14 +364,14 @@ function getDetailsIdentifiers(cashboxesAccountIds, dateFrom, dateTo) {
   const CANCELLED_VOUCHER_ID = 10;
   const ids = cashboxesAccountIds;
   const queryTransactions = `
-      SELECT gl.trans_id 
-      FROM general_ledger gl 
-      WHERE gl.account_id IN ? 
-        AND 
+      SELECT gl.trans_id
+      FROM general_ledger gl
+      WHERE gl.account_id IN ?
+        AND
         (DATE(gl.trans_date) >= DATE(?) AND DATE(gl.trans_date) <= DATE(?))
         AND
         (
-          gl.origin_id <> ${CANCELLED_VOUCHER_ID} AND 
+          gl.origin_id <> ${CANCELLED_VOUCHER_ID} AND
           gl.record_uuid NOT IN (SELECT v.uuid FROM voucher v WHERE v.type_id = ${CANCELLED_VOUCHER_ID})
         );
     `;
@@ -384,8 +384,8 @@ function getDetailsIdentifiers(cashboxesAccountIds, dateFrom, dateTo) {
       const transIds = rows.map(row => row.trans_id);
 
       const queryUuids = `
-        SELECT gl.uuid 
-        FROM general_ledger gl 
+        SELECT gl.uuid
+        FROM general_ledger gl
         WHERE gl.trans_id IN ? AND gl.account_id NOT IN ?;
         `;
 
@@ -401,13 +401,13 @@ function getDetailsIdentifiers(cashboxesAccountIds, dateFrom, dateTo) {
  */
 function getCashboxesDetails(cashboxesIds) {
   const query = `
-    SELECT 
+    SELECT
       cac.currency_id, cac.account_id, c.id, c.label, cur.symbol,
       a.number AS account_number, a.label AS account_label
-    FROM cash_box c 
-    JOIN cash_box_account_currency cac ON cac.cash_box_id = c.id 
+    FROM cash_box c
+    JOIN cash_box_account_currency cac ON cac.cash_box_id = c.id
     JOIN currency cur ON cur.id = cac.currency_id
-    JOIN account a ON a.id = cac.account_id 
+    JOIN account a ON a.id = cac.account_id
     WHERE c.id IN ? ORDER BY c.id;
   `;
   return db.exec(query, [[cashboxesIds]]);

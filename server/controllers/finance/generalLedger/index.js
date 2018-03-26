@@ -19,7 +19,6 @@
 const db = require('../../../lib/db');
 const FilterParser = require('../../../lib/filter');
 const Tree = require('../../../lib/Tree');
-const util = require('../../../lib/util');
 
 // expose to the api
 exports.list = list;

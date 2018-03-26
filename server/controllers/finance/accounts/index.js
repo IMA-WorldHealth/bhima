@@ -99,7 +99,9 @@ function remove(req, res, next) {
   db.exec(sql, [req.params.id])
     .then((rows) => {
       if (rows[0].childrens > 0) {
-        throw new BadRequest(`Could not delete account with id: ${req.params.id}. This account contains child accounts.`);
+        throw new BadRequest(`
+          Could not delete account with id: ${req.params.id}. This account contains child accounts.
+        `);
       }
 
       const sqlDelete = 'DELETE FROM account WHERE id = ?;';

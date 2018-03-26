@@ -38,7 +38,7 @@ const dir = process.env.UPLOAD_DIR || defaultDir; // relative path
 const fsdir = path.join(process.cwd(), dir); // global path
 
 if (!process.env.UPLOAD_DIR) {
-  debug(`the environmental variable UPLOAD_DIR is not defined.  The application will default to using ${fsdir} as the upload directory.`);
+  debug(`The environmental variable $UPLOAD_DIR is not defined.  The application will default to using ${fsdir} as the upload directory.`);
 }
 
 // attach the upload directory path for outside consumption
@@ -76,7 +76,7 @@ function Uploader(prefix, fields) {
 
       // ensure that a link is passed to the req.file object
       file.link = `${directory}${id}`;
-      debug(`storing file in ${file.link}.`);
+      debug(`Storing file in ${file.link}.`);
       cb(null, id);
     },
   });

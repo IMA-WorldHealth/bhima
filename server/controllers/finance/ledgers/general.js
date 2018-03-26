@@ -1,4 +1,4 @@
-var db = require('../../../lib/db');
+const db = require('../../../lib/db');
 
 /** queries the general ledger for all columns */
 // route: /ledgers/general?since={date}

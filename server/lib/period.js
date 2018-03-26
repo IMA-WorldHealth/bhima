@@ -5,7 +5,7 @@ const Moment = require('moment');
 
 class PeriodService {
   constructor(clientTimestamp) {
-    var self = this;
+    const self = this;
     this.timestamp = new Moment(clientTimestamp);
 
     this.periods = {
@@ -63,9 +63,8 @@ class PeriodService {
       },
     };
 
-    function calculatePeriodLimit(periodKey, modifier) {
-      var dateModifier = modifier || 0;
-      var currentPeriod = Moment().get(periodKey);
+    function calculatePeriodLimit(periodKey, dateModifier = 0) {
+      const currentPeriod = Moment().get(periodKey);
 
       return {
         start : () =>

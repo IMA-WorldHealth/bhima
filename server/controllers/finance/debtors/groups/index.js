@@ -146,7 +146,7 @@ function create(req, res, next) {
  * @function update
  */
 function update(req, res, next) {
-  var sql = 'UPDATE debtor_group SET ? WHERE uuid = ?;';
+  const sql = 'UPDATE debtor_group SET ? WHERE uuid = ?;';
   const uid = db.bid(req.params.uuid);
 
   // convert any incoming uuids to binary
@@ -245,7 +245,7 @@ function list(req, res, next) {
  *
  */
 function invoices(req, res, next) {
-  var options = req.query;
+  const options = req.query;
 
   options.debtor_uuid = req.params.uuid;
 

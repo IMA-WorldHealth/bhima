@@ -4,8 +4,8 @@
 * This controller exposes an API to the client for reading and writing Payroll configuration
 */
 
-var db = require('../../../lib/db');
-var NotFound = require('../../../lib/errors/NotFound');
+const db = require('../../../lib/db');
+const NotFound = require('../../../lib/errors/NotFound');
 
 // GET /PAYROLL_CONFIG
 function lookupPayrollConfig(id) {

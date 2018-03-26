@@ -4,12 +4,12 @@
 * This controller exposes an API to the client for reading and writing Weekend configuration
 */
 
-var db = require('../../../lib/db');
-var NotFound = require('../../../lib/errors/NotFound');
+const db = require('../../../lib/db');
+const NotFound = require('../../../lib/errors/NotFound');
 
 // GET /WEEKEND_CONFIG
 function lookupWeekendConfig(id) {
-  var sql =`
+  const sql = `
     SELECT w.id, w.label
     FROM weekend_config AS w
     WHERE w.id = ?`;
@@ -38,7 +38,7 @@ function list(req, res, next) {
 * Returns the detail of a single Weekend
 */
 function detail(req, res, next) {
-  var id = req.params.id;
+  const id = req.params.id;
 
   lookupWeekendConfig(id)
     .then((record) => {

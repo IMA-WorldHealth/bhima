@@ -1,5 +1,5 @@
 const {
-  _, ReportManager, Stock, identifiers, NotFound, db, STOCK_ADJUSTMENT_TEMPLATE,
+  _, ReportManager, Stock, NotFound, db, STOCK_ADJUSTMENT_TEMPLATE,
 } = require('../common');
 
 
@@ -35,7 +35,7 @@ function stockAdjustmentReceipt(req, res, next) {
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
     JOIN depot d ON d.uuid = m.depot_uuid
-    JOIN user u ON u.id = m.user_id    
+    JOIN user u ON u.id = m.user_id
     WHERE m.flux_id IN (${Stock.flux.FROM_ADJUSTMENT}, ${Stock.flux.TO_ADJUSTMENT}) AND m.document_uuid = ?
   `;
 

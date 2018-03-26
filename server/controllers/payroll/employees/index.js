@@ -208,10 +208,10 @@ function update(req, res, next) {
     sex : employee.sex,
     phone : employee.phone,
     email : employee.email,
-    address_1 : employee.adresse
+    address_1 : employee.adresse,
   };
 
-  const clean = {          
+  const clean = {
     date_embauche : employee.date_embauche,
     service_id : employee.service_id,
     nb_spouse : employee.nb_spouse,
@@ -322,7 +322,7 @@ function create(req, res, next) {
   delete employee.debtor_uuid;
   delete employee.hospital_no;
 
-  //Delete not necessary Data for Employee
+  // Delete not necessary Data for Employee
   delete employee.display_name;
   delete employee.dob;
   delete employee.sex;

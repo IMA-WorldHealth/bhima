@@ -149,7 +149,7 @@ function formatPriceListItems(priceListUuid, items) {
   // the database
   return items.map((item) => {
     //  prevent missing inventory_uuids from crashing the server
-    var inventoryId = item.inventory_uuid ? db.bid(item.inventory_uuid) : null;
+    const inventoryId = item.inventory_uuid ? db.bid(item.inventory_uuid) : null;
 
     return [
       db.bid(item.uuid || uuid()),
@@ -169,13 +169,13 @@ function formatPriceListItems(priceListUuid, items) {
  * POST /prices
  */
 exports.create = function create(req, res, next) {
-  var items;
-  var data = req.body.list;
-  var trans = db.transaction();
-  var priceListSql =
+  let items;
+  const data = req.body.list;
+  const trans = db.transaction();
+  const priceListSql =
     `INSERT INTO price_list (uuid, label, description, enterprise_id)
     VALUES (?, ?, ?, ?);`;
-  var priceListItemSql =
+  const priceListItemSql =
     `INSERT INTO price_list_item (uuid, inventory_uuid, price_list_uuid,
     label, value, is_percentage) VALUES ?;`;
 
@@ -214,19 +214,19 @@ exports.create = function create(req, res, next) {
  * PUT /prices/:uuid
  */
 exports.update = function update(req, res, next) {
-  var items;
-  var data = req.body.list;
-  var priceListSql =
+  let items;
+  const data = req.body.list;
+  const priceListSql =
     'UPDATE price_list SET ? WHERE uuid = ?;';
 
-  var priceListDeleteItemSql =
+  const priceListDeleteItemSql =
     'DELETE FROM price_list_item WHERE price_list_uuid = ?';
 
-  var priceListCreateItemSql =
+  const priceListCreateItemSql =
     `INSERT INTO price_list_item (uuid, inventory_uuid, price_list_uuid,
     label, value, is_percentage) VALUES ?;`;
 
-  var trans = db.transaction();
+  const trans = db.transaction();
   const uid = db.bid(req.params.uuid);
 
   // if the client didn't send price list items, do not create them.

@@ -4,12 +4,12 @@
 * This controller exposes an API to the client for reading and writing Function
 */
 
-var db = require('../../lib/db');
-var NotFound = require('../../lib/errors/NotFound');
+const db = require('../../lib/db');
+const NotFound = require('../../lib/errors/NotFound');
 
 // GET /Function
 function lookupFunction(id) {
-  var sql =
+  const sql =
     `SELECT id, fonction_txt FROM fonction
     WHERE fonction.id = ?`;
 
@@ -35,7 +35,7 @@ function list(req, res, next) {
 * Returns the detail of a single Function
 */
 function detail(req, res, next) {
-  var id = req.params.id;
+  const { id } = req.params;
 
   lookupFunction(id)
     .then((record) => {

@@ -4,13 +4,13 @@
 * This controller exposes an API to the client for reading and writing IprTax
 */
 
-var db = require('../../lib/db');
-var NotFound = require('../../lib/errors/NotFound');
+const db = require('../../lib/db');
+const NotFound = require('../../lib/errors/NotFound');
 const FilterParser = require('../../lib/filter');
 
 // GET /IprTax
 function lookupIprTax(id) {
-  var sql = `
+  const sql = `
     SELECT taxe_ipr.id, taxe_ipr.label, taxe_ipr.description, taxe_ipr.currency_id, currency.symbol
     FROM taxe_ipr
     JOIN currency ON currency.id = taxe_ipr.currency_id
@@ -41,7 +41,7 @@ function list(req, res, next) {
 * Returns the detail of a single IprTax
 */
 function detail(req, res, next) {
-  var id = req.params.id;
+  const id = req.params.id;
 
   lookupIprTax(id)
     .then((record) => {
@@ -101,7 +101,7 @@ function del(req, res, next) {
 
 // GET /IprTaxConfig
 function lookupIprTaxConfig(id) {
-  var sql = `
+  const sql = `
     SELECT tc.id, tc.rate, tc.tranche_annuelle_debut, tc.tranche_annuelle_fin, tc.tranche_mensuelle_debut, tc.tranche_mensuelle_fin,
       tc.ecart_annuel, tc.ecart_mensuel, tc.impot_annuel, tc.impot_mensuel, tc.cumul_annuel, tc.cumul_mensuel, tc.taxe_ipr_id, t.currency_id, c.symbol
     FROM taxe_ipr_configuration AS tc
@@ -141,7 +141,7 @@ function listConfig(req, res, next) {
 * Returns the detail of a single IprTax
 */
 function detailConfig(req, res, next) {
-  var id = req.params.id;
+  const id = req.params.id;
 
   lookupIprTaxConfig(id)
     .then((record) => {

@@ -9,7 +9,7 @@ const NotFound = require('../../../lib/errors/NotFound');
 
 // GET /ACCOUNT_CONFIG
 function lookupAccountConfig(id) {
-  let sql =`
+  const sql = `
     SELECT c.id, c.label, c.account_id
     FROM config_accounting AS c  
     WHERE c.id = ?`;
@@ -39,7 +39,7 @@ function list(req, res, next) {
 * Returns the detail of a single Account
 */
 function detail(req, res, next) {
-  let id = req.params.id;
+  const id = req.params.id;
 
   lookupAccountConfig(id)
     .then((record) => {
