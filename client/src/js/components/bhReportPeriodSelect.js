@@ -15,7 +15,7 @@ angular.module('bhima.components')
   });
 
 ReportPeriodSelectController.$inject = [
-  'FiscalPeriodService', '$filter'
+  'FiscalPeriodService', '$filter',
 ];
 
 /**
@@ -23,7 +23,7 @@ ReportPeriodSelectController.$inject = [
  *
  */
 function ReportPeriodSelectController(FiscalPeriod, $filter) {
-  var $ctrl = this;
+  const $ctrl = this;
 
   $ctrl.$onInit = function onInit() {
     // fired when a Period has been selected
@@ -37,8 +37,8 @@ function ReportPeriodSelectController(FiscalPeriod, $filter) {
 
     // load all Fiscal Yeal Period
     FiscalPeriod.read(null, { excludeExtremityPeriod : true })
-      .then(function (periodes) {
-        periodes.forEach(function (period) {
+      .then(periodes => {
+        periodes.forEach(period => {
           period.monthYear = $filter('date')(period.end_date, 'MMMM yyyy');
         });
 
@@ -49,7 +49,5 @@ function ReportPeriodSelectController(FiscalPeriod, $filter) {
   };
 
   // fires the onSelectCallback bound to the component boundary
-  $ctrl.onSelect = function ($item) {
-    $ctrl.onSelectCallback({ period : $item });
-  };
+  $ctrl.onSelect = period => $ctrl.onSelectCallback({ period });
 }

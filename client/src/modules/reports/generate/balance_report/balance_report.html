@@ -21,22 +21,29 @@
         </div>
 
         <div class="panel-body">
+          <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate>
 
-        <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate autocomplete="off">
+            <bh-report-period-select
+              period-id="ReportConfigCtrl.reportDetails.period_id"
+              on-select-callback="ReportConfigCtrl.onSelectPeriod(period)">
+            </bh-report-period-select>
 
-          <!--select the period by a date-->
-          <bh-date-editor
-            date-value="ReportConfigCtrl.date"
-            max-date="ReportConfigCtrl.timestamp">
-          </bh-date-editor>
+            <bh-yes-no-radios
+              label="Use Two Column Layout?"
+              value="ReportConfigCtrl.reportDetails.useSeparateDebitsAndCredits"
+              on-change-callback="ReportConfigCtrl.onChangeLayout(bool)">
+            </bh-yes-no-radios>
 
-          <!--preview-->
-          <bh-loading-button loading-state="ConfigForm.$loading">
-            <span translate>REPORT.UTIL.PREVIEW</span>
-          </bh-loading-button>
+            <bh-yes-no-radios
+              label="Remove Empty Rows?"
+              value="ReportConfigCtrl.reportDetails.shouldPruneEmptyRows"
+              on-change-callback="ReportConfigCtrl.onChangeEmptyRows(bool)">
+            </bh-yes-no-radios>
 
-        </form>
-
+            <bh-loading-button loading-state="ConfigForm.$loading">
+              <span translate>REPORT.UTIL.PREVIEW</span>
+            </bh-loading-button>
+          </form>
         </div>
       </div>
     </div>
