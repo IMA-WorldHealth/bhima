@@ -27,8 +27,6 @@ function UtilService(moment) {
     }
   }
 
-
-
   /** @todo comments showing usage */
   service.filterFormElements = function filterFormElements(formDefinition, requireDirty) {
     var response = {};

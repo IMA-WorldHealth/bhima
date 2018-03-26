@@ -15,8 +15,8 @@ VoucherRegistrySearchModalController.$inject = [
  * preset by passing in a filters object using filtersProvider().
  */
 function VoucherRegistrySearchModalController(
-  ModalInstance, filters, Notify, Periods, Store, util,
-  Vouchers, TransactionTypeService, $translate,
+  ModalInstance, filters, Notify, Periods, Store, util, Vouchers,
+  TransactionTypeService, $translate,
 ) {
   const vm = this;
   const changes = new Store({ identifier : 'key' });
@@ -28,13 +28,17 @@ function VoucherRegistrySearchModalController(
   const displayValues = {};
   const lastDisplayValues = Vouchers.filters.getDisplayValueMap();
 
-  vm.filters = filters;
   // searchQueries is the same id:value pair
   vm.searchQueries = {};
   vm.defaultQueries = {};
 
+
   // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(filters, searchQueryOptions);
+
+  // keep track of the initial search queries to make sure we properly restore
+  // default display values
+  const initialSearchQueries = angular.copy(vm.searchQueries);
 
   if (filters.limit) {
     vm.defaultQueries.limit = filters.limit;
@@ -101,9 +105,6 @@ function VoucherRegistrySearchModalController(
 
   // submit the filter object to the parent controller.
   vm.submit = function submit(form) {
-    let _displayValue;
-
-
     if (form.$invalid) { return; }
 
     // delete type_ids if there is no transaction type sent
@@ -111,11 +112,20 @@ function VoucherRegistrySearchModalController(
       vm.clear('type_ids');
     }
 
+
     // push all searchQuery values into the changes array to be applied
     angular.forEach(vm.searchQueries, (_value, _key) => {
       if (angular.isDefined(_value)) {
-        // default to the original value if no display value is defined
-        _displayValue = displayValues[_key] || lastDisplayValues[_key] || _value;
+
+        // To avoid overwriting a real display value, we first determine if the value changed in the current view.
+        // If so, we do not use the previous display value.  If the values are identical, we can restore the
+        // previous display value without fear of data being out of date.
+        const usePreviousDisplayValue =
+          angular.equals(initialSearchQueries[_key], _value) &&
+          angular.isDefined(lastDisplayValues[_key]);
+
+        // default to the raw value if no display value is defined
+        const _displayValue = usePreviousDisplayValue ? lastDisplayValues[_key] : displayValues[_key] || _value;
         changes.post({ key : _key, value : _value, displayValue : _displayValue });
       }
     });
