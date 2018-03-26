@@ -2,8 +2,7 @@ angular.module('bhima.controllers')
   .controller('PatientRegistryModalController', PatientRegistryModalController);
 
 PatientRegistryModalController.$inject = [
-  '$uibModalInstance', 'filters',
-  'bhConstants', 'moment', 'Store', 'util', 'PeriodService',
+  '$uibModalInstance', 'filters', 'Store', 'util', 'PeriodService', 'PatientService',
 ];
 
 /**
@@ -14,15 +13,17 @@ PatientRegistryModalController.$inject = [
  * search functionality on the patient registry page.  Filters that are already
  * applied to the grid can be passed in via the filters inject.
  */
-function PatientRegistryModalController(ModalInstance, filters, bhConstants, moment, Store, util, Periods) {
+function PatientRegistryModalController(ModalInstance, filters, Store, util, Periods, Patients) {
   const vm = this;
   const changes = new Store({ identifier : 'key' });
+
   // displayValues will be an id:displayValue pair
   const displayValues = {};
-  // @TODO ideally these should be passed in when the modal is initialised these are known when the filter service is defined
+
   const searchQueryOptions = [
-    'display_name', 'sex', 'hospital_no', 'reference', 'dateBirthFrom', 'dateBirthTo', 'dateRegistrationFrom', 'dateRegistrationTo',
-    'debtor_group_uuid', 'patient_group_uuid', 'user_id', 'defaultPeriod',
+    'display_name', 'sex', 'hospital_no', 'reference', 'dateBirthFrom', 'dateBirthTo',
+    'dateRegistrationFrom', 'dateRegistrationTo', 'debtor_group_uuid',
+    'patient_group_uuid', 'user_id', 'defaultPeriod',
   ];
 
   vm.filters = filters;
@@ -36,8 +37,14 @@ function PatientRegistryModalController(ModalInstance, filters, bhConstants, mom
     vm.defaultQueries.limit = filters.limit;
   }
 
+  const lastDisplayValues = Patients.filters.getDisplayValueMap();
+
   // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(filters, searchQueryOptions);
+
+  // keep track of the initial search queries to make sure we properly restore
+  // default display values
+  const initialSearchQueries = angular.copy(vm.searchQueries);
 
   // bind methods
   vm.submit = submit;
@@ -81,11 +88,20 @@ function PatientRegistryModalController(ModalInstance, filters, bhConstants, mom
   // returns the parameters to the parent controller
   function submit() {
     // push all searchQuery values into the changes array to be applied
-    angular.forEach(vm.searchQueries, (val, _key) => {
-      if (angular.isDefined(val)) {
-        // default to the original value if no display value is defined
-        const displayVal = displayValues[_key] || val;
-        changes.post({ key : _key, value: val, displayValue : displayVal });
+    angular.forEach(vm.searchQueries, (value, key) => {
+      if (angular.isDefined(value)) {
+
+        // To avoid overwriting a real display value, we first determine if the value changed in the current view.
+        // If so, we do not use the previous display value.  If the values are identical, we can restore the
+        // previous display value without fear of data being out of date.
+        const usePreviousDisplayValue =
+          angular.equals(initialSearchQueries[key], value) &&
+          angular.isDefined(lastDisplayValues[key]);
+
+        // default to the raw value if no display value is defined
+        const displayValue = usePreviousDisplayValue ? lastDisplayValues[key] : displayValues[key] || value;
+
+        changes.post({ key, value, displayValue });
       }
     });
 
