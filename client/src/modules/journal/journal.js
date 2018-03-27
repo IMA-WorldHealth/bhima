@@ -288,7 +288,7 @@ function JournalController(
     headerCellFilter : 'translate',
     visible : true,
   }, {
-    field : 'origin_id',
+    field : 'transaction_type_id',
     displayName : 'FORM.LABELS.TRANSACTION_TYPE',
     headerCellFilter : 'translate',
     visible : false,

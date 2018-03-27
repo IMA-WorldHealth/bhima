@@ -47,12 +47,12 @@
           <div class="form-group-sm">
             <label class="col-sm-3 control-label" translate>TABLE.COLUMNS.TYPE</label>
             <div ng-if="ModalCtrl.readOnly" class="col-sm-9">
-              <p class="form-control-static" translate>{{ModalCtrl.transactionTypes.get(ModalCtrl.shared.origin_id).text || '-'}}</p>
+              <p class="form-control-static" translate>{{ModalCtrl.transactionTypes.get(ModalCtrl.shared.transaction_type_id).text || '-'}}</p>
             </div>
             <div ng-if="!ModalCtrl.readOnly" class="col-sm-9">
               <select
-                ng-model="ModalCtrl.shared.origin_id"
-                ng-change="ModalCtrl.handleTransactionTypeChange(ModalCtrl.shared.origin_id)"
+                ng-model="ModalCtrl.shared.transaction_type_id"
+                ng-change="ModalCtrl.handleTransactionTypeChange(ModalCtrl.shared.transaction_type_id)"
                 ng-options="types.id as (types.text | translate) for types in ModalCtrl.transactionTypes.data"
                 class="form-control">
                 <option disabled value="" translate>POSTING_JOURNAL.NO_TRANSACTION_TYPE</option>

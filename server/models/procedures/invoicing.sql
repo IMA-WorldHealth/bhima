@@ -485,7 +485,7 @@ BEGIN
           (uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
           record_uuid, description, account_id, debit, credit, debit_equiv,
           credit_equiv, currency_id, entity_uuid, reference_uuid,
-          user_id, origin_id)
+          user_id, transaction_type_id)
         VALUES (
           HUID(UUID()), projectId, fiscalYearId, periodId, transId, idate, iuuid, cdescription,
           iaccountId, icost, 0, icost, 0, currencyId, ientityId, cid, iuserId, 11
@@ -509,7 +509,7 @@ BEGIN
           uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
           record_uuid, description, account_id, debit, credit, debit_equiv,
           credit_equiv, currency_id, entity_uuid, reference_uuid,
-          user_id, origin_id
+          user_id, transaction_type_id
         ) VALUES (
           HUID(UUID()), projectId, fiscalYearId, periodId, transId, idate,
           iuuid, cdescription, iaccountId, cbalance, 0, cbalance, 0,
@@ -528,7 +528,7 @@ BEGIN
     INSERT INTO posting_journal (
       uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
       record_uuid, description, account_id, debit, credit, debit_equiv,
-      credit_equiv, currency_id, entity_uuid, user_id, origin_id
+      credit_equiv, currency_id, entity_uuid, user_id, transaction_type_id
     ) VALUES (
       HUID(UUID()), projectId, fiscalYearId, periodId, transId, idate,
       iuuid, idescription, iaccountId, icost, 0, icost, 0,
@@ -540,7 +540,7 @@ BEGIN
   INSERT INTO posting_journal (
     uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
     record_uuid, description, account_id, debit, credit, debit_equiv,
-    credit_equiv, currency_id, origin_id, user_id
+    credit_equiv, currency_id, transaction_type_id, user_id
   )
    SELECT
     HUID(UUID()), i.project_id, fiscalYearId, periodId, transId, i.date, i.uuid,
@@ -557,7 +557,7 @@ BEGIN
   INSERT INTO posting_journal (
     uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
     record_uuid, description, account_id, debit, credit, debit_equiv,
-    credit_equiv, currency_id, origin_id, user_id
+    credit_equiv, currency_id, transaction_type_id, user_id
   ) SELECT
     HUID(UUID()), i.project_id, fiscalYearId, periodId, transId, i.date, i.uuid,
     i.description, su.account_id, isu.value, 0, isu.value, 0, currencyId, 11,
@@ -571,7 +571,7 @@ BEGIN
   INSERT INTO posting_journal (
     uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
     record_uuid, description, account_id, debit, credit, debit_equiv,
-    credit_equiv, currency_id, origin_id, user_id
+    credit_equiv, currency_id, transaction_type_id, user_id
   ) SELECT
     HUID(UUID()), i.project_id, fiscalYearId, periodId, transId, i.date, i.uuid,
     i.description, b.account_id, 0, ib.value, 0, ib.value, currencyId, 11,

@@ -21,7 +21,7 @@ function JournalSearchModalController(
   //       these are known when the filter service is defined
   const searchQueryOptions = [
     'description', 'user_id', 'account_id', 'project_id', 'amount', 'trans_id',
-    'origin_id', 'includeNonPosted', 'hrRecord', 'hrEntity', 'comment',
+    'transaction_type_id', 'includeNonPosted', 'hrRecord', 'hrEntity', 'comment',
     'hrReference',
   ];
 
@@ -105,9 +105,9 @@ function JournalSearchModalController(
     });
   };
 
-  // custom filter origin_id - assign the value to the searchQueries object
+  // custom filter transaction_type_id - assign the value to the searchQueries object
   vm.onTransactionTypesChange = function onTransactionTypesChange(transactionTypes) {
-    vm.searchQueries.origin_id = transactionTypes;
+    vm.searchQueries.transaction_type_id = transactionTypes;
     const types = [];
 
     transactionTypes.forEach(typeId => {
@@ -118,7 +118,7 @@ function JournalSearchModalController(
       });
     });
 
-    displayValues.origin_id = types.join(' / ');
+    displayValues.transaction_type_id = types.join(' / ');
   };
 
   // default filter limit - directly write to changes list

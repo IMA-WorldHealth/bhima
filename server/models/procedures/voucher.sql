@@ -71,7 +71,7 @@ BEGIN
   INSERT INTO posting_journal (uuid, project_id, fiscal_year_id, period_id,
     trans_id, trans_date, record_uuid, description, account_id, debit,
     credit, debit_equiv, credit_equiv, currency_id, entity_uuid,
-    reference_uuid, comment, origin_id, user_id)
+    reference_uuid, comment, transaction_type_id, user_id)
   SELECT
     HUID(UUID()), v.project_id, fiscal_year_id, period_id, transaction_id, v.date,
     v.uuid, v.description, vi.account_id, vi.debit, vi.credit,

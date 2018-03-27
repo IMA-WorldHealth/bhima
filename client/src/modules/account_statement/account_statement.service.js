@@ -71,7 +71,7 @@ function AccountStatementService(Modal, $http, util, AppCache, Filters, Periods,
     { key : 'amount', label : 'FORM.LABELS.AMOUNT' },
     { key : 'project_id', label : 'FORM.LABELS.PROJECT' },
     { key : 'description', label : 'FORM.LABELS.DESCRIPTION' },
-    { key : 'origin_id', label : 'FORM.LABELS.TRANSACTION_TYPE' }]);
+    { key : 'transaction_type_id', label : 'FORM.LABELS.TRANSACTION_TYPE' }]);
 
 
   if (filterCache.filters) {
