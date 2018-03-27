@@ -1,13 +1,13 @@
-<div ng-form="RadioForm"
-  class="form-group"
-  ng-class="{'has-error' : RadioForm.$error && RadioForm.$submitted }">
-  <label class="control-label" translate>{{$ctrl.label}}</label>
+<div class="form-group">
+  <label class="control-label" translate>
+    {{$ctrl.label}}
+  </label>
 
-  <div class="col-sm-12">
+  <div>
     <label class="radio-inline">
       <input
         type="radio"
-        name="$ctrl.name"
+        name="{{$ctrl.name}}"
         data-choice="yes"
         ng-value="1"
         ng-model="$ctrl.value"
@@ -19,7 +19,7 @@
     <label class="radio-inline">
       <input
         type="radio"
-        name="$ctrl.name"
+        name="{{$ctrl.name}}"
         data-choice="no"
         ng-value="0"
         ng-model="$ctrl.value"
@@ -28,9 +28,8 @@
       <span translate>FORM.LABELS.NO</span>
     </label>
 
-    <span class="help-block" ng-show="$ctrl.helpText" translate>{{$ctrl.helpText}}</span>
-    <div class="help-block" ng-messages="yesNoRadiosForm.yesNoOptions.$error" ng-show="yesNoRadiosForm.$submitted">
-      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-    </div>
+    <span class="help-block" ng-show="$ctrl.helpText" translate>
+      {{$ctrl.helpText}}
+    </span>
   </div>
 </div>

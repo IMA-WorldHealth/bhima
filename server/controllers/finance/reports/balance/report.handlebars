@@ -34,15 +34,15 @@
               </th>
               <th colspan="2" class="text-center">
                 {{translate "BALANCE.OLD_SOLD"}} <br>
-                <small class="text-capitalize">&lt; {{date ../period.start_date "MMMM YYYY"}}</small>
+                <small class="text-capitalize">&lt; {{date period.start_date "MMMM YYYY"}}</small>
               </th>
               <th colspan="2" class="text-center">
                 {{translate "BALANCE.MONTH_SOLD"}} <br>
-                <small class="text-capitalize">{{date ../period.start_date "MMMM YYYY"}}</small>
+                <small class="text-capitalize">{{date period.start_date "MMMM YYYY"}}</small>
               </th>
               <th colspan="2" class="text-center">
                 {{translate "BALANCE.NEW_SOLD"}} <br>
-                <small class="text-capitalize">&gt; {{date ../period.start_date "MMMM YYYY"}}</small>
+                <small class="text-capitalize">&gt; {{date period.start_date "MMMM YYYY"}}</small>
               </th>
             </tr>
           {{else}}
@@ -52,15 +52,15 @@
               </th>
               <th class="text-center">
                 {{translate "BALANCE.OLD_SOLD"}} <br>
-                <small class="text-capitalize">&lt; {{date ../period.start_date "MMMM YYYY"}}</small>
+                <small class="text-capitalize">&lt; {{date period.start_date "MMMM YYYY"}}</small>
               </th>
               <th class="text-center">
                 {{translate "BALANCE.MONTH_SOLD"}} <br>
-                <small class="text-capitalize">{{date ../period.start_date "MMMM YYYY"}}</small>
+                <small class="text-capitalize">{{date period.start_date "MMMM YYYY"}}</small>
               </th>
               <th class="text-center">
                 {{translate "BALANCE.NEW_SOLD"}} <br>
-                <small class="text-capitalize">&gt; {{date ../period.start_date "MMMM YYYY"}}</small>
+                <small class="text-capitalize">&gt; {{date period.start_date "MMMM YYYY"}}</small>
               </th>
             </tr>
           {{/if}}
@@ -140,21 +140,48 @@
 
         <tfoot>
           <tr class="text-right" style="background-color: #efefef;">
-            <!--
             <th>{{translate "FORM.LABELS.TOTAL"}}</th>
-            <td>{{currency totals.beginDebit metadata.enterprise.currency_id }}</td>
-            <td>{{currency totals.beginCredit metadata.enterprise.currency_id }}</td>
-            <td>{{currency totals.middleDebit metadata.enterprise.currency_id }}</td>
-            <td>{{currency totals.middleCredit metadata.enterprise.currency_id }}</td>
-            <td>{{currency totals.endDebit metadata.enterprise.currency_id }}</td>
-            <td>{{currency totals.endCredit metadata.enterprise.currency_id }}</td>
-            -->
+            {{#if useSeparateDebitsAndCredits}}
+              {{#gt totals.before 0}}
+                <th>{{currency totals.before totals.currencyId }}</th>
+                <th></th>
+              {{else}}
+                <th></th>
+                <th>{{currency totals.before totals.currencyId }}</th>
+              {{/gt}}
+            {{else}}
+              <th>{{debcred totals.before totals.currencyId }}</th>
+            {{/if}}
+
+            {{#if useSeparateDebitsAndCredits}}
+              {{#gt totals.during 0}}
+                <th>{{currency totals.during totals.currencyId }}</th>
+                <th></th>
+              {{else}}
+                <th></th>
+                <th>{{currency totals.during totals.currencyId }}</th>
+              {{/gt}}
+            {{else}}
+              <th>{{debcred totals.during totals.currencyId }}</th>
+            {{/if}}
+
+
+            {{#if useSeparateDebitsAndCredits}}
+              {{#gt totals.after 0}}
+                <th>{{currency totals.after totals.currencyId }}</th>
+                <th></th>
+              {{else}}
+                <th></th>
+                <th>{{currency totals.after totals.currencyId }}</th>
+              {{/gt}}
+            {{else}}
+              <th>{{debcred totals.after totals.currencyId }}</th>
+            {{/if}}
           </tr>
         </tfoot>
       </table>
     </div>
   </div>
-
 </main>
 </body>
 </html>

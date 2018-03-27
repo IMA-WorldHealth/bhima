@@ -24,19 +24,15 @@ function BalanceReportConfigController($sce, Notify, SavedReports, AppCache, rep
   };
 
   vm.onChangeLayout = (bool) => {
-    console.log('layout bool:', bool);
     vm.reportDetails.useSeparateDebitsAndCredits = bool;
   };
 
   vm.onChangeEmptyRows = (bool) => {
-    console.log('empty bool:', bool);
     vm.reportDetails.shouldPruneEmptyRows = bool;
   };
 
   vm.preview = function preview(form) {
     if (form.$invalid) { return 0; }
-
-    console.log('reportDetails', vm.reportDetails);
 
     // update cached configuration
     cache.reportDetails = angular.copy(vm.reportDetails);

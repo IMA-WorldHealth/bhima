@@ -146,7 +146,11 @@
       "USE_ORIGINAL_TRANSACTION_CURRENCY" : "Afficher la devise de transaction originale?",
       "USE_ORIGINAL_TRANSACTION_CURRENCY_HELP" : "Si oui, le rapport affichera la devise de la transaction au lieu de la valeur dans la devise de l'entreprise.",
       "TOTALS_CURRENCY" : "Sélectionnez la Devise des Totaux",
-      "TOTALS_CURRENCY_HELP" : "Cette option vous permet d'afficher les totaux dans la devise sélectionnée en échangeant les totaux dans la devise sélectionnée en utilisant le taux de change du jour."
+      "TOTALS_CURRENCY_HELP" : "Cette option vous permet d'afficher les totaux dans la devise sélectionnée en échangeant les totaux dans la devise sélectionnée en utilisant le taux de change du jour.",
+      "SEPARATE_DEBITS_AND_CREDITS" : "Séparer les débits et les crédits?",
+      "SEPARATE_DEBITS_AND_CREDITS_HELP" : "Cette option répartit les colonnes d'un seul solde positif ou négatif en deux colonnes représentant les débits et les crédits.",
+      "REMOVE_ZERO_ROWS" : "Cacher les colonnes vide?",
+      "REMOVE_ZERO_ROWS_HELP" : "Cette option supprime les lignes qui ne contiennent aucune donnée. Produit un rapport plus compacte."
     }
   }
 }

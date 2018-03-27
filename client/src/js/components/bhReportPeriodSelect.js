@@ -33,7 +33,7 @@ function ReportPeriodSelectController(FiscalPeriod, $filter) {
     $ctrl.name = $ctrl.name || 'PeriodForm';
 
     // translated label for the form input
-    $ctrl.label = $ctrl.label || 'FORM.LABELS.PERIODES';
+    $ctrl.label = $ctrl.label || 'FORM.LABELS.PERIOD';
 
     // load all Fiscal Yeal Period
     FiscalPeriod.read(null, { excludeExtremityPeriod : true })

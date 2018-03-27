@@ -44,10 +44,10 @@ function document(req, res, next) {
   const context = {};
   let report;
 
-  context.useSeparateDebitsAndCredits = params.useSeparateDebitsAndCredits || false;
-  context.shouldPruneEmptyRows = params.shouldPruneEmptyRows || false;
-
   _.defaults(params, DEFAULT_PARAMS);
+
+  context.useSeparateDebitsAndCredits = Number.parseInt(params.useSeparateDebitsAndCredits, 10);
+  context.shouldPruneEmptyRows = Number.parseInt(params.shouldPruneEmptyRows, 10);
 
   try {
     report = new ReportManager(TEMPLATE, req.session, params);
@@ -59,7 +59,6 @@ function document(req, res, next) {
   getBalanceSummary(params.period_id, req.session.enterprise.currency_id, context.shouldPruneEmptyRows)
     .then(data => {
       _.merge(context, data);
-
       return report.render(context);
     })
     .then(result => {
@@ -133,12 +132,19 @@ function getBalanceSummary(periodId, currencyId, shouldPrune) {
       // label depths
       tree.walk(Tree.common.computeNodeDepth);
 
-      // prune empty rows
-      if (shouldPrune) {
-        const trimmed = tree.prune(isEmptyRow);
-        _.merge(context, { accounts : trimmed });
-      }
+      // prune empty rows if needed
+      const balances = shouldPrune ? tree.prune(isEmptyRow) : tree.toArray();
 
+      const root = tree.getRootNode();
+
+      const totals = {
+        before : root.before,
+        during : root.during,
+        after : root.after,
+        currencyId,
+      };
+
+      _.merge(context, { accounts : balances, totals });
       return context;
     });
 }

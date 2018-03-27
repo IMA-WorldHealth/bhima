@@ -29,15 +29,19 @@
             </bh-report-period-select>
 
             <bh-yes-no-radios
-              label="Use Two Column Layout?"
+              label="REPORT.OPTIONS.SEPARATE_DEBITS_AND_CREDITS"
+              help-text="REPORT.OPTIONS.SEPARATE_DEBITS_AND_CREDITS_HELP"
+              name="useSeparateDebitsAndCredits"
               value="ReportConfigCtrl.reportDetails.useSeparateDebitsAndCredits"
-              on-change-callback="ReportConfigCtrl.onChangeLayout(bool)">
+              on-change-callback="ReportConfigCtrl.onChangeLayout(value)">
             </bh-yes-no-radios>
 
             <bh-yes-no-radios
-              label="Remove Empty Rows?"
+              label="REPORT.OPTIONS.REMOVE_ZERO_ROWS"
+              help-text="REPORT.OPTIONS.REMOVE_ZERO_ROWS_HELP"
+              name="shouldPruneEmptyRows"
               value="ReportConfigCtrl.reportDetails.shouldPruneEmptyRows"
-              on-change-callback="ReportConfigCtrl.onChangeEmptyRows(bool)">
+              on-change-callback="ReportConfigCtrl.onChangeEmptyRows(value)">
             </bh-yes-no-radios>
 
             <bh-loading-button loading-state="ConfigForm.$loading">
