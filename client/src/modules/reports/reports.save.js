@@ -32,4 +32,8 @@ function SaveReportController(ModalInstance, Notify, SavedReports, options, Lang
       })
       .catch(Notify.handleError);
   }
+
+  vm.setDocumentorientation = function setDocumentorientation(orientation) {
+    vm.documentOptions.orientation = orientation;
+  };
 }

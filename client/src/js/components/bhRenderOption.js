@@ -1,19 +1,18 @@
 angular.module('bhima.components')
   .component('bhRenderOption', {
     templateUrl : '/modules/templates/bhRenderOption.tmpl.html',
-    controller  : RenderOptionController,
-    bindings    : {
-      orientation         : '=', // two-way binding
+    controller : RenderOptionController,
+    bindings : {
+      orientation : '<', // two-way binding
+      onChange : '&',
     },
   });
 
 
 /**
- * bhDateEditor Component
+ * bhRenderOption Component
  *
- * A component to deal with date, it lets a user choose a date by either typing
- * into an <input> or clicking a calendar dropdown.  It wraps the
- * uib-date-picker to provide the dropdown calendar functionality.
+ * used for specifying the documents properties (layout, ...)
  *
  * @example
  * <bh-render-option
@@ -27,6 +26,9 @@ function RenderOptionController() {
 
   this.$onInit = function $onInit() {
     ctrl.orientation = ctrl.orientation || 'portrait';
+    ctrl.onChange = ctrl.onChange || angular.noop();
+    ctrl.setOrientation = () => ctrl.onChange({ orientation : ctrl.orientation });
   };
 
+   
 }

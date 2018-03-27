@@ -18,6 +18,7 @@ describe('Clients Report', () => {
     orientation : 'landscape',
   };
 
+
   before(() => {
     helpers.navigate(`#!/reports/${key}`);
     Page = new ReportClientsPage(key);
