@@ -1,4 +1,3 @@
-/* global element, by */
 const chai = require('chai');
 const helpers = require('../shared/helpers');
 
@@ -128,7 +127,8 @@ describe('Enterprises', () => {
   });
 
   it('edit an existing project', () => {
-    element(by.css(`[data-update="${abbr}"]`)).click();
+    const btn = $(`[data-project="${abbr}"]`);
+    btn.$('a[data-method="update"]').click();
 
     FU.input('$ctrl.project.name', projectUpdate.name);
     FU.input('$ctrl.project.abbr', projectUpdate.abbr);
@@ -139,7 +139,8 @@ describe('Enterprises', () => {
   });
 
   it('delete an existing project', () => {
-    element(by.css(`[data-delete="${abbrUpdate}"]`)).click();
+    const btn = $(`[data-project="${abbr}"]`);
+    btn.$('a[data-method="delete"]').click();
 
     FU.input('$ctrl.text', projectUpdate.name);
 

@@ -1,7 +1,15 @@
 <div style="padding : 5px;">
+  <div ng-if="grid.appScope.FORBID_PRICE_CHANGES" class="text-right">
+    <span ng-hide="row.entity._initialised">-</span>
+    <span ng-show="row.entity._initialised">
+      {{ row.entity.transaction_price | currency:grid.appScope.enterprise.currency_id }}
+    </span>
+  </div>
+
   <input
     min="0.0001"
     type="number"
+    ng-if="!grid.appScope.FORBID_PRICE_CHANGES"
     ng-disabled="!row.entity._initialised"
     class="form-control"
     style="padding-left : 5px !important"

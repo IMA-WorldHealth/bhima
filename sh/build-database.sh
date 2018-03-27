@@ -20,7 +20,7 @@ mysql -u $DB_USER -p$DB_PASS -e "DROP DATABASE IF EXISTS $DB_NAME ;" &> /dev/nul
 mysql -u $DB_USER -p$DB_PASS -e "CREATE DATABASE $DB_NAME CHARACTER SET utf8 COLLATE utf8_unicode_ci;" &> /dev/null
 
 echo "[build] database schema"
-mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/schema.sql &> /dev/null
+mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/schema.sql
 
 echo "[build] triggers"
 mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/triggers.sql &> /dev/null

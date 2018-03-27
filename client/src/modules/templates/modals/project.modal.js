@@ -1,22 +1,23 @@
 angular.module('bhima.controllers')
-.controller('ProjectModalController', ProjectModalController);
+  .controller('ProjectModalController', ProjectModalController);
 
 // dependencies injections
 ProjectModalController.$inject = [
-  '$uibModalInstance', 'ProjectService', 'NotifyService', 'data'
+  '$uibModalInstance', 'ProjectService', 'NotifyService', 'data',
 ];
 
 function ProjectModalController(Instance, Projects, Notify, Data) {
-  var vm = this;
+  const vm = this;
 
   vm.project = {};
-  vm.action  = Data.action; // action must be 'create' or 'edit'
   vm.enterprise = Data.enterprise; // the project enterprise
-  vm.showLock = Data.action === 'edit' ? true : false;
+
+  vm.isCreateState = (Data.action === 'create');
+  vm.isEditState = (Data.action === 'edit');
 
   // expose to the view
   vm.submit = submit;
-  vm.close  = Instance.close;
+  vm.close = Instance.close;
 
   /**
    * @function submitProject
@@ -26,42 +27,38 @@ function ProjectModalController(Instance, Projects, Notify, Data) {
   function submit(form) {
     if (form.$invalid) {
       Notify.danger('FORM.ERRORS.HAS_ERRORS');
-      return;
+      return 0;
     }
 
-    var promise;
-    var creation = !vm.showLock; //if show lock is false, creation true
-    var project = angular.copy(vm.project);
+    const project = angular.copy(vm.project);
 
     // set enterprise
     project.enterprise_id = vm.enterprise.id;
 
     // set locked boolean required
-    project.locked = project.locked ? true : false;
+    project.locked = !!project.locked;
 
-    promise = (creation) ?
+    const promise = (vm.isCreateState) ?
       Projects.create(project) :
       Projects.update(project.id, project);
 
     return promise
-    .then(function (response) {
-      Instance.close(true);
-    })
-    .catch(Notify.handleError);
-  }
-
-  /** startup function */
-  function startup() {
-    if (Data.action === 'edit' && Data.identifier) {
-      Projects.read(Data.identifier)
-      .then(function (project) {
-        vm.project = project;
+      .then(() => {
+        Instance.close(true);
       })
       .catch(Notify.handleError);
+  }
+
+  /* startup function */
+  function startup() {
+    if (vm.isEditState && Data.identifier) {
+      Projects.read(Data.identifier)
+        .then(project => {
+          vm.project = project;
+        })
+        .catch(Notify.handleError);
     }
   }
 
-  // run
   startup();
-
 }

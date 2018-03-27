@@ -1,24 +1,30 @@
 angular.module('bhima.components')
   .component('bhYesNoRadios', {
     bindings : {
-      defaultValue : '@?',
-      value : '=',
-      label : '@?',
+      value : '<',
+      label : '@',
+      name : '@',
       helpText : '@?',
       onChangeCallback : '&',
     },
     templateUrl : 'modules/templates/bhYesNoRadios.tmpl.html',
-    controller : YesNoRadio,
+    controller : YesNoRadioController,
   });
 
-function YesNoRadio() {
+/**
+ * @function YesNoRadioController
+ *
+ * @description
+ * This component makes yes/no options a bit easier to navigate.
+ */
+function YesNoRadioController() {
   const $ctrl = this;
-  $ctrl.$onInit = function onInit() {
-    $ctrl.onChangeCallback = $ctrl.onChangeCallback;
-    $ctrl.defaultValue = $ctrl.defaultValue;
-    $ctrl.value = ($ctrl.defaultValue) ? 1 : 0;
-    $ctrl.label = $ctrl.label;
-    $ctrl.helpText = $ctrl.helpText;
+
+  $ctrl.$onInit = () => {
+    $ctrl.value = Number.parseInt($ctrl.value, 10);
   };
 
+  $ctrl.onChange = (value) => {
+    $ctrl.onChangeCallback({ value });
+  };
 }

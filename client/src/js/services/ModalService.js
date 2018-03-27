@@ -24,9 +24,9 @@ ModalService.$inject = ['$uibModal'];
  *
  */
 function ModalService(Modal) {
-  var service = this;
+  const service = this;
 
-  var modalParameters = {
+  const modalParameters = {
     size      : 'md',
     backdrop  : 'static',
     animation : false,
@@ -89,9 +89,9 @@ function ModalService(Modal) {
    */
   function confirm(prompt, options) {
     // default options for modal rendering
-    var opts = options || {};
+    const opts = options || {};
 
-    var instance = Modal.open({
+    const instance = Modal.open({
       animation : opts.animation || false,
       keyboard : opts.keyboard || true,
       size : opts.size || 'md',
@@ -105,28 +105,30 @@ function ModalService(Modal) {
 
   function alert(prompt, options) {
     // default options for modal rendering
-    var opts = options || {};
+    const opts = options || {};
 
-    var instance = Modal.open({
+    const instance = Modal.open({
       animation : opts.animation || false,
       keyboard : opts.keyboard || true,
       size : opts.size || 'md',
       controller : 'AlertModalController as AlertModalCtrl',
-      resolve : { prompt : function provider() { return prompt;} },
-      templateUrl : '/modules/templates/modals/alert.modal.html'
+      resolve : { prompt : () => prompt },
+      templateUrl : '/modules/templates/modals/alert.modal.html',
     });
+
+    return instance.result;
   }
 
   /**
    * Select cashbox modal
    */
   function openSelectCashbox(request) {
-    var params = angular.extend(modalParameters, {
+    const params = angular.extend(modalParameters, {
       templateUrl : 'modules/cash/modals/selectCashbox.modal.html',
       controller  : 'SelectCashboxModalController as $ctrl',
       resolve     : {
-        cashboxId : function cashboxIdProvider() { return request.cashboxId; }
-      }
+        cashboxId : function cashboxIdProvider() { return request.cashboxId; },
+      },
     });
 
     return Modal.open(params).result;
@@ -137,281 +139,223 @@ function ModalService(Modal) {
    */
   function openUploadDocument(request) {
 
-    var params = angular.extend(modalParameters, {
+    const params = angular.extend(modalParameters, {
       templateUrl  : 'modules/patients/documents/modals/documents.modal.html',
       controller   : 'PatientDocumentsModalController',
       controllerAs : '$ctrl',
-      resolve : {
-        patientUuid :  function patientProvider() { return request.patient_uuid; }
-      }
+      resolve : { patientUuid : () => request.patient_uuid },
     });
 
-    var instance = Modal.open(params);
+    const instance = Modal.open(params);
     return instance.result;
   }
 
   /**
    * Page for printing in Modal
    */
-   function openReports(request) {
+  function openReports(request) {
 
-     var params = angular.extend(modalParameters, {
-       templateUrl  : 'modules/templates/modals/reports.modal.html',
-       controller   : 'ReportsModalController',
-       controllerAs : '$ctrl',
-       size         : 'lg',
-       backdrop     : 'static',
-       animation    : false,
-       resolve : {
-         data :  function dataProvider() { return request; }
-       }
-     });
+    const params = angular.extend(modalParameters, {
+      templateUrl  : 'modules/templates/modals/reports.modal.html',
+      controller   : 'ReportsModalController',
+      controllerAs : '$ctrl',
+      size         : 'lg',
+      resolve : { data : () => request },
+    });
 
-     var instance = Modal.open(params);
-   }
+    const instance = Modal.open(params);
+    return instance.result;
+  }
 
-   /**
-    * Inventory Group Actions
-    */
-    function openInventoryGroupActions(request) {
+  /**
+   * Inventory Group Actions
+   */
+  function openInventoryGroupActions(request) {
+    const params = angular.extend(modalParameters, {
+      templateUrl  : 'modules/inventory/configuration/groups/modals/actions.tmpl.html',
+      controller   : 'InventoryGroupsActionsModalController',
+      controllerAs : '$ctrl',
+      size         : 'xs',
+      resolve : { data : () => request },
+    });
 
-      var params = angular.extend(modalParameters, {
-        templateUrl  : 'modules/inventory/configuration/groups/modals/actions.tmpl.html',
-        controller   : 'InventoryGroupsActionsModalController',
-        controllerAs : '$ctrl',
-        size         : 'xs',
-        backdrop     : 'static',
-        animation    : false,
-        resolve : {
-          data :  function dataProvider() { return request; }
-        }
-      });
+    const instance = Modal.open(params);
+    return instance.result;
+  }
 
-      var instance = Modal.open(params);
-      return instance.result;
-    }
+  /** Inventory Types Modal for actions */
+  function openInventoryTypeActions(request) {
 
-    /** Inventory Types Modal for actions */
-    function openInventoryTypeActions(request) {
+    const params = angular.extend(modalParameters, {
+      templateUrl  : 'modules/inventory/configuration/types/modals/actions.tmpl.html',
+      controller   : 'InventoryTypeActionsModalController',
+      controllerAs : '$ctrl',
+      size         : 'xs',
+      resolve : { data : () => request },
+    });
 
-      var params = angular.extend(modalParameters, {
-        templateUrl  : 'modules/inventory/configuration/types/modals/actions.tmpl.html',
-        controller   : 'InventoryTypeActionsModalController',
-        controllerAs : '$ctrl',
-        size         : 'xs',
-        backdrop     : 'static',
-        animation    : false,
-        resolve : {
-          data :  function dataProvider() { return request; }
-        }
-      });
+    const instance = Modal.open(params);
+    return instance.result;
+  }
 
-      var instance = Modal.open(params);
-      return instance.result;
-    }
+  /** Inventory Units Modals for actions */
+  function openInventoryUnitActions(data) {
+    const params = angular.extend(modalParameters, {
+      templateUrl  : 'modules/inventory/configuration/units/modals/actions.tmpl.html',
+      controller   : 'InventoryUnitActionsModalController',
+      controllerAs : '$ctrl',
+      resolve : { data : () => data },
+    });
 
-    /** Inventory Units Modals for actions */
-    function openInventoryUnitActions(data) {
-      var params = angular.extend(modalParameters, {
-        templateUrl  : 'modules/inventory/configuration/units/modals/actions.tmpl.html',
-        controller   : 'InventoryUnitActionsModalController',
-        controllerAs : '$ctrl',
-        resolve : {
-          data : function dataProvider() { return data; }
-        }
-      });
+    const instance = Modal.open(params);
+    return instance.result;
+  }
 
-      var instance = Modal.open(params);
-      return instance.result;
-    }
+  /** Inventory List Modals for actions */
+  function openInventoryListActions(request) {
+    const params = angular.extend(modalParameters, {
+      templateUrl  : 'modules/inventory/list/modals/actions.tmpl.html',
+      controller   : 'InventoryListActionsModalController',
+      controllerAs : '$ctrl',
+      resolve : { data : () => request },
+    });
 
-    /** Inventory List Modals for actions */
-    function openInventoryListActions(request) {
-      var params = angular.extend(modalParameters, {
-        templateUrl  : 'modules/inventory/list/modals/actions.tmpl.html',
-        controller   : 'InventoryListActionsModalController',
-        controllerAs : '$ctrl',
-        resolve : {
-          data :  function dataProvider() { return request; }
-        }
-      });
+    const instance = Modal.open(params);
+    return instance.result;
+  }
 
-      var instance = Modal.open(params);
-      return instance.result;
-    }
+  /** Find by Date interval modal */
+  function openDateInterval(request) {
 
-    /** Find by Date interval modal */
-    function openDateInterval(request) {
+    const params = angular.extend(modalParameters, {
+      templateUrl  : 'modules/templates/modals/dateInterval.tmpl.html',
+      controller   : 'DateIntervalModalController',
+      controllerAs : '$ctrl',
+      size         : 'xs',
+      resolve : { data : () => request },
+    });
 
-      var params = angular.extend(modalParameters, {
-        templateUrl  : 'modules/templates/modals/dateInterval.tmpl.html',
-        controller   : 'DateIntervalModalController',
-        controllerAs : '$ctrl',
-        size         : 'xs',
-        backdrop     : 'static',
-        animation    : true,
-        resolve : {
-          data :  function dataProvider() { return request; }
-        }
-      });
+    const instance = Modal.open(params);
+    return instance.result;
+  }
 
-      var instance = Modal.open(params);
-      return instance.result;
-    }
+  /**
+   * confirm deletion modal
+   * @param {object} request
+   * The request parameter take :
+   *  pattern: the text to match,
+   *  elementName: the name translated of the element to delete (document, transaction)
+   * @example
+   * request = {
+   *   pattern: '#HBB17',
+   *   elementName: $translate.instant('FORM.LABELS.TRANSACTION')
+   *  }
+   */
+  function openConfirmDialog(request) {
 
-    /**
-     * confirm deletion modal
-     * @param {object} request
-     * The request parameter take :
-     *  pattern: the text to match,
-     *  elementName: the name translated of the element to delete (document, transaction)
-     * @example
-     * request = {
-     *   pattern: '#HBB17',
-     *   elementName: $translate.instant('FORM.LABELS.TRANSACTION')
-     *  }
-     */
-    function openConfirmDialog(request) {
+    const params = angular.extend(modalParameters, {
+      templateUrl  : 'modules/templates/modals/confirmDialog.modal.html',
+      controller   : 'ConfirmDialogModalController',
+      controllerAs : '$ctrl',
+      size         : 'xs',
+      resolve : { data : () => request },
+    });
 
-      var params = angular.extend(modalParameters, {
-        templateUrl  : 'modules/templates/modals/confirmDialog.modal.html',
-        controller   : 'ConfirmDialogModalController',
-        controllerAs : '$ctrl',
-        size         : 'xs',
-        backdrop     : 'static',
-        animation    : false,
-        resolve : {
-          data :  function dataProvider() { return request; }
-        }
-      });
+    const instance = Modal.open(params);
+    return instance.result;
+  }
 
-      var instance = Modal.open(params);
-      return instance.result;
-    }
+  /** project modal actions */
+  function openProjectActions(request) {
+    const params = angular.extend(modalParameters, {
+      templateUrl  : 'modules/templates/modals/project.modal.html',
+      controller   : 'ProjectModalController',
+      controllerAs : '$ctrl',
+      size         : 'xs',
+      resolve : { data : () => request },
+    });
 
-    /** project modal actions */
-    function openProjectActions(request) {
-      var params = angular.extend(modalParameters, {
-        templateUrl  : 'modules/templates/modals/project.modal.html',
-        controller   : 'ProjectModalController',
-        controllerAs : '$ctrl',
-        size         : 'xs',
-        backdrop     : 'static',
-        animation    : false,
-        resolve : {
-          data :  function dataProvider() { return request; }
-        }
-      });
+    const instance = Modal.open(params);
+    return instance.result;
+  }
 
-      var instance = Modal.open(params);
-      return instance.result;
-    }
+  /** transaction type modal actions */
+  function openTransactionTypeActions(request) {
+    const params = angular.extend(modalParameters, {
+      templateUrl  : 'modules/templates/modals/transactionType.modal.html',
+      controller   : 'TransactionTypeModalController',
+      controllerAs : '$ctrl',
+      size         : 'xs',
+      resolve : { data : () => request },
+    });
 
-    /** transaction type modal actions */
-    function openTransactionTypeActions(request) {
-      var params = angular.extend(modalParameters, {
-        templateUrl  : 'modules/templates/modals/transactionType.modal.html',
-        controller   : 'TransactionTypeModalController',
-        controllerAs : '$ctrl',
-        size         : 'xs',
-        backdrop     : 'static',
-        animation    : false,
-        resolve : {
-          data :  function dataProvider() { return request; }
-        }
-      });
+    const instance = Modal.open(params);
+    return instance.result;
+  }
 
-      var instance = Modal.open(params);
-      return instance.result;
-    }
+  /** closing fiscal year modal */
+  function openClosingFiscalYear(request) {
+    const params = angular.extend(modalParameters, {
+      templateUrl  : 'modules/fiscal/templates/modals/fiscal.closing.modal.html',
+      controller   : 'ClosingFiscalYearModalController',
+      controllerAs : '$ctrl',
+      size         : 'lg',
+      resolve : { data : () => request },
+    });
 
-    /** closing fiscal year modal */
-    function openClosingFiscalYear(request) {
-      var params = angular.extend(modalParameters, {
-        templateUrl  : 'modules/fiscal/templates/modals/fiscal.closing.modal.html',
-        controller   : 'ClosingFiscalYearModalController',
-        controllerAs : '$ctrl',
-        size         : 'lg',
-        backdrop     : 'static',
-        animation    : false,
-        resolve : {
-          data :  function dataProvider() { return request; }
-        }
-      });
+    const instance = Modal.open(params);
+    return instance.result;
+  }
 
-      var instance = Modal.open(params);
-      return instance.result;
-    }
+  /** searchCashPayment */
+  function openSearchCashPayment(filters) {
+    const params = angular.extend(modalParameters, {
+      templateUrl  : 'modules/cash/payments/templates/search.modal.html',
+      controller   : 'SearchCashPaymentModalController',
+      controllerAs : '$ctrl',
+      resolve : { filters : () => filters },
+    });
 
-    /** searchCashPayment */
-    function openSearchCashPayment(filters) {
-      var params = angular.extend(modalParameters, {
-        templateUrl  : 'modules/cash/payments/templates/search.modal.html',
-        controller   : 'SearchCashPaymentModalController',
-        controllerAs : '$ctrl',
-        size         : 'md',
-        backdrop     : 'static',
-        animation    : false,
-        resolve : {
-          filters :  function filtersProvider() { return filters; }
-        }
-      });
+    const instance = Modal.open(params);
+    return instance.result;
+  }
 
-      var instance = Modal.open(params);
-      return instance.result;
-    }
+  /** purchase order status */
+  function openPurchaseOrderStatus(request) {
+    const params = angular.extend(modalParameters, {
+      templateUrl  : 'modules/purchases/modals/status.tmpl.html',
+      controller   : 'PurchaseOrderStatusModalController',
+      controllerAs : '$ctrl',
+      resolve : { data : () => request },
+    });
 
-    /** purchase order status */
-    function openPurchaseOrderStatus(request) {
-      var params = angular.extend(modalParameters, {
-        templateUrl  : 'modules/purchases/modals/status.tmpl.html',
-        controller   : 'PurchaseOrderStatusModalController',
-        controllerAs : '$ctrl',
-        size         : 'md',
-        backdrop     : 'static',
-        animation    : false,
-        resolve : {
-          data :  function dataProvider() { return request; }
-        }
-      });
+    const instance = Modal.open(params);
+    return instance.result;
+  }
 
-      var instance = Modal.open(params);
-      return instance.result;
-    }
+  /** search purchase order */
+  function openSearchPurchaseOrder(request) {
+    const params = angular.extend(modalParameters, {
+      templateUrl  : 'modules/purchases/modals/search.tmpl.html',
+      controller   : 'SearchPurchaseOrderModalController',
+      controllerAs : '$ctrl',
+      resolve : { data : () => request },
+    });
 
-    /** search purchase order */
-    function openSearchPurchaseOrder(request) {
-      var params = angular.extend(modalParameters, {
-        templateUrl  : 'modules/purchases/modals/search.tmpl.html',
-        controller   : 'SearchPurchaseOrderModalController',
-        controllerAs : '$ctrl',
-        size         : 'md',
-        backdrop     : 'static',
-        animation    : false,
-        resolve : {
-          data :  function dataProvider() { return request; }
-        }
-      });
+    const instance = Modal.open(params);
+    return instance.result;
+  }
 
-      var instance = Modal.open(params);
-      return instance.result;
-    }
+  function openSelectFiscalYear(request) {
+    const params = angular.extend(modalParameters, {
+      templateUrl  : 'modules/general-ledger/modals/search.tmpl.html',
+      controller   : 'SearchFiscalYearModalController',
+      controllerAs : '$ctrl',
+      resolve : { data : () => request },
+    });
 
-    function openSelectFiscalYear(request) {
-      var params = angular.extend(modalParameters, {
-        templateUrl  : 'modules/general-ledger/modals/search.tmpl.html',
-        controller   : 'SearchFiscalYearModalController',
-        controllerAs : '$ctrl',
-        size         : 'md',
-        backdrop     : 'static',
-        animation    : false,
-        resolve : {
-          data :  function dataProvider() { return request; }
-        }
-      });
-
-      var instance = Modal.open(params);
-      return instance.result;
-    }
+    const instance = Modal.open(params);
+    return instance.result;
+  }
 
 }
