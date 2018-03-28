@@ -216,7 +216,7 @@ BEGIN
   INSERT INTO posting_journal (
     uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
     record_uuid, description, account_id, debit, credit, debit_equiv,
-    credit_equiv, currency_id, user_id, origin_id
+    credit_equiv, currency_id, user_id, transaction_type_id
   ) SELECT
     HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid, c.description,
     cb.account_id, c.amount, 0, (c.amount * (1 / currentExchangeRate)), 0, c.currency_id, c.user_id, cashPaymentOriginId
@@ -233,7 +233,7 @@ BEGIN
     INSERT INTO posting_journal (
       uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
       record_uuid, description, account_id, debit, credit, debit_equiv,
-      credit_equiv, currency_id, entity_uuid, user_id, origin_id
+      credit_equiv, currency_id, entity_uuid, user_id, transaction_type_id
     ) SELECT
       HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid,
       c.description, dg.account_id, 0, c.amount, 0, (c.amount * (1 / currentExchangeRate)), c.currency_id,
@@ -254,7 +254,7 @@ BEGIN
     INSERT INTO posting_journal (
       uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
       record_uuid, description, account_id, debit, credit, debit_equiv,
-      credit_equiv, currency_id, entity_uuid, user_id, reference_uuid, origin_id
+      credit_equiv, currency_id, entity_uuid, user_id, reference_uuid, transaction_type_id
     ) SELECT
       HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid,
       c.description, dg.account_id, 0, ci.amount, 0, (ci.amount * (1 / currentExchangeRate)), c.currency_id,
@@ -314,7 +314,7 @@ BEGIN
         INSERT INTO posting_journal (
           uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
           record_uuid, description, account_id, debit, credit, debit_equiv,
-          credit_equiv, currency_id, user_id, origin_id
+          credit_equiv, currency_id, user_id, transaction_type_id
         ) SELECT
           HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid, c.description,
           gain_account_id, 0, remainder, 0, (remainder * (1 / currentExchangeRate)), c.currency_id, c.user_id, cashPaymentOriginId
@@ -341,7 +341,7 @@ BEGIN
         INSERT INTO posting_journal (
           uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
           record_uuid, description, account_id, debit, credit, debit_equiv,
-          credit_equiv, currency_id, entity_uuid, user_id, reference_uuid, origin_id
+          credit_equiv, currency_id, entity_uuid, user_id, reference_uuid, transaction_type_id
         ) SELECT
           HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid, c.description,
           dg.account_id, 0, remainder, 0, (remainder * (1 / currentExchangeRate)), c.currency_id,
@@ -355,7 +355,7 @@ BEGIN
         INSERT INTO posting_journal (
           uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
           record_uuid, description, account_id, debit, credit, debit_equiv,
-          credit_equiv, currency_id, user_id, origin_id
+          credit_equiv, currency_id, user_id, transaction_type_id
         ) SELECT
           HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid, c.description,
           loss_account_id, remainder, 0, (remainder * (1 / currentExchangeRate)), 0, c.currency_id, c.user_id, cashPaymentOriginId

@@ -119,7 +119,7 @@ function buildTransactionQuery(options, posted) {
       p.debit_equiv, p.credit_equiv, p.currency_id, c.name AS currencyName,
       BUID(p.entity_uuid) AS entity_uuid, em.text AS hrEntity,
       BUID(p.reference_uuid) AS reference_uuid, dm2.text AS hrReference,
-      p.comment, p.origin_id, p.user_id, p.cc_id, p.pc_id, pro.abbr,
+      p.comment, p.transaction_type_id, p.user_id, p.cc_id, p.pc_id, pro.abbr,
       pro.name AS project_name, per.start_date AS period_start,
       per.end_date AS period_end, a.number AS account_number, a.label AS account_label, u.display_name
     FROM ${table} p
@@ -152,7 +152,7 @@ function buildTransactionQuery(options, posted) {
   filters.equals('hrRecord', 'text', 'dm1');
   filters.equals('hrReference', 'text', 'dm2');
 
-  filters.custom('origin_id', 'p.origin_id IN (?)', options.origin_id);
+  filters.custom('transaction_type_id', 'p.transaction_type_id IN (?)', options.transaction_type_id);
 
   filters.custom('uuids', 'p.uuid IN (?)', [options.uuids]);
   filters.custom('record_uuids', 'p.record_uuid IN (?)', [options.record_uuids]);

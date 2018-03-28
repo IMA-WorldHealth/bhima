@@ -211,7 +211,7 @@ function JournalEditTransactionController(
     while (i--) {
       row = rows[i];
 
-      const hasTransactionType = typeof row.origin_id === 'number';
+      const hasTransactionType = typeof row.transaction_type_id === 'number';
       if (!hasTransactionType) {
         return ERROR_MISSING_TRANSACTION_TYPE;
       }
@@ -270,7 +270,7 @@ function JournalEditTransactionController(
 
   // Editing global transaction attributes
   vm.handleTransactionTypeChange = function handleTransactionTypeChange(currentValue) {
-    applyAttributeToRows('origin_id', currentValue);
+    applyAttributeToRows('transaction_type_id', currentValue);
   };
 
   vm.handleTransactionDateChange = function handleTransactionDateChange(currentValue) {
@@ -447,7 +447,7 @@ function JournalEditTransactionController(
   // @TODO(sfount) rewrite method given current transaction service code
   function sharedDetails(row) {
     var columns = [
-      'hrRecord', 'record_uuid', 'project_name', 'trans_id', 'origin_id', 'display_name', 'trans_date',
+      'hrRecord', 'record_uuid', 'project_name', 'trans_id', 'transaction_type_id', 'display_name', 'trans_date',
       'project_id', 'fiscal_year_id', 'currency_id', 'user_id', 'posted', 'period_id', 'description',
     ];
 

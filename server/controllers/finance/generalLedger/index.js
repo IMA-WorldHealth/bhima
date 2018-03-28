@@ -48,7 +48,7 @@ function find(options) {
       gl.debit_equiv, gl.credit_equiv, gl.currency_id, c.name AS currencyName,
       BUID(gl.entity_uuid) AS entity_uuid, em.text AS hrEntity,
       BUID(gl.reference_uuid) AS reference_uuid, dm2.text AS hrReference,
-      gl.comment, gl.origin_id, gl.user_id, gl.cc_id, gl.pc_id, pro.abbr,
+      gl.comment, gl.transaction_type_id, gl.user_id, gl.cc_id, gl.pc_id, pro.abbr,
       pro.name AS project_name, per.start_date AS period_start,
       per.end_date AS period_end, a.number AS account_number, a.label AS account_label, u.display_name
     FROM general_ledger gl
@@ -73,7 +73,7 @@ function find(options) {
   filters.equals('account_id');
   filters.equals('project_id');
   filters.equals('trans_id');
-  filters.equals('origin_id');
+  filters.equals('transaction_type_id');
 
   filters.custom('uuids', ' gl.uuid IN (?)', [options.uuids]);
   filters.custom('amount', '(credit_equiv = ? OR debit_equiv = ?)', [options.amount, options.amount]);

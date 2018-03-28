@@ -708,7 +708,7 @@ CREATE TABLE `general_ledger` (
   `entity_uuid`       BINARY(16),
   `reference_uuid`    BINARY(16),
   `comment`           TEXT,
-  `origin_id`         TINYINT(3) UNSIGNED NULL,
+  `transaction_type_id`         TINYINT(3) UNSIGNED NULL,
   `user_id`           SMALLINT(5) UNSIGNED NOT NULL,
   `cc_id`             SMALLINT(6),
   `pc_id`             SMALLINT(6),
@@ -1233,7 +1233,7 @@ CREATE TABLE `posting_journal` (
   `entity_uuid`       BINARY(16),
   `reference_uuid`    BINARY(16),
   `comment`           TEXT,
-  `origin_id`         TINYINT(3) UNSIGNED NULL,
+  `transaction_type_id`         TINYINT(3) UNSIGNED NULL,
   `user_id`           SMALLINT(5) UNSIGNED NOT NULL,
   `cc_id`             SMALLINT(6),
   `pc_id`             SMALLINT(6),
@@ -1675,6 +1675,7 @@ CREATE TABLE `role` (
   UNIQUE `project_role_label` (`project_id`,`label`),
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 DROP TABLE IF EXISTS `user_role`;
 CREATE TABLE `user_role` (

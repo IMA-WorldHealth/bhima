@@ -111,7 +111,7 @@ function JournalService(Api, AppCache, Filters, Periods, Modal, bhConstants, Tra
     { key : 'project_id', label : 'FORM.LABELS.PROJECT' },
     { key : 'description', label : 'FORM.LABELS.DESCRIPTION' },
     { key : 'includeNonPosted', label : 'TRANSACTIONS.INCLUDE_POSTED_TRANSACTIONS_SHORT' },
-    { key : 'origin_id', label : 'FORM.LABELS.TRANSACTION_TYPE' },
+    { key : 'transaction_type_id', label : 'FORM.LABELS.TRANSACTION_TYPE' },
     { key : 'hrRecord', label : 'TABLE.COLUMNS.RECORD' },
     { key : 'hrReference', label : 'TABLE.COLUMNS.REFERENCE' },
     { key : 'hrEntity', label : 'TABLE.COLUMNS.RECIPIENT' },

@@ -260,7 +260,7 @@ function report(req, res, next) {
             gl.period_id, gl.account_id
           FROM general_ledger gl
           JOIN account a ON gl.account_id = a.id
-          JOIN transaction_type tt ON gl.origin_id = tt.id
+          JOIN transaction_type tt ON gl.transaction_type_id = tt.id
           WHERE gl.uuid IN ?
           GROUP BY a.id, tt.id
         ) AS source
@@ -371,7 +371,7 @@ function getDetailsIdentifiers(cashboxesAccountIds, dateFrom, dateTo) {
         (DATE(gl.trans_date) >= DATE(?) AND DATE(gl.trans_date) <= DATE(?))
         AND
         (
-          gl.origin_id <> ${CANCELLED_VOUCHER_ID} AND
+          gl.transaction_type_id <> ${CANCELLED_VOUCHER_ID} AND
           gl.record_uuid NOT IN (SELECT v.uuid FROM voucher v WHERE v.type_id = ${CANCELLED_VOUCHER_ID})
         );
     `;
