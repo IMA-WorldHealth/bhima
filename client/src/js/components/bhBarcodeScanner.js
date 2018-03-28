@@ -1,6 +1,6 @@
 angular.module('bhima.components')
   .component('bhBarcodeScanner', {
-    templateUrl : '/modules/templates/bhBarcodeScanner.html',
+    templateUrl : 'modules/templates/bhBarcodeScanner.html',
     controller  : bhBarcodeScanner,
     bindings    : {
       onScanCallback : '&',
