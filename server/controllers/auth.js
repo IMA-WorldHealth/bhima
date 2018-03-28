@@ -63,9 +63,12 @@ function login(req, res, next) {
     SELECT user.id FROM user
     WHERE user.username = ? AND user.password = PASSWORD(?)`;
 
+  // a role should be assigned to the user
+  // each role has some units(paths or urls) that the user is allowed to access(permissions)
   const sqlPermission =
-    `SELECT permission.id FROM permission
-    JOIN user ON user.id = permission.user_id
+    `SELECT  user.id 
+    FROM  user_role
+    JOIN user ON user.id =  user_role.user_id
     WHERE user.username = ? AND user.password = PASSWORD(?)`;
 
   q.all([
@@ -75,7 +78,6 @@ function login(req, res, next) {
   ])
     .spread((connect, user, permission) => {
       _.merge(param, { connect, user, permission });
-
       const hasAuthorization = param.connect.length > 0;
       const isMissingPermissions = param.permission.length === 0;
       const isUnrecognizedUser = param.user.length === 0;
@@ -177,13 +179,16 @@ function loadSessionInformation(user) {
       [session.user] = rows;
 
       // next make sure this user has permissions
+      // we use now roles for assigning permissions to users
       sql = `
-        SELECT IF(permission.user_id = ?, 1, 0) authorized, unit.path
-        FROM unit LEFT JOIN permission
-          ON unit.id = permission.unit_id;
+        SELECT IF(user_role.user_id = ?, 1, 0) authorized, unit.path
+        FROM unit 
+        LEFT JOIN role_unit ON unit.id = role_unit.unit_id
+        LEFT JOIN user_role ON user_role.role_uuid = role_unit.role_uuid
+        WHERE user_role.user_id=?
       `;
 
-      return db.exec(sql, [session.user.id]);
+      return db.exec(sql, [session.user.id, session.user.id]);
     })
     .then(modules => {
       const unauthorized = modules.every(mod => !mod.authorized);

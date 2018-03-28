@@ -106,20 +106,15 @@ exports.proceedInstall = (req, res, next) => {
     const sqlProject = 'INSERT INTO project SET ? ';
     const sqlUser = `
       INSERT INTO user (username, password, display_name) VALUES (?, PASSWORD(?), ?);`;
-
-    const sqlUnitPermission = `
-      INSERT INTO permission (unit_id, user_id)
-      SELECT unit.id, ${USER_ID} FROM unit
-      ON DUPLICATE KEY UPDATE unit_id = unit_id, user_id = user_id`;
+    const sqlRole = `CALL superUserRole(${USER_ID}, ${PROJECT_ID})`;
 
     const sqlProjectPermission = 'INSERT INTO project_permission SET ? ';
 
     transaction.addQuery(sqlEnterprise, _enterprise);
     transaction.addQuery(sqlProject, _project);
     transaction.addQuery(sqlUser, [_user.username, _user.password, _user.display_name]);
-    transaction.addQuery(sqlUnitPermission);
     transaction.addQuery(sqlProjectPermission, { user_id : USER_ID, project_id : PROJECT_ID });
-
+    transaction.addQuery(sqlRole);
     return transaction.execute();
   }
 };
