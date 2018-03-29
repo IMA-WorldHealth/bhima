@@ -21,6 +21,7 @@ function bhBarcodeScanner($timeout, $window, Barcode) {
     READ_SUCCESS : 8,
     READ_ERROR : 16,
     LOST_FOCUS : 32,
+    NOT_FOUND : 64,
   };
 
   $ctrl.$onInit = () => {
@@ -56,8 +57,9 @@ function bhBarcodeScanner($timeout, $window, Barcode) {
         $ctrl.record = record;
         $ctrl.onScanCallback({ record });
       })
-      .catch(() => {
-        $ctrl.currentStep = steps.READ_ERROR;
+      .catch(err => {
+        const isNotFound = (err.status === 404);
+        $ctrl.currentStep = isNotFound ? steps.NOT_FOUND : steps.READ_ERROR;
         $ctrl.isResetButtonVisible = true;
       });
   };

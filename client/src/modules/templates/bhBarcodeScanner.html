@@ -20,8 +20,12 @@
       <i class="fa fa-check-circle-o"></i> <span translate>BARCODE.READ_SUCCESS</span> {{ $ctrl.record.reference }}
     </span>
 
-    <span class="text-danger" ng-if="$ctrl.currentStep === $ctrl.steps.READ_ERROR">
+    <span class="text-danger" data-error="READ_ERROR" ng-if="$ctrl.currentStep === $ctrl.steps.READ_ERROR">
       <i class="fa fa-danger-sign"></i> <span translate>BARCODE.READ_ERROR</span>
+    </span>
+
+    <span class="text-danger" data-error="NOT_FOUND" ng-if="$ctrl.currentStep === $ctrl.steps.NOT_FOUND">
+      <i class="fa fa-danger-sign"></i> <span translate>BARCODE.NOT_FOUND</span>
     </span>
   </p>
 
