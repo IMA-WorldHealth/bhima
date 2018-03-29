@@ -46,7 +46,7 @@ function StockFindDepotModalController(Instance, Depot, Notify, Data) {
 
   // cancel
   function cancel() {
-    Instance.close();
+    Instance.close(vm.selected);
   }
 
 }

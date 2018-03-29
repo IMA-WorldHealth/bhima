@@ -37,7 +37,7 @@ function StockFindServiceModalController(Instance, Service, Notify, Data) {
 
   // cancel
   function cancel() {
-    Instance.close();
+    Instance.close(vm.selected);
   }
 
 }

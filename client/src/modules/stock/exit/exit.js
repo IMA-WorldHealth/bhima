@@ -310,7 +310,7 @@ function StockExitController(
 
   // find patient
   function findPatient() {
-    StockModal.openFindPatient()
+    StockModal.openFindPatient({ entity_uuid : vm.selectedEntityUuid })
       .then(patient => {
         handleSelectedEntity(patient, 'patient');
       })
@@ -370,7 +370,9 @@ function StockExitController(
     return mapExit[vm.movement.exit_type].submit()
       .then(() => {
         vm.validForSubmit = false;
+
         // reseting the form
+        resetSelectedEntity();
         vm.reset(form);
       })
       .catch(Notify.handleError);
