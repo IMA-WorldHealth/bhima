@@ -7,7 +7,8 @@ describe('(/inventory/import) The inventory import http API', () => {
   const templateCsvContent =
     'inventory_group_name, inventory_code, inventory_text, inventory_type, inventory_unit, inventory_unit_price';
 
-  const filepath = '../test/fixtures/inventory-to-import.csv';
+  const file = '../test/fixtures/inventory-to-import.csv';
+  const invalidFile = '../test/fixtures/bad-inventory-to-import.csv';
   const filename = 'inventory-to-import.csv';
   const numberOfInventoriesToAdd = 2;
 
@@ -43,7 +44,7 @@ describe('(/inventory/import) The inventory import http API', () => {
            * to attach file into req.files please use fs.createReadStream
            * fs.readFileSync doesn't work because it insert the file into req.body.file
            */
-          .attach('file', fs.createReadStream(filepath), filename)
+          .attach('file', fs.createReadStream(file), filename)
           .then(innerRes => {
             expect(innerRes).to.have.status(200);
 
@@ -55,6 +56,18 @@ describe('(/inventory/import) The inventory import http API', () => {
         const totalInventoriesAfterImport = res.body.length;
 
         expect(totalInventoriesAfterImport).to.be.equal(totalInventoriesBeforeImport + numberOfInventoriesToAdd);
+      })
+      .catch(helpers.handler);
+  });
+
+  /**
+   * test an upload of a bad csv file
+   */
+  it('POST /inventory/import blocks an upload of a bad csv file for inventory import', () => {
+    return agent.post('/inventory/import')
+      .attach('file', fs.createReadStream(invalidFile))
+      .then(res => {
+        helpers.api.errored(res, 400, 'ERRORS.BAD_DATA_FORMAT');
       })
       .catch(helpers.handler);
   });

@@ -45,6 +45,10 @@ function importInventories(req, res, next) {
 
   formatCsvToJson(file)
     .then(data => {
+      if (!hasValidDataFormat(data)) {
+        throw new BadRequest('The given file has a bad data format for inventories', 'ERRORS.BAD_DATA_FORMAT');
+      }
+
       const transaction = db.transaction();
 
       data.forEach(item => {
@@ -66,6 +70,21 @@ function importInventories(req, res, next) {
     .then(() => res.sendStatus(200))
     .catch(next)
     .done();
+}
+
+/**
+ * hasValidDataFormat
+ *
+ * @description check if data has a valid format for inventories
+ *
+ * @param {object} data
+ */
+function hasValidDataFormat(data = []) {
+  return data.every(item => {
+    return item.inventory_code && item.inventory_group_name
+      && item.inventory_text && item.inventory_type && item.inventory_unit
+      && item.inventory_unit_price;
+  });
 }
 
 /**

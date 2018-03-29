@@ -29,20 +29,10 @@ BEGIN
   DECLARE inventoryTypeId TINYINT(3);
   DECLARE inventoryUnitId SMALLINT(5);
 
-  CALL SetupDebugLog();
-
   SET existInventoryGroup = (SELECT IF((SELECT COUNT(`name`) AS total FROM `inventory_group` WHERE `name` = inventoryGroupName COLLATE utf8_unicode_ci) > 0, 1, 0));
   SET existInventory = (SELECT IF((SELECT COUNT(`text`) AS total FROM `inventory` WHERE `code` = inventoryCode COLLATE utf8_unicode_ci OR `text` = inventoryText COLLATE utf8_unicode_ci) > 0, 1, 0));
   SET existInventoryType = (SELECT IF((SELECT COUNT(*) AS total FROM `inventory_type` WHERE `text` = inventoryType COLLATE utf8_unicode_ci) > 0, 1, 0));
   SET existInventoryUnit = (SELECT IF((SELECT COUNT(*) AS total FROM `inventory_unit` WHERE `text` = inventoryUnit COLLATE utf8_unicode_ci) > 0, 1, 0));
-
-  CALL DebugLog(CONCAT('Exist Inventory Group : ', existInventoryGroup));
-  CALL DebugLog(CONCAT('Exist Inventory : ', existInventory));
-  CALL DebugLog(CONCAT('Exist Inventory Type : ', existInventoryType));
-  CALL DebugLog(CONCAT('Exist Inventory Unit : ', existInventoryUnit));
-  CALL DebugLog(CONCAT('Variable Inventory Group Name : ', inventoryGroupName));
-
-  CALL FlushLog('Youpi');
 
   /* Create group if doesn't exist */
   IF (existInventoryGroup = 0) THEN
