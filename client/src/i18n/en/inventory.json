@@ -25,6 +25,7 @@
         "REGISTRY": "Inventories Registry",
         "EXPIRES" : "Expires",
         "UNIQUE_ITEM" : "Unique item",
-        "IS_BROKEN" : "is broken"
+        "IS_BROKEN" : "is broken",
+        "LOT_ALREAD_SELECTED": "This lot has already been selected"
     }
 }

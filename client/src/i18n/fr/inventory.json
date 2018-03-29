@@ -25,6 +25,8 @@
         "NO_INVENTORY_REGISTERED": "Il n'y aucun inventaire enregistré jusque là",
         "EXPIRES" : "Expire",
         "UNIQUE_ITEM" : "Un seul item",
-        "IS_BROKEN" : "est endommagé"
+        "IS_BROKEN" : "est endommagé",
+        "IS_BROKEN" : "is broken",
+        "LOT_ALREAD_SELECTED": "Ce lot a été déjà sélectionné"
     }
 }
