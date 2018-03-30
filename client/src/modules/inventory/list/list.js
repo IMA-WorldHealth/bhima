@@ -16,14 +16,9 @@ function InventoryListController(
   Inventory, Notify, uiGridConstants, Modal, $state, Filters, AppCache, Columns, GridState,
   GridExport, Languages, Session, $rootScope
 ) {
-  var vm = this;
-  var cacheKey = 'InventoryGrid';
-  var cache = new AppCache(cacheKey);
-
-  var gridColumns;
-  var exportation;
-  var columnDefs;
-  var state;
+  const vm = this;
+  const cacheKey = 'InventoryGrid';
+  const cache = new AppCache(cacheKey);
 
   // global variables
   vm.download = Inventory.download;
@@ -31,6 +26,9 @@ function InventoryListController(
   vm.filterEnabled = false;
   vm.gridOptions = {};
   vm.gridApi = {};
+
+  // import
+  vm.openImportInventoriesModal = openImportInventoriesModal;
 
   vm.loading = true;
   vm.remove = remove;
@@ -43,7 +41,7 @@ function InventoryListController(
   }
 
   // grid default options
-  columnDefs = [{
+  const columnDefs = [{
     field : 'code',
     displayName : 'FORM.LABELS.CODE',
     headerCellFilter : 'translate',
@@ -128,14 +126,14 @@ function InventoryListController(
     showColumnFooter : true,
     fastWatch : true,
     flatEntityAccess : true,
-    columnDefs : columnDefs,
-    onRegisterApi : onRegisterApi,
+    columnDefs,
+    onRegisterApi,
   };
 
   // configurations
-  gridColumns = new Columns(vm.gridOptions, cacheKey);
-  exportation = new GridExport(vm.gridOptions, 'visible', 'visible');
-  state = new GridState(vm.gridOptions, cacheKey);
+  const gridColumns = new Columns(vm.gridOptions, cacheKey);
+  const exportation = new GridExport(vm.gridOptions, 'visible', 'visible');
+  const state = new GridState(vm.gridOptions, cacheKey);
 
   // expose methods and object
   vm.saveGridState = state.saveGridState;
@@ -188,7 +186,7 @@ function InventoryListController(
 
   // research and filter data in Inventory List
   function research() {
-    var filtersSnapshot = Inventory.filters.formatHTTP();
+    const filtersSnapshot = Inventory.filters.formatHTTP();
 
     Inventory.openSearchModal(filtersSnapshot)
       .then(handleSearchResult);
@@ -236,20 +234,31 @@ function InventoryListController(
   // delete an invetory from the database
   function remove(uuid) {
     Modal.confirm('FORM.DIALOGS.CONFIRM_DELETE')
-      .then(function (yes) {
+      .then((yes) => {
         if (!yes) {
           return;
         }
         Inventory.remove(uuid)
-        .then(function (res) {
-          startup();
-          Notify.success('FORM.INFO.DELETE_SUCCESS');
-        })
-        .catch(Notify.handleError);
+          .then(() => {
+            startup();
+            Notify.success('FORM.INFO.DELETE_SUCCESS');
+          })
+          .catch(Notify.handleError);
       });
   }
   // export csv
   function exportCsv() {
     exportation.run();
+  }
+
+  /**
+   * start the import of inventories from a csv file
+  */
+  function openImportInventoriesModal() {
+    Inventory.openImportInventoriesModal()
+      .then(() => {
+
+      })
+      .catch(Notify.handleError);
   }
 }

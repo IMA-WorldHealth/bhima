@@ -12,29 +12,41 @@ UtilService.$inject = ['moment'];
  * @requires moment
  */
 function UtilService(moment) {
-  var service = this;
+  const service = this;
 
   service.unwrapHttpResponse = function unwrapHttpResponse(response) {
     return response.data;
   };
 
-  service.formatDate = function (date, format) {
-    var f = format || 'DD/MM/YYYY HH:mm:ss';
+  service.formatDate = (date, format) => {
+    const f = format || 'DD/MM/YYYY HH:mm:ss';
     if (date) {
       return moment(date).format(f);
-    } else {
-      return null;
     }
-  }
+    return null;
+  };
+
+  service.download = (response, filename, extension) => {
+    const hiddenElement = document.createElement('a');
+    const hasFileInfo = (filename && extension);
+    const attachment = hasFileInfo ? 'data:attachment/'.concat(extension, ',') : 'data:attachment/text,';
+    const name = hasFileInfo ? filename.concat('.', extension) : 'file.txt';
+
+    hiddenElement.href = attachment.concat(encodeURI(response.data));
+    hiddenElement.target = '_blank';
+    hiddenElement.download = name;
+    hiddenElement.click();
+  };
+
 
   /** @todo comments showing usage */
   service.filterFormElements = function filterFormElements(formDefinition, requireDirty) {
-    var response = {};
+    const response = {};
 
-    angular.forEach(formDefinition, function (value, key) {
+    angular.forEach(formDefinition, (value, key) => {
 
       // Determine angular elements, these can be ignored
-      var isAngularAttribute = key.substring(0, 1) === '$';
+      const isAngularAttribute = key.substring(0, 1) === '$';
 
       if (!isAngularAttribute) {
 
@@ -73,19 +85,19 @@ function UtilService(moment) {
   // utility function
   service.clean = function clean(o) {
     // clean off the $$hashKey and other angular bits and delete undefined
-    var cleaned = {};
+    const cleaned = {};
 
-    for (var k in o) {
+    Object.keys(o).forEach(k => {
       if (k !== '$$hashKey' && angular.isDefined(o[k]) && o[k] !== '' && o[k] !== null) {
         cleaned[k] = o[k];
       }
-    }
+    });
 
     return cleaned;
   };
 
   // moment() provides the current date, similar to the new Date() API. This requests the difference between two dates
-  service.getMomentAge = function (date, duration) {
+  service.getMomentAge = (date, duration) => {
     return duration ? moment().diff(date, duration) : moment().diff(date);
   };
 
@@ -100,12 +112,11 @@ function UtilService(moment) {
    * @param {Object} context - sets the `this` variable in the called function
    */
   service.once = function once(fn, context) {
-    var result;
+    let result;
 
-    return function () {
-
+    return function out() {
       if (!fn) {
-        return;
+        return null;
       }
 
       // call the function only once
@@ -135,13 +146,13 @@ function UtilService(moment) {
    * // this will log 'Before 123)' and then 'I got:1,2,3'
    */
   service.before = function before(target, methodName, fn) {
-    var callback = target[methodName] || angular.noop;
+    const callback = target[methodName] || angular.noop;
 
     // replace with the injected function
     target[methodName] = function intercept() {
 
       // call the function before the cached callback
-      var result = fn.apply(this, arguments);
+      const result = fn.apply(this, arguments);
 
       // fire the callback
       callback.apply(this, arguments);
@@ -169,7 +180,7 @@ function UtilService(moment) {
    * // this will log 'After 123' and then 'I got:1,2,3'
    */
   service.after = function after(target, methodName, fn) {
-    var callback = target[methodName] || angular.noop;
+    const callback = target[methodName] || angular.noop;
 
     // replace with the injected function
     target[methodName] = function intercept() {
@@ -188,8 +199,8 @@ function UtilService(moment) {
    * @description return an array which contain only unique values
    */
   service.uniquelize = function uniquelize(array) {
-    return array.filter(function (value, idx, array) {
-      return array.indexOf(value) === idx;
+    return array.filter((value, idx, _array) => {
+      return _array.indexOf(value) === idx;
     });
   };
 
@@ -232,7 +243,7 @@ function UtilService(moment) {
 
       //  for each key, if the key exists in the mask, add the k/v pair to the
       //  screened object.
-      .reduce(function (screenedObject, key) {
+      .reduce((screenedObject, key) => {
         if (mask.indexOf(key) >= 0) {
           screenedObject[key] = object[key];
         }
@@ -246,15 +257,15 @@ function UtilService(moment) {
   // N milliseconds. If `immediate` is passed, trigger the function on the
   // leading edge, instead of the trailing.
   function debounce(func, wait, immediate) {
-    var timeout;
-    return function () {
-      var context = this;
-      var args = arguments;
-      var later = function () {
+    let timeout;
+    return function out() {
+      const context = this;
+      const args = arguments;
+      const later = function () {
         timeout = null;
         if (!immediate) func.apply(context, args);
       };
-      var callNow = immediate && !timeout;
+      const callNow = immediate && !timeout;
       clearTimeout(timeout);
       timeout = setTimeout(later, wait);
       if (callNow) func.apply(context, args);
@@ -264,7 +275,7 @@ function UtilService(moment) {
   service.debounce = debounce;
 
   service.arrayIncludes = function arrayIncludes(array, values) {
-    return values.some(function (value) {
+    return values.some((value) => {
       return array.indexOf(value) !== -1;
     });
   };

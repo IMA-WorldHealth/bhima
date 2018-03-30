@@ -271,6 +271,10 @@ exports.configure = function configure(app) {
   app.put('/inventory/units/:id', inventory.updateInventoryUnits);
   app.delete('/inventory/units/:id', inventory.deleteInventoryUnits);
 
+  /** Inventory Import API endpoints */
+  app.post('/inventory/import/', upload.middleware('csv', 'file'), inventory.importing.importInventories);
+  app.get('/inventory/import/template_file', inventory.importing.downloadTemplate);
+
 
   /** @todo: These routes below need to be implemented */
   /*

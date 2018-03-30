@@ -32,6 +32,7 @@ class DatabaseConnector {
       user     : process.env.DB_USER,
       password : process.env.DB_PASS,
       database : process.env.DB_NAME,
+      charset  : 'utf8_unicode_ci',
     };
 
     this.pool = mysql.createPool(params);

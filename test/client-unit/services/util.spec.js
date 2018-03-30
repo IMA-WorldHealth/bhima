@@ -1,18 +1,16 @@
 /* global inject, expect */
-describe('util', function () {
-  'use strict';
-
+describe('util', () => {
   let util;
 
   beforeEach(module('angularMoment', 'bhima.services'));
 
 
-  beforeEach(inject(_util_=> {
-    util= _util_;
+  beforeEach(inject(_util_ => {
+    util = _util_;
   }));
 
   it('#unwrapHttpResponse() returns only object data', () => {
-    const data = { headers : [ 1, 2, 3], data : {o : 1}, other : y => y + 1 };
+    const data = { headers : [ 1, 2, 3], data : { o : 1 }, other : y => y + 1 };
 
     const result = util.unwrapHttpResponse(data);
     expect(result).to.have.keys('o');
@@ -24,12 +22,12 @@ describe('util', function () {
 
     // the result of the function shouldn't change
     expect(fn(1)).to.be.equal(2);
-    expect(fn(10)).to.be.undefined;
-    expect(fn('some string')).to.be.undefined;
+    expect(fn(10)).to.be.equal(null);
+    expect(fn('some string')).to.be.equal(null);
 
     // you should be able to pass in a context to use as this
     const context = { y : 0 };
-    fn = util.once(function () {
+    fn = util.once(function cb() {
       this.y = this.y + 3;
     }, context);
 
@@ -48,12 +46,12 @@ describe('util', function () {
   it('#before() should call a function when a target method is called', () => {
 
     const api = {
-      x : z => Math.pow(z, 2),
-      y : z => z / 2
+      x : z => z ** 2,
+      y : z => z / 2,
     };
 
     let input;
-    util.before(api, 'x', function (args) {
+    util.before(api, 'x', args => {
       input = args;
     });
 
@@ -64,12 +62,12 @@ describe('util', function () {
   it('#after() should call a function when a target method is called', () => {
 
     const api = {
-      x : z => Math.pow(z, 2),
-      y : z => z / 2
+      x : z => z ** 2,
+      y : z => z / 2,
     };
 
     let input;
-    util.after(api, 'y', function (args) {
+    util.after(api, 'y', args => {
       input = args;
     });
 
