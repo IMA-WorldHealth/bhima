@@ -206,7 +206,11 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
       }
     });
 
-    return { reference : entity.reference || '', displayName : entity.displayName || '' };
+    return {
+      uuid : entity.uuid || '',
+      reference : entity.reference || '',
+      displayName : entity.displayName || '',
+    };
   }
 
   /**

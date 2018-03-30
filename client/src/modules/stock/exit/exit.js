@@ -22,15 +22,14 @@ function StockExitController(
   Depots, Inventory, Notify, Session, util, bhConstants, ReceiptModal, StockForm, Stock,
   StockModal, uiGridGroupingConstants, $translate, AppCache, moment, GridExportService
 ) {
-  var vm = this;
-  var cache = new AppCache('StockExit');
-  var mapExit;
-  var gridOptions;
+  const vm = this;
+  const cache = new AppCache('StockExit');
 
   vm.stockForm = new StockForm('StockExit');
   vm.movement = {};
   vm.gridApi = {};
   vm.reset = reset;
+
   // bind methods
   vm.itemIncrement = 1;
   vm.maxLength = util.maxLength;
@@ -45,9 +44,7 @@ function StockExitController(
   vm.changeDepot = changeDepot;
   vm.checkValidity = checkValidity;
 
-  // delete cache.depotUuid;
-
-  mapExit = {
+  const mapExit = {
     patient : { description : 'STOCK.EXIT_PATIENT', find : findPatient, submit : submitPatient },
     service : { description : 'STOCK.EXIT_SERVICE', find : findService, submit : submitService },
     depot : { description : 'STOCK.EXIT_DEPOT', find : findDepot, submit : submitDepot },
@@ -61,7 +58,7 @@ function StockExitController(
     </div>
   `;
 
-  gridOptions = {
+  const gridOptions = {
     appScopeProvider : vm,
     enableSorting : false,
     enableColumnMenus : false,
@@ -237,7 +234,7 @@ function StockExitController(
       inventory_uuid : item.inventory.inventory_uuid,
       includeEmptyLot : 0,
     })
-      .then(function handleLots(lots) {
+      .then(lots => {
         item.lots = lots;
       })
       .catch(Notify.handleError);
@@ -280,7 +277,7 @@ function StockExitController(
     setupStock();
 
     Stock.inventories.read(null, { depot_uuid : depot.uuid })
-      .then(function handleInventories(inventories) {
+      .then(inventories => {
         vm.loading = false;
         vm.selectableInventories = angular.copy(inventories);
         checkValidity();
@@ -290,7 +287,7 @@ function StockExitController(
 
   // check validity
   function checkValidity() {
-    var lotsExists = vm.stockForm.store.data.every(function checking(item) {
+    const lotsExists = vm.stockForm.store.data.every(item => {
       return item.quantity > 0 && item.lot.uuid;
     });
     vm.validForSubmit = (lotsExists && vm.stockForm.store.data.length);
@@ -313,8 +310,8 @@ function StockExitController(
 
   // find patient
   function findPatient() {
-    StockModal.openFindPatient()
-      .then(function handlePatient(patient) {
+    StockModal.openFindPatient({ entity_uuid : vm.selectedEntityUuid })
+      .then(patient => {
         handleSelectedEntity(patient, 'patient');
       })
       .catch(Notify.handleError);
@@ -322,8 +319,8 @@ function StockExitController(
 
   // find service
   function findService() {
-    StockModal.openFindService()
-      .then(function handleService(service) {
+    StockModal.openFindService({ entity_uuid : vm.selectedEntityUuid })
+      .then(service => {
         handleSelectedEntity(service, 'service');
       })
       .catch(Notify.handleError);
@@ -331,8 +328,8 @@ function StockExitController(
 
   // find depot
   function findDepot() {
-    StockModal.openFindDepot({ depot : vm.depot })
-      .then(function handleDepot(depot) {
+    StockModal.openFindDepot({ depot : vm.depot, entity_uuid : vm.selectedEntityUuid })
+      .then(depot => {
         handleSelectedEntity(depot, 'depot');
       })
       .catch(Notify.handleError);
@@ -350,9 +347,10 @@ function StockExitController(
   }
 
   function setSelectedEntity(entity) {
-    var uniformEntity = Stock.uniformSelectedEntity(entity);
+    const uniformEntity = Stock.uniformSelectedEntity(entity);
     vm.reference = uniformEntity.reference;
     vm.displayName = uniformEntity.displayName;
+    vm.selectedEntityUuid = uniformEntity.uuid;
   }
 
   function resetSelectedEntity() {
@@ -372,7 +370,9 @@ function StockExitController(
     return mapExit[vm.movement.exit_type].submit()
       .then(() => {
         vm.validForSubmit = false;
+
         // reseting the form
+        resetSelectedEntity();
         vm.reset(form);
       })
       .catch(Notify.handleError);
@@ -390,10 +390,7 @@ function StockExitController(
 
   // submit patient
   function submitPatient() {
-    var movement;
-    var lots;
-
-    movement = {
+    const movement = {
       depot_uuid : vm.depot.uuid,
       entity_uuid : vm.movement.entity.uuid,
       date : vm.movement.date,
@@ -403,12 +400,12 @@ function StockExitController(
       user_id : vm.stockForm.details.user_id,
     };
 
-    lots = vm.stockForm.store.data.map(formatLot);
+    const lots = vm.stockForm.store.data.map(formatLot);
 
     movement.lots = lots;
 
     return Stock.movements.create(movement)
-      .then(function handleReceipt(document) {
+      .then(document => {
         vm.stockForm.store.clear();
         ReceiptModal.stockExitPatientReceipt(document.uuid, bhConstants.flux.TO_PATIENT);
       })
@@ -417,7 +414,7 @@ function StockExitController(
 
   // submit service
   function submitService() {
-    var movement = {
+    const movement = {
       depot_uuid : vm.depot.uuid,
       entity_uuid : vm.movement.entity.uuid,
       date : vm.movement.date,
@@ -427,12 +424,12 @@ function StockExitController(
       user_id : vm.stockForm.details.user_id,
     };
 
-    var lots = vm.stockForm.store.data.map(formatLot);
+    const lots = vm.stockForm.store.data.map(formatLot);
 
     movement.lots = lots;
 
     return Stock.movements.create(movement)
-      .then(function handleReceipt(document) {
+      .then(document => {
         vm.stockForm.store.clear();
         ReceiptModal.stockExitServiceReceipt(document.uuid, bhConstants.flux.TO_SERVICE);
       })
@@ -441,7 +438,7 @@ function StockExitController(
 
   // submit depot
   function submitDepot() {
-    var movement = {
+    const movement = {
       from_depot : vm.depot.uuid,
       from_depot_is_warehouse : vm.depot.is_warehouse,
       to_depot : vm.movement.entity.uuid,
@@ -451,12 +448,12 @@ function StockExitController(
       user_id : vm.stockForm.details.user_id,
     };
 
-    var lots = vm.stockForm.store.data.map(formatLot);
+    const lots = vm.stockForm.store.data.map(formatLot);
 
     movement.lots = lots;
 
     return Stock.movements.create(movement)
-      .then(function handleReceipt(document) {
+      .then(document => {
         vm.stockForm.store.clear();
         ReceiptModal.stockExitDepotReceipt(document.uuid, bhConstants.flux.TO_OTHER_DEPOT);
       })
@@ -465,7 +462,7 @@ function StockExitController(
 
   // submit loss
   function submitLoss() {
-    var movement = {
+    const movement = {
       depot_uuid : vm.depot.uuid,
       entity_uuid : vm.movement.entity.uuid,
       date : vm.movement.date,
@@ -475,12 +472,12 @@ function StockExitController(
       user_id : vm.stockForm.details.user_id,
     };
 
-    var lots = vm.stockForm.store.data.map(formatLot);
+    const lots = vm.stockForm.store.data.map(formatLot);
 
     movement.lots = lots;
 
     return Stock.movements.create(movement)
-      .then(function handleReceipt(document) {
+      .then(document => {
         vm.stockForm.store.clear();
         ReceiptModal.stockExitLossReceipt(document.uuid, bhConstants.flux.TO_LOSS);
       })
@@ -489,10 +486,10 @@ function StockExitController(
 
   function changeDepot() {
     // if requirement is true the modal cannot be canceled
-    var requirement = !cache.depotUuid;
+    const requirement = !cache.depotUuid;
 
     return Depots.openSelectionModal(vm.depot, requirement)
-      .then(function handleDepotSwitch(depot) {
+      .then(depot => {
         vm.depot = depot;
         cache.depotUuid = vm.depot.uuid;
         loadInventories(vm.depot);

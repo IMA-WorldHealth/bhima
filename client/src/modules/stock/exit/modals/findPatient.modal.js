@@ -2,11 +2,11 @@ angular.module('bhima.controllers')
   .controller('StockFindPatientModalController', StockFindPatientModalController);
 
 StockFindPatientModalController.$inject = [
-  '$uibModalInstance', 'PatientService', 'NotifyService',
+  '$uibModalInstance', 'PatientService', 'NotifyService', 'data',
 ];
 
-function StockFindPatientModalController(Instance, Patient, Notify) {
-  var vm = this;
+function StockFindPatientModalController(Instance, Patient, Notify, Data) {
+  const vm = this;
 
   // global
   vm.selected = {};
@@ -17,8 +17,17 @@ function StockFindPatientModalController(Instance, Patient, Notify) {
   vm.cancel = cancel;
 
   Patient.read()
-    .then(function assignPatients(patients) {
+    .then(patients => {
       vm.patients = patients;
+
+      // set defined the previous selected service
+      if (Data.entity_uuid) {
+        const currentPatient = patients.filter(item => {
+          return item.uuid === Data.entity_uuid;
+        });
+
+        vm.selected = currentPatient.length > 0 ? currentPatient[0] : {};
+      }
     })
     .catch(Notify.handleError);
 
@@ -34,7 +43,7 @@ function StockFindPatientModalController(Instance, Patient, Notify) {
 
   // cancel
   function cancel() {
-    Instance.close();
+    Instance.close(vm.selected);
   }
 
 }
