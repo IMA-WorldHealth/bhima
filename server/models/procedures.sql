@@ -52,4 +52,9 @@ SOURCE server/models/procedures/stock.sql
 */
 SOURCE server/models/procedures/inventory.sql
 
+/*
+  role management procedures
+*/
+SOURCE server/models/procedures/roles.sql
+
 DELIMITER ;

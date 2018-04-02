@@ -823,15 +823,27 @@ INSERT INTO `payroll_configuration` (`id`, `label`, `dateFrom`, `dateTo`, `confi
 -- creates a default role
 
 SET @roleUUID = HUID('5b7dd0d6-9273-4955-a703-126fbd504b61');
+SET @regularRoleUUID = HUID('5f7dd0c6-9273-4955-a703-126fbd504b61');
 DELETE FROM role;
+
 INSERT INTO `role`(uuid, label, project_id)
-VALUES(@roleUUID, 'Admin', 1);
+VALUES(@roleUUID, 'Admin', 1), (@regularRoleUUID, 'Regular', 1);
 
-
+-- superuser
 INSERT INTO role_unit
  SELECT HUID(uuid()) as uuid,@roleUUID, id FROM unit;
 
 INSERT INTO `user_role`(uuid, user_id, role_uuid) 
 VALUES(HUID(uuid()), 1, @roleUUID);
+
+-- regular user
+INSERT INTO role_unit
+ VALUES(HUID(uuid()), @regularRoleUUID , 0 ), 
+ (HUID(uuid()), @regularRoleUUID , 1 ),
+ (HUID(uuid()), @regularRoleUUID , 2 ),
+ (HUID(uuid()), @regularRoleUUID , 3 ),
+ (HUID(uuid()), @regularRoleUUID , 4 );
+INSERT INTO `user_role`(uuid, user_id, role_uuid) 
+VALUES(HUID(uuid()), 2, @regularRoleUUID);
 
 -- ----------------------------------------------------------------------------------------

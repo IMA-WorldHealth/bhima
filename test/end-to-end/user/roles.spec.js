@@ -20,13 +20,13 @@ function RolesManagementTests() {
   });
 
   it(`Should add a edit role`, () => {
-    page.editRole(1);
+    page.editRole(2);
     page.setLabel(`Sécretaire`);
     page.submit();
   });
 
   it(`Should edit permissions for a role`, () => {
-    page.editPermissions(1);
+    page.editPermissions(2);
     page.checkAllPerimission();
     page.submit();
   });
@@ -42,7 +42,7 @@ function RolesManagementTests() {
   });
 
   it(`Should delete the third role`, () => {
-    page.deleteRole(2);
+    page.deleteRole(3);
     page.submit();
   });
 }
