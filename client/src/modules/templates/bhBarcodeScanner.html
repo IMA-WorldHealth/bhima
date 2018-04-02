@@ -1,0 +1,41 @@
+<div data-bh-barcode-scanner>
+
+  <!-- giant barcode to emphasize what this component is for -->
+  <h1 style="margin-bottom: 0;"><i class="fa fa-barcode fa-3x"></i></h1>
+
+  <p ng-class="{ 'animate-flicker' : $ctrl.currentStep === $ctrl.steps.AWAIT_READ }">
+    <span class="text-primary" ng-if="$ctrl.currentStep === $ctrl.steps.LOST_FOCUS">
+      <span translate>BARCODE.LOST_FOCUS</span>
+    </span>
+    <span class="text-muted" ng-if="$ctrl.currentStep === $ctrl.steps.AWAIT_READ">
+      <span translate>BARCODE.AWAITING_INPUT</span>
+    </span>
+
+    <span class="text-primary" ng-if="$ctrl.currentStep === $ctrl.steps.AWAIT_HTTP">
+      <i class="fa fa-info-circle"></i>
+      <span translate>BARCODE.AWAITING_HTTP</span>
+    </span>
+
+    <span class="text-success" ng-if="$ctrl.currentStep === $ctrl.steps.READ_SUCCESS">
+      <i class="fa fa-check-circle-o"></i> <span translate>BARCODE.READ_SUCCESS</span> {{ $ctrl.record.reference }}
+    </span>
+
+    <span class="text-danger" data-error="READ_ERROR" ng-if="$ctrl.currentStep === $ctrl.steps.READ_ERROR">
+      <i class="fa fa-danger-sign"></i> <span translate>BARCODE.READ_ERROR</span>
+    </span>
+
+    <span class="text-danger" data-error="NOT_FOUND" ng-if="$ctrl.currentStep === $ctrl.steps.NOT_FOUND">
+      <i class="fa fa-danger-sign"></i> <span translate>BARCODE.NOT_FOUND</span>
+    </span>
+  </p>
+
+  <!-- hidden barcode input -->
+  <div style="height:0; width:0; overflow: hidden;">
+    <input id="hidden-barcode-input" ng-model="$ctrl.barcode" ng-model-options="{ debounce : 150 }" ng-change="$ctrl.triggerBarcodeRead()" ng-blur="$ctrl.showResetButton()">
+  </div>
+
+  <!-- reset button to put focus on hidden input -->
+  <button data-method="reset" class="btn btn-default" type="button" ng-show="$ctrl.isResetButtonVisible" ng-click="$ctrl.setFocusOnHiddenInput()" translate>
+    BARCODE.RESET_BUTTON
+  </button>
+</div>

@@ -1,9 +1,10 @@
 <div class="modal-header">
-  <h4><span translate>FORM.LABELS.ROLES_FOR</span>
-    : <span class="text-primary">
-      {{UsersRolesCtrl.user.display_name}}
-    </span>
-  </h4>
+    <ol class="headercrumb">
+      <li class="static" translate>FORM.LABELS.ROLES_FOR</li>
+      <li class="title">
+        <span translate>{{UsersRolesCtrl.user.display_name}}</span>
+      </li>
+    </ol>
 </div>
 <div class="modal-body">
 
@@ -23,7 +24,7 @@
 
 <div class="modal-footer">
   <div class=" pull-right">
-  <button class='btn inverse' ng-click='UsersRolesCtrl.close()'>Fermer</button>
+  <button type="button" class='btn inverse' ng-click='UsersRolesCtrl.close()' translate>FORM.BUTTONS.CLOSE</button>
  
   <button data-method="submit" type="button" class="btn btn-primary" ng-click="UsersRolesCtrl.assignRolesToUser()">
       <span translate>FORM.BUTTONS.SAVE</span>

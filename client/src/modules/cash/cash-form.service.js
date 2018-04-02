@@ -121,7 +121,7 @@ function CashFormService(AppCache, Session, Patients, Exchange) {
   CashForm.prototype.configure = function configure(config) {
 
     if (config.patient) {
-      this.setPatient(config.invoices);
+      this.setPatient(config.patient);
     }
 
     if (config.description) {
