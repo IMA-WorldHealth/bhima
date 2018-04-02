@@ -36,7 +36,7 @@ function generate(receiptIdentifier, uuid) {
 // YYYYYYYY - First characters of the entity UUID
 // - returns the full UUID of the entity
 function reverseLookup(barcodeKey) {
-  const code = barcodeKey.substr(0, 2);
+  const code = barcodeKey.substr(0, 2).toUpperCase();
   const partialUuid = barcodeKey.substr(2, barcodeKey.length);
   const documentDefinition = identifiersIndex[code];
 
