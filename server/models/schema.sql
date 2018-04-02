@@ -1696,7 +1696,7 @@ CREATE TABLE `role_unit` (
   `role_uuid`  binary(16) NOT NULL,
   `unit_id` SMALLINT(5) UNSIGNED DEFAULT NULL,
   PRIMARY kEY(`uuid`),
-  FOREIGN KEY (`role_uuid`) REFERENCES `role` (`uuid`) ON UPDATE CASCADE,
+  FOREIGN KEY (`role_uuid`) REFERENCES `role` (`uuid`) ON UPDATE CASCADE ON DELETE CASCADE,
   FOREIGN KEY (`unit_id`) REFERENCES `unit` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
