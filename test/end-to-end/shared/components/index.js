@@ -49,5 +49,6 @@ module.exports = {
   iprConfigSelect             : require('./bhIprConfigSelect'),
   rubricConfigSelect          : require('./bhRubricConfigSelect'),
   accountConfigSelect         : require('./bhAccountConfigSelect'),
-  weekConfigSelect            : require('./bhWeekConfigSelect'), 
+  weekConfigSelect            : require('./bhWeekConfigSelect'),
+  yesNoRadios : require('./bhYesNoRadios'),
 };

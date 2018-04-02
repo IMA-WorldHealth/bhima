@@ -143,39 +143,39 @@
             <th>{{translate "FORM.LABELS.TOTAL"}}</th>
             {{#if useSeparateDebitsAndCredits}}
               {{#gt totals.before 0}}
-                <th>{{currency totals.before totals.currencyId }}</th>
-                <th></th>
+                <th class="text-right">{{currency totals.before totals.currencyId }}</th>
+                <th class="text-right">{{currency 0 totals.currencyId }}</th>
               {{else}}
-                <th></th>
-                <th>{{currency totals.before totals.currencyId }}</th>
+                <th class="text-right">{{currency 0 totals.currencyId }}</th>
+                <th class="text-right">{{currency totals.before totals.currencyId }}</th>
               {{/gt}}
             {{else}}
-              <th>{{debcred totals.before totals.currencyId }}</th>
+              <th class="text-right">{{debcred totals.before totals.currencyId }}</th>
             {{/if}}
 
             {{#if useSeparateDebitsAndCredits}}
               {{#gt totals.during 0}}
-                <th>{{currency totals.during totals.currencyId }}</th>
-                <th></th>
+                <th class="text-right">{{currency totals.during totals.currencyId }}</th>
+                <th class="text-right">{{currency 0 totals.currencyId }}</th>
               {{else}}
-                <th></th>
-                <th>{{currency totals.during totals.currencyId }}</th>
+                <th class="text-right">{{currency 0 totals.currencyId }}</th>
+                <th class="text-right">{{currency totals.during totals.currencyId }}</th>
               {{/gt}}
             {{else}}
-              <th>{{debcred totals.during totals.currencyId }}</th>
+              <th class="text-right">{{debcred totals.during totals.currencyId }}</th>
             {{/if}}
 
 
             {{#if useSeparateDebitsAndCredits}}
               {{#gt totals.after 0}}
-                <th>{{currency totals.after totals.currencyId }}</th>
-                <th></th>
+                <th class="text-right">{{currency totals.after totals.currencyId }}</th>
+                <th class="text-right">{{currency 0 totals.currencyId }}</th>
               {{else}}
-                <th></th>
-                <th>{{currency totals.after totals.currencyId }}</th>
+                <th class="text-right">{{currency 0 totals.currencyId }}</th>
+                <th class="text-right">{{currency totals.after totals.currencyId }}</th>
               {{/gt}}
             {{else}}
-              <th>{{debcred totals.after totals.currencyId }}</th>
+              <th class="text-right">{{debcred totals.after totals.currencyId }}</th>
             {{/if}}
           </tr>
         </tfoot>
