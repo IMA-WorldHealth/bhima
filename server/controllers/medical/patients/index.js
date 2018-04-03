@@ -11,8 +11,8 @@
  *
  * @requires q
  * @requires lodash
+ * @requires @ima-worldhealth/topic
  * @requires lib/db
- * @requires lib/topic
  * @requires lib/uuid/v4
  * @requires lib/errors/BadRequest
  * @requires lib/errors/NotFound
@@ -33,12 +33,12 @@
 const _ = require('lodash');
 const q = require('q');
 const uuid = require('uuid/v4');
+const topic = require('@ima-worldhealth/topic');
 
 const identifiers = require('../../../config/identifiers');
 
 const barcode = require('../../../lib/barcode');
 const db = require('../../../lib/db');
-const topic = require('../../../lib/topic');
 const FilterParser = require('../../../lib/filter');
 const BadRequest = require('../../../lib/errors/BadRequest');
 const NotFound = require('../../../lib/errors/NotFound');

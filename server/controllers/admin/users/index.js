@@ -13,10 +13,10 @@
 
 
 const _ = require('lodash');
+const Topic = require('@ima-worldhealth/topic');
 const db = require('../../../lib/db');
 const NotFound = require('../../../lib/errors/NotFound');
 const BadRequest = require('../../../lib/errors/BadRequest');
-const Topic = require('../../../lib/topic');
 
 // expose submodules
 exports.permissions = require('./permissions');

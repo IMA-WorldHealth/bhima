@@ -11,15 +11,16 @@
  * @requires lib/uuid/v4
  * @requires lib/errors/BadRequest
  * @requires lib/errors/NotFound
- * @requires Topic
+ * @requires @ima-worldhealth/topic
  */
 
 const _ = require('lodash');
-const db = require('../../../lib/db');
 const uuid = require('uuid/v4');
+const Topic = require('@ima-worldhealth/topic');
+
+const db = require('../../../lib/db');
 const BadRequest = require('../../../lib/errors/BadRequest');
 const NotFound = require('../../../lib/errors/NotFound');
-const Topic = require('../../../lib/topic');
 
 // GET /patients/:uuid/groups
 exports.list = list;

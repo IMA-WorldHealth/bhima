@@ -1,9 +1,10 @@
 const uuid = require('uuid/v4');
 const _ = require('lodash');
+const Topic = require('@ima-worldhealth/topic');
+
 const db = require('../../lib/db');
 const BadRequest = require('../../lib/errors/BadRequest');
 const util = require('../../lib/util');
-const Topic = require('../../lib/topic');
 
 module.exports = create;
 

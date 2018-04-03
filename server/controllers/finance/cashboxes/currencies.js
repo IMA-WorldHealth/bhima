@@ -7,13 +7,13 @@
  *
  * @requires db
  * @requires NotFound
- * @requires Topic
+ * @requires @ima-worldhealth/topic
  */
 
 
 const db = require('../../../lib/db');
 const NotFound = require('../../../lib/errors/NotFound');
-const Topic = require('../../../lib/topic');
+const Topic = require('@ima-worldhealth/topic');
 
 exports.list = list;
 exports.detail = detail;

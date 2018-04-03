@@ -8,12 +8,12 @@
  *
  * @requires os
  * @requires lib/db
- * @requires lib/topic
+ * @requires @ima-worldhealth/topic
  */
 
 const os = require('os');
 const db = require('../lib/db');
-const Topic = require('../lib/topic');
+const Topic = require('@ima-worldhealth/topic');
 
 // this path is correct _when compiled_
 const pkg = require('../../../package.json');

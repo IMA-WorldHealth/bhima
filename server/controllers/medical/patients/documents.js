@@ -20,7 +20,7 @@
 const uuid = require('uuid/v4');
 
 const db = require('../../../lib/db');
-const Topic = require('../../../lib/topic');
+const Topic = require('@ima-worldhealth/topic');
 
 const BadRequest = require('../../../lib/errors/BadRequest');
 const NotFound = require('../../../lib/errors/NotFound');
