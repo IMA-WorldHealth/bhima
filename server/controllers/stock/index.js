@@ -366,7 +366,7 @@ function listLotsDepot(req, res, next) {
     params.defaultPeriodEntry = params.defaultPeriod;
     delete params.defaultPeriod;
   }
-
+  params.user_id = req.session.user.id;
   core.getLotsDepot(null, params)
     .then((rows) => {
       res.status(200).json(rows);
@@ -383,7 +383,7 @@ function listLotsDepot(req, res, next) {
  */
 function listInventoryDepot(req, res, next) {
   const params = req.query;
-
+  params.user_id = req.session.user.id;
   core.getInventoryQuantityAndConsumption(params)
     .then((rows) => res.status(200).json(rows))
     .catch(next)

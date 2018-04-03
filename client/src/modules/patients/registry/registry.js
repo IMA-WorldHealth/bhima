@@ -10,6 +10,7 @@ PatientRegistryController.$inject = [
 /**
  * Patient Registry Controller
  *
+ * *
  * This module is responsible for the management of Patient Registry.
  */
 function PatientRegistryController($state, Patients, Notify, AppCache,
