@@ -188,6 +188,9 @@ function StockLotsController(
     vm.hasError = false;
     toggleLoadingIndicator();
 
+    // no negative or empty lot
+    filters.includeEmptyLot = 0;
+
     Stock.lots.read(null, filters)
       .then((lots) => {
         vm.gridOptions.data = lots;
@@ -208,7 +211,7 @@ function StockLotsController(
   };
 
   function search() {
-    var filtersSnapshot = stockLotFilters.formatHTTP();
+    const filtersSnapshot = stockLotFilters.formatHTTP();
 
     Modal.openSearchLots(filtersSnapshot)
       .then((changes) => {

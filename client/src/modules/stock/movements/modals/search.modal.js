@@ -7,12 +7,11 @@ SearchMovementsModalController.$inject = [
 ];
 
 function SearchMovementsModalController(data, Notify, Instance, Flux, $translate, Periods, Store, util, Stock) {
-  var vm = this;
-  var lastDisplayValues;
-  var displayValues = {};
-  var changes = new Store({ identifier : 'key' });
+  const vm = this;
+  const displayValues = {};
+  const changes = new Store({ identifier : 'key' });
 
-  var searchQueryOptions = [
+  const searchQueryOptions = [
     'is_exit', 'depot_uuid', 'inventory_uuid', 'label', 'flux_id', 'dateFrom', 'dateTo', 'user_id',
   ];
 
@@ -37,15 +36,15 @@ function SearchMovementsModalController(data, Notify, Instance, Flux, $translate
 
   // default filter period - directly write to changes list
   vm.onSelectPeriod = function onSelectPeriod(period) {
-    var periodFilters = Periods.processFilterChanges(period);
+    const periodFilters = Periods.processFilterChanges(period);
 
-    periodFilters.forEach(function handlePeriodFilter(filterChange) {
+    periodFilters.forEach(filterChange => {
       changes.post(filterChange);
     });
   };
 
   // map key to last display value for lookup in loggedChange
-  lastDisplayValues = Stock.filter.movement.getDisplayValueMap();
+  const lastDisplayValues = Stock.filter.movement.getDisplayValueMap();
 
   // custom filter depot_uuid - assign the value to the params object
   vm.onSelectDepot = function onSelectDepot(depot) {
@@ -61,11 +60,11 @@ function SearchMovementsModalController(data, Notify, Instance, Flux, $translate
 
   // custom filter flux_id - assign the value to the searchQueries object
   vm.onFluxChange = function onFluxChange(_flux) {
-    var typeText = '/';
+    let typeText = '/';
     vm.searchQueries.flux_id = _flux;
 
-    _flux.forEach(function handleFluxesChanges(fluxIds) {
-      vm.fluxes.forEach(function handleFluxChange(flux) {
+    _flux.forEach(fluxIds => {
+      vm.fluxes.forEach(flux => {
         if (fluxIds === flux.id) {
           typeText += String(flux.label).concat(' / ');
         }
@@ -105,20 +104,19 @@ function SearchMovementsModalController(data, Notify, Instance, Flux, $translate
   vm.cancel = function cancel() { Instance.close(); };
 
   vm.submit = function submit() {
-    var loggedChanges;
 
     // push all searchQuery values into the changes array to be applied
-    angular.forEach(vm.searchQueries, function handleDefinedValue(_value, key) {
-      var _displayValue;
+    angular.forEach(vm.searchQueries, (_value, key) => {
+      let _displayValue;
 
       if (angular.isDefined(_value)) {
         // default to the original value if no display value is defined
         _displayValue = displayValues[key] || lastDisplayValues[key] || _value;
-        changes.post({ key : key, value : _value, displayValue : _displayValue });
+        changes.post({ key, value : _value, displayValue : _displayValue });
       }
     });
 
-    loggedChanges = changes.getAll();
+    const loggedChanges = changes.getAll();
     return Instance.close(loggedChanges);
   };
 }
