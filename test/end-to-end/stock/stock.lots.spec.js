@@ -26,8 +26,8 @@ function StockLotsRegistryTests() {
 
   const depotGroupingRow = 1;
   const LOT_FOR_ALLTIME = 16;
-  const LOT_FOR_TODAY = 10;
-  const LOT_FOR_LAST_YEAR = 10;
+  const LOT_FOR_TODAY = 11;
+  const LOT_FOR_LAST_YEAR = 11;
 
   const invetoryGroup = 'Injectable';
 
@@ -75,7 +75,7 @@ function StockLotsRegistryTests() {
   it('find lots by entry date', () => {
     modal.setdateInterval('02/02/2017', '02/02/2017', 'entry-date');
     modal.submit();
-    GU.expectRowCount(gridId, 6 + (2 * depotGroupingRow));
+    GU.expectRowCount(gridId, 6);
   });
 
   it('find lots by expiration date', () => {

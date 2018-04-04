@@ -1,9 +1,8 @@
-/* global element, by, browser */
+/* global element, by */
 const FU = require('../shared/FormUtils');
 const GU = require('../shared/GridUtils');
 const helpers = require('../shared/helpers');
 const SearchModal = require('../shared/search.page');
-const components = require('../shared/components');
 const Filters = require('../shared/components/bhFilters');
 
 function StockInventoriesRegistryTests() {
@@ -23,10 +22,10 @@ function StockInventoriesRegistryTests() {
 
   const depotGroupingRow = 1;
 
-  it('find 1 inventory in Depot Secondaire plus one line for the Grouping', () => {
+  it('find 2 inventory in Depot Secondaire plus one line for the Grouping', () => {
     modal.setDepot('Depot Secondaire');
     modal.submit();
-    GU.expectRowCount(gridId, 1 + depotGroupingRow);
+    GU.expectRowCount(gridId, 2 + depotGroupingRow);
   });
 
   it('find 3 inventory in Depot Principal plus one line for the Grouping', () => {
@@ -69,17 +68,16 @@ function StockInventoriesRegistryTests() {
   it('find 0 inventories  by state plus one line for grouping (minimum reached)', () => {
     FU.radio('$ctrl.searchQueries.status', 3);
     FU.modal.submit();
-    // GU.expectRowCount(gridId, 2 + (depotGroupingRow));
+
     GU.expectRowCount(gridId, 0);
     filters.resetFilters();
   });
 
-  it('find 4 inventories  by state plus one lne for grouping (over maximum)', () => {
+  it('find 3 inventories  by state plus two lines for grouping (over maximum)', () => {
     FU.radio('$ctrl.searchQueries.status', 4);
     FU.modal.submit();
 
-    // GU.expectRowCount(gridId, 3 + (2 * depotGroupingRow));
-    GU.expectRowCount(gridId, 4);
+    GU.expectRowCount(gridId, 3 + (2 * depotGroupingRow));
     filters.resetFilters();
   });
 
@@ -88,6 +86,7 @@ function StockInventoriesRegistryTests() {
     modal.setPeriod('allTime');
     modal.submit();
     GU.expectRowCount(gridId, 7);
+    filters.resetFilters();
   });
 
   it('find 3 inventories who Requires a purchase order', () => {
