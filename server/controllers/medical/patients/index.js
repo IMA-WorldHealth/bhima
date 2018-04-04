@@ -437,6 +437,11 @@ function find(options) {
   filters.dateTo('dateBirthTo', 'dob');
   filters.equals('health_zone');
   filters.equals('health_area');
+
+  // filters for location
+  const orignSql = `(originVillage.name LIKE ?) OR (originSector.name LIKE ?) OR (originProvince.name LIKE ?)`;
+  const params1 = _.fill(Array(3), `%${options.originLocationLabel || ''}%`);
+  filters.customMultiParameters('originLocationLabel', orignSql, params1);
   // default registration date
   filters.period('period', 'registration_date');
   filters.dateFrom('custom_period_start', 'registration_date');
@@ -487,13 +492,14 @@ function patientEntityQuery(detailed) {
       proj.abbr, p.reference) AS reference, p.display_name, BUID(p.debtor_uuid) as debtor_uuid,
       p.sex, p.dob, p.registration_date, BUID(d.group_uuid) as debtor_group_uuid, p.hospital_no,
       p.health_zone, p.health_area, u.display_name as userName, originVillage.name as originVillageName, dg.color,
-      originSector.name as originSectorName ${detailedColumns}
+      originSector.name as originSectorName, originProvince.name as originProvinceName ${detailedColumns}
     FROM patient AS p
       JOIN project AS proj ON p.project_id = proj.id
       JOIN debtor AS d ON p.debtor_uuid = d.uuid
       JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
       JOIN village as originVillage ON originVillage.uuid = p.origin_location_id
-      JOIN sector AS originSector on originVillage.sector_uuid = originSector.uuid
+      JOIN sector AS originSector ON originVillage.sector_uuid = originSector.uuid
+      JOIN province AS originProvince ON originProvince.uuid = originSector.province_uuid 
       JOIN user AS u ON p.user_id = u.id
   `;
 

@@ -16,7 +16,6 @@ function PatientRegistryController($state, Patients, Notify, AppCache,
   util, Receipts, uiGridConstants, $translate,
   Columns, Sorting, bhConstants, GridState, Languages, Export) {
   var vm = this;
-
   var cacheKey = 'PatientRegistry';
   var cache = AppCache(cacheKey);
   var state;
@@ -81,6 +80,11 @@ function PatientRegistryController($state, Patients, Notify, AppCache,
     },
     { field            : 'originVillageName',
       displayName      : 'FORM.LABELS.ORIGIN_VILLAGE',
+      headerCellFilter : 'translate',
+      visible          : false,
+    },
+    { field            : 'originProvinceName',
+      displayName      : 'FORM.LABELS.ORIGIN_PROVINCE',
       headerCellFilter : 'translate',
       visible          : false,
     },

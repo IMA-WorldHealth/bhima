@@ -220,6 +220,7 @@ function PatientService(
     { key : 'patient_group_uuid', label : 'PATIENT_GROUP.PATIENT_GROUP' },
     { key : 'user_id', label : 'FORM.LABELS.USER' },
     { key : 'defaultPeriod', label : 'TABLE.COLUMNS.PERIOD' },
+    { key : 'originLocationLabel', label : 'FORM.LABELS.ORIGIN_LOCATION' },
   ]);
 
   if (filterCache.filters) {
