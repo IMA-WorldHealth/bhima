@@ -27,9 +27,10 @@
     </div>
 
     <!-- thumbnail  -->
-    <div ng-if="$ctrl.file" class="upload-thumbnail">
-      <img ngf-thumbnail="{{ '$ctrl.thumbnail' }}">
+    <div ng-if="$ctrl.file && $ctrl.isImage" class="upload-thumbnail">
+      <img id="upload_thumbnail" ngf-thumbnail="{{ '$ctrl.thumbnail' }}">
     </div>
+    
 
     <!-- progress bar  -->
     <div class="progress" ng-show="$ctrl.file.progress >= 0">

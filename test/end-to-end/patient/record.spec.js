@@ -82,9 +82,11 @@ describe('Patient Record', () => {
     FU.input('$ctrl.file', absolutePath);
 
     FU.modal.submit();
+
     components.notification.hasSuccess();
   });
 
+ 
   // upload patient documents
   it('upload a PDF document', () => {
     const title = '[e2e] New Document';
@@ -121,6 +123,34 @@ describe('Patient Record', () => {
 
     element(by.css('[data-document-action="list"]')).click();
     FU.exists(by.css('[data-view="list"]'), true);
+  });
+
+
+
+  it(' thumbnail should not be shown if the upload is not an image', () => {
+    const title = '[e2e] New pdf As Document';
+    const fileToUpload = 'file.pdf';
+    const absolutePath = path.resolve(fixtures, fileToUpload);
+
+    $('[data-document-action="add"]').click();
+
+    FU.input('$ctrl.title', title);
+    FU.input('$ctrl.file', absolutePath);
+    FU.exists(by.id('upload_thumbnail'), false);
+    FU.modal.close();
+  });
+
+  it('Should check if upload_thumbnail is displayed if the upload is an image', () => {
+    const title = '[e2e] New Image As Document';
+    const fileToUpload = 'file.jpg';
+    const absolutePath = path.resolve(fixtures, fileToUpload);
+
+    $('[data-document-action="add"]').click();
+
+    FU.input('$ctrl.title', title);
+    FU.input('$ctrl.file', absolutePath);
+    FU.exists(by.id('upload_thumbnail'), true);
+    FU.modal.close();
   });
 
   it('informs the user that there is no patient for invalid request', () => {
