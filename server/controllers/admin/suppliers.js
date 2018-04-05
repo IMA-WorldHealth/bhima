@@ -4,12 +4,12 @@
  *
  * @description
  * This controller exposes an API to the client for reading and writing supplier
- * */
+ */
 
+const uuid = require('uuid/v4');
+const Topic = require('@ima-worldhealth/topic');
 
 const db = require('../../lib/db');
-const uuid = require('uuid/v4');
-const Topic = require('../../lib/topic');
 
 function lookupSupplier(uid) {
   const sql = `
@@ -41,7 +41,7 @@ function list(req, res, next) {
   const locked = Number(req.query.locked);
   const params = [];
 
-  if (!isNaN(locked)) {
+  if (!Number.isNaN(locked)) {
     sql += 'WHERE supplier.locked = ?;';
     params.push(locked);
   }

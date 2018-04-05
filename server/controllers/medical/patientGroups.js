@@ -10,14 +10,14 @@
  * @requires db
  * @requires uuid/v4
  * @requires NotFound
- * @requires Topic
+ * @requires @ima-worldhealth/topic
  */
 
 
 const db = require('../../lib/db');
 const uuid = require('uuid/v4');
+const Topic = require('@ima-worldhealth/topic');
 const NotFound = require('../../lib/errors/NotFound');
-const Topic = require('../../lib/topic');
 
 /**
  * @method list

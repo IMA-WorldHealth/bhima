@@ -10,7 +10,7 @@
  *
  * @requires lib/db
  * @requires q
- * @requires Topic
+ * @requires @ima-worldhealth/Topic
  * @requires lodash
  * @requires lib/errors/Unauthorized
  * @requires lib/errors/Forbidden
@@ -22,7 +22,7 @@ const q = require('q');
 const db = require('../lib/db');
 const Unauthorized = require('../lib/errors/Unauthorized');
 const InternalServerError = require('../lib/errors/InternalServerError');
-const Topic = require('../lib/topic');
+const Topic = require('@ima-worldhealth/topic');
 
 // POST /auth/login
 exports.login = login;
@@ -66,7 +66,7 @@ function login(req, res, next) {
   // a role should be assigned to the user
   // each role has some units(paths or urls) that the user is allowed to access(permissions)
   const sqlPermission =
-    `SELECT  user.id 
+    `SELECT  user.id
     FROM  user_role
     JOIN user ON user.id =  user_role.user_id
     WHERE user.username = ? AND user.password = PASSWORD(?)`;
@@ -182,7 +182,7 @@ function loadSessionInformation(user) {
       // we use now roles for assigning permissions to users
       sql = `
         SELECT IF(user_role.user_id = ?, 1, 0) authorized, unit.path
-        FROM unit 
+        FROM unit
         LEFT JOIN role_unit ON unit.id = role_unit.unit_id
         LEFT JOIN user_role ON user_role.role_uuid = role_unit.role_uuid
         WHERE user_role.user_id=?

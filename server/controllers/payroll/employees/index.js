@@ -12,15 +12,15 @@
  * @requires db
  * @requires uuid
  * @requires NotFound
- * @requires topic
+ * @requires @ima-worldhealth/topic
  * @requires filter
  */
 
 
 const uuid = require('uuid/v4');
+const topic = require('@ima-worldhealth/topic');
 
 const db = require('./../../../lib/db');
-const topic = require('../../../lib/topic');
 const NotFound = require('./../../../lib/errors/NotFound');
 const FilterParser = require('./../../../lib/filter');
 
@@ -127,8 +127,8 @@ exports.checkOffday = function checkHoliday(req, res, next) {
 function lookupEmployee(id) {
   const sql =
     `
-    SELECT 
-      employee.id, employee.code, patient.display_name, patient.sex, 
+    SELECT
+      employee.id, employee.code, patient.display_name, patient.sex,
       patient.dob, employee.date_embauche, employee.service_id,
       employee.nb_spouse, employee.nb_enfant, BUID(employee.grade_uuid) as grade_uuid,
       employee.locked, employee.is_medical, grade.text, grade.basic_salary,
@@ -146,7 +146,7 @@ function lookupEmployee(id) {
       JOIN debtor ON patient.debtor_uuid = debtor.uuid
       JOIN creditor ON employee.creditor_uuid = creditor.uuid
       JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid
-      LEFT JOIN service ON service.id = employee.service_id 
+      LEFT JOIN service ON service.id = employee.service_id
     WHERE employee.id = ?;
   `;
 
@@ -401,9 +401,9 @@ function search(req, res, next) {
  */
 function find(options) {
   const sql =
-    `SELECT 
-      employee.id, employee.code, patient.display_name, patient.sex, 
-      patient.dob, employee.date_embauche, employee.service_id, employee.nb_spouse, 
+    `SELECT
+      employee.id, employee.code, patient.display_name, patient.sex,
+      patient.dob, employee.date_embauche, employee.service_id, employee.nb_spouse,
       employee.nb_enfant, BUID(employee.grade_uuid) as grade_uuid, employee.locked,
       grade.text, grade.basic_salary, fonction.id AS fonction_id, fonction.fonction_txt, patient.hospital_no,
       patient.phone, patient.email, patient.address_1 AS adresse, BUID(employee.patient_uuid) AS patient_uuid, employee.bank, employee.bank_account,

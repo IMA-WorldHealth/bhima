@@ -11,13 +11,13 @@
  * @requires Topic
  * @requires Cashboxes/Currencies
  * @requires FilterParser
+ * @requires @ima-worldhealth/topic
  */
 
-
+const Topic = require('@ima-worldhealth/topic');
 const db = require('../../../lib/db');
 const NotFound = require('../../../lib/errors/NotFound');
 const FilterParser = require('../../../lib/filter');
-const Topic = require('../../../lib/topic');
 const currencies = require('./currencies');
 
 exports.list = list;

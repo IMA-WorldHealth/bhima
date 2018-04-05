@@ -15,9 +15,10 @@
  * */
 
 
-const db = require('../../lib/db');
 const uuid = require('uuid/v4');
-const Topic = require('../../lib/topic');
+const Topic = require('@ima-worldhealth/topic');
+
+const db = require('../../lib/db');
 
 exports.lookupVillage = lookupVillage;
 
@@ -115,18 +116,18 @@ exports.provinces = function provinces(req, res, next) {
   if (req.query.detailed === '1') {
     sql =
       `
-      SELECT 
+      SELECT
         BUID(province.uuid) as uuid, province.name, country.name AS country_name,
         BUID(province.country_uuid) AS countryUuid
-      FROM 
-        province 
-      JOIN 
+      FROM
+        province
+      JOIN
         country ON province.country_uuid = country.uuid`;
   } else {
     sql =
       `
-      SELECT 
-        BUID(province.uuid) as uuid, province.name 
+      SELECT
+        BUID(province.uuid) as uuid, province.name
       FROM province`;
   }
 
@@ -158,9 +159,9 @@ exports.provinces = function provinces(req, res, next) {
 exports.countries = function countries(req, res, next) {
   const sql =
     `
-    SELECT 
-      BUID(country.uuid) as uuid, country.name 
-    FROM 
+    SELECT
+      BUID(country.uuid) as uuid, country.name
+    FROM
       country
     ORDER BY country.name ASC;`;
 
