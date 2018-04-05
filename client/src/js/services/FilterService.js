@@ -141,12 +141,6 @@ function FilterService() {
     return httpFilters;
   };
 
-  // returns an array of labels and overriden labels that is built for the FilterParser API
-  FilterList.prototype.formatHTTPLabels = function formatHTTPLabels() {
-    const activeFilters = this._filterActiveFilters();
-    return activeFilters.map(filter => `${filter._key}:${filter._label}`);
-  };
-
   FilterList.prototype.formatCache = function formatCache() {
     const copy = angular.copy(this._filterIndex);
 
