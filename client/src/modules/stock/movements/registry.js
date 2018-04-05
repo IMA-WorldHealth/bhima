@@ -15,19 +15,17 @@ function StockMovementsController(
   Stock, Notify, uiGridConstants, $translate, Modal,
   Languages, Session, Flux, ReceiptModal, Grouping, $state, Columns, GridState
 ) {
-  var vm = this;
-  var filterKey = 'movement';
-  var stockMovementFilters = Stock.filter.movement;
+  const vm = this;
+  const filterKey = 'movement';
+  const stockMovementFilters = Stock.filter.movement;
 
-  var cacheKey = 'movements-grid';
-  var state;
-  var gridColumns;
+  const cacheKey = 'movements-grid';
 
   // grid columns
-  var columns = getGridColumns();
+  const columns = getGridColumns();
 
   // bind flux id with receipt
-  var mapFlux = {
+  const mapFlux = {
     1 : { receipt : ReceiptModal.stockEntryPurchaseReceipt },
     2 : { receipt : ReceiptModal.stockEntryDepotReceipt },
     3 : { receipt : ReceiptModal.stockAdjustmentReceipt },
@@ -155,8 +153,8 @@ function StockMovementsController(
   vm.download = Stock.download;
   vm.clearGridState = clearGridState;
 
-  gridColumns = new Columns(vm.gridOptions, cacheKey);
-  state = new GridState(vm.gridOptions, cacheKey);
+  const gridColumns = new Columns(vm.gridOptions, cacheKey);
+  const state = new GridState(vm.gridOptions, cacheKey);
 
   // grid api
   function onRegisterApiFn(gridApi) {
@@ -189,7 +187,7 @@ function StockMovementsController(
 
   // aggregation total cost
   function totalCost(items) {
-    var total = items.reduce(processTotalCost, 0);
+    const total = items.reduce(processTotalCost, 0);
     return total;
   }
 
@@ -257,7 +255,7 @@ function StockMovementsController(
 
   // search modal
   function search() {
-    var filtersSnapshot = stockMovementFilters.formatHTTP();
+    const filtersSnapshot = stockMovementFilters.formatHTTP();
 
     Modal.openSearchMovements(filtersSnapshot)
       .then(handleSearchModal);

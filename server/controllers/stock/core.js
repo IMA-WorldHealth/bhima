@@ -103,14 +103,18 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
 
   filters.period('defaultPeriod', 'date');
   filters.period('defaultPeriodEntry', 'entry_date', 'l');
-  filters.period('period', 'entry_date');
+  filters.period('period', 'date');
 
   filters.dateFrom('expiration_date_from', 'expiration_date', 'l');
   filters.dateTo('expiration_date_to', 'expiration_date', 'l');
 
-
-  filters.dateFrom('entry_date_from', 'entry_date', 'l');
-  filters.dateTo('entry_date_to', 'entry_date', 'l');
+  /**
+   * the real entry date for a lot
+   * is the MIN(movement.date) for a lot in a given depot
+   * so that we can identify for each depot the entry date of a lot
+   */
+  filters.dateFrom('entry_date_from', 'date', 'm');
+  filters.dateTo('entry_date_to', 'date', 'm');
 
   filters.dateFrom('dateFrom', 'date', 'm');
   filters.dateTo('dateTo', 'date', 'm');
@@ -137,21 +141,21 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
  * @param {string} finalClause - An optional final clause (GROUP BY, ...) to add to query built
  */
 function getLotsDepot(depotUuid, params, finalClause) {
-  let status;
+  let _status;
   // token of query to add if only no empty lots should be returned
-  let exludeToken = '';
+  let excludeToken = '';
 
   if (depotUuid) {
     params.depot_uuid = depotUuid;
   }
 
   if (params.status) {
-    status = params.status;
+    _status = params.status;
     delete params.status;
   }
 
   if (Number(params.includeEmptyLot) === 0) {
-    exludeToken = 'HAVING quantity > 0';
+    excludeToken = 'HAVING quantity > 0';
     delete params.includeEmptyLot;
   }
 
@@ -160,7 +164,8 @@ function getLotsDepot(depotUuid, params, finalClause) {
             SUM(m.quantity * IF(m.is_exit = 1, -1, 1)) AS quantity,
             d.text AS depot_text, l.unit_cost, l.expiration_date,
             BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid,
-            l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
+            i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
+            MIN(m.date) AS entry_date,
             i.avg_consumption, i.purchase_interval, i.delay,
             iu.text AS unit_type,
             ig.name AS group_name, ig.expires,
@@ -174,13 +179,13 @@ function getLotsDepot(depotUuid, params, finalClause) {
         LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
     `;
 
-  const clause = finalClause || ` GROUP BY l.uuid, m.depot_uuid ${exludeToken} ORDER BY i.code, l.label `;
+  const clause = finalClause || ` GROUP BY l.uuid, m.depot_uuid ${excludeToken} ORDER BY i.code, l.label `;
 
   return getLots(sql, params, clause)
     .then(stockManagementProcess)
     .then((rows) => {
-      if (status) {
-        return rows.filter(row => row.status === status);
+      if (_status) {
+        return rows.filter(row => row.status === _status);
       }
       return rows;
     });
@@ -397,13 +402,14 @@ function getStockConsumptionAverage(periodId, periodDate, numberOfMonths) {
  */
 function getInventoryQuantityAndConsumption(params) {
   const bundle = {};
-  let status;
+  let _status;
   let delay;
   let purchaseInterval;
   let requirePurchaseOrder;
+  let excludeToken = '';
 
   if (params.status) {
-    status = params.status;
+    _status = params.status;
     delete params.status;
   }
 
@@ -420,6 +426,11 @@ function getInventoryQuantityAndConsumption(params) {
   if (params.require_po) {
     requirePurchaseOrder = params.require_po;
     delete params.require_po;
+  }
+
+  if (Number(params.includeEmptyLot) === 0) {
+    excludeToken = 'HAVING quantity > 0';
+    delete params.includeEmptyLot;
   }
 
   const sql = `
@@ -441,7 +452,7 @@ function getInventoryQuantityAndConsumption(params) {
     LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
   `;
 
-  const clause = ' GROUP BY l.inventory_uuid, m.depot_uuid ORDER BY i.code, i.text ';
+  const clause = ` GROUP BY l.inventory_uuid, m.depot_uuid ${excludeToken} ORDER BY i.code, i.text `;
 
   return getLots(sql, params, clause)
     .then((rows) => {
@@ -471,8 +482,8 @@ function getInventoryQuantityAndConsumption(params) {
     .then(rows => {
       let filteredRows = rows;
 
-      if (status) {
-        filteredRows = filteredRows.filter(row => row.status === status);
+      if (_status) {
+        filteredRows = filteredRows.filter(row => row.status === _status);
       }
 
       if (requirePurchaseOrder) {

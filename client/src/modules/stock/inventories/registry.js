@@ -213,6 +213,9 @@ function StockInventoriesController(
     vm.hasError = false;
     vm.loading = true;
 
+    // no negative or empty lot
+    filters.includeEmptyLot = 0;
+
     Stock.inventories.read(null, filters)
       .then((rows) => {
         // set status flags
