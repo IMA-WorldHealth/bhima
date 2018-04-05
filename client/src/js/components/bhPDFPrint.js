@@ -2,15 +2,15 @@ angular.module('bhima.components')
   .component('bhPdfPrint', {
     bindings : {
       pdfUrl       : '@',
-      disableCache : '@',
-      options      : '<',
-      disabled     : '<',
+      disableCache : '@?',
+      options      : '<?',
+      disabled     : '<?',
     },
     template :
-      '<bh-loading-button button-class="btn-default" loading-state="$ctrl.$loading" ng-click="$ctrl.print()" disabled="$ctrl.disabled">' +
-        '<span><i class="fa fa-print"></i> <span translate>FORM.BUTTONS.PRINT</span></span>' +
-      '</bh-loading-button>' +
-      '<iframe ng-src="{{$ctrl.src}}" id="{{$ctrl.embeddedContentId}}" style="display : none"></iframe>',
+      `<bh-loading-button button-class="btn-default" loading-state="$ctrl.$loading" ng-click="$ctrl.print()" disabled="$ctrl.disabled">
+        <span><i class="fa fa-print"></i> <span translate>FORM.BUTTONS.PRINT</span></span>
+      </bh-loading-button>
+      <iframe ng-src="{{$ctrl.src}}" id="{{$ctrl.embeddedContentId}}" style="display : none"></iframe>`,
     controller : bhPDFPrintController,
   });
 
@@ -18,23 +18,25 @@ angular.module('bhima.components')
   .component('bhPdfLink', {
     bindings : {
       pdfUrl       : '@',
-      buttonText   : '@',
-      disableCache : '@',
-      options      : '<',
+      buttonText   : '@?',
+      disableCache : '@?',
+      options      : '<?',
     },
     transclude : true,
     template   :
-      '<a href ng-click="$ctrl.print()">' +
-        '<span ng-if="!$ctrl.$loading"><i class="fa fa-print"></i> <span translate>{{ $ctrl.buttonText }}</span></span>' +
-        '<span ng-if="$ctrl.$loading"><i class="fa fa-spin fa-circle-o-notch"></i> <span translate>FORM.INFO.LOADING</span></span>' +
-      '</a>' +
-      '<iframe ng-src="{{$ctrl.src}}" id="{{$ctrl.embeddedContentId}}" style="display : none"></iframe>',
+      `<a href ng-click="$ctrl.print()">
+        <span ng-if="!$ctrl.$loading"><i class="fa fa-print"></i> <span translate>{{ $ctrl.buttonText }}</span></span>
+        <span ng-if="$ctrl.$loading">
+          <i class="fa fa-spin fa-circle-o-notch"></i> <span translate>FORM.INFO.LOADING</span>
+        </span>
+      </a>
+      <iframe ng-src="{{$ctrl.src}}" id="{{$ctrl.embeddedContentId}}" style="display : none"></iframe>`,
     controller : bhPDFPrintController,
   });
 
 
 bhPDFPrintController.$inject = [
-  '$scope', '$window', '$http', '$sce', '$timeout', 'LanguageService',
+  '$window', '$http', '$sce', '$timeout', 'LanguageService',
   'NotifyService',
 ];
 
@@ -49,7 +51,7 @@ bhPDFPrintController.$inject = [
  * technology to be used in an export drop-down etc.
  *
  * The provided pdf url should be relative to the servers path and does not need
- * to include the renderer option (this is performed by the component).
+ * to include the renderer option (this is performed by the component.
  * Options will be passed as params in the get request.
  *
  * @todo Investigate abstracting direct print to browser window functionality to allow export drop-down
@@ -64,93 +66,95 @@ bhPDFPrintController.$inject = [
  *   disable-cache="false">
  * </bh-pdf-print>
  */
-function bhPDFPrintController($scope, $window, $http, $sce, $timeout, Languages, Notify) {
-  var cachedRequest;
-  var component = this;
+function bhPDFPrintController($window, $http, $sce, $timeout, Languages, Notify) {
+  const $ctrl = this;
+  let cachedRequest;
 
-  this.$onInit = function $onInit() {
-    component.buttonText = component.buttonText || 'FORM.BUTTONS.PRINT';
+  $ctrl.$onInit = function $onInit() {
+    $ctrl.buttonText = $ctrl.buttonText || 'FORM.BUTTONS.PRINT';
 
-    component.$loading = false;
-    component.embeddedContentId = 'pdfdirect-' + Date.now();
+    $ctrl.$loading = false;
+    $ctrl.embeddedContentId = `pdfdirect-${Date.now()}`;
+
+    // turn off caching via disable-cache="true".  Caching is enabled by default.
+    $ctrl.enableCache = ($ctrl.disableCache !== 'true');
   };
 
   // expose the print method to the view
-  component.print = print;
+  $ctrl.print = printChildFrame;
 
-  // turn off caching via disable-cache="true".  Caching is enabled by default.
-  var enableCache = (component.disableCache !== 'true');
-
-  /** @todo update all options (receipt modal + direct print directive to use bhConstants included in account management PR */
-  var pdfOptions = {
+  const pdfOptions = {
     renderer : 'pdf',
-    lang : Languages.key
+    lang : Languages.key,
   };
 
-  var responseType = 'arraybuffer';
-  var pdfType = 'application/pdf';
+  const responseType = 'arraybuffer';
+  const pdfType = 'application/pdf';
 
   // delay between GET request completion and loading indication, this is used
   // to compensate for the delay in browsers opening the print dialog
-  var loadingIndicatorDelay = 1000;
+  const loadingIndicatorDelay = 1000;
 
-  function print() {
-    var url = component.pdfUrl;
-    var configuration = requestOptions();
+  function printChildFrame() {
+    const url = $ctrl.pdfUrl;
+    const configuration = requestOptions();
 
     // check to see if this request has been made before - if it has and caching is enabled,
     // we will use the local resource
-    if (enableCache && angular.equals(configuration, cachedRequest)) {
+    if ($ctrl.enableCache && angular.equals(configuration, cachedRequest)) {
       printEmbeddedContent();
-      return;
+      return 0;
     }
 
     cachedRequest = configuration;
-    component.$loading = true;
-    var testUrl =  false;
-    // return the value to allow the controller to perform error handling
-    return $http.get(url, {params : configuration, responseType : responseType})
-      .then(function (result) {
-        var file = new Blob([result.data], {type : pdfType});
-        var fileURL = URL.createObjectURL(file);
+    $ctrl.$loading = true;
+    let testUrl = false;
 
-        // Check if fileURL return a valide file
-        testUrl = fileURL ? true : false;
+    // return the value to allow the controller to perform error handling
+    return $http.get(url, { params : configuration, responseType })
+      .then(result => {
+        const file = new Blob([result.data], { type : pdfType });
+        const fileURL = URL.createObjectURL(file);
+        $ctrl.blobFileURL = fileURL;
+
+        // Check if fileURL return a valid file
+        testUrl = !!fileURL;
 
         // expose the stored pdf to the hidden view
         // the print method is automatically called with the load listener on the $window option
-        component.src = $sce.trustAsResourceUrl(fileURL);
+        $ctrl.src = $sce.trustAsResourceUrl(fileURL);
 
-        // ensure the blob is cleared when this $scope is cleaned up
-        var cleanupListener = $scope.$on('$destroy', function () {
-          // @TODO $stateChangeStart events have been depreciated as of ui-router 1.0. When this dependency is updated this
-          // should be re-written to use the latest $transition standards
-          URL.revokeObjectURL(fileURL);
-
-          // de-register event listener
-          cleanupListener();
-        });
+        $timeout(bindPrintEventMethod);
       })
-      .finally(function () {
+      .finally(() => {
         $timeout(toggleLoading, loadingIndicatorDelay);
         // Check if was not found on the server
-        if(!testUrl) {
+        if (!testUrl) {
           Notify.danger('FORM.WARNINGS.DOC_NOT_FOUND');
         }
 
       });
   }
 
+  // ensure the blob is cleared when this $scope is cleaned up
+  $ctrl.$onDestroy = () => {
+    if ($ctrl.blobFileURL) {
+      URL.revokeObjectURL($ctrl.blobFileUrl);
+    }
+
+    $window.frames[$ctrl.embeddedContentId].removeEventListener('load', printEmbeddedContent);
+  };
+
   /**
    * @method requestOptions
    *
    * @description
    * Combine the pdf options and the report options passed in from the
-   * controller
+   * controller.
    */
   function requestOptions() {
-    var combined = angular.copy(pdfOptions);
-    angular.extend(combined, component.options);
+    const combined = angular.copy(pdfOptions);
+    angular.extend(combined, $ctrl.options);
     return combined;
   }
 
@@ -162,16 +166,15 @@ function bhPDFPrintController($scope, $window, $http, $sce, $timeout, Languages,
    * HTTP requests.
    */
   function toggleLoading() {
-    component.$loading = !component.$loading;
+    $ctrl.$loading = !$ctrl.$loading;
   }
 
   // ensure that the template/ iframe element is available
   // both the $onInit and $postLink methods are fired before guaranteeing the
   // id has been dynamically set
-  $timeout(bindPrintEventMethod);
 
   function bindPrintEventMethod() {
-    $window.frames[component.embeddedContentId].addEventListener('load', printEmbeddedContent);
+    $window.frames[$ctrl.embeddedContentId].addEventListener('load', printEmbeddedContent);
   }
 
   /**
@@ -184,11 +187,11 @@ function bhPDFPrintController($scope, $window, $http, $sce, $timeout, Languages,
    * ready to be printed - waiting until the load event is fired ensures everything
    * is ready for printing.
    */
-  function printEmbeddedContent(event) {
+  function printEmbeddedContent() {
     // ensure this is considered in Angular's $digest
-    $timeout(function () {
+    $timeout(() => {
       // invoke print on the target window
-      $window.frames[component.embeddedContentId].contentWindow.print();
+      $window.frames[$ctrl.embeddedContentId].contentWindow.print();
     });
   }
 }
