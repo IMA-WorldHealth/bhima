@@ -183,6 +183,28 @@ describe('(/stock/) The Stock HTTP API', () => {
       .catch(helpers.handler)
   );
 
+    // (report) render all stock exit
+  it(
+    `GET /reports/stock/lots?renderer=json
+    returns exits for all depots (12 OUT)`,
+    () => agent.get(`/reports/stock/lots?renderer=json`)
+      .then((res) => {
+        expect(res.body.rows.length).to.equal(12);
+      })
+      .catch(helpers.handler)
+  );
+  
+  // (report) render all stock exit relatives to 'Depot Principal'
+  it(
+    `GET /reports/stock/lots?renderer=json
+    returns exits for Depot principal(10 OUT)`,
+    () => agent.get(`/reports/stock/lots?renderer=json&depot_uuid=${depotPrincipalUuid}`)
+      .then((res) => {
+        expect(res.body.rows.length).to.equal(10);
+      })
+      .catch(helpers.handler)
+  );
+
   // list all stock entry relatives to 'Depot Principal'
   it(
     `GET /stock/lots/movements?is_exit=0&depot_uuid=... returns entries for Depot Principal (10 IN)`,
