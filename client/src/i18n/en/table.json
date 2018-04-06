@@ -97,6 +97,8 @@
             "LOADING": "Fetching data from the server.",
             "LOCKED": "Locked",
             "LOT": "Lot",
+            "LONGITUDE": "Longitude",
+            "LATITUDE": "Latitude",
             "PAYMENT_INVOICE": "payment made against this invoice",
             "NAME": "Name",
             "NATURE": "Nature",

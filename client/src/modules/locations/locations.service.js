@@ -1,7 +1,7 @@
 angular.module('bhima.services')
-.service('LocationService', LocationService);
+  .service('LocationService', LocationService);
 
-LocationService.$inject = [ '$http', 'util', '$uibModal' ];
+LocationService.$inject = ['$http', 'util', '$uibModal'];
 
 /**
  * Location Service
@@ -32,8 +32,8 @@ LocationService.$inject = [ '$http', 'util', '$uibModal' ];
  * @class LocationService
  */
 function LocationService($http, util, Modal) {
-  var service = {};
-  var baseUrl = '/locations';
+  const service = {};
+  const baseUrl = '/locations';
 
   /** read interfaces */
   service.countries = countries;
@@ -52,7 +52,7 @@ function LocationService($http, util, Modal) {
   service.create.sector = createSector;
   service.create.village = createVillage;
 
-/** location update interfaces */
+  /** location update interfaces */
   service.update = {};
   service.update.country = updateCountry;
   service.update.province = updateProvince;
@@ -65,11 +65,11 @@ function LocationService($http, util, Modal) {
 
   /** translation messages used in location <select> components */
   service.messages = {
-    country:  'FORM.SELECT.COUNTRY',
-    province: 'FORM.SELECT.PROVINCE',
-    sector:   'FORM.SELECT.SECTOR',
-    village:  'FORM.SELECT.VILLAGE',
-    empty:    'FORM.SELECT.EMPTY'
+    country :  'FORM.SELECT.COUNTRY',
+    province : 'FORM.SELECT.PROVINCE',
+    sector :   'FORM.SELECT.SECTOR',
+    village :  'FORM.SELECT.VILLAGE',
+    empty :    'FORM.SELECT.EMPTY',
   };
 
   /**
@@ -78,7 +78,7 @@ function LocationService($http, util, Modal) {
    */
   function request(path, options) {
     return $http.get(baseUrl.concat(path), options)
-    .then(util.unwrapHttpResponse);
+      .then(util.unwrapHttpResponse);
   }
 
   /**
@@ -132,7 +132,7 @@ function LocationService($http, util, Modal) {
     return Modal.open({
       templateUrl : 'modules/templates/modals/location.modal.html',
       controller : 'LocationModalController as LocationModalCtrl',
-      size : 'md'
+      size : 'md',
     }).result;
   }
 
@@ -142,7 +142,7 @@ function LocationService($http, util, Modal) {
    */
   function createGeneric(endpoint, data) {
     return $http.post(baseUrl.concat(endpoint), data)
-    .then(util.unwrapHttpResponse);
+      .then(util.unwrapHttpResponse);
   }
 
   /**
@@ -175,9 +175,9 @@ function LocationService($http, util, Modal) {
   }
 
   function updateProvince(uuid, province) {
-    var provinceClean = {
+    const provinceClean = {
       country_uuid : province.country_uuid,
-      name : province.name
+      name : province.name,
     };
 
     return $http.put('/locations/provinces/'.concat(uuid), provinceClean)
@@ -185,9 +185,9 @@ function LocationService($http, util, Modal) {
   }
 
   function updateSector(uuid, sector) {
-    var sectorClean = {
+    const sectorClean = {
       province_uuid : sector.province_uuid,
-      name : sector.name
+      name : sector.name,
     };
 
     return $http.put('/locations/sectors/'.concat(uuid), sectorClean)
@@ -195,9 +195,11 @@ function LocationService($http, util, Modal) {
   }
 
   function updateVillage(uuid, village) {
-    var villageClean = {
+    const villageClean = {
       sector_uuid : village.sector_uuid,
-      name : village.name
+      name : village.name,
+      longitude : village.longitude,
+      latitude : village.latitude,
     };
 
     return $http.put('/locations/villages/'.concat(uuid), villageClean)

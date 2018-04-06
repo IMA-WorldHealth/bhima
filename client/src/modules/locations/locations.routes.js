@@ -1,7 +1,6 @@
 angular.module('bhima.routes')
-  .config(['$stateProvider', function ($stateProvider) {
+  .config(['$stateProvider', $stateProvider => {
     $stateProvider
-
       .state('locations', {
         url         : '/locations',
         controller  : 'LocationController as LocationCtrl',

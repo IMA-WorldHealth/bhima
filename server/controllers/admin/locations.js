@@ -35,7 +35,7 @@ exports.lookupVillage = lookupVillage;
  */
 exports.villages = function villages(req, res, next) {
   let sql =
-    'SELECT BUID(village.uuid) as uuid, village.name FROM village ';
+    'SELECT BUID(village.uuid) as uuid, village.name, village.longitude, village.latitude FROM village ';
 
   sql += (req.query.sector) ?
     'WHERE village.sector_uuid = ? ORDER BY village.name ASC;' :
@@ -178,9 +178,10 @@ function lookupVillage(uid) {
   // convert hex uuid into binary
   const bid = db.bid(uid);
 
-  const sql =
-    `SELECT BUID(village.uuid) as uuid, village.name, sector.name AS sector_name, BUID(sector.uuid) AS sector_uuid,
-    province.name AS province_name, country.name AS country_name
+  const sql = `
+    SELECT BUID(village.uuid) as uuid, village.name, sector.name AS sector_name, BUID(sector.uuid) AS sector_uuid,
+      province.name AS province_name, country.name AS country_name,
+      village.longitude, village.latitude
     FROM village JOIN sector JOIN province JOIN country ON
       village.sector_uuid = sector.uuid AND
       sector.province_uuid = province.uuid AND
@@ -244,7 +245,8 @@ exports.detail = function detail(req, res, next) {
   const sql =
     `SELECT BUID(village.uuid) AS villageUuid, village.name AS village, sector.name AS sector,
       BUID(sector.uuid) AS sectorUuid, province.name AS province, BUID(province.uuid) AS provinceUuid,
-      country.name AS country, BUID(country.uuid) AS countryUuid
+      country.name AS country, BUID(country.uuid) AS countryUuid,
+      village.longitude, village.latitude
     FROM village, sector, province, country
     WHERE village.sector_uuid = sector.uuid AND
       sector.province_uuid = province.uuid AND
@@ -272,7 +274,8 @@ exports.list = function list(req, res, next) {
   const sql =
     `SELECT BUID(village.uuid) AS villageUuid, village.name AS village, sector.name AS sector,
       BUID(sector.uuid) AS sectorUuid, province.name AS province, BUID(province.uuid) AS provinceUuid,
-      country.name AS country, BUID(country.uuid) AS countryUuid
+      country.name AS country, BUID(country.uuid) AS countryUuid,
+      village.longitude, village.latitude
     FROM village, sector, province, country
     WHERE village.sector_uuid = sector.uuid AND
       sector.province_uuid = province.uuid AND
@@ -405,9 +408,9 @@ exports.create.village = function createVillage(req, res, next) {
   data.uuid = data.uuid || uuid();
 
   const sql =
-    `INSERT INTO village (uuid, name, sector_uuid) VALUES (?);`;
+    `INSERT INTO village (uuid, name, sector_uuid, longitude, latitude) VALUES (?);`;
 
-  db.exec(sql, [[db.bid(data.uuid), data.name, data.sector_uuid]])
+  db.exec(sql, [[db.bid(data.uuid), data.name, data.sector_uuid, data.longitude, data.latitude]])
     .then(() => {
       Topic.publish(Topic.channels.ADMIN, {
         event : Topic.events.CREATE,

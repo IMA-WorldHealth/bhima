@@ -1707,6 +1707,8 @@ CREATE TABLE `village` (
   `uuid`        BINARY(16) NOT NULL,
   `name`        VARCHAR(80) NOT NULL,
   `sector_uuid` BINARY(16) NOT NULL,
+  `longitude`   DECIMAL(19, 6) NULL,
+  `latitude`    DECIMAL(19, 6) NULL,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `village_1` (`name`, `sector_uuid`),
   KEY `sector_id` (`sector_uuid`),
