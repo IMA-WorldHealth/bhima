@@ -12,22 +12,20 @@ const {
  * GET /reports/stock/lots
  */
 function stockLotsReport(req, res, next) {
-  let options = {};
+  let options = req.query;
   let display = {};
   let hasFilter = false;
-
   const data = {};
   let report;
 
   const optionReport = _.extend(req.query, pdfOptions, {
     filename : 'TREE.STOCK_LOTS',
   });
-
   // set up the report with report manager
   try {
     if (req.query.identifiers && req.query.display) {
-      options = JSON.parse(req.query.identifiers);
-      display = JSON.parse(req.query.display);
+      options = req.query.identifiers;
+      display = req.query.display;
       hasFilter = Object.keys(display).length > 0;
     }
 
@@ -40,7 +38,6 @@ function stockLotsReport(req, res, next) {
     options.defaultPeriodEntry = options.defaultPeriod;
     delete options.defaultPeriod;
   }
-
 
   return Stock.getLotsDepot(null, options)
     .then((rows) => {
