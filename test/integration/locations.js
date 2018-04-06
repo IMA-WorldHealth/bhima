@@ -38,7 +38,7 @@ describe('(/locations) Locations Interface', () => {
 
   it('GET /locations/villages should return a list of villages', () => {
     return agent.get('/locations/villages')
-      .then(function (res) {
+      .then((res) => {
         // check that we received the correct number of villages
         helpers.api.listed(res, numVillages);
       })
@@ -47,7 +47,7 @@ describe('(/locations) Locations Interface', () => {
 
   it('GET /locations/villages?sector={uuid} should return a filtered list of villages', () => {
     return agent.get(`/locations/villages?sector=${sectorUuid}`)
-      .then(function (res) {
+      .then((res) => {
         // check that we received the correct number of villages
         helpers.api.listed(res, numFilteredVillages);
       })
@@ -56,7 +56,7 @@ describe('(/locations) Locations Interface', () => {
 
   it('GET /locations/sectors should return a list of sectors', () => {
     return agent.get('/locations/sectors')
-      .then(function (res) {
+      .then((res) => {
         // check that we received the correct number of sectors
         helpers.api.listed(res, numSectors);
       })
@@ -65,66 +65,68 @@ describe('(/locations) Locations Interface', () => {
 
   it('GET /locations/sectors?province={uuid} should return a filtered list of sectors', () => {
     return agent.get(`/locations/sectors?province=${provinceUuid}`)
-      .then(function (res) {
+      .then((res) => {
         // check that we received the correct number of sectors
         helpers.api.listed(res, numFilteredSectors);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /locations/provinces should return a list of provinces', function () {
+  it('GET /locations/provinces should return a list of provinces', () => {
     return agent.get('/locations/provinces')
-      .then(function (res) {
+      .then((res) => {
       // check that we received the correct number of provinces
         helpers.api.listed(res, numProvinces);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /locations/provinces?country={uuid} should return a filtered list of provinces', function () {
+  it('GET /locations/provinces?country={uuid} should return a filtered list of provinces', () => {
     return agent.get(`/locations/provinces?country=${countryUuid}`)
-      .then(function (res) {
+      .then((res) => {
       // check that we received the correct number of provinces
         helpers.api.listed(res, numFilteredProvinces);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /locations/countries should return a list of countries', function () {
+  it('GET /locations/countries should return a list of countries', () => {
     return agent.get('/locations/countries')
-      .then(function (res) {
+      .then((res) => {
       // check that we received the correct number of countries
         helpers.api.listed(res, numCountries);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /locations/detail/:uuid should return a JSON description of the location', function () {
+  it('GET /locations/detail/:uuid should return a JSON description of the location', () => {
     return agent.get('/locations/detail/'.concat(detailUuid))
-      .then(function (res) {
+      .then((res) => {
       // make sure we successfully found the location
         expect(res).to.have.status(200);
-        expect(res).to.be.json;
+        expect(res).to.be.an('object');
 
         expect(res.body).to.have.keys([
           'villageUuid', 'village', 'sector', 'sectorUuid',
           'province', 'provinceUuid', 'country', 'countryUuid',
+          'longitude', 'latitude',
         ]);
       })
       .catch(helpers.handler);
   });
 
 
-  it('GET /locations/detail/ Return a Global list of all locations with all information (Country, Province, District and Village) ', function () {
+  it('GET /locations/detail/ Return a Global list of all locations with all information (Country, Province, District and Village) ', () => {
     return agent.get('/locations/detail/')
-      .then(function (res) {
+      .then((res) => {
         expect(res).to.have.status(200);
-        expect(res).to.be.json;
+        expect(res).to.be.an('object');
         expect(res.body).to.have.length(numVillages);
 
         expect(res.body[0]).to.have.keys([
           'villageUuid', 'village', 'sector', 'sectorUuid',
           'province', 'provinceUuid', 'country', 'countryUuid',
+          'longitude', 'latitude',
         ]);
       })
       .catch(helpers.handler);

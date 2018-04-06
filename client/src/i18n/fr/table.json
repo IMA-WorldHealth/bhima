@@ -96,6 +96,8 @@
             "LISTS": "Liste des prix enregistrés",
             "LOADING": "Récupération des données à partir du serveur.",
             "LOCKED": "Bloquée",
+            "LONGITUDE": "Longitude",
+            "LATITUDE": "Latitude",
             "LOT": "Lot",
             "PAYMENT_INVOICE": "paiement pour cette facture",
             "NAME": "Nom",

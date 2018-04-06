@@ -3,11 +3,11 @@ angular.module('bhima.controllers')
 .controller('VillageController', VillageController);
 
 VillageController.$inject = [
-  'LocationService', 'util'
+  'LocationService', 'util', 'NotifyService',
 ];
 
-function VillageController(locationService, util) {
-  var vm = this;
+function VillageController(locationService, util, Notify) {
+  const vm = this;
   vm.session = {};
   vm.view = 'default';
   vm.state = {};
@@ -22,10 +22,6 @@ function VillageController(locationService, util) {
   vm.loadProvinces = loadProvinces;
   vm.loadSectors = loadSectors;
   vm.maxLength = util.maxTextLength;
-
-  function handler(error) {
-    console.error(error);
-  }
 
   // fired on startup
   function startup() {
@@ -48,7 +44,7 @@ function VillageController(locationService, util) {
   vm.messages = {
     country : locationService.messages.country,
     province : locationService.messages.province,
-    sector : locationService.messages.sector
+    sector : locationService.messages.sector,
   };
 
   /** load countries on startup */
@@ -112,14 +108,16 @@ function VillageController(locationService, util) {
     vm.village.sector_uuid = data.sectorUuid;
     vm.village.province_uuid = data.provinceUuid;
     vm.village.country_uuid = data.countryUuid;
+    vm.village.longitude = data.longitude;
+    vm.village.latitude = data.latitude;
     loadProvinces();
     loadSectors();
   }
 
-  
+
   // refresh the displayed Villages
   function refreshVillages() {
-    return locationService.locations().then(function (data) {
+    return locationService.locations().then((data) => {
       vm.locations = data;
       vm.session.loading = false;
     });
@@ -129,27 +127,26 @@ function VillageController(locationService, util) {
   function submit(form) {
     // stop submission if the form is invalid
     if (form.$invalid) {
-      vm.state.errored = true; 
-      return; 
+      vm.state.errored = true;
+      return;
     }
 
-    var promise;
-    var creation = (vm.view === 'create');
-    var village = angular.copy(vm.village);
-    
-    promise = (creation) ?
+    const creation = (vm.view === 'create');
+    const village = angular.copy(vm.village);
+
+    const promise = (creation) ?
       locationService.create.village(village) :
       locationService.update.village(village.uuid, village);
 
     promise
-      .then(function (response) {
+      .then(() => {
         return refreshVillages();
       })
-      .then(function () {
+      .then(() => {
         vm.view = creation ? 'create_success' : 'update_success';
-      })      
-      .catch(handler);
+      })
+      .catch(Notify.handleError);
   }
 
-  startup();  
+  startup();
 }
