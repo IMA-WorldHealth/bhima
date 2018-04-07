@@ -9,7 +9,7 @@ const NotFound = require('../../lib/errors/NotFound');
 
 // GET /Offday
 function lookupOffday(id) {
-  const sql = `
+  const sql =`
     SELECT o.id, o.label, o.date, o.percent_pay
     FROM offday AS o
     WHERE o.id = ?`;
