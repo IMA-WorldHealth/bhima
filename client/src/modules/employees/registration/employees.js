@@ -5,16 +5,14 @@ angular.module('bhima.controllers')
 EmployeeController.$inject = [
   'EmployeeService', 'ServiceService', 'GradeService', 'FunctionService',
   'CreditorGroupService', 'util', 'NotifyService','$state',
-  'bhConstants', 'ReceiptModal', 'SessionService',
+  'bhConstants', 'ReceiptModal', 'SessionService', 'RubricService',
 ];
 
-function EmployeeController(Employees, Services, Grades, Functions, CreditorGroups, util, Notify, $state, bhConstants, Receipts, Session) {
+function EmployeeController(Employees, Services, Grades, Functions, CreditorGroups, util, Notify, $state, bhConstants, Receipts, Session, Rubrics) {
   var vm = this;
-  var referenceId = $state.params.id;
-
+  var referenceId = $state.params.uuid;
   vm.enterprise = Session.enterprise;
   vm.isUpdating = $state.params.id ? true : false;
-
   vm.origin = '';
 
   if (referenceId) {
@@ -23,6 +21,14 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
       formatEmployeeAttributes(employee);
       vm.origin = employee.hospital_no;
       vm.employee = employee;
+      vm.employee.payroll = {};
+
+      return Employees.advantage(referenceId);
+    })
+    .then(function (advantages) {
+      advantages.forEach(function (advantage){
+        vm.employee.payroll[advantage.rubric_payroll_id] = advantage.value;
+      });
     })
     .catch(function (error) {
 
@@ -31,6 +37,12 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
       vm.unknownId = true;
     });    
   }
+
+  Rubrics.read(null, {is_defined_employee : 1 })
+  .then(function (rubrics) {
+    vm.rubrics = rubrics;
+  })
+  .catch(Notify.handleError);
 
   function formatEmployeeAttributes(employee) {
 
@@ -89,8 +101,6 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
 
     angular.merge(vm.datepickerOptions, currentOptions);
   }  
-
-
 
   // Loading Grades
   Grades.read(null, { detailed : 1 }).then(function (data) {

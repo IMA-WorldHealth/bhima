@@ -21,7 +21,8 @@ function EmployeeService(Filters, $uibModal, Api, AppCache, Languages, $httpPara
   service.employeeFilters = employeeFilters;
   service.loadCachedFilters = loadCachedFilters;
   service.cacheFilters = cacheFilters;
-  service.download = download;  
+  service.download = download;
+  service.advantage = advantage;
 
   employeeFilters.registerDefaultFilters([{ key : 'limit', label : 'FORM.LABELS.LIMIT' }]);
 
@@ -55,6 +56,11 @@ function EmployeeService(Filters, $uibModal, Api, AppCache, Languages, $httpPara
     if (assignedKeys.indexOf('limit') === -1) {
       employeeFilters.assignFilter('limit', 100);
     }
+  }
+
+  function advantage(uuid) {
+    var url = ''.concat(uuid, '/advantage');
+    return Api.read.call(service, url);
   }
 
   function removeFilter(key) {

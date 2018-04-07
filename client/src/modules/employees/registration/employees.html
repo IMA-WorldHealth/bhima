@@ -304,9 +304,8 @@
                     </div>
                   </div>
                   <!-- Employee number of spouse-->
-                  <div class="form-group"
+                  <!-- <div class="form-group"
                     ng-class="{'has-error' : OptionalForm.nb_spouse.$invalid && EmployeeRegistrationForm.$submitted}">
-
                     <label class="col-md-3 control-label" translate>FORM.LABELS.NB_SPOUSE</label>
                     <div class="col-md-9">
                       <input
@@ -319,7 +318,7 @@
                       <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
                      </div>
                     </div>
-                  </div>
+                  </div> -->
 
                   <!-- Employee number of child-->
                   <div class="form-group"
@@ -459,21 +458,38 @@
                   <!-- Employee daily salary -->
                   <div
                     class="form-group"
-                    ng-class="{'has-error' : DetailForm.daily_salary.$invalid && EmployeeRegistrationForm.$submitted}">
+                    ng-class="{'has-error' : DetailForm.individual_salary.$invalid && EmployeeRegistrationForm.$submitted}">
 
-                    <label class="col-md-3 control-label" translate>FORM.LABELS.DAILY_SALARY</label>
+                    <label class="col-md-3 control-label" translate>FORM.LABELS.INDIVIDUAL_SALARY</label>
                     <div class="col-md-9">
                       <div class="input-group">
                         <span class="input-group-addon text-uppercase">{{ EmployeeCtrl.enterprise.currencySymbol || '...' }}</span>
                         <input
                           type="number"
                           class="form-control"
-                          name="daily_salary"
-                          ng-model="EmployeeCtrl.employee.daily_salary"
+                          name="individual_salary"
+                          ng-model="EmployeeCtrl.employee.individual_salary"
                           autocomplete="off">
                       </div>
-                      <div class="help-block" ng-messages="DetailForm.daily_salary.$error" ng-show="EmployeeRegistrationForm.$submitted">
+                      <div class="help-block" ng-messages="DetailForm.individual_salary.$error" ng-show="EmployeeRegistrationForm.$submitted">
                         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div ng-repeat="rubric in EmployeeCtrl.rubrics">
+                    <div class="form-group">
+                      <label class="col-md-3 control-label" translate>{{ rubric.label}}</label>
+                      <div class="col-md-9">
+                        <div class="input-group">
+                          <span class="input-group-addon text-uppercase">{{ EmployeeCtrl.enterprise.currencySymbol || '...' }}</span>
+                          <input
+                            type="number"
+                            class="form-control"
+                            name="individual_salary"
+                            ng-model="EmployeeCtrl.employee.payroll[rubric.id]"
+                            autocomplete="off">
+                        </div>
                       </div>
                     </div>
                   </div>

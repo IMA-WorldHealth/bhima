@@ -7,7 +7,7 @@ angular.module('bhima.routes')
         templateUrl : 'modules/employees/registration/employees.html',
       })
       .state('employeeEdit', {
-        url         : '/employees/:id/edit',
+        url         : '/employees/:uuid/edit',
         controller  : 'EmployeeController as EmployeeCtrl',
         templateUrl : 'modules/employees/registration/employees.html',
       })
