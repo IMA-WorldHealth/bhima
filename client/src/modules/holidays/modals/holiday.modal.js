@@ -35,7 +35,7 @@ function HolidayModalController($state, Holidays, ModalService, Notify, AppCache
 
   // custom filter employee_id
   vm.onSelectEmployee = function onSelectEmployee(employee) {
-    vm.holiday.employee_id = employee.id;
+    vm.holiday.employee_uuid = employee.uuid;
   };
 
   // submit the data to the server from all two forms (update, create)
