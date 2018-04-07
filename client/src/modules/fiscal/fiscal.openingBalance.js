@@ -220,7 +220,6 @@ function FiscalOpeningBalanceController($state, Fiscal, Notify, uiGridConstants,
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
   }
 
-
   /**
    * @function hasBalancedAccount
    *

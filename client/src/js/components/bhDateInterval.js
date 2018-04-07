@@ -22,6 +22,7 @@ angular.module('bhima.components')
       dateId : '@?', // date identifier
       required : '<?', // true or false
       onChange : '<?', // on change action
+      canClear : '<?', // flag for displaying clear button
       label : '@?',
       mode : '@?', // the date mode (day|month|year)
     },
@@ -38,8 +39,10 @@ function bhDateInterval(moment, bhConstants) {
   vm.search = search;
   vm.clear = clear;
 
-
   vm.$onInit = function $onInit() {
+    // specify if clear button can be displayed
+    vm.canClear = (vm.canClear || true);
+
     vm.options = [
       { translateKey : 'FORM.LABELS.TODAY', fn : day, range : 'day' },
       { translateKey : 'FORM.LABELS.THIS_WEEK', fn : week, range : 'week' },

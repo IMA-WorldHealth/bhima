@@ -18,6 +18,7 @@ const Transaction = require('../../lib/db/transaction');
 const NotFound = require('../../lib/errors/NotFound');
 const FilterParser = require('../../lib/filter');
 
+const Tree = require('../../lib/Tree');
 const debug = require('debug')('FiscalYear');
 
 // Account Service
@@ -255,7 +256,16 @@ function getBalance(req, res, next) {
 
   lookupBalance(id, period)
     .then((rows) => {
-      res.status(200).json(rows);
+      const tree = new Tree(rows);
+      let result = [];
+      try {
+        tree.walk(Tree.common.sumOnProperty('debit'), false);
+        tree.walk(Tree.common.sumOnProperty('credit'), false);
+        result = tree.toArray();
+      } catch (error) {
+        result = [];
+      }
+      res.status(200).json(result);
     })
     .catch(next)
     .done();

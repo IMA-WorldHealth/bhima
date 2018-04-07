@@ -13,8 +13,8 @@
     <p translate>FORM.DIALOGS.CANNOT_UNDONE_ACTION</p>
 
     <br>
-
     <div class="form-group"
+      ng-if = "!$ctrl.noText"
       ng-class="{ 'has-error' : $ctrl.hasErrorMessage, 'has-warning' : $ctrl.hasWarningMessage }">
       <label class="control-label">{{ 'FORM.DIALOGS.PLEASE_TYPE_TEXT' | translate: $ctrl.patternValue }} </label>
       <input class="form-control" ng-model="$ctrl.text" ng-change="$ctrl.validate(ConfirmDeletion)" type="text" name="text" required>

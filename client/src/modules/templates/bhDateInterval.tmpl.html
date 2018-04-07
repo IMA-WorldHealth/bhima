@@ -16,7 +16,8 @@
         <span translate>{{ ::view.translateKey }}</span>
       </a>
     </li>
-    <li class="pull-right">
+
+    <li class="pull-right" ng-if = "$ctrl.canClear">
       <a href ng-click="$ctrl.clear()" tabindex="-1">
         <i class="fa fa-eraser"></i> <span translate>FORM.BUTTONS.CLEAR</span>
       </a>

@@ -16,7 +16,8 @@ function ConfirmDialogModalController(Instance, $translate, Data) {
   vm.accept = accept;
   vm.dismiss = Instance.dismiss;
   vm.close = Instance.close;
-
+  // confirm modal without input field flag
+  vm.noText = Data.noText || false;
   // initial setup
   startup();
 
@@ -38,22 +39,23 @@ function ConfirmDialogModalController(Instance, $translate, Data) {
     vm.patternValue = { value : $translate.instant(Data.patternName) };
   }
 
-  /** matching */
+  // matching
   function isMatching(text, pattern) {
     return pattern && text === pattern;
   }
 
+
   /** validation message */
   function validate(form) {
-    vm.hasErrorMessage = form.text.$invalid && form.$submitted;
-    vm.hasWarningMessage = form.text.$valid && form.$submitted && vm.noCorrespondancy;
+    vm.hasErrorMessage = form.$submitted;
+    vm.hasWarningMessage = form.$submitted && vm.noCorrespondancy;
   }
 
   /** accept the action */
   function accept(form) {
     validate(form);
 
-    const result = isMatching(vm.pattern, vm.text);
+    const result = vm.noText ? true : isMatching(vm.pattern, vm.text);
 
     if (!form.$invalid && result) {
       Instance.close(result);

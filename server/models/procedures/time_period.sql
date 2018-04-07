@@ -75,10 +75,10 @@ BEGIN
     fyPreviousFYId, fyLocked, fyCreatedAt, fyUpdatedAt, fyUserId, fyNote
   FROM fiscal_year WHERE id = fiscalYearId;
 
-  -- insert N+2 period
-  WHILE periodNumber <= fyNumberOfMonths + 1 DO
+  -- insert N+1 period
+  WHILE periodNumber <= fyNumberOfMonths DO
 
-    IF periodNumber = 0 OR periodNumber = fyNumberOfMonths + 1 THEN
+    IF periodNumber = 0 THEN
       -- Extremum periods 0 and N+1
       -- Insert periods with null dates - period id is YYYY00
       INSERT INTO period (`id`, `fiscal_year_id`, `number`, `start_date`, `end_date`, `locked`)

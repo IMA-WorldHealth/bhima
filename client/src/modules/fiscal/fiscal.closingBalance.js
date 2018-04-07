@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('FiscalClosingBalanceController', FiscalClosingBalanceController);
 
 FiscalClosingBalanceController.$inject = [
-  '$state', 'AccountService', 'FiscalService', 'NotifyService',
+  '$state', 'AccountService', 'FiscalService', 'NotifyService', 'SessionService',
   'uiGridConstants', 'bhConstants',
 ];
 
@@ -12,14 +12,18 @@ FiscalClosingBalanceController.$inject = [
  * @description
  * This controller is responsible for handling the closing balance of a fiscal year.
  */
-function FiscalClosingBalanceController($state, Accounts, Fiscal, Notify, uiGridConstants, bhConstants) {
+function FiscalClosingBalanceController(
+  $state, Accounts, Fiscal, Notify, Session, uiGridConstants
+  , bhConstants
+) {
+
   const vm = this;
   const fiscalYearId = $state.params.id;
+  vm.currency_id = Session.enterprise.currency_id;
 
   // expose to the view
   vm.showAccountFilter = false;
   vm.toggleAccountFilter = toggleAccountFilter;
-
   // grid options
   vm.indentTitleSpace = 20;
   vm.gridApi = {};
@@ -40,7 +44,7 @@ function FiscalClosingBalanceController($state, Accounts, Fiscal, Notify, uiGrid
     displayName : 'FORM.LABELS.DEBIT',
     headerCellClass : 'text-center',
     headerCellFilter : 'translate',
-    cellTemplate : '/modules/fiscal/templates/balance.debit.tmpl.html',
+    cellTemplate : '/modules/fiscal/templates/debit.tmpl.html',
     width : 200,
     enableFiltering : false,
   }, {
@@ -48,7 +52,7 @@ function FiscalClosingBalanceController($state, Accounts, Fiscal, Notify, uiGrid
     displayName : 'FORM.LABELS.CREDIT',
     headerCellClass : 'text-center',
     headerCellFilter : 'translate',
-    cellTemplate : '/modules/fiscal/templates/balance.credit.tmpl.html',
+    cellTemplate : '/modules/fiscal/templates/credit.tmpl.html',
     width : 200,
     enableFiltering : false,
   }];
@@ -58,6 +62,7 @@ function FiscalClosingBalanceController($state, Accounts, Fiscal, Notify, uiGrid
     fastWatch : true,
     flatEntityAccess : true,
     enableSorting : false,
+    showColumnFooter : true,
     enableColumnMenus : false,
     enableFiltering : vm.showAccountFilter,
     columnDefs : columns,

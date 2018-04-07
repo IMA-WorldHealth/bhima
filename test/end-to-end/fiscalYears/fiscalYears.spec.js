@@ -133,7 +133,7 @@ describe('Fiscal Year', () => {
 
     // inner variables
     const resultAccount = '13110001'; // 13110001 -Résusltat de l\'exercise
-    const fiscalYearPattern = 'Test Fiscal Year 2015';
+    // const fiscalYearPattern = 'Test Fiscal Year 2015';
 
     // set the result account
     components.accountSelect.set(resultAccount);
@@ -145,7 +145,7 @@ describe('Fiscal Year', () => {
     submitButton.click();
 
     // set the pattern to confirm
-    element(by.model('$ctrl.text')).clear().sendKeys(fiscalYearPattern);
+    // element(by.model('$ctrl.text')).clear().sendKeys(fiscalYearPattern);
 
     // submit to confirm the action
     submitButton.click();
