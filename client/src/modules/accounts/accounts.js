@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 AccountsController.$inject = [
   '$rootScope', '$timeout', 'AccountGridService', 'NotifyService', 'bhConstants',
-  'LanguageService', 'uiGridConstants',
+  'LanguageService', 'uiGridConstants', '$translate',
 ];
 
 /**
@@ -15,7 +15,7 @@ AccountsController.$inject = [
  * This controller is responsible for configuring the Accounts Management UI grid
  * and connecting it with the Accounts data model.
  */
-function AccountsController($rootScope, $timeout, AccountGrid, Notify, Constants, Language, uiGridConstants) {
+function AccountsController($rootScope, $timeout, AccountGrid, Notify, Constants, Language, uiGridConstants, $translate) {
   var vm = this;
   var columns = gridColumns();
 
@@ -68,6 +68,11 @@ function AccountsController($rootScope, $timeout, AccountGrid, Notify, Constants
         field : 'label',
         displayName : 'FORM.LABELS.ACCOUNT',
         cellTemplate : '/modules/accounts/templates/grid.indentCell.tmpl.html',
+        headerCellFilter : 'translate',
+      },
+      {
+        field : 'translation_key',
+        displayName : 'FORM.LABELS.ACCOUNT_TYPE',
         headerCellFilter : 'translate',
       },
       {
@@ -140,6 +145,10 @@ function AccountsController($rootScope, $timeout, AccountGrid, Notify, Constants
   }
 
   function bindGridData() {
+    vm.Accounts.data.forEach(account => {
+      account.translation_key = $translate.instant(account.translation_key);
+    });
+
     vm.gridOptions.data = vm.Accounts.data;
   }
 
