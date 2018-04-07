@@ -12,15 +12,15 @@
  * @requires db
  * @requires uuid
  * @requires NotFound
- * @requires topic
+ * @requires @ima-worldhealth/topic
  * @requires filter
  */
 
 
 const uuid = require('uuid/v4');
+const topic = require('@ima-worldhealth/topic');
 
 const db = require('./../../../lib/db');
-const topic = require('../../../lib/topic');
 const NotFound = require('./../../../lib/errors/NotFound');
 const FilterParser = require('./../../../lib/filter');
 
@@ -56,10 +56,10 @@ exports.listHolidays = function listHolidays(req, res, next) {
   const sql =
     `SELECT holiday.id, holiday.label, holiday.dateFrom, holiday.percentage, holiday.dateTo
      FROM holiday WHERE
-       ((holiday.dateFrom >= ? AND holiday.dateFrom <= ?)
-       (holiday.dateTo >= ? AND holiday.dateTo <= ?) OR
-       (holiday.dateFrom <= ? AND holiday.dateTo >= ?)) AND
-       holiday.employee_uuid = ?;`;
+      ((holiday.dateFrom >= ? AND holiday.dateFrom <= ?)
+      (holiday.dateTo >= ? AND holiday.dateTo <= ?) OR
+      (holiday.dateFrom <= ? AND holiday.dateTo >= ?)) AND
+      holiday.employee_uuid = ?;`;
 
   const data = [
     pp.dateFrom, pp.dateTo,
@@ -129,8 +129,8 @@ exports.checkOffday = function checkHoliday(req, res, next) {
 function lookupEmployee(uuid) {
   const sql =
     `
-    SELECT 
-      BUID(employee.uuid) AS uuid, employee.code, patient.display_name, patient.sex, 
+    SELECT
+      BUID(employee.uuid) AS uuid, employee.code, patient.display_name, patient.sex,
       patient.dob, employee.date_embauche, employee.service_id,
       employee.nb_spouse, employee.nb_enfant, BUID(employee.grade_uuid) as grade_uuid,
       employee.locked, employee.is_medical, grade.text, grade.basic_salary,
@@ -148,7 +148,7 @@ function lookupEmployee(uuid) {
       JOIN debtor ON patient.debtor_uuid = debtor.uuid
       JOIN creditor ON employee.creditor_uuid = creditor.uuid
       JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid
-      LEFT JOIN service ON service.id = employee.service_id 
+      LEFT JOIN service ON service.id = employee.service_id
     WHERE employee.uuid = ?;
   `;
 
@@ -243,13 +243,12 @@ function update(req, res, next) {
     sex : employee.sex,
     phone : employee.phone,
     email : employee.email,
-    address_1 : employee.adresse
+    address_1 : employee.adresse,
   };
 
-  const clean = {          
+  const clean = {
     date_embauche : employee.date_embauche,
     service_id : employee.service_id,
-    nb_spouse : employee.nb_spouse,
     nb_enfant : employee.nb_enfant,
     grade_uuid : employee.grade_uuid,
     locked : employee.locked,
@@ -283,6 +282,7 @@ function update(req, res, next) {
 
   transaction.execute()
     .then(results => {
+
       if (!results[3].affectedRows) {
         throw new NotFound(`Could not find an employee with Uuid ${req.params.uuid}.`);
       }
