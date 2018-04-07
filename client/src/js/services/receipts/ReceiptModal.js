@@ -264,8 +264,29 @@ function ReceiptModal(Modal, Receipts) {
     /* noop */
   }
 
-  function payroll(uuid, notifyCreated) {
-    /* noop */
+  function payroll(idPeriod, employees, notifyCreated) {
+    var options = {
+      title         : 'TREE.PAYROLL',
+      renderer      : Receipts.renderers.PDF,
+      notifyCreated : notifyCreated
+    };
+
+    var request = {
+      idPeriod : idPeriod,
+      employees : employees,
+    };
+
+    var payrollRequest = Receipts.payroll(request, { renderer: options.renderer });
+    var reportProvider = {
+      resolve : {
+        receipt : function receiptProvider() { return { promise: payrollRequest }; },
+        options : function optionsProvider() { return options; },
+      }
+    };
+
+    var configuration = angular.extend(modalConfiguration, reportProvider);
+    var instance = Modal.open(configuration);
+    return instance.result;
   }
 
   // ================================ stock =====================================
