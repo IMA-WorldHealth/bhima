@@ -3,7 +3,7 @@ angular.module('bhima.components')
     templateUrl : '/modules/templates/bhRenderOption.tmpl.html',
     controller : RenderOptionController,
     bindings : {
-      orientation : '<', // two-way binding
+      orientation : '<', // one-way binding
       onChange : '&',
     },
   });
@@ -23,12 +23,9 @@ angular.module('bhima.components')
  */
 function RenderOptionController() {
   const ctrl = this;
-
   this.$onInit = function $onInit() {
     ctrl.orientation = ctrl.orientation || 'portrait';
     ctrl.onChange = ctrl.onChange || angular.noop();
     ctrl.setOrientation = () => ctrl.onChange({ orientation : ctrl.orientation });
   };
-
-   
 }
