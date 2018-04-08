@@ -232,6 +232,10 @@ function create(req, res, next) {
   const { voucher } = req.body;
   let items = req.body.voucher.items || [];
 
+  const voucherType = voucher.type_id;
+  const paiementRows = voucher.paiementRows;
+  let updatesPaiementData = [];  
+
   // a voucher without two items doesn't make any sense in double-entry
   // accounting.  Therefore, throw a bad data error if there are any fewer
   // than two items in the journal voucher.
@@ -245,6 +249,7 @@ function create(req, res, next) {
   // database
   delete voucher.items;
   delete voucher.reference;
+  delete voucher.paiementRows;
 
   // convert dates to a date objects
   voucher.date = voucher.date ? new Date(voucher.date) : new Date();
@@ -260,6 +265,26 @@ function create(req, res, next) {
   // preprocess the items so they have uuids as required
   items.forEach(value => {
     let item = value;
+    // Only for Employee Salary Paiement
+    if (voucherType === 7) {
+      paiementRows.forEach((paiement) => {      
+        if (paiement.entity && item.entity) {      
+          if (paiement.entity.uuid === item.entity.uuid) {
+            item.document_uuid = paiement.document_uuid;
+
+            let statusID = item.debit === paiement.debit ? 5 : 4;
+            let updatePaiement = `UPDATE paiement SET amount_paid = amount_paid + '${item.debit}', status_id = '${statusID}' WHERE uuid = ? `;
+            updatesPaiementData.push({
+              query : updatePaiement,
+              params : [db.bid(paiement.document_uuid)],
+            });
+
+          }
+        }
+      });
+    }
+
+
     // if the item doesn't have a uuid, create one for it.
     item.uuid = item.uuid || uuid();
 
@@ -287,6 +312,13 @@ function create(req, res, next) {
       [items]
     )
     .addQuery('CALL PostVoucher(?);', [voucher.uuid]);
+
+    // Only for Employee Salary Paiement
+    if (voucherType === 7) {
+      updatesPaiementData.forEach(updatePaiement => {
+        transaction.addQuery(updatePaiement.query, updatePaiement.params);
+      });
+    }
 
   transaction.execute()
     .then(() => res.status(201).json({ uuid : vuid }))
