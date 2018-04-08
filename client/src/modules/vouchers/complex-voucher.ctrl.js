@@ -87,6 +87,11 @@ function ComplexJournalVoucherController(
       .then(processVoucherToolRows);
   };
 
+  vm.openPaymentEmployees = function openPaymentEmployees() {
+    Toolkit.openPaymentEmployees()
+      .then(processVoucherToolRows);
+  };
+
   /**
    * @function processVoucherToolRows
    *
@@ -95,6 +100,7 @@ function ComplexJournalVoucherController(
   function processVoucherToolRows(result) {
     if (!result) { return; }
 
+    vm.paiementRows = result.rows;
     vm.Voucher.replaceFormRows(result.rows);
 
     // force updating details
@@ -261,6 +267,17 @@ function ComplexJournalVoucherController(
 
     const voucher = vm.Voucher.details;
     voucher.items = vm.Voucher.store.data;
+
+    /**
+    *FIXE ME
+    * With the use of Journal Vouchers for the payment of the salaries of the agents, it was question 
+    * of knowing the identifier of the payment to facilitate the update of the payment table finally to determine 
+    * if the payment is partial or total, and in case of partial payment it would be impossible to determine the indetifier of the payment, 
+    * reason for which we had used the property document_uuid to preserve the identifier of the table
+    */
+    if(voucher.type_id === 7) {
+      voucher.paiementRows = vm.paiementRows;
+    }
 
     return Vouchers.create(voucher)
       .then((result) => {

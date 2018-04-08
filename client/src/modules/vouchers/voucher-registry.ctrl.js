@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 VoucherController.$inject = [
   'VoucherService', 'NotifyService', 'uiGridConstants', 'ReceiptModal',
   'TransactionTypeService', 'bhConstants', 'GridSortingService',
-  'GridColumnService', 'GridStateService', '$state', 'ModalService', 'util',
+  'GridColumnService', 'GridStateService', '$state', 'ModalService', 'util'
 ];
 
 /**
@@ -35,6 +35,7 @@ function VoucherController(
   vm.clearGridState = clearGridState;
   vm.download = Vouchers.download;
   vm.deleteVoucher = deleteVoucherWithConfirmation;
+  vm.showReceipt = showReceipt;
 
   // date format function
   vm.format = util.formatDate;
@@ -141,6 +142,11 @@ function VoucherController(
       })
       .catch(errorHandler)
       .finally(toggleLoadingIndicator);
+  }
+
+  // showReceipt
+  function showReceipt(uuid) {
+    Receipts.voucher(uuid);
   }
 
   // remove a filter with from the filter object, save the filters and reload
