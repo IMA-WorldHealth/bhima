@@ -21,6 +21,7 @@ function PatientRegistrySearch() {
     dateBirthTo : '16/05/2016',
     dateBirthFrom2 : '30/01/1960',
     dateBirthTo2 : '16/05/2016',
+    originVillageName : 'Gombe',
   };
 
   const grid = element(by.id('patient-registry'));
@@ -99,6 +100,13 @@ function PatientRegistrySearch() {
     modal.setPeriod('allTime');
     FU.modal.submit();
 
+    expectNumberOfGridRows(NUM_MATCHING);
+  });
+
+  it(`should find patients with origin location "${parameters.originVillageName}" `, () => {
+    const NUM_MATCHING = 4;
+    FU.input('$ctrl.searchQueries.originLocationLabel', parameters.originVillageName);
+    FU.modal.submit();
     expectNumberOfGridRows(NUM_MATCHING);
   });
 

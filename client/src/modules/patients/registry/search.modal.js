@@ -23,7 +23,7 @@ function PatientRegistryModalController(ModalInstance, filters, Store, util, Per
   const searchQueryOptions = [
     'display_name', 'sex', 'hospital_no', 'reference', 'dateBirthFrom', 'dateBirthTo',
     'dateRegistrationFrom', 'dateRegistrationTo', 'debtor_group_uuid',
-    'patient_group_uuid', 'user_id', 'defaultPeriod',
+    'patient_group_uuid', 'user_id', 'defaultPeriod', 'originLocationLabel',
   ];
 
   vm.filters = filters;
@@ -41,7 +41,6 @@ function PatientRegistryModalController(ModalInstance, filters, Store, util, Per
 
   // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(filters, searchQueryOptions);
-
   // keep track of the initial search queries to make sure we properly restore
   // default display values
   const initialSearchQueries = angular.copy(vm.searchQueries);
