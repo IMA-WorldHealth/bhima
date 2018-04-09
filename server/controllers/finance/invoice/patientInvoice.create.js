@@ -1,15 +1,13 @@
 /**
  * Patient Invoice - Create State
+ *
  * @module controllers/finance/patientInvoice
  *
- * This module is responsible for preparing a series of MySQL commands
- * (a transaction) for creating patient invoices, the transaction will be executed by the API handler, error and results
- * will be propagated through to the client.
+ * This module is responsible for preparing a series of MySQL commands (a
+ * transaction) for creating patient invoices, the transaction will be executed
+ * by the API handler error and results will be propagated through to the
+ * client.
  *
- * @todo multiple inserts during the staging process could have performance
- * implications on smaller data sets (larger seems to be negligible), the
- * data that must be staged could be passed in through a string to be concatted
- * into a prepared statement
  */
 const db = require('../../../lib/db');
 const uuid = require('uuid/v4');
