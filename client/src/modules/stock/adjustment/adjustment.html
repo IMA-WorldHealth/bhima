@@ -71,7 +71,7 @@
               class="form-control"
               name="description"
               ng-model="StockCtrl.movement.description"
-              placeholder="{{ 'FORM.PLACEHOLDERS.DESCRIPTION' | translate }}"
+              translate-attr="{ placeholder : 'FORM.PLACEHOLDERS.DESCRIPTION' }"
               ng-maxlength="StockCtrl.maxLength"
               required>
             </textarea>
@@ -122,10 +122,10 @@
 
           <!-- "Add number of grid rows" input-group -->
           <bh-add-item
-            disable = "StockCtrl.adjustmentOption"
-            callback = "StockCtrl.addItems(numItem)">
+            disable="StockCtrl.adjustmentOption"
+            callback="StockCtrl.addItems(numItem)">
           </bh-add-item>
-        </div>          
+        </div>
       </div>
 
       <!-- grid -->

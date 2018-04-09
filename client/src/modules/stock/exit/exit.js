@@ -3,11 +3,10 @@ angular.module('bhima.controllers')
 
 // dependencies injections
 StockExitController.$inject = [
-  'DepotService', 'InventoryService', 'NotifyService',
-  'SessionService', 'util', 'bhConstants', 'ReceiptModal',
-  'StockFormService', 'StockService', 'StockModalService',
-  'uiGridGroupingConstants', '$translate', 'appcache', 'moment',
-  'GridExportService',
+  'DepotService', 'InventoryService', 'NotifyService', 'SessionService', 'util',
+  'bhConstants', 'ReceiptModal', 'StockFormService', 'StockService',
+  'StockModalService', 'uiGridConstants', '$translate', 'appcache',
+  'moment', 'GridExportService',
 ];
 
 /**
@@ -20,7 +19,7 @@ StockExitController.$inject = [
  */
 function StockExitController(
   Depots, Inventory, Notify, Session, util, bhConstants, ReceiptModal, StockForm, Stock,
-  StockModal, uiGridGroupingConstants, $translate, AppCache, moment, GridExportService
+  StockModal, uiGridConstants, $translate, AppCache, moment, GridExportService
 ) {
   const vm = this;
   const cache = new AppCache('StockExit');
@@ -31,7 +30,6 @@ function StockExitController(
   vm.reset = reset;
 
   // bind methods
-  vm.itemIncrement = 1;
   vm.maxLength = util.maxLength;
   vm.enterprise = Session.enterprise;
   vm.maxDate = new Date();
@@ -53,7 +51,7 @@ function StockExitController(
 
   const gridFooterTemplate = `
     <div style="margin-left: 10px;">
-      {{ grid.appScope.gridApi.core.getVisibleRows().length }} 
+      {{ grid.appScope.gridApi.core.getVisibleRows().length }}
       <span translate>STOCK.ROWS</span>
     </div>
   `;
@@ -97,7 +95,7 @@ function StockExitController(
         displayName : 'TABLE.COLUMNS.QUANTITY',
         headerCellFilter : 'translate',
         cellTemplate : 'modules/stock/exit/templates/quantity.tmpl.html',
-        treeAggregationType : uiGridGroupingConstants.aggregation.SUM,
+        aggregationType : uiGridConstants.aggregationTypes.sum,
       }, {
         field : 'unit_type',
         width : 75,

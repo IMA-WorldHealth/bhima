@@ -1,59 +1,75 @@
 angular.module('bhima.services')
-.service('StockEntryExitTypeService', StockEntryExitTypeService);
+  .service('StockEntryExitTypeService', StockEntryExitTypeService);
 
 StockEntryExitTypeService.$inject = [];
 
 function StockEntryExitTypeService() {
-  var service = this;
+  const service = this;
 
-  var entryExitTypeList = [
-    { label : 'patient',
+  const entryExitTypeList = [
+    {
+      label : 'patient',
       labelKey : 'PATIENT_REG.ENTITY',
       descriptionKey : 'STOCK.PATIENT_DISTRIBUTION',
       isEntry : false,
-      allowedKey : 'allow_exit_debtor' },
+      allowedKey : 'allow_exit_debtor',
+    },
 
-    { label : 'service',
+    {
+      label : 'service',
       labelKey : 'SERVICE.ENTITY',
       descriptionKey : 'STOCK.SERVICE_DISTRIBUTION',
       isEntry : false,
-      allowedKey : 'allow_exit_service' },
+      allowedKey : 'allow_exit_service',
+    },
 
-    { label : 'depot',
+    {
+      label : 'depot',
       labelKey : 'DEPOT.ENTITY',
       descriptionKey : 'STOCK.DEPOT_DISTRIBUTION',
       isEntry : false,
-      allowedKey : 'allow_exit_transfer' },
+      allowedKey : 'allow_exit_transfer',
+    },
 
-    { label : 'loss',
+    {
+      label : 'loss',
       labelKey : 'STOCK.EXIT_LOSS',
       descriptionKey : 'STOCK.LOSS_DISTRIBUTION',
       isEntry : false,
-      allowedKey : 'allow_exit_loss' },
+      allowedKey : 'allow_exit_loss',
+    },
 
-    { label : 'purchase',
+    {
+      label : 'purchase',
       labelKey : 'STOCK.ENTRY_PURCHASE',
       descriptionKey : 'STOCK_FLUX.FROM_PURCHASE',
       isEntry : true,
-      allowedKey : 'allow_entry_purchase' },
+      allowedKey : 'allow_entry_purchase',
+    },
 
-    { label : 'integration',
+    {
+      label : 'integration',
       labelKey : 'STOCK.INTEGRATION',
       descriptionKey : 'STOCK_FLUX.FROM_INTEGRATION',
       isEntry : true,
-      allowedKey : 'allow_entry_integration' },
+      allowedKey : 'allow_entry_integration',
+    },
 
-    { label : 'donation',
+    {
+      label : 'donation',
       labelKey : 'STOCK.DONATION',
       descriptionKey : 'STOCK_FLUX.FROM_DONATION',
       isEntry : true,
-      allowedKey : 'allow_entry_donation' },
+      allowedKey : 'allow_entry_donation',
+    },
 
-    { label : 'transfer_reception',
+    {
+      label : 'transfer_reception',
       labelKey : 'STOCK.RECEPTION_TRANSFER',
       descriptionKey : 'STOCK_FLUX.FROM_TRANSFER',
       isEntry : true,
-      allowedKey : 'allow_entry_transfer' },
+      allowedKey : 'allow_entry_transfer',
+    },
   ];
 
   service.getAllowedTypes = getAllowedTypes;
@@ -77,7 +93,7 @@ function StockEntryExitTypeService() {
   function getAllowedTypes(depot) {
     if (!depot || !depot.uuid) { return []; }
 
-    return entryExitTypeList.map(function (item) {
+    return entryExitTypeList.map((item) => {
       item.isAllowed = depot[item.allowedKey];
       return item;
     });
@@ -93,7 +109,7 @@ function StockEntryExitTypeService() {
    * @param {boolean} isEntry
    */
   function filterByEntry(isEntry) {
-    return entryExitTypeList.filter(function (item) {
+    return entryExitTypeList.filter((item) => {
       return item.isEntry === isEntry;
     });
   }
