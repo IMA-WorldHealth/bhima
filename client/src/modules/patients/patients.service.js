@@ -47,24 +47,8 @@ function PatientService(
   // document exposition definition
   service.Documents = Documents;
   service.Visits = Visits;
-  service.latest = latest;
   service.balance = balance;
   service.download = download;
-
-
-  /**
-   * @method latest
-   *
-   * @description
-   * This method returns the latest invoice that was billed to a patient.
-   *
-   * @param {String} uuid The patient's UUID
-   */
-  function latest(uuid) {
-    const path = 'patients/:uuid/invoices/latest';
-    return service.$http.get(path.replace(':uuid', uuid))
-      .then(service.util.unwrapHttpResponse);
-  }
 
   /**
    * @method balance
@@ -75,8 +59,8 @@ function PatientService(
    * @param {String} uuid The patient's UUID
    */
   function balance(uuid) {
-    const path = 'patients/:uuid/finance/balance';
-    return service.$http.get(path.replace(':uuid', uuid))
+    const path = `patients/${uuid}/finance/balance`;
+    return service.$http.get(path)
       .then(service.util.unwrapHttpResponse);
   }
 
@@ -91,8 +75,8 @@ function PatientService(
    */
   function create(medical, finance) {
     const formatPatientRequest = {
-      medical : medical,
-      finance : finance,
+      medical,
+      finance,
     };
 
     // Assign implicit information
@@ -211,10 +195,18 @@ function PatientService(
     { key : 'sex', label : 'FORM.LABELS.GENDER' },
     { key : 'hospital_no', label : 'FORM.LABELS.HOSPITAL_NO' },
     { key : 'reference', label : 'FORM.LABELS.REFERENCE' },
-    { key : 'dateBirthFrom', label : 'FORM.LABELS.DOB', comparitor: '>', valueFilter : 'date' },
-    { key : 'dateBirthTo', label : 'FORM.LABELS.DOB', comparitor: '<', valueFilter : 'date' },
-    { key : 'dateRegistrationFrom', label : 'FORM.LABELS.DATE_REGISTRATION', comparitor: '>', valueFilter : 'date' },
-    { key : 'dateRegistrationTo', label : 'FORM.LABELS.DATE_REGISTRATION', comparitor: '<', valueFilter : 'date' },
+    {
+      key : 'dateBirthFrom', label : 'FORM.LABELS.DOB', comparitor : '>', valueFilter : 'date',
+    },
+    {
+      key : 'dateBirthTo', label : 'FORM.LABELS.DOB', comparitor : '<', valueFilter : 'date',
+    },
+    {
+      key : 'dateRegistrationFrom', label : 'FORM.LABELS.DATE_REGISTRATION', comparitor : '>', valueFilter : 'date',
+    },
+    {
+      key : 'dateRegistrationTo', label : 'FORM.LABELS.DATE_REGISTRATION', comparitor : '<', valueFilter : 'date',
+    },
     { key : 'debtor_group_uuid', label : 'FORM.LABELS.DEBTOR_GROUP' },
     { key : 'debtor_uuid', label : 'FORM.LABELS.PATIENT' },
     { key : 'patient_group_uuid', label : 'PATIENT_GROUP.PATIENT_GROUP' },

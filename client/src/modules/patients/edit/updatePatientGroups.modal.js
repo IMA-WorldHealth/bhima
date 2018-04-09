@@ -3,23 +3,23 @@ angular.module('bhima.controllers')
 
 UpdatePatientGroups.$inject = [
   '$uibModalInstance', 'PatientService', 'sessionPatient', 'sessionGroups',
-  'updateModel', 'NotifyService'
+  'updateModel', 'NotifyService',
 ];
 
 function UpdatePatientGroups($uibModalInstance, patients, sessionPatient, sessionGroups, updateModel, Notify) {
-  var viewModel = this;
+  const viewModel = this;
 
   // TODO move to method
   viewModel.subscribedGroups = {};
   viewModel.patient = sessionPatient;
 
-  sessionGroups.forEach(function (patientGroup) {
+  sessionGroups.forEach((patientGroup) => {
     viewModel.subscribedGroups[patientGroup.uuid] = true;
   });
 
   // TODO Handle errors with generic modal exception display (inform system administrator)
   patients.groups()
-    .then(function (groups) {
+    .then((groups) => {
       viewModel.patientGroups = groups;
     })
     .catch(Notify.handleError);
@@ -33,13 +33,13 @@ function UpdatePatientGroups($uibModalInstance, patients, sessionPatient, sessio
     }
 
     return patients.updateGroups(sessionPatient.uuid, viewModel.subscribedGroups)
-      .then(function () {
+      .then(() => {
 
         // TODO move to method
-        var formatControllerResponse = [];
+        const formatControllerResponse = [];
 
         // Fetch each of the updated group definitions and collect them in an array
-        Object.keys(viewModel.subscribedGroups).forEach(function (groupKey) {
+        Object.keys(viewModel.subscribedGroups).forEach((groupKey) => {
           if (viewModel.subscribedGroups[groupKey]) {
             formatControllerResponse.push(fetchGroupObject(groupKey));
           }
@@ -52,9 +52,9 @@ function UpdatePatientGroups($uibModalInstance, patients, sessionPatient, sessio
 
   // TODO Refactor - use stores?
   function fetchGroupObject(uuid) {
-    var groups = viewModel.patientGroups;
-    var i = groups.length;
-    var groupObject;
+    const groups = viewModel.patientGroups;
+    let i = groups.length;
+    let groupObject;
 
     while (i--) {
       if (groups[i].uuid === uuid) {

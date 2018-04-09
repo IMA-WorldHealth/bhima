@@ -1,5 +1,5 @@
 angular.module('bhima.services')
-.service('PatientGroupService', PatientGroupService);
+  .service('PatientGroupService', PatientGroupService);
 
 PatientGroupService.$inject = ['$http', 'util'];
 
@@ -9,8 +9,8 @@ PatientGroupService.$inject = ['$http', 'util'];
 * A service wrapper for the /patient_groups HTTP endpoint.
 */
 function PatientGroupService($http, util) {
-  var service = this;
-  var baseUrl = '/patients/groups/';
+  const service = this;
+  const baseUrl = '/patients/groups/';
 
   service.read = read;
   service.create = create;
@@ -19,7 +19,7 @@ function PatientGroupService($http, util) {
 
   // return a list of patient group
   function read(uuid, options) {
-    var url = baseUrl.concat(uuid || '');
+    const url = baseUrl.concat(uuid || '');
     return $http.get(url, { params : options })
       .then(util.unwrapHttpResponse);
   }
