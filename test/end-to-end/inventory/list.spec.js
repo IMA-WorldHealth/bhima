@@ -6,12 +6,15 @@ const FU = require('../shared/FormUtils');
 const helpers = require('../shared/helpers');
 const components = require('../shared/components');
 
+const Filters = require('../shared/components/bhFilters');
+
+
 helpers.configure(chai);
 
 describe('Inventory List', () => {
   // navigate to the page
   before(() => helpers.navigate('#/inventory'));
-
+  const filters = new Filters();
   const currentDate = new Date();
   const uniqueIdentifier = currentDate.getTime().toString();
 
@@ -87,6 +90,7 @@ describe('Inventory List', () => {
     FU.modal.submit();
 
     GU.expectRowCount('inventoryListGrid', 2);
+    filters.resetFilters();
   });
 
 
@@ -99,6 +103,7 @@ describe('Inventory List', () => {
     FU.modal.submit();
 
     GU.expectRowCount('inventoryListGrid', 1);
+    filters.resetFilters();
   });
 
 
