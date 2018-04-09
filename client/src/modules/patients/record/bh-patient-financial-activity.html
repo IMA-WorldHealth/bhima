@@ -1,0 +1,170 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <span class="fa fa-clipboard"></span>
+    <span translate>FORM.LABELS.FINANCIAL_STATUS</span>
+    <span class="pull-right">
+      <bh-pdf-link
+        pdf-url="/reports/finance/financialPatient/{{ ::$ctrl.patientUuid }}"
+        button-text="FORM.BUTTONS.PRINT_FINANCIAL_ACT"
+        disable-cache="true">
+      </bh-pdf-link>
+    </span>
+  </div>
+  <div class="panel-body" style="position:relative;">
+
+    <bh-panel-overlay ng-if="$ctrl.loading">
+      <span><span class="fa fa-circle-o-notch fa-spin"></span>
+        <span translate>FORM.INFO.LOADING</span>
+      </span>
+    </bh-panel-overlay>
+
+    <bh-panel-overlay ng-if="$ctrl.noFinancialHistory">
+      <span translate>PATIENT_RECORDS.FINANCES.NO_ACTIVITY</span>
+    </bh-panel-overlay>
+
+    <div class="row">
+
+      <!-- patient's standing -->
+      <div class="col-sm-6 col-xs-12">
+        <!-- show good financial standing indicator -->
+        <h5 ng-show="$ctrl.status.isInGoodStanding" class="text-success" style="margin-top:0;">
+          <i class="fa fa-check-circle"></i> <span translate>PATIENT_RECORDS.FINANCES.IN_GOOD_STANDING</span>
+        </h5>
+
+        <h5 ng-show="!$ctrl.status.isInGoodStanding" class="text-danger">
+          <i class="fa fa-exclamation-circle"></i> <span translate>PATIENT_RECORDS.FINANCES.NOT_IN_GOOD_STANDING</span>
+        </h5>
+
+        <ul style="list-style:none;padding-left:0;" class="text-warning" style="margin-top:0;">
+          <li ng-show="$ctrl.status.hasCreditorBalance">
+            <i class="fa fa-warning"></i>
+            <span
+              translate
+              translate-values="$ctrl.i18nValues"
+              translate-sanitize-strategy="'sce'">
+              PATIENT_RECORDS.FINANCES.HAS_CREDITOR_BALANCE
+            </span>
+          </li>
+          <li ng-show="$ctrl.status.hasOldDebt">
+            <i class="fa fa-warning"></i>
+            <span
+              translate
+              translate-values="$ctrl.i18nValues"
+              translate-compile
+              translate-sanitize-strategy="'sce'">
+              PATIENT_RECORDS.FINANCES.HAS_OVERDUE_BALANCE
+            </span>
+          </li>
+          <li ng-show="$ctrl.status.hasExcessiveDebt">
+            <i class="fa fa-warning"></i>
+            <span
+              translate
+              translate-values="$ctrl.i18nValues"
+              translate-sanitize-strategy="'sce'">
+              PATIENT_RECORDS.FINANCES.HAS_EXCESS_BALANCE
+            </span>
+          </li>
+        </ul>
+
+        <dl class="dl-horizontal">
+          <dt translate>PATIENT_RECORDS.FINANCES.FIRST_TRANSACTION</dt>
+          <dd>
+            {{ $ctrl.data.aggregates.since | date:$ctrl.DATE_FORMAT }}
+            (<span am-time-ago="$ctrl.data.aggregates.since"></span> <i class="fa fa-clock-o"></i>)
+          </dd>
+
+          <dt translate>PATIENT_RECORDS.FINANCES.LAST_TRANSACTION</dt>
+          <dd>
+            {{ $ctrl.data.aggregates.until | date:$ctrl.DATE_FORMAT }}
+            (<span am-time-ago="$ctrl.data.aggregates.until"></span> <i class="fa fa-clock-o"></i>)
+          </dd>
+        </dl>
+      </div>
+
+      <!-- patient's records -->
+      <div class="col-sm-6 col-xs-12">
+        <table class="table table-responsive table-condensed">
+          <thead>
+            <tr>
+              <th></th>
+              <th translate>FORM.LABELS.ID</th>
+              <th>#</th>
+              <th translate>FORM.LABELS.AMOUNT</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>
+                <span translate>FORM.LABELS.INVOICES</span>
+                (<a href ui-sref="invoiceRegistry({
+                  filters : [
+                    { key : 'patientReference', value : $ctrl.data.patient.reference },
+                    { key : 'limit', value : $ctrl.groups.IV.count },
+                    { key : 'period', value : 'allTime' }
+                  ]
+                })">
+                  {{$ctrl.groups.IV.count}}
+                </a>)
+              </th>
+              <td>IV</td>
+              <td>{{$ctrl.groups.IV.count }}</td>
+              <td class="text-right">
+                <span ng-show="$ctrl.groups.IV.isCreditBalance" class="text-danger">({{$ctrl.groups.IV.totalAmount | currency:$ctrl.enterpriseCurrencyId}})</span>
+                <span ng-hide="$ctrl.groups.IV.isCreditBalance">{{$ctrl.groups.IV.totalAmount | currency:$ctrl.enterpriseCurrencyId}}</span>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <span translate>FORM.LABELS.CASH_PAYMENTS</span>
+                (<a href ui-sref="cashRegistry({
+                  filters : [
+                    { key : 'patientReference', value : $ctrl.data.patient.reference },
+                    { key : 'limit', value : $ctrl.groups.CP.count },
+                    { key : 'period', value : 'allTime' }
+                  ]
+                })">
+                  {{$ctrl.groups.CP.count}}
+                </a>)
+              </th>
+              <td>CP</td>
+              <td>{{$ctrl.groups.CP.count }}</td>
+              <td class="text-right">
+                <span ng-show="$ctrl.groups.CP.isCreditBalance" class="text-danger">({{$ctrl.groups.CP.totalAmount | currency:$ctrl.enterpriseCurrencyId}})</span>
+                <span ng-hide="$ctrl.groups.CP.isCreditBalance">{{$ctrl.groups.CP.totalAmount | currency:$ctrl.enterpriseCurrencyId}}</span>
+              </td>
+            </tr>
+            <tr>
+              <th>
+                <span translate>FORM.LABELS.VOUCHERS</span>
+                (<a href ui-sref="vouchers({
+                  filters : [
+                    { key : 'entity_uuid', value : $ctrl.data.patient.debtor_uuid, displayValue: $ctrl.data.patient.display_name },
+                    { key : 'limit', value : $ctrl.groups.VO.count },
+                    { key : 'period', value : 'allTime' }
+                  ]
+                })">
+                  {{$ctrl.groups.VO.count}}
+                </a>)
+              </th>
+              <td>VO</td>
+              <td>{{$ctrl.groups.VO.count }}</td>
+              <td class="text-right">
+                <span ng-show="$ctrl.groups.VO.isCreditBalance" class="text-danger">({{$ctrl.groups.VO.totalAmount | currency:$ctrl.enterpriseCurrencyId}})</span>
+                <span ng-hide="$ctrl.groups.VO.isCreditBalance">{{$ctrl.groups.VO.totalAmount | currency:$ctrl.enterpriseCurrencyId}}</span>
+              </td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <th translate>FORM.INFO.TRANSACTIONS</th>
+              <td></td>
+              <th>{{$ctrl.data.transactions.length}}</th>
+              <th class="text-right">
+                <span ng-show="$ctrl.status.hasCreditorBalance" class="text-danger">({{$ctrl.data.aggregates.balance | currency:$ctrl.enterpriseCurrencyId}})</span>
+                <span ng-hide="$ctrl.status.hasCreditorBalance">{{$ctrl.data.aggregates.balance | currency:$ctrl.enterpriseCurrencyId}}</span>
+              </th>
+            </tr>
+        </table>
+      </div>
+  </div>
+</div>

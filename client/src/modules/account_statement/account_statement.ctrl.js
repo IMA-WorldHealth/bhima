@@ -231,7 +231,7 @@ function AccountStatementController(
 
   // open search modal
   vm.openSearchModal = function openSearchModal() {
-    var filtersSnapshot = AccountStatement.filters.formatHTTP();
+    const filtersSnapshot = AccountStatement.filters.formatHTTP();
 
     Journal.openSearchModal(filtersSnapshot, {
       hasDefaultAccount : true,

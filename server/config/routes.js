@@ -429,8 +429,9 @@ exports.configure = function configure(app) {
   app.post('/patients/:uuid/visits/discharge', patients.visits.discharge);
 
   // misc patients financial routes
-  app.get('/patients/:uuid/invoices/latest', patients.latestInvoice);
+  app.get('/patients/:uuid/finance/activity', patients.getFinancialStatus);
   app.get('/patients/:uuid/finance/balance', financialPatient.balance);
+
 
   // Barcode API
   app.get('/barcode/:key', report.barcodeLookup);

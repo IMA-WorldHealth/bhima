@@ -7,8 +7,6 @@ GridExportService.$inject = [
 ];
 
 function GridExportService(Modal, util, bhConstants, uiGridExporterService, moment) {
-  const service = this;
-
   /**
    * @constructor
    */
@@ -17,29 +15,30 @@ function GridExportService(Modal, util, bhConstants, uiGridExporterService, mome
     this.rows = defaultRowKey;
     this.cols = defaultColKey;
 
-    // bind gridOptions to service
-    service.options = gridOptions;
+    // bind gridOptions to instance
+    this.options = gridOptions;
 
-    util.after(gridOptions, 'onRegisterApi', function onRegisterApi(api) {
+    util.after(gridOptions, 'onRegisterApi', api => {
       this.api = api;
-    }.bind(this));
+    });
   }
 
   /**
    * @method run
+   *
    * @description run the export tool
+   *
+   * NOTE(@jniles) - any function using "this" cannot be an arrow function.
    */
-  GridExport.prototype.run = () => {
-    const { api } = this;
-    const { options } = this;
-    const { rows } = this;
-    const { cols } = this;
+  GridExport.prototype.run = function run() {
+    const {
+      api,
+      options,
+      rows,
+      cols,
+    } = this;
 
-    var request = {
-      api, options, rows, cols,
-    };
-
-    var params = {
+    const params = {
       templateUrl  : 'modules/templates/modals/export.modal.html',
       controller   : 'ExportGridModalController',
       controllerAs : '$ctrl',
@@ -47,11 +46,16 @@ function GridExportService(Modal, util, bhConstants, uiGridExporterService, mome
       backdrop     : 'static',
       animation    : false,
       resolve      : {
-        data : function dataProvider() { return request; },
+        data : () => ({
+          api,
+          options,
+          rows,
+          cols,
+        }),
       },
     };
 
-    var instance = Modal.open(params);
+    const instance = Modal.open(params);
     return instance.result;
   };
 
@@ -66,15 +70,15 @@ function GridExportService(Modal, util, bhConstants, uiGridExporterService, mome
    * @param {function} columnsFormatterFn - [optional] callback fn to apply to columns
    */
   GridExport.prototype.exportToCsv = (filename, columnsFormatterFn, rowsFormatterFn) => {
-    var columns = service.options.columnDefs || [];
-    var rows = service.options.data || [];
+    let columns = this.options.columnDefs || [];
+    let rows = this.options.data || [];
 
     if (columnsFormatterFn) {
-      columns = columnsFormatterFn(service.options.columnDefs);
+      columns = columnsFormatterFn(this.options.columnDefs);
     }
 
     if (rowsFormatterFn) {
-      rows = rowsFormatterFn(service.options.data);
+      rows = rowsFormatterFn(this.options.data);
     }
 
     const prefix = filename || 'Export_';

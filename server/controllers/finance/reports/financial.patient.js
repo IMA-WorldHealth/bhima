@@ -8,25 +8,30 @@
  * @requires ReportManager
  */
 const _ = require('lodash');
-const q = require('q');
-const db = require('../../../lib/db');
 const ReportManager = require('../../../lib/ReportManager');
 
 const Patients = require('../../medical/patients');
+const Debtors = require('../../finance/debtors');
 
 const TEMPLATE = './server/controllers/finance/reports/financial.patient.handlebars';
+
+const PDF_OPTIONS = {
+  filename : 'FORM.LABELS.FINANCIAL_STATUS',
+};
 
 /**
  * @method build
  *
  * @description
- * This method builds the report of financial activites of a patient
+ * This method builds the report of financial activities of a patient.
  *
  * GET reports/finance/financePatient/{:uuid}
  */
 function build(req, res, next) {
   const options = req.query;
   let report;
+
+  _.defaults(options, PDF_OPTIONS);
 
   // set up the report with report manager
   try {
@@ -35,8 +40,17 @@ function build(req, res, next) {
     return next(e);
   }
 
-  return financialActivities(req.params.uuid)
-    .then(result => report.render(result))
+  const data = {};
+
+  return Patients.lookupPatient(req.params.uuid)
+    .then(patient => {
+      _.extend(data, { patient });
+      return Debtors.getFinancialActivity(patient.debtor_uuid);
+    })
+    .then(({ transactions, aggregates }) => {
+      _.extend(data, { transactions, aggregates });
+    })
+    .then(() => report.render(data))
     .then(result => {
       res.set(result.headers).send(result.report);
     })
@@ -44,70 +58,4 @@ function build(req, res, next) {
     .done();
 }
 
-/**
- * @method financialActivities
- * Return details of financial activities of a given patient
- */
-function financialActivities(patientUuid) {
-  const data = {};
-
-  const sql = `
-    SELECT trans_id, entity_uuid, description, record_uuid, trans_date, debit, credit, document,
-      balance,
-      (@cumsum := balance + @cumsum) AS cumsum
-    FROM (
-      SELECT p.trans_id, p.entity_uuid, p.description, p.record_uuid, p.trans_date,
-        SUM(p.debit_equiv) AS debit, SUM(p.credit_equiv) AS credit, dm.text AS document,
-        SUM(p.debit_equiv) - SUM(p.credit_equiv) AS balance
-      FROM posting_journal AS p
-        LEFT JOIN document_map AS dm ON dm.uuid = p.record_uuid
-      WHERE p.entity_uuid = ?
-      GROUP BY p.record_uuid
-
-      UNION ALL
-
-      SELECT g.trans_id, g.entity_uuid, g.description, g.record_uuid, g.trans_date,
-        SUM(g.debit_equiv) AS debit, SUM(g.credit_equiv) AS credit, dm.text AS document,
-        SUM(g.debit_equiv) - SUM(g.credit_equiv) AS balance
-      FROM general_ledger AS g
-        LEFT JOIN document_map AS dm ON dm.uuid = g.record_uuid
-      WHERE g.entity_uuid = ?
-      GROUP BY g.record_uuid
-    )c, (SELECT @cumsum := 0)z
-    ORDER BY trans_date ASC, trans_id;
-  `;
-
-  const aggregateQuery = `
-    SELECT IFNULL(SUM(ledger.debit_equiv), 0) AS debit, IFNULL(SUM(ledger.credit_equiv), 0) AS credit,
-      IFNULL(SUM(ledger.debit_equiv - ledger.credit_equiv), 0) AS balance
-    FROM (
-      SELECT debit_equiv, credit_equiv, entity_uuid FROM posting_journal WHERE entity_uuid = ?
-      UNION ALL
-      SELECT debit_equiv, credit_equiv, entity_uuid FROM general_ledger WHERE entity_uuid = ?
-    ) AS ledger
-    GROUP BY ledger.entity_uuid;
-  `;
-
-  return Patients.lookupPatient(patientUuid)
-    .then((patient) => {
-      _.extend(data, { patient });
-      const buid = db.bid(patient.debtor_uuid);
-      return q.all([
-        db.exec(sql, [buid, buid]),
-        db.exec(aggregateQuery, [buid, buid]),
-      ]);
-    })
-    .spread((transactions, aggs) => {
-      if (!aggs.length) {
-        aggs.push({ balance : 0 });
-      }
-
-      const [aggregates] = aggs;
-
-      _.extend(data, { transactions, aggregates });
-      return data;
-    });
-}
-
-exports.financialActivities = financialActivities;
 exports.report = build;
