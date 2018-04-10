@@ -91,10 +91,6 @@ function PatientInvoiceController(
     Patients.read(uuid)
       .then(patient => {
         vm.Invoice.setPatient(patient);
-        return Patients.balance(patient.uuid);
-      })
-      .then(balance => {
-        vm.patientBalance = balance;
       });
   }
 

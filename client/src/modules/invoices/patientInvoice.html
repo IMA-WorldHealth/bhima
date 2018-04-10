@@ -75,12 +75,16 @@
             </div><!-- End panel -->
           </div><!-- End (12) columns -->
         </div><!-- End row -->
+      </div>
 
-      <div ng-show="PatientInvoiceCtrl.patientBalance < 0" class="row">
+      <div class="row" ng-if="PatientInvoiceCtrl.Invoice.recipient.hasCreditorBalance">
         <div class="col-xs-12">
-          <div class="alert alert-warning">
-            <strong class="text-capitalize" translate>CASH.CAUTION_REMAINING</strong>:
-            {{PatientInvoiceCtrl.patientBalance * -1 | currency:PatientInvoiceCtrl.enterprise.currency_id}}
+          <div class="alert alert-success">
+            <i class="fa fa-feed"></i> <span translate translate-values="{
+              patientBalance : PatientInvoiceCtrl.Invoice.recipient.balance,
+              patientName : PatientInvoiceCtrl.Invoice.recipient.display_name,
+              enterpriseCurrencyId : PatientInvoiceCtrl.enterprise.currency_id,
+            }" translate-compile>PATIENT_INVOICE.ALERT_CREDITOR_BALANCE</span>
           </div>
         </div>
       </div>
