@@ -24,13 +24,14 @@ class ClientsReportPage {
   }
 
   // save an clients report
-  saveClientsReport(start_date, end_date, reportName, reportFormat) {
+  saveClientsReport(start_date, end_date, reportName, reportFormat, orientation) {
     this.showClientsReportPreview(start_date, end_date);
 
     // save report as PDF
     this.page.saveAs();
     FU.input('SaveCtrl.documentOptions.label', reportName);
     FU.select('SaveCtrl.documentOptions.renderer', reportFormat);
+    element(by.id(orientation)).click();
     FU.modal.submit();
 
     // successfully saved notification

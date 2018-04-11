@@ -15,7 +15,9 @@ describe('Clients Report', () => {
     clients : ['Church Employees'],
     report_name : 'Clients Report Saved by E2E',
     renderer : 'PDF',
+    orientation : 'landscape',
   };
+
 
   before(() => {
     helpers.navigate(`#!/reports/${key}`);
@@ -31,7 +33,7 @@ describe('Clients Report', () => {
   });
 
   it('save a previewed report', () => {
-    Page.saveClientsReport(dataset.start_date, dataset.end_date, dataset.report_name, dataset.renderer);
+    Page.saveClientsReport(dataset.start_date, dataset.end_date, dataset.report_name, dataset.renderer, dataset.orientation);
   });
 
   it('report has been saved into archive', () => {

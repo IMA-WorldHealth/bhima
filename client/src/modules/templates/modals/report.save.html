@@ -17,10 +17,17 @@
     </div>
   </div>
 
-  <div class="form-group">
-    <label class="control-label" translate>REPORT.UTIL.SAVE_AS</label>
-    <select class="form-control" ng-model="SaveCtrl.documentOptions.renderer" ng-options="type.key as (type.label | translate) for type in SaveCtrl.supportedRenderTypes">
-    </select>
+    <div class="form-group">
+      <label class="control-label" translate>REPORT.UTIL.SAVE_AS</label>
+      <select class="form-control" ng-model="SaveCtrl.documentOptions.renderer" ng-options="type.key as (type.label | translate) for type in SaveCtrl.supportedRenderTypes">
+      </select>
+    </div>
+    <!-- layout orientation -->
+    <bh-render-option
+      on-change="SaveCtrl.setDocumentorientation(orientation)"
+      orientation="SaveCtrl.documentOptions.orientation">
+    </bh-render-option>
+    
   </div>
 </div>
 
