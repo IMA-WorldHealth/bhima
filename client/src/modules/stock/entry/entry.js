@@ -28,7 +28,6 @@ function StockEntryController(
   vm.movement = {};
 
   // exposing some properties to the view
-  vm.itemIncrement = 1;
   vm.enterprise = Session.enterprise;
   vm.maxLength = util.maxLength;
   vm.maxDate = new Date();

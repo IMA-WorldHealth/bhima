@@ -235,7 +235,7 @@ function StockInventoriesController(
 
   // open a modal to let user filtering data
   function search() {
-    var filtersSnapshot = stockInventoryFilters.formatHTTP();
+    const filtersSnapshot = stockInventoryFilters.formatHTTP();
 
     Modal.openSearchInventories(filtersSnapshot)
       .then((changes) => {

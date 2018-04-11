@@ -9,12 +9,12 @@ SelectDepotModalController.$inject = [
  * This modal selects a depot from the list of all depots.
  */
 function SelectDepotModalController(Instance, Depots, Notify, depot) {
-  var vm = this;
+  const vm = this;
 
   // bind the depot passed into the controller
   vm.depot = depot;
   vm.selectDepot = selectDepot;
-  vm.hasSelectedDepot = hasSelectedDepot; 
+  vm.hasSelectedDepot = hasSelectedDepot;
   vm.isDepotRequired = Depots.isDepotRequired;
   vm.loading = false;
 
@@ -28,8 +28,8 @@ function SelectDepotModalController(Instance, Depots, Notify, depot) {
   function startup() {
     toggleLoadingIndicator();
     // download only the depots that the user has the management right
-    Depots.read(null, {only_user : true})
-      .then(function (depots) {
+    Depots.read(null, { only_user : true })
+      .then((depots) => {
         vm.depots = depots;
       })
       .catch(Notify.handleError)
@@ -38,7 +38,7 @@ function SelectDepotModalController(Instance, Depots, Notify, depot) {
 
   // fired when a user selects a depot from a list
   function selectDepot(uuid) {
-    vm.depot = vm.depots.filter(function (d) {
+    vm.depot = vm.depots.filter((d) => {
       return d.uuid === uuid;
     }).pop();
   }

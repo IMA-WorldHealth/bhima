@@ -2,8 +2,7 @@ angular.module('bhima.services')
   .service('StockFormService', StockFormService);
 
 StockFormService.$inject = [
-  'StockItemService', 'Store', 'AppCache', 'SessionService',
-  '$timeout',
+  'StockItemService', 'Store', 'AppCache', 'SessionService', '$timeout',
 ];
 
 /**
@@ -25,7 +24,7 @@ function StockFormService(StockItem, Store, AppCache, Session, $timeout) {
 
     this.cache = AppCache(cacheKey);
     this.details = {};
-    this.store = new Store({ data: [] });
+    this.store = new Store({ data : [] });
   }
 
   /**
@@ -37,8 +36,8 @@ function StockFormService(StockItem, Store, AppCache, Session, $timeout) {
    */
   StockForm.prototype.setup = function setup() {
     this.details = {
-      date: new Date(),
-      user_id: Session.user.id,
+      date : new Date(),
+      user_id : Session.user.id,
     };
   };
 
@@ -51,10 +50,11 @@ function StockFormService(StockItem, Store, AppCache, Session, $timeout) {
    * @param {Number} n - the number of items to add to the grid
    */
   StockForm.prototype.addItems = function addItems(n) {
-    var elt;
+    let elt;
+    let i = n;
 
     // will repeat will n > 0
-    while (n--) {
+    while (i--) {
       elt = new StockItem();
       elt.id = this.store.data.length;
       this.store.post(elt);
