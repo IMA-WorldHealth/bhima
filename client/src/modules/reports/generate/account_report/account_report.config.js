@@ -38,11 +38,9 @@ function AccountReportConfigController(
   };
 
   vm.requestSaveAs = function requestSaveAs() {
-    let options;
     parseDateInterval(vm.reportDetails);
 
-    // @FIXME
-    options = {
+    const options = {
       url : reportUrl,
       report : reportData,
       reportOptions : sanitiseDateStrings(vm.reportDetails),

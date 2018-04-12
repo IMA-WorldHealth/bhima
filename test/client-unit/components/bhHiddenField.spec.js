@@ -1,3 +1,4 @@
+/* eslint no-unused-expressions:off */
 /* global inject, expect */
 
 describe('bhHiddenField', bhHiddenFieldTests);

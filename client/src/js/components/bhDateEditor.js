@@ -1,6 +1,6 @@
 angular.module('bhima.components')
   .component('bhDateEditor', {
-    templateUrl : '/modules/templates/bhDateEditor.tmpl.html',
+    templateUrl : 'modules/templates/bhDateEditor.tmpl.html',
     controller : bhDateEditorController,
     bindings : {
       dateValue : '<', // one-way binding

@@ -129,10 +129,11 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Session, Modals, 
         return hasCaution ?
           Modals.confirm('CASH.CONFIRM_PAYMENT_WHEN_CAUTION') : true;
       })
-      .then((allowPaymentWithCaution) => {
+      .then(allowPaymentWithCaution => {
         if (allowPaymentWithCaution) {
           return submitPayment(form);
         }
+        return null;
       });
   }
 

@@ -248,21 +248,18 @@ function ComplexJournalVoucherController(
 
   /** submit data */
   function submit(form) {
-    let valid;
-    let voucher;
-
     // stop submission if the form is invalid
     if (form.$invalid) {
       return Notify.danger('VOUCHERS.COMPLEX.INVALID_VALUES');
     }
 
-    valid = vm.Voucher.validate();
+    const valid = vm.Voucher.validate();
 
     if (!valid) {
       return Notify.danger(vm.Voucher._error);
     }
 
-    voucher = vm.Voucher.details;
+    const voucher = vm.Voucher.details;
     voucher.items = vm.Voucher.store.data;
 
     return Vouchers.create(voucher)

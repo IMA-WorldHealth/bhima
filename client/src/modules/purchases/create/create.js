@@ -65,7 +65,8 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify, Session, util
 
   // adds n items to the purchase order grid
   function addItems(n) {
-    while (n--) { vm.order.addItem(); }
+    let i = n;
+    while (i--) { vm.order.addItem(); }
   }
 
   // expose the API so that scrolling methods can be used
@@ -81,7 +82,7 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify, Session, util
     // check the form for invalid inputs
     if (form.$invalid) {
       Notify.danger('FORM.ERRORS.RECORD_ERROR');
-      return;
+      return 0;
     }
 
     // check the grid for invalid items
@@ -94,7 +95,7 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify, Session, util
 
       // show the user where the error is in the grid by scrolling to it.
       vm.gridApi.core.scrollTo(firstInvalidItem);
-      return;
+      return 0;
     }
 
     // Set Waiting confirmation like default Purchase Order Status
@@ -141,7 +142,7 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify, Session, util
     vm.optimalPO = true;
 
     Stock.inventories.read(null, { require_po : 1 })
-      .then((rows) => {
+      .then(rows => {
         if (!rows.length) {
           return Notify.warn('FORM.INFO.NO_INVENTORY_PO');
         }
@@ -161,6 +162,7 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify, Session, util
           item._initialised = true;
         });
 
+        return 0;
       })
       .catch(Notify.handleError)
       .finally(() => {

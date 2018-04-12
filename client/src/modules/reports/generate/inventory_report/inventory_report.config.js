@@ -41,16 +41,13 @@ function InventoryReportConfigController(
   };
 
   vm.preview = function preview(form) {
-    let options;
-    let params;
-
     if (form.$invalid) { return 0; }
 
     if (!vm.chooseOneDepot) { vm.depot = {}; }
 
     if (!vm.chooseOneInventory) { vm.inventory = {}; }
 
-    params = {
+    const params = {
       depot_uuid : vm.depot.uuid,
       inventory_uuid : vm.inventory.uuid,
       inventory_delay : vm.delay,
@@ -64,7 +61,7 @@ function InventoryReportConfigController(
     // format date for the server
     params.dateTo = moment(params.dateTo).format('YYYY-MM-DD');
 
-    options = {
+    const options = {
       params,
       lang : Languages.key,
     };
