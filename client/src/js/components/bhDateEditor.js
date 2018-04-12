@@ -1,19 +1,20 @@
 angular.module('bhima.components')
-.component('bhDateEditor', {
-  templateUrl : '/modules/templates/bhDateEditor.tmpl.html',
-  controller  : dateEditorController,
-  bindings    : {
-    dateValue         : '=', // two-way binding
-    minDate           : '<', // one-way binding
-    maxDate           : '<', // one-way binding
-    validationTrigger : '<', // one-way binding
-    disabled          : '<', // one-way binding
-    dateFormat        : '@', // bind text
-    label             : '@', // bind text
-  },
-});
+  .component('bhDateEditor', {
+    templateUrl : '/modules/templates/bhDateEditor.tmpl.html',
+    controller : bhDateEditorController,
+    bindings : {
+      dateValue : '<', // one-way binding
+      onChange : '&',
+      minDate : '<?',
+      maxDate : '<?',
+      validationTrigger : '<?',
+      disabled : '<?',
+      dateFormat : '@?',
+      label : '@?',
+    },
+  });
 
-dateEditorController.$inject = ['bhConstants'];
+bhDateEditorController.$inject = ['bhConstants'];
 
 /**
  * bhDateEditor Component
@@ -25,6 +26,7 @@ dateEditorController.$inject = ['bhConstants'];
  * @example
  * <bh-date-editor
  *  date-value="Ctrl.date"
+ *  on-change="Ctrl.onDateChange(date)"
  *  date-format="'yyyy-MM-dd'"
  *  min-date="Ctrl.min"
  *  max-date="Ctrl.max"
@@ -34,24 +36,27 @@ dateEditorController.$inject = ['bhConstants'];
  *
  * @module components/bhDateEditor
  */
-function dateEditorController(bhConstants) {
-  var ctrl = this;
+function bhDateEditorController(bhConstants) {
+  const $ctrl = this;
 
-  this.$onInit = function $onInit() {
-    ctrl.dateFormat = bhConstants.dayOptions.format;
+  $ctrl.editMode = false;
+  $ctrl.dateFormat = bhConstants.dayOptions.format;
 
-    ctrl.editMode = false;
-    ctrl.toggleEditMode = toggleEditMode;
+  $ctrl.$onInit = () => {
+    $ctrl.label = $ctrl.label || 'FORM.LABELS.DATE';
 
     // options to be passed to datepicker-option
-    ctrl.options = {
-      minDate : ctrl.minDate,
-      maxDate : ctrl.maxDate,
+    $ctrl.options = {
+      minDate : $ctrl.minDate,
+      maxDate : $ctrl.maxDate,
     };
   };
 
+  // fires the onChange() callback
+  $ctrl.onDateChange = () => $ctrl.onChange({ date : $ctrl.dateValue });
+
   // opens/closes the date dropdown
-  function toggleEditMode() {
-    ctrl.editMode = !ctrl.editMode;
-  }
+  $ctrl.toggleEditMode = () => {
+    $ctrl.editMode = !$ctrl.editMode;
+  };
 }

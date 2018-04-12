@@ -23,7 +23,7 @@ SimpleJournalVoucherController.$inject = [
  * forms (via AppCache and the breadcrumb component).
  */
 function SimpleJournalVoucherController(Vouchers, util, Notify, Receipts, bhConstants, RS, VoucherForm) {
-  var vm = this;
+  const vm = this;
 
   vm.bhConstants = bhConstants;
 
@@ -43,7 +43,7 @@ function SimpleJournalVoucherController(Vouchers, util, Notify, Receipts, bhCons
 
   // format voucher types and bind to the view
   Vouchers.transactionType()
-    .then(function (list) {
+    .then((list) => {
       // bind to the view
       vm.types = list;
     })
@@ -65,26 +65,26 @@ function SimpleJournalVoucherController(Vouchers, util, Notify, Receipts, bhCons
     }
 
     // CONVENTION: 0 is debit, 1 is credit
-    var debitRow = vm.Voucher.store.data[0];
-    var creditRow = vm.Voucher.store.data[1];
+    const debitRow = vm.Voucher.store.data[0];
+    const creditRow = vm.Voucher.store.data[1];
 
     // configure as needed
     debitRow.configure({ debit : vm.amount });
     creditRow.configure({ credit : vm.amount });
 
-    var valid = vm.Voucher.validate();
+    const valid = vm.Voucher.validate();
 
     if (!valid) {
       Notify.danger(vm.Voucher._error);
       return;
     }
 
-    var voucher = vm.Voucher.details;
+    const voucher = vm.Voucher.details;
     voucher.items = vm.Voucher.store.data;
 
     // submit the voucher
     return Vouchers.create(voucher)
-      .then(function (res) {
+      .then((res) => {
         Receipts.voucher(res.uuid, true);
 
         // clear the form to refresh it.
@@ -108,7 +108,7 @@ function SimpleJournalVoucherController(Vouchers, util, Notify, Receipts, bhCons
   }
 
   // used for scanning barcodes
-  RS.$on('voucher:configure', function (evt, data) {
+  RS.$on('voucher:configure', (evt, data) => {
 
     // configure the basics of the transaction type.
     vm.Voucher.details.description = data.description;
@@ -116,8 +116,8 @@ function SimpleJournalVoucherController(Vouchers, util, Notify, Receipts, bhCons
 
     vm.amount = data.amount;
 
-    var debitRow = vm.Voucher.store.data[0];
-    var creditRow = vm.Voucher.store.data[1];
+    const debitRow = vm.Voucher.store.data[0];
+    const creditRow = vm.Voucher.store.data[1];
 
     if (data.debit) {
       debitRow.configure(data.debit);

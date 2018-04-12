@@ -1,19 +1,19 @@
 angular.module('bhima.controllers')
   .controller('operatingController', OperatingConfigController);
 
-  OperatingConfigController.$inject = [
+OperatingConfigController.$inject = [
   '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state',
 ];
 
 
 function OperatingConfigController($sce, Notify, SavedReports, AppCache, reportData, $state) {
-  let vm = this;
-  let cache = new AppCache('configure_operating');
+  const vm = this;
+  const cache = new AppCache('configure_operating');
   const reportUrl = 'reports/finance/operating';
   vm.reportDetails = {};
   vm.previewGenerated = false;
   checkCachedConfiguration();
-  
+
   vm.onSelectFiscal = function onSelectFiscal(fiscal) {
     vm.reportDetails.fiscal = fiscal;
   };
@@ -33,7 +33,7 @@ function OperatingConfigController($sce, Notify, SavedReports, AppCache, reportD
     cache.reportDetails = angular.copy(vm.reportDetails);
 
     return SavedReports.requestPreview(reportUrl, reportData.id, angular.copy(vm.reportDetails))
-      .then(function (result) {
+      .then((result) => {
         vm.previewGenerated = true;
         vm.previewResult = $sce.trustAsHtml(result);
       })
@@ -47,14 +47,14 @@ function OperatingConfigController($sce, Notify, SavedReports, AppCache, reportD
 
   vm.requestSaveAs = function requestSaveAs() {
 
-    var options = {
+    const options = {
       url : reportUrl,
       report : reportData,
       reportOptions : angular.copy(vm.reportDetails),
     };
 
     return SavedReports.saveAsModal(options)
-      .then(function () {
+      .then(() => {
         $state.go('reportsBase.reportsArchive', { key : options.report.report_key });
       })
       .catch(Notify.handleError);

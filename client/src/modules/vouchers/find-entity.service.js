@@ -1,20 +1,20 @@
 angular.module('bhima.services')
-.service('FindEntityService', FindEntityService);
+  .service('FindEntityService', FindEntityService);
 
 FindEntityService.$inject = ['$uibModal'];
 
 function FindEntityService(Modal) {
-  var service = this;
+  const service = this;
 
   service.openModal = openModal;
 
   function openModal() {
-    var instance = Modal.open({
+    const instance = Modal.open({
       templateUrl  : 'modules/templates/modals/findEntity.modal.html',
       controller   : 'FindEntityModalController',
       controllerAs : '$ctrl',
       size         : 'md',
-      animation    : true
+      animation    : true,
     });
     return instance.result;
   }

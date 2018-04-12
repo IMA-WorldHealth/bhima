@@ -1,7 +1,7 @@
 angular.module('bhima.services')
-.service('PurchaseOrderItemService', PurchaseOrderItemService);
+  .service('PurchaseOrderItemService', PurchaseOrderItemService);
 
-PurchaseOrderItemService.$inject = [ 'uuid' ];
+PurchaseOrderItemService.$inject = ['uuid'];
 
 /**
  * @class PurchaseOrderItemService
@@ -51,11 +51,11 @@ function PurchaseOrderItemService(uuid) {
    * we are expecting to create potentially many items in an invoice.
    */
   PurchaseOrderItem.prototype.validate = function validate() {
-    var item = this;
+    const item = this;
 
     // ensure the numbers are valid in the invoice
     // The Quantity and Unit Price must not be Zero
-    var hasValidNumbers =
+    const hasValidNumbers =
       angular.isNumber(item.quantity) &&
       angular.isNumber(item.unit_price) &&
       item.quantity > 0 &&

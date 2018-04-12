@@ -20,10 +20,11 @@
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
       </div>
     </div>
-    
+
     <div class="modal-body">
       <bh-date-editor
         date-value="OffdayModalCtrl.offday.date"
+        on-change="OffdayModalCtrl.onDateChange(date)"
         validation-trigger="OffdayModalCtrl.$submitted">
       </bh-date-editor>
     </div>
@@ -34,7 +35,7 @@
       <div class="help-block" ng-messages="OffdayForm.percent_pay.$error" ng-show="OffdayForm.$submitted">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
       </div>
-    </div>  
+    </div>
   </div>
 
   <div class="modal-footer">

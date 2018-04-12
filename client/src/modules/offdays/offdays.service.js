@@ -11,7 +11,7 @@ OffdayService.$inject = ['PrototypeApiService', '$uibModal'];
  * Encapsulates common requests to the /offdays/ URL.
  */
 function OffdayService(Api, Modal) {
-  var service = new Api('/offdays/');
+  const service = new Api('/offdays/');
 
   return service;
 }

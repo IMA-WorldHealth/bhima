@@ -71,6 +71,7 @@
                 <fieldset ng-disabled="CashCtrl.Payment.messages.isNonCashPatient">
                   <bh-date-editor
                     date-value="CashCtrl.Payment.details.date"
+                    on-change="CashCtrl.Payment.onDateChange(date)"
                     validation-trigger="CashVoucherForm.$submitted"
                     max-date="CashCtrl.timestamp">
                   </bh-date-editor>

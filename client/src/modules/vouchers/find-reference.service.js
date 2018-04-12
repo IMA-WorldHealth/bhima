@@ -4,7 +4,7 @@ angular.module('bhima.services')
 FindReferenceService.$inject = ['$uibModal'];
 
 function FindReferenceService(Modal) {
-  var service = this;
+  const service = this;
 
   service.openModal = openModal;
 
@@ -14,17 +14,17 @@ function FindReferenceService(Modal) {
    * @param {object} entity the entity parameter is not required, it's for specifying the entity's references
    */
   function openModal(entity) {
-    var instance = Modal.open({
+    const instance = Modal.open({
       templateUrl  : 'modules/templates/modals/findReference.modal.html',
       controller   : 'FindReferenceModalController',
       controllerAs : '$ctrl',
       size         : 'lg',
       animation    : true,
       resolve      : {
-        entity : function () {
+        entity() {
           return entity || {};
-        }
-      }
+        },
+      },
     });
     return instance.result;
   }

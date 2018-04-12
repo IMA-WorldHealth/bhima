@@ -13,11 +13,10 @@
   <div
     class="form-group"
     ng-class="{ 'has-error' : $ctrl.validationTrigger && DateEditorForm.$invalid } "
-    data-date-editor
-    >
+    data-date-editor>
 
-    <label class="control-label">
-      {{ ($ctrl.label || "FORM.LABELS.DATE") | translate }}
+    <label class="control-label" translate>
+      {{ $ctrl.label }}
     </label>
 
     <!-- input component implementation -->
@@ -25,6 +24,7 @@
       <input
         name="date"
         type="text"
+        ng-change="$ctrl.onDateChange()"
         class="form-control"
         uib-datepicker-popup="{{ $ctrl.dateFormat }}"
         ng-model="$ctrl.dateValue"
@@ -34,8 +34,7 @@
         data-date-editor-input
         ng-readonly="!$ctrl.editMode"
         ng-disabled="$ctrl.disabled"
-        ng-required="required"
-        >
+        ng-required="required">
       <span class="input-group-btn">
         <button
           type="button"
@@ -43,8 +42,8 @@
           ng-click="$ctrl.toggleEditMode()"
           ng-disabled="$ctrl.editMode || $ctrl.disabled"
           data-date-editor-dropdown-toggle>
-          <span class="glyphicon glyphicon-calendar"></span>
-          {{ "FORM.LABELS.SET_DATE" | translate }}
+          <span class="fa fa-calendar"></span>
+          <span translate>FORM.LABELS.SET_DATE</span>
         </button>
       </span>
     </div>
@@ -54,8 +53,8 @@
 
       <!-- @todo - potentially include this message in the generic date validation messages -->
       <p ng-message="dateDisabled">
-        <span class="glyphicon glyphicon-warning-sign"></span>
-        {{ "FORM.ERRORS.DATE_OUT_OF_RANGE" | translate }}
+        <span class="fa fa-warning"></span>
+        <span translate>FORM.ERRORS.DATE_OUT_OF_RANGE</span>
       </p>
     </div>
 

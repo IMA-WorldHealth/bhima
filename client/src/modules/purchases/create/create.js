@@ -8,7 +8,7 @@ PurchaseOrderController.$inject = [
 
 
 function PurchaseOrderController(Purchases, PurchaseOrder, Notify, Session, util, Receipts, bhConstants, Stock) {
-  var vm = this;
+  const vm = this;
 
   // create a new purchase order form
   vm.order = new PurchaseOrder('PurchaseOrder');
@@ -28,21 +28,33 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify, Session, util
   }
 
   // grid options for the purchase order grid
-  var gridOptions = {
+  const gridOptions = {
     appScopeProvider : vm,
     enableSorting : false,
     enableColumnMenus : false,
     columnDefs : [
-      { field : 'status', width : 25, displayName : '', cellTemplate : 'modules/purchases/create/templates/status.tmpl.html' },
-      { field : 'code', width : 150, displayName : 'TABLE.COLUMNS.CODE', headerCellFilter : 'translate', cellTemplate :  'modules/purchases/create/templates/code.tmpl.html' },
+      {
+        field : 'status', width : 25, displayName : '', cellTemplate : 'modules/purchases/create/templates/status.tmpl.html',
+      },
+      {
+        field : 'code', width : 150, displayName : 'TABLE.COLUMNS.CODE', headerCellFilter : 'translate', cellTemplate : 'modules/purchases/create/templates/code.tmpl.html',
+      },
       { field : 'description', displayName : 'TABLE.COLUMNS.DESCRIPTION', headerCellFilter : 'translate' },
-      { field : 'unit', width :100, displayName : 'TABLE.COLUMNS.UNIT', headerCellFilter : 'translate' },
-      { field : 'quantity', width :100, displayName : 'TABLE.COLUMNS.QUANTITY', headerCellFilter : 'translate', cellTemplate : 'modules/purchases/create/templates/quantity.tmpl.html' },
-      { field : 'unit_price', width : 100, displayName : 'TABLE.COLUMNS.PURCHASE_PRICE', headerCellFilter : 'translate', cellTemplate : 'modules/purchases/create/templates/price.tmpl.html' },
-      { field : 'amount', width :100, displayName : 'TABLE.COLUMNS.AMOUNT', headerCellFilter : 'translate', cellTemplate : 'modules/purchases/create/templates/amount.tmpl.html' },
-      { field : 'actions', width : 25, cellTemplate : 'modules/purchases/create/templates/actions.tmpl.html' }
+      {
+        field : 'unit', width : 100, displayName : 'TABLE.COLUMNS.UNIT', headerCellFilter : 'translate',
+      },
+      {
+        field : 'quantity', width : 100, displayName : 'TABLE.COLUMNS.QUANTITY', headerCellFilter : 'translate', cellTemplate : 'modules/purchases/create/templates/quantity.tmpl.html',
+      },
+      {
+        field : 'unit_price', width : 100, displayName : 'TABLE.COLUMNS.PURCHASE_PRICE', headerCellFilter : 'translate', cellTemplate : 'modules/purchases/create/templates/price.tmpl.html',
+      },
+      {
+        field : 'amount', width : 100, displayName : 'TABLE.COLUMNS.AMOUNT', headerCellFilter : 'translate', cellTemplate : 'modules/purchases/create/templates/amount.tmpl.html',
+      },
+      { field : 'actions', width : 25, cellTemplate : 'modules/purchases/create/templates/actions.tmpl.html' },
     ],
-    onRegisterApi : onRegisterApi,
+    onRegisterApi,
     data : vm.order.store.data,
   };
 
@@ -73,12 +85,12 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify, Session, util
     }
 
     // check the grid for invalid items
-    var invalidItems = vm.order.validate();
+    const invalidItems = vm.order.validate();
 
     if (invalidItems.length) {
       Notify.danger('PURCHASES.ERRORS.INVALID_ITEMS');
 
-      var firstInvalidItem = invalidItems[0];
+      const firstInvalidItem = invalidItems[0];
 
       // show the user where the error is in the grid by scrolling to it.
       vm.gridApi.core.scrollTo(firstInvalidItem);
@@ -89,13 +101,13 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify, Session, util
     vm.order.details.status_id = 1;
 
     // copy the purchase order object into something that can be sent to the server
-    var order = angular.copy(vm.order.details);
+    const order = angular.copy(vm.order.details);
     order.items = angular.copy(vm.order.store.data);
 
     vm.loadingState = true;
 
     return Purchases.create(order)
-      .then(function (res) {
+      .then((res) => {
 
         // open the receipt modal
         Receipts.purchase(res.uuid, true);
@@ -104,7 +116,7 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify, Session, util
         clear(form);
       })
       .catch(Notify.handleError)
-      .finally(function () {
+      .finally(() => {
         vm.loadingState = false;
       });
   }
@@ -129,7 +141,7 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify, Session, util
     vm.optimalPO = true;
 
     Stock.inventories.read(null, { require_po : 1 })
-      .then(function (rows) {
+      .then((rows) => {
         if (!rows.length) {
           return Notify.warn('FORM.INFO.NO_INVENTORY_PO');
         }
@@ -139,7 +151,7 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify, Session, util
           vm.order.addItem(rows.length);
         }
 
-        vm.order.store.data.forEach(function (item, index) {
+        vm.order.store.data.forEach((item, index) => {
           item.code = rows[index].code;
           item.inventory_uuid = rows[index].inventory_uuid;
           item.description = rows[index].text;
@@ -151,7 +163,7 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify, Session, util
 
       })
       .catch(Notify.handleError)
-      .finally(function () {
+      .finally(() => {
         vm.loadingState = false;
       });
   }

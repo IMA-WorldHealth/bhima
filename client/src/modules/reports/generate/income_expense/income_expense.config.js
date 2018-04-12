@@ -6,16 +6,16 @@ IncomeExpenseConfigController.$inject = [
 ];
 
 function IncomeExpenseConfigController($sce, Notify, SavedReports, AppCache, reportData, $state) {
-  var vm = this;
-  var cache = new AppCache('configure_income_expense');
-  var reportUrl = 'reports/finance/income_expense';
+  const vm = this;
+  const cache = new AppCache('configure_income_expense');
+  const reportUrl = 'reports/finance/income_expense';
   vm.reportDetails = {};
   vm.previewGenerated = false;
 
   vm.reportTypes = [
-    { id: 1, label: 'FORM.LABELS.INCOME_EXPENSE' },
-    { id: 2, label: 'FORM.LABELS.INCOME' },
-    { id: 3, label: 'FORM.LABELS.EXPENSE' },
+    { id : 1, label : 'FORM.LABELS.INCOME_EXPENSE' },
+    { id : 2, label : 'FORM.LABELS.INCOME' },
+    { id : 3, label : 'FORM.LABELS.EXPENSE' },
   ];
 
   checkCachedConfiguration();
@@ -39,7 +39,7 @@ function IncomeExpenseConfigController($sce, Notify, SavedReports, AppCache, rep
     cache.reportDetails = angular.copy(vm.reportDetails);
 
     return SavedReports.requestPreview(reportUrl, reportData.id, angular.copy(vm.reportDetails))
-      .then(function (result) {
+      .then((result) => {
         vm.previewGenerated = true;
         vm.previewResult = $sce.trustAsHtml(result);
       })
@@ -53,14 +53,14 @@ function IncomeExpenseConfigController($sce, Notify, SavedReports, AppCache, rep
 
   vm.requestSaveAs = function requestSaveAs() {
 
-    var options = {
+    const options = {
       url : reportUrl,
       report : reportData,
       reportOptions : angular.copy(vm.reportDetails),
     };
 
     return SavedReports.saveAsModal(options)
-      .then(function () {
+      .then(() => {
         $state.go('reportsBase.reportsArchive', { key : options.report.report_key });
       })
       .catch(Notify.handleError);

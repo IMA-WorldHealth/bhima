@@ -14,13 +14,15 @@ OpenDebtorsConfigController.$inject = [
  * This controller powers the Open Debtors report.  The Open Debtors report allows a user
  * to see debtors with unpaid debts.
  */
-function OpenDebtorsConfigController($sce, Notify, SavedReports, AppCache, reportData, $state, OpenDebtorsReports,
-  bhConstants) {
-  var vm = this;
-  var cache = new AppCache('configure_open_debtors');
-  var reportUrl = 'reports/finance/debtors/open';
+function OpenDebtorsConfigController(
+  $sce, Notify, SavedReports, AppCache, reportData, $state, OpenDebtorsReports,
+  bhConstants
+) {
+  const vm = this;
+  const cache = new AppCache('configure_open_debtors');
+  const reportUrl = 'reports/finance/debtors/open';
 
-  var DEFAULT_ORDERING = 'debt-desc';
+  const DEFAULT_ORDERING = 'debt-desc';
 
   vm.DATE_FORMAT = bhConstants.dates.format;
 
@@ -54,14 +56,14 @@ function OpenDebtorsConfigController($sce, Notify, SavedReports, AppCache, repor
   };
 
   vm.requestSaveAs = function requestSaveAs() {
-    var options = {
+    const options = {
       url : reportUrl,
       report : reportData,
       reportOptions : angular.copy(vm.reportDetails),
     };
 
     return SavedReports.saveAsModal(options)
-      .then(function () {
+      .then(() => {
         $state.go('reportsBase.reportsArchive', { key : options.report.report_key });
       })
       .catch(Notify.handleError);
@@ -74,7 +76,7 @@ function OpenDebtorsConfigController($sce, Notify, SavedReports, AppCache, repor
     cache.reportDetails = angular.copy(vm.reportDetails);
 
     return SavedReports.requestPreview(reportUrl, reportData.id, angular.copy(vm.reportDetails))
-      .then(function (result) {
+      .then((result) => {
         vm.previewGenerated = true;
         vm.previewResult = $sce.trustAsHtml(result);
 

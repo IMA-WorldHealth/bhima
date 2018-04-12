@@ -35,6 +35,7 @@
 
     <bh-date-editor
       date-value="ModalCtrl.rate.date"
+      on-change="ModalCtrl.onDateChange(date)"
       validation-trigger="ModalForm.$submitted"
       max-date="ModalCtrl.timestamp">
     </bh-date-editor>

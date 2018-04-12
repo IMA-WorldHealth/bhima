@@ -70,6 +70,7 @@
                 <div class="col-md-6">
                   <bh-date-editor
                     date-value="PurchaseCtrl.order.details.date"
+                    on-change="PurchaseCtrl.order.onDateChange(date)"
                     validation-trigger="PurchaseOrderForm.$submitted"
                     max-date="PurchaseCtrl.maxDate">
                   </bh-date-editor>
@@ -155,9 +156,9 @@
         <div class="row" style="padding-top : 5px; padding-bottom : 5px;">
           <div class="col-md-12 text-right">
               <bh-loading-button
-                  disabled="!PurchaseCtrl.supplier"
-                  loading-state="PurchaseCtrl.loadingState">
-                    <span translate>FORM.BUTTONS.SAVE</span>
+                disabled="!PurchaseCtrl.supplier"
+                loading-state="PurchaseCtrl.loadingState">
+                <span translate>FORM.BUTTONS.SAVE</span>
               </bh-loading-button>
 
               <button

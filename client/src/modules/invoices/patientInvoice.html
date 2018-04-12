@@ -50,6 +50,7 @@
                   -->
                   <bh-date-editor
                     date-value="PatientInvoiceCtrl.Invoice.details.date"
+                    on-change="PatientInvoiceCtrl.onDateChange(date)"
                     validation-trigger="InvoiceForm.$submitted"
                     min-date="PatientInvoiceCtrl.minimumDate"
                     max-date="PatientInvoiceCtrl.timestamp">
@@ -114,7 +115,7 @@
           <bh-add-item
             disable = "PatientInvoiceCtrl.Invoice.recipient"
             callback = "PatientInvoiceCtrl.addItems(numItem)">
-          </bh-add-item> 
+          </bh-add-item>
 
           <!-- @todo - hacky check for inventory to prevent local variables -->
           <p

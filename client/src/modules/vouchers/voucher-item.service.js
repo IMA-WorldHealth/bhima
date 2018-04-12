@@ -15,8 +15,8 @@ VoucherItemService.$inject = ['uuid', 'bhConstants', 'util'];
  */
 function VoucherItemService(uuid, Constants, util) {
   // global variables
-  var MIN_DECIMAL_VALUE = Constants.lengths.minDecimalValue;
-  var MIN_PRECISION_VALUE = getDecimalPrecision(MIN_DECIMAL_VALUE);
+  const MIN_DECIMAL_VALUE = Constants.lengths.minDecimalValue;
+  const MIN_PRECISION_VALUE = getDecimalPrecision(MIN_DECIMAL_VALUE);
 
   /**
    * @function getDecimalPrecision
@@ -27,8 +27,8 @@ function VoucherItemService(uuid, Constants, util) {
    * @private
    */
   function getDecimalPrecision(value) {
-    var valueString = String(value);
-    var decimalPart = valueString.split('.')[1] || [];
+    const valueString = String(value);
+    const decimalPart = valueString.split('.')[1] || [];
     return decimalPart.length;
   }
 
@@ -67,25 +67,25 @@ function VoucherItemService(uuid, Constants, util) {
    * It will set both the this._valid and this._error properties on itself
    */
   VoucherItem.prototype.validate = function validate() {
-    var item = this;
+    const item = this;
 
     // checks that the row is initialised
-    var initialized = angular.isDefined(item.account_id);
+    const initialized = angular.isDefined(item.account_id);
 
-    var debitPrecision = getDecimalPrecision(item.debit);
-    var creditPrecision = getDecimalPrecision(item.credit);
+    const debitPrecision = getDecimalPrecision(item.debit);
+    const creditPrecision = getDecimalPrecision(item.credit);
 
     // checks that the decimal precision is able to be stored in the database correctly
-    var hasValidPrecision = (
+    const hasValidPrecision = (
       debitPrecision <= MIN_PRECISION_VALUE &&
       creditPrecision <= MIN_PRECISION_VALUE
     );
 
     // check that only one column - debit or credit is filled out
-    var hasSingleNumericValue = util.xor(Boolean(item.debit), Boolean(item.credit));
+    const hasSingleNumericValue = util.xor(Boolean(item.debit), Boolean(item.credit));
 
     // check that the values are greater than zero
-    var hasPositiveValues = (item.debit >= 0 && item.credit >= 0);
+    const hasPositiveValues = (item.debit >= 0 && item.credit >= 0);
 
     // set the initialized property
     this._initialised = initialized;

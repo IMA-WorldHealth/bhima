@@ -6,13 +6,13 @@ CashFlowByServiceConfigController.$inject = [
 ];
 
 function CashFlowByServiceConfigController($sce, Notify, SavedReports, AppCache, reportData, $state) {
-  var vm = this;
-  var cache = new AppCache('configure_cashflowByService');
-  var reportUrl = 'reports/finance/cashflow/services';
+  const vm = this;
+  const cache = new AppCache('configure_cashflowByService');
+  const reportUrl = 'reports/finance/cashflow/services';
 
   vm.previewGenerated = false;
   vm.reportDetails = {};
-  vm.checked =  0;
+  vm.checked = 0;
 
   checkCachedConfiguration();
 
@@ -22,14 +22,14 @@ function CashFlowByServiceConfigController($sce, Notify, SavedReports, AppCache,
   };
 
   vm.requestSaveAs = function requestSaveAs() {
-    var options = {
+    const options = {
       url : reportUrl,
       report : reportData,
       reportOptions : angular.copy(vm.reportDetails),
     };
 
     return SavedReports.saveAsModal(options)
-      .then(function () {
+      .then(() => {
         $state.go('reportsBase.reportsArchive', { key : options.report.report_key });
       })
       .catch(Notify.handleError);
@@ -42,14 +42,14 @@ function CashFlowByServiceConfigController($sce, Notify, SavedReports, AppCache,
     cache.reportDetails = angular.copy(vm.reportDetails);
 
     return SavedReports.requestPreview(reportUrl, reportData.id, angular.copy(vm.reportDetails))
-      .then(function (result) {
+      .then((result) => {
         vm.previewGenerated = true;
         vm.previewResult = $sce.trustAsHtml(result);
       })
       .catch(Notify.handleError);
   };
 
-  vm.onSelectCashbox =  function onSelectCashbox(cashbox){
+  vm.onSelectCashbox = function onSelectCashbox(cashbox) {
     vm.reportDetails.account_id = cashbox.account_id;
   };
 

@@ -19,12 +19,12 @@ function VoucherService(
   Api, TransactionTypeStore, Modal, Filters, Periods, Languages,
   $httpParamSerializer, AppCache, bhConstants, Transactions, $translate
 ) {
-  var service = new Api('/vouchers/');
-  var voucherFilters = new Filters();
-  var filterCache = new AppCache('voucher-filters');
+  const service = new Api('/vouchers/');
+  const voucherFilters = new Filters();
+  const filterCache = new AppCache('voucher-filters');
 
   // @todo - remove this reference to baseUrl
-  var baseUrl = '/journal/';
+  const baseUrl = '/journal/';
 
   service.create = create;
   service.reverse = reverse;
@@ -62,10 +62,10 @@ function VoucherService(
 
   function assignDefaultFilters() {
     // get the keys of filters already assigned - on initial load this will be empty
-    var assignedKeys = Object.keys(voucherFilters.formatHTTP());
+    const assignedKeys = Object.keys(voucherFilters.formatHTTP());
 
     // assign default period filter
-    var periodDefined =
+    const periodDefined =
       service.util.arrayIncludes(assignedKeys, ['period', 'custom_period_start', 'custom_period_end']);
 
     if (!periodDefined) {
@@ -98,9 +98,9 @@ function VoucherService(
 
   // strips internal keys from object
   function stripInternalObjectKeys(object) {
-    var o = {};
+    const o = {};
 
-    angular.forEach(object, function (value, key) {
+    angular.forEach(object, (value, key) => {
       if (!isInternalKey(key)) {
         o[key] = value;
       }
@@ -113,11 +113,11 @@ function VoucherService(
    * Wraps the prototype create method.
    */
   function create(voucher) {
-    var v = angular.copy(voucher);
+    const v = angular.copy(voucher);
 
     // format items for posting, removing validation keys and unlinking old objects
-    v.items = v.items.map(function (item) {
-      var escapedItem = stripInternalObjectKeys(item);
+    v.items = v.items.map((item) => {
+      const escapedItem = stripInternalObjectKeys(item);
 
       if (escapedItem.entity) {
         escapedItem.entity_uuid = escapedItem.entity.uuid;
@@ -132,7 +132,7 @@ function VoucherService(
 
     // we pick either the debit or the credit side to assign as the total amount
     // of the voucher
-    v.amount = v.items.reduce(function (sum, row) {
+    v.amount = v.items.reduce((sum, row) => {
       return sum + row.debit;
     }, 0);
 
@@ -158,8 +158,8 @@ function VoucherService(
    */
   function transactionType() {
     return TransactionTypeStore.load()
-      .then(function (transactionTypes) {
-        return transactionTypes.data.map(function (item) {
+      .then((transactionTypes) => {
+        return transactionTypes.data.map((item) => {
           item.hrText = $translate.instant(item.text);
           return item;
         });
@@ -168,11 +168,11 @@ function VoucherService(
 
   // downloads a type of report based on the
   function download(type) {
-    var filterOpts = voucherFilters.formatHTTP();
-    var defaultOpts = { renderer : type, lang: Languages.key };
+    const filterOpts = voucherFilters.formatHTTP();
+    const defaultOpts = { renderer : type, lang : Languages.key };
 
     // combine options
-    var options = angular.merge(defaultOpts, filterOpts);
+    const options = angular.merge(defaultOpts, filterOpts);
 
     // return  serialized options
     return $httpParamSerializer(options);

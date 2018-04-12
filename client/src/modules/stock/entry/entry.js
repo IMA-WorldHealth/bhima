@@ -19,13 +19,16 @@ function StockEntryController(
   Depots, Inventory, Notify, Session, util, bhConstants, ReceiptModal, Purchase,
   StockForm, Stock, StockModal, uiGridConstants, Store, AppCache, Uuid, $translate
 ) {
-
   const vm = this;
   const cache = new AppCache('StockEntry');
   let inventoryStore;
 
   vm.stockForm = new StockForm('StockEntry');
   vm.movement = {};
+
+  vm.onDateChange = date => {
+    vm.movement.date = date;
+  };
 
   // exposing some properties to the view
   vm.enterprise = Session.enterprise;
