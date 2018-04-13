@@ -522,6 +522,7 @@ CREATE TABLE `depot` (
   `allow_exit_service` tinyint(1) unsigned NOT NULL DEFAULT 0,
   `allow_exit_transfer` tinyint(1) unsigned NOT NULL DEFAULT 0,
   `allow_exit_loss` tinyint(1) unsigned NOT NULL DEFAULT 0,
+  `location_uuid` BINARY(16) NULL,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `depot_1` (`text`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

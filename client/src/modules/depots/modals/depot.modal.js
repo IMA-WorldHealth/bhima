@@ -6,10 +6,14 @@ DepotModalController.$inject = [
 ];
 
 function DepotModalController($state, Depots, ModalService, Notify) {
-  var vm = this;
+  const vm = this;
 
   vm.depot = $state.params.depot;
   vm.isCreating = !!($state.params.creating);
+
+  if (vm.depot.location_uuid) {
+    vm.hasLocation = 1;
+  }
 
   // exposed methods
   vm.submit = submit;
@@ -17,17 +21,21 @@ function DepotModalController($state, Depots, ModalService, Notify) {
 
   // submit the data to the server from all two forms (update, create)
   function submit(depotForm) {
-    var promise;
-
     if (depotForm.$invalid || depotForm.$pristine) { return 0; }
 
-    promise = (vm.isCreating) ?
+    Depots.clean(vm.depot);
+
+    if (vm.hasLocation === 0) {
+      vm.depot.location_uuid = null;
+    }
+
+    const promise = (vm.isCreating) ?
       Depots.create(vm.depot) :
       Depots.update(vm.depot.uuid, vm.depot);
 
     return promise
-      .then(function () {
-        var translateKey = (vm.isCreating) ? 'DEPOT.CREATED' : 'DEPOT.UPDATED';
+      .then(() => {
+        const translateKey = (vm.isCreating) ? 'DEPOT.CREATED' : 'DEPOT.UPDATED';
         Notify.success(translateKey);
         $state.go('depots', null, { reload : true });
       })

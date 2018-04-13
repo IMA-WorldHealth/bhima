@@ -1,9 +1,8 @@
 angular.module('bhima.controllers')
-.controller('DepotManagementController', DepotManagementController);
+  .controller('DepotManagementController', DepotManagementController);
 
 DepotManagementController.$inject = [
-  'DepotService', 'ModalService',
-  'NotifyService', 'uiGridConstants', '$state',
+  'DepotService', 'ModalService', 'NotifyService', 'uiGridConstants', '$state',
 ];
 
 /**
@@ -12,9 +11,8 @@ DepotManagementController.$inject = [
  * This controller is about the depot management module in the admin zone
  * It's responsible for creating, editing and updating a depot
  */
-function DepotManagementController(Depots, ModalService,
-  Notify, uiGridConstants, $state) {
-  var vm = this;
+function DepotManagementController(Depots, ModalService, Notify, uiGridConstants, $state) {
+  const vm = this;
 
   // bind methods
   vm.deleteDepot = deleteDepot;
@@ -35,8 +33,20 @@ function DepotManagementController(Depots, ModalService,
     enableSorting     : true,
     onRegisterApi     : onRegisterApiFn,
     columnDefs : [
-      { field : 'text', displayName : 'DEPOT.LABEL', headerCellFilter : 'translate' },
-      { field : 'is_warehouse',
+      {
+        field : 'text',
+        displayName : 'DEPOT.LABEL',
+        headerCellFilter : 'translate',
+        cellTemplate : '/modules/depots/templates/label.tmpl.html',
+      },
+      {
+        field : 'location',
+        displayName : 'DEPOT.LOCATION',
+        headerCellFilter : 'translate',
+        cellTemplate : '/modules/depots/templates/location.tmpl.html',
+      },
+      {
+        field : 'is_warehouse',
         width : 125,
         displayName : 'DEPOT.WAREHOUSE',
         headerCellFilter : 'translate',
@@ -44,7 +54,8 @@ function DepotManagementController(Depots, ModalService,
         enableSorting : false,
         enableFiltering : false,
       },
-      { field : 'action',
+      {
+        field : 'action',
         width : 80,
         displayName : '',
         cellTemplate : '/modules/depots/templates/action.tmpl.html',
@@ -68,28 +79,34 @@ function DepotManagementController(Depots, ModalService,
     vm.loading = true;
 
     Depots.read(null, { full : 1 })
-    .then(function (data) {
-      vm.gridOptions.data = data;
-    })
-    .catch(Notify.handleError)
-    .finally(function () {
-      vm.loading = false;
-    });
+      .then(data => {
+        // format location
+        vm.gridOptions.data = data.map(item => {
+          item.location = item.location_uuid ?
+            ''.concat(`${item.village_name} / ${item.sector_name} / ${item.province_name} `)
+              .concat(`(${item.country_name})`) : '';
+          return item;
+        });
+      })
+      .catch(Notify.handleError)
+      .finally(() => {
+        vm.loading = false;
+      });
   }
 
   // switch to delete warning mode
   function deleteDepot(depot) {
     ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
-    .then(function (bool) {
-      if (!bool) { return; }
+      .then(bool => {
+        if (!bool) { return; }
 
-      Depots.delete(depot.uuid)
-      .then(function () {
-        Notify.success('DEPOT.DELETED');
-        loadDepots();
-      })
-      .catch(Notify.handleError);
-    });
+        Depots.delete(depot.uuid)
+          .then(() => {
+            Notify.success('DEPOT.DELETED');
+            loadDepots();
+          })
+          .catch(Notify.handleError);
+      });
   }
 
   // update an existing depot
