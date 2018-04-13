@@ -88,7 +88,6 @@
           <!-- "Add number of grid rows" input-group -->
           <bh-add-item disable="StockCtrl.entryOption" callback="StockCtrl.addItems(numItem)">
           </bh-add-item>
-
         </div>
       </div>
 
@@ -97,7 +96,8 @@
         id="stock-entry-grid"
         ui-grid="StockCtrl.gridOptions"
         style="height: 300px; width: 100%;"
-        ui-grid-auto-resize ui-grid-resize-columns>
+        ui-grid-auto-resize
+        ui-grid-resize-columns>
       </div>
 
       <!-- footer -->
