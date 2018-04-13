@@ -1,4 +1,4 @@
-/* global by */
+/* global by, element */
 
 const FU = require('../shared/FormUtils');
 const GU = require('../shared/GridUtils');
@@ -19,8 +19,8 @@ function StockAdjustmentPage() {
    * @method setAdjustment
    * @param {number} radionIndex
    */
-  page.setAdjustment = function setAdjustment(radionIndex) {
-    FU.radio('StockCtrl.adjustmentOption', radionIndex);
+  page.setAdjustment = function setAdjustment(value) {
+    element(by.id(`btn-${value}`)).click();
   };
 
   /**
@@ -83,7 +83,7 @@ function StockAdjustmentPage() {
     FU.exists(by.id('receipt-confirm-created'), true);
 
     // close the modal
-    $('[data-action="close"]').click();
+    element(by.css('[data-action="close"]')).click();
   };
 }
 

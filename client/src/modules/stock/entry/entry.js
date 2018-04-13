@@ -20,7 +20,7 @@ function StockEntryController(
   StockForm, Stock, StockModal, uiGridConstants, Store, AppCache, Uuid, $translate
 ) {
   const vm = this;
-  const cache = new AppCache('StockEntry');
+  const cache = new AppCache('StockCache');
   let inventoryStore;
 
   vm.stockForm = new StockForm('StockEntry');
@@ -166,11 +166,12 @@ function StockEntryController(
 
     // make sure that the depot is loaded if it doesn't exist at startup.
     if (cache.depotUuid) {
-      Depots.read(cache.depotUuid)
+      Depots.read(cache.depotUuid, { only_user : true })
         .then((depot) => {
           vm.depot = depot;
           setupStock();
-        });
+        })
+        .catch(Notify.handleError);
     } else {
       changeDepot().then(setupStock);
     }
@@ -438,7 +439,9 @@ function StockEntryController(
   }
 
   function changeDepot() {
-    return Depots.openSelectionModal(vm.depot)
+    // if there is not cached depot, the modal require to select a depot
+    const requirement = !cache.depotUuid;
+    return Depots.openSelectionModal(vm.depot, requirement)
       .then((depot) => {
         vm.depot = depot;
         cache.depotUuid = vm.depot.uuid;

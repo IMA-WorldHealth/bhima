@@ -22,7 +22,7 @@ function StockExitController(
   StockModal, uiGridConstants, $translate, AppCache, moment, GridExportService
 ) {
   const vm = this;
-  const cache = new AppCache('StockExit');
+  const cache = new AppCache('StockCache');
 
   vm.stockForm = new StockForm('StockExit');
   vm.movement = {};
@@ -256,8 +256,9 @@ function StockExitController(
 
     // make sure that the depot is loaded if it doesn't exist at startup.
     if (cache.depotUuid) {
-      Depots.read(cache.depotUuid)
-        .then(handleCachedDepot);
+      Depots.read(cache.depotUuid, { only_user : true })
+        .then(handleCachedDepot)
+        .catch(Notify.handleError);
     } else {
       changeDepot()
         .then(setupStock)
