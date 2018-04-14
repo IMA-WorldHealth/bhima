@@ -82,7 +82,6 @@ describe('StockEntryModalForm', () => {
       rows : [sampleRow],
     });
 
-    form.validate();
     const [row] = form.rows;
     expect(row.isValid).to.equal(true);
     expect(row._error).to.equal(null);
@@ -93,7 +92,6 @@ describe('StockEntryModalForm', () => {
     data.lot = null;
 
     const form = new StockForm({ rows : [data] });
-    form.validate();
     const [row] = form.rows;
 
     expect(row.isValid).to.equal(false);
@@ -106,7 +104,6 @@ describe('StockEntryModalForm', () => {
     data.quantity = -100;
 
     const form = new StockForm({ rows : [data] });
-    form.validate();
     const [row] = form.rows;
 
     expect(row.isValid).to.equal(false);
@@ -121,7 +118,6 @@ describe('StockEntryModalForm', () => {
     data.expiration_date = new Date(Date.now() - Math.pow(10, 11));
 
     const form = new StockForm({ rows : [data], expires : true });
-    form.validate();
     const [row] = form.rows;
 
     expect(row.isValid).to.equal(false);
@@ -136,7 +132,6 @@ describe('StockEntryModalForm', () => {
     data.expiration_date = new Date(Date.now() - Math.pow(10, 11));
 
     const form = new StockForm({ rows : [data], expires : true });
-    form.validate();
     const [row] = form.rows;
 
     expect(row.isValid).to.equal(false);

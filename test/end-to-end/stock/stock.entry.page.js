@@ -130,7 +130,7 @@ function StockEntryPage() {
 
       if (index < lotsArray.length - 1) {
         // Add another lot line
-        $('[data-add-lot]').click();
+        components.addItem.set(1, $('[uib-modal-transclude]'));
       }
     });
 

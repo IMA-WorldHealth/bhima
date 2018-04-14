@@ -21,6 +21,10 @@ function StockEntryModalForm() {
     this.lot = row.lot || null;
     this.isInvalid = true;
     this.isValid = false;
+
+    if (row.uuid) {
+      this.uuid = row.uuid;
+    }
   }
 
   function StockForm(opts = {}) {
