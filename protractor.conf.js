@@ -24,6 +24,7 @@ const config = {
       clearOldScreenshots  : true,
       jsonReport           : false,
     },
+    // bail : true,
     timeout : 30000,
   },
 
@@ -76,6 +77,7 @@ if (process.env.TRAVIS_BUILD_NUMBER) {
       takePassedScreenshot : false,
       clearOldScreenshots  : true,
     },
+    bail : true,
     timeout : 30000,
   };
 }
