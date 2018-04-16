@@ -18,9 +18,9 @@ function ReceiptModal(Modal, Receipts) {
   var modalConfiguration = {
     templateUrl : '/js/services/receipts/modal/receiptModal.tmpl.html',
     controller  : 'ReceiptModalController as ReceiptCtrl',
-    size        : 'md',
+    size        : 'lg',
     backdrop    : 'static',
-    animation   : false
+    animation   : false,
   };
 
   // expose available receipts
