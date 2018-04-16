@@ -10,6 +10,9 @@ module.exports.remove = remove;
 module.exports.affectPages = affectPages;
 module.exports.affectToUser = affectToUser;
 module.exports.listForUser = listForUser;
+module.exports.rolesAction = rolesAction;
+module.exports.hasAction = hasAction;
+module.exports.assignActionToRole = assignActionToRole;
 
 function list(req, res, next) {
 
@@ -31,7 +34,6 @@ function list(req, res, next) {
     }).catch(next)
     .done();
 }
-
 
 function detail(req, res, next) {
   const sql = `
@@ -75,7 +77,6 @@ function update(req, res, next) {
     .done();
 }
 
-
 function remove(req, res, next) {
   const binaryUuid = db.bid(req.params.uuid);
 
@@ -118,29 +119,16 @@ function affectPages(req, res, next) {
 function listForUser(req, res, next) {
   const userId = req.params.user_id;
   const projectId = req.params.project_id;
-
   const sql = `
-    SELECT DISTINCT q.uuid, q.label, q.project_id , q.affected
-    FROM (
-
-    SELECT DISTINCT BUID(r.uuid) as uuid, r.label, r.project_id ,1 as affected
+    SELECT BUID(r.uuid) as uuid, r.label, r.project_id , IFNULL(s.affected, 0) as affected
     FROM role r
-    JOIN user_role as ur ON ur.role_uuid = r.uuid
-    WHERE ur.user_id = ?
-
-    UNION 
-    
-    SELECT DISTINCT BUID(r.uuid) as uuid, r.label, r.project_id , 0 as affected
-    FROM role r
-    WHERE r.uuid NOT IN ( 
-      select ro.uuid 
-      FROM role ro
-      JOIN user_role as ur ON ur.role_uuid = ro.uuid
+    LEFT JOIN(
+      select  ro.uuid, 1 as affected 
+      FROM user_role ur
+      JOIN role ro ON ur.role_uuid = ro.uuid
       WHERE ur.user_id = ?
-    )
-    ) as q
-    WHERE q.project_id =?
-    ORDER BY q.label
+    )s ON s.uuid = r.uuid
+    ORDER BY r.label
   `;
 
   db.exec(sql, [userId, userId, projectId])
@@ -148,6 +136,71 @@ function listForUser(req, res, next) {
       res.json(roles);
     })
     .catch(next)
+    .done();
+}
+
+
+function rolesAction(req, res, next) {
+
+  const roleUuid = db.bid(req.params.roleUuid);
+  const sql = `
+    SELECT a.id, a.description, IFNULL(s.affected, 0) as affected
+    FROM actions a
+    LEFT JOIN(
+      select  actions_id , 1 as affected 
+      FROM role_actions ra
+      JOIN role ro ON ra.role_uuid = ro.uuid
+      WHERE ro.uuid = ?
+    )s ON s.actions_id = a.id
+  `;
+
+  db.exec(sql, [roleUuid])
+    .then((actions) => {
+      res.json(actions);
+    })
+    .catch(next)
+    .done();
+}
+
+
+// affect roles to a user
+// actions ares permissions for a role used most of the time in the view
+// some actions are sensitive
+function assignActionToRole(req, res, next) {
+  const data = req.body;
+
+  const actionIds = [...data.action_ids];
+
+  const roleUuid = db.bid(data.role_uuid);
+  const transaction = db.transaction();
+
+  const deleleUserRoles = `DELETE FROM role_actions WHERE role_uuid=? `;
+  const addAction = `INSERT INTO role_actions SET ?`;
+
+  db.exec(deleleUserRoles, roleUuid)
+    .then(() => {
+      actionIds.forEach(actionId => {
+        transaction.addQuery(addAction, { uuid : db.uuid(), role_uuid : roleUuid, actions_id : actionId });
+      });
+      return transaction.execute();
+    }).then(() => {
+      res.sendStatus(201);
+    }).catch(next)
+    .done();
+}
+
+function hasAction(req, res, next) {
+  const actionId = req.params.action_id;
+  const userId = req.session.user.id;
+
+  const sql = `
+    SELECT count(ra.uuid) as nbr FROM role_actions ra
+    JOIN user_role as ur ON ur.role_uuid = ra.role_uuid
+    WHERE actions_id =? AND ur.user_id=?`;
+
+  db.one(sql, [actionId, userId]).then(row => {
+    res.status(200).json(row.nbr > 0);
+  }).catch(next)
     .done();
 }
 

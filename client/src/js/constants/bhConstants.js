@@ -10,6 +10,9 @@ function constantConfig() {
   var JOURNAL_UTIL_HEIGHT = '150px';
 
   return {
+    actions : {
+      CAN_EDIT_ROLES : 1,
+    },
     accounts : {
       ROOT  : 0,
       ASSET : 1,
@@ -119,8 +122,8 @@ function constantConfig() {
     },
     defaultFilters : [
       { key : 'period', label : 'TABLE.COLUMNS.PERIOD', valueFilter : 'translate' },
-      { key : 'custom_period_start', label : 'PERIODS.START', comparitor: '>', valueFilter : 'date' },
-      { key : 'custom_period_end', label : 'PERIODS.END', comparitor: '<', valueFilter : 'date' },
+      { key : 'custom_period_start', label : 'PERIODS.START', comparitor : '>', valueFilter : 'date' },
+      { key : 'custom_period_end', label : 'PERIODS.END', comparitor : '<', valueFilter : 'date' },
       { key : 'limit', label : 'FORM.LABELS.LIMIT' }],
     weekDays : [
       { id : 0, label : 'FORM.LABELS.WEEK_DAYS.SUNDAY' },

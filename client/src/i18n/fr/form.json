@@ -273,6 +273,7 @@
             "CURRENCIES": "Monnaies",
             "CURRENCY": "Monnaie",
             "CURRENT_LOCATION": "Localisation actuelle",
+            "CAN_EDIT_ROLES" : "Possibilité d'éditer le rôle",
             "DAILY_SALARY": "Salaire Journalier",
             "DATE": "Date",
             "DATE_CREATED": "Date de création",

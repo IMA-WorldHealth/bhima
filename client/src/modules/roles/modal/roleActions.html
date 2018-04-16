@@ -1,0 +1,31 @@
+<div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate>FORM.BUTTONS.ACTIONS</li>
+      <li class="title">
+        <span translate>{{RoleActionsCtrl.role.label}}</span>
+      </li>
+    </ol>
+</div>
+<div class="modal-body">
+
+  <div class="row">
+    <div class="col-lg-12">
+      <ul class="list-group">
+        <li  class="list-group-item" ng-repeat="action in RoleActionsCtrl.actions">
+          <label class="radio-inline">
+            <input type='checkbox' ng-model='action.affected' ng-true-value="1" ng-false-value="0" />
+            <span id="{{action.id}}" translate>{{action.description}}</span>
+          </label>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="modal-footer text-right">
+  <button type="button" class='btn btn-default' ng-click='RoleActionsCtrl.close()' translate>FORM.BUTTONS.CLOSE</button>
+ 
+  <button data-method="submit" type="button" class="btn btn-primary" ng-click="RoleActionsCtrl.assignActionToRole()">
+      <span translate>FORM.BUTTONS.SAVE</span>
+  </button>
+</div>

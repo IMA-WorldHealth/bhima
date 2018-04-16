@@ -5,7 +5,7 @@
       <li class="title" translate>TREE.ROLE_MANAGEMENT</li>
     </ol>
     
-    <div class="toolbar">
+    <div class="toolbar" ng-show="RolesCtrl.canEditRoles">
       <div class="toolbar-item">
         <button data-method="add" class="btn btn-default text-capitalize" ng-click="RolesCtrl.add()" data-method="create">
           <span class="fa fa-plus"></span>

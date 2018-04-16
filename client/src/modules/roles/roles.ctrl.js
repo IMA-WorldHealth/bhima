@@ -2,13 +2,15 @@ angular.module('bhima.controllers')
   .controller('RolesController', RolesController);
 
 RolesController.$inject = [
-  '$uibModal', 'RolesService', 'SessionService', 'ModalService', 'NotifyService',
+  '$uibModal', 'RolesService', 'SessionService',
+  'ModalService', 'NotifyService', 'bhConstants',
 ];
 
-function RolesController($uibModal, RolesService, session, Modal, Notify) {
+function RolesController($uibModal, RolesService, session, Modal, Notify, bhConstants) {
   const vm = this;
   vm.loadRoles = loadRoles;
   vm.loading = false;
+  vm.canEditRoles = false;
 
   vm.add = function add(role) {
     const _role = role || {
@@ -24,6 +26,18 @@ function RolesController($uibModal, RolesService, session, Modal, Notify) {
         data : function dataProvider() {
           return _role;
         },
+      },
+    });
+  };
+
+  vm.editActions = function editActions(role) {
+    $uibModal.open({
+      keyboard : false,
+      backdrop : 'static',
+      templateUrl : 'modules/roles/modal/roleActions.html',
+      controller : 'RoleActionsController as RoleActionsCtrl',
+      resolve : {
+        data : () => role,
       },
     });
   };
@@ -58,8 +72,17 @@ function RolesController($uibModal, RolesService, session, Modal, Notify) {
       });
   };
 
+  function checkRoleEditonAllowability() {
+    RolesService.userHasAction(bhConstants.actions.CAN_EDIT_ROLES)
+      .then(response => {
+        vm.canEditRoles = response.data;
+      })
+      .catch(Notify.handleError);
+  }
+
   function loadRoles() {
     vm.loading = true;
+    checkRoleEditonAllowability();
     RolesService.list(session.project.id)
       .then(response => {
         vm.gridOptions.data = response.data;
