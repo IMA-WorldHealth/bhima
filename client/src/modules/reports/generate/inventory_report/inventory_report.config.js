@@ -6,11 +6,13 @@ InventoryReportConfigController.$inject = [
   'LanguageService', 'moment',
 ];
 
-function InventoryReportConfigController($sce, Notify, SavedReports, AppCache, reportData, $state,
-  Languages, moment) {
-  var vm = this;
-  var cache = new AppCache('configure_stock_report');
-  var reportUrl = 'reports/stock/inventories';
+function InventoryReportConfigController(
+  $sce, Notify, SavedReports, AppCache, reportData, $state,
+  Languages, moment
+) {
+  const vm = this;
+  const cache = new AppCache('configure_stock_report');
+  const reportUrl = 'reports/stock/inventories';
 
   vm.previewGenerated = false;
 
@@ -39,16 +41,13 @@ function InventoryReportConfigController($sce, Notify, SavedReports, AppCache, r
   };
 
   vm.preview = function preview(form) {
-    var options;
-    var params;
-
     if (form.$invalid) { return 0; }
 
     if (!vm.chooseOneDepot) { vm.depot = {}; }
 
     if (!vm.chooseOneInventory) { vm.inventory = {}; }
 
-    params = {
+    const params = {
       depot_uuid : vm.depot.uuid,
       inventory_uuid : vm.inventory.uuid,
       inventory_delay : vm.delay,
@@ -56,21 +55,21 @@ function InventoryReportConfigController($sce, Notify, SavedReports, AppCache, r
       dateTo : vm.dateTo,
     };
 
-     // update cached configuration
+    // update cached configuration
     cache.reportDetails = angular.copy(params);
 
     // format date for the server
     params.dateTo = moment(params.dateTo).format('YYYY-MM-DD');
 
-    options = {
-      params : params,
+    const options = {
+      params,
       lang : Languages.key,
     };
 
     vm.reportDetails = options;
 
     return SavedReports.requestPreview(reportUrl, reportData.id, angular.copy(vm.reportDetails))
-      .then(function (result) {
+      .then((result) => {
         vm.previewGenerated = true;
         vm.previewResult = $sce.trustAsHtml(result);
       })
@@ -78,14 +77,14 @@ function InventoryReportConfigController($sce, Notify, SavedReports, AppCache, r
   };
 
   vm.requestSaveAs = function requestSaveAs() {
-    var options = {
+    const options = {
       url : reportUrl,
       report : reportData,
       reportOptions : angular.copy(vm.reportDetails),
     };
 
     return SavedReports.saveAsModal(options)
-      .then(function () {
+      .then(() => {
         $state.go('reportsBase.reportsArchive', { key : options.report.report_key });
       })
       .catch(Notify.handleError);

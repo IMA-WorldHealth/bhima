@@ -54,7 +54,10 @@
       <div class="row">
         <div class="col-md-6 col-xs-12">
           <!-- date -->
-          <bh-date-editor date-value="StockCtrl.movement.date" max-date="StockCtrl.timestamp">
+          <bh-date-editor
+            date-value="StockCtrl.movement.date"
+            max-date="StockCtrl.timestamp"
+            on-change="StockCtrl.onDateChange(date)">
           </bh-date-editor>
 
           <!-- note -->
@@ -90,7 +93,7 @@
       </div>
 
       <!-- grid -->
-      <div 
+      <div
         id="stock-entry-grid"
         ui-grid="StockCtrl.gridOptions"
         style="height: 300px; width: 100%;"

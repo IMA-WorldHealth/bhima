@@ -4,7 +4,7 @@ angular.module('bhima.services')
 VoucherToolkitService.$inject = ['$uibModal'];
 
 function VoucherToolkitService(Modal) {
-  var service = this;
+  const service = this;
 
   // expose the service
   service.open = open;
@@ -83,13 +83,13 @@ function VoucherToolkitService(Modal) {
       throw new Error('Toolkit.open() requires a controller or templateUrl!');
     }
 
-    var instance = Modal.open({
+    const instance = Modal.open({
       templateUrl  : option.templateUrl,
       controller   : option.controller,
       controllerAs : 'ToolCtrl',
       size         : 'md',
       backdrop     : 'static',
-      resolve      : { data: function () { return option; } },
+      resolve      : { data() { return option; } },
     });
 
     return instance.result;

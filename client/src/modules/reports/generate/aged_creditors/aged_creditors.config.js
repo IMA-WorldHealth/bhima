@@ -6,9 +6,9 @@ AgedCreditorsConfigController.$inject = [
 ];
 
 function AgedCreditorsConfigController($sce, Notify, SavedReports, AppCache, reportData, $state) {
-  var vm = this;
-  var cache = new AppCache('configure_aged_creditors');
-  var reportUrl = 'reports/finance/creditors/aged';
+  const vm = this;
+  const cache = new AppCache('configure_aged_creditors');
+  const reportUrl = 'reports/finance/creditors/aged';
 
   vm.previewGenerated = false;
   vm.reportDetails = {};
@@ -21,14 +21,14 @@ function AgedCreditorsConfigController($sce, Notify, SavedReports, AppCache, rep
   };
 
   vm.requestSaveAs = function requestSaveAs() {
-    var options = {
+    const options = {
       url : reportUrl,
       report : reportData,
       reportOptions : angular.copy(vm.reportDetails),
     };
 
     return SavedReports.saveAsModal(options)
-      .then(function () {
+      .then(() => {
         $state.go('reportsBase.reportsArchive', { key : options.report.report_key });
       })
       .catch(Notify.handleError);
@@ -41,14 +41,14 @@ function AgedCreditorsConfigController($sce, Notify, SavedReports, AppCache, rep
     cache.reportDetails = angular.copy(vm.reportDetails);
 
     return SavedReports.requestPreview(reportUrl, reportData.id, angular.copy(vm.reportDetails))
-      .then(function (result) {
+      .then((result) => {
         vm.previewGenerated = true;
         vm.previewResult = $sce.trustAsHtml(result);
       })
       .catch(Notify.handleError);
   };
 
-  vm.onSelectPeriod =  function onSelectPeriod(period){
+  vm.onSelectPeriod = function onSelectPeriod(period) {
     vm.reportDetails.date = period.end_date;
   };
 

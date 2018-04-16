@@ -10,9 +10,9 @@ function AccountReportConfigController(
   $sce, Notify, SavedReports, AppCache, reportData, $state,
   Moment, Session
 ) {
-  var vm = this;
-  var cache = new AppCache('configure_account_report');
-  var reportUrl = 'reports/finance/account_report';
+  const vm = this;
+  const cache = new AppCache('configure_account_report');
+  const reportUrl = 'reports/finance/account_report';
 
   vm.previewGenerated = false;
 
@@ -38,11 +38,9 @@ function AccountReportConfigController(
   };
 
   vm.requestSaveAs = function requestSaveAs() {
-    var options;
     parseDateInterval(vm.reportDetails);
 
-    // @FIXME
-    options = {
+    const options = {
       url : reportUrl,
       report : reportData,
       reportOptions : sanitiseDateStrings(vm.reportDetails),
@@ -74,7 +72,7 @@ function AccountReportConfigController(
   };
 
   function sanitiseDateStrings(options) {
-    var sanitisedOptions = angular.copy(options);
+    const sanitisedOptions = angular.copy(options);
     sanitisedOptions.dateTo = Moment(sanitisedOptions.dateTo).format('YYYY-MM-DD');
     sanitisedOptions.dateFrom = Moment(sanitisedOptions.dateFrom).format('YYYY-MM-DD');
     return sanitisedOptions;

@@ -23,7 +23,7 @@ function ComplexJournalVoucherController(
   Vouchers, Currencies, Session, FindEntity, FindReference, Notify, Toolkit,
   Receipts, bhConstants, uiGridConstants, VoucherForm, $timeout
 ) {
-  var vm = this;
+  const vm = this;
 
   // bind constants
   vm.bhConstants = bhConstants;
@@ -54,7 +54,7 @@ function ComplexJournalVoucherController(
     enableSorting     : false,
     enableColumnMenus : false,
     showColumnFooter  : true,
-    onRegisterApi     : onRegisterApi,
+    onRegisterApi,
   };
 
   function onRegisterApi(api) {
@@ -111,7 +111,7 @@ function ComplexJournalVoucherController(
    * @param {object} result
    */
   function updateView(result) {
-    $timeout(function update() {
+    $timeout(() => {
       // transaction type
       vm.Voucher.details.type_id = result.type_id || vm.Voucher.details.type_id;
 
@@ -131,8 +131,8 @@ function ComplexJournalVoucherController(
    * @description remove null rows
    */
   function removeNullRows() {
-    var gridData = JSON.parse(JSON.stringify(vm.gridOptions.data));
-    gridData.forEach(function removeItems(item) {
+    const gridData = JSON.parse(JSON.stringify(vm.gridOptions.data));
+    gridData.forEach((item) => {
       if (!item.account_id) {
         vm.Voucher.store.remove(item.uuid);
       }
@@ -149,8 +149,8 @@ function ComplexJournalVoucherController(
 
   // load the available currencies
   Currencies.read()
-    .then(function (currencies) {
-      currencies.forEach(function (currency) {
+    .then((currencies) => {
+      currencies.forEach((currency) => {
         currency.label = Currencies.format(currency.id);
       });
       vm.currencies = currencies;
@@ -160,7 +160,7 @@ function ComplexJournalVoucherController(
   /** Entity modal */
   function openEntityModal(row) {
     FindEntity.openModal()
-      .then(function (entity) {
+      .then((entity) => {
         row.entity = entity;
       });
   }
@@ -168,8 +168,8 @@ function ComplexJournalVoucherController(
   /** Reference modal */
   function openReferenceModal(row) {
     FindReference.openModal(row.entity)
-      .then(function (doc) {
-        row.configure({ document: doc });
+      .then((doc) => {
+        row.configure({ document : doc });
       });
   }
 
@@ -187,7 +187,7 @@ function ComplexJournalVoucherController(
   /* ============================= Transaction Type ============================= */
 
   Vouchers.transactionType()
-    .then(function (list) {
+    .then((list) => {
       vm.types = list;
     })
     .catch(Notify.handleError);
@@ -248,25 +248,22 @@ function ComplexJournalVoucherController(
 
   /** submit data */
   function submit(form) {
-    var valid;
-    var voucher;
-
     // stop submission if the form is invalid
     if (form.$invalid) {
       return Notify.danger('VOUCHERS.COMPLEX.INVALID_VALUES');
     }
 
-    valid = vm.Voucher.validate();
+    const valid = vm.Voucher.validate();
 
     if (!valid) {
       return Notify.danger(vm.Voucher._error);
     }
 
-    voucher = vm.Voucher.details;
+    const voucher = vm.Voucher.details;
     voucher.items = vm.Voucher.store.data;
 
     return Vouchers.create(voucher)
-      .then(function (result) {
+      .then((result) => {
         Receipts.voucher(result.uuid, true);
         vm.Voucher.clear();
         form.$setPristine();

@@ -18,6 +18,10 @@ function BalanceReportConfigController($sce, Notify, SavedReports, AppCache, rep
     vm.reportDetails.period_id = period.id;
   };
 
+  vm.onDateChange = date => {
+    vm.date = date;
+  };
+
   vm.clearPreview = function clearPreview() {
     vm.previewGenerated = false;
     vm.previewResult = null;

@@ -27,12 +27,16 @@ function PatientInvoiceController(
   vm.ROW_ERROR_FLAG = Constants.grid.ROW_ERROR_FLAG;
   vm.FORBID_PRICE_CHANGES = (Session.enterprise.settings.enable_price_lock);
 
+  // bind the date's onChange() function
+  vm.onDateChange = (date) => {
+    vm.Invoice.details.date = date;
+  };
+
   // application constants
   vm.maxLength = util.maxTextLength;
   vm.minimumDate = util.minimumDate;
   vm.itemIncrement = 1;
   vm.onPatientSearchApiCallback = onPatientSearchApiCallback;
-
 
   const gridOptions = {
     appScopeProvider : vm,
@@ -76,7 +80,6 @@ function PatientInvoiceController(
     onRegisterApi : exposeGridScroll,
     data : vm.Invoice.store.data,
   };
-
 
     // called when the grid is initialized
   function exposeGridScroll(gridApi) {

@@ -17,10 +17,10 @@ VoucherScanBarcodeController.$inject = [
  * @todo - refactor this whole thing into a component.
 */
 function VoucherScanBarcodeController($state, Notify, Barcodes, Patients, DebtorGroups, bhConstants, Instance, $timeout, Invoices, RS, $translate) {
-  var vm = this;
-  var id = $state.params.id;
+  const vm = this;
+  const id = $state.params.id;
 
-  var MODAL_CLOSE_TIMEOUT = 0;
+  const MODAL_CLOSE_TIMEOUT = 0;
 
   vm.triggerBarcodeRead = triggerBarcodeRead;
   vm.dismiss = dismiss;
@@ -65,35 +65,35 @@ function VoucherScanBarcodeController($state, Notify, Barcodes, Patients, Debtor
     vm.step = vm.LOADING;
 
     Barcodes.search(barcode)
-      .then(function (invoice) {
+      .then((invoice) => {
         vm.invoice = invoice;
         return Invoices.balance(invoice.uuid);
       })
-      .then(function (balance) {
+      .then((balance) => {
         vm.balance = balance;
         return Patients.read(null, { debtor_uuid : vm.invoice.debtor_uuid });
       })
-      .then(function (patients) {
+      .then((patients) => {
 
         // de-structure search array
-        var patient = patients[0];
+        const patient = patients[0];
 
         vm.patient = patient;
 
         return DebtorGroups.read(patient.debtor_group_uuid);
       })
-      .then(function (group) {
+      .then((group) => {
 
         // TODO - move all data gathering to a barcode component
-        var data = {
+        const data = {
           patient : vm.patient,
           invoice : vm.invoice,
           balance : vm.balance,
-          group : group
+          group,
         };
 
         // format the data as needed before returning to the parent controller
-        var fmt = barcodeDataFinalizerFn(data);
+        const fmt = barcodeDataFinalizerFn(data);
 
         // emit the configuration event
         RS.$broadcast('voucher:configure', fmt);
@@ -101,14 +101,14 @@ function VoucherScanBarcodeController($state, Notify, Barcodes, Patients, Debtor
         vm.step = vm.READ_SUCCESS;
 
         // close the modal after a timeout
-        $timeout(function () {
+        $timeout(() => {
           Instance.close();
         }, MODAL_CLOSE_TIMEOUT, false);
       })
-      .catch(function (error) {
+      .catch((error) => {
         vm.step = vm.READ_ERROR;
       })
-      .finally(function () {
+      .finally(() => {
         toggleFlickerAnimation();
       });
   }
@@ -119,7 +119,7 @@ function VoucherScanBarcodeController($state, Notify, Barcodes, Patients, Debtor
     data.description = $translate.instant('VOUCHERS.TYPES.SUPPORT_PAYMENT_DESCRIPTION', {
       patientName : data.patient.display_name,
       patientReference : data.patient.reference,
-      invoiceReference : data.invoice.reference
+      invoiceReference : data.invoice.reference,
     });
 
     data.debit = {

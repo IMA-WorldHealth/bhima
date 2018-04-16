@@ -27,6 +27,10 @@ function StockAdjustmentController(
   vm.Stock = new StockForm('StockAdjustment');
   vm.movement = {};
 
+  vm.onDateChange = date => {
+    vm.movement.date = date;
+  };
+
   // bind constants
   vm.enterprise = Session.enterprise;
   vm.maxLength = util.maxLength;
@@ -221,7 +225,7 @@ function StockAdjustmentController(
     movement.lots = lots;
 
     return Stock.movements.create(movement)
-      .then((document) => {
+      .then(document => {
         vm.Stock.store.clear();
         ReceiptModal.stockAdjustmentReceipt(document.uuid, fluxId);
       })

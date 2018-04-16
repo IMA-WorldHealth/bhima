@@ -43,7 +43,7 @@ function scanBarcodeModal($state, Modal) {
     size        : 'lg',
     backdrop    : 'static',
     keyboard    : true,
-  }).result.finally(function () {
+  }).result.finally(() => {
     $state.go('simpleVouchers');
   });
 }

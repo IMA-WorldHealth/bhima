@@ -1,9 +1,8 @@
 angular.module('bhima.controllers')
-.controller('OffdayManagementController', OffdayManagementController);
+  .controller('OffdayManagementController', OffdayManagementController);
 
 OffdayManagementController.$inject = [
-  'OffdayService', 'ModalService',
-  'NotifyService', 'uiGridConstants', '$state', 'SessionService',
+  'OffdayService', 'ModalService', 'NotifyService', 'uiGridConstants', '$state',
 ];
 
 /**
@@ -12,9 +11,8 @@ OffdayManagementController.$inject = [
  * This controller is about the Offday management module in the admin zone
  * It's responsible for creating, editing and updating a Offday
  */
-function OffdayManagementController(Offdays, ModalService,
-  Notify, uiGridConstants, $state, Session) {
-  var vm = this;
+function OffdayManagementController(Offdays, ModalService, Notify, uiGridConstants, $state) {
+  const vm = this;
 
   // bind methods
   vm.deleteOffday = deleteOffday;
@@ -25,20 +23,21 @@ function OffdayManagementController(Offdays, ModalService,
   vm.gridApi = {};
   vm.filterEnabled = false;
 
-  var gridColumn =
-    [
-    
-      { field : 'label', displayName : 'FORM.LABELS.DESIGNATION', headerCellFilter : 'translate' },
-      { field : 'date', displayName : 'FORM.LABELS.DATE', cellFilter : 'date', headerCellFilter : 'translate' },
-      { field : 'percent_pay', displayName : 'FORM.LABELS.PERCENTAGE', headerCellFilter : 'translate' },
-      { field : 'action',
-        width : 80,
-        displayName : '',
-        cellTemplate : '/modules/offdays/templates/action.tmpl.html',
-        enableSorting : false,
-        enableFiltering : false,
-      },
-    ];
+  const columns = [
+    { field : 'label', displayName : 'FORM.LABELS.DESIGNATION', headerCellFilter : 'translate' },
+    {
+      field : 'date', displayName : 'FORM.LABELS.DATE', cellFilter : 'date', headerCellFilter : 'translate',
+    },
+    { field : 'percent_pay', displayName : 'FORM.LABELS.PERCENTAGE', headerCellFilter : 'translate' },
+    {
+      field : 'action',
+      width : 80,
+      displayName : '',
+      cellTemplate : '/modules/offdays/templates/action.tmpl.html',
+      enableSorting : false,
+      enableFiltering : false,
+    },
+  ];
 
   // options for the UI grid
   vm.gridOptions = {
@@ -48,7 +47,7 @@ function OffdayManagementController(Offdays, ModalService,
     flatEntityAccess  : true,
     enableSorting     : true,
     onRegisterApi     : onRegisterApiFn,
-    columnDefs : gridColumn,
+    columnDefs : columns,
   };
 
   function onRegisterApiFn(gridApi) {
@@ -65,28 +64,28 @@ function OffdayManagementController(Offdays, ModalService,
     vm.loading = true;
 
     Offdays.read()
-    .then(function (data) {
-      vm.gridOptions.data = data;
-    })
-    .catch(Notify.handleError)
-    .finally(function () {
-      vm.loading = false;
-    });
+      .then((data) => {
+        vm.gridOptions.data = data;
+      })
+      .catch(Notify.handleError)
+      .finally(() => {
+        vm.loading = false;
+      });
   }
 
   // switch to delete warning mode
   function deleteOffday(title) {
     ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
-    .then(function (bool) {
-      if (!bool) { return; }
+      .then((bool) => {
+        if (!bool) { return; }
 
-      Offdays.delete(title.id)
-      .then(function () {
-        Notify.success('FORM.INFO.DELETE_SUCCESS');
-        loadOffdays();
-      })
-      .catch(Notify.handleError);
-    });
+        Offdays.delete(title.id)
+          .then(() => {
+            Notify.success('FORM.INFO.DELETE_SUCCESS');
+            loadOffdays();
+          })
+          .catch(Notify.handleError);
+      });
   }
 
   // update an existing Offday

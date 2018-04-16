@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 CashController.$inject = [
   'CashService', 'CashboxService', 'AppCache', 'CurrencyService',
   'SessionService', 'ModalService', 'NotifyService', '$state',
-  'ReceiptModal', 'CashFormService', '$q', '$rootScope'
+  'ReceiptModal', 'CashFormService', '$q', '$rootScope',
 ];
 
 /**
@@ -17,14 +17,14 @@ CashController.$inject = [
  * functionality to pay both in multiple currencies.
  */
 function CashController(Cash, Cashboxes, AppCache, Currencies, Session, Modals, Notify, $state, Receipts, CashForm, $q, RS) {
-  var vm = this;
+  const vm = this;
 
-  var cacheKey = 'CashPayments';
+  const cacheKey = 'CashPayments';
   // persist cash data across sessions
-  var cache = AppCache(cacheKey);
+  const cache = AppCache(cacheKey);
 
   /* id of the currently select cashbox */
-  var cashboxId = $state.params.id || (cache.cashbox && cache.cashbox.id);
+  const cashboxId = $state.params.id || (cache.cashbox && cache.cashbox.id);
 
   // if no id, re-route to 'cash.select'
   if (!cashboxId) {
@@ -34,7 +34,7 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Session, Modals, 
   // localstorage params.  This doesn't actually reload anything .. it just changes
   // the URL.
   } else if (cashboxId && !$state.params.id) {
-    $state.go('^.window', { id : cashboxId }, { location: 'replace'});
+    $state.go('^.window', { id : cashboxId }, { location : 'replace' });
   }
 
   // this is the cache payment form
@@ -44,7 +44,7 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Session, Modals, 
   vm.enterprise = Session.enterprise;
 
   // this toggles whether the form should re-enter the checkbox state
-  var DEFAULT_BARCODE_CHECKBOX_STATE = true;
+  const DEFAULT_BARCODE_CHECKBOX_STATE = true;
 
   // bind methods
   vm.submit = submit;
@@ -62,21 +62,21 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Session, Modals, 
     vm.openBarcodeModalOnSuccess = (cache.openBarcodeModalOnSuccess || DEFAULT_BARCODE_CHECKBOX_STATE);
 
     Currencies.read()
-      .then(function (currencies) {
+      .then((currencies) => {
         vm.currencies = currencies;
         return Cashboxes.read(cashboxId);
       })
-      .then(function (cashbox) {
+      .then((cashbox) => {
 
         // set the cashbox selection in localstorage and recalculate disabled ids
         setCashboxSelection(cashbox);
       })
-      .catch(function (error) {
+      .catch((error) => {
 
         // if we hit a 404 error, we don't have a valid cashbox and do not show
         // the error.
         if (error.status === 404) {
-          $state.go('^.select', {}, { notify: false});
+          $state.go('^.select', {}, { notify : false });
           return;
         }
 
@@ -97,16 +97,16 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Session, Modals, 
     $state.go('cash.debtors', {
       id : vm.cashbox.id,
       debtor_uuid : vm.Payment.details.debtor_uuid,
-      invoices: vm.Payment.details.invoices
-        .map(function (invoice) {
+      invoices : vm.Payment.details.invoices
+        .map((invoice) => {
           return invoice.uuid;
-        })
+        }),
     });
   }
 
   // submits the form to the server
   function submit(form) {
-    if (form.$invalid) { return; }
+    if (form.$invalid) { return 0; }
 
     // be sure the cashbox is set
     vm.Payment.setCashbox(vm.cashbox);
@@ -114,9 +114,9 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Session, Modals, 
     cache.openBarcodeModalOnSuccess = vm.openBarcodeModalOnSuccess;
 
     // patient invoices are covered by caution
-    var hasCaution = vm.Payment.messages.hasPositiveAccountBalance;
-    var isCaution = vm.Payment.isCaution();
-    var hasInvoices = vm.Payment.details.invoices && vm.Payment.details.invoices.length > 0;
+    const hasCaution = vm.Payment.messages.hasPositiveAccountBalance;
+    const isCaution = vm.Payment.isCaution();
+    const hasInvoices = vm.Payment.details.invoices && vm.Payment.details.invoices.length > 0;
 
     // if the this is not a caution payment, but no invoices are selected,
     // raise an error.
@@ -125,39 +125,40 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Session, Modals, 
     }
 
     return $q.resolve()
-      .then(function () {
+      .then(() => {
         return hasCaution ?
           Modals.confirm('CASH.CONFIRM_PAYMENT_WHEN_CAUTION') : true;
       })
-      .then(function (allowPaymentWithCaution) {
+      .then(allowPaymentWithCaution => {
         if (allowPaymentWithCaution) {
           return submitPayment(form);
         }
+        return null;
       });
   }
 
   // submit payment
   function submitPayment(form) {
     // make a copy of the data before submitting
-    var copy = angular.copy(vm.Payment.details);
+    const copy = angular.copy(vm.Payment.details);
 
     // format the cash payment description
-    var cachedPaymentDescription = copy.description;
+    const cachedPaymentDescription = copy.description;
 
     // TODO - find a much better way of doing this.  This seems quite ... hacky
     copy.description = Cash.formatCashDescription(vm.Payment.patient, copy)
       .concat(' -- ', cachedPaymentDescription);
 
     return Cash.create(copy)
-      .then(function (response) {
+      .then((response) => {
         return Receipts.cash(response.uuid, true);
       })
-      .then(function () {
+      .then(() => {
         // clear and refresh the form
         clear(form);
 
         if (vm.openBarcodeModalOnSuccess) {
-          $state.go('^.scan', { id: vm.cashbox.id });
+          $state.go('^.scan', { id : vm.cashbox.id });
         }
       })
       .catch(Notify.handleError);
@@ -173,7 +174,7 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Session, Modals, 
     form.$setPristine();
   }
 
-  RS.$on('cash:configure', function (event, data) {
+  RS.$on('cash:configure', (event, data) => {
     vm.Payment.configure(data);
 
     // if the patient UUID is provided, search by that patient
