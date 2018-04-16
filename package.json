@@ -4,11 +4,10 @@
   "description": "A rural hospital information management system.",
   "main": "npm run build",
   "scripts": {
-    "app": "cross-env NODE_ENV=production gulp build && cd bin && set NODE_ENV=production && node server/app.js",
-    "dev": "cross-env gulp build && cd bin && set NODE_ENV=development && node server/app.js",
+    "app": "cross-env NODE_ENV=production gulp build && cd bin && NODE_ENV=production node server/app.js",
+    "dev": "cross-env NODE_ENV=development gulp build && cd bin && NODE_ENV=development node server/app.js",
     "test": "./sh/test.sh",
     "test:integration": "./sh/integration-tests.sh",
-    "test:reports": "./sh/report-tests.sh",
     "test:ends": "./sh/test-ends.sh",
     "test:client-unit": "./node_modules/.bin/karma start --single-run --no-auto-watch --concurrency 1 karma.conf.js",
     "test:server-unit": "./node_modules/.bin/mocha --recursive --exit test/server-unit",
