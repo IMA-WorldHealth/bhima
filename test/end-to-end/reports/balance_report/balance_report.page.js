@@ -1,10 +1,3 @@
-/* global browser, element, by */
-
-const chai = require('chai');
-const helpers = require('../../shared/helpers');
-
-helpers.configure(chai);
-
 const FU = require('../../shared/FormUtils');
 const ReportPage = require('../page');
 const components = require('../../shared/components');
@@ -15,14 +8,16 @@ class BalanceReportPage {
   }
 
   // preview an account report
-  showBalanceReportPreview(date) {
-    components.dateEditor.set(date);
+  showBalanceReportPreview(period) {
+    components.reportPeriodSelect.set(period);
+    components.yesNoRadios.set('yes', 'useSeparateDebitsAndCredits');
+    components.yesNoRadios.set('yes', 'shouldPruneEmptyRows');
     this.page.preview();
   }
 
   // save an account report
-  saveBalanceReport(date, reportName, reportFormat) {
-    this.showBalanceReportPreview(date);
+  saveBalanceReport(period, reportName, reportFormat) {
+    this.showBalanceReportPreview(period);
 
     // save report as PDF
     this.page.saveAs();

@@ -1,8 +1,10 @@
+<!doctype html>
+<html>
 {{> head title="TREE.BALANCE"}}
 
 <body>
 
-<div class="container">
+<main class="container">
   {{> header}}
 
   <!-- body  -->
@@ -14,71 +16,172 @@
         {{translate 'REPORT.BALANCE'}}
       </h2>
 
-      <h4 class="text-center text-capitalize">
-        <strong>{{translate session.classe_name}}</strong>
-      </h4>
-
       <h4 class="text-center">
-        {{#if session.date}}
-          <span class="text-capitalize">{{translate "FORM.LABELS.UNTIL_PERIOD"}}</span> 
-          <strong class="text-capitalize">{{date session.date "MMMM YYYY"}}</strong>
+        {{#if period.start_date}}
+          <span class="text-capitalize">{{translate "FORM.LABELS.UNTIL_PERIOD"}}</span>
+          <strong class="text-capitalize">{{date period.start_date "MMMM YYYY"}}</strong>
         {{/if}}
       </h4>
 
       <!-- data  -->
       <table class="table table-condensed table-report">
         <thead>
-          <tr style="background-color:#ddd;">
-            <th rowspan="2" class="text-center">{{translate "FORM.LABELS.ACCOUNT"}}</th>
-            <th colspan="2" class="text-center">
-              {{translate "BALANCE.OLD_SOLD"}} <br>
-              <small>{{#if session.date}} &lt; {{date session.date "MMMM"}}{{/if}}</small>
-            </th>
-            <th colspan="2" class="text-center">
-              {{translate "BALANCE.MONTH_SOLD"}} <br>
-              <small>{{#if session.date}}{{date session.date "MMMM YYYY"}}{{/if}}</small>
-            </th>
-            <th colspan="2" class="text-center">
-              {{translate "BALANCE.NEW_SOLD"}} <br>
-              <small>{{#if session.date}}{{date session.date "MMMM YYYY"}}{{/if}}</small>
-            </th>
-          </tr>
-          <tr style="background-color:#ddd;">
-            <th class="text-center">{{translate "FORM.LABELS.DEBIT"}}</th>
-            <th class="text-center">{{translate "FORM.LABELS.CREDIT"}}</th>
-            <th class="text-center">{{translate "FORM.LABELS.DEBIT"}}</th>
-            <th class="text-center">{{translate "FORM.LABELS.CREDIT"}}</th>
-            <th class="text-center">{{translate "FORM.LABELS.DEBIT"}}</th>
-            <th class="text-center">{{translate "FORM.LABELS.CREDIT"}}</th>
-          </tr>
+          {{! only shown if we are separating the debit and credit columns }}
+          {{#if useSeparateDebitsAndCredits}}
+            <tr style="background-color:#ddd;">
+              <th class="text-center" rowspan="2" style="vertical-align:middle">
+                {{translate "FORM.LABELS.ACCOUNT"}}
+              </th>
+              <th colspan="2" class="text-center">
+                {{translate "BALANCE.OLD_SOLD"}} <br>
+                <small class="text-capitalize">&lt; {{date period.start_date "MMMM YYYY"}}</small>
+              </th>
+              <th colspan="2" class="text-center">
+                {{translate "BALANCE.MONTH_SOLD"}} <br>
+                <small class="text-capitalize">{{date period.start_date "MMMM YYYY"}}</small>
+              </th>
+              <th colspan="2" class="text-center">
+                {{translate "BALANCE.NEW_SOLD"}} <br>
+                <small class="text-capitalize">&gt; {{date period.start_date "MMMM YYYY"}}</small>
+              </th>
+            </tr>
+          {{else}}
+            <tr style="background-color:#ddd;">
+              <th class="text-center">
+                {{translate "FORM.LABELS.ACCOUNT"}}
+              </th>
+              <th class="text-center">
+                {{translate "BALANCE.OLD_SOLD"}} <br>
+                <small class="text-capitalize">&lt; {{date period.start_date "MMMM YYYY"}}</small>
+              </th>
+              <th class="text-center">
+                {{translate "BALANCE.MONTH_SOLD"}} <br>
+                <small class="text-capitalize">{{date period.start_date "MMMM YYYY"}}</small>
+              </th>
+              <th class="text-center">
+                {{translate "BALANCE.NEW_SOLD"}} <br>
+                <small class="text-capitalize">&gt; {{date period.start_date "MMMM YYYY"}}</small>
+              </th>
+            </tr>
+          {{/if}}
+
+          {{! separating debits and credits requires an additional header to name each column }}
+          {{#if useSeparateDebitsAndCredits}}
+            <tr style="background-color:#ddd;">
+              <th class="text-center">{{translate "FORM.LABELS.DEBIT"}}</th>
+              <th class="text-center">{{translate "FORM.LABELS.CREDIT"}}</th>
+              <th class="text-center">{{translate "FORM.LABELS.DEBIT"}}</th>
+              <th class="text-center">{{translate "FORM.LABELS.CREDIT"}}</th>
+              <th class="text-center">{{translate "FORM.LABELS.DEBIT"}}</th>
+              <th class="text-center">{{translate "FORM.LABELS.CREDIT"}}</th>
+            </tr>
+          {{/if}}
         </thead>
         <tbody>
           {{#each accounts as |account|}}
-          <tr class="text-right">
-            <td class="text-left"><b>{{ account.number }}</b> - {{ account.label }}</td>
-            <td>{{#if account.beginDebit}}{{currency account.beginDebit ../metadata.enterprise.currency_id }}{{/if}}</td>
-            <td>{{#if account.beginCredit}}{{currency account.beginCredit ../metadata.enterprise.currency_id }}{{/if}}</td>
-            <td>{{#if account.middleDebit}}{{currency account.middleDebit ../metadata.enterprise.currency_id }}{{/if}}</td>
-            <td>{{#if account.middleCredit}}{{currency account.middleCredit ../metadata.enterprise.currency_id }}{{/if}}</td>
-            <td>{{#if account.endDebit}}{{currency account.endDebit ../metadata.enterprise.currency_id }}{{/if}}</td>
-            <td>{{#if account.endCredit}}{{currency account.endCredit ../metadata.enterprise.currency_id }}{{/if}}</td>
-          </tr>
+            <tr class="text-right" {{#if account.isTitleAccount}}style="font-weight:bold;"{{/if}}>
+              <td class="text-left">
+                <span style="padding-left: calc(10px * {{account.depth}})">{{ account.number }} - {{ account.label }}</span>
+              </td>
+
+              {{#if ../useSeparateDebitsAndCredits}}
+                {{#if account.before}}
+                  {{#gt account.before 0}}
+                    <td>{{currency account.before account.currencyId }}</td>
+                    <td></td>
+                  {{else}}
+                    <td></td>
+                    <td>{{currency account.before account.currencyId }}</td>
+                  {{/gt}}
+                {{else}}
+                  <td></td>
+                  <td></td>
+                {{/if}}
+              {{else}}
+                <td>{{#if account.before}}{{debcred account.before account.currencyId }}{{/if}}</td>
+              {{/if}}
+
+              {{#if ../useSeparateDebitsAndCredits}}
+                {{#if account.during}}
+                  {{#gt account.during 0}}
+                    <td>{{currency account.during account.currencyId }}</td>
+                    <td></td>
+                  {{else}}
+                    <td></td>
+                    <td>{{currency account.during account.currencyId }}</td>
+                  {{/gt}}
+                {{else}}
+                  <td></td>
+                  <td></td>
+                {{/if}}
+              {{else}}
+                <td>{{#if account.during}}{{debcred account.during account.currencyId }}{{/if}}</td>
+              {{/if}}
+
+              {{#if ../useSeparateDebitsAndCredits}}
+                {{#if account.after}}
+                  {{#gt account.after 0}}
+                    <td>{{currency account.after account.currencyId }}</td>
+                    <td></td>
+                  {{else}}
+                    <td></td>
+                    <td>{{currency account.after account.currencyId }}</td>
+                  {{/gt}}
+                {{else}}
+                  <td></td>
+                  <td></td>
+                {{/if}}
+              {{else}}
+                <td>{{#if account.after}}{{debcred account.after account.currencyId }}{{/if}}</td>
+              {{/if}}
+            </tr>
           {{/each}}
         </tbody>
+
         <tfoot>
-          <tr class="text-right" style="font-weight: bold; background-color: #efefef;">
+          <tr class="text-right" style="background-color: #efefef;">
             <th>{{translate "FORM.LABELS.TOTAL"}}</th>
-            <td>{{currency totals.beginDebit metadata.enterprise.currency_id }}</td>
-            <td>{{currency totals.beginCredit metadata.enterprise.currency_id }}</td>
-            <td>{{currency totals.middleDebit metadata.enterprise.currency_id }}</td>
-            <td>{{currency totals.middleCredit metadata.enterprise.currency_id }}</td>
-            <td>{{currency totals.endDebit metadata.enterprise.currency_id }}</td>
-            <td>{{currency totals.endCredit metadata.enterprise.currency_id }}</td>
+            {{#if useSeparateDebitsAndCredits}}
+              {{#gt totals.before 0}}
+                <th class="text-right">{{currency totals.before totals.currencyId }}</th>
+                <th class="text-right">{{currency 0 totals.currencyId }}</th>
+              {{else}}
+                <th class="text-right">{{currency 0 totals.currencyId }}</th>
+                <th class="text-right">{{currency totals.before totals.currencyId }}</th>
+              {{/gt}}
+            {{else}}
+              <th class="text-right">{{debcred totals.before totals.currencyId }}</th>
+            {{/if}}
+
+            {{#if useSeparateDebitsAndCredits}}
+              {{#gt totals.during 0}}
+                <th class="text-right">{{currency totals.during totals.currencyId }}</th>
+                <th class="text-right">{{currency 0 totals.currencyId }}</th>
+              {{else}}
+                <th class="text-right">{{currency 0 totals.currencyId }}</th>
+                <th class="text-right">{{currency totals.during totals.currencyId }}</th>
+              {{/gt}}
+            {{else}}
+              <th class="text-right">{{debcred totals.during totals.currencyId }}</th>
+            {{/if}}
+
+
+            {{#if useSeparateDebitsAndCredits}}
+              {{#gt totals.after 0}}
+                <th class="text-right">{{currency totals.after totals.currencyId }}</th>
+                <th class="text-right">{{currency 0 totals.currencyId }}</th>
+              {{else}}
+                <th class="text-right">{{currency 0 totals.currencyId }}</th>
+                <th class="text-right">{{currency totals.after totals.currencyId }}</th>
+              {{/gt}}
+            {{else}}
+              <th class="text-right">{{debcred totals.after totals.currencyId }}</th>
+            {{/if}}
           </tr>
         </tfoot>
       </table>
     </div>
   </div>
-
-</div>
+</main>
 </body>
+</html>

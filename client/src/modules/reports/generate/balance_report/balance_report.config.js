@@ -3,49 +3,42 @@ angular.module('bhima.controllers')
 
 BalanceReportConfigController.$inject = [
   '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state',
-  'LanguageService', 'moment',
 ];
 
-function BalanceReportConfigController($sce, Notify, SavedReports, AppCache, reportData, $state,
-  Languages, moment) {
-  var vm = this;
-  var cache = new AppCache('configure_balance_report');
-  var reportUrl = 'reports/finance/balance';
+function BalanceReportConfigController($sce, Notify, SavedReports, AppCache, reportData, $state) {
+  const vm = this;
+  const cache = new AppCache('BalanceReport');
+  const reportUrl = 'reports/finance/balance';
 
   vm.previewGenerated = false;
   vm.reportDetails = {};
   vm.timestamp = new Date();
-  vm.date = angular.copy(vm.timestamp);
+
+  vm.onSelectPeriod = (period) => {
+    vm.reportDetails.period_id = period.id;
+  };
 
   vm.clearPreview = function clearPreview() {
     vm.previewGenerated = false;
     vm.previewResult = null;
   };
 
+  vm.onChangeLayout = (bool) => {
+    vm.reportDetails.useSeparateDebitsAndCredits = bool;
+  };
+
+  vm.onChangeEmptyRows = (bool) => {
+    vm.reportDetails.shouldPruneEmptyRows = bool;
+  };
+
   vm.preview = function preview(form) {
-    var options;
-
     if (form.$invalid) { return 0; }
-
-    options = {
-      accountOption : vm.accountOption,
-      lang : Languages.key,
-    };
-
-    if (vm.dateOption === 'date-range') {
-      options.dateFrom = moment(vm.dateFrom).format('YYYY-MM-DD');
-      options.dateTo = moment(vm.dateTo).format('YYYY-MM-DD');
-    } else {
-      options.date = moment(vm.date).format('YYYY-MM-DD');
-    }
-
-    vm.reportDetails = options;
 
     // update cached configuration
     cache.reportDetails = angular.copy(vm.reportDetails);
 
     return SavedReports.requestPreview(reportUrl, reportData.id, angular.copy(vm.reportDetails))
-      .then(function (result) {
+      .then(result => {
         vm.previewGenerated = true;
         vm.previewResult = $sce.trustAsHtml(result);
       })
@@ -53,14 +46,14 @@ function BalanceReportConfigController($sce, Notify, SavedReports, AppCache, rep
   };
 
   vm.requestSaveAs = function requestSaveAs() {
-    var options = {
+    const options = {
       url : reportUrl,
       report : reportData,
       reportOptions : angular.copy(vm.reportDetails),
     };
 
     return SavedReports.saveAsModal(options)
-      .then(function () {
+      .then(() => {
         $state.go('reportsBase.reportsArchive', { key : options.report.report_key });
       })
       .catch(Notify.handleError);

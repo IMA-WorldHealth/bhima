@@ -12,45 +12,42 @@
  */
 
 const _ = require('lodash');
-const moment = require('moment');
 const db = require('../../../../lib/db');
+const Tree = require('../../../../lib/Tree');
 const ReportManager = require('../../../../lib/ReportManager');
 
 // report template
 const TEMPLATE = './server/controllers/finance/reports/balance/report.handlebars';
 
-// TODO(@jniles)
-// Not sure why this is structured this way
-const ASSET_ID = 1;
-const EXPENSE_ID = 5;
-const shouldShowCredit = (typeId) =>
-  [ASSET_ID, EXPENSE_ID].includes(typeId);
-
 // expose to the API
 exports.document = document;
 
+// default report parameters
+const DEFAULT_PARAMS = {
+  csvKey : 'accounts',
+  filename : 'TREE.BALANCE',
+  orientation : 'landscape',
+  footerRight : '[page] / [toPage]',
+};
+
+const TITLE_ID = 6;
+
 /**
  * @function document
- * @description process and render the balance report document
+ *
+ * @description
+ * This function renders the Balance report.  The balance report provides a view
+ * of the balances of any account used during the period.
  */
 function document(req, res, next) {
   const params = req.query;
-  const session = {};
+  const context = {};
   let report;
 
-  // date option
-  if (params.dateFrom && params.dateTo) {
-    session.dateFrom = moment(params.dateFrom).format('YYYY-MM-DD');
-    session.dateTo = moment(params.dateTo).format('YYYY-MM-DD');
-  } else {
-    session.date = moment(params.date).format('YYYY-MM-DD');
-  }
+  _.defaults(params, DEFAULT_PARAMS);
 
-  session.classe = params.classe;
-  session.classe_name = params.classe_name;
-  session.enterprise = req.session.enterprise;
-
-  _.defaults(params, { orientation : 'landscape', user : req.session.user });
+  context.useSeparateDebitsAndCredits = Number.parseInt(params.useSeparateDebitsAndCredits, 10);
+  context.shouldPruneEmptyRows = Number.parseInt(params.shouldPruneEmptyRows, 10);
 
   try {
     report = new ReportManager(TEMPLATE, req.session, params);
@@ -59,12 +56,12 @@ function document(req, res, next) {
     return;
   }
 
-  params.enterpriseId = session.enterprise.id;
-
-  balanceReporting(params)
-    .then(balances => processAccounts(balances))
-    .then((result) => report.render({ accounts : result.accounts, totals : result.totals, session }))
-    .then((result) => {
+  getBalanceSummary(params.period_id, req.session.enterprise.currency_id, context.shouldPruneEmptyRows)
+    .then(data => {
+      _.merge(context, data);
+      return report.render(context);
+    })
+    .then(result => {
       res.set(result.headers).send(result.report);
     })
     .catch(next)
@@ -72,151 +69,82 @@ function document(req, res, next) {
 }
 
 /**
- * @method processAccounts
- * @description process and format accounts balance
- * @param {object} balances The result of balanceReporting function
+ * @function getBalanceSummary(periodId, currencyId)
+ *
+ * @description
+ * Returns the balance of the accounts for a given period.
+ *
+ * TODO(@jniles) - use the currencyId to get an exchange rate.
+ *
  */
-function processAccounts(balances) {
-  // format and process opening balance for accounts
-
-  const accounts = balances.beginning.reduce((account, row) => {
-    const id = row.number;
-    const obj = {};
-    const sold = getSold(row);
-    obj.label = row.label;
-    obj.number = row.number;
-    obj.beginDebit = sold.debit;
-    obj.beginCredit = sold.credit;
-    obj.middleDebit = 0;
-    obj.middleCredit = 0;
-    account[id] = obj;
-    return account;
-  }, {});
-
-  // format and process the monthly balance for accounts
-  balances.middle.forEach((row) => {
-    const account = accounts[row.number] || {};
-    account.middleDebit = row.debit;
-    account.middleCredit = row.credit;
-    account.label = row.label;
-    account.number = row.number;
-    accounts[row.number] = account;
-  });
-
-  Object.keys(accounts).forEach((item) => {
-    accounts[item].endDebit = 0;
-    accounts[item].endCredit = 0;
-    const sold = (accounts[item].beginDebit || 0 - accounts[item].beginCredit || 0)
-      + (accounts[item].middleDebit - accounts[item].middleCredit);
-    if (sold < 0) {
-      accounts[item].endCredit = sold * -1;
-    } else {
-      accounts[item].endDebit = sold;
-    }
-  });
-
-  // process for getting totals
-  const vtotals = Object.keys(accounts)
-    .reduce((t, key) => {
-      const account = accounts[key];
-      t.beginDebit += (account.beginDebit || 0);
-      t.beginCredit += (account.beginCredit || 0);
-      t.middleDebit += (account.middleDebit || 0);
-      t.middleCredit += (account.middleCredit || 0);
-      t.endDebit += (account.endDebit || 0);
-      t.endCredit += (account.endCredit || 0);
-      return t;
-    }, {
-      beginDebit   : 0,
-      beginCredit  : 0,
-      middleDebit  : 0,
-      middleCredit : 0,
-      endDebit     : 0,
-      endCredit    : 0,
-    });
-
-  return { accounts, totals : vtotals };
-}
-
-/**
- * @function getSold
- * @description return the balance of an account
- * @param {object} object An object from the array returned by balanceReporting function
- */
-function getSold(item) {
-  let debit = 0;
-  let credit = 0;
-  let sold = 0;
-
-  if (shouldShowCredit(item.type_id)) {
-    sold = item.debit - item.credit;
-    if (sold < 0) {
-      credit = sold * -1;
-    } else {
-      debit = sold;
-    }
-  } else {
-    sold = item.credit - item.debit;
-    if (sold < 0) {
-      debit = sold * -1;
-    } else {
-      credit = sold;
-    }
-  }
-  return { debit, credit };
-}
-
-/**
- * @function balanceReporting
- * @description return the balance needed according the given params
- * @param {object} params An object which contains dates range and the account class
- */
-function balanceReporting(params) {
-  const query = params;
-  const data = {};
-
-  const sqlFiscalYear = `
-    SELECT id, number_of_months FROM fiscal_year WHERE DATE(?) BETWEEN DATE(start_date) AND DATE(end_date) LIMIT 1;
+function getBalanceSummary(periodId, currencyId, shouldPrune) {
+  const getFiscalYearSQL = `
+    SELECT id, start_date, end_date, fiscal_year_id FROM period WHERE id = ?
   `;
 
-  let sql;
-  let fiscal;
+  const sql = `
+    SELECT a.id, a.number, a.label, a.type_id, a.label, a.parent,
+      a.type_id = ${TITLE_ID} AS isTitleAccount,
+      IFNULL(s.before, 0) AS "before",
+      IFNULL(s.during, 0) AS "during",
+      IFNULL(s.after, 0) AS "after",
+      ? AS currencyId
+    FROM account AS a LEFT JOIN (
+      SELECT pt.account_id,
+        IF(p.id < ?, SUM(pt.debit - pt.credit), 0) AS "before",
+        IF(p.id = ?, SUM(pt.debit - pt.credit), 0) AS "during",
+        IF(p.id <= ?, SUM(pt.debit - pt.credit), 0) AS "after"
+      FROM period_total AS pt
+      JOIN period AS p ON p.id = pt.period_id
+      WHERE pt.fiscal_year_id = ?
+      GROUP BY pt.account_id
+    )s ON a.id = s.account_id
+    ORDER BY a.number;
+  `;
 
-  return db.one(sqlFiscalYear, [query.date])
-    .then((fiscalYear) => {
-      fiscal = fiscalYear;
+  const context = {};
 
-      sql = `
-        SELECT a.number, a.id, a.label, a.type_id,
-          SUM(pt.credit) AS credit, SUM(pt.debit) AS debit, SUM(pt.debit - pt.credit) AS balance
-        FROM period_total AS pt JOIN account AS a ON pt.account_id = a.id
-        JOIN period AS p ON pt.period_id = p.id
-        WHERE (p.end_date < DATE(?) OR p.number = 0) AND pt.enterprise_id = ? AND p.fiscal_year_id = ?
-        GROUP BY a.id HAVING balance <> 0;`;
+  // if the after result is 0, that means no movements occurred
+  const isEmptyRow = (row) => row.after === 0;
 
-      const queryParameters = [query.date, query.enterpriseId, fiscal.id];
-      return db.exec(sql, queryParameters);
+  return db.one(getFiscalYearSQL, [periodId])
+    .then(period => {
+      const params = _.fill(Array(3), period.id);
+      _.merge(context, { period });
+      return db.exec(sql, [currencyId, ...params, period.fiscal_year_id]);
     })
-    .then((rows) => {
-      data.beginning = rows;
+    .then(accounts => {
+      const tree = new Tree(accounts);
 
-      sql = `
-        SELECT a.number, a.label, a.id, a.type_id,
-        SUM(pt.credit) AS credit, SUM(pt.debit) AS debit, SUM(pt.debit - pt.credit) AS balance
-        FROM period_total AS pt JOIN account AS a ON pt.account_id = a.id
-        JOIN period AS p ON pt.period_id = p.id
-        WHERE (DATE(?) BETWEEN p.start_date AND p.end_date AND pt.enterprise_id = ?)
-          OR (MONTH(?) = ? AND pt.enterprise_id = ? AND p.number = ? AND p.fiscal_year_id = ?)
-        GROUP BY a.id HAVING balance <> 0;`;
+      // compute the values of the title accounts as the values of their children
+      // takes O(n * m) time, where n is the number of nodes and m is the number
+      // of periods
+      const balanceKeys = ['before', 'during', 'after'];
+      const bulkSumFn = (currentNode, parentNode) => {
+        balanceKeys.forEach(key => {
+          parentNode[key] = (parentNode[key] || 0) + currentNode[key];
+        });
+      };
 
-      const period13 = fiscal.number_of_months + 1;
-      return db.exec(sql, [
-        query.date, query.enterpriseId,
-        query.date, fiscal.number_of_months, query.enterpriseId, period13, fiscal.id,
-      ]);
-    })
-    .then((rows) => {
-      data.middle = rows;
-      return data;
+      // sum the debits and credits
+      tree.walk(bulkSumFn, false);
+
+      // label depths
+      tree.walk(Tree.common.computeNodeDepth);
+
+      // prune empty rows if needed
+      const balances = shouldPrune ? tree.prune(isEmptyRow) : tree.toArray();
+
+      const root = tree.getRootNode();
+
+      const totals = {
+        before : root.before,
+        during : root.during,
+        after : root.after,
+        currencyId,
+      };
+
+      _.merge(context, { accounts : balances, totals });
+      return context;
     });
 }

@@ -28,7 +28,6 @@ const EXPENSE = 5;
 const DATE_FORMAT = 'YYYY-MM-DD';
 const FC_CURRENCY = 1;
 
-
 // expose to the API
 exports.document = document;
 

@@ -1,23 +1,14 @@
-/* global browser, element, by */
-
-const chai = require('chai');
 const helpers = require('../../shared/helpers');
-
-helpers.configure(chai);
 
 const BalanceReportPage = require('./balance_report.page');
 
-describe('Balance report ::', () => {
+describe('Balance Report', () => {
   let Page;
   const key = 'balance_report';
 
   const dataset = {
-    dateFrom   : '01/01/2016',
-    dateTo     : '31/12/2016',
-    date       : new Date('2016-12-31 12:00'),
-    dateOption : 0,
-    classe     : '*',
-    report_name : 'Balance Report Saved by E2E',
+    period : '2018',
+    reportName : 'Balance Report Saved by E2E',
     renderer : 'PDF',
   };
 
@@ -27,7 +18,7 @@ describe('Balance report ::', () => {
   });
 
   it('preview a new balance report', () => {
-    Page.showBalanceReportPreview(dataset.date);
+    Page.showBalanceReportPreview(dataset.period);
   });
 
   it('close the previewed report', () => {
@@ -35,14 +26,14 @@ describe('Balance report ::', () => {
   });
 
   it('save a previewed report', () => {
-    Page.saveBalanceReport(dataset.date, dataset.report_name, dataset.renderer);
+    Page.saveBalanceReport(dataset.period, dataset.reportName, dataset.renderer);
   });
 
   it('report has been saved into archive', () => {
-    Page.checkSavedBalanceReport(dataset.report_name);
+    Page.checkSavedBalanceReport(dataset.reportName);
   });
 
   it('print the previewed report', () => {
-    Page.printBalanceReport(dataset.date);
+    Page.printBalanceReport(dataset.period);
   });
 });
