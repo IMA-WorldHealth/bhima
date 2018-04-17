@@ -7,6 +7,7 @@ angular.module('bhima.components')
       onChange : '&',
       minDate : '<?',
       maxDate : '<?',
+      allowFutureDate : '<?',
       validationTrigger : '<?',
       disabled : '<?',
       dateFormat : '@?',
@@ -44,16 +45,27 @@ function bhDateEditorController(bhConstants) {
 
   $ctrl.$onInit = () => {
     $ctrl.label = $ctrl.label || 'FORM.LABELS.DATE';
-
+    $ctrl.allowFutureDate = $ctrl.allowFutureDate || false;
     // options to be passed to datepicker-option
     $ctrl.options = {
       minDate : $ctrl.minDate,
-      maxDate : $ctrl.maxDate,
     };
+    if (!$ctrl.allowFutureDate) {
+      $ctrl.options.maxDate = $ctrl.maxDate || new Date();
+    }
   };
 
   // fires the onChange() callback
-  $ctrl.onDateChange = () => $ctrl.onChange({ date : $ctrl.dateValue });
+  $ctrl.onDateChange = () => {
+    if (!$ctrl.allowFutureDate) {
+      const dt = (typeof $ctrl.dateValue === 'string') ? new Date($ctrl.dateValue) : $ctrl.dateValue;
+      const check = new Date() >= dt;
+      if (!check) {
+        delete $ctrl.dateValue;
+      }
+    }
+    $ctrl.onChange({ date : $ctrl.dateValue });
+  };
 
   // opens/closes the date dropdown
   $ctrl.toggleEditMode = () => {
