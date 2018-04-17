@@ -64,7 +64,6 @@ correct SQL_MODE is set._
 The database structure is contained in the `server/models/*.sql` files.  You can
 execute these one by one in the order below, or simply run `yarn build:db`.
  1. `server/models/schema.sql`
- 2. `server/models/.sql`
  3. `server/models/triggers.sql`
  4. `server/models/functions.sql`
  5. `server/models/procedures.sql`
