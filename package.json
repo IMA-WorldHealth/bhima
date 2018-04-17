@@ -4,8 +4,8 @@
   "description": "A rural hospital information management system.",
   "main": "npm run build",
   "scripts": {
-    "app": "cross-env NODE_ENV=production gulp build && cd bin && NODE_ENV=production node server/app.js",
-    "dev": "cross-env NODE_ENV=development gulp build && cd bin && NODE_ENV=development node server/app.js",
+    "app": "cross-env NODE_ENV=production gulp build && cd bin && cross-env NODE_ENV=production node server/app.js",
+    "dev": "cross-env NODE_ENV=development gulp build && cd bin && cross-env NODE_ENV=development node server/app.js",
     "test": "./sh/test.sh",
     "test:integration": "./sh/integration-tests.sh",
     "test:ends": "./sh/test-ends.sh",
