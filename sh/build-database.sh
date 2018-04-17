@@ -20,7 +20,7 @@ mysql -u $DB_USER -p$DB_PASS -e "DROP DATABASE IF EXISTS $DB_NAME ;" &> /dev/nul
 mysql -u $DB_USER -p$DB_PASS -e "CREATE DATABASE $DB_NAME CHARACTER SET utf8 COLLATE utf8_unicode_ci;" &> /dev/null
 
 echo "[build] database schema"
-mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/schema.sql
+mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/schema.sql &> /dev/null
 
 echo "[build] triggers"
 mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/triggers.sql &> /dev/null
@@ -31,14 +31,13 @@ mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/functions.sql &> /dev/null
 echo "[build] procedures"
 mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/procedures.sql &> /dev/null
 mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/admin.sql &> /dev/null
-mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/debug.sql &> /dev/null
 
 echo "[build] default data"
 mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/icd10.sql &> /dev/null
 mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/bhima.sql &> /dev/null
 
 echo "[build] test data"
-mysql -u $DB_USER -p$DB_PASS $DB_NAME < test/data.sql
+mysql -u $DB_USER -p$DB_PASS $DB_NAME < test/data.sql &> /dev/null
 
 echo "[build] compute account class"
 mysql -u $DB_USER -p$DB_PASS $DB_NAME -e "Call ComputeAccountClass();" &> /dev/null
