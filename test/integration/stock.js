@@ -83,6 +83,7 @@ describe('(/stock/) The Stock HTTP API', () => {
     date       : new Date(),
     flux_id    : 1,
     user_id    : 1,
+    description : 'Initial Lot Movement',
     lots,
   };
 
@@ -91,6 +92,7 @@ describe('(/stock/) The Stock HTTP API', () => {
     entity_uuid : '274c51ae-efcc-4238-98c6-f402bfb39866',
     date        : new Date(),
     is_exit     : 1,
+    description : 'Stock Exit to patient',
     flux_id     : flux.TO_PATIENT,
     user_id     : 1,
     lots        : [
@@ -113,6 +115,7 @@ describe('(/stock/) The Stock HTTP API', () => {
     to_depot   : 'd4bb1452-e4fa-4742-a281-814140246877',
     date       : new Date(),
     user_id    : 1,
+    description : 'Stock movement between depot',
     lots       : [
       {
         inventory_uuid : helpers.data.QUININE,
@@ -183,7 +186,7 @@ describe('(/stock/) The Stock HTTP API', () => {
       .catch(helpers.handler)
   );
 
-    // (report) render all stock exit
+  // (report) render all stock exit
   it(
     `GET /reports/stock/lots?renderer=json
     returns exits for all depots (12 OUT)`,
@@ -193,7 +196,7 @@ describe('(/stock/) The Stock HTTP API', () => {
       })
       .catch(helpers.handler)
   );
-  
+
   // (report) render all stock exit relatives to 'Depot Principal'
   it(
     `GET /reports/stock/lots?renderer=json
@@ -216,7 +219,7 @@ describe('(/stock/) The Stock HTTP API', () => {
   );
 
   // get initial quantity of QUININE-A in 'Depot Principal'
-  it(`GET /stock/lots?lot_uuid=...&depot_uuid=...  returns initial quantity of QUININE-A in Depot Principal (100pcs)`, () =>
+  it(`GET /stock/lots?lot_uuid=...&depot_uuid=... returns initial quantity of QUININE-A in Depot Principal (100pcs)`, () =>
     agent.get('/stock/lots')
       .query({
         lot_uuid : lotQuinineUuid,
