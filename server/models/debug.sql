@@ -30,7 +30,7 @@ BEGIN
        entrytime TIMESTAMP,
        connection_id INT NOT NULL DEFAULT 0,
        msg VARCHAR(512)
-  ) engine = memory;
+  ) ENGINE = MEMORY;
 END $$
 
 
@@ -46,7 +46,7 @@ BEGIN
                 VALUES (connection_id(), logMsg);
      END;
 
-      insert into tmp_debuglog (connection_id, msg) values (connection_id(), logMsg);
+      INSERT INTO tmp_debuglog (connection_id, msg) VALUES (connection_id(), logMsg);
 END $$
 
 CREATE PROCEDURE FlushLog(in logMsg VARCHAR(512))

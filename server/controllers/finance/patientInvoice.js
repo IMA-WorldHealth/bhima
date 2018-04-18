@@ -187,13 +187,26 @@ function create(req, res, next) {
   const invoiceUuid = invoice.uuid || uuid();
   invoice.uuid = invoiceUuid;
 
-  const preparedTransaction = createInvoice(invoice);
-  preparedTransaction.execute()
+  const hasDebtorUuid = !!(invoice.debtor_uuid);
+  if (!hasDebtorUuid) {
+    next(new BadRequest(`An invoice must be submitted to a debtor.`));
+    return;
+  }
+
+  // check if the patient/debtor has a creditor balance with the enterprise.  If
+  // so, we will use their caution balance to link to the invoice for payment.
+  Debtors.balance(invoice.debtor_uuid)
+    .then(([pBalance]) => {
+      const hasCreditorBalance = pBalance && (pBalance.credit > pBalance.debit);
+      const preparedTransaction = createInvoice(invoice, hasCreditorBalance);
+      return preparedTransaction.execute();
+    })
     .then(() => {
       res.status(201).json({ uuid : invoiceUuid });
     })
     .catch(next)
     .done();
+
 }
 
 function find(options) {

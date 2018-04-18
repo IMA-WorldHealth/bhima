@@ -43,7 +43,7 @@ module.exports = createInvoice;
  * @todo - change the API to pass in only an array of invoicingFee and subsidy
  * ids.
  */
-function createInvoice(invoiceDetails) {
+function createInvoice(invoiceDetails, hasCreditorBalance) {
   const transaction = db.transaction();
   const invoiceUuid = db.bid(invoiceDetails.uuid || uuid());
 
@@ -51,6 +51,7 @@ function createInvoice(invoiceDetails) {
   const subsidies = processSubsidies(invoiceUuid, invoiceDetails.subsidies);
   const items = processInvoiceItems(invoiceUuid, invoiceDetails.items);
 
+  const debtorUuid = db.bid(invoiceDetails.debtor_uuid);
   const invoice = processInvoice(invoiceUuid, invoiceDetails);
 
   // 'stage' - make all data that will be required for writing an invoice available to the database procedures
@@ -65,6 +66,13 @@ function createInvoice(invoiceDetails) {
   // write and post invoice to the posting journal
   transaction.addQuery('CALL WriteInvoice(?)', [invoiceUuid]);
   transaction.addQuery('CALL PostInvoice(?)', [invoiceUuid]);
+
+  // if there is a creditor balance, we will link the prepayments here.
+  if (hasCreditorBalance) {
+    transaction
+      .addQuery('CALL LinkPrepaymentsToInvoice(?, ?)', [invoiceUuid, debtorUuid]);
+  }
+
   return transaction;
 }
 
@@ -158,3 +166,4 @@ function processInvoiceItems(invoiceUuid, invoiceItems) {
   // prepare invoice items for insertion into database
   return _.map(items, filter);
 }
+

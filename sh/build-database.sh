@@ -29,8 +29,9 @@ echo "[build] functions"
 mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/functions.sql &> /dev/null
 
 echo "[build] procedures"
-mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/procedures.sql &> /dev/null
+mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/procedures.sql
 mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/admin.sql &> /dev/null
+mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/debug.sql &> /dev/null
 
 echo "[build] default data"
 mysql -u $DB_USER -p$DB_PASS $DB_NAME < server/models/icd10.sql &> /dev/null
