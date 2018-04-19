@@ -42,6 +42,7 @@
             "DESTINATION_ACCOUNT": "Compte de destination",
             "TRANSFER_ACCOUNT": "Compte de transfert",
             "IMPORT_TRANSACTION": "Importer les transactions",
+            "PAYMENT_EMPLOYEES": "Paiement des salaires des employés",
             "RECEIPT": {
                 "SUCCESS": "Bon de paiement enregistré avec succès."
             },
@@ -54,8 +55,11 @@
         "SIMPLE": {
             "CASH_PAYMENT": "Paiement des clients",
             "CASH_RETURN": "Remboursement",
+            "CHARGE_REMUNERATION": "Charges sociales sur rémunération",
+            "COMMITMENT": "Engagement",
             "CONVENTION_PAYMENT": "Paiement des Conventions",
             "CREDIT_NOTE": "Note de crédit",
+            "EMPLOYEE_WITHHOLDINGS": "Retenus des employés",
             "EXPENSE": "Dépenses",
             "INCOME": "Récettes",
             "INVOICING": "Facturation",
