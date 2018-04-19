@@ -8,6 +8,7 @@
 const chai = require('chai');
 const helpers = require('../shared/helpers');
 
+const { expect } = chai;
 helpers.configure(chai);
 
 /* loading grid actions */
@@ -20,7 +21,7 @@ class DepotPage {
   constructor() {
     this.gridId = 'depot-grid';
     this.depotGrid = element(by.id(this.gridId));
-    this.actionLinkColumn = 2;
+    this.actionLinkColumn = 3;
   }
 
   /**
@@ -35,12 +36,20 @@ class DepotPage {
 
   /**
    * simulate the create depot button click to show the dialog of creation
+   * @param {string} name the name of the depot
+   * @param {boolean} hasWarehouse
+   * @param {boolean} hasLocation if true it will enable the option of adding location
+   * @param {array} location an array of location as [country_uuid, province_uuid, sector_uuid, village_uuid]
    */
-  createDepot(name, hasWarehouse) {
+  createDepot(name, hasWarehouse, hasLocation, location) {
     FU.buttons.create();
     FU.input('DepotModalCtrl.depot.text', name);
     if (hasWarehouse) {
       element(by.css('[name="is_warehouse"]')).click();
+    }
+    if (hasLocation) {
+      element(by.css('[name="has_location"]')).click();
+      components.locationSelect.set(location);
     }
     FU.buttons.submit();
     components.notification.hasSuccess();
@@ -77,6 +86,45 @@ class DepotPage {
         element(by.css('[name="allow_exit_loss"]')).click();
 
 
+        FU.buttons.submit();
+        components.notification.hasSuccess();
+      });
+  }
+
+  /**
+   * join a location to a depot
+   */
+  joinLocation(depotName, location) {
+    GU.getGridIndexesMatchingText(this.gridId, depotName)
+      .then(indices => {
+        const { rowIndex } = indices;
+        GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'edit', this.gridId);
+
+        element(by.css('[name="has_location"]')).click();
+        return element(by.css('[name="has_location"]')).isSelected();
+      })
+      .then(selected => {
+        expect(selected).to.be.equal(true);
+        components.locationSelect.set(location);
+        FU.buttons.submit();
+        components.notification.hasSuccess();
+      });
+  }
+
+  /**
+   * remove a location to a depot
+   */
+  removeLocation(depotName) {
+    GU.getGridIndexesMatchingText(this.gridId, depotName)
+      .then(indices => {
+        const { rowIndex } = indices;
+        GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'edit', this.gridId);
+
+        element(by.model('DepotModalCtrl.hasLocation')).click();
+        return element(by.model('DepotModalCtrl.hasLocation')).isSelected();
+      })
+      .then(selected => {
+        expect(selected).to.be.equal(false);
         FU.buttons.submit();
         components.notification.hasSuccess();
       });

@@ -99,6 +99,24 @@
       </div>
     </div>
 
+    <div class="form-group">
+      <div class="checkbox">
+        <label>
+          <input
+            type="checkbox"
+            name="has_location"
+            ng-true-value="1"
+            ng-false-value="0"
+            ng-model="DepotModalCtrl.hasLocation">
+          <span translate>DEPOT.JOIN_LOCATION</span>
+        </label>
+      </div>
+
+      <div ng-if="DepotModalCtrl.hasLocation">
+        <bh-location-select location-uuid="DepotModalCtrl.depot.location_uuid"></bh-location-select>
+      </div>
+    </div>
+
   </div>
 
   <div class="modal-footer">

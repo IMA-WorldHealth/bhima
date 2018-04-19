@@ -25,7 +25,6 @@ function DepotService(Api, Modal) {
    */
   service.openSelectionModal = function openSelectionModal(depot, isDepotRequired) {
     service.isDepotRequired = isDepotRequired || false;
-
     return Modal.open({
       controller : 'SelectDepotModalController as $ctrl',
       templateUrl : 'modules/stock/depot-selection.modal.html',
@@ -36,6 +35,14 @@ function DepotService(Api, Modal) {
       backdrop : 'static',
       keyboard : false,
     }).result;
+  };
+
+  service.clean = depot => {
+    delete depot.country_name;
+    delete depot.province_name;
+    delete depot.sector_name;
+    delete depot.village_name;
+    delete depot.location;
   };
 
   return service;

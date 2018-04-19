@@ -11,9 +11,11 @@
     "EDIT_DEPOT" : "Edit the information in a Depot",
     "ENTITY" : "Depot",
     "LABEL" : "Depot",
+    "LOCATION" : "Location",
     "MAIN" : {
       "TITLE" : "Depot Management"
     },
+    "JOIN_LOCATION" : "Join location",
     "NO_DEPOT" : "No Depot",
     "NO_DEPOT_ASSIGNED_TO_USER" : "You are not allowed to access any depot or there's no depot registered yet. Please contact the administrateur if needed",
     "NOT_ALLOWED_ACTIONS" : "This depot is protected.  You cannot modify its properties.",

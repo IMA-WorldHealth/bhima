@@ -24,7 +24,7 @@ INSERT INTO unit VALUES
   (16,  'Patient Invoice','TREE.PATIENT_INVOICE','Create an invoice for a patient',5,'/modules/patient_invoice/','/invoices/patient'),
   (18,  'Cash Window','TREE.CASH_WINDOW','Cash payments against past or future invoices',5,'/modules/cash/','/cash'),
   (19,  'Register Supplier','TREE.REGISTER_SUPPLIER','',1,'/modules/suppliers/','/suppliers'),
-  (20,  'Depot Management','TREE.DEPOTS','',1,'/modules/depots/','/depots'),
+  (20,  'Depot Management','TREE.DEPOTS','',0,'/modules/depots/','/DEPOT_FOLDER'),
   (21,  'Price List','TREE.PRICE_LIST','Configure price lists!',1,'/modules/prices/','/prices'),
   (26,  'Location Manager','TREE.LOCATION','',1,'/modules/locations/locations.html','/locations'),
   (29,  'Patient Group','TREE.PATIENT_GRP','',1,'/modules/patients/groups/','/patients/groups'),
@@ -84,7 +84,8 @@ INSERT INTO unit VALUES
   (192, 'Operating report', 'TREE.OPERATING_ACCOUNT', 'The Report of operating', 144, '/modules/reports/operating', '/reports/operating'),
   (193, 'Weekend Configuration','TREE.WEEKEND_CONFIGURATION','Weekend Configuration', 57,'/modules/payroll/weekend_configuration','/payroll/weekend_configuration'),
   (194, 'Payroll Configuration','TREE.PAYROLL_CONFIGURATION','Payroll Configuration', 57,'/modules/payroll','/payroll'),
-  (195, 'Role management','TREE.ROLE_MANAGEMENT','Roles Management', 1,'/modules/role/','/roles');
+  (195, 'Role management','TREE.ROLE_MANAGEMENT','Roles Management', 1,'/modules/role/','/roles'),
+  (196, 'Depot Registry','TREE.DEPOTS_REGISTRY','',20,'/modules/depots/','/depots');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES

@@ -46,6 +46,9 @@ function create(req, res, next) {
   const depotUuid = req.body.uuid || uuid();
   req.body.uuid = db.bid(depotUuid);
 
+  // convert the location uuid into binary
+  req.body = db.convert(req.body, ['location_uuid']);
+
   // enterprise for the depot
   req.body.enterprise_id = req.session.enterprise.id;
 
@@ -88,6 +91,9 @@ function update(req, res, next) {
   // prevent updating the uuid by accident
   if (req.body.uuid) { delete req.body.uuid; }
 
+  // convert the location uuid into binary
+  req.body = db.convert(req.body, ['location_uuid']);
+
   db.exec(query, [req.body, uid])
     .then(() => {
       const sql = `
@@ -126,18 +132,24 @@ function list(req, res, next) {
 
   const sql = `
   SELECT
-    BUID(uuid) as uuid, text, is_warehouse,
-    allow_entry_purchase, allow_entry_donation, allow_entry_integration, allow_entry_transfer,
-    allow_exit_debtor, allow_exit_service, allow_exit_transfer, allow_exit_loss
-    FROM depot
+    BUID(d.uuid) as uuid, d.text, d.is_warehouse,
+    d.allow_entry_purchase, d.allow_entry_donation, d.allow_entry_integration, d.allow_entry_transfer,
+    d.allow_exit_debtor, d.allow_exit_service, d.allow_exit_transfer, d.allow_exit_loss,
+    BUID(d.location_uuid) AS location_uuid,
+    v.name as village_name, s.name as sector_name, p.name as province_name, c.name as country_name
+    FROM depot d 
+    LEFT JOIN village v ON v.uuid = d.location_uuid
+    LEFT JOIN sector s ON s.uuid = v.sector_uuid 
+    LEFT JOIN province p ON p.uuid = s.province_uuid
+    LEFT JOIN country c ON c.uuid = p.country_uuid 
   `;
 
   filters.custom(
     'user_id',
-    'depot.uuid IN (SELECT depot_permission.depot_uuid FROM depot_permission WHERE depot_permission.user_id = ?)'
+    'd.uuid IN (SELECT depot_permission.depot_uuid FROM depot_permission WHERE depot_permission.user_id = ?)'
   );
 
-  filters.equals('enterprise_id');
+  filters.equals('enterprise_id', 'enterprise_id', 'd');
 
   const query = filters.applyQuery(sql);
   const parameters = filters.parameters();
