@@ -13,8 +13,8 @@
  */
 angular.module('bhima.components')
   .component('bhDateInterval', {
-    templateUrl: '/modules/templates/bhDateInterval.tmpl.html',
-    controller: bhDateInterval,
+    templateUrl : '/modules/templates/bhDateInterval.tmpl.html',
+    controller : bhDateInterval,
     bindings : {
       validationTrigger : '<', // validation trigger action
       dateFrom : '=', // date from
@@ -33,7 +33,7 @@ bhDateInterval.$inject = ['moment', 'bhConstants'];
 
 // controller definition
 function bhDateInterval(moment, bhConstants) {
-  var vm = this;
+  const vm = this;
 
   // expose to the viewe
   vm.search = search;
@@ -100,9 +100,7 @@ function bhDateInterval(moment, bhConstants) {
   }
 
   function startup() {
-    var option;
-
-    option = ['day', 'week', 'month', 'year'].indexOf(vm.mode);
+    const option = ['day', 'week', 'month', 'year'].indexOf(vm.mode);
 
     // set the default option according the mode
     if (option !== -1) {

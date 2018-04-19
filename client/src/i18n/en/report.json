@@ -123,7 +123,15 @@
       "VALUE":"Value",
       "ENTRIES":"Entries",
       "EXITS":"Exits",
-      "STOCKS":"Stocks"
+      "STOCKS":"Stocks",
+      "EXIT_REPORT":"Stock Exit Report",
+      "EXIT_REPORT_DESCRIPTION":"This report shows stocks exit which had occured in different depots",
+      "INCLUDE_INFORMATION":"Information to include",
+      "INCLUDE_PATIENT_EXIT":"Include stock exit to patient",
+      "INCLUDE_SERVICE_EXIT":"Include stock exit to service",
+      "INCLUDE_DEPOT_EXIT":"Include stock exit to other depots",
+      "INCLUDE_LOSS_EXIT":"Include stock loss",
+      "SHOW_DETAILS":"Show Details"
     },
     "UTIL": {
       "CANCEL_PREVIEW": "Cancel Preview",

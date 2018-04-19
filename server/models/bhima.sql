@@ -85,7 +85,8 @@ INSERT INTO unit VALUES
   (193, 'Weekend Configuration','TREE.WEEKEND_CONFIGURATION','Weekend Configuration', 57,'/modules/payroll/weekend_configuration','/payroll/weekend_configuration'),
   (194, 'Payroll Configuration','TREE.PAYROLL_CONFIGURATION','Payroll Configuration', 57,'/modules/payroll','/payroll'),
   (195, 'Role management','TREE.ROLE_MANAGEMENT','Roles Management', 1,'/modules/role/','/roles'),
-  (196, 'Depot Registry','TREE.DEPOTS_REGISTRY','',20,'/modules/depots/','/depots');
+  (196, 'Depot Registry','TREE.DEPOTS_REGISTRY','',20,'/modules/depots/','/depots'),
+  (197, 'Stock Exit Report','TREE.STOCK_EXIT_REPORT','Stock Exit Report', 144,'/modules/reports/generated/stock_exit','/reports/stock_exit');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -119,7 +120,8 @@ INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
   (12, 'cash_report', 'REPORT.CASH_REPORT'),
   (13, 'inventory_report', 'REPORT.STOCK.TITLE'),
   (14, 'inventory_file', 'REPORT.STOCK.INVENTORY_REPORT'),
-  (15, 'operating', 'TREE.OPERATING_ACCOUNT');
+  (15, 'operating', 'TREE.OPERATING_ACCOUNT'),
+  (16, 'stock_exit', 'REPORT.STOCK.EXIT_REPORT');
 
 
 -- Supported Languages

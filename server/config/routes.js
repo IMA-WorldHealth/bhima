@@ -671,6 +671,7 @@ exports.configure = function configure(app) {
   app.post('/stock/integration', stock.createIntegration);
 
   // stock reports API
+  app.get('/reports/stock/exit', stockReports.stockExitReport);
   app.get('/reports/stock/lots', stockReports.stockLotsReport);
   app.get('/reports/stock/movements', stockReports.stockMovementsReport);
   app.get('/reports/stock/inventories', stockReports.stockInventoriesReport);

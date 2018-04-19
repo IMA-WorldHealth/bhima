@@ -89,6 +89,7 @@
     "STOCK_INVENTORY":"Articles en stock",
     "STOCK_REPORT": "[Stock] Articles en stock",
     "STOCK_INVENTORY_REPORT":"[Stock] Fiche de stock",
+    "STOCK_EXIT_REPORT":"[Stock] Sortie des stocks",
     "STOCK_LOTS":"Lots en stock",
     "STOCK_MOVEMENTS":"Movements de stock",
     "TRANSACTION_TYPE":"Types de Transaction",
