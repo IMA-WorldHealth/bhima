@@ -169,6 +169,8 @@ function list(req, res, next) {
 * @function detail
 */
 function detail(req, res, next) {
+  const options = req.query;
+
   const uid = db.bid(req.params.uuid);
 
   const sql = `
@@ -177,9 +179,15 @@ function detail(req, res, next) {
       allow_entry_purchase, allow_entry_donation, allow_entry_integration, allow_entry_transfer,
       allow_exit_debtor, allow_exit_service, allow_exit_transfer, allow_exit_loss
     FROM depot AS d
-    WHERE d.enterprise_id = ? AND d.uuid = ?;`;
+    WHERE d.enterprise_id = ? AND d.uuid = ? `;
 
-  db.one(sql, [req.session.enterprise.id, uid])
+  const requireUserPermissions = ` AND 
+    d.uuid IN (SELECT depot_permission.depot_uuid FROM depot_permission WHERE depot_permission.user_id = ?)
+  `;
+
+  const query = options.only_user ? sql.concat(requireUserPermissions) : sql;
+
+  db.one(query, [req.session.enterprise.id, uid, req.session.user.id])
     .then((row) => {
     // return the json
       res.status(200).json(row);

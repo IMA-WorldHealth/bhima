@@ -21,7 +21,7 @@ function StockAdjustmentController(
   const vm = this;
 
   // TODO - merge all stock caches together so that the same depot is shared across all stock modules
-  const cache = new AppCache('StockAdjustment');
+  const cache = new AppCache('StockCache');
 
   // global variables
   vm.Stock = new StockForm('StockAdjustment');
@@ -128,7 +128,8 @@ function StockAdjustmentController(
     checkValidity();
   }
 
-  function handleAdjustmentOption() {
+  function handleAdjustmentOption(value) {
+    vm.adjustmentOption = value;
     if (vm.adjustmentOption === 'increase') {
       vm.adjustmentType = 'FORM.LABELS.INCREASE';
     } else if (vm.adjustmentOption === 'decrease') {
@@ -160,21 +161,20 @@ function StockAdjustmentController(
       entity : {},
     };
 
-    vm.depot = cache.depot;
-
     // make sure that the depot is loaded if it doesn't exist at startup.
-    if (vm.depot) {
-      setupStock();
+    if (cache.depotUuid) {
+      // load depot from the cached uuid
+      loadDepot(cache.depotUuid).then(setupStock);
     } else {
-      changeDepot()
-        .then(setupStock);
+      // show the changeDepot modal
+      changeDepot().then(setupStock);
     }
   }
 
   // ============================ Inventories ==========================
   function loadInventories(depot) {
-    const givenDepot = depot || vm.depot;
-    Stock.inventories.read(null, { depot_uuid : givenDepot.uuid })
+    const depotUuid = depot && depot.uuid ? depot.uuid : cache.depotUuid;
+    Stock.inventories.read(null, { depot_uuid : depotUuid })
       .then((inventories) => {
         vm.selectableInventories = angular.copy(inventories);
       })
@@ -190,11 +190,14 @@ function StockAdjustmentController(
   }
 
   // ================================= Submit ================================
-  function submit(form) {
+  function submit() {
     let isExit;
     let fluxId;
 
-    if (form.$invalid || !vm.adjustmentOption) { return 0; }
+    // check stock validity
+    checkValidity();
+
+    if (!vm.validForSubmit || !vm.adjustmentOption) { return 0; }
 
     if (vm.adjustmentOption === 'increase') {
       isExit = 0;
@@ -234,14 +237,23 @@ function StockAdjustmentController(
 
   function changeDepot() {
     // if requirement is true the modal cannot be canceled
-    const requirement = !cache.depot;
+    const requirement = !cache.depotUuid;
 
     return Depots.openSelectionModal(vm.depot, requirement)
       .then((depot) => {
         vm.depot = depot;
-        cache.depot = vm.depot;
+        cache.depotUuid = depot.uuid;
         return depot;
       });
+  }
+
+  function loadDepot(uuid) {
+    return Depots.read(uuid, { only_user : true })
+      .then(depot => {
+        vm.depot = depot;
+        return depot;
+      })
+      .catch(Notify.handleError);
   }
 
   startup();
