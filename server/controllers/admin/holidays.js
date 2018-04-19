@@ -96,10 +96,18 @@ function create(req, res, next) {
 function update(req, res, next) {
   const sql = `UPDATE holiday SET ? WHERE id = ?;`;
   const data = req.body;
-  data.employee_uuid = db.bid(data.employee_uuid);
+  console.log('AA');
+  if (data.employee_uuid) {
+    data.employee_uuid = db.bid(data.employee_uuid);  
+  }
 
+  console.log('BBBBBBBB');
+  
   checkHoliday(data)
     .then((record) => {
+      console.log('RECOREDDDDDDDddd');
+
+
       if (record.length > 1) {
         throw new BadRequest('Holiday Nested.', 'ERRORS.HOLIDAY_NESTED');
       }

@@ -35,6 +35,8 @@ function HolidayModalController($state, Holidays, ModalService, Notify, AppCache
 
   // custom filter employee_id
   vm.onSelectEmployee = function onSelectEmployee(employee) {
+
+    console.log(employee);
     vm.holiday.employee_uuid = employee.uuid;
   };
 
@@ -43,6 +45,9 @@ function HolidayModalController($state, Holidays, ModalService, Notify, AppCache
     var promise;
 
     if (holidayForm.$invalid) { return 0; }
+
+    console.log('PLISSSSSSSSSSSSSS')
+    console.log(vm.holiday);
 
     vm.holiday.dateFrom = moment(vm.holiday.dateFrom).format('YYYY-MM-DD');
     vm.holiday.dateTo = moment(vm.holiday.dateTo).format('YYYY-MM-DD');
