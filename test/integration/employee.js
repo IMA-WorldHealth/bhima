@@ -72,7 +72,7 @@ describe('(/employees) the employees API endpoint', function () {
       .send(employee)
       .then(function (res) {
         helpers.api.created(res);
-        employee.id = res.body.id;
+        employee.uuid = res.body.uuid;
         updateEmployee.patient_uuid = res.body.patient_uuid;
       })
       .catch(helpers.handler);
@@ -90,7 +90,7 @@ describe('(/employees) the employees API endpoint', function () {
   it('GET /employees returns a list of all employees', function () {
     return agent.get('/employees')
       .then(function (res) {
-        helpers.api.listed(res, 2);
+        helpers.api.listed(res, 3);
       })
       .catch(helpers.handler);
   });
@@ -164,7 +164,7 @@ describe('(/employees) the employees API endpoint', function () {
     return agent.get('/employees')
       .query(conditions)
       .then(function (res) {
-        helpers.api.listed(res, 1);
+        helpers.api.listed(res, 2);
         expect(res.body[0].service_id).to.exist;
         expect(res.body[0].service_id).to.be.equals(conditions.service_id);
       })

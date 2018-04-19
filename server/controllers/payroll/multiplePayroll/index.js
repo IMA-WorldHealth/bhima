@@ -245,7 +245,6 @@ function configuration(req, res, next) {
  */
 function setMultiConfiguration(req, res, next) {
   const dataEmployees = req.body.data;
-
   const payrollConfigurationId = req.params.id;
   const transac = db.transaction();
   const enterpriseId = req.session.enterprise.id;
@@ -801,6 +800,7 @@ function setConfiguration(req, res, next) {
  */
 function makeCommitment(req, res, next) {
   const dataEmployees = req.body.data;
+
   const payrollConfigurationId = req.params.id;
   const enterpriseId = req.session.enterprise.id;
   const projectId = req.session.project.id;

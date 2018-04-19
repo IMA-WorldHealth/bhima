@@ -12,7 +12,7 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
   const date = new Date();
 
   const vUuid = 'b140c144-6ca8-47b0-99ba-94732cf6efde';
-  const numVouchers = 8;
+  const numVouchers = 9;
 
   const TO_DELETE_UUID = '3688e9ce-85ea-4b5c-9144-688177edcb63';
 
