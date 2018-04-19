@@ -59,7 +59,7 @@ function PatientService(
    * @param {String} uuid The patient's UUID
    */
   function balance(uuid) {
-    const path = `patients/${uuid}/finance/balance`;
+    const path = `/patients/${uuid}/finance/balance`;
     return service.$http.get(path)
       .then(service.util.unwrapHttpResponse);
   }
