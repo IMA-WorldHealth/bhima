@@ -234,7 +234,7 @@ function create(req, res, next) {
 
   const voucherType = voucher.type_id;
   const paiementRows = voucher.paiementRows;
-  let updatesPaiementData = [];  
+  const updatesPaiementData = [];
 
   // a voucher without two items doesn't make any sense in double-entry
   // accounting.  Therefore, throw a bad data error if there are any fewer
@@ -267,16 +267,17 @@ function create(req, res, next) {
     let item = value;
     // Only for Employee Salary Paiement
     if (voucherType === 7) {
-      paiementRows.forEach((paiement) => {      
-        if (paiement.entity && item.entity) {      
+      paiementRows.forEach((paiement) => {
+        if (paiement.entity && item.entity) {
           if (paiement.entity.uuid === item.entity.uuid) {
             item.document_uuid = paiement.document_uuid;
 
-            let statusID = item.debit === paiement.debit ? 5 : 4;
-            let updatePaiement = `UPDATE paiement SET amount_paid = amount_paid + '${item.debit}', status_id = '${statusID}' WHERE uuid = ? `;
+            const statusID = item.debit === paiement.debit ? 5 : 4;
+            const updatePaiement = `UPDATE paiement SET amount_paid = amount_paid + '${item.debit}', status_id = '${statusID}', paiement_date = ? WHERE uuid = ? `;
+
             updatesPaiementData.push({
               query : updatePaiement,
-              params : [db.bid(paiement.document_uuid)],
+              params : [voucher.date, db.bid(paiement.document_uuid)],
             });
 
           }
@@ -313,12 +314,12 @@ function create(req, res, next) {
     )
     .addQuery('CALL PostVoucher(?);', [voucher.uuid]);
 
-    // Only for Employee Salary Paiement
-    if (voucherType === 7) {
-      updatesPaiementData.forEach(updatePaiement => {
-        transaction.addQuery(updatePaiement.query, updatePaiement.params);
-      });
-    }
+  // Only for Employee Salary Paiement
+  if (voucherType === 7) {
+    updatesPaiementData.forEach(updatePaiement => {
+      transaction.addQuery(updatePaiement.query, updatePaiement.params);
+    });
+  }
 
   transaction.execute()
     .then(() => res.status(201).json({ uuid : vuid }))

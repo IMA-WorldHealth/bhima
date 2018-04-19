@@ -25,6 +25,7 @@ function MultiPayrollSearchModalController(
   ];
   const lastValues = {};
 
+  let statusText = '/';
 
   // displayValues will be an id:displayValue pair
   const displayValues = {};
@@ -58,7 +59,7 @@ function MultiPayrollSearchModalController(
   // load all Paiement Status
   Payroll.paiementStatus()
     .then((paiementStatus) => {
-      paiementStatus.forEach(function (item) {
+      paiementStatus.forEach((item) => {
         item.plainText = $translate.instant(item.text);
       });
 
@@ -84,12 +85,11 @@ function MultiPayrollSearchModalController(
 
   vm.onPayrollStatusChange = function onPayrollStatusChange(paiementStatus) {
     vm.searchQueries.status_id = paiementStatus;
-    var statusText = '/';
 
-    paiementStatus.forEach(function (statusId) {
-      vm.paiementStatus.forEach(function (status) {
+    paiementStatus.forEach((statusId) => {
+      vm.paiementStatus.forEach((status) => {
         if (statusId === status.id) {
-          statusText += status.plainText + ' / ';
+          statusText += `${status.plainText} / `;
         }
       });
     });
@@ -105,7 +105,7 @@ function MultiPayrollSearchModalController(
   // submit the filter object to the parent controller.
   vm.submit = function submit(form) {
     let _displayValue;
-    let loggedChanges;
+    const loggedChanges;
 
     if (form.$invalid) { return; }
 
@@ -114,7 +114,7 @@ function MultiPayrollSearchModalController(
       if (angular.isDefined(_value)) {
         // default to the original value if no display value is defined
         _displayValue = displayValues[_key] || lastValues[_key];
-        
+
         changes.post({ key : _key, value : _value, displayValue : _displayValue });
       }
     });

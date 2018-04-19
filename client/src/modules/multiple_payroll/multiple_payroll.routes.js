@@ -11,15 +11,15 @@ angular.module('bhima.routes')
         },
       })
 
-    .state('multiple_payroll.config', {
-      url : '/:uuid/config',
-      params : {
-        config : { value : null },
-        filters : [],        
-      },
-      onEnter : ['$uibModal', configurationMultiplePayroll],
-      onExit : ['$uibModalStack', closeModal],
-    });
+      .state('multiple_payroll.config', {
+        url : '/:uuid/config',
+        params : {
+          config : { value : null },
+          filters : [],
+        },
+        onEnter : ['$uibModal', configurationMultiplePayroll],
+        onExit : ['$uibModalStack', closeModal],
+      });
   }]);
 
 function configurationMultiplePayroll($modal) {
@@ -30,4 +30,9 @@ function configurationMultiplePayroll($modal) {
     templateUrl : 'modules/multiple_payroll/modals/config.modal.html',
     controller : 'ConfigPaiementModalController as ConfigPaiementModalCtrl',
   });
+}
+
+
+function closeModal(ModalStack) {
+  ModalStack.dismissAll();
 }

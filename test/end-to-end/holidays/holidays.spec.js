@@ -13,7 +13,7 @@ describe('Holidays Management', () => {
   const Page = new HolidayPage();
 
   const holiday = {
-    employee_id : 1,
+    employee_uuid : '75e09694-65f2-45a1-a8a2-8b025003d793',
     percentage  : 100,
     label       : 'Conge de circonstance',
     dateFrom    : '17/05/2017',
@@ -21,7 +21,7 @@ describe('Holidays Management', () => {
   };
 
   const nestedHoliday = {
-    employee_id : 1,
+    employee_uuid : '75e09694-65f2-45a1-a8a2-8b025003d793',
     percentage  : 100,
     label       : 'Conge de Imbrique',
     dateFrom    : '12/06/2017',

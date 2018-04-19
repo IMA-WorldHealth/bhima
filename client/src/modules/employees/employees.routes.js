@@ -20,3 +20,4 @@ angular.module('bhima.routes')
         },
       });
   }]);
+  

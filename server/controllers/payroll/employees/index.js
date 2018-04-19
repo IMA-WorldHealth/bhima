@@ -185,14 +185,14 @@ function advantage(req, res, next) {
     .done();
 }
 
-function lookupEmployeeAdvantages(uuid) {
-  const sql =`
+function lookupEmployeeAdvantages(uid) {
+  const sql = `
     SELECT employee_advantage.employee_uuid, employee_advantage.rubric_payroll_id, employee_advantage.value 
     FROM employee_advantage
     WHERE employee_uuid = ?  
   `;
 
-  return db.exec(sql, [db.bid(uuid)]);
+  return db.exec(sql, [db.bid(uid)]);
 }
 
 /**
@@ -202,8 +202,7 @@ function lookupEmployeeAdvantages(uuid) {
  * Update details of an employee referenced by an `id` in the database
  */
 function update(req, res, next) {
-  let employeeAdvantage = [];
-  let employeeIdentification;
+  const employeeAdvantage = [];
 
   const employee = db.convert(req.body, [
     'grade_uuid', 'debtor_group_uuid', 'creditor_group_uuid', 'creditor_uuid', 'debtor_uuid', 'patient_uuid', 'current_location_id', 'origin_location_id',
@@ -211,8 +210,7 @@ function update(req, res, next) {
 
   const employeeAdvantagePayroll = employee.payroll;
 
-  for(var i in employeeAdvantagePayroll)
-    employeeAdvantage.push([db.bid(req.params.uuid), i, employeeAdvantagePayroll[i]]);
+  for (const i in employeeAdvantagePayroll) { employeeAdvantage.push([db.bid(req.params.uuid), i, employeeAdvantagePayroll[i]]); }
 
   if (employee.dob) {
     employee.dob = new Date(employee.dob);
@@ -276,8 +274,8 @@ function update(req, res, next) {
     .addQuery(sql, [clean, db.bid(req.params.uuid)]);
 
   if (employeeAdvantage.length) {
-    transaction.addQuery(delEmployee, [db.bid(req.params.uuid)])
-    transaction.addQuery(sqlEmployeeAdvantage, [employeeAdvantage]);    
+    transaction.addQuery(delEmployee, [db.bid(req.params.uuid)]);
+    transaction.addQuery(sqlEmployeeAdvantage, [employeeAdvantage]);
   }
 
   transaction.execute()
@@ -316,10 +314,9 @@ function create(req, res, next) {
 
   // Provide UUID if the client has not specified
   data.uuid = employeeID;
-  
+
   const patientID = uuid();
-  let employeeAdvantage = [];
-  let employeeIdentification; 
+  const employeeAdvantage = [];
 
   data.creditor_uuid = uuid();
   data.debtor_uuid = uuid();
@@ -334,8 +331,7 @@ function create(req, res, next) {
 
   const employeeAdvantagePayroll = employee.payroll;
 
-  for(var i in employeeAdvantagePayroll)
-    employeeAdvantage.push([employee.uuid, i, employeeAdvantagePayroll[i]]);
+  for (const i in employeeAdvantagePayroll) { employeeAdvantage.push([employee.uuid, i, employeeAdvantagePayroll[i]]); }
 
   if (employee.dob) {
     employee.dob = new Date(employee.dob);
@@ -377,7 +373,7 @@ function create(req, res, next) {
   delete employee.debtor_uuid;
   delete employee.hospital_no;
 
-  //Delete not necessary Data for Employee
+  // Delete not necessary Data for Employee
   delete employee.display_name;
   delete employee.dob;
   delete employee.sex;
@@ -400,7 +396,7 @@ function create(req, res, next) {
     .addQuery(sql, [employee]);
 
   if (employeeAdvantage.length) {
-    transaction.addQuery(sqlEmployeeAdvantage, [employeeAdvantage]);    
+    transaction.addQuery(sqlEmployeeAdvantage, [employeeAdvantage]);
   }
 
   transaction.execute()

@@ -35,19 +35,19 @@
             <li role="separator" class="divider"></li>
 
             <li role="menuitem">
-              <a data-method="put" ng-click="MultiplePayrollCtrl.setConfigured()" href>
+              <a data-method="configure-payment" ng-click="MultiplePayrollCtrl.setConfigured()" href>
                 <i class="fa fa-cog"></i> <span translate>FORM.BUTTONS.CONFIGURE_PAYMENT</span>
               </a>
             </li>
 
             <li role="menuitem">
-              <a data-method="put" ng-click="MultiplePayrollCtrl.putOnWaiting()" href>
+              <a data-method="put-waiting" ng-click="MultiplePayrollCtrl.putOnWaiting()" href>
                 <i class="fa fa-list"></i> <span translate>FORM.BUTTONS.PUT_ON_WAITING</span>
               </a>
             </li>
 
             <li role="menuitem">
-              <a data-method="put" ng-click="MultiplePayrollCtrl.viewPaySlip()" href>
+              <a data-method="view-payslip" ng-click="MultiplePayrollCtrl.viewPaySlip()" href>
                 <i class="fa fa-file-text-o"></i> <span translate>FORM.BUTTONS.PAYROLL_BULLETINS</span>
               </a>
             </li>
@@ -92,7 +92,7 @@
 
     <!-- vouchers list  -->
     <div
-      id="voucher-grid"
+      id="multipayroll-grid"
       class="grid-full-height-with-filters"
       ui-grid="MultiplePayrollCtrl.gridOptions"
       ui-grid-auto-resize

@@ -21,12 +21,12 @@ function MultiplePayrollController(
   MultiplePayroll, Notify, uiGridGroupingConstants, uiGridConstants,
   Sorting, Columns, GridState, $state, Modals, util, GridSelection, Receipts
 ) {
-  var vm = this;
+  const vm = this;
 
-  var cacheKey = 'multiple-payroll-grid';
-  var gridColumns;
-  var state;
-  var columnDefs;
+  const cacheKey = 'multiple-payroll-grid';
+  let gridColumns;
+  let state;
+  let columnDefs;
 
   vm.gridOptions = {};
 
@@ -38,33 +38,33 @@ function MultiplePayrollController(
 
   // date format function
   vm.format = util.formatDate;
-  
+
   vm.loading = false;
 
   columnDefs = [{
     field : 'display_name',
     displayName : 'FORM.LABELS.EMPLOYEE_NAME',
     headerCellFilter : 'translate',
-  },{
+  }, {
     field : 'code',
     displayName : 'FORM.LABELS.CODE',
     headerCellFilter : 'translate',
-  },{
+  }, {
     field : 'net_salary',
     displayName : 'FORM.LABELS.NET_SALARY',
     headerCellFilter : 'translate',
-    cellFilter : 'currency:row.entity.currency_id'
-  },{
+    cellFilter : 'currency:row.entity.currency_id',
+  }, {
     field : 'balance',
     displayName : 'FORM.LABELS.BALANCE',
     headerCellFilter : 'translate',
-    cellFilter : 'currency:row.entity.currency_id'
-  },{
+    cellFilter : 'currency:row.entity.currency_id',
+  }, {
     field : 'status_id',
     displayName : 'FORM.LABELS.STATUS',
     headerCellFilter : 'translate',
-    cellTemplate: '/modules/multiple_payroll/templates/cellStatus.tmpl.html',
-  },{
+    cellTemplate : '/modules/multiple_payroll/templates/cellStatus.tmpl.html',
+  }, {
     field : 'action',
     width : 200,
     displayName : '',
@@ -83,24 +83,23 @@ function MultiplePayrollController(
     columnDefs,
     onRegisterApi : function onRegisterApi(api) {
       vm.gridApi = api;
-    },    
+    },
   };
 
   gridColumns = new Columns(vm.gridOptions, cacheKey);
   state = new GridState(vm.gridOptions, cacheKey);
-  const selection = new GridSelection(vm.gridOptions);
 
   // search Payroll Data
   function search() {
-    var filtersSnapshot = MultiplePayroll.filters.formatHTTP();
+    const filtersSnapshot = MultiplePayroll.filters.formatHTTP();
 
     MultiplePayroll.openSearchModal(filtersSnapshot)
-      .then(function (changes) {
+      .then((changes) => {
         if (changes) {
           MultiplePayroll.filters.replaceFilters(changes);
           MultiplePayroll.cacheFilters();
           vm.latestViewFilters = MultiplePayroll.filters.formatView();
-          return load(MultiplePayroll.filters.formatHTTP(true));          
+          return load(MultiplePayroll.filters.formatHTTP(true));
         }
       });
   }
@@ -111,7 +110,7 @@ function MultiplePayrollController(
     toggleLoadingIndicator();
 
     MultiplePayroll.read(null, filters)
-      .then(function (employees) {
+      .then((employees) => {
 
         vm.gridOptions.data = employees;
       })
@@ -126,7 +125,7 @@ function MultiplePayrollController(
     MultiplePayroll.cacheFilters();
     vm.latestViewFilters = MultiplePayroll.filters.formatView();
 
-    return load(MultiplePayroll.filters.formatHTTP(true));
+    load(MultiplePayroll.filters.formatHTTP(true));
   }
 
   /**
@@ -161,12 +160,12 @@ function MultiplePayrollController(
 
     vm.latestViewFilters = MultiplePayroll.filters.formatView();
 
-    //If there is no filter open the window to select the pay period
+    // If there is no filter open the window to select the pay period
     if (!vm.latestViewFilters.defaultFilters.length) {
       search();
     } else {
-      return load(MultiplePayroll.filters.formatHTTP(true));
-    }      
+      load(MultiplePayroll.filters.formatHTTP(true));
+    }
   }
 
   // This function opens a modal through column service to let the user toggle
@@ -177,7 +176,7 @@ function MultiplePayrollController(
     gridColumns.openConfigurationModal();
   }
 
-  // 
+  //
   vm.putOnWaiting = function putOnWaiting() {
     const employees = vm.gridApi.selection.getSelectedRows();
     let invalid = false;
@@ -185,18 +184,18 @@ function MultiplePayrollController(
 
     if (employees.length) {
       employees.forEach(employee => {
-        employeeStatusId = parseInt(employee.status_id); 
+        employeeStatusId = parseInt(employee.status_id, 10);
 
-        if(employeeStatusId !== 2) {
+        if (employeeStatusId !== 2) {
           invalid = true;
         }
-      });     
+      });
 
       if (invalid) {
         Notify.warn('FORM.WARNINGS.ATTENTION_WAITING_LIST');
       } else {
-        let idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
-        return MultiplePayroll.paiementCommitment(idPeriod, employees)
+        const idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
+        MultiplePayroll.paiementCommitment(idPeriod, employees)
           .then((res) => {
             Notify.success('FORM.INFO.CONFIGURED_SUCCESSFULLY');
             $state.go('multiple_payroll', null, { reload : true });
@@ -217,19 +216,19 @@ function MultiplePayrollController(
 
     if (employees.length) {
       employees.forEach(employee => {
-        employeeStatusId = parseInt(employee.status_id); 
+        employeeStatusId = parseInt(employee.status_id);
 
-        if(employeeStatusId !== 1) {
+        if (employeeStatusId !== 1) {
           invalid = true;
         }
-      });     
+      });
 
       if (invalid) {
         Notify.warn('FORM.WARNINGS.ATTENTION_CONFIGURED');
       } else {
-        let idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
-        return MultiplePayroll.configurations(idPeriod, employees)
-          .then((res) => {
+        const idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
+        MultiplePayroll.configurations(idPeriod, employees)
+          .then(() => {
             Notify.success('FORM.INFO.CONFIGURED_SUCCESSFULLY');
             $state.go('multiple_payroll', null, { reload : true });
           })
@@ -247,29 +246,29 @@ function MultiplePayrollController(
 
     if (employees.length) {
       employees.forEach(employee => {
-        employeeStatusId = parseInt(employee.status_id); 
+        employeeStatusId = parseInt(employee.status_id, 10);
 
-        if(employeeStatusId === 1) {
+        if (employeeStatusId === 1) {
           invalid = true;
         }
-      });     
+      });
 
       if (invalid) {
         Notify.warn('FORM.WARNINGS.ATTENTION_PAYSLIPS');
       } else {
-        let idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
-        
+        const idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
+
         Receipts.payroll(idPeriod, employees);
       }
     } else {
       Notify.danger('FORM.WARNINGS.NO_EMPLOYE_SELECTED');
     }
-  }
+  };
 
   vm.paySlip = function paySlip(employee) {
-    let idPeriod = vm.latestViewFilters.defaultFilters[0]._value;        
-    Receipts.payroll(idPeriod, employee);        
-  }
+    const idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
+    Receipts.payroll(idPeriod, employee);
+  };
 
   vm.saveGridState = state.saveGridState;
   // saves the grid's current configuration

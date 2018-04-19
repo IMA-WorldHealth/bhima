@@ -264,7 +264,7 @@ function ReceiptModal(Modal, Receipts) {
     /* noop */
   }
 
-  function payroll(idPeriod, employees, notifyCreated) {
+  function payroll(periodPayroll, data, notifyCreated) {
     var options = {
       title         : 'TREE.PAYROLL',
       renderer      : Receipts.renderers.PDF,
@@ -272,8 +272,8 @@ function ReceiptModal(Modal, Receipts) {
     };
 
     var request = {
-      idPeriod : idPeriod,
-      employees : employees,
+      idPeriod : periodPayroll,
+      employees : data,
     };
 
     var payrollRequest = Receipts.payroll(request, { renderer: options.renderer });

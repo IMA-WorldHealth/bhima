@@ -346,7 +346,7 @@ exports.configure = function configure(app) {
 
   // Payroll Configuration api
   app.get('/payroll_config', payrollConfig.list);
-  app.get('/payroll_config/paiementStatus', payrollConfig.paiementStatus);    
+  app.get('/payroll_config/paiementStatus', payrollConfig.paiementStatus);
   app.get('/payroll_config/:id', payrollConfig.detail);
   app.post('/payroll_config', payrollConfig.create);
   app.put('/payroll_config/:id', payrollConfig.update);

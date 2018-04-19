@@ -4,13 +4,13 @@
 * This controller exposes an API to the client for reading and writing Holiday
 */
 
-var db = require('../../lib/db');
-var NotFound = require('../../lib/errors/NotFound');
+const db = require('../../lib/db');
+const NotFound = require('../../lib/errors/NotFound');
 const BadRequest = require('../../lib/errors/BadRequest');
 
 // GET /Holiday
 function lookupHoliday(id) {
-  var sql =`
+  const sql = `
     SELECT h.id, h.label, BUID(h.employee_uuid) AS employee_uuid, h.dateFrom, h.dateTo, h.percentage
     FROM holiday AS h  
     WHERE h.id = ?`;
@@ -19,12 +19,12 @@ function lookupHoliday(id) {
 }
 
 // Check Holidays
-/** 
+/**
 *
 * This function prevents to define for an employee, two periods of holidays that fits nested
 */
 function checkHoliday(param) {
-  var sql = `
+  const sql = `
     SELECT id, BUID(employee_uuid) AS employee_uuid, label, dateTo, percentage, dateFrom 
     FROM holiday WHERE employee_uuid = ?
     AND ((dateFrom >= DATE(?)) OR (dateTo >= DATE(?)) OR (dateFrom >= DATE(?))
@@ -60,7 +60,7 @@ function list(req, res, next) {
 * Returns the detail of a single Holiday
 */
 function detail(req, res, next) {
-  var id = req.params.id;
+  const id = req.params.id;
 
   lookupHoliday(id)
     .then((record) => {
@@ -81,7 +81,7 @@ function create(req, res, next) {
       if (record.length) {
         throw new BadRequest('Holiday Nested.', 'ERRORS.HOLIDAY_NESTED');
       }
-      
+
       return db.exec(sql, [data]);
     })
     .then((row) => {
@@ -96,24 +96,20 @@ function create(req, res, next) {
 function update(req, res, next) {
   const sql = `UPDATE holiday SET ? WHERE id = ?;`;
   const data = req.body;
-  console.log('AA');
+
   if (data.employee_uuid) {
-    data.employee_uuid = db.bid(data.employee_uuid);  
+    data.employee_uuid = db.bid(data.employee_uuid);
   }
 
-  console.log('BBBBBBBB');
-  
   checkHoliday(data)
     .then((record) => {
-      console.log('RECOREDDDDDDDddd');
-
 
       if (record.length > 1) {
         throw new BadRequest('Holiday Nested.', 'ERRORS.HOLIDAY_NESTED');
       }
-      
+
       return db.exec(sql, [data, req.params.id]);
-    })  
+    })
     .then(() => {
       return lookupHoliday(req.params.id);
     })

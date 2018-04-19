@@ -35,7 +35,7 @@ function VoucherToolkitService(Modal) {
     payment_employee : {
       controller  : 'PaymentEmployeeKitController',
       templateUrl : 'modules/vouchers/toolkit/payment_employee/payment_employee.modal.html',
-    },    
+    },
   };
 
   service.openConventionPaymentModal = function openConventionPaymentModal() {

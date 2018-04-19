@@ -12,7 +12,8 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
   const date = new Date();
 
   const vUuid = 'b140c144-6ca8-47b0-99ba-94732cf6efde';
-  const numVouchers = 9;
+  const pUuid = 'c144b140-6ca8-47b0-99ba-6efde94732cf';
+  const numVouchers = 11;
 
   const TO_DELETE_UUID = '3688e9ce-85ea-4b5c-9144-688177edcb63';
 
@@ -42,8 +43,12 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
 
   // NOTE: this voucher does not have any uuids
   const items = [
-    { account_id : 197, debit : 11, credit : 0, document_uuid : uuid(), entity_uuid : uuid() },
-    { account_id : 191, debit : 0, credit : 11, document_uuid : uuid(), entity_uuid : uuid() },
+    {
+      account_id : 197, debit : 11, credit : 0, document_uuid : uuid(), entity_uuid : uuid(),
+    },
+    {
+      account_id : 191, debit : 0, credit : 11, document_uuid : uuid(), entity_uuid : uuid(),
+    },
     { account_id : 197, debit : 0, credit : 12 },
     { account_id : 190, debit : 12, credit : 0 },
   ];
@@ -98,6 +103,75 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
 
   let mockVoucher;
 
+  const voucherPaymentSalary = {
+    date        : date,
+    uuid        : pUuid,
+    project_id  : 1,
+    currency_id : helpers.data.USD,
+    amount      : 14.07,
+    type_id : 7,
+    description : 'Partial Paiement Salary [ 02 - 2018]',
+    user_id     : 1,
+    items       : [{
+      uuid          : uuid(),
+      account_id    : 187,
+      debit         : 0,
+      credit        : 14.07,
+      document_uuid : uuid(),
+      voucher_uuid  : pUuid,
+    }, {
+      account_id   : 179,
+      debit        : 14.07,
+      credit       : 0,
+      voucher_uuid : pUuid,
+      entity_uuid: '42d3756a-7770-4bb8-a899-7953cd859892',
+      entity: { 
+        label : 'TEST 2 PATIENT',
+        type  : 'C',
+        uuid  : '42d3756a-7770-4bb8-a899-7953cd859892' 
+      },
+    }],
+    paiementRows: [{ 
+      account_id  : 187, 
+      debit       : 0, 
+      credit      : 614.07,
+    }, { 
+      account_id  : 179,
+      debit       : 614.07,
+      credit      : 0,
+      document_uuid   : '2a3f17b0-ae32-42bb-9333-a760825fd257',
+      entity_uuid     : '42d3756a-7770-4bb8-a899-7953cd859892',
+      entity: { 
+        label : 'TEST 2 PATIENT',
+        type  : 'C',
+        uuid  : '42d3756a-7770-4bb8-a899-7953cd859892' 
+      } 
+    }],
+  };
+
+  const voucher2 = {
+    date,
+    uuid        : vUuid,
+    project_id  : 1,
+    currency_id : helpers.data.USD,
+    amount      : 10,
+    description : 'Voucher Transaction to BCDC',
+    user_id     : 1,
+    items       : [{
+      uuid          : uuid(),
+      account_id    : 184,
+      debit         : 10,
+      credit        : 0,
+      document_uuid : uuid(),
+      voucher_uuid  : vUuid,
+    }, {
+      account_id   : 217,
+      debit        : 0,
+      credit       : 10,
+      voucher_uuid : vUuid,
+    }],
+  };
+
   it('POST /vouchers create a new voucher record in voucher and voucher_item tables', () => {
     return agent.post('/vouchers')
       .send({ voucher })
@@ -147,13 +221,13 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
   it('POST /vouchers will reject a voucher will less than two records', () => {
     // attempt 1 - missing items completely + bad voucher
     return agent.post('/vouchers')
-      .send({ voucher: { uuid: uuid() } })
+      .send({ voucher : { uuid : uuid() } })
       .then((res) => {
         helpers.api.errored(res, 400);
 
         // attempt 2 - only a single item
         return agent.post('/vouchers')
-          .send({ voucher: badVoucher });
+          .send({ voucher : badVoucher });
       })
       .then((res) => {
         helpers.api.errored(res, 400);
@@ -163,7 +237,7 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
 
   it('POST /vouchers will reject a voucher with an invalid exchange rate', () => {
     return agent.post('/vouchers')
-      .send({ voucher: predatedVoucher })
+      .send({ voucher : predatedVoucher })
       .then((res) => {
         helpers.api.errored(res, 400);
         expect(res.body.code).to.equal('ERRORS.NO_FISCAL_YEAR');
@@ -226,4 +300,15 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
       })
       .catch(helpers.handler);
   });
+
+  it('POST /vouchers create a voucher record For Paiement Salary', () => {
+    return agent.post('/vouchers')
+      .send({ voucher : voucherPaymentSalary })
+      .then((res) => {
+        helpers.api.created(res);
+        expect(res.body.uuid).to.be.equal(voucherPaymentSalary.uuid);
+      })
+      .catch(helpers.handler);
+  });
+
 });

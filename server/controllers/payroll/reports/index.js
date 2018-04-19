@@ -13,6 +13,6 @@ const payslipGenerator = require('./payslipGenerator');
 // expose to the express router
 module.exports = {
   employeeRegistrations : employeeRegistration,
-  employeeMultiPayroll : employeeMultiPayroll,
-  payslipGenerator : payslipGenerator,
+  employeeMultiPayroll,
+  payslipGenerator,
 };

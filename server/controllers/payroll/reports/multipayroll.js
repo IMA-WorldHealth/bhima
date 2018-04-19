@@ -13,13 +13,11 @@
  */
 
 const _ = require('lodash');
-const moment = require('moment');
-
 const ReportManager = require('../../../lib/ReportManager');
-const db = require('../../../lib/db');
 const shared = require('../../finance/reports/shared');
 const Payroll = require('../multiplePayroll');
 const PayrollConfig = require('../configuration');
+
 const TEMPLATE = './server/controllers/payroll/reports/multipayroll.handlebars';
 
 /**
@@ -35,12 +33,12 @@ const TEMPLATE = './server/controllers/payroll/reports/multipayroll.handlebars';
 function build(req, res, next) {
   const options = _.clone(req.query);
 
-  //delete options.payroll_configuration_id;
+  // delete options.payroll_configuration_id;
   delete options.currency_id;
 
-  _.extend(options, { 
-    filename : 'TREE.MULTI_PAYROLL', 
-    csvKey : 'multipayroll', 
+  _.extend(options, {
+    filename : 'TREE.MULTI_PAYROLL',
+    csvKey : 'multipayroll',
     orientation : 'portrait',
     footerRight : '[page] / [toPage]',
     footerFontSize : '7',
@@ -68,7 +66,7 @@ function build(req, res, next) {
     })
     .then(rows => {
       data.rows = rows;
-	  
+
       return report.render(data);
     })
     .then(result => {

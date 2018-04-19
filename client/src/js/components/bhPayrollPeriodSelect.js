@@ -21,7 +21,7 @@ PayrollPeriodSelectController.$inject = [
  * Payroll Period Select Controller
  */
 function PayrollPeriodSelectController(PayrollConfigs, $timeout, $scope, Notify) {
-  var $ctrl = this;
+  let $ctrl = this;
 
   // fired at the beginning of the Payroll Configuration select
   $ctrl.$onInit = function $onInit() {

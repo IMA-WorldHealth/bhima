@@ -20,7 +20,7 @@ PayrollStatusSelectController.$inject = [
  *
  */
 function PayrollStatusSelectController(Payroll, Notify, $translate) {
-  var $ctrl = this;
+  const $ctrl = this;
 
   $ctrl.$onInit = function onInit() {
     // label to display
@@ -34,8 +34,8 @@ function PayrollStatusSelectController(Payroll, Notify, $translate) {
 
     // load all Payroll status
     Payroll.paiementStatus()
-      .then(function (status) {
-        status.forEach(function (item) {
+      .then((status) => {
+        status.forEach((item) => {
           item.plainText = $translate.instant(item.text);
         });
         $ctrl.paiementStatus = status;

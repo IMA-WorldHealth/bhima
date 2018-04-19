@@ -181,7 +181,7 @@ CREATE TABLE `rubric_payroll` (
   `debtor_account_id` int(10) unsigned DEFAULT NULL,
   `expense_account_id` int(10) unsigned DEFAULT NULL,
   `is_ipr` tinyint(1) DEFAULT 0,
-  `value` float DEFAULT NULL,
+  `value` float DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `rubric_payroll_1` (`label`),
   KEY `debtor_account_id` (`debtor_account_id`),

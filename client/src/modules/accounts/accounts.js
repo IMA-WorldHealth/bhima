@@ -71,11 +71,6 @@ function AccountsController($rootScope, $timeout, AccountGrid, Notify, Constants
         headerCellFilter : 'translate',
       },
       {
-        field : 'translation_key',
-        displayName : 'FORM.LABELS.ACCOUNT_TYPE',
-        headerCellFilter : 'translate',
-      },
-      {
         name : 'actions',
         enableFiltering : false,
         displayName : '',

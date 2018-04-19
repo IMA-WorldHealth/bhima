@@ -16,13 +16,16 @@ describe('Employees', () => {
     sex          : 'M',
     dob           : '30/06/1960',
     date_embauche : '17/05/1997',
-    nb_spouse     : 1,
     nb_enfant     : 2,
     bank          : 'BIAC',
     bank_account  : '00-99-88-77',
     email         : 'me@info.com',
     adresse       : '221B Baker Street',
     hospital_no   : 'TP003',
+    payroll       : {
+      TPR : 20,
+      f_scol : 150,
+    },
   };
 
   before(() => helpers.navigate(path));
@@ -48,7 +51,6 @@ describe('Employees', () => {
     registrationPage.setOriginLocation(helpers.data.locations);
     registrationPage.setCurrentLocation(helpers.data.locations);
     registrationPage.setHiringDate(employee.date_embauche);
-    registrationPage.setNumberSpouse(employee.nb_spouse);
     registrationPage.setNumberChild(employee.nb_enfant);
     registrationPage.setService('Administration');
     registrationPage.setFonction('Infirmier');
@@ -57,6 +59,7 @@ describe('Employees', () => {
     registrationPage.setAddress(employee.adresse);
     registrationPage.setBank(employee.bank);
     registrationPage.setBankAccount(employee.bank_account);
+    registrationPage.setRubricPayroll(employee.payroll);
 
     registrationPage.createEmployee();
     registrationPage.isEmpoyeeCreated(true);

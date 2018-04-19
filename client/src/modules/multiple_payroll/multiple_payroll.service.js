@@ -4,7 +4,7 @@ angular.module('bhima.services')
 MultiplePayrollService.$inject = [
   'PrototypeApiService', 'TransactionTypeStoreService', '$uibModal',
   'FilterService', 'PeriodService', 'LanguageService', '$httpParamSerializer',
-  'appcache', 'TransactionService', '$translate',
+  'appcache', 'TransactionService',
 ];
 
 /**
@@ -13,17 +13,16 @@ MultiplePayrollService.$inject = [
  *
  * @description
  * This service manages posting data to the database via the /multiple_payroll/ URL.  It also
- * includes some utilities that are useful for Multiple Payroll pages. 
+ * includes some utilities that are useful for Multiple Payroll pages.
  */
 function MultiplePayrollService(
   Api, TransactionTypeStore, Modal, Filters, Periods, Languages,
-  $httpParamSerializer, AppCache, Transactions, $translate
+  $httpParamSerializer, AppCache, Transactions
 ) {
-  var service = new Api('/multiple_payroll/');
-  var multiplePayrollFilters = new Filters();
-  var filterCache = new AppCache('multiple-payroll-filters');
+  const service = new Api('/multiple_payroll/');
+  const multiplePayrollFilters = new Filters();
+  const filterCache = new AppCache('multiple-payroll-filters');
 
-  //service.create = create;
   service.remove = Transactions.remove;
   service.openSearchModal = openSearchModal;
 
@@ -39,20 +38,20 @@ function MultiplePayrollService(
 
   // loads the Payroll Configuration
   function getConfiguration(id, params) {
-    return service.$http.get(`/multiple_payroll/${id}/configuration`, { params : params })
+    return service.$http.get(`/multiple_payroll/${id}/configuration`, { params })
       .then(service.util.unwrapHttpResponse);
   }
 
   // Set Multi Payroll Configuration using the public API
   function setConfiguration(id, data) {
-    return service.$http.post(`/multiple_payroll/${id}/configuration`, { data : data })
+    return service.$http.post(`/multiple_payroll/${id}/configuration`, { data })
       .then(service.util.unwrapHttpResponse);
   }
 
   // Set Employees Configured for Payroll
   function configurations(id, data) {
-    return service.$http.post(`/multiple_payroll/${id}/multiConfiguration`, { data : data })
-      .then(service.util.unwrapHttpResponse);    
+    return service.$http.post(`/multiple_payroll/${id}/multiConfiguration`, { data })
+      .then(service.util.unwrapHttpResponse);
   }
 
   /**
@@ -60,7 +59,7 @@ function MultiplePayrollService(
    *Transfer of the entries in accountants for the commitment of payment
   */
   function paiementCommitment(id, data) {
-    return service.$http.post(`/multiple_payroll/${id}/commitment`, { data : data })
+    return service.$http.post(`/multiple_payroll/${id}/commitment`, { data })
       .then(service.util.unwrapHttpResponse);
   }
 
@@ -72,7 +71,7 @@ function MultiplePayrollService(
   multiplePayrollFilters.registerCustomFilters([
     { key : 'display_name', label : 'FORM.LABELS.EMPLOYEE_NAME' },
     { key : 'code', label : 'FORM.LABELS.CODE' },
-    { key : 'status_id', label : 'FORM.LABELS.STATUS' },  
+    { key : 'status_id', label : 'FORM.LABELS.STATUS' },
   ]);
 
 
@@ -84,7 +83,7 @@ function MultiplePayrollService(
     multiplePayrollFilters.resetFilterState(key);
   }
 
-  //load filters from cache
+  // load filters from cache
   function cacheFilters() {
     filterCache.filters = multiplePayrollFilters.formatCache();
   }
@@ -95,11 +94,11 @@ function MultiplePayrollService(
 
   // downloads a type of report based on the
   function download(type) {
-    var filterOpts = multiplePayrollFilters.formatHTTP();
-    var defaultOpts = { renderer : type, lang: Languages.key };
+    const filterOpts = multiplePayrollFilters.formatHTTP();
+    const defaultOpts = { renderer : type, lang : Languages.key };
 
     // combine options
-    var options = angular.merge(defaultOpts, filterOpts);
+    const options = angular.merge(defaultOpts, filterOpts);
     // return  serialized options
     return $httpParamSerializer(options);
   }

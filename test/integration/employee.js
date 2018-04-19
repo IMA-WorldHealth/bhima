@@ -20,7 +20,7 @@ describe('(/employees) the employees API endpoint', function () {
 
   // employee we will add during this test suite.
   var employee = {
-    uuid : uuid(),
+    uuid : '6b4642a7-4577-4768-b6ae-1b3d38f0bbef',
     code : 'x500',
     display_name : 'Magnus Carolus Charlemagne',
     sex : 'M',

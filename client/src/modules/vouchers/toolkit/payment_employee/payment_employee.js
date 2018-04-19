@@ -8,12 +8,12 @@ PaymentEmployeeKitController.$inject = [
 
 // Import transaction rows for a Payment Employee
 function PaymentEmployeeKitController(Instance, Notify, Session, bhConstants, Debtors, $translate, ToolKits, MultiplePayroll, moment) {
-  var vm = this;
+  const vm = this;
 
-  var MAX_DECIMAL_PRECISION = bhConstants.precision.MAX_DECIMAL_PRECISION;
+  const MAX_DECIMAL_PRECISION = bhConstants.precision.MAX_DECIMAL_PRECISION;
   vm.enterprise = Session.enterprise;
   vm.onSelectPayrollPeriod = onSelectPayrollPeriod;
-  vm.onSelectCashbox = onSelectCashbox;  
+  vm.onSelectCashbox = onSelectCashbox;
 
   vm.close = Instance.close;
   vm.import = submit;
@@ -23,7 +23,7 @@ function PaymentEmployeeKitController(Instance, Notify, Session, bhConstants, De
 
     vm.currencyId = cashbox.currency_id;
     vm.account_id = cashbox.account_id;
-    reloadGrid();    
+    reloadGrid();
   }
 
   // helper aggregation function
@@ -41,26 +41,26 @@ function PaymentEmployeeKitController(Instance, Notify, Session, bhConstants, De
   function reloadGrid() {
     if (vm.currencyId && vm.periodId) {
       vm.gridDisplay = true;
-      
-      let params = {
-        payroll_configuration_id : vm.periodId, 
+
+      const params = {
+        payroll_configuration_id : vm.periodId,
         currency_id : vm.currencyId,
         status_id : [3, 4],
         filterCurrency : true,
       };
 
       MultiplePayroll.read(null, params)
-      .then(function (paiements) {
+        .then((paiements) => {
 
-        //total amount
-        var totals = paiements.reduce(aggregate, 0);
+        // total amount
+          const totals = paiements.reduce(aggregate, 0);
 
-        vm.gridOptions.data = paiements || [];
+          vm.gridOptions.data = paiements || [];
 
-        // make sure we are always within precision
-        vm.totalNetSalary = Number.parseFloat(totals.toFixed(MAX_DECIMAL_PRECISION));
-      })
-      .catch(Notify.handleError);      
+          // make sure we are always within precision
+          vm.totalNetSalary = Number.parseFloat(totals.toFixed(MAX_DECIMAL_PRECISION));
+        })
+        .catch(Notify.handleError);
     } else {
       vm.gridDisplay = false;
     }
@@ -70,11 +70,11 @@ function PaymentEmployeeKitController(Instance, Notify, Session, bhConstants, De
 
   // generate transaction rows
   function generateTransactionRows(result) {
-    var rows = [];
+    const rows = [];
 
-    var supportAccountId = result.account_id;
-    var paiements = result.paiements;
-    var supportRow = ToolKits.getBlankVoucherRow();
+    const supportAccountId = result.account_id;
+    const paiements = result.paiements;
+    const supportRow = ToolKits.getBlankVoucherRow();
 
     rows.typeId = bhConstants.transactionType.SALARY_PAYMENT;
 
@@ -85,17 +85,15 @@ function PaymentEmployeeKitController(Instance, Notify, Session, bhConstants, De
     rows.push(supportRow);
 
     // then loop through each selected item and credit it with the Supported account
-    paiements.forEach(function (paiement) {
-      var row = ToolKits.getBlankVoucherRow();
+    paiements.forEach((paiement) => {
+      const row = ToolKits.getBlankVoucherRow();
 
       row.account_id = paiement.account_id;
-      
       row.document_uuid = paiement.uuid;
-      
       row.debit = paiement.balance;
 
       // this is needed for a nice display in the grid
-      row.entity = { label : paiement.display_name, type: 'C', uuid : paiement.creditor_uuid };
+      row.entity = { label : paiement.display_name, type : 'C', uuid : paiement.creditor_uuid };
 
       // add the row in to the
       rows.push(row);
@@ -112,7 +110,7 @@ function PaymentEmployeeKitController(Instance, Notify, Session, bhConstants, De
     fastWatch : true,
     flatEntityAccess : true,
     enableSelectionBatchEvent : false,
-    onRegisterApi : onRegisterApi,
+    onRegisterApi,
   };
 
   vm.gridOptions.columnDefs = [{
@@ -123,17 +121,17 @@ function PaymentEmployeeKitController(Instance, Notify, Session, bhConstants, De
     field : 'net_salary',
     displayName : 'FORM.LABELS.NET_SALARY',
     headerCellFilter : 'translate',
-    cellFilter : 'currency:row.entity.currency_id'
+    cellFilter : 'currency:row.entity.currency_id',
   }, {
     field : 'balance',
     displayName : 'FORM.LABELS.BALANCE',
     headerCellFilter : 'translate',
-    cellFilter : 'currency:row.entity.currency_id'
+    cellFilter : 'currency:row.entity.currency_id',
   }, {
     field : 'status_id',
     displayName : 'FORM.LABELS.STATUS',
     headerCellFilter : 'translate',
-    cellTemplate: '/modules/multiple_payroll/templates/cellStatus.tmpl.html',
+    cellTemplate : '/modules/multiple_payroll/templates/cellStatus.tmpl.html',
   }];
 
   function onRegisterApi(gridApi) {
@@ -143,8 +141,8 @@ function PaymentEmployeeKitController(Instance, Notify, Session, bhConstants, De
 
   // called whenever the selection changes in the ui-grid
   function rowSelectionCallback() {
-    var selected = vm.gridApi.selection.getSelectedRows();
-    var aggregation = selected.reduce(aggregate, 0);
+    const selected = vm.gridApi.selection.getSelectedRows();
+    const aggregation = selected.reduce(aggregate, 0);
 
     vm.hasSelectedRows = selected.length > 0;
     vm.totalSelected = Number.parseFloat(aggregation.toFixed(MAX_DECIMAL_PRECISION));
@@ -156,22 +154,20 @@ function PaymentEmployeeKitController(Instance, Notify, Session, bhConstants, De
   function submit(form) {
     if (form.$invalid) { return; }
 
-    var selected = vm.gridApi.selection.getSelectedRows();
+    const selected = vm.gridApi.selection.getSelectedRows();
 
-    var bundle = generateTransactionRows({
+    const bundle = generateTransactionRows({
       account_id : vm.account_id,
       paiements  : selected,
     });
-
-    var invoiceRefs = selected.map(function (i) { return i.reference; }).join(', ');
-
-    var msg = $translate.instant('VOUCHERS.GLOBAL.PAYMENT_EMPLOYEES') + ' [ ' + vm.dateFrom + ']';
+    
+    const msg = `${$translate.instant('VOUCHERS.GLOBAL.PAYMENT_EMPLOYEES')} [ ${vm.dateFrom}]`;
 
     Instance.close({
       rows    : bundle,
       description : msg,
       type_id : bhConstants.transactionType.SALARY_PAYMENT,
-      currency_id : vm.currencyId, 
+      currency_id : vm.currencyId,
     });
   }
 }

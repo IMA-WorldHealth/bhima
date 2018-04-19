@@ -104,7 +104,7 @@ function PatientRegistrySearch() {
   });
 
   it(`should find patients with origin location "${parameters.originVillageName}" `, () => {
-    const NUM_MATCHING = 4;
+    const NUM_MATCHING = 5;
     FU.input('$ctrl.searchQueries.originLocationLabel', parameters.originVillageName);
     FU.modal.submit();
     expectNumberOfGridRows(NUM_MATCHING);
@@ -123,7 +123,7 @@ function PatientRegistrySearch() {
 
   // changes every single date input manually.
   it('should not find any patients with complex limited dates.', () => {
-    const NUM_MATCHING = 4;
+    const NUM_MATCHING = 5;
     components.dateInterval.range(parameters.dateBirthFrom2, parameters.dateBirthTo2, 'dob-date');
     modal.switchToDefaultFilterTab();
     modal.setPeriod('allTime');

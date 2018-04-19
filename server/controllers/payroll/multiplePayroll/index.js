@@ -31,13 +31,19 @@ function find(options) {
   }
 
   const sql = `
-    SELECT payroll.employee_uuid, payroll.code, payroll.date_embauche, payroll.nb_enfant, payroll.individual_salary, payroll.account_id, payroll.creditor_uuid, payroll.display_name, payroll.sex, payroll.uuid, payroll.payroll_configuration_id, payroll.currency_id,
-      payroll.paiement_date, payroll.base_taxable, payroll.basic_salary, payroll.gross_salary, payroll.grade_salary, payroll.text, payroll.net_salary, payroll.working_day, payroll.total_day, payroll.daily_salary, payroll.amount_paid,
+    SELECT payroll.employee_uuid, payroll.code, payroll.date_embauche, payroll.nb_enfant, payroll.individual_salary,
+     payroll.account_id, payroll.creditor_uuid, payroll.display_name, payroll.sex, payroll.uuid, payroll.payroll_configuration_id, 
+     payroll.currency_id, payroll.paiement_date, payroll.base_taxable, payroll.basic_salary, payroll.gross_salary, 
+     payroll.grade_salary, payroll.text, payroll.net_salary, payroll.working_day, payroll.total_day, payroll.daily_salary, payroll.amount_paid,
       payroll.status_id, payroll.status, (payroll.net_salary - payroll.amount_paid) AS balance
     FROM(
-      SELECT BUID(employee.uuid) AS employee_uuid, employee.code, employee.date_embauche, employee.nb_enfant, employee.individual_salary, creditor_group.account_id, BUID(employee.creditor_uuid) AS creditor_uuid,
-        UPPER(patient.display_name) AS display_name, patient.sex, BUID(paiement.uuid) AS uuid, paiement.payroll_configuration_id,  paiement.currency_id, paiement.paiement_date, paiement.base_taxable, 
-        paiement.basic_salary, paiement.gross_salary, grade.basic_salary AS grade_salary, grade.text, paiement.net_salary, paiement.working_day, paiement.total_day, paiement.daily_salary, paiement.amount_paid, paiement.status_id, paiement_status.text AS status
+      SELECT BUID(employee.uuid) AS employee_uuid, employee.code, employee.date_embauche, employee.nb_enfant, 
+      employee.individual_salary, creditor_group.account_id, BUID(employee.creditor_uuid) AS creditor_uuid,
+        UPPER(patient.display_name) AS display_name, patient.sex, BUID(paiement.uuid) AS uuid, 
+        paiement.payroll_configuration_id,  paiement.currency_id, paiement.paiement_date, paiement.base_taxable, 
+        paiement.basic_salary, paiement.gross_salary, grade.basic_salary AS grade_salary, grade.text, 
+        paiement.net_salary, paiement.working_day, paiement.total_day, paiement.daily_salary, paiement.amount_paid, 
+        paiement.status_id, paiement_status.text AS status
         FROM employee 
         JOIN creditor ON creditor.uuid = employee.creditor_uuid  
         JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid 
@@ -47,9 +53,12 @@ function find(options) {
         JOIN paiement_status ON paiement_status.id = paiement.status_id
         WHERE paiement.payroll_configuration_id = '${options.payroll_configuration_id}'
       UNION 
-        SELECT BUID(employee.uuid) AS employee_uuid, employee.code, employee.date_embauche, employee.nb_enfant, employee.individual_salary, creditor_group.account_id, BUID(employee.creditor_uuid) AS creditor_uuid,
-        UPPER(patient.display_name) AS display_name, patient.sex, NULL AS 'paiement_uuid', '${options.payroll_configuration_id}' AS payroll_configuration_id, '${options.currency_id}' AS currency_id, NULL AS paiement_date, 0 AS base_taxable, 0 AS basic_salary, 0 AS gross_salary, 
-        grade.basic_salary AS grade_salary, grade.text, 0 AS net_salary, 0 AS working_day, 0 AS total_day, 0 AS daily_salary, 0 AS amount_paid, 1 AS status_id, 'PAYROLL_STATUS.WAITING_FOR_CONFIGURATION' AS status
+        SELECT BUID(employee.uuid) AS employee_uuid, employee.code, employee.date_embauche, employee.nb_enfant, 
+        employee.individual_salary, creditor_group.account_id, BUID(employee.creditor_uuid) AS creditor_uuid,
+        UPPER(patient.display_name) AS display_name, patient.sex, NULL AS 'paiement_uuid', '${options.payroll_configuration_id}' AS payroll_configuration_id, 
+        '${options.currency_id}' AS currency_id, NULL AS paiement_date, 0 AS base_taxable, 0 AS basic_salary, 0 AS gross_salary, 
+        grade.basic_salary AS grade_salary, grade.text, 0 AS net_salary, 0 AS working_day, 0 AS total_day, 0 AS daily_salary,
+         0 AS amount_paid, 1 AS status_id, 'PAYROLL_STATUS.WAITING_FOR_CONFIGURATION' AS status
         FROM employee 
         JOIN creditor ON creditor.uuid = employee.creditor_uuid  
         JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid 
@@ -61,12 +70,12 @@ function find(options) {
   filters.fullText('display_name');
   filters.fullText('code');
 
-  //Company currency filtering is optional only if you want to 
-  //know the currency for which the employees have been configured for payment  
+  // Company currency filtering is optional only if you want to
+  // know the currency for which the employees have been configured for payment
   if (options.filterCurrency) {
-    filters.equals('currency_id');  
+    filters.equals('currency_id');
   }
-  
+
   filters.custom('status_id', 'payroll.status_id IN (?)', [statusIds]);
   filters.setOrder('ORDER BY payroll.display_name');
 
@@ -94,7 +103,8 @@ function getConfigurationData(payrollConfigurationId, params) {
   const transaction = db.transaction();
 
   const sql = `
-    SELECT config_rubric_item.id, config_rubric_item.config_rubric_id, config_rubric_item.rubric_payroll_id, payroll_configuration.label AS PayrollConfig,
+    SELECT config_rubric_item.id, config_rubric_item.config_rubric_id, config_rubric_item.rubric_payroll_id, 
+    payroll_configuration.label AS PayrollConfig,
     rubric_payroll.* 
     FROM config_rubric_item
     JOIN rubric_payroll ON rubric_payroll.id = config_rubric_item.rubric_payroll_id
@@ -109,7 +119,8 @@ function getConfigurationData(payrollConfigurationId, params) {
   `;
 
   const getEmployeeHoliday = `
-    SELECT holiday.id, holiday.label, holiday.dateFrom, holiday.dateTo, holiday.percentage, BUID(holiday.employee_uuid) AS employee_uuid
+    SELECT holiday.id, holiday.label, holiday.dateFrom, holiday.dateTo, holiday.percentage,
+     BUID(holiday.employee_uuid) AS employee_uuid
     FROM holiday 
     WHERE ((DATE(holiday.dateFrom) >= DATE(?) AND DATE(holiday.dateTo) <= DATE(?)) OR
     (DATE(holiday.dateFrom) >= DATE(?) AND DATE(holiday.dateFrom) <= DATE(?)) OR
@@ -149,7 +160,6 @@ function manageConfigurationData(rows, params) {
 
   const validOffDays = [];
   const validHolidays = [];
-  const totalDays = [];
 
   offDays.forEach(offDay => {
     let invalidOffDays = false;
@@ -187,6 +197,18 @@ function manageConfigurationData(rows, params) {
             invalidHoliday = true;
           }
         });
+
+        // Check if in a holiday period there is a offDay
+        validOffDays.forEach(off => {
+
+          const offDayCheck = moment(off.date).format('YYYY-MM-DD');
+          const dayCheck = moment(day).format('YYYY-MM-DD');
+
+          if (offDayCheck === dayCheck) {
+            invalidHoliday = true;
+          }
+        });
+
         if (!invalidHoliday) {
           numberOfDays++;
           validHolidays.push(holiday);
@@ -226,7 +248,6 @@ function manageConfigurationData(rows, params) {
 }
 
 function configuration(req, res, next) {
-  const transaction = db.transaction();  
   const params = req.query;
   const payrollConfigurationId = req.params.id;
 
@@ -246,7 +267,6 @@ function configuration(req, res, next) {
 function setMultiConfiguration(req, res, next) {
   const dataEmployees = req.body.data;
   const payrollConfigurationId = req.params.id;
-  const transac = db.transaction();
   const enterpriseId = req.session.enterprise.id;
   const currencyId = req.session.enterprise.currency_id;
   const DECIMAL_PRECISION = 2;
@@ -264,8 +284,8 @@ function setMultiConfiguration(req, res, next) {
   `;
 
   const getRubricPayroll = `
-    SELECT config_rubric_item.id, config_rubric_item.config_rubric_id, config_rubric_item.rubric_payroll_id, payroll_configuration.label AS PayrollConfig,
-    rubric_payroll.* 
+    SELECT config_rubric_item.id, config_rubric_item.config_rubric_id, config_rubric_item.rubric_payroll_id, 
+    payroll_configuration.label AS PayrollConfig, rubric_payroll.* 
     FROM config_rubric_item
     JOIN rubric_payroll ON rubric_payroll.id = config_rubric_item.rubric_payroll_id
     JOIN payroll_configuration ON payroll_configuration.config_rubric_id = config_rubric_item.config_rubric_id
@@ -300,7 +320,7 @@ function setMultiConfiguration(req, res, next) {
 
         return Exchange.getExchangeRate(enterpriseId, employee.currency_id, new Date())
           .then((exchange) => {
-            enterpriseExchangeRate = currencyId === parseInt(employee.currency_id) ? 1 : exchange.rate;
+            enterpriseExchangeRate = currencyId === parseInt(employee.currency_id, 10) ? 1 : exchange.rate;
             return Exchange.getExchangeRate(enterpriseId, iprCurrencyId, new Date());
           })
           .then((exchangeIpr) => {
@@ -311,18 +331,18 @@ function setMultiConfiguration(req, res, next) {
             advantagesEmployee = advantages;
             return getConfigurationData(payrollConfigurationId, option);
           })
-          .then((rows) => {
-            const dataManaged = manageConfigurationData(rows, option);
+          .then((dataConfiguration) => {
+            const dataManaged = manageConfigurationData(dataConfiguration, option);
 
-            let iprScales = dataManaged[4];
+            const iprScales = dataManaged[4];
 
-            let daysPeriod = dataManaged[7][0];
+            const daysPeriod = dataManaged[7][0];
 
-            let offDays = dataManaged[5];
-            let holidays = dataManaged[2];
+            const offDays = dataManaged[5];
+            const holidays = dataManaged[2];
 
-            let nbHolidays = dataManaged[6].length;
-            let nbOffDays = dataManaged[5].length;
+            const nbHolidays = dataManaged[6].length;
+            const nbOffDays = dataManaged[5].length;
 
             let offDaysCost = 0;
             let holidaysCost = 0;
@@ -338,19 +358,19 @@ function setMultiConfiguration(req, res, next) {
             let membershipFeeEmployee = 0;
             let coeffDiscount;
 
-            let allRubrics = [];
-            let holidaysElements = [];
-            let offDaysElements = [];
+            const allRubrics = [];
+            const holidaysElements = [];
+            const offDaysElements = [];
 
             const paiementUuid = uuid();
-            let uid = db.bid(paiementUuid);
+            const uid = db.bid(paiementUuid);
 
-            //Calcul Daily Salary
-            let dailySalary = employee.individual_salary ? (employee.individual_salary / daysPeriod.working_day) : (employee.grade_salary / daysPeriod.working_day);
-            let workingDays = (daysPeriod.working_day - (nbHolidays + nbOffDays));
-            let workingDayCost = dailySalary * (daysPeriod.working_day - (nbHolidays + nbOffDays));
-              
-            let nbChildren = employee.nb_enfant;
+            // Calcul Daily Salary
+            const dailySalary = employee.individual_salary ? (employee.individual_salary / daysPeriod.working_day) : (employee.grade_salary / daysPeriod.working_day);
+            const workingDays = (daysPeriod.working_day - (nbHolidays + nbOffDays));
+            const workingDayCost = dailySalary * (daysPeriod.working_day - (nbHolidays + nbOffDays));
+
+            const nbChildren = employee.nb_enfant;
 
             /**
             * Some institution allocates a percentage for the offday and holiday payment,
@@ -358,19 +378,19 @@ function setMultiConfiguration(req, res, next) {
             */
             if (offDays.length) {
               offDays.forEach(offDay => {
-                let offDaysValue = ((dailySalary * offDay.percent_pay) / 100);
-                offDaysCost += offDaysValue;                
+                const offDaysValue = ((dailySalary * offDay.percent_pay) / 100);
+                offDaysCost += offDaysValue;
                 offDaysElements.push([offDay.id, offDay.percent_pay, uid, offDay.label, offDaysValue]);
               });
             }
 
             if (holidays.length) {
               holidays.forEach(holiday => {
-                let holidayValue = ((dailySalary * holiday.percentage * holiday.numberOfDays) / 100);
+                const holidayValue = ((dailySalary * holiday.percentage * holiday.numberOfDays) / 100);
                 holidaysCost += holidayValue;
 
                 holidaysElements.push([holiday.id, holiday.numberOfDays, holiday.percentage, uid, holiday.label, holidayValue]);
-              });              
+              });
             }
 
             /*
@@ -378,7 +398,7 @@ function setMultiConfiguration(req, res, next) {
             * where the percentages are respectively equal to 100% of the basic salary will
             * remain equal to that defined at the level of the grade table
             */
-            let basicSalary = util.roundDecimal((workingDayCost + offDaysCost + holidaysCost) * enterpriseExchangeRate, DECIMAL_PRECISION);
+            const basicSalary = util.roundDecimal((workingDayCost + offDaysCost + holidaysCost) * enterpriseExchangeRate, DECIMAL_PRECISION);
 
             if (rubricData.length) {
               rubricData.forEach(rubric => {
@@ -398,13 +418,13 @@ function setMultiConfiguration(req, res, next) {
 
 
               // Filtering all taxes and contributions that is calculated from the taxable base
-              taxesContributions = rubricData.filter(item => item.is_tax || item.is_membership_fee || item.is_discount === 1);              
+              taxesContributions = rubricData.filter(item => item.is_tax || item.is_membership_fee || item.is_discount === 1);
             }
 
             // Calcul value for non-taxable and automatically calculated
             if (nonTaxables.length) {
               nonTaxables.forEach(nonTaxable => {
-                nonTaxable.result = nonTaxable.is_percent ? util.roundDecimal((basicSalary * nonTaxable.value) / 100, DECIMAL_PRECISION) : nonTaxable.result || 0;
+                nonTaxable.result = nonTaxable.is_percent ? util.roundDecimal((basicSalary * nonTaxable.value) / 100, DECIMAL_PRECISION) : nonTaxable.result || nonTaxable.value;
                 sumNonTaxable += nonTaxable.result;
 
                 allRubrics.push([uid, nonTaxable.rubric_payroll_id, nonTaxable.result]);
@@ -413,20 +433,20 @@ function setMultiConfiguration(req, res, next) {
 
             if (taxables.length) {
               taxables.forEach(taxable => {
-                taxable.result = taxable.is_percent ? util.roundDecimal((basicSalary * taxable.value) / 100, DECIMAL_PRECISION) : taxable.result || 0;
+                taxable.result = taxable.is_percent ? util.roundDecimal((basicSalary * taxable.value) / 100, DECIMAL_PRECISION) : taxable.result || taxable.value;
                 sumTaxable += taxable.result;
 
                 allRubrics.push([uid, taxable.rubric_payroll_id, taxable.result]);
               });
             }
 
-            let baseTaxable = basicSalary + sumTaxable;
+            const baseTaxable = basicSalary + sumTaxable;
 
             grossSalary = basicSalary + sumTaxable + sumNonTaxable;
 
             if (taxesContributions.length) {
               taxesContributions.forEach(taxContribution => {
-                taxContribution.result = taxContribution.is_percent ? util.roundDecimal((baseTaxable * taxContribution.value) / 100, DECIMAL_PRECISION) : taxContribution.result || 0;
+                taxContribution.result = taxContribution.is_percent ? util.roundDecimal((baseTaxable * taxContribution.value) / 100, DECIMAL_PRECISION) : taxContribution.result || taxContribution.value;
 
                 // Recovery of the value of the Membership Fee worker share
                 if (taxContribution.is_membership_fee && taxContribution.is_employee) {
@@ -482,9 +502,9 @@ function setMultiConfiguration(req, res, next) {
               }
             }
 
-            let netSalary = grossSalary - sumTaxContributionEmp;
+            const netSalary = grossSalary - sumTaxContributionEmp;
 
-            let paiementData = {
+            const paiementData = {
               uuid : uid,
               employee_uuid : db.bid(employee.employee_uuid),
               payroll_configuration_id : payrollConfigurationId,
@@ -500,10 +520,10 @@ function setMultiConfiguration(req, res, next) {
               status_id : 2,
             };
 
-            let setPaiementData = 'INSERT INTO paiement SET ?';
-            let setRubricPaiementData = 'INSERT INTO rubric_paiement (paiement_uuid, rubric_payroll_id, value) VALUES ?';
-            let setHolidayPaiement = 'INSERT INTO holiday_paiement (holiday_id, holiday_nbdays, holiday_percentage, paiement_uuid, label, value) VALUES ?';
-            let setOffDayPaiement = 'INSERT INTO offday_paiement (offday_id, offday_percentage, paiement_uuid, label, value) VALUES ?';
+            const setPaiementData = 'INSERT INTO paiement SET ?';
+            const setRubricPaiementData = 'INSERT INTO rubric_paiement (paiement_uuid, rubric_payroll_id, value) VALUES ?';
+            const setHolidayPaiement = 'INSERT INTO holiday_paiement (holiday_id, holiday_nbdays, holiday_percentage, paiement_uuid, label, value) VALUES ?';
+            const setOffDayPaiement = 'INSERT INTO offday_paiement (offday_id, offday_percentage, paiement_uuid, label, value) VALUES ?';
 
             // initialise All transactions handler
             allTransactions = [{
@@ -511,21 +531,21 @@ function setMultiConfiguration(req, res, next) {
               params : [paiementData],
             }];
 
-            if (allRubrics.length) {              
+            if (allRubrics.length) {
               allTransactions.push({
                 query : setRubricPaiementData,
                 params : [allRubrics],
               });
             }
 
-            if(holidaysElements.length) {
+            if (holidaysElements.length) {
               allTransactions.push({
                 query : setHolidayPaiement,
                 params : [holidaysElements],
-              });              
+              });
             }
 
-            if(offDaysElements.length) {
+            if (offDaysElements.length) {
               allTransactions.push({
                 query : setOffDayPaiement,
                 params : [offDaysElements],
@@ -535,20 +555,20 @@ function setMultiConfiguration(req, res, next) {
             return allTransactions;
           });
       }))
-      .then((allTransactions) => {
-        const postingJournal = db.transaction();
+        .then((results) => {
+          const postingJournal = db.transaction();
 
-        allTransactions.forEach(transaction => {
-          transaction.forEach(item => {
-            postingJournal.addQuery(item.query, item.params);
+          results.forEach(transaction => {
+            transaction.forEach(item => {
+              postingJournal.addQuery(item.query, item.params);
+            });
           });
-        });
 
-        return postingJournal.execute();
-      })
-      .then((postingJournal) => {
-        res.sendStatus(201);
-      });
+          return postingJournal.execute();
+        })
+        .then(() => {
+          res.sendStatus(201);
+        });
     })
     .catch(next)
     .done();
@@ -559,11 +579,13 @@ function setMultiConfiguration(req, res, next) {
  */
 function setConfiguration(req, res, next) {
   const data = req.body.data;
-
   const transaction = db.transaction();
   const currencyId = req.session.enterprise.currency_id;
   const enterpriseId = req.session.enterprise.id;
-  const iprCurrencyId = data.iprScales[0].currency_id;
+
+  // If tax IPR is not defined Else Use Currency ID
+  const iprCurrencyId = data.iprScales.length ? data.iprScales[0].currency_id : currencyId;
+
   const iprScales = data.iprScales;
   const employee = data.employee;
   const payrollConfigurationId = req.params.id;
@@ -586,12 +608,10 @@ function setConfiguration(req, res, next) {
     })
     .then((exchangeIpr) => {
       iprExchangeRate = exchangeIpr.rate;
-
       const DECIMAL_PRECISION = 2;
 
       let offDaysCost = 0;
       let holidaysCost = 0;
-      const grossSalary = 0;
 
       // Calcul Daily Salary
       const totalDayPeriod = data.daysPeriod.working_day;
@@ -605,20 +625,20 @@ function setConfiguration(req, res, next) {
      * the calculation of this rate is found by calculating the equivalence of the daily wage with the percentage of the offday or holiday.
      */
       data.offDays.forEach(offDay => {
-        let offDayValue = ((dailySalary * offDay.percent_pay) / 100);
+        const offDayValue = ((dailySalary * offDay.percent_pay) / 100);
         offDaysCost += offDayValue;
 
         offDaysElements.push([offDay.id, offDay.percent_pay, uid, offDay.label, offDayValue]);
       });
 
       data.holidays.forEach(holiday => {
-        let holidayValue = ((dailySalary * holiday.percentage * holiday.numberOfDays) / 100);
+        const holidayValue = ((dailySalary * holiday.percentage * holiday.numberOfDays) / 100);
         holidaysCost += holidayValue;
 
         holidaysElements.push([holiday.id, holiday.numberOfDays, holiday.percentage, uid, holiday.label, holidayValue]);
       });
 
-    /*
+      /*
      * Recalculation of base salary on the basis of any holiday or vacation period,
      * where the percentages are respectively equal to 100% of the basic salary will
      * remain equal to that defined at the level of the grade table
@@ -640,10 +660,10 @@ function setConfiguration(req, res, next) {
           let sumTaxable = 0;
           let sumTaxContributionEmp = 0;
           let membershipFeeEmployee = 0;
-          
+
           let nonTaxables = [];
           let taxables = [];
-          let taxesContributions = [];          
+          let taxesContributions = [];
 
           if (rubrics.length) {
             rubrics.forEach(rubric => {
@@ -658,13 +678,13 @@ function setConfiguration(req, res, next) {
             taxables = rubrics.filter(item => (item.is_tax !== 1 && item.is_discount !== 1 && item.is_social_care !== 1 && item.is_membership_fee !== 1));
 
             // Filtering all taxes and contributions that is calculated from the taxable base
-            taxesContributions = rubrics.filter(item => item.is_tax || item.is_membership_fee || item.is_discount === 1);            
+            taxesContributions = rubrics.filter(item => item.is_tax || item.is_membership_fee || item.is_discount === 1);
           }
 
           // Calcul value for non-taxable and automatically calculated
           if (nonTaxables.length) {
             nonTaxables.forEach(nonTaxable => {
-              nonTaxable.result = nonTaxable.is_percent ? util.roundDecimal((basicSalary * nonTaxable.value) / 100, DECIMAL_PRECISION) : nonTaxable.result;
+              nonTaxable.result = nonTaxable.is_percent ? util.roundDecimal((basicSalary * nonTaxable.value) / 100, DECIMAL_PRECISION) : (nonTaxable.result || nonTaxable.value);
               sumNonTaxable += nonTaxable.result;
 
               allRubrics.push([uid, nonTaxable.rubric_payroll_id, nonTaxable.result]);
@@ -673,7 +693,7 @@ function setConfiguration(req, res, next) {
 
           if (taxables.length) {
             taxables.forEach(taxable => {
-              taxable.result = taxable.is_percent ? util.roundDecimal((basicSalary * taxable.value) / 100, DECIMAL_PRECISION) : taxable.result;
+              taxable.result = taxable.is_percent ? util.roundDecimal((basicSalary * taxable.value) / 100, DECIMAL_PRECISION) : (taxable.result || taxable.value);
               sumTaxable += taxable.result;
 
               allRubrics.push([uid, taxable.rubric_payroll_id, taxable.result]);
@@ -686,7 +706,7 @@ function setConfiguration(req, res, next) {
 
           if (taxesContributions.length) {
             taxesContributions.forEach(taxContribution => {
-              taxContribution.result = taxContribution.is_percent ? util.roundDecimal((baseTaxable * taxContribution.value) / 100, DECIMAL_PRECISION) : taxContribution.result;
+              taxContribution.result = taxContribution.is_percent ? util.roundDecimal((baseTaxable * taxContribution.value) / 100, DECIMAL_PRECISION) : (taxContribution.result || taxContribution.value);
 
               // Recovery of the value of the Membership Fee worker share
               if (taxContribution.is_membership_fee && taxContribution.is_employee) {
@@ -733,13 +753,21 @@ function setConfiguration(req, res, next) {
                 }
 
                 // Calculation of the sum of taxes and membership fee borne by the employee
-                if (taxContribution.is_employee) {
-                  sumTaxContributionEmp += taxContribution.result;
-                }
+                if (taxContribution.is_employee) { sumTaxContributionEmp += taxContribution.result; }
 
                 allRubrics.push([uid, taxContribution.rubric_payroll_id, taxContribution.result]);
               });
             }
+          } else if (taxesContributions.length) {
+            taxesContributions.forEach(taxContribution => {
+              // Calculation of the sum of taxes and membership fee borne by the employee
+              if (taxContribution.is_employee) {
+                sumTaxContributionEmp += taxContribution.result;
+              }
+
+              allRubrics.push([uid, taxContribution.rubric_payroll_id, taxContribution.result]);
+            });
+
           }
 
           const netSalary = grossSalary - sumTaxContributionEmp;
@@ -770,20 +798,20 @@ function setConfiguration(req, res, next) {
             .addQuery(deletePaiementData, [db.bid(employee.uuid), payrollConfigurationId])
             .addQuery(setPaiementData, [paiementData]);
 
-          if(allRubrics.length) {
+          if (allRubrics.length) {
             transaction.addQuery(setRubricPaiementData, [allRubrics]);
           }
 
-          if(holidaysElements.length) {
+          if (holidaysElements.length) {
             transaction.addQuery(setHolidayPaiement, [holidaysElements]);
           }
 
-          if(offDaysElements.length) {
+          if (offDaysElements.length) {
             transaction.addQuery(setOffDayPaiement, [offDaysElements]);
           }
 
           transaction.execute()
-            .then((rows) => {
+            .then(() => {
               res.sendStatus(201);
             })
             .catch(next)
@@ -800,7 +828,6 @@ function setConfiguration(req, res, next) {
  */
 function makeCommitment(req, res, next) {
   const dataEmployees = req.body.data;
-
   const payrollConfigurationId = req.params.id;
   const enterpriseId = req.session.enterprise.id;
   const projectId = req.session.project.id;
@@ -846,7 +873,7 @@ function makeCommitment(req, res, next) {
             const rubricPaiement = rows[0];
             let totalWithholding = 0;
             let totalChargeRemuneration = 0;
-            
+
             let employeeBenefits = [];
             let employeeWithholdings = [];
             let chargeRemunerations = [];
@@ -870,12 +897,12 @@ function makeCommitment(req, res, next) {
 
               chargeRemunerations.forEach(chargeRemuneration => {
                 totalChargeRemuneration += util.roundDecimal(chargeRemuneration.value, 2);
-              });              
+              });
             }
 
-            let employeeBenefitsItem = [];
-            let employeeWithholdingItem = [];
-            let enterpriseChargeRemunerations = [];
+            const employeeBenefitsItem = [];
+            const employeeWithholdingItem = [];
+            const enterpriseChargeRemunerations = [];
 
             const voucherCommitment = {
               uuid : db.bid(uuid()),
@@ -918,7 +945,7 @@ function makeCommitment(req, res, next) {
                   db.bid(voucherCommitment.uuid),
                   null,
                 ]);
-              });              
+              });
             }
 
             // WithholdingItem
@@ -957,7 +984,7 @@ function makeCommitment(req, res, next) {
             }
 
             if (chargeRemunerations.length) {
-             // Social charge on remuneration
+              // Social charge on remuneration
               voucherChargeRemuneration = {
                 uuid : db.bid(uuid()),
                 date : new Date(),
@@ -1004,13 +1031,13 @@ function makeCommitment(req, res, next) {
             if (employeeWithholdings.length) {
               transactions.push({
                 query : 'INSERT INTO voucher SET ?',
-                  params : [voucherWithholding],
-                }, {
-                  query : 'INSERT INTO voucher_item (uuid, account_id, debit, credit, voucher_uuid, entity_uuid) VALUES ?',
-                  params : [employeeWithholdingItem],
-                }, {
-                  query : 'CALL PostVoucher(?);',
-                  params : [voucherWithholding.uuid] 
+                params : [voucherWithholding],
+              }, {
+                query : 'INSERT INTO voucher_item (uuid, account_id, debit, credit, voucher_uuid, entity_uuid) VALUES ?',
+                params : [employeeWithholdingItem],
+              }, {
+                query : 'CALL PostVoucher(?);',
+                params : [voucherWithholding.uuid],
               });
             }
 
@@ -1030,15 +1057,15 @@ function makeCommitment(req, res, next) {
             transactions.push({
               query : 'UPDATE paiement set status_id = 3 WHERE uuid = ?',
               params : [paiementUuid],
-            });              
-            
+            });
+
             return transactions;
           });
       }))
-        .then((transactions) => {
+        .then((results) => {
           const postingJournal = db.transaction();
 
-          transactions.forEach(transaction => {
+          results.forEach(transaction => {
             transaction.forEach(item => {
               postingJournal.addQuery(item.query, item.params);
             });
