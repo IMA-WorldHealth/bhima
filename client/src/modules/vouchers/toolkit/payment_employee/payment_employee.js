@@ -155,12 +155,10 @@ function PaymentEmployeeKitController(Instance, Notify, Session, bhConstants, De
     if (form.$invalid) { return; }
 
     const selected = vm.gridApi.selection.getSelectedRows();
-
     const bundle = generateTransactionRows({
       account_id : vm.account_id,
       paiements  : selected,
     });
-    
     const msg = `${$translate.instant('VOUCHERS.GLOBAL.PAYMENT_EMPLOYEES')} [ ${vm.dateFrom}]`;
 
     Instance.close({

@@ -123,7 +123,7 @@ exports.checkOffday = function checkHoliday(req, res, next) {
  * @description
  * Looks up an employee in the database by their id.
  *
- * @param {Number} id - the id of the employee to look up
+ * @param uuid - the uuid of the employee to look up
  * @returns {Promise} - the result of the database query.
  */
 function lookupEmployee(uuid) {
@@ -210,7 +210,11 @@ function update(req, res, next) {
 
   const employeeAdvantagePayroll = employee.payroll;
 
-  for (const i in employeeAdvantagePayroll) { employeeAdvantage.push([db.bid(req.params.uuid), i, employeeAdvantagePayroll[i]]); }
+  for (const i in employeeAdvantagePayroll) {
+    if (employeeAdvantagePayroll.hasOwnProperty(i)) {
+      employeeAdvantage.push([db.bid(req.params.uuid), i, employeeAdvantagePayroll[i]]); 
+    }
+  }
 
   if (employee.dob) {
     employee.dob = new Date(employee.dob);
@@ -331,7 +335,11 @@ function create(req, res, next) {
 
   const employeeAdvantagePayroll = employee.payroll;
 
-  for (const i in employeeAdvantagePayroll) { employeeAdvantage.push([employee.uuid, i, employeeAdvantagePayroll[i]]); }
+  for (const i in employeeAdvantagePayroll) {
+    if (employeeAdvantagePayroll.hasOwnProperty(i)) {
+      employeeAdvantage.push([employee.uuid, i, employeeAdvantagePayroll[i]]); 
+    }
+  }
 
   if (employee.dob) {
     employee.dob = new Date(employee.dob);
@@ -400,7 +408,7 @@ function create(req, res, next) {
   }
 
   transaction.execute()
-    .then(results => {
+    .then(() => {
       topic.publish(topic.channels.ADMIN, {
         event : topic.events.CREATE,
         entity : topic.entities.EMPLOYEE,

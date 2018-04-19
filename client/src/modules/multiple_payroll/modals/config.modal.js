@@ -34,9 +34,7 @@ function ConfigPaiementModalController($state, Notify, AppCache, Employees, Mult
 
     vm.employee.basic_salary *= rateCurrency;
 
-    for (key in vm.payroll.value) {
-      vm.payroll.value[key] *= rateCurrency;
-    }
+    for (key in vm.payroll.value) { vm.payroll.value[key] *= rateCurrency; }
   };
 
   Employees.read(vm.stateParams.uuid)

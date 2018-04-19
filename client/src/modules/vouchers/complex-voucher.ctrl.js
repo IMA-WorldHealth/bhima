@@ -269,11 +269,11 @@ function ComplexJournalVoucherController(
     voucher.items = vm.Voucher.store.data;
 
     /**
-    *FIXE ME
-    * With the use of Journal Vouchers for the payment of the salaries 
-    * of the agents, it was question of knowing the identifier 
+    * FIXE ME
+    * With the use of Journal Vouchers for the payment of the salaries
+    * of the agents, it was question of knowing the identifier
     * of the payment to facilitate the update of the payment table finally to determine
-    * if the payment is partial or total, and in case of partial payment 
+    * if the payment is partial or total, and in case of partial payment
     * it would be impossible to determine the indetifier of the payment,
     * reason for which we had used the property document_uuid to preserve the identifier of the table
     */

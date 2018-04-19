@@ -128,11 +128,9 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
 
   // submit the data to the server
   function submit(employeeForm) {
-    let promise;
-
     if (employeeForm.$invalid) { return Notify.danger('FORM.ERRORS.INVALID'); }
 
-    promise = (!referenceId) ?
+    const promise = (!referenceId) ?
       Employees.create(vm.employee) :
       Employees.update(referenceId, vm.employee);
 

@@ -44,7 +44,7 @@ function PayrollStatusSelectController(Payroll, Notify, $translate) {
   };
 
   // fires the onSelectCallback bound to the component
-  $ctrl.handleChange = function (models) {
+  $ctrl.handleChange = function handleChange(models) {
     $ctrl.onChange({ paiementStatus : models });
   };
 }

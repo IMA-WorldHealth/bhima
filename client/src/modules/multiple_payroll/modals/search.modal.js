@@ -105,7 +105,7 @@ function MultiPayrollSearchModalController(
   // submit the filter object to the parent controller.
   vm.submit = function submit(form) {
     let _displayValue;
-    const loggedChanges;
+    let loggedChanges;
 
     if (form.$invalid) { return; }
 

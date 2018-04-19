@@ -10,7 +10,7 @@ const FilterParser = require('../../../lib/filter');
 
 // GET /Rubric
 function lookupRubric(id) {
-  const sql =`
+  const sql = `
     SELECT r.id, r.label, r.abbr, r.is_employee, r.is_percent, r.is_defined_employee, r.is_discount, r.is_social_care,
     r.debtor_account_id, r.expense_account_id, r.is_ipr, r.value, r.is_tax, r.is_membership_fee 
     FROM rubric_payroll AS r  

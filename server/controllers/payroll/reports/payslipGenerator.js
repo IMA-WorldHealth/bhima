@@ -14,7 +14,6 @@ const _ = require('lodash');
 
 const ReportManager = require('../../../lib/ReportManager');
 const db = require('../../../lib/db');
-const shared = require('../../finance/reports/shared');
 
 const TEMPLATE = './server/controllers/payroll/reports/payslipGenerator.handlebars';
 const PayrollConfig = require('../configuration');

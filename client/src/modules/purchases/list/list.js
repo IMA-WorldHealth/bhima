@@ -18,8 +18,9 @@ function PurchaseListController(
   const vm = this;
 
   const cacheKey = 'PurchaseRegistry';
-  const state;
   const columnDefs;
+
+  let state;
 
   vm.search = search;
   vm.openColumnConfiguration = openColumnConfiguration;

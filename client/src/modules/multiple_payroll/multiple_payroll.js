@@ -22,11 +22,7 @@ function MultiplePayrollController(
   Sorting, Columns, GridState, $state, Modals, util, GridSelection, Receipts
 ) {
   const vm = this;
-
   const cacheKey = 'multiple-payroll-grid';
-  let gridColumns;
-  let state;
-  let columnDefs;
 
   vm.gridOptions = {};
 
@@ -41,7 +37,7 @@ function MultiplePayrollController(
 
   vm.loading = false;
 
-  columnDefs = [{
+  const columnDefs = [{
     field : 'display_name',
     displayName : 'FORM.LABELS.EMPLOYEE_NAME',
     headerCellFilter : 'translate',
@@ -86,8 +82,8 @@ function MultiplePayrollController(
     },
   };
 
-  gridColumns = new Columns(vm.gridOptions, cacheKey);
-  state = new GridState(vm.gridOptions, cacheKey);
+  const gridColumns = new Columns(vm.gridOptions, cacheKey);
+  const state = new GridState(vm.gridOptions, cacheKey);
 
   // search Payroll Data
   function search() {
@@ -196,7 +192,7 @@ function MultiplePayrollController(
       } else {
         const idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
         MultiplePayroll.paiementCommitment(idPeriod, employees)
-          .then((res) => {
+          .then(() => {
             Notify.success('FORM.INFO.CONFIGURED_SUCCESSFULLY');
             $state.go('multiple_payroll', null, { reload : true });
           })
@@ -216,7 +212,7 @@ function MultiplePayrollController(
 
     if (employees.length) {
       employees.forEach(employee => {
-        employeeStatusId = parseInt(employee.status_id);
+        employeeStatusId = parseInt(employee.status_id, 10);
 
         if (employeeStatusId !== 1) {
           invalid = true;

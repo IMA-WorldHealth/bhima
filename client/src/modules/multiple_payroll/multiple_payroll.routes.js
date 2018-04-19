@@ -1,5 +1,5 @@
 angular.module('bhima.routes')
-  .config(['$stateProvider', function ($stateProvider) {
+  .config(['$stateProvider', function multiplePayrollRoutes($stateProvider) {
     $stateProvider
       // Multiple Payroll Registry
       .state('multiple_payroll', {

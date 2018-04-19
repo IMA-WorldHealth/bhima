@@ -356,7 +356,6 @@ function setMultiConfiguration(req, res, next) {
             let sumTaxable = 0;
             let sumTaxContributionEmp = 0;
             let membershipFeeEmployee = 0;
-            let coeffDiscount;
 
             const allRubrics = [];
             const holidaysElements = [];
@@ -558,8 +557,8 @@ function setMultiConfiguration(req, res, next) {
         .then((results) => {
           const postingJournal = db.transaction();
 
-          results.forEach(transaction => {
-            transaction.forEach(item => {
+          results.forEach(transac => {
+            transac.forEach(item => {
               postingJournal.addQuery(item.query, item.params);
             });
           });
@@ -829,7 +828,6 @@ function setConfiguration(req, res, next) {
 function makeCommitment(req, res, next) {
   const dataEmployees = req.body.data;
   const payrollConfigurationId = req.params.id;
-  const enterpriseId = req.session.enterprise.id;
   const projectId = req.session.project.id;
   const userId = req.session.user.id;
 
@@ -1073,7 +1071,7 @@ function makeCommitment(req, res, next) {
 
           return postingJournal.execute();
         })
-        .then((postingJournal) => {
+        .then(() => {
           res.sendStatus(201);
         });
     })
