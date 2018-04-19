@@ -189,10 +189,10 @@ describe('(/stock/) The Stock HTTP API', () => {
   // (report) render all stock exit
   it(
     `GET /reports/stock/lots?renderer=json
-    returns exits for all depots (12 OUT)`,
+    returns exits for all depots (10 OUT)`,
     () => agent.get(`/reports/stock/lots?renderer=json`)
       .then((res) => {
-        expect(res.body.rows.length).to.equal(12);
+        expect(res.body.rows.length).to.equal(10);
       })
       .catch(helpers.handler)
   );
@@ -256,7 +256,7 @@ describe('(/stock/) The Stock HTTP API', () => {
         user_id : 1, // super user
       })
       .then(res => {
-        helpers.api.listed(res, 15);
+        helpers.api.listed(res, 13);
       })
       .catch(helpers.handler));
 
