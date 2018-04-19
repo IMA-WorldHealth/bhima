@@ -41,3 +41,4 @@ nbproject/
 .nyc_output/
 
 yarn-error.log
+*.log
