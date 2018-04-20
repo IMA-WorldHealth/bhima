@@ -16,9 +16,7 @@ function PurchaseListController(
   Modal
 ) {
   const vm = this;
-
   const cacheKey = 'PurchaseRegistry';
-  const columnDefs;
 
   let state;
 
@@ -33,7 +31,7 @@ function PurchaseListController(
   // track if module is making a HTTP request for purchase order
   vm.loading = false;
 
-  columnDefs = [{
+  const columnDefs = [{
     field : 'reference',
     displayName : 'FORM.LABELS.REFERENCE',
     headerCellFilter : 'translate',

@@ -40,14 +40,13 @@ function HolidayModalController($state, Holidays, ModalService, Notify, AppCache
 
   // submit the data to the server from all two forms (update, create)
   function submit(holidayForm) {
-    let promise;
 
     if (holidayForm.$invalid) { return 0; }
 
     vm.holiday.dateFrom = moment(vm.holiday.dateFrom).format('YYYY-MM-DD');
     vm.holiday.dateTo = moment(vm.holiday.dateTo).format('YYYY-MM-DD');
 
-    promise = (vm.isCreating) ?
+    const promise = (vm.isCreating) ?
       Holidays.create(vm.holiday) :
       Holidays.update(vm.holiday.id, vm.holiday);
 

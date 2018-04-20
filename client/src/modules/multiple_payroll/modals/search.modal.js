@@ -105,7 +105,6 @@ function MultiPayrollSearchModalController(
   // submit the filter object to the parent controller.
   vm.submit = function submit(form) {
     let _displayValue;
-    let loggedChanges;
 
     if (form.$invalid) { return; }
 
@@ -119,7 +118,7 @@ function MultiPayrollSearchModalController(
       }
     });
 
-    loggedChanges = changes.getAll();
+    const loggedChanges = changes.getAll();
 
     // return values to the voucher controller
     return ModalInstance.close(loggedChanges);

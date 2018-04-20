@@ -126,7 +126,7 @@ exports.checkOffday = function checkHoliday(req, res, next) {
  * @param uuid - the uuid of the employee to look up
  * @returns {Promise} - the result of the database query.
  */
-function lookupEmployee(uuid) {
+function lookupEmployee(uid) {
   const sql =
     `
     SELECT
@@ -152,7 +152,7 @@ function lookupEmployee(uuid) {
     WHERE employee.uuid = ?;
   `;
 
-  return db.one(sql, [db.bid(uuid)], uuid, 'employee');
+  return db.one(sql, [db.bid(uid)], uid, 'employee');
 }
 
 /**
@@ -210,11 +210,9 @@ function update(req, res, next) {
 
   const employeeAdvantagePayroll = employee.payroll;
 
-  for (const i in employeeAdvantagePayroll) {
-    if (employeeAdvantagePayroll.hasOwnProperty(i)) {
-      employeeAdvantage.push([db.bid(req.params.uuid), i, employeeAdvantagePayroll[i]]); 
-    }
-  }
+  Object.keys(employeeAdvantagePayroll).forEach(function(key) {
+    employeeAdvantage.push([db.bid(req.params.uuid), key, employeeAdvantagePayroll[key]]);    
+  })
 
   if (employee.dob) {
     employee.dob = new Date(employee.dob);
@@ -335,11 +333,9 @@ function create(req, res, next) {
 
   const employeeAdvantagePayroll = employee.payroll;
 
-  for (const i in employeeAdvantagePayroll) {
-    if (employeeAdvantagePayroll.hasOwnProperty(i)) {
-      employeeAdvantage.push([employee.uuid, i, employeeAdvantagePayroll[i]]); 
-    }
-  }
+  Object.keys(employeeAdvantagePayroll).forEach(function(key) {
+    employeeAdvantage.push([employee.uuid, key, employeeAdvantagePayroll[key]]);   
+  });
 
   if (employee.dob) {
     employee.dob = new Date(employee.dob);
