@@ -55,7 +55,7 @@ function ConfigPaiementModalController(
       vm.idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
       vm.currencyId = vm.latestViewFilters.defaultFilters[1]._value;
       vm.payroll.currency_id = vm.latestViewFilters.defaultFilters[1]._value;
-      vm.employee.basic_salary = vm.employee.individual_salary ? 
+      vm.employee.basic_salary = vm.employee.individual_salary ?
         vm.employee.individual_salary : vm.employee.basic_salary;
 
       return Exchange.read();

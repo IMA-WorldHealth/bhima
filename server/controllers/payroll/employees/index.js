@@ -207,7 +207,7 @@ function update(req, res, next) {
   const employeeAdvantage = [];
 
   const employee = db.convert(req.body, [
-    'grade_uuid', 'debtor_group_uuid', 'creditor_group_uuid', 'creditor_uuid', 'debtor_uuid', 'patient_uuid', 
+    'grade_uuid', 'debtor_group_uuid', 'creditor_group_uuid', 'creditor_uuid', 'debtor_uuid', 'patient_uuid',
     'current_location_id', 'origin_location_id',
   ]);
 

@@ -91,7 +91,7 @@ function MultiplePayrollController(
 
     MultiplePayroll.openSearchModal(filtersSnapshot)
       .then((changes) => {
-        if (changes) {
+        if (changes.length) {
           MultiplePayroll.filters.replaceFilters(changes);
           MultiplePayroll.cacheFilters();
           vm.latestViewFilters = MultiplePayroll.filters.formatView();
