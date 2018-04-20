@@ -32,9 +32,10 @@ function find(options) {
 
   const sql = `
     SELECT payroll.employee_uuid, payroll.code, payroll.date_embauche, payroll.nb_enfant, payroll.individual_salary,
-     payroll.account_id, payroll.creditor_uuid, payroll.display_name, payroll.sex, payroll.uuid, payroll.payroll_configuration_id, 
-     payroll.currency_id, payroll.paiement_date, payroll.base_taxable, payroll.basic_salary, payroll.gross_salary, 
-     payroll.grade_salary, payroll.text, payroll.net_salary, payroll.working_day, payroll.total_day, payroll.daily_salary, payroll.amount_paid,
+     payroll.account_id, payroll.creditor_uuid, payroll.display_name, payroll.sex, payroll.uuid, 
+     payroll.payroll_configuration_id, payroll.currency_id, payroll.paiement_date, payroll.base_taxable, 
+     payroll.basic_salary, payroll.gross_salary, payroll.grade_salary, payroll.text, payroll.net_salary, 
+     payroll.working_day, payroll.total_day, payroll.daily_salary, payroll.amount_paid,
       payroll.status_id, payroll.status, (payroll.net_salary - payroll.amount_paid) AS balance
     FROM(
       SELECT BUID(employee.uuid) AS employee_uuid, employee.code, employee.date_embauche, employee.nb_enfant, 
@@ -55,16 +56,20 @@ function find(options) {
       UNION 
         SELECT BUID(employee.uuid) AS employee_uuid, employee.code, employee.date_embauche, employee.nb_enfant, 
         employee.individual_salary, creditor_group.account_id, BUID(employee.creditor_uuid) AS creditor_uuid,
-        UPPER(patient.display_name) AS display_name, patient.sex, NULL AS 'paiement_uuid', '${options.payroll_configuration_id}' AS payroll_configuration_id, 
-        '${options.currency_id}' AS currency_id, NULL AS paiement_date, 0 AS base_taxable, 0 AS basic_salary, 0 AS gross_salary, 
-        grade.basic_salary AS grade_salary, grade.text, 0 AS net_salary, 0 AS working_day, 0 AS total_day, 0 AS daily_salary,
-         0 AS amount_paid, 1 AS status_id, 'PAYROLL_STATUS.WAITING_FOR_CONFIGURATION' AS status
+        UPPER(patient.display_name) AS display_name, patient.sex, NULL AS 'paiement_uuid',
+        '${options.payroll_configuration_id}' AS payroll_configuration_id, '${options.currency_id}' AS currency_id, 
+        NULL AS paiement_date, 0 AS base_taxable, 0 AS basic_salary, 0 AS gross_salary, 
+        grade.basic_salary AS grade_salary, grade.text, 0 AS net_salary, 0 AS working_day, 0 AS total_day,
+        0 AS daily_salary, 0 AS amount_paid, 1 AS status_id, 'PAYROLL_STATUS.WAITING_FOR_CONFIGURATION' AS status
         FROM employee 
         JOIN creditor ON creditor.uuid = employee.creditor_uuid  
         JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid 
         JOIN patient ON patient.uuid = employee.patient_uuid 
         JOIN grade ON employee.grade_uuid = grade.uuid
-        WHERE employee.uuid NOT IN (SELECT paiement.employee_uuid FROM paiement WHERE paiement.payroll_configuration_id = '${options.payroll_configuration_id}')
+        WHERE employee.uuid NOT IN (
+          SELECT paiement.employee_uuid 
+          FROM paiement 
+          WHERE paiement.payroll_configuration_id = '${options.payroll_configuration_id}')
     ) AS payroll`;
 
   filters.fullText('display_name');
@@ -145,7 +150,14 @@ function getConfigurationData(payrollConfigurationId, params) {
   transaction
     .addQuery(sql, [payrollConfigurationId])
     .addQuery(getPeriodOffdays, [params.dateFrom, params.dateTo])
-    .addQuery(getEmployeeHoliday, [params.dateFrom, params.dateTo, params.dateFrom, params.dateTo, params.dateFrom, params.dateTo, db.bid(params.employeeUuid)])
+    .addQuery(getEmployeeHoliday, [
+      params.dateFrom,
+      params.dateTo,
+      params.dateFrom,
+      params.dateTo,
+      params.dateFrom,
+      params.dateTo,
+      db.bid(params.employeeUuid)])
     .addQuery(getWeekEndConfig, [payrollConfigurationId])
     .addQuery(getIprConfig, [payrollConfigurationId]);
 
@@ -365,7 +377,8 @@ function setMultiConfiguration(req, res, next) {
             const uid = db.bid(paiementUuid);
 
             // Calcul Daily Salary
-            const dailySalary = employee.individual_salary ? (employee.individual_salary / daysPeriod.working_day) : (employee.grade_salary / daysPeriod.working_day);
+            const dailySalary = employee.individual_salary ?
+              (employee.individual_salary / daysPeriod.working_day) : (employee.grade_salary / daysPeriod.working_day);
             const workingDays = (daysPeriod.working_day - (nbHolidays + nbOffDays));
             const workingDayCost = dailySalary * (daysPeriod.working_day - (nbHolidays + nbOffDays));
 
@@ -373,7 +386,8 @@ function setMultiConfiguration(req, res, next) {
 
             /**
             * Some institution allocates a percentage for the offday and holiday payment,
-            * the calculation of this rate is found by calculating the equivalence of the daily wage with the percentage of the offday or holiday.
+            * the calculation of this rate is found by calculating the equivalence of the daily wage with
+            * the percentage of the offday or holiday.
             */
             if (offDays.length) {
               offDays.forEach(offDay => {
@@ -388,7 +402,12 @@ function setMultiConfiguration(req, res, next) {
                 const holidayValue = ((dailySalary * holiday.percentage * holiday.numberOfDays) / 100);
                 holidaysCost += holidayValue;
 
-                holidaysElements.push([holiday.id, holiday.numberOfDays, holiday.percentage, uid, holiday.label, holidayValue]);
+                holidaysElements.push([holiday.id,
+                  holiday.numberOfDays,
+                  holiday.percentage,
+                  uid,
+                  holiday.label,
+                  holidayValue]);
               });
             }
 
@@ -397,7 +416,9 @@ function setMultiConfiguration(req, res, next) {
             * where the percentages are respectively equal to 100% of the basic salary will
             * remain equal to that defined at the level of the grade table
             */
-            const basicSalary = util.roundDecimal((workingDayCost + offDaysCost + holidaysCost) * enterpriseExchangeRate, DECIMAL_PRECISION);
+            const totalCosts = workingDayCost + offDaysCost + holidaysCost;
+
+            const basicSalary = util.roundDecimal(totalCosts * enterpriseExchangeRate, DECIMAL_PRECISION);
 
             if (rubricData.length) {
               rubricData.forEach(rubric => {
@@ -413,17 +434,22 @@ function setMultiConfiguration(req, res, next) {
               nonTaxables = rubricData.filter(item => item.is_social_care);
 
               // Filtering taxable Rubrics
-              taxables = rubricData.filter(item => (item.is_tax !== 1 && item.is_social_care !== 1 && item.is_membership_fee !== 1));
+              taxables = rubricData.filter(item =>
+                (item.is_tax !== 1 && item.is_social_care !== 1 && item.is_membership_fee !== 1));
 
 
               // Filtering all taxes and contributions that is calculated from the taxable base
-              taxesContributions = rubricData.filter(item => item.is_tax || item.is_membership_fee || item.is_discount === 1);
+              taxesContributions = rubricData.filter(item =>
+                item.is_tax || item.is_membership_fee || item.is_discount === 1);
             }
 
             // Calcul value for non-taxable and automatically calculated
             if (nonTaxables.length) {
               nonTaxables.forEach(nonTaxable => {
-                nonTaxable.result = nonTaxable.is_percent ? util.roundDecimal((basicSalary * nonTaxable.value) / 100, DECIMAL_PRECISION) : nonTaxable.result || nonTaxable.value;
+                nonTaxable.result = nonTaxable.is_percent ?
+                  util.roundDecimal((basicSalary * nonTaxable.value) / 100, DECIMAL_PRECISION) :
+                  nonTaxable.result || nonTaxable.value;
+
                 sumNonTaxable += nonTaxable.result;
 
                 allRubrics.push([uid, nonTaxable.rubric_payroll_id, nonTaxable.result]);
@@ -432,7 +458,10 @@ function setMultiConfiguration(req, res, next) {
 
             if (taxables.length) {
               taxables.forEach(taxable => {
-                taxable.result = taxable.is_percent ? util.roundDecimal((basicSalary * taxable.value) / 100, DECIMAL_PRECISION) : taxable.result || taxable.value;
+                taxable.result = taxable.is_percent ?
+                  util.roundDecimal((basicSalary * taxable.value) / 100, DECIMAL_PRECISION) :
+                  taxable.result || taxable.value;
+
                 sumTaxable += taxable.result;
 
                 allRubrics.push([uid, taxable.rubric_payroll_id, taxable.result]);
@@ -445,7 +474,9 @@ function setMultiConfiguration(req, res, next) {
 
             if (taxesContributions.length) {
               taxesContributions.forEach(taxContribution => {
-                taxContribution.result = taxContribution.is_percent ? util.roundDecimal((baseTaxable * taxContribution.value) / 100, DECIMAL_PRECISION) : taxContribution.result || taxContribution.value;
+                taxContribution.result = taxContribution.is_percent ?
+                  util.roundDecimal((baseTaxable * taxContribution.value) / 100, DECIMAL_PRECISION) :
+                  taxContribution.result || taxContribution.value;
 
                 // Recovery of the value of the Membership Fee worker share
                 if (taxContribution.is_membership_fee && taxContribution.is_employee) {
@@ -520,9 +551,14 @@ function setMultiConfiguration(req, res, next) {
             };
 
             const setPaiementData = 'INSERT INTO paiement SET ?';
-            const setRubricPaiementData = 'INSERT INTO rubric_paiement (paiement_uuid, rubric_payroll_id, value) VALUES ?';
-            const setHolidayPaiement = 'INSERT INTO holiday_paiement (holiday_id, holiday_nbdays, holiday_percentage, paiement_uuid, label, value) VALUES ?';
-            const setOffDayPaiement = 'INSERT INTO offday_paiement (offday_id, offday_percentage, paiement_uuid, label, value) VALUES ?';
+            const setRubricPaiementData = `INSERT INTO rubric_paiement (paiement_uuid, rubric_payroll_id, value) 
+              VALUES ?`;
+
+            const setHolidayPaiement = `INSERT INTO holiday_paiement (holiday_id, holiday_nbdays, holiday_percentage, 
+             paiement_uuid, label, value) VALUES ?`;
+
+            const setOffDayPaiement = `INSERT INTO offday_paiement 
+              (offday_id, offday_percentage, paiement_uuid, label, value) VALUES ?`;
 
             // initialise All transactions handler
             allTransactions = [{
@@ -615,14 +651,19 @@ function setConfiguration(req, res, next) {
       // Calcul Daily Salary
       const totalDayPeriod = data.daysPeriod.working_day;
 
-      const dailySalary = employee.individual_salary ? (employee.individual_salary / totalDayPeriod) : (employee.basic_salary / totalDayPeriod);
+      const dailySalary = employee.individual_salary ?
+        (employee.individual_salary / totalDayPeriod) :
+        (employee.basic_salary / totalDayPeriod);
+
       const workingDayCost = dailySalary * data.working_day;
       const nbChildren = employee.nb_enfant;
 
       /**
      * Some institution allocates a percentage for the offday and holiday payment,
-     * the calculation of this rate is found by calculating the equivalence of the daily wage with the percentage of the offday or holiday.
-     */
+     * the calculation of this rate is found by calculating the equivalence of the daily wage with
+     * the percentage of the offday or holiday.
+    */
+
       data.offDays.forEach(offDay => {
         const offDayValue = ((dailySalary * offDay.percent_pay) / 100);
         offDaysCost += offDayValue;
@@ -640,18 +681,21 @@ function setConfiguration(req, res, next) {
       /*
      * Recalculation of base salary on the basis of any holiday or vacation period,
      * where the percentages are respectively equal to 100% of the basic salary will
-     * remain equal to that defined at the level of the grade table
+     * remain equal to that defined at the level of the grade table BB
      */
-      const basicSalary = util.roundDecimal((workingDayCost + offDaysCost + holidaysCost) * enterpriseExchangeRate, DECIMAL_PRECISION);
+
+      const totalCosts = workingDayCost + offDaysCost + holidaysCost;
+
+      const basicSalary = util.roundDecimal((totalCosts) * enterpriseExchangeRate, DECIMAL_PRECISION);
 
       const sql = `
-      SELECT config_rubric_item.id, config_rubric_item.config_rubric_id, config_rubric_item.rubric_payroll_id, payroll_configuration.label AS PayrollConfig,
-      rubric_payroll.* 
-      FROM config_rubric_item
-      JOIN rubric_payroll ON rubric_payroll.id = config_rubric_item.rubric_payroll_id
-      JOIN payroll_configuration ON payroll_configuration.config_rubric_id = config_rubric_item.config_rubric_id
-      WHERE payroll_configuration.id = ?;
-    `;
+        SELECT config_rubric_item.id, config_rubric_item.config_rubric_id, config_rubric_item.rubric_payroll_id, 
+        payroll_configuration.label AS PayrollConfig, rubric_payroll.* 
+        FROM config_rubric_item
+        JOIN rubric_payroll ON rubric_payroll.id = config_rubric_item.rubric_payroll_id
+        JOIN payroll_configuration ON payroll_configuration.config_rubric_id = config_rubric_item.config_rubric_id
+        WHERE payroll_configuration.id = ?;
+      `;
 
       db.exec(sql, [payrollConfigurationId])
         .then(rubrics => {
@@ -674,16 +718,24 @@ function setConfiguration(req, res, next) {
             nonTaxables = rubrics.filter(item => item.is_social_care);
 
             // Filtering taxable Rubrics
-            taxables = rubrics.filter(item => (item.is_tax !== 1 && item.is_discount !== 1 && item.is_social_care !== 1 && item.is_membership_fee !== 1));
+            taxables = rubrics.filter(item =>
+              (item.is_tax !== 1 &&
+              item.is_discount !== 1 &&
+              item.is_social_care !== 1 &&
+              item.is_membership_fee !== 1));
 
             // Filtering all taxes and contributions that is calculated from the taxable base
-            taxesContributions = rubrics.filter(item => item.is_tax || item.is_membership_fee || item.is_discount === 1);
+            taxesContributions = rubrics.filter(item =>
+              item.is_tax || item.is_membership_fee || item.is_discount === 1);
           }
 
           // Calcul value for non-taxable and automatically calculated
           if (nonTaxables.length) {
             nonTaxables.forEach(nonTaxable => {
-              nonTaxable.result = nonTaxable.is_percent ? util.roundDecimal((basicSalary * nonTaxable.value) / 100, DECIMAL_PRECISION) : (nonTaxable.result || nonTaxable.value);
+              nonTaxable.result = nonTaxable.is_percent ?
+                util.roundDecimal((basicSalary * nonTaxable.value) / 100, DECIMAL_PRECISION) :
+                (nonTaxable.result || nonTaxable.value);
+
               sumNonTaxable += nonTaxable.result;
 
               allRubrics.push([uid, nonTaxable.rubric_payroll_id, nonTaxable.result]);
@@ -692,7 +744,10 @@ function setConfiguration(req, res, next) {
 
           if (taxables.length) {
             taxables.forEach(taxable => {
-              taxable.result = taxable.is_percent ? util.roundDecimal((basicSalary * taxable.value) / 100, DECIMAL_PRECISION) : (taxable.result || taxable.value);
+              taxable.result = taxable.is_percent ?
+                util.roundDecimal((basicSalary * taxable.value) / 100, DECIMAL_PRECISION) :
+                (taxable.result || taxable.value);
+
               sumTaxable += taxable.result;
 
               allRubrics.push([uid, taxable.rubric_payroll_id, taxable.result]);
@@ -705,7 +760,9 @@ function setConfiguration(req, res, next) {
 
           if (taxesContributions.length) {
             taxesContributions.forEach(taxContribution => {
-              taxContribution.result = taxContribution.is_percent ? util.roundDecimal((baseTaxable * taxContribution.value) / 100, DECIMAL_PRECISION) : (taxContribution.result || taxContribution.value);
+              taxContribution.result = taxContribution.is_percent ?
+                util.roundDecimal((baseTaxable * taxContribution.value) / 100, DECIMAL_PRECISION) :
+                (taxContribution.result || taxContribution.value);
 
               // Recovery of the value of the Membership Fee worker share
               if (taxContribution.is_membership_fee && taxContribution.is_employee) {
@@ -789,9 +846,12 @@ function setConfiguration(req, res, next) {
 
           const deletePaiementData = 'DELETE FROM paiement WHERE employee_uuid = ? AND payroll_configuration_id = ?';
           const setPaiementData = 'INSERT INTO paiement SET ?';
-          const setRubricPaiementData = 'INSERT INTO rubric_paiement (paiement_uuid, rubric_payroll_id, value) VALUES ?';
-          const setHolidayPaiement = 'INSERT INTO holiday_paiement (holiday_id, holiday_nbdays, holiday_percentage, paiement_uuid, label, value) VALUES ?';
-          const setOffDayPaiement = 'INSERT INTO offday_paiement (offday_id, offday_percentage, paiement_uuid, label, value) VALUES ?';
+          const setRubricPaiementData = `INSERT INTO rubric_paiement (paiement_uuid, rubric_payroll_id, value) 
+            VALUES ?`;
+          const setHolidayPaiement = `INSERT INTO holiday_paiement 
+            (holiday_id, holiday_nbdays, holiday_percentage, paiement_uuid, label, value) VALUES ?`;
+          const setOffDayPaiement = `INSERT INTO offday_paiement 
+            (offday_id, offday_percentage, paiement_uuid, label, value) VALUES ?`;
 
           transaction
             .addQuery(deletePaiementData, [db.bid(employee.uuid), payrollConfigurationId])
@@ -838,7 +898,8 @@ function makeCommitment(req, res, next) {
   let transactions = [];
 
   const sqlGetAccountPayroll = `
-    SELECT payroll_configuration.id, payroll_configuration.config_accounting_id, payroll_configuration.dateFrom, payroll_configuration.dateTo, config_accounting.account_id
+    SELECT payroll_configuration.id, payroll_configuration.config_accounting_id, payroll_configuration.dateFrom, 
+    payroll_configuration.dateTo, config_accounting.account_id
     FROM payroll_configuration
     JOIN config_accounting ON config_accounting.id = payroll_configuration.config_accounting_id
     WHERE payroll_configuration.id = ?
@@ -854,9 +915,11 @@ function makeCommitment(req, res, next) {
         const transac = db.transaction();
 
         const sqlGetRubricPayroll = `
-          SELECT paiement.payroll_configuration_id, BUID(paiement.uuid) AS uuid, paiement.basic_salary, BUID(paiement.employee_uuid) AS employee_uuid, 
-          paiement.base_taxable, paiement.currency_id, rubric_payroll.is_employee, rubric_payroll.is_discount, rubric_payroll.label, rubric_payroll.is_tax, 
-          rubric_payroll.is_social_care, rubric_payroll.is_membership_fee, rubric_payroll.debtor_account_id, rubric_payroll.expense_account_id, rubric_paiement.value
+          SELECT paiement.payroll_configuration_id, BUID(paiement.uuid) AS uuid, paiement.basic_salary, 
+          BUID(paiement.employee_uuid) AS employee_uuid, 
+          paiement.base_taxable, paiement.currency_id, rubric_payroll.is_employee, rubric_payroll.is_discount, 
+          rubric_payroll.label, rubric_payroll.is_tax, rubric_payroll.is_social_care, rubric_payroll.is_membership_fee, 
+          rubric_payroll.debtor_account_id, rubric_payroll.expense_account_id, rubric_paiement.value
           FROM paiement
           JOIN rubric_paiement ON rubric_paiement.paiement_uuid = paiement.uuid
           JOIN rubric_payroll ON rubric_payroll.id = rubric_paiement.rubric_payroll_id
@@ -1031,7 +1094,8 @@ function makeCommitment(req, res, next) {
                 query : 'INSERT INTO voucher SET ?',
                 params : [voucherWithholding],
               }, {
-                query : 'INSERT INTO voucher_item (uuid, account_id, debit, credit, voucher_uuid, entity_uuid) VALUES ?',
+                query : `INSERT INTO voucher_item 
+                  (uuid, account_id, debit, credit, voucher_uuid, entity_uuid) VALUES ?`,
                 params : [employeeWithholdingItem],
               }, {
                 query : 'CALL PostVoucher(?);',
@@ -1044,7 +1108,8 @@ function makeCommitment(req, res, next) {
                 query : 'INSERT INTO voucher SET ?',
                 params : [voucherChargeRemuneration],
               }, {
-                query : 'INSERT INTO voucher_item (uuid, account_id, debit, credit, voucher_uuid, entity_uuid) VALUES ?',
+                query : `INSERT INTO voucher_item 
+                  (uuid, account_id, debit, credit, voucher_uuid, entity_uuid) VALUES ?`,
                 params : [enterpriseChargeRemunerations],
               }, {
                 query : 'CALL PostVoucher(?);',

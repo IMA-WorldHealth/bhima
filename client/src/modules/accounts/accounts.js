@@ -15,9 +15,13 @@ AccountsController.$inject = [
  * This controller is responsible for configuring the Accounts Management UI grid
  * and connecting it with the Accounts data model.
  */
-function AccountsController($rootScope, $timeout, AccountGrid, Notify, Constants, Language, uiGridConstants, $translate) {
-  var vm = this;
-  var columns = gridColumns();
+function AccountsController(
+  $rootScope, $timeout, AccountGrid, Notify, Constants,
+  Language, uiGridConstants, $translate
+) {
+
+  const vm = this;
+  const columns = gridColumns();
 
   vm.Constants = Constants;
   vm.loading = true;
@@ -82,11 +86,11 @@ function AccountsController($rootScope, $timeout, AccountGrid, Notify, Constants
   }
 
   function handleUpdatedAccount(event, account) {
-    var scrollDelay = 200;
+    const scrollDelay = 200;
 
     // check to see if the underlying accounts model requires a grid refresh
     // it will return true if it is required
-    var forceRefresh = vm.Accounts.updateViewEdit(event, account);
+    const forceRefresh = vm.Accounts.updateViewEdit(event, account);
 
     if (forceRefresh) {
       vm.initialDataSet = true;
@@ -108,7 +112,7 @@ function AccountsController($rootScope, $timeout, AccountGrid, Notify, Constants
   }
 
   function getDisplayAccount(id) {
-    var account;
+    let account;
 
     // UI Grid uses the actual data object, pulling it directly from the account
     // store will not match UI grid's copy so this method iterates through grid

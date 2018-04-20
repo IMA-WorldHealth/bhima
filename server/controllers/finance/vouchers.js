@@ -273,13 +273,16 @@ function create(req, res, next) {
             item.document_uuid = paiement.document_uuid;
 
             const statusID = item.debit === paiement.debit ? 5 : 4;
-            const updatePaiement = `UPDATE paiement SET amount_paid = amount_paid + '${item.debit}', status_id = '${statusID}', paiement_date = ? WHERE uuid = ? `;
+            const updatePaiement = `UPDATE paiement SET 
+              amount_paid = amount_paid + '${item.debit}', 
+              status_id = '${statusID}', 
+              paiement_date = ? 
+              WHERE uuid = ? `;
 
             updatesPaiementData.push({
               query : updatePaiement,
               params : [voucher.date, db.bid(paiement.document_uuid)],
             });
-
           }
         }
       });

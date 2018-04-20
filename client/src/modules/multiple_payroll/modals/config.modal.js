@@ -2,10 +2,14 @@ angular.module('bhima.controllers')
   .controller('ConfigPaiementModalController', ConfigPaiementModalController);
 
 ConfigPaiementModalController.$inject = [
-  '$state', 'NotifyService', 'appcache', 'EmployeeService', 'MultiplePayrollService', 'PayrollConfigurationService', 'ExchangeRateService', 'SessionService',
+  '$state', 'NotifyService', 'appcache', 'EmployeeService', 'MultiplePayrollService', 'PayrollConfigurationService',
+  'ExchangeRateService', 'SessionService',
 ];
 
-function ConfigPaiementModalController($state, Notify, AppCache, Employees, MultiplePayroll, Configuration, Exchange, Session) {
+function ConfigPaiementModalController(
+  $state, Notify, AppCache, Employees, MultiplePayroll, Configuration,
+  Exchange, Session
+) {
   const vm = this;
   vm.config = {};
   vm.payroll = {};
@@ -28,14 +32,17 @@ function ConfigPaiementModalController($state, Notify, AppCache, Employees, Mult
 
   vm.setCurrency = function setCurrency(currencyId) {
     vm.payroll.currency_id = currencyId;
-    const rateCurrency = currencyId === vm.lastExchangeRate.currency_id ? vm.lastExchangeRate.rate : (1 / vm.lastExchangeRate.rate);
+    const sameCurrency = currencyId === vm.lastExchangeRate.currency_id;
+
+    const rateCurrency = sameCurrency ? vm.lastExchangeRate.rate : (1 / vm.lastExchangeRate.rate);
 
     vm.employee.basic_salary *= rateCurrency;
 
-    Object.keys(vm.payroll.value).forEach((key) => {
-      vm.payroll.value[key] *= rateCurrency;
-    });
-
+    if (vm.payroll.value.length) {
+      Object.keys(vm.payroll.value).forEach((key) => {
+        vm.payroll.value[key] *= rateCurrency;
+      });
+    }
   };
 
   Employees.read(vm.stateParams.uuid)
@@ -48,7 +55,8 @@ function ConfigPaiementModalController($state, Notify, AppCache, Employees, Mult
       vm.idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
       vm.currencyId = vm.latestViewFilters.defaultFilters[1]._value;
       vm.payroll.currency_id = vm.latestViewFilters.defaultFilters[1]._value;
-      vm.employee.basic_salary = vm.employee.individual_salary ? vm.employee.individual_salary : vm.employee.basic_salary;
+      vm.employee.basic_salary = vm.employee.individual_salary ? 
+        vm.employee.individual_salary : vm.employee.basic_salary;
 
       return Exchange.read();
     })
@@ -70,6 +78,7 @@ function ConfigPaiementModalController($state, Notify, AppCache, Employees, Mult
       vm.rubConfigured = configurations[0];
       vm.payroll.off_days = configurations[5] ? configurations[5].length : 0;
       vm.payroll.nb_holidays = configurations[6] ? configurations[6].length : 0;
+
       const workingDay = configurations[7][0].working_day - (vm.payroll.off_days + vm.payroll.nb_holidays);
 
       vm.payroll.working_day = workingDay;

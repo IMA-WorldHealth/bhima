@@ -1,4 +1,4 @@
-
+ 
 /**
  * @overview reports/payroll/multipayroll
  *
@@ -69,8 +69,9 @@ function build(req, res, next) {
     employeeData.push({ employee });
 
     const sql = `
-      SELECT rubric_paiement.paiement_uuid, rubric_paiement.value AS result, BUID(paiement.employee_uuid) AS employee_uuid, 
-      rubric_payroll.abbr, rubric_payroll.label, rubric_payroll.is_percent, rubric_payroll.value, rubric_payroll.is_discount, 
+      SELECT rubric_paiement.paiement_uuid, rubric_paiement.value AS result, 
+      BUID(paiement.employee_uuid) AS employee_uuid, rubric_payroll.abbr, rubric_payroll.label, 
+      rubric_payroll.is_percent, rubric_payroll.value, rubric_payroll.is_discount, 
       rubric_payroll.is_social_care, rubric_payroll.is_employee
       FROM rubric_paiement
       JOIN paiement ON paiement.uuid = rubric_paiement.paiement_uuid
@@ -88,8 +89,8 @@ function build(req, res, next) {
 
 
     const sqlOffDayPaiement = `
-      SELECT offday_paiement.offday_percentage, BUID(offday_paiement.paiement_uuid) AS paiement_uuid, offday_paiement.label, 
-      offday_paiement.value
+      SELECT offday_paiement.offday_percentage, BUID(offday_paiement.paiement_uuid) AS paiement_uuid,
+      offday_paiement.label, offday_paiement.value
       FROM offday_paiement
       WHERE offday_paiement.paiement_uuid = ?
     `;

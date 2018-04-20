@@ -80,10 +80,11 @@ exports.listHolidays = function listHolidays(req, res, next) {
  * Check an existing holiday
  */
 exports.checkHoliday = function checkHoliday(req, res, next) {
-  let sql =
-    `SELECT id, BUID(employee_uuid) AS employee_uuid, label, dateTo, percentage, dateFrom FROM holiday WHERE employee_uuid = ?
-     AND ((dateFrom >= ?) OR (dateTo >= ?) OR (dateFrom >= ?) OR (dateTo >= ?))
-     AND ((dateFrom <= ?) OR (dateTo <= ?) OR (dateFrom <= ?) OR (dateTo <= ?))`;
+  let sql = `
+    SELECT id, BUID(employee_uuid) AS employee_uuid, label, dateTo, percentage, dateFrom FROM holiday 
+    WHERE employee_uuid = ?
+    AND ((dateFrom >= ?) OR (dateTo >= ?) OR (dateFrom >= ?) OR (dateTo >= ?))
+    AND ((dateFrom <= ?) OR (dateTo <= ?) OR (dateFrom <= ?) OR (dateTo <= ?))`;
 
   const data = [
     db.bid(req.query.employee_uuid),
@@ -135,7 +136,8 @@ function lookupEmployee(uid) {
       employee.nb_spouse, employee.nb_enfant, BUID(employee.grade_uuid) as grade_uuid,
       employee.locked, employee.is_medical, grade.text, grade.basic_salary,
       fonction.id AS fonction_id, fonction.fonction_txt, service.name AS service_txt, patient.hospital_no,
-      patient.phone, patient.email, patient.address_1 AS adresse, BUID(employee.patient_uuid) AS patient_uuid, employee.bank, employee.bank_account,
+      patient.phone, patient.email, patient.address_1 AS adresse, BUID(employee.patient_uuid) AS patient_uuid,
+      employee.bank, employee.bank_account,
       employee.individual_salary, grade.code AS code_grade, BUID(debtor.uuid) as debtor_uuid,
       debtor.text AS debtor_text, BUID(debtor.group_uuid) as debtor_group_uuid,
       BUID(creditor.uuid) as creditor_uuid, creditor.text AS creditor_text,
@@ -205,14 +207,17 @@ function update(req, res, next) {
   const employeeAdvantage = [];
 
   const employee = db.convert(req.body, [
-    'grade_uuid', 'debtor_group_uuid', 'creditor_group_uuid', 'creditor_uuid', 'debtor_uuid', 'patient_uuid', 'current_location_id', 'origin_location_id',
+    'grade_uuid', 'debtor_group_uuid', 'creditor_group_uuid', 'creditor_uuid', 'debtor_uuid', 'patient_uuid', 
+    'current_location_id', 'origin_location_id',
   ]);
 
   const employeeAdvantagePayroll = employee.payroll;
 
-  Object.keys(employeeAdvantagePayroll).forEach((key) => {
-    employeeAdvantage.push([db.bid(req.params.uuid), key, employeeAdvantagePayroll[key]]);
-  });
+  if (employeeAdvantagePayroll && employeeAdvantagePayroll.length) {
+    Object.keys(employeeAdvantagePayroll).forEach((key) => {
+      employeeAdvantage.push([db.bid(req.params.uuid), key, employeeAdvantagePayroll[key]]);
+    });
+  }
 
   if (employee.dob) {
     employee.dob = new Date(employee.dob);
@@ -333,9 +338,12 @@ function create(req, res, next) {
 
   const employeeAdvantagePayroll = employee.payroll;
 
-  Object.keys(employeeAdvantagePayroll).forEach((key) => {
-    employeeAdvantage.push([employee.uuid, key, employeeAdvantagePayroll[key]]);
-  });
+
+  if (employeeAdvantage.length) {
+    Object.keys(employeeAdvantagePayroll).forEach((key) => {
+      employeeAdvantage.push([employee.uuid, key, employeeAdvantagePayroll[key]]);
+    });
+  }
 
   if (employee.dob) {
     employee.dob = new Date(employee.dob);
@@ -463,7 +471,8 @@ function find(options) {
       patient.dob, employee.date_embauche, employee.service_id, employee.nb_spouse, 
       employee.nb_enfant, BUID(employee.grade_uuid) as grade_uuid, employee.locked,
       grade.text, grade.basic_salary, fonction.id AS fonction_id, fonction.fonction_txt, patient.hospital_no,
-      patient.phone, patient.email, patient.address_1 AS adresse, BUID(employee.patient_uuid) AS patient_uuid, employee.bank, employee.bank_account,
+      patient.phone, patient.email, patient.address_1 AS adresse, BUID(employee.patient_uuid) AS patient_uuid, 
+      employee.bank, employee.bank_account,
       employee.individual_salary, employee.is_medical, grade.code AS code_grade, BUID(debtor.uuid) as debtor_uuid,
       debtor.text AS debtor_text, BUID(debtor.group_uuid) as debtor_group_uuid,
       BUID(creditor.uuid) as creditor_uuid, creditor.text AS creditor_text,

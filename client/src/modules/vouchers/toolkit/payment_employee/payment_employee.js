@@ -7,7 +7,8 @@ PaymentEmployeeKitController.$inject = [
 ];
 
 // Import transaction rows for a Payment Employee
-function PaymentEmployeeKitController(Instance, Notify, Session, bhConstants, Debtors, $translate, ToolKits, MultiplePayroll, moment) {
+function PaymentEmployeeKitController(Instance, Notify, Session, bhConstants, Debtors, $translate, 
+  ToolKits, MultiplePayroll, moment) {
   const vm = this;
 
   const MAX_DECIMAL_PRECISION = bhConstants.precision.MAX_DECIMAL_PRECISION;

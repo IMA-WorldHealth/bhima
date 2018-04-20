@@ -329,7 +329,11 @@ function ReceiptModal(Modal, Receipts) {
    * @param {boolean} notifyCreated
    */
   function stockExitServiceReceipt(documentUuid, notifyCreated) {
-    var opts = { title : 'STOCK.RECEIPT.EXIT_SERVICE', notifyCreated : notifyCreated, renderer: Receipts.renderers.PDF };
+    var opts = { 
+      title : 'STOCK.RECEIPT.EXIT_SERVICE', 
+      notifyCreated : notifyCreated, 
+      renderer: Receipts.renderers.PDF 
+    };
     var promise = Receipts.stockExitServiceReceipt(documentUuid, { renderer: opts.renderer });
     return ReceiptFactory(promise, opts);
   }
@@ -340,7 +344,12 @@ function ReceiptModal(Modal, Receipts) {
    * @param {boolean} notifyCreated
    */
   function stockExitDepotReceipt(documentUuid, notifyCreated) {
-    var opts = { title : 'STOCK.RECEIPT.EXIT_DEPOT', notifyCreated : notifyCreated, renderer: Receipts.renderers.PDF };
+    var opts = { 
+      title : 'STOCK.RECEIPT.EXIT_DEPOT', 
+      notifyCreated : notifyCreated, 
+      renderer: Receipts.renderers.PDF 
+    };
+    
     var promise = Receipts.stockExitDepotReceipt(documentUuid, {renderer : opts.renderer});
     return ReceiptFactory(promise, opts);
   }
@@ -351,7 +360,12 @@ function ReceiptModal(Modal, Receipts) {
    * @param {boolean} notifyCreated
    */
   function stockEntryDepotReceipt(documentUuid, notifyCreated) {
-    var opts = { title : 'STOCK.RECEIPT.ENTRY_DEPOT', notifyCreated : notifyCreated, renderer: Receipts.renderers.PDF };
+    var opts = { 
+      title : 'STOCK.RECEIPT.ENTRY_DEPOT', 
+      notifyCreated : notifyCreated, 
+      renderer: Receipts.renderers.PDF 
+    };
+    
     var promise = Receipts.stockEntryDepotReceipt(documentUuid, {renderer: opts.renderer});
     return ReceiptFactory(promise, opts);
   }
@@ -362,7 +376,12 @@ function ReceiptModal(Modal, Receipts) {
    * @param {boolean} notifyCreated
    */
   function stockEntryPurchaseReceipt(documentUuid, notifyCreated) {
-    var opts = { title : 'STOCK.RECEIPT.ENTRY_PURCHASE', notifyCreated : notifyCreated, renderer: Receipts.renderers.PDF };
+    var opts = { 
+      title : 'STOCK.RECEIPT.ENTRY_PURCHASE', 
+      notifyCreated : notifyCreated, 
+      renderer: Receipts.renderers.PDF 
+    };
+    
     var promise = Receipts.stockEntryPurchaseReceipt(documentUuid, { renderer: opts.renderer });
     return ReceiptFactory(promise, opts);
   }
@@ -373,7 +392,12 @@ function ReceiptModal(Modal, Receipts) {
    * @param {boolean} notifyCreated
    */
   function stockEntryIntegrationReceipt(documentUuid, notifyCreated) {
-    var opts = { title : 'STOCK.RECEIPT.ENTRY_INTEGRATION', notifyCreated : notifyCreated, renderer: Receipts.renderers.PDF };
+    var opts = { 
+      title : 'STOCK.RECEIPT.ENTRY_INTEGRATION', 
+      notifyCreated : notifyCreated, 
+      renderer: Receipts.renderers.PDF 
+    };
+    
     var promise = Receipts.stockEntryIntegrationReceipt(documentUuid, { renderer: opts.renderer });
     return ReceiptFactory(promise, opts);
   }
@@ -384,7 +408,12 @@ function ReceiptModal(Modal, Receipts) {
    * @param {boolean} notifyCreated
    */
   function stockEntryDonationReceipt(documentUuid, notifyCreated) {
-    var opts = { title : 'STOCK.RECEIPT.ENTRY_DONATION', notifyCreated : notifyCreated, renderer: Receipts.renderers.PDF };
+    var opts = { 
+      title : 'STOCK.RECEIPT.ENTRY_DONATION', 
+      notifyCreated : notifyCreated, 
+      renderer: Receipts.renderers.PDF 
+    };
+    
     var promise = Receipts.stockEntryDonationReceipt(documentUuid, { renderer: opts.renderer });
     return ReceiptFactory(promise, opts);
   }
