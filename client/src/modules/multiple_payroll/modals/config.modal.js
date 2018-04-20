@@ -12,8 +12,6 @@ function ConfigPaiementModalController($state, Notify, AppCache, Employees, Mult
   vm.enterprise = Session.enterprise;
   vm.lastExchangeRate = {};
 
-  let key;
-
   const cache = AppCache('multiple-payroll-grid');
 
   if ($state.params.creating || $state.params.uuid) {
@@ -34,7 +32,7 @@ function ConfigPaiementModalController($state, Notify, AppCache, Employees, Mult
 
     vm.employee.basic_salary *= rateCurrency;
 
-    Object.keys(vm.payroll.value).forEach(function(key) {
+    Object.keys(vm.payroll.value).forEach((key) => {
       vm.payroll.value[key] *= rateCurrency;
     });
 

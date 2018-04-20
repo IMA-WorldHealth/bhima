@@ -210,9 +210,9 @@ function update(req, res, next) {
 
   const employeeAdvantagePayroll = employee.payroll;
 
-  Object.keys(employeeAdvantagePayroll).forEach(function(key) {
-    employeeAdvantage.push([db.bid(req.params.uuid), key, employeeAdvantagePayroll[key]]);    
-  })
+  Object.keys(employeeAdvantagePayroll).forEach((key) => {
+    employeeAdvantage.push([db.bid(req.params.uuid), key, employeeAdvantagePayroll[key]]);
+  });
 
   if (employee.dob) {
     employee.dob = new Date(employee.dob);
@@ -333,8 +333,8 @@ function create(req, res, next) {
 
   const employeeAdvantagePayroll = employee.payroll;
 
-  Object.keys(employeeAdvantagePayroll).forEach(function(key) {
-    employeeAdvantage.push([employee.uuid, key, employeeAdvantagePayroll[key]]);   
+  Object.keys(employeeAdvantagePayroll).forEach((key) => {
+    employeeAdvantage.push([employee.uuid, key, employeeAdvantagePayroll[key]]);
   });
 
   if (employee.dob) {
