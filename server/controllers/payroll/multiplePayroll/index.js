@@ -1,8 +1,17 @@
 /**
-* Multiple Payroll Controller
-*
-* This controller exposes an API to the client for reading and writing Payroll Multiple
-*/
+ * Multiple Payroll Controller
+ *
+ * @description
+ * This controller is responsible for implementing all operation on the
+ * paiement table through the `/multiple_payroll` endpoint.
+ * The /multiple_payroll HTTP API endpoint
+ *
+ *
+ * @requires db
+ * @requires filter
+ * @requires util
+ * @requires moment
+ */
 
 const db = require('../../../lib/db');
 const FilterParser = require('../../../lib/filter');
