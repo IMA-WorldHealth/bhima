@@ -106,7 +106,7 @@ function MultiPayrollSearchModalController(
   vm.submit = function submit(form) {
     let _displayValue;
 
-    if (form.$invalid) { return; }
+    if (form.$invalid) { return 0; }
 
     // push all searchQuery values into the changes array to be applied
     angular.forEach(vm.searchQueries, (_value, _key) => {
