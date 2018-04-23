@@ -1,5 +1,9 @@
 /* global by,browser, element */
 const q = require('q');
+const chai = require('chai');
+const helpers = require('./test/end-to-end/shared/helpers');
+
+helpers.configure(chai);
 
 // we want to make sure we run tests locally, but TravisCI
 // should run tests on it's own driver.  To find out if it
@@ -24,20 +28,20 @@ const config = {
       clearOldScreenshots  : true,
       jsonReport           : false,
     },
-    // bail : true,
+    bail : true,
     timeout : 30000,
   },
 
   // default browsers to run
   multiCapabilities : [{
     // 'browserName': 'firefox',
- // }, {
-    'browserName': 'chrome',
+  // }, {
+    browserName : 'chrome',
   }],
 
   // this will log the user in to begin with
-  onPrepare : function () {
-    return q.fcall(function () {
+  onPrepare : () => {
+    return q.fcall(() => {
       browser.get('http://localhost:8080/#!/login');
 
       element(by.model('LoginCtrl.credentials.username')).sendKeys('superuser');

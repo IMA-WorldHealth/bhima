@@ -128,20 +128,20 @@ function list(req, res, next) {
 
   options.enterprise_id = req.session.enterprise.id;
 
-  const filters = new FilterParser(options, { tableAlias : 'depot' });
+  const filters = new FilterParser(options, { tableAlias : 'd' });
 
   const sql = `
-  SELECT
-    BUID(d.uuid) as uuid, d.text, d.is_warehouse,
-    d.allow_entry_purchase, d.allow_entry_donation, d.allow_entry_integration, d.allow_entry_transfer,
-    d.allow_exit_debtor, d.allow_exit_service, d.allow_exit_transfer, d.allow_exit_loss,
-    BUID(d.location_uuid) AS location_uuid,
-    v.name as village_name, s.name as sector_name, p.name as province_name, c.name as country_name
-    FROM depot d 
+    SELECT
+      BUID(d.uuid) as uuid, d.text, d.is_warehouse,
+      d.allow_entry_purchase, d.allow_entry_donation, d.allow_entry_integration,
+      d.allow_entry_transfer, d.allow_exit_debtor, d.allow_exit_service,
+      d.allow_exit_transfer, d.allow_exit_loss, BUID(d.location_uuid) AS location_uuid,
+      v.name as village_name, s.name as sector_name, p.name as province_name, c.name as country_name
+    FROM depot d
     LEFT JOIN village v ON v.uuid = d.location_uuid
-    LEFT JOIN sector s ON s.uuid = v.sector_uuid 
+    LEFT JOIN sector s ON s.uuid = v.sector_uuid
     LEFT JOIN province p ON p.uuid = s.province_uuid
-    LEFT JOIN country c ON c.uuid = p.country_uuid 
+    LEFT JOIN country c ON c.uuid = p.country_uuid
   `;
 
   filters.custom(
@@ -151,11 +151,13 @@ function list(req, res, next) {
 
   filters.equals('enterprise_id', 'enterprise_id', 'd');
 
+  filters.setOrder('ORDER BY d.text');
+
   const query = filters.applyQuery(sql);
   const parameters = filters.parameters();
 
   db.exec(query, parameters)
-    .then((rows) => {
+    .then(rows => {
       res.status(200).json(rows);
     })
     .catch(next)
@@ -181,7 +183,7 @@ function detail(req, res, next) {
     FROM depot AS d
     WHERE d.enterprise_id = ? AND d.uuid = ? `;
 
-  const requireUserPermissions = ` AND 
+  const requireUserPermissions = ` AND
     d.uuid IN (SELECT depot_permission.depot_uuid FROM depot_permission WHERE depot_permission.user_id = ?)
   `;
 

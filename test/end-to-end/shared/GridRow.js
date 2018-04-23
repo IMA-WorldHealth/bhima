@@ -26,6 +26,10 @@ class GridRow {
     return this.menu.$('[data-method="delete-record"]');
   }
 
+  edit() {
+    return this.menu.$('[data-method="edit-record"]');
+  }
+
   receipt() {
     return this.menu.$('[data-method="receipt"]');
   }
