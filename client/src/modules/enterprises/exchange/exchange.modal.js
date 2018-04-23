@@ -41,7 +41,7 @@ function ExchangeRateModalController(ModalInstance, Exchange, Currencies, Sessio
         .filter(currency => currency.id !== Session.enterprise.currency_id);
 
       // use the first currency in the list
-      [vm.rate.currency] = vm.currencies0;
+      [vm.rate.currency] = vm.currencies;
 
       // if there are more than a single other currency (besides the enterprise currency)
       // show the currency selection input
