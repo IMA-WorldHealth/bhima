@@ -1,4 +1,6 @@
-<div class="modal-header">
+<form name="RoleActionForm" bh-submit="RoleActionsCtrl.assignActionToRole()">
+  <div class="modal-header">
+
     <ol class="headercrumb">
       <li class="static" translate>FORM.BUTTONS.ACTIONS</li>
       <li class="title">
@@ -24,8 +26,6 @@
 
 <div class="modal-footer text-right">
   <button type="button" class='btn btn-default' ng-click='RoleActionsCtrl.close()' translate>FORM.BUTTONS.CLOSE</button>
- 
-  <button data-method="submit" type="button" class="btn btn-primary" ng-click="RoleActionsCtrl.assignActionToRole()">
-      <span translate>FORM.BUTTONS.SAVE</span>
-  </button>
+  <bh-loading-button loading-state="RoleActionForm.$loading"></bh-loading-button>
 </div>
+</form>

@@ -115,7 +115,7 @@ function affectPages(req, res, next) {
 }
 
 
-// retireves affected and not affected role by a user id
+// retrieves affected and not affected role by a user id
 function listForUser(req, res, next) {
   const userId = req.params.user_id;
   const projectId = req.params.project_id;

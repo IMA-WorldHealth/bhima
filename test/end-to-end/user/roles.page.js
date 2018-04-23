@@ -20,6 +20,8 @@ function RolesPage() {
   page.dismissNotification = dismissNotification;
   page.assignRole = assignRole;
   page.setRole = setRole;
+  page.assignActions = assignActions;
+  page.setAction = setAction;
 
   const actionLinkColumn = 1;
   //  label field in the create/edit modal
@@ -55,8 +57,17 @@ function RolesPage() {
   function assignRole(n) {
     GA.clickOnMethod(n, 2, 'assign_roles', 'users-grid');
   }
+
+  function assignActions(n) {
+    return GA.clickOnMethod(n, actionLinkColumn, 'edit_actions', gridId);
+  }
+
   function setRole(txt) {
     return element(by.css(`[title="${txt}"]`)).click();
+  }
+
+  function setAction(id) {
+    return element(by.css(`[id="${id}"]`)).click();
   }
 
   function openCreateModal() {
