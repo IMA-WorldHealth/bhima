@@ -39,7 +39,7 @@
     </div>
 
     <div class="form-group" ng-class="{ 'has-error' : ConfigPaiementForm.$submitted && ConfigPaiementForm.working_day.$invalid }">
-      <label class="control-label" translate>FORM.LABELS.WORKING_DAY</label>
+      <label class="control-label" translate>FORM.LABELS.DAYS_WORK</label>
       <input type="number" name="working_day" ng-max="ConfigPaiementModalCtrl.maxWorkingDay" ng-model="ConfigPaiementModalCtrl.payroll.working_day" autocomplete="off" required class="form-control">    
       <div class="help-block" ng-messages="ConfigPaiementForm.working_day.$error" ng-show="ConfigPaiementForm.$submitted">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
