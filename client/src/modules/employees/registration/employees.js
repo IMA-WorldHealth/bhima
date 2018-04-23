@@ -8,7 +8,8 @@ EmployeeController.$inject = [
   'bhConstants', 'ReceiptModal', 'SessionService', 'PatientService',
 ];
 
-function EmployeeController(Employees, Services, Grades, Functions, CreditorGroups, util, Notify, $state, bhConstants, Receipts, Session, Patients) {
+function EmployeeController(Employees, Services, Grades, Functions, 
+  CreditorGroups, util, Notify, $state, bhConstants, Receipts, Session, Patients) {
   var vm = this;
   var referenceId = $state.params.id;
   var saveAsEmployee = $state.params.saveAsEmployee;
@@ -42,6 +43,7 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
         vm.employee.is_patient = true;
         vm.employee.patient_uuid = patient.uuid;
         vm.employee.debtor_uuid = patient.debtor_uuid;
+        vm.employee.debtor_group_uuid = patient.debtor_group_uuid;
         vm.employee.current_location_id = patient.current_location_id;
         vm.employee.origin_location_id = patient.origin_location_id;
       })
