@@ -5,25 +5,45 @@ angular.module('bhima.controllers')
 EmployeeController.$inject = [
   'EmployeeService', 'ServiceService', 'GradeService', 'FunctionService',
   'CreditorGroupService', 'util', 'NotifyService', '$state',
-  'bhConstants', 'ReceiptModal', 'SessionService',
+  'bhConstants', 'ReceiptModal', 'SessionService', 'PatientService',
 ];
 
-function EmployeeController(Employees, Services, Grades, Functions, CreditorGroups, util, Notify, $state, bhConstants, Receipts, Session) {
+function EmployeeController(Employees, Services, Grades, Functions, CreditorGroups, util, Notify, $state, bhConstants, Receipts, Session, Patients) {
   var vm = this;
   var referenceId = $state.params.id;
+  var saveAsEmployee = $state.params.saveAsEmployee;
 
   vm.enterprise = Session.enterprise;
   vm.isUpdating = !!$state.params.id;
-  vm.setPatient = setPatient;
 
   vm.origin = '';
 
-  if (referenceId) {
+  if (referenceId && !saveAsEmployee) {
     Employees.read(referenceId)
       .then(function (employee) {
         formatEmployeeAttributes(employee);
         vm.origin = employee.hospital_no;
         vm.employee = employee;
+      })
+      .catch(function (error) {
+      // handle error and update view to show no results - this could be improved
+        Notify.handleError(error);
+        vm.unknownId = true;
+      });
+  }
+
+  if (saveAsEmployee) {
+    Patients.read(referenceId)
+      .then(function (patient) {
+        vm.employee.display_name = patient.display_name;
+        vm.employee.dob = new Date(patient.dob);
+        vm.employee.sex = patient.sex;
+        vm.employee.hospital_no = patient.hospital_no;
+        vm.employee.is_patient = true;
+        vm.employee.patient_uuid = patient.uuid;
+        vm.employee.debtor_uuid = patient.debtor_uuid;
+        vm.employee.current_location_id = patient.current_location_id;
+        vm.employee.origin_location_id = patient.origin_location_id;
       })
       .catch(function (error) {
       // handle error and update view to show no results - this could be improved
@@ -41,16 +61,6 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
     employee.name = employee.display_name;
     employee.displayGender = employee.sex;
     employee.displayAge = moment().diff(employee.dob, 'years');
-  }
-
-  function setPatient(patient) {
-    vm.employee.display_name = patient.display_name;
-    vm.employee.dob = new Date(patient.dob);
-    vm.employee.sex = patient.sex;
-    vm.employee.hospital_no = patient.hospital_no;
-    vm.employee.is_patient = true;
-    vm.employee.patient_uuid = patient.uuid;
-    vm.employee.debtor_uuid = patient.debtor_uuid;
   }
 
   // Expose lenths from util
