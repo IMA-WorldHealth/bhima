@@ -7,7 +7,6 @@
  * matching query conditions passed from the multi Payroll UI grid.
  *
  * @requires lodash
- * @requires moment
  * @requires Employees
  * @requires ReportManager
  */
