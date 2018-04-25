@@ -32,17 +32,19 @@ function ConfigPaiementModalController(
 
   vm.setCurrency = function setCurrency(currencyId) {
     vm.payroll.currency_id = currencyId;
-    const sameCurrency = currencyId === vm.lastExchangeRate.currency_id;
+     const isSameCurrency = currencyId === vm.lastExchangeRate.currency_id;
+     const rate = isSameCurrency ? vm.lastExchangeRate.rate : (1 / vm.lastExchangeRate.rate);
+    calculatePaymentWithExchangeRate(rate);
+  };
 
-    const rateCurrency = sameCurrency ? vm.lastExchangeRate.rate : (1 / vm.lastExchangeRate.rate);
-
-    vm.employee.basic_salary *= rateCurrency;
+  function calculatePaymentWithExchangeRate(rate) {
+    vm.employee.basic_salary *= rate;
 
     Object.keys(vm.payroll.value).forEach((key) => {
-      vm.payroll.value[key] *= rateCurrency;
+      vm.payroll.value[key] *= rate;
     });
 
-  };
+  }
 
   Employees.read(vm.stateParams.uuid)
     .then((employee) => {
