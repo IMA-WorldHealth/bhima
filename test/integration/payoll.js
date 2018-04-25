@@ -327,7 +327,7 @@ describe('(/multiplePayroll ) the Payroll API endpoint', () => {
   const employeesNumber = 3;
   const workingDay = 20;
 
-  it('GET / MULTI_PAYROLL Returns the pay situation for employees in a period', () => {
+  it('GET / MULTIPLE_PAYROLL Returns the pay situation for employees in a period', () => {
     const conditions = { payroll_configuration_id : params.periodPaie };
 
     return agent.get('/multiple_payroll')
@@ -338,7 +338,7 @@ describe('(/multiplePayroll ) the Payroll API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('GET /MULTI_PAYROLL/:ID/MULTICONFIGURATION  Returns configuration of Rubrics and other element  required for the configuration of employees for Payment', () => {
+  it('GET /MULTIPLE_PAYROLL/:ID/MULTICONFIGURATION  Returns configuration of Rubrics and other element  required for the configuration of employees for Payment', () => {
     const path = '/multiple_payroll/'.concat(params.periodPaie, '/configuration');
 
     return agent.get(path)
@@ -352,7 +352,7 @@ describe('(/multiplePayroll ) the Payroll API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('POST /MULTI_PAYROLL/:ID/CONFIGURATION should Set Configuration of Paiement for Multiple Patient', () => {
+  it('POST /MULTIPLE_PAYROLL/:ID/CONFIGURATION should Set Configuration of Paiement for Multiple Patient', () => {
     return agent.post('/multiple_payroll/'.concat(params.periodPaie, '/multiConfiguration'))
       .send(dataMultiConfiguration)
       .then((res) => {
@@ -361,7 +361,7 @@ describe('(/multiplePayroll ) the Payroll API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('POST /MULTI_PAYROLL/:ID/CONFIGURATION should Set Configuration of Paiement', () => {
+  it('POST /MULTIPLE_PAYROLL/:ID/CONFIGURATION should Set Configuration of Paiement', () => {
     return agent.post('/multiple_payroll/'.concat(params.periodPaie, '/configuration'))
       .send(dataConfiguration)
       .then((res) => {
@@ -370,7 +370,7 @@ describe('(/multiplePayroll ) the Payroll API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('POST /MULTI_PAYROLL/:ID/COMMITMENT should Set Configuration of Paiement', () => {
+  it('POST /MULTIPLE_PAYROLL/:ID/COMMITMENT should Set Configuration of Paiement', () => {
     return agent.post('/multiple_payroll/'.concat(params.periodPaie, '/commitment'))
       .send(dataCommitment)
       .then((res) => {
