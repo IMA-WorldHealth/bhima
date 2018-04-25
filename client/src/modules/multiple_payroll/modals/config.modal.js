@@ -38,11 +38,10 @@ function ConfigPaiementModalController(
 
     vm.employee.basic_salary *= rateCurrency;
 
-    if (vm.payroll.value.length) {
-      Object.keys(vm.payroll.value).forEach((key) => {
-        vm.payroll.value[key] *= rateCurrency;
-      });
-    }
+    Object.keys(vm.payroll.value).forEach((key) => {
+      vm.payroll.value[key] *= rateCurrency;
+    });
+
   };
 
   Employees.read(vm.stateParams.uuid)
