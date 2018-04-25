@@ -50,7 +50,7 @@
         "SUCCESS":"Voucher Payment recorded successfully."
       },
       "ERROR_SAME_ACCOUNT": "You cannot use the same account twice to in this transaction. Please select two different accounts.",
-      "PAYMENT_EMPLOYEES": "Payment of wages"
+      "PAYMENT_EMPLOYEES": "Payment of wages {{date}}"
     },
     "SIMPLE": {
       "CASH_PAYMENT": "Client Payment",

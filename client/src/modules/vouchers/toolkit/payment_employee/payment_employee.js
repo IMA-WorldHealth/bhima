@@ -162,7 +162,7 @@ function PaymentEmployeeKitController(
       account_id : vm.account_id,
       paiements  : selected,
     });
-    const msg = `${$translate.instant('VOUCHERS.GLOBAL.PAYMENT_EMPLOYEES')} [ ${vm.dateFrom}]`;
+    const msg= $translate.instant('VOUCHERS.GLOBAL.PAYMENT_EMPLOYEES', { date : `[ ${vm.dateFrom} ]` });
 
     Instance.close({
       rows    : bundle,

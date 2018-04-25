@@ -42,7 +42,7 @@
             "DESTINATION_ACCOUNT": "Compte de destination",
             "TRANSFER_ACCOUNT": "Compte de transfert",
             "IMPORT_TRANSACTION": "Importer les transactions",
-            "PAYMENT_EMPLOYEES": "Paiement des salaires des employés",
+            "PAYMENT_EMPLOYEES": "Paiement des salaires des employés {{date}}",
             "RECEIPT": {
                 "SUCCESS": "Bon de paiement enregistré avec succès."
             },
