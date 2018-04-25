@@ -8,22 +8,27 @@ EmployeeController.$inject = [
   'bhConstants', 'ReceiptModal', 'SessionService', 'RubricService',
 ];
 
-function EmployeeController(Employees, Services, Grades, Functions, CreditorGroups, util, Notify, $state, bhConstants, Receipts, Session, Rubrics) {
+function EmployeeController(Employees, Services, Grades, Functions, CreditorGroups, util, Notify, 
+  $state, bhConstants, Receipts, Session, Rubrics) {
   const vm = this;
-  const referenceId = $state.params.uuid;
+  const referenceUuid = $state.params.uuid;
   vm.enterprise = Session.enterprise;
   vm.isUpdating = !!$state.params.id;
   vm.origin = '';
 
-  if (referenceId) {
-    Employees.read(referenceId)
+  if (referenceUuid) {
+    Employees.read(referenceUuid)
       .then((employee) => {
         formatEmployeeAttributes(employee);
         vm.origin = employee.hospital_no;
         vm.employee = employee;
         vm.employee.payroll = {};
 
-        return Employees.advantage(referenceId);
+        /**
+        /* Finds the amounts of all Rubrics (advantage) defined by employees, 
+        /* these rubrics are those whose value Is defined by employee? is true
+        */
+        return Employees.advantage(referenceUuid);
       })
       .then((advantages) => {
         advantages.forEach((advantage) => {
@@ -130,9 +135,9 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
   function submit(employeeForm) {
     if (employeeForm.$invalid) { return Notify.danger('FORM.ERRORS.INVALID'); }
 
-    const promise = (!referenceId) ?
+    const promise = (!referenceUuid) ?
       Employees.create(vm.employee) :
-      Employees.update(referenceId, vm.employee);
+      Employees.update(referenceUuid, vm.employee);
 
     return promise
       .then((feedBack) => {
@@ -141,7 +146,7 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
         employeeForm.$setUntouched();
         vm.employee = {};
 
-        if (!referenceId) {
+        if (!referenceUuid) {
           Receipts.patient(feedBack.patient_uuid, true);
         } else {
           Notify.success('FORM.INFO.UPDATE_SUCCESS');

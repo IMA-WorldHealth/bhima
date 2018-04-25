@@ -29,7 +29,7 @@ function PayrollPeriodSelectController(PayrollConfigs, $timeout, $scope, Notify)
     $ctrl.label = $ctrl.label || 'FORM.LABELS.PERIOD_PAYMENT';
 
     // fired when an Payroll Period configuration has been selected
-    $ctrl.onSelectCallback = $ctrl.onSelectCallback || angular.noop;
+    $ctrl.onSelectCallback = $ctrl.onSelectCallback;
 
     // default for form name
     $ctrl.name = $ctrl.name || 'PayrollPeriodForm';

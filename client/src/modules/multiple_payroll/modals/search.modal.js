@@ -21,7 +21,7 @@ function MultiPayrollSearchModalController(
   const vm = this;
   const changes = new Store({ identifier : 'key' });
   const searchQueryOptions = [
-    'payroll_configuration_id', 'currency_id', 'display_name', 'code',
+    'payroll_configuration_id', 'currency_id', 'display_name', 'code', 'status_id'
   ];
   const lastValues = {};
 

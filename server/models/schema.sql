@@ -184,6 +184,7 @@ CREATE TABLE `rubric_payroll` (
   `value` float DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `rubric_payroll_1` (`label`),
+  UNIQUE KEY `rubric_payroll_2` (`abbr`),  
   KEY `debtor_account_id` (`debtor_account_id`),
   KEY `expense_account_id` (`expense_account_id`),
   FOREIGN KEY (`debtor_account_id`) REFERENCES `account` (`id`),

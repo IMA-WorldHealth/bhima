@@ -144,10 +144,6 @@ function AccountsController(
   }
 
   function bindGridData() {
-    vm.Accounts.data.forEach(account => {
-      account.translation_key = $translate.instant(account.translation_key);
-    });
-
     vm.gridOptions.data = vm.Accounts.data;
   }
 

@@ -4,7 +4,7 @@ angular.module('bhima.components')
     controller  : PayrollStatusSelectController,
     bindings    : {
       onChange : '&',
-      statusId : '<?',
+      statusIds : '<?',
       label : '@?',
       required : '<?',
       validationTrigger : '<?',
@@ -26,11 +26,11 @@ function PayrollStatusSelectController(Payroll, Notify, $translate) {
     // label to display
     $ctrl.label = $ctrl.label || 'FORM.LABELS.STATUS';
 
-    // fired when a purchase status has been selected or removed from the list
-    $ctrl.onChange = $ctrl.onChange || angular.noop;
+    // fired when a payroll status has been selected or removed from the list
+    $ctrl.onChange = $ctrl.onChange;
 
     // init the model
-    $ctrl.selectedPayrollStatus = $ctrl.statusId || [];
+    $ctrl.selectedPayrollStatus = $ctrl.statusIds || [];
 
     // load all Payroll status
     Payroll.paiementStatus()

@@ -213,7 +213,7 @@ function update(req, res, next) {
 
   const employeeAdvantagePayroll = employee.payroll;
 
-  if (employeeAdvantagePayroll && employeeAdvantagePayroll.length) {
+  if (employeeAdvantagePayroll) {
     Object.keys(employeeAdvantagePayroll).forEach((key) => {
       employeeAdvantage.push([db.bid(req.params.uuid), key, employeeAdvantagePayroll[key]]);
     });
@@ -287,7 +287,6 @@ function update(req, res, next) {
 
   transaction.execute()
     .then(results => {
-
       if (!results[3].affectedRows) {
         throw new NotFound(`Could not find an employee with Uuid ${req.params.uuid}.`);
       }
@@ -317,6 +316,7 @@ function update(req, res, next) {
 function create(req, res, next) {
   // cast as data object and add unique ids
   const data = req.body;
+  
   const employeeID = data.uuid || uuid();
 
   // Provide UUID if the client has not specified
@@ -338,8 +338,7 @@ function create(req, res, next) {
 
   const employeeAdvantagePayroll = employee.payroll;
 
-
-  if (employeeAdvantage.length) {
+  if (employeeAdvantagePayroll) {
     Object.keys(employeeAdvantagePayroll).forEach((key) => {
       employeeAdvantage.push([employee.uuid, key, employeeAdvantagePayroll[key]]);
     });

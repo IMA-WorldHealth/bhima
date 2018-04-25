@@ -7,7 +7,7 @@ angular.module('bhima.components')
       model : '=', // two way binding
       validationTrigger : '<', // one-way binding
       label : '@?',
-      disabled : '<',
+      disabled : '<?',
       min   : '@?',
     },
   });
