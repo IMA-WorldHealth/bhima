@@ -18,6 +18,7 @@ describe('(/inventory/metadata) The inventory metadata http API', () => {
     unit_id : 1,
     type_id : 1,
     consumable : 0,
+    sellable : 1,
   };
 
   const metadataUpdate = {
@@ -76,6 +77,24 @@ describe('(/inventory/metadata) The inventory metadata http API', () => {
         expect(res).to.have.status(200);
         expect(res).to.be.a('object');
         inventoryList = res.body;
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /inventory/metadata?sellable=1 returns the list of sellable inventories', () => {
+    return agent.get('/inventory/metadata?sellable=1')
+      .then(res => {
+        expect(res).to.have.status(200);
+        expect(res.body.length).to.be.equal(160);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /inventory/metadata?sellable=0 returns the list of unsellable inventories', () => {
+    return agent.get('/inventory/metadata?sellable=0')
+      .then(res => {
+        expect(res).to.have.status(200);
+        expect(res.body.length).to.be.equal(4);
       })
       .catch(helpers.handler);
   });
