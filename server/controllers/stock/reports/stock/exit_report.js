@@ -1,7 +1,5 @@
-const Q = require('q');
-
 const {
-  _, ReportManager, pdfOptions, STOCK_EXIT_REPORT_TEMPLATE,
+  _, db, ReportManager, pdfOptions, STOCK_EXIT_REPORT_TEMPLATE,
 } = require('../common');
 
 const StockExitToPatient = require('./exit/exitToPatient');
@@ -49,7 +47,11 @@ function stockExitReport(req, res, next) {
     return next(e);
   }
 
-  return Q.fcall(() => data)
+  return fetchDepotDetails(params.depotUuid)
+    .then(depot => {
+      params.depotName = depot.text;
+      return data;
+    })
     .then(groupCollection)
     .then((bundle) => {
       _.extend(bundle, params);
@@ -61,6 +63,15 @@ function stockExitReport(req, res, next) {
     })
     .catch(next)
     .done();
+}
+
+/**
+ * fetchDepotDetails
+ * @param {number} depotUuid depot uuid
+ */
+function fetchDepotDetails(depotUuid) {
+  const query = 'SELECT text FROM depot WHERE uuid = ?';
+  return db.one(query, [db.bid(depotUuid)]);
 }
 
 /**
