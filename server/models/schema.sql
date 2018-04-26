@@ -807,7 +807,6 @@ CREATE TABLE `inventory` (
   `stock_min` INT(10) UNSIGNED NOT NULL DEFAULT 0,
   `type_id` TINYINT(3) UNSIGNED NOT NULL DEFAULT 0,
   `consumable` TINYINT(1) NOT NULL DEFAULT 0,
-  `is_broken` TINYINT(1)   NOT NULL DEFAULT 0,
   `note` text  NULL,
   `locked` TINYINT(1) NOT NULL DEFAULT 0,
   `delay` DECIMAL(10,4) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Delivery time',
