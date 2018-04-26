@@ -1,7 +1,6 @@
 angular.module('bhima.services')
   .service('StockModalService', StockModalService);
 
-// dependencies injection
 StockModalService.$inject = ['$uibModal'];
 
 // service definition
@@ -30,12 +29,7 @@ function StockModalService(Modal) {
       templateUrl  : 'modules/stock/lots/modals/search.modal.html',
       controller   : 'SearchLotsModalController',
       controllerAs : '$ctrl',
-      size         : 'md',
-      backdrop     : 'static',
-      animation    : false,
-      resolve      : {
-        data : function dataProvider() { return request; },
-      },
+      resolve      : { data : () => request },
     });
 
     const instance = Modal.open(params);
@@ -48,12 +42,7 @@ function StockModalService(Modal) {
       templateUrl  : 'modules/stock/movements/modals/search.modal.html',
       controller   : 'SearchMovementsModalController',
       controllerAs : '$ctrl',
-      size         : 'md',
-      backdrop     : 'static',
-      animation    : false,
-      resolve      : {
-        data : function dataProvider() { return request; },
-      },
+      resolve      : { data : () => request },
     });
 
     const instance = Modal.open(params);
@@ -66,12 +55,7 @@ function StockModalService(Modal) {
       templateUrl  : 'modules/stock/inventories/modals/search.modal.html',
       controller   : 'SearchInventoriesModalController',
       controllerAs : '$ctrl',
-      size         : 'md',
-      backdrop     : 'static',
-      animation    : false,
-      resolve      : {
-        data : function dataProvider() { return request; },
-      },
+      resolve      : { data : () => request },
     });
 
     const instance = Modal.open(params);
@@ -84,12 +68,7 @@ function StockModalService(Modal) {
       templateUrl  : 'modules/stock/exit/modals/findPatient.modal.html',
       controller   : 'StockFindPatientModalController',
       controllerAs : '$ctrl',
-      size         : 'md',
-      backdrop     : 'static',
-      animation    : false,
-      resolve      : {
-        data : function dataProvider() { return request; },
-      },
+      resolve      : { data : () => request },
     });
 
     const instance = Modal.open(params);
@@ -102,12 +81,7 @@ function StockModalService(Modal) {
       templateUrl  : 'modules/stock/exit/modals/findService.modal.html',
       controller   : 'StockFindServiceModalController',
       controllerAs : '$ctrl',
-      size         : 'md',
-      backdrop     : 'static',
-      animation    : false,
-      resolve      : {
-        data : function dataProvider() { return request; },
-      },
+      resolve      : { data : () => request },
     });
 
     const instance = Modal.open(params);
@@ -120,12 +94,7 @@ function StockModalService(Modal) {
       templateUrl  : 'modules/stock/exit/modals/findDepot.modal.html',
       controller   : 'StockFindDepotModalController',
       controllerAs : '$ctrl',
-      size         : 'md',
-      backdrop     : 'static',
-      animation    : false,
-      resolve      : {
-        data : function dataProvider() { return request; },
-      },
+      resolve      : { data : () => request },
     });
 
     const instance = Modal.open(params);
@@ -138,12 +107,7 @@ function StockModalService(Modal) {
       templateUrl  : 'modules/stock/entry/modals/findPurchase.modal.html',
       controller   : 'StockFindPurchaseModalController',
       controllerAs : '$ctrl',
-      size         : 'md',
-      backdrop     : 'static',
-      animation    : false,
-      resolve      : {
-        data : function dataProvider() { return request; },
-      },
+      resolve      : { data : () => request },
     });
 
     const instance = Modal.open(params);
@@ -156,11 +120,8 @@ function StockModalService(Modal) {
       templateUrl  : 'modules/stock/entry/modals/findTransfer.modal.html',
       controller   : 'StockFindTransferModalController',
       controllerAs : '$ctrl',
-      size         : 'md',
-      backdrop     : 'static',
-      animation    : false,
       resolve      : {
-        data : function dataProvider() { return request; },
+        data : () => request,
       },
     });
 
@@ -168,18 +129,13 @@ function StockModalService(Modal) {
     return instance.result;
   }
 
-  /** lots definition */
   function openDefineLots(request) {
     const params = angular.extend(modalParameters, {
       templateUrl  : 'modules/stock/entry/modals/lots.modal.html',
       controller   : 'StockDefineLotsModalController',
       controllerAs : '$ctrl',
-      size         : 'md',
-      backdrop     : 'static',
-      animation    : false,
-      resolve      : {
-        data : function dataProvider() { return request; },
-      },
+      size         : 'lg',
+      resolve      : { data : () => request },
     });
 
     const instance = Modal.open(params);

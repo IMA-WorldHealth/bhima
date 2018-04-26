@@ -98,13 +98,6 @@ function InventoryListController(
     visible : false,
   },
   {
-    field : 'is_broken',
-    displayName : 'INVENTORY.IS_BROKEN',
-    headerCellFilter : 'translate',
-    cellTemplate : '/modules/inventory/list/templates/isbroken.cell.html',
-    visible : false,
-  },
-  {
     field : 'note',
     displayName : 'FORM.INFO.NOTE',
     headerCellFilter : 'translate',

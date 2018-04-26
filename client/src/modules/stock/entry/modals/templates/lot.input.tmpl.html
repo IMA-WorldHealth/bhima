@@ -1,10 +1,14 @@
 <div class="ui-grid-cell-contents">
-  <input 
+  <span ng-if="grid.appScope.isTransfer">
+    {{row.entity.lot}}
+  </span>
+
+  <input
     type="text"
-    ng-disabled="grid.appScope.entryType === 'transfer_reception'"
+    ng-if="!grid.appScope.isTransfer"
     class="form-control"
     ng-model="row.entity.lot"
-    ng-model-options="{ 'debounce' : { 'default' : 150, 'blur' : 0 }}"
-    ng-change="grid.appScope.checkLine(row.entity)"
+    ng-model-options="{ 'debounce' : '$inherit' }"
+    ng-change="grid.appScope.onChanges()"
     required>
 </div>

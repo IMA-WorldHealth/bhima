@@ -1,15 +1,15 @@
 angular.module('bhima.components')
-.component('bhDatePicker', {
-  templateUrl : '/modules/templates/bhDatePickerAction.tmpl.html',
-  controller  : DatePickerController,
-  bindings    : {
-    date     : '<', // set the date once as the initial date and use callbacks to change it later
-    format   : '<',
-    mode     : '@', // will this ever change?  If so, we can use '<'
-    required : '<',
-    onChange : '&', // use a callback to notify for changes
-  },
-});
+  .component('bhDatePicker', {
+    templateUrl : '/modules/templates/bhDatePickerAction.tmpl.html',
+    controller  : DatePickerController,
+    bindings    : {
+      date     : '<', // set the date once as the initial date and use callbacks to change it later
+      onChange : '&', // use a callback to notify for changes
+      format   : '<?',
+      mode     : '@?', // will this ever change?  If so, we can use '<'
+      required : '<?',
+    },
+  });
 
 DatePickerController.$inject = ['$uibModal', 'bhConstants'];
 
@@ -21,9 +21,9 @@ DatePickerController.$inject = ['$uibModal', 'bhConstants'];
  * @module components/bhDatePicker
  */
 function DatePickerController(Modal, bhConstants) {
-  var vm = this;
+  const vm = this;
 
-  var modalParameters = {
+  const modalParameters = {
     size         : 'sm',
     backdrop     : 'static',
     animation    : true,
@@ -39,24 +39,24 @@ function DatePickerController(Modal, bhConstants) {
 
   // on date change
   function notifyDateChange() {
-    vm.onChange({ date: vm.date });
+    vm.onChange({ date : vm.date });
   }
 
   function open() {
-    openDatePicker({ mode: vm.mode })
-    .then(function (res) {
-      // notify the parent controller of a date change via a callback
-      vm.onChange({ date: res });
-    });
+    openDatePicker({ mode : vm.mode })
+      .then(date => {
+        // notify the parent controller of a date change via a callback
+        vm.onChange({ date });
+      });
   }
 
   function openDatePicker() {
-    var params = angular.extend(modalParameters, {
+    const params = angular.extend(modalParameters, {
       resolve : {
         data : function dataProvider() { return {}; },
       },
     });
-    var instance = Modal.open(params);
+    const instance = Modal.open(params);
     return instance.result;
   }
 }
@@ -67,7 +67,7 @@ function DatePickerController(Modal, bhConstants) {
 DatePickerModalController.$inject = ['$uibModalInstance', 'data'];
 
 function DatePickerModalController(Instance, Data) {
-  var vm = this;
+  const vm = this;
 
   vm.selected = new Date();
 
