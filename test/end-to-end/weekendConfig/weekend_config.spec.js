@@ -2,8 +2,7 @@ const helpers = require('../shared/helpers');
 const WeekEndConfigPage = require('./weekend_config.page');
 const chai = require('chai');
 
-
-/** configuring helpers**/
+/* configuring helpers */
 helpers.configure(chai);
 
 describe('Week End Configuration Management', () => {

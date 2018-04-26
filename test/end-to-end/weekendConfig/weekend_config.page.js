@@ -67,7 +67,7 @@ class WeekEndConfigPage {
       .then(indices => {
         const { rowIndex } = indices;
         GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'config', this.gridId);
-        
+
         element.all(by.css('[name="days"]')).get(0).click();
         element.all(by.css('[name="days"]')).get(1).click();
         element.all(by.css('[name="days"]')).get(6).click();
@@ -85,7 +85,7 @@ class WeekEndConfigPage {
       .then(indices => {
         const { rowIndex } = indices;
         GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'config', this.gridId);
-   
+
         element.all(by.css('[name="days"]')).get(0).click();
         element.all(by.css('[name="days"]')).get(1).click();
         element.all(by.css('[name="days"]')).get(6).click();

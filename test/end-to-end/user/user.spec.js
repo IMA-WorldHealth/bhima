@@ -87,7 +87,8 @@ describe('User Management Page', () => {
      * to help us access the application with the edited user information
      * from this test
      */
-    expect(editPasswordPage.isDisplayed()).to.eventually.equal(false); // if every thing is ok, the modal should disappear
+    // if every thing is ok, the modal should disappear
+    expect(editPasswordPage.isDisplayed()).to.eventually.equal(false);
     userCreateUpdatePage.close();
   });
 

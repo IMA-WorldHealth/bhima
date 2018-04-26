@@ -3,18 +3,18 @@ angular.module('bhima.components')
 /**
  * Location Selection Component - bhLocationSelect
  */
-.component('bhLocationSelect', {
-  templateUrl : 'modules/templates/bhLocationSelect.tmpl.html',
-  controller  : LocationSelectController,
-  bindings    : {
-    locationUuid      : '=', // two-way binding
-    disable           : '<', // one-way binding
-    validationTrigger : '<', // one-way binding
-    name              : '@',
-  },
-});
+  .component('bhLocationSelect', {
+    templateUrl : 'modules/templates/bhLocationSelect.tmpl.html',
+    controller  : LocationSelectController,
+    bindings    : {
+      locationUuid      : '=', // two-way binding
+      disable           : '<?', // one-way binding
+      validationTrigger : '<?', // one-way binding
+      name              : '@?',
+    },
+  });
 
-LocationSelectController.$inject =  ['LocationService', '$rootScope', '$scope', '$timeout'];
+LocationSelectController.$inject = ['LocationService', '$rootScope', '$scope', '$timeout'];
 
 /**
  * Location Select Controller
@@ -53,8 +53,8 @@ LocationSelectController.$inject =  ['LocationService', '$rootScope', '$scope', 
  *
  */
 function LocationSelectController(Locations, $rootScope, $scope, $timeout) {
-  var vm = this;
-  var listener;
+  const vm = this;
+  let listener;
 
   this.$onInit = function $onInit() {
     vm.loading = false;
@@ -139,87 +139,87 @@ function LocationSelectController(Locations, $rootScope, $scope, $timeout) {
   }
   function loadCountries() {
     return Locations.countries()
-    .then(function (countries) {
+      .then((countries) => {
 
-      // bind the countries to view
-      vm.countries = countries;
+        // bind the countries to view
+        vm.countries = countries;
 
-      // if there are countries to select, show a "select a country" message
-      // however, if there isn't any data, show a "no data" message. This pattern
-      // is used throughout the component.
-      vm.messages.country = (countries.length > 0) ?
-        Locations.messages.country :
-        Locations.messages.empty ;
-    });
+        // if there are countries to select, show a "select a country" message
+        // however, if there isn't any data, show a "no data" message. This pattern
+        // is used throughout the component.
+        vm.messages.country = (countries.length > 0) ?
+          Locations.messages.country :
+          Locations.messages.empty;
+      });
   }
 
   /** load the provinces, based on the country selected */
   function loadProvinces() {
 
     // don't send an HTTP request if there is no country
-    if (!vm.country || !vm.country.uuid) { return; }
+    if (!vm.country || !vm.country.uuid) { return 0; }
 
     // allow the <select> to be selected
     vm.disabled.province = false;
 
     // load the provinces to bind to the view
     return Locations.provinces({ country : vm.country.uuid })
-    .then(function (provinces) {
-      vm.provinces = provinces;
+      .then(provinces => {
+        vm.provinces = provinces;
 
-      // show the appropriate message to the user
-      vm.messages.province = (provinces.length > 0) ?
-        Locations.messages.province :
-        Locations.messages.empty;
+        // show the appropriate message to the user
+        vm.messages.province = (provinces.length > 0) ?
+          Locations.messages.province :
+          Locations.messages.empty;
 
-      // clear the dependent <select> elements
-      vm.sectors = [];
-      vm.villages = [];
-    });
+        // clear the dependent <select> elements
+        vm.sectors = [];
+        vm.villages = [];
+      });
   }
 
   /** load the sectors, based on the province selected */
   function loadSectors() {
     // don't send an HTTP request if there is no province
-    if (!vm.province || !vm.province.uuid) { return; }
+    if (!vm.province || !vm.province.uuid) { return 0; }
 
     // allow the <select> to be selected
     vm.disabled.sector = false;
 
     // fetch the sectors from the server
     return Locations.sectors({ province : vm.province.uuid })
-    .then(function (sectors) {
-      vm.sectors = sectors;
+      .then(sectors => {
+        vm.sectors = sectors;
 
-      // show the appropriate message to the user
-      vm.messages.sector = (sectors.length > 0) ?
-        Locations.messages.sector :
-        Locations.messages.empty ;
+        // show the appropriate message to the user
+        vm.messages.sector = (sectors.length > 0) ?
+          Locations.messages.sector :
+          Locations.messages.empty;
 
-      // clear the selected village
-      vm.villages = [];
-    });
+        // clear the selected village
+        vm.villages = [];
+      });
   }
 
   /** load the villages, based on the sector selected */
   function loadVillages() {
 
     // don't send an HTTP request if there is no sector
-    if (!vm.sector || !vm.sector.uuid) { return; }
+    if (!vm.sector || !vm.sector.uuid) { return 0; }
 
     // allow the <select> to be selected
     vm.disabled.village = false;
 
     // fetch the villages from the server
     return Locations.villages({ sector : vm.sector.uuid })
-    .then(function (villages) {
-      vm.villages = villages;
+      .then((villages) => {
+        vm.villages = villages;
 
-      // show the appropriate message to the user
-      vm.messages.village = (villages.length > 0) ?
-        Locations.messages.village :
-        Locations.messages.empty;
-    });
+        // show the appropriate message to the user
+        vm.messages.village = (villages.length > 0) ?
+          Locations.messages.village :
+          Locations.messages.empty;
+      });
   }
 
   /** updates the exposed location uuid for the client to use */
@@ -256,56 +256,54 @@ function LocationSelectController(Locations, $rootScope, $scope, $timeout) {
 
     // download the location to the view via the LocationService
     Locations.location(vm.locationUuid)
-    .then(function (initial)  {
+      .then((initial) => {
 
-      // bind initial data to each <select> elementin the view
-      vm.village = {
-        uuid    : initial.villageUuid,
-        village : initial.village,
-      };
+        // bind initial data to each <select> elementin the view
+        vm.village = {
+          uuid    : initial.villageUuid,
+          village : initial.village,
+        };
 
-      vm.sector = {
-        uuid   : initial.sectorUuid,
-        sector : initial.sector,
-      };
+        vm.sector = {
+          uuid   : initial.sectorUuid,
+          sector : initial.sector,
+        };
 
-      vm.province = {
-        uuid     : initial.provinceUuid,
-        province : initial.province,
-      };
+        vm.province = {
+          uuid     : initial.provinceUuid,
+          province : initial.province,
+        };
 
-      vm.country = {
-        uuid    : initial.countryUuid,
-        country : initial.country,
-      };
+        vm.country = {
+          uuid    : initial.countryUuid,
+          country : initial.country,
+        };
 
-      updateLocationUuid();
+        updateLocationUuid();
 
-      // refresh all data sources to allow a user to use the <select> elements.
-      loadProvinces()
-      .then(loadSectors)
-      .then(loadVillages);
-    });
+        // refresh all data sources to allow a user to use the <select> elements.
+        loadProvinces()
+          .then(loadSectors)
+          .then(loadVillages);
+      });
   }
 
   // load the countries once, at startup
   loadCountries();
 
   function refreshData() {
-    var cacheSector = angular.copy(vm.sector);
-    var cacheVillage = angular.copy(vm.village);
+    const cacheSector = angular.copy(vm.sector);
+    const cacheVillage = angular.copy(vm.village);
 
     loadProvinces()
-    .then(function (results) {
-      return loadSectors();
-    })
-    .then(function (results) {
-      vm.sector = cacheSector;
-      return loadVillages();
-    })
-    .then(function () {
-      vm.village = cacheVillage;
-    });
+      .then(loadSectors)
+      .then(() => {
+        vm.sector = cacheSector;
+        return loadVillages();
+      })
+      .then(() => {
+        vm.village = cacheVillage;
+      });
   }
 
   /**
