@@ -30,6 +30,14 @@ function ConfigPaiementModalController(
   vm.submit = submit;
   vm.closeModal = closeModal;
 
+  vm.latestViewFilters = MultiplePayroll.filters.formatView();
+
+  vm.label = vm.latestViewFilters.defaultFilters[0]._label;
+  vm.displayValue = vm.latestViewFilters.defaultFilters[0]._displayValue;
+  vm.idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
+  vm.currencyId = vm.latestViewFilters.defaultFilters[1]._value;
+  vm.payroll.currency_id = vm.latestViewFilters.defaultFilters[1]._value;
+
   vm.setCurrency = function setCurrency(currencyId) {
     vm.payroll.currency_id = currencyId;
      const isSameCurrency = currencyId === vm.lastExchangeRate.currency_id;
@@ -43,19 +51,11 @@ function ConfigPaiementModalController(
     Object.keys(vm.payroll.value).forEach((key) => {
       vm.payroll.value[key] *= rate;
     });
-
   }
 
   Employees.read(vm.stateParams.uuid)
     .then((employee) => {
       vm.employee = employee;
-      vm.latestViewFilters = MultiplePayroll.filters.formatView();
-
-      vm.label = vm.latestViewFilters.defaultFilters[0]._label;
-      vm.displayValue = vm.latestViewFilters.defaultFilters[0]._displayValue;
-      vm.idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
-      vm.currencyId = vm.latestViewFilters.defaultFilters[1]._value;
-      vm.payroll.currency_id = vm.latestViewFilters.defaultFilters[1]._value;
       vm.employee.basic_salary = vm.employee.individual_salary ?
         vm.employee.individual_salary : vm.employee.basic_salary;
 
