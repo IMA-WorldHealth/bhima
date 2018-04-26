@@ -14,18 +14,18 @@ InventorySearchModalController.$inject = [
  * applied to the grid can be passed in via the filters inject.
  */
 function InventorySearchModalController(ModalInstance, Notify, filters, Inventory, Store, util) {
-  var vm = this;
+  const vm = this;
 
   // @TODO ideally these should be passed in when the modal is initialised these are known when the filter service is defined
-  var searchQueryOptions = [
-    'code', 'group_uuid', 'consumable', 'locked', 'label', 'type_id', 'price',
+  const searchQueryOptions = [
+    'code', 'group_uuid', 'consumable', 'text', 'locked',
+    'label', 'type_id', 'price',
   ];
 
-  var changes = new Store({ identifier : 'key' });
+  const changes = new Store({ identifier : 'key' });
 
   // displayValues will be an id:displayValue pair
-  var displayValues = {};
-  var lastDisplayValues = Inventory.filters.getDisplayValueMap();
+  const displayValues = {};
 
   vm.filters = filters;
 
@@ -43,15 +43,20 @@ function InventorySearchModalController(ModalInstance, Notify, filters, Inventor
     vm.defaultQueries.limit = filters.limit;
   }
 
+  const lastDisplayValues = Inventory.filters.getDisplayValueMap();
+
   // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(filters, searchQueryOptions);
+  // keep track of the initial search queries to make sure we properly restore
+  // default display values
+  const initialSearchQueries = angular.copy(vm.searchQueries);
 
 
   // default filter limit - directly write to changes list
-  vm.onSelectLimit = function onSelectLimit(value) {
+  vm.onSelectLimit = function onSelectLimit(val) {
     // input is type value, this will only be defined for a valid number
-    if (angular.isDefined(value)) {
-      changes.post({ key : 'limit', value : value });
+    if (angular.isDefined(val)) {
+      changes.post({ key : 'limit', value : val });
     }
   };
 
@@ -68,17 +73,24 @@ function InventorySearchModalController(ModalInstance, Notify, filters, Inventor
   };
 
   // returns the parameters to the parent controller
-  function submit(form) {
+  function submit() {
     // push all searchQuery values into the changes array to be applied
-    angular.forEach(vm.searchQueries, function (value, key) {
+    angular.forEach(vm.searchQueries, (value, key) => {
       if (angular.isDefined(value)) {
-        // default to the original value if no display value is defined
-        var displayValue = displayValues[key] || lastDisplayValues[key] || value;
-        changes.post({ key: key, value: value, displayValue: displayValue });
+        // To avoid overwriting a real display value, we first determine if the value changed in the current view.
+        // If so, we do not use the previous display value.  If the values are identical, we can restore the
+        // previous display value without fear of data being out of date.
+        const usePreviousDisplayValue =
+          angular.equals(initialSearchQueries[key], value) &&
+          angular.isDefined(lastDisplayValues[key]);
+        // default to the raw value if no display value is defined
+        const displayValue = usePreviousDisplayValue ? lastDisplayValues[key] : displayValues[key] || value;
+
+        changes.post({ key, value, displayValue });
       }
     });
 
-    var loggedChanges = changes.getAll();
+    const loggedChanges = changes.getAll();
 
     // return values to the Patient Registry Controller
     return ModalInstance.close(loggedChanges);

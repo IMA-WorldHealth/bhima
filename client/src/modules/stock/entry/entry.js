@@ -333,7 +333,9 @@ function StockEntryController(
   }
 
   function submit(form) {
-    if (form.$invalid) { return null; }
+    if (form.$invalid) {
+      return Notify.danger('FORM.ERRORS.INVALID');
+    }
 
     if (!vm.movement.entry_type) {
       return Notify.danger('ERRORS.ER_NO_STOCK_SOURCE');

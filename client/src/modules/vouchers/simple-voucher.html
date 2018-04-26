@@ -41,8 +41,7 @@
               <bh-date-editor
                 date-value="SimpleVoucherCtrl.Voucher.details.date"
                 on-change="SimpleVoucherCtrl.Voucher.onDateChange(date)"
-                validation-trigger="SimpleVoucherForm.$submitted"
-                max-date="SimpleVoucherCtrl.timestamp">
+                validation-trigger="SimpleVoucherForm.$submitted">
               </bh-date-editor>
 
               <div class="form-group" ng-class="{ 'has-error' : SimpleVoucherForm.$submitted && SimpleVoucherForm.type_id.$invalid }">

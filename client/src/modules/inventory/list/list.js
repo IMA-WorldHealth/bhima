@@ -16,6 +16,7 @@ function InventoryListController(
   Inventory, Notify, uiGridConstants, Modal, $state, Filters, AppCache, Columns, GridState,
   GridExport, Languages, Session, $rootScope
 ) {
+
   const vm = this;
   const cacheKey = 'InventoryGrid';
   const cache = new AppCache(cacheKey);
@@ -187,7 +188,6 @@ function InventoryListController(
   // research and filter data in Inventory List
   function research() {
     const filtersSnapshot = Inventory.filters.formatHTTP();
-
     Inventory.openSearchModal(filtersSnapshot)
       .then(handleSearchResult);
   }
