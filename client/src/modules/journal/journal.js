@@ -200,10 +200,7 @@ function JournalController(
     displayName : 'TABLE.COLUMNS.RECORD',
     headerCellFilter : 'translate',
     visible : true,
-    cellTemplate :
-      `<div class="ui-grid-cell-contents">
-        <bh-reference-link ng-if="row.entity.hrRecord" reference="row.entity.hrRecord" />
-      </div>`,
+    cellTemplate : '/modules/journal/templates/record.cell.html',
     treeAggregationType : uiGridGroupingConstants.aggregation.MIN,
     treeAggregationLabel : '',
     footerCellTemplate : '<i></i>',
@@ -223,6 +220,8 @@ function JournalController(
     headerCellFilter : 'translate',
     cellClass : 'text-right',
     footerCellClass : 'text-right',
+    cellFilter : 'number: 2',
+    footerCellFilter : 'number:2',
     treeAggregationType : uiGridGroupingConstants.aggregation.SUM,
     customTreeAggregationFinalizerFn : (aggregation) => {
       aggregation.rendered = aggregation.value;
@@ -235,6 +234,8 @@ function JournalController(
     headerCellFilter : 'translate',
     cellClass : 'text-right',
     footerCellClass : 'text-right',
+    cellFilter : 'number: 2',
+    footerCellFilter : 'number:2',
     treeAggregationType : uiGridGroupingConstants.aggregation.SUM,
     customTreeAggregationFinalizerFn : (aggregation) => {
       aggregation.rendered = aggregation.value;
@@ -251,6 +252,8 @@ function JournalController(
     displayName : 'TABLE.COLUMNS.DEBIT_SOURCE',
     headerCellFilter : 'translate',
     cellTemplate : currencyCellTemplate,
+    cellFilter : 'number: 2',
+    footerCellFilter : 'number:2',
     treeAggregationType : uiGridGroupingConstants.aggregation.SUM,
     customTreeAggregationFinalizerFn : (aggregation) => {
       aggregation.rendered = aggregation.value;
@@ -263,6 +266,8 @@ function JournalController(
     displayName : 'TABLE.COLUMNS.CREDIT_SOURCE',
     headerCellFilter : 'translate',
     cellTemplate : currencyCellTemplate,
+    cellFilter : 'number: 2',
+    footerCellFilter : 'number:2',
     treeAggregationType : uiGridGroupingConstants.aggregation.SUM,
     customTreeAggregationFinalizerFn : (aggregation) => {
       aggregation.rendered = aggregation.value;
