@@ -1,3 +1,4 @@
 <div class="ui-grid-cell-contents">
-    {{ grid.appScope.format(row.entity.trans_date) }}
+    <span ng-hide="row.groupHeader">{{ grid.appScope.format(row.entity.trans_date) }}</span>
+    <span ng-show="row.groupHeader">{{ grid.appScope.format(row.treeNode.children[0].row.entity.trans_date) }}</span>
 </div>
