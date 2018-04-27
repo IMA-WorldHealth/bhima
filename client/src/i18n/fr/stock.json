@@ -27,11 +27,12 @@
     "ENTRY_INTEGRATION" : "Integration",
     "ENTRY_TRANSFER"  : "Transfert",
     "ERRORS" : {
-      "MISSING_LOT_NAME":"Identifiant de lot manquant",
-      "INVALID_LOT_QUANTITY":"Quantité de lot invalide",
-      "INVALID_LOT_EXPIRATION":"Date d'expiration invalide",
-      "INVALID_GLOBAL_QUANTITY":"Quantité globale des lots invalide",
-      "LOT_ROW_WITH_ERRORS":"Données invalide dans certaines lignes de lot ",
+      "NO_ROWS" : "Vous devez avoir au moins une ligne dans le grid.",
+      "MISSING_LOT_NAME" : "Identifiant de lot manquant",
+      "INVALID_LOT_QUANTITY" : "Quantité de lot invalide",
+      "INVALID_LOT_EXPIRATION" : "Date d'expiration invalide",
+      "INVALID_GLOBAL_QUANTITY" : "Quantité globale des lots invalide",
+      "LOT_ROW_WITH_ERRORS" : "Données invalide dans certaines lignes de lot ",
       "EXCESSIVE_QUANTITY": "Quantité excessive",
       "PLEASE_CHECK_EXPIRY_DATE": "Veuillez vérifier la date d'expiration"
     },    

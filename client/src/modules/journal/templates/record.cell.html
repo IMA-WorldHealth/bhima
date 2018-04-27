@@ -1,0 +1,8 @@
+<div class="ui-grid-cell-contents">
+  <span ng-hide="row.groupHeader">
+    <bh-reference-link  reference="row.entity.hrRecord" />
+  </span>
+  <span ng-show="row.groupHeader">
+    <bh-reference-link  reference="row.treeNode.children[0].row.entity.hrRecord" />
+  </span>
+</div>

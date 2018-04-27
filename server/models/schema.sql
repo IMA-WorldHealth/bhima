@@ -807,7 +807,6 @@ CREATE TABLE `inventory` (
   `stock_min` INT(10) UNSIGNED NOT NULL DEFAULT 0,
   `type_id` TINYINT(3) UNSIGNED NOT NULL DEFAULT 0,
   `consumable` TINYINT(1) NOT NULL DEFAULT 0,
-  `is_broken` TINYINT(1)   NOT NULL DEFAULT 0,
   `note` text  NULL,
   `locked` TINYINT(1) NOT NULL DEFAULT 0,
   `delay` DECIMAL(10,4) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Delivery time',
@@ -1760,9 +1759,6 @@ CREATE TABLE IF NOT EXISTS `voucher_item` (
   FOREIGN KEY (`voucher_uuid`) REFERENCES `voucher` (`uuid`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-SET foreign_key_checks = 1;
-
-
 -- stock tables
 
 DROP TABLE IF EXISTS `flux`;
@@ -1779,6 +1775,7 @@ CREATE TABLE `lot` (
   `initial_quantity`  INT(11) NOT NULL DEFAULT 0,
   `quantity`          INT(11) NOT NULL DEFAULT 0,
   `unit_cost`         DECIMAL(19, 4) UNSIGNED NOT NULL,
+  `description`       TEXT,
   `expiration_date`   DATE NOT NULL,
   `inventory_uuid`    BINARY(16) NOT NULL,
   `origin_uuid`       BINARY(16) NOT NULL,
@@ -1928,3 +1925,5 @@ CREATE TABLE `config_rubric_item` (
   CONSTRAINT `config_rubric_item_ibfk_1` FOREIGN KEY (`config_rubric_id`) REFERENCES `config_rubric` (`id`),
   CONSTRAINT `config_rubric_item_ibfk_2` FOREIGN KEY (`rubric_payroll_id`) REFERENCES `rubric_payroll` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+SET foreign_key_checks = 1;

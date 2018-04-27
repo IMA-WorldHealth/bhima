@@ -55,8 +55,6 @@ CREATE TABLE `rubric_payroll` (
 -- For some reason, MariaDB is being a pain with this.  Skipping it for now.
 -- ALTER TABLE `offday` DROP CONSTRAINT `offday_1`;
 -- ALTER TABLE `offday` ADD UNIQUE `offday_1` (`date`);
-
-ALTER TABLE `inventory` ADD COLUMN `is_broken` TINYINT(1) NOT NULL DEFAULT 0;
 ALTER TABLE `inventory` ADD COLUMN `note` text  NULL;
 
 ALTER TABLE `patient` ADD COLUMN `health_zone` VARCHAR(30);

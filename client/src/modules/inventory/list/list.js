@@ -16,6 +16,7 @@ function InventoryListController(
   Inventory, Notify, uiGridConstants, Modal, $state, Filters, AppCache, Columns, GridState,
   GridExport, Languages, Session, $rootScope
 ) {
+
   const vm = this;
   const cacheKey = 'InventoryGrid';
   const cache = new AppCache(cacheKey);
@@ -94,13 +95,6 @@ function InventoryListController(
     headerCellFilter : 'translate',
     cellClass : 'text-right',
     type : 'number',
-    visible : false,
-  },
-  {
-    field : 'is_broken',
-    displayName : 'INVENTORY.IS_BROKEN',
-    headerCellFilter : 'translate',
-    cellTemplate : '/modules/inventory/list/templates/isbroken.cell.html',
     visible : false,
   },
   {
@@ -187,7 +181,6 @@ function InventoryListController(
   // research and filter data in Inventory List
   function research() {
     const filtersSnapshot = Inventory.filters.formatHTTP();
-
     Inventory.openSearchModal(filtersSnapshot)
       .then(handleSearchResult);
   }

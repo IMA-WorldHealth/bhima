@@ -21,7 +21,7 @@ function bhDateEditorTests() {
   let $scope;
   let $compile;
   let element;
-
+  const futureDate = '20120-01-20';
   // utility fns
   const find = (elm, selector) => elm[0].querySelector(selector);
 
@@ -32,7 +32,6 @@ function bhDateEditorTests() {
     // spy on the onChange callback
     $scope.date = new Date();
     $scope.callback = chai.spy();
-
     element = $compile(angular.element(template))($scope);
 
     $scope.$digest();
@@ -77,4 +76,36 @@ function bhDateEditorTests() {
 
     expect($scope.callback).to.have.been.called();
   });
+
+
+  it('Should not allow future date to be selected', () => {
+    const input = find(element, '[data-date-editor-input]');
+    clickOnCalendarButton(element);
+
+    const ngModel = angular.element(input).controller('ngModel');
+    ngModel.$setViewValue(futureDate);
+    $scope.$digest();
+    expect(ngModel.$modelValue).to.be.equal(undefined);
+
+  });
+
+  it('Should allow future date to be selected', () => {
+
+    const stub = templateWithOptions
+      .replace('OPTIONS', 'allow-future-date="true"');
+
+    element = $compile(angular.element(stub))($scope);
+    $scope.$digest();
+    const input = find(element, '[data-date-editor-input]');
+
+    clickOnCalendarButton(element);
+
+    const ngModel = angular.element(input).controller('ngModel');
+    ngModel.$setUntouched();
+    ngModel.$setViewValue(futureDate);
+    element = $compile(angular.element(stub))($scope);
+    $scope.$digest();
+    expect(ngModel.$modelValue).to.be.equal(futureDate);
+  });
+
 }

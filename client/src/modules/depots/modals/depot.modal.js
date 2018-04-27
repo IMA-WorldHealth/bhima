@@ -11,17 +11,22 @@ function DepotModalController($state, Depots, ModalService, Notify) {
   vm.depot = $state.params.depot;
   vm.isCreating = !!($state.params.creating);
 
-  if (vm.depot.location_uuid) {
-    vm.hasLocation = 1;
-  }
+  // make sure hasLocation is set
+  vm.hasLocation = vm.depot.location_uuid ? 1 : 0;
 
   // exposed methods
   vm.submit = submit;
-  vm.closeModal = closeModal;
 
   // submit the data to the server from all two forms (update, create)
   function submit(depotForm) {
-    if (depotForm.$invalid || depotForm.$pristine) { return 0; }
+    if (depotForm.$invalid) {
+      return 0;
+    }
+
+    if (depotForm.$pristine) {
+      cancel();
+      return 0;
+    }
 
     Depots.clean(vm.depot);
 
@@ -42,7 +47,7 @@ function DepotModalController($state, Depots, ModalService, Notify) {
       .catch(Notify.handleError);
   }
 
-  function closeModal() {
+  function cancel() {
     $state.go('depots');
   }
 }

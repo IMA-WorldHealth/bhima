@@ -125,8 +125,8 @@ function getItemsMetadata(params) {
     `SELECT BUID(inventory.uuid) as uuid, inventory.code, inventory.text AS label, inventory.price, iu.abbr AS unit,
       it.text AS type, ig.name AS groupName, BUID(ig.uuid) AS group_uuid, ig.expires, ig.unique_item, inventory.consumable,inventory.locked, inventory.stock_min,
       inventory.stock_max, inventory.created_at AS timestamp, inventory.type_id, inventory.unit_id,
-      inventory.is_broken, inventory.note, 
-      inventory.unit_weight, inventory.unit_volume, ig.sales_account, ig.stock_account, ig.donation_account,
+      inventory.note,  inventory.unit_weight, inventory.unit_volume, 
+      ig.sales_account, ig.stock_account, ig.donation_account,
       ig.cogs_account, inventory.default_quantity
     FROM inventory JOIN inventory_type AS it
       JOIN inventory_unit AS iu JOIN inventory_group AS ig ON
@@ -144,7 +144,6 @@ function getItemsMetadata(params) {
   filters.equals('consumable');
   filters.equals('locked');
   filters.equals('label');
-  filters.equals('is_broken');
   filters.equals('note');
 
   filters.custom('inventory_uuids', 'inventory.uuid IN (?)', params.inventory_uuids);

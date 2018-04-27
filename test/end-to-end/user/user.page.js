@@ -11,9 +11,9 @@ const GA = require('../shared/GridAction');
 function UserPage() {
   const page = this;
 
-  var userGrid = element(by.id('users-grid'));
-  var addUserButon = element(by.css('[data-method="create"]'));
-  var actionLinkColumn = 2;
+  const userGrid = element(by.id('users-grid'));
+  const addUserButon = element(by.css('[data-method="create"]'));
+  const actionLinkColumn = 2;
 
   /* send back the number of user in the grid */
   function getUserCount() {
@@ -70,7 +70,6 @@ function UserPage() {
     GA.clickOnMethod(n, actionLinkColumn, 'deactivate', 'users-grid');
   }
 
-
   page.getUserCount = getUserCount;
   page.createUser = createUser;
   page.editUser = editUser;
@@ -79,7 +78,6 @@ function UserPage() {
   page.editUserCashbox = editUserCashbox;
   page.activateUser = activateUser;
   page.deactivateUser = deactivateUser;
-
 }
 
 module.exports = UserPage;
