@@ -30,42 +30,46 @@
             on-select-callback="ReportConfigCtrl.onSelectDepot(depot)"
             required="true"
             validate-trigger="ConfigForm.$submitted">
-            <bh-clear on-clear="ReportConfigCtrl.clear('depot')"></bh-clear>
           </bh-depot-select>
 
           <!-- date interval -->
           <bh-date-interval 
             date-from="ReportConfigCtrl.dateFrom" 
-            date-to="ReportConfigCtrl.dateTo">
+            date-to="ReportConfigCtrl.dateTo"
+            validation-trigger="ConfigForm.$submitted"
+            required="true">
           </bh-date-interval>
 
           <!-- stock exit type -->
-          <div class="checkbox">
-            <label>
-              <input type="checkbox" ng-true-value="1" ng-false-value="0" value="1" ng-model="ReportConfigCtrl.includePatientExit">
-              <span translate>REPORT.STOCK.INCLUDE_PATIENT_EXIT</span>
-            </label>
-          </div>
-
-          <div class="checkbox">
-            <label>
-              <input type="checkbox" ng-true-value="1" ng-false-value="0" ng-model="ReportConfigCtrl.includeServiceExit">
-              <span translate>REPORT.STOCK.INCLUDE_SERVICE_EXIT</span>
-            </label>
-          </div>
-
-          <div class="checkbox">
-            <label>
-              <input type="checkbox" ng-true-value="1" ng-false-value="0" ng-model="ReportConfigCtrl.includeDepotExit">
-              <span translate>REPORT.STOCK.INCLUDE_DEPOT_EXIT</span>
-            </label>
-          </div>
-
-          <div class="checkbox">
-            <label>
-              <input type="checkbox" ng-true-value="1" ng-false-value="0" ng-model="ReportConfigCtrl.includeLossExit">
-              <span translate>REPORT.STOCK.INCLUDE_LOSS_EXIT</span>
-            </label>
+          <div ng-class="{'has-error': ConfigForm.$submitted && !ReportConfigCtrl.hasOneChecked}">
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" ng-true-value="1" ng-false-value="0" ng-change="ReportConfigCtrl.onExitTypeChange()" ng-model="ReportConfigCtrl.includePatientExit">
+                <span translate>REPORT.STOCK.INCLUDE_PATIENT_EXIT</span>
+              </label>
+            </div>
+  
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" ng-true-value="1" ng-false-value="0" ng-change="ReportConfigCtrl.onExitTypeChange()" ng-model="ReportConfigCtrl.includeServiceExit">
+                <span translate>REPORT.STOCK.INCLUDE_SERVICE_EXIT</span>
+              </label>
+            </div>
+  
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" ng-true-value="1" ng-false-value="0" ng-change="ReportConfigCtrl.onExitTypeChange()" ng-model="ReportConfigCtrl.includeDepotExit">
+                <span translate>REPORT.STOCK.INCLUDE_DEPOT_EXIT</span>
+              </label>
+            </div>
+  
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" ng-true-value="1" ng-false-value="0" ng-change="ReportConfigCtrl.onExitTypeChange()" ng-model="ReportConfigCtrl.includeLossExit">
+                <span translate>REPORT.STOCK.INCLUDE_LOSS_EXIT</span>
+              </label>
+            </div>
+            <em ng-if="ConfigForm.$submitted && !ReportConfigCtrl.hasOneChecked" class="help-block" translate>STOCK.AT_LEAST_ONE_CHECKED</em>
           </div>
 
           <hr>

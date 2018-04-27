@@ -1,10 +1,5 @@
 /* global element, by */
 
-const chai = require('chai');
-const helpers = require('../../shared/helpers');
-
-helpers.configure(chai);
-
 const FU = require('../../shared/FormUtils');
 const ReportPage = require('../page');
 const components = require('../../shared/components');

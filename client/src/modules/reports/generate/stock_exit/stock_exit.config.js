@@ -13,10 +13,17 @@ function InventoryFileConfigController($sce, Notify, SavedReports, AppCache, rep
 
   // default values
   vm.includePatientExit = 1;
+  vm.includeServiceExit = 0;
+  vm.includeDepotExit = 0;
+  vm.includeLossExit = 0;
   vm.previewGenerated = false;
+  vm.onExitTypeChange = onExitTypeChange;
 
   // check cached configuration
   checkCachedConfiguration();
+
+  // check checked exit type
+  onExitTypeChange();
 
   vm.onSelectDepot = depot => {
     vm.depot = depot;
@@ -32,7 +39,13 @@ function InventoryFileConfigController($sce, Notify, SavedReports, AppCache, rep
   };
 
   vm.preview = form => {
-    if (form.$invalid) { return 0; }
+    if (form.$invalid) {
+      return 0;
+    }
+
+    if (!vm.hasOneChecked) {
+      return 0;
+    }
 
     const params = {
       depotUuid : vm.depot.uuid,
@@ -47,13 +60,7 @@ function InventoryFileConfigController($sce, Notify, SavedReports, AppCache, rep
 
     // update cached configuration
     cache.reportDetails = angular.copy(params);
-
-    const options = {
-      params,
-      lang : Languages.key,
-    };
-
-    vm.reportDetails = options;
+    angular.extend(vm.reportDetails, params, { lang : Languages.key });
 
     return SavedReports.requestPreview(reportUrl, reportData.id, angular.copy(vm.reportDetails))
       .then((result) => {
@@ -79,5 +86,11 @@ function InventoryFileConfigController($sce, Notify, SavedReports, AppCache, rep
 
   function checkCachedConfiguration() {
     vm.reportDetails = angular.copy(cache.reportDetails || {});
+  }
+
+  function onExitTypeChange() {
+    // be sure at least one checkbox is checked
+    const sum = vm.includePatientExit + vm.includeServiceExit + vm.includeDepotExit + vm.includeLossExit;
+    vm.hasOneChecked = sum > 0;
   }
 }

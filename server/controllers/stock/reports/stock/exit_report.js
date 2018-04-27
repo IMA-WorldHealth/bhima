@@ -1,5 +1,5 @@
 const {
-  _, db, ReportManager, pdfOptions, STOCK_EXIT_REPORT_TEMPLATE,
+  _, db, util, ReportManager, pdfOptions, STOCK_EXIT_REPORT_TEMPLATE,
 } = require('../common');
 
 const StockExitToPatient = require('./exit/exitToPatient');
@@ -19,30 +19,15 @@ const StockExitToLoss = require('./exit/exitToLoss');
 function stockExitReport(req, res, next) {
   let report;
 
-  let data = {};
-  let params = {};
-  const options = req.query;
-  const optionReport = _.extend(options, pdfOptions, {
+  const params = util.convertStringToNumber(req.query);
+
+  const optionReport = _.extend(params, pdfOptions, {
     filename : 'REPORT.STOCK.EXIT_REPORT',
   });
 
   // set up the report with report manager
   try {
     report = new ReportManager(STOCK_EXIT_REPORT_TEMPLATE, req.session, optionReport);
-    params = JSON.parse(req.query.params);
-  } catch (e) {
-    return next(e);
-  }
-
-  /**
-   * get into the data object :
-   * - exitToPatient : stock exit to patient data
-   * - exitToService : stock exit to service data
-   * - exitToDepot : stock exit to depot data
-   * - exitToLoss : stock exit as loss
-   */
-  try {
-    data = collect(params);
   } catch (e) {
     return next(e);
   }
@@ -50,7 +35,7 @@ function stockExitReport(req, res, next) {
   return fetchDepotDetails(params.depotUuid)
     .then(depot => {
       params.depotName = depot.text;
-      return data;
+      return collect(params);
     })
     .then(groupCollection)
     .then((bundle) => {
@@ -82,34 +67,35 @@ function groupCollection(exitCollection) {
   const collection = {};
 
   // exit to patient
-  collection.exitToPatient = _.groupBy(exitCollection.exitToPatient, row => row.text);
-  collection.exitToPatient = _.map(collection.exitToPatient, formatExit);
-  collection.exitToPatientEmpty = (Object.keys(collection.exitToPatient).length === 0);
+  collection.exitToPatient = formatAndCombine(exitCollection.exitToPatient);
 
   // exit to service
-  collection.exitToService = _.groupBy(exitCollection.exitToService, row => row.text);
-  collection.exitToService = _.map(collection.exitToService, formatExit);
-  collection.exitToServiceEmpty = (Object.keys(collection.exitToService).length === 0);
+  collection.exitToService = formatAndCombine(exitCollection.exitToService);
 
   // exit to depot
-  collection.exitToDepot = _.groupBy(exitCollection.exitToDepot, row => row.text);
-  collection.exitToDepot = _.map(collection.exitToDepot, formatExit);
-  collection.exitToDepotEmpty = (Object.keys(collection.exitToDepot).length === 0);
+  collection.exitToDepot = formatAndCombine(exitCollection.exitToDepot);
 
   // exit to loss
-  collection.exitToLoss = _.groupBy(exitCollection.exitToLoss, row => row.text);
-  collection.exitToLoss = _.map(collection.exitToLoss, formatExit);
-  collection.exitToLossEmpty = (Object.keys(collection.exitToLoss).length === 0);
+  collection.exitToLoss = formatAndCombine(exitCollection.exitToLoss);
 
   return collection;
+}
+
+function formatAndCombine(data) {
+  const aggregate = _.chain(data)
+    .groupBy('text')
+    .map(formatExit)
+    .value();
+
+  return { data : aggregate, isEmpty : _.size(aggregate) === 0 };
 }
 
 /**
  * @function formatExit
  */
-function formatExit(value, index) {
+function formatExit(value, key) {
   return {
-    inventory_name : index,
+    inventory_name : key,
     inventory_unit : value && value[0] ? value[0].unit_text : '',
     inventory_stock_exit_data : value,
     inventory_stock_exit_quantity : _.sumBy(value, 'quantity'),
@@ -119,7 +105,7 @@ function formatExit(value, index) {
 /**
  * @function collect
  * @param {object} params query parameters
- * @return {object} { exitToPatient: [], exitToService: [], exitToDepot: [], exitToLoss: [] }
+ * @return {promise} { exitToPatient: [], exitToService: [], exitToDepot: [], exitToLoss: [] }
  */
 async function collect(params) {
   const {
@@ -135,29 +121,24 @@ async function collect(params) {
 
   const data = {};
 
-  try {
-    // get stock exit to patient
-    if (includePatientExit) {
-      data.exitToPatient = await StockExitToPatient.fetch(depotUuid, dateFrom, dateTo, showDetails);
-    }
+  // get stock exit to patient
+  if (includePatientExit) {
+    data.exitToPatient = await StockExitToPatient.fetch(depotUuid, dateFrom, dateTo, showDetails);
+  }
 
-    // get stock exit to service
-    if (includeServiceExit) {
-      data.exitToService = await StockExitToService.fetch(depotUuid, dateFrom, dateTo, showDetails);
-    }
+  // get stock exit to service
+  if (includeServiceExit) {
+    data.exitToService = await StockExitToService.fetch(depotUuid, dateFrom, dateTo, showDetails);
+  }
 
-    // get stock exit to other depot
-    if (includeDepotExit) {
-      data.exitToDepot = await StockExitToDepot.fetch(depotUuid, dateFrom, dateTo, showDetails);
-    }
+  // get stock exit to other depot
+  if (includeDepotExit) {
+    data.exitToDepot = await StockExitToDepot.fetch(depotUuid, dateFrom, dateTo, showDetails);
+  }
 
-    // get stock exit to loss
-    if (includeLossExit) {
-      data.exitToLoss = await StockExitToLoss.fetch(depotUuid, dateFrom, dateTo, showDetails);
-    }
-
-  } catch (error) {
-    throw error;
+  // get stock exit to loss
+  if (includeLossExit) {
+    data.exitToLoss = await StockExitToLoss.fetch(depotUuid, dateFrom, dateTo, showDetails);
   }
 
   return data;

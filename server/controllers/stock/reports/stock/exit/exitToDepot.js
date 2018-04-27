@@ -1,12 +1,13 @@
 const db = require('../../../../../lib/db');
 
+const IS_EXIT = 1;
+const EXIT_TO_DEPOT_ID = 8;
+
 /**
  * @function fetch
  * @description fetch stock exit for patient
  */
 function fetch(depotUuid, dateFrom, dateTo, showDetails) {
-  const IS_EXIT = 1;
-  const EXIT_TO_DEPOT_ID = 8;
   const sql = `
   SELECT 
     i.code, i.text, iu.text AS unit_text, BUID(m.document_uuid) AS document_uuid,
@@ -25,9 +26,9 @@ function fetch(depotUuid, dateFrom, dateTo, showDetails) {
     AND (DATE(m.date) BETWEEN DATE(?) AND DATE(?))
   GROUP BY i.uuid`;
 
-  const details = ', m.uuid, dd.uuid';
+  const groupBy = ', m.uuid, dd.uuid';
   const orderBy = ' ORDER BY i.text ASC';
-  const query = showDetails ? sql.concat(details, orderBy) : sql.concat(orderBy);
+  const query = showDetails ? sql.concat(groupBy, orderBy) : sql.concat(orderBy);
 
   const _depotUuid = db.bid(depotUuid);
   const _dateFrom = new Date(dateFrom);

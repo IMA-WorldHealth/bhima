@@ -1,7 +1,4 @@
-const chai = require('chai');
 const helpers = require('../../shared/helpers');
-
-helpers.configure(chai);
 
 const ReportStockExitPage = require('./stock_exit.page');
 

@@ -25,6 +25,7 @@ const _ = require('lodash');
 
 // Application-specific imports
 const db = require('../../../lib/db');
+const util = require('../../../lib/util');
 const Stock = require('../core');
 const ReportManager = require('../../../lib/ReportManager');
 const PeriodService = require('../../../lib/period');
@@ -168,6 +169,7 @@ const stockFluxReceipt = {
 exports._ = _;
 
 exports.db = db;
+exports.util = util;
 
 exports.Stock = Stock;
 exports.ReportManager = ReportManager;

@@ -5,6 +5,7 @@
     "ADJUSTMENT_TYPE" : "Type d'Ajustement",
     "AMOUNT"          : "Montant",
     "APPROVISIONING"  : "Quantité à commander",
+    "AT_LEAST_ONE_CHECKED" : "Au moins une option doit être coché",
     "CACHED_DATA"     : "Donnees mises en cache",
     "CHOOSE_AGAIN"    : "(Cliquer Sur Cette Boite Pour Choisir Encore)",
     "CODE"            : "Code",
