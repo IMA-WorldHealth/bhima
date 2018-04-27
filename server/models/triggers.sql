@@ -11,15 +11,15 @@ FOR EACH ROW BEGIN
 
   -- this writes a patient entity into the entity_map table
   INSERT INTO entity_map
-    SELECT new.uuid, CONCAT_WS('.', 'PA', project.abbr, new.reference) FROM project where project.id = new.project_id;
+    SELECT new.uuid, CONCAT_WS('.', 'PA', project.abbr, new.reference) FROM project WHERE project.id = new.project_id ON DUPLICATE KEY UPDATE text=text;
 
   -- debtor entity reference removed to allow for reverse lookups - if debit
   -- entity is refined this can point directly to the debtor
 
   -- this writes a debtor entity into the entity_map table
-  -- NOTE: the debtor actually points to the patient entity for convienence
+  -- NOTE: the debtor actually points to the patient entity for convenience
   INSERT INTO entity_map
-    SELECT new.debtor_uuid, CONCAT_WS('.', 'PA', project.abbr, new.reference) FROM project where project.id = new.project_id;
+    SELECT new.debtor_uuid, CONCAT_WS('.', 'PA', project.abbr, new.reference) FROM project WHERE project.id = new.project_id ON DUPLICATE KEY UPDATE text=text;
 END$$
 
 -- Purchase Triggers
@@ -31,7 +31,7 @@ FOR EACH ROW
 CREATE TRIGGER purchase_document_map AFTER INSERT ON purchase
 FOR EACH ROW BEGIN
   INSERT INTO document_map
-    SELECT new.uuid, CONCAT_WS('.', 'PO', project.abbr, new.reference) FROM project where project.id = new.project_id;
+    SELECT new.uuid, CONCAT_WS('.', 'PO', project.abbr, new.reference) FROM project WHERE project.id = new.project_id ON DUPLICATE KEY UPDATE text=text;
 END$$
 
 
@@ -44,7 +44,7 @@ FOR EACH ROW
 CREATE TRIGGER invoice_document_map AFTER INSERT ON invoice
 FOR EACH ROW BEGIN
   INSERT INTO document_map
-    SELECT new.uuid, CONCAT_WS('.', 'IV', project.abbr, new.reference) FROM project where project.id = new.project_id;
+    SELECT new.uuid, CONCAT_WS('.', 'IV', project.abbr, new.reference) FROM project WHERE project.id = new.project_id ON DUPLICATE KEY UPDATE text=text;
 END$$
 
 
@@ -57,7 +57,7 @@ FOR EACH ROW
 CREATE TRIGGER cash_document_map AFTER INSERT ON cash
 FOR EACH ROW BEGIN
   INSERT INTO document_map
-    SELECT new.uuid, CONCAT_WS('.', 'CP', project.abbr, new.reference) FROM project where project.id = new.project_id;
+    SELECT new.uuid, CONCAT_WS('.', 'CP', project.abbr, new.reference) FROM project WHERE project.id = new.project_id ON DUPLICATE KEY UPDATE text=text;
 END$$
 
 -- Voucher Triggers
@@ -69,7 +69,7 @@ FOR EACH ROW
 CREATE TRIGGER voucher_document_map AFTER INSERT ON voucher
 FOR EACH ROW BEGIN
   INSERT INTO document_map
-    SELECT new.uuid, CONCAT_WS('.', 'VO', project.abbr, new.reference) FROM project where project.id = new.project_id;
+    SELECT new.uuid, CONCAT_WS('.', 'VO', project.abbr, new.reference) FROM project WHERE project.id = new.project_id ON DUPLICATE KEY UPDATE text=text;
 END$$
 
 
@@ -80,7 +80,7 @@ FOR EACH ROW BEGIN
 
   -- Since employees do not have UUIDs or project associations, we create their mapping by simply concatenating
   -- the id with a prefix like this: E.{{employee.id}}.
-  INSERT INTO entity_map SELECT new.creditor_uuid, CONCAT_WS('.', 'EM', new.id);
+  INSERT INTO entity_map SELECT new.creditor_uuid, CONCAT_WS('.', 'EM', new.id) ON DUPLICATE KEY UPDATE text=text;
 END$$
 
 
@@ -95,7 +95,7 @@ FOR EACH ROW BEGIN
 
   -- this writes the supplier's creditor into the entity_map, pointing to the supplier
   INSERT INTO entity_map
-    SELECT new.creditor_uuid, CONCAT_WS('.', 'FO', new.reference);
+    SELECT new.creditor_uuid, CONCAT_WS('.', 'FO', new.reference) ON DUPLICATE KEY UPDATE text=text;
 END$$
 
 DELIMITER ;
