@@ -6,7 +6,7 @@ JournalController.$inject = [
   'SessionService', 'NotifyService', 'bhConstants', '$state', 'uiGridConstants', 'ModalService', 'LanguageService',
   'AppCache', 'Store', 'uiGridGroupingConstants', 'ExportService', '$filter', 'GridExportService',
   'GridStateService', 'GridSelectionService', 'TrialBalanceService', '$httpParamSerializer', 'TransactionService',
-  'util',
+  'util', '$translate',
 ];
 
 /**
@@ -33,7 +33,7 @@ function JournalController(
   Journal, Sorting, Grouping, Filtering, Columns, Session, Notify, bhConstants,
   $state, uiGridConstants, Modal, Languages, AppCache, Store, uiGridGroupingConstants,
   Export, $filter, GridExport, GridState, GridSelection, TrialBalance,
-  $httpParamSerializer, Transactions, util
+  $httpParamSerializer, Transactions, util, $translate,
 ) {
   // store journal data
   const journalStore = new Store({
@@ -382,13 +382,22 @@ function JournalController(
     Modal.openReports({ url, params });
   };
 
+  function getDisplayNames() {
+    const displayNames = {};
+    vm.gridOptions.columnDefs.forEach(col => {
+      displayNames[col.field] = $translate.instant(col.displayName);
+    });
+    return displayNames;
+  }
   vm.downloadExcel = () => {
+
     const filterOpts = Journal.filters.formatHTTP();
     const defaultOpts = {
       renderer : 'xlsx',
       lang : Languages.key,
+      renameKeys : true,
+      displayNames : getDisplayNames(),
     };
-
     // combine options
     const options = angular.merge(defaultOpts, filterOpts);
     // return  serialized options

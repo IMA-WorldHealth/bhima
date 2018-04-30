@@ -26,6 +26,8 @@ exports.dateFormatter = dateFormatter;
 exports.execp = execp;
 exports.format = require('util').format;
 
+exports.renameKeys = renameKeys;
+
 exports.roundDecimal = roundDecimal;
 exports.loadDictionary = loadDictionary;
 exports.stringToNumber = stringToNumber;
@@ -181,4 +183,28 @@ function convertStringToNumber(obj) {
     obj[property] = stringToNumber(obj[property]);
   });
   return obj;
+}
+
+/*
+ * rename an object's keys
+ */
+
+function renameKeys(objs, newKeys) {
+  const stringType = 'string';
+  const formatedKeys = (typeof stringType) ? JSON.parse(newKeys) : newKeys;
+  if (_.isArray(objs)) {
+    _.forEach(objs, (obj, index) => {
+      objs[index] = renameObjectKeys(obj, formatedKeys);
+    });
+    return objs;
+  }
+  return renameObjectKeys(objs, formatedKeys);
+}
+
+function renameObjectKeys(obj, newKeys) {
+  const keyValues = Object.keys(obj).map(key => {
+    const newKey = newKeys[key] || key;
+    return { [newKey] : obj[key] };
+  });
+  return Object.assign({}, ...keyValues);
 }
