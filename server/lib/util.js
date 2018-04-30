@@ -28,6 +28,8 @@ exports.format = require('util').format;
 
 exports.roundDecimal = roundDecimal;
 exports.loadDictionary = loadDictionary;
+exports.stringToNumber = stringToNumber;
+exports.convertStringToNumber = convertStringToNumber;
 
 /**
  * @function take
@@ -150,4 +152,33 @@ function loadDictionary(key, dictionaries = {}) {
 
   dictionaries[key] = require(`../../client/i18n/${key}.json`);
   return dictionaries[key];
+}
+
+/**
+ * @function stringToNumber
+ *
+ * @description
+ * convert string number to number
+ *
+ * @param {string} x
+ */
+function stringToNumber(x) {
+  const parsed = Number(x);
+  if (Number.isNaN(parsed)) { return x; }
+  return parsed;
+}
+
+/**
+ * @function convertStringToNumber
+ *
+ * @description
+ * look into an object and convert each string number to number if it is possible
+ *
+ * @param {object} obj An object in which we want to convert value of each property into the correct type
+ */
+function convertStringToNumber(obj) {
+  _.keys(obj).forEach(property => {
+    obj[property] = stringToNumber(obj[property]);
+  });
+  return obj;
 }

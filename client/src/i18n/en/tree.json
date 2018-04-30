@@ -89,6 +89,7 @@
     "STOCK_INVENTORY": "Inventories in Stock",
     "STOCK_REPORT": "[Stock] Inventories",
     "STOCK_INVENTORY_REPORT": "[Stock] Inventory Report",
+    "STOCK_EXIT_REPORT":"[Stock] Exit Report",
     "STOCK_LOTS": "Stock Lots",
     "STOCK_MOVEMENTS": "Stock Movements",
     "SUBSIDY": "Subsidy Management",

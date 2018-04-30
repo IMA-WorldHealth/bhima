@@ -126,7 +126,15 @@
       "VALUE":"Valeur",
       "ENTRIES":"Entrées",
       "EXITS":"Sorties",
-      "STOCKS":"Stocks"
+      "STOCKS":"Stocks",
+      "EXIT_REPORT":"Rapport des sorties de stocks",
+      "EXIT_REPORT_DESCRIPTION":"Ce rapport affiche les sorties de stock qui ont eu lieu dans different depots",
+      "INCLUDE_INFORMATION":"Information à inclure",
+      "INCLUDE_PATIENT_EXIT":"Inclure les distributions vers les patients",
+      "INCLUDE_SERVICE_EXIT":"Inclure les distributions vers les services",
+      "INCLUDE_DEPOT_EXIT":"Inclure les distributions vers d'autres depots",
+      "INCLUDE_LOSS_EXIT":"Inclure les pertes de stocks",
+      "SHOW_DETAILS":"Afficher les details"
     },
     "UTIL":{
       "CANCEL_PREVIEW":"Fermer l'Aperçu",
