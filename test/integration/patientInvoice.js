@@ -1,3 +1,4 @@
+/* eslint no-unused-expressions:"off" */
 /* global expect, agent */
 
 const helpers = require('./helpers');
@@ -284,8 +285,8 @@ function InvoicingFeeScenario() {
         // ensure the data in the database is correct
         const invoice = res.body;
 
-        // this is the invoice cost ($100) + 20% ($20) of billing service
-        expect(invoice.cost).to.equal(100);
+        // this is the invoice cost ($100) + 20% ($20) of invoicing fee
+        expect(invoice.cost).to.equal(120);
         expect(invoice.items).to.have.length(2);
       })
       .catch(helpers.handler);
