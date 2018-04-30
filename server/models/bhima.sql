@@ -175,6 +175,12 @@ INSERT INTO `flux` VALUES
   (12, 'STOCK_FLUX.TO_ADJUSTMENT'),
   (13, 'STOCK_FLUX.FROM_INTEGRATION');
 
+-- Roles Actions
+
+INSERT INTO `actions`(`id`, `description`) VALUES
+  (1, 'FORM.LABELS.CAN_EDIT_ROLES');
+
+
 -- transaction type
 INSERT INTO `purchase_status` (`id`, `text`) VALUES
   (1,  'PURCHASES.STATUS.WAITING_CONFIRMATION'),

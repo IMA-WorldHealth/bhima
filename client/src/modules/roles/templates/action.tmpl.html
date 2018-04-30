@@ -1,4 +1,4 @@
-<div class="ui-grid-cell-contents text-right"
+<div class="ui-grid-cell-contents text-right" ng-show="grid.appScope.canEditRoles"
   uib-dropdown dropdown-append-to-body uib-dropdown-toggle>
 
   <a href>
@@ -16,6 +16,11 @@
     <li>
       <a data-method="edit_permissions" ng-click="grid.appScope.pages(row.entity)" href>
         <i class="fa fa-edit"></i> <span translate>FORM.BUTTONS.EDIT_PERMISSIONS</span>
+      </a>
+    </li>
+    <li>
+      <a data-method="edit_actions" ng-click="grid.appScope.editActions(row.entity)" href>
+        <i class="fa fa-edit"></i> <span translate>FORM.BUTTONS.ACTIONS</span>
       </a>
     </li>
     <li class="divider"></li>

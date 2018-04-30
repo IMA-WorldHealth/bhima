@@ -4,9 +4,8 @@ const components = require('../shared/components');
 
 // the page object
 const page = new RolesPage();
-
+const canEditRoleAction = 1;
 function RolesManagementTests() {
-
   // navigate to the page
   before(() => helpers.navigate('#/roles'));
 
@@ -45,6 +44,13 @@ function RolesManagementTests() {
     page.deleteRole(3);
     page.submit();
   });
+
+  it(`Shoud assign an action to a role`, () => {
+    page.assignActions(2);
+    page.setAction(canEditRoleAction);
+    page.submit();
+    components.notification.hasSuccess();
+  });
 }
 
 function assigningRole() {
@@ -59,5 +65,8 @@ function assigningRole() {
   });
 }
 
-describe('Role management Test', RolesManagementTests);
-describe('Role management assigning role', assigningRole);
+
+describe('Role management Test', () => {
+  describe('Role management', RolesManagementTests);
+  describe('Role assignment', assigningRole);
+});

@@ -233,6 +233,7 @@
             "ON": "On",
             "BY_ID": "By Id",
             "BY_NAME": "By Name",
+            "CAN_EDIT_ROLES" : "Editing roles possibility",
             "CANCEL": "Cancel",
             "CANCELED": "Canceled",
             "CHARACTERISTICS": "Characteristics",

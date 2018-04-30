@@ -832,6 +832,10 @@ VALUES(@roleUUID, 'Admin', 1), (@regularRoleUUID, 'Regular', 1);
 -- superuser
 INSERT INTO role_unit
  SELECT HUID(uuid()) as uuid,@roleUUID, id FROM unit;
+-- actions
+INSERT INTO role_actions
+SELECT HUID(uuid()) as uuid, @roleUUID, id FROM actions;
+
 
 INSERT INTO `user_role`(uuid, user_id, role_uuid) 
 VALUES(HUID(uuid()), 1, @roleUUID);

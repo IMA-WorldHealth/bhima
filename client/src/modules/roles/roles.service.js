@@ -35,6 +35,21 @@ function RolesService(Api) {
     return service.$http.get(url);
   };
 
+  service.actions = function actions(roleUuid) {
+    const url = '/roles/actions/'.concat(roleUuid);
+    return service.$http.get(url);
+  };
+
+  service.assignActions = function actions(data) {
+    const url = `/roles/actions`;
+    return service.$http.post(url, data);
+  };
+
+  service.userHasAction = function userHasAction(actionId) {
+    const url = '/roles/actions/user/'.concat(actionId);
+    return service.$http.get(url);
+  };
+
   function affectPages(data) {
     return service.$http.post('/roles/affectUnits', data);
   }

@@ -1,3 +1,4 @@
+<form name="RolesForm" bh-submit=" UsersRolesCtrl.assignRolesToUser()">
 <div class="modal-header">
     <ol class="headercrumb">
       <li class="static" translate>FORM.LABELS.ROLES_FOR</li>
@@ -25,9 +26,7 @@
 <div class="modal-footer">
   <div class=" pull-right">
   <button type="button" class='btn inverse' ng-click='UsersRolesCtrl.close()' translate>FORM.BUTTONS.CLOSE</button>
- 
-  <button data-method="submit" type="button" class="btn btn-primary" ng-click="UsersRolesCtrl.assignRolesToUser()">
-      <span translate>FORM.BUTTONS.SAVE</span>
-    </button>
+  <bh-loading-button loading-state="RolesForm.$loading"></bh-loading-button>
   </div>
 </div>
+</form>

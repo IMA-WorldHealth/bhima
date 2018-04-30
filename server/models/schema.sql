@@ -230,6 +230,8 @@ CREATE TABLE `weekend_config` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+
+
 DROP TABLE IF EXISTS `config_week_days`;
 CREATE TABLE `config_week_days` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -1676,6 +1678,22 @@ CREATE TABLE `role` (
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
+DROP TABLE IF EXISTS `actions`;
+CREATE TABLE `actions` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `description` VARCHAR(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `role_actions` (
+  `uuid` binary(16) NOT NULL,
+  `role_uuid` binary(16) NOT NULL,
+  `actions_id`int(10) unsigned NOT NULL,
+  PRIMARY KEY (`uuid`),
+  FOREIGN KEY (`actions_id`) REFERENCES `actions` (`id`) ON UPDATE CASCADE,
+  FOREIGN KEY (`role_uuid`) REFERENCES `role` (`uuid`) ON UPDATE CASCADE  ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `user_role`;
 CREATE TABLE `user_role` (
