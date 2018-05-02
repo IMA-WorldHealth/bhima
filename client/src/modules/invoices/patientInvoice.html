@@ -76,7 +76,7 @@
           </div><!-- End (12) columns -->
         </div><!-- End row -->
 
-        <div class="row" ng-if="PatientInvoiceCtrl.Invoice.recipient.hasCreditorBalance">
+        <div class="row" ng-if="PatientInvoiceCtrl.supportsPrepayments && PatientInvoiceCtrl.Invoice.recipient.hasCreditorBalance">
           <div class="col-xs-12">
             <div class="alert alert-success">
               <i class="fa fa-feed"></i> <span translate translate-values="{

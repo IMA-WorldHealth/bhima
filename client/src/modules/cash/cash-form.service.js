@@ -29,9 +29,15 @@ function CashFormService(AppCache, Session, Patients, Exchange) {
   CashForm.prototype.setup = function setup() {
     this.details = { date : new Date(), description : '', invoices : [] };
     this.details.currency_id = Session.enterprise.currency_id;
+    this.hasPrepaymentSupport = Session.enterprise.settings.enable_prepayments;
 
     // load the caution type from memory or default
     this.setCautionType(this.cache.isCaution || DEFAULT_PAYMENT_TYPE);
+
+    // if there is no prepayment support, remove caution payment option
+    if (!this.hasPrepaymentSupport) {
+      this.setCautionType(0);
+    }
 
     // this is for any messages/warnings/errors
     this.messages = {};
