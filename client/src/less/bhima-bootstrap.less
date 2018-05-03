@@ -428,3 +428,31 @@ div.ui-grid-cell .form-group input.form-control.ng-invalid {
 div.ui-grid-cell .form-group.has-error input.ng-invalid {
   border : 1px solid #fc8f8f;
 }
+
+.text-bold {
+  font-weight: bold;
+}
+
+/* note: panels must have position:relative set on them */
+.panel-overlay {
+  top: 0;
+  left: 0;
+  right : 0;
+  bottom : 0;
+  background-color: rgba(255,255,255, 0.95);
+  position : absolute;
+  z-index: 1000;
+}
+
+.panel-overlay-container {
+  height: 100%;
+  width: 100%;
+  position: relative;
+}
+
+.panel-overlay-text {
+  top: 50%;
+  left: 50%;
+  position: absolute;
+  transform: translate(-50%, -50%);
+}

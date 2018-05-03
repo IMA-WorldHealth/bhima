@@ -1,7 +1,7 @@
 <ng-form name="$ctrl.form">
   <div class="radio" ng-class="{ 'has-error' : ($ctrl.validationTrigger && $ctrl.form.$invalid) || !$ctrl.valid }" data-bh-currency-select>
     <p class="control-label" style="margin-bottom:5px;">
-      <strong translate>FORM.LABELS.CURRENCY</strong>
+      <strong translate>{{ $ctrl.label }}</strong>
     </p>
 
     <ng-transclude></ng-transclude>

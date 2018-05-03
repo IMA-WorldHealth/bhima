@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 HomeController.$inject = [
   'CurrencyService', 'ExchangeRateService', 'SessionService',
-  'NotifyService', 'FiscalService', 'DashboardService', 'moment'
+  'NotifyService', 'FiscalService', 'DashboardService', 'moment',
 ];
 
 /**
@@ -40,8 +40,8 @@ function HomeController(Currencies, Rates, Session, Notify, Fiscal, DashboardSer
 
   // load exchange rates
   Currencies.read(true)
-    .then(function (currencies) {
-      vm.currencies = currencies.filter(function (currency) {
+    .then((currencies) => {
+      vm.currencies = currencies.filter((currency) => {
         return currency.id !== Session.enterprise.currency_id;
       });
       // format the enterprise currency
@@ -50,20 +50,20 @@ function HomeController(Currencies, Rates, Session, Notify, Fiscal, DashboardSer
       // load supported rates
       return Rates.read(true);
     })
-    .then(function () {
-      vm.currencies.forEach(function (currency) {
-        currency.rate = Rates.getCurrentRate(currency.id);
-
-
+    .then(() => {
+      vm.currencies.forEach((currency) => {
+        const exchange = Rates.getCurrentExchange(currency.id);
+        currency.rate = exchange.rate;
+        currency.date = exchange.date;
         /*
           Let check is the currency rate is lower the 1
           so that we could format it in a readable way
         */
+
         if (currency.rate < 1) {
           currency.rate = (1 / currency.rate);
           vm.isFirstCurencyLabel = true;
         }
-
 
         currency.formattedDate = new Moment(currency.date).format('LL');
       });
@@ -77,7 +77,7 @@ function HomeController(Currencies, Rates, Session, Notify, Fiscal, DashboardSer
   Fiscal.fiscalYearDate({ date : vm.today })
     .then(function (year) {
       vm.year = year[0];
-      vm.year.percentage = vm.year.percentage * 100;
+      vm.year.percentage *= 100;
     })
     .catch(Notify.handleError);
 }

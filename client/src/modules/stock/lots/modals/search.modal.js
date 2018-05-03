@@ -4,42 +4,38 @@ angular.module('bhima.controllers')
 // dependencies injections
 SearchLotsModalController.$inject = [
   'data', 'InventoryService', 'NotifyService',
-  'util', 'Store', '$uibModalInstance', 'PeriodService', 'StockService'
+  'util', 'Store', '$uibModalInstance', 'PeriodService', 'StockService',
 ];
 
 function SearchLotsModalController(data, Inventory, Notify, util, Store, Instance, Periods, Stock) {
-
-  var vm = this;
-  var changes = new Store({ identifier: 'key' });
+  const vm = this;
+  const changes = new Store({ identifier : 'key' });
 
   vm.filters = data;
   vm.searchQueries = {};
   vm.defaultQueries = {};
 
-  var searchQueryOptions = [
-    'depot_uuid', 'inventory_uuid', 'label', 'entry_date_from',
-    'entry_date_to', 'expiration_date_from', 'expiration_date_to'
+  const searchQueryOptions = [
+    'depot_uuid', 'inventory_uuid', 'group_uuid', 'label', 'entry_date_from',
+    'entry_date_to', 'expiration_date_from', 'expiration_date_to',
   ];
 
   // displayValues will be an id:displayValue pair
-  var displayValues = {};  
+  const displayValues = {};
+  const lastDisplayValues = Stock.filter.lot.getDisplayValueMap();
+
+  // keep track of the initial search queries to make sure we properly restore
+  // default display values
+  const initialSearchQueries = angular.copy(vm.searchQueries);
 
   // default filter period - directly write to changes list
   vm.onSelectPeriod = function onSelectPeriod(period) {
-    var periodFilters = Periods.processFilterChanges(period);
+    const periodFilters = Periods.processFilterChanges(period);
 
-    periodFilters.forEach(function (filterChange) {
+    periodFilters.forEach(filterChange => {
       changes.post(filterChange);
     });
   };
-
-  var lastViewFilters = Stock.filter.lot.formatView().customFilters;
-
-  // map key to last display value for lookup in loggedChange
-  var lastDisplayValues = lastViewFilters.reduce(function (object, filter) {
-    object[filter._key] = filter.displayValue;
-    return object;
-  }, {});  
 
   // custom filter depot_uuid - assign the value to the params object
   vm.onSelectDepot = function onSelectDepot(depot) {
@@ -64,11 +60,17 @@ function SearchLotsModalController(data, Inventory, Notify, util, Store, Instanc
   vm.onSelectLimit = function onSelectLimit(value) {
     // input is type value, this will only be defined for a valid number
     if (angular.isDefined(value)) {
-      changes.post({ key: 'limit', value: value });
+      changes.post({ key : 'limit', value });
     }
   };
 
-  // deletes a filter from the custom filter object, 
+  // custom filter group_uuid - assign the value to the params object
+  vm.onSelectGroup = (group) => {
+    vm.searchQueries.group_uuid = group.uuid;
+    displayValues.group_uuid = group.name;
+  };
+
+  // deletes a filter from the custom filter object,
   // this key will no longer be written to changes on exit
   vm.clear = function clear(key) {
     delete vm.searchQueries[key];
@@ -76,18 +78,26 @@ function SearchLotsModalController(data, Inventory, Notify, util, Store, Instanc
 
   vm.cancel = function cancel() { Instance.close(); };
 
-  vm.submit = function submit(form) {
+  vm.submit = function submit() {
     // push all searchQuery values into the changes array to be applied
-    angular.forEach(vm.searchQueries, function (value, key) {
+    angular.forEach(vm.searchQueries, (value, key) => {
       if (angular.isDefined(value)) {
-        // default to the original value if no display value is defined
-        var displayValue = displayValues[key] || lastDisplayValues[key] || value;
-        changes.post({ key: key, value: value, displayValue: displayValue });
+
+        // To avoid overwriting a real display value, we first determine if the value changed in the current view.
+        // If so, we do not use the previous display value.  If the values are identical, we can restore the
+        // previous display value without fear of data being out of date.
+        const usePreviousDisplayValue =
+        angular.equals(initialSearchQueries[key], value) &&
+        angular.isDefined(lastDisplayValues[key]);
+
+        // default to the raw value if no display value is defined
+        const displayValue = usePreviousDisplayValue ? lastDisplayValues[key] : displayValues[key] || value;
+
+        changes.post({ key, value, displayValue });
       }
     });
 
-    var loggedChanges = changes.getAll();
-    
+    const loggedChanges = changes.getAll();
     return Instance.close(loggedChanges);
-  }
+  };
 }

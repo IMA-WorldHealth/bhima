@@ -4,8 +4,9 @@ angular.module('bhima.controllers')
 JournalController.$inject = [
   'JournalService', 'GridSortingService', 'GridGroupingService', 'GridFilteringService', 'GridColumnService',
   'SessionService', 'NotifyService', 'bhConstants', '$state', 'uiGridConstants', 'ModalService', 'LanguageService',
-  'AppCache', 'Store', 'uiGridGroupingConstants', 'ExportService', '$filter', '$translate', 'GridExportService',
-  'GridStateService', 'GridSelectionService', 'TrialBalanceService', '$httpParamSerializer',
+  'AppCache', 'Store', 'uiGridGroupingConstants', 'ExportService', '$filter', 'GridExportService',
+  'GridStateService', 'GridSelectionService', 'TrialBalanceService', '$httpParamSerializer', 'TransactionService',
+  'util',
 ];
 
 /**
@@ -31,31 +32,28 @@ JournalController.$inject = [
 function JournalController(
   Journal, Sorting, Grouping, Filtering, Columns, Session, Notify, bhConstants,
   $state, uiGridConstants, Modal, Languages, AppCache, Store, uiGridGroupingConstants,
-  Export, $filter, $translate, GridExport, GridState, GridSelection, TrialBalance, $httpParamSerializer
+  Export, $filter, GridExport, GridState, GridSelection, TrialBalance,
+  $httpParamSerializer, Transactions, util
 ) {
-  var sorting;
-  var grouping;
-  var filtering;
-  var columnConfig;
-  var exportation;
-  var state;
-  var selection;
-  var columns;
-
   // store journal data
-  var journalStore = new Store({ identifier : 'uuid' });
-  var transactionIdToRecordUuidMap;
+  const journalStore = new Store({
+    identifier : 'uuid',
+  });
+
+  let transactionIdToRecordUuidMap;
 
   /** @const the cache alias for this controller */
-  var cacheKey = 'Journal';
+  const cacheKey = 'Journal';
 
   // top level cache
-  var cache = AppCache(cacheKey.concat('-module'));
-  var vm = this;
+  const cache = AppCache(cacheKey.concat('-module'));
+  const vm = this;
+
+  vm.format = util.formatDate;
 
   // number of all of the transactions in the system
   Journal.count()
-    .then(function (data) {
+    .then(data => {
       vm.numberTotalSystemTransactions = data[0].number_transactions;
     })
     .catch(Notify.handleError);
@@ -64,27 +62,29 @@ function JournalController(
   vm.languages = Languages;
   vm.gridApi = {};
 
+
   // gridOptions is bound to the UI Grid and used to configure many of the
   // options, it is also used by the grid to expose the API
+  // FIXME(@jniles) - why does this not have fastWatch?
   vm.gridOptions = {
-    enableColumnMenus          : false,
-    showColumnFooter           : true,
-    appScopeProvider           : vm,
-    flatEntityAccess           : true,
+    enableColumnMenus : false,
+    showColumnFooter : true,
+    appScopeProvider : vm,
+    flatEntityAccess : true,
     enableGroupHeaderSelection : true,
-    enableRowHeaderSelection   : true,
-    onRegisterApi :  function onRegisterApi(api) {
+    enableRowHeaderSelection : true,
+    onRegisterApi : function onRegisterApi(api) {
       vm.gridApi = api;
     },
   };
 
   // comment selected rows
   vm.commentRows = function commentRows() {
-    var selectedRows = vm.gridApi.selection.getSelectedGridRows();
+    const rows = vm.gridApi.selection.getSelectedGridRows();
 
-    Journal.openCommentModal({ rows : selectedRows })
-      .then(function (comment) {
-        updateGridComment(selectedRows, comment);
+    Transactions.openCommentModal({ rows })
+      .then((comment) => {
+        updateGridComment(rows, comment);
         Notify.success('ACCOUNT_STATEMENT.SUCCESSFULLY_COMMENTED');
       })
       .catch(Notify.handleError);
@@ -92,7 +92,7 @@ function JournalController(
 
   // update local rows
   function updateGridComment(rows, comment) {
-    rows.forEach(function (row) {
+    rows.forEach(row => {
       row.entity.comment = comment;
     });
   }
@@ -102,14 +102,14 @@ function JournalController(
   // Initialise each of the journal utilities, providing them access to the journal
   // configuration options
 
-  sorting = new Sorting();
+  const sorting = new Sorting();
 
-  filtering = new Filtering(vm.gridOptions, cacheKey);
-  grouping = new Grouping(vm.gridOptions, true, 'trans_id', vm.grouped, false);
-  columnConfig = new Columns(vm.gridOptions, cacheKey);
-  exportation = new GridExport(vm.gridOptions, 'selected', 'visible');
-  state = new GridState(vm.gridOptions, cacheKey);
-  selection = new GridSelection(vm.gridOptions);
+  const filtering = new Filtering(vm.gridOptions, cacheKey);
+  const grouping = new Grouping(vm.gridOptions, true, 'trans_id', vm.grouped, false);
+  const columnConfig = new Columns(vm.gridOptions, cacheKey);
+  const exportation = new GridExport(vm.gridOptions, 'selected', 'visible');
+  const state = new GridState(vm.gridOptions, cacheKey);
+  const selection = new GridSelection(vm.gridOptions);
 
   // attaching the filtering object to the view
   vm.filtering = filtering;
@@ -138,6 +138,12 @@ function JournalController(
     $state.reload();
   };
 
+  const currencyCellTemplate = `
+    <div class="ui-grid-cell-contents text-right">
+      <span ng-hide="row.groupHeader">{{ COL_FIELD | currency: row.entity.currency_id }}</span>
+      <span ng-show="row.groupHeader">{{ COL_FIELD | currency: row.treeNode.children[0].row.entity.currency_id }}</span>
+    </div>`;
+
   /**
    * Column definitions; specify the configuration and behaviour for each column
    * in the journal grid. Initialise each of the journal utilities,
@@ -152,141 +158,153 @@ function JournalController(
    *      cause unexpected behaviour (splitting up of groups) when sorting
    *      other columns. This can be avoided by setting default sort and group.
    */
-  columns = [{
-    field            : 'uuid',
-    displayName      : 'TABLE.COLUMNS.ID',
+  const columns = [{
+    field : 'uuid',
+    displayName : 'TABLE.COLUMNS.ID',
     headerCellFilter : 'translate',
-    visible          : false,
+    visible : false,
   }, {
-    field            : 'project_name',
-    displayName      : 'TABLE.COLUMNS.PROJECT',
+    field : 'project_name',
+    displayName : 'TABLE.COLUMNS.PROJECT',
     headerCellFilter : 'translate',
-    visible          : false,
-    enableCellEdit   : false,
-  }, {
-    field            : 'period_end',
-    displayName      : 'TABLE.COLUMNS.PERIOD',
-    headerCellFilter : 'translate',
-    cellTemplate     : 'modules/templates/bhPeriod.tmpl.html',
-    visible          : false,
-  }, {
-    field            : 'trans_id',
-    displayName      : 'TABLE.COLUMNS.TRANSACTION',
+    visible : false,
+    enableCellEdit : false,
+  },
+  {
+    field : 'trans_id',
+    displayName : 'TABLE.COLUMNS.TRANSACTION',
     headerCellFilter : 'translate',
     sortingAlgorithm : sorting.transactionIds,
-    width            : 110,
-    cellTemplate     : 'modules/journal/templates/transaction-id.cell.html',
+    width : 110,
+    cellTemplate : 'modules/journal/templates/transaction-id.cell.html',
   }, {
-    field                            : 'trans_date',
-    displayName                      : 'TABLE.COLUMNS.DATE',
-    headerCellFilter                 : 'translate',
-    cellFilter                       : 'date:"'.concat(bhConstants.dates.format, '"'),
-    filter                           : { condition: filtering.filterByDate },
-    treeAggregationType              : uiGridGroupingConstants.aggregation.MIN,
-    customTreeAggregationFinalizerFn : function (aggregation) {
+    field : 'trans_date',
+    displayName : 'TABLE.COLUMNS.DATE',
+    headerCellFilter : 'translate',
+    cellTemplate : 'modules/journal/templates/date.cell.html',
+    cellFilter : 'date:"'.concat(bhConstants.dates.format, '"'),
+    filter : {
+      condition : filtering.filterByDate,
+    },
+    treeAggregationType : uiGridGroupingConstants.aggregation.MIN,
+    customTreeAggregationFinalizerFn : (aggregation) => {
       aggregation.rendered = $filter('date')(aggregation.value, bhConstants.dates.format);
     },
-
-    // note that sort priorities are cached and saved with the grid save state - this default sort will only be applied if the custom settings are cleared
     sort : {
       priority : 0,
       direction : uiGridConstants.DESC,
     },
     footerCellTemplate : '<i></i>',
   }, {
-    field                : 'hrRecord',
-    displayName          : 'TABLE.COLUMNS.RECORD',
-    headerCellFilter     : 'translate',
-    visible              : true,
-    cellTemplate         : '<div class="ui-grid-cell-contents"><bh-reference-link ng-if="row.entity.hrRecord" reference="row.entity.hrRecord" /></div>',
-    treeAggregationType  : uiGridGroupingConstants.aggregation.MIN,
+    field : 'hrRecord',
+    displayName : 'TABLE.COLUMNS.RECORD',
+    headerCellFilter : 'translate',
+    visible : true,
+    cellTemplate : '/modules/journal/templates/record.cell.html',
+    treeAggregationType : uiGridGroupingConstants.aggregation.MIN,
     treeAggregationLabel : '',
-    footerCellTemplate   : '<i></i>',
+    footerCellTemplate : '<i></i>',
   }, {
-    field              : 'description',
-    displayName        : 'TABLE.COLUMNS.DESCRIPTION',
-    headerCellFilter   : 'translate',
+    field : 'description',
+    displayName : 'TABLE.COLUMNS.DESCRIPTION',
+    headerCellFilter : 'translate',
   }, {
-    field                : 'account_number',
-    displayName          : 'TABLE.COLUMNS.ACCOUNT',
-    cellTemplate         : '/modules/journal/templates/account.cell.html',
-    headerCellFilter     : 'translate',
+    field : 'account_number',
+    displayName : 'TABLE.COLUMNS.ACCOUNT',
+    cellTemplate : '/modules/journal/templates/account.cell.html',
+    headerCellFilter : 'translate',
   }, {
-    field                            : 'debit_equiv',
-    type                             : 'number',
-    displayName                      : 'TABLE.COLUMNS.DEBIT',
-    headerCellFilter                 : 'translate',
-    cellClass                        : 'text-right',
+    field : 'debit_equiv',
+    type : 'number',
+    displayName : 'TABLE.COLUMNS.DEBIT',
+    headerCellFilter : 'translate',
+    cellClass : 'text-right',
     footerCellClass : 'text-right',
-    treeAggregationType              : uiGridGroupingConstants.aggregation.SUM,
-    customTreeAggregationFinalizerFn : function (aggregation) {
+    cellFilter : 'number: 2',
+    footerCellFilter : 'number:2',
+    treeAggregationType : uiGridGroupingConstants.aggregation.SUM,
+    customTreeAggregationFinalizerFn : (aggregation) => {
       aggregation.rendered = aggregation.value;
     },
     enableFiltering : true,
-    footerCellFilter : 'currency:grid.appScope.enterprise.currency_id',
   }, {
-    field                            : 'credit_equiv',
-    type                             : 'number',
-    displayName                      : 'TABLE.COLUMNS.CREDIT',
-    headerCellFilter                 : 'translate',
-    cellClass                        : 'text-right',
+    field : 'credit_equiv',
+    type : 'number',
+    displayName : 'TABLE.COLUMNS.CREDIT',
+    headerCellFilter : 'translate',
+    cellClass : 'text-right',
     footerCellClass : 'text-right',
-    treeAggregationType              : uiGridGroupingConstants.aggregation.SUM,
-    customTreeAggregationFinalizerFn : function (aggregation) {
+    cellFilter : 'number: 2',
+    footerCellFilter : 'number:2',
+    treeAggregationType : uiGridGroupingConstants.aggregation.SUM,
+    customTreeAggregationFinalizerFn : (aggregation) => {
       aggregation.rendered = aggregation.value;
     },
     enableFiltering : true,
-    footerCellFilter : 'currency:grid.appScope.enterprise.currency_id',
   }, {
-    field            : 'currencyName',
-    displayName      : 'TABLE.COLUMNS.CURRENCY',
+    field : 'currencyName',
+    displayName : 'TABLE.COLUMNS.CURRENCY',
     headerCellFilter : 'translate',
-    visible          : false,
+    visible : false,
   }, {
-    field            : 'debit',
-    type             : 'number',
-    displayName      : 'TABLE.COLUMNS.DEBIT_SOURCE',
-    cellClass        : 'text-right',
+    field : 'debit',
+    type : 'number',
+    displayName : 'TABLE.COLUMNS.DEBIT_SOURCE',
     headerCellFilter : 'translate',
-    footerCellClass : 'text-right',
-    visible          : false,
-    cellTemplate     : '/modules/journal/templates/debit.grid.html',
+    cellTemplate : currencyCellTemplate,
+    cellFilter : 'number: 2',
+    footerCellFilter : 'number:2',
+    treeAggregationType : uiGridGroupingConstants.aggregation.SUM,
+    customTreeAggregationFinalizerFn : (aggregation) => {
+      aggregation.rendered = aggregation.value;
+    },
+    footerCellTemplate : '<i></i>',
+    visible : false,
   }, {
-    field            : 'credit',
-    type             : 'number',
-    displayName      : 'TABLE.COLUMNS.CREDIT_SOURCE',
-    cellClass        : 'text-right',
-    footerCellClass : 'text-right',
+    field : 'credit',
+    type : 'number',
+    displayName : 'TABLE.COLUMNS.CREDIT_SOURCE',
     headerCellFilter : 'translate',
-    visible          : false,
-    cellTemplate     : '/modules/journal/templates/credit.grid.html',
+    cellTemplate : currencyCellTemplate,
+    cellFilter : 'number: 2',
+    footerCellFilter : 'number:2',
+    treeAggregationType : uiGridGroupingConstants.aggregation.SUM,
+    customTreeAggregationFinalizerFn : (aggregation) => {
+      aggregation.rendered = aggregation.value;
+    },
+    footerCellTemplate : '<i></i>',
+    visible : false,
   }, {
-    field                : 'hrEntity',
-    displayName          : 'TABLE.COLUMNS.RECIPIENT',
-    headerCellFilter     : 'translate',
-    cellTemplate         : '<div class="ui-grid-cell-contents"><bh-reference-link ng-if="row.entity.hrEntity" reference="row.entity.hrEntity" /></div>',
-    visible              : true,
-  }, {
-    field            : 'hrReference',
-    displayName      : 'TABLE.COLUMNS.REFERENCE',
-    cellTemplate     : '<div class="ui-grid-cell-contents"><bh-reference-link ng-if="row.entity.hrReference" reference="row.entity.hrReference" /></div>',
+    field : 'hrEntity',
+    displayName : 'TABLE.COLUMNS.RECIPIENT',
     headerCellFilter : 'translate',
-    visible          : true,
+    cellTemplate :
+      `<div class="ui-grid-cell-contents">
+        <bh-reference-link ng-if="row.entity.hrEntity" reference="row.entity.hrEntity" />
+      </div>`,
+    visible : true,
   }, {
-    field                : 'origin_id',
-    displayName          : 'FORM.LABELS.TRANSACTION_TYPE',
-    headerCellFilter     : 'translate',
-    // @FIXME(sfount) transaction types relied on data in the controller that is gone
-    // cellTemplate         : '/modules/journal/templates/transaction_type.html',
-    visible              : false,
-  }, {
-    field            : 'display_name',
-    displayName      : 'TABLE.COLUMNS.RESPONSIBLE',
+    field : 'hrReference',
+    displayName : 'TABLE.COLUMNS.REFERENCE',
+    cellTemplate :
+      `<div class="ui-grid-cell-contents">
+        <bh-reference-link ng-if="row.entity.hrReference" reference="row.entity.hrReference" />
+      </div>`,
     headerCellFilter : 'translate',
-    visible          : false,
+    visible : true,
   }, {
-    field            : 'comment',
-    displayName      : 'FORM.LABELS.COMMENT',
+    field : 'transaction_type_id',
+    displayName : 'FORM.LABELS.TRANSACTION_TYPE',
+    headerCellFilter : 'translate',
+    visible : false,
+  }, {
+    field : 'display_name',
+    displayName : 'TABLE.COLUMNS.RESPONSIBLE',
+    headerCellFilter : 'translate',
+    visible : false,
+  }, {
+    field : 'comment',
+    displayName : 'FORM.LABELS.COMMENT',
     headerCellFilter : 'translate',
   }];
 
@@ -301,10 +319,7 @@ function JournalController(
   // This function opens a modal, to let the user posting transaction to the general ledger
   vm.openTrialBalanceModal = function openTrialBalanceModal() {
     // gather the selected transactions together
-    var selectedTransactionIds = selection.selected.groups;
-    var selectedRecordUuids;
-    var rows;
-    var hasPostedRecords;
+    const selectedTransactionIds = selection.selected.groups;
 
     // make sure a row is selected before running the trial balance
     if (selectedTransactionIds.length === 0) {
@@ -312,17 +327,15 @@ function JournalController(
       return;
     }
 
-    rows = vm.gridApi.selection.getSelectedRows();
-    hasPostedRecords = rows.some(function (row) {
-      return row.posted === 1;
-    });
+    const rows = vm.gridApi.selection.getSelectedRows();
+    const hasPostedRecords = rows.some(row => row.posted === 1);
 
     if (hasPostedRecords) {
       Notify.warn('POSTING_JOURNAL.WARNINGS.TRIAL_BALANCE_HAS_POSTED_RECORDS');
       return;
     }
 
-    selectedRecordUuids = selectedTransactionIds.map(lookupIntermediateRecordUuid);
+    const selectedRecordUuids = selectedTransactionIds.map(lookupIntermediateRecordUuid);
 
     // initialize the data request to the server
     TrialBalance.initialise(selectedRecordUuids);
@@ -336,44 +349,52 @@ function JournalController(
   // format Export Parameters
   function formatExportParameters(type) {
     // gather the selected transactions together
-    var selectedTransactionIds = selection.selected.groups;
-    var rows;
-    var uuids;
+    const selectedTransactionIds = selection.selected.groups;
 
     // @TODO(sfount) this should not be requirement for exporting - filter on group like editing
     // make sure a row is selected before running the trial balance
     if (selectedTransactionIds.length === 0) {
       Notify.warn('POSTING_JOURNAL.WARNINGS.NO_TRANSACTIONS_SELECTED');
-      return;
+      return 0;
     }
 
-    rows = vm.gridApi.selection.getSelectedRows();
+    const rows = vm.gridApi.selection.getSelectedRows();
 
     // gather unique uuids to ship back to the server
-    uuids = rows
-      .map(function (row) { return row.uuid; })
-      .filter(function (uuid, index, array) { return array.indexOf(uuid) === index; });
+    const uuids = rows
+      .map(row => row.uuid)
+      .filter((uuid, index, array) => array.indexOf(uuid) === index);
 
-    return { renderer : type || 'pdf', lang : Languages.key, uuids : uuids };
+    return {
+      renderer : type || 'pdf',
+      lang : Languages.key,
+      uuids,
+    };
   }
 
   // display the journal printable report of selected transactions
   vm.openJournalReport = function openJournalReport() {
-    var url = '/reports/finance/journal';
-    var params = formatExportParameters('pdf');
-    if (!params) { return; }
-    Modal.openReports({ url: url, params: params });
+    const url = '/reports/finance/journal';
+    const params = formatExportParameters('pdf');
+    if (!params) {
+      return;
+    }
+    Modal.openReports({ url, params });
   };
 
-  vm.downloadExcel = function () {
-    var filterOpts = Journal.filters.formatHTTP();
-    var defaultOpts = { renderer : 'xlsx', lang : Languages.key };
+  vm.downloadExcel = () => {
+    const filterOpts = Journal.filters.formatHTTP();
+    const defaultOpts = {
+      renderer : 'xlsx',
+      lang : Languages.key,
+    };
 
     // combine options
-    var options = angular.merge(defaultOpts, filterOpts);
+    const options = angular.merge(defaultOpts, filterOpts);
     // return  serialized options
     return $httpParamSerializer(options);
-  }
+  };
+
   // export data into csv file
   vm.exportFile = function exportFile() {
     exportation.run();
@@ -397,7 +418,7 @@ function JournalController(
     vm.gridOptions.showGridFooter = false;
 
     Journal.grid(null, options)
-      .then(function (records) {
+      .then(records => {
         // number of transactions downloaded and shown in the current journal
 
         // @FIXME(sfount) just get the length of the transaction ID index
@@ -434,11 +455,10 @@ function JournalController(
 
   // open search modal
   vm.openSearchModal = function openSearchModal() {
-    var filtersSnapshot = Journal.filters.formatHTTP();
+    const filtersSnapshot = Journal.filters.formatHTTP();
 
     Journal.openSearchModal(filtersSnapshot)
-      .then(function (changes) {
-
+      .then((changes) => {
         Journal.filters.replaceFilters(changes);
 
         Journal.cacheFilters();
@@ -452,9 +472,9 @@ function JournalController(
 
   // calculates the total number of transactions and lines respecting
   function sumTransactionAggregates(journalRows) {
-    var uniqueTransactions = {};
-    var totalRows = journalRows.length;
-    var totalPosted = journalRows.reduce(function (sum, row) {
+    const uniqueTransactions = {};
+    const totalRows = journalRows.length;
+    const totalPosted = journalRows.reduce((sum, row) => {
       if (angular.isUndefined(uniqueTransactions[row.record_uuid])) {
         uniqueTransactions[row.record_uuid] = 1;
         return sum + Number(row.posted);
@@ -463,18 +483,18 @@ function JournalController(
       return sum;
     }, 0);
 
-    var totalNonPosted = Object.keys(uniqueTransactions).length - totalPosted;
-    var remainingSystemTransactions = vm.numberTotalSystemTransactions - totalNonPosted;
+    const totalNonPosted = Object.keys(uniqueTransactions).length - totalPosted;
+    let remainingSystemTransactions = vm.numberTotalSystemTransactions - totalNonPosted;
 
     if (Number.isNaN(remainingSystemTransactions)) {
       remainingSystemTransactions = 0;
     }
 
     return {
-      totalRows : totalRows,
-      totalPosted : totalPosted,
-      totalNonPosted : totalNonPosted,
-      remainingSystemTransactions : remainingSystemTransactions,
+      totalRows,
+      totalPosted,
+      totalNonPosted,
+      remainingSystemTransactions,
     };
   }
 
@@ -490,7 +510,7 @@ function JournalController(
 
   // @FIXME(sfount) should this not be done in the grouping service?
   vm.toggleTransactionGroup = function toggleTransactionGroup() {
-    var transactionColumnKey = 'trans_id';
+    const transactionColumnKey = 'trans_id';
 
     // column grouping is permenantly saved if the user saves the current grid state
     if (vm.grouping.getCurrentGroupingColumn()) {
@@ -510,17 +530,20 @@ function JournalController(
 
   // runs on startup
   function startup() {
-    var hasStateFilters = $state.params.filters.length > 0;
-    if (hasStateFilters) {
-      Journal.filters.replaceFiltersFromState($state.params.filters);
+    const { filters } = $state.params;
+    if (filters.length > 0) {
+      Journal.filters.replaceFiltersFromState(filters);
+    } else {
+      Journal.loadCachedFilters();
     }
+
     load(Journal.filters.formatHTTP(true));
     vm.latestViewFilters = Journal.filters.formatView();
   }
 
   startup();
-
   vm.editTransactionModal = editTransactionModal;
+
   function editTransactionModal() {
     // block multiple simultaneous edit
     if (selection.selected.groups.length > 1) {
@@ -528,8 +551,8 @@ function JournalController(
       return;
     }
 
-    var selectedTransaction = selection.selected.groups[0];
-    var transactionUuid = lookupIntermediateRecordUuid(selectedTransaction);
+    const selectedTransaction = selection.selected.groups[0];
+    const transactionUuid = lookupIntermediateRecordUuid(selectedTransaction);
 
     // Journal module rules for optimistic updating:
     // 1. If a row in the current dataset has been removed - remove this row
@@ -537,41 +560,62 @@ function JournalController(
     // 3. If a row has been added in the edit session it will be ignored as we cannot know if it fits the current filter
     // 4. A dismissable alert will always be shown to the user reminding them their data may be out of date
     Journal.openTransactionEditModal(transactionUuid, false)
-      .then(function (editSessionResult) {
-        var updatedRows = editSessionResult.updatedTransaction;
-        var changed = angular.isDefined(updatedRows);
-
-        if (!changed) {
-          Notify.warn('FORM.WARNINGS.NO_CHANGES');
-          return;
-        }
-
-        vm.gridApi.selection.clearSelectedRows();
-
-        // update only rows that already existed and have been edited
-        editSessionResult.edited.forEach(function (uuid) {
-          // update record that already exists
-          var currentRow = journalStore.get(uuid);
-          var updatedRow = editSessionResult.updatedTransaction.get(uuid);
-
-          Object.keys(currentRow).forEach(function (key) {
-            currentRow[key] = updatedRow[key];
-          });
-        });
-
-        // remove rows that existed before and have been removed
-        editSessionResult.removed.forEach(function (uuid) {
-          journalStore.remove(uuid);
-        });
-
-        if (editSessionResult.added.length) {
-          // rows have been added, we have no guarantees on filters so display a warning
-          vm.unknownTransactionEditState = true;
-        }
-        vm.gridApi.grid.notifyDataChange(uiGridConstants.dataChange.ALL);
-
-        Notify.success('POSTING_JOURNAL.SAVE_TRANSACTION_SUCCESS');
+      .then((result) => {
+        return result.deleted ?
+          handleDeleteTransactionResult(result) :
+          handleEditTransactionResult(result);
       });
+  }
+
+  // Handle Edit Transaction Result
+  function handleEditTransactionResult(editSessionResult) {
+    const updatedRows = editSessionResult.updatedTransaction;
+    const changed = angular.isDefined(updatedRows);
+
+    if (!changed) {
+      Notify.warn('FORM.WARNINGS.NO_CHANGES');
+      return;
+    }
+
+    vm.gridApi.selection.clearSelectedRows();
+
+    // update only rows that already existed and have been edited
+    editSessionResult.edited.forEach((uuid) => {
+      // update record that already exists
+      var currentRow = journalStore.get(uuid);
+      var updatedRow = editSessionResult.updatedTransaction.get(uuid);
+
+      Object.keys(currentRow).forEach((key) => {
+        currentRow[key] = updatedRow[key];
+      });
+    });
+
+    // remove rows that existed before and have been removed
+    editSessionResult.removed.forEach((uuid) => {
+      journalStore.remove(uuid);
+    });
+
+    if (editSessionResult.added.length) {
+      // rows have been added, we have no guarantees on filters so display a warning
+      vm.unknownTransactionEditState = true;
+    }
+    vm.gridApi.grid.notifyDataChange(uiGridConstants.dataChange.ALL);
+
+    Notify.success('POSTING_JOURNAL.SAVE_TRANSACTION_SUCCESS');
+  }
+
+  // Handle Delete Transaction Result
+  function handleDeleteTransactionResult(deleteSessionResult) {
+    if (!deleteSessionResult.deleted) { return; }
+    vm.gridApi.selection.clearSelectedRows();
+
+    // remove rows that existed before and have been removed
+    deleteSessionResult.removed.forEach((uuid) => {
+      journalStore.remove(uuid);
+    });
+
+    vm.gridApi.grid.notifyDataChange(uiGridConstants.dataChange.ALL);
+    Notify.success('POSTING_JOURNAL.DELETE_TRANSACTION_SUCCESS');
   }
 
   // TODO(@jniles) rename this method and migrate all code to it

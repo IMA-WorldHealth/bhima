@@ -50,9 +50,9 @@
                   -->
                   <bh-date-editor
                     date-value="PatientInvoiceCtrl.Invoice.details.date"
+                    on-change="PatientInvoiceCtrl.onDateChange(date)"
                     validation-trigger="InvoiceForm.$submitted"
-                    min-date="PatientInvoiceCtrl.minimumDate"
-                    max-date="PatientInvoiceCtrl.timestamp">
+                    min-date="PatientInvoiceCtrl.minimumDate">
                   </bh-date-editor>
 
                   <div class="form-group"
@@ -114,7 +114,7 @@
           <bh-add-item
             disable = "PatientInvoiceCtrl.Invoice.recipient"
             callback = "PatientInvoiceCtrl.addItems(numItem)">
-          </bh-add-item> 
+          </bh-add-item>
 
           <!-- @todo - hacky check for inventory to prevent local variables -->
           <p
@@ -153,21 +153,21 @@
               <h4 translate>FORM.LABELS.TOTAL</h4>
 
 
-              <!-- expand billing services -->
-              <div ng-show="PatientInvoiceCtrl.expandBillingServices">
+              <!-- expand invoicing fees -->
+              <div ng-show="PatientInvoiceCtrl.expandInvoicingFees">
                 <hr>
-                <h4 ng-repeat="service in PatientInvoiceCtrl.Invoice.billingServices track by service.billing_service_id">
+                <h4 ng-repeat="service in PatientInvoiceCtrl.Invoice.invoicingFees track by service.invoicing_fee_id">
                   {{ service.label }}({{ service.value }}%)
                 </h4>
                 <hr>
               </div>
 
               <h4>
-                <span translate>FORM.LABELS.BILLING_SERVICES</span>
+                <span translate>FORM.LABELS.INVOICING_FEES</span>
                 <span
                   class="text-info fa fa-info-circle"
-                  ng-show="PatientInvoiceCtrl.Invoice.billingServices.length > 0"
-                  uib-popover-template="'billingServicesPopover.tmpl.html'"
+                  ng-show="PatientInvoiceCtrl.Invoice.invoicingFees.length > 0"
+                  uib-popover-template="'invoicingFeesPopover.tmpl.html'"
                   popover-placement="right"
                   popover-append-to-body="true"
                   popover-trigger="mouseenter">
@@ -199,7 +199,7 @@
               {{ PatientInvoiceCtrl.Invoice.totals.rows | currency:PatientInvoiceCtrl.enterprise.currency_id }}
             </h4>
             <h4>
-              + {{ PatientInvoiceCtrl.Invoice.totals.billingServices | currency:PatientInvoiceCtrl.enterprise.currency_id }}
+              + {{ PatientInvoiceCtrl.Invoice.totals.invoicingFees | currency:PatientInvoiceCtrl.enterprise.currency_id }}
             </h4>
             <h4>
               - {{ PatientInvoiceCtrl.Invoice.totals.subsidies | currency:PatientInvoiceCtrl.enterprise.currency_id }}
@@ -235,16 +235,16 @@
   </div>
 </div>
 
-<!-- billing service breakdown popover -->
-<script type="text/ng-template" id="billingServicesPopover.tmpl.html">
+<!-- invoicing fee breakdown popover -->
+<script type="text/ng-template" id="invoicingFeesPopover.tmpl.html">
   <table class="table table-condensed">
     <thead>
       <tr>
-        <th colspan="2" translate>PATIENT_INVOICE.BILLING_SERVICE_BREAKDOWN</th>
+        <th colspan="2" translate>PATIENT_INVOICE.INVOICING_FEE_BREAKDOWN</th>
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="service in PatientInvoiceCtrl.Invoice.billingServices track by service.billing_service_id">
+      <tr ng-repeat="service in PatientInvoiceCtrl.Invoice.invoicingFees track by service.invoicing_fee_id">
         <td>{{ service.label }}</td>
         <td class="text-right">{{ service.value }}%</td>
       </tr>
@@ -253,7 +253,7 @@
       <tr>
         <th translate>FORM.LABELS.TOTAL</th>
         <th class="text-right">
-          {{ PatientInvoiceCtrl.Invoice.totals.billingServices | currency:PatientInvoiceCtrl.enterprise.currency_id }}
+          {{ PatientInvoiceCtrl.Invoice.totals.invoicingFees | currency:PatientInvoiceCtrl.enterprise.currency_id }}
         </th>
       </tr>
     </tfoot>

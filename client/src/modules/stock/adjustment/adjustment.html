@@ -37,28 +37,37 @@
   <div class="container-fluid">
     <form name="StockForm" bh-submit="StockCtrl.submit(StockForm)" novalidate>
       <div class="row">
-        <div class="col-xs-6">
+        <div class="col-xs-12 col-sm-6 col-md-4">
           <!-- adjustment type -->
           <div class="form-group">
-            <div class="well well-sm">
-                <div class="radio">
-                  <label class="radio-inline" style="padding: 0 3em;">
-                    <input type="radio" ng-model="StockCtrl.adjustmentOption" ng-value="'increase'" ng-change="StockCtrl.handleAdjustmentOption()">
-                    <span translate>STOCK.INCREASE</span>
-                  </label>
-
-                  <label class="radio-inline" style="padding: 0 3em;">
-                    <input type="radio" ng-model="StockCtrl.adjustmentOption" ng-value="'decrease'" ng-change="StockCtrl.handleAdjustmentOption()">
-                    <span translate>STOCK.DECREASE</span>
-                  </label>
-                </div>
+            <div class="btn-group btn-group-justified">
+              <div class="btn-group btn-group-lg">
+                <button id="btn-increase" class="btn btn-default" ng-class="{'btn-primary': StockCtrl.adjustmentOption === 'increase'}" ng-click="StockCtrl.handleAdjustmentOption('increase')">
+                  <i class="fa fa-plus-circle"></i>
+                  <span translate>STOCK.INCREASE</span>
+                </button>
+              </div>
+              <div class="btn-group btn-group-lg">
+                <button id="btn-decrease" class="btn btn-default" ng-class="{'btn-primary': StockCtrl.adjustmentOption === 'decrease'}" ng-click="StockCtrl.handleAdjustmentOption('decrease')">
+                  <i class="fa fa-minus-circle"></i>
+                  <span translate>STOCK.DECREASE</span>
+                </button>
+              </div>
             </div>
+          </div>
+
+          <div ng-if="StockCtrl.adjustmentOption === 'increase'" style="margin-top: 0px;">
+            <p translate>STOCK.INCREASE_HELP</p>
+          </div>
+
+          <div ng-if="StockCtrl.adjustmentOption === 'decrease'" style="margin-top: 0px;">
+            <p translate>STOCK.DECREASE_HELP</p>
           </div>
 
           <!-- date -->
           <bh-date-editor
             date-value="StockCtrl.movement.date"
-            max-date="StockCtrl.timestamp" >
+            on-change="StockCtrl.onDateChange(date)">
           </bh-date-editor>
 
           <!-- note -->
@@ -71,26 +80,13 @@
               class="form-control"
               name="description"
               ng-model="StockCtrl.movement.description"
-              placeholder="{{ 'FORM.PLACEHOLDERS.DESCRIPTION' | translate }}"
+              translate-attr="{ placeholder : 'FORM.PLACEHOLDERS.DESCRIPTION' }"
               ng-maxlength="StockCtrl.maxLength"
               required>
             </textarea>
             <div class="help-block" ng-messages="StockForm.description.$error" ng-show="StockForm.$submitted">
               <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
             </div>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-xs-12">
-          <div ng-if="StockCtrl.adjustmentOption === 'increase'" style="margin-top: 0px;">
-            <h4><i class="fa fa-arrow-circle-up"></i> <span translate>STOCK.INCREASE</span> </h4>
-            <p translate>STOCK.INCREASE_HELP</p>
-          </div>
-
-          <div ng-if="StockCtrl.adjustmentOption === 'decrease'" style="margin-top: 0px;">
-            <h4><i class="fa fa-arrow-circle-down"></i> <span translate>STOCK.DECREASE</span> </h4>
-            <p translate>STOCK.DECREASE_HELP</p>
           </div>
         </div>
       </div>
@@ -122,10 +118,10 @@
 
           <!-- "Add number of grid rows" input-group -->
           <bh-add-item
-            disable = "StockCtrl.adjustmentOption"
-            callback = "StockCtrl.addItems(numItem)">
+            disable="StockCtrl.adjustmentOption"
+            callback="StockCtrl.addItems(numItem)">
           </bh-add-item>
-        </div>          
+        </div>
       </div>
 
       <!-- grid -->

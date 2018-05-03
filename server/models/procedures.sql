@@ -7,7 +7,7 @@ DELIMITER $$
 
 /*
   Invoicing procedures include: StageInvoice, StageInvoiceItem,
-  StageBillingService, VerifySubsidyStageTable, PostInvoice, PostingSetupUtil,
+  StageInvoiceFee, VerifySubsidyStageTable, PostInvoice, PostingSetupUtil,
   PostingJournalErrorHandler, CopyInvoiceToPostingJournal and PostToGeneralLedger
 */
 SOURCE server/models/procedures/invoicing.sql
@@ -48,8 +48,13 @@ SOURCE server/models/procedures/trial_balance.sql
 SOURCE server/models/procedures/stock.sql
 
 /*
-  Posting procedures include: PostPurchase and PostIntegration
+  Inventory procedures include: ImportInventory
 */
-SOURCE server/models/procedures/posting.sql
+SOURCE server/models/procedures/inventory.sql
+
+/*
+  role management procedures
+*/
+SOURCE server/models/procedures/roles.sql
 
 DELIMITER ;

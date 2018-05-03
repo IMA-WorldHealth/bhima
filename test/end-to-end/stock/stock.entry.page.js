@@ -69,15 +69,15 @@ function StockEntryPage() {
    * @method setItem
    */
   page.setItem = function setInventory(rowNumber, code) {
-
     // inventory code column
     const itemCell = GU.getCell(gridId, rowNumber, 1);
 
     // enter data into the typeahead input.
     FU.input('row.entity.inventory_uuid', code, itemCell);
 
-    // the typeahead should be open - use an id to click the right item
-    element(by.id(`inv-code-${code}`)).click();
+    const externalAnchor = $('body > ul.dropdown-menu.ng-isolate-scope:not(.ng-hide)');
+    const option = externalAnchor.element(by.cssContainingText('[role="option"]', code));
+    option.click();
   };
 
   /**
@@ -130,7 +130,7 @@ function StockEntryPage() {
 
       if (index < lotsArray.length - 1) {
         // Add another lot line
-        $('[data-add-lot]').click();
+        components.addItem.set(1, $('[uib-modal-transclude]'));
       }
     });
 

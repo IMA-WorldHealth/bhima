@@ -5,10 +5,10 @@ const helpers = require('./helpers');
  * The /trial_balance API endpoint
  */
 describe('(/journal/trialbalance) API endpoint', () => {
-  const GOOD_TXNS = [ 'a5a5f950-a4c9-47f0-9a9a-2bfc3123e534' ] //TPA1
+  const GOOD_TXNS = ['a5a5f950-a4c9-47f0-9a9a-2bfc3123e534']; // TPA1
   const EMPTY_TXNS = [];
   const ERROR_TXNS = ['3688e9ce-85ea-4b5c-9144-688177edcb63']; // TRANS5
-  const POSTING_TXNS = ['a5a5f950-a4c9-47f0-9a9a-2bfc3123e534']; //TPA1
+  const POSTING_TXNS = ['a5a5f950-a4c9-47f0-9a9a-2bfc3123e534']; // TPA1
 
   const formatParams = transactions => ({ transactions });
 
@@ -53,7 +53,7 @@ describe('(/journal/trialbalance) API endpoint', () => {
         expect(res.body.errors).to.have.length(0);
 
         // The transactions TPA1, TPA10 hit 2 accounts and should have the following profiles
-        const { summary } = res.body;    
+        const { summary } = res.body;
 
         expect(summary).to.have.length(2);
 
@@ -61,14 +61,14 @@ describe('(/journal/trialbalance) API endpoint', () => {
         expect(summary[0].balance_before).to.equal(0);
         expect(summary[1].balance_before).to.equal(0);
 
-        expect(summary[0].debit_equiv).to.equal(100);
-        expect(summary[1].debit_equiv).to.equal(0);
+        expect(summary[0].debit_equiv).to.equal(0);
+        expect(summary[1].debit_equiv).to.equal(100);
 
-        expect(summary[0].credit_equiv).to.equal(0);
-        expect(summary[1].credit_equiv).to.equal(100);
+        expect(summary[0].credit_equiv).to.equal(100);
+        expect(summary[1].credit_equiv).to.equal(0);
 
-        expect(summary[0].balance_final).to.equal(100);
-        expect(summary[1].balance_final).to.equal(-100);
+        expect(summary[0].balance_final).to.equal(-100);
+        expect(summary[1].balance_final).to.equal(100);
       })
       .catch(helpers.handler);
   });

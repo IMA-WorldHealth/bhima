@@ -34,6 +34,7 @@
     "NOT_BALANCED":"Accounts are not balanced",
     "NOT_FOUND":"Not accounts found.",
     "NOT_POSITIVE":"Contains not positive value",
+    "NOT_0_AS_ACCOUNT_NOMBER": "You cannot set 0 as account number",
     "NUMBER":"Account Number",
     "PROFIT_CENTER":"Profit Center",
     "TITLE_ACCOUNT":"Title Account",
@@ -47,15 +48,14 @@
     "SUBMIT_UPDATE":"Update Account",
     "TYPE_CHANGE_BLOCKED":"You cannot change the type of a title account with children.",
     "TYPES":{
-      "INCOME":"Income",
       "EXPENSE":"Expense",
       "BALANCE":"Balance",
       "TITLE":"Title",
       "ASSET":"Asset",
       "LIABILITY":"Liability",
       "EQUITY":"Equity",
-      "REVENUE":"Revenue",
-      "TIERS":"Tiers"
+      "INCOME":"Income",
+      "TIERS":"Others"
     }
   }
 }

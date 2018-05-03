@@ -1,5 +1,6 @@
 const accountingjs = require('accounting-js');
 const NumberToText = require('../../../lib/NumberToText');
+const Handlebars = require('handlebars');
 
 const USD_FMT = { precision : 2 };
 
@@ -45,6 +46,22 @@ function indentAccount(depth) {
   return number ? number * INDENTATION_STEP : 0;
 }
 
+function debcred(value = 0, currencyId) {
+  let cellClass = '';
+  let _value;
+  if (value < 0) {
+    cellClass = 'text-danger';
+    _value = `(${currency(Math.abs(value), currencyId)})`;
+  } else {
+    _value = `${currency(value, currencyId)}`;
+  }
+
+  return new Handlebars.SafeString(`
+    <span class="text-right ${cellClass}">${_value}</span>
+  `);
+}
+
+exports.debcred = debcred;
 exports.currency = currency;
 exports.indentAccount = indentAccount;
 exports.numberToText = numberToText;

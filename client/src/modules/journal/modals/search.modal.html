@@ -18,7 +18,7 @@
         <!-- acting body class="tab-body" -->
         <div class="tab-body">
 
-        <div class="form-group">
+        <div class="form-group" ng-if="!ModalCtrl.hidePostedOption">
           <label class="control-label" translate>TRANSACTIONS.VERIFIED_TRANSACTIONS</label>
           <bh-clear on-clear="ModalCtrl.clear('includeNonPosted')"></bh-clear>
           <div class="checkbox">
@@ -51,10 +51,37 @@
           </bh-account-select>
         </div>
 
+        <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.hrRecord.$invalid }">
+          <label class="control-label" translate>TABLE.COLUMNS.RECORD</label>
+          <bh-clear on-clear="ModalCtrl.clear('hrRecord')"></bh-clear>
+          <input type="text" class="form-control" name="hrRecord" ng-model="ModalCtrl.searchQueries.hrRecord">
+          <div class="help-block" ng-messages="ModalForm.hrRecord.$error" ng-show="ModalForm.$submitted">
+            <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+          </div>
+        </div>
+
+        <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.hrEntity.$invalid }">
+          <label class="control-label" translate>TABLE.COLUMNS.RECIPIENT</label>
+          <bh-clear on-clear="ModalCtrl.clear('hrEntity')"></bh-clear>
+          <input type="text" class="form-control" name="hrEntity" ng-model="ModalCtrl.searchQueries.hrEntity">
+          <div class="help-block" ng-messages="ModalForm.hrEntity.$error" ng-show="ModalForm.$submitted">
+            <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+          </div>
+        </div>
+
+        <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.hrReference.$invalid }">
+          <label class="control-label" translate>TABLE.COLUMNS.REFERENCE</label>
+          <bh-clear on-clear="ModalCtrl.clear('hrReference')"></bh-clear>
+          <input type="text" class="form-control" name="hrReference" ng-model="ModalCtrl.searchQueries.hrReference">
+          <div class="help-block" ng-messages="ModalForm.hrReference.$error" ng-show="ModalForm.$submitted">
+            <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+          </div>
+        </div>
+
         <bh-transaction-type-select
           on-change="ModalCtrl.onTransactionTypesChange(transactionTypes)"
-          transaction-type-ids="ModalCtrl.searchQueries.origin_id">
-        </bh-transaction-type-select>        
+          transaction-type-ids="ModalCtrl.searchQueries.transaction_type_id">
+        </bh-transaction-type-select>
 
         <!-- description fuzzy search -->
         <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.description.$invalid }">
@@ -66,7 +93,7 @@
             class="form-control"
             name="description"
             ng-model="ModalCtrl.searchQueries.description"
-            rows="4">
+            rows="3">
           </textarea>
           <div class="help-block" ng-messages="ModalForm.description.$error" ng-show="ModalForm.$submitted">
             <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -96,12 +123,31 @@
           </div>
         </div>
 
+        <!-- description fuzzy search -->
+        <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.comment.$invalid }">
+          <label class="control-label" translate>FORM.LABELS.COMMENT</label>
+          <bh-clear on-clear="ModalCtrl.clear('comment')"></bh-clear>
+          <textarea
+            class="form-control"
+            name="comment"
+            ng-model="ModalCtrl.searchQueries.comment"
+            rows="3">
+          </textarea>
+          <div class="help-block" ng-messages="ModalForm.comment.$error" ng-show="ModalForm.$submitted">
+            <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+          </div>
+        </div>
+
         </div>
       </uib-tab>
 
       <uib-tab index="1" heading="{{ 'FORM.LABELS.DEFAULTS' | translate }}">
         <div class="tab-body">
-          <!-- hasDefaultAccount is used to set a default account selection behavior -->
+
+          <!--
+            hasDefaultAccount is used to set a default account selection
+            behavior in the Account Statement Module.
+          -->
           <div ng-if="ModalCtrl.hasDefaultAccount">
             <bh-account-select
               account-id="ModalCtrl.defaultQueries.account_id"
@@ -110,6 +156,17 @@
               exclude-title-accounts="true"
               required="0">
             </bh-account-select>
+          </div>
+
+          <!-- Full Transaction applies to the Journal, not the Account Statement -->
+          <div ng-if="!ModalCtrl.hasDefaultAccount">
+            <bh-yes-no-radios
+              default-value="true"
+              value ="ModalCtrl.defaultQueries.showFullTransactions"
+              on-change-callback="ModalCtrl.toggleFullTransaction(ModalCtrl.defaultQueries.showFullTransactions)"
+              label="POSTING_JOURNAL.SHOW_FULL_TRANSACTION_RECORDS"
+              help-text="POSTING_JOURNAL.SHOW_FULL_TRANSACTION_RECORDS_HELP">
+            </bh-yes-no-radios>
           </div>
 
           <!-- period selection -->
@@ -127,24 +184,6 @@
             <div class="help-block" ng-messages="ModalForm.limit.$error">
               <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
             </div>
-          </div>
-          <!-- posted/ non-posted records -->
-          <!-- <div class="form-group"> -->
-          <!--   <label class="form-label">Transactions Limit</label> -->
-
-          <!--   <div class="checkbox"> -->
-          <!--     <label> -->
-          <!--       <input type="checkbox" value=""> -->
-          <!--       Posted transactions -->
-          <!--     </label> -->
-          <!--   </div> -->
-          <!--   <div class="checkbox"> -->
-          <!--     <label> -->
-          <!--       <input type="checkbox" value=""> -->
-          <!--       Non-posted transactions -->
-          <!--     </label> -->
-          <!--   </div> -->
-
           </div>
         </div>
       </uib-tab>

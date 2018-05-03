@@ -4,7 +4,7 @@
  */
 
 // requirements
-const uuid = require('node-uuid');
+const uuid = require('uuid/v4');
 const db = require('../../../lib/db');
 
 // expose module's methods
@@ -28,7 +28,8 @@ function details(identifier) {
 
 /** create new inventory group */
 function create(record) {
-  record.uuid = db.bid(record.uuid || uuid.v4());
+  const recordUuid = record.uuid || uuid();
+  record.uuid = db.bid(recordUuid);
 
   const sql = 'INSERT INTO inventory_group SET ?;';
   /*
@@ -36,7 +37,7 @@ function create(record) {
    * in the main controller (inventory.js)
    */
   return db.exec(sql, [record])
-    .then(() => uuid.unparse(record.uuid));
+    .then(() => recordUuid);
 }
 
 /** update an existing inventory group */
@@ -58,13 +59,13 @@ function update(record, identifier) {
  */
 function getGroups(uid) {
   const sql = `
-    SELECT BUID(uuid) AS uuid, code, name, sales_account, cogs_account, stock_account
+    SELECT BUID(uuid) AS uuid, code, name, sales_account, cogs_account, stock_account, expires, unique_item
     FROM inventory_group
     ${uid ? 'WHERE uuid = ?' : ''};
   `;
 
   const id = (uid) ? db.bid(uid) : undefined;
-  return db.exec(sql, [id]);
+  return id ? db.one(sql, [id]) : db.exec(sql);
 }
 
 
@@ -73,7 +74,7 @@ function getGroups(uid) {
  */
 function getGroupsMembers() {
   const sql = `
-    SELECT BUID(ig.uuid) AS uuid, ig.code, ig.name, ig.sales_account, ig.cogs_account,
+    SELECT BUID(ig.uuid) AS uuid, ig.code, ig.name, ig.sales_account, ig.cogs_account, ig.expires, ig.unique_item,
       ig.stock_account, COUNT(i.uuid) AS inventory_counted
     FROM inventory_group AS ig
     LEFT JOIN inventory AS i ON i.group_uuid = ig.uuid

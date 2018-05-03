@@ -1,4 +1,4 @@
-/* global element, by, browser */
+/* global */
 
 const helpers = require('../shared/helpers');
 const ExitAdjustment = require('./stock.adjustment.page');
@@ -19,7 +19,7 @@ function StockAdjustmentTests() {
 
   it('Should make a positive adjustment ', () => {
     // select the positive adjustment
-    page.setAdjustment(0);
+    page.setAdjustment('increase');
 
     page.setDate(new Date());
 
@@ -28,7 +28,7 @@ function StockAdjustmentTests() {
     page.addRows(1);
 
     // increase the QUININE-A for 20
-    page.setItem(0, 'INV0', 'QUININE-A', 20);
+    page.setItem(0, 'Quinine', 'QUININE-A', 20);
 
     // submit
     page.submit();
@@ -36,7 +36,7 @@ function StockAdjustmentTests() {
 
   it('Should make a negative adjustment ', () => {
     // select the negative adjustment
-    page.setAdjustment(1);
+    page.setAdjustment('decrease');
 
     page.setDate(new Date());
 
@@ -45,7 +45,7 @@ function StockAdjustmentTests() {
     page.addRows(1);
 
     // increase the QUININE-A for 20
-    page.setItem(0, 'INV0', 'QUININE-A', 20);
+    page.setItem(0, 'Quinine', 'QUININE-A', 20);
 
     // submit
     page.submit();

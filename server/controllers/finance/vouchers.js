@@ -7,7 +7,7 @@
  * against the `voucher` table.
  *
  * @requires lodash
- * @requires node-uuid
+ * @requires uuid/v4
  * @requires lib/util
  * @requires lib/db
  * @requires lib/ReportManager
@@ -16,7 +16,7 @@
  */
 
 const _ = require('lodash');
-const uuid = require('node-uuid');
+const uuid = require('uuid/v4');
 
 const util = require('../../lib/util');
 const db = require('../../lib/db');
@@ -41,7 +41,7 @@ exports.create = create;
 exports.find = find;
 exports.lookupVoucher = lookupVoucher;
 exports.safelyDeleteVoucher = safelyDeleteVoucher;
-
+exports.totalAmountByCurrency = totalAmountByCurrency;
 /**
  * GET /vouchers
  *
@@ -95,7 +95,8 @@ function lookupVoucher(vUuid) {
     JOIN account a ON a.id = vi.account_id
     LEFT JOIN entity_map ON entity_map.uuid = vi.entity_uuid
     LEFT JOIN document_map ON document_map.uuid = vi.document_uuid
-    WHERE vi.voucher_uuid = ?;
+    WHERE vi.voucher_uuid = ?
+    ORDER BY vi.account_id DESC, vi.debit DESC, vi.credit ASC, entity_reference;
   `;
 
   return db.one(sql, [db.bid(vUuid)])
@@ -133,7 +134,7 @@ function find(options) {
       BUID(v.uuid) as uuid, v.date, v.project_id, v.currency_id, v.amount,
       v.description, v.user_id, v.type_id, u.display_name, transaction_type.text,
       CONCAT_WS('.', '${entityIdentifier}', p.abbr, v.reference) AS reference,
-      BUID(v.reference_uuid) AS reference_uuid
+      v.edited, BUID(v.reference_uuid) AS reference_uuid
     FROM voucher v
     JOIN project p ON p.id = v.project_id
     JOIN user u ON u.id = v.user_id
@@ -146,6 +147,7 @@ function find(options) {
   filters.dateFrom('custom_period_start', 'date');
   filters.dateTo('custom_period_end', 'date');
   filters.equals('user_id');
+  filters.equals('edited');
 
   filters.custom('reference', referenceStatement);
 
@@ -171,6 +173,54 @@ function find(options) {
   return db.exec(query, parameters);
 }
 
+function totalAmountByCurrency(options) {
+  db.convert(options, ['uuid', 'reference_uuid', 'entity_uuid', 'cash_uuid', 'invoice_uuid']);
+
+  const filters = new FilterParser(options, { tableAlias : 'v' });
+  const referenceStatement = `CONCAT_WS('.', '${entityIdentifier}', p.abbr, v.reference) = ?`;
+  let typeIds = [];
+
+  if (options.type_ids) {
+    typeIds = typeIds.concat(options.type_ids);
+  }
+
+  const sql = `
+  SELECT c.id as currencyId, c.symbol as currencySymbol, SUM(v.amount) as totalAmount, COUNT(c.symbol) AS numVouchers
+  FROM voucher v
+  JOIN currency c ON v.currency_id = c.id
+  `;
+
+  delete options.detailed;
+
+  filters.period('period', 'date');
+  filters.dateFrom('custom_period_start', 'date');
+  filters.dateTo('custom_period_end', 'date');
+  filters.equals('user_id');
+  filters.equals('edited');
+
+  filters.custom('reference', referenceStatement);
+
+  filters.fullText('description');
+
+  // @todo - could this be improved
+  filters.custom('entity_uuid', 'v.uuid IN (SELECT DISTINCT voucher_uuid FROM voucher_item WHERE entity_uuid = ?)');
+
+  filters.custom('type_ids', 'v.type_id IN (?)', [typeIds]);
+
+  // @todo - could this be improved
+  filters.custom('account_id', 'v.uuid IN (SELECT DISTINCT voucher_uuid FROM voucher_item WHERE account_id = ?)');
+
+  filters.custom('invoice_uuid', REFERENCE_SQL, [options.invoice_uuid, options.invoice_uuid]);
+  filters.custom('cash_uuid', REFERENCE_SQL, [options.cash_uuid, options.cash_uuid]);
+
+  // @TODO Support ordering query (reference support for limit)?
+  filters.setOrder('ORDER BY v.date DESC');
+  filters.setGroup('GROUP BY c.id');
+
+  const query = filters.applyQuery(sql);
+  const parameters = filters.parameters();
+  return db.exec(query, parameters);
+}
 
 /**
  * POST /vouchers
@@ -186,11 +236,7 @@ function create(req, res, next) {
   // accounting.  Therefore, throw a bad data error if there are any fewer
   // than two items in the journal voucher.
   if (items.length < 2) {
-    next(
-      new BadRequest(
-        `Expected there to be at least two items, but only received ${items.length} items.`
-      )
-    );
+    next(new BadRequest(`Expected there to be at least two items, but only received ${items.length} items.`));
 
     return;
   }
@@ -208,14 +254,14 @@ function create(req, res, next) {
   voucher.project_id = req.session.project.id;
 
   // make sure the voucher has an id
-  const vuid = voucher.uuid || uuid.v4();
+  const vuid = voucher.uuid || uuid();
   voucher.uuid = db.bid(vuid);
 
   // preprocess the items so they have uuids as required
   items.forEach((value) => {
     let item = value;
     // if the item doesn't have a uuid, create one for it.
-    item.uuid = item.uuid || uuid.v4();
+    item.uuid = item.uuid || uuid();
 
     // make sure the items reference the voucher correctly
     item.voucher_uuid = item.voucher_uuid || voucher.uuid;

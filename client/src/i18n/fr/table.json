@@ -72,13 +72,14 @@
             "FILTERING": {
                 "LABEL": "Filtre"
             },
-            "FIRST_NAME": "Prenom",
-            "FUNCTION": "Fonction",
+            "FIRST_NAME": "Prénom",
+            "PROFESSION": "Profession",
             "GENDER": "Genre",
             "GRADE": "Grade",
-            "HOSPITAL_FILE_NR": "Numero Fiche",
+            "HOSPITAL_FILE_NR": "Numéro Fiche",
             "ID": "ID",
             "INVENTORY": "Inventaire",
+            "INVENTORY_GROUP":"Groupe d'inventaire",
             "INVOICES": "factures",
             "INVOICE_ID": "ID Facture",
             "IS_ASSET": "Actif ?",
@@ -95,6 +96,8 @@
             "LISTS": "Liste des prix enregistrés",
             "LOADING": "Récupération des données à partir du serveur.",
             "LOCKED": "Bloquée",
+            "LONGITUDE": "Longitude",
+            "LATITUDE": "Latitude",
             "LOT": "Lot",
             "PAYMENT_INVOICE": "paiement pour cette facture",
             "NAME": "Nom",
@@ -120,6 +123,7 @@
             "PROFIT_CENTER": "Centre de profit",
             "PROJECT": "Projet",
             "PROVINCE": "Province",
+            "PURCHASE_PRICE" : "Prix d'achat",
             "QUANTITY": "Quantité",
             "QUARTER_FOUR": "Exercices precedantes",
             "QUARTER_ONE": "Moins de 3 mois",
@@ -189,7 +193,8 @@
             "RECORDS": "Données",
             "TOTAL_COST": "Cout Totale",
             "TOTAL_AMOUNT": "Mountant Totale",
-            "NUM_EMPLOYEES": "Nombre des Employees"
+            "NUM_EMPLOYEES": "Nombre des Employees",
+            "ROWS":"Ligne(s)"
         }
     }
 }

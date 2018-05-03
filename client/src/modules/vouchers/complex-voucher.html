@@ -67,8 +67,8 @@
               <div class="col-md-6">
                 <bh-date-editor
                   date-value="ComplexVoucherCtrl.Voucher.details.date"
-                  validation-trigger="ComplexVoucherForm.$submitted"
-                  max-date="ComplexVoucherCtrl.timestamp">
+                  on-change="ComplexVoucherCtrl.Voucher.onDateChange(date)"
+                  validation-trigger="ComplexVoucherForm.$submitted">
                 </bh-date-editor>
 
                 <div
@@ -79,7 +79,7 @@
                     class="form-control"
                     name="description"
                     ng-model="ComplexVoucherCtrl.Voucher.details.description"
-                    placeholder="{{ 'FORM.PLACEHOLDERS.DESCRIPTION' | translate }}"
+                    translate-attr="{ placeholder : 'FORM.PLACEHOLDERS.DESCRIPTION' }"
                     required>
                   </textarea>
                   <div class="help-block" ng-messages="ComplexVoucherForm.description.$error" ng-show="ComplexVoucherForm.$submitted">
@@ -95,27 +95,27 @@
                 <div class="form-group" ng-class="{ 'has-error' : ComplexVoucherForm.$submitted && ComplexVoucherForm.type_id.$invalid }">
                   <label class="control-label">
                     <span translate>FORM.LABELS.TRANSACTION_TYPE</span>
-                    <span uib-popover="{{ 'VOUCHERS.GLOBAL.TRANSFER_TYPE_INFO' | translate }}"
+                    <span uib-popover="{{ 'VOUCHERS.GLOBAL.TRANSACTION_TYPE_INFO' | translate }}"
                       popover-trigger="'mouseenter'"
                       popover-placement="bottom"
                       class="text-info fa fa-info-circle">
                     </span>
                   </label>
 
-                  <!-- financial transaction  -->
+                  <!-- Select a Transaction Type -->
                   <ui-select
                     name="type_id"
                     ng-model="ComplexVoucherCtrl.Voucher.details.type_id"
                     ng-required="ComplexVoucherCtrl.Voucher.hasCashboxAccount"
-                    ng-change="ComplexVoucherCtrl.Voucher.validate()"
-                    append-to-body="true">
+                    on-select="ComplexVoucherCtrl.Voucher.validate()">
 
-                    <ui-select-match placeholder="{{ 'FORM.SELECT.TRANSFER_TYPE' | translate }}">
+                    <ui-select-match placeholder="{{ 'FORM.SELECT.TRANSACTION_TYPE' | translate }}">
                       <span translate>{{ $select.selected.text }}</span>
                     </ui-select-match>
 
                     <ui-select-choices
-                      repeat="item.id as item in ComplexVoucherCtrl.types | filter:{ 'hrText' : $select.search }"
+                      ui-select-focus-patch
+                      repeat="item.id as item in ComplexVoucherCtrl.types | filter: { hrText : $select.search }"
                       group-by="'type'">
                       <div ng-bind-html="item.hrText | highlight: $select.search"></div>
                     </ui-select-choices>

@@ -1,10 +1,3 @@
-/* global element, by, browser */
-const chai = require('chai');
-const expect = chai.expect;
-
-const helpers = require('../shared/helpers');
-helpers.configure(chai);
-
 const FU = require('../shared/FormUtils');
 const GU = require('../shared/GridUtils');
 const components = require('../shared/components');

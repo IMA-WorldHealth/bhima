@@ -7,7 +7,7 @@
  * @description
  * This controller is responsible for implementing all crud and others custom request
  * on the services table through the `/services` endpoint. *
- * @requires node-uuid
+ * @requires uuid/v4
  * @requires db
  * @requires NotFound
  * @requires BadRequest
@@ -15,10 +15,11 @@
  */
 
 
-const uuid = require('node-uuid');
+const uuid = require('uuid/v4');
+const Topic = require('@ima-worldhealth/topic');
+
 const db = require('../../lib/db');
 const NotFound = require('../../lib/errors/NotFound');
-const Topic = require('../../lib/topic');
 
 /**
  * @method list
@@ -32,7 +33,7 @@ function list(req, res, next) {
 
   if (req.query.full === '1') {
     sql = `
-      SELECT s.id, s.name, s.enterprise_id, s.cost_center_id, BUID(s.uuid) AS uuid, 
+      SELECT s.id, s.name, s.enterprise_id, s.cost_center_id, BUID(s.uuid) AS uuid,
         s.profit_center_id, e.name AS enterprise_name, e.abbr, cc.id AS cc_id,
         cc.text AS cost_center_name, pc.id AS pc_id, pc.text AS profit_center_name
       FROM service AS s
@@ -67,7 +68,7 @@ function create(req, res, next) {
   delete record.id;
 
   // service unique uuid as entity uuid
-  record.uuid = db.bid(uuid.v4());
+  record.uuid = db.bid(uuid());
 
   db.exec(sql, [record])
     .then((result) => {
@@ -182,11 +183,11 @@ function detail(req, res, next) {
 function lookupService(id) {
   const sql =
     `
-    SELECT 
-      s.id, s.name, s.enterprise_id, s.cost_center_id, s.profit_center_id 
-    FROM 
-      service AS s 
-    WHERE 
+    SELECT
+      s.id, s.name, s.enterprise_id, s.cost_center_id, s.profit_center_id
+    FROM
+      service AS s
+    WHERE
       s.id = ?;`;
 
   return db.one(sql, id, id, 'service');

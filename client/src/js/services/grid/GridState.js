@@ -1,8 +1,8 @@
 angular.module('bhima.services')
-.service('GridStateService', GridStateService);
+  .service('GridStateService', GridStateService);
 
 GridStateService.$inject = [
-  'util', 'appcache', 'NotifyService'
+  'util', 'appcache', 'NotifyService',
 ];
 
 // responsible for -

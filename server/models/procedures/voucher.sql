@@ -1,3 +1,41 @@
+/*
+
+--------
+OVERVIEW
+--------
+
+This procedures file contains all procedures for creating vouchers.  A "voucher"
+is a generic accounting document that can model essentially any transaction.
+Given their flexibility, they are expected to be a user's main method of
+creating non-standard transactions, such as recording generic payments or
+balancing accounts.  All transactions that are not an invoice or cash payment
+are modeled as vouchers.
+
+Unlike cash payments and invoices, where many additional calculations may need
+to take place prior to writing the transaction, vouchers alone have no
+additional preprocessing.  For this reason, they are missing the StageVoucher()
+and StageVoucherItem() methods.  The tables can be written to directly from JS.
+
+There is also a special facility for reversing transactions.  In double-entry
+accounting, to reverse a transaction, one only needs to flip the debits and
+credits of a previous transaction.  However, this does not capture the reason
+for which the transaction needed to be reversed.  To overcome this limitation,
+BHIMA implements ReverseTransaction(), which adds special text to the previous
+transaction's description, as well as points the voucher's "reference_uuid"
+column to the reversed transaction.  Despite a similar sounding name, the
+"reference_uuid" column is never written to the posting_journal.  It is used
+only for reference lookups on the voucher table.
+*/
+
+
+/*
+CALL PostVoucher();
+
+DESCRIPTION
+This function posts a voucher that has already been written to the vouchers
+table.  The route will convert currencies from the given currency into the
+enterprise currency directly as it writes the values into the posting_journal.
+*/
 CREATE PROCEDURE PostVoucher(
   IN uuid BINARY(16)
 )
@@ -10,7 +48,7 @@ BEGIN
   -- variables to store core set-up results
   DECLARE fiscal_year_id MEDIUMINT(8) UNSIGNED;
   DECLARE period_id MEDIUMINT(8) UNSIGNED;
-  DECLARE current_exchange_rate DECIMAL(19, 4) UNSIGNED;
+  DECLARE current_exchange_rate DECIMAL(19, 8) UNSIGNED;
   DECLARE enterprise_currency_id TINYINT(3) UNSIGNED;
   DECLARE transaction_id VARCHAR(100);
   DECLARE gain_account_id INT UNSIGNED;
@@ -33,7 +71,7 @@ BEGIN
   INSERT INTO posting_journal (uuid, project_id, fiscal_year_id, period_id,
     trans_id, trans_date, record_uuid, description, account_id, debit,
     credit, debit_equiv, credit_equiv, currency_id, entity_uuid,
-    reference_uuid, comment, origin_id, user_id)
+    reference_uuid, comment, transaction_type_id, user_id)
   SELECT
     HUID(UUID()), v.project_id, fiscal_year_id, period_id, transaction_id, v.date,
     v.uuid, v.description, vi.account_id, vi.debit, vi.credit,
@@ -45,6 +83,22 @@ BEGIN
   -- NOTE: this does not handle any rounding - it simply converts the currency as needed.
 END $$
 
+/*
+CALL ReverseTransaction()
+
+DESCRIPTION
+A unique procedure specifically for reversing cash payments or invoices.  It
+should not be called for vouchers.  The procedures will simply copy the previous
+transaction and create a voucher reversing the debits and credits of the
+transaction.  In double-entry accounting, this will effectively annul the last
+transaction.  Additionally, the voucher will store the uuid of the record that
+is being reversed in the "reference_uuid" column of the "voucher" table.  This
+enables filters to look up the reversing entry later for any cash payment or
+invoice.
+
+Once the procedure has finished, the corresponding cash or invoice record will
+have the "reversed" column set to "1".
+*/
 CREATE PROCEDURE ReverseTransaction(
   IN uuid BINARY(16),
   IN user_id INT,
@@ -71,7 +125,7 @@ BEGIN
   -- @todo - make only one type of reversal (not cash, credit, or voucher)
 
   INSERT INTO voucher (uuid, date, project_id, currency_id, amount, description, user_id, type_id, reference_uuid)
-    SELECT voucher_uuid, NOW(), zz.project_id, enterprise.currency_id, 0, CONCAT_WS(' ', '(REVERSAL)', description), user_id, reversalType, uuid
+    SELECT voucher_uuid, NOW(), zz.project_id, enterprise.currency_id, 0, CONCAT_WS(' ', '(CORRECTION)', description), user_id, reversalType, uuid
     FROM (
       SELECT pj.project_id, pj.description FROM posting_journal AS pj WHERE pj.record_uuid = uuid
       UNION ALL

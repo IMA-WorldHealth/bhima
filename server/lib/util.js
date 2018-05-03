@@ -1,22 +1,35 @@
-/* eslint global-require:off, import/no-dynamic-require:off */
+/* eslint global-require:off, import/no-dynamic-require:off, no-restricted-properties:off */
+
 /**
- * @module util
+ * @overview util
  *
  * @description
- * This module contains useful utility functions
+ * This module contains useful utility functions used throughout the server.
  *
- * @required lodash
+ * @requires lodash
+ * @requires q
+ * @requires moment
+ * @requires debug
+ * @requires child_process
+ * @requires util
  */
 
 const _ = require('lodash');
 const q = require('q');
 const moment = require('moment');
+const debug = require('debug')('util');
+const { exec } = require('child_process');
 
-/** The query string conditions builder */
-module.exports.take = take;
-module.exports.loadModuleIfExists = requireModuleIfExists;
+exports.take = take;
+exports.loadModuleIfExists = requireModuleIfExists;
 exports.dateFormatter = dateFormatter;
-exports.resolveObject = resolveObject;
+exports.execp = execp;
+exports.format = require('util').format;
+
+exports.roundDecimal = roundDecimal;
+exports.loadDictionary = loadDictionary;
+exports.stringToNumber = stringToNumber;
+exports.convertStringToNumber = convertStringToNumber;
 
 /**
  * @function take
@@ -51,50 +64,25 @@ exports.resolveObject = resolveObject;
  * // take both the id and the season properties from the array
  * var filter = take('id', 'season');
  * var arrs = _.map(array, filter); // returns [[1, 'summer], [2, 'winter'], [3, 'fall']]
- *
- * @public
  */
 function take(...keys) {
   // get the arguments as an array
   // return the filter function
-  return object => (
-    keys.map(key => object[key])
-  );
+  return object => (keys.map(key => object[key]));
 }
 
 /**
-* @method requireModuleIfExists
-* @description load a module if it exists
-*/
+ * @method requireModuleIfExists
+ * @description load a module if it exists
+ */
 function requireModuleIfExists(moduleName) {
   try {
     require(moduleName);
+    debug(`Dynamically loaded ${moduleName}.`);
   } catch (err) {
     return false;
   }
   return true;
-}
-
-/**
- * @function resolveObject
- *
- * @description
- * This utility takes in an object of promise queries and returns the object
- * with all values resolved when all promises have settled.  If any one is
- * rejected, the promise is rejected.
- *
- * @param {Object} object - this is the object of keys mapped to promise
- *   values.
- * @returns {Promise} - one all promises resolve, the same object mapped to
- */
-function resolveObject(object) {
-  const settled = {};
-
-  return q.all(_.values(object))
-    .then((results) => {
-      _.keys(object).forEach((key, index) => { settled[key] = results[index]; });
-      return settled;
-    });
 }
 
 /**
@@ -107,8 +95,8 @@ function resolveObject(object) {
 function dateFormatter(rows, dateFormat) {
   const DATE_FORMAT = dateFormat || 'YYYY-MM-DD HH:mm:ss';
 
-  _.forEach(rows, function (element) {
-    _.forEach(element, function (value, key) {
+  _.forEach(rows, element => {
+    _.forEach(element, (value, key) => {
       if (_.isDate(element[key])) {
         element[key] = moment(element[key]).format(DATE_FORMAT);
       }
@@ -118,3 +106,79 @@ function dateFormatter(rows, dateFormat) {
   return rows;
 }
 
+/**
+ * @method execp
+ *
+ * @description
+ * This method promisifies the child process exec() function.  It is used in
+ * lib/backup.js, but will likely be handy in other places as well.
+ */
+function execp(cmd) {
+  debug(`#execp(): ${cmd}`);
+  const deferred = q.defer();
+  const child = exec(cmd);
+  child.addListener('error', deferred.reject);
+  child.addListener('exit', deferred.resolve);
+  return deferred.promise;
+}
+
+
+/**
+ * @function roundDecimal
+ *
+ * @description
+ * Round a decimal to a certain precision.
+ *
+ * @param {Number} number
+ * @param {Number} precision
+ */
+function roundDecimal(number, precision = 4) {
+  const base = Math.pow(10, precision);
+  return Math.round(number * base) / base;
+}
+
+/**
+ * @function loadDictionary
+ *
+ * @description
+ * Either returns a cached version of the dictionary, or loads the dictionary
+ * into the cache and returns it.
+ *
+ * @param {String} key - either 'fr' or 'en'
+ */
+function loadDictionary(key, dictionaries = {}) {
+  const dictionary = dictionaries[key];
+  if (dictionary) { return dictionary; }
+
+  dictionaries[key] = require(`../../client/i18n/${key}.json`);
+  return dictionaries[key];
+}
+
+/**
+ * @function stringToNumber
+ *
+ * @description
+ * convert string number to number
+ *
+ * @param {string} x
+ */
+function stringToNumber(x) {
+  const parsed = Number(x);
+  if (Number.isNaN(parsed)) { return x; }
+  return parsed;
+}
+
+/**
+ * @function convertStringToNumber
+ *
+ * @description
+ * look into an object and convert each string number to number if it is possible
+ *
+ * @param {object} obj An object in which we want to convert value of each property into the correct type
+ */
+function convertStringToNumber(obj) {
+  _.keys(obj).forEach(property => {
+    obj[property] = stringToNumber(obj[property]);
+  });
+  return obj;
+}

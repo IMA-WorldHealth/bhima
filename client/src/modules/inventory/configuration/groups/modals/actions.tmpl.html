@@ -15,7 +15,7 @@
         type="text"
         name="name"
         autocomplete="off"
-        placeholder="{{ 'FORM.PLACEHOLDERS.NAME' | translate }}..."
+        translate-attr="{ placeholder: 'FORM.PLACEHOLDERS.NAME' }"
         required>
       <div class="help-block" ng-messages="ActionForm.name.$error" ng-show="ActionForm.$submitted">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -30,85 +30,67 @@
         type="text"
         name="code"
         autocomplete="off"
-        placeholder="{{ 'FORM.PLACEHOLDERS.CODE' | translate }}..."
+        translate-attr="{ placeholder: 'FORM.PLACEHOLDERS.CODE' }"
         required>
       <div class="help-block" ng-messages="ActionForm.code.$error" ng-show="ActionForm.$submitted">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
       </div>
     </div>
 
-    <div class="form-group"
-      ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.salesAccount.$invalid }">
-      <label class="control-label">
-        <span translate>FORM.SELECT.ACCOUNT</span> (<span translate>FORM.LABELS.SALE</span>)
-      </label>
+    <bh-account-select
+      name="sales_account"
+      id="sales_account"
+      account-id="$ctrl.session.sales_account"
+      validation-trigger="ActionForm.$submitted"
+      exclude-title-accounts="true"
+      on-select-callback="$ctrl.onSelectSalesAccount(account)">
+      (<span translate>FORM.LABELS.SALE</span>)
+      <bh-clear on-clear="$ctrl.session.sales_account = null;"></bh-clear>
+    </bh-account-select>
 
-      <ui-select
-        name="salesAccount"
-        ng-model="$ctrl.session.salesAccount">
-        <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}" allow-clear="true">
-          <span><strong>{{$select.selected.number}}</strong> {{$select.selected.label}}</span>
-        </ui-select-match>
-        <ui-select-choices
-          ui-select-focus-patch
-          ui-disable-choice="account.type_id === $ctrl.bhConstants.accounts.TITLE"
-          repeat="account in $ctrl.accounts | filter: { 'hrlabel' : $select.search } track by account.id">
-          <strong ng-bind-html="account.number | highlight:$select.search"></strong>
-          <span ng-bind-html="account.label | highlight:$select.search"></span>
-        </ui-select-choices>
-      </ui-select>
+    <bh-account-select
+      name="stock_account"
+      id="stock_account"
+      account-id="$ctrl.session.stock_account"
+      exclude-title-accounts="true"
+      required="false"
+      on-select-callback="$ctrl.onSelectStockAccount(account)">
+      (<span translate>FORM.LABELS.STOCK</span>)
+      <bh-clear on-clear="$ctrl.session.stock_account = null;"></bh-clear>
+    </bh-account-select>
 
-      <div class="help-block" ng-messages="ActionForm.salesAccount.$error" ng-show="ActionForm.$submitted">
-        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    <bh-account-select
+      name="cogs_account"
+      id="cogs_account"
+      account-id="$ctrl.session.cogs_account"
+      exclude-title-accounts="true"
+      required="false"
+      on-select-callback="$ctrl.onSelectCOGSAccount(account)">
+      (<span translate>FORM.LABELS.CHARGE</span>)
+      <bh-clear on-clear="$ctrl.session.cogs_account = null;"></bh-clear>
+    </bh-account-select>
+
+    <div class='form-group'>
+      <div class="checkbox">
+        <label>
+         <input type='checkbox' name="expires" ng-model = '$ctrl.session.expires' ng-true-value="1" ng-false-value="0"/>
+         <span translate>INVENTORY.EXPIRES</span>
+        </label>
+      </div>
+    </div>
+    <div class='form-group'>
+      <div class="checkbox">
+        <label>
+         <input type='checkbox' name='unique_item' ng-model = '$ctrl.session.unique_item' ng-true-value="1" ng-false-value="0"/>
+         <span translate>INVENTORY.UNIQUE_ITEM</span>
+        </label>
       </div>
     </div>
 
-    <div class="form-group">
-      <label class="control-label">
-        <span translate>FORM.SELECT.ACCOUNT</span> (<span translate>FORM.LABELS.STOCK</span>)
-      </label>
-      <ui-select
-        name="stockAccount"
-        ng-model="$ctrl.session.stockAccount">
-        <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}"  allow-clear="true">
-          <span><strong>{{$select.selected.number}}</strong> {{$select.selected.label}}</span>
-        </ui-select-match>
-        <ui-select-choices
-          ui-select-focus-patch
-          ui-disable-choice="account.type_id === $ctrl.bhConstants.accounts.TITLE"
-          repeat="account in $ctrl.accounts | filter: { 'hrlabel' : $select.search } track by account.id">
-          <strong ng-bind-html="account.number | highlight:$select.search"></strong>
-          <span ng-bind-html="account.label | highlight:$select.search"></span>
-        </ui-select-choices>
-      </ui-select>
-    </div>
-
-    <div class="form-group">
-      <label class="control-label">
-        <span translate>FORM.SELECT.ACCOUNT</span> (<span translate>FORM.LABELS.CHARGE</span>)
-      </label>
-
-      <ui-select
-        name="cogsAccount"
-        ng-model="$ctrl.session.cogsAccount">
-        <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.ACCOUNT' | translate }}" allow-clear="true">
-          <span><strong>{{$select.selected.number}}</strong> {{$select.selected.label}}</span>
-        </ui-select-match>
-        <ui-select-choices
-          ui-select-focus-patch
-          ui-disable-choice="account.type_id === $ctrl.bhConstants.accounts.TITLE"
-          repeat="account in $ctrl.accounts | filter: { 'hrlabel' : $select.search } track by account.id">
-          <strong ng-bind-html="account.number | highlight:$select.search"></strong>
-          <span ng-bind-html="account.label | highlight:$select.search"></span>
-        </ui-select-choices>
-      </ui-select>
-    </div>
   </div>
 
   <div class="modal-footer">
-    <button type="button"
-      class="btn btn-default"
-      ng-click="$ctrl.cancel()" translate>
+    <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" translate>
       FORM.BUTTONS.CANCEL
     </button>
 

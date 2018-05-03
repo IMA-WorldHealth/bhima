@@ -1,4 +1,5 @@
-{"PATIENT_EDIT":{"FINANCIAL_INFO":"Information financière",
+{"PATIENT_EDIT":{"ADMIN_DATA":"Données administratives",
+"FINANCIAL_INFO":"Information financière",
 "PAGE_TITLE":"Modifier Patient",
 "RECORD_SAME":"Aucun changement n'a été apporté sur le formulaire. Mettez à jour les détails de patients et appuyez sur soumettre.",
 "REGISTERED":"Patient Enregistré",

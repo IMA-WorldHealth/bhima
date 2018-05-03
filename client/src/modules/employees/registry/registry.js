@@ -112,7 +112,7 @@ function EmployeeRegistryController(
       visible          : false
     },
     { field            : 'fonction_txt',
-      displayName      : 'FORM.LABELS.FUNCTION',
+      displayName      : 'FORM.LABELS.PROFESSION',
       headerCellFilter : 'translate',
       visible          : false
     },
@@ -182,9 +182,11 @@ function EmployeeRegistryController(
 
   function search() {
     var filtersSnapshot = Employees.filters.formatHTTP();
-
     Employees.openSearchModal(filtersSnapshot)
       .then(function (changes) {
+        //This is very important if changes is undefined, a cache problem occurs
+        if(!changes){return;}
+
         Employees.filters.replaceFilters(changes);
 
         Employees.cacheFilters();

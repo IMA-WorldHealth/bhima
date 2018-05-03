@@ -25,8 +25,7 @@ CREATE PROCEDURE StageInvoice(
 )
 BEGIN
   -- verify if invoice stage already exists within this connection, if the
-  -- stage already exists simply write to it, otherwise create and select into
-  -- it
+  -- stage already exists simply write to it, otherwise create and select into it
   DECLARE `no_invoice_stage` TINYINT(1) DEFAULT 0;
   DECLARE CONTINUE HANDLER FOR SQLSTATE '42S02' SET `no_invoice_stage` = 1;
   SELECT NULL FROM `stage_invoice` LIMIT 0;
@@ -81,13 +80,13 @@ BEGIN
 END $$
 
 
-CREATE PROCEDURE StageBillingService(
+CREATE PROCEDURE StageInvoicingFee(
   IN id SMALLINT UNSIGNED,
   IN invoice_uuid BINARY(16)
 )
 BEGIN
-  CALL VerifyBillingServiceStageTable();
-  INSERT INTO stage_billing_service (SELECT id, invoice_uuid);
+  CALL VerifyInvoicingFeeStageTable();
+  INSERT INTO stage_invoicing_fee (SELECT id, invoice_uuid);
 END $$
 
 CREATE PROCEDURE StageSubsidy(
@@ -110,9 +109,9 @@ BEGIN
   );
 END $$
 
-CREATE PROCEDURE VerifyBillingServiceStageTable()
+CREATE PROCEDURE VerifyInvoicingFeeStageTable()
 BEGIN
-  CREATE TEMPORARY TABLE IF NOT EXISTS stage_billing_service (
+  CREATE TEMPORARY TABLE IF NOT EXISTS stage_invoicing_fee (
     id INTEGER,
     invoice_uuid BINARY(16)
   );
@@ -124,11 +123,11 @@ END $$
   DESCRIPTION
   This procedure takes all staged records and begins to compose the invoice from
   them.  Keep in mind:
-    1) Billing Services place percentage increase on the invoice in proportion
+    1) Invoicing Fees place percentage increase on the invoice in proportion
       to the base invoice cost.
     2) Subsidies place a percentage reduction on the invoice in proportion to
       the invoice cost.
-    3) Billing Services are applied first, then Subsidies are applied to the
+    3) Invoicing Fees are applied first, then Subsidies are applied to the
       adjusted invoice amount.
 
   The final value of this algorithm is recorded in the invoices table as the
@@ -141,17 +140,17 @@ CREATE PROCEDURE WriteInvoice(
 BEGIN
   -- running calculation variables
   DECLARE items_cost decimal(19, 4);
-  DECLARE billing_services_cost decimal(19, 4);
+  DECLARE invoicing_fees_cost decimal(19, 4);
   DECLARE total_cost_to_debtor decimal(19, 4);
   DECLARE total_subsidy_cost decimal(19, 4);
   DECLARE total_subsidised_cost decimal(19, 4);
 
   -- ensure that all optional entities have staging tables available, it is
   -- possible that the invoice has not invoked methods to stage subsidies and
-  -- billing services if they are not relevant - this makes sure the tables
+  -- invoicing fees if they are not relevant - this makes sure the tables
   -- exist for queries within this method.
   CALL VerifySubsidyStageTable();
-  CALL VerifyBillingServiceStageTable();
+  CALL VerifyInvoicingFeeStageTable();
 
   -- invoice details
   INSERT INTO invoice (
@@ -167,27 +166,27 @@ BEGIN
   SELECT * from stage_invoice_item WHERE stage_invoice_item.invoice_uuid = uuid;
 
   -- Total cost of all invoice items.  This is important to determine how much
-  -- the billing services
+  -- the invoicing fees
   SET items_cost = (
     SELECT SUM(credit) as cost FROM invoice_item where invoice_uuid = uuid
   );
 
-  -- calculate billing services based on total item cost
-  INSERT INTO invoice_billing_service (invoice_uuid, value, billing_service_id)
-  SELECT uuid, (billing_service.value / 100) * items_cost, billing_service.id
-  FROM billing_service WHERE id in (
-    SELECT id FROM stage_billing_service where invoice_uuid = uuid
+  -- calculate invoicing fee based on total item cost
+  INSERT INTO invoice_invoicing_fee (invoice_uuid, value, invoicing_fee_id)
+  SELECT uuid, (invoicing_fee.value / 100) * items_cost, invoicing_fee.id
+  FROM invoicing_fee WHERE id in (
+    SELECT id FROM stage_invoicing_fee where invoice_uuid = uuid
   );
 
-  -- total cost of all invoice items and billing services
-  SET billing_services_cost = (
+  -- total cost of all invoice items and invoicing fees
+  SET invoicing_fees_cost = (
     SELECT IFNULL(SUM(value), 0) AS value
-    FROM invoice_billing_service
+    FROM invoice_invoicing_fee
     WHERE invoice_uuid = uuid
   );
 
   -- cost so far to the debtor
-  SET total_cost_to_debtor = items_cost + billing_services_cost;
+  SET total_cost_to_debtor = items_cost + invoicing_fees_cost;
 
   -- calculate subsidy cost based on total cost to debtor
   INSERT INTO invoice_subsidy (invoice_uuid, value, subsidy_id)
@@ -209,7 +208,7 @@ BEGIN
   UPDATE invoice SET cost = total_subsidised_cost WHERE invoice.uuid = uuid;
 
   -- return information relevant to the final calculated and written bill
-  SELECT items_cost, billing_services_cost, total_cost_to_debtor,
+  SELECT items_cost, invoicing_fees_cost, total_cost_to_debtor,
     total_subsidy_cost, total_subsidised_cost;
 END $$
 
@@ -239,7 +238,7 @@ BEGIN
   -- variables to store core set-up results
   DECLARE current_fiscal_year_id MEDIUMINT(8) UNSIGNED;
   DECLARE current_period_id MEDIUMINT(8) UNSIGNED;
-  DECLARE current_exchange_rate DECIMAL(19, 4) UNSIGNED;
+  DECLARE current_exchange_rate DECIMAL(19, 8) UNSIGNED;
   DECLARE enterprise_currency_id TINYINT(3) UNSIGNED;
   DECLARE transaction_id VARCHAR(100);
   DECLARE gain_account_id INT UNSIGNED;
@@ -410,8 +409,9 @@ BEGIN
   DECLARE cdescription TEXT;
 
  -- cursor for debtor's cautions
+ -- TODO(@jniles) - remove MAX() call.  This violates ONLY_FULL_GROUP_BY.
   DECLARE curse CURSOR FOR
-    SELECT c.id, c.date, c.description, SUM(c.credit - c.debit) AS balance FROM (
+    SELECT c.id, c.date, MAX(c.description), SUM(c.credit - c.debit) AS balance FROM (
 
         -- get the record_uuids in the posting journal
         SELECT debit_equiv as debit, credit_equiv as credit, posting_journal.trans_date as date, posting_journal.description, record_uuid AS id
@@ -443,7 +443,7 @@ BEGIN
           ON cash.uuid = general_ledger.reference_uuid
         WHERE entity_uuid = ientityId AND cash.is_caution = 0
     ) AS c
-    GROUP BY c.id
+    GROUP BY c.id, c.date
     HAVING balance > 0
     ORDER BY c.date;
 
@@ -485,7 +485,7 @@ BEGIN
           (uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
           record_uuid, description, account_id, debit, credit, debit_equiv,
           credit_equiv, currency_id, entity_uuid, reference_uuid,
-          user_id, origin_id)
+          user_id, transaction_type_id)
         VALUES (
           HUID(UUID()), projectId, fiscalYearId, periodId, transId, idate, iuuid, cdescription,
           iaccountId, icost, 0, icost, 0, currencyId, ientityId, cid, iuserId, 11
@@ -509,7 +509,7 @@ BEGIN
           uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
           record_uuid, description, account_id, debit, credit, debit_equiv,
           credit_equiv, currency_id, entity_uuid, reference_uuid,
-          user_id, origin_id
+          user_id, transaction_type_id
         ) VALUES (
           HUID(UUID()), projectId, fiscalYearId, periodId, transId, idate,
           iuuid, cdescription, iaccountId, cbalance, 0, cbalance, 0,
@@ -528,7 +528,7 @@ BEGIN
     INSERT INTO posting_journal (
       uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
       record_uuid, description, account_id, debit, credit, debit_equiv,
-      credit_equiv, currency_id, entity_uuid, user_id, origin_id
+      credit_equiv, currency_id, entity_uuid, user_id, transaction_type_id
     ) VALUES (
       HUID(UUID()), projectId, fiscalYearId, periodId, transId, idate,
       iuuid, idescription, iaccountId, icost, 0, icost, 0,
@@ -540,7 +540,7 @@ BEGIN
   INSERT INTO posting_journal (
     uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
     record_uuid, description, account_id, debit, credit, debit_equiv,
-    credit_equiv, currency_id, origin_id, user_id
+    credit_equiv, currency_id, transaction_type_id, user_id
   )
    SELECT
     HUID(UUID()), i.project_id, fiscalYearId, periodId, transId, i.date, i.uuid,
@@ -557,7 +557,7 @@ BEGIN
   INSERT INTO posting_journal (
     uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
     record_uuid, description, account_id, debit, credit, debit_equiv,
-    credit_equiv, currency_id, origin_id, user_id
+    credit_equiv, currency_id, transaction_type_id, user_id
   ) SELECT
     HUID(UUID()), i.project_id, fiscalYearId, periodId, transId, i.date, i.uuid,
     i.description, su.account_id, isu.value, 0, isu.value, 0, currencyId, 11,
@@ -567,55 +567,18 @@ BEGIN
     isu.subsidy_id = su.id
   WHERE i.uuid = iuuid;
 
-  -- copy the invoice_billing_service records into the posting_journal (credits)
+  -- copy the invoice_invoicing_fee records into the posting_journal (credits)
   INSERT INTO posting_journal (
     uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
     record_uuid, description, account_id, debit, credit, debit_equiv,
-    credit_equiv, currency_id, origin_id, user_id
+    credit_equiv, currency_id, transaction_type_id, user_id
   ) SELECT
     HUID(UUID()), i.project_id, fiscalYearId, periodId, transId, i.date, i.uuid,
     i.description, b.account_id, 0, ib.value, 0, ib.value, currencyId, 11,
     i.user_id
-  FROM invoice AS i JOIN invoice_billing_service AS ib JOIN billing_service AS b ON
+  FROM invoice AS i JOIN invoice_invoicing_fee AS ib JOIN invoicing_fee AS b ON
     i.uuid = ib.invoice_uuid AND
-    ib.billing_service_id = b.id
+    ib.invoicing_fee_id = b.id
   WHERE i.uuid = iuuid;
 END
 $$
-
-/*
-PostToGeneralLedger()
-
-This procedure uses the same staging code as the Trial Balance to stage and then post transactions
-from the posting_journal table to the General Ledger table.
-
-*/
-CREATE PROCEDURE PostToGeneralLedger()
-BEGIN
-  -- write into the posting journal
-  INSERT INTO general_ledger (
-    project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date,
-    record_uuid, description, account_id, debit, credit, debit_equiv,
-    credit_equiv, currency_id, entity_uuid, reference_uuid, comment, origin_id, user_id,
-    cc_id, pc_id
-  ) SELECT project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, posting_journal.record_uuid,
-    description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id,
-    entity_uuid, reference_uuid, comment, origin_id, user_id, cc_id, pc_id
-  FROM posting_journal JOIN stage_trial_balance_transaction AS staged
-    ON posting_journal.record_uuid = staged.record_uuid;
-
-  -- write into period_total
-  INSERT INTO period_total (
-    account_id, credit, debit, fiscal_year_id, enterprise_id, period_id
-  )
-  SELECT account_id, SUM(credit_equiv) AS credit, SUM(debit_equiv) as debit,
-    fiscal_year_id, project.enterprise_id, period_id
-  FROM posting_journal JOIN stage_trial_balance_transaction JOIN project
-    ON posting_journal.record_uuid = stage_trial_balance_transaction.record_uuid
-    AND project_id = project.id
-  GROUP BY period_id, account_id
-  ON DUPLICATE KEY UPDATE credit = credit + VALUES(credit), debit = debit + VALUES(debit);
-
-  -- remove from posting journal
-  DELETE FROM posting_journal WHERE record_uuid IN (SELECT record_uuid FROM stage_trial_balance_transaction);
-END $$

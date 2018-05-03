@@ -1,0 +1,55 @@
+<form name="IprTaxForm" bh-submit="IprTaxConfigModalCtrl.submit(IprTaxForm)" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li ng-if="IprTaxConfigModalCtrl.isCreating" class="title">
+        <span translate>IPRTAX.ADD_SCALE</span>
+        <label class="badge badge-success" translate> {{ IprTaxConfigModalCtrl.iprTax.label }} </label>
+      </li>
+      <li ng-if="!IprTaxConfigModalCtrl.isCreating" class="title">
+        <span translate>IPRTAX.EDIT_SCALE</span>
+        <label class="badge badge-success" translate> {{ IprTaxConfigModalCtrl.iprTax.label }} </label>
+      </li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+    <div class="modal-body" ng-class="{ 'has-error' : IprTaxForm.$submitted && IprTaxForm.rate.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.RATE</label>
+      <input type="number" name="rate" ng-model="IprTaxConfigModalCtrl.iprTax.rate" ng-max="100" ng-min="0" autocomplete="off" class="form-control" required>
+      <div class="help-block" ng-messages="IprTaxForm.rate.$error" ng-show="IprTaxForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <div class="modal-body">
+      <bh-currency-input
+        id="tranche_annuelle_debut"
+        label="FORM.LABELS.ANNUAL_TRANCH_FROM"
+        min="0"
+        currency-id="IprTaxConfigModalCtrl.iprTax.currency_id"
+        model="IprTaxConfigModalCtrl.iprTax.tranche_annuelle_debut"
+        validation-trigger="IprTaxForm.$submitted">
+      </bh-currency-input>
+    </div>
+
+    <div class="modal-body">
+      <bh-currency-input
+        id="tranche_annuelle_fin"
+        label="FORM.LABELS.ANNUAL_TRANCH_TO"
+        currency-id="IprTaxConfigModalCtrl.iprTax.currency_id"
+        model="IprTaxConfigModalCtrl.iprTax.tranche_annuelle_fin"
+        validation-trigger="IprTaxForm.$submitted">
+      </bh-currency-input>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button data-method="cancel" type="button" class="btn btn-default" ui-sref="iprConfiguration">
+      <span translate>FORM.BUTTONS.CANCEL</span>
+    </button>
+
+    <bh-loading-button loading-state="IprTaxForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

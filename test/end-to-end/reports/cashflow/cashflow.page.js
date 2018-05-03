@@ -1,4 +1,4 @@
-/* global browser, element, by */
+/* global */
 
 const chai = require('chai');
 const helpers = require('../../shared/helpers');
@@ -15,25 +15,15 @@ class CashflowReportPage {
   }
 
   // preview a Cashflow report
-  showCashflowReportPreview(dateRange, weekly, cashbox, dateFrom, dateTo) {
-    if(dateRange){
-      $('[data-date-range="' + dateRange + '"]').click();
-    } else {
-      components.dateInterval.range(dateFrom, dateTo);
-    }
-
-    if (weekly) {
-      element(by.css('input[type="checkbox"]')).click();
-    }
-
-    components.cashboxSelect.set(cashbox);
-
+  showCashflowReportPreview(cashboxes, dateFrom, dateTo) {
+    components.dateInterval.range(dateFrom, dateTo);
+    components.multipleCashBoxSelect.set(cashboxes);
     this.page.preview();
   }
 
   // save a Cashflow report
-  saveCashflowReport(dateFrom, dateTo, cashbox, reportName, reportFormat) {
-    this.showCashflowReportPreview(null, null, cashbox, dateFrom, dateTo);
+  saveCashflowReport(dateFrom, dateTo, cashboxes, reportName, reportFormat) {
+    this.showCashflowReportPreview(cashboxes, dateFrom, dateTo);
 
     // save report as PDF
     this.page.saveAs();
@@ -46,9 +36,9 @@ class CashflowReportPage {
     this.page.backToConfig();
   }
 
-  // print a debtors report
-  printCashflowReport(dateRange, weekly, cashbox) {
-    this.showCashflowReportPreview(dateRange, weekly, cashbox);
+  // print the report
+  printCashflowReport(cashboxes, dateFrom, dateTo) {
+    this.showCashflowReportPreview(cashboxes, dateFrom, dateTo);
     this.page.printPreview();
   }
 

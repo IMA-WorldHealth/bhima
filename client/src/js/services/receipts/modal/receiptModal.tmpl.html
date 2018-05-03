@@ -1,9 +1,9 @@
 <div class="modal-header" data-modal="receipt">
   <div style="display : inline-block">
   <ol class="headercrumb">
-    <li class="static">{{ ReceiptCtrl.title | translate }}</li>
+    <li class="static" translate>{{ ReceiptCtrl.title }}</li>
     <li class="title">
-      {{ "TABLE.COLUMNS.RECEIPT" | translate }}
+      <span translate>TABLE.COLUMNS.RECEIPT</span>
       <span ng-if="ReceiptCtrl.identifier" class="label label-warning">{{ReceiptCtrl.receipt[ReceiptCtrl.identifier]}}</span>
     </li>
   </ol>
@@ -15,7 +15,7 @@
       class="pull-right">
     <span class="text-success">
       <span class="fa fa-check-circle-o"></span>
-      {{ReceiptCtrl.createdKey | translate}}
+      <span translate>{{ReceiptCtrl.createdKey}}</span>
     </span>
   </div>
 </div>

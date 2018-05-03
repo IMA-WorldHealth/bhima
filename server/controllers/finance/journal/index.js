@@ -8,7 +8,7 @@
  *
  * @requires q
  * @requires lodash
- * @requires node-uuid
+ * @requires uuid/v4
  * @requires lib/db
  * @requires lib/filter
  * @requires lib/errors/NotFound
@@ -17,13 +17,20 @@
 
 const q = require('q');
 const _ = require('lodash');
-const uuid = require('node-uuid');
+const uuid = require('uuid/v4');
 
 // module dependencies
 const db = require('../../../lib/db');
 const FilterParser = require('../../../lib/filter');
 const NotFound = require('../../../lib/errors/NotFound');
 const BadRequest = require('../../../lib/errors/BadRequest');
+
+const identifiers = require('../../../config/identifiers');
+
+const hrRecordToTableMap = {};
+_.forEach(identifiers, v => {
+  hrRecordToTableMap[v.key] = v.table;
+});
 
 // Fiscal Service
 const FiscalService = require('../../finance/fiscal');
@@ -39,7 +46,6 @@ exports.getTransactionEditHistory = getTransactionEditHistory;
 
 exports.editTransaction = editTransaction;
 exports.count = count;
-exports.commentPostingJournal = commentPostingJournal;
 
 /**
  * Looks up a transaction by record_uuid.
@@ -100,17 +106,11 @@ function naiveTransactionSearch(options, includeNonPosted) {
 // if posted ONLY return posted transactions
 // if not posted ONLY return non-posted transactions
 function buildTransactionQuery(options, posted) {
-  db.convert(options, ['uuid', 'record_uuid', 'uuids']);
+  db.convert(options, ['uuid', 'record_uuid', 'uuids', 'record_uuids']);
 
   const filters = new FilterParser(options, { tableAlias : 'p' });
 
   const table = posted ? 'general_ledger' : 'posting_journal';
-
-  let typeIds = [];
-
-  if (options.origin_id) {
-    typeIds = typeIds.concat(options.origin_id);
-  }
 
   const sql = `
     SELECT BUID(p.uuid) AS uuid, ${posted} as posted, p.project_id, p.fiscal_year_id, p.period_id,
@@ -119,7 +119,7 @@ function buildTransactionQuery(options, posted) {
       p.debit_equiv, p.credit_equiv, p.currency_id, c.name AS currencyName,
       BUID(p.entity_uuid) AS entity_uuid, em.text AS hrEntity,
       BUID(p.reference_uuid) AS reference_uuid, dm2.text AS hrReference,
-      p.comment, p.origin_id, p.user_id, p.cc_id, p.pc_id, pro.abbr,
+      p.comment, p.transaction_type_id, p.user_id, p.cc_id, p.pc_id, pro.abbr,
       pro.name AS project_name, per.start_date AS period_start,
       per.end_date AS period_end, a.number AS account_number, a.label AS account_label, u.display_name
     FROM ${table} p
@@ -145,10 +145,17 @@ function buildTransactionQuery(options, posted) {
   filters.equals('project_id');
   filters.equals('trans_id');
   filters.equals('record_uuid');
+  filters.equals('currency_id');
 
-  filters.custom('origin_id', 'p.origin_id IN (?)', [typeIds]);
+  filters.equals('comment');
+  filters.equals('hrEntity', 'text', 'em');
+  filters.equals('hrRecord', 'text', 'dm1');
+  filters.equals('hrReference', 'text', 'dm2');
+
+  filters.custom('transaction_type_id', 'p.transaction_type_id IN (?)', options.transaction_type_id);
 
   filters.custom('uuids', 'p.uuid IN (?)', [options.uuids]);
+  filters.custom('record_uuids', 'p.record_uuid IN (?)', [options.record_uuids]);
   filters.custom('amount', '(credit_equiv = ? OR debit_equiv = ?)', [options.amount, options.amount]);
 
   return {
@@ -177,18 +184,44 @@ function find(options) {
   return naiveTransactionSearch(options, false);
 }
 
+function postProcessFullTransactions(rows, includeNonPosted) {
+  // get a list of unique record uuids
+  const records = rows
+    .map(row => row.record_uuid)
+    .filter((value, idx, arr) => arr.indexOf(value) === idx);
+
+  return find({ record_uuids : records, includeNonPosted });
+}
+
 /**
  * @method list
  *
  * @description
  * This function simply uses the find() method to filter the posting journal and
- * (optionally) the general ledger.
+ * (optionally) the general ledger.  If the "showFullTransactions" option is
+ * passed to the query string, the entire transaction matching the filter
+ * parameters will be shown.
  */
 function list(req, res, next) {
+  // cache this the "nonposted" query in case in case we need to look up the
+  // full transaction records.
+  const { includeNonPosted, showFullTransactions } = req.query;
   find(req.query)
-    .then((journalResults) => {
-      return res.status(200).send(journalResults);
+    .then(journalResults => {
+      const hasEmptyResults = journalResults.length === 0;
+
+      const hasFullTransactions = showFullTransactions &&
+        Boolean(Number(showFullTransactions));
+
+      // only do a second pass if we have data and have requested the full transaction
+      // records
+      if (!hasEmptyResults && hasFullTransactions) {
+        return postProcessFullTransactions(journalResults, includeNonPosted);
+      }
+
+      return journalResults;
     })
+    .then(rows => res.status(200).send(rows))
     .catch(next)
     .done();
 }
@@ -213,6 +246,7 @@ function editTransaction(req, res, next) {
   const UPDATE_JOURNAL_ROW = 'UPDATE posting_journal SET ? WHERE uuid = ?;';
   const INSERT_JOURNAL_ROW = 'INSERT INTO posting_journal SET ?;';
   const UPDATE_TRANSACTION_HISTORY = 'INSERT INTO transaction_history SET ?;';
+  const UPDATE_RECORD_EDITED_FLAG = 'UPDATE ?? SET edited = 1 WHERE uuid = ?;';
 
   const transaction = db.transaction();
   const recordUuid = req.params.record_uuid;
@@ -223,6 +257,7 @@ function editTransaction(req, res, next) {
 
   let _transactionToEdit;
   let _fiscalYear;
+  let _recordTableToEdit;
 
   rowsRemoved.forEach(row => transaction.addQuery(REMOVE_JOURNAL_ROW, [db.bid(row.uuid)]));
 
@@ -230,15 +265,20 @@ function editTransaction(req, res, next) {
   // @FIXME(sfount) this logic needs to be updated when allowing super user editing
   lookupTransaction(recordUuid)
     .then((transactionToEdit) => {
-      const { posted, trans_id } = transactionToEdit[0];
+      const [{ posted, hrRecord }] = transactionToEdit;
+      const transactionId = transactionToEdit[0].trans_id;
 
       // bind the current transaction under edit as "transactionToEdit"
       _transactionToEdit = transactionToEdit;
 
+      // _recordTableToEdit is now either voucher, invoice, or cash
+      const [prefix] = hrRecord.split('.');
+      _recordTableToEdit = hrRecordToTableMap[prefix];
+
       // check the source (posted vs. non-posted) of the first transaction row
       if (posted) {
         throw new BadRequest(
-          `Posted transactions cannot be edited.  Transaction ${trans_id} is already posted.`,
+          `Posted transactions cannot be edited.  Transaction ${transactionId} is already posted.`,
           'POSTING_JOURNAL.ERRORS.TRANSACTION_ALREADY_POSTED'
         );
       }
@@ -249,7 +289,7 @@ function editTransaction(req, res, next) {
       const singleRow = ((rowsAdded.length - rowsRemoved.length) + transactionToEdit.length) === 1;
       if (allRowsRemoved || singleRow) {
         throw new BadRequest(
-          `Transaction ${trans_id} has too few rows!  A valid transaction must contain at least two rows.`,
+          `Transaction ${transactionId} has too few rows!  A valid transaction must contain at least two rows.`,
           'POSTING_JOURNAL.ERRORS.TRANSACTION_MUST_CONTAIN_ROWS'
         );
       }
@@ -288,12 +328,14 @@ function editTransaction(req, res, next) {
       // record the transaction history once the transaction has been updated.
       const row = _transactionToEdit[0];
       const transactionHistory = {
-        uuid : db.bid(uuid.v4()),
+        uuid : db.bid(uuid()),
         record_uuid : db.bid(row.record_uuid),
         user_id : req.session.user.id,
       };
 
-      transaction.addQuery(UPDATE_TRANSACTION_HISTORY, [transactionHistory]);
+      transaction
+        .addQuery(UPDATE_RECORD_EDITED_FLAG, [_recordTableToEdit, db.bid(row.record_uuid)])
+        .addQuery(UPDATE_TRANSACTION_HISTORY, [transactionHistory]);
 
       return transaction.execute();
     })
@@ -323,6 +365,11 @@ function transformColumns(rows, newRecord, transactionToEdit, setFiscalData) {
   const REFERENCE_QUERY = 'SELECT uuid FROM document_map  WHERE text = ?';
   const EXCHANGE_RATE_QUERY = `
     SELECT ? * IF(enterprise.currency_id = ?, 1, GetExchangeRate(enterprise.id, ?, ?)) AS amount FROM enterprise
+    JOIN project ON enterprise.id = project.enterprise_id WHERE project.id = ?;
+  `;
+
+  const EXCHANGE_RATE_REVERSE_QUERY = `
+    SELECT ? * IF(enterprise.currency_id = ?, 1, (1 / GetExchangeRate(enterprise.id, ?, ?))) AS amount FROM enterprise
     JOIN project ON enterprise.id = project.enterprise_id WHERE project.id = ?;
   `;
 
@@ -428,6 +475,27 @@ function transformColumns(rows, newRecord, transactionToEdit, setFiscalData) {
       });
     }
 
+    if (row.debit) {
+      // if the date has been updated, use the new date - otherwise default to the old transaction date
+      const transDate = new Date(row.trans_date ? row.trans_date : transactionDate);
+
+      databaseRequests.push(EXCHANGE_RATE_REVERSE_QUERY);
+      databaseValues.push([row.debit, currencyId, currencyId, transDate, projectId]);
+
+      assignments.push((result) => {
+        const [{ amount }] = result;
+
+        if (!amount) {
+          throw new BadRequest(
+            'Missing or corrupt exchange rate for rows',
+            'POSTING_JOURNAL.ERRORS.MISSING_EXCHANGE_RATE'
+          );
+        }
+
+        row.debit_equiv = amount;
+      });
+    }
+
     if (row.credit_equiv) {
       // if the date has been updated, use the new date - otherwise default to the old transaction date
       const transDate = new Date(row.trans_date ? row.trans_date : transactionDate);
@@ -445,6 +513,26 @@ function transformColumns(rows, newRecord, transactionToEdit, setFiscalData) {
           );
         }
         row.credit = amount;
+      });
+    }
+
+    if (row.credit) {
+      // if the date has been updated, use the new date - otherwise default to the old transaction date
+      const transDate = new Date(row.trans_date ? row.trans_date : transactionDate);
+
+      databaseRequests.push(EXCHANGE_RATE_REVERSE_QUERY);
+      databaseValues.push([row.credit, currencyId, currencyId, transDate, projectId]);
+
+      assignments.push((result) => {
+        const [{ amount }] = result;
+
+        if (!amount) {
+          throw new BadRequest(
+            'Missing or corrupt exchange rate for rows',
+            'POSTING_JOURNAL.ERRORS.MISSING_EXCHANGE_RATE'
+          );
+        }
+        row.credit_equiv = amount;
       });
     }
 
@@ -478,7 +566,7 @@ function transformColumns(rows, newRecord, transactionToEdit, setFiscalData) {
  * POST /journal/:uuid/reverse
  */
 function reverse(req, res, next) {
-  const voucherUuid = uuid.v4();
+  const voucherUuid = uuid();
   const recordUuid = db.bid(req.params.uuid);
   const params = [
     recordUuid,
@@ -567,35 +655,6 @@ function getTransactionEditHistory(req, res, next) {
 
   db.exec(sql, [db.bid(req.params.uuid)])
     .then(record => res.status(200).json(record))
-    .catch(next)
-    .done();
-}
-
-
-/**
- * PUT /journal/comments
- *
- * @function commentPostingJournal
- *
- * @description
- * This function will put a comment on both the posting journal and general ledger.
- *
- * @param {object} params - { uuids: [...], comment: '' }
- */
-function commentPostingJournal(req, res, next) {
-  const { uuids, comment } = req.body.params;
-  const uids = uuids.map(db.bid);
-
-  const journalUpdate = 'UPDATE posting_journal SET comment = ? WHERE uuid IN ?';
-  const ledgerUpdate = 'UPDATE general_ledger SET comment = ? WHERE uuid IN ?';
-
-  q.all([
-    db.exec(journalUpdate, [comment, [uids]]),
-    db.exec(ledgerUpdate, [comment, [uids]]),
-  ])
-    .then(() => {
-      res.sendStatus(200);
-    })
     .catch(next)
     .done();
 }

@@ -3,7 +3,16 @@
     <ol class="headercrumb">
       <li class="static" translate>TREE.PAYROLL</li>
       <li class="title" translate>EMPLOYEE.TITLE</li>
+      <li ng-if="EmployeeCtrl.isUpdating" class="title">{{ EmployeeCtrl.employee.name }}</li>
     </ol>
+
+    <!-- ng-if to stop flickering on load -->
+    <span
+        ng-if="EmployeeCtrl.isUpdating" 
+        style="margin-left : 5px"
+        class="label label-warning text-uppercase">
+      <span translate>FORM.LABELS.EDIT</span>
+    </span>    
   </div>
 </div>
 
@@ -198,6 +207,7 @@
                         bh-unique="/patients/hospital_number"
                         ng-maxlength="EmployeeCtrl.length20"
                         autocomplete="off"
+                        origin = {{EmployeeCtrl.origin}}
                         required>
                       <span ng-show="DetailForm.hospitalNumber.$error.unique" class="glyphicon glyphicon-remove form-control-feedback" id="unique-error-icon"></span>
                       <span ng-show="DetailForm.hospitalNumber.$pending.unique" class="glyphicon glyphicon-hourglass form-control-feedback"></span>
@@ -359,15 +369,15 @@
 
                     <uib-alert class="text-danger" type="danger" ng-if="EmployeeCtrl.fonctions.length === 0">
                       <i class="fa fa-warning"></i>
-                      <span translate>FORM.LABELS.FUNCTION</span> <b><span translate>FORM.LABELS.CONTACT_ADMIN</span></b>
+                      <span translate>FORM.LABELS.PROFESSION</span> <b><span translate>FORM.LABELS.CONTACT_ADMIN</span></b>
                     </uib-alert>
 
-                    <label class="col-md-3 control-label" translate>FORM.LABELS.FUNCTION</label>
+                    <label class="col-md-3 control-label" translate>FORM.LABELS.PROFESSION</label>
                     <div class="col-md-9">
                       <ui-select
                         name="fonction"
                         ng-model="EmployeeCtrl.employee.fonction_id">
-                        <ui-select-match placeholder="{{ 'FORM.SELECT.FUNCTION' | translate }}">
+                        <ui-select-match placeholder="{{ 'FORM.SELECT.PROFESSION' | translate }}">
                           <span>{{$select.selected.fonction_txt}}</span>
                         </ui-select-match>
                         <ui-select-choices ui-select-focus-patch repeat="f.id as f in EmployeeCtrl.functions | filter:{ fonction_txt : $select.search } | orderBy:'fonction_txt'">

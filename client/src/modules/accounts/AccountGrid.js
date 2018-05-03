@@ -1,7 +1,10 @@
 angular.module('bhima.services')
   .service('AccountGridService', AccountGridService);
 
-AccountGridService.$inject = ['AccountStoreService', 'AccountService', 'Store', 'LanguageService', '$httpParamSerializer'];
+AccountGridService.$inject = [
+  'AccountStoreService', 'AccountService', 'Store', 'LanguageService',
+  '$httpParamSerializer',
+];
 
 /**
  * @class AccountGridService
@@ -12,7 +15,6 @@ AccountGridService.$inject = ['AccountStoreService', 'AccountService', 'Store', 
  * adding and removing data.
  */
 function AccountGridService(AccountStore, Accounts, Store, Languages, $httpParamSerializer) {
-
   /**
    * @constructor
    *
@@ -33,19 +35,20 @@ function AccountGridService(AccountStore, Accounts, Store, Languages, $httpParam
    * Requests the latest account list from the AccountStore service and updates loading variables
    */
   AccountGrid.prototype.settup = function settup() {
+    // handle account store
+    function handleAccountStore(result) {
+      this._store = result;
+
+      // order and expose data made available through the store
+      this.formatStore();
+
+      // update exposed store driven data
+      this.data = angular.copy(this._store.data);
+    }
 
     // Fetch initial set of accounts
     return AccountStore.accounts()
-      .then(function (result) {
-        this._store = result;
-
-        // order and expose data made available through the store
-        // this.data = Accounts.order(this._store.data);
-        this.formatStore();
-
-        // update exposed store driven data
-        this.data = angular.copy(this._store.data);
-      }.bind(this));
+      .then(handleAccountStore.bind(this));
   };
 
 
@@ -141,6 +144,7 @@ function AccountGridService(AccountStore, Accounts, Store, Languages, $httpParam
   };
 
   AccountGrid.prototype.insertDifference = function insertDifference(account, index) {
+    this.data = this.data || [];
     this.data.splice(index, 0, account);
   };
 

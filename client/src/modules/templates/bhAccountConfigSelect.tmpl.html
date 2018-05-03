@@ -1,0 +1,30 @@
+<div ng-form="{{ $ctrl.name }}" bh-account-config-select ng-model-options="{ updateOn: 'default' }">
+  <div
+    class="form-group"
+    ng-class="{ 'has-error' : $ctrl.validationTrigger && AccountConfigForm.config_accounting_id.$invalid }">
+
+    <label class="control-label" translate>
+      {{ ::$ctrl.label }}
+    </label>
+    <ng-transclude></ng-transclude>
+        
+    <ui-select
+      name="config_accounting_id"
+      ng-model="$ctrl.configAccountingId"
+      on-select="$ctrl.onSelect($item, $model)"
+      ng-required="$ctrl.required">
+      <ui-select-match placeholder="{{ ::'FORM.SELECT.ACCOUNT_CONFIGURATION' | translate }}">
+        <span>{{$select.selected.label}}</span>
+      </ui-select-match>
+      <ui-select-choices
+        ui-select-focus-patch
+        repeat="accountConfig.id as accountConfig in $ctrl.accountConfigs | filter: { 'label': $select.search }">        
+        <span ng-bind-html="accountConfig.label | highlight:$select.search"></span>
+      </ui-select-choices>
+    </ui-select>
+
+    <div class="help-block" ng-messages="AccountConfigForm.config_accounting_id.$error" ng-show="$ctrl.validationTrigger &&  AccountConfigForm.config_accounting_id.$invalid">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+</div>

@@ -48,13 +48,32 @@
         </bh-stock-entry-exit-type>
       </div>
 
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="text-info" ng-show="!StockCtrl.movement.exit_type">
+            <span class="fa fa-info-circle"></span>
+            <span translate>FORM.INFO.NO_DESTINATION</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- entity -->
+      <div ng-if="StockCtrl.reference || StockCtrl.displayName" class="row">
+        <div class="col-xs-12">
+          <div class="show-on-small-screen">
+              <span translate>STOCK.DESTINATION</span> :
+              {{ StockCtrl.reference || StockCtrl.displayName }}
+          </div>
+        </div>
+      </div>
+
       <!-- date and note -->
       <div class="row">
-        <div class="col-xs-6">
+        <div class="col-xs-12 col-md-6">
           <!-- date -->
           <bh-date-editor
             date-value="StockCtrl.movement.date"
-            max-date="StockCtrl.maxDate" >
+            on-change="StockCtrl.onDateChange(date)">
           </bh-date-editor>
 
           <!-- note -->
@@ -67,7 +86,7 @@
               class="form-control"
               name="description"
               ng-model="StockCtrl.movement.description"
-              placeholder="{{ ::'FORM.PLACEHOLDERS.DESCRIPTION' | translate }}"
+              placeholder="{{ 'FORM.PLACEHOLDERS.DESCRIPTION' | translate }}"
               ng-maxlength="StockCtrl.maxLength"
               required>
             </textarea>
@@ -82,34 +101,42 @@
       <div class="row" style="padding-bottom : 5px;">
         <div class="col-xs-12">
 
-          <!-- info -->
-          <p
-            style="padding-top : 10px;"
-            class="text-info"
-            ng-show="!StockCtrl.movement.exit_type">
-            <span class="fa fa-info-circle"></span>
-            <span translate>FORM.INFO.NO_DESTINATION</span>
-          </p>
+          <div class="grid-toolbar">
 
-          <!-- "Recover Items" button -->
-          <div class="btn-group pull-right" role="group">
-            <button
-              type="button"
-              class="btn btn-default"
-              ng-class="{'btn-primary' : StockCtrl.hasCacheAvailable }"
-              ng-click="StockCtrl.readCache()"
-              ng-disabled="!StockCtrl.hasCacheAvailable">
-              <span class="fa fa-recycle"></span>
-              <span translate>FORM.BUTTONS.RECOVER_ITEMS</span>
-            </button>
+            <!-- "Add number of grid rows" input-group -->
+            <div class="grid-toolbar-item">
+              <bh-add-item
+                disable = "StockCtrl.movement.exit_type"
+                callback = "StockCtrl.addItems(numItem)">
+              </bh-add-item>
+            </div>
+
+            <!-- Other Actions -->
+            <div class="grid-toolbar-item">
+              <div uib-dropdown dropdown-append-to-body data-action="grid-lots-tools">
+                  <a class="btn btn-default" uib-dropdown-toggle>
+                    </span> <span class="hidden-xs" translate>FORM.BUTTONS.ACTIONS</span> <span class="caret"></span>
+                  </a>
+                  <ul uib-dropdown-menu role="menu" class="dropdown-menu-right">
+                    <li role="menuitem">
+                      <a href ng-click="StockCtrl.exportGrid()">
+                        <i class="fa fa-file-excel-o"></i> <span translate>FORM.BUTTONS.EXPORT</span>
+                      </a>
+                    </li>
+                    <!-- TODO: Cache Selected Lots
+                      <li role="menuitem">
+                        <a href
+                          ng-class="{'bg-ima-blue' : StockCtrl.hasCacheAvailable }"
+                          ng-click="StockCtrl.readCache()"
+                          ng-disabled="!StockCtrl.hasCacheAvailable">
+                          <i class="fa fa-recycle"></i> <span translate>FORM.BUTTONS.RECOVER_ITEMS</span>
+                        </a>
+                      </li>
+                    -->
+                  </ul>
+                </div>
+            </div>
           </div>
-
-          <!-- "Add number of grid rows" input-group -->
-          <bh-add-item
-            disable = "StockCtrl.movement.exit_type"
-            callback = "StockCtrl.addItems(numItem)">
-          </bh-add-item>
-
         </div>
       </div>
 
@@ -117,6 +144,7 @@
       <div id="stock-exit-grid"
         ui-grid="StockCtrl.gridOptions"
         style="height: 300px; width: 100%;"
+        ui-grid-exporter
         ui-grid-auto-resize
         ui-grid-resize-columns>
         <bh-grid-loading-indicator
@@ -129,10 +157,10 @@
 
       <!-- footer -->
       <div class="row" style="margin-top: 5px;">
-        <div class="col-xs-6 col-xs-offset-6">
+        <div class="col-xs-12">
           <div class="text-right">
-            <button class="btn btn-default" ng-click="StockCtrl.suspend(StockExitForm)" type="button" translate>
-              FORM.BUTTONS.SUSPEND
+            <button class="btn btn-default" ng-click="StockCtrl.reset(StockExitForm)" type="button" translate>
+              FORM.BUTTONS.CLEAR
             </button>
 
             <bh-loading-button loading-state="StockCtrl.$loading" disabled="!StockCtrl.validForSubmit">

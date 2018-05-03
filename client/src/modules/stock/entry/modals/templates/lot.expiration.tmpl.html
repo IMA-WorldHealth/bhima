@@ -1,9 +1,7 @@
-<div 
-  class="ui-grid-cell-contents"
-  >
+<div class="ui-grid-cell-contents">
   <bh-date-picker
     date="row.entity.expiration_date"
-    on-change="grid.appScope.checkLine(row.entity, date)"
+    on-change="grid.appScope.onDateChange(date, row.entity)"
     required="true">
   </bh-date-picker>
 </div>

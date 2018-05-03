@@ -12,7 +12,7 @@
   <br>
 
   <!-- content  -->
-  <table class="table table-condensed table-striped table-bordered table-report">
+  <table class="table table-condensed table-bordered table-report">
     <thead>
       <tr style="background-color:#ddd;">
         <th class="text-left" style="width: 15%;"></th>
@@ -23,10 +23,10 @@
 
     <tbody>
       {{#each accounts}}
-        {{#if this.is_title}}
+        {{#equal this.type_id ../TITLE_ID}}
           <tr>
             <td class="text-right"><strong>{{ this.number }}</strong></td>
-            <td class="text-left">
+            <td class="text-left" title="{{this.label}}">
               <strong style="margin-left: {{indentAccount this.depth}};">
                 {{#if this.locked}}
                   <i class="fa fa-lock"></i>
@@ -49,7 +49,7 @@
             </td>
             <td>{{translate this.translation_key }}</td>
           </tr>
-        {{/if}}
+        {{/equal}}
       {{/each}}
     </tbody>
   </table>

@@ -1,11 +1,9 @@
 <div class="container-fluid" ng-form="debtorGroup" novalidate>
   <div class="row" ng-if="GroupUpdateCtrl.$loading">
-    <div class="col-xs-12">
-      <i class="fa fa-circle-o-notch fa-spin"></i> <span translate>DEBTOR_GROUP.LOADING</span>
-    </div>
+    <i class="fa fa-circle-o-notch fa-spin"></i> <span translate>DEBTOR_GROUP.LOADING</span>
   </div>
-  <div ng-if="GroupUpdateCtrl.$loaded">
 
+  <div ng-if="GroupUpdateCtrl.$loaded">
     <div class="row">
       <div class="col-md-5">
         <!-- Debtor group details form elements -->
@@ -21,27 +19,12 @@
             </div>
           </div>
 
-          <div
-            class="form-group has-feedback"
-            ng-class="{'has-error' : !GroupUpdateCtrl.group.color && debtorGroup.$submitted}">
-            <label class="control-label" translate>FORM.LABELS.COLOR</label>
-
-            <ui-select tagging ng-model="GroupUpdateCtrl.group.color">
-              <ui-select-match placeholder="Pick one...">
-                <i class="fa fa-circle" style="color: {{$select.selected.value}}; font-sze:14px"></i>
-                &nbsp;<span translate>{{$select.selected.name}}</span>
-              </ui-select-match>
-              <ui-select-choices repeat="val.value as val in GroupUpdateCtrl.colors | filter: {'name' :$select.search}">
-                <div>
-                  <span><i class="fa fa-circle" style="color: {{val.value}}; font-sze:14px"></i>&nbsp; <span translate>{{val.name}} </span> </span>
-                </div>
-              </ui-select>
-          </div>
 
           <bh-account-select
             name="account_id"
             account-id="GroupUpdateCtrl.group.account_id"
-            on-select-callback="GroupUpdateCtrl.onSelectAccountCallback(account)">
+            on-select-callback="GroupUpdateCtrl.onSelectAccountCallback(account)"
+            exclude-title-accounts="true">
           </bh-account-select>
 
           <!-- @todo The UI should show an option that allows you apply a price list, if this is checked then you can select an option -->
@@ -107,6 +90,23 @@
               location-uuid="GroupUpdateCtrl.group.location_id"
               required></bh-location-select>
           </div>
+
+
+          <div
+            class="form-group has-feedback"
+            ng-class="{'has-error' : !GroupUpdateCtrl.group.color && debtorGroup.$submitted}">
+            <label class="control-label" translate>FORM.LABELS.COLOR</label>
+
+            <ui-select tagging ng-model="GroupUpdateCtrl.group.color">
+              <ui-select-match placeholder="Pick one...">
+                <i class="fa fa-circle" style="color: {{$select.selected.value}}"></i>
+                <span translate>{{$select.selected.name}}</span>
+              </ui-select-match>
+              <ui-select-choices repeat="val.value as val in GroupUpdateCtrl.colors | filter: {'name' :$select.search}">
+                <span><i class="fa fa-circle" style="color: {{val.value}}; font-sze:14px"></i> <span translate>{{ val.name }}</span></span>
+              </ui-select>
+          </div>
+          
         </div>
 
         <div class="clearfix">
@@ -198,15 +198,15 @@
             </div>
             <div class="row">
               <div class="col-md-12">
-                <h5><b translate>DEBTOR_GROUP.POLICIES.BILLING_SERVICES.TITLE</b></h5>
-                <p ng-if="GroupUpdateCtrl.group.apply_billing_services===false" class="text-info">
+                <h5><b translate>DEBTOR_GROUP.POLICIES.INVOICING_FEES.TITLE</b></h5>
+                <p ng-if="GroupUpdateCtrl.group.apply_invoicing_fees===false" class="text-info">
                   <span class="fa fa-info-circle" aria-hidden="true"></span>
-                  <span translate>DEBTOR_GROUP.POLICIES.BILLING_SERVICES.INFO</span>
+                  <span translate>DEBTOR_GROUP.POLICIES.INVOICING_FEES.INFO</span>
                 </p>
                 <div class="checkbox">
                   <label>
-                    <input ng-model="GroupUpdateCtrl.group.apply_billing_services" name="apply_billing_services" ng-true-value="false" ng-false-value="true" type="checkbox">
-                    <span translate>DEBTOR_GROUP.POLICIES.BILLING_SERVICES.LABEL</span>
+                    <input ng-model="GroupUpdateCtrl.group.apply_invoicing_fees" name="apply_invoicing_fees" ng-true-value="false" ng-false-value="true" type="checkbox">
+                    <span translate>DEBTOR_GROUP.POLICIES.INVOICING_FEES.LABEL</span>
                   </label>
                 </div>
               </div>
@@ -222,22 +222,22 @@
 
           <div class="panel-body">
             <div class="form-group">
-              <label translate>DEBTOR_GROUP.POLICIES.BILLING_SERVICES.TITLE</label>
+              <label translate>DEBTOR_GROUP.POLICIES.INVOICING_FEES.TITLE</label>
 
-              <p class="text-info form-control-static" ng-if="GroupUpdateCtrl.group.billingServices.length === 0">
+              <p class="text-info form-control-static" ng-if="GroupUpdateCtrl.group.invoicingFees.length === 0">
                 <i class="fa fa-info-circle"></i>
-                <span translate>DEBTOR_GROUP.POLICIES.BILLING_SERVICES.EMPTY</span>
+                <span translate>DEBTOR_GROUP.POLICIES.INVOICING_FEES.EMPTY</span>
               </p>
               <ul>
                 <li
-                  ng-repeat="billingService in GroupUpdateCtrl.group.billingServices | orderBy:'label'"
+                  ng-repeat="invoicingFee in GroupUpdateCtrl.group.invoicingFees | orderBy:'label'"
                   class="form-control-static">
-                  {{ billingService.label }}
+                  {{ invoicingFee.label }}
                 </li>
               </ul>
 
-              <button id="billingServiceSubscription" class="btn btn-block btn-warning" ng-click="GroupUpdateCtrl.billingServiceSubscriptions()" translate>
-                DEBTOR_GROUP.POLICIES.BILLING_SERVICES.UPDATE
+              <button id="invoicingFeeSubscription" class="btn btn-block btn-warning" ng-click="GroupUpdateCtrl.invoicingFeeSubscriptions()" translate>
+                DEBTOR_GROUP.POLICIES.INVOICING_FEES.UPDATE
               </button>
             </div>
             <div class="form-group">

@@ -73,12 +73,13 @@
                 "LABEL": "Filter"
             },
             "FIRST_NAME": "First Name",
-            "FUNCTION": "Function",
+            "PROFESSION": "Job Title",
             "GENDER": "Gender",
             "GRADE": "Grade",
             "HOSPITAL_FILE_NR": "Hospital File Number",
             "ID": "ID",
             "INVENTORY": "Inventory",
+            "INVENTORY_GROUP":"Inventory Group",
             "INVOICES": "Invoices",
             "INVOICE_ID": "Invoice ID",
             "IS_ASSET": "Is asset ?",
@@ -96,6 +97,8 @@
             "LOADING": "Fetching data from the server.",
             "LOCKED": "Locked",
             "LOT": "Lot",
+            "LONGITUDE": "Longitude",
+            "LATITUDE": "Latitude",
             "PAYMENT_INVOICE": "payment made against this invoice",
             "NAME": "Name",
             "NATURE": "Nature",
@@ -120,6 +123,7 @@
             "PROFIT_CENTER": "Profit Center",
             "PROJECT": "Project",
             "PROVINCE": "Province",
+            "PURCHASE_PRICE" : "Purchase Price",
             "QUARTER_FOUR": "Previous Exercises",
             "QUARTER_ONE": "Less than 3 months",
             "QUARTER_THREE": "More than 6 months",
@@ -189,7 +193,8 @@
             "NUM_PATIENTS": "Number of Patients",
             "NUM_DISTINCT_RESIDENCES": "Number of Distinct Residences",
             "NUM_DEBTOR_GROUPS": "Number of Debtor Groups",
-            "NUM_EMPLOYEES": "Number of Employees"
+            "NUM_EMPLOYEES": "Number of Employees",
+            "ROWS":"Row(s)"
         }
     }
 }

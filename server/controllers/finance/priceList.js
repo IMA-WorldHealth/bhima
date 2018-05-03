@@ -14,7 +14,7 @@
  */
 
 const db = require('../../lib/db');
-const uuid = require('node-uuid');
+const uuid = require('uuid/v4');
 
 /**
  * Lists all price lists in the database
@@ -149,10 +149,10 @@ function formatPriceListItems(priceListUuid, items) {
   // the database
   return items.map((item) => {
     //  prevent missing inventory_uuids from crashing the server
-    var inventoryId = item.inventory_uuid ? db.bid(item.inventory_uuid) : null;
+    const inventoryId = item.inventory_uuid ? db.bid(item.inventory_uuid) : null;
 
     return [
-      db.bid(item.uuid || uuid.v4()),
+      db.bid(item.uuid || uuid()),
       inventoryId,
       priceListUuid,
       item.label,
@@ -169,18 +169,19 @@ function formatPriceListItems(priceListUuid, items) {
  * POST /prices
  */
 exports.create = function create(req, res, next) {
-  var items;
-  var data = req.body.list;
-  var trans = db.transaction();
-  var priceListSql =
+  let items;
+  const data = req.body.list;
+  const trans = db.transaction();
+  const priceListSql =
     `INSERT INTO price_list (uuid, label, description, enterprise_id)
     VALUES (?, ?, ?, ?);`;
-  var priceListItemSql =
+  const priceListItemSql =
     `INSERT INTO price_list_item (uuid, inventory_uuid, price_list_uuid,
     label, value, is_percentage) VALUES ?;`;
 
   // generate a UUID if not provided
-  data.uuid = db.bid(data.uuid || uuid.v4());
+  const priceListUuid = data.uuid || uuid();
+  data.uuid = db.bid(priceListUuid);
   // if the client didn't send price list items, do not create them.
   if (data.items) {
     items = formatPriceListItems(data.uuid, data.items);
@@ -200,7 +201,7 @@ exports.create = function create(req, res, next) {
   trans.execute()
     .then(() => {
       // respond to the client with a 201 CREATED
-      res.status(201).json({ uuid : uuid.unparse(data.uuid) });
+      res.status(201).json({ uuid : priceListUuid });
     })
     .catch(next)
     .done();
@@ -213,19 +214,19 @@ exports.create = function create(req, res, next) {
  * PUT /prices/:uuid
  */
 exports.update = function update(req, res, next) {
-  var items;
-  var data = req.body.list;
-  var priceListSql =
+  let items;
+  const data = req.body.list;
+  const priceListSql =
     'UPDATE price_list SET ? WHERE uuid = ?;';
 
-  var priceListDeleteItemSql =
+  const priceListDeleteItemSql =
     'DELETE FROM price_list_item WHERE price_list_uuid = ?';
 
-  var priceListCreateItemSql =
+  const priceListCreateItemSql =
     `INSERT INTO price_list_item (uuid, inventory_uuid, price_list_uuid,
     label, value, is_percentage) VALUES ?;`;
 
-  var trans = db.transaction();
+  const trans = db.transaction();
   const uid = db.bid(req.params.uuid);
 
   // if the client didn't send price list items, do not create them.
@@ -282,15 +283,15 @@ exports.delete = function del(req, res, next) {
 
   // ensure that the price list exists
   lookupPriceList(uid)
-  .then(() => {
-    return db.exec(sql, [uid]);
-  })
-  .then(() => {
+    .then(() => {
+      return db.exec(sql, [uid]);
+    })
+    .then(() => {
     // respond with 204 'NO CONTENT'
-    res.status(204).json();
-  })
-  .catch(next)
-  .done();
+      res.status(204).json();
+    })
+    .catch(next)
+    .done();
 };
 
 function isEmptyObject(object) {

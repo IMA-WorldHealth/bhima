@@ -3,7 +3,8 @@
     <ol class="headercrumb">
       <li class="static" translate>CASHBOX.TITLE</li>
       <li class="title">
-        <span translate>CASHBOX.CONFIG_ACCOUNTS</span> <small>{{ CashboxModalCtrl.cashbox.text }}</small>
+        <span translate>CASHBOX.CONFIG_ACCOUNTS</span>
+        <small>{{ CashboxModalCtrl.cashbox.text }}</small>
       </li>
     </ol>
   </div>
@@ -11,7 +12,8 @@
   <div class="modal-body">
 
     <p class="text-danger text-justify" ng-if="CashboxModalCtrl.error">
-      <i class="glyphicon glyphicon-exclamation-sign"></i> <span translate>FORM.ERRORS.CONNECTION</span>
+      <i class="glyphicon glyphicon-exclamation-sign"></i>
+      <span translate>FORM.ERRORS.CONNECTION</span>
     </p>
 
     <div class="form-group">
@@ -21,36 +23,33 @@
       </p>
     </div>
 
-    <bh-account-select
-      id="account-id"
-      account-id="CashboxModalCtrl.data.account_id"
-      label="FORM.LABELS.CASH_ACCOUNT"
-      name="account_id"
-      on-select-callback="CashboxModalCtrl.onSelectCashAccount(account)">
+    <bh-account-select id="account-id" account-id="CashboxModalCtrl.data.account_id" label="FORM.LABELS.CASH_ACCOUNT" name="account_id"
+      exclude-title-accounts="true" on-select-callback="CashboxModalCtrl.onSelectCashAccount(account)">
     </bh-account-select>
 
-    <bh-account-select
-      id="transfer-account-id"
-      account-id="CashboxModalCtrl.data.transfer_account_id"
-      label="FORM.LABELS.TRANSFER_ACCOUNT"
-      name="transfer_account_id"
-      on-select-callback="CashboxModalCtrl.onSelectTransferAccount(account)">
+    <bh-account-select id="transfer-account-id" account-id="CashboxModalCtrl.data.transfer_account_id" label="FORM.LABELS.TRANSFER_ACCOUNT"
+      name="transfer_account_id" exclude-title-accounts="true" on-select-callback="CashboxModalCtrl.onSelectTransferAccount(account)">
     </bh-account-select>
   </div>
 
   <div class="modal-footer">
-    <button type="button" class="btn btn-default" ng-click="CashboxModalCtrl.dismiss()" data-method="cancel">
-      <span translate>FORM.BUTTONS.CANCEL</span>
-    </button>
 
-    <bh-loading-button loading-state="CashboxModalForm.$loading">
-      <span translate>FORM.BUTTONS.SUBMIT</span>
-    </bh-loading-button>
-
-    <span data-role="feedback">
-      <span ng-if="CashboxModalForm.$submitted && CashboxModalForm.$invalid" class="text-danger">
-        <i class="glyphicon glyphicon-remove-sign"></i> <span translate>FORM.ERRORS.HAS_ERROR</span>
+    <div class="col-lg-12">
+      <span data-role="feedback">
+        <span ng-if="CashboxModalForm.$submitted && CashboxModalForm.$invalid" class="text-danger">
+          <i class="glyphicon glyphicon-remove-sign"></i>
+          <span translate>FORM.ERRORS.HAS_ERROR</span>
+        </span>
       </span>
-    </span>
+    </div>
+    <div class="col-lg-12">
+      <button type="button" class="btn btn-default" ng-click="CashboxModalCtrl.dismiss()" data-method="cancel">
+        <span translate>FORM.BUTTONS.CANCEL</span>
+      </button>
+
+      <bh-loading-button loading-state="CashboxModalForm.$loading">
+        <span translate>FORM.BUTTONS.SUBMIT</span>
+      </bh-loading-button>
+    </div>
   </div>
 </form>

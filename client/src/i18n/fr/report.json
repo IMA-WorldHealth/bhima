@@ -29,7 +29,12 @@
     "CASHFLOW" : {
       "TITLE":"Rapports de flux de trésorerie physique",
       "DESCRIPTION":"Ce rapport affiche les variations des comptes et des revenus du bilan sur la trésorerie",
-      "SHOW_WEEKLY_REPORT_HELP":"L'activation de cette option permettra de visualiser le rapport du cash flow par semaine"
+      "OPERATION":"Operation",
+      "INCOMES":"Recettes",
+      "EXPENSES":"Dépenses",
+      "TRANSFER":"Transferts",
+      "IN":"En",
+      "CONCERNED_ACCOUNT":"Ce rapport concerne les comptes suivants"
     },
     "CASH_INCOME":"Recettes",
     "CHART_OF_ACCOUNTS":"Plan Comptable",
@@ -60,6 +65,7 @@
       "TOTAL_DEBT": "Total des Dettes"
     },
     "OVER_NINETY_DAYS": "Plus de 90 Jours",
+    "PREVIOUS_MONTHS": "Mois Précédents",
     "PERIOD_START": "Debut",
     "PERIOD_STOP": "Fin",
     "PRODUCED_BY": "Produit par",
@@ -68,6 +74,7 @@
     "SINCE": "Depuis",
     "SIXTY_TO_NINETY_DAYS": "60 a 90 jours",
     "THIRTY_TO_SIXTY_DAYS": "30 a 60 jours",
+    "VIEW_ACCOUNT_STATEMENT": "Voir le Rélevé de Compte",
     "VIEW_CREDIT_NOTE": "Voir la note de credit",
     "VIEW_INVOICE": "Voir les factures",
     "VIEW_PATIENT": "Voir le Patient",
@@ -78,7 +85,8 @@
     "REPORT_ACCOUNTS": {
       "TITLE": "Rapport de comptes",
       "DESCRIPTION": "Ce rapport affiche toutes les transactions sur un compte individuel pour une période donnée",
-      "WARN_MULTIPLE": "N.B. Ce rapport concerne des comptes de produits / charges et s'étend sur plusieurs années fiscales. Les comptes de produits / charges sont remis à 0 au début de chaque exercice financier, le solde cumulatif affiché est destiné aux transactions dans ce délai. Il est recommandé d'utiliser cette déclaration au cours d'un exercice financier unique."
+      "WARN_MULTIPLE": "N.B. Ce rapport concerne des comptes de produits / charges et s'étend sur plusieurs années fiscales. Les comptes de produits / charges sont remis à 0 au début de chaque exercice financier, le solde cumulatif affiché est destiné aux transactions dans ce délai. Il est recommandé d'utiliser cette déclaration au cours d'un exercice financier unique.",
+      "WARN_CURRENCY" : "Attention! Vous utilisez une devise autre que la devise de l'entreprise. Les valeurs de ce rapport sont susceptibles d'être modifiées en fonction du taux de change et ne doivent pas être considérées comme définitives. Veuillez enregistrer un rapport dans la devise de l'entreprise pour référence à long terme."
     },
     "INCOME_EXPENSE_REPORT": {
       "TITLE": "Rapport des Comptes d'exploitation",
@@ -99,6 +107,8 @@
     "CLIENTS_REPORT" : {
       "TITLE" : "Rapport Clients",
       "CURRENT_MVT" : "Mouvement Courant",
+      "ADD_IGNORED_CLIENTS" : "Sauter Certains Clients",
+      "HIDE_IGNORED_CLIENTS" : "Sauter Certains Clients",
       "PREVIOUS_MVT" : "Du debut Au :",
       "DESCRIPTION" : "Ce rapport affiche tous les groupes de debiteurs, leurs situations precedent l'annee en cours, leurs situations de l'annee en cours ainsi que la balance finale"
     },
@@ -116,7 +126,15 @@
       "VALUE":"Valeur",
       "ENTRIES":"Entrées",
       "EXITS":"Sorties",
-      "STOCKS":"Stocks"
+      "STOCKS":"Stocks",
+      "EXIT_REPORT":"Rapport des sorties de stocks",
+      "EXIT_REPORT_DESCRIPTION":"Ce rapport affiche les sorties de stock qui ont eu lieu dans different depots",
+      "INCLUDE_INFORMATION":"Information à inclure",
+      "INCLUDE_PATIENT_EXIT":"Inclure les distributions vers les patients",
+      "INCLUDE_SERVICE_EXIT":"Inclure les distributions vers les services",
+      "INCLUDE_DEPOT_EXIT":"Inclure les distributions vers d'autres depots",
+      "INCLUDE_LOSS_EXIT":"Inclure les pertes de stocks",
+      "SHOW_DETAILS":"Afficher les details"
     },
     "UTIL":{
       "CANCEL_PREVIEW":"Fermer l'Aperçu",
@@ -128,8 +146,20 @@
       "BACK":"Revenir en arriere",
       "OPTIONS":"Options",
       "PREVIEW":"Aperçu",
-      "VIEW_ARCHIVE":"Archives"
+      "VIEW_ARCHIVE":"Archives",
+      "EMAIL_HELP_TXT" : "L'e-mail ci-dessus recevra le rapport en pièce jointe. Le serveur doit avoir une connexion Internet pour que l'e-mail soit livré avec succès."
     },
-      "CLIENT_DEBTOR_ACCOUNT_BALANCE_REPORT" : "Rapport des comptes débiteurs clients"
+    "OPTIONS" : {
+      "MORE_OPTIONS" : "Plus d'options",
+      "USE_ORIGINAL_TRANSACTION_CURRENCY" : "Afficher la devise de transaction originale?",
+      "USE_ORIGINAL_TRANSACTION_CURRENCY_HELP" : "Si oui, le rapport affichera la devise de la transaction au lieu de la valeur dans la devise de l'entreprise.",
+      "TOTALS_CURRENCY" : "Sélectionnez la Devise des Totaux",
+      "TOTALS_CURRENCY_HELP" : "Cette option vous permet d'afficher les totaux dans la devise sélectionnée en échangeant les totaux dans la devise sélectionnée en utilisant le taux de change du jour.",
+      "SEPARATE_DEBITS_AND_CREDITS" : "Séparer les débits et les crédits?",
+      "SEPARATE_DEBITS_AND_CREDITS_HELP" : "Cette option répartit les colonnes d'un seul solde positif ou négatif en deux colonnes représentant les débits et les crédits.",
+      "REMOVE_ZERO_ROWS" : "Cacher les colonnes vide?",
+      "REMOVE_ZERO_ROWS_HELP" : "Cette option supprime les lignes qui ne contiennent aucune donnée. Produit un rapport plus compacte."
+    },
+    "CLIENT_DEBTOR_ACCOUNT_BALANCE_REPORT" : "Rapport des comptes débiteurs clients"
   }
 }

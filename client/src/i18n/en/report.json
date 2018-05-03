@@ -1,6 +1,5 @@
 {
   "REPORT": {
-    "CLIENTS" : "Rapport Clients",
     "ACCOUNT": "Account Statement",
     "AGED_CREDITORS":{
      "TITLE":"Aged Creditors",
@@ -26,12 +25,20 @@
     "CASHFLOW" : {
       "TITLE":"Cash Flow Physical Report",
       "DESCRIPTION":"This report shows changes in the accounts and revenues of the balance sheet on cash",
-      "SHOW_WEEKLY_REPORT_HELP":"Enabling this option will allow to view the cash flow report per week"
+      "OPERATION":"Operation",
+      "INCOMES":"Incomes",
+      "EXPENSES":"Expenses",
+      "TRANSFER":"Transfers",
+      "IN":"In",
+      "CONCERNED_ACCOUNT":"This report concerns these accounts"
     },
     "CASH_INCOME":"Incomes",
     "CHART_OF_ACCOUNTS": "Chart of Accounts",
+    "CLIENTS" : "Clients Report",
     "CLIENTS_REPORT": {
       "TITLE": "Clients Report",
+      "ADD_IGNORED_CLIENTS" : "Skip Certain Clients",
+      "HIDE_IGNORED_CLIENTS" : "Skip Certain Clients",
       "CURRENT_MVT": "Current Movement",
       "PREVIOUS_MVT": "From Beginning To :",
       "DESCRIPTION": "This report displays all the debtor groups, their account balances at the beginning of the fiscal year, the current balances, and their ending balances."
@@ -63,6 +70,7 @@
       "TOTAL_DEBT": "Total Debt"
     },
     "OVER_NINETY_DAYS": "Over 90 Days",
+    "PREVIOUS_MONTHS": "Previous Months",
     "PERIOD_START": "Start",
     "PERIOD_STOP": "Stop",
     "PRODUCED_BY": "Produced by",
@@ -71,6 +79,7 @@
     "SINCE": "Since",
     "SIXTY_TO_NINETY_DAYS": "60 to 90 Days",
     "THIRTY_TO_SIXTY_DAYS": "30 to 60 Days",
+    "VIEW_ACCOUNT_STATEMENT": "View in Account Statement",
     "VIEW_CREDIT_NOTE": "View Credit Note",
     "VIEW_INVOICE": "View Invoices",
     "VIEW_PATIENT": "View Patient",
@@ -81,7 +90,8 @@
     "REPORT_ACCOUNTS": {
       "TITLE": "Account Report",
       "DESCRIPTION": "This report shows all transactions for an individual account given a set time period.",
-      "WARN_MULTIPLE": "N.B. This report concerns an income/ expense account and spans multiple fiscal years. Income/ expense accounts are cleared to 0 at the begining of every fiscal year, the cumulative balance displayed is for the transactions within this period of time. It is recommended to use this statement within a single fiscal year."
+      "WARN_MULTIPLE": "N.B. This report concerns an income/ expense account and spans multiple fiscal years. Income/ expense accounts are cleared to 0 at the beginning of every fiscal year, the cumulative balance displayed is for the transactions within this period of time. It is recommended to use this statement within a single fiscal year.",
+      "WARN_CURRENCY": "Attention! You are using a currency other than the enterprise currency.  Values on this report are subject to change with changes to the exchange rate and should not be considered final.  Please save a report in the enterprise currency for long term reference."
     },
     "INCOME_EXPENSE_REPORT": {
       "TITLE": "Income Expense Report",
@@ -113,7 +123,15 @@
       "VALUE":"Value",
       "ENTRIES":"Entries",
       "EXITS":"Exits",
-      "STOCKS":"Stocks"
+      "STOCKS":"Stocks",
+      "EXIT_REPORT":"Stock Exit Report",
+      "EXIT_REPORT_DESCRIPTION":"This report shows stocks exit which had occured in different depots",
+      "INCLUDE_INFORMATION":"Information to include",
+      "INCLUDE_PATIENT_EXIT":"Include stock exit to patient",
+      "INCLUDE_SERVICE_EXIT":"Include stock exit to service",
+      "INCLUDE_DEPOT_EXIT":"Include stock exit to other depots",
+      "INCLUDE_LOSS_EXIT":"Include stock loss",
+      "SHOW_DETAILS":"Show Details"
     },
     "UTIL": {
       "CANCEL_PREVIEW": "Cancel Preview",
@@ -125,7 +143,20 @@
       "BACK": "Back to the previous page",
       "OPTIONS": "Options",
       "PREVIEW": "Preview",
-      "VIEW_ARCHIVE": "Archives"
+      "VIEW_ARCHIVE": "Archives",
+      "EMAIL_HELP_TXT" : "The email above will receive the report as an attachment.  The server must have an internet connection for the email to be successfully delivered."
+    },
+    "OPTIONS" : {
+      "MORE_OPTIONS" : "More Options",
+      "USE_ORIGINAL_TRANSACTION_CURRENCY" : "Display original transaction currency?",
+      "USE_ORIGINAL_TRANSACTION_CURRENCY_HELP" : "If yes, the report will show the recorded currency of the transaction instead of the value in the enterprise's currency.",
+      "TOTALS_CURRENCY" : "Select Totals Currency",
+      "TOTALS_CURRENCY_HELP" : "This options lets you view the totals in the selected currency by exchanging the totals into the selected currency using today's exchange rate.",
+      "SEPARATE_DEBITS_AND_CREDITS" : "Separate Debits and Credits?",
+      "SEPARATE_DEBITS_AND_CREDITS_HELP" : "This option breaks out columns from a single positive or negative balance into two columns representing debits and credits.",
+      "REMOVE_ZERO_ROWS" : "Hide zero rows?",
+      "REMOVE_ZERO_ROWS_HELP" : "This option will remove rows that do not have any data in them.  Produces a more compact output."
     },
     "CLIENT_DEBTOR_ACCOUNT_BALANCE_REPORT" : "Client debtors accounts balance report"
-  }}
+  }
+}

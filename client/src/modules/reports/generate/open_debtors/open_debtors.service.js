@@ -11,10 +11,10 @@ OpenDebtorsReportService.$inject = ['$translate'];
  * Debtors Report.
  */
 function OpenDebtorsReportService($translate) {
-  var service = this;
+  const service = this;
 
-  var ASC = 1;
-  var DESC = 0;
+  const ASC = 1;
+  const DESC = 0;
 
   service.ASC = ASC;
   service.DESC = DESC;
@@ -46,7 +46,7 @@ function OpenDebtorsReportService($translate) {
   }];
 
   // ensure a human readable label
-  service.orders.forEach(function (order) {
+  service.orders.forEach((order) => {
     order.hrLabel = $translate.instant(order.label);
   });
 

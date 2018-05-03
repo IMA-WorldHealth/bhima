@@ -25,7 +25,7 @@ function StockItemService() {
 
   StockItem.prototype.validate = function validate() {
     this.isValid = this.inventory_uuid && this.lots.length > 0 && this.code;
-  }
-  
+  };
+
   return StockItem;
 }

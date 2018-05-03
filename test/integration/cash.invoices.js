@@ -1,5 +1,4 @@
 /* global expect, agent */
-'use strict';
 
 /**
  * @overview CashInvoicePayments
@@ -13,18 +12,18 @@ const _ = require('lodash');
 module.exports = PatientInvoicePayments;
 
 function PatientInvoicePayments() {
-  const DEBTOR_UUID =      // Test Patient
+  const DEBTOR_UUID =
     '3be232f9-a4b9-4af6-984c-5d3f87d5c107';
 
   const defaults = {
     currency_id : 1, // FCs
-    cashbox_id : 1, // Test Primary Cashbox A
+    cashbox_id : 1, // Caisse Principale
     project_id : 1, // Test Project
     debtor_uuid : DEBTOR_UUID,
     user_id : 1, // Test User
   };
 
-  const INVOICES    = [    // invoices defined in the database
+  const INVOICES = [ // invoices defined in the database
     { invoice_uuid : '957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6' },
     { invoice_uuid : 'c44619e0-3a88-4754-a750-a414fc9567bf' },
   ];
@@ -88,7 +87,6 @@ function PatientInvoicePayments() {
     return agent.post('/cash')
       .send({ payment : INVALID_INVOICE_PAYMENT })
       .then((res) => {
-
         // anticipate a 400 error from the API.
         helpers.api.errored(res, 400);
       })
@@ -136,7 +134,7 @@ function PatientInvoicePayments() {
         expect(res.body).to.not.be.empty;
         expect(res.body).to.have.keys(
           'uuid', 'barcode', 'reference', 'date', 'debtor_uuid', 'project_id', 'currency_id', 'items',
-          'cashbox_id', 'amount', 'user_id', 'description', 'is_caution'
+          'cashbox_id', 'amount', 'user_id', 'description', 'is_caution', 'edited'
         );
       })
       .catch(helpers.handler);

@@ -1,0 +1,35 @@
+<div class="form-group" data-bh-yes-no-radios>
+  <label class="control-label" translate>
+    {{$ctrl.label}}
+  </label>
+
+  <div>
+    <label class="radio-inline">
+      <input
+        type="radio"
+        name="{{$ctrl.name}}"
+        data-choice="yes"
+        ng-value="1"
+        ng-model="$ctrl.value"
+        ng-change="$ctrl.onChange($ctrl.value)"
+        required>
+      <span translate>FORM.LABELS.YES</span>
+    </label>
+
+    <label class="radio-inline">
+      <input
+        type="radio"
+        name="{{$ctrl.name}}"
+        data-choice="no"
+        ng-value="0"
+        ng-model="$ctrl.value"
+        ng-change="$ctrl.onChange($ctrl.value)"
+        required>
+      <span translate>FORM.LABELS.NO</span>
+    </label>
+
+    <span class="help-block" ng-show="$ctrl.helpText" translate>
+      {{$ctrl.helpText}}
+    </span>
+  </div>
+</div>

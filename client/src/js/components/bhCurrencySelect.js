@@ -6,8 +6,9 @@ angular.module('bhima.components')
     bindings    : {
       currencyId        : '=',
       validationTrigger : '<',
+      onChange          : '&',
+      label             : '@?',
       disableIds        : '<?',
-      onChange          : '&?',
       cashboxId         : '<?',
     },
   });
@@ -56,8 +57,7 @@ bhCurrencySelect.$inject = ['CurrencyService'];
  *   currency-id="ParentCtrl.model.currencyId"
  *   on-change="ParentCtrl.currencyChangeEvent()"
  *   disable-ids="ParentCtrl.disabledIds"
- *   validation-trigger="ParentForm.$submitted"
- *   >
+ *   validation-trigger="ParentForm.$submitted">
  * </bh-currency-select>
  *
  * @requires services/CurrencyService
@@ -80,6 +80,8 @@ function bhCurrencySelect(Currencies) {
 
     $ctrl.valid = true;
 
+    $ctrl.label = $ctrl.label || 'FORM.LABELS.CURRENCY';
+
     // default to noop() if an onChange() method was not passed in
     $ctrl.onChange = $ctrl.onChange || angular.noop;
   };
@@ -89,6 +91,7 @@ function bhCurrencySelect(Currencies) {
       digestDisableIds(changes.disableIds.currentValue);
     }
 
+    // FIXME - why is this needed?
     if (changes.onChange) {
       $ctrl.onChange = changes.onChange.currentValue;
     }

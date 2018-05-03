@@ -2,8 +2,9 @@ angular.module('bhima.services')
   .service('PatientInvoiceService', PatientInvoiceService);
 
 PatientInvoiceService.$inject = [
-  '$uibModal', 'SessionService', 'PrototypeApiService', 'FilterService', 'appcache', 'PeriodService',
-  '$httpParamSerializer', 'LanguageService', 'bhConstants',
+  '$uibModal', 'SessionService', 'PrototypeApiService', 'FilterService', 'appcache',
+  'PeriodService', '$httpParamSerializer', 'LanguageService', 'bhConstants',
+  'TransactionService',
 ];
 
 /**
@@ -16,7 +17,7 @@ PatientInvoiceService.$inject = [
  */
 function PatientInvoiceService(
   Modal, Session, Api, Filters, AppCache, Periods, $httpParamSerializer,
-  Languages, bhConstants
+  Languages, bhConstants, Transactions
 ) {
   var service = new Api('/invoices/');
 
@@ -28,7 +29,7 @@ function PatientInvoiceService(
   service.openCreditNoteModal = openCreditNoteModal;
   service.balance = balance;
   service.filters = invoiceFilters;
-  service.remove = remove;
+  service.remove = Transactions.remove;
 
   /**
    * @method create
@@ -38,22 +39,22 @@ function PatientInvoiceService(
    *
    * @returns {Promise} - a promise resolving to the HTTP result.
    */
-  function create(invoice, invoiceItems, billingServices, subsidies, description) {
+  function create(invoice, invoiceItems, invoicingFees, subsidies, description) {
     var cp = angular.copy(invoice);
 
     // add project id from session
     cp.project_id = Session.project.id;
 
-    // a patient invoice is not required to qualify for billing services or subsidies
+    // a patient invoice is not required to qualify for invoicing fees or subsidies
     // default to empty arrays
-    billingServices = billingServices || [];
+    invoicingFees = invoicingFees || [];
     subsidies = subsidies || [];
 
     // concatenate into a single object to send back to the client
     cp.items = invoiceItems.map(filterInventorySource);
 
-    cp.billingServices = billingServices.map(function (billingService) {
-      return billingService.billing_service_id;
+    cp.invoicingFees = invoicingFees.map(function (invoicingFee) {
+      return invoicingFee.invoicing_fee_id;
     });
 
     cp.subsidies = subsidies.map(function (subsidy) {
@@ -112,7 +113,7 @@ function PatientInvoiceService(
   function openCreditNoteModal(invoice) {
     return Modal.open({
       templateUrl : 'modules/invoices/registry/modalCreditNote.html',
-      resolve : { data : { invoice : invoice } },
+      resolve : { data : { invoice } },
       size : 'md',
       animation : true,
       keyboard  : false,
@@ -188,19 +189,6 @@ function PatientInvoiceService(
     // return  serialized options
     return $httpParamSerializer(options);
   };
-
-  /**
-   * @method remove
-   *
-   * @description
-   * This function removes an invoice from the database via the transaction
-   * delete route.
-   */
-  function remove(uuid) {
-    var url = '/transactions/'.concat(uuid);
-    return service.$http.delete(url)
-      .then(service.util.unwrapHttpResponse);
-  }
 
   return service;
 }

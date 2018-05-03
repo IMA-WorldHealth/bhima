@@ -50,7 +50,7 @@ function list(req, res, next) {
 function find(options) {
   const sql =
     `
-    SELECT 
+    SELECT
       p.id, p.fiscal_year_id, p.number, p.start_date, p.end_date,
       CONCAT(IFNULL(p.start_date, p.number), '/',  IFNULL(p.end_date, p.number)) AS label,
       MONTH(p.start_date) AS month_number, YEAR(p.start_date) AS year_number
@@ -79,12 +79,12 @@ function isInSameFiscalYear(opt) {
     return false;
   }
   const sql = `
-  SELECT 
-    p.fiscal_year_id 
-  FROM 
+  SELECT
+    p.fiscal_year_id
+  FROM
     period AS p
   WHERE p.id IN (${opt.periods.join(',')})
-  GROUP BY 
+  GROUP BY
     p.fiscal_year_id`;
 
   return db.exec(sql)
@@ -96,7 +96,7 @@ function isInSameFiscalYear(opt) {
 function getPeriodDiff(periodIdA, periodIdB) {
   const sql =
   `
-  SELECT 
+  SELECT
   DATEDIFF(
    (SELECT start_date FROM period where id = ?), (SELECT start_date FROM period WHERE id = ?)
   ) as nb`;

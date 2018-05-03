@@ -3,14 +3,27 @@ angular.module('bhima.services')
 
 InventoryService.$inject = [
   'PrototypeApiService', 'InventoryGroupService', 'InventoryUnitService', 'InventoryTypeService', '$uibModal',
-  'FilterService', 'appcache',
+  'FilterService', 'appcache', 'LanguageService', '$httpParamSerializer', 'util', '$http',
 ];
 
-function InventoryService(Api, Groups, Units, Types, $uibModal, Filters, AppCache) {
-  var service = new Api('/inventory/metadata/');
+function InventoryService(
+  Api, Groups, Units, Types, $uibModal, Filters,
+  AppCache, Languages, $httpParamSerializer, util, $http
+) {
+  const service = new Api('/inventory/metadata/');
 
-  var inventoryFilters = new Filters();
-  var filterCache = new AppCache('inventory-filters');
+  // the import inventory api
+  const INVENTORY_IMPORT_URL = '/inventory/import/';
+
+  const inventoryFilters = new Filters();
+  const filterCache = new AppCache('inventory-filters');
+
+  const modalParameters = {
+    size : 'md',
+    keyboard : false,
+    animation : false,
+    backdrop : 'static',
+  };
 
   // expose inventory services through a nicer API
   service.Groups = Groups;
@@ -18,6 +31,16 @@ function InventoryService(Api, Groups, Units, Types, $uibModal, Filters, AppCach
   service.Types = Types;
   service.openSearchModal = openSearchModal;
   service.filters = inventoryFilters;
+  service.remove = remove;
+  service.openImportInventoriesModal = openImportInventoriesModal;
+  service.downloadInventoriesTemplate = downloadInventoriesTemplate;
+
+  function downloadInventoriesTemplate() {
+    $http.get(INVENTORY_IMPORT_URL.concat('template_file'))
+      .then(response => {
+        return util.download(response, 'Template Inventory', 'csv');
+      });
+  }
 
   /**
    * @method openSearchModal
@@ -27,31 +50,70 @@ function InventoryService(Api, Groups, Units, Types, $uibModal, Filters, AppCach
    * @returns {Promise} modalInstance
    */
   function openSearchModal(filters) {
-    return $uibModal.open({
-      templateUrl : 'modules/inventory/list/modals/search.modal.html',
-      size : 'md',
-      keyboard : false,
-      animation : false,
-      backdrop : 'static',
-      controller : 'InventorySearchModalController as ModalCtrl',
+    const params = angular.extend(modalParameters, {
+      templateUrl  : 'modules/inventory/list/modals/search.modal.html',
+      controller   : 'InventorySearchModalController as ModalCtrl',
       resolve : {
         filters : function filtersProvider() { return filters; },
       },
-    }).result;
+    });
+
+    const instance = $uibModal.open(params);
+    return instance.result;
   }
 
-  inventoryFilters.registerDefaultFilters([
-    { key : 'limit', label : 'FORM.LABELS.LIMIT' },
-  ]);
+  /**
+   * @method openImportInventoriesModal
+   *
+   * @returns {Promise} modalInstance
+   */
+  function openImportInventoriesModal(request) {
+    const params = angular.extend(modalParameters, {
+      templateUrl  : 'modules/inventory/list/modals/import.modal.html',
+      controller   : 'ImportInventoriesModalController',
+      controllerAs : '$ctrl',
+      resolve : {
+        data :  function dataProvider() { return request; },
+      },
+    });
 
-  inventoryFilters.registerCustomFilters([
-    { key : 'group_uuid', label : 'FORM.LABELS.GROUP' },
-    { key : 'code', label : 'FORM.LABELS.CODE' },
-    { key : 'consumable', label : 'FORM.LABELS.CONSUMABLE' },
-    { key : 'locked', label : 'FORM.LABELS.LOCKED' },
-    { key : 'text', label : 'FORM.LABELS.LABEL' },
-    { key : 'type_id', label : 'FORM.LABELS.TYPE' },
-    { key : 'price', label : 'FORM.LABELS.PRICE' },
+    const instance = $uibModal.open(params);
+    return instance.result;
+  }
+
+  inventoryFilters.registerDefaultFilters([{
+    key : 'limit',
+    label : 'FORM.LABELS.LIMIT',
+  }]);
+
+  inventoryFilters.registerCustomFilters([{
+    key : 'group_uuid',
+    label : 'FORM.LABELS.GROUP',
+  },
+  {
+    key : 'code',
+    label : 'FORM.LABELS.CODE',
+  },
+  {
+    key : 'consumable',
+    label : 'FORM.LABELS.CONSUMABLE',
+  },
+  {
+    key : 'locked',
+    label : 'FORM.LABELS.LOCKED',
+  },
+  {
+    key : 'text',
+    label : 'FORM.LABELS.LABEL',
+  },
+  {
+    key : 'type_id',
+    label : 'FORM.LABELS.TYPE',
+  },
+  {
+    key : 'price',
+    label : 'FORM.LABELS.PRICE',
+  },
   ]);
 
   if (filterCache.filters) {
@@ -63,7 +125,7 @@ function InventoryService(Api, Groups, Units, Types, $uibModal, Filters, AppCach
 
   function assignDefaultFilters() {
     // get the keys of filters already assigned - on initial load this will be empty
-    var assignedKeys = Object.keys(inventoryFilters.formatHTTP());
+    const assignedKeys = Object.keys(inventoryFilters.formatHTTP());
 
     // assign default limit filter
     if (assignedKeys.indexOf('limit') === -1) {
@@ -84,5 +146,23 @@ function InventoryService(Api, Groups, Units, Types, $uibModal, Filters, AppCach
     inventoryFilters.loadCache(filterCache.filters || {});
   };
 
+  service.download = function download(type) {
+    const filterOpts = inventoryFilters.formatHTTP();
+    const defaultOpts = {
+      renderer : type,
+      lang : Languages.key,
+    };
+
+    // combine options
+    const options = angular.merge(defaultOpts, filterOpts);
+
+    // return  serialized options
+    return $httpParamSerializer(options);
+  };
+
+  // delete an inventory
+  function remove(uuid) {
+    return $http.delete('/inventory/metadata/'.concat(uuid));
+  }
   return service;
 }

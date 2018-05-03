@@ -54,7 +54,9 @@
       <div class="row">
         <div class="col-md-6 col-xs-12">
           <!-- date -->
-          <bh-date-editor date-value="StockCtrl.movement.date" max-date="StockCtrl.timestamp">
+          <bh-date-editor
+            date-value="StockCtrl.movement.date"
+            on-change="StockCtrl.onDateChange(date)">
           </bh-date-editor>
 
           <!-- note -->
@@ -85,24 +87,24 @@
           <!-- "Add number of grid rows" input-group -->
           <bh-add-item disable="StockCtrl.entryOption" callback="StockCtrl.addItems(numItem)">
           </bh-add-item>
-
         </div>
       </div>
 
       <!-- grid -->
-      <div 
+      <div
         id="stock-entry-grid"
         ui-grid="StockCtrl.gridOptions"
         style="height: 300px; width: 100%;"
-        ui-grid-auto-resize ui-grid-resize-columns>
+        ui-grid-auto-resize
+        ui-grid-resize-columns>
       </div>
 
       <!-- footer -->
       <div class="row" style="margin-top: 5px;">
         <div class="col-xs-6 col-xs-offset-6">
           <div class="text-right">
-            <button class="btn btn-default" ng-click="StockCtrl.suspend(StockEntryForm)" type="button" translate>
-            FORM.BUTTONS.SUSPEND
+            <button class="btn btn-default" ng-click="StockCtrl.reset(StockEntryForm)" type="button" translate>
+            FORM.BUTTONS.CLEAR
           </button>
 
             <bh-loading-button loading-state="StockCtrl.$loading" disabled="!StockCtrl.hasValidInput">

@@ -54,7 +54,7 @@ function lookup(uuid) {
     SELECT BUID(cash.uuid) as uuid, cash.project_id,
       CONCAT_WS('.', '${CASH_KEY}', project.abbr, cash.reference) AS reference,
       cash.date, BUID(cash.debtor_uuid) AS debtor_uuid, cash.currency_id, cash.amount,
-      cash.description, cash.cashbox_id, cash.is_caution, cash.user_id
+      cash.description, cash.cashbox_id, cash.is_caution, cash.user_id, cash.edited
     FROM cash JOIN project ON cash.project_id = project.id
     WHERE cash.uuid = ?;
   `;
@@ -131,7 +131,8 @@ function find(options) {
       CONCAT_WS('.', '${CASH_KEY}', project.abbr, cash.reference) AS reference,
       cash.date, BUID(cash.debtor_uuid) AS debtor_uuid, cash.currency_id, cash.amount,
       cash.description, cash.cashbox_id, cash.is_caution, cash.user_id, cash.reversed,
-      d.text AS debtor_name, cb.label AS cashbox_label, u.display_name, p.display_name AS patientName
+      d.text AS debtor_name, cb.label AS cashbox_label, u.display_name,
+      p.display_name AS patientName, cash.edited
     FROM cash
       JOIN project ON cash.project_id = project.id
       JOIN debtor d ON d.uuid = cash.debtor_uuid
@@ -140,18 +141,20 @@ function find(options) {
       JOIN user u ON u.id = cash.user_id
   `;
 
-  filters.period('period', 'date');
   filters.dateFrom('custom_period_start', 'date');
   filters.dateTo('custom_period_end', 'date');
-  filters.fullText('description');
-  filters.equals('user_id');
-  filters.equals('is_caution');
   filters.equals('cashbox_id');
-  filters.equals('debtor_uuid');
   filters.equals('currency_id');
-  filters.equals('reversed');
   filters.equals('debtor_group_uuid', 'group_uuid', 'd');
+  filters.equals('debtor_uuid');
+  filters.equals('edited');
+  filters.equals('is_caution');
+  filters.equals('reversed');
+  filters.equals('user_id');
+  filters.fullText('description');
+  filters.period('period', 'date');
 
+  // TODO - re-write these use document maps and entity maps
   const referenceStatement = `CONCAT_WS('.', '${CASH_KEY}', project.abbr, cash.reference) = ?`;
   filters.custom('reference', referenceStatement);
 

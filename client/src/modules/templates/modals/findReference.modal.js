@@ -3,160 +3,158 @@ angular.module('bhima.controllers')
 
 FindReferenceModalController.$inject = [
   '$uibModalInstance', 'VoucherService', 'CashService', 'GridFilteringService',
-  'entity', 'PatientInvoiceService', 'uiGridConstants', 'NotifyService'
+  'entity', 'PatientInvoiceService', 'uiGridConstants', 'NotifyService',
+  'bhConstants', 'SessionService',
 ];
 
 /**
  * Find Reference Modal Controller
  *
+ * @description
  * This controller provides bindings for the find references modal.
- * @todo Implement the Cash Payment Data list for the references
+ *
+ * TODO(@jniles) - rewrite this entire file.  There is no need to use objects,
+ * just call the methods from the HTML itself.
  */
-function FindReferenceModalController(Instance, Voucher, Cash, Filtering, Entity, Invoices, uiGridConstants, Notify) {
+function FindReferenceModalController(
+  Instance, Voucher, Cash, GridFilter, entity, Invoices, uiGridConstants,
+  Notify, bhConstants, Session
+) {
   var vm = this;
+  var filtering;
+  var SHARED_COLUMN_DEFNS;
+  var DEFAULT_DOWNLOAD_LIMIT = 250;
+  vm.DEFAULT_DOWNLOAD_LIMIT = DEFAULT_DOWNLOAD_LIMIT;
 
   vm.result = {};
 
   vm.loading = false;
 
   vm.documentType = {
-    'patient_invoice' : {
+    patient_invoice : {
       label : 'VOUCHERS.COMPLEX.PATIENT_INVOICE',
-      action : referencePatientInvoice
+      action : referencePatientInvoice,
     },
-    'cash_payment' : {
+    cash_payment : {
       label : 'VOUCHERS.COMPLEX.CASH_PAYMENT',
-      action : referenceCashPayment
+      action : referenceCashPayment,
     },
-    'voucher' : {
+    voucher : {
       label : 'VOUCHERS.COMPLEX.VOUCHER',
-      action : referenceVoucher
-    }
+      action : referenceVoucher,
+    },
   };
 
   vm.selectDocType = selectDocType;
-  vm.submit  = submit;
-  vm.cancel  = cancel;
+  vm.submit = submit;
+  vm.cancel = cancel;
   vm.refresh = refresh;
+  vm.showAllRecords = showAllRecords;
 
   /* ======================= Grid configurations ============================ */
-  vm.filterEnabled = false;
+
+  // TODO - make this a default options extensible by many different
   vm.gridOptions = {};
 
-  var filtering  = new Filtering(vm.gridOptions);
+  vm.gridOptions.multiSelect = false;
+  vm.gridOptions.enableFiltering = false;
+  vm.gridOptions.onRegisterApi = onRegisterApi;
+  vm.gridOptions.fastWatch = true;
+  vm.gridOptions.flatEntityAccess = true;
+  vm.gridOptions.enableColumnMenus = false;
 
-  vm.gridOptions.multiSelect     = false;
-  vm.gridOptions.enableFiltering = vm.filterEnabled;
-  vm.gridOptions.onRegisterApi   = onRegisterApi;
-  vm.toggleFilter = toggleFilter;
+  filtering = new GridFilter(vm.gridOptions);
 
   function onRegisterApi(gridApi) {
     vm.gridApi = gridApi;
-    vm.gridApi.selection.on.rowSelectionChanged(null, rowSelectionCallback);
   }
 
-  function rowSelectionCallback(row) {
-    vm.selectedRow = row.entity;
-
-    // update to selected document type
-    vm.selectedRow.document_type = vm.documentTypeLabel;
-  }
-
-  /** toggle filter */
-  function toggleFilter() {
-    vm.filterEnabled = !vm.filterEnabled;
-    vm.gridOptions.enableFiltering = vm.filterEnabled;
+  // FIXME(@jniles) - by some quirk of UI grid, this doesn't work.
+  vm.toggleInlineFilter = function toggleInlineFilter() {
+    vm.gridOptions.enableFiltering = !vm.gridOptions.enableFiltering;
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
-  }
+  };
+
   /* ======================= End Grid configurations ======================== */
 
   // startup the modal
   startup();
 
-  function referencePatientInvoice() {
+  SHARED_COLUMN_DEFNS = [{
+    field : 'reference',
+    displayName : 'TABLE.COLUMNS.REFERENCE',
+    headerCellFilter : 'translate',
+  }, {
+    field : 'date',
+    cellFilter : 'date:"'.concat(bhConstants.dates.format, '"'),
+    filter : { condition : filtering.filterByDate },
+    displayName : 'TABLE.COLUMNS.DATE',
+    headerCellFilter : 'translate',
+    sort : { priority : 0, direction : 'desc' },
+  }, {
+    field : 'amount',
+    displayName : 'TABLE.COLUMNS.COST',
+    headerCellFilter : 'translate',
+    cellFilter: 'currency:'.concat(Session.enterprise.currency_id),
+    cellClass : 'text-right',
+  }];
+
+  // this function extends the columns list by splicing in the accounts
+  // at the second position.
+  function substitute(columns) {
+    var cloned = SHARED_COLUMN_DEFNS.slice();
+    Array.prototype.splice.apply(cloned, [1, 0].concat(columns));
+    return cloned;
+  }
+
+  function referencePatientInvoice(limit) {
     toggleLoadingIndicator();
 
-    Invoices.read()
+    Invoices.read(null, { limit : limit })
       .then(function (list) {
-        var costTemplate =
-          '<div class="ui-grid-cell-contents text-right">' +
-            '{{ row.entity.cost | currency: grid.appScope.enterprise.currency_id }}' +
-          '</div>';
+        vm.gridOptions.columnDefs = substitute([
+          { field : 'patientName', displayName : 'TABLE.COLUMNS.PATIENT', headerCellFilter : 'translate' },
+          { field : 'serviceName', displayName : 'TABLE.COLUMNS.SERVICE', headerCellFilter : 'translate' },
+          { field : 'display_name', displayName : 'TABLE.COLUMNS.BY', headerCellFilter : 'translate' },
+        ]);
 
-        vm.gridOptions.columnDefs = [
-          { field : 'reference', displayName : 'TABLE.COLUMNS.REFERENCE', headerCellFilter: 'translate' },
-          {
-            field : 'date',
-            cellFilter:'date',
-            filter : { condition : filtering.filterByDate },
-            displayName : 'TABLE.COLUMNS.BILLING_DATE',
-            headerCellFilter : 'translate',
-            sort : { priority : 0, direction : 'desc'}
-          },
-          { field : 'patientNames', displayName : 'TABLE.COLUMNS.PATIENT', headerCellFilter : 'translate' },
-          { field : 'cost', displayName : 'TABLE.COLUMNS.COST', headerCellFilter : 'translate', cellTemplate: costTemplate },
-          { field : 'serviceName', displayName : 'TABLE.COLUMNS.SERVICE', headerCellFilter : 'translate'  },
-          { field : 'display_name', displayName : 'TABLE.COLUMNS.BY', headerCellFilter : 'translate' }
-        ];
+        // map the cost to the "amount" field
+        list.forEach(function (row) {
+          row.amount = row.cost;
+        });
 
         vm.gridOptions.data = list;
+
+        vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
       })
       .catch(handler)
       .finally(toggleLoadingIndicator);
   }
 
-  function referenceCashPayment() {
+  function referenceCashPayment(limit) {
     toggleLoadingIndicator();
 
-    Cash.read()
+    Cash.read(null, { limit : limit })
       .then(function (list) {
-        var costTemplate =
-          '<div class="ui-grid-cell-contents text-right">' +
-            '{{ row.entity.amount | currency: grid.appScope.enterprise.currency_id }}' +
-          '</div>';
-
-        vm.gridOptions.columnDefs = [
-          { field : 'reference', displayName : 'TABLE.COLUMNS.REFERENCE', headerCellFilter: 'translate' },
-          {
-            field : 'date',
-            cellFilter:'date',
-            filter : { condition : filtering.filterByDate },
-            displayName : 'TABLE.COLUMNS.BILLING_DATE',
-            headerCellFilter : 'translate',
-            sort : { priority : 0, direction : 'desc'}
-          },
+        vm.gridOptions.columnDefs = substitute([
           { field : 'description', displayName : 'TABLE.COLUMNS.DESCRIPTION', headerCellFilter : 'translate' },
-          { field : 'amount', displayName : 'TABLE.COLUMNS.COST', headerCellFilter : 'translate', cellTemplate: costTemplate }
-        ];
+        ]);
 
         vm.gridOptions.data = list;
+        vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
       })
       .catch(handler)
       .finally(toggleLoadingIndicator);
   }
 
-  function referenceVoucher() {
+  function referenceVoucher(limit) {
     toggleLoadingIndicator();
 
-    Voucher.read()
+    Voucher.read(null, { limit : limit })
       .then(function (list) {
-        var amountTemplate =
-          '<div class="ui-grid-cell-contents text-right">' +
-            '{{ row.entity.amount | currency: grid.appScope.enterprise.currency_id }}' +
-          '</div>';
-
-        vm.gridOptions.columnDefs  = [
-          { field : 'reference', displayName : 'Reference'},
-          {
-            field : 'date',
-            displayName : 'Date',
-            cellFilter : 'date:"mediumDate"',
-            filter : { condition : filtering.filterByDate },
-            sort : { priority : 0, direction : 'desc'}
-          },
-          { field : 'description', displayName : 'Description'},
-          { field : 'amount', displayName : 'Amount', cellTemplate: amountTemplate }
-        ];
+        vm.gridOptions.columnDefs = substitute([
+          { field : 'description', displayName : 'TABLE.COLUMNS.DESCRIPTION', headerCellFilter : 'translate' },
+        ]);
 
         // format data for the grid
         var data = list.map(function (item) {
@@ -165,27 +163,41 @@ function FindReferenceModalController(Instance, Voucher, Cash, Filtering, Entity
             reference     : item.reference,
             date          : item.date,
             description   : item.description,
-            amount        : item.amount
+            amount        : item.amount,
           };
         });
+
         vm.gridOptions.data = data;
+
+        vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
       })
       .catch(handler)
       .finally(toggleLoadingIndicator);
   }
 
+
   function selectDocType(type) {
+    vm.docType = type;
     vm.documentTypeLabel = vm.documentType[type].label;
-    vm.documentType[type].action();
+    vm.documentType[type].action(DEFAULT_DOWNLOAD_LIMIT);
     vm.documentTypeSelected = true;
+  }
+
+  function showAllRecords() {
+    // use a very, very large limit.
+    vm.documentType[vm.docType].action(10000000);
   }
 
   function refresh() {
     vm.documentTypeSelected = false;
+    vm.gridOptions.data = [];
   }
 
   function submit() {
-    Instance.close(vm.selectedRow);
+    var row = vm.gridApi.selection.getSelectedRows();
+    var e = row[0];
+    e.document_type = vm.documentTypeLabel;
+    Instance.close(e);
   }
 
   function cancel() {
@@ -193,7 +205,7 @@ function FindReferenceModalController(Instance, Voucher, Cash, Filtering, Entity
   }
 
   function startup() {
-    vm.selectedEntity = Entity || {};
+    vm.selectedEntity = entity || {};
   }
 
   function toggleLoadingIndicator() {

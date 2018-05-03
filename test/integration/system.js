@@ -9,7 +9,7 @@ describe('(/system) System Information', () => {
         expect(res).to.have.status(200);
         expect(res.body).to.have.keys(
           'platform', 'numCPUs', 'machineUptime', 'processUptime', 'memoryUsage',
-          'version'
+          'version', 'memory'
         );
 
         expect(res.body.memoryUsage).to.satisfy((x) => { return x >= 0 && x <= 100; });

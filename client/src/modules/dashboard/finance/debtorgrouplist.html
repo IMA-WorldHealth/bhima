@@ -1,6 +1,6 @@
 <div class="panel panel-default dash-panel-table" ng-controller="DebtorGroupListDashboardController as DebtorGroupListCtrl">
-   <div class="panel-heading">
-    {{ "DASHBOARD.FINANCE.TOP_DEBTOR_GROUPS" | translate }}
+  <div class="panel-heading">
+    <span translate>DASHBOARD.FINANCE.TOP_DEBTOR_GROUPS</span>
     <span class="pull-right">
       <select ng-model="DebtorGroupListCtrl.limit" ng-options="value as key for (key, value) in DebtorGroupListCtrl.limits" ng-change="DebtorGroupListCtrl.saveOptions()"></select>
     </span>
@@ -8,9 +8,9 @@
   <table class="table table-condensed">
     <thead>
       <tr>
-        <th colspan="2">{{ "COLUMNS.DEBTOR_GROUP" | translate }}</th>
-        <th>{{ "COLUMNS.ACCOUNT_NUMBER" | translate }}</th>
-        <th class="currency">{{ "COLUMNS.DEBT" | translate }}</th>
+        <th colspan="2" translate>COLUMNS.DEBTOR_GROUP</th>
+        <th translate>COLUMNS.ACCOUNT_NUMBER</th>
+        <th class="currency" translate>COLUMNS.DEBT</th>
       </tr>
     </thead>
     <tbody>

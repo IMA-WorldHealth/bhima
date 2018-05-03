@@ -1,0 +1,33 @@
+<div>
+  <div class="modal-header">
+    <h4><i class="fa fa-camera fa-1x"></i> <b>Snapshot</b></h4>
+  </div>
+  <div class="modal-body">
+    <div class='row'>
+      <div class="col-lg-6">
+        <center>
+          <webcam class="well"
+            on-stream="snapshotCtrl.onStream(stream)"
+            on-error="snapshotCtrl.onError(err)"
+            on-streaming="snapshotCtrl.onSuccess()"
+            channel="snapshotCtrl.channel">
+            <div class="alert alert-error" ng-show="snapshotCtrl.webcamError">
+              <span translate>FORM.LABELS.WEBCAM_NOT_STARTED</span>
+            </div>
+          </webcam>
+        </center>
+      </div> 
+      <div class ='col-lg-6'>
+        <center>
+            <canvas id="snapshot" class="well" ng-show='snapshotCtrl.hasDataUrl'></canvas>
+        </center>
+        
+      </div>
+    </div>
+  <div>
+  <div class="modal-footer">
+    <button class="btn btn-small" ng-click="snapshotCtrl.closeModal()" translate>FORM.LABELS.CANCEL</button>
+    <button class="btn btn-large btn-primary" ng-click="snapshotCtrl.makeSnapshot()" translate> FORM.LABELS.TAKE_SNAPSHOT</button>
+    <button class="btn btn-small" ng-show="snapshotCtrl.hasDataUrl" ng-click="snapshotCtrl.getDataUrl()" translate>FORM.BUTTONS.SAVE</button>
+  </div>
+  </div>

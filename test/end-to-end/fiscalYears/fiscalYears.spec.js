@@ -1,12 +1,10 @@
-/* global element, by, browser */
+/* global element, by */
 const chai = require('chai');
-
-const expect = chai.expect;
-
 const FU = require('../shared/FormUtils');
 const helpers = require('../shared/helpers');
 const components = require('../shared/components');
 
+const { expect } = chai;
 helpers.configure(chai);
 
 describe('Fiscal Year', () => {
@@ -18,7 +16,7 @@ describe('Fiscal Year', () => {
   const fiscalYear = {
     label    : 'A Special Fiscal Year',
     note     : 'Note for the new fiscal Year',
-    previous : 'Test Fiscal Year 2016',
+    previous : 'Test Fiscal Year 2017',
   };
 
   it('blocks invalid form submission with relevant error classes', () => {
@@ -44,7 +42,7 @@ describe('Fiscal Year', () => {
     FU.input('FiscalManageCtrl.fiscal.label', fiscalYear.label);
 
     // select the proper date
-    components.dateInterval.range('01/01/2018', '31/12/2018');
+    components.dateInterval.range('01/01/2019', '31/12/2019');
     FU.select('FiscalManageCtrl.fiscal.previous_fiscal_year_id', fiscalYear.previous);
     FU.input('FiscalManageCtrl.fiscal.note', fiscalYear.note);
     FU.buttons.submit();
@@ -58,7 +56,7 @@ describe('Fiscal Year', () => {
 
     // modify the fiscal year label and note
     FU.input('FiscalManageCtrl.fiscal.label', 'Test Fiscal Year 2017 (update)');
-    FU.input('FiscalManageCtrl.fiscal.note', 'Test 2017 (update)');
+    FU.input('FiscalManageCtrl.fiscal.note', 'Test 2017 [update]');
 
     FU.buttons.submit();
     components.notification.hasSuccess();
@@ -83,13 +81,10 @@ describe('Fiscal Year', () => {
     // click on the opening balance button
     element(by.css('[data-action="opening-balance"]')).click();
 
-    // activate the edition of the opening balance
-    element(by.css('[data-action="edit-opening-balance"]')).click();
-
     // actions in the grid
-    const account1 = 3627;
-    const account2 = 3628;
-    const account3 = 3630;
+    const account1 = 85;
+    const account2 = 89;
+    const account3 = 83;
 
     element(by.css(`[data-debit-account="${account1}"]`)).clear().sendKeys(150);
     element(by.css(`[data-debit-account="${account2}"]`)).clear().sendKeys(150);
@@ -109,13 +104,10 @@ describe('Fiscal Year', () => {
     // click on the opening balance button
     element(by.css('[data-action="opening-balance"]')).click();
 
-    // activate the edition of the opening balance
-    element(by.css('[data-action="edit-opening-balance"]')).click();
-
     // actions in the grid
-    const account1 = 3627;
-    const account2 = 3628;
-    const account3 = 3630;
+    const account1 = 85;
+    const account2 = 89;
+    const account3 = 83;
 
     element(by.css(`[data-debit-account="${account1}"]`)).clear().sendKeys(150);
     element(by.css(`[data-debit-account="${account2}"]`)).clear().sendKeys(150);
@@ -139,9 +131,9 @@ describe('Fiscal Year', () => {
     // click on the opening balance button
     element(by.css('[data-action="closing-fiscal-year"]')).click();
 
-    // inner constiables
-    const resultAccount = 'Test Capital One';
-    const fiscalYearPattern = 'Test Fiscal Year 2015';
+    // inner variables
+    const resultAccount = '13110001'; // 13110001 -Résusltat de l\'exercise
+    // const fiscalYearPattern = 'Test Fiscal Year 2015';
 
     // set the result account
     components.accountSelect.set(resultAccount);
@@ -153,7 +145,7 @@ describe('Fiscal Year', () => {
     submitButton.click();
 
     // set the pattern to confirm
-    element(by.model('$ctrl.text')).clear().sendKeys(fiscalYearPattern);
+    // element(by.model('$ctrl.text')).clear().sendKeys(fiscalYearPattern);
 
     // submit to confirm the action
     submitButton.click();

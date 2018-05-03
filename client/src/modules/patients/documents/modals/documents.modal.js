@@ -50,6 +50,7 @@ function PatientDocumentsModalController(Instance, Upload, patientUuid, PatientS
   function setThumbnail(file) {
     vm.thumbnail = file || 'assets/placeholder.gif';
     vm.documentError = !file ? true : false;
+    vm.isImage = file.type.includes('image/');
   }
 
   /** upload the file to server */

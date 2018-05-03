@@ -1,0 +1,188 @@
+{{> head title="REPORT.STOCK.EXIT_REPORT" }}
+
+<body>
+
+  <div class="container">
+  {{> header}}
+
+  <!-- body  -->
+  <div class="row">
+    <div class="col-xs-12">
+
+      <!-- page title  -->
+      <h2 class="text-center">
+        {{translate 'REPORT.STOCK.EXIT_REPORT'}}
+      </h2>
+
+      <h1 class="text-center">
+        {{ depotName }}
+      </h1>
+
+      <h4 class="text-center">
+        {{date dateFrom}} - {{date dateTo}}
+      </h4>
+
+      <br/>
+
+      <!-- stock exit to patient -->
+      {{#if includePatientExit}}
+        <h3>{{translate 'STOCK.RECEIPT.EXIT_PATIENTS'}}</h3>
+
+        <table class="table table-condensed table-report">
+          {{#each exitToPatient.data as | data |}}
+            <thead>
+              <tr>
+                <th colspan="3">{{ data.inventory_name }}</th>
+                <th class="text-right">{{ data.inventory_stock_exit_quantity }} <i>({{ data.inventory_unit }})</i></th>
+              </tr>
+            </thead>
+
+            {{#if ../showDetails}}
+              <tbody>
+                {{#each data.inventory_stock_exit_data as | item |}}
+                  <tr>
+                    <td style="border:none; width: 20%;"><b>{{ document_reference }}</b></td>
+                    <td class="text-left" style="border:none; width: 40%;">({{ patient_reference }}) {{ patient_display_name }}</td>
+                    <td style="border:none;">{{date date }}</td>
+                    <td class="text-right" style="border:none;">{{ quantity }} <i>({{ unit_text }})</i></td>
+                  </tr>
+                {{/each}}
+              </tbody>
+
+              <!-- blank row -->
+              <tr style="border:none;"><th style="border:none;">&nbsp;</th></tr>
+            {{/if}}
+
+          {{/each}}
+
+          <!-- no data -->
+          {{#if exitToPatient.isEmpty}}
+            <tr><th class="text-center">{{translate 'STOCK.NO_DATA'}}</th></tr>
+          {{/if}}
+        </table>
+      {{/if}}
+
+      <br/>
+
+      <!-- stock exit to service -->
+      {{#if includeServiceExit}}
+        <h3>{{translate 'STOCK.RECEIPT.EXIT_SERVICES'}}</h3>
+
+        <table class="table table-condensed table-report">
+          {{#each exitToService.data as | data |}}
+            <thead>
+              <tr>
+                <th colspan="3">{{ data.inventory_name }}</th>
+                <th class="text-right">{{ data.inventory_stock_exit_quantity }} <i>({{ data.inventory_unit }})</i></th>
+              </tr>
+            </thead>
+
+            {{#if ../showDetails}}
+              <tbody>
+                {{#each data.inventory_stock_exit_data as | item |}}
+                  <tr>
+                    <td style="border:none; width: 20%;"><b>{{ document_reference }}</b></td>
+                    <td class="text-left" style="border:none;  width: 40%;">{{ service_display_name }}</td>
+                    <td style="border:none;">{{date date }}</td>
+                    <td class="text-right" style="border:none;">{{ quantity }} <i>({{ unit_text }})</i></td>
+                  </tr>
+                {{/each}}
+              </tbody>
+
+              <!-- blank row -->
+              <tr style="border:none;"><th style="border:none;">&nbsp;</th></tr>
+            {{/if}}
+
+          {{/each}}
+
+          <!-- no data -->
+          {{#if exitToService.isEmpty}}
+            <tr><th class="text-center">{{translate 'STOCK.NO_DATA'}}</th></tr>
+          {{/if}}
+        </table>
+      {{/if}}
+
+      <br/>
+
+      <!-- stock exit to other depot -->
+      {{#if includeDepotExit}}
+        <h3>{{translate 'STOCK.RECEIPT.EXIT_DEPOTS'}}</h3>
+
+        <table class="table table-condensed table-report">
+          {{#each exitToDepot.data as | data |}}
+            <thead>
+              <tr>
+                <th colspan="3">{{ data.inventory_name }}</th>
+                <th class="text-right">{{ data.inventory_stock_exit_quantity }} <i>({{ data.inventory_unit }})</i></th>
+              </tr>
+            </thead>
+
+            {{#if ../showDetails}}
+              <tbody>
+                {{#each data.inventory_stock_exit_data as | item |}}
+                  <tr>
+                    <td style="border:none; width: 20%;"><b>{{ document_reference }}</b></td>
+                    <td class="text-left" style="border:none;  width: 40%;">{{ depot_name }}</td>
+                    <td style="border:none;">{{date date }}</td>
+                    <td class="text-right" style="border:none;">{{ quantity }} <i>({{ unit_text }})</i></td>
+                  </tr>
+                {{/each}}
+              </tbody>
+
+              <!-- blank row -->
+              <tr style="border:none;"><th style="border:none;">&nbsp;</th></tr>
+            {{/if}}
+
+          {{/each}}
+
+          <!-- no data -->
+          {{#if exitToDepot.isEmpty}}
+            <tr><th class="text-center">{{translate 'STOCK.NO_DATA'}}</th></tr>
+          {{/if}}
+        </table>
+      {{/if}}
+
+      <br/>
+
+      <!-- stock exit as loss -->
+      {{#if includeLossExit}}
+        <h3>{{translate 'STOCK.RECEIPT.EXIT_LOSS'}}</h3>
+
+        <table class="table table-condensed table-report">
+          {{#each exitToLoss.data as | data |}}
+            <thead>
+              <tr>
+                <th colspan="3">{{ data.inventory_name }}</th>
+                <th class="text-right">{{ data.inventory_stock_exit_quantity }} <i>({{ data.inventory_unit }})</i></th>
+              </tr>
+            </thead>
+
+            {{#if ../showDetails}}
+              <tbody>
+                {{#each data.inventory_stock_exit_data as | item |}}
+                  <tr>
+                    <td style="border:none; width: 20%;"><b>{{ document_reference }}</b></td>
+                    <td class="text-left" style="border:none;  width: 40%;">{{ description }}</td>
+                    <td style="border:none;">{{date date }}</td>
+                    <td class="text-right" style="border:none;">{{ quantity }} <i>({{ unit_text }})</i></td>
+                  </tr>
+                {{/each}}
+              </tbody>
+
+              <!-- blank row -->
+              <tr style="border:none;"><th style="border:none;">&nbsp;</th></tr>
+            {{/if}}
+
+          {{/each}}
+
+          <!-- no data -->
+          {{#if exitToLoss.isEmpty}}
+            <tr><th class="text-center">{{translate 'STOCK.NO_DATA'}}</th></tr>
+          {{/if}}
+        </table>
+      {{/if}}
+    </div>
+  </div>
+
+  </div>
+</body>

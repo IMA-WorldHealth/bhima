@@ -17,7 +17,7 @@
       {{> filterbar filters=filters }}
 
       <!-- list of data  -->
-      <table class="table table-condensed table-bordered table-striped">
+      <table class="table table-condensed table-bordered">
         <thead>
           <tr>
             <th>{{translate 'TABLE.COLUMNS.REFERENCE'}}</th>
@@ -31,9 +31,9 @@
         <tbody>
           {{#each rows}}
             <tr>
-              <td>{{reference}}</td>
+              <td title="{{reference}}">{{reference}}</td>
               <td class="text-right">{{date date}}</td>
-              <td>{{debtor_name}}</td>
+              <td title="{{debtor_name}}">{{debtor_name}}</td>
               <td class="text-right">{{currency amount currency_id}}</td>
               <td>{{cashbox_label}}</td>
               <td>{{display_name}}</td>
@@ -51,7 +51,7 @@
       <div class="col-xs-6">
 
         <!-- summary table -->
-        <table class="table table-condensed table-bordered table-striped">
+        <table class="table table-condensed table-bordered table-report">
           <tbody>
             <tr>
               <th colspan="2" class="text-center">

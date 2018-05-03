@@ -1,18 +1,18 @@
 angular.module('bhima.components')
-.component('bhPeriodSelect', {
-  bindings : {
-    defaultPeriod : '@',
-    onSelectCallback : '&',
-  },
-  templateUrl : 'modules/templates/bhPeriodSelect.tmpl.html',
-  controller : PeriodSelect,
-});
+  .component('bhPeriodSelect', {
+    bindings : {
+      defaultPeriod : '@',
+      onSelectCallback : '&',
+    },
+    templateUrl : 'modules/templates/bhPeriodSelect.tmpl.html',
+    controller : PeriodSelect,
+  });
 
 PeriodSelect.$inject = ['PeriodService', 'bhConstants'];
 
 function PeriodSelect(Periods, bhConstants) {
-  var ctrl = this;
-  var DEFAULT_PERIOD = 'today';
+  const ctrl = this;
+  const DEFAULT_PERIOD = 'today';
 
   ctrl.NO_PERIOD_LIMIT_KEY = 'allTime';
   ctrl.CUSTOM_PERIOD_KEY = 'custom';
@@ -32,6 +32,12 @@ function PeriodSelect(Periods, bhConstants) {
   ctrl.$onInit = function onInit() {
     ctrl.periodKey = ctrl.defaultPeriod || DEFAULT_PERIOD;
     ctrl.period = Periods.definition(ctrl.periodKey);
+
+    // if custom is already defined, use it
+    if (ctrl.periodKey === ctrl.CUSTOM_PERIOD_KEY) {
+      ctrl.customSelection.from = ctrl.period.customPeriodStart || new Date();
+      ctrl.customSelection.to = ctrl.period.customPeriodEnd || new Date();
+    }
   };
 
   ctrl.toggleSelectionOptions = function toggleSelectionOptions() {
@@ -53,14 +59,13 @@ function PeriodSelect(Periods, bhConstants) {
       */
       ctrl.selectPeriod(ctrl.NO_PERIOD_LIMIT_KEY, true);
     }
-
   };
 
 
   ctrl.selectPeriod = function selectPeriod(key, togglable) {
-    var period = Periods.definition(key);
-    ctrl.onSelectCallback({ period : period });
-    // shoud not toggle in custom mode , as explained in at this point : ctrl.toggleCustomSelection()
+    const period = Periods.definition(key);
+    ctrl.onSelectCallback({ period });
+    // should not toggle in custom mode , as explained in at this point : ctrl.toggleCustomSelection()
     if (!togglable) {
       ctrl.toggleSelectionOptions();
     }
@@ -69,8 +74,8 @@ function PeriodSelect(Periods, bhConstants) {
   };
 
   // custom dates changed, current period should be updated
-  ctrl.customPeriodChanges = function () {
-    var _period = Periods.index.custom;
+  ctrl.customPeriodChanges = () => {
+    const _period = Periods.index.custom;
     _period.customPeriodStart = ctrl.customSelection.from;
     _period.customPeriodEnd = ctrl.customSelection.to;
     ctrl.onSelectCallback({ period : _period });
@@ -78,13 +83,13 @@ function PeriodSelect(Periods, bhConstants) {
 
 
   ctrl.selectCustomPeriod = function selectCustomPeriod(selection) {
-    var period = Periods.index.custom;
+    const period = Periods.index.custom;
 
-    // alias start and
+    // alias start and end;
     period.customPeriodStart = selection.from;
     period.customPeriodEnd = selection.to;
 
-    ctrl.onSelectCallback({ period : period });
+    ctrl.onSelectCallback({ period });
     ctrl.toggleSelectionOptions();
 
     ctrl.period = period;

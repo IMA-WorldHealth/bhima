@@ -2,6 +2,8 @@ const GU = require('../shared/GridUtils');
 const helpers = require('../shared/helpers');
 const SearchModal = require('../shared/search.page');
 const Filters = require('../shared/components/bhFilters');
+const components = require('../shared/components');
+const FU = require('../shared/FormUtils');
 
 function StockLotsRegistryTests() {
   let modal;
@@ -24,8 +26,10 @@ function StockLotsRegistryTests() {
 
   const depotGroupingRow = 1;
   const LOT_FOR_ALLTIME = 16;
-  const LOT_FOR_TODAY = 10;
-  const LOT_FOR_LAST_YEAR = 16;
+  const LOT_FOR_TODAY = 11;
+  const LOT_FOR_LAST_YEAR = 11;
+
+  const invetoryGroup = 'Injectable';
 
 
   it(`finds ${LOT_FOR_TODAY} lot for today`, () => {
@@ -56,7 +60,7 @@ function StockLotsRegistryTests() {
   });
 
   it('find lots by inventory', () => {
-    modal.setInventory('First Test Inventory Item');
+    modal.setInventory('Quinine sulphate 500mg');
     modal.submit();
     GU.expectRowCount(gridId, 8 + (2 * depotGroupingRow));
   });
@@ -71,7 +75,7 @@ function StockLotsRegistryTests() {
   it('find lots by entry date', () => {
     modal.setdateInterval('02/02/2017', '02/02/2017', 'entry-date');
     modal.submit();
-    GU.expectRowCount(gridId, 6 + (2 * depotGroupingRow));
+    GU.expectRowCount(gridId, 6);
   });
 
   it('find lots by expiration date', () => {
@@ -79,6 +83,14 @@ function StockLotsRegistryTests() {
     modal.submit();
     GU.expectRowCount(gridId, 1 + depotGroupingRow);
   });
+
+  it('find inventories by group', () => {
+    components.inventoryGroupSelect.set(invetoryGroup);
+    FU.modal.submit();
+    GU.expectRowCount(gridId, 0);
+    filters.resetFilters();
+  });
+
 }
 
 describe('Stock Lots Registry', StockLotsRegistryTests);

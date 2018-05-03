@@ -16,18 +16,19 @@ VoucherFormService.$inject = [
  *
  * @todo - finish the caching implementation
  */
-function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes, AppCache, Store, Accounts, $timeout,
-  $translate
+function VoucherFormService(
+  Vouchers, Constants, Session, VoucherItem, Cashboxes, AppCache, Store, Accounts,
+  $timeout, $translate
 ) {
   // Error Flags
   // must have transaction_type for certain cases
-  var ERROR_MISSING_TRANSACTION_TYPE = 'TRANSACTIONS.MISSING_TRANSACTION_TYPE';
+  const ERROR_MISSING_TRANSACTION_TYPE = 'TRANSACTIONS.MISSING_TRANSACTION_TYPE';
   // must have sum(debits) === sum(credits)
-  var ERROR_IMBALANCED_TRANSACTION = 'TRANSACTIONS.IMBALANCED_TRANSACTION';
+  const ERROR_IMBALANCED_TRANSACTION = 'TRANSACTIONS.IMBALANCED_TRANSACTION';
   // must have > 1 unique accounts
-  var ERROR_SINGLE_ACCOUNT_TRANSACTION = 'TRANSACTIONS.SINGLE_ACCOUNT_TRANSACTION';
+  const ERROR_SINGLE_ACCOUNT_TRANSACTION = 'TRANSACTIONS.SINGLE_ACCOUNT_TRANSACTION';
   // must have > 1 rows
-  var ERROR_SINGLE_ROW_TRANSACTION = 'TRANSACTIONS.SINGLE_ROW_TRANSACTION';
+  const ERROR_SINGLE_ROW_TRANSACTION = 'TRANSACTIONS.SINGLE_ROW_TRANSACTION';
 
   // applied to the reduce
   function sumDebitsAndCredits(aggregates, row) {
@@ -52,9 +53,7 @@ function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes
   /** @constructor */
   function VoucherForm(cacheKey) {
     if (!cacheKey) {
-      throw new Error(
-        'VoucherForm expected a cacheKey, but it was not provided.'
-      );
+      throw new Error('VoucherForm expected a cacheKey, but it was not provided.');
     }
 
     // bind the cache key
@@ -65,20 +64,20 @@ function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes
 
     // cash accounts require a certain voucher type
     this.cashAccounts = [];
-    var self = this;
+    const self = this;
 
     // load cashboxes for their accounts.
     Cashboxes.read(null, { detailed : 1 })
-      .then(function (cashboxes) {
+      .then((cashboxes) => {
         self.cashAccounts = cashboxes
 
           // collect a lost of all cashbox accounts
-          .reduce(function (accounts, cashbox) {
-            return accounts.concat([ cashbox.account_id, cashbox.transfer_account_id ]);
+          .reduce((accounts, cashbox) => {
+            return accounts.concat([cashbox.account_id, cashbox.transfer_account_id]);
           }, [])
 
           // make sure the list is unique
-          .filter(function (account, index, accounts) {
+          .filter((account, index, accounts) => {
             return accounts.indexOf(account) === index;
           });
 
@@ -87,12 +86,12 @@ function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes
       });
 
     Accounts.read()
-      .then(function (accounts) {
+      .then((accounts) => {
         self.accounts = Accounts.order(accounts);
       });
 
     // this will contain the grid rows
-    this.store = new Store({ identifier: 'uuid', data : [] });
+    this.store = new Store({ identifier : 'uuid', data : [] });
 
     // run the setup function
     this.setup();
@@ -111,29 +110,28 @@ function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes
    * cashbox accounts.
    */
   VoucherForm.prototype.validate = function validate() {
-    var items = this.store.data;
+    const items = this.store.data;
 
-    var err;
+    let err;
 
     // calculate the totals for the data
     this.totals = calculateItemTotals(items);
 
     // this array will store unique accounts
-    var uniqueAccountsArray = [];
+    const uniqueAccountsArray = [];
 
     // this will store the validity condition.  We could use array.every() but it
     // seems like Chrome greedily exits if a false condition is it.
-    var valid = true;
-
+    let valid = true;
 
     // do validation checks to see if we have a transaction type for a cashbox
     // account
-    var cashAccounts = this.cashAccounts;
+    const { cashAccounts } = this;
 
-    var hasCashboxAccount = false;
+    let hasCashboxAccount = false;
 
     // loop through each row, checking the amounts and accounts of each item.
-    items.forEach(function (item, index) {
+    items.forEach(item => {
       valid = valid && item.validate();
 
       // if the row has an error, save it as the form error
@@ -158,32 +156,32 @@ function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes
     this.hasCashboxAccount = hasCashboxAccount;
 
     // validate that the cashbox accounts and type_id are set
-    var hasTypeId = angular.isDefined(this.details.type_id);
+    const hasTypeId = angular.isDefined(this.details.type_id);
     if (!hasTypeId && this.hasCashboxAccount) {
       err = ERROR_MISSING_TRANSACTION_TYPE;
+    }
+
+    // validate that the number of rows in the grid is > 1
+    const hasEnoughRows = (items.length > 1);
+    if (!hasEnoughRows) {
+      err = ERROR_SINGLE_ROW_TRANSACTION;
     }
 
     // validate that this uses multiple accounts in the transaction
 
     // To prevent calling the validation function when selecting the transaction type before selecting accounts
-    var hasNullAccounts = (uniqueAccountsArray.length === 0);
+    const hasNullAccounts = (uniqueAccountsArray.length === 0);
 
     if (!hasNullAccounts) {
-      var hasUniqueAccounts = (uniqueAccountsArray.length > 1);
+      const hasUniqueAccounts = (uniqueAccountsArray.length > 1);
       if (!hasUniqueAccounts) {
         err = ERROR_SINGLE_ACCOUNT_TRANSACTION;
       }
 
-      // validate that the number of rows in the grid is > 1
-      var hasEnoughRows = (items.length > 1);
-      if (!hasEnoughRows) {
-        err = ERROR_SINGLE_ROW_TRANSACTION;
-      }
-
       // validate that total debit equals to total credit
-      var totalDebit = Number(this.totals.debit).toFixed(4);
-      var totalCredit = Number(this.totals.credit).toFixed(4);
-      var hasBalancedDebitsAndCredits = (totalDebit === totalCredit);
+      const totalDebit = Number(this.totals.debit).toFixed(4);
+      const totalCredit = Number(this.totals.credit).toFixed(4);
+      const hasBalancedDebitsAndCredits = (totalDebit === totalCredit);
       if (!hasBalancedDebitsAndCredits) {
         err = ERROR_IMBALANCED_TRANSACTION;
       }
@@ -194,6 +192,11 @@ function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes
       // return the boolean condition to the caller
       return (valid && hasUniqueAccounts && hasEnoughRows && hasBalancedDebitsAndCredits);
     }
+
+    // attach error to the form
+    this._error = err;
+
+    return valid && hasEnoughRows;
   };
 
   /**
@@ -223,6 +226,10 @@ function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes
     row.configure(row);
   };
 
+  VoucherForm.prototype.onDateChange = function onDateChange(date) {
+    this.details.date = date;
+  };
+
   VoucherForm.prototype.description = function description(key, options) {
     this.details.description = $translate.instant(key, options);
   };
@@ -242,7 +249,8 @@ function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes
    * @param {Number} n - the number of items to add to the grid
    */
   VoucherForm.prototype.addItems = function addItems(n) {
-    while (n--) {
+    let i = n;
+    while (i--) {
       this.store.post(new VoucherItem());
     }
   };
@@ -269,7 +277,7 @@ function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes
     // directly running setup after clear adds the voucher items that have been
     // removed from the store, wrapping these methods in a timeout ensures they
     // are no longer in use by the ui-grid data object
-    $timeout(function () {
+    $timeout(() => {
       this.setup();
 
       // validate() is only set up to test on submission as it checks the validity
@@ -277,7 +285,7 @@ function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes
       // reset error state
       delete this._error;
       this.hasCashboxAccount = false;
-    }.bind(this));
+    });
   };
 
   /**
@@ -286,13 +294,11 @@ function VoucherFormService(Vouchers, Constants, Session, VoucherItem, Cashboxes
   VoucherForm.prototype.replaceFormRows = function replaceFormRows(rows) {
     this.clear();
 
-    var form = this;
+    rows.forEach(row => {
+      this.addItems(1);
 
-    rows.forEach(function (row) {
-      form.addItems(1);
-
-      var lastRowIdx = form.store.data.length - 1;
-      var lastRow = form.store.data[lastRowIdx];
+      const lastRowIdx = this.store.data.length - 1;
+      const lastRow = this.store.data[lastRowIdx];
 
       lastRow.configure(row);
     });

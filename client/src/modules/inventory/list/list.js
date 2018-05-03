@@ -5,7 +5,7 @@ angular.module('bhima.controllers')
 InventoryListController.$inject = [
   'InventoryService', 'NotifyService', 'uiGridConstants', 'ModalService',
   '$state', 'FilterService', 'appcache', 'GridColumnService', 'GridStateService',
-  'GridExportService', 'LanguageService', 'SessionService',
+  'GridExportService', 'LanguageService', 'SessionService', '$rootScope',
 ];
 
 /**
@@ -14,27 +14,35 @@ InventoryListController.$inject = [
  */
 function InventoryListController(
   Inventory, Notify, uiGridConstants, Modal, $state, Filters, AppCache, Columns, GridState,
-  GridExport, Languages, Session
+  GridExport, Languages, Session, $rootScope
 ) {
-  var vm = this;
-  var cacheKey = 'InventoryGrid';
-  var cache = new AppCache(cacheKey);
 
-  var gridColumns;
-  var exportation;
-  var columnDefs;
-  var state;
+  const vm = this;
+  const cacheKey = 'InventoryGrid';
+  const cache = new AppCache(cacheKey);
 
   // global variables
+  vm.download = Inventory.download;
   vm.lang = Languages.key;
   vm.filterEnabled = false;
   vm.gridOptions = {};
   vm.gridApi = {};
 
+  // import
+  vm.openImportInventoriesModal = openImportInventoriesModal;
+
   vm.loading = true;
+  vm.remove = remove;
+
+  // listner
+  $rootScope.$on('INVENTORY_UPDATED', onInventoryUpdated);
+
+  function onInventoryUpdated() {
+    load(Inventory.filters.formatHTTP(true));
+  }
 
   // grid default options
-  columnDefs = [{
+  const columnDefs = [{
     field : 'code',
     displayName : 'FORM.LABELS.CODE',
     headerCellFilter : 'translate',
@@ -88,7 +96,15 @@ function InventoryListController(
     cellClass : 'text-right',
     type : 'number',
     visible : false,
-  }, {
+  },
+  {
+    field : 'note',
+    displayName : 'FORM.INFO.NOTE',
+    headerCellFilter : 'translate',
+    cellClass : 'text-right',
+    visible : false,
+  },
+  {
     field : 'action',
     displayName : '',
     cellTemplate : '/modules/inventory/list/templates/action.cell.html',
@@ -99,19 +115,19 @@ function InventoryListController(
 
   vm.gridOptions = {
     appScopeProvider : vm,
-    enableFiltering  : vm.filterEnabled,
+    enableFiltering : vm.filterEnabled,
     enableColumnMenus : false,
     showColumnFooter : true,
     fastWatch : true,
     flatEntityAccess : true,
-    columnDefs : columnDefs,
-    onRegisterApi : onRegisterApi,
+    columnDefs,
+    onRegisterApi,
   };
 
   // configurations
-  gridColumns = new Columns(vm.gridOptions, cacheKey);
-  exportation = new GridExport(vm.gridOptions, 'visible', 'visible');
-  state = new GridState(vm.gridOptions, cacheKey);
+  const gridColumns = new Columns(vm.gridOptions, cacheKey);
+  const exportation = new GridExport(vm.gridOptions, 'visible', 'visible');
+  const state = new GridState(vm.gridOptions, cacheKey);
 
   // expose methods and object
   vm.saveGridState = state.saveGridState;
@@ -144,30 +160,36 @@ function InventoryListController(
     vm.hasError = false;
 
     Inventory.read(null, params)
-      .then(function (rows) {
-        vm.gridOptions.data = rows;
-      })
-      .catch(function (exception) {
-        vm.hasError = true;
-        Notify.handleError(exception);
-      })
-      .finally(function () {
-        vm.loading = false; // this will execute after the data is downloaded.
-      });
+      .then(handleInventoryResult)
+      .catch(handleException)
+      .finally(toggleLoading);
+  }
+
+  function handleInventoryResult(rows) {
+    vm.gridOptions.data = rows;
+  }
+
+  function handleException(exception) {
+    vm.hasError = true;
+    Notify.handleError(exception);
+  }
+
+  function toggleLoading() {
+    vm.loading = !vm.loading;
   }
 
   // research and filter data in Inventory List
   function research() {
-    var filtersSnapshot = Inventory.filters.formatHTTP();
-
+    const filtersSnapshot = Inventory.filters.formatHTTP();
     Inventory.openSearchModal(filtersSnapshot)
-      .then(function (changes) {
-        Inventory.filters.replaceFilters(changes);
-        Inventory.cacheFilters();
-        vm.latestViewFilters = Inventory.filters.formatView();
+      .then(handleSearchResult);
+  }
 
-        return load(Inventory.filters.formatHTTP(true));
-      });
+  function handleSearchResult(changes) {
+    Inventory.filters.replaceFilters(changes);
+    Inventory.cacheFilters();
+    vm.latestViewFilters = Inventory.filters.formatView();
+    return load(Inventory.filters.formatHTTP(true));
   }
 
   // remove a filter with from the filter object, save the filters and reload
@@ -181,7 +203,7 @@ function InventoryListController(
 
   function startup() {
     // if parameters are passed through the $state object, use them.
-    if ($state.params.filters.length) {
+    if ($state.params.filters && $state.params.filters.length) {
       Inventory.filters.replaceFiltersFromState($state.params.filters);
     }
 
@@ -202,9 +224,34 @@ function InventoryListController(
   function openColumnConfigModal() {
     gridColumns.openConfigurationModal();
   }
-
+  // delete an invetory from the database
+  function remove(uuid) {
+    Modal.confirm('FORM.DIALOGS.CONFIRM_DELETE')
+      .then((yes) => {
+        if (!yes) {
+          return;
+        }
+        Inventory.remove(uuid)
+          .then(() => {
+            startup();
+            Notify.success('FORM.INFO.DELETE_SUCCESS');
+          })
+          .catch(Notify.handleError);
+      });
+  }
   // export csv
   function exportCsv() {
     exportation.run();
+  }
+
+  /**
+   * start the import of inventories from a csv file
+  */
+  function openImportInventoriesModal() {
+    Inventory.openImportInventoriesModal()
+      .then(() => {
+
+      })
+      .catch(Notify.handleError);
   }
 }

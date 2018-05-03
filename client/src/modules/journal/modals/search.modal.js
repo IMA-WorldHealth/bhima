@@ -2,43 +2,38 @@ angular.module('bhima.controllers')
   .controller('JournalSearchModalController', JournalSearchModalController);
 
 JournalSearchModalController.$inject = [
-  '$uibModalInstance', 'NotifyService',
-  'Store', 'filters', 'options', 'PeriodService', '$translate',
-  'util', 'TransactionTypeService', 'JournalService',
+  '$uibModalInstance', 'NotifyService', 'Store', 'filters', 'options',
+  'PeriodService', '$translate', 'util', 'TransactionTypeService',
+  'JournalService',
 ];
 
-function JournalSearchModalController(Instance, Notify,
-  Store, filters, options, Periods, $translate,
-  util, TransactionTypes, Journal) {
-  var vm = this;
+function JournalSearchModalController(
+  Instance, Notify, Store, filters, options, Periods, $translate, util,
+  TransactionTypes, Journal
+) {
+  const vm = this;
 
-  var changes = new Store({ identifier : 'key' });
+  // displayValues will be an id:displayValue pair
+  const displayValues = {};
+  const lastDisplayValues = Journal.filters.getDisplayValueMap();
+
+  // @TODO ideally these should be passed in when the modal is initialised
+  //       these are known when the filter service is defined
+  const searchQueryOptions = [
+    'description', 'user_id', 'account_id', 'project_id', 'amount', 'trans_id',
+    'transaction_type_id', 'includeNonPosted', 'hrRecord', 'hrEntity', 'comment',
+    'hrReference',
+  ];
+
+  const changes = new Store({ identifier : 'key' });
   vm.filters = filters;
   vm.options = options;
 
   // an object to keep track of all custom filters, assigned in the view
   vm.searchQueries = {};
   vm.defaultQueries = {};
-
-  // displayValues will be an id:displayValue pair
-  var displayValues = {};
-
-  // @TODO ideally these should be passed in when the modal is initialised
-  //       these are known when the filter service is defined
-  var searchQueryOptions = ['description', 'user_id', 'account_id', 'project_id', 'amount', 'trans_id', 'origin_id', 'includeNonPosted'];
-
-  var lastViewFilters = Journal.filters.formatView().customFilters;
-
-  // map key to last display value for lookup in loggedChange
-  var lastDisplayValues = lastViewFilters.reduce(function (object, filter) {
-    object[filter._key] = filter.displayValue;
-    return object;
-  }, {});
-
   // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(filters, searchQueryOptions);
-
-  window.search = vm.searchQueries;
 
   /**
    * hasDefaultAccount is used to set a default account selection behavior
@@ -46,27 +41,36 @@ function JournalSearchModalController(Instance, Notify,
    * as parameters
    * @example
    * <pre>
-   * Config.openSearchModal(filters, { hasDefaultAccount : true })
+   *   Config.openSearchModal(filters, { hasDefaultAccount : true })
    * </pre>
    */
   if (options.hasDefaultAccount) {
     vm.hasDefaultAccount = true;
   }
-  
+
+  // hide the posted toggle when not needed
+  if (options.hidePostedOption) {
+    vm.hidePostedOption = true;
+  }
+
   // assign default filters
   if (filters.limit) {
     vm.defaultQueries.limit = filters.limit;
   }
 
-  // assing default account
+  if (angular.isDefined(filters.showFullTransactions)) {
+    vm.defaultQueries.showFullTransactions = filters.showFullTransactions;
+  }
+
+  // assign default account
   if (filters.account_id) {
     vm.defaultQueries.account_id = filters.account_id;
   }
 
   // load all Transaction types
   TransactionTypes.read()
-    .then(function (types) {
-      types.forEach(function (item) {
+    .then(types => {
+      types.forEach(item => {
         item.typeText = $translate.instant(item.text);
       });
       vm.transactionTypes = types;
@@ -94,34 +98,41 @@ function JournalSearchModalController(Instance, Notify,
 
   // deafult filter period - directly write to changes list
   vm.onSelectPeriod = function onSelectPeriod(period) {
-    var periodFilters = Periods.processFilterChanges(period);
+    const periodFilters = Periods.processFilterChanges(period);
 
-    periodFilters.forEach(function (filterChange) {
+    periodFilters.forEach(filterChange => {
       changes.post(filterChange);
     });
   };
 
-  // custom filter origin_id - assign the value to the searchQueries object
+  // custom filter transaction_type_id - assign the value to the searchQueries object
   vm.onTransactionTypesChange = function onTransactionTypesChange(transactionTypes) {
-    vm.searchQueries.origin_id = transactionTypes;
-    var typeText = '/';
+    vm.searchQueries.transaction_type_id = transactionTypes;
+    const types = [];
 
-    transactionTypes.forEach(function (typeId) {
-      vm.transactionTypes.forEach(function (type) {
+    transactionTypes.forEach(typeId => {
+      vm.transactionTypes.forEach(type => {
         if (typeId === type.id) {
-          typeText += type.typeText + ' / ';
+          types.push(type.typeText);
         }
       });
     });
 
-    displayValues.origin_id = typeText;
+    displayValues.transaction_type_id = types.join(' / ');
   };
 
   // default filter limit - directly write to changes list
   vm.onSelectLimit = function onSelectLimit(value) {
     // input is type value, this will only be defined for a valid number
     if (angular.isDefined(value)) {
-      changes.post({ key : 'limit', value : value });
+      changes.post({ key : 'limit', value });
+    }
+  };
+
+  // default filter to show full transactions
+  vm.toggleFullTransaction = function toggleFullTransaction(value) {
+    if (angular.isDefined(value)) {
+      changes.post({ key : 'showFullTransactions', value });
     }
   };
 
@@ -134,16 +145,18 @@ function JournalSearchModalController(Instance, Notify,
 
   // returns the filters to the journal to be used to refresh the page
   vm.submit = function submit(form) {
+    if (form.$invalid) { return 0; }
+
     // push all searchQuery values into the changes array to be applied
-    angular.forEach(vm.searchQueries, function (value, key) {
+    angular.forEach(vm.searchQueries, (value, key) => {
       if (angular.isDefined(value)) {
         // default to the original value if no display value is defined
-        var displayValue = displayValues[key] || lastDisplayValues[key] || value;
-        changes.post({ key: key, value: value, displayValue: displayValue });
-       }
+        const displayValue = displayValues[key] || lastDisplayValues[key] || value;
+        changes.post({ key, value, displayValue });
+      }
     });
 
-    var loggedChanges = changes.getAll();
+    const loggedChanges = changes.getAll();
 
     // return values to the JournalController
     return Instance.close(loggedChanges);

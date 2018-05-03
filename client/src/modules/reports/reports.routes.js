@@ -1,9 +1,8 @@
 angular.module('bhima.routes')
-  .config(['$stateProvider', function ($stateProvider) {
+  .config(['$stateProvider', $stateProvider => {
     // a list of all supported reported and their respective keys, this allows
     // the ui-view to be populated with the correct report configuration form
-    /* @const */
-    var SUPPORTED_REPORTS = [
+    const SUPPORTED_REPORTS = [
       'cash_report',
       'account_report',
       'balance_sheet_report',
@@ -17,7 +16,9 @@ angular.module('bhima.routes')
       'cashflowByService',
       'aged_creditors',
       'cashflow',
-      'debtorBalanceReport'
+      'operating',
+      'debtorBalanceReport',
+      'stock_exit',
     ];
 
     $stateProvider
@@ -26,10 +27,10 @@ angular.module('bhima.routes')
         controller : 'ReportsController as ReportCtrl',
         templateUrl : 'modules/reports/reports.html',
         resolve : {
-          reportData : ['$stateParams', 'BaseReportService', function ($stateParams, SavedReports) {
-            var reportKey = $stateParams.key;
+          reportData : ['$stateParams', 'BaseReportService', ($stateParams, SavedReports) => {
+            const reportKey = $stateParams.key;
             return SavedReports.requestKey(reportKey)
-              .then(function (results) { return results[0]; });
+              .then((results) => { return results[0]; });
           }],
         },
         abstract : true,
@@ -41,13 +42,12 @@ angular.module('bhima.routes')
         params : { key : { squash : true, value : null } },
       });
 
-
-    SUPPORTED_REPORTS.forEach(function (key) {
+    SUPPORTED_REPORTS.forEach((key) => {
       $stateProvider.state('reportsBase.'.concat(key), {
         url : '/'.concat(key),
         controller : key.concat('Controller as ReportConfigCtrl'),
         templateUrl : '/modules/reports/generate/'.concat(key, '/', key, '.html'),
-        params : { key : key }
+        params : { key },
       });
     });
   }]);

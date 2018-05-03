@@ -8,18 +8,19 @@
  *
  * @requires lodash
  * @requires lib/db
- * @requires lib/node-uuid
+ * @requires lib/uuid/v4
  * @requires lib/errors/BadRequest
  * @requires lib/errors/NotFound
- * @requires Topic
+ * @requires @ima-worldhealth/topic
  */
 
 const _ = require('lodash');
+const uuid = require('uuid/v4');
+const Topic = require('@ima-worldhealth/topic');
+
 const db = require('../../../lib/db');
-const uuid = require('node-uuid');
 const BadRequest = require('../../../lib/errors/BadRequest');
 const NotFound = require('../../../lib/errors/NotFound');
-const Topic = require('../../../lib/topic');
 
 // GET /patients/:uuid/groups
 exports.list = list;
@@ -43,7 +44,7 @@ function list(req, res, next) {
   // read patient groups
   const patientGroupsQuery = `
     SELECT patient_group.name, patient_group.note, patient_group.created_at, BUID(patient_group.uuid) as uuid
-    FROM assignation_patient LEFT JOIN patient_group ON patient_group_uuid = patient_group.uuid
+    FROM patient_assignment LEFT JOIN patient_group ON patient_group_uuid = patient_group.uuid
     WHERE patient_uuid = ?;
   `;
 
@@ -75,29 +76,27 @@ function update(req, res, next) {
 
   // TODO make sure assignments is an array etc. - test for these cases
   if (!req.body.assignments) {
-    next(
-      new BadRequest(
-        `Request must specify an "assignments" object containing an array of patient group ids.`,
-        'ERROR.ERR_MISSING_INFO'
-      )
-    );
+    next(new BadRequest(
+      `Request must specify an "assignments" object containing an array of patient group ids.`,
+      'ERROR.ERR_MISSING_INFO'
+    ));
 
     return;
   }
 
   // Clear assigned groups
   const removeAssignmentsQuery =
-    'DELETE FROM assignation_patient WHERE patient_uuid = ?';
+    'DELETE FROM patient_assignment WHERE patient_uuid = ?';
 
   // Insert new relationships
   const createAssignmentsQuery =
-    'INSERT INTO assignation_patient (uuid, patient_uuid, patient_group_uuid) VALUES ?';
+    'INSERT INTO patient_assignment (uuid, patient_uuid, patient_group_uuid) VALUES ?';
 
   // map each requested patient group uuid to the current patient uuid to be
   // inserted into the database
   const assignmentData = req.body.assignments.map(patientGroupId => {
     return [
-      db.bid(uuid.v4()),
+      db.bid(uuid()),
       patientId,
       db.bid(patientGroupId),
     ];

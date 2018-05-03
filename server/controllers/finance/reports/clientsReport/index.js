@@ -108,81 +108,82 @@ function buildComplexReport(opt) {
   });
 
   return getClientBalancesFromPeriodTotal(opt, true)
-  .then((data) => {
+    .then((data) => {
     // from previous fiscal year data, building the object containing all previous info to print
-    clientsData.lines = data.reduce((obj, clientInfo) => {
-      const number = clientInfo.accountNumber;
-      _.merge(obj[number] = {}, clientInfo);
-      return obj;
-    }, {});
+      clientsData.lines = data.reduce((obj, clientInfo) => {
+        const number = clientInfo.accountNumber;
+        _.merge(obj[number] = {}, clientInfo);
+        return obj;
+      }, {});
 
-    // get the totals of openning balance
-    return getClientTotalsFromPeriodTotal(opt, true);
-  })
-  .then((previousTotal) => {
-    _.merge(clientsData, previousTotal);
-    // fetching data of the current fiscal year
-    return getClientBalancesFromGeneralLedger(opt);
-  })
-  .then((data) => {
-    if (!data.length) {
-      Object.keys(clientsData.lines).forEach((accountNumber) => {
-        _.merge(clientsData.lines[accountNumber], {
-          debit : 0,
-          credit : 0,
-          currentBalance : 0,
-        });
-      });
-    } else {
-      data.forEach((dt) => {
-        // if there is no info about the client for the previous year
-        if (!clientsData.lines[dt.accountNumber]) {
-          _.merge(clientsData.lines[dt.accountNumber] = {}, {
-            initDebit : 0,
-            initCredit : 0,
-            initBalance : 0,
-            name : dt.name,
-            accountNumber : dt.accountNumber,
+      // get the totals of openning balance
+      return getClientTotalsFromPeriodTotal(opt, true);
+    })
+    .then((previousTotal) => {
+      _.merge(clientsData, previousTotal);
+      // fetching data of the current fiscal year
+      return getClientBalancesFromGeneralLedger(opt);
+    })
+    .then((data) => {
+      if (!data.length) {
+        Object.keys(clientsData.lines).forEach((accountNumber) => {
+          _.merge(clientsData.lines[accountNumber], {
+            debit : 0,
+            credit : 0,
+            currentBalance : 0,
           });
-        }
-
-        // adding effectively current info to the object
-        // and adding the current balance of the client,
-        // no way to get it from the database directly without altering the current requests
-        _.merge(clientsData.lines[dt.accountNumber], {
-          debit : dt.debit,
-          credit : dt.credit,
-          currentBalance : dt.balance,
         });
-      });
-    }
-    // fetch totals for current period / fiscal year
-    return getClientTotalsFromGeneralLedger(opt, false);
-  })
-  .then((currentTotal) => {
-    _.merge(clientsData, currentTotal);
+      } else {
+        data.forEach((dt) => {
+        // if there is no info about the client for the previous year
+          if (!clientsData.lines[dt.accountNumber]) {
+            _.merge(clientsData.lines[dt.accountNumber] = {}, {
+              initDebit : 0,
+              initCredit : 0,
+              initBalance : 0,
+              name : dt.name,
+              accountNumber : dt.accountNumber,
+            });
+          }
 
-    // removing the period filter
-    delete opt.period_id;
-
-    // fecth final balances
-    return getClientBalancesFromPeriodTotal(opt, false);
-  })
-  .then((data) => {
-    data.forEach((dt) => {
-      if (clientsData.lines[dt.accountNumber]) {
-        _.merge(clientsData.lines[dt.accountNumber], {
-          finalBalance : dt.finalBalance,
+          // adding effectively current info to the object
+          // and adding the current balance of the client,
+          // no way to get it from the database directly without altering the current requests
+          _.merge(clientsData.lines[dt.accountNumber], {
+            debit : dt.debit,
+            credit : dt.credit,
+            currentBalance : dt.balance,
+          });
         });
       }
+      // fetch totals for current period / fiscal year
+      return getClientTotalsFromGeneralLedger(opt, false);
+    })
+    .then((currentTotal) => {
+      _.merge(clientsData, currentTotal);
+
+      // removing the period filter
+      delete opt.period_id;
+
+      // fetch final balances
+      return getClientBalancesFromPeriodTotal(opt, false);
+    })
+    .then((data) => {
+      data.forEach((dt) => {
+        if (clientsData.lines[dt.accountNumber]) {
+          _.merge(clientsData.lines[dt.accountNumber], {
+            finalBalance : dt.finalBalance,
+          });
+        }
+      });
+
+      // fetch the final total for each row of the period total table
+      return getClientTotalsFromPeriodTotal(opt, false);
+    })
+    .then((data) => {
+      _.merge(clientsData, data);
+      return clientsData;
     });
-    // fetch the final total for each row of the period total table
-    return getClientTotalsFromPeriodTotal(opt, false);
-  })
-  .then((data) => {
-    _.merge(clientsData, data);
-    return clientsData;
-  });
 }
 
 /**
@@ -193,15 +194,15 @@ function buildComplexReport(opt) {
  * This function is responsible of returning a correct fiscal year and its period zero Id
  */
 function getFiscalYearByDate(date, periodZeroNumber) {
-  var query =
+  const query =
     `
-    SELECT 
-      fy.id AS fiscal_year_id, fy.previous_fiscal_year_id, fy.start_date, fy.end_date, p.id AS period_id 
-    FROM 
-      fiscal_year fy 
-    JOIN 
+    SELECT
+      fy.id AS fiscal_year_id, fy.previous_fiscal_year_id, fy.start_date, fy.end_date, p.id AS period_id
+    FROM
+      fiscal_year fy
+    JOIN
       period p ON p.fiscal_year_id = fy.id
-    WHERE 
+    WHERE
       p.number = ? AND
       DATE(?) BETWEEN DATE(fy.start_date) AND DATE(fy.end_date)`;
   return db.one(query, [periodZeroNumber, date]);
@@ -229,11 +230,11 @@ function getClientBalancesFromPeriodTotal(options, isInitial) {
   const sql = `
     SELECT
       ac.number AS number, dg.name AS name, SUM(pt.debit) AS debit,
-      SUM(pt.credit) AS credit, SUM(pt.debit - pt.credit) AS balance 
-    FROM 
-      debtor_group dg 
-    JOIN 
-      account ac ON ac.id = dg.account_id 
+      SUM(pt.credit) AS credit, SUM(pt.debit - pt.credit) AS balance
+    FROM
+      debtor_group dg
+    JOIN
+      account ac ON ac.id = dg.account_id
     LEFT JOIN period_total pt ON ac.id = pt.account_id`;
 
   filterParser.equals('fiscal_year_id', 'fiscal_year_id', 'pt');
@@ -252,17 +253,17 @@ function getClientBalancesFromPeriodTotal(options, isInitial) {
     cols = `t.number AS accountNumber, t.name, IFNULL(t.balance, 0) AS balance`;
   } else {
     cols = (isInitial) ?
-    `
+      `
       t.number AS accountNumber, t.name, IFNULL(t.debit, 0) AS initDebit,
       IFNULL(t.credit, 0) AS initCredit, IFNULL(t.balance, 0) AS initBalance` :
-    `t.number AS accountNumber, t.name, IFNULL(t.balance, 0) AS finalBalance`;
+      `t.number AS accountNumber, t.name, IFNULL(t.balance, 0) AS finalBalance`;
   }
 
   const finalQuery =
       `
-    SELECT 
-      ${cols}         
-    FROM 
+    SELECT
+      ${cols}
+    FROM
       (${query}) AS t`;
   return db.exec(finalQuery, parameters);
 }
@@ -272,13 +273,13 @@ function getClientBalancesFromGeneralLedger(options) {
   const filterParser = new FilterParser(options, { tableAlias : 'gl' });
   const sql = `
     SELECT
-      ac.number, dg.name, SUM(gl.debit_equiv) AS debit, SUM(gl.credit_equiv) AS credit, 
-      SUM(gl.debit_equiv - gl.credit_equiv) AS balance 
-    FROM 
-      debtor_group dg 
-    JOIN 
+      ac.number, dg.name, SUM(gl.debit_equiv) AS debit, SUM(gl.credit_equiv) AS credit,
+      SUM(gl.debit_equiv - gl.credit_equiv) AS balance
+    FROM
+      debtor_group dg
+    JOIN
       account ac ON ac.id = dg.account_id
-    LEFT JOIN 
+    LEFT JOIN
       general_ledger gl ON ac.id = gl.account_id`;
 
   filterParser.dateFrom('dateFrom', 'trans_date');
@@ -289,12 +290,12 @@ function getClientBalancesFromGeneralLedger(options) {
   const query = filterParser.applyQuery(sql);
   const parameters = filterParser.parameters();
 
-    // request to fetch the current fiscal year data of a client from the general ledger
+  // request to fetch the current fiscal year data of a client from the general ledger
   const finalQuery = `
-    SELECT 
-      t.number AS accountNumber, t.name, IFNULL(t.debit, 0) AS debit, IFNULL(t.credit, 0) AS credit, 
+    SELECT
+      t.number AS accountNumber, t.name, IFNULL(t.debit, 0) AS debit, IFNULL(t.credit, 0) AS credit,
       IFNULL(t.balance, 0) AS balance
-    FROM 
+    FROM
       (${query}) AS t`;
   return db.exec(finalQuery, parameters);
 }
@@ -305,10 +306,10 @@ function getClientTotalsFromPeriodTotal(options, isInitial) {
 
   const sql = `
     SELECT
-      SUM(pt.debit) AS debit, SUM(pt.credit) AS credit, SUM(pt.debit - pt.credit) AS balance 
-    FROM 
+      SUM(pt.debit) AS debit, SUM(pt.credit) AS credit, SUM(pt.debit - pt.credit) AS balance
+    FROM
       period_total pt
-    JOIN 
+    JOIN
       debtor_group dg ON dg.account_id = pt.account_id`;
 
   filterParser.equals('fiscal_year_id', 'fiscal_year_id', 'pt');
@@ -324,15 +325,15 @@ function getClientTotalsFromPeriodTotal(options, isInitial) {
     cols = `IFNULL(t.balance, 0) AS balance`;
   } else {
     cols = (isInitial) ?
-    `IFNULL(debit, 0) AS totalInitDebit, IFNULL(credit, 0) AS totalInitCredit, IFNULL(balance, 0) AS totalInitBalance` :
-    `IFNULL(t.balance, 0) AS totalFinalBalance`;
+      'IFNULL(debit, 0) totalInitDebit, IFNULL(credit, 0) totalInitCredit, IFNULL(balance, 0) totalInitBalance' :
+      'IFNULL(t.balance, 0) AS totalFinalBalance';
   }
 
   const finalQuery =
       `
-    SELECT 
-      ${cols}         
-    FROM 
+    SELECT
+      ${cols}
+    FROM
       (${query}) AS t`;
 
   return db.one(finalQuery, parameters);
@@ -343,14 +344,14 @@ function getClientTotalsFromGeneralLedger(options) {
   const filterParser = new FilterParser(options, { tableAlias : 'gl', autoParseStatements : false });
   const sql =
       `
-    SELECT 
-     SUM(gl.debit_equiv) AS debit, SUM(gl.credit_equiv) AS credit, 
-     SUM(gl.debit_equiv - gl.credit_equiv) AS balance 
-    FROM 
-      debtor_group dg 
-    JOIN 
-      account ac ON ac.id = dg.account_id 
-    JOIN 
+    SELECT
+     SUM(gl.debit_equiv) AS debit, SUM(gl.credit_equiv) AS credit,
+     SUM(gl.debit_equiv - gl.credit_equiv) AS balance
+    FROM
+      debtor_group dg
+    JOIN
+      account ac ON ac.id = dg.account_id
+    JOIN
       general_ledger gl ON ac.id = gl.account_id`;
 
   filterParser.dateFrom('dateFrom', 'trans_date');
@@ -361,10 +362,10 @@ function getClientTotalsFromGeneralLedger(options) {
   const parameters = filterParser.parameters();
 
   const finalQuery =
-    `SELECT 
-      IFNULL(t.debit, 0) AS totalCurrentDebit, IFNULL(t.credit, 0) AS totalCurrentCredit, 
+    `SELECT
+      IFNULL(t.debit, 0) AS totalCurrentDebit, IFNULL(t.credit, 0) AS totalCurrentCredit,
       IFNULL(t.balance, 0) AS totalCurrentBalance
-    FROM 
+    FROM
       (${query}) AS t`;
 
   return db.one(finalQuery, parameters);

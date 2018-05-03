@@ -1,7 +1,7 @@
 /* global expect, chai, agent */
 
 const helpers = require('./helpers');
-const uuid = require('node-uuid');
+const uuid = require('uuid/v4');
 
 /*
  * The /grades API endpoint
@@ -12,7 +12,7 @@ describe('(/grades) API endpoint', function () {
 
   // grade we will add during this test suite.
   var grade = {
-    uuid : uuid.v4(),
+    uuid : uuid(),
     code : 'G2',
     text : 'Grade 2',
     basic_salary : 150

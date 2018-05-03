@@ -1,42 +1,44 @@
 angular.module('bhima.services')
   .service('GridExportService', GridExportService);
 
-GridExportService.$inject = ['$uibModal', 'util'];
+GridExportService.$inject = [
+  '$uibModal', 'util', 'bhConstants',
+  'uiGridExporterService', 'moment',
+];
 
-function GridExportService(Modal, util) {
-
+function GridExportService(Modal, util, bhConstants, uiGridExporterService, moment) {
   /**
    * @constructor
    */
   function GridExport(gridOptions, defaultRowKey, defaultColKey) {
+    this.options = gridOptions;
+    this.rows = defaultRowKey;
+    this.cols = defaultColKey;
 
-    this.gridOptions = gridOptions;
-    this.ROWS = defaultRowKey;
-    this.COLS = defaultColKey;
+    // bind gridOptions to instance
+    this.options = gridOptions;
 
-    util.after(gridOptions, 'onRegisterApi', function onRegisterApi(api) {
+    util.after(gridOptions, 'onRegisterApi', api => {
       this.api = api;
-    }.bind(this));
+    });
   }
 
   /**
    * @method run
+   *
    * @description run the export tool
+   *
+   * NOTE(@jniles) - any function using "this" cannot be an arrow function.
    */
   GridExport.prototype.run = function run() {
-    var gridApi = this.api;
-    var gridOptions = this.gridOptions;
-    var rows = this.ROWS;
-    var cols = this.COLS;
+    const {
+      api,
+      options,
+      rows,
+      cols,
+    } = this;
 
-    var request = {
-      api: gridApi,
-      options: gridOptions,
-      rows: rows,
-      cols: cols,
-    };
-
-    var params = {
+    const params = {
       templateUrl  : 'modules/templates/modals/export.modal.html',
       controller   : 'ExportGridModalController',
       controllerAs : '$ctrl',
@@ -44,13 +46,46 @@ function GridExportService(Modal, util) {
       backdrop     : 'static',
       animation    : false,
       resolve      : {
-        data : function dataProvider() { return request; },
+        data : () => ({
+          api,
+          options,
+          rows,
+          cols,
+        }),
       },
     };
 
-    var instance = Modal.open(params);
+    const instance = Modal.open(params);
     return instance.result;
-  }
+  };
+
+
+  /**
+   * @method exportToCsv
+   *
+   * @description export the grid content into a csv file
+   *
+   * @param {string} filename - [optional] The name of the csv file
+   * @param {function} rowsFormatterFn - [optional] callback fn to apply to rows
+   * @param {function} columnsFormatterFn - [optional] callback fn to apply to columns
+   */
+  GridExport.prototype.exportToCsv = (filename, columnsFormatterFn, rowsFormatterFn) => {
+    let columns = this.options.columnDefs || [];
+    let rows = this.options.data || [];
+
+    if (columnsFormatterFn) {
+      columns = columnsFormatterFn(this.options.columnDefs);
+    }
+
+    if (rowsFormatterFn) {
+      rows = rowsFormatterFn(this.options.data);
+    }
+
+    const prefix = filename || 'Export_';
+    const _fileName = String(prefix).concat(moment().format(bhConstants.dates.formatDB), '.csv');
+    const fileString = uiGridExporterService.formatAsCsv(columns, rows, ',');
+    uiGridExporterService.downloadFile(_fileName, fileString, true, true);
+  };
 
   return GridExport;
 }

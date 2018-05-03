@@ -2,7 +2,8 @@ angular.module('bhima.controllers')
   .controller('ExchangeRateModalController', ExchangeRateModalController);
 
 ExchangeRateModalController.$inject = [
-  '$uibModalInstance', 'ExchangeRateService', 'CurrencyService', 'SessionService', 'NotifyService'
+  '$uibModalInstance', 'ExchangeRateService', 'CurrencyService',
+  'SessionService', 'NotifyService',
 ];
 
 /**
@@ -11,7 +12,7 @@ ExchangeRateModalController.$inject = [
  *
  */
 function ExchangeRateModalController(ModalInstance, Exchange, Currencies, Session, Notify) {
-  var vm = this;
+  const vm = this;
 
   // bind defaults
   vm.timestamp = new Date();
@@ -22,46 +23,50 @@ function ExchangeRateModalController(ModalInstance, Exchange, Currencies, Sessio
     date : new Date(),
   };
 
+  vm.onDateChange = (date) => {
+    vm.rate.date = date;
+  };
+
   vm.submit = submit;
   vm.format = Currencies.format;
   vm.symbol = Currencies.symbol;
-  vm.cancel = function () { ModalInstance.dismiss(); };
+  vm.cancel = function cancel() { ModalInstance.dismiss(); };
 
   // this turns on and off the currency select input
   vm.hasMultipleCurrencies = false;
 
   Currencies.read()
-    .then(function (currencies) {
+    .then((currencies) => {
       vm.currencies = currencies
-        .filter(function (currency) {
-          return currency.id !== Session.enterprise.currency_id;
-        });
+        .filter(currency => currency.id !== Session.enterprise.currency_id);
 
       // use the first currency in the list
-      vm.rate.currency = vm.currencies[0];
+      [vm.rate.currency] = vm.currencies;
 
       // if there are more than a single other currency (besides the enterprise currency)
       // show the currency selection input
       if (vm.currencies.length > 1) {
         vm.hasMultipleCurrencies = true;
       }
+
+      vm.currentExchangeRate = Exchange.getCurrentRate(vm.rate.currency.id);
     })
     .catch(Notify.handleError);
 
   function submit(form) {
-    if (form.$invalid) { return; }
+    if (form.$invalid) { return 0; }
 
     // gather form data for submission
-    var data = angular.copy(vm.rate);
+    const data = angular.copy(vm.rate);
 
     data.enterprise_id = Session.enterprise.id;
 
     // TODO clean this up with proper ui-select syntax when internet available
-    var currency = vm.rate.currency;
+    const { currency } = vm.rate;
     data.currency_id = currency.id;
 
     return Exchange.create(data)
-      .then(function () {
+      .then(() => {
         ModalInstance.close();
       });
   }

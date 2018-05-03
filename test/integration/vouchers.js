@@ -1,7 +1,7 @@
 /* global expect, agent */
 
 const helpers = require('./helpers');
-const uuid = require('node-uuid');
+const uuid = require('uuid/v4');
 
 /*
  * The /vouchers API endpoint
@@ -12,7 +12,7 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
   const date = new Date();
 
   const vUuid = 'b140c144-6ca8-47b0-99ba-94732cf6efde';
-  const numVouchers = 9;
+  const numVouchers = 8;
 
   const TO_DELETE_UUID = '3688e9ce-85ea-4b5c-9144-688177edcb63';
 
@@ -23,17 +23,17 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
     project_id  : 1,
     currency_id : helpers.data.USD,
     amount      : 10,
-    description : 'Voucher Transaction',
+    description : 'Voucher Transaction to BCDC',
     user_id     : 1,
     items       : [{
-      uuid          : uuid.v4(),
-      account_id    : 3631,
+      uuid          : uuid(),
+      account_id    : 184,
       debit         : 10,
       credit        : 0,
-      document_uuid : uuid.v4(),
+      document_uuid : uuid(),
       voucher_uuid  : vUuid,
     }, {
-      account_id   : 3628,
+      account_id   : 217,
       debit        : 0,
       credit       : 10,
       voucher_uuid : vUuid,
@@ -42,10 +42,10 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
 
   // NOTE: this voucher does not have any uuids
   const items = [
-    { account_id : 3631, debit : 11, credit : 0, document_uuid : uuid.v4(), entity_uuid : uuid.v4() },
-    { account_id : 3637, debit : 0, credit : 11, document_uuid : uuid.v4(), entity_uuid : uuid.v4() },
-    { account_id : 3631, debit : 0, credit : 12 },
-    { account_id : 3628, debit : 12, credit : 0 },
+    { account_id : 197, debit : 11, credit : 0, document_uuid : uuid(), entity_uuid : uuid() },
+    { account_id : 191, debit : 0, credit : 11, document_uuid : uuid(), entity_uuid : uuid() },
+    { account_id : 197, debit : 0, credit : 12 },
+    { account_id : 190, debit : 12, credit : 0 },
   ];
 
   const secondVoucher = {
@@ -61,14 +61,14 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
   // only one item - bad transaction
   const badVoucher = {
     date,
-    uuid        : uuid.v4(),
+    uuid        : uuid(),
     project_id  : 1,
     currency_id : helpers.data.USD,
     amount      : 10,
     description : 'Voucher Transaction',
     items       : [{
-      uuid       : uuid.v4(),
-      account_id : 3631,
+      uuid       : uuid(),
+      account_id : 177,
       debit      : 10,
       credit     : 0,
     }],
@@ -76,7 +76,7 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
 
   // this voucher will not have an exchange rate
   const predatedVoucher = {
-    uuid        : uuid.v4(),
+    uuid        : uuid(),
     date        : new Date('2000-01-01'),
     project_id  : 1,
     currency_id : helpers.data.FC,
@@ -84,13 +84,13 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
     description : 'Voucher Transaction',
     user_id     : 1,
     items       : [{
-      uuid       : uuid.v4(),
-      account_id : 3627,
+      uuid       : uuid(),
+      account_id : 179,
       debit      : 10,
       credit     : 0,
     }, {
-      uuid       : uuid.v4(),
-      account_id : 3637,
+      uuid       : uuid(),
+      account_id : 191,
       debit      : 0,
       credit     : 10,
     }],
@@ -118,7 +118,7 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
   });
 
   it('POST /vouchers doesn\'t register when missing data', () => {
-    const uid = uuid.v4();
+    const uid = uuid();
     mockVoucher = {
       date,
       uuid          : uid,
@@ -126,7 +126,7 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
       currency_id   : 1,
       amount        : 10,
       description   : 'Bad Voucher Transaction',
-      document_uuid : uuid.v4(), // technically, this should reference something..
+      document_uuid : uuid(), // technically, this should reference something..
       user_id       : 1,
       items         : [{
         account_id   : 3631,
@@ -147,7 +147,7 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
   it('POST /vouchers will reject a voucher will less than two records', () => {
     // attempt 1 - missing items completely + bad voucher
     return agent.post('/vouchers')
-      .send({ voucher: { uuid: uuid.v4() } })
+      .send({ voucher: { uuid: uuid() } })
       .then((res) => {
         helpers.api.errored(res, 400);
 

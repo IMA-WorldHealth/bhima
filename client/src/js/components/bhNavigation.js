@@ -1,11 +1,11 @@
 angular.module('bhima.components')
   .component('bhNavigation', {
     controller : NavigationController,
-    templateUrl : 'modules/templates/navigation.tmpl.html'
+    templateUrl : 'modules/templates/navigation.tmpl.html',
   });
 
 NavigationController.$inject = [
-  '$location', '$rootScope', 'Tree', 'AppCache', 'NotifyService'
+  '$location', '$rootScope', 'Tree', 'AppCache', 'NotifyService', '$transitions', '$state',
 ];
 
 /**
@@ -14,11 +14,11 @@ NavigationController.$inject = [
  * @description
  * This controller determines the
  */
-function NavigationController($location, $rootScope, Tree, AppCache, Notify) {
-  var $ctrl = this;
-  var openedCache = AppCache('navigation.opened');
+function NavigationController($location, $rootScope, Tree, AppCache, Notify, $transitions, $state) {
+  const $ctrl = this;
+  const openedCache = AppCache('navigation.opened');
 
-  var $$listeners = [];
+  const $$listeners = [];
 
   /*
    * Object used to index unit ids and paths, this allows for very efficient
@@ -26,11 +26,11 @@ function NavigationController($location, $rootScope, Tree, AppCache, Notify) {
    * parsed once - every following method should use the index to point to the
    * relevant unit
    */
-  var unitsIndex = { id : {}, path : {} };
+  const unitsIndex = { id : {}, path : {} };
 
   function loadTreeUnits() {
     Tree.units()
-      .then(function (units) {
+      .then(units => {
 
         Tree.sortByTranslationKey(units);
         $ctrl.units = units;
@@ -38,8 +38,9 @@ function NavigationController($location, $rootScope, Tree, AppCache, Notify) {
         calculateUnitIndex($ctrl.units);
         expandInitialUnits($ctrl.units);
 
-        // updates the tree selection on path change
-        updateSelectionOnPathChange();
+        const currentStateName = $state.$current.name;
+        const currentStateUrl = $state.href(currentStateName);
+        updateSelectionOnPathChange(currentStateUrl);
       })
       .catch(Notify.handleError);
   }
@@ -77,36 +78,38 @@ function NavigationController($location, $rootScope, Tree, AppCache, Notify) {
   /**
    * Select a unit in the tree given a specified URL.
    */
-  function updateSelectionOnPathChange() {
-    var path = $location.path();
-
+  function updateSelectionOnPathChange(nextUrl) {
     /**
      * loop through all paths, selecting those are match the selected url
      *
      * @todo - write test cases to be sure this works in all cases, probably
      * dependent on the ordering of unitsIndex.
      */
-    var paths = Object.keys(unitsIndex.path);
+    const paths = Object.keys(unitsIndex.path);
     paths.sort();
 
-    paths.forEach(function (key) {
-      var node = unitsIndex.path[key];
-      if (path.includes(node.path)) {
+    paths.forEach(key => {
+      const node = unitsIndex.path[key];
+      if (nextUrl.includes(node.path)) {
         selectUnit(node);
       }
     });
   }
 
   function selectUnit(unit) {
-
     // Clear previous selection if it exists
     if ($ctrl.selectedUnit) {
       $ctrl.selectedUnit.selected = false;
     }
 
+    const parentNode = unitsIndex.id[unit.parent];
+
     // Update status of currently selected unit
     unit.selected = true;
     $ctrl.selectedUnit = unit;
+
+    // make sure the parent node is open
+    parentNode.open = true;
   }
 
   /**
@@ -114,16 +117,14 @@ function NavigationController($location, $rootScope, Tree, AppCache, Notify) {
    *
    * @todo - This method may make more sense as part of the Tree service
    */
-  function expandInitialUnits(units, states) {
+  function expandInitialUnits() {
+    const nodes = Object.keys(openedCache);
 
-    var nodes = Object.keys(openedCache);
-
-    nodes.forEach(function (key) {
-
-      var isOpen = openedCache[key];
+    nodes.forEach(key => {
+      const isOpen = openedCache[key];
 
       // Lookup the cached unit key in the current set of units
-      var currentUnit = unitsIndex.id[key];
+      const currentUnit = unitsIndex.id[key];
 
       if (angular.isDefined(currentUnit)) {
 
@@ -143,7 +144,7 @@ function NavigationController($location, $rootScope, Tree, AppCache, Notify) {
    * should be required
    */
   function calculateUnitIndex(units) {
-    units.forEach(function (unit) {
+    units.forEach(unit => {
       unitsIndex.id[unit.id] = unit;
       unitsIndex.path[unit.path] = unit;
       calculateUnitIndex(unit.children);
@@ -157,17 +158,21 @@ function NavigationController($location, $rootScope, Tree, AppCache, Notify) {
    * page being refreshed
    */
   $$listeners.push($rootScope.$on('$translateChangeSuccess', $ctrl.refreshTranslation));
-  $$listeners.push($rootScope.$on('$stateChangeSuccess', updateSelectionOnPathChange));
 
   // if the session is reloaded, download the new tree units
   $$listeners.push($rootScope.$on('session:reload', loadTreeUnits));
 
   // unregister listeners on destroy
-  this.$onDestroy = function $onDestroy() {
-    $$listeners.forEach(function (unregister) {
-      unregister();
-    });
+  $ctrl.$onDestroy = function $onDestroy() {
+    $$listeners.forEach(unregister => unregister());
   };
 
-  loadTreeUnits();
+  // update the selected unit when $state is changed
+  $transitions.onSuccess({}, transition => {
+    const nextState = transition.to();
+    const nextUrl = $state.href(nextState.name);
+    updateSelectionOnPathChange(nextUrl);
+  });
+
+  $ctrl.$onInit = () => loadTreeUnits();
 }

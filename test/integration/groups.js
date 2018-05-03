@@ -6,7 +6,7 @@ describe('(/groups) Group subscriptions API', function () {
   'use strict';
 
   let invalidKey = 'notakey';
-  let validKey = 'debtor_group_billing_service';
+  let validKey = 'debtor_group_invoicing_fee';
 
   // debtor group id
   let validEntity = '4de0fe47-177f-4d30-b95f-cff8166400b4';

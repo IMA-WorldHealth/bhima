@@ -1,16 +1,16 @@
 angular.module('bhima.controllers')
-.controller('SearchInventoriesModalController', SearchInventoriesModalController);
+  .controller('SearchInventoriesModalController', SearchInventoriesModalController);
 
 // dependencies injections
 SearchInventoriesModalController.$inject = [
-  'data','NotifyService', '$uibModalInstance', 'Store', 'PeriodService', 'util', 'StockService',
+  'data', 'NotifyService', '$uibModalInstance', 'Store', 'PeriodService', 'util', 'StockService',
 ];
 
 function SearchInventoriesModalController(data, Notify, Instance, Store, Periods, util, Stock) {
   var vm = this;
-  var changes = new Store({identifier : 'key'});
+  var changes = new Store({ identifier : 'key' });
   var searchQueryOptions = [
-    'depot_uuid', 'inventory_uuid', 'status',
+    'depot_uuid', 'inventory_uuid', 'status', 'require_po',
   ];
 
   vm.filters = data;
@@ -18,42 +18,48 @@ function SearchInventoriesModalController(data, Notify, Instance, Store, Periods
   vm.defaultQueries = {};
 
   // displayValues will be an id:displayValue pair
-  var displayValues = {};
+  const displayValues = {};
 
   // default filter period - directly write to changes list
-  vm.onSelectPeriod = function onSelectPeriod(period) {
+  vm.onSelectPeriod = (period) => {
     var periodFilters = Periods.processFilterChanges(period);
 
-    periodFilters.forEach(function (filterChange) {
+    periodFilters.forEach((filterChange) => {
       changes.post(filterChange);
     });
   };
 
-  var lastViewFilters = Stock.filter.inventory.formatView().customFilters;
+  const lastViewFilters = Stock.filter.inventory.formatView().customFilters;
 
   // map key to last display value for lookup in loggedChange
-  var lastDisplayValues = lastViewFilters.reduce(function (object, filter) {
+  const lastDisplayValues = lastViewFilters.reduce((object, filter) => {
     object[filter._key] = filter.displayValue;
     return object;
   }, {});
 
   // custom filter depot_uuid - assign the value to the params object
-  vm.onSelectDepot = function onSelectDepot(depot) {
+  vm.onSelectDepot = (depot) => {
     vm.searchQueries.depot_uuid = depot.uuid;
     displayValues.depot_uuid = depot.text;
   };
 
+  // custom filter group_uuid - assign the value to the params object
+  vm.onSelectGroup = (group) => {
+    vm.searchQueries.group_uuid = group.uuid;
+    displayValues.group_uuid = group.name;
+  };
+
   // custom filter inventory_uuid - assign the value to the params object
-  vm.onSelectInventory = function onSelectInventory(inventory) {
+  vm.onSelectInventory = (inventory) => {
     vm.searchQueries.inventory_uuid = inventory.uuid;
     displayValues.inventory_uuid = inventory.label;
   };
 
   // default filter limit - directly write to changes list
-  vm.onSelectLimit = function onSelectLimit(value) {
+  vm.onSelectLimit = (value) => {
     // input is type value, this will only be defined for a valid number
     if (angular.isDefined(value)) {
-      changes.post({ key : 'limit', value : value });
+      changes.post({ key : 'limit', value });
     }
   };
 
@@ -68,7 +74,7 @@ function SearchInventoriesModalController(data, Notify, Instance, Store, Periods
 
   if (data.limit) {
     vm.defaultQueries.limit = data.limit;
-  } 
+  }
 
   vm.cancel = function cancel() { Instance.close(); };
 
@@ -79,15 +85,15 @@ function SearchInventoriesModalController(data, Notify, Instance, Store, Periods
     }
 
     // push all searchQuery values into the changes array to be applied
-    angular.forEach(vm.searchQueries, function (value, key) {
+    angular.forEach(vm.searchQueries, (value, key) => {
       if (angular.isDefined(value)) {
         // default to the original value if no display value is defined
-        var displayValue = displayValues[key] || lastDisplayValues[key] || value;
-        changes.post({ key: key, value: value, displayValue: displayValue });
+        const displayValue = displayValues[key] || lastDisplayValues[key] || value;
+        changes.post({ key, value, displayValue });
       }
     });
 
-    var loggedChanges = changes.getAll();
+    const loggedChanges = changes.getAll();
 
     return Instance.close(loggedChanges);
   };

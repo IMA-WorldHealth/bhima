@@ -3,30 +3,33 @@ angular.module('bhima.components')
     templateUrl : 'modules/templates/bhAddItem.tmpl.html',
     controller  : addItemController,
     bindings    : {
-      disable     : '<',
       callback    : '&',
+      disable     : '<?',
     },
   });
 
 /**
  * Add Item component
- *
  */
 function addItemController() {
-  var $ctrl = this;
+  const $ctrl = this;
 
-  $ctrl.$onInit = function onInit() {    
+  $ctrl.$onInit = function onInit() {
     // default for form name
     $ctrl.name = 'AddItemForm';
-    
+
     // default value for incrementation
     $ctrl.itemIncrement = 1;
+
+    if (!angular.isDefined($ctrl.disable)) {
+      $ctrl.disable = false;
+    }
   };
 
   // fires the Callback bound to the component boundary
-  $ctrl.addItems = function ($item) {
+  $ctrl.addItems = $item => {
     if ($item > 0) {
-      $ctrl.callback({ numItem : $item });  
+      $ctrl.callback({ numItem : $item });
     }
   };
 }

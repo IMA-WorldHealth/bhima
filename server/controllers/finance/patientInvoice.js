@@ -7,14 +7,15 @@
  * billing services infrastructure
  */
 
-const uuid = require('node-uuid');
-const identifiers = require('../../config/identifiers');
-const db = require('../../lib/db');
-const barcode = require('../../lib/barcode');
-const FilterParser = require('../../lib/filter');
+const uuid = require('uuid/v4');
+
 const BadRequest = require('../../lib/errors/BadRequest');
-const createInvoice = require('./invoice/patientInvoice.create');
 const Debtors = require('./debtors');
+const FilterParser = require('../../lib/filter');
+const barcode = require('../../lib/barcode');
+const createInvoice = require('./invoice/patientInvoice.create');
+const db = require('../../lib/db');
+const identifiers = require('../../config/identifiers');
 
 const shared = require('./shared');
 
@@ -120,13 +121,13 @@ function lookupInvoice(invoiceUuid) {
 
   const invoiceBillingQuery =
     `SELECT
-      invoice_billing_service.value, billing_service.label, billing_service.value AS billing_value,
+      invoice_invoicing_fee.value, invoicing_fee.label, invoicing_fee.value AS billing_value,
       SUM(invoice_item.quantity * invoice_item.transaction_price) AS invoice_cost
-    FROM invoice_billing_service
-    JOIN billing_service ON billing_service.id = invoice_billing_service.billing_service_id
-    JOIN invoice_item ON invoice_item.invoice_uuid = invoice_billing_service.invoice_uuid
-    WHERE invoice_billing_service.invoice_uuid = ?
-    GROUP BY billing_service.id`;
+    FROM invoice_invoicing_fee
+    JOIN invoicing_fee ON invoicing_fee.id = invoice_invoicing_fee.invoicing_fee_id
+    JOIN invoice_item ON invoice_item.invoice_uuid = invoice_invoicing_fee.invoice_uuid
+    WHERE invoice_invoicing_fee.invoice_uuid = ?
+    GROUP BY invoicing_fee.id`;
 
   const invoiceSubsidyQuery = `
     SELECT invoice_subsidy.value, subsidy.label, subsidy.value AS subsidy_value
@@ -182,10 +183,14 @@ function create(req, res, next) {
     return;
   }
 
+  // cache the uuid to avoid parsing later
+  const invoiceUuid = invoice.uuid || uuid();
+  invoice.uuid = invoiceUuid;
+
   const preparedTransaction = createInvoice(invoice);
   preparedTransaction.execute()
     .then(() => {
-      res.status(201).json({ uuid : uuid.unparse(invoice.uuid) });
+      res.status(201).json({ uuid : invoiceUuid });
     })
     .catch(next)
     .done();
@@ -204,26 +209,31 @@ function find(options) {
 
   const sql = `
     SELECT BUID(invoice.uuid) as uuid, invoice.project_id, invoice.date,
-      patient.display_name as patientName, invoice.cost, BUID(invoice.debtor_uuid) as debtor_uuid,
-      CONCAT_WS('.', '${identifiers.INVOICE.key}', project.abbr, invoice.reference) AS reference,
-      CONCAT_WS('.', '${identifiers.PATIENT.key}', project.abbr, patient.reference) AS patientReference,
-      service.name as serviceName, user.display_name, invoice.user_id, invoice.reversed
+      patient.display_name as patientName, invoice.cost,
+      BUID(invoice.debtor_uuid) as debtor_uuid, dm.text AS reference,
+      em.text AS patientReference, service.name as serviceName,
+      user.display_name, invoice.user_id, invoice.reversed, invoice.edited
     FROM invoice
     LEFT JOIN patient ON invoice.debtor_uuid = patient.debtor_uuid
     JOIN debtor AS d ON invoice.debtor_uuid = d.uuid
+    JOIN entity_map AS em ON em.uuid = patient.uuid
+    JOIN document_map AS dm ON dm.uuid = invoice.uuid
     JOIN service ON service.id = invoice.service_id
     JOIN user ON user.id = invoice.user_id
-    JOIN project ON project.id = invoice.project_id
   `;
 
-  filters.equals('patientUuid', 'uuid', 'patient');
-  filters.equals('user_id');
-  filters.equals('debtor_uuid');
-  filters.equals('reversed');
   filters.equals('cost');
-  filters.equals('service_id');
-  filters.equals('project_id');
   filters.equals('debtor_group_uuid', 'group_uuid', 'd');
+  filters.equals('debtor_uuid');
+  filters.equals('edited');
+  filters.equals('patientUuid', 'uuid', 'patient');
+  filters.equals('project_id');
+  filters.equals('reversed');
+  filters.equals('service_id');
+  filters.equals('user_id');
+
+  filters.equals('reference', 'text', 'dm');
+  filters.equals('patientReference', 'text', 'em');
 
   filters.custom(
     'cash_uuid',
@@ -238,12 +248,6 @@ function find(options) {
   filters.period('period', 'date');
   filters.dateFrom('custom_period_start', 'date');
   filters.dateTo('custom_period_end', 'date');
-
-  const referenceStatement = `CONCAT_WS('.', '${identifiers.INVOICE.key}', project.abbr, invoice.reference) = ?`;
-  filters.custom('reference', referenceStatement);
-
-  const patientReferenceStatement = `CONCAT_WS('.', '${identifiers.PATIENT.key}', project.abbr, patient.reference) = ?`;
-  filters.custom('patientReference', patientReferenceStatement);
 
   // @TODO Support ordering query (reference support for limit)?
   filters.setOrder('ORDER BY invoice.date DESC, invoice.reference DESC');
@@ -270,10 +274,8 @@ function lookupInvoiceCreditNote(invoiceUuid) {
     JOIN user u ON u.id = v.user_id
     JOIN invoice i ON i.uuid = v.reference_uuid
     WHERE v.type_id = ${CREDIT_NOTE_ID} AND v.reference_uuid = ?`;
+
   return db.one(sql, [buid])
-    .then(creditNote => {
-      return creditNote;
-    })
     .catch(() => {
       // db.one throw a critical error when there is not any record
       // and it must be handled

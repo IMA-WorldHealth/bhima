@@ -1,32 +1,28 @@
 const helpers = require('../shared/helpers');
 const DepotPage = require('./depots.page');
-const chai = require('chai');
 
-/** loading User pages **/
+/* loading User pages */
 const UserPage = require('../user/user.page.js');
-const UserCreateUpdatePage = require('../user/userCU.page.js');
-
-/** configuring helpers**/
-helpers.configure(chai);
-const expect = chai.expect;
 
 describe('Depots Management', () => {
   // navigate to the page
   before(() => helpers.navigate('#!/depots'));
 
   const Page = new DepotPage();
+
   /**
-  /* The implementation of the E2E test of the assignment of a repository
-  /* to a user is added in the E2E test of the repository and not in the 
-  /* user test because the E2E test on the users runs after the repository test. 
-  */
+   * The implementation of the E2E test of the assignment of a Depot
+   * to a user is added in the E2E test of the Depot and not in the
+   * user test because the E2E test on the users runs after the Depot test.
+   */
   const userPage = new UserPage();
-  const userCreateUpdatePage = new UserCreateUpdatePage();
 
   const depot = {
     text : 'E2E_new_depot',
     is_warehouse : 0,
   };
+
+  const DEPOT_SECONDAIRE = 'Depot Secondaire';
 
   const updateDepot = {
     text : 'E2E_updated_depot',
@@ -34,11 +30,19 @@ describe('Depots Management', () => {
   };
 
   it('successfully creates a new depot', () => {
-    Page.createDepot(depot.text, false);
+    Page.createDepot(depot.text, false, true, helpers.data.locations);
   });
 
   it('successfully edits a depot', () => {
     Page.editDepot(depot.text, updateDepot.text);
+  });
+
+  it.skip('join a location to a depot', () => {
+    Page.joinLocation(DEPOT_SECONDAIRE, helpers.data.locations);
+  });
+
+  it.skip('remove a location to a depot', () => {
+    Page.removeLocation(DEPOT_SECONDAIRE);
   });
 
   it('don\'t create when incorrect depot name', () => {
@@ -49,12 +53,11 @@ describe('Depots Management', () => {
     Page.deleteDepot(updateDepot.text);
   });
 
-  it('Set the depot manage by User', () => {
+  it('Set the depot manage by user', () => {
     helpers.navigate('#!/users');
-    
+
     userPage.editUserDepot(0);
-    Page.selectUserDepot(['Depot Secondaire']);
+    Page.selectUserDepot([DEPOT_SECONDAIRE]);
     Page.submitUserDepot();
   });
-
 });

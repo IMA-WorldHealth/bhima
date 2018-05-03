@@ -5,9 +5,11 @@ angular.module('bhima.components')
     transclude  : true,
     bindings    : {
       accountId        : '<',
-      disable          : '<',
-      onSelectCallback : '&?',
+      onSelectCallback : '&',
+      disable          : '<?',
       required         : '<?',
+      classe           : '@?',
+      accountTypeId :  '<?',
       label            : '@?',
       name             : '@?',
       excludeTitleAccounts : '@?',
@@ -21,19 +23,15 @@ AccountSelectController.$inject = [
 
 /**
  * Account selection component
- *
  */
 function AccountSelectController(Accounts, AppCache, $timeout, bhConstants, $scope) {
   var $ctrl = this;
-
   var hasCachedAccounts = false;
   var cache = new AppCache('bhAccountSelect');
 
-  // cache accounts locally for three seconds
-  var CACHE_TIMEOUT = 3000;
-
   // fired at the beginning of the account select
   $ctrl.$onInit = function $onInit() {
+
     // cache the title account ID for convenience
     $ctrl.TITLE_ACCOUNT_ID = bhConstants.accounts.TITLE;
 
@@ -90,11 +88,22 @@ function AccountSelectController(Accounts, AppCache, $timeout, bhConstants, $sco
 
   // loads accounts from the server
   function loadHttpAccounts() {
+    const detail = $ctrl.accountTypeId || $ctrl.classe;
+    const detailedRequest = detail ? 1 : 0;
+    const params = { detailed : detailedRequest };
+
+    if ($ctrl.classe) {
+      params.classe = $ctrl.classe.split(',').map(num => { return parseInt(num, 10); });
+    }
+    if ($ctrl.accountTypeId) {
+      params.type_id = $ctrl.accountTypeId.split(',').map(num => { return parseInt(num, 10); });
+    }
+
     // load accounts
-    Accounts.read()
+    Accounts.read(null, params)
       .then(function (elements) {
         // bind the accounts to the controller
-        var accounts = Accounts.order(elements);
+        let accounts = Accounts.order(elements);
 
         if ($ctrl.excludeTitleAccounts) {
           accounts = Accounts.filterTitleAccounts(accounts);

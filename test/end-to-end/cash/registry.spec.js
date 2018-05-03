@@ -10,7 +10,7 @@ describe('Payments Registry', CashPaymentsRegistryTests);
 function CashPaymentsRegistryTests() {
   const PAYMENT_INSIDE_REGISTRY = 3;
   const PAYMENT_PRIMARY_CASHBOX = 0;
-  const DEBTOR_GROUP = 'First Test Debtor Group';
+  const DEBTOR_GROUP = 'Church Employees';
   let modal;
   let filters;
 
@@ -63,7 +63,7 @@ function CashPaymentsRegistryTests() {
   });
 
   it('finds two payments in the primary cashbox', () => {
-    modal.setReference('Test Primary Cashbox A');
+    modal.setReference('Caisse Principale');
     modal.submit();
     GU.expectRowCount('payment-registry', PAYMENT_PRIMARY_CASHBOX);
   });

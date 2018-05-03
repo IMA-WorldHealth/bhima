@@ -1,16 +1,16 @@
 <div class="panel panel-default dash-panel" ng-controller="CashFlowChartController as ChartCtrl">
   <div class="panel-heading">
-    {{ "DASHBOARD.FINANCE.CASHFLOW" | translate }}
+    <span translate>DASHBOARD.FINANCE.CASHFLOW</span>
     <span class="pull-right" style="margin : 0 5px;">
-      {{ "CHART.GROUPING.TITLE" | translate }}:
+      <span translate>CHART.GROUPING.TITLE</span>:
       <select ng-model="ChartCtrl.group" ng-options="group as ChartCtrl.fmt(group.key) for group in ChartCtrl.grouping track by group.key" ng-change="ChartCtrl.refresh()"></select>
     </span>
     <span class="pull-right" style="margin : 0 5px;">
-      {{ "DASHBOARD.FINANCE.CURRENCY" | translate }}:
+      <span translate>DASHBOARD.FINANCE.CURRENCY</span>:
       <select ng-model="ChartCtrl.currencyId" ng-options="currency.id as currency.symbol for currency in ChartCtrl.currencies" ng-change="ChartCtrl.refresh()"></select>
     </span>
     <span class="pull-right" style="margin : 0 5px;">
-      {{ "DASHBOARD.FINANCE.CASHBOX" | translate }}:
+      <span translate>DASHBOARD.FINANCE.CASHBOX</span>:
       <select ng-model="ChartCtrl.cashBoxId" ng-options="cash.id as cash.text for cash in ChartCtrl.cashBoxes" ng-change="ChartCtrl.refresh()"></select>
     </span>
   </div>
@@ -18,14 +18,14 @@
     <tbody>
       <tr>
         <td>
-          <span style="margin: 0 5px;"><b><i class="glyphicon glyphicon-transactions"></i> {{ "COLUMNS.TRANSACTIONS" | translate }}</b>: {{ ChartCtrl.meta.transactions }}</span>
-          <span style="margin: 0 5px;" class="text-success"><b><i class="glyphicon glyphicon-chevron-up"></i> {{ "COLUMNS.INCOME" | translate }}</b>: {{ ChartCtrl.meta.debit | currency }}</span>
-          <span style="margin: 0 5px;" class="text-danger"><b><i class="glyphicon glyphicon-chevron-down"></i> {{ "COLUMNS.EXPENSE" | translate }}</b>: {{ ChartCtrl.meta.credit | currency }}</span>
-          <span style="margin: 0 5px;" class="text-info"><b><i class="glyphicon glyphicon-transfer"></i> {{ "COLUMNS.BALANCE" | translate }}</b>: {{ ChartCtrl.meta.balance | currency }}</span>
+          <span style="margin: 0 5px;"><b><i class="glyphicon glyphicon-transactions"></i> <span translate>COLUMNS.TRANSACTIONS</span></b>: {{ ChartCtrl.meta.transactions }}</span>
+          <span style="margin: 0 5px;" class="text-success"><b><i class="glyphicon glyphicon-chevron-up"></i> <span translate>COLUMNS.INCOME</span></b>: {{ ChartCtrl.meta.debit | currency }}</span>
+          <span style="margin: 0 5px;" class="text-danger"><b><i class="glyphicon glyphicon-chevron-down"></i> <span translate>COLUMNS.EXPENSE</span></b>: {{ ChartCtrl.meta.credit | currency }}</span>
+          <span style="margin: 0 5px;" class="text-info"><b><i class="glyphicon glyphicon-transfer"></i> <span translate>COLUMNS.BALANCE</span> </b>: {{ ChartCtrl.meta.balance | currency }}</span>
           <span class="pull-right">
             <label>
               <input ng-model="ChartCtrl.hasPostingJournal" type="checkbox" ng-change="ChartCtrl.refresh()" ng-true-value="1" ng-false-value="0" />
-              {{ "DASHBOARD.FINANCE.HASPOSTINGJOURNAL" | translate }}
+              <span translate>DASHBOARD.FINANCE.HASPOSTINGJOURNAL</span>
             </label>
           </span>
         </td>

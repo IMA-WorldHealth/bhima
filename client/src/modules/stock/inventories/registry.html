@@ -55,6 +55,35 @@
           <span class="fa fa-search"></span> <span class="hidden-xs" translate>FORM.BUTTONS.SEARCH</span>
         </button>
       </div>
+
+      <div class="toolbar-item">
+        <div class="btn-group" uib-dropdown>
+          <a class="btn btn-default" 
+            ng-class="{ 'btn-info' : StockCtrl.grouped }" 
+            ng-click="StockCtrl.toggleGroup(StockCtrl.selectedGroup.value)"
+            ng-disabled="!StockCtrl.selectedGroup.label">
+            <span>
+              <i class="fa fa-object-group"></i>
+              <span ng-hide="StockCtrl.selectedGroup.label" translate>STOCK.GROUPING</span>
+              <span 
+                ng-show="StockCtrl.selectedGroup.label" 
+                translate>
+                {{ StockCtrl.selectedGroup.label }}
+              </span>
+            </span>
+          </a>
+          <a class="btn btn-default" uib-dropdown-toggle>
+            <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
+            <li ng-repeat="option in StockCtrl.groupingBox">
+              <a href ng-click="StockCtrl.selectGroup(option)">
+                <span translate>{{ option.label }}</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
   </div>
 </div>

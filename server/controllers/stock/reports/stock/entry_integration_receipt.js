@@ -28,11 +28,11 @@ function stockEntryIntegrationReceipt(req, res, next) {
     SELECT i.code, i.text, BUID(m.document_uuid) AS document_uuid,
       m.quantity, m.unit_cost, (m.quantity * m.unit_cost) AS total , m.date, m.description,
       u.display_name AS user_display_name,
-      CONCAT_WS('.', '${identifiers.DOCUMENT.key}', m.reference) AS document_reference,
       l.label, l.expiration_date, d.text AS depot_name,
       CONCAT_WS('.', '${identifiers.INTEGRATION.key}', proj.abbr, integ.reference) AS integration_reference,
       integ.description, integ.date AS integration_date,
-      proj.name AS project_display_name
+      proj.name AS project_display_name,
+      dm.text as document_reference
     FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
@@ -40,6 +40,7 @@ function stockEntryIntegrationReceipt(req, res, next) {
     JOIN user u ON u.id = m.user_id
     JOIN integration integ ON integ.uuid = l.origin_uuid
     JOIN project proj ON proj.id = integ.project_id
+    LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
     WHERE m.is_exit = 0 AND m.flux_id = ${Stock.flux.FROM_INTEGRATION} AND m.document_uuid = ?
     ORDER BY i.text, l.label
   `;

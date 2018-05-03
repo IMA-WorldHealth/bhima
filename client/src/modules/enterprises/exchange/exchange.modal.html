@@ -1,8 +1,8 @@
 <form name="ModalForm" bh-submit="ModalCtrl.submit(ModalForm)" novalidate>
   <div class="modal-header">
     <ol class="headercrumb">
-      <li class="static">{{ "EXCHANGE.TITLE" | translate }}</li>
-      <li class="title">{{ "EXCHANGE.ADDING_RATE" | translate }}</li>
+      <li class="static" translate>EXCHANGE.TITLE</li>
+      <li class="title" translate>EXCHANGE.ADDING_RATE</li>
     </ol>
   </div>
 
@@ -12,9 +12,7 @@
       class="form-group"
       ng-show="ModalCtrl.hasMultipleCurrencies"
       ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.currency.$invalid }">
-      <label class="control-label">
-        {{ "FORM.LABELS.CURRENCY" | translate }}
-      </label>
+      <label class="control-label" translate>FORM.LABELS.CURRENCY</label>
 
       <ui-select
         name="currency"
@@ -37,14 +35,17 @@
 
     <bh-date-editor
       date-value="ModalCtrl.rate.date"
-      validation-trigger="ModalForm.$submitted"
-      max-date="ModalCtrl.timestamp">
+      on-change="ModalCtrl.onDateChange(date)"
+      validation-trigger="ModalForm.$submitted">
     </bh-date-editor>
 
+    <p>
+      <span translate>EXCHANGE.CURRENT_RATE</span>: <i>{{ ModalCtrl.currentExchangeRate | currency:ModalCtrl.rate.currency.id }}</i>
+    </p>
+
     <div class="form-group"
-      ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.rate.$invalid }"
-      >
-      <label class="control-label">{{ "FORM.LABELS.EXCHANGE_RATE" | translate }}</label>
+      ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.rate.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.EXCHANGE_RATE</label>
       <div class="row">
         <div class="col-xs-2">
           <p class="form-control-static text-right" ng-class="{ 'text-danger' : ModalForm.$submitted && ModalForm.rate.$invalid }">
@@ -65,12 +66,12 @@
   </div>
 
   <div class="modal-footer">
-    <button type="button" class="btn btn-default" ng-click="ModalCtrl.cancel()" data-method="cancel">
-      {{ "FORM.BUTTONS.CANCEL" | translate }}
+    <button type="button" class="btn btn-default" ng-click="ModalCtrl.cancel()" data-method="cancel" translate>
+      FORM.BUTTONS.CANCEL
     </button>
 
     <bh-loading-button loading-state="ModalForm.$loading">
-      {{ "FORM.BUTTONS.SUBMIT" | translate }}
+      <span translate>FORM.BUTTONS.SUBMIT</span>
     </bh-loading-button>
   </div>
 </form>

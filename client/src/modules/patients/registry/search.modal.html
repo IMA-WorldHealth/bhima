@@ -102,6 +102,20 @@
               mode="clean">
             </bh-date-interval>
           </fieldset>
+
+          <!-- location -->
+
+          <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.originLocationLabel.$invalid }">
+            <label class="control-label" translate>
+                FORM.LABELS.ORIGIN_LOCATION
+            </label>
+            <bh-clear on-clear="$ctrl.clear('originLocationLabel')"></bh-clear>
+
+            <input type="text" class="form-control" name="originLocationLabel" ng-model="$ctrl.searchQueries.originLocationLabel">
+            <div class="help-block" ng-messages="ModalForm.originLocationLabel.$error" ng-show="ModalForm.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
         </div>
       </uib-tab>
 

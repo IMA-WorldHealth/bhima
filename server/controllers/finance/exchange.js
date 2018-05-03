@@ -7,8 +7,10 @@
 
 const db = require('../../lib/db');
 const NotFound = require('../../lib/errors/NotFound');
+const util = require('../../lib/util');
 
 exports.getExchangeRate = getExchangeRate;
+exports.formatExchangeRateForDisplay = formatExchangeRateForDisplay;
 
 // uses the mysql function getExchangeRate() to find
 // the correct exchange rate
@@ -17,6 +19,11 @@ function getExchangeRate(enterpriseId, currencyId, date) {
 
   return db.exec(sql, [enterpriseId, currencyId, new Date(date)])
     .then(rows => rows[0]);
+}
+
+// gets a positive number for the exchange rate display.
+function formatExchangeRateForDisplay(value) {
+  return (value < 1) ? util.roundDecimal(1 / value, 2) : value;
 }
 
 /**
@@ -29,7 +36,7 @@ function getExchangeRate(enterpriseId, currencyId, date) {
  * URL: /exchange
  */
 exports.list = function list(req, res, next) {
-  const enterprise = req.session.enterprise;
+  const { enterprise } = req.session;
   const options = req.query;
 
   getExchangeRateList(enterprise.id, options)
@@ -54,7 +61,7 @@ function getExchangeRateList(enterpriseId, opts) {
   const limitQuery = Number.isNaN(limit) ? '' : `LIMIT ${limit}`;
 
   const sql = `
-    SELECT exchange_rate.id, exchange_rate.enterprise_id, exchange_rate.currency_id, 
+    SELECT exchange_rate.id, exchange_rate.enterprise_id, exchange_rate.currency_id,
     exchange_rate.rate, exchange_rate.date, enterprise.currency_id AS 'enterprise_currency_id'
     FROM exchange_rate
     JOIN enterprise ON enterprise.id = exchange_rate.enterprise_id
@@ -80,19 +87,17 @@ exports.create = function create(req, res, next) {
     VALUES (?);`;
 
   db.exec(sql, [[data.enterprise_id, data.currency_id, data.rate, data.date]])
-  .then((row) => {
-    res.status(201).json({ id : row.insertId });
-  })
-  .catch(next)
-  .done();
+    .then((row) => {
+      res.status(201).json({ id : row.insertId });
+    })
+    .catch(next)
+    .done();
 };
 
 
 // PUT /exchange/:id
 exports.update = function update(req, res, next) {
-  var sql;
-
-  sql =
+  let sql =
     'UPDATE exchange_rate SET ? WHERE id = ?;';
 
   // should we even be changed the date?
@@ -101,25 +106,25 @@ exports.update = function update(req, res, next) {
   }
 
   db.exec(sql, [req.body, req.params.id])
-  .then(() => {
-    sql =
+    .then(() => {
+      sql =
       `SELECT
-        exchange_rate.id, exchange_rate.enterprise_id, exchange_rate.currency_id, 
+        exchange_rate.id, exchange_rate.enterprise_id, exchange_rate.currency_id,
         exchange_rate.rate, exchange_rate.date, enterprise.currency_id AS enterprise_currency_id
       FROM exchange_rate
       JOIN enterprise ON enterprise.id = exchange_rate.enterprise_id
       WHERE exchange_rate.id = ?;`;
 
-    return db.exec(sql, [req.params.id]);
-  })
-  .then((rows) => {
-    if (rows.length === 0) {
-      throw new NotFound(`Could not find an exchange rate with id ${req.params.id}`);
-    }
-    res.status(200).json(rows[0]);
-  })
-  .catch(next)
-  .done();
+      return db.exec(sql, [req.params.id]);
+    })
+    .then((rows) => {
+      if (rows.length === 0) {
+        throw new NotFound(`Could not find an exchange rate with id ${req.params.id}`);
+      }
+      res.status(200).json(rows[0]);
+    })
+    .catch(next)
+    .done();
 };
 
 // DELETE /exchange/:id
@@ -128,13 +133,13 @@ exports.delete = function del(req, res, next) {
     'DELETE FROM exchange_rate WHERE id = ?;';
 
   db.exec(sql, [req.params.id])
-  .then((row) => {
+    .then((row) => {
     // if nothing happened, let the client know via a 404 error
-    if (row.affectedRows === 0) {
-      throw new NotFound(`Could not find an exchange rate with id ${req.params.id}`);
-    }
-    res.status(204).json();
-  })
-  .catch(next)
-  .done();
+      if (row.affectedRows === 0) {
+        throw new NotFound(`Could not find an exchange rate with id ${req.params.id}`);
+      }
+      res.status(204).json();
+    })
+    .catch(next)
+    .done();
 };

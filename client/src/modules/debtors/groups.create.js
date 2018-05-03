@@ -20,7 +20,7 @@ function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGro
   var policies = {
     subsidies       : true,
     discounts       : true,
-    billingServices : false,
+    invoicingFees : false,
   };
 
   vm.colors = DebtorGroups.colors;
@@ -28,6 +28,7 @@ function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGro
   vm.$loading = true;
   vm.$loaded = false;
   vm.onSelectAccountCallback = onSelectAccount;
+  vm.cancel = cancel;
 
   /* @todo This should be handled by the accounts directive - this controller should not be concerned with accounts */
   Accounts.read()
@@ -63,7 +64,7 @@ function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGro
     // assigning policy logic
     vm.group.apply_discounts = policies.subsidies;
     vm.group.apply_subsidies = policies.discounts;
-    vm.group.apply_billing_services = !policies.billingServices;
+    vm.group.apply_invoicing_fees = !policies.invoicingFees;
 
     vm.group.max_credit = 0;
     vm.submit = submit;
@@ -72,6 +73,10 @@ function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGro
   // attached the account as needed
   function onSelectAccount(account) {
     vm.group.account_id = account.id;
+  }
+
+  function cancel() {
+    $state.go('debtorGroups.list');
   }
 
   function submit(groupForm) {

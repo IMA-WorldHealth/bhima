@@ -12,7 +12,7 @@ function ExportGridModalController(Instance, uiGridConstants, $filter,
 
   var gridOptions = Data.options || {};
   var gridApi = Data.api || {};
-  var filename = Data.filename || 'Export ' + moment().format('YYYY-MM-DD');
+  var filename = Data.filename || `Export ${moment().format('YYYY-MM-DD')}`;
   var ROWS = Data.rows || 'visible';
   var COLS = Data.cols || 'visible';
 
@@ -33,6 +33,8 @@ function ExportGridModalController(Instance, uiGridConstants, $filter,
     gridOptions.exporterCsvFilename = filename.concat('.csv');
     gridOptions.exporterHeaderFilter = exporterHeaderFilter;
     gridOptions.exporterOlderExcelCompatibility = true;
+
+    window.gridApi = gridApi;
     gridApi.exporter.csvExport(vm.exportRowType, vm.exportColType, myElement);
     Instance.close(true);
   }

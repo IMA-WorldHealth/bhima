@@ -2,11 +2,11 @@ angular.module('bhima.controllers')
   .controller('StockFindServiceModalController', StockFindServiceModalController);
 
 StockFindServiceModalController.$inject = [
-  '$uibModalInstance', 'ServiceService', 'NotifyService',
+  '$uibModalInstance', 'ServiceService', 'NotifyService', 'data',
 ];
 
-function StockFindServiceModalController(Instance, Service, Notify) {
-  var vm = this;
+function StockFindServiceModalController(Instance, Service, Notify, Data) {
+  const vm = this;
 
   // global
   vm.selected = {};
@@ -16,10 +16,19 @@ function StockFindServiceModalController(Instance, Service, Notify) {
   vm.cancel = cancel;
 
   Service.read()
-  .then(function (services) {
-    vm.services = services;
-  })
-  .catch(Notify.handleError);
+    .then(services => {
+      vm.services = services;
+
+      // set defined the previous selected service
+      if (Data.entity_uuid) {
+        const currentService = services.filter(item => {
+          return item.uuid === Data.entity_uuid;
+        });
+
+        vm.selected = currentService.length > 0 ? currentService[0] : {};
+      }
+    })
+    .catch(Notify.handleError);
 
   // submit
   function submit() {
@@ -28,7 +37,7 @@ function StockFindServiceModalController(Instance, Service, Notify) {
 
   // cancel
   function cancel() {
-    Instance.dismiss();
+    Instance.close(vm.selected);
   }
 
 }

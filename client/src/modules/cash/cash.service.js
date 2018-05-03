@@ -4,7 +4,7 @@ angular.module('bhima.services')
 CashService.$inject = [
   '$uibModal', 'PrototypeApiService', 'ExchangeRateService', 'SessionService',
   'moment', '$translate', 'FilterService', 'appcache', 'PeriodService',
-  'LanguageService', '$httpParamSerializer', 'bhConstants',
+  'LanguageService', '$httpParamSerializer', 'bhConstants', 'TransactionService',
 ];
 
 /**
@@ -16,17 +16,17 @@ CashService.$inject = [
  */
 function CashService(
   Modal, Api, Exchange, Session, moment, $translate, Filters, AppCache, Periods,
-  Languages, $httpParamSerializer, bhConstants
+  Languages, $httpParamSerializer, bhConstants, Transactions
 ) {
-  var service = new Api('/cash/');
-  var urlCheckin = '/cash/checkin/';
+  const service = new Api('/cash/');
+  const urlCheckin = '/cash/checkin/';
 
-  var cashFilters = new Filters();
-  var filterCache = new AppCache('cash-filters');
+  const cashFilters = new Filters();
+  const filterCache = new AppCache('cash-filters');
 
   // custom methods
   service.create = create;
-  service.remove = remove;
+  service.remove = Transactions.remove;
   service.calculateDisabledIds = calculateDisabledIds;
   service.formatCashDescription = formatCashDescription;
   service.openCancelCashModal = openCancelCashModal;
@@ -40,12 +40,12 @@ function CashService(
    */
   function allocatePaymentAmounts(data) {
     // default to an empty array if necessary -- the server will throw an error
-    var items = (data.invoices || [])
+    const items = (data.invoices || [])
 
     // loop through the invoices, allocating a sum to the invoice until there
     // is no more left to allocate.
-      .map(function (invoice) {
-        return { invoice_uuid: invoice.uuid };
+      .map((invoice) => {
+        return { invoice_uuid : invoice.uuid };
       });
 
     return items;
@@ -62,7 +62,7 @@ function CashService(
    */
   function create(payment) {
     // create a temporary copy to send to the server
-    var data = angular.copy(payment);
+    const data = angular.copy(payment);
 
     // ensure that the caution flag is a Number
     data.is_caution = Number(data.is_caution);
@@ -76,24 +76,24 @@ function CashService(
     delete data.invoices;
 
     // call the prototype create method with the formatted data
-    return Api.create.call(service, { payment: data });
+    return Api.create.call(service, { payment : data });
   }
 
   /*
    * Nicely format the cash payment description
    */
   function formatCashDescription(patient, payment) {
-    var isCaution = payment.is_caution;
+    const isCaution = payment.is_caution;
 
     // invoice references
-    var invoicesReferences = payment.invoices.map(function (invoice) {
+    const invoicesReferences = payment.invoices.map((invoice) => {
       return invoice.reference;
     });
 
     // this must be semicolons, otherwise the CSV file breaks.
-    var referencesString = invoicesReferences.join('; ');
+    const referencesString = invoicesReferences.join('; ');
 
-    var tmpl = isCaution ? 'CASH.PREPAYMENT_DESCRIPTION' : 'CASH.PAYMENT_DESCRIPTION';
+    const tmpl = isCaution ? 'CASH.PREPAYMENT_DESCRIPTION' : 'CASH.PAYMENT_DESCRIPTION';
 
     return $translate.instant(tmpl, {
       patientName       : patient.display_name,
@@ -101,19 +101,6 @@ function CashService(
       patientReference  : patient.reference,
       amount            : payment.amount,
     });
-  }
-
-  /**
-   * @method remove
-   *
-   * @description
-   * This function removes a cash payment from the database via the transaction
-   * delete route.
-   */
-  function remove(uuid) {
-    var url = '/transactions/'.concat(uuid);
-    return service.$http.delete(url)
-      .then(service.util.unwrapHttpResponse);
   }
 
   /**
@@ -129,13 +116,13 @@ function CashService(
    */
   function calculateDisabledIds(cashbox, currencies) {
     // collect cashbox ids in an array
-    var cashboxCurrencyIds = cashbox.currencies.reduce(function (array, currency) {
+    const cashboxCurrencyIds = cashbox.currencies.reduce((array, currency) => {
       return array.concat(currency.currency_id);
     }, []);
 
     // find all ids that are not cashbox ids, to disable them
-    var disabledCurrencyIds = currencies.reduce(function (array, currency) {
-      var bool = (cashboxCurrencyIds.indexOf(currency.id) === -1);
+    const disabledCurrencyIds = currencies.reduce((array, currency) => {
+      const bool = (cashboxCurrencyIds.indexOf(currency.id) === -1);
       return array.concat(bool ? currency.id : []);
     }, []);
 
@@ -150,8 +137,12 @@ function CashService(
     { key : 'debtor_uuid', label : 'FORM.LABELS.CLIENT' },
     { key : 'user_id', label : 'FORM.LABELS.USER' },
     { key : 'reference', label : 'FORM.LABELS.REFERENCE' },
-    { key : 'dateFrom', label : 'FORM.LABELS.DATE_FROM', comparitor : '>', valueFilter : 'date' },
-    { key : 'dateTo', label : 'FORM.LABELS.DATE_TO', comparitor : '<', valueFilter : 'date' },
+    {
+      key : 'dateFrom', label : 'FORM.LABELS.DATE_FROM', comparitor : '>', valueFilter : 'date',
+    },
+    {
+      key : 'dateTo', label : 'FORM.LABELS.DATE_TO', comparitor : '<', valueFilter : 'date',
+    },
     { key : 'currency_id', label : 'FORM.LABELS.CURRENCY' },
     { key : 'reversed', label : 'CASH.REGISTRY.REVERSED_RECORDS' },
     { key : 'patientReference', label : 'FORM.LABELS.REFERENCE_PATIENT' },
@@ -170,10 +161,10 @@ function CashService(
 
   function assignDefaultFilters() {
     // get the keys of filters already assigned - on initial load this will be empty
-    var assignedKeys = Object.keys(cashFilters.formatHTTP());
+    const assignedKeys = Object.keys(cashFilters.formatHTTP());
 
     // assign default period filter
-    var periodDefined =
+    const periodDefined =
       service.util.arrayIncludes(assignedKeys, ['period', 'custom_period_start', 'custom_period_end']);
 
     if (!periodDefined) {
@@ -201,11 +192,11 @@ function CashService(
 
   // downloads a the registry as a given type (pdf, csv)
   service.download = function download(type) {
-    var filterOpts = cashFilters.formatHTTP();
-    var defaultOpts = { renderer : type, lang : Languages.key };
+    const filterOpts = cashFilters.formatHTTP();
+    const defaultOpts = { renderer : type, lang : Languages.key };
 
     // combine options
-    var options = angular.merge(defaultOpts, filterOpts);
+    const options = angular.merge(defaultOpts, filterOpts);
 
     // return  serialized options
     return $httpParamSerializer(options);
@@ -221,7 +212,7 @@ function CashService(
    *  });
    */
   function checkCashPayment(invoiceUuid) {
-    var url = urlCheckin + invoiceUuid;
+    const url = urlCheckin + invoiceUuid;
     return service.$http.get(url)
       .then(service.util.unwrapHttpResponse);
   }
@@ -230,7 +221,7 @@ function CashService(
   function openCancelCashModal(invoice) {
     return Modal.open({
       templateUrl : 'modules/cash/modals/modal-cancel-cash.html',
-      resolve     : { data : { invoice : invoice } },
+      resolve     : { data : { invoice } },
       size        : 'md',
       animation   : false,
       keyboard    : false,

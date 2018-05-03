@@ -9,12 +9,12 @@
  * It is responsible for reading and writing to the `patient_visit` database table as well as responding to HTTP
  * requests.
  *
- * @requires  node-uuid
+ * @requires  uuid/v4
  * @requires  lib/db
  * @requires  lib/errors/BadRequest
  */
 
-const uuid = require('node-uuid');
+const uuid = require('uuid/v4');
 const db = require('../../../lib/db');
 const BadRequest = require('../../../lib/errors/BadRequest');
 const NotFound = require('../../../lib/errors/NotFound');
@@ -185,7 +185,7 @@ function listByPatient(req, res, next) {
 function admission(req, res, next) {
   const data = req.body;
 
-  const visitUuid = uuid.v4();
+  const visitUuid = uuid();
   data.uuid = db.bid(visitUuid);
   data.patient_uuid = req.params.uuid;
 
@@ -195,12 +195,10 @@ function admission(req, res, next) {
   // if there is not start_diagnosis_id, return a BAD REQUEST that will insist
   // on a diagnosis.
   if (!data.start_diagnosis_id) {
-    next(
-      new BadRequest(
-        'An admission diagnosis is required to begin a patient visit.',
-        'PATIENT.VISITS.ERR_MISSING_DIAGNOSIS'
-      )
-    );
+    next(new BadRequest(
+      'An admission diagnosis is required to begin a patient visit.',
+      'PATIENT.VISITS.ERR_MISSING_DIAGNOSIS'
+    ));
 
     return;
   }
@@ -242,12 +240,10 @@ function discharge(req, res, next) {
   delete data.uuid;
 
   if (!visitUuid) {
-    next(
-      new NotFound(
-        'You did not specify a visit identifier to end!  Please pass an identifier to the discharge() method.',
-        'PATIENT.VISITS.ERR_MISSING_UUID'
-      )
-    );
+    next(new NotFound(
+      'You did not specify a visit identifier to end!  Please pass an identifier to the discharge() method.',
+      'PATIENT.VISITS.ERR_MISSING_UUID'
+    ));
 
     return;
   }
@@ -255,12 +251,10 @@ function discharge(req, res, next) {
   // if there is not end_diagnosis_id, return a BAD REQUEST that will insist
   // on a diagnosis.
   if (!data.end_diagnosis_id) {
-    next(
-      new BadRequest(
-        'A discharge diagnosis is required to end a patient visit.  Please select an ICD10 diagnosis code.',
-        'PATIENT.VISITS.ERR_MISSING_DIAGNOSIS'
-      )
-    );
+    next(new BadRequest(
+      'A discharge diagnosis is required to end a patient visit.  Please select an ICD10 diagnosis code.',
+      'PATIENT.VISITS.ERR_MISSING_DIAGNOSIS'
+    ));
 
     return;
   }

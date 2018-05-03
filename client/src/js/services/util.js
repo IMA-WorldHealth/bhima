@@ -1,7 +1,7 @@
 angular.module('bhima.services')
-.service('util', UtilService);
+  .service('util', UtilService);
 
-UtilService.$inject = ['moment' ];
+UtilService.$inject = ['moment'];
 
 /**
  * @class util
@@ -12,20 +12,41 @@ UtilService.$inject = ['moment' ];
  * @requires moment
  */
 function UtilService(moment) {
-  var service = this;
+  const service = this;
 
   service.unwrapHttpResponse = function unwrapHttpResponse(response) {
     return response.data;
   };
 
+  service.formatDate = (date, format) => {
+    const f = format || 'DD/MM/YYYY HH:mm:ss';
+    if (date) {
+      return moment(date).format(f);
+    }
+    return null;
+  };
+
+  service.download = (response, filename, extension) => {
+    const hiddenElement = document.createElement('a');
+    const hasFileInfo = (filename && extension);
+    const attachment = hasFileInfo ? 'data:attachment/'.concat(extension, ',') : 'data:attachment/text,';
+    const name = hasFileInfo ? filename.concat('.', extension) : 'file.txt';
+
+    hiddenElement.href = attachment.concat(encodeURI(response.data));
+    hiddenElement.target = '_blank';
+    hiddenElement.download = name;
+    hiddenElement.click();
+  };
+
+
   /** @todo comments showing usage */
   service.filterFormElements = function filterFormElements(formDefinition, requireDirty) {
-    var response = {};
+    const response = {};
 
-    angular.forEach(formDefinition, function (value, key) {
+    angular.forEach(formDefinition, (value, key) => {
 
       // Determine angular elements, these can be ignored
-      var isAngularAttribute = key.substring(0, 1) === '$';
+      const isAngularAttribute = key.substring(0, 1) === '$';
 
       if (!isAngularAttribute) {
 
@@ -64,19 +85,19 @@ function UtilService(moment) {
   // utility function
   service.clean = function clean(o) {
     // clean off the $$hashKey and other angular bits and delete undefined
-    var cleaned = {};
+    const cleaned = {};
 
-    for (var k in o) {
+    Object.keys(o).forEach(k => {
       if (k !== '$$hashKey' && angular.isDefined(o[k]) && o[k] !== '' && o[k] !== null) {
         cleaned[k] = o[k];
       }
-    }
+    });
 
     return cleaned;
   };
 
   // moment() provides the current date, similar to the new Date() API. This requests the difference between two dates
-  service.getMomentAge = function (date, duration) {
+  service.getMomentAge = (date, duration) => {
     return duration ? moment().diff(date, duration) : moment().diff(date);
   };
 
@@ -91,11 +112,12 @@ function UtilService(moment) {
    * @param {Object} context - sets the `this` variable in the called function
    */
   service.once = function once(fn, context) {
-    var result;
+    let result;
 
-    return function () {
-
-      if (!fn) { return; }
+    return function out() {
+      if (!fn) {
+        return null;
+      }
 
       // call the function only once
       result = fn.apply(context || this, arguments);
@@ -124,13 +146,13 @@ function UtilService(moment) {
    * // this will log 'Before 123)' and then 'I got:1,2,3'
    */
   service.before = function before(target, methodName, fn) {
-    var callback = target[methodName] || angular.noop;
+    const callback = target[methodName] || angular.noop;
 
     // replace with the injected function
     target[methodName] = function intercept() {
 
       // call the function before the cached callback
-      var result = fn.apply(this, arguments);
+      const result = fn.apply(this, arguments);
 
       // fire the callback
       callback.apply(this, arguments);
@@ -158,7 +180,7 @@ function UtilService(moment) {
    * // this will log 'After 123' and then 'I got:1,2,3'
    */
   service.after = function after(target, methodName, fn) {
-    var callback = target[methodName] || angular.noop;
+    const callback = target[methodName] || angular.noop;
 
     // replace with the injected function
     target[methodName] = function intercept() {
@@ -176,9 +198,9 @@ function UtilService(moment) {
    * @param {array} array An array in which we want to get only unique values
    * @description return an array which contain only unique values
    */
-  service.uniquelize = function uniquelize (array) {
-    return array.filter(function (value, idx, array) {
-      return array.indexOf(value) === idx;
+  service.uniquelize = function uniquelize(array) {
+    return array.filter((value, idx, _array) => {
+      return _array.indexOf(value) === idx;
     });
   };
 
@@ -199,7 +221,7 @@ function UtilService(moment) {
    * @returns {Boolean} - the result
    */
   service.xor = function xor(a, b) {
-     return !a !== !b;
+    return !a !== !b;
   };
 
   /**
@@ -219,9 +241,9 @@ function UtilService(moment) {
   service.maskObjectFromKeys = function maskObjectFromKeys(object, mask) {
     return Object.keys(object)
 
-    //  for each key, if the key exists in the mask, add the k/v pair to the
-    //  screened object.
-      .reduce(function (screenedObject, key) {
+      //  for each key, if the key exists in the mask, add the k/v pair to the
+      //  screened object.
+      .reduce((screenedObject, key) => {
         if (mask.indexOf(key) >= 0) {
           screenedObject[key] = object[key];
         }
@@ -230,8 +252,30 @@ function UtilService(moment) {
       }, {});
   };
 
+  // Returns a function, that, as long as it continues to be invoked, will not
+  // be triggered. The function will be called after it stops being called for
+  // N milliseconds. If `immediate` is passed, trigger the function on the
+  // leading edge, instead of the trailing.
+  function debounce(func, wait, immediate) {
+    let timeout;
+    return function out() {
+      const context = this;
+      const args = arguments;
+      const later = function () {
+        timeout = null;
+        if (!immediate) func.apply(context, args);
+      };
+      const callNow = immediate && !timeout;
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+      if (callNow) func.apply(context, args);
+    };
+  }
+
+  service.debounce = debounce;
+
   service.arrayIncludes = function arrayIncludes(array, values) {
-    return values.some(function (value) {
+    return values.some((value) => {
       return array.indexOf(value) !== -1;
     });
   };

@@ -66,13 +66,12 @@
                   <span class="text-center" translate>DEBTOR_GROUP.CONVENTION.CANNOT_PAY</span>
                   <strong class="text-center">{{CashCtrl.Payment.messages.patientConventionName}}</strong>
                 </div>
-
                 <!-- allowed for cash payment -->
                 <fieldset ng-disabled="CashCtrl.Payment.messages.isNonCashPatient">
                   <bh-date-editor
                     date-value="CashCtrl.Payment.details.date"
-                    validation-trigger="CashVoucherForm.$submitted"
-                    max-date="CashCtrl.timestamp">
+                    on-change="CashCtrl.Payment.onDateChange(date)"
+                    validation-trigger="CashVoucherForm.$submitted">
                   </bh-date-editor>
 
                   <!-- currency selection -->
@@ -173,7 +172,7 @@
                     <textarea
                       ng-model="CashCtrl.Payment.details.description"
                       name="notes"
-                      placeholder="{{ 'FORM.PLACEHOLDERS.NOTES' | translate}}..."
+                      translate-attr="{ placeholder : 'FORM.PLACEHOLDERS.NOTES' }"
                       class="form-control"
                       rows="4">
                     </textarea>

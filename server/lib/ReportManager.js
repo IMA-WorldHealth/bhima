@@ -1,3 +1,4 @@
+/* eslint global-require:off */
 /**
  * @overview ReportManager
  *
@@ -14,7 +15,7 @@
  * @requires path
  * @requires fs
  * @requires q
- * @requires node-uuid
+ * @requires uuid/v4
  * @requires lib/helpers/translate
  * @requires lib/errors/BadRequest
  * @requires lib/errors/InternalServerError
@@ -25,7 +26,7 @@ const _ = require('lodash');
 const path = require('path');
 const fs = require('fs');
 const q = require('q');
-const uuid = require('node-uuid');
+const uuid = require('uuid/v4');
 const translateHelper = require('./helpers/translate');
 
 const BadRequest = require('./errors/BadRequest');
@@ -39,6 +40,7 @@ const renderers = {
   pdf  : require('./renderers/pdf'),
   csv  : require('./renderers/csv'),
   xlsx  : require('./renderers/xlsx'),
+  xlsxReceipt : require('./renderers/xlsxReceipt'),
 };
 
 // default report configuration
@@ -60,7 +62,6 @@ const SAVE_SQL = `
 // Class Declaration
 
 class ReportManager {
-
   /**
    * @constructor
    *
@@ -91,7 +92,10 @@ class ReportManager {
     this.renderer = renderers[this.options.renderer || this.defaults.renderer];
 
     if (!this.renderer) {
-      throw new BadRequest(`The application does not support rendering ${options.renderer}.`, 'ERRORS.INVALID_RENDERER');
+      throw new BadRequest(
+        `The application does not support rendering ${options.renderer}.`,
+        'ERRORS.INVALID_RENDERER'
+      );
     }
 
     // @TODO user information could be determined by report manager, removing the need for this check
@@ -121,11 +125,13 @@ class ReportManager {
    *    render() function.
    */
   render(data) {
-    const metadata = this.metadata;
-    const renderer = this.renderer;
+    const { metadata, renderer } = this;
 
     // set the render timestamp
     metadata.timestamp = new Date();
+
+    // prune extraneous paths
+    delete metadata.paths;
 
     // @TODO fit this better into the code flow
     // sanitise save report option
@@ -184,8 +190,8 @@ class ReportManager {
     }
 
     // generate a unique id for the report name
-    const reportId = uuid.v4();
-    const options = this.options;
+    const reportId = uuid();
+    const { options } = this;
 
     // make the report name using the
     const fname = reportId + this.renderer.extension;
@@ -194,7 +200,7 @@ class ReportManager {
     const data = {
       uuid : db.bid(reportId),
       label : options.label,
-      link : link,
+      link,
       timestamp : new Date(),
       user_id : options.user.id,
       report_id : options.reportId,

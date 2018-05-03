@@ -1,0 +1,11 @@
+<div class="ui-grid-cell-contents text-left">
+  <div ng-if="row.entity.is_discount">
+    <i class="fa fa-minus-circle"></i>
+    <span translate>FORM.LABELS.DEDUCTION</span>
+    (<span ng-if="row.entity.is_employee" translate>FORM.LABELS.STAFF_COST</span>
+    <span ng-if="!row.entity.is_employee" translate>FORM.LABELS.ENTERPRISE_COST</span>)
+  </div>
+  <div ng-if="!row.entity.is_discount">
+    <i class="fa fa-plus-circle"></i> <span translate>FORM.LABELS.ADDITION</span>
+  </div>  
+</div>

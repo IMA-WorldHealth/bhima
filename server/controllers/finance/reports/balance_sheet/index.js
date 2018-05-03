@@ -23,11 +23,10 @@ const TEMPLATE = './server/controllers/finance/reports/balance_sheet/report.hand
 const ASSET = 1;
 const LIABILITY = 2;
 const EQUITY = 3;
-const REVENUE = 4;
+const INCOME = 4;
 const EXPENSE = 5;
 const DATE_FORMAT = 'YYYY-MM-DD';
 const FC_CURRENCY = 1;
-
 
 // expose to the API
 exports.document = document;
@@ -71,15 +70,15 @@ function document(req, res, next) {
       bundle.assets = result[ASSET] || {};
       bundle.liabilities = result[LIABILITY] || {};
       bundle.equity = result[EQUITY] || {};
-      bundle.revenue = result[REVENUE] || {};
+      bundle.revenue = result[INCOME] || {};
       bundle.expense = result[EXPENSE] || {};
       bundle.result = handleExploitationResult(bundle.revenue, bundle.expense);
       bundle.totals = getTotalBalance(bundle);
 
       // get the exchange rate for the given date
       const query = `
-        SELECT e.rate, c.symbol, c.name, e.currency_id FROM exchange_rate e 
-        JOIN currency c ON c.id = e.currency_id 
+        SELECT e.rate, c.symbol, c.name, e.currency_id FROM exchange_rate e
+        JOIN currency c ON c.id = e.currency_id
         WHERE e.currency_id = ? AND DATE(e.date) <= DATE(?) AND e.enterprise_id = ?
         ORDER BY e.id DESC LIMIT 1;`;
       return db.exec(query, [FC_CURRENCY, session.date, session.enterprise.id]);
@@ -165,24 +164,22 @@ function processAccounts(data) {
       obj.debit = row.debit;
       obj.credit = row.credit;
       obj.balance = row.balance;
-      obj.is_charge = row.is_charge;
-      obj.is_asset = row.is_asset;
       return account;
     }, {});
 
     // process for getting totals
     const totals = Object.keys(accounts)
-    .reduce((t, key) => {
-      const account = accounts[key];
-      t.debit += (account.debit || 0);
-      t.credit += (account.credit || 0);
-      t.balance += (account.balance || 0);
-      return t;
-    }, {
-      debit   : 0,
-      credit  : 0,
-      balance  : 0,
-    });
+      .reduce((t, key) => {
+        const account = accounts[key];
+        t.debit += (account.debit || 0);
+        t.credit += (account.credit || 0);
+        t.balance += (account.balance || 0);
+        return t;
+      }, {
+        debit   : 0,
+        credit  : 0,
+        balance  : 0,
+      });
 
     bundle[type] = { accounts, totals };
   });
@@ -214,7 +211,7 @@ function computeBalanceSheet(params) {
   const sql = `
     SELECT
       a.number, a.id, a.label, a.type_id, SUM(pt.credit) AS credit, SUM(pt.debit) AS debit,
-      SUM(pt.debit - pt.credit) AS balance 
+      SUM(pt.debit - pt.credit) AS balance
     FROM
       period_total AS pt
     JOIN
@@ -227,14 +224,14 @@ function computeBalanceSheet(params) {
       pt.fiscal_year_id =
         (
           SELECT
-            f.id 
+            f.id
           FROM
             fiscal_year f
           WHERE
             DATE(?) BETWEEN DATE(f.start_date) AND DATE(f.end_date)
           LIMIT 1
         )
-    GROUP BY 
+    GROUP BY
       a.id`;
 
   const queryParameters = [query.enterpriseId, query.date, query.date];

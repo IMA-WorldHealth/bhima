@@ -8,13 +8,12 @@
  *
  * @requires os
  * @requires lib/db
- * @requires lib/topic
+ * @requires @ima-worldhealth/topic
  */
-
 
 const os = require('os');
 const db = require('../lib/db');
-const Topic = require('../lib/topic');
+const Topic = require('@ima-worldhealth/topic');
 
 // this path is correct _when compiled_
 const pkg = require('../../../package.json');
@@ -72,13 +71,13 @@ function events(req, res, next) {
   `;
 
   db.exec(sql)
-  .then(rows => {
+    .then(rows => {
       // events are stored as TEXT, that need to be parsed into JSON data.
-    const eventString = rows.map(row => row.data);
-    res.status(200).json(eventString);
-  })
-  .catch(next)
-  .done();
+      const eventString = rows.map(row => row.data);
+      res.status(200).json(eventString);
+    })
+    .catch(next)
+    .done();
 }
 
 // send operating system information
@@ -90,10 +89,11 @@ function info(req, res) {
   const data = {
     platform : platformString,
     numCPUs : os.cpus().length,
-    machineUptime : os.uptime() * 1000,       // change to milliseconds
-    processUptime : process.uptime() * 1000,  // change to milliseconds
-    memoryUsage : (1 - (os.freemem() / os.totalmem())) * 100,
+    machineUptime : os.uptime() * 1000, // change to milliseconds
+    processUptime : process.uptime() * 1000, // change to milliseconds
+    memoryUsage : (1 - (os.freemem() / os.totalmem())) * 100, // percentage
     version : pkg.version,
+    memory : (os.totalmem() / (1024 ** 2)), // change to  MB
   };
 
   // respond with the system statistics

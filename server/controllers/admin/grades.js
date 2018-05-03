@@ -3,9 +3,9 @@
  * Grade Controller
  *
  * This controller exposes an API to the client for reading and writing Grade
- **/
+ * */
 const db = require('../../lib/db');
-const uuid = require('node-uuid');
+const uuid = require('uuid/v4');
 const NotFound = require('../../lib/errors/NotFound');
 
 // GET /Grade
@@ -56,16 +56,17 @@ function detail(req, res, next) {
 // POST /grade
 function create(req, res, next) {
   const data = req.body;
+  const recordUuid = data.uuid || uuid();
 
   // Provide UUID if the client has not specified
-  data.uuid = db.bid(data.uuid || uuid.v4());
+  data.uuid = db.bid(recordUuid);
 
   const sql =
     'INSERT INTO grade SET ? ';
 
   db.exec(sql, [data])
     .then(() => {
-      res.status(201).json({ uuid : uuid.unparse(data.uuid) });
+      res.status(201).json({ uuid : recordUuid });
     })
     .catch(next)
     .done();
@@ -74,7 +75,7 @@ function create(req, res, next) {
 
 // PUT /grade /:uuid
 function update(req, res, next) {
-  var sql =
+  const sql =
     'UPDATE grade SET ? WHERE uuid = ?;';
 
   // make sure you cannot update the uuid
@@ -93,20 +94,20 @@ function update(req, res, next) {
 
 // DELETE /grade/:uuid
 function del(req, res, next) {
-  var sql =
+  const sql =
     'DELETE FROM grade WHERE uuid = ?;';
 
   db.exec(sql, [db.bid(req.params.uuid)])
-  .then((row) => {
-    // if nothing happened, let the client know via a 404 error
-    if (row.affectedRows === 0) {
-      throw new NotFound(`Could not find a Grade with uuid ${db.bid(req.params.uuid)}`);
-    }
+    .then((row) => {
+      // if nothing happened, let the client know via a 404 error
+      if (row.affectedRows === 0) {
+        throw new NotFound(`Could not find a Grade with uuid ${db.bid(req.params.uuid)}`);
+      }
 
-    res.status(204).json();
-  })
-  .catch(next)
-  .done();
+      res.status(204).json();
+    })
+    .catch(next)
+    .done();
 }
 
 

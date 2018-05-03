@@ -4,9 +4,9 @@ const db = require('../lib/db');
 const BadRequest = require('../lib/errors/BadRequest');
 
 let subscriptions = {
-  debtor_group_billing_service : {
+  debtor_group_invoicing_fee : {
     entity  : 'debtor_group_uuid',
-    map     : 'billing_service_id',
+    map     : 'invoicing_fee_id',
   },
   debtor_group_subsidy : {
     entity : 'debtor_group_uuid',
@@ -27,7 +27,7 @@ prepareQueries();
  */
 function updateSubscriptions(req, res, next) {
   // TODO remove the concept of ids or uuids on linking tables
-  const id = req.params.id;
+  const { id } = req.params;
   const subscriptionKey = req.params.key;
   const subscriptionDetails = subscriptions[subscriptionKey];
   const groupSubscriptions = req.body.subscriptions;
@@ -81,6 +81,7 @@ function prepareQueries() {
       `INSERT INTO ${key} (${subscription.entity}, ${subscription.map}) VALUES ?`;
     return subscription;
   });
+
   return subscriptions;
 }
 
@@ -107,11 +108,8 @@ function prepareQueries() {
  * ]
  */
 function parseFormMap(groupSubscriptions, entityId) {
-  let formattedGroups = [];
-
-  formattedGroups = _.chain(groupSubscriptions)
+  return _.chain(groupSubscriptions)
     .pickBy(isGroupSubscribed => isGroupSubscribed)
     .map((isGroupSubscribed, key) => [entityId, key])
     .value();
-  return formattedGroups;
 }

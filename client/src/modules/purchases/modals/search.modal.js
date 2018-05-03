@@ -1,9 +1,8 @@
 angular.module('bhima.controllers')
 .controller('SearchPurchaseOrderModalController', SearchPurchaseOrderModalController);
 
-// dependencies injections
 SearchPurchaseOrderModalController.$inject = [
-  '$uibModalInstance', 'params', 'Store', 
+  '$uibModalInstance', 'params', 'Store',
   'util', 'PeriodService', 'NotifyService', 'PurchaseOrderService', '$translate',
 ];
 
@@ -32,8 +31,7 @@ function SearchPurchaseOrderModalController(ModalInstance, params, Store, util, 
 
   // displayValues will be an id:displayValue pair
   var displayValues = {};
-
-  var lastViewFilters = PurchaseOrder.filters.formatView().customFilters;
+  var lastDisplayValues = PurchaseOrder.filters.getDisplayValueMap();
 
   // load all Purchase status
   PurchaseOrder.purchaseState()
@@ -44,12 +42,6 @@ function SearchPurchaseOrderModalController(ModalInstance, params, Store, util, 
       vm.purchaseStatus = status;
     })
     .catch(Notify.handleError);
-
-  // map key to last display value for lookup in loggedChange
-  var lastDisplayValues = lastViewFilters.reduce(function (object, filter) {
-    object[filter._key] = filter.displayValue;
-    return object;
-  }, {});  
 
   // assign already defined custom params to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(params, searchQueryOptions);

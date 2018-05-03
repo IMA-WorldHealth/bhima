@@ -11,15 +11,15 @@ TrialBalanceErrorsController.$inject = ['TrialBalanceService', 'NotifyService'];
  * for the Trial Balance.
  */
 function TrialBalanceErrorsController(TrialBalance, Notify) {
-  var vm = this;
+  const vm = this;
 
   // links the errors to the posting journal via their record uuid
-  var link =
+  const link =
     '<div class="ui-grid-cell-contents">' +
       '<bh-journal-link record-uuid="row.entity.record_uuid" display="{{row.entity.trans_id}}"></bh-journal-link>' +
     '</div>';
 
-  var columns = [{
+  const columns = [{
     field            : 'code',
     displayName      : 'TABLE.COLUMNS.ERROR_TYPE',
     headerCellFilter : 'translate',
@@ -58,11 +58,11 @@ function TrialBalanceErrorsController(TrialBalance, Notify) {
 
     // load the errors from the Trial Balance
     TrialBalance.errors()
-      .then(function (errors) {
+      .then(errors => {
         vm.gridOptions.data = errors;
       })
       .catch(errorHandler)
-      .finally(function () {
+      .finally(() => {
         vm.loading = false;
       });
   }

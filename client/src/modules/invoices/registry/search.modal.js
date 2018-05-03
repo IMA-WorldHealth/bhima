@@ -13,23 +13,15 @@ InvoiceRegistrySearchModalController.$inject = [
  * the underlying filters before passing them back to the parent controller.
  */
 function InvoiceRegistrySearchModalController(ModalInstance, filters, Notify, Store, Periods, util, Invoices) {
-  var vm = this;
-  var changes = new Store({ identifier : 'key' });
+  const vm = this;
+  const changes = new Store({ identifier : 'key' });
   vm.filters = filters;
 
   vm.defaultQueries = {};
 
   // displayValues will be an id:displayValue pair
-  var displayValues = {};
-
-  var lastViewFilters = Invoices.filters.formatView().customFilters;  
-  
-  // map key to last display value for lookup in loggedChange
-  var lastDisplayValues = lastViewFilters.reduce(function (object, filter) {
-    object[filter._key] = filter.displayValue;
-    return object;
-  }, {});
-
+  const displayValues = {};
+  const lastDisplayValues = Invoices.filters.getDisplayValueMap();
 
   // assign default limit filter
   if (filters.limit) {
@@ -38,12 +30,17 @@ function InvoiceRegistrySearchModalController(ModalInstance, filters, Notify, St
 
   // @TODO ideally these should be passed in when the modal is initialised
   //       these are known when the filter service is defined
-  var searchQueryOptions = [
-    'is_caution', 'reference', 'cashbox_id', 'user_id', 'reference_patient', 'currency_id', 'reversed', 'service_id', 'debtor_group_uuid',
+  const searchQueryOptions = [
+    'is_caution', 'reference', 'cashbox_id', 'user_id', 'reference_patient',
+    'currency_id', 'reversed', 'service_id', 'debtor_group_uuid',
   ];
 
   // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(filters, searchQueryOptions);
+
+  // keep track of the initial search queries to make sure we properly restore
+  // default display values
+  const initialSearchQueries = angular.copy(vm.searchQueries);
 
   // set controller data
   vm.cancel = ModalInstance.close;
@@ -70,15 +67,15 @@ function InvoiceRegistrySearchModalController(ModalInstance, filters, Notify, St
   vm.onSelectLimit = function onSelectLimit(value) {
     // input is type value, this will only be defined for a valid number
     if (angular.isDefined(value)) {
-      changes.post({ key : 'limit', value : value });
+      changes.post({ key : 'limit', value });
     }
   };
 
   // default filter period - directly write to changes list
   vm.onSelectPeriod = function onSelectPeriod(period) {
-    var periodFilters = Periods.processFilterChanges(period);
+    const periodFilters = Periods.processFilterChanges(period);
 
-    periodFilters.forEach(function (filterChange) {
+    periodFilters.forEach(filterChange => {
       changes.post(filterChange);
     });
   };
@@ -91,15 +88,23 @@ function InvoiceRegistrySearchModalController(ModalInstance, filters, Notify, St
   // returns the filters to the journal to be used to refresh the page
   vm.submit = function submit() {
     // push all searchQuery values into the changes array to be applied
-    angular.forEach(vm.searchQueries, function (value, key) {
+    angular.forEach(vm.searchQueries, (value, key) => {
       if (angular.isDefined(value)) {
-        // default to the original value if no display value is defined
-        var displayValue = displayValues[key] || lastDisplayValues[key] || value;
-        changes.post({ key: key, value: value, displayValue: displayValue });
+        // To avoid overwriting a real display value, we first determine if the value changed in the current view.
+        // If so, we do not use the previous display value.  If the values are identical, we can restore the
+        // previous display value without fear of data being out of date.
+        const usePreviousDisplayValue =
+          angular.equals(initialSearchQueries[key], value) &&
+          angular.isDefined(lastDisplayValues[key]);
+
+        // default to the raw value if no display value is defined
+        const displayValue = usePreviousDisplayValue ? lastDisplayValues[key] : displayValues[key] || value;
+
+        changes.post({ key, value, displayValue });
       }
     });
-    
-    var loggedChanges = changes.getAll();
+
+    const loggedChanges = changes.getAll();
 
     // return values to the Invoice Registry Controller
     return ModalInstance.close(loggedChanges);

@@ -110,6 +110,10 @@ function report(req, res, next) {
   return Vouchers.find(options)
     .then(rows => {
       _.extend(data, { rows });
+      return Vouchers.totalAmountByCurrency(options);
+    })
+    .then((sumAmount) => {
+      _.extend(data, { totals : sumAmount });
       return reportInstance.render(data);
     })
     .then((result) => {
@@ -118,3 +122,4 @@ function report(req, res, next) {
     .catch(next)
     .done();
 }
+

@@ -1,22 +1,20 @@
-/* global expect, chai, agent */
-const expect = require('chai').expect;
-const _ = require('lodash');
+/* global agent */
+const { expect } = require('chai');
 
 describe('Aged debtors Report', () => {
-
   const reportURL = '/reports/finance/debtors/aged';
 
-  const january2017 = { 
-    date: '2017-01-31',
-    reportId: '5',
-    zeroes: '0',
+  const january2017 = {
+    date : '2017-01-31',
+    reportId : '5',
+    zeroes : '0',
     renderer : 'json',
   };
 
-  const june2015 = { 
-    date: '2015-06-30',
-    reportId: '5',
-    zeroes: '1',
+  const june2015 = {
+    date : '2015-06-30',
+    reportId : 5,
+    zeroes : 1,
     renderer : 'json',
   };
 
@@ -31,9 +29,7 @@ describe('Aged debtors Report', () => {
 
         expect(Number(report.debtors[0].total)).to.equal(totalGuestHouse);
         expect(Number(report.debtors[3].sixty)).to.equal(totalRegideso30To60);
-
       });
-
   });
 
   // Aged debtors report during the period June 2015
@@ -56,5 +52,4 @@ describe('Aged debtors Report', () => {
         expect(Number(report.aggregates.total)).to.equal(totalAggregates);
       });
   });
-
 });

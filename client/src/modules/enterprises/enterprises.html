@@ -50,7 +50,7 @@
                 <label class="control-label" translate>
                   FORM.LABELS.ABBREVIATION
                 </label>
-                <input type="text" class="form-control" name="abbr" ng-model="EnterpriseCtrl.enterprise.abbr" autocomplete="off" ng-maxlength="EnterpriseCtrl.length50" required >
+                <input type="text" class="form-control" name="abbr" ng-model="EnterpriseCtrl.enterprise.abbr" autocomplete="off" ng-maxlength="EnterpriseCtrl.length50" required>
                 <div class="help-block" ng-messages="EnterpriseForm.abbr.$error" ng-show="EnterpriseForm.$submitted">
                   <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
                 </div>
@@ -62,7 +62,8 @@
                 account-id="EnterpriseCtrl.enterprise.gain_account_id"
                 label="FORM.LABELS.GAIN_ACCOUNT"
                 name="gain_account_id"
-                on-select-callback="EnterpriseCtrl.onSelectGainAccount(account)">
+                on-select-callback="EnterpriseCtrl.onSelectGainAccount(account)"
+                exclude-title-accounts="true">
               </bh-account-select>
 
               <bh-account-select
@@ -70,6 +71,7 @@
                 account-id="EnterpriseCtrl.enterprise.loss_account_id"
                 label="FORM.LABELS.LOSS_ACCOUNT"
                 name="loss_account_id"
+                exclude-title-accounts="true"
                 on-select-callback="EnterpriseCtrl.onSelectLossAccount(account)">
               </bh-account-select>
             </div>
@@ -122,7 +124,7 @@
 
               <bh-location-select
                 validation-trigger="EnterpriseForm.$submitted"
-                name = 'location_id'
+                name="location_id"
                 location-uuid="EnterpriseCtrl.enterprise.location_id">
               </bh-location-select>
 
@@ -145,15 +147,20 @@
           </div>
 
           <ul class="list-group">
-            <li class="list-group-item" ng-repeat="p in EnterpriseCtrl.projects track by p.id">
-              <i class="fa fa-hospital-o"></i>
-              <span>{{ p.name }} ({{ p.abbr }})</span>
-              <a data-delete="{{ p.abbr }}" class="badge badge-danger" ng-click="EnterpriseCtrl.deleteProject(p.id, p.name)">
-                <i class="fa fa-trash"></i> <span translate>FORM.BUTTONS.DELETE</span>
-              </a>
-              <a data-update="{{ p.abbr }}" class="badge badge-info" ng-click="EnterpriseCtrl.editProject(p.id)">
-                <i class="fa fa-edit"></i> <span translate>FORM.BUTTONS.EDIT</span>
-              </a>
+            <li class="list-group-item clearfix" data-project="{{ ::p.abbr }}" ng-repeat="p in EnterpriseCtrl.projects track by p.id">
+              <span>
+                <i class="fa fa-hospital-o"></i> {{ p.name }} ({{ p.abbr }})
+              </span>
+
+              <span class="pull-right">
+                <a data-method="update" ng-click="EnterpriseCtrl.editProject(p.id)" href style="padding: 0 5px;">
+                  <i class="fa fa-edit"></i> <span translate>FORM.BUTTONS.EDIT</span>
+                </a>
+
+                <a data-method="delete" ng-click="EnterpriseCtrl.deleteProject(p.id, p.name)" class="text-danger" style="padding: 0 5px;" href>
+                  <i class="fa fa-trash"></i> <span translate>FORM.BUTTONS.DELETE</span>
+                </a>
+              </span>
             </li>
           </ul>
 
@@ -166,9 +173,24 @@
           </div>
         </div>
 
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <b><i class="fa fa-cogs"></i> <span translate>ENTERPRISE.SETTINGS.TITLE</span></b>
+          </div>
+          <div class="panel-body">
+            <bh-yes-no-radios
+              label="ENTERPRISE.SETTINGS.ENABLE_PRICE_LOCK_LABEL"
+              value="EnterpriseCtrl.enterprise.settings.enable_price_lock"
+              help-text="ENTERPRISE.SETTINGS.ENABLE_PRICE_LOCK_HELP_TEXT"
+              on-change-callback="EnterpriseCtrl.enablePriceLockSetting(value)">
+            </bh-yes-no-radios>
+          </div>
+        </div>
+
         <!-- embedded exchange rate -->
         <div ui-view="exchange"></div>
-      </div>
+
     </div>
   </div>
 </div>

@@ -1,8 +1,8 @@
 angular.module('bhima.services')
-.service('PurchaseOrderForm', PurchaseOrderFormService);
+  .service('PurchaseOrderForm', PurchaseOrderFormService);
 
 PurchaseOrderFormService.$inject = [
-  'InventoryService', 'AppCache', 'Store', 'Pool', 'PurchaseOrderItemService'
+  'InventoryService', 'AppCache', 'Store', 'Pool', 'PurchaseOrderItemService',
 ];
 
 /**
@@ -27,9 +27,7 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
   function PurchaseOrderForm(cacheKey) {
 
     if (!cacheKey) {
-      throw new Error(
-        'PurchaseOrderForm expected a cacheKey, but it was not provided.'
-      );
+      throw new Error('PurchaseOrderForm expected a cacheKey, but it was not provided.');
     }
 
     // bind the cache key
@@ -37,17 +35,17 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
 
     // set up the inventory
     // this will be referred to as PurchaseOrderForm.inventory.available.data
-    this.inventory = new Pool({ identifier: 'uuid', data : [] });
+    this.inventory = new Pool({ identifier : 'uuid', data : [] });
 
     // set up the inventory
     Inventory.read(null, { locked : 0 })
-      .then(function (data) {
+      .then((data) => {
         this.inventory.initialize('uuid', data);
-      }.bind(this));
+      });
 
     // setup the rows of the grid as a store
     // this will be referred to as PurchaseOrderForm.store.data
-    this.store = new Store({ identifier : 'uuid', data: [] });
+    this.store = new Store({ identifier : 'uuid', data : [] });
 
     this.setup();
   }
@@ -57,9 +55,9 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
 
     // the order details
     this.details = {
-      payment_method: 'FORM.LABELS.ON_DELIVERY',
-      date: new Date(),
-      cost: 0,
+      payment_method : 'FORM.LABELS.ON_PURCHASE',
+      date : new Date(),
+      cost : 0,
     };
 
     // the supplier is null
@@ -67,17 +65,21 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
 
     // this object holds the totals for the order.
     this.totals = {
-      rows : 0
+      rows : 0,
     };
 
     // remove all items from the store as needed
     this.clear();
 
-    this._valid = false ;
+    this._valid = false;
     this._invalid = true;
 
     // trigger a totals digest
     this.digest();
+  };
+
+  PurchaseOrderForm.prototype.onDateChange = function onDateChange(date) {
+    this.details.date = date;
   };
 
   /**
@@ -91,7 +93,7 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
     this.digest();
 
     // filters out valid items
-    var invalidItems = this.store.data.filter(function (row) {
+    const invalidItems = this.store.data.filter((row) => {
       return row._invalid;
     });
 
@@ -113,7 +115,7 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
    *   module's typeahead
    */
   PurchaseOrderForm.prototype.setSupplier = function setSupplier(supplier) {
-    var order = this;
+    const order = this;
 
     // attach the creditor uuid to the request
     order.details.supplier_uuid = supplier.uuid;
@@ -138,11 +140,11 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
    * setSupplier() completion.
    */
   PurchaseOrderForm.prototype.digest = function digest() {
-    var order = this;
-    var totals = order.totals;
+    const order = this;
+    const { totals } = order;
 
     // loop through the items summing them into a total
-    totals.rows = order.store.data.reduce(function (value, unit) {
+    totals.rows = order.store.data.reduce((value, unit) => {
 
       // compute validation
       unit.validate();
@@ -160,13 +162,13 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
 
   // clears the store of items
   PurchaseOrderForm.prototype.clear = function clear() {
-    var order = this;
+    const order = this;
 
     // copy the data so that forEach() doesn't get confused.
-    var cp = angular.copy(order.store.data);
+    const cp = angular.copy(order.store.data);
 
     // remove each item from the store
-    cp.forEach(function (item) {
+    cp.forEach((item) => {
       order.removeItem(item);
     });
   };
@@ -186,13 +188,13 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
   PurchaseOrderForm.prototype.addItem = function addItem() {
 
     // we cannot insert more rows than our max inventory size
-    var maxRows = this.inventory.size();
+    const maxRows = this.inventory.size();
     if (this.store.data.length >= maxRows) {
-      return;
+      return null;
     }
 
     // add the item to the store
-    var item = new PurchaseOrderItem();
+    const item = new PurchaseOrderItem();
     this.store.post(item);
 
     // return a reference to the item
@@ -226,9 +228,14 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
    * @param {Object} item - the item/row to be configured
    */
   PurchaseOrderForm.prototype.configureItem = function configureItem(item) {
-
     // remove the item from the pool
-    var inventoryItem = this.inventory.use(item.inventory_uuid);
+    const inventoryItem = this.inventory.use(item.inventory_uuid);
+
+    /**
+    * FIX ME or NEED Discussion, The Purchase Order must Used Purchase Price and not
+    * Used Inventory Selling price
+    */
+    inventoryItem.price = 0;
 
     // configure the PurchaseOrderFormItem with the inventory values
     item.configure(inventoryItem);
@@ -249,7 +256,7 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
   PurchaseOrderForm.prototype.readCache = function readCache() {
 
     // copy the cache temporarily
-    var cp = angular.copy(this.cache);
+    const cp = angular.copy(this.cache);
 
     // set the details to the cached ones
     this.details = cp.details;
@@ -261,11 +268,11 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
     this.store.clear();
 
     // loop through the cached items, configuring them
-    cp.items.forEach(function (cacheItem) {
-      var item = this.addItem();
+    cp.items.forEach((cacheItem) => {
+      const item = this.addItem();
       item.inventory_uuid = cacheItem.inventory_uuid;
       this.configureItem(item);
-    }.bind(this));
+    });
 
     // digest validation and totals
     this.digest();
@@ -302,7 +309,7 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
    * @description
    * Checks to see if the order has cached items to recover.
    */
-  PurchaseOrderForm.prototype.hasCacheAvailable =  function hasCacheAvailable() {
+  PurchaseOrderForm.prototype.hasCacheAvailable = function hasCacheAvailable() {
     return Object.keys(this.cache).length > 0;
   };
 

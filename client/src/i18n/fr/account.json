@@ -32,6 +32,7 @@
     "NOT_BALANCED": "Comptes non balancés",
     "NOT_FOUND": "Aucun compte enregistrés...",
     "NOT_POSITIVE": "Contiens des valeurs non positives",
+    "NOT_0_AS_ACCOUNT_NOMBER":"Vous ne pouvez pas enregistrer 0 comme numéro de compte!",
     "NUMBER": "Numéro de compte",
     "PROFIT_CENTER": "Centre des profits",
     "RECORDING": "Enregistrement",
@@ -53,7 +54,6 @@
       "ASSET":"Actif",
       "LIABILITY":"Passif",
       "EQUITY":"Capital",
-      "REVENUE":"Produit",
       "TIERS":"Tiers"
     },
     "UPDATED": "Les données du compte ont été mis à jour"

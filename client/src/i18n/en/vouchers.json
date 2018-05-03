@@ -14,6 +14,7 @@
       "ERROR_AMOUNT": "Amount's values are invalid",
       "ERROR_TOTALS": "The totals are not balanced",
       "ERROR_PRECISION": "The amounts entered cannot have more than 4 decimal places in precision",
+      "ERROR_NEGATIVE_NUMBERS": "There are negative numbers detected",
       "INVALID_VALUES": "There are invalid values detected",
       "PATIENT_INVOICE": "Patient Invoice",
       "REFERENCE": "Reference",
@@ -41,10 +42,10 @@
       "DESTINATION_ACCOUNT":"Destination Account",
       "TRANSFER_ACCOUNT":"Transfer Account",
       "CASH_TRANSFER":"Cash Transfer",
-      "REPORT":"Voucher Report",
+      "REPORT":"Voucher Registry",
       "TITLE":"Voucher",
-      "TRANSFER_TYPE_INFO":"Transaction Type in case we have either incomes or expenses",
-      "USE_FINANCIAL_ACCOUNT":"Use of cashes or banks accounts in this transaction",
+      "TRANSACTION_TYPE_INFO":"Transaction type must be set if there is income or expenses.",
+      "USE_FINANCIAL_ACCOUNT": "This transactions uses a cash or bank account.  Be sure to set a transaction type.",
       "RECEIPT":{
         "SUCCESS":"Voucher Payment recorded successfully."
       },

@@ -1,24 +1,20 @@
 <form name="ConfirmDeletion" ng-submit="$ctrl.accept(ConfirmDeletion)" novalidate>
 
   <div class="modal-header">
-    <button ng-click="$ctrl.close()" type="button" class="close">&times;</button>
-    <h4>
-      {{ "FORM.DIALOGS.SURE_CONTINUE" | translate }}
-    </h4>
+    <button ng-click="$ctrl.dismiss()" type="button" class="close">&times;</button>
+    <h4 translate>FORM.DIALOGS.SURE_CONTINUE</h4>
   </div>
 
   <div class="alert alert-warning">
-    <i class="fa fa-exclamation-triangle"></i> {{ "FORM.DIALOGS.PLEASE_READ" | translate }}
+    <i class="fa fa-exclamation-triangle"></i> <span translate>FORM.DIALOGS.PLEASE_READ</span>
   </div>
 
   <div class="modal-body">
-    <p>
-      {{ "FORM.DIALOGS.CANNOT_UNDONE_ACTION" | translate }}
-    </p>
+    <p translate>FORM.DIALOGS.CANNOT_UNDONE_ACTION</p>
 
     <br>
-
     <div class="form-group"
+      ng-if = "!$ctrl.noText"
       ng-class="{ 'has-error' : $ctrl.hasErrorMessage, 'has-warning' : $ctrl.hasWarningMessage }">
       <label class="control-label">{{ 'FORM.DIALOGS.PLEASE_TYPE_TEXT' | translate: $ctrl.patternValue }} </label>
       <input class="form-control" ng-model="$ctrl.text" ng-change="$ctrl.validate(ConfirmDeletion)" type="text" name="text" required>
@@ -28,7 +24,7 @@
     </div>
 
     <button class="btn btn-block" type="submit" data-method="submit">
-      <b class="text-danger">{{ "FORM.DIALOGS.UNDERSTAND_ACTION" | translate }}</b>
+      <b class="text-danger" translate>FORM.DIALOGS.UNDERSTAND_ACTION</b>
     </button>
   </div>
 

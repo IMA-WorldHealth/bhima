@@ -4,7 +4,7 @@ angular.module('bhima.services')
 VoucherService.$inject = [
   'PrototypeApiService', 'TransactionTypeStoreService', '$uibModal',
   'FilterService', 'PeriodService', 'LanguageService', '$httpParamSerializer',
-  'appcache', 'bhConstants',
+  'appcache', 'bhConstants', 'TransactionService', '$translate',
 ];
 
 /**
@@ -17,18 +17,18 @@ VoucherService.$inject = [
  */
 function VoucherService(
   Api, TransactionTypeStore, Modal, Filters, Periods, Languages,
-  $httpParamSerializer, AppCache, bhConstants
+  $httpParamSerializer, AppCache, bhConstants, Transactions, $translate
 ) {
-  var service = new Api('/vouchers/');
-  var voucherFilters = new Filters();
-  var filterCache = new AppCache('voucher-filters');
+  const service = new Api('/vouchers/');
+  const voucherFilters = new Filters();
+  const filterCache = new AppCache('voucher-filters');
 
   // @todo - remove this reference to baseUrl
-  var baseUrl = '/journal/';
+  const baseUrl = '/journal/';
 
   service.create = create;
   service.reverse = reverse;
-  service.remove = remove;
+  service.remove = Transactions.remove;
   service.transactionType = transactionType;
   service.openSearchModal = openSearchModal;
 
@@ -46,9 +46,11 @@ function VoucherService(
     { key : 'reversed', label : 'FORM.INFO.ANNULLED' },
     { key : 'description', label : 'FORM.LABELS.DESCRIPTION' },
     { key : 'entity_uuid', label : 'FORM.LABELS.ENTITY' },
+    { key : 'account_id', label : 'FORM.LABELS.ACCOUNT' },
     { key : 'cash_uuid', label : 'FORM.INFO.PAYMENT' },
     { key : 'invoice_uuid', label : 'FORM.LABELS.INVOICE' },
-    { key : 'type_ids', label : 'FORM.LABELS.TRANSACTION_TYPE' }]);
+    { key : 'type_ids', label : 'FORM.LABELS.TRANSACTION_TYPE' },
+  ]);
 
 
   if (filterCache.filters) {
@@ -60,10 +62,10 @@ function VoucherService(
 
   function assignDefaultFilters() {
     // get the keys of filters already assigned - on initial load this will be empty
-    var assignedKeys = Object.keys(voucherFilters.formatHTTP());
+    const assignedKeys = Object.keys(voucherFilters.formatHTTP());
 
     // assign default period filter
-    var periodDefined =
+    const periodDefined =
       service.util.arrayIncludes(assignedKeys, ['period', 'custom_period_start', 'custom_period_end']);
 
     if (!periodDefined) {
@@ -96,9 +98,9 @@ function VoucherService(
 
   // strips internal keys from object
   function stripInternalObjectKeys(object) {
-    var o = {};
+    const o = {};
 
-    angular.forEach(object, function (value, key) {
+    angular.forEach(object, (value, key) => {
       if (!isInternalKey(key)) {
         o[key] = value;
       }
@@ -111,11 +113,11 @@ function VoucherService(
    * Wraps the prototype create method.
    */
   function create(voucher) {
-    var v = angular.copy(voucher);
+    const v = angular.copy(voucher);
 
     // format items for posting, removing validation keys and unlinking old objects
-    v.items = v.items.map(function (item) {
-      var escapedItem = stripInternalObjectKeys(item);
+    v.items = v.items.map((item) => {
+      const escapedItem = stripInternalObjectKeys(item);
 
       if (escapedItem.entity) {
         escapedItem.entity_uuid = escapedItem.entity.uuid;
@@ -130,7 +132,7 @@ function VoucherService(
 
     // we pick either the debit or the credit side to assign as the total amount
     // of the voucher
-    v.amount = v.items.reduce(function (sum, row) {
+    v.amount = v.items.reduce((sum, row) => {
       return sum + row.debit;
     }, 0);
 
@@ -155,16 +157,22 @@ function VoucherService(
    * @return {object} Store transaction type store object { data: array, ...}
    */
   function transactionType() {
-    return TransactionTypeStore.load();
+    return TransactionTypeStore.load()
+      .then((transactionTypes) => {
+        return transactionTypes.data.map((item) => {
+          item.hrText = $translate.instant(item.text);
+          return item;
+        });
+      });
   }
 
   // downloads a type of report based on the
   function download(type) {
-    var filterOpts = voucherFilters.formatHTTP();
-    var defaultOpts = { renderer : type, lang : Languages.key };
+    const filterOpts = voucherFilters.formatHTTP();
+    const defaultOpts = { renderer : type, lang : Languages.key };
 
     // combine options
-    var options = angular.merge(defaultOpts, filterOpts);
+    const options = angular.merge(defaultOpts, filterOpts);
 
     // return  serialized options
     return $httpParamSerializer(options);
@@ -178,28 +186,15 @@ function VoucherService(
   function openSearchModal(filters) {
     return Modal.open({
       templateUrl : 'modules/vouchers/modals/search.modal.html',
-      size        : 'md',
-      animation   : false,
-      keyboard    : false,
-      backdrop    : 'static',
-      controller  : 'VoucherRegistrySearchModalController as $ctrl',
-      resolve     : {
+      size : 'md',
+      animation : false,
+      keyboard : false,
+      backdrop : 'static',
+      controller : 'VoucherRegistrySearchModalController as $ctrl',
+      resolve : {
         filters : function filtersProvider() { return filters; },
       },
     }).result;
-  }
-
-  /**
-   * @method remove
-   *
-   * @description
-   * This function removes a voucher from the database via the transaction
-   * delete route.
-   */
-  function remove(uuid) {
-    var url = '/transactions/'.concat(uuid);
-    return service.$http.delete(url)
-      .then(service.util.unwrapHttpResponse);
   }
 
   return service;

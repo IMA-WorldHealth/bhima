@@ -1,9 +1,9 @@
 angular.module('bhima.controllers')
-.controller('AccountsController', AccountsController);
+  .controller('AccountsController', AccountsController);
 
 AccountsController.$inject = [
   '$rootScope', '$timeout', 'AccountGridService', 'NotifyService', 'bhConstants',
-  'LanguageService', 'uiGridConstants'
+  'LanguageService', 'uiGridConstants',
 ];
 
 /**
@@ -17,6 +17,8 @@ AccountsController.$inject = [
  */
 function AccountsController($rootScope, $timeout, AccountGrid, Notify, Constants, Language, uiGridConstants) {
   var vm = this;
+  var columns = gridColumns();
+
   vm.Constants = Constants;
   vm.loading = true;
 
@@ -27,19 +29,13 @@ function AccountsController($rootScope, $timeout, AccountGrid, Notify, Constants
   vm.initialDataSet = true;
 
   // lang parameter for document
-  vm.parameter = { lang: Language.key };
+  vm.parameter = { lang : Language.key };
 
   vm.Accounts = new AccountGrid();
   vm.Accounts.settup()
     .then(bindGridData)
     .catch(Notify.handleError)
     .finally(toggleLoadingIndicator);
-
-  var columns = [
-    { field : 'number', displayName : '', cellClass : 'text-right', width : 80},
-    { field : 'label', displayName : 'FORM.LABELS.ACCOUNT', cellTemplate : '/modules/accounts/templates/grid.indentCell.tmpl.html', headerCellFilter : 'translate' },
-    { name : 'actions', enableFiltering : false, displayName : '', cellTemplate : '/modules/accounts/templates/grid.actionsCell.tmpl.html', headerCellFilter : 'translate', width : 140 }
-  ];
 
   vm.gridOptions = {
     appScopeProvider : vm,
@@ -50,7 +46,7 @@ function AccountsController($rootScope, $timeout, AccountGrid, Notify, Constants
     enableColumnMenus : false,
     rowTemplate : '/modules/accounts/templates/grid.leafRow.tmpl.html',
     onRegisterApi : registerAccountEvents,
-    columnDefs : columns
+    columnDefs : columns,
   };
 
   // because the modal is instantiated on onEnter in the ui-router configuration the
@@ -59,6 +55,31 @@ function AccountsController($rootScope, $timeout, AccountGrid, Notify, Constants
   $rootScope.$on('ACCOUNT_CREATED', vm.Accounts.updateViewInsert.bind(vm.Accounts));
   $rootScope.$on('ACCOUNT_DELETED', vm.Accounts.updateViewDelete.bind(vm.Accounts));
   $rootScope.$on('ACCOUNT_UPDATED', handleUpdatedAccount);
+
+  function gridColumns() {
+    return [
+      {
+        field : 'number',
+        displayName : '',
+        cellClass : 'text-right',
+        width : 80,
+      },
+      {
+        field : 'label',
+        displayName : 'FORM.LABELS.ACCOUNT',
+        cellTemplate : '/modules/accounts/templates/grid.indentCell.tmpl.html',
+        headerCellFilter : 'translate',
+      },
+      {
+        name : 'actions',
+        enableFiltering : false,
+        displayName : '',
+        cellTemplate : '/modules/accounts/templates/grid.actionsCell.tmpl.html',
+        headerCellFilter : 'translate',
+        width : 140,
+      },
+    ];
+  }
 
   function handleUpdatedAccount(event, account) {
     var scrollDelay = 200;
@@ -73,7 +94,11 @@ function AccountsController($rootScope, $timeout, AccountGrid, Notify, Constants
 
       // @todo delaying scroll removes a corner case where the grid hasn't yet
       //       fully processed the new data - this should probably follow an event
-      $timeout(function () { scrollTo(account.id); }, scrollDelay);
+      $timeout(scrollOnTimeout, scrollDelay);
+    }
+
+    function scrollOnTimeout() {
+      scrollTo(account.id);
     }
   }
 
@@ -88,13 +113,16 @@ function AccountsController($rootScope, $timeout, AccountGrid, Notify, Constants
     // UI Grid uses the actual data object, pulling it directly from the account
     // store will not match UI grid's copy so this method iterates through grid
     // options data
-    vm.gridOptions.data.some(function (row) {
+    vm.gridOptions.data.some(handleAccount);
+
+    function handleAccount(row) {
       if (row.id === id) {
         account = row;
-        return;
+        return true;
       }
       return false;
-    });
+    }
+
     return account;
   }
 

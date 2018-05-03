@@ -2,16 +2,17 @@ angular.module('bhima.controllers')
   .controller('SearchMovementsModalController', SearchMovementsModalController);
 
 SearchMovementsModalController.$inject = [
-  'data', 'NotifyService', '$uibModalInstance', 'FluxService',
-  '$translate', 'PeriodService', 'Store', 'util', 'StockService',
+  'data', 'NotifyService', '$uibModalInstance', 'FluxService', '$translate',
+  'PeriodService', 'Store', 'util', 'StockService',
 ];
 
 function SearchMovementsModalController(data, Notify, Instance, Flux, $translate, Periods, Store, util, Stock) {
-  var vm = this;
-  var changes = new Store({ identifier : 'key' });
+  const vm = this;
+  const displayValues = {};
+  const changes = new Store({ identifier : 'key' });
 
-  var searchQueryOptions = [
-    'is_exit', 'depot_uuid', 'inventory_uuid', 'label', 'flux_id', 'dateFrom', 'dateTo',
+  const searchQueryOptions = [
+    'is_exit', 'depot_uuid', 'inventory_uuid', 'label', 'flux_id', 'dateFrom', 'dateTo', 'user_id',
   ];
 
   vm.filters = data;
@@ -19,35 +20,35 @@ function SearchMovementsModalController(data, Notify, Instance, Flux, $translate
   vm.searchQueries = {};
   vm.defaultQueries = {};
 
-  // displayValues will be an id:displayValue pair
-  var displayValues = {};  
+  // keep track of the initial search queries to make sure we properly restore
+  // default display values
+  const initialSearchQueries = angular.copy(vm.searchQueries);
 
   // load flux
   Flux.read()
-    .then(function (rows) {
-      vm.fluxes = rows.map(function (row) {
-        row.label = $translate.instant(row.label);
-        return row;
-      });
-    })
+    .then(handleFluxes)
     .catch(Notify.handleError);
+
+  function handleFluxes(rows) {
+    vm.fluxes = rows.map(handleFlux);
+  }
+
+  function handleFlux(row) {
+    row.label = $translate.instant(row.label);
+    return row;
+  }
 
   // default filter period - directly write to changes list
   vm.onSelectPeriod = function onSelectPeriod(period) {
-    var periodFilters = Periods.processFilterChanges(period);
+    const periodFilters = Periods.processFilterChanges(period);
 
-    periodFilters.forEach(function (filterChange) {
+    periodFilters.forEach(filterChange => {
       changes.post(filterChange);
     });
   };
 
-  var lastViewFilters = Stock.filter.movement.formatView().customFilters;
-
   // map key to last display value for lookup in loggedChange
-  var lastDisplayValues = lastViewFilters.reduce(function (object, filter) {
-    object[filter._key] = filter.displayValue;
-    return object;
-  }, {});
+  const lastDisplayValues = Stock.filter.movement.getDisplayValueMap();
 
   // custom filter depot_uuid - assign the value to the params object
   vm.onSelectDepot = function onSelectDepot(depot) {
@@ -62,14 +63,14 @@ function SearchMovementsModalController(data, Notify, Instance, Flux, $translate
   };
 
   // custom filter flux_id - assign the value to the searchQueries object
-  vm.onFluxChange = function onFluxChange(flux) {
-    vm.searchQueries.flux_id = flux;
-    var typeText = '/';
+  vm.onFluxChange = function onFluxChange(_flux) {
+    let typeText = '/';
+    vm.searchQueries.flux_id = _flux;
 
-    flux.forEach(function (fluxIds) {
-      vm.fluxes.forEach(function (flux) {
+    _flux.forEach(fluxIds => {
+      vm.fluxes.forEach(flux => {
         if (fluxIds === flux.id) {
-          typeText += flux.label + ' / ';
+          typeText += String(flux.label).concat(' / ');
         }
       });
     });
@@ -77,6 +78,11 @@ function SearchMovementsModalController(data, Notify, Instance, Flux, $translate
     displayValues.flux_id = typeText;
   };
 
+  // custom filter user
+  vm.onSelectUser = function onSelectUser(user) {
+    vm.searchQueries.user_id = user.id;
+    displayValues.user_id = user.display_name;
+  };
 
   // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(data, searchQueryOptions);
@@ -86,10 +92,10 @@ function SearchMovementsModalController(data, Notify, Instance, Flux, $translate
   }
 
   // default filter limit - directly write to changes list
-  vm.onSelectLimit = function onSelectLimit(value) {
+  vm.onSelectLimit = function onSelectLimit(_value) {
     // input is type value, this will only be defined for a valid number
-    if (angular.isDefined(value)) {
-      changes.post({ key : 'limit', value : value });
+    if (angular.isDefined(_value)) {
+      changes.post({ key : 'limit', value : _value });
     }
   };
 
@@ -102,17 +108,26 @@ function SearchMovementsModalController(data, Notify, Instance, Flux, $translate
   vm.cancel = function cancel() { Instance.close(); };
 
   vm.submit = function submit() {
+
     // push all searchQuery values into the changes array to be applied
-    angular.forEach(vm.searchQueries, function (value, key) {
+    angular.forEach(vm.searchQueries, (value, key) => {
       if (angular.isDefined(value)) {
-        // default to the original value if no display value is defined
-        var displayValue = displayValues[key] || lastDisplayValues[key] || value;
-        changes.post({ key: key, value: value, displayValue: displayValue });
+
+        // To avoid overwriting a real display value, we first determine if the value changed in the current view.
+        // If so, we do not use the previous display value.  If the values are identical, we can restore the
+        // previous display value without fear of data being out of date.
+        const usePreviousDisplayValue =
+        angular.equals(initialSearchQueries[key], value) &&
+        angular.isDefined(lastDisplayValues[key]);
+
+        // default to the raw value if no display value is defined
+        const displayValue = usePreviousDisplayValue ? lastDisplayValues[key] : displayValues[key] || value;
+
+        changes.post({ key, value, displayValue });
       }
     });
 
-    var loggedChanges = changes.getAll();
-
+    const loggedChanges = changes.getAll();
     return Instance.close(loggedChanges);
   };
 }

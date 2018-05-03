@@ -4,11 +4,10 @@ const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 const helpers = require('../shared/helpers');
 
-const expect = chai.expect;
+const { expect } = chai;
 helpers.configure(chai);
 
-describe('Patient Registration', function () {
-
+describe('Patient Registration', () => {
   const path = '#!/patients/register';
   beforeEach(() => helpers.navigate(path));
 
@@ -20,10 +19,7 @@ describe('Patient Registration', function () {
     hospital_no  : 120,
   };
 
-  const uniqueHospitalNumber = 1020;
-
-  it('registers a valid patient', function () {
-
+  it('registers a valid patient', () => {
     // patient name
     FU.input('PatientRegCtrl.medical.display_name', mockPatient.display_name);
 
@@ -39,7 +35,7 @@ describe('Patient Registration', function () {
     components.locationSelect.set(helpers.data.locations, 'current-location-id');
 
     // set the debtor group
-    components.debtorGroupSelect.set('Second Test Debtor Group');
+    components.debtorGroupSelect.set('NGO IMA World Health');
 
 
     // submit the patient registration form
@@ -49,13 +45,11 @@ describe('Patient Registration', function () {
 
   // This test group assumes the previous mock patient has been successfully registered
   // with the system
-  describe('form validation', function () {
-
+  describe('form validation', () => {
     // refresh the page to make sure previous data is cleared
     before(() => browser.refresh());
 
-    it('blocks invalid form submission with relevent error classes', function () {
-
+    it('blocks invalid form submission with relevent error classes', () => {
       // submit the patient registration form
       FU.buttons.submit();
 
@@ -73,7 +67,7 @@ describe('Patient Registration', function () {
       components.notification.hasDanger();
     });
 
-    it('alerts for minimum and maximum dates', function () {
+    it('alerts for minimum and maximum dates', () => {
       const testMaxYear = '01/01/9000';
       const validYear = '01/01/2000';
       const testMinYear = '01/01/1000';

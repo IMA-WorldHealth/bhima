@@ -2,7 +2,7 @@ angular.module('bhima.services')
   .service('AccountService', AccountService);
 
 AccountService.$inject = [
-  'PrototypeApiService', '$http', 'util', 'bhConstants',
+  'PrototypeApiService', 'bhConstants',
 ];
 
 /**
@@ -10,7 +10,7 @@ AccountService.$inject = [
  *
  * A service wrapper for the /accounts HTTP endpoint.
  */
-function AccountService(Api, $http, util, bhConstants) {
+function AccountService(Api, bhConstants) {
   var baseUrl = '/accounts/';
   var service = new Api(baseUrl);
 
@@ -18,11 +18,27 @@ function AccountService(Api, $http, util, bhConstants) {
   service.label = label;
 
   service.getBalance = getBalance;
+  service.getOpeningBalanceForPeriod = getOpeningBalanceForPeriod;
   service.getChildren = getChildren;
   service.filterTitleAccounts = filterTitleAccounts;
+  service.filterAccountByType = filterAccountsByType;
 
   service.flatten = flatten;
   service.order = order;
+
+  /**
+   * @method getOpeningBalance
+   *
+   *
+   * @description
+   * This method exists to get the opening balance for parameters like those
+   * used to load a date range.
+   */
+  function getOpeningBalanceForPeriod(id, options) {
+    var url = service.url.concat(id, '/openingBalance');
+    return service.$http.get(url, { params : options })
+      .then(service.util.unwrapHttpResponse);
+  }
 
   /**
    * The read() method loads data from the api endpoint. If an id is provided,
@@ -35,36 +51,41 @@ function AccountService(Api, $http, util, bhConstants) {
    *   an array of JSONs.
    */
   function read(id, options) {
-    var url = baseUrl.concat(id || '');
-    return $http.get(url, { params : options })
-      .then(util.unwrapHttpResponse)
-      .then(function (accounts) {
-
-        // if we received an array of accounts from the server,
-        // label the accounts with a nice human readable label
-        if (angular.isArray(accounts)) {
-          accounts.forEach(function (account) {
-            account.hrlabel = label(account);
-          });
-        }
-
-        return accounts;
-      });
+    return Api.read.call(this, id, options)
+      .then(handleAccounts);
   }
 
-  function getBalance(account_id, opt){
-    var url = baseUrl + account_id + '/balance';
-    return $http.get(url, opt)
-      .then(util.unwrapHttpResponse);
+  function handleAccounts(accounts) {
+    // if we received an array of accounts from the server,
+    // label the accounts with a nice human readable label
+    if (angular.isArray(accounts)) {
+      accounts.forEach(humanReadableLabel);
+    }
+
+    return accounts;
+  }
+
+  function humanReadableLabel(account) {
+    account.hrlabel = label(account);
   }
 
   function label(account) {
-    return account.number + ' - ' + account.label;
+    return String(account.number).concat(' - ', account.label);
+  }
+
+  function getBalance(accountId, opt) {
+    var url = baseUrl.concat(accountId, '/balance');
+    return service.$http.get(url, opt)
+      .then(service.util.unwrapHttpResponse);
   }
 
   function filterTitleAccounts(accounts) {
-    return accounts.filter(function (account) {
-      return account.type_id !== bhConstants.accounts.TITLE;
+    return filterAccountsByType(accounts, bhConstants.accounts.TITLE);
+  }
+
+  function filterAccountsByType(accounts, type) {
+    return accounts.filter(function filterFn(account) {
+      return account.type_id !== type;
     });
   }
 
@@ -85,15 +106,19 @@ function AccountService(Api, $http, util, bhConstants) {
 
     // returns all accounts where the parent is the
     // parentId
-    children = accounts.filter(function (account) {
-      return account.parent === parentId;
-    });
+    children = accounts.filter(handleParent);
 
     // recursively call getChildren on all child accounts
     // and attach them as childen of their parent account
-    children.forEach(function (account) {
+    children.forEach(handleChildren);
+
+    function handleParent(account) {
+      return account.parent === parentId;
+    }
+
+    function handleChildren(account) {
       account.children = getChildren(accounts, account.id);
-    });
+    }
 
     return children;
   }
@@ -106,16 +131,18 @@ function AccountService(Api, $http, util, bhConstants) {
    *
    * @returns {Array} - the flattened array
    */
-  function flatten(tree, depth) {
-    depth = isNaN(depth) ? -1 : depth;
+  function flatten(_tree, _depth) {
+    var tree = _tree || [];
+    var depth = (!angular.isDefined(_depth) || Number.isNaN(_depth)) ? -1 : _depth;
     depth += 1;
 
-    return tree.reduce(function (array, node) {
-      node.$$treeLevel = depth;
-
+    function handleTreeLevel(array, node) {
       var items = [node].concat(node.children ? flatten(node.children, depth) : []);
+      node.$$treeLevel = depth;
       return array.concat(items);
-    }, []);
+    }
+
+    return tree.reduce(handleTreeLevel, []);
   }
 
   /**
@@ -129,9 +156,7 @@ function AccountService(Api, $http, util, bhConstants) {
    * @returns {Array} - the properly ordered list of account objects
    */
   function order(accounts) {
-
-    // NOTE
-    // we assume the root node is 0
+    // NOTE: we assume the root node is 0
     var ROOT_NODE = 0;
 
     // build the account tree

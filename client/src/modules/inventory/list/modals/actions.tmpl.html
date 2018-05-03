@@ -21,7 +21,7 @@
         type="text"
         name="code"
         autocomplete="off"
-        placeholder="{{ 'FORM.PLACEHOLDERS.CODE' | translate }}..."
+        translate-attr="{ placeholder : 'FORM.PLACEHOLDERS.CODE' }"
         required>
       <div class="help-block" ng-messages="ActionForm.code.$error" ng-show="ActionForm.$submitted">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -36,7 +36,7 @@
         type="text"
         name="text"
         autocomplete="off"
-        placeholder="{{ 'FORM.PLACEHOLDERS.NAME' | translate }}..."
+        translate-attr="{ placeholder : 'FORM.PLACEHOLDERS.NAME' }"
         required>
       <div class="help-block" ng-messages="ActionForm.text.$error" ng-show="ActionForm.$submitted">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -59,14 +59,14 @@
 
     <div class="form-group"
       ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.price.$invalid }">
-      <label class="control-label" translate>FORM.LABELS.PRICE</label>
+      <label class="control-label"><span translate>FORM.LABELS.PRICE </span> ({{$ctrl.currencySymbol}})</label>
       <input class="form-control"
         type="number"
         ng-min="0"
         name="price"
         autocomplete="off"
         ng-model="$ctrl.item.price"
-        placeholder="{{ 'FORM.PLACEHOLDERS.PRICE' | translate }}..."
+        translate-attr="{ placeholder : 'FORM.PLACEHOLDERS.PRICE' }"
         required>
       <div class="help-block" ng-messages="ActionForm.price.$error" ng-show="ActionForm.$submitted">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -86,7 +86,7 @@
         name="default_quantity"
         autocomplete="off"
         ng-model="$ctrl.item.default_quantity"
-        placeholder="{{ 'FORM.PLACEHOLDERS.QUANTITY' | translate }}...">
+        translate-attr="{ placeholder : 'FORM.PLACEHOLDERS.QUANTITY' }">
       <div class="help-block" ng-messages="ActionForm.default_quantity.$error" ng-show="ActionForm.$submitted">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
       </div>
@@ -142,12 +142,12 @@
       <label class="control-label" translate>FORM.LABELS.UNIT_WEIGHT</label>
       <input class="form-control" type="number" step="1" name="unit_weight"
         ng-model="$ctrl.item.unit_weight"
-        placeholder="{{ 'FORM.PLACEHOLDERS.UNIT_WEIGHT' | translate }}...">
+        translate-attr="{ placeholder : 'FORM.PLACEHOLDERS.UNIT_WEIGHT' }">
     </div>
 
     <div class="form-group">
       <label class="control-label" translate>FORM.LABELS.UNIT_VOLUME</label>
-      <input class="form-control" type="number" step="1" name="unit_volume" ng-model="$ctrl.item.unit_volume" placeholder="{{ 'FORM.PLACEHOLDERS.UNIT_VOLUME' | translate }}...">
+      <input class="form-control" type="number" step="1" name="unit_volume" ng-model="$ctrl.item.unit_volume" translate-attr="{ placeholder: 'FORM.PLACEHOLDERS.UNIT_VOLUME' }">
     </div>
 
     <hr>
@@ -175,7 +175,11 @@
         <span class="input-group-addon" translate>FORM.LABELS.MONTH</span>
       </div>
     </div>
-    
+    <div class="form-group">
+      <span translate>FORM.INFO.NOTE</span>
+      <textarea  class="form-control"  name="note"  ng-model="$ctrl.item.note">
+      </textarea>
+    </div>
   </div>
 
   <div class="modal-footer">

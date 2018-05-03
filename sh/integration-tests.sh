@@ -27,12 +27,12 @@ echo "[test] Spawned node process $NODE_PID."
 
 # make sure we have enough time for the server to start
 echo "[test] Sleeping for $TIMEOUT seconds."
-sleep $TIMEOUT
+sleep "$TIMEOUT"
 
 echo "[test] running tests using mocha"
 
 # run the tests
-../node_modules/.bin/mocha --recursive ../test/integration/
+../node_modules/.bin/mocha --recursive --bail ../test/integration/
 
 echo "[test] cleaning up node process $NODE_PID."
 

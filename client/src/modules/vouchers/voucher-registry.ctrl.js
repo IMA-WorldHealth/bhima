@@ -1,12 +1,10 @@
 angular.module('bhima.controllers')
   .controller('VoucherController', VoucherController);
 
-// dependencies injection
 VoucherController.$inject = [
-  'VoucherService', 'NotifyService', 'uiGridGroupingConstants',
-  'TransactionTypeService', 'uiGridConstants', 'bhConstants', 'ReceiptModal',
-  'GridSortingService', 'GridColumnService', 'GridStateService', '$state',
-  'ModalService',
+  'VoucherService', 'NotifyService', 'uiGridConstants', 'ReceiptModal',
+  'TransactionTypeService', 'bhConstants', 'GridSortingService',
+  'GridColumnService', 'GridStateService', '$state', 'ModalService', 'util',
 ];
 
 /**
@@ -18,22 +16,18 @@ VoucherController.$inject = [
  * reordering, and many more features.
  */
 function VoucherController(
-  Vouchers, Notify, uiGridGroupingConstants, TransactionTypes, uiGridConstants,
-  bhConstants, Receipts, Sorting, Columns, GridState, $state, Modals
+  Vouchers, Notify, uiGridConstants, Receipts, TransactionTypes, bhConstants,
+  Sorting, Columns, GridState, $state, Modals, util
 ) {
-  var vm = this;
+  const vm = this;
 
-  var cacheKey = 'voucher-grid';
-  var gridColumns;
-  var state;
-  var columnDefs;
+  const cacheKey = 'voucher-grid';
+  const transactionTypeMap = {};
 
-  var transactionTypeMap = {};
-
-  var INCOME = bhConstants.transactionType.INCOME;
-  var EXPENSE = bhConstants.transactionType.EXPENSE;
+  const { INCOME, EXPENSE } = bhConstants.transactionType;
 
   vm.gridOptions = {};
+  vm.bhConstants = bhConstants;
 
   vm.search = search;
   vm.onRemoveFilter = onRemoveFilter;
@@ -42,52 +36,50 @@ function VoucherController(
   vm.download = Vouchers.download;
   vm.deleteVoucher = deleteVoucherWithConfirmation;
 
+  // date format function
+  vm.format = util.formatDate;
+
   vm.loading = false;
 
   // grid default options
-  columnDefs = [{
+  const columnDefs = [{
     field : 'reference',
     displayName : 'TABLE.COLUMNS.REFERENCE',
     headerCellFilter : 'translate',
     cellTemplate : 'modules/vouchers/templates/uuid.tmpl.html',
-    treeAggregationType : uiGridGroupingConstants.aggregation.COUNT,
     sortingAlgorithm : Sorting.algorithms.sortByReference,
-    treeAggregationLabel : '',
+    aggregationType      : uiGridConstants.aggregationTypes.count,
+    aggregationHideLabel : true,
   }, {
     field : 'type_id',
     displayName : 'TABLE.COLUMNS.TYPE',
     headerCellFilter : 'translate',
     cellTemplate : 'modules/templates/grid/voucherType.tmpl.html',
-    treeAggregationType : uiGridGroupingConstants.aggregation.SUM,
-    treeAggregationLabel : '',
-    groupingShowAggregationMenu : false,
+    aggregationType      : uiGridConstants.aggregationTypes.sum,
+    aggregationHideLabel : true,
   }, {
     field : 'date',
     displayName : 'TABLE.COLUMNS.DATE',
     headerCellFilter : 'translate',
     type : 'date',
-    cellFilter : 'date :"mediumDate"',
-    groupingShowAggregationMenu : false,
+    cellTemplate : 'modules/vouchers/templates/date.cell.html',
   }, {
     field : 'description',
     displayName : 'TABLE.COLUMNS.DESCRIPTION',
     headerCellFilter : 'translate',
-    groupingShowAggregationMenu : false,
   }, {
     field : 'amount',
     displayName : 'TABLE.COLUMNS.AMOUNT',
     headerCellFilter : 'translate',
-    treeAggregationType : uiGridGroupingConstants.aggregation.SUM,
-    treeAggregationLabel : '',
+    aggregationType      : uiGridConstants.aggregationTypes.sum,
+    aggregationHideLabel : true,
     footerCellClass : 'text-right',
     type : 'number',
-    groupingShowAggregationMenu : false,
     cellTemplate : 'modules/vouchers/templates/amount.grid.tmpl.html',
   }, {
     field : 'display_name',
     displayName : 'TABLE.COLUMNS.RESPONSIBLE',
     headerCellFilter : 'translate',
-    groupingShowAggregationMenu : false,
   }, {
     field : 'action',
     displayName : '...',
@@ -104,22 +96,18 @@ function VoucherController(
     enableSorting : true,
     flatEntityAccess : true,
     fastWatch : true,
-    columnDefs : columnDefs,
+    columnDefs,
   };
 
-  gridColumns = new Columns(vm.gridOptions, cacheKey);
-  state = new GridState(vm.gridOptions, cacheKey);
-
-  // expose function
-  vm.showReceipt = showReceipt;
-  vm.bhConstants = bhConstants;
+  const gridColumns = new Columns(vm.gridOptions, cacheKey);
+  const state = new GridState(vm.gridOptions, cacheKey);
 
   // search voucher
   function search() {
-    var filtersSnapshot = Vouchers.filters.formatHTTP();
+    const filtersSnapshot = Vouchers.filters.formatHTTP();
 
     Vouchers.openSearchModal(filtersSnapshot)
-      .then(function (changes) {
+      .then(changes => {
         Vouchers.filters.replaceFilters(changes);
         Vouchers.cacheFilters();
         vm.latestViewFilters = Vouchers.filters.formatView();
@@ -128,27 +116,22 @@ function VoucherController(
       });
   }
 
-  // showReceipt
-  function showReceipt(uuid) {
-    Receipts.voucher(uuid);
-  }
-
   function load(filters) {
     // flush error and loading states
     vm.hasError = false;
     toggleLoadingIndicator();
 
     Vouchers.read(null, filters)
-      .then(function (vouchers) {
+      .then(vouchers => {
         vm.gridOptions.data = vouchers;
 
-        vouchers.forEach(function (voucher) {
-          var transactionType;
-          var isNull = (voucher.type_id === null);
+        // TODO(@jniles) - can we do better?
+        vouchers.forEach(voucher => {
+          const isNull = (voucher.type_id === null);
 
           if (!isNull) {
             // determine the transaction_type for this voucher
-            transactionType = transactionTypeMap[voucher.type_id];
+            const transactionType = transactionTypeMap[voucher.type_id];
             voucher._isIncome = (transactionType.type === INCOME);
             voucher._isExpense = (transactionType.type === EXPENSE);
             voucher._isOther = !(voucher._isIncome || voucher._isExpense);
@@ -205,9 +188,9 @@ function VoucherController(
     // before we can properly render the vouchers, we need to have
     // a transaction type mapping set up.
     TransactionTypes.read()
-      .then(function (types) {
+      .then(types => {
         // organize transaction types into a map
-        types.forEach(function (type) {
+        types.forEach(type => {
           transactionTypeMap[type.id] = type;
         });
 
@@ -233,7 +216,7 @@ function VoucherController(
 
   function remove(entity) {
     Vouchers.remove(entity.uuid)
-      .then(function () {
+      .then(() => {
         Notify.success('FORM.INFO.DELETE_RECORD_SUCCESS');
 
         // load() has it's own error handling.  The absence of return below is
@@ -246,10 +229,12 @@ function VoucherController(
   // this function deletes the voucher from the database
   function deleteVoucherWithConfirmation(entity) {
     Modals.confirm('FORM.DIALOGS.CONFIRM_DELETE')
-      .then(function (isOk) {
+      .then(isOk => {
         if (isOk) { remove(entity); }
       });
   }
+
+  vm.showReceipt = Receipts.voucher;
 
   startup();
 }

@@ -1,8 +1,8 @@
 angular.module('bhima.controllers')
-.controller('FindEntityModalController', FindEntityModalController);
+  .controller('FindEntityModalController', FindEntityModalController);
 
 FindEntityModalController.$inject = [
-  '$uibModalInstance','DebtorService', 'CreditorService', '$timeout',
+  '$uibModalInstance', 'DebtorService', 'CreditorService', '$timeout',
 ];
 
 /**
@@ -10,7 +10,7 @@ FindEntityModalController.$inject = [
  *
  * This controller provides bindings for the find entity modal.
  */
-function FindEntityModalController(Instance, Debtor, Creditor, $timeout) {
+function FindEntityModalController(Instance, Debtors, Creditors, $timeout) {
   var vm = this;
 
   vm.result = {};
@@ -28,15 +28,15 @@ function FindEntityModalController(Instance, Debtor, Creditor, $timeout) {
   vm.cancel = cancel;
   vm.refresh = refresh;
 
-  Debtor.read()
-  .then(function (list) {
-    vm.debtorList = list;
-  });
+  Debtors.read()
+    .then(function (debtors) {
+      vm.debtorList = debtors;
+    });
 
-  Creditor.read()
-  .then(function (list) {
-    vm.creditorList = list;
-  });
+  Creditors.read()
+    .then(function (creditors) {
+      vm.creditorList = creditors;
+    });
 
   function selectEntity(item) {
     vm.result = {
@@ -64,14 +64,14 @@ function FindEntityModalController(Instance, Debtor, Creditor, $timeout) {
 
   function submit() {
     // the $timeout fix the $digest error
-    $timeout(function() {
+    $timeout(function () {
       Instance.close(vm.result);
     }, 0, false);
   }
 
   function cancel() {
     // the $timeout fix the $digest error
-    $timeout(function() {
+    $timeout(function () {
       Instance.close();
     }, 0, false);
   }

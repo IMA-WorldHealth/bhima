@@ -5,16 +5,18 @@
  * This module provides an API interface for the Purchase API, responsible for
  * making purchase orders and quotes.
  *
- * @requires node-uuid
+ * @requires uuid/v4
  * @requires db
  * @requires NotFound
  * @requires BadRequest
+ * @requires moment
  */
 
-const uuid = require('node-uuid');
+const uuid = require('uuid/v4');
 
 const db = require('../../lib/db');
 const BadRequest = require('../../lib/errors/BadRequest');
+const moment = require('moment');
 
 const identifiers = require('../../config/identifiers');
 const FilterParser = require('../../lib/filter');
@@ -69,7 +71,7 @@ function linkPurchaseItems(items, purchaseUuid) {
   // loop through each item, making sure we have escapes and orderings correct
   return items.map((item) => {
     // make sure that each item has a uuid by generate
-    item.uuid = db.bid(item.uuid || uuid.v4());
+    item.uuid = db.bid(item.uuid || uuid());
     item.purchase_uuid = purchaseUuid;
     item.inventory_uuid = db.bid(item.inventory_uuid);
 
@@ -140,13 +142,11 @@ function create(req, res, next) {
   let data = req.body;
 
   if (!data.items) {
-    return next(
-      new BadRequest('Cannot create a purchase order without purchase items.')
-    );
+    return next(new BadRequest('Cannot create a purchase order without purchase items.'));
   }
 
   // default to a new uuid if the client did not provide one
-  const puid = data.uuid || uuid.v4();
+  const puid = data.uuid || uuid();
   data.uuid = db.bid(puid);
 
   data = db.convert(data, ['supplier_uuid']);
@@ -182,6 +182,52 @@ function create(req, res, next) {
 
   return transaction.execute()
     .then(() => {
+
+      // Finally, for the inventories ordered, to know the average value of purchase interval,
+      // the number of purchase and the date of the last order
+      const getInventory = `
+        SELECT BUID(purchase_item.inventory_uuid) AS inventory_uuid, inventory.purchase_interval,
+          inventory.last_purchase, inventory.num_purchase
+        FROM purchase_item
+        JOIN inventory ON inventory.uuid = purchase_item.inventory_uuid
+        WHERE purchase_item.purchase_uuid = ?
+      `;
+
+      return db.exec(getInventory, [data.uuid]);
+    })
+    .then((rows) => {
+      const datePurchase = new Date(data.date);
+
+      const transactionWrapper = db.transaction();
+      rows.forEach((row) => {
+        /**
+          * Normally purchase interval is calculated by deducting the gap in months of
+          * all purchase orders for a product, this form is also very expensive in terms of resources,
+          * so let's store the date of the last orders and store the results in months in the column Purchase interval,
+          * and in the following we would calculate each time the average value Multiply by number of old orders minus
+          * one Add up by the period between the last purchase Order and the date of the current purchase order
+          * and divide the results by the number of old orders
+        */
+
+        let purchaseInterval = row.purchase_interval;
+        const numPurchase = row.num_purchase + 1;
+        if (row.last_purchase) {
+          const diff = moment(datePurchase).diff(moment(row.last_purchase));
+          const duration = moment.duration(diff, 'milliseconds');
+          const durationMonth = duration.asMonths();
+
+          purchaseInterval = (((row.purchase_interval * (row.num_purchase - 1)) + durationMonth) / row.num_purchase);
+        }
+
+        transactionWrapper.addQuery(
+          'UPDATE inventory SET purchase_interval = ?, last_purchase = ?, num_purchase = ?  WHERE uuid = ?',
+          [purchaseInterval, datePurchase, numPurchase, db.bid(row.inventory_uuid)]
+        );
+      });
+
+      return transactionWrapper.execute();
+    })
+    .then(() => {
       res.status(201).json({ uuid : puid });
     })
     .catch(next)
@@ -199,9 +245,9 @@ function create(req, res, next) {
  */
 function list(req, res, next) {
   find(req.query)
-  .then(rows => res.status(200).json(rows))
-  .catch(next)
-  .done();
+    .then(rows => res.status(200).json(rows))
+    .catch(next)
+    .done();
 }
 
 /**
@@ -280,7 +326,7 @@ function find(options) {
   filters.dateFrom('custion_period_start', 'date');
   filters.dateTo('custom_period_end', 'date');
   filters.equals('user_id');
-  
+
   filters.custom('status_id', 'p.status_id IN (?)', [statusIds]);
   filters.equals('supplier_uuid', 'uuid', 's');
 
@@ -319,7 +365,7 @@ function purchaseStatus(req, res, next) {
   const FROM_PURCHASE_ID = 1;
   const purchaseUuid = db.bid(req.params.uuid);
   const sql = `
-    SELECT IFNULL(SUM(m.quantity * m.unit_cost), 0) AS movement_cost, p.cost
+    SELECT IFNULL(SUM(m.quantity * m.unit_cost), 0) AS movement_cost, p.cost, CEIL(DATEDIFF(m.date, p.date)) AS delay
     FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN purchase p ON p.uuid = l.origin_uuid
@@ -327,30 +373,69 @@ function purchaseStatus(req, res, next) {
   `;
 
   db.one(sql, [purchaseUuid, FROM_PURCHASE_ID])
-  .then((row) => {
-    let query = '';
-    status.cost = row.cost;
-    status.movement_cost = row.movement_cost;
+    .then((row) => {
+      let query = '';
+      status.cost = row.cost;
+      status.movement_cost = row.movement_cost;
+      status.delay = Math.round((row.delay / 30) * 10) / 10;
 
-    if (row.movement_cost === row.cost) {
+      if (row.movement_cost === row.cost) {
       // the purchase is totally delivered
-      status.status = 'full_entry';
-      query = 'UPDATE purchase SET status_id = 3 WHERE uuid = ?';
-    } else if (row.movement_cost > 0 && row.movement_cost < row.cost) {
+        status.status = 'full_entry';
+        query = 'UPDATE purchase SET status_id = 3 WHERE uuid = ?';
+      } else if (row.movement_cost > 0 && row.movement_cost < row.cost) {
       // the purchase is partially delivered
-      status.status = 'partial_entry';
-      query = 'UPDATE purchase SET status_id = 4 WHERE uuid = ?';
-    } else if (row.movement_cost === 0) {
+        status.status = 'partial_entry';
+        query = 'UPDATE purchase SET status_id = 4 WHERE uuid = ?';
+      } else if (row.movement_cost === 0) {
       // the purchase is not yet delivered
-      status.status = 'no_entry';
-      //If there are no movements, the status of the purchase order must remain confirmed
-      query = 'UPDATE purchase SET status_id = 2 WHERE uuid = ?';
-    }
-    return db.exec(query, [purchaseUuid]);
-  })
-  .then(() => res.status(200).send(status))
-  .catch(next)
-  .done();
+        status.status = 'no_entry';
+        // If there are no movements, the status of the purchase order must remain confirmed
+        query = 'UPDATE purchase SET status_id = 2 WHERE uuid = ?';
+      }
+      return db.exec(query, [purchaseUuid]);
+    })
+    .then(() => {
+      /**
+        * Get all the inventories of a purchase order finally to obtain the average
+        * waiting time between the order and the delivery
+      */
+      const getInventory = `
+        SELECT BUID(purchase_item.inventory_uuid) AS inventory_uuid, inventory.delay, inventory.num_delivery
+        FROM purchase_item
+        JOIN inventory ON inventory.uuid = purchase_item.inventory_uuid
+        WHERE purchase_item.purchase_uuid = ?
+      `;
+
+      return db.exec(getInventory, [purchaseUuid]);
+    })
+    .then((rows) => {
+      const transaction = db.transaction();
+
+      rows.forEach((row) => {
+        /**
+          * Normally the delay agreement time between the order and the delivery is calculated
+          * by finding the average duration of agreement of orders of last six months for a product
+          * this calculation is very expensive in terms of memory, which is the reason why we keep
+          * this information in the inventory table for article shovel
+        */
+        const numDelivery = row.num_delivery + 1;
+
+        const delay = (((row.delay * (numDelivery - 1)) + status.delay) / numDelivery);
+
+        transaction.addQuery(
+          'UPDATE inventory SET delay = ?, num_delivery = ? WHERE uuid = ?',
+          [delay, numDelivery, db.bid(row.inventory_uuid)]
+        );
+      });
+
+      return transaction.execute();
+    })
+    .then(() => {
+      res.status(200).send(status);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -365,7 +450,7 @@ function purchaseBalance(req, res, next) {
   const purchaseUuid = db.bid(req.params.uuid);
   const sql = `
     SELECT
-      s.display_name, u.display_name, BUID(p.uuid) AS uuid,
+      s.display_name AS supplier_name, u.display_name AS user_name, BUID(p.uuid) AS uuid,
       CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', proj.abbr, p.reference) AS reference, p.date,
       BUID(pi.inventory_uuid) AS inventory_uuid, pi.quantity, pi.unit_price,
       IFNULL(distributed.quantity, 0) AS distributed_quantity,
@@ -388,9 +473,9 @@ function purchaseBalance(req, res, next) {
   `;
 
   db.exec(sql, [FROM_PURCHASE_ID, purchaseUuid, purchaseUuid])
-  .then(rows => res.status(200).json(rows))
-  .catch(next)
-  .done();
+    .then(rows => res.status(200).json(rows))
+    .catch(next)
+    .done();
 }
 
 

@@ -9,11 +9,11 @@
     <ui-select
       style="width: 90%;"
       name="type_id"
-      ng-model="row.entity.origin_id"
+      ng-model="row.entity.transaction_type_id"
       ng-change="grid.appScope.editTransactionType(row.entity)"
       append-to-body="true">
 
-      <ui-select-match placeholder="{{ 'FORM.SELECT.TRANSFER_TYPE' | translate }}">
+      <ui-select-match placeholder="{{ 'FORM.SELECT.TRANSACTION_TYPE' | translate }}">
         <span translate>{{$select.selected.text}}</span>
       </ui-select-match>
 
@@ -27,6 +27,6 @@
   </div>
 
   <div ng-hide="grid.appScope.transactions.isEditing()">
-    {{ grid.appScope.mapOrigins[row.entity.origin_id] }}
+    {{ grid.appScope.mapOrigins[row.entity.transaction_type_id] }}
   </div>
 </div>

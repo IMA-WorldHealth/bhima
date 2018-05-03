@@ -1,7 +1,7 @@
 {
   "CURRENCY_SYM": "Fc",
   "DECIMAL_SEP": ",",
-  "GROUP_SEP": "\u00a0",
+  "GROUP_SEP": ".",
   "PATTERNS": [
     {
       "gSize": 3,

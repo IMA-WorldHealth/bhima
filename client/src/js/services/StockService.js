@@ -39,29 +39,45 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
   StockInventoryFilters.registerDefaultFilters(bhConstants.defaultFilters);
 
   StockLotFilters.registerCustomFilters([
-    { key: 'depot_uuid', label: 'STOCK.DEPOT' },
-    { key: 'inventory_uuid', label: 'STOCK.INVENTORY' },
-    { key: 'label', label: 'STOCK.LOT' },
-    { key: 'entry_date_from', label: 'STOCK.ENTRY_DATE', comparitor: '>', valueFilter: 'date' },
-    { key: 'entry_date_to', label: 'STOCK.ENTRY_DATE', comparitor: '<', valueFilter: 'date' },
-    { key: 'expiration_date_from', label: 'STOCK.EXPIRATION_DATE', comparitor: '>', valueFilter: 'date' },
-    { key: 'expiration_date_to', label: 'STOCK.EXPIRATION_DATE', comparitor: '<', valueFilter: 'date' },
+    { key : 'depot_uuid', label : 'STOCK.DEPOT' },
+    { key : 'inventory_uuid', label : 'STOCK.INVENTORY' },
+    { key : 'group_uuid', label : 'STOCK.INVENTORY_GROUP' },
+    { key : 'label', label : 'STOCK.LOT' },
+    {
+      key : 'entry_date_from', label : 'STOCK.ENTRY_DATE', comparitor : '>', valueFilter : 'date',
+    },
+    {
+      key : 'entry_date_to', label : 'STOCK.ENTRY_DATE', comparitor : '<', valueFilter : 'date',
+    },
+    {
+      key : 'expiration_date_from', label : 'STOCK.EXPIRATION_DATE', comparitor : '>', valueFilter : 'date',
+    },
+    {
+      key : 'expiration_date_to', label : 'STOCK.EXPIRATION_DATE', comparitor : '<', valueFilter : 'date',
+    },
   ]);
 
   StockMovementFilters.registerCustomFilters([
-    { key: 'is_exit', label: 'STOCK.OUTPUT' },
-    { key: 'depot_uuid', label: 'STOCK.DEPOT' },
-    { key: 'inventory_uuid', label: 'STOCK.INVENTORY' },
-    { key: 'label', label: 'STOCK.LOT' },
-    { key: 'flux_id', label: 'STOCK.FLUX' },
-    { key: 'dateFrom', label: 'FORM.LABELS.DATE', comparitor: '>', valueFilter: 'date' },
-    { key: 'dateTo', label: 'FORM.LABELS.DATE', comparitor: '<', valueFilter: 'date' },
+    { key : 'is_exit', label : 'STOCK.OUTPUT' },
+    { key : 'depot_uuid', label : 'STOCK.DEPOT' },
+    { key : 'inventory_uuid', label : 'STOCK.INVENTORY' },
+    { key : 'label', label : 'STOCK.LOT' },
+    { key : 'flux_id', label : 'STOCK.FLUX' },
+    {
+      key : 'dateFrom', label : 'FORM.LABELS.DATE', comparitor : '>', valueFilter : 'date',
+    },
+    {
+      key : 'dateTo', label : 'FORM.LABELS.DATE', comparitor : '<', valueFilter : 'date',
+    },
+    { key : 'user_id', label : 'FORM.LABELS.USER' },
   ]);
 
   StockInventoryFilters.registerCustomFilters([
     { key : 'depot_uuid', label : 'STOCK.DEPOT' },
     { key : 'inventory_uuid', label : 'STOCK.INVENTORY' },
+    { key : 'group_uuid', label : 'STOCK.INVENTORY_GROUP' },
     { key : 'status', label : 'STOCK.STATUS.LABEL', valueFilter : 'translate' },
+    { key : 'require_po', label : 'STOCK.REQUIRES_PO' },
   ]);
 
 
@@ -83,17 +99,17 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
   assignInventoryDefaultFilters();
 
   // creating an object of filter to avoid method duplication
-  var stockFilter = {
-    lot: StockLotFilters,
-    movement: StockMovementFilters,
-    inventory: StockInventoryFilters
+  const stockFilter = {
+    lot : StockLotFilters,
+    movement : StockMovementFilters,
+    inventory : StockInventoryFilters,
   };
 
   // creating an object of filter object to avoid method duplication
-  var filterCache = {
-    lot: filterLotCache,
-    movement: filterMovementCache,
-    inventory: filterInventoryCache
+  const filterCache = {
+    lot : filterLotCache,
+    movement : filterMovementCache,
+    inventory : filterInventoryCache,
   };
 
   function assignLotDefaultFilters() {
@@ -166,7 +182,7 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
   // downloads a type of report based on the
   function download(filterKey, type) {
     var filterOpts = stockFilter[filterKey].formatHTTP();
-    var defaultOpts = { renderer: type, lang: Languages.key };
+    var defaultOpts = { renderer : type, lang : Languages.key };
 
     // combine options
     var options = angular.merge(defaultOpts, filterOpts);
@@ -182,15 +198,19 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
       return {};
     }
 
-    var keys = ['name', 'text', 'display_name'];
+    const keys = ['name', 'text', 'display_name'];
 
-    keys.forEach(function (key) {
+    keys.forEach((key) => {
       if (entity[key]) {
         entity.displayName = entity[key];
       }
     });
 
-    return { reference: entity.reference || '', displayName: entity.displayName || '' };
+    return {
+      uuid : entity.uuid || '',
+      reference : entity.reference || '',
+      displayName : entity.displayName || '',
+    };
   }
 
   /**
@@ -203,50 +223,50 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
    * @returns {Array} - lots in an array.
  */
   function processLotsFromStore(data, uuid) {
-    return data.reduce(function (current, line) {
-      return line.lots.map(function (lot) {
+    return data.reduce((current, line) => {
+      return line.lots.map((lot) => {
         return {
-          uuid: lot.uuid || null,
-          label: lot.lot,
-          initial_quantity: lot.quantity,
-          quantity: lot.quantity,
-          unit_cost: line.unit_cost,
-          expiration_date: lot.expiration_date,
-          inventory_uuid: line.inventory_uuid,
-          origin_uuid: uuid,
+          uuid : lot.uuid || null,
+          label : lot.lot,
+          initial_quantity : lot.quantity,
+          quantity : lot.quantity,
+          unit_cost : line.unit_cost,
+          expiration_date : lot.expiration_date,
+          inventory_uuid : line.inventory_uuid,
+          origin_uuid : uuid,
         };
       }).concat(current);
     }, []);
   }
 
-    /** Get label for purchase Status */
+  /** Get label for purchase Status */
   function statusLabelMap(status) {
     var keys = {
       sold_out          : 'STOCK.STATUS.SOLD_OUT',
       in_stock          : 'STOCK.STATUS.IN_STOCK',
       security_reached  : 'STOCK.STATUS.SECURITY',
       minimum_reached   : 'STOCK.STATUS.MINIMUM',
-      over_maximum      : 'STOCK.STATUS.OVER_MAX',    
+      over_maximum      : 'STOCK.STATUS.OVER_MAX',
     };
-    
+
     return keys[status];
   }
 
 
   return {
-    stocks: stocks,
-    lots: lots,
-    movements: movements,
-    inventories: inventories,
-    integration: integration,
-    transfers: transfers,
-    filter: stockFilter,
-    cacheFilters: cacheFilters,
-    removeFilter: removeFilter,
-    loadCachedFilters: loadCachedFilters,
-    download: download,
-    uniformSelectedEntity: uniformSelectedEntity,
-    processLotsFromStore : processLotsFromStore,
-    statusLabelMap: statusLabelMap,
+    stocks,
+    lots,
+    movements,
+    inventories,
+    integration,
+    transfers,
+    filter : stockFilter,
+    cacheFilters,
+    removeFilter,
+    loadCachedFilters,
+    download,
+    uniformSelectedEntity,
+    processLotsFromStore,
+    statusLabelMap,
   };
 }

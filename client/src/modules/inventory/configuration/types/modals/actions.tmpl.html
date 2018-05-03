@@ -1,20 +1,20 @@
 <form name="ActionForm" bh-submit="$ctrl.submit(ActionForm)" novalidate>
   <div class="modal-header">
     <i class="fa fa-list"></i>
-    <span ng-if="$ctrl.action==='add'">{{ 'INVENTORY.ADD_TYPE' | translate }}</span>
-    <span ng-if="$ctrl.action==='edit'">{{ 'INVENTORY.EDIT_TYPE' | translate }}</span>
+    <span ng-if="$ctrl.action==='add'" translate>INVENTORY.ADD_TYPE</span>
+    <span ng-if="$ctrl.action==='edit'" translate>INVENTORY.EDIT_TYPE</span>
   </div>
 
   <div class="modal-body">
     <div class="form-group"
       ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.text.$invalid }">
-      <label class="control-label">{{ 'FORM.LABELS.LABEL' | translate }}</label>
+      <label class="control-label" translate>FORM.LABELS.LABEL</label>
       <input ng-model="$ctrl.session.text"
         class="form-control"
         type="text"
         name="text"
         autocomplete="off"
-        placeholder="{{ 'FORM.PLACEHOLDERS.NAME' | translate }}..."
+        translate-attr="{ placeholder : 'FORM.PLACEHOLDERS.NAME' }"
         required>
       <div class="help-block" ng-messages="ActionForm.text.$error" ng-show="ActionForm.$submitted">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -26,11 +26,12 @@
     <button type="button"
       class="btn btn-default"
       data-method="cancel"
-      ng-click="$ctrl.cancel()">
-      {{ 'FORM.BUTTONS.CANCEL' | translate }}
+      ng-click="$ctrl.cancel()"
+      translate>
+      <span translate>FORM.BUTTONS.CANCEL</span>
     </button>
     <bh-loading-button loading-state="ActionForm.$loading">
-      {{ 'FORM.BUTTONS.SUBMIT' | translate }}
+      <span translate>FORM.BUTTONS.SUBMIT</span>
     </bh-loading-button>
   </div>
 </form>

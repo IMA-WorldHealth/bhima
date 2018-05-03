@@ -12,7 +12,7 @@
  * into a prepared statement
  */
 const db = require('../../../lib/db');
-const uuid = require('node-uuid');
+const uuid = require('uuid/v4');
 const util = require('../../../lib/util');
 const _ = require('lodash');
 
@@ -21,35 +21,35 @@ module.exports = createInvoice;
 /**
  * POST /invoices
  *
- * The function is responsible for billing a patient and calculating the total
+ * The function is responsible for invoicing a patient and calculating the total
  * due on their invoice.  It will create a record in the `invoice` table.
  *
  * Up to three additional tables may be affected:
  *  1. `invoice_items`
- *  2. `invoice_billing_service`
+ *  2. `invoice_invoicing_fee`
  *  3. `invoice_subsidy`
  *
  * The invoicing procedure of a patient's total invoice goes like this:
  *  1. First, the total sum of the invoice items are recorded as sent from the
  *  client.  The Patient Invoice module is allowed to edit the item costs as it
  *  sees fit, so we use the POSTed costs.
- *  2. Next, each billing service is added to the invoice by writing records to
- *  the `invoice_billing_service` table.  The cost of each billing service is
- *  determined by multiplying the billing service's value (as a percentage) to
+ *  2. Next, each invoicing fee is added to the invoice by writing records to
+ *  the `invoice_invoicing_fee` table.  The cost of each invoicing fee is
+ *  determined by multiplying the invoicing fee's value (as a percentage) to
  *  the total invoice cost.
  *  3. Finally, the subsidy for the bill is determined.  NOTE - as of #343, we
  *  are only allowing a single subsidy per invoice.  The array of subsidies is
- *  treated identically to the billing_services, except that it subtracts from
+ *  treated identically to the invoicing_fees, except that it subtracts from
  *  the total bill amount.
  *
- * @todo - change the API to pass in only an array of billingService and subsidy
+ * @todo - change the API to pass in only an array of invoicingFee and subsidy
  * ids.
  */
 function createInvoice(invoiceDetails) {
   const transaction = db.transaction();
-  const invoiceUuid = db.bid(invoiceDetails.uuid || uuid.v4());
+  const invoiceUuid = db.bid(invoiceDetails.uuid || uuid());
 
-  const billingServices = processBillingServices(invoiceUuid, invoiceDetails.billingServices);
+  const invoicingFees = processInvoicingFees(invoiceUuid, invoiceDetails.invoicingFees);
   const subsidies = processSubsidies(invoiceUuid, invoiceDetails.subsidies);
   const items = processInvoiceItems(invoiceUuid, invoiceDetails.items);
 
@@ -59,8 +59,8 @@ function createInvoice(invoiceDetails) {
   transaction.addQuery('CALL StageInvoice(?)', [invoice]);
   items.forEach(item =>
     transaction.addQuery('CALL StageInvoiceItem(?)', [item]));
-  billingServices.forEach(billingService =>
-    transaction.addQuery('CALL StageBillingService(?)', [billingService]));
+  invoicingFees.forEach(invoicingFee =>
+    transaction.addQuery('CALL StageInvoicingFee(?)', [invoicingFee]));
   subsidies.forEach(subsidy =>
     transaction.addQuery('CALL StageSubsidy(?)', [subsidy]));
 
@@ -85,7 +85,7 @@ function processInvoice(invoiceUuid, invoice) {
 
   // cleanup details not directly tied to invoice
   delete invoice.items;
-  delete invoice.billingServices;
+  delete invoice.invoicingFees;
   delete invoice.subsidies;
   delete invoice.reference;
 
@@ -98,22 +98,22 @@ function processInvoice(invoiceUuid, invoice) {
 }
 
 /**
- * @method processBillingServices
+ * @method processInvoicingFees
  *
  * @description
- * Maps an array of billing service ids into billing service ids and invoice
+ * Maps an array of invoicing fee ids into invoicing fee ids and invoice
  * UUID tuples.
  *
  * @param {Buffer} invoiceUuid - the binary invoice UUID
- * @param {Array|Undefined} subsidiesDetails - an array of billing service ids
+ * @param {Array|Undefined} subsidiesDetails - an array of invoicing fee ids
  *   if they exist.
- * @returns {Array} - a possibly empty array billing service ids and invoice UUID pairs.
+ * @returns {Array} - a possibly empty array invoicing fee ids and invoice UUID pairs.
  *
  * @private
  */
-function processBillingServices(invoiceUuid, billingServiceDetails) {
-  const billingServices = billingServiceDetails || [];
-  return billingServices.map(billingServiceId => [billingServiceId, invoiceUuid]);
+function processInvoicingFees(invoiceUuid, invoicingFeeDetails) {
+  const invoicingFees = invoicingFeeDetails || [];
+  return invoicingFees.map(invoicingFeeId => [invoicingFeeId, invoiceUuid]);
 }
 
 /**
@@ -140,7 +140,7 @@ function processInvoiceItems(invoiceUuid, invoiceItems) {
 
   // make sure that invoice items have their uuids
   items.forEach((item) => {
-    item.uuid = db.bid(item.uuid || uuid.v4());
+    item.uuid = db.bid(item.uuid || uuid());
     item.invoice_uuid = invoiceUuid;
 
     // should every item have an inventory uuid?
@@ -153,7 +153,8 @@ function processInvoiceItems(invoiceUuid, invoiceItems) {
   // create a filter to align invoice item columns to the SQL columns
   const filter =
     util.take(
-      'uuid', 'inventory_uuid', 'quantity', 'transaction_price', 'inventory_price', 'debit', 'credit', 'invoice_uuid'
+      'uuid', 'inventory_uuid', 'quantity', 'transaction_price',
+      'inventory_price', 'debit', 'credit', 'invoice_uuid'
     );
 
   // prepare invoice items for insertion into database

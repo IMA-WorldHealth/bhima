@@ -8,11 +8,10 @@
  * @todo Pass authenticate and authorize middleware down through controllers,
  * allowing for modules to subscribe to different levels of authority
  *
- * @requires winston
  * @requires uploader
  */
 
-const winston = require('winston');
+const debug = require('debug')('app');
 const upload = require('../lib/uploader');
 
 // unclassified routes
@@ -21,8 +20,11 @@ const tree = require('../controllers/tree');
 const units = require('../controllers/units');
 const system = require('../controllers/system');
 const report = require('../controllers/report');
+const install = require('../controllers/install');
 
 // admin routes
+const rolesCtrl = require('../controllers/admin/roles');
+const unitCtrl = require('../controllers/admin/unit');
 const users = require('../controllers/admin/users');
 const projects = require('../controllers/admin/projects');
 const enterprises = require('../controllers/admin/enterprises');
@@ -30,9 +32,19 @@ const services = require('../controllers/admin/services');
 const suppliers = require('../controllers/admin/suppliers');
 const functions = require('../controllers/admin/functions');
 const grades = require('../controllers/admin/grades');
+const holidays = require('../controllers/admin/holidays');
+const offdays = require('../controllers/admin/offdays');
+const iprTax = require('../controllers/admin/iprTax');
 const languages = require('../controllers/admin/languages');
 const locations = require('../controllers/admin/locations');
 const groups = require('../controllers/groups');
+
+// payroll routes
+const payrollConfig = require('../controllers/payroll/configuration');
+const rubrics = require('../controllers/payroll/rubrics');
+const rubricConfig = require('../controllers/payroll/rubricConfig');
+const accountConfig = require('../controllers/payroll/accounts');
+const weekendConfig = require('../controllers/payroll/weekendConfig');
 
 // medical routes
 const patients = require('../controllers/medical/patients');
@@ -63,7 +75,7 @@ const cashboxes = require('../controllers/finance/cashboxes');
 const exchange = require('../controllers/finance/exchange');
 const cash = require('../controllers/finance/cash');
 const priceList = require('../controllers/finance/priceList');
-const billingServices = require('../controllers/finance/billingServices');
+const invoicingFees = require('../controllers/finance/invoicingFees');
 const accounts = require('../controllers/finance/accounts');
 const subsidies = require('../controllers/finance/subsidies');
 const patientInvoice = require('../controllers/finance/patientInvoice');
@@ -88,9 +100,11 @@ var reportDebtor = require('../controllers/finance/reports/debtors/debtorAccount
 // looking up an entity by it reference
 const referenceLookup = require('../lib/referenceLookup');
 
+const operating = require('../controllers/finance/reports/operating/index');
+
 // expose routes to the server.
 exports.configure = function configure(app) {
-  winston.debug('Configuring routes');
+  debug('configuring routes.');
 
   // exposed to the outside without authentication
   app.get('/languages', languages.list);
@@ -155,6 +169,7 @@ exports.configure = function configure(app) {
   app.get('/accounts', accounts.list);
   app.get('/accounts/:id', accounts.detail);
   app.get('/accounts/:id/balance', accounts.getBalance);
+  app.get('/accounts/:id/openingBalance', accounts.getOpeningBalanceForPeriod);
   app.post('/accounts', accounts.create);
   app.put('/accounts/:id', accounts.update);
   app.delete('/accounts/:id', accounts.remove);
@@ -185,12 +200,11 @@ exports.configure = function configure(app) {
   app.get('/journal/:record_uuid', journal.getTransaction);
   app.post('/journal/:record_uuid/edit', journal.editTransaction);
   app.post('/journal/:uuid/reverse', journal.reverse);
-  app.put('/journal/comments', journal.commentPostingJournal);
+  app.put('/transactions/comments', transactions.commentTransactions);
 
   // API for general ledger
   app.get('/general_ledger', generalLedger.list);
   app.get('/general_ledger/accounts', generalLedger.listAccounts);
-  app.put('/general_ledger/comments', generalLedger.commentAccountStatement);
 
   app.get('/transactions/:uuid/history', journal.getTransactionEditHistory);
   app.delete('/transactions/:uuid', transactions.deleteTransaction);
@@ -200,6 +214,7 @@ exports.configure = function configure(app) {
   app.get('/fiscal/date', fiscal.getFiscalYearsByDate);
   app.get('/fiscal/:id', fiscal.detail);
   app.get('/fiscal/:id/balance/:period_number', fiscal.getBalance);
+  app.get('/fiscal/:id/opening_balance', fiscal.getOpeningBalance);
   app.post('/fiscal/:id/opening_balance', fiscal.setOpeningBalance);
   app.post('/fiscal', fiscal.create);
   app.put('/fiscal/:id/closing', fiscal.closing);
@@ -225,7 +240,7 @@ exports.configure = function configure(app) {
   app.get('/inventory/metadata', inventory.getInventoryItems);
   app.get('/inventory/metadata/:uuid', inventory.getInventoryItemsById);
   app.put('/inventory/metadata/:uuid', inventory.updateInventoryItems);
-
+  app.delete('/inventory/metadata/:uuid', inventory.deleteInventory);
   // route for inventory list receipt
 
   /**
@@ -257,6 +272,10 @@ exports.configure = function configure(app) {
   app.get('/inventory/units/:id', inventory.detailsInventoryUnits);
   app.put('/inventory/units/:id', inventory.updateInventoryUnits);
   app.delete('/inventory/units/:id', inventory.deleteInventoryUnits);
+
+  /** Inventory Import API endpoints */
+  app.post('/inventory/import/', upload.middleware('csv', 'file'), inventory.importing.importInventories);
+  app.get('/inventory/import/template_file', inventory.importing.downloadTemplate);
 
 
   /** @todo: These routes below need to be implemented */
@@ -322,6 +341,13 @@ exports.configure = function configure(app) {
   // interface for employee report
   app.get('/reports/payroll/employees', employeeReports.employeeRegistrations);
 
+  // Payroll Configuration api
+  app.get('/payroll_config', payrollConfig.list);
+  app.get('/payroll_config/:id', payrollConfig.detail);
+  app.post('/payroll_config', payrollConfig.create);
+  app.put('/payroll_config/:id', payrollConfig.update);
+  app.delete('/payroll_config/:id', payrollConfig.delete);
+
   // reports API: Invoices (receipts)
   app.get('/reports/medical/patients', medicalReports.patientRegistrations);
   app.get('/reports/medical/patients/:uuid', medicalReports.receipts.patients);
@@ -340,7 +366,7 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/vouchers', financeReports.vouchers.report);
   app.get('/reports/finance/vouchers/:uuid', financeReports.vouchers.receipt);
   app.get('/reports/finance/accounts/chart', financeReports.accounts.chart);
-  app.get('/reports/finance/cashflow', financeReports.cashflow.document);
+  app.get('/reports/finance/cashflow/', financeReports.cashflow.report);
   app.get('/reports/finance/cashflow/services', financeReports.cashflow.byService);
   app.get('/reports/finance/financialPatient/:uuid', financeReports.patient);
   app.get('/reports/finance/income_expense', financeReports.incomeExpense.document);
@@ -352,7 +378,6 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/account_statement', financeReports.accountStatement.report);
   app.get('/reports/finance/clientsReport', financeReports.clientsReport.document);
   app.get('/reports/finance/general_ledger/', financeReports.generalLedger.report);
-  app.get('/reports/finance/general_ledger/:account_id', financeReports.generalLedger.accountSlip);
   app.get('/reports/finance/creditors/aged', financeReports.creditors.aged);
   app.get('/reports/finance/purchases', financeReports.purchases.report);
 
@@ -363,6 +388,7 @@ exports.configure = function configure(app) {
 
   // lookup saved report document
   app.get('/reports/archive/:uuid', report.sendArchived);
+  app.post('/reports/archive/:uuid/email', report.emailArchived);
   app.delete('/reports/archive/:uuid', report.deleteArchived);
 
   app.get('/reports/debtorAccountBalance/:fiscalYearId', reportDebtor.debtorAccountBalance);
@@ -389,7 +415,7 @@ exports.configure = function configure(app) {
 
   app.get('/patients/hospital_number/:id/exists', patients.hospitalNumberExists);
 
-  app.get('/patients/:uuid/services', patients.billingServices);
+  app.get('/patients/:uuid/services', patients.invoicingFees);
   app.get('/patients/:uuid/subsidies', patients.subsidies);
 
   app.get('/patients/:uuid/documents', patients.documents.list);
@@ -405,8 +431,9 @@ exports.configure = function configure(app) {
   app.post('/patients/:uuid/visits/discharge', patients.visits.discharge);
 
   // misc patients financial routes
-  app.get('/patients/:uuid/invoices/latest', patients.latestInvoice);
+  app.get('/patients/:uuid/finance/activity', patients.getFinancialStatus);
   app.get('/patients/:uuid/finance/balance', financialPatient.balance);
+
 
   // Barcode API
   app.get('/barcode/:key', report.barcodeLookup);
@@ -446,6 +473,8 @@ exports.configure = function configure(app) {
   app.get('/users/:id/depots', users.depots.list);
   app.post('/users/:id/depots', users.depots.create);
   app.put('/users/:id/password', users.password);
+  app.get('/users/:id/cashboxes', users.cashboxes.list);
+  app.post('/users/:id/cashboxes', users.cashboxes.create);
 
   // projects controller
   app.get('/projects/:id', projects.detail);
@@ -455,6 +484,10 @@ exports.configure = function configure(app) {
 
   // cashbox controller
   app.get('/cashboxes', cashboxes.list);
+
+  // cashbox privileges
+  app.get('/cashboxes/privileges', cashboxes.privileges);
+
   app.get('/cashboxes/:id', cashboxes.detail);
   app.post('/cashboxes', cashboxes.create);
   app.put('/cashboxes/:id', cashboxes.update);
@@ -494,11 +527,11 @@ exports.configure = function configure(app) {
   app.put('/employees/:id', employees.update);
 
   // billing services
-  app.get('/billing_services', billingServices.list);
-  app.get('/billing_services/:id', billingServices.detail);
-  app.post('/billing_services', billingServices.create);
-  app.put('/billing_services/:id', billingServices.update);
-  app.delete('/billing_services/:id', billingServices.delete);
+  app.get('/invoicing_fees', invoicingFees.list);
+  app.get('/invoicing_fees/:id', invoicingFees.detail);
+  app.post('/invoicing_fees', invoicingFees.create);
+  app.put('/invoicing_fees/:id', invoicingFees.update);
+  app.delete('/invoicing_fees/:id', invoicingFees.delete);
 
   // discounts
   app.get('/discounts', discounts.list);
@@ -536,12 +569,72 @@ exports.configure = function configure(app) {
   app.put('/functions/:id', functions.update);
   app.delete('/functions/:id', functions.delete);
 
+  // rubrics payroll api
+  app.get('/rubrics', rubrics.list);
+  app.get('/rubrics/:id', rubrics.detail);
+  app.post('/rubrics', rubrics.create);
+  app.put('/rubrics/:id', rubrics.update);
+  app.delete('/rubrics/:id', rubrics.delete);
+
+  // rubrics payroll Configuration api
+  app.get('/rubric_config', rubricConfig.list);
+  app.get('/rubric_config/:id', rubricConfig.detail);
+  app.post('/rubric_config', rubricConfig.create);
+  app.put('/rubric_config/:id', rubricConfig.update);
+  app.get('/rubric_config/:id/setting', rubricConfig.listConfig);
+  app.post('/rubric_config/:id/setting', rubricConfig.createConfig);
+  app.delete('/rubric_config/:id', rubricConfig.delete);
+
   // grades api
   app.get('/grades', grades.list);
   app.get('/grades/:uuid', grades.detail);
   app.post('/grades', grades.create);
   app.put('/grades/:uuid', grades.update);
   app.delete('/grades/:uuid', grades.delete);
+
+  // Holidays API
+  app.get('/holidays', holidays.list);
+  app.get('/holidays/:id', holidays.detail);
+  app.post('/holidays', holidays.create);
+  app.put('/holidays/:id', holidays.update);
+  app.delete('/holidays/:id', holidays.delete);
+
+  // Offday api
+  app.get('/offdays', offdays.list);
+  app.get('/offdays/:id', offdays.detail);
+  app.post('/offdays', offdays.create);
+  app.put('/offdays/:id', offdays.update);
+  app.delete('/offdays/:id', offdays.delete);
+
+  // IPR API
+  app.get('/iprTax', iprTax.list);
+  app.get('/iprTax/:id', iprTax.detail);
+  app.post('/iprTax', iprTax.create);
+  app.put('/iprTax/:id', iprTax.update);
+  app.delete('/iprTax/:id', iprTax.delete);
+
+  // IPR TAX CONFIG
+  app.get('/iprTaxConfig', iprTax.listConfig);
+  app.get('/iprTaxConfig/:id', iprTax.detailConfig);
+  app.post('/iprTaxConfig', iprTax.createConfig);
+  app.put('/iprTaxConfig/:id', iprTax.updateConfig);
+  app.delete('/iprTaxConfig/:id', iprTax.deleteConfig);
+
+  // account payroll Configuration api
+  app.get('/account_config', accountConfig.list);
+  app.get('/account_config/:id', accountConfig.detail);
+  app.post('/account_config', accountConfig.create);
+  app.put('/account_config/:id', accountConfig.update);
+  app.delete('/account_config/:id', accountConfig.delete);
+
+  // week end payroll Configuration api
+  app.get('/weekend_config', weekendConfig.list);
+  app.get('/weekend_config/:id', weekendConfig.detail);
+  app.post('/weekend_config', weekendConfig.create);
+  app.put('/weekend_config/:id', weekendConfig.update);
+  app.get('/weekend_config/:id/days', weekendConfig.listConfig);
+  app.post('/weekend_config/:id/days', weekendConfig.createConfig);
+  app.delete('/weekend_config/:id', weekendConfig.delete);
 
   // creditor groups API
   app.post('/creditors/groups', creditorGroups.create);
@@ -580,6 +673,7 @@ exports.configure = function configure(app) {
   app.post('/stock/integration', stock.createIntegration);
 
   // stock reports API
+  app.get('/reports/stock/exit', stockReports.stockExitReport);
   app.get('/reports/stock/lots', stockReports.stockLotsReport);
   app.get('/reports/stock/movements', stockReports.stockMovementsReport);
   app.get('/reports/stock/inventories', stockReports.stockInventoriesReport);
@@ -605,5 +699,28 @@ exports.configure = function configure(app) {
   // stock transfers
   app.get('/stock/transfers', stock.getStockTransfers);
 
+  // install
+  app.get('/install', install.checkBasicInstallExist);
+  app.post('/install', install.proceedInstall);
+
   app.get('/diagnoses', diagnoses.list);
+
+  app.get('/reports/finance/operating', operating.document);
+
+  // roles
+  app.get('/roles', rolesCtrl.list);
+  app.get('/roles/:uuid', rolesCtrl.detail);
+  app.get('/roles/actions/:roleUuid', rolesCtrl.rolesAction);
+  app.get('/roles/actions/user/:action_id', rolesCtrl.hasAction);
+  app.get('/roles/user/:user_id/:project_id', rolesCtrl.listForUser);
+  app.post('/roles', rolesCtrl.create);
+  app.put('/roles/:uuid', rolesCtrl.update);
+  app.delete('/roles/:uuid', rolesCtrl.remove);
+
+  app.post('/roles/affectUnits', rolesCtrl.affectPages);
+  app.post('/roles/assignTouser', rolesCtrl.affectToUser);
+  app.post('/roles/actions', rolesCtrl.assignActionToRole);
+  // unit
+  app.get('/unit/:roleUuid', unitCtrl.list);
+
 };

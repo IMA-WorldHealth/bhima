@@ -1,16 +1,21 @@
-/* eslint import/no-unresolved:off */
+/* eslint import/no-dynamic-require: "off", global-require: "off" */
 const _ = require('lodash');
+const util = require('../util');
 
-const en = require('../../../client/i18n/en.json');
-const fr = require('../../../client/i18n/fr.json');
+// these are resolved at compile time
+const dictionaries = {};
 
 /**
  * @function getTranslationHelper
  *
+ * @description
+ * Returns a compiler function that will translate all text using a dictionary
+ *
  * @param {String} languageKey - either 'fr' or 'en'
  */
 function getTranslationHelper(languageKey) {
-  const dictionary = (String(languageKey).toLowerCase() === 'fr') ? fr : en;
+  const key = String(languageKey).toLowerCase() === 'fr' ? 'fr' : 'en';
+  const dictionary = util.loadDictionary(key, dictionaries);
 
   /**
    * @function translate
@@ -26,6 +31,5 @@ function getTranslationHelper(languageKey) {
     return _.get(dictionary, translateCode) || translateCode;
   };
 }
-
 
 module.exports = getTranslationHelper;

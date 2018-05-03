@@ -1,5 +1,3 @@
-<div class="ui-grid-cell-contents text-action">
-  <a ng-click="grid.appScope.openReceiptModal(row.entity.uuid)" href>
-    {{ row.entity.reference }}
-  </a>
+<div class="ui-grid-cell-contents">
+  <bh-receipt value="row.entity.uuid" display-value="row.entity.reference" type="cash">
 </div>

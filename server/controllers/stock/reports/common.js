@@ -14,6 +14,7 @@ const STOCK_ENTRY_DONATION_TEMPLATE = `${BASE_PATH}/stock_entry_donation.receipt
 const STOCK_ADJUSTMENT_TEMPLATE = `${BASE_PATH}/stock_adjustment.receipt.handlebars`;
 
 // reports
+const STOCK_EXIT_REPORT_TEMPLATE = `${BASE_PATH}/stock_exit.report.handlebars`;
 const STOCK_LOTS_REPORT_TEMPLATE = `${BASE_PATH}/stock_lots.report.handlebars`;
 const STOCK_MOVEMENTS_REPORT_TEMPLATE = `${BASE_PATH}/stock_movements.report.handlebars`;
 const STOCK_INVENTORIES_REPORT_TEMPLATE = `${BASE_PATH}/stock_inventories.report.handlebars`;
@@ -24,6 +25,7 @@ const _ = require('lodash');
 
 // Application-specific imports
 const db = require('../../../lib/db');
+const util = require('../../../lib/util');
 const Stock = require('../core');
 const ReportManager = require('../../../lib/ReportManager');
 const PeriodService = require('../../../lib/period');
@@ -43,8 +45,12 @@ function formatFilters(qs) {
     { field : 'period', displayName : 'TABLE.COLUMNS.PERIOD', isPeriod : true },
     { field : 'limit', displayName : 'FORM.LABELS.LIMIT' },
 
-    { field : 'entry_date_from', displayName : 'STOCK.ENTRY_DATE', comparitor : '>', isDate : true },
-    { field : 'entry_date_to', displayName : 'STOCK.ENTRY_DATE', comparitor : '<', isDate : true },
+    {
+      field : 'entry_date_from', displayName : 'STOCK.ENTRY_DATE', comparitor : '>', isDate : true,
+    },
+    {
+      field : 'entry_date_to', displayName : 'STOCK.ENTRY_DATE', comparitor : '<', isDate : true,
+    },
   ];
 
   return columns.filter(column => {
@@ -132,7 +138,7 @@ function getDepotMovement(documentUuid, enterprise, isExit) {
 const pdfOptions = {
   orientation : 'landscape',
   footerRight : '[page] / [toPage]',
-  footerFontSize : '8',
+  footerFontSize : '7',
 };
 
 /**
@@ -163,6 +169,7 @@ const stockFluxReceipt = {
 exports._ = _;
 
 exports.db = db;
+exports.util = util;
 
 exports.Stock = Stock;
 exports.ReportManager = ReportManager;
@@ -186,6 +193,7 @@ exports.STOCK_ENTRY_INTEGRATION_TEMPLATE = STOCK_ENTRY_INTEGRATION_TEMPLATE;
 exports.STOCK_ENTRY_DONATION_TEMPLATE = STOCK_ENTRY_DONATION_TEMPLATE;
 exports.STOCK_ADJUSTMENT_TEMPLATE = STOCK_ADJUSTMENT_TEMPLATE;
 
+exports.STOCK_EXIT_REPORT_TEMPLATE = STOCK_EXIT_REPORT_TEMPLATE;
 exports.STOCK_LOTS_REPORT_TEMPLATE = STOCK_LOTS_REPORT_TEMPLATE;
 exports.STOCK_MOVEMENTS_REPORT_TEMPLATE = STOCK_MOVEMENTS_REPORT_TEMPLATE;
 exports.STOCK_INVENTORY_REPORT_TEMPLATE = STOCK_INVENTORY_REPORT_TEMPLATE;

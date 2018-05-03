@@ -3,10 +3,9 @@ angular.module('bhima.controllers')
 
 // dependencies injections
 StockAdjustmentController.$inject = [
-  'DepotService', 'InventoryService', 'NotifyService',
-  'SessionService', 'util', 'bhConstants', 'ReceiptModal',
-  'StockFormService', 'StockService', 'StockModalService',
-  'uiGridGroupingConstants', 'appcache',
+  'DepotService', 'InventoryService', 'NotifyService', 'SessionService', 'util',
+  'bhConstants', 'ReceiptModal', 'StockFormService', 'StockService',
+  'StockModalService', 'uiGridConstants', 'appcache',
 ];
 
 /**
@@ -16,21 +15,23 @@ StockAdjustmentController.$inject = [
  * This module exists to make sure that stock can be adjusted up and down as needed.
  */
 function StockAdjustmentController(
-  Depots, Inventory, Notify, Session, util, bhConstants, ReceiptModal, StockForm, Stock, StockModal,
-  uiGridGroupingConstants, AppCache
+  Depots, Inventory, Notify, Session, util, bhConstants, ReceiptModal, StockForm,
+  Stock, StockModal, uiGridConstants, AppCache
 ) {
-  var vm = this;
+  const vm = this;
 
   // TODO - merge all stock caches together so that the same depot is shared across all stock modules
-  var cache = new AppCache('StockAdjustment');
-  //delete cache.depot;
-  
+  const cache = new AppCache('StockCache');
+
   // global variables
   vm.Stock = new StockForm('StockAdjustment');
   vm.movement = {};
 
+  vm.onDateChange = date => {
+    vm.movement.date = date;
+  };
+
   // bind constants
-  vm.itemIncrement = 1;
   vm.enterprise = Session.enterprise;
   vm.maxLength = util.maxLength;
   vm.maxDate = new Date();
@@ -45,74 +46,74 @@ function StockAdjustmentController(
   vm.handleAdjustmentOption = handleAdjustmentOption;
 
   // grid columns
-  var columns = [
+  const columns = [
     {
-      field: 'status',
-      width: 25,
-      displayName: '',
-      cellTemplate: 'modules/stock/exit/templates/status.tmpl.html'
+      field : 'status',
+      width : 25,
+      displayName : '',
+      cellTemplate : 'modules/stock/exit/templates/status.tmpl.html',
     },
 
     {
-      field: 'code',
-      width: 120,
-      displayName: 'TABLE.COLUMNS.CODE',
-      headerCellFilter: 'translate',
-      cellTemplate: 'modules/stock/exit/templates/code.tmpl.html'
+      field : 'code',
+      width : 120,
+      displayName : 'TABLE.COLUMNS.CODE',
+      headerCellFilter : 'translate',
+      cellTemplate : 'modules/stock/exit/templates/code.tmpl.html',
     },
 
     {
-      field: 'description',
-      displayName: 'TABLE.COLUMNS.DESCRIPTION',
-      headerCellFilter: 'translate',
-      cellTemplate: 'modules/stock/exit/templates/description.tmpl.html'
+      field : 'description',
+      displayName : 'TABLE.COLUMNS.DESCRIPTION',
+      headerCellFilter : 'translate',
+      cellTemplate : 'modules/stock/exit/templates/description.tmpl.html',
     },
 
     {
-      field: 'lot',
-      width: 150,
-      displayName: 'TABLE.COLUMNS.LOT',
-      headerCellFilter: 'translate',
-      cellTemplate: 'modules/stock/exit/templates/lot.tmpl.html'
+      field : 'lot',
+      width : 150,
+      displayName : 'TABLE.COLUMNS.LOT',
+      headerCellFilter : 'translate',
+      cellTemplate : 'modules/stock/exit/templates/lot.tmpl.html',
     },
 
     {
-      field: 'quantity',
-      width: 150,
-      displayName: 'TABLE.COLUMNS.QUANTITY',
-      headerCellFilter: 'translate',
-      cellTemplate: 'modules/stock/adjustment/templates/quantity.tmpl.html',
-      treeAggregationType: uiGridGroupingConstants.aggregation.SUM
+      field : 'quantity',
+      width : 150,
+      displayName : 'TABLE.COLUMNS.QUANTITY',
+      headerCellFilter : 'translate',
+      cellTemplate : 'modules/stock/adjustment/templates/quantity.tmpl.html',
+      aggregationType : uiGridConstants.aggregationTypes.sum,
     },
 
     {
-      field: 'available_lot',
-      width: 150,
-      displayName: 'TABLE.COLUMNS.AVAILABLE',
-      headerCellFilter: 'translate',
-      cellTemplate: 'modules/stock/exit/templates/available.tmpl.html'
+      field : 'available_lot',
+      width : 150,
+      displayName : 'TABLE.COLUMNS.AVAILABLE',
+      headerCellFilter : 'translate',
+      cellTemplate : 'modules/stock/exit/templates/available.tmpl.html',
     },
 
     {
-      field: 'expiration_date',
-      width: 150,
-      displayName: 'TABLE.COLUMNS.EXPIRATION_DATE',
-      headerCellFilter: 'translate',
-      cellTemplate: 'modules/stock/exit/templates/expiration.tmpl.html'
+      field : 'expiration_date',
+      width : 150,
+      displayName : 'TABLE.COLUMNS.EXPIRATION_DATE',
+      headerCellFilter : 'translate',
+      cellTemplate : 'modules/stock/exit/templates/expiration.tmpl.html',
     },
 
-    { field: 'actions', width: 25, cellTemplate: 'modules/stock/exit/templates/actions.tmpl.html' },
+    { field : 'actions', width : 25, cellTemplate : 'modules/stock/exit/templates/actions.tmpl.html' },
   ];
 
   // grid options
   vm.gridOptions = {
-    appScopeProvider: vm,
-    enableSorting: false,
-    enableColumnMenus: false,
-    columnDefs: columns,
-    data: vm.Stock.store.data,
-    fastWatch: true,
-    flatEntityAccess: true,
+    appScopeProvider : vm,
+    enableSorting : false,
+    enableColumnMenus : false,
+    columnDefs : columns,
+    data : vm.Stock.store.data,
+    fastWatch : true,
+    flatEntityAccess : true,
   };
 
   // add items
@@ -127,7 +128,8 @@ function StockAdjustmentController(
     checkValidity();
   }
 
-  function handleAdjustmentOption() {
+  function handleAdjustmentOption(value) {
+    vm.adjustmentOption = value;
     if (vm.adjustmentOption === 'increase') {
       vm.adjustmentType = 'FORM.LABELS.INCREASE';
     } else if (vm.adjustmentOption === 'decrease') {
@@ -139,8 +141,8 @@ function StockAdjustmentController(
   function configureItem(item) {
     item._initialised = true;
     // get lots
-    Stock.lots.read(null, { depot_uuid: vm.depot.uuid, inventory_uuid: item.inventory.inventory_uuid })
-      .then(function (lots) {
+    Stock.lots.read(null, { depot_uuid : vm.depot.uuid, inventory_uuid : item.inventory.inventory_uuid })
+      .then((lots) => {
         item.lots = lots;
       })
       .catch(Notify.handleError);
@@ -155,26 +157,25 @@ function StockAdjustmentController(
 
   function startup() {
     vm.movement = {
-      date: new Date(),
-      entity: {},
+      date : new Date(),
+      entity : {},
     };
 
-    vm.depot = cache.depot;
-
     // make sure that the depot is loaded if it doesn't exist at startup.
-    if (vm.depot) {
-      setupStock();
+    if (cache.depotUuid) {
+      // load depot from the cached uuid
+      loadDepot(cache.depotUuid).then(setupStock);
     } else {
-      changeDepot()
-        .then(setupStock);
+      // show the changeDepot modal
+      changeDepot().then(setupStock);
     }
   }
 
   // ============================ Inventories ==========================
   function loadInventories(depot) {
-    var givenDepot = depot || vm.depot;
-    Stock.inventories.read(null, { depot_uuid: givenDepot.uuid })
-      .then(function (inventories) {
+    const depotUuid = depot && depot.uuid ? depot.uuid : cache.depotUuid;
+    Stock.inventories.read(null, { depot_uuid : depotUuid })
+      .then((inventories) => {
         vm.selectableInventories = angular.copy(inventories);
       })
       .catch(Notify.handleError);
@@ -182,18 +183,21 @@ function StockAdjustmentController(
 
   // check validity
   function checkValidity() {
-    var lotsExists = vm.Stock.store.data.every(function (item) {
+    const lotsExists = vm.Stock.store.data.every((item) => {
       return item.quantity > 0 && item.lot.uuid;
     });
     vm.validForSubmit = (lotsExists && vm.Stock.store.data.length);
   }
 
   // ================================= Submit ================================
-  function submit(form) {
-    var isExit;
-    var fluxId;
+  function submit() {
+    let isExit;
+    let fluxId;
 
-    if (form.$invalid || !vm.adjustmentOption) { return; }
+    // check stock validity
+    checkValidity();
+
+    if (!vm.validForSubmit || !vm.adjustmentOption) { return 0; }
 
     if (vm.adjustmentOption === 'increase') {
       isExit = 0;
@@ -203,45 +207,53 @@ function StockAdjustmentController(
       fluxId = bhConstants.flux.TO_ADJUSTMENT;
     }
 
-    var movement = {
-      depot_uuid: vm.depot.uuid,
-      entity_uuid: vm.movement.entity.uuid,
-      date: vm.movement.date,
-      description: vm.movement.description,
-      is_exit: isExit,
-      flux_id: fluxId,
-      user_id: Session.user.id,
+    const movement = {
+      depot_uuid : vm.depot.uuid,
+      entity_uuid : vm.movement.entity.uuid,
+      date : vm.movement.date,
+      description : vm.movement.description,
+      is_exit : isExit,
+      flux_id : fluxId,
+      user_id : Session.user.id,
     };
 
-    var lots = vm.Stock.store.data.map(function (row) {
+    const lots = vm.Stock.store.data.map((row) => {
       return {
-        uuid: row.lot.uuid,
-        quantity: row.quantity,
-        unit_cost: row.lot.unit_cost,
+        uuid : row.lot.uuid,
+        quantity : row.quantity,
+        unit_cost : row.lot.unit_cost,
       };
     });
 
     movement.lots = lots;
 
     return Stock.movements.create(movement)
-      .then(function (document) {
+      .then(document => {
         vm.Stock.store.clear();
         ReceiptModal.stockAdjustmentReceipt(document.uuid, fluxId);
       })
       .catch(Notify.handleError);
   }
-  
-  function changeDepot() {
 
+  function changeDepot() {
     // if requirement is true the modal cannot be canceled
-    var requirement = !cache.depot;
-  
+    const requirement = !cache.depotUuid;
+
     return Depots.openSelectionModal(vm.depot, requirement)
-      .then(function (depot) {
+      .then((depot) => {
         vm.depot = depot;
-        cache.depot = vm.depot;
+        cache.depotUuid = depot.uuid;
         return depot;
       });
+  }
+
+  function loadDepot(uuid) {
+    return Depots.read(uuid, { only_user : true })
+      .then(depot => {
+        vm.depot = depot;
+        return depot;
+      })
+      .catch(Notify.handleError);
   }
 
   startup();

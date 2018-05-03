@@ -1,25 +1,27 @@
-/* global element, by, browser */
+/* global element, by */
+
 const chai = require('chai');
-const expect = chai.expect;
+
+const { expect } = chai;
 
 const FU = require('../shared/FormUtils');
+
 const helpers = require('../shared/helpers');
+
 helpers.configure(chai);
 
-describe('Villages Management', function () {
-  'use strict';
-
+describe('Villages Management', () => {
   const path = '#!/locations/village';
   before(() => helpers.navigate(path));
 
   const village = {
-    country: 'Democratiq Republic of Congo',
-    province: 'Bas Congo',
-    sector: 'Tshikapa',
-    name: 'New Village'
+    country : 'République Démocratique du Congo',
+    province : 'Kinshasa',
+    sector : 'Lukunga',
+    name : 'New Village',
   };
 
-  it('creates a new village', function () {
+  it('creates a new village', () => {
 
     // switch to the create form
     FU.buttons.create();
@@ -36,7 +38,7 @@ describe('Villages Management', function () {
     FU.exists(by.id('create_success'), true);
   });
 
-  it('edits a village', function () {
+  it('edits a village', () => {
 
     // click the edit button
     $(`[data-village-name="${village.name}"]`).click();
@@ -53,7 +55,7 @@ describe('Villages Management', function () {
     FU.exists(by.id('update_success'), true);
   });
 
-  it('correctly blocks invalid form submission with relevant error classes', function () {
+  it('correctly blocks invalid form submission with relevant error classes', () => {
 
     // switch to the create form
     FU.buttons.create();

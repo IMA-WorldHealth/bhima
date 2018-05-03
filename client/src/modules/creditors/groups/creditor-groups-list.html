@@ -1,12 +1,39 @@
 <div class="container">
-  <div class="row">
+  <div class="row" ng-show="CreditorGroupCtrl.creditorGroupList.length>0">
     <div class="col-md-8 col-md-offset-2">
 
-      <div ng-repeat="cg in CreditorGroupCtrl.creditorGroupList | orderBy: 'name' track by $index">
+      <div class="panel panel-default" style="margin-bottom : 0px;">
+        <div class="panel-heading clearfix text-left">
+
+          <a href ng-click="CreditorGroupCtrl.toggleFilter()">
+            <span translate>TABLE.COLUMNS.FILTERING.LABEL</span> <span class="caret" ng-class="{'rotate' : CreditorGroupCtrl.filterActive}"></span>
+          </a>
+
+          <div class="pull-right">
+            <span class="label label-primary" ng-if="CreditorGroupCtrl.sort"><span translate>{{CreditorGroupCtrl.sort.key }}</span></span>
+            <span uib-dropdown>
+              <a href uib-dropdown-toggle> <span translate>TABLE.COLUMNS.SORTING.LABEL</span> <span class="caret"></span></a>
+              <ul class="dropdown-menu-right" uib-dropdown-menu>
+                <li ng-repeat="option in CreditorGroupCtrl.sortOptions">
+                  <a href ng-click="CreditorGroupCtrl.setOrder(option)"><span translate>{{ option.key }}</span></a>
+                </li>
+                <li role="seperator" class="divider"></li>
+                <li><a href ng-click="CreditorGroupCtrl.setOrder()"><span class="fa fa-times" aria-hidden="true"></span><span translate> FORM.BUTTONS.CLEAR </span></a></li>
+              </ul>
+            </span>
+          </div>
+        </div>
+
+        <input ng-model="CreditorGroupCtrl.filter" ng-show="CreditorGroupCtrl.filterActive" class="form-control" placeholder="{{'FORM.PLACEHOLDERS.FILTER_NAME' | translate }}" style="border-radius: 0"/>
+      </div>
+
+      <div ng-repeat="cg in CreditorGroupCtrl.creditorGroupList
+       | filter    : {name : CreditorGroupCtrl.filter}
+       | orderBy   : CreditorGroupCtrl.sort.attribute: CreditorGroupCtrl.sort.reverse
+       track by cg.uuid">
 
         <div class="panel panel-default" style="margin-bottom: 5px;" data-group-entry>
           <div class="panel-body">
-
             <div class="row">
               <div class="col-md-6">
                 <h4 style="margin-top : 0px;"><span ng-if="cg.locked" class="fa fa-lock text-danger"></span> <b>{{ cg.name }}</b></h4>
@@ -26,5 +53,10 @@
       </div>
 
     </div>
+  </div>
+
+  <div class="row" ng-show=" CreditorGroupCtrl.creditorGroupList.length==0">
+    <br>
+    <p class="text-danger" translate>CREDITOR_GROUP.NO_CREDITOR_GROUP</p>
   </div>
 </div>

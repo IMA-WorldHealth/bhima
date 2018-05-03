@@ -1,4 +1,5 @@
 {"CREDITOR_GROUP":{"BACK":"Back to creditor groups list",
 "CREATE":"Create a creditor group",
 "UPDATE":"Update a creditor group",
-"FAILURE_DELETE":"Failure of the deletion of the creditor group"}}
+"FAILURE_DELETE":"Failure of the deletion of the creditor group",
+"NO_CREDITOR_GROUP": "There is no creditor group entered yet"}}

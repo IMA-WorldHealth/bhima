@@ -3,7 +3,9 @@
 const path = require('path');
 const chai = require('chai');
 
-const expect = chai.expect;
+const { expect } = chai;
+
+const moment = require('moment');
 
 const components = require('../shared/components');
 const helpers = require('../shared/helpers');
@@ -18,21 +20,15 @@ describe('Patient Record', () => {
   const root = '#!/patients/';
   const id = '274c51ae-efcc-4238-98c6-f402bfb39866';
 
-  // calcul Age dynamically
-  const currentDate = new Date();
-  const currentYear = currentDate.getFullYear();
-
-  // Calculate age and transform ageTestPatient2 to String
-  const ageTestPatient2 = `${(currentYear - 1990)}`;
-
   const patient = {
     name : 'Test 2 Patient',
     id : 'PA.TPA.2',
     hospital_no : '110',
-    age : ageTestPatient2,
+    dob : '1990-06-01',
     gender : 'M',
   };
 
+  const age = (dob) => `${moment().diff(dob, 'years')}`;
   const url = root.concat(id);
 
   before(() => helpers.navigate(url));
@@ -41,7 +37,7 @@ describe('Patient Record', () => {
     FU.hasText(by.id('name'), patient.name);
     FU.hasText(by.id('patientID'), patient.id);
     FU.hasText(by.id('hospitalNo'), patient.hospital_no);
-    FU.hasText(by.id('age'), patient.age);
+    FU.hasText(by.id('age'), age(patient.dob));
     FU.hasText(by.id('gender'), patient.gender);
   });
 
@@ -51,7 +47,7 @@ describe('Patient Record', () => {
   });
 
   it('admits a patient', () => {
-    const diagnosisLabel = 'dio';
+    const diagnosisLabel = 'Melioidose a';
     element(by.id('submit-visit')).click();
 
     FU.typeahead('AdmitCtrl.visit.diagnosis', diagnosisLabel);
@@ -62,7 +58,7 @@ describe('Patient Record', () => {
   });
 
   it('dicharges a patient with a new diagnosis', () => {
-    const diagnosisLabel = 'iod';
+    const diagnosisLabel = 'Melioidose a';
     element(by.id('submit-visit')).click();
 
     FU.typeahead('AdmitCtrl.visit.diagnosis', diagnosisLabel);
@@ -86,9 +82,11 @@ describe('Patient Record', () => {
     FU.input('$ctrl.file', absolutePath);
 
     FU.modal.submit();
+
     components.notification.hasSuccess();
   });
 
+ 
   // upload patient documents
   it('upload a PDF document', () => {
     const title = '[e2e] New Document';
@@ -125,6 +123,34 @@ describe('Patient Record', () => {
 
     element(by.css('[data-document-action="list"]')).click();
     FU.exists(by.css('[data-view="list"]'), true);
+  });
+
+
+
+  it(' thumbnail should not be shown if the upload is not an image', () => {
+    const title = '[e2e] New pdf As Document';
+    const fileToUpload = 'file.pdf';
+    const absolutePath = path.resolve(fixtures, fileToUpload);
+
+    $('[data-document-action="add"]').click();
+
+    FU.input('$ctrl.title', title);
+    FU.input('$ctrl.file', absolutePath);
+    FU.exists(by.id('upload_thumbnail'), false);
+    FU.modal.close();
+  });
+
+  it('Should check if upload_thumbnail is displayed if the upload is an image', () => {
+    const title = '[e2e] New Image As Document';
+    const fileToUpload = 'file.jpg';
+    const absolutePath = path.resolve(fixtures, fileToUpload);
+
+    $('[data-document-action="add"]').click();
+
+    FU.input('$ctrl.title', title);
+    FU.input('$ctrl.file', absolutePath);
+    FU.exists(by.id('upload_thumbnail'), true);
+    FU.modal.close();
   });
 
   it('informs the user that there is no patient for invalid request', () => {

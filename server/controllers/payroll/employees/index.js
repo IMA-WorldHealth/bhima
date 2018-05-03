@@ -12,15 +12,15 @@
  * @requires db
  * @requires uuid
  * @requires NotFound
- * @requires topic
+ * @requires @ima-worldhealth/topic
  * @requires filter
  */
 
 
-const uuid = require('node-uuid');
+const uuid = require('uuid/v4');
+const topic = require('@ima-worldhealth/topic');
 
 const db = require('./../../../lib/db');
-const topic = require('../../../lib/topic');
 const NotFound = require('./../../../lib/errors/NotFound');
 const FilterParser = require('./../../../lib/filter');
 
@@ -67,11 +67,11 @@ exports.listHolidays = function listHolidays(req, res, next) {
   ];
 
   db.exec(sql, data)
-  .then(rows => {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+    .then(rows => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 };
 
 /**
@@ -95,11 +95,11 @@ exports.checkHoliday = function checkHoliday(req, res, next) {
   }
 
   db.exec(sql, data)
-  .then(rows => {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+    .then(rows => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 };
 
 /**
@@ -108,11 +108,11 @@ exports.checkHoliday = function checkHoliday(req, res, next) {
 exports.checkOffday = function checkHoliday(req, res, next) {
   const sql = `SELECT * FROM offday WHERE date = ? AND id <> ?`;
   db.exec(sql, [req.query.date, req.query.id])
-  .then(rows => {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+    .then(rows => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 };
 
 /**
@@ -127,17 +127,18 @@ exports.checkOffday = function checkHoliday(req, res, next) {
 function lookupEmployee(id) {
   const sql =
     `
-    SELECT 
-      employee.id, employee.code AS code_employee, employee.display_name, employee.sex, 
-      employee.dob, employee.date_embauche, employee.service_id,
+    SELECT
+      employee.id, employee.code, patient.display_name, patient.sex,
+      patient.dob, employee.date_embauche, employee.service_id,
       employee.nb_spouse, employee.nb_enfant, BUID(employee.grade_uuid) as grade_uuid,
       employee.locked, employee.is_medical, grade.text, grade.basic_salary,
-      fonction.id AS fonction_id, fonction.fonction_txt, service.name AS service_txt,
-      employee.phone, employee.email, employee.adresse, employee.bank, employee.bank_account,
+      fonction.id AS fonction_id, fonction.fonction_txt, service.name AS service_txt, patient.hospital_no,
+      patient.phone, patient.email, patient.address_1 AS adresse, BUID(employee.patient_uuid) AS patient_uuid, employee.bank, employee.bank_account,
       employee.daily_salary, grade.code AS code_grade, BUID(debtor.uuid) as debtor_uuid,
       debtor.text AS debtor_text, BUID(debtor.group_uuid) as debtor_group_uuid,
       BUID(creditor.uuid) as creditor_uuid, creditor.text AS creditor_text,
-      BUID(creditor.group_uuid) as creditor_group_uuid, creditor_group.account_id
+      BUID(creditor.group_uuid) as creditor_group_uuid, creditor_group.account_id,
+      BUID(current_location_id) as current_location_id, BUID(origin_location_id) as origin_location_id
     FROM employee
       JOIN grade ON employee.grade_uuid = grade.uuid
       LEFT JOIN fonction ON employee.fonction_id = fonction.id
@@ -145,7 +146,7 @@ function lookupEmployee(id) {
       JOIN debtor ON patient.debtor_uuid = debtor.uuid
       JOIN creditor ON employee.creditor_uuid = creditor.uuid
       JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid
-      LEFT JOIN service ON service.id = employee.service_id 
+      LEFT JOIN service ON service.id = employee.service_id
     WHERE employee.id = ?;
   `;
 
@@ -175,7 +176,7 @@ function detail(req, res, next) {
  */
 function update(req, res, next) {
   const employee = db.convert(req.body, [
-    'grade_uuid', 'debtor_group_uuid', 'creditor_group_uuid', 'creditor_uuid', 'debtor_uuid',
+    'grade_uuid', 'debtor_group_uuid', 'creditor_group_uuid', 'creditor_uuid', 'debtor_uuid', 'patient_uuid', 'current_location_id', 'origin_location_id',
   ]);
 
   if (employee.dob) {
@@ -198,10 +199,19 @@ function update(req, res, next) {
     text : `Debiteur [${employee.display_name}]`,
   };
 
-  const clean = {
+  const patient = {
     display_name : employee.display_name,
-    sex : employee.sex,
     dob : employee.dob,
+    current_location_id : employee.current_location_id,
+    origin_location_id : employee.origin_location_id,
+    hospital_no : employee.hospital_no,
+    sex : employee.sex,
+    phone : employee.phone,
+    email : employee.email,
+    address_1 : employee.adresse,
+  };
+
+  const clean = {
     date_embauche : employee.date_embauche,
     service_id : employee.service_id,
     nb_spouse : employee.nb_spouse,
@@ -209,18 +219,16 @@ function update(req, res, next) {
     grade_uuid : employee.grade_uuid,
     locked : employee.locked,
     fonction_id : employee.fonction_id,
-    phone : employee.phone,
-    email : employee.email,
-    adresse : employee.adresse,
     bank : employee.bank,
     bank_account : employee.bank_account,
     daily_salary : employee.daily_salary,
     code : employee.code,
-    is_medical : employee.is_medical
+    is_medical : employee.is_medical,
   };
 
   const updateCreditor = `UPDATE creditor SET ? WHERE creditor.uuid = ?`;
   const updateDebtor = `UPDATE debtor SET ? WHERE debtor.uuid = ?`;
+  const updatePatient = `UPDATE patient SET ? WHERE uuid = ?`;
   const sql = `UPDATE employee SET ? WHERE employee.id = ?`;
 
   const transaction = db.transaction();
@@ -228,11 +236,13 @@ function update(req, res, next) {
   transaction
     .addQuery(updateCreditor, [creditor, creditor.uuid])
     .addQuery(updateDebtor, [debtor, debtor.uuid])
+    .addQuery(updatePatient, [patient, employee.patient_uuid])
     .addQuery(sql, [clean, req.params.id]);
 
   transaction.execute()
     .then(results => {
-      if (!results[2].affectedRows) {
+
+      if (!results[3].affectedRows) {
         throw new NotFound(`Could not find an employee with id ${req.params.id}.`);
       }
 
@@ -261,9 +271,9 @@ function update(req, res, next) {
 function create(req, res, next) {
   // cast as data object and add unique ids
   const data = req.body;
-  const patientID = uuid.v4();
-  data.creditor_uuid = uuid.v4();
-  data.debtor_uuid = uuid.v4();
+  const patientID = uuid();
+  data.creditor_uuid = uuid();
+  data.debtor_uuid = uuid();
   data.patient_uuid = patientID;
 
   // convert uuids to binary uuids as necessary
@@ -312,6 +322,14 @@ function create(req, res, next) {
   delete employee.debtor_uuid;
   delete employee.hospital_no;
 
+  // Delete not necessary Data for Employee
+  delete employee.display_name;
+  delete employee.dob;
+  delete employee.sex;
+  delete employee.adresse;
+  delete employee.phone;
+  delete employee.email;
+
   const writeCreditor = 'INSERT INTO creditor SET ?';
   const writeDebtor = 'INSERT INTO debtor SET ?';
   const writePatient = 'INSERT INTO patient SET ?';
@@ -357,18 +375,18 @@ function create(req, res, next) {
  */
 function search(req, res, next) {
   find(req.query)
-  .then((rows) => {
+    .then((rows) => {
     // publish a SEARCH event on the medical channel
-    topic.publish(topic.channels.MEDICAL, {
-      event   : topic.events.SEARCH,
-      entity  : topic.entities.PATIENT,
-      user_id : req.session.user.id,
-    });
+      topic.publish(topic.channels.MEDICAL, {
+        event   : topic.events.SEARCH,
+        entity  : topic.entities.PATIENT,
+        user_id : req.session.user.id,
+      });
 
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -383,16 +401,17 @@ function search(req, res, next) {
  */
 function find(options) {
   const sql =
-    `SELECT 
-      employee.id, employee.code AS code, employee.display_name, employee.sex, 
-      employee.dob, employee.date_embauche, employee.service_id, employee.nb_spouse, 
+    `SELECT
+      employee.id, employee.code, patient.display_name, patient.sex,
+      patient.dob, employee.date_embauche, employee.service_id, employee.nb_spouse,
       employee.nb_enfant, BUID(employee.grade_uuid) as grade_uuid, employee.locked,
-      grade.text, grade.basic_salary, fonction.id AS fonction_id, fonction.fonction_txt,
-      employee.phone, employee.email, employee.adresse, employee.bank, employee.bank_account,
+      grade.text, grade.basic_salary, fonction.id AS fonction_id, fonction.fonction_txt, patient.hospital_no,
+      patient.phone, patient.email, patient.address_1 AS adresse, BUID(employee.patient_uuid) AS patient_uuid, employee.bank, employee.bank_account,
       employee.daily_salary, employee.is_medical, grade.code AS code_grade, BUID(debtor.uuid) as debtor_uuid,
       debtor.text AS debtor_text, BUID(debtor.group_uuid) as debtor_group_uuid,
       BUID(creditor.uuid) as creditor_uuid, creditor.text AS creditor_text,
       BUID(creditor.group_uuid) as creditor_group_uuid, creditor_group.account_id,
+      BUID(current_location_id) as current_location_id, BUID(origin_location_id) as origin_location_id,
       service.name as service_name
     FROM employee
      JOIN grade ON employee.grade_uuid = grade.uuid
@@ -408,12 +427,12 @@ function find(options) {
 
   const filters = new FilterParser(options, { tableAlias : 'employee' });
 
-  filters.fullText('display_name');
+  filters.fullText('display_name', 'display_name', 'patient');
   filters.dateFrom('dateEmbaucheFrom', 'date_embauche');
   filters.dateTo('dateEmbaucheTo', 'date_embauche');
-  filters.dateFrom('dateBirthFrom', 'dob');
-  filters.dateTo('dateBirthTo', 'dob');
-  filters.equals('sex', 'sex', 'employee');
+  filters.dateFrom('dateBirthFrom', 'dob', 'patient');
+  filters.dateTo('dateBirthTo', 'dob', 'patient');
+  filters.equals('sex', 'sex', 'patient');
   filters.equals('code', 'code', 'employee');
   filters.equals('service_id', 'service_id', 'employee');
   filters.equals('fonction_id', 'fonction_id', 'employee');
@@ -421,7 +440,8 @@ function find(options) {
   filters.equals('is_medical', 'is_medical', 'employee');
 
   // @TODO Support ordering query
-  filters.setOrder('ORDER BY employee.display_name DESC');
+  filters.setOrder('ORDER BY patient.display_name DESC');
+
 
   // applies filters and limits to defined sql, get parameters in correct order
   const query = filters.applyQuery(sql);

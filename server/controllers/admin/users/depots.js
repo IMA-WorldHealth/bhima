@@ -26,13 +26,13 @@ function list(req, res, next) {
   `;
 
   db.exec(sql, [req.params.id])
-  .then((rows) => {
-    rows = rows.map(row => row.depot_uuid);
-        
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+    .then((rows) => {
+      rows = rows.map(row => row.depot_uuid);
+
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }
 
 
@@ -49,7 +49,7 @@ function create(req, res, next) {
     .addQuery('DELETE FROM depot_permission WHERE user_id = ?;', [req.params.id]);
 
   // if an array of permission has been sent, add them to an INSERT query
-  if (req.body.depots) {
+  if (req.body.depots.length) {
     const data = req.body.depots.map((uuid) => {
       return [db.bid(uuid), req.params.id];
     });

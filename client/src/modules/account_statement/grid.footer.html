@@ -1,0 +1,15 @@
+<div class="ui-grid-cell-contents">
+  <span>({{grid.rows.length}} <span translate>FORM.INFO.ROWS</span>)</span>
+  <span style="padding-left:0.5em;">
+    <strong translate>FORM.LABELS.BEGINNING_VIEW_BALANCE</strong>: {{ grid.appScope.balances.opening | currency:grid.appScope.enterprise.currency_id }}
+  </span>
+  <span style="padding-left:0.5em;">
+    <strong translate>FORM.LABELS.DEBIT</strong>: {{ grid.appScope.balances.debits | currency:grid.appScope.enterprise.currency_id }}
+  </span>
+  <span style="padding-left:0.5em;">
+    <strong translate>FORM.LABELS.CREDIT</strong>: {{ grid.appScope.balances.credits | currency:grid.appScope.enterprise.currency_id }}
+  </span>
+  <span style="padding-left:0.5em;">
+    <strong translate>FORM.LABELS.DIFFERENCE</strong>: {{ grid.appScope.balances.difference | currency:grid.appScope.enterprise.currency_id }}
+  </span>
+</div>

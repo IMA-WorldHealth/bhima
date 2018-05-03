@@ -2,9 +2,8 @@ angular.module('bhima.controllers')
   .controller('PurchaseListController', PurchaseListController);
 
 PurchaseListController.$inject = [
-  '$state', 'PurchaseOrderService', 'NotifyService', 'ReceiptModal',
-  'uiGridConstants', 'GridColumnService',
-  'GridStateService', 'SessionService', 'ModalService',
+  '$state', 'PurchaseOrderService', 'NotifyService', 'uiGridConstants',
+  'GridColumnService', 'GridStateService', 'SessionService', 'ModalService',
 ];
 
 /**
@@ -12,8 +11,10 @@ PurchaseListController.$inject = [
  *
  * This module is responsible for the management of Purchase Order Registry.
  */
-function PurchaseListController($state, PurchaseOrder, Notify, Receipts, uiGridConstants,
-  Columns, GridState, Session, Modal) {
+function PurchaseListController(
+  $state, PurchaseOrder, Notify, uiGridConstants, Columns, GridState, Session,
+  Modal
+) {
   var vm = this;
 
   var cacheKey = 'PurchaseRegistry';
@@ -26,7 +27,6 @@ function PurchaseListController($state, PurchaseOrder, Notify, Receipts, uiGridC
   vm.onRemoveFilter = onRemoveFilter;
   vm.download = PurchaseOrder.download;
 
-  vm.getDocument = getDocument;
   vm.editStatus = editStatus;
 
   // track if module is making a HTTP request for purchase order
@@ -106,11 +106,6 @@ function PurchaseListController($state, PurchaseOrder, Notify, Receipts, uiGridC
     Notify.handleError(error);
   }
 
-  // get document
-  function getDocument(uuid) {
-    Receipts.purchase(uuid);
-  }
-
   // edit status
   function editStatus(purchase) {
     Modal.openPurchaseOrderStatus(purchase)
@@ -122,7 +117,7 @@ function PurchaseListController($state, PurchaseOrder, Notify, Receipts, uiGridC
 
   /** load purchase orders */
   function load(filters) {
-    // flush error and loading states    
+    // flush error and loading states
     vm.hasError = false;
     toggleLoadingIndicator();
 

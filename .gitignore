@@ -40,3 +40,5 @@ nbproject/
 # ignore istanbul generated folders
 .nyc_output/
 
+yarn-error.log
+*.log

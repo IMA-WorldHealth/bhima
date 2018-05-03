@@ -19,13 +19,18 @@ function StockEntryController(
   Depots, Inventory, Notify, Session, util, bhConstants, ReceiptModal, Purchase,
   StockForm, Stock, StockModal, uiGridConstants, Store, AppCache, Uuid, $translate
 ) {
-  var vm = this;
+  const vm = this;
+  const cache = new AppCache('StockCache');
+  let inventoryStore;
 
   vm.stockForm = new StockForm('StockEntry');
   vm.movement = {};
 
+  vm.onDateChange = date => {
+    vm.movement.date = date;
+  };
+
   // exposing some properties to the view
-  vm.itemIncrement = 1;
   vm.enterprise = Session.enterprise;
   vm.maxLength = util.maxLength;
   vm.maxDate = new Date();
@@ -40,16 +45,16 @@ function StockEntryController(
   vm.setLots = setLots;
   vm.submit = submit;
   vm.changeDepot = changeDepot;
+  vm.reset = reset;
 
-  var inventoryStore = null;
-  var cache = new AppCache('StockEntry');
-  var mapEntry = {
+  const mapEntry = {
     purchase : { find : findPurchase, submit : submitPurchase },
     donation : { find : handleDonationSelection, submit : submitDonation },
     integration : { find : handleIntegrationSelection, submit : submitIntegration },
     transfer_reception : { find : findTransfer, submit : submitTransferReception },
   };
-  var gridOptions = {
+
+  const gridOptions = {
     appScopeProvider : vm,
     enableSorting : false,
     enableColumnMenus : false,
@@ -58,7 +63,7 @@ function StockEntryController(
         field : 'status',
         width : 25,
         displayName : '',
-        cellTemplate : 'modules/stock/entry/templates/status.tmpl.html'
+        cellTemplate : 'modules/stock/entry/templates/status.tmpl.html',
       },
 
       {
@@ -66,14 +71,14 @@ function StockEntryController(
         width : 120,
         displayName : 'TABLE.COLUMNS.CODE',
         headerCellFilter : 'translate',
-        cellTemplate : 'modules/stock/entry/templates/code.tmpl.html'
+        cellTemplate : 'modules/stock/entry/templates/code.tmpl.html',
       },
 
       {
         field : 'description',
         displayName : 'TABLE.COLUMNS.DESCRIPTION',
         headerCellFilter : 'translate',
-        cellTemplate : 'modules/stock/entry/templates/description.tmpl.html'
+        cellTemplate : 'modules/stock/entry/templates/description.tmpl.html',
       },
 
       {
@@ -81,7 +86,7 @@ function StockEntryController(
         width : 150,
         displayName : 'TABLE.COLUMNS.LOT',
         headerCellFilter : 'translate',
-        cellTemplate : 'modules/stock/entry/templates/lot.tmpl.html'
+        cellTemplate : 'modules/stock/entry/templates/lot.tmpl.html',
       },
 
       {
@@ -90,13 +95,13 @@ function StockEntryController(
         displayName : 'TABLE.COLUMNS.QUANTITY',
         headerCellFilter : 'translate',
         cellTemplate : 'modules/stock/entry/templates/quantity.tmpl.html',
-        aggregationType : uiGridConstants.aggregationTypes.sum
+        aggregationType : uiGridConstants.aggregationTypes.sum,
       },
 
       {
         field : 'actions',
         width : 25,
-        cellTemplate : 'modules/stock/entry/templates/actions.tmpl.html'
+        cellTemplate : 'modules/stock/entry/templates/actions.tmpl.html',
       },
     ],
     data : vm.stockForm.store.data,
@@ -104,6 +109,15 @@ function StockEntryController(
     flatEntityAccess : true,
   };
 
+  // reset the form after submission or on clear
+  function reset(form) {
+    const _form = form || mapEntry.form;
+    const _date = vm.movement.date;
+    vm.movement = { date : _date };
+    _form.$setPristine();
+    _form.$setUntouched();
+    vm.stockForm.store.clear();
+  }
   // exposing the grid options to the view
   vm.gridOptions = gridOptions;
 
@@ -124,8 +138,8 @@ function StockEntryController(
     hasValidInput();
   }
 
-  function removeItem(item) {
-    vm.stockForm.removeItem(item.index);
+  function removeItem(index) {
+    vm.stockForm.removeItem(index);
     hasValidInput();
   }
 
@@ -152,78 +166,99 @@ function StockEntryController(
 
     // make sure that the depot is loaded if it doesn't exist at startup.
     if (cache.depotUuid) {
-      Depots.read(cache.depotUuid)
-      .then(function (depot) {
-        vm.depot = depot;
-        setupStock();
-      });
+      Depots.read(cache.depotUuid, { only_user : true })
+        .then((depot) => {
+          vm.depot = depot;
+          setupStock();
+        })
+        .catch(Notify.handleError);
     } else {
       changeDepot().then(setupStock);
     }
   }
 
   function loadInventories() {
-    // by definition, a item is consumable if it is purchasable because it can finish or be full used (amorti)
+    // by definition, an item is consumable if it is purchasable because it can finish or be full used (amorti)
     // an aspirin or a pen are both consumable because they can be purchased
     // we will load only purchasable items
 
     Inventory.read(null, { consumable : 1 })
-      .then(function (inventories) {
+      .then((inventories) => {
         vm.inventories = inventories;
         inventoryStore = new Store({ identifier : 'uuid', data : inventories });
       })
       .catch(Notify.handleError);
   }
 
+  function resetSelectedEntity() {
+    vm.movement.entity = {};
+    vm.movement.entry_type = null;
+    vm.movement.description = null;
+    vm.reference = null;
+    vm.displayName = null;
+  }
+
+  function handleSelectedEntity(_entities, _type) {
+    if (!_entities || !_entities.length) {
+      resetSelectedEntity();
+      return;
+    }
+
+    vm.movement.entity = {
+      uuid : _entities[0].uuid,
+      type : _type,
+      instance : _entities[0], // just to get common information in every purchase
+    };
+
+    populate(_entities);
+  }
+
   // pop up  a modal to let user find a purchase order
   function findPurchase() {
-    var description = $translate.instant('STOCK.PURCHASE_DESCRIPTION');
+    const description = $translate.instant('STOCK.PURCHASE_DESCRIPTION');
     initSelectedEntity(description);
 
     StockModal.openFindPurchase()
-      .then(function (purchase) {
-        if (!purchase) { return; }
-        vm.movement.entity = {
-          uuid : purchase[0].uuid,
-          type : 'purchase',
-          instance : purchase[0], // just to get common information in every purchase
-        };
-
+      .then((purchase) => {
+        handleSelectedEntity(purchase, 'purchase');
         setSelectedEntity(vm.movement.entity.instance);
-        populate(purchase);
       })
       .catch(Notify.handleError);
   }
 
   // find transfer
   function findTransfer() {
-    var description = $translate.instant('STOCK.RECEPTION_DESCRIPTION');
+    const description = $translate.instant('STOCK.RECEPTION_DESCRIPTION');
     initSelectedEntity(description);
 
     StockModal.openFindTansfer({ depot_uuid : vm.depot.uuid })
-      .then(function (transfers) {
-        if (!transfers) { return; }
-        vm.movement.entity = {
-          uuid : transfers[0].uuid,
-          type : 'transfer_reception',
-          instance : transfers[0],
-        };
+      .then((transfers) => {
+        if (!transfers) {
+          resetSelectedEntity();
+          return;
+        }
 
+        handleSelectedEntity(transfers, 'transfer_reception');
         vm.reference = transfers[0].documentReference;
-        populate(transfers);
         vm.hasValidInput = hasValidInput();
       })
       .catch(Notify.handleError);
   }
 
   function handleIntegrationSelection() {
-    var description = $translate.instant('STOCK.RECEPTION_INTEGRATION');
+    const description = $translate.instant('STOCK.RECEPTION_INTEGRATION');
     initSelectedEntity(description);
+    if (vm.gridOptions.data.length === 0) {
+      vm.addItems(1);
+    }
   }
 
   function handleDonationSelection() {
-    var description = $translate.instant('STOCK.RECEPTION_DONATION');
+    const description = $translate.instant('STOCK.RECEPTION_DONATION');
     initSelectedEntity(description);
+    if (vm.gridOptions.data.length === 0) {
+      vm.addItems(1);
+    }
   }
 
   // fill the grid with the inventory contained in the purchase order
@@ -236,8 +271,8 @@ function StockEntryController(
     // adding items.length line in the stockForm store, which will be reflected to the grid
     vm.stockForm.addItems(items.length);
 
-    vm.stockForm.store.data.forEach(function (item, index) {
-      var inventory = inventoryStore.get(items[index].inventory_uuid);
+    vm.stockForm.store.data.forEach((item, index) => {
+      const inventory = inventoryStore.get(items[index].inventory_uuid);
 
       item.code = inventory.code;
       item.inventory_uuid = inventory.uuid;
@@ -247,7 +282,7 @@ function StockEntryController(
       item.cost = item.quantity * item.unit_cost;
       item.expiration_date = new Date();
 
-      if(vm.movement.entity.type === 'transfer_reception') {
+      if (vm.movement.entity.type === 'transfer_reception') {
         item.lots.push({
           isValid : true,
           lot : items[index].label,
@@ -268,17 +303,22 @@ function StockEntryController(
   }
 
   function setSelectedEntity(entity) {
-    var uniformEntity = Stock.uniformSelectedEntity(entity);
+    const uniformEntity = Stock.uniformSelectedEntity(entity);
     vm.reference = uniformEntity.reference;
     vm.displayName = uniformEntity.displayName;
   }
 
   function setLots(stockLine) {
+    // Additionnal information for an inventory Group
+    const inventory = inventoryStore.get(stockLine.inventory_uuid);
+    stockLine.expires = inventory.expires;
+    stockLine.unique_item = inventory.unique_item;
+
     StockModal.openDefineLots({
-      stockLine : stockLine,
+      stockLine,
       entry_type : vm.movement.entry_type,
     })
-      .then(function (res) {
+      .then((res) => {
         if (!res) { return; }
         stockLine.lots = res.lots;
         stockLine.givenQuantity = res.quantity;
@@ -289,19 +329,23 @@ function StockEntryController(
 
   // validation
   function hasValidInput() {
-    return vm.stockForm.store.data.every(function (line) {
-      return line.lots.length > 0;
-    });
+    return vm.stockForm.store.data.every(line => line.lots.length > 0);
   }
 
   function submit(form) {
-    if (form.$invalid) { return; }
-    mapEntry[vm.movement.entry_type].submit();
+    if (form.$invalid) {
+      return Notify.danger('FORM.ERRORS.INVALID');
+    }
+
+    if (!vm.movement.entry_type) {
+      return Notify.danger('ERRORS.ER_NO_STOCK_SOURCE');
+    }
+    mapEntry.form = form;
+    return mapEntry[vm.movement.entry_type].submit();
   }
 
   function submitPurchase() {
-
-    var movement = {
+    const movement = {
       depot_uuid : vm.depot.uuid,
       entity_uuid : vm.movement.entity.uuid,
       date : vm.movement.date,
@@ -313,13 +357,12 @@ function StockEntryController(
     movement.lots = Stock.processLotsFromStore(vm.stockForm.store.data, vm.movement.entity.uuid);
 
     Stock.stocks.create(movement)
-      .then(function (document) {
+      .then((document) => {
         vm.document = document;
         return Purchase.stockStatus(vm.movement.entity.uuid);
       })
-      .then(function () {
-        vm.stockForm.store.clear();
-        vm.movement = {};
+      .then(() => {
+        vm.reset();
         ReceiptModal.stockEntryPurchaseReceipt(vm.document.uuid, bhConstants.flux.FROM_PURCHASE);
       })
       .catch(Notify.handleError);
@@ -327,7 +370,7 @@ function StockEntryController(
 
 
   function submitIntegration() {
-    var movement = {
+    const movement = {
       depot_uuid : vm.depot.uuid,
       entity_uuid : null,
       date : vm.movement.date,
@@ -336,22 +379,20 @@ function StockEntryController(
       user_id : vm.stockForm.details.user_id,
     };
 
-    var entry = {
+    const entry = {
       lots : Stock.processLotsFromStore(vm.stockForm.store.data, movement.entity_uuid),
-      movement : movement
+      movement,
     };
 
     Stock.integration.create(entry)
-      .then(function (document) {
-        vm.stockForm.store.clear();
-        vm.movement = {};
+      .then((document) => {
+        vm.reset();
         ReceiptModal.stockEntryIntegrationReceipt(document.uuid, bhConstants.flux.FROM_INTEGRATION);
       })
       .catch(Notify.handleError);
   }
-
   function submitDonation() {
-    var movement = {
+    const movement = {
       depot_uuid : vm.depot.uuid,
       entity_uuid : null,
       date : vm.movement.date,
@@ -370,9 +411,8 @@ function StockEntryController(
     movement.lots = Stock.processLotsFromStore(vm.stockForm.store.data, Uuid());
 
     return Stock.stocks.create(movement)
-      .then(function (document) {
-        vm.stockForm.store.clear();
-        vm.movement = {};
+      .then((document) => {
+        vm.reset();
         ReceiptModal.stockEntryDonationReceipt(document.uuid, bhConstants.flux.FROM_DONATION);
       })
       .catch(Notify.handleError);
@@ -380,7 +420,7 @@ function StockEntryController(
 
   // submit transfer reception
   function submitTransferReception() {
-    var movement = {
+    const movement = {
       from_depot : vm.movement.entity.instance.depot_uuid,
       to_depot : vm.depot.uuid,
       document_uuid : vm.movement.entity.instance.document_uuid,
@@ -393,24 +433,25 @@ function StockEntryController(
     movement.lots = Stock.processLotsFromStore(vm.stockForm.store.data, null);
 
     return Stock.movements.create(movement)
-      .then(function (document) {
-        vm.stockForm.store.clear();
-        vm.movement = {};
+      .then((document) => {
+        vm.reset();
         ReceiptModal.stockEntryDepotReceipt(document.uuid, true);
       })
       .catch(Notify.handleError);
   }
 
   function changeDepot() {
-    return Depots.openSelectionModal(vm.depot)
-      .then(function (depot) {
+    // if there is not cached depot, the modal require to select a depot
+    const requirement = !cache.depotUuid;
+    return Depots.openSelectionModal(vm.depot, requirement)
+      .then((depot) => {
         vm.depot = depot;
         cache.depotUuid = vm.depot.uuid;
       });
   }
 
   function buildStockLine(line) {
-    var inventory = inventoryStore.get(line.inventory_uuid);
+    const inventory = inventoryStore.get(line.inventory_uuid);
     line.code = inventory.code;
     line.label = inventory.label;
     line.unit_cost = inventory.price;

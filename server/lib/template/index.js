@@ -27,6 +27,7 @@ const presentation = require('./helpers/presentation');
 const hbs = exphbs.create({
   helpers : {
     date          : dates.date,
+    month         : dates.month,
     timestamp     : dates.timestamp,
     age           : dates.age,
     multiply      : math.multiply,
@@ -36,10 +37,12 @@ const hbs = exphbs.create({
     currency      : finance.currency,
     numberToText  : finance.numberToText,
     indentAccount : finance.indentAccount,
+    debcred       : finance.debcred,
     look          : objects.look,
     equal         : logic.equal,
     gt            : logic.gt,
     lt            : logic.lt,
+    absolute      : math.absolute,
     getIncomeExpenseTitle : presentation.getTitle,
     isIncomeViewable : presentation.isIncomeViewable,
     isExpenseViewable : presentation.isExpenseViewable,

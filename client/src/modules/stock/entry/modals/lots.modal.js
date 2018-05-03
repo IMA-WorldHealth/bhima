@@ -3,145 +3,123 @@ angular.module('bhima.controllers')
 
 StockDefineLotsModalController.$inject = [
   '$uibModalInstance', 'NotifyService', 'uiGridConstants', 'data',
-  'SessionService',
+  'SessionService', 'bhConstants', 'StockEntryModalForm',
 ];
 
-function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data, Session) {
-  var vm = this;
+function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data, Session, bhConstants, EntryForm) {
+  const vm = this;
+
+  // initialize the form instance
+  vm.form = new EntryForm({
+    expires : Data.stockLine.expires,
+    rows : Data.stockLine.lots,
+  });
+
+  vm.hasMissingLotIdentifier = false;
+  vm.hasInvalidLotExpiration = false;
+  vm.hasInvalidLotQuantity = false;
 
   vm.enterprise = Session.enterprise;
-  vm.stockLine = Data.stockLine;
+  vm.stockLine = angular.copy(Data.stockLine);
   vm.entryType = Data.entry_type;
-  vm.gridApi = {};
-  vm.isCostEditable = (vm.entryType !== 'purchase' && vm.entryType !== 'transfer_reception');
 
-  vm.gridOptions = {
-    appScopeProvider: vm,
-    enableSorting: false,
-    enableColumnMenus: false,
-    showColumnFooter: true,
-    fastWatch: true,
-    flatEntityAccess: true,
-    columnDefs: [
-      {
-        field: 'status',
-        width: 25,
-        displayName: '',
-        cellTemplate: 'modules/stock/entry/modals/templates/lot.status.tmpl.html'
-      },
-
-      {
-        field: 'lot',
-        displayName: 'TABLE.COLUMNS.LOT',
-        headerCellFilter: 'translate',
-        aggregationType: uiGridConstants.aggregationTypes.count,
-        aggregationHideLabel: true,
-        cellTemplate: 'modules/stock/entry/modals/templates/lot.input.tmpl.html'
-      },
-
-      {
-        field: 'quantity',
-        type: 'number',
-        width: 150,
-        displayName: 'TABLE.COLUMNS.QUANTITY',
-        headerCellFilter: 'translate',
-        aggregationType: uiGridConstants.aggregationTypes.sum,
-        aggregationHideLabel: true,
-        footerCellClass: 'text-right',
-        cellTemplate: 'modules/stock/entry/modals/templates/lot.quantity.tmpl.html'
-      },
-
-      {
-        field: 'expiration_date',
-        type: 'date',
-        width: 150,
-        displayName: 'TABLE.COLUMNS.EXPIRATION_DATE',
-        headerCellFilter: 'translate',
-        cellTemplate: 'modules/stock/entry/modals/templates/lot.expiration.tmpl.html'
-      },
-
-      {
-        field: 'actions',
-        width: 25,
-        cellTemplate: 'modules/stock/entry/modals/templates/lot.actions.tmpl.html'
-      }
-    ],
-    data: vm.stockLine.lots,
-    onRegisterApi: onRegisterApi
-  };
+  vm.isTransfer = (vm.entryType === 'transfer_reception');
 
   // exposing method to the view
   vm.submit = submit;
   vm.cancel = cancel;
-  vm.addLot = addLot;
-  vm.checkLine = checkLine
-  vm.checkAll = checkAll;
-  vm.removeLot = removeLot;
 
-  function sumLot(x, y) {
-    return x + y.quantity;
-  }
+  vm.onChanges = onChanges;
+  vm.onDateChange = onDateChange;
+
+  vm.isCostEditable = (vm.entryType !== 'purchase' && vm.entryType !== 'transfer_reception');
+
+  const cols = [{
+    field : 'status',
+    width : 25,
+    displayName : '',
+    cellTemplate : 'modules/stock/entry/modals/templates/lot.status.tmpl.html',
+  }, {
+    field : 'lot',
+    displayName : 'TABLE.COLUMNS.LOT',
+    headerCellFilter : 'translate',
+    aggregationType : uiGridConstants.aggregationTypes.count,
+    aggregationHideLabel : true,
+    cellTemplate : 'modules/stock/entry/modals/templates/lot.input.tmpl.html',
+  }, {
+    field : 'quantity',
+    type : 'number',
+    width : 150,
+    displayName : 'TABLE.COLUMNS.QUANTITY',
+    headerCellFilter : 'translate',
+    aggregationType : uiGridConstants.aggregationTypes.sum,
+    aggregationHideLabel : true,
+    footerCellClass : 'text-right',
+    cellTemplate : 'modules/stock/entry/modals/templates/lot.quantity.tmpl.html',
+  }, {
+    field : 'expiration_date',
+    type : 'date',
+    cellFilter : `date:"${bhConstants.dates.format}"`,
+    width : 150,
+    visible : (vm.stockLine.expires !== 0),
+    displayName : 'TABLE.COLUMNS.EXPIRATION_DATE',
+    headerCellFilter : 'translate',
+    cellTemplate : 'modules/stock/entry/modals/templates/lot.expiration.tmpl.html',
+  }, {
+    field : 'actions',
+    width : 25,
+    cellTemplate : 'modules/stock/entry/modals/templates/lot.actions.tmpl.html',
+  }];
+
+  vm.gridOptions = {
+    appScopeProvider : vm,
+    enableSorting : false,
+    enableColumnMenus : false,
+    showColumnFooter : true,
+    fastWatch : true,
+    flatEntityAccess : true,
+    data : vm.form.rows,
+    columnDefs : cols,
+    onRegisterApi,
+  };
 
   function init() {
-    if (!vm.stockLine.lots.length) {
-      addLot();
-    } else {
-      // if there is at least one lot already, then check only
-      checkAll();
-    }
-  }
-
-  function addLot() {
-    vm.stockLine.lots.push({
-      isValid: false,
-      lot: null,
-      expiration_date: new Date(),
-      quantity: 0,
-    });
-
-    checkAll();
+    if (vm.form.rows.length) { return; }
+    vm.form.addItem();
   }
 
   function onRegisterApi(api) {
     vm.gridApi = api;
   }
 
-  function checkAll() {
-    vm.hasNoLot = !vm.stockLine.lots.length > 0;
-
-    vm.isSomeLineIncorrect = vm.stockLine.lots.some(function (lot) {
-      return lot.isValid === false;
-    });
-
-    vm.sum = vm.stockLine.lots.reduce(sumLot, 0);
-
-    vm.isQuantityIncorrect = vm.sum > vm.stockLine.quantity;
-
-    vm.hasInvalidEntries = vm.isSomeLineIncorrect || vm.isQuantityIncorrect || vm.hasNoLot;
+  function onChanges() {
+    vm.errors = vm.form.validate();
+    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.EDIT);
   }
 
-  function checkLine(line, date) {
-    if (date) { line.expiration_date = date; }
-
-    var isPosterior = new Date(line.expiration_date) >= new Date();
-    line.isValid = (line.lot && line.quantity > 0 && isPosterior);
-    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.EDIT);
-
-    checkAll();
+  function onDateChange(date, row) {
+    if (date) {
+      row.expiration_date = date;
+      onChanges();
+    }
   }
 
   function cancel() {
     Instance.dismiss();
   }
 
-  function removeLot(index) {
-    vm.stockLine.lots.splice(index, 1);
-    checkAll();
-  }
+  function submit(form) {
+    vm.errors = vm.form.validate();
 
-  function submit(detailsForm) {
-    if (!vm.hasInvalidEntries) {
-      Instance.close({ lots: vm.stockLine.lots, quantity: vm.sum });
+    // unfortunately, a negative number will not trigger the onChange() function
+    // on the quantity, since the "min" property is set on the input.  So, we
+    // need to through a generic error here.
+    if (form.$invalid) {
+      return;
+    }
+
+    if (vm.errors.length === 0) {
+      Instance.close({ lots : vm.form.rows, quantity : vm.form.total() });
     }
   }
 

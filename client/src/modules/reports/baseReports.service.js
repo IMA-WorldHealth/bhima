@@ -13,6 +13,8 @@ function BaseReportService($http, Modal, util, Languages) {
   service.saveReport = saveReport;
   service.requestPreview = requestPreview;
   service.saveAsModal = saveAsModal;
+  service.emailReportModal = emailReportModal;
+  service.emailReport = emailReport;
 
   function requestKey(key) {
     var url = '/reports/keys/';
@@ -61,6 +63,25 @@ function BaseReportService($http, Modal, util, Languages) {
     var url = '/reports/archive/'.concat(uuid);
     return $http.delete(url)
       .then(util.unwrapHttpResponse);
+  }
+
+  function emailReport(uuid, email) {
+    var url = '/reports/archive/'.concat(uuid, '/email');
+    return $http.post(url, { address : email })
+      .then(util.unwrapHttpResponse);
+  }
+
+  function emailReportModal(options) {
+    var instance = Modal.open({
+      keyboard : true,
+      resolve : {
+        options : function resolveOptions() { return options; },
+      },
+      controller : 'EmailReportController as EmailCtrl',
+      templateUrl : '/modules/reports/modals/reports.email.html',
+    });
+
+    return instance.result;
   }
 
   function saveAsModal(options) {

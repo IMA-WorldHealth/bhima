@@ -8,7 +8,7 @@
 <div ng-show="!ReportConfigCtrl.previewGenerated">
   <div class="row">
     <div class="col-md-12">
-      <h3 class="text-capitalize" translate>REPORT.STOCK.INVENTORY_REPORT</h3>
+      <h3 translate>REPORT.STOCK.INVENTORY_REPORT</h3>
       <p class="text-info" translate>REPORT.STOCK.INVENTORY_REPORT_DESCRIPTION</p>
     </div>
   </div>
@@ -45,7 +45,8 @@
           <!-- choose date until  -->
           <bh-date-editor
             label="FORM.LABELS.UNTIL_DATE"
-            date-value="ReportConfigCtrl.dateTo">
+            date-value="ReportConfigCtrl.dateTo"
+            on-change="ReportConfigCtrl.onDateChange(date)">
           </bh-date-editor>
 
           <!-- preview -->

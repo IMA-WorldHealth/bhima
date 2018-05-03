@@ -4,7 +4,7 @@
     <span class="caret"></span>
   </a>
 
-  <ul data-action="{{ rowRenderIndex}}"  class="dropdown-menu-right" uib-dropdown-menu>
+  <ul data-action="{{ rowRenderIndex}}"  class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
     <li class="dropdown-header">{{row.entity.reference}}</li>
     <li>
       <a data-method="record" ui-sref="patientRecord.details({ patientID : row.entity.uuid })" href>

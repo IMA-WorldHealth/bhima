@@ -27,15 +27,15 @@ function lookupDiscount(id) {
     WHERE d.id = ?;`;
 
   return db.exec(sql, [id])
-  .then((rows) => {
+    .then((rows) => {
     // if no matches in the database, throw a 404
-    if (rows.length === 0) {
-      throw new NotFound(`Could not find a discount with id ${id}`);
-    }
+      if (rows.length === 0) {
+        throw new NotFound(`Could not find a discount with id ${id}`);
+      }
 
-    // return a single record
-    return rows[0];
-  });
+      // return a single record
+      return rows[0];
+    });
 }
 
 /**
@@ -64,11 +64,11 @@ exports.list = function list(req, res, next) {
     'SELECT d.id, d.label, d.value FROM discount AS d;';
 
   db.exec(sql)
-  .then((rows) => {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 };
 
 /**
@@ -109,7 +109,7 @@ exports.update = function update(req, res, next) {
   // no namespace necessary for updates -- allows middleware to catch empty
   // req.body's
   const data = db.convert(req.body, ['inventory_uuid']);
-  const id = req.params.id;
+  const { id } = req.params;
 
   // remove the id if it exists (prevent attacks on data integrity)
   delete data.id;
@@ -145,7 +145,7 @@ exports.update = function update(req, res, next) {
  * a 204 NO CONTENT for a successfully deleted record.
  */
 exports.delete = function del(req, res, next) {
-  const id = req.params.id;
+  const { id } = req.params;
   const sql =
     'DELETE FROM discount WHERE id = ?;';
 

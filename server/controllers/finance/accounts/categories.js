@@ -44,7 +44,7 @@ function detail(req, res, next) {
  */
 function list(req, res, next) {
   const sql = `
-    SELECT id, category, translation_key 
+    SELECT id, category, translation_key
     FROM account_category;
   `;
 
@@ -75,7 +75,7 @@ function create(req, res, next) {
    * @todo
    * design/ update account categories to allow setting a translation_key
    * - the implications of this are system wide
-   **/
+   * */
   record.translation_key = '';
 
   db.exec(sql, [record])
@@ -96,14 +96,14 @@ function create(req, res, next) {
  */
 function update(req, res, next) {
   const data = req.body;
-  const id = req.params.id;
+  const { id } = req.params;
   const sql = 'UPDATE account_category SET ? WHERE id = ?';
 
   delete data.id;
 
   lookupAccountCategory(id)
     .then(() => db.exec(sql, [data, id]))
-   .then(() => lookupAccountCategory(id))
+    .then(() => lookupAccountCategory(id))
     .then((accountCategory) => {
       res.status(200).json(accountCategory);
     })
@@ -120,7 +120,7 @@ function update(req, res, next) {
  * DELETE /accounts/categories/:id
  */
 function remove(req, res, next) {
-  const id = req.params.id;
+  const { id } = req.params;
   const sql = 'DELETE FROM account_category WHERE id = ?';
 
   lookupAccountCategory(id)

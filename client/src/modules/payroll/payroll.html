@@ -1,0 +1,44 @@
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static" translate> TREE.PAYROLL </li>
+      <li class="title" translate> TREE.PAYROLL_CONFIGURATION </li>
+    </ol>
+
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <button class="btn btn-default text-capitalize" ui-sref="payroll.create" data-method="create">
+          <span class="fa fa-plus"></span> <span translate>FORM.BUTTONS.ADD_PAYROLL_CONFIGURATION</span>
+        </button>
+      </div>
+
+      <div class="toolbar-item">
+        <button
+          type="button"
+          ng-click="PayrollConfigurationCtrl.toggleFilter()"
+          data-method="filter"
+          class="btn btn-default"
+          ng-class="{ 'btn-info' : PayrollConfigurationCtrl.filterEnabled }">
+          <i class="fa fa-filter"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- main content -->
+<div class="flex-content">
+  <div class="container-fluid">
+    <div id="payroll-configuration-grid"
+      ui-grid="PayrollConfigurationCtrl.gridOptions"
+      class="grid-full-height"
+      ui-grid-auto-resize>
+
+      <bh-grid-loading-indicator
+        loading-state="PayrollConfigurationCtrl.loading"
+        empty-state="PayrollConfigurationCtrl.gridOptions.data.length === 0"
+        error-state="PayrollConfigurationCtrl.hasError">
+      </bh-grid-loading-indicator>
+    </div>
+  </div>
+</div>

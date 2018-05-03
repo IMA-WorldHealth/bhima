@@ -3,7 +3,7 @@ angular.module('bhima.routes')
     $stateProvider
       .state('generalLedger', {
         url         : '/general_ledger',
-        controller  : 'GeneralLedgerAccountsController as GeneralLedgerAccountsCtrl',
-        templateUrl : 'modules/general-ledger/general-ledger-accounts.html',
+        controller  : 'GeneralLedgerController as GeneralLedgerCtrl',
+        templateUrl : 'modules/general-ledger/general-ledger.html',
       });
   }]);

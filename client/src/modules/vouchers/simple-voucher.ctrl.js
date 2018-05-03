@@ -1,9 +1,9 @@
 angular.module('bhima.controllers')
-.controller('SimpleJournalVoucherController', SimpleJournalVoucherController);
+  .controller('SimpleJournalVoucherController', SimpleJournalVoucherController);
 
 SimpleJournalVoucherController.$inject = [
-  'VoucherService', 'AccountService', 'SessionService', 'util',
-  'NotifyService',  'ReceiptModal','bhConstants', '$rootScope', 'VoucherForm', '$translate'
+  'VoucherService', 'util', 'NotifyService', 'ReceiptModal', 'bhConstants',
+  '$rootScope', 'VoucherForm',
 ];
 
 /**
@@ -22,8 +22,8 @@ SimpleJournalVoucherController.$inject = [
  * @todo - use VoucherForm
  * forms (via AppCache and the breadcrumb component).
  */
-function SimpleJournalVoucherController(Vouchers, Accounts, Session, util, Notify, Receipts, bhConstants, RS, VoucherForm, $translate) {
-  var vm = this;
+function SimpleJournalVoucherController(Vouchers, util, Notify, Receipts, bhConstants, RS, VoucherForm) {
+  const vm = this;
 
   vm.bhConstants = bhConstants;
 
@@ -31,30 +31,33 @@ function SimpleJournalVoucherController(Vouchers, Accounts, Session, util, Notif
   vm.Voucher = new VoucherForm('SimpleVoucher');
 
   // global variables
+  vm.timestamp = new Date();
   vm.maxLength = util.maxTextLength;
 
   // expose methods to the view
   vm.submit = submit;
   vm.clear = clear;
 
+  vm.onSelectCreditAccount = onSelectCreditAccount;
+  vm.onSelectDebitAccount = onSelectDebitAccount;
+
   // format voucher types and bind to the view
   Vouchers.transactionType()
-    .then(function (list) {
-
-      // make sure that the items are translated
-      list.data.forEach(function (item) {
-        item.hrText = $translate.instant(item.text);
-      });
-
+    .then((list) => {
       // bind to the view
-      vm.types = list.data;
+      vm.types = list;
     })
     .catch(Notify.handleError);
 
-  vm.timestamp = new Date();
+  function onSelectCreditAccount(account) {
+    vm.Voucher.store.data[1].account_id = account.id;
+  }
+
+  function onSelectDebitAccount(account) {
+    vm.Voucher.store.data[0].account_id = account.id;
+  }
 
   function submit(form) {
-
     // stop submission if the form is invalid
     if (form.$invalid) {
       Notify.danger('FORM.ERRORS.RECORD_ERROR');
@@ -62,26 +65,26 @@ function SimpleJournalVoucherController(Vouchers, Accounts, Session, util, Notif
     }
 
     // CONVENTION: 0 is debit, 1 is credit
-    var debitRow = vm.Voucher.store.data[0];
-    var creditRow = vm.Voucher.store.data[1];
+    const debitRow = vm.Voucher.store.data[0];
+    const creditRow = vm.Voucher.store.data[1];
 
     // configure as needed
     debitRow.configure({ debit : vm.amount });
     creditRow.configure({ credit : vm.amount });
 
-    var valid = vm.Voucher.validate();
+    const valid = vm.Voucher.validate();
 
     if (!valid) {
       Notify.danger(vm.Voucher._error);
       return;
     }
 
-    var voucher = vm.Voucher.details;
+    const voucher = vm.Voucher.details;
     voucher.items = vm.Voucher.store.data;
 
     // submit the voucher
     return Vouchers.create(voucher)
-      .then(function (res) {
+      .then((res) => {
         Receipts.voucher(res.uuid, true);
 
         // clear the form to refresh it.
@@ -94,7 +97,6 @@ function SimpleJournalVoucherController(Vouchers, Accounts, Session, util, Notif
   }
 
   function clear() {
-
     // current timestamp to limit date
     vm.timestamp = new Date();
 
@@ -105,7 +107,8 @@ function SimpleJournalVoucherController(Vouchers, Accounts, Session, util, Notif
     delete vm.amount;
   }
 
-  RS.$on('voucher:configure', function (evt, data) {
+  // used for scanning barcodes
+  RS.$on('voucher:configure', (evt, data) => {
 
     // configure the basics of the transaction type.
     vm.Voucher.details.description = data.description;
@@ -113,8 +116,8 @@ function SimpleJournalVoucherController(Vouchers, Accounts, Session, util, Notif
 
     vm.amount = data.amount;
 
-    var debitRow = vm.Voucher.store.data[0];
-    var creditRow = vm.Voucher.store.data[1];
+    const debitRow = vm.Voucher.store.data[0];
+    const creditRow = vm.Voucher.store.data[1];
 
     if (data.debit) {
       debitRow.configure(data.debit);

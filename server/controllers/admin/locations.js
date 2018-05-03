@@ -12,12 +12,13 @@
  *
  * Each endpoint returns a table with all information available.
  * Endpoints taking UUIDs return only the records matching the UUID
- **/
+ * */
 
+
+const uuid = require('uuid/v4');
+const Topic = require('@ima-worldhealth/topic');
 
 const db = require('../../lib/db');
-const uuid = require('node-uuid');
-const Topic = require('../../lib/topic');
 
 exports.lookupVillage = lookupVillage;
 
@@ -34,7 +35,7 @@ exports.lookupVillage = lookupVillage;
  */
 exports.villages = function villages(req, res, next) {
   let sql =
-    'SELECT BUID(village.uuid) as uuid, village.name FROM village ';
+    'SELECT BUID(village.uuid) as uuid, village.name, village.longitude, village.latitude FROM village ';
 
   sql += (req.query.sector) ?
     'WHERE village.sector_uuid = ? ORDER BY village.name ASC;' :
@@ -45,11 +46,11 @@ exports.villages = function villages(req, res, next) {
   }
 
   db.exec(sql, [req.query.sector])
-  .then((data) => {
-    res.status(200).json(data);
-  })
-  .catch(next)
-  .done();
+    .then((data) => {
+      res.status(200).json(data);
+    })
+    .catch(next)
+    .done();
 };
 
 /**
@@ -90,11 +91,11 @@ exports.sectors = function sectors(req, res, next) {
   }
 
   db.exec(sql, [req.query.province])
-  .then((data) => {
-    res.status(200).json(data);
-  })
-  .catch(next)
-  .done();
+    .then((data) => {
+      res.status(200).json(data);
+    })
+    .catch(next)
+    .done();
 };
 
 /**
@@ -115,18 +116,18 @@ exports.provinces = function provinces(req, res, next) {
   if (req.query.detailed === '1') {
     sql =
       `
-      SELECT 
+      SELECT
         BUID(province.uuid) as uuid, province.name, country.name AS country_name,
         BUID(province.country_uuid) AS countryUuid
-      FROM 
-        province 
-      JOIN 
+      FROM
+        province
+      JOIN
         country ON province.country_uuid = country.uuid`;
   } else {
     sql =
       `
-      SELECT 
-        BUID(province.uuid) as uuid, province.name 
+      SELECT
+        BUID(province.uuid) as uuid, province.name
       FROM province`;
   }
 
@@ -140,11 +141,11 @@ exports.provinces = function provinces(req, res, next) {
   }
 
   db.exec(sql, [req.query.country])
-  .then((data) => {
-    res.status(200).json(data);
-  })
-  .catch(next)
-  .done();
+    .then((data) => {
+      res.status(200).json(data);
+    })
+    .catch(next)
+    .done();
 };
 
 /**
@@ -158,18 +159,18 @@ exports.provinces = function provinces(req, res, next) {
 exports.countries = function countries(req, res, next) {
   const sql =
     `
-    SELECT 
-      BUID(country.uuid) as uuid, country.name 
-    FROM 
+    SELECT
+      BUID(country.uuid) as uuid, country.name
+    FROM
       country
     ORDER BY country.name ASC;`;
 
   db.exec(sql)
-  .then((data) => {
-    res.status(200).json(data);
-  })
-  .catch(next)
-  .done();
+    .then((data) => {
+      res.status(200).json(data);
+    })
+    .catch(next)
+    .done();
 };
 
 
@@ -177,9 +178,10 @@ function lookupVillage(uid) {
   // convert hex uuid into binary
   const bid = db.bid(uid);
 
-  const sql =
-    `SELECT BUID(village.uuid) as uuid, village.name, sector.name AS sector_name, BUID(sector.uuid) AS sector_uuid,
-    province.name AS province_name, country.name AS country_name
+  const sql = `
+    SELECT BUID(village.uuid) as uuid, village.name, sector.name AS sector_name, BUID(sector.uuid) AS sector_uuid,
+      province.name AS province_name, country.name AS country_name,
+      village.longitude, village.latitude
     FROM village JOIN sector JOIN province JOIN country ON
       village.sector_uuid = sector.uuid AND
       sector.province_uuid = province.uuid AND
@@ -243,18 +245,19 @@ exports.detail = function detail(req, res, next) {
   const sql =
     `SELECT BUID(village.uuid) AS villageUuid, village.name AS village, sector.name AS sector,
       BUID(sector.uuid) AS sectorUuid, province.name AS province, BUID(province.uuid) AS provinceUuid,
-      country.name AS country, BUID(country.uuid) AS countryUuid
+      country.name AS country, BUID(country.uuid) AS countryUuid,
+      village.longitude, village.latitude
     FROM village, sector, province, country
     WHERE village.sector_uuid = sector.uuid AND
       sector.province_uuid = province.uuid AND
       province.country_uuid = country.uuid AND village.uuid = ?;`;
 
   db.one(sql, [bid])
-  .then((row) => {
-    res.status(200).json(row);
-  })
-  .catch(next)
-  .done();
+    .then((row) => {
+      res.status(200).json(row);
+    })
+    .catch(next)
+    .done();
 };
 
 /**
@@ -271,18 +274,19 @@ exports.list = function list(req, res, next) {
   const sql =
     `SELECT BUID(village.uuid) AS villageUuid, village.name AS village, sector.name AS sector,
       BUID(sector.uuid) AS sectorUuid, province.name AS province, BUID(province.uuid) AS provinceUuid,
-      country.name AS country, BUID(country.uuid) AS countryUuid
+      country.name AS country, BUID(country.uuid) AS countryUuid,
+      village.longitude, village.latitude
     FROM village, sector, province, country
     WHERE village.sector_uuid = sector.uuid AND
       sector.province_uuid = province.uuid AND
       province.country_uuid = country.uuid ;`;
 
   db.exec(sql)
-  .then((data) => {
-    res.status(200).json(data);
-  })
-  .catch(next)
-  .done();
+    .then((data) => {
+      res.status(200).json(data);
+    })
+    .catch(next)
+    .done();
 };
 
 
@@ -299,24 +303,24 @@ exports.create = {};
  */
 exports.create.country = function createCountry(req, res, next) {
   // create a UUID if not provided
-  req.body.uuid = req.body.uuid || uuid.v4();
+  req.body.uuid = req.body.uuid || uuid();
 
   const sql =
     `INSERT INTO country (uuid, name) VALUES (?, ?);`;
 
   db.exec(sql, [db.bid(req.body.uuid), req.body.name])
-  .then(() => {
-    Topic.publish(Topic.channels.ADMIN, {
-      event : Topic.events.CREATE,
-      entity : Topic.entities.LOCATION,
-      user_id : req.session.user.id,
-      uuid : req.body.uuid,
-    });
+    .then(() => {
+      Topic.publish(Topic.channels.ADMIN, {
+        event : Topic.events.CREATE,
+        entity : Topic.entities.LOCATION,
+        user_id : req.session.user.id,
+        uuid : req.body.uuid,
+      });
 
-    res.status(201).json({ uuid : req.body.uuid });
-  })
-  .catch(next)
-  .done();
+      res.status(201).json({ uuid : req.body.uuid });
+    })
+    .catch(next)
+    .done();
 };
 
 /**
@@ -334,24 +338,24 @@ exports.create.province = function createProvince(req, res, next) {
   ]);
 
   // create a UUID if not provided
-  data.uuid = data.uuid || uuid.v4();
+  data.uuid = data.uuid || uuid();
 
   const sql =
     'INSERT INTO province (uuid, name, country_uuid) VALUES (?);';
 
   db.exec(sql, [[db.bid(data.uuid), data.name, data.country_uuid]])
-  .then(() => {
-    Topic.publish(Topic.channels.ADMIN, {
-      event : Topic.events.CREATE,
-      entity : Topic.entities.LOCATION,
-      user_id : req.session.user.id,
-      uuid : data.uuid,
-    });
+    .then(() => {
+      Topic.publish(Topic.channels.ADMIN, {
+        event : Topic.events.CREATE,
+        entity : Topic.entities.LOCATION,
+        user_id : req.session.user.id,
+        uuid : data.uuid,
+      });
 
-    res.status(201).json({ uuid : data.uuid });
-  })
-  .catch(next)
-  .done();
+      res.status(201).json({ uuid : data.uuid });
+    })
+    .catch(next)
+    .done();
 };
 
 
@@ -368,24 +372,24 @@ exports.create.sector = function createSector(req, res, next) {
   const data = db.convert(req.body, ['province_uuid']);
 
   // create a UUID if not provided
-  data.uuid = data.uuid || uuid.v4();
+  data.uuid = data.uuid || uuid();
 
   const sql =
     `INSERT INTO sector (uuid, name, province_uuid) VALUES (?);`;
 
   db.exec(sql, [[db.bid(data.uuid), data.name, data.province_uuid]])
-  .then(() => {
-    Topic.publish(Topic.channels.ADMIN, {
-      event : Topic.events.CREATE,
-      entity : Topic.entities.LOCATION,
-      user_id : req.session.user.id,
-      uuid : data.uuid,
-    });
+    .then(() => {
+      Topic.publish(Topic.channels.ADMIN, {
+        event : Topic.events.CREATE,
+        entity : Topic.entities.LOCATION,
+        user_id : req.session.user.id,
+        uuid : data.uuid,
+      });
 
-    res.status(201).json({ uuid : data.uuid });
-  })
-  .catch(next)
-  .done();
+      res.status(201).json({ uuid : data.uuid });
+    })
+    .catch(next)
+    .done();
 };
 
 /**
@@ -401,24 +405,24 @@ exports.create.village = function createVillage(req, res, next) {
   const data = db.convert(req.body, ['sector_uuid']);
 
   // create a UUID if not provided
-  data.uuid = data.uuid || uuid.v4();
+  data.uuid = data.uuid || uuid();
 
   const sql =
-    `INSERT INTO village (uuid, name, sector_uuid) VALUES (?);`;
+    `INSERT INTO village (uuid, name, sector_uuid, longitude, latitude) VALUES (?);`;
 
-  db.exec(sql, [[db.bid(data.uuid), data.name, data.sector_uuid]])
-  .then(() => {
-    Topic.publish(Topic.channels.ADMIN, {
-      event : Topic.events.CREATE,
-      entity : Topic.entities.LOCATION,
-      user_id : req.session.user.id,
-      uuid : data.uuid,
-    });
+  db.exec(sql, [[db.bid(data.uuid), data.name, data.sector_uuid, data.longitude, data.latitude]])
+    .then(() => {
+      Topic.publish(Topic.channels.ADMIN, {
+        event : Topic.events.CREATE,
+        entity : Topic.entities.LOCATION,
+        user_id : req.session.user.id,
+        uuid : data.uuid,
+      });
 
-    res.status(201).json({ uuid : data.uuid });
-  })
-  .catch(next)
-  .done();
+      res.status(201).json({ uuid : data.uuid });
+    })
+    .catch(next)
+    .done();
 };
 
 
@@ -445,14 +449,14 @@ exports.update.country = function updateCountry(req, res, next) {
   ]);
 
   db.exec(sql, [data, bid])
-  .then(() => {
-    return lookupCountry(req.params.uuid);
-  })
-  .then((record) => {
-    res.status(200).json(record);
-  })
-  .catch(next)
-  .done();
+    .then(() => {
+      return lookupCountry(req.params.uuid);
+    })
+    .then((record) => {
+      res.status(200).json(record);
+    })
+    .catch(next)
+    .done();
 };
 
 /**
@@ -475,14 +479,14 @@ exports.update.province = function updateProvince(req, res, next) {
   ]);
 
   db.exec(sql, [data, bid])
-  .then(() => {
-    return lookupProvince(req.params.uuid);
-  })
-  .then((record) => {
-    res.status(200).json(record);
-  })
-  .catch(next)
-  .done();
+    .then(() => {
+      return lookupProvince(req.params.uuid);
+    })
+    .then((record) => {
+      res.status(200).json(record);
+    })
+    .catch(next)
+    .done();
 };
 
 /**
@@ -505,14 +509,14 @@ exports.update.sector = function updateSector(req, res, next) {
   ]);
 
   db.exec(sql, [data, bid])
-  .then(() => {
-    return lookupSector(req.params.uuid);
-  })
-  .then((record) => {
-    res.status(200).json(record);
-  })
-  .catch(next)
-  .done();
+    .then(() => {
+      return lookupSector(req.params.uuid);
+    })
+    .then((record) => {
+      res.status(200).json(record);
+    })
+    .catch(next)
+    .done();
 };
 
 /**
@@ -536,12 +540,12 @@ exports.update.village = function updateVillage(req, res, next) {
   ]);
 
   db.exec(sql, [data, bid])
-  .then(() => {
-    return lookupVillage(req.params.uuid);
-  })
-  .then((record) => {
-    res.status(200).json(record);
-  })
-  .catch(next)
-  .done();
+    .then(() => {
+      return lookupVillage(req.params.uuid);
+    })
+    .then((record) => {
+      res.status(200).json(record);
+    })
+    .catch(next)
+    .done();
 };

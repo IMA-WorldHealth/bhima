@@ -1,10 +1,15 @@
-<div class="ui-grid-cell-contents">
+<div class="ui-grid-cell-contents text-right">
+  <span ng-if="row.entity.isTitleAccount" class="text-bold">
+    {{row.entity.credit | currency: grid.appScope.enterprise.currency_id}}
+  </span>
+
   <input
     min="0"
-    ng-hide="row.entity.type === 'title'"
+    ng-if="!row.entity.isTitleAccount"
     ng-disabled="!grid.appScope.editBalanceEnabled || grid.appScope.previousFiscalYearExist"
     ng-model="row.entity.credit"
     data-credit-account="{{row.entity.id}}"
+    ng-change="grid.appScope.onBalanceChange()"
     class="form-control text-right"
     type="number">
 </div>

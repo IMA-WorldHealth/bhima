@@ -1,0 +1,51 @@
+<form name="GradeForm" bh-submit="GradeModalCtrl.submit(GradeForm)" novalidate>
+  <div class="modal-header">
+  <ol class="headercrumb">
+    <li ng-if="GradeModalCtrl.isCreating" class="title">
+      <span translate>GRADE.ADD_GRADE</span>
+      <label class="badge badge-success" translate>FORM.LABELS.CREATE</label>
+    </li>
+    <li ng-if="!GradeModalCtrl.isCreating" class="title">
+      <span translate>GRADE.EDIT_GRADE</span>
+      <label class="badge badge-success" translate>FORM.LABELS.UPDATE</label>
+    </li>
+  </ol>
+</div>
+
+  <div class="modal-body">
+
+    <div class="form-group" ng-class="{ 'has-error' : GradeForm.$submitted && GradeForm.text.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.DESIGNATION</label>
+      <input name="text" ng-model="GradeModalCtrl.grade.text" autocomplete="off" class="form-control" required>
+      <div class="help-block" ng-messages="GradeForm.text.$error" ng-show="GradeForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <div class="form-group" ng-class="{ 'has-error' : GradeForm.$submitted && GradeForm.code.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.CODE</label>
+      <input name="code" ng-model="GradeModalCtrl.grade.code" autocomplete="off" class="form-control" required>
+      <div class="help-block" ng-messages="GradeForm.code.$error" ng-show="GradeForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <div class="form-group" ng-class="{ 'has-error' : GradeForm.$submitted && GradeForm.basic_salary.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.BASIC_SALARY</label>
+      <input type="number" name="basic_salary" ng-model="GradeModalCtrl.grade.basic_salary" autocomplete="off" class="form-control" required>
+      <div class="help-block" ng-messages="GradeForm.basic_salary.$error" ng-show="GradeForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>    
+  </div>
+
+  <div class="modal-footer">
+    <button data-method="cancel" type="button" class="btn btn-default" ng-click="GradeModalCtrl.closeModal()">
+      <span translate>FORM.BUTTONS.CANCEL</span>
+    </button>
+
+    <bh-loading-button loading-state="GradeForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

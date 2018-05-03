@@ -22,9 +22,7 @@ exports.getAverageItemConsumption = getAverageItemConsumption;
 */
 function getItemConsumption(uuid, options) {
   let sql;
-  const group = options.group;
-  const start = options.start;
-  const end = options.end;
+  const { group, start, end } = options;
 
   // pre-format queries
   const where = start ? 'c.date BETWEEN DATE(?) AND DATE(?) ' : '1 ';
@@ -50,7 +48,7 @@ function getItemConsumption(uuid, options) {
       GROUP BY i.uuid, YEAR(c.date), MONTH(c.date)`;
     break;
 
-  case 'week' :
+  case 'week':
     sql =
       `SELECT SUM(IF(c.canceled, 0, c.quantity)) AS quantity, c.date
       FROM consumption AS c JOIN stock AS s JOIN inventory AS i
@@ -84,8 +82,7 @@ function getItemConsumption(uuid, options) {
 * @returns {Promise} returns a database query
 */
 function getAverageItemConsumption(uuid, options) {
-  const start = options.start;
-  const end = options.end;
+  const { start, end } = options;
 
   // pre-format queries
   const where = start ? 'c.date BETWEEN DATE(?) AND DATE(?) ' : '1 ';

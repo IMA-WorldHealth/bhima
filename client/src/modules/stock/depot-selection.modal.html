@@ -7,46 +7,41 @@
 
 <div class="modal-body">
 
-  <!-- link to depots page if depots not found -->
-  <p class="text-info">
-    <i class="fa fa-question-circle-o"></i>
-    <span translate>DEPOT.MODAL.NO_DEPOTS</span>
-
-    <a href ui-sref="depots.create">
-      <i class="fa fa-link"></i> <span translate>DEPOT.ADD_DEPOT</span>
-    </a>
-  </p>
-
-  <div uib-alert class="alert-warning" ng-if="$ctrl.hasNoDefaultDepot">
+  <div uib-alert class="alert-warning" ng-if="$ctrl.hasNoDefaultDepot && $ctrl.depots.length>0">
     <p>
       <strong> <i class="fa fa-warning"></i> <span translate>DEPOT.MODAL.NO_DEFAULT_DEPOT</span></strong>
       <br />
       <span translate>DEPOT.MODAL.SELECTION_EXPLANATION</span>
-      <strong><a ui-sref="depots.create"><b><span translate>DEPOT.ADD_DEPOT</span></b></a></strong>.
     </p>
   </div>
 
+  <div uib-alert class="alert-warning" ng-if="$ctrl.depots.length===0">
+      <p>
+        <span translate>DEPOT.NO_DEPOT_ASSIGNED_TO_USER</span>
+      </p>
+    </div>
+  <div ng-if="$ctrl.depots.length>0">
+    <label class="control-label" translate>DEPOT.MODAL.SELECT_A_DEPOT</label>
 
-  <label class="control-label" translate>DEPOT.MODAL.SELECT_A_DEPOT</label>
+    <!-- list of depots -->
+    <ul class="list-group">
+      <li
+        class="list-group-item"
+        ng-repeat="depot in $ctrl.depots track by depot.uuid"
+        ng-class="{'active' : $ctrl.depot.uuid === depot.uuid}"
+        ng-click="$ctrl.selectDepot(depot.uuid)"
+        style="cursor:pointer;">
 
-  <!-- list of depots -->
-  <ul class="list-group">
-    <li
-      class="list-group-item"
-      ng-repeat="depot in $ctrl.depots track by depot.uuid"
-      ng-class="{'active' : $ctrl.depot.uuid === depot.uuid}"
-      ng-click="$ctrl.selectDepot(depot.uuid)"
-      style="cursor:pointer;">
+        <span id="depot-{{ depot.uuid }}">
+          <i class="fa fa-inbox"></i> {{ depot.text }}
+        </span>
 
-      <span id="depot-{{ depot.uuid }}">
-        <i class="fa fa-inbox"></i> {{ depot.text }}
-      </span>
-
-      <span ng-show="$ctrl.depot.uuid === depot.uuid" class="badge">
-        <i class="fa fa-check"></i>
-      </span>
-    </li>
-  </ul>
+        <span ng-show="$ctrl.depot.uuid === depot.uuid" class="badge">
+          <i class="fa fa-check"></i>
+        </span>
+      </li>
+    </ul>
+  </div>
 </div>
 
 <div class="modal-footer">

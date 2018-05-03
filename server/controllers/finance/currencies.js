@@ -9,6 +9,18 @@
 
 const db = require('../../lib/db');
 
+exports.lookupCurrencyById = lookupCurrencyById;
+function lookupCurrencyById(id) {
+  const sql = `
+    SELECT c.id, c.name, c.note, c.format_key,
+      c.symbol, c.min_monentary_unit
+    FROM currency AS c
+    WHERE c.id = ?;
+  `;
+
+  return db.one(sql, id);
+}
+
 /** list currencies in the database */
 exports.list = function list(req, res, next) {
   const sql =
@@ -18,25 +30,19 @@ exports.list = function list(req, res, next) {
     ON currency.id = latest_rate.currency_id group by currency.id;`;
 
   db.exec(sql)
-  .then((rows) => {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 };
 
 /** get the details of a single currency */
 exports.detail = function detail(req, res, next) {
-  const sql =
-    `SELECT c.id, c.name, c.note, c.format_key,
-      c.symbol, c.min_monentary_unit
-    FROM currency AS c
-    WHERE c.id = ?;`;
-
-  db.one(sql, [req.params.id])
-  .then((row) => {
-    res.status(200).json(row);
-  })
-  .catch(next)
-  .done();
+  lookupCurrencyById(req.params.id)
+    .then((row) => {
+      res.status(200).json(row);
+    })
+    .catch(next)
+    .done();
 };

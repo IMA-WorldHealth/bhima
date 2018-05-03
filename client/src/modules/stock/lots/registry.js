@@ -5,111 +5,141 @@ StockLotsController.$inject = [
   'StockService', 'NotifyService',
   'uiGridConstants', '$translate', 'StockModalService', 'LanguageService',
   'GridGroupingService', 'GridStateService', 'GridColumnService',
-  'bhConstants', '$state'
+  'bhConstants', '$state',
 ];
 
 /**
  * Stock lots Controller
  * This module is a registry page for stock lots
  */
-function StockLotsController(Stock, Notify,
+function StockLotsController(
+  Stock, Notify,
   uiGridConstants, $translate, Modal, Languages, Grouping,
-  GridState, Columns, bhConstants, $state) {
-  var vm = this;
-
-  var cacheKey = 'lot-grid';
-  var filterKey = 'lot';
-  var stockLotFilters = Stock.filter.lot;
-  var gridColumns;
-  var state;
+  GridState, Columns, bhConstants, $state
+) {
+  const vm = this;
+  const cacheKey = 'lot-grid';
+  const filterKey = 'lot';
+  const stockLotFilters = Stock.filter.lot;
 
   // grouping box
   vm.groupingBox = [
-    { label: 'STOCK.INVENTORY', value: 'text' },
+    { label : 'STOCK.INVENTORY', value : 'text' },
+    { label : 'STOCK.INVENTORY_GROUP', value : 'group_name' },
   ];
-
-  vm.download = Stock.download;
-  vm.clearGridState = clearGridState;
 
   // grid columns
-  var columns = [
+  const columns = [
     {
-      field: 'depot_text',
-      displayName: 'STOCK.DEPOT',
-      headerCellFilter: 'translate'
+      field : 'depot_text',
+      displayName : 'STOCK.DEPOT',
+      headerCellFilter : 'translate',
     },
 
     {
-      field: 'code',
-      displayName: 'STOCK.CODE',
-      headerCellFilter: 'translate',
-      aggregationType: uiGridConstants.aggregationTypes.count
+      field : 'code',
+      displayName : 'STOCK.CODE',
+      headerCellFilter : 'translate',
     },
 
     {
-      field: 'text',
-      displayName: 'STOCK.INVENTORY',
-      headerCellFilter: 'translate'
+      field : 'text',
+      displayName : 'STOCK.INVENTORY',
+      headerCellFilter : 'translate',
     },
 
     {
-      field: 'label',
-      displayName: 'STOCK.LOT',
-      headerCellFilter: 'translate'
+      field : 'group_name',
+      displayName : 'TABLE.COLUMNS.INVENTORY_GROUP',
+      headerCellFilter : 'translate',
     },
 
     {
-      field: 'quantity',
-      displayName: 'STOCK.QUANTITY',
-      headerCellFilter: 'translate',
-      aggregationType: uiGridConstants.aggregationTypes.sum
+      field : 'label',
+      displayName : 'STOCK.LOT',
+      headerCellFilter : 'translate',
     },
 
     {
-      field: 'unit_type',
-      width: 75,
-      displayName: 'TABLE.COLUMNS.UNIT',
-      headerCellFilter: 'translate',
-      cellTemplate: 'modules/stock/inventories/templates/unit.tmpl.html'
+      field : 'quantity',
+      displayName : 'STOCK.QUANTITY',
+      headerCellFilter : 'translate',
     },
 
-    { field: 'entry_date', displayName: 'STOCK.ENTRY_DATE', headerCellFilter: 'translate', cellFilter: 'date' },
-    { field: 'expiration_date', displayName: 'STOCK.EXPIRATION_DATE', headerCellFilter: 'translate', cellFilter: 'date' },
-    { field: 'delay_expiration', displayName: 'STOCK.EXPIRATION', headerCellFilter: 'translate' },
+    {
+      field : 'unit_type',
+      width : 75,
+      displayName : 'TABLE.COLUMNS.UNIT',
+      headerCellFilter : 'translate',
+      cellTemplate : 'modules/stock/inventories/templates/unit.tmpl.html',
+    },
+
+    {
+      field : 'entry_date',
+      displayName : 'STOCK.ENTRY_DATE',
+      headerCellFilter : 'translate',
+      cellFilter : 'date',
+    },
+
+    {
+      field : 'expiration_date',
+      displayName : 'STOCK.EXPIRATION_DATE',
+      headerCellFilter : 'translate',
+      cellFilter : 'date',
+    },
+    {
+      field : 'delay_expiration',
+      displayName : 'STOCK.EXPIRATION',
+      headerCellFilter : 'translate',
+    },
   ];
+
+  const gridFooterTemplate = `
+    <div>
+      <b>{{ grid.appScope.countGridRows() }}</b> 
+      <span translate>TABLE.AGGREGATES.ROWS</span>
+    </div>
+  `;
 
   // options for the UI grid
   vm.gridOptions = {
-    appScopeProvider: vm,
-    enableColumnMenus: false,
-    columnDefs: columns,
-    enableSorting: true,
-    showColumnFooter: true,
-    fastWatch: true,
-    flatEntityAccess: true,
+    appScopeProvider : vm,
+    enableColumnMenus : false,
+    columnDefs : columns,
+    enableSorting : true,
+    showColumnFooter : true,
+    fastWatch : true,
+    flatEntityAccess : true,
+    showGridFooter : true,
+    gridFooterTemplate,
   };
 
-  vm.grouping = new Grouping(vm.gridOptions, true, 'depot_text', vm.grouped, true);
+  const gridColumns = new Columns(vm.gridOptions, cacheKey);
+  const state = new GridState(vm.gridOptions, cacheKey);
 
-  // expose to the view
+  // expose to the view model
+  vm.grouping = new Grouping(vm.gridOptions, true, 'depot_text', vm.grouped, true);
+  vm.download = Stock.download;
+  vm.clearGridState = clearGridState;
   vm.search = search;
   vm.openColumnConfigModal = openColumnConfigModal;
-  vm.selectGroup = selectGroup;
-  vm.toggleGroup = toggleGroup;
   vm.loading = false;
+  vm.saveGridState = state.saveGridState;
 
-  gridColumns = new Columns(vm.gridOptions, cacheKey);
-  state = new GridState(vm.gridOptions, cacheKey);
+  // count data rows
+  vm.countGridRows = () => {
+    return vm.gridOptions.data.length;
+  };
 
   // select group
-  function selectGroup(group) {
+  vm.selectGroup = (group) => {
     if (!group) { return; }
 
     vm.selectedGroup = group;
-  }
+  };
 
   // toggle group
-  function toggleGroup(column) {
+  vm.toggleGroup = (column) => {
     if (vm.grouped) {
       vm.grouping.removeGrouping(column);
       vm.grouped = false;
@@ -117,7 +147,7 @@ function StockLotsController(Stock, Notify,
       vm.grouping.changeGrouping(column);
       vm.grouped = true;
     }
-  }
+  };
 
   // initialize module
   function startup() {
@@ -158,15 +188,16 @@ function StockLotsController(Stock, Notify,
     vm.hasError = false;
     toggleLoadingIndicator();
 
+    // no negative or empty lot
+    filters.includeEmptyLot = 0;
+
     Stock.lots.read(null, filters)
-      .then(function (lots) {
+      .then((lots) => {
         vm.gridOptions.data = lots;
         vm.grouping.unfoldAllGroups();
       })
       .catch(errorHandler)
-      .finally(function (){
-        toggleLoadingIndicator();
-      });
+      .finally(toggleLoadingIndicator);
   }
 
   // remove a filter with from the filter object, save the filters and reload
@@ -177,13 +208,13 @@ function StockLotsController(Stock, Notify,
     vm.latestViewFilters = stockLotFilters.formatView();
 
     return load(stockLotFilters.formatHTTP(true));
-  }
+  };
 
   function search() {
-    var filtersSnapshot = stockLotFilters.formatHTTP();
+    const filtersSnapshot = stockLotFilters.formatHTTP();
 
     Modal.openSearchLots(filtersSnapshot)
-      .then(function (changes) {
+      .then((changes) => {
         stockLotFilters.replaceFilters(changes);
         Stock.cacheFilters(filterKey);
         vm.latestViewFilters = stockLotFilters.formatView();
@@ -198,14 +229,13 @@ function StockLotsController(Stock, Notify,
     // column configuration has direct access to the grid API to alter the current
     // state of the columns - this will be saved if the user saves the grid configuration
     gridColumns.openConfigurationModal();
-  };
+  }
 
-  vm.saveGridState = state.saveGridState;
   // saves the grid's current configuration
   function clearGridState() {
     state.clearGridState();
     $state.reload();
-  };
+  }
 
   startup();
 }

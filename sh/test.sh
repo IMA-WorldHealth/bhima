@@ -16,21 +16,20 @@ function endfold {
   fi
 }
 
-
-# run lint tests
-startfold "Running Lint Tests..." "lint";
-./sh/lint.sh
-endfold "lint" ;
+# run karma (client unit) tests
+startfold "Running Client Unit Tests..." "test-client-unit";
+./node_modules/.bin/karma start --single-run --no-auto-watch --concurrency 1 karma.conf.js
+endfold "test-client-unit" ;
 
 # run integration tests
 startfold "Running Integration Tests..." "test-integration";
 ./sh/integration-tests.sh
 endfold "test-integration" ;
 
-# run karma (client unit) tests
-startfold "Running Client Unit Tests..." "test-client-unit";
-./node_modules/.bin/karma start --single-run --no-auto-watch --concurrency 1 karma.conf.js
-endfold "test-client-unit" ;
+#run server-unit test
+startfold "Running server Unit Tests ......" "server-unit"
+./node_modules/.bin/mocha --recursive --exit test/server-unit
+endfold "server-unit" ;
 
 # run end to end tests
 startfold "Running Client Unit Tests..." "test-end-to-end";

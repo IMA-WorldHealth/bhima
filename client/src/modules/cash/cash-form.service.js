@@ -8,11 +8,11 @@ CashFormService.$inject = [
 function CashFormService(AppCache, Session, Patients, Exchange) {
 
   // sets the default payment type is an invoice payment
-  var DEFAULT_PAYMENT_TYPE = 0;
+  const DEFAULT_PAYMENT_TYPE = 0;
 
   // @contructor
   function CashForm(cacheKey) {
-    this.cache = new AppCache('CashForm - ' + cacheKey);
+    this.cache = new AppCache(`CashForm - ${cacheKey}`);
 
     this.setup();
 
@@ -48,6 +48,10 @@ function CashFormService(AppCache, Session, Patients, Exchange) {
    */
   CashForm.prototype.isInEnterpriseCurrency = function isInEnterpriseCurrency() {
     return this.details.currency_id === Session.enterprise.currency_id;
+  };
+
+  CashForm.prototype.onDateChange = function onDateChange(date) {
+    this.details.date = date;
   };
 
   /**
@@ -90,14 +94,14 @@ function CashFormService(AppCache, Session, Patients, Exchange) {
    * It also looks up to confirm if the patient has a caution to alert the user.
    */
   CashForm.prototype.setPatient = function setPatient(patient) {
-    var self = this;
+    const self = this;
 
     this.patient = patient;
     this.details.debtor_uuid = patient.debtor_uuid;
 
     return Patients.balance(patient.uuid)
-      .then(function (balance) {
-        var patientAccountBalance = balance * -1;
+      .then((balance) => {
+        const patientAccountBalance = balance * -1;
         self.messages.hasPositiveAccountBalance = patientAccountBalance > 0;
         self.messages.patientAccountBalance = patientAccountBalance;
 
@@ -121,7 +125,7 @@ function CashFormService(AppCache, Session, Patients, Exchange) {
   CashForm.prototype.configure = function configure(config) {
 
     if (config.patient) {
-      this.setPatient(config.invoices);
+      this.setPatient(config.patient);
     }
 
     if (config.description) {
@@ -191,7 +195,7 @@ function CashFormService(AppCache, Session, Patients, Exchange) {
     this.details.invoices = this.details.invoices || [];
 
     // first total the invoice
-    var total = this.details.invoices.reduce(function (aggregate, invoice) {
+    const total = this.details.invoices.reduce((aggregate, invoice) => {
       return aggregate + invoice.balance;
     }, 0);
 

@@ -17,13 +17,14 @@ PatientRegistrationController.$inject = [
  *
  * @module controllers/PatientRegistrationController
  */
-function PatientRegistrationController(Patients, Session, util, Notify, Receipts, ScrollTo, bhConstants) {
+function PatientRegistrationController(Patients, Session, util, Notify, 
+  Receipts, ScrollTo, bhConstants) {
   var vm = this;
 
   vm.submit = submit;
   vm.toggleFullDate = toggleFullDate;
   vm.calculateYOB = calculateYOB;
-  vm.dateIndicatorLabel = 'FORM.LABELS.ENTER_BIRTH_DAY';
+  vm.dateIndicatorLabel = 'FORM.LABELS.ENTER_BIRTH_YEAR';
   vm.dateComponentLabel = 'FORM.LABELS.DOB';
 
 

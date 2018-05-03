@@ -15,7 +15,7 @@
       {{> filterbar filters=filters }}
 
       <!-- invoices listed  -->
-      <table class="table table-condensed table-bordered table-striped">
+      <table class="table table-condensed table-bordered">
         <thead>
           <tr>
             <th>{{translate 'TABLE.COLUMNS.REFERENCE'}}</th>
@@ -29,9 +29,9 @@
         <tbody>
           {{#each rows}}
             <tr>
-              <td>{{reference}}</td>
+              <td title="{{reference}}">{{reference}}</td>
               <td class="text-right">{{date date}}</td>
-              <td>{{patientName}}</td>
+              <td title="{{patientName}}">{{patientName}}</td>
               <td class="text-right">{{currency cost currency_id}}</td>
               <td>{{serviceName}}</td>
               <td>{{display_name}}</td>
@@ -56,7 +56,7 @@
       <div class="col-xs-6">
 
         <!-- summary table -->
-        <table class="table table-condensed table-bordered table-striped">
+        <table class="table table-condensed table-bordered table-report">
           <tbody>
             <tr>
               <th colspan="2" class="text-center">

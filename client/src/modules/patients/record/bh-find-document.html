@@ -13,7 +13,7 @@
     <input
       ng-model="$ctrl.searchByName"
       type="text"
-      placeholder="{{ 'FORM.PLACEHOLDERS.DOCUMENT_NAME' | translate }}..."
+      translate-attr="{ placeholder: 'FORM.PLACEHOLDERS.DOCUMENT_NAME' }"
       class="form-control">
   </div>
 </div>
@@ -26,7 +26,7 @@
     <div class="right btn-group">
       <button
         type="button"
-        title="{{ 'PATIENT_DOCUMENT.DISPLAY_THUMBNAIL' | translate }}"
+        translate-attr="{ title : 'PATIENT_DOCUMENT.DISPLAY_THUMBNAIL' }"
         class="btn btn-sm btn-default"
         data-document-action="thumbnail"
         ng-click="$ctrl.switchDisplay('thumbnail')">
@@ -35,7 +35,7 @@
 
       <button
         type="button"
-        title="{{ 'PATIENT_DOCUMENT.DISPLAY_LIST' | translate }}"
+        translate-attr="{ title : 'PATIENT_DOCUMENT.DISPLAY_LIST' }"
         class="btn btn-sm btn-default"
         data-document-action="list"
         ng-click="$ctrl.switchDisplay('list')">
@@ -44,7 +44,7 @@
 
       <button
         type="button"
-        title="{{ 'PATIENT_DOCUMENT.ADD' | translate }}"
+        translate-attr="{ title : 'PATIENT_DOCUMENT.ADD' }"
         class="btn btn-sm btn-default"
         data-document-action="add"
         ng-click="$ctrl.addDocument()">
@@ -76,7 +76,7 @@
             <div class="pull-right">
               <a
                 ng-href="/{{ doc.link }}" download="{{ doc.downloadLink }}"
-                title="{{ 'PATIENT_DOCUMENT.DOWNLOAD' | translate }}"
+                translate-attr="{ title : 'PATIENT_DOCUMENT.DOWNLOAD' }"
                 type="button"
                 class="btn btn-sm btn-default">
                 <i class="fa fa-download"></i>
@@ -84,7 +84,7 @@
 
               <button
                 ng-click="$ctrl.deleteDocument(doc.uuid, doc.label)"
-                title="{{ 'FORM.BUTTONS.DELETE' | translate }}"
+                translate-attr="{ title : 'FORM.BUTTONS.DELETE' }"
                 type="button"
                 class="btn btn-sm btn-danger">
                 <i class="fa fa-trash"></i>
@@ -126,7 +126,7 @@
             <div class="pull-right">
               <a
                 ng-href="/{{ doc.link }}" download="{{ doc.downloadLink }}"
-                title="{{ 'PATIENT_DOCUMENT.DOWNLOAD' | translate }}"
+                translate-attr="{ title : 'PATIENT_DOCUMENT.DOWNLOAD' }"
                 type="button"
                 class="btn btn-sm btn-default">
                 <i class="fa fa-download"></i>
@@ -134,7 +134,7 @@
 
               <button
                 ng-click="$ctrl.deleteDocument(doc.uuid, doc.label)"
-                title="{{ 'FORM.BUTTONS.DELETE' | translate }}"
+                translate-attr="{ title : 'FORM.BUTTONS.DELETE' }"
                 type="button"
                 class="btn btn-sm btn-danger">
                 <i class="fa fa-trash"></i>

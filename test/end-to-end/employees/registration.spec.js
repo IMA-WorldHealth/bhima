@@ -1,8 +1,8 @@
-/* global element, by, browser */
+/* global browser */
 const chai = require('chai');
 const helpers = require('../shared/helpers');
 
-const expect = chai.expect;
+const { expect } = chai;
 const RegistrationPage = require('./registration.page.js');
 
 helpers.configure(chai);
@@ -12,10 +12,10 @@ describe('Employees', () => {
   const registrationPage = new RegistrationPage();
   const employee = {
     code          : 'HBB80',
-    display_name  : 'Sherlock Holmes Doyle',
+    display_name  : 'Dedrick Kitamuka',
     sex          : 'M',
-    dob           : '1960-06-30',
-    date_embauche : '1997-05-17',
+    dob           : '30/06/1960',
+    date_embauche : '17/05/1997',
     nb_spouse     : 1,
     nb_enfant     : 2,
     bank          : 'BIAC',
@@ -25,14 +25,14 @@ describe('Employees', () => {
     hospital_no   : 'TP003',
   };
 
-  before(() => { return helpers.navigate(path); });
+  before(() => helpers.navigate(path));
 
   it('blocks invalid form submission with relevant error classes', () => {
     // verify we are in the current path
     expect(helpers.getCurrentPath()).to.eventually.equal(path);
 
     registrationPage.createEmployee();
-    registrationPage.requiredFIeldErrored();
+    registrationPage.requiredFieldErrored();
     registrationPage.noRequiredFieldOk();
   });
 
@@ -43,8 +43,8 @@ describe('Employees', () => {
     registrationPage.setCode(employee.code);
     registrationPage.setGrade('A1');
     registrationPage.setHospitalNumber(employee.hospital_no);
-    registrationPage.setCreditorGroup('Personnel');
-    registrationPage.setDebtorGroup('Second Test Debtor Group');
+    registrationPage.setCreditorGroup('Employees');
+    registrationPage.setDebtorGroup('NGO IMA World Health');
     registrationPage.setOriginLocation(helpers.data.locations);
     registrationPage.setCurrentLocation(helpers.data.locations);
     registrationPage.setHiringDate(employee.date_embauche);
@@ -78,7 +78,6 @@ describe('Employees', () => {
   //   components.notification.hasSuccess();
   // });
 
-  // FIXME: skip throws an error
   // it.skip('unlocks an employee', () => {
   //   element(by.id(`employee-upd-${employeeId}`)).click();
   //   element(by.id('bhima-employee-locked')).click();

@@ -1,15 +1,15 @@
 const _ = require('lodash');
+const debug = require('debug')('barcode');
 
 const db = require('./db');
-const identifiers = require('../config/identifiers');
-
 const BadRequest = require('./errors/BadRequest');
+const identifiers = require('../config/identifiers');
 
 exports.generate = generate;
 exports.reverseLookup = reverseLookup;
 
-const lookupPatient = require('../controllers/medical/patients').lookupPatient;
-const lookupInvoice = require('../controllers/finance/patientInvoice').lookupInvoice;
+const { lookupPatient } = require('../controllers/medical/patients');
+const { lookupInvoice } = require('../controllers/finance/patientInvoice');
 
 const identifiersIndex = {};
 indexIdentifiers();
@@ -36,9 +36,11 @@ function generate(receiptIdentifier, uuid) {
 // YYYYYYYY - First characters of the entity UUID
 // - returns the full UUID of the entity
 function reverseLookup(barcodeKey) {
-  const code = barcodeKey.substr(0, 2);
+  const code = barcodeKey.substr(0, 2).toUpperCase();
   const partialUuid = barcodeKey.substr(2, barcodeKey.length);
   const documentDefinition = identifiersIndex[code];
+
+  debug(`reverse lookup of uuid using ${barcodeKey}.`);
 
   if (!documentDefinition) {
     throw new BadRequest(`Invalid barcode document type '${code}'`);
@@ -50,19 +52,20 @@ function reverseLookup(barcodeKey) {
 
   const query = `
     SELECT BUID(uuid) as uuid FROM ${documentDefinition.table}
-    WHERE BUID(uuid) LIKE '${partialUuid}%' COLLATE utf8_unicode_ci
+    WHERE BUID(uuid) LIKE '${partialUuid}%' COLLATE utf8_unicode_ci;
   `;
 
   // search for full UUID
   return db.one(query)
-    .then(result =>
-      documentDefinition.lookup(result.uuid)
-    )
+    .then(result => documentDefinition.lookup(result.uuid))
     .then((entity) => {
+      debug(`lookup found: ${entity.uuid}.`);
+
       // @todo review specific logic flow
       if (documentDefinition.redirectPath) {
         entity._redirectPath = documentDefinition.redirectPath.replace('?', entity.uuid);
       }
+
       return entity;
     });
 }

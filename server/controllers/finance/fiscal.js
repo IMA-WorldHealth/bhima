@@ -5,17 +5,21 @@
  * This module is responsible for implementing CRUD on the fiscal table, as
  * well as accompanying period tables.
  *
+ * @requires lodash
+ * @requires q
  * @requires lib/db
  * @requires lib/errors/NotFound
  */
 
 const q = require('q');
 const _ = require('lodash');
-const uuid = require('node-uuid');
 const db = require('../../lib/db');
 const Transaction = require('../../lib/db/transaction');
 const NotFound = require('../../lib/errors/NotFound');
-const BadRequest = require('../../lib/errors/BadRequest');
+const FilterParser = require('../../lib/filter');
+
+const Tree = require('../../lib/Tree');
+const debug = require('debug')('FiscalYear');
 
 // Account Service
 const AccountService = require('./accounts');
@@ -31,6 +35,13 @@ exports.update = update;
 exports.remove = remove;
 exports.getPeriodByFiscal = getPeriodByFiscal;
 exports.lookupFiscalYearByDate = lookupFiscalYearByDate;
+exports.getFirstDateOfFirstFiscalYear = getFirstDateOfFirstFiscalYear;
+exports.getNumberOfFiscalYears = getNumberOfFiscalYears;
+exports.getDateRangeFromPeriods = getDateRangeFromPeriods;
+exports.getPeriodsFromDateRange = getPeriodsFromDateRange;
+exports.accountBanlanceByTypeId = accountBanlanceByTypeId;
+exports.getOpeningBalance = getOpeningBalance;
+
 
 /**
  * @method lookupFiscalYear
@@ -59,35 +70,38 @@ function lookupFiscalYear(id) {
  * @method list
  *
  * @description
- * Returns a list of all fiscal year in the database.
+ * Returns a list of all fiscal years in the database.
  */
 function list(req, res, next) {
-  let sql = 'SELECT id, label FROM fiscal_year';
-  const params = [];
+  const filters = new FilterParser(req.query, { tableAlias : 'f' });
+  const sql = `
+    SELECT f.id, f.enterprise_id, f.number_of_months, f.label, f.start_date, f.end_date,
+    f.previous_fiscal_year_id, f.locked, f.created_at, f.updated_at, f.note,
+    f.user_id, u.display_name
+    FROM fiscal_year AS f
+    JOIN user AS u ON u.id = f.user_id
+  `;
 
-  // make a complex query
-  if (req.query.detailed === '1') {
-    params.push(req.session.enterprise.id);
+  filters.equals('id');
+  filters.equals('locked');
+  filters.equals('previous_fiscal_year_id');
 
-    sql = `
-      SELECT f.id, f.enterprise_id, f.number_of_months, f.label, f.start_date, f.end_date,
-      f.previous_fiscal_year_id, f.locked, f.created_at, f.updated_at, f.note,
-      f.user_id, u.display_name
-      FROM fiscal_year AS f
-      JOIN user AS u ON u.id = f.user_id
-      WHERE f.enterprise_id = ?
-    `;
-  }
-
+  // TODO(@jniles) - refactor this custom ordering logic.  Can it be done on the
+  // client?
+  let ordering;
   if (req.query.by && req.query.order) {
     const direction = (req.query.order === 'ASC') ? 'ASC' : 'DESC';
-    params.push(req.query.by);
-    sql += ` ORDER BY ?? ${direction} `;
+    ordering = `ORDER BY ${req.query.by} ${direction}`;
   } else {
-    sql += ' ORDER BY start_date DESC';
+    ordering = 'ORDER BY start_date DESC';
   }
 
-  db.exec(sql, params)
+  filters.setOrder(ordering);
+
+  const query = filters.applyQuery(sql);
+  const parameters = filters.parameters();
+
+  db.exec(query, parameters)
     .then((rows) => {
       res.status(200).json(rows);
     })
@@ -157,10 +171,13 @@ function create(req, res, next) {
 /**
  * GET /fiscal/:id
  *
+ * @description
  * Returns the detail of a single Fiscal Year
  */
 function detail(req, res, next) {
-  const id = req.params.id;
+  const { id } = req.params;
+
+  debug(`#detail() looking up FY${id}.`);
 
   lookupFiscalYear(id)
     .then((record) => {
@@ -174,7 +191,7 @@ function detail(req, res, next) {
  * Updates a fiscal year details (particularly id)
  */
 function update(req, res, next) {
-  const id = req.params.id;
+  const { id } = req.params;
   const sql = 'UPDATE fiscal_year SET ? WHERE id = ?';
   const queryData = req.body;
 
@@ -185,6 +202,8 @@ function update(req, res, next) {
 
   // remove the id before updating (if the ID exists)
   delete queryData.id;
+
+  debug(`#update() updating column ${Object.keys(queryData)} on FY${id}.`);
 
   lookupFiscalYear(id)
     .then(() => db.exec(sql, [queryData, id]))
@@ -198,11 +217,13 @@ function update(req, res, next) {
  * Remove a fiscal year details (particularly id)
  */
 function remove(req, res, next) {
-  const id = req.params.id;
+  const { id } = req.params;
   const sqlDelFiscalYear = 'DELETE FROM fiscal_year WHERE id = ?;';
   const sqlDelPeriods = 'DELETE FROM period WHERE fiscal_year_id = ?;';
 
   const transaction = new Transaction(db);
+
+  debug(`#remove() deleting FY${id}.`);
 
   transaction
     .addQuery(sqlDelPeriods, [id])
@@ -228,15 +249,36 @@ function remove(req, res, next) {
  * the period must be given
  */
 function getBalance(req, res, next) {
-  const id = req.params.id;
+  const { id } = req.params;
   const period = req.params.period_number;
 
+  debug(`#getBalance() looking up balance for FY${id} and period ${period}.`);
+
   lookupBalance(id, period)
-  .then((rows) => {
-    res.status(200).json(rows);
-  })
-  .catch(next)
-  .done();
+    .then((rows) => {
+      const tree = new Tree(rows);
+      let result = [];
+      try {
+        tree.walk(Tree.common.sumOnProperty('debit'), false);
+        tree.walk(Tree.common.sumOnProperty('credit'), false);
+        result = tree.toArray();
+      } catch (error) {
+        result = [];
+      }
+      res.status(200).json(result);
+    })
+    .catch(next)
+    .done();
+}
+
+function getOpeningBalance(req, res, next) {
+  const { id } = req.params;
+  loadOpeningBalance(id)
+    .then(rows => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
@@ -250,7 +292,7 @@ function lookupBalance(fiscalYearId, periodNumber) {
   const sql = `
     SELECT t.period_id, a.id, a.label,
       SUM(t.debit) AS debit, SUM(t.credit) AS credit, SUM(t.debit - t.credit) AS balance
-    FROM period_total t
+    FROM period_total AS t
     JOIN account a ON a.id = t.account_id
     JOIN period p ON p.id = t.period_id
     WHERE t.fiscal_year_id = ? AND p.number <= ?
@@ -263,41 +305,41 @@ function lookupBalance(fiscalYearId, periodNumber) {
   `;
 
   return db.exec(periodSql, [fiscalYearId, periodNumber])
-  .then((rows) => {
-    if (!rows.length) {
-      throw new NotFound(`Could not find the period ${periodNumber} for the fiscal year with id ${fiscalYearId}.`);
-    }
-    glb.period = rows[0];
-    return db.exec(sql, [fiscalYearId, periodNumber]);
-  })
-  .then((rows) => {
-    glb.existTotalAccount = rows;
-
-    // for to have an updated data in any time
-    return AccountService.lookupAccount();
-  })
-  .then((rows) => {
-    let inlineAccount;
-    const allAccounts = rows;
-
-    glb.totalAccount = allAccounts.map((item) => {
-      inlineAccount = _.find(glb.existTotalAccount, { id : item.id });
-
-      if (inlineAccount) {
-        item.period_id = inlineAccount.period_id;
-        item.debit = inlineAccount.debit;
-        item.credit = inlineAccount.credit;
-      } else {
-        item.period_id = glb.period.id;
-        item.debit = 0;
-        item.credit = 0;
+    .then((rows) => {
+      if (!rows.length) {
+        throw new NotFound(`Could not find the period ${periodNumber} for the fiscal year with id ${fiscalYearId}.`);
       }
+      [glb.period] = rows;
+      return db.exec(sql, [fiscalYearId, periodNumber]);
+    })
+    .then((rows) => {
+      glb.existTotalAccount = rows;
 
-      return item;
+      // for to have an updated data in any time
+      return AccountService.lookupAccount();
+    })
+    .then((rows) => {
+      let inlineAccount;
+      const allAccounts = rows;
+
+      glb.totalAccount = allAccounts.map((item) => {
+        inlineAccount = _.find(glb.existTotalAccount, { id : item.id });
+
+        if (inlineAccount) {
+          item.period_id = inlineAccount.period_id;
+          item.debit = inlineAccount.debit;
+          item.credit = inlineAccount.credit;
+        } else {
+          item.period_id = glb.period.id;
+          item.debit = 0;
+          item.credit = 0;
+        }
+
+        return item;
+      });
+
+      return glb.totalAccount;
     });
-
-    return glb.totalAccount;
-  });
 }
 
 /**
@@ -305,9 +347,14 @@ function lookupBalance(fiscalYearId, periodNumber) {
  * set the opening balance for a specified fiscal year
  */
 function setOpeningBalance(req, res, next) {
-  const id = req.params.id;
+  const {
+    id,
+  } = req.params;
+
+  const { accounts } = req.body.params;
   const fiscalYear = req.body.params.fiscal;
-  const accounts = req.body.params.accounts;
+
+  debug(`#setOpeningBalance() setting balance for FY${id}.`);
 
   // check for previous fiscal year
   hasPreviousFiscalYear(id)
@@ -349,16 +396,31 @@ function hasPreviousFiscalYear(id) {
 }
 
 /**
- * @function load opening balance
- * @description load the opening balance from period N+1 into period 0
+ * @function loadOpeningBalance
+ *
+ * @description
+ * Load the opening balance of a fiscal year from period 0 of that fiscal year.
  */
-function loadOpeningBalance(fiscalYear) {
-  /*
-   * fetch the period 13 balance and insert it into
-   * the period zero of the new fiscal year
-   */
-  return lookupBalance(fiscalYear.previous_fiscal_year_id, fiscalYear.number_of_months + 1)
-    .then(accounts => insertOpeningBalance(fiscalYear, accounts));
+function loadOpeningBalance(fiscalYearId) {
+  const INCOME_TYPE_ID = 4;
+  const EXPENSE_TYPE_ID = 5;
+
+  const sql = `
+    SELECT a.id, a.number, a.label, a.type_id, a.label, a.parent,
+      IFNULL(s.debit, 0) AS debit, IFNULL(s.credit, 0) AS credit
+    FROM account AS a LEFT JOIN (
+      SELECT SUM(pt.debit) AS debit, SUM(pt.credit) AS credit, pt.account_id
+      FROM period_total AS pt
+      JOIN period AS p ON p.id = pt.period_id
+      WHERE pt.fiscal_year_id = ?
+        AND p.number = 0
+      GROUP BY pt.account_id
+    )s ON a.id = s.account_id
+    WHERE a.type_id NOT IN (?, ?)
+    ORDER BY a.number;
+  `;
+
+  return db.exec(sql, [fiscalYearId, INCOME_TYPE_ID, EXPENSE_TYPE_ID]);
 }
 
 /**
@@ -399,8 +461,7 @@ function insertOpeningBalance(fiscalYear, accounts) {
         db.exec(sql, [
           item.enterprise_id, item.fiscal_year_id, item.period_id,
           item.account_id, item.credit, item.debit,
-        ])
-      );
+        ]));
       return q.all(dbPromise);
     });
 }
@@ -437,12 +498,6 @@ function notNullBalance(array, exception) {
   return exception ? array : array.filter(item => (item.debit !== 0 || item.credit !== 0));
 }
 
-const sumCreditsMinusDebits = (aggregate, record) =>
-  aggregate + (record.credit - record.debit);
-
-const sumDebitsMinusCredits = (aggregate, record) =>
-  aggregate + (record.debit - record.credit);
-
 /**
  * @function closing
  * @description closing a fiscal year
@@ -450,182 +505,17 @@ const sumDebitsMinusCredits = (aggregate, record) =>
  * @todo - migrate this to a stored procedure
  */
 function closing(req, res, next) {
-  const id = req.params.id;
+  const { id } = req.params;
   const accountId = req.body.params.account_id;
-  const exploitation = {};
-  const result = {};
-  let fiscal;
-  let period;
-  let voucher;
-  let sql;
 
-  // query fiscal year
-  sql = 'SELECT id, number_of_months, end_date FROM fiscal_year WHERE id = ?;';
+  const transaction = db.transaction();
 
-  db.one(sql, [id], id, 'fiscal year')
-    .then((row) => {
-      fiscal = row;
+  transaction
+    .addQuery('CALL CloseFiscalYear(?, ?)', [id, accountId]);
 
-      // query period
-      sql = 'SELECT p.id FROM period p WHERE p.fiscal_year_id = ? AND p.number = ?;';
-      return db.exec(sql, [id, fiscal.number_of_months + 1]);
-    })
-    .then((rows) => {
-      if (!rows) {
-        throw new NotFound(
-          `Could not find the period for the fiscal year with id ${id} and number ${fiscal.number_of_months + 1}.`
-        );
-      }
-      period = rows[0];
-    })
+  transaction.execute()
     .then(() => {
-      const sqlProfitAccounts = `
-        SELECT a.id, SUM(pt.credit) AS credit, SUM(pt.debit) AS debit
-        FROM period_total AS pt
-        JOIN account AS a ON pt.account_id = a.id
-        JOIN account_type AS at ON a.type_id = at.id
-        WHERE (pt.fiscal_year_id = ?) AND at.type = 'revenue'
-        GROUP BY a.id;
-      `;
-
-      const sqlChargeAccounts = `
-        SELECT a.id, SUM(pt.credit) AS credit, SUM(pt.debit) AS debit
-        FROM period_total AS pt
-        JOIN account AS a ON pt.account_id = a.id
-        JOIN account_type AS at ON a.type_id = at.id
-        WHERE (pt.fiscal_year_id = ?) AND at.type = 'expense'
-        GROUP BY a.id;
-      `;
-
-      return q.all([
-        db.exec(sqlProfitAccounts, [id]),
-        db.exec(sqlChargeAccounts, [id]),
-      ]);
-    })
-    .spread((profitAccounts, chargeAccounts) => {
-      exploitation.profit = notNullBalance(profitAccounts);
-      exploitation.charge = notNullBalance(chargeAccounts);
-
-      // profit
-      result.profit = exploitation.profit.reduce(sumCreditsMinusDebits, 0);
-
-      // charge
-      result.charge = exploitation.charge.reduce(sumDebitsMinusCredits, 0);
-
-      // result
-      result.global = result.profit - result.charge;
-    })
-    .then(() => {
-      const sqlInsertVoucherItem = `
-        INSERT INTO voucher_item (uuid, account_id, debit, credit, voucher_uuid, document_uuid)
-        VALUES (?, ?, ?, ?, ?, ?);
-      `;
-
-      // util variables
-      const projectId = req.session.project.id;
-      const currencyId = req.session.enterprise.currency_id;
-      const userId = req.session.user.id;
-      const transaction = db.transaction();
-
-      voucher = {
-        uuid : db.bid(uuid.v4()),
-        date : fiscal.end_date,
-        project_id : projectId,
-        currency_id : currencyId,
-        user_id : userId,
-        type_id : null,
-        description : 'closing fiscal year - Sold Exploitation Accounts',
-        amount : 0, // not necessary
-      };
-
-      const voucherDocumentUuid = db.bid(uuid.v4());
-
-      // insert voucher
-      transaction.addQuery('INSERT INTO voucher SET ?', voucher);
-
-      // sold the profit exploitation
-      exploitation.profit.forEach((item) => {
-        // profit has creditor sold
-        const value = item.credit - item.debit;
-
-        // inverted values for solding
-        const debit = value >= 0 ? Math.abs(value) : 0;
-        const credit = value >= 0 ? 0 : Math.abs(value);
-
-        const profitParams = [
-          db.bid(uuid.v4()),
-          item.id,
-          debit,
-          credit,
-          voucher.uuid,
-          voucherDocumentUuid,
-        ];
-
-        transaction.addQuery(sqlInsertVoucherItem, profitParams);
-      });
-
-      // sold the charge exploitation
-      exploitation.charge.forEach((item) => {
-        // charge has debtor sold
-        const value = item.debit - item.credit;
-
-        // inverted values for solding
-        const debit = value > 0 ? 0 : Math.abs(value);
-        const credit = value > 0 ? Math.abs(value) : 0;
-
-        const chargeParams = [
-          db.bid(uuid.v4()),
-          item.id,
-          debit,
-          credit,
-          voucher.uuid,
-          voucherDocumentUuid,
-        ];
-
-        transaction.addQuery(sqlInsertVoucherItem, chargeParams);
-      });
-
-      // be sure to have accounts to sold, either profit or charge
-      if (exploitation.profit.length || exploitation.charge.length) {
-        // the result: profit - charge
-        const value = result.global;
-
-        // debit if benefits or credit if loss
-        const debit = value >= 0 ? 0 : Math.abs(value);
-        const credit = value >= 0 ? Math.abs(value) : 0;
-
-        const resultParams = [
-          db.bid(uuid.v4()),
-          accountId,
-          debit,
-          credit,
-          voucher.uuid,
-          voucherDocumentUuid,
-        ];
-
-        transaction.addQuery(sqlInsertVoucherItem, resultParams);
-      }
-
-      // update the period to the period N+1 (13)
-      const sqlUpdateJournalPeriod = 'UPDATE posting_journal SET period_id = ? WHERE reference_uuid = ?';
-
-      // post voucher and close the fiscal year
-      transaction
-        .addQuery('CALL PostVoucher(?);', [voucher.uuid])                   // post voucher into the journal
-        .addQuery(sqlUpdateJournalPeriod, [period.id, voucherDocumentUuid])   // update the period to 13
-        .addQuery('UPDATE fiscal_year SET locked = 1 WHERE id = ?;', [id]); // lock the fiscal year
-
-      return transaction.execute();
-    })
-    .then((rows) => {
-      const queryUpdateFiscal = rows.pop();
-
-      // Note: changedRows is generated from the server message.
-      // It is not correctly parsed and set in multi-langual environments.
-      if (!queryUpdateFiscal.affectedRows) {
-        throw new BadRequest('FISCAL.FAILURE_CLOSING', 'Failure occurs during the closing of the fiscal year');
-      }
-      res.status(200).json({ id });
+      res.status(200).json({ id : parseInt(id, 10) });
     })
     .catch(next)
     .done();
@@ -670,3 +560,88 @@ function lookupFiscalYearByDate(transDate) {
 
   return db.one(sql, [transDate, transDate], transDate, 'fiscal year');
 }
+
+/**
+ * @function getFirstDateOfFirstFiscalYear
+ *
+ * @description
+ * returns the start date of the very first fiscal year for the provided
+ * enterprise.
+ *
+ * @TODO - move this to the fiscal controller with other AccountExtra functions.
+ */
+function getFirstDateOfFirstFiscalYear(enterpriseId) {
+  const sql = `
+    SELECT start_date FROM fiscal_year
+    WHERE enterprise_id = ?
+    ORDER BY DATE(start_date)
+    LIMIT 1;
+  `;
+
+  return db.one(sql, enterpriseId);
+}
+
+/**
+ * @method getNumberOfFiscalYears
+ *
+ * @description
+ * This function returns the number of fiscal years between two dates.
+ *
+ * FIXME(@jniles) - should this not include the enterprise id?
+ */
+function getNumberOfFiscalYears(dateFrom, dateTo) {
+  const sql = `
+    SELECT COUNT(id) AS fiscalYearSpan FROM fiscal_year
+    WHERE
+    start_date >= DATE(?) AND end_date <= DATE(?)
+  `;
+
+  return db.one(sql, [dateFrom, dateTo]);
+}
+
+function getPeriodsFromDateRange(dateFrom, dateTo) {
+  const query = `
+    SELECT id, number, start_date, end_date
+    FROM period WHERE (DATE(start_date) >= DATE(?) AND DATE(end_date) <= DATE(?))
+      OR (DATE(?) BETWEEN DATE(start_date) AND DATE(end_date))
+      OR (DATE(?) BETWEEN DATE(start_date) AND DATE(end_date));`;
+  return db.exec(query, [dateFrom, dateTo, dateFrom, dateTo]);
+}
+
+function getDateRangeFromPeriods(periods) {
+  const sql = `
+    SELECT
+      MIN(start_date) AS dateFrom, MAX(end_date) AS dateTo
+    FROM
+      period
+    WHERE
+      period.id IN (?, ?)`;
+
+  return db.one(sql, [periods.periodFrom, periods.periodTo]);
+}
+
+/**
+ * return a query for retrieving account'balance by type_id and periods
+ */
+function accountBanlanceByTypeId() {
+  return `
+    SELECT ac.id, ac.number, ac.label, ac.parent, IFNULL(s.amount, 0) AS amount, s.type_id
+
+    FROM account as ac LEFT JOIN (
+    SELECT SUM(pt.credit - pt.debit) as amount, pt.account_id, act.id as type_id
+    FROM period_total as pt
+    JOIN account as a ON a.id = pt.account_id
+    JOIN account_type as act ON act.id = a.type_id
+    JOIN period as p ON  p.id = pt.period_id
+    JOIN fiscal_year as fy ON fy.id = p.fiscal_year_id
+    WHERE fy.id = ? AND
+      pt.period_id IN (
+        SELECT id FROM period WHERE start_date>= ? AND end_date<= ?
+      )
+      AND act.id = ?
+    GROUP BY pt.account_id
+    )s ON ac.id = s.account_id
+    ORDER BY ac.number
+  `;
+}
+

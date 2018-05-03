@@ -2,19 +2,19 @@ angular.module('bhima.controllers')
   .controller('SelectDepotModalController', SelectDepotModalController);
 
 SelectDepotModalController.$inject = [
-  '$uibModalInstance', 'DepotService', 'NotifyService', 'depot', 'SessionService',
+  '$uibModalInstance', 'DepotService', 'NotifyService', 'depot',
 ];
 
 /**
  * This modal selects a depot from the list of all depots.
  */
-function SelectDepotModalController(Instance, Depots, Notify, depot, Session) {
-  var vm = this;
+function SelectDepotModalController(Instance, Depots, Notify, depot) {
+  const vm = this;
 
   // bind the depot passed into the controller
   vm.depot = depot;
   vm.selectDepot = selectDepot;
-  vm.hasSelectedDepot = hasSelectedDepot; 
+  vm.hasSelectedDepot = hasSelectedDepot;
   vm.isDepotRequired = Depots.isDepotRequired;
   vm.loading = false;
 
@@ -28,10 +28,8 @@ function SelectDepotModalController(Instance, Depots, Notify, depot, Session) {
   function startup() {
     toggleLoadingIndicator();
     // download only the depots that the user has the management right
-    var userId = Session.user.id;
-
-    Depots.read(null, {user_id : userId})
-      .then(function (depots) {
+    Depots.read(null, { only_user : true })
+      .then((depots) => {
         vm.depots = depots;
       })
       .catch(Notify.handleError)
@@ -40,7 +38,7 @@ function SelectDepotModalController(Instance, Depots, Notify, depot, Session) {
 
   // fired when a user selects a depot from a list
   function selectDepot(uuid) {
-    vm.depot = vm.depots.filter(function (d) {
+    vm.depot = vm.depots.filter((d) => {
       return d.uuid === uuid;
     }).pop();
   }

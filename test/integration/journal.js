@@ -8,7 +8,7 @@ describe('(/journal) API endpoint', () => {
   const RECORD_UUID = 'a5a5f950-a4c9-47f0-9a9a-2bfc3123e534';
   const MISSING_RECORD_UUID = 'a5a5f950-a4c9-47f0-9a9a-2bfc3123e635';
 
-  const NUM_ROW_ALL_RECORDS = 17;
+  const NUM_ROW_ALL_RECORDS = 15;
   const NUM_ROWS_FETCHING_TRANSACTION = 2;
 
   it('GET /journal returns a set of records', () =>
@@ -29,7 +29,7 @@ describe('(/journal) API endpoint', () => {
       .catch(helpers.handler)
   );
 
-  it('GET /journal/:record_id : it returns an error message and 404 code if the transaction does not exist ', () =>
+  it('GET /journal/:record_uuid : it returns an error message and 404 code if the transaction does not exist ', () =>
     agent.get(`/journal/${MISSING_RECORD_UUID}`)
       .then((res) => {
         helpers.api.errored(res, 404);
@@ -41,10 +41,10 @@ describe('(/journal) API endpoint', () => {
 });
 
 function SearchTests() {
-  const description = 'Some cool description';
-  const account_id = 3626;
+  const description = 'Sample voucher data one';
+  const account_id = 187;
   const amount = 100;
-  const DISTINCT_TRANSACTIONS = 8;
+  const DISTINCT_TRANSACTIONS = 7;
 
   it(`GET /journal?description=${description} should match two records`, () => {
     const NUM_MATCHES = 2;
@@ -67,11 +67,29 @@ function SearchTests() {
   });
 
   it(`GET /journal?account_id=${account_id} should find items by account`, () => {
-    const NUM_MATCHES = 3;
+    const NUM_MATCHES = 1;
     return agent.get('/journal')
       .query({ account_id })
       .then((res) => {
         helpers.api.listed(res, NUM_MATCHES);
+      })
+      .catch(helpers.handler);
+  });
+
+  it(`GET /journal?account_id=${account_id}&showFullTransaction=1 should find complete transactions`, () => {
+    const NUM_MATCHES = 2;
+    const NUM_TXNS = 1;
+    return agent.get('/journal')
+      .query({ account_id, showFullTransactions : 1 })
+      .then((res) => {
+        helpers.api.listed(res, NUM_MATCHES);
+
+        // make sure that even though we return more rows, the transactions are unique.
+        const uniqueTransactions = res.body
+          .map(row => row.record_uuid)
+          .filter((record, idx, arr) => arr.indexOf(record) === idx);
+
+        expect(uniqueTransactions).to.have.length(NUM_TXNS);
       })
       .catch(helpers.handler);
   });

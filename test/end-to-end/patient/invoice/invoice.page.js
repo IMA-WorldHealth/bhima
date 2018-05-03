@@ -1,12 +1,11 @@
 /* global element, by */
-'use strict';
 
 const FU = require('../../shared/FormUtils');
 const GU = require('../../shared/GridUtils');
 
 const findPatient = require('../../shared/components/bhFindPatient');
 const dateEditor = require('../../shared/components/bhDateEditor');
-const addItem = require('../../shared/components/bhAddItem'); 
+const addItem = require('../../shared/components/bhAddItem');
 
 function PatientInvoicePage() {
   const page = this;

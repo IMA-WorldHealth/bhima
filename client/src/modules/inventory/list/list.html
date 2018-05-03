@@ -35,14 +35,21 @@
 
             <li role="separator" class="divider"></li>
             <li role="menuitem">
-              <a ng-href="/reports/inventory/items/?params={{ InventoryCtrl.filters.formatHTTP(true) }}&lang={{ InventoryCtrl.lang }}"
-                download="{{ 'INVENTORY.PRICE_LIST_REPORT' | translate }}">
+              <a ng-href="/reports/inventory/items/?{{ InventoryCtrl.download('pdf') }}" download="{{ 'INVENTORY.PRICE_LIST_REPORT' | translate }}">
                 <span class="fa fa-file-pdf-o"></span> <span translate>DOWNLOADS.PDF</span>
               </a>
             </li>
             <li role="menuitem">
               <a ng-click="InventoryCtrl.exportCsv()" href>
                 <span class="fa fa-file-excel-o"></span> <span translate>DOWNLOADS.CSV</span>
+              </a>
+            </li>
+
+            <!-- data import section -->
+            <li role="separator" class="divider"></li>
+            <li role="menuitem">
+              <a ng-click="InventoryCtrl.openImportInventoriesModal()" class="text-success" href>
+                <span class="fa fa-cloud-upload"></span> <span translate>INVENTORY.IMPORT_INVENTORIES</span>
               </a>
             </li>
           </ul>
@@ -88,8 +95,7 @@
   <div class="container-fluid">
     <div
       id="inventoryListGrid"
-      class="grid-full-height"
-      ng-class="{'grid-full-height-with-filters': InventoryCtrl.hasCustomFilters}"
+      class="grid-full-height-with-filters"
       ui-grid="InventoryCtrl.gridOptions"
       ui-grid-save-state
       ui-grid-exporter

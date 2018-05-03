@@ -16,7 +16,7 @@
       <br>
 
       <!-- list of data  -->
-      <table class="table table-condensed">
+      <table class="table table-condensed table-report">
         <thead>
           <tr>
             <th>{{translate 'TABLE.COLUMNS.TRANSACTION'}}</th>
@@ -27,8 +27,7 @@
             <th class="text-right">{{translate 'TABLE.COLUMNS.DEBIT'}}</th>
             <th class="text-right">{{translate 'TABLE.COLUMNS.CREDIT'}}</th>
             <th>{{translate 'TABLE.COLUMNS.RECIPIENT'}}</th>
-            <th>{{translate 'TABLE.COLUMNS.REFERENCE'}}</th>
-            <th>{{translate 'TABLE.COLUMNS.RESPONSIBLE'}}</th>
+            <th>{{translate 'TABLE.COLUMNS.REFERENCE'}}</th> 
           </tr>
         </thead>
         <tbody>
@@ -43,7 +42,6 @@
               <td class="text-right">{{currency credit_equiv}}</td>
               <td>{{hrEntity}}</td>
               <td>{{hrReference}}</td>
-              <td>{{user}}</td>
             </tr>
           {{/each}}
         </tbody>
