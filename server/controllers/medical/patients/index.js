@@ -81,15 +81,13 @@ exports.lookupPatient = lookupPatient;
 exports.lookupByDebtorUuid = lookupByDebtorUuid;
 
 exports.getFinancialStatus = getFinancialStatus;
+exports.getDebtorBalance = getDebtorBalance;
 
 /** @todo Method handles too many operations */
 function create(req, res, next) {
   const createRequestData = req.body;
 
-  let {
-    medical,
-    finance,
-  } = createRequestData;
+  let { medical, finance } = createRequestData;
 
   // Debtor group required for financial modelling
   const invalidParameters = !finance || !medical;
@@ -498,7 +496,7 @@ function patientEntityQuery(detailed) {
       JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
       JOIN village as originVillage ON originVillage.uuid = p.origin_location_id
       JOIN sector AS originSector ON originVillage.sector_uuid = originSector.uuid
-      JOIN province AS originProvince ON originProvince.uuid = originSector.province_uuid 
+      JOIN province AS originProvince ON originProvince.uuid = originSector.province_uuid
       JOIN user AS u ON p.user_id = u.id
   `;
 
@@ -647,6 +645,27 @@ function getFinancialStatus(req, res, next) {
       _.extend(data, { transactions, aggregates });
 
       res.status(200).send(data);
+    })
+    .catch(next)
+    .done();
+}
+
+/**
+ * @function getDebtorBalance
+ *
+ * @description
+ * returns the patient's debtor balance with the enterprise.  Note that this
+ * route provides a "real-time" balance, so it scans both the posting_journal
+ * and general_ledger.
+ */
+function getDebtorBalance(req, res, next) {
+  const uid = req.params.uuid;
+  lookupPatient(uid)
+    .then(patient => {
+      return Debtors.balance(patient.debtor_uuid);
+    })
+    .then(([balance]) => {
+      res.status(200).send(balance);
     })
     .catch(next)
     .done();

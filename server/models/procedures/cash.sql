@@ -617,8 +617,8 @@ BEGIN
    It is possible to underpay.  This is never checked - the loop will
    simply exit early and the other invoices will not be credited.
 
-   Loop through the table of invoice balances, allocating money from the total payment to
-   balance those invoices.
+   Loop through the table of invoice balances, allocating money from the total
+    payment to balance those invoices.
   */
   SET amountToAllocate = cashAmount;
 

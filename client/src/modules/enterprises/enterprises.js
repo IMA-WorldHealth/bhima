@@ -27,6 +27,7 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
   vm.onSelectGainAccount = onSelectGainAccount;
   vm.onSelectLossAccount = onSelectLossAccount;
   vm.enablePriceLockSetting = enablePriceLockSetting;
+  vm.enablePrepaymentsSetting = enablePrepaymentsSetting;
 
   // fired on startup
   function startup() {
@@ -168,6 +169,11 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
 
   function enablePriceLockSetting(enabled) {
     vm.enterprise.settings.enable_price_lock = enabled;
+    $touched = true;
+  }
+
+  function enablePrepaymentsSetting(enabled) {
+    vm.enterprise.settings.enable_prepayments = enabled;
     $touched = true;
   }
 

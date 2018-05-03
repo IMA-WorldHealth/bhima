@@ -23,6 +23,7 @@ function PatientInvoiceController(
 
   // bind the enterprise to get the enterprise currency id
   vm.enterprise = Session.enterprise;
+  vm.supportsPrepayments = Session.enterprise.settings.enable_prepayments;
   vm.Invoice = new PatientInvoiceForm('PatientInvoiceForm');
   vm.ROW_ERROR_FLAG = Constants.grid.ROW_ERROR_FLAG;
   vm.FORBID_PRICE_CHANGES = (Session.enterprise.settings.enable_price_lock);
@@ -91,10 +92,6 @@ function PatientInvoiceController(
     Patients.read(uuid)
       .then(patient => {
         vm.Invoice.setPatient(patient);
-        return Patients.balance(patient.uuid);
-      })
-      .then(balance => {
-        vm.patientBalance = balance;
       });
   }
 

@@ -3,12 +3,12 @@ angular.module('bhima.controllers')
 
 PatientEdit.$inject = [
   '$stateParams', 'PatientService', 'util', 'moment', 'NotifyService',
-  'ScrollService', 'PatientGroupModal', 'bhConstants'
+  'ScrollService', 'PatientGroupModal', 'bhConstants',
 ];
 
 function PatientEdit($stateParams, Patients, util, moment, Notify, ScrollTo, GroupModal, Constants) {
-  var vm = this;
-  var referenceId = $stateParams.uuid;
+  const vm = this;
+  const referenceId = $stateParams.uuid;
 
   vm.patient = null;
   vm.unknownId = false;
@@ -32,18 +32,18 @@ function PatientEdit($stateParams, Patients, util, moment, Notify, ScrollTo, Gro
   vm.datePickerOptions = {
     maxDate : new Date(),
     minDate : Constants.dates.minDob,
-    popup : Constants.dayOptions.format
+    popup : Constants.dayOptions.format,
   };
 
   vm.datePickerIsOpen = false;
 
   function buildPage(patientId) {
     collectPatient(patientId)
-      .then(function () {
+      .then(() => {
 
         return collectGroups(patientId);
       })
-      .catch(function (error) {
+      .catch((error) => {
 
         // handle error and update view to show no results - this could be improved
         Notify.handleError(error);
@@ -57,7 +57,7 @@ function PatientEdit($stateParams, Patients, util, moment, Notify, ScrollTo, Gro
     // 1. Only download id + name in patient directive
     // 2. Download full patients/details on selection
     return Patients.read(patientId)
-      .then(function (patient) {
+      .then((patient) => {
         vm.origin = patient.hospital_no;
         formatPatientAttributes(patient);
         vm.medical = patient;
@@ -77,8 +77,8 @@ function PatientEdit($stateParams, Patients, util, moment, Notify, ScrollTo, Gro
 
   function collectGroups(patientId) {
     Patients.groups(patientId)
-      .then(function (result) {
-        vm.finance = {patientGroups : result};
+      .then((result) => {
+        vm.finance = { patientGroups : result };
       });
   }
 
@@ -98,7 +98,7 @@ function PatientEdit($stateParams, Patients, util, moment, Notify, ScrollTo, Gro
 
   // TODO Clearer naming conventions
   vm.updatePatient = function updatePatient(patientDetailsForm) {
-    var submitPatient;
+    let submitPatient;
 
     if (patientDetailsForm.$pristine) {
       Notify.warn('PATIENT_EDIT.RECORD_SAME');
@@ -113,7 +113,7 @@ function PatientEdit($stateParams, Patients, util, moment, Notify, ScrollTo, Gro
     submitPatient = util.filterFormElements(patientDetailsForm, true);
 
     return Patients.update(vm.medical.uuid, submitPatient)
-      .then(function (updatedPatient) {
+      .then((updatedPatient) => {
         Notify.success('FORM.INFO.UPDATE_SUCCESS');
 
         // Update view

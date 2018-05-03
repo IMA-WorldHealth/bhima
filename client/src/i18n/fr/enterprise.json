@@ -11,7 +11,9 @@
     "SETTINGS" : {
       "TITLE" : "Parametres de l'Enterprise",
       "ENABLE_PRICE_LOCK_LABEL" : "Verrouiller les changements de prix pour la facturation des patients",
-      "ENABLE_PRICE_LOCK_HELP_TEXT" : "L'activation de cette fonctionnalité empêchera les utilisateurs de modifier les prix des articles en stock dans le module Facturation de Patients."
+      "ENABLE_PRICE_LOCK_HELP_TEXT" : "L'activation de cette fonctionnalité empêchera les utilisateurs de modifier les prix des articles en stock dans le module Facturation de Patients.",
+      "ENABLE_PREPAYMENTS_LABEL" : "Activer les Cautions",
+      "ENABLE_PREPAYMENTS_HELP_TEXT" : "L'activation de cette fonctionnalité permet aux patients de déposer des fonds à la fenêtre de paiement avant d'être facturé. Si le patient a un solde créditeur, ses factures seront automatiquement payées après facturation."
     }
   }
 }

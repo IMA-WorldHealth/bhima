@@ -19,7 +19,7 @@ PatientGroupController.$inject = [
  *  @constructor
  */
 function PatientGroupController(PatientGroups, PriceLists, Session, ModalService, util, Notify) {
-  var vm = this;
+  const vm = this;
 
   vm.length100 = util.length100;
   vm.maxLength = util.maxTextLength;
@@ -34,7 +34,7 @@ function PatientGroupController(PatientGroups, PriceLists, Session, ModalService
 
     // fetching all price list
     PriceLists.read()
-      .then(function (priceLists) {
+      .then((priceLists) => {
 
         // attaching the price list to the view
         vm.priceLists = priceLists;
@@ -42,7 +42,7 @@ function PatientGroupController(PatientGroups, PriceLists, Session, ModalService
         // load all patient groups
         return loadPatientGroups();
       })
-      .then(function (patientGroups) {
+      .then((patientGroups) => {
         vm.groups = patientGroups;
       })
       .catch(Notify.handleError)
@@ -67,21 +67,21 @@ function PatientGroupController(PatientGroups, PriceLists, Session, ModalService
     // if the form is not valid do nothing
     if (form.$invalid) { return; }
 
-    var creation = (vm.view === 'create');
-    var patientGroup = angular.copy(vm.patientGroup);
+    const creation = (vm.view === 'create');
+    const patientGroup = angular.copy(vm.patientGroup);
 
     /** @todo - discuss if this should happen on the server */
     patientGroup.enterprise_id = Session.enterprise.id;
 
-    var promise = (creation) ?
+    const promise = (creation) ?
       PatientGroups.create(patientGroup) :
       PatientGroups.update(patientGroup.uuid, patientGroup);
 
     return promise
-      .then(function () {
+      .then(() => {
         return loadPatientGroups();
       })
-      .then(function (groups) {
+      .then((groups) => {
         vm.groups = groups;
         vm.view = 'default';
       })
@@ -95,7 +95,7 @@ function PatientGroupController(PatientGroups, PriceLists, Session, ModalService
     vm.view = 'update';
 
     PatientGroups.read(uuid)
-      .then(function (data) {
+      .then((data) => {
         vm.patientGroup = data;
       })
       .catch(Notify.handleError);
@@ -109,16 +109,16 @@ function PatientGroupController(PatientGroups, PriceLists, Session, ModalService
   // this function is responsible of removing a patient group
   function remove() {
     ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
-      .then(function (bool) {
+      .then((bool) => {
         // if the user cancels, return immediately.
         if (!bool) { return; }
 
         PatientGroups.delete(vm.patientGroup.uuid)
-          .then(function () {
+          .then(() => {
             vm.view = 'default';
             return loadPatientGroups();
           })
-          .then(function (groups) {
+          .then((groups) => {
             vm.groups = groups;
           })
           .catch(Notify.handleError);
