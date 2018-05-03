@@ -19,8 +19,10 @@
         <div ng-switch-default>
 
           <!--exploitation grid-->
-          <div id="exploitation-grid" style="max-height: 250px;" ui-grid="$ctrl.gridOptions" ui-grid-grouping>
-            <bh-grid-loading-indicator loading-state="$ctrl.loading" empty-state="$ctrl.gridOptions.data.length === 0" error-state="$ctrl.hasError">
+          <div id="exploitation-grid" style="max-height: 250px;" ui-grid="$ctrl.gridOptions" ui-grid-resize-columns>
+            <bh-grid-loading-indicator
+              loading-state="$ctrl.loading"
+              empty-state="$ctrl.gridOptions.data.length === 0">
             </bh-grid-loading-indicator>
           </div>
 
@@ -30,7 +32,7 @@
             <h4 class="text-success">
               <dt translate>FORM.LABELS.PROFIT</dt>
               <dd class="text-right">
-                {{ $ctrl.profit | currency: $ctrl.currency_id }}
+                {{ $ctrl.totals.income | currency: $ctrl.currency_id }}
               </dd>
             </h4>
 
@@ -38,7 +40,7 @@
             <h4 style="margin: 10px 0px;" class="text-danger">
               <dt translate>FORM.LABELS.CHARGE</dt>
               <dd class="text-right">
-                {{ $ctrl.charge | currency: $ctrl.currency_id }}
+                {{ $ctrl.totals.expense | currency: $ctrl.currency_id }}
               </dd>
             </h4>
 
@@ -47,8 +49,8 @@
               <dt>
                 <span translate>FORM.LABELS.RESULT</span>
               </dt>
-              <dd class="text-right" ng-class="{'text-danger' : $ctrl.globalResult < 0, 'text-success' : $ctrl.globalResult > 0 }">
-                {{ $ctrl.globalResult | currency: $ctrl.currency_id }}
+              <dd class="text-right" ng-class="{'text-danger' : $ctrl.totals.net < 0, 'text-success' : $ctrl.totals.net > 0 }">
+                {{ $ctrl.totals.net | currency: $ctrl.currency_id }}
               </dd>
             </h4>
           </dl>
@@ -63,13 +65,12 @@
           <h3 class="text-primary">{{ $ctrl.resultAccount.number + ' - ' + $ctrl.resultAccount.label }}</h3>
           <h3>
             <span translate>FISCAL.RESULT_AMOUNT</span>
-            <span ng-class="{'text-danger' : $ctrl.globalResult < 0, 'text-success' : $ctrl.globalResult > 0 }">
-              {{ $ctrl.globalResult | currency: $ctrl.currency_id }}
+            <span ng-class="{'text-danger' : $ctrl.totals.net < 0, 'text-success' : $ctrl.totals.net > 0 }">
+              {{ $ctrl.totals.net | currency: $ctrl.currency_id }}
             </span>
           </h3>
         </div>
       </div>
-
     </div>
 
     <div ng-show="$ctrl.fiscal.locked">

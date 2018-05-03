@@ -247,8 +247,8 @@ INSERT INTO `account` (`id`, `type_id`, `enterprise_id`, `number`, `label`, `par
   (283, 3, 1, 13110001, 'Résusltat de l\'exercise', 111, 0, NULL, NULL, '2017-06-09 12:29:04', NULL),
   (284, 1, 1, 40111000, 'SNEL SUPPLIER', 170, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
   (285, 1, 1, 40111001, 'REGIDESO SUPPLIER', 170, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
-  (300, 5, 1, 40111002, 'SUPPLIER\'S ACCOUNT 1', 170, 0, NULL, NULL, '2017-11-06 15:07:21', NULL),
-  (301, 5, 1, 40111003, 'SUPPLIER\'S ACCOUNT 2', 170, 0, NULL, NULL, '2017-11-06 15:07:21', NULL);
+  (300, 1, 1, 40111002, 'SUPPLIER\'S ACCOUNT 1', 170, 0, NULL, NULL, '2017-11-06 15:07:21', NULL),
+  (301, 1, 1, 40111003, 'SUPPLIER\'S ACCOUNT 2', 170, 0, NULL, NULL, '2017-11-06 15:07:21', NULL);
 
 
 -- attach gain/loss accounts to the enterprise
@@ -837,17 +837,17 @@ INSERT INTO role_actions
 SELECT HUID(uuid()) as uuid, @roleUUID, id FROM actions;
 
 
-INSERT INTO `user_role`(uuid, user_id, role_uuid) 
+INSERT INTO `user_role`(uuid, user_id, role_uuid)
 VALUES(HUID(uuid()), 1, @roleUUID);
 
 -- regular user
 INSERT INTO role_unit
- VALUES(HUID(uuid()), @regularRoleUUID , 0 ), 
+ VALUES(HUID(uuid()), @regularRoleUUID , 0 ),
  (HUID(uuid()), @regularRoleUUID , 1 ),
  (HUID(uuid()), @regularRoleUUID , 2 ),
  (HUID(uuid()), @regularRoleUUID , 3 ),
  (HUID(uuid()), @regularRoleUUID , 4 );
-INSERT INTO `user_role`(uuid, user_id, role_uuid) 
+INSERT INTO `user_role`(uuid, user_id, role_uuid)
 VALUES(HUID(uuid()), 2, @regularRoleUUID);
 
 -- ----------------------------------------------------------------------------------------

@@ -21,6 +21,9 @@ const FilterParser = require('../../lib/filter');
 const Tree = require('../../lib/Tree');
 const debug = require('debug')('FiscalYear');
 
+const INCOME_TYPE_ID = 4;
+const EXPENSE_TYPE_ID = 5;
+
 // Account Service
 const AccountService = require('./accounts');
 
@@ -41,7 +44,6 @@ exports.getDateRangeFromPeriods = getDateRangeFromPeriods;
 exports.getPeriodsFromDateRange = getPeriodsFromDateRange;
 exports.accountBanlanceByTypeId = accountBanlanceByTypeId;
 exports.getOpeningBalance = getOpeningBalance;
-
 
 /**
  * @method lookupFiscalYear
@@ -242,29 +244,23 @@ function remove(req, res, next) {
 }
 
 /**
- * Get /fiscal/:id/balance/:period
+ * Get /fiscal/:id/balance/:period_number
  * @param {number} id the fiscal year id
- * @param {number} period the period number [0,13]
+ * @param {number} period the period number [0,12]
  * The balance for a specified fiscal year and period with all accounts
  * the period must be given
  */
 function getBalance(req, res, next) {
   const { id } = req.params;
-  const period = req.params.period_number;
-
+  const period = req.params.period_number || 12;
   debug(`#getBalance() looking up balance for FY${id} and period ${period}.`);
 
   lookupBalance(id, period)
-    .then((rows) => {
+    .then(rows => {
       const tree = new Tree(rows);
-      let result = [];
-      try {
-        tree.walk(Tree.common.sumOnProperty('debit'), false);
-        tree.walk(Tree.common.sumOnProperty('credit'), false);
-        result = tree.toArray();
-      } catch (error) {
-        result = [];
-      }
+      tree.walk(Tree.common.sumOnProperty('debit'), false);
+      tree.walk(Tree.common.sumOnProperty('credit'), false);
+      const result = tree.toArray();
       res.status(200).json(result);
     })
     .catch(next)
@@ -395,16 +391,7 @@ function hasPreviousFiscalYear(id) {
     });
 }
 
-/**
- * @function loadOpeningBalance
- *
- * @description
- * Load the opening balance of a fiscal year from period 0 of that fiscal year.
- */
-function loadOpeningBalance(fiscalYearId) {
-  const INCOME_TYPE_ID = 4;
-  const EXPENSE_TYPE_ID = 5;
-
+function loadBalanceByPeriodNumber(fiscalYearId, periodNumber) {
   const sql = `
     SELECT a.id, a.number, a.label, a.type_id, a.label, a.parent,
       IFNULL(s.debit, 0) AS debit, IFNULL(s.credit, 0) AS credit
@@ -413,7 +400,7 @@ function loadOpeningBalance(fiscalYearId) {
       FROM period_total AS pt
       JOIN period AS p ON p.id = pt.period_id
       WHERE pt.fiscal_year_id = ?
-        AND p.number = 0
+        AND p.number = ${periodNumber}
       GROUP BY pt.account_id
     )s ON a.id = s.account_id
     WHERE a.type_id NOT IN (?, ?)
@@ -421,6 +408,16 @@ function loadOpeningBalance(fiscalYearId) {
   `;
 
   return db.exec(sql, [fiscalYearId, INCOME_TYPE_ID, EXPENSE_TYPE_ID]);
+}
+
+/**
+ * @function loadOpeningBalance
+ *
+ * @description
+ * Load the opening balance of a fiscal year from period 0 of that fiscal year.
+ */
+function loadOpeningBalance(fiscalYearId) {
+  return loadBalanceByPeriodNumber(fiscalYearId, 0);
 }
 
 /**
