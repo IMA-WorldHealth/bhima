@@ -1,45 +1,46 @@
 angular.module('bhima.controllers')
-.controller('debtorBalanceReportController', DebtorBalanceReportController);
+  .controller('debtorBalanceReportController', DebtorBalanceReportController);
 
 DebtorBalanceReportController.$inject = [
-  '$state', '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'BaseReportService', 'reportData',
+  '$state', '$sce', 'NotifyService', 'BaseReportService', 'AppCache',
+  'BaseReportService', 'reportData',
 ];
 
 function DebtorBalanceReportController($state, $sce, Notify, BaseReportService, AppCache, SavedReports, reportData) {
-  var vm = this;
-  var cache = new AppCache('configure_debtorAccountBalance');
-  var reportUrl = 'reports/debtorAccountBalance';
+  const vm = this;
+  const cache = new AppCache('configure_debtorAccountBalance');
+  const reportUrl = 'reports/debtorAccountBalance';
 
   vm.reportDetails = {};
-  vm.fiscalYear_id = '';
-  var _url = '';
 
-  vm.onSelectFiscal = function(fiscal) {
-    _url = reportUrl + '/' + fiscal;
+  checkCachedConfiguration();
+
+  vm.onSelectFiscal = fiscalId => {
+    vm.reportDetails.fiscalId = fiscalId;
   };
 
   vm.requestSaveAs = function requestSaveAs() {
-
-    var options = {
-      url : _url,
+    const options = {
+      url : reportUrl,
       report : reportData,
       reportOptions : angular.copy(vm.reportDetails),
     };
 
     return SavedReports.saveAsModal(options)
-      .then(function () {
+      .then(() => {
         $state.go('reportsBase.reportsArchive', { key : options.report.report_key });
       })
       .catch(Notify.handleError);
   };
 
   vm.preview = function preview(form) {
-    if (form.$invalid) { return; }
-        // update cached configuration
+    if (form.$invalid) { return 0; }
+
+    // update cached configuration
     cache.reportDetails = angular.copy(vm.reportDetails);
 
-    return SavedReports.requestPreview( _url, reportData.id, angular.copy(vm.reportDetails))
-      .then(function (result) {
+    return SavedReports.requestPreview(reportUrl, reportData.id, angular.copy(vm.reportDetails))
+      .then(result => {
         vm.previewGenerated = true;
         vm.previewResult = $sce.trustAsHtml(result);
       })
@@ -50,4 +51,10 @@ function DebtorBalanceReportController($state, $sce, Notify, BaseReportService, 
     vm.previewGenerated = false;
     vm.previewResult = null;
   };
+
+  function checkCachedConfiguration() {
+    if (cache.reportDetails) {
+      vm.reportDetails = angular.copy(cache.reportDetails);
+    }
+  }
 }

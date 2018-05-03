@@ -1,4 +1,6 @@
 const _ = require('lodash');
+const q = require('q');
+
 const ReportManager = require('../../../../lib/ReportManager');
 const db = require('../../../../lib/db');
 
@@ -31,55 +33,73 @@ function debtorAccountBalance(req, res, next) {
   }
 
   // fire the SQL for the report
-  const fiscalYearId = req.params.fiscalYearId;
-  let _rows = [];
+  const fiscalYearId = req.query.fiscalId;
 
-  queryContext(fiscalYearId)
-  .then(function (data) {
-    _rows = data;
-    return fiscalYearQuery(fiscalYearId);
-  })
-  .then(function (fiscalYear) {
-    return report.render(
-      { rows : _rows, fiscalLabel : fiscalYear.label }
-    );
-  })
-  .then(result => {
-    res.set(result.headers).send(result.report);
-  })
-  .catch(next)
-  .done();
+  return q.all([
+    fiscalYearQuery(fiscalYearId),
+    getDebtorGroupMovements(fiscalYearId),
+    getTotalsFooter(fiscalYearId),
+  ])
+    .spread((fiscalYear, rows, footer) => {
+      return report.render({ fiscalYear, rows, footer });
+    })
+    .then(result => {
+      res.set(result.headers).send(result.report);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
- * @method queryContext
+ * @method getDebtorGroupMovements
  *
- * @param int fiscalYearId
- * this method takes the fiscal year's id and retreives
- * the balance of all clients debtor accounts
  * @description
- * The HTTP interface which actually creates the report.
+ * This method takes the fiscal year's id and retrieves the balance of all
+ * debtor group's accounts.
  */
-function queryContext(fiscalYearId) {
-
+function getDebtorGroupMovements(fiscalYearId) {
   const sql = `
-    SELECT ac.id as account, ac.label as name, p.number as period,
-      SUM(pt.debit) as debit, SUM(pt.credit) as credit,
-      SUM(IF(p.number = 0, (pt.debit-pt.credit) ,0))  as openingBalance,
-      SUM(IF((p.number >0 AND p.number<13), (pt.debit-pt.credit) ,0))  as movement,
-      (SUM(IF(p.number <13, (pt.debit-pt.credit) ,0))) as closingBalance
-    FROM  period_total  pt
-    JOIN debtor_group d ON pt.account_id = d.account_id
-    JOIN account ac  ON ac.id = pt.account_id
-    JOIN fiscal_year f ON f.id = pt.fiscal_year_id
-    JOIN period p ON p.id = pt.period_id
+    SELECT ac.number AS accountNumber, dg.name AS groupName,
+      SUM(pt.debit) AS debit, SUM(pt.credit) AS credit,
+      IFNULL(SUM(IF(p.number = 0, pt.debit - pt.credit, 0)), 0) AS openingBalance,
+      IFNULL(SUM(IF(p.number > 0, pt.debit - pt.credit, 0)), 0) AS movement,
+      IFNULL(SUM(pt.debit - pt.credit), 0) AS closingBalance
+    FROM debtor_group dg
+      LEFT JOIN period_total pt ON dg.account_id = pt.account_id
+      LEFT JOIN account ac ON ac.id = pt.account_id
+      LEFT JOIN period p ON p.id = pt.period_id
     WHERE pt.fiscal_year_id = ?
     GROUP BY pt.account_id
   `;
+
   return db.exec(sql, fiscalYearId);
 }
 
+/**
+ * @method getTotalsFooter
+ *
+ * @description
+ * This function computes the sum of all the values from the table of debtors
+ * groups.
+ */
+function getTotalsFooter(fiscalYearId) {
+  const sql = `
+    SELECT ac.number AS accountNumber, ac.label AS accountLabel,
+      SUM(pt.debit) AS debit, SUM(pt.credit) AS credit,
+      IFNULL(SUM(IF(p.number = 0, pt.debit - pt.credit, 0)), 0) AS openingBalance,
+      IFNULL(SUM(IF(p.number > 0, pt.debit - pt.credit, 0)), 0) AS movement,
+      IFNULL(SUM(pt.debit - pt.credit), 0) AS closingBalance
+    FROM debtor_group dg
+      LEFT JOIN period_total pt ON dg.account_id = pt.account_id
+      LEFT JOIN account ac ON ac.id = pt.account_id
+      LEFT JOIN period p ON p.id = pt.period_id
+    WHERE pt.fiscal_year_id = ?
+  `;
+
+  return db.one(sql, fiscalYearId);
+}
+
 function fiscalYearQuery(id) {
-  const sql = `SELECT label FROM fiscal_year WHERE id =?`;
+  const sql = 'SELECT label FROM fiscal_year WHERE id = ?';
   return db.one(sql, id);
 }

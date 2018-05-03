@@ -4,15 +4,13 @@
   <main class="container">
     {{> header }}
 
-    <h3 class="text-center text-uppercase">
+    <h3 class="text-center text-capitalize">
       <strong>{{translate "REPORT.CLIENT_DEBTOR_ACCOUNT_BALANCE_REPORT"}}</strong>
     </h3>
 
-    <h5 class="text-center">
-      <strong>
-        <span class="text-capitalize"> {{ fiscalLabel }}</span>
-      </strong>
-    </h5>
+    <h4 class="text-center text-capitalize">
+      {{ fiscalYear.label }}
+    </h4>
 
     <section>
       <table class="table table-condensed table-report table-bordered">
@@ -27,19 +25,28 @@
           </tr>
         </thead>
         <tbody>
-
           <!-- print a row for each debtor account-->
-          {{#each rows}}
+          {{#each rows as | row |}}
             <tr>
-              <td>{{this.account}}</td>
-              <td>{{this.name}}</td>
-              <td class="text-right">{{currency this.openingBalance metadata.enterprise.currency_id}}</td>
-              <td class="text-right">{{currency this.debit  metadata.enterprise.currency_id}}</td>
-              <td class="text-right">{{currency this.credit  metadata.enterprise.currency_id}}</td>
-              <td class="text-right">{{currency this.closingBalance  metadata.enterprise.currency_id}}</td>
+              <td>{{row.accountNumber}}</td>
+              <td>{{row.groupName }}</td>
+              <td class="text-right">{{currency row.openingBalance ../metadata.enterprise.currency_id}}</td>
+              <td class="text-right">{{currency row.debit  ../metadata.enterprise.currency_id}}</td>
+              <td class="text-right">{{currency row.credit  ../metadata.enterprise.currency_id}}</td>
+              <td class="text-right">{{currency row.closingBalance ../metadata.enterprise.currency_id}}</td>
             </tr>
-            {{/each}}
+          {{else}}
+            {{> emptyTable columns="6" }}
+          {{/each}}
         </tbody>
+
+        <tfoot>
+          <th colspan="2">{{translate "TABLE.COLUMNS.TOTAL"}}</th>
+          <th class="text-right">{{currency footer.openingBalance  ../metadata.enterprise.currency_id}}</th>
+          <th class="text-right">{{currency footer.debit  ../metadata.enterprise.currency_id}}</th>
+          <th class="text-right">{{currency footer.credit  ../metadata.enterprise.currency_id}}</th>
+          <th class="text-right">{{currency footer.closingBalance  ../metadata.enterprise.currency_id}}</th>
+        </tfoot>
       </table>
     </section>
   </main>

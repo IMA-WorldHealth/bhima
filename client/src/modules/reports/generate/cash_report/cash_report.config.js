@@ -68,6 +68,5 @@ function CashReportConfigController($sce, Notify, SavedReports, AppCache, report
     }
     vm.reportDetails.type = 1;
     vm.reportDetails.format = 1;
-
   }
 }

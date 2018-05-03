@@ -1,19 +1,10 @@
-/* global browser, element, by */
-
+/* global  element, by */
 const FU = require('../FormUtils');
 
+const selector = '[bh-fiscal-year-select]';
 module.exports = {
-  mainSelector : '[bh-fiscal-year-select]',
-  set : function set(fiscal_year_id, id) {
-      var opts;
-    /** return selector for an option element */
-    function getValue(id) {
-      return by.css('option[value="number:?"]'.replace('?', id));
-    }
-
-    const bhFiscal = (id) ? element(by.id(id)) : element(by.css(this.mainSelector));
-
-    opts = bhFiscal.element(by.model('$ctrl.selectedFiscal'));
-    opts.element(getValue(fiscal_year_id)).click();
+  set : (fiscalYear, id) => {
+    const locator = id ? by.id(id) : by.css(selector);
+    FU.select('$ctrl.fiscalId', fiscalYear, element(locator));
   },
 };

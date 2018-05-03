@@ -21,21 +21,20 @@
       </div>
 
       <div class="panel-body">
+        <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate autocomplete="off">
 
-      <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate autocomplete="off">
+          <!--select the period by a date-->
+          <bh-fiscal-year-select
+            fiscal-id="ReportConfigCtrl.reportDetails.fiscalId"
+            validation-trigger="ConfigForm.$submitted"
+            on-select-fiscal-callback ="ReportConfigCtrl.onSelectFiscal(fiscalId)">
+          </bh-fiscal-year-select>
 
-        <!--select the period by a date-->
-        <bh-fiscal-year-select
-          validation-trigger="ConfigForm.$submitted"
-          on-select-fiscal-callback ="ReportConfigCtrl.onSelectFiscal(fiscal)">
-        </bh-fiscal-year-select>
-
-        <!--preview-->
-        <bh-loading-button loading-state="ConfigForm.$loading">
-          <span translate>REPORT.UTIL.PREVIEW</span>
-        </bh-loading-button>
-      </form>
-
+          <!--preview-->
+          <bh-loading-button loading-state="ConfigForm.$loading">
+            <span translate>REPORT.UTIL.PREVIEW</span>
+          </bh-loading-button>
+        </form>
       </div>
     </div>
   </div>

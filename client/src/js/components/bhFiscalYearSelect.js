@@ -1,24 +1,27 @@
 angular.module('bhima.components')
-.component('bhFiscalYearSelect', {
-    bindings: {
-      validationTrigger: '<',
-      onSelectFiscalCallback: '&',
+  .component('bhFiscalYearSelect', {
+    bindings : {
+      onSelectFiscalCallback : '&',
+      fiscalId : '<?',
+      validationTrigger : '<?',
     },
-    templateUrl: 'modules/templates/bhFiscalYearSelect.tmpl.html',
-    controller: FiscalYearSelect,
-});
-
-FiscalYearSelect.$inject = ['FiscalService', '$translate'];
-
-function FiscalYearSelect(Fiscals, $translate) {
-  var $ctrl = this;
-
-  Fiscals.read().then(function (fiscals) {
-    $ctrl.fiscals = fiscals;
+    templateUrl : 'modules/templates/bhFiscalYearSelect.tmpl.html',
+    controller : FiscalYearSelect,
   });
-  
-  $ctrl.loadPeriod = function (fiscal_id) {
-    $ctrl.onSelectFiscalCallback({ fiscal: fiscal_id });
-  }
 
+FiscalYearSelect.$inject = ['FiscalService'];
+
+function FiscalYearSelect(FiscalYears) {
+  const $ctrl = this;
+
+  $ctrl.$onInit = () => {
+    FiscalYears.read()
+      .then(years => {
+        $ctrl.years = years;
+      });
+  };
+
+  $ctrl.onChange = fiscalId => {
+    $ctrl.onSelectFiscalCallback({ fiscalId });
+  };
 }

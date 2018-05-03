@@ -1,10 +1,3 @@
-/* global browser, element, by */
-
-const chai = require('chai');
-const helpers = require('../../shared/helpers');
-
-helpers.configure(chai);
-
 const FU = require('../../shared/FormUtils');
 const ReportPage = require('../page');
 const components = require('../../shared/components');
@@ -15,14 +8,14 @@ class DebtorClientAccountBalanceReportPage {
   }
 
   // preview an income expense report
-  showIncomeExpenseReportPreview(fiscalYearId) {
-    components.fiscalYearSelect.set(fiscalYearId);
+  showDebtorAccountBalanceReportPreview(fiscalYear) {
+    components.fiscalYearSelect.set(fiscalYear);
     this.page.preview();
   }
 
   // save an income expense report
-  saveIncomeExpenseReport(fiscalYearId, reportName, reportFormat) {
-    this.showIncomeExpenseReportPreview(fiscalYearId);
+  saveDebtorAccountBalanceReport(fiscalYear, reportName, reportFormat) {
+    this.showDebtorAccountBalanceReportPreview(fiscalYear);
 
     // save report as PDF
     this.page.saveAs();
@@ -36,20 +29,20 @@ class DebtorClientAccountBalanceReportPage {
   }
 
   // print an income expense report
-  printIncomeExpenseReport(fiscalYearId) {
-    this.showIncomeExpenseReportPreview(fiscalYearId);
+  printDebtorAccountBalanceReport(fiscalYear) {
+    this.showDebtorAccountBalanceReportPreview(fiscalYear);
     this.page.printPreview();
   }
 
   // check saved report
-  checkSavedIncomeExpenseReport(reportName) {
+  checkSavedDebtorAccountBalanceReport(reportName) {
     this.page.gotoArchive();
     this.page.lastReportMatching(reportName);
     this.page.backToConfig();
   }
 
   // close preview
-  closeIncomeExpenseReportPreview() {
+  closeDebtorAccountBalanceReportPreview() {
     this.page.closePreview();
   }
 }

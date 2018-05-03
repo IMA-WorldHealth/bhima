@@ -1,19 +1,15 @@
-/* global browser, element, by */
+/* global browser */
 
-const chai = require('chai');
 const helpers = require('../../shared/helpers');
-
-helpers.configure(chai);
 
 const DebtorClientAccountBalanceReportPage = require('./balance.page');
 
 describe('Debtor Clients Account Balance Report', () => {
-  let Page;
   const key = 'debtorBalanceReport';
+  let Page;
 
   const dataset = {
-    fiscal_id : 2,
-    type : 'Accounts balance',
+    fiscalYear : 'Test Fiscal Year 2016',
     report_name : 'debtor client accounts balance Saved by E2E',
     renderer : 'PDF',
   };
@@ -24,23 +20,23 @@ describe('Debtor Clients Account Balance Report', () => {
     browser.refresh();
   });
 
-  it('preview a new Debtor client account balance report', () => {
-    Page.showIncomeExpenseReportPreview(dataset.fiscal_id);
+  it('preview a new debtor client account balance report', () => {
+    Page.showDebtorAccountBalanceReportPreview(dataset.fiscalYear);
   });
 
   it('close the previewed report', () => {
-    Page.closeIncomeExpenseReportPreview();
+    Page.closeDebtorAccountBalanceReportPreview();
   });
 
   it('save a previewed report', () => {
-    Page.saveIncomeExpenseReport(dataset.fiscal_id, dataset.report_name, dataset.renderer);
+    Page.saveDebtorAccountBalanceReport(dataset.fiscalYear, dataset.report_name, dataset.renderer);
   });
 
   it('report has been saved into archive', () => {
-    Page.checkSavedIncomeExpenseReport(dataset.report_name);
+    Page.checkSavedDebtorAccountBalanceReport(dataset.report_name);
   });
 
   it('print the previewed report', () => {
-    Page.printIncomeExpenseReport(dataset.fiscal_id);
+    Page.printDebtorAccountBalanceReport(dataset.fiscalYear);
   });
 });
