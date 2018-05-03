@@ -190,8 +190,8 @@ function convertStringToNumber(obj) {
  */
 
 function renameKeys(objs, newKeys) {
-  const stringType = 'string';
-  const formatedKeys = (typeof stringType) ? JSON.parse(newKeys) : newKeys;
+
+  const formatedKeys = _.isString(newKeys) ? JSON.parse(newKeys) : newKeys;
   if (_.isArray(objs)) {
     _.forEach(objs, (obj, index) => {
       objs[index] = renameObjectKeys(obj, formatedKeys);
