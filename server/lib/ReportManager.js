@@ -149,7 +149,6 @@ class ReportManager {
 
       const renderHeaders = renderer.headers;
       const report = reportStream;
-
       if (this.options.filename) {
         const translate = translateHelper(this.options.lang);
         const translatedName = translate(this.options.filename);

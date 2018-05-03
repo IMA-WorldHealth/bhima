@@ -21,10 +21,6 @@
  * @copyright IMA World Health 2016
  */
 
-// json2xls has a strict-mode octal error in underlying modules.
-// Workaround - required before 'use-strict'
-const json2xls = require('json2xls');
-
 require('use-strict');
 const dotEnv = require('dotenv');
 
@@ -35,11 +31,6 @@ const express = require('express');
 const debug = require('debug')('app');
 
 const app = express();
-/*
-  * json2xls middelware used to send xlsx file as http response
-  *example : res.xls('data.xlsx', jsonArray);
-*/
-app.use(json2xls.middleware);
 
 /**
  * @function configureEnvironmentVariables

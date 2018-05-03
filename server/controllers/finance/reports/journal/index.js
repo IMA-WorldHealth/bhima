@@ -10,7 +10,6 @@ const _ = require('lodash');
 const ReportManager = require('../../../../lib/ReportManager');
 const db = require('../../../../lib/db');
 const Journal = require('../../journal');
-const util = require('../../../../lib/util');
 
 const REPORT_TEMPLATE = './server/controllers/finance/reports/journal/report.handlebars';
 
@@ -22,6 +21,13 @@ exports.postingReport = postingJournalExport;
  * @method postingJournalExport
  */
 function postingJournalExport(req, res, next) {
+
+  /*
+   theses below properties are used for rename the result keys
+    some time export report with the database columns' labels
+    whitch is not understandable for the end user
+  */
+
   const options = _.extend(req.query, {
     filename                 : 'POSTING_JOURNAL.TITLE',
     orientation              : 'landscape',
@@ -58,11 +64,7 @@ function postingJournalExport(req, res, next) {
       return report.render({ rows, totals });
     })
     .then((result) => {
-      if (result.headers.type === 'xlsx') {
-        res.xls(result.headers.filename, util.dateFormatter(result.report.rows));
-      } else {
-        res.set(result.headers).send(result.report);
-      }
+      res.set(result.headers).send(result.report);
     })
     .catch(next)
     .done();
