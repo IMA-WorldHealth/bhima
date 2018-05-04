@@ -175,6 +175,12 @@
         <span class="input-group-addon" translate>FORM.LABELS.MONTH</span>
       </div>
     </div>
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" name="sellable" ng-true-value="1" ng-false-value="0" ng-model="$ctrl.item.sellable">
+        <span translate>INVENTORY.SELLABLE</span>
+      </label>
+    </div>
     <div class="form-group">
       <span translate>FORM.INFO.NOTE</span>
       <textarea  class="form-control"  name="note"  ng-model="$ctrl.item.note">
