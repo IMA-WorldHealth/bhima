@@ -47,7 +47,7 @@ function render(data) {
 
   const normaFontSize = {
     font : {
-      size : 12,
+      size : 10,
     },
   };
   const borderInfo = {
@@ -65,14 +65,16 @@ function render(data) {
   };
   // Add Worksheets to the workbook
   const ws = wb.addWorksheet('Sheet 1');
-  const { rows } = data;
+  let { rows } = data;
+  rows = rows || [];
   const firstObject = rows[0] || {};
 
   // writing columns
   const firstLineCols = Object.keys(firstObject);
   let line = 1;
   firstLineCols.forEach((key, index) => {
-    ws.cell(line, index + 1).string(key)
+    ws.cell(line, index + 1)
+      .string(key)
       .style(headerStryle)
       .style(styleAllBorders);
   });
@@ -101,5 +103,5 @@ function setValue(ws, x, y, value) {
       numberFormat : 'yyyy-mm-dd hh:mm:ss',
     });
   }
-  return ws.cell(x, y).string(''.concat(value || ''));
+  return ws.cell(x, y).string(value || '');
 }
