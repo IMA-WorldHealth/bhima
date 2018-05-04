@@ -39,11 +39,7 @@ function chart(req, res, next) {
     .then(Accounts.processAccountDepth)
     .then(accounts => report.render({ accounts }))
     .then(result => {
-      if (result.headers.type === 'xlsx') {
-        res.xls(result.headers.filename, result.report.accounts);
-      } else {
-        res.set(result.headers).send(result.report);
-      }
+      res.set(result.headers).send(result.report);
     })
     .catch(next)
     .done();
