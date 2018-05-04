@@ -48,4 +48,18 @@ describe('util.js', () => {
     const value = 12.11111;
     expect(util.roundDecimal(value)).to.equal(12.1111);
   });
+
+  it('Should rename an object\'s keys', () => {
+    const a = [{ id : 1 }];
+    const keyMap = { id : 'hello' };
+    const result = util.renameKeys(a, keyMap);
+    expect(result).to.deep.equal([{ hello : 1 }]);
+  });
+
+  it('Should retain an emo', () => {
+    const a = [];
+    const keyMap = { id : 'hello' };
+    const result = util.renameKeys(a, keyMap);
+    expect(result).to.deep.equal([]);
+  });
 });

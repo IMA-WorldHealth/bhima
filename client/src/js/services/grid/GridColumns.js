@@ -1,8 +1,8 @@
 angular.module('bhima.services')
-.service('GridColumnService', GridColumnService);
+  .service('GridColumnService', GridColumnService);
 
 GridColumnService.$inject = [
-  'uiGridConstants', 'AppCache', '$uibModal', 'util', '$timeout',
+  'uiGridConstants', 'AppCache', '$uibModal', 'util', '$translate',
 ];
 
 /**
@@ -19,9 +19,9 @@ GridColumnService.$inject = [
  *
  * @todo - investigate using ui-grid-saveState for caching the column
  */
-function GridColumnService(uiGridConstants, AppCache, Modal, util, $timeout) {
+function GridColumnService(uiGridConstants, AppCache, Modal, util, $translate) {
   /** @const cache alias for this service */
-  var serviceKey = '-Columns';
+  // const serviceKey = '-Columns';
 
   /**
    * @method cacheDefaultColumnVisibility
@@ -39,15 +39,14 @@ function GridColumnService(uiGridConstants, AppCache, Modal, util, $timeout) {
     // this.defaults is set.
     if (Object.keys(this.defaults).length > 0) { return; }
 
-    var defaults = this.defaults;
-    var cache = this.cache;
+    const { defaults } = this;
 
-    angular.forEach(this.gridOptions.columnDefs, function (defn) {
-      var field = defn.field;
+    angular.forEach(this.gridOptions.columnDefs, (defn) => {
+      const { field } = defn;
 
       // only use the fields have usable names
       if (field) {
-        var column = api.grid.getColumn(field);
+        const column = api.grid.getColumn(field);
 
         // cache the default visible value
         defaults[field] = column.visible;
@@ -63,20 +62,32 @@ function GridColumnService(uiGridConstants, AppCache, Modal, util, $timeout) {
    * gridOptions and a cacheKey to determine where to store the column
    * visibility selection for future page refreshes.
    */
-  function Columns(gridOptions, cacheKey) {
+  function Columns(gridOptions) {
     // bind access to the gridOptions
     this.gridOptions = gridOptions;
     this.defaults = {};
 
     // bind the exposed grid API
-    util.after(gridOptions, 'onRegisterApi', function onRegisterApi(api) {
+    util.after(gridOptions, 'onRegisterApi', (api) => {
       this.gridApi = api;
 
       // when the rendering is complete, cache the default column visibility
       api.core.on.rowsRendered(null, cacheDefaultColumnVisibility.bind(this));
-    }.bind(this));
+    });
   }
 
+
+  /**
+   * returns [{field1 : displayName1}, {field2 : displayName2}, ...]
+   * this function is useful for renaming keys
+   */
+  Columns.prototype.getDisplayNames = function getDisplayNames() {
+    const displayNames = {};
+    this.gridOptions.columnDefs.forEach(col => {
+      displayNames[col.field] = $translate.instant(col.displayName);
+    });
+    return displayNames;
+  };
   /**
    * @method setVisibleColumns
    *
@@ -87,10 +98,10 @@ function GridColumnService(uiGridConstants, AppCache, Modal, util, $timeout) {
    * @param {object} columns - a mapping of field names to boolean visibility values
    */
   Columns.prototype.setVisibleColumns = function setVisibleColumns(columns) {
-    var grid = this.gridApi.grid;
+    const { grid } = this.gridApi;
 
-    angular.forEach(columns, function (visible, field) {
-      var column = grid.getColumn(field);
+    angular.forEach(columns, (visible, field) => {
+      const column = grid.getColumn(field);
       if (visible) {
         column.showColumn();
       } else {
@@ -111,13 +122,12 @@ function GridColumnService(uiGridConstants, AppCache, Modal, util, $timeout) {
    *
    */
   Columns.prototype.hasEnoughColumns = function hasEnoughColumns(columns) {
-    var grid = this.gridApi.grid;
-    var visibleColumn = 0;
-    var defaultValueColumn = 1;
-    var totalColumn = 0;
+    const { grid } = this.gridApi;
+    let visibleColumn = 0;
+    let defaultValueColumn = 1;
 
-    angular.forEach(columns, function (visible, field) {
-      var column = grid.getColumn(field);
+    angular.forEach(columns, (visible, field) => {
+      const column = grid.getColumn(field);
 
       /**
         *This alternative structure checks if selectionRowHeaderCol or treeBaseRowHeaderCol are visible or not,
@@ -176,7 +186,7 @@ function GridColumnService(uiGridConstants, AppCache, Modal, util, $timeout) {
    * @returns {Object} map - a mapping of column field names to visibility status
    */
   Columns.prototype.getColumnVisibilityMap = function getColumnVisibilityMap() {
-    return this.getColumns().reduce(function (map, column) {
+    return this.getColumns().reduce((map, column) => {
       map[column.field] = column.visible;
       return map;
     }, {});
@@ -192,8 +202,8 @@ function GridColumnService(uiGridConstants, AppCache, Modal, util, $timeout) {
    * @returns {Promise} - resolve the modal's close/open state
    */
   Columns.prototype.openConfigurationModal = function openConfigurationModal() {
-    var self = this;
-    var modal = Modal.open({
+    const self = this;
+    const modal = Modal.open({
       templateUrl : 'modules/templates/modals/columnConfig.modal.html',
       controller :  'ColumnsConfigModalController as ColumnsConfigModalCtrl',
       size : 'lg',

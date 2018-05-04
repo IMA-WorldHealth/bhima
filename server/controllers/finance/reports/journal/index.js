@@ -22,6 +22,12 @@ exports.postingReport = postingJournalExport;
  */
 function postingJournalExport(req, res, next) {
 
+  /*
+   theses below properties are used for rename the result keys
+    some time export report with the database columns' labels
+    whitch is not understandable for the end user
+  */
+
   const options = _.extend(req.query, {
     filename                 : 'POSTING_JOURNAL.TITLE',
     orientation              : 'landscape',

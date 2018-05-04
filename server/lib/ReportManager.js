@@ -28,6 +28,7 @@ const fs = require('fs');
 const q = require('q');
 const uuid = require('uuid/v4');
 const translateHelper = require('./helpers/translate');
+const util = require('../lib/util');
 
 const BadRequest = require('./errors/BadRequest');
 const InternalServerError = require('./errors/InternalServerError');
@@ -125,7 +126,8 @@ class ReportManager {
    *    render() function.
    */
   render(data) {
-    const { metadata, renderer } = this;
+    const { metadata } = this;
+    const { renderer } = this;
 
     // set the render timestamp
     metadata.timestamp = new Date();
@@ -137,9 +139,16 @@ class ReportManager {
     // sanitise save report option
     this.options.saveReport = Boolean(Number(this.options.saveReport));
 
+
     // merge the data object before templating
+
     _.merge(data, { metadata });
 
+    // some reports(Excel,..) require renaming result's column names
+    // so, util.renameKeys can help to solve this problem
+    const { displayNames, renameKeys } = this.options;
+    data.rows = (renameKeys) ? util.renameKeys(data.rows, displayNames) : data.rows;
+    //
     // render the report using the stored renderer
     const promise = renderer.render(data, this.template, this.options);
 
