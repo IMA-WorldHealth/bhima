@@ -15,6 +15,7 @@
         "DESCRIPTION": "Invoice to {{ patientName }} ({{ patientReference }}) for {{ numItems }} items from service {{ serviceName }}. {{ description }}",
         "INVALID_DETAILS": "This invoice contains invalid details",
         "INVALID_ITEMS": "This invoice contains invalid items",
+        "PREPAYMENT_LINK_DESCRIPTION" : "[Prepayment] Allocation of previous payments against debtor's invoice.",
         "PAGE_TITLE": "Patient Invoice",
         "STAT_TOTAL_INVOICE": "Total Invoices",
         "LABEL_PAID": "Invoice has been paid in full",

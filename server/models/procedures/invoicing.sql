@@ -607,7 +607,8 @@ may not be a remaining balance on the invoice.
 */
 CREATE PROCEDURE LinkPrepaymentsToInvoice(
   IN invoice_uuid BINARY(16),
-  IN debtor_uuid BINARY(16)
+  IN debtor_uuid BINARY(16),
+  IN description TEXT
 )
 BEGIN
   -- local variables
@@ -625,7 +626,6 @@ BEGIN
   DECLARE enterpriseCurrencyId SMALLINT(5);
   DECLARE linkTransactionTypeId SMALLINT(5);
   DECLARE debtorAccountId INT(10);
-
 
   DECLARE curse CURSOR FOR
     SELECT payment.uuid, payment.balance FROM stage_payment_balances AS payment;
@@ -653,7 +653,7 @@ BEGIN
 
   -- make the voucher that will link the debtor's invoices to their cautions.
   INSERT INTO voucher (uuid, date, project_id, currency_id, amount, description, user_id, type_id)
-    SELECT vUuid, date, project_id, enterpriseCurrencyId, 0, '[Caution Link]', user_id, linkTransactionTypeId
+    SELECT vUuid, date, project_id, enterpriseCurrencyId, 0, description, user_id, linkTransactionTypeId
     FROM invoice WHERE invoice.uuid = invoice_uuid;
 
   SELECT cost INTO amountToAllocate FROM invoice WHERE uuid = invoice_uuid;

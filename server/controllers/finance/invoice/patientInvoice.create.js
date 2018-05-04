@@ -43,7 +43,7 @@ module.exports = createInvoice;
  * @todo - change the API to pass in only an array of invoicingFee and subsidy
  * ids.
  */
-function createInvoice(invoiceDetails, hasCreditorBalance) {
+function createInvoice(invoiceDetails, hasCreditorBalance, prepaymentDescription) {
   const transaction = db.transaction();
   const invoiceUuid = db.bid(invoiceDetails.uuid || uuid());
 
@@ -70,7 +70,7 @@ function createInvoice(invoiceDetails, hasCreditorBalance) {
   // if there is a creditor balance, we will link the prepayments here.
   if (hasCreditorBalance) {
     transaction
-      .addQuery('CALL LinkPrepaymentsToInvoice(?, ?)', [invoiceUuid, debtorUuid]);
+      .addQuery('CALL LinkPrepaymentsToInvoice(?, ?, ?)', [invoiceUuid, debtorUuid, prepaymentDescription]);
   }
 
   return transaction;

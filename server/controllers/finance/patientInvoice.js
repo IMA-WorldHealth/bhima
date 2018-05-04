@@ -173,6 +173,7 @@ function detail(req, res, next) {
 
 function create(req, res, next) {
   const { invoice } = req.body;
+  const { prepaymentDescription } = req.query;
   invoice.user_id = req.session.user.id;
 
   const hasPrepaymentSupport = req.session.enterprise.settings.enable_prepayments;
@@ -200,7 +201,7 @@ function create(req, res, next) {
   Debtors.balance(invoice.debtor_uuid)
     .then(([pBalance]) => {
       const hasCreditorBalance = hasPrepaymentSupport && pBalance && (pBalance.credit > pBalance.debit);
-      const preparedTransaction = createInvoice(invoice, hasCreditorBalance);
+      const preparedTransaction = createInvoice(invoice, hasCreditorBalance, prepaymentDescription);
       return preparedTransaction.execute();
     })
     .then(() => {
