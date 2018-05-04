@@ -98,19 +98,17 @@ function PatientEdit($stateParams, Patients, util, moment, Notify, ScrollTo, Gro
 
   // TODO Clearer naming conventions
   vm.updatePatient = function updatePatient(patientDetailsForm) {
-    let submitPatient;
-
     if (patientDetailsForm.$pristine) {
       Notify.warn('PATIENT_EDIT.RECORD_SAME');
-      return;
+      return 0;
     }
 
     if (patientDetailsForm.$invalid) {
       Notify.danger('FORM.ERRORS.RECORD_ERROR');
-      return;
+      return 0;
     }
 
-    submitPatient = util.filterFormElements(patientDetailsForm, true);
+    const submitPatient = util.filterFormElements(patientDetailsForm, true);
 
     return Patients.update(vm.medical.uuid, submitPatient)
       .then((updatedPatient) => {

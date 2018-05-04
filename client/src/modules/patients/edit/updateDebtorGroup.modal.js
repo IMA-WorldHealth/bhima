@@ -2,10 +2,10 @@ angular.module('bhima.controllers')
   .controller('UpdateDebtorGroup', UpdateDebtorGroup);
 
 UpdateDebtorGroup.$inject = [
-  '$uibModalInstance', 'DebtorService', 'patient', 'updateModel', 'NotifyService',
+  '$uibModalInstance', 'DebtorService', 'patient', 'updateModel',
 ];
 
-function UpdateDebtorGroup($uibModalInstance, debtors, patient, updateModel, Notify) {
+function UpdateDebtorGroup($uibModalInstance, debtors, patient, updateModel) {
   const viewModel = this;
   let originalGroupUuid;
 
@@ -21,17 +21,16 @@ function UpdateDebtorGroup($uibModalInstance, debtors, patient, updateModel, Not
   }
 
   // form submission
-  viewModel.confirmGroup = function confirmGroup(groupForm) {
-    let updateRequest;
+  viewModel.confirmGroup = function confirmGroup() {
     const noGroupChange = (originalGroupUuid === viewModel.debtor_group_uuid);
 
     // if there was no change in the groups, just close the modal.
     if (noGroupChange) {
       closeModal();
-      return;
+      return 0;
     }
 
-    updateRequest = {
+    const updateRequest = {
       group_uuid : viewModel.debtor_group_uuid,
     };
 
