@@ -165,3 +165,4 @@ CREATE TABLE `role_actions` (
 
 ALTER TABLE `flux` ADD COLUMN `description` TEXT;
 ALTER TABLE `inventory` DROP COLUMN `is_broken`;
+ALTER TABLE `inventory` ADD COLUMN `sellable` TINYINT(1)   NOT NULL DEFAULT 1;
