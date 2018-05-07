@@ -33,6 +33,7 @@
       "VARIOUS_TRANSACTION_TYPE" : "Type de transaction different pour une meme transaction",
       "TRANSACTION_DIFF_DATES" : "Transactions avec des dates differentes",
       "LOCKED_ACCOUNT" : "Compte(s) verrouille(s)",
+      "LOCKED_PERIOD" : "Periodes(s) verrouille(s)",
       "UNBALANCED_TRANSACTIONS" : "Transaction(s) non balancee(s)",
       "MISSING_ACCOUNTS" : "Compte(s) omis",
       "CREDITED_DEBITED": "Sur une meme ligne de transaction un compte ne peut pas être débité et crédité en même temps",

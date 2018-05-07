@@ -230,8 +230,6 @@ CREATE TABLE `weekend_config` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-
-
 DROP TABLE IF EXISTS `config_week_days`;
 CREATE TABLE `config_week_days` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -616,6 +614,7 @@ DROP TABLE IF EXISTS `enterprise_setting`;
 CREATE TABLE `enterprise_setting` (
   `enterprise_id`   SMALLINT(5) UNSIGNED NOT NULL,
   `enable_price_lock` TINYINT(1) NOT NULL DEFAULT 1,
+  `enable_prepayments` TINYINT(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (`enterprise_id`),
   FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -809,6 +808,7 @@ CREATE TABLE `inventory` (
   `stock_min` INT(10) UNSIGNED NOT NULL DEFAULT 0,
   `type_id` TINYINT(3) UNSIGNED NOT NULL DEFAULT 0,
   `consumable` TINYINT(1) NOT NULL DEFAULT 0,
+  `sellable` TINYINT(1)   NOT NULL DEFAULT 1,
   `note` text  NULL,
   `locked` TINYINT(1) NOT NULL DEFAULT 0,
   `delay` DECIMAL(10,4) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Delivery time',
@@ -871,7 +871,6 @@ CREATE TABLE `inventory_log` (
 
 
 DROP TABLE IF EXISTS `inventory_type`;
-
 CREATE TABLE `inventory_type` (
   `id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
   `text` varchar(30) NOT NULL,
@@ -933,7 +932,6 @@ CREATE TABLE `mod_snis_zs` (
 
 
 DROP TABLE IF EXISTS `offday`;
-
 CREATE TABLE `offday` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `label` varchar(100) NOT NULL,
@@ -945,7 +943,6 @@ CREATE TABLE `offday` (
 
 
 DROP TABLE IF EXISTS `paiement`;
-
 CREATE TABLE `paiement` (
   `uuid` BINARY(16) NOT NULL,
   `employee_id` int(11) unsigned NOT NULL,
@@ -968,13 +965,12 @@ CREATE TABLE `paiement` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `partial_paiement`;
-
 CREATE TABLE `partial_paiement` (
   `uuid` BINARY(16) NOT NULL,
   `paiement_uuid` BINARY(16) NOT NULL,
-  `currency_id` tinyint(3) unsigned DEFAULT NULL,
-  `paiement_date` date DEFAULT NULL,
-  `amount` float DEFAULT 0,
+  `currency_id` TINYINT(3) UNSIGNED DEFAULT NULL,
+  `paiement_date` DATE DEFAULT NULL,
+  `amount` FLOAT DEFAULT 0,
   PRIMARY KEY (`uuid`),
   KEY `paiement_uuid` (`paiement_uuid`),
   KEY `currency_id` (`currency_id`),
@@ -983,7 +979,6 @@ CREATE TABLE `partial_paiement` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `price_list`;
-
 CREATE TABLE `price_list` (
   `uuid`                BINARY(16) NOT NULL,
   `enterprise_id`       SMALLINT(5) UNSIGNED NOT NULL,
@@ -1707,20 +1702,18 @@ CREATE TABLE `user_role` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-
 DROP TABLE IF EXISTS `role_unit`;
 CREATE TABLE `role_unit` (
   `uuid` binary(16) NOT NULL,
   `role_uuid`  binary(16) NOT NULL,
   `unit_id` SMALLINT(5) UNSIGNED DEFAULT NULL,
-  PRIMARY kEY(`uuid`),
+  PRIMARY KEY(`uuid`),
   FOREIGN KEY (`role_uuid`) REFERENCES `role` (`uuid`) ON UPDATE CASCADE ON DELETE CASCADE,
   FOREIGN KEY (`unit_id`) REFERENCES `unit` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `village`;
-
 CREATE TABLE `village` (
   `uuid`        BINARY(16) NOT NULL,
   `name`        VARCHAR(80) NOT NULL,

@@ -126,7 +126,8 @@ function getItemsMetadata(params) {
       it.text AS type, ig.name AS groupName, BUID(ig.uuid) AS group_uuid, ig.expires, ig.unique_item, inventory.consumable,inventory.locked, inventory.stock_min,
       inventory.stock_max, inventory.created_at AS timestamp, inventory.type_id, inventory.unit_id,
       inventory.note,  inventory.unit_weight, inventory.unit_volume, 
-      ig.sales_account, ig.stock_account, ig.donation_account,
+      ig.sales_account, ig.stock_account, ig.donation_account, inventory.sellable, inventory.note, 
+      inventory.unit_weight, inventory.unit_volume, ig.sales_account, ig.stock_account, ig.donation_account,
       ig.cogs_account, inventory.default_quantity
     FROM inventory JOIN inventory_type AS it
       JOIN inventory_unit AS iu JOIN inventory_group AS ig ON
@@ -144,6 +145,7 @@ function getItemsMetadata(params) {
   filters.equals('consumable');
   filters.equals('locked');
   filters.equals('label');
+  filters.equals('sellable');
   filters.equals('note');
 
   filters.custom('inventory_uuids', 'inventory.uuid IN (?)', params.inventory_uuids);
@@ -157,9 +159,9 @@ function getItemsMetadata(params) {
 
 // This function helps to delete an invetory
 
-function remove(uuid) {
+function remove(_uuid) {
   const sql = `DELETE FROM inventory WHERE uuid = HUID(?)`;
-  return db.exec(sql, uuid);
+  return db.exec(sql, _uuid);
 }
 
 /**

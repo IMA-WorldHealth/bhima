@@ -103,6 +103,12 @@ function InventoryListController(
     headerCellFilter : 'translate',
     cellClass : 'text-right',
     visible : false,
+  }, {
+    field : 'sellable',
+    visible : false,
+    displayName : 'INVENTORY.SELLABLE',
+    headerCellFilter : 'translate',
+    cellTemplate : '/modules/inventory/list/templates/sellable.cell.tmpl.html',
   },
   {
     field : 'action',
@@ -111,7 +117,8 @@ function InventoryListController(
     enableFiltering : false,
     enableSorting : false,
     enableColumnMenu : false,
-  }];
+  },
+  ];
 
   vm.gridOptions = {
     appScopeProvider : vm,
@@ -123,6 +130,7 @@ function InventoryListController(
     columnDefs,
     onRegisterApi,
   };
+
 
   // configurations
   const gridColumns = new Columns(vm.gridOptions, cacheKey);

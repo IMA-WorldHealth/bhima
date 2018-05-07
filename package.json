@@ -1,6 +1,6 @@
 {
   "name": "bhima",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "A rural hospital information management system.",
   "main": "npm run build",
   "scripts": {
@@ -66,7 +66,6 @@
     "helmet": "^3.8.0",
     "ioredis": "^3.1.2",
     "json-2-csv": "^2.1.0",
-    "json2xls": "^0.1.2",
     "lodash": "^4.16.2",
     "lzma-native": "^3.0.4",
     "mailgun-js": "^0.18.0",

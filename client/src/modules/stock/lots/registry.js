@@ -134,7 +134,6 @@ function StockLotsController(
   // select group
   vm.selectGroup = (group) => {
     if (!group) { return; }
-
     vm.selectedGroup = group;
   };
 

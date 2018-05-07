@@ -89,7 +89,6 @@ const creditors = require('../controllers/finance/creditors.js');
 const journal = require('../controllers/finance/journal');
 const transactionType = require('../controllers/admin/transactionType');
 const generalLedger = require('../controllers/finance/generalLedger');
-const financialPatient = require('../controllers/finance/patient');
 
 const dashboardDebtors = require('../controllers/dashboard/debtorGroups');
 const stats = require('../controllers/dashboard/stats');
@@ -213,13 +212,14 @@ exports.configure = function configure(app) {
   app.get('/fiscal', fiscal.list);
   app.get('/fiscal/date', fiscal.getFiscalYearsByDate);
   app.get('/fiscal/:id', fiscal.detail);
-  app.get('/fiscal/:id/balance/:period_number', fiscal.getBalance);
-  app.get('/fiscal/:id/opening_balance', fiscal.getOpeningBalance);
-  app.post('/fiscal/:id/opening_balance', fiscal.setOpeningBalance);
   app.post('/fiscal', fiscal.create);
-  app.put('/fiscal/:id/closing', fiscal.closing);
   app.put('/fiscal/:id', fiscal.update);
   app.delete('/fiscal/:id', fiscal.remove);
+
+  app.get('/fiscal/:id/balance/:period_number?', fiscal.getBalance);
+  app.get('/fiscal/:id/opening_balance', fiscal.getOpeningBalance);
+  app.post('/fiscal/:id/opening_balance', fiscal.setOpeningBalance);
+  app.put('/fiscal/:id/closing', fiscal.closing);
 
   // Period routes
   app.get('/periods', fiscalPeriod.list);
@@ -432,13 +432,12 @@ exports.configure = function configure(app) {
 
   // misc patients financial routes
   app.get('/patients/:uuid/finance/activity', patients.getFinancialStatus);
-  app.get('/patients/:uuid/finance/balance', financialPatient.balance);
-
+  app.get('/patients/:uuid/finance/balance', patients.getDebtorBalance);
 
   // Barcode API
   app.get('/barcode/:key', report.barcodeLookup);
 
-  // redirect the request directly to the relevent client document
+  // redirect the request directly to the relevant client document
   app.get('/barcode/redirect/:key', report.barcodeRedirect);
 
   // Debtors API

@@ -1,11 +1,11 @@
 angular.module('bhima.services')
-.service('DocumentService', DocumentService);
+  .service('DocumentService', DocumentService);
 
-DocumentService.$inject = [ '$http', 'util' ];
+DocumentService.$inject = ['$http', 'util'];
 
 function DocumentService($http, util) {
-  var service = this;
-  var baseUrl = '/patients/';
+  const service = this;
+  const baseUrl = '/patients/';
 
   // expose the service
   service.read = read;
@@ -19,7 +19,7 @@ function DocumentService($http, util) {
    * @return {Object}       Promise object that will return patient details
    */
   function read(patientUuid) {
-    if (!patientUuid) { return ; }
+    if (!patientUuid) { return; }
 
     return $http.get(baseUrl.concat(patientUuid, '/documents'))
       .then(util.unwrapHttpResponse);

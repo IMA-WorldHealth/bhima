@@ -2,6 +2,92 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.8.0"></a>
+# [0.8.0](https://github.com/IMA-WorldHealth/bhima-2.X/compare/v0.6.0...v0.8.0) (2018-05-05)
+
+
+### Bug Fixes
+
+* **$translate:** limit sce strategy to modal ([96e6dd0](https://github.com/IMA-WorldHealth/bhima-2.X/commit/96e6dd0))
+* **account statement:** remove posted toggle ([33dacbe](https://github.com/IMA-WorldHealth/bhima-2.X/commit/33dacbe)), closes [#2429](https://github.com/IMA-WorldHealth/bhima-2.X/issues/2429)
+* **account statement:** show description ([13dee94](https://github.com/IMA-WorldHealth/bhima-2.X/commit/13dee94))
+* **accounts:** properly compute $$treeLevel ([799efa9](https://github.com/IMA-WorldHealth/bhima-2.X/commit/799efa9)), closes [#2433](https://github.com/IMA-WorldHealth/bhima-2.X/issues/2433)
+* **accounts:** unify account types ([483b3f3](https://github.com/IMA-WorldHealth/bhima-2.X/commit/483b3f3)), closes [#2436](https://github.com/IMA-WorldHealth/bhima-2.X/issues/2436)
+* **balance:** fix end to end tests ([abe68cc](https://github.com/IMA-WorldHealth/bhima-2.X/commit/abe68cc))
+* **bhNavigation:** update tree on navigation delta ([38d7723](https://github.com/IMA-WorldHealth/bhima-2.X/commit/38d7723))
+* **bhPDFPrint:** anticipate memory leak ([fb37458](https://github.com/IMA-WorldHealth/bhima-2.X/commit/fb37458)), closes [#2350](https://github.com/IMA-WorldHealth/bhima-2.X/issues/2350)
+* **ci:** remove gecko from webdriver ([35ff34b](https://github.com/IMA-WorldHealth/bhima-2.X/commit/35ff34b))
+* **ci:** sleep before running protrator tests ([3a7d06f](https://github.com/IMA-WorldHealth/bhima-2.X/commit/3a7d06f))
+* **depots:** address flaky tests ([a2a2b47](https://github.com/IMA-WorldHealth/bhima-2.X/commit/a2a2b47))
+* **exchange:** show HR rate instead of inverted ([8cc6626](https://github.com/IMA-WorldHealth/bhima-2.X/commit/8cc6626))
+* **General Ledger:** identify title accounts ([b49ff7a](https://github.com/IMA-WorldHealth/bhima-2.X/commit/b49ff7a)), closes [#2348](https://github.com/IMA-WorldHealth/bhima-2.X/issues/2348)
+* **inventory:** misc ui improvements. ([dce11ed](https://github.com/IMA-WorldHealth/bhima-2.X/commit/dce11ed)), closes [#2499](https://github.com/IMA-WorldHealth/bhima-2.X/issues/2499) [#2493](https://github.com/IMA-WorldHealth/bhima-2.X/issues/2493)
+* **invoice:** use invoicing fees ([7182346](https://github.com/IMA-WorldHealth/bhima-2.X/commit/7182346))
+* **invoices:** remove projects from links ([b682fa6](https://github.com/IMA-WorldHealth/bhima-2.X/commit/b682fa6)), closes [#2415](https://github.com/IMA-WorldHealth/bhima-2.X/issues/2415)
+* **journal:** cache filters typo ([14a28c0](https://github.com/IMA-WorldHealth/bhima-2.X/commit/14a28c0)), closes [#2521](https://github.com/IMA-WorldHealth/bhima-2.X/issues/2521)
+* **package:** remove amzn backups ([32edc47](https://github.com/IMA-WorldHealth/bhima-2.X/commit/32edc47))
+* **package:** update bower-npm-resolver to version 0.9.0 ([4badd8b](https://github.com/IMA-WorldHealth/bhima-2.X/commit/4badd8b))
+* **package:** update chai-spies to version 1.0.0 ([fb94899](https://github.com/IMA-WorldHealth/bhima-2.X/commit/fb94899))
+* **package:** update dotenv to version 5.0.0 ([2f2101e](https://github.com/IMA-WorldHealth/bhima-2.X/commit/2f2101e))
+* **package:** update mailgun-js to version 0.14.0 ([8b388fd](https://github.com/IMA-WorldHealth/bhima-2.X/commit/8b388fd))
+* **package:** update mailgun-js to version 0.15.0 ([71d073e](https://github.com/IMA-WorldHealth/bhima-2.X/commit/71d073e))
+* **package:** update mailgun-js to version 0.16.0 ([a939c73](https://github.com/IMA-WorldHealth/bhima-2.X/commit/a939c73))
+* **package:** update mailgun-js to version 0.17.0 ([d28fdd1](https://github.com/IMA-WorldHealth/bhima-2.X/commit/d28fdd1))
+* correct filter display values ([826d729](https://github.com/IMA-WorldHealth/bhima-2.X/commit/826d729)), closes [#2595](https://github.com/IMA-WorldHealth/bhima-2.X/issues/2595)
+* **package:** update mailgun-js to version 0.18.0 ([c9b21dc](https://github.com/IMA-WorldHealth/bhima-2.X/commit/c9b21dc))
+* **purchase:** ui glitches in purchase orders ([c7ef425](https://github.com/IMA-WorldHealth/bhima-2.X/commit/c7ef425)), closes [#1842](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1842)
+* **reports:** add title attribute ([6f56f3a](https://github.com/IMA-WorldHealth/bhima-2.X/commit/6f56f3a)), closes [#2526](https://github.com/IMA-WorldHealth/bhima-2.X/issues/2526)
+* **reports:** incorrect footer account statement ([3dda25f](https://github.com/IMA-WorldHealth/bhima-2.X/commit/3dda25f)), closes [#2609](https://github.com/IMA-WorldHealth/bhima-2.X/issues/2609)
+* **reports:** operating account indent ([4873fd9](https://github.com/IMA-WorldHealth/bhima-2.X/commit/4873fd9))
+* **reports:** order Income/Expense by account ([ed07548](https://github.com/IMA-WorldHealth/bhima-2.X/commit/ed07548))
+* **stock:** force refresh grid index ([5849d99](https://github.com/IMA-WorldHealth/bhima-2.X/commit/5849d99)), closes [#2492](https://github.com/IMA-WorldHealth/bhima-2.X/issues/2492)
+* **stock:** only add line if no line expected ([7da7ead](https://github.com/IMA-WorldHealth/bhima-2.X/commit/7da7ead))
+* **tests:** add fiscal year ([8494bec](https://github.com/IMA-WorldHealth/bhima-2.X/commit/8494bec))
+* **Trial Balance:** limit lookup to FY ([16ce3c3](https://github.com/IMA-WorldHealth/bhima-2.X/commit/16ce3c3)), closes [#2568](https://github.com/IMA-WorldHealth/bhima-2.X/issues/2568)
+* empty sql path ([63e4c74](https://github.com/IMA-WorldHealth/bhima-2.X/commit/63e4c74))
+* **Trial Balance:** show loading indicator ([01b0426](https://github.com/IMA-WorldHealth/bhima-2.X/commit/01b0426))
+* **ui-grid:** fix export to CSV ([711ffd8](https://github.com/IMA-WorldHealth/bhima-2.X/commit/711ffd8))
+* **vouchers:** update end to end test ([0e24027](https://github.com/IMA-WorldHealth/bhima-2.X/commit/0e24027))
+* links to patient registry ([294b6e1](https://github.com/IMA-WorldHealth/bhima-2.X/commit/294b6e1)), closes [#2391](https://github.com/IMA-WorldHealth/bhima-2.X/issues/2391) [#2403](https://github.com/IMA-WorldHealth/bhima-2.X/issues/2403)
+* use strings for testing account numbers ([c48dbac](https://github.com/IMA-WorldHealth/bhima-2.X/commit/c48dbac))
+
+
+### Features
+
+* **account statement:** grid beginning balance ([01c9311](https://github.com/IMA-WorldHealth/bhima-2.X/commit/01c9311)), closes [#1762](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1762)
+* **Account Statement:** implement SaveState ([7d74317](https://github.com/IMA-WorldHealth/bhima-2.X/commit/7d74317)), closes [#1762](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1762)
+* **Account Statement Report:** debit/credit sums ([3b13bfb](https://github.com/IMA-WorldHealth/bhima-2.X/commit/3b13bfb))
+* **barcode:** differentiate between 404/400 ([65e1f27](https://github.com/IMA-WorldHealth/bhima-2.X/commit/65e1f27))
+* **barcode:** implement barcode component ([17bd5ed](https://github.com/IMA-WorldHealth/bhima-2.X/commit/17bd5ed)), closes [#1529](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1529)
+* **bhPeriodSelect:** preserve custom dates ([010e9e2](https://github.com/IMA-WorldHealth/bhima-2.X/commit/010e9e2)), closes [#2516](https://github.com/IMA-WorldHealth/bhima-2.X/issues/2516)
+* **build:** Use to cross-env module to stop deal with the operation system ([9042f2a](https://github.com/IMA-WorldHealth/bhima-2.X/commit/9042f2a))
+* **enterprise:** add settings panel ([1581916](https://github.com/IMA-WorldHealth/bhima-2.X/commit/1581916)), closes [#2174](https://github.com/IMA-WorldHealth/bhima-2.X/issues/2174)
+* **exchange:** add the current exchange rate ([468a134](https://github.com/IMA-WorldHealth/bhima-2.X/commit/468a134)), closes [#2387](https://github.com/IMA-WorldHealth/bhima-2.X/issues/2387)
+* **General Ledger:** add totals on PDF printout ([c72386b](https://github.com/IMA-WorldHealth/bhima-2.X/commit/c72386b))
+* **General Ledger:** implement checksum footer ([085500d](https://github.com/IMA-WorldHealth/bhima-2.X/commit/085500d)), closes [#2463](https://github.com/IMA-WorldHealth/bhima-2.X/issues/2463)
+* **General Ledger:** implement title summing ([22f4cc1](https://github.com/IMA-WorldHealth/bhima-2.X/commit/22f4cc1))
+* **General Ledger:** link Account Statement ([ae25a1d](https://github.com/IMA-WorldHealth/bhima-2.X/commit/ae25a1d)), closes [#2459](https://github.com/IMA-WorldHealth/bhima-2.X/issues/2459)
+* **General Ledger:** prune empty accounts ([ceec405](https://github.com/IMA-WorldHealth/bhima-2.X/commit/ceec405))
+* **General Ledger:** use Account Statement Report ([a2096d1](https://github.com/IMA-WorldHealth/bhima-2.X/commit/a2096d1)), closes [#1706](https://github.com/IMA-WorldHealth/bhima-2.X/issues/1706)
+* **invoice:** lock price changes ([69510d0](https://github.com/IMA-WorldHealth/bhima-2.X/commit/69510d0)), closes [#2174](https://github.com/IMA-WorldHealth/bhima-2.X/issues/2174)
+* **journal:** add debit/credit source sums ([27f4eeb](https://github.com/IMA-WorldHealth/bhima-2.X/commit/27f4eeb)), closes [#2512](https://github.com/IMA-WorldHealth/bhima-2.X/issues/2512)
+* **journal:** add extra search parameters ([5e04bd6](https://github.com/IMA-WorldHealth/bhima-2.X/commit/5e04bd6)), closes [#2547](https://github.com/IMA-WorldHealth/bhima-2.X/issues/2547)
+* **patients:** link Fin. Act. to registries ([b21f3df](https://github.com/IMA-WorldHealth/bhima-2.X/commit/b21f3df)), closes [#2596](https://github.com/IMA-WorldHealth/bhima-2.X/issues/2596)
+* **Patients:** implement financial activity ([e6b6434](https://github.com/IMA-WorldHealth/bhima-2.X/commit/e6b6434))
+* **reports:** additional opts for Account Report ([2c5b2f8](https://github.com/IMA-WorldHealth/bhima-2.X/commit/2c5b2f8))
+* **stock:** allow moving lots registry columns ([2a8362e](https://github.com/IMA-WorldHealth/bhima-2.X/commit/2a8362e)), closes [#2502](https://github.com/IMA-WorldHealth/bhima-2.X/issues/2502)
+* **Tree:** implement sumOnProperty() ([663165a](https://github.com/IMA-WorldHealth/bhima-2.X/commit/663165a))
+* **Tree:** implement tree structure w/ tests ([85892b6](https://github.com/IMA-WorldHealth/bhima-2.X/commit/85892b6))
+* **vouchers:** filter on account ([01ac57e](https://github.com/IMA-WorldHealth/bhima-2.X/commit/01ac57e)), closes [#2412](https://github.com/IMA-WorldHealth/bhima-2.X/issues/2412)
+
+
+### Performance Improvements
+
+* **general_leger:** optimize GL Matrix ([542db22](https://github.com/IMA-WorldHealth/bhima-2.X/commit/542db22))
+* **vouchers:** improve FindReference usability ([0bb06ac](https://github.com/IMA-WorldHealth/bhima-2.X/commit/0bb06ac))
+
+
+
 <a name="0.7.0"></a>
 # [0.7.0](https://github.com/IMA-WorldHealth/bhima-2.X/compare/v0.6.0...v0.7.0) (2018-02-08)
 

@@ -37,6 +37,8 @@
         "INVENTORY_TYPE_INFO" : "inventory_type : the type of inventory such as Article, Service, Assembly or Other",
         "INVENTORY_UNIT_INFO" : "inventory_unit : the unit of inventory such as Piece, Tablet, Box, Bottle or Other",
         "INVENTORY_PRICE_INFO" : "inventory_price : the sale price of the inventory in the enterprise currency",
-        "COLUMNS_INFO" : "Note about some columns"
+        "COLUMNS_INFO" : "Note about some columns",
+        "SELLABLE" : "Sellable"
+       
     }
 }

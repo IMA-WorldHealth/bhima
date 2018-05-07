@@ -1,5 +1,5 @@
 angular.module('bhima.services')
-.service('PrototypeApiService', PrototypeApiService);
+  .service('PrototypeApiService', PrototypeApiService);
 
 PrototypeApiService.$inject = ['$http', 'util'];
 
@@ -16,7 +16,7 @@ PrototypeApiService.$inject = ['$http', 'util'];
  * inherit the methods and properties from this service.
  *
  * @example
- * var service = new PrototypeApiService('/interface');
+ * const service = new PrototypeApiService('/interface');
  *
  * // You can now use service.create(), service.update(), service.delete(),
  * // service.read(), and service.search() without any extra work!
@@ -48,7 +48,7 @@ function PrototypeApiService($http, util) {
       return new Api(url);
     }
 
-    angular.extend(this, { url : url });
+    angular.extend(this, { url });
   }
 
   // bind methods to the prototype
@@ -105,13 +105,10 @@ function PrototypeApiService($http, util) {
    *     // data is typically an array here
    *   });
    */
-  function read(id, parameters) {
-
-    // default to empty object for parameters
-    parameters = parameters || {};
-
+  function read(id, parameters = {}) {
     // append the id to the target
-    var target = this.url.concat(id || '');
+    const target = this.url.concat(id || '');
+
     // send the GET request
     return $http.get(target, { params : parameters })
       .then(util.unwrapHttpResponse);
@@ -142,7 +139,7 @@ function PrototypeApiService($http, util) {
     delete data.uuid;
 
     // append the id to the base url
-    var target = this.url.concat(id);
+    const target = this.url.concat(id);
 
     // send the PUT request
     return $http.put(target, data)
@@ -166,13 +163,13 @@ function PrototypeApiService($http, util) {
    *   // data an object containing the identifier.  Usually "id" or "uuid"
    * });
    */
-  function create(data) {
+  function create(data, params = {}) {
 
     // the target is the base URL
-    var target = this.url;
+    const target = this.url;
 
     // send the POST request
-    return $http.post(target, data)
+    return $http.post(target, data, { params })
       .then(util.unwrapHttpResponse);
   }
 
@@ -196,7 +193,7 @@ function PrototypeApiService($http, util) {
   function remove(id) {
 
     // append the id to the base url
-    var target = this.url.concat(id);
+    const target = this.url.concat(id);
 
     // send the DELETE request
     return $http.delete(target)
@@ -223,7 +220,7 @@ function PrototypeApiService($http, util) {
   function search(parameters) {
 
     // append 'search' to the base url
-    var target = this.url.concat('search');
+    const target = this.url.concat('search');
 
     // return the query to the controller
     return $http.get(target, { params : parameters })
@@ -244,33 +241,21 @@ function PrototypeApiService($http, util) {
   function report(param, filetype) {
 
     // append the id to the base url
-    var target = this.url.concat('reports/', param);
+    const target = this.url.concat('reports/', param);
     return reportBuilder(target, param, filetype);
   }
 
-  /**
-   * Receipt
-   */
-  function receipt(param, filetype) {
-
-    // append the id to the base url
-    var target = this.url.concat('receipts/', param);
-    return reportBuilder(target, param, filetype);
-  }
 
   /** report builder */
   function reportBuilder(target, param, filetype) {
 
     // filetype setup
-    var responseType = filetype === 'pdf' ? 'arraybuffer' : null;
-    var params = { renderer: filetype };
+    const responseType = filetype === 'pdf' ? 'arraybuffer' : null;
+    const params = { renderer : filetype };
 
     // send the GET request
-    return $http.get(target, {
-      params: params,
-      responseType: responseType
-    })
-    .then(util.unwrapHttpResponse);
+    return $http.get(target, { params, responseType })
+      .then(util.unwrapHttpResponse);
   }
 
 
@@ -294,7 +279,7 @@ function PrototypeApiService($http, util) {
   function count() {
 
     // append 'count' to the base url
-    var target = this.url.concat('count');
+    const target = this.url.concat('count');
 
     // return the query to the controller
     return $http.get(target)

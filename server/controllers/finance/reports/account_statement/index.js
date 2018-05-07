@@ -9,7 +9,6 @@
 const _ = require('lodash');
 const db = require('../../../../lib/db');
 const ReportManager = require('../../../../lib/ReportManager');
-const util = require('../../../../lib/util');
 const generalLedger = require('../../generalLedger');
 
 const REPORT_TEMPLATE = './server/controllers/finance/reports/account_statement/report.handlebars';
@@ -66,11 +65,7 @@ function report(req, res, next) {
       });
     })
     .then((result) => {
-      if (result.headers.type === 'xlsx') {
-        res.xls(result.headers.filename, util.dateFormatter(result.report.rows));
-      } else {
-        res.set(result.headers).send(result.report);
-      }
+      res.set(result.headers).send(result.report);
     })
     .catch(next)
     .done();
