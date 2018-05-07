@@ -27,7 +27,7 @@ const moment = require('moment');
  *
  * @description
  * This method will apply filters from the options object passed in to
- * filter the purchase orders.
+ * filter.
  */
 function find(options) {
 
