@@ -173,7 +173,10 @@ function detail(req, res, next) {
 
 function create(req, res, next) {
   const { invoice } = req.body;
+  const { prepaymentDescription } = req.query;
   invoice.user_id = req.session.user.id;
+
+  const hasPrepaymentSupport = req.session.enterprise.settings.enable_prepayments;
 
   const hasInvoiceItems = (invoice.items && invoice.items.length > 0);
 
@@ -187,13 +190,26 @@ function create(req, res, next) {
   const invoiceUuid = invoice.uuid || uuid();
   invoice.uuid = invoiceUuid;
 
-  const preparedTransaction = createInvoice(invoice);
-  preparedTransaction.execute()
+  const hasDebtorUuid = !!(invoice.debtor_uuid);
+  if (!hasDebtorUuid) {
+    next(new BadRequest(`An invoice must be submitted to a debtor.`));
+    return;
+  }
+
+  // check if the patient/debtor has a creditor balance with the enterprise.  If
+  // so, we will use their caution balance to link to the invoice for payment.
+  Debtors.balance(invoice.debtor_uuid)
+    .then(([pBalance]) => {
+      const hasCreditorBalance = hasPrepaymentSupport && pBalance && (pBalance.credit > pBalance.debit);
+      const preparedTransaction = createInvoice(invoice, hasCreditorBalance, prepaymentDescription);
+      return preparedTransaction.execute();
+    })
     .then(() => {
       res.status(201).json({ uuid : invoiceUuid });
     })
     .catch(next)
     .done();
+
 }
 
 function find(options) {
@@ -267,9 +283,10 @@ function find(options) {
 function lookupInvoiceCreditNote(invoiceUuid) {
   const buid = db.bid(invoiceUuid);
   const sql = `
-    SELECT BUID(v.uuid) AS uuid, v.date, CONCAT_WS('.', '${identifiers.VOUCHER.key}', p.abbr, v.reference) AS reference,
+    SELECT BUID(v.uuid) AS uuid, v.date, dm.text AS reference,
       v.currency_id, v.amount, v.description, v.reference_uuid, u.display_name
     FROM voucher v
+    JOIN document_map dm ON v.uuid = dm.uuid
     JOIN project p ON p.id = v.project_id
     JOIN user u ON u.id = v.user_id
     JOIN invoice i ON i.uuid = v.reference_uuid

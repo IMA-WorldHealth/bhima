@@ -24,7 +24,7 @@ angular.module('bhima.routes')
         controller  : 'PatientRegistryController as PatientRegistryCtrl',
         templateUrl : '/modules/patients/registry/registry.html',
         params      : {
-          filters: [],
+          filters : [],
         },
       })
       .state('patientGroups', {
@@ -36,7 +36,7 @@ angular.module('bhima.routes')
       .state('patientRecord', {
         abstract    : true,
         url         : '/patients/:patientID',
-        params      : { patientID: null },
+        params      : { patientID : null },
         templateUrl : 'modules/patients/record/patient-record.html',
         controller  : 'PatientRecordController as PatientRecordCtrl',
       })

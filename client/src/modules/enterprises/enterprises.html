@@ -176,7 +176,7 @@
 
         <div class="panel panel-default">
           <div class="panel-heading">
-            <b><i class="fa fa-cogs"></i> <span translate>ENTERPRISE.SETTINGS.TITLE</span></b>
+            <i class="fa fa-cogs"></i> <span translate>ENTERPRISE.SETTINGS.TITLE</span>
           </div>
           <div class="panel-body">
             <bh-yes-no-radios
@@ -184,6 +184,13 @@
               value="EnterpriseCtrl.enterprise.settings.enable_price_lock"
               help-text="ENTERPRISE.SETTINGS.ENABLE_PRICE_LOCK_HELP_TEXT"
               on-change-callback="EnterpriseCtrl.enablePriceLockSetting(value)">
+            </bh-yes-no-radios>
+
+            <bh-yes-no-radios
+              label="ENTERPRISE.SETTINGS.ENABLE_PREPAYMENTS_LABEL"
+              value="EnterpriseCtrl.enterprise.settings.enable_prepayments"
+              help-text="ENTERPRISE.SETTINGS.ENABLE_PREPAYMENTS_HELP_TEXT"
+              on-change-callback="EnterpriseCtrl.enablePrepaymentsSetting(value)">
             </bh-yes-no-radios>
           </div>
         </div>

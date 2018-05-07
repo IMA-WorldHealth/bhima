@@ -89,7 +89,6 @@ const creditors = require('../controllers/finance/creditors.js');
 const journal = require('../controllers/finance/journal');
 const transactionType = require('../controllers/admin/transactionType');
 const generalLedger = require('../controllers/finance/generalLedger');
-const financialPatient = require('../controllers/finance/patient');
 
 const dashboardDebtors = require('../controllers/dashboard/debtorGroups');
 const stats = require('../controllers/dashboard/stats');
@@ -431,13 +430,12 @@ exports.configure = function configure(app) {
 
   // misc patients financial routes
   app.get('/patients/:uuid/finance/activity', patients.getFinancialStatus);
-  app.get('/patients/:uuid/finance/balance', financialPatient.balance);
-
+  app.get('/patients/:uuid/finance/balance', patients.getDebtorBalance);
 
   // Barcode API
   app.get('/barcode/:key', report.barcodeLookup);
 
-  // redirect the request directly to the relevent client document
+  // redirect the request directly to the relevant client document
   app.get('/barcode/redirect/:key', report.barcodeRedirect);
 
   // Debtors API

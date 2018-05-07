@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 PatientRegistrationController.$inject = [
   'PatientService', 'SessionService', 'util',
-  'NotifyService', 'ReceiptModal', 'ScrollService', 'bhConstants'
+  'NotifyService', 'ReceiptModal', 'ScrollService', 'bhConstants',
 ];
 
 /**
@@ -17,9 +17,11 @@ PatientRegistrationController.$inject = [
  *
  * @module controllers/PatientRegistrationController
  */
-function PatientRegistrationController(Patients, Session, util, Notify, 
-  Receipts, ScrollTo, bhConstants) {
-  var vm = this;
+function PatientRegistrationController(
+  Patients, Session, util, Notify,
+  Receipts, ScrollTo, bhConstants
+) {
+  const vm = this;
 
   vm.submit = submit;
   vm.toggleFullDate = toggleFullDate;
@@ -40,11 +42,11 @@ function PatientRegistrationController(Patients, Session, util, Notify,
   // define limits for DOB
   vm.datepickerOptions = {
     maxDate : new Date(),
-    minDate : bhConstants.dates.minDOB
+    minDate : bhConstants.dates.minDOB,
   };
 
-  var yearOptions = bhConstants.yearOptions;
-  var dayOptions = bhConstants.dayOptions;
+  const yearOptions = bhConstants.yearOptions;
+  const dayOptions = bhConstants.dayOptions;
 
   setupRegistration();
 
@@ -56,7 +58,7 @@ function PatientRegistrationController(Patients, Session, util, Notify,
     }
 
     return Patients.create(vm.medical, vm.finance)
-      .then(function (confirmation) {
+      .then((confirmation) => {
         Receipts.patient(confirmation.uuid, true);
 
         // reset form state
@@ -70,7 +72,7 @@ function PatientRegistrationController(Patients, Session, util, Notify,
   }
 
   function setDateComponent() {
-    var currentOptions = vm.fullDateEnabled ? dayOptions : yearOptions;
+    const currentOptions = vm.fullDateEnabled ? dayOptions : yearOptions;
 
     // set the database flag to track if a date is set to JAN 01 or if the date is unknown
     vm.medical.dob_unknown_date = !vm.fullDateEnabled;
@@ -101,7 +103,7 @@ function PatientRegistrationController(Patients, Session, util, Notify,
 
   function calculateYOB(value) {
     vm.medical.dob = (value && value.length === 4) ?
-      new Date(value + '-' + util.defaultBirthMonth) :
+      new Date(`${value}-${util.defaultBirthMonth}`) :
       undefined;
   }
 }

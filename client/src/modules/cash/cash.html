@@ -66,6 +66,7 @@
                   <span class="text-center" translate>DEBTOR_GROUP.CONVENTION.CANNOT_PAY</span>
                   <strong class="text-center">{{CashCtrl.Payment.messages.patientConventionName}}</strong>
                 </div>
+
                 <!-- allowed for cash payment -->
                 <fieldset ng-disabled="CashCtrl.Payment.messages.isNonCashPatient">
                   <bh-date-editor
@@ -83,8 +84,12 @@
                     cashbox-id="CashCtrl.cashbox.id">
                   </bh-currency-select>
 
-                  <!-- determine if we are creating a caution or an invoice payment -->
-                  <div class="radio" ng-class="{ 'has-error' : CashVoucherForm.$submitted && CashVoucherForm.type.$invalid }">
+                  <!--
+                    determine if we are creating a caution or an invoice payment
+                    NOTE(@jniles): this option is only visible if enable_prepayments
+                    is set in the enterprise settings
+                  -->
+                  <div class="radio" ng-class="{ 'has-error' : CashVoucherForm.$submitted && CashVoucherForm.type.$invalid }" ng-if="CashCtrl.Payment.hasPrepaymentSupport">
                     <p><strong class="control-label" translate>FORM.LABELS.TYPE</strong></p>
                     <label class="radio-inline">
                       <input name="type" type="radio" ng-model="CashCtrl.Payment.details.is_caution" ng-value="1" ng-change="CashCtrl.Payment.setCautionType(CashCtrl.Payment.details.is_caution)" data-caution-option="1" required>

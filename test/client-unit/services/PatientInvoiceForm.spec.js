@@ -6,7 +6,6 @@ describe('PatientInvoiceForm', () => {
   let Session;
   let form;
   let Mocks;
-  let $rootScope;
 
   beforeEach(module(
     'bhima.services',
@@ -19,11 +18,10 @@ describe('PatientInvoiceForm', () => {
     'bhima.mocks'
   ));
 
-  beforeEach(inject((_PatientInvoiceForm_, $httpBackend, _SessionService_, _MockDataService_, _$rootScope_) => {
+  beforeEach(inject((_PatientInvoiceForm_, $httpBackend, _SessionService_, _MockDataService_) => {
     PatientInvoiceForm = _PatientInvoiceForm_;
     Session = _SessionService_;
     Mocks = _MockDataService_;
-    $rootScope = _$rootScope_;
 
     // set up the required properties for the session
     Session.create(Mocks.user(), Mocks.enterprise(), Mocks.project());
@@ -43,7 +41,7 @@ describe('PatientInvoiceForm', () => {
     httpBackend.when('GET', `${baseUrl}/subsidies`)
       .respond(200, Mocks.subsidies());
 
-    httpBackend.when('GET', `${baseUrl}/balance`)
+    httpBackend.when('GET', `${baseUrl}/finance/balance`)
       .respond(200, null);
 
     httpBackend.when('GET', `/prices/${patient.price_list_uuid}`)

@@ -68,7 +68,7 @@ END $$
 
   EXAMPLE
 
-  SET transId = GenerateTransactionid(projectid);
+  SET transId = SELECT GenerateTransactionid(projectid);
 */
 CREATE FUNCTION GenerateTransactionId(
   project_id SMALLINT(5)
