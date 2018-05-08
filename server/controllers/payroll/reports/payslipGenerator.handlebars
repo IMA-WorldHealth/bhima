@@ -49,8 +49,8 @@
             <td class="text-left">  {{translate 'TABLE.COLUMNS.DAY_WORKED'}} </td>
             <td class="text-left"></td>
             <td class="text-left"> {{ employee.working_day }} </td>
-            <td class="text-right"> {{currency employee.daily_salary ../employee.currency_id}} </td>
-            <td class="text-right">  {{currency employee.dailyWorkedValue ../employee.currency_id}} </td>
+            <td class="text-right"> {{currency employee.daily_salary employee.currency_id}} </td>
+            <td class="text-right">  {{currency employee.dailyWorkedValue employee.currency_id}} </td>
             <td class="text-left"></td>
             <td class="text-left"></td>
           </tr>
@@ -80,7 +80,7 @@
           {{/each}}
           <tr style="background-color: #efefef;">
             <td class="text-right" colspan="4"> <strong> {{translate 'TABLE.COLUMNS.TOTAL'}} </strong></td>
-            <td class="text-right">  {{currency employee.basic_salary ../employee.currency_id}} </td>
+            <td class="text-right">  {{currency employee.basic_salary employee.currency_id}} </td>
             <td class="text-left"> --- </td>
             <td class="text-left"> --- </td>
           </tr>

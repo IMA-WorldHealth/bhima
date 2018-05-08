@@ -233,7 +233,6 @@ function create(req, res, next) {
   let items = req.body.voucher.items || [];
 
   const voucherType = voucher.type_id;
-  const paiementRows = voucher.paiementRows;
   const updatesPaiementData = [];
 
   // a voucher without two items doesn't make any sense in double-entry
@@ -249,7 +248,6 @@ function create(req, res, next) {
   // database
   delete voucher.items;
   delete voucher.reference;
-  delete voucher.paiementRows;
 
   // convert dates to a date objects
   voucher.date = voucher.date ? new Date(voucher.date) : new Date();
@@ -267,27 +265,20 @@ function create(req, res, next) {
     let item = value;
     // Only for Employee Salary Paiement
     if (voucherType === 7) {
-      paiementRows.forEach((paiement) => {
-        if (paiement.entity && item.entity) {
-          if (paiement.entity.uuid === item.entity.uuid) {
-            item.document_uuid = paiement.document_uuid;
+      if (item.document_uuid) {
+        const updatePaiement = `
+          UPDATE paiement SET 
+            status_id = IF (((paiement.net_salary - paiement.amount_paid) = ?), 5, 4),
+            paiement.amount_paid = amount_paid + ?,   
+            paiement.paiement_date = ? 
+          WHERE paiement.uuid = ? `;
 
-            const statusID = item.debit === paiement.debit ? 5 : 4;
-            const updatePaiement = `UPDATE paiement SET 
-              amount_paid = amount_paid + '${item.debit}', 
-              status_id = '${statusID}', 
-              paiement_date = ? 
-              WHERE uuid = ? `;
-
-            updatesPaiementData.push({
-              query : updatePaiement,
-              params : [voucher.date, db.bid(paiement.document_uuid)],
-            });
-          }
-        }
-      });
+        updatesPaiementData.push({
+          query : updatePaiement,
+          params : [item.debit, item.debit, voucher.date, db.bid(item.document_uuid)],
+        });
+      }
     }
-
 
     // if the item doesn't have a uuid, create one for it.
     item.uuid = item.uuid || uuid();

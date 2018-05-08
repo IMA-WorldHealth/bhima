@@ -388,6 +388,7 @@ function setMultiConfiguration(req, res, next) {
             // Calcul Daily Salary
             const dailySalary = employee.individual_salary ?
               (employee.individual_salary / daysPeriod.working_day) : (employee.grade_salary / daysPeriod.working_day);
+
             const workingDays = (daysPeriod.working_day - (nbHolidays + nbOffDays));
             const workingDayCost = dailySalary * (daysPeriod.working_day - (nbHolidays + nbOffDays));
 
@@ -402,7 +403,12 @@ function setMultiConfiguration(req, res, next) {
               offDays.forEach(offDay => {
                 const offDaysValue = ((dailySalary * offDay.percent_pay) / 100);
                 offDaysCost += offDaysValue;
-                offDaysElements.push([offDay.id, offDay.percent_pay, uid, offDay.label, offDaysValue]);
+                offDaysElements.push([
+                  offDay.id, 
+                  offDay.percent_pay, 
+                  uid, 
+                  offDay.label, 
+                  util.roundDecimal(offDaysValue * enterpriseExchangeRate, DECIMAL_PRECISION)]);
               });
             }
 
@@ -416,7 +422,7 @@ function setMultiConfiguration(req, res, next) {
                   holiday.percentage,
                   uid,
                   holiday.label,
-                  holidayValue]);
+                  util.roundDecimal(holidayValue * enterpriseExchangeRate, DECIMAL_PRECISION)]);
               });
             }
 
@@ -549,7 +555,7 @@ function setMultiConfiguration(req, res, next) {
               payroll_configuration_id : payrollConfigurationId,
               currency_id : employee.currency_id,
               basic_salary : basicSalary,
-              daily_salary : dailySalary,
+              daily_salary : util.roundDecimal(dailySalary * enterpriseExchangeRate, DECIMAL_PRECISION),
               base_taxable : baseTaxable,
               working_day : workingDays,
               total_day : daysPeriod.working_day,
@@ -693,9 +699,7 @@ function setConfiguration(req, res, next) {
      * remain equal to that defined at the level of the grade table BB
      */
 
-      const totalCosts = workingDayCost + offDaysCost + holidaysCost;
-
-      const basicSalary = util.roundDecimal((totalCosts) * enterpriseExchangeRate, DECIMAL_PRECISION);
+      const basicSalary = workingDayCost + offDaysCost + holidaysCost;
 
       const sql = `
         SELECT config_rubric_item.id, config_rubric_item.config_rubric_id, config_rubric_item.rubric_payroll_id, 

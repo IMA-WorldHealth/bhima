@@ -30,9 +30,11 @@ function build(req, res, next) {
   const options = _.clone(req.query);
   const typeVar = Array.isArray(options.employees);
 
+  /**
+  * If the options.employees content is not Array (When only one employee is selected) 
+  * options.employees must be converted to Json
+  */
   options.employees = !typeVar ? [JSON.parse(options.employees)] : options.employees;
-
-  // options.employees = [JSON.parse(options.employees)];
 
   _.extend(options, {
     filename : 'FORM.LABELS.PAYSLIP',
@@ -56,13 +58,16 @@ function build(req, res, next) {
   // set up the report with report manager
   try {
     report = new ReportManager(TEMPLATE, req.session, options);
-    delete options.orientation;
   } catch (e) {
     next(e);
     return;
   }
 
   options.employees.forEach(emp => {
+    /**
+    * If the options.employees content is an Array (When selecting multiple employees)  
+    * each element of the array must be converted to Json
+    */
     const employee = typeVar ? JSON.parse(emp) : emp;
 
     employeeData.push({ employee });
@@ -85,7 +90,6 @@ function build(req, res, next) {
       FROM holiday_paiement
       WHERE holiday_paiement.paiement_uuid = ?
     `;
-
 
     const sqlOffDayPaiement = `
       SELECT offday_paiement.offday_percentage, BUID(offday_paiement.paiement_uuid) AS paiement_uuid,
@@ -191,7 +195,7 @@ function build(req, res, next) {
         results.forEach(holidayEmployee => {
           holidayEmployee.forEach(holiday => {
             if (emp.employee.uuid === holiday.paiement_uuid) {
-              holiday.dailyRate = holiday.value / holiday.holiday_nbdays;
+              holiday.dailyRate = holiday.value / holiday.holiday_nbdays;              
               emp.employee.holidaysPaid.push(holiday);
             }
           });
