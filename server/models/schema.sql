@@ -181,10 +181,10 @@ CREATE TABLE `rubric_payroll` (
   `debtor_account_id` int(10) unsigned DEFAULT NULL,
   `expense_account_id` int(10) unsigned DEFAULT NULL,
   `is_ipr` tinyint(1) DEFAULT 0,
-  `value` float DEFAULT 0,
+  `value` float DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `rubric_payroll_1` (`label`),
-  UNIQUE KEY `rubric_payroll_2` (`abbr`),  
+  UNIQUE KEY `rubric_payroll_2` (`abbr`),
   KEY `debtor_account_id` (`debtor_account_id`),
   KEY `expense_account_id` (`expense_account_id`),
   FOREIGN KEY (`debtor_account_id`) REFERENCES `account` (`id`),
@@ -587,6 +587,7 @@ CREATE TABLE `employee_advantage` (
   FOREIGN KEY (`rubric_payroll_id`) REFERENCES `rubric_payroll` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
 DROP TABLE IF EXISTS `enterprise`;
 CREATE TABLE `enterprise` (
   `id`              SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -776,11 +777,9 @@ CREATE TABLE `holiday_paiement` (
   `holiday_nbdays` int(10) unsigned NOT NULL,
   `holiday_percentage` float DEFAULT 0,
   `paiement_uuid` BINARY(16) NOT NULL,
-  `label` varchar(100) NOT NULL,
-  `value` decimal(19,4) unsigned DEFAULT NULL,  
   KEY `paiement_uuid` (`paiement_uuid`),
   KEY `holiday_id` (`holiday_id`),
-  FOREIGN KEY (`paiement_uuid`) REFERENCES `paiement` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`paiement_uuid`) REFERENCES `paiement` (`uuid`),
   FOREIGN KEY (`holiday_id`) REFERENCES `holiday` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

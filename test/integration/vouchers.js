@@ -123,6 +123,7 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
       account_id   : 179,
       debit        : 14.07,
       credit       : 0,
+      document_uuid   : '2a3f17b0-ae32-42bb-9333-a760825fd257',
       voucher_uuid : pUuid,
       entity_uuid: '42d3756a-7770-4bb8-a899-7953cd859892',
       entity: { 
@@ -130,22 +131,6 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
         type  : 'C',
         uuid  : '42d3756a-7770-4bb8-a899-7953cd859892' 
       },
-    }],
-    paiementRows: [{ 
-      account_id  : 187, 
-      debit       : 0, 
-      credit      : 614.07,
-    }, { 
-      account_id  : 179,
-      debit       : 614.07,
-      credit      : 0,
-      document_uuid   : '2a3f17b0-ae32-42bb-9333-a760825fd257',
-      entity_uuid     : '42d3756a-7770-4bb8-a899-7953cd859892',
-      entity: { 
-        label : 'TEST 2 PATIENT',
-        type  : 'C',
-        uuid  : '42d3756a-7770-4bb8-a899-7953cd859892' 
-      } 
     }],
   };
 

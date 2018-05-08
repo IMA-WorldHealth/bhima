@@ -248,7 +248,7 @@ INSERT INTO `account` (`id`, `type_id`, `enterprise_id`, `number`, `label`, `par
   (284, 1, 1, 40111000, 'SNEL SUPPLIER', 170, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
   (285, 1, 1, 40111001, 'REGIDESO SUPPLIER', 170, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
   (300, 1, 1, 40111002, 'SUPPLIER\'S ACCOUNT 1', 170, 0, NULL, NULL, '2017-11-06 15:07:21', NULL),
-  (301, 1, 1, 40111003, 'SUPPLIER\'S ACCOUNT 2', 170, 0, NULL, NULL, '2017-11-06 15:07:21', NULL); 
+  (301, 1, 1, 40111003, 'SUPPLIER\'S ACCOUNT 2', 170, 0, NULL, NULL, '2017-11-06 15:07:21', NULL), 
   (303, 6, 1, 431, 'SECURITE SOCIAL', 35, 0, NULL, NULL, '2018-03-14 11:57:04', NULL),
   (304, 6, 1, 4313, 'Caisse de retraite obligatoire', 303, 0, NULL, NULL, '2018-03-14 11:58:19', NULL),
   (305, 2, 1, 43130010, 'Cotisation INSS Employés', 304, 0, NULL, NULL, '2018-03-14 12:01:32', NULL),
@@ -299,6 +299,7 @@ INSERT INTO `account` (`id`, `type_id`, `enterprise_id`, `number`, `label`, `par
   (355, 5, 1, 66411012, 'Cotisation ONEM', 352, 0, NULL, NULL, '2018-03-14 14:45:55', NULL),
   (357, 6, 1, 6141, 'Transport du Personnel', 48, 0, NULL, NULL, '2018-03-14 14:58:55', NULL),
   (358, 5, 1, 61411010, 'Transport personnel', 357, 0, NULL, NULL, '2018-03-14 14:59:59', NULL);
+
 
 -- attach gain/loss accounts to the enterprise
 UPDATE enterprise SET `gain_account_id` = 267, `loss_account_id` = 134;
@@ -875,14 +876,12 @@ INSERT INTO `taxe_ipr_configuration` (`rate`, `tranche_annuelle_debut`, `tranche
 (37.5, 16824000, 22956000, 1402000, 1913000, 6132000, 511000, 2299500, 191625, 6887680, 573973, 1),
 (40, 22956000, 100000000000000, 1913000, 1913000, 0, 0, 0, 0, 6887680, 573973, 1);
 
-
 -- Configuration Accounting Payroll
 INSERT INTO `config_accounting` (`label`, `account_id`) VALUES ('Configuration Compte Rémunération', 220);
 
 -- Payroll Configuration Period
 INSERT INTO `payroll_configuration` (`id`, `label`, `dateFrom`, `dateTo`, `config_rubric_id`, `config_accounting_id`, `config_weekend_id`, `config_ipr_id`) VALUES
 (1, 'Février 2018', '2018-02-01', '2018-02-28', 1, 1, 1, 1);
-
 
 -- Paiement DATA 
 
