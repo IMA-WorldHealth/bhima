@@ -232,6 +232,9 @@ function configuration(req, res, next) {
 
   getConfigurationData(payrollConfigurationId, params)
     .then((rows) => {
+      console.log('HHHHhh');
+      console.log(rows);
+
       const dataManaged = manageConfigurationData(rows, params);
 
       res.status(200).json(dataManaged);
@@ -600,6 +603,9 @@ function setConfiguration(req, res, next) {
       const dailySalary = employee.individual_salary ? (employee.individual_salary / totalDayPeriod) : (employee.basic_salary / totalDayPeriod);
       const workingDayCost = dailySalary * data.working_day;
       const nbChildren = employee.nb_enfant;
+
+      console.log('LAV', nbChildren);
+      console.log('NB_CHIDL', workingDayCost);
 
       /**
      * Some institution allocates a percentage for the offday and holiday payment,

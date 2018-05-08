@@ -1,0 +1,7 @@
+<div class="ui-grid-cell-contents">  
+  <div ng-if="row.entity.status_id == 1" class="label label-default text-uppercase" translate> PAYROLL_STATUS.WAITING_FOR_CONFIGURATION </div>
+  <div ng-if="row.entity.status_id == 2" class="label label-info text-uppercase" translate> PAYROLL_STATUS.CONFIGURED </div>
+  <div ng-if="row.entity.status_id == 3" class="label label-primary text-uppercase" translate> PAYROLL_STATUS.WAITING_FOR_PAYMENT </div>  
+  <div ng-if="row.entity.status_id == 4" class="label label-warning text-uppercase" translate> PAYROLL_STATUS.PARTIALLY_PAID</div>
+  <div ng-if="row.entity.status_id == 5" class="label label-success text-uppercase" translate> PAYROLL_STATUS.PAID </div>
+</div>

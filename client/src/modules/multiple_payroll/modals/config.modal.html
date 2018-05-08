@@ -1,0 +1,77 @@
+<form name="ConfigPaiementForm" bh-submit="ConfigPaiementModalCtrl.submit(ConfigPaiementForm)" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.PAYROLL</li>
+      <li class="title" translate>TREE.MULTI_PAYROLL</li>
+      <label class="badge badge-success">{{ ConfigPaiementModalCtrl.employee.display_name }}</label>
+      <label class="badge badge-primary"><span translate> {{ ConfigPaiementModalCtrl.label }} </span> : {{ ConfigPaiementModalCtrl.displayValue }}</label>
+    </ol>
+  </div>
+
+  <div class="modal-body" style="max-height: 70vh; overflow:auto;">
+    <div class="form-group">
+      <label class="control-label" translate>FORM.LABELS.GRADE</label>
+      <input disabled="disabled" name="code_grade" ng-model="ConfigPaiementModalCtrl.employee.code_grade" autocomplete="off" class="form-control">
+    </div>
+
+    <div class="form-group">
+      <label class="control-label" translate>FORM.LABELS.NB_CHILD</label>
+      <input disabled="disabled" name="nb_enfant" ng-model="ConfigPaiementModalCtrl.employee.nb_enfant" autocomplete="off" class="form-control">
+    </div>
+
+    <bh-currency-input
+      data-payment-currency-input
+      label="FORM.LABELS.BASIC_SALARY"
+      currency-id="ConfigPaiementModalCtrl.currencyId"
+      model="ConfigPaiementModalCtrl.employee.basic_salary"
+      disabled = "true"
+      min = 0>
+    </bh-currency-input>
+
+    <div class="form-group">
+      <label class="control-label" translate>FORM.LABELS.OFF_DAYS</label>
+      <input disabled="disabled" name="off_days" ng-model="ConfigPaiementModalCtrl.payroll.off_days" autocomplete="off" class="form-control">
+    </div>
+
+    <div class="form-group">
+      <label class="control-label" translate>FORM.LABELS.HOLIDAYS</label>
+      <input disabled="disabled" name="nb_holidays" ng-model="ConfigPaiementModalCtrl.payroll.nb_holidays" autocomplete="off" class="form-control">
+    </div>
+
+    <div class="form-group" ng-class="{ 'has-error' : ConfigPaiementForm.$submitted && ConfigPaiementForm.working_day.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.WORKING_DAY</label>
+      <input type="number" name="working_day" ng-max="ConfigPaiementModalCtrl.maxWorkingDay" ng-model="ConfigPaiementModalCtrl.payroll.working_day" autocomplete="off" required class="form-control">    
+      <div class="help-block" ng-messages="ConfigPaiementForm.working_day.$error" ng-show="ConfigPaiementForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <!-- currency selection -->
+    <bh-currency-select
+      currency-id="ConfigPaiementModalCtrl.currencyId"
+      validation-trigger="ConfigPaiementForm.$submitted"
+      on-change="ConfigPaiementModalCtrl.setCurrency(currency)">
+    </bh-currency-select>
+
+    <div ng-repeat="rubConfigured in ConfigPaiementModalCtrl.rubConfigured" class="form-group">
+      <bh-currency-input
+        data-payment-currency-input
+        label="{{rubConfigured.label}}"
+        currency-id="ConfigPaiementModalCtrl.currencyId"
+        model="ConfigPaiementModalCtrl.payroll.value[rubConfigured.abbr]"
+        validation-trigger="ConfigPaiementForm.$submitted"
+        min = 0>
+      </bh-currency-input>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button data-method="cancel" type="button" class="btn btn-default" ui-sref="multiple_payroll">
+      <span translate>FORM.BUTTONS.CANCEL</span>
+    </button>
+
+    <bh-loading-button loading-state="ConfigPaiementForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>
