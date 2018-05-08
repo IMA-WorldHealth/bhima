@@ -10,7 +10,10 @@ function PasswordMeterService(Session) {
   service.validate = validate;
   service.counter = counter;
 
+  // A strong password must include special characters
   const strongRegularExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/;
+
+  // A medium strength password includes only numbers and letters
   const mediumRegularExp = /^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})/;
 
   // both Strong and Weak password are accepted
