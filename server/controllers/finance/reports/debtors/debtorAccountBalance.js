@@ -35,8 +35,10 @@ function debtorAccountBalance(req, res, next) {
   // fire the SQL for the report
   const fiscalYearId = req.query.fiscalId;
 
+  // none of the queries depend on each other, so we can go ahead and fire them
+  // all simultaneously
   return q.all([
-    fiscalYearQuery(fiscalYearId),
+    getFiscalYearById(fiscalYearId),
     getDebtorGroupMovements(fiscalYearId),
     getTotalsFooter(fiscalYearId),
   ])
@@ -99,7 +101,16 @@ function getTotalsFooter(fiscalYearId) {
   return db.one(sql, fiscalYearId);
 }
 
-function fiscalYearQuery(id) {
+
+/**
+ * @function getFiscalYearById
+ *
+ * @description
+ * This function gets the label of a fiscal year by its id.
+ *
+ * TODO(@jniles) - move this into the fiscal controller.
+ */
+function getFiscalYearById(id) {
   const sql = 'SELECT label FROM fiscal_year WHERE id = ?';
   return db.one(sql, id);
 }

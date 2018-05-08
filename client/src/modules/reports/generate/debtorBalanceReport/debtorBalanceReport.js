@@ -6,6 +6,14 @@ DebtorBalanceReportController.$inject = [
   'BaseReportService', 'reportData',
 ];
 
+/**
+ * @function DebtorBalanceReportController
+ *
+ * @description
+ * The debtor balance report provides a view of the current balance of each
+ * debtor group in the enterprise.  It is slightly easier to use than the aged
+ * debtors report, but contains the same information, sans aging.
+ */
 function DebtorBalanceReportController($state, $sce, Notify, BaseReportService, AppCache, SavedReports, reportData) {
   const vm = this;
   const cache = new AppCache('configure_debtorAccountBalance');
@@ -15,6 +23,7 @@ function DebtorBalanceReportController($state, $sce, Notify, BaseReportService, 
 
   checkCachedConfiguration();
 
+  // update the fiscal year on selection
   vm.onSelectFiscal = fiscalId => {
     vm.reportDetails.fiscalId = fiscalId;
   };
