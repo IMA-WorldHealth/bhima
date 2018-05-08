@@ -4,9 +4,9 @@ angular.module('bhima.controllers')
 // dependencies injections
 StockExitController.$inject = [
   'DepotService', 'InventoryService', 'NotifyService', 'SessionService', 'util',
-  'bhConstants', 'ReceiptModal', 'StockFormService', 'StockService',
+  'bhConstants', 'ReceiptModal', 'StockItemService', 'StockFormService', 'StockService',
   'StockModalService', 'uiGridConstants', '$translate', 'appcache',
-  'moment', 'GridExportService',
+  'moment', 'GridExportService', '_',
 ];
 
 /**
@@ -18,8 +18,8 @@ StockExitController.$inject = [
  * @todo Implement caching data feature
  */
 function StockExitController(
-  Depots, Inventory, Notify, Session, util, bhConstants, ReceiptModal, StockForm, Stock,
-  StockModal, uiGridConstants, $translate, AppCache, moment, GridExportService
+  Depots, Inventory, Notify, Session, util, bhConstants, ReceiptModal, StockItem, StockForm, Stock,
+  StockModal, uiGridConstants, $translate, AppCache, moment, GridExportService, _,
 ) {
   const vm = this;
   const cache = new AppCache('StockCache');
@@ -285,6 +285,13 @@ function StockExitController(
       .then(inventories => {
         vm.loading = false;
         vm.selectableInventories = angular.copy(inventories);
+
+        // map of inventories by inventory uuid
+        vm.mapSelectableInventories = _.reduce(vm.selectableInventories, (aggregate, value) => {
+          aggregate[value.inventory_uuid] = value;
+          return aggregate;
+        }, {});
+
         checkValidity();
       })
       .catch(Notify.handleError);
@@ -318,8 +325,41 @@ function StockExitController(
     StockModal.openFindPatient({ entity_uuid : vm.selectedEntityUuid })
       .then(patient => {
         handleSelectedEntity(patient, 'patient');
+        loadInvoiceInventories(patient);
       })
       .catch(Notify.handleError);
+  }
+
+  // load inventories from an invoice
+  function loadInvoiceInventories(patient) {
+    vm.inventoryNotAvailable = [];
+    vm.stockForm.clear();
+    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.EDIT);
+
+    if (!patient || !patient.invoice) { return; }
+
+    const nbItems = patient.invoice.items.length;
+
+    if (!nbItems) { return; }
+
+    let inventoryAvailableIndex = 0;
+
+    patient.invoice.items.forEach((item) => {
+      if (vm.mapSelectableInventories[item.inventory_uuid]) {
+        addItems(1);
+        vm.stockForm.store.data[inventoryAvailableIndex].inventory = vm.mapSelectableInventories[item.inventory_uuid];
+        vm.stockForm.store.data[inventoryAvailableIndex].inventory_uuid = item.inventory_uuid;
+        vm.stockForm.store.data[inventoryAvailableIndex].quantity = item.quantity;
+        vm.stockForm.store.data[inventoryAvailableIndex].lot = {};
+        configureItem(vm.stockForm.store.data[inventoryAvailableIndex]);
+
+        inventoryAvailableIndex++;
+      } else {
+        vm.inventoryNotAvailable.push(item.text);
+      }
+    });
+
+    vm.checkValidity();
   }
 
   // find service
@@ -364,6 +404,7 @@ function StockExitController(
     vm.movement.description = null;
     vm.reference = null;
     vm.displayName = null;
+    vm.inventoryNotAvailable = [];
   }
 
   function submit(form) {
@@ -395,9 +436,13 @@ function StockExitController(
 
   // submit patient
   function submitPatient() {
+    const invoiceUuid = vm.movement.entity.instance.invoice && vm.movement.entity.instance.invoice ?
+      vm.movement.entity.instance.invoice.details.uuid : null;
+
     const movement = {
       depot_uuid : vm.depot.uuid,
       entity_uuid : vm.movement.entity.uuid,
+      invoice_uuid : invoiceUuid,
       date : vm.movement.date,
       description : vm.movement.description,
       is_exit : 1,

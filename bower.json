@@ -32,14 +32,13 @@
     "moment": "2.20.1",
     "angular-dynamic-locale": "0.1.32",
     "ngstorage": "0.3.11",
-    "Chart.js": "2.7.1",
-    "angular-chart.js": "1.1.1",
     "components-font-awesome": "4.7.0",
     "angular-ui-select": "0.17.1",
     "JsBarcode": "jsbarcode#3.8.0",
     "angular-touch": "1.6.6",
     "angular-growl-notifications": "2.6.0",
-    "webcam-directive": "3.1.1"
+    "webcam-directive": "3.1.1",
+    "lodash": "^4.17.10"
   },
   "devDependencies": {
     "angular-mocks": "1.6.6"

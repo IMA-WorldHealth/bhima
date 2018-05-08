@@ -19,11 +19,29 @@ function StockExitPage() {
    * @method setPatient
    * @param {string} reference - the patient reference
    */
-  page.setPatient = function setPatient(reference) {
+  page.setPatient = function setPatient(reference, invoice, patientAlreadyCached) {
     components.stockEntryExitType.set('patient');
-    components.findPatient.findById(reference);
+
+    if (!patientAlreadyCached) {
+      components.findPatient.findById(reference);
+    }
+
+    if (invoice) {
+      components.findInvoice.set(invoice);
+    } else {
+      clickJoinInvoice();
+    }
+
     FU.modal.submit();
   };
+
+  /**
+   * @method unset invoice
+   */
+  function clickJoinInvoice() {
+    const elm = element(by.model('$ctrl.joinInvoice'));
+    elm.click();
+  }
 
   /**
    * @method setService
@@ -102,6 +120,15 @@ function StockExitPage() {
 
     // set the quantity
     FU.input('row.entity.quantity', quantity, quantityCell);
+  };
+
+  /**
+   * @method setLot
+   */
+  page.setLot = (rowNumber, lot) => {
+    const lotCell = GU.getCell(gridId, rowNumber, 3);
+
+    FU.uiSelectAppended('row.entity.lot', lot, lotCell);
   };
 
   /**

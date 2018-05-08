@@ -30,6 +30,8 @@ function PatientInvoiceService(
   service.balance = balance;
   service.filters = invoiceFilters;
   service.remove = Transactions.remove;
+  service.findInvoice = findInvoice;
+  service.findConsumableInvoicePatient = findConsumableInvoicePatient;
 
   /**
    * @method create
@@ -125,8 +127,12 @@ function PatientInvoiceService(
     { key : 'debtor_uuid', label : 'FORM.LABELS.CLIENT' },
     { key : 'patientReference', label : 'FORM.LABELS.REFERENCE_PATIENT' },
     { key : 'inventory_uuid', label : 'FORM.LABELS.INVENTORY' },
-    { key : 'billingDateFrom', label : 'FORM.LABELS.DATE', comparitor : '>', valueFilter : 'date' },
-    { key : 'billingDateTo', label : 'FORM.LABELS.DATE', comparitor : '<', valueFilter : 'date' },
+    {
+      key : 'billingDateFrom', label : 'FORM.LABELS.DATE', comparitor : '>', valueFilter : 'date',
+    },
+    {
+      key : 'billingDateTo', label : 'FORM.LABELS.DATE', comparitor : '<', valueFilter : 'date',
+    },
     { key : 'reversed', label : 'FORM.INFO.CREDIT_NOTE' },
     { key : 'defaultPeriod', label : 'TABLE.COLUMNS.PERIOD', valueFilter : 'translate' },
     { key : 'debtor_group_uuid', label : 'FORM.LABELS.DEBTOR_GROUP' },
@@ -183,6 +189,25 @@ function PatientInvoiceService(
     // return  serialized options
     return $httpParamSerializer(options);
   };
+
+  /**
+   * findInvoice
+   */
+  function findInvoice(invoiceUuid) {
+    const url = '/invoices/'.concat(invoiceUuid);
+    return this.$http.get(url)
+      .then(this.util.unwrapHttpResponse);
+  }
+
+  /**
+   * find an invoice with its consumable inventories for a given patient
+   */
+  function findConsumableInvoicePatient(invoiceReference, patientUuid) {
+    const params = { invoiceReference, patientUuid };
+    const url = '/invoices/consumable/';
+    return this.$http.get(url, { params })
+      .then(this.util.unwrapHttpResponse);
+  }
 
   return service;
 }
