@@ -156,6 +156,7 @@
       "SEPARATE_DEBITS_AND_CREDITS_HELP" : "This option breaks out columns from a single positive or negative balance into two columns representing debits and credits.",
       "REMOVE_ZERO_ROWS" : "Hide zero rows?",
       "REMOVE_ZERO_ROWS_HELP" : "This option will remove rows that do not have any data in them.  Produces a more compact output."
-    }
+    },
+    "CLIENT_DEBTOR_ACCOUNT_BALANCE_REPORT" : "Annual Clients Report"
   }
 }

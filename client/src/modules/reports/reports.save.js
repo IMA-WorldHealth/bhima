@@ -1,10 +1,12 @@
 angular.module('bhima.controllers')
   .controller('SaveReportController', SaveReportController);
 
-SaveReportController.$inject = ['$uibModalInstance', 'NotifyService', 'BaseReportService', 'options', 'LanguageService'];
+SaveReportController.$inject = [
+  '$uibModalInstance', 'NotifyService', 'BaseReportService', 'options', 'LanguageService',
+];
 
 function SaveReportController(ModalInstance, Notify, SavedReports, options, Languages) {
-  var vm = this;
+  const vm = this;
   vm.documentOptions = {};
   vm.report = options.report;
 
@@ -16,22 +18,23 @@ function SaveReportController(ModalInstance, Notify, SavedReports, options, Lang
   vm.supportedRenderTypes = [
     { key : 'pdf', label : 'REPORT.UTIL.PDF' },
   ];
+
   vm.documentOptions.renderer = vm.supportedRenderTypes[0].key;
 
   vm.submit = function submit(SaveForm) {
-    if (SaveForm.$invalid) { return; }
+    if (SaveForm.$invalid) { return 0; }
     vm.documentOptions.lang = Languages.key;
 
     // @TODO this can directly be loaded from the form
-    var reportOptions = angular.merge(vm.documentOptions, options.reportOptions);
+    const reportOptions = angular.merge(vm.documentOptions, options.reportOptions);
 
     return SavedReports.saveReport(options.url, options.report, reportOptions)
-      .then(function (result) {
+      .then(result => {
         Notify.success('REPORT.UTIL.SAVE_SUCCESS');
         ModalInstance.close(result);
       })
       .catch(Notify.handleError);
-  }
+  };
 
   vm.setDocumentorientation = function setDocumentorientation(orientation) {
     vm.documentOptions.orientation = orientation;

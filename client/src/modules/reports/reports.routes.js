@@ -17,6 +17,7 @@ angular.module('bhima.routes')
       'aged_creditors',
       'cashflow',
       'operating',
+      'debtorBalanceReport',
       'stock_exit',
     ];
 
