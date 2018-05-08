@@ -7,8 +7,8 @@ SET NAMES 'utf8';
 INSERT INTO `enterprise` VALUES
   (1, 'Test Enterprise', 'TE', '243 81 504 0540', 'enterprise@test.org', HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), NULL, 2, 103, NULL, NULL);
 
-INSERT INTO `enterprise_setting` (enterprise_id, enable_price_lock, enable_delete_records) VALUES
-  (1, 0, 1);
+INSERT INTO `enterprise_setting` (enterprise_id, enable_price_lock, enable_password_validation, enable_delete_records) VALUES
+  (1, 0, 1, 1);
 
 -- Project
 INSERT INTO `project` VALUES
@@ -248,7 +248,7 @@ INSERT INTO `account` (`id`, `type_id`, `enterprise_id`, `number`, `label`, `par
   (284, 1, 1, 40111000, 'SNEL SUPPLIER', 170, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
   (285, 1, 1, 40111001, 'REGIDESO SUPPLIER', 170, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
   (300, 1, 1, 40111002, 'SUPPLIER\'S ACCOUNT 1', 170, 0, NULL, NULL, '2017-11-06 15:07:21', NULL),
-  (301, 1, 1, 40111003, 'SUPPLIER\'S ACCOUNT 2', 170, 0, NULL, NULL, '2017-11-06 15:07:21', NULL), 
+  (301, 1, 1, 40111003, 'SUPPLIER\'S ACCOUNT 2', 170, 0, NULL, NULL, '2017-11-06 15:07:21', NULL),
   (303, 6, 1, 431, 'SECURITE SOCIAL', 35, 0, NULL, NULL, '2018-03-14 11:57:04', NULL),
   (304, 6, 1, 4313, 'Caisse de retraite obligatoire', 303, 0, NULL, NULL, '2018-03-14 11:58:19', NULL),
   (305, 2, 1, 43130010, 'Cotisation INSS Employés', 304, 0, NULL, NULL, '2018-03-14 12:01:32', NULL),
@@ -616,7 +616,7 @@ INSERT INTO `creditor_group` VALUES
 -- Creditors
 INSERT INTO `creditor` VALUES
   (HUID('42d3756a-7770-4bb8-a899-7953cd859892'), HUID('b0fa5ed2-04f9-4cb3-92f7-61d6404696e7'), 'Personnel'),
-  (HUID('7ac4e83c-65f2-45a1-8357-8b025003d794'), HUID('8bedb6df-6b08-4dcf-97f7-0cfbb07cf9e2'), 'SNEL'),  
+  (HUID('7ac4e83c-65f2-45a1-8357-8b025003d794'), HUID('8bedb6df-6b08-4dcf-97f7-0cfbb07cf9e2'), 'SNEL'),
   (HUID('18dcada5-f149-4eea-8267-19c346c2744f'), HUID('b0fa5ed2-04f9-4cb3-92f7-61d6404696e7'), 'Personnel 2');
 
 -- Supplier
@@ -864,7 +864,7 @@ INSERT INTO `taxe_ipr` (`id`, `label`, `description`, `currency_id`) VALUES
 (1, 'Bareme IPR 2013', 'Barème Impôt Professionnel sur les revenus', 1);
 
 -- Tax IPR Configuration
-INSERT INTO `taxe_ipr_configuration` (`rate`, `tranche_annuelle_debut`, `tranche_annuelle_fin`, `tranche_mensuelle_debut`, `tranche_mensuelle_fin`, `ecart_annuel`, `ecart_mensuel`, `impot_annuel`, `impot_mensuel`, `cumul_annuel`, `cumul_mensuel`, `taxe_ipr_id`) VALUES 
+INSERT INTO `taxe_ipr_configuration` (`rate`, `tranche_annuelle_debut`, `tranche_annuelle_fin`, `tranche_mensuelle_debut`, `tranche_mensuelle_fin`, `ecart_annuel`, `ecart_mensuel`, `impot_annuel`, `impot_mensuel`, `cumul_annuel`, `cumul_mensuel`, `taxe_ipr_id`) VALUES
 (0, 0, 524160, 0, 43680, 524160, 43680, 0, 0, 0, 0, 1),
 (15, 524160, 1428000, 43680, 119000, 903840, 75320, 135576, 11298, 135576, 11298, 1),
 (20, 1428000, 2700000, 119000, 225000, 1272000, 106000, 254400, 21200, 389976, 32498, 1),
@@ -885,13 +885,13 @@ INSERT INTO `payroll_configuration` (`id`, `label`, `dateFrom`, `dateTo`, `confi
 
 SET @paymentUuid = HUID('2a3f17b0ae3242bb9333a760825fd257');
 SET @employeeUuid = HUID('75e0969465f245a1a8a28b025003d793');
--- Paiement DATA 
+-- Paiement DATA
 
 INSERT INTO `paiement` (`uuid`, `employee_uuid`, `payroll_configuration_id`, `currency_id`, `paiement_date`, `total_day`, `working_day`, `basic_salary`, `daily_salary`, `base_taxable`, `gross_salary`, `net_salary`, `amount_paid`, `status_id`)
 VALUES (@paymentUuid, @employeeUuid, 1, 2, NULL, 20, 20, 500.0000, 25.0000, 550.0000, 730.0000, 614.0700, 0.0000, 2);
 
 -- rubric_paiement DATA
-INSERT INTO `rubric_paiement` (`id`, `paiement_uuid`, `rubric_payroll_id`, `value`, `posted`) VALUES 
+INSERT INTO `rubric_paiement` (`id`, `paiement_uuid`, `rubric_payroll_id`, `value`, `posted`) VALUES
 (1, @paymentUuid, 5, 20, NULL),
 (2, @paymentUuid, 9, 150, NULL),
 (3, @paymentUuid, 10, 10, NULL),

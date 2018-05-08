@@ -29,6 +29,7 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
   vm.enablePriceLockSetting = enablePriceLockSetting;
   vm.enablePrepaymentsSetting = enablePrepaymentsSetting;
   vm.enableDeleteRecordsSetting = enableDeleteRecordsSetting;
+  vm.enablePasswordValidationSetting = enablePasswordValidationSetting;
 
   // fired on startup
   function startup() {
@@ -180,6 +181,11 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
 
   function enableDeleteRecordsSetting(enabled) {
     vm.enterprise.settings.enable_delete_records = enabled;
+    $touched = true;
+  }
+
+  function enablePasswordValidationSetting(enabled) {
+    vm.enterprise.settings.enable_password_validation = enabled;
     $touched = true;
   }
 
