@@ -988,16 +988,8 @@ CREATE TABLE `paiement` (
   FOREIGN KEY (`status_id`) REFERENCES `paiement_status` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-<<<<<<< d00d1315c9f88a62b68a14011f062d2085506843
-DROP TABLE IF EXISTS `partial_paiement`;
-CREATE TABLE `partial_paiement` (
-  `uuid` BINARY(16) NOT NULL,
-  `paiement_uuid` BINARY(16) NOT NULL,
-  `currency_id` TINYINT(3) UNSIGNED DEFAULT NULL,
-  `paiement_date` DATE DEFAULT NULL,
-  `amount` FLOAT DEFAULT 0,
-  PRIMARY KEY (`uuid`),
-=======
+
+
 DROP TABLE IF EXISTS `paiement_status`;
 
 CREATE TABLE `paiement_status` (
@@ -1017,7 +1009,6 @@ CREATE TABLE `rubric_paiement` (
   `value` FLOAT DEFAULT '0',
   `posted` TINYINT(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
->>>>>>> refactor(Schema database)
   KEY `paiement_uuid` (`paiement_uuid`),
   KEY `rubric_payroll_id` (`rubric_payroll_id`),
   FOREIGN KEY (`paiement_uuid`) REFERENCES `paiement` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
