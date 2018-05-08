@@ -90,6 +90,7 @@ INSERT INTO unit VALUES
   (199, 'Client Debtor Account Balance', 'REPORT.CLIENT_DEBTOR_ACCOUNT_BALANCE_REPORT', 'Client Debtor Account Balance', 144, '/modules/reports/debtor_accounts_balance', '/reports/debtorBalanceReport'),
   (200, 'Multiple Payroll','TREE.MULTI_PAYROLL','Multiple Payroll', 57,'/modules/multiple_payroll','/multiple_payroll');
 
+
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
   (1, 'income', 'ACCOUNT.TYPES.INCOME'),
