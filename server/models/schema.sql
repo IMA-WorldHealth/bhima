@@ -777,11 +777,14 @@ CREATE TABLE `holiday_paiement` (
   `holiday_nbdays` int(10) unsigned NOT NULL,
   `holiday_percentage` float DEFAULT 0,
   `paiement_uuid` BINARY(16) NOT NULL,
+  `label` varchar(100) NOT NULL,
+  `value` decimal(19,4) unsigned DEFAULT NULL,  
   KEY `paiement_uuid` (`paiement_uuid`),
   KEY `holiday_id` (`holiday_id`),
-  FOREIGN KEY (`paiement_uuid`) REFERENCES `paiement` (`uuid`),
+  FOREIGN KEY (`paiement_uuid`) REFERENCES `paiement` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`holiday_id`) REFERENCES `holiday` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 DROP TABLE IF EXISTS `offday_paiement`;
 
