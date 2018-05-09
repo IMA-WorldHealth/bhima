@@ -6,7 +6,7 @@ StockExitController.$inject = [
   'DepotService', 'InventoryService', 'NotifyService', 'SessionService', 'util',
   'bhConstants', 'ReceiptModal', 'StockFormService', 'StockService',
   'StockModalService', 'uiGridConstants', '$translate', 'appcache',
-  'moment', 'GridExportService',
+  'moment', 'GridExportService', 'Store',
 ];
 
 /**
@@ -18,8 +18,8 @@ StockExitController.$inject = [
  * @todo Implement caching data feature
  */
 function StockExitController(
-  Depots, Inventory, Notify, Session, util, bhConstants, ReceiptModal, StockForm, Stock,
-  StockModal, uiGridConstants, $translate, AppCache, moment, GridExportService
+  Depots, Inventory, Notify, Session, util, bhConstants, ReceiptModal, StockItem, StockForm, Stock,
+  StockModal, uiGridConstants, $translate, AppCache, moment, GridExportService, Store
 ) {
   const vm = this;
   const cache = new AppCache('StockCache');
@@ -132,7 +132,10 @@ function StockExitController(
       },
     ],
     data : vm.stockForm.store.data,
-    fastWatch : true,
+
+    // fastWatch to false is required for updating the grid correctly for
+    // inventories loaded from an invoice for patient exit
+    fastWatch : false,
     flatEntityAccess : true,
     showGridFooter : true,
     gridFooterTemplate,
@@ -285,6 +288,10 @@ function StockExitController(
       .then(inventories => {
         vm.loading = false;
         vm.selectableInventories = angular.copy(inventories);
+
+        // map of inventories by inventory uuid
+        vm.mapSelectableInventories = new Store({ identifier : 'inventory_uuid', data : vm.selectableInventories });
+
         checkValidity();
       })
       .catch(Notify.handleError);
@@ -320,6 +327,35 @@ function StockExitController(
         handleSelectedEntity(patient, 'patient');
       })
       .catch(Notify.handleError);
+  }
+
+  // load inventories from an invoice
+  function loadInvoiceInventories(patient) {
+    if (!patient || !patient.invoice) { return; }
+
+    vm.inventoryNotAvailable = [];
+    vm.stockForm.clear();
+
+    if (!patient.invoice.items.length) { return; }
+
+    patient.invoice.items.forEach((item) => {
+      const inventory = vm.mapSelectableInventories.get(item.inventory_uuid);
+
+      if (inventory) {
+        const row = vm.stockForm.addItems(1);
+
+        row.inventory = inventory;
+        row.inventory_uuid = item.inventory_uuid;
+        row.quantity = item.quantity;
+        row.lot = {};
+
+        configureItem(row);
+      } else {
+        vm.inventoryNotAvailable.push(item.text);
+      }
+    });
+
+    vm.checkValidity();
   }
 
   // find service
