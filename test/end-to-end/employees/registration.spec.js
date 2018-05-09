@@ -22,10 +22,6 @@ describe('Employees', () => {
     email         : 'me@info.com',
     adresse       : '221B Baker Street',
     hospital_no   : 'TP003',
-    payroll       : {
-      TPR : 20,
-      f_scol : 150,
-    },
   };
 
   before(() => helpers.navigate(path));
@@ -57,9 +53,15 @@ describe('Employees', () => {
     registrationPage.setIsMedical();
     registrationPage.setEmail(employee.email);
     registrationPage.setAddress(employee.adresse);
+    registrationPage.setCurrencyInput('individual_salary', 0);
+
+    registrationPage.setCurrencyInput('TPR', 0);
+    registrationPage.setCurrencyInput('v_cher', 30);
+    registrationPage.setCurrencyInput('f_scol', 0);
+    registrationPage.setCurrencyInput('allc', 120);
+
     registrationPage.setBank(employee.bank);
     registrationPage.setBankAccount(employee.bank_account);
-    registrationPage.setRubricPayroll(employee.payroll);
 
     registrationPage.createEmployee();
     registrationPage.isEmpoyeeCreated(true);

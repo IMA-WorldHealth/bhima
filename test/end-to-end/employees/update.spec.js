@@ -22,8 +22,15 @@ describe('Update Employees', () => {
     registrationPage.setFonction('Infirmier');
     registrationPage.setIsMedical();
     registrationPage.setGrade('A1');
+
+    registrationPage.setCurrencyInput('TPR', 10);
+    registrationPage.setCurrencyInput('v_cher', 50);
+    registrationPage.setCurrencyInput('f_scol', 0);
+    registrationPage.setCurrencyInput('allc', 0);
+
     registrationPage.createEmployee();
     components.notification.hasSuccess();
+
   });
 
   it(`blocks validation when the value is already taken when the field must be Unique`, () => {

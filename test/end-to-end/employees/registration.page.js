@@ -90,6 +90,11 @@ class RegistrationPage {
     FU.uiSelect('EmployeeCtrl.employee.creditor_group_uuid', cg);
   }
 
+  // Set Currency Input
+  setCurrencyInput(id, value) {
+    components.currencyInput.set(value, id);
+  }
+
   // set bank
   setBank(bank) {
     FU.input('EmployeeCtrl.employee.bank', bank);
