@@ -30,8 +30,7 @@
               <div class="panel-body">
                 <div class="form-horizontal" ng-form="DetailForm">
                   <fieldset>
-                    <label translate>EMPLOYEE.EMPLOYEE_DETAILS</label>
-
+                  
                   <!-- Employee names  -->
                   <div
                     class="form-group"
@@ -155,8 +154,6 @@
                     </div>
                   </div>
 
-
-
                   <!-- Employee creditor group-->
                   <div class="form-group"
                     ng-class="{'has-error' : DetailForm.creditor_group.$invalid && EmployeeRegistrationForm.$submitted}">
@@ -195,6 +192,7 @@
 
                      <!-- Employee Hospital File Number -->
                   <div
+                    ng-if="!EmployeeCtrl.employee.is_patient"
                     class="form-group has-feedback"
                     ng-class="{'has-error' : (DetailForm.hospitalNumber.$invalid && EmployeeRegistrationForm.$submitted) || DetailForm.hospitalNumber.$error.unique}">
 
@@ -230,8 +228,6 @@
                       </bh-debtor-group-select>
                     </div>
                   </div>
-
-
 
                   <!-- Employee location -->
                   <div class="row">

@@ -523,6 +523,7 @@ exports.configure = function configure(app) {
   app.get('/employees', employees.list);
   app.get('/employees/:id', employees.detail);
   app.post('/employees', employees.create);
+  app.post('/employees/patient_employee', employees.patientToEmployee);
   app.put('/employees/:id', employees.update);
 
   // billing services

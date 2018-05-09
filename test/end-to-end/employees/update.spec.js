@@ -15,8 +15,8 @@ describe('Update Employees', () => {
   before(() => { helpers.navigate(path); });
 
   it(`should update data for employee`, () => {
-    element.all(by.css('[data-method="action"]')).get(1).click();
-    element.all(by.css('[data-method="edit"]')).get(1).click();
+    element.all(by.css('[data-method="action"]')).get(2).click();
+    element.all(by.css('[data-method="edit"]')).get(2).click();
 
     registrationPage.setService('Administration');
     registrationPage.setFonction('Infirmier');
@@ -27,8 +27,8 @@ describe('Update Employees', () => {
   });
 
   it(`blocks validation when the value is already taken when the field must be Unique`, () => {
-    element.all(by.css('[data-method="action"]')).get(0).click();
-    element.all(by.css('[data-method="edit"]')).get(1).click();
+    element.all(by.css('[data-method="action"]')).get(1).click();
+    element.all(by.css('[data-method="edit"]')).get(2).click();
 
     registrationPage.setHospitalNumber(110);
 
