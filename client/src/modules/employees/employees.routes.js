@@ -12,7 +12,7 @@ angular.module('bhima.routes')
         templateUrl : 'modules/employees/registration/employees.html',
       })
       .state('patientAsEmployee', {
-        url         : '/employees/:id/patientAsEmployee',
+        url         : '/employees/:uuid/patientAsEmployee',
         params : {
           saveAsEmployee : { value : true },
         },

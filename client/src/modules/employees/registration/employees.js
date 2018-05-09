@@ -8,25 +8,27 @@ EmployeeController.$inject = [
   'bhConstants', 'ReceiptModal', 'SessionService', 'PatientService',
 ];
 
-function EmployeeController(Employees, Services, Grades, Functions, 
-  CreditorGroups, util, Notify, $state, bhConstants, Receipts, Session, Patients) {
-  var vm = this;
-  var referenceId = $state.params.id;
-  var saveAsEmployee = $state.params.saveAsEmployee;
-  var isUpdating = !!$state.params.id && !saveAsEmployee;
+function EmployeeController(
+  Employees, Services, Grades, Functions,
+  CreditorGroups, util, Notify, $state, bhConstants, Receipts, Session, Patients
+) {
+  const vm = this;
+  const referenceUuid = $state.params.uuid;
+  const saveAsEmployee = $state.params.saveAsEmployee;
+  const isUpdating = !!$state.params.id && !saveAsEmployee;
 
   vm.enterprise = Session.enterprise;
 
   vm.origin = '';
 
-  if (referenceId && !saveAsEmployee) {
-    Employees.read(referenceId)
-      .then(function (employee) {
+  if (referenceUuid && !saveAsEmployee) {
+    Employees.read(referenceUuid)
+      .then((employee) => {
         formatEmployeeAttributes(employee);
         vm.origin = employee.hospital_no;
         vm.employee = employee;
       })
-      .catch(function (error) {
+      .catch((error) => {
       // handle error and update view to show no results - this could be improved
         Notify.handleError(error);
         vm.unknownId = true;
@@ -34,8 +36,8 @@ function EmployeeController(Employees, Services, Grades, Functions,
   }
 
   if (saveAsEmployee) {
-    Patients.read(referenceId)
-      .then(function (patient) {
+    Patients.read(referenceUuid)
+      .then((patient) => {
         vm.employee.display_name = patient.display_name;
         vm.employee.dob = new Date(patient.dob);
         vm.employee.sex = patient.sex;
@@ -47,7 +49,7 @@ function EmployeeController(Employees, Services, Grades, Functions,
         vm.employee.current_location_id = patient.current_location_id;
         vm.employee.origin_location_id = patient.origin_location_id;
       })
-      .catch(function (error) {
+      .catch((error) => {
       // handle error and update view to show no results - this could be improved
         Notify.handleError(error);
         vm.unknownId = true;
@@ -74,8 +76,8 @@ function EmployeeController(Employees, Services, Grades, Functions,
     minDate : bhConstants.dates.minDOB,
   };
 
-  var yearOptions = bhConstants.yearOptions;
-  var dayOptions = bhConstants.dayOptions;
+  const yearOptions = bhConstants.yearOptions;
+  const dayOptions = bhConstants.dayOptions;
 
   setupRegistration();
 
@@ -103,7 +105,7 @@ function EmployeeController(Employees, Services, Grades, Functions,
   }
 
   function setDateComponent() {
-    var currentOptions = dayOptions;
+    const currentOptions = dayOptions;
 
     // set the database flag to track if a date is set to JAN 01 or if the date is unknown
     vm.employee.dob_unknown_date = !vm.fullDateEnabled;
@@ -113,44 +115,44 @@ function EmployeeController(Employees, Services, Grades, Functions,
 
 
   // Loading Grades
-  Grades.read(null, { detailed : 1 }).then(function (data) {
-    data.forEach(function (g) {
+  Grades.read(null, { detailed : 1 }).then((data) => {
+    data.forEach((g) => {
       g.format = `${g.code} - ${g.text}`;
     });
     vm.grades = data;
   }).catch(Notify.handleError);
 
   // Loading Creditor Groups
-  CreditorGroups.read().then(function (data) {
+  CreditorGroups.read().then((data) => {
     vm.creditorGroups = data;
   }).catch(Notify.handleError);
 
   // Loading Services
-  Services.read().then(function (services) {
+  Services.read().then((services) => {
     vm.services = services;
   }).catch(Notify.handleError);
 
   // Loading Functions
-  Functions.read().then(function (data) {
+  Functions.read().then((data) => {
     vm.functions = data;
   }).catch(Notify.handleError);
 
   // submit the data to the server
   function submit(employeeForm) {
-    var promise;
+    let promise;
 
     if (employeeForm.$invalid) { return Notify.danger('FORM.ERRORS.INVALID'); }
 
     if (!vm.employee.is_patient) {
-      promise = (!referenceId) ?
+      promise = (!referenceUuid) ?
         Employees.create(vm.employee) :
-        Employees.update(referenceId, vm.employee);
+        Employees.update(referenceUuid, vm.employee);
     } else {
       promise = Employees.patientToEmployee(vm.employee);
     }
 
     return promise
-      .then(function (feedBack) {
+      .then((feedBack) => {
         // reset form state
         employeeForm.$setPristine();
         employeeForm.$setUntouched();

@@ -271,10 +271,10 @@ function update(req, res, next) {
 function create(req, res, next) {
   // cast as data object and add unique ids
   const data = req.body;
-  const patientID = uuid();
+  const patientUuid = uuid();
   data.creditor_uuid = uuid();
   data.debtor_uuid = uuid();
-  data.patient_uuid = patientID;
+  data.patient_uuid = patientUuid;
 
   // convert uuids to binary uuids as necessary
   const employee = db.convert(data, [
@@ -355,7 +355,7 @@ function create(req, res, next) {
         id : employeeId,
       });
 
-      res.status(201).json({ id : employeeId, patient_uuid : patientID });
+      res.status(201).json({ id : employeeId, patient_uuid : patientUuid });
     })
     .catch(next)
     .done();
@@ -406,8 +406,9 @@ function find(options) {
       patient.dob, employee.date_embauche, employee.service_id, employee.nb_spouse,
       employee.nb_enfant, BUID(employee.grade_uuid) as grade_uuid, employee.locked,
       grade.text, grade.basic_salary, fonction.id AS fonction_id, fonction.fonction_txt, patient.hospital_no,
-      patient.phone, patient.email, patient.address_1 AS adresse, BUID(employee.patient_uuid) AS patient_uuid, employee.bank, employee.bank_account,
-      employee.daily_salary, employee.is_medical, grade.code AS code_grade, BUID(debtor.uuid) as debtor_uuid,
+      patient.phone, patient.email, patient.address_1 AS adresse, BUID(employee.patient_uuid) AS patient_uuid, 
+      employee.bank, employee.bank_account, employee.daily_salary, employee.is_medical, grade.code AS code_grade, 
+      BUID(debtor.uuid) as debtor_uuid,
       debtor.text AS debtor_text, BUID(debtor.group_uuid) as debtor_group_uuid,
       BUID(creditor.uuid) as creditor_uuid, creditor.text AS creditor_text,
       BUID(creditor.group_uuid) as creditor_group_uuid, creditor_group.account_id,
@@ -458,7 +459,7 @@ function find(options) {
  */
 function patientToEmployee(req, res, next) {
   const data = req.body;
-  const patientID = data.patient_uuid;
+  const patientUuid = data.patient_uuid;
 
   data.creditor_uuid = uuid();
 
@@ -523,7 +524,7 @@ function patientToEmployee(req, res, next) {
         id : employeeId,
       });
 
-      res.status(201).json({ id : employeeId, patient_uuid : patientID });
+      res.status(201).json({ id : employeeId, patient_uuid : patientUuid });
     })
     .catch(next)
     .done();
