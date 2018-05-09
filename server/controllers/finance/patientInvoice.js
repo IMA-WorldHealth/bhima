@@ -14,9 +14,9 @@ const Debtors = require('./debtors');
 const FilterParser = require('../../lib/filter');
 const barcode = require('../../lib/barcode');
 const createInvoice = require('./invoice/patientInvoice.create');
+const consumableInvoice = require('./invoice/lookupConsumableInvoice');
 const db = require('../../lib/db');
 const identifiers = require('../../config/identifiers');
-
 const shared = require('./shared');
 
 const entityIdentifier = identifiers.INVOICE.key;
@@ -44,6 +44,9 @@ exports.balance = balance;
 
 /** Expose lookup invoice credit note for other controllers to use internally */
 exports.lookupInvoiceCreditNote = lookupInvoiceCreditNote;
+
+/** get invoice details and its consumable inventories for a given patient */
+exports.lookupConsumableInvoicePatient = consumableInvoice.lookupConsumableInvoicePatient;
 
 /**
  * read
