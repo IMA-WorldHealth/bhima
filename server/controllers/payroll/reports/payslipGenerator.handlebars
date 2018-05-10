@@ -46,43 +46,43 @@
             <td class="text-center" colspan="7"> <strong> {{translate 'TABLE.COLUMNS.BASIC_SALARY'}} </strong></td>
           </tr>
           <tr>
-            <td class="text-left">  {{translate 'TABLE.COLUMNS.DAY_WORKED'}} </td>
-            <td class="text-left"></td>
-            <td class="text-left"> {{ employee.working_day }} </td>
+            <td>  {{translate 'TABLE.COLUMNS.DAY_WORKED'}} </td>
+            <td></td>
+            <td> {{ employee.working_day }} </td>
             <td class="text-right"> {{currency employee.daily_salary employee.currency_id}} </td>
             <td class="text-right">  {{currency employee.dailyWorkedValue employee.currency_id}} </td>
-            <td class="text-left"></td>
-            <td class="text-left"></td>
+            <td></td>
+            <td></td>
           </tr>
 
           {{#each employee.holidaysPaid}}
             <tr>
-              <td class="text-left"> {{ label }} </td>
-              <td class="text-left"> {{ holiday_percentage }} </td>
-              <td class="text-left"> {{ holiday_nbdays }} </td> 
+              <td> {{ label }} </td>
+              <td> {{ holiday_percentage }} </td>
+              <td> {{ holiday_nbdays }} </td> 
               <td class="text-right"> {{currency dailyRate ../employee.currency_id}} </td>
               <td class="text-right"> {{currency value ../employee.currency_id}} </td>
-              <td class="text-left"></td>
-              <td class="text-left"></td>
+              <td></td>
+              <td></td>
             </tr>
           {{/each}}
 
           {{#each employee.offDaysPaid}}
             <tr>
-              <td class="text-left"> {{ label }} </td>
-              <td class="text-left"> {{ offday_percentage }} </td>
-              <td class="text-left"> 1 </td>
+              <td> {{ label }} </td>
+              <td> {{ offday_percentage }} </td>
+              <td> 1 </td>
               <td class="text-right"> {{currency value ../employee.currency_id}} </td>
               <td class="text-right"> {{currency value ../employee.currency_id}} </td>
-              <td class="text-left"> --- </td>
-              <td class="text-left"> --- </td>
+              <td> --- </td>
+              <td> --- </td>
             </tr>
           {{/each}}
           <tr style="background-color: #efefef;">
             <td class="text-right" colspan="4"> <strong> {{translate 'TABLE.COLUMNS.TOTAL'}} </strong></td>
             <td class="text-right">  {{currency employee.basic_salary employee.currency_id}} </td>
-            <td class="text-left"> --- </td>
-            <td class="text-left"> --- </td>
+            <td> --- </td>
+            <td> --- </td>
           </tr>
           <tr>
             <td style="background-color: #fff;" colspan="7"></td>
@@ -95,20 +95,20 @@
           </tr>          
           {{#each employee.rubricTaxable}}
             <tr>
-              <td class="text-left"> {{ label }} </td>
-              <td class="text-left"> {{ ratePercentage }} </td>              
-              <td class="text-left"> --- </td>
+              <td> {{ label }} </td>
+              <td> {{ ratePercentage }} </td>              
+              <td> --- </td>
               <td class="text-right"> --- </td>
               <td class="text-right"> {{currency result ../employee.currency_id}} </td>
               <td class="text-right"> --- </td>
-              <td class="text-left"> --- </td>
+              <td> --- </td>
             </tr>
           {{/each}}    
           <tr style="background-color: #efefef;">
             <td class="text-right" colspan="4"> <strong> {{translate 'TABLE.COLUMNS.TOTAL'}} </strong></td>
             <td class="text-right">  {{currency employee.somRubTaxable employee.currency_id}} </td>
-            <td class="text-left"> --- </td>
-            <td class="text-left"> --- </td>
+            <td> --- </td>
+            <td> --- </td>
           </tr>
 
           <tr>
@@ -135,20 +135,20 @@
           </tr>          
           {{#each employee.rubricNonTaxable}}
             <tr>
-              <td class="text-left"> {{ label }} </td>
-              <td class="text-left"> {{ ratePercentage }} </td>              
-              <td class="text-left"> --- </td>
+              <td> {{ label }} </td>
+              <td> {{ ratePercentage }} </td>              
+              <td> --- </td>
               <td class="text-right"> --- </td>
               <td class="text-right"> {{currency result ../employee.currency_id}} </td>
               <td class="text-right"> --- </td>
-              <td class="text-left"> --- </td>
+              <td> --- </td>
             </tr>
           {{/each}}    
           <tr style="background-color: #efefef;">
             <td class="text-right" colspan="4"> <strong> {{translate 'TABLE.COLUMNS.TOTAL'}} </strong></td>
             <td class="text-right">  {{currency employee.somRubNonTaxable employee.currency_id}} </td>
-            <td class="text-left"> --- </td>
-            <td class="text-left"> --- </td>
+            <td> --- </td>
+            <td> --- </td>
           </tr>
 
           <tr>
@@ -172,9 +172,9 @@
           </tr>          
           {{#each employee.rubricDiscount}}
             <tr>
-              <td class="text-left"> {{ label }} </td>
-              <td class="text-left"> {{ ratePercentage }} </td>              
-              <td class="text-left"> --- </td>
+              <td> {{ label }} </td>
+              <td> {{ ratePercentage }} </td>              
+              <td> --- </td>
               <td class="text-right"> --- </td>
               <td class="text-right"> --- </td>
               <td class="text-right"> {{currency chargeEmployee ../employee.currency_id}} </td>
@@ -196,19 +196,19 @@
           </tr>
 
           <tr>
-            <td colspan="4" valign="top" class="text-right"> </td>
-            <td colspan="3"><h4><strong> ({{translate 'TABLE.COLUMNS.GROSS_SALARY'}}) - ({{translate "TABLE.COLUMNS.CONTRIBUTION_DEDUCTIONS"}})</strong></h4></td>
+            <td colspan="4" style="vertical-align : 'top'" class="text-right"> </td>
+            <td colspan="3"><h4><strong>({{translate 'TABLE.COLUMNS.GROSS_SALARY'}}) - ({{translate "TABLE.COLUMNS.CONTRIBUTION_DEDUCTIONS"}})</strong></h4></td>
           </tr>
           <tr>
-            <td colspan="4" valign="top" class="text-right">&nbsp;</td>
+            <td colspan="4" style="vertical-align : 'top'" class="text-right">&nbsp;</td>
             <td colspan="3"><h4><strong> {{currency employee.gross_salary employee.currency_id}} - {{currency employee.somChargeEmployee employee.currency_id}} </strong></h4></td>
           </tr>
           <tr>
-            <td colspan="4" valign="top" class="text-right"><h3>{{translate 'TABLE.COLUMNS.NET_SALARY'}}</h3></td>
+            <td colspan="4" style="vertical-align : 'top'" class="text-right"><h3>{{translate 'TABLE.COLUMNS.NET_SALARY'}}</h3></td>
             <td colspan="3"><h3><strong>{{currency employee.net_salary employee.currency_id}}</strong></h3></td>
           </tr>
           <tr>
-            <td colspan="4" valign="top" class="text-right">&nbsp;</td>
+            <td colspan="4" style="vertical-align : 'top'" class="text-right">&nbsp;</td>
             <td colspan="3"><h5><strong> {{numberToText employee.net_salary ../lang ',' }}</strong></h5></td>
           </tr>
 

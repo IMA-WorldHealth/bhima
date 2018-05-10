@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 AccountsController.$inject = [
   '$rootScope', '$timeout', 'AccountGridService', 'NotifyService', 'bhConstants',
-  'LanguageService', 'uiGridConstants', '$translate',
+  'LanguageService', 'uiGridConstants',
 ];
 
 /**
@@ -17,7 +17,7 @@ AccountsController.$inject = [
  */
 function AccountsController(
   $rootScope, $timeout, AccountGrid, Notify, Constants,
-  Language, uiGridConstants, $translate
+  Language, uiGridConstants
 ) {
 
   const vm = this;

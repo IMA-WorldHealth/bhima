@@ -134,29 +134,6 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
     }],
   };
 
-  const voucher2 = {
-    date,
-    uuid        : vUuid,
-    project_id  : 1,
-    currency_id : helpers.data.USD,
-    amount      : 10,
-    description : 'Voucher Transaction to BCDC',
-    user_id     : 1,
-    items       : [{
-      uuid          : uuid(),
-      account_id    : 184,
-      debit         : 10,
-      credit        : 0,
-      document_uuid : uuid(),
-      voucher_uuid  : vUuid,
-    }, {
-      account_id   : 217,
-      debit        : 0,
-      credit       : 10,
-      voucher_uuid : vUuid,
-    }],
-  };
-
   it('POST /vouchers create a new voucher record in voucher and voucher_item tables', () => {
     return agent.post('/vouchers')
       .send({ voucher })

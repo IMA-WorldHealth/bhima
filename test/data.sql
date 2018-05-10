@@ -883,24 +883,26 @@ INSERT INTO `config_accounting` (`label`, `account_id`) VALUES ('Configuration C
 INSERT INTO `payroll_configuration` (`id`, `label`, `dateFrom`, `dateTo`, `config_rubric_id`, `config_accounting_id`, `config_weekend_id`, `config_ipr_id`) VALUES
 (1, 'Février 2018', '2018-02-01', '2018-02-28', 1, 1, 1, 1);
 
+SET @paymentUuid = HUID('2a3f17b0ae3242bb9333a760825fd257');
+SET @employeeUuid = HUID('75e0969465f245a1a8a28b025003d793');
 -- Paiement DATA 
 
 INSERT INTO `paiement` (`uuid`, `employee_uuid`, `payroll_configuration_id`, `currency_id`, `paiement_date`, `total_day`, `working_day`, `basic_salary`, `daily_salary`, `base_taxable`, `gross_salary`, `net_salary`, `amount_paid`, `status_id`)
-VALUES (HUID('2a3f17b0ae3242bb9333a760825fd257'), HUID('75e0969465f245a1a8a28b025003d793'), 1, 2, NULL, 20, 20, 500.0000, 25.0000, 550.0000, 730.0000, 614.0700, 0.0000, 2);
+VALUES (@paymentUuid, @employeeUuid, 1, 2, NULL, 20, 20, 500.0000, 25.0000, 550.0000, 730.0000, 614.0700, 0.0000, 2);
 
 -- rubric_paiement DATA
 INSERT INTO `rubric_paiement` (`id`, `paiement_uuid`, `rubric_payroll_id`, `value`, `posted`) VALUES 
-(1, HUID('2a3f17b0ae3242bb9333a760825fd257'), 5, 20, NULL),
-(2, HUID('2a3f17b0ae3242bb9333a760825fd257'), 9, 150, NULL),
-(3, HUID('2a3f17b0ae3242bb9333a760825fd257'), 10, 10, NULL),
-(4, HUID('2a3f17b0ae3242bb9333a760825fd257'), 6, 20, NULL),
-(5, HUID('2a3f17b0ae3242bb9333a760825fd257'), 7, 20, NULL),
-(6, HUID('2a3f17b0ae3242bb9333a760825fd257'), 8, 10, NULL),
-(7, HUID('2a3f17b0ae3242bb9333a760825fd257'), 1, 27.5, NULL),
-(8, HUID('2a3f17b0ae3242bb9333a760825fd257'), 2, 96.68, NULL),
-(9, HUID('2a3f17b0ae3242bb9333a760825fd257'), 3, 11, NULL),
-(10, HUID('2a3f17b0ae3242bb9333a760825fd257'), 4, 19.25, NULL),
-(11, HUID('2a3f17b0ae3242bb9333a760825fd257'), 11, 1.1, NULL);
+(1, @paymentUuid, 5, 20, NULL),
+(2, @paymentUuid, 9, 150, NULL),
+(3, @paymentUuid, 10, 10, NULL),
+(4, @paymentUuid, 6, 20, NULL),
+(5, @paymentUuid, 7, 20, NULL),
+(6, @paymentUuid, 8, 10, NULL),
+(7, @paymentUuid, 1, 27.5, NULL),
+(8, @paymentUuid, 2, 96.68, NULL),
+(9, @paymentUuid, 3, 11, NULL),
+(10, @paymentUuid, 4, 19.25, NULL),
+(11, @paymentUuid, 11, 1.1, NULL);
 
 -- ------------- AFFECTING ALL unit to admin role ----------------------------------------
 -- creates a default role
