@@ -73,9 +73,6 @@ const paths = {
       'client/vendor/jquery/dist/jquery.min.js',
       'client/vendor/cropper/dist/cropper.js',
 
-      // lodash
-      'client/vendor/lodash/dist/lodash.min.js',
-
       // Angular
       'client/vendor/angular/angular.min.js',
       'client/vendor/angular-messages/angular-messages.min.js',

@@ -7,7 +7,7 @@ function StockExiTests() {
   const DEPOT_PRINCIPAL = 'Depot Principal';
   const DEPOT_SECONDAIRE = 'Depot Secondaire';
   const PATIENT = 'PA.TPA.2';
-  const INVOICE = 'IV.TPA.3';
+  const INVOICE = 'IV.TPA.2';
   const SERVICE = 'Medecine Interne';
   const DESCRIPTION = 'Sortie de stock';
 
@@ -49,7 +49,7 @@ function StockExiTests() {
 
     page.setDescription(DESCRIPTION.concat(' - Patient'));
 
-    page.setLot(0, 'VITAMINE-A');
+    page.setLot(0, 'QUININE-A');
 
     // submit
     page.submit();
