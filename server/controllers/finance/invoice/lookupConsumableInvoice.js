@@ -14,8 +14,7 @@ function lookupConsumableInvoicePatient(req, res, next) {
 
   let invoiceDetailQuery =
     `SELECT
-      BUID(invoice.uuid) as uuid, CONCAT_WS('.', '${identifiers.INVOICE.key}',
-      project.abbr, invoice.reference) AS reference, invoice.cost,
+      BUID(invoice.uuid) as uuid, dm.text AS reference, invoice.cost,
       invoice.description, BUID(invoice.debtor_uuid) AS debtor_uuid,
       patient.display_name AS debtor_name,   BUID(patient.uuid) as patient_uuid,
       invoice.user_id, invoice.date, user.display_name, invoice.service_id,
@@ -23,8 +22,6 @@ function lookupConsumableInvoicePatient(req, res, next) {
     FROM invoice
     LEFT JOIN patient ON patient.debtor_uuid = invoice.debtor_uuid
     JOIN service ON invoice.service_id = service.id
-    JOIN project ON project.id = invoice.project_id
-    JOIN enterprise ON enterprise.id = project.enterprise_id
     JOIN user ON user.id = invoice.user_id
     JOIN document_map AS dm ON dm.uuid = invoice.uuid
     WHERE dm.text = ? `;

@@ -257,11 +257,7 @@ function FindPatientComponent(Patients, AppCache, Notify, SessionService, bhCons
    * @description This function is responsible for changing the option of search.
    * Search by ID or by name
    */
-  function loadDefaultOption(optionKey) {
-
-    // default to findById
-    optionKey = optionKey || 'findById';
-
+  function loadDefaultOption(optionKey = 'findById') {
     // change the findBy call
     findBy(optionKey);
   }
