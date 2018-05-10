@@ -21,10 +21,17 @@
         </div>
         <div class="panel-body">
           <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate>
-            <bh-report-period-select
+
+            <bh-fiscal-year-select
+              fiscal-id="ReportConfigCtrl.reportDetails.fiscal_id"
+              on-select-fiscal-callback="ReportConfigCtrl.onSelectFiscalYear(fiscalYear)">
+            </bh-fiscal-year-select>
+
+            <bh-period-selection
+              fiscal-year-id="ReportConfigCtrl.reportDetails.fiscal_id"
               period-id="ReportConfigCtrl.reportDetails.period_id"
               on-select-callback="ReportConfigCtrl.onSelectPeriod(period)">
-            </bh-report-period-select>
+            </bh-period-selection>
 
             <bh-yes-no-radios
               label="REPORT.OPTIONS.SEPARATE_DEBITS_AND_CREDITS"

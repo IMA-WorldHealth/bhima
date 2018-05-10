@@ -133,7 +133,10 @@ function getBalanceSummary(periodId, currencyId, shouldPrune) {
       tree.walk(Tree.common.computeNodeDepth);
 
       // prune empty rows if needed
-      const balances = shouldPrune ? tree.prune(isEmptyRow) : tree.toArray();
+      if (shouldPrune) {
+        tree.prune(isEmptyRow);
+      }
+      const balances = tree.toArray();
 
       const root = tree.getRootNode();
 

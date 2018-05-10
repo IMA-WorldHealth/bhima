@@ -47,6 +47,10 @@ class Tree {
     return children;
   }
 
+  size() {
+    return this._nodeIndex.keys().length;
+  }
+
   buildNodeIndex() {
     this._nodeIndex = {};
     this.walk(node => {
@@ -68,8 +72,15 @@ class Tree {
 
     debug(`#prune() removed ${prev.length - pruned.length} nodes from the tree`);
 
+    // expose the data array for data binding
+    this.data = pruned;
+
+    // build the tree with the provided root id and parentKey
+    this._rootNode.children = this.buildTreeFromArray(pruned);
+    this.buildNodeIndex();
+
     // return an array missing the pruned values
-    return pruned;
+    return prev.length - pruned.length;
   }
 
   toArray() {
@@ -125,7 +136,7 @@ class Tree {
     const callFnAfterRecurse = !callFnBeforeRecurse;
 
     const recurse = () =>
-      currentNode.children.forEach(childNode =>
+      (currentNode.children || []).forEach(childNode =>
         this.walk(fn, callFnBeforeRecurse, childNode, currentNode));
 
     // if we start as the root node, then descend immediately.

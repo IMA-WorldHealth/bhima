@@ -36,6 +36,10 @@ exports.create = create;
 exports.detail = detail;
 exports.update = update;
 exports.remove = remove;
+exports.getPeriods = getPeriods;
+
+exports.lookupFiscalYear = lookupFiscalYear;
+
 exports.getPeriodByFiscal = getPeriodByFiscal;
 exports.lookupFiscalYearByDate = lookupFiscalYearByDate;
 exports.getFirstDateOfFirstFiscalYear = getFirstDateOfFirstFiscalYear;
@@ -54,8 +58,6 @@ exports.getOpeningBalance = getOpeningBalance;
  *
  * @param {Number} id - the id of the sought fiscal year
  * @returns {Promise} - a promise resolving to the fiscal record
- *
- * @private
  */
 function lookupFiscalYear(id) {
   const sql = `
@@ -522,8 +524,8 @@ function closing(req, res, next) {
  * @method getPeriodByFiscal
  *
  * @description
- * This function returns all Fiscal Year's periods
- * the Fiscal Year provided.  If no record is found, it throws a NotFound error.
+ * This function returns all Fiscal Year's periods for the Fiscal Year provided.
+ * If no records are found, it will throw a NotFound error.
  *
  * @param {fiscalYearId}  - Makes it possible to select the different periods of the fiscal year
  * @returns {Promise} - a promise resolving to the periods record
@@ -531,10 +533,11 @@ function closing(req, res, next) {
  */
 function getPeriodByFiscal(fiscalYearId) {
   const sql = `
-    SELECT period.number, period.id
+    SELECT period.number, period.id, period.start_date, period.end_date, period.locked
     FROM period
-    JOIN fiscal_year ON period.fiscal_year_id = fiscal_year.id
-    WHERE period.fiscal_year_id = ? AND period.number <> 13;
+    WHERE period.fiscal_year_id = ?
+      AND period.number <> 13
+    ORDER BY period.start_date;
   `;
 
   return db.exec(sql, [fiscalYearId]);
@@ -544,8 +547,8 @@ function getPeriodByFiscal(fiscalYearId) {
  * @method lookupFiscalYearByDate
  *
  * @description
- * This function returns a single record from the fiscal year table matching
- *
+ * This function returns a single record from the fiscal year table matching the
+ * date range provided.
  */
 function lookupFiscalYearByDate(transDate) {
   const sql = `
@@ -615,6 +618,21 @@ function getDateRangeFromPeriods(periods) {
       period.id IN (?, ?)`;
 
   return db.one(sql, [periods.periodFrom, periods.periodTo]);
+}
+
+/**
+ * @function getPeriods
+ *
+ * @description
+ * HTTP interface to getting periods by fiscal year id.
+ */
+function getPeriods(req, res, next) {
+  getPeriodByFiscal(req.params.id)
+    .then(periods => {
+      res.status(200).json(periods);
+    })
+    .catch(next)
+    .done();
 }
 
 /**
