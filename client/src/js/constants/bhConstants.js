@@ -1,6 +1,5 @@
 angular.module('bhima.constants')
-  .constant('bhConstants', constantConfig())
-  .constant('_', window._);
+  .constant('bhConstants', constantConfig());
 
 /**
  * TODO - Some of these constants are system standards, others should be

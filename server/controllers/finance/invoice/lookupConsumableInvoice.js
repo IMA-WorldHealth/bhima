@@ -12,7 +12,7 @@ function lookupConsumableInvoicePatient(req, res, next) {
   const params = req.query;
   const record = {};
 
-  const invoiceDetailQuery =
+  let invoiceDetailQuery =
     `SELECT
       BUID(invoice.uuid) as uuid, CONCAT_WS('.', '${identifiers.INVOICE.key}',
       project.abbr, invoice.reference) AS reference, invoice.cost,
@@ -27,7 +27,12 @@ function lookupConsumableInvoicePatient(req, res, next) {
     JOIN enterprise ON enterprise.id = project.enterprise_id
     JOIN user ON user.id = invoice.user_id
     JOIN document_map AS dm ON dm.uuid = invoice.uuid
-    WHERE dm.text = ? AND patient.uuid = ?;`;
+    WHERE dm.text = ? `;
+
+  if (params.patientUuid) {
+    params.patientUuid = db.bid(params.patientUuid);
+    invoiceDetailQuery += ' AND patient.uuid = ?;';
+  }
 
   const invoiceItemsQuery =
     `SELECT
@@ -40,7 +45,7 @@ function lookupConsumableInvoicePatient(req, res, next) {
     JOIN inventory_unit ON inventory_unit.id = inventory.unit_id
     WHERE invoice_uuid = ? AND inventory.consumable = 1`;
 
-  db.exec(invoiceDetailQuery, [params.invoiceReference, db.bid(params.patientUuid)])
+  db.exec(invoiceDetailQuery, [params.invoiceReference, params.patientUuid])
     .then(details => {
       if (!details.length) { return null; }
 

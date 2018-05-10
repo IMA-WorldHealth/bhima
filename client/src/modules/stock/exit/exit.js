@@ -6,7 +6,7 @@ StockExitController.$inject = [
   'DepotService', 'InventoryService', 'NotifyService', 'SessionService', 'util',
   'bhConstants', 'ReceiptModal', 'StockItemService', 'StockFormService', 'StockService',
   'StockModalService', 'uiGridConstants', '$translate', 'appcache',
-  'moment', 'GridExportService', '_',
+  'moment', 'GridExportService', 'Store',
 ];
 
 /**
@@ -19,7 +19,7 @@ StockExitController.$inject = [
  */
 function StockExitController(
   Depots, Inventory, Notify, Session, util, bhConstants, ReceiptModal, StockItem, StockForm, Stock,
-  StockModal, uiGridConstants, $translate, AppCache, moment, GridExportService, _,
+  StockModal, uiGridConstants, $translate, AppCache, moment, GridExportService, Store
 ) {
   const vm = this;
   const cache = new AppCache('StockCache');
@@ -132,7 +132,10 @@ function StockExitController(
       },
     ],
     data : vm.stockForm.store.data,
-    fastWatch : true,
+
+    // fastWatch to false is required for updating the grid correctly for
+    // inventories loaded from an invoice for patient exit
+    fastWatch : false,
     flatEntityAccess : true,
     showGridFooter : true,
     gridFooterTemplate,
@@ -287,10 +290,7 @@ function StockExitController(
         vm.selectableInventories = angular.copy(inventories);
 
         // map of inventories by inventory uuid
-        vm.mapSelectableInventories = _.reduce(vm.selectableInventories, (aggregate, value) => {
-          aggregate[value.inventory_uuid] = value;
-          return aggregate;
-        }, {});
+        vm.mapSelectableInventories = new Store({ identifier : 'inventory_uuid', data : vm.selectableInventories });
 
         checkValidity();
       })
@@ -332,28 +332,25 @@ function StockExitController(
 
   // load inventories from an invoice
   function loadInvoiceInventories(patient) {
-    vm.inventoryNotAvailable = [];
-    vm.stockForm.clear();
-    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.EDIT);
-
     if (!patient || !patient.invoice) { return; }
 
-    const nbItems = patient.invoice.items.length;
+    vm.inventoryNotAvailable = [];
+    vm.stockForm.clear();
 
-    if (!nbItems) { return; }
-
-    let inventoryAvailableIndex = 0;
+    if (!patient.invoice.items.length) { return; }
 
     patient.invoice.items.forEach((item) => {
-      if (vm.mapSelectableInventories[item.inventory_uuid]) {
-        addItems(1);
-        vm.stockForm.store.data[inventoryAvailableIndex].inventory = vm.mapSelectableInventories[item.inventory_uuid];
-        vm.stockForm.store.data[inventoryAvailableIndex].inventory_uuid = item.inventory_uuid;
-        vm.stockForm.store.data[inventoryAvailableIndex].quantity = item.quantity;
-        vm.stockForm.store.data[inventoryAvailableIndex].lot = {};
-        configureItem(vm.stockForm.store.data[inventoryAvailableIndex]);
+      const inventory = vm.mapSelectableInventories.get(item.inventory_uuid);
 
-        inventoryAvailableIndex++;
+      if (inventory) {
+        const row = vm.stockForm.addItems(1);
+
+        row.inventory = inventory;
+        row.inventory_uuid = item.inventory_uuid;
+        row.quantity = item.quantity;
+        row.lot = {};
+
+        configureItem(row);
       } else {
         vm.inventoryNotAvailable.push(item.text);
       }

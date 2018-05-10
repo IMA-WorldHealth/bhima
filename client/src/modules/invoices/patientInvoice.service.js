@@ -30,7 +30,6 @@ function PatientInvoiceService(
   service.balance = balance;
   service.filters = invoiceFilters;
   service.remove = Transactions.remove;
-  service.findInvoice = findInvoice;
   service.findConsumableInvoicePatient = findConsumableInvoicePatient;
 
   /**
@@ -189,15 +188,6 @@ function PatientInvoiceService(
     // return  serialized options
     return $httpParamSerializer(options);
   };
-
-  /**
-   * findInvoice
-   */
-  function findInvoice(invoiceUuid) {
-    const url = '/invoices/'.concat(invoiceUuid);
-    return this.$http.get(url)
-      .then(this.util.unwrapHttpResponse);
-  }
 
   /**
    * find an invoice with its consumable inventories for a given patient

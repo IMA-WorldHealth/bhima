@@ -25,7 +25,7 @@
       ng-if="!$ctrl.invoiceFound && FindInvoiceForm.$submitted" 
       class="help-block" 
       translate="FORM.INFO.PATIENT_INVOICE_NOT_FOUND" 
-      translate-values="{{ $ctrl.translateValues }}">
+      translate-values="{{ $ctrl.translate }}">
     </p>
     <p 
       ng-if="$ctrl.invoiceFound && FindInvoiceForm.$submitted" 

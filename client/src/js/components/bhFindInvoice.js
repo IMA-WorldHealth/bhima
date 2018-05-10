@@ -3,20 +3,20 @@ angular.module('bhima.components')
     controller : FindInvoiceComponent,
     templateUrl : 'modules/templates/bhFindInvoice.tmpl.html',
     bindings : {
-      patientUuid :       '<', // patient uuid - to restrict search to this patient
+      patientUuid :       '<?', // patient uuid - to restrict search to this patient
       onSearchComplete :  '&', // bind callback to call when data is available
       disabled :          '<', // bind disable behavior
     },
   });
 
 FindInvoiceComponent.$inject = [
-  'PatientService', 'PatientInvoiceService', 'AppCache', 'NotifyService',
+  'PatientService', 'PatientInvoiceService', 'NotifyService', '$window',
 ];
 
 /**
  * The Find Invoice Component
  */
-function FindInvoiceComponent(Patients, PatientInvoice, AppCache, Notify) {
+function FindInvoiceComponent(Patients, PatientInvoice, Notify, $window) {
   const vm = this;
 
   /* @const the enter key keycode */
@@ -61,7 +61,7 @@ function FindInvoiceComponent(Patients, PatientInvoice, AppCache, Notify) {
     vm.invoiceFound = true;
 
     const elementId = 'search';
-    const searchButton = document.getElementById(elementId);
+    const searchButton = $window.document.getElementById(elementId);
 
     if (invoice && typeof (invoice) === 'object') {
       vm.translate.name = invoice.details.debtor_name;
