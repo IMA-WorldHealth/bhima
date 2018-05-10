@@ -56,7 +56,7 @@
       </a>
     </li>
 
-    <li ng-hide="row.entity._hasCreditNote">
+    <li ng-hide="row.entity._hasCreditNote"  ng-if="grid.appScope.allowsRecordDeletion()">
       <a data-method="delete-record" href ng-click="grid.appScope.deleteCashPayment(row.entity)">
         <span class="text-danger"><i class="fa fa-trash"></i> <span translate>FORM.BUTTONS.DELETE_RECORD</span></span>
       </a>

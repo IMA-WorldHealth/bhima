@@ -45,6 +45,8 @@ function CashPaymentRegistryController(
   vm.deleteCashPayment = deleteCashPaymentWithConfirmation;
   vm.download = Cash.download;
 
+  vm.allowsRecordDeletion = allowsRecordDeletion;
+
   columnDefs = [{
     field : 'reference',
     displayName : 'TABLE.COLUMNS.REFERENCE',
@@ -217,6 +219,10 @@ function CashPaymentRegistryController(
       .then((isOk) => {
         if (isOk) { remove(entity); }
       });
+  }
+
+  function allowsRecordDeletion() {
+    return Session.enterprise.settings.enable_delete_records;
   }
 
   startup();

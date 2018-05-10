@@ -28,6 +28,7 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
   vm.onSelectLossAccount = onSelectLossAccount;
   vm.enablePriceLockSetting = enablePriceLockSetting;
   vm.enablePrepaymentsSetting = enablePrepaymentsSetting;
+  vm.enableDeleteRecordsSetting = enableDeleteRecordsSetting;
 
   // fired on startup
   function startup() {
@@ -174,6 +175,11 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
 
   function enablePrepaymentsSetting(enabled) {
     vm.enterprise.settings.enable_prepayments = enabled;
+    $touched = true;
+  }
+
+  function enableDeleteRecordsSetting(enabled) {
+    vm.enterprise.settings.enable_delete_records = enabled;
     $touched = true;
   }
 

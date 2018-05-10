@@ -13,7 +13,9 @@
       "ENABLE_PRICE_LOCK_LABEL" : "Lock Price Changes for Patient Invoicing",
       "ENABLE_PRICE_LOCK_HELP_TEXT" : "Enabling this feature will disallow users from modifying the prices of inventory items in the Patient Invoice module.",
       "ENABLE_PREPAYMENTS_LABEL" : "Enable Cash Prepayments",
-      "ENABLE_PREPAYMENTS_HELP_TEXT" : "Enabling this feature allow patients to deposit funds with the institution at the cash window for future invoices.  If the patient has a creditor balance, their invoices will be automatically paid after invoicing."
+      "ENABLE_PREPAYMENTS_HELP_TEXT" : "Enabling this feature allow patients to deposit funds with the institution at the cash window for future invoices.  If the patient has a creditor balance, their invoices will be automatically paid after invoicing.",
+      "ENABLE_DELETE_RECORDS_LABEL" : "Enable Record Deletion from Registries",
+      "ENABLE_DELETE_RECORDS_HELP_TEXT" : "This feature allows users to delete transactions as an alternative to reversing transactions directly from the record registries."
     }
   }
 }

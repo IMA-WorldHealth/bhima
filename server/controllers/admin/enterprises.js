@@ -22,7 +22,8 @@ exports.list = function list(req, res, next) {
     sql = `
       SELECT id, name, abbr, email, po_box, phone,
         BUID(location_id) AS location_id, logo, currency_id,
-        gain_account_id, loss_account_id, enable_price_lock, enable_prepayments
+        gain_account_id, loss_account_id, enable_price_lock, enable_prepayments,
+        enable_delete_records
       FROM enterprise LEFT JOIN enterprise_setting
         ON enterprise.id = enterprise_setting.enterprise_id
       ;`;
@@ -40,6 +41,7 @@ exports.list = function list(req, res, next) {
           const settings = [
             'enable_price_lock',
             'enable_prepayments',
+            'enable_delete_records',
           ];
 
           row.settings = _.pick(row, settings);
