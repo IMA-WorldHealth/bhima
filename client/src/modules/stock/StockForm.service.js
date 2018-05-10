@@ -59,6 +59,8 @@ function StockFormService(StockItem, Store, AppCache, Session, $timeout) {
       elt.id = this.store.data.length;
       this.store.post(elt);
     }
+
+    return elt;
   };
 
   /**

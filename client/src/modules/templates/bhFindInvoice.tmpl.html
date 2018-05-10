@@ -1,0 +1,43 @@
+<div data-find-invoice ng-form="FindInvoiceForm" novalidate>
+  <div class="form-group"
+    ng-class="{ 'has-success' : $ctrl.invoiceFound && FindInvoiceForm.$submitted, 'has-error' : !$ctrl.invoiceFound && FindInvoiceForm.$submitted }">
+    <label class="control-label" translate>FORM.LABELS.ENTER_INVOICE_ID</label>
+    <div class="input-group">
+      <input
+        class="form-control"
+        type="text"
+        ng-model="$ctrl.invoiceReference"
+        ng-keypress="$ctrl.onKeyPress($event, FindInvoiceForm)"
+        ng-disabled="$ctrl.disabled">
+      <span class="input-group-btn">
+        <button 
+          id="search" 
+          class="btn btn-default" 
+          type="button" 
+          ng-click="$ctrl.search(FindInvoiceForm)" 
+          ng-disabled="$ctrl.disabled"
+          translate>
+          FORM.BUTTONS.SEARCH
+        </button>
+      </span>
+    </div>
+    <p 
+      ng-if="!$ctrl.invoiceFound && FindInvoiceForm.$submitted" 
+      class="help-block" 
+      translate="FORM.INFO.PATIENT_INVOICE_NOT_FOUND" 
+      translate-values="{{ $ctrl.translate }}">
+    </p>
+    <p 
+      ng-if="$ctrl.invoiceFound && FindInvoiceForm.$submitted" 
+      class="help-block" 
+      translate="FORM.INFO.PATIENT_INVOICE_FOUND">
+    </p>
+  </div>
+
+  <div ng-if="$ctrl.invoiceFound && FindInvoiceForm.$submitted" class="alert alert-success">
+    {{ $ctrl.invoiceDescription }}
+    <ul>
+      <li ng-repeat="item in $ctrl.invoiceItems track by $index">{{ item }}</li>
+    </ul>
+  </div>
+</div>
