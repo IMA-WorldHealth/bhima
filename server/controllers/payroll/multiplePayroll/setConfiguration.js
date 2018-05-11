@@ -1,0 +1,282 @@
+/**
+ * POST /multiple_payroll/:id/configuration
+ */
+const db = require('../../../lib/db');
+const EmployeeData = require('../employees');
+const uuid = require('uuid/v4');
+const Exchange = require('../../finance/exchange');
+const util = require('../../../lib/util');
+
+const getConfig = require('./getConfig');
+const manageConfig = require('./manageConfig');
+
+function config(req, res, next) {
+  const data = req.body.data;
+  const transaction = db.transaction();
+  const currencyId = req.session.enterprise.currency_id;
+  const enterpriseId = req.session.enterprise.id;
+
+  // If tax IPR is not defined Else Use Currency ID
+  const iprCurrencyId = data.iprScales.length ? data.iprScales[0].currency_id : currencyId;
+
+  const iprScales = data.iprScales;
+  const employee = data.employee;
+  const payrollConfigurationId = req.params.id;
+  const paiementUuid = uuid();
+
+  const uid = db.bid(paiementUuid);
+
+  const allRubrics = [];
+  const holidaysElements = [];
+  const offDaysElements = [];
+
+  let enterpriseExchangeRate = 0;
+  let iprExchangeRate = 0;
+
+  Exchange.getExchangeRate(enterpriseId, data.currency_id, new Date())
+    .then((exchange) => {
+      enterpriseExchangeRate = currencyId === data.currency_id ? 1 : exchange.rate;
+
+      return Exchange.getExchangeRate(enterpriseId, iprCurrencyId, new Date());
+    })
+    .then((exchangeIpr) => {
+      iprExchangeRate = exchangeIpr.rate;
+      const DECIMAL_PRECISION = 2;
+
+      let offDaysCost = 0;
+      let holidaysCost = 0;
+
+      // Calcul Daily Salary
+      const totalDayPeriod = data.daysPeriod.working_day;
+
+      const dailySalary = employee.individual_salary ?
+        (employee.individual_salary / totalDayPeriod) :
+        (employee.basic_salary / totalDayPeriod);
+
+      const workingDayCost = dailySalary * data.working_day;
+      const nbChildren = employee.nb_enfant;
+
+      /**
+     * Some institution allocates a percentage for the offday and holiday payment,
+     * the calculation of this rate is found by calculating the equivalence of the daily wage with
+     * the percentage of the offday or holiday.
+    */
+
+      data.offDays.forEach(offDay => {
+        const offDayValue = ((dailySalary * offDay.percent_pay) / 100);
+        offDaysCost += offDayValue;
+
+        offDaysElements.push([offDay.id, offDay.percent_pay, uid, offDay.label, offDayValue]);
+      });
+
+      data.holidays.forEach(holiday => {
+        const holidayValue = ((dailySalary * holiday.percentage * holiday.numberOfDays) / 100);
+        holidaysCost += holidayValue;
+
+        holidaysElements.push([holiday.id, holiday.numberOfDays, holiday.percentage, uid, holiday.label, holidayValue]);
+      });
+
+      /*
+     * Recalculation of base salary on the basis of any holiday or vacation period,
+     * where the percentages are respectively equal to 100% of the basic salary will
+     * remain equal to that defined at the level of the grade table BB
+     */
+
+      const basicSalary = workingDayCost + offDaysCost + holidaysCost;
+
+      const sql = `
+        SELECT config_rubric_item.id, config_rubric_item.config_rubric_id, config_rubric_item.rubric_payroll_id, 
+        payroll_configuration.label AS PayrollConfig, rubric_payroll.* 
+        FROM config_rubric_item
+        JOIN rubric_payroll ON rubric_payroll.id = config_rubric_item.rubric_payroll_id
+        JOIN payroll_configuration ON payroll_configuration.config_rubric_id = config_rubric_item.config_rubric_id
+        WHERE payroll_configuration.id = ?;
+      `;
+
+      db.exec(sql, [payrollConfigurationId])
+        .then(rubrics => {
+          let sumNonTaxable = 0;
+          let sumTaxable = 0;
+          let sumTaxContributionEmp = 0;
+          let membershipFeeEmployee = 0;
+
+          let nonTaxables = [];
+          let taxables = [];
+          let taxesContributions = [];
+
+          if (rubrics.length) {
+            rubrics.forEach(rubric => {
+            // Initialize values for rubrics that are not automatically calculated
+              rubric.result = util.roundDecimal(data.value[rubric.abbr], DECIMAL_PRECISION);
+            });
+
+            // Filtering non-taxable Rubrics
+            nonTaxables = rubrics.filter(item => item.is_social_care);
+
+            // Filtering taxable Rubrics
+            taxables = rubrics.filter(item =>
+              (item.is_tax !== 1 &&
+              item.is_discount !== 1 &&
+              item.is_social_care !== 1 &&
+              item.is_membership_fee !== 1));
+
+            // Filtering all taxes and contributions that is calculated from the taxable base
+            taxesContributions = rubrics.filter(item =>
+              item.is_tax || item.is_membership_fee || item.is_discount === 1);
+          }
+
+          // Calcul value for non-taxable and automatically calculated
+          if (nonTaxables.length) {
+            nonTaxables.forEach(nonTaxable => {
+              nonTaxable.result = nonTaxable.is_percent ?
+                util.roundDecimal((basicSalary * nonTaxable.value) / 100, DECIMAL_PRECISION) :
+                (nonTaxable.result || nonTaxable.value);
+
+              sumNonTaxable += nonTaxable.result;
+
+              allRubrics.push([uid, nonTaxable.rubric_payroll_id, nonTaxable.result]);
+            });
+          }
+
+          if (taxables.length) {
+            taxables.forEach(taxable => {
+              taxable.result = taxable.is_percent ?
+                util.roundDecimal((basicSalary * taxable.value) / 100, DECIMAL_PRECISION) :
+                (taxable.result || taxable.value);
+
+              sumTaxable += taxable.result;
+
+              allRubrics.push([uid, taxable.rubric_payroll_id, taxable.result]);
+            });
+          }
+
+          const baseTaxable = basicSalary + sumTaxable;
+
+          const grossSalary = basicSalary + sumTaxable + sumNonTaxable;
+
+          if (taxesContributions.length) {
+            taxesContributions.forEach(taxContribution => {
+              taxContribution.result = taxContribution.is_percent ?
+                util.roundDecimal((baseTaxable * taxContribution.value) / 100, DECIMAL_PRECISION) :
+                (taxContribution.result || taxContribution.value);
+
+              // Recovery of the value of the Membership Fee worker share
+              if (taxContribution.is_membership_fee && taxContribution.is_employee) {
+                membershipFeeEmployee = taxContribution.result;
+              }
+            });
+          }
+
+          const baseIpr = ((baseTaxable - membershipFeeEmployee) * (iprExchangeRate / enterpriseExchangeRate));
+
+          // Annual cumulation of Base IPR
+          const annualCumulation = baseIpr * 12;
+
+          let ind = -1;
+          let iprValue = 0;
+          let scaleIndice;
+
+          if (iprScales.length) {
+            iprScales.forEach(scale => {
+              ind++;
+              if (annualCumulation > scale.tranche_annuelle_debut && annualCumulation <= scale.tranche_annuelle_fin) {
+                scaleIndice = ind;
+              }
+            });
+
+            const initial = iprScales[scaleIndice].tranche_annuelle_debut;
+            const rate = iprScales[scaleIndice].rate / 100;
+
+            const cumul = (iprScales[scaleIndice - 1]) ? iprScales[scaleIndice - 1].cumul_annuel : 0;
+            iprValue = (((annualCumulation - initial) * rate) + cumul) / 12;
+
+            if (nbChildren > 0) {
+              iprValue -= (iprValue * (nbChildren * 2)) / 100;
+            }
+
+            // Convert IPR value in selected Currency
+            iprValue = util.roundDecimal(iprValue * (enterpriseExchangeRate / iprExchangeRate), DECIMAL_PRECISION);
+
+            if (taxesContributions.length) {
+              taxesContributions.forEach(taxContribution => {
+              // Set the result of IPR calculation
+                if (taxContribution.is_ipr) {
+                  taxContribution.result = iprValue;
+                }
+
+                // Calculation of the sum of taxes and membership fee borne by the employee
+                if (taxContribution.is_employee) { sumTaxContributionEmp += taxContribution.result; }
+
+                allRubrics.push([uid, taxContribution.rubric_payroll_id, taxContribution.result]);
+              });
+            }
+          } else if (taxesContributions.length) {
+            taxesContributions.forEach(taxContribution => {
+              // Calculation of the sum of taxes and membership fee borne by the employee
+              if (taxContribution.is_employee) {
+                sumTaxContributionEmp += taxContribution.result;
+              }
+
+              allRubrics.push([uid, taxContribution.rubric_payroll_id, taxContribution.result]);
+            });
+
+          }
+
+          const netSalary = grossSalary - sumTaxContributionEmp;
+
+          const paiementData = {
+            uuid : uid,
+            employee_uuid : db.bid(employee.uuid),
+            payroll_configuration_id : payrollConfigurationId,
+            currency_id : data.currency_id,
+            basic_salary : basicSalary,
+            base_taxable : baseTaxable,
+            daily_salary : dailySalary,
+            total_day : totalDayPeriod,
+            working_day : data.working_day,
+            gross_salary : grossSalary,
+            net_salary : netSalary,
+            amount_paid : 0,
+            status_id : 2,
+          };
+
+          const deletePaiementData = 'DELETE FROM paiement WHERE employee_uuid = ? AND payroll_configuration_id = ?';
+          const setPaiementData = 'INSERT INTO paiement SET ?';
+          const setRubricPaiementData = `INSERT INTO rubric_paiement (paiement_uuid, rubric_payroll_id, value) 
+            VALUES ?`;
+          const setHolidayPaiement = `INSERT INTO holiday_paiement 
+            (holiday_id, holiday_nbdays, holiday_percentage, paiement_uuid, label, value) VALUES ?`;
+          const setOffDayPaiement = `INSERT INTO offday_paiement 
+            (offday_id, offday_percentage, paiement_uuid, label, value) VALUES ?`;
+
+          transaction
+            .addQuery(deletePaiementData, [db.bid(employee.uuid), payrollConfigurationId])
+            .addQuery(setPaiementData, [paiementData]);
+
+          if (allRubrics.length) {
+            transaction.addQuery(setRubricPaiementData, [allRubrics]);
+          }
+
+          if (holidaysElements.length) {
+            transaction.addQuery(setHolidayPaiement, [holidaysElements]);
+          }
+
+          if (offDaysElements.length) {
+            transaction.addQuery(setOffDayPaiement, [offDaysElements]);
+          }
+
+          transaction.execute()
+            .then(() => {
+              res.sendStatus(201);
+            })
+            .catch(next)
+            .done();
+
+        })
+        .catch(next)
+        .done();
+    });
+}
+
+// Configure Paiement for Employee
+exports.config = config;

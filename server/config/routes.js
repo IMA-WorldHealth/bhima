@@ -540,9 +540,9 @@ exports.configure = function configure(app) {
   // Multiple Payroll API
   app.get('/multiple_payroll', multiplePayroll.search);
   app.get('/multiple_payroll/:id/configuration', multiplePayroll.configuration);
-  app.post('/multiple_payroll/:id/configuration', multiplePayroll.setConfiguration);
-  app.post('/multiple_payroll/:id/multiConfiguration', multiplePayroll.setMultiConfiguration);
-  app.post('/multiple_payroll/:id/commitment', multiplePayroll.makeCommitment);
+  app.post('/multiple_payroll/:id/configuration', multiplePayroll.setConfiguration.config);
+  app.post('/multiple_payroll/:id/multiConfiguration', multiplePayroll.setMultiConfiguration.config);
+  app.post('/multiple_payroll/:id/commitment', multiplePayroll.makeCommitment.config);
 
   // discounts
   app.get('/discounts', discounts.list);
