@@ -94,6 +94,7 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
   }
 
   function onChanges() {
+    vm.form.setMaxQuantity(vm.stockLine.quantity);
     vm.errors = vm.form.validate();
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.EDIT);
   }

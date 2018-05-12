@@ -43,6 +43,10 @@ function StockEntryModalForm() {
     this.rows.push(new Lot());
   };
 
+  StockForm.prototype.setMaxQuantity = function setMaxQuantity(value) {
+    this.opts.max_quantity = value;
+  };
+
   StockForm.prototype.removeItem = function removeItem(idx) {
     this.rows.splice(idx, 1);
   };
