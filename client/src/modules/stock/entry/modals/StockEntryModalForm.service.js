@@ -11,12 +11,14 @@ angular.module('bhima.services')
  */
 function StockEntryModalForm() {
   const ERR_NO_ROWS = 'STOCK.ERRORS.NO_ROWS';
+  const ERR_LOT_QUANTITY_OVER_GLOBAL = 'STOCK.ERRORS.LOT_QUANTITY_OVER_GLOBAL';
   const ERR_INVALID_QUANTITY = 'STOCK.ERRORS.INVALID_LOT_QUANTITY';
   const ERR_INVALID_EXPIRATION = 'STOCK.ERRORS.INVALID_LOT_EXPIRATION';
   const ERR_INVALID_IDENTIFIER = 'STOCK.ERRORS.MISSING_LOT_NAME';
 
   function Lot(row = {}) {
     this.expiration_date = row.expiration_date || new Date();
+    this.unit_cost = row.unit_cost || null;
     this.quantity = row.quantity || 1;
     this.lot = row.lot || null;
     this.isInvalid = true;
@@ -95,6 +97,10 @@ function StockEntryModalForm() {
 
     if (this.rows.length === 0) {
       errors.push(ERR_NO_ROWS);
+    }
+
+    if (this.opts.max_quantity < this.total()) {
+      errors.push(ERR_LOT_QUANTITY_OVER_GLOBAL);
     }
 
     this.rows.forEach(lot => {

@@ -11,6 +11,7 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
 
   // initialize the form instance
   vm.form = new EntryForm({
+    max_quantity : Data.stockLine.quantity,
     expires : Data.stockLine.expires,
     rows : Data.stockLine.lots,
   });
@@ -105,7 +106,7 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
   }
 
   function cancel() {
-    Instance.dismiss();
+    Instance.close();
   }
 
   function submit(form) {
@@ -119,7 +120,11 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
     }
 
     if (vm.errors.length === 0) {
-      Instance.close({ lots : vm.form.rows, quantity : vm.form.total() });
+      Instance.close({
+        lots : vm.form.rows,
+        unit_cost : vm.stockLine.unit_cost,
+        quantity : vm.form.total(),
+      });
     }
   }
 

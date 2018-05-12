@@ -34,6 +34,7 @@
       "INVALID_GLOBAL_QUANTITY" : "Invalid Global Lot's Quantity",
       "LOT_ROW_WITH_ERRORS" : "Some lot line contains invalid data",
       "EXCESSIVE_QUANTITY": "Excessive Quantity",
+      "LOT_QUANTITY_OVER_GLOBAL": "The total of lot quantity is more than the global quantity given",
       "PLEASE_CHECK_EXPIRY_DATE": "Please check the expiration date"
     },
     "EXPIRATION_DATE" : "Expiration Date",
