@@ -1,5 +1,4 @@
 const db = require('../../../lib/db');
-const identifiers = require('../../../config/identifiers');
 
 /**
  * @function lookupConsumableInvoicePatient
@@ -14,11 +13,11 @@ function lookupConsumableInvoicePatient(req, res, next) {
 
   let invoiceDetailQuery =
     `SELECT
-      BUID(invoice.uuid) as uuid, dm.text AS reference, invoice.cost,
+      BUID(invoice.uuid) as uuid, dm.text AS reference,
       invoice.description, BUID(invoice.debtor_uuid) AS debtor_uuid,
-      patient.display_name AS debtor_name,   BUID(patient.uuid) as patient_uuid,
+      patient.display_name AS debtor_name, BUID(patient.uuid) as patient_uuid,
       invoice.user_id, invoice.date, user.display_name, invoice.service_id,
-      service.name AS serviceName, enterprise.currency_id
+      service.name AS serviceName
     FROM invoice
     LEFT JOIN patient ON patient.debtor_uuid = invoice.debtor_uuid
     JOIN service ON invoice.service_id = service.id

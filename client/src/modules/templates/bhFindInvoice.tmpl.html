@@ -1,9 +1,10 @@
-<div data-find-invoice ng-form="FindInvoiceForm" novalidate>
+<form data-find-invoice name="FindInvoiceForm" novalidate>
   <div class="form-group"
     ng-class="{ 'has-success' : $ctrl.invoiceFound && FindInvoiceForm.$submitted, 'has-error' : !$ctrl.invoiceFound && FindInvoiceForm.$submitted }">
     <label class="control-label" translate>FORM.LABELS.ENTER_INVOICE_ID</label>
     <div class="input-group">
       <input
+        id="search-input"
         class="form-control"
         type="text"
         ng-model="$ctrl.invoiceReference"
@@ -11,7 +12,7 @@
         ng-disabled="$ctrl.disabled">
       <span class="input-group-btn">
         <button 
-          id="search" 
+          id="search-button" 
           class="btn btn-default" 
           type="button" 
           ng-click="$ctrl.search(FindInvoiceForm)" 
@@ -40,4 +41,4 @@
       <li ng-repeat="item in $ctrl.invoiceItems track by $index">{{ item }}</li>
     </ul>
   </div>
-</div>
+</form>

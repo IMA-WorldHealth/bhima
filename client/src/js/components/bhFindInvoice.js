@@ -10,13 +10,13 @@ angular.module('bhima.components')
   });
 
 FindInvoiceComponent.$inject = [
-  'PatientService', 'PatientInvoiceService', 'NotifyService', '$window',
+  'PatientInvoiceService', 'NotifyService', '$window',
 ];
 
 /**
  * The Find Invoice Component
  */
-function FindInvoiceComponent(Patients, PatientInvoice, Notify, $window) {
+function FindInvoiceComponent(PatientInvoice, Notify, $window) {
   const vm = this;
 
   /* @const the enter key keycode */
@@ -60,7 +60,7 @@ function FindInvoiceComponent(Patients, PatientInvoice, Notify, $window) {
   function selectInvoice(invoice) {
     vm.invoiceFound = true;
 
-    const elementId = 'search';
+    const elementId = 'search-button';
     const searchButton = $window.document.getElementById(elementId);
 
     if (invoice && typeof (invoice) === 'object') {
@@ -89,7 +89,7 @@ function FindInvoiceComponent(Patients, PatientInvoice, Notify, $window) {
 
     // submit the find-invoice form
     if (event.keyCode === ENTER_KEY) {
-      search(form);
+      vm.search(form);
       event.preventDefault();
     }
   }
