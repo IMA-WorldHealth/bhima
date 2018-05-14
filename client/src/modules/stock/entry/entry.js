@@ -321,7 +321,8 @@ function StockEntryController(
       .then((res) => {
         if (!res) { return; }
         stockLine.lots = res.lots;
-        stockLine.givenQuantity = res.quantity;
+        stockLine.quantity = res.quantity;
+        stockLine.unit_cost = res.unit_cost; // integration and donation price is defined in the lot modal
         vm.hasValidInput = hasValidInput();
       })
       .catch(Notify.handleError);
