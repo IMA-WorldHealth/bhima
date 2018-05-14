@@ -1,17 +1,30 @@
 /**
- * POST /multiple_payroll/:id/configuration
+ *
+ * @description
+ * This controller allows to initialize the payment configuration for an employee, 
+ * the data of this configuration comes from the manual configuration,
+ *
+ * @requires db
+ * @requires EmployeeData
+ * @requires uuid
+ * @requires Exchange
+ * @requires q
+ * @requires util
  */
+
 const db = require('../../../lib/db');
 const EmployeeData = require('../employees');
 const uuid = require('uuid/v4');
 const Exchange = require('../../finance/exchange');
 const util = require('../../../lib/util');
+const q = require('q');
 
 const getConfig = require('./getConfig');
 const manageConfig = require('./manageConfig');
+const calculation = require('./calculation');
 
 function config(req, res, next) {
-  const data = req.body.data;
+  const { data  } = req.body;
   const transaction = db.transaction();
   const currencyId = req.session.enterprise.currency_id;
   const enterpriseId = req.session.enterprise.id;
@@ -33,13 +46,13 @@ function config(req, res, next) {
   let enterpriseExchangeRate = 0;
   let iprExchangeRate = 0;
 
-  Exchange.getExchangeRate(enterpriseId, data.currency_id, new Date())
-    .then((exchange) => {
+  q.all([
+    Exchange.getExchangeRate(enterpriseId, data.currency_id, new Date()),
+    Exchange.getExchangeRate(enterpriseId, iprCurrencyId, new Date()),
+  ])
+    .spread((exchange, exchangeIpr) => {
       enterpriseExchangeRate = currencyId === data.currency_id ? 1 : exchange.rate;
 
-      return Exchange.getExchangeRate(enterpriseId, iprCurrencyId, new Date());
-    })
-    .then((exchangeIpr) => {
       iprExchangeRate = exchangeIpr.rate;
       const DECIMAL_PRECISION = 2;
 
@@ -172,23 +185,11 @@ function config(req, res, next) {
           // Annual cumulation of Base IPR
           const annualCumulation = baseIpr * 12;
 
-          let ind = -1;
           let iprValue = 0;
           let scaleIndice;
 
           if (iprScales.length) {
-            iprScales.forEach(scale => {
-              ind++;
-              if (annualCumulation > scale.tranche_annuelle_debut && annualCumulation <= scale.tranche_annuelle_fin) {
-                scaleIndice = ind;
-              }
-            });
-
-            const initial = iprScales[scaleIndice].tranche_annuelle_debut;
-            const rate = iprScales[scaleIndice].rate / 100;
-
-            const cumul = (iprScales[scaleIndice - 1]) ? iprScales[scaleIndice - 1].cumul_annuel : 0;
-            iprValue = (((annualCumulation - initial) * rate) + cumul) / 12;
+            iprValue = calculation.iprTax(annualCumulation, iprScales);
 
             if (nbChildren > 0) {
               iprValue -= (iprValue * (nbChildren * 2)) / 100;
@@ -265,13 +266,10 @@ function config(req, res, next) {
             transaction.addQuery(setOffDayPaiement, [offDaysElements]);
           }
 
-          transaction.execute()
-            .then(() => {
-              res.sendStatus(201);
-            })
-            .catch(next)
-            .done();
-
+          return transaction.execute();
+        })
+        .then(() => {
+          res.sendStatus(201);
         })
         .catch(next)
         .done();

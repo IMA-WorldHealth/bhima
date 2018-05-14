@@ -1,6 +1,18 @@
 /**
- * POST /multiple_payroll/:id/commitment
+ *
+ * @description
+ * This controller makes it possible to make entries to make the payment commitment,
+ *
+ *
+ * @requires db
+ * @requires EmployeeData
+ * @requires uuid
+ * @requires Exchange
+ * @requires q
+ * @requires util
+ * @requires moment 
  */
+
 const db = require('../../../lib/db');
 const EmployeeData = require('../employees');
 const uuid = require('uuid/v4');
@@ -50,10 +62,7 @@ function config(req, res, next) {
           WHERE paiement.uuid = ? AND rubric_paiement.value > 0
           `;
 
-        transac
-          .addQuery(sqlGetRubricPayroll, [paiementUuid]);
-
-        return transac.execute()
+        return db.exec(sqlGetRubricPayroll, [paiementUuid])
           .then((rows) => {
             const rubricPaiement = rows[0];
             let totalWithholding = 0;

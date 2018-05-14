@@ -13,6 +13,7 @@ const _ = require('lodash');
 
 const ReportManager = require('../../../lib/ReportManager');
 const db = require('../../../lib/db');
+const q = require('q');
 
 const TEMPLATE = './server/controllers/payroll/reports/payslipGenerator.handlebars';
 const PayrollConfig = require('../configuration');
@@ -31,7 +32,7 @@ function build(req, res, next) {
   const typeVar = Array.isArray(options.employees);
 
   /**
-  * If the options.employees content is not Array (When only one employee is selected) 
+  * If the options.employees content is not Array (When only one employee is selected)
   * options.employees must be converted to Json
   */
   options.employees = !typeVar ? [JSON.parse(options.employees)] : options.employees;
@@ -65,7 +66,7 @@ function build(req, res, next) {
 
   options.employees.forEach(emp => {
     /**
-    * If the options.employees content is an Array (When selecting multiple employees)  
+    * If the options.employees content is an Array (When selecting multiple employees)
     * each element of the array must be converted to Json
     */
     const employee = typeVar ? JSON.parse(emp) : emp;
@@ -98,95 +99,75 @@ function build(req, res, next) {
       WHERE offday_paiement.paiement_uuid = ?
     `;
 
-    getPaiementRubrics.push({
-      query : sql,
-      params : [options.idPeriod, db.bid(employee.employee_uuid)],
-    });
+    getPaiementRubrics.push(db.exec(sql, [options.idPeriod, db.bid(employee.employee_uuid)]));
 
-    getHolidays.push({
-      query : sqlHolidayPaiement,
-      params : [db.bid(employee.uuid)],
-    });
+    getHolidays.push(db.exec(sqlHolidayPaiement, [db.bid(employee.uuid)]));
 
-    getOffDays.push({
-      query : sqlOffDayPaiement,
-      params : [db.bid(employee.uuid)],
-    });
+    getOffDays.push(db.exec(sqlOffDayPaiement, [db.bid(employee.uuid)]));
+
   });
 
-  // initialise the transaction handler
-  const transaction = db.transaction();
-  const transactionHoliday = db.transaction();
-  const transactionOffDay = db.transaction();
+  const queriesRubrics = q.all(getPaiementRubrics);
 
-  getPaiementRubrics.forEach(item => {
-    transaction.addQuery(item.query, item.params);
-  });
+  const queriesHolidays = q.all(getHolidays);
 
-  getHolidays.forEach(item => {
-    transactionHoliday.addQuery(item.query, item.params);
-  });
+  const queriesOffDays = q.all(getOffDays);
 
-  getOffDays.forEach(item => {
-    transactionOffDay.addQuery(item.query, item.params);
-  });
+  queriesRubrics.then(results => {
+    employeeData.forEach(emp => {
+      emp.employee.rubricTaxable = [];
+      emp.employee.rubricNonTaxable = [];
+      emp.employee.rubricDiscount = [];
+      let somRubTaxable = 0;
+      let somRubNonTaxable = 0;
+      let somChargeEmployee = 0;
+      let somChargeEnterprise = 0;
 
-  transaction.execute()
-    .then((results) => {
-      employeeData.forEach(emp => {
-        emp.employee.rubricTaxable = [];
-        emp.employee.rubricNonTaxable = [];
-        emp.employee.rubricDiscount = [];
-        let somRubTaxable = 0;
-        let somRubNonTaxable = 0;
-        let somChargeEmployee = 0;
-        let somChargeEnterprise = 0;
+      results.forEach(rubEmployee => {
+        rubEmployee.forEach(rubrics => {
+          if (emp.employee.employee_uuid === rubrics.employee_uuid) {
+            rubrics.ratePercentage = rubrics.is_percent ? rubrics.value : '---';
 
-        results.forEach(rubEmployee => {
-          rubEmployee.forEach(rubrics => {
-            if (emp.employee.employee_uuid === rubrics.employee_uuid) {
-              rubrics.ratePercentage = rubrics.is_percent ? rubrics.value : '---';
-
-              // Get Rubric Taxable
-              if (!rubrics.is_discount && !rubrics.is_social_care) {
-                somRubTaxable += rubrics.result;
-                emp.employee.rubricTaxable.push(rubrics);
-              }
-
-              // Get Rubric Non Taxable
-              if (!rubrics.is_discount && rubrics.is_social_care) {
-                somRubNonTaxable += rubrics.result;
-                emp.employee.rubricNonTaxable.push(rubrics);
-              }
-
-              // Get Charge
-              if (rubrics.is_discount) {
-                if (rubrics.is_employee) {
-                  rubrics.chargeEmployee = rubrics.result;
-                  rubrics.chargeEnterprise = 0;
-
-                  somChargeEmployee += rubrics.result;
-                } else {
-                  rubrics.chargeEmployee = 0;
-                  rubrics.chargeEnterprise = rubrics.result;
-
-                  somChargeEnterprise += rubrics.result;
-                }
-
-                emp.employee.rubricDiscount.push(rubrics);
-              }
+            // Get Rubric Taxable
+            if (!rubrics.is_discount && !rubrics.is_social_care) {
+              somRubTaxable += rubrics.result;
+              emp.employee.rubricTaxable.push(rubrics);
             }
-          });
-        });
 
-        emp.employee.somRubTaxable = somRubTaxable;
-        emp.employee.somRubNonTaxable = somRubNonTaxable;
-        emp.employee.somChargeEmployee = somChargeEmployee;
-        emp.employee.somChargeEnterprise = somChargeEnterprise;
+            // Get Rubric Non Taxable
+            if (!rubrics.is_discount && rubrics.is_social_care) {
+              somRubNonTaxable += rubrics.result;
+              emp.employee.rubricNonTaxable.push(rubrics);
+            }
+
+            // Get Charge
+            if (rubrics.is_discount) {
+              if (rubrics.is_employee) {
+                rubrics.chargeEmployee = rubrics.result;
+                rubrics.chargeEnterprise = 0;
+
+                somChargeEmployee += rubrics.result;
+              } else {
+                rubrics.chargeEmployee = 0;
+                rubrics.chargeEnterprise = rubrics.result;
+
+                somChargeEnterprise += rubrics.result;
+              }
+
+              emp.employee.rubricDiscount.push(rubrics);
+            }
+          }
+        });
       });
 
-      return transactionHoliday.execute();
-    })
+      emp.employee.somRubTaxable = somRubTaxable;
+      emp.employee.somRubNonTaxable = somRubNonTaxable;
+      emp.employee.somChargeEmployee = somChargeEmployee;
+      emp.employee.somChargeEnterprise = somChargeEnterprise;
+    });
+
+    return queriesHolidays;
+  })
     .then(results => {
       employeeData.forEach(emp => {
         emp.employee.holidaysPaid = [];
@@ -195,14 +176,14 @@ function build(req, res, next) {
         results.forEach(holidayEmployee => {
           holidayEmployee.forEach(holiday => {
             if (emp.employee.uuid === holiday.paiement_uuid) {
-              holiday.dailyRate = holiday.value / holiday.holiday_nbdays;              
+              holiday.dailyRate = holiday.value / holiday.holiday_nbdays;
               emp.employee.holidaysPaid.push(holiday);
             }
           });
         });
       });
 
-      return transactionOffDay.execute();
+      return queriesOffDays;
     })
     .then(results => {
       employeeData.forEach(emp => {
@@ -229,6 +210,7 @@ function build(req, res, next) {
     })
     .catch(next)
     .done();
+
 }
 
 module.exports = build;

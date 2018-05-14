@@ -1,6 +1,17 @@
 /**
- * POST /multiple_payroll/:id/multiConfiguration
+ *
+ * @description
+ * This controller allows to initialize the payment configuration of several employees at a time, 
+ * the data are calculated including the values of the rubrics defined individually by employees
+ *
+ * @requires db
+ * @requires EmployeeData
+ * @requires uuid
+ * @requires Exchange
+ * @requires q
+ * @requires util
  */
+
 const db = require('../../../lib/db');
 const EmployeeData = require('../employees');
 const uuid = require('uuid/v4');
@@ -10,6 +21,7 @@ const util = require('../../../lib/util');
 
 const getConfig = require('./getConfig');
 const manageConfig = require('./manageConfig');
+const calculation = require('./calculation');
 
 function config(req, res, next) {
   const dataEmployees = req.body.data;
@@ -39,12 +51,12 @@ function config(req, res, next) {
     WHERE payroll_configuration.id = ?;
   `;
 
-  transaction
-    .addQuery(getPeriodData, [payrollConfigurationId])
-    .addQuery(getRubricPayroll, [payrollConfigurationId]);
+  const queries = q.all([
+    db.exec(getPeriodData, [payrollConfigurationId]),
+    db.exec(getRubricPayroll, [payrollConfigurationId]),
+  ]);
 
-  transaction.execute()
-    .then((rows) => {
+  queries.then(rows => {
       const periodData = rows[0][0];
       const rubricData = rows[1];
 
@@ -65,16 +77,16 @@ function config(req, res, next) {
           employeeUuid : employee.employee_uuid,
         };
 
-        return Exchange.getExchangeRate(enterpriseId, employee.currency_id, new Date())
-          .then((exchange) => {
+        let queries2 = [
+          Exchange.getExchangeRate(enterpriseId, employee.currency_id, new Date()),
+          Exchange.getExchangeRate(enterpriseId, iprCurrencyId, new Date()),
+          EmployeeData.lookupEmployeeAdvantages(employee.employee_uuid),
+        ];
+
+        return q.all(queries2)
+          .then(([exchange, exchangeIpr, advantages]) => {
             enterpriseExchangeRate = currencyId === parseInt(employee.currency_id, 10) ? 1 : exchange.rate;
-            return Exchange.getExchangeRate(enterpriseId, iprCurrencyId, new Date());
-          })
-          .then((exchangeIpr) => {
             iprExchangeRate = exchangeIpr.rate;
-            return EmployeeData.lookupEmployeeAdvantages(employee.employee_uuid);
-          })
-          .then((advantages) => {
             advantagesEmployee = advantages;
             return getConfig.getConfigurationData(payrollConfigurationId, option);
           })
@@ -126,32 +138,28 @@ function config(req, res, next) {
             * the calculation of this rate is found by calculating the equivalence of the daily wage with
             * the percentage of the offday or holiday.
             */
-            if (offDays.length) {
-              offDays.forEach(offDay => {
-                const offDaysValue = ((dailySalary * offDay.percent_pay) / 100);
-                offDaysCost += offDaysValue;
-                offDaysElements.push([
-                  offDay.id, 
-                  offDay.percent_pay, 
-                  uid, 
-                  offDay.label, 
-                  util.roundDecimal(offDaysValue * enterpriseExchangeRate, DECIMAL_PRECISION)]);
-              });
-            }
+            offDays.forEach(offDay => {
+              const offDaysValue = ((dailySalary * offDay.percent_pay) / 100);
+              offDaysCost += offDaysValue;
+              offDaysElements.push([
+                offDay.id, 
+                offDay.percent_pay, 
+                uid, 
+                offDay.label, 
+                util.roundDecimal(offDaysValue * enterpriseExchangeRate, DECIMAL_PRECISION)]);
+            });
+            
+            holidays.forEach(holiday => {
+              const holidayValue = ((dailySalary * holiday.percentage * holiday.numberOfDays) / 100);
+              holidaysCost += holidayValue;
 
-            if (holidays.length) {
-              holidays.forEach(holiday => {
-                const holidayValue = ((dailySalary * holiday.percentage * holiday.numberOfDays) / 100);
-                holidaysCost += holidayValue;
-
-                holidaysElements.push([holiday.id,
-                  holiday.numberOfDays,
-                  holiday.percentage,
-                  uid,
-                  holiday.label,
-                  util.roundDecimal(holidayValue * enterpriseExchangeRate, DECIMAL_PRECISION)]);
-              });
-            }
+              holidaysElements.push([holiday.id,
+                holiday.numberOfDays,
+                holiday.percentage,
+                uid,
+                holiday.label,
+                util.roundDecimal(holidayValue * enterpriseExchangeRate, DECIMAL_PRECISION)]);
+            });
 
             /*
             * Recalculation of base salary on the basis of any holiday or vacation period,
@@ -238,23 +246,11 @@ function config(req, res, next) {
             // Annual cumulation of Base IPR
             const annualCumulation = baseIpr * 12;
 
-            let ind = -1;
             let iprValue = 0;
             let scaleIndice;
 
             if (iprScales.length) {
-              iprScales.forEach(scale => {
-                ind++;
-                if (annualCumulation > scale.tranche_annuelle_debut && annualCumulation <= scale.tranche_annuelle_fin) {
-                  scaleIndice = ind;
-                }
-              });
-
-              const initial = iprScales[scaleIndice].tranche_annuelle_debut;
-              const rate = iprScales[scaleIndice].rate / 100;
-
-              const cumul = (iprScales[scaleIndice - 1]) ? iprScales[scaleIndice - 1].cumul_annuel : 0;
-              iprValue = (((annualCumulation - initial) * rate) + cumul) / 12;
+              iprValue = calculation.iprTax(annualCumulation, iprScales);
 
               if (nbChildren > 0) {
                 iprValue -= (iprValue * (nbChildren * 2)) / 100;
@@ -338,20 +334,20 @@ function config(req, res, next) {
             return allTransactions;
           });
       }))
-        .then((results) => {
-          const postingJournal = db.transaction();
+      .then((results) => {
+        const postingJournal = db.transaction();
 
-          results.forEach(transac => {
-            transac.forEach(item => {
-              postingJournal.addQuery(item.query, item.params);
-            });
+        results.forEach(transac => {
+          transac.forEach(item => {
+            postingJournal.addQuery(item.query, item.params);
           });
-
-          return postingJournal.execute();
-        })
-        .then(() => {
-          res.sendStatus(201);
         });
+
+        return postingJournal.execute();
+      })
+      .then(() => {
+        res.sendStatus(201);
+      });
     })
     .catch(next)
     .done();

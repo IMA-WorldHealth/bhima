@@ -8,19 +8,9 @@
  *
  *
  * @requires db
- * @requires filter
- * @requires util
- * @requires moment
  */
 
 const db = require('../../../lib/db');
-const FilterParser = require('../../../lib/filter');
-const util = require('../../../lib/util');
-const Exchange = require('../../finance/exchange');
-const EmployeeData = require('../employees');
-const uuid = require('uuid/v4');
-const q = require('q');
-const moment = require('moment');
 
 const find = require('./find');
 const getConfig = require('./getConfig');

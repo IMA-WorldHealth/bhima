@@ -1,23 +1,26 @@
+/**
+ *
+ * @description
+ * This function is used to manage different data for the payment configuration, 
+ * filter holidays that are not in the configuration of weekends, deconsidere holidays days which are holidays 
+ * but also in the configuration of weeks ends and calculates the number of working days in a pay period
+ *
+ *
+ */
+
 function manageConfigurationData(rows, params) {
   const offDays = rows[1];
   const weekEndDays = rows[3];
   const periodFrom = new Date(params.dateFrom);
   const periodTo = new Date(params.dateTo);
+  const moment = require('moment');
 
-  const validOffDays = [];
   const validHolidays = [];
 
-  offDays.forEach(offDay => {
-    let invalidOffDays = false;
+  const validOffDays = offDays.filter(offDay => {
     const offdayIndice = new Date(offDay.date).getDay();
-    weekEndDays.forEach(days => {
-      if (offdayIndice === days.indice) {
-        invalidOffDays = true;
-      }
-    });
-    if (!invalidOffDays) {
-      validOffDays.push(offDay);
-    }
+    const isValidOffDay = weekEndDays.every(weekEndDay => offdayIndice !== weekEndDay.indice);
+    return isValidOffDay;
   });
 
   if (validOffDays.length) {
@@ -47,10 +50,7 @@ function manageConfigurationData(rows, params) {
         // Check if in a holiday period there is a offDay
         validOffDays.forEach(off => {
 
-          const offDayCheck = moment(off.date).format('YYYY-MM-DD');
-          const dayCheck = moment(day).format('YYYY-MM-DD');
-
-          if (offDayCheck === dayCheck) {
+          if (moment(off.date).isSame(day, 'day')) {
             invalidHoliday = true;
           }
         });
@@ -89,7 +89,8 @@ function manageConfigurationData(rows, params) {
     return dates;
   };
 
-  let range = getDates(periodFrom, periodTo);
+
+  const range = getDates(periodFrom, periodTo);
   range.forEach((day) => {
 
     let invalidDate = false;
