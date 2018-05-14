@@ -48,7 +48,6 @@ function config(req, res, next) {
 
       q.all(dataEmployees.map((employee) => {
         const paiementUuid = db.bid(employee.uuid);
-        const transac = db.transaction();
 
         const sqlGetRubricPayroll = `
           SELECT paiement.payroll_configuration_id, BUID(paiement.uuid) AS uuid, paiement.basic_salary, 
@@ -63,8 +62,7 @@ function config(req, res, next) {
           `;
 
         return db.exec(sqlGetRubricPayroll, [paiementUuid])
-          .then((rows) => {
-            const rubricPaiement = rows[0];
+          .then((rubricPaiement) => {
             let totalWithholding = 0;
             let totalChargeRemuneration = 0;
 
