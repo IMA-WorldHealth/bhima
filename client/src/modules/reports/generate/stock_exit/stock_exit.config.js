@@ -1,12 +1,12 @@
 angular.module('bhima.controllers')
-  .controller('stock_exitController', InventoryFileConfigController);
+  .controller('stock_exitController', StockExitConfigController);
 
-InventoryFileConfigController.$inject = [
+StockExitConfigController.$inject = [
   '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state',
   'LanguageService',
 ];
 
-function InventoryFileConfigController($sce, Notify, SavedReports, AppCache, reportData, $state, Languages) {
+function StockExitConfigController($sce, Notify, SavedReports, AppCache, reportData, $state, Languages) {
   const vm = this;
   const cache = new AppCache('configure_stock_exit_report');
   const reportUrl = 'reports/stock/exit';
