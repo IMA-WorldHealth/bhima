@@ -1,4 +1,4 @@
-/* global element, by, browser */
+/* global */
 
 const helpers = require('../shared/helpers');
 const ExitPage = require('./stock.exit.page');

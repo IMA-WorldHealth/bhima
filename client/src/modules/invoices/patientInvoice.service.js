@@ -126,8 +126,12 @@ function PatientInvoiceService(
     { key : 'debtor_uuid', label : 'FORM.LABELS.CLIENT' },
     { key : 'patientReference', label : 'FORM.LABELS.REFERENCE_PATIENT' },
     { key : 'inventory_uuid', label : 'FORM.LABELS.INVENTORY' },
-    { key : 'billingDateFrom', label : 'FORM.LABELS.DATE', comparitor : '>', valueFilter : 'date' },
-    { key : 'billingDateTo', label : 'FORM.LABELS.DATE', comparitor : '<', valueFilter : 'date' },
+    {
+      key : 'billingDateFrom', label : 'FORM.LABELS.DATE', comparitor : '>', valueFilter : 'date',
+    },
+    {
+      key : 'billingDateTo', label : 'FORM.LABELS.DATE', comparitor : '<', valueFilter : 'date',
+    },
     { key : 'reversed', label : 'FORM.INFO.CREDIT_NOTE' },
     { key : 'defaultPeriod', label : 'TABLE.COLUMNS.PERIOD', valueFilter : 'translate' },
     { key : 'debtor_group_uuid', label : 'FORM.LABELS.DEBTOR_GROUP' },
