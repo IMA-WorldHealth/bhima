@@ -67,8 +67,7 @@ function bhFindInvoiceTests() {
     // overwrite the getElementById function
     _$window_.document.getElementById = (id) => find(element, `#${id}`);
 
-    // overwrite the notification errorhandler and track it
-    Notify.handleError = () => {};
+    // track notification of error
     Notify.handleError = chai.spy();
 
     $scope.patientUuid = '234c51ae-efcc-4238-98c6-f402bfb39866';
