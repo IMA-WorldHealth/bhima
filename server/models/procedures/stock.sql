@@ -73,6 +73,7 @@ BEGIN
   
   -- variables
 	DECLARE v_stock_account INT(10);
+  DECLARE v_stock_movement_reference INT(10);
 	DECLARE v_cogs_account INT(10);
 	DECLARE v_unit_cost DECIMAL(19, 4);
 	DECLARE v_quantity INT(11);
@@ -91,7 +92,7 @@ BEGIN
   DECLARE v_finished INTEGER DEFAULT 0;
   
   DECLARE stage_stock_movement_cursor CURSOR FOR 
-  	SELECT temp.stock_account, temp.cogs_account, temp.unit_cost, temp.quantity, temp.document_uuid, temp.is_exit 
+  	SELECT temp.stock_account, temp.cogs_account, temp.unit_cost, temp.quantity, temp.document_uuid, temp.is_exit, temp.reference
 	FROM stage_stock_movement as temp;
   
   -- variables for the cursor
@@ -114,6 +115,7 @@ BEGIN
   -- temporarise the stock movement
   CREATE TEMPORARY TABLE stage_stock_movement (
       SELECT 
+        m.reference, 
         projectId as project_id, currencyId as currency_id,
         m.uuid, m.description, m.date, m.flux_id, m.is_exit, m.document_uuid, m.quantity, m.unit_cost, m.user_id,
         ig.cogs_account, ig.stock_account 
@@ -148,7 +150,7 @@ BEGIN
   -- loop in the cursor
   insert_voucher_item : LOOP
 
-    FETCH stage_stock_movement_cursor INTO v_stock_account, v_cogs_account, v_unit_cost, v_quantity, v_document_uuid, v_is_exit;
+    FETCH stage_stock_movement_cursor INTO v_stock_account, v_cogs_account, v_unit_cost, v_quantity, v_document_uuid, v_is_exit, v_stock_movement_reference;
 
     IF v_finished = 1 THEN 
       LEAVE insert_voucher_item;
@@ -163,12 +165,12 @@ BEGIN
     END IF;
 
     -- insert debit
-    INSERT INTO voucher_item (uuid, account_id, debit, credit, voucher_uuid, document_uuid)
-      VALUES (HUID(UUID()), voucher_item_account_debit, (v_unit_cost * v_quantity), 0, voucher_uuid, v_document_uuid);
+    INSERT INTO voucher_item (uuid, account_id, debit, credit, voucher_uuid, document_uuid, stock_movement_reference)
+      VALUES (HUID(UUID()), voucher_item_account_debit, (v_unit_cost * v_quantity), 0, voucher_uuid, v_document_uuid, v_stock_movement_reference);
 
     -- insert credit
-    INSERT INTO voucher_item (uuid, account_id, debit, credit, voucher_uuid, document_uuid)
-      VALUES (HUID(UUID()), voucher_item_account_credit, 0, (v_unit_cost * v_quantity), voucher_uuid, v_document_uuid);
+    INSERT INTO voucher_item (uuid, account_id, debit, credit, voucher_uuid, document_uuid, stock_movement_reference)
+      VALUES (HUID(UUID()), voucher_item_account_credit, 0, (v_unit_cost * v_quantity), voucher_uuid, v_document_uuid, v_stock_movement_reference);
 
   END LOOP insert_voucher_item;
 

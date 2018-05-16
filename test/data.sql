@@ -683,12 +683,12 @@ INSERT INTO `voucher` (uuid, `date`,  project_id, currency_id, amount, descripti
 
 -- voucher items sample data
 INSERT INTO `voucher_item` VALUES
-  (HUID(UUID()), 187, 100, 0, @first_voucher, @first_invoice, HUID(UUID())),
-  (HUID(UUID()), 182, 0, 100, @first_voucher, NULL, NULL),
-  (HUID(UUID()), 188, 200, 0, @second_voucher, NULL, NULL),
-  (HUID(UUID()), 200, 0, 200, @second_voucher, NULL, NULL),
-  (HUID(UUID()), 125, 300, 0, @third_voucher, @cash_payment, HUID(UUID())),
-  (HUID(UUID()), 117, 0, 300, @third_voucher, NULL, NULL);
+  (HUID(UUID()), 187, 100, 0, @first_voucher, @first_invoice, HUID(UUID()), NULL),
+  (HUID(UUID()), 182, 0, 100, @first_voucher, NULL, NULL, NULL),
+  (HUID(UUID()), 188, 200, 0, @second_voucher, NULL, NULL, NULL),
+  (HUID(UUID()), 200, 0, 200, @second_voucher, NULL, NULL, NULL),
+  (HUID(UUID()), 125, 300, 0, @third_voucher, @cash_payment, HUID(UUID()), NULL),
+  (HUID(UUID()), 117, 0, 300, @third_voucher, NULL, NULL, NULL);
 
 -- post voucher data to the general ledger
 CALL PostVoucher(@first_voucher);
