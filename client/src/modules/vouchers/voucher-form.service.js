@@ -292,6 +292,7 @@ function VoucherFormService(
    * @method replaceFormRows
    */
   VoucherForm.prototype.replaceFormRows = function replaceFormRows(rows) {
+
     this.clear();
 
     rows.forEach(row => {

@@ -87,6 +87,11 @@ function ComplexJournalVoucherController(
       .then(processVoucherToolRows);
   };
 
+  vm.openPaymentEmployees = function openPaymentEmployees() {
+    Toolkit.openPaymentEmployees()
+      .then(processVoucherToolRows);
+  };
+
   /**
    * @function processVoucherToolRows
    *
@@ -260,6 +265,7 @@ function ComplexJournalVoucherController(
     }
 
     const voucher = vm.Voucher.details;
+
     voucher.items = vm.Voucher.store.data;
 
     return Vouchers.create(voucher)

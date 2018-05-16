@@ -15,20 +15,27 @@ describe('Update Employees', () => {
   before(() => { helpers.navigate(path); });
 
   it(`should update data for employee`, () => {
-    element.all(by.css('[data-method="action"]')).get(1).click();
-    element.all(by.css('[data-method="edit"]')).get(1).click();
+    element.all(by.css('[data-method="action"]')).get(2).click();
+    element.all(by.css('[data-method="edit"]')).get(2).click();
 
     registrationPage.setService('Administration');
     registrationPage.setFonction('Infirmier');
     registrationPage.setIsMedical();
     registrationPage.setGrade('A1');
+
+    registrationPage.setCurrencyInput('TPR', 10);
+    registrationPage.setCurrencyInput('v_cher', 50);
+    registrationPage.setCurrencyInput('f_scol', 0);
+    registrationPage.setCurrencyInput('allc', 0);
+
     registrationPage.createEmployee();
     components.notification.hasSuccess();
+
   });
 
   it(`blocks validation when the value is already taken when the field must be Unique`, () => {
-    element.all(by.css('[data-method="action"]')).get(0).click();
-    element.all(by.css('[data-method="edit"]')).get(1).click();
+    element.all(by.css('[data-method="action"]')).get(1).click();
+    element.all(by.css('[data-method="edit"]')).get(2).click();
 
     registrationPage.setHospitalNumber(110);
 

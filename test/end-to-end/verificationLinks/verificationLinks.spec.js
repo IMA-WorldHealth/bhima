@@ -22,7 +22,8 @@ describe('Check Inter-Registry Links', () => {
     GU.expectRowCount('patient-registry', 3);
   });
 
-  it('Checks the link between Patient Registry -> Invoice Registry', () => {
+  // skip this until we can filter on used Patient Registry. (@lomamech)
+  it.skip('Checks the link between Patient Registry -> Invoice Registry', () => {
     helpers.navigate('#!/patients');
     filters.resetFilters();
 

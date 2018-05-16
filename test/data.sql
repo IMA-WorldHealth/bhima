@@ -210,6 +210,7 @@ INSERT INTO `account` (`id`, `type_id`, `enterprise_id`, `number`, `label`, `par
   (217, 5, 1, 60511010, 'Eau', 216, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
   (218, 5, 1, 60521010, 'Electricité', 216, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
   (219, 6, 1, 661, 'RÉMUNÉRATIONS DIRECTES VERSÉES AU PERSONNEL NATIONAL', 53, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
+  (341, 6, 1, 6611, 'Appointements salaires et commissions', 219, 0, NULL, NULL, '2018-03-14 14:07:01', NULL),
   (220, 5, 1, 66110011, 'Remunération Personnel', 219, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
   (221, 6, 1, 676, 'PERTES DE CHANGE', 54, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
   (222, 5, 1, 67611010, 'Différences de change', 221, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
@@ -247,7 +248,57 @@ INSERT INTO `account` (`id`, `type_id`, `enterprise_id`, `number`, `label`, `par
   (284, 1, 1, 40111000, 'SNEL SUPPLIER', 170, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
   (285, 1, 1, 40111001, 'REGIDESO SUPPLIER', 170, 0, NULL, NULL, '2016-10-23 16:05:34', NULL),
   (300, 1, 1, 40111002, 'SUPPLIER\'S ACCOUNT 1', 170, 0, NULL, NULL, '2017-11-06 15:07:21', NULL),
-  (301, 1, 1, 40111003, 'SUPPLIER\'S ACCOUNT 2', 170, 0, NULL, NULL, '2017-11-06 15:07:21', NULL);
+  (301, 1, 1, 40111003, 'SUPPLIER\'S ACCOUNT 2', 170, 0, NULL, NULL, '2017-11-06 15:07:21', NULL), 
+  (303, 6, 1, 431, 'SECURITE SOCIAL', 35, 0, NULL, NULL, '2018-03-14 11:57:04', NULL),
+  (304, 6, 1, 4313, 'Caisse de retraite obligatoire', 303, 0, NULL, NULL, '2018-03-14 11:58:19', NULL),
+  (305, 2, 1, 43130010, 'Cotisation INSS Employés', 304, 0, NULL, NULL, '2018-03-14 12:01:32', NULL),
+  (306, 2, 1, 43130011, 'Cotisation INSS Employeur', 304, 0, NULL, NULL, '2018-03-14 12:08:57', NULL),
+  (307, 6, 1, 433, 'AUTRES ORGANISMES SOCIAUX', 35, 0, NULL, NULL, '2018-03-14 12:13:06', NULL),
+  (308, 6, 1, 4331, 'Mutuelle', 307, 0, NULL, NULL, '2018-03-14 12:13:45', NULL),
+  (311, 2, 1, 43311011, 'INPP', 308, 0, NULL, NULL, '2018-03-14 12:15:19', NULL),
+  (312, 6, 1, 441, 'ETAT ; IMPOTS SUR LE BENEFICES', 36, 0, NULL, NULL, '2018-03-14 12:59:42', NULL),
+  (313, 6, 1, 442, 'ETAT ; AUTRES IMPOTS ET TAXE', 36, 0, NULL, NULL, '2018-03-14 13:00:18', NULL),
+  (314, 6, 1, 443, 'ETAT ; TVA FACTUREE', 36, 0, NULL, NULL, '2018-03-14 13:00:40', NULL),
+  (315, 6, 1, 445, 'TVA RECUPERABLE', 36, 0, NULL, NULL, '2018-03-14 13:02:33', NULL),
+  (317, 6, 1, 447, 'ETAT ; IMPOTS RETENUES A LA SOURCE', 36, 0, NULL, NULL, '2018-03-14 13:03:51', NULL),
+  (318, 6, 1, 4472, 'IMPOTS SUR SALAIRES', 317, 0, NULL, NULL, '2018-03-14 13:04:37', NULL),
+  (319, 2, 1, 44720010, 'IPR', 317, 0, NULL, NULL, '2018-03-14 13:05:13', NULL),
+  (320, 2, 1, 43311010, 'ONEM', 308, 0, NULL, NULL, '2018-03-14 13:08:07', NULL),
+  (321, 6, 1, 423, 'PERSONNEL SAISIE ARRET', 34, 0, NULL, NULL, '2018-03-14 13:12:51', NULL),
+  (322, 6, 1, 424, 'PERSONNEL OEUVRES SOCIALES', 34, 0, NULL, NULL, '2018-03-14 13:14:08', NULL),
+  (323, 6, 1, 4241, 'ASSISTANCE MEDICALE', 322, 0, NULL, NULL, '2018-03-14 13:37:24', NULL),
+  (324, 6, 1, 4242, 'ALLOCATIONS FAMILIALES', 322, 0, NULL, NULL, '2018-03-14 13:38:02', NULL),
+  (325, 2, 1, 42421010, 'Allocations Familiales', 324, 0, NULL, NULL, '2018-03-14 13:38:40', NULL),
+  (326, 6, 1, 4248, 'AUTRES OEUVRES SOCIALES INTERNES', 322, 0, NULL, NULL, '2018-03-14 13:39:45', NULL),
+  (327, 2, 1, 42481010, 'Logement', 326, 0, NULL, NULL, '2018-03-14 13:40:17', NULL),
+  (328, 6, 1, 425, 'REPRESENTANT DU PERSONNEL', 34, 0, NULL, NULL, '2018-03-14 13:46:26', NULL),
+  (329, 6, 1, 428, 'PERSONNEL CHARGES A PAYER ET PRODUITS A RECEVOIR', 34, 0, NULL, NULL, '2018-03-14 13:47:56', NULL),
+  (330, 6, 1, 4281, 'DETTES PROVISIONNEES POUR CONGE A PAYER', 329, 0, NULL, NULL, '2018-03-14 13:48:46', NULL),
+  (331, 6, 1, 4286, 'AUTRES CHARGES A PAYER', 329, 0, NULL, NULL, '2018-03-14 13:49:46', NULL),
+  (332, 2, 1, 42860010, 'Primes', 331, 0, NULL, NULL, '2018-03-14 13:52:25', NULL),
+  (333, 2, 1, 42860011, 'Indemnité vie chère', 331, 0, NULL, NULL, '2018-03-14 13:53:43', NULL),
+  (334, 2, 1, 42860012, 'Frais scolarité', 331, 0, NULL, NULL, '2018-03-14 13:54:31', NULL),
+  (335, 6, 1, 421, 'PERSONNEL AVANCE ET ACOMPTES', 34, 0, NULL, NULL, '2018-03-14 13:56:28', NULL),
+  (337, 6, 1, 4211, 'PERSONNELS AVANCES', 335, 0, NULL, NULL, '2018-03-14 13:57:58', NULL),
+  (338, 2, 1, 42110010, 'Avances sur salaires', 337, 0, NULL, NULL, '2018-03-14 13:58:36', NULL),
+  (339, 6, 1, 4212, 'PERSONNEL ACOMPTE', 335, 0, NULL, NULL, '2018-03-14 14:00:38', NULL),
+  (340, 2, 1, 42120010, 'Acompte sur salaires', 339, 0, NULL, NULL, '2018-03-14 14:01:03', NULL),
+  (342, 6, 1, 6612, 'Primes et gratifications', 219, 0, NULL, NULL, '2018-03-14 14:08:34', NULL),
+  (343, 5, 1, 66121011, 'Primes', 342, 0, NULL, NULL, '2018-03-14 14:09:05', NULL),
+  (344, 6, 1, 6613, 'Conges payes', 219, 0, NULL, NULL, '2018-03-14 14:31:17', NULL),
+  (345, 5, 1, 66131010, 'Indemnité de congé', 344, 0, NULL, NULL, '2018-03-14 14:32:16', NULL),
+  (346, 6, 1, 6616, 'Supplement familial', 219, 0, NULL, NULL, '2018-03-14 14:34:14', NULL),
+  (347, 5, 1, 66161010, 'Allocations familiales légales', 346, 0, NULL, NULL, '2018-03-14 14:34:56', NULL),
+  (348, 6, 1, 663, 'INDEMNITES FORFAITAIRES VERSEES AU PERSONNEL', 53, 0, NULL, NULL, '2018-03-14 14:38:36', NULL),
+  (349, 6, 1, 6631, 'Indemnités de logement', 348, 0, NULL, NULL, '2018-03-14 14:39:34', NULL),
+  (350, 5, 1, 66311010, 'Indemnités de logement', 349, 0, NULL, NULL, '2018-03-14 14:40:27', NULL),
+  (351, 6, 1, 664, 'CHARGES SOCIALES', 53, 0, NULL, NULL, '2018-03-14 14:43:34', NULL),
+  (352, 6, 1, 6641, 'Charges sociales sur remuneration du personnel', 351, 0, NULL, NULL, '2018-03-14 14:44:22', NULL),
+  (353, 5, 1, 66411010, 'Cotisation INSS (QPP)', 352, 0, NULL, NULL, '2018-03-14 14:45:00', NULL),
+  (354, 5, 1, 66411011, 'Cotisations INPP', 352, 0, NULL, NULL, '2018-03-14 14:45:36', NULL),
+  (355, 5, 1, 66411012, 'Cotisation ONEM', 352, 0, NULL, NULL, '2018-03-14 14:45:55', NULL),
+  (357, 6, 1, 6141, 'Transport du Personnel', 48, 0, NULL, NULL, '2018-03-14 14:58:55', NULL),
+  (358, 5, 1, 61411010, 'Transport personnel', 357, 0, NULL, NULL, '2018-03-14 14:59:59', NULL);
 
 
 -- attach gain/loss accounts to the enterprise
@@ -538,12 +589,14 @@ INSERT INTO `patient_group` VALUES
 
 INSERT INTO `debtor` (uuid, group_uuid, text) VALUES
   (HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'), 'Patient/2/Patient'),
-  (HUID('a11e6b7f-fbbb-432e-ac2a-5312a66dccf4'), HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'), 'Patient/1/Patient');
+  (HUID('a11e6b7f-fbbb-432e-ac2a-5312a66dccf4'), HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'), 'Patient/1/Patient'),
+  (HUID('76976710-27eb-46dd-b3f5-cb5eb4abbc92'), HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'), 'Debiteur [Employee Test 1]');
 
 -- Patients
 INSERT INTO `patient` VALUES
   (HUID('274c51ae-efcc-4238-98c6-f402bfb39866'), 1, 2, HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), 'Test 2 Patient', '1990-06-01 00:00:00', FALSE, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'M', NULL, NULL, NULL, NULL, NULL, NULL, HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), NOW(), NULL, NULL, '110', '', 1, '2015-11-14 07:04:49', NULL, NULL),
-  (HUID('81af634f-321a-40de-bc6f-ceb1167a9f65'), 1, 1, HUID('a11e6b7f-fbbb-432e-ac2a-5312a66dccf4'), 'Test 1 Patient', '1990-06-01 00:00:00', FALSE, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'F', NULL, NULL, NULL, NULL, NULL, NULL, HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), NOW(), NULL, NULL, '100', '', 2, '2015-11-14 07:04:49', NULL, NULL);
+  (HUID('81af634f-321a-40de-bc6f-ceb1167a9f65'), 1, 1, HUID('a11e6b7f-fbbb-432e-ac2a-5312a66dccf4'), 'Test 1 Patient', '1990-06-01 00:00:00', FALSE, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'F', NULL, NULL, NULL, NULL, NULL, NULL, HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), NOW(), NULL, NULL, '100', '', 2, '2015-11-14 07:04:49', NULL, NULL),
+  (HUID('d1d7f856-d414-4400-8b94-8ba9445a2bc0'), 1, 4, HUID('76976710-27eb-46dd-b3f5-cb5eb4abbc92'), 'Employee Test 1', '1960-06-30', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'F', NULL, NULL, NULL, NULL, NULL, NULL, HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), '2018-04-09 13:56:19', NULL, NULL, 'SOF-14', NULL, 1, '2018-04-09 13:56:19', NULL, NULL);
 
 -- Patient Visits
 INSERT INTO `patient_visit` (`uuid`, `patient_uuid`, `start_date`, `end_date`, `start_notes`, `end_notes`, `start_diagnosis_id`, `end_diagnosis_id`, `user_id`) VALUES
@@ -563,7 +616,8 @@ INSERT INTO `creditor_group` VALUES
 -- Creditors
 INSERT INTO `creditor` VALUES
   (HUID('42d3756a-7770-4bb8-a899-7953cd859892'), HUID('b0fa5ed2-04f9-4cb3-92f7-61d6404696e7'), 'Personnel'),
-  (HUID('7ac4e83c-65f2-45a1-8357-8b025003d794'), HUID('8bedb6df-6b08-4dcf-97f7-0cfbb07cf9e2'), 'SNEL');
+  (HUID('7ac4e83c-65f2-45a1-8357-8b025003d794'), HUID('8bedb6df-6b08-4dcf-97f7-0cfbb07cf9e2'), 'SNEL'),  
+  (HUID('18dcada5-f149-4eea-8267-19c346c2744f'), HUID('b0fa5ed2-04f9-4cb3-92f7-61d6404696e7'), 'Personnel 2');
 
 -- Supplier
 INSERT INTO `supplier` (uuid, creditor_uuid, display_name, address_1, address_2, email) VALUES
@@ -701,7 +755,8 @@ INSERT INTO `mod_snis_zs` VALUES
   (2, 'Zone Sante B', 'Territoire B', 'Province B');
 
 INSERT INTO `employee` VALUES
-  (1,'E1','2016-02-02 00:00:00',HUID('71e9f21c-d9b1-11e5-8ab7-78eb2f2a46e0'),1,3,500,'TMB', '1201-3456-5423-03',1,3,HUID('42d3756a-7770-4bb8-a899-7953cd859892'),NULL,HUID('274c51ae-efcc-4238-98c6-f402bfb39866'), 0);
+  (HUID('75e09694-65f2-45a1-a8a2-8b025003d793'),'E1','2016-02-02 00:00:00',HUID('71e9f21c-d9b1-11e5-8ab7-78eb2f2a46e0'),1,3,500,'TMB', '1201-3456-5423-03',1,3,HUID('42d3756a-7770-4bb8-a899-7953cd859892'),NULL,HUID('274c51ae-efcc-4238-98c6-f402bfb39866'), 0),
+  (HUID('75e69409-562f-a2a8-45a1-3d7938b02500'), 'WWEFCB', '2016-01-01 01:00:00', HUID('9ee06e4a7b5948e6812cc0f8a00cf7d3'), 0, 0, 0, 'BCOL', '00-99-88-77', 1, 1, HUID('18dcada5-f149-4eea-8267-19c346c2744f'), NULL, HUID('d1d7f856-d414-4400-8b948ba9445a2bc0'), 0);
 
 INSERT INTO `price_list` VALUES
   (HUID('75e09694-dd5c-11e5-a8a2-6c29955775b0'), 1, 'Test Price List', 'Price list for test purposes', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
@@ -763,25 +818,35 @@ INSERT INTO `stock_movement` (`uuid`, `lot_uuid`, `document_uuid`, `depot_uuid`,
   (HUID('e8502c3e-7483-11e7-a8de-507b9dd6de91'), HUID('064ab1d9-5246-4402-ae8a-958fcdb07b35'), HUID('0cc6c435-7484-11e7-a8de-507b9dd6de91'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), HUID('d4bb1452-e4fa-4742-a281-814140246877'), 8, '2017-02-02', 75, 1.2000, 1, 1);
 
 -- Rubric Payroll
-INSERT INTO `rubric_payroll` (`id`, `label`, `abbr`, `is_employee`, `is_percent`, `is_discount`, `is_tax`, `is_social_care`, `is_membership_fee`, `debtor_account_id`, `expense_account_id`, `is_ipr`, `value`) VALUES
-(1, 'INSS Code part Patronale', 'INSS2', 0, 1, 1, 0, 0, 1, 300, 203, 0, 9),
-(2, 'Impot Professionnel sur le Revenue', 'IPR', 1, 0, 1, 1, 0, 0, 300, 207, 1, NULL),
-(3, 'Institut National de Pratique Professionel', 'INPP', 0, 1, 1, 1, 0, 0, 172, 206, 0, 0.2),
-(4, 'INSS Code Part Ouvriere', 'INSS1', 1, 1, 1, 0, 0, 1, 300, 203, 0, 3.5),
-(5, 'Transport', 'TPR', 0, 0, 0, 0, 1, 0, 285, 204, 0, NULL),
-(6, 'Primes', 'PRI', 0, 0, 0, 0, 0, 0, 172, 204, 0, NULL);
+INSERT INTO `rubric_payroll` (`id`, `label`, `abbr`, `is_employee`, `is_percent`, `is_discount`, `is_tax`, `is_social_care`, `is_membership_fee`, `debtor_account_id`, `expense_account_id`, `is_ipr`, `value`, `is_defined_employee`) VALUES
+  (1, 'INSS Code part Patronale', 'INSS2', 0, 1, 1, 0, 0, 1, 306, 353, 0, 5, 0),
+  (2, 'Impôt Professionnel sur le Revenue', 'IPR', 1, 0, 1, 1, 0, 0, 319, 179, 1, NULL, 0),
+  (3, 'Institut National des Pratiques Professionels', 'INPP', 0, 1, 1, 1, 0, 0, 311, 354, 0, 2, 0),
+  (4, 'INSS Code Part Ouvriere', 'INSS1', 1, 1, 1, 0, 0, 1, 305, 179, 0, 3.5, 0),
+  (5, 'Transport', 'TPR', 0, 0, 0, 0, 1, 0, 179, 358, 0, NULL, 1),
+  (6, 'Primes', 'PRI', 0, 0, 0, 0, 0, 0, 179, 343, 0, NULL, 0),
+  (7, 'Indemnité vie chère', 'v_cher', 0, 0, 0, 0, 0, 0, 179, 343, 0, NULL, 1),
+  (8, 'Frais scolarité', 'f_scol', 0, 0, 0, 0, 0, 0, 179, 343, 0, NULL, 1),
+  (9, 'Logement', 'logm', 0, 1, 0, 0, 1, 0, 179, 350, 0, 30, 0),
+  (10, 'Allocation Familiale', 'allc', 0, 0, 0, 0, 1, 0, 179, 347, 0, NULL, 1),
+  (11, 'Office Nationale de l\'emploie', 'ONEM', 0, 1, 1, 1, 0, 0, 320, 355, 0, 0.2, 0);
 
 -- Configuration of Rubric
 INSERT INTO `config_rubric` (`id`, `label`) VALUES (1, 'Configuration des rubriques');
 
 -- Configuration of Rubric Items
 INSERT INTO `config_rubric_item` (`id`, `config_rubric_id`, `rubric_payroll_id`) VALUES
-(1, 1, 5),
-(2, 1, 2),
-(3, 1, 3),
-(4, 1, 6),
-(5, 1, 1),
-(6, 1, 4);
+  (1, 1, 1),
+  (2, 1, 2),
+  (3, 1, 3),
+  (4, 1, 4),
+  (5, 1, 5),
+  (6, 1, 6),
+  (7, 1, 7),
+  (8, 1, 8),
+  (9, 1, 9),
+  (10, 1, 10),
+  (11, 1, 11);
 
 -- Configuration of weekend
 INSERT INTO `weekend_config` (`id`, `label`) VALUES
@@ -799,24 +864,45 @@ INSERT INTO `taxe_ipr` (`id`, `label`, `description`, `currency_id`) VALUES
 (1, 'Bareme IPR 2013', 'Barème Impôt Professionnel sur les revenus', 1);
 
 -- Tax IPR Configuration
-INSERT INTO `taxe_ipr_configuration` (`rate`, `tranche_annuelle_debut`, `tranche_annuelle_fin`, `tranche_mensuelle_debut`, `tranche_mensuelle_fin`, `ecart_annuel`, `ecart_mensuel`, `impot_annuel`, `impot_mensuel`, `cumul_annuel`, `cumul_mensuel`, `taxe_ipr_id`) VALUES
+INSERT INTO `taxe_ipr_configuration` (`rate`, `tranche_annuelle_debut`, `tranche_annuelle_fin`, `tranche_mensuelle_debut`, `tranche_mensuelle_fin`, `ecart_annuel`, `ecart_mensuel`, `impot_annuel`, `impot_mensuel`, `cumul_annuel`, `cumul_mensuel`, `taxe_ipr_id`) VALUES 
 (0, 0, 524160, 0, 43680, 524160, 43680, 0, 0, 0, 0, 1),
 (15, 524160, 1428000, 43680, 119000, 903840, 75320, 135576, 11298, 135576, 11298, 1),
-(20, 1428000, 2700000, 119000, 225000, 1272000, 106000, 254400, 21200, 0, 0, 1),
-(22.5, 2700000, 4620000, 225000, 385000, 1920000, 160000, 432000, 36000, 0, 0, 1),
+(20, 1428000, 2700000, 119000, 225000, 1272000, 106000, 254400, 21200, 389976, 32498, 1),
+(22.5, 2700000, 4620000, 225000, 385000, 1920000, 160000, 432000, 36000, 821976, 68498, 1),
 (25, 4620000, 7260000, 385000, 605000, 2640000, 220000, 660000, 55000, 1481980, 123498, 1),
 (30, 7260000, 10260000, 605000, 855000, 3000000, 250000, 900000, 75000, 2381980, 198498, 1),
 (32.5, 10260000, 13908000, 855000, 1159000, 3648000, 304000, 1185600, 98800, 3567580, 297298, 1),
 (35, 13908000, 16824000, 1159000, 1402000, 2916000, 243000, 1020600, 85050, 4588180, 382348, 1),
 (37.5, 16824000, 22956000, 1402000, 1913000, 6132000, 511000, 2299500, 191625, 6887680, 573973, 1),
-(40, 22956000, 22956000, 1913000, 1913000, 0, 0, 0, 0, 6887680, 573973, 1);
+(40, 22956000, 100000000000000, 1913000, 1913000, 0, 0, 0, 0, 6887680, 573973, 1);
 
 -- Configuration Accounting Payroll
 INSERT INTO `config_accounting` (`label`, `account_id`) VALUES ('Configuration Compte Rémunération', 220);
 
 -- Payroll Configuration Period
 INSERT INTO `payroll_configuration` (`id`, `label`, `dateFrom`, `dateTo`, `config_rubric_id`, `config_accounting_id`, `config_weekend_id`, `config_ipr_id`) VALUES
-(1, 'Période de Paiement', '2018-02-01', '2018-02-28', 1, 1, 1, 1);
+(1, 'Février 2018', '2018-02-01', '2018-02-28', 1, 1, 1, 1);
+
+SET @paymentUuid = HUID('2a3f17b0ae3242bb9333a760825fd257');
+SET @employeeUuid = HUID('75e0969465f245a1a8a28b025003d793');
+-- Paiement DATA 
+
+INSERT INTO `paiement` (`uuid`, `employee_uuid`, `payroll_configuration_id`, `currency_id`, `paiement_date`, `total_day`, `working_day`, `basic_salary`, `daily_salary`, `base_taxable`, `gross_salary`, `net_salary`, `amount_paid`, `status_id`)
+VALUES (@paymentUuid, @employeeUuid, 1, 2, NULL, 20, 20, 500.0000, 25.0000, 550.0000, 730.0000, 614.0700, 0.0000, 2);
+
+-- rubric_paiement DATA
+INSERT INTO `rubric_paiement` (`id`, `paiement_uuid`, `rubric_payroll_id`, `value`, `posted`) VALUES 
+(1, @paymentUuid, 5, 20, NULL),
+(2, @paymentUuid, 9, 150, NULL),
+(3, @paymentUuid, 10, 10, NULL),
+(4, @paymentUuid, 6, 20, NULL),
+(5, @paymentUuid, 7, 20, NULL),
+(6, @paymentUuid, 8, 10, NULL),
+(7, @paymentUuid, 1, 27.5, NULL),
+(8, @paymentUuid, 2, 96.68, NULL),
+(9, @paymentUuid, 3, 11, NULL),
+(10, @paymentUuid, 4, 19.25, NULL),
+(11, @paymentUuid, 11, 1.1, NULL);
 
 -- ------------- AFFECTING ALL unit to admin role ----------------------------------------
 -- creates a default role

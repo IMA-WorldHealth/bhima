@@ -11,7 +11,7 @@ const BadRequest = require('../../lib/errors/BadRequest');
 // GET /Holiday
 function lookupHoliday(id) {
   const sql = `
-    SELECT h.id, h.label, h.employee_id, h.dateFrom, h.dateTo, h.percentage
+    SELECT h.id, h.label, BUID(h.employee_uuid) AS employee_uuid, h.dateFrom, h.dateTo, h.percentage
     FROM holiday AS h  
     WHERE h.id = ?`;
 
@@ -25,24 +25,24 @@ function lookupHoliday(id) {
 */
 function checkHoliday(param) {
   const sql = `
-    SELECT id, employee_id, label, dateTo, percentage, dateFrom 
-    FROM holiday WHERE employee_id = ?
+    SELECT id, BUID(employee_uuid) AS employee_uuid, label, dateTo, percentage, dateFrom 
+    FROM holiday WHERE employee_uuid = ?
     AND ((dateFrom >= DATE(?)) OR (dateTo >= DATE(?)) OR (dateFrom >= DATE(?))
     OR (dateTo >= DATE(?)))
     AND ((dateFrom <= DATE(?)) OR (dateTo <= DATE(?)) OR (dateFrom <= DATE(?))
     OR (dateTo <= DATE(?)))
   `;
 
-  return db.exec(sql, [param.employee_id, param.dateFrom, param.dateFrom, param.dateTo, param.dateTo, param.dateFrom, param.dateFrom, param.dateTo, param.dateTo]);
+  return db.exec(sql, [db.bid(param.employee_uuid), param.dateFrom, param.dateFrom, param.dateTo, param.dateTo, param.dateFrom, param.dateFrom, param.dateTo, param.dateTo]);
 }
 
 
 // Lists the Payroll Holidays
 function list(req, res, next) {
   const sql = `
-    SELECT h.id, h.label, h.employee_id, h.dateFrom, h.dateTo, p.display_name, h.percentage
+    SELECT h.id, h.label, BUID(h.employee_uuid) AS employee_uuid, h.dateFrom, h.dateTo, p.display_name, h.percentage
     FROM holiday AS h
-    JOIN employee AS e ON e.id = h.employee_id
+    JOIN employee AS e ON e.uuid = h.employee_uuid
     JOIN patient AS p ON p.uuid = e.patient_uuid
   ;`;
 
@@ -74,6 +74,7 @@ function detail(req, res, next) {
 function create(req, res, next) {
   const sql = `INSERT INTO holiday SET ?`;
   const data = req.body;
+  data.employee_uuid = db.bid(data.employee_uuid);
 
   checkHoliday(data)
     .then((record) => {
@@ -94,14 +95,20 @@ function create(req, res, next) {
 // PUT /Holiday /:id
 function update(req, res, next) {
   const sql = `UPDATE holiday SET ? WHERE id = ?;`;
+  const data = req.body;
 
-  checkHoliday(req.body)
+  if (data.employee_uuid) {
+    data.employee_uuid = db.bid(data.employee_uuid);
+  }
+
+  checkHoliday(data)
     .then((record) => {
+
       if (record.length > 1) {
         throw new BadRequest('Holiday Nested.', 'ERRORS.HOLIDAY_NESTED');
       }
 
-      return db.exec(sql, [req.body, req.params.id]);
+      return db.exec(sql, [data, req.params.id]);
     })
     .then(() => {
       return lookupHoliday(req.params.id);

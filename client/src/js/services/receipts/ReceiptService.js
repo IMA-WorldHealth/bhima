@@ -139,10 +139,15 @@ function ReceiptService($http, util, Language, AppCache, Session) {
     /* noop */
   }
 
-  // print a receipt of payroll payment
-  // TBD - is this really necessary to have as a separate receipt?
-  function payroll(uuid, options) {
-    /* noop */
+  // print a payslip of payroll payment
+  function payroll(request, options) {
+    options.employees = request.employees;
+    options.idPeriod = request.idPeriod;
+    // set the session language
+    options.lang = Language.key;
+
+    var route = '/reports/payroll/payslip';
+    return fetch(route, options);
   }
 
   // ========================== stock ==============================

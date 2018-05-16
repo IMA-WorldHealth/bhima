@@ -96,6 +96,18 @@ function del(req, res, next) {
     .done();
 }
 
+function paiementStatus(req, res, next) {
+  const sql = `
+    SELECT paiement_status.id, paiement_status.text
+    FROM paiement_status
+  `;
+
+  db.exec(sql)
+    .then(rows => res.status(200).json(rows))
+    .catch(next)
+    .done();
+}
+
 // get list of Payroll configuration
 exports.list = list;
 
@@ -110,3 +122,8 @@ exports.update = update;
 
 // Delete a Payroll configuration
 exports.delete = del;
+
+// get list of Paiement Status
+exports.paiementStatus = paiementStatus;
+
+exports.lookupPayrollConfig = lookupPayrollConfig;

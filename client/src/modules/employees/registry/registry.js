@@ -81,8 +81,8 @@ function EmployeeRegistryController(
       type             : 'number',
       visible          : false
     },
-    { field            : 'daily_salary',
-      displayName      : 'FORM.LABELS.DAILY_SALARY',
+    { field            : 'individual_salary',
+      displayName      : 'FORM.LABELS.INDIVIDUAL_SALARY',
       headerCellFilter : 'translate',
       visible          : false
     },

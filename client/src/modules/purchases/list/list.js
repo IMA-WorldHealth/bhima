@@ -15,11 +15,8 @@ function PurchaseListController(
   $state, PurchaseOrder, Notify, uiGridConstants, Columns, GridState, Session,
   Modal
 ) {
-  var vm = this;
-
-  var cacheKey = 'PurchaseRegistry';
-  var state;
-  var columnDefs;
+  const vm = this;
+  const cacheKey = 'PurchaseRegistry';
 
   vm.search = search;
   vm.openColumnConfiguration = openColumnConfiguration;
@@ -32,67 +29,67 @@ function PurchaseListController(
   // track if module is making a HTTP request for purchase order
   vm.loading = false;
 
-  columnDefs = [{
-    field: 'reference',
-    displayName: 'FORM.LABELS.REFERENCE',
-    headerCellFilter: 'translate',
-    cellTemplate: 'modules/purchases/templates/uuid.tmpl.html',
-    aggregationType: uiGridConstants.aggregationTypes.count,
-    aggregationHideLabel: true,
+  const columnDefs = [{
+    field : 'reference',
+    displayName : 'FORM.LABELS.REFERENCE',
+    headerCellFilter : 'translate',
+    cellTemplate : 'modules/purchases/templates/uuid.tmpl.html',
+    aggregationType : uiGridConstants.aggregationTypes.count,
+    aggregationHideLabel : true,
   }, {
-    field: 'date',
-    displayName: 'FORM.LABELS.DATE',
-    headerCellFilter: 'translate',
-    cellFilter: 'date',
+    field : 'date',
+    displayName : 'FORM.LABELS.DATE',
+    headerCellFilter : 'translate',
+    cellFilter : 'date',
   }, {
-    field: 'supplier',
-    displayName: 'FORM.LABELS.SUPPLIER',
-    headerCellFilter: 'translate',
+    field : 'supplier',
+    displayName : 'FORM.LABELS.SUPPLIER',
+    headerCellFilter : 'translate',
   }, {
-    field: 'note',
-    displayName: 'FORM.LABELS.DESCRIPTION',
-    headerCellFilter: 'translate',
+    field : 'note',
+    displayName : 'FORM.LABELS.DESCRIPTION',
+    headerCellFilter : 'translate',
   }, {
-    cellTemplate: '/modules/purchases/templates/cellCost.tmpl.html',
-    field: 'cost',
-    displayName: 'FORM.LABELS.COST',
-    headerCellFilter: 'translate',
-    footerCellFilter: 'currency:'.concat(Session.enterprise.currency_id),
-    aggregationType: uiGridConstants.aggregationTypes.sum,
-    aggregationHideLabel: true,
+    cellTemplate : '/modules/purchases/templates/cellCost.tmpl.html',
+    field : 'cost',
+    displayName : 'FORM.LABELS.COST',
+    headerCellFilter : 'translate',
+    footerCellFilter : 'currency:'.concat(Session.enterprise.currency_id),
+    aggregationType : uiGridConstants.aggregationTypes.sum,
+    aggregationHideLabel : true,
   }, {
-    field: 'author',
-    displayName: 'FORM.LABELS.AUTHOR',
-    headerCellFilter: 'translate',
+    field : 'author',
+    displayName : 'FORM.LABELS.AUTHOR',
+    headerCellFilter : 'translate',
   }, {
-    cellTemplate: '/modules/purchases/templates/cellStatus.tmpl.html',
-    field: 'status',
-    displayName: 'FORM.LABELS.STATUS',
-    headerCellFilter: 'translate',
-    enableFiltering: false,
-    enableSorting: false,
+    cellTemplate : '/modules/purchases/templates/cellStatus.tmpl.html',
+    field : 'status',
+    displayName : 'FORM.LABELS.STATUS',
+    headerCellFilter : 'translate',
+    enableFiltering : false,
+    enableSorting : false,
   }, {
-    field: 'action',
-    displayName: '...',
-    enableFiltering: false,
-    enableColumnMenu: false,
-    enableSorting: false,
-    cellTemplate: 'modules/purchases/templates/action.cell.html',
+    field : 'action',
+    displayName : '...',
+    enableFiltering : false,
+    enableColumnMenu : false,
+    enableSorting : false,
+    cellTemplate : 'modules/purchases/templates/action.cell.html',
   }];
 
   /** TODO manage column : last_transaction */
   vm.uiGridOptions = {
-    appScopeProvider: vm,
-    showColumnFooter: true,
-    enableSorting: true,
-    enableColumnMenus: false,
-    flatEntityAccess: true,
-    fastWatch: true,
-    columnDefs: columnDefs,
+    appScopeProvider : vm,
+    showColumnFooter : true,
+    enableSorting : true,
+    enableColumnMenus : false,
+    flatEntityAccess : true,
+    fastWatch : true,
+    columnDefs,
   };
 
-  var columnConfig = new Columns(vm.uiGridOptions, cacheKey);
-  state = new GridState(vm.uiGridOptions, cacheKey);
+  const columnConfig = new Columns(vm.uiGridOptions, cacheKey);
+  const state = new GridState(vm.uiGridOptions, cacheKey);
 
   vm.saveGridState = state.saveGridState;
   vm.clearGridState = function clearGridState() {
@@ -109,7 +106,7 @@ function PurchaseListController(
   // edit status
   function editStatus(purchase) {
     Modal.openPurchaseOrderStatus(purchase)
-      .then(function () {
+      .then(() => {
         return load(PurchaseOrder.filters.formatHTTP(true));
       })
       .catch(handler);
@@ -122,7 +119,7 @@ function PurchaseListController(
     toggleLoadingIndicator();
 
     PurchaseOrder.read(null, filters)
-      .then(function (purchases) {
+      .then((purchases) => {
         vm.uiGridOptions.data = purchases;
       })
       .catch(handler)
@@ -130,10 +127,10 @@ function PurchaseListController(
   }
 
   function search() {
-    var filtersSnapshot = PurchaseOrder.filters.formatHTTP();
+    const filtersSnapshot = PurchaseOrder.filters.formatHTTP();
 
     PurchaseOrder.openSearchModal(filtersSnapshot)
-      .then(function (changes) {
+      .then((changes) => {
         PurchaseOrder.filters.replaceFilters(changes);
         PurchaseOrder.cacheFilters();
         vm.latestViewFilters = PurchaseOrder.filters.formatView();

@@ -32,6 +32,10 @@ function VoucherToolkitService(Modal) {
       controller  : 'SupportPatientKitController',
       templateUrl : 'modules/vouchers/toolkit/support_patient/support_patient.modal.html',
     },
+    payment_employee : {
+      controller  : 'PaymentEmployeeKitController',
+      templateUrl : 'modules/vouchers/toolkit/payment_employee/payment_employee.modal.html',
+    },
   };
 
   service.openConventionPaymentModal = function openConventionPaymentModal() {
@@ -52,6 +56,10 @@ function VoucherToolkitService(Modal) {
 
   service.openSupportPatientModal = function openSupportPatientModal() {
     return open(service.tools.support_patient);
+  };
+
+  service.openPaymentEmployees = function openPaymentEmployees() {
+    return open(service.tools.payment_employee);
   };
 
   /**

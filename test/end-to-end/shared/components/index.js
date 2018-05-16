@@ -53,4 +53,5 @@ module.exports = {
   weekConfigSelect            : require('./bhWeekConfigSelect'),
   yesNoRadios                 : require('./bhYesNoRadios'),
   findInvoice                 : require('./bhFindInvoice'),
+  payrollPeriodSelect         : require('./bhPayrollPeriodSelect'),
 };

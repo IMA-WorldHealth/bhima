@@ -303,23 +303,6 @@
                       </div>
                     </div>
                   </div>
-                  <!-- Employee number of spouse-->
-                  <div class="form-group"
-                    ng-class="{'has-error' : OptionalForm.nb_spouse.$invalid && EmployeeRegistrationForm.$submitted}">
-
-                    <label class="col-md-3 control-label" translate>FORM.LABELS.NB_SPOUSE</label>
-                    <div class="col-md-9">
-                      <input
-                        type="number"
-                        class="form-control"
-                        name="nb_spouse"
-                        ng-model="EmployeeCtrl.employee.nb_spouse"
-                        autocomplete="off">
-                     <div class="help-block" ng-messages="OptionalForm.nb_spouse.$error" ng-show="EmployeeRegistrationForm.$submitted">
-                      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-                     </div>
-                    </div>
-                  </div>
 
                   <!-- Employee number of child-->
                   <div class="form-group"
@@ -457,25 +440,26 @@
                   </div>
 
                   <!-- Employee daily salary -->
-                  <div
-                    class="form-group"
-                    ng-class="{'has-error' : DetailForm.daily_salary.$invalid && EmployeeRegistrationForm.$submitted}">
+                  <bh-currency-input
+                    data-payment-currency-input
+                    label="FORM.LABELS.INDIVIDUAL_SALARY"
+                    id="individual_salary"
+                    currency-id="EmployeeCtrl.enterprise.currency_id"
+                    model="EmployeeCtrl.employee.individual_salary"
+                    validation-trigger="EmployeeRegistrationForm.$submitted"
+                    min = 0>
+                  </bh-currency-input>
 
-                    <label class="col-md-3 control-label" translate>FORM.LABELS.DAILY_SALARY</label>
-                    <div class="col-md-9">
-                      <div class="input-group">
-                        <span class="input-group-addon text-uppercase">{{ EmployeeCtrl.enterprise.currencySymbol || '...' }}</span>
-                        <input
-                          type="number"
-                          class="form-control"
-                          name="daily_salary"
-                          ng-model="EmployeeCtrl.employee.daily_salary"
-                          autocomplete="off">
-                      </div>
-                      <div class="help-block" ng-messages="DetailForm.daily_salary.$error" ng-show="EmployeeRegistrationForm.$submitted">
-                        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-                      </div>
-                    </div>
+                  <div ng-repeat="rubric in EmployeeCtrl.rubrics"> 
+                    <bh-currency-input
+                      data-payment-currency-input
+                      label="{{rubric.label}}"
+                      id="{{rubric.abbr}}"
+                      currency-id="EmployeeCtrl.enterprise.currency_id"
+                      model="EmployeeCtrl.employee.payroll[rubric.id]"
+                      validation-trigger="EmployeeRegistrationForm.$submitted"
+                      min = 0>
+                    </bh-currency-input>
                   </div>
 
                   <!-- Employee bank -->
