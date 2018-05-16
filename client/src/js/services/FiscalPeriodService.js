@@ -14,6 +14,20 @@ FiscalPeriodService.$inject = [ 'PrototypeApiService' ];
 function FiscalPeriodService(Api) {
 
   // extend the PrototypeApiService with period routes
-  var service = new Api('/periods');
+  const service = new Api('/periods');
+  service.currentPeriod = currentPeriod;
+
+  /**
+   *
+   * @method currentPeriod
+   * @description
+   * return the current period'id
+   */
+  function currentPeriod() {
+    const url = `/periods/current`;
+    return service.$http.get(url)
+      .then(service.util.unwrapHttpResponse);
+  }
+
   return service;
 }

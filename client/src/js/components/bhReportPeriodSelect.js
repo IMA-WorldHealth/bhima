@@ -28,7 +28,7 @@ function ReportPeriodSelectController(FiscalPeriod, $filter) {
   $ctrl.$onInit = function onInit() {
     // fired when a Period has been selected
     $ctrl.onSelectCallback = $ctrl.onSelectCallback || angular.noop;
-
+    $ctrl.displayCurrentPeriod = !($ctrl.periodId);
     // default for form name
     $ctrl.name = $ctrl.name || 'PeriodForm';
 
@@ -43,6 +43,10 @@ function ReportPeriodSelectController(FiscalPeriod, $filter) {
         });
 
         $ctrl.periodes = periodes;
+        // console.log($ctrl.periodes);
+        if ($ctrl.displayCurrentPeriod) {
+          setCurrentperiod();
+        }
       });
 
     $ctrl.valid = true;
@@ -50,4 +54,10 @@ function ReportPeriodSelectController(FiscalPeriod, $filter) {
 
   // fires the onSelectCallback bound to the component boundary
   $ctrl.onSelect = period => $ctrl.onSelectCallback({ period });
+
+  function setCurrentperiod() {
+    FiscalPeriod.currentPeriod().then(id => {
+      $ctrl.periodId = id;
+    });
+  }
 }

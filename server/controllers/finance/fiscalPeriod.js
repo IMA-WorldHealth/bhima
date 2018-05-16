@@ -21,6 +21,7 @@ exports.list = list;
 exports.find = find;
 exports.getPeriodDiff = getPeriodDiff;
 exports.isInSameFiscalYear = isInSameFiscalYear;
+exports.currentPeriod = currentPeriod;
 
 /**
  * @method list
@@ -103,3 +104,13 @@ function getPeriodDiff(periodIdA, periodIdB) {
   return db.one(sql, [periodIdA, periodIdB]);
 }
 
+function currentPeriod(req, res, next) {
+  const sql = `
+    SELECT id FROM period WHERE DATE(start_date) <= DATE(?) AND DATE(end_date) >= DATE(?);
+  `;
+
+  db.one(sql, [new Date(), new Date()])
+    .then(period => res.status(200).json(period.id))
+    .catch(next)
+    .done();
+}

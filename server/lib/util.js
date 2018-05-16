@@ -96,16 +96,19 @@ function requireModuleIfExists(moduleName) {
  */
 function dateFormatter(rows, dateFormat) {
   const DATE_FORMAT = dateFormat || 'YYYY-MM-DD HH:mm:ss';
-
-  _.forEach(rows, element => {
-    _.forEach(element, (value, key) => {
-      if (_.isDate(element[key])) {
-        element[key] = moment(element[key]).format(DATE_FORMAT);
-      }
+  if (_.isArray(rows)) {
+    _.forEach(rows, element => {
+      _.forEach(element, (value, key) => {
+        if (_.isDate(element[key])) {
+          element[key] = moment(element[key]).format(DATE_FORMAT);
+        }
+      });
     });
-  });
 
-  return rows;
+    return rows;
+  }
+
+  return moment(rows).format(DATE_FORMAT);
 }
 
 /**

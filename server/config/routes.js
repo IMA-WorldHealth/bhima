@@ -224,6 +224,7 @@ exports.configure = function configure(app) {
 
   // Period routes
   app.get('/periods', fiscalPeriod.list);
+  app.get('/periods/current', fiscalPeriod.currentPeriod);
 
   /* load a user's tree */
   app.get('/tree', tree.generate);
