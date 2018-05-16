@@ -11,11 +11,34 @@
 
   <div class="modal-body">
     <bh-find-patient
-      suppress-reset="true"
+      patient-uuid="$ctrl.selected.uuid"
+      suppress-reset="false"
       on-search-complete="$ctrl.setPatient(patient)"
       on-register-api="$ctrl.onPatientSearchApiCallback(api)"
       validation-trigger="FindForm.$submitted">
     </bh-find-patient>
+
+    <div class="form-group">
+      <div class="checkbox">
+        <label>
+          <input
+            type="checkbox"
+            name="join_invoice"
+            ng-true-value="1"
+            ng-false-value="0"
+            ng-model="$ctrl.joinInvoice">
+          <span translate>STOCK.JOIN_INVOICE</span>
+        </label>
+      </div>
+
+      <div ng-if="$ctrl.joinInvoice">
+        <bh-find-invoice
+          patient-uuid="$ctrl.selected.uuid"
+          on-search-complete="$ctrl.setInvoice(invoice)"
+          disabled="!$ctrl.selected.uuid">
+        </bh-find-invoice>
+      </div>
+    </div>
   </div>
 
   <div class="modal-footer">
@@ -23,7 +46,7 @@
       FORM.BUTTONS.CLOSE
     </button>
 
-    <bh-loading-button loading-state="FindForm.$loading">
+    <bh-loading-button loading-state="FindForm.$loading" disabled="$ctrl.joinInvoice && !$ctrl.selected.invoice.details.uuid">
       <span translate>FORM.BUTTONS.SUBMIT</span>
     </bh-loading-button>
   </div>

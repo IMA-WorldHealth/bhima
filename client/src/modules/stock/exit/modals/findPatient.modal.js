@@ -8,11 +8,15 @@ StockFindPatientModalController.$inject = [
 function StockFindPatientModalController(Instance, Patient, Notify, Data) {
   const vm = this;
 
+  // join invoice as default behavior
+  vm.joinInvoice = 1;
+
   // global
   vm.selected = {};
 
   // bind methods
   vm.setPatient = setPatient;
+  vm.setInvoice = setInvoice;
   vm.submit = submit;
   vm.cancel = cancel;
 
@@ -20,7 +24,7 @@ function StockFindPatientModalController(Instance, Patient, Notify, Data) {
     .then(patients => {
       vm.patients = patients;
 
-      // set defined the previous selected service
+      // set defined the previous selected patient
       if (Data.entity_uuid) {
         const currentPatient = patients.filter(item => {
           return item.uuid === Data.entity_uuid;
@@ -36,6 +40,10 @@ function StockFindPatientModalController(Instance, Patient, Notify, Data) {
     vm.selected = patient;
   }
 
+  function setInvoice(invoice) {
+    vm.selected.invoice = invoice;
+  }
+
   // submit
   function submit() {
     Instance.close(vm.selected);
@@ -43,7 +51,7 @@ function StockFindPatientModalController(Instance, Patient, Notify, Data) {
 
   // cancel
   function cancel() {
-    Instance.close(vm.selected);
+    Instance.close();
   }
 
 }

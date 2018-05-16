@@ -27,7 +27,7 @@ function fetch(depotUuid, dateFrom, dateTo, showDetails) {
   GROUP BY i.uuid`;
 
   const groupBy = ', m.uuid, dd.uuid';
-  const orderBy = ' ORDER BY i.text ASC';
+  const orderBy = ' ORDER BY i.text, m.date ASC';
   const query = showDetails ? sql.concat(groupBy, orderBy) : sql.concat(orderBy);
 
   const _depotUuid = db.bid(depotUuid);

@@ -50,6 +50,7 @@
     "FLUX"            : "Reason",
     "FROM"            : "From",
     "GROUPING"        : "Grouping",
+    "JOIN_INVOICE"    : "Join an invoice", 
     "INCREASE"        : "Increase",
     "INCREASE_HELP"   : "Adjustment of stock by increasing the quantity of lots of products in stock",
     "INVENTORY"       : "Inventory",
