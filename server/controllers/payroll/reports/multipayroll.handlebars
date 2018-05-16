@@ -1,0 +1,53 @@
+{{> head title="TREE.MULTI_PAYROLL"}}
+<body>
+  {{> header}}
+
+  <!-- body  -->
+  <div class="row">
+    <div class="col-xs-12">
+
+      <!-- page title  -->
+      <h3 class="text-center text-uppercase">
+        <strong>{{translate 'VOUCHERS.SIMPLE.SALARY_PAYMENT'}} : {{ payrollTitle }} </strong>
+      </h3>
+
+      {{#each filters}}
+        <h4 class="text-center">
+          <strong>
+          <span class="text-capitalize">
+            {{translate this.displayName}} : {{this.value}} 
+          </span
+          </strong>
+        </h4>
+      {{/each}}
+
+      <!-- invoices listed  -->
+      <table class="table table-condensed table-report table-bordered">
+        <thead>
+          <tr style="background-color: #ddd;">
+            <th>{{translate 'TABLE.COLUMNS.NR'}}</th>
+            <th>{{translate 'TABLE.COLUMNS.NAME'}}</th>
+            <th>{{translate 'TABLE.COLUMNS.CODE'}}</th>
+            <th>{{translate 'TABLE.COLUMNS.NET_SALARY'}}</th>
+            <th>{{translate 'TABLE.COLUMNS.BALANCE'}}</th>
+            <th>{{translate 'TABLE.COLUMNS.STATUS'}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each rows}}
+            <tr class="text-left">
+              <td>{{ add @key 1}}</td>
+              <td>{{display_name}}</td>
+              <td>{{code}}</td>
+              <td>{{currency net_salary currency_id}}</td>
+              <td>{{currency balance currency_id}}</td>
+              <td><strong>{{translate status}} </strong></td>
+            </tr>
+          {{else}}
+            {{> emptyTable columns=6}}
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>

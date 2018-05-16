@@ -87,7 +87,8 @@ INSERT INTO unit VALUES
   (195, 'Role management','TREE.ROLE_MANAGEMENT','Roles Management', 1,'/modules/role/','/roles'),
   (196, 'Depot Registry','TREE.DEPOTS_REGISTRY','',20,'/modules/depots/','/depots'),
   (197, 'Stock Exit Report','TREE.STOCK_EXIT_REPORT','Stock Exit Report', 144,'/modules/reports/generated/stock_exit','/reports/stock_exit'),
-  (199, 'Client Debtor Account Balance', 'REPORT.CLIENT_DEBTOR_ACCOUNT_BALANCE_REPORT', 'Client Debtor Account Balance', 144, '/modules/reports/debtor_accounts_balance', '/reports/debtorBalanceReport');
+  (199, 'Client Debtor Account Balance', 'REPORT.CLIENT_DEBTOR_ACCOUNT_BALANCE_REPORT', 'Client Debtor Account Balance', 144, '/modules/reports/debtor_accounts_balance', '/reports/debtorBalanceReport'),
+  (200, 'Multiple Payroll','TREE.MULTI_PAYROLL','Multiple Payroll', 57,'/modules/multiple_payroll','/multiple_payroll');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -159,7 +160,10 @@ INSERT INTO `transaction_type` (`id`, `text`, `type`, `prefix`, `fixed`) VALUES
   (11,'VOUCHERS.SIMPLE.INVOICING', 'income', 'INV', 1),
   (12, 'VOUCHERS.SIMPLE.STOCK_INTEGRATION', 'stock integration', 'STOCK. INT', 1),
   (13, 'VOUCHERS.SIMPLE.STOCK_EXIT', 'stock distribution', 'STOCK_EXIT', 1),
-  (14, 'VOUCHERS.SIMPLE.STOCK_ENTRY', 'stock reception', 'STOCK_ENTRY', 1);
+  (14, 'VOUCHERS.SIMPLE.STOCK_ENTRY', 'stock reception', 'STOCK_ENTRY', 1),
+  (15, 'VOUCHERS.SIMPLE.COMMITMENT', 'other', 'COMMIT', 1),
+  (16, 'VOUCHERS.SIMPLE.EMPLOYEE_WITHHOLDINGS', 'other', 'WITHHOLDING', 1),
+  (17, 'VOUCHERS.SIMPLE.CHARGE_REMUNERATION', 'other', 'CHARGE_REMUNERATION', 1);
 
 -- Stock Movement Flux
 INSERT INTO `flux` VALUES
@@ -183,13 +187,21 @@ INSERT INTO `actions`(`id`, `description`) VALUES
   (1, 'FORM.LABELS.CAN_EDIT_ROLES');
 
 
--- transaction type
+-- Purchase Status
 INSERT INTO `purchase_status` (`id`, `text`) VALUES
   (1,  'PURCHASES.STATUS.WAITING_CONFIRMATION'),
   (2,  'PURCHASES.STATUS.CONFIRMED'),
   (3,  'PURCHASES.STATUS.RECEIVED'),
   (4,  'PURCHASES.STATUS.PARTIALLY_RECEIVED'),
   (5,  'PURCHASES.STATUS.CANCELLED');
+
+-- Paiement Status
+INSERT INTO `paiement_status` (`id`, `text`) VALUES
+  (1,  'PAYROLL_STATUS.WAITING_FOR_CONFIGURATION'),
+  (2,  'PAYROLL_STATUS.CONFIGURED'),
+  (3,  'PAYROLL_STATUS.WAITING_FOR_PAYMENT'),
+  (4,  'PAYROLL_STATUS.PARTIALLY_PAID'),
+  (5,  'PAYROLL_STATUS.PAID');
 
 -- locations (default enterprise location only)
 INSERT INTO `country` VALUES (HUID('dbe330b6-5cde-4830-8c30-dc00eccd1a5f'),'République Démocratique du Congo');

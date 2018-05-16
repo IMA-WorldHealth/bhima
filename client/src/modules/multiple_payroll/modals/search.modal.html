@@ -1,0 +1,60 @@
+<form name="ModalForm" bh-submit="$ctrl.submit(ModalForm)" novalidate>  
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.PAYROLL</li>
+      <li class="title" translate>TREE.MULTI_PAYROLL</li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+    <div class="modal-body">
+      <bh-payroll-period-select
+        id="payroll_configuration_id"
+        payroll-configuration-id="$ctrl.searchQueries.payroll_configuration_id"
+        name="PayrollPeriodForm"
+        on-select-callback="$ctrl.onSelectPayrollPeriod(payrollConfig)"
+        required="true"
+        validation-trigger="ModalForm.$submitted">
+      </bh-payroll-period-select>
+    </div>
+
+    <div class="modal-body">
+      <bh-currency-select
+        currency-id="$ctrl.searchQueries.currency_id"
+        on-change="$ctrl.setCurrency(currency)"
+        validation-trigger="ModalForm.$submitted">
+      </bh-currency-select>
+    </div>
+
+    <hr>
+    <div class="modal-body" >
+      <label class="control-label" translate>FORM.LABELS.NAME</label>
+      <bh-clear on-clear="$ctrl.clear('display_name')"></bh-clear>
+      <input type="text" class="form-control" name="display_name" ng-model="$ctrl.searchQueries.display_name">
+    </div>
+
+    <div class="modal-body" >
+      <label class="control-label" translate>FORM.LABELS.CODE</label>
+      <bh-clear on-clear="$ctrl.clear('code')"></bh-clear>
+      <input type="text" class="form-control" name="code" ng-model="$ctrl.searchQueries.code">
+    </div>
+
+    <!-- status -->
+    <div class="modal-body" >
+      <bh-payroll-status-select
+        on-change="$ctrl.onPayrollStatusChange(paiementStatus)"
+        status-ids="$ctrl.searchQueries.status_id">
+      </bh-payroll-status-select>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button data-method="cancel" type="button" class="btn btn-default" ng-click="$ctrl.cancel()">
+      <span translate>FORM.BUTTONS.CANCEL</span>
+    </button>
+
+    <bh-loading-button loading-state="ModalForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

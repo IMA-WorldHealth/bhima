@@ -24,7 +24,7 @@ describe('(/accounts) Accounts', () => {
   const FETCHABLE_ACCOUNT_ID = 117;
   const CHURCH_ACCOUNT_ID = 174;
 
-  const NUM_ACCOUNTS = 230;
+  const NUM_ACCOUNTS = 281;
 
   const responseKeys = [
     'id', 'enterprise_id', 'locked', 'cc_id', 'pc_id', 'created', 'classe',

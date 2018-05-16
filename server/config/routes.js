@@ -45,6 +45,7 @@ const rubrics = require('../controllers/payroll/rubrics');
 const rubricConfig = require('../controllers/payroll/rubricConfig');
 const accountConfig = require('../controllers/payroll/accounts');
 const weekendConfig = require('../controllers/payroll/weekendConfig');
+const multiplePayroll = require('../controllers/payroll/multiplePayroll');
 
 // medical routes
 const patients = require('../controllers/medical/patients');
@@ -340,9 +341,12 @@ exports.configure = function configure(app) {
 
   // interface for employee report
   app.get('/reports/payroll/employees', employeeReports.employeeRegistrations);
+  app.get('/reports/payroll/multipayroll', employeeReports.employeeMultiPayroll);
+  app.get('/reports/payroll/payslip', employeeReports.payslipGenerator);
 
   // Payroll Configuration api
   app.get('/payroll_config', payrollConfig.list);
+  app.get('/payroll_config/paiementStatus', payrollConfig.paiementStatus);
   app.get('/payroll_config/:id', payrollConfig.detail);
   app.post('/payroll_config', payrollConfig.create);
   app.put('/payroll_config/:id', payrollConfig.update);
@@ -521,9 +525,10 @@ exports.configure = function configure(app) {
   // employees
   app.get('/employees/search', employees.search);
   app.get('/employees', employees.list);
-  app.get('/employees/:id', employees.detail);
+  app.get('/employees/:uuid', employees.detail);
+  app.get('/employees/:uuid/advantage', employees.advantage);
   app.post('/employees', employees.create);
-  app.put('/employees/:id', employees.update);
+  app.put('/employees/:uuid', employees.update);
 
   // billing services
   app.get('/invoicing_fees', invoicingFees.list);
@@ -531,6 +536,13 @@ exports.configure = function configure(app) {
   app.post('/invoicing_fees', invoicingFees.create);
   app.put('/invoicing_fees/:id', invoicingFees.update);
   app.delete('/invoicing_fees/:id', invoicingFees.delete);
+
+  // Multiple Payroll API
+  app.get('/multiple_payroll', multiplePayroll.search);
+  app.get('/multiple_payroll/:id/configuration', multiplePayroll.configuration);
+  app.post('/multiple_payroll/:id/configuration', multiplePayroll.setConfiguration.config);
+  app.post('/multiple_payroll/:id/multiConfiguration', multiplePayroll.setMultiConfiguration.config);
+  app.post('/multiple_payroll/:id/commitment', multiplePayroll.makeCommitment.config);
 
   // discounts
   app.get('/discounts', discounts.list);

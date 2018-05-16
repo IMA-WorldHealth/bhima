@@ -1,4 +1,11 @@
 {
+  "PAYROLL_STATUS": {
+    "CONFIGURED": "configured",
+    "PAID" : "Paid",
+    "PARTIALLY_PAID" : "Partially paid",  
+    "WAITING_FOR_CONFIGURATION" : "Waiting for configuration",
+    "WAITING_FOR_PAYMENT" : "Waiting for payment"
+  },    
   "PAYROLL_RUBRIC" : {
     "ADD_PAYROLL_RUBRIC"    : "Add a Payroll Rubric",
     "ADD_PAYROLL_RUBRIC_CONFIGURATION" : "Add a Payroll Rubric Configuration",

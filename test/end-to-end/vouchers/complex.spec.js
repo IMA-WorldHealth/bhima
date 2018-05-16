@@ -327,4 +327,43 @@ describe('Complex Vouchers', () => {
     // close the modal
     $('[data-method="close"]').click();
   });
+
+  it('Employees Salary Paiement via the tool', () => {
+    const page = new ComplexVoucherPage();
+    const gridId = 'paymentGrid';
+
+    const detail = {
+      cashbox       : 'Caisse Auxiliaire $',
+      tool          : 'Paiement des salaires',
+      period        : 'Février 2018',
+      description   : 'Paiement Salaire Février 2018',
+    };
+
+    // click on the Support Patient Tool
+    FU.dropdown('[toolbar-dropdown]', detail.tool);
+
+    // Select Cashbox
+    components.cashboxSelect.set(detail.cashbox);
+
+    // Select Payroll Period
+    components.payrollPeriodSelect.set(detail.period)
+
+    GU.selectRow(gridId, 1);
+
+    // validate selection
+    FU.modal.submit();
+
+    // description
+    page.description(detail.description);
+
+    // submit voucher
+    FU.buttons.submit();
+
+    // make sure a receipt was opened
+    FU.exists(by.id('receipt-confirm-created'), true);
+
+    // close the modal
+    $('[data-method="close"]').click();
+  });
+
 });

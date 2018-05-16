@@ -4,7 +4,7 @@ angular.module('bhima.components')
     controller  : EmployeeSelectController,
     transclude  : true,
     bindings    : {
-      employeeId           : '<',
+      employeeUuid     : '<',
       disable          : '<?',
       onSelectCallback : '&',
       required         : '<?',

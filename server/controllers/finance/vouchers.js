@@ -232,6 +232,9 @@ function create(req, res, next) {
   const { voucher } = req.body;
   let items = req.body.voucher.items || [];
 
+  const voucherType = voucher.type_id;
+  const updatesPaiementData = [];
+
   // a voucher without two items doesn't make any sense in double-entry
   // accounting.  Therefore, throw a bad data error if there are any fewer
   // than two items in the journal voucher.
@@ -260,6 +263,23 @@ function create(req, res, next) {
   // preprocess the items so they have uuids as required
   items.forEach(value => {
     let item = value;
+    // Only for Employee Salary Paiement
+    if (voucherType === 7) {
+      if (item.document_uuid) {
+        const updatePaiement = `
+          UPDATE paiement SET 
+            status_id = IF (((paiement.net_salary - paiement.amount_paid) = ?), 5, 4),
+            paiement.amount_paid = amount_paid + ?,   
+            paiement.paiement_date = ? 
+          WHERE paiement.uuid = ? `;
+
+        updatesPaiementData.push({
+          query : updatePaiement,
+          params : [item.debit, item.debit, voucher.date, db.bid(item.document_uuid)],
+        });
+      }
+    }
+
     // if the item doesn't have a uuid, create one for it.
     item.uuid = item.uuid || uuid();
 
@@ -287,6 +307,13 @@ function create(req, res, next) {
       [items]
     )
     .addQuery('CALL PostVoucher(?);', [voucher.uuid]);
+
+  // Only for Employee Salary Paiement
+  if (voucherType === 7) {
+    updatesPaiementData.forEach(updatePaiement => {
+      transaction.addQuery(updatePaiement.query, updatePaiement.params);
+    });
+  }
 
   transaction.execute()
     .then(() => res.status(201).json({ uuid : vuid }))

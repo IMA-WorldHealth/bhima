@@ -47,7 +47,7 @@ const filters = [{
   displayName : 'FORM.LABELS.SUPPLIER',
 }, {
   field : 'status_id',
-  displayName : 'PURCHASES.ORDER',
+  displayName : 'FORM.LABELS.STATUS',
 }, {
   field : 'patientReference',
   displayName : 'FORM.LABELS.REFERENCE_PATIENT',

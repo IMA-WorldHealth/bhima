@@ -29,10 +29,6 @@ class RegistrationPage {
     $(`[id="${id}"]`).click();
   }
 
-  // set number of spouse
-  setNumberSpouse(nbSpouse) {
-    FU.input('EmployeeCtrl.employee.nb_spouse', nbSpouse);
-  }
 
   // set number of spouse
   setNumberChild(nbEnfant) {
@@ -94,6 +90,11 @@ class RegistrationPage {
     FU.uiSelect('EmployeeCtrl.employee.creditor_group_uuid', cg);
   }
 
+  // Set Currency Input
+  setCurrencyInput(id, value) {
+    components.currencyInput.set(value, id);
+  }
+
   // set bank
   setBank(bank) {
     FU.input('EmployeeCtrl.employee.bank', bank);
@@ -102,6 +103,14 @@ class RegistrationPage {
   // set bank account
   setBankAccount(bankAccount) {
     FU.input('EmployeeCtrl.employee.bank_account', bankAccount);
+  }
+
+  // Set RubricPayroll defined value By Employee
+  setRubricPayroll(rubrics) {
+    for (let key in rubrics) {
+      let rubricPayroll = element( by.id(key));
+      rubricPayroll.sendKeys(rubrics[key]);    
+    }
   }
 
   // set origin location
@@ -129,7 +138,6 @@ class RegistrationPage {
   }
 
   noRequiredFieldOk() {
-    FU.validation.ok('EmployeeCtrl.employee.nb_spouse');
     FU.validation.ok('EmployeeCtrl.employee.nb_enfant');
     FU.validation.ok('EmployeeCtrl.employee.phone');
     FU.validation.ok('EmployeeCtrl.employee.email');
