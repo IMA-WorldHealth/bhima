@@ -15,7 +15,8 @@ function fetch(depotUuid, dateFrom, dateTo, showDetails) {
     SUM(m.quantity) as quantity, m.date, m.description,
     u.display_name AS user_display_name, p.display_name AS patient_display_name,
     dm.text AS document_reference, d.text AS depot_name, 
-    CONCAT_WS('.', '${identifiers.PATIENT.key}', proj.abbr, p.reference) AS patient_reference
+    CONCAT_WS('.', '${identifiers.PATIENT.key}', proj.abbr, p.reference) AS patient_reference,
+    dm2.text AS invoice_reference
   FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
@@ -25,12 +26,14 @@ function fetch(depotUuid, dateFrom, dateTo, showDetails) {
     JOIN project proj ON proj.id = p.project_id
     JOIN user u ON u.id = m.user_id
     JOIN document_map dm ON dm.uuid = m.document_uuid
+    LEFT JOIN invoice iv ON iv.uuid = m.invoice_uuid
+    LEFT JOIN document_map dm2 ON dm2.uuid = iv.uuid
   WHERE m.is_exit = ${IS_EXIT} AND m.flux_id = ${EXIT_TO_PATIENT_ID} AND d.uuid = ? 
     AND (DATE(m.date) BETWEEN DATE(?) AND DATE(?))
   GROUP BY i.uuid`;
 
   const groupBy = ', m.uuid, p.uuid';
-  const orderBy = ' ORDER BY i.text ASC';
+  const orderBy = ' ORDER BY i.text, m.date ASC';
   const query = showDetails ? sql.concat(groupBy, orderBy) : sql.concat(orderBy);
 
   const _depotUuid = db.bid(depotUuid);

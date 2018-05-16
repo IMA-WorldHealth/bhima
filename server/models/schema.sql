@@ -1851,6 +1851,7 @@ CREATE TABLE `stock_movement` (
   `is_exit`         TINYINT(1) NOT NULL,
   `user_id`         SMALLINT(5) UNSIGNED NOT NULL,
   `reference`       INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `invoice_uuid`    BINARY(16) NULL,  
   PRIMARY KEY (`reference`),
   UNIQUE KEY `stock_movement_uuid` (`uuid`),
   KEY `depot_uuid` (`depot_uuid`),

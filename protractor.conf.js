@@ -81,7 +81,7 @@ if (process.env.TRAVIS_BUILD_NUMBER) {
       takePassedScreenshot : false,
       clearOldScreenshots  : true,
     },
-    bail : true,
+    bail : false,
     timeout : 30000,
   };
 }

@@ -1,4 +1,4 @@
-/* global browser, element, by */
+/* global element, by */
 
 const FU = require('../FormUtils');
 
@@ -13,17 +13,16 @@ module.exports = {
   /**
    * sets the input to the correct mode
    */
-  mode : function mode(mode) {
-
+  mode : function mode(_mode) {
     // get the dropdown
-    var dropdown = element(by.css('[data-find-patient-dropdown-toggle]'));
+    const dropdown = element(by.css('[data-find-patient-dropdown-toggle]'));
     dropdown.click();
 
     // are we searching by id or name?
-    var tmpl = (mode === 'id') ? 'ID' : 'NAME';
+    const tmpl = (_mode === 'id') ? 'ID' : 'NAME';
 
     // click the correct dropdown item
-    var option = element(by.css(`[data-find-patient-option="FORM.LABELS.PATIENT_${tmpl}"]`));
+    const option = element(by.css(`[data-find-patient-option="FORM.LABELS.PATIENT_${tmpl}"]`));
     option.click();
   },
 
@@ -31,10 +30,7 @@ module.exports = {
    * searches for a patient by name
    * @todo - this needs to be improved to select directly from the typeahead
    */
-  findByName: function findByName(name) {
-
-    var root = element(by.css(this.selector));
-
+  findByName : function findByName(name) {
     // set the input to "find by name" mode
     this.mode('name');
 
@@ -54,11 +50,11 @@ module.exports = {
     FU.input('$ctrl.idInput', id);
 
     // submit the id to the server
-    var submit = element(by.css('[data-find-patient-submit]'));
+    const submit = element(by.css('[data-find-patient-submit]'));
     submit.click();
   },
 
   reset : function reset() {
     $('[ng-click="$ctrl.reset()"]').click();
-  }
+  },
 };

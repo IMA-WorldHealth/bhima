@@ -2,6 +2,7 @@
   <ui-select append-to-body="true"
     name="lot"
     ng-model="row.entity.lot"
+    ng-change="grid.appScope.checkValidity()"
     required>
     <ui-select-match placeholder="{{ ::'FORM.PLACEHOLDERS.LOT' | translate }}">
       <span>{{$select.selected.label}}</span>
