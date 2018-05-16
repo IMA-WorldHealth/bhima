@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 // dependencies injections
 StockExitController.$inject = [
   'DepotService', 'InventoryService', 'NotifyService', 'SessionService', 'util',
-  'bhConstants', 'ReceiptModal', 'StockFormService', 'StockService',
+  'bhConstants', 'ReceiptModal', 'StockItemService', 'StockFormService', 'StockService',
   'StockModalService', 'uiGridConstants', '$translate', 'appcache',
   'moment', 'GridExportService', 'Store',
 ];
@@ -325,6 +325,7 @@ function StockExitController(
     StockModal.openFindPatient({ entity_uuid : vm.selectedEntityUuid })
       .then(patient => {
         handleSelectedEntity(patient, 'patient');
+        loadInvoiceInventories(patient);
       })
       .catch(Notify.handleError);
   }
@@ -400,6 +401,7 @@ function StockExitController(
     vm.movement.description = null;
     vm.reference = null;
     vm.displayName = null;
+    vm.inventoryNotAvailable = [];
   }
 
   function submit(form) {
@@ -431,9 +433,13 @@ function StockExitController(
 
   // submit patient
   function submitPatient() {
+    const invoiceUuid = vm.movement.entity.instance.invoice && vm.movement.entity.instance.invoice ?
+      vm.movement.entity.instance.invoice.details.uuid : null;
+
     const movement = {
       depot_uuid : vm.depot.uuid,
       entity_uuid : vm.movement.entity.uuid,
+      invoice_uuid : invoiceUuid,
       date : vm.movement.date,
       description : vm.movement.description,
       is_exit : 1,

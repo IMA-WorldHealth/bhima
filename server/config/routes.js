@@ -333,6 +333,7 @@ exports.configure = function configure(app) {
   // Patient invoice API
   app.get('/invoices', patientInvoice.read);
   app.post('/invoices', patientInvoice.create);
+  app.get('/invoices/consumable/', patientInvoice.lookupConsumableInvoicePatient);
   app.get('/invoices/:uuid', patientInvoice.detail);
   app.get('/invoices/:uuid/balance', patientInvoice.balance);
 

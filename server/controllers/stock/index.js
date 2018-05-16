@@ -231,6 +231,7 @@ function normalMovement(document, params, metadata) {
   );
 
   parameters.entity_uuid = parameters.entity_uuid ? db.bid(parameters.entity_uuid) : null;
+  parameters.invoice_uuid = parameters.invoice_uuid ? db.bid(parameters.invoice_uuid) : null;
 
   parameters.lots.forEach((lot) => {
     createMovementQuery = 'INSERT INTO stock_movement SET ?';
@@ -247,6 +248,7 @@ function normalMovement(document, params, metadata) {
       flux_id : parameters.flux_id,
       description : parameters.description,
       user_id : document.user,
+      invoice_uuid : parameters.invoice_uuid,
     };
 
     // transaction - add movement
