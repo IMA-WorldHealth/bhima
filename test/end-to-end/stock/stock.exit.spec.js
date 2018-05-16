@@ -7,6 +7,7 @@ function StockExiTests() {
   const DEPOT_PRINCIPAL = 'Depot Principal';
   const DEPOT_SECONDAIRE = 'Depot Secondaire';
   const PATIENT = 'PA.TPA.2';
+  const INVOICE = 'IV.TPA.2';
   const SERVICE = 'Medecine Interne';
   const DESCRIPTION = 'Sortie de stock';
 
@@ -35,6 +36,20 @@ function StockExiTests() {
 
     // second item
     page.setItem(1, 'Multivitamine', 'VITAMINE-A', 10);
+
+    // submit
+    page.submit();
+  });
+
+  it(`Should distribute the stock to the patient ${PATIENT} linked with the invoice ${INVOICE} `, () => {
+    // select the patient
+    page.setPatient(PATIENT, INVOICE, true);
+
+    page.setDate(new Date());
+
+    page.setDescription(DESCRIPTION.concat(' - Patient'));
+
+    page.setLot(0, 'QUININE-A');
 
     // submit
     page.submit();

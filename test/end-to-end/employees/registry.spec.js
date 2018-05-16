@@ -10,7 +10,7 @@ describe('Employees Registry', () => {
   const path = '#!/employees';
   const employeeRegistryPage = new EmployeeRegistryPage();
   const searchModalPage = new SearchModalPage();
-  const employeeCount = 2;
+  const employeeCount = 3;
   const ONE_EMPLOYEE = 1;
   const parameters = {
     name : 'Dedrick',
@@ -62,7 +62,7 @@ describe('Employees Registry', () => {
     searchModalPage.selectSex('male');
     searchModalPage.submit();
 
-    employeeRegistryPage.employeeCount(employeeCount, `The number of filtered employee should be ${employeeCount}`);
+    employeeRegistryPage.employeeCount(parameters.twoFilters, `The number of filtered employee should be ${parameters.twoFilters}`);
     employeeRegistryPage.clearFilter();
     employeeRegistryPage.employeeCount(employeeCount, `The number of filtered employee should be ${employeeCount}`);
   });

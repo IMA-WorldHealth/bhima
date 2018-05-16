@@ -7,7 +7,12 @@
  */
 
 const employeeRegistration = require('./registrations');
+const employeeMultiPayroll = require('./multipayroll');
+const payslipGenerator = require('./payslipGenerator');
+
 // expose to the express router
 module.exports = {
   employeeRegistrations : employeeRegistration,
+  employeeMultiPayroll,
+  payslipGenerator,
 };

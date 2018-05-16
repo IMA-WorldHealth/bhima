@@ -16,7 +16,6 @@ describe('Employees', () => {
     sex          : 'M',
     dob           : '30/06/1960',
     date_embauche : '17/05/1997',
-    nb_spouse     : 1,
     nb_enfant     : 2,
     bank          : 'BIAC',
     bank_account  : '00-99-88-77',
@@ -48,13 +47,19 @@ describe('Employees', () => {
     registrationPage.setOriginLocation(helpers.data.locations);
     registrationPage.setCurrentLocation(helpers.data.locations);
     registrationPage.setHiringDate(employee.date_embauche);
-    registrationPage.setNumberSpouse(employee.nb_spouse);
     registrationPage.setNumberChild(employee.nb_enfant);
     registrationPage.setService('Administration');
     registrationPage.setFonction('Infirmier');
     registrationPage.setIsMedical();
     registrationPage.setEmail(employee.email);
     registrationPage.setAddress(employee.adresse);
+    registrationPage.setCurrencyInput('individual_salary', 0);
+
+    registrationPage.setCurrencyInput('TPR', 0);
+    registrationPage.setCurrencyInput('v_cher', 30);
+    registrationPage.setCurrencyInput('f_scol', 0);
+    registrationPage.setCurrencyInput('allc', 120);
+
     registrationPage.setBank(employee.bank);
     registrationPage.setBankAccount(employee.bank_account);
 

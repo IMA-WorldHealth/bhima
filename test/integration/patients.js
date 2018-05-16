@@ -77,7 +77,7 @@ describe('(/patients) Patients', function () {
     it('GET /patients with missing necessary parameters should succeed', function () {
       return agent.get('/patients/?')
         .then(function (res) {
-          helpers.api.listed(res, 4);
+          helpers.api.listed(res, 5);
         })
         .catch(helpers.handler);
     });
@@ -97,7 +97,7 @@ describe('(/patients) Patients', function () {
       return agent.get('/patients/')
         .query(conditions)
         .then((res) => {
-          helpers.api.listed(res, 2);
+          helpers.api.listed(res, 3);
         })
         .catch(helpers.handler);
     });
@@ -107,7 +107,7 @@ describe('(/patients) Patients', function () {
       return agent.get('/patients/search/name')
         .query(conditions)
         .then((res) => {
-          helpers.api.listed(res, 2);
+          helpers.api.listed(res, 3);
 
           const firstRecord = res.body[0];
           expect(firstRecord).to.have.all.keys(['uuid', 'display_name', 'reference', 'color']);
@@ -170,7 +170,7 @@ describe('(/patients) Patients', function () {
             'is_convention', 'locked',
           ];
 
-          helpers.api.listed(res, 2);
+          helpers.api.listed(res, 3);
 
           expect(res.body[0]).to.contain.all.keys(expected);
           return agent.get('/patients/?display_name=Test&limit=1');
@@ -183,7 +183,7 @@ describe('(/patients) Patients', function () {
   });
 
   it('GET /patients returns a list of patients', function () {
-    var INITIAL_TEST_PATIENTS = 3;
+    var INITIAL_TEST_PATIENTS = 4;
     return agent.get('/patients')
       .then((res) => {
         helpers.api.listed(res, INITIAL_TEST_PATIENTS);

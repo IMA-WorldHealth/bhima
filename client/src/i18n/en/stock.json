@@ -54,6 +54,8 @@
     "INCREASE_HELP"   : "Adjustment of stock by increasing the quantity of lots of products in stock",
     "INVENTORY"       : "Inventory",
     "INVENTORY_GROUP" : "Inventory Group",
+    "INVENTORY_NOT_AVAILABLE" : "Inventories not available",
+    "PRODUCT_NOT_AVAILABLE" : "Products not available",
     "INVENTORY_UNIT"  : "Unit",
     "INPUT"           : "Input",
     "INTEGRATION"     : "Integration",

@@ -42,19 +42,19 @@ function StockMovementsRegistryTests() {
     // for Exit
     modal.setEntryExit(1);
     modal.submit();
-    GU.expectRowCount(gridId, 8 + depotGroupingRow);
+    GU.expectRowCount(gridId, 9 + depotGroupingRow);
   });
 
   it('find movements by depot', () => {
     modal.setDepot('Depot Principal');
     modal.submit();
-    GU.expectRowCount(gridId, 17 + depotGroupingRow);
+    GU.expectRowCount(gridId, 18 + depotGroupingRow);
   });
 
   it('find movements by inventory', () => {
     modal.setInventory('Quinine sulphate 500mg');
     modal.submit();
-    GU.expectRowCount(gridId, 13 + (2 * depotGroupingRow));
+    GU.expectRowCount(gridId, 14 + (2 * depotGroupingRow));
   });
 
 
@@ -65,7 +65,7 @@ function StockMovementsRegistryTests() {
   });
 
   it('find by lots reasons for purchase order', () => {
-    modal.setMovementReason(["Commande d'achat"]);
+    modal.setMovementReason(['Commande d\'achat']);
     modal.submit();
     GU.expectRowCount(gridId, 8 + depotGroupingRow);
   });
@@ -74,7 +74,7 @@ function StockMovementsRegistryTests() {
     // to patient
     modal.setMovementReason(['Vers un patient']);
     modal.submit();
-    GU.expectRowCount(gridId, 2 + depotGroupingRow);
+    GU.expectRowCount(gridId, 3 + depotGroupingRow);
   });
 
   it('find by lots reasons for distribution to depot', () => {

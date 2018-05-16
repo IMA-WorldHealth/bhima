@@ -49,13 +49,17 @@
       "RECEIPT":{
         "SUCCESS":"Voucher Payment recorded successfully."
       },
-      "ERROR_SAME_ACCOUNT": "You cannot use the same account twice to in this transaction. Please select two different accounts."
+      "ERROR_SAME_ACCOUNT": "You cannot use the same account twice to in this transaction. Please select two different accounts.",
+      "PAYMENT_EMPLOYEES": "Payment of wages {{date}}"
     },
     "SIMPLE": {
       "CASH_PAYMENT": "Client Payment",
       "CASH_RETURN": "Cash Return (Payback)",
+      "CHARGE_REMUNERATION": "Social charges on remuneration",
+      "COMMITMENT": "Commitment",      
       "CONVENTION_PAYMENT": "Convention Payment",
       "CREDIT_NOTE": "Credit Note",
+      "EMPLOYEE_WITHHOLDINGS": "Employee withholdings",
       "EXPENSE": "Expenses",
       "INCOME": "Incomes",
       "INVOICING": "Invoicing",
