@@ -37,6 +37,8 @@ function InvoiceRegistryController(
   // date format function
   vm.format = util.formatDate;
 
+  vm.allowsRecordDeletion = allowsRecordDeletion;
+
   // track if module is making a HTTP request for invoices
   vm.loading = false;
   vm.enterprise = Session.enterprise;
@@ -235,6 +237,10 @@ function InvoiceRegistryController(
       .then(isOk => {
         if (isOk) { remove(entity); }
       });
+  }
+
+  function allowsRecordDeletion() {
+    return Session.enterprise.settings.enable_delete_records;
   }
 
   // fire up the module

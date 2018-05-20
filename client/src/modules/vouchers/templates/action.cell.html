@@ -27,10 +27,10 @@
       </a>
     </li>
 
-    <li class="divider"></li>
+    <li class="divider" ng-if="grid.appScope.allowRecordDeletion()"></li>
 
     <!-- delete voucher record -->
-    <li>
+    <li ng-if="grid.appScope.allowsRecordDeletion()">
       <a data-method="delete-record" href ng-click="grid.appScope.deleteVoucher(row.entity)">
         <span class="text-danger"><i class="fa fa-trash-o"></i> <span translate>FORM.BUTTONS.DELETE_RECORD</span></span>
       </a>

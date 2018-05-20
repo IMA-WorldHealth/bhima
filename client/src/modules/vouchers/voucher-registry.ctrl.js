@@ -5,6 +5,7 @@ VoucherController.$inject = [
   'VoucherService', 'NotifyService', 'uiGridConstants', 'ReceiptModal',
   'TransactionTypeService', 'bhConstants', 'GridSortingService',
   'GridColumnService', 'GridStateService', '$state', 'ModalService', 'util',
+  'SessionService',
 ];
 
 /**
@@ -17,7 +18,7 @@ VoucherController.$inject = [
  */
 function VoucherController(
   Vouchers, Notify, uiGridConstants, Receipts, TransactionTypes, bhConstants,
-  Sorting, Columns, GridState, $state, Modals, util
+  Sorting, Columns, GridState, $state, Modals, util, Session
 ) {
   const vm = this;
 
@@ -39,6 +40,8 @@ function VoucherController(
 
   // date format function
   vm.format = util.formatDate;
+
+  vm.allowsRecordDeletion = allowsRecordDeletion;
 
   vm.loading = false;
 
@@ -238,6 +241,10 @@ function VoucherController(
       .then(isOk => {
         if (isOk) { remove(entity); }
       });
+  }
+
+  function allowsRecordDeletion() {
+    return Session.enterprise.settings.enable_delete_records;
   }
 
   vm.showReceipt = Receipts.voucher;
