@@ -44,7 +44,7 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Session, Modals, 
   vm.enterprise = Session.enterprise;
 
   // this toggles whether the form should re-enter the checkbox state
-  const DEFAULT_BARCODE_CHECKBOX_STATE = true;
+  const DEFAULT_BARCODE_CHECKBOX_STATE = false;
 
   // bind methods
   vm.submit = submit;
@@ -97,10 +97,7 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Session, Modals, 
     $state.go('cash.debtors', {
       id : vm.cashbox.id,
       debtor_uuid : vm.Payment.details.debtor_uuid,
-      invoices : vm.Payment.details.invoices
-        .map((invoice) => {
-          return invoice.uuid;
-        }),
+      invoices : vm.Payment.details.invoices.map(invoice => invoice.uuid),
     });
   }
 
@@ -150,9 +147,7 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Session, Modals, 
       .concat(' -- ', cachedPaymentDescription);
 
     return Cash.create(copy)
-      .then((response) => {
-        return Receipts.cash(response.uuid, true);
-      })
+      .then(response => Receipts.cash(response.uuid, true))
       .then(() => {
         // clear and refresh the form
         clear(form);
