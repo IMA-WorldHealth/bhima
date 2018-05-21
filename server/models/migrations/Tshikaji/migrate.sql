@@ -249,15 +249,24 @@ ON DUPLICATE KEY UPDATE id = bhima.service.id;
   select count(*) from sale where sale.seller_id not in (select id from `user`);
   I WILL CONSIDER JUST SALE MADE BY EXISTING USERS
 */
-ALTER TABLE `invoice` DROP KEY `invoice_1`;
 INSERT INTO invoice (project_id, reference, `uuid`, cost, debtor_uuid, service_id, user_id, `date`, description)
-SELECT project_id, reference, HUID(`uuid`), cost, HUID(debitor_uuid), service_id, seller_id, invoice_date, note FROM bhima.sale WHERE bhima.sale.seller_id IN (SELECT u.id FROM bhima.user u)
+SELECT project_id, reference, HUID(`uuid`), cost, HUID(debitor_uuid), service_id, seller_id, invoice_date, note FROM bhima.sale WHERE bhima.sale.seller_id IN (SELECT id FROM bhima.user)
 ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.sale.`uuid`);
-ALTER TABLE `invoice` ADD CONSTRAINT `invoice_1` UNIQUE (`project_id`, `reference`);
 
 /* INVOICE ITEM */
+/*
+  SELECT JUST invoice_item for invoice who exist
+*/
+/* INSERT INTO invoice_item (invoice_uuid, `uuid`, inventory_uuid, quantity, inventory_price, transaction_price, debit, credit)
+SELECT HUID(sale_uuid), HUID(`uuid`), HUID(inventory_uuid), quantity, inventory_price, transaction_price, debit, credit FROM bhima.sale_item WHERE bhima.sale_item.sale_uuid IN (
+  SELECT `uuid` FROM bhima.sale WHERE bhima.sale.seller_id IN (SELECT id FROM bhima.`user`)
+)
+ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.sale_item.`uuid`); */
+
 INSERT INTO invoice_item (invoice_uuid, `uuid`, inventory_uuid, quantity, inventory_price, transaction_price, debit, credit)
-SELECT HUID(sale_uuid), HUID(`uuid`), HUID(inventory_uuid), quantity, inventory_price, transaction_price, debit, credit FROM bhima.sale_item WHERE bhima.sale_item.sale_uuid IN (SELECT `uuid` FROM bhima.sale WHERE bhima.sale.seller_id IN (SELECT u.id FROM bhima.user u))
+SELECT HUID(sale_uuid), HUID(`uuid`), HUID(inventory_uuid), quantity, inventory_price, transaction_price, debit, credit FROM bhima.sale_item WHERE bhima.sale_item.sale_uuid IN (
+  SELECT BUID(`uuid`) COLLATE utf8_unicode_ci FROM invoice
+)
 ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.sale_item.`uuid`);
 
 
