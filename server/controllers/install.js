@@ -100,21 +100,29 @@ exports.proceedInstall = (req, res, next) => {
       delete _user.repassword;
     }
 
+    // default values for enterprise settigns
+    const enterpriseSetting = { enterprise_id : ENTERPRISE_ID };
+
     // prepare transactions
     const transaction = db.transaction();
     const sqlEnterprise = 'INSERT INTO enterprise SET ? ';
+    const sqlEnterpriseSettings = 'INSERT INTO enterprise_setting SET ?';
     const sqlProject = 'INSERT INTO project SET ? ';
     const sqlUser = `
       INSERT INTO user (username, password, display_name) VALUES (?, PASSWORD(?), ?);`;
+
     const sqlRole = `CALL superUserRole(${USER_ID}, ${PROJECT_ID})`;
 
     const sqlProjectPermission = 'INSERT INTO project_permission SET ? ';
 
-    transaction.addQuery(sqlEnterprise, _enterprise);
-    transaction.addQuery(sqlProject, _project);
-    transaction.addQuery(sqlUser, [_user.username, _user.password, _user.display_name]);
-    transaction.addQuery(sqlProjectPermission, { user_id : USER_ID, project_id : PROJECT_ID });
-    transaction.addQuery(sqlRole);
+    transaction
+      .addQuery(sqlEnterprise, _enterprise)
+      .addQuery(sqlEnterpriseSettings, enterpriseSetting)
+      .addQuery(sqlProject, _project)
+      .addQuery(sqlUser, [_user.username, _user.password, _user.display_name])
+      .addQuery(sqlProjectPermission, { user_id : USER_ID, project_id : PROJECT_ID })
+      .addQuery(sqlRole);
+
     return transaction.execute();
   }
 };
