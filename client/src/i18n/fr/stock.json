@@ -115,7 +115,7 @@
     "SECURITY"        : "Stock de securité",
     "STATUS"          : {
       "IN_STOCK"      : "Disponible",
-      "LABEL"         : "Etat",
+      "LABEL"         : "État",
       "MAXIMUM"       : "Stock Max Atteint",
       "MINIMUM"       : "Stock Min Atteint",
       "OVER_MAX"      : "Stock Max Depassé",
