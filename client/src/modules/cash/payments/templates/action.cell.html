@@ -12,8 +12,9 @@
         <span translate>FORM.INFO.EDITED</span>
       </span>
     </li>
+
     <li>
-      <a href data-method="receipt" ng-click="grid.appScope.openReceiptModal(row.entity.uuid)">
+      <a href data-method="receipt" ng-click="grid.appScope.Receipts.cash(row.entity.uuid)">
         <i class="fa fa-file-pdf-o"></i> <span translate>TABLE.COLUMNS.RECEIPT</span>
       </a>
     </li>
@@ -56,7 +57,7 @@
       </a>
     </li>
 
-    <li ng-hide="row.entity._hasCreditNote">
+    <li ng-hide="row.entity._hasCreditNote"  ng-if="grid.appScope.allowsRecordDeletion()">
       <a data-method="delete-record" href ng-click="grid.appScope.deleteCashPayment(row.entity)">
         <span class="text-danger"><i class="fa fa-trash"></i> <span translate>FORM.BUTTONS.DELETE_RECORD</span></span>
       </a>

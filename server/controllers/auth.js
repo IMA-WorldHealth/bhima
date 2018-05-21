@@ -232,7 +232,7 @@ function loadSessionInformation(user) {
       [session.enterprise] = rows;
 
       sql = `
-        SELECT enable_price_lock, enable_prepayments FROM enterprise_setting
+        SELECT enable_price_lock, enable_prepayments, enable_delete_records FROM enterprise_setting
         WHERE enterprise_id = ?;
       `;
 

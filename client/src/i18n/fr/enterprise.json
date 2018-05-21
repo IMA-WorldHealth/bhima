@@ -13,7 +13,9 @@
       "ENABLE_PRICE_LOCK_LABEL" : "Verrouiller les changements de prix pour la facturation des patients",
       "ENABLE_PRICE_LOCK_HELP_TEXT" : "L'activation de cette fonctionnalité empêchera les utilisateurs de modifier les prix des articles en stock dans le module Facturation de Patients.",
       "ENABLE_PREPAYMENTS_LABEL" : "Activer les Cautions",
-      "ENABLE_PREPAYMENTS_HELP_TEXT" : "L'activation de cette fonctionnalité permet aux patients de déposer des fonds à la fenêtre de paiement avant d'être facturé. Si le patient a un solde créditeur, ses factures seront automatiquement payées après facturation."
+      "ENABLE_PREPAYMENTS_HELP_TEXT" : "L'activation de cette fonctionnalité permet aux patients de déposer des fonds à la fenêtre de paiement avant d'être facturé. Si le patient a un solde créditeur, ses factures seront automatiquement payées après facturation.",
+      "ENABLE_DELETE_RECORDS_LABEL" : "Activer la Suppression d'Enregistrements",
+      "ENABLE_DELETE_RECORDS_HELP_TEXT" : "Cette fonctionnalité permet aux utilisateurs de supprimer des transactions comme une alternative à l'inversion des transactions directement à partir des registres."
     }
   }
 }

@@ -7,8 +7,8 @@ SET NAMES 'utf8';
 INSERT INTO `enterprise` VALUES
   (1, 'Test Enterprise', 'TE', '243 81 504 0540', 'enterprise@test.org', HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), NULL, 2, 103, NULL, NULL);
 
-INSERT INTO `enterprise_setting` (enterprise_id, enable_price_lock) VALUES
-  (1, 0);
+INSERT INTO `enterprise_setting` (enterprise_id, enable_price_lock, enable_delete_records) VALUES
+  (1, 0, 1);
 
 -- Project
 INSERT INTO `project` VALUES
