@@ -42,19 +42,25 @@ SELECT HUID(`uuid`), country_fr FROM bhima.country
 ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.country.`uuid`), name = bhima.country.country_fr;
 
 /* PROVINCE */
+ALTER TABLE `province` DROP KEY `province_1`;
 INSERT INTO province (`uuid`, name, country_uuid) 
 SELECT HUID(`uuid`), name, HUID(country_uuid) FROM bhima.province
 ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.province.`uuid`), name = bhima.province.name;
+ALTER TABLE `province` ADD CONSTRAINT `province_1` UNIQUE (name, country_uuid);
 
 /* SECTOR */
+ALTER TABLE `sector` DROP KEY `sector_1`;
 INSERT INTO sector (`uuid`, name, province_uuid) 
 SELECT HUID(`uuid`), name, HUID(province_uuid) FROM bhima.sector
 ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.sector.`uuid`), name = bhima.sector.name;
+ALTER TABLE `sector` ADD CONSTRAINT `sector_1` UNIQUE (name, province_uuid);
 
 /* VILLAGE */
+ALTER TABLE `village` DROP KEY `village_1`;
 INSERT INTO village (`uuid`, name, sector_uuid) 
 SELECT HUID(`uuid`), name, HUID(sector_uuid) FROM bhima.village
 ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.village.`uuid`), name = bhima.village.name;
+ALTER TABLE `village` ADD CONSTRAINT `village_1` UNIQUE (name, sector_uuid);
 
 /* ENTERPRISE  */
 INSERT INTO enterprise (id, name, abbr, phone, email, location_id, logo, currency_id, po_box, gain_account_id, loss_account_id)
@@ -162,6 +168,98 @@ INSERT INTO account (id, type_id, enterprise_id, `number`, label, parent, locked
 SELECT id, account_type_id, enterprise_id, account_number, account_txt, parent, locked, cc_id, pc_id, created, classe, reference_id FROM bhima.account
 ON DUPLICATE KEY UPDATE id = bhima.account.id;
 ALTER TABLE `account` ADD CONSTRAINT `account_1` UNIQUE (`number`);
+
+/* INVENTORY GROUP */
+ALTER TABLE `inventory_group` DROP KEY `inventory_group_1`;
+ALTER TABLE `inventory_group` DROP KEY `inventory_group_2`;
+INSERT INTO inventory_group (`uuid`, name, code, sales_account, cogs_account, stock_account, donation_account, expires, unique_item)
+SELECT HUID(`uuid`), name, code, sales_account, cogs_account, stock_account, donation_account, 1, 0 FROM bhima.inventory_group
+ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.inventory_group.`uuid`);
+ALTER TABLE `inventory_group` ADD CONSTRAINT `inventory_group_1` UNIQUE (`name`);
+ALTER TABLE `inventory_group` ADD CONSTRAINT `inventory_group_2` UNIQUE (`code`);
+
+/* INVENTORY UNIT */
+INSERT INTO inventory_unit (id, abbr, `text`)
+SELECT id, `text`, `text` FROM bhima.inventory_unit
+ON DUPLICATE KEY UPDATE id = bhima.inventory_unit.id;
+
+/* INVENTORY TYPE */
+INSERT INTO inventory_type (id, `text`)
+SELECT id, `text` FROM bhima.inventory_type
+ON DUPLICATE KEY UPDATE id = bhima.inventory_type.id;
+
+/* INVENTORY */
+ALTER TABLE `inventory` DROP KEY `inventory_1`;
+ALTER TABLE `inventory` DROP KEY `inventory_2`;
+INSERT INTO inventory (enterprise_id, `uuid`, code, `text`, price, default_quantity, group_uuid, unit_id, unit_weight, unit_volume, stock, stock_max, stock_min, type_id, consumable, sellable, note, locked, delay, avg_consumption, purchase_interval, num_purchase, num_delivery, created_at, updated_at)
+SELECT enterprise_id, HUID(`uuid`), code, `text`, price, 1, HUID(group_uuid), unit_id, unit_weight, unit_volume, stock, stock_max, stock_min, type_id, consumable, 1, `text`, 0, 1, 1, 1, 0, 0, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP() FROM bhima.inventory 
+ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.inventory.`uuid`);
+ALTER TABLE `inventory` ADD CONSTRAINT `inventory_1` UNIQUE (group_uuid, `text`);
+ALTER TABLE `inventory` ADD CONSTRAINT `inventory_2` UNIQUE (code);
+
+/* PRICE LIST */
+INSERT INTO price_list (`uuid`, enterprise_id, label, description, created_at, updated_at) 
+SELECT HUID(`uuid`), enterprise_id, title, description, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP() FROM bhima.price_list 
+ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.price_list.`uuid`);
+
+/* PRICE LIST ITEM */
+/* AMPICILINE_UUID IS A DEFAULT EXISTING INVENTORY_UUID FOR AVOIDING ERRORS IN CASE OF NULL */
+SET @AMPICILINE_UUID = '00efb27b-0d50-4561-bf13-94337c069c2a';
+INSERT INTO price_list_item (`uuid`, inventory_uuid, price_list_uuid, label, value, is_percentage, created_at) 
+SELECT HUID(`uuid`), IFNULL(HUID(inventory_uuid), HUID(@AMPICILINE_UUID)), HUID(price_list_uuid), CAST(description AS CHAR(250)), value, 0, CURRENT_TIMESTAMP() FROM bhima.price_list_item
+ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.price_list_item.`uuid`);
+
+/* DEBTOR GROUP */
+/* Account with Ids : 210, 257, 1074 doesn't exist */
+ALTER TABLE `debtor_group` DROP KEY `debtor_group_1`;
+ALTER TABLE `debtor_group` DROP KEY `debtor_group_2`;
+INSERT INTO debtor_group (enterprise_id, `uuid`, name, account_id, location_id, phone, email, note, locked, max_credit, is_convention, price_list_uuid, apply_discounts, apply_invoicing_fees, apply_subsidies, created_at, updated_at)
+SELECT enterprise_id, HUID(`uuid`), name, account_id, HUID(location_id), phone, email, note, locked, max_credit, is_convention, HUID(price_list_uuid), 1, 1, 1, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP() FROM bhima.debitor_group WHERE bhima.debitor_group.account_id NOT IN (210, 257, 1074)
+ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.debitor_group.`uuid`);
+ALTER TABLE `debtor_group` ADD CONSTRAINT `debtor_group_1` UNIQUE (`name`);
+ALTER TABLE `debtor_group` ADD CONSTRAINT `debtor_group_2` UNIQUE (`name`, `account_id`);
+
+/* DEBTOR */
+/*
+  THERE IS DEBTOR WHO BELONGS TO A GROUP WHICH DOESN'T HAVE AN EXISTING ACCOUNT ID
+*/
+INSERT INTO debtor (`uuid`, group_uuid, `text`) 
+SELECT HUID(`uuid`), HUID(group_uuid), SUBSTRING(`text`, 0, 99) FROM bhima.debitor WHERE bhima.debitor.uuid NOT IN (
+  SELECT d.uuid FROM bhima.debitor d JOIN bhima.debitor_group dg ON dg.uuid = d.group_uuid WHERE dg.account_id IN (210, 257, 1074))
+ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.debitor.`uuid`);
+
+/* CREDITOR GROUP */
+INSERT INTO creditor_group (enterprise_id, `uuid`, name, account_id, locked) 
+SELECT enterprise_id, HUID(`uuid`), name, account_id, locked FROM bhima.creditor_group
+ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.creditor_group.`uuid`);
+
+/* CREDITOR */
+INSERT INTO creditor (`uuid`, group_uuid, `text`) 
+SELECT HUID(`uuid`), HUID(group_uuid), SUBSTRING(`text`, 0, 99) FROM bhima.creditor 
+ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.creditor.`uuid`);
+
+/* SERVICE */
+INSERT INTO service (id, `uuid`, enterprise_id, name, cost_center_id, profit_center_id) 
+SELECT id, HUID(UUID()), 200, name, cost_center_id, profit_center_id FROM bhima.service
+ON DUPLICATE KEY UPDATE id = bhima.service.id;
+
+/* INVOICE */
+/*
+  THERE ARE SALE (58) MADE BY USER (SELLER_ID) WHO DOESN'T EXIST IN THE USER TABLE
+  select count(*) from sale where sale.seller_id not in (select id from `user`);
+  I WILL CONSIDER JUST SALE MADE BY EXISTING USERS
+*/
+ALTER TABLE `invoice` DROP KEY `invoice_1`;
+INSERT INTO invoice (project_id, reference, `uuid`, cost, debtor_uuid, service_id, user_id, `date`, description)
+SELECT project_id, reference, HUID(`uuid`), cost, HUID(debitor_uuid), service_id, seller_id, invoice_date, note FROM bhima.sale WHERE bhima.sale.seller_id IN (SELECT u.id FROM bhima.user u)
+ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.sale.`uuid`);
+ALTER TABLE `invoice` ADD CONSTRAINT `invoice_1` UNIQUE (`project_id`, `reference`);
+
+/* INVOICE ITEM */
+INSERT INTO invoice_item (invoice_uuid, `uuid`, inventory_uuid, quantity, inventory_price, transaction_price, debit, credit)
+SELECT HUID(sale_uuid), HUID(`uuid`), HUID(inventory_uuid), quantity, inventory_price, transaction_price, debit, credit FROM bhima.sale_item WHERE bhima.sale_item.sale_uuid IN (SELECT `uuid` FROM bhima.sale WHERE bhima.sale.seller_id IN (SELECT u.id FROM bhima.user u))
+ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.sale_item.`uuid`);
+
 
 /* POSTING JOURNAL*/
 /*
