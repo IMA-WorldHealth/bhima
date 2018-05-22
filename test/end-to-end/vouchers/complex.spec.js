@@ -223,7 +223,7 @@ describe('Complex Vouchers', () => {
 
   it('Generic Income via the tool', () => {
     const detail = {
-      tool        : 'Recette Generique',
+      tool        : 'Recette Générique',
       cashbox     : 'Caisse Aux',
       account     : '41111010', // CHURCH
       description : 'E2E RECETTE GENERIQUE',
@@ -260,7 +260,7 @@ describe('Complex Vouchers', () => {
 
   it('Generic Expense via the tool', () => {
     const detail = {
-      tool        : 'Depense Generique',
+      tool        : 'Dépense Générique',
       cashbox     : 'Caisse Aux',
       account     : '60521010', // 60521010 - Electricité
       description : 'Payment for electricity',
