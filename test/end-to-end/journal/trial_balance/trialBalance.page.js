@@ -1,15 +1,14 @@
-/* global element, by, browser */
+/* global element, by */
 
 function TrialBalancePage() {
   const page = this;
 
-  const grid = element(by.id('main-grid'));
+  const grid = element(by.id('overview-grid'));
   const gridRows = grid
     .element(by.css('.ui-grid-render-container-body'))
     .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'));
   const viewErrorButton = $('[data-method="show-error"]');
-  const switchViewButton = element(by.id('switchViewID'));
-  const cancelButton = element(by.id('cancelID'));
+  const cancelButton = $('[data-method="cancel"]');
   const submitButton = $('[data-method="submit"]');
   const resetButton = $('[data-method="reset"]');
 
@@ -19,10 +18,6 @@ function TrialBalancePage() {
 
   function closeTrialBalance() {
     return cancelButton.click();
-  }
-
-  function switchView() {
-    return switchViewButton.click();
   }
 
   function getLineCount() {
@@ -54,7 +49,6 @@ function TrialBalancePage() {
   page.getLineCount = getLineCount;
   page.submitData = submitData;
   page.closeTrialBalance = closeTrialBalance;
-  page.switchView = switchView;
   page.viewErrorList = viewErrorList;
   page.resetView = resetView;
   page.showAccountDetailInTransaction = showAccountDetailInTransaction;
