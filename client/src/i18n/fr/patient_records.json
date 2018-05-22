@@ -3,7 +3,7 @@
     "CHECK_IN":{
       "TITLE":"Visites",
       "SUBMIT":"Confirmer la visite du patient",
-      "NOT_RECENT":"Ce patient n'a pas été à l'hopital récemment, vérifier le patient pour le suivi de cette visite à l'hôpital.",
+      "NOT_RECENT":"Ce patient n'a pas été à l'hopital récemment, Consulter le patient pour suivre cette visite à l'hôpital.",
       "ORIGINAL":"Ce patient n'a jamais été consulté à l'hopital.",
       "RECENT":"Visites récentes",
       "REPORT_TITLE":"Rapport de consultations des patients",
@@ -14,7 +14,7 @@
     "VISITS":{
       "TITLE":"Visites des patients",
       "ADMIT":"Admission à l'hôpital",
-      "ADMISSION_DIAGNOSIS":"Diagnostic Admission",
+      "ADMISSION_DIAGNOSIS":"Diagnostic d'admission",
       "ADMISSION":"Admission",
       "DISCHARGE":"Décharge",
       "ORIGINAL":"Ce patient n'a pas de visites enregistrées",
@@ -27,8 +27,8 @@
       "DEBTOR_GROUP":"Groupe débiteur",
       "REPORT_TITLE":"Activité Financière du Patient"
     },
-    "STAT_TOTAL_PATIENT":"Total Patients",
-    "STAT_TOTAL_VISIT":"Total Visits",
+    "STAT_TOTAL_PATIENT":"Total des patients",
+    "STAT_TOTAL_VISIT":"Total des visites",
     "STAT_TOTAL_NEW":"Nouveaux Patients",
     "IS_COVERED_BY":"est couvert par",
     "INVOICE_COVERED_BY":"Cette facture est couverte par",

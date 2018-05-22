@@ -1,7 +1,7 @@
 {
   "ERRORS" : {
-    "BAD_DATE_INTERVAL" : "Mauvais interval de date",
-    "BAD_REQUEST" : "Vous n'etes pas authorisé à faire cette operation",
+    "BAD_DATE_INTERVAL" : "Mauvaise intervalle de date",
+    "BAD_REQUEST" : "Vous n'etes pas authorisé à faire cette opération",
     "ERR_INTERNET_DISCONNECTED" : "Vous n'êtes pas connecté à un réseau.",
     "BAD_DATA_FORMAT" : "Mauvais format de données",
   	"HOLIDAY_NESTED" : "La periode de vacance définie pour cet employé est imbriqué avec une autre periode",

@@ -11,6 +11,7 @@ function ExchangeController(Session, Exchange, Notify, Currencies, $uibModal) {
 
   vm.loading = true;
   vm.enterpriseCurrencyId = Session.enterprise.currency_id;
+  vm.rates = [];
 
   // load the exchange rates
   function loadRates() {

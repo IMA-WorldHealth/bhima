@@ -6,14 +6,14 @@
     "CREATE_ANOTHER": "Créer un autre Groupe débiteur",
     "CREATED": "Groupes débiteurs enregistrés avec succès",
     "DEBTOR": {
-      "SUBSCRIBED": "Debiteurs souscris"
+      "SUBSCRIBED": "Débiteurs souscris"
     },
     "DELETE": "Supprimer le groupe débiteur",
-    "EDIT": "Editer le groupe debiteur",
+    "EDIT": "Éditer le groupe debiteur",
     "FAILURE_DELETE": "Echec de suppression du groupe débiteurs",
     "GROUPS": "Groupes Débiteurs",
     "HELP_TXT_1": "Cette interface vous permet de visualiser, trouver, et configurer un groupe de debiteur",
-    "HELP_TXT_2": "Editer le Groupe de debiteur Sélectionnée",
+    "HELP_TXT_2": "Éditer le Groupe de debiteur Sélectionnée",
     "HELP_TXT_3": "Bloquer le Groupe de debiteur sélectionné. Aucune transaction ne pourra etre Effectuée avec ce groupe",
     "HELP_TXT_4": "Crée un nouveau groupe de debiteur",
     "INFO": "Information du Groupe",
@@ -37,7 +37,7 @@
       },
       "INVOICING_FEES": {
         "TITLE": "Services des facturations",
-        "INFO": "Avec cette configuration, tous les membres de ce groupe débiteur sera exonéré de paiement des services de facturation appliqués automatiquement",
+        "INFO": "Avec cette configuration, tous les membres de ce groupe débiteur seront exonérés de paiement des services de facturation appliqués automatiquement",
         "LABEL": "Ce groupe est exempté du paiement des services de facturation",
         "EMPTY": "Ce groupe de débiteurs n'est pas abonné à des services de facturation",
         "UPDATE": "Mettre à jour les services de facturation"

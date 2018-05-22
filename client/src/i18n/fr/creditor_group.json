@@ -1,5 +1,5 @@
-{"CREDITOR_GROUP":{"BACK":"Retour vers la liste des groupes crediteurs",
-"CREATE":"Création d'un groupe crediteur",
-"UPDATE":"Mise à jour du groupe crediteur",
-"FAILURE_DELETE":"Echec de suppression du groupe crediteur",
+{"CREDITOR_GROUP":{"BACK":"Retour vers la liste des groupes créditeurs",
+"CREATE":"Création d'un groupe créditeur",
+"UPDATE":"Mise à jour du groupe créditeur",
+"FAILURE_DELETE":"Echec de suppression du groupe créditeur",
 "NO_CREDITOR_GROUP": "Il y a aucun group crediteur enregistré jusque là"}}
