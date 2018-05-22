@@ -53,6 +53,7 @@
       abbr : 'TE',
       location_id : '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
       currency_id : 1,
+      settings :  {},
     });
 
     service.project = () => ({

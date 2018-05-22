@@ -23,7 +23,7 @@ exports.list = function list(req, res, next) {
       SELECT id, name, abbr, email, po_box, phone,
         BUID(location_id) AS location_id, logo, currency_id,
         gain_account_id, loss_account_id, enable_price_lock, enable_prepayments,
-        enable_delete_records
+        enable_delete_records, enable_password_validation
       FROM enterprise LEFT JOIN enterprise_setting
         ON enterprise.id = enterprise_setting.enterprise_id
       ;`;
@@ -42,6 +42,7 @@ exports.list = function list(req, res, next) {
             'enable_price_lock',
             'enable_prepayments',
             'enable_delete_records',
+            'enable_password_validation',
           ];
 
           row.settings = _.pick(row, settings);
@@ -76,7 +77,11 @@ function lookupEnterprise(id) {
   `;
 
   const settingsSQL = `
-    SELECT enable_price_lock, enable_prepayments FROM enterprise_setting WHERE enterprise_id = ?;
+    SELECT
+      enable_price_lock,
+      enable_prepayments,
+      enable_password_validation
+    FROM enterprise_setting WHERE enterprise_id = ?;
   `;
 
   let enterprise;
