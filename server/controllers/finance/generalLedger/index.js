@@ -175,6 +175,8 @@ function getAccountTotalsMatrix(fiscalYearId) {
       accountsTree.walk(bulkSumFn, false);
 
       // prune empty rows
-      return accountsTree.prune(isEmptyRow);
+      accountsTree.prune(isEmptyRow);
+
+      return accountsTree.toArray();
     });
 }

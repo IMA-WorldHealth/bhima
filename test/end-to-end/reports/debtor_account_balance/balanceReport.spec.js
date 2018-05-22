@@ -1,7 +1,6 @@
 /* global browser */
 
 const helpers = require('../../shared/helpers');
-
 const DebtorClientAccountBalanceReportPage = require('./balance.page');
 
 describe('Debtor Clients Account Balance Report', () => {

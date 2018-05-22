@@ -7,7 +7,8 @@ describe('Balance Report', () => {
   const key = 'balance_report';
 
   const dataset = {
-    period : '2018',
+    month : 'juin',
+    year : '2018',
     reportName : 'Balance Report Saved by E2E',
     renderer : 'PDF',
   };
@@ -18,7 +19,7 @@ describe('Balance Report', () => {
   });
 
   it('preview a new balance report', () => {
-    Page.showBalanceReportPreview(dataset.period);
+    Page.showBalanceReportPreview(dataset.year, dataset.month);
   });
 
   it('close the previewed report', () => {
@@ -26,7 +27,7 @@ describe('Balance Report', () => {
   });
 
   it('save a previewed report', () => {
-    Page.saveBalanceReport(dataset.period, dataset.reportName, dataset.renderer);
+    Page.saveBalanceReport(dataset.year, dataset.month, dataset.reportName, dataset.renderer);
   });
 
   it('report has been saved into archive', () => {
@@ -34,6 +35,6 @@ describe('Balance Report', () => {
   });
 
   it('print the previewed report', () => {
-    Page.printBalanceReport(dataset.period);
+    Page.printBalanceReport(dataset.year, dataset.month);
   });
 });

@@ -1,9 +1,4 @@
-/* global browser, element, by */
-
-const chai = require('chai');
-const helpers = require('../../shared/helpers');
-
-helpers.configure(chai);
+/* global element, by */
 
 const FU = require('../../shared/FormUtils');
 const ReportPage = require('../page');
@@ -15,19 +10,21 @@ class DebtorsReportPage {
   }
 
   // preview a Debtors report
-  showDebtorsReportPreview(period, includeZero) {
-    components.reportPeriodSelect.set(period);
+  showDebtorsReportPreview(year, month, includeZero) {
+    components.fiscalYearSelect.set(year);
+    components.periodSelection.set(month);
+
 
     if (includeZero) {
       element(by.css('input[type="checkbox"]')).click();
     }
-    
+
     this.page.preview();
   }
 
   // save a Debtors report
-  saveDebtorsReport(period, includeZero, reportName, reportFormat) {
-    this.showDebtorsReportPreview(period, includeZero);
+  saveDebtorsReport(year, month, includeZero, reportName, reportFormat) {
+    this.showDebtorsReportPreview(year, month, includeZero);
 
     // save report as PDF
     this.page.saveAs();
@@ -41,8 +38,8 @@ class DebtorsReportPage {
   }
 
   // print a debtors report
-  printDebtorsReport(period, includeZero) {
-    this.showDebtorsReportPreview(period, includeZero);
+  printDebtorsReport(year, month, includeZero) {
+    this.showDebtorsReportPreview(year, month, includeZero);
     this.page.printPreview();
   }
 

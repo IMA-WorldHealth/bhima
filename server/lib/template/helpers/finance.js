@@ -27,9 +27,7 @@ function currency(value = 0, currencyId) {
  * @currencyName is the Name of currency
  */
 function numberToText(value, lang, currencyName) {
-  const numberText = NumberToText.convert(value, lang, currencyName);
-  const fmt = numberText;
-  return fmt;
+  return NumberToText.convert(value, lang, currencyName);
 }
 
 const INDENTATION_STEP = 40;
@@ -61,7 +59,15 @@ function debcred(value = 0, currencyId) {
   `);
 }
 
+function percentage(value = 0, precision = 2) {
+  if (!value || !Number.isFinite(value) || Number.isNaN(value)) { return ''; }
+
+  const str = (value * 100).toFixed(precision);
+  return `${str}%`;
+}
+
 exports.debcred = debcred;
 exports.currency = currency;
 exports.indentAccount = indentAccount;
 exports.numberToText = numberToText;
+exports.percentage = percentage;
