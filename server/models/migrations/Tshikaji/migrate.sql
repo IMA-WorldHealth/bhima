@@ -293,3 +293,9 @@ ON DUPLICATE KEY UPDATE uuid = HUID(bhima.posting_journal.uuid);
 INSERT INTO general_ledger (uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, record_uuid, description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id, entity_uuid, reference_uuid, comment, transaction_type_id, user_id, cc_id, pc_id, created_at, updated_at)
 SELECT HUID(`uuid`), project_id, bhima.general_ledger.fiscal_year_id, IF(bhima.general_ledger.fiscal_year_id = 6 OR bhima.general_ledger.fiscal_year_id = 7, 50 + period_number, period_id), trans_id, trans_date, IFNULL(doc_num, HUID(UUID())), description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id, IF(deb_cred_uuid = 'null', HUID(NULL), IF(deb_cred_uuid = 'undefined', HUID(NULL), HUID(REPLACE(deb_cred_uuid, '"', '')))), IF(inv_po_id = 'null', HUID(NULL), IF(inv_po_id = 'undefined', HUID(NULL), if (inv_po_id = 'pce29850', HUID('8d344ed2-5db0-11e8-8061-54e1ad7439c7'), HUID(REPLACE(inv_po_id, '"', ''))))), comment, origin_id, user_id, cc_id, pc_id, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP() FROM bhima.general_ledger JOIN bhima.period ON bhima.period.id = bhima.general_ledger.period_id
 ON DUPLICATE KEY UPDATE uuid = HUID(bhima.general_ledger.uuid);
+
+/* PERIOD TOTAL */
+INSERT INTO period_total (enterprise_id, fiscal_year_id, period_id, account_id, credit, debit, locked) 
+SELECT enterprise_id, fiscal_year_id, period_id, account_id, credit, debit, locked FROM bhima.period_total
+;
+
