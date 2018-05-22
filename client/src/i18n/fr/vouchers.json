@@ -49,7 +49,6 @@
             "REPORT": "Rapport des Quittances",
             "SUPPORT_PAYMENT_DESCRIPTION":"Transfert de la dette du {{patientName}} ({{patientReference}}) pour {{numInvoices}} facture(s) {{invoiceReferences}}.",
             "TITLE": "Quittance",
-            "TRANSACTION_TYPE_INFO": "Type de transaction selon qu'on a soit une recette ou une depense",
             "USE_FINANCIAL_ACCOUNT": "Utilisation de compte de caisses ou banques dans cette transaction"
         },
         "SIMPLE": {
