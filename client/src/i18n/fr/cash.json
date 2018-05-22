@@ -9,7 +9,7 @@
     "PAYMENT_DESCRIPTION":"Paiement par {{patientName}} ({{patientReference}}) contre les facture(s) {{invoiceReferences}}.",
     "PREPAYMENT_DESCRIPTION":"Paiement caution par {{patientName}} ({{patientReference}}).",
     "DEBTOR_INVOICES":{
-      "TITLE":"Factures des débiteurs"
+      "TITLE":"Factures des Débiteurs"
     },
     "REGISTRY":{"INCLUDE_ONLY_REVERSED_RECORDS":"Inclure uniquement les paiements inversées",
     "EXCLUDE_REVERSED_RECORDS":"Exclure toutes les paiements inversées",
@@ -54,7 +54,7 @@
       "READ_SUCCESS":"Facture Trouvée",
       "READ_ERROR":"Code-barres illisible! Entrez le code à barres manuellement."},
       "OPEN_BARCODE_MODAL":"Numériser un autre code-barres lors d'un paiement réussi.",
-      "DEBTOR_INVOICES":"Factures des débiteurs",
+      "DEBTOR_INVOICES":"Factures des Débiteurs",
       "REPORT":"Rapport",
       "RECEIPTS_TITLE":"Reçu de paiement des factures",
       "SLIP":"Caisse en espèces",
