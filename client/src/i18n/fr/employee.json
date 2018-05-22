@@ -2,7 +2,7 @@
     "EMPLOYEE" : {
         "EDIT" : "Formulaire de mise à jour des employés",
         "EMPLOYEES" : "Les employés enregistrés",
-        "EMPLOYEE_DETAILS" : "Details Employees",
+        "EMPLOYEE_DETAILS" : "Détails des employés",
         "HOSPITAL_DATA" : "Données hospitalières",
         "INFO" : "L'outil de gestion du personnel peut être utilisé pour créer, afficher et mettre à jour les employés et leurs informations. Les employés inscrits ici sont disponibles pour l'intégration dans des modules tels que / Payroll (Gestion de paiment) /.",
         "REGISTER" : "Nouveau employé",

@@ -1,10 +1,10 @@
 {
   "ENTERPRISE" : {
-    "ADD_ENTERPRISE" : "Ajouter entreprise",
-    "ALL_ENTERPRISES" : "Tous les entriprises",
-    "CONFIGURATION_ENTERPRISE" : "Configuration entreprise",
-    "DESCRIPTION_1" : "Gerer les entreprises de l'application A partir d'ici.  Pour l'instant effacement de l'entrerpise n'est pas prise en compte.",
-    "DESCRIPTION_2" : "Modifier l'enterprise sélectionner",
+    "ADD_ENTERPRISE" : "Ajouter une entreprise",
+    "ALL_ENTERPRISES" : "Tous les entreprises",
+    "CONFIGURATION_ENTERPRISE" : "Configuration d'entreprise",
+    "DESCRIPTION_1" : "Gérer les entreprises de l'application A partir d'ici.  Pour l'instant effacement de l'entrerpise n'est pas prise en compte.",
+    "DESCRIPTION_2" : "Modifier l'enterprise sélectionnée",
     "DESCRIPTION_3" : "Ajouter une nouvelle entreprises",
     "EDITING_ENTERPRISE" : "Edition entreprise",
     "TITLE" : "Gestion des entreprises",

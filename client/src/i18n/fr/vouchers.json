@@ -1,14 +1,14 @@
 {
     "VOUCHERS": {
         "COMPLEX": {
-            "ADD_ITEMS": "Ajouter item(s)",
-            "CASH_PAYMENT": "Paiement Caisse",
-            "CREATE_SUCCESS": "Transaction postée avec succes",
+            "ADD_ITEMS": "Ajout des items",
+            "CASH_PAYMENT": "Paiement en espèces",
+            "CREATE_SUCCESS": "Transaction passée avec succès",
             "CREATE_ERROR": "Une erreur s'est produite lors du post",
-            "CREDITOR": "Crediteur (C)",
-            "DEBTOR": "Debiteur (D)",
-            "DEB_CRED": "Debtor/Creditor",
-            "DESCRIPTION": "Ce module permet de passer des transactions avancees dans le journal",
+            "CREDITOR": "Créditeur (C)",
+            "DEBTOR": "Débiteur (D)",
+            "DEB_CRED": "Débiteur/Créditeir",
+            "DESCRIPTION": "Ce module vous permet d'effectuer manuellement des transactions de journal avancées",
             "ENTITY": "Entité (Debiteur/Crediteur)",
             "ERROR_ACCOUNT": "Les comptes selectionnés sont invalides",
             "ERROR_AMOUNT": "Les montants sont invalides",
@@ -28,15 +28,15 @@
             "SUPPORT_PAYMENT_DESCRIPTION": "Prise en charge de {{ patientName }} ({{ patientReference}}) pour la facture {{ invoiceReference }}."
         },
         "GLOBAL": {
-            "CASHFLOW_OPTION": "Option pour cashflow",
+            "CASHFLOW_OPTION": "Option de flux de trésorerie",
             "CONVENTION_INVOICES": "Convention - Paiement factures",
             "CONVENTION_PAYMENT_DESCRIPTION": "Paiement des Conventions: paiement de {{numInvoices}} facture(s) par {{debtorGroupName}}.",
             "TRANSFER_DESCRIPTION": "Transfert: De {{ fromAccount }} à {{ toAccount }} pour {{ amount }} {{ symbol }}",
             "SUPPORT_FORM": "Prise en Charge des patients",
             "SUPPORT_TEXT": "Lorsque les deux champs ci-dessus sont remplis, Les dettes du patient apparaissent en vue qu'une  \"Prise en Charge\" puissent être attribue à un Compte.",
             "ERROR_SAME_ACCOUNT": "Vous ne pouvez pas utiliser le même compte deux fois dans cette transaction. Veuillez sélectionner deux comptes différents.",
-            "GENERIC_EXPENSE": "Depense Generique",
-            "GENERIC_INCOME": "Recette Generique",
+            "GENERIC_EXPENSE": "Dépense Générique",
+            "GENERIC_INCOME": "Recette Générique",
             "CASH_TRANSFER": "Transfert d'argent",
             "ORIGIN_ACCOUNT": "Compte de provenance",
             "DESTINATION_ACCOUNT": "Compte de destination",
@@ -49,6 +49,7 @@
             "REPORT": "Rapport des Quittances",
             "SUPPORT_PAYMENT_DESCRIPTION":"Transfert de la dette du {{patientName}} ({{patientReference}}) pour {{numInvoices}} facture(s) {{invoiceReferences}}.",
             "TITLE": "Quittance",
+            "TRANSACTION_TYPE_INFO": "Type de transaction selon qu'on a soit une recette ou une dépense",
             "USE_FINANCIAL_ACCOUNT": "Utilisation de compte de caisses ou banques dans cette transaction"
         },
         "SIMPLE": {
@@ -70,7 +71,7 @@
             "TITLE": "Bordereau de transfert",
             "TRANSFER": "Transfert d'argent",
             "TRANSFER_PATIENT_INVOICE_AMOUNT": "Prise en Charge de Facture de Patient",
-            "STOCK_INTEGRATION" : "Integration Stock",
+            "STOCK_INTEGRATION" : "Intégration Stock",
             "STOCK_EXIT":"Sortie de stock",
             "STOCK_ENTRY":"Entrée de stock"
         },

@@ -9,24 +9,24 @@
     "PAYMENT_DESCRIPTION":"Paiement par {{patientName}} ({{patientReference}}) contre les facture(s) {{invoiceReferences}}.",
     "PREPAYMENT_DESCRIPTION":"Paiement caution par {{patientName}} ({{patientReference}}).",
     "DEBTOR_INVOICES":{
-      "TITLE":"Facture(s) debiteur"
+      "TITLE":"Factures des Débiteurs"
     },
-    "REGISTRY":{"INCLUDE_ONLY_REVERSED_RECORDS":"Inclure uniquement les paiements inversees",
-    "EXCLUDE_REVERSED_RECORDS":"Exclure toutes les paiements inversees",
-    "REVERSED_RECORDS":"Paiements Inversees"},
+    "REGISTRY":{"INCLUDE_ONLY_REVERSED_RECORDS":"Inclure uniquement les paiements inversées",
+    "EXCLUDE_REVERSED_RECORDS":"Exclure toutes les paiements inversées",
+    "REVERSED_RECORDS":"Paiements Inversées"},
     "PAYMENT":"Paiement",
     "RECEIPT":{
-      "TITLE":"Recu",
+      "TITLE":"Reçu",
       "SUCCESS":"Créé avec succès un paiement en espèces"
     },
     "SELECTION":{
-      "GO_TO_CASHBOX_PAGE":"Allez a la page de gestion de caisse",
+      "GO_TO_CASHBOX_PAGE":"Allez à la page de gestion des caisses",
       "MISSING_CASH":"Caisse manquante",
-      "TITLE":"Selection Caisse",
+      "TITLE":"Sélectionnez une caisse",
       "CURRENT_PROJECT_CASHBOXES" : "Caisses pour ce Projet",
       "OTHER_PROJECT_CASHBOXES" : "Caisses pour tous Projets",
       "NO_OTHER_PROJECT_CASHBOXES" : "Il n'y a aucune caisses enregistrer pour les autres projets.",
-	  "NO_OTHER_PROJECT_CASHBOXES_ACCESS" : "Il n'y a aucune caisses enregistrer pour les autres projets dont vous avez le droit d'accès.",
+	  "NO_OTHER_PROJECT_CASHBOXES_ACCESS" : "Il n'existe aucune caisses des autres projets dont vous avez le droit d'accès .",
       "NO_CURRENT_PROJECT_CASHBOXES" : "Il n'y a aucune caisses enregistrer pour votre projet.",
 	  "NO_CURRENT_PROJECT_CASHBOXES_ACCESS" : "Il n'y a aucune caisses dans votre projet dont vous avez le droit d'accès."
     },
@@ -48,13 +48,13 @@
       "TRANSFER":"Transférer Fonds"
     },
     "BARCODE":{
-      "SCAN":"Scanner le Code à Barres",
+      "SCAN":"Scanner le Code-Barres",
       "AWAITING_INPUT":"En Attente d'Entrée",
-      "AWAITING_HTTP":"Code à barres lu! Recherche de factures ....",
+      "AWAITING_HTTP":"Code-barres lu! Recherche de factures ....",
       "READ_SUCCESS":"Facture Trouvée",
-      "READ_ERROR":"Code à barres illisible! Entrez le code à barres manuellement."},
-      "OPEN_BARCODE_MODAL":"Numériser un autre code à barres lors d'un paiement réussi.",
-      "DEBTOR_INVOICES":"Factures des débiteurs",
+      "READ_ERROR":"Code-barres illisible! Entrez le code à barres manuellement."},
+      "OPEN_BARCODE_MODAL":"Numériser un autre code-barres lors d'un paiement réussi.",
+      "DEBTOR_INVOICES":"Factures des Débiteurs",
       "REPORT":"Rapport",
       "RECEIPTS_TITLE":"Reçu de paiement des factures",
       "SLIP":"Caisse en espèces",
