@@ -146,24 +146,24 @@ INSERT INTO `fonction` VALUES
   (2,'Medecin Directeur');
 
 -- transaction type
-INSERT INTO `transaction_type` (`id`, `text`, `type`, `prefix`, `fixed`) VALUES
-  (1, 'VOUCHERS.SIMPLE.GENERIC_INCOME', 'income', 'REC. GEN', 1),
-  (2, 'VOUCHERS.SIMPLE.CASH_PAYMENT', 'income', 'CASH', 1),
-  (3, 'VOUCHERS.SIMPLE.CONVENTION_PAYMENT', 'income', 'CONV', 1),
-  (4, 'VOUCHERS.SIMPLE.SUPPORT_INCOME', 'income', 'PEC', 1),
-  (5, 'VOUCHERS.SIMPLE.TRANSFER', 'transfer', 'TRANSF', 1),
-  (6, 'VOUCHERS.SIMPLE.GENERIC_EXPENSE', 'expense', 'DEP. GEN', 1),
-  (7, 'VOUCHERS.SIMPLE.SALARY_PAYMENT', 'expense', 'SALAIRE', 1),
-  (8, 'VOUCHERS.SIMPLE.CASH_RETURN', 'expense', 'PAYBACK', 1),
-  (9, 'VOUCHERS.SIMPLE.PURCHASES', 'expense', 'ACHAT', 1),
-  (10,'VOUCHERS.SIMPLE.CREDIT_NOTE', 'other', 'CREDIT NOTE', 1),
-  (11,'VOUCHERS.SIMPLE.INVOICING', 'income', 'INV', 1),
-  (12, 'VOUCHERS.SIMPLE.STOCK_INTEGRATION', 'stock integration', 'STOCK. INT', 1),
-  (13, 'VOUCHERS.SIMPLE.STOCK_EXIT', 'stock distribution', 'STOCK_EXIT', 1),
-  (14, 'VOUCHERS.SIMPLE.STOCK_ENTRY', 'stock reception', 'STOCK_ENTRY', 1),
-  (15, 'VOUCHERS.SIMPLE.COMMITMENT', 'other', 'COMMIT', 1),
-  (16, 'VOUCHERS.SIMPLE.EMPLOYEE_WITHHOLDINGS', 'other', 'WITHHOLDING', 1),
-  (17, 'VOUCHERS.SIMPLE.CHARGE_REMUNERATION', 'other', 'CHARGE_REMUNERATION', 1);
+INSERT INTO `transaction_type` (`id`, `text`, `type`, `fixed`) VALUES
+  (1, 'VOUCHERS.SIMPLE.GENERIC_INCOME', 'income', 1),
+  (2, 'VOUCHERS.SIMPLE.CASH_PAYMENT', 'income', 1),
+  (3, 'VOUCHERS.SIMPLE.CONVENTION_PAYMENT', 'income', 1),
+  (4, 'VOUCHERS.SIMPLE.SUPPORT_INCOME', 'income', 1),
+  (5, 'VOUCHERS.SIMPLE.TRANSFER', 'other',  1),
+  (6, 'VOUCHERS.SIMPLE.GENERIC_EXPENSE', 'expense', 1),
+  (7, 'VOUCHERS.SIMPLE.SALARY_PAYMENT', 'expense', 1),
+  (8, 'VOUCHERS.SIMPLE.CASH_RETURN', 'expense',  1),
+  (9, 'VOUCHERS.SIMPLE.PURCHASES', 'expense',  1),
+  (10,'VOUCHERS.SIMPLE.CREDIT_NOTE', 'other', 1),
+  (11,'VOUCHERS.SIMPLE.INVOICING', 'income', 1),
+  (12, 'VOUCHERS.SIMPLE.STOCK_INTEGRATION', 'other', 1),
+  (13, 'VOUCHERS.SIMPLE.STOCK_EXIT', 'other', 1),
+  (14, 'VOUCHERS.SIMPLE.STOCK_ENTRY', 'other', 1),
+  (15, 'VOUCHERS.SIMPLE.COMMITMENT', 'other', 1),
+  (16, 'VOUCHERS.SIMPLE.EMPLOYEE_WITHHOLDINGS', 'other', 1),
+  (17, 'VOUCHERS.SIMPLE.CHARGE_REMUNERATION', 'other', 1);
 
 -- Stock Movement Flux
 INSERT INTO `flux` VALUES
@@ -185,7 +185,6 @@ INSERT INTO `flux` VALUES
 
 INSERT INTO `actions`(`id`, `description`) VALUES
   (1, 'FORM.LABELS.CAN_EDIT_ROLES');
-
 
 -- Purchase Status
 INSERT INTO `purchase_status` (`id`, `text`) VALUES

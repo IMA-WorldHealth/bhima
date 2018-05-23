@@ -108,7 +108,7 @@ function remove(req, res, next) {
  */
 function getTransactionType(id) {
   const sql = `
-    SELECT id, text, type, prefix, fixed
+    SELECT id, text, type, fixed
     FROM transaction_type ${id ? ' WHERE id = ?' : ''};
   `;
 
