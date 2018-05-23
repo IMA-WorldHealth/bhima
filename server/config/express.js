@@ -6,7 +6,6 @@
  */
 
 const express = require('express');
-const compress = require('compression');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const RedisStore = require('connect-redis')(session);
@@ -43,7 +42,6 @@ exports.configure = function configure(app) {
 
   // helmet guards
   app.use(helmet());
-  app.use(compress());
 
   app.use(bodyParser.json({ limit : '8mb' }));
   app.use(bodyParser.urlencoded({ extended : false }));
