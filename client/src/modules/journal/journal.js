@@ -584,8 +584,8 @@ function JournalController(
     // update only rows that already existed and have been edited
     editSessionResult.edited.forEach((uuid) => {
       // update record that already exists
-      var currentRow = journalStore.get(uuid);
-      var updatedRow = editSessionResult.updatedTransaction.get(uuid);
+      const currentRow = journalStore.get(uuid);
+      const updatedRow = editSessionResult.updatedTransaction.get(uuid);
 
       Object.keys(currentRow).forEach((key) => {
         currentRow[key] = updatedRow[key];
