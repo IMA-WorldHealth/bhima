@@ -13,16 +13,16 @@ function GridSelectionService(util) {
 
     this.gridOptions = gridOptions;
 
-    util.after(gridOptions, 'onRegisterApi', function onRegisterApi(api) {
+    util.after(gridOptions, 'onRegisterApi', api => {
       this._gridApi = api;
-      this._gridApi.selection.on.rowSelectionChanged(null, selectedHook.bind(this));
+      this._gridApi.selection.on.rowSelectionChanged(null, selectedHookBatch.bind(this));
       this._gridApi.selection.on.rowSelectionChangedBatch(null, selectedHookBatch.bind(this));
-    }.bind(this));
+    });
   }
 
   function updateSelectedGroups() {
-    var currentSelection = this._gridApi.selection.getSelectedRows();
-    var currentGroups = collapseRowsToGroups.bind(this)(currentSelection);
+    const currentSelection = this._gridApi.selection.getSelectedRows();
+    const currentGroups = collapseRowsToGroups.bind(this)(currentSelection);
     this.selected.groups = currentGroups;
   }
 
@@ -30,40 +30,14 @@ function GridSelectionService(util) {
     updateSelectedGroups.call(this);
   }
 
-  function isHeaderRow(row) {
-    return angular.isDefined(row.groupHeader);
-  }
-
-  function selectedHook(row) {
-    var isHeaderSelected;
-    var children;
-
-    var getRowChildren = this._gridApi.treeBase.getRowChildren.bind(this);
-    var toggleRowSelectionFn = this._gridApi.selection.toggleRowSelection.bind(this);
-
-    // special treatment to header rows:
-    // if the header is selected, select all children.
-    // if the header is unselected, unselect all children.
-    if (isHeaderRow(row)) {
-      isHeaderSelected = row.isSelected;
-      children = getRowChildren(row);
-      children.forEach(function (child) {
-        if (child.isSelected !== isHeaderSelected) {
-          toggleRowSelectionFn(child.entity);
-        }
-      });
-    }
-
-    updateSelectedGroups.call(this);
-  }
-
   function collapseRowsToGroups(rows) {
-    var groups = {};
+    const groups = {};
 
-    rows.forEach(function (row) {
+    rows.forEach(row => {
       groups[row[this._uniqueKey]] = groups[row[this._uniqueKey]] || [];
       groups[row[this._uniqueKey]].push(row);
-    }.bind(this));
+    });
+
     return Object.keys(groups);
   }
 
