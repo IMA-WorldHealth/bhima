@@ -1,5 +1,4 @@
 <form name="ColumnConfigForm" bh-submit="ColumnsConfigModalCtrl.submit()" novalidate>
-
   <div class="modal-header">
     <ol class="headercrumb">
       <li class="static" translate>FORM.BUTTONS.CONFIGURE</li>
@@ -8,9 +7,10 @@
   </div>
 
   <div class="modal-body">
+
     <div class="row" ng-if="ColumnsConfigModalCtrl.hasTooFewColumns">
       <div class="alert alert-danger">
-        <h4><span class="fa fa-warning"></span>  <span translate> FORM.ERRORS.AT_LEAST_1_COL </span></h4>
+        <span class="fa fa-warning"></span> <span translate>FORM.ERRORS.AT_LEAST_1_COL</span>
       </div>
     </div>
 

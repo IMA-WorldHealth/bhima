@@ -119,36 +119,23 @@ function GridColumnService(uiGridConstants, AppCache, Modal, util, $translate) {
    *
    * @description
    * This structure is used to count the number of selected columns
-   *
    */
   Columns.prototype.hasEnoughColumns = function hasEnoughColumns(columns) {
     const { grid } = this.gridApi;
-    let visibleColumn = 0;
-    let defaultValueColumn = 1;
+    let visibleColumns = 0;
 
+    const skipColumnNames = ['selectionRowHeaderCol', 'treeBaseRowHeaderCol'];
+
+    // loop through columns, counting those that aren't matched by skipColumnNames
     angular.forEach(columns, (visible, field) => {
       const column = grid.getColumn(field);
-
-      /**
-        *This alternative structure checks if selectionRowHeaderCol or treeBaseRowHeaderCol are visible or not,
-        *finally to incremente the number of column by default
-      */
-
-      if ((column.name === 'selectionRowHeaderCol' || column.name === 'treeBaseRowHeaderCol') && visible) {
-        defaultValueColumn++;
-      }
-
+      if (skipColumnNames.includes(column.name)) { return; }
       if (visible) {
-        visibleColumn++;
+        visibleColumns++;
       }
     });
 
-
-    // There are 'defaultValueColumn' elements that are initialized to true
-    if (visibleColumn > defaultValueColumn) {
-      return true;
-    }
-    return false;
+    return visibleColumns > 0;
   };
 
 
