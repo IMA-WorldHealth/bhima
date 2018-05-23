@@ -6,13 +6,13 @@ const GridRow = require('../shared/GridRow');
 const components = require('../shared/components');
 
 describe('Voucher Registry', () => {
-  const NUM_VOUCHERS = 29;
+  const NUM_VOUCHERS = 28;
   const gridId = 'voucher-grid';
 
   before(() => helpers.navigate('vouchers'));
 
   it(`displays ${NUM_VOUCHERS} vouchers on the page`, () => {
-    GU.expectRowCount(gridId, NUM_VOUCHERS);
+    GU.expectRowCountAbove(gridId, NUM_VOUCHERS);
   });
 
   describe('Search', VoucherRegistrySearch);
