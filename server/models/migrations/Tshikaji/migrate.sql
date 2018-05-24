@@ -85,14 +85,15 @@ ALTER TABLE `user` ADD CONSTRAINT `user_1` UNIQUE (username);
 /*
   CREATE THE SUPERUSER for attributing permissions
 */
+SET @SUPERUSER_ID = 1000;
 INSERT INTO `user` (id, username, password, display_name, email, active, deactivated, pin) VALUE 
-  (1000, 'superuser', PASSWORD('superuser'), 'The Admin User', 'support@bhi.ma', 1, 0, 1000);
+  (@SUPERUSER_ID, 'superuser', PASSWORD('superuser'), 'The Admin User', 'support@bhi.ma', 1, 0, 1000);
 
 INSERT INTO `permission` (unit_id, user_id)
-SELECT id, 1000 FROM unit;
+SELECT id, @SUPERUSER_ID FROM unit;
 
 INSERT INTO `project_permission` (project_id, user_id)
-SELECT id, 1000 FROM project;
+SELECT id, @SUPERUSER_ID FROM project;
 
 SET @roleUuid = HUID('7b7dd0d6-9273-4955-a703-126fbd504b61');
 
@@ -114,7 +115,7 @@ SELECT HUID(uuid()) as uuid, @roleUuid, id FROM actions;
 
 /* user role */
 INSERT INTO `user_role`(`uuid`, user_id, role_uuid)
-VALUES(HUID(uuid()), 1000, @roleUuid);
+VALUES(HUID(uuid()), @SUPERUSER_ID, @roleUuid);
 
 /* FISCAL YEAR */
 /*
@@ -260,20 +261,16 @@ ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.sale.`uuid`);
 /* INVOICE ITEM */
 /*
   SELECT JUST invoice_item for invoice who exist
+  THIS QUERY TAKE TOO LONG TIME
 */
-/* INSERT INTO invoice_item (invoice_uuid, `uuid`, inventory_uuid, quantity, inventory_price, transaction_price, debit, credit)
-SELECT HUID(sale_uuid), HUID(`uuid`), HUID(inventory_uuid), quantity, inventory_price, transaction_price, debit, credit FROM bhima.sale_item WHERE bhima.sale_item.sale_uuid IN (
-  SELECT `uuid` FROM bhima.sale WHERE bhima.sale.seller_id IN (SELECT id FROM bhima.`user`)
-)
-ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.sale_item.`uuid`); */
+-- ALTER TABLE `invoice_item` DROP KEY `invoice_item_1`;
+-- INSERT INTO invoice_item (invoice_uuid, `uuid`, inventory_uuid, quantity, inventory_price, transaction_price, debit, credit)
+-- SELECT HUID(sale_uuid), HUID(`uuid`), HUID(inventory_uuid), quantity, inventory_price, transaction_price, debit, credit FROM bhima.sale_item WHERE bhima.sale_item.sale_uuid IN (
+--   SELECT BUID(`uuid`) COLLATE utf8_unicode_ci FROM invoice
+-- )
+-- ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.sale_item.`uuid`);
+-- ALTER TABLE `invoice_item` ADD CONSTRAINT `invoice_item_1` UNIQUE (`invoice_uuid`, `inventory_uuid`);
 
-/*
-INSERT INTO invoice_item (invoice_uuid, `uuid`, inventory_uuid, quantity, inventory_price, transaction_price, debit, credit)
-SELECT HUID(sale_uuid), HUID(`uuid`), HUID(inventory_uuid), quantity, inventory_price, transaction_price, debit, credit FROM bhima.sale_item WHERE bhima.sale_item.sale_uuid IN (
-  SELECT BUID(`uuid`) COLLATE utf8_unicode_ci FROM invoice
-)
-ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.sale_item.`uuid`);
-*/
 
 
 /* POSTING JOURNAL*/
@@ -299,3 +296,18 @@ INSERT INTO period_total (enterprise_id, fiscal_year_id, period_id, account_id, 
 SELECT enterprise_id, fiscal_year_id, period_id, account_id, credit, debit, locked FROM bhima.period_total
 ;
 
+/* PATIENT */
+/*
+  1.x DOESN'T LINK PATIENT TO USER WHO CREATE THE PATIENT,
+  SO WE USE 2.X SUPERUSER ACCOUNT
+
+  DEBTOR UUID WITH BAD GROUP : e27aecd1-5122-4c34-8aa6-1187edc8e597
+  SELECT d.`uuid` FROM bhima.debitor d JOIN bhima.debitor_group dg ON dg.uuid = d.group_uuid WHERE dg.account_id IN (210, 257, 1074)
+*/
+ALTER TABLE `patient` DROP KEY `patient_1`;
+ALTER TABLE `patient` DROP KEY `patient_2`;
+INSERT INTO patient (`uuid`, project_id, reference, debtor_uuid, display_name, dob, dob_unknown_date, father_name, mother_name, profession, employer, spouse, spouse_profession, spouse_employer, sex, religion, marital_status, phone, email, address_1, address_2, registration_date, origin_location_id, current_location_id, title, notes, hospital_no, avatar, user_id, health_zone, health_area, created_at) 
+SELECT HUID(`uuid`), project_id, reference, HUID(debitor_uuid), IFNULL(CONCAT(first_name, ' ', last_name, ' ', middle_name), 'Unknown'), dob, 0, father_name, mother_name, profession, employer, spouse, spouse_profession, spouse_employer, sex, religion, marital_status, phone, email, address_1, address_2, IF(registration_date = 0, CURRENT_DATE(), registration_date), HUID(origin_location_id), HUID(current_location_id), title, notes, SUBSTRING(hospital_no, 0, 19), NULL, 1000, NULL, NULL, IF(registration_date = 0, CURRENT_DATE(), registration_date) FROM bhima.patient  WHERE bhima.patient.debitor_uuid NOT IN ('e27aecd1-5122-4c34-8aa6-1187edc8e597')
+ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.patient.uuid);
+ALTER TABLE `patient` ADD CONSTRAINT `patient_1` UNIQUE (`hospital_no`);
+ALTER TABLE `patient` ADD CONSTRAINT `patient_2` UNIQUE (`project_id`, `reference`);
