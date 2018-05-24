@@ -17,7 +17,6 @@ const _ = require('lodash');
 const db = require('../../../../lib/db');
 const Fiscal = require('../../fiscal');
 const ReportManager = require('../../../../lib/ReportManager');
-const identifiers = require('../../../../config/identifiers');
 const BadRequest = require('../../../../lib/errors/BadRequest');
 
 const TEMPLATE = './server/controllers/finance/reports/cashflow/report.handlebars';
@@ -41,7 +40,15 @@ function reportByService(req, res, next) {
   let serviceReport;
 
   const options = _.clone(req.query);
-  _.extend(options, { orientation : 'landscape' });
+
+  _.extend(options, {
+    filename : 'TREE.CASHFLOW_BY_SERVICE',
+    csvKey : 'matrix',
+    orientation : 'landscape',
+    footerRight : '[page] / [toPage]',
+    footerFontSize : '7',
+  });
+
 
   try {
     serviceReport = new ReportManager(TEMPLATE_BY_SERVICE, req.session, options);
@@ -62,14 +69,15 @@ function reportByService(req, res, next) {
       display_name, name, (@cumsum := cashAmount + @cumsum) AS cumsum
     FROM (
       SELECT BUID(cash.uuid) AS uuid,
-        CONCAT_WS('.', '${identifiers.CASH_PAYMENT.key}', project.abbr, cash.reference) AS reference,
-        cash.date, cash.amount AS cashAmount, SUM(invoice.cost) AS invoiceAmount, cash.currency_id,
+        dm.text AS reference, cash.date, cash.amount AS cashAmount,
+        SUM(invoice.cost) AS invoiceAmount, cash.currency_id,
         service.id AS service_id, patient.display_name, service.name
       FROM cash JOIN cash_item ON cash.uuid = cash_item.cash_uuid
         JOIN invoice ON cash_item.invoice_uuid = invoice.uuid
         JOIN project ON cash.project_id = project.id
         JOIN patient ON patient.debtor_uuid = cash.debtor_uuid
         JOIN service ON invoice.service_id = service.id
+        JOIN document_map dm ON dm.uuid = cash.uuid
       WHERE cash.is_caution = 0 AND cash.reversed = 0
         AND DATE(cash.date) >= DATE(?) AND DATE(cash.date) <= DATE(?)
       GROUP BY cash.uuid
@@ -121,6 +129,11 @@ function reportByService(req, res, next) {
 
       const { rows } = data;
       delete data.rows;
+
+      // Infer currencyId from first row.  Note that currencies are separated by
+      // accounts - therefore, we will always have a uniform currency_id throughout
+      // the record set.
+      data.currencyId = rows[0].currency_id;
 
       // map services to their service names
       data.services = services.map(service => service.name);
