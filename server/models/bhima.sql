@@ -73,7 +73,7 @@ INSERT INTO unit VALUES
   (181, 'Stock Report', 'TREE.STOCK_REPORT', 'The Report of inventories in stock', 144, '/modules/reports/inventory_report', '/reports/inventory_report'),
   (182, 'Stock File Report', 'TREE.STOCK_INVENTORY_REPORT', 'The Report of an inventory in stock', 144, '/modules/reports/inventory_file', '/reports/inventory_file'),
   (183, 'Grade Management','TREE.GRADES','', 57,'/modules/grades/','/grades'),
-  (184, 'Job Title Management','TREE.PROFESSION','', 1,'/modules/functions/','/functions'),
+  (184, 'Job Title Management','TREE.PROFESSION','', 57,'/modules/functions/','/functions'),
   (185, 'Payroll Rubric Management','TREE.PAYROLL_RUB_MANAGEMENT','', 57,'/modules/payroll/rubrics','/payroll/rubrics'),
   (186, 'Holidays Management','TREE.HOLIDAYS_MANAGEMENT','Holidays Management',57,'/modules/holidays/','/holidays'),
   (187, 'Offdays Management','TREE.OFFDAYS_MANAGEMENT','Offdays Management', 57,'/modules/offdays/','/offdays'),
