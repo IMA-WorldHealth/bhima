@@ -1,4 +1,5 @@
-var bhima = angular.module('bhima', [
+/* eslint no-console:"off" */
+const bhima = angular.module('bhima', [
   'bhima.controllers', 'bhima.services', 'bhima.directives', 'bhima.filters',
   'bhima.components', 'bhima.routes', 'bhima.constants', 'ui.bootstrap',
   'pascalprecht.translate', 'ngStorage',
@@ -17,7 +18,7 @@ function bhimaConfig($urlMatcherFactoryProvider) {
 }
 
 function translateConfig($translateProvider) {
-  // TODO Review i18n and determine if this it the right solution/grade_employers/
+  // TODO Review i18n and determine if this it the right solution
   $translateProvider.useStaticFilesLoader({
     prefix : '/i18n/',
     suffix : '.json',
@@ -39,17 +40,17 @@ function startupConfig(
   $rootScope, $state, $uibModalStack, SessionService, amMoment, Notify,
   $location, InstallService
 ) {
-  var installStateRegexp = /#!\/install$/;
-  var loginStateRegexp = /#!\/login$/;
+  const installStateRegexp = /#!\/install$/;
+  const loginStateRegexp = /#!\/login$/;
 
   // make sure the user is logged in and allowed to access states when
   // navigating by URL.  This is pure an authentication issue.
   $rootScope.$on('$locationChangeStart', onLocationChangeStart);
 
   function onLocationChangeStart(event, next) {
-    var isLoggedIn = !!SessionService.user;
-    var isLoginState = loginStateRegexp.test(next);
-    var isInstallState = installStateRegexp.test(next);
+    const isLoggedIn = !!SessionService.user;
+    const isLoginState = loginStateRegexp.test(next);
+    const isInstallState = installStateRegexp.test(next);
 
     // if the user is logged in and trying to access the login state, deny the
     // attempt with a message "Cannot return to login.  Please log out from the
@@ -93,16 +94,8 @@ function startupConfig(
   $rootScope.$on('$stateChangeStart', onStateChangeStart);
 
   function onStateChangeStart(event, next) {
-    var path;
-    var paths;
-    var publicRoutes;
-    var isPublicPath;
-    var authorized;
-
-    var isErrorState;
-    var isSettingsState;
-    var isLoggedIn = !!SessionService.user;
-    var isLoginState = next.name.indexOf('login') !== -1;
+    const isLoggedIn = !!SessionService.user;
+    const isLoginState = next.name.indexOf('login') !== -1;
 
 
     if (isLoggedIn && isLoginState) {
@@ -112,12 +105,12 @@ function startupConfig(
     }
 
     // check if we are going to an error state;
-    isErrorState = (
+    const isErrorState = (
       next.name.indexOf('404') !== -1 ||
       next.name.indexOf('403') !== -1
     );
 
-    isSettingsState = next.name.indexOf('settings') !== -1;
+    const isSettingsState = next.name.indexOf('settings') !== -1;
 
     // pass through to error state or settings state
     if (isErrorState || isSettingsState) {
@@ -125,19 +118,18 @@ function startupConfig(
     }
 
     // verify that the user is authorized to go to the next state
-    path = $location.path();
+    const path = $location.path();
+    const { paths } = SessionService;
 
-    paths = SessionService.paths;
+    const publicRoutes = ['/', '/settings', '/login', '/landing/stats', '/install'];
 
-    publicRoutes = ['/', '/settings', '/login', '/landing/stats', '/install'];
-
-    isPublicPath = publicRoutes.indexOf(path) > -1;
+    const isPublicPath = publicRoutes.indexOf(path) > -1;
 
     // pass through
     if (!paths || isPublicPath) { return; }
 
     // check if the user is authorized to access this route.
-    authorized = paths.some(checkUserAuthorization);
+    const authorized = paths.some(checkUserAuthorization);
 
     // if the user is not authorized, go to the 403 state instead
     if (!authorized) {
@@ -159,7 +151,7 @@ function startupConfig(
 
 // set the proper key prifix
 function localStorageConfig($localStorageProvider) {
-  var PREFIX = 'bhima-';
+  const PREFIX = 'bhima-';
   $localStorageProvider.setKeyPrefix(PREFIX);
 }
 
@@ -195,7 +187,7 @@ function animateConfig($animateProvider) {
  */
 function compileConfig($compileProvider) {
   // switch this variable when going into production for an easy performance win.
-  var PRODUCTION = true;
+  const PRODUCTION = true;
 
   if (PRODUCTION) {
     $compileProvider.debugInfoEnabled(false);

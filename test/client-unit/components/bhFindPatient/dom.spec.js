@@ -11,8 +11,6 @@ describe.skip('bhFindPatient DOM bindings', DomTests);
  * Eventually, this should compliment the test suite for the component's controller.
  */
 function DomTests() {
-  'use strict';
-
   const template = `
     <bh-find-patient
       on-search-complete="onSearchComplete(patient)"

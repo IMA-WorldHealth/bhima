@@ -36,7 +36,9 @@ function StockEntryTests() {
     page.submit();
   });
 
-  it(`Should entry stock in ${DEPOT_SECONDAIRE} from an integration`, () => {
+  it(`Should entry stock in ${DEPOT_SECONDAIRE} from an integration`, function t() {
+    this.timeout(60000);
+
     // set another Depot
     page.setDepot(DEPOT_SECONDAIRE);
 
