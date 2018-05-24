@@ -1,21 +1,28 @@
 angular.module('bhima.components')
-.component('bhStrengthMeter', {
-  template :
-    "<div class='strength-meter'>"+
-    " <div class='strength-meter-fill' data-strength='{{$ctrl.counter()}}'></div>"+
-    "</div>",
-  bindings : {
-    password : '<',
-  },
-  controller: StrengthMeterController,
-});
+  .component('bhStrengthMeter', {
+    template : `
+      <div class='strength-meter' ng-if="$ctrl.showStrengthMeter">
+       <div class='strength-meter-fill' data-strength='{{$ctrl.counter()}}'></div>
+      </div>`,
+    bindings : {
+      password : '<',
+    },
+    controller : StrengthMeterController,
+  });
 
-StrengthMeterController.$inject = ['PasswordMeterService'];
+StrengthMeterController.$inject = [
+  'PasswordMeterService', 'SessionService',
+];
 
-function StrengthMeterController(PasswordMeterService){
-
-  var $ctrl = this;
-  $ctrl.counter = function () {
-    return PasswordMeterService.counter($ctrl.password);
-  }
+/**
+ * @function StrengthMeterController
+ *
+ * @description
+ * This is a display only component that evaluates a password's strength as the
+ * user types it.  It displays these values in a meter underneath the password
+ * input.
+ */
+function StrengthMeterController(PasswordMeterService, Session) {
+  this.showStrengthMeter = Session.enterprise.settings.enable_password_validation;
+  this.counter = () => PasswordMeterService.counter(this.password);
 }

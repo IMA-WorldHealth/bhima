@@ -21,7 +21,7 @@
     "OUTDATED_DATA_MESSAGE_2" : "the latest data.",
     "CLICK_HERE_TO_RELOAD" : "Click here to reload",
     "CONFIGURATION": {
-      "TITLE" : "Columns configuration",
+      "TITLE" : "Configuration des colonnes",
       "COLUMNS" : "Columns"
     },
     "ERRORS": {
@@ -32,7 +32,7 @@
       "VARIOUS_TRANSACTION_TYPE" : "Various transaction type for a transaction",
       "LOCKED_ACCOUNT" : "An accountant has locked one or more accounts used in a transaction.  To correct this error, update the transaction or unlock the periods.",
       "LOCKED_PERIOD" : "An accountant has locked the periods used in these transactions. To correct this error, please unlock the periods in the fiscal year module.",
-      "TRANSACTION_DIFF_DATES" : "A transaction must have identical dates, yet some transaction contains different dates.  Correct this by updating the dates of the affected transactions.",
+      "TRANSACTION_DIFF_DATES" : "A transaction must have identical dates, yet some transaction contains different dates. Correct this by updating the dates of the affected transactions.",
       "UNBALANCED_TRANSACTIONS" : "Unbalanced Transaction(s)",
       "MISSING_TRANSACTIONS" : "No transactions have been submitted.",
       "MISSING_ACCOUNTS" : "Accounts omitted",

@@ -1,10 +1,10 @@
 {
   "REPORT":{
     "CLIENTS" : "Rapport Clients",
-    "ACCOUNT":"Rapport du Compte",
+    "ACCOUNT":"Relevé de compte",
     "AGED_CREDITORS":{
       "TITLE":"Balance agée des Créances",
-      "DESCRIPTION":"Ce rapport affiche toutes les créances par Créditeurs et par période"
+      "DESCRIPTION":"Ce rapport affiche toutes les créances dues aux Créditeurs par période"
     },
     "AGED_DEBTORS":{
       "TITLE":"Balance agée des Conventionnés",
@@ -17,11 +17,11 @@
       "TITLE": "Bilan",
       "DESCRIPTION": "Ce rapport affiche le bilan simplifié de l'entreprise",
       "SHOW_EXPLOITATION": "Afficher les exploitations",
-      "DEBTOR_SOLD": "Debit",
-      "CREDITOR_SOLD": "Credit",
-      "EXPLOITATION_RESULT": "Resultat d'exploitation"
+      "DEBTOR_SOLD": "Débit",
+      "CREDITOR_SOLD": "Crédit",
+      "EXPLOITATION_RESULT": "Résultat d'exploitation"
     },
-    "CASH_EXPENSE":"Depenses",
+    "CASH_EXPENSE":"Dépenses",
     "CASHFLOW_BY_SERVICE": {
       "TITLE" : "Rapports de flux de trésorerie par Service",
       "DESCRIPTION" : "Ce rapport affiche les variations des comptes et des revenus du bilan sur la trésorerie."
@@ -29,7 +29,7 @@
     "CASHFLOW" : {
       "TITLE":"Rapports de flux de trésorerie physique",
       "DESCRIPTION":"Ce rapport affiche les variations des comptes et des revenus du bilan sur la trésorerie",
-      "OPERATION":"Operation",
+      "OPERATION":"Opération",
       "INCOMES":"Recettes",
       "EXPENSES":"Dépenses",
       "TRANSFER":"Transferts",
@@ -60,16 +60,16 @@
     },
     "OPENING_BALANCE": "Balance d'ouverture",
     "ORDER": {
-      "LAST_TRANSACTION": "Date Dernière Transaction",
+      "LAST_TRANSACTION": "Date de la dernière transaction",
       "PATIENT_NAME": "Nom du Patient",
       "TOTAL_DEBT": "Total des Dettes"
     },
     "OVER_NINETY_DAYS": "Plus de 90 Jours",
     "PREVIOUS_MONTHS": "Mois Précédents",
-    "PERIOD_START": "Debut",
+    "PERIOD_START": "Début",
     "PERIOD_STOP": "Fin",
     "PRODUCED_BY": "Produit par",
-    "PRODUCED_DATE": "Date de generation",
+    "PRODUCED_DATE": "Date de génération",
     "PRODUCED_ON": "Produit le",
     "SINCE": "Depuis",
     "SIXTY_TO_NINETY_DAYS": "60 a 90 jours",
@@ -90,7 +90,7 @@
     },
     "INCOME_EXPENSE_REPORT": {
       "TITLE": "Rapport des Comptes d'exploitation",
-      "DESCRIPTION": "Montre les profits et charges qui se sont produit au sein de l'entreprise"
+      "DESCRIPTION": "Afficher la liste des revenus et des dépenses pris en charge dans l'entreprise"
     },
     "BALANCE_REPORT": {
       "TITLE": "Rapport de la Balance des comptes",
@@ -98,41 +98,41 @@
     },
     "REPORT_INCOME_EXPENSE": {
       "TITLE": "Rapport de recettes et depenses",
-      "DESCRIPTION": "Ce rapport affiche toutes les depenses et recettes de l'entreprise"
+      "DESCRIPTION": "Ce rapport affiche toutes les dépenses et recettes de l'entreprise"
     },
     "CASH_REPORT": {
       "TITLE": "Rapport de caisse",
       "DESCRIPTION": "Ce rapport liste toutes les entrees et sorties d'argent de la caisse au sein de l'entreprise"
     },
     "CLIENTS_REPORT" : {
-      "TITLE" : "Rapport Clients",
+      "TITLE" : "Rapport des clients",
       "CURRENT_MVT" : "Mouvement Courant",
-      "ADD_IGNORED_CLIENTS" : "Sauter Certains Clients",
-      "HIDE_IGNORED_CLIENTS" : "Sauter Certains Clients",
-      "PREVIOUS_MVT" : "Du debut Au :",
-      "DESCRIPTION" : "Ce rapport affiche tous les groupes de debiteurs, leurs situations precedent l'annee en cours, leurs situations de l'annee en cours ainsi que la balance finale"
+      "ADD_IGNORED_CLIENTS" : "Ajouter des clients ignorés",
+      "HIDE_IGNORED_CLIENTS" : "Masquer les clients ignorés",
+      "PREVIOUS_MVT" : "Du début Au :",
+      "DESCRIPTION" : "Ce rapport affiche tous les groupes de débiteurs, leurs soldes de compte au début de l'exercice, les soldes actuels et leurs soldes de clôture"
     },
     "STOCK":{
       "TITLE":"Rapport de stock",
-      "DESCRIPTION":"Ce rapport affiche les stocks de produits ansi que leur moyenne de consommation et etat",
+      "DESCRIPTION":"Ce rapport affiche les stocks de produits ansi que leur moyenne de consommation et état",
       "ALL_DEPOTS":"Tous les dépôts",
       "ONE_DEPOT":"Un dépôt en particulier",
       "ALL_INVENTORIES":"Tous les articles",
       "ONE_INVENTORY":"Un article en particulier",
       "INVENTORY_REPORT":"Fiche de stock",
-      "INVENTORY_REPORT_DESCRIPTION":"Ce rapport affiche montre les mouvements d'un article ainsi que son etat et sa valeur dans le stock",
+      "INVENTORY_REPORT_DESCRIPTION":"Ce rapport affiche montre les mouvements d'un article ainsi que son état et sa valeur dans le stock",
       "QUANTITY":"Quantité",
-      "UNIT_COST":"Cout Unitaire",
+      "UNIT_COST":"Coût Unitaire",
       "VALUE":"Valeur",
       "ENTRIES":"Entrées",
       "EXITS":"Sorties",
       "STOCKS":"Stocks",
       "EXIT_REPORT":"Rapport des sorties de stocks",
-      "EXIT_REPORT_DESCRIPTION":"Ce rapport affiche les sorties de stock qui ont eu lieu dans different depots",
+      "EXIT_REPORT_DESCRIPTION":"Ce rapport affiche les sorties de stock qui ont eu lieu dans different dépôts",
       "INCLUDE_INFORMATION":"Information à inclure",
       "INCLUDE_PATIENT_EXIT":"Inclure les distributions vers les patients",
       "INCLUDE_SERVICE_EXIT":"Inclure les distributions vers les services",
-      "INCLUDE_DEPOT_EXIT":"Inclure les distributions vers d'autres depots",
+      "INCLUDE_DEPOT_EXIT":"Inclure les distributions vers d'autres dépôts",
       "INCLUDE_LOSS_EXIT":"Inclure les pertes de stocks",
       "SHOW_DETAILS":"Afficher les details"
     },
@@ -143,7 +143,7 @@
       "PDF":"PDF",
       "CSV":"CSV",
       "SAVE_SUCCESS":"Rapport enregistré avec succès",
-      "BACK":"Revenir en arriere",
+      "BACK":"Revenir en arrière",
       "OPTIONS":"Options",
       "PREVIEW":"Aperçu",
       "VIEW_ARCHIVE":"Archives",

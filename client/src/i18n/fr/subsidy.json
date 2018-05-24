@@ -1,7 +1,7 @@
-{"SUBSIDY":{"ADDING_SUBSIDY":"Ajout d'une subvention",
-"ADD_SUBSIDY":"Ajouter subvention",
+{"SUBSIDY":{"ADDING_SUBSIDY":"Ajout des subventions",
+"ADD_SUBSIDY":"Ajouter une subvention",
 "ALL_SUBSIDIES":"Toutes les subventions",
-"DESCRIPTION":"Ce module permet de creer une subvention pour une facturation particuliere",
+"DESCRIPTION":"Ce module permet de créer une subvention pour une facturation particulière",
 "NO_SUBSIDY":"Aucune subvention",
 "TITLE":"Gestion des subventions",
 "UPDATING_SUBSIDY":"Modification d'une subvention"}}

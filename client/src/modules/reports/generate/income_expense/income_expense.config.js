@@ -9,31 +9,26 @@ function IncomeExpenseConfigController($sce, Notify, SavedReports, AppCache, rep
   const vm = this;
   const cache = new AppCache('configure_income_expense');
   const reportUrl = 'reports/finance/income_expense';
+
   vm.reportDetails = {};
   vm.previewGenerated = false;
-
-  vm.reportTypes = [
-    { id : 1, label : 'FORM.LABELS.INCOME_EXPENSE' },
-    { id : 2, label : 'FORM.LABELS.INCOME' },
-    { id : 3, label : 'FORM.LABELS.EXPENSE' },
-  ];
 
   checkCachedConfiguration();
 
   vm.onSelectFiscal = function onSelectFiscal(fiscal) {
-    vm.reportDetails.fiscal = fiscal;
+    vm.reportDetails.fiscalYearId = fiscal;
   };
 
   vm.onSelectPeriodFrom = function onSelectPeriodFrom(period) {
-    vm.reportDetails.periodFrom = period;
+    vm.reportDetails.periodFromId = period.id;
   };
 
   vm.onSelectPeriodTo = function onSelectPeriodTo(period) {
-    vm.reportDetails.periodTo = period;
+    vm.reportDetails.periodToId = period.id;
   };
 
   vm.preview = function preview(form) {
-    if (form.$invalid) { return; }
+    if (form.$invalid) { return 0; }
 
     // update cached configuration
     cache.reportDetails = angular.copy(vm.reportDetails);
@@ -52,7 +47,6 @@ function IncomeExpenseConfigController($sce, Notify, SavedReports, AppCache, rep
   };
 
   vm.requestSaveAs = function requestSaveAs() {
-
     const options = {
       url : reportUrl,
       report : reportData,
@@ -66,10 +60,10 @@ function IncomeExpenseConfigController($sce, Notify, SavedReports, AppCache, rep
       .catch(Notify.handleError);
   };
 
+  // load cache if defined
   function checkCachedConfiguration() {
     if (cache.reportDetails) {
       vm.reportDetails = angular.copy(cache.reportDetails);
     }
-    vm.reportDetails.type = 1;
   }
 }

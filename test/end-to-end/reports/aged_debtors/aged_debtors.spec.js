@@ -1,8 +1,4 @@
-const chai = require('chai');
 const helpers = require('../../shared/helpers');
-
-helpers.configure(chai);
-
 const ReportDebtorsPage = require('./aged_debtors.page');
 
 describe('Aged Debtors Report', () => {
@@ -11,11 +7,11 @@ describe('Aged Debtors Report', () => {
 
   const dataset = {
     include_zeroes : true,
-    exclude_zeroes : false,
-    report_name : 'Report Saved by E2E',
+    report_name : 'Aged Debtors Report Saved by E2E',
     renderer : 'PDF',
-    period_1 : 'juin 2017',
-    period_2 : 'mai 2017',
+    year : '2015',
+    month : 'mai ',
+    month2 : 'juin',
   };
 
   before(() => {
@@ -23,8 +19,9 @@ describe('Aged Debtors Report', () => {
     Page = new ReportDebtorsPage(key);
   });
 
+
   it('preview a new Aged Debtors Report', () => {
-    Page.showDebtorsReportPreview(dataset.period_2, dataset.include_zeroes);
+    Page.showDebtorsReportPreview(dataset.year, dataset.month, dataset.include_zeroes);
   });
 
   it('close the previewed report', () => {
@@ -32,7 +29,7 @@ describe('Aged Debtors Report', () => {
   });
 
   it('save a previewed report', () => {
-    Page.saveDebtorsReport(dataset.period_2, dataset.exclude_zeroes, dataset.report_name, dataset.renderer);
+    Page.saveDebtorsReport(dataset.year, dataset.month2, false, dataset.report_name, dataset.renderer);
   });
 
   it('report has been saved into archive', () => {
@@ -40,6 +37,6 @@ describe('Aged Debtors Report', () => {
   });
 
   it('print the previewed report', () => {
-    Page.printDebtorsReport(dataset.period_1, dataset.include_zeroes);
+    Page.printDebtorsReport(dataset.year, dataset.month, dataset.include_zeroes);
   });
 });

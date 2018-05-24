@@ -1,10 +1,10 @@
 {
   "ENTERPRISE" : {
-    "ADD_ENTERPRISE" : "Ajouter entreprise",
-    "ALL_ENTERPRISES" : "Tous les entriprises",
-    "CONFIGURATION_ENTERPRISE" : "Configuration entreprise",
-    "DESCRIPTION_1" : "Gerer les entreprises de l'application A partir d'ici.  Pour l'instant effacement de l'entrerpise n'est pas prise en compte.",
-    "DESCRIPTION_2" : "Modifier l'enterprise sélectionner",
+    "ADD_ENTERPRISE" : "Ajouter une entreprise",
+    "ALL_ENTERPRISES" : "Tous les entreprises",
+    "CONFIGURATION_ENTERPRISE" : "Configuration d'entreprise",
+    "DESCRIPTION_1" : "Gérer les entreprises de l'application A partir d'ici.  Pour l'instant effacement de l'entrerpise n'est pas prise en compte.",
+    "DESCRIPTION_2" : "Modifier l'enterprise sélectionnée",
     "DESCRIPTION_3" : "Ajouter une nouvelle entreprises",
     "EDITING_ENTERPRISE" : "Edition entreprise",
     "TITLE" : "Gestion des entreprises",
@@ -15,7 +15,9 @@
       "ENABLE_PREPAYMENTS_LABEL" : "Activer les Cautions",
       "ENABLE_PREPAYMENTS_HELP_TEXT" : "L'activation de cette fonctionnalité permet aux patients de déposer des fonds à la fenêtre de paiement avant d'être facturé. Si le patient a un solde créditeur, ses factures seront automatiquement payées après facturation.",
       "ENABLE_DELETE_RECORDS_LABEL" : "Activer la Suppression d'Enregistrements",
-      "ENABLE_DELETE_RECORDS_HELP_TEXT" : "Cette fonctionnalité permet aux utilisateurs de supprimer des transactions comme une alternative à l'inversion des transactions directement à partir des registres."
+      "ENABLE_DELETE_RECORDS_HELP_TEXT" : "Cette fonctionnalité permet aux utilisateurs de supprimer des transactions comme une alternative à l'inversion des transactions directement à partir des registres.",
+      "ENABLE_PASSWORD_VALIDATION_LABEL" : "Strictement valider les mots de passe",
+      "ENABLE_PASSWORD_VALIDATION_HELP_TEXT" : "L'activation de cette fonctionnalité oblige les utilisateurs à utiliser des mots de passe difficiles à deviner. Cette action n'est pas rétroactive. Les anciens mots de passe continueront à fonctionner jusqu'à modification manuelle."
     }
   }
 }

@@ -19,8 +19,8 @@ function FiscalService(Api) {
   service.closeFiscalYear = closeFiscalYear;
   service.fiscalYearDate = fiscalYearDate;
   service.setOpeningBalance = setOpeningBalance;
-  service.periodFiscalYear = periodFiscalYear;
   service.getOpeningBalance = getOpeningBalance;
+  service.getPeriods = getPeriods;
 
   service.getBalance = getBalance;
 
@@ -84,14 +84,21 @@ function FiscalService(Api) {
   }
 
   /**
-   * @method periodFiscalYear
+   * @method getPeriods
    *
-   * @description get all period of all fiscal Year
+   * @description
+   * Retrieves the periods for a fiscal year by the fiscal year id.
    */
-  function periodFiscalYear() {
-    const url = service.url.concat('period');
+  function getPeriods(id) {
+    const url = service.url.concat(id, '/periods');
     return service.$http.get(url)
-      .then(service.util.unwrapHttpResponse);
+      .then(service.util.unwrapHttpResponse)
+      .then(periods =>
+        periods.map(p => {
+          p.start_date = new Date(p.start_date);
+          p.end_date = new Date(p.end_date);
+          return p;
+        }));
   }
 
   return service;

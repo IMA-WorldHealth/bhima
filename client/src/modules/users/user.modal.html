@@ -1,16 +1,18 @@
 <form name="UserForm" bh-submit="UserModalCtrl.submit(UserForm)" novalidate>
   <div class="modal-header">
-  <ol class="headercrumb">
-    <li ng-if="UserModalCtrl.isCreating" class="title">
-      <span translate>USERS.ADDING_USER</span>
-      <label class="badge badge-warning" translate>FORM.LABELS.CREATE</label>
-    </li>
-    <li ng-if="!UserModalCtrl.isCreating" class="title">
-      <span translate>USERS.UPDATING_USER</span>
-      <label class="badge badge-warning" translate>FORM.LABELS.UPDATE</label>
-    </li>
-  </ol>
-</div>
+    <ol class="headercrumb">
+      <li class="static" translate>USERS.TITLE</li>
+
+      <li ng-if="UserModalCtrl.isCreating" class="title">
+        <span translate>USERS.ADDING_USER</span>
+        <label class="badge badge-warning" translate>FORM.LABELS.CREATE</label>
+      </li>
+      <li ng-if="!UserModalCtrl.isCreating" class="title">
+        <span translate>USERS.UPDATING_USER</span>
+        <label class="badge badge-warning" translate>FORM.LABELS.UPDATE</label>
+      </li>
+    </ol>
+  </div>
 
   <div class="modal-body" style="overflow-y: scroll; max-height:600px; ">
 
@@ -105,7 +107,6 @@
         </label>
 
         <input name="passwordVerify" ng-model="UserModalCtrl.user.passwordVerify" class="form-control" type="password" required>
-
         <span ng-show="UserForm.passwordVerify.$dirty && !UserModalCtrl.validPassword()" class="glyphicon glyphicon-warning-sign form-control-feedback text-danger" aria-hidden="true"></span>
         <span ng-show="UserForm.passwordVerify.$dirty && UserModalCtrl.validPassword()" class="glyphicon glyphicon-ok form-control-feedback text-success" aria-hidden="true"></span>
 
@@ -124,16 +125,17 @@
     <p id="user-same" ng-if="UserForm.$submitted && UserForm.$pristine && !UserModalCtrl.isCreating" class="text-warning">
       <i class="fa fa-warning"></i> <span translate>USERS.RECORD_SAME</span>
     </p>
+
     <p ng-if="UserForm.$submitted && UserForm.$invalid" class="text-danger">
       <i class="fa fa-exclamation-triangle"></i> <span translate>FORM.ERRORS.RECORD_ERROR</span>
     </p>
 
-    <button id="user-cancel" type="button" class="btn btn-default" ng-click="UserModalCtrl.closeModal()">
-      <i class="fa fa-ban"></i> <span translate>FORM.BUTTONS.CANCEL</span>
+    <button id="user-cancel" type="button" class="btn btn-default" ng-click="UserModalCtrl.closeModal()" translate>
+      FORM.BUTTONS.CANCEL
     </button>
 
     <bh-loading-button loading-state="UserForm.$loading">
-      <i class="fa fa-ok"></i> <span translate>FORM.BUTTONS.SUBMIT</span>
+      <span translate>FORM.BUTTONS.SUBMIT</span>
     </bh-loading-button>
   </div>
 </form>

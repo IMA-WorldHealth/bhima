@@ -619,6 +619,7 @@ CREATE TABLE `enterprise_setting` (
   `enable_price_lock` TINYINT(1) NOT NULL DEFAULT 1,
   `enable_delete_records` TINYINT(1) NOT NULL DEFAULT 0,
   `enable_prepayments` TINYINT(1) NOT NULL DEFAULT 1,
+  `enable_password_validation` TINYINT(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (`enterprise_id`),
   FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

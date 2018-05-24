@@ -28,9 +28,6 @@ describe('VoucherForm', () => {
 
     httpBackend = $httpBackend;
 
-    httpBackend.when('GET', '/cashboxes/?detailed=1')
-      .respond(200, Mocks.cashboxes());
-
     httpBackend.when('GET', '/accounts/')
       .respond(200, Mocks.accounts());
 

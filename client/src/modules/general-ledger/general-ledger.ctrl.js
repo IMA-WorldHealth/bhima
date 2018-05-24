@@ -339,7 +339,7 @@ function GeneralLedgerController(
     });
   }
 
-  function loadData(accounts) {
+  function loadData(accounts = []) {
     // make an object of aggregates { column:0 }
     vm.aggregates = fields.reduce(function (aggregates, field) {
       aggregates[field] = 0;

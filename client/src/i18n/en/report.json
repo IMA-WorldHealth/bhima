@@ -21,7 +21,10 @@
       "EXPLOITATION_RESULT": "Exploitation Result"
     },
     "CASH_EXPENSE": "Expenses",
-    "CASHFLOW_BY_SERVICE": {"TITLE":"Cash flow By Service", "DESCRIPTION":"This report shows the changes in the accounts and revenues of the balance sheet on cash by Services"},
+    "CASHFLOW_BY_SERVICE": {
+      "TITLE":"Cash flow By Service", 
+      "DESCRIPTION":"This report shows the changes in the accounts and revenues of the balance sheet on cash by Services"
+    },
     "CASHFLOW" : {
       "TITLE":"Cash Flow Physical Report",
       "DESCRIPTION":"This report shows changes in the accounts and revenues of the balance sheet on cash",
@@ -37,8 +40,8 @@
     "CLIENTS" : "Clients Report",
     "CLIENTS_REPORT": {
       "TITLE": "Clients Report",
-      "ADD_IGNORED_CLIENTS" : "Skip Certain Clients",
-      "HIDE_IGNORED_CLIENTS" : "Skip Certain Clients",
+      "ADD_IGNORED_CLIENTS" : "Add Ignored Clients",
+      "HIDE_IGNORED_CLIENTS" : "Hide Ignored Clients",
       "CURRENT_MVT": "Current Movement",
       "PREVIOUS_MVT": "From Beginning To :",
       "DESCRIPTION": "This report displays all the debtor groups, their account balances at the beginning of the fiscal year, the current balances, and their ending balances."
@@ -49,7 +52,7 @@
     "DOWNLOAD": "Download",
     "EXPENSE_REPORT": "Expenses Report",
     "GENERATED": "Generated Report",
-    "INCOME_EXPENSE": "Income Expense Report",
+    "INCOME_EXPENSE": "Profit And Loss Statement",
     "INCOME_REPORT": "Incomes Report",
     "MONTHLY_BALANCE": "Monthly Balance",
     "OPEN_DEBTORS": {

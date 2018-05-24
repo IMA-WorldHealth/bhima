@@ -24,8 +24,8 @@ function DebtorBalanceReportController($state, $sce, Notify, BaseReportService, 
   checkCachedConfiguration();
 
   // update the fiscal year on selection
-  vm.onSelectFiscal = fiscalId => {
-    vm.reportDetails.fiscalId = fiscalId;
+  vm.onSelectFiscal = fiscal => {
+    vm.reportDetails.fiscalId = fiscal.id;
   };
 
   vm.requestSaveAs = function requestSaveAs() {

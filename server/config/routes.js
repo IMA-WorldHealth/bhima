@@ -68,7 +68,6 @@ const stockReports = require('../controllers/stock/reports');
 // finance routes
 const trialBalance = require('../controllers/finance/trialBalance');
 const fiscal = require('../controllers/finance/fiscal');
-const fiscalPeriod = require('../controllers/finance/fiscalPeriod');
 const gl = require('../controllers/finance/ledgers/general');
 const purchases = require('../controllers/finance/purchases');
 const debtors = require('../controllers/finance/debtors');
@@ -222,8 +221,7 @@ exports.configure = function configure(app) {
   app.post('/fiscal/:id/opening_balance', fiscal.setOpeningBalance);
   app.put('/fiscal/:id/closing', fiscal.closing);
 
-  // Period routes
-  app.get('/periods', fiscalPeriod.list);
+  app.get('/fiscal/:id/periods', fiscal.getPeriods);
 
   /* load a user's tree */
   app.get('/tree', tree.generate);
@@ -374,7 +372,7 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/cashflow/', financeReports.cashflow.report);
   app.get('/reports/finance/cashflow/services', financeReports.cashflow.byService);
   app.get('/reports/finance/financialPatient/:uuid', financeReports.patient);
-  app.get('/reports/finance/income_expense', financeReports.incomeExpense.document);
+  app.get('/reports/finance/income_expense', financeReports.income_expense.document);
   app.get('/reports/finance/cash_report', financeReports.cashReport.document);
   app.get('/reports/finance/balance', financeReports.balance.document);
   app.get('/reports/finance/balance_sheet', financeReports.balanceSheet.document);

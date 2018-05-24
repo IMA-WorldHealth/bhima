@@ -20,6 +20,14 @@ function AgedDebtorsConfigController($sce, Notify, SavedReports, AppCache, repor
     vm.previewResult = null;
   };
 
+  vm.onSelectFiscalYear = (fiscalYear) => {
+    vm.reportDetails.fiscal_id = fiscalYear.id;
+  };
+
+  vm.onSelectPeriod = (period) => {
+    vm.reportDetails.period_id = period.id;
+  };
+
   vm.requestSaveAs = function requestSaveAs() {
     const options = {
       url : reportUrl,
@@ -35,7 +43,7 @@ function AgedDebtorsConfigController($sce, Notify, SavedReports, AppCache, repor
   };
 
   vm.preview = function preview(form) {
-    if (form.$invalid) { return; }
+    if (form.$invalid) { return 0; }
 
     // update cached configuration
     cache.reportDetails = angular.copy(vm.reportDetails);
@@ -46,10 +54,6 @@ function AgedDebtorsConfigController($sce, Notify, SavedReports, AppCache, repor
         vm.previewResult = $sce.trustAsHtml(result);
       })
       .catch(Notify.handleError);
-  };
-
-  vm.onSelectPeriod = function onSelectPeriod(period) {
-    vm.reportDetails.date = period.end_date;
   };
 
   function checkCachedConfiguration() {

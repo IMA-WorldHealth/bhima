@@ -4,7 +4,7 @@ const helpers = require('../../helpers');
 
 const target = '/reports/finance/income_expense';
 
-describe(`(${target}) Income Expense Reports`, () => {
+describe.skip(`(${target}) Income Expense Reports`, () => {
   const keys = [
     'incomes', 'expenses', 'dateFrom', 'dateTo', 'isEmpty', 'isLost', 'overallBalance', 'type_id',
   ];
