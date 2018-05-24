@@ -5,18 +5,20 @@ angular.module('bhima.controllers')
 EmployeeController.$inject = [
   'EmployeeService', 'ServiceService', 'GradeService', 'FunctionService',
   'CreditorGroupService', 'util', 'NotifyService', '$state',
-  'bhConstants', 'ReceiptModal', 'SessionService', 'RubricService',
+  'bhConstants', 'ReceiptModal', 'SessionService', 'RubricService', 'PatientService',
 ];
 
 function EmployeeController(Employees, Services, Grades, Functions, CreditorGroups, util, Notify, 
-  $state, bhConstants, Receipts, Session, Rubrics) {
+  $state, bhConstants, Receipts, Session, Rubrics, Patients) {
   const vm = this;
   const referenceUuid = $state.params.uuid;
+  const saveAsEmployee = $state.params.saveAsEmployee;
+
   vm.enterprise = Session.enterprise;
   vm.isUpdating = !!$state.params.id;
   vm.origin = '';
 
-  if (referenceUuid) {
+  if (referenceUuid && !saveAsEmployee) {
     Employees.read(referenceUuid)
       .then((employee) => {
         formatEmployeeAttributes(employee);
@@ -37,6 +39,27 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
       })
       .catch((error) => {
 
+      // handle error and update view to show no results - this could be improved
+        Notify.handleError(error);
+        vm.unknownId = true;
+      });
+  }
+
+  if (saveAsEmployee) {
+    Patients.read(referenceUuid)
+      .then((patient) => {
+        vm.employee.display_name = patient.display_name;
+        vm.employee.dob = new Date(patient.dob);
+        vm.employee.sex = patient.sex;
+        vm.employee.hospital_no = patient.hospital_no;
+        vm.employee.is_patient = true;
+        vm.employee.patient_uuid = patient.uuid;
+        vm.employee.debtor_uuid = patient.debtor_uuid;
+        vm.employee.debtor_group_uuid = patient.debtor_group_uuid;
+        vm.employee.current_location_id = patient.current_location_id;
+        vm.employee.origin_location_id = patient.origin_location_id;
+      })
+      .catch((error) => {
       // handle error and update view to show no results - this could be improved
         Notify.handleError(error);
         vm.unknownId = true;
@@ -134,10 +157,15 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
   // submit the data to the server
   function submit(employeeForm) {
     if (employeeForm.$invalid) { return Notify.danger('FORM.ERRORS.INVALID'); }
+    let promise;
 
-    const promise = (!referenceUuid) ?
-      Employees.create(vm.employee) :
-      Employees.update(referenceUuid, vm.employee);
+    if (!vm.employee.is_patient) {
+      promise = (!referenceUuid) ?
+        Employees.create(vm.employee) :
+        Employees.update(referenceUuid, vm.employee);
+    } else {
+      promise = Employees.patientToEmployee(vm.employee);
+    }
 
     return promise
       .then((feedBack) => {

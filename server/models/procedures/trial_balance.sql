@@ -130,6 +130,22 @@ BEGIN
     JOIN period p ON pj.period_id = p.id
     WHERE p.locked = 1 GROUP BY pj.record_uuid;
 
+  -- check that there are no transactions with accounts of locked creditor groups
+  INSERT INTO stage_trial_balance_errors
+    SELECT pj.record_uuid, MAX(pj.trans_id), 'POSTING_JOURNAL.ERRORS.LOCKED_CREDITOR_GROUP_ACCOUNT' AS code
+    FROM posting_journal AS pj JOIN stage_trial_balance_transaction AS temp
+      ON pj.record_uuid = temp.record_uuid
+    JOIN creditor_group cg ON pj.account_id = cg.account_id
+    WHERE cg.locked = 1 GROUP BY pj.record_uuid;
+
+  -- check that there are no transactions with accounts of locked debtor groups
+  INSERT INTO stage_trial_balance_errors
+    SELECT pj.record_uuid, MAX(pj.trans_id), 'POSTING_JOURNAL.ERRORS.LOCKED_DEBTOR_GROUP_ACCOUNT' AS code
+    FROM posting_journal AS pj JOIN stage_trial_balance_transaction AS temp
+      ON pj.record_uuid = temp.record_uuid
+    JOIN debtor_group dg ON pj.account_id = dg.account_id
+    WHERE dg.locked = 1 GROUP BY pj.record_uuid;
+
   -- check that all accounts are unlocked
   INSERT INTO stage_trial_balance_errors
     SELECT pj.record_uuid, MAX(pj.trans_id), 'POSTING_JOURNAL.ERRORS.LOCKED_ACCOUNT' AS code
@@ -137,6 +153,14 @@ BEGIN
       ON pj.record_uuid = temp.record_uuid
     JOIN account a ON pj.account_id = a.id
     WHERE a.locked = 1 GROUP BY pj.record_uuid;
+
+  -- check that users are active (no deactivated users)
+  INSERT INTO stage_trial_balance_errors
+    SELECT pj.record_uuid, MAX(pj.trans_id), 'POSTING_JOURNAL.ERRORS.DEACTIVATED_USER' AS code
+    FROM posting_journal AS pj JOIN stage_trial_balance_transaction AS temp
+      ON pj.record_uuid = temp.record_uuid
+    JOIN user u ON pj.user_id = u.id
+    WHERE u.deactivated = 1 GROUP BY pj.record_uuid;
 
   -- check that all transactions are balanced
   INSERT INTO stage_trial_balance_errors

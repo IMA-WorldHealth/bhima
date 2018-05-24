@@ -32,6 +32,7 @@ exports.search = search;
 exports.find = find;
 exports.advantage = advantage;
 exports.lookupEmployeeAdvantages = lookupEmployeeAdvantages;
+exports.patientToEmployee = patientToEmployee;
 
 /**
  * @method list
@@ -317,10 +318,10 @@ function create(req, res, next) {
   // cast as data object and add unique ids
   const data = req.body;
   
-  const employeeID = data.uuid || uuid();
+  const employeeUuid = data.uuid || uuid();
 
   // Provide UUID if the client has not specified
-  data.uuid = employeeID;
+  data.uuid = employeeUuid;
 
   const patientID = uuid();
   const employeeAdvantage = [];
@@ -416,10 +417,10 @@ function create(req, res, next) {
         event : topic.events.CREATE,
         entity : topic.entities.EMPLOYEE,
         user_id : req.session.user.id,
-        uuid : employeeID,
+        uuid : employeeUuid,
       });
 
-      res.status(201).json({ uuid : employeeID, patient_uuid : patientID });
+      res.status(201).json({ uuid : employeeUuid, patient_uuid : patientID });
     })
     .catch(next)
     .done();
@@ -513,4 +514,98 @@ function find(options) {
   const parameters = filters.parameters();
 
   return db.exec(query, parameters);
+}
+
+/**
+ * @method patientToEmployee
+ *
+ * @description
+ * This function is responsible for transform a Patient to New employee in the database
+ */
+function patientToEmployee(req, res, next) {
+  const data = req.body;
+  const patientUuid = data.patient_uuid;
+  const employeeUuid = uuid();
+
+  data.creditor_uuid = uuid();
+  data.uuid = employeeUuid;
+
+  const employeeAdvantage = [];
+
+  // convert uuids to binary uuids as necessary
+  const employee = db.convert(data, [
+    'uuid', 'grade_uuid', 'debtor_group_uuid', 'creditor_group_uuid', 'creditor_uuid',
+    'debtor_uuid', 'current_location_id', 'origin_location_id', 'patient_uuid',
+  ]);
+
+  const employeeAdvantagePayroll = employee.payroll;
+
+  if (employeeAdvantagePayroll) {
+    Object.keys(employeeAdvantagePayroll).forEach((key) => {
+      employeeAdvantage.push([employee.uuid, key, employeeAdvantagePayroll[key]]);
+    });
+  }  
+
+  const creditor = {
+    uuid : employee.creditor_uuid,
+    group_uuid : employee.creditor_group_uuid,
+    text : `Crediteur [${employee.display_name}]`,
+  };
+
+  const debtor = {
+    uuid : employee.debtor_uuid,
+    group_uuid : employee.debtor_group_uuid,
+    text : `Debiteur [${employee.display_name}]`,
+  };
+
+  if (employee.date_embauche) {
+    employee.date_embauche = new Date(employee.date_embauche);
+  }
+
+  delete employee.debtor_group_uuid;
+  delete employee.creditor_group_uuid;
+  delete employee.current_location_id;
+  delete employee.origin_location_id;
+  delete employee.debtor_uuid;
+  delete employee.hospital_no;
+
+  // Delete not necessary Data for Employee
+  delete employee.display_name;
+  delete employee.dob;
+  delete employee.sex;
+  delete employee.adresse;
+  delete employee.phone;
+  delete employee.email;
+  delete employee.is_patient;
+  delete employee.payroll;  
+
+  const writeCreditor = 'INSERT INTO creditor SET ?';
+  const updateDebtor = `UPDATE debtor SET ? WHERE debtor.uuid = ?`;
+  const sql = 'INSERT INTO employee SET ?';
+  const sqlEmployeeAdvantage = 'INSERT INTO employee_advantage (employee_uuid, rubric_payroll_id, value) VALUES ?';
+
+  const transaction = db.transaction();
+
+  transaction
+    .addQuery(writeCreditor, [creditor])
+    .addQuery(updateDebtor, [debtor, employee.debtor_uuid])
+    .addQuery(sql, [employee]);
+
+  if (employeeAdvantage.length) {
+    transaction.addQuery(sqlEmployeeAdvantage, [employeeAdvantage]);
+  }
+
+  transaction.execute()
+    .then(() => {
+      topic.publish(topic.channels.ADMIN, {
+        event : topic.events.CREATE,
+        entity : topic.entities.EMPLOYEE,
+        user_id : req.session.user.id,
+        uuid : employeeUuid,
+      });
+
+      res.status(201).json({ uuid : employeeUuid, patient_uuid : patientUuid });
+    })
+    .catch(next)
+    .done();
 }
