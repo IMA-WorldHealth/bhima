@@ -11,6 +11,14 @@ angular.module('bhima.routes')
         controller  : 'EmployeeController as EmployeeCtrl',
         templateUrl : 'modules/employees/registration/employees.html',
       })
+      .state('patientAsEmployee', {
+        url         : '/employees/:uuid/patientAsEmployee',
+        params : {
+          saveAsEmployee : { value : true },
+        },
+        controller  : 'EmployeeController as EmployeeCtrl',
+        templateUrl : 'modules/employees/registration/employees.html',
+      })      
       .state('employeeRegistry', {
         url         : '/employees',
         controller  : 'EmployeeRegistryController as EmployeeRegistryCtrl',

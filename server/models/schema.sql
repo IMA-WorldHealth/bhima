@@ -562,6 +562,7 @@ CREATE TABLE `employee` (
   `is_medical`    TINYINT(1) DEFAULT 0,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `employee_1` (`code`),
+  UNIQUE KEY `employee_2` (`patient_uuid`),
   KEY `fonction_id` (`fonction_id`),
   KEY `service_id` (`service_id`),
   KEY `creditor_uuid` (`creditor_uuid`),

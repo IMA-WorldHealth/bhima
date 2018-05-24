@@ -527,6 +527,7 @@ exports.configure = function configure(app) {
   app.get('/employees/:uuid', employees.detail);
   app.get('/employees/:uuid/advantage', employees.advantage);
   app.post('/employees', employees.create);
+  app.post('/employees/patient_employee', employees.patientToEmployee);
   app.put('/employees/:uuid', employees.update);
 
   // billing services

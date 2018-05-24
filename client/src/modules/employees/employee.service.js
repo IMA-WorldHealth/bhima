@@ -23,6 +23,7 @@ function EmployeeService(Filters, $uibModal, Api, AppCache, Languages, $httpPara
   service.cacheFilters = cacheFilters;
   service.download = download;
   service.advantage = advantage;
+  service.patientToEmployee = patientToEmployee;
 
   employeeFilters.registerDefaultFilters([{ key : 'limit', label : 'FORM.LABELS.LIMIT' }]);
 
@@ -115,6 +116,12 @@ function EmployeeService(Filters, $uibModal, Api, AppCache, Languages, $httpPara
     // return  serialized options
     return $httpParamSerializer(options);
   }
+
+   // transform patient to employee
+  function patientToEmployee(data) {
+    return service.$http.post(`/employees/patient_employee`, data)
+      .then(service.util.unwrapHttpResponse);
+  } 
 
   return service;
 }

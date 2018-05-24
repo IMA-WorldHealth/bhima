@@ -508,6 +508,7 @@
             "REFERENCE": "Reference",
             "REFERENCE_PATIENT": "Patient Reference",
             "REFERENCE_GROUP": "Reference Group",
+            "REGISTER_EMPLOYEE_PATIENT": "Save as an employee",
             "RELIGION": "Religion",
             "RESULT": "Results",
             "RESULT_ACCOUNT_SCT": "Result Account section",

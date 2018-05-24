@@ -195,6 +195,7 @@
 
                      <!-- Employee Hospital File Number -->
                   <div
+                    ng-if="!EmployeeCtrl.employee.is_patient"
                     class="form-group has-feedback"
                     ng-class="{'has-error' : (DetailForm.hospitalNumber.$invalid && EmployeeRegistrationForm.$submitted) || DetailForm.hospitalNumber.$error.unique}">
 
