@@ -10,13 +10,14 @@ helpers.configure(chai);
 describe('Update Employees', () => {
   const path = '#!/employees';
   const registrationPage = new RegistrationPage();
+  const employeeName1 = 'Test 2 Patient';
+  const employeeName2 = 'Employee Test 1';
 
 
   before(() => { helpers.navigate(path); });
 
   it(`should update data for employee`, () => {
-    element.all(by.css('[data-method="action"]')).get(2).click();
-    element.all(by.css('[data-method="edit"]')).get(2).click();
+    registrationPage.editEmployeeName(employeeName1);
 
     registrationPage.setService('Administration');
     registrationPage.setFonction('Infirmier');
@@ -34,8 +35,7 @@ describe('Update Employees', () => {
   });
 
   it(`blocks validation when the value is already taken when the field must be Unique`, () => {
-    element.all(by.css('[data-method="action"]')).get(1).click();
-    element.all(by.css('[data-method="edit"]')).get(2).click();
+    registrationPage.editEmployeeName(employeeName2);
 
     registrationPage.setHospitalNumber(110);
 

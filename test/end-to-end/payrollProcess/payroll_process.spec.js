@@ -17,7 +17,7 @@ describe('Payroll Process Management', () => {
   const Page = new PayrollProcessPage();
   const searchModalPage = new SearchModalPage();
 
-  const employeeCount = 3;
+  const employeeCount = 4;
 
   const defaultValue = {
     period      : 'Février 2018',

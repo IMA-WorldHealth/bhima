@@ -6,9 +6,26 @@
  */
 
 const FU = require('../shared/FormUtils');
+const GA = require('../shared/GridAction');
+const GU = require('../shared/GridUtils');
 const components = require('../shared/components');
 
 class RegistrationPage {
+  constructor() {
+    this.gridId = 'employee-registry';
+    this.multipayrollGrid = element(by.id(this.gridId));
+    this.actionLinkColumn = 6;
+  }
+
+  editEmployeeName(label) {
+    GU.getGridIndexesMatchingText(this.gridId, label)
+      .then(indices => {
+        const { rowIndex } = indices;
+        GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'edit', this.gridId);
+      });
+  }
+
+
   createEmployee() {
     FU.buttons.submit();
   }
@@ -125,6 +142,10 @@ class RegistrationPage {
 
   isEmpoyeeCreated(resp) {
     return FU.exists(by.id('receipt-confirm-created'), resp);
+  }
+
+  expectNotificationSuccess(resp) {
+    components.notification.hasSuccess();
   }
 
   requiredFieldErrored() {

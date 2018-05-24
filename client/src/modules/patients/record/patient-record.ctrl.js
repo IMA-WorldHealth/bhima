@@ -8,7 +8,7 @@ PatientRecordController.$inject = [
 
 function PatientRecordController($stateParams, Patients, Notify, moment, Upload, $timeout, SnapshotService) {
   const vm = this;
-  const patientID = $stateParams.patientID;
+  const patientUuid = $stateParams.patientUuid;
 
   vm.loading = true;
   vm.uploadFiles = uploadFiles;
@@ -24,7 +24,7 @@ function PatientRecordController($stateParams, Patients, Notify, moment, Upload,
       const imageCheck = file.type.search('image/');
       if (imageCheck !== -1) {
         file.upload = Upload.upload({
-          url : `/patients/${patientID}/pictures`,
+          url : `/patients/${patientUuid}/pictures`,
           data : { pictures : file },
         });
 
@@ -44,7 +44,7 @@ function PatientRecordController($stateParams, Patients, Notify, moment, Upload,
   }
 
   /** @fixme if no uuid is provided this will download all the patients through the base url '/' */
-  Patients.read(patientID)
+  Patients.read(patientUuid)
     .then((result) => {
       vm.patient = result;
       vm.loading = false;
@@ -81,6 +81,4 @@ function PatientRecordController($stateParams, Patients, Notify, moment, Upload,
         }
       });
   };
-
-
 }

@@ -24,6 +24,22 @@ describe('Employees', () => {
     hospital_no   : 'TP003',
   };
 
+  const patient = {
+    code           : 'HBB2018',
+    display_name   : 'Test 1 Patient',
+    date_embauche  : '24/11/1965',
+    nb_spouse      : 5,
+    nb_enfant      : 3,
+    bank           : 'BCDC_1909',
+    bank_account   : '00-99-100',
+    email          : 'me@info.com',
+    adresse        : '10011 B1-P455',
+    debtor_group   : 'NGO IMA World Health',
+    creditor_group : 'Employees',
+  };
+
+  const pathPatient = '#!/employees/81af634f-321a-40de-bc6f-ceb1167a9f65/patientAsEmployee';
+
   before(() => helpers.navigate(path));
 
   it('blocks invalid form submission with relevant error classes', () => {
@@ -65,6 +81,33 @@ describe('Employees', () => {
 
     registrationPage.createEmployee();
     registrationPage.isEmpoyeeCreated(true);
+    browser.refresh();
+  });
+
+  it('Register an employee from a patient', () => {
+    browser.get(pathPatient);
+
+    registrationPage.setCode(patient.code);
+    registrationPage.setGrade('A1');
+    registrationPage.setCreditorGroup(patient.creditor_group);
+    registrationPage.setDebtorGroup(patient.debtor_group);
+    registrationPage.setHiringDate(patient.date_embauche);
+    registrationPage.setNumberChild(patient.nb_enfant);
+    registrationPage.setService('Administration');
+    registrationPage.setFonction('Infirmier');
+    registrationPage.setIsMedical();
+    registrationPage.setEmail(patient.email);
+    registrationPage.setAddress(patient.adresse);
+    registrationPage.setCurrencyInput('individual_salary', 0);
+    registrationPage.setCurrencyInput('TPR', 0);
+    registrationPage.setCurrencyInput('v_cher', 0);
+    registrationPage.setCurrencyInput('f_scol', 0);
+    registrationPage.setCurrencyInput('allc', 0);	
+    registrationPage.setBank(patient.bank);
+    registrationPage.setBankAccount(patient.bank_account);
+
+    registrationPage.createEmployee();
+    registrationPage.expectNotificationSuccess();
     browser.refresh();
   });
 
