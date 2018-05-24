@@ -121,7 +121,7 @@ function EmployeeService(Filters, $uibModal, Api, AppCache, Languages, $httpPara
   function patientToEmployee(data) {
     return service.$http.post(`/employees/patient_employee`, data)
       .then(service.util.unwrapHttpResponse);
-  } 
+  }
 
   return service;
 }

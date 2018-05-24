@@ -596,8 +596,7 @@ function patientToEmployee(req, res, next) {
   }
 
   transaction.execute()
-    .then(results => {
-
+    .then(() => {
       topic.publish(topic.channels.ADMIN, {
         event : topic.events.CREATE,
         entity : topic.entities.EMPLOYEE,
