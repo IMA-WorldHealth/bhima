@@ -1,81 +1,59 @@
-/* global element, by, browser */
+/* global element, by */
 
-const chai = require('chai');
 const FU = require('../shared/FormUtils');
 const helpers = require('../shared/helpers');
 const components = require('../shared/components');
 
-const expect = chai.expect;
-helpers.configure(chai);
-
-describe('Transaction Types', () => {
+describe('transaction types', () => {
   // navigate to the page
   before(() => helpers.navigate('#!/transaction_type'));
 
   const newType = {
     text        : 'E2E Transaction Type',
-    type        : 'income',
-    prefix      : 'E2ETT',
+    type        : 'Récettes',
   };
 
   const updateType = {
     text        : 'E2E Transaction Type updated',
-    type        : 'expense',
-    prefix      : 'E2ETT_UPDATED',
+    type        : 'Dépenses',
   };
 
   const otherType = {
     text        : 'E2E Other Transaction Type',
-    type        : 'other',
-    prefix      : 'E2EOTT',
-    other       : 'OTHER_TYPE',
+    type        : 'Autre',
   };
 
-  it('Successfully creates a transaction type', () => {
+  it('successfully creates a transaction type', () => {
     FU.buttons.create();
     FU.input('$ctrl.transactionType.text', newType.text);
-    FU.input('$ctrl.transactionType.prefix', newType.prefix);
-    element(by.model('$ctrl.transactionType.type')).click();
-    element(by.css(`[value=${newType.type}]`)).click();
+    FU.select('$ctrl.transactionType.type', newType.type);
     FU.buttons.submit();
     components.notification.hasSuccess();
   });
 
-  it('Successfully updates an existing transaction type', () => {
-    element(by.css(`[data-edit-type="${newType.text}"]`)).click();
+  it('successfully updates an existing transaction type', () => {
+    $(`[data-edit-type="${newType.text}"]`).click();
     FU.input('$ctrl.transactionType.text', updateType.text);
-    FU.input('$ctrl.transactionType.prefix', updateType.prefix);
-    element(by.model('$ctrl.transactionType.type')).click();
-    element(by.css(`[value=${updateType.type}]`)).click();
+    FU.select('$ctrl.transactionType.type', updateType.type);
     FU.buttons.submit();
     components.notification.hasSuccess();
   });
 
-  it('Successfully creates a transaction type with a specific type', () => {
+  it('successfully creates a transaction type with a specific type', () => {
     FU.buttons.create();
     FU.input('$ctrl.transactionType.text', otherType.text);
-    FU.input('$ctrl.transactionType.prefix', otherType.prefix);
-    element(by.model('$ctrl.transactionType.type')).click();
-    element(by.css(`[value=${otherType.type}]`)).click();
-    FU.input('$ctrl.otherType', otherType.other);
+    FU.select('$ctrl.transactionType.type', updateType.type);
     FU.buttons.submit();
     components.notification.hasSuccess();
   });
 
-  it('Dont creates a new transaction type for missing type', () => {
+  it('dont creates a new transaction type for missing type', () => {
     FU.buttons.create();
     element(by.model('$ctrl.transactionType.type')).click();
-    element(by.css(`[value=${otherType.type}]`)).click();
     FU.buttons.submit();
 
     // check validations
-    FU.validation.error('$ctrl.transactionType.text');
-    FU.validation.error('$ctrl.transactionType.prefix');
-    FU.validation.error('$ctrl.otherType');
-
-    // be sure not success
-    expect(element(by.css('[data-notification-type="notification-success"]')).isPresent())
-      .to.eventually.equal(false);
+    FU.validation.error('$ctrl.transactionType.type');
 
     FU.modal.cancel();
 
@@ -89,12 +67,7 @@ describe('Transaction Types', () => {
 
     // check validations
     FU.validation.error('$ctrl.transactionType.text');
-    FU.validation.error('$ctrl.transactionType.prefix');
     FU.validation.error('$ctrl.transactionType.type');
-
-    // be sure not success
-    expect(element(by.css('[data-notification-type="notification-success"]')).isPresent())
-      .to.eventually.equal(false);
 
     FU.modal.cancel();
 
