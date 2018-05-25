@@ -33,7 +33,32 @@ SET unique_checks=0;
   18. posting_journal
 */
 
+-- optimisations for bulk data import
+-- see https://dev.mysql.com/doc/refman/5.7/en/optimizing-innodb-bulk-data-loading.html
+SET autocommit=0;
+SET foreign_key_checks=0;
+SET unique_checks=0;
+
+/*
+Useful Functions/ Procedures
+*/
+
+DELIMITER $$
+
+CREATE PROCEDURE MergeSector(
+  IN beforeUuid CHAR(36),
+  IN afterUuid CHAR(36)
+) BEGIN
+  DECLARE `isDuplicate` BOOL DEFAULT 0;
+  DECLARE CONTINUE HANDLER FOR SQLEXCEPTION SET `isDuplicate` = 1;
+  UPDATE village SET sector_uuid = HUID(afterUuid) WHERE sector_uuid = HUID(beforeUuid);
+  DELETE FROM sector WHERE sector.uuid = HUID(beforeUuid);
+END $$
+
+DELIMITER ;
+
 /* CURRENCY */
+
 /*
   WRONG NAME : min_monentary_unit instead of min_monentary_unit
 */
@@ -47,30 +72,58 @@ SELECT HUID(`uuid`), country_fr FROM bhima.country
 ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.country.`uuid`), name = bhima.country.country_fr;
 
 /* PROVINCE */
-ALTER TABLE `province` DROP KEY `province_1`;
+-- NOTE: Bandundu and Kasai Oriental are duplicated.  These are removed lated.
 INSERT INTO province (`uuid`, name, country_uuid)
 SELECT HUID(`uuid`), name, HUID(country_uuid) FROM bhima.province
 ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.province.`uuid`), name = bhima.province.name;
-ALTER TABLE `province` ADD CONSTRAINT `province_1` UNIQUE (name, country_uuid);
 
 /* SECTOR */
-ALTER TABLE `sector` DROP KEY `sector_1`;
 INSERT INTO sector (`uuid`, name, province_uuid)
 SELECT HUID(`uuid`), name, HUID(province_uuid) FROM bhima.sector
 ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.sector.`uuid`), name = bhima.sector.name;
-ALTER TABLE `sector` ADD CONSTRAINT `sector_1` UNIQUE (name, province_uuid);
+
+-- remove extra Bandundu and Kasai Oriental provinces
+SET @KO_UUID_OLD = '525ecb4f-ae8d-40e1-9f86-913c5fe9b5a7';
+SET @KO_UUID_NEW = '5891deb5-e725-48b2-a720-cbfcb95da36b';
+
+SET @BA_UUID_OLD = '2feea5a1-b738-45de-95b6-947e35e11f79';
+SET @BA_UUID_NEW = '47927e29-2da0-4566-b6e5-a74a9670c4c5';
+
+UPDATE sector SET province_uuid = @KO_UUID_NEW WHERE province_uuid = @KO_UUID_OLD;
+UPDATE sector SET province_uuid = @BA_UUID_NEW WHERE province_uuid = @BA_UUID_OLD;
+DELETE FROM province WHERE uuid IN (@KO_UUID, @BA_UUID);
 
 /* VILLAGE */
-ALTER TABLE `village` DROP KEY `village_1`;
 INSERT INTO village (`uuid`, name, sector_uuid)
 SELECT HUID(`uuid`), name, HUID(sector_uuid) FROM bhima.village
-ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.village.`uuid`), name = bhima.village.name;
-ALTER TABLE `village` ADD CONSTRAINT `village_1` UNIQUE (name, sector_uuid);
+  ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.village.`uuid`), name = bhima.village.name;
+
+
+/*
+Merge duplicate sectors
+
+All these sectors have the same name, but are registered in both KO and Bas Congo.
+Here, I delete the Bas Congo ones and keep the KO ones.
+*/
+CALL MergeSector('61414179-25e1-494a-895b-90d44138491c', '87055ace-2f6f-4a8f-9c07-1743079f01e9');
+CALL MergeSector('449f5802-f33c-4455-b90a-aedb993e3c63', 'f9608a66-b425-4e90-878d-458174e392e1');
+CALL MergeSector('6912ae18-c57f-444b-a3f1-47cf539d2b16', '9ab1a069-be59-419a-842c-2a3ad8c71e0d');
+CALL MergeSector('4c9d1f3d-d5af-47ca-80fd-357c2f1fa807', '9cf5a7f2-4199-4a87-905b-709c7a0df73f');
+CALL MergeSector('a3b5109b-3b9e-439e-8af0-732ecdc5d904', 'dd248048-b687-4fb6-a97c-81e73f95cb49');
+CALL MergeSector('00712a73-694f-463e-b111-995871395bc1', '7d2740c1-aac9-40dc-8469-b1f74916afee');
+CALL MergeSector('c43d8e55-7a42-4fee-9378-a830c0f42b43', 'd96f7e9a-1917-493b-bce7-c55b601e98aa');
+CALL MergeSector('5d7ccadc-ddf6-41eb-93f7-a505e3280558', 'e2016756-76be-4ac9-a842-e39db81f251c');
+CALL MergeSector('0404e9ea-ebd6-4f20-b1f8-6dc9f9313450', '32fac9d5-843a-4503-b142-21a3396c6f50');
+
+/*
+We should also merge locations, but only once the entire database is built.
 
 /* ENTERPRISE  */
 INSERT INTO enterprise (id, name, abbr, phone, email, location_id, logo, currency_id, po_box, gain_account_id, loss_account_id)
 SELECT id, name, abbr, phone, email, HUID(location_id), logo, currency_id, po_box, NULL, NULL FROM bhima.enterprise
 ON DUPLICATE KEY UPDATE id = bhima.enterprise.id, name = bhima.enterprise.name, abbr = bhima.enterprise.abbr, phone = bhima.enterprise.phone, email = bhima.enterprise.email, location_id = HUID(bhima.enterprise.location_id), logo = bhima.enterprise.logo, currency_id = bhima.enterprise.currency_id, po_box = bhima.enterprise.po_box;
+
+INSERT INTO enterprise_setting (enterprise_id) SELECT enterprise.id FROM bhima.enterprise;
 
 /* PROJECT */
 INSERT INTO project (id, name, abbr, enterprise_id, zs_id, locked)
@@ -78,17 +131,15 @@ SELECT id, name, abbr, enterprise_id, zs_id, 0 FROM bhima.project
 ON DUPLICATE KEY UPDATE id = bhima.project.id;
 
 /* USER */
-ALTER TABLE `user` DROP KEY `user_1`;
 INSERT INTO `user` (id, username, password, display_name, email, active, deactivated, pin, last_login)
-SELECT id, username, password, CONCAT(first, ' ', last), email, active, 0, pin, IF(TIMESTAMP(last_login), TIMESTAMP(last_login), NOW()) FROM bhima.`user`
+  SELECT id, username, password, CONCAT(first, ' ', last), email, active, 0, pin, IF(TIMESTAMP(last_login), TIMESTAMP(last_login), NOW()) FROM bhima.`user`
 ON DUPLICATE KEY UPDATE id = bhima.`user`.id;
-ALTER TABLE `user` ADD CONSTRAINT `user_1` UNIQUE (username);
 
 /*
   CREATE THE SUPERUSER for attributing permissions
 */
 SET @SUPERUSER_ID = 1000;
-INSERT INTO `user` (id, username, password, display_name, email, active, deactivated, pin) VALUE 
+INSERT INTO `user` (id, username, password, display_name, email, active, deactivated, pin) VALUE
   (@SUPERUSER_ID, 'superuser', PASSWORD('superuser'), 'The Admin User', 'support@bhi.ma', 1, 0, 1000);
 
 INSERT INTO `permission` (unit_id, user_id)
@@ -130,8 +181,14 @@ SELECT enterprise_id, id, number_of_months, fiscal_year_txt, MAKEDATE(start_year
 ON DUPLICATE KEY UPDATE id = bhima_test.fiscal_year.id;
 
 /* TRANSACTION TYPE */
-INSERT INTO transaction_type (id, `text`, type, prefix, fixed)
-SELECT id, service_txt, service_txt, service_txt, 1 FROM bhima.transaction_type
+/*
+ NOTE: Transaction Types were completely re-written in 2.x and certain transaction
+types are hard-coded "fixed" types.  These need to be handled manually.
+
+NOTE: These are the distributions of data in the transct3
+*/
+INSERT INTO transaction_type (id, `text`, type, fixed)
+SELECT id, service_txt, service_txt, 1 FROM bhima.transaction_type
 ON DUPLICATE KEY UPDATE id = bhima.transaction_type.id;
 
 /* COST CENTER */
@@ -161,28 +218,23 @@ ON DUPLICATE KEY UPDATE id = bhima.period.id;
   FIX: FIX THE ACCOUNT_CATEGORY_ID FOR EXPENSE ACCOUNT
 */
 INSERT INTO account_type (id, type, translation_key, account_category_id)
-SELECT id, type, type, IF(type = 'balance', 3, IF(type = 'title', 4, IF(type = 'income/expense', 1, 2))) FROM bhima.account_type
+  SELECT id, type, type, IF(type = 'balance', 3, IF(type = 'title', 4, IF(type = 'income/expense', 1, 2))) FROM bhima.account_type
 ON DUPLICATE KEY UPDATE id = bhima.account_type.id;
 
 /* REFERENCE */
 INSERT INTO reference (id, is_report, ref, `text`, `position`, `reference_group_id`, `section_resultat_id`)
-SELECT id, is_report, ref, `text`, `position`, `reference_group_id`, `section_resultat_id` FROM bhima.reference
+  SELECT id, is_report, ref, `text`, `position`, `reference_group_id`, `section_resultat_id` FROM bhima.reference
 ON DUPLICATE KEY UPDATE id = bhima.reference.id;
 
 /* ACCOUNT */
-ALTER TABLE `account` DROP KEY `account_1`;
 INSERT INTO account (id, type_id, enterprise_id, `number`, label, parent, locked, cc_id, pc_id, created, classe, reference_id)
-SELECT id, account_type_id, enterprise_id, account_number, account_txt, parent, locked, cc_id, pc_id, created, classe, reference_id FROM bhima.account
+  SELECT id, account_type_id, enterprise_id, account_number, account_txt, parent, locked, cc_id, pc_id, created, classe, reference_id FROM bhima.account
 ON DUPLICATE KEY UPDATE id = bhima.account.id;
-ALTER TABLE `account` ADD CONSTRAINT `account_1` UNIQUE (`number`);
 
 CREATE TEMPORARY TABLE `inventory_group_dups` AS
   SELECT COUNT(code) as N, code FROM bhima.inventory_group GROUP BY code HAVING COUNT(code) > 1;
 
 /* INVENTORY GROUP */
-ALTER TABLE `inventory_group` DROP KEY `inventory_group_1`;
-ALTER TABLE `inventory_group` DROP KEY `inventory_group_2`;
-
 INSERT INTO inventory_group (`uuid`, name, code, sales_account, cogs_account, stock_account, donation_account, expires, unique_item)
   SELECT HUID(`uuid`), name, code, sales_account, cogs_account, stock_account, donation_account, 1, 0
   FROM bhima.inventory_group
@@ -194,9 +246,6 @@ INSERT INTO inventory_group (`uuid`, name, code, sales_account, cogs_account, st
   FROM bhima.inventory_group
   WHERE code IN (SELECT code from inventory_group_dups)
 ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.inventory_group.`uuid`);
-
-ALTER TABLE `inventory_group` ADD CONSTRAINT `inventory_group_1` UNIQUE (`name`);
-ALTER TABLE `inventory_group` ADD CONSTRAINT `inventory_group_2` UNIQUE (`code`);
 
 /* INVENTORY UNIT */
 INSERT INTO inventory_unit (id, abbr, `text`)
@@ -219,9 +268,6 @@ CREATE TEMPORARY TABLE `inventory_dups` AS
   SELECT COUNT(text) as N, text FROM bhima.inventory GROUP BY text HAVING COUNT(text) > 1;
 
 /* INVENTORY */
-ALTER TABLE `inventory` DROP KEY `inventory_1`;
-ALTER TABLE `inventory` DROP KEY `inventory_2`;
-
 INSERT INTO inventory (enterprise_id, `uuid`, code, `text`, price, default_quantity, group_uuid, unit_id, unit_weight, unit_volume, stock, stock_max, stock_min, type_id, consumable, sellable, note, locked, delay, avg_consumption, purchase_interval, num_purchase, num_delivery, created_at, updated_at)
 SELECT enterprise_id, HUID(`uuid`), code, `text`, price, 1, HUID(group_uuid), unit_id, unit_weight, unit_volume, stock, stock_max, stock_min, type_id, consumable, 1, `text`, 0, 1, 1, 1, 0, 0, origin_stamp, origin_stamp
   FROM bhima.inventory WHERE text NOT IN (SELECT text FROM `inventory_dups`) ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.inventory.`uuid`);
@@ -230,9 +276,6 @@ INSERT INTO inventory (enterprise_id, `uuid`, code, `text`, price, default_quant
   SELECT enterprise_id, HUID(`uuid`), code, CONCAT(`text`, ' (', code, ')'), price, 1, HUID(group_uuid), unit_id, unit_weight, unit_volume, stock, stock_max, stock_min, type_id, consumable, 1, `text`, 0, 1, 1, 1, 0, 0, origin_stamp, origin_stamp
     FROM bhima.inventory WHERE text IN (SELECT text from `inventory_dups`) ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.inventory.`uuid`);
 
-ALTER TABLE `inventory` ADD CONSTRAINT `inventory_1` UNIQUE (group_uuid, `text`);
-ALTER TABLE `inventory` ADD CONSTRAINT `inventory_2` UNIQUE (code);
-
 /* PRICE LIST */
 INSERT INTO price_list (`uuid`, enterprise_id, label, description, created_at, updated_at)
 SELECT HUID(`uuid`), enterprise_id, title, description, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP() FROM bhima.price_list
@@ -240,20 +283,18 @@ ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.price_list.`uuid`);
 
 /* PRICE LIST ITEM */
 /* AMPICILINE_UUID IS A DEFAULT EXISTING INVENTORY_UUID FOR AVOIDING ERRORS IN CASE OF NULL */
-SET @AMPICILINE_UUID = '00efb27b-0d50-4561-bf13-94337c069c2a';
+SET @AMPICILINE_UUID = HUID('00efb27b-0d50-4561-bf13-94337c069c2a');
 INSERT INTO price_list_item (`uuid`, inventory_uuid, price_list_uuid, label, value, is_percentage, created_at)
-SELECT HUID(`uuid`), IFNULL(HUID(inventory_uuid), HUID(@AMPICILINE_UUID)), HUID(price_list_uuid), CAST(description AS CHAR(250)), value, 0, CURRENT_TIMESTAMP() FROM bhima.price_list_item
+SELECT HUID(`uuid`), IFNULL(HUID(inventory_uuid), @AMPICILINE_UUID), HUID(price_list_uuid), CAST(description AS CHAR(250)), value, 0, CURRENT_TIMESTAMP() FROM bhima.price_list_item
 ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.price_list_item.`uuid`);
+
+COMMIT;
 
 /* DEBTOR GROUP */
 /* Account with Ids : 210, 257, 1074 doesn't exist */
-ALTER TABLE `debtor_group` DROP KEY `debtor_group_1`;
-ALTER TABLE `debtor_group` DROP KEY `debtor_group_2`;
 INSERT INTO debtor_group (enterprise_id, `uuid`, name, account_id, location_id, phone, email, note, locked, max_credit, is_convention, price_list_uuid, apply_discounts, apply_invoicing_fees, apply_subsidies, created_at, updated_at)
 SELECT enterprise_id, HUID(`uuid`), name, account_id, HUID(location_id), phone, email, note, locked, max_credit, is_convention, HUID(price_list_uuid), 1, 1, 1, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP() FROM bhima.debitor_group WHERE bhima.debitor_group.account_id NOT IN (210, 257, 1074)
 ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.debitor_group.`uuid`);
-ALTER TABLE `debtor_group` ADD CONSTRAINT `debtor_group_1` UNIQUE (`name`);
-ALTER TABLE `debtor_group` ADD CONSTRAINT `debtor_group_2` UNIQUE (`name`, `account_id`);
 
 /* DEBTOR */
 /*
@@ -279,6 +320,21 @@ INSERT INTO service (id, `uuid`, enterprise_id, name, cost_center_id, profit_cen
 SELECT id, HUID(UUID()), 200, name, cost_center_id, profit_center_id FROM bhima.service
 ON DUPLICATE KEY UPDATE id = bhima.service.id;
 
+/*
+
+sale --> invoice
+
+The following code deals with invoices and invoice links to the posting journal.
+In 1.x, we used inv_po_id to link the `posting_journal` to the `sale` table.
+*/
+
+-- this will be "temporary" eventually
+CREATE TEMPORARY TABLE `sale_record_map` AS
+  SELECT HUID(s.uuid) AS uuid, p.trans_id FROM bhima.sale s JOIN bhima.posting_journal p ON s.uuid = p.inv_po_id;
+
+INSERT INTO `sale_record_map`
+  SELECT HUID(s.uuid) AS uuid, g.trans_id FROM bhima.sale s JOIN bhima.general_ledger g ON s.uuid = g.inv_po_id;
+
 /* INVOICE */
 /*
   THERE ARE SALE (58) MADE BY USER (SELLER_ID) WHO DOESN'T EXIST IN THE USER TABLE
@@ -303,14 +359,19 @@ ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.sale.`uuid`);
 -- ALTER TABLE `invoice_item` ADD CONSTRAINT `invoice_item_1` UNIQUE (`invoice_uuid`, `inventory_uuid`);
 
 
+COMMIT;
 
 /* POSTING JOURNAL*/
 /*
   NOTE: CONVERT DOC_NUM TO RECORD_UUID
 */
 INSERT INTO posting_journal (uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, record_uuid, description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id, entity_uuid, reference_uuid, comment, transaction_type_id, user_id, cc_id, pc_id, created_at, updated_at)
-SELECT HUID(uuid), project_id, bhima.posting_journal.fiscal_year_id, IF(bhima.posting_journal.fiscal_year_id = 6 OR bhima.posting_journal.fiscal_year_id = 7, 50 + period_number, period_id), trans_id, TIMESTAMP(trans_date), IFNULL(doc_num, HUID(UUID())), description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id, HUID(deb_cred_uuid), HUID(inv_po_id), comment, origin_id, user_id, cc_id, pc_id, TIMESTAMP(trans_date), CURRENT_TIMESTAMP() FROM bhima.posting_journal JOIN bhima.period ON bhima.period.id = bhima.posting_journal.period_id
+  SELECT HUID(uuid), project_id, bhima.posting_journal.fiscal_year_id, IF(bhima.posting_journal.fiscal_year_id = 6 OR bhima.posting_journal.fiscal_year_id = 7, 50 + period_number, period_id), trans_id, TIMESTAMP(trans_date), IFNULL(doc_num, HUID(UUID())), description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id, IF(LENGTH(deb_cred_uuid) = 36, HUID(deb_cred_uuid), NULL), NULL, comment, origin_id, user_id, cc_id, pc_id, TIMESTAMP(trans_date), CURRENT_TIMESTAMP() FROM bhima.posting_journal JOIN bhima.period ON bhima.period.id = bhima.posting_journal.period_id
 ON DUPLICATE KEY UPDATE uuid = HUID(bhima.posting_journal.uuid);
+
+-- TODO - deal with this in a better way
+-- account for data corruption (modifies HBB's dataset!)
+UPDATE bhima.general_ledger SET deb_cred_uuid = NULL WHERE LEFT(deb_cred_uuid, 1) = '"';
 
 /* GENERAL LEDGER */
 /*
@@ -319,11 +380,11 @@ ON DUPLICATE KEY UPDATE uuid = HUID(bhima.posting_journal.uuid);
   WE WILL USE 8d344ed2-5db0-11e8-8061-54e1ad7439c7 AS UUID
 */
 INSERT INTO general_ledger (uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, record_uuid, description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id, entity_uuid, reference_uuid, comment, transaction_type_id, user_id, cc_id, pc_id, created_at, updated_at)
-SELECT HUID(`uuid`), project_id, bhima.general_ledger.fiscal_year_id, IF(bhima.general_ledger.fiscal_year_id = 6 OR bhima.general_ledger.fiscal_year_id = 7, 50 + period_number, period_id), trans_id, TIMESTAMP(trans_date), IFNULL(doc_num, HUID(UUID())), description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id, IF(deb_cred_uuid = 'null', HUID(NULL), IF(deb_cred_uuid = 'undefined', HUID(NULL), HUID(REPLACE(deb_cred_uuid, '"', '')))), IF(inv_po_id = 'null', HUID(NULL), IF(inv_po_id = 'undefined', HUID(NULL), if (inv_po_id = 'pce29850', HUID('8d344ed2-5db0-11e8-8061-54e1ad7439c7'), HUID(REPLACE(inv_po_id, '"', ''))))), comment, origin_id, user_id, cc_id, pc_id, TIMESTAMP(trans_date), CURRENT_TIMESTAMP() FROM bhima.general_ledger JOIN bhima.period ON bhima.period.id = bhima.general_ledger.period_id
+  SELECT HUID(`uuid`), project_id, bhima.general_ledger.fiscal_year_id, IF(bhima.general_ledger.fiscal_year_id = 6 OR bhima.general_ledger.fiscal_year_id = 7, 50 + period_number, period_id), trans_id, TIMESTAMP(trans_date), IFNULL(doc_num, HUID(UUID())), description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id, IF(LENGTH(deb_cred_uuid) = 36, HUID(deb_cred_uuid), NULL), NULL, comment, origin_id, user_id, cc_id, pc_id, TIMESTAMP(trans_date), CURRENT_TIMESTAMP() FROM bhima.general_ledger JOIN bhima.period ON bhima.period.id = bhima.general_ledger.period_id
 ON DUPLICATE KEY UPDATE uuid = HUID(bhima.general_ledger.uuid);
 
 /* PERIOD TOTAL */
-INSERT INTO period_total (enterprise_id, fiscal_year_id, period_id, account_id, credit, debit, locked) 
+INSERT INTO period_total (enterprise_id, fiscal_year_id, period_id, account_id, credit, debit, locked)
 SELECT enterprise_id, fiscal_year_id, period_id, account_id, credit, debit, locked FROM bhima.period_total
 ;
 
@@ -335,13 +396,10 @@ SELECT enterprise_id, fiscal_year_id, period_id, account_id, credit, debit, lock
   DEBTOR UUID WITH BAD GROUP : e27aecd1-5122-4c34-8aa6-1187edc8e597
   SELECT d.`uuid` FROM bhima.debitor d JOIN bhima.debitor_group dg ON dg.uuid = d.group_uuid WHERE dg.account_id IN (210, 257, 1074)
 */
-SET autocommit=0;
-SET unique_checks=0;
-SET foreign_key_checks=0;
 
 ALTER TABLE `patient` DROP KEY `patient_1`;
 ALTER TABLE `patient` DROP KEY `patient_2`;
-INSERT INTO patient (`uuid`, project_id, reference, debtor_uuid, display_name, dob, dob_unknown_date, father_name, mother_name, profession, employer, spouse, spouse_profession, spouse_employer, sex, religion, marital_status, phone, email, address_1, address_2, registration_date, origin_location_id, current_location_id, title, notes, hospital_no, avatar, user_id, health_zone, health_area, created_at) 
+INSERT INTO patient (`uuid`, project_id, reference, debtor_uuid, display_name, dob, dob_unknown_date, father_name, mother_name, profession, employer, spouse, spouse_profession, spouse_employer, sex, religion, marital_status, phone, email, address_1, address_2, registration_date, origin_location_id, current_location_id, title, notes, hospital_no, avatar, user_id, health_zone, health_area, created_at)
 SELECT HUID(`uuid`), project_id, reference, HUID(debitor_uuid), IFNULL(CONCAT(first_name, ' ', last_name, ' ', middle_name), 'Unknown'), dob, 0, father_name, mother_name, profession, employer, spouse, spouse_profession, spouse_employer, sex, religion, marital_status, phone, email, address_1, address_2, IF(registration_date = 0, CURRENT_DATE(), registration_date), HUID(origin_location_id), HUID(current_location_id), title, notes, SUBSTRING(hospital_no, 0, 19), NULL, 1000, NULL, NULL, IF(registration_date = 0, CURRENT_DATE(), registration_date) FROM bhima.patient  WHERE bhima.patient.debitor_uuid NOT IN ('e27aecd1-5122-4c34-8aa6-1187edc8e597')
 ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.patient.uuid);
 ALTER TABLE `patient` ADD CONSTRAINT `patient_1` UNIQUE (`hospital_no`);
@@ -349,19 +407,14 @@ ALTER TABLE `patient` ADD CONSTRAINT `patient_2` UNIQUE (`project_id`, `referenc
 COMMIT;
 
 /* CASH_BOX */
-INSERT INTO cash_box (id, label, project_id, is_auxiliary) 
+INSERT INTO cash_box (id, label, project_id, is_auxiliary)
 SELECT id, `text`, project_id, is_auxillary FROM bhima.cash_box
 ON DUPLICATE KEY UPDATE id = bhima.cash_box.id;
 
 /* CASH_BOX ACCOUNT CURRENCY */
-INSERT INTO cash_box_account_currency (id, currency_id, cash_box_id, account_id, transfer_account_id) 
-SELECT id, currency_id, cash_box_id, account_id, virement_account_id FROM bhima.cash_box_account_currency 
+INSERT INTO cash_box_account_currency (id, currency_id, cash_box_id, account_id, transfer_account_id)
+SELECT id, currency_id, cash_box_id, account_id, virement_account_id FROM bhima.cash_box_account_currency
 ON DUPLICATE KEY UPDATE id = bhima.cash_box_account_currency.id;
-
-/* FOREIGN KEY CHECKS */
-SET autocommit=0;
-SET unique_checks=0;
-SET foreign_key_checks=0;
 
 /* CASH */
 /*
@@ -369,8 +422,8 @@ SET foreign_key_checks=0;
   with as cash uuid 524475fb-9762-4051-960c-e5796a14d300
 */
 ALTER TABLE `cash` DROP KEY `cash_1`;
-INSERT INTO cash (`uuid`, project_id, reference, `date`, debtor_uuid, currency_id, amount, user_id, cashbox_id, description, is_caution, reversed, edited, created_at) 
-SELECT HUID(bhima.cash.`uuid`), bhima.cash.project_id, bhima.cash.reference, bhima.cash.`date`, HUID(bhima.cash.deb_cred_uuid), bhima.cash.currency_id, bhima.cash.cost, bhima.cash.user_id, bhima.cash.cashbox_id, bhima.cash.description, bhima.cash.is_caution, IF(bhima.cash_discard.`uuid` <> NULL, 1, 0), 0, CURRENT_TIMESTAMP() FROM bhima.cash LEFT JOIN bhima.cash_discard ON bhima.cash_discard.cash_uuid = bhima.cash.`uuid` 
+INSERT INTO cash (`uuid`, project_id, reference, `date`, debtor_uuid, currency_id, amount, user_id, cashbox_id, description, is_caution, reversed, edited, created_at)
+SELECT HUID(bhima.cash.`uuid`), bhima.cash.project_id, bhima.cash.reference, bhima.cash.`date`, HUID(bhima.cash.deb_cred_uuid), bhima.cash.currency_id, bhima.cash.cost, bhima.cash.user_id, bhima.cash.cashbox_id, bhima.cash.description, bhima.cash.is_caution, IF(bhima.cash_discard.`uuid` <> NULL, 1, 0), 0, CURRENT_TIMESTAMP() FROM bhima.cash LEFT JOIN bhima.cash_discard ON bhima.cash_discard.cash_uuid = bhima.cash.`uuid`
 WHERE bhima.cash.deb_cred_uuid NOT IN (
   SELECT d.uuid FROM bhima.debitor d JOIN bhima.debitor_group dg ON dg.uuid = d.group_uuid WHERE dg.account_id IN (210, 257, 1074)) AND bhima.cash.deb_cred_uuid <> 'c54a8769-3e4f-4899-bc43-ef896d3919b3'
 ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.cash.`uuid`);
@@ -379,11 +432,14 @@ COMMIT;
 
 /* CASH ITEM */
 /*
-  skiped cash 524475fb-9762-4051-960c-e5796a14d30
+  skipped cash 524475fb-9762-4051-960c-e5796a14d30
 */
-INSERT INTO cash_item (`uuid`, cash_uuid, amount, invoice_uuid) 
+INSERT INTO cash_item (`uuid`, cash_uuid, amount, invoice_uuid)
 SELECT HUID(`uuid`), HUID(cash_uuid), allocated_cost, HUID(invoice_uuid) FROM bhima.cash_item WHERE bhima.cash_item.cash_uuid <> '524475fb-9762-4051-960c-e5796a14d30'
 ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.cash_item.`uuid`);
+
+UPDATE general_ledger gl JOIN sale_record_map srm ON gl.trans_id = srm.trans_id SET gl.record_uuid = srm.uuid;
+UPDATE posting_journal pj JOIN sale_record_map srm ON pj.trans_id = srm.trans_id SET pj.record_uuid = srm.uuid;
 
 /* RECOMPUTE */
 Call ComputeAccountClass();
@@ -391,8 +447,11 @@ Call zRecomputeEntityMap();
 Call zRecomputeDocumentMap();
 Call zRecalculatePeriodTotals();
 
-
 /* ENABLE AUTOCOMMIT AFTER THE SCRIPT */
 SET autocommit=1;
-SET unique_checks=1;
 SET foreign_key_checks=1;
+SET unique_checks=1;
+
+DROP PROCEDURE MergeSector;
+
+COMMIT;
