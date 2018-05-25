@@ -36,20 +36,20 @@ function CashFlowByServiceConfigController($sce, Notify, SavedReports, AppCache,
   };
 
   vm.preview = function preview(form) {
-    if (form.$invalid) { return; }
+    if (form.$invalid) { return 0; }
 
     // update cached configuration
     cache.reportDetails = angular.copy(vm.reportDetails);
 
     return SavedReports.requestPreview(reportUrl, reportData.id, angular.copy(vm.reportDetails))
-      .then((result) => {
+      .then(result => {
         vm.previewGenerated = true;
         vm.previewResult = $sce.trustAsHtml(result);
       })
       .catch(Notify.handleError);
   };
 
-  vm.onSelectCashbox = function onSelectCashbox(cashbox) {
+  vm.onSelectCashbox = cashbox => {
     vm.reportDetails.account_id = cashbox.account_id;
   };
 
