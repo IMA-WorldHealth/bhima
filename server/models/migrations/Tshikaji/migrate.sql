@@ -1,3 +1,6 @@
+SET autocommit=0;
+SET unique_checks=0;
+
 /*
   NOTES:
    - the script assumes IMCK's database is named "bhima".  Please rename the IMCK
@@ -332,13 +335,18 @@ SELECT enterprise_id, fiscal_year_id, period_id, account_id, credit, debit, lock
   DEBTOR UUID WITH BAD GROUP : e27aecd1-5122-4c34-8aa6-1187edc8e597
   SELECT d.`uuid` FROM bhima.debitor d JOIN bhima.debitor_group dg ON dg.uuid = d.group_uuid WHERE dg.account_id IN (210, 257, 1074)
 */
-/* ALTER TABLE `patient` DROP KEY `patient_1`;
+SET autocommit=0;
+SET unique_checks=0;
+SET foreign_key_checks=0;
+
+ALTER TABLE `patient` DROP KEY `patient_1`;
 ALTER TABLE `patient` DROP KEY `patient_2`;
 INSERT INTO patient (`uuid`, project_id, reference, debtor_uuid, display_name, dob, dob_unknown_date, father_name, mother_name, profession, employer, spouse, spouse_profession, spouse_employer, sex, religion, marital_status, phone, email, address_1, address_2, registration_date, origin_location_id, current_location_id, title, notes, hospital_no, avatar, user_id, health_zone, health_area, created_at) 
 SELECT HUID(`uuid`), project_id, reference, HUID(debitor_uuid), IFNULL(CONCAT(first_name, ' ', last_name, ' ', middle_name), 'Unknown'), dob, 0, father_name, mother_name, profession, employer, spouse, spouse_profession, spouse_employer, sex, religion, marital_status, phone, email, address_1, address_2, IF(registration_date = 0, CURRENT_DATE(), registration_date), HUID(origin_location_id), HUID(current_location_id), title, notes, SUBSTRING(hospital_no, 0, 19), NULL, 1000, NULL, NULL, IF(registration_date = 0, CURRENT_DATE(), registration_date) FROM bhima.patient  WHERE bhima.patient.debitor_uuid NOT IN ('e27aecd1-5122-4c34-8aa6-1187edc8e597')
 ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.patient.uuid);
 ALTER TABLE `patient` ADD CONSTRAINT `patient_1` UNIQUE (`hospital_no`);
-ALTER TABLE `patient` ADD CONSTRAINT `patient_2` UNIQUE (`project_id`, `reference`); */
+ALTER TABLE `patient` ADD CONSTRAINT `patient_2` UNIQUE (`project_id`, `reference`);
+COMMIT;
 
 /* CASH_BOX */
 INSERT INTO cash_box (id, label, project_id, is_auxiliary) 
@@ -350,3 +358,41 @@ INSERT INTO cash_box_account_currency (id, currency_id, cash_box_id, account_id,
 SELECT id, currency_id, cash_box_id, account_id, virement_account_id FROM bhima.cash_box_account_currency 
 ON DUPLICATE KEY UPDATE id = bhima.cash_box_account_currency.id;
 
+/* FOREIGN KEY CHECKS */
+SET autocommit=0;
+SET unique_checks=0;
+SET foreign_key_checks=0;
+
+/* CASH */
+/*
+  c54a8769-3e4f-4899-bc43-ef896d3919b3 is a deb_cred_uuid with type D which doesn't exist in the debitor table in 1.x
+  with as cash uuid 524475fb-9762-4051-960c-e5796a14d300
+*/
+ALTER TABLE `cash` DROP KEY `cash_1`;
+INSERT INTO cash (`uuid`, project_id, reference, `date`, debtor_uuid, currency_id, amount, user_id, cashbox_id, description, is_caution, reversed, edited, created_at) 
+SELECT HUID(bhima.cash.`uuid`), bhima.cash.project_id, bhima.cash.reference, bhima.cash.`date`, HUID(bhima.cash.deb_cred_uuid), bhima.cash.currency_id, bhima.cash.cost, bhima.cash.user_id, bhima.cash.cashbox_id, bhima.cash.description, bhima.cash.is_caution, IF(bhima.cash_discard.`uuid` <> NULL, 1, 0), 0, CURRENT_TIMESTAMP() FROM bhima.cash LEFT JOIN bhima.cash_discard ON bhima.cash_discard.cash_uuid = bhima.cash.`uuid` 
+WHERE bhima.cash.deb_cred_uuid NOT IN (
+  SELECT d.uuid FROM bhima.debitor d JOIN bhima.debitor_group dg ON dg.uuid = d.group_uuid WHERE dg.account_id IN (210, 257, 1074)) AND bhima.cash.deb_cred_uuid <> 'c54a8769-3e4f-4899-bc43-ef896d3919b3'
+ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.cash.`uuid`);
+ALTER TABLE `cash` ADD CONSTRAINT `cash_1` UNIQUE (`reference`, `project_id`);
+COMMIT;
+
+/* CASH ITEM */
+/*
+  skiped cash 524475fb-9762-4051-960c-e5796a14d30
+*/
+INSERT INTO cash_item (`uuid`, cash_uuid, amount, invoice_uuid) 
+SELECT HUID(`uuid`), HUID(cash_uuid), allocated_cost, HUID(invoice_uuid) FROM bhima.cash_item WHERE bhima.cash_item.cash_uuid <> '524475fb-9762-4051-960c-e5796a14d30'
+ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.cash_item.`uuid`);
+
+/* RECOMPUTE */
+Call ComputeAccountClass();
+Call zRecomputeEntityMap();
+Call zRecomputeDocumentMap();
+Call zRecalculatePeriodTotals();
+
+
+/* ENABLE AUTOCOMMIT AFTER THE SCRIPT */
+SET autocommit=1;
+SET unique_checks=1;
+SET foreign_key_checks=1;
