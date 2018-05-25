@@ -285,9 +285,9 @@ ON DUPLICATE KEY UPDATE id = bhima.service.id;
   select count(*) from sale where sale.seller_id not in (select id from `user`);
   I WILL CONSIDER JUST SALE MADE BY EXISTING USERS
 */
-/* INSERT INTO invoice (project_id, reference, `uuid`, cost, debtor_uuid, service_id, user_id, `date`, description)
+INSERT INTO invoice (project_id, reference, `uuid`, cost, debtor_uuid, service_id, user_id, `date`, description)
 SELECT project_id, reference, HUID(`uuid`), cost, HUID(debitor_uuid), service_id, seller_id, invoice_date, note FROM bhima.sale WHERE bhima.sale.seller_id IN (SELECT id FROM bhima.user)
-ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.sale.`uuid`); */
+ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.sale.`uuid`);
 
 /* INVOICE ITEM */
 /*
@@ -308,9 +308,9 @@ ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.sale.`uuid`); */
 /*
   NOTE: CONVERT DOC_NUM TO RECORD_UUID
 */
-/* INSERT INTO posting_journal (uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, record_uuid, description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id, entity_uuid, reference_uuid, comment, transaction_type_id, user_id, cc_id, pc_id, created_at, updated_at)
+INSERT INTO posting_journal (uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, record_uuid, description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id, entity_uuid, reference_uuid, comment, transaction_type_id, user_id, cc_id, pc_id, created_at, updated_at)
 SELECT HUID(uuid), project_id, bhima.posting_journal.fiscal_year_id, IF(bhima.posting_journal.fiscal_year_id = 6 OR bhima.posting_journal.fiscal_year_id = 7, 50 + period_number, period_id), trans_id, TIMESTAMP(trans_date), IFNULL(doc_num, HUID(UUID())), description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id, HUID(deb_cred_uuid), HUID(inv_po_id), comment, origin_id, user_id, cc_id, pc_id, TIMESTAMP(trans_date), CURRENT_TIMESTAMP() FROM bhima.posting_journal JOIN bhima.period ON bhima.period.id = bhima.posting_journal.period_id
-ON DUPLICATE KEY UPDATE uuid = HUID(bhima.posting_journal.uuid); */
+ON DUPLICATE KEY UPDATE uuid = HUID(bhima.posting_journal.uuid);
 
 /* GENERAL LEDGER */
 /*
@@ -318,14 +318,14 @@ ON DUPLICATE KEY UPDATE uuid = HUID(bhima.posting_journal.uuid); */
   SO WE CONVERT PCE29850 TO 36 CHARS BEFORE PASSING IT TO HUID
   WE WILL USE 8d344ed2-5db0-11e8-8061-54e1ad7439c7 AS UUID
 */
-/* INSERT INTO general_ledger (uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, record_uuid, description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id, entity_uuid, reference_uuid, comment, transaction_type_id, user_id, cc_id, pc_id, created_at, updated_at)
+INSERT INTO general_ledger (uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, record_uuid, description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id, entity_uuid, reference_uuid, comment, transaction_type_id, user_id, cc_id, pc_id, created_at, updated_at)
 SELECT HUID(`uuid`), project_id, bhima.general_ledger.fiscal_year_id, IF(bhima.general_ledger.fiscal_year_id = 6 OR bhima.general_ledger.fiscal_year_id = 7, 50 + period_number, period_id), trans_id, TIMESTAMP(trans_date), IFNULL(doc_num, HUID(UUID())), description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id, IF(deb_cred_uuid = 'null', HUID(NULL), IF(deb_cred_uuid = 'undefined', HUID(NULL), HUID(REPLACE(deb_cred_uuid, '"', '')))), IF(inv_po_id = 'null', HUID(NULL), IF(inv_po_id = 'undefined', HUID(NULL), if (inv_po_id = 'pce29850', HUID('8d344ed2-5db0-11e8-8061-54e1ad7439c7'), HUID(REPLACE(inv_po_id, '"', ''))))), comment, origin_id, user_id, cc_id, pc_id, TIMESTAMP(trans_date), CURRENT_TIMESTAMP() FROM bhima.general_ledger JOIN bhima.period ON bhima.period.id = bhima.general_ledger.period_id
-ON DUPLICATE KEY UPDATE uuid = HUID(bhima.general_ledger.uuid); */
+ON DUPLICATE KEY UPDATE uuid = HUID(bhima.general_ledger.uuid);
 
 /* PERIOD TOTAL */
-/* INSERT INTO period_total (enterprise_id, fiscal_year_id, period_id, account_id, credit, debit, locked) 
+INSERT INTO period_total (enterprise_id, fiscal_year_id, period_id, account_id, credit, debit, locked) 
 SELECT enterprise_id, fiscal_year_id, period_id, account_id, credit, debit, locked FROM bhima.period_total
-; */
+;
 
 /* PATIENT */
 /*
