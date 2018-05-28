@@ -42,6 +42,10 @@
     "CONFIGURATION":"Configuration rapport",
     "DELETE":"Supprimer un rapport",
     "DOWNLOAD":"Télécharger",
+    "EMPLOYEE_STANDING" : {
+      "DESCRIPTION": "Ce module permet de connaître la situation financière d'un employé",
+      "TITLE": "Situation financière d'un employé"
+    },
     "EXPENSE_REPORT":"Rapport des dépenses",
     "GENERATED":"Rapport généré",
     "INCOME_EXPENSE":"Rapport  des recettes et des dépenses",

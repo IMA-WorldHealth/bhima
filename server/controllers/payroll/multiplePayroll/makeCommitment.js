@@ -115,7 +115,7 @@ function config(req, res, next) {
               0,
               employee.gross_salary,
               db.bid(voucherCommitment.uuid),
-              null,
+              db.bid(employee.creditor_uuid),
             ]);
 
             employeeBenefitsItem.push([
@@ -124,7 +124,7 @@ function config(req, res, next) {
               employee.basic_salary,
               0,
               db.bid(voucherCommitment.uuid),
-              db.bid(employee.creditor_uuid),
+              null,
             ]);
 
             if (employeeBenefits.length) {
