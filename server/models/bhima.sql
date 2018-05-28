@@ -88,7 +88,8 @@ INSERT INTO unit VALUES
   (196, 'Depot Registry','TREE.DEPOTS_REGISTRY','',20,'/modules/depots/','/depots'),
   (197, 'Stock Exit Report','TREE.STOCK_EXIT_REPORT','Stock Exit Report', 144,'/modules/reports/generated/stock_exit','/reports/stock_exit'),
   (199, 'Client Debtor Account Balance', 'REPORT.CLIENT_DEBTOR_ACCOUNT_BALANCE_REPORT', 'Client Debtor Account Balance', 144, '/modules/reports/debtor_accounts_balance', '/reports/debtorBalanceReport'),
-  (200, 'Multiple Payroll','TREE.MULTI_PAYROLL','Multiple Payroll', 57,'/modules/multiple_payroll','/multiple_payroll');
+  (200, 'Multiple Payroll','TREE.MULTI_PAYROLL','Multiple Payroll', 57,'/modules/multiple_payroll','/multiple_payroll'),
+  (201, 'Employee Standing Report', 'TREE.EMPLOYEE_STANDING_REPORT', 'Employee Standing Report', 144, '/modules/reports/employeeStanding', '/reports/employeeStanding');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -124,7 +125,8 @@ INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
   (14, 'inventory_file', 'REPORT.STOCK.INVENTORY_REPORT'),
   (15, 'operating', 'TREE.OPERATING_ACCOUNT'),
   (16, 'stock_exit', 'REPORT.STOCK.EXIT_REPORT'),
-  (17, 'debtorBalanceReport', 'REPORT.CLIENT_DEBTOR_ACCOUNT_BALANCE_REPORT');
+  (17, 'debtorBalanceReport', 'REPORT.CLIENT_DEBTOR_ACCOUNT_BALANCE_REPORT'),
+  (18, 'employeeStanding', 'REPORT.EMPLOYEE_STANDING.TITLE');  
 
 
 -- Supported Languages
