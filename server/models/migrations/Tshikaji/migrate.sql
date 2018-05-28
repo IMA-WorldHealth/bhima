@@ -307,7 +307,7 @@ ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.debitor_group.`uuid`);
   THERE IS DEBTOR WHO BELONGS TO A GROUP WHICH DOESN'T HAVE AN EXISTING ACCOUNT ID
 */
 INSERT INTO debtor (`uuid`, group_uuid, `text`)
-SELECT HUID(`uuid`), HUID(group_uuid), SUBSTRING(`text`, 0, 99) FROM bhima.debitor WHERE bhima.debitor.uuid NOT IN (
+SELECT HUID(`uuid`), HUID(group_uuid), SUBSTRING(`text`, 1, 100) FROM bhima.debitor WHERE bhima.debitor.uuid NOT IN (
   SELECT d.uuid FROM bhima.debitor d JOIN bhima.debitor_group dg ON dg.uuid = d.group_uuid WHERE dg.account_id IN (210, 257, 1074))
 ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.debitor.`uuid`);
 
@@ -318,7 +318,7 @@ ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.creditor_group.`uuid`);
 
 /* CREDITOR */
 INSERT INTO creditor (`uuid`, group_uuid, `text`)
-SELECT HUID(`uuid`), HUID(group_uuid), SUBSTRING(`text`, 0, 99) FROM bhima.creditor
+SELECT HUID(`uuid`), HUID(group_uuid), SUBSTRING(`text`, 1, 100) FROM bhima.creditor
 ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.creditor.`uuid`);
 
 /* SERVICE */
@@ -437,7 +437,7 @@ COMMIT;
 
 -- filter for the cash table
 CREATE TEMPORARY TABLE deb_cred_filter AS
-  SELECT d.uuid FROM bhima.debitor d JOIN bhima.debitor_group dg ON dg.uuid = d.group_uuid WHERE dg.account_id IN (210, 257, 1074));
+  SELECT d.uuid FROM bhima.debitor d JOIN bhima.debitor_group dg ON dg.uuid = d.group_uuid WHERE dg.account_id IN (210, 257, 1074);
 
 /* CASH */
 /*
@@ -464,6 +464,37 @@ UPDATE general_ledger gl JOIN cash_record_map crm ON gl.trans_id = crm.trans_id 
 UPDATE posting_journal pj JOIN cash_record_map crm ON pj.trans_id = crm.trans_id SET pj.record_uuid = crm.uuid;
 
 COMMIT;
+
+/* TEMPORARY FOR JOURNAL AND GENERAL LEDGER */
+DROP TABLE IF EXISTS combined_ledger;
+CREATE TEMPORARY TABLE combined_ledger as select account_id, debit, credit, inv_po_id from (
+  SELECT account_id, debit, credit, inv_po_id FROM bhima.posting_journal
+  UNION
+  SELECT account_id, debit, credit, inv_po_id FROM bhima.general_ledger
+) as combined;
+
+/* VOUCHER */
+INSERT INTO voucher (`uuid`, `date`, project_id, reference, currency_id, amount, description, user_id, created_at, type_id, reference_uuid, edited)
+SELECT HUID(pc.`uuid`), pc.`date`, pc.project_id, pc.reference, pc.currency_id, pc.cost, pc.description, pc.user_id, pc.`date`, pc.origin_id, HUID(pci.document_uuid), 0 FROM bhima.primary_cash pc
+  JOIN bhima.primary_cash_item pci ON pci.primary_cash_uuid = pc.uuid
+ON DUPLICATE KEY UPDATE `uuid` = HUID(pc.`uuid`);
+
+/* VOUCHER ITEM */
+/* GET DATA DIRECTLY FROM POSTING JOURNAL AND GENERAL LEDGER */
+INSERT INTO voucher_item (`uuid`, account_id, debit, credit, voucher_uuid, document_uuid, entity_uuid)
+SELECT HUID(pci.`uuid`), cl.account_id, cl.debit, cl.credit, HUID(pci.primary_cash_uuid), HUID(pci.document_uuid), HUID(pc.deb_cred_uuid) FROM bhima.primary_cash_item pci
+  JOIN bhima.primary_cash pc ON pc.`uuid` = pci.primary_cash_uuid
+  JOIN combined_ledger cl ON cl.inv_po_id = pci.document_uuid
+ON DUPLICATE KEY UPDATE `uuid` = HUID(pci.`uuid`);
+
+COMMIT;
+
+CREATE TEMPORARY TABLE `pcash_record_map` AS SELECT HUID(c.uuid) AS uuid, p.trans_id FROM bhima.primary_cash c JOIN bhima.posting_journal p ON c.uuid = p.inv_po_id;
+INSERT INTO `pcash_record_map` SELECT HUID(c.uuid) AS uuid, p.trans_id FROM bhima.primary_cash c JOIN bhima.general_ledger p ON c.uuid = p.inv_po_id;
+
+UPDATE general_ledger gl JOIN pcash_record_map crm ON gl.trans_id = crm.trans_id SET gl.record_uuid = crm.uuid;
+UPDATE posting_journal pj JOIN pcash_record_map crm ON pj.trans_id = crm.trans_id SET pj.record_uuid = crm.uuid;
+
 
 /* ENABLE AUTOCOMMIT AFTER THE SCRIPT */
 SET autocommit=1;
