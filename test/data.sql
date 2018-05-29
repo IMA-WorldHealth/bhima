@@ -818,18 +818,18 @@ INSERT INTO `stock_movement` (`uuid`, `lot_uuid`, `document_uuid`, `depot_uuid`,
   (HUID('e8502c3e-7483-11e7-a8de-507b9dd6de91'), HUID('064ab1d9-5246-4402-ae8a-958fcdb07b35'), HUID('0cc6c435-7484-11e7-a8de-507b9dd6de91'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), HUID('d4bb1452-e4fa-4742-a281-814140246877'), 8, '2017-02-02', 75, 1.2000, 1, 1);
 
 -- Rubric Payroll
-INSERT INTO `rubric_payroll` (`id`, `label`, `abbr`, `is_employee`, `is_percent`, `is_discount`, `is_tax`, `is_social_care`, `is_membership_fee`, `debtor_account_id`, `expense_account_id`, `is_ipr`, `value`, `is_defined_employee`) VALUES
-  (1, 'INSS Code part Patronale', 'INSS2', 0, 1, 1, 0, 0, 1, 306, 353, 0, 5, 0),
-  (2, 'Impôt Professionnel sur le Revenue', 'IPR', 1, 0, 1, 1, 0, 0, 319, 179, 1, NULL, 0),
-  (3, 'Institut National des Pratiques Professionels', 'INPP', 0, 1, 1, 1, 0, 0, 311, 354, 0, 2, 0),
-  (4, 'INSS Code Part Ouvriere', 'INSS1', 1, 1, 1, 0, 0, 1, 305, 179, 0, 3.5, 0),
-  (5, 'Transport', 'TPR', 0, 0, 0, 0, 1, 0, 179, 358, 0, NULL, 1),
-  (6, 'Primes', 'PRI', 0, 0, 0, 0, 0, 0, 179, 343, 0, NULL, 0),
-  (7, 'Indemnité vie chère', 'v_cher', 0, 0, 0, 0, 0, 0, 179, 343, 0, NULL, 1),
-  (8, 'Frais scolarité', 'f_scol', 0, 0, 0, 0, 0, 0, 179, 343, 0, NULL, 1),
-  (9, 'Logement', 'logm', 0, 1, 0, 0, 1, 0, 179, 350, 0, 30, 0),
-  (10, 'Allocation Familiale', 'allc', 0, 0, 0, 0, 1, 0, 179, 347, 0, NULL, 1),
-  (11, 'Office Nationale de l\'emploie', 'ONEM', 0, 1, 1, 1, 0, 0, 320, 355, 0, 0.2, 0);
+INSERT INTO `rubric_payroll` (`id`, `label`, `abbr`, `is_employee`, `is_percent`, `is_discount`, `is_tax`, `is_social_care`, `is_membership_fee`, `debtor_account_id`, `expense_account_id`, `is_ipr`, `value`, `is_associated_employee`, `is_defined_employee`) VALUES
+  (1, 'INSS Code part Patronale', 'INSS2', 0, 1, 1, 0, 0, 1, 306, 353, 0, 5, 0, 0),
+  (2, 'Impôt Professionnel sur le Revenue', 'IPR', 1, 0, 1, 1, 0, 0, 319, 179, 1, NULL, 0, 0),
+  (3, 'Institut National des Pratiques Professionels', 'INPP', 0, 1, 1, 1, 0, 0, 311, 354, 0, 2, 0, 0),
+  (4, 'INSS Code Part Ouvriere', 'INSS1', 1, 1, 1, 0, 0, 1, 305, 179, 0, 3.5, 0, 0),
+  (5, 'Transport', 'TPR', 0, 0, 0, 0, 1, 0, 179, 358, 0, NULL, 0, 1),
+  (6, 'Primes', 'PRI', 0, 0, 0, 0, 0, 0, 179, 343, 0, NULL, 0, 0),
+  (7, 'Indemnité vie chère', 'v_cher', 0, 0, 0, 0, 0, 0, 179, 343, 0, NULL, 0, 1),
+  (8, 'Frais scolarité', 'f_scol', 0, 0, 0, 0, 0, 0, 179, 343, 0, NULL, 0, 1),
+  (9, 'Logement', 'logm', 0, 1, 0, 0, 1, 0, 179, 350, 0, 30, 0, 0),
+  (10, 'Allocation Familiale', 'allc', 0, 0, 0, 0, 1, 0, 179, 347, 0, NULL, 0, 1),
+  (11, 'Office Nationale de l\'emploie', 'ONEM', 0, 1, 1, 1, 0, 0, 320, 355, 0, 0.2, 0, 0);
 
 -- Configuration of Rubric
 INSERT INTO `config_rubric` (`id`, `label`) VALUES (1, 'Configuration des rubriques');
