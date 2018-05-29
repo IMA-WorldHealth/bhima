@@ -33,7 +33,7 @@
       </a>
     </li>
     <li>
-      <a data-method="view-voucher"  href ui-sref="vouchers({ filters : [{ key : 'invoice_uuid', value : row.entity.uuid, displayValue: row.entity.reference }]})">
+      <a data-method="view-voucher"  href ui-sref="vouchers({ filters : [{ key : 'invoice_uuid', value : row.entity.uuid, displayValue: row.entity.reference }, { key : 'period', value : 'allTime' }]})">
         <span class="fa fa-file-text-o"></span> <span translate>REPORT.VIEW_VOUCHER</span>
       </a>
     </li>
