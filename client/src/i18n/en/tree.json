@@ -24,6 +24,7 @@
     "DEPOTS_REGISTRY" : "Depots Registry",
     "EMPLOYEE" : "Employee",
     "EMPLOYEE_REGISTRY" : "Employees registry",
+    "EMPLOYEE_STANDING_REPORT" : "Employee Standing Report",
     "ENTERPRISE" : "Enterprise",
     "EXCHANGE" : "Exchange Rate",
     "FINANCE" : "Finance",

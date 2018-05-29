@@ -7,15 +7,18 @@
  *
  * @todo - this page is lacking integration tests
  *
+ * @requires q
  * @requires db
  * @requires NotFound
  */
 
+const q = require('q');
 const db = require('../../lib/db');
 const NotFound = require('../../lib/errors/NotFound');
 
 exports.list = list;
 exports.detail = detail;
+exports.getFinancialActivity = getFinancialActivity;
 
 /**
  * GET /creditors
@@ -62,4 +65,83 @@ function detail(req, res, next) {
     })
     .catch(next)
     .done();
+}
+
+/**
+ * This function returns the balance of a creditor account with the hospital.
+ *
+ * The algorithm works like this:
+ *  1) Look up all transaction lines associated with that creditor and sum the
+ *  debits and credits.
+ *
+ * NOTE - this function is not suitable for reporting, and should only be used
+ * by modules that need up-to-the minute debtor status.  There is no control
+ * over the dataset queried only the creditor
+ *
+ * @method balance
+ */
+function balance(creditorUuid) {
+  const creditorUid = db.bid(creditorUuid);
+
+  const sql = `
+    SELECT IFNULL(SUM(ledger.debit_equiv), 0) AS debit, IFNULL(SUM(ledger.credit_equiv), 0) AS credit,
+      IFNULL(SUM(ledger.credit_equiv - ledger.debit_equiv), 0) AS balance, MIN(trans_date) AS since,
+      MAX(trans_date) AS until
+    FROM (
+      SELECT debit_equiv, credit_equiv, entity_uuid, trans_date FROM posting_journal WHERE entity_uuid = ?
+      UNION ALL
+      SELECT debit_equiv, credit_equiv, entity_uuid, trans_date FROM general_ledger WHERE entity_uuid = ?
+    ) AS ledger
+    GROUP BY ledger.entity_uuid;
+  `;
+
+  return db.exec(sql, [creditorUid, creditorUid]);
+}
+
+/**
+ * @function getFinancialActivity
+ *
+ * @description
+ * returns all transactions and balances associated with the Creditor.
+ */
+function getFinancialActivity(creditorUuid) {
+  const uid = db.bid(creditorUuid);
+  const sql = `
+    SELECT trans_id, BUID(entity_uuid) AS entity_uuid, description,
+      BUID(record_uuid) AS record_uuid, trans_date, debit, credit, document, balance,
+      (@cumsum := balance + @cumsum) AS cumsum
+    FROM (
+      SELECT p.trans_id, p.entity_uuid, p.description, p.record_uuid, p.trans_date,
+        SUM(p.debit_equiv) AS debit, SUM(p.credit_equiv) AS credit, dm.text AS document,
+        SUM(p.credit_equiv) - SUM(p.debit_equiv) AS balance, 0 AS posted
+      FROM posting_journal AS p
+        LEFT JOIN document_map AS dm ON dm.uuid = p.record_uuid
+      WHERE p.entity_uuid = ?
+      GROUP BY p.record_uuid
+
+      UNION ALL
+
+      SELECT g.trans_id, g.entity_uuid, g.description, g.record_uuid, g.trans_date,
+        SUM(g.debit_equiv) AS debit, SUM(g.credit_equiv) AS credit, dm.text AS document,
+        SUM(g.credit_equiv) - SUM(g.debit_equiv) AS balance, 1 AS posted
+      FROM general_ledger AS g
+        LEFT JOIN document_map AS dm ON dm.uuid = g.record_uuid
+      WHERE g.entity_uuid = ?
+      GROUP BY g.record_uuid
+    )c, (SELECT @cumsum := 0)z
+    ORDER BY trans_date ASC, trans_id;
+  `;
+
+  return q.all([
+    db.exec(sql, [uid, uid]),
+    balance(creditorUuid),
+  ])
+    .spread((transactions, aggs) => {
+      if (!aggs.length) {
+        aggs.push({ debit : 0, credit : 0, balance : 0 });
+      }
+
+      const [aggregates] = aggs;
+      return { transactions, aggregates };
+    });
 }
