@@ -39,7 +39,7 @@
       </a>
     </li>
     <li>
-      <a data-method="voucher" ui-sref="vouchers({ filters : [{ key : 'entity_uuid', value : row.entity.debtor_uuid, displayValue: row.entity.display_name }]})" href>
+      <a data-method="voucher" ui-sref="vouchers({ filters : [{ key : 'entity_uuid', value : row.entity.debtor_uuid, displayValue: row.entity.display_name }, { key : 'period', value : 'allTime' }]})" href>
         <span class="fa fa-address-card-o"></span> <span translate>PATIENT_REGISTRY.VOUCHERS</span>
       </a>
     </li>
