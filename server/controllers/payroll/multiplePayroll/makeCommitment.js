@@ -54,7 +54,8 @@ function config(req, res, next) {
           BUID(paiement.employee_uuid) AS employee_uuid, 
           paiement.base_taxable, paiement.currency_id, rubric_payroll.is_employee, rubric_payroll.is_discount, 
           rubric_payroll.label, rubric_payroll.is_tax, rubric_payroll.is_social_care, rubric_payroll.is_membership_fee, 
-          rubric_payroll.debtor_account_id, rubric_payroll.expense_account_id, rubric_paiement.value
+          rubric_payroll.debtor_account_id, rubric_payroll.expense_account_id, rubric_paiement.value,
+          rubric_payroll.is_associated_employee
           FROM paiement
           JOIN rubric_paiement ON rubric_paiement.paiement_uuid = paiement.uuid
           JOIN rubric_payroll ON rubric_payroll.id = rubric_paiement.rubric_payroll_id
@@ -164,13 +165,16 @@ function config(req, res, next) {
               ]);
 
               employeeWithholdings.forEach(withholding => {
+                const employeeCreditorUuid = withholding.is_associated_employee === 1 
+                  ? db.bid(employee.creditor_uuid) : null;
+
                 employeeWithholdingItem.push([
                   db.bid(uuid()),
                   withholding.debtor_account_id,
                   0,
                   util.roundDecimal(withholding.value, 2),
                   db.bid(voucherWithholding.uuid),
-                  null,
+                  employeeCreditorUuid,
                 ]);
               });
             }

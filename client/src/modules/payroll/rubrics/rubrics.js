@@ -53,6 +53,9 @@ function RubricManagementController(
         field : 'is_ipr', displayName : 'FORM.LABELS.IS_IPR', cellTemplate : '/modules/payroll/rubrics/templates/ipr.tmpl.html', headerCellFilter : 'translate',
       },
       {
+        field : 'is_associated_employee', displayName : 'FORM.LABELS.EMPLOYEE_ID', cellTemplate : '/modules/payroll/rubrics/templates/associated.tmpl.html', headerCellFilter : 'translate',
+      },      
+      {
         field : 'debtorAccount', displayName : 'FORM.LABELS.DEBTOR_ACCOUNT', headerCellFilter : 'translate',
       },
       {
