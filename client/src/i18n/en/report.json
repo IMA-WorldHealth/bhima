@@ -50,6 +50,10 @@
     "CONFIGURATION": "Report Configuration",
     "DELETE": "Delete Report",
     "DOWNLOAD": "Download",
+    "EMPLOYEE_STANDING" : {
+      "DESCRIPTION": "",
+      "TITLE": "Employee Standing Report"
+    },    
     "EXPENSE_REPORT": "Expenses Report",
     "GENERATED": "Generated Report",
     "INCOME_EXPENSE": "Profit And Loss Statement",

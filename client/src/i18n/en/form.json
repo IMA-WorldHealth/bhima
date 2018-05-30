@@ -559,6 +559,8 @@
             "TOTAL": "Total",
             "TOTAL_BALANCE_REMAINING": "Total Balance Remaining",
             "TOTAL_BILLED": "Total Billed",
+            "TOTAL_CREDITS": "Total Credits",
+            "TOTAL_DEBITS": "Total debits",
             "TOTAL_DEBT": "Total of Debts",
             "TOTAL_PAID": "Total Paid",
             "TOTAL_SELECTED_INVOICES": "Total Selected Invoices",

@@ -33,6 +33,7 @@ exports.find = find;
 exports.advantage = advantage;
 exports.lookupEmployeeAdvantages = lookupEmployeeAdvantages;
 exports.patientToEmployee = patientToEmployee;
+exports.lookupEmployee = lookupEmployee;
 
 /**
  * @method list

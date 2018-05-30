@@ -33,7 +33,7 @@ function HolidayModalController($state, Holidays, ModalService, Notify, AppCache
       .catch(Notify.handleError);
   }
 
-  // custom filter employee_id
+  // custom filter employee_uuid
   vm.onSelectEmployee = function onSelectEmployee(employee) {
     vm.holiday.employee_uuid = employee.uuid;
   };

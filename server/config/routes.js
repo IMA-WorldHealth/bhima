@@ -384,6 +384,8 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/creditors/aged', financeReports.creditors.aged);
   app.get('/reports/finance/purchases', financeReports.purchases.report);
 
+  app.get('/reports/finance/employeeStanding/', financeReports.employee);
+
   app.get('/reports/keys/:key', report.keys);
 
   // list of saved reports
