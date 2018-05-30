@@ -190,7 +190,7 @@ function config(req, res, next) {
 
               // Filtering taxable Rubrics
               taxables = rubricData.filter(item =>
-                (item.is_tax !== 1 && item.is_social_care !== 1 && item.is_membership_fee !== 1));
+                (item.is_tax !== 1 && item.is_social_care !== 1 && item.is_membership_fee !== 1 && item.is_discount !== 1));
 
 
               // Filtering all taxes and contributions that is calculated from the taxable base
