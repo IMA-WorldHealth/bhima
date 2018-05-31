@@ -56,6 +56,27 @@ CREATE PROCEDURE MergeSector(
   DELETE FROM sector WHERE sector.uuid = HUID(beforeUuid);
 END $$
 
+CREATE PROCEDURE ComputePeriodZero(
+  IN year INT
+) BEGIN
+  DECLARE fyId INT;
+  DECLARE previousFyId INT;
+  DECLARE enterpriseId INT;
+  DECLARE periodZeroId INT;
+
+  SELECT id, previous_fiscal_year_id, enterprise_id
+    INTO fyId, previousFyId, enterpriseId
+  FROM fiscal_year WHERE YEAR(start_date) = year;
+
+  SET periodZeroId = CONCAT(year, 0);
+
+  INSERT INTO period_total (enterprise_id, fiscal_year_id, period_id, account_id, credit, debit, locked)
+    SELECT enterpriseId, fyId, periodZeroId, account_id, SUM(credit), SUM(debit), 0
+    FROM period_total
+    WHERE fiscal_year_id = previousFyId
+    GROUP BY account_id;
+END $$
+
 DELIMITER ;
 
 /* CURRENCY */
@@ -182,6 +203,10 @@ SELECT id, @enterpriseId, foreign_currency_id, rate, date FROM bhima.exchange_ra
   FOR GETTING THE OLD ID
     SEE: ON DUPLICATE KEY UPDATE id = bhima_test.fiscal_year.id;
 */
+-- remove duplicate FYs
+DELETE FROM bhima.period WHERE fiscal_year_id IN (6, 7);
+DELETE FROM bhima.fiscal_year WHERE id IN (6, 7);
+
 INSERT INTO fiscal_year (enterprise_id, id, number_of_months, label, start_date, end_date, previous_fiscal_year_id, locked, created_at, updated_at, user_id, note)
 SELECT enterprise_id, id, number_of_months, fiscal_year_txt, MAKEDATE(start_year, 1), DATE_ADD(DATE_ADD(MAKEDATE(start_year, 1), INTERVAL (12)-1 MONTH), INTERVAL (31)-1 DAY), previous_fiscal_year, 0, CURRENT_TIMESTAMP(), CURRENT_TIMESTAMP(), 1, start_year FROM bhima.fiscal_year
 ON DUPLICATE KEY UPDATE id = bhima_test.fiscal_year.id;
@@ -207,35 +232,95 @@ INSERT INTO profit_center (project_id, id, `text`, note)
 SELECT project_id, id, `text`, note FROM bhima.profit_center
 ON DUPLICATE KEY UPDATE id = bhima.profit_center.id;
 
-/* PERIOD */
 /*
-  NOTE : PLEASE CONVERT ALL ID TO YYYYN+ ex. 20180, 201812
-  WITH : SELECT CONCAT(YEAR(start_date), IF(LPAD(number,2,'0') = '00', '0', LPAD(number,2,'0'))) AS NUMBER FROM period;
-  FISCAL_YEAR_ID IN (6. 7) ARE FOR DUPLICATED 2018
+Migrate period information.  Since we have foreign keys off, the easiest way is
+to delete the default data created by init database and then smash in IMCK's data.
 */
+DELETE FROM period;
+
 INSERT INTO period (id, fiscal_year_id, `number`, start_date, end_date, locked)
-SELECT id, fiscal_year_id, period_number, IF(period_start=0, NULL, period_start), IF(period_stop=0, NULL, period_stop), locked FROM bhima.period WHERE bhima.period.fiscal_year_id NOT IN (6, 7)
-ON DUPLICATE KEY UPDATE id = bhima.period.id;
+  SELECT id, fiscal_year_id, period_number, IF(period_start=0, NULL, period_start), IF(period_stop=0, NULL, period_stop), locked
+    FROM bhima.period;
+
+DELETE FROM period WHERE number = 0;
+
+-- insert period 0 for all fiscal years.
+INSERT INTO period (id, fiscal_year_id, `number`, start_date, end_date)
+  SELECT CONCAT(start_year, 0), id, 0, NULL, NULL FROM bhima.fiscal_year;
+
 
 /* ACCOUNT TYPE */
 /*
   NOTE: UPDATE ALL ACCOUNT_CATEGORY USED TO BE AS 2.X WANT
   NO NEED TO ADD OTHER ACCOUNT_CATEGORY
   FIX: FIX THE ACCOUNT_CATEGORY_ID FOR EXPENSE ACCOUNT
-*/
+
+  FIXME(@jniles) - I don't think we need to migrate account types.  They are already
+  built in the initial database engine. We just need to update the 1.x account
+  type links to point to the correct account types.
+
 INSERT INTO account_type (id, type, translation_key, account_category_id)
   SELECT id, type, type, IF(type = 'balance', 3, IF(type = 'title', 4, IF(type = 'income/expense', 1, 2))) FROM bhima.account_type
 ON DUPLICATE KEY UPDATE id = bhima.account_type.id;
+*/
 
 /* REFERENCE */
 INSERT INTO reference (id, is_report, ref, `text`, `position`, `reference_group_id`, `section_resultat_id`)
   SELECT id, is_report, ref, `text`, `position`, `reference_group_id`, `section_resultat_id` FROM bhima.reference
 ON DUPLICATE KEY UPDATE id = bhima.reference.id;
 
-/* ACCOUNT */
+/*
+Migrating accounts is kind of tricky.  We need to fit the 2.x model of accounts
+and account types.  This means eliminating duplicate accounts and migrating
+account types based on account class.
+
+First we eliminate duplicates from the accounts.  We do this by appending random
+text to the label and prepending 9 to the account number.
+*/
+
+-- SELECT account_number from account GROUP BY account_number HAVING COUNT(account_number) = 2;
+ALTER TABLE account DROP KEY `account_1`;
 INSERT INTO account (id, type_id, enterprise_id, `number`, label, parent, locked, cc_id, pc_id, created, classe, reference_id)
-  SELECT id, account_type_id, enterprise_id, account_number, account_txt, parent, locked, cc_id, pc_id, created, classe, reference_id FROM bhima.account
-ON DUPLICATE KEY UPDATE id = bhima.account.id;
+  SELECT id, account_type_id, enterprise_id, account_number, account_txt, parent, IF(locked, 1, is_ohada), cc_id, pc_id, created, classe, reference_id FROM bhima.account
+ON DUPLICATE KEY UPDATE id = bhima.account.id, number = bhima.account.account_number, label = bhima.account.account_txt, parent = bhima.account.parent;
+-- ALTER TABLE account ADD UNIQUE KEY `account_1` (`number`);
+
+/*
+First, we treat the title accounts.  These are any accounts with children, and
+all accounts with the previous title type.
+
+Then we do income/expense.  These are any accounts that are not title accounts
+and are in the appropriate class.
+
+Finally, assets/liabilities are pretty brutally forced in.
+*/
+
+SET @asset = 1;
+SET @liability = 2;
+SET @equity = 3;
+SET @income = 4;
+SET @expense = 5;
+SET @title = 6;
+
+-- setting up accounts for processing
+CREATE TEMPORARY TABLE title_accounts AS (SELECT DISTINCT parent AS id FROM account);
+
+-- title accounts
+UPDATE account SET type_id = @title WHERE id IN (SELECT id FROM title_accounts);
+
+-- income accounts
+UPDATE account SET type_id = @income WHERE id NOT IN (SELECT id FROM title_accounts) AND LEFT(number, 1) = '7';
+
+-- expense accounts
+UPDATE account SET type_id = @expense WHERE id NOT IN (SELECT id FROM title_accounts) AND LEFT(number, 1) = '6';
+
+-- liability accounts
+UPDATE account SET type_id = @liability WHERE id NOT IN (SELECT id FROM title_accounts) AND LEFT(number, 1) = '4';
+
+-- asset accounts
+UPDATE account SET type_id = @asset WHERE id NOT IN (SELECT id FROM title_accounts) AND LEFT(number, 1) IN ('1', '2', '3', '5', '8');
+
+DROP TABLE title_accounts;
 
 CREATE TEMPORARY TABLE `inventory_group_dups` AS
   SELECT COUNT(code) as N, code FROM bhima.inventory_group GROUP BY code HAVING COUNT(code) > 1;
@@ -495,18 +580,29 @@ INSERT INTO `pcash_record_map` SELECT HUID(c.uuid) AS uuid, p.trans_id FROM bhim
 UPDATE general_ledger gl JOIN pcash_record_map crm ON gl.trans_id = crm.trans_id SET gl.record_uuid = crm.uuid;
 UPDATE posting_journal pj JOIN pcash_record_map crm ON pj.trans_id = crm.trans_id SET pj.record_uuid = crm.uuid;
 
-
 /* ENABLE AUTOCOMMIT AFTER THE SCRIPT */
 SET autocommit=1;
 SET foreign_key_checks=1;
 SET unique_checks=1;
 
+/*
+Hack hack hack
+*/
+UPDATE general_ledger gl JOIN project p ON gl.project_id = p.id JOIN enterprise e ON p.enterprise_id = e.id SET credit_equiv = credit, debit_equiv = debit WHERE gl.currency_id = e.currency_id;
+UPDATE posting_journal gl JOIN project p ON gl.project_id = p.id JOIN enterprise e ON p.enterprise_id = e.id SET credit_equiv = credit, debit_equiv = debit WHERE gl.currency_id = e.currency_id;
+
 /* RECOMPUTE */
 Call ComputeAccountClass();
 Call zRecomputeEntityMap();
 Call zRecomputeDocumentMap();
--- Call zRecalculatePeriodTotals();
+Call zRecalculatePeriodTotals();
 
 DROP PROCEDURE MergeSector;
+
+-- compute period 0 for the following fiscal years
+CALL ComputePeriodZero(2015);
+CALL ComputePeriodZero(2016);
+CALL ComputePeriodZero(2017);
+CALL ComputePeriodZero(2018);
 
 COMMIT;
