@@ -141,8 +141,10 @@ ON DUPLICATE KEY UPDATE id = bhima.`user`.id;
   CREATE THE SUPERUSER for attributing permissions
 */
 SET @SUPERUSER_ID = 1000;
+SET @JOHN_DOE = 1001;
 INSERT INTO `user` (id, username, password, display_name, email, active, deactivated, pin) VALUE
-  (@SUPERUSER_ID, 'superuser', PASSWORD('superuser'), 'The Admin User', 'support@bhi.ma', 1, 0, 1000);
+  (@SUPERUSER_ID, 'superuser', PASSWORD('superuser'), 'The Admin User', 'support@bhi.ma', 1, 0, 1000),
+  (@JOHN_DOE, 'johndoe', PASSWORD('superuser'), 'An Unknown User (John Doe)', 'support@bhi.ma', 1, 0, 1000);
 
 INSERT INTO `permission` (unit_id, user_id)
 SELECT id, @SUPERUSER_ID FROM unit;
@@ -502,6 +504,9 @@ INSERT INTO voucher (`uuid`, `date`, project_id, reference, currency_id, amount,
 SELECT HUID(pc.`uuid`), pc.`date`, pc.project_id, pc.reference, pc.currency_id, pc.cost, pc.description, pc.user_id, pc.`date`, pc.origin_id, HUID(pci.document_uuid), 0 FROM bhima.primary_cash pc
   JOIN bhima.primary_cash_item pci ON pci.primary_cash_uuid = pc.uuid
 ON DUPLICATE KEY UPDATE `uuid` = HUID(pc.`uuid`);
+
+/* FIX UNKNOWN USERS */
+UPDATE voucher SET user_id = @JOHN_DOE WHERE user_id NOT IN (SELECT u.id FROM user u);
 
 /* TEMPORARY VOUCHER ITEMS JOINED TO COMBINED LEDGER */
 CREATE TEMPORARY TABLE temp_voucher_item AS 
