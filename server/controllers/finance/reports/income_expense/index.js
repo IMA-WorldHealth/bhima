@@ -79,8 +79,8 @@ function document(req, res, next) {
 
       const isIncomeFirstElement = root.children[0].isIncomeAccount;
 
-      let income;
-      let expense;
+      let income = {};
+      let expense = {};
       if (isIncomeFirstElement) {
         [income, expense] = root.children;
       } else {
@@ -91,8 +91,14 @@ function document(req, res, next) {
       const losses = [];
 
       tree.walk(node => profits.push(node), true, income);
-
       tree.walk(node => losses.push(node), true, expense);
+
+      // calculate totals and profit
+      const emptyTotal = { balance : 0, previousBalance : 0, difference : 0 };
+      const totals = {
+        income :  profits[0] || emptyTotal,
+        expense : losses[0] || emptyTotal,
+      };
 
       // computes the variance on the income/expense
       profits.forEach(account => {
@@ -103,7 +109,9 @@ function document(req, res, next) {
         account.variance = variance(account.balance, account.previousBalance);
       });
 
-      _.extend(data, { profits, losses, previousFiscalYear });
+      _.extend(data, {
+        profits, losses, previousFiscalYear, totals,
+      });
 
       return report.render(data);
     })

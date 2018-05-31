@@ -12,7 +12,7 @@
       </h3>
 
       <h5 style="margin:15px;" class="text-center">
-        {{date periodFrom.start_date "MMMM"}} - {{date periodTo.end_date "MMMM"}}
+        {{date periodFrom.start_date "MMMM"}} - {{date periodTo.end_date "MMMM"}} ({{fiscalYear.label }})
       </h5>
 
       {{#if profits}}
@@ -35,12 +35,19 @@
             <tr {{#if account.isTitleAccount}} class="text-bold" {{/if}}>
               <td>{{account.number}}</td>
               <td style="padding-left:calc(({{account.depth}} - 1) * 15px);">{{account.label}}</td>
-              <td class="text-right">{{debcred account.previousBalance ../metadata.enterprise.currency_id}}</td>
-              <td class="text-right">{{debcred account.balance ../metadata.enterprise.currency_id}}</td>
-              <td class="text-right">{{debcred account.difference ../metadata.enterprise.currency_id}}</td>
+              <td class="text-right">{{debcred account.previousBalance metadata.enterprise.currency_id}}</td>
+              <td class="text-right">{{debcred account.balance metadata.enterprise.currency_id}}</td>
+              <td class="text-right">{{debcred account.difference metadata.enterprise.currency_id}}</td>
               <td class="text-right">{{percentage account.variance}}</td>
             </tr>
           {{/each}}
+          <tr>
+            <td colspan="2" class="text-right"><b>{{translate 'FORM.LABELS.TOTAL'}}</b></td>
+            <td class="text-right">{{debcred totals.income.previousBalance metadata.enterprise.currency_id}}</td>
+            <td class="text-right">{{debcred totals.income.balance metadata.enterprise.currency_id}}</td>
+            <td class="text-right">{{debcred totals.income.difference metadata.enterprise.currency_id}}</td>
+            <td class="text-right">{{debcred totals.income.variance metadata.enterprise.currency_id}}</td>
+          </tr>
         </tbody>
       </table>
     {{/if}}
@@ -67,15 +74,41 @@
             <tr {{#if account.isTitleAccount}} class="text-bold" {{/if}}>
               <td>{{account.number}}</td>
               <td style="padding-left:calc(({{account.depth}} - 1) * 15px);">{{account.label}}</td>
-              <td class="text-right">{{debcred account.previousBalance ../metadata.enterprise.currency_id}}</td>
-              <td class="text-right">{{debcred account.balance ../metadata.enterprise.currency_id}}</td>
-              <td class="text-right">{{debcred account.difference ../metadata.enterprise.currency_id}}</td>
+              <td class="text-right">{{debcred account.previousBalance metadata.enterprise.currency_id}}</td>
+              <td class="text-right">{{debcred account.balance metadata.enterprise.currency_id}}</td>
+              <td class="text-right">{{debcred account.difference metadata.enterprise.currency_id}}</td>
               <td class="text-right">{{percentage account.variance}}</td>
             </tr>
           {{else}}
             {{>emptyTable columns=6}}
           {{/each}}
+          <tr>
+            <td colspan="2" class="text-right"><b>{{translate 'FORM.LABELS.TOTAL'}}</b></td>
+            <td class="text-right">{{debcred totals.expense.previousBalance metadata.enterprise.currency_id}}</td>
+            <td class="text-right">{{debcred totals.expense.balance metadata.enterprise.currency_id}}</td>
+            <td class="text-right">{{debcred totals.expense.difference metadata.enterprise.currency_id}}</td>
+            <td class="text-right">{{debcred totals.expense.variance metadata.enterprise.currency_id}}</td>
+          </tr>
         </tbody>
+      </table>
+
+      <br/>
+      <table style="width:400px;" class="pull-right table table-condensed table-report">
+        <tr style="background-color:#ddd;">
+          <th colspan="2" class="text-center"><b>{{translate 'FORM.LABELS.PROFIT'}}</b></th>
+        </tr>
+        <tr>
+          <td>{{translate 'FORM.LABELS.INCOME'}}</td>
+          <td class="text-right">{{debcred totals.income.balance metadata.enterprise.currency_id}}</td>
+        </tr>
+        <tr>
+          <td>{{translate 'FORM.LABELS.EXPENSE'}}</td>
+          <td class="text-right">{{debcred totals.expense.balance metadata.enterprise.currency_id}}</td>
+        </tr>
+        <tr>
+          <td>{{translate 'FORM.LABELS.BALANCE'}}</td>
+          <td class="text-right">{{debcred totals.result metadata.enterprise.currency_id}}</td>
+        </tr>
       </table>
     {{/if}}
     </div>
