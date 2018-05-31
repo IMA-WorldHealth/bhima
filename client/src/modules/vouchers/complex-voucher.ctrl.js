@@ -62,36 +62,46 @@ function ComplexJournalVoucherController(
   }
 
   vm.openConventionPaymentModal = function openConventionPaymentModal() {
-    Toolkit.openConventionPaymentModal()
-      .then(processVoucherToolRows);
+    gridManager(Toolkit.openConventionPaymentModal);
   };
 
   vm.openGenericIncomeModal = function openGenericIncomeModal() {
-    Toolkit.openGenericIncomeModal()
-      .then(processVoucherToolRows);
+    gridManager(Toolkit.openGenericIncomeModal);
   };
 
 
   vm.openGenericExpenseModal = function openGenericExpenseModal() {
-    Toolkit.openGenericExpenseModal()
-      .then(processVoucherToolRows);
+    gridManager(Toolkit.openGenericExpenseModal);
   };
 
   vm.openCashTransferModal = function openCashTransferModal() {
-    Toolkit.openCashTransferModal()
-      .then(processVoucherToolRows);
+    gridManager(Toolkit.openCashTransferModal);
   };
 
   vm.openSupportPatientModal = function openSupportPatientModal() {
-    Toolkit.openSupportPatientModal()
-      .then(processVoucherToolRows);
+    gridManager(Toolkit.openSupportPatientModal);
   };
 
   vm.openPaymentEmployees = function openPaymentEmployees() {
-    Toolkit.openPaymentEmployees()
-      .then(processVoucherToolRows);
+    gridManager(Toolkit.openPaymentEmployees);
   };
 
+
+  // @TODO fixed me to display correctly selected items(invoices, ..) accounts
+  // without adding empty items before
+  function gridManager(modal) {
+    vm.Voucher.addItems(300);
+    modal().then(result => {
+      if (!result) {
+        removeNullRows();
+        if (vm.Voucher.store.data.length === 0) {
+          vm.Voucher.addItems(2);
+        }
+        return;
+      }
+      processVoucherToolRows(result);
+    });
+  }
   /**
    * @function processVoucherToolRows
    *
@@ -99,10 +109,9 @@ function ComplexJournalVoucherController(
    */
   function processVoucherToolRows(result) {
     if (!result) { return; }
-
+    // force updating details
     vm.Voucher.replaceFormRows(result.rows);
 
-    // force updating details
     updateView(result);
   }
 
@@ -116,6 +125,7 @@ function ComplexJournalVoucherController(
    * @param {object} result
    */
   function updateView(result) {
+
     $timeout(() => {
       // transaction type
       vm.Voucher.details.type_id = result.type_id || vm.Voucher.details.type_id;
@@ -127,8 +137,10 @@ function ComplexJournalVoucherController(
       vm.Voucher.details.currency_id = result.currency_id || vm.Voucher.details.currency_id;
 
       removeNullRows();
+
     }, 0);
   }
+
 
   /**
    * @function removeNullRows
