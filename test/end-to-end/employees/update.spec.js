@@ -28,6 +28,7 @@ describe('Update Employees', () => {
     registrationPage.setCurrencyInput('v_cher', 50);
     registrationPage.setCurrencyInput('f_scol', 0);
     registrationPage.setCurrencyInput('allc', 0);
+    registrationPage.setCurrencyInput('ac_sal', 0);
 
     registrationPage.createEmployee();
     components.notification.hasSuccess();

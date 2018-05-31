@@ -113,7 +113,7 @@ SET @BA_UUID_NEW = '47927e29-2da0-4566-b6e5-a74a9670c4c5';
 
 UPDATE sector SET province_uuid = @KO_UUID_NEW WHERE province_uuid = @KO_UUID_OLD;
 UPDATE sector SET province_uuid = @BA_UUID_NEW WHERE province_uuid = @BA_UUID_OLD;
-DELETE FROM province WHERE uuid IN (@KO_UUID, @BA_UUID);
+DELETE FROM province WHERE uuid IN (@KO_UUID_OLD, @BA_UUID_OLD);
 
 /* VILLAGE */
 INSERT INTO village (`uuid`, name, sector_uuid)
@@ -162,8 +162,10 @@ ON DUPLICATE KEY UPDATE id = bhima.`user`.id;
   CREATE THE SUPERUSER for attributing permissions
 */
 SET @SUPERUSER_ID = 1000;
+SET @JOHN_DOE = 1001;
 INSERT INTO `user` (id, username, password, display_name, email, active, deactivated, pin) VALUE
-  (@SUPERUSER_ID, 'superuser', PASSWORD('superuser'), 'The Admin User', 'support@bhi.ma', 1, 0, 1000);
+  (@SUPERUSER_ID, 'superuser', PASSWORD('superuser'), 'The Admin User', 'support@bhi.ma', 1, 0, 1000),
+  (@JOHN_DOE, 'johndoe', PASSWORD('superuser'), 'An Unknown User (John Doe)', 'support@bhi.ma', 1, 0, 1000);
 
 INSERT INTO `permission` (unit_id, user_id)
 SELECT id, @SUPERUSER_ID FROM unit;
@@ -194,8 +196,8 @@ INSERT INTO `user_role`(`uuid`, user_id, role_uuid)
 VALUES(HUID(uuid()), @SUPERUSER_ID, @roleUuid);
 
 -- migrate exchange rate
-INSERT INTO exchange_rate (id, enterprise_id, currency_id, rate, date)
-SELECT id, @enterpriseId, foreign_currency_id, rate, date FROM bhima.exchange_rate;
+INSERT INTO exchange_rate (id, enterprise_id, currency_id, rate, `date`)
+SELECT id, @enterpriseId, foreign_currency_id, rate, IF(`date` = 0, NOW(), `date`) FROM bhima.exchange_rate;
 
 /* FISCAL YEAR */
 /*
@@ -220,7 +222,7 @@ NOTE: These are the distributions of data in the transct3
 */
 INSERT INTO transaction_type (id, `text`, type, fixed)
 SELECT id, service_txt, service_txt, 1 FROM bhima.transaction_type
-ON DUPLICATE KEY UPDATE id = bhima.transaction_type.id;
+ON DUPLICATE KEY UPDATE id = bhima.transaction_type.id, `text` = bhima.transaction_type.service_txt, `type` = bhima.transaction_type.service_txt;
 
 /* COST CENTER */
 INSERT INTO cost_center (project_id, id, `text`, note, is_principal)
@@ -419,11 +421,18 @@ The following code deals with invoices and invoice links to the posting journal.
 In 1.x, we used inv_po_id to link the `posting_journal` to the `sale` table.
 */
 
+/*!40000 ALTER TABLE `bhima`.`posting_journal` DISABLE KEYS */;
+/*!40000 ALTER TABLE `bhima`.`general_ledger` DISABLE KEYS */;
 CREATE TEMPORARY TABLE `sale_record_map` AS
   SELECT HUID(s.uuid) AS uuid, p.trans_id FROM bhima.sale s JOIN bhima.posting_journal p ON s.uuid = p.inv_po_id;
 
 INSERT INTO `sale_record_map`
   SELECT HUID(s.uuid) AS uuid, g.trans_id FROM bhima.sale s JOIN bhima.general_ledger g ON s.uuid = g.inv_po_id;
+/*!40000 ALTER TABLE `bhima`.`posting_journal` ENABLE KEYS */;
+/*!40000 ALTER TABLE `bhima`.`general_ledger` ENABLE KEYS */;
+
+/* INDEX FOR SALE RECORD MAP */
+ALTER TABLE sale_record_map ADD INDEX `uuid` (`uuid`);
 
 /* INVOICE */
 /*
@@ -440,10 +449,17 @@ ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.sale.`uuid`);
   SELECT JUST invoice_item for invoice who exist
   THIS QUERY TAKE TOO LONG TIME
 */
-INSERT INTO invoice_item (invoice_uuid, `uuid`, inventory_uuid, quantity, inventory_price, transaction_price, debit, credit)
-SELECT HUID(sale_uuid), HUID(`uuid`), HUID(inventory_uuid), quantity, inventory_price, transaction_price, debit, credit FROM bhima.sale_item WHERE HUID(bhima.sale_item.sale_uuid) IN (
+CREATE TEMPORARY TABLE temp_sale_item AS SELECT HUID(sale_uuid) AS sale_uuid, HUID(`uuid`) AS `uuid`, HUID(inventory_uuid) AS inventory_uuid, quantity, inventory_price, transaction_price, debit, credit
+FROM bhima.sale_item WHERE HUID(bhima.sale_item.sale_uuid) IN (
   SELECT uuid from sale_record_map
-) ON DUPLICATE KEY UPDATE `uuid` = HUID(bhima.sale_item.`uuid`);
+);
+
+/* remove the unique key for boosting the insert operation */
+ALTER TABLE invoice_item DROP KEY `invoice_item_1`;
+INSERT INTO invoice_item (invoice_uuid, `uuid`, inventory_uuid, quantity, inventory_price, transaction_price, debit, credit)
+SELECT sale_uuid, `uuid`, inventory_uuid, quantity, inventory_price, transaction_price, debit, credit FROM temp_sale_item
+ON DUPLICATE KEY UPDATE `uuid` = temp_sale_item.`uuid`;
+ALTER TABLE invoice_item ADD UNIQUE KEY `invoice_item_1` (`invoice_uuid`, `inventory_uuid`);
 
 COMMIT;
 
@@ -454,6 +470,7 @@ COMMIT;
 INSERT INTO posting_journal (uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, record_uuid, description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id, entity_uuid, reference_uuid, comment, transaction_type_id, user_id, cc_id, pc_id, created_at, updated_at)
   SELECT HUID(uuid), project_id, bhima.posting_journal.fiscal_year_id, IF(bhima.posting_journal.fiscal_year_id = 6 OR bhima.posting_journal.fiscal_year_id = 7, 50 + period_number, period_id), trans_id, TIMESTAMP(trans_date), IFNULL(doc_num, HUID(UUID())), description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id, IF(LENGTH(deb_cred_uuid) = 36, HUID(deb_cred_uuid), NULL), NULL, comment, origin_id, user_id, cc_id, pc_id, TIMESTAMP(trans_date), CURRENT_TIMESTAMP() FROM bhima.posting_journal JOIN bhima.period ON bhima.period.id = bhima.posting_journal.period_id
 ON DUPLICATE KEY UPDATE uuid = HUID(bhima.posting_journal.uuid);
+COMMIT;
 
 -- TODO - deal with this in a better way
 -- account for data corruption (modifies HBB's dataset!)
@@ -468,6 +485,7 @@ UPDATE bhima.general_ledger SET deb_cred_uuid = NULL WHERE LEFT(deb_cred_uuid, 1
 INSERT INTO general_ledger (uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, record_uuid, description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id, entity_uuid, reference_uuid, comment, transaction_type_id, user_id, cc_id, pc_id, created_at, updated_at)
   SELECT HUID(`uuid`), project_id, bhima.general_ledger.fiscal_year_id, IF(bhima.general_ledger.fiscal_year_id = 6 OR bhima.general_ledger.fiscal_year_id = 7, 50 + period_number, period_id), trans_id, TIMESTAMP(trans_date), IFNULL(doc_num, HUID(UUID())), description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id, IF(LENGTH(deb_cred_uuid) = 36, HUID(deb_cred_uuid), NULL), NULL, comment, origin_id, user_id, cc_id, pc_id, TIMESTAMP(trans_date), CURRENT_TIMESTAMP() FROM bhima.general_ledger JOIN bhima.period ON bhima.period.id = bhima.general_ledger.period_id
 ON DUPLICATE KEY UPDATE uuid = HUID(bhima.general_ledger.uuid);
+COMMIT;
 
 UPDATE general_ledger gl JOIN sale_record_map srm ON gl.trans_id = srm.trans_id SET gl.record_uuid = srm.uuid;
 UPDATE posting_journal pj JOIN sale_record_map srm ON pj.trans_id = srm.trans_id SET pj.record_uuid = srm.uuid;
@@ -551,12 +569,18 @@ UPDATE posting_journal pj JOIN cash_record_map crm ON pj.trans_id = crm.trans_id
 COMMIT;
 
 /* TEMPORARY FOR JOURNAL AND GENERAL LEDGER */
-DROP TABLE IF EXISTS combined_ledger;
-CREATE TEMPORARY TABLE combined_ledger as select account_id, debit, credit, inv_po_id from (
-  SELECT account_id, debit, credit, inv_po_id FROM bhima.posting_journal
-  UNION
-  SELECT account_id, debit, credit, inv_po_id FROM bhima.general_ledger
+/*!40000 ALTER TABLE `bhima`.`posting_journal` DISABLE KEYS */;
+/*!40000 ALTER TABLE `bhima`.`general_ledger` DISABLE KEYS */;
+CREATE TEMPORARY TABLE combined_ledger AS SELECT account_id, debit, credit, deb_cred_uuid, inv_po_id FROM (
+  SELECT account_id, debit, credit, deb_cred_uuid, inv_po_id FROM bhima.posting_journal
+  UNION ALL
+  SELECT account_id, debit, credit, deb_cred_uuid, inv_po_id FROM bhima.general_ledger
 ) as combined;
+/*!40000 ALTER TABLE `bhima`.`posting_journal` ENABLE KEYS */;
+/*!40000 ALTER TABLE `bhima`.`general_ledger` ENABLE KEYS */;
+
+/* INDEX IN COMBINED */
+ALTER TABLE combined_ledger ADD INDEX `inv_po_id` (`inv_po_id`);
 
 /* VOUCHER */
 INSERT INTO voucher (`uuid`, `date`, project_id, reference, currency_id, amount, description, user_id, created_at, type_id, reference_uuid, edited)
@@ -564,13 +588,26 @@ SELECT HUID(pc.`uuid`), pc.`date`, pc.project_id, pc.reference, pc.currency_id, 
   JOIN bhima.primary_cash_item pci ON pci.primary_cash_uuid = pc.uuid
 ON DUPLICATE KEY UPDATE `uuid` = HUID(pc.`uuid`);
 
+/* FIX UNKNOWN USERS */
+UPDATE voucher SET user_id = @JOHN_DOE WHERE user_id NOT IN (SELECT u.id FROM user u);
+
+/* TEMPORARY VOUCHER ITEMS JOINED TO COMBINED LEDGER */
+CREATE TEMPORARY TABLE temp_voucher_item AS
+  SELECT HUID(pci.`uuid`) AS `uuid`, cl.account_id, cl.debit, cl.credit, HUID(pci.primary_cash_uuid) AS voucher_uuid, HUID(pci.document_uuid) AS document_uuid, HUID(pc.deb_cred_uuid) AS deb_cred_uuid
+  FROM bhima.primary_cash_item pci
+  JOIN bhima.primary_cash pc ON pc.uuid = pci.primary_cash_item
+  JOIN combined_ledger cl ON cl.inv_po_id = pci.document_uuid;
+
+/* INDEX IN TEMP VOUCHER ITEM */
+ALTER TABLE temp_voucher_item ADD INDEX `uuid` (`uuid`);
+
+/* REMOVE DUPLICATED UUID BY SETTING UP NEW UUID FOR EACH ROW */
+UPDATE temp_voucher_item SET `uuid` = HUID(UUID()) WHERE `uuid` IS NOT NULL;
+
 /* VOUCHER ITEM */
 /* GET DATA DIRECTLY FROM POSTING JOURNAL AND GENERAL LEDGER */
 INSERT INTO voucher_item (`uuid`, account_id, debit, credit, voucher_uuid, document_uuid, entity_uuid)
-SELECT HUID(pci.`uuid`), cl.account_id, cl.debit, cl.credit, HUID(pci.primary_cash_uuid), HUID(pci.document_uuid), HUID(pc.deb_cred_uuid) FROM bhima.primary_cash_item pci
-  JOIN bhima.primary_cash pc ON pc.`uuid` = pci.primary_cash_uuid
-  JOIN combined_ledger cl ON cl.inv_po_id = pci.document_uuid
-ON DUPLICATE KEY UPDATE `uuid` = HUID(pci.`uuid`);
+SELECT `uuid`, account_id, debit, credit, voucher_uuid, document_uuid, deb_cred_uuid FROM temp_voucher_item;
 
 COMMIT;
 
