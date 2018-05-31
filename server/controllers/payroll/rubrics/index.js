@@ -12,7 +12,8 @@ const FilterParser = require('../../../lib/filter');
 function lookupRubric(id) {
   const sql = `
     SELECT r.id, r.label, r.abbr, r.is_employee, r.is_percent, r.is_defined_employee, r.is_discount, r.is_social_care,
-    r.debtor_account_id, r.expense_account_id, r.is_ipr, r.value, r.is_tax, r.is_membership_fee 
+    r.debtor_account_id, r.expense_account_id, r.is_ipr, r.value, r.is_tax, r.is_membership_fee, 
+    r.is_associated_employee
     FROM rubric_payroll AS r  
     WHERE r.id = ?`;
 
@@ -26,7 +27,8 @@ function list(req, res, next) {
   const sql = `
     SELECT r.id, r.label, r.abbr, r.is_employee, r.is_percent, r.is_defined_employee, r.is_discount, r.is_social_care,  
     r.debtor_account_id, a4.number AS four_number, a4.label AS four_label, 
-    r.expense_account_id, a6.number AS six_number, a6.label AS six_label, r.is_ipr, r.value, r.is_tax, r.is_membership_fee
+    r.expense_account_id, a6.number AS six_number, a6.label AS six_label, r.is_ipr, r.value, r.is_tax, 
+    r.is_membership_fee, r.is_associated_employee
     FROM rubric_payroll AS r
     JOIN account AS a4 ON a4.id = r.debtor_account_id
     JOIN account AS a6 ON a6.id = r.expense_account_id   

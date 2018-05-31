@@ -47,18 +47,8 @@ describe('Payroll Process Management', () => {
   });
 
   it(`Configure and edit Rubrics Payroll values`, () => {
-
     Page.editPayrollRubric(employeeName);
   });
-
-  it(`Configure and edit Rubrics Payroll values`, () => {
-    Page.editPayrollRubric(employeeName);
-  });
-
-  it(`Configure and edit Rubrics Payroll values`, () => {
-    Page.editPayrollRubric(employeeName);
-  });
-
 
   it(`Should set multiple employees On Waiting List of Payroll`, () => {
     GU.selectRow(gridId, 0);
