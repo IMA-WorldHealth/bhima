@@ -75,6 +75,7 @@ describe('Employees', () => {
     registrationPage.setCurrencyInput('v_cher', 30);
     registrationPage.setCurrencyInput('f_scol', 0);
     registrationPage.setCurrencyInput('allc', 120);
+    registrationPage.setCurrencyInput('ac_sal', 0);
 
     registrationPage.setBank(employee.bank);
     registrationPage.setBankAccount(employee.bank_account);
@@ -102,7 +103,8 @@ describe('Employees', () => {
     registrationPage.setCurrencyInput('TPR', 0);
     registrationPage.setCurrencyInput('v_cher', 0);
     registrationPage.setCurrencyInput('f_scol', 0);
-    registrationPage.setCurrencyInput('allc', 0);	
+    registrationPage.setCurrencyInput('allc', 50);
+    registrationPage.setCurrencyInput('ac_sal', 0);
     registrationPage.setBank(patient.bank);
     registrationPage.setBankAccount(patient.bank_account);
 
