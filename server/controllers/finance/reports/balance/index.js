@@ -126,20 +126,33 @@ function getBalanceSummary(periodId, currencyId, shouldPrune) {
         });
       };
 
+      // specify debit and credit, make credit absolute
+      const makeBalanceKeysAbs = (currentNode) => {
+        balanceKeys.forEach(key => {
+          const amount = _.clone(currentNode[key]);
+          if (amount > 0) {
+            currentNode[key] = { debit : amount, amount };
+          }
+          if (amount < 0) {
+            currentNode[key] = { credit : Math.abs(amount), amount };
+          }
+        });
+      };
+
       // sum the debits and credits
       tree.walk(bulkSumFn, false);
 
       // label depths
       tree.walk(Tree.common.computeNodeDepth);
-
       // prune empty rows if needed
       if (shouldPrune) {
         tree.prune(isEmptyRow);
       }
-      const balances = tree.toArray();
 
       const root = tree.getRootNode();
 
+      tree.walk(makeBalanceKeysAbs, false);
+      const balances = tree.toArray();
       const totals = {
         before : root.before,
         during : root.during,

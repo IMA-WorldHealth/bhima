@@ -85,54 +85,48 @@
               </td>
 
               {{#if ../useSeparateDebitsAndCredits}}
-                {{#if account.before}}
-                  {{#gt account.before 0}}
-                    <td>{{currency account.before account.currencyId }}</td>
-                    <td></td>
+                {{#if account.before.debit }}
+                  <td>{{currency account.before.debit account.currencyId }}</td>
+                  <td></td>
+                 {{else if account.befor.credit }}
+                  <td></td>
+                  <td>{{currency account.before.credit account.currencyId }}</td>
                   {{else}}
-                    <td></td>
-                    <td>{{currency account.before account.currencyId }}</td>
-                  {{/gt}}
-                {{else}}
                   <td></td>
                   <td></td>
                 {{/if}}
               {{else}}
-                <td>{{#if account.before}}{{debcred account.before account.currencyId }}{{/if}}</td>
+                <td>{{#if account.before}}{{debcred account.before.amount account.currencyId }}{{/if}}</td>
               {{/if}}
 
               {{#if ../useSeparateDebitsAndCredits}}
-                {{#if account.during}}
-                  {{#gt account.during 0}}
-                    <td>{{currency account.during account.currencyId }}</td>
-                    <td></td>
-                  {{else}}
-                    <td></td>
-                    <td>{{currency account.during account.currencyId }}</td>
-                  {{/gt}}
+                {{#if account.during.debit }}
+                  <td>{{currency account.during.debit account.currencyId }}</td>
+                  <td></td>
+                 {{else if account.during.credit }}
+                  <td></td>
+                  <td>{{currency account.during.credit account.currencyId }}</td>
                 {{else}}
                   <td></td>
                   <td></td>
                 {{/if}}
               {{else}}
-                <td>{{#if account.during}}{{debcred account.during account.currencyId }}{{/if}}</td>
+                <td>{{#if account.during}}{{debcred account.during.amount account.currencyId }}{{/if}}</td>
               {{/if}}
 
               {{#if ../useSeparateDebitsAndCredits}}
-                {{#if account.after}}
-                  {{#gt account.after 0}}
-                    <td>{{currency account.after account.currencyId }}</td>
-                    <td></td>
-                  {{else}}
-                    <td></td>
-                    <td>{{currency account.after account.currencyId }}</td>
-                  {{/gt}}
+                {{#if account.after.debit }}
+                  <td>{{currency account.after.debit account.currencyId }}</td>
+                  <td></td>
+                {{else if account.after.credit}}
+                  <td></td>
+                  <td>{{currency account.after.credit account.currencyId }}</td>
                 {{else}}
                   <td></td>
                   <td></td>
                 {{/if}}
               {{else}}
-                <td>{{#if account.after}}{{debcred account.after account.currencyId }}{{/if}}</td>
+                <td>{{#if account.after}}{{debcred account.after.amount account.currencyId }}{{/if}}</td>
               {{/if}}
             </tr>
           {{/each}}
