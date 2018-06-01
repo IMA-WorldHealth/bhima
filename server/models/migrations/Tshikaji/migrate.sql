@@ -283,7 +283,7 @@ text to the label and prepending 9 to the account number.
 -- SELECT account_number from account GROUP BY account_number HAVING COUNT(account_number) = 2;
 ALTER TABLE account DROP KEY `account_1`;
 INSERT INTO account (id, type_id, enterprise_id, `number`, label, parent, locked, cc_id, pc_id, created, classe, reference_id)
-  SELECT id, account_type_id, enterprise_id, account_number, account_txt, parent, IF(locked, 1, is_ohada), cc_id, pc_id, created, classe, reference_id FROM bhima.account
+  SELECT id, account_type_id, enterprise_id, account_number, account_txt, parent, IF(locked, 1, IF(is_ohada, 0, 1)), cc_id, pc_id, created, classe, reference_id FROM bhima.account
 ON DUPLICATE KEY UPDATE id = bhima.account.id, number = bhima.account.account_number, label = bhima.account.account_txt, parent = bhima.account.parent;
 -- ALTER TABLE account ADD UNIQUE KEY `account_1` (`number`);
 
@@ -455,11 +455,11 @@ FROM bhima.sale_item WHERE HUID(bhima.sale_item.sale_uuid) IN (
 );
 
 /* remove the unique key for boosting the insert operation */
-ALTER TABLE invoice_item DROP KEY `invoice_item_1`;
+-- ALTER TABLE invoice_item DROP KEY `invoice_item_1`;
 INSERT INTO invoice_item (invoice_uuid, `uuid`, inventory_uuid, quantity, inventory_price, transaction_price, debit, credit)
-SELECT sale_uuid, `uuid`, inventory_uuid, quantity, inventory_price, transaction_price, debit, credit FROM temp_sale_item
+  SELECT sale_uuid, `uuid`, inventory_uuid, quantity, inventory_price, transaction_price, debit, credit FROM temp_sale_item
 ON DUPLICATE KEY UPDATE `uuid` = temp_sale_item.`uuid`;
-ALTER TABLE invoice_item ADD UNIQUE KEY `invoice_item_1` (`invoice_uuid`, `inventory_uuid`);
+-- ALTER TABLE invoice_item ADD UNIQUE KEY `invoice_item_1` (`invoice_uuid`, `inventory_uuid`);
 
 COMMIT;
 
@@ -595,7 +595,7 @@ UPDATE voucher SET user_id = @JOHN_DOE WHERE user_id NOT IN (SELECT u.id FROM us
 CREATE TEMPORARY TABLE temp_voucher_item AS
   SELECT HUID(pci.`uuid`) AS `uuid`, cl.account_id, cl.debit, cl.credit, HUID(pci.primary_cash_uuid) AS voucher_uuid, HUID(pci.document_uuid) AS document_uuid, HUID(pc.deb_cred_uuid) AS deb_cred_uuid
   FROM bhima.primary_cash_item pci
-  JOIN bhima.primary_cash pc ON pc.uuid = pci.primary_cash_item
+  JOIN bhima.primary_cash pc ON pc.uuid = pci.primary_cash_uuid
   JOIN combined_ledger cl ON cl.inv_po_id = pci.document_uuid;
 
 /* INDEX IN TEMP VOUCHER ITEM */
@@ -617,16 +617,19 @@ INSERT INTO `pcash_record_map` SELECT HUID(c.uuid) AS uuid, p.trans_id FROM bhim
 UPDATE general_ledger gl JOIN pcash_record_map crm ON gl.trans_id = crm.trans_id SET gl.record_uuid = crm.uuid;
 UPDATE posting_journal pj JOIN pcash_record_map crm ON pj.trans_id = crm.trans_id SET pj.record_uuid = crm.uuid;
 
-/* ENABLE AUTOCOMMIT AFTER THE SCRIPT */
-SET autocommit=1;
-SET foreign_key_checks=1;
-SET unique_checks=1;
+COMMIT;
 
 /*
 Hack hack hack
 */
 UPDATE general_ledger gl JOIN project p ON gl.project_id = p.id JOIN enterprise e ON p.enterprise_id = e.id SET credit_equiv = credit, debit_equiv = debit WHERE gl.currency_id = e.currency_id;
 UPDATE posting_journal gl JOIN project p ON gl.project_id = p.id JOIN enterprise e ON p.enterprise_id = e.id SET credit_equiv = credit, debit_equiv = debit WHERE gl.currency_id = e.currency_id;
+
+/* ENABLE AUTOCOMMIT AFTER THE SCRIPT */
+SET autocommit=1;
+SET foreign_key_checks=1;
+SET unique_checks=1;
+
 
 /* RECOMPUTE */
 Call ComputeAccountClass();
