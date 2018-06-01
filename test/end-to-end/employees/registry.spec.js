@@ -15,6 +15,7 @@ describe('Employees Registry', () => {
   const parameters = {
     name : 'Dedrick',
     oneFilter : 1,
+    reference : 'EM.TE.2',
     twoFilters : 2,
     threeFilters : 3,
     fourFilters : 4,
@@ -55,6 +56,14 @@ describe('Employees Registry', () => {
 
     employeeRegistryPage.employeeCount(0, `The number of filtered employee should be 0`);
     employeeRegistryPage.clearFilter();
+  });
+
+  it(`should find One employee With reference "${parameters.reference}"`, () => {
+    employeeRegistryPage.search();
+    searchModalPage.setReference(parameters.reference);
+    searchModalPage.submit();
+    employeeRegistryPage.employeeCount(ONE_EMPLOYEE, `The number of filtered employee should be ${ONE_EMPLOYEE}`);
+    employeeRegistryPage.clearFilter();  
   });
 
   it('clearing filters restores default number of rows to the grid', () => {

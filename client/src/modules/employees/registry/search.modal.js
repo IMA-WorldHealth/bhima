@@ -30,7 +30,7 @@ function EmployeeRegistryModalController(ModalInstance, bhConstants, moment, Ser
   // these properties will be used to filter employee data form the client
   var searchQueryOptions = [
     'display_name', 'sex', 'code', 'dateBirthFrom', 'dateBirthTo', 'dateEmbaucheFrom',
-    'dateEmbaucheTo', 'grade_uuid', 'fonction_id', 'service_id', 'is_medical',
+    'dateEmbaucheTo', 'grade_uuid', 'fonction_id', 'service_id', 'is_medical', 'reference',
   ];
 
   // assign already defined custom filters to searchQueries object

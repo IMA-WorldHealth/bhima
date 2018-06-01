@@ -14,7 +14,7 @@ class RegistrationPage {
   constructor() {
     this.gridId = 'employee-registry';
     this.multipayrollGrid = element(by.id(this.gridId));
-    this.actionLinkColumn = 6;
+    this.actionLinkColumn = 7;
   }
 
   editEmployeeName(label) {

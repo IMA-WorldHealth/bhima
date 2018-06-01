@@ -13,6 +13,10 @@ class SearchModalPage {
     FU.input('ModalCtrl.searchQueries.display_name', displayName);
   }
 
+  setReference(reference) {
+    FU.input('ModalCtrl.searchQueries.reference', reference);
+  }
+
   submit() {
     FU.modal.submit();
   }

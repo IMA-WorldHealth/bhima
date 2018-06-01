@@ -23,7 +23,7 @@
             "CASHBOX": "Caisse",
             "CHARGE": "Charge",
             "CLIENT": "Client",
-            "CODE": "Code",
+            "CODE": "Matricule",
             "CONTRIBUTION_DEDUCTIONS": "Contributions et retenues",
             "COST": "Coût",
             "COST_CENTER": "Centre de coût",
