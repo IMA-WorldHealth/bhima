@@ -44,6 +44,7 @@
     "DOWNLOAD":"Télécharger",
     "EMPLOYEE_STANDING" : {
       "DESCRIPTION": "Ce module permet de connaître la situation financière d'un employé",
+      "REPORT": "Situation financière de l'employé",
       "TITLE": "Situation financière d'un employé"
     },
     "EXPENSE_REPORT":"Rapport des dépenses",

@@ -1,11 +1,13 @@
-{{> head title="REPORT.EMPLOYEE_STANDING.TITLE" }}
+{{> head title="REPORT.EMPLOYEE_STANDING.REPORT" }}
 
 <body>
 
   {{> header }}
 
-  <h3 class="text-center text-uppercase"><strong>{{translate "REPORT.EMPLOYEE_STANDING.TITLE"}}</strong></h3>
-  <h3 class="text-center"><strong>{{ employee.code }} | {{ employee.display_name }}</strong></h3>
+  <h3 class="text-center text-uppercase"><strong>{{translate "REPORT.EMPLOYEE_STANDING.REPORT"}}</strong></h3>
+  <h3 class="text-center text-uppercase"><strong>{{ employee.display_name }}</strong></h3>
+  <h4 class="text-center text-uppercase"><strong>{{translate "FORM.LABELS.REFERENCE"}} : {{ employee.reference }}</strong></h4>
+  <h5 class="text-center text-uppercase"><strong>{{translate "FORM.LABELS.REGISTRATION_NUMBER"}} : {{ employee.code }}</strong></h5>
 
   <section>
     <table class="table table-condensed table-bordered table-report">
@@ -52,7 +54,7 @@
         </tr>
         <tr>
           <th colspan="5" class="text-right">
-            {{translate "FORM.LABELS.TOTAL_BALANCE_REMAINING" }}
+            {{translate aggregates.balanceText}}
           </th>
           <th class="text-right">
             {{debcred aggregates.balance metadata.enterprise.currency_id}}

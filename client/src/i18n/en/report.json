@@ -52,6 +52,7 @@
     "DOWNLOAD": "Download",
     "EMPLOYEE_STANDING" : {
       "DESCRIPTION": "",
+      "REPORT": "Employee Standing Report",
       "TITLE": "Employee Standing Report"
     },    
     "EXPENSE_REPORT": "Expenses Report",
