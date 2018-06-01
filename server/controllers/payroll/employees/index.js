@@ -319,7 +319,7 @@ function update(req, res, next) {
 function create(req, res, next) {
   // cast as data object and add unique ids
   const data = req.body;
-  
+
   const employeeUuid = data.uuid || uuid();
 
   // Provide UUID if the client has not specified
@@ -549,7 +549,7 @@ function patientToEmployee(req, res, next) {
     Object.keys(employeeAdvantagePayroll).forEach((key) => {
       employeeAdvantage.push([employee.uuid, key, employeeAdvantagePayroll[key]]);
     });
-  }  
+  }
 
   const creditor = {
     uuid : employee.creditor_uuid,
@@ -582,7 +582,7 @@ function patientToEmployee(req, res, next) {
   delete employee.phone;
   delete employee.email;
   delete employee.is_patient;
-  delete employee.payroll;  
+  delete employee.payroll;
 
   const writeCreditor = 'INSERT INTO creditor SET ?';
   const updateDebtor = `UPDATE debtor SET ? WHERE debtor.uuid = ?`;
