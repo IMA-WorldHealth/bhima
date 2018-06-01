@@ -20,6 +20,14 @@ BEGIN
     SELECT patient.debtor_uuid, CONCAT_WS('.', 'PA', project.abbr, patient.reference)
     FROM patient JOIN project ON patient.project_id = project.id;
 
+  -- employee
+  INSERT INTO entity_map
+    SELECT employee.creditor_uuid, CONCAT_WS('.', 'EM', enterprise.abbr, employee.reference)
+    FROM employee 
+    JOIN patient ON patient.uuid = employee.patient_uuid
+    JOIN project ON project.id = patient.project_id
+    JOIN enterprise ON enterprise.id = project.enterprise_id;
+
   -- supplier
   INSERT INTO entity_map
     SELECT supplier.creditor_uuid, CONCAT_WS('.', 'FO', supplier.reference) FROM supplier;

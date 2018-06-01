@@ -327,8 +327,8 @@ function create(req, res, next) {
   const patientID = uuid();
   const employeeAdvantage = [];
 
-  data.creditor_uuid = uuid();
-  data.debtor_uuid = uuid();
+  data.creditor_uuid = data.creditor_uuid || uuid();
+  data.debtor_uuid = data.debtor_uuid || uuid();
   data.patient_uuid = patientID;
 
 

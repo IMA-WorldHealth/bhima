@@ -615,9 +615,9 @@ INSERT INTO `creditor_group` VALUES
 
 -- Creditors
 INSERT INTO `creditor` VALUES
-  (HUID('42d3756a-7770-4bb8-a899-7953cd859892'), HUID('b0fa5ed2-04f9-4cb3-92f7-61d6404696e7'), 'Personnel'),
+  (HUID('42d3756a-7770-4bb8-a899-7953cd859892'), HUID('b0fa5ed2-04f9-4cb3-92f7-61d6404696e7'), 'Crediteur[Test 2 Patient]'),
   (HUID('7ac4e83c-65f2-45a1-8357-8b025003d794'), HUID('8bedb6df-6b08-4dcf-97f7-0cfbb07cf9e2'), 'SNEL'),
-  (HUID('18dcada5-f149-4eea-8267-19c346c2744f'), HUID('b0fa5ed2-04f9-4cb3-92f7-61d6404696e7'), 'Personnel 2');
+  (HUID('18dcada5-f149-4eea-8267-19c346c2744f'), HUID('b0fa5ed2-04f9-4cb3-92f7-61d6404696e7'), 'Crediteur[Employee Test 1]');
 
 -- Supplier
 INSERT INTO `supplier` (uuid, creditor_uuid, display_name, address_1, address_2, email) VALUES
@@ -657,6 +657,11 @@ INSERT INTO `service` VALUES
   (1, HUID('aff85bdc-d7c6-4047-afe7-1724f8cd369e'), 1, 'Test Service', 1, 1),
   (2, HUID('b1816006-5558-45f9-93a0-c222b5efa6cb'), 1, 'Administration', 2, 2),
   (3, HUID('e3988489-ef66-41df-88fa-8b8ed6aa03ac'), 1, 'Medecine Interne', 1, 2);
+
+INSERT INTO `employee` (`uuid`, `code`, `date_embauche`, `grade_uuid`, `nb_spouse`, `nb_enfant`, `individual_salary`, `bank`, `bank_account`, `fonction_id`, `service_id`, `creditor_uuid`, `locked`, `patient_uuid`, `is_medical`) VALUES
+  (HUID('75e09694-65f2-45a1-a8a2-8b025003d793'),'E1','2016-02-02 00:00:00',HUID('71e9f21c-d9b1-11e5-8ab7-78eb2f2a46e0'),1,3,500,'TMB', '1201-3456-5423-03',1,3,HUID('42d3756a-7770-4bb8-a899-7953cd859892'),NULL,HUID('274c51ae-efcc-4238-98c6-f402bfb39866'), 0),
+  (HUID('75e69409-562f-a2a8-45a1-3d7938b02500'), 'WWEFCB', '2016-01-01 01:00:00', HUID('9ee06e4a7b5948e6812cc0f8a00cf7d3'), 0, 0, 0, 'BCOL', '00-99-88-77', 1, 1, HUID('18dcada5-f149-4eea-8267-19c346c2744f'), NULL, HUID('d1d7f856-d414-4400-8b94-8ba9445a2bc0'), 0);
+
 
 -- invoicing fee configuration
 
@@ -753,10 +758,6 @@ CALL PostVoucher(@third_voucher);
 INSERT INTO `mod_snis_zs` VALUES
   (1, 'Zone Sante A', 'Territoire A', 'Province A'),
   (2, 'Zone Sante B', 'Territoire B', 'Province B');
-
-INSERT INTO `employee` VALUES
-  (HUID('75e09694-65f2-45a1-a8a2-8b025003d793'),'E1','2016-02-02 00:00:00',HUID('71e9f21c-d9b1-11e5-8ab7-78eb2f2a46e0'),1,3,500,'TMB', '1201-3456-5423-03',1,3,HUID('42d3756a-7770-4bb8-a899-7953cd859892'),NULL,HUID('274c51ae-efcc-4238-98c6-f402bfb39866'), 0),
-  (HUID('75e69409-562f-a2a8-45a1-3d7938b02500'), 'WWEFCB', '2016-01-01 01:00:00', HUID('9ee06e4a7b5948e6812cc0f8a00cf7d3'), 0, 0, 0, 'BCOL', '00-99-88-77', 1, 1, HUID('18dcada5-f149-4eea-8267-19c346c2744f'), NULL, HUID('d1d7f856-d414-4400-8b948ba9445a2bc0'), 0);
 
 INSERT INTO `price_list` VALUES
   (HUID('75e09694-dd5c-11e5-a8a2-6c29955775b0'), 1, 'Test Price List', 'Price list for test purposes', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);

@@ -561,6 +561,7 @@ CREATE TABLE `employee` (
   `locked`        TINYINT(1) DEFAULT NULL,
   `patient_uuid`  BINARY(16) DEFAULT NULL,
   `is_medical`    TINYINT(1) DEFAULT 0,
+  `reference`     SMALLINT(5) UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `employee_1` (`code`),
   UNIQUE KEY `employee_2` (`patient_uuid`),

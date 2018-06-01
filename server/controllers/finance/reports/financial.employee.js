@@ -29,6 +29,7 @@ const PDF_OPTIONS = {
  */
 function build(req, res, next) {
   const options = req.query;
+
   let report;
 
   _.defaults(options, PDF_OPTIONS);
