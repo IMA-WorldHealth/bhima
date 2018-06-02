@@ -44,6 +44,7 @@ function EmployeeService(Filters, $uibModal, Api, AppCache, Languages, $httpPara
       key : 'dateEmbaucheTo', label : 'FORM.LABELS.DATE_EMBAUCHE', comparitor : '<', valueFilter : 'date',
     },
     { key : 'grade_uuid', label : 'FORM.LABELS.GRADE' },
+    { key : 'reference', label : 'FORM.LABELS.REFERENCE' },
     { key : 'fonction_id', label : 'FORM.LABELS.PROFESSION' },
     { key : 'service_id', label : 'FORM.LABELS.SERVICE' },
     { key : 'is_medical', label : 'FORM.LABELS.MEDICAL_STAFF' },

@@ -33,7 +33,13 @@ function EmployeeRegistryController(
 
   var columnDefs = [
     { field                : 'code',
-      displayName          : 'TABLE.COLUMNS.CODE',
+      displayName          : 'TABLE.COLUMNS.REGISTRATION_NUMBER',
+      aggregationType      : uiGridConstants.aggregationTypes.count,
+      aggregationHideLabel : true, headerCellFilter     : 'translate',
+      footerCellClass      : 'text-center',
+    },
+    { field                : 'reference',
+      displayName          : 'TABLE.COLUMNS.REFERENCE',
       aggregationType      : uiGridConstants.aggregationTypes.count,
       aggregationHideLabel : true, headerCellFilter     : 'translate',
       footerCellClass      : 'text-center',

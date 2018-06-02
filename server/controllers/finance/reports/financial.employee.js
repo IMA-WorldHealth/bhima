@@ -29,6 +29,7 @@ const PDF_OPTIONS = {
  */
 function build(req, res, next) {
   const options = req.query;
+
   let report;
 
   _.defaults(options, PDF_OPTIONS);
@@ -48,6 +49,7 @@ function build(req, res, next) {
       return Creditors.getFinancialActivity(employee.creditor_uuid);
     })
     .then(({ transactions, aggregates }) => {
+      aggregates.balanceText = aggregates.balance >= 0 ? 'FORM.LABELS.CREDIT_BALANCE' : 'FORM.LABELS.DEBIT_BALANCE';
       _.extend(data, { transactions, aggregates });
     })
     .then(() => report.render(data))

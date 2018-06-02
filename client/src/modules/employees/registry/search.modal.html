@@ -35,10 +35,19 @@
         </div>
 
         <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.code.$invalid }">
-          <label class="control-label" translate>FORM.LABELS.CODE</label>
+          <label class="control-label" translate>FORM.LABELS.REGISTRATION_NUMBER</label>
           <bh-clear on-clear="ModalCtrl.clear('code')"></bh-clear>
           <input type="text" class="form-control" name="code" ng-model="ModalCtrl.searchQueries.code">
           <div class="help-block" ng-messages="ModalForm.code.$error" ng-show="ModalForm.$submitted">
+            <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+          </div>
+        </div>
+
+        <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.reference.$invalid }">
+          <label class="control-label" translate>FORM.LABELS.REFERENCE</label>
+          <bh-clear on-clear="ModalCtrl.clear('reference')"></bh-clear>
+          <input type="text" class="form-control" name="reference" ng-model="ModalCtrl.searchQueries.reference">
+          <div class="help-block" ng-messages="ModalForm.reference.$error" ng-show="ModalForm.$submitted">
             <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
           </div>
         </div>

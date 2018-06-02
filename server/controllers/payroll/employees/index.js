@@ -141,7 +141,7 @@ function lookupEmployee(uid) {
       patient.phone, patient.email, patient.address_1 AS adresse, BUID(employee.patient_uuid) AS patient_uuid,
       employee.bank, employee.bank_account,
       employee.individual_salary, grade.code AS code_grade, BUID(debtor.uuid) as debtor_uuid,
-      debtor.text AS debtor_text, BUID(debtor.group_uuid) as debtor_group_uuid,
+      debtor.text AS debtor_text, BUID(debtor.group_uuid) as debtor_group_uuid, entity_map.text AS reference,
       BUID(creditor.uuid) as creditor_uuid, creditor.text AS creditor_text,
       BUID(creditor.group_uuid) as creditor_group_uuid, creditor_group.account_id,
       BUID(current_location_id) as current_location_id, BUID(origin_location_id) as origin_location_id
@@ -153,6 +153,7 @@ function lookupEmployee(uid) {
       JOIN creditor ON employee.creditor_uuid = creditor.uuid
       JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid
       LEFT JOIN service ON service.id = employee.service_id
+      LEFT JOIN entity_map ON entity_map.uuid = employee.creditor_uuid
     WHERE employee.uuid = ?;
   `;
 
@@ -318,7 +319,7 @@ function update(req, res, next) {
 function create(req, res, next) {
   // cast as data object and add unique ids
   const data = req.body;
-  
+
   const employeeUuid = data.uuid || uuid();
 
   // Provide UUID if the client has not specified
@@ -327,8 +328,8 @@ function create(req, res, next) {
   const patientID = uuid();
   const employeeAdvantage = [];
 
-  data.creditor_uuid = uuid();
-  data.debtor_uuid = uuid();
+  data.creditor_uuid = data.creditor_uuid || uuid();
+  data.debtor_uuid = data.debtor_uuid || uuid();
   data.patient_uuid = patientID;
 
 
@@ -466,6 +467,7 @@ function search(req, res, next) {
  * @returns {Promise} - the result of the promise query on the database.
  */
 function find(options) {
+
   const sql =
     `SELECT 
       BUID(employee.uuid) AS uuid, employee.code, patient.display_name, patient.sex, 
@@ -479,7 +481,7 @@ function find(options) {
       BUID(creditor.uuid) as creditor_uuid, creditor.text AS creditor_text,
       BUID(creditor.group_uuid) as creditor_group_uuid, creditor_group.account_id,
       BUID(current_location_id) as current_location_id, BUID(origin_location_id) as origin_location_id,
-      service.name as service_name
+      service.name as service_name, entity_map.text as reference
     FROM employee
      JOIN grade ON employee.grade_uuid = grade.uuid
      LEFT JOIN fonction ON employee.fonction_id = fonction.id
@@ -488,6 +490,7 @@ function find(options) {
      JOIN creditor ON employee.creditor_uuid = creditor.uuid
      JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid
      LEFT JOIN service ON service.id = employee.service_id
+     LEFT JOIN entity_map ON entity_map.uuid = employee.creditor_uuid
   `;
   // ensure epected options are parsed appropriately as binary
   db.convert(options, ['uuid', 'grade_uuid', 'creditor_uuid', 'patient_uuid']);
@@ -505,13 +508,14 @@ function find(options) {
   filters.equals('fonction_id', 'fonction_id', 'employee');
   filters.equals('grade_uuid', 'grade_uuid', 'employee');
   filters.equals('is_medical', 'is_medical', 'employee');
+  filters.equals('reference', 'text', 'entity_map');
 
   // @TODO Support ordering query
   filters.setOrder('ORDER BY patient.display_name DESC');
 
-
   // applies filters and limits to defined sql, get parameters in correct order
   const query = filters.applyQuery(sql);
+
   const parameters = filters.parameters();
 
   return db.exec(query, parameters);
@@ -545,7 +549,7 @@ function patientToEmployee(req, res, next) {
     Object.keys(employeeAdvantagePayroll).forEach((key) => {
       employeeAdvantage.push([employee.uuid, key, employeeAdvantagePayroll[key]]);
     });
-  }  
+  }
 
   const creditor = {
     uuid : employee.creditor_uuid,
@@ -578,7 +582,7 @@ function patientToEmployee(req, res, next) {
   delete employee.phone;
   delete employee.email;
   delete employee.is_patient;
-  delete employee.payroll;  
+  delete employee.payroll;
 
   const writeCreditor = 'INSERT INTO creditor SET ?';
   const updateDebtor = `UPDATE debtor SET ? WHERE debtor.uuid = ?`;

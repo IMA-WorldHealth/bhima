@@ -70,6 +70,7 @@ describe('(/employees) the employees API endpoint', () => {
 
   var patient = {
     code : 'bcdc2018',
+    display_name : 'Test 1 Patient',
     patient_uuid : '81af634f-321a-40de-bc6f-ceb1167a9f65',
     debtor_uuid : 'a11e6b7f-fbbb-432e-ac2a-5312a66dccf4',
     date_embauche : embaucheDate,

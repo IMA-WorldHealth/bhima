@@ -75,14 +75,16 @@ END$$
 
 -- Employee Triggers
 
+CREATE TRIGGER employee_before_insert BEFORE INSERT ON employee
+FOR EACH ROW
+  SET NEW.reference = (SELECT IF(NEW.reference, NEW.reference, IFNULL(MAX(employee.reference) + 1, 1)) FROM employee);$$
+
+-- Must be fixed if the system is to manage multiple Enterprises at the same time, which would add the Enterprise identifier to each employee : @lomamech
 CREATE TRIGGER employee_entity_map AFTER INSERT ON employee
 FOR EACH ROW BEGIN
-
-  -- Since employees do not have UUIDs or project associations, we create their mapping by simply concatenating
-  -- the id with a prefix like this: E.{{employee.id}}.
-  INSERT INTO entity_map SELECT new.creditor_uuid, CONCAT_WS('.', 'EM', new.id) ON DUPLICATE KEY UPDATE text=text;
+  INSERT INTO entity_map 
+    SELECT new.creditor_uuid, CONCAT_WS('.', 'EM', enterprise.abbr, new.reference) FROM enterprise ON DUPLICATE KEY UPDATE text=text;
 END$$
-
 
 -- Supplier Triggers
 

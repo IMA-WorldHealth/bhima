@@ -29,6 +29,10 @@ function getEntity(req, res, next) {
 
   // handle stock movement reference
   const STOCK_MOVEMENT_PREFIX = 'SM';
+
+  // handle employee reference
+  const EMPLOYEE_PREFIX = 'EM';
+
   const fluxId = codeRef[1];
 
   if (code === STOCK_MOVEMENT_PREFIX) {
@@ -40,6 +44,24 @@ function getEntity(req, res, next) {
         const uuid = entity.uuid;
         const path = `/receipts/stock/${type.path}/`;
         const url = `${path}${uuid}?lang=${language}&renderer=pdf`;
+        res.redirect(url);
+      })
+      .catch(next)
+      .done();
+  }
+
+  if (code === EMPLOYEE_PREFIX) {
+    const queryEntity = `
+      SELECT BUID(entity_map.uuid) as uuid, BUID(employee.uuid) AS employee_uuid
+      FROM entity_map
+      JOIN employee ON employee.creditor_uuid = entity_map.uuid
+      WHERE entity_map.text = ?
+    `;
+
+    return db.one(queryEntity, [req.params.codeRef])
+      .then(entity => {
+        const uuid = entity.employee_uuid;
+        const url = `${documentDefinition.documentPath}?lang=${language}&renderer=pdf&employee_uuid=${uuid}`;
         res.redirect(url);
       })
       .catch(next)
