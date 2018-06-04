@@ -51,7 +51,7 @@
     "DELETE": "Delete Report",
     "DOWNLOAD": "Download",
     "EMPLOYEE_STANDING" : {
-      "DESCRIPTION": "",
+      "DESCRIPTION": "This report shows the financial situation of an employee",
       "REPORT": "Employee Standing Report",
       "TITLE": "Employee Standing Report"
     },    
@@ -78,6 +78,10 @@
       "TOTAL_DEBT": "Total Debt"
     },
     "OVER_NINETY_DAYS": "Over 90 Days",
+    "PATIENT_STANDING": {
+      "DESCRIPTION": "This report shows the financial situation of a patient",
+      "TITLE": "Patient Standing Report"
+    },
     "PREVIOUS_MONTHS": "Previous Months",
     "PERIOD_START": "Start",
     "PERIOD_STOP": "Stop",

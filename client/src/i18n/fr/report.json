@@ -43,7 +43,7 @@
     "DELETE":"Supprimer un rapport",
     "DOWNLOAD":"Télécharger",
     "EMPLOYEE_STANDING" : {
-      "DESCRIPTION": "Ce module permet de connaître la situation financière d'un employé",
+      "DESCRIPTION": "Ce rapport permet de connaître la situation financière d'un employé",
       "REPORT": "Situation financière de l'employé",
       "TITLE": "Situation financière d'un employé"
     },
@@ -70,6 +70,10 @@
       "TOTAL_DEBT": "Total des Dettes"
     },
     "OVER_NINETY_DAYS": "Plus de 90 Jours",
+    "PATIENT_STANDING": {
+      "DESCRIPTION": "Ce rapport permet de connaître la situation financière d'un patient",
+      "TITLE": "Situation financière d'un Patient"
+    },
     "PREVIOUS_MONTHS": "Mois Précédents",
     "PERIOD_START": "Début",
     "PERIOD_STOP": "Fin",
