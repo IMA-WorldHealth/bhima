@@ -18,6 +18,7 @@ function SupportPatientKitController(Instance, Notify, Session, bhConstants, Deb
   vm.import = submit;
   vm.loadInvoice = loadInvoice;
   vm.onSelectAccount = onSelectAccount;
+  vm.onSelectEmployee = onSelectEmployee;
 
   // helper aggregation function
   function aggregate(sum, row) {
@@ -51,6 +52,10 @@ function SupportPatientKitController(Instance, Notify, Session, bhConstants, Deb
     vm.account_id = account.id;
   }
 
+  function onSelectEmployee(employee) {
+    vm.employee = employee;
+  }
+
   // generate transaction rows
   function generateTransactionRows(result) {
     var rows = [];
@@ -65,6 +70,9 @@ function SupportPatientKitController(Instance, Notify, Session, bhConstants, Deb
     supportRow.account_id = supportAccountId;
     supportRow.debit = vm.totalSelected;
     supportRow.credit = 0;
+
+    supportRow.entity = vm.selectEmployee && vm.employee ? { label : vm.employee.display_name, type : 'C', uuid : vm.employee.creditor_uuid } : null;
+  
     rows.push(supportRow);
 
     // then loop through each selected item and credit it with the Supported account
