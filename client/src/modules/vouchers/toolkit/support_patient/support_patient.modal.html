@@ -15,6 +15,22 @@
       exclude-title-accounts="true">
     </bh-account-select>
 
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" name="selectEmployee" ng-true-value="1" ng-false-value="0" ng-model="ToolCtrl.selectEmployee">
+        <span translate>FORM.SELECT.EMPLOYEE</span>
+      </label>
+    </div>
+
+    <div ng-if="ToolCtrl.selectEmployee === 1">
+      <bh-employee-select
+        employee-uuid="ToolCtrl.employee_uuid"
+        on-select-callback="ToolCtrl.onSelectEmployee(employee)"
+        required="true"
+        validate-trigger="ToolForm.$submitted">
+      </bh-employee-select>
+    </div>
+
     <bh-find-patient
       on-search-complete="ToolCtrl.loadInvoice(patient)"
       on-register-api="ToolCtrl.onRegisterApiCallback(api)"
