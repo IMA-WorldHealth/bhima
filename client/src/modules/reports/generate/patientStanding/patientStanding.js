@@ -35,11 +35,6 @@ function PatientStandingController($state, $sce, Notify, BaseReportService, AppC
       .catch(Notify.handleError);
   };
 
-  // register the patient search api
-  vm.onPatientSearchApiCallback = function onPatientSearchApiCallback(api) {
-    vm.patientSearchApi = api;
-  };
-
   // set patient
   vm.setPatient = function setPatient(patient) {
     reportUrl = reportUrl.concat(patient.uuid);
