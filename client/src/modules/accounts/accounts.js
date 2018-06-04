@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 AccountsController.$inject = [
   '$rootScope', '$timeout', 'AccountGridService', 'NotifyService', 'bhConstants',
-  'LanguageService', 'uiGridConstants',
+  'LanguageService', 'uiGridConstants', 'ModalService', 'AccountService',
 ];
 
 /**
@@ -16,10 +16,9 @@ AccountsController.$inject = [
  * and connecting it with the Accounts data model.
  */
 function AccountsController(
-  $rootScope, $timeout, AccountGrid, Notify, Constants,
-  Language, uiGridConstants
+  $rootScope, $timeout, AccountGrid, Notify, Constants, Language,
+  uiGridConstants, Modal, Accounts
 ) {
-
   const vm = this;
   const columns = gridColumns();
 
@@ -34,6 +33,8 @@ function AccountsController(
 
   // lang parameter for document
   vm.parameter = { lang : Language.key };
+
+  vm.remove = remove;
 
   vm.Accounts = new AccountGrid();
   vm.Accounts.settup()
@@ -57,7 +58,6 @@ function AccountsController(
   // $parent $scope for the modal is $rootScope, it is impossible to inject the $scope of the
   // parent state into the onEnter callback. for this reason $rootScope is used for now
   $rootScope.$on('ACCOUNT_CREATED', vm.Accounts.updateViewInsert.bind(vm.Accounts));
-  $rootScope.$on('ACCOUNT_DELETED', vm.Accounts.updateViewDelete.bind(vm.Accounts));
   $rootScope.$on('ACCOUNT_UPDATED', handleUpdatedAccount);
 
   function gridColumns() {
@@ -108,26 +108,7 @@ function AccountsController(
 
   // scroll to a row given an account ID
   function scrollTo(accountId) {
-    vm.api.core.scrollTo(getDisplayAccount(accountId));
-  }
-
-  function getDisplayAccount(id) {
-    let account;
-
-    // UI Grid uses the actual data object, pulling it directly from the account
-    // store will not match UI grid's copy so this method iterates through grid
-    // options data
-    vm.gridOptions.data.some(handleAccount);
-
-    function handleAccount(row) {
-      if (row.id === id) {
-        account = row;
-        return true;
-      }
-      return false;
-    }
-
-    return account;
+    vm.api.core.scrollTo(vm.Accounts.get(accountId));
   }
 
   function registerAccountEvents(api) {
@@ -141,6 +122,32 @@ function AccountsController(
       grid.api.treeBase.expandAllRows();
       vm.initialDataSet = false;
     }
+  }
+
+  /**
+   * @function remove
+   *
+   * @description
+   * This function will delete an account from the database, provided it isn't
+   * used anywhere.
+   */
+  function remove(id) {
+    const account = vm.Accounts.get(id);
+
+    Modal.confirm('FORM.DIALOGS.CONFIRM_DELETE')
+      .then(bool => {
+        // if the user clicked cancel, reset the view and return
+        if (!bool || !account) {
+          return null;
+        }
+
+        return Accounts.delete(account.id)
+          .then(() => {
+            vm.Accounts.updateViewDelete(null, account);
+            Notify.success('ACCOUNT.DELETED');
+          })
+          .catch(Notify.handleError);
+      });
   }
 
   function bindGridData() {

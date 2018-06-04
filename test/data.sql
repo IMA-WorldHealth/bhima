@@ -301,6 +301,9 @@ INSERT INTO `account` (`id`, `type_id`, `enterprise_id`, `number`, `label`, `par
   (358, 5, 1, 61411010, 'Transport personnel', 357, 0, NULL, NULL, '2018-03-14 14:59:59', NULL);
 
 
+-- set one hidden account 52121010 - BCDC USD
+UPDATE account set hidden = 1 WHERE id = 184;
+
 -- attach gain/loss accounts to the enterprise
 UPDATE enterprise SET `gain_account_id` = 267, `loss_account_id` = 134;
 
