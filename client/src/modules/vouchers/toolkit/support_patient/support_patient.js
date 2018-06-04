@@ -71,7 +71,7 @@ function SupportPatientKitController(Instance, Notify, Session, bhConstants, Deb
     supportRow.debit = vm.totalSelected;
     supportRow.credit = 0;
 
-    supportRow.entity = vm.selectEmployee && vm.employee 
+    supportRow.entity = vm.selectEmployee && vm.employee
       ? { label : vm.employee.display_name, type : 'C', uuid : vm.employee.creditor_uuid } : null;
 
     rows.push(supportRow);
