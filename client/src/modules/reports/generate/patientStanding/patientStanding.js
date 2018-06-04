@@ -15,7 +15,7 @@ function PatientStandingController($state, $sce, Notify, BaseReportService, AppC
 
   const vm = this;
   const cache = new AppCache('configure_patientStanding');
-  const reportUrl = '/reports/finance/financialPatient/';
+  let reportUrl = '/reports/finance/financialPatient/';
 
   vm.reportDetails = {};
 
