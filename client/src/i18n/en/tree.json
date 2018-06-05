@@ -63,6 +63,7 @@
     "PATIENT_REGISTRATION" : "Patient Registration",
     "PATIENT_REGISTRATIONS" : "Patient Registrations",
     "PATIENT_REGISTRY" : "Patients Registry",
+    "PATIENT_STANDING_REPORT": "Patient Standing Report",
     "PAYROLL_ACCOUNT_CONFIGURATION" : "Account Configuration",
     "PAYROLL_CONFIGURATION" : "Pay Period Configuration",
     "PAYROLL_RUB_CONFIGURATION" : "Payroll Rubric Configuration",

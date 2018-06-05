@@ -48,6 +48,8 @@ function build(req, res, next) {
       return Debtors.getFinancialActivity(patient.debtor_uuid);
     })
     .then(({ transactions, aggregates }) => {
+      aggregates.balanceText = aggregates.balance >= 0 ? 'FORM.LABELS.DEBIT_BALANCE' : 'FORM.LABELS.CREDIT_BALANCE';
+
       _.extend(data, { transactions, aggregates });
     })
     .then(() => report.render(data))

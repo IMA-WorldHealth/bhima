@@ -20,6 +20,7 @@ angular.module('bhima.routes')
       'debtorBalanceReport',
       'stock_exit',
       'employeeStanding',
+      'patientStanding',
     ];
 
     $stateProvider
