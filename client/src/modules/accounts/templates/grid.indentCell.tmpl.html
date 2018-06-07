@@ -7,7 +7,9 @@
 
     <!-- Indent accounts -->
     <span style="padding-left : {{row.treeLevel * grid.appScope.indentTitleSpace}}px;"></span>
-    <i ng-if="row.entity.locked" class="fa fa-lock"></i> {{grid.getCellValue(row, col)}}
+    <i ng-show="row.entity.locked" class="fa fa-lock"></i>
+    <i ng-show="row.entity.hidden" class="fa fa-eye-slash"></i>
+    {{grid.getCellValue(row, col)}}
   </span>
 
   <a

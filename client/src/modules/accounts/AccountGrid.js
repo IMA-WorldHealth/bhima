@@ -143,7 +143,7 @@ function AccountGridService(AccountStore, Accounts, Store, Languages, $httpParam
 
   // look up an account by it's id
   AccountGrid.prototype.lookup = function lookup(id) {
-    return this.store.get(id);
+    return this._store.get(id);
   };
 
   return AccountGrid;
