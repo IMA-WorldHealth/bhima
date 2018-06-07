@@ -28,10 +28,6 @@ function AccountSelectController(Accounts, AppCache, $timeout, bhConstants, $sco
   const hasCachedAccounts = false;
   const cache = new AppCache('bhAccountSelect');
 
-  // excludes any accounts locked in the database
-  // default: true
-  const EXCLUDE_LOCKED_ACCOUNTS = true;
-
   // fired at the beginning of the account select
   $ctrl.$onInit = function $onInit() {
 
@@ -100,10 +96,8 @@ function AccountSelectController(Accounts, AppCache, $timeout, bhConstants, $sco
         .map(num => parseInt(num, 10));
     }
 
-    //  filters out locked accounts
-    if (EXCLUDE_LOCKED_ACCOUNTS) {
-      params.locked = 0;
-    }
+    // NOTE: this will hide all "hidden" accounts
+    params.hidden = 0;
 
     // load accounts
     Accounts.read(null, params)

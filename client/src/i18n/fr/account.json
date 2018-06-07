@@ -46,6 +46,10 @@
     "TITLE": "Gestion des Comptes",
     "TITLE_ACCOUNT": "Comptes Titre",
     "TYPE_CHANGE_BLOCKED": "Vous ne pouvez pas modifier le type d'un compte de titre qui a des sous-comptes.",
+    "CONFIRM_HIDE" : "Masquer un compte supprime le compte de tous les éléments de sélection de compte. Cela n'affectera pas les transactions en attente utilisant le compte. Le rendre caché ?",
+    "CONFIRM_UNHIDE" : "Ce compte est actuellement caché. Êtes-vous sûr de vouloir le révéler pour l'utiliser ?",
+    "CONFIRM_LOCK" : "Le verrouillage d'un compte limite la possibilité de publier des transactions en utilisant le compte. Êtes-vous sûr de vouloir le verrouiller ?",
+    "CONFIRM_UNLOCK" : "Le compte est bloqué. Le débloquer permettra d'afficher des transactions contenant ce compte. Êtes-vous sûr de vouloir le débloquer ?",
     "TYPES": {
       "BALANCE": "Balance",
       "TITLE": "Titre",
