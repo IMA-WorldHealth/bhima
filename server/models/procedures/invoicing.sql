@@ -477,7 +477,7 @@ BEGIN
 
     -- check: if the caution is more than the cost, assign the total cost of the
     -- invoice to the caution and exit the loop.
-    IF cbalance >= scost THEN
+    IF cbalance >= icost THEN
 
       -- write the cost value from into the posting journal
       INSERT INTO posting_journal
