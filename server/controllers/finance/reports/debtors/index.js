@@ -95,7 +95,7 @@ function queryContext(queryParams) {
   `;
 
   const columns = useMonthGrouping ? groupByMonthColumns : groupByRangeColumns;
-  const filterByFiscalId = useMonthGrouping ? `AND gl.fiscal_year_id = ${fiscalId} ` : ``;
+  const filterByFiscalId = useMonthGrouping ? `AND gl.fiscal_year_id = ${db.escape(fiscalId)} ` : ``;
   // selects into columns of 30, 60, 90, and >90
   const debtorSql = `
     SELECT BUID(dg.uuid) AS id, dg.name, a.number,
@@ -105,7 +105,7 @@ function queryContext(queryParams) {
       LEFT JOIN ${source} AS gl ON gl.entity_uuid = d.uuid
       JOIN account AS a ON a.id = dg.account_id
     WHERE DATE(gl.trans_date) <= DATE(?) ${filterByFiscalId}
-    GROUP BY dg.uuid 
+    GROUP BY dg.uuid
     ${includeZeroes ? '' : havingNonZeroValues}
     ORDER BY dg.name;
   `;
