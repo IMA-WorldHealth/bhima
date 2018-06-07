@@ -67,6 +67,9 @@ function receipt(req, res, next) {
       // voucher transaction rows
       record.items = voucher.items;
 
+      data.numberOfLines = voucher.items.length;
+      data.showNumberOfLines = (data.numberOfLines >= 6);
+
       // populate data for the view
       _.extend(data, record, metadata);
 
