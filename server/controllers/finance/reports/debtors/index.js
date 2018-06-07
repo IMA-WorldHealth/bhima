@@ -72,6 +72,7 @@ function queryContext(queryParams) {
   const havingNonZeroValues = ' HAVING total > 0 ';
   const includeZeroes = Boolean(Number(params.zeroes));
   const useMonthGrouping = Boolean(Number(params.useMonthGrouping));
+  const fiscalId = params.fiscal_id;
 
   // format the dates for MySQL escape
   const dates = _.fill(Array(5), new Date(params.date));
@@ -94,7 +95,7 @@ function queryContext(queryParams) {
   `;
 
   const columns = useMonthGrouping ? groupByMonthColumns : groupByRangeColumns;
-
+  const filterByFiscalId = useMonthGrouping ? `AND gl.fiscal_year_id = ${db.escape(fiscalId)} ` : ``;
   // selects into columns of 30, 60, 90, and >90
   const debtorSql = `
     SELECT BUID(dg.uuid) AS id, dg.name, a.number,
@@ -103,7 +104,7 @@ function queryContext(queryParams) {
     FROM debtor_group AS dg JOIN debtor AS d ON dg.uuid = d.group_uuid
       LEFT JOIN ${source} AS gl ON gl.entity_uuid = d.uuid
       JOIN account AS a ON a.id = dg.account_id
-    WHERE DATE(gl.trans_date) <= DATE(?)
+    WHERE DATE(gl.trans_date) <= DATE(?) ${filterByFiscalId}
     GROUP BY dg.uuid
     ${includeZeroes ? '' : havingNonZeroValues}
     ORDER BY dg.name;
