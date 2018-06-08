@@ -35,29 +35,26 @@ function AccountGridService(AccountStore, Accounts, Store, Languages, $httpParam
    * Requests the latest account list from the AccountStore service and updates loading variables
    */
   AccountGrid.prototype.settup = function settup() {
-    // handle account store
-    function handleAccountStore(result) {
-      this._store = result;
-
-      // order and expose data made available through the store
-      this.formatStore();
-
-      // update exposed store driven data
-      this.data = angular.copy(this._store.data);
-    }
-
     // Fetch initial set of accounts
     return AccountStore.accounts()
-      .then(handleAccountStore.bind(this));
+      .then(result => {
+        this._store = result;
+
+        // order and expose data made available through the store
+        this.formatStore();
+
+        // update exposed store driven data
+        this.data = angular.copy(this._store.data);
+      });
   };
 
 
   AccountGrid.prototype.download = function download(type, filters) {
-    var filterOpts = filters;
-    var defaultOpts = { renderer : type, lang : Languages.key };
+    const filterOpts = filters;
+    const defaultOpts = { renderer : type, lang : Languages.key };
 
     // combine options
-    var options = angular.merge(defaultOpts, filterOpts);
+    const options = angular.merge(defaultOpts, filterOpts);
 
     // return  serialized options
     return $httpParamSerializer(options);
@@ -80,8 +77,6 @@ function AccountGridService(AccountStore, Accounts, Store, Languages, $httpParam
   }
 
   AccountGrid.prototype.updateViewInsert = function updateViewInsert(event, account) {
-    var insertedIndex;
-
     account.number = Number(account.number);
     account.type_id = Number(account.type_id);
     account.hrlabel = Accounts.label(account);
@@ -89,7 +84,7 @@ function AccountGridService(AccountStore, Accounts, Store, Languages, $httpParam
     // update local store
     this._store.post(account);
     this.formatStore();
-    insertedIndex = this._store.index[account.id];
+    const insertedIndex = this._store.index[account.id];
 
     // live update the grid data - this does not require the grid to redraw and
     // maintains the expand/ collapse states
@@ -98,10 +93,8 @@ function AccountGridService(AccountStore, Accounts, Store, Languages, $httpParam
 
 
   AccountGrid.prototype.updateViewDelete = function updateViewDelete(event, account) {
-    // findAndRemove(this._store.data, 'id', account.id);
-
     // Update the store for other modules accessing it
-    var removeIndex = this._store.index[account.id];
+    const removeIndex = this._store.index[account.id];
     this._store.remove(account.id);
     this.formatStore();
 
@@ -124,8 +117,8 @@ function AccountGridService(AccountStore, Accounts, Store, Languages, $httpParam
    * @return {Boolean} This value reflects if the Grid must be refreshed or not
    */
   AccountGrid.prototype.updateViewEdit = function updateViewEdit(event, account) {
-    var storeRecord = this._store.get(account.id);
-    var parentHasChanged = account.parent !== storeRecord.parent;
+    const storeRecord = this._store.get(account.id);
+    const parentHasChanged = account.parent !== storeRecord.parent;
 
     account.hrlabel = Accounts.label(account);
     angular.extend(storeRecord, account);
@@ -146,6 +139,11 @@ function AccountGridService(AccountStore, Accounts, Store, Languages, $httpParam
   AccountGrid.prototype.insertDifference = function insertDifference(account, index) {
     this.data = this.data || [];
     this.data.splice(index, 0, account);
+  };
+
+  // look up an account by it's id
+  AccountGrid.prototype.lookup = function lookup(id) {
+    return this._store.get(id);
   };
 
   return AccountGrid;

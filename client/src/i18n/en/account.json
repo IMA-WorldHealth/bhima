@@ -47,6 +47,10 @@
     "SUBMIT_DELETE":"Delete Account",
     "SUBMIT_UPDATE":"Update Account",
     "TYPE_CHANGE_BLOCKED":"You cannot change the type of a title account with children.",
+    "CONFIRM_HIDE" : "Hiding an account removes the account from all account selection elements.  It will not affect any pending transactions using the account.  Make it hidden?",
+    "CONFIRM_UNHIDE" : "This account is currently hidden. Are you sure you want to reveal it for use?",
+    "CONFIRM_LOCK" : "Locking an account restrict the ability to post transactions using the account.  Are you sure you want to lock it?",
+    "CONFIRM_UNLOCK" : "The account is locked.  Unlocking it will allow transactions to be posted containing this account.  Are you sure you want to unlock it?",
     "TYPES":{
       "EXPENSE":"Expense",
       "BALANCE":"Balance",

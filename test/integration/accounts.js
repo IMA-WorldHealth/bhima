@@ -166,7 +166,7 @@ describe('(/accounts) Accounts', () => {
       .catch(helpers.handler);
   });
 
-  it('DELETE /accounts/:id Deletes the newly added account', () => {
+  it('DELETE /accounts/:id deletes the newly added account', () => {
     return agent.delete(`/accounts/${newAccount.id}`)
       .then(res => {
         helpers.api.deleted(res);
@@ -178,6 +178,24 @@ describe('(/accounts) Accounts', () => {
     return agent.delete(`/accounts/${FETCHABLE_ACCOUNT_ID}`)
       .then(res => {
         expect(res).to.have.status(400);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /accounts?hidden=1 returns one hidden account', () => {
+    return agent.get(`/accounts`)
+      .query({ hidden : 1 })
+      .then(res => {
+        helpers.api.listed(res, 1);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /accounts?hidden=0 returns all but one hidden account', () => {
+    return agent.get(`/accounts`)
+      .query({ hidden : 0 })
+      .then(res => {
+        helpers.api.listed(res, NUM_ACCOUNTS - 1);
       })
       .catch(helpers.handler);
   });

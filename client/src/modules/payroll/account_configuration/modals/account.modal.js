@@ -6,13 +6,14 @@ AccountConfigModalController.$inject = [
 ];
 
 function AccountConfigModalController($state, Config, Notify, AppCache) {
-  var vm = this;
+  const vm = this;
   vm.accountConfig = {};
 
-  var cache = AppCache('RubricModal');
+  const cache = AppCache('RubricModal');
 
   if ($state.params.creating || $state.params.id) {
-    vm.stateParams = cache.stateParams = $state.params;
+    cache.stateParams = $state.params;
+    vm.stateParams = cache.stateParams;
   } else {
     vm.stateParams = cache.stateParams;
   }
@@ -28,7 +29,7 @@ function AccountConfigModalController($state, Config, Notify, AppCache) {
 
   if (!vm.isCreating) {
     Config.read(vm.stateParams.id)
-      .then(function (accountConfig) {    
+      .then(accountConfig => {
         vm.accountConfig = accountConfig;
       })
       .catch(Notify.handleError);
@@ -36,17 +37,15 @@ function AccountConfigModalController($state, Config, Notify, AppCache) {
 
   // submit the data to the server from all two forms (update, create)
   function submit(accountConfigForm) {
-    var promise;
-
     if (accountConfigForm.$invalid || accountConfigForm.$pristine) { return 0; }
 
-    promise = (vm.isCreating) ?
+    const promise = (vm.isCreating) ?
       Config.create(vm.accountConfig) :
       Config.update(vm.accountConfig.id, vm.accountConfig);
 
     return promise
-      .then(function () {
-        var translateKey = (vm.isCreating) ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
+      .then(() => {
+        const translateKey = (vm.isCreating) ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
         Notify.success(translateKey);
         $state.go('configurationAccount', null, { reload : true });
       })

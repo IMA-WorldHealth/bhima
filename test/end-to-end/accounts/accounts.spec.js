@@ -129,19 +129,12 @@ describe('Account Management', () => {
   it('can delete a specific account', () => {
     // FIXME(@jniles) - account page does not refresh the grid on updates
     browser.refresh();
-
-    page.openEdit(DELETE_ACCOUNT_ID);
-
-    FU.buttons.delete();
-    components.modalAction.confirm();
-
+    page.deleteAccount(DELETE_ACCOUNT_ID);
     components.notification.hasSuccess();
   });
 
   it('cannot delete an account with children', () => {
-    page.openEdit(assetAccountGroup.id);
-    FU.buttons.delete();
-    components.modalAction.confirm();
-    FU.exists(by.css('[data-submit-error]'), true);
+    page.deleteAccount(assetAccountGroup.id);
+    components.notification.hasError();
   });
 });

@@ -31,11 +31,10 @@ const { NotFound, BadRequest } = require('../../../lib/errors');
 const types = require('./types');
 const categories = require('./categories');
 const Periods = require('../../../lib/period');
-const AccountExtras = require('./extra.js');
-const Fiscal = require('../fiscal.js');
+const AccountExtras = require('./extra');
+const Fiscal = require('../fiscal');
 const debug = require('debug')('accounts');
 const FilterParser = require('../../../lib/filter');
-
 
 /**
  * @method create
@@ -95,10 +94,10 @@ function update(req, res, next) {
  * DELETE /accounts/:id
  */
 function remove(req, res, next) {
-  const sql = `SELECT COUNT(id) AS childrens FROM account WHERE parent = ?;`;
+  const sql = `SELECT COUNT(id) AS children FROM account WHERE parent = ?;`;
   db.exec(sql, [req.params.id])
     .then((rows) => {
-      if (rows[0].childrens > 0) {
+      if (rows[0].children > 0) {
         throw new BadRequest(`
           Could not delete account with id: ${req.params.id}. This account contains child accounts.
         `);
@@ -109,7 +108,7 @@ function remove(req, res, next) {
     })
     .then(result => {
       if (!result.affectedRows) {
-        throw new NotFound(`Could not find an Account with id ${req.params.id}.`);
+        throw new NotFound(`Could not find an account with id ${req.params.id}.`);
       }
 
       res.sendStatus(204);
@@ -130,16 +129,16 @@ function remove(req, res, next) {
 function list(req, res, next) {
   const filters = new FilterParser(req.query, { tableAlias : 'a' });
 
-
-  let sql =
-    'SELECT a.id, a.number, a.label, a.locked, a.type_id, a.parent FROM account AS a';
+  let sql = `
+    SELECT a.id, a.number, a.label, a.locked, a.type_id, a.parent, a.locked, a.hidden FROM account AS a
+  `;
 
   if (req.query.detailed === '1') {
     sql = `
       SELECT a.id, a.enterprise_id, a.locked, a.cc_id, a.pc_id, a.created,
         a.classe, a.reference_id, a.number, a.label, a.parent,
         a.type_id, at.type, at.translation_key, cc.text AS cost_center_text,
-        pc.text AS profit_center_text
+        pc.text AS profit_center_text, a.hidden
       FROM account AS a JOIN account_type AS at ON a.type_id = at.id
       LEFT JOIN cost_center AS cc ON a.cc_id = cc.id
       LEFT JOIN profit_center AS pc ON a.pc_id = pc.id
@@ -149,6 +148,7 @@ function list(req, res, next) {
   filters.equals('classe', 'classe', 'a', true);
   filters.equals('type_id', 'type_id', 'a', true);
   filters.equals('locked');
+  filters.equals('hidden');
 
   filters.setOrder('ORDER BY a.number');
 
