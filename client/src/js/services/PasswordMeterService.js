@@ -19,7 +19,7 @@ function PasswordMeterService(Session) {
   // both Strong and Weak password are accepted
   function validate(viewValue) {
     // escape the validation if we don't need to validate passwords
-    if (!Session.enterprise.settings.enable_password_validation) {
+    if (!Session.enterprise || !Session.enterprise.settings.enable_password_validation) {
       return true;
     }
 
