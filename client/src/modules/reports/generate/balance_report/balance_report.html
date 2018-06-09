@@ -51,6 +51,15 @@
               on-change-callback="ReportConfigCtrl.onChangeEmptyRows(value)">
             </bh-yes-no-radios>
 
+            <bh-yes-no-radios
+              label="REPORT.OPTIONS.HIDE_TITLE_ACCOUNT"
+              help-text="REPORT.OPTIONS.HIDE_TITLE_ACCOUNT_HELP"
+              name="shouldHideTitleAccounts"
+              id="shouldHideTitleAccounts"
+              value="ReportConfigCtrl.reportDetails.shouldHideTitleAccounts"
+              on-change-callback="ReportConfigCtrl.onChangeHideTitleAccounts(value)">
+            </bh-yes-no-radios>
+
             <bh-loading-button loading-state="ConfigForm.$loading">
               <span translate>REPORT.UTIL.PREVIEW</span>
             </bh-loading-button>
