@@ -4,9 +4,9 @@
   data-modal="purchase-search"
   novalidate>
 
-  <div class="search-modal-header">
+  <div class="modal-header">
     <ol class="headercrumb">
-      <li class="static" translate>FORM.INFO.PATIENTS</li>
+      <li class="static" translate>TREE.PURCHASE</li>
       <li class="title" translate>FORM.INFO.SEARCH</li>
     </ol>
   </div>
@@ -33,7 +33,7 @@
             required="false">
             <bh-clear on-clear="$ctrl.clear('supplier_uuid')"></bh-clear>
           </bh-supplier-select>
-    
+
           <!-- user -->
           <bh-user-select
             user-id="$ctrl.searchQueries.user_id"
@@ -67,8 +67,8 @@
             </div>
           </div>
         </div>
-      </uib-tab>      
-    </uib-tabset>  
+      </uib-tab>
+    </uib-tabset>
   </div>
 
   <div class="modal-footer">
