@@ -8,7 +8,7 @@ PatientRecordController.$inject = [
 
 function PatientRecordController($stateParams, Patients, Notify, moment, Upload, $timeout, SnapshotService) {
   const vm = this;
-  const patientUuid = $stateParams.patientUuid;
+  const { patientUuid } = $stateParams;
 
   vm.loading = true;
   vm.uploadFiles = uploadFiles;
@@ -65,8 +65,7 @@ function PatientRecordController($stateParams, Patients, Notify, moment, Upload,
 
   // webcam functionnalities
 
-  vm.openWebcam = function () {
-
+  vm.openWebcam = function openWebcam() {
     SnapshotService.openWebcamModal()
       .then((strDataURI) => {
         if (strDataURI) {
