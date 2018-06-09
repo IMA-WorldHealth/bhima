@@ -1,7 +1,6 @@
 {{> head title="VOUCHERS.GLOBAL.TITLE"}}
 
 <div class="container" style="font-size: 0.9em;">
-
   <header>
     <!-- headings  -->
     <div class="row">
@@ -63,7 +62,10 @@
     </tbody>
     <tfoot>
       <tr>
-        <th colspan="2" class="text-right">{{translate 'FORM.LABELS.TOTAL'}}</th>
+        <th colspan="2" class="text-left">
+          {{translate 'FORM.LABELS.TOTAL'}}
+          {{#if showNumberOfLines}}({{numberOfLines}} {{translate 'FORM.LABELS.RECORDS'}}){{/if}}
+        </th>
         <th class="text-right">{{currency (sum items 'debit') details.currency_id}}</th>
         <th class="text-right">{{currency (sum items 'credit') details.currency_id}}</th>
         <th colspan="2"></th>

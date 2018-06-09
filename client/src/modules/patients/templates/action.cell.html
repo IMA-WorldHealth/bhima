@@ -7,7 +7,7 @@
   <ul data-action="{{ rowRenderIndex}}"  class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
     <li class="dropdown-header">{{row.entity.reference}}</li>
     <li>
-      <a data-method="record" ui-sref="patientRecord.details({ patientID : row.entity.uuid })" href>
+      <a data-method="record" ui-sref="patientRecord.details({ patientUuid : row.entity.uuid })" href>
         <span class="fa fa-book"></span> <span translate>PATIENT_REGISTRY.RECORD</span>
       </a>
     </li>

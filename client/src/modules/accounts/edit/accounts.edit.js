@@ -1,6 +1,3 @@
-/** @todo server should not accept not a number */
-/** @todo server shouldn't allow bigger than an integer */
-/** @todo server should not allow updating fields that are not white listed */
 angular.module('bhima.controllers')
   .controller('AccountEditController', AccountEditController);
 
@@ -13,12 +10,8 @@ function AccountEditController(
   $rootScope, $state, AccountStore, Accounts,
   Notify, util, Constants, ModalService, AppCache
 ) {
-  var accountStore;
-  var typeStore;
-  var cache = AppCache('AccountEdit');
-  var vm = this;
-  var id;
-  var parentId;
+  const cache = AppCache('AccountEdit');
+  const vm = this;
   vm.stateParams = {};
   vm.stateCurrent = {};
 
@@ -33,8 +26,10 @@ function AccountEditController(
     vm.stateCurrent = cache.stateCurrent;
   }
 
-  id = vm.stateParams.id;
-  parentId = vm.stateParams.parentId;
+  const { id, parentId } = vm.stateParams;
+
+  let accountStore;
+  let typeStore;
 
   vm.Constants = Constants;
 
@@ -43,38 +38,37 @@ function AccountEditController(
   vm.updateAccount = updateAccount;
   vm.getTypeTitle = getTypeTitle;
   vm.close = close;
-  vm.deleteAccount = deleteAccount;
 
   vm.batchCreate = false;
   vm.account = null;
 
   // states that are available as sibling states - these can be used to show and hide
-  // relevent components
+  // relevant components
   vm.states = {
-    create: 'accounts.create',
-    edit: 'accounts.edit',
+    create : 'accounts.create',
+    edit : 'accounts.edit',
   };
 
   vm.state = angular.copy(vm.stateCurrent.name);
-  vm.isCreateState = vm.state === vm.states.create;
+  vm.isCreateState = (vm.state === vm.states.create);
 
-  // varaibles to track custom modal error handling, these will be replaced
+  // variables to track custom modal error handling, these will be replaced
   // with either the Notification library or a uniform modal error handling utility
   vm.fetchError = null;
   vm.accountNotFound = null;
 
   vm.rootAccount = {
-    id: 0,
-    number: 0,
-    type_id: Constants.accounts.TITLE,
-    label: 'ROOT ACCOUNT',
+    id : 0,
+    number : 0,
+    type_id : Constants.accounts.TITLE,
+    label : 'ROOT ACCOUNT',
   };
   vm.rootAccount.hrlabel = Accounts.label(vm.rootAccount);
 
   /** @todo design how these are served for stores */
   vm.notFound = {
-    status: 404,
-    code: 'ERRORS.NOT_FOUND',
+    status : 404,
+    code : 'ERRORS.NOT_FOUND',
   };
 
   settupPage()
@@ -121,8 +115,7 @@ function AccountEditController(
 
   function loadAccountDetails(accountId) {
     // load in the account details
-    var accountParentId;
-    var account = accountStore.get(accountId);
+    const account = accountStore.get(accountId);
 
     // if no account is found either the store is out of date or a bad reference
     // has been passed
@@ -132,7 +125,7 @@ function AccountEditController(
     }
 
     vm.account = angular.copy(account);
-    accountParentId = vm.account.parent.id || vm.account.parent;
+    const accountParentId = vm.account.parent.id || vm.account.parent;
     vm.account.parent = accountStore.get(accountParentId);
 
     // cast to string to match type options
@@ -142,13 +135,14 @@ function AccountEditController(
   function defineNewAccount() {
     // defining a new account
     // if a previous account existed - use these settings for the next account (batch creation)
-    var cacheType;
-    var cacheParent;
+    let cacheType;
+    let cacheParent;
 
     if (vm.account) {
       cacheType = vm.account.type_id;
       cacheParent = vm.account.parent.id;
     }
+
     vm.account = {};
 
     // default parent -check to see if there is a requested parent ID has been passed in
@@ -168,8 +162,8 @@ function AccountEditController(
 
   // @todo form validation using validators on a component
   function titleChangedValidation(newAccountType) {
-    var notTitleAccount = Number(newAccountType) !== Constants.accounts.TITLE;
-    var hasChildren = vm.account.children && vm.account.children.length;
+    const notTitleAccount = Number(newAccountType) !== Constants.accounts.TITLE;
+    const hasChildren = vm.account.children && vm.account.children.length;
 
     if (notTitleAccount && hasChildren) {
       vm.invalidTitleAccount = true;
@@ -182,7 +176,7 @@ function AccountEditController(
   /** @todo re-factor method - potentially these two actions should be split into two controllers */
   function updateAccount(accountForm) {
     // only require form to have changed if this is not the create state (no initial values)
-    var requireDirty = !vm.isCreateState;
+    const requireDirty = !vm.isCreateState;
     accountForm.$setSubmitted();
 
     if (accountForm.$invalid) {
@@ -196,14 +190,14 @@ function AccountEditController(
       return;
     }
 
-    var number = parseInt(vm.account.number, 10);
+    const number = parseInt(vm.account.number, 10);
     if (number === 0) {
       Notify.danger('ACCOUNT.NOT_0_AS_ACCOUNT_NOMBER');
       return;
     }
 
     // this will return all elements if requireDirty is set to false
-    var submit = util.filterFormElements(accountForm, requireDirty);
+    const submit = util.filterFormElements(accountForm, requireDirty);
 
     // filter parent
     if (submit.parent) {
@@ -253,33 +247,6 @@ function AccountEditController(
     }
   }
 
-  /** Delete an used account */
-  function deleteAccount(account) {
-    function confirmAccountDeletionResult(bool) {
-      // if the user clicked cancel, reset the view and return
-      if (!bool) {
-        return null;
-      }
-
-      if (!account.id) {
-        return null;
-      }
-
-      return Accounts.delete(account.id)
-        .then(handleAccountDeletionResult)
-        .catch(handleModalError);
-    }
-
-    function handleAccountDeletionResult() {
-      $rootScope.$broadcast('ACCOUNT_DELETED', account);
-      Notify.success('ACCOUNT.DELETED');
-      close();
-    }
-
-    ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
-      .then(confirmAccountDeletionResult);
-  }
-
   function resetModal(accountForm) {
     accountForm.$setPristine();
     accountForm.$setUntouched();
@@ -312,7 +279,7 @@ function AccountEditController(
    * pattern on the client this could be handled and returned from the store
    */
   function mockAccountNotFound() {
-    var error = new Error();
+    const error = new Error();
     error.data = vm.notFound;
     vm.accountNotFound = error.data;
     throw error;

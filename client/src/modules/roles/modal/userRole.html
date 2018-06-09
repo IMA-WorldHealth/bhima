@@ -2,9 +2,7 @@
 <div class="modal-header">
     <ol class="headercrumb">
       <li class="static" translate>FORM.LABELS.ROLES_FOR</li>
-      <li class="title">
-        <span translate>{{UsersRolesCtrl.user.display_name}}</span>
-      </li>
+      <li class="title">{{UsersRolesCtrl.user.display_name}}</li>
     </ol>
 </div>
 <div class="modal-body">
@@ -14,7 +12,7 @@
       <ul class="list-group">
         <li  class="list-group-item" ng-repeat="role in UsersRolesCtrl.roles">
           <label class="radio-inline">
-            <input type='checkbox' ng-model='role.affected' ng-true-value="1" ng-false-value="0" />
+            <input type="checkbox" ng-model="role.affected" ng-true-value="1" ng-false-value="0" />
             <span title="{{role.label}}">{{role.label}}</span>
           </label>
         </li>
@@ -23,10 +21,8 @@
   </div>
 </div>
 
-<div class="modal-footer">
-  <div class=" pull-right">
-  <button type="button" class='btn inverse' ng-click='UsersRolesCtrl.close()' translate>FORM.BUTTONS.CLOSE</button>
+<div class="modal-footer text-right">
+  <button type="button" class='btn btn-default' ng-click="UsersRolesCtrl.close()" translate>FORM.BUTTONS.CLOSE</button>
   <bh-loading-button loading-state="RolesForm.$loading"></bh-loading-button>
-  </div>
 </div>
 </form>

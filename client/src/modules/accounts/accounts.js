@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 AccountsController.$inject = [
   '$rootScope', '$timeout', 'AccountGridService', 'NotifyService', 'bhConstants',
-  'LanguageService', 'uiGridConstants',
+  'LanguageService', 'uiGridConstants', 'ModalService', 'AccountService',
 ];
 
 /**
@@ -16,10 +16,9 @@ AccountsController.$inject = [
  * and connecting it with the Accounts data model.
  */
 function AccountsController(
-  $rootScope, $timeout, AccountGrid, Notify, Constants,
-  Language, uiGridConstants
+  $rootScope, $timeout, AccountGrid, Notify, Constants, Language,
+  uiGridConstants, Modal, Accounts
 ) {
-
   const vm = this;
   const columns = gridColumns();
 
@@ -34,6 +33,10 @@ function AccountsController(
 
   // lang parameter for document
   vm.parameter = { lang : Language.key };
+
+  vm.remove = remove;
+  vm.toggleHideAccount = toggleHideAccount;
+  vm.toggleLockAccount = toggleLockAccount;
 
   vm.Accounts = new AccountGrid();
   vm.Accounts.settup()
@@ -57,7 +60,6 @@ function AccountsController(
   // $parent $scope for the modal is $rootScope, it is impossible to inject the $scope of the
   // parent state into the onEnter callback. for this reason $rootScope is used for now
   $rootScope.$on('ACCOUNT_CREATED', vm.Accounts.updateViewInsert.bind(vm.Accounts));
-  $rootScope.$on('ACCOUNT_DELETED', vm.Accounts.updateViewDelete.bind(vm.Accounts));
   $rootScope.$on('ACCOUNT_UPDATED', handleUpdatedAccount);
 
   function gridColumns() {
@@ -108,26 +110,7 @@ function AccountsController(
 
   // scroll to a row given an account ID
   function scrollTo(accountId) {
-    vm.api.core.scrollTo(getDisplayAccount(accountId));
-  }
-
-  function getDisplayAccount(id) {
-    let account;
-
-    // UI Grid uses the actual data object, pulling it directly from the account
-    // store will not match UI grid's copy so this method iterates through grid
-    // options data
-    vm.gridOptions.data.some(handleAccount);
-
-    function handleAccount(row) {
-      if (row.id === id) {
-        account = row;
-        return true;
-      }
-      return false;
-    }
-
-    return account;
+    vm.api.core.scrollTo(vm.Accounts.lookup(accountId));
   }
 
   function registerAccountEvents(api) {
@@ -143,6 +126,32 @@ function AccountsController(
     }
   }
 
+  /**
+   * @function remove
+   *
+   * @description
+   * This function will delete an account from the database, provided it isn't
+   * used anywhere.
+   */
+  function remove(id) {
+    const account = vm.Accounts.lookup(id);
+
+    Modal.confirm('FORM.DIALOGS.CONFIRM_DELETE')
+      .then(bool => {
+        // if the user clicked cancel, reset the view and return
+        if (!bool || !account) {
+          return null;
+        }
+
+        return Accounts.delete(account.id)
+          .then(() => {
+            vm.Accounts.updateViewDelete(null, account);
+            Notify.success('ACCOUNT.DELETED');
+          })
+          .catch(Notify.handleError);
+      });
+  }
+
   function bindGridData() {
     vm.gridOptions.data = vm.Accounts.data;
   }
@@ -151,6 +160,60 @@ function AccountsController(
     vm.loading = !vm.loading;
   }
 
+  /**
+   * @function toggleLockAccount
+   *
+   * @description
+   * Switches the "locked" field on the account on and off.  If the account
+   * is unlocked, it will ask for express permission to toggle it to locked.
+   */
+  function toggleLockAccount(id) {
+    const account = vm.Accounts.lookup(id);
+
+    const msg = account.locked ? 'ACCOUNT.CONFIRM_UNLOCK' : 'ACCOUNT.CONFIRM_LOCK';
+
+    Modal.confirm(msg)
+      .then(bool => {
+        if (bool) {
+          Accounts.update(id, { locked : !account.locked })
+            .then(() => {
+              account.locked = !account.locked;
+              vm.Accounts.updateViewEdit(null, account);
+            });
+        }
+      });
+  }
+
+  /**
+   * @function toggleHideAccount
+   *
+   * @description
+   * Switches the "hidden" field on accounts on or off.  If the account is not
+   * hidden, it will ask for confirmation before the toggle.
+   */
+  function toggleHideAccount(id) {
+    const account = vm.Accounts.lookup(id);
+
+    const msg = account.hidden ? 'ACCOUNT.CONFIRM_UNHIDE' : 'ACCOUNT.CONFIRM_HIDE';
+
+    Modal.confirm(msg)
+      .then(bool => {
+        if (bool) {
+          Accounts.update(id, { hidden : !account.hidden })
+            .then(() => {
+              account.hidden = !account.hidden;
+              vm.Accounts.updateViewEdit(null, account);
+            });
+        }
+      });
+  }
+
+  /**
+   * @function toggleInlineFilter
+   *
+   * @description
+   * Switches the inline filter on and off.
+   */
   vm.toggleInlineFilter = function toggleInlineFilter() {
     vm.gridOptions.enableFiltering = !vm.gridOptions.enableFiltering;
     vm.api.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);

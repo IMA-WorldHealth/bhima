@@ -25,7 +25,6 @@ function accountStateProvider($stateProvider) {
         id : { squash : true, value : null },
       },
     })
-
     .state('accounts.edit', {
       url : '/:id/edit',
       params : {

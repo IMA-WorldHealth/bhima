@@ -127,15 +127,6 @@
     <span translate>FORM.BUTTONS.CLOSE</span>
   </button>
 
-  <button
-    type="button"
-    ng-if="!AccountEditCtrl.isCreateState"
-    class="btn btn-danger"
-    data-method="delete"
-    ng-click="AccountEditCtrl.deleteAccount(AccountEditCtrl.account)">
-    <span translate>ACCOUNT.SUBMIT_DELETE</span>
-  </button>
-
   <bh-loading-button loading-state="AccountForm.$loading" disabled="AccountEditCtrl.accountNotFound || AccountEditCtrl.error">
     <span ng-if="AccountEditCtrl.isCreateState" translate>ACCOUNT.SUBMIT_CREATE</span>
     <span ng-if="!AccountEditCtrl.isCreateState" translate>ACCOUNT.SUBMIT_UPDATE</span>
