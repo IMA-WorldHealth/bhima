@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('TrialBalanceOverviewController', TrialBalanceOverviewController);
 
 TrialBalanceOverviewController.$inject = [
-  'SessionService', 'TrialBalanceService', 'NotifyService', 'uiGridConstants', 'GridExportService',
+  'SessionService', 'TrialBalanceService', 'NotifyService', 'uiGridConstants', 'GridExportService', '$state',
 ];
 
 /**
@@ -11,7 +11,7 @@ TrialBalanceOverviewController.$inject = [
  * @description
  * This controller is responsible for displaying the Trial Balance data to the user.
  */
-function TrialBalanceOverviewController(Session, TrialBalance, Notify, uiGridConstants, GridExport) {
+function TrialBalanceOverviewController(Session, TrialBalance, Notify, uiGridConstants, GridExport, $state) {
   const vm = this;
   const currencyId = Session.enterprise.currency_id;
 
@@ -20,6 +20,9 @@ function TrialBalanceOverviewController(Session, TrialBalance, Notify, uiGridCon
 
   // default false
   vm.loading = false;
+
+  // FIXME(@jniles) - a ui-sref doesn't work here anymore.  Why does this work?
+  vm.goToErrorView = () => $state.go('TrialBalanceErrors');
 
   const columns = [{
     field            : 'hrLabel',
@@ -107,6 +110,7 @@ function TrialBalanceOverviewController(Session, TrialBalance, Notify, uiGridCon
   function toggleLoadingIndicator() {
     vm.loading = !vm.loading;
   }
+
 
   function startup() {
     toggleLoadingIndicator();

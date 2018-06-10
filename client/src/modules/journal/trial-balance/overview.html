@@ -1,6 +1,6 @@
 <div class="row" style="padding-bottom: 1rem;" ng-if="OverviewCtrl.showErrorLink">
   <div class="col-xs-12">
-    <a href ui-sref="TrialBalanceErrors" class="text-danger">
+    <a href ng-click="OverviewCtrl.goToErrorView()" class="text-danger">
       <strong>
         <i class="fa fa-exclamation-triangle"></i> <span translate>POSTING_JOURNAL.TRIAL_BALANCE.SHOW_ERRORS</span>
       </strong>
