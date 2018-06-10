@@ -97,7 +97,6 @@ function startupConfig(
     const isLoggedIn = !!SessionService.user;
     const isLoginState = next.name.indexOf('login') !== -1;
 
-
     if (isLoggedIn && isLoginState) {
       event.preventDefault();
       Notify.warn('AUTH.CANNOT_RETURN_TO_LOGIN');
