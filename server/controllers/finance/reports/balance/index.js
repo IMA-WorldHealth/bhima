@@ -48,6 +48,7 @@ function document(req, res, next) {
 
   context.useSeparateDebitsAndCredits = Number.parseInt(params.useSeparateDebitsAndCredits, 10);
   context.shouldPruneEmptyRows = Number.parseInt(params.shouldPruneEmptyRows, 10);
+  context.shouldHideTitleAccounts = Number.parseInt(params.shouldHideTitleAccounts, 10);
 
   try {
     report = new ReportManager(TEMPLATE, req.session, params);
@@ -58,6 +59,9 @@ function document(req, res, next) {
 
   getBalanceSummary(params.period_id, req.session.enterprise.currency_id, context.shouldPruneEmptyRows)
     .then(data => {
+      if (context.shouldHideTitleAccounts) {
+        data.accounts = data.accounts.filter(account => account.isTitleAccount === 0);
+      }
       _.merge(context, data);
       return report.render(context);
     })
@@ -86,16 +90,27 @@ function getBalanceSummary(periodId, currencyId, shouldPrune) {
     SELECT a.id, a.number, a.label, a.type_id, a.label, a.parent,
       a.type_id = ${TITLE_ID} AS isTitleAccount,
       IFNULL(s.before, 0) AS "before",
+      IFNULL(s.before_debit, 0) AS "before_debit",
+      IFNULL(s.before_credit, 0) AS "before_credit",
       IFNULL(s.during, 0) AS "during",
+      IFNULL(s.during_debit, 0) AS "during_debit",
+      IFNULL(s.during_credit, 0) AS "during_credit",
       IFNULL(s.after, 0) AS "after",
+      IFNULL(s.after_debit, 0) AS "after_debit",
+      IFNULL(s.after_credit, 0) AS "after_credit",
       ? AS currencyId
     FROM account AS a LEFT JOIN (
       SELECT pt.account_id,
-        IF(p.id < ?, SUM(pt.debit - pt.credit), 0) AS "before",
-        IF(p.id = ?, SUM(pt.debit - pt.credit), 0) AS "during",
-        IF(p.id <= ?, SUM(pt.debit - pt.credit), 0) AS "after"
+        IF(pt.period_id < ?, SUM(pt.debit - pt.credit), 0) AS "before",
+        IF(pt.period_id < ?, SUM(pt.debit), 0) AS "before_debit",
+        IF(pt.period_id < ?, SUM(pt.credit), 0) AS "before_credit",
+        IF(pt.period_id = ?, SUM(pt.debit - pt.credit), 0) AS "during",
+        IF(pt.period_id = ?, SUM(pt.debit), 0) AS "during_debit",
+        IF(pt.period_id = ?, SUM(pt.credit), 0) AS "during_credit",
+        IF(pt.period_id <= ?, SUM(pt.debit - pt.credit), 0) AS "after",
+        IF(pt.period_id <= ?, SUM(pt.debit), 0) AS "after_debit",
+        IF(pt.period_id <= ?, SUM(pt.credit), 0) AS "after_credit"
       FROM period_total AS pt
-      JOIN period AS p ON p.id = pt.period_id
       WHERE pt.fiscal_year_id = ?
       GROUP BY pt.account_id
     )s ON a.id = s.account_id
@@ -109,7 +124,7 @@ function getBalanceSummary(periodId, currencyId, shouldPrune) {
 
   return db.one(getFiscalYearSQL, [periodId])
     .then(period => {
-      const params = _.fill(Array(3), period.id);
+      const params = _.fill(Array(9), period.id);
       _.merge(context, { period });
       return db.exec(sql, [currencyId, ...params, period.fiscal_year_id]);
     })
@@ -119,7 +134,11 @@ function getBalanceSummary(periodId, currencyId, shouldPrune) {
       // compute the values of the title accounts as the values of their children
       // takes O(n * m) time, where n is the number of nodes and m is the number
       // of periods
-      const balanceKeys = ['before', 'during', 'after'];
+      const balanceKeys = [
+        'before', 'before_debit', 'before_credit',
+        'during', 'during_debit', 'during_credit',
+        'after', 'after_debit', 'after_credit',
+      ];
       const bulkSumFn = (currentNode, parentNode) => {
         balanceKeys.forEach(key => {
           parentNode[key] = (parentNode[key] || 0) + currentNode[key];
@@ -155,8 +174,14 @@ function getBalanceSummary(periodId, currencyId, shouldPrune) {
       const balances = tree.toArray();
       const totals = {
         before : root.before,
+        before_debit : root.before_debit,
+        before_credit : root.before_credit,
         during : root.during,
+        during_debit : root.during_debit,
+        during_credit : root.during_credit,
         after : root.after,
+        after_debit : root.after_debit,
+        after_credit : root.after_credit,
         currencyId,
       };
 

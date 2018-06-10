@@ -159,6 +159,8 @@
       "EMAIL_HELP_TXT" : "The email above will receive the report as an attachment.  The server must have an internet connection for the email to be successfully delivered."
     },
     "OPTIONS" : {
+      "HIDE_TITLE_ACCOUNT": "Hide title accounts",
+      "HIDE_TITLE_ACCOUNT_HELP": "If yes, the report will not contain title accounts",
       "MORE_OPTIONS" : "More Options",
       "USE_ORIGINAL_TRANSACTION_CURRENCY" : "Display original transaction currency?",
       "USE_ORIGINAL_TRANSACTION_CURRENCY_HELP" : "If yes, the report will show the recorded currency of the transaction instead of the value in the enterprise's currency.",

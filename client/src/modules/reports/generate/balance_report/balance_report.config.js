@@ -33,6 +33,10 @@ function BalanceReportConfigController($sce, Notify, SavedReports, AppCache, rep
     vm.reportDetails.shouldPruneEmptyRows = bool;
   };
 
+  vm.onChangeHideTitleAccounts = (bool) => {
+    vm.reportDetails.shouldHideTitleAccounts = bool;
+  };
+
   vm.preview = function preview(form) {
     if (form.$invalid) { return 0; }
 

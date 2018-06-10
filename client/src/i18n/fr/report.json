@@ -159,6 +159,8 @@
       "EMAIL_HELP_TXT" : "L'e-mail ci-dessus recevra le rapport en pièce jointe. Le serveur doit avoir une connexion Internet pour que l'e-mail soit livré avec succès."
     },
     "OPTIONS" : {
+      "HIDE_TITLE_ACCOUNT": "Cacher les comptes de titre",
+      "HIDE_TITLE_ACCOUNT_HELP": "Si oui, le rapport ne va pas contenir les comptes de titre",
       "MORE_OPTIONS" : "Plus d'options",
       "USE_ORIGINAL_TRANSACTION_CURRENCY" : "Afficher la devise de transaction originale?",
       "USE_ORIGINAL_TRANSACTION_CURRENCY_HELP" : "Si oui, le rapport affichera la devise de la transaction au lieu de la valeur dans la devise de l'entreprise.",

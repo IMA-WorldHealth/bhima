@@ -81,31 +81,35 @@
           {{#each accounts as |account|}}
             <tr class="text-right" {{#if account.isTitleAccount}}style="font-weight:bold;"{{/if}}>
               <td class="text-left">
-                <span style="padding-left: calc(10px * {{account.depth}})">{{ account.number }} - {{ account.label }}</span>
+                <span {{#unless ../shouldHideTitleAccounts}}style="padding-left: calc(10px * {{account.depth}})"{{/unless}}>{{ account.number }} - {{ account.label }}</span>
               </td>
 
               {{#if ../useSeparateDebitsAndCredits}}
-                {{#if account.before.debit }}
+                {{!-- debtor sold --}}
+                {{#gt account.before.amount 0}}
                   <td>{{currency account.before.debit account.currencyId }}</td>
                   <td></td>
-                 {{else if account.befor.credit }}
+                {{/gt}}
+
+                {{!-- creditor sold --}}
+                {{#lt account.before.amount 0}}
                   <td></td>
                   <td>{{currency account.before.credit account.currencyId }}</td>
-                  {{else}}
+                {{/lt}}
+
+                {{!-- void cells in other case --}}
+                {{#unless account.before}}
                   <td></td>
                   <td></td>
-                {{/if}}
+                {{/unless}}
               {{else}}
                 <td>{{#if account.before}}{{debcred account.before.amount account.currencyId }}{{/if}}</td>
               {{/if}}
 
               {{#if ../useSeparateDebitsAndCredits}}
-                {{#if account.during.debit }}
-                  <td>{{currency account.during.debit account.currencyId }}</td>
-                  <td></td>
-                 {{else if account.during.credit }}
-                  <td></td>
-                  <td>{{currency account.during.credit account.currencyId }}</td>
+                {{#if account.during}}
+                  <td>{{currency account.during_debit.amount account.currencyId }}</td>
+                  <td>{{currency account.during_credit.amount account.currencyId }}</td>
                 {{else}}
                   <td></td>
                   <td></td>
@@ -115,16 +119,23 @@
               {{/if}}
 
               {{#if ../useSeparateDebitsAndCredits}}
-                {{#if account.after.debit }}
+                {{!-- debtor sold --}}
+                {{#gt account.after.amount 0}}
                   <td>{{currency account.after.debit account.currencyId }}</td>
                   <td></td>
-                {{else if account.after.credit}}
+                {{/gt}}
+
+                {{!-- creditor sold --}}
+                {{#lt account.after.amount 0}}
                   <td></td>
                   <td>{{currency account.after.credit account.currencyId }}</td>
-                {{else}}
+                {{/lt}}
+
+                {{!-- void cells in other case --}}
+                {{#unless account.after}}
                   <td></td>
                   <td></td>
-                {{/if}}
+                {{/unless}}
               {{else}}
                 <td>{{#if account.after}}{{debcred account.after.amount account.currencyId }}{{/if}}</td>
               {{/if}}
@@ -136,38 +147,23 @@
           <tr class="text-right" style="background-color: #efefef;">
             <th>{{translate "FORM.LABELS.TOTAL"}}</th>
             {{#if useSeparateDebitsAndCredits}}
-              {{#gt totals.before 0}}
-                <th class="text-right">{{currency totals.before totals.currencyId }}</th>
-                <th class="text-right">{{currency 0 totals.currencyId }}</th>
-              {{else}}
-                <th class="text-right">{{currency 0 totals.currencyId }}</th>
-                <th class="text-right">{{currency totals.before totals.currencyId }}</th>
-              {{/gt}}
+              <th class="text-right">{{currency totals.before_debit totals.currencyId }}</th>
+              <th class="text-right">{{currency totals.before_credit totals.currencyId }}</th>
             {{else}}
               <th class="text-right">{{debcred totals.before totals.currencyId }}</th>
             {{/if}}
 
             {{#if useSeparateDebitsAndCredits}}
-              {{#gt totals.during 0}}
-                <th class="text-right">{{currency totals.during totals.currencyId }}</th>
-                <th class="text-right">{{currency 0 totals.currencyId }}</th>
-              {{else}}
-                <th class="text-right">{{currency 0 totals.currencyId }}</th>
-                <th class="text-right">{{currency totals.during totals.currencyId }}</th>
-              {{/gt}}
+              <th class="text-right">{{currency totals.during_debit totals.currencyId }}</th>
+              <th class="text-right">{{currency totals.during_credit totals.currencyId }}</th>
             {{else}}
               <th class="text-right">{{debcred totals.during totals.currencyId }}</th>
             {{/if}}
 
 
             {{#if useSeparateDebitsAndCredits}}
-              {{#gt totals.after 0}}
-                <th class="text-right">{{currency totals.after totals.currencyId }}</th>
-                <th class="text-right">{{currency 0 totals.currencyId }}</th>
-              {{else}}
-                <th class="text-right">{{currency 0 totals.currencyId }}</th>
-                <th class="text-right">{{currency totals.after totals.currencyId }}</th>
-              {{/gt}}
+              <th class="text-right">{{currency totals.after_debit totals.currencyId }}</th>
+              <th class="text-right">{{currency totals.after_credit totals.currencyId }}</th>
             {{else}}
               <th class="text-right">{{debcred totals.after totals.currencyId }}</th>
             {{/if}}
