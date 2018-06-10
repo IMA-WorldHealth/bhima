@@ -62,6 +62,7 @@
     "EXPENSE_REPORT": "Expenses Report",
     "GENERATED": "Generated Report",
     "INCOME_EXPENSE": "Profit And Loss Statement",
+    "INCOME_EXPENSE_BY_MONTH": "Profit And Loss Statement by Month",
     "INCOME_REPORT": "Incomes Report",
     "MONTHLY_BALANCE": "Monthly Balance",
     "OPEN_DEBTORS": {
@@ -108,6 +109,10 @@
       "DESCRIPTION": "This report shows all transactions for an individual account given a set time period.",
       "WARN_MULTIPLE": "N.B. This report concerns an income/ expense account and spans multiple fiscal years. Income/ expense accounts are cleared to 0 at the beginning of every fiscal year, the cumulative balance displayed is for the transactions within this period of time. It is recommended to use this statement within a single fiscal year.",
       "WARN_CURRENCY": "Attention! You are using a currency other than the enterprise currency.  Values on this report are subject to change with changes to the exchange rate and should not be considered final.  Please save a report in the enterprise currency for long term reference."
+    },
+    "INCOME_EXPENSE_BY_MONTH_REPORT": {
+      "TITLE": "Income Expense Report by month",
+      "DESCRIPTION": "Creates an income and expense statement for the current period and the previous two periods"
     },
     "INCOME_EXPENSE_REPORT": {
       "TITLE": "Income Expense Report",

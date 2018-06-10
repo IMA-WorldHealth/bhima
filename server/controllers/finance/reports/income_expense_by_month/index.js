@@ -1,7 +1,7 @@
 /**
- * Income Expense Controller
+ * Income Expense by Month Controller
  *
- * This controller is responsible for processing the income and expense report.
+ * This controller is responsible for processing the income and expense by month report.
  *
  * @module finance/incomeExpense
  *
@@ -21,7 +21,7 @@ const BadRequest = require('../../../../lib/errors/BadRequest');
 const Tree = require('../../../../lib/Tree');
 const Fiscal = require('../../fiscal');
 
-const TEMPLATE = './server/controllers/finance/reports/income_expense/report.handlebars';
+const TEMPLATE = './server/controllers/finance/reports/income_expense_by_month/report.handlebars';
 
 const INCOME_TYPE_ID = 4;
 const EXPENSE_TYPE_ID = 5;
@@ -49,42 +49,42 @@ function document(req, res, next) {
     return;
   }
 
-  const { periodFromId, periodToId, fiscalYearId } = options;
+  const { periodId, periodNumber, fiscalYearId } = options;
   const data = {};
 
   Promise.all([
-    getPeriodById(periodFromId),
-    getPeriodById(periodToId),
+    getPeriodByNumberAndFiscalId(parseInt(periodNumber, 10) - 2, fiscalYearId),
+    getPeriodByNumberAndFiscalId(parseInt(periodNumber, 10) - 1, fiscalYearId),
+    getPeriodById(periodId),
+
     Fiscal.lookupFiscalYear(fiscalYearId),
   ])
-    .then(([periodFrom, periodTo, fiscalYear]) => {
-      if (periodFrom.start_date > periodTo.start_date) {
-        throw new BadRequest('The date range is inverted.', 'ERRORS.BAD_DATE_INTERVAL');
+    .then(([previousPeriod, period, nexPeriod, fiscalYear]) => {
+      if (!previousPeriod.id || !nexPeriod.id) {
+        throw new BadRequest('The date range is invalid.');
       }
 
-      _.extend(data, { periodFrom, periodTo, fiscalYear });
+      _.extend(data, {
+        previousPeriod, period, nexPeriod, fiscalYear,
+      });
 
-      // retrieve both the current balances and the previous year balances
+
       return Promise.all([
-        getAccountBalances(fiscalYear.id, periodFrom.number, periodTo.number),
-        getAccountBalances(fiscalYear.previous_fiscal_year_id, periodFrom.number, periodTo.number),
-        Fiscal.lookupFiscalYear(fiscalYear.previous_fiscal_year_id),
+        getAccountBalances(fiscalYear.id, previousPeriod.number, nexPeriod.number),
+        getAccountBalances(fiscalYear.id, period.number, period.number),
+        getAccountBalances(fiscalYear.id, nexPeriod.number, nexPeriod.number),
       ]);
     })
-    .then(([currentBalances, previousBalances, previousFiscalYear]) => {
-      const dataset = combineIntoSingleDataset(currentBalances, previousBalances);
+    .then(([currentBalances, previousBalances, nextBalances]) => {
+
+      const dataset = combineIntoSingleDataset(currentBalances, previousBalances, nextBalances);
+      // console.log(dataset);
       const tree = constructAndPruneTree(dataset);
 
       const root = tree.getRootNode();
-
-      if (!Array.isArray(root.children) || root.children.length < 2) {
-        throw new BadRequest(
-          'Could not find both income and expense accounts for the time period',
-          'ERRORS.NO_DATA_FOUND'
-        );
-      }
-
-      const isIncomeFirstElement = root.children[0].isIncomeAccount;
+      root.children = root.children || [];
+      const rootChildrenFirst = root.children[0] || {};
+      const isIncomeFirstElement = rootChildrenFirst.isIncomeAccount;
 
       let income = {};
       let expense = {};
@@ -101,14 +101,11 @@ function document(req, res, next) {
       tree.walk(node => losses.push(node), true, expense);
 
       // calculate totals and profit
-      const emptyTotal = { balance : 0, previousBalance : 0, difference : 0 };
+      const emptyTotal = { balance : 0, previousBalance : 0, nextBalance : 0 };
       const totals = {
         income :  profits[0] || emptyTotal,
         expense : losses[0] || emptyTotal,
       };
-
-      // compute the difference between the income and expense
-      totals.result = totals.income.balance + totals.expense.balance;
 
       // computes the variance on the income/expense
       profits.forEach(account => {
@@ -120,7 +117,7 @@ function document(req, res, next) {
       });
 
       _.extend(data, {
-        profits, losses, previousFiscalYear, totals,
+        profits, losses, totals,
       });
 
       return report.render(data);
@@ -194,34 +191,51 @@ function getPeriodById(id) {
  *
  * @returns Array
  */
-function combineIntoSingleDataset(currentBalances, previousBalances) {
+function combineIntoSingleDataset(currentBalances, previousBalances, nextBalances) {
   // make an id -> account map for both values
   const currentMap = new Map(currentBalances.map(a => [a.id, a]));
   const previousMap = new Map(previousBalances.map(a => [a.id, a]));
+  const nextMap = new Map(nextBalances.map(a => [a.id, a]));
 
   // get all account ids in a single list.
-  const combined = _.uniq([...currentMap.keys(), ...previousMap.keys()]);
+  const combined = _.uniq([...currentMap.keys(), ...previousMap.keys(), ...nextMap.keys()]);
 
   return combined.map(id => {
     const record = {};
 
     const current = currentMap.get(id);
     const previous = previousMap.get(id);
+    const next = nextMap.get(id);
 
     if (current) {
       const previousBalance = previous ? previous.balance : 0;
-      _.extend(record, current, { previousBalance });
+      const nextBalance = next ? next.balance : 0;
+      _.extend(record, current, { previousBalance, nextBalance });
+    } else if (previous) {
+      const nextBalance = next ? next.balance : 0;
+      _.extend(record, previous, { balance : 0 }, { previousBalance : previous.balance, nextBalance });
     } else {
-      _.extend(record, previous, { balance : 0 }, { previousBalance : previous.balance });
+      _.extend(record, next, { balance : 0, previousBalance : 0 }, { nextBalance : next.balance });
     }
 
-    // compute the difference between this and last year's balance
-    record.difference = (record.balance - record.previousBalance);
 
     return record;
   });
 }
 
+/**
+ * @function getPeriodByNumberAndFiscalId
+ *
+ * @description
+ * Small helper to get all properties of a period by its number.
+ */
+function getPeriodByNumberAndFiscalId(number, fiscalId) {
+  const sql = `
+    SELECT id, number, start_date, end_date, locked FROM period WHERE number = ? AND fiscal_year_id = ?;
+  `;
+
+  return db.one(sql, [number, fiscalId]);
+}
 
 /**
  * @function constructAndPruneTree
@@ -233,7 +247,7 @@ function constructAndPruneTree(dataset) {
   const tree = new Tree(dataset);
 
   const properties = [
-    'balance', 'previousBalance', 'difference', 'variance',
+    'balance', 'previousBalance', 'nextBalance', 'variance',
   ];
 
   const bulkSumFn = (currentNode, parentNode) => {

@@ -53,7 +53,9 @@
     },
     "EXPENSE_REPORT":"Rapport des dépenses",
     "GENERATED":"Rapport généré",
-    "INCOME_EXPENSE":"Rapport des Produits et Charges",
+    "INCOME_EXPENSE":"Rapport  des recettes et des dépenses",
+    "INCOME_EXPENSE_BY_MONTH": "Rapport  des recettes et des dépenses par Mois",
+    
     "INCOME_REPORT":"Rapport des recettes",
     "MONTHLY_BALANCE":"Balance mensuelle",
     "OPEN_DEBTORS": {
@@ -104,6 +106,10 @@
     "INCOME_EXPENSE_REPORT": {
       "TITLE": "Rapport des Comptes d'exploitation",
       "DESCRIPTION": "Afficher la liste des revenus et des dépenses pris en charge dans l'entreprise"
+    },
+    "INCOME_EXPENSE_BY_MONTH_REPORT": {
+      "TITLE": "Rapport des Comptes d'exploitation par mois",
+      "DESCRIPTION": "Ce rapport affiche la liste des revenus et des dépenses pris en charge dans l'entreprise, il compare le mois précédent, le mois en cours et le mois suivant"
     },
     "BALANCE_REPORT": {
       "TITLE": "Rapport de la Balance des comptes",

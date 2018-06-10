@@ -99,7 +99,9 @@ INSERT INTO unit VALUES
   (205, 'Account Reference Management','TREE.ACCOUNT_REFERENCE_MANAGEMENT','',1,'/modules/account_reference','/account_reference'),
   (206, '[OHADA] Bilan','TREE.OHADA_BALANCE_SHEET','',144,'/modules/reports/ohada_balance_sheet_report','/reports/ohada_balance_sheet_report'),
   (207, 'Account Reference Report','TREE.ACCOUNT_REFERENCE_REPORT','',144,'/modules/reports/account_reference','/reports/account_reference'),
-  (208, 'Import Stock From File','TREE.IMPORT_STOCK_FROM_FILE','',160,'/modules/stock/import','/stock/import');
+  (208, 'Import Stock From File','TREE.IMPORT_STOCK_FROM_FILE','',160,'/modules/stock/import','/stock/import'),
+  (209,  'Income Expenses by month', 'TREE.INCOME_EXPENSE_BY_MONTH', 'The Report of income and expenses', 144, '/modules/finance/income_expense_by_month', '/reports/income_expense_by_month');
+
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -139,7 +141,8 @@ INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
   (18, 'employeeStanding', 'REPORT.EMPLOYEE_STANDING.TITLE'),
   (19, 'patientStanding', 'REPORT.PATIENT_STANDING.TITLE'),
   (20, 'ohada_balance_sheet_report', 'REPORT.OHADA.BALANCE_SHEET'),
-  (21, 'account_reference', 'REPORT.ACCOUNT_REFERENCE.TITLE');
+  (21, 'account_reference', 'REPORT.ACCOUNT_REFERENCE.TITLE'),
+  (22, 'income_expense_by_month', 'REPORT.INCOME_EXPENSE_BY_MONTH');
 
 -- Supported Languages
 INSERT INTO `language` VALUES

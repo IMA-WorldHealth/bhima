@@ -363,6 +363,7 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/cashflow/services', financeReports.cashflow.byService);
   app.get('/reports/finance/financialPatient/:uuid', financeReports.patient);
   app.get('/reports/finance/income_expense', financeReports.income_expense.document);
+  app.get('/reports/finance/income_expense_by_month', financeReports.income_expense_by_month.document);
   app.get('/reports/finance/cash_report', financeReports.cashReport.document);
   app.get('/reports/finance/balance', financeReports.balance.document);
   app.get('/reports/finance/balance_sheet', financeReports.balanceSheet.document);
