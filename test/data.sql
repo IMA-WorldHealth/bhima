@@ -888,6 +888,10 @@ INSERT INTO `config_accounting` (`label`, `account_id`) VALUES ('Configuration C
 -- Configuration Employee Payroll
 INSERT INTO `config_employee` (`id`, `label`) VALUES ('1', 'Configuration des Employés');
 
+INSERT INTO `config_employee_item` (`id`, `config_employee_id`, `employee_uuid`) VALUES 
+  (1, 1, 0x75E0969465F245A1A8A28B025003D793),
+  (2, 1, 0x75E69409562FA2A845A13D7938B02500);
+
 -- Payroll Configuration Period
 INSERT INTO `payroll_configuration` (`id`, `label`, `dateFrom`, `dateTo`, `config_rubric_id`, `config_accounting_id`, `config_weekend_id`, `config_employee_id`, `config_ipr_id`) VALUES
 (1, 'Février 2018', '2018-02-01', '2018-02-28', 1, 1, 1, 1, 1);

@@ -156,6 +156,19 @@
                   </div>
 
 
+                  <!-- is locked ?  -->
+                  <div id="locked" class="form-group"
+                    ng-class="{'has-error' : DetailForm.locked.$invalid && EmployeeRegistrationForm.$submitted}">
+                    <label class="col-md-3 control-label" translate></label>
+                    <div class="col-md-9">
+                      <div class="form-group" ng-if="EmployeeCtrl.isUpdating">
+                        <label>
+                          <input type="checkbox" name="locked" ng-model="EmployeeCtrl.employee.locked" ng-true-value="1" ng-false-value="0">
+                          <span translate>FORM.LABELS.LOCKED</span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
 
                   <!-- Employee creditor group-->
                   <div class="form-group"
@@ -231,8 +244,6 @@
                       </bh-debtor-group-select>
                     </div>
                   </div>
-
-
 
                   <!-- Employee location -->
                   <div class="row">

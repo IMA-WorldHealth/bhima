@@ -40,6 +40,9 @@ function find(options) {
         JOIN patient ON patient.uuid = employee.patient_uuid 
         JOIN grade ON employee.grade_uuid = grade.uuid
         JOIN paiement ON paiement.employee_uuid = employee.uuid
+        JOIN payroll_configuration ON payroll_configuration.id = paiement.payroll_configuration_id
+        JOIN config_employee ON config_employee.id = payroll_configuration.config_employee_id
+        JOIN config_employee_item ON config_employee_item.employee_uuid = employee.uuid        
         JOIN paiement_status ON paiement_status.id = paiement.status_id
         WHERE paiement.payroll_configuration_id = '${options.payroll_configuration_id}'
       UNION 
@@ -55,10 +58,14 @@ function find(options) {
         JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid 
         JOIN patient ON patient.uuid = employee.patient_uuid 
         JOIN grade ON employee.grade_uuid = grade.uuid
+        JOIN config_employee_item ON config_employee_item.employee_uuid = employee.uuid
+        JOIN config_employee ON config_employee.id = config_employee_item.config_employee_id
+        JOIN payroll_configuration ON payroll_configuration.config_employee_id = config_employee.id        
         WHERE employee.uuid NOT IN (
           SELECT paiement.employee_uuid 
           FROM paiement 
-          WHERE paiement.payroll_configuration_id = '${options.payroll_configuration_id}')
+          WHERE paiement.payroll_configuration_id = '${options.payroll_configuration_id}') 
+          AND payroll_configuration.id = '${options.payroll_configuration_id}'
     ) AS payroll`;
 
   filters.fullText('display_name');

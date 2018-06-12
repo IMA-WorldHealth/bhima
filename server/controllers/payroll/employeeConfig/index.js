@@ -61,7 +61,6 @@ function create(req, res, next) {
     .done();
 }
 
-
 // PUT/EMPLOYEE_CONFIG/:ID
 function update(req, res, next) {
   const sql = `UPDATE config_employee SET ? WHERE id = ?;`;
