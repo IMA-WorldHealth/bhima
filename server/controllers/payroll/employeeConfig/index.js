@@ -105,7 +105,7 @@ function del(req, res, next) {
  */
 function createConfig(req, res, next) {
 
-  let data = req.body.configuration.map((uuid) => {
+  const data = req.body.configuration.map((uuid) => {
     return [db.bid(uuid), req.params.id];
   });
 

@@ -702,6 +702,7 @@
         "SELECT": {
             "EMPTY": "Empty",
             "EMPLOYEE": "Select an Employee",
+            "EMPLOYEE_CONFIGURATION": "Select Employee Configuration",
             "ACCOUNT": "Select an Account",
             "ACCOUNT_TYPE": "Select Account Type",
             "ACCOUNT_CONFIGURATION" : "Select account configuration",
@@ -782,6 +783,7 @@
             "EMPTY_SELECTION": "Empty Selection",
             "NOT_AUTHORISED": "The requested page is not authorised",
             "NOT_FOUND": "Not found",
+            "NO_CONFIGURATION_FOUND": "No configuration found",
             "NO_EMPLOYE_SELECTED": "No employees were selected",
             "PAGE_NOT_FOUND": "The page you requested could not be found",
             "NO_CHANGES": "You haven't changed any form values.  Nothing will be submitted to the server."

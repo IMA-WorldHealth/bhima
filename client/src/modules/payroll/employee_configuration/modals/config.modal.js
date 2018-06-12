@@ -6,10 +6,10 @@ EmployeeConfigModalController.$inject = [
 ];
 
 function EmployeeConfigModalController($state, Config, Notify, AppCache, bhConstants, Employees) {
-  var vm = this;
+  const vm = this;
   vm.config = {};
 
-  var cache = AppCache('EmployeeModal');
+  const cache = AppCache('EmployeeModal');
 
   if ($state.params.creating || $state.params.id) {
     vm.stateParams = cache.stateParams = $state.params;
@@ -26,19 +26,19 @@ function EmployeeConfigModalController($state, Config, Notify, AppCache, bhConst
 
   if (!vm.isCreating) {
     Config.read(vm.stateParams.id)
-      .then(function (config) {
+      .then((config) => {
         vm.config = config;
       })
       .catch(Notify.handleError);
   }
 
   Employees.read()
-    .then(function (employees) {
+    .then((employees) => {
       vm.employees = employees;
 
       return Config.getEmployees(vm.stateParams.id);
     })
-    .then(function (employeeConfig) {
+    .then((employeeConfig) => {
 
       employeeConfig.forEach(object => {
         vm.employees.forEach(employee => {
@@ -50,23 +50,23 @@ function EmployeeConfigModalController($state, Config, Notify, AppCache, bhConst
 
   // toggles all Employees to match there Configuration Employee's setting
   function toggleAllEmployees(bool) {
-    vm.employees.forEach(function (employee) {
+    vm.employees.forEach((employee) => {
       employee.checked = employee.locked ? null : bool;
     });
   }
 
   // submit the data to the server for configure week day
   function submit(employeeConfigForm) {
-    var promise,
+    let promise,
       employeesChecked;
 
     if (employeeConfigForm.$invalid || employeeConfigForm.$pristine) { return 0; }
 
-    employeesChecked = vm.employees.filter(employee => employee.checked )
-      .map(employee => employee.uuid );
-   
+    employeesChecked = vm.employees.filter(employee => employee.checked)
+      .map(employee => employee.uuid);
+
     return Config.setEmployees(vm.stateParams.id, employeesChecked)
-      .then(function () {
+      .then(() => {
         Notify.success('FORM.INFO.UPDATE_SUCCESS');
         $state.go('configurationEmployee', null, { reload : true });
       })

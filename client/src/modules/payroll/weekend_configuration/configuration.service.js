@@ -11,7 +11,7 @@ ConfigurationWeekEndService.$inject = ['PrototypeApiService'];
  * Encapsulates common requests to the /weekend_config/ URL.
  */
 function ConfigurationWeekEndService(Api) {
-  var service = new Api('/weekend_config/');
+  const service = new Api('/weekend_config/');
 
   service.getWeekDays = getWeekDays;
   service.setWeekDays = setWeekDays;

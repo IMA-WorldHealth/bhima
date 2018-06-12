@@ -28,6 +28,7 @@ function PayrollConfigModalController($state, PayrollConfigurations, Notify, App
   vm.onSelectAccountConfig = onSelectAccountConfig;
   vm.onSelectIprConfig = onSelectIprConfig;
   vm.onSelectWeekendConfig = onSelectWeekendConfig;
+  vm.onSelectEmployeeConfig = onSelectEmployeeConfig;
 
   vm.clear = clear;
 
@@ -59,6 +60,10 @@ function PayrollConfigModalController($state, PayrollConfigurations, Notify, App
   // Callback for weekend configuration select
   function onSelectWeekendConfig(week) {
     vm.payroll.config_weekend_id = week.id;
+  }
+
+  function onSelectEmployeeConfig(employee) {
+    vm.payroll.config_employee_id = employee.id; 
   }
 
   // deletes a filter from the custom filter object

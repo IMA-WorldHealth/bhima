@@ -159,12 +159,14 @@ CREATE TABLE `payroll_configuration` (
   `config_rubric_id` int(10) unsigned NOT NULL,
   `config_accounting_id` int(10) unsigned NOT NULL,
   `config_weekend_id` int(10) unsigned NOT NULL,
+  `config_employee_id` int(10) unsigned NOT NULL,
   `config_ipr_id`int(10) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `payroll_configuration` (`label`),
   FOREIGN KEY (`config_rubric_id`) REFERENCES `config_rubric` (`id`),
   FOREIGN KEY (`config_accounting_id`) REFERENCES `config_accounting` (`id`),
-  FOREIGN KEY (`config_weekend_id`) REFERENCES `weekend_config` (`id`)
+  FOREIGN KEY (`config_weekend_id`) REFERENCES `weekend_config` (`id`),
+  FOREIGN KEY (`config_employee_id`) REFERENCES `config_employee` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `rubric_payroll`;
@@ -1999,6 +2001,7 @@ CREATE TABLE `config_employee_item` (
   PRIMARY KEY (`id`),
   KEY `config_employee_id` (`config_employee_id`),
   KEY `employee_uuid` (`employee_uuid`),
+  UNIQUE KEY  (`config_employee_id`, `employee_uuid`),
   FOREIGN KEY (`config_employee_id`) REFERENCES `config_employee` (`id`),
   FOREIGN KEY (`employee_uuid`) REFERENCES `employee` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;

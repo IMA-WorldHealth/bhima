@@ -11,7 +11,7 @@ ConfigurationEmployeeService.$inject = ['PrototypeApiService'];
  * Encapsulates common requests to the /weekend_config/ URL.
  */
 function ConfigurationEmployeeService(Api) {
-  var service = new Api('/employee_config/');
+  const service = new Api('/employee_config/');
 
   service.getEmployees = getEmployees;
   service.setEmployees = setEmployees;

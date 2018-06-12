@@ -6,10 +6,10 @@ EmployeeModalController.$inject = [
 ];
 
 function EmployeeModalController($state, Config, Notify, AppCache) {
-  var vm = this;
+  const vm = this;
   vm.employee = {};
 
-  var cache = AppCache('EmployeeModal');
+  const cache = AppCache('EmployeeModal');
 
   if ($state.params.creating || $state.params.id) {
     vm.stateParams = cache.stateParams = $state.params;
@@ -24,7 +24,7 @@ function EmployeeModalController($state, Config, Notify, AppCache) {
 
   if (!vm.isCreating) {
     Config.read(vm.stateParams.id)
-      .then(function (employee) {    
+      .then((employee) => {
         vm.employee = employee;
       })
       .catch(Notify.handleError);
@@ -32,7 +32,7 @@ function EmployeeModalController($state, Config, Notify, AppCache) {
 
   // submit the data to the server from all two forms (update, create)
   function submit(EmployeeForm) {
-    var promise;
+    let promise;
 
     if (EmployeeForm.$invalid || EmployeeForm.$pristine) { return 0; }
 
@@ -41,8 +41,8 @@ function EmployeeModalController($state, Config, Notify, AppCache) {
       Config.update(vm.employee.id, vm.employee);
 
     return promise
-      .then(function () {
-        var translateKey = (vm.isCreating) ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
+      .then(() => {
+        const translateKey = (vm.isCreating) ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
         Notify.success(translateKey);
         $state.go('configurationEmployee', null, { reload : true });
       })

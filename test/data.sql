@@ -885,9 +885,12 @@ INSERT INTO `taxe_ipr_configuration` (`rate`, `tranche_annuelle_debut`, `tranche
 -- Configuration Accounting Payroll
 INSERT INTO `config_accounting` (`label`, `account_id`) VALUES ('Configuration Compte Rémunération', 220);
 
+-- Configuration Employee Payroll
+INSERT INTO `config_employee` (`id`, `label`) VALUES ('1', 'Configuration des Employés');
+
 -- Payroll Configuration Period
-INSERT INTO `payroll_configuration` (`id`, `label`, `dateFrom`, `dateTo`, `config_rubric_id`, `config_accounting_id`, `config_weekend_id`, `config_ipr_id`) VALUES
-(1, 'Février 2018', '2018-02-01', '2018-02-28', 1, 1, 1, 1);
+INSERT INTO `payroll_configuration` (`id`, `label`, `dateFrom`, `dateTo`, `config_rubric_id`, `config_accounting_id`, `config_weekend_id`, `config_employee_id`, `config_ipr_id`) VALUES
+(1, 'Février 2018', '2018-02-01', '2018-02-28', 1, 1, 1, 1, 1);
 
 SET @paymentUuid = HUID('2a3f17b0ae3242bb9333a760825fd257');
 SET @employeeUuid = HUID('75e0969465f245a1a8a28b025003d793');

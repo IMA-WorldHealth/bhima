@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('ConfigurationEmployeeController', ConfigurationEmployeeController);
+  .controller('ConfigurationEmployeeController', ConfigurationEmployeeController);
 
 ConfigurationEmployeeController.$inject = [
   'ConfigurationEmployeeService', 'ModalService',
@@ -12,9 +12,11 @@ ConfigurationEmployeeController.$inject = [
  * This controller is about the Employee management module in the admin zone
  * It's responsible for creating, editing and updating a Employee
  */
-function ConfigurationEmployeeController(Configs, ModalService,
-  Notify, uiGridConstants, $state, Session) {
-  var vm = this;
+function ConfigurationEmployeeController(
+  Configs, ModalService,
+  Notify, uiGridConstants, $state, Session
+) {
+  const vm = this;
 
   // bind methods
   vm.deleteConfig = deleteConfig;
@@ -26,10 +28,11 @@ function ConfigurationEmployeeController(Configs, ModalService,
   vm.gridApi = {};
   vm.filterEnabled = false;
 
-  var gridColumn =
+  const gridColumn =
     [
       { field : 'label', displayName : 'FORM.LABELS.DESIGNATION', headerCellFilter : 'translate' },
-      { field : 'action',
+      {
+        field : 'action',
         width : 80,
         displayName : '',
         cellTemplate : '/modules/payroll/employee_configuration/templates/action.tmpl.html',
@@ -63,28 +66,28 @@ function ConfigurationEmployeeController(Configs, ModalService,
     vm.loading = true;
 
     Configs.read()
-    .then(function (data) {
-      vm.gridOptions.data = data;
-    })
-    .catch(Notify.handleError)
-    .finally(function () {
-      vm.loading = false;
-    });
+      .then((data) => {
+        vm.gridOptions.data = data;
+      })
+      .catch(Notify.handleError)
+      .finally(() => {
+        vm.loading = false;
+      });
   }
 
   // switch to delete warning mode
   function deleteConfig(title) {
     ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
-    .then(function (bool) {
-      if (!bool) { return; }
+      .then((bool) => {
+        if (!bool) { return; }
 
-      Configs.delete(title.id)
-      .then(function () {
-        Notify.success('FORM.INFO.DELETE_SUCCESS');
-        loadConfigs();
-      })
-      .catch(Notify.handleError);
-    });
+        Configs.delete(title.id)
+          .then(() => {
+            Notify.success('FORM.INFO.DELETE_SUCCESS');
+            loadConfigs();
+          })
+          .catch(Notify.handleError);
+      });
   }
 
   // update an existing Employee Configuration

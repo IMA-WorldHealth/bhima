@@ -701,6 +701,7 @@
         "SELECT": {
             "EMPTY": "Vide",
             "EMPLOYEE": "Sélectionner un Employé",
+            "EMPLOYEE_CONFIGURATION": "Sélectionner la configuration des employés",
             "ACCOUNT": "Sélectionner un compte",
             "ACCOUNT_TYPE": "Sélectionner un Type de Compte",
             "ACCOUNT_CONFIGURATION" : "Sélectionner la configuration des comptes",
@@ -780,6 +781,7 @@
             "DOC_NOT_FOUND": "Le document n'a pas était retrouvé au serveur",
             "EMPTY_SELECTION": "Sélection vide",
             "NOT_AUTHORISED": "La page demandée n'est pas autorisée",
+            "NO_CONFIGURATION_FOUND": "Aucune configuration trouvée",
             "NOT_FOUND": "Non trouvee",
             "NO_EMPLOYE_SELECTED": "Aucun employé n'a été sélectionné",
             "PAGE_NOT_FOUND": "La page demandée n'a pas été trouvée",
