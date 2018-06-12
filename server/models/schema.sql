@@ -1982,4 +1982,26 @@ CREATE TABLE `config_rubric_item` (
   CONSTRAINT `config_rubric_item_ibfk_2` FOREIGN KEY (`rubric_payroll_id`) REFERENCES `rubric_payroll` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+DROP TABLE IF EXISTS `config_employee`;
+
+CREATE TABLE `config_employee` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `label` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS `config_employee_item`;
+
+CREATE TABLE `config_employee_item` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `config_employee_id` int(10) unsigned NOT NULL,
+  `employee_uuid` BINARY(16) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `config_employee_id` (`config_employee_id`),
+  KEY `employee_uuid` (`employee_uuid`),
+  FOREIGN KEY (`config_employee_id`) REFERENCES `config_employee` (`id`),
+  FOREIGN KEY (`employee_uuid`) REFERENCES `employee` (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
 SET foreign_key_checks = 1;

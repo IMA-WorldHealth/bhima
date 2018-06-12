@@ -1,0 +1,34 @@
+<form name="EmployeeForm" bh-submit="EmployeeModalCtrl.submit(EmployeeForm)" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li ng-if="EmployeeModalCtrl.isCreating" class="title">
+        <span translate>TREE.PAYROLL_EMP_CONFIGURATION</span>
+        <label class="badge badge-success" translate>FORM.LABELS.CREATE</label>
+      </li>
+      <li ng-if="!EmployeeModalCtrl.isCreating" class="title">
+        <span translate>TREE.PAYROLL_EMP_CONFIGURATION</span>
+        <label class="badge badge-success" translate>FORM.LABELS.UPDATE</label>
+      </li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+    <div class="form-group" ng-class="{ 'has-error' : EmployeeForm.$submitted && EmployeeForm.label.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.DESIGNATION</label>
+      <input name="label" ng-model="EmployeeModalCtrl.employee.label" autocomplete="off" class="form-control" required>
+      <div class="help-block" ng-messages="EmployeeForm.label.$error" ng-show="EmployeeForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button data-method="cancel" type="button" class="btn btn-default" ng-click="EmployeeModalCtrl.closeModal()">
+      <span translate>FORM.BUTTONS.CANCEL</span>
+    </button>
+
+    <bh-loading-button loading-state="EmployeeForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

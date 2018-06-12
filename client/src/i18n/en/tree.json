@@ -66,6 +66,7 @@
     "PATIENT_STANDING_REPORT": "Patient Standing Report",
     "PAYROLL_ACCOUNT_CONFIGURATION" : "Account Configuration",
     "PAYROLL_CONFIGURATION" : "Pay Period Configuration",
+    "PAYROLL_EMP_CONFIGURATION" : "Payroll Employees Configuration",
     "PAYROLL_RUB_CONFIGURATION" : "Payroll Rubric Configuration",
     "PAYROLL_RUB_MANAGEMENT" : "Payroll Rubric Management",
     "PHARMACY" : "Pharmacy Management",

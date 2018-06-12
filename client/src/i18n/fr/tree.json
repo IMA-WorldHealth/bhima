@@ -67,6 +67,7 @@
     "PAYROLL":"Payroll",
     "PAYROLL_ACCOUNT_CONFIGURATION":"Configuration des comptes",
     "PAYROLL_CONFIGURATION" : "Configuration des périodes",
+    "PAYROLL_EMP_CONFIGURATION" : "Configuration des employés",
     "PAYROLL_RUB_CONFIGURATION" : "Configuration des rubriques de paie",
     "PAYROLL_RUB_MANAGEMENT" : "Gestion des rubriques de paie",
     "POSTING_JOURNAL":"Journal",
