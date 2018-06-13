@@ -681,6 +681,7 @@
             "PATIENT_ID": "Enter Patient ID",
             "PATIENT_NAME": "Enter a Patient Name",
             "PHONE": "Enter a Phone number",
+            "PICK_ONE": "Pick one",
             "PRICE": "Enter a price",
             "PROVINCE": "Enter province",
             "SECTOR": "Enter sector",
