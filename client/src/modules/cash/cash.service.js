@@ -134,6 +134,7 @@ function CashService(
   cashFilters.registerCustomFilters([
     { key : 'is_caution', label : 'FORM.LABELS.CAUTION' },
     { key : 'cashbox_id', label : 'FORM.LABELS.CASHBOX' },
+    { key : 'project_id', label : 'FORM.LABELS.PROJECT' },
     { key : 'debtor_uuid', label : 'FORM.LABELS.CLIENT' },
     { key : 'user_id', label : 'FORM.LABELS.USER' },
     { key : 'reference', label : 'FORM.LABELS.REFERENCE' },

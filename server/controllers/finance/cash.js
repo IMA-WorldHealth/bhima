@@ -149,6 +149,7 @@ function find(options) {
   filters.equals('debtor_uuid');
   filters.equals('edited');
   filters.equals('is_caution');
+  filters.equals('project_id');
   filters.equals('reversed');
   filters.equals('user_id');
   filters.fullText('description');
