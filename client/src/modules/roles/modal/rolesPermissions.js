@@ -12,6 +12,8 @@ function RolesPermissionsController(data, $state, $uibModalInstance, AppCache, R
   vm.tree = [];
   vm.selectAll = selectAll;
   vm.allPage = 0;
+  vm.pageSelected = pageSelected;
+  vm.moduleSelected = moduleSelected;
 
   // affeted pages(permission) to this role
   vm.getAffected = getAffected;
@@ -25,6 +27,23 @@ function RolesPermissionsController(data, $state, $uibModalInstance, AppCache, R
   // close modal
   function close() {
     $uibModalInstance.close();
+  }
+
+  function pageSelected(page, _module) {
+    let found = false;
+    _module.pages.forEach(p => {
+      // check is at least a page is selected
+      if (p.affected === 1) {
+        found = true;
+      }
+    });
+    _module.affected = found ? 1 : 0;
+  }
+
+  function moduleSelected(_module) {
+    _module.pages.forEach(page => {
+      page.affected = _module.affected;
+    });
   }
 
   function selectAll() {

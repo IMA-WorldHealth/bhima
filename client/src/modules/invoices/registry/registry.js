@@ -145,11 +145,13 @@ function InvoiceRegistryController(
 
     Invoices.openSearchModal(filtersSnapshot)
       .then(changes => {
+        if (!changes) {
+          return 0;
+        }
         Invoices.filters.replaceFilters(changes);
 
         Invoices.cacheFilters();
         vm.latestViewFilters = Invoices.filters.formatView();
-
         return load(Invoices.filters.formatHTTP(true));
       });
   }

@@ -20,9 +20,8 @@ function RolesService(Api) {
     return service.$http.get('/unit/'.concat(roleUuid));
   };
 
-  service.list = function list(projectId) {
-    const url = '/roles?project_id='.concat(projectId);
-    return service.$http.get(url);
+  service.list = function list() {
+    return service.$http.get(baseUrl);
   };
 
   service.assignToUser = function assignToUser(data) {

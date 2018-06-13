@@ -120,7 +120,8 @@ function lookupInvoice(invoiceUuid) {
       inventory.consumable
     FROM invoice_item
     LEFT JOIN inventory ON invoice_item.inventory_uuid = inventory.uuid
-    WHERE invoice_uuid = ?`;
+    WHERE invoice_uuid = ?
+    ORDER BY inventory.code;`;
 
   const invoiceBillingQuery =
     `SELECT
