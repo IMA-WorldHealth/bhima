@@ -6,8 +6,8 @@ PayrollConfigModalController.$inject = [
 ];
 
 function PayrollConfigModalController($state, PayrollConfigurations, Notify, AppCache, moment) {
-  var vm = this;
-  var cache;
+  const vm = this;
+  let cache;
 
   vm.payroll = {};
 
@@ -63,7 +63,7 @@ function PayrollConfigModalController($state, PayrollConfigurations, Notify, App
   }
 
   function onSelectEmployeeConfig(employee) {
-    vm.payroll.config_employee_id = employee.id; 
+    vm.payroll.config_employee_id = employee.id;
   }
 
   // deletes a filter from the custom filter object
@@ -73,7 +73,7 @@ function PayrollConfigModalController($state, PayrollConfigurations, Notify, App
 
   // submit the data to the server from all two forms (update, create)
   function submit(payrollForm) {
-    var promise;
+    let promise;
     if (payrollForm.$invalid) { return 0; }
 
     vm.payroll.dateFrom = moment(vm.payroll.dateFrom).format('YYYY-MM-DD');
@@ -85,7 +85,7 @@ function PayrollConfigModalController($state, PayrollConfigurations, Notify, App
 
     return promise
       .then(() => {
-        var translateKey = (vm.isCreating) ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
+        const translateKey = (vm.isCreating) ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
         Notify.success(translateKey);
         $state.go('payroll', null, { reload : true });
       })

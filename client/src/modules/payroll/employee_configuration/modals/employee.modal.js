@@ -35,7 +35,7 @@ function EmployeeModalController($state, Config, Notify, AppCache) {
   function submit(EmployeeForm) {
     if (EmployeeForm.$invalid || EmployeeForm.$pristine) { return 0; }
 
-    promise = (vm.isCreating) ?
+    const promise = (vm.isCreating) ?
       Config.create(vm.employee) :
       Config.update(vm.employee.id, vm.employee);
 

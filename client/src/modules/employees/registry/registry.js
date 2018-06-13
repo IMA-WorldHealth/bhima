@@ -19,7 +19,6 @@ function EmployeeRegistryController(
   const vm = this;
 
   const cacheKey = 'EmployeeRegistry';
-  let state;
 
   vm.search = search;
   vm.employeesCard = employeesCard;
@@ -173,7 +172,7 @@ function EmployeeRegistryController(
   };
 
   const columnConfig = new Columns(vm.uiGridOptions, cacheKey);
-  state = new GridState(vm.uiGridOptions, cacheKey);
+  const state = new GridState(vm.uiGridOptions, cacheKey);
 
   vm.saveGridState = state.saveGridState;
   vm.clearGridState = function clearGridState() {
