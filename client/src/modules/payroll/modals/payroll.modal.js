@@ -7,7 +7,7 @@ PayrollConfigModalController.$inject = [
 
 function PayrollConfigModalController($state, PayrollConfigurations, Notify, AppCache, moment) {
   const vm = this;
-  let cache;
+  const cache;
 
   vm.payroll = {};
 
@@ -73,13 +73,12 @@ function PayrollConfigModalController($state, PayrollConfigurations, Notify, App
 
   // submit the data to the server from all two forms (update, create)
   function submit(payrollForm) {
-    let promise;
     if (payrollForm.$invalid) { return 0; }
 
     vm.payroll.dateFrom = moment(vm.payroll.dateFrom).format('YYYY-MM-DD');
     vm.payroll.dateTo = moment(vm.payroll.dateTo).format('YYYY-MM-DD');
 
-    promise = (vm.isCreating) ?
+    const promise = (vm.isCreating) ?
       PayrollConfigurations.create(vm.payroll) :
       PayrollConfigurations.update(vm.payroll.id, vm.payroll);
 
