@@ -55,4 +55,5 @@ module.exports = {
   findInvoice : require('./bhFindInvoice'),
   payrollPeriodSelect : require('./bhPayrollPeriodSelect'),
   periodSelection : require('./bhPeriodSelection'),
+  employeeConfigSelect : require('./bhEmployeeConfigSelect'),
 };
