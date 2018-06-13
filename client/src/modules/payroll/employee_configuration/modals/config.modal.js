@@ -12,7 +12,8 @@ function EmployeeConfigModalController($state, Config, Notify, AppCache, bhConst
   const cache = AppCache('EmployeeModal');
 
   if ($state.params.creating || $state.params.id) {
-    vm.stateParams = cache.stateParams = $state.params;
+    vm.stateParams = $state.params;
+    cache.stateParams = $state.params;
   } else {
     vm.stateParams = cache.stateParams;
   }
@@ -57,12 +58,9 @@ function EmployeeConfigModalController($state, Config, Notify, AppCache, bhConst
 
   // submit the data to the server for configure week day
   function submit(employeeConfigForm) {
-    let promise,
-      employeesChecked;
-
     if (employeeConfigForm.$invalid || employeeConfigForm.$pristine) { return 0; }
 
-    employeesChecked = vm.employees.filter(employee => employee.checked)
+    const employeesChecked = vm.employees.filter(employee => employee.checked)
       .map(employee => employee.uuid);
 
     return Config.setEmployees(vm.stateParams.id, employeesChecked)

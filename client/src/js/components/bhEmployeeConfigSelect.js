@@ -21,7 +21,7 @@ EmployeeConfigSelectController.$inject = [
  * Employee Configuration Select Controller
  */
 function EmployeeConfigSelectController(EmployeeConfigs, $timeout, $scope, Notify) {
-  var $ctrl = this;
+  const $ctrl = this;
 
   // fired at the beginning of the employee configuration select
   $ctrl.$onInit = function $onInit() {

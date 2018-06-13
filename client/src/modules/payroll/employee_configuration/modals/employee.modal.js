@@ -12,7 +12,8 @@ function EmployeeModalController($state, Config, Notify, AppCache) {
   const cache = AppCache('EmployeeModal');
 
   if ($state.params.creating || $state.params.id) {
-    vm.stateParams = cache.stateParams = $state.params;
+    vm.stateParams = $state.params;
+    cache.stateParams = $state.params;
   } else {
     vm.stateParams = cache.stateParams;
   }
@@ -32,8 +33,6 @@ function EmployeeModalController($state, Config, Notify, AppCache) {
 
   // submit the data to the server from all two forms (update, create)
   function submit(EmployeeForm) {
-    let promise;
-
     if (EmployeeForm.$invalid || EmployeeForm.$pristine) { return 0; }
 
     promise = (vm.isCreating) ?
