@@ -147,7 +147,6 @@ function CashPaymentRegistryController(
 
   // load cash
   function load(filters) {
-    console.log('filters : ', filters);
     const request = Cash.read(null, filters);
 
     vm.hasError = false;
