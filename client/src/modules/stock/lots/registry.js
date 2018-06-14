@@ -5,7 +5,7 @@ StockLotsController.$inject = [
   'StockService', 'NotifyService',
   'uiGridConstants', '$translate', 'StockModalService', 'LanguageService',
   'GridGroupingService', 'GridStateService', 'GridColumnService',
-  'bhConstants', '$state',
+  'bhConstants', '$state', '$httpParamSerializer',
 ];
 
 /**
@@ -15,7 +15,7 @@ StockLotsController.$inject = [
 function StockLotsController(
   Stock, Notify,
   uiGridConstants, $translate, Modal, Languages, Grouping,
-  GridState, Columns, bhConstants, $state
+  GridState, Columns, bhConstants, $state, $httpParamSerializer
 ) {
   const vm = this;
   const cacheKey = 'lot-grid';
@@ -235,6 +235,21 @@ function StockLotsController(
     state.clearGridState();
     $state.reload();
   }
+
+  vm.downloadExcel = () => {
+
+    const filterOpts = stockLotFilters.formatHTTP();
+    const defaultOpts = {
+      renderer : 'xlsx',
+      lang : Languages.key,
+      renameKeys : true,
+      displayNames : gridColumns.getDisplayNames(),
+    };
+    // combine options
+    const options = angular.merge(defaultOpts, filterOpts);
+    // return  serialized options
+    return $httpParamSerializer(options);
+  };
 
   startup();
 }
