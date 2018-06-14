@@ -5,6 +5,7 @@ PatientRegistryController.$inject = [
   '$state', 'PatientService', 'NotifyService', 'AppCache', 'util',
   'ReceiptModal', 'uiGridConstants', '$translate', 'GridColumnService',
   'GridSortingService', 'bhConstants', 'GridStateService', '$httpParamSerializer', 'LanguageService',
+  'GridSortingService', 'bhConstants', 'GridStateService', 'LanguageService',
 ];
 
 /**
@@ -27,6 +28,7 @@ function PatientRegistryController(
   vm.onRemoveFilter = onRemoveFilter;
   vm.download = Patients.download;
   vm.downloadExcel = downloadExcel;
+  vm.languageKey = Languages.key;
 
   // track if module is making a HTTP request for patients
   vm.loading = false;
