@@ -1,6 +1,5 @@
 const db = require('../../lib/db');
 const q = require('q');
-const FilterParser = require('../../lib/filter');
 
 module.exports.list = list;
 module.exports.detail = detail;
@@ -16,19 +15,13 @@ module.exports.assignActionToRole = assignActionToRole;
 
 function list(req, res, next) {
 
-  const filters = new FilterParser(req.query, {
-    tableAlias : 'r',
-  });
-
-  let sql = `
+  const sql = `
     SELECT BUID(r.uuid) as uuid, r.label, r.project_id 
     FROM role  r
+    ORDER BY r.label ASC
   `;
 
-  filters.equals('project_id');
-  sql = filters.applyQuery(sql);
-
-  db.exec(sql, filters.parameters())
+  db.exec(sql)
     .then((rows) => {
       res.json(rows);
     }).catch(next)
