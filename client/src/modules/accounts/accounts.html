@@ -1,8 +1,8 @@
 <div class="flex-header">
   <div class="bhima-title">
     <ol class="headercrumb">
-      <li class="static">{{ "TREE.FINANCE" | translate }}</li>
-      <li class="title">{{ "ACCOUNT.TITLE" | translate }}</li>
+      <li class="static" translate>TREE.FINANCE</li>
+      <li class="title" translate>ACCOUNT.TITLE</li>
     </ol>
 
     <div class="toolbar">
@@ -17,17 +17,14 @@
                 <span class="fa fa-file-pdf-o"></span> <span translate>DOWNLOADS.PDF</span>
               </a>
             </li>
-            <li role="separator" class="divider"></li>
-
-            <li role="menuitem">
-              <a ng-href="/reports/finance/accounts/chart/?{{ AccountsCtrl.Accounts.download('xlsx') }}" download="{{ 'ACCOUNT.TITLE' | translate }}">
-                <span class="fa fa-file-excel-o"></span> <span translate>DOWNLOADS.EXCEL</span>
-              </a>
-            </li>
-
             <li role="menuitem">
               <a ng-href="/reports/finance/accounts/chart/?{{ AccountsCtrl.Accounts.download('csv') }}" download="{{ 'ACCOUNT.TITLE' | translate }}">
                 <span class="fa fa-file-excel-o"></span> <span translate>DOWNLOADS.CSV</span>
+              </a>
+            </li>
+            <li role="menuitem">
+              <a ng-href="/reports/finance/accounts/chart/?{{ AccountsCtrl.Accounts.download('xlsx') }}" download="{{ 'ACCOUNT.TITLE' | translate }}">
+                <span class="fa fa-file-excel-o"></span> <span translate>DOWNLOADS.EXCEL</span>
               </a>
             </li>
           </ul>
