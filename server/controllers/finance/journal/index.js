@@ -126,7 +126,7 @@ function buildTransactionQuery(options, posted) {
       JOIN project pro ON pro.id = p.project_id
       JOIN period per ON per.id = p.period_id
       JOIN account a ON a.id = p.account_id
-      JOIN transaction_type tp ON tp.id = p.transaction_type_id
+      LEFT JOIN transaction_type tp ON tp.id = p.transaction_type_id
       JOIN user u ON u.id = p.user_id
       JOIN currency c ON c.id = p.currency_id
       LEFT JOIN entity_map em ON em.uuid = p.entity_uuid
