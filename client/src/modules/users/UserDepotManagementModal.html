@@ -22,18 +22,18 @@
     <bh-multiple-depot-select
       label="STOCK.DEPOT"
       depots-uuids = "UsersDepotModalCtrl.depots"
-      on-change="UsersDepotModalCtrl.onDepotChange(depots)">            
+      on-change="UsersDepotModalCtrl.onDepotChange(depots)">
     </bh-multiple-depot-select>
 
   </div>
 
   <div class="modal-footer">
     <button id="user-cancel" type="button" class="btn btn-default" ng-click="UsersDepotModalCtrl.closeModal()">
-      <i class="fa fa-ban"></i> <span translate>FORM.BUTTONS.CANCEL</span>
+      <span translate>FORM.BUTTONS.CANCEL</span>
     </button>
 
     <bh-loading-button loading-state="UserForm.$loading">
-      <i class="fa fa-ok"></i> <span translate>FORM.BUTTONS.SUBMIT</span>
+      <span translate>FORM.BUTTONS.SUBMIT</span>
     </bh-loading-button>
   </div>
 </form>
