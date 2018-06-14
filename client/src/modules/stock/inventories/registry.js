@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 StockInventoriesController.$inject = [
   'StockService', 'NotifyService',
   'uiGridConstants', '$translate', 'StockModalService', 'LanguageService', 'SessionService',
-  'GridGroupingService', 'bhConstants', 'GridStateService', '$state', 'GridColumnService',
+  'GridGroupingService', 'bhConstants', 'GridStateService', '$state', 'GridColumnService', '$httpParamSerializer',
 ];
 
 /**
@@ -13,7 +13,7 @@ StockInventoriesController.$inject = [
  */
 function StockInventoriesController(
   Stock, Notify, uiGridConstants, $translate, Modal, Languages,
-  Session, Grouping, bhConstants, GridState, $state, Columns
+  Session, Grouping, bhConstants, GridState, $state, Columns, $httpParamSerializer
 ) {
   const vm = this;
   const filterKey = 'inventory';
@@ -257,5 +257,18 @@ function StockInventoriesController(
     vm.latestViewFilters = stockInventoryFilters.formatView();
   }
 
+  vm.downloadExcel = () => {
+    const filterOpts = stockInventoryFilters.formatHTTP();
+    const defaultOpts = {
+      renderer : 'xlsx',
+      lang : Languages.key,
+      renameKeys : true,
+      displayNames : gridColumns.getDisplayNames(),
+    };
+    // combine options
+    const options = angular.merge(defaultOpts, filterOpts);
+    // return  serialized options
+    return $httpParamSerializer(options);
+  };
   startup();
 }
