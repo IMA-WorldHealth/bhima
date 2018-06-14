@@ -19,15 +19,12 @@
             </div>
           </div>
 
-          <div class="form-group" ng-class="{'has-error' : debtorGroup.locked.$invalid && debtorGroup.$submitted}">
+          <div ng-class="{'has-error' : debtorGroup.locked.$invalid && debtorGroup.$submitted}">
             <div class="checkbox">
               <label>
                 <input type="checkbox" name="locked" ng-model="GroupUpdateCtrl.group.locked" ng-true-value="1" ng-false-value="0">
                 <span translate>FORM.LABELS.LOCKED</span>
               </label>
-            </div>
-            <div class="help-block" ng-messages="debtorGroup.locked.$error" ng-show="debtorGroup.$submitted">
-              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
             </div>
           </div>
 
