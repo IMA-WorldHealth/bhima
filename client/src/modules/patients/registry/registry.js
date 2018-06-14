@@ -59,6 +59,10 @@ function PatientRegistryController(
     displayName : 'TABLE.COLUMNS.HOSPITAL_FILE_NR',
     headerCellFilter : 'translate',
   }, {
+    field : 'debtorGroupName',
+    displayName : 'TABLE.COLUMNS.DEBTOR_GROUP',
+    headerCellFilter : 'translate',
+  }, {
     field : 'registration_date',
     cellFilter : 'date',
     displayName : 'TABLE.COLUMNS.DATE_REGISTERED',
