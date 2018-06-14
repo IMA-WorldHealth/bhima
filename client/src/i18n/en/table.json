@@ -56,6 +56,7 @@
             "DEBIT": "Debit",
             "DEBIT_SOURCE": "Debit (Source)",
             "DEBTOR": "Debtor",
+            "DEBTOR_GROUP": "Debtor Group",
             "DEBTOR_GROUPS": "Debtor Groups",
             "DEBTOR_SOLD": "Debtor Sold",
             "DESCRIPTION": "Description",

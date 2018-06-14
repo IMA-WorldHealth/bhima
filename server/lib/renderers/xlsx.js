@@ -26,8 +26,6 @@ exports.headers = headers;
  */
 
 function render(data) {
-
-
   // Create a new instance of a Workbook class
   const wb = new xl.Workbook();
 
@@ -63,10 +61,12 @@ function render(data) {
       right : borderInfo,
     },
   };
+
   // Add Worksheets to the workbook
   const ws = wb.addWorksheet('Sheet 1');
   let { rows } = data;
   rows = rows || [];
+
   const firstObject = rows[0] || {};
 
   // writing columns
