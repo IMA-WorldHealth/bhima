@@ -410,8 +410,10 @@ function StockExitController(
     if (!vm.movement.entity.uuid && vm.movement.entity.type !== 'loss') {
       return Notify.danger('ERRORS.ER_NO_STOCK_DESTINATION');
     }
+    vm.$loading = true;
     return mapExit[vm.movement.exit_type].submit()
       .then(() => {
+        vm.$loading = false;
         vm.validForSubmit = false;
 
         // reseting the form

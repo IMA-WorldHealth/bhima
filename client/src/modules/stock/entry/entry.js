@@ -341,8 +341,14 @@ function StockEntryController(
     if (!vm.movement.entry_type) {
       return Notify.danger('ERRORS.ER_NO_STOCK_SOURCE');
     }
+    vm.$loading = true;
     mapEntry.form = form;
-    return mapEntry[vm.movement.entry_type].submit();
+    return mapEntry[vm.movement.entry_type].submit()
+      .then(toggleLoadingIndicator);
+  }
+
+  function toggleLoadingIndicator() {
+    vm.$loading = !vm.$loading;
   }
 
   function submitPurchase() {
@@ -357,7 +363,7 @@ function StockEntryController(
 
     movement.lots = Stock.processLotsFromStore(vm.stockForm.store.data, vm.movement.entity.uuid);
 
-    Stock.stocks.create(movement)
+    return Stock.stocks.create(movement)
       .then((document) => {
         vm.document = document;
         return Purchase.stockStatus(vm.movement.entity.uuid);
@@ -385,7 +391,7 @@ function StockEntryController(
       movement,
     };
 
-    Stock.integration.create(entry)
+    return Stock.integration.create(entry)
       .then((document) => {
         vm.reset();
         ReceiptModal.stockEntryIntegrationReceipt(document.uuid, bhConstants.flux.FROM_INTEGRATION);
