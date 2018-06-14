@@ -294,7 +294,7 @@ function JournalController(
     visible : true,
   }, {
     field : 'transaction_type_text',
-    displayName : 'FORM.LABELS.TRANSACTION_TYPE',  
+    displayName : 'FORM.LABELS.TRANSACTION_TYPE',
     headerCellFilter : 'translate',
     cellTemplate :
       `<div class="ui-grid-cell-contents" translate>
