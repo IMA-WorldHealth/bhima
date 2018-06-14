@@ -8,16 +8,16 @@ ConfigurationEmployeeService.$inject = ['PrototypeApiService'];
  * @extends PrototypeApiService
  *
  * @description
- * Encapsulates common requests to the /weekend_config/ URL.
+ * Encapsulates common requests to the /employee_config/ URL.
  */
 function ConfigurationEmployeeService(Api) {
   const service = new Api('/employee_config/');
 
-  service.getEmployees = getEmployees;
+  service.getEmployeeConfiguration = getEmployeeConfiguration;
   service.setEmployees = setEmployees;
 
   // loads the configuration's Employee
-  function getEmployees(id) {
+  function getEmployeeConfiguration(id) {
     return service.$http.get(`/employee_config/${id}/setting`)
       .then(service.util.unwrapHttpResponse);
   }

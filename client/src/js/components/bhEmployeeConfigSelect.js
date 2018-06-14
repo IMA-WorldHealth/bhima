@@ -28,9 +28,6 @@ function EmployeeConfigSelectController(EmployeeConfigs, $timeout, $scope, Notif
     // translated label for the form input
     $ctrl.label = $ctrl.label || 'EMPLOYEE.CONFIGURATION';
 
-    // fired when an employee configuration has been selected
-    $ctrl.onSelectCallback = $ctrl.onSelectCallback || angular.noop;
-
     // default for form name
     $ctrl.name = $ctrl.name || 'EmployeeConfigForm';
 

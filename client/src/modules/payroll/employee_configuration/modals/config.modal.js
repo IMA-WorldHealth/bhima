@@ -37,7 +37,7 @@ function EmployeeConfigModalController($state, Config, Notify, AppCache, bhConst
     .then((employees) => {
       vm.employees = employees;
 
-      return Config.getEmployees(vm.stateParams.id);
+      return Config.getEmployeeConfiguration(vm.stateParams.id);
     })
     .then((employeeConfig) => {
 

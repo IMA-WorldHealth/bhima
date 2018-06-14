@@ -1023,7 +1023,7 @@ CREATE TABLE `rubric_paiement` (
   KEY `rubric_payroll_id` (`rubric_payroll_id`),
   FOREIGN KEY (`paiement_uuid`) REFERENCES `paiement` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`rubric_payroll_id`) REFERENCES `rubric_payroll` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `price_list`;
 CREATE TABLE `price_list` (
@@ -1969,7 +1969,7 @@ CREATE TABLE `config_rubric` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `label` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `config_rubric_item`;
 
@@ -1982,7 +1982,7 @@ CREATE TABLE `config_rubric_item` (
   KEY `rubric_payroll_id` (`rubric_payroll_id`),
   CONSTRAINT `config_rubric_item_ibfk_1` FOREIGN KEY (`config_rubric_id`) REFERENCES `config_rubric` (`id`),
   CONSTRAINT `config_rubric_item_ibfk_2` FOREIGN KEY (`rubric_payroll_id`) REFERENCES `rubric_payroll` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `config_employee`;
 
@@ -1990,7 +1990,7 @@ CREATE TABLE `config_employee` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `label` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `config_employee_item`;
 
@@ -2004,7 +2004,7 @@ CREATE TABLE `config_employee_item` (
   UNIQUE KEY  (`config_employee_id`, `employee_uuid`),
   FOREIGN KEY (`config_employee_id`) REFERENCES `config_employee` (`id`),
   FOREIGN KEY (`employee_uuid`) REFERENCES `employee` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 SET foreign_key_checks = 1;
