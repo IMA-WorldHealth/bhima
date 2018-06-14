@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 PatientRegistryController.$inject = [
   '$state', 'PatientService', 'NotifyService', 'AppCache', 'util',
   'ReceiptModal', 'uiGridConstants', '$translate', 'GridColumnService',
-  'GridSortingService', 'bhConstants', 'GridStateService',
+  'GridSortingService', 'bhConstants', 'GridStateService', '$httpParamSerializer', 'LanguageService',
 ];
 
 /**
@@ -15,7 +15,7 @@ PatientRegistryController.$inject = [
  */
 function PatientRegistryController(
   $state, Patients, Notify, AppCache, util, Receipts, uiGridConstants,
-  $translate, Columns, Sorting, bhConstants, GridState
+  $translate, Columns, Sorting, bhConstants, GridState, $httpParamSerializer, Languages
 ) {
   const vm = this;
   const cacheKey = 'PatientRegistry';
@@ -26,6 +26,7 @@ function PatientRegistryController(
   vm.gridApi = {};
   vm.onRemoveFilter = onRemoveFilter;
   vm.download = Patients.download;
+  vm.downloadExcel = downloadExcel;
 
   // track if module is making a HTTP request for patients
   vm.loading = false;
@@ -207,6 +208,20 @@ function PatientRegistryController(
     vm.latestViewFilters = Patients.filters.formatView();
   }
 
+  function downloadExcel() {
+    const filterOpts = Patients.filters.formatHTTP();
+    const defaultOpts = {
+      renderer : 'xlsx',
+      lang : Languages.key,
+      rowsDataKey : 'patients',
+      renameKeys : true,
+      displayNames : columnConfig.getDisplayNames(),
+    };
+    // combine options
+    const options = angular.merge(defaultOpts, filterOpts);
+    // return  serialized options
+    return $httpParamSerializer(options);
+  }
   // fire up the module
   startup();
 }

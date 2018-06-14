@@ -147,7 +147,11 @@ class ReportManager {
     // some reports(Excel,..) require renaming result's column names
     // so, util.renameKeys can help to solve this problem
     const { displayNames, renameKeys } = this.options;
-    data.rows = (renameKeys) ? util.renameKeys(data.rows, displayNames) : data.rows;
+
+    const rowsToRename = data.rows || data[this.options.rowsDataKey];
+
+
+    data.rows = (renameKeys) ? util.renameKeys(rowsToRename, displayNames) : data.rows;
     //
     // render the report using the stored renderer
     const promise = renderer.render(data, this.template, this.options);
