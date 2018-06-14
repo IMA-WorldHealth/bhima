@@ -120,12 +120,13 @@ function buildTransactionQuery(options, posted) {
       BUID(p.entity_uuid) AS entity_uuid, em.text AS hrEntity,
       BUID(p.reference_uuid) AS reference_uuid, dm2.text AS hrReference,
       p.comment, p.transaction_type_id, p.user_id, p.cc_id, p.pc_id, pro.abbr,
-      pro.name AS project_name, per.start_date AS period_start,
+      pro.name AS project_name, per.start_date AS period_start, tp.text AS transaction_type_text,
       per.end_date AS period_end, a.number AS account_number, a.label AS account_label, u.display_name
     FROM ${table} p
       JOIN project pro ON pro.id = p.project_id
       JOIN period per ON per.id = p.period_id
       JOIN account a ON a.id = p.account_id
+      LEFT JOIN transaction_type tp ON tp.id = p.transaction_type_id
       JOIN user u ON u.id = p.user_id
       JOIN currency c ON c.id = p.currency_id
       LEFT JOIN entity_map em ON em.uuid = p.entity_uuid
