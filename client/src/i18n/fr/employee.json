@@ -1,5 +1,6 @@
 {
     "EMPLOYEE" : {
+        "CONFIGURATION": "Configuration des employés",
         "EDIT" : "Formulaire de mise à jour des employés",
         "EMPLOYEES" : "Les employés enregistrés",
         "EMPLOYEE_DETAILS" : "Détails des employés",

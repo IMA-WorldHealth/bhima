@@ -511,7 +511,7 @@ function find(options) {
   filters.equals('reference', 'text', 'entity_map');
 
   // @TODO Support ordering query
-  filters.setOrder('ORDER BY patient.display_name DESC');
+  filters.setOrder('ORDER BY patient.display_name ASC');
 
   // applies filters and limits to defined sql, get parameters in correct order
   const query = filters.applyQuery(sql);

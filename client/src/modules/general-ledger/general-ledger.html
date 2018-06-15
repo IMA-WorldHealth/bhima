@@ -41,16 +41,17 @@
             </li>
 
             <li role="menuitem">
+              <a ng-href="/reports/finance/general_ledger/?{{ GeneralLedgerCtrl.download('csv', GeneralLedgerCtrl.filters) }}" download="{{ GeneralLedgerCtrl.fiscalYearLabel | translate }}">
+                <span class="fa fa-file-excel-o"></span> <span translate>DOWNLOADS.CSV</span>
+              </a>
+            </li>
+
+            <li role="menuitem">
               <a ng-href="/reports/finance/general_ledger/?{{ GeneralLedgerCtrl.download('xlsx', GeneralLedgerCtrl.filters) }}" download="{{GeneralLedgerCtrl.fiscalYearLabel | translate }}">
                 <span class="fa fa-file-excel-o"></span> <span translate>DOWNLOADS.EXCEL</span>
               </a>
             </li>
 
-            <li role="menuitem">
-              <a ng-href="/reports/finance/general_ledger/?{{ GeneralLedgerCtrl.download('csv', GeneralLedgerCtrl.filters) }}" download="{{ GeneralLedgerCtrl.fiscalYearLabel | translate }}">
-                <span class="fa fa-file-excel-o"></span> <span translate>DOWNLOADS.CSV</span>
-              </a>
-            </li>
           </ul>
         </div>
       </div>

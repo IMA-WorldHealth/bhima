@@ -7,6 +7,9 @@
       {{ ::$ctrl.label }}
     </label>
     <ng-transclude></ng-transclude>
+    <div class="text-danger" ng-if="!$ctrl.weekendConfigs.length">
+      <i class="fa fa-exclamation-triangle"></i> <span translate> FORM.WARNINGS.NO_CONFIGURATION_FOUND </span>  
+    </div>
         
     <ui-select
       name="config_weekend_id"

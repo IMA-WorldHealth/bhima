@@ -6,12 +6,11 @@ PayrollConfigModalController.$inject = [
 ];
 
 function PayrollConfigModalController($state, PayrollConfigurations, Notify, AppCache, moment) {
-  var vm = this;
-  var cache;
+  const vm = this;
 
   vm.payroll = {};
 
-  cache = AppCache('PayrollModal');
+  const cache = AppCache('PayrollModal');
 
   if ($state.params.creating || $state.params.id) {
     vm.stateParams = $state.params;
@@ -28,6 +27,7 @@ function PayrollConfigModalController($state, PayrollConfigurations, Notify, App
   vm.onSelectAccountConfig = onSelectAccountConfig;
   vm.onSelectIprConfig = onSelectIprConfig;
   vm.onSelectWeekendConfig = onSelectWeekendConfig;
+  vm.onSelectEmployeeConfig = onSelectEmployeeConfig;
 
   vm.clear = clear;
 
@@ -61,6 +61,10 @@ function PayrollConfigModalController($state, PayrollConfigurations, Notify, App
     vm.payroll.config_weekend_id = week.id;
   }
 
+  function onSelectEmployeeConfig(employee) {
+    vm.payroll.config_employee_id = employee.id;
+  }
+
   // deletes a filter from the custom filter object
   function clear(key) {
     delete vm.payroll[key];
@@ -68,19 +72,18 @@ function PayrollConfigModalController($state, PayrollConfigurations, Notify, App
 
   // submit the data to the server from all two forms (update, create)
   function submit(payrollForm) {
-    var promise;
     if (payrollForm.$invalid) { return 0; }
 
     vm.payroll.dateFrom = moment(vm.payroll.dateFrom).format('YYYY-MM-DD');
     vm.payroll.dateTo = moment(vm.payroll.dateTo).format('YYYY-MM-DD');
 
-    promise = (vm.isCreating) ?
+    const promise = (vm.isCreating) ?
       PayrollConfigurations.create(vm.payroll) :
       PayrollConfigurations.update(vm.payroll.id, vm.payroll);
 
     return promise
       .then(() => {
-        var translateKey = (vm.isCreating) ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
+        const translateKey = (vm.isCreating) ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
         Notify.success(translateKey);
         $state.go('payroll', null, { reload : true });
       })

@@ -11,7 +11,7 @@ const NotFound = require('../../../lib/errors/NotFound');
 function lookupPayrollConfig(id) {
   const sql = `
     SELECT p.id, p.label, p.dateFrom, p.dateTo, p.config_rubric_id, 
-    p.config_accounting_id, p.config_weekend_id, p.config_ipr_id
+    p.config_accounting_id, p.config_weekend_id, p.config_ipr_id, p.config_employee_id
     FROM payroll_configuration AS p
     WHERE p.id = ?`;
 
@@ -22,7 +22,7 @@ function lookupPayrollConfig(id) {
 function list(req, res, next) {
   const sql = `
     SELECT p.id, p.label, p.dateFrom, p.dateTo, p.config_rubric_id, 
-    p.config_accounting_id, p.config_weekend_id, p.config_ipr_id
+    p.config_accounting_id, p.config_weekend_id, p.config_ipr_id, p.config_employee_id
     FROM payroll_configuration AS p;`;
 
   db.exec(sql)

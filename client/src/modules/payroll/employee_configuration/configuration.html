@@ -1,0 +1,37 @@
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static" translate> TREE.ADMIN </li>
+      <li class="title" translate> TREE.PAYROLL_EMP_CONFIGURATION </li>
+    </ol>
+
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <button class="btn btn-default text-capitalize" id="create" ui-sref="configurationEmployee.create" data-method="create">
+          <span class="fa fa-plus"></span> <span translate>FORM.BUTTONS.ADD_EMPLOYEE_CONFIGURATION</span>
+        </button>
+      </div>
+
+      <bh-filter-toggle on-toggle="ConfigurationEmployeeCtrl.toggleFilter()">
+      </bh-filter-toggle>
+    </div>
+  </div>
+</div>
+
+<!-- main content -->
+<div class="flex-content">
+  <div class="container-fluid">
+    <div id="employee-config-grid"
+      ui-grid="ConfigurationEmployeeCtrl.gridOptions"
+      class="grid-full-height"
+      ui-grid-auto-resize
+      ui-grid-resize-columns>
+
+      <bh-grid-loading-indicator
+        loading-state="ConfigurationEmployeeCtrl.loading"
+        empty-state="ConfigurationEmployeeCtrl.gridOptions.data.length === 0"
+        error-state="ConfigurationEmployeeCtrl.hasError">
+      </bh-grid-loading-indicator>
+    </div>
+  </div>
+</div>

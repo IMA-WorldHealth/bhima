@@ -1,0 +1,32 @@
+<div ng-form="{{ $ctrl.name }}" bh-employee-config-select ng-model-options="{ updateOn: 'default' }">
+  <!-- This component will only be displayed if there is no EMPLOYEE tax configuration, this will prevent an empty selection list from appearing in cases where the institution or company is not using the EMPLOYEE tax -->
+  <div class="form-group" ng-class="{ 'has-error' : $ctrl.validationTrigger && EmployeeConfigForm.config_employee_id.$invalid }">
+    <label class="control-label" translate>
+      {{ ::$ctrl.label }}
+    </label>
+    <div class="text-danger" ng-if="!$ctrl.employeeConfigs.length">
+      <i class="fa fa-exclamation-triangle"></i> <span translate> FORM.WARNINGS.NO_CONFIGURATION_FOUND </span>  
+    </div>
+
+    <ng-transclude></ng-transclude>
+        
+    <ui-select
+      name="config_employee_id"
+      ng-model="$ctrl.configEmployeeId"
+      on-select="$ctrl.onSelect($item, $model)"
+      ng-required="$ctrl.required">
+      <ui-select-match placeholder="{{ ::'FORM.SELECT.EMPLOYEE_CONFIGURATION' | translate }}">
+        <span>{{$select.selected.label}}</span>
+      </ui-select-match>
+      <ui-select-choices
+        ui-select-focus-patch
+        repeat="employeeConfig.id as employeeConfig in $ctrl.employeeConfigs | filter: { 'label': $select.search }">        
+        <span ng-bind-html="employeeConfig.label | highlight:$select.search"></span>
+      </ui-select-choices>
+    </ui-select>
+
+    <div class="help-block" ng-messages="EmployeeConfigForm.config_employee_id.$error" ng-show="$ctrl.validationTrigger &&  EmployeeConfigForm.config_employee_id.$invalid">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+</div>

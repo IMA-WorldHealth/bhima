@@ -15,7 +15,7 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
   const saveAsEmployee = $state.params.saveAsEmployee;
 
   vm.enterprise = Session.enterprise;
-  vm.isUpdating = !!$state.params.id;
+  vm.isUpdating = $state.params.uuid;
   vm.origin = '';
 
   if (referenceUuid && !saveAsEmployee) {

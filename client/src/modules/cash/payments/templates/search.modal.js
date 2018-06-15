@@ -64,6 +64,10 @@ function SearchCashPaymentModalController(Notify, Instance, filters, Store, Peri
     })
     .catch(Notify.handleError);
 
+  vm.onSelectProject = (project) => {
+    displayValues.project_id = project.name;
+    vm.searchQueries.project_id = project.id;
+  };
 
   // custom filter user_id - assign the value to the searchQueries object
   vm.onSelectUser = function onSelectUser(user) {

@@ -324,7 +324,7 @@ describe('(/multiplePayroll ) the Payroll API endpoint', () => {
     ,
   };
 
-  const employeesNumber = 4;
+  const employeesNumber = 3;
   const workingDay = 20;
 
   it('GET / MULTIPLE_PAYROLL Returns the pay situation for employees in a period', () => {

@@ -4,10 +4,11 @@
  * @description
  * This library is just a shim to ensure API uniformity with other renderers.
  * it renders an Excel report(from data.rows that we pass as render function param).
- * Having the same data structure will help to have less xlsx rendereres
+ * Having the same data structure will help to have less xlsx renderers
  * @module lib/renderers/xlsx
  *
- * @requires q
+ * @requires excel4node
+ * @requires lodash
  */
 const xl = require('excel4node');
 const _ = require('lodash');
@@ -30,7 +31,7 @@ function render(data) {
   const wb = new xl.Workbook();
 
   // style applied to cells
-  const headerStryle = wb.createStyle({
+  const headerStyle = wb.createStyle({
     font : {
       color : '#ffffff',
       size : 12,
@@ -75,7 +76,7 @@ function render(data) {
   firstLineCols.forEach((key, index) => {
     ws.cell(line, index + 1)
       .string(key)
-      .style(headerStryle)
+      .style(headerStyle)
       .style(styleAllBorders);
   });
   line++;

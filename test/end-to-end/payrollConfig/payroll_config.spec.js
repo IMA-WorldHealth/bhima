@@ -19,6 +19,7 @@ describe('Payroll Configuration Management', () => {
     config_accounting_id : 'Configuration Compte Rémunération',
     config_weekend_id : 'Configuration Semaine Normale',
     config_ipr_id : 'Bareme IPR 2013',
+    config_employee_id : 'Configuration des Employés',
   };
 
   const updatePayrollConfig = {

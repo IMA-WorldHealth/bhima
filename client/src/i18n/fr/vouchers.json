@@ -47,7 +47,7 @@
                 "SUCCESS": "Bon de paiement enregistré avec succès."
             },
             "REPORT": "Rapport des Quittances",
-            "SUPPORT_PAYMENT_DESCRIPTION":"Transfert de la dette du {{patientName}} ({{patientReference}}) pour {{numInvoices}} facture(s) {{invoiceReferences}}.",
+            "SUPPORT_PAYMENT_DESCRIPTION":"Prise en charge de {{patientName}} ({{patientReference}}) pour {{numInvoices}} facture(s) {{invoiceReferences}}.",
             "TITLE": "Quittance",
             "TRANSACTION_TYPE_INFO": "Le type de transaction dépend du revenu ou bien d'une dépense",
             "USE_FINANCIAL_ACCOUNT": "Utilisation de compte de caisses ou banques dans cette transaction"

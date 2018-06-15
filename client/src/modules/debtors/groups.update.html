@@ -19,6 +19,14 @@
             </div>
           </div>
 
+          <div ng-class="{'has-error' : debtorGroup.locked.$invalid && debtorGroup.$submitted}">
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" name="locked" ng-model="GroupUpdateCtrl.group.locked" ng-true-value="1" ng-false-value="0">
+                <span translate>FORM.LABELS.LOCKED</span>
+              </label>
+            </div>
+          </div>
 
           <bh-account-select
             name="account_id"
@@ -98,7 +106,7 @@
             <label class="control-label" translate>FORM.LABELS.COLOR</label>
 
             <ui-select tagging ng-model="GroupUpdateCtrl.group.color">
-              <ui-select-match placeholder="Pick one...">
+              <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.PICK_ONE' | translate }}">
                 <i class="fa fa-circle" style="color: {{$select.selected.value}}"></i>
                 <span translate>{{$select.selected.name}}</span>
               </ui-select-match>

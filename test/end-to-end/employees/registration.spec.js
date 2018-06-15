@@ -112,28 +112,4 @@ describe('Employees', () => {
     registrationPage.expectNotificationSuccess();
     browser.refresh();
   });
-
-  // FIXME: skip throws an error
-  // it.skip('edits an employee', () => {
-  //   element(by.id(`employee-upd-${employeeId}`)).click();
-
-  //   // modify the employee display_name
-  //   FU.input('EmployeeCtrl.employee.display_name', ' Elementary');
-  //   FU.input('EmployeeCtrl.employee.adresse', ' Blvd Lumumba');
-
-  //   element(by.id('bhima-employee-locked')).click();
-  //   element(by.id('change_employee')).click();
-
-  //   // make sure the success message appears
-  //   components.notification.hasSuccess();
-  // });
-
-  // it.skip('unlocks an employee', () => {
-  //   element(by.id(`employee-upd-${employeeId}`)).click();
-  //   element(by.id('bhima-employee-locked')).click();
-  //   element(by.id('change_employee')).click();
-
-  //   // make sure the success message appears
-  //   components.notification.hasSuccess();
-  // });
 });
