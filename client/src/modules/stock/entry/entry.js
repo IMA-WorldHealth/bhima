@@ -6,7 +6,7 @@ StockEntryController.$inject = [
   'DepotService', 'InventoryService', 'NotifyService', 'SessionService', 'util',
   'bhConstants', 'ReceiptModal', 'PurchaseOrderService', 'StockFormService',
   'StockService', 'StockModalService', 'uiGridConstants', 'Store', 'appcache',
-  'uuid', '$translate',
+  'uuid', '$translate', '$state',
 ];
 
 /**
@@ -17,7 +17,8 @@ StockEntryController.$inject = [
  */
 function StockEntryController(
   Depots, Inventory, Notify, Session, util, bhConstants, ReceiptModal, Purchase,
-  StockForm, Stock, StockModal, uiGridConstants, Store, AppCache, Uuid, $translate
+  StockForm, Stock, StockModal, uiGridConstants, Store, AppCache, Uuid, $translate,
+  $state
 ) {
   const vm = this;
   const cache = new AppCache('StockCache');
@@ -361,11 +362,16 @@ function StockEntryController(
     vm.$loading = true;
     mapEntry.form = form;
     return mapEntry[vm.movement.entry_type].submit()
-      .then(toggleLoadingIndicator);
+      .then(toggleLoadingIndicator)
+      .finally(forceReload);
   }
 
   function toggleLoadingIndicator() {
     vm.$loading = !vm.$loading;
+  }
+
+  function forceReload() {
+    $state.reload();
   }
 
   function submitPurchase() {

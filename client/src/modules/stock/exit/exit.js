@@ -6,7 +6,7 @@ StockExitController.$inject = [
   'DepotService', 'InventoryService', 'NotifyService', 'SessionService', 'util',
   'bhConstants', 'ReceiptModal', 'StockItemService', 'StockFormService', 'StockService',
   'StockModalService', 'uiGridConstants', '$translate', 'appcache',
-  'moment', 'GridExportService', 'Store',
+  'moment', 'GridExportService', 'Store', '$state',
 ];
 
 /**
@@ -19,7 +19,7 @@ StockExitController.$inject = [
  */
 function StockExitController(
   Depots, Inventory, Notify, Session, util, bhConstants, ReceiptModal, StockItem, StockForm, Stock,
-  StockModal, uiGridConstants, $translate, AppCache, moment, GridExportService, Store
+  StockModal, uiGridConstants, $translate, AppCache, moment, GridExportService, Store, $state
 ) {
   const vm = this;
   const cache = new AppCache('StockCache');
@@ -412,15 +412,17 @@ function StockExitController(
     }
     vm.$loading = true;
     return mapExit[vm.movement.exit_type].submit()
-      .then(() => {
-        vm.$loading = false;
-        vm.validForSubmit = false;
+      .then(toggleLoadingIndicator)
+      .catch(Notify.handleError)
+      .finally(forceReload);
+  }
 
-        // reseting the form
-        resetSelectedEntity();
-        vm.reset(form);
-      })
-      .catch(Notify.handleError);
+  function toggleLoadingIndicator() {
+    vm.$loading = !vm.$loading;
+  }
+
+  function forceReload() {
+    $state.reload();
   }
 
   // handle lot function
