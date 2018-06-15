@@ -7,40 +7,40 @@ UpdatePatientGroups.$inject = [
 ];
 
 function UpdatePatientGroups($uibModalInstance, patients, sessionPatient, sessionGroups, updateModel, Notify) {
-  const viewModel = this;
+  const vm = this;
 
   // TODO move to method
-  viewModel.subscribedGroups = {};
-  viewModel.patient = sessionPatient;
+  vm.subscribedGroups = {};
+  vm.patient = sessionPatient;
 
   sessionGroups.forEach((patientGroup) => {
-    viewModel.subscribedGroups[patientGroup.uuid] = true;
+    vm.subscribedGroups[patientGroup.uuid] = true;
   });
 
   // TODO Handle errors with generic modal exception display (inform system administrator)
   patients.groups()
     .then((groups) => {
-      viewModel.patientGroups = groups;
+      vm.patientGroups = groups;
     })
     .catch(Notify.handleError);
 
-  viewModel.confirmGroups = function confirmGroup(groupForm) {
+  vm.confirmGroups = function confirmGroup(groupForm) {
 
     // if untouched, exit the modal
     if (groupForm.$pristine) {
       closeModal();
-      return;
+      return 0;
     }
 
-    return patients.updateGroups(sessionPatient.uuid, viewModel.subscribedGroups)
+    return patients.updateGroups(sessionPatient.uuid, vm.subscribedGroups)
       .then(() => {
 
         // TODO move to method
         const formatControllerResponse = [];
 
         // Fetch each of the updated group definitions and collect them in an array
-        Object.keys(viewModel.subscribedGroups).forEach((groupKey) => {
-          if (viewModel.subscribedGroups[groupKey]) {
+        Object.keys(vm.subscribedGroups).forEach((groupKey) => {
+          if (vm.subscribedGroups[groupKey]) {
             formatControllerResponse.push(fetchGroupObject(groupKey));
           }
         });
@@ -52,7 +52,7 @@ function UpdatePatientGroups($uibModalInstance, patients, sessionPatient, sessio
 
   // TODO Refactor - use stores?
   function fetchGroupObject(uuid) {
-    const groups = viewModel.patientGroups;
+    const groups = vm.patientGroups;
     let i = groups.length;
     let groupObject;
 
@@ -66,7 +66,7 @@ function UpdatePatientGroups($uibModalInstance, patients, sessionPatient, sessio
     return groupObject;
   }
 
-  viewModel.closeModal = closeModal;
+  vm.closeModal = closeModal;
 
   function closeModal() {
     $uibModalInstance.dismiss();
