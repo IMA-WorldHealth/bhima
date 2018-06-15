@@ -173,7 +173,7 @@ DROP TABLE IF EXISTS `rubric_payroll`;
 CREATE TABLE `rubric_payroll` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `label` VARCHAR(80) NOT NULL,
-  `abbr` varchar(6) DEFAULT NULL,
+  `abbr` varchar(20) DEFAULT NULL,
   `is_employee` tinyint(1) DEFAULT 0,
   `is_percent` tinyint(1) DEFAULT 0,
   `is_discount` tinyint(1) DEFAULT 0,
@@ -1325,7 +1325,7 @@ DROP TABLE IF EXISTS `project`;
 CREATE TABLE `project` (
   `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(60) NOT NULL,
-  `abbr` CHAR(3) NOT NULL,
+  `abbr` CHAR(20) NOT NULL,
   `enterprise_id` SMALLINT(5) UNSIGNED NOT NULL,
   `zs_id` INT(11) NULL,
   `locked` BOOLEAN NOT NULL DEFAULT FALSE,
