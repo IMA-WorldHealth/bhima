@@ -185,6 +185,8 @@ CREATE TABLE `rubric_payroll` (
   `expense_account_id` int(10) unsigned DEFAULT NULL,
   `is_ipr` tinyint(1) DEFAULT 0,
   `is_associated_employee` tinyint(1) DEFAULT 0,
+  `is_seniority_bonus` tinyint(1) DEFAULT 0,
+  `is_family_allowances` tinyint(1) DEFAULT 0,
   `value` float DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `rubric_payroll_1` (`label`),
