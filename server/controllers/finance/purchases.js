@@ -12,6 +12,7 @@
  * @requires moment
  */
 
+const q = require('q');
 const uuid = require('uuid/v4');
 
 const db = require('../../lib/db');
@@ -361,58 +362,77 @@ function find(options) {
  * if it is completed or partially entered
  */
 function purchaseStatus(req, res, next) {
-  const status = {};
   const FROM_PURCHASE_ID = 1;
+  const PURCHASE_PARTIALLY_RECEIVED = 4;
+  const PURCHASE_FULLY_RECEIVED = 3;
+  const PURCHASE_EXCESSIVELY_RECEIVED = 6;
+
+  const glb = {};
   const purchaseUuid = db.bid(req.params.uuid);
-  const sql = `
-    SELECT IFNULL(SUM(m.quantity * m.unit_cost), 0) AS movement_cost, p.cost, CEIL(DATEDIFF(m.date, p.date)) AS delay
+
+  const sqlQuantities = `
+    SELECT
+      IFNULL(SUM(m.quantity), 0) AS movement_quantity,
+      IFNULL(SUM(pi.quantity), 0) AS purchase_quantity
+    FROM purchase p
+    JOIN purchase_item pi ON pi.purchase_uuid = p.uuid
+    LEFT JOIN lot l ON l.origin_uuid = p.uuid
+    LEFT JOIN stock_movement m ON m.lot_uuid = l.uuid AND m.flux_id = ? AND m.is_exit = 0
+    WHERE p.uuid = ?;
+  `;
+
+  const sqlPurchaseDelay = `
+    SELECT
+      p.cost, CEIL(DATEDIFF(m.date, p.date)) AS delay
     FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN purchase p ON p.uuid = l.origin_uuid
-    WHERE p.uuid = ? AND m.flux_id = ? AND m.is_exit = 0;
+    WHERE p.uuid = ? AND m.flux_id = ? AND m.is_exit = 0 LIMIT 1;
   `;
 
-  db.one(sql, [purchaseUuid, FROM_PURCHASE_ID])
-    .then((row) => {
-      let query = '';
-      status.cost = row.cost;
-      status.movement_cost = row.movement_cost;
-      status.delay = Math.round((row.delay / 30) * 10) / 10;
+  const sqlPurchaseInventories = `
+    SELECT purchase_item.inventory_uuid AS inventory_uuid, inventory.delay, inventory.num_delivery
+    FROM purchase_item
+    JOIN inventory ON inventory.uuid = purchase_item.inventory_uuid
+    WHERE purchase_item.purchase_uuid = ?
+  `;
 
-      if (row.movement_cost === row.cost) {
-      // the purchase is totally delivered
-        status.status = 'full_entry';
-        query = 'UPDATE purchase SET status_id = 3 WHERE uuid = ?';
-      } else if (row.movement_cost > 0 && row.movement_cost < row.cost) {
-      // the purchase is partially delivered
-        status.status = 'partial_entry';
-        query = 'UPDATE purchase SET status_id = 4 WHERE uuid = ?';
-      } else if (row.movement_cost === 0) {
-      // the purchase is not yet delivered
-        status.status = 'no_entry';
-        // If there are no movements, the status of the purchase order must remain confirmed
-        query = 'UPDATE purchase SET status_id = 2 WHERE uuid = ?';
+  const dbPromise = [
+    db.one(sqlQuantities, [FROM_PURCHASE_ID, purchaseUuid]),
+    db.one(sqlPurchaseDelay, [purchaseUuid, FROM_PURCHASE_ID]),
+    db.exec(sqlPurchaseInventories, [purchaseUuid]),
+  ];
+
+  q.all(dbPromise)
+    .spread((resultQuantities, resultDelay, resultPurchaseInventories) => {
+      const rq = resultQuantities;
+      const rd = resultDelay;
+
+      glb.delay = Math.round((rd.delay / 30) * 10) / 10;
+      glb.purchaseInventories = resultPurchaseInventories;
+
+      let query;
+      let statusId;
+
+      if (rq.movement_quantity > 0 && rq.movement_quantity === rq.purchase_quantity) {
+        // the purchase is totally delivered
+        statusId = PURCHASE_FULLY_RECEIVED;
+        query = 'UPDATE purchase SET status_id = ? WHERE uuid = ?';
+      } else if (rq.movement_quantity > 0 && rq.movement_quantity < rq.purchase_quantity) {
+        // the purchase is partially delivered
+        statusId = PURCHASE_PARTIALLY_RECEIVED;
+        query = 'UPDATE purchase SET status_id = ? WHERE uuid = ?';
+      } else if (rq.movement_quantity > rq.purchase_quantity) {
+        // the purchase is delivered in an excessive quantity
+        statusId = PURCHASE_EXCESSIVELY_RECEIVED;
+        query = 'UPDATE purchase SET status_id = ? WHERE uuid = ?';
       }
-      return db.exec(query, [purchaseUuid]);
+      return query ? db.exec(query, [statusId, purchaseUuid]) : '';
     })
     .then(() => {
-      /**
-        * Get all the inventories of a purchase order finally to obtain the average
-        * waiting time between the order and the delivery
-      */
-      const getInventory = `
-        SELECT BUID(purchase_item.inventory_uuid) AS inventory_uuid, inventory.delay, inventory.num_delivery
-        FROM purchase_item
-        JOIN inventory ON inventory.uuid = purchase_item.inventory_uuid
-        WHERE purchase_item.purchase_uuid = ?
-      `;
-
-      return db.exec(getInventory, [purchaseUuid]);
-    })
-    .then((rows) => {
       const transaction = db.transaction();
 
-      rows.forEach((row) => {
+      glb.purchaseInventories.forEach((row) => {
         /**
           * Normally the delay agreement time between the order and the delivery is calculated
           * by finding the average duration of agreement of orders of last six months for a product
@@ -421,18 +441,18 @@ function purchaseStatus(req, res, next) {
         */
         const numDelivery = row.num_delivery + 1;
 
-        const delay = (((row.delay * (numDelivery - 1)) + status.delay) / numDelivery);
+        const delay = (((row.delay * (numDelivery - 1)) + glb.delay) / numDelivery);
 
         transaction.addQuery(
           'UPDATE inventory SET delay = ?, num_delivery = ? WHERE uuid = ?',
-          [delay, numDelivery, db.bid(row.inventory_uuid)]
+          [delay, numDelivery, row.inventory_uuid]
         );
       });
 
       return transaction.execute();
     })
     .then(() => {
-      res.status(200).send(status);
+      res.status(200).send();
     })
     .catch(next)
     .done();
