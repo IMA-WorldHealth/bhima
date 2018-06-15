@@ -4,12 +4,12 @@ angular.module('bhima.controllers')
 ModalCreditNoteController.$inject = [
   '$uibModalInstance', 'PatientInvoiceService', 'data', 'VoucherService',
   'NotifyService', '$translate', 'CurrencyService', 'bhConstants', '$state',
-  '$filter',
+  '$filter', 'CashService',
 ];
 
 function ModalCreditNoteController(
   Instance, Invoices, data, Vouchers, Notify, $translate, CurrencyService,
-  bhConstants, $state, $filter
+  bhConstants, $state, $filter, Cash
 ) {
   const vm = this;
   vm.Constants = bhConstants;
@@ -25,6 +25,13 @@ function ModalCreditNoteController(
   vm.invoice = data.invoice;
   vm.billingAmount = 0;
   vm.subsidyAmount = 0;
+
+  // checks if there has been payments made against the invoice about to
+  // be reversed
+  Cash.checkCashPayment(data.invoice.uuid)
+    .then(paymentsAgainstInvoice => {
+      vm.hasPaymentsAgainstInvoice = paymentsAgainstInvoice.length > 0;
+    });
 
   Invoices.read(data.invoice.uuid)
     .then(response => {

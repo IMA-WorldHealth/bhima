@@ -3,9 +3,9 @@ angular.module('bhima.controllers')
 
 InvoiceRegistryController.$inject = [
   'PatientInvoiceService', 'bhConstants', 'NotifyService', 'SessionService',
-  'ReceiptModal', 'uiGridConstants', 'ModalService', 'CashService',
-  'GridSortingService', 'GridColumnService', 'GridStateService', '$state',
-  'ModalService', 'ReceiptModal', 'util',
+  'ReceiptModal', 'uiGridConstants', 'ModalService', 'GridSortingService',
+  'GridColumnService', 'GridStateService', '$state', 'ModalService',
+  'ReceiptModal', 'util',
 ];
 
 /**
@@ -16,7 +16,7 @@ InvoiceRegistryController.$inject = [
  */
 function InvoiceRegistryController(
   Invoices, bhConstants, Notify, Session, Receipt, uiGridConstants,
-  ModalService, Cash, Sorting, Columns, GridState, $state, Modals, Receipts, util
+  ModalService, Sorting, Columns, GridState, $state, Modals, Receipts, util
 ) {
   const vm = this;
 
@@ -199,32 +199,13 @@ function InvoiceRegistryController(
     $state.reload();
   };
 
-  // Call the opening of Modal
-  function openModal(invoice) {
+  // Function for Credit Note cancel all Invoice
+  function creditNote(invoice) {
     Invoices.openCreditNoteModal(invoice)
       .then(success => {
         if (success) {
           Notify.success('FORM.INFO.TRANSACTION_REVER_SUCCESS');
           load(vm.filters);
-        }
-      })
-      .catch(Notify.handleError);
-  }
-
-  // Function for Credit Note cancel all Invoice
-  function creditNote(invoice) {
-    Cash.checkCashPayment(invoice.uuid)
-      .then(res => {
-        const numberPayment = res.length;
-        if (numberPayment > 0) {
-          ModalService.confirm('FORM.DIALOGS.CONFIRM_CREDIT_NOTE')
-            .then(bool => {
-              if (bool) {
-                openModal(invoice);
-              }
-            });
-        } else {
-          openModal(invoice);
         }
       })
       .catch(Notify.handleError);
