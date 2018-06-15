@@ -117,7 +117,7 @@ function lookupByProjectId(id) {
       JOIN village ON e.location_id = village.uuid
       JOIN sector ON village.sector_uuid = sector.uuid
       JOIN province ON sector.province_uuid = province.uuid
-    WHERE p.enterprise_id = ?
+    WHERE p.id = ?
     LIMIT 1;
   `;
 
