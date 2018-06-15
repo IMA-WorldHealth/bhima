@@ -371,14 +371,19 @@ function purchaseStatus(req, res, next) {
   const purchaseUuid = db.bid(req.params.uuid);
 
   const sqlQuantities = `
-    SELECT
-      IFNULL(SUM(m.quantity), 0) AS movement_quantity,
-      IFNULL(SUM(pi.quantity), 0) AS purchase_quantity
-    FROM purchase p
-    JOIN purchase_item pi ON pi.purchase_uuid = p.uuid
-    LEFT JOIN lot l ON l.origin_uuid = p.uuid
-    LEFT JOIN stock_movement m ON m.lot_uuid = l.uuid AND m.flux_id = ? AND m.is_exit = 0
-    WHERE p.uuid = ?;
+    SELECT SUM(t.purchase_quantity) AS purchase_quantity, SUM(t.movement_quantity) AS movement_quantity
+    FROM (
+      (
+        SELECT IFNULL(SUM(pi.quantity), 0) AS purchase_quantity, 0 AS movement_quantity FROM purchase p
+        JOIN purchase_item pi ON pi.purchase_uuid = p.uuid
+        WHERE p.uuid = ?
+      ) UNION (
+        SELECT 0 AS purchase_quantity, SUM(m.quantity) AS movement_quantity FROM stock_movement m 
+        JOIN lot l ON l.uuid = m.lot_uuid 
+        JOIN purchase p ON p.uuid = l.origin_uuid
+        WHERE p.uuid = ? AND m.flux_id = ? AND m.is_exit = 0
+      )
+    )t
   `;
 
   const sqlPurchaseDelay = `
@@ -398,7 +403,7 @@ function purchaseStatus(req, res, next) {
   `;
 
   const dbPromise = [
-    db.one(sqlQuantities, [FROM_PURCHASE_ID, purchaseUuid]),
+    db.one(sqlQuantities, [purchaseUuid, purchaseUuid, FROM_PURCHASE_ID]),
     db.one(sqlPurchaseDelay, [purchaseUuid, FROM_PURCHASE_ID]),
     db.exec(sqlPurchaseInventories, [purchaseUuid]),
   ];

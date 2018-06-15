@@ -4,6 +4,7 @@ angular.module('bhima.controllers')
 PurchaseListController.$inject = [
   '$state', 'PurchaseOrderService', 'NotifyService', 'uiGridConstants',
   'GridColumnService', 'GridStateService', 'SessionService', 'ModalService',
+  'ReceiptModal',
 ];
 
 /**
@@ -12,8 +13,8 @@ PurchaseListController.$inject = [
  * This module is responsible for the management of Purchase Order Registry.
  */
 function PurchaseListController(
-  $state, PurchaseOrder, Notify, uiGridConstants, Columns, GridState, Session,
-  Modal
+  $state, PurchaseOrder, Notify, uiGridConstants,
+  Columns, GridState, Session, Modal, ReceiptModal
 ) {
   const vm = this;
   const cacheKey = 'PurchaseRegistry';
@@ -102,6 +103,10 @@ function PurchaseListController(
     vm.hasError = true;
     Notify.handleError(error);
   }
+
+  vm.getDocument = (uuid) => {
+    ReceiptModal.purchase(uuid);
+  };
 
   // edit status
   function editStatus(purchase) {

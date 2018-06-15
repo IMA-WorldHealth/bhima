@@ -210,14 +210,34 @@ function StockEntryController(
       instance : _entities[0], // just to get common information in every purchase
     };
 
+    // set the description
+    setDescription(vm.movement.entity);
+
+    // populate the grid
     populate(_entities);
+  }
+
+  // set the description of the movement
+  function setDescription(entity) {
+    const map = {
+      purchase : 'STOCK.PURCHASE_DESCRIPTION',
+      donation : 'STOCK.RECEPTION_DONATION',
+      integration : 'STOCK.RECEPTION_INTEGRATION',
+      transfer_reception : 'STOCK.RECEPTION_DESCRIPTION',
+    };
+
+    if (!entity || !entity.uuid) { return; }
+
+    const description = $translate.instant(map[entity.type], {
+      supplier : entity.instance.supplier_name,
+      purchase_order : entity.instance.reference,
+    });
+
+    vm.movement.description = description;
   }
 
   // pop up  a modal to let user find a purchase order
   function findPurchase() {
-    const description = $translate.instant('STOCK.PURCHASE_DESCRIPTION');
-    initSelectedEntity(description);
-
     StockModal.openFindPurchase()
       .then((purchase) => {
         handleSelectedEntity(purchase, 'purchase');
@@ -228,9 +248,6 @@ function StockEntryController(
 
   // find transfer
   function findTransfer() {
-    const description = $translate.instant('STOCK.RECEPTION_DESCRIPTION');
-    initSelectedEntity(description);
-
     StockModal.openFindTansfer({ depot_uuid : vm.depot.uuid })
       .then((transfers) => {
         if (!transfers) {
@@ -278,7 +295,7 @@ function StockEntryController(
       item.inventory_uuid = inventory.uuid;
       item.label = inventory.label;
       item.unit_cost = items[index].unit_price || items[index].unit_cost; // transfer comes with unit_cost
-      item.quantity = items[index].quantity;
+      item.quantity = items[index].balance || items[index].quantity;
       item.cost = item.quantity * item.unit_cost;
       item.expiration_date = new Date();
 
