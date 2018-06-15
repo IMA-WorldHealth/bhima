@@ -107,7 +107,18 @@ function reportByService(req, res, next) {
     ORDER BY service.name;
   `;
 
-  db.exec(cashflowByServiceSql, [dateFrom, dateTo, cashboxId])
+  const cashboxDetailsSql = `
+    SELECT cb.id, cb.label FROM cash_box cb JOIN cash_box_account_currency cba
+      ON cb.id = cba.cash_box_id
+    WHERE cba.id = ?;
+  `;
+
+  // pick up the cashbox's details
+  db.one(cashboxDetailsSql, cashboxId)
+    .then(cashbox => {
+      data.cashbox = cashbox;
+      return db.exec(cashflowByServiceSql, [dateFrom, dateTo, cashboxId]);
+    })
     .then((rows) => {
       data.rows = rows;
 

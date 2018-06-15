@@ -7,7 +7,7 @@
     </label>
 
     <ng-transclude></ng-transclude>
-    <ui-select name="cashbox_id" 
+    <ui-select name="cashbox_id"
       ng-model="$ctrl.cashboxId"
       on-select="$ctrl.onSelect($item, $model)" required>
       <ui-select-match placeholder="{{ 'FORM.SELECT.CASHBOX' | translate }}"><span>{{$select.selected.hrlabel}}</span></ui-select-match>

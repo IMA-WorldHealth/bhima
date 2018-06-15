@@ -45,7 +45,7 @@ function CashboxSelectController(Cashbox, Notify, Session) {
     Cashbox.read(null, params)
       .then(cashboxes => {
         cashboxes.forEach(cashbox => {
-          cashbox.hrlabel = `${cashbox.label}  ${cashbox.symbol}`;
+          cashbox.hrlabel = `${cashbox.label} ${cashbox.symbol}`;
         });
 
         $ctrl.cashboxes = cashboxes;

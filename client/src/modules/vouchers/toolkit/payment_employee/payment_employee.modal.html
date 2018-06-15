@@ -11,7 +11,8 @@
     <bh-cashbox-select
       cashbox-id = "ToolCtrl.searchQueries.cashbox_id"
       name = "cashbox_id"
-      on-select-callback = "ToolCtrl.onSelectCashbox(cashbox)">
+      on-select-callback = "ToolCtrl.onSelectCashbox(cashbox)"
+      restrict-to-user = "false">
     </bh-cashbox-select>
 
     <bh-payroll-period-select
@@ -22,7 +23,7 @@
       required="true"
       validation-trigger="ToolForm.$submitted">
     </bh-payroll-period-select>
- 
+
     <!-- select Employees Paiements  -->
     <div ng-show="ToolCtrl.gridDisplay">
       <div
