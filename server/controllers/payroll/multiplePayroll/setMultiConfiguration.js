@@ -178,6 +178,11 @@ function config(req, res, next) {
 
           if (rubricData.length) {
             rubricData.forEach(rubric => {
+              // Conversion of non-percentage currency values to the currency used for payment
+              if (rubric.value && !rubric.is_percent && !rubric.is_seniority_bonus) {
+                rubric.value *= enterpriseExchangeRate;
+              }
+
               if (advantagesEmployee.length) {
                 advantagesEmployee.forEach(advantage => {
                   if (rubric.rubric_payroll_id === advantage.rubric_payroll_id) {
@@ -224,7 +229,7 @@ function config(req, res, next) {
                 nonTaxable.result = nonTaxable.is_percent ?
                   util.roundDecimal((basicSalary * nonTaxable.value) / 100, DECIMAL_PRECISION) :
                   nonTaxable.result || nonTaxable.value;
-              }  
+              }
 
               sumNonTaxable += nonTaxable.result;
               allRubrics.push([uid, nonTaxable.rubric_payroll_id, nonTaxable.result]);

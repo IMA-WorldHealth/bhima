@@ -128,6 +128,11 @@ function config(req, res, next) {
 
           if (rubrics.length) {
             rubrics.forEach(rubric => {
+              // Conversion of non-percentage currency values to the currency used for payment
+              if (rubric.value && !rubric.is_percent && !rubric.is_seniority_bonus) {
+                rubric.value *= enterpriseExchangeRate;
+              }
+
               // Initialize values for rubrics that are not automatically calculated
               rubric.result = util.roundDecimal(data.value[rubric.abbr], DECIMAL_PRECISION);
 
@@ -139,7 +144,6 @@ function config(req, res, next) {
               if (rubric.is_family_allowances === 1) {
                 rubric.result = calculation.automaticRubric(rubric.value, nbChildren);
               }
-
             });
 
             // Filtering non-taxable Rubrics
