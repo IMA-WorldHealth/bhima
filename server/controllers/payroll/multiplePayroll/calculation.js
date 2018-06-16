@@ -1,7 +1,7 @@
 /**
  *
  * @description
- * This function is used to calculate the value of the IPR tax, and has to set the annual value of 
+ * This function is used to calculate the value of the IPR tax, and has to set the annual value of
  * the IPR base as well as the table of the different IPR slices, and returns the calculated IPR value.
  *
  */
@@ -26,8 +26,8 @@ function iprTax(annualCumulation, iprScales) {
 }
 
 function automaticRubric(coefficient, variables) {
-  
-  return variables.reduce((total, next) =>total * next, coefficient);
+
+  return variables.reduce((total, next) => total * next, coefficient);
 }
 
 exports.iprTax = iprTax;
