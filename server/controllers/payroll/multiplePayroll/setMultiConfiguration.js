@@ -5,32 +5,19 @@
  * the data are calculated including the values of the rubrics defined individually by employees
  *
  * @requires db
- * @requires EmployeeData
- * @requires uuid
  * @requires Exchange
  * @requires q
- * @requires util
  */
 const db = require('../../../lib/db');
-const EmployeeData = require('../employees');
-const uuid = require('uuid/v4');
-const Exchange = require('../../finance/exchange');
 const q = require('q');
-const util = require('../../../lib/util');
-const getConfig = require('./getConfig');
-const manageConfig = require('./manageConfig');
-const calculation = require('./calculation');
 const payrollSettings = require('./payrollSettings');
-const moment = require('moment');
 
 function config(req, res, next) {
   const dataEmployees = req.body.data;
   const payrollConfigurationId = req.params.id;
   const enterpriseId = req.session.enterprise.id;
   const currencyId = req.session.enterprise.currency_id;
-  const DECIMAL_PRECISION = 2;
   const transaction = db.transaction();
-  const enterpriseExchangeRate = 0;
   const iprExchangeRate = 0;
   const getPeriodData = `
     SELECT payroll_configuration.id, payroll_configuration.dateFrom, payroll_configuration.dateTo,
