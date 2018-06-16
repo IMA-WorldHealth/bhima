@@ -377,7 +377,7 @@ function purchaseStatus(req, res, next) {
         SELECT IFNULL(SUM(pi.quantity), 0) AS purchase_quantity, 0 AS movement_quantity FROM purchase p
         JOIN purchase_item pi ON pi.purchase_uuid = p.uuid
         WHERE p.uuid = ?
-      ) UNION (
+      ) UNION ALL (
         SELECT 0 AS purchase_quantity, SUM(m.quantity) AS movement_quantity FROM stock_movement m 
         JOIN lot l ON l.uuid = m.lot_uuid 
         JOIN purchase p ON p.uuid = l.origin_uuid

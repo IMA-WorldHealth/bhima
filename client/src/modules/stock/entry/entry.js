@@ -6,7 +6,7 @@ StockEntryController.$inject = [
   'DepotService', 'InventoryService', 'NotifyService', 'SessionService', 'util',
   'bhConstants', 'ReceiptModal', 'PurchaseOrderService', 'StockFormService',
   'StockService', 'StockModalService', 'uiGridConstants', 'Store', 'appcache',
-  'uuid', '$translate', '$state',
+  'uuid', '$translate',
 ];
 
 /**
@@ -17,27 +17,24 @@ StockEntryController.$inject = [
  */
 function StockEntryController(
   Depots, Inventory, Notify, Session, util, bhConstants, ReceiptModal, Purchase,
-  StockForm, Stock, StockModal, uiGridConstants, Store, AppCache, Uuid, $translate,
-  $state
+  StockForm, Stock, StockModal, uiGridConstants, Store, AppCache, Uuid, $translate
 ) {
-  const vm = this;
-  const cache = new AppCache('StockCache');
+  // variables
   let inventoryStore;
 
+  // constants
+  const vm = this;
+  const cache = new AppCache('StockCache');
+  const mapEntry = initEntryMap();
+
+  // view models variables and methods
   vm.stockForm = new StockForm('StockEntry');
-  vm.movement = {};
-
-  vm.onDateChange = date => {
-    vm.movement.date = date;
-  };
-
-  // exposing some properties to the view
-  vm.enterprise = Session.enterprise;
   vm.maxLength = util.maxLength;
   vm.maxDate = new Date();
   vm.entryOption = false;
-
-  // exposing some methods to the view
+  vm.resetEntryExitTypes = false;
+  vm.enterprise = Session.enterprise;
+  vm.movement = {};
   vm.addItems = addItems;
   vm.removeItem = removeItem;
   vm.selectEntryType = selectEntryType;
@@ -47,15 +44,8 @@ function StockEntryController(
   vm.submit = submit;
   vm.changeDepot = changeDepot;
   vm.reset = reset;
-
-  const mapEntry = {
-    purchase : { find : findPurchase, submit : submitPurchase },
-    donation : { find : handleDonationSelection, submit : submitDonation },
-    integration : { find : handleIntegrationSelection, submit : submitIntegration },
-    transfer_reception : { find : findTransfer, submit : submitTransferReception },
-  };
-
-  const gridOptions = {
+  vm.onDateChange = onDateChange;
+  vm.gridOptions = {
     appScopeProvider : vm,
     enableSorting : false,
     enableColumnMenus : false,
@@ -110,46 +100,94 @@ function StockEntryController(
     flatEntityAccess : true,
   };
 
-  // reset the form after submission or on clear
-  function reset(form) {
-    const _form = form || mapEntry.form;
-    const _date = vm.movement.date;
-    vm.movement = { date : _date };
-    _form.$setPristine();
-    _form.$setUntouched();
+  /**
+   * @function initEntryMap
+   * @description return an object map for the mapEntry constant
+   */
+  function initEntryMap() {
+    return {
+      purchase : { find : findPurchase, submit : submitPurchase },
+      donation : { find : handleDonationSelection, submit : submitDonation },
+      integration : { find : handleIntegrationSelection, submit : submitIntegration },
+      transfer_reception : { find : findTransfer, submit : submitTransferReception },
+    };
+  }
+
+  /**
+   * @method onDateChange
+   * @param {date} date
+   * @description on change in bhDateEditor component update the date
+   */
+  function onDateChange(date) {
+    vm.movement.date = date;
+  }
+
+  /**
+   * @method reset
+   * @param {object} form
+   * @description reset the form after submission or on clear
+   */
+  function reset(form = mapEntry.form) {
     vm.stockForm.store.clear();
+    form.$setPristine();
+    form.$setUntouched();
+    vm.movement = { date : new Date() };
+    vm.resetEntryExitTypes = true;
   }
-  // exposing the grid options to the view
-  vm.gridOptions = gridOptions;
 
+  /**
+   * @method selectEntryType
+   * @param {object} entryType
+   * @description called when an entry type is selected
+   */
   function selectEntryType(entryType) {
-    vm.movement.entry_type = entryType.label;
     mapEntry[entryType.label].find();
-
-    vm.entryOption = entryType && entryType.label !== 'purchase';
+    vm.movement.entry_type = entryType.label;
+    vm.stockForm.store.clear();
+    vm.resetEntryExitTypes = false;
   }
 
-  // set initialized to true on the passed item
+  /**
+   * @method setInitialized
+   * @param {object} item
+   * @description [grid] set initialized to true on the passed item
+   */
   function setInitialized(item) {
     item._initialised = true;
   }
 
+  /**
+   * @method addItems
+   * @param {number} n
+   * @description [grid] add n items (rows) in the grid and call a validation function on each rows
+   */
   function addItems(n) {
     vm.stockForm.addItems(n);
     hasValidInput();
   }
 
+  /**
+   * @method removeItem
+   * @param {number} index
+   * @description [grid] remove the row with the given index and call a validation function on each remaining rows
+   */
   function removeItem(index) {
     vm.stockForm.removeItem(index);
     hasValidInput();
   }
 
+  /**
+   * @method setupStock
+   * @description [grid] setup the grid and clear all previous values
+   */
   function setupStock() {
     vm.stockForm.setup();
     vm.stockForm.store.clear();
   }
 
   /**
+   * @method startup
+   * @description
    * The first function to be called, it init :
    * - A list of inventories
    * - An object dor a movement
@@ -178,11 +216,14 @@ function StockEntryController(
     }
   }
 
+  /**
+   * @method loadInventories
+   * @description load consumable inventories
+   */
   function loadInventories() {
     // by definition, an item is consumable if it is purchasable because it can finish or be full used (amorti)
     // an aspirin or a pen are both consumable because they can be purchased
     // we will load only purchasable items
-
     Inventory.read(null, { consumable : 1 })
       .then((inventories) => {
         vm.inventories = inventories;
@@ -191,14 +232,28 @@ function StockEntryController(
       .catch(Notify.handleError);
   }
 
+  /**
+   * @method resetSelectedEntity
+   * @description
+   * reset the selected entity (purchase | integration | donation | transfer)
+   * variables and properties
+   */
   function resetSelectedEntity() {
     vm.movement.entity = {};
     vm.movement.entry_type = null;
     vm.movement.description = null;
     vm.reference = null;
     vm.displayName = null;
+    vm.resetEntryExitTypes = true;
   }
 
+  /**
+   * @method handleSelectedEntity
+   * @param {object} _entities
+   * @param {object} _type
+   * @description
+   * set movement information according the selected entity and populate the grid
+   */
   function handleSelectedEntity(_entities, _type) {
     if (!_entities || !_entities.length) {
       resetSelectedEntity();
@@ -208,7 +263,7 @@ function StockEntryController(
     vm.movement.entity = {
       uuid : _entities[0].uuid,
       type : _type,
-      instance : _entities[0], // just to get common information in every purchase
+      instance : _entities[0],
     };
 
     // set the description
@@ -218,7 +273,11 @@ function StockEntryController(
     populate(_entities);
   }
 
-  // set the description of the movement
+  /**
+   * @method setDescription
+   * @param {object} entity
+   * @description set the description of the movement
+   */
   function setDescription(entity) {
     const map = {
       purchase : 'STOCK.PURCHASE_DESCRIPTION',
@@ -237,7 +296,10 @@ function StockEntryController(
     vm.movement.description = description;
   }
 
-  // pop up  a modal to let user find a purchase order
+  /**
+   * @method findPurchase
+   * @description pop up  a modal to let user find a purchase order
+   */
   function findPurchase() {
     StockModal.openFindPurchase()
       .then((purchase) => {
@@ -247,22 +309,23 @@ function StockEntryController(
       .catch(Notify.handleError);
   }
 
-  // find transfer
+  /**
+   * @method findTransfer
+   * @description pop up  a modal to let user find a transfer to receive
+   */
   function findTransfer() {
     StockModal.openFindTansfer({ depot_uuid : vm.depot.uuid })
       .then((transfers) => {
-        if (!transfers) {
-          resetSelectedEntity();
-          return;
-        }
-
         handleSelectedEntity(transfers, 'transfer_reception');
-        vm.reference = transfers[0].documentReference;
-        vm.hasValidInput = hasValidInput();
+        setSelectedEntity(vm.movement.entity.instance);
       })
       .catch(Notify.handleError);
   }
 
+  /**
+   * @method handleIntegrationSelection
+   * @description reset the form for a new integration entry
+   */
   function handleIntegrationSelection() {
     const description = $translate.instant('STOCK.RECEPTION_INTEGRATION');
     initSelectedEntity(description);
@@ -271,6 +334,10 @@ function StockEntryController(
     }
   }
 
+  /**
+   * @method handleDonationSelection
+   * @description reset the form for a new donation entry
+   */
   function handleDonationSelection() {
     const description = $translate.instant('STOCK.RECEPTION_DONATION');
     initSelectedEntity(description);
@@ -279,7 +346,11 @@ function StockEntryController(
     }
   }
 
-  // fill the grid with the inventory contained in the purchase order
+  /**
+   * @method populate
+   * @param {object} items
+   * @description fill the grid with inventories contained in the purchase order or transfer
+   */
   function populate(items) {
     if (!items.length) { return; }
 
@@ -314,18 +385,33 @@ function StockEntryController(
     });
   }
 
+  /**
+   * @method initSelectedEntity
+   * @param {string} description
+   * @description initialize description and label for the selected entity
+   */
   function initSelectedEntity(description) {
     vm.displayName = '';
     vm.reference = '';
     vm.movement.description = description;
   }
 
+  /**
+   * @method setSelectedEntity
+   * @param {entity} entity
+   * @description set the label of the selected entity
+   */
   function setSelectedEntity(entity) {
     const uniformEntity = Stock.uniformSelectedEntity(entity);
-    vm.reference = uniformEntity.reference;
-    vm.displayName = uniformEntity.displayName;
+    vm.reference = entity.documentReference || uniformEntity.reference;
+    vm.displayName = entity.depot_text || uniformEntity.displayName;
   }
 
+  /**
+   * @method setLots
+   * @param {object} stockLine
+   * @description [grid] pop up a modal for defining lots for each row in the grid
+   */
   function setLots(stockLine) {
     // Additionnal information for an inventory Group
     const inventory = inventoryStore.get(stockLine.inventory_uuid);
@@ -346,11 +432,19 @@ function StockEntryController(
       .catch(Notify.handleError);
   }
 
-  // validation
+  /**
+   * @function hasValidInput
+   * @description [grid] check if all rows in the grid have lots defined
+   */
   function hasValidInput() {
     return vm.stockForm.store.data.every(line => line.lots.length > 0);
   }
 
+  /**
+   * @method submit
+   * @param {object} form
+   * @description send data to the server for a stock entry
+   */
   function submit(form) {
     if (form.$invalid) {
       return Notify.danger('FORM.ERRORS.INVALID');
@@ -363,31 +457,35 @@ function StockEntryController(
     mapEntry.form = form;
     return mapEntry[vm.movement.entry_type].submit()
       .then(toggleLoadingIndicator)
-      .finally(forceReload);
+      .finally(() => vm.reset(form));
   }
 
+  /**
+   * @method toggleLoadingIndicator
+   * @description toggle value for the loading indicator
+   */
   function toggleLoadingIndicator() {
     vm.$loading = !vm.$loading;
   }
 
-  function forceReload() {
-    $state.reload();
-  }
-
+  /**
+   * @method submitPurchase
+   * @description prepare the stock movement and send data to the server as new entry from a purchase
+   */
   function submitPurchase() {
     const movement = {
-      depot_uuid : vm.depot.uuid,
+      depot_uuid  : vm.depot.uuid,
       entity_uuid : vm.movement.entity.uuid,
-      date : vm.movement.date,
+      date        : vm.movement.date,
       description : vm.movement.description,
-      flux_id : bhConstants.flux.FROM_PURCHASE,
-      user_id : vm.stockForm.details.user_id,
+      flux_id     : bhConstants.flux.FROM_PURCHASE,
+      user_id     : vm.stockForm.details.user_id,
     };
 
     movement.lots = Stock.processLotsFromStore(vm.stockForm.store.data, vm.movement.entity.uuid);
 
     return Stock.stocks.create(movement)
-      .then((document) => {
+      .then(document => {
         vm.document = document;
         return Purchase.stockStatus(vm.movement.entity.uuid);
       })
@@ -399,14 +497,18 @@ function StockEntryController(
   }
 
 
+  /**
+   * @method submitIntegration
+   * @description prepare the stock movement and send data to the server as new stock integration
+   */
   function submitIntegration() {
     const movement = {
-      depot_uuid : vm.depot.uuid,
+      depot_uuid  : vm.depot.uuid,
       entity_uuid : null,
-      date : vm.movement.date,
+      date        : vm.movement.date,
       description : vm.movement.description,
-      flux_id : bhConstants.flux.FROM_INTEGRATION,
-      user_id : vm.stockForm.details.user_id,
+      flux_id     : bhConstants.flux.FROM_INTEGRATION,
+      user_id     : vm.stockForm.details.user_id,
     };
 
     const entry = {
@@ -415,20 +517,25 @@ function StockEntryController(
     };
 
     return Stock.integration.create(entry)
-      .then((document) => {
+      .then(document => {
         vm.reset();
         ReceiptModal.stockEntryIntegrationReceipt(document.uuid, bhConstants.flux.FROM_INTEGRATION);
       })
       .catch(Notify.handleError);
   }
+
+  /**
+   * @method submitDonation
+   * @description prepare the stock movement and send data to the server as new stock donation
+   */
   function submitDonation() {
     const movement = {
-      depot_uuid : vm.depot.uuid,
+      depot_uuid  : vm.depot.uuid,
       entity_uuid : null,
-      date : vm.movement.date,
+      date        : vm.movement.date,
       description : vm.movement.description,
-      flux_id : bhConstants.flux.FROM_DONATION,
-      user_id : vm.stockForm.details.user_id,
+      flux_id     : bhConstants.flux.FROM_DONATION,
+      user_id     : vm.stockForm.details.user_id,
     };
 
     /*
@@ -448,16 +555,19 @@ function StockEntryController(
       .catch(Notify.handleError);
   }
 
-  // submit transfer reception
+  /**
+   * @method submitTransferReception
+   * @description prepare the stock movement and send data to the server as new stock reception of transfer
+   */
   function submitTransferReception() {
     const movement = {
-      from_depot : vm.movement.entity.instance.depot_uuid,
-      to_depot : vm.depot.uuid,
+      from_depot    : vm.movement.entity.instance.depot_uuid,
+      to_depot      : vm.depot.uuid,
       document_uuid : vm.movement.entity.instance.document_uuid,
-      date : vm.movement.date,
-      description : vm.movement.description,
-      isExit : false,
-      user_id : vm.stockForm.details.user_id,
+      date          : vm.movement.date,
+      description   : vm.movement.description,
+      isExit        : false,
+      user_id       : vm.stockForm.details.user_id,
     };
 
     movement.lots = Stock.processLotsFromStore(vm.stockForm.store.data, null);
@@ -470,8 +580,12 @@ function StockEntryController(
       .catch(Notify.handleError);
   }
 
+  /**
+   * @method changeDepot
+   * @description pop up a modal for selecting a depot
+   */
   function changeDepot() {
-    // if there is not cached depot, the modal require to select a depot
+    // if there is not cached depot, the modal will require to select a depot
     const requirement = !cache.depotUuid;
     return Depots.openSelectionModal(vm.depot, requirement)
       .then((depot) => {
@@ -480,6 +594,11 @@ function StockEntryController(
       });
   }
 
+  /**
+   * @method buildStockLine
+   * @param {object} line
+   * @description [grid] initialize each cell of defined rows with value
+   */
   function buildStockLine(line) {
     const inventory = inventoryStore.get(line.inventory_uuid);
     line.code = inventory.code;

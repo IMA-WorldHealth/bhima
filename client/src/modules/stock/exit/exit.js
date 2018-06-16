@@ -6,7 +6,7 @@ StockExitController.$inject = [
   'DepotService', 'InventoryService', 'NotifyService', 'SessionService', 'util',
   'bhConstants', 'ReceiptModal', 'StockItemService', 'StockFormService', 'StockService',
   'StockModalService', 'uiGridConstants', '$translate', 'appcache',
-  'moment', 'GridExportService', 'Store', '$state',
+  'moment', 'GridExportService', 'Store',
 ];
 
 /**
@@ -14,12 +14,10 @@ StockExitController.$inject = [
  *
  * @description
  * This controller is responsible to handle stock exit module.
- *
- * @todo Implement caching data feature
  */
 function StockExitController(
   Depots, Inventory, Notify, Session, util, bhConstants, ReceiptModal, StockItem, StockForm, Stock,
-  StockModal, uiGridConstants, $translate, AppCache, moment, GridExportService, Store, $state
+  StockModal, uiGridConstants, $translate, AppCache, moment, GridExportService, Store
 ) {
   const vm = this;
   const cache = new AppCache('StockCache');
@@ -37,6 +35,7 @@ function StockExitController(
   vm.maxLength = util.maxLength;
   vm.enterprise = Session.enterprise;
   vm.maxDate = new Date();
+  vm.resetEntryExitTypes = false;
 
   vm.addItems = addItems;
   vm.removeItem = removeItem;
@@ -163,6 +162,7 @@ function StockExitController(
     _form.$setPristine();
     _form.$setUntouched();
     vm.stockForm.store.clear();
+    vm.resetEntryExitTypes = true;
   }
 
   /**
@@ -213,6 +213,8 @@ function StockExitController(
     vm.movement.exit_type = exitType.label;
     mapExit[exitType.label].find();
     vm.movement.description = $translate.instant(mapExit[exitType.label].description);
+    vm.stockForm.store.clear();
+    vm.resetEntryExitTypes = false;
   }
 
   function setupStock() {
@@ -414,15 +416,16 @@ function StockExitController(
     return mapExit[vm.movement.exit_type].submit()
       .then(toggleLoadingIndicator)
       .catch(Notify.handleError)
-      .finally(forceReload);
+      .finally(() => reinit(form));
   }
 
   function toggleLoadingIndicator() {
     vm.$loading = !vm.$loading;
   }
 
-  function forceReload() {
-    $state.reload();
+  function reinit(form) {
+    vm.reset(form);
+    resetSelectedEntity();
   }
 
   // handle lot function
