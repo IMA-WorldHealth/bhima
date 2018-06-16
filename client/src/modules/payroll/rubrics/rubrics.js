@@ -37,31 +37,31 @@ function RubricManagementController(
       { field : 'abbr', displayName : 'FORM.LABELS.ABBREVIATION', headerCellFilter : 'translate' },
       {
         field : 'is_discount',
-        displayName : '(+)/(-)', 
-        cellTemplate : '/modules/payroll/rubrics/templates/discount.tmpl.html', 
+        displayName : '(+)/(-)',
+        cellTemplate : '/modules/payroll/rubrics/templates/discount.tmpl.html',
         headerCellFilter : 'translate',
       },
       { field : 'value', displayName : 'FORM.LABELS.VALUE', headerCellFilter : 'translate' },
       {
         field : 'is_percent',
-        displayName : '%', 
-        cellTemplate : '/modules/payroll/rubrics/templates/percent.tmpl.html', 
+        displayName : '%',
+        cellTemplate : '/modules/payroll/rubrics/templates/percent.tmpl.html',
         headerCellFilter : 'translate',
       },
       {
         field : 'is_social_care',
         displayName : 'FORM.LABELS.IS_SOCIAL_CARE',
-        cellTemplate : '/modules/payroll/rubrics/templates/social.tmpl.html', 
+        cellTemplate : '/modules/payroll/rubrics/templates/social.tmpl.html',
         headerCellFilter : 'translate',
       },
       {
         field : 'is_membership_fee',
-        displayName : 'FORM.INFO.IS_MEMBERSHIP_FEE', 
-        cellTemplate : '/modules/payroll/rubrics/templates/membership.tmpl.html', 
+        displayName : 'FORM.INFO.IS_MEMBERSHIP_FEE',
+        cellTemplate : '/modules/payroll/rubrics/templates/membership.tmpl.html',
         headerCellFilter : 'translate',
       },
       {
-        field : 'is_tax',   
+        field : 'is_tax',
         displayName : 'FORM.LABELS.TAX',
         cellTemplate : '/modules/payroll/rubrics/templates/tax.tmpl.html',
         headerCellFilter : 'translate',
@@ -127,13 +127,13 @@ function RubricManagementController(
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
-  function openColumnConfiguration() {
-    columnConfig.openConfigurationModal();
-  }  
-
   const columnConfig = new Columns(vm.gridOptions, cacheKey);
   const state = new GridState(vm.gridOptions, cacheKey);
   vm.saveGridState = state.saveGridState;
+
+  function openColumnConfiguration() {
+    columnConfig.openConfigurationModal();
+  }
 
   function loadRubrics() {
     vm.loading = true;

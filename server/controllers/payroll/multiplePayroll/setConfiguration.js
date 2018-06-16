@@ -76,7 +76,7 @@ function config(req, res, next) {
       // Calcul of Seniority date Between date_embauche and the end date of Period
       const diff = moment(periodDateTo).diff(moment(employee.date_embauche));
       const duration = moment.duration(diff, 'milliseconds');
-      const yearOfSeniority = parseInt(duration.asYears());
+      const yearOfSeniority = parseInt(duration.asYears(), 10);
 
       /**
      * Some institution allocates a percentage for the offday and holiday payment,
