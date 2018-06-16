@@ -1,8 +1,8 @@
 angular.module('bhima.controllers')
-.controller('ApplicationController', ApplicationController);
+  .controller('ApplicationController', ApplicationController);
 
 ApplicationController.$inject = [
-  'AppCache', 'SessionService', 'LanguageService', '$state', '$rootScope', 'NotifyService'
+  'AppCache', 'SessionService', 'LanguageService', '$state', '$rootScope', 'NotifyService',
 ];
 
 /**
@@ -12,10 +12,10 @@ ApplicationController.$inject = [
  * loading and controlling the side-bar hide/show methods.
  */
 function ApplicationController(AppCache, Session, Languages, $state, $rootScope, Notify) {
-  var vm = this;
+  const vm = this;
 
   // load in the application cache
-  var cache = AppCache('preferences');
+  const cache = AppCache('preferences');
 
   // expose notifications list to the application level view
   vm.notifications = Notify.list;
@@ -54,7 +54,7 @@ function ApplicationController(AppCache, Session, Languages, $state, $rootScope,
     delete vm.project;
   }
 
-  $rootScope.$on('session:login', function () {
+  $rootScope.$on('session:login', () => {
     vm.sidebarExpanded = cache.sidebar && cache.sidebar.expanded;
     vm.project = Session.project;
   });
@@ -65,7 +65,7 @@ function ApplicationController(AppCache, Session, Languages, $state, $rootScope,
   // go to the settings page
   vm.settings = function settings() {
     if (!isLoggedIn()) { return; }
-    $state.go('settings', { previous : $state.$current.name });
+    $state.go('settings');
   };
 
 }

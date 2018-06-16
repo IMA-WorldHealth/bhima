@@ -573,6 +573,11 @@ ol.headercrumb {
     top : 0;
   }
 
+  .bh-print-expand {
+    overflow: auto;
+    height: initial;
+  }
+
   .bh-modal-content {
     position : initial;
   }
@@ -930,7 +935,7 @@ a[disabled] {
   text-decoration : line-through;
 }
 
-.dropdown-menu { 
+.dropdown-menu {
   z-index : 9999;
 }
 
