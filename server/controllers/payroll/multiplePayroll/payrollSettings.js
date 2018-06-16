@@ -28,6 +28,7 @@ function setConfig(dataEmployees, rows, enterpriseId, currencyId, payrollConfigu
   let enterpriseExchangeRate = 0;
   let allTransactions = [];
   const DECIMAL_PRECISION = 2;
+  let iprExchangeRate;
 
   return q.all(dataEmployees.map((employee) => {
     let advantagesEmployee = [];
@@ -44,7 +45,7 @@ function setConfig(dataEmployees, rows, enterpriseId, currencyId, payrollConfigu
     return q.all(queries2)
       .then(([exchange, exchangeIpr, advantages]) => {
         enterpriseExchangeRate = currencyId === parseInt(employee.currency_id, 10) ? 1 : exchange.rate;
-        const iprExchangeRate = exchangeIpr.rate;
+        iprExchangeRate = exchangeIpr.rate;
         advantagesEmployee = advantages;
         return getConfig.getConfigurationData(payrollConfigurationId, option);
       })

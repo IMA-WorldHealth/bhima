@@ -18,7 +18,6 @@ function config(req, res, next) {
   const enterpriseId = req.session.enterprise.id;
   const currencyId = req.session.enterprise.currency_id;
   const transaction = db.transaction();
-  const iprExchangeRate = 0;
   const getPeriodData = `
     SELECT payroll_configuration.id, payroll_configuration.dateFrom, payroll_configuration.dateTo,
       payroll_configuration.config_ipr_id, taxe_ipr.currency_id
