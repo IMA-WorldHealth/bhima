@@ -39,12 +39,6 @@ function config(req, res, next) {
     db.exec(getRubricPayroll, [payrollConfigurationId]),
   ]);
   queries.then(rows => {
-    const periodData = rows[0][0];
-    const rubricData = rows[1];
-    const iprCurrencyId = periodData.currency_id;
-    const dateFrom = periodData.dateFrom;
-    const dateTo = periodData.dateTo;
-
     return payrollSettings.setConfig(
       dataEmployees,
       rows,

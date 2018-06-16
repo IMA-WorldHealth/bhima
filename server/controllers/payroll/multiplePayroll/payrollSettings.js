@@ -17,7 +17,6 @@ const util = require('../../../lib/util');
 const getConfig = require('./getConfig');
 const manageConfig = require('./manageConfig');
 const calculation = require('./calculation');
-const payrollSettings = require('./payrollSettings');
 const moment = require('moment');
 
 function setConfig(dataEmployees, rows, enterpriseId, currencyId, payrollConfigurationId) {
@@ -27,7 +26,6 @@ function setConfig(dataEmployees, rows, enterpriseId, currencyId, payrollConfigu
   const dateFrom = periodData.dateFrom;
   const dateTo = periodData.dateTo;
   let enterpriseExchangeRate = 0;
-  let iprExchangeRate = 0;
   let allTransactions = [];
   const DECIMAL_PRECISION = 2;
 
@@ -46,7 +44,7 @@ function setConfig(dataEmployees, rows, enterpriseId, currencyId, payrollConfigu
     return q.all(queries2)
       .then(([exchange, exchangeIpr, advantages]) => {
         enterpriseExchangeRate = currencyId === parseInt(employee.currency_id, 10) ? 1 : exchange.rate;
-        iprExchangeRate = exchangeIpr.rate;
+        const iprExchangeRate = exchangeIpr.rate;
         advantagesEmployee = advantages;
         return getConfig.getConfigurationData(payrollConfigurationId, option);
       })
@@ -199,7 +197,7 @@ function setConfig(dataEmployees, rows, enterpriseId, currencyId, payrollConfigu
         // Annual cumulation of Base IPR
         const annualCumulation = baseIpr * 12;
         let iprValue = 0;
-        let scaleIndice;
+
         if (iprScales.length) {
           iprValue = calculation.iprTax(annualCumulation, iprScales);
           if (nbChildren > 0) {
