@@ -253,6 +253,34 @@
       </div>      
     </div>
 
+    <div class="form-group" ng-if="RubricModalCtrl.rubric.is_discount === 0">
+      <div class="checkbox">
+        <label>
+          <input
+            type="checkbox"
+            name="is_seniority_bonus"
+            ng-true-value="1"
+            ng-false-value="0"
+            ng-model="RubricModalCtrl.rubric.is_seniority_bonus">
+          <span translate>FORM.LABELS.SENIORITY_BONUS</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="form-group" ng-if="RubricModalCtrl.rubric.is_discount === 0">
+      <div class="checkbox">
+        <label>
+          <input
+            type="checkbox"
+            name="is_family_allowances"
+            ng-true-value="1"
+            ng-false-value="0"
+            ng-model="RubricModalCtrl.rubric.is_family_allowances">
+          <span translate>FORM.LABELS.FAMILY_ALLOWANCES</span>
+        </label>
+      </div>
+    </div>
+
     <div id="addition" ng-if="RubricModalCtrl.rubric.is_discount === 0">
       <hr>
       <div class="form-group">

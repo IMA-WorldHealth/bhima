@@ -22,6 +22,7 @@ const util = require('../../../lib/util');
 const getConfig = require('./getConfig');
 const manageConfig = require('./manageConfig');
 const calculation = require('./calculation');
+const moment = require('moment');
 
 function config(req, res, next) {
   const dataEmployees = req.body.data;
@@ -133,6 +134,11 @@ function config(req, res, next) {
 
           const nbChildren = employee.nb_enfant;
 
+          // Calcul of Seniority date Between date_embauche and the end date of Period
+          const diff = moment(dateTo).diff(moment(employee.date_embauche));
+          const duration = moment.duration(diff, 'milliseconds');
+          const yearOfSeniority = parseInt(duration.asYears());
+
           /**
             * Some institution allocates a percentage for the offday and holiday payment,
             * the calculation of this rate is found by calculating the equivalence of the daily wage with
@@ -184,6 +190,17 @@ function config(req, res, next) {
               }
             });
 
+            rubricData.forEach(rubric => {
+              // Automatic calcul of Seniority_Bonus & Family_Allowances
+              if (rubric.is_seniority_bonus === 1) {
+                rubric.result = calculation.automaticRubric(basicSalary, yearOfSeniority, rubric.value);
+              }
+
+              if (rubric.is_family_allowances === 1) {
+                rubric.result = calculation.automaticRubric(rubric.value, nbChildren);
+              }
+            });
+
             // Filtering non-taxable Rubrics
 
             nonTaxables = rubricData.filter(item => item.is_social_care);
@@ -203,24 +220,26 @@ function config(req, res, next) {
           // Calcul value for non-taxable and automatically calculated
           if (nonTaxables.length) {
             nonTaxables.forEach(nonTaxable => {
-              nonTaxable.result = nonTaxable.is_percent ?
-                util.roundDecimal((basicSalary * nonTaxable.value) / 100, DECIMAL_PRECISION) :
-                nonTaxable.result || nonTaxable.value;
+              if (!nonTaxable.is_seniority_bonus && !nonTaxable.is_family_allowances) {
+                nonTaxable.result = nonTaxable.is_percent ?
+                  util.roundDecimal((basicSalary * nonTaxable.value) / 100, DECIMAL_PRECISION) :
+                  nonTaxable.result || nonTaxable.value;
+              }  
 
               sumNonTaxable += nonTaxable.result;
-
               allRubrics.push([uid, nonTaxable.rubric_payroll_id, nonTaxable.result]);
             });
           }
 
           if (taxables.length) {
             taxables.forEach(taxable => {
-              taxable.result = taxable.is_percent ?
-                util.roundDecimal((basicSalary * taxable.value) / 100, DECIMAL_PRECISION) :
-                taxable.result || taxable.value;
+              if (!taxable.is_seniority_bonus && !taxable.is_family_allowances) {
+                taxable.result = taxable.is_percent ?
+                  util.roundDecimal((basicSalary * taxable.value) / 100, DECIMAL_PRECISION) :
+                  taxable.result || taxable.value;
+              }
 
               sumTaxable += taxable.result;
-
               allRubrics.push([uid, taxable.rubric_payroll_id, taxable.result]);
             });
           }
