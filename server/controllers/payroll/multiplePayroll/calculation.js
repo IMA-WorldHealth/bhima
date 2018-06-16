@@ -25,10 +25,9 @@ function iprTax(annualCumulation, iprScales) {
   return iprValue;
 }
 
-function automaticRubric(coefficient, variable1, variable2) {
-  const value = variable2 ? coefficient * variable1 * variable2 : coefficient * variable1; 
-
-  return value;
+function automaticRubric(coefficient, variables) {
+  
+  return variables.reduce((total, next) =>total * next, coefficient);
 }
 
 exports.iprTax = iprTax;

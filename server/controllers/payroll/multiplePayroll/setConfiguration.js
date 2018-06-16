@@ -138,11 +138,15 @@ function config(req, res, next) {
 
               // Automatic calcul of Seniority_Bonus & Family_Allowances
               if (rubric.is_seniority_bonus === 1) {
-                rubric.result = calculation.automaticRubric(basicSalary, yearOfSeniority, rubric.value);
+                const seniorityElements = [yearOfSeniority, rubric.value];
+
+                rubric.result = calculation.automaticRubric(basicSalary, seniorityElements);
               }
 
               if (rubric.is_family_allowances === 1) {
-                rubric.result = calculation.automaticRubric(rubric.value, nbChildren);
+                const allowanceElements = [nbChildren];
+
+                rubric.result = calculation.automaticRubric(rubric.value, allowanceElements);
               }
             });
 
