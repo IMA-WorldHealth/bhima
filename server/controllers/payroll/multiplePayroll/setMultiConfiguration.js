@@ -128,12 +128,9 @@ function config(req, res, next) {
           // Calcul Daily Salary
           const dailySalary = employee.individual_salary ?
             (employee.individual_salary / daysPeriod.working_day) : (employee.grade_salary / daysPeriod.working_day);
-
           const workingDays = (daysPeriod.working_day - (nbHolidays + nbOffDays));
           const workingDayCost = dailySalary * (daysPeriod.working_day - (nbHolidays + nbOffDays));
-
           const nbChildren = employee.nb_enfant;
-
           // Calcul of Seniority date Between date_embauche and the end date of Period
           const diff = moment(dateTo).diff(moment(employee.date_embauche));
           const duration = moment.duration(diff, 'milliseconds');
@@ -173,7 +170,6 @@ function config(req, res, next) {
             * remain equal to that defined at the level of the grade table
             */
           const totalCosts = workingDayCost + offDaysCost + holidaysCost;
-
           const basicSalary = util.roundDecimal(totalCosts * enterpriseExchangeRate, DECIMAL_PRECISION);
 
           if (rubricData.length) {
@@ -207,9 +203,7 @@ function config(req, res, next) {
             });
 
             // Filtering non-taxable Rubrics
-
             nonTaxables = rubricData.filter(item => item.is_social_care);
-
             // Filtering taxable Rubrics
             taxables = rubricData.filter(item =>
               (item.is_tax !== 1 && item.is_social_care !== 1
