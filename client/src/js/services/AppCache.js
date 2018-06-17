@@ -1,8 +1,10 @@
 angular.module('bhima.services')
-.service('AppCache', AppCache)
-.service('appcache', AppCache);
+  .service('AppCache', AppCache)
+  .service('appcache', AppCache);
 
-AppCache.$inject = [ '$localStorage', '$sessionStorage' ];
+AppCache.$inject = [
+  '$localStorage', '$sessionStorage',
+];
 
 /**
  * Application Cache Service
@@ -25,7 +27,7 @@ function AppCache($localStorage, $sessionStorage) {
   return function namespace(name, temp) {
 
     // if temp is true, create only session storage instance
-    var storage = (temp === true) ? $sessionStorage : $localStorage;
+    const storage = (temp === true) ? $sessionStorage : $localStorage;
 
     // make a namespace for the storage instance, if it doesn't already exist
     storage[name] = storage[name] || {};

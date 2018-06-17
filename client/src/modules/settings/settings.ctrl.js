@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 SettingsController.$inject = [
   'LanguageService', 'SessionService', 'bhConstants', '$translate',
-  'NotifyService', '$window', 'SystemService', 'ReceiptService'
+  'NotifyService', '$window', 'SystemService', 'ReceiptService',
 ];
 
 /**
@@ -15,49 +15,59 @@ SettingsController.$inject = [
  * @constructor
  */
 function SettingsController(Languages, Session, Constants, $translate, Notify, $window, System, Receipts) {
-  var vm = this;
+  const vm = this;
 
   vm.back = function back() { $window.history.back(); };
   vm.cachePosReceipt = cachePosReceipt;
   vm.cacheSimplified = cacheSimplified;
   vm.cacheInvoiceCurrency = cacheInvoiceCurrency;
+  vm.cacheReceiptRenderer = cacheReceiptRenderer;
 
   // load settings from services
-  vm.settings = { language : Languages.key, posReceipt : Receipts.posReceipt, simplified : Receipts.simplified };
+  vm.settings = {
+    language : Languages.key,
+    posReceipt : Receipts.posReceipt,
+    simplified : Receipts.simplified,
+    renderer : Receipts.renderer,
+  };
+
+  vm.rendererOptions = [
+    { id : Receipts.renderers.HTML, label : 'REPORT.UTIL.HTML' },
+    { id : Receipts.renderers.PDF, label : 'REPORT.UTIL.PDF' },
+  ];
 
   // bind methods/services to the view
   vm.languageService = Languages;
   vm.logout = Session.logout;
 
-  /** bind the language service for use in the view */
+  // bind the language service for use in the view
   Languages.read()
-    .then(function (languages) {
+    .then(languages => {
       vm.languages = languages;
     })
     .catch(Notify.handleError);
 
   // formatting or bug report
-  var emailAddress = Constants.settings.CONTACT_EMAIL;
-  var subject = '[BUG] ' + new Date().toLocaleDateString() + ' -  ' + Session.enterprise.name;
+  const emailAddress = Constants.settings.CONTACT_EMAIL;
+  const subject = `[BUG] ${new Date().toLocaleDateString()} -  ${Session.enterprise.name}`;
 
   // get the translated bug report
   $translate('SETTINGS.BUG_REPORT')
-    .then(function (body) {
+    .then(body => {
 
-      var text =
-        Session.user.username + ' ' +
-        new Date().toLocaleDateString() + '\r\n\r\n' +
-        body;
+      const text = `${Session.user.username} ${new Date().toLocaleDateString()}
+
+      ${body}`;
 
       // template in the bug link
-      vm.bugLink = encodeURI(emailAddress + '?subject=' + subject + '&body=' + text);
+      vm.bugLink = encodeURI(`${emailAddress}?subject=${subject}&body=${text}`);
     })
     .catch(Notify.handleError);
 
   // loads system information from the server
   function loadSystemInformation() {
     System.information()
-      .then(function (data) {
+      .then(data => {
         vm.system = data;
       });
   }
@@ -72,6 +82,10 @@ function SettingsController(Languages, Session, Constants, $translate, Notify, $
 
   function cacheInvoiceCurrency(value) {
     Receipts.setReceiptCurrency(value);
+  }
+
+  function cacheReceiptRenderer(value) {
+    Receipts.setReceiptRenderer(value);
   }
 
   // initialize with data
