@@ -796,8 +796,8 @@ INSERT INTO `depot` VALUES
   (@second_depot_uuid, 'Depot Secondaire', 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, NULL);
 
 -- Set Depot Management By User
-INSERT INTO depot_permission (id, user_id, depot_uuid) VALUES
-  (NULL, @superUser, @depot_uuid);
+INSERT INTO depot_permission (user_id, depot_uuid) VALUES
+  (@superUser, @depot_uuid);
 
 -- TODO : As soon as the stored Procedure for Stock accounting landed, stock movement records should be posted also
 SET @quinine = HUID('43f3decb-fce9-426e-940a-bc2150e62186');

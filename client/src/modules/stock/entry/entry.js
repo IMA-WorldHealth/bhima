@@ -145,6 +145,14 @@ function StockEntryController(
     vm.movement.entry_type = entryType.label;
     vm.stockForm.store.clear();
     vm.resetEntryExitTypes = false;
+
+    /**
+     * if false, the bhAddItems will be deactived
+     * the bhAddItems must be deactivated if no entity is selected
+     * or if the selected entity is `purchase` or `transfer_reception`
+     */
+    vm.entityAllowAddItems = !!(vm.movement.entry_type) &&
+      (vm.movement.entry_type !== 'purchase' && vm.movement.entry_type !== 'transfer_reception');
   }
 
   /**
@@ -402,6 +410,8 @@ function StockEntryController(
    * @description set the label of the selected entity
    */
   function setSelectedEntity(entity) {
+    if (!entity) { return; }
+
     const uniformEntity = Stock.uniformSelectedEntity(entity);
     vm.reference = entity.documentReference || uniformEntity.reference;
     vm.displayName = entity.depot_text || uniformEntity.displayName;

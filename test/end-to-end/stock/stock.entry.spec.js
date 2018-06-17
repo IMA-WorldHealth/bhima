@@ -49,6 +49,8 @@ function StockEntryTests() {
 
     page.setDescription(DESCRIPTION.concat(' - Integration de stock'));
 
+    page.addRows(1);
+
     const lots = [
       { label : 'ASP-ONE', quantity : 100, expiration_date : '2020-12-31' },
       { label : 'ASP-TWO', quantity : 200, expiration_date : '2019-06-15' },
