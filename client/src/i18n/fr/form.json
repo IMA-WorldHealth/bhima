@@ -139,6 +139,7 @@
             "ENTITY_NOT_FOUND": "Entité (Débiteur/Créditeur) Non Trouvé",
             "EMAIL_SUCCESS": "Email envoyé avec succès.",
             "EXPORT_SUCCESS": "Exportation avec succes",
+            "EXCHANGE_RATE_UPDATE_SUCCESS": "Taux de change mise à jour avec succès avec succes",
             "EDITED" : "Édité",
             "EMPLOYEE_NOT_FOUND" : "Employé introuvable",
             "FINANCIAL_DETAIL": "Détails financieres",

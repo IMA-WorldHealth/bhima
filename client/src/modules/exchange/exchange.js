@@ -31,7 +31,7 @@ function ExchangeController(Session, Exchange, Notify, Currencies, $uibModal) {
   // opens a modal to set a new exchange rate
   vm.setNewExchangeRate = function setNewExchangeRate() {
     const instance = $uibModal.open({
-      templateUrl : 'modules/enterprises/exchange/exchange.modal.html',
+      templateUrl : 'modules/exchange/exchange.modal.html',
       controller : 'ExchangeRateModalController as ModalCtrl',
     }).result;
 
