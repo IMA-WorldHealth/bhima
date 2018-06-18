@@ -216,8 +216,10 @@ function update(req, res, next) {
  * @returns {Promise} - the result of the database query
  */
 function lookupPatient(patientUuid) {
-  // convert uuid to database usable binary uuid
+  // convert uuid to patientbase usable binary uuid
   const buid = db.bid(patientUuid);
+
+  let patient;
 
   // @FIXME(sfount) ALL patient queries should use the same column selection and guarantee the same information
   const sql = `
@@ -228,23 +230,53 @@ function lookupPatient(patientUuid) {
       CONCAT_WS('.', '${identifiers.PATIENT.key}', proj.abbr, p.reference) AS reference, p.title, p.address_1,
       p.address_2, p.father_name, p.mother_name, p.religion, p.marital_status, p.profession, p.employer, p.spouse,
       p.spouse_profession, p.spouse_employer, p.notes, p.avatar, proj.abbr, d.text,
-      dg.account_id, BUID(dg.price_list_uuid) AS price_list_uuid, dg.is_convention, BUID(dg.uuid) as debtor_group_uuid,
-      dg.locked, dg.name as debtor_group_name, u.username, u.display_name AS userName, a.number
-    FROM patient AS p JOIN project AS proj JOIN debtor AS d JOIN debtor_group AS dg JOIN user AS u JOIN account AS a
-      ON p.debtor_uuid = d.uuid AND d.group_uuid = dg.uuid
-      AND p.project_id = proj.id AND p.user_id = u.id
-      AND a.id = dg.account_id
+      dg.account_id, BUID(dg.price_list_uuid) AS price_list_uuid, dg.is_convention,
+      BUID(dg.uuid) as debtor_group_uuid, dg.locked, dg.name as debtor_group_name, u.username,
+      u.display_name AS userName, a.number
+    FROM patient AS p
+      JOIN project AS proj ON p.project_id = proj.id
+      JOIN debtor AS d ON p.debtor_uuid = d.uuid
+      JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
+      JOIN user AS u ON p.user_id = u.id
+      JOIN account AS a ON a.id = dg.account_id
     WHERE p.uuid = ?;
   `;
 
   return db.one(sql, buid, patientUuid, 'patient')
-    .then((patient) => {
+    .then((data) => {
+      patient = data;
       _.extend(patient, {
         barcode : barcode.generate(identifiers.PATIENT.key, patient.uuid),
       });
 
+      return lookupPatientPriceList(buid);
+    })
+    .then(priceList => {
+      patient.price_list_uuid = patient.price_list_uuid || priceList;
       return patient;
     });
+}
+
+/**
+ * @method lookupPatientPriceLise
+ *
+ * @description
+ * This method queries the price list for the patient, choosing the debtor price
+ * list if it exists, or using a random patient group price list if those exist.
+ *
+ * TODO(@jniles) - how should this logic actually work?
+ *
+ */
+function lookupPatientPriceList(patientUuid) {
+  const sql = `
+    SELECT BUID(MAX(price_list_uuid)) as price_list_uuid FROM patient_assignment pa
+      LEFT JOIN patient_group pg ON pa.patient_group_uuid = pg.uuid
+    WHERE pa.patient_uuid = ?
+    GROUP BY patient_uuid;
+  `;
+
+  return db.exec(sql, patientUuid)
+    .then(([row]) => row && row.price_list_uuid);
 }
 
 

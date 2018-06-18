@@ -16,7 +16,6 @@ InventorySearchModalController.$inject = [
 function InventorySearchModalController(ModalInstance, Notify, filters, Inventory, Store, util) {
   const vm = this;
 
-  // @TODO ideally these should be passed in when the modal is initialised these are known when the filter service is defined
   const searchQueryOptions = [
     'code', 'group_uuid', 'consumable', 'text', 'locked',
     'label', 'type_id', 'price',
