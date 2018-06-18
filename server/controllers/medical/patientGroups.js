@@ -13,10 +13,12 @@
  * @requires @ima-worldhealth/topic
  */
 
-
-const db = require('../../lib/db');
 const uuid = require('uuid/v4');
 const Topic = require('@ima-worldhealth/topic');
+const Q = require('q');
+
+const db = require('../../lib/db');
+const FilterParser = require('../../lib/filter');
 const NotFound = require('../../lib/errors/NotFound');
 
 /**
@@ -26,23 +28,23 @@ const NotFound = require('../../lib/errors/NotFound');
  * Returns an array of patient groups.
  */
 function list(req, res, next) {
-  let sql = `
+  const filters = new FilterParser(req.query, { tableAlias : 'pg' });
+  const sql = `
     SELECT BUID(pg.uuid) as uuid, pg.name, BUID(pg.price_list_uuid) AS price_list_uuid,
-      pg.note, pg.created_at
-    FROM patient_group AS pg
+      pg.note, pg.created_at, pl.label AS priceListLabel, pl.description
+    FROM patient_group AS pg LEFT JOIN price_list AS pl ON pg.price_list_uuid = pl.uuid
   `;
 
-  if (req.query.detailed === '1') {
-    sql = `
-      SELECT BUID(pg.uuid) as uuid, pg.name, BUID(pg.price_list_uuid) AS price_list_uuid,
-        pg.note, pg.created_at, pl.label AS priceListLable, pl.description
-      FROM patient_group AS pg LEFT JOIN price_list AS pl ON pg.price_list_uuid = pl.uuid
-    `;
-  }
+  filters.equals('name');
+  filters.fullText('note');
+  filters.fullText('label');
+  filters.fullText('description');
 
-  sql += ' ORDER BY pg.name;';
+  filters.setOrder(' ORDER BY pg.name;');
 
-  db.exec(sql)
+  const [query, parameters] = [filters.applyQuery(sql), filters.parameters()];
+
+  db.exec(query, parameters)
     .then(rows => {
       res.status(200).json(rows);
     })
@@ -54,17 +56,55 @@ function list(req, res, next) {
  * @method create
  *
  * @description
- * Create a patient group in the database
+ * Create a patient group in the database.  If the patient group has associated
+ * subsidies or invoicing fees.
  */
 function create(req, res, next) {
   const record = db.convert(req.body, ['price_list_uuid']);
-  const sql = 'INSERT INTO patient_group SET ?';
+  const sql = 'INSERT INTO patient_group SET ?;';
+  const subsidySql = 'INSERT INTO patient_group_subsidy VALUES ?;';
+  const invoicingFeeSql = 'INSERT INTO patient_group_invoicing_fee VALUES ?;';
 
   // provide UUID if the client has not specified
   const uid = record.uuid || uuid();
   record.uuid = db.bid(uid);
 
-  db.exec(sql, [record])
+  const hasSubsidies = record.subsidies && record.subsidies.length > 0;
+  const hasInvoicingFees = record.invoicingFees && record.invoicingFees.length > 0;
+
+  const { subsidies, invoicingFees } = record;
+
+  delete record.subsidies;
+  delete record.invoicingFees;
+
+  const transaction = db.transaction();
+
+  transaction
+    .addQuery(sql, [record]);
+
+  // link up subsidies if they exist
+  if (hasSubsidies) {
+    const subs = subsidies
+      .map(subsidyId => ({
+        subsidy_id : subsidyId,
+        patient_group_uuid : record.uuid,
+      }));
+
+    transaction.addQuery(subsidySql, [subs]);
+  }
+
+  // link up invoicing fees if they exist
+  if (hasInvoicingFees) {
+    const fees = invoicingFees
+      .map(invoicingFeeId => ({
+        invoicing_fee_id : invoicingFeeId,
+        patient_group_uuid : record.uuid,
+      }));
+
+    transaction.addQuery(invoicingFeeSql, [fees]);
+  }
+
+  transaction.execute()
     .then(() => {
       Topic.publish(Topic.channels.MEDICAL, {
         event : Topic.events.CREATE,
@@ -83,28 +123,65 @@ function create(req, res, next) {
  * @method update
  *
  * @description
- * Update a patient group in the database
+ * Update a patient group in the database.  It will also recreate the subsidies
+ * and invoicing fees based on any lists passed from the client-side.
  */
 function update(req, res, next) {
   const sql = 'UPDATE patient_group SET ? WHERE uuid = ?';
+  const deleteSubsidySql =
+    'DELETE FROM patient_group_subsidy WHERE patient_group_uuid = ?';
+  const deleteInvoicingFeeSql =
+    'DELETE FROM patient_group_invoicing_fee WHERE patient_group_uuid = ?';
+
+  const subsidySql = 'INSERT INTO patient_group_subsidy VALUES ?;';
+  const invoicingFeeSql = 'INSERT INTO patient_group_invoicing_fee VALUES ?;';
 
   const data = db.convert(req.body, ['price_list_uuid']);
+  const { subsidies, invoicingFees } = data;
 
-  if (data.created_at) {
-    data.created_at = new Date(data.created_at);
-  }
+  const hasSubsidies = data.subsidies && data.subsidies.length > 0;
+  const hasInvoicingFees = data.invoicingFees && data.invoicingFees.length > 0;
 
   // make sure we aren't updating the uuid
   delete data.uuid;
+  delete data.created_at;
+  delete data.subsidies;
+  delete data.invoicingFees;
 
-  db.exec(sql, [data, db.bid(req.params.uuid)])
-    .then(rows => {
-      if (!rows.affectedRows) {
-        throw new NotFound(`No patient group found with id ${req.params.uuid}`);
-      }
+  const patientGroupUuid = db.bid(req.params.uuid);
 
-      return lookupPatientGroup(req.params.uuid);
-    })
+  const transaction = db.transaction();
+  transaction
+    .addQuery(sql, [data, patientGroupUuid])
+    .addQuery(deleteSubsidySql, patientGroupUuid)
+    .addQuery(deleteInvoicingFeeSql, patientGroupUuid);
+
+  // TODO(@jniles) - clean up repeated code
+
+  // link up subsidies if they exist
+  if (hasSubsidies) {
+    const subs = subsidies
+      .map(subsidyId => ({
+        subsidy_id : subsidyId,
+        patient_group_uuid : patientGroupUuid,
+      }));
+
+    transaction.addQuery(subsidySql, [subs]);
+  }
+
+  // link up invoicing fees if they exist
+  if (hasInvoicingFees) {
+    const fees = invoicingFees
+      .map(invoicingFeeId => ({
+        invoicing_fee_id : invoicingFeeId,
+        patient_group_uuid : patientGroupUuid,
+      }));
+
+    transaction.addQuery(invoicingFeeSql, [fees]);
+  }
+
+  transaction.execute()
+    .then(() => lookupPatientGroup(req.params.uuid))
     .then(group => {
       Topic.publish(Topic.channels.MEDICAL, {
         event : Topic.events.UPDATE,
@@ -171,7 +248,30 @@ function lookupPatientGroup(uid) {
     FROM patient_group AS pg WHERE pg.uuid = ?;
   `;
 
-  return db.one(sql, [db.bid(uid)], uid, 'patient group');
+  const subsidiesSql = `
+    SELECT subsidy.id, subsidy.label, subsidy.description
+    FROM patient_group_subsidy pgs JOIN subsidy ON pgs.subsidy_id = subsidy.id
+    WHERE pgs.patient_group_uuid = ?;
+  `;
+
+  const invoicingFeeSql = `
+    SELECT fee.id, fee.label, fee.description
+    FROM patient_group_invoicing_fee pgif JOIN invoicing_fee fee ON pgif.invoicing_fee_id = fee.id
+    WHERE pgif.patient_group_uuid = ?;
+  `;
+
+  const patientGroupUuid = db.bid(uid);
+
+  return Q.all([
+    db.one(sql, patientGroupUuid, uid, 'patient group'),
+    db.exec(subsidiesSql, patientGroupUuid),
+    db.exec(invoicingFeeSql, patientGroupUuid),
+  ])
+    .then(([patientGroup, subsidies, invoicingFees]) => {
+      patientGroup.subsidies = subsidies;
+      patientGroup.invoicingFees = invoicingFees;
+      return patientGroup;
+    });
 }
 
 exports.list = list;
