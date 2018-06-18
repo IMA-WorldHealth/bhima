@@ -4,14 +4,13 @@ angular.module('bhima.controllers')
 PatientRegistryController.$inject = [
   '$state', 'PatientService', 'NotifyService', 'AppCache', 'util',
   'ReceiptModal', 'uiGridConstants', '$translate', 'GridColumnService',
-  'GridSortingService', 'bhConstants', 'GridStateService', '$httpParamSerializer', 'LanguageService',
-  'GridSortingService', 'bhConstants', 'GridStateService', 'LanguageService',
+  'GridSortingService', 'bhConstants', 'GridStateService', '$httpParamSerializer',
+  'LanguageService',
 ];
 
 /**
  * Patient Registry Controller
  *
- * *
  * This module is responsible for the management of Patient Registry.
  */
 function PatientRegistryController(
@@ -113,6 +112,7 @@ function PatientRegistryController(
     visible : false,
   }, {
     name : 'actions',
+    enableFiltering : false,
     displayName : '',
     cellTemplate : '/modules/patients/templates/action.cell.html',
     enableSorting : false,
@@ -126,6 +126,7 @@ function PatientRegistryController(
     flatEntityAccess : true,
     fastWatch : true,
     columnDefs,
+    onRegisterApi : api => { vm.gridApi = api; },
   };
 
   const columnConfig = new Columns(vm.uiGridOptions, cacheKey);
@@ -203,6 +204,17 @@ function PatientRegistryController(
     Receipts.patient(uuid);
   }
 
+  /**
+   * @function toggleInlineFilter
+   *
+   * @description
+   * Switches the inline filter on and off.
+   */
+  vm.toggleInlineFilter = function toggleInlineFilter() {
+    vm.uiGridOptions.enableFiltering = !vm.uiGridOptions.enableFiltering;
+    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+  };
+
   // startup function. Checks for cached filters and loads them.  This behavior could be changed.
   function startup() {
     if ($state.params.filters.length) {
@@ -223,11 +235,13 @@ function PatientRegistryController(
       renameKeys : true,
       displayNames : columnConfig.getDisplayNames(),
     };
+
     // combine options
     const options = angular.merge(defaultOpts, filterOpts);
     // return  serialized options
     return $httpParamSerializer(options);
   }
+
   // fire up the module
   startup();
 }
