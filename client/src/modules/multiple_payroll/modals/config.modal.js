@@ -96,6 +96,8 @@ function ConfigPaiementModalController(
       employeeUuid : vm.stateParams.uuid,
     };
 
+    vm.periodDateTo = period.dateTo;
+
     return MultiplePayroll.getConfiguration(vm.idPeriod, params);
   })
   .then((configurations) => {
@@ -126,6 +128,7 @@ function ConfigPaiementModalController(
     vm.payroll.holidays = vm.configurations[2];
     vm.payroll.daysPeriod = vm.configurations[7][0];
     vm.payroll.iprScales = vm.configurations[4];
+    vm.payroll.periodDateTo = vm.periodDateTo;
 
     return MultiplePayroll.setConfiguration(vm.idPeriod, vm.payroll)
       .then(() => {

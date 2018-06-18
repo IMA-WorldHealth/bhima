@@ -32,7 +32,7 @@ novalidate>
           </h4>
 
           <ul class="list-group">
-            <li ng-repeat="page in module.pages" class="list-group-item">
+            <li ng-repeat="page in RolesPermissionsCtrl.sortUnit(module.pages)" class="list-group-item">
               <label class="radio-inline" ng-click="RolesPermissionsCtrl.pageSelected(page, module)">
                 <input type='checkbox' ng-model='page.affected' ng-true-value="1" ng-false-value="0" />
                 <span translate>{{page.key}}</span>

@@ -1,7 +1,7 @@
 /**
  *
  * @description
- * This controller allows to initialize the payment configuration for an employee, 
+ * This controller allows to initialize the payment configuration for an employee,
  * the data of this configuration comes from the manual configuration,
  *
  * @requires db
@@ -18,13 +18,14 @@ const uuid = require('uuid/v4');
 const Exchange = require('../../finance/exchange');
 const util = require('../../../lib/util');
 const q = require('q');
+const moment = require('moment');
 
 const getConfig = require('./getConfig');
 const manageConfig = require('./manageConfig');
 const calculation = require('./calculation');
 
 function config(req, res, next) {
-  const { data  } = req.body;
+  const { data } = req.body;
   const transaction = db.transaction();
   const currencyId = req.session.enterprise.currency_id;
   const enterpriseId = req.session.enterprise.id;
@@ -36,6 +37,9 @@ function config(req, res, next) {
   const employee = data.employee;
   const payrollConfigurationId = req.params.id;
   const paiementUuid = uuid();
+
+  // End Date of Payroll Period
+  const periodDateTo = data.periodDateTo;
 
   const uid = db.bid(paiementUuid);
 
@@ -68,6 +72,11 @@ function config(req, res, next) {
 
       const workingDayCost = dailySalary * data.working_day;
       const nbChildren = employee.nb_enfant;
+
+      // Calcul of Seniority date Between date_embauche and the end date of Period
+      const diff = moment(periodDateTo).diff(moment(employee.date_embauche));
+      const duration = moment.duration(diff, 'milliseconds');
+      const yearOfSeniority = parseInt(duration.asYears(), 10);
 
       /**
      * Some institution allocates a percentage for the offday and holiday payment,
@@ -119,8 +128,26 @@ function config(req, res, next) {
 
           if (rubrics.length) {
             rubrics.forEach(rubric => {
-            // Initialize values for rubrics that are not automatically calculated
+              // Conversion of non-percentage currency values to the currency used for payment
+              if (rubric.value && !rubric.is_percent && !rubric.is_seniority_bonus) {
+                rubric.value *= enterpriseExchangeRate;
+              }
+
+              // Initialize values for rubrics that are not automatically calculated
               rubric.result = util.roundDecimal(data.value[rubric.abbr], DECIMAL_PRECISION);
+
+              // Automatic calcul of Seniority_Bonus & Family_Allowances
+              if (rubric.is_seniority_bonus === 1) {
+                const seniorityElements = [yearOfSeniority, rubric.value];
+
+                rubric.result = calculation.automaticRubric(basicSalary, seniorityElements);
+              }
+
+              if (rubric.is_family_allowances === 1) {
+                const allowanceElements = [nbChildren];
+
+                rubric.result = calculation.automaticRubric(rubric.value, allowanceElements);
+              }
             });
 
             // Filtering non-taxable Rubrics
@@ -138,27 +165,30 @@ function config(req, res, next) {
               item.is_tax || item.is_membership_fee || item.is_discount === 1);
           }
 
-          // Calcul value for non-taxable and automatically calculated
+          // Calcul value for non-taxable and automatically calculated Expected Seniority_bonus & Family_allowances
           if (nonTaxables.length) {
             nonTaxables.forEach(nonTaxable => {
-              nonTaxable.result = nonTaxable.is_percent ?
-                util.roundDecimal((basicSalary * nonTaxable.value) / 100, DECIMAL_PRECISION) :
-                (nonTaxable.result || nonTaxable.value);
+              if (!nonTaxable.is_seniority_bonus && !nonTaxable.is_family_allowances) {
+                nonTaxable.result = nonTaxable.is_percent ?
+                  util.roundDecimal((basicSalary * nonTaxable.value) / 100, DECIMAL_PRECISION) :
+                  (nonTaxable.result || nonTaxable.value);
+              }
 
               sumNonTaxable += nonTaxable.result;
-
               allRubrics.push([uid, nonTaxable.rubric_payroll_id, nonTaxable.result]);
             });
           }
 
+          // Calcul value for taxable and automatically calculated Expected Seniority_bonus & Family_allowances
           if (taxables.length) {
             taxables.forEach(taxable => {
-              taxable.result = taxable.is_percent ?
-                util.roundDecimal((basicSalary * taxable.value) / 100, DECIMAL_PRECISION) :
-                (taxable.result || taxable.value);
+              if (!taxable.is_seniority_bonus && !taxable.is_family_allowances) {
+                taxable.result = taxable.is_percent ?
+                  util.roundDecimal((basicSalary * taxable.value) / 100, DECIMAL_PRECISION) :
+                  (taxable.result || taxable.value);
+              }
 
               sumTaxable += taxable.result;
-
               allRubrics.push([uid, taxable.rubric_payroll_id, taxable.result]);
             });
           }

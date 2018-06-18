@@ -2,10 +2,10 @@ angular.module('bhima.controllers')
   .controller('RolesPermissionsController', RolesPermissionsController);
 
 RolesPermissionsController.$inject = [
-  'data', '$state', '$uibModalInstance', 'AppCache', 'RolesService', 'NotifyService',
+  'data', '$state', '$uibModalInstance', 'AppCache', 'RolesService', 'NotifyService', 'Tree',
 ];
 
-function RolesPermissionsController(data, $state, $uibModalInstance, AppCache, RolesService, Notify) {
+function RolesPermissionsController(data, $state, $uibModalInstance, AppCache, RolesService, Notify, Tree) {
   const vm = this;
   vm.close = close;
   vm.role = angular.copy(data);
@@ -14,6 +14,7 @@ function RolesPermissionsController(data, $state, $uibModalInstance, AppCache, R
   vm.allPage = 0;
   vm.pageSelected = pageSelected;
   vm.moduleSelected = moduleSelected;
+  vm.sortUnit = sortUnit;
 
   // affeted pages(permission) to this role
   vm.getAffected = getAffected;
@@ -21,12 +22,17 @@ function RolesPermissionsController(data, $state, $uibModalInstance, AppCache, R
   // vm.role.uuid
   RolesService.unit(vm.role.uuid)
     .then(res => {
-      vm.tree = res.data;
+      vm.tree = vm.sortUnit(res.data);
     });
 
   // close modal
   function close() {
     $uibModalInstance.close();
+  }
+
+  function sortUnit(units) {
+    Tree.sortByTranslationKey(units);
+    return units;
   }
 
   function pageSelected(page, _module) {

@@ -10,7 +10,9 @@ function getConfigurationData(payrollConfigurationId, params) {
     FROM config_rubric_item
     JOIN rubric_payroll ON rubric_payroll.id = config_rubric_item.rubric_payroll_id
     JOIN payroll_configuration ON payroll_configuration.config_rubric_id = config_rubric_item.config_rubric_id
-    WHERE payroll_configuration.id = ? AND rubric_payroll.is_percent = 0 AND rubric_payroll.is_tax = 0;
+    WHERE payroll_configuration.id = ? AND rubric_payroll.is_percent = 0 AND rubric_payroll.is_tax = 0
+    AND rubric_payroll.is_seniority_bonus = 0 AND rubric_payroll.is_family_allowances = 0
+    ORDER BY rubric_payroll.label ASC;
   `;
 
   const getPeriodOffdays = `
