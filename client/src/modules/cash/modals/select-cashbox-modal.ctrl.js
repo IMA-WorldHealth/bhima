@@ -10,26 +10,26 @@ SelectCashboxModalController.$inject = [
  * This modal selects the active cashbox on the cash page
  */
 function SelectCashboxModalController(Session, Instance, Cashboxes, $stateParams, Notify) {
-  var vm = this;
+  const vm = this;
 
-  var cashboxId = $stateParams.id;
+  const cashboxId = $stateParams.id;
   vm.cashboxId = cashboxId;
   vm.selectCashbox = selectCashbox;
-
+  vm.hasCashboxes = false;
   /* ------------------------------------------------------------------------ */
 
   // loads a new set of cashboxes from the server that the user has management right.
   function startup() {
     toggleLoadingIndicator();
     Cashboxes.readPrivileges()
-      .then(function (cashboxes) {
+      .then((cashboxes) => {
         vm.cashboxes = cashboxes;
-
-        vm.currentProjectCashboxes = cashboxes.filter(function (cashbox) {
+        vm.hasCashboxes = cashboxes.length > 0;
+        vm.currentProjectCashboxes = cashboxes.filter((cashbox) => {
           return ((cashbox.project_id === Session.project.id) && cashbox.user_id);
         });
 
-        vm.otherProjectCashboxes = cashboxes.filter(function (cashbox) {
+        vm.otherProjectCashboxes = cashboxes.filter((cashbox) => {
           return ((cashbox.project_id !== Session.project.id) && cashbox.user_id);
         });
 
@@ -43,12 +43,12 @@ function SelectCashboxModalController(Session, Instance, Cashboxes, $stateParams
 
         /**
         * This section makes it possible to check if the user does not have permissions to a cash register or that it does not exist
-        */        
-        vm.currentCashboxes = cashboxes.filter(function (cashbox) {
+        */
+        vm.currentCashboxes = cashboxes.filter((cashbox) => {
           return cashbox.project_id === Session.project.id;
         });
 
-        vm.otherCashboxes = cashboxes.filter(function (cashbox) {
+        vm.otherCashboxes = cashboxes.filter((cashbox) => {
           return cashbox.project_id !== Session.project.id;
         });
 
@@ -62,9 +62,9 @@ function SelectCashboxModalController(Session, Instance, Cashboxes, $stateParams
 
   // fired when a user selects a cashbox from a list
   function selectCashbox(id) {
-    var selected;
+    let selected;
 
-    vm.cashboxes.forEach(function (box) {
+    vm.cashboxes.forEach((box) => {
       if (box.id === id) {
         selected = box;
       }

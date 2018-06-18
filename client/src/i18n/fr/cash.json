@@ -28,6 +28,7 @@
       "NO_OTHER_PROJECT_CASHBOXES" : "Il n'y a aucune caisses enregistrer pour les autres projets.",
 	  "NO_OTHER_PROJECT_CASHBOXES_ACCESS" : "Il n'existe aucune caisses des autres projets dont vous avez le droit d'accès .",
       "NO_CURRENT_PROJECT_CASHBOXES" : "Il n'y a aucune caisses enregistrer pour votre projet.",
+      "NO_CASHBOXE" : "Il n'y a aucune caisse enregistrée dans le système, veillez contacter l'administrateur pour en créer.",
 	  "NO_CURRENT_PROJECT_CASHBOXES_ACCESS" : "Il n'y a aucune caisses dans votre projet dont vous avez le droit d'accès."
     },
     "TITLE":"Caisse Auxilliaire",
