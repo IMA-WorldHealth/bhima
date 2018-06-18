@@ -5,21 +5,20 @@
     <!-- Error alert in case the server sends back an error -->
     <div ng-show="AlertModalCtrl.error">
       <uib-alert type="danger">
-        {{ AlertModalCtrl.error | translate }}
+        <span translate> {{ AlertModalCtrl.error }}</span>
       </uib-alert>
     </div>
 
     <!-- translateable prompt -->
     <p class="text-left">
       <span class="glyphicon glyphicon-alert text-warning"></span>
-      {{ (AlertModalCtrl.prompt) | translate }}
+      <span translate>{{ AlertModalCtrl.prompt }}</span>
     </p>
   </div>
 
   <div class="modal-footer">
-
-    <button type="button" class="btn btn-default" ng-click="AlertModalCtrl.dismiss()" data-model-cancel>
-      {{ "FORM.BUTTONS.OK" | translate }}
+    <button type="button" class="btn btn-default" ng-click="AlertModalCtrl.dismiss()" data-model-cancel translate>
+      FORM.BUTTONS.OK
     </button>
   </div>
 </form>
