@@ -33,7 +33,7 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
   vm.onChanges = onChanges;
   vm.onDateChange = onDateChange;
 
-  vm.isCostEditable = (vm.entryType !== 'purchase' && vm.entryType !== 'transfer_reception');
+  vm.isCostEditable = (vm.entryType !== 'transfer_reception');
 
   const cols = [{
     field : 'status',

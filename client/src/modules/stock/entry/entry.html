@@ -39,16 +39,17 @@
 
     <form name="StockEntryForm" bh-submit="StockCtrl.submit(StockEntryForm)" novalidate>
 
-    <!-- activator -->
-    <div class="row">
-      <bh-stock-entry-exit-type
-        on-entry-exit-type-select-callback="StockCtrl.selectEntryType(type)"
-        reference="StockCtrl.reference"
-        display-name="StockCtrl.displayName"
-        is-entry="true"
-        depot="StockCtrl.depot">
-      </bh-stock-entry-exit-type>
-    </div>
+      <!-- activator -->
+      <div class="row">
+        <bh-stock-entry-exit-type
+          on-entry-exit-type-select-callback="StockCtrl.selectEntryType(type)"
+          reference="StockCtrl.reference"
+          display-name="StockCtrl.displayName"
+          is-entry="true"
+          depot="StockCtrl.depot"
+          reset="StockCtrl.resetEntryExitTypes">
+        </bh-stock-entry-exit-type>
+      </div>
 
       <!-- date and note -->
       <div class="row">
@@ -85,7 +86,7 @@
           </p>
 
           <!-- "Add number of grid rows" input-group -->
-          <bh-add-item disable="StockCtrl.entryOption" callback="StockCtrl.addItems(numItem)">
+          <bh-add-item disable="StockCtrl.entityAllowAddItems" callback="StockCtrl.addItems(numItem)">
           </bh-add-item>
         </div>
       </div>
@@ -104,8 +105,8 @@
         <div class="col-xs-6 col-xs-offset-6">
           <div class="text-right">
             <button class="btn btn-default" ng-click="StockCtrl.reset(StockEntryForm)" type="button" translate>
-            FORM.BUTTONS.CLEAR
-          </button>
+              FORM.BUTTONS.CLEAR
+            </button>
 
             <bh-loading-button loading-state="StockCtrl.$loading" disabled="!StockCtrl.hasValidInput">
               <span translate>FORM.BUTTONS.SUBMIT</span>

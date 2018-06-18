@@ -1,4 +1,4 @@
-/* global by, element */
+/* global by */
 
 const FU = require('../shared/FormUtils');
 const GU = require('../shared/GridUtils');

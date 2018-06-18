@@ -1,5 +1,5 @@
 const bhReceiptTemplate = `
-  <a ng-click="$ctrl.open()" href="">
+  <a ng-click="$ctrl.open()" href="" translate>
     {{ $ctrl.displayValue }}
   </a>`;
 
