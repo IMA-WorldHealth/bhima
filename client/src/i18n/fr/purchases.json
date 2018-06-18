@@ -15,4 +15,5 @@
 "NOT_RECEIVED":"Non Reçu",
 "NOT_RECEIVED_DESC":"La commande n'a pas encore été reçu",
 "CANCELLED":"Annulé",
+"EXCESSIVE_RECEIVED_QUANTITY":"La commande a été reçu mais de façon excessive",
 "CANCELLED_DESC":"La commande a été annulée suite à une raison quelconque"}}}

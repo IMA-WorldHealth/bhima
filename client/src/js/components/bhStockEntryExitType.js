@@ -8,6 +8,7 @@ angular.module('bhima.components')
       displayName : '<?',
       isEntry : '@',
       depot : '<?',
+      reset : '<?', // when changes to true the component will be reseted
     },
   });
 
@@ -27,6 +28,10 @@ function StockEntryExitTypeController(StockEntryExitType) {
 
   $ctrl.$onChanges = function onChanges(changes) {
     if (changes.depot) {
+      reloadEntryExitTypes();
+    }
+
+    if (changes.reset && changes.reset.currentValue === true) {
       reloadEntryExitTypes();
     }
   };

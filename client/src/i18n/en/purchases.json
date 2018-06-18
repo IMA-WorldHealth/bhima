@@ -15,4 +15,5 @@
 "NOT_RECEIVED":"Not Received",
 "NOT_RECEIVED_DESC":"The purchase order products are not yet in the stock",
 "CANCELLED":"Cancelled",
+"EXCESSIVE_RECEIVED_QUANTITY":"The purchase order has been received but with excessive quantity",
 "CANCELLED_DESC":"The purchase order has been cancelled"}}}

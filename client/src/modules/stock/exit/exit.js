@@ -14,8 +14,6 @@ StockExitController.$inject = [
  *
  * @description
  * This controller is responsible to handle stock exit module.
- *
- * @todo Implement caching data feature
  */
 function StockExitController(
   Depots, Inventory, Notify, Session, util, bhConstants, ReceiptModal, StockItem, StockForm, Stock,
@@ -37,6 +35,7 @@ function StockExitController(
   vm.maxLength = util.maxLength;
   vm.enterprise = Session.enterprise;
   vm.maxDate = new Date();
+  vm.resetEntryExitTypes = false;
 
   vm.addItems = addItems;
   vm.removeItem = removeItem;
@@ -163,6 +162,7 @@ function StockExitController(
     _form.$setPristine();
     _form.$setUntouched();
     vm.stockForm.store.clear();
+    vm.resetEntryExitTypes = true;
   }
 
   /**
@@ -213,6 +213,8 @@ function StockExitController(
     vm.movement.exit_type = exitType.label;
     mapExit[exitType.label].find();
     vm.movement.description = $translate.instant(mapExit[exitType.label].description);
+    vm.stockForm.store.clear();
+    vm.resetEntryExitTypes = false;
   }
 
   function setupStock() {
@@ -410,15 +412,20 @@ function StockExitController(
     if (!vm.movement.entity.uuid && vm.movement.entity.type !== 'loss') {
       return Notify.danger('ERRORS.ER_NO_STOCK_DESTINATION');
     }
+    vm.$loading = true;
     return mapExit[vm.movement.exit_type].submit()
-      .then(() => {
-        vm.validForSubmit = false;
+      .then(toggleLoadingIndicator)
+      .catch(Notify.handleError)
+      .finally(() => reinit(form));
+  }
 
-        // reseting the form
-        resetSelectedEntity();
-        vm.reset(form);
-      })
-      .catch(Notify.handleError);
+  function toggleLoadingIndicator() {
+    vm.$loading = !vm.$loading;
+  }
+
+  function reinit(form) {
+    vm.reset(form);
+    resetSelectedEntity();
   }
 
   // handle lot function
