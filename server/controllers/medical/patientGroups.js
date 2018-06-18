@@ -62,8 +62,8 @@ function list(req, res, next) {
 function create(req, res, next) {
   const record = db.convert(req.body, ['price_list_uuid']);
   const sql = 'INSERT INTO patient_group SET ?;';
-  const subsidySql = 'INSERT INTO patient_group_subsidy VALUES ?;';
-  const invoicingFeeSql = 'INSERT INTO patient_group_invoicing_fee VALUES ?;';
+  const subsidySql = 'INSERT INTO patient_group_subsidy (subsidy_id, patient_group_uuid) VALUES ?;';
+  const invoicingFeeSql = 'INSERT INTO patient_group_invoicing_fee (invoicing_fee_id, patient_group_uuid) VALUES ?;';
 
   // provide UUID if the client has not specified
   const uid = record.uuid || uuid();
@@ -85,10 +85,10 @@ function create(req, res, next) {
   // link up subsidies if they exist
   if (hasSubsidies) {
     const subs = subsidies
-      .map(subsidyId => ({
-        subsidy_id : subsidyId,
-        patient_group_uuid : record.uuid,
-      }));
+      .map(subsidyId => ([
+        subsidyId,
+        record.uuid,
+      ]));
 
     transaction.addQuery(subsidySql, [subs]);
   }
@@ -96,10 +96,10 @@ function create(req, res, next) {
   // link up invoicing fees if they exist
   if (hasInvoicingFees) {
     const fees = invoicingFees
-      .map(invoicingFeeId => ({
-        invoicing_fee_id : invoicingFeeId,
-        patient_group_uuid : record.uuid,
-      }));
+      .map(invoicingFeeId => ([
+        invoicingFeeId,
+        record.uuid,
+      ]));
 
     transaction.addQuery(invoicingFeeSql, [fees]);
   }
@@ -133,8 +133,8 @@ function update(req, res, next) {
   const deleteInvoicingFeeSql =
     'DELETE FROM patient_group_invoicing_fee WHERE patient_group_uuid = ?';
 
-  const subsidySql = 'INSERT INTO patient_group_subsidy VALUES ?;';
-  const invoicingFeeSql = 'INSERT INTO patient_group_invoicing_fee VALUES ?;';
+  const subsidySql = 'INSERT INTO patient_group_subsidy (subsidy_id, patient_group_uuid) VALUES ?;';
+  const invoicingFeeSql = 'INSERT INTO patient_group_invoicing_fee (invoicing_fee_id, patient_group_uuid) VALUES ?;';
 
   const data = db.convert(req.body, ['price_list_uuid']);
   const { subsidies, invoicingFees } = data;
@@ -161,10 +161,10 @@ function update(req, res, next) {
   // link up subsidies if they exist
   if (hasSubsidies) {
     const subs = subsidies
-      .map(subsidyId => ({
-        subsidy_id : subsidyId,
-        patient_group_uuid : patientGroupUuid,
-      }));
+      .map(subsidyId => ([
+        subsidyId,
+        patientGroupUuid,
+      ]));
 
     transaction.addQuery(subsidySql, [subs]);
   }
@@ -172,10 +172,10 @@ function update(req, res, next) {
   // link up invoicing fees if they exist
   if (hasInvoicingFees) {
     const fees = invoicingFees
-      .map(invoicingFeeId => ({
-        invoicing_fee_id : invoicingFeeId,
-        patient_group_uuid : patientGroupUuid,
-      }));
+      .map(invoicingFeeId => ([
+        invoicingFeeId,
+        patientGroupUuid,
+      ]));
 
     transaction.addQuery(invoicingFeeSql, [fees]);
   }
