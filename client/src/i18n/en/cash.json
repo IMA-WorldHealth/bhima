@@ -23,7 +23,8 @@
       "OTHER_PROJECT_CASHBOXES" : "Other Project Cashboxes",
       "NO_OTHER_PROJECT_CASHBOXES" : "No cashboxes found registered to other projects.",
 	  "NO_OTHER_PROJECT_CASHBOXES_ACCESS" : "No cashboxes found registered to other projects that you have access right to.",
-      "NO_CURRENT_PROJECT_CASHBOXES" : "No cashboxes found registered to the current project.",
+    "NO_CURRENT_PROJECT_CASHBOXES" : "No cashboxes found registered to the current project.",
+    "NO_CASHBOXE" : "No cashbox found registered in the system, contact the administrator for creating one.",
 	  "NO_CURRENT_PROJECT_CASHBOXES_ACCESS" : "There are no cashbox in your project that you have access right to"
     },
     "TITLE":"Cash Window",

@@ -154,7 +154,7 @@
 
         <!-- Form for updating supplier -->
         <div class="panel panel-primary" ng-switch-when="update">
-          <div class="panel-heading"><b translate> {{ 'SUPPLIER.EDIT_SUPPLIER' | translate }} </b> </div>
+          <div class="panel-heading"><b translate>SUPPLIER.EDIT_SUPPLIER</b> </div>
           <div class="panel-body">
             <form name="UpdateForm" ng-submit="SupplierCtrl.submit(UpdateForm)" novalidate>
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.display_name.$invalid }">

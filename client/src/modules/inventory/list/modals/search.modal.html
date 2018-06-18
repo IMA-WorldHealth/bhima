@@ -9,7 +9,7 @@
 
   <div class="modal-body search-modal">
     <uib-tabset>
-      <uib-tab index="0" heading="{{ 'FORM.LABELS.SEARCH_QUERRIES' | translate }}" data-custom-filter-tab>
+      <uib-tab index="0" heading="{{ 'FORM.LABELS.SEARCH_QUERIES' | translate }}" data-custom-filter-tab>
         <div class="tab-body">
 
           <bh-inventory-group-select
@@ -68,8 +68,8 @@
               FORM.LABELS.CONSUMABLE
             </label>
             <div ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.consumable.$invalid }">
-            
-           
+
+
             <label class="radio-inline">
               <input type="radio" value='1' name="consumable" ng-model="ModalCtrl.searchQueries.consumable">
               <span translate>FORM.LABELS.YES</span>
@@ -81,14 +81,14 @@
             </label>
           </div>
           </div>
- 
+
           <div class="form-group">
             <bh-clear on-clear="ModalCtrl.clear('locked')"></bh-clear>
             <label class="control-label" translate>
               FORM.LABELS.LOCKED
             </label>
             <div  ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.locked.$invalid }">
-              
+
               <label class="radio-inline">
                 <input type="radio" value='1' name="locked" ng-model="ModalCtrl.searchQueries.locked">
                 <span translate>FORM.LABELS.YES</span>
