@@ -181,15 +181,15 @@
         <span translate>INVENTORY.SELLABLE</span>
       </label>
     </div>
+
     <div class="form-group">
-      <span translate>FORM.INFO.NOTE</span>
-      <textarea  class="form-control"  name="note"  ng-model="$ctrl.item.note">
+      <label class="control-label" translate>FORM.LABELS.NOTE</label>
+      <textarea class="form-control" name="note"  ng-model="$ctrl.item.note">
       </textarea>
     </div>
   </div>
 
   <div class="modal-footer">
-
     <div class="checkbox" style="display : inline-block" ng-if="$ctrl.isCreateState">
       <label>
         <input type="checkbox" ng-model="$ctrl.createAnotherItem"> <span translate>INVENTORY.CREATE_ANOTHER</span>
