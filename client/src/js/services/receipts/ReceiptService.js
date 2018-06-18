@@ -1,7 +1,7 @@
 angular.module('bhima.services')
-.service('ReceiptService', ReceiptService);
+  .service('ReceiptService', ReceiptService);
 
-ReceiptService.$inject = ['$http', 'util' , 'LanguageService', 'AppCache', 'SessionService'];
+ReceiptService.$inject = ['$http', 'util', 'LanguageService', 'AppCache', 'SessionService'];
 
 /**
  * Receipts Service
@@ -19,18 +19,19 @@ ReceiptService.$inject = ['$http', 'util' , 'LanguageService', 'AppCache', 'Sess
  * @module services/receipts/ReciptService
  */
 function ReceiptService($http, util, Language, AppCache, Session) {
-  var service = this;
-  var renderers = {
+  const service = this;
+  const renderers = {
     PDF  : 'pdf',
     HTML : 'html',
-    JSON : 'json'
+    JSON : 'json',
   };
 
-  var cache = new AppCache('receipts');
+  const cache = new AppCache('receipts');
 
   service.posReceipt = cache.posReceipt || '0';
   service.simplified = cache.simplified || '0';
   service.invoiceCurrency = cache.invoiceCurrency || Session.enterprise.currency_id;
+  service.renderer = cache.renderer || renderers.PDF;
 
   // expose data
   service.renderers = renderers;
@@ -41,14 +42,13 @@ function ReceiptService($http, util, Language, AppCache, Session) {
   service.purchase = purchase;
   service.cash = cash;
   service.voucher = voucher;
-  service.transaction = transaction;
   service.payroll = payroll;
   service.creditNote = creditNote;
-  service.accountSlip = accountSlip;
 
   service.setPosReceipt = setPosReceipt;
   service.setSimplified = setSimplified;
   service.setReceiptCurrency = setReceiptCurrency;
+  service.setReceiptRenderer = setReceiptRenderer;
 
   /**
    * @method fetch
@@ -63,10 +63,8 @@ function ReceiptService($http, util, Language, AppCache, Session) {
    * @returns {Promise}        Eventually returns report object from server
    * @private
    */
-  function fetch(target, options) {
-    var responseType = null;
-
-    options = options || {};
+  function fetch(target, options = {}) {
+    let responseType = null;
 
     // set the session language
     options.lang = Language.key;
@@ -75,7 +73,7 @@ function ReceiptService($http, util, Language, AppCache, Session) {
       responseType = 'arraybuffer';
     }
 
-    return $http.get(target, {params: options, responseType: responseType})
+    return $http.get(target, { params : options, responseType })
       .then(util.unwrapHttpResponse);
 
   }
@@ -90,7 +88,7 @@ function ReceiptService($http, util, Language, AppCache, Session) {
    */
   function invoice(uuid, options) {
     options.posReceipt = service.posReceipt;
-    var route = '/reports/finance/invoices/'.concat(uuid);
+    const route = '/reports/finance/invoices/'.concat(uuid);
     return fetch(route, options);
   }
 
@@ -98,46 +96,36 @@ function ReceiptService($http, util, Language, AppCache, Session) {
   function patient(uuid, options) {
     options.posReceipt = service.posReceipt;
     options.simplified = service.simplified;
-    var route ='/reports/medical/patients/'.concat(uuid);
+    const route = '/reports/medical/patients/'.concat(uuid);
     return fetch(route, options);
   }
 
   // print a receipt modal for a purchase order
   function purchase(uuid, options) {
-    var route ='/reports/inventory/purchases/'.concat(uuid);
+    const route = '/reports/inventory/purchases/'.concat(uuid);
     return fetch(route, options);
   }
 
   // print a cash (point-of-sale) receipt
   function cash(uuid, options) {
     options.posReceipt = service.posReceipt;
-    var route = '/reports/finance/cash/'.concat(uuid);
+    const route = '/reports/finance/cash/'.concat(uuid);
     return fetch(route, options);
   }
 
   // print a complex voucher receipt
   function voucher(uuid, options) {
     options.posReceipt = service.posReceipt;
-    var route = '/reports/finance/vouchers/'.concat(uuid);
+    const route = '/reports/finance/vouchers/'.concat(uuid);
     return fetch(route, options);
   }
 
-  // print a credit note for an invoice 
+  // print a credit note for an invoice
   function creditNote(uuid, options) {
-    var route = '/reports/finance/invoices/'.concat(uuid, '/creditNote');
+    const route = '/reports/finance/invoices/'.concat(uuid, '/creditNote');
     return fetch(route, options);
   }
 
-  // print a document for an account slip 
-  function accountSlip(id, options) {
-    var route = '/reports/finance/general_ledger/'.concat(id);
-    return fetch(route, options);
-  }
-
-  // print a generic transaction receipt
-  function transaction(uuid, options) {
-    /* noop */
-  }
 
   // print a payslip of payroll payment
   function payroll(request, options) {
@@ -146,7 +134,7 @@ function ReceiptService($http, util, Language, AppCache, Session) {
     // set the session language
     options.lang = Language.key;
 
-    var route = '/reports/payroll/payslip';
+    const route = '/reports/payroll/payslip';
     return fetch(route, options);
   }
 
@@ -165,70 +153,78 @@ function ReceiptService($http, util, Language, AppCache, Session) {
 
   // stock exit patient receipt
   function stockExitPatientReceipt(uuid, options) {
-    var route = '/receipts/stock/exit_patient/'.concat(uuid);
+    const route = '/receipts/stock/exit_patient/'.concat(uuid);
     return fetch(route, options);
   }
 
   // stock exit service receipt
   function stockExitServiceReceipt(uuid, options) {
-    var route = '/receipts/stock/exit_service/'.concat(uuid);
+    const route = '/receipts/stock/exit_service/'.concat(uuid);
     return fetch(route, options);
   }
 
   // stock exit depot receipt
   function stockExitDepotReceipt(uuid, options) {
-    var route = '/receipts/stock/exit_depot/'.concat(uuid);
+    const route = '/receipts/stock/exit_depot/'.concat(uuid);
     return fetch(route, options);
   }
 
   // stock exit loss receipt
   function stockExitLossReceipt(uuid, options) {
-    var route = '/receipts/stock/exit_loss/'.concat(uuid);
+    const route = '/receipts/stock/exit_loss/'.concat(uuid);
     return fetch(route, options);
   }
 
   // stock entry depot receipt
   function stockEntryDepotReceipt(uuid, options) {
-    var route = '/receipts/stock/entry_depot/'.concat(uuid);
+    const route = '/receipts/stock/entry_depot/'.concat(uuid);
     return fetch(route, options);
   }
 
   // stock entry purchase receipt
   function stockEntryPurchaseReceipt(uuid, options) {
-    var route = '/receipts/stock/entry_purchase/'.concat(uuid);
+    const route = '/receipts/stock/entry_purchase/'.concat(uuid);
     return fetch(route, options);
   }
 
   // stock entry integration receipt
   function stockEntryIntegrationReceipt(uuid, options) {
-    var route = '/receipts/stock/entry_integration/'.concat(uuid);
+    const route = '/receipts/stock/entry_integration/'.concat(uuid);
     return fetch(route, options);
   }
 
   // stock entry donation receipt
   function stockEntryDonationReceipt(uuid, options) {
-    var route = '/receipts/stock/entry_donation/'.concat(uuid);
+    const route = '/receipts/stock/entry_donation/'.concat(uuid);
     return fetch(route, options);
   }
 
   // stock adjustment receipt
   function stockAdjustmentReceipt(uuid, options) {
-    var route = '/receipts/stock/adjustment/'.concat(uuid);
+    const route = '/receipts/stock/adjustment/'.concat(uuid);
     return fetch(route, options);
   }
 
   // ========================== end stock ==========================
 
   function setPosReceipt(posReceiptEnabled) {
-    service.posReceipt = cache.posReceipt = posReceiptEnabled;
+    service.posReceipt = posReceiptEnabled;
+    cache.posReceipt = posReceiptEnabled;
   }
 
   function setSimplified(simplifiedEnabled) {
-    service.simplified = cache.simplified = simplifiedEnabled;
+    service.simplified = simplifiedEnabled;
+    cache.simplified = simplifiedEnabled;
   }
-  
+
+  function setReceiptRenderer(renderer) {
+    cache.renderer = renderer;
+    service.renderer = cache.renderer;
+  }
+
   function setReceiptCurrency(currency) {
-    service.receiptCurrency = cache.receiptCurrency = currency;
+    service.receiptCurrency = currency;
+    cache.receiptCurrency = currency;
   }
 
   return service;

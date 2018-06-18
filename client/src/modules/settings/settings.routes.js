@@ -1,8 +1,8 @@
 angular.module('bhima.routes')
-  .config(['$stateProvider', function ($stateProvider) {
+  .config(['$stateProvider', $stateProvider => {
     $stateProvider
       .state('settings', {
-        url         : '/settings?previous',
+        url         : '/settings',
         controller  : 'settings as SettingsCtrl',
         templateUrl : 'modules/settings/settings.html',
       });

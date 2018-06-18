@@ -1,7 +1,9 @@
 angular.module('bhima.services')
   .service('ReceiptModal', ReceiptModal);
 
-ReceiptModal.$inject = ['$uibModal', 'ReceiptService'];
+ReceiptModal.$inject = [
+  '$uibModal', 'ReceiptService',
+];
 
 /**
  * Receipts Modal Service
@@ -28,11 +30,9 @@ function ReceiptModal(Modal, Receipts) {
   service.patient = patient;
   service.purchase = purchase;
   service.cash = cash;
-  service.transaction = transaction;
   service.payroll = payroll;
   service.voucher = voucher;
   service.creditNote = creditNote;
-  service.accountSlip = accountSlip;
 
   /**
    * Invokes a patient invoice receipt
@@ -47,12 +47,12 @@ function ReceiptModal(Modal, Receipts) {
       title         : 'PATIENT_INVOICE.PAGE_TITLE',
       createdKey    : 'PATIENT_INVOICE.SUCCESS',
       identifier    : 'reference',
-      renderer      : Receipts.renderers.PDF,
+      renderer      : Receipts.renderer,
       notifyCreated,
     };
 
     const receiptOptions = {
-      renderer : Receipts.renderers.PDF,
+      renderer      : Receipts.renderer,
       currency : Receipts.receiptCurrency,
     };
 
@@ -81,12 +81,12 @@ function ReceiptModal(Modal, Receipts) {
       title         : 'PATIENT_REG.PAGE_TITLE',
       createdKey    : 'PATIENT_REG.SUCCESS',
       identifier    : 'reference',
-      renderer      : Receipts.renderers.PDF,
+      renderer      : Receipts.renderer,
       notifyCreated,
     };
 
     const receiptOptions = {
-      renderer : Receipts.renderers.PDF,
+      renderer      : Receipts.renderer,
     };
 
     angular.extend(receiptOptions, userOptions);
@@ -115,7 +115,7 @@ function ReceiptModal(Modal, Receipts) {
       title         : 'PURCHASES.PAGE_TITLE',
       createdKey    : 'PURCHASES.RECEIPT.SUCCESS',
       identifier    : 'reference',
-      renderer      : Receipts.renderers.PDF,
+      renderer      : Receipts.renderer,
       notifyCreated,
     };
 
@@ -143,7 +143,7 @@ function ReceiptModal(Modal, Receipts) {
       title         : 'CASH.TITLE',
       createdKey    : 'CASH.RECEIPT.SUCCESS',
       identifier    : 'reference', // @todo - what does this do?
-      renderer      : Receipts.renderers.PDF,
+      renderer      : Receipts.renderer,
       notifyCreated,
     };
 
@@ -176,7 +176,7 @@ function ReceiptModal(Modal, Receipts) {
       title         : 'VOUCHERS.GLOBAL.TITLE',
       createdKey    : 'VOUCHERS.GLOBAL.RECEIPT.SUCCESS',
       identifier    : 'reference', // @todo - what does this do?
-      renderer      : Receipts.renderers.PDF,
+      renderer      : Receipts.renderer,
       notifyCreated,
     };
 
@@ -206,12 +206,12 @@ function ReceiptModal(Modal, Receipts) {
       title         : 'TREE.CREDIT_NOTE',
       createdKey    : 'PATIENT_INVOICE.SUCCESS',
       identifier    : 'reference',
-      renderer      : Receipts.renderers.PDF,
+      renderer      : Receipts.renderer,
       notifyCreated,
     };
 
     const receiptOptions = {
-      renderer : Receipts.renderers.PDF,
+      renderer      : Receipts.renderer,
     };
 
     angular.extend(receiptOptions, userOptions);
@@ -229,45 +229,10 @@ function ReceiptModal(Modal, Receipts) {
     return instance.result;
   }
 
-  /**
-   * @method accountSlip
-   *
-   * @description
-   * Invokes a general ledger account slip
-   *
-   * @param {number} id - Target account ii
-   * @param {Boolean} notifyCreated   Defines if a success message should be shown for entity creation
-   */
-  function accountSlip(id, notifyCreated) {
-    const options = {
-      title         : 'GENERAL_LEDGER.ACCOUNT_SLIP',
-      // createdKey    : 'VOUCHERS.GLOBAL.RECEIPT.SUCCESS',
-      // identifier    : 'reference', // @todo - what does this do?
-      renderer      : Receipts.renderers.PDF,
-      notifyCreated,
-    };
-
-    const accountSlipRequest = Receipts.accountSlip(id, { renderer : options.renderer });
-    const reportProvider = {
-      resolve : {
-        receipt : function receiptProvider() { return { promise : accountSlipRequest }; },
-        options : function optionsProvider() { return options; },
-      },
-    };
-
-    const configuration = angular.extend(modalConfiguration, reportProvider);
-    const instance = Modal.open(configuration);
-    return instance.result;
-  }
-
-  function transaction(uuid, notifyCreated) {
-    /* noop */
-  }
-
   function payroll(periodPayroll, data, notifyCreated) {
     const options = {
       title         : 'TREE.PAYROLL',
-      renderer      : Receipts.renderers.PDF,
+      renderer      : Receipts.renderer,
       notifyCreated,
     };
 
@@ -307,7 +272,7 @@ function ReceiptModal(Modal, Receipts) {
    * @param {boolean} notifyCreated
    */
   function stockExitPatientReceipt(documentUuid, notifyCreated) {
-    const opts = { title : 'STOCK.RECEIPT.EXIT_PATIENT', notifyCreated, renderer : Receipts.renderers.PDF };
+    const opts = { title : 'STOCK.RECEIPT.EXIT_PATIENT', notifyCreated, renderer : Receipts.renderer };
     const promise = Receipts.stockExitPatientReceipt(documentUuid, { renderer : opts.renderer });
     return ReceiptFactory(promise, opts);
   }
@@ -318,7 +283,7 @@ function ReceiptModal(Modal, Receipts) {
    * @param {boolean} notifyCreated
    */
   function stockExitLossReceipt(documentUuid, notifyCreated) {
-    const opts = { title : 'STOCK.RECEIPT.EXIT_LOSS', notifyCreated, renderer : Receipts.renderers.PDF };
+    const opts = { title : 'STOCK.RECEIPT.EXIT_LOSS', notifyCreated, renderer : Receipts.renderer };
     const promise = Receipts.stockExitLossReceipt(documentUuid, { renderer : opts.renderer });
     return ReceiptFactory(promise, opts);
   }
@@ -332,7 +297,7 @@ function ReceiptModal(Modal, Receipts) {
     const opts = {
       title : 'STOCK.RECEIPT.EXIT_SERVICE',
       notifyCreated,
-      renderer : Receipts.renderers.PDF,
+      renderer : Receipts.renderer,
     };
     const promise = Receipts.stockExitServiceReceipt(documentUuid, { renderer : opts.renderer });
     return ReceiptFactory(promise, opts);
@@ -347,7 +312,7 @@ function ReceiptModal(Modal, Receipts) {
     const opts = {
       title : 'STOCK.RECEIPT.EXIT_DEPOT',
       notifyCreated,
-      renderer : Receipts.renderers.PDF,
+      renderer : Receipts.renderer,
     };
 
     const promise = Receipts.stockExitDepotReceipt(documentUuid, { renderer : opts.renderer });
@@ -363,7 +328,7 @@ function ReceiptModal(Modal, Receipts) {
     const opts = {
       title : 'STOCK.RECEIPT.ENTRY_DEPOT',
       notifyCreated,
-      renderer : Receipts.renderers.PDF,
+      renderer : Receipts.renderer,
     };
 
     const promise = Receipts.stockEntryDepotReceipt(documentUuid, { renderer : opts.renderer });
@@ -379,7 +344,7 @@ function ReceiptModal(Modal, Receipts) {
     const opts = {
       title : 'STOCK.RECEIPT.ENTRY_PURCHASE',
       notifyCreated,
-      renderer : Receipts.renderers.PDF,
+      renderer : Receipts.renderer,
     };
 
     const promise = Receipts.stockEntryPurchaseReceipt(documentUuid, { renderer : opts.renderer });
@@ -395,7 +360,7 @@ function ReceiptModal(Modal, Receipts) {
     const opts = {
       title : 'STOCK.RECEIPT.ENTRY_INTEGRATION',
       notifyCreated,
-      renderer : Receipts.renderers.PDF,
+      renderer : Receipts.renderer,
     };
 
     const promise = Receipts.stockEntryIntegrationReceipt(documentUuid, { renderer : opts.renderer });
@@ -411,7 +376,7 @@ function ReceiptModal(Modal, Receipts) {
     const opts = {
       title : 'STOCK.RECEIPT.ENTRY_DONATION',
       notifyCreated,
-      renderer : Receipts.renderers.PDF,
+      renderer : Receipts.renderer,
     };
 
     const promise = Receipts.stockEntryDonationReceipt(documentUuid, { renderer : opts.renderer });
@@ -424,7 +389,7 @@ function ReceiptModal(Modal, Receipts) {
    * @param {boolean} notifyCreated
    */
   function stockAdjustmentReceipt(documentUuid, notifyCreated) {
-    const opts = { title : 'STOCK.RECEIPT.ADJUSTMENT', notifyCreated, renderer : Receipts.renderers.PDF };
+    const opts = { title : 'STOCK.RECEIPT.ADJUSTMENT', notifyCreated, renderer : Receipts.renderer };
     const promise = Receipts.stockAdjustmentReceipt(documentUuid, { renderer : opts.renderer });
     return ReceiptFactory(promise, opts);
   }
@@ -435,7 +400,7 @@ function ReceiptModal(Modal, Receipts) {
    */
   function ReceiptFactory(promise, options) {
     const defaults = {
-      renderer : Receipts.renderers.PDF,
+      renderer : Receipts.renderer,
       notifyCreated : false,
     };
 

@@ -1,8 +1,8 @@
 angular.module('bhima.controllers')
-.controller('ReceiptModalController', ReceiptModalController);
+  .controller('ReceiptModalController', ReceiptModalController);
 
 ReceiptModalController.$inject = [
-  '$scope', '$uibModalInstance', '$window', '$sce', 'ReceiptService', 'NotifyService', 'receipt', 'options'
+  '$scope', '$uibModalInstance', '$window', '$sce', 'ReceiptService', 'NotifyService', 'receipt', 'options',
 ];
 
 /**
@@ -16,7 +16,7 @@ ReceiptModalController.$inject = [
  * @param {String} render    Render target used to generate report
  */
 function ReceiptModalController($scope, $modalInstance, $window, $sce, Receipts, Notify, receipt, options) {
-  var vm = this;
+  const vm = this;
 
   // expose available receipt renderers to view
   vm.renderers = Receipts.renderers;
@@ -28,23 +28,23 @@ function ReceiptModalController($scope, $modalInstance, $window, $sce, Receipts,
   angular.extend(vm, options);
 
   receipt.promise
-    .then(function (result) {
+    .then(result => {
       // special case for pdf rendering
       if (options.renderer === Receipts.renderers.PDF) {
 
         // store downloaded base64 PDF file in a browser blob - this will be accessible through 'blob://...'
-        var file = new Blob([result], {type : 'application/pdf'});
+        const file = new Blob([result], { type : 'application/pdf' });
 
         // determine the direct path to the newly (temporarily) stored PDF file
-        var fileURL = URL.createObjectURL(file);
+        const fileURL = URL.createObjectURL(file);
 
         // trust and expose the file to the view to embed the PDF
         vm.receipt = $sce.trustAsResourceUrl(fileURL);
 
         // ensure the blob is cleared when this $scope is cleaned up
-        var cleanupListener = $scope.$on('$destroy', function () {
-          // @TODO $stateChangeStart events have been depreciated as of ui-router 1.0. When this dependency is updated this
-          // should be re-written to use the latest $transition standards
+        const cleanupListener = $scope.$on('$destroy', () => {
+          // @TODO $stateChangeStart events have been depreciated as of ui-router 1.0. When this dependency
+          // is updated this should be re-written to use the latest $transition standards
           URL.revokeObjectURL(fileURL);
 
           // de-register event listener
@@ -59,8 +59,7 @@ function ReceiptModalController($scope, $modalInstance, $window, $sce, Receipts,
     .catch(Notify.handleError);
 
   function print() {
-
-    /**@todo This printing could be exposed by a directive/ component */
+    // @todo This printing could be exposed by a directive/ component
     if (options.renderer === Receipts.renderers.PDF) {
 
       // iframes in the DOM are all stored under the $window.frames object, this accesses the iframe with id 'pdf'
@@ -71,7 +70,7 @@ function ReceiptModalController($scope, $modalInstance, $window, $sce, Receipts,
     $window.print();
   }
 
-  /** @todo use dismiss vs. close to handle error and complete exit */
+  // @todo use dismiss vs. close to handle error and complete exit
   function close() {
     $modalInstance.close();
   }
