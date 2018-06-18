@@ -167,7 +167,9 @@ INSERT INTO `transaction_type` (`id`, `text`, `type`, `fixed`) VALUES
   (14, 'VOUCHERS.SIMPLE.STOCK_ENTRY', 'other', 1),
   (15, 'VOUCHERS.SIMPLE.COMMITMENT', 'other', 1),
   (16, 'VOUCHERS.SIMPLE.EMPLOYEE_WITHHOLDINGS', 'other', 1),
-  (17, 'VOUCHERS.SIMPLE.CHARGE_REMUNERATION', 'other', 1);
+  (17, 'VOUCHERS.SIMPLE.CHARGE_REMUNERATION', 'other', 1),
+  (18, 'VOUCHERS.SIMPLE.ADJUSTMENT', 'other', 1),
+  (19, 'VOUCHERS.SIMPLE.CAUTION_LINK', 'other', 1);
 
 -- Stock Movement Flux
 INSERT INTO `flux` VALUES

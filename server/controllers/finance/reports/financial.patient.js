@@ -45,7 +45,7 @@ function build(req, res, next) {
   return Patients.lookupPatient(req.params.uuid)
     .then(patient => {
       _.extend(data, { patient });
-      return Debtors.getFinancialActivity(patient.debtor_uuid);
+      return Debtors.getFinancialActivity(patient.debtor_uuid, true);
     })
     .then(({ transactions, aggregates }) => {
       aggregates.balanceText = aggregates.balance >= 0 ? 'FORM.LABELS.DEBIT_BALANCE' : 'FORM.LABELS.CREDIT_BALANCE';
