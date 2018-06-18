@@ -37,7 +37,7 @@
             <tbody>
               <tr ng-repeat="group in PatientGroupCtrl.groups track by group.uuid" ng-class="{ 'bg-primary' : group.uuid == PatientGroupCtrl.patientGroup.uuid }">
                 <td>{{ group.name}}</td>
-                <td>{{ group.priceListLable }}</td>
+                <td>{{ group.priceListLabel }}</td>
                 <td>
                   <a class="btn btn-xs btn-default" ng-click="PatientGroupCtrl.update(group.uuid)" id="group-{{group.uuid}}">
                     <span class="glyphicon glyphicon-pencil"></span>
@@ -106,6 +106,32 @@
                   </div>
                 </div>
 
+                <div class="form-group">
+                  <label class="control-label" translate>
+                    FORM.LABELS.INVOICING_FEES
+                  </label>
+
+                  <ui-select multiple ng-model="PatientGroupCtrl.patientGroup.invoicingFees">
+                  <ui-select-match>{{$item.label}}</ui-select-match>
+                  <ui-select-choices repeat="fee.id as fee in PatientGroupCtrl.invoicingFees | filter:$select.search">
+                      {{fee.label}}
+                  </ui-select-choices>
+                  </ui-select>
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label" translate>
+                    FORM.LABELS.SUBSIDIES
+                  </label>
+
+                  <ui-select multiple ng-model="PatientGroupCtrl.patientGroup.subsidies">
+                  <ui-select-match>{{$item.label}}</ui-select-match>
+                  <ui-select-choices repeat="subsidy.id as subsidy in PatientGroupCtrl.subsidies | filter:$select.search">
+                      {{subsidy.label}}
+                  </ui-select-choices>
+                  </ui-select>
+                </div>
+
                 <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.note.$invalid }">
                   <label class="control-label" translate>
                     FORM.LABELS.NOTES
@@ -163,6 +189,32 @@
                   <div class="help-block" ng-messages="UpdateForm.priceList.$error" ng-show="UpdateForm.$submitted">
                     <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
                   </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label" translate>
+                    FORM.LABELS.INVOICING_FEES
+                  </label>
+
+                  <ui-select multiple ng-model="PatientGroupCtrl.patientGroup.invoicingFees">
+                  <ui-select-match>{{$item.label}}</ui-select-match>
+                  <ui-select-choices repeat="fee.id as fee in PatientGroupCtrl.invoicingFees | filter:$select.search">
+                      {{fee.label}}
+                  </ui-select-choices>
+                  </ui-select>
+                </div>
+
+                <div class="form-group">
+                  <label class="control-label" translate>
+                    FORM.LABELS.SUBSIDIES
+                  </label>
+
+                  <ui-select multiple ng-model="PatientGroupCtrl.patientGroup.subsidies">
+                  <ui-select-match>{{$item.label}}</ui-select-match>
+                  <ui-select-choices repeat="subsidy.id as subsidy in PatientGroupCtrl.subsidies | filter:$select.search">
+                      {{subsidy.label}}
+                  </ui-select-choices>
+                  </ui-select>
                 </div>
 
                 <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.note.$invalid }">

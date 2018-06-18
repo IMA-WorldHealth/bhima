@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 PatientGroupController.$inject = [
   'PatientGroupService', 'PriceListService', 'SessionService', 'ModalService',
-  'util', 'NotifyService',
+  'util', 'NotifyService', 'SubsidyService', 'InvoicingFeesService',
 ];
 
 /**
@@ -18,7 +18,10 @@ PatientGroupController.$inject = [
  *
  *  @constructor
  */
-function PatientGroupController(PatientGroups, PriceLists, Session, ModalService, util, Notify) {
+function PatientGroupController(
+  PatientGroups, PriceLists, Session, ModalService, util, Notify, Subsidies,
+  InvoicingFees
+) {
   const vm = this;
 
   vm.length100 = util.length100;
@@ -32,9 +35,19 @@ function PatientGroupController(PatientGroups, PriceLists, Session, ModalService
     // make the loading state into true, while loading data
     toggleLoadingIndicator();
 
+    InvoicingFees.read()
+      .then(invoicingFees => {
+        vm.invoicingFees = invoicingFees;
+      });
+
+    Subsidies.read()
+      .then(subsidies => {
+        vm.subsidies = subsidies;
+      });
+
     // fetching all price list
     PriceLists.read()
-      .then((priceLists) => {
+      .then(priceLists => {
 
         // attaching the price list to the view
         vm.priceLists = priceLists;
@@ -42,7 +55,7 @@ function PatientGroupController(PatientGroups, PriceLists, Session, ModalService
         // load all patient groups
         return loadPatientGroups();
       })
-      .then((patientGroups) => {
+      .then(patientGroups => {
         vm.groups = patientGroups;
       })
       .catch(Notify.handleError)
@@ -65,7 +78,7 @@ function PatientGroupController(PatientGroups, PriceLists, Session, ModalService
   // this function is responsible of submitting the patient group to the server for creation
   function submit(form) {
     // if the form is not valid do nothing
-    if (form.$invalid) { return; }
+    if (form.$invalid) { return 0; }
 
     const creation = (vm.view === 'create');
     const patientGroup = angular.copy(vm.patientGroup);
@@ -96,6 +109,8 @@ function PatientGroupController(PatientGroups, PriceLists, Session, ModalService
 
     PatientGroups.read(uuid)
       .then((data) => {
+        data.invoicingFees = data.invoicingFees.map(fee => fee.id);
+        data.subsidies = data.subsidies.map(subsidy => subsidy.id);
         vm.patientGroup = data;
       })
       .catch(Notify.handleError);
