@@ -80,7 +80,19 @@
           {{/unless }}
           <td class="text-right">{{currency item.amount ../payment.currency_id}}</td>
         </tr>
+        <tr>
+          <td colspan="2" class="text-right">{{translate "TABLE.COLUMNS.REMAINING_BALANCE"}}</td>
+          <td style="text-align : right;">{{currency item.balance ../enterprise.currency_id}}</td>
+        </tr>
+        {{#if ../hasRate}}
+        <tr>
+          <td colspan="3" style="text-align : right">({{currency item.exchangedBalance ../payment.currency_id}})</td>
+        </tr>
+        {{/if}}
       {{/each}}
+      <tr style="border:none !important">
+        <td colspan="3" style="border-top: none !important">.</td>
+      </tr>
     </tbody>
     <tfoot>
       <tr>
