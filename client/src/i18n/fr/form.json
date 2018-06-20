@@ -453,6 +453,7 @@
             "NO_DEBTOR_GROUPS": "Aucun Groupes Débiteurs",
             "NO_DISTRIBUTABLE": "Non distribuable",
             "NO_FISCALYEAR_REGISTERED": "Il n'y a aucune année fiscale enregistré jusque là! Cliquez sur 'Créer L'année Fiscale' pour ajouter votre première année fiscale",
+            "NO_PRICE_LIST" : "Aucune liste de prix",
             "NR": "N°",
             "OF": "De",
             "OFF_DAYS": "jours fériés",
