@@ -12,7 +12,7 @@ describe('Voucher Registry', () => {
   before(() => helpers.navigate('vouchers'));
 
   it(`displays ${NUM_VOUCHERS} vouchers on the page`, () => {
-    GU.expectRowCount(gridId, NUM_VOUCHERS);
+    GU.expectRowCountAbove(gridId, NUM_VOUCHERS);
   });
 
   describe('Search', VoucherRegistrySearch);
