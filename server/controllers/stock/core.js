@@ -72,7 +72,6 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
         JOIN inventory_unit iu ON iu.id = i.unit_id
         JOIN inventory_group ig ON ig.uuid = i.group_uuid
         JOIN stock_movement m ON m.lot_uuid = l.uuid AND m.flux_id = ${flux.FROM_PURCHASE}
-        JOIN depot_permission dp ON m.depot_uuid = dp.depot_uuid
         LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
         JOIN depot d ON d.uuid = m.depot_uuid
     `;
@@ -99,7 +98,6 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
   filters.equals('group_uuid', 'uuid', 'ig');
   filters.equals('text', 'text', 'i');
   filters.equals('label', 'label', 'l');
-  filters.custom('user_id', 'dp.user_id=?');
   filters.equals('is_exit', 'is_exit', 'm');
   filters.equals('flux_id', 'flux_id', 'm', true);
 
@@ -178,7 +176,6 @@ function getLotsDepot(depotUuid, params, finalClause) {
         JOIN inventory_unit iu ON iu.id = i.unit_id
         JOIN inventory_group ig ON ig.uuid = i.group_uuid
         JOIN depot d ON d.uuid = m.depot_uuid
-        JOIN depot_permission dp ON m.depot_uuid = dp.depot_uuid
         LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
     `;
 
@@ -231,7 +228,6 @@ function getLotsMovements(depotUuid, params) {
     JOIN inventory i ON i.uuid = l.inventory_uuid
     JOIN inventory_unit iu ON iu.id = i.unit_id
     JOIN depot d ON d.uuid = m.depot_uuid
-    JOIN depot_permission dp ON m.depot_uuid = dp.depot_uuid
     JOIN flux f ON f.id = m.flux_id
     LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
   `;
@@ -453,7 +449,6 @@ function getInventoryQuantityAndConsumption(params) {
     JOIN inventory_unit iu ON iu.id = i.unit_id
     JOIN inventory_group ig ON ig.uuid = i.group_uuid
     JOIN depot d ON d.uuid = m.depot_uuid
-    JOIN depot_permission dp ON m.depot_uuid = dp.depot_uuid
     LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
   `;
 
