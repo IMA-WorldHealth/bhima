@@ -1,6 +1,5 @@
 {{> head title="{{translate 'TREE.OPERATING_ACCOUNT' }}" }}
 
-
 <div class="container">
   {{> header}}
 
@@ -11,7 +10,7 @@
       <h3 class="text-center text-uppercase">
         <strong>{{translate 'TREE.OPERATING_ACCOUNT'}}</strong>
       </h3>
-      
+
       <h5 style="margin:15px; font-weight:bold" class="text-center text-uppercase">
         {{date this.dateFrom}} - {{date this.dateTo}}
       </h5>
@@ -19,29 +18,31 @@
         <tbody>
           <tr>
             <th class="text-center">
-              {{ translate 'ACCOUNT.TYPES.EXPENSE'}}
+              {{translate 'ACCOUNT.TYPES.EXPENSE'}}
             </th>
             <th class="text-center">
-              {{ translate 'ACCOUNT.TYPES.INCOME'}}
+              {{translate 'ACCOUNT.TYPES.INCOME'}}
             </th>
           </tr>
           <tr>
             <td>
               <table class="table table-condensed table-report table-bordered">
                 <thead>
-                  <th>{{ translate 'FORM.LABELS.ACCOUNT_NUMBER'}}</th>
-                  <th>{{ translate 'FORM.LABELS.LABEL'}}</th>
-                  <th> {{ translate 'FORM.LABELS.AMOUNT'}}</th>
+                  <th>{{translate 'FORM.LABELS.ACCOUNT_NUMBER'}}</th>
+                  <th>{{translate 'FORM.LABELS.LABEL'}}</th>
+                  <th>{{translate 'FORM.LABELS.AMOUNT'}}</th>
                   <th>%</th>
                 </thead>
                 <tbody>
                   {{#each this.expense}}
                   <tr>
                     <td class="text-right">{{number}}</td>
-                    <td {{#if title}}style="font-weight:bold; text-align:center;"{{/if}}>
+                    <td
+                      {{#if title}}class="text-bold text-center"{{/if}}
+                        style="padding-left:calc(({{depth}} - 1) * 5px);">
                       {{label}}
                     </td>
-                    <td class="text-right">{{amount}}</td>
+                    <td class="text-right">{{debcred amount}}</td>
                     <td class="text-right">{{percent}}</td>
                   </tr>
                   {{/each}}
@@ -51,21 +52,22 @@
             <td>
               <table class="table table-condensed table-report table-bordered">
                 <thead>
-                  <th>{{ translate 'FORM.LABELS.ACCOUNT_NUMBER'}}</th>
-                  <th>{{ translate 'FORM.LABELS.LABEL'}}</th>
-                  <th> {{ translate 'FORM.LABELS.AMOUNT'}}</th>
+                  <th>{{translate 'FORM.LABELS.ACCOUNT_NUMBER'}}</th>
+                  <th>{{translate 'FORM.LABELS.LABEL'}}</th>
+                  <th>{{translate 'FORM.LABELS.AMOUNT'}}</th>
                   <th>%</th>
                 </thead>
                 <tbody>
                   {{#each this.revenue}}
                   <tr>
                     <td class="text-right">{{number}}</td>
-                    <td {{#if title}}style="font-weight:bold; text-align:center;"{{/if}}>
+                    <td
+                      {{#if title}}class="text-bold text-center"{{/if}}
+                        style="padding-left:calc(({{depth}} - 1) * 5px);">
                       {{label}}
                     </td>
-                    <td class="text-right">{{amount}}</td>
+                    <td class="text-right">{{debcred amount}}</td>
                     <td class="text-right">{{percent}}</td>
-  
                   </tr>
                   {{/each}}
                 </tbody>
@@ -73,56 +75,54 @@
             </td>
           </tr>
           <tr>
-            <td colspan="2">
+            <td>
             <table class="table table-condensed table-report table-bordered">
               <tr>
                 <th>
                 </th>
                 <th class="text-center">
-                  {{ translate 'ACCOUNT.TYPES.EXPENSE'}}
+                  {{translate 'ACCOUNT.TYPES.EXPENSE'}}
                 </th>
                  <th class="text-center">
-                   {{ translate 'ACCOUNT.TYPES.INCOME'}}
+                   {{translate 'ACCOUNT.TYPES.INCOME'}}
                 </th>
               </tr>
                <tr>
                 <th class="text-center">
-                  {{ translate 'FORM.LABELS.TOTAL'}}
+                  {{translate 'FORM.LABELS.TOTAL'}}
                 </th>
                 <td class="text-right">
-                  {{this.totalExpense}}
+                  {{debcred this.totalExpense}}
                 </td>
                  <td class="text-right">
-                    {{this.totalIncome}}
+                  {{debcred this.totalIncome}}
                 </td>
               </tr>
               <tr>
                 <th class="text-center">
-                  {{ translate 'FORM.LABELS.RESULT'}}
+                  {{translate 'FORM.LABELS.RESULT'}}
                 </th>
                 <td class="text-right">
-                  {{this.leftResult}}
+                  {{debcred this.leftResult}}
                 </td>
                 <td class="text-right">
-                  {{this.rightResult}}
+                  {{debcred this.rightResult}}
                 </td>
               </tr>
               <tr>
                 <th class="text-center">
-                  {{ translate 'FORM.LABELS.BALANCE'}}
+                  {{translate 'FORM.LABELS.BALANCE'}}
                 </th>
                 <td class="text-right">
-                  {{this.totalIncome}}
+                  {{debcred this.totalIncome}}
                 </td>
                  <td class="text-right">
-                    {{this.totalIncome}}
+                  {{debcred this.totalIncome}}
                 </td>
               </tr>
-            
             </table>
             </td>
-            </tr>
-
+          </tr>
         </tbody>
       </table>
     </div>
