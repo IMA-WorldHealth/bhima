@@ -37,6 +37,7 @@ function VoucherController(
   vm.download = Vouchers.download;
   vm.deleteVoucher = deleteVoucherWithConfirmation;
   vm.showReceipt = showReceipt;
+  vm.toggleInlineFilter = toggleInlineFilter;
 
   // date format function
   vm.format = util.formatDate;
@@ -102,6 +103,14 @@ function VoucherController(
     fastWatch : true,
     columnDefs,
   };
+  vm.gridOptions.onRegisterApi = function onRegisterApi(gridApi) {
+    vm.gridApi = gridApi;
+  };
+
+  function toggleInlineFilter() {
+    vm.gridOptions.enableFiltering = !vm.gridOptions.enableFiltering;
+    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+  }
 
   const gridColumns = new Columns(vm.gridOptions, cacheKey);
   const state = new GridState(vm.gridOptions, cacheKey);

@@ -24,11 +24,11 @@ function PatientRegistryController(
   vm.search = search;
   vm.patientCard = patientCard;
   vm.openColumnConfiguration = openColumnConfiguration;
-  vm.gridApi = {};
   vm.onRemoveFilter = onRemoveFilter;
   vm.download = Patients.download;
   vm.downloadExcel = downloadExcel;
   vm.languageKey = Languages.key;
+  vm.toggleInlineFilter = toggleInlineFilter;
 
   // track if module is making a HTTP request for patients
   vm.loading = false;
@@ -116,6 +116,7 @@ function PatientRegistryController(
     displayName : '',
     cellTemplate : '/modules/patients/templates/action.cell.html',
     enableSorting : false,
+    enableFiltering : false,
   }];
 
   vm.uiGridOptions = {
@@ -128,6 +129,14 @@ function PatientRegistryController(
     columnDefs,
   };
 
+  vm.uiGridOptions.onRegisterApi = function onRegisterApi(gridApi) {
+    vm.gridApi = gridApi;
+  };
+
+  function toggleInlineFilter() {
+    vm.uiGridOptions.enableFiltering = !vm.uiGridOptions.enableFiltering;
+    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+  }
   const columnConfig = new Columns(vm.uiGridOptions, cacheKey);
   const state = new GridState(vm.uiGridOptions, cacheKey);
 
