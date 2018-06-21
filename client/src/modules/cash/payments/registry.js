@@ -29,6 +29,7 @@ function CashPaymentRegistryController(
   vm.filter = filter;
   vm.format = util.formatDate;
   vm.Receipts = Receipts;
+  vm.toggleInlineFilter = toggleInlineFilter;
 
   // global variables
   vm.enterprise = Session.enterprise;
@@ -104,6 +105,15 @@ function CashPaymentRegistryController(
     columnDefs,
     rowTemplate       : '/modules/cash/payments/templates/grid.canceled.tmpl.html',
   };
+
+  vm.gridOptions.onRegisterApi = function onRegisterApi(gridApi) {
+    vm.gridApi = gridApi;
+  };
+
+  function toggleInlineFilter() {
+    vm.gridOptions.enableFiltering = !vm.gridOptions.enableFiltering;
+    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+  }
 
   const gridColumns = new Columns(vm.gridOptions, cacheKey);
   const state = new GridState(vm.gridOptions, cacheKey);

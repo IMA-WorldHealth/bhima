@@ -33,6 +33,7 @@ function InvoiceRegistryController(
   vm.download = Invoices.download;
   vm.deleteInvoice = deleteInvoiceWithConfirmation;
   vm.Receipts = Receipts;
+  vm.toggleInlineFilter = toggleInlineFilter;
 
   // date format function
   vm.format = util.formatDate;
@@ -85,6 +86,7 @@ function InvoiceRegistryController(
   }, {
     name : 'credit_action',
     displayName : '',
+    enableFiltering     : false,
     cellTemplate : '/modules/invoices/registry/templates/action.cell.html',
     enableSorting : false,
   }];
@@ -99,6 +101,9 @@ function InvoiceRegistryController(
     flatEntityAccess  : true,
     rowTemplate       : '/modules/invoices/templates/grid.creditNote.tmpl.html',
     columnDefs,
+  };
+  vm.uiGridOptions.onRegisterApi = function onRegisterApi(gridApi) {
+    vm.gridApi = gridApi;
   };
 
   const gridColumns = new Columns(vm.uiGridOptions, cacheKey);
@@ -243,6 +248,11 @@ function InvoiceRegistryController(
 
   function allowsRecordDeletion() {
     return Session.enterprise.settings.enable_delete_records;
+  }
+
+  function toggleInlineFilter() {
+    vm.uiGridOptions.enableFiltering = !vm.uiGridOptions.enableFiltering;
+    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
   // fire up the module
