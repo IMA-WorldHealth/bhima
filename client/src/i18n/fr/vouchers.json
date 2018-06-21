@@ -53,8 +53,10 @@
             "USE_FINANCIAL_ACCOUNT": "Utilisation de compte de caisses ou banques dans cette transaction"
         },
         "SIMPLE": {
+            "ADJUSTMENT": "Ajustement",
             "CASH_PAYMENT": "Paiement des clients",
             "CASH_RETURN": "Remboursement",
+            "CAUTION_LINK": "Lien vers une caution",
             "CHARGE_REMUNERATION": "Charges sociales sur rémunération",
             "COMMITMENT": "Engagement",
             "CONVENTION_PAYMENT": "Paiement des Conventions",
