@@ -21,8 +21,8 @@ AccountTypeaheadInlineController.$inject = [
  * without having a heavy uiSelect component.
  */
 function AccountTypeaheadInlineController(Accounts, $timeout, $scope, Store) {
-  var $ctrl = this;
-  var store = new Store();
+  const $ctrl = this;
+  const store = new Store();
 
   // fired at the beginning of the account select
   $ctrl.$onInit = function $onInit() {
@@ -46,10 +46,13 @@ function AccountTypeaheadInlineController(Accounts, $timeout, $scope, Store) {
 
   // loads accounts from the server
   function loadAccounts() {
-    Accounts.read()
-      .then(function (elements) {
+    // NOTE: this will hide all "hidden" accounts
+    const params = { hidden : 0 };
+
+    Accounts.read(null, params)
+      .then((elements) => {
         // bind the accounts to the controller
-        var accounts = Accounts.order(elements);
+        const accounts = Accounts.order(elements);
         $ctrl.accounts = Accounts.filterTitleAccounts(accounts);
 
         store.setData($ctrl.accounts);
@@ -57,7 +60,7 @@ function AccountTypeaheadInlineController(Accounts, $timeout, $scope, Store) {
   }
 
   $ctrl.$onChanges = function $onChanges(changes) {
-    var accountId = changes.accountId && changes.accountId.currentValue;
+    const accountId = changes.accountId && changes.accountId.currentValue;
     if (accountId) {
       $ctrl.account = store.get(accountId);
     }
