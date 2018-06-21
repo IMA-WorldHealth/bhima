@@ -117,7 +117,9 @@ function create(req, res, next) {
   medical.debtor_uuid = finance.uuid;
 
   // Remove whitespace from Patient display_name
-  medical.display_name = medical.display_name.trim();
+  if (medical.display_name) {
+    medical.display_name = medical.display_name.trim();
+  }
 
   const writeDebtorQuery = 'INSERT INTO debtor (uuid, group_uuid, text) VALUES (?, ?, ?)';
   const writePatientQuery = 'INSERT INTO patient SET ?';
@@ -184,7 +186,9 @@ function update(req, res, next) {
   }
 
   // Remove whitespace from Patient display_name
-  data.display_name = data.display_name.trim();
+  if (data.dob) {
+    data.display_name = data.display_name.trim();
+  }
 
   // prevent updating the patient's uuid
   delete data.uuid;

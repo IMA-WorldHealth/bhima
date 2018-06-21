@@ -215,7 +215,9 @@ function update(req, res, next) {
   ]);
 
   // Remove whitespace from Patient display_name
-  employee.display_name = employee.display_name.trim();
+  if (employee.dob) {
+    employee.display_name = employee.display_name.trim();
+  }
 
   const employeeAdvantagePayroll = employee.payroll;
 
@@ -343,7 +345,9 @@ function create(req, res, next) {
   ]);
 
   // Remove whitespace from Patient display_name
-  employee.display_name = employee.display_name.trim();
+  if (employee.display_name) {
+    employee.display_name = employee.display_name.trim();
+  }
 
   const employeeAdvantagePayroll = employee.payroll;
 
