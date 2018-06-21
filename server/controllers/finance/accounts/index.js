@@ -312,7 +312,11 @@ function lookupAccount(id) {
     LEFT JOIN profit_center AS pc ON a.pc_id = pc.id
     `;
 
-  sql += id ? ' WHERE a.id = ? ORDER BY CAST(a.number AS CHAR(15)) ASC;' : ' ORDER BY CAST(a.number AS CHAR(15)) ASC;';
+  // Added the restriction to prevent the display when downloading the chart
+  // of accounts in Excel, CSV or PDF of the hidden accounts
+
+  sql += id ? ' WHERE a.id = ? ORDER BY CAST(a.number AS CHAR(15)) ASC;' :
+    ' WHERE a.hidden = 0 ORDER BY CAST(a.number AS CHAR(15)) ASC;';
 
   return db.exec(sql, id)
     .then(rows => {

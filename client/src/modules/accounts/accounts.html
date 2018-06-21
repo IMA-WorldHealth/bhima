@@ -38,6 +38,20 @@
         </a>
       </div>
 
+      <div class="toolbar-item" ng-if="AccountsCtrl.display">
+        <a class="btn btn-default text-capitalize" ng-click="AccountsCtrl.hiddenAccount(1)">
+          <i class="fa fa-eye"></i>
+          <span translate> ACCOUNT.DISPLAY_HIDDEN </span>
+        </a>
+      </div>
+
+      <div class="toolbar-item" ng-if="!AccountsCtrl.display">
+        <a class="btn btn-default text-capitalize" ng-click="AccountsCtrl.hiddenAccount(0)">
+          <i class="fa fa-eye-slash"></i>
+          <span translate> ACCOUNT.HIDE_HIDDEN </span>
+        </a>
+      </div>
+
       <bh-filter-toggle on-toggle="AccountsCtrl.toggleInlineFilter()">
       </bh-filter-toggle>
     </div>
