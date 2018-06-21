@@ -30,6 +30,7 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
   vm.enablePrepaymentsSetting = enablePrepaymentsSetting;
   vm.enableDeleteRecordsSetting = enableDeleteRecordsSetting;
   vm.enablePasswordValidationSetting = enablePasswordValidationSetting;
+  vm.enablePrepaymentInsideInvoiceSetting = enablePrepaymentInsideInvoiceSetting;
 
   // fired on startup
   function startup() {
@@ -186,6 +187,11 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
 
   function enablePasswordValidationSetting(enabled) {
     vm.enterprise.settings.enable_password_validation = enabled;
+    $touched = true;
+  }
+
+  function enablePrepaymentInsideInvoiceSetting(enabled) {
+    vm.enterprise.settings.enable_prepayment_inside_invoice = enabled;
     $touched = true;
   }
 

@@ -20,6 +20,7 @@ const ReportManager = require('../../../../lib/ReportManager');
 const Invoices = require('../../patientInvoice');
 const Patients = require('../../../medical/patients');
 const Exchange = require('../../exchange');
+const Debtors = require('../../debtors');
 
 const pdf = require('../../../../lib/renderers/pdf');
 
@@ -108,6 +109,7 @@ function receipt(req, res, next) {
 
   const invoiceUuid = req.params.uuid;
   const enterpriseId = req.session.enterprise.id;
+  const prepaymentInsideInvoice = req.session.enterprise.settings.enable_prepayment_inside_invoice;
   const currencyId = options.currency || req.session.enterprise.currency_id;
   const invoiceResponse = {};
   invoiceResponse.lang = options.lang;
@@ -152,6 +154,7 @@ function receipt(req, res, next) {
       return Exchange.getExchangeRate(enterpriseId, currencyId, new Date());
     })
     .then(exchangeResult => {
+      invoiceResponse.prepaymentInsideInvoice = prepaymentInsideInvoice;
       invoiceResponse.receiptCurrency = currencyId;
       invoiceResponse.exchange = exchangeResult.rate;
       invoiceResponse.dateFormat = (new Moment()).format('L');
@@ -159,8 +162,24 @@ function receipt(req, res, next) {
         invoiceResponse.exchangedTotal = _.round(invoiceResponse.cost * invoiceResponse.exchange);
       }
 
-      return receiptReport.render(invoiceResponse);
+      return prepaymentInsideInvoice ? Debtors.invoiceBalances(invoiceResponse.debtor_uuid, [invoiceUuid]) : [];
+    })
+    .then(invoiceBalance => {
+      if (invoiceBalance.length > 0) {
+        [invoiceResponse.invoiceBalance] = invoiceBalance;
 
+        if (invoiceResponse.exchange) {
+          invoiceResponse.invoiceBalance.exchangedDebit =
+            _.round(invoiceResponse.invoiceBalance.debit * invoiceResponse.exchange);
+
+          invoiceResponse.invoiceBalance.exchangedCredit =
+            _.round(invoiceResponse.invoiceBalance.credit * invoiceResponse.exchange);
+
+          invoiceResponse.invoiceBalance.exchangedBalance =
+            _.round(invoiceResponse.invoiceBalance.balance * invoiceResponse.exchange);
+        }
+      }
+      return receiptReport.render(invoiceResponse);
     })
     .then(result => {
 

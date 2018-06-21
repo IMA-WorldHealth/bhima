@@ -236,7 +236,8 @@ function loadSessionInformation(user) {
           enable_price_lock,
           enable_prepayments,
           enable_password_validation,
-          enable_delete_records
+          enable_delete_records,
+          enable_prepayment_inside_invoice
         FROM enterprise_setting
         WHERE enterprise_id = ?;
       `;
