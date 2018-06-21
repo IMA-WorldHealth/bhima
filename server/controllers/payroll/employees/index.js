@@ -214,6 +214,11 @@ function update(req, res, next) {
     'current_location_id', 'origin_location_id',
   ]);
 
+  // Remove whitespace from Patient display_name
+  if (employee.dob) {
+    employee.display_name = employee.display_name.trim();
+  }
+
   const employeeAdvantagePayroll = employee.payroll;
 
   if (employeeAdvantagePayroll) {
@@ -338,6 +343,11 @@ function create(req, res, next) {
     'uuid', 'grade_uuid', 'debtor_group_uuid', 'creditor_group_uuid', 'creditor_uuid',
     'debtor_uuid', 'current_location_id', 'origin_location_id', 'patient_uuid',
   ]);
+
+  // Remove whitespace from Patient display_name
+  if (employee.display_name) {
+    employee.display_name = employee.display_name.trim();
+  }
 
   const employeeAdvantagePayroll = employee.payroll;
 
@@ -542,6 +552,9 @@ function patientToEmployee(req, res, next) {
     'uuid', 'grade_uuid', 'debtor_group_uuid', 'creditor_group_uuid', 'creditor_uuid',
     'debtor_uuid', 'current_location_id', 'origin_location_id', 'patient_uuid',
   ]);
+
+  // Remove whitespace from Patient display_name
+  employee.display_name = employee.display_name.trim();
 
   const employeeAdvantagePayroll = employee.payroll;
 
