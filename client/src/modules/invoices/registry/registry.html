@@ -6,7 +6,7 @@
     </ol>
 
     <div class="toolbar">
-
+     
       <div class="toolbar-item">
         <div uib-dropdown dropdown-append-to-body data-action="open-menu">
           <a class="btn btn-default" uib-dropdown-toggle>
@@ -61,6 +61,10 @@
           <span class="fa fa-search"></span> <span class="hidden-xs" translate>FORM.BUTTONS.SEARCH</span>
         </button>
       </div>
+      
+      <bh-filter-toggle on-toggle="InvoiceRegistryCtrl.toggleInlineFilter()">
+      </bh-filter-toggle>
+
     </div>
   </div>
 </div>

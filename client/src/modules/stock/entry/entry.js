@@ -171,7 +171,7 @@ function StockEntryController(
    */
   function addItems(n) {
     vm.stockForm.addItems(n);
-    hasValidInput();
+    vm.hasValidInput = hasValidInput();
   }
 
   /**
@@ -181,7 +181,7 @@ function StockEntryController(
    */
   function removeItem(index) {
     vm.stockForm.removeItem(index);
-    hasValidInput();
+    vm.hasValidInput = hasValidInput();
   }
 
   /**

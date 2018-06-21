@@ -1142,7 +1142,7 @@ DROP TABLE IF EXISTS `patient_group`;
 CREATE TABLE `patient_group` (
   `uuid`              BINARY(16) NOT NULL,
   `enterprise_id`     SMALLINT(5) UNSIGNED NOT NULL,
-  `price_list_uuid`   BINARY(16),
+  `price_list_uuid`   BINARY(16) NULL,
   `name`              VARCHAR(60) NOT NULL,
   `note`              TEXT NOT NULL,
   `created_at`        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -1151,7 +1151,7 @@ CREATE TABLE `patient_group` (
    KEY `enterprise_id` (`enterprise_id`),
    KEY `price_list_uuid` (`price_list_uuid`),
    FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
-   FOREIGN KEY (`price_list_uuid`) REFERENCES `price_list` (`uuid`)
+   FOREIGN KEY (`price_list_uuid`) REFERENCES `price_list` (`uuid`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS patient_group_invoicing_fee;

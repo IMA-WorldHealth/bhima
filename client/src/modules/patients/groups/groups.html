@@ -176,15 +176,16 @@
                 </div>
 
                 <div class="form-group">
-                  <label class="control-label" translate>
-                    FORM.LABELS.PRICE_LIST
+                  <label class="control-label">
+                    <span translate> FORM.LABELS.PRICE_LIST</span>&nbsp;&nbsp;&nbsp;
+                     
                   </label>
                   <select
                     class="form-control"
                     name="priceList"
                     ng-model="PatientGroupCtrl.patientGroup.price_list_uuid"
                     ng-options="p.uuid as p.label for p in PatientGroupCtrl.priceLists">
-                    <option value="" disabled translate> FORM.SELECT.PRICE_LIST </option>
+                    <option value="" translate>FORM.LABELS.NO_PRICE_LIST </option>
                   </select>
                   <div class="help-block" ng-messages="UpdateForm.priceList.$error" ng-show="UpdateForm.$submitted">
                     <div ng-messages-include="modules/templates/messages.tmpl.html"></div>

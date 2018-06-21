@@ -116,6 +116,11 @@ function create(req, res, next) {
   medical = db.convert(medical, ['uuid', 'current_location_id', 'origin_location_id']);
   medical.debtor_uuid = finance.uuid;
 
+  // Remove whitespace from Patient display_name
+  if (medical.display_name) {
+    medical.display_name = medical.display_name.trim();
+  }
+
   const writeDebtorQuery = 'INSERT INTO debtor (uuid, group_uuid, text) VALUES (?, ?, ?)';
   const writePatientQuery = 'INSERT INTO patient SET ?';
 
@@ -178,6 +183,11 @@ function update(req, res, next) {
   // sanitize date
   if (data.dob) {
     data.dob = new Date(data.dob);
+  }
+
+  // Remove whitespace from Patient display_name
+  if (data.dob) {
+    data.display_name = data.display_name.trim();
   }
 
   // prevent updating the patient's uuid
