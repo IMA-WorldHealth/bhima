@@ -237,7 +237,7 @@ function loadSessionInformation(user) {
           enable_prepayments,
           enable_password_validation,
           enable_delete_records,
-          enable_prepayment_inside_invoice
+          enable_balance_on_invoice_receipt
         FROM enterprise_setting
         WHERE enterprise_id = ?;
       `;

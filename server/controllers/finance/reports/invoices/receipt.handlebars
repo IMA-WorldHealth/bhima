@@ -151,8 +151,8 @@
           </td>
         </tr>
 
-        <!-- Prepayment inside invoice -->
-        {{#if prepaymentInsideInvoice}}
+        <!-- Balance on invoice receipt -->
+        {{#if balanceOnInvoiceReceipt}}
           <tr>
             <td>{{{translate 'FORM.LABELS.TOTAL_PAID'}}}</td>
             <td class="text-right">{{currency invoiceBalance.credit metadata.enterprise.currency_id}}</td>

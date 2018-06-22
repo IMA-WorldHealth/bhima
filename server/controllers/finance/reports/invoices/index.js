@@ -109,7 +109,7 @@ function receipt(req, res, next) {
 
   const invoiceUuid = req.params.uuid;
   const enterpriseId = req.session.enterprise.id;
-  const prepaymentInsideInvoice = req.session.enterprise.settings.enable_prepayment_inside_invoice;
+  const balanceOnInvoiceReceipt = req.session.enterprise.settings.enable_balance_on_invoice_receipt;
   const currencyId = options.currency || req.session.enterprise.currency_id;
   const invoiceResponse = {};
   invoiceResponse.lang = options.lang;
@@ -154,7 +154,7 @@ function receipt(req, res, next) {
       return Exchange.getExchangeRate(enterpriseId, currencyId, new Date());
     })
     .then(exchangeResult => {
-      invoiceResponse.prepaymentInsideInvoice = prepaymentInsideInvoice;
+      invoiceResponse.balanceOnInvoiceReceipt = balanceOnInvoiceReceipt;
       invoiceResponse.receiptCurrency = currencyId;
       invoiceResponse.exchange = exchangeResult.rate;
       invoiceResponse.dateFormat = (new Moment()).format('L');
@@ -162,7 +162,7 @@ function receipt(req, res, next) {
         invoiceResponse.exchangedTotal = _.round(invoiceResponse.cost * invoiceResponse.exchange);
       }
 
-      return prepaymentInsideInvoice ? Debtors.invoiceBalances(invoiceResponse.debtor_uuid, [invoiceUuid]) : [];
+      return balanceOnInvoiceReceipt ? Debtors.invoiceBalances(invoiceResponse.debtor_uuid, [invoiceUuid]) : [];
     })
     .then(invoiceBalance => {
       if (invoiceBalance.length > 0) {
