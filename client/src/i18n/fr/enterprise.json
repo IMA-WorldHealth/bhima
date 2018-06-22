@@ -18,8 +18,8 @@
       "ENABLE_DELETE_RECORDS_HELP_TEXT" : "Cette fonctionnalité permet aux utilisateurs de supprimer des transactions comme une alternative à l'inversion des transactions directement à partir des registres.",
       "ENABLE_PASSWORD_VALIDATION_LABEL" : "Strictement valider les mots de passe",
       "ENABLE_PASSWORD_VALIDATION_HELP_TEXT" : "L'activation de cette fonctionnalité oblige les utilisateurs à utiliser des mots de passe difficiles à deviner. Cette action n'est pas rétroactive. Les anciens mots de passe continueront à fonctionner jusqu'à modification manuelle.",
-      "ENABLE_PREPAYMENT_INVOICE_LABEL" : "Activer les Cautions payées sur la facture",
-      "ENABLE_PREPAYMENT_INVOICE_HELP_TEXT" : "L'activation de cette option permet de voir les cautions payées sur la facture"
+      "ENABLE_PREPAYMENT_INVOICE_LABEL" : "Activer l'affichage du solde sur la facture",
+      "ENABLE_PREPAYMENT_INVOICE_HELP_TEXT" : "L'activation de cette option permet de voir les montants payés ainsi que le solde pour une facture"
     }
   }
 }

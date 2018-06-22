@@ -7,5 +7,5 @@
   there was a prepayment
 */
 
-ALTER TABLE `enterprise_setting` ADD COLUMN `enable_prepayment_inside_invoice` TINYINT(1) NOT NULL DEFAULT 0;
+ALTER TABLE `enterprise_setting` ADD COLUMN `enable_prepayment_inside_invoice` TINYINT(1) NOT NULL DEFAULT 1;
 
