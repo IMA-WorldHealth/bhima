@@ -4,21 +4,21 @@ angular.module('bhima.services')
 EnterpriseService.$inject = ['$http', 'util'];
 
 function EnterpriseService($http, util) {
-  var service = {};
-  var baseUrl = '/enterprises/';
+  const service = {};
+  const baseUrl = '/enterprises/';
 
   service.read = read;
   service.create = create;
   service.update = update;
 
   function read(id, options) {
-    var url = baseUrl.concat(id || '');
+    const url = baseUrl.concat(id || '');
     return $http.get(url, { params : options })
       .then(util.unwrapHttpResponse);
   }
 
   function create(enterprise) {
-    return $http.post(baseUrl, { enterprise: enterprise })
+    return $http.post(baseUrl, { enterprise })
       .then(util.unwrapHttpResponse);
   }
 
