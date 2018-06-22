@@ -60,7 +60,7 @@ function MultiplePayrollController(
     displayName : 'FORM.LABELS.STATUS',
     headerCellFilter : 'translate',
     enableFiltering : false,
-    enableSorting : false,    
+    enableSorting : false,
     cellTemplate : '/modules/multiple_payroll/templates/cellStatus.tmpl.html',
   }, {
     field : 'action',
