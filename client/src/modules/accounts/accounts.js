@@ -24,7 +24,7 @@ function AccountsController(
 
   vm.Constants = Constants;
   vm.loading = true;
-  vm.display = true;
+  vm.showHiddenAccounts = true;
 
   // account title indent value in pixels
   vm.indentTitleSpace = 20;
@@ -91,11 +91,11 @@ function AccountsController(
 
   function hiddenAccount(value) {
     if (value === 1) {
-      vm.display = false;
+      vm.showHiddenAccounts = false;
       vm.gridOptions.data = vm.Accounts.data;
 
     } else {
-      vm.display = true;
+      vm.showHiddenAccounts = true;
       vm.gridOptions.data = vm.unHiddenAccount;
     }
   }
