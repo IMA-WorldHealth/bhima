@@ -53,7 +53,7 @@
       "PAYMENT_EMPLOYEES": "Payment of wages {{date}}"
     },
     "SIMPLE": {
-      "ADJUSTMENT" : "Ajustement",
+      "ADJUSTMENT" : "Adjustment",
       "CASH_PAYMENT": "Client Payment",
       "CASH_RETURN": "Cash Return (Payback)",
       "CHARGE_REMUNERATION": "Social charges on remuneration",

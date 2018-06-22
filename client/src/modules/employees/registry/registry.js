@@ -26,6 +26,7 @@ function EmployeeRegistryController(
   vm.gridApi = {};
   vm.onRemoveFilter = onRemoveFilter;
   vm.download = Employees.download;
+  vm.toggleInlineFilter = toggleInlineFilter;
 
   // track if module is making a HTTP request for employeess
   vm.loading = false;
@@ -154,9 +155,10 @@ function EmployeeRegistryController(
       visible          : false,
     },
     {
-      name          : 'actions',
-      displayName   : '',
-      cellTemplate  : '/modules/employees/templates/action.cell.html',
+      name            : 'actions',
+      displayName     : '',
+      cellTemplate    : '/modules/employees/templates/action.cell.html',
+      enableFiltering : false,
     },
   ];
 
@@ -173,6 +175,15 @@ function EmployeeRegistryController(
 
   const columnConfig = new Columns(vm.uiGridOptions, cacheKey);
   const state = new GridState(vm.uiGridOptions, cacheKey);
+
+  vm.uiGridOptions.onRegisterApi = function onRegisterApi(gridApi) {
+    vm.gridApi = gridApi;
+  };
+
+  function toggleInlineFilter() {
+    vm.uiGridOptions.enableFiltering = !vm.uiGridOptions.enableFiltering;
+    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+  }
 
   vm.saveGridState = state.saveGridState;
   vm.clearGridState = function clearGridState() {
