@@ -37,10 +37,6 @@ exports.privileges = privileges;
  * optional parameters:
  */
 function list(req, res, next) {
-  if (req.query.only_user) {
-    req.query.user_id = req.session.user.id;
-  }
-
   const filters = new FilterParser(req.query);
 
   let sql =
@@ -59,21 +55,12 @@ function list(req, res, next) {
   filters.equals('project_id');
   filters.equals('is_auxiliary');
 
-  if (req.query.detailed === '1') {
-    filters.custom(
-      'user_id',
-      `cash_box_account_currency.cash_box_id IN (
-        SELECT cashbox_permission.cashbox_id FROM cashbox_permission WHERE cashbox_permission.user_id = ?
-      )`
-    );
-  } else {
-    filters.custom(
-      'user_id',
-      `cash_box.id IN (
-        SELECT cashbox_permission.cashbox_id FROM cashbox_permission WHERE cashbox_permission.user_id = ?
-      )`
-    );
-  }
+  filters.custom(
+    'user_id',
+    `cash_box.id IN (
+      SELECT cashbox_permission.cashbox_id FROM cashbox_permission WHERE cashbox_permission.user_id = ?
+    )`
+  );
 
   filters.setOrder('ORDER BY label');
 

@@ -2,18 +2,18 @@ angular.module('bhima.controllers')
   .controller('PaymentEmployeeKitController', PaymentEmployeeKitController);
 
 PaymentEmployeeKitController.$inject = [
-  '$uibModalInstance', 'NotifyService', 'SessionService', 'bhConstants', 'DebtorService', '$translate',
+  '$uibModalInstance', 'NotifyService', 'SessionService', 'bhConstants', '$translate',
   'VoucherToolkitService', 'MultiplePayrollService', 'moment',
 ];
 
 // Import transaction rows for a Payment Employee
 function PaymentEmployeeKitController(
-  Instance, Notify, Session, bhConstants, Debtors, $translate,
-  ToolKits, MultiplePayroll, moment
+  Instance, Notify, Session, bhConstants, $translate, ToolKits,
+  MultiplePayroll, moment
 ) {
   const vm = this;
 
-  const MAX_DECIMAL_PRECISION = bhConstants.precision.MAX_DECIMAL_PRECISION;
+  const { MAX_DECIMAL_PRECISION } = bhConstants.precision;
   vm.enterprise = Session.enterprise;
   vm.onSelectPayrollPeriod = onSelectPayrollPeriod;
   vm.onSelectCashbox = onSelectCashbox;
@@ -23,7 +23,6 @@ function PaymentEmployeeKitController(
 
   // custom filter cashbox_id - assign the value to the searchQueries object
   function onSelectCashbox(cashbox) {
-
     vm.currencyId = cashbox.currency_id;
     vm.account_id = cashbox.account_id;
     reloadGrid();
@@ -76,7 +75,7 @@ function PaymentEmployeeKitController(
     const rows = [];
 
     const supportAccountId = result.account_id;
-    const paiements = result.paiements;
+    const { paiements } = result;
     const supportRow = ToolKits.getBlankVoucherRow();
 
     rows.typeId = bhConstants.transactionType.SALARY_PAYMENT;
@@ -162,7 +161,10 @@ function PaymentEmployeeKitController(
       account_id : vm.account_id,
       paiements  : selected,
     });
-    const msg= $translate.instant('VOUCHERS.GLOBAL.PAYMENT_EMPLOYEES', { date : `[ ${vm.dateFrom} ]` });
+
+    const msg = $translate.instant('VOUCHERS.GLOBAL.PAYMENT_EMPLOYEES', {
+      date : `[ ${vm.dateFrom} ]`,
+    });
 
     Instance.close({
       rows    : bundle,

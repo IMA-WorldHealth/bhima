@@ -36,6 +36,7 @@ exports.byService = reportByService;
 function reportByService(req, res, next) {
   const dateFrom = new Date(req.query.dateFrom);
   const dateTo = new Date(req.query.dateTo);
+  const { cashboxId } = req.query;
 
   let serviceReport;
 
@@ -60,6 +61,7 @@ function reportByService(req, res, next) {
   const data = {};
   data.dateFrom = dateFrom;
   data.dateTo = dateTo;
+  data.cashboxId = cashboxId;
 
   let emptyCashValues = false;
 
@@ -80,6 +82,7 @@ function reportByService(req, res, next) {
         JOIN document_map dm ON dm.uuid = cash.uuid
       WHERE cash.is_caution = 0 AND cash.reversed = 0
         AND DATE(cash.date) >= DATE(?) AND DATE(cash.date) <= DATE(?)
+        AND cash.cashbox_id =  ?
       GROUP BY cash.uuid
       ORDER BY cash.date, cash.reference
     )c, (SELECT @cumsum := 0)z
@@ -99,11 +102,23 @@ function reportByService(req, res, next) {
       JOIN service ON invoice.service_id = service.id
     WHERE cash.is_caution = 0 AND cash.reversed = 0
       AND DATE(cash.date) >= DATE(?) AND DATE(cash.date) <= DATE(?)
+      AND cash.cashbox_id = ?
     GROUP BY service.name
     ORDER BY service.name;
   `;
 
-  db.exec(cashflowByServiceSql, [dateFrom, dateTo])
+  const cashboxDetailsSql = `
+    SELECT cb.id, cb.label FROM cash_box cb JOIN cash_box_account_currency cba
+      ON cb.id = cba.cash_box_id
+    WHERE cba.id = ?;
+  `;
+
+  // pick up the cashbox's details
+  db.one(cashboxDetailsSql, cashboxId)
+    .then(cashbox => {
+      data.cashbox = cashbox;
+      return db.exec(cashflowByServiceSql, [dateFrom, dateTo, cashboxId]);
+    })
     .then((rows) => {
       data.rows = rows;
 
@@ -162,7 +177,7 @@ function reportByService(req, res, next) {
       data.matrix = matrix;
 
       // query the aggregates
-      return db.exec(serviceAggregationSql, [dateFrom, dateTo]);
+      return db.exec(serviceAggregationSql, [dateFrom, dateTo, cashboxId]);
     })
     .then((aggregates) => {
       data.aggregates = aggregates;

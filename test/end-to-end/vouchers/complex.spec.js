@@ -147,7 +147,7 @@ describe('Complex Vouchers', () => {
 
     const detail = {
       tool            : 'Convention - Paiement factures',
-      cashbox         : 'Caisse Aux',
+      cashbox         : '$', // use Caisse Aux USD
       convention      : 'NGO IMA World Health',
       invoices        : [0, 1],
       description     : 'Convention payment with journal voucher',
@@ -333,7 +333,7 @@ describe('Complex Vouchers', () => {
     const gridId = 'paymentGrid';
 
     const detail = {
-      cashbox       : 'Caisse Auxiliaire $',
+      cashbox       : '$',
       tool          : 'Paiement des salaires',
       period        : 'Février 2018',
       description   : 'Paiement Salaire Février 2018',
