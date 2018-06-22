@@ -67,6 +67,7 @@ function ExchangeRateModalController(ModalInstance, Exchange, Currencies, Sessio
 
     return Exchange.create(data)
       .then(() => {
+        Notify.success('FORM.INFO.EXCHANGE_RATE_UPDATE_SUCCESS');
         ModalInstance.close();
       });
   }
