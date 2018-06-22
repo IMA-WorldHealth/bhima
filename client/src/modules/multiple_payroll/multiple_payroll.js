@@ -5,7 +5,7 @@ angular.module('bhima.controllers')
 MultiplePayrollController.$inject = [
   'MultiplePayrollService', 'NotifyService',
   'GridSortingService', 'GridColumnService', 'GridStateService', '$state',
-  'ModalService', 'util', 'ReceiptModal',
+  'ModalService', 'util', 'ReceiptModal', 'uiGridConstants',
 ];
 
 /**
@@ -18,7 +18,7 @@ MultiplePayrollController.$inject = [
  */
 function MultiplePayrollController(
   MultiplePayroll, Notify,
-  Sorting, Columns, GridState, $state, Modals, util, Receipts
+  Sorting, Columns, GridState, $state, Modals, util, Receipts, uiGridConstants
 ) {
   const vm = this;
   const cacheKey = 'multiple-payroll-grid';
@@ -30,6 +30,7 @@ function MultiplePayrollController(
   vm.openColumnConfigModal = openColumnConfigModal;
   vm.clearGridState = clearGridState;
   vm.download = MultiplePayroll.download;
+  vm.toggleInlineFilter = toggleInlineFilter;
 
   // date format function
   vm.format = util.formatDate;
@@ -58,6 +59,8 @@ function MultiplePayrollController(
     field : 'status_id',
     displayName : 'FORM.LABELS.STATUS',
     headerCellFilter : 'translate',
+    enableFiltering : false,
+    enableSorting : false,    
     cellTemplate : '/modules/multiple_payroll/templates/cellStatus.tmpl.html',
   }, {
     field : 'action',
@@ -83,6 +86,11 @@ function MultiplePayrollController(
 
   const gridColumns = new Columns(vm.gridOptions, cacheKey);
   const state = new GridState(vm.gridOptions, cacheKey);
+
+  function toggleInlineFilter() {
+    vm.gridOptions.enableFiltering = !vm.gridOptions.enableFiltering;
+    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+  }
 
   // search Payroll Data
   function search() {
