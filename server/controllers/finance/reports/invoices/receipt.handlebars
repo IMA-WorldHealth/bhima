@@ -132,30 +132,51 @@
       <table style="width: 100%;" class="table-report">
         <tr>
           <td>
-            <h1>{{translate 'FORM.LABELS.TOTAL'}} : </h1>
+            <b>{{translate 'FORM.LABELS.TOTAL'}} : </b>
           </td>
           <td class="text-right">
-            <h3><b>{{currency cost metadata.enterprise.currency_id}}</b></h3>
+            <h5><b>{{currency cost metadata.enterprise.currency_id}}</b></h5>
           </td>
+
+          <!-- Bill exchange -->
+          {{#if exchange}}
+            <td class="text-right">
+              <h5><b>{{{currency exchangedTotal receiptCurrency}}}</b></h5>
+            </td>
+          {{/if}}
         </tr>
         <tr>
           <td colspan='2' class="text-right">
-            <h4><b> {{numberToText cost lang metadata.enterprise.currencyName}}</b></h4>
+            <em>{{numberToText cost lang metadata.enterprise.currencyName}}</em>
           </td>
         </tr>
 
-        <!-- Bill exchange -->
+        <!-- Balance on invoice receipt -->
+        {{#if balanceOnInvoiceReceipt}}
+          <tr>
+            <td>{{{translate 'FORM.LABELS.TOTAL_PAID'}}}</td>
+            <td class="text-right">{{currency invoiceBalance.credit metadata.enterprise.currency_id}}</td>
+            {{#if exchange}}
+              <td class="text-right">{{currency invoiceBalance.exchangedCredit receiptCurrency}}</td>
+            {{/if}}
+          </tr>
+          <tr>
+            <td>{{{translate 'FORM.LABELS.SOLD'}}}</td>
+            <td class="text-right">{{currency invoiceBalance.balance metadata.enterprise.currency_id}}</td>
+            {{#if exchange}}
+              <td class="text-right">{{currency invoiceBalance.exchangedBalance receiptCurrency}}</td>
+            {{/if}}
+          </tr>
+        {{/if}}
+
         {{#if exchange}}
+          <!-- disclamer and exchange rate -->
           <tr>
-            <td colspan="2">{{{translate 'EXCHANGE.INVOICE_DISCLAIMER'}}}</td>
-          </tr>
-          <tr>
-            <td colspan="2">{{{translate 'EXCHANGE.SET_AS'}}} 1:{{exchange}} {{{translate 'EXCHANGE.ON'}}} {{dateFormat}}</td>
-          </tr>
-          <tr>
-            <td></td>
-            <td class="text-right">
-              <h1><b>{{{currency exchangedTotal receiptCurrency}}}</b></h1>
+            <td colspan="2" class="text-right">
+              <em>
+                * {{{translate 'EXCHANGE.INVOICE_DISCLAIMER'}}} <br>
+                {{{translate 'EXCHANGE.SET_AS'}}} 1 = {{exchange}} {{{translate 'EXCHANGE.ON'}}} {{dateFormat}}
+              </em>
             </td>
           </tr>
         {{/if}}
