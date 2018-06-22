@@ -137,6 +137,13 @@
           <td class="text-right">
             <h5><b>{{currency cost metadata.enterprise.currency_id}}</b></h5>
           </td>
+
+          <!-- Bill exchange -->
+          {{#if exchange}}
+            <td class="text-right">
+              <h5><b>{{{currency exchangedTotal receiptCurrency}}}</b></h5>
+            </td>
+          {{/if}}
         </tr>
         <tr>
           <td colspan='2' class="text-right">
@@ -149,41 +156,20 @@
           <tr>
             <td>{{{translate 'FORM.LABELS.TOTAL_PAID'}}}</td>
             <td class="text-right">{{currency invoiceBalance.credit metadata.enterprise.currency_id}}</td>
+            {{#if exchange}}
+              <td class="text-right">{{currency invoiceBalance.exchangedCredit receiptCurrency}}</td>
+            {{/if}}
           </tr>
           <tr>
             <td>{{{translate 'FORM.LABELS.SOLD'}}}</td>
             <td class="text-right">{{currency invoiceBalance.balance metadata.enterprise.currency_id}}</td>
+            {{#if exchange}}
+              <td class="text-right">{{currency invoiceBalance.exchangedBalance receiptCurrency}}</td>
+            {{/if}}
           </tr>
         {{/if}}
 
-        <!-- Bill exchange -->
         {{#if exchange}}
-
-          <!-- blank row -->
-          <tr>
-            <td colspan="2">&nbsp;</td>
-          </tr>
-
-          <!-- invoice total exchanged -->
-          <tr>
-            <td><b>{{translate 'FORM.LABELS.TOTAL'}} : </b></td>
-            <td class="text-right">
-              <h5><b>{{{currency exchangedTotal receiptCurrency}}}</b></h5>
-            </td>
-          </tr>
-          
-          <!-- Prepayment inside invoice for exchanged values -->
-          {{#if prepaymentInsideInvoice}}
-            <tr>
-              <td>{{{translate 'FORM.LABELS.TOTAL_PAID'}}}</td>
-              <td class="text-right">{{currency invoiceBalance.exchangedCredit receiptCurrency}}</td>
-            </tr>
-            <tr>
-              <td>{{{translate 'FORM.LABELS.SOLD'}}}</td>
-              <td class="text-right">{{currency invoiceBalance.exchangedBalance receiptCurrency}}</td>
-            </tr>
-          {{/if}}
-
           <!-- disclamer and exchange rate -->
           <tr>
             <td colspan="2" class="text-right">
@@ -193,7 +179,6 @@
               </em>
             </td>
           </tr>
-
         {{/if}}
 
         {{!-- is convention --}}
