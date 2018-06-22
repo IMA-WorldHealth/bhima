@@ -16,6 +16,10 @@ function CashFlowByServiceConfigController($sce, Notify, SavedReports, AppCache,
 
   checkCachedConfiguration();
 
+  vm.onSelectCashbox = (cashbox) => {
+    vm.reportDetails.cashboxId = cashbox.id;
+  };
+
   vm.clearPreview = function clearPreview() {
     vm.previewGenerated = false;
     vm.previewResult = null;
@@ -47,10 +51,6 @@ function CashFlowByServiceConfigController($sce, Notify, SavedReports, AppCache,
         vm.previewResult = $sce.trustAsHtml(result);
       })
       .catch(Notify.handleError);
-  };
-
-  vm.onSelectCashbox = cashbox => {
-    vm.reportDetails.account_id = cashbox.account_id;
   };
 
   function checkCachedConfiguration() {

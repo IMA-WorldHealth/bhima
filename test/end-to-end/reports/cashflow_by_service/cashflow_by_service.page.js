@@ -1,10 +1,3 @@
-/* global browser, element, by */
-
-const chai = require('chai');
-const helpers = require('../../shared/helpers');
-
-helpers.configure(chai);
-
 const FU = require('../../shared/FormUtils');
 const ReportPage = require('../page');
 const components = require('../../shared/components');
@@ -15,19 +8,21 @@ class CashflowByServiceReportPage {
   }
 
   // preview a CashflowByService report
-  showCashflowByServiceReportPreview(dateRange, dateFrom, dateTo) {
-    if(dateRange){
-      $('[data-date-range="' + dateRange + '"]').click();
+  showCashflowByServiceReportPreview(dateRange, dateFrom, dateTo, cashbox) {
+    if (dateRange) {
+      $(`[data-date-range="${dateRange}"]`).click();
     } else {
       components.dateInterval.range(dateFrom, dateTo);
     }
+
+    components.cashboxSelect.set(cashbox);
 
     this.page.preview();
   }
 
   // save a CashflowByService report
-  saveCashflowByServiceReport(dateRange, dateFrom, dateTo, reportName, reportFormat) {
-    this.showCashflowByServiceReportPreview(dateRange, dateFrom, dateTo);
+  saveCashflowByServiceReport(dateRange, dateFrom, dateTo, cashbox, reportName, reportFormat) {
+    this.showCashflowByServiceReportPreview(dateRange, dateFrom, dateTo, cashbox);
 
     // save report as PDF
     this.page.saveAs();
@@ -40,9 +35,8 @@ class CashflowByServiceReportPage {
     this.page.backToConfig();
   }
 
-  // print a debtors report
-  printCashflowByServiceReport(dateRange, weekly, cashbox) {
-    this.showCashflowByServiceReportPreview(dateRange, weekly, cashbox);
+  printCashflowByServiceReport(dateRange, dateFrom, dateTo, cashbox) {
+    this.showCashflowByServiceReportPreview(dateRange, dateFrom, dateTo, cashbox);
     this.page.printPreview();
   }
 

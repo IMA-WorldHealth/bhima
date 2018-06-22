@@ -4,13 +4,13 @@
   {{> header }}
 
   <h3 class="text-center text-uppercase"><strong>{{translate "REPORT.CASHFLOW_BY_SERVICE.TITLE"}}</strong></h3>
+  <h4 class="text-center">{{cashbox.label}}</h3>
 
   {{#if dateFrom }}
     <h4 style="margin:15px; font-weight:bold" class="text-center text-uppercase">
       {{date dateFrom }} - {{date dateTo }}
     </h4>
   {{/if}}
-
 
   <section>
     <div class="row">
