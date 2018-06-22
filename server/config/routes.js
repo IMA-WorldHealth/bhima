@@ -204,7 +204,7 @@ exports.configure = function configure(app) {
 
   // API for general ledger
   app.get('/general_ledger', generalLedger.list);
-  app.get('/general_ledger/accounts', generalLedger.listAccounts);
+  app.get('/general_ledger/aggregates', generalLedger.getAggregates);
 
   app.get('/transactions/:uuid/history', journal.getTransactionEditHistory);
   app.delete('/transactions/:uuid', transactions.deleteTransaction);
@@ -743,7 +743,7 @@ exports.configure = function configure(app) {
   app.post('/roles/affectUnits', rolesCtrl.affectPages);
   app.post('/roles/assignTouser', rolesCtrl.affectToUser);
   app.post('/roles/actions', rolesCtrl.assignActionToRole);
+
   // unit
   app.get('/unit/:roleUuid', unitCtrl.list);
-
 };

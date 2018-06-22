@@ -1,3 +1,4 @@
+/* eslint no-unused-expressions:off */
 /* global expect, agent */
 const helpers = require('./helpers');
 
@@ -8,7 +9,11 @@ describe('(/journal/trialbalance) API endpoint', () => {
   const GOOD_TXNS = ['a5a5f950-a4c9-47f0-9a9a-2bfc3123e534']; // TPA1
   const EMPTY_TXNS = [];
   const ERROR_TXNS = ['3688e9ce-85ea-4b5c-9144-688177edcb63']; // TRANS5
-  const POSTING_TXNS = ['a5a5f950-a4c9-47f0-9a9a-2bfc3123e534']; // TPA1
+  const POSTING_TXNS = [
+    'a5a5f950-a4c9-47f0-9a9a-2bfc3123e534', // TPA1
+    '2e1332b7-3e63-411e-827d-42ad585ff517',
+    'f24619e0-3a88-4784-a750-a414fc9567bf',
+  ];
 
   const formatParams = transactions => ({ transactions });
 
@@ -73,7 +78,7 @@ describe('(/journal/trialbalance) API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('POST /journal/transactions posts the a transaction to general_ledger and remove it from the posting_general', () => {
+  it('POST /journal/transactions posts the a transaction to general_ledger and removes it from the journal', () => {
     return agent.post('/journal/transactions')
       .send(formatParams(POSTING_TXNS))
       .then((res) => {

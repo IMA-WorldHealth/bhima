@@ -13,8 +13,6 @@ GeneralLedgerService.$inject = [
 function GeneralLedgerService(Api, $httpParamSerializer, Languages, Session) {
   const service = new Api('/general_ledger/');
 
-  service.accounts = new Api('/general_ledger/accounts');
-
   service.download = download;
   service.openAccountReport = openAccountReport;
 
@@ -41,6 +39,10 @@ function GeneralLedgerService(Api, $httpParamSerializer, Languages, Session) {
     // return serialized options
     return $httpParamSerializer(opts);
   }
+
+  // GET /general_ledger/aggregates
+  service.aggregates = (params) =>
+    service.read.call({ url : service.url.concat('aggregates') }, null, params);
 
   return service;
 }

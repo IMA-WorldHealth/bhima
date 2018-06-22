@@ -300,6 +300,7 @@ function GeneralLedgerController(
   function onRegisterApiFn(api) {
     vm.gridApi = api;
     api.grid.registerDataChangeCallback(expandOnSetData);
+    window.uiGrid = api;
   }
 
   function expandOnSetData(grid) {
@@ -325,30 +326,13 @@ function GeneralLedgerController(
     fields.forEach((field) => {
       if (account[field] === 0) {
         delete account[field];
-        return;
-      }
-
-      // total all values that are not title account values
-      if (account.type_id !== bhConstants.accounts.TITLE) {
-        vm.aggregates[field] += account[field];
       }
     });
   }
 
   function loadData(accounts = []) {
-    // make an object of aggregates { column:0 }
-    vm.aggregates = fields.reduce((aggregates, field) => {
-      aggregates[field] = 0;
-      return aggregates;
-    }, {});
-
-    Object.keys(vm.aggregates).forEach(key => {
-      vm.aggregates[key] = Number(vm.aggregates[key].toFixed(bhConstants.precision.MAX_DECIMAL_PRECISION));
-    });
-
     accounts.forEach(preProcessAccounts);
     Accounts.order(accounts);
-
     vm.gridOptions.data = accounts;
   }
 
@@ -369,10 +353,15 @@ function GeneralLedgerController(
   function load(options) {
     vm.loading = true;
 
-    GeneralLedger.accounts.read(null, options)
+    GeneralLedger.read(null, options)
       .then(loadData)
       .catch(handleError)
       .finally(toggleLoadingIndicator);
+
+    GeneralLedger.aggregates(options)
+      .then(([aggregates]) => {
+        vm.aggregates = aggregates || {};
+      });
   }
 
   // fired when the footer changes and on startup.
