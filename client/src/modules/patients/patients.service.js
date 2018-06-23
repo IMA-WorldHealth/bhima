@@ -211,6 +211,7 @@ function PatientService(
     { key : 'debtor_uuid', label : 'FORM.LABELS.PATIENT' },
     { key : 'patient_group_uuid', label : 'PATIENT_GROUP.PATIENT_GROUP' },
     { key : 'user_id', label : 'FORM.LABELS.USER' },
+    { key : 'project_id', label : 'FORM.LABELS.PROJECT' },
     { key : 'defaultPeriod', label : 'TABLE.COLUMNS.PERIOD' },
     { key : 'originLocationLabel', label : 'FORM.LABELS.ORIGIN_LOCATION' },
   ]);

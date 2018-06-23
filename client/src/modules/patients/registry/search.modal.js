@@ -55,6 +55,11 @@ function PatientRegistryModalController(ModalInstance, filters, Store, util, Per
     displayValues.debtor_group_uuid = debtorGroup.name;
   };
 
+  vm.onSelectProject = (project) => {
+    displayValues.project_id = project.name;
+    vm.searchQueries.project_id = project.id;
+  };
+
   vm.onSelectPatientGroup = function onSelectPatientGroup(patientGroup) {
     vm.searchQueries.patient_group_uuid = patientGroup.uuid;
     displayValues.patient_group_uuid = patientGroup.name;
