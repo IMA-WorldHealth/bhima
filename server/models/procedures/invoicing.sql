@@ -749,14 +749,16 @@ BEGIN
     SELECT p.reference_uuid AS uuid, p.debit_equiv as debit, p.credit_equiv as credit, p.trans_date as date
     FROM posting_journal AS p
       JOIN cash c ON c.uuid = p.reference_uuid
-    WHERE c.debtor_uuid = debtor_uuid AND c.reversed = 0 AND c.is_caution = 1;
+    WHERE c.debtor_uuid = debtor_uuid AND c.reversed = 0 AND c.is_caution = 1
+      AND p.trans_id NOT IN (SELECT pj.trans_id FROM posting_journal pj JOIN invoice i ON i.uuid = pj.reference_uuid WHERE pj.trans_id = p.trans_id AND i.reversed = 1);
 
   -- pull in general_ledger references
   INSERT INTO stage_payment_references
     SELECT p.reference_uuid AS uuid, p.debit_equiv as debit, p.credit_equiv as credit, p.trans_date as date
     FROM general_ledger AS p
       JOIN cash c ON c.uuid = p.reference_uuid
-    WHERE c.debtor_uuid = debtor_uuid AND c.reversed = 0 AND c.is_caution = 1;
+    WHERE c.debtor_uuid = debtor_uuid AND c.reversed = 0 AND c.is_caution = 1
+      AND p.trans_id NOT IN (SELECT pj.trans_id FROM general_ledger pj JOIN invoice i ON i.uuid = pj.reference_uuid WHERE pj.trans_id = p.trans_id AND i.reversed = 1);
 
   INSERT INTO stage_payment_balances
     SELECT zz.uuid, zz.balance, zz.date
