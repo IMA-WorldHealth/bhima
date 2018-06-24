@@ -5,7 +5,7 @@ angular.module('bhima.controllers')
 MultiplePayrollController.$inject = [
   'MultiplePayrollService', 'NotifyService',
   'GridSortingService', 'GridColumnService', 'GridStateService', '$state',
-  'ModalService', 'util', 'ReceiptModal', 'uiGridConstants', 'SessionService',
+  'ModalService', 'util', 'ReceiptModal', 'uiGridConstants',
 ];
 
 /**
@@ -18,7 +18,7 @@ MultiplePayrollController.$inject = [
  */
 function MultiplePayrollController(
   MultiplePayroll, Notify,
-  Sorting, Columns, GridState, $state, Modals, util, Receipts, uiGridConstants, Session
+  Sorting, Columns, GridState, $state, Modals, util, Receipts, uiGridConstants
 ) {
   const vm = this;
   const cacheKey = 'multiple-payroll-grid';
