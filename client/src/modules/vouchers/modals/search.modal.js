@@ -87,7 +87,7 @@ function VoucherRegistrySearchModalController(
   vm.onSelectProject = (project) => {
     displayValues.project_id = project.name;
     vm.searchQueries.project_id = project.id;
-  };
+  };  
 
   // default filter period - directly write to changes list
   vm.onSelectPeriod = function onSelectPeriod(period) {
@@ -104,7 +104,7 @@ function VoucherRegistrySearchModalController(
         displayValues.currency_id = currency.label;
       }
     });
-  };
+  };  
 
   // default filter limit - directly write to changes list
   vm.onSelectLimit = function onSelectLimit(_value) {
@@ -128,14 +128,11 @@ function VoucherRegistrySearchModalController(
   vm.cancel = function cancel() { ModalInstance.close(); };
 
   // submit the filter object to the parent controller.
-  vm.submit = function submit(form) {
-    if (form.$invalid) { return; }
-
+  vm.submit = function submit() {
     // delete type_ids if there is no transaction type sent
     if (vm.searchQueries.type_ids && vm.searchQueries.type_ids.length === 0) {
       vm.clear('type_ids');
     }
-
 
     // push all searchQuery values into the changes array to be applied
     angular.forEach(vm.searchQueries, (_value, _key) => {
