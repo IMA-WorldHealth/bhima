@@ -23,12 +23,12 @@
 
     <!-- view linked records -->
     <li>
-      <a data-method="view-patient" href ui-sref="patientRegistry({ filters : [{ key : 'display_name', value : row.entity.patientName }]})">
+      <a data-method="view-patient" href ui-sref="patientRegistry({ filters : [{ key : 'period', value : 'allTime' }, { key : 'display_name', value : row.entity.patientName }]})">
         <i class="fa fa-user"></i> <span translate>REPORT.VIEW_PATIENT</span>
       </a>
     </li>
     <li>
-      <a data-method="view-payment" href ui-sref="cashRegistry({ filters : [{ key : 'invoice_uuid', value : row.entity.uuid, displayValue: row.entity.reference }]})">
+      <a data-method="view-payment" href ui-sref="cashRegistry({ filters : [{ key : 'period', value : 'allTime' }, { key : 'invoice_uuid', value : row.entity.uuid, displayValue: row.entity.reference }]})">
         <span class="fa fa-money"></span> <span translate>REPORT.VIEW_PAYMENTS</span>
       </a>
     </li>
