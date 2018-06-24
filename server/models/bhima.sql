@@ -123,7 +123,7 @@ INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
   (9, 'clients_report','REPORT.CLIENTS'),
   (10, 'aged_creditors','TREE.AGED_CREDITORS'),
   (11, 'balance_sheet_report', 'REPORT.BALANCE_SHEET.TITLE'),
-  (12, 'cash_report', 'REPORT.CASH_REPORT'),
+  (12, 'cash_report', 'REPORT.CASH_REPORT.TITLE'),
   (13, 'inventory_report', 'REPORT.STOCK.TITLE'),
   (14, 'inventory_file', 'REPORT.STOCK.INVENTORY_REPORT'),
   (15, 'operating', 'TREE.OPERATING_ACCOUNT'),
