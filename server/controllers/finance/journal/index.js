@@ -576,10 +576,7 @@ function reverse(req, res, next) {
     db.bid(voucherUuid),
   ];
 
-  /**
-   * Check already cancelled
-   * Transaction type for cancelled operation is 10
-   */
+  // Check to see if the record is already canceled.
   const CANCELLED_ID = 10;
   const query = `
     SELECT uuid FROM voucher
