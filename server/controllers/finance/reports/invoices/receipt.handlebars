@@ -79,49 +79,48 @@
         <td class="text-right">{{currency (multiply this.transaction_price quantity) ../metadata.enterprise.currency_id}}</td>
       </tr>
       {{/each}}
-      <tr>
-        <td colspan="4" class="text-right">{{translate 'TABLE.COLUMNS.TOTAL'}}</td>
-        <td class="text-right">{{currency (sum items 'transaction_price' 'quantity') metadata.enterprise.currency_id}}</td>
-      </tr>
     </tbody>
+    <tfoot>
+      <tr>
+        <th colspan="4" class="text-right">{{translate 'TABLE.COLUMNS.TOTAL'}}</th>
+        <th class="text-right">{{currency (sum items 'transaction_price' 'quantity') metadata.enterprise.currency_id}}</th>
+      </tr>
+    </tfoot>
   </table>
   {{/if}}
 
   <div class="row">
-    <div class="col-xs-8 col-xs-offset-4" >
+    <div class="col-xs-6 col-xs-offset-6" >
       <!-- billing service  -->
       {{#if billing.length}}
-        <h4>
-          <u>{{translate 'FORM.LABELS.INVOICING_FEES'}}</u> :
-        </h4>
+        <u class="text-capitalize">{{translate 'FORM.LABELS.INVOICING_FEES'}}</u> :
+
         <table style="width: 100%;" class="table-report">
           {{#each billing}}
             <tr>
-              <td class="text-right">
+              <td class="text-right" style="border:0px">
                 ({{this.label}} {{this.billing_value}}%
                 {{translate 'FORM.LABELS.OF'}}
                 {{currency this.invoice_cost ../metadata.enterprise.currency_id}}) =
               </td>
-              <td class="text-right">
+              <td class="text-right" style="border:0px">
                 +{{currency this.value ../metadata.enterprise.currency_id}}
               </td>
             </tr>
           {{/each}}
           <tr style="font-weight: bold;">
-            <td class="text-right">{{translate 'FORM.LABELS.TOTAL'}} ({{translate 'FORM.LABELS.INVOICING_FEES'}}) = </td>
-            <td class="text-right">+{{currency (sum billing 'value') ../metadata.enterprise.currency_id}}</td>
+            <td class="text-right text-capitalize" style="border:0px">{{translate 'FORM.LABELS.TOTAL'}} ({{translate 'FORM.LABELS.INVOICING_FEES'}}) = </td>
+            <td class="text-right" style="border:0px">+{{currency (sum billing 'value') ../metadata.enterprise.currency_id}}</td>
           </tr>
         </table>
       {{/if}}
 
       <!-- subsidies  -->
       {{#if subsidy.length}}
+        <u>{{translate 'FORM.LABELS.SUBSIDIES'}}</u> ({{subsidy.length}}) :
         <table style="width: 100%;" class="table-report">
-          <tr>
-            <td>
-              <h4><u>{{translate 'FORM.LABELS.SUBSIDIES'}}</u> ({{subsidy.length}}) :</h4>
-            </td>
-            <td class="text-right">
+          <tr style="border:0px">
+            <td class="text-right" style="border:0px">
               <b>-{{currency (sum subsidy 'value') metadata.enterprise.currency_id}}</b>
             </td>
           </tr>
@@ -135,18 +134,18 @@
             <b>{{translate 'FORM.LABELS.TOTAL'}} : </b>
           </td>
           <td class="text-right">
-            <h5><b>{{currency cost metadata.enterprise.currency_id}}</b></h5>
+            <b>{{currency cost metadata.enterprise.currency_id}}</b>
           </td>
 
           <!-- Bill exchange -->
           {{#if exchange}}
             <td class="text-right">
-              <h5><b>{{{currency exchangedTotal receiptCurrency}}}</b></h5>
+              <b>{{{currency exchangedTotal receiptCurrency}}}</b>
             </td>
           {{/if}}
         </tr>
         <tr>
-          <td colspan='2' class="text-right">
+          <td colspan="{{#if exchange}}3{{else}}2{{/if}}" class="text-right" style="border:0px">
             <em>{{numberToText cost lang metadata.enterprise.currencyName}}</em>
           </td>
         </tr>
@@ -154,25 +153,25 @@
         <!-- Balance on invoice receipt -->
         {{#if balanceOnInvoiceReceipt}}
           <tr>
-            <td>{{{translate 'FORM.LABELS.TOTAL_PAID'}}}</td>
-            <td class="text-right">{{currency invoiceBalance.credit metadata.enterprise.currency_id}}</td>
+            <td style="border:0px">{{{translate 'FORM.LABELS.TOTAL_PAID'}}}</td>
+            <td class="text-right" style="border:0px">{{currency invoiceBalance.credit metadata.enterprise.currency_id}}</td>
             {{#if exchange}}
-              <td class="text-right">{{currency invoiceBalance.exchangedCredit receiptCurrency}}</td>
+              <td class="text-right" style="border:0px">{{currency invoiceBalance.exchangedCredit receiptCurrency}}</td>
             {{/if}}
           </tr>
           <tr>
-            <td>{{{translate 'FORM.LABELS.SOLD'}}}</td>
-            <td class="text-right">{{currency invoiceBalance.balance metadata.enterprise.currency_id}}</td>
+            <td style="border:0px">{{{translate 'FORM.LABELS.SOLD'}}}</td>
+            <td class="text-right" style="border:0px">{{currency invoiceBalance.balance metadata.enterprise.currency_id}}</td>
             {{#if exchange}}
-              <td class="text-right">{{currency invoiceBalance.exchangedBalance receiptCurrency}}</td>
+              <td class="text-right" style="border:0px">{{currency invoiceBalance.exchangedBalance receiptCurrency}}</td>
             {{/if}}
           </tr>
         {{/if}}
 
         {{#if exchange}}
-          <!-- disclamer and exchange rate -->
+          <!-- disclaimer and exchange rate -->
           <tr>
-            <td colspan="2" class="text-right">
+            <td colspan="3" class="text-right" style="border:0px">
               <em>
                 * {{{translate 'EXCHANGE.INVOICE_DISCLAIMER'}}} <br>
                 {{{translate 'EXCHANGE.SET_AS'}}} 1 = {{exchange}} {{{translate 'EXCHANGE.ON'}}} {{dateFormat}}
@@ -184,8 +183,8 @@
         {{!-- is convention --}}
         {{#if recipient.hasConventionCoverage}}
           <tr>
-            <td colspan='2' class="text-right">
-              <h4 style="border: 1px solid #333;"><b>{{translate 'PATIENT_RECORDS.INVOICE_COVERED_BY'}}: {{recipient.debtor_group_name}}</b></h4>
+            <td colspan="2" class="text-right" style="border:0px">
+              <h5 style="border: 1px solid #333;"><b>{{translate 'PATIENT_RECORDS.INVOICE_COVERED_BY'}}: {{recipient.debtor_group_name}}</b></h5>
             </td>
           </tr>
         {{/if}}

@@ -134,14 +134,16 @@ function receipt(req, res, next) {
   Invoices.lookupInvoice(invoiceUuid)
     .then(reportResult => {
       const recipientUuid = reportResult.patient_uuid;
+
       _.extend(invoiceResponse, reportResult);
 
       return Promise.all([
         Patients.lookupPatient(recipientUuid),
         Invoices.lookupInvoiceCreditNote(invoiceUuid),
+        Exchange.getExchangeRate(enterpriseId, currencyId, new Date()),
       ]);
     })
-    .spread((recipient, cNote) => {
+    .spread((recipient, cNote, exchangeResult) => {
       _.extend(invoiceResponse, { recipient, creditNote : cNote }, metadata);
 
       invoiceResponse.recipient.hasConventionCoverage = invoiceResponse.recipient.is_convention;
@@ -151,9 +153,6 @@ function receipt(req, res, next) {
         invoiceResponse.creditNoteReference = invoiceResponse.creditNote.reference;
       }
 
-      return Exchange.getExchangeRate(enterpriseId, currencyId, new Date());
-    })
-    .then(exchangeResult => {
       invoiceResponse.balanceOnInvoiceReceipt = balanceOnInvoiceReceipt;
       invoiceResponse.receiptCurrency = currencyId;
       invoiceResponse.exchange = exchangeResult.rate;
@@ -179,10 +178,10 @@ function receipt(req, res, next) {
             _.round(invoiceResponse.invoiceBalance.balance * invoiceResponse.exchange);
         }
       }
+
       return receiptReport.render(invoiceResponse);
     })
     .then(result => {
-
       res.set(result.headers).send(result.report);
     })
     .catch(next)
