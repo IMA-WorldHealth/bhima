@@ -52,17 +52,11 @@ function MultiplePayrollController(
     displayName : 'FORM.LABELS.NET_SALARY',
     headerCellFilter : 'translate',
     cellFilter : 'currency:row.entity.currency_id',
-    aggregationType : uiGridConstants.aggregationTypes.sum,
-    aggregationHideLabel : true,
-    footerCellFilter : 'currency:'.concat(Session.enterprise.currency_id),
   }, {
     field : 'balance',
     displayName : 'FORM.LABELS.BALANCE',
     headerCellFilter : 'translate',
     cellFilter : 'currency:row.entity.currency_id',
-    aggregationType : uiGridConstants.aggregationTypes.sum,
-    aggregationHideLabel : true,
-    footerCellFilter : 'currency:'.concat(Session.enterprise.currency_id),
   }, {
     field : 'status_id',
     displayName : 'FORM.LABELS.STATUS',
