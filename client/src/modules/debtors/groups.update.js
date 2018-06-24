@@ -3,7 +3,7 @@
  *       data is fetched per page load
  */
 angular.module('bhima.controllers')
-.controller('DebtorGroupUpdateController', DebtorGroupsUpdateController);
+  .controller('DebtorGroupUpdateController', DebtorGroupsUpdateController);
 
 DebtorGroupsUpdateController.$inject = [
   '$state', 'DebtorGroupService', 'AccountService', 'PriceListService',
@@ -12,9 +12,10 @@ DebtorGroupsUpdateController.$inject = [
 
 function DebtorGroupsUpdateController(
   $state, DebtorGroups, Accounts, Prices,
-  ScrollTo, util, Notify, Modal) {
-  var vm = this;
-  var target = $state.params.uuid;
+  ScrollTo, util, Notify, Modal
+) {
+  const vm = this;
+  const target = $state.params.uuid;
 
   vm.submit = submit;
   vm.state = $state;
@@ -30,15 +31,15 @@ function DebtorGroupsUpdateController(
 
 
   Prices.read()
-    .then(function (priceLists) {
+    .then((priceLists) => {
       vm.priceLists = priceLists;
       return Accounts.read();
     })
-    .then(function (accounts) {
+    .then((accounts) => {
       vm.accounts = accounts;
       return DebtorGroups.read(target);
     })
-    .then(function (result) {
+    .then((result) => {
       vm.group = result;
       vm.$loaded = true;
       $state.params.label = vm.group.name;
@@ -49,12 +50,11 @@ function DebtorGroupsUpdateController(
       vm.group.apply_discounts = Boolean(vm.group.apply_discounts);
     })
     .catch(Notify.handleError)
-    .finally(function () {
+    .finally(() => {
       vm.$loading = false;
     });
 
   function submit(debtorGroupForm) {
-    var submitDebtorGroup;
     debtorGroupForm.$setSubmitted();
 
     // ensure we don't make HTTP requests if the form is invalid - exit early
@@ -70,10 +70,10 @@ function DebtorGroupsUpdateController(
       return;
     }
 
-    submitDebtorGroup = util.filterFormElements(debtorGroupForm, true);
+    const submitDebtorGroup = util.filterFormElements(debtorGroupForm, true);
 
     DebtorGroups.update(target, submitDebtorGroup)
-      .then(function () {
+      .then(() => {
         Notify.success('DEBTOR_GROUP.UPDATED');
         $state.go('debtorGroups.list', null, { reload : true });
       })
@@ -85,9 +85,9 @@ function DebtorGroupsUpdateController(
   }
 
   function invoicingFeeSubscriptions() {
-    var modal = DebtorGroups.manageInvoicingFees(vm.group);
+    const modal = DebtorGroups.manageInvoicingFees(vm.group);
     modal.result
-      .then(function (results) {
+      .then((results) => {
         // update UI
         vm.group.invoicingFees = results;
         Notify.success('FORM.INFO.UPDATE_SUCCESS');
@@ -95,9 +95,9 @@ function DebtorGroupsUpdateController(
   }
 
   function subsidySubscriptions() {
-    var modal = DebtorGroups.manageSubsidies(vm.group);
+    const modal = DebtorGroups.manageSubsidies(vm.group);
     modal.result
-      .then(function (results) {
+      .then((results) => {
         // update UI
         vm.group.subsidies = results;
         Notify.success('FORM.INFO.UPDATE_SUCCESS');
@@ -110,14 +110,14 @@ function DebtorGroupsUpdateController(
    */
   function deleteGroup(groupUuid) {
     Modal.confirm()
-      .then(function (confirmResponse) {
+      .then((confirmResponse) => {
         if (!confirmResponse) {
           return false;
         }
 
         // user has confirmed removal of debtor group
         return DebtorGroups.remove(groupUuid)
-          .then(function () {
+          .then(() => {
             Notify.success('FORM.INFO.DELETE_SUCCESS');
             $state.go('debtorGroups.list', null, { reload : true });
           })

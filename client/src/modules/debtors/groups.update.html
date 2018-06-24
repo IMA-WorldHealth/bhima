@@ -105,7 +105,7 @@
             ng-class="{'has-error' : !GroupUpdateCtrl.group.color && debtorGroup.$submitted}">
             <label class="control-label" translate>FORM.LABELS.COLOR</label>
 
-            <ui-select tagging ng-model="GroupUpdateCtrl.group.color">
+            <ui-select tagging name="color" ng-model="GroupUpdateCtrl.group.color">
               <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.PICK_ONE' | translate }}">
                 <i class="fa fa-circle" style="color: {{$select.selected.value}}"></i>
                 <span translate>{{$select.selected.name}}</span>
