@@ -87,7 +87,7 @@ function VoucherRegistrySearchModalController(
   vm.onSelectProject = (project) => {
     displayValues.project_id = project.name;
     vm.searchQueries.project_id = project.id;
-  };  
+  };
 
   // default filter period - directly write to changes list
   vm.onSelectPeriod = function onSelectPeriod(period) {
@@ -104,7 +104,7 @@ function VoucherRegistrySearchModalController(
         displayValues.currency_id = currency.label;
       }
     });
-  };  
+  };
 
   // default filter limit - directly write to changes list
   vm.onSelectLimit = function onSelectLimit(_value) {
