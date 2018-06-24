@@ -50,6 +50,8 @@ function VoucherService(
     { key : 'cash_uuid', label : 'FORM.INFO.PAYMENT' },
     { key : 'invoice_uuid', label : 'FORM.LABELS.INVOICE' },
     { key : 'type_ids', label : 'FORM.LABELS.TRANSACTION_TYPE' },
+    { key : 'project_id', label : 'FORM.LABELS.PROJECT' },
+    { key : 'currency_id', label : 'FORM.LABELS.CURRENCY' },
   ]);
 
 

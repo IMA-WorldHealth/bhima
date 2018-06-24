@@ -45,23 +45,10 @@
                 <i class="fa fa-list"></i> <span translate>FORM.BUTTONS.PUT_ON_WAITING</span>
               </a>
             </li>
-
+            <li role="separator" class="divider"></li>
             <li role="menuitem">
               <a data-method="view-payslip" ng-click="MultiplePayrollCtrl.viewPaySlip()" href>
                 <i class="fa fa-file-text-o"></i> <span translate>FORM.BUTTONS.PAYROLL_BULLETINS</span>
-              </a>
-            </li>
-
-            <li role="separator" class="divider"></li>
-
-            <li role="menuitem">
-              <a ng-href="/reports/payroll/multipayroll/?{{ MultiplePayrollCtrl.download('pdf') }}" download="{{ 'TREE.MULTI_PAYROLL' | translate }}">
-                <span class="fa fa-file-pdf-o"></span> <span translate>DOWNLOADS.PDF</span>
-              </a>
-            </li>
-            <li role="menuitem">
-              <a ng-href="/reports/payroll/multipayroll/?{{ MultiplePayrollCtrl.download('csv') }}" download="{{ 'TREE.MULTI_PAYROLL' | translate }}">
-                <span class="fa fa-file-excel-o"></span> <span translate>DOWNLOADS.CSV</span>
               </a>
             </li>
           </ul>

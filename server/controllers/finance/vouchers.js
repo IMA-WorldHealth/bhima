@@ -134,7 +134,7 @@ function find(options) {
       BUID(v.uuid) as uuid, v.date, v.project_id, v.currency_id, v.amount,
       v.description, v.user_id, v.type_id, u.display_name, transaction_type.text,
       CONCAT_WS('.', '${entityIdentifier}', p.abbr, v.reference) AS reference,
-      v.edited, BUID(v.reference_uuid) AS reference_uuid
+      v.edited, BUID(v.reference_uuid) AS reference_uuid, p.name AS project_name
     FROM voucher v
     JOIN project p ON p.id = v.project_id
     JOIN user u ON u.id = v.user_id
@@ -147,7 +147,9 @@ function find(options) {
   filters.dateFrom('custom_period_start', 'date');
   filters.dateTo('custom_period_end', 'date');
   filters.equals('user_id');
+  filters.equals('project_id');
   filters.equals('edited');
+  filters.equals('currency_id');
 
   filters.custom('reference', referenceStatement);
 

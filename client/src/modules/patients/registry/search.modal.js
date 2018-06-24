@@ -22,7 +22,7 @@ function PatientRegistryModalController(ModalInstance, filters, Store, util, Per
 
   const searchQueryOptions = [
     'display_name', 'sex', 'hospital_no', 'reference', 'dateBirthFrom', 'dateBirthTo',
-    'dateRegistrationFrom', 'dateRegistrationTo', 'debtor_group_uuid',
+    'dateRegistrationFrom', 'dateRegistrationTo', 'debtor_group_uuid', 'project_id',
     'patient_group_uuid', 'user_id', 'defaultPeriod', 'originLocationLabel',
   ];
 

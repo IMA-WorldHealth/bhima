@@ -5,7 +5,7 @@ angular.module('bhima.controllers')
 MultiplePayrollController.$inject = [
   'MultiplePayrollService', 'NotifyService',
   'GridSortingService', 'GridColumnService', 'GridStateService', '$state',
-  'ModalService', 'util', 'ReceiptModal', 'uiGridConstants',
+  'ModalService', 'util', 'ReceiptModal', 'uiGridConstants', 'SessionService',
 ];
 
 /**
@@ -18,7 +18,7 @@ MultiplePayrollController.$inject = [
  */
 function MultiplePayrollController(
   MultiplePayroll, Notify,
-  Sorting, Columns, GridState, $state, Modals, util, Receipts, uiGridConstants
+  Sorting, Columns, GridState, $state, Modals, util, Receipts, uiGridConstants, Session
 ) {
   const vm = this;
   const cacheKey = 'multiple-payroll-grid';
@@ -41,6 +41,8 @@ function MultiplePayrollController(
     field : 'display_name',
     displayName : 'FORM.LABELS.EMPLOYEE_NAME',
     headerCellFilter : 'translate',
+    aggregationType  : uiGridConstants.aggregationTypes.count,
+    aggregationHideLabel : true,
   }, {
     field : 'code',
     displayName : 'FORM.LABELS.CODE',
@@ -50,11 +52,17 @@ function MultiplePayrollController(
     displayName : 'FORM.LABELS.NET_SALARY',
     headerCellFilter : 'translate',
     cellFilter : 'currency:row.entity.currency_id',
+    aggregationType : uiGridConstants.aggregationTypes.sum,
+    aggregationHideLabel : true,
+    footerCellFilter : 'currency:'.concat(Session.enterprise.currency_id),    
   }, {
     field : 'balance',
     displayName : 'FORM.LABELS.BALANCE',
     headerCellFilter : 'translate',
     cellFilter : 'currency:row.entity.currency_id',
+    aggregationType : uiGridConstants.aggregationTypes.sum,
+    aggregationHideLabel : true,
+    footerCellFilter : 'currency:'.concat(Session.enterprise.currency_id),    
   }, {
     field : 'status_id',
     displayName : 'FORM.LABELS.STATUS',
