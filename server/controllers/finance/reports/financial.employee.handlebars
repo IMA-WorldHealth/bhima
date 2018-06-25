@@ -40,10 +40,10 @@
             <td class="text-right" title="{{this.trans_id}}">{{this.trans_id}}</td>
             <td class="text-uppercase" style="max-width : 200px; white-space : nowrap; overflow : hidden; text-overflow : ellipsis;" title="{{this.description}}">{{this.description}}</td>
             <td class="text-right">
-              {{debcred this.debit ../metadata.enterprise.currency_id}}
+              {{currency this.debit ../metadata.enterprise.currency_id}}
             </td>
             <td class="text-right">
-              {{debcred this.credit ../metadata.enterprise.currency_id}}
+              {{currency this.credit ../metadata.enterprise.currency_id}}
             </td>           
             <td class="text-right">
               {{debcred this.cumsum ../metadata.enterprise.currency_id}}
