@@ -18,14 +18,10 @@ function GeneralLedgerController(
   GeneralLedger, Session, Notify, uiGridConstants, Receipts, Columns,
   GridState, $state, Languages, Modal, Fiscal, bhConstants, Accounts
 ) {
-  var vm = this;
-  var columns;
-  var state;
-  var cacheKey = 'GeneralLedger';
-  var columnConfig;
-  var tmpl;
+  const vm = this;
+  const cacheKey = 'GeneralLedger';
 
-  var fields = [
+  const fields = [
     'balance',
     'balance0',
     'balance1',
@@ -50,18 +46,18 @@ function GeneralLedgerController(
 
   vm.indentTitleSpace = 15;
 
-  tmpl =
-    '<div class="ui-grid-cell-contents">' +
-    '<span style="padding-left : {{row.entity.$$treeLevel * grid.appScope.indentTitleSpace}}px;"></span>' +
-    '{{grid.getCellValue(row, col)}}' +
-    '</span>';
+  const tmpl = `
+    <div class="ui-grid-cell-contents">
+      <span style="padding-left : {{row.entity.$$treeLevel * grid.appScope.indentTitleSpace}}px;"></span>
+      {{grid.getCellValue(row, col)}}
+    </span>`;
 
 
   function customAggregationFn(columnDefs, column) {
-    return (vm.aggregates[column.field] || 0);
+    return (vm.aggregates[column.field] || 0).toFixed(2);
   }
 
-  columns = [{
+  const columns = [{
     field            : 'number',
     displayName      : 'TABLE.COLUMNS.ACCOUNT',
     enableFiltering  : true,
@@ -282,8 +278,8 @@ function GeneralLedgerController(
     onRegisterApi : onRegisterApiFn,
   };
 
-  columnConfig = new Columns(vm.gridOptions, cacheKey);
-  state = new GridState(vm.gridOptions, cacheKey);
+  const columnConfig = new Columns(vm.gridOptions, cacheKey);
+  const state = new GridState(vm.gridOptions, cacheKey);
 
   vm.saveGridState = state.saveGridState;
   vm.clearGridState = function clearGridState() {
@@ -304,6 +300,7 @@ function GeneralLedgerController(
   function onRegisterApiFn(api) {
     vm.gridApi = api;
     api.grid.registerDataChangeCallback(expandOnSetData);
+    window.uiGrid = api;
   }
 
   function expandOnSetData(grid) {
@@ -326,39 +323,22 @@ function GeneralLedgerController(
     account.hrlabel = Accounts.label(account);
 
     // remove zero values from the matrix to render as empty cells.
-    fields.forEach(function (field) {
+    fields.forEach((field) => {
       if (account[field] === 0) {
         delete account[field];
-        return;
-      }
-
-      // total all values that are not title account values
-      if (account.type_id !== bhConstants.accounts.TITLE) {
-        vm.aggregates[field] += account[field];
       }
     });
   }
 
   function loadData(accounts = []) {
-    // make an object of aggregates { column:0 }
-    vm.aggregates = fields.reduce(function (aggregates, field) {
-      aggregates[field] = 0;
-      return aggregates;
-    }, {});
-
-    Object.keys(vm.aggregates).forEach(key => {
-      vm.aggregates[key] = Number(vm.aggregates[key].toFixed(bhConstants.precision.MAX_DECIMAL_PRECISION));
-    });
-
     accounts.forEach(preProcessAccounts);
     Accounts.order(accounts);
-
     vm.gridOptions.data = accounts;
   }
 
   vm.download = GeneralLedger.download;
   vm.openAccountReport = function openAccountReport(accountId) {
-    var opts = {
+    const opts = {
       account_id : accountId,
       dateFrom : vm.year.start_date,
       dateTo : vm.year.end_date,
@@ -373,10 +353,15 @@ function GeneralLedgerController(
   function load(options) {
     vm.loading = true;
 
-    GeneralLedger.accounts.read(null, options)
+    GeneralLedger.read(null, options)
       .then(loadData)
       .catch(handleError)
       .finally(toggleLoadingIndicator);
+
+    GeneralLedger.aggregates(options)
+      .then(([aggregates]) => {
+        vm.aggregates = aggregates || {};
+      });
   }
 
   // fired when the footer changes and on startup.
@@ -396,7 +381,7 @@ function GeneralLedgerController(
   function startup() {
     // TODO(@jniles) - cache this date
     Fiscal.read(null, { detailed : 1 })
-      .then(function (years) {
+      .then((years) => {
         vm.fiscalYears = years;
 
         // get the last year
