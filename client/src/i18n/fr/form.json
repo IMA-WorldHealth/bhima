@@ -60,6 +60,7 @@
             "RESET": "Réinitialiser",
             "RESET_DEFAULTS": "Réinitialiser par défaut",
             "RETURN": "Retourne",
+            "REVERSE_RECORD" : "Inverser l'enregistrement",
             "SAVE": "Sauver",
             "SAVE_GRID_CONFIGURATION": "Enregister la configuration",
             "CLEAR_GRID_CONFIGURATION": "Effacer la configuration",

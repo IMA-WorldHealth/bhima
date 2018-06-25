@@ -20,8 +20,6 @@ function CashPaymentRegistryController(
   const vm = this;
 
   // background color for make the difference between the valid and canceled payment
-  const reversedBackgroundColor = { 'background-color' : '#ffb3b3' };
-  const regularBackgroundColor = { 'background-color' : 'none' };
   const cacheKey = 'payment-grid';
 
   const filter = new Filters();
@@ -103,7 +101,7 @@ function CashPaymentRegistryController(
     flatEntityAccess  : true,
     fastWatch         : true,
     columnDefs,
-    rowTemplate       : '/modules/cash/payments/templates/grid.canceled.tmpl.html',
+    rowTemplate       : '/modules/templates/row.reversed.html',
   };
 
   vm.gridOptions.onRegisterApi = function onRegisterApi(gridApi) {
@@ -163,14 +161,8 @@ function CashPaymentRegistryController(
     toggleLoadingIndicator();
 
     request
-      .then((rows) => {
-        rows.forEach((row) => {
-          const hasCreditNote = row.reversed;
-          row._backgroundColor = hasCreditNote ? reversedBackgroundColor : regularBackgroundColor;
-          row._hasCreditNote = hasCreditNote;
-        });
-
-        vm.gridOptions.data = rows;
+      .then(payments => {
+        vm.gridOptions.data = payments;
       })
       .catch(handleError)
       .finally(toggleLoadingIndicator);
@@ -182,7 +174,7 @@ function CashPaymentRegistryController(
       .then((success) => {
         if (!success) { return; }
         Notify.success('FORM.INFO.TRANSACTION_REVER_SUCCESS');
-        load(Cash.Filters.formatHTTP(true));
+        load(Cash.filters.formatHTTP(true));
       });
   }
 

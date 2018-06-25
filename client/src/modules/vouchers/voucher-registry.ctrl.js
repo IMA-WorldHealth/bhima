@@ -106,6 +106,7 @@ function VoucherController(
     enableSorting : true,
     flatEntityAccess : true,
     fastWatch : true,
+    rowTemplate : '/modules/templates/row.reversed.html',
     columnDefs,
   };
   vm.gridOptions.onRegisterApi = function onRegisterApi(gridApi) {
@@ -245,12 +246,14 @@ function VoucherController(
 
   function reverseVoucher(entity) {
     Vouchers.openReverseRecordModal(entity.uuid)
-      .then(() => {
-        Notify.success('FORM.INFO.TRANSACTION_REVER_SUCCESS');
+      .then(bool => {
+        if (bool) {
+          Notify.success('FORM.INFO.TRANSACTION_REVER_SUCCESS');
 
-        // load() has it's own error handling.  The absence of return below is
-        // explicit.
-        load(Vouchers.filters.formatHTTP(true));
+          // load() has it's own error handling.  The absence of return below is
+          // explicit.
+          load(Vouchers.filters.formatHTTP(true));
+        }
       })
       .catch(Notify.handleError);
   }
