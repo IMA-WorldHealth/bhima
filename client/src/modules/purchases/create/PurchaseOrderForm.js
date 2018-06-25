@@ -93,9 +93,7 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
     this.digest();
 
     // filters out valid items
-    const invalidItems = this.store.data.filter((row) => {
-      return row._invalid;
-    });
+    const invalidItems = this.store.data.filter(row => row._invalid);
 
     this._invalid = invalidItems.length > 0;
     this._valid = !this._invalid;

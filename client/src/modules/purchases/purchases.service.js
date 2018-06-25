@@ -18,11 +18,11 @@ function PurchaseOrderService(
   $http, util, $uibModal, Filters, AppCache, Periods, Api, $httpParamSerializer,
   Languages, bhConstants
 ) {
-  var baseUrl = '/purchases/';
-  var service = new Api(baseUrl);
+  const baseUrl = '/purchases/';
+  const service = new Api(baseUrl);
 
-  var purchaseFilters = new Filters();
-  var filterCache = new AppCache('purchases-filters');
+  const purchaseFilters = new Filters();
+  const filterCache = new AppCache('purchases-filters');
 
   service.filters = purchaseFilters;
   service.openSearchModal = openSearchModal;
@@ -55,10 +55,10 @@ function PurchaseOrderService(
 
   function assignDefaultFilters() {
     // get the keys of filters already assigned - on initial load this will be empty
-    var assignedKeys = Object.keys(purchaseFilters.formatHTTP());
+    const assignedKeys = Object.keys(purchaseFilters.formatHTTP());
 
     // assign default period filter
-    var periodDefined =
+    const periodDefined =
       service.util.arrayIncludes(assignedKeys, ['period', 'custom_period_start', 'custom_period_end']);
 
     if (!periodDefined) {
@@ -96,7 +96,7 @@ function PurchaseOrderService(
     // to the server.
     // Technically, this filtering is also done on the server, but this reduces
     // bandwidth required for the POST request.
-    data.items = data.items.map(function (item) {
+    data.items = data.items.map((item) => {
       delete item._initialised;
       delete item._invalid;
       delete item._valid;
@@ -110,17 +110,17 @@ function PurchaseOrderService(
   }
 
   function stockStatus(id) {
-    var url = ''.concat(id, '/stock_status');
+    const url = ''.concat(id, '/stock_status');
     return Api.read.call(service, url);
   }
 
   function stockBalance(id) {
-    var url = ''.concat(id, '/stock_balance');
+    const url = ''.concat(id, '/stock_balance');
     return Api.read.call(service, url);
   }
 
   function purchaseState() {
-    var url = ''.concat('purchaseState');
+    const url = ''.concat('purchaseState');
     return Api.read.call(service, url);
   }
 
@@ -146,11 +146,11 @@ function PurchaseOrderService(
   }
 
   function download(type) {
-    var filterOpts = purchaseFilters.formatHTTP();
-    var defaultOpts = { renderer : type, lang : Languages.key };
+    const filterOpts = purchaseFilters.formatHTTP();
+    const defaultOpts = { renderer : type, lang : Languages.key };
 
     // combine options
-    var options = angular.merge(defaultOpts, filterOpts);
+    const options = angular.merge(defaultOpts, filterOpts);
 
     // return  serialized options
     return $httpParamSerializer(options);
