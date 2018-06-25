@@ -24,6 +24,7 @@ function AccountsController(
 
   vm.Constants = Constants;
   vm.loading = true;
+  vm.showHiddenAccounts = true;
 
   // account title indent value in pixels
   vm.indentTitleSpace = 20;
@@ -37,6 +38,7 @@ function AccountsController(
   vm.remove = remove;
   vm.toggleHideAccount = toggleHideAccount;
   vm.toggleLockAccount = toggleLockAccount;
+  vm.hiddenAccount = hiddenAccount;
 
   vm.Accounts = new AccountGrid();
   vm.Accounts.settup()
@@ -85,6 +87,17 @@ function AccountsController(
         width : 140,
       },
     ];
+  }
+
+  function hiddenAccount(value) {
+    if (value === 1) {
+      vm.showHiddenAccounts = false;
+      vm.gridOptions.data = vm.Accounts.data;
+
+    } else {
+      vm.showHiddenAccounts = true;
+      vm.gridOptions.data = vm.unHiddenAccount;
+    }
   }
 
   function handleUpdatedAccount(event, account) {
@@ -153,7 +166,10 @@ function AccountsController(
   }
 
   function bindGridData() {
-    vm.gridOptions.data = vm.Accounts.data;
+    // Filter unhidden account
+    vm.unHiddenAccount = vm.Accounts.data.filter(item => (item.hidden === 0));
+
+    vm.gridOptions.data = vm.unHiddenAccount;
   }
 
   function toggleLoadingIndicator() {

@@ -34,7 +34,21 @@
       <div class="toolbar-item">
         <a class="btn btn-default text-capitalize" data-method="create" ui-sref="accounts.create">
           <i class="fa fa-plus"></i>
-          <span translate> ACCOUNT.ADD </span>
+          <span class="hidden-xs" translate> ACCOUNT.ADD </span>
+        </a>
+      </div>
+
+      <div class="toolbar-item" ng-if="AccountsCtrl.showHiddenAccounts">
+        <a class="btn btn-default text-capitalize" ng-click="AccountsCtrl.hiddenAccount(1)">
+          <i class="fa fa-eye"></i>
+          <span class="hidden-xs" translate> ACCOUNT.DISPLAY_HIDDEN </span>
+        </a>
+      </div>
+
+      <div class="toolbar-item" ng-if="!AccountsCtrl.showHiddenAccounts">
+        <a class="btn btn-default text-capitalize" ng-click="AccountsCtrl.hiddenAccount(0)">
+          <i class="fa fa-eye-slash"></i>
+          <span class="hidden-xs" translate> ACCOUNT.HIDE_HIDDEN </span>
         </a>
       </div>
 
