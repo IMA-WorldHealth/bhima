@@ -53,21 +53,23 @@
           <td class="text-right" style="vertical-align:middle;">{{item.transaction_price | currency:ModalCtrl.invoice.currency_id }}</td>
           <td class="text-right" style="vertical-align:middle;">{{item.quantity * item.transaction_price | currency:ModalCtrl.invoice.currency_id }}</td>
         </tr>
+
         <tr ng-show="ModalCtrl.hasExpandedFooter">
           <td colspan="4"></td>
         </tr>
+
         <tr ng-show="ModalCtrl.hasBillingServices">
-          <td translate>FORM.LABELS.INVOICING_FEES</td>
-          <td class="text-right" colspan="3">+ {{ ModalCtrl.billingAmount | currency:ModalCtrl.invoice.currency_id }}</td>
+          <th translate class="text-capitalize text-right" colspan="3" style="border:0px">FORM.LABELS.INVOICING_FEES</th>
+          <td class="text-right" style="border:0px">+ {{ ModalCtrl.billingAmount | currency:ModalCtrl.invoice.currency_id }}</td>
         </tr>
         <tr ng-show="ModalCtrl.hasSubsidies">
-          <td translate>FORM.LABELS.SUBSIDIES</td>
-          <td class="text-right" colspan="3">- {{ ModalCtrl.subsidyAmount | currency:ModalCtrl.invoice.currency_id }}</td>
+          <th translate class="text-right" colspan="3" style="border:0px">FORM.LABELS.SUBSIDIES</th>
+          <td class="text-right" style="border:0px">- {{ ModalCtrl.subsidyAmount | currency:ModalCtrl.invoice.currency_id }}</td>
         </tr>
 
         <tr>
           <th colspan="3" class="text-right" translate>TABLE.COLUMNS.TOTAL</th>
-          <td class="text-right">{{ ModalCtrl.invoice.cost | currency:ModalCtrl.invoice.currency_id }}</td>
+          <th class="text-right">{{ ModalCtrl.invoice.cost | currency:ModalCtrl.invoice.currency_id }}</th>
         </tr>
       </tbody>
     </table>
