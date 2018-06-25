@@ -60,6 +60,7 @@
             "RESET": "Reset",
             "RESET_DEFAULTS": "Reset Defaults",
             "RETURN": "Return",
+            "REVERSE_RECORD" : "Reverse Record",
             "SAVE": "Save",
             "SAVE_GRID_CONFIGURATION": "Save Grid Configuration",
             "CLEAR_GRID_CONFIGURATION": "Clear Grid Configuration",

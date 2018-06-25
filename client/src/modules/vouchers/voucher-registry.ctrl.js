@@ -36,6 +36,7 @@ function VoucherController(
   vm.clearGridState = clearGridState;
   vm.download = Vouchers.download;
   vm.deleteVoucher = deleteVoucherWithConfirmation;
+  vm.reverseVoucher = reverseVoucher;
   vm.showReceipt = showReceipt;
   vm.toggleInlineFilter = toggleInlineFilter;
 
@@ -240,6 +241,18 @@ function VoucherController(
   function clearGridState() {
     state.clearGridState();
     $state.reload();
+  }
+
+  function reverseVoucher(entity) {
+    Vouchers.openReverseRecordModal(entity.uuid)
+      .then(() => {
+        Notify.success('FORM.INFO.TRANSACTION_REVER_SUCCESS');
+
+        // load() has it's own error handling.  The absence of return below is
+        // explicit.
+        load(Vouchers.filters.formatHTTP(true));
+      })
+      .catch(Notify.handleError);
   }
 
   function remove(entity) {
