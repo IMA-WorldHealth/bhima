@@ -15,8 +15,8 @@ function ConventionPaymentKitController(
 
   var MAX_DECIMAL_PRECISION = bhConstants.precision.MAX_DECIMAL_PRECISION;
 
-  // global variables
-  vm.debtorGroupFilter = { is_convention : 1 };
+  // This module should include the entire Debtor group
+  vm.debtorGroupFilter = { is_convention : 0 };
   vm.gridOptions = {};
   vm.enterprise = Session.enterprise;
 
