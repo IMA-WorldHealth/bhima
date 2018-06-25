@@ -17,25 +17,24 @@ DepotSelectController.$inject = ['DepotService', 'NotifyService'];
  * Depot selection component
  */
 function DepotSelectController(Depots, Notify) {
-  var $ctrl = this;
+  const $ctrl = this;
 
   $ctrl.$onInit = function onInit() {
     $ctrl.loading = true;
 
-    // download only the depots that the user has the management right
-
-    Depots.read(null, {only_user : true})
-      .then(function (depots) {
+    // load all depots
+    Depots.read(null)
+      .then((depots) => {
         $ctrl.depots = depots;
       })
       .catch(Notify.handleError)
-      .finally(function () {
+      .finally(() => {
         $ctrl.loading = false;
       });
   };
 
   // fires the onSelectCallback bound to the component boundary
-  $ctrl.onSelect = function ($item) {
+  $ctrl.onSelect = $item => {
     $ctrl.onSelectCallback({ depot : $item });
   };
 }

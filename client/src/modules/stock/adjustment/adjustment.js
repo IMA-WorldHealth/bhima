@@ -227,9 +227,11 @@ function StockAdjustmentController(
 
     movement.lots = lots;
 
+    vm.$loading = true;
     return Stock.movements.create(movement)
       .then(document => {
         vm.Stock.store.clear();
+        vm.$loading = false;
         ReceiptModal.stockAdjustmentReceipt(document.uuid, fluxId);
       })
       .catch(Notify.handleError);
