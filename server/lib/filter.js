@@ -1,7 +1,6 @@
 /* eslint class-methods-use-this:off */
 
 const _ = require('lodash');
-const moment = require('moment');
 
 const Periods = require('./period');
 
@@ -9,15 +8,6 @@ const RESERVED_KEYWORDS = ['limit', 'detailed'];
 const DEFAULT_LIMIT_KEY = 'limit';
 const DEFAULT_UUID_PARTIAL_KEY = 'uuid';
 
-// @FIXME patch code - this could be implemented in another library
-//
-// IF no client_timestamp is passed with the request, the server's timestamp is used
-// IF a client_timestamp is passed the client timestamp is used
-// const PERIODS = {
-// today : () => { return { start : moment().toDate(), end : moment().toDate() } },
-// week : () => { return { start : moment().startOf('week').toDate(), end : moment().endOf('week').toDate() } },
-// month : () => {  return { start : moment().startOf('month').toDate(), end : moment().endOf('month').toDate() } }
-// };
 /**
  * @class FilterParser
  *
@@ -117,11 +107,11 @@ class FilterParser {
    */
   dateFrom(filterKey, columnAlias = filterKey, tableAlias = this._tableAlias) {
     const tableString = this._formatTableAlias(tableAlias);
+    const timestamp = this._filters[filterKey];
 
-    if (this._filters[filterKey]) {
+    if (timestamp) {
       const preparedStatement = `DATE(${tableString}${columnAlias}) >= DATE(?)`;
-      this._addFilter(preparedStatement, moment(this._filters[filterKey]).format('YYYY-MM-DD').toString());
-
+      this._addFilter(preparedStatement, new Date(timestamp));
       delete this._filters[filterKey];
     }
   }
@@ -137,11 +127,11 @@ class FilterParser {
    */
   dateTo(filterKey, columnAlias = filterKey, tableAlias = this._tableAlias) {
     const tableString = this._formatTableAlias(tableAlias);
+    const timestamp = this._filters[filterKey];
 
-    if (this._filters[filterKey]) {
+    if (timestamp) {
       const preparedStatement = `DATE(${tableString}${columnAlias}) <= DATE(?)`;
-
-      this._addFilter(preparedStatement, moment(this._filters[filterKey]).format('YYYY-MM-DD').toString());
+      this._addFilter(preparedStatement, new Date(timestamp));
       delete this._filters[filterKey];
     }
   }
