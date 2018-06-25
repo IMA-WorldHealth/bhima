@@ -50,7 +50,7 @@ function getRecordQuery(token, format, openingBalance) {
                       posting_journal AS p
                     WHERE 
                       p.account_id= ? AND 
-                      (p.trans_date >= DATE(?) AND p.trans_date <= DATE(?))
+                      (DATE(p.trans_date) >= DATE(?) AND DATE(p.trans_date) <= DATE(?))
                   )
                   UNION ALL
                   (
@@ -61,7 +61,7 @@ function getRecordQuery(token, format, openingBalance) {
                       general_ledger AS g 
                     WHERE 
                       g.account_id= ? AND 
-                      (g.trans_date >= DATE(?) AND g.trans_date <= DATE(?))
+                      (DATE(g.trans_date) >= DATE(?) AND DATE(g.trans_date) <= DATE(?))
                   )
               ) AS u, (SELECT @cbal := ${openingBalance}) AS z 
           ORDER BY 
@@ -89,7 +89,7 @@ function getRecordQuery(token, format, openingBalance) {
             FROM
               posting_journal AS p
             WHERE 
-              p.account_id= ? AND (p.trans_date >= DATE(?) AND p.trans_date <= DATE(?))
+              p.account_id= ? AND (DATE(p.trans_date) >= DATE(?) AND DATE(p.trans_date) <= DATE(?))
           )
           UNION ALL
           (
@@ -99,7 +99,7 @@ function getRecordQuery(token, format, openingBalance) {
             FROM
               general_ledger AS g
             WHERE 
-              g.account_id= ? AND (g.trans_date >= DATE(?) AND g.trans_date <= DATE(?))
+              g.account_id= ? AND (DATE(g.trans_date) >= DATE(?) AND DATE(g.trans_date) <= DATE(?))
           )
         ) AS t
       JOIN 
@@ -233,7 +233,7 @@ function aggregateRecordQuery(token = 1, openingBalance) {
         posting_journal AS p
       WHERE 
         p.account_id= ? AND 
-        (p.trans_date >= DATE(?) AND p.trans_date <= DATE(?))
+        (DATE(p.trans_date) >= DATE(?) AND DATE(p.trans_date) <= DATE(?))
       )
       UNION ALL
       (
@@ -243,7 +243,7 @@ function aggregateRecordQuery(token = 1, openingBalance) {
         general_ledger AS g
       WHERE
         g.account_id= ? AND 
-        (g.trans_date >= DATE(?) AND g.trans_date <= DATE(?))
+        (DATE(g.trans_date) >= DATE(?) AND DATE(g.trans_date) <= DATE(?))
       )
     ) AS t WHERE ${token}`;
 
