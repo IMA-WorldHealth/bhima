@@ -173,12 +173,12 @@ function EmployeeRegistryController(
     columnDefs,
   };
 
-  const columnConfig = new Columns(vm.uiGridOptions, cacheKey);
-  const state = new GridState(vm.uiGridOptions, cacheKey);
-
   vm.uiGridOptions.onRegisterApi = function onRegisterApi(gridApi) {
     vm.gridApi = gridApi;
   };
+
+  const columnConfig = new Columns(vm.uiGridOptions, cacheKey);
+  const state = new GridState(vm.uiGridOptions, cacheKey);
 
   function toggleInlineFilter() {
     vm.uiGridOptions.enableFiltering = !vm.uiGridOptions.enableFiltering;
