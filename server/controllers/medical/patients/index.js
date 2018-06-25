@@ -242,7 +242,7 @@ function lookupPatient(patientUuid) {
       p.spouse_profession, p.spouse_employer, p.notes, p.avatar, proj.abbr, d.text,
       dg.account_id, BUID(dg.price_list_uuid) AS price_list_uuid, dg.is_convention,
       BUID(dg.uuid) as debtor_group_uuid, dg.locked, dg.name as debtor_group_name, u.username,
-      u.display_name AS userName, a.number
+      u.display_name AS userName, a.number, proj.name
     FROM patient AS p
       JOIN project AS proj ON p.project_id = proj.id
       JOIN debtor AS d ON p.debtor_uuid = d.uuid
@@ -357,7 +357,7 @@ function lookupByDebtorUuid(debtorUuid) {
     SELECT BUID(p.uuid) as uuid, p.project_id, BUID(p.debtor_uuid) AS debtor_uuid, p.display_name,
       p.hospital_no, p.sex, p.registration_date, p.email, p.phone, p.dob,
       BUID(p.origin_location_id) as origin_location_id, p.title, p.address_1, p.address_2,
-      CONCAT_WS('.', '${identifiers.PATIENT.key}', proj.abbr, p.reference) AS reference,
+      CONCAT_WS('.', '${identifiers.PATIENT.key}', proj.abbr, p.reference) AS reference, proj.name AS proj_name,
       p.father_name, p.mother_name, p.religion, p.marital_status, p.profession, p.employer, p.spouse,
       p.spouse_profession, p.spouse_employer, p.notes, p.avatar, proj.abbr, d.text,
       dg.account_id, BUID(dg.price_list_uuid) AS price_list_uuid, dg.is_convention, BUID(dg.uuid) as debtor_group_uuid,
@@ -476,6 +476,7 @@ function find(options) {
   filters.dateTo('dateBirthTo', 'dob');
   filters.equals('health_zone');
   filters.equals('health_area');
+  filters.equals('project_id');
 
   // filters for location
   const orignSql = `(originVillage.name LIKE ?) OR (originSector.name LIKE ?) OR (originProvince.name LIKE ?)`;
@@ -531,7 +532,7 @@ function patientEntityQuery(detailed) {
       proj.abbr, p.reference) AS reference, p.display_name, BUID(p.debtor_uuid) as debtor_uuid,
       p.sex, p.dob, p.registration_date, BUID(d.group_uuid) as debtor_group_uuid, p.hospital_no,
       p.health_zone, p.health_area, u.display_name as userName, originVillage.name as originVillageName, dg.color,
-      originSector.name as originSectorName, dg.name AS debtorGroupName,
+      originSector.name as originSectorName, dg.name AS debtorGroupName, proj.name AS project_name,
       originProvince.name as originProvinceName ${detailedColumns}
     FROM patient AS p
       JOIN project AS proj ON p.project_id = proj.id

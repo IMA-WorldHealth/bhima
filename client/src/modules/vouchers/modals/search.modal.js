@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 VoucherRegistrySearchModalController.$inject = [
   '$uibModalInstance', 'filters', 'NotifyService', 'PeriodService', 'Store',
-  'util', 'VoucherService', 'TransactionTypeService', '$translate',
+  'util', 'VoucherService', 'TransactionTypeService', '$translate', 'CurrencyService',
 ];
 
 /**
@@ -16,12 +16,12 @@ VoucherRegistrySearchModalController.$inject = [
  */
 function VoucherRegistrySearchModalController(
   ModalInstance, filters, Notify, Periods, Store, util, Vouchers,
-  TransactionTypeService, $translate,
+  TransactionTypeService, $translate, Currencies,
 ) {
   const vm = this;
   const changes = new Store({ identifier : 'key' });
   const searchQueryOptions = [
-    'reference', 'description', 'user_id', 'type_ids', 'account_id',
+    'reference', 'description', 'user_id', 'type_ids', 'account_id', 'project_id', 'currency_id',
   ];
 
   // displayValues will be an id:displayValue pair
@@ -32,6 +32,17 @@ function VoucherRegistrySearchModalController(
   vm.searchQueries = {};
   vm.defaultQueries = {};
 
+  // load all the available currencies
+  Currencies.read()
+    .then(currencies => {
+      // cache a label for faster view rendering
+      currencies.forEach(currency => {
+        currency.label = Currencies.format(currency.id);
+      });
+
+      vm.currencies = currencies;
+    })
+    .catch(Notify.handleError);
 
   // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(filters, searchQueryOptions);
@@ -73,12 +84,26 @@ function VoucherRegistrySearchModalController(
     displayValues.user_id = user.display_name;
   };
 
+  vm.onSelectProject = (project) => {
+    displayValues.project_id = project.name;
+    vm.searchQueries.project_id = project.id;
+  };
+
   // default filter period - directly write to changes list
   vm.onSelectPeriod = function onSelectPeriod(period) {
     const periodFilters = Periods.processFilterChanges(period);
 
     periodFilters.forEach((filterChange) => {
       changes.post(filterChange);
+    });
+  };
+
+  vm.setCurrency = function setCurrency(currencyId) {
+    vm.searchQueries.currency_id = currencyId;
+    vm.currencies.forEach(currency => {
+      if (currency.id === currencyId) {
+        displayValues.currency_id = currency.label;
+      }
     });
   };
 
@@ -104,14 +129,11 @@ function VoucherRegistrySearchModalController(
   vm.cancel = function cancel() { ModalInstance.close(); };
 
   // submit the filter object to the parent controller.
-  vm.submit = function submit(form) {
-    if (form.$invalid) { return; }
-
+  vm.submit = function submit() {
     // delete type_ids if there is no transaction type sent
     if (vm.searchQueries.type_ids && vm.searchQueries.type_ids.length === 0) {
       vm.clear('type_ids');
     }
-
 
     // push all searchQuery values into the changes array to be applied
     angular.forEach(vm.searchQueries, (_value, _key) => {

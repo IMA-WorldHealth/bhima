@@ -46,6 +46,20 @@
             <bh-clear on-clear="$ctrl.clear('account_id')"></bh-clear>
           </bh-account-select>
 
+          <bh-currency-select
+            currency-id="$ctrl.searchQueries.currency_id"
+            on-change="$ctrl.setCurrency(currency)">
+            <bh-clear on-clear="$ctrl.clear('currency_id')"></bh-clear>
+          </bh-currency-select>
+
+          <!-- filter by project -->
+          <bh-project-select
+            project-id="$ctrl.searchQueries.project_id"
+            name="project_id"
+            on-select-callback="$ctrl.onSelectProject(project)">
+            <bh-clear on-clear="$ctrl.clear('project_id')"></bh-clear>
+          </bh-project-select>          
+
           <bh-transaction-type-select
             on-change="$ctrl.onTransactionTypesChange(transactionTypes)"
             transaction-type-ids="$ctrl.searchQueries.type_ids">

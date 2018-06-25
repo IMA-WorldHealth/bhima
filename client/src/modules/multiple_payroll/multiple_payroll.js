@@ -41,6 +41,8 @@ function MultiplePayrollController(
     field : 'display_name',
     displayName : 'FORM.LABELS.EMPLOYEE_NAME',
     headerCellFilter : 'translate',
+    aggregationType  : uiGridConstants.aggregationTypes.count,
+    aggregationHideLabel : true,
   }, {
     field : 'code',
     displayName : 'FORM.LABELS.CODE',

@@ -57,6 +57,11 @@ function InvoiceRegistrySearchModalController(ModalInstance, filters, Notify, St
     vm.searchQueries.user_id = user.id;
   };
 
+  vm.onSelectProject = (project) => {
+    displayValues.project_id = project.name;
+    vm.searchQueries.project_id = project.id;
+  };
+
   // custom filter service_id - assign the value to the searchQueries object
   vm.onSelectService = function onSelectService(service) {
     displayValues.service_id = service.name;

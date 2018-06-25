@@ -231,11 +231,12 @@ function find(options) {
     SELECT BUID(invoice.uuid) as uuid, invoice.project_id, invoice.date,
       patient.display_name as patientName, invoice.cost,
       BUID(invoice.debtor_uuid) as debtor_uuid, dm.text AS reference,
-      em.text AS patientReference, service.name as serviceName,
+      em.text AS patientReference, service.name as serviceName, proj.name AS project_name,
       user.display_name, invoice.user_id, invoice.reversed, invoice.edited
     FROM invoice
     LEFT JOIN patient ON invoice.debtor_uuid = patient.debtor_uuid
     JOIN debtor AS d ON invoice.debtor_uuid = d.uuid
+    JOIN project AS proj ON proj.id = invoice.project_id
     JOIN entity_map AS em ON em.uuid = patient.uuid
     JOIN document_map AS dm ON dm.uuid = invoice.uuid
     JOIN service ON service.id = invoice.service_id

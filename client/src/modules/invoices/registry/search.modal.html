@@ -50,6 +50,14 @@
           </div>
         </div>
 
+        <!-- filter by project -->
+        <bh-project-select
+          project-id="$ctrl.searchQueries.project_id"
+          name="project_id"
+          on-select-callback="$ctrl.onSelectProject(project)">
+          <bh-clear on-clear="$ctrl.clear('project_id')"></bh-clear>
+        </bh-project-select>
+
         <bh-service-select
           service-id="$ctrl.searchQueries.service_id"
           name="service_id"
