@@ -326,6 +326,7 @@ function StockEntryController(
       .then((transfers) => {
         handleSelectedEntity(transfers, 'transfer_reception');
         setSelectedEntity(vm.movement.entity.instance);
+        vm.hasValidInput = hasValidInput();
       })
       .catch(Notify.handleError);
   }
