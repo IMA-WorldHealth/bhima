@@ -254,7 +254,8 @@ function checkInvoicePayment(req, res, next) {
   const bid = db.bid(req.params.invoiceUuid);
 
   const sql = `
-    SELECT cash.reversed, cash_item.cash_uuid, cash_item.invoice_uuid FROM cash JOIN cash_item
+    SELECT cash_item.cash_uuid, cash_item.invoice_uuid
+    FROM cash JOIN cash_item
     WHERE cash_item.invoice_uuid = ? AND cash.reversed <> 1
     GROUP BY cash_item.invoice_uuid;
   `;
