@@ -12,7 +12,7 @@
       <span translate>FORM.DIALOGS.CONFIRM_CREDIT_NOTE</span>
     </div>
 
-    <div class="alert alert-warning">
+    <div class="alert alert-warning" ng-hide="ModalCtrl.hasPaymentsAgainstInvoice">
       <i class="fa fa-exclamation-triangle"></i>
       <span translate translate-values="ModalCtrl.alertI18nValues" translate-sanitize-strategy="'sce'">PATIENT_INVOICE.ALERT_CREDIT_NOTE</span>
     </div>
@@ -86,6 +86,7 @@
         name="description"
         class="form-control"
         rows="3"
+        ng-disabled="ModalCtrl.hasPaymentsAgainstInvoice"
         required>
       </textarea>
       <div class="help-block" ng-messages="ModalForm.description.$error" ng-show="ModalForm.$submitted">
@@ -99,7 +100,7 @@
       FORM.BUTTONS.CLOSE
     </button>
 
-    <bh-loading-button loading-state="ModalForm.$loading">
+    <bh-loading-button loading-state="ModalForm.$loading" disabled="ModalCtrl.hasPaymentsAgainstInvoice">
       <span translate>FORM.BUTTONS.SUBMIT_CREDIT_NOTE</span>
     </bh-loading-button>
   </div>

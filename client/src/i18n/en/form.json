@@ -88,7 +88,7 @@
             "CONFIRM_ACTION": "Do you confirm this action?",
             "CONFIRMATION_NEEDED": "Confirmation Needed",
             "CONFIRM_ACTIVATION": "Do you really want to allow this user's system access",
-            "CONFIRM_CREDIT_NOTE": "Warning! The invoice you selected has already paid!  Reversing it may cause imbalances in your accounting.  Are you sure you want to continue canceling this invoice?",
+            "CONFIRM_CREDIT_NOTE": "Warning! The invoice you selected has already paid.  You must first reverse the payment(s) before you can reverse this invoice.",
             "CONFIRM_DEACTIVATION": "Do you really want to revoked this user's system access",
             "CONFIRM_DELETE": "You are about to delete a record.  This action is permanent and cannot be undone.  Click \"Confirm\" to accept or \"Cancel\" to halt this action.",
             "CANNOT_UNDONE_ACTION": "This action CANNOT BE REVERSED, the action will be permanent. You must be sure that you want to do this action.",
