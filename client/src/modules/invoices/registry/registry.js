@@ -21,8 +21,6 @@ function InvoiceRegistryController(
   const vm = this;
 
   // Background color for make the difference between the valid and cancel invoice
-  const reversedBackgroundColor = { 'background-color' : '#ffb3b3' };
-  const regularBackgroundColor = { 'background-color' : 'none' };
   const cacheKey = 'invoice-grid';
 
   vm.search = search;
@@ -103,7 +101,7 @@ function InvoiceRegistryController(
     enableSorting     : true,
     fastWatch         : true,
     flatEntityAccess  : true,
-    rowTemplate       : '/modules/invoices/templates/grid.creditNote.tmpl.html',
+    rowTemplate       : '/modules/templates/row.reversed.html',
     columnDefs,
   };
   vm.uiGridOptions.onRegisterApi = function onRegisterApi(gridApi) {
@@ -135,10 +133,6 @@ function InvoiceRegistryController(
     // hook the returned patients up to the grid.
     request
       .then(invoices => {
-        invoices.forEach(invoice => {
-          invoice._backgroundColor = invoice.reversed ? reversedBackgroundColor : regularBackgroundColor;
-        });
-
         // put data in the grid
         vm.uiGridOptions.data = invoices;
       })

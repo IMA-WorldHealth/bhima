@@ -31,6 +31,7 @@ function VoucherService(
   service.remove = Transactions.remove;
   service.transactionType = transactionType;
   service.openSearchModal = openSearchModal;
+  service.openReverseRecordModal = openReverseRecordModal;
 
   service.filters = voucherFilters;
   service.cacheFilters = cacheFilters;
@@ -67,8 +68,8 @@ function VoucherService(
     const assignedKeys = Object.keys(voucherFilters.formatHTTP());
 
     // assign default period filter
-    const periodDefined =
-      service.util.arrayIncludes(assignedKeys, ['period', 'custom_period_start', 'custom_period_end']);
+    const periodKeys = ['period', 'custom_period_start', 'custom_period_end'];
+    const periodDefined = service.util.arrayIncludes(assignedKeys, periodKeys);
 
     if (!periodDefined) {
       voucherFilters.assignFilters(Periods.defaultFilters());
@@ -142,14 +143,16 @@ function VoucherService(
   }
 
   /**
-   * This method facilitate annulling a transaction,
-   * bhima should automatically be able to reverse
-   * any transaction in the posting_journal by creating a
-   * new transaction that is an exact duplicate of the original transaction with the
-   * debits and credits switched.
+   * @method reverse
+   *
+   * @description
+   * This method reverses a transaction.
+   * bhima should automatically be able to reverse any transaction in the
+   * posting_journal by creating a new transaction that is an exact duplicate of
+   * the original transaction with the debits and credits switched.
    */
-  function reverse(creditNote) {
-    return service.$http.post(baseUrl.concat(creditNote.uuid, '/reverse'), creditNote)
+  function reverse(record) {
+    return service.$http.post(baseUrl.concat(record.uuid, '/reverse'), record)
       .then(service.util.unwrapHttpResponse);
   }
 
@@ -194,10 +197,23 @@ function VoucherService(
       backdrop : 'static',
       controller : 'VoucherRegistrySearchModalController as $ctrl',
       resolve : {
-        filters : function filtersProvider() { return filters; },
+        filters : () => filters,
       },
     }).result;
   }
+
+  function openReverseRecordModal(uuid) {
+    return Modal.open({
+      templateUrl : 'modules/vouchers/modals/reverse-voucher.modal.html',
+      resolve     : { data : { uuid } },
+      size        : 'md',
+      animation   : false,
+      keyboard    : false,
+      backdrop    : 'static',
+      controller  : 'ReverseVoucherModalController as ModalCtrl',
+    }).result;
+  }
+
 
   return service;
 }

@@ -1790,6 +1790,7 @@ CREATE TABLE IF NOT EXISTS `voucher` (
   `type_id`         SMALLINT(3) UNSIGNED NULL,
   `reference_uuid`  BINARY(16),
   `edited`          TINYINT NOT NULL DEFAULT 0,
+  `reversed`        TINYINT NOT NULL DEFAULT 0,
   KEY `project_id` (`project_id`),
   KEY `currency_id` (`currency_id`),
   KEY `user_id` (`user_id`),

@@ -1,0 +1,103 @@
+<form name="ModalForm" bh-submit="ModalCtrl.submit(ModalForm)" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate>FORM.BUTTONS.REVERSE_RECORD</li>
+      <li class="title">{{ ModalCtrl.voucher.reference }}</li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+    <!-- voucher metadata -->
+    <div class="row">
+      <div class="col-xs-6">
+        <dl style="margin-bottom:0">
+          <dt class="text-capitalize" translate>FORM.LABELS.TRANSACTION_TYPE</dt>
+          <dd>
+            <span class="text-capitalize" translate>{{ ModalCtrl.voucher.text }}</span>
+          </dd>
+        </dl>
+        <dl style="margin-bottom:0">
+          <dt translate>FORM.LABELS.AMOUNT</dt>
+          <dd>
+            <span>{{ ModalCtrl.voucher.amount | currency:ModalCtrl.voucher.currency_id }}</span>
+          </dd>
+        </dl>
+      </div>
+      <div class="col-xs-6">
+        <dl style="margin-bottom:0">
+          <dt translate>FORM.LABELS.DATE</dt>
+          <dd>
+            <span>{{ ModalCtrl.voucher.date | date:ModalCtrl.Constants.dates.format }}</span>
+          </dd>
+        </dl>
+        <dl style="margin-bottom:0">
+          <dt translate>FORM.LABELS.USER</dt>
+          <dd>
+            <span>{{ ModalCtrl.voucher.display_name }}</span>
+          </dd>
+        </dl>
+      </div>
+    </div>
+
+    <dl>
+      <dt translate>FORM.LABELS.DESCRIPTION</dt>
+      <dd>{{ ModalCtrl.voucher.description }}</span></dd>
+    </dl>
+
+    <table class="table table-condensed">
+      <thead>
+        <tr>
+          <th translate>FORM.LABELS.ACCOUNT</th>
+          <th class="text-center" translate>FORM.LABELS.DEBIT</th>
+          <th class="text-center" translate>FORM.LABELS.CREDIT</th>
+          <th class="text-center" translate>FORM.LABELS.REFERENCE</th>
+          <th class="text-center" translate>FORM.LABELS.ENTITY</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="item in ModalCtrl.voucher.items track by item.uuid">
+          <td>{{item.number}}</td>
+          <td class="text-right" style="vertical-align:middle;">{{item.debit | currency:ModalCtrl.voucher.currency_id}}</td>
+          <td class="text-right" style="vertical-align:middle;">{{item.credit | currency:ModalCtrl.voucher.currency_id}}</td>
+          <td class="text-center" style="vertical-align:middle;">
+            <bh-reference-link ng-if="item.document_reference" reference="item.document_reference" />
+          </td>
+          <td class="text-center" style="vertical-align:middle;">
+            <bh-reference-link ng-if="item.entity_reference" reference="item.entity_reference" />
+          </td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <th translate>FORM.LABELS.TOTAL</th>
+          <th class="text-right" style="vertical-align:middle;">{{ModalCtrl.voucher.amount | currency:ModalCtrl.voucher.currency_id}}</th>
+          <th class="text-right" style="vertical-align:middle;">{{ModalCtrl.voucher.amount | currency:ModalCtrl.voucher.currency_id}}</th>
+          <th colspan="2"></th>
+        </tr>
+      </tfoot>
+    </table>
+
+    <div class="form-group" ng-class="{'has-error': ModalForm.$submitted && ModalForm.description.$invalid }">
+      <label class="control-label" translate>TABLE.COLUMNS.DESCRIPTION</label>
+      <textarea
+        ng-model="ModalCtrl.record.description"
+        name="description"
+        class="form-control"
+        rows="3"
+        required>
+      </textarea>
+      <div class="help-block" ng-messages="ModalForm.description.$error" ng-show="ModalForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="ModalCtrl.cancel()" translate>
+      FORM.BUTTONS.CLOSE
+    </button>
+
+    <bh-loading-button loading-state="ModalForm.$loading">
+    </bh-loading-button>
+  </div>
+</form>
