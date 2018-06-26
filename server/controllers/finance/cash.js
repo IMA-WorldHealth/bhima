@@ -253,19 +253,29 @@ function update(req, res, next) {
 function checkInvoicePayment(req, res, next) {
   const bid = db.bid(req.params.invoiceUuid);
 
-  const sql = `
+  const getInvoicePayment = `
     SELECT cash_item.cash_uuid, cash_item.invoice_uuid
     FROM cash JOIN cash_item
     WHERE cash_item.invoice_uuid = ? AND cash.reversed <> 1
     GROUP BY cash_item.invoice_uuid;
   `;
 
-  db.exec(sql, [bid])
-    .then((rows) => {
-      res.status(200).json(rows);
+  const getPrepaymentLinkPayment = `
+    SELECT vi.voucher_uuid, vi.document_uuid
+    FROM voucher v JOIN voucher_item vi
+    WHERE vi.document_uuid = ? AND v.reversed <> 1
+    GROUP BY vi.document_uuid;
+  `;
+
+
+  Promise.all([
+    db.exec(getInvoicePayment, [bid]),
+    db.exec(getPrepaymentLinkPayment, [bid]),
+  ])
+    .then(([invoices, prepayments]) => {
+      res.status(200).json([...invoices, ...prepayments]);
     })
-    .catch(next)
-    .done();
+    .catch(next);
 }
 
 /**
