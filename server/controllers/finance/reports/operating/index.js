@@ -11,7 +11,10 @@ const TEMPLATE = './server/controllers/finance/reports/operating/report.handleba
 
 exports.document = document;
 exports.formatData = formatData;
-exports.prepareTree = prepareTree;
+
+const EXPENSE_ACCOUNT_TYPE = 5;
+const INCOME_ACCOUNT_TYPE = 4;
+const DECIMAL_PRECISION = 2; // ex: 12.4567 => 12.46
 
 function document(req, res, next) {
   const params = req.query;
@@ -30,12 +33,8 @@ function document(req, res, next) {
     return;
   }
 
-
-  const queries = [];
+  let queries;
   let range;
-  const EXPENSE_ACCOUNT_TYPE = 5;
-  const INCOME_ACCOUNT_TYPE = 4;
-  const DECIMAL_PRECISION = 2; // ex: 12.4567 => 12.46
 
   const getQuery = fiscal.accountBanlanceByTypeId;
 
@@ -63,10 +62,12 @@ function document(req, res, next) {
       INCOME_ACCOUNT_TYPE,
     ];
 
-    queries.push(db.exec(getQuery(), expenseParams));
-    queries.push(db.exec(getQuery(), incomeParams));
-    queries.push(db.one(totalExpense, expenseParams));
-    queries.push(db.one(totalIncome, incomeParams));
+    queries = [
+      db.exec(getQuery(), expenseParams),
+      db.exec(getQuery(), incomeParams),
+      db.one(totalExpense, expenseParams),
+      db.one(totalIncome, incomeParams),
+    ];
 
     return q.all(queries);
   })
@@ -118,7 +119,6 @@ function prepareTree(data, prop, value, summableProp) {
 // set the percentage of each amoun's row,
 // round amounts
 function formatData(result, total, decimalPrecision) {
-
   const _total = (total === 0) ? 1 : total;
   return result.forEach(row => {
     row.title = (row.depth < 3);
