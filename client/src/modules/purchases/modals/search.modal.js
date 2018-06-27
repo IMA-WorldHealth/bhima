@@ -2,8 +2,8 @@ angular.module('bhima.controllers')
   .controller('SearchPurchaseOrderModalController', SearchPurchaseOrderModalController);
 
 SearchPurchaseOrderModalController.$inject = [
-  '$uibModalInstance', 'params', 'Store',
-  'util', 'PeriodService', 'NotifyService', 'PurchaseOrderService', '$translate',
+  '$uibModalInstance', 'params', 'Store', 'util', 'PeriodService',
+  'NotifyService', 'PurchaseOrderService', '$translate',
 ];
 
 /**
@@ -14,7 +14,10 @@ SearchPurchaseOrderModalController.$inject = [
  * search functionality on the Purchase Order registry page.  Filters that are already
  * applied to the grid can be passed in via the params inject.
  */
-function SearchPurchaseOrderModalController(ModalInstance, params, Store, util, Periods, Notify, PurchaseOrder, $translate) {
+function SearchPurchaseOrderModalController(
+  ModalInstance, params, Store, util, Periods, Notify, PurchaseOrder,
+  $translate
+) {
   const vm = this;
   const changes = new Store({ identifier : 'key' });
   vm.filters = params;
@@ -102,7 +105,7 @@ function SearchPurchaseOrderModalController(ModalInstance, params, Store, util, 
   };
 
   // returns the parameters to the parent controller
-  function submit(form) {
+  function submit() {
     // push all searchQuery values into the changes array to be applied
     angular.forEach(vm.searchQueries, (value, key) => {
       if (angular.isDefined(value)) {

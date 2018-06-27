@@ -96,6 +96,14 @@
           </div>
         </div>
 
+        <div class="row" ng-if="PurchaseCtrl.order._hasGlobalError">
+          <div class="col-xs-12">
+            <div class="alert alert-danger">
+              <i class="fa fa-warning"></i> <span translate>PURCHASES.ERRORS.INVALID_ACCOUNTS</span>
+            </div>
+          </div>
+        </div>
+
         <!-- TODO Move padding to generic CSS class -->
         <div class="row" style="padding-bottom : 5px;">
           <div class="col-xs-12">

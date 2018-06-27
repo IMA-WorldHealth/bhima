@@ -57,9 +57,10 @@ function PurchaseOrderService(
     // get the keys of filters already assigned - on initial load this will be empty
     const assignedKeys = Object.keys(purchaseFilters.formatHTTP());
 
+    const includes = service.util.arrayIncludes;
+
     // assign default period filter
-    const periodDefined =
-      service.util.arrayIncludes(assignedKeys, ['period', 'custom_period_start', 'custom_period_end']);
+    const periodDefined = includes(assignedKeys, ['period', 'custom_period_start', 'custom_period_end']);
 
     if (!periodDefined) {
       purchaseFilters.assignFilters(Periods.defaultFilters());
