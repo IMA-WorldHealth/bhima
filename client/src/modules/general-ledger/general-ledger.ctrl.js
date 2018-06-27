@@ -337,6 +337,7 @@ function GeneralLedgerController(
   }
 
   vm.download = GeneralLedger.download;
+
   vm.openAccountReport = function openAccountReport(accountId) {
     const opts = {
       account_id : accountId,
@@ -371,7 +372,6 @@ function GeneralLedgerController(
 
     vm.filters = {
       fiscal_year_id : vm.year.id,
-      fiscal_year_label : vm.year.label,
     };
 
     load(vm.filters);

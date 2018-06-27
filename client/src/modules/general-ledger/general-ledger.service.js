@@ -16,8 +16,9 @@ function GeneralLedgerService(Api, $httpParamSerializer, Languages, Session) {
   service.download = download;
   service.openAccountReport = openAccountReport;
 
-  function download(type, filters) {
+  function download(type, filters, label) {
     const filterOpts = filters;
+    filters.fiscal_year_label = label;
     const defaultOpts = { renderer : type, lang : Languages.key };
 
     // combine options
@@ -41,8 +42,7 @@ function GeneralLedgerService(Api, $httpParamSerializer, Languages, Session) {
   }
 
   // GET /general_ledger/aggregates
-  service.aggregates = (params) =>
-    service.read.call({ url : service.url.concat('aggregates') }, null, params);
+  service.aggregates = (params) => service.read.call({ url : service.url.concat('aggregates') }, null, params);
 
   return service;
 }
