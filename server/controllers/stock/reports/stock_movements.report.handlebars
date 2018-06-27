@@ -59,7 +59,6 @@
               <th style="border:none; border-bottom: solid black 2px;" class="text-uppercase">
                 {{ name }}
               </th>
-
               <th colspan="7" style="border:none; border-bottom: solid black 2px;" class="text-right">
                 ({{ items.length }} {{ translate "TABLE.AGGREGATES.RECORDS" }})
               </th>
@@ -76,7 +75,7 @@
                   <td>{{label}}</td>
                   <td class="text-right">{{quantity}}</td>
                   <td class="text-right">{{unit_cost}}</td>
-                  <td class="text-right">{{multiply quantity unit_cost}}</td>
+                  <td class="text-right">{{currency cost ../metadata.enterprise.currency_id}}</td>
                   <td>{{date date}}</td>
                   <td>{{translate flux_label}}</td>
                 </tr>
@@ -88,8 +87,8 @@
                   <td>{{text}}</td>
                   <td>{{label}}</td>
                   <td class="text-right">{{quantity}}</td>
-                  <td class="text-right">{{unit_cost}}</td>
-                  <td class="text-right">{{multiply quantity unit_cost}}</td>
+                  <td class="text-right">{{currency unit_cost ../metadata.enterprise.currency_id}}</td>
+                  <td class="text-right">{{currency cost ../metadata.enterprise.currency_id}}</td>
                   <td>{{date date}}</td>
                   <td>{{translate flux_label}}</td>
                 </tr>
