@@ -321,7 +321,8 @@ function loadInvoices(params) {
   `;
 
   // balanced or not
-  sqlInvoices += params.balanced ? ' HAVING balance = 0 ' : ' HAVING balance <> 0 ';
+  // Payment must only be made for invoices whose balances are strictly greater than Zero
+  sqlInvoices += params.balanced ? ' HAVING balance = 0 ' : ' HAVING balance > 0 ';
 
   const bid = db.bid(params.debtor_uuid);
 
