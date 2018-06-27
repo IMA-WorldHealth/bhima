@@ -65,7 +65,7 @@
     "json-2-csv": "^2.1.0",
     "lodash": "^4.16.2",
     "lzma-native": "^3.0.8",
-    "mailgun-js": "^0.18.0",
+    "mailgun-js": "^0.19.0",
     "mkdirp": "^0.5.1",
     "moment": "^2.15.0",
     "morgan": "^1.6.1",
