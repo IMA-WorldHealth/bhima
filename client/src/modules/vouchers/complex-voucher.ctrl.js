@@ -5,6 +5,7 @@ ComplexJournalVoucherController.$inject = [
   'VoucherService', 'CurrencyService', 'SessionService', 'FindEntityService',
   'FindReferenceService', 'NotifyService', 'VoucherToolkitService',
   'ReceiptModal', 'bhConstants', 'uiGridConstants', 'VoucherForm', '$timeout',
+  'ExchangeRateService',
 ];
 
 /**
@@ -21,7 +22,7 @@ ComplexJournalVoucherController.$inject = [
  */
 function ComplexJournalVoucherController(
   Vouchers, Currencies, Session, FindEntity, FindReference, Notify, Toolkit,
-  Receipts, bhConstants, uiGridConstants, VoucherForm, $timeout
+  Receipts, bhConstants, uiGridConstants, VoucherForm, $timeout, Rates
 ) {
   const vm = this;
 
@@ -31,6 +32,10 @@ function ComplexJournalVoucherController(
   vm.itemIncrement = 1;
   vm.timestamp = new Date();
 
+  vm.currentCurrency = {
+    id : vm.enterprise.currency_id,
+    rate : 1,
+  };
   // bind the complex voucher form
   vm.Voucher = new VoucherForm('ComplexVouchers');
 
@@ -44,6 +49,28 @@ function ComplexJournalVoucherController(
   vm.onChanges = function onChanges() {
     vm.Voucher.onChanges();
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.EDIT);
+  };
+
+  vm.currencyChange = function currencyChange(vCurrencyId) {
+    const entCurrencyId = vm.enterprise.currency_id;
+    let exchange = {};
+    Rates.read(true).then(() => {
+      if (vCurrencyId !== entCurrencyId) {
+        exchange = Rates.getCurrentExchange(vCurrencyId);
+        vm.currentCurrency = { id : vCurrencyId, rate : exchange.rate };
+        vm.gridOptions.data = vm.gridOptions.data.map(row => {
+          row.credit *= exchange.rate;
+          row.debit *= exchange.rate;
+          return row;
+        });
+      } else {
+        vm.gridOptions.data = vm.gridOptions.data.map(row => {
+          row.credit /= vm.currentCurrency.rate;
+          row.debit /= vm.currentCurrency.rate;
+          return row;
+        });
+      }
+    });
   };
 
   // ui-grid options
