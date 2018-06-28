@@ -35,14 +35,24 @@
             <li role="separator" class="divider"></li>
 
             <li role="menuitem">
-              <a data-method="configure-payment" ng-click="MultiplePayrollCtrl.setConfigured()" href>
+              <a ng-if="MultiplePayrollCtrl.activeConfig" data-method="configure-payment" ng-click="MultiplePayrollCtrl.setConfigured()" href>
                 <i class="fa fa-cog"></i> <span translate>FORM.BUTTONS.CONFIGURE_PAYMENT</span>
+              </a>
+
+              <a ng-if="!MultiplePayrollCtrl.activeConfig" href>
+                <span><span class="fa fa-circle-o-notch fa-spin"></span>
+                <span style="color: #cfcfcf" translate>FORM.BUTTONS.CONFIGURE_PAYMENT</span>
               </a>
             </li>
 
             <li role="menuitem">
-              <a data-method="put-waiting" ng-click="MultiplePayrollCtrl.putOnWaiting()" href>
+              <a ng-if="MultiplePayrollCtrl.activePosting" data-method="put-waiting" ng-click="MultiplePayrollCtrl.putOnWaiting()" href>
                 <i class="fa fa-list"></i> <span translate>FORM.BUTTONS.PUT_ON_WAITING</span>
+              </a>
+
+              <a ng-if="!MultiplePayrollCtrl.activePosting" href>
+                <span><span class="fa fa-circle-o-notch fa-spin"></span>
+                <span style="color: #cfcfcf" translate>FORM.BUTTONS.PUT_ON_WAITING</span>
               </a>
             </li>
             <li role="separator" class="divider"></li>

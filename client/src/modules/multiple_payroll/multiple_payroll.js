@@ -36,6 +36,8 @@ function MultiplePayrollController(
   vm.format = util.formatDate;
 
   vm.loading = false;
+  vm.activePosting = true;
+  vm.activeConfig = true;
 
   const columnDefs = [{
     field : 'display_name',
@@ -199,10 +201,13 @@ function MultiplePayrollController(
       if (invalid) {
         Notify.warn('FORM.WARNINGS.ATTENTION_WAITING_LIST');
       } else {
+        vm.activePosting = false;
+
         const idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
         MultiplePayroll.paiementCommitment(idPeriod, employees)
           .then(() => {
             Notify.success('FORM.INFO.CONFIGURED_SUCCESSFULLY');
+            vm.activePosting = true;
             $state.go('multiple_payroll', null, { reload : true });
           })
           .catch(Notify.handleError);
@@ -231,10 +236,12 @@ function MultiplePayrollController(
       if (invalid) {
         Notify.warn('FORM.WARNINGS.ATTENTION_CONFIGURED');
       } else {
+        vm.activeConfig = false;
         const idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
         MultiplePayroll.configurations(idPeriod, employees)
           .then(() => {
             Notify.success('FORM.INFO.CONFIGURED_SUCCESSFULLY');
+            vm.activeConfig = true;
             $state.go('multiple_payroll', null, { reload : true });
           })
           .catch(Notify.handleError);
