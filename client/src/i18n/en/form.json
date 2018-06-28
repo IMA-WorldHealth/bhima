@@ -605,6 +605,7 @@
             "USE_MONTH_GROUPING": "Group By Months",
             "USE_POS_RECEIPT": "POS Receipts",
             "USE_SIMPLIFIED_CARD": "Use simple patient identity",
+            "USED_ACCOUNT_TRANSFERT": "Used the account of transfer",
             "USER": "User",
             "USERNAME": "Username",
             "UNIT": "Galenique form",

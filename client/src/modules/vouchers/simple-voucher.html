@@ -114,6 +114,17 @@
                 <span>(C)</span>
               </bh-account-select>
 
+              <div ng-if="SimpleVoucherCtrl.Voucher.details.type_id === 5" class="form-group">
+                <div class="checkbox">
+                  <label>
+                    <input ng-model="SimpleVoucherCtrl.includeTransfert" ng-true-value="1" ng-false-value="0" type="checkbox"> 
+                    <strong>
+                      <span translate>FORM.LABELS.USED_ACCOUNT_TRANSFERT</span>
+                    </strong>
+                  </label>
+                </div>
+              </div>
+
                <bh-currency-select
                  currency-id="SimpleVoucherCtrl.Voucher.details.currency_id"
                  validation-trigger="SimpleVoucherForm.$submitted">

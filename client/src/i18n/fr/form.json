@@ -604,6 +604,7 @@
             "UPDATE_GROUP_DEBTOR": "Mettre à jour le Groupe débiteur",
             "UPDATE_PATIENT_GROUP": "Mettre à jour les groupes de patients",
             "USE": "Utilisation",
+            "USED_ACCOUNT_TRANSFERT": "Utilisé le compte de transfert",
             "USE_MONTH_GROUPING": "Grouper par Mois",
             "USERNAME": "Nom de l'utilisateur",
             "USE_POS_RECEIPT": "Impression POS",

@@ -32,7 +32,7 @@ function VoucherService(
   service.transactionType = transactionType;
   service.openSearchModal = openSearchModal;
   service.openReverseRecordModal = openReverseRecordModal;
-
+  service.transfert = transfert;
   service.filters = voucherFilters;
   service.cacheFilters = cacheFilters;
   service.removeFilter = removeFilter;
@@ -181,6 +181,32 @@ function VoucherService(
 
     // return  serialized options
     return $httpParamSerializer(options);
+  }
+
+  /**
+   * @method transfert
+   *
+   * @description
+   * This function makes it possible to carry out a transfer by using an account of transfer
+   */
+  function transfert(voucher) {
+    const v = angular.copy(voucher);
+
+    // format items for posting, removing validation keys and unlinking old objects
+    v.items = v.items.map((item) => {
+      const escapedItem = stripInternalObjectKeys(item);
+
+      return escapedItem;
+    });
+
+    // we pick either the debit or the credit side to assign as the total amount
+    // of the voucher
+    v.amount = v.items.reduce((sum, row) => {
+      return sum + row.debit;
+    }, 0);
+
+    return service.$http.post('/vouchers/transfert', { voucher : v })
+      .then(service.util.unwrapHttpResponse);
   }
 
   /**

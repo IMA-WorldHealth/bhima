@@ -558,6 +558,7 @@ exports.configure = function configure(app) {
   app.get('/vouchers', vouchers.list);
   app.get('/vouchers/:uuid', vouchers.detail);
   app.post('/vouchers', vouchers.create);
+  app.post('/vouchers/transfert', vouchers.transfert);
 
   // suppliers api
   app.get('/suppliers/search', suppliers.search);
