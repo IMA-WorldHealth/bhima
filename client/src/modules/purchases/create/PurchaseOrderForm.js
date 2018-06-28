@@ -93,12 +93,15 @@ function PurchaseOrderFormService(Inventory, AppCache, Store, Pool, PurchaseOrde
     this.digest();
 
     // filters out valid items
-    const invalidItems = this.store.data.filter((row) => {
-      return row._invalid;
-    });
+    const invalidItems = this.store.data.filter(row => row._invalid);
+
+    // set global configuration error if missing accounts
+    const hasGlobalError = this.store.data.some(row => !row._hasValidAccounts);
+    this._hasGlobalError = hasGlobalError;
 
     this._invalid = invalidItems.length > 0;
     this._valid = !this._invalid;
+
 
     return invalidItems;
   };
