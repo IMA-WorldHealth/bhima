@@ -10,8 +10,6 @@
  * @requires uuid/v4
  * @requires lib/util
  * @requires lib/db
- * @requires lib/ReportManager
- * @requires lib/errors/NotFound
  * @requires lib/errors/BadRequest
  */
 
@@ -20,12 +18,6 @@ const uuid = require('uuid/v4');
 const util = require('../../lib/util');
 const db = require('../../lib/db');
 const BadRequest = require('../../lib/errors/BadRequest');
-const identifiers = require('../../config/identifiers');
-const FilterParser = require('../../lib/filter');
-
-exports.generate = generate;
-
-
 
 /**
  * POST /vouchers/transfert/generate
@@ -175,3 +167,5 @@ function generate(req, res, next) {
     .done();
 
 }
+
+exports.generate = generate;
