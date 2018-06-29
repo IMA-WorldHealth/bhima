@@ -59,8 +59,6 @@ function SimpleJournalVoucherController(Vouchers, util, Notify, Receipts, bhCons
   }
 
   function submit(form) {
-    let promise;
-
     // stop submission if the form is invalid
     if (form.$invalid) {
       Notify.danger('FORM.ERRORS.RECORD_ERROR');
@@ -88,9 +86,9 @@ function SimpleJournalVoucherController(Vouchers, util, Notify, Receipts, bhCons
     // submit the voucher
     // the transfer service only starts if the transaction type is 5 (Transfer)
     // and also if the Used transfer account checkbox is enabled
-    promise = (vm.includeTransfert && (vm.Voucher.details.type_id === 5))
+    const promise = (vm.includeTransfert && (vm.Voucher.details.type_id === 5))
       ? Vouchers.transfert(voucher) : Vouchers.create(voucher);
- 
+
     return promise
       .then((res) => {
         Receipts.voucher(res.uuid, true);
