@@ -112,6 +112,7 @@ function StockLotsController(
     flatEntityAccess : true,
     showGridFooter : true,
     gridFooterTemplate,
+    onRegisterApi,
   };
 
   const gridColumns = new Columns(vm.gridOptions, cacheKey);
@@ -125,6 +126,10 @@ function StockLotsController(
   vm.openColumnConfigModal = openColumnConfigModal;
   vm.loading = false;
   vm.saveGridState = state.saveGridState;
+
+  function onRegisterApi(gridApi) {
+    vm.gridApi = gridApi;
+  }
 
   // count data rows
   vm.countGridRows = () => {
@@ -249,6 +254,11 @@ function StockLotsController(
     const options = angular.merge(defaultOpts, filterOpts);
     // return  serialized options
     return $httpParamSerializer(options);
+  };
+
+  vm.toggleInlineFilter = () => {
+    vm.gridOptions.enableFiltering = !vm.gridOptions.enableFiltering;
+    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   };
 
   startup();
