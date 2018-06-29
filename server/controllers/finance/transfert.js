@@ -156,10 +156,12 @@ function generate(req, res, next) {
         )
         .addQuery('CALL PostVoucher(?);', [voucher2.uuid]);
 
-      return transaction.execute();
-    })
-    .then(() => {
-      res.status(201).json({ uuid : vuid2 });
+       return transaction.execute()
+        .then(() => {
+          res.status(201).json({ uuid : vuid2 });
+        })
+        .catch(next)
+        .done();
     })
     .catch(next)
     .done();
