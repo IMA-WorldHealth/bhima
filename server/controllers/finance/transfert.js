@@ -158,11 +158,12 @@ function generate(req, res, next) {
       return transaction.execute();
     })
     .then(() => {
-      res.sendStatus(201);
+      res.status(201).json({ uuid : vuid2 });
     })
     .catch(next)
     .done();
-
+    
+  return;
 }
 
 exports.generate = generate;
