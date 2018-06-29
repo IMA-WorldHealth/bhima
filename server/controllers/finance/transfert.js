@@ -98,6 +98,7 @@ function generate(req, res, next) {
     .then(data => {
       if (!data.length) {
         next(new BadRequest(`There is not any account of transfer configured for the accounts which you chose.`));
+
         return;
       }
 
@@ -162,8 +163,7 @@ function generate(req, res, next) {
     })
     .catch(next)
     .done();
-    
-  return;
+
 }
 
 exports.generate = generate;
