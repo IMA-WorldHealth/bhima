@@ -107,9 +107,6 @@ function generate(req, res, next) {
 
       // preprocess the items so they have uuids as required
       items.forEach(item => {
-        // convert the item's binary uuids
-        item = db.convert(item, ['uuid', 'voucher_uuid', 'document_uuid', 'entity_uuid']);
-
         const itemAccount1 = item.debit > 0 ? transfertAccountId : item.account_id;
         const itemAccount2 = item.credit > 0 ? transfertAccountId : item.account_id;
 
