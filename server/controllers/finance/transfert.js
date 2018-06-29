@@ -96,10 +96,8 @@ function generate(req, res, next) {
 
   db.exec(getTransfertAccount, [creditAccount])
     .then(data => {
-
       if (!data.length) {
         next(new BadRequest(`There is not any account of transfer configured for the accounts which you chose.`));
-
         return;
       }
 
@@ -160,7 +158,7 @@ function generate(req, res, next) {
       return transaction.execute();
     })
     .then(() => {
-      res.status(201).json({ uuid : vuid2 });
+      res.sendStatus(201);
     })
     .catch(next)
     .done();
