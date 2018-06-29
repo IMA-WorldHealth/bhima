@@ -17,66 +17,66 @@
         <!-- acting body class="tab-body" -->
         <div class="tab-body">
 
-        <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.reference.$invalid }">
-          <label class="control-label" translate>FORM.LABELS.REFERENCE</label>
-          <bh-clear on-clear="$ctrl.clear('reference')"></bh-clear>
-          <input type="text" class="form-control" name="reference" ng-model="$ctrl.searchQueries.reference">
-          <div class="help-block" ng-messages="ModalForm.reference.$error" ng-show="ModalForm.$submitted">
-            <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-          </div>
-        </div>
+          <!-- filter by project -->
+          <bh-project-select
+            project-id="$ctrl.searchQueries.project_id"
+            name="project_id"
+            on-select-callback="$ctrl.onSelectProject(project)">
+            <bh-clear on-clear="$ctrl.clear('project_id')"></bh-clear>
+          </bh-project-select>
 
-        <div class="form-group">
-          <label class="control-label" translate>FORM.LABELS.REFERENCE_PATIENT</label>
-          <bh-clear on-clear="$ctrl.clear('patientReference')"></bh-clear>
-          <input type="text" class="form-control" ng-model="$ctrl.searchQueries.patientReference"/>
-        </div>
-
-        <div class="form-group">
-          <label class="control-label"><span translate>FORM.INFO.CREDIT_NOTE</span></label>
-          <bh-clear on-clear="$ctrl.clear('reversed')"></bh-clear>
-          <div class="radio">
-            <label>
-              <input type="radio" name="optionsReversal" value="0" ng-model="$ctrl.searchQueries.reversed">
-              <span translate>INVOICE_REGISTRY.EXCLUDE_REVERSE</span>
-            </label>
+          <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.reference.$invalid }">
+            <label class="control-label" translate>FORM.LABELS.REFERENCE</label>
+            <bh-clear on-clear="$ctrl.clear('reference')"></bh-clear>
+            <input type="text" class="form-control" name="reference" ng-model="$ctrl.searchQueries.reference">
+            <div class="help-block" ng-messages="ModalForm.reference.$error" ng-show="ModalForm.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
           </div>
 
-          <div class="radio">
-            <label>
-              <input type="radio" name="optionsReversal" value="1" ng-model="$ctrl.searchQueries.reversed">
-              <span translate>INVOICE_REGISTRY.INCLUDE_REVERSE</span>
-            </label>
+          <div class="form-group">
+            <label class="control-label" translate>FORM.LABELS.REFERENCE_PATIENT</label>
+            <bh-clear on-clear="$ctrl.clear('patientReference')"></bh-clear>
+            <input type="text" class="form-control" ng-model="$ctrl.searchQueries.patientReference"/>
           </div>
-        </div>
 
-        <!-- filter by project -->
-        <bh-project-select
-          project-id="$ctrl.searchQueries.project_id"
-          name="project_id"
-          on-select-callback="$ctrl.onSelectProject(project)">
-          <bh-clear on-clear="$ctrl.clear('project_id')"></bh-clear>
-        </bh-project-select>
+          <div class="form-group">
+            <label class="control-label"><span translate>FORM.INFO.CREDIT_NOTE</span></label>
+            <bh-clear on-clear="$ctrl.clear('reversed')"></bh-clear>
+            <div class="radio">
+              <label>
+                <input type="radio" name="optionsReversal" value="0" ng-model="$ctrl.searchQueries.reversed">
+                <span translate>INVOICE_REGISTRY.EXCLUDE_REVERSE</span>
+              </label>
+            </div>
 
-        <bh-service-select
-          service-id="$ctrl.searchQueries.service_id"
-          name="service_id"
-          on-select-callback="$ctrl.onSelectService(service)">
-          <bh-clear on-clear="$ctrl.clear('service_id')"></bh-clear>
-        </bh-service-select>
+            <div class="radio">
+              <label>
+                <input type="radio" name="optionsReversal" value="1" ng-model="$ctrl.searchQueries.reversed">
+                <span translate>INVOICE_REGISTRY.INCLUDE_REVERSE</span>
+              </label>
+            </div>
+          </div>
 
-        <bh-debtor-group-select
-          debtor-group-uuid = "$ctrl.searchQueries.debtor_group_uuid"
-          on-select-callback = "$ctrl.onSelectDebtor(debtorGroup)">
-		        <bh-clear on-clear="$ctrl.clear('debtor_group_uuid')"></bh-clear>
-        </bh-debtor-group-select>        
+          <bh-service-select
+            service-id="$ctrl.searchQueries.service_id"
+            name="service_id"
+            on-select-callback="$ctrl.onSelectService(service)">
+            <bh-clear on-clear="$ctrl.clear('service_id')"></bh-clear>
+          </bh-service-select>
 
-        <bh-user-select
-          user-id="$ctrl.searchQueries.user_id"
-          name="user_id"
-          on-select-callback="$ctrl.onSelectUser(user)">
-          <bh-clear on-clear="$ctrl.clear('user_id')"></bh-clear>
-        </bh-user-select>
+          <bh-debtor-group-select
+            debtor-group-uuid = "$ctrl.searchQueries.debtor_group_uuid"
+            on-select-callback = "$ctrl.onSelectDebtor(debtorGroup)">
+              <bh-clear on-clear="$ctrl.clear('debtor_group_uuid')"></bh-clear>
+          </bh-debtor-group-select>        
+
+          <bh-user-select
+            user-id="$ctrl.searchQueries.user_id"
+            name="user_id"
+            on-select-callback="$ctrl.onSelectUser(user)">
+            <bh-clear on-clear="$ctrl.clear('user_id')"></bh-clear>
+          </bh-user-select>
         </div>
       </uib-tab>
 
