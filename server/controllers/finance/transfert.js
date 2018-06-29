@@ -159,7 +159,9 @@ function generate(req, res, next) {
 
       return transaction.execute();
     })
-    .then((results) => res.status(201).json({ uuid : vuid2 }))
+    .then(() => {
+      res.status(201).json({ uuid : vuid2 });
+    })
     .catch(next)
     .done();
 
