@@ -13,7 +13,7 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
 
   const vUuid = 'b140c144-6ca8-47b0-99ba-94732cf6efde';
   const pUuid = 'c144b140-6ca8-47b0-99ba-6efde94732cf';
-  const numVouchers = 11;
+  const numVouchers = 13;
 
   const TO_DELETE_UUID = '3688e9ce-85ea-4b5c-9144-688177edcb63';
 
@@ -37,6 +37,29 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
       account_id   : 217,
       debit        : 0,
       credit       : 10,
+      voucher_uuid : vUuid,
+    }],
+  };
+
+  // VoucherForTransfer
+  const voucherTransfert = {
+    date,
+    uuid        : vUuid,
+    project_id  : 1,
+    currency_id : helpers.data.USD,
+    amount      : 10,
+    description : 'Voucher Transfer AUX to PPL Cashbox',
+    user_id     : 1,
+    items       : [{
+      uuid          : uuid(),
+      account_id    : 190,
+      debit         : 1000,
+      credit        : 0,
+      voucher_uuid  : vUuid,
+    }, {
+      account_id   : 191,
+      debit        : 0,
+      credit       : 1000,
       voucher_uuid : vUuid,
     }],
   };
@@ -147,6 +170,15 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
   it('POST /vouchers create a new voucher record with multiple voucher_items', () => {
     return agent.post('/vouchers')
       .send({ voucher : secondVoucher })
+      .then((res) => {
+        helpers.api.created(res);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('POST /vouchers create a new voucher For transfer between two Cashbox', () => {
+    return agent.post('/vouchers/transfert')
+      .send({ voucher : voucherTransfert })
       .then((res) => {
         helpers.api.created(res);
       })
