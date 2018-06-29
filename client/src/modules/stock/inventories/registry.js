@@ -270,5 +270,11 @@ function StockInventoriesController(
     // return  serialized options
     return $httpParamSerializer(options);
   };
+
+  vm.toggleInlineFilter = () => {
+    vm.gridOptions.enableFiltering = !vm.gridOptions.enableFiltering;
+    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+  };
+
   startup();
 }
