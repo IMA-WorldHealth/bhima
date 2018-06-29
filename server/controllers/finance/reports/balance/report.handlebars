@@ -17,10 +17,9 @@
       </h2>
 
       <h4 class="text-center">
-        {{#if period.start_date}}
-          <span class="text-capitalize">{{translate "FORM.LABELS.UNTIL_PERIOD"}}</span>
-          <strong class="text-capitalize">{{date period.start_date "MMMM YYYY"}}</strong>
-        {{/if}}
+        <strong class="text-capitalize">{{date period.fiscalYearStart "MMMM YYYY"}}</strong>
+         -
+        <strong class="text-capitalize">{{date period.end_date "MMMM YYYY"}}</strong>
       </h4>
 
       <!-- data  -->
@@ -34,15 +33,12 @@
               </th>
               <th colspan="2" class="text-center">
                 {{translate "BALANCE.OLD_SOLD"}} <br>
-                <small class="text-capitalize">&lt; {{date period.start_date "MMMM YYYY"}}</small>
               </th>
               <th colspan="2" class="text-center">
                 {{translate "BALANCE.MONTH_SOLD"}} <br>
-                <small class="text-capitalize">{{date period.start_date "MMMM YYYY"}}</small>
               </th>
               <th colspan="2" class="text-center">
                 {{translate "BALANCE.NEW_SOLD"}} <br>
-                <small class="text-capitalize">&gt; {{date period.start_date "MMMM YYYY"}}</small>
               </th>
             </tr>
           {{else}}
@@ -85,59 +81,40 @@
               </td>
 
               {{#if ../useSeparateDebitsAndCredits}}
-                {{!-- debtor sold --}}
-                {{#gt account.before.amount 0}}
-                  <td>{{currency account.before.debit account.currencyId }}</td>
-                  <td></td>
-                {{/gt}}
-
-                {{!-- creditor sold --}}
-                {{#lt account.before.amount 0}}
-                  <td></td>
-                  <td>{{currency account.before.credit account.currencyId }}</td>
-                {{/lt}}
-
-                {{!-- void cells in other case --}}
-                {{#unless account.before}}
-                  <td></td>
-                  <td></td>
-                {{/unless}}
+                <td>
+                  {{#if account.before_debit}}
+                    {{currency account.before_debit account.currencyId }}
+                  {{/if}}
+                </td>
+                <td>
+                  {{#if account.before_credit}}
+                    {{currency account.before_credit account.currencyId }}
+                  {{/if}}
+                </td>
               {{else}}
-                <td>{{#if account.before}}{{debcred account.before.amount account.currencyId }}{{/if}}</td>
+                <td>{{#if account.before}}{{debcred account.before account.currencyId }}{{/if}}</td>
               {{/if}}
 
               {{#if ../useSeparateDebitsAndCredits}}
-                {{#if account.during}}
-                  <td>{{currency account.during_debit.amount account.currencyId }}</td>
-                  <td>{{currency account.during_credit.amount account.currencyId }}</td>
-                {{else}}
-                  <td></td>
-                  <td></td>
-                {{/if}}
+                <td>{{currency account.during_debit account.currencyId }}</td>
+                <td>{{currency account.during_credit account.currencyId }}</td>
               {{else}}
-                <td>{{#if account.during}}{{debcred account.during.amount account.currencyId }}{{/if}}</td>
+                <td>{{#if account.during}}{{debcred account.during account.currencyId }}{{/if}}</td>
               {{/if}}
 
               {{#if ../useSeparateDebitsAndCredits}}
-                {{!-- debtor sold --}}
-                {{#gt account.after.amount 0}}
-                  <td>{{currency account.after.debit account.currencyId }}</td>
-                  <td></td>
-                {{/gt}}
-
-                {{!-- creditor sold --}}
-                {{#lt account.after.amount 0}}
-                  <td></td>
-                  <td>{{currency account.after.credit account.currencyId }}</td>
-                {{/lt}}
-
-                {{!-- void cells in other case --}}
-                {{#unless account.after}}
-                  <td></td>
-                  <td></td>
-                {{/unless}}
+                <td>
+                  {{#if account.after_debit}}
+                    {{currency account.after_debit account.currencyId }}
+                  {{/if}}
+                </td>
+                <td>
+                  {{#if account.after_credit}}
+                    {{currency account.after_credit account.currencyId }}
+                  {{/if}}
+                </td>
               {{else}}
-                <td>{{#if account.after}}{{debcred account.after.amount account.currencyId }}{{/if}}</td>
+                <td>{{#if account.after}}{{debcred account.after account.currencyId }}{{/if}}</td>
               {{/if}}
             </tr>
           {{/each}}
