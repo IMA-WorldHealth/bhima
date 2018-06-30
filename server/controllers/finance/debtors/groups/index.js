@@ -314,9 +314,8 @@ function loadInvoices(params) {
     ) AS i
     JOIN project ON i.project_id = project.id
     JOIN entity_map ON i.entity_uuid = entity_map.uuid
-    WHERE i.uuid NOT IN (
-      SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = ${CANCELED_TRANSACTION_TYPE}
-    )
+    LEFT JOIN voucher ON voucher.reference_uuid = i.uuid AND voucher.type_id = ${CANCELED_TRANSACTION_TYPE}
+    WHERE voucher.reference_uuid IS NULL
     GROUP BY i.uuid
   `;
 
