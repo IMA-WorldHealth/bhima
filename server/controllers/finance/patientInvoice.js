@@ -235,6 +235,7 @@ function find(options) {
       user.display_name, invoice.user_id, invoice.reversed, invoice.edited
     FROM invoice
     JOIN patient FORCE INDEX(debtor_uuid) ON invoice.debtor_uuid = patient.debtor_uuid
+    JOIN debtor d ON d.uuid = invoice.debtor_uuid
     JOIN project AS proj ON proj.id = invoice.project_id
     JOIN entity_map AS em ON em.uuid = patient.uuid
     JOIN document_map AS dm ON dm.uuid = invoice.uuid
