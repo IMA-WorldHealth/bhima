@@ -24,7 +24,7 @@ const PERIODS = [
   0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
 ];
 
-// expose to the api
+// expose to the API
 exports.list = list;
 exports.getAggregates = getAggregates;
 exports.getTransactions = getTransactions;
@@ -32,6 +32,7 @@ exports.getTransactions = getTransactions;
 // expose to server controllers
 exports.findTransactions = findTransactions;
 exports.getAccountTotalsMatrix = getAccountTotalsMatrix;
+exports.getAccountTotalsMatrixAggregates = getAccountTotalsMatrixAggregates;
 
 /**
  * @function findTransactions
@@ -118,14 +119,14 @@ function getAccountTotalsMatrix(fiscalYearId) {
     ''
   );
 
-  const outerColumns =
-    PERIODS.map(number => `IFNULL(s.balance${number}, 0) AS balance${number}`)
-      .join(', ');
+  const outerColumns = PERIODS
+    .map(number => `IFNULL(s.balance${number}, 0) AS balance${number}`)
+    .join(', ');
 
   // we want to show every single account, so we do a left join of the account
   // table
   const sql = `
-    SELECT a.id, a.number, a.label, a.type_id, a.label, a.parent,
+    SELECT a.id, a.number, a.label, a.type_id, a.parent,
       IFNULL(s.balance, 0) AS balance, ${outerColumns}
     FROM account AS a LEFT JOIN (
       SELECT SUM(pt.debit - pt.credit) AS balance, pt.account_id ${columns}
@@ -138,7 +139,22 @@ function getAccountTotalsMatrix(fiscalYearId) {
   `;
 
   //  returns true if all the balances are 0
-  const isEmptyRow = (row) => row.balance === 0;
+  const isEmptyRow = (row) => (
+    row.balance === 0
+    && row.balance0 === 0
+    && row.balance1 === 0
+    && row.balance2 === 0
+    && row.balance3 === 0
+    && row.balance4 === 0
+    && row.balance5 === 0
+    && row.balance6 === 0
+    && row.balance7 === 0
+    && row.balance8 === 0
+    && row.balance9 === 0
+    && row.balance10 === 0
+    && row.balance11 === 0
+    && row.balance12 === 0
+  );
 
   return db.exec(sql, [fiscalYearId])
     .then(accounts => {
@@ -169,9 +185,9 @@ function getAccountTotalsMatrixAggregates(fiscalYearId) {
     ''
   );
 
-  const outerColumns =
-    PERIODS.map(number => `IFNULL(s.balance${number}, 0) AS balance${number}`)
-      .join(', ');
+  const outerColumns = PERIODS
+    .map(number => `IFNULL(s.balance${number}, 0) AS balance${number}`)
+    .join(', ');
 
   const sql = `
     SELECT IFNULL(s.balance, 0) AS balance, ${outerColumns}

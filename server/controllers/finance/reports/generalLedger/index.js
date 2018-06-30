@@ -41,8 +41,11 @@ function renderReport(req, res, next) {
   const fiscalYearId = options.fiscal_year_id;
   const TITLE_ACCOUNT_ID = 6;
 
-  return GeneralLedger.getAccountTotalsMatrix(fiscalYearId)
-    .then(rows => {
+  return Promise.all([
+    GeneralLedger.getAccountTotalsMatrix(fiscalYearId),
+    GeneralLedger.getAccountTotalsMatrixAggregates(fiscalYearId),
+  ])
+    .then(([rows, aggregates]) => {
       const tree = new Tree(rows);
 
       tree.walk((node, parentNode) => {
@@ -52,25 +55,12 @@ function renderReport(req, res, next) {
         node.padLeft = node.depth * 15;
       });
 
-      const keys = _.keys(rows[0])
-        .filter(name => name.includes('balance'));
-
-      const root = tree.getRootNode();
-      const balances = root.children.reduce((aggregates, node) => {
-        keys.forEach(key => {
-          aggregates[key] = (aggregates[key] || 0) + node[key];
-        });
-
-        return aggregates;
-      }, {});
-
-      data = { rows : tree.toArray(), footer : balances };
+      data = { rows : tree.toArray(), footer : aggregates[0] };
       data.fiscal_year_label = options.fiscal_year_label;
       return report.render(data);
     })
     .then((result) => {
       res.set(result.headers).send(result.report);
     })
-    .catch(next)
-    .done();
+    .catch(next);
 }
