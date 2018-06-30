@@ -18,6 +18,7 @@
 // module dependencies
 const db = require('../../../lib/db');
 const Tree = require('../../../lib/Tree');
+const Journal = require('../journal');
 
 const PERIODS = [
   0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
@@ -26,9 +27,42 @@ const PERIODS = [
 // expose to the api
 exports.list = list;
 exports.getAggregates = getAggregates;
+exports.getTransactions = getTransactions;
 
 // expose to server controllers
+exports.findTransactions = findTransactions;
 exports.getAccountTotalsMatrix = getAccountTotalsMatrix;
+
+/**
+ * @function findTransactions
+ * @description returns general ledger transactions
+ * @param {object} options
+ */
+function findTransactions(options) {
+  const RETURN_POSTED_TRANSACTIONS = true;
+  const query = Journal.buildTransactionQuery(options, RETURN_POSTED_TRANSACTIONS);
+
+  let limitCondition = '';
+  if (options.limit) {
+    limitCondition = ` LIMIT ${Number(options.limit)}`;
+  }
+
+  return db.exec(`(${query.sql}) ORDER BY trans_date DESC ${limitCondition}`, query.parameters);
+}
+
+/**
+ * @function getTransactions
+ * @description returns general ledger transactions
+ */
+function getTransactions(req, res, next) {
+  const options = req.query;
+
+  findTransactions(options)
+    .then(rows => {
+      res.status(200).json(rows);
+    })
+    .catch(next);
+}
 
 /**
  * @function list

@@ -204,6 +204,7 @@ exports.configure = function configure(app) {
 
   // API for general ledger
   app.get('/general_ledger', generalLedger.list);
+  app.get('/general_ledger/transactions', generalLedger.getTransactions);
   app.get('/general_ledger/aggregates', generalLedger.getAggregates);
 
   app.get('/transactions/:uuid/history', journal.getTransactionEditHistory);

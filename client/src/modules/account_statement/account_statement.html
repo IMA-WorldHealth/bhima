@@ -63,7 +63,7 @@
       </div>
 
       <div class="toolbar-item">
-        <button data-method="comment" class="btn btn-default" ng-disabled="!AccountStateCtrl.selectedRows.length" ng-click="AccountStateCtrl.commentRows()">
+        <button data-method="comment" class="btn btn-default" ng-disabled="!AccountStateCtrl.gridApi.selection.getSelectedGridRows().length" ng-click="AccountStateCtrl.commentRows()">
           <i class="fa fa-sticky-note-o"></i> <span class="hidden-xs" translate>FORM.LABELS.COMMENT</span>
         </button>
       </div>
