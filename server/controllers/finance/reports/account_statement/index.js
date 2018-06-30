@@ -36,15 +36,13 @@ function report(req, res, next) {
   try {
     rm = new ReportManager(REPORT_TEMPLATE, req.session, options);
   } catch (e) {
-    return next(e);
+    next(e);
   }
-  // converting uuids in binary
-  db.convert(options, ['uuids']);
 
-  return generalLedger.find(options)
+  generalLedger.findTransactions(options)
     .then((rows) => {
-
       glb.rows = rows;
+
       const aggregateSql = `
         SELECT SUM(debit_equiv) AS debit_equiv, SUM(credit_equiv) AS credit_equiv,
           SUM(debit_equiv - credit_equiv) AS balance
