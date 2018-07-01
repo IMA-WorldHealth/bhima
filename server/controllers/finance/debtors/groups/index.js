@@ -272,8 +272,6 @@ function invoices(req, res, next) {
  * do we need to look at each individual invoice?
  */
 function loadInvoices(params) {
-  // cancelled transaction type
-  const CANCELED_TRANSACTION_TYPE = 10;
 
   // get debtors of the group
   const sqlDebtors = `
@@ -314,9 +312,6 @@ function loadInvoices(params) {
     ) AS i
     JOIN project ON i.project_id = project.id
     JOIN entity_map ON i.entity_uuid = entity_map.uuid
-    WHERE i.uuid NOT IN (
-      SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = ${CANCELED_TRANSACTION_TYPE}
-    )
     GROUP BY i.uuid
   `;
 
