@@ -9,9 +9,16 @@
     <div class="col-xs-12">
 
       <!-- page title  -->
-      <h2 class="text-center text-capitalize">
+      <h2 class="text-center text-uppercase">
         {{translate 'TREE.CASH_PAYMENT_REGISTRY'}}
       </h2>
+
+      <h3 class="text-center">
+        {{#if project.id}}{{project.name}}<br>{{/if}}
+        <small>{{date aggregates.minDate }} - {{date aggregates.maxDate}}</small>
+      </h3>
+
+      <br>
 
       <!-- filters  -->
       {{> filterbar filters=filters }}

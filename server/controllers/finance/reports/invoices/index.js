@@ -21,6 +21,7 @@ const Invoices = require('../../patientInvoice');
 const Patients = require('../../../medical/patients');
 const Exchange = require('../../exchange');
 const Debtors = require('../../debtors');
+const Projects = require('../../../admin/projects');
 
 const pdf = require('../../../../lib/renderers/pdf');
 
@@ -88,6 +89,10 @@ function report(req, res, next) {
     .then(aggregates => {
       data.aggregates = aggregates;
       data.hasMultipleProjects = aggregates.numProjects > 1;
+      return query.project_id ? Projects.findDetails(query.project_id) : {};
+    })
+    .then(project => {
+      data.project = project;
       return reportInstance.render(data);
     })
     .then(result => {
