@@ -53,17 +53,21 @@ function ComplexJournalVoucherController(
 
   vm.currencyChange = function currencyChange(vCurrencyId) {
     const entCurrencyId = vm.enterprise.currency_id;
-    let exchange = {};
+    let exchangeRate = 1;
+    const currentDate = vm.Voucher.details.date;
+
     Rates.read(true).then(() => {
       if (vCurrencyId !== entCurrencyId) {
-        exchange = Rates.getCurrentExchange(vCurrencyId);
-        vm.currentCurrency = { id : vCurrencyId, rate : exchange.rate };
+        exchangeRate = Rates.getExchangeRate(vCurrencyId, currentDate);
+        vm.currentCurrency = { id : vCurrencyId, rate : exchangeRate };
         vm.gridOptions.data = vm.gridOptions.data.map(row => {
-          row.credit *= exchange.rate;
-          row.debit *= exchange.rate;
+          row.credit *= vm.currentCurrency.rate;
+          row.debit *= vm.currentCurrency.rate;
           return row;
         });
       } else {
+        exchangeRate = Rates.getExchangeRate(vm.currentCurrency.id, currentDate);
+        vm.currentCurrency = { id : vCurrencyId, rate : exchangeRate };
         vm.gridOptions.data = vm.gridOptions.data.map(row => {
           row.credit /= vm.currentCurrency.rate;
           row.debit /= vm.currentCurrency.rate;
