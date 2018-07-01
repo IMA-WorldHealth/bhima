@@ -23,7 +23,7 @@ BEGIN
   -- employee
   INSERT INTO entity_map
     SELECT employee.creditor_uuid, CONCAT_WS('.', 'EM', enterprise.abbr, employee.reference)
-    FROM employee 
+    FROM employee
     JOIN patient ON patient.uuid = employee.patient_uuid
     JOIN project ON project.id = patient.project_id
     JOIN enterprise ON enterprise.id = project.enterprise_id;
@@ -128,7 +128,7 @@ BEGIN
     FROM general_ledger
       JOIN period ON general_ledger.period_id = period.id
       JOIN project ON general_ledger.project_id = project.id
-    GROUP BY account_id, period_id, enterprise_id;
+    GROUP BY account_id, period_id, fiscal_year_id, enterprise_id;
 
 END $$
 
