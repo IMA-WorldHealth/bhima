@@ -8,16 +8,18 @@ class BalanceReportPage {
   }
 
   // preview an account report
-  showBalanceReportPreview(period) {
-    components.reportPeriodSelect.set(period);
+  showBalanceReportPreview(year, month) {
+    components.fiscalYearSelect.set(year);
+    components.periodSelection.set(month);
     components.yesNoRadios.set('yes', 'useSeparateDebitsAndCredits');
     components.yesNoRadios.set('yes', 'shouldPruneEmptyRows');
+    components.yesNoRadios.set('yes', 'shouldHideTitleAccounts');
     this.page.preview();
   }
 
   // save an account report
-  saveBalanceReport(period, reportName, reportFormat) {
-    this.showBalanceReportPreview(period);
+  saveBalanceReport(year, month, reportName, reportFormat) {
+    this.showBalanceReportPreview(year, month);
 
     // save report as PDF
     this.page.saveAs();
@@ -31,8 +33,8 @@ class BalanceReportPage {
   }
 
   // print an account report
-  printBalanceReport(date) {
-    this.showBalanceReportPreview(date);
+  printBalanceReport(year, month) {
+    this.showBalanceReportPreview(year, month);
     this.page.printPreview();
   }
 

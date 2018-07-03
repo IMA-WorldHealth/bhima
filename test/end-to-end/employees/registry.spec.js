@@ -10,11 +10,12 @@ describe('Employees Registry', () => {
   const path = '#!/employees';
   const employeeRegistryPage = new EmployeeRegistryPage();
   const searchModalPage = new SearchModalPage();
-  const employeeCount = 2;
+  const employeeCount = 4;
   const ONE_EMPLOYEE = 1;
   const parameters = {
     name : 'Dedrick',
     oneFilter : 1,
+    reference : 'EM.TE.2',
     twoFilters : 2,
     threeFilters : 3,
     fourFilters : 4,
@@ -57,12 +58,20 @@ describe('Employees Registry', () => {
     employeeRegistryPage.clearFilter();
   });
 
+  it(`should find One employee With reference "${parameters.reference}"`, () => {
+    employeeRegistryPage.search();
+    searchModalPage.setReference(parameters.reference);
+    searchModalPage.submit();
+    employeeRegistryPage.employeeCount(ONE_EMPLOYEE, `The number of filtered employee should be ${ONE_EMPLOYEE}`);
+    employeeRegistryPage.clearFilter();  
+  });
+
   it('clearing filters restores default number of rows to the grid', () => {
     employeeRegistryPage.search();
     searchModalPage.selectSex('male');
     searchModalPage.submit();
 
-    employeeRegistryPage.employeeCount(employeeCount, `The number of filtered employee should be ${employeeCount}`);
+    employeeRegistryPage.employeeCount(parameters.twoFilters, `The number of filtered employee should be ${parameters.twoFilters}`);
     employeeRegistryPage.clearFilter();
     employeeRegistryPage.employeeCount(employeeCount, `The number of filtered employee should be ${employeeCount}`);
   });
@@ -75,7 +84,7 @@ describe('Employees Registry', () => {
     searchModalPage.selectGrade('1.1');
     searchModalPage.submit();
 
-    employeeRegistryPage.employeeCount(1, `The number of filtered employee should be 1`);
+    employeeRegistryPage.employeeCount(2, `The number of filtered employee should be 1`);
     employeeRegistryPage.clearFilter();
   });
 });

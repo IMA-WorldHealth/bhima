@@ -56,6 +56,7 @@ function InvoicingFeesController($state, InvoicingServices, Notify, bhConstants,
     field : 'action',
     displayName: '',
     enableSorting : false,
+    enableFiltering : false,
     cellTemplate : actionTemplate,
   }];
 

@@ -139,8 +139,10 @@
         </form>
       </div>
 
-      <!-- project form  -->
+      <!-- right side section  -->
       <div class="col-md-6">
+
+        <!-- project section -->
         <div class="panel panel-primary">
           <div class="panel-heading">
             <b><i class="fa fa-cube"></i> <span translate>TREE.PROJECT</span></b>
@@ -173,10 +175,10 @@
           </div>
         </div>
 
-
+        <!-- enterprise options section -->
         <div class="panel panel-default">
           <div class="panel-heading">
-            <b><i class="fa fa-cogs"></i> <span translate>ENTERPRISE.SETTINGS.TITLE</span></b>
+            <i class="fa fa-cogs"></i> <span translate>ENTERPRISE.SETTINGS.TITLE</span>
           </div>
           <div class="panel-body">
             <bh-yes-no-radios
@@ -185,12 +187,39 @@
               help-text="ENTERPRISE.SETTINGS.ENABLE_PRICE_LOCK_HELP_TEXT"
               on-change-callback="EnterpriseCtrl.enablePriceLockSetting(value)">
             </bh-yes-no-radios>
+
+            <bh-yes-no-radios
+              label="ENTERPRISE.SETTINGS.ENABLE_PREPAYMENTS_LABEL"
+              value="EnterpriseCtrl.enterprise.settings.enable_prepayments"
+              help-text="ENTERPRISE.SETTINGS.ENABLE_PREPAYMENTS_HELP_TEXT"
+              on-change-callback="EnterpriseCtrl.enablePrepaymentsSetting(value)">
+            </bh-yes-no-radios>
+
+            <bh-yes-no-radios
+              label="ENTERPRISE.SETTINGS.ENABLE_PREPAYMENT_INVOICE_LABEL"
+              value="EnterpriseCtrl.enterprise.settings.enable_balance_on_invoice_receipt"
+              help-text="ENTERPRISE.SETTINGS.ENABLE_PREPAYMENT_INVOICE_HELP_TEXT"
+              on-change-callback="EnterpriseCtrl.enableBalanceOnInvoiceReceipSetting(value)">
+            </bh-yes-no-radios>
+
+            <bh-yes-no-radios
+              label="ENTERPRISE.SETTINGS.ENABLE_DELETE_RECORDS_LABEL"
+              value="EnterpriseCtrl.enterprise.settings.enable_delete_records"
+              help-text="ENTERPRISE.SETTINGS.ENABLE_DELETE_RECORDS_HELP_TEXT"
+              on-change-callback="EnterpriseCtrl.enableDeleteRecordsSetting(value)">
+            </bh-yes-no-radios>
+
+            <bh-yes-no-radios
+              label="ENTERPRISE.SETTINGS.ENABLE_PASSWORD_VALIDATION_LABEL"
+              value="EnterpriseCtrl.enterprise.settings.enable_password_validation"
+              help-text="ENTERPRISE.SETTINGS.ENABLE_PASSWORD_VALIDATION_HELP_TEXT"
+              on-change-callback="EnterpriseCtrl.enablePasswordValidationSetting(value)">
+            </bh-yes-no-radios>
           </div>
         </div>
 
-        <!-- embedded exchange rate -->
-        <div ui-view="exchange"></div>
-
+        <!-- exchange section -->
+        <bh-exchange></bh-exchange>
     </div>
   </div>
 </div>

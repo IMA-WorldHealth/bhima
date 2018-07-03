@@ -3,7 +3,7 @@ angular.module('bhima.services')
 
 VoucherFormService.$inject = [
   'VoucherService', 'bhConstants', 'SessionService', 'VoucherItemService',
-  'CashboxService', 'AppCache', 'Store', 'AccountService', '$timeout', '$translate',
+  'AppCache', 'Store', 'AccountService', '$timeout', '$translate',
 ];
 
 /**
@@ -17,7 +17,7 @@ VoucherFormService.$inject = [
  * @todo - finish the caching implementation
  */
 function VoucherFormService(
-  Vouchers, Constants, Session, VoucherItem, Cashboxes, AppCache, Store, Accounts,
+  Vouchers, Constants, Session, VoucherItem, AppCache, Store, Accounts,
   $timeout, $translate
 ) {
   // Error Flags
@@ -62,32 +62,9 @@ function VoucherFormService(
     // this is the overarching details of the voucher to be filled in
     this.details = {};
 
-    // cash accounts require a certain voucher type
-    this.cashAccounts = [];
-    const self = this;
-
-    // load cashboxes for their accounts.
-    Cashboxes.read(null, { detailed : 1 })
-      .then((cashboxes) => {
-        self.cashAccounts = cashboxes
-
-          // collect a lost of all cashbox accounts
-          .reduce((accounts, cashbox) => {
-            return accounts.concat([cashbox.account_id, cashbox.transfer_account_id]);
-          }, [])
-
-          // make sure the list is unique
-          .filter((account, index, accounts) => {
-            return accounts.indexOf(account) === index;
-          });
-
-        // self.cashAccounts is now a proper list of unique cash account ids
-        // that can be used to determine if a voucher type is required.
-      });
-
     Accounts.read()
       .then((accounts) => {
-        self.accounts = Accounts.order(accounts);
+        this.accounts = Accounts.order(accounts);
       });
 
     // this will contain the grid rows
@@ -104,10 +81,6 @@ function VoucherFormService(
    * This function is called on the journal voucher items to run validation
    * checks against each item, returning the global validation state.  If there
    * is an error in any single line item, that error is set on the form.
-   *
-   * It also performs validation to check if a type_id is required for the
-   * voucher.  Voucher types are required if any of the concerned accounts are
-   * cashbox accounts.
    */
   VoucherForm.prototype.validate = function validate() {
     const items = this.store.data;
@@ -124,12 +97,6 @@ function VoucherFormService(
     // seems like Chrome greedily exits if a false condition is it.
     let valid = true;
 
-    // do validation checks to see if we have a transaction type for a cashbox
-    // account
-    const { cashAccounts } = this;
-
-    let hasCashboxAccount = false;
-
     // loop through each row, checking the amounts and accounts of each item.
     items.forEach(item => {
       valid = valid && item.validate();
@@ -142,22 +109,15 @@ function VoucherFormService(
       // only test for unique accounts if there are valid accounts selected
       if (item.account_id) {
         // if there unique accounts array does not have this account, add it.
-        if (uniqueAccountsArray.indexOf(item.account_id) === -1) {
+        if (!uniqueAccountsArray.includes(item.account_id)) {
           uniqueAccountsArray.push(item.account_id);
         }
       }
-
-      if (cashAccounts.indexOf(item.account_id) !== -1) {
-        hasCashboxAccount = true;
-      }
     });
 
-    // if there is a cashbox account used, the voucher type_id is required
-    this.hasCashboxAccount = hasCashboxAccount;
-
-    // validate that the cashbox accounts and type_id are set
+    // validate that the type_id are set
     const hasTypeId = angular.isDefined(this.details.type_id);
-    if (!hasTypeId && this.hasCashboxAccount) {
+    if (!hasTypeId) {
       err = ERROR_MISSING_TRANSACTION_TYPE;
     }
 
@@ -284,7 +244,6 @@ function VoucherFormService(
       // of individual items which will not have been configured, manually
       // reset error state
       delete this._error;
-      this.hasCashboxAccount = false;
     });
   };
 
@@ -292,6 +251,7 @@ function VoucherFormService(
    * @method replaceFormRows
    */
   VoucherForm.prototype.replaceFormRows = function replaceFormRows(rows) {
+
     this.clear();
 
     rows.forEach(row => {

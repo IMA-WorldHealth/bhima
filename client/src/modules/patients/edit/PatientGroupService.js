@@ -1,5 +1,5 @@
 angular.module('bhima.services')
-.service('PatientGroupModal', PatientGroupModal);
+  .service('PatientGroupModal', PatientGroupModal);
 
 PatientGroupModal.$inject = ['$uibModal'];
 
@@ -10,13 +10,13 @@ PatientGroupModal.$inject = ['$uibModal'];
  * @todo remove callbacks in favour of propegating values through promise fufillment
  */
 function PatientGroupModal(Modal) {
-  var service = this;
+  const service = this;
 
-  var modalConfig = {
+  const modalConfig = {
     animation : true,
     size : 'md',
     keyboard : false,
-    backdrop : 'static'
+    backdrop : 'static',
   };
 
   service.updateDebtor = updateDebtor;
@@ -29,49 +29,49 @@ function PatientGroupModal(Modal) {
    * @param Object     patientEntity
    */
   function updateDebtor(patientEntity, callback) {
-    var debtorGroupConfig = {
+    const debtorGroupConfig = {
       templateUrl : 'modules/patients/edit/updateDebtorGroup.tmpl.html',
       controller : 'UpdateDebtorGroup as UpdateDebtorGroupCtrl',
       resolve : {
-        patient : function () {
+        patient() {
           return patientEntity;
         },
 
         /** @todo investigate passing multiple params through $modal.close to remove callback methods */
-        updateModel : function () {
+        updateModel() {
           return callback;
-        }
-      }
+        },
+      },
     };
 
     angular.extend(debtorGroupConfig, modalConfig);
 
-    var modalInstance = Modal.open(debtorGroupConfig);
+    const modalInstance = Modal.open(debtorGroupConfig);
     return modalInstance.result;
   }
 
   function updateGroupConfig(patientEntity, groups, callback) {
-    var patientGroupConfig = {
+    const patientGroupConfig = {
       templateUrl : 'modules/patients/edit/updatePatientGroups.tmpl.html',
       controller : 'UpdatePatientGroups as UpdatePatientGroupsCtrl',
       resolve : {
-        sessionPatient : function () {
+        sessionPatient() {
           return patientEntity;
         },
-        sessionGroups : function () {
+        sessionGroups() {
           return groups;
         },
 
         /** @todo investigate passing multiple params through $modal.close to remove callback methods */
-        updateModel : function () {
+        updateModel() {
           return callback;
-        }
-      }
+        },
+      },
     };
 
     angular.extend(patientGroupConfig, modalConfig);
 
-    var modalInstance = Modal.open(patientGroupConfig);
+    const modalInstance = Modal.open(patientGroupConfig);
     return modalInstance.result;
   }
 }

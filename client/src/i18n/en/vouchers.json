@@ -25,7 +25,7 @@
       "VOUCHER": "Voucher"
     },
     "TYPES": {
-      "SUPPORT_PAYMENT_DESCRIPTION": "Debt transfer from {{ patientName }} ({{ patientReference}}) for invoice {{ invoiceReference }}."
+      "SUPPORT_PAYMENT_DESCRIPTION": "Support of {{ patientName }} ({{ patientReference}}) for invoice {{ invoiceReference }}."
     },
     "GLOBAL": {
       "CASHFLOW_OPTION": "Cashflow Option",
@@ -44,24 +44,30 @@
       "CASH_TRANSFER":"Cash Transfer",
       "REPORT":"Voucher Registry",
       "TITLE":"Voucher",
-      "TRANSACTION_TYPE_INFO":"Transaction type must be set if there is income or expenses.",
+      "TRANSACTION_TYPE_INFO": "Transaction type depending on whether you have an income or an expense",
       "USE_FINANCIAL_ACCOUNT": "This transactions uses a cash or bank account.  Be sure to set a transaction type.",
       "RECEIPT":{
         "SUCCESS":"Voucher Payment recorded successfully."
       },
-      "ERROR_SAME_ACCOUNT": "You cannot use the same account twice to in this transaction. Please select two different accounts."
+      "ERROR_SAME_ACCOUNT": "You cannot use the same account twice to in this transaction. Please select two different accounts.",
+      "PAYMENT_EMPLOYEES": "Payment of wages {{date}}"
     },
     "SIMPLE": {
+      "ADJUSTMENT" : "Adjustment",
       "CASH_PAYMENT": "Client Payment",
       "CASH_RETURN": "Cash Return (Payback)",
+      "CHARGE_REMUNERATION": "Social charges on remuneration",
+      "CAUTION_LINK" : "Caution Link",
+      "COMMITMENT": "Commitment",
       "CONVENTION_PAYMENT": "Convention Payment",
       "CREDIT_NOTE": "Credit Note",
+      "EMPLOYEE_WITHHOLDINGS": "Employee withholdings",
       "EXPENSE": "Expenses",
-      "INCOME": "Incomes",
+      "INCOME": "Income",
       "INVOICING": "Invoicing",
       "SALARY_PAYMENT": "Salary Payment",
       "GENERIC_EXPENSE": "Other Expenses",
-      "GENERIC_INCOME": "Other Incomes",
+      "GENERIC_INCOME": "Other Income",
       "PURCHASES": "Purchases",
       "SUPPORT_INCOME": "Support Incomes",
       "TITLE": "Simple Voucher",

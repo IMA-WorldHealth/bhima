@@ -6,11 +6,74 @@
  *
  * NOTE:
  *  this endpoint does not filter for enterprise ID.  We should probably
- *   move to doing this in the future.
+ *  move to doing this in the future.
  * */
 
 const db = require('../../lib/db');
 const NotFound = require('../../lib/errors/NotFound');
+
+// expose the find function
+exports.find = find;
+exports.findDetails = findDetails;
+
+/**
+ * @function findDetails
+ * @description return details of a project
+ * @param {number} id the project id
+ */
+function findDetails(id) {
+  const sql = `
+    SELECT project.id, project.enterprise_id, project.abbr,
+      project.zs_id, project.name, project.locked
+    FROM project
+    WHERE project.id = ?;
+  `;
+
+  return db.one(sql, [id], id, 'project');
+}
+
+/**
+ * @function find
+ * @description find projects according params given
+ * @param {object} params
+ */
+function find(params) {
+  let sql;
+
+  // send a larger response if complete is 1
+  if (params.complete === '1') {
+    sql = `
+      SELECT project.id, project.enterprise_id, project.abbr,
+        project.zs_id, project.name, project.locked
+      FROM project;`;
+  } else {
+    sql = 'SELECT project.id, project.name FROM project;';
+  }
+
+  if (params.locked === '0') {
+    sql = `
+      SELECT project.id, project.enterprise_id, project.abbr,
+        project.zs_id, project.name, project.locked
+      FROM project WHERE project.locked = 0;`;
+  }
+
+  if (params.locked === '1') {
+    sql = `
+      SELECT project.id, project.enterprise_id, project.abbr,
+        project.zs_id, project.name, project.locked
+      FROM project WHERE project.locked = 1;`;
+  }
+
+  if (params.incomplete_locked === '0') {
+    sql = 'SELECT project.id, project.name FROM project WHERE project.locked = 0;';
+  }
+
+  if (params.incomplete_locked === '1') {
+    sql = 'SELECT project.id, project.name FROM project WHERE project.locked = 1;';
+  }
+
+  return db.exec(sql);
+}
 
 /**
  * GET /projects?complete={0|1}
@@ -18,41 +81,7 @@ const NotFound = require('../../lib/errors/NotFound');
  * Returns an array of {id, name} for each project in the database.
  */
 exports.list = function list(req, res, next) {
-  let sql;
-
-  // send a larger response if complete is 1
-  if (req.query.complete === '1') {
-    sql = `SELECT project.id, project.enterprise_id, project.abbr,
-      project.zs_id, project.name, project.locked
-    FROM project;`;
-  } else {
-    sql =
-      'SELECT project.id, project.name FROM project;';
-  }
-
-  if (req.query.locked === '0') {
-    sql = `SELECT project.id, project.enterprise_id, project.abbr,
-      project.zs_id, project.name, project.locked
-    FROM project WHERE project.locked = 0;`;
-  }
-
-  if (req.query.locked === '1') {
-    sql = `SELECT project.id, project.enterprise_id, project.abbr,
-      project.zs_id, project.name, project.locked
-    FROM project WHERE project.locked = 1;`;
-  }
-
-  if (req.query.incomplete_locked === '0') {
-    sql =
-      'SELECT project.id, project.name FROM project WHERE project.locked = 0;';
-  }
-
-  if (req.query.incomplete_locked === '1') {
-    sql =
-      'SELECT project.id, project.name FROM project WHERE project.locked = 1;';
-  }
-
-  db.exec(sql)
+  find(req.query)
     .then((rows) => {
       res.status(200).json(rows);
     })
@@ -67,16 +96,7 @@ exports.list = function list(req, res, next) {
  * Returns the details of a single project
  */
 exports.detail = function detail(req, res, next) {
-  const id = req.params.id;
-
-  const sql = `
-    SELECT project.id, project.enterprise_id, project.abbr,
-      project.zs_id, project.name, project.locked
-    FROM project
-    WHERE project.id = ?;
-  `;
-
-  db.one(sql, [id], id, 'project')
+  findDetails(req.params.id)
     .then(project => res.status(200).json(project))
     .catch(next)
     .done();

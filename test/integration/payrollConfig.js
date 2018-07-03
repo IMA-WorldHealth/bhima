@@ -17,6 +17,7 @@ describe('(/payroll) The /payroll  API endpoint', function () {
     config_rubric_id : 1,
     config_accounting_id : 1,
     config_weekend_id : 1,
+    config_employee_id : 1,
   };
 
   const PayrollConfigUpdate = {

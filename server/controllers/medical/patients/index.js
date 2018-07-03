@@ -81,15 +81,13 @@ exports.lookupPatient = lookupPatient;
 exports.lookupByDebtorUuid = lookupByDebtorUuid;
 
 exports.getFinancialStatus = getFinancialStatus;
+exports.getDebtorBalance = getDebtorBalance;
 
 /** @todo Method handles too many operations */
 function create(req, res, next) {
   const createRequestData = req.body;
 
-  let {
-    medical,
-    finance,
-  } = createRequestData;
+  let { medical, finance } = createRequestData;
 
   // Debtor group required for financial modelling
   const invalidParameters = !finance || !medical;
@@ -117,6 +115,11 @@ function create(req, res, next) {
   finance = db.convert(finance, ['uuid', 'debtor_group_uuid']);
   medical = db.convert(medical, ['uuid', 'current_location_id', 'origin_location_id']);
   medical.debtor_uuid = finance.uuid;
+
+  // Remove whitespace from Patient display_name
+  if (medical.display_name) {
+    medical.display_name = medical.display_name.trim();
+  }
 
   const writeDebtorQuery = 'INSERT INTO debtor (uuid, group_uuid, text) VALUES (?, ?, ?)';
   const writePatientQuery = 'INSERT INTO patient SET ?';
@@ -182,6 +185,11 @@ function update(req, res, next) {
     data.dob = new Date(data.dob);
   }
 
+  // Remove whitespace from Patient display_name
+  if (data.dob) {
+    data.display_name = data.display_name.trim();
+  }
+
   // prevent updating the patient's uuid
   delete data.uuid;
   delete data.reference;
@@ -218,8 +226,10 @@ function update(req, res, next) {
  * @returns {Promise} - the result of the database query
  */
 function lookupPatient(patientUuid) {
-  // convert uuid to database usable binary uuid
+  // convert uuid to patientbase usable binary uuid
   const buid = db.bid(patientUuid);
+
+  let patient;
 
   // @FIXME(sfount) ALL patient queries should use the same column selection and guarantee the same information
   const sql = `
@@ -230,23 +240,53 @@ function lookupPatient(patientUuid) {
       CONCAT_WS('.', '${identifiers.PATIENT.key}', proj.abbr, p.reference) AS reference, p.title, p.address_1,
       p.address_2, p.father_name, p.mother_name, p.religion, p.marital_status, p.profession, p.employer, p.spouse,
       p.spouse_profession, p.spouse_employer, p.notes, p.avatar, proj.abbr, d.text,
-      dg.account_id, BUID(dg.price_list_uuid) AS price_list_uuid, dg.is_convention, BUID(dg.uuid) as debtor_group_uuid,
-      dg.locked, dg.name as debtor_group_name, u.username, u.display_name AS userName, a.number
-    FROM patient AS p JOIN project AS proj JOIN debtor AS d JOIN debtor_group AS dg JOIN user AS u JOIN account AS a
-      ON p.debtor_uuid = d.uuid AND d.group_uuid = dg.uuid
-      AND p.project_id = proj.id AND p.user_id = u.id
-      AND a.id = dg.account_id
+      dg.account_id, BUID(dg.price_list_uuid) AS price_list_uuid, dg.is_convention,
+      BUID(dg.uuid) as debtor_group_uuid, dg.locked, dg.name as debtor_group_name, u.username,
+      u.display_name AS userName, a.number, proj.name
+    FROM patient AS p
+      JOIN project AS proj ON p.project_id = proj.id
+      JOIN debtor AS d ON p.debtor_uuid = d.uuid
+      JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
+      JOIN user AS u ON p.user_id = u.id
+      JOIN account AS a ON a.id = dg.account_id
     WHERE p.uuid = ?;
   `;
 
   return db.one(sql, buid, patientUuid, 'patient')
-    .then((patient) => {
+    .then((data) => {
+      patient = data;
       _.extend(patient, {
         barcode : barcode.generate(identifiers.PATIENT.key, patient.uuid),
       });
 
+      return lookupPatientPriceList(buid);
+    })
+    .then(priceList => {
+      patient.price_list_uuid = patient.price_list_uuid || priceList;
       return patient;
     });
+}
+
+/**
+ * @method lookupPatientPriceLise
+ *
+ * @description
+ * This method queries the price list for the patient, choosing the debtor price
+ * list if it exists, or using a random patient group price list if those exist.
+ *
+ * TODO(@jniles) - how should this logic actually work?
+ *
+ */
+function lookupPatientPriceList(patientUuid) {
+  const sql = `
+    SELECT BUID(MAX(price_list_uuid)) as price_list_uuid FROM patient_assignment pa
+      LEFT JOIN patient_group pg ON pa.patient_group_uuid = pg.uuid
+    WHERE pa.patient_uuid = ?
+    GROUP BY patient_uuid;
+  `;
+
+  return db.exec(sql, patientUuid)
+    .then(([row]) => row && row.price_list_uuid);
 }
 
 
@@ -317,7 +357,7 @@ function lookupByDebtorUuid(debtorUuid) {
     SELECT BUID(p.uuid) as uuid, p.project_id, BUID(p.debtor_uuid) AS debtor_uuid, p.display_name,
       p.hospital_no, p.sex, p.registration_date, p.email, p.phone, p.dob,
       BUID(p.origin_location_id) as origin_location_id, p.title, p.address_1, p.address_2,
-      CONCAT_WS('.', '${identifiers.PATIENT.key}', proj.abbr, p.reference) AS reference,
+      CONCAT_WS('.', '${identifiers.PATIENT.key}', proj.abbr, p.reference) AS reference, proj.name AS proj_name,
       p.father_name, p.mother_name, p.religion, p.marital_status, p.profession, p.employer, p.spouse,
       p.spouse_profession, p.spouse_employer, p.notes, p.avatar, proj.abbr, d.text,
       dg.account_id, BUID(dg.price_list_uuid) AS price_list_uuid, dg.is_convention, BUID(dg.uuid) as debtor_group_uuid,
@@ -436,6 +476,7 @@ function find(options) {
   filters.dateTo('dateBirthTo', 'dob');
   filters.equals('health_zone');
   filters.equals('health_area');
+  filters.equals('project_id');
 
   // filters for location
   const orignSql = `(originVillage.name LIKE ?) OR (originSector.name LIKE ?) OR (originProvince.name LIKE ?)`;
@@ -491,14 +532,15 @@ function patientEntityQuery(detailed) {
       proj.abbr, p.reference) AS reference, p.display_name, BUID(p.debtor_uuid) as debtor_uuid,
       p.sex, p.dob, p.registration_date, BUID(d.group_uuid) as debtor_group_uuid, p.hospital_no,
       p.health_zone, p.health_area, u.display_name as userName, originVillage.name as originVillageName, dg.color,
-      originSector.name as originSectorName, originProvince.name as originProvinceName ${detailedColumns}
+      originSector.name as originSectorName, dg.name AS debtorGroupName, proj.name AS project_name,
+      originProvince.name as originProvinceName ${detailedColumns}
     FROM patient AS p
       JOIN project AS proj ON p.project_id = proj.id
       JOIN debtor AS d ON p.debtor_uuid = d.uuid
       JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
       JOIN village as originVillage ON originVillage.uuid = p.origin_location_id
       JOIN sector AS originSector ON originVillage.sector_uuid = originSector.uuid
-      JOIN province AS originProvince ON originProvince.uuid = originSector.province_uuid 
+      JOIN province AS originProvince ON originProvince.uuid = originSector.province_uuid
       JOIN user AS u ON p.user_id = u.id
   `;
 
@@ -647,6 +689,27 @@ function getFinancialStatus(req, res, next) {
       _.extend(data, { transactions, aggregates });
 
       res.status(200).send(data);
+    })
+    .catch(next)
+    .done();
+}
+
+/**
+ * @function getDebtorBalance
+ *
+ * @description
+ * returns the patient's debtor balance with the enterprise.  Note that this
+ * route provides a "real-time" balance, so it scans both the posting_journal
+ * and general_ledger.
+ */
+function getDebtorBalance(req, res, next) {
+  const uid = req.params.uuid;
+  lookupPatient(uid)
+    .then(patient => {
+      return Debtors.balance(patient.debtor_uuid);
+    })
+    .then(([balance]) => {
+      res.status(200).send(balance);
     })
     .catch(next)
     .done();

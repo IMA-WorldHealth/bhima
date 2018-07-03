@@ -19,11 +19,11 @@ function OperatingConfigController($sce, Notify, SavedReports, AppCache, reportD
   };
 
   vm.onSelectPeriodFrom = function onSelectPeriodFrom(period) {
-    vm.reportDetails.periodFrom = period;
+    vm.reportDetails.periodFrom = period.id;
   };
 
   vm.onSelectPeriodTo = function onSelectPeriodTo(period) {
-    vm.reportDetails.periodTo = period;
+    vm.reportDetails.periodTo = period.id;
   };
 
   vm.preview = function preview(form) {

@@ -38,6 +38,7 @@ class PayrollConfigPage {
     components.accountConfigSelect.set(payrollConfig.config_accounting_id, 'config_accounting_id');
     components.weekConfigSelect.set(payrollConfig.config_weekend_id, 'config_weekend_id');
     components.iprConfigSelect.set(payrollConfig.config_ipr_id, 'config_ipr_id');
+    components.employeeConfigSelect.set(payrollConfig.config_employee_id, 'config_employee_id');
     FU.buttons.submit();
     components.notification.hasSuccess();
   }

@@ -9,7 +9,7 @@ const FC_FMT = {
   precision : 2,
   thousand : '.',
   decimal : ',',
-  format : '%v %s', // value before symbol
+  format : '%v&nbsp;%s', // value before symbol
 };
 
 /** @todo use the currency filter fork written for the client to perform the same behaviour here */
@@ -17,7 +17,7 @@ function currency(value = 0, currencyId) {
   // if currencyId is not defined, defaults to USD.
   // @TODO - super-hardcoded values for the moment.  Can we do better?
   const fmt = (Number(currencyId) === 1) ? FC_FMT : USD_FMT;
-  return accountingjs.formatMoney(value, fmt);
+  return new Handlebars.SafeString(accountingjs.formatMoney(value, fmt));
 }
 
 /**
@@ -27,9 +27,7 @@ function currency(value = 0, currencyId) {
  * @currencyName is the Name of currency
  */
 function numberToText(value, lang, currencyName) {
-  const numberText = NumberToText.convert(value, lang, currencyName);
-  const fmt = numberText;
-  return fmt;
+  return NumberToText.convert(value, lang, currencyName);
 }
 
 const INDENTATION_STEP = 40;
@@ -61,7 +59,15 @@ function debcred(value = 0, currencyId) {
   `);
 }
 
+function percentage(value = 0, precision = 2) {
+  if (!value || !Number.isFinite(value) || Number.isNaN(value)) { return ''; }
+
+  const str = (value * 100).toFixed(precision);
+  return `${str}%`;
+}
+
 exports.debcred = debcred;
 exports.currency = currency;
 exports.indentAccount = indentAccount;
 exports.numberToText = numberToText;
+exports.percentage = percentage;

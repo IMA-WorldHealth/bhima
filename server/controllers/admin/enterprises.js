@@ -6,6 +6,8 @@
  * location as well as a currency and it is not possible to remove an enterprise.
  */
 
+const _ = require('lodash');
+
 const db = require('../../lib/db');
 const NotFound = require('../../lib/errors/NotFound');
 
@@ -20,7 +22,8 @@ exports.list = function list(req, res, next) {
     sql = `
       SELECT id, name, abbr, email, po_box, phone,
         BUID(location_id) AS location_id, logo, currency_id,
-        gain_account_id, loss_account_id, enable_price_lock
+        gain_account_id, loss_account_id, enable_price_lock, enable_prepayments,
+        enable_delete_records, enable_password_validation, enable_balance_on_invoice_receipt
       FROM enterprise LEFT JOIN enterprise_setting
         ON enterprise.id = enterprise_setting.enterprise_id
       ;`;
@@ -28,18 +31,28 @@ exports.list = function list(req, res, next) {
 
   db.exec(sql)
     .then(rows => {
+      let data = rows;
 
       // FIXME(@jniles) - this is kinda hacky.  The idea is to keep settings
       // separate in a JSON file.  This will make more sense as we add enterprise
       // options.
       if (req.query.detailed === '1') {
-        rows.forEach(row => {
-          row.settings = { enable_price_lock : row.enable_price_lock };
-          delete row.enable_price_lock;
+        data = rows.map(row => {
+          const settings = [
+            'enable_price_lock',
+            'enable_prepayments',
+            'enable_delete_records',
+            'enable_password_validation',
+            'enable_balance_on_invoice_receipt',
+          ];
+
+          row.settings = _.pick(row, settings);
+          return _.omit(row, settings);
         });
+
       }
 
-      res.status(200).json(rows);
+      res.status(200).json(data);
     })
     .catch(next)
     .done();
@@ -65,7 +78,12 @@ function lookupEnterprise(id) {
   `;
 
   const settingsSQL = `
-    SELECT enable_price_lock FROM enterprise_setting WHERE enterprise_id = ?;
+    SELECT
+      enable_price_lock,
+      enable_prepayments,
+      enable_password_validation,
+      enable_balance_on_invoice_receipt
+    FROM enterprise_setting WHERE enterprise_id = ?;
   `;
 
   let enterprise;
@@ -101,7 +119,7 @@ function lookupByProjectId(id) {
       JOIN village ON e.location_id = village.uuid
       JOIN sector ON village.sector_uuid = sector.uuid
       JOIN province ON sector.province_uuid = province.uuid
-    WHERE p.enterprise_id = ?
+    WHERE p.id = ?
     LIMIT 1;
   `;
 

@@ -265,7 +265,7 @@ function CreditNoteTests() {
     row.dropdown().click();
     row.reverse().click();
 
-    FU.input('ModalCtrl.creditNote.description', 'Cancel This Payment');
+    FU.input('ModalCtrl.cancelCash.description', 'Cancel This Payment');
     FU.modal.submit();
     components.notification.hasSuccess();
   });

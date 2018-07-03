@@ -6,7 +6,6 @@
  *
  * The typical age categories are 0-30 days, 30-60 days, 60-90 days, and > 90
  * days.
- *
  */
 
 
@@ -37,8 +36,16 @@ function agedCreditorReport(req, res, next) {
     return;
   }
 
-  // fire the SQL for the report
-  queryContext(qs)
+  const sql = `
+    SELECT end_date FROM period WHERE id = ?;
+  `;
+
+  db.one(sql, [qs.period_id])
+    .then(period => {
+      qs.date = period.end_date;
+      // fire the SQL for the report
+      return queryContext(qs);
+    })
     .then(data => report.render(data))
     .then(result => {
       res.set(result.headers).send(result.report);
@@ -55,17 +62,15 @@ function agedCreditorReport(req, res, next) {
  * @description
  * The HTTP interface which actually creates the report.
  */
-function queryContext(queryParams) {
-  const params = queryParams || {};
+function queryContext(params = {}) {
   const havingNonZeroValues = ' HAVING total > 0 ';
   const includeZeroes = Boolean(Number(params.zeroes));
   const useMonthGrouping = Boolean(Number(params.useMonthGrouping));
 
   // format the dates for MySQL escape
-  const dates = _.fill(Array(5), new Date(params.date));
+  const dates = _.fill(Array(5), params.date);
 
   const data = {};
-  const source = 'general_ledger';
 
   const groupByMonthColumns = `
     SUM(IF(MONTH(?) - MONTH(gl.trans_date) = 0, gl.debit_equiv - gl.credit_equiv, 0)) AS thirty,
@@ -89,7 +94,7 @@ function queryContext(queryParams) {
       ${columns}
       SUM(gl.credit_equiv - gl.debit_equiv) AS total
     FROM creditor_group AS cg
-      JOIN ${source} AS gl ON gl.account_id = cg.account_id
+      JOIN general_ledger AS gl ON gl.account_id = cg.account_id
       JOIN account AS a ON a.id = cg.account_id
     WHERE DATE(gl.trans_date) <= DATE(?)
     GROUP BY cg.uuid
@@ -103,7 +108,7 @@ function queryContext(queryParams) {
       ${columns}
       SUM(gl.credit_equiv - gl.debit_equiv) AS total
     FROM creditor_group AS cg
-      JOIN ${source} AS gl ON gl.account_id = cg.account_id
+      JOIN general_ledger AS gl ON gl.account_id = cg.account_id
     WHERE DATE(gl.trans_date) <= DATE(?)
     ${includeZeroes ? '' : havingNonZeroValues}
   `;

@@ -5,7 +5,7 @@ StockLotsController.$inject = [
   'StockService', 'NotifyService',
   'uiGridConstants', '$translate', 'StockModalService', 'LanguageService',
   'GridGroupingService', 'GridStateService', 'GridColumnService',
-  'bhConstants', '$state',
+  'bhConstants', '$state', '$httpParamSerializer',
 ];
 
 /**
@@ -15,7 +15,7 @@ StockLotsController.$inject = [
 function StockLotsController(
   Stock, Notify,
   uiGridConstants, $translate, Modal, Languages, Grouping,
-  GridState, Columns, bhConstants, $state
+  GridState, Columns, bhConstants, $state, $httpParamSerializer
 ) {
   const vm = this;
   const cacheKey = 'lot-grid';
@@ -112,6 +112,7 @@ function StockLotsController(
     flatEntityAccess : true,
     showGridFooter : true,
     gridFooterTemplate,
+    onRegisterApi,
   };
 
   const gridColumns = new Columns(vm.gridOptions, cacheKey);
@@ -126,6 +127,10 @@ function StockLotsController(
   vm.loading = false;
   vm.saveGridState = state.saveGridState;
 
+  function onRegisterApi(gridApi) {
+    vm.gridApi = gridApi;
+  }
+
   // count data rows
   vm.countGridRows = () => {
     return vm.gridOptions.data.length;
@@ -134,7 +139,6 @@ function StockLotsController(
   // select group
   vm.selectGroup = (group) => {
     if (!group) { return; }
-
     vm.selectedGroup = group;
   };
 
@@ -236,6 +240,26 @@ function StockLotsController(
     state.clearGridState();
     $state.reload();
   }
+
+  vm.downloadExcel = () => {
+
+    const filterOpts = stockLotFilters.formatHTTP();
+    const defaultOpts = {
+      renderer : 'xlsx',
+      lang : Languages.key,
+      renameKeys : true,
+      displayNames : gridColumns.getDisplayNames(),
+    };
+    // combine options
+    const options = angular.merge(defaultOpts, filterOpts);
+    // return  serialized options
+    return $httpParamSerializer(options);
+  };
+
+  vm.toggleInlineFilter = () => {
+    vm.gridOptions.enableFiltering = !vm.gridOptions.enableFiltering;
+    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+  };
 
   startup();
 }

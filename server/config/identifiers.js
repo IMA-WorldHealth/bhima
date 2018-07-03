@@ -20,6 +20,7 @@ module.exports = {
   EMPLOYEE : {
     key   : 'EM',
     table : 'employee',
+    documentPath : '/reports/finance/employeeStanding/',
   },
   INVOICE : {
     key   : 'IV',

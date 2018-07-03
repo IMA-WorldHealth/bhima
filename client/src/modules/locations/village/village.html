@@ -150,19 +150,25 @@
                 </div>
               </div>
 
-              <div class="form-group">
+              <div class="row">
+
                 <div class="col-xs-6">
-                  <label class="control-label" translate> FORM.LABELS.LONGITUDE </label>
-                  <input type="number" step="1.0" placeholder="{{ 'FORM.PLACEHOLDERS.LONGITUDE' | translate }}" autocomplete="off" class="form-control" name="longitude" ng-model="VillageCtrl.village.longitude">
+                  <div class="form-group">
+                    <label class="control-label" translate> FORM.LABELS.LONGITUDE </label>
+                    <input type="number" step="1.0" placeholder="{{ 'FORM.PLACEHOLDERS.LONGITUDE' | translate }}" autocomplete="off" class="form-control" name="longitude" ng-model="VillageCtrl.village.longitude">
+                  </div>
                 </div>
+
                 <div class="col-xs-6">
-                  <label class="control-label" translate> FORM.LABELS.LATITUDE </label>
-                  <input type="number" step="1.0" placeholder="{{ 'FORM.PLACEHOLDERS.LATITUDE' | translate }}" autocomplete="off" class="form-control" name="latitude" ng-model="VillageCtrl.village.latitude">
+                  <div class="form-group">
+                    <label class="control-label" translate> FORM.LABELS.LATITUDE </label>
+                    <input type="number" step="1.0" placeholder="{{ 'FORM.PLACEHOLDERS.LATITUDE' | translate }}" autocomplete="off" class="form-control" name="latitude" ng-model="VillageCtrl.village.latitude">
+                  </div>
                 </div>
               </div>
 
               <div class="form-group">
-                <button class="btn btn-default" id="submit-village" type="submit" data-method="submit" translate>
+                <button class="btn btn-primary" id="submit-village" type="submit" data-method="submit" translate>
                   FORM.BUTTONS.SAVE
                 </button>
                 <button class="btn btn-default" type="button" ng-click="VillageCtrl.cancel()" data-method="cancel" translate>
@@ -246,25 +252,25 @@
               <div class="form-group">
                 <div class="col-xs-12 col-md-6">
                   <label class="control-label" translate> FORM.LABELS.LONGITUDE </label>
-                  <input type="number" placeholder="{{ 'FORM.PLACEHOLDERS.LONGITUDE' | translate }}" 
-                    autocomplete="off" 
-                    class="form-control" 
-                    name="longitude" 
+                  <input type="number" placeholder="{{ 'FORM.PLACEHOLDERS.LONGITUDE' | translate }}"
+                    autocomplete="off"
+                    class="form-control"
+                    name="longitude"
                     ng-model="VillageCtrl.village.longitude">
                 </div>
                 <div class="col-xs-12 col-md-6">
                   <label class="control-label" translate> FORM.LABELS.LATITUDE </label>
-                  <input type="number" placeholder="{{ 'FORM.PLACEHOLDERS.LATITUDE' | translate }}" 
-                    autocomplete="off" 
-                    class="form-control" 
-                    name="latitude" 
+                  <input type="number" placeholder="{{ 'FORM.PLACEHOLDERS.LATITUDE' | translate }}"
+                    autocomplete="off"
+                    class="form-control"
+                    name="latitude"
                     ng-model="VillageCtrl.village.latitude">
                 </div>
                 <div class="clearfix"></div>
               </div>
 
               <div class="form-group">
-                <button class="btn btn-default" id="change_village" type="submit" data-method="submit" translate>
+                <button class="btn btn-primary" id="change_village" type="submit" data-method="submit" translate>
                   FORM.BUTTONS.SAVE
                 </button>
                 <button class="btn btn-default" type="button" ng-click="VillageCtrl.cancel()" data-method="cancel" translate>

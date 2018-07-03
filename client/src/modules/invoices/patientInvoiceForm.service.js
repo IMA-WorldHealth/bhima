@@ -236,6 +236,15 @@ function PatientInvoiceFormService(
       promises.push(priceListPromise);
     }
 
+    promises.push(Patients.balance(patient.uuid)
+      .then(balance => {
+        // NOTE - a patient with no invoices will have a null balance.
+        if (balance) {
+          invoice.recipient.hasCreditorBalance = balance.credit > balance.debit;
+          invoice.recipient.balance = Math.abs(balance.balance);
+        }
+      }));
+
     invoice.recipient = patient;
     invoice.details.debtor_uuid = patient.debtor_uuid;
 

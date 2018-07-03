@@ -146,6 +146,42 @@ describe('StockEntryModalForm', () => {
     expect(errors).to.deep.equal(['STOCK.ERRORS.NO_ROWS']);
   });
 
+  it('#validate() will block when total quantity is over max quantity', () => {
+    const maxQuantity = 100;
+    const data = clone(sampleRow);
+    data.quantity = 120;
+
+    const form = new StockForm({ rows : [data] });
+    form.setMaxQuantity(maxQuantity);
+
+    const error = form.validate();
+    expect(error).to.deep.equal(['STOCK.ERRORS.LOT_QUANTITY_OVER_GLOBAL']);
+  });
+
+  it('#validate() will pass when total quantity is under max quantity', () => {
+    const maxQuantity = 100;
+    const data = clone(sampleRow);
+    data.quantity = 90;
+
+    const form = new StockForm({ rows : [data] });
+    form.setMaxQuantity(maxQuantity);
+
+    const error = form.validate();
+    expect(error).to.deep.equal([]);
+  });
+
+  it('#validate() will pass when total quantity is equal max quantity', () => {
+    const maxQuantity = 100;
+    const data = clone(sampleRow);
+    data.quantity = 100;
+
+    const form = new StockForm({ rows : [data] });
+    form.setMaxQuantity(maxQuantity);
+
+    const error = form.validate();
+    expect(error).to.deep.equal([]);
+  });
+
   it('#validate() returns an array of one or more errors', () => {
     const first = clone(sampleRow);
     const second = clone(sampleRow);

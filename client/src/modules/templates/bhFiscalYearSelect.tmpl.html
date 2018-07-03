@@ -1,0 +1,19 @@
+<fieldset
+  ng-form="FiscalYearSelectForm"
+  novalidate
+  bh-fiscal-year-select>
+
+  <div class="form-group"
+      ng-class="{ 'has-error' : $ctrl.validationTrigger && FiscalYearSelectForm.fiscal.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.FISCAL_YEAR</label>
+      <select
+        class="form-control"
+        ng-model="$ctrl.selectedYear"
+        name="fiscal"
+        ng-options="year as year.label for year in $ctrl.years"
+        ng-change="$ctrl.onChange($ctrl.selectedYear)"
+        required>
+        <option value="" disabled translate>FORM.SELECT.FISCAL_YEAR</option>
+      </select>
+  </div>
+</fieldset>

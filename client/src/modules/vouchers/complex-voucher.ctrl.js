@@ -5,6 +5,7 @@ ComplexJournalVoucherController.$inject = [
   'VoucherService', 'CurrencyService', 'SessionService', 'FindEntityService',
   'FindReferenceService', 'NotifyService', 'VoucherToolkitService',
   'ReceiptModal', 'bhConstants', 'uiGridConstants', 'VoucherForm', '$timeout',
+  'ExchangeRateService',
 ];
 
 /**
@@ -21,7 +22,7 @@ ComplexJournalVoucherController.$inject = [
  */
 function ComplexJournalVoucherController(
   Vouchers, Currencies, Session, FindEntity, FindReference, Notify, Toolkit,
-  Receipts, bhConstants, uiGridConstants, VoucherForm, $timeout
+  Receipts, bhConstants, uiGridConstants, VoucherForm, $timeout, Rates
 ) {
   const vm = this;
 
@@ -31,6 +32,10 @@ function ComplexJournalVoucherController(
   vm.itemIncrement = 1;
   vm.timestamp = new Date();
 
+  vm.currentCurrency = {
+    id : vm.enterprise.currency_id,
+    rate : 1,
+  };
   // bind the complex voucher form
   vm.Voucher = new VoucherForm('ComplexVouchers');
 
@@ -44,6 +49,28 @@ function ComplexJournalVoucherController(
   vm.onChanges = function onChanges() {
     vm.Voucher.onChanges();
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.EDIT);
+  };
+
+  vm.currencyChange = function currencyChange(vCurrencyId) {
+    const entCurrencyId = vm.enterprise.currency_id;
+    let exchange = {};
+    Rates.read(true).then(() => {
+      if (vCurrencyId !== entCurrencyId) {
+        exchange = Rates.getCurrentExchange(vCurrencyId);
+        vm.currentCurrency = { id : vCurrencyId, rate : exchange.rate };
+        vm.gridOptions.data = vm.gridOptions.data.map(row => {
+          row.credit *= exchange.rate;
+          row.debit *= exchange.rate;
+          return row;
+        });
+      } else {
+        vm.gridOptions.data = vm.gridOptions.data.map(row => {
+          row.credit /= vm.currentCurrency.rate;
+          row.debit /= vm.currentCurrency.rate;
+          return row;
+        });
+      }
+    });
   };
 
   // ui-grid options
@@ -62,31 +89,46 @@ function ComplexJournalVoucherController(
   }
 
   vm.openConventionPaymentModal = function openConventionPaymentModal() {
-    Toolkit.openConventionPaymentModal()
-      .then(processVoucherToolRows);
+    gridManager(Toolkit.openConventionPaymentModal);
   };
 
   vm.openGenericIncomeModal = function openGenericIncomeModal() {
-    Toolkit.openGenericIncomeModal()
-      .then(processVoucherToolRows);
+    gridManager(Toolkit.openGenericIncomeModal);
   };
 
 
   vm.openGenericExpenseModal = function openGenericExpenseModal() {
-    Toolkit.openGenericExpenseModal()
-      .then(processVoucherToolRows);
+    gridManager(Toolkit.openGenericExpenseModal);
   };
 
   vm.openCashTransferModal = function openCashTransferModal() {
-    Toolkit.openCashTransferModal()
-      .then(processVoucherToolRows);
+    gridManager(Toolkit.openCashTransferModal);
   };
 
   vm.openSupportPatientModal = function openSupportPatientModal() {
-    Toolkit.openSupportPatientModal()
-      .then(processVoucherToolRows);
+    gridManager(Toolkit.openSupportPatientModal);
   };
 
+  vm.openPaymentEmployees = function openPaymentEmployees() {
+    gridManager(Toolkit.openPaymentEmployees);
+  };
+
+
+  // @TODO fixed me to display correctly selected items(invoices, ..) accounts
+  // without adding empty items before
+  function gridManager(modal) {
+    vm.Voucher.addItems(300);
+    modal().then(result => {
+      if (!result) {
+        removeNullRows();
+        if (vm.Voucher.store.data.length === 0) {
+          vm.Voucher.addItems(2);
+        }
+        return;
+      }
+      processVoucherToolRows(result);
+    });
+  }
   /**
    * @function processVoucherToolRows
    *
@@ -94,10 +136,9 @@ function ComplexJournalVoucherController(
    */
   function processVoucherToolRows(result) {
     if (!result) { return; }
-
+    // force updating details
     vm.Voucher.replaceFormRows(result.rows);
 
-    // force updating details
     updateView(result);
   }
 
@@ -111,6 +152,7 @@ function ComplexJournalVoucherController(
    * @param {object} result
    */
   function updateView(result) {
+
     $timeout(() => {
       // transaction type
       vm.Voucher.details.type_id = result.type_id || vm.Voucher.details.type_id;
@@ -122,8 +164,10 @@ function ComplexJournalVoucherController(
       vm.Voucher.details.currency_id = result.currency_id || vm.Voucher.details.currency_id;
 
       removeNullRows();
+
     }, 0);
   }
+
 
   /**
    * @function removeNullRows
@@ -260,6 +304,7 @@ function ComplexJournalVoucherController(
     }
 
     const voucher = vm.Voucher.details;
+
     voucher.items = vm.Voucher.store.data;
 
     return Vouchers.create(voucher)

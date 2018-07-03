@@ -27,6 +27,10 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
   vm.onSelectGainAccount = onSelectGainAccount;
   vm.onSelectLossAccount = onSelectLossAccount;
   vm.enablePriceLockSetting = enablePriceLockSetting;
+  vm.enablePrepaymentsSetting = enablePrepaymentsSetting;
+  vm.enableDeleteRecordsSetting = enableDeleteRecordsSetting;
+  vm.enablePasswordValidationSetting = enablePasswordValidationSetting;
+  vm.enableBalanceOnInvoiceReceipSetting = enableBalanceOnInvoiceReceipSetting;
 
   // fired on startup
   function startup() {
@@ -168,6 +172,26 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
 
   function enablePriceLockSetting(enabled) {
     vm.enterprise.settings.enable_price_lock = enabled;
+    $touched = true;
+  }
+
+  function enablePrepaymentsSetting(enabled) {
+    vm.enterprise.settings.enable_prepayments = enabled;
+    $touched = true;
+  }
+
+  function enableDeleteRecordsSetting(enabled) {
+    vm.enterprise.settings.enable_delete_records = enabled;
+    $touched = true;
+  }
+
+  function enablePasswordValidationSetting(enabled) {
+    vm.enterprise.settings.enable_password_validation = enabled;
+    $touched = true;
+  }
+
+  function enableBalanceOnInvoiceReceipSetting(enabled) {
+    vm.enterprise.settings.enable_balance_on_invoice_receipt = enabled;
     $touched = true;
   }
 

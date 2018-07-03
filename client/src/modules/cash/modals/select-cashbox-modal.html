@@ -7,16 +7,10 @@
 
 <div class="modal-body" data-cashbox-modal>
 
-  <!-- link to cashboxes page if cashboxes not found -->
-  <p class="text-info">
-    <i class="fa fa-question-circle-o"></i>
-    <span translate>CASH.VOUCHER.CASHBOXES.MISSING</span>
-
-    <a href ui-sref="cashboxes.create">
-      <i class="fa fa-link"></i> <span translate>CASH.VOUCHER.CASHBOXES.LINK</span>
-    </a>
+  <p class ="text-danger" ng-if="!$ctrl.hasCashboxes" translate>
+    CASH.SELECTION.NO_CASHBOXE
   </p>
-
+  
   <label class="control-label" translate>CASH.SELECTION.CURRENT_PROJECT_CASHBOXES</label>
 
   <!-- list of cashboxes -->
@@ -46,6 +40,9 @@
   <p ng-if="!$ctrl.hasCurrentProjectCashboxes && !$ctrl.hasCurrentCashboxes" translate>
     CASH.SELECTION.NO_CURRENT_PROJECT_CASHBOXES
   </p>
+
+
+  
 
   <label class="control-label" translate>CASH.SELECTION.OTHER_PROJECT_CASHBOXES</label>
   <ul ng-if="$ctrl.hasOtherProjectCashboxes" class="list-group">

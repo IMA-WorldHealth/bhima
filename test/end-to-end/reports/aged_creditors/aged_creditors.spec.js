@@ -1,8 +1,4 @@
-const chai = require('chai');
 const helpers = require('../../shared/helpers');
-
-helpers.configure(chai);
-
 const ReportCreditorsPage = require('./aged_creditors.page');
 
 describe('Aged Creditors Report', () => {
@@ -11,11 +7,11 @@ describe('Aged Creditors Report', () => {
 
   const dataset = {
     include_zeroes : true,
-    exclude_zeroes : false,
-    report_name : 'Report Saved by E2E',
+    report_name : 'Aged Creditors Report Saved by E2E',
     renderer : 'PDF',
-    period_1 : 'juin 2016',
-    period_2 : 'mai 2015',
+    year : '2015',
+    month : 'mai ',
+    month2 : 'juin',
   };
 
   before(() => {
@@ -24,7 +20,7 @@ describe('Aged Creditors Report', () => {
   });
 
   it('preview a new Aged Creditors Report', () => {
-    Page.showCreditorsReportPreview(dataset.period_2, dataset.include_zeroes);
+    Page.showCreditorsReportPreview(dataset.year, dataset.month, dataset.include_zeroes);
   });
 
   it('close the previewed report', () => {
@@ -32,7 +28,7 @@ describe('Aged Creditors Report', () => {
   });
 
   it('save a previewed report', () => {
-    Page.saveCreditorsReport(dataset.period_2, dataset.exclude_zeroes, dataset.report_name, dataset.renderer);
+    Page.saveCreditorsReport(dataset.year, dataset.month2, false, dataset.report_name, dataset.renderer);
   });
 
   it('report has been saved into archive', () => {
@@ -40,6 +36,6 @@ describe('Aged Creditors Report', () => {
   });
 
   it('print the previewed report', () => {
-    Page.printCreditorsReport(dataset.period_1, dataset.include_zeroes);
+    Page.printCreditorsReport(dataset.year, dataset.month, dataset.include_zeroes);
   });
 });

@@ -1,0 +1,53 @@
+<form name="EmployeeForm" bh-submit="EmployeeConfigModalCtrl.submit(EmployeeForm)" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="title">
+        <span translate>TREE.PAYROLL_EMP_CONFIGURATION</span>
+        <label class="badge badge-success" translate>{{ EmployeeConfigModalCtrl.config.label }}</label>
+      </li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+    <ul class="list-group" style="max-height: 70vh; overflow:auto;">
+      <li ng-if="!EmployeeConfigModalCtrl.employees.length" class="list-group-item">      
+        <span translate>TABLE.COLUMNS.EMPTY</span>       
+      </li>
+
+      <li ng-if="EmployeeConfigModalCtrl.employees.length" class="list-group-item">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" id="all" ng-model="EmployeeConfigModalCtrl.all" ng-change="EmployeeConfigModalCtrl.toggleAllEmployees(EmployeeConfigModalCtrl.all)">
+            <b translate>FORM.LABELS.ALL_EMPLOYEES</b>
+          </label>
+        </div>
+      </li>
+
+      <li ng-repeat="employee in EmployeeConfigModalCtrl.employees" class="list-group-item">
+        <div style="margin:0" class="checkbox">
+          <label style="padding-left: 12%">
+            <div ng-if="!employee.locked">
+              <input type="checkbox" ng-model="employee.checked">
+              <strong>{{ employee.display_name }}</strong>
+            </div>
+
+            <div ng-if="employee.locked">
+              <i class="fa fa-lock"></i>
+              <span>{{ employee.display_name }}</span>
+            </div>
+          </label> 
+        </div>
+      </li>
+    </ul>  
+  </div>
+
+  <div class="modal-footer">
+    <button data-method="cancel" type="button" class="btn btn-default" ng-click="EmployeeConfigModalCtrl.closeModal()">
+      <span translate>FORM.BUTTONS.CANCEL</span>
+    </button>
+
+    <bh-loading-button loading-state="EmployeeForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

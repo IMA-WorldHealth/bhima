@@ -46,19 +46,14 @@
 
               <div class="form-group" ng-class="{ 'has-error' : SimpleVoucherForm.$submitted && SimpleVoucherForm.type_id.$invalid }">
 
-                <label class="control-label">
-                  <span translate>FORM.LABELS.TRANSACTION_TYPE</span>
-                  <span uib-popover="{{ ::'VOUCHERS.GLOBAL.TRANSACTION_TYPE_INFO' | translate }}"
-                    popover-trigger="'mouseenter'"
-                    popover-placement="top"
-                    class="text-info fa fa-info-circle">
-                  </span>
+                <label class="control-label" translate>
+                  FORM.LABELS.TRANSACTION_TYPE
                 </label>
 
                 <ui-select
                   name="type_id"
                   ng-model="SimpleVoucherCtrl.Voucher.details.type_id"
-                  ng-required="SimpleVoucherCtrl.Voucher.hasCashboxAccount"
+                  required="true"
                   append-to-body="true">
 
                   <ui-select-match placeholder="{{ 'FORM.SELECT.TRANSACTION_TYPE' | translate }}">
@@ -72,12 +67,6 @@
                     <div ng-bind-html="item.hrText | highlight: $select.search"></div>
                   </ui-select-choices>
                 </ui-select>
-
-                <div class="help-block" ng-show="SimpleVoucherCtrl.Voucher.hasCashboxAccount">
-                  <p class="text-info">
-                    <i class="fa fa-info-circle"></i> <span translate>VOUCHERS.GLOBAL.USE_FINANCIAL_ACCOUNT</span>
-                  </p>
-                </div>
 
                 <div class="help-block" ng-messages="SimpleVoucherForm.type_id.$error" ng-show="SimpleVoucherForm.$submitted">
                   <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -94,7 +83,7 @@
                   class="form-control"
                   name="description"
                   ng-model="SimpleVoucherCtrl.Voucher.details.description"
-                  placeholder="{{ ::'FORM.PLACEHOLDERS.DESCRIPTION' | translate }}"
+                  translate-attrs="{ placeholder : 'FORM.PLACEHOLDERS.DESCRIPTION' }"
                   ng-maxlength="SimpleVoucherCtrl.maxLength"
                   required>
                 </textarea>

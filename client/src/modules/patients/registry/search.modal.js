@@ -22,7 +22,7 @@ function PatientRegistryModalController(ModalInstance, filters, Store, util, Per
 
   const searchQueryOptions = [
     'display_name', 'sex', 'hospital_no', 'reference', 'dateBirthFrom', 'dateBirthTo',
-    'dateRegistrationFrom', 'dateRegistrationTo', 'debtor_group_uuid',
+    'dateRegistrationFrom', 'dateRegistrationTo', 'debtor_group_uuid', 'project_id',
     'patient_group_uuid', 'user_id', 'defaultPeriod', 'originLocationLabel',
   ];
 
@@ -53,6 +53,11 @@ function PatientRegistryModalController(ModalInstance, filters, Store, util, Per
   vm.onSelectDebtor = function onSelectDebtor(debtorGroup) {
     vm.searchQueries.debtor_group_uuid = debtorGroup.uuid;
     displayValues.debtor_group_uuid = debtorGroup.name;
+  };
+
+  vm.onSelectProject = (project) => {
+    displayValues.project_id = project.name;
+    vm.searchQueries.project_id = project.id;
   };
 
   vm.onSelectPatientGroup = function onSelectPatientGroup(patientGroup) {

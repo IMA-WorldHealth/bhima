@@ -13,7 +13,7 @@
 
   <div class="modal-body" style="overflow: auto; max-height: 600px; padding: 0px">
     <uib-tabset>
-      <uib-tab index="0" heading="{{ 'FORM.LABELS.SEARCH_QUERRIES' | translate}}" data-custom-filter-tab>
+      <uib-tab index="0" heading="{{ 'FORM.LABELS.SEARCH_QUERIES' | translate}}" data-custom-filter-tab>
         <div class="tab-body">
           <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.reference.$invalid }">
             <label class="control-label" translate>FORM.LABELS.REFERENCE</label>
@@ -45,6 +45,20 @@
             required="false">
             <bh-clear on-clear="$ctrl.clear('account_id')"></bh-clear>
           </bh-account-select>
+
+          <bh-currency-select
+            currency-id="$ctrl.searchQueries.currency_id"
+            on-change="$ctrl.setCurrency(currency)">
+            <bh-clear on-clear="$ctrl.clear('currency_id')"></bh-clear>
+          </bh-currency-select>
+
+          <!-- filter by project -->
+          <bh-project-select
+            project-id="$ctrl.searchQueries.project_id"
+            name="project_id"
+            on-select-callback="$ctrl.onSelectProject(project)">
+            <bh-clear on-clear="$ctrl.clear('project_id')"></bh-clear>
+          </bh-project-select>          
 
           <bh-transaction-type-select
             on-change="$ctrl.onTransactionTypesChange(transactionTypes)"

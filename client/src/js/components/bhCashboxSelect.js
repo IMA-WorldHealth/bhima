@@ -5,43 +5,49 @@ angular.module('bhima.components')
     transclude  : true,
     bindings    : {
       cashboxId         : '<',
-      disable           : '<?',
       onSelectCallback  : '&',
+      disable           : '<?',
       name              : '@?',
       label             : '@?',
       required          : '<?',
-      validationTrigger : '<',
+      validationTrigger : '<?',
+      restrictToUser    : '<?',
     },
   });
 
 CashboxSelectController.$inject = [
-  'CashboxService', 'NotifyService',
+  'CashboxService', 'NotifyService', 'SessionService',
 ];
 
 /**
  * Cashbox selection component
  *
  */
-function CashboxSelectController(Cashbox, Notify) {
-  var $ctrl = this;
+function CashboxSelectController(Cashbox, Notify, Session) {
+  const $ctrl = this;
 
   $ctrl.$onInit = function onInit() {
-    // fired when a Cashbox has been selected
-    $ctrl.onSelectCallback = $ctrl.onSelectCallback;
-
     // default for form name
     $ctrl.name = $ctrl.name || 'CashboxForm';
 
     // translated label for the form input
     $ctrl.label = $ctrl.label || 'FORM.SELECT.CASHBOX';
 
+    const restrictCashboxList = angular.isDefined($ctrl.restrictToUser) ?
+      $ctrl.restrictToUser : true;
+
+    const params = { detailed : 1 };
+    if (restrictCashboxList) {
+      params.user_id = Session.user.id;
+    }
+
     // load all Cashbox
-    Cashbox.read(null, { detailed: 1, only_user : true })
-      .then(function (cashboxes) {
-        cashboxes.forEach(function (cashbox) {
-          cashbox.hrlabel = cashbox.label + ' ' + cashbox.symbol;
+    Cashbox.read(null, params)
+      .then(cashboxes => {
+        cashboxes.forEach(cashbox => {
+          cashbox.hrlabel = `${cashbox.label} ${cashbox.symbol}`;
         });
-        
+
         $ctrl.cashboxes = cashboxes;
       })
       .catch(Notify.handleError);
@@ -50,7 +56,7 @@ function CashboxSelectController(Cashbox, Notify) {
   };
 
   // fires the onSelectCallback bound to the component boundary
-  $ctrl.onSelect = function ($item) {
+  $ctrl.onSelect = ($item) => {
     $ctrl.onSelectCallback({ cashbox : $item });
   };
 }

@@ -6,12 +6,12 @@ angular.module('bhima.components')
     bindings    : {
       projectId        : '<',
       onSelectCallback : '&',
-      name             : '@?',     
+      name             : '@?',
     },
   });
 
 ProjectSelectController.$inject = [
-  'ProjectService', 'NotifyService'
+  'ProjectService', 'NotifyService',
 ];
 
 /**
@@ -19,18 +19,18 @@ ProjectSelectController.$inject = [
  *
  */
 function ProjectSelectController(Projects, Notify) {
-  var $ctrl = this;
+  const $ctrl = this;
 
-  $ctrl.$onInit = function onInit() {    
+  $ctrl.$onInit = () => {
     Projects.read()
-      .then(function (projects) {
+      .then((projects) => {
         $ctrl.projects = projects;
       })
       .catch(Notify.handleError);
   };
 
   // fires the onSelectCallback bound to the component boundary
-  $ctrl.onSelect = function ($item) {
+  $ctrl.onSelect = ($item) => {
     $ctrl.onSelectCallback({ project : $item });
   };
 }

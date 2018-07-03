@@ -1,7 +1,9 @@
 angular.module('bhima.controllers')
   .controller('TrialBalanceErrorsController', TrialBalanceErrorsController);
 
-TrialBalanceErrorsController.$inject = ['TrialBalanceService', 'NotifyService'];
+TrialBalanceErrorsController.$inject = [
+  'TrialBalanceService', 'NotifyService', '$state',
+];
 
 /**
  * @overview TrialBalanceErrorsController
@@ -10,14 +12,17 @@ TrialBalanceErrorsController.$inject = ['TrialBalanceService', 'NotifyService'];
  * This controller provides a view of the errors in the selected transactions
  * for the Trial Balance.
  */
-function TrialBalanceErrorsController(TrialBalance, Notify) {
+function TrialBalanceErrorsController(TrialBalance, Notify, $state) {
   const vm = this;
+
+  // FIXME(@jniles): why doesn't ui-sref work here?
+  vm.goToOverviewView = () => $state.go('TrialBalanceOverview');
 
   // links the errors to the posting journal via their record uuid
   const link =
-    '<div class="ui-grid-cell-contents">' +
-      '<bh-journal-link record-uuid="row.entity.record_uuid" display="{{row.entity.trans_id}}"></bh-journal-link>' +
-    '</div>';
+    `<div class="ui-grid-cell-contents">
+      <bh-journal-link record-uuid="row.entity.record_uuid" display="{{row.entity.trans_id}}"></bh-journal-link>
+    </div>`;
 
   const columns = [{
     field            : 'code',

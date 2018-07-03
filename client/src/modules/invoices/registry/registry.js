@@ -3,9 +3,9 @@ angular.module('bhima.controllers')
 
 InvoiceRegistryController.$inject = [
   'PatientInvoiceService', 'bhConstants', 'NotifyService', 'SessionService',
-  'ReceiptModal', 'uiGridConstants', 'ModalService', 'CashService',
-  'GridSortingService', 'GridColumnService', 'GridStateService', '$state',
-  'ModalService', 'ReceiptModal', 'util',
+  'ReceiptModal', 'uiGridConstants', 'ModalService', 'GridSortingService',
+  'GridColumnService', 'GridStateService', '$state', 'ModalService',
+  'ReceiptModal', 'util',
 ];
 
 /**
@@ -16,13 +16,11 @@ InvoiceRegistryController.$inject = [
  */
 function InvoiceRegistryController(
   Invoices, bhConstants, Notify, Session, Receipt, uiGridConstants,
-  ModalService, Cash, Sorting, Columns, GridState, $state, Modals, Receipts, util
+  ModalService, Sorting, Columns, GridState, $state, Modals, Receipts, util
 ) {
   const vm = this;
 
   // Background color for make the difference between the valid and cancel invoice
-  const reversedBackgroundColor = { 'background-color' : '#ffb3b3' };
-  const regularBackgroundColor = { 'background-color' : 'none' };
   const cacheKey = 'invoice-grid';
 
   vm.search = search;
@@ -33,9 +31,12 @@ function InvoiceRegistryController(
   vm.download = Invoices.download;
   vm.deleteInvoice = deleteInvoiceWithConfirmation;
   vm.Receipts = Receipts;
+  vm.toggleInlineFilter = toggleInlineFilter;
 
   // date format function
   vm.format = util.formatDate;
+
+  vm.allowsRecordDeletion = allowsRecordDeletion;
 
   // track if module is making a HTTP request for invoices
   vm.loading = false;
@@ -73,6 +74,10 @@ function InvoiceRegistryController(
     type : 'number',
     footerCellFilter : 'currency:'.concat(Session.enterprise.currency_id),
   }, {
+    field : 'project_name',
+    displayName : 'TABLE.COLUMNS.PROJECT',
+    headerCellFilter : 'translate',
+  }, {
     field : 'serviceName',
     displayName : 'TABLE.COLUMNS.SERVICE',
     headerCellFilter : 'translate',
@@ -83,6 +88,7 @@ function InvoiceRegistryController(
   }, {
     name : 'credit_action',
     displayName : '',
+    enableFiltering     : false,
     cellTemplate : '/modules/invoices/registry/templates/action.cell.html',
     enableSorting : false,
   }];
@@ -95,8 +101,11 @@ function InvoiceRegistryController(
     enableSorting     : true,
     fastWatch         : true,
     flatEntityAccess  : true,
-    rowTemplate       : '/modules/invoices/templates/grid.creditNote.tmpl.html',
+    rowTemplate       : '/modules/templates/row.reversed.html',
     columnDefs,
+  };
+  vm.uiGridOptions.onRegisterApi = function onRegisterApi(gridApi) {
+    vm.gridApi = gridApi;
   };
 
   const gridColumns = new Columns(vm.uiGridOptions, cacheKey);
@@ -124,10 +133,6 @@ function InvoiceRegistryController(
     // hook the returned patients up to the grid.
     request
       .then(invoices => {
-        invoices.forEach(invoice => {
-          invoice._backgroundColor = invoice.reversed ? reversedBackgroundColor : regularBackgroundColor;
-        });
-
         // put data in the grid
         vm.uiGridOptions.data = invoices;
       })
@@ -143,11 +148,13 @@ function InvoiceRegistryController(
 
     Invoices.openSearchModal(filtersSnapshot)
       .then(changes => {
+        if (!changes) {
+          return 0;
+        }
         Invoices.filters.replaceFilters(changes);
 
         Invoices.cacheFilters();
         vm.latestViewFilters = Invoices.filters.formatView();
-
         return load(Invoices.filters.formatHTTP(true));
       });
   }
@@ -186,32 +193,13 @@ function InvoiceRegistryController(
     $state.reload();
   };
 
-  // Call the opening of Modal
-  function openModal(invoice) {
+  // Function for Credit Note cancel all Invoice
+  function creditNote(invoice) {
     Invoices.openCreditNoteModal(invoice)
       .then(success => {
         if (success) {
           Notify.success('FORM.INFO.TRANSACTION_REVER_SUCCESS');
           load(vm.filters);
-        }
-      })
-      .catch(Notify.handleError);
-  }
-
-  // Function for Credit Note cancel all Invoice
-  function creditNote(invoice) {
-    Cash.checkCashPayment(invoice.uuid)
-      .then(res => {
-        const numberPayment = res.length;
-        if (numberPayment > 0) {
-          ModalService.confirm('FORM.DIALOGS.CONFIRM_CREDIT_NOTE')
-            .then(bool => {
-              if (bool) {
-                openModal(invoice);
-              }
-            });
-        } else {
-          openModal(invoice);
         }
       })
       .catch(Notify.handleError);
@@ -235,6 +223,15 @@ function InvoiceRegistryController(
       .then(isOk => {
         if (isOk) { remove(entity); }
       });
+  }
+
+  function allowsRecordDeletion() {
+    return Session.enterprise.settings.enable_delete_records;
+  }
+
+  function toggleInlineFilter() {
+    vm.uiGridOptions.enableFiltering = !vm.uiGridOptions.enableFiltering;
+    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
   // fire up the module

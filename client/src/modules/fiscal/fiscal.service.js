@@ -13,17 +13,16 @@ FiscalService.$inject = ['PrototypeApiService'];
  * @requires PrototypeApiService
  */
 function FiscalService(Api) {
-
-  // extend the PrototypeApiService with fiscal routes
   const service = new Api('/fiscal/');
 
   // TODO - rename this something like 'byDate()'
-  service.closing = closing;
+  service.closeFiscalYear = closeFiscalYear;
   service.fiscalYearDate = fiscalYearDate;
-  service.periodicBalance = periodicBalance;
   service.setOpeningBalance = setOpeningBalance;
-  service.periodFiscalYear = periodFiscalYear;
   service.getOpeningBalance = getOpeningBalance;
+  service.getPeriods = getPeriods;
+
+  service.getBalance = getBalance;
 
   /**
    * @method fiscalYearDate
@@ -38,17 +37,15 @@ function FiscalService(Api) {
   }
 
   /**
-   * @method periodBalance
+   * @method getBalance
    *
-   * @description find the balance for a specified period and fiscal year
-   * @param {object} params which contains the fiscal year id and the period number
-   * @example
-   * periodicBalance({id: 1, period_number: 0});
+   * @description
+   * Gets the balance for the fiscal year using all transactions posted against
+   * the fiscal year.
    */
-  function periodicBalance(params) {
-    const url = service.url.concat(params.id, '/balance/', params.period_number);
-
-    return service.$http.get(url)
+  function getBalance(id, params) {
+    const url = service.url.concat(id, '/balance');
+    return service.$http.get(url, { params })
       .then(service.util.unwrapHttpResponse);
   }
 
@@ -80,21 +77,28 @@ function FiscalService(Api) {
    *
    * @description closing a fiscal year
    */
-  function closing(params) {
-    const url = service.url.concat(params.id, '/closing');
+  function closeFiscalYear(id, params) {
+    const url = service.url.concat(id, '/closing');
     return service.$http.put(url, { params })
       .then(service.util.unwrapHttpResponse);
   }
 
   /**
-   * @method periodFiscalYear
+   * @method getPeriods
    *
-   * @description get all period of all fiscal Year
+   * @description
+   * Retrieves the periods for a fiscal year by the fiscal year id.
    */
-  function periodFiscalYear() {
-    const url = service.url.concat('period');
+  function getPeriods(id) {
+    const url = service.url.concat(id, '/periods');
     return service.$http.get(url)
-      .then(service.util.unwrapHttpResponse);
+      .then(service.util.unwrapHttpResponse)
+      .then(periods =>
+        periods.map(p => {
+          p.start_date = new Date(p.start_date);
+          p.end_date = new Date(p.end_date);
+          return p;
+        }));
   }
 
   return service;

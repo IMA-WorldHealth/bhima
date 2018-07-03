@@ -10,6 +10,7 @@ describe('Cashflow By Service Report', () => {
   const key = 'cashflowByService';
 
   const dataset = {
+    cashbox : 'Caisse Aux',
     date_range    : 'year',
     date_range2   : 'month',
     dateFrom      : '01/01/2017',
@@ -24,7 +25,7 @@ describe('Cashflow By Service Report', () => {
   });
 
   it('preview a new Cashflow By Service Report', () => {
-    Page.showCashflowByServiceReportPreview(dataset.date_range);
+    Page.showCashflowByServiceReportPreview(dataset.date_range, null, null, dataset.cashbox);
   });
 
   it('close the previewed report', () => {
@@ -32,7 +33,14 @@ describe('Cashflow By Service Report', () => {
   });
 
   it('save a previewed report', () => {
-    Page.saveCashflowByServiceReport(null, dataset.dateFrom, dataset.dateTo, dataset.report_name, dataset.renderer);
+    Page.saveCashflowByServiceReport(
+      null,
+      dataset.dateFrom,
+      dataset.dateTo,
+      dataset.cashbox,
+      dataset.report_name,
+      dataset.renderer
+    );
   });
 
   it('report has been saved into archive', () => {
@@ -40,6 +48,6 @@ describe('Cashflow By Service Report', () => {
   });
 
   it('print the previewed report', () => {
-    Page.printCashflowByServiceReport(dataset.date_range2);
+    Page.printCashflowByServiceReport(dataset.date_range2, null, null, dataset.cashbox);
   });
 });

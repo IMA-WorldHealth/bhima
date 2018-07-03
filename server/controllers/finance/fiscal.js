@@ -21,6 +21,9 @@ const FilterParser = require('../../lib/filter');
 const Tree = require('../../lib/Tree');
 const debug = require('debug')('FiscalYear');
 
+const INCOME_TYPE_ID = 4;
+const EXPENSE_TYPE_ID = 5;
+
 // Account Service
 const AccountService = require('./accounts');
 
@@ -33,6 +36,10 @@ exports.create = create;
 exports.detail = detail;
 exports.update = update;
 exports.remove = remove;
+exports.getPeriods = getPeriods;
+
+exports.lookupFiscalYear = lookupFiscalYear;
+
 exports.getPeriodByFiscal = getPeriodByFiscal;
 exports.lookupFiscalYearByDate = lookupFiscalYearByDate;
 exports.getFirstDateOfFirstFiscalYear = getFirstDateOfFirstFiscalYear;
@@ -41,7 +48,6 @@ exports.getDateRangeFromPeriods = getDateRangeFromPeriods;
 exports.getPeriodsFromDateRange = getPeriodsFromDateRange;
 exports.accountBanlanceByTypeId = accountBanlanceByTypeId;
 exports.getOpeningBalance = getOpeningBalance;
-
 
 /**
  * @method lookupFiscalYear
@@ -52,8 +58,6 @@ exports.getOpeningBalance = getOpeningBalance;
  *
  * @param {Number} id - the id of the sought fiscal year
  * @returns {Promise} - a promise resolving to the fiscal record
- *
- * @private
  */
 function lookupFiscalYear(id) {
   const sql = `
@@ -242,29 +246,23 @@ function remove(req, res, next) {
 }
 
 /**
- * Get /fiscal/:id/balance/:period
+ * Get /fiscal/:id/balance/:period_number
  * @param {number} id the fiscal year id
- * @param {number} period the period number [0,13]
+ * @param {number} period the period number [0,12]
  * The balance for a specified fiscal year and period with all accounts
  * the period must be given
  */
 function getBalance(req, res, next) {
   const { id } = req.params;
-  const period = req.params.period_number;
-
+  const period = req.params.period_number || 12;
   debug(`#getBalance() looking up balance for FY${id} and period ${period}.`);
 
   lookupBalance(id, period)
-    .then((rows) => {
+    .then(rows => {
       const tree = new Tree(rows);
-      let result = [];
-      try {
-        tree.walk(Tree.common.sumOnProperty('debit'), false);
-        tree.walk(Tree.common.sumOnProperty('credit'), false);
-        result = tree.toArray();
-      } catch (error) {
-        result = [];
-      }
+      tree.walk(Tree.common.sumOnProperty('debit'), false);
+      tree.walk(Tree.common.sumOnProperty('credit'), false);
+      const result = tree.toArray();
       res.status(200).json(result);
     })
     .catch(next)
@@ -395,16 +393,7 @@ function hasPreviousFiscalYear(id) {
     });
 }
 
-/**
- * @function loadOpeningBalance
- *
- * @description
- * Load the opening balance of a fiscal year from period 0 of that fiscal year.
- */
-function loadOpeningBalance(fiscalYearId) {
-  const INCOME_TYPE_ID = 4;
-  const EXPENSE_TYPE_ID = 5;
-
+function loadBalanceByPeriodNumber(fiscalYearId, periodNumber) {
   const sql = `
     SELECT a.id, a.number, a.label, a.type_id, a.label, a.parent,
       IFNULL(s.debit, 0) AS debit, IFNULL(s.credit, 0) AS credit
@@ -413,7 +402,7 @@ function loadOpeningBalance(fiscalYearId) {
       FROM period_total AS pt
       JOIN period AS p ON p.id = pt.period_id
       WHERE pt.fiscal_year_id = ?
-        AND p.number = 0
+        AND p.number = ${periodNumber}
       GROUP BY pt.account_id
     )s ON a.id = s.account_id
     WHERE a.type_id NOT IN (?, ?)
@@ -421,6 +410,16 @@ function loadOpeningBalance(fiscalYearId) {
   `;
 
   return db.exec(sql, [fiscalYearId, INCOME_TYPE_ID, EXPENSE_TYPE_ID]);
+}
+
+/**
+ * @function loadOpeningBalance
+ *
+ * @description
+ * Load the opening balance of a fiscal year from period 0 of that fiscal year.
+ */
+function loadOpeningBalance(fiscalYearId) {
+  return loadBalanceByPeriodNumber(fiscalYearId, 0);
 }
 
 /**
@@ -525,8 +524,8 @@ function closing(req, res, next) {
  * @method getPeriodByFiscal
  *
  * @description
- * This function returns all Fiscal Year's periods
- * the Fiscal Year provided.  If no record is found, it throws a NotFound error.
+ * This function returns all Fiscal Year's periods for the Fiscal Year provided.
+ * If no records are found, it will throw a NotFound error.
  *
  * @param {fiscalYearId}  - Makes it possible to select the different periods of the fiscal year
  * @returns {Promise} - a promise resolving to the periods record
@@ -534,10 +533,11 @@ function closing(req, res, next) {
  */
 function getPeriodByFiscal(fiscalYearId) {
   const sql = `
-    SELECT period.number, period.id
+    SELECT period.number, period.id, period.start_date, period.end_date, period.locked
     FROM period
-    JOIN fiscal_year ON period.fiscal_year_id = fiscal_year.id
-    WHERE period.fiscal_year_id = ? AND period.number <> 13;
+    WHERE period.fiscal_year_id = ?
+      AND period.number <> 13
+    ORDER BY period.start_date;
   `;
 
   return db.exec(sql, [fiscalYearId]);
@@ -547,8 +547,8 @@ function getPeriodByFiscal(fiscalYearId) {
  * @method lookupFiscalYearByDate
  *
  * @description
- * This function returns a single record from the fiscal year table matching
- *
+ * This function returns a single record from the fiscal year table matching the
+ * date range provided.
  */
 function lookupFiscalYearByDate(transDate) {
   const sql = `
@@ -618,6 +618,21 @@ function getDateRangeFromPeriods(periods) {
       period.id IN (?, ?)`;
 
   return db.one(sql, [periods.periodFrom, periods.periodTo]);
+}
+
+/**
+ * @function getPeriods
+ *
+ * @description
+ * HTTP interface to getting periods by fiscal year id.
+ */
+function getPeriods(req, res, next) {
+  getPeriodByFiscal(req.params.id)
+    .then(periods => {
+      res.status(200).json(periods);
+    })
+    .catch(next)
+    .done();
 }
 
 /**

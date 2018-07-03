@@ -49,8 +49,9 @@ corresponding to `.env.$NODE_ENV` will be used to configure the application.  Fo
 the default node instance, `NODE_ENV="development"`.  Please set this globally,
 if it is not set by default on your machine.
 
-Before building, edit your `.env.development` to set up your database connection
-parameters.  Their variables should be self-explanatory. Then, build the app with
+Before building, edit your `.env.development` to set up your MySQL database
+connection parameters.  Their variables should be self-explanatory. Then,
+build the app with
 ```bash
 # build the application
 NODE_ENV="development" yarn build

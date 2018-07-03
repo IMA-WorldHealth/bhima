@@ -90,7 +90,7 @@ function NavigationController($location, $rootScope, Tree, AppCache, Notify, $tr
 
     paths.forEach(key => {
       const node = unitsIndex.path[key];
-      if (nextUrl.includes(node.path)) {
+      if (nextUrl && nextUrl.includes(node.path)) {
         selectUnit(node);
       }
     });

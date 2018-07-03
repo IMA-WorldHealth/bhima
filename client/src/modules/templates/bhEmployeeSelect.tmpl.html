@@ -9,17 +9,17 @@
 
     <ng-transclude></ng-transclude>
     <ui-select 
-      name="employee_id"
-      ng-model="$ctrl.employeeId"
+      name="employee_uuid"
+      ng-model="$ctrl.employeeUuid"
       ng-required="$ctrl.required"
       on-select="$ctrl.onSelect($item, $model)">
       <ui-select-match placeholder="{{ 'FORM.SELECT.EMPLOYEE' | translate }}"><span>{{$select.selected.display_name}}</span></ui-select-match>
-      <ui-select-choices ui-select-focus-patch repeat="employee.id as employee in $ctrl.employees | filter: { 'display_name': $select.search }">
+      <ui-select-choices ui-select-focus-patch repeat="employee.uuid as employee in $ctrl.employees | filter: { 'display_name': $select.search }">
         <span ng-bind-html="employee.display_name | highlight:$select.search"></span>
       </ui-select-choices>
     </ui-select>
 
-    <div class="help-block" ng-messages="EmployeeForm.employee_id.$error" ng-show="$ctrl.validateTrigger">
+    <div class="help-block" ng-messages="EmployeeForm.employee_uuid.$error" ng-show="$ctrl.validateTrigger">
       <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
     </div>
   </div>

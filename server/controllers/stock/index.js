@@ -231,6 +231,7 @@ function normalMovement(document, params, metadata) {
   );
 
   parameters.entity_uuid = parameters.entity_uuid ? db.bid(parameters.entity_uuid) : null;
+  parameters.invoice_uuid = parameters.invoice_uuid ? db.bid(parameters.invoice_uuid) : null;
 
   parameters.lots.forEach((lot) => {
     createMovementQuery = 'INSERT INTO stock_movement SET ?';
@@ -247,6 +248,7 @@ function normalMovement(document, params, metadata) {
       flux_id : parameters.flux_id,
       description : parameters.description,
       user_id : document.user,
+      invoice_uuid : parameters.invoice_uuid,
     };
 
     // transaction - add movement
@@ -366,7 +368,6 @@ function listLotsDepot(req, res, next) {
     params.defaultPeriodEntry = params.defaultPeriod;
     delete params.defaultPeriod;
   }
-  params.user_id = req.session.user.id;
   core.getLotsDepot(null, params)
     .then((rows) => {
       res.status(200).json(rows);
@@ -383,7 +384,6 @@ function listLotsDepot(req, res, next) {
  */
 function listInventoryDepot(req, res, next) {
   const params = req.query;
-  params.user_id = req.session.user.id;
   core.getInventoryQuantityAndConsumption(params)
     .then((rows) => res.status(200).json(rows))
     .catch(next)
@@ -396,7 +396,6 @@ function listInventoryDepot(req, res, next) {
  */
 function listLotsOrigins(req, res, next) {
   const params = req.query;
-
   core.getLotsOrigins(null, params)
     .then((rows) => {
       res.status(200).json(rows);

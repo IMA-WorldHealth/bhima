@@ -11,7 +11,15 @@
     "SETTINGS" : {
       "TITLE" : "Enterprise Settings",
       "ENABLE_PRICE_LOCK_LABEL" : "Lock Price Changes for Patient Invoicing",
-      "ENABLE_PRICE_LOCK_HELP_TEXT" : "Enabling this feature will disallow users from modifying the prices of inventory items in the Patient Invoice module."
+      "ENABLE_PRICE_LOCK_HELP_TEXT" : "Enabling this feature will disallow users from modifying the prices of inventory items in the Patient Invoice module.",
+      "ENABLE_PREPAYMENTS_LABEL" : "Enable Cash Prepayments",
+      "ENABLE_PREPAYMENTS_HELP_TEXT" : "Enabling this feature allow patients to deposit funds with the institution at the cash window for future invoices.  If the patient has a creditor balance, their invoices will be automatically paid after invoicing.",
+      "ENABLE_DELETE_RECORDS_LABEL" : "Enable Record Deletion from Registries",
+      "ENABLE_DELETE_RECORDS_HELP_TEXT" : "This feature allows users to delete transactions as an alternative to reversing transactions directly from the record registries.",
+      "ENABLE_PASSWORD_VALIDATION_LABEL" : "Enforce Strict Password Validation",
+      "ENABLE_PASSWORD_VALIDATION_HELP_TEXT" : "Enabling this feature forces users to use hard-to-guess passwords.  This action is not retroactive.  Old passwords will continue to work until manually changed.",
+      "ENABLE_PREPAYMENT_INVOICE_LABEL" : "Enable to see the balance on invoice",
+      "ENABLE_PREPAYMENT_INVOICE_HELP_TEXT" : "Enabling this feature allows to see the balance and the paid amount on an invoice"
     }
   }
 }

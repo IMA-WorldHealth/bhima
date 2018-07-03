@@ -51,20 +51,21 @@ function lookup(uuid) {
   let record;
 
   const cashRecordSql = `
-    SELECT BUID(cash.uuid) as uuid, cash.project_id,
-      CONCAT_WS('.', '${CASH_KEY}', project.abbr, cash.reference) AS reference,
+    SELECT BUID(cash.uuid) as uuid, cash.project_id, dm.text AS reference,
       cash.date, BUID(cash.debtor_uuid) AS debtor_uuid, cash.currency_id, cash.amount,
       cash.description, cash.cashbox_id, cash.is_caution, cash.user_id, cash.edited
     FROM cash JOIN project ON cash.project_id = project.id
+      JOIN document_map dm ON cash.uuid = dm.uuid
     WHERE cash.uuid = ?;
   `;
 
   const cashItemsRecordSql = `
-    SELECT BUID(ci.uuid) AS uuid, ci.amount, BUID(ci.invoice_uuid) AS invoice_uuid, s.name AS serviceName,
-      CONCAT_WS('.', '${identifiers.INVOICE.key}', p.abbr, i.reference) AS reference
+    SELECT BUID(ci.uuid) AS uuid, ci.amount, BUID(ci.invoice_uuid) AS invoice_uuid,
+      s.name AS serviceName, dm.text AS reference
     FROM cash_item AS ci
       JOIN invoice AS i ON ci.invoice_uuid = i.uuid
       JOIN project AS p ON i.project_id = p.id
+      JOIN document_map dm ON i.uuid = dm.uuid
       LEFT JOIN service AS s ON i.service_id = s.id
     WHERE ci.cash_uuid = ?
     ORDER BY i.date ASC;
@@ -149,6 +150,7 @@ function find(options) {
   filters.equals('debtor_uuid');
   filters.equals('edited');
   filters.equals('is_caution');
+  filters.equals('project_id');
   filters.equals('reversed');
   filters.equals('user_id');
   filters.fullText('description');
@@ -241,6 +243,8 @@ function update(req, res, next) {
     .done();
 }
 
+const PREPAYMENT_LINK_TYPE_ID = 19;
+
 /**
  * GET /cash/:checkin/:invoiceUuid
  * Check if the invoice is paid
@@ -251,18 +255,28 @@ function update(req, res, next) {
 function checkInvoicePayment(req, res, next) {
   const bid = db.bid(req.params.invoiceUuid);
 
-  const sql = `
-    SELECT cash.reversed, cash_item.cash_uuid, cash_item.invoice_uuid FROM cash JOIN cash_item
-    WHERE cash_item.invoice_uuid = ? AND cash.reversed <> 1
-    GROUP BY cash_item.invoice_uuid;
+
+  const getInvoicePayment = `
+    SELECT DISTINCT BUID(cash_item.cash_uuid) cash_uuid, BUID(cash_item.invoice_uuid) invoice_uuid, cash.reversed
+    FROM cash JOIN cash_item ON cash.uuid = cash_item.cash_uuid
+    WHERE cash_item.invoice_uuid = ? AND cash.reversed <> 1;
   `;
 
-  db.exec(sql, [bid])
-    .then((rows) => {
-      res.status(200).json(rows);
+  const getPrepaymentLinkPayment = `
+    SELECT DISTINCT BUID(vi.voucher_uuid) voucher_uuid, BUID(vi.document_uuid) document_uuid
+    FROM voucher v JOIN voucher_item vi ON v.uuid = vi.voucher_uuid
+    WHERE vi.document_uuid = ? AND v.reversed <> 1
+      AND v.type_id = ${PREPAYMENT_LINK_TYPE_ID};
+  `;
+
+  Promise.all([
+    db.exec(getInvoicePayment, [bid]),
+    db.exec(getPrepaymentLinkPayment, [bid]),
+  ])
+    .then(([invoices, prepayments]) => {
+      res.status(200).json([...invoices, ...prepayments]);
     })
-    .catch(next)
-    .done();
+    .catch(next);
 }
 
 /**

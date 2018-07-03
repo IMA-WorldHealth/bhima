@@ -1,6 +1,75 @@
 # Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
-version: v1.7.1
-ignore: {}
+version: v1.10.2
+# ignores vulnerabilities until expiry date; change duration by modifying expiry date
+ignore:
+  'npm:deep-extend:20180409':
+    - bower-npm-resolver > requireg > rc > deep-extend:
+        reason: None given
+        expires: '2018-06-13T08:35:55.463Z'
+    - node-pre-gyp > rc > deep-extend:
+        reason: None given
+        expires: '2018-06-13T08:35:55.463Z'
+  'npm:hoek:20180212':
+    - lzma-native > node-pre-gyp > hawk > boom > hoek:
+        reason: None Given
+        expires: '2018-06-13T08:35:55.463Z'
+    - lzma-native > node-pre-gyp > hawk > sntp > hoek:
+        reason: None given
+        expires: '2018-06-13T08:35:55.463Z'
+    - lzma-native > node-pre-gyp > hawk > cryptiles > boom > hoek:
+        reason: None given
+        expires: '2018-06-13T08:35:55.463Z'
+    - lzma-native > node-pre-gyp > request > hawk > hoek:
+        reason: None given
+        expires: '2018-06-13T08:35:55.464Z'
+    - lzma-native > node-pre-gyp > request > hawk > boom > hoek:
+        reason: None given
+        expires: '2018-06-13T08:35:55.464Z'
+    - lzma-native > node-pre-gyp > request > hawk > sntp > hoek:
+        reason: None given
+        expires: '2018-06-13T08:35:55.464Z'
+    - lzma-native > node-pre-gyp > request > hawk > cryptiles > boom > hoek:
+        reason: None given
+        expires: '2018-06-13T08:35:55.464Z'
+    - node-pre-gyp > hawk > hoek:
+        reason: None given
+        expires: '2018-06-13T08:35:55.464Z'
+    - node-pre-gyp > hawk > boom > hoek:
+        reason: None given
+        expires: '2018-06-13T08:35:55.464Z'
+    - node-pre-gyp > hawk > sntp > hoek:
+        reason: None given
+        expires: '2018-06-13T08:35:55.464Z'
+    - node-pre-gyp > hawk > cryptiles > boom > hoek:
+        reason: None given
+        expires: '2018-06-13T08:35:55.464Z'
+    - node-pre-gyp > request > hawk > hoek:
+        reason: None given
+        expires: '2018-06-13T08:35:55.464Z'
+    - node-pre-gyp > request > hawk > boom > hoek:
+        reason: None given
+        expires: '2018-06-13T08:35:55.464Z'
+    - node-pre-gyp > request > hawk > sntp > hoek:
+        reason: None given
+        expires: '2018-06-13T08:35:55.464Z'
+    - node-pre-gyp > request > hawk > cryptiles > boom > hoek:
+        reason: None given
+        expires: '2018-06-13T08:35:55.464Z'
+  'npm:lodash:20180130':
+    - excel4node > lodash:
+        reason: None given
+        expires: '2018-06-13T08:35:55.464Z'
+  'npm:open:20180512':
+    - snyk > open:
+        reason: None given
+        expires: '2018-06-13T08:35:55.464Z'
+  'npm:stringstream:20180511':
+    - lzma-native > node-pre-gyp > request > stringstream:
+        reason: None given
+        expires: '2018-06-13T08:35:55.464Z'
+    - node-pre-gyp > request > stringstream:
+        reason: None given
+        expires: '2018-06-13T08:35:55.464Z'
 # patches apply the minimum changes required to fix a vulnerability
 patch:
   'npm:debug:20170905':

@@ -36,7 +36,9 @@ function StockEntryTests() {
     page.submit();
   });
 
-  it(`Should entry stock in ${DEPOT_SECONDAIRE} from an integration`, () => {
+  it(`Should entry stock in ${DEPOT_SECONDAIRE} from an integration`, function t() {
+    this.timeout(60000);
+
     // set another Depot
     page.setDepot(DEPOT_SECONDAIRE);
 
@@ -46,6 +48,8 @@ function StockEntryTests() {
     page.setDate(new Date());
 
     page.setDescription(DESCRIPTION.concat(' - Integration de stock'));
+
+    page.addRows(1);
 
     const lots = [
       { label : 'ASP-ONE', quantity : 100, expiration_date : '2020-12-31' },

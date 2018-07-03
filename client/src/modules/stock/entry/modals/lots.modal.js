@@ -11,6 +11,7 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
 
   // initialize the form instance
   vm.form = new EntryForm({
+    max_quantity : Data.stockLine.quantity,
     expires : Data.stockLine.expires,
     rows : Data.stockLine.lots,
   });
@@ -32,7 +33,7 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
   vm.onChanges = onChanges;
   vm.onDateChange = onDateChange;
 
-  vm.isCostEditable = (vm.entryType !== 'purchase' && vm.entryType !== 'transfer_reception');
+  vm.isCostEditable = (vm.entryType !== 'transfer_reception');
 
   const cols = [{
     field : 'status',
@@ -93,6 +94,7 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
   }
 
   function onChanges() {
+    vm.form.setMaxQuantity(vm.stockLine.quantity);
     vm.errors = vm.form.validate();
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.EDIT);
   }
@@ -105,7 +107,7 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
   }
 
   function cancel() {
-    Instance.dismiss();
+    Instance.close();
   }
 
   function submit(form) {
@@ -119,7 +121,11 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
     }
 
     if (vm.errors.length === 0) {
-      Instance.close({ lots : vm.form.rows, quantity : vm.form.total() });
+      Instance.close({
+        lots : vm.form.rows,
+        unit_cost : vm.stockLine.unit_cost,
+        quantity : vm.form.total(),
+      });
     }
   }
 

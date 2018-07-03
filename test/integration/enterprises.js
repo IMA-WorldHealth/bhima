@@ -92,7 +92,8 @@ describe('(/enterprises) Enterprises API', () => {
   });
 
   it('GET /enterprises?detailed=1 returns a enterprises list with all keys', () => {
-    return agent.get('/enterprises?detailed=1')
+    return agent.get('/enterprises')
+      .query({ detailed : 1 })
       .then(res => {
         helpers.api.listed(res, numEnterprises);
         expect(res.body[0]).to.have.all.keys(responseKeys);

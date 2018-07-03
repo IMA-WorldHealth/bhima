@@ -20,6 +20,8 @@ const ReportManager = require('../../../../lib/ReportManager');
 const Invoices = require('../../patientInvoice');
 const Patients = require('../../../medical/patients');
 const Exchange = require('../../exchange');
+const Debtors = require('../../debtors');
+const Projects = require('../../../admin/projects');
 
 const pdf = require('../../../../lib/renderers/pdf');
 
@@ -87,6 +89,10 @@ function report(req, res, next) {
     .then(aggregates => {
       data.aggregates = aggregates;
       data.hasMultipleProjects = aggregates.numProjects > 1;
+      return query.project_id ? Projects.findDetails(query.project_id) : {};
+    })
+    .then(project => {
+      data.project = project;
       return reportInstance.render(data);
     })
     .then(result => {
@@ -108,6 +114,7 @@ function receipt(req, res, next) {
 
   const invoiceUuid = req.params.uuid;
   const enterpriseId = req.session.enterprise.id;
+  const balanceOnInvoiceReceipt = req.session.enterprise.settings.enable_balance_on_invoice_receipt;
   const currencyId = options.currency || req.session.enterprise.currency_id;
   const invoiceResponse = {};
   invoiceResponse.lang = options.lang;
@@ -132,14 +139,16 @@ function receipt(req, res, next) {
   Invoices.lookupInvoice(invoiceUuid)
     .then(reportResult => {
       const recipientUuid = reportResult.patient_uuid;
+
       _.extend(invoiceResponse, reportResult);
 
       return Promise.all([
         Patients.lookupPatient(recipientUuid),
         Invoices.lookupInvoiceCreditNote(invoiceUuid),
+        Exchange.getExchangeRate(enterpriseId, currencyId, new Date()),
       ]);
     })
-    .spread((recipient, cNote) => {
+    .spread((recipient, cNote, exchangeResult) => {
       _.extend(invoiceResponse, { recipient, creditNote : cNote }, metadata);
 
       invoiceResponse.recipient.hasConventionCoverage = invoiceResponse.recipient.is_convention;
@@ -149,9 +158,7 @@ function receipt(req, res, next) {
         invoiceResponse.creditNoteReference = invoiceResponse.creditNote.reference;
       }
 
-      return Exchange.getExchangeRate(enterpriseId, currencyId, new Date());
-    })
-    .then(exchangeResult => {
+      invoiceResponse.balanceOnInvoiceReceipt = balanceOnInvoiceReceipt;
       invoiceResponse.receiptCurrency = currencyId;
       invoiceResponse.exchange = exchangeResult.rate;
       invoiceResponse.dateFormat = (new Moment()).format('L');
@@ -159,11 +166,27 @@ function receipt(req, res, next) {
         invoiceResponse.exchangedTotal = _.round(invoiceResponse.cost * invoiceResponse.exchange);
       }
 
-      return receiptReport.render(invoiceResponse);
+      return balanceOnInvoiceReceipt ? Debtors.invoiceBalances(invoiceResponse.debtor_uuid, [invoiceUuid]) : [];
+    })
+    .then(invoiceBalance => {
+      if (invoiceBalance.length > 0) {
+        [invoiceResponse.invoiceBalance] = invoiceBalance;
 
+        if (invoiceResponse.exchange) {
+          invoiceResponse.invoiceBalance.exchangedDebit =
+            _.round(invoiceResponse.invoiceBalance.debit * invoiceResponse.exchange);
+
+          invoiceResponse.invoiceBalance.exchangedCredit =
+            _.round(invoiceResponse.invoiceBalance.credit * invoiceResponse.exchange);
+
+          invoiceResponse.invoiceBalance.exchangedBalance =
+            _.round(invoiceResponse.invoiceBalance.balance * invoiceResponse.exchange);
+        }
+      }
+
+      return receiptReport.render(invoiceResponse);
     })
     .then(result => {
-
       res.set(result.headers).send(result.report);
     })
     .catch(next)

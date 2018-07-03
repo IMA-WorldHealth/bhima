@@ -1,15 +1,13 @@
 /**
  * Patient Invoice - Create State
+ *
  * @module controllers/finance/patientInvoice
  *
- * This module is responsible for preparing a series of MySQL commands
- * (a transaction) for creating patient invoices, the transaction will be executed by the API handler, error and results
- * will be propagated through to the client.
+ * This module is responsible for preparing a series of MySQL commands (a
+ * transaction) for creating patient invoices, the transaction will be executed
+ * by the API handler error and results will be propagated through to the
+ * client.
  *
- * @todo multiple inserts during the staging process could have performance
- * implications on smaller data sets (larger seems to be negligible), the
- * data that must be staged could be passed in through a string to be concatted
- * into a prepared statement
  */
 const db = require('../../../lib/db');
 const uuid = require('uuid/v4');
@@ -45,7 +43,7 @@ module.exports = createInvoice;
  * @todo - change the API to pass in only an array of invoicingFee and subsidy
  * ids.
  */
-function createInvoice(invoiceDetails) {
+function createInvoice(invoiceDetails, hasCreditorBalance, prepaymentDescription) {
   const transaction = db.transaction();
   const invoiceUuid = db.bid(invoiceDetails.uuid || uuid());
 
@@ -53,6 +51,7 @@ function createInvoice(invoiceDetails) {
   const subsidies = processSubsidies(invoiceUuid, invoiceDetails.subsidies);
   const items = processInvoiceItems(invoiceUuid, invoiceDetails.items);
 
+  const debtorUuid = db.bid(invoiceDetails.debtor_uuid);
   const invoice = processInvoice(invoiceUuid, invoiceDetails);
 
   // 'stage' - make all data that will be required for writing an invoice available to the database procedures
@@ -67,6 +66,13 @@ function createInvoice(invoiceDetails) {
   // write and post invoice to the posting journal
   transaction.addQuery('CALL WriteInvoice(?)', [invoiceUuid]);
   transaction.addQuery('CALL PostInvoice(?)', [invoiceUuid]);
+
+  // if there is a creditor balance, we will link the prepayments here.
+  if (hasCreditorBalance) {
+    transaction
+      .addQuery('CALL LinkPrepaymentsToInvoice(?, ?, ?)', [invoiceUuid, debtorUuid, prepaymentDescription]);
+  }
+
   return transaction;
 }
 
@@ -160,3 +166,4 @@ function processInvoiceItems(invoiceUuid, invoiceItems) {
   // prepare invoice items for insertion into database
   return _.map(items, filter);
 }
+

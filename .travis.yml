@@ -10,9 +10,12 @@ before_install:
   - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
   - sudo dpkg -i google-chrome*.deb
   - wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
-  - tar -xvf wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
+  - tar -xf wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
   - sudo mv ./wkhtmltox/bin/wkhtmltopdf  /usr/bin/wkhtmltopdf
-  - sudo mv ./wkhtmltox/bin/wkhtmltoimage  /usr/bin/wkhtmltoimage
+  - yarn global add greenkeeper-lockfile@1
+  - export GK_LOCK_YARN_OPTS="--ignore-engines"
+
+
 
 services:
   - mysql
@@ -27,10 +30,13 @@ before_script:
   - export DISPLAY=:99.0
   - ./sh/travis.sh
   - ./sh/dependencies.sh
+  - greenkeeper-lockfile-update
 
 script:
   - mkdir test/artifacts
-  - npm run test
+  - yarn test
+
+after_script: greenkeeper-lockfile-upload
 
 git:
   depth: 3

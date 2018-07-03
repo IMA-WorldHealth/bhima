@@ -235,7 +235,9 @@ function getAccountTransactions(options, openingBalance = 0) {
       // if there is data in the transaction array, use the date of the last transaction
       const lastTransaction = bundle.transactions[bundle.transactions.length - 1];
       const lastDate = (lastTransaction && lastTransaction.trans_date) || options.dateTo;
-      const lastCumSum = (lastTransaction && lastTransaction.cumsum) || (totals.balance * totals.rate);
+
+      const hasLastCumSum = !_.isUndefined(lastTransaction && lastTransaction.cumsum);
+      const lastCumSum = hasLastCumSum ? lastTransaction.cumsum : (totals.balance * totals.rate);
 
       const lastCurrencyId = (lastTransaction && lastTransaction.currency_id) || totals.currency_id;
       const shouldDisplayDebitCredit = bundle.transactions.every(txn => txn.currency_id === lastCurrencyId);

@@ -1,10 +1,7 @@
 /* global element, by  */
 
-const chai = require('chai');
-const helpers = require('../shared/helpers');
 const FU = require('../shared/FormUtils');
-
-helpers.configure(chai);
+const components = require('../shared/components');
 
 const GU = require('../shared/GridUtils.js');
 
@@ -13,6 +10,10 @@ function AccountsPage() {
   const gridId = 'account-grid';
 
   const getRow = (id) => $(`[data-row="${id}"]`);
+  const openMenu = id => {
+    const cell = $(`[data-action="${id}"]`);
+    cell.$(`[data-action="open-dropdown-menu"]`).click();
+  };
 
   page.expectGridRowsAtLeast = function expectGridRowsAtLeast(numRows) {
     GU.expectRowCountAbove(gridId, numRows);
@@ -35,7 +36,12 @@ function AccountsPage() {
   };
 
   page.openEdit = function openEdit(accountId) {
-    element(by.id(`account-edit-${accountId}`)).click();
+    // open the menu
+    openMenu(accountId);
+
+    // click the right thing
+    const menu = $(`[data-row-menu="${accountId}"`);
+    menu.$(`[data-method="edit"]`).click();
   };
 
   page.EditModal = {
@@ -45,6 +51,17 @@ function AccountsPage() {
 
   page.toggleBatchCreate = function toggleBatchCreate() {
     element(by.model('AccountEditCtrl.batchCreate')).click();
+  };
+
+  page.deleteAccount = function deleteAccount(accountId) {
+    // open the menu
+    openMenu(accountId);
+
+    // click the right thing
+    const menu = $(`[data-row-menu="${accountId}"`);
+    menu.$(`[data-method="delete"]`).click();
+
+    components.modalAction.confirm();
   };
 }
 

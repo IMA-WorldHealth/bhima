@@ -272,8 +272,6 @@ function invoices(req, res, next) {
  * do we need to look at each individual invoice?
  */
 function loadInvoices(params) {
-  // cancelled transaction type
-  const CANCELED_TRANSACTION_TYPE = 10;
 
   // get debtors of the group
   const sqlDebtors = `
@@ -314,14 +312,12 @@ function loadInvoices(params) {
     ) AS i
     JOIN project ON i.project_id = project.id
     JOIN entity_map ON i.entity_uuid = entity_map.uuid
-    WHERE i.uuid NOT IN (
-      SELECT voucher.reference_uuid FROM voucher WHERE voucher.type_id = ${CANCELED_TRANSACTION_TYPE}
-    )
     GROUP BY i.uuid
   `;
 
   // balanced or not
-  sqlInvoices += params.balanced ? ' HAVING balance = 0 ' : ' HAVING balance <> 0 ';
+  // Payment must only be made for invoices whose balances are strictly greater than Zero
+  sqlInvoices += params.balanced ? ' HAVING balance = 0 ' : ' HAVING balance > 0 ';
 
   const bid = db.bid(params.debtor_uuid);
 

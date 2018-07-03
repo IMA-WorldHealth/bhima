@@ -14,13 +14,38 @@
   <div class="modal-body" style="overflow : auto; max-height : 600px; padding: 0px;">
 
     <uib-tabset>
-      <uib-tab index="0" heading="{{ 'FORM.LABELS.SEARCH_QUERRIES' | translate}}" data-custom-filter-tab>
+      <uib-tab index="0" heading="{{ 'FORM.LABELS.SEARCH_QUERIES' | translate}}" data-custom-filter-tab>
         <div class="tab-body">
+
+          <!-- filter by project -->
+          <bh-project-select
+            project-id="$ctrl.searchQueries.project_id"
+            name="project_id"
+            on-select-callback="$ctrl.onSelectProject(project)">
+            <bh-clear on-clear="$ctrl.clear('project_id')"></bh-clear>
+          </bh-project-select>
+
           <!-- cash human readable reference  -->
           <div class="form-group">
             <label class="control-label" translate>FORM.LABELS.REFERENCE</label>
             <input type="text" class="form-control" name="reference" ng-model="$ctrl.searchQueries.reference">
           </div>
+
+          <!-- patient reference -->
+          <div class="form-group">
+            <label class="control-label" translate>
+              FORM.LABELS.REFERENCE_PATIENT
+            </label>
+            <bh-clear on-clear="$ctrl.clear('patientReference')"></bh-clear>
+            <input type="text" class="form-control" ng-model="$ctrl.searchQueries.patientReference"/>
+          </div>
+
+          <!-- debtor group -->
+          <bh-debtor-group-select
+            debtor-group-uuid = "$ctrl.searchQueries.debtor_group_uuid"
+            on-select-callback = "$ctrl.onSelectDebtor(debtorGroup)">
+			      <bh-clear on-clear="$ctrl.clear('debtor_group_uuid')"></bh-clear>
+          </bh-debtor-group-select>
 
           <!-- filter out cautions -->
           <div class="checkbox">
@@ -45,20 +70,6 @@
             <bh-clear on-clear="$ctrl.clear('user_id')"></bh-clear>
           </bh-user-select>
 
-          <bh-debtor-group-select
-            debtor-group-uuid = "$ctrl.searchQueries.debtor_group_uuid"
-            on-select-callback = "$ctrl.onSelectDebtor(debtorGroup)">
-			      <bh-clear on-clear="$ctrl.clear('debtor_group_uuid')"></bh-clear>
-          </bh-debtor-group-select>
-
-          <div class="form-group">
-            <label class="control-label" translate>
-              FORM.LABELS.REFERENCE_PATIENT
-            </label>
-            <bh-clear on-clear="$ctrl.clear('patientReference')"></bh-clear>
-            <input type="text" class="form-control" ng-model="$ctrl.searchQueries.patientReference"/>
-          </div>
-
           <bh-currency-select
             currency-id="$ctrl.searchQueries.currency_id"
             on-change="$ctrl.setCurrency(currency)"
@@ -66,21 +77,24 @@
             <bh-clear on-clear="$ctrl.clear('currency_id')"></bh-clear>
           </bh-currency-select>
 
-          <div class="radio">
-            <p class="control-label" style="margin-bottom:5px;">
-              <strong translate>CASH.REGISTRY.REVERSED_RECORDS</strong>
-            </p>
-            <label>
-              <input type="radio" name="reversed" ng-value="1" ng-model="$ctrl.searchQueries.reversed">
-              <span translate>CASH.REGISTRY.INCLUDE_ONLY_REVERSED_RECORDS</span>
-            </label>
-          </div>
-
-          <div class="radio">
-            <label>
-              <input type="radio" name="reversed" ng-value="0" ng-model="$ctrl.searchQueries.reversed">
-              <span translate>CASH.REGISTRY.EXCLUDE_REVERSED_RECORDS</span>
-            </label>
+          <div class="form-group">
+            <div class="radio">
+              <bh-clear on-clear="$ctrl.clear('reversed')"></bh-clear>
+              <p class="control-label" style="margin-bottom:5px;">
+                <strong translate>CASH.REGISTRY.REVERSED_RECORDS</strong>
+              </p>
+              <label>
+                <input type="radio" name="reversed" ng-value="1" ng-model="$ctrl.searchQueries.reversed">
+                <span translate>CASH.REGISTRY.INCLUDE_ONLY_REVERSED_RECORDS</span>
+              </label>
+            </div>
+  
+            <div class="radio">
+              <label>
+                <input type="radio" name="reversed" ng-value="0" ng-model="$ctrl.searchQueries.reversed">
+                <span translate>CASH.REGISTRY.EXCLUDE_REVERSED_RECORDS</span>
+              </label>
+            </div>
           </div>
         </div>
       </uib-tab>

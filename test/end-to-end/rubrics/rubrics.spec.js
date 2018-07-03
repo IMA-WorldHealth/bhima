@@ -13,7 +13,7 @@ describe('Rubrics Management', () => {
   const Page = new RubricPage();
 
   const rubric = {
-    label : 'Rubric Syndical',
+    label : 'RUBRIC SYNDICAL',
     abbr  : 'CoSynd',
     is_percent : 1,
     debtor_account_id : '40111002', //SUPPLIER'S ACCOUNT 1
@@ -26,7 +26,7 @@ describe('Rubrics Management', () => {
   };
 
   const updateRubric = {
-    label : 'Chef Comptable',
+    label : 'CHEF COMPTABLE',
     is_percent : 0
   };
 

@@ -1,8 +1,64 @@
-<div class="ui-grid-cell-contents">
-  <a
-    id="account-edit-{{row.entity.id}}"
-    ui-sref="accounts.edit({id:row.entity.id})">
-    <i class="fa fa-edit"></i>
-    <span translate>TABLE.COLUMNS.EDIT</span> {{row.entity.number}}
+<div class="ui-grid-cell-contents" uib-dropdown dropdown-append-to-body data-action="{{ row.entity.id }}">
+  <a href uib-dropdown-toggle>
+    <span data-action="open-dropdown-menu" translate>FORM.BUTTONS.ACTIONS</span>
+    <span class="caret"></span>
   </a>
+
+  <ul data-row-menu="{{ row.entity.id }}" class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
+    <!-- make ellipsis overflow to prevent long titles from pushing panel around -->
+    <li class="dropdown-header text-ellipsis"  style="max-width:250px;">
+      <span>{{row.entity.number}} - {{row.entity.label}}</span>
+    </li>
+
+    <li>
+      <a href data-method="edit"
+        ui-sref="accounts.edit({id : row.entity.id})">
+        <i class="fa fa-edit"></i>
+        <span translate>TABLE.COLUMNS.EDIT</span>
+      </a>
+    </li>
+
+    <li class="divider"></li>
+
+    <li>
+      <a href data-method="toggle-locked"
+        ng-click="grid.appScope.toggleLockAccount(row.entity.id)">
+
+        <span ng-if="row.entity.locked">
+          <i class="fa fa-unlock"></i>
+          <span translate>FORM.BUTTONS.UNLOCK</span>
+        </span>
+
+        <span ng-if="!row.entity.locked">
+          <i class="fa fa-lock"></i>
+          <span translate>FORM.BUTTONS.LOCK</span>
+        </span>
+      </a>
+    </li>
+
+    <li>
+      <a href data-method="toggle-hidden"
+        ng-click="grid.appScope.toggleHideAccount(row.entity.id)">
+
+        <span ng-if="row.entity.hidden">
+          <i class="fa fa-eye"></i>
+          <span translate>FORM.BUTTONS.UNHIDE</span>
+        </span>
+
+        <span ng-if="!row.entity.hidden">
+          <i class="fa fa-eye-slash"></i>
+          <span translate>FORM.BUTTONS.HIDE</span>
+        </span>
+      </a>
+    </li>
+
+    <li class="divider"></li>
+
+    <li>
+      <a href data-method="delete" ng-click="grid.appScope.remove(row.entity.id)">
+        <span class="text-danger">
+          <i class="fa fa-trash"></i> <span translate>FORM.BUTTONS.DELETE</span>
+        </span>
+      </a>
+    </li>
 </div>

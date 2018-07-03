@@ -4,9 +4,9 @@ angular.module('bhima.controllers')
 // dependencies injections
 StockExitController.$inject = [
   'DepotService', 'InventoryService', 'NotifyService', 'SessionService', 'util',
-  'bhConstants', 'ReceiptModal', 'StockFormService', 'StockService',
+  'bhConstants', 'ReceiptModal', 'StockItemService', 'StockFormService', 'StockService',
   'StockModalService', 'uiGridConstants', '$translate', 'appcache',
-  'moment', 'GridExportService',
+  'moment', 'GridExportService', 'Store',
 ];
 
 /**
@@ -14,12 +14,10 @@ StockExitController.$inject = [
  *
  * @description
  * This controller is responsible to handle stock exit module.
- *
- * @todo Implement caching data feature
  */
 function StockExitController(
-  Depots, Inventory, Notify, Session, util, bhConstants, ReceiptModal, StockForm, Stock,
-  StockModal, uiGridConstants, $translate, AppCache, moment, GridExportService
+  Depots, Inventory, Notify, Session, util, bhConstants, ReceiptModal, StockItem, StockForm, Stock,
+  StockModal, uiGridConstants, $translate, AppCache, moment, GridExportService, Store
 ) {
   const vm = this;
   const cache = new AppCache('StockCache');
@@ -37,6 +35,7 @@ function StockExitController(
   vm.maxLength = util.maxLength;
   vm.enterprise = Session.enterprise;
   vm.maxDate = new Date();
+  vm.resetEntryExitTypes = false;
 
   vm.addItems = addItems;
   vm.removeItem = removeItem;
@@ -132,7 +131,10 @@ function StockExitController(
       },
     ],
     data : vm.stockForm.store.data,
-    fastWatch : true,
+
+    // fastWatch to false is required for updating the grid correctly for
+    // inventories loaded from an invoice for patient exit
+    fastWatch : false,
     flatEntityAccess : true,
     showGridFooter : true,
     gridFooterTemplate,
@@ -160,6 +162,7 @@ function StockExitController(
     _form.$setPristine();
     _form.$setUntouched();
     vm.stockForm.store.clear();
+    vm.resetEntryExitTypes = true;
   }
 
   /**
@@ -210,6 +213,8 @@ function StockExitController(
     vm.movement.exit_type = exitType.label;
     mapExit[exitType.label].find();
     vm.movement.description = $translate.instant(mapExit[exitType.label].description);
+    vm.stockForm.store.clear();
+    vm.resetEntryExitTypes = false;
   }
 
   function setupStock() {
@@ -285,6 +290,10 @@ function StockExitController(
       .then(inventories => {
         vm.loading = false;
         vm.selectableInventories = angular.copy(inventories);
+
+        // map of inventories by inventory uuid
+        vm.mapSelectableInventories = new Store({ identifier : 'inventory_uuid', data : vm.selectableInventories });
+
         checkValidity();
       })
       .catch(Notify.handleError);
@@ -318,8 +327,38 @@ function StockExitController(
     StockModal.openFindPatient({ entity_uuid : vm.selectedEntityUuid })
       .then(patient => {
         handleSelectedEntity(patient, 'patient');
+        loadInvoiceInventories(patient);
       })
       .catch(Notify.handleError);
+  }
+
+  // load inventories from an invoice
+  function loadInvoiceInventories(patient) {
+    if (!patient || !patient.invoice) { return; }
+
+    vm.inventoryNotAvailable = [];
+    vm.stockForm.clear();
+
+    if (!patient.invoice.items.length) { return; }
+
+    patient.invoice.items.forEach((item) => {
+      const inventory = vm.mapSelectableInventories.get(item.inventory_uuid);
+
+      if (inventory) {
+        const row = vm.stockForm.addItems(1);
+
+        row.inventory = inventory;
+        row.inventory_uuid = item.inventory_uuid;
+        row.quantity = item.quantity;
+        row.lot = {};
+
+        configureItem(row);
+      } else {
+        vm.inventoryNotAvailable.push(item.text);
+      }
+    });
+
+    vm.checkValidity();
   }
 
   // find service
@@ -364,6 +403,7 @@ function StockExitController(
     vm.movement.description = null;
     vm.reference = null;
     vm.displayName = null;
+    vm.inventoryNotAvailable = [];
   }
 
   function submit(form) {
@@ -372,15 +412,20 @@ function StockExitController(
     if (!vm.movement.entity.uuid && vm.movement.entity.type !== 'loss') {
       return Notify.danger('ERRORS.ER_NO_STOCK_DESTINATION');
     }
+    vm.$loading = true;
     return mapExit[vm.movement.exit_type].submit()
-      .then(() => {
-        vm.validForSubmit = false;
+      .then(toggleLoadingIndicator)
+      .catch(Notify.handleError)
+      .finally(() => reinit(form));
+  }
 
-        // reseting the form
-        resetSelectedEntity();
-        vm.reset(form);
-      })
-      .catch(Notify.handleError);
+  function toggleLoadingIndicator() {
+    vm.$loading = !vm.$loading;
+  }
+
+  function reinit(form) {
+    vm.reset(form);
+    resetSelectedEntity();
   }
 
   // handle lot function
@@ -395,9 +440,13 @@ function StockExitController(
 
   // submit patient
   function submitPatient() {
+    const invoiceUuid = vm.movement.entity.instance.invoice && vm.movement.entity.instance.invoice ?
+      vm.movement.entity.instance.invoice.details.uuid : null;
+
     const movement = {
       depot_uuid : vm.depot.uuid,
       entity_uuid : vm.movement.entity.uuid,
+      invoice_uuid : invoiceUuid,
       date : vm.movement.date,
       description : vm.movement.description,
       is_exit : 1,

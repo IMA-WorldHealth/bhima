@@ -13,7 +13,7 @@ describe('(/holidays) The /holidays  API endpoint', function () {
 
   const holiday = {
     label           : 'Conge Maternite',
-    employee_id     : 1,
+    employee_uuid   : '75e09694-65f2-45a1-a8a2-8b025003d793',
     dateFrom        : '2017-11-01',
     dateTo          : '2017-11-29',
   };
@@ -47,8 +47,11 @@ describe('(/holidays) The /holidays  API endpoint', function () {
   });
 
   it('PUT /HOLIDAYS  should update an existing Holiday ', function () {
+    console.log('HHH');
+    console.log(holiday.id);
+
     return agent.put('/holidays/'.concat(holiday.id))
-      .send({ label : 'Holiday Updated' })
+      .send({ label : 'Holiday Updated', employee_uuid   : '75e09694-65f2-45a1-a8a2-8b025003d793' })
       .then(function (res) {
         expect(res).to.have.status(200);
         expect(res.body.label).to.equal('Holiday Updated');

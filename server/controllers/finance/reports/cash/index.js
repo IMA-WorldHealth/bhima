@@ -26,6 +26,7 @@ const Exchange = require('../../exchange');
 const Users = require('../../../admin/users');
 const Patients = require('../../../medical/patients');
 const Enterprises = require('../../../admin/enterprises');
+const Projects = require('../../../admin/projects');
 
 const RECEIPT_TEMPLATE = './server/controllers/finance/reports/cash/receipt.handlebars';
 const POS_RECEIPT_TEMPLATE = './server/controllers/finance/reports/cash/receipt.pos.handlebars';
@@ -209,6 +210,10 @@ function report(req, res, next) {
     })
     .then(amounts => {
       data.amounts = amounts;
+      return query.project_id ? Projects.findDetails(query.project_id) : {};
+    })
+    .then(project => {
+      data.project = project;
       return reportInstance.render(data);
     })
     .then(result => {

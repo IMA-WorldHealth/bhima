@@ -1,7 +1,7 @@
 angular.module('bhima.services')
-.service('PatientInvoiceItemService', PatientInvoiceItemService);
+  .service('PatientInvoiceItemService', PatientInvoiceItemService);
 
-PatientInvoiceItemService.$inject = [ 'uuid' ];
+PatientInvoiceItemService.$inject = ['uuid'];
 
 /**
  * @class PatientInvoiceItemService
@@ -55,18 +55,20 @@ function PatientInvoiceItemService(uuid) {
    * we are expecting to create potentially many items in an invoice.
    */
   PatientInvoiceItem.prototype.validate = function validate() {
-    var item = this;
+    const item = this;
 
     // ensure the numbers are valid in the invoice
-    var hasValidNumbers =
+    const hasValidNumbers =
       angular.isNumber(item.quantity) &&
       angular.isNumber(item.transaction_price) &&
       item.quantity > 0 &&
       item.transaction_price >= 0;
 
     // ensure the item has a sales account
-    var hasSalesAccount = angular.isDefined(item._salesAccount) &&
-      item._salesAccount !== null;
+    const hasSalesAccount =
+      angular.isDefined(item._salesAccount) &&
+      item._salesAccount !== null &&
+      item._salesAccount !== 0;
 
     item._hasSalesAccount = hasSalesAccount;
 
@@ -118,7 +120,10 @@ function PatientInvoiceItemService(uuid) {
 
       // special binding to make sure inventory items have a sales_account
       this._salesAccount = inventoryItem.sales_account;
-    } catch (e) {}
+    } catch (e) {
+      /* eslint no-console: off */
+      console.error(e);
+    }
 
     // reset the validation flags.
     this.validate();
@@ -139,7 +144,7 @@ function PatientInvoiceItemService(uuid) {
 
     // if the price list is a percentage of the cost, calculate that percentage and
     // apply to the transaction_price
-    if (priceListItem.is_percentage ) {
+    if (priceListItem.is_percentage) {
       this.transaction_price += (this.transaction_price / 100) * priceListItem.value;
 
     // otherwise, we are setting a new price manually. Simply replace the

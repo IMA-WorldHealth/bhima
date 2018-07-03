@@ -27,33 +27,57 @@ function PurchaseOrderController(Purchases, PurchaseOrder, Notify, Session, util
     vm.order.setSupplier(supplier);
   }
 
+  const cols = [{
+    field : 'status',
+    width : 25,
+    displayName : '',
+    cellTemplate : 'modules/purchases/create/templates/status.tmpl.html',
+  }, {
+    field : 'code',
+    width : 150,
+    displayName : 'TABLE.COLUMNS.CODE',
+    headerCellFilter : 'translate',
+    cellTemplate : 'modules/purchases/create/templates/code.tmpl.html',
+  }, {
+    field : 'description',
+    displayName : 'TABLE.COLUMNS.DESCRIPTION',
+    headerCellFilter : 'translate',
+  }, {
+    field : 'unit',
+    width : 100,
+    displayName : 'TABLE.COLUMNS.UNIT',
+    headerCellFilter : 'translate',
+  }, {
+    field : 'quantity',
+    width : 100,
+    displayName : 'TABLE.COLUMNS.QUANTITY',
+    headerCellFilter : 'translate',
+    cellTemplate : 'modules/purchases/create/templates/quantity.tmpl.html',
+  }, {
+    field : 'unit_price',
+    width : 100,
+    displayName : 'TABLE.COLUMNS.PURCHASE_PRICE',
+    headerCellFilter : 'translate',
+    cellTemplate : 'modules/purchases/create/templates/price.tmpl.html',
+  }, {
+    field : 'amount',
+    width : 100,
+    displayName : 'TABLE.COLUMNS.AMOUNT',
+    headerCellFilter : 'translate',
+    cellTemplate : 'modules/purchases/create/templates/amount.tmpl.html',
+  }, {
+    field : 'actions',
+    width : 25,
+    cellTemplate : 'modules/purchases/create/templates/actions.tmpl.html',
+  }];
+
+
   // grid options for the purchase order grid
   const gridOptions = {
     appScopeProvider : vm,
     enableSorting : false,
     enableColumnMenus : false,
-    columnDefs : [
-      {
-        field : 'status', width : 25, displayName : '', cellTemplate : 'modules/purchases/create/templates/status.tmpl.html',
-      },
-      {
-        field : 'code', width : 150, displayName : 'TABLE.COLUMNS.CODE', headerCellFilter : 'translate', cellTemplate : 'modules/purchases/create/templates/code.tmpl.html',
-      },
-      { field : 'description', displayName : 'TABLE.COLUMNS.DESCRIPTION', headerCellFilter : 'translate' },
-      {
-        field : 'unit', width : 100, displayName : 'TABLE.COLUMNS.UNIT', headerCellFilter : 'translate',
-      },
-      {
-        field : 'quantity', width : 100, displayName : 'TABLE.COLUMNS.QUANTITY', headerCellFilter : 'translate', cellTemplate : 'modules/purchases/create/templates/quantity.tmpl.html',
-      },
-      {
-        field : 'unit_price', width : 100, displayName : 'TABLE.COLUMNS.PURCHASE_PRICE', headerCellFilter : 'translate', cellTemplate : 'modules/purchases/create/templates/price.tmpl.html',
-      },
-      {
-        field : 'amount', width : 100, displayName : 'TABLE.COLUMNS.AMOUNT', headerCellFilter : 'translate', cellTemplate : 'modules/purchases/create/templates/amount.tmpl.html',
-      },
-      { field : 'actions', width : 25, cellTemplate : 'modules/purchases/create/templates/actions.tmpl.html' },
-    ],
+    columnDefs : cols,
     onRegisterApi,
     data : vm.order.store.data,
   };

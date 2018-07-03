@@ -1,0 +1,59 @@
+<div class="modal-header">
+  <ol class="headercrumb">
+    <li class="static" translate>TREE.FINANCE</li>
+    <li class="title" translate>VOUCHERS.GLOBAL.PAYMENT_EMPLOYEES</li>
+  </ol>
+</div>
+
+<form name="ToolForm" bh-submit="ToolCtrl.import(ToolForm)" novalidate>
+  <div class="modal-body">
+    <!-- cashbox -->
+    <bh-cashbox-select
+      cashbox-id = "ToolCtrl.searchQueries.cashbox_id"
+      name = "cashbox_id"
+      on-select-callback = "ToolCtrl.onSelectCashbox(cashbox)"
+      restrict-to-user = "false">
+    </bh-cashbox-select>
+
+    <bh-payroll-period-select
+      id="payroll_configuration_id"
+      payroll-configuration-id="ToolCtrl.searchQueries.payroll_configuration_id"
+      name="PayrollPeriodForm"
+      on-select-callback="ToolCtrl.onSelectPayrollPeriod(payrollConfig)"
+      required="true"
+      validation-trigger="ToolForm.$submitted">
+    </bh-payroll-period-select>
+
+    <!-- select Employees Paiements  -->
+    <div ng-show="ToolCtrl.gridDisplay">
+      <div
+        id="paymentGrid"
+        style="height: 40vh; margin-bottom: 20px;"
+        ui-grid="ToolCtrl.gridOptions"
+        ui-grid-filtering
+        ui-grid-auto-resize
+        ui-grid-selection>
+      </div>
+    </div>
+
+    <div ng-show="ToolCtrl.gridDisplay" class="text-right">
+      <span translate>FORM.LABELS.TOTAL</span>: <strong class="text-danger">{{ ToolCtrl.totalNetSalary || 0 | currency: ToolCtrl.currencyId }}</strong><br>
+      <span translate>FORM.LABELS.TOTAL_SELECTED_SALARIES</span>: <strong class="text-success">{{ ToolCtrl.totalSelected || 0 | currency: ToolCtrl.currencyId }}</strong>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-default"
+      ng-click="ToolCtrl.close()"
+      data-method="close"
+      translate>
+      FORM.BUTTONS.CANCEL
+    </button>
+
+    <bh-loading-button loading-state="ToolForm.$loading" disabled="!ToolCtrl.hasSelectedRows">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

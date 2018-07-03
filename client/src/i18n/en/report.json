@@ -21,7 +21,10 @@
       "EXPLOITATION_RESULT": "Exploitation Result"
     },
     "CASH_EXPENSE": "Expenses",
-    "CASHFLOW_BY_SERVICE": {"TITLE":"Cash flow By Service", "DESCRIPTION":"This report shows the changes in the accounts and revenues of the balance sheet on cash by Services"},
+    "CASHFLOW_BY_SERVICE": {
+      "TITLE":"Cash flow By Service", 
+      "DESCRIPTION":"This report shows the changes in the accounts and revenues of the balance sheet on cash by Services"
+    },
     "CASHFLOW" : {
       "TITLE":"Cash Flow Physical Report",
       "DESCRIPTION":"This report shows changes in the accounts and revenues of the balance sheet on cash",
@@ -37,8 +40,8 @@
     "CLIENTS" : "Clients Report",
     "CLIENTS_REPORT": {
       "TITLE": "Clients Report",
-      "ADD_IGNORED_CLIENTS" : "Skip Certain Clients",
-      "HIDE_IGNORED_CLIENTS" : "Skip Certain Clients",
+      "ADD_IGNORED_CLIENTS" : "Add Ignored Clients",
+      "HIDE_IGNORED_CLIENTS" : "Hide Ignored Clients",
       "CURRENT_MVT": "Current Movement",
       "PREVIOUS_MVT": "From Beginning To :",
       "DESCRIPTION": "This report displays all the debtor groups, their account balances at the beginning of the fiscal year, the current balances, and their ending balances."
@@ -47,9 +50,14 @@
     "CONFIGURATION": "Report Configuration",
     "DELETE": "Delete Report",
     "DOWNLOAD": "Download",
+    "EMPLOYEE_STANDING" : {
+      "DESCRIPTION": "This report shows the financial situation of an employee",
+      "REPORT": "Employee Standing Report",
+      "TITLE": "Employee Standing Report"
+    },    
     "EXPENSE_REPORT": "Expenses Report",
     "GENERATED": "Generated Report",
-    "INCOME_EXPENSE": "Income Expense Report",
+    "INCOME_EXPENSE": "Profit And Loss Statement",
     "INCOME_REPORT": "Incomes Report",
     "MONTHLY_BALANCE": "Monthly Balance",
     "OPEN_DEBTORS": {
@@ -70,6 +78,10 @@
       "TOTAL_DEBT": "Total Debt"
     },
     "OVER_NINETY_DAYS": "Over 90 Days",
+    "PATIENT_STANDING": {
+      "DESCRIPTION": "This report shows the financial situation of a patient",
+      "TITLE": "Patient Standing Report"
+    },
     "PREVIOUS_MONTHS": "Previous Months",
     "PERIOD_START": "Start",
     "PERIOD_STOP": "Stop",
@@ -138,6 +150,7 @@
       "SAVE_AS": "Save As",
       "DOCUMENT_PREVIEW": "Document Preview",
       "PDF": "PDF",
+      "HTML": "HTML",
       "CSV": "CSV",
       "SAVE_SUCCESS": "Report successfully saved",
       "BACK": "Back to the previous page",
@@ -147,6 +160,8 @@
       "EMAIL_HELP_TXT" : "The email above will receive the report as an attachment.  The server must have an internet connection for the email to be successfully delivered."
     },
     "OPTIONS" : {
+      "HIDE_TITLE_ACCOUNT": "Hide title accounts",
+      "HIDE_TITLE_ACCOUNT_HELP": "If yes, the report will not contain title accounts",
       "MORE_OPTIONS" : "More Options",
       "USE_ORIGINAL_TRANSACTION_CURRENCY" : "Display original transaction currency?",
       "USE_ORIGINAL_TRANSACTION_CURRENCY_HELP" : "If yes, the report will show the recorded currency of the transaction instead of the value in the enterprise's currency.",
@@ -156,6 +171,7 @@
       "SEPARATE_DEBITS_AND_CREDITS_HELP" : "This option breaks out columns from a single positive or negative balance into two columns representing debits and credits.",
       "REMOVE_ZERO_ROWS" : "Hide zero rows?",
       "REMOVE_ZERO_ROWS_HELP" : "This option will remove rows that do not have any data in them.  Produces a more compact output."
-    }
+    },
+    "CLIENT_DEBTOR_ACCOUNT_BALANCE_REPORT" : "Annual Clients Report"
   }
 }

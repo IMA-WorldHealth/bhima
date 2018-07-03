@@ -33,6 +33,17 @@
     </div>
 
     <div class="modal-body">
+      <bh-employee-config-select
+        id="config_employee_id"
+        config-employee-id="PayrollConfigModalCtrl.payroll.config_employee_id"
+        name="EmployeeConfigForm"
+        on-select-callback="PayrollConfigModalCtrl.onSelectEmployeeConfig(employeeConfig)"
+        required="true"
+        validation-trigger="PayrollModalForm.$submitted">
+      </bh-employee-config-select>
+    </div>
+
+    <div class="modal-body">
       <bh-rubric-config-select
         id="config_rubric_id"
         config-rubric-id="PayrollConfigModalCtrl.payroll.config_rubric_id"
@@ -71,7 +82,7 @@
         config-ipr-id="PayrollConfigModalCtrl.payroll.config_ipr_id"
         name="IprConfigForm"
         on-select-callback="PayrollConfigModalCtrl.onSelectIprConfig(iprConfig)"
-        required="true"
+        required="false"
         validation-trigger="PayrollModalForm.$submitted">
           <bh-clear on-clear="PayrollConfigModalCtrl.clear('config_ipr_id')"></bh-clear>
       </bh-ipr-config-select>

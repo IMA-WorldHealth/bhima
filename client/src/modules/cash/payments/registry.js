@@ -1,37 +1,34 @@
 angular.module('bhima.controllers')
   .controller('CashPaymentRegistryController', CashPaymentRegistryController);
 
-// dependencies injection
 CashPaymentRegistryController.$inject = [
   'CashService', 'bhConstants', 'NotifyService', 'SessionService', 'uiGridConstants',
   'ModalService', 'GridSortingService', '$state', 'FilterService',
-  'GridColumnService', 'GridStateService', 'ModalService', 'util',
+  'GridColumnService', 'GridStateService', 'util', 'ReceiptModal',
 ];
 
 /**
  * Cash Payment Registry Controller
  *
  * This controller is responsible to display all cash payment made and provides
- * print and search utilities for the registry.`j
+ * print and search utilities for the registry.
  */
 function CashPaymentRegistryController(
   Cash, bhConstants, Notify, Session, uiGridConstants, Modal, Sorting, $state,
-  Filters, Columns, GridState, Modals, util
+  Filters, Columns, GridState, util, Receipts
 ) {
-  var vm = this;
+  const vm = this;
 
   // background color for make the difference between the valid and canceled payment
-  var reversedBackgroundColor = { 'background-color' : '#ffb3b3' };
-  var regularBackgroundColor = { 'background-color' : 'none' };
-  var cacheKey = 'payment-grid';
+  const cacheKey = 'payment-grid';
 
-  var gridColumns;
-  var columnDefs;
-  var state;
-  var filter = new Filters();
+  const filter = new Filters();
 
   vm.filter = filter;
   vm.format = util.formatDate;
+  vm.Receipts = Receipts;
+  vm.toggleInlineFilter = toggleInlineFilter;
+
   // global variables
   vm.enterprise = Session.enterprise;
   vm.bhConstants = bhConstants;
@@ -45,7 +42,9 @@ function CashPaymentRegistryController(
   vm.deleteCashPayment = deleteCashPaymentWithConfirmation;
   vm.download = Cash.download;
 
-  columnDefs = [{
+  vm.allowsRecordDeletion = allowsRecordDeletion;
+
+  const columnDefs = [{
     field : 'reference',
     displayName : 'TABLE.COLUMNS.REFERENCE',
     headerCellFilter : 'translate',
@@ -102,11 +101,20 @@ function CashPaymentRegistryController(
     flatEntityAccess  : true,
     fastWatch         : true,
     columnDefs,
-    rowTemplate       : '/modules/cash/payments/templates/grid.canceled.tmpl.html',
+    rowTemplate       : '/modules/templates/row.reversed.html',
   };
 
-  gridColumns = new Columns(vm.gridOptions, cacheKey);
-  state = new GridState(vm.gridOptions, cacheKey);
+  vm.gridOptions.onRegisterApi = function onRegisterApi(gridApi) {
+    vm.gridApi = gridApi;
+  };
+
+  function toggleInlineFilter() {
+    vm.gridOptions.enableFiltering = !vm.gridOptions.enableFiltering;
+    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+  }
+
+  const gridColumns = new Columns(vm.gridOptions, cacheKey);
+  const state = new GridState(vm.gridOptions, cacheKey);
 
   // saves the grid's current configuration
   vm.saveGridState = state.saveGridState;
@@ -153,14 +161,8 @@ function CashPaymentRegistryController(
     toggleLoadingIndicator();
 
     request
-      .then((rows) => {
-        rows.forEach((row) => {
-          const hasCreditNote = row.reversed;
-          row._backgroundColor = hasCreditNote ? reversedBackgroundColor : regularBackgroundColor;
-          row._hasCreditNote = hasCreditNote;
-        });
-
-        vm.gridOptions.data = rows;
+      .then(payments => {
+        vm.gridOptions.data = payments;
       })
       .catch(handleError)
       .finally(toggleLoadingIndicator);
@@ -172,7 +174,7 @@ function CashPaymentRegistryController(
       .then((success) => {
         if (!success) { return; }
         Notify.success('FORM.INFO.TRANSACTION_REVER_SUCCESS');
-        load(Cash.Filters.formatHTTP(true));
+        load(Cash.filters.formatHTTP(true));
       });
   }
 
@@ -213,10 +215,14 @@ function CashPaymentRegistryController(
   // this function deletes the cash payment and associated transactions from
   // the database
   function deleteCashPaymentWithConfirmation(entity) {
-    Modals.confirm('FORM.DIALOGS.CONFIRM_DELETE')
+    Modal.confirm('FORM.DIALOGS.CONFIRM_DELETE')
       .then((isOk) => {
         if (isOk) { remove(entity); }
       });
+  }
+
+  function allowsRecordDeletion() {
+    return Session.enterprise.settings.enable_delete_records;
   }
 
   startup();

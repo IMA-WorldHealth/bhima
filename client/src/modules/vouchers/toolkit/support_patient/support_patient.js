@@ -8,9 +8,9 @@ SupportPatientKitController.$inject = [
 
 // Import transaction rows for a Support Patient
 function SupportPatientKitController(Instance, Notify, Session, bhConstants, Debtors, $translate, ToolKits) {
-  var vm = this;
+  const vm = this;
 
-  var MAX_DECIMAL_PRECISION = bhConstants.precision.MAX_DECIMAL_PRECISION;
+  const MAX_DECIMAL_PRECISION = bhConstants.precision.MAX_DECIMAL_PRECISION;
 
   vm.enterprise = Session.enterprise;
 
@@ -18,6 +18,7 @@ function SupportPatientKitController(Instance, Notify, Session, bhConstants, Deb
   vm.import = submit;
   vm.loadInvoice = loadInvoice;
   vm.onSelectAccount = onSelectAccount;
+  vm.onSelectEmployee = onSelectEmployee;
 
   // helper aggregation function
   function aggregate(sum, row) {
@@ -30,9 +31,9 @@ function SupportPatientKitController(Instance, Notify, Session, bhConstants, Deb
     vm.debtorUuid = debtorUuid;
 
     Debtors.invoices(debtorUuid, { balanced : 0 })
-      .then(function (invoices) {
+      .then((invoices) => {
         // total amount
-        var totals = invoices.reduce(aggregate, 0);
+        const totals = invoices.reduce(aggregate, 0);
 
         vm.gridOptions.data = invoices || [];
 
@@ -51,13 +52,17 @@ function SupportPatientKitController(Instance, Notify, Session, bhConstants, Deb
     vm.account_id = account.id;
   }
 
+  function onSelectEmployee(employee) {
+    vm.employee = employee;
+  }
+
   // generate transaction rows
   function generateTransactionRows(result) {
-    var rows = [];
-    var supportAccountId = result.account_id;
-    var supportedAccountId = result.patient.account_id;
-    var invoices = result.invoices;
-    var supportRow = ToolKits.getBlankVoucherRow();
+    const rows = [];
+    const supportAccountId = result.account_id;
+    const supportedAccountId = result.patient.account_id;
+    const invoices = result.invoices;
+    const supportRow = ToolKits.getBlankVoucherRow();
 
     rows.typeId = bhConstants.transactionType.SUPPORT_INCOME;
 
@@ -65,11 +70,15 @@ function SupportPatientKitController(Instance, Notify, Session, bhConstants, Deb
     supportRow.account_id = supportAccountId;
     supportRow.debit = vm.totalSelected;
     supportRow.credit = 0;
+
+    supportRow.entity = vm.selectEmployee && vm.employee
+      ? { label : vm.employee.display_name, type : 'C', uuid : vm.employee.creditor_uuid } : null;
+
     rows.push(supportRow);
 
     // then loop through each selected item and credit it with the Supported account
-    invoices.forEach(function (invoice) {
-      var row = ToolKits.getBlankVoucherRow();
+    invoices.forEach((invoice) => {
+      const row = ToolKits.getBlankVoucherRow();
 
       row.account_id = supportedAccountId;
       row.reference_uuid = invoice.uuid;
@@ -77,7 +86,7 @@ function SupportPatientKitController(Instance, Notify, Session, bhConstants, Deb
       row.credit = invoice.balance;
 
       // this is needed for a nice display in the grid
-      row.entity = { label : result.patient.text, type: 'D', uuid : result.patient.debtor_uuid };
+      row.entity = { label : result.patient.text, type : 'D', uuid : result.patient.debtor_uuid };
 
       // @FIXME(sfount) this was included in legacy format invoice code - it should either be derived from
       // the database or omitted
@@ -99,7 +108,7 @@ function SupportPatientKitController(Instance, Notify, Session, bhConstants, Deb
     fastWatch : true,
     flatEntityAccess : true,
     enableSelectionBatchEvent : false,
-    onRegisterApi : onRegisterApi,
+    onRegisterApi,
   };
 
   vm.gridOptions.columnDefs = [{
@@ -129,8 +138,8 @@ function SupportPatientKitController(Instance, Notify, Session, bhConstants, Deb
 
   // called whenever the selection changes in the ui-grid
   function rowSelectionCallback() {
-    var selected = vm.gridApi.selection.getSelectedRows();
-    var aggregation = selected.reduce(aggregate, 0);
+    const selected = vm.gridApi.selection.getSelectedRows();
+    const aggregation = selected.reduce(aggregate, 0);
 
     vm.hasSelectedRows = selected.length > 0;
     vm.totalSelected = Number.parseFloat(aggregation.toFixed(MAX_DECIMAL_PRECISION));
@@ -142,17 +151,17 @@ function SupportPatientKitController(Instance, Notify, Session, bhConstants, Deb
   function submit(form) {
     if (form.$invalid) { return; }
 
-    var selected = vm.gridApi.selection.getSelectedRows();
+    const selected = vm.gridApi.selection.getSelectedRows();
 
-    var bundle = generateTransactionRows({
+    const bundle = generateTransactionRows({
       account_id : vm.account_id,
       patient    : vm.patient,
       invoices   : selected,
     });
 
-    var invoiceRefs = selected.map(function (i) { return i.reference; }).join(', ');
+    const invoiceRefs = selected.map((i) => { return i.reference; }).join(', ');
 
-    var msg = $translate.instant('VOUCHERS.GLOBAL.SUPPORT_PAYMENT_DESCRIPTION', {
+    const msg = $translate.instant('VOUCHERS.GLOBAL.SUPPORT_PAYMENT_DESCRIPTION', {
       patientName : vm.patient.display_name,
       patientReference : vm.patient.reference,
       invoiceReferences : invoiceRefs,

@@ -12,27 +12,29 @@ function BalanceReportConfigController($sce, Notify, SavedReports, AppCache, rep
 
   vm.previewGenerated = false;
   vm.reportDetails = {};
-  vm.timestamp = new Date();
+
+  vm.onSelectFiscalYear = (fiscalYear) => {
+    vm.reportDetails.fiscal_id = fiscalYear.id;
+  };
 
   vm.onSelectPeriod = (period) => {
     vm.reportDetails.period_id = period.id;
-  };
-
-  vm.onDateChange = date => {
-    vm.date = date;
   };
 
   vm.clearPreview = function clearPreview() {
     vm.previewGenerated = false;
     vm.previewResult = null;
   };
-
   vm.onChangeLayout = (bool) => {
     vm.reportDetails.useSeparateDebitsAndCredits = bool;
   };
 
   vm.onChangeEmptyRows = (bool) => {
     vm.reportDetails.shouldPruneEmptyRows = bool;
+  };
+
+  vm.onChangeHideTitleAccounts = (bool) => {
+    vm.reportDetails.shouldHideTitleAccounts = bool;
   };
 
   vm.preview = function preview(form) {

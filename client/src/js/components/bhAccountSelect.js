@@ -8,7 +8,6 @@ angular.module('bhima.components')
       onSelectCallback : '&',
       disable          : '<?',
       required         : '<?',
-      classe           : '@?',
       accountTypeId :  '<?',
       label            : '@?',
       name             : '@?',
@@ -25,9 +24,9 @@ AccountSelectController.$inject = [
  * Account selection component
  */
 function AccountSelectController(Accounts, AppCache, $timeout, bhConstants, $scope) {
-  var $ctrl = this;
-  var hasCachedAccounts = false;
-  var cache = new AppCache('bhAccountSelect');
+  const $ctrl = this;
+  const hasCachedAccounts = false;
+  const cache = new AppCache('bhAccountSelect');
 
   // fired at the beginning of the account select
   $ctrl.$onInit = function $onInit() {
@@ -38,11 +37,9 @@ function AccountSelectController(Accounts, AppCache, $timeout, bhConstants, $sco
     // translated label for the form input
     $ctrl.label = $ctrl.label || 'FORM.LABELS.ACCOUNT';
 
-    // fired when an account has been selected
-    $ctrl.onSelectCallback = $ctrl.onSelectCallback || angular.noop;
-
     // used to disable title accounts in the select list
-    $ctrl.disableTitleAccounts = $ctrl.disableTitleAccounts || true;
+    $ctrl.disableTitleAccounts = angular.isDefined($ctrl.disableTitleAccounts) ?
+      $ctrl.disableTitleAccounts : true;
 
     // default for form name
     $ctrl.name = $ctrl.name || 'AccountForm';
@@ -54,7 +51,8 @@ function AccountSelectController(Accounts, AppCache, $timeout, bhConstants, $sco
       $ctrl.required = true;
     }
 
-    $ctrl.excludeTitleAccounts = $ctrl.excludeTitleAccounts || false;
+    $ctrl.excludeTitleAccounts = angular.isDefined($ctrl.excludeTitleAccounts) ?
+      $ctrl.excludeTitleAccounts : true;
 
     // load accounts
     loadAccounts();
@@ -88,20 +86,22 @@ function AccountSelectController(Accounts, AppCache, $timeout, bhConstants, $sco
 
   // loads accounts from the server
   function loadHttpAccounts() {
-    const detail = $ctrl.accountTypeId || $ctrl.classe;
-    const detailedRequest = detail ? 1 : 0;
-    const params = { detailed : detailedRequest };
+    const detail = $ctrl.accountTypeId;
+    const detailed = detail ? 1 : 0;
+    const params = { detailed };
 
-    if ($ctrl.classe) {
-      params.classe = $ctrl.classe.split(',').map(num => { return parseInt(num, 10); });
-    }
     if ($ctrl.accountTypeId) {
-      params.type_id = $ctrl.accountTypeId.split(',').map(num => { return parseInt(num, 10); });
+      params.type_id = $ctrl.accountTypeId
+        .split(',')
+        .map(num => parseInt(num, 10));
     }
+
+    // NOTE: this will hide all "hidden" accounts
+    params.hidden = 0;
 
     // load accounts
     Accounts.read(null, params)
-      .then(function (elements) {
+      .then(elements => {
         // bind the accounts to the controller
         let accounts = Accounts.order(elements);
 
@@ -120,11 +120,13 @@ function AccountSelectController(Accounts, AppCache, $timeout, bhConstants, $sco
   }
 
   // write the accounts to localstorage
+  /*
   function cacheAccounts(accounts) {
     hasCachedAccounts = true;
     cache.accounts = accounts;
   }
 
+  */
   // fires the onSelectCallback bound to the component boundary
   $ctrl.onSelect = function onSelect($item) {
     $ctrl.onSelectCallback({ account : $item });
@@ -133,9 +135,11 @@ function AccountSelectController(Accounts, AppCache, $timeout, bhConstants, $sco
     $scope[$ctrl.name].$bhValue = $item.id;
   };
 
+  /*
   // removes the accounts from localstorage
   function removeCachedAccounts() {
     hasCachedAccounts = false;
     delete cache.accounts;
   }
+  */
 }

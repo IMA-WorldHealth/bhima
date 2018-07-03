@@ -5,6 +5,7 @@ VoucherController.$inject = [
   'VoucherService', 'NotifyService', 'uiGridConstants', 'ReceiptModal',
   'TransactionTypeService', 'bhConstants', 'GridSortingService',
   'GridColumnService', 'GridStateService', '$state', 'ModalService', 'util',
+  'SessionService',
 ];
 
 /**
@@ -17,7 +18,7 @@ VoucherController.$inject = [
  */
 function VoucherController(
   Vouchers, Notify, uiGridConstants, Receipts, TransactionTypes, bhConstants,
-  Sorting, Columns, GridState, $state, Modals, util
+  Sorting, Columns, GridState, $state, Modals, util, Session
 ) {
   const vm = this;
 
@@ -35,9 +36,14 @@ function VoucherController(
   vm.clearGridState = clearGridState;
   vm.download = Vouchers.download;
   vm.deleteVoucher = deleteVoucherWithConfirmation;
+  vm.reverseVoucher = reverseVoucher;
+  vm.showReceipt = showReceipt;
+  vm.toggleInlineFilter = toggleInlineFilter;
 
   // date format function
   vm.format = util.formatDate;
+
+  vm.allowsRecordDeletion = allowsRecordDeletion;
 
   vm.loading = false;
 
@@ -77,6 +83,10 @@ function VoucherController(
     type : 'number',
     cellTemplate : 'modules/vouchers/templates/amount.grid.tmpl.html',
   }, {
+    field : 'project_name',
+    displayName : 'TABLE.COLUMNS.PROJECT',
+    headerCellFilter : 'translate',
+  }, {
     field : 'display_name',
     displayName : 'TABLE.COLUMNS.RESPONSIBLE',
     headerCellFilter : 'translate',
@@ -96,8 +106,17 @@ function VoucherController(
     enableSorting : true,
     flatEntityAccess : true,
     fastWatch : true,
+    rowTemplate : '/modules/templates/row.reversed.html',
     columnDefs,
   };
+  vm.gridOptions.onRegisterApi = function onRegisterApi(gridApi) {
+    vm.gridApi = gridApi;
+  };
+
+  function toggleInlineFilter() {
+    vm.gridOptions.enableFiltering = !vm.gridOptions.enableFiltering;
+    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+  }
 
   const gridColumns = new Columns(vm.gridOptions, cacheKey);
   const state = new GridState(vm.gridOptions, cacheKey);
@@ -108,6 +127,7 @@ function VoucherController(
 
     Vouchers.openSearchModal(filtersSnapshot)
       .then(changes => {
+
         Vouchers.filters.replaceFilters(changes);
         Vouchers.cacheFilters();
         vm.latestViewFilters = Vouchers.filters.formatView();
@@ -130,17 +150,27 @@ function VoucherController(
           const isNull = (voucher.type_id === null);
 
           if (!isNull) {
-            // determine the transaction_type for this voucher
             const transactionType = transactionTypeMap[voucher.type_id];
-            voucher._isIncome = (transactionType.type === INCOME);
-            voucher._isExpense = (transactionType.type === EXPENSE);
-            voucher._isOther = !(voucher._isIncome || voucher._isExpense);
-            voucher._type = transactionType.text;
+            if (transactionType) {
+              // determine the transaction_type for this voucher
+
+              voucher._isIncome = (transactionType.type === INCOME);
+              voucher._isExpense = (transactionType.type === EXPENSE);
+              voucher._isOther = !(voucher._isIncome || voucher._isExpense);
+              voucher._type = transactionType.text;
+            }
+          } else {
+            voucher._type = '';
           }
         });
       })
       .catch(errorHandler)
       .finally(toggleLoadingIndicator);
+  }
+
+  // showReceipt
+  function showReceipt(uuid) {
+    Receipts.voucher(uuid);
   }
 
   // remove a filter with from the filter object, save the filters and reload
@@ -214,6 +244,20 @@ function VoucherController(
     $state.reload();
   }
 
+  function reverseVoucher(entity) {
+    Vouchers.openReverseRecordModal(entity.uuid)
+      .then(bool => {
+        if (bool) {
+          Notify.success('FORM.INFO.TRANSACTION_REVER_SUCCESS');
+
+          // load() has it's own error handling.  The absence of return below is
+          // explicit.
+          load(Vouchers.filters.formatHTTP(true));
+        }
+      })
+      .catch(Notify.handleError);
+  }
+
   function remove(entity) {
     Vouchers.remove(entity.uuid)
       .then(() => {
@@ -232,6 +276,10 @@ function VoucherController(
       .then(isOk => {
         if (isOk) { remove(entity); }
       });
+  }
+
+  function allowsRecordDeletion() {
+    return Session.enterprise.settings.enable_delete_records;
   }
 
   vm.showReceipt = Receipts.voucher;

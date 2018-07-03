@@ -29,8 +29,14 @@
 
     <li class="divider"></li>
 
-    <!-- delete voucher record -->
     <li>
+      <a data-method="reverse-record" href ng-click="grid.appScope.reverseVoucher(row.entity)">
+        <span class="text-danger"><i class="fa fa-clone"></i> <span translate>FORM.BUTTONS.REVERSE_RECORD</span></span>
+      </a>
+    </li>
+
+    <!-- delete voucher record -->
+    <li ng-if="grid.appScope.allowsRecordDeletion()">
       <a data-method="delete-record" href ng-click="grid.appScope.deleteVoucher(row.entity)">
         <span class="text-danger"><i class="fa fa-trash-o"></i> <span translate>FORM.BUTTONS.DELETE_RECORD</span></span>
       </a>

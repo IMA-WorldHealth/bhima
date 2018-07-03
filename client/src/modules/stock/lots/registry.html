@@ -44,6 +44,11 @@
                 <span class="fa fa-file-excel-o"></span> <span translate>DOWNLOADS.CSV</span>
               </a>
             </li>
+            <li role="menuitem">
+              <a target='_blank' ng-href="/reports/stock/lots/?{{StockLotsCtrl.downloadExcel()}}" translate-attr="{'download': 'DOWNLOADS.EXCEL'}" >
+                <span class="fa fa-file-excel-o"></span> <span translate>DOWNLOADS.EXCEL</span>
+              </a>
+            </li>
           </ul>
         </div>
       </div>
@@ -85,6 +90,11 @@
           </ul>
         </div>
       </div>
+
+      <!-- inline filter -->
+      <bh-filter-toggle 
+        on-toggle="StockLotsCtrl.toggleInlineFilter()">
+      </bh-filter-toggle>
     </div>
   </div>
 </div>

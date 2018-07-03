@@ -49,7 +49,7 @@ INSERT INTO unit VALUES
   -- (148, 'Chart of Accounts', 'REPORT.CHART_OF_ACCOUNTS', 'The COA Report', 144, '/modules/finance/chart_of_accounts', '/reports/accounts_chart'),
   (146, 'Creditor Groups Management', 'TREE.CREDITOR_GROUP', 'Creditor Groups Management module', 1, '/modules/creditor-groups/', '/creditors/groups'),
   (147, 'Cash Payment Registry', 'TREE.CASH_PAYMENT_REGISTRY', 'Cash Payment Registry', 5, '/modules/cash/payments/registry', '/payments'),
-  (149, 'Cash report', 'TREE.CASH_REPORT', 'The Report of cash entry and exit', 144, '/modules/reports/cash_report', '/reports/cash_report'),
+  (149, 'Cash Report', 'TREE.CASH_REPORT', 'The Report of cash entry and exit', 144, '/modules/reports/cash_report', '/reports/cash_report'),
   (150, 'Balance Report', 'TREE.BALANCE_REPORT', 'Balance report module', 144, '/modules/reports/balance_report', '/reports/balance_report'),
   (151, 'Customer Debts', 'TREE.AGED_DEBTORS', 'Aged Debtors', 144, '/modules/reports/aged_debtors', '/reports/aged_debtors'),
   (152, 'Account report', 'TREE.REPORT_ACCOUNTS', 'The Report accounts', 144, '/modules/reports/account_report', '/reports/account_report'),
@@ -73,7 +73,7 @@ INSERT INTO unit VALUES
   (181, 'Stock Report', 'TREE.STOCK_REPORT', 'The Report of inventories in stock', 144, '/modules/reports/inventory_report', '/reports/inventory_report'),
   (182, 'Stock File Report', 'TREE.STOCK_INVENTORY_REPORT', 'The Report of an inventory in stock', 144, '/modules/reports/inventory_file', '/reports/inventory_file'),
   (183, 'Grade Management','TREE.GRADES','', 57,'/modules/grades/','/grades'),
-  (184, 'Job Title Management','TREE.PROFESSION','', 1,'/modules/functions/','/functions'),
+  (184, 'Job Title Management','TREE.PROFESSION','', 57,'/modules/functions/','/functions'),
   (185, 'Payroll Rubric Management','TREE.PAYROLL_RUB_MANAGEMENT','', 57,'/modules/payroll/rubrics','/payroll/rubrics'),
   (186, 'Holidays Management','TREE.HOLIDAYS_MANAGEMENT','Holidays Management',57,'/modules/holidays/','/holidays'),
   (187, 'Offdays Management','TREE.OFFDAYS_MANAGEMENT','Offdays Management', 57,'/modules/offdays/','/offdays'),
@@ -86,7 +86,13 @@ INSERT INTO unit VALUES
   (194, 'Payroll Configuration','TREE.PAYROLL_CONFIGURATION','Payroll Configuration', 57,'/modules/payroll','/payroll'),
   (195, 'Role management','TREE.ROLE_MANAGEMENT','Roles Management', 1,'/modules/role/','/roles'),
   (196, 'Depot Registry','TREE.DEPOTS_REGISTRY','',20,'/modules/depots/','/depots'),
-  (197, 'Stock Exit Report','TREE.STOCK_EXIT_REPORT','Stock Exit Report', 144,'/modules/reports/generated/stock_exit','/reports/stock_exit');
+  (197, 'Stock Exit Report','TREE.STOCK_EXIT_REPORT','Stock Exit Report', 144,'/modules/reports/generated/stock_exit','/reports/stock_exit'),
+  (199, 'Client Debtor Account Balance', 'REPORT.CLIENT_DEBTOR_ACCOUNT_BALANCE_REPORT', 'Client Debtor Account Balance', 144, '/modules/reports/debtor_accounts_balance', '/reports/debtorBalanceReport'),
+  (200, 'Multiple Payroll','TREE.MULTI_PAYROLL','Multiple Payroll', 57,'/modules/multiple_payroll','/multiple_payroll'),
+  (201, 'Employee Standing Report', 'TREE.EMPLOYEE_STANDING_REPORT', 'Employee Standing Report', 144, '/modules/reports/employeeStanding', '/reports/employeeStanding'),
+  (202, 'Patient Standing Report', 'TREE.PATIENT_STANDING_REPORT', 'Patient Standing Report', 144, '/modules/reports/patientStanding', '/reports/patientStanding'),
+  (203, 'Employees Configuration','TREE.PAYROLL_EMP_CONFIGURATION','',57,'/modules/payroll/employee_configuration','/payroll/employee_configuration'),
+  (204, 'Exchange Rate','TREE.EXCHANGE','',1,'/modules/exchange/exchange','/exchange');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -112,17 +118,19 @@ INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
   (4, 'balance_report', 'REPORT.BALANCE'),
   (5, 'aged_debtors', 'TREE.AGED_DEBTORS'),
   (6, 'account_report', 'REPORT.REPORT_ACCOUNTS.TITLE'),
-  (7, 'cashflowByService', 'REPORT.CASHFLOW_BY_SERVICE.TITLE'),
+  (7, 'cashflowByService', 'TREE.CASHFLOW_BY_SERVICE'),
   (8, 'open_debtors', 'REPORT.OPEN_DEBTORS.TITLE'),
   (9, 'clients_report','REPORT.CLIENTS'),
   (10, 'aged_creditors','TREE.AGED_CREDITORS'),
   (11, 'balance_sheet_report', 'REPORT.BALANCE_SHEET.TITLE'),
-  (12, 'cash_report', 'REPORT.CASH_REPORT'),
+  (12, 'cash_report', 'REPORT.CASH_REPORT.TITLE'),
   (13, 'inventory_report', 'REPORT.STOCK.TITLE'),
   (14, 'inventory_file', 'REPORT.STOCK.INVENTORY_REPORT'),
   (15, 'operating', 'TREE.OPERATING_ACCOUNT'),
-  (16, 'stock_exit', 'REPORT.STOCK.EXIT_REPORT');
-
+  (16, 'stock_exit', 'REPORT.STOCK.EXIT_REPORT'),
+  (17, 'debtorBalanceReport', 'REPORT.CLIENT_DEBTOR_ACCOUNT_BALANCE_REPORT'),
+  (18, 'employeeStanding', 'REPORT.EMPLOYEE_STANDING.TITLE'),
+  (19, 'patientStanding', 'REPORT.PATIENT_STANDING.TITLE');
 
 -- Supported Languages
 INSERT INTO `language` VALUES
@@ -143,21 +151,26 @@ INSERT INTO `fonction` VALUES
   (2,'Medecin Directeur');
 
 -- transaction type
-INSERT INTO `transaction_type` (`id`, `text`, `type`, `prefix`, `fixed`) VALUES
-  (1, 'VOUCHERS.SIMPLE.GENERIC_INCOME', 'income', 'REC. GEN', 1),
-  (2, 'VOUCHERS.SIMPLE.CASH_PAYMENT', 'income', 'CASH', 1),
-  (3, 'VOUCHERS.SIMPLE.CONVENTION_PAYMENT', 'income', 'CONV', 1),
-  (4, 'VOUCHERS.SIMPLE.SUPPORT_INCOME', 'income', 'PEC', 1),
-  (5, 'VOUCHERS.SIMPLE.TRANSFER', 'transfer', 'TRANSF', 1),
-  (6, 'VOUCHERS.SIMPLE.GENERIC_EXPENSE', 'expense', 'DEP. GEN', 1),
-  (7, 'VOUCHERS.SIMPLE.SALARY_PAYMENT', 'expense', 'SALAIRE', 1),
-  (8, 'VOUCHERS.SIMPLE.CASH_RETURN', 'expense', 'PAYBACK', 1),
-  (9, 'VOUCHERS.SIMPLE.PURCHASES', 'expense', 'ACHAT', 1),
-  (10,'VOUCHERS.SIMPLE.CREDIT_NOTE', 'other', 'CREDIT NOTE', 1),
-  (11,'VOUCHERS.SIMPLE.INVOICING', 'income', 'INV', 1),
-  (12, 'VOUCHERS.SIMPLE.STOCK_INTEGRATION', 'stock integration', 'STOCK. INT', 1),
-  (13, 'VOUCHERS.SIMPLE.STOCK_EXIT', 'stock distribution', 'STOCK_EXIT', 1),
-  (14, 'VOUCHERS.SIMPLE.STOCK_ENTRY', 'stock reception', 'STOCK_ENTRY', 1);
+INSERT INTO `transaction_type` (`id`, `text`, `type`, `fixed`) VALUES
+  (1, 'VOUCHERS.SIMPLE.GENERIC_INCOME', 'income', 1),
+  (2, 'VOUCHERS.SIMPLE.CASH_PAYMENT', 'income', 1),
+  (3, 'VOUCHERS.SIMPLE.CONVENTION_PAYMENT', 'income', 1),
+  (4, 'VOUCHERS.SIMPLE.SUPPORT_INCOME', 'income', 1),
+  (5, 'VOUCHERS.SIMPLE.TRANSFER', 'other',  1),
+  (6, 'VOUCHERS.SIMPLE.GENERIC_EXPENSE', 'expense', 1),
+  (7, 'VOUCHERS.SIMPLE.SALARY_PAYMENT', 'expense', 1),
+  (8, 'VOUCHERS.SIMPLE.CASH_RETURN', 'expense',  1),
+  (9, 'VOUCHERS.SIMPLE.PURCHASES', 'expense',  1),
+  (10,'VOUCHERS.SIMPLE.CREDIT_NOTE', 'other', 1),
+  (11,'VOUCHERS.SIMPLE.INVOICING', 'income', 1),
+  (12, 'VOUCHERS.SIMPLE.STOCK_INTEGRATION', 'other', 1),
+  (13, 'VOUCHERS.SIMPLE.STOCK_EXIT', 'other', 1),
+  (14, 'VOUCHERS.SIMPLE.STOCK_ENTRY', 'other', 1),
+  (15, 'VOUCHERS.SIMPLE.COMMITMENT', 'other', 1),
+  (16, 'VOUCHERS.SIMPLE.EMPLOYEE_WITHHOLDINGS', 'other', 1),
+  (17, 'VOUCHERS.SIMPLE.CHARGE_REMUNERATION', 'other', 1),
+  (18, 'VOUCHERS.SIMPLE.ADJUSTMENT', 'other', 1),
+  (19, 'VOUCHERS.SIMPLE.CAUTION_LINK', 'other', 1);
 
 -- Stock Movement Flux
 INSERT INTO `flux` VALUES
@@ -180,14 +193,22 @@ INSERT INTO `flux` VALUES
 INSERT INTO `actions`(`id`, `description`) VALUES
   (1, 'FORM.LABELS.CAN_EDIT_ROLES');
 
-
--- transaction type
+-- Purchase Status
 INSERT INTO `purchase_status` (`id`, `text`) VALUES
   (1,  'PURCHASES.STATUS.WAITING_CONFIRMATION'),
   (2,  'PURCHASES.STATUS.CONFIRMED'),
   (3,  'PURCHASES.STATUS.RECEIVED'),
   (4,  'PURCHASES.STATUS.PARTIALLY_RECEIVED'),
-  (5,  'PURCHASES.STATUS.CANCELLED');
+  (5,  'PURCHASES.STATUS.CANCELLED'),
+  (6,  'PURCHASES.STATUS.EXCESSIVE_RECEIVED_QUANTITY');
+
+-- Paiement Status
+INSERT INTO `paiement_status` (`id`, `text`) VALUES
+  (1,  'PAYROLL_STATUS.WAITING_FOR_CONFIGURATION'),
+  (2,  'PAYROLL_STATUS.CONFIGURED'),
+  (3,  'PAYROLL_STATUS.WAITING_FOR_PAYMENT'),
+  (4,  'PAYROLL_STATUS.PARTIALLY_PAID'),
+  (5,  'PAYROLL_STATUS.PAID');
 
 -- locations (default enterprise location only)
 INSERT INTO `country` VALUES (HUID('dbe330b6-5cde-4830-8c30-dc00eccd1a5f'),'République Démocratique du Congo');

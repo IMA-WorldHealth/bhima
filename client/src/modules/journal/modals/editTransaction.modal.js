@@ -5,21 +5,19 @@ JournalEditTransactionController.$inject = [
   'JournalService', 'Store', 'TransactionService', 'TransactionTypeService', '$uibModalInstance',
   'transactionUuid', 'readOnly', 'uiGridConstants', 'uuid', 'util', 'moment',
   'ModalService', 'CurrencyService', 'ExchangeRateService', 'SessionService',
-  'NotifyService',
 ];
 
 function JournalEditTransactionController(
   Journal, Store, TransactionService, TransactionType, Modal, transactionUuid, readOnly, uiGridConstants,
-  uuid, util, moment, ModalService, CurrencyService, ExchangeRateService, SessionService, Notify
+  uuid, util, moment, ModalService, CurrencyService, ExchangeRateService, SessionService
 ) {
-  var gridApi = {};
-  var vm = this;
-  var editColumns;
+  const vm = this;
+  let gridApi = {};
 
   // Variables for tracking edits
-  var removedRows = [];
-  var addedRows = [];
-  var changes = {};
+  const removedRows = [];
+  const addedRows = [];
+  const changes = {};
 
   // must have transaction_type for certain cases
   const ERROR_MISSING_TRANSACTION_TYPE = 'TRANSACTIONS.MISSING_TRANSACTION_TYPE';
@@ -31,8 +29,9 @@ function JournalEditTransactionController(
 
   const footerTemplate = `
     <div class="ui-grid-cell-contents">
-      <span translate>POSTING_JOURNAL.ROWS</span> <span>{{grid.rows.length}}</span> | 
-      <span translate>POSTING_JOURNAL.TRANSACTION_CURRENCY</span> <b>{{grid.appScope.transactionCurrencySymbole()}}</b> | 
+      <span translate>POSTING_JOURNAL.ROWS</span> <span>{{grid.rows.length}}</span> |
+      <span translate>POSTING_JOURNAL.TRANSACTION_CURRENCY</span>
+      <b>{{grid.appScope.transactionCurrencySymbol()}}</b> |
       <bh-exchange-rate></bh-exchange-rate>
     </div>`;
 
@@ -51,7 +50,7 @@ function JournalEditTransactionController(
   };
 
   // @TODO(sfount) column definitions currently duplicated across journal and here
-  editColumns = [{
+  const editColumns = [{
     field              : 'description',
     displayName        : 'TABLE.COLUMNS.DESCRIPTION',
     headerCellFilter   : 'translate',
@@ -92,14 +91,20 @@ function JournalEditTransactionController(
     field                : 'hrEntity',
     displayName          : 'TABLE.COLUMNS.RECIPIENT',
     headerCellFilter     : 'translate',
-    cellTemplate : '<div class="ui-grid-cell-contents"><bh-reference-link ng-if="row.entity.hrEntity" reference="row.entity.hrEntity" /></div>',
+    cellTemplate : `
+      <div class="ui-grid-cell-contents">
+        <bh-reference-link ng-if="row.entity.hrEntity" reference="row.entity.hrEntity" />
+      </div>`,
     enableCellEdit : !vm.readOnly,
     allowCellFocus : !vm.readOnly,
     visible              : true,
   }, {
     field            : 'hrReference',
     displayName      : 'TABLE.COLUMNS.REFERENCE',
-    cellTemplate : '<div class="ui-grid-cell-contents"><bh-reference-link ng-if="row.entity.hrReference" reference="row.entity.hrReference" /></div>',
+    cellTemplate : `
+      <div class="ui-grid-cell-contents">
+        <bh-reference-link ng-if="row.entity.hrReference" reference="row.entity.hrReference" />
+      </div>`,
     headerCellFilter : 'translate',
     enableCellEdit : !vm.readOnly,
     allowCellFocus : !vm.readOnly,
@@ -120,7 +125,7 @@ function JournalEditTransactionController(
     gridApi.edit.on.afterCellEdit(null, handleCellEdit);
   }
 
-  vm.transactionCurrencySymbole = () => {
+  vm.transactionCurrencySymbol = () => {
     if (!vm.shared.currency_id) { return ''; }
     return CurrencyService.symbol(vm.shared.currency_id);
   };
@@ -145,8 +150,8 @@ function JournalEditTransactionController(
   // this is completely optional - it is just for decoration and interest.
   Journal.getTransactionEditHistory(transactionUuid)
     .then((editHistory) => {
-      var hasPreviousEdits = editHistory.length > 0;
-      var mostRecentEdit;
+      const hasPreviousEdits = editHistory.length > 0;
+      let mostRecentEdit;
       vm.hasPreviousEdits = hasPreviousEdits;
 
       if (hasPreviousEdits) {
@@ -279,7 +284,7 @@ function JournalEditTransactionController(
 
   // Edit rows functions
   vm.addRow = function addRow() {
-    var row = { uuid : uuid(), debit : 0, credit : 0 };
+    const row = { uuid : uuid(), debit : 0, credit : 0 };
     angular.extend(row, angular.copy(vm.shared));
 
     addedRows.push(row.uuid);
@@ -369,20 +374,19 @@ function JournalEditTransactionController(
   vm.deleteTransaction = () => {
     ModalService.confirm()
       .then(ans => {
-        if (!ans) { return null; }
-        return TransactionService.remove(vm.shared.record_uuid);
+        if (!ans) { return; }
+
+        TransactionService.remove(vm.shared.record_uuid)
+          .then(() => {
+            const deleteTransactionResult = {
+              deleted : true,
+              removed : getGridRowsUuid(),
+            };
+
+            Modal.close(deleteTransactionResult);
+          });
       })
-      .then(() => {
-        const deleteTransactionResult = {
-          deleted : true,
-          removed : getGridRowsUuid(),
-        };
-        Modal.close(deleteTransactionResult);
-      })
-      .catch((err) => {
-        Notify.handleError(err);
-        Modal.close();
-      });
+      .catch(angular.noop);
   };
 
   function getGridRowsUuid() {
@@ -394,17 +398,14 @@ function JournalEditTransactionController(
   // rows - array of rows
   // uuids - array of uuids
   function filterRowsByUuid(rows, uuids) {
-    const result = rows.filter((row) => {
-      return contains(uuids, row.uuid);
-    });
-    return result;
+    return rows.filter(row => uuids.includes(row.uuid));
   }
 
   vm.removeRows = () => {
     const selectedRows = gridApi.selection.getSelectedRows();
 
     selectedRows.forEach((row) => {
-      var isOriginalRow = !contains(addedRows, row.uuid);
+      const isOriginalRow = !addedRows.includes(row.uuid);
 
       if (isOriginalRow) {
         // remove any changes tracked against this record
@@ -420,9 +421,8 @@ function JournalEditTransactionController(
   };
 
   function handleCellEdit(rowEntity, colDef, newValue, oldValue) {
-    var isOriginalRow;
     if (oldValue !== newValue) {
-      isOriginalRow = !contains(addedRows, rowEntity.uuid);
+      const isOriginalRow = !addedRows.includes(rowEntity.uuid);
 
       if (isOriginalRow) {
         changes[rowEntity.uuid] = changes[rowEntity.uuid] || {};
@@ -439,19 +439,15 @@ function JournalEditTransactionController(
     });
   }
 
-  function contains(array, value) {
-    return array.indexOf(value) !== -1;
-  }
-
   // takes a transaction row and returns all parameters that are shared among the transaction
   // @TODO(sfount) rewrite method given current transaction service code
   function sharedDetails(row) {
-    var columns = [
+    const columns = [
       'hrRecord', 'record_uuid', 'project_name', 'trans_id', 'transaction_type_id', 'display_name', 'trans_date',
       'project_id', 'fiscal_year_id', 'currency_id', 'user_id', 'posted', 'period_id', 'description',
     ];
 
-    var shared = {};
+    const shared = {};
 
     columns.forEach((column) => {
       shared[column] = row[column];

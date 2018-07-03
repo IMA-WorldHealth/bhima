@@ -4,7 +4,7 @@ angular.module('bhima.services')
 PatientInvoiceService.$inject = [
   '$uibModal', 'SessionService', 'PrototypeApiService', 'FilterService', 'appcache',
   'PeriodService', '$httpParamSerializer', 'LanguageService', 'bhConstants',
-  'TransactionService',
+  'TransactionService', '$translate',
 ];
 
 /**
@@ -17,12 +17,12 @@ PatientInvoiceService.$inject = [
  */
 function PatientInvoiceService(
   Modal, Session, Api, Filters, AppCache, Periods, $httpParamSerializer,
-  Languages, bhConstants, Transactions
+  Languages, bhConstants, Transactions, $translate
 ) {
-  var service = new Api('/invoices/');
+  const service = new Api('/invoices/');
 
-  var invoiceFilters = new Filters();
-  var filterCache = new AppCache('cash-filters');
+  const invoiceFilters = new Filters();
+  const filterCache = new AppCache('cash-filters');
 
   service.create = create;
   service.openSearchModal = openSearchModal;
@@ -30,6 +30,7 @@ function PatientInvoiceService(
   service.balance = balance;
   service.filters = invoiceFilters;
   service.remove = Transactions.remove;
+  service.findConsumableInvoicePatient = findConsumableInvoicePatient;
 
   /**
    * @method create
@@ -39,31 +40,25 @@ function PatientInvoiceService(
    *
    * @returns {Promise} - a promise resolving to the HTTP result.
    */
-  function create(invoice, invoiceItems, invoicingFees, subsidies, description) {
-    var cp = angular.copy(invoice);
+  function create(invoice, invoiceItems, invoicingFees = [], subsidies = [], description) {
+    const cp = angular.copy(invoice);
 
     // add project id from session
     cp.project_id = Session.project.id;
 
-    // a patient invoice is not required to qualify for invoicing fees or subsidies
-    // default to empty arrays
-    invoicingFees = invoicingFees || [];
-    subsidies = subsidies || [];
-
     // concatenate into a single object to send back to the client
     cp.items = invoiceItems.map(filterInventorySource);
 
-    cp.invoicingFees = invoicingFees.map(function (invoicingFee) {
-      return invoicingFee.invoicing_fee_id;
-    });
-
-    cp.subsidies = subsidies.map(function (subsidy) {
-      return subsidy.subsidy_id;
-    });
-
+    cp.invoicingFees = invoicingFees.map(invoicingFee => invoicingFee.invoicing_fee_id);
+    cp.subsidies = subsidies.map(subsidy => subsidy.subsidy_id);
     cp.description = description;
 
-    return Api.create.call(this, { invoice : cp });
+    const params = {};
+    if (Session.enterprise.settings.enable_prepayments) {
+      params.prepaymentDescription = $translate.instant('PATIENT_INVOICE.PREPAYMENT_LINK_DESCRIPTION');
+    }
+
+    return Api.create.call(this, { invoice : cp }, params);
   }
 
   /**
@@ -76,7 +71,7 @@ function PatientInvoiceService(
    * @param {String} debtorUuid - the amount due to the debtor
    */
   function balance(uuid) {
-    var url = '/invoices/'.concat(uuid, '/balance');
+    const url = '/invoices/'.concat(uuid, '/balance');
     return this.$http.get(url)
       .then(this.util.unwrapHttpResponse);
   }
@@ -131,11 +126,16 @@ function PatientInvoiceService(
     { key : 'debtor_uuid', label : 'FORM.LABELS.CLIENT' },
     { key : 'patientReference', label : 'FORM.LABELS.REFERENCE_PATIENT' },
     { key : 'inventory_uuid', label : 'FORM.LABELS.INVENTORY' },
-    { key : 'billingDateFrom', label : 'FORM.LABELS.DATE', comparitor : '>', valueFilter : 'date' },
-    { key : 'billingDateTo', label : 'FORM.LABELS.DATE', comparitor : '<', valueFilter : 'date' },
+    {
+      key : 'billingDateFrom', label : 'FORM.LABELS.DATE', comparitor : '>', valueFilter : 'date',
+    },
+    {
+      key : 'billingDateTo', label : 'FORM.LABELS.DATE', comparitor : '<', valueFilter : 'date',
+    },
     { key : 'reversed', label : 'FORM.INFO.CREDIT_NOTE' },
     { key : 'defaultPeriod', label : 'TABLE.COLUMNS.PERIOD', valueFilter : 'translate' },
     { key : 'debtor_group_uuid', label : 'FORM.LABELS.DEBTOR_GROUP' },
+    { key : 'project_id', label : 'FORM.LABELS.PROJECT' },
     { key : 'cash_uuid', label : 'FORM.INFO.PAYMENT' },
   ]);
 
@@ -149,10 +149,10 @@ function PatientInvoiceService(
 
   function assignDefaultFilters() {
     // get the keys of filters already assigned - on initial load this will be empty
-    var assignedKeys = Object.keys(invoiceFilters.formatHTTP());
+    const assignedKeys = Object.keys(invoiceFilters.formatHTTP());
 
     // assign default period filter
-    var periodDefined =
+    const periodDefined =
       service.util.arrayIncludes(assignedKeys, ['period', 'custom_period_start', 'custom_period_end']);
 
     if (!periodDefined) {
@@ -180,15 +180,25 @@ function PatientInvoiceService(
 
   // downloads a type of report based on the
   service.download = function download(type) {
-    var filterOpts = invoiceFilters.formatHTTP();
-    var defaultOpts = { renderer : type, lang : Languages.key };
+    const filterOpts = invoiceFilters.formatHTTP();
+    const defaultOpts = { renderer : type, lang : Languages.key };
 
     // combine options
-    var options = angular.merge(defaultOpts, filterOpts);
+    const options = angular.merge(defaultOpts, filterOpts);
 
     // return  serialized options
     return $httpParamSerializer(options);
   };
+
+  /**
+   * find an invoice with its consumable inventories for a given patient
+   */
+  function findConsumableInvoicePatient(invoiceReference, patientUuid) {
+    const params = { invoiceReference, patientUuid };
+    const url = '/invoices/consumable/';
+    return this.$http.get(url, { params })
+      .then(this.util.unwrapHttpResponse);
+  }
 
   return service;
 }

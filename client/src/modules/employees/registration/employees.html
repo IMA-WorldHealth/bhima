@@ -108,7 +108,7 @@
                     class="form-group"
                     ng-class="{'has-error' : DetailForm.code.$invalid && EmployeeRegistrationForm.$submitted}">
 
-                    <label class="col-md-3 control-label" translate>FORM.LABELS.CODE</label>
+                    <label class="col-md-3 control-label" translate>FORM.LABELS.REGISTRATION_NUMBER</label>
                     <div class="col-md-9">
                       <input
                         class="form-control"
@@ -155,7 +155,18 @@
                     </div>
                   </div>
 
-
+                  <div class="checkbox" id="locked" 
+                    ng-class="{'has-error' : DetailForm.locked.$invalid && EmployeeRegistrationForm.$submitted}">
+                    <label class="col-md-3 control-label" translate></label>
+                    <div class="col-md-9">
+                      <div class="form-group" ng-if="EmployeeCtrl.isUpdating">
+                        <label>
+                          <input type="checkbox" name="locked" ng-model="EmployeeCtrl.employee.locked" ng-true-value="1" ng-false-value="0">
+                          <span translate>FORM.LABELS.LOCKED</span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
 
                   <!-- Employee creditor group-->
                   <div class="form-group"
@@ -195,6 +206,7 @@
 
                      <!-- Employee Hospital File Number -->
                   <div
+                    ng-if="!EmployeeCtrl.employee.is_patient"
                     class="form-group has-feedback"
                     ng-class="{'has-error' : (DetailForm.hospitalNumber.$invalid && EmployeeRegistrationForm.$submitted) || DetailForm.hospitalNumber.$error.unique}">
 
@@ -230,8 +242,6 @@
                       </bh-debtor-group-select>
                     </div>
                   </div>
-
-
 
                   <!-- Employee location -->
                   <div class="row">
@@ -301,23 +311,6 @@
                       <div class="help-block" ng-messages="DetailForm.dateEmbauche.$error" data-date-error ng-if="EmployeeRegistrationForm.$submitted && DetailForm.dob.$invalid">
                         <div ng-messages-include="modules/templates/dates.messages.tmpl.html"></div>
                       </div>
-                    </div>
-                  </div>
-                  <!-- Employee number of spouse-->
-                  <div class="form-group"
-                    ng-class="{'has-error' : OptionalForm.nb_spouse.$invalid && EmployeeRegistrationForm.$submitted}">
-
-                    <label class="col-md-3 control-label" translate>FORM.LABELS.NB_SPOUSE</label>
-                    <div class="col-md-9">
-                      <input
-                        type="number"
-                        class="form-control"
-                        name="nb_spouse"
-                        ng-model="EmployeeCtrl.employee.nb_spouse"
-                        autocomplete="off">
-                     <div class="help-block" ng-messages="OptionalForm.nb_spouse.$error" ng-show="EmployeeRegistrationForm.$submitted">
-                      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-                     </div>
                     </div>
                   </div>
 
@@ -457,25 +450,26 @@
                   </div>
 
                   <!-- Employee daily salary -->
-                  <div
-                    class="form-group"
-                    ng-class="{'has-error' : DetailForm.daily_salary.$invalid && EmployeeRegistrationForm.$submitted}">
+                  <bh-currency-input
+                    data-payment-currency-input
+                    label="FORM.LABELS.INDIVIDUAL_SALARY"
+                    id="individual_salary"
+                    currency-id="EmployeeCtrl.enterprise.currency_id"
+                    model="EmployeeCtrl.employee.individual_salary"
+                    validation-trigger="EmployeeRegistrationForm.$submitted"
+                    min = 0>
+                  </bh-currency-input>
 
-                    <label class="col-md-3 control-label" translate>FORM.LABELS.DAILY_SALARY</label>
-                    <div class="col-md-9">
-                      <div class="input-group">
-                        <span class="input-group-addon text-uppercase">{{ EmployeeCtrl.enterprise.currencySymbol || '...' }}</span>
-                        <input
-                          type="number"
-                          class="form-control"
-                          name="daily_salary"
-                          ng-model="EmployeeCtrl.employee.daily_salary"
-                          autocomplete="off">
-                      </div>
-                      <div class="help-block" ng-messages="DetailForm.daily_salary.$error" ng-show="EmployeeRegistrationForm.$submitted">
-                        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-                      </div>
-                    </div>
+                  <div ng-repeat="rubric in EmployeeCtrl.rubrics"> 
+                    <bh-currency-input
+                      data-payment-currency-input
+                      label="{{rubric.label}}"
+                      id="{{rubric.abbr}}"
+                      currency-id="EmployeeCtrl.enterprise.currency_id"
+                      model="EmployeeCtrl.employee.payroll[rubric.id]"
+                      validation-trigger="EmployeeRegistrationForm.$submitted"
+                      min = 0>
+                    </bh-currency-input>
                   </div>
 
                   <!-- Employee bank -->

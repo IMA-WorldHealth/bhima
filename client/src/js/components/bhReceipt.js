@@ -1,5 +1,7 @@
-var bhReceiptTemplate =
-  '<a ng-click="$ctrl.open()" href="">{{ $ctrl.displayValue }}</a>';
+const bhReceiptTemplate = `
+  <a ng-click="$ctrl.open()" href="" translate>
+    {{ $ctrl.displayValue }}
+  </a>`;
 
 angular.module('bhima.components')
   .component('bhReceipt', {
@@ -7,19 +9,19 @@ angular.module('bhima.components')
     controller  : bhReceiptController,
     bindings    : {
       value : '<',
-      displayValue : '<',
       type : '@',
+      displayValue : '<',
     },
   });
 
 bhReceiptController.$inject = ['ReceiptModal', '$log'];
 
 function bhReceiptController(ReceiptModal, $log) {
-  var $ctrl = this;
+  const $ctrl = this;
 
-  $ctrl.$onInit = function $onInit() {
+  $ctrl.$onInit = () => {
     // make sure the receipt type exists before it is clicked
-    var hasCallbackFn = ReceiptModal[$ctrl.type];
+    const hasCallbackFn = ReceiptModal[$ctrl.type];
     if (!hasCallbackFn) {
       $log.error('Warning: Cannot find '
         .concat($ctrl.type)
@@ -27,8 +29,6 @@ function bhReceiptController(ReceiptModal, $log) {
     }
   };
 
-  $ctrl.open = function open() {
-    ReceiptModal[$ctrl.type]($ctrl.value);
-  };
+  $ctrl.open = () => ReceiptModal[$ctrl.type]($ctrl.value);
 }
 

@@ -25,15 +25,15 @@ novalidate>
         <div ng-repeat="module in RolesPermissionsCtrl.tree" class="treeview">
 
           <h4>
-            <label class="radio-inline">
+            <label class="radio-inline" ng-click="RolesPermissionsCtrl.moduleSelected(module)">
               <input type='checkbox' ng-model='module.affected' ng-true-value="1" ng-false-value="0" />
               <b translate>{{module.key}}</b>
             </label>
           </h4>
 
           <ul class="list-group">
-            <li ng-repeat="page in module.pages" class="list-group-item">
-              <label class="radio-inline">
+            <li ng-repeat="page in RolesPermissionsCtrl.sortUnit(module.pages)" class="list-group-item">
+              <label class="radio-inline" ng-click="RolesPermissionsCtrl.pageSelected(page, module)">
                 <input type='checkbox' ng-model='page.affected' ng-true-value="1" ng-false-value="0" />
                 <span translate>{{page.key}}</span>
               </label>

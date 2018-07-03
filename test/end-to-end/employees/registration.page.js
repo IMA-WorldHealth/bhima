@@ -6,9 +6,26 @@
  */
 
 const FU = require('../shared/FormUtils');
+const GA = require('../shared/GridAction');
+const GU = require('../shared/GridUtils');
 const components = require('../shared/components');
 
 class RegistrationPage {
+  constructor() {
+    this.gridId = 'employee-registry';
+    this.multipayrollGrid = element(by.id(this.gridId));
+    this.actionLinkColumn = 8;
+  }
+
+  editEmployeeName(label) {
+    GU.getGridIndexesMatchingText(this.gridId, label)
+      .then(indices => {
+        const { rowIndex } = indices;
+        GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'edit', this.gridId);
+      });
+  }
+
+
   createEmployee() {
     FU.buttons.submit();
   }
@@ -29,10 +46,6 @@ class RegistrationPage {
     $(`[id="${id}"]`).click();
   }
 
-  // set number of spouse
-  setNumberSpouse(nbSpouse) {
-    FU.input('EmployeeCtrl.employee.nb_spouse', nbSpouse);
-  }
 
   // set number of spouse
   setNumberChild(nbEnfant) {
@@ -94,6 +107,11 @@ class RegistrationPage {
     FU.uiSelect('EmployeeCtrl.employee.creditor_group_uuid', cg);
   }
 
+  // Set Currency Input
+  setCurrencyInput(id, value) {
+    components.currencyInput.set(value, id);
+  }
+
   // set bank
   setBank(bank) {
     FU.input('EmployeeCtrl.employee.bank', bank);
@@ -102,6 +120,14 @@ class RegistrationPage {
   // set bank account
   setBankAccount(bankAccount) {
     FU.input('EmployeeCtrl.employee.bank_account', bankAccount);
+  }
+
+  // Set RubricPayroll defined value By Employee
+  setRubricPayroll(rubrics) {
+    for (let key in rubrics) {
+      let rubricPayroll = element( by.id(key));
+      rubricPayroll.sendKeys(rubrics[key]);    
+    }
   }
 
   // set origin location
@@ -118,6 +144,10 @@ class RegistrationPage {
     return FU.exists(by.id('receipt-confirm-created'), resp);
   }
 
+  expectNotificationSuccess(resp) {
+    components.notification.hasSuccess();
+  }
+
   requiredFieldErrored() {
     FU.validation.error('EmployeeCtrl.employee.display_name');
     FU.validation.error('EmployeeCtrl.employee.code');
@@ -129,7 +159,6 @@ class RegistrationPage {
   }
 
   noRequiredFieldOk() {
-    FU.validation.ok('EmployeeCtrl.employee.nb_spouse');
     FU.validation.ok('EmployeeCtrl.employee.nb_enfant');
     FU.validation.ok('EmployeeCtrl.employee.phone');
     FU.validation.ok('EmployeeCtrl.employee.email');

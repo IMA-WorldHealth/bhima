@@ -3,40 +3,40 @@ angular.module('bhima.controllers')
 
 PatientRecordController.$inject = [
   '$stateParams', 'PatientService', 'NotifyService',
-  'moment', 'Upload', '$timeout', 'SnapshotService'
+  'moment', 'Upload', '$timeout', 'SnapshotService',
 ];
 
 function PatientRecordController($stateParams, Patients, Notify, moment, Upload, $timeout, SnapshotService) {
-  var vm = this;
-  var patientID = $stateParams.patientID;
+  const vm = this;
+  const { patientUuid } = $stateParams;
 
   vm.loading = true;
   vm.uploadFiles = uploadFiles;
   vm.uploadButtonText = 'PATIENT_RECORDS.UPLOAD_PICTURE';
 
   function uploadFiles(file, invalidFiles) {
-    if(invalidFiles.length){
+    if (invalidFiles.length) {
       Notify.danger('FORM.WARNINGS.BAD_FILE_TYPE');
       return;
     }
 
     if (file) {
-      var imageCheck = file.type.search('image/');
-      if(imageCheck !== -1){
+      const imageCheck = file.type.search('image/');
+      if (imageCheck !== -1) {
         file.upload = Upload.upload({
-          url: '/patients/' + patientID + '/pictures',
-          data: {pictures: file}
+          url : `/patients/${patientUuid}/pictures`,
+          data : { pictures : file },
         });
 
-        file.upload.then(function (response) {
+        file.upload.then((response) => {
           Notify.success('FORM.INFO.PATIENT_SUCC_TRANSFERRED');
-          $timeout(function () {
+          $timeout(() => {
             vm.patient.avatar = response.data.link;
           });
         })
-        .catch(function (error) {
-          Notify.handleError(error);
-        });
+          .catch((error) => {
+            Notify.handleError(error);
+          });
       } else {
         Notify.danger('FORM.INFO.UPLOAD_PICTURE_FAILED');
       }
@@ -44,12 +44,12 @@ function PatientRecordController($stateParams, Patients, Notify, moment, Upload,
   }
 
   /** @fixme if no uuid is provided this will download all the patients through the base url '/' */
-  Patients.read(patientID)
-    .then(function (result) {
+  Patients.read(patientUuid)
+    .then((result) => {
       vm.patient = result;
       vm.loading = false;
 
-      if(vm.patient.avatar){
+      if (vm.patient.avatar) {
         vm.uploadButtonText = 'PATIENT_RECORDS.UPDATE_PICTURE';
       }
 
@@ -58,29 +58,26 @@ function PatientRecordController($stateParams, Patients, Notify, moment, Upload,
       vm.patient.age = moment().diff(vm.patient.dob, 'years');
       vm.patient.dobFormatted = moment(vm.patient.dob).format('L');
     })
-    .catch(function (error) {
+    .catch((error) => {
       vm.loading = false;
       Notify.handleError(error);
     });
 
-    // webcam functionnalities
+  // webcam functionnalities
 
-    vm.openWebcam =  function(){
-      
-      SnapshotService.openWebcamModal()
-      .then(function(strDataURI){
-        if(strDataURI) {
+  vm.openWebcam = function openWebcam() {
+    SnapshotService.openWebcamModal()
+      .then((strDataURI) => {
+        if (strDataURI) {
           SnapshotService.dataUriToFile(
             strDataURI,
             'image.png',
             'image/png'
           )
-          .then(function(file){
-            vm.uploadFiles(file, false);
-          });
-        } 
-      })
-    }
-  
-    
+            .then((file) => {
+              vm.uploadFiles(file, false);
+            });
+        }
+      });
+  };
 }

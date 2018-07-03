@@ -44,7 +44,8 @@
           reference="StockCtrl.reference"
           display-name="StockCtrl.displayName"
           is-entry="false"
-          depot="StockCtrl.depot">
+          depot="StockCtrl.depot"
+          reset="StockCtrl.resetEntryExitTypes">
         </bh-stock-entry-exit-type>
       </div>
 
@@ -93,6 +94,18 @@
             <div class="help-block" ng-messages="StockExitForm.description.$error" ng-show="StockExitForm.$submitted">
               <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- not available messages -->
+      <div ng-if="StockCtrl.inventoryNotAvailable.length" class="row">
+        <div class="col-xs-12 col-sm-6">
+          <div class="alert alert-warning">
+            <h4 translate>STOCK.PRODUCT_NOT_AVAILABLE</h4>
+            <ul>
+              <li ng-repeat="item in StockCtrl.inventoryNotAvailable track by $index">{{ item }}</li>
+            </ul>
           </div>
         </div>
       </div>

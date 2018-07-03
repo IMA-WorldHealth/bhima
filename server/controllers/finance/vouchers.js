@@ -79,7 +79,7 @@ function lookupVoucher(vUuid) {
   const sql = `
     SELECT BUID(v.uuid) as uuid, v.date, v.project_id, v.currency_id, v.amount,
       v.description, v.user_id, v.type_id,  u.display_name, transaction_type.text,
-      CONCAT_WS('.', '${entityIdentifier}', p.abbr, v.reference) AS reference
+      CONCAT_WS('.', '${entityIdentifier}', p.abbr, v.reference) AS reference, reversed
     FROM voucher v
     JOIN project p ON p.id = v.project_id
     JOIN user u ON u.id = v.user_id
@@ -134,7 +134,8 @@ function find(options) {
       BUID(v.uuid) as uuid, v.date, v.project_id, v.currency_id, v.amount,
       v.description, v.user_id, v.type_id, u.display_name, transaction_type.text,
       CONCAT_WS('.', '${entityIdentifier}', p.abbr, v.reference) AS reference,
-      v.edited, BUID(v.reference_uuid) AS reference_uuid
+      v.edited, BUID(v.reference_uuid) AS reference_uuid, p.name AS project_name,
+      v.reversed
     FROM voucher v
     JOIN project p ON p.id = v.project_id
     JOIN user u ON u.id = v.user_id
@@ -147,7 +148,9 @@ function find(options) {
   filters.dateFrom('custom_period_start', 'date');
   filters.dateTo('custom_period_end', 'date');
   filters.equals('user_id');
+  filters.equals('project_id');
   filters.equals('edited');
+  filters.equals('currency_id');
 
   filters.custom('reference', referenceStatement);
 
@@ -232,6 +235,9 @@ function create(req, res, next) {
   const { voucher } = req.body;
   let items = req.body.voucher.items || [];
 
+  const voucherType = voucher.type_id;
+  const updatesPaiementData = [];
+
   // a voucher without two items doesn't make any sense in double-entry
   // accounting.  Therefore, throw a bad data error if there are any fewer
   // than two items in the journal voucher.
@@ -258,8 +264,25 @@ function create(req, res, next) {
   voucher.uuid = db.bid(vuid);
 
   // preprocess the items so they have uuids as required
-  items.forEach((value) => {
+  items.forEach(value => {
     let item = value;
+    // Only for Employee Salary Paiement
+    if (voucherType === 7) {
+      if (item.document_uuid) {
+        const updatePaiement = `
+          UPDATE paiement SET
+            status_id = IF (((paiement.net_salary - paiement.amount_paid) = ?), 5, 4),
+            paiement.amount_paid = amount_paid + ?,
+            paiement.paiement_date = ?
+          WHERE paiement.uuid = ? `;
+
+        updatesPaiementData.push({
+          query : updatePaiement,
+          params : [item.debit, item.debit, voucher.date, db.bid(item.document_uuid)],
+        });
+      }
+    }
+
     // if the item doesn't have a uuid, create one for it.
     item.uuid = item.uuid || uuid();
 
@@ -287,6 +310,13 @@ function create(req, res, next) {
       [items]
     )
     .addQuery('CALL PostVoucher(?);', [voucher.uuid]);
+
+  // Only for Employee Salary Paiement
+  if (voucherType === 7) {
+    updatesPaiementData.forEach(updatePaiement => {
+      transaction.addQuery(updatePaiement.query, updatePaiement.params);
+    });
+  }
 
   transaction.execute()
     .then(() => res.status(201).json({ uuid : vuid }))
@@ -341,6 +371,10 @@ function safelyDeleteVoucher(guid) {
       WHERE voucher.uuid = ?;
   `;
 
+  const TOGGLE_VOUCHER_REVERSAL = `
+      UPDATE voucher SET voucher.reversed = 0 WHERE voucher.uuid = ?;
+  `;
+
   return shared.isRemovableTransaction(guid)
     .then(() => {
       const binaryUuid = db.bid(guid);
@@ -353,6 +387,7 @@ function safelyDeleteVoucher(guid) {
         // wholesale.
         .addQuery(TOGGLE_INVOICE_REVERSAL, binaryUuid)
         .addQuery(TOGGLE_CASH_REVERSAL, binaryUuid)
+        .addQuery(TOGGLE_VOUCHER_REVERSAL, binaryUuid)
 
         .addQuery(DELETE_VOUCHER, binaryUuid)
         .addQuery(DELETE_TRANSACTION_HISTORY, binaryUuid)

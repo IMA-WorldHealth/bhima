@@ -13,7 +13,7 @@
 
   <div class="modal-body search-modal">
     <uib-tabset>
-      <uib-tab index="0" heading="{{ 'FORM.LABELS.SEARCH_QUERRIES' | translate }}" data-custom-filter-tab>
+      <uib-tab index="0" heading="{{ 'FORM.LABELS.SEARCH_QUERIES' | translate }}" data-custom-filter-tab>
         <div class="tab-body">
           <!--patient name-->
           <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.display_name.$invalid }">
@@ -68,6 +68,14 @@
               <span translate>FORM.LABELS.FEMALE</span>
             </label>
           </div>
+
+          <!-- filter by project -->
+          <bh-project-select
+            project-id="$ctrl.searchQueries.project_id"
+            name="project_id"
+            on-select-callback="$ctrl.onSelectProject(project)">
+            <bh-clear on-clear="$ctrl.clear('project_id')"></bh-clear>
+          </bh-project-select>
 
           <!-- patient debtor group -->
           <bh-debtor-group-select

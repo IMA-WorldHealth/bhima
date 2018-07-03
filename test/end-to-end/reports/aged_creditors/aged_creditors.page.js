@@ -10,8 +10,9 @@ class CreditorsReportPage {
   }
 
   // preview a Creditors report
-  showCreditorsReportPreview(period, includeZero) {
-    components.reportPeriodSelect.set(period);
+  showCreditorsReportPreview(year, month, includeZero) {
+    components.fiscalYearSelect.set(year);
+    components.periodSelection.set(month);
 
     if (includeZero) {
       element(by.css('input[type="checkbox"]')).click();
@@ -21,8 +22,8 @@ class CreditorsReportPage {
   }
 
   // save a Creditors report
-  saveCreditorsReport(period, includeZero, reportName, reportFormat) {
-    this.showCreditorsReportPreview(period, includeZero);
+  saveCreditorsReport(year, month, includeZero, reportName, reportFormat) {
+    this.showCreditorsReportPreview(year, month, includeZero);
 
     // save report as PDF
     this.page.saveAs();
@@ -36,8 +37,8 @@ class CreditorsReportPage {
   }
 
   // print a debtors report
-  printCreditorsReport(period, includeZero) {
-    this.showCreditorsReportPreview(period, includeZero);
+  printCreditorsReport(year, month, includeZero) {
+    this.showCreditorsReportPreview(year, month, includeZero);
     this.page.printPreview();
   }
 

@@ -1,3 +1,4 @@
+/* eslint no-unused-expressions:"off" */
 /* global expect, agent */
 
 const helpers = require('../helpers');
@@ -12,7 +13,6 @@ module.exports = function LazyTester(target, keys, options = {}) {
     const invalid = _.merge({ renderer : 'unknown' }, params);
     const json = _.merge({ renderer : 'json' }, params);
     const html = _.merge({ renderer : 'html' }, params);
-    const pdf = _.merge({ renderer : 'pdf' }, params);
 
     it(`GET ${target} should return Bad Request for invalid renderer`, () => {
       return agent.get(target)
@@ -37,24 +37,6 @@ module.exports = function LazyTester(target, keys, options = {}) {
         .catch(helpers.handler);
     });
 
-    it(`GET ${target} should return PDF data for 'pdf' rendering target`, function renderPdfData() {
-      this.timeout(5000);
-      return agent.get(target)
-        .query(pdf)
-        .then(expectPDFReport)
-        .catch(helpers.handler);
-    });
-
-    it(`GET ${target} should return the default PDF renderer if no rendering target`, function renderDefaultPdf() {
-      this.timeout(5000);
-      const parameters = _.clone(params);
-      delete parameters.renderer;
-      return agent.get(target)
-        .query(parameters)
-        .then(expectPDFReport)
-        .catch(helpers.handler);
-    });
-
     // validate a JSON response
     function expectJSONReport(result) {
       expect(result).to.have.status(200);
@@ -74,10 +56,5 @@ module.exports = function LazyTester(target, keys, options = {}) {
       expect(result.text).to.not.be.empty;
     }
 
-    // validate a PDF response
-    function expectPDFReport(result) {
-      expect(result.headers['content-type']).to.equal('application/pdf');
-      expect(result.type).to.equal('application/pdf');
-    }
   };
 };

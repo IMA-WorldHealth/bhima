@@ -76,6 +76,11 @@ function AccountStatementController(
     editableCellTemplate : 'modules/journal/templates/date.edit.html',
     footerCellTemplate   : '<i></i>',
   }, {
+    field              : 'description',
+    displayName        : 'TABLE.COLUMNS.DESCRIPTION',
+    headerCellFilter   : 'translate',
+    footerCellTemplate : '<i></i>',
+  }, {
     field            : 'account_number',
     displayName      : 'TABLE.COLUMNS.ACCOUNT',
     width            : 110,
@@ -110,11 +115,6 @@ function AccountStatementController(
     footerCellFilter : 'currency:grid.appScope.enterprise.currency_id',
     footerCellClass  : 'text-right',
   }, {
-    field              : 'description',
-    displayName        : 'TABLE.COLUMNS.DESCRIPTION',
-    headerCellFilter   : 'translate',
-    footerCellTemplate : '<i></i>',
-  }, {
     field            : 'project_name',
     displayName      : 'TABLE.COLUMNS.PROJECT',
     headerCellFilter : 'translate',
@@ -125,12 +125,6 @@ function AccountStatementController(
     headerCellFilter : 'translate',
     cellTemplate     : 'modules/templates/bhPeriod.tmpl.html',
     visible          : false,
-  }, {
-    field                : 'hrRecord',
-    displayName          : 'TABLE.COLUMNS.RECORD',
-    headerCellFilter     : 'translate',
-    footerCellTemplate   : '<i></i>',
-    visible              : false,
   }, {
     field            : 'currencyName',
     displayName      : 'TABLE.COLUMNS.CURRENCY',
@@ -159,12 +153,21 @@ function AccountStatementController(
     footerCellTemplate   : '<i></i>',
     visible          : false,
   }, {
+    field                : 'hrRecord',
+    displayName          : 'TABLE.COLUMNS.RECORD',
+    headerCellFilter     : 'translate',
+    cellTemplate :
+      `<div class="ui-grid-cell-contents">
+        <bh-reference-link ng-if="row.entity.hrRecord" reference="row.entity.hrRecord" />
+      </div>`,
+    visible              : true,
+  }, {
     field                : 'hrEntity',
     displayName          : 'TABLE.COLUMNS.RECIPIENT',
     headerCellFilter     : 'translate',
     cellTemplate :
       `<div class="ui-grid-cell-contents">
-        <bh-reference-link ng-if="row.entity.hrRecord" reference="row.entity.hrRecord" />
+        <bh-reference-link ng-if="row.entity.hrEntity" reference="row.entity.hrEntity" />
       </div>`,
     visible              : true,
   }, {
@@ -206,6 +209,7 @@ function AccountStatementController(
   // comment selected rows
   vm.commentRows = function commentRows() {
     vm.selectedRows = vm.gridApi.selection.getSelectedGridRows();
+
     Transactions.openCommentModal({ rows : vm.selectedRows })
       .then(comment => {
         if (!comment) { return; }
@@ -261,22 +265,14 @@ function AccountStatementController(
 
   // format parameters
   function formatExportParameters(type) {
-    // make sure a row is selected before running the trial balance
-    if (vm.gridApi.selection.getSelectedGridRows().length < 1) {
-      Notify.warn('POSTING_JOURNAL.WARNINGS.NO_TRANSACTIONS_SELECTED');
-      return 0;
-    }
-
-    const uuids = vm.gridApi.selection.getSelectedGridRows()
-      .map(row => row.entity.uuid);
-
-    return { renderer : type || 'pdf', lang : Languages.key, uuids };
+    const filters = AccountStatement.filters.formatHTTP(true);
+    return angular.extend(filters, { renderer : type || 'pdf', lang : Languages.key });
   }
 
   // export pdf
   vm.exportPdf = function exportPdf() {
-    var url = '/reports/finance/account_statement';
-    var params = formatExportParameters('pdf');
+    const url = '/reports/finance/account_statement';
+    const params = formatExportParameters('pdf');
 
     if (!params) { return; }
     Modal.openReports({ url, params });
@@ -338,7 +334,7 @@ function AccountStatementController(
       })
       .catch(Notify.handleError);
 
-    GeneralLedger.read(null, options)
+    GeneralLedger.transactions(options)
       .then(data => {
         vm.gridOptions.data = data;
 

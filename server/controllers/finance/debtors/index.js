@@ -19,8 +19,9 @@
 const q = require('q');
 const db = require('../../../lib/db');
 const NotFound = require('../../../lib/errors/NotFound');
-
 const identifiers = require('../../../config/identifiers');
+
+const CAUTION_LINK_TYPE_ID = 19;
 
 exports.list = list;
 exports.detail = detail;
@@ -236,17 +237,21 @@ function invoiceBalances(debtorUuid, uuids, options = {}) {
  *
  * @method balance
  */
-function balance(debtorUuid) {
+function balance(debtorUuid, excludeCautionLinks = false) {
   const debtorUid = db.bid(debtorUuid);
+
+  const excludeCautionLinkStatement = `AND transaction_type_id <> ${CAUTION_LINK_TYPE_ID}`;
 
   const sql = `
     SELECT IFNULL(SUM(ledger.debit_equiv), 0) AS debit, IFNULL(SUM(ledger.credit_equiv), 0) AS credit,
       IFNULL(SUM(ledger.debit_equiv - ledger.credit_equiv), 0) AS balance, MIN(trans_date) AS since,
       MAX(trans_date) AS until
     FROM (
-      SELECT debit_equiv, credit_equiv, entity_uuid, trans_date FROM posting_journal WHERE entity_uuid = ?
+      SELECT debit_equiv, credit_equiv, entity_uuid, trans_date FROM posting_journal
+        WHERE entity_uuid = ? ${excludeCautionLinks ? excludeCautionLinkStatement : ''}
       UNION ALL
-      SELECT debit_equiv, credit_equiv, entity_uuid, trans_date FROM general_ledger WHERE entity_uuid = ?
+      SELECT debit_equiv, credit_equiv, entity_uuid, trans_date FROM general_ledger
+        WHERE entity_uuid = ? ${excludeCautionLinks ? excludeCautionLinkStatement : ''}
     ) AS ledger
     GROUP BY ledger.entity_uuid;
   `;
@@ -260,8 +265,12 @@ function balance(debtorUuid) {
  * @description
  * returns all transactions and balances associated with the debtor (or creditor).
  */
-function getFinancialActivity(debtorUuid) {
+function getFinancialActivity(debtorUuid, excludeCautionLinks = false) {
   const uid = db.bid(debtorUuid);
+
+
+  const excludeCautionLinkStatement = `AND transaction_type_id <> ${CAUTION_LINK_TYPE_ID}`;
+
   const sql = `
     SELECT trans_id, BUID(entity_uuid) AS entity_uuid, description,
       BUID(record_uuid) AS record_uuid, trans_date, debit, credit, document, balance,
@@ -272,7 +281,7 @@ function getFinancialActivity(debtorUuid) {
         SUM(p.debit_equiv) - SUM(p.credit_equiv) AS balance, 0 AS posted
       FROM posting_journal AS p
         LEFT JOIN document_map AS dm ON dm.uuid = p.record_uuid
-      WHERE p.entity_uuid = ?
+      WHERE p.entity_uuid = ? ${excludeCautionLinks ? excludeCautionLinkStatement : ''}
       GROUP BY p.record_uuid
 
       UNION ALL
@@ -282,7 +291,7 @@ function getFinancialActivity(debtorUuid) {
         SUM(g.debit_equiv) - SUM(g.credit_equiv) AS balance, 1 AS posted
       FROM general_ledger AS g
         LEFT JOIN document_map AS dm ON dm.uuid = g.record_uuid
-      WHERE g.entity_uuid = ?
+      WHERE g.entity_uuid = ? ${excludeCautionLinks ? excludeCautionLinkStatement : ''}
       GROUP BY g.record_uuid
     )c, (SELECT @cumsum := 0)z
     ORDER BY trans_date ASC, trans_id;
@@ -291,7 +300,7 @@ function getFinancialActivity(debtorUuid) {
 
   return q.all([
     db.exec(sql, [uid, uid]),
-    balance(debtorUuid),
+    balance(debtorUuid, excludeCautionLinks),
   ])
     .spread((transactions, aggs) => {
       if (!aggs.length) {

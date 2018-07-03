@@ -34,6 +34,7 @@ function agedDebtorReport(req, res, next) {
 
   const qs = _.extend(req.query, {
     csvKey : 'debtors',
+    orientation : 'landscape',
     footerRight : '[page] / [toPage]',
     footerFontSize : '7',
   });
@@ -49,8 +50,16 @@ function agedDebtorReport(req, res, next) {
     return;
   }
 
-  // fire the SQL for the report
-  queryContext(qs)
+  const sql = `
+    SELECT end_date FROM period WHERE id = ?;
+  `;
+
+  db.one(sql, [qs.period_id])
+    .then(period => {
+      qs.date = period.end_date;
+      // fire the SQL for the report
+      return queryContext(qs);
+    })
     .then(data => report.render(data))
     .then(result => {
       res.set(result.headers).send(result.report);
@@ -58,6 +67,7 @@ function agedDebtorReport(req, res, next) {
     .catch(next)
     .done();
 }
+
 
 /**
  * @method queryContext
@@ -67,17 +77,15 @@ function agedDebtorReport(req, res, next) {
  * @description
  * The HTTP interface which actually creates the report.
  */
-function queryContext(queryParams) {
-  const params = queryParams || {};
+function queryContext(params = {}) {
   const havingNonZeroValues = ' HAVING total > 0 ';
   const includeZeroes = Boolean(Number(params.zeroes));
   const useMonthGrouping = Boolean(Number(params.useMonthGrouping));
+  const fiscalId = params.fiscal_id;
 
   // format the dates for MySQL escape
-  const dates = _.fill(Array(5), new Date(params.date));
-
+  const dates = _.fill(Array(5), params.date);
   const data = {};
-  const source = 'general_ledger';
 
   const groupByMonthColumns = `
     SUM(IF(MONTH(?) - MONTH(gl.trans_date) = 0, gl.debit_equiv - gl.credit_equiv, 0)) AS thirty,
@@ -94,19 +102,19 @@ function queryContext(queryParams) {
   `;
 
   const columns = useMonthGrouping ? groupByMonthColumns : groupByRangeColumns;
-
+  const filterByFiscalId = useMonthGrouping ? `AND gl.fiscal_year_id = ${db.escape(fiscalId)} ` : ``;
   // selects into columns of 30, 60, 90, and >90
   const debtorSql = `
     SELECT BUID(dg.uuid) AS id, dg.name, a.number,
       ${columns}
       SUM(gl.debit_equiv - gl.credit_equiv) AS total
     FROM debtor_group AS dg JOIN debtor AS d ON dg.uuid = d.group_uuid
-      LEFT JOIN ${source} AS gl ON gl.entity_uuid = d.uuid
+      LEFT JOIN general_ledger AS gl ON gl.entity_uuid = d.uuid
       JOIN account AS a ON a.id = dg.account_id
-    WHERE DATE(gl.trans_date) <= DATE(?)
+    WHERE DATE(gl.trans_date) <= DATE(?) ${filterByFiscalId}
     GROUP BY dg.uuid
     ${includeZeroes ? '' : havingNonZeroValues}
-    ORDER BY dg.name;
+    ORDER BY a.number;
   `;
 
   // aggregates the data above as totals into columns of 30, 60, 90, and >90
@@ -115,7 +123,7 @@ function queryContext(queryParams) {
       ${columns}
       SUM(gl.debit_equiv - gl.credit_equiv) AS total
     FROM debtor_group AS dg JOIN debtor AS d ON dg.uuid = d.group_uuid
-      LEFT JOIN ${source} AS gl ON gl.entity_uuid = d.uuid
+      LEFT JOIN general_ledger AS gl ON gl.entity_uuid = d.uuid
     WHERE DATE(gl.trans_date) <= DATE(?)
     ${includeZeroes ? '' : havingNonZeroValues}
   `;

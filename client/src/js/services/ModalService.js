@@ -15,9 +15,6 @@ ModalService.$inject = ['$uibModal'];
  *    It might be useful to have an associated icon and state (error, info,
  *    warning, etc).
  *
- *  - sudo() to bring up a modal requiring correct user password entry and set
- *    the application state into super user mode (if appropriate)
- *
  *  - confirmText() to bring up a "type this text to confirm" input that will
  *    only allow a user to enter text and only enable the "confirm" button once
  *    the text matches exactly what is anticipated.
@@ -36,6 +33,7 @@ function ModalService(Modal) {
   service.confirm = confirm;
   service.openSelectCashbox = openSelectCashbox;
   service.openUploadDocument = openUploadDocument;
+
   // modal for reporting
   service.openReports = openReports;
   // inventory group action : add or edit
@@ -49,9 +47,6 @@ function ModalService(Modal) {
 
   // inventory list action : add or edit
   service.openInventoryListActions = openInventoryListActions;
-
-  // date interval modal
-  service.openDateInterval = openDateInterval;
 
   // confirm deletion modal
   service.openConfirmDialog = openConfirmDialog;
@@ -217,21 +212,6 @@ function ModalService(Modal) {
       templateUrl  : 'modules/inventory/list/modals/actions.tmpl.html',
       controller   : 'InventoryListActionsModalController',
       controllerAs : '$ctrl',
-      resolve : { data : () => request },
-    });
-
-    const instance = Modal.open(params);
-    return instance.result;
-  }
-
-  /** Find by Date interval modal */
-  function openDateInterval(request) {
-
-    const params = angular.extend(modalParameters, {
-      templateUrl  : 'modules/templates/modals/dateInterval.tmpl.html',
-      controller   : 'DateIntervalModalController',
-      controllerAs : '$ctrl',
-      size         : 'xs',
       resolve : { data : () => request },
     });
 

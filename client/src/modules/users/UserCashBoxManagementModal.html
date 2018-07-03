@@ -14,7 +14,7 @@
     <div class="form-group" ng-class="{ 'has-error' : UserForm.$submitted && UserForm.display_name.$invalid }">
       <label class="control-label" translate>FORM.LABELS.USERNAME</label>
       <div>
-        <h4><i> {{ UsersCashBoxModalCtrl.user.display_name }} </i></h4>
+        <h4><i>{{ UsersCashBoxModalCtrl.user.display_name }}</i></h4>
       </div>
     </div>
 
@@ -29,11 +29,11 @@
 
   <div class="modal-footer">
     <button id="user-cancel" type="button" class="btn btn-default" ng-click="UsersCashBoxModalCtrl.closeModal()">
-      <i class="fa fa-ban"></i> <span translate>FORM.BUTTONS.CANCEL</span>
+      <span translate>FORM.BUTTONS.CANCEL</span>
     </button>
 
     <bh-loading-button loading-state="UserForm.$loading">
-      <i class="fa fa-ok"></i> <span translate>FORM.BUTTONS.SUBMIT</span>
+      <span translate>FORM.BUTTONS.SUBMIT</span>
     </bh-loading-button>
   </div>
 </form>

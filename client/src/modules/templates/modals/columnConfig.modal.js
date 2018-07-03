@@ -1,7 +1,7 @@
 angular.module('bhima.controllers')
   .controller('ColumnsConfigModalController', ColumnsConfigModalController);
 
-ColumnsConfigModalController.$inject = [ '$uibModalInstance', 'Columns' ];
+ColumnsConfigModalController.$inject = ['$uibModalInstance', 'Columns'];
 
 /**
  * @module ColumnConfigModal
@@ -11,12 +11,10 @@ ColumnsConfigModalController.$inject = [ '$uibModalInstance', 'Columns' ];
  * to toggle column visibilities.
  */
 function ColumnsConfigModalController(ModalInstance, Columns) {
-  var vm = this;
+  const vm = this;
 
   // make sure we do not have any blank columns
-  vm.columns = Columns.getColumns().filter(function (column) {
-    return column.displayName !== '';
-  });
+  vm.columns = Columns.getColumns().filter(column => column.displayName !== '');
 
   // visibility map
   vm.map = Columns.getColumnVisibilityMap();
@@ -26,13 +24,15 @@ function ColumnsConfigModalController(ModalInstance, Columns) {
 
   /**
    * @function submit
-   * @description for submitting a dialog content
+   *
+   * @description
+   * Registers the columns on the grid and then closes the modal
    */
   function submit() {
-    if (vm.hasTooFewColumns) { return; }
+    if (vm.hasTooFewColumns) { return 0; }
 
     Columns.setVisibleColumns(vm.map);
-    ModalInstance.close();
+    return ModalInstance.close();
   }
 
   // reset the column visibility to their default configuration
@@ -47,10 +47,8 @@ function ColumnsConfigModalController(ModalInstance, Columns) {
     ModalInstance.dismiss();
   }
 
-  function checkVisible(){
-    var columnNumber = Columns.hasEnoughColumns(vm.map);
-    vm.hasTooFewColumns = !columnNumber ? true : false;
-
+  function checkVisible() {
+    vm.hasTooFewColumns = !Columns.hasEnoughColumns(vm.map);
   }
 
   vm.submit = submit;

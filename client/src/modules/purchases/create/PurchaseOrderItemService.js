@@ -55,17 +55,16 @@ function PurchaseOrderItemService(uuid) {
 
     // ensure the numbers are valid in the invoice
     // The Quantity and Unit Price must not be Zero
-    const hasValidNumbers =
-      angular.isNumber(item.quantity) &&
-      angular.isNumber(item.unit_price) &&
-      item.quantity > 0 &&
-      item.unit_price > 0;
+    const hasValidNumbers = angular.isNumber(item.quantity)
+      && angular.isNumber(item.unit_price)
+      && item.quantity > 0
+      && item.unit_price > 0;
 
     // the item is only initialised if it has an inventory item
     item._initialised = angular.isDefined(item.inventory_uuid);
 
     // alias both valid and invalid for easy reading
-    item._valid = item._initialised && hasValidNumbers;
+    item._valid = item._initialised && hasValidNumbers && item._hasValidAccounts;
     item._invalid = !item._valid;
   };
 
@@ -84,6 +83,9 @@ function PurchaseOrderItemService(uuid) {
     this.unit_price = inventoryItem.price;
     this.inventory_uuid = inventoryItem.uuid;
     this.unit = inventoryItem.unit;
+
+    // make sure the appropriate accounts are defined for inventory items
+    this._hasValidAccounts = inventoryItem.stock_account && inventoryItem.cogs_account;
 
     // reset the validation flags.
     this.validate();

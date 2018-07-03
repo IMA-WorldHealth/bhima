@@ -43,6 +43,11 @@
                 <span class="fa fa-file-excel-o"></span> <span translate>DOWNLOADS.CSV</span>
               </a>
             </li>
+            <li role="menuitem">
+              <a ng-href="/reports/finance/cash/?{{ CPRCtrl.download('xlsx') }}" download="{{ 'CASH_REGISTRY.TITLE' | translate }}">
+                <span class="fa fa-file-excel-o"></span> <span translate>DOWNLOADS.EXCEL</span>
+              </a>
+            </li>
           </ul>
         </div>
       </div>
@@ -55,6 +60,10 @@
           <span class="fa fa-search"></span> <span class="hidden-xs" translate>FORM.BUTTONS.SEARCH</span>
         </button>
       </div>
+
+      <bh-filter-toggle on-toggle="CPRCtrl.toggleInlineFilter()">
+      </bh-filter-toggle>
+
     </div>
   </div>
 </div>

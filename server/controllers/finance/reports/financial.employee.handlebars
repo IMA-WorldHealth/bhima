@@ -1,0 +1,72 @@
+{{> head title="REPORT.EMPLOYEE_STANDING.REPORT" }}
+
+<body>
+
+  {{> header }}
+
+  <h3 class="text-center text-uppercase">
+    <span style="text-decoration-line: underline">
+      <strong> {{translate "REPORT.EMPLOYEE_STANDING.REPORT"}} </strong>
+    </span>  
+  </h3>
+  <h4 class="text-uppercase"><strong>{{translate "FORM.LABELS.EMPLOYEE_NAME"}} :  {{ employee.display_name }}</strong></h4>
+  <h4 class="text-uppercase"><strong>{{translate "FORM.LABELS.REFERENCE"}} : {{ employee.reference }}</strong></h4>
+  <h5 class="text-uppercase"><strong>{{translate "FORM.LABELS.REGISTRATION_NUMBER"}} : {{ employee.code }}</strong></h5>
+  <h4 class="text-uppercase" style="background-color: #efefef;">
+    <strong>
+      {{translate aggregates.balanceText}} == {{debcred aggregates.balance metadata.enterprise.currency_id}}
+    </strong>
+  </h4>
+  <hr/>
+
+  <section>
+    <table class="table table-condensed table-bordered table-report">
+      <thead>
+        <tr class="text-capitalize text-center" style="background-color: #ddd;" >
+          <th>{{translate "TABLE.COLUMNS.DATE" }}</th>
+          <th style="width: 10%;">{{translate "TABLE.COLUMNS.DOCUMENT" }}</th>
+          <th style="width: 5%;">{{translate "TABLE.COLUMNS.TRANSACTION" }}</th>
+          <th>{{translate "TABLE.COLUMNS.DESCRIPTION" }}</th>
+          <th style="width: 15%;" class="text-center">{{translate "TABLE.COLUMNS.DEBIT" }}</th>
+          <th style="width: 15%;" class="text-center">{{translate "TABLE.COLUMNS.CREDIT" }}</th>
+          <th style="width: 15%;" class="text-center">{{translate "TABLE.COLUMNS.BALANCE" }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each transactions}}
+          <tr>
+            <td>{{date this.trans_date}}</td>
+            <td class="text-right" title="{{this.document}}">{{this.document}}</td>
+            <td class="text-right" title="{{this.trans_id}}">{{this.trans_id}}</td>
+            <td class="text-uppercase" style="max-width : 200px; white-space : nowrap; overflow : hidden; text-overflow : ellipsis;" title="{{this.description}}">{{this.description}}</td>
+            <td class="text-right">
+              {{currency this.debit ../metadata.enterprise.currency_id}}
+            </td>
+            <td class="text-right">
+              {{currency this.credit ../metadata.enterprise.currency_id}}
+            </td>           
+            <td class="text-right">
+              {{debcred this.cumsum ../metadata.enterprise.currency_id}}
+            </td>
+          </tr>
+        {{else}}
+          {{>emptyTable columns=5}}
+        {{/each}}
+      </tbody>
+      <tfoot style="background-color: #ddd;">
+        <tr>
+          <td colspan="4" class="text-right"><strong>{{translate "FORM.LABELS.TOTAL" }}</strong></th>
+          <th class="text-right">
+            <span>{{currency aggregates.debit metadata.enterprise.currency_id}}</span>
+          </th>
+          <th class="text-right">
+            <span>{{currency aggregates.credit metadata.enterprise.currency_id}}</span>
+          </th>
+          <th class="text-right">
+            <span>{{currency aggregates.balance metadata.enterprise.currency_id}}</span>
+          </th>
+        </tr>      
+      </tfoot>
+    </table>
+  </section>
+</body>

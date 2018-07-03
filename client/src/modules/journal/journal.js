@@ -33,7 +33,7 @@ function JournalController(
   Journal, Sorting, Grouping, Filtering, Columns, Session, Notify, bhConstants,
   $state, uiGridConstants, Modal, Languages, AppCache, Store, uiGridGroupingConstants,
   Export, $filter, GridExport, GridState, GridSelection, TrialBalance,
-  $httpParamSerializer, Transactions, util
+  $httpParamSerializer, Transactions, util,
 ) {
   // store journal data
   const journalStore = new Store({
@@ -293,9 +293,13 @@ function JournalController(
     headerCellFilter : 'translate',
     visible : true,
   }, {
-    field : 'transaction_type_id',
+    field : 'transaction_type_text',
     displayName : 'FORM.LABELS.TRANSACTION_TYPE',
     headerCellFilter : 'translate',
+    cellTemplate :
+      `<div class="ui-grid-cell-contents" translate>
+        {{ row.entity.transaction_type_text}}
+      </div>`,
     visible : false,
   }, {
     field : 'display_name',
@@ -383,12 +387,14 @@ function JournalController(
   };
 
   vm.downloadExcel = () => {
+
     const filterOpts = Journal.filters.formatHTTP();
     const defaultOpts = {
       renderer : 'xlsx',
       lang : Languages.key,
+      renameKeys : true,
+      displayNames : columnConfig.getDisplayNames(),
     };
-
     // combine options
     const options = angular.merge(defaultOpts, filterOpts);
     // return  serialized options
@@ -582,8 +588,8 @@ function JournalController(
     // update only rows that already existed and have been edited
     editSessionResult.edited.forEach((uuid) => {
       // update record that already exists
-      var currentRow = journalStore.get(uuid);
-      var updatedRow = editSessionResult.updatedTransaction.get(uuid);
+      const currentRow = journalStore.get(uuid);
+      const updatedRow = editSessionResult.updatedTransaction.get(uuid);
 
       Object.keys(currentRow).forEach((key) => {
         currentRow[key] = updatedRow[key];

@@ -4,16 +4,16 @@
   data-modal="purchase-search"
   novalidate>
 
-  <div class="search-modal-header">
+  <div class="modal-header">
     <ol class="headercrumb">
-      <li class="static" translate>FORM.INFO.PATIENTS</li>
+      <li class="static" translate>TREE.PURCHASE</li>
       <li class="title" translate>FORM.INFO.SEARCH</li>
     </ol>
   </div>
 
   <div class="modal-body search-modal">
     <uib-tabset>
-      <uib-tab index="0" heading="{{ 'FORM.LABELS.SEARCH_QUERRIES' | translate}}" data-custom-filter-tab>
+      <uib-tab index="0" heading="{{ 'FORM.LABELS.SEARCH_QUERIES' | translate}}" data-custom-filter-tab>
         <div class="tab-body">
           <!-- Reference -->
           <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.reference.$invalid }">
@@ -33,7 +33,7 @@
             required="false">
             <bh-clear on-clear="$ctrl.clear('supplier_uuid')"></bh-clear>
           </bh-supplier-select>
-    
+
           <!-- user -->
           <bh-user-select
             user-id="$ctrl.searchQueries.user_id"
@@ -67,8 +67,8 @@
             </div>
           </div>
         </div>
-      </uib-tab>      
-    </uib-tabset>  
+      </uib-tab>
+    </uib-tabset>
   </div>
 
   <div class="modal-footer">

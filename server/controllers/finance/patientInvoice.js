@@ -14,9 +14,9 @@ const Debtors = require('./debtors');
 const FilterParser = require('../../lib/filter');
 const barcode = require('../../lib/barcode');
 const createInvoice = require('./invoice/patientInvoice.create');
+const consumableInvoice = require('./invoice/lookupConsumableInvoice');
 const db = require('../../lib/db');
 const identifiers = require('../../config/identifiers');
-
 const shared = require('./shared');
 
 const entityIdentifier = identifiers.INVOICE.key;
@@ -44,6 +44,9 @@ exports.balance = balance;
 
 /** Expose lookup invoice credit note for other controllers to use internally */
 exports.lookupInvoiceCreditNote = lookupInvoiceCreditNote;
+
+/** get invoice details and its consumable inventories for a given patient */
+exports.lookupConsumableInvoicePatient = consumableInvoice.lookupConsumableInvoicePatient;
 
 /**
  * read
@@ -117,7 +120,8 @@ function lookupInvoice(invoiceUuid) {
       inventory.consumable
     FROM invoice_item
     LEFT JOIN inventory ON invoice_item.inventory_uuid = inventory.uuid
-    WHERE invoice_uuid = ?`;
+    WHERE invoice_uuid = ?
+    ORDER BY inventory.code;`;
 
   const invoiceBillingQuery =
     `SELECT
@@ -173,7 +177,10 @@ function detail(req, res, next) {
 
 function create(req, res, next) {
   const { invoice } = req.body;
+  const { prepaymentDescription } = req.query;
   invoice.user_id = req.session.user.id;
+
+  const hasPrepaymentSupport = req.session.enterprise.settings.enable_prepayments;
 
   const hasInvoiceItems = (invoice.items && invoice.items.length > 0);
 
@@ -187,13 +194,26 @@ function create(req, res, next) {
   const invoiceUuid = invoice.uuid || uuid();
   invoice.uuid = invoiceUuid;
 
-  const preparedTransaction = createInvoice(invoice);
-  preparedTransaction.execute()
+  const hasDebtorUuid = !!(invoice.debtor_uuid);
+  if (!hasDebtorUuid) {
+    next(new BadRequest(`An invoice must be submitted to a debtor.`));
+    return;
+  }
+
+  // check if the patient/debtor has a creditor balance with the enterprise.  If
+  // so, we will use their caution balance to link to the invoice for payment.
+  Debtors.balance(invoice.debtor_uuid)
+    .then(([pBalance]) => {
+      const hasCreditorBalance = hasPrepaymentSupport && pBalance && (pBalance.credit > pBalance.debit);
+      const preparedTransaction = createInvoice(invoice, hasCreditorBalance, prepaymentDescription);
+      return preparedTransaction.execute();
+    })
     .then(() => {
       res.status(201).json({ uuid : invoiceUuid });
     })
     .catch(next)
     .done();
+
 }
 
 function find(options) {
@@ -211,11 +231,12 @@ function find(options) {
     SELECT BUID(invoice.uuid) as uuid, invoice.project_id, invoice.date,
       patient.display_name as patientName, invoice.cost,
       BUID(invoice.debtor_uuid) as debtor_uuid, dm.text AS reference,
-      em.text AS patientReference, service.name as serviceName,
+      em.text AS patientReference, service.name as serviceName, proj.name AS project_name,
       user.display_name, invoice.user_id, invoice.reversed, invoice.edited
     FROM invoice
-    LEFT JOIN patient ON invoice.debtor_uuid = patient.debtor_uuid
-    JOIN debtor AS d ON invoice.debtor_uuid = d.uuid
+    JOIN patient FORCE INDEX(debtor_uuid) ON invoice.debtor_uuid = patient.debtor_uuid
+    JOIN debtor d ON d.uuid = invoice.debtor_uuid
+    JOIN project AS proj ON proj.id = invoice.project_id
     JOIN entity_map AS em ON em.uuid = patient.uuid
     JOIN document_map AS dm ON dm.uuid = invoice.uuid
     JOIN service ON service.id = invoice.service_id
@@ -267,9 +288,10 @@ function find(options) {
 function lookupInvoiceCreditNote(invoiceUuid) {
   const buid = db.bid(invoiceUuid);
   const sql = `
-    SELECT BUID(v.uuid) AS uuid, v.date, CONCAT_WS('.', '${identifiers.VOUCHER.key}', p.abbr, v.reference) AS reference,
+    SELECT BUID(v.uuid) AS uuid, v.date, dm.text AS reference,
       v.currency_id, v.amount, v.description, v.reference_uuid, u.display_name
     FROM voucher v
+    JOIN document_map dm ON v.uuid = dm.uuid
     JOIN project p ON p.id = v.project_id
     JOIN user u ON u.id = v.user_id
     JOIN invoice i ON i.uuid = v.reference_uuid

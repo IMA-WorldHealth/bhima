@@ -20,7 +20,7 @@ class RubricPage {
   constructor() {
     this.gridId = 'rubric-grid';
     this.rubricGrid = element(by.id(this.gridId));
-    this.actionLinkColumn = 11;
+    this.actionLinkColumn = 14;
   }
 
   /**

@@ -44,6 +44,12 @@
               </a>
             </li>
 
+            <li role="menuitem">
+              <a href data-action="payment-employee" ng-click="ComplexVoucherCtrl.openPaymentEmployees()">
+                <i class="fa fa-user-secret"></i> <span translate>VOUCHERS.GLOBAL.PAYMENT_EMPLOYEES</span>
+              </a>
+            </li>
+
           </ul>
         </div>
       </div>
@@ -93,20 +99,15 @@
               <div class="col-md-6">
 
                 <div class="form-group" ng-class="{ 'has-error' : ComplexVoucherForm.$submitted && ComplexVoucherForm.type_id.$invalid }">
-                  <label class="control-label">
-                    <span translate>FORM.LABELS.TRANSACTION_TYPE</span>
-                    <span uib-popover="{{ 'VOUCHERS.GLOBAL.TRANSACTION_TYPE_INFO' | translate }}"
-                      popover-trigger="'mouseenter'"
-                      popover-placement="bottom"
-                      class="text-info fa fa-info-circle">
-                    </span>
+                  <label class="control-label" translate>
+                    FORM.LABELS.TRANSACTION_TYPE
                   </label>
 
                   <!-- Select a Transaction Type -->
                   <ui-select
                     name="type_id"
                     ng-model="ComplexVoucherCtrl.Voucher.details.type_id"
-                    ng-required="ComplexVoucherCtrl.Voucher.hasCashboxAccount"
+                    required="true"
                     on-select="ComplexVoucherCtrl.Voucher.validate()">
 
                     <ui-select-match placeholder="{{ 'FORM.SELECT.TRANSACTION_TYPE' | translate }}">
@@ -121,18 +122,13 @@
                     </ui-select-choices>
                   </ui-select>
 
-                  <div class="help-block" ng-show="ComplexVoucherCtrl.Voucher.hasCashboxAccount">
-                    <p class="text-info">
-                      <i class="fa fa-info-circle"></i> <span translate>VOUCHERS.GLOBAL.USE_FINANCIAL_ACCOUNT</span>
-                    </p>
-                  </div>
-
                   <div class="help-block" ng-messages="ComplexVoucherForm.type_id.$error" ng-show="ComplexVoucherForm.$submitted">
                     <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
                   </div>
                 </div>
 
                 <bh-currency-select
+                  on-change="ComplexVoucherCtrl.currencyChange(currency)"
                   currency-id="ComplexVoucherCtrl.Voucher.details.currency_id"
                   validation-trigger="ComplexVoucherForm.$submitted">
                 </bh-currency-select>

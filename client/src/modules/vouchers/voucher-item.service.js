@@ -125,6 +125,7 @@ function VoucherItemService(uuid, Constants, util) {
    * the ui-select.
    */
   VoucherItem.prototype.configure = function configure(item) {
+
     if (item.account_id) {
       this.account_id = item.account_id;
     }
@@ -146,6 +147,10 @@ function VoucherItemService(uuid, Constants, util) {
     if (angular.isDefined(item.document)) {
       this.document = item.document;
     }
+
+    if (angular.isDefined(item.document_uuid)) {
+      this.document_uuid = item.document_uuid;
+    }    
   };
 
   return VoucherItem;

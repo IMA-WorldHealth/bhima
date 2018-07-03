@@ -31,6 +31,10 @@ function InventoryReportConfigController(
     vm.inventory = inventory;
   };
 
+  vm.onSelectDate = (date) => {
+    vm.dateTo = date;
+  };
+
   vm.clear = function clear(key) {
     delete vm[key];
   };
