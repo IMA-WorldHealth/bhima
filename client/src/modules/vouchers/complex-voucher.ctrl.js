@@ -36,6 +36,11 @@ function ComplexJournalVoucherController(
     id : vm.enterprise.currency_id,
     rate : 1,
   };
+
+  function roundDecimal(number, precision = 4) {
+    const base = 10 ** precision;
+    return Math.round(number * base) / base;
+  }
   // bind the complex voucher form
   vm.Voucher = new VoucherForm('ComplexVouchers');
 
@@ -61,16 +66,16 @@ function ComplexJournalVoucherController(
         exchangeRate = Rates.getExchangeRate(vCurrencyId, currentDate);
         vm.currentCurrency = { id : vCurrencyId, rate : exchangeRate };
         vm.gridOptions.data = vm.gridOptions.data.map(row => {
-          row.credit *= vm.currentCurrency.rate;
-          row.debit *= vm.currentCurrency.rate;
+          row.credit = roundDecimal(row.credit * vm.currentCurrency.rate, 2);
+          row.debit = roundDecimal(row.debit * vm.currentCurrency.rate, 2);
           return row;
         });
       } else {
         exchangeRate = Rates.getExchangeRate(vm.currentCurrency.id, currentDate);
         vm.currentCurrency = { id : vCurrencyId, rate : exchangeRate };
         vm.gridOptions.data = vm.gridOptions.data.map(row => {
-          row.credit /= vm.currentCurrency.rate;
-          row.debit /= vm.currentCurrency.rate;
+          row.credit = roundDecimal(row.credit / vm.currentCurrency.rate, 2);
+          row.debit = roundDecimal(row.debit / vm.currentCurrency.rate, 2);
           return row;
         });
       }
