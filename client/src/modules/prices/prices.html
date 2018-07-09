@@ -44,6 +44,13 @@
                     <i class="fa fa-pencil"></i> <span translate>FORM.BUTTONS.EDIT</span>
                   </a>
                 </td>
+                <td width='50'>
+                  <a class="btn btn-xs btn-default"
+                    target="_blank"
+                    href="/prices/report/{{list.uuid}}?{{PriceListCtrl.download()}}">
+                    <i class="fa fa-print"></i> <span translate>FORM.BUTTONS.PRINT</span>
+                  </a>
+                </td>
               </tr>
               <tr ng-if="PriceListCtrl.priceList.data.length===0">
                 <td colspan="3"><i translate> PRICE_LIST.NO_RECORDS </i></tr>

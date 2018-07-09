@@ -508,6 +508,7 @@ exports.configure = function configure(app) {
   // price lists
   app.get('/prices', priceList.list);
   app.get('/prices/:uuid', priceList.details);
+  app.get('/prices/report/:uuid', financeReports.priceList);
   app.post('/prices', priceList.create);
   app.put('/prices/:uuid', priceList.update);
   app.delete('/prices/:uuid', priceList.delete);
