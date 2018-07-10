@@ -433,7 +433,10 @@ function PatientInvoiceFormService(
     if (angular.isDefined(price)) {
       item.applyPriceList(price);
     }
-
+    // set focus on quantity field
+    setTimeout(() => {
+      document.getElementById(item.uuid).focus();
+    }, 100);
     // make sure to validate and calculate new totals
     this.digest();
 
