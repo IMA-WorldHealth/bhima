@@ -12,7 +12,7 @@
       <p class="text-info" translate>REPORT.BALANCE_SHEET.DESCRIPTION</p>
     </div>
   </div>
-
+  
   <div class="row" style="margin-top : 10px">
     <div class="col-md-6">
       <div class="panel panel-default">
@@ -22,22 +22,13 @@
 
         <div class="panel-body">
           <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate>
+            <bh-fiscal-period-select
+              validation-trigger="ConfigForm.$submitted"
+              on-select-fiscal-callback="ReportConfigCtrl.onSelectFiscal(fiscal)"
+              on-select-period-from-callback="ReportConfigCtrl.onSelectPeriodFrom(period)"
+              on-select-period-to-callback="ReportConfigCtrl.onSelectPeriodTo(period)">
+            </bh-fiscal-period-select>
 
-            <!-- choose date until  -->
-            <bh-date-editor
-              date-value="ReportConfigCtrl.reportDetails.date"
-              on-change="ReportConfigCtrl.onDateChange(date)">
-            </bh-date-editor>
-
-            <!--display also revenue and expense-->
-            <div class="checkbox">
-              <label>
-                <input type="checkbox"
-                  ng-model="ReportConfigCtrl.reportDetails.showExploitation"
-                  ng-true-value="1" ng-false-value="0">
-                <span translate>REPORT.BALANCE_SHEET.SHOW_EXPLOITATION</span>
-              </label>
-            </div>
 
             <bh-loading-button loading-state="ConfigForm.$loading">
               <span translate>REPORT.UTIL.PREVIEW</span>
@@ -47,4 +38,6 @@
       </div>
     </div>
   </div>
+
+  
 </div>
