@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 FiscalClosingBalanceController.$inject = [
   '$state', 'AccountService', 'FiscalService', 'NotifyService', 'SessionService',
-  'uiGridConstants', 'bhConstants',
+  'uiGridConstants', 'bhConstants', 'TreeService',
 ];
 
 /**
@@ -14,7 +14,7 @@ FiscalClosingBalanceController.$inject = [
  */
 function FiscalClosingBalanceController(
   $state, Accounts, Fiscal, Notify, Session, uiGridConstants
-  , bhConstants
+  , bhConstants, Tree
 ) {
 
   const vm = this;
@@ -45,6 +45,9 @@ function FiscalClosingBalanceController(
     headerCellClass : 'text-center',
     headerCellFilter : 'translate',
     cellTemplate : '/modules/fiscal/templates/debit.tmpl.html',
+    aggregationType  : customAggregationFn,
+    footerCellClass  : 'text-right',
+    footerCellFilter : 'currency:'.concat(Session.enterprise.currency_id),
     width : 200,
     enableFiltering : false,
   }, {
@@ -53,6 +56,9 @@ function FiscalClosingBalanceController(
     headerCellClass : 'text-center',
     headerCellFilter : 'translate',
     cellTemplate : '/modules/fiscal/templates/credit.tmpl.html',
+    aggregationType  : customAggregationFn,
+    footerCellClass  : 'text-right',
+    footerCellFilter : 'currency:'.concat(Session.enterprise.currency_id),
     width : 200,
     enableFiltering : false,
   }];
@@ -69,6 +75,15 @@ function FiscalClosingBalanceController(
     onRegisterApi,
   };
 
+  function customAggregationFn(columnDefs, column) {
+    if (vm.AccountTree) {
+      const root = vm.AccountTree.getRootNode();
+      return (root[column.field] || 0);
+    }
+
+    return 0;
+  }
+
   // API register function
   function onRegisterApi(gridApi) {
     vm.gridApi = gridApi;
@@ -81,25 +96,96 @@ function FiscalClosingBalanceController(
       $state.params.label = vm.fiscal.label;
       return fy.previous_fiscal_year_id;
     })
-    .then(loadPeriodicBalance)
+    .then(loadFinalBalance)
     .catch(Notify.handleError);
 
   /**
-   * loadPeriodicBalance
+   * @function pruneUntilSettled
+   *
+   * @description
+   * Tree shaking algorithm that prunes the tree until only accounts with
+   * children remain in the tree.  Highly inefficient!  But this operation
+   * doesn't happen that frequently.
+   *
+   * In practice, the prune function is called 0 - 5 times, depending on how
+   * many title accounts are missing children.
+   */
+  function pruneUntilSettled(tree) {
+    const pruneFn = node => node.isTitleAccount && node.children.length === 0;
+
+    let settled = tree.prune(pruneFn);
+    while (settled > 0) {
+      settled = tree.prune(pruneFn);
+    }
+  }
+
+  const debitSumFn = Tree.common.sumOnProperty('debit');
+  const creditSumFn = Tree.common.sumOnProperty('credit');
+
+  /**
+   * @function onBalanceChange
+   *
+   * @description
+   * This function tells the ui-grid to sum the values of the debit/credit
+   * columns in the footer.
+   */
+  function onBalanceChange() {
+    vm.AccountTree.walk((node, parent) => {
+      parent.debit = 0;
+      parent.credit = 0;
+    });
+
+    vm.AccountTree.walk((childNode, parentNode) => {
+      debitSumFn(childNode, parentNode);
+      creditSumFn(childNode, parentNode);
+    }, false);
+
+    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+  }
+
+  /**
+   * @function hasBalancedAccount
+   *
+   * @description
+   * Checks if the debits and credits balance
+   */
+  function hasBalancedAccount() {
+    const { debit, credit } = vm.AccountTree.getRootNode();
+    return debit === credit;
+  }
+
+  /**
+   * loadFinalBalance
    * load the balance until a given period
    */
-  function loadPeriodicBalance() {
-    Fiscal.periodicBalance({
+  function loadFinalBalance(showHiddenAccounts) {
+    Fiscal.getBalance(fiscalYearId, {
       id : fiscalYearId,
-      period_number : vm.fiscal.number_of_months + 1,
+      period_number : vm.fiscal.number_of_months,
     })
-      .then((list) => {
-        list.forEach(account => {
-          account.isTitleAccount = account.type_id === bhConstants.accounts.TITLE;
+      .then(data => {
+        let accounts = data;
+
+        if (!showHiddenAccounts) {
+          accounts = accounts.filter(account => account.hidden !== 1);
+        }
+
+        vm.AccountTree = new Tree(accounts);
+
+        // compute properties for rendering pretty indented templates
+        vm.AccountTree.walk((child, parent) => {
+          child.isTitleAccount = child.type_id === bhConstants.accounts.TITLE;
+          child.$$treeLevel = (parent.$$treeLevel || 0) + 1;
         });
 
-        vm.accounts = list;
-        vm.gridOptions.data = Accounts.order(vm.accounts);
+        // prune all title accounts with empty children
+        pruneUntilSettled(vm.AccountTree);
+
+        // compute balances
+        vm.balanced = hasBalancedAccount();
+        onBalanceChange();
+
+        vm.gridOptions.data = vm.AccountTree.data;
       })
       .catch(Notify.handleError);
   }

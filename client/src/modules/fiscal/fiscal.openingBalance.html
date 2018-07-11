@@ -23,7 +23,7 @@
         </section>
 
         <!-- footer  -->
-        <div class="panel-footer clearfix">
+        <div ng-if="!FiscalOBCtrl.previousFiscalYearExist" class="panel-footer clearfix">
           <span ng-class="{'text-success': FiscalOBCtrl.balanced, 'text-danger': !FiscalOBCtrl.balanced}" ng-show="OpeningAccountForm.$submitted">
             <i class="fa" ng-class="{'fa-check': FiscalOBCtrl.balanced, 'fa-warning': !FiscalOBCtrl.balanced}"></i>
             <span data-status="balanced" ng-show="FiscalOBCtrl.balanced" translate>ACCOUNT.BALANCED</span>
