@@ -134,7 +134,7 @@ function ClosingFYModalCtrl(Notify, Fiscal, Modal, Session, Instance, Data, uiGr
       if (isIncome) {
         aggregates.income += (node.credit - node.debit);
       } else if (isExpense) {
-        aggregates.expense += (node.credit - node.debit);
+        aggregates.expense += (node.debit - node.credit);
       }
 
       return aggregates;
