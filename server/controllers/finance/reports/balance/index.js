@@ -94,7 +94,7 @@ function document(req, res, next) {
 function getBalanceSummary(periodId, currencyId, shouldPrune) {
   const getFiscalYearSQL = `
     SELECT p.id, p.start_date, p.end_date, p.fiscal_year_id, p.number,
-      fy.start_date AS fiscalYearStart, fy.end_date
+      fy.start_date AS fiscalYearStart, fy.end_date AS fiscalYearEnd
     FROM period p JOIN fiscal_year fy ON p.fiscal_year_id = fy.id
     WHERE p.id = ?;
   `;
