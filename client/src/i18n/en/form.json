@@ -577,6 +577,8 @@
             "TOTAL_DEBITS": "Total debits",
             "TOTAL_DEBT": "Total of Debts",
             "TOTAL_PAID": "Total Paid",
+            "TOTAL_PROFITS": "Total profits",
+            "TOTAL_CHARGES": "Total charges",
             "TOTAL_SELECTED_INVOICES": "Total Selected Invoices",
             "TOTAL_SELECTED_SALARIES": "Total selected salaries",
             "TO_ACCOUNT": "To Account",

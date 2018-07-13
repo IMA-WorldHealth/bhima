@@ -18,10 +18,10 @@
         <tbody>
           <tr>
             <th class="text-center">
-              {{translate 'ACCOUNT.TYPES.EXPENSE'}}
+              {{translate 'FORM.LABELS.CHARGE'}}
             </th>
             <th class="text-center">
-              {{translate 'ACCOUNT.TYPES.INCOME'}}
+              {{translate 'FORM.LABELS.PROFIT'}}
             </th>
           </tr>
           <tr>
@@ -81,10 +81,10 @@
                 <th>
                 </th>
                 <th class="text-center">
-                  {{translate 'ACCOUNT.TYPES.EXPENSE'}}
+                  {{translate 'FORM.LABELS.TOTAL_CHARGES'}}
                 </th>
                  <th class="text-center">
-                   {{translate 'ACCOUNT.TYPES.INCOME'}}
+                   {{translate 'FORM.LABELS.TOTAL_PROFITS'}}
                 </th>
               </tr>
                <tr>
@@ -107,17 +107,6 @@
                 </td>
                 <td class="text-right">
                   {{debcred this.rightResult}}
-                </td>
-              </tr>
-              <tr>
-                <th class="text-center">
-                  {{translate 'FORM.LABELS.BALANCE'}}
-                </th>
-                <td class="text-right">
-                  {{debcred this.totalIncome}}
-                </td>
-                 <td class="text-right">
-                  {{debcred this.totalIncome}}
                 </td>
               </tr>
             </table>
