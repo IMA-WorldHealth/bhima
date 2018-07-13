@@ -660,6 +660,7 @@ function accountBanlanceByTypeId() {
       AND act.id = ?
     GROUP BY pt.account_id
     )s ON ac.id = s.account_id
+    WHERE ac.locked = 0
     ORDER BY ac.number
   `;
 }
