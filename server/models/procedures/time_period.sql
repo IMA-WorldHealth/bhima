@@ -117,7 +117,10 @@ TODO - check that there are no unposted records from previous years.
 */
 CREATE PROCEDURE CloseFiscalYear(
   IN fiscalYearId MEDIUMINT UNSIGNED,
-  IN closingAccountId INT UNSIGNED
+  IN closingAccountId INT UNSIGNED,
+  IN projectId SMALLINT(5) UNSIGNED,
+  IN currencyId TINYINT(3) UNSIGNED,
+  IN userId SMALLINT(5) UNSIGNED
 )
 BEGIN
   DECLARE NoSubsequentFiscalYear CONDITION FOR SQLSTATE '45010';
@@ -129,6 +132,9 @@ BEGIN
 
   DECLARE carryForwardBalance DECIMAL(16,4);
   DECLARE hasPreviousBalance BOOLEAN;
+
+  DECLARE voucherUuid BINARY(16);
+  DECLARE voucherDate DATETIME;
 
   -- constants
   SET incomeAccountType = 4;
@@ -165,6 +171,28 @@ BEGIN
     WHERE pt.fiscal_year_id = fiscalYearId
     GROUP BY a.id
     ORDER BY a.number;
+
+  -- 1. CREATE VOUCHERS
+  SET voucherUuid = HUID(UUID());
+  SET voucherDate = (
+    SELECT end_date FROM fiscal_year WHERE id = fiscalYearId LIMIT 1
+  );
+
+  -- insert into voucher table
+  INSERT INTO voucher 
+    (`uuid`, `date`, project_id, currency_id, description, amount, user_id) 
+  SELECT voucherUuid, voucherDate, projectId, currencyId, SUM(fyb.balance), userId 
+  FROM FiscalYearBalances fyb 
+  WHERE fyb.type_id IN (incomeAccountType, expenseAccountType);
+
+  -- insert into voucher_item table
+  -- insert the reversed values (debit for credit, credit for debit) for solding exploitation accounts
+  INSERT INTO voucher_item 
+    `uuid`, account_id, debit, credit, voucher_uuid) 
+  SELECT (HUID(UUID()), fyb.account_id, fyb.credit, fyb.debit, voucherUuid, userId 
+  FROM FiscalYearBalances fyb 
+  WHERE fyb.type_id IN (incomeAccountType, expenseAccountType);
+
 
   -- copy all balances of non-income and non-expense accounts as the opening
   -- balance of the next fiscal year

@@ -84,6 +84,60 @@ BEGIN
 END $$
 
 /*
+  PostGeneralVoucher
+
+  DESCRIPTION
+  this procedure Works as the PostVoucher with difference that it writes directly in the general_ledger
+  instead of the posting_journal
+*/
+CREATE PROCEDURE PostGeneralVoucher(
+  IN uuid BINARY(16)
+)
+BEGIN
+  DECLARE enterprise_id INT;
+  DECLARE project_id INT;
+  DECLARE currency_id INT;
+  DECLARE date TIMESTAMP;
+
+  -- variables to store core set-up results
+  DECLARE fiscal_year_id MEDIUMINT(8) UNSIGNED;
+  DECLARE period_id MEDIUMINT(8) UNSIGNED;
+  DECLARE current_exchange_rate DECIMAL(19, 8) UNSIGNED;
+  DECLARE enterprise_currency_id TINYINT(3) UNSIGNED;
+  DECLARE transaction_id VARCHAR(100);
+  DECLARE gain_account_id INT UNSIGNED;
+  DECLARE loss_account_id INT UNSIGNED;
+
+  --
+  SELECT p.enterprise_id, p.id, v.currency_id, v.date
+    INTO enterprise_id, project_id, currency_id, date
+  FROM voucher AS v JOIN project AS p ON v.project_id = p.id
+  WHERE v.uuid = uuid;
+
+  -- populate core setup values
+  CALL PostingSetupUtil(date, enterprise_id, project_id, currency_id, fiscal_year_id, period_id, current_exchange_rate, enterprise_currency_id, transaction_id, gain_account_id, loss_account_id);
+
+  -- make sure the exchange rate is correct
+  SET current_exchange_rate = GetExchangeRate(enterprise_id, currency_id, date);
+  SET current_exchange_rate = (SELECT IF(currency_id = enterprise_currency_id, 1, current_exchange_rate));
+
+  -- POST to the general_ledger
+  INSERT INTO general_ledger (uuid, project_id, fiscal_year_id, period_id,
+    trans_id, trans_date, record_uuid, description, account_id, debit,
+    credit, debit_equiv, credit_equiv, currency_id, entity_uuid,
+    reference_uuid, comment, transaction_type_id, user_id)
+  SELECT
+    HUID(UUID()), v.project_id, fiscal_year_id, period_id, transaction_id, v.date,
+    v.uuid, v.description, vi.account_id, vi.debit, vi.credit,
+    vi.debit * (1 / current_exchange_rate), vi.credit * (1 / current_exchange_rate), v.currency_id,
+    vi.entity_uuid, vi.document_uuid, NULL, v.type_id, v.user_id
+  FROM voucher AS v JOIN voucher_item AS vi ON v.uuid = vi.voucher_uuid
+  WHERE v.uuid = uuid;
+
+  -- NOTE: this does not handle any rounding - it simply converts the currency as needed.
+END $$
+
+/*
 CALL ReverseTransaction()
 
 DESCRIPTION
