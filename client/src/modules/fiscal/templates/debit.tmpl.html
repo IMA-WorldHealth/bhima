@@ -3,7 +3,7 @@
     {{row.entity.debit | currency: grid.appScope.enterprise.currency_id}}
   </span>
 
-  <span ng-if="!row.entity.isTitleAccount && (row.entity.credit>0)">
+  <span ng-if="!row.entity.isTitleAccount">
     {{row.entity.debit | currency: grid.appScope.enterprise.currency_id}}
   </span>
 </div>

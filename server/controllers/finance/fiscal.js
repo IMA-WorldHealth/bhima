@@ -21,9 +21,6 @@ const FilterParser = require('../../lib/filter');
 const Tree = require('../../lib/Tree');
 const debug = require('debug')('FiscalYear');
 
-const INCOME_TYPE_ID = 4;
-const EXPENSE_TYPE_ID = 5;
-
 // Account Service
 const AccountService = require('./accounts');
 
@@ -325,8 +322,8 @@ function lookupBalance(fiscalYearId, periodNumber) {
 
         if (inlineAccount) {
           item.period_id = inlineAccount.period_id;
-          item.debit = inlineAccount.debit;
-          item.credit = inlineAccount.credit;
+          item.debit = inlineAccount.balance > 0 ? inlineAccount.balance : 0;
+          item.credit = inlineAccount.balance < 0 ? Math.abs(inlineAccount.balance) : 0;
         } else {
           item.period_id = glb.period.id;
           item.debit = 0;
@@ -395,21 +392,28 @@ function hasPreviousFiscalYear(id) {
 
 function loadBalanceByPeriodNumber(fiscalYearId, periodNumber) {
   const sql = `
-    SELECT a.id, a.number, a.label, a.type_id, a.label, a.parent,
-      IFNULL(s.debit, 0) AS debit, IFNULL(s.credit, 0) AS credit
+    SELECT a.id, a.number, a.label, a.type_id, a.label, a.parent, a.locked, a.hidden,
+      IFNULL(s.debit, 0) AS debit, IFNULL(s.credit, 0) AS credit, IFNULL(s.balance, 0) AS balance
     FROM account AS a LEFT JOIN (
-      SELECT SUM(pt.debit) AS debit, SUM(pt.credit) AS credit, pt.account_id
+      SELECT SUM(pt.debit) AS debit, SUM(pt.credit) AS credit, SUM(pt.debit - pt.credit) AS balance, pt.account_id
       FROM period_total AS pt
       JOIN period AS p ON p.id = pt.period_id
       WHERE pt.fiscal_year_id = ?
         AND p.number = ${periodNumber}
       GROUP BY pt.account_id
     )s ON a.id = s.account_id
-    WHERE a.type_id NOT IN (?, ?)
-    ORDER BY a.number;
+    ORDER BY CONVERT(a.number, CHAR(8)) ASC;
   `;
 
-  return db.exec(sql, [fiscalYearId, INCOME_TYPE_ID, EXPENSE_TYPE_ID]);
+  return db.exec(sql, [fiscalYearId])
+    .then(rows => {
+      const accounts = rows.map(row => {
+        row.debit = row.balance > 0 ? row.balance : 0;
+        row.credit = row.balance < 0 ? Math.abs(row.balance) : 0;
+        return row;
+      });
+      return accounts;
+    });
 }
 
 /**
