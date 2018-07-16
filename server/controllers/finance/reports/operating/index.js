@@ -85,10 +85,16 @@ function document(req, res, next) {
       formatData(context.revenue, context.totalIncome, DECIMAL_PRECISION);
 
       // diff is the result in the report
-      const diff = util.roundDecimal((context.totalIncome - context.totalExpense), DECIMAL_PRECISION);
+      // Obtaining total Expense is done by using debit - credit,
+      // which makes totalExpense negative because the expense accounts
+      // are generally credited, the result should
+      // not be obtained by making totalIncome - totalExpense
+      // but adding up because TotalExpense already has a sign (-)
+      const diff = util.roundDecimal((context.totalIncome + context.totalExpense), DECIMAL_PRECISION);
       context.totalIncome = util.roundDecimal(context.totalIncome, DECIMAL_PRECISION);
       context.totalExpense = util.roundDecimal(context.totalExpense, DECIMAL_PRECISION);
-      const isExpenseHigher = context.totalExpense < context.totalIncome;
+      const isExpenseHigher = context.totalIncome < (context.totalExpense * (-1));
+
       // the result position is usefull for balancing
       context.leftResult = isExpenseHigher ? diff : '';
       context.rightResult = (!isExpenseHigher) ? diff : '';

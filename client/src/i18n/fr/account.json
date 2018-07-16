@@ -55,7 +55,7 @@
     "TYPES": {
       "BALANCE": "Balance",
       "TITLE": "Titre",
-      "INCOME": "Produit",
+      "INCOME": "Profit",
       "EXPENSE": "Charge",
       "ASSET":"Actif",
       "LIABILITY":"Passif",
