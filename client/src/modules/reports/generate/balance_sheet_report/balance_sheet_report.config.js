@@ -12,6 +12,7 @@ function BalanceSheetReportConfigController($sce, Notify, SavedReports, AppCache
   const reportUrl = 'reports/finance/balance_sheet';
   vm.reportDetails = {};
   vm.previewGenerated = false;
+
   checkCachedConfiguration();
 
   vm.onSelectFiscal = function onSelectFiscal(fiscal) {

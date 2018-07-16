@@ -84,9 +84,9 @@ function document(req, res, next) {
     return q.all(queries);
   })
     .spread((asset, liability, equity, totalAsset, totalLiability, totalEquity) => {
-      const props = [LIABILITY_ACCOUNT_TYPE, EQUITY_ACCOUNT_TYPE];
+      const props = [EQUITY_ACCOUNT_TYPE, LIABILITY_ACCOUNT_TYPE];
       const context = {
-        liability : gatherTrees([liability, equity], props, 'type_id', 'amount'),
+        liability : gatherTrees([equity, liability], props, 'type_id', 'amount'),
         asset : prepareTree(asset, 'type_id', ASSET_ACCOUNT_TYPE, 'amount'),
         totalLiability :  (totalLiability.total + totalEquity.total),
         totalAsset : totalAsset.total,
