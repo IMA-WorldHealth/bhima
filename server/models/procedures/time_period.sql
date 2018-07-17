@@ -161,7 +161,10 @@ BEGIN
 
   -- create the fiscal year balances
   CREATE TEMPORARY TABLE FiscalYearBalances AS
-    SELECT a.id, MAX(fy.id) AS fiscal_year_id, MAX(fy.enterprise_id) AS enterprise_id,
+    SELECT a.id, a.number AS account_number, 
+      MAX(fy.label) AS fiscal_label,
+      MAX(fy.id) AS fiscal_year_id,
+      MAX(fy.enterprise_id) AS enterprise_id,
       SUM(pt.credit) AS credit, SUM(pt.debit) AS debit,
       SUM(pt.debit - pt.credit) AS balance, MAX(a.type_id) AS type_id
     FROM period_total AS pt
@@ -172,8 +175,10 @@ BEGIN
     GROUP BY a.id
     ORDER BY a.number;
 
-  -- 1. CREATE VOUCHERS
+  -- create vouchers
   SET voucherUuid = HUID(UUID());
+
+  -- the last date of the fiscal year
   SET voucherDate = (
     SELECT end_date FROM fiscal_year WHERE id = fiscalYearId LIMIT 1
   );
@@ -181,7 +186,7 @@ BEGIN
   -- insert into voucher table
   INSERT INTO voucher 
     (`uuid`, `date`, project_id, currency_id, description, amount, user_id) 
-  SELECT voucherUuid, voucherDate, projectId, currencyId, SUM(fyb.balance), userId 
+  SELECT voucherUuid, voucherDate, projectId, currencyId, CONCAT('Sold of exploitation accounts for the closing of ', fyb.fiscal_label), SUM(fyb.balance), userId 
   FROM FiscalYearBalances fyb 
   WHERE fyb.type_id IN (incomeAccountType, expenseAccountType);
 
@@ -189,10 +194,21 @@ BEGIN
   -- insert the reversed values (debit for credit, credit for debit) for solding exploitation accounts
   INSERT INTO voucher_item 
     `uuid`, account_id, debit, credit, voucher_uuid) 
-  SELECT (HUID(UUID()), fyb.account_id, fyb.credit, fyb.debit, voucherUuid, userId 
+  SELECT (HUID(UUID()), fyb.account_id, IF(fyb.balance < 0, fyb.balance * -1, 0), IF(fyb.balance > 0, fyb.balance, 0), voucherUuid, userId 
   FROM FiscalYearBalances fyb 
   WHERE fyb.type_id IN (incomeAccountType, expenseAccountType);
 
+  -- insert the result in voucher_item table
+  -- we debit the closingAccountId for a loss, it means SUM(balance) > 0 => SUM(debit) > SUM(credit)
+  -- we credit the closingAccountId for a gain, it means SUM(balance) < 0
+  INSERT INTO voucher_item 
+    `uuid`, account_id, debit, credit, voucher_uuid) 
+  SELECT (HUID(UUID()), closingAccountId, IF(SUM(fyb.balance) > 0, SUM(fyb.balance), 0), IF(SUM(fyb.balance) <= 0, SUM(fyb.balance) * -1, 0), voucherUuid, userId 
+  FROM FiscalYearBalances fyb 
+  WHERE fyb.type_id IN (incomeAccountType, expenseAccountType);
+
+  /* post into the general ledger */
+  CALL PostGeneralVoucher();
 
   -- copy all balances of non-income and non-expense accounts as the opening
   -- balance of the next fiscal year
