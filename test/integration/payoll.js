@@ -292,36 +292,7 @@ describe('(/multiplePayroll ) the Payroll API endpoint', () => {
   };
 
   const dataCommitment = {
-    data : [{
-      employee_uuid : '75e09694-65f2-45a1-a8a2-8b025003d793',
-      code : 'E1',
-      date_embauche : '2016-02-01T23:00:00.000Z',
-      nb_enfant : 3,
-      individual_salary : 500,
-      account_id : 179,
-      creditor_uuid : '42d3756a-7770-4bb8-a899-7953cd859892',
-      display_name : 'TEST 2 PATIENT',
-      sex : 'M',
-      uuid : '2a3f17b0-ae32-42bb-9333-a760825fd257',
-      payroll_configuration_id : '1',
-      currency_id : '2',
-      paiement_date : null,
-      base_taxable : 550,
-      basic_salary : 500,
-      gross_salary : 730,
-      grade_salary : 500,
-      text : 'grade 1',
-      net_salary : 614.07,
-      working_day : 20,
-      total_day : 20,
-      daily_salary : 25,
-      amount_paid : 0,
-      status_id : 2,
-      status : 'PAYROLL_STATUS.CONFIGURED',
-      balance : 614.07,
-    },
-    ]
-    ,
+    data : [1]
   };
 
   const employeesNumber = 3;

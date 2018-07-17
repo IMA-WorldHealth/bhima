@@ -15,6 +15,7 @@ const configurationData = require('./find');
 const transac = require('./commitment');
 
 function config(req, res, next) {
+  // Collection of employee references select
   const referenceEmployees = req.body.data;
 
   const payrollConfigurationId = req.params.id;
@@ -23,6 +24,7 @@ function config(req, res, next) {
 
   const data = {};
 
+  // Obtaining the expense account for the remuneration of employees' salaries,
   const sqlGetAccountPayroll = `
     SELECT payroll_configuration.id, payroll_configuration.config_accounting_id, payroll_configuration.dateFrom, 
     payroll_configuration.dateTo, config_accounting.account_id
@@ -31,6 +33,11 @@ function config(req, res, next) {
     WHERE payroll_configuration.id = ?
   `;
 
+  /*
+    * This request is used to retrieve the values of the rubrics found
+    * in the payment table in order to determine for each of its rubrics
+    * the expense and profit accounts For each Employees
+  */
   const sqlGetRubricPayroll = `
     SELECT paiement.payroll_configuration_id, BUID(paiement.uuid) AS uuid, paiement.basic_salary, 
     BUID(paiement.employee_uuid) AS employee_uuid, 
