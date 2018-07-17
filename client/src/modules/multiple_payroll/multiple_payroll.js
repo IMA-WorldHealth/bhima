@@ -189,6 +189,9 @@ function MultiplePayrollController(
     let invalid = false;
     let employeeStatusId;
 
+    //get All Employees Reference
+    const employeesRef = employees.map(emp => emp.reference);
+
     if (employees.length) {
       employees.forEach(employee => {
         employeeStatusId = parseInt(employee.status_id, 10);
@@ -204,7 +207,7 @@ function MultiplePayrollController(
         vm.activePosting = false;
 
         const idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
-        MultiplePayroll.paiementCommitment(idPeriod, employees)
+        MultiplePayroll.paiementCommitment(idPeriod, employeesRef)
           .then(() => {
             Notify.success('FORM.INFO.CONFIGURED_SUCCESSFULLY');
             vm.activePosting = true;
