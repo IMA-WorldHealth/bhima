@@ -193,8 +193,8 @@ BEGIN
   -- insert into voucher_item table
   -- insert the reversed values (debit for credit, credit for debit) for solding exploitation accounts
   INSERT INTO voucher_item 
-    `uuid`, account_id, debit, credit, voucher_uuid) 
-  SELECT (HUID(UUID()), fyb.account_id, IF(fyb.balance < 0, fyb.balance * -1, 0), IF(fyb.balance > 0, fyb.balance, 0), voucherUuid, userId 
+    (`uuid`, account_id, debit, credit, voucher_uuid) 
+  SELECT HUID(UUID()) AS uuid, fyb.id AS account_id, IF(fyb.balance < 0, fyb.balance * -1, 0) AS debit, IF(fyb.balance > 0, fyb.balance, 0) AS credit, voucherUuid AS voucher_uuid
   FROM FiscalYearBalances fyb 
   WHERE fyb.type_id IN (incomeAccountType, expenseAccountType);
 
@@ -202,13 +202,13 @@ BEGIN
   -- we debit the closingAccountId for a loss, it means SUM(balance) > 0 => SUM(debit) > SUM(credit)
   -- we credit the closingAccountId for a gain, it means SUM(balance) < 0
   INSERT INTO voucher_item 
-    `uuid`, account_id, debit, credit, voucher_uuid) 
-  SELECT (HUID(UUID()), closingAccountId, IF(SUM(fyb.balance) > 0, SUM(fyb.balance), 0), IF(SUM(fyb.balance) <= 0, SUM(fyb.balance) * -1, 0), voucherUuid, userId 
+    (`uuid`, account_id, debit, credit, voucher_uuid) 
+  SELECT HUID(UUID()) AS uuid, closingAccountId AS account_id, IF(SUM(fyb.balance) > 0, SUM(fyb.balance), 0) AS debit, IF(SUM(fyb.balance) <= 0, SUM(fyb.balance) * -1, 0) AS credit, voucherUuid AS voucher_uuid
   FROM FiscalYearBalances fyb 
   WHERE fyb.type_id IN (incomeAccountType, expenseAccountType);
 
   /* post into the general ledger */
-  CALL PostGeneralVoucher();
+  CALL PostGeneralVoucher(voucherUuid);
 
   -- copy all balances of non-income and non-expense accounts as the opening
   -- balance of the next fiscal year
@@ -233,4 +233,7 @@ BEGIN
   -- lock the fiscal year and associated periods
   UPDATE fiscal_year SET locked = 1 WHERE id = fiscalYearId;
   UPDATE period SET locked = 1 WHERE fiscal_year_id = fiscalYearId;
+
+  /* recalculate totals */
+  CALL zRecalculatePeriodTotals();
 END $$

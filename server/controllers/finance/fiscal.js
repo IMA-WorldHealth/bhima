@@ -510,11 +510,14 @@ function notNullBalance(array, exception) {
 function closing(req, res, next) {
   const { id } = req.params;
   const accountId = req.body.params.account_id;
+  const projectId = req.session.project.id;
+  const currencyId = req.session.enterprise.currency_id;
+  const userId = req.session.user.id;
 
   const transaction = db.transaction();
 
   transaction
-    .addQuery('CALL CloseFiscalYear(?, ?)', [id, accountId]);
+    .addQuery('CALL CloseFiscalYear(?, ?, ?, ?, ?)', [id, accountId, projectId, currencyId, userId]);
 
   transaction.execute()
     .then(() => {
