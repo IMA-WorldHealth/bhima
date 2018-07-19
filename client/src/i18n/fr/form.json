@@ -709,6 +709,7 @@
             "EMPLOYEE": "Sélectionner un Employé",
             "EMPLOYEE_CONFIGURATION": "Sélectionner la configuration des employés",
             "ACCOUNT": "Sélectionner un compte",
+            "ACCOUNTS": "Sélectionner des comptes",
             "ACCOUNT_TYPE": "Sélectionner un Type de Compte",
             "ACCOUNT_CONFIGURATION" : "Sélectionner la configuration des comptes",
             "BALANCE_SECTION": "Sélectionner la section du bilan",
