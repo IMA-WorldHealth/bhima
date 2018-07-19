@@ -9,7 +9,6 @@ AccountReferenceModalController.$inject = [
 function AccountReferenceModalController($state, Accounts, AccountReferences, Notify, AppCache) {
   const vm = this;
   const cache = AppCache('AccountReferenceModal');
-  const TITLE_ACCOUNT = 6;
 
   vm.accountReference = {};
   vm.stateParams = {};
@@ -37,7 +36,7 @@ function AccountReferenceModalController($state, Accounts, AccountReferences, No
   }
 
   // load accounts
-  Accounts.read(null, { type_id : TITLE_ACCOUNT, locked : 0, hidden : 0 })
+  Accounts.read(null, { locked : 0, hidden : 0 })
     .then(elements => {
       vm.accounts = Accounts.order(elements);
     })

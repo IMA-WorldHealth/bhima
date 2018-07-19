@@ -34,7 +34,6 @@ function AccountReferenceController($state, AccountReferences, Notify, uiGridCon
         field : 'accounts',
         displayName : 'ACCOUNT.REFERENCE.ACCOUNT_LIST',
         headerCellFilter : 'translate',
-        cellTemplate : '/modules/account_reference/templates/accounts.cell.html',
         enableFiltering : true,
       },
       {
@@ -44,7 +43,7 @@ function AccountReferenceController($state, AccountReferences, Notify, uiGridCon
         enableFiltering : true,
       },
       {
-        field : 'parent',
+        field : 'parent_abbr',
         displayName : 'ACCOUNT.REFERENCE.PARENT_REFERENCE',
         headerCellFilter : 'translate',
         enableFiltering : true,
@@ -78,9 +77,19 @@ function AccountReferenceController($state, AccountReferences, Notify, uiGridCon
 
   // bind methods
   vm.edit = edit;
+  vm.remove = remove;
 
   function edit(accountReference) {
     $state.go('account_reference.edit', { id : accountReference.id });
+  }
+
+  function remove(id) {
+    AccountReferences.delete(id)
+      .then(() => {
+        Notify.success('ACCOUNT.REFERENCE.DELETED');
+        loadGrid();
+      })
+      .catch(Notify.handleError);
   }
 
   function handleError(error) {

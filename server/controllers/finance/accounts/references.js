@@ -45,8 +45,16 @@ function detail(req, res, next) {
  * GET /accounts/references
  */
 function list(req, res, next) {
-  const sql =
-    'SELECT id, abbr, description, parent, is_amo_dep FROM account_reference;';
+  const sql = `
+    SELECT 
+      ar.id, ar.abbr, ar.description, ar.parent, ar.is_amo_dep, arp.abbr as parent_abbr,
+      GROUP_CONCAT(a.number SEPARATOR ', ') AS accounts
+    FROM account_reference ar
+    LEFT JOIN account_reference arp ON arp.id = ar.parent
+    LEFT JOIN account_reference_item ari ON ari.account_reference_id = ar.id
+    LEFT JOIN account a ON a.id = ari.account_id
+    GROUP BY ar.id;
+  `;
 
   db.exec(sql)
     .then((rows) => {
@@ -144,12 +152,16 @@ function update(req, res, next) {
  * DELETE /accounts/references/:id
  */
 function remove(req, res, next) {
+  const transaction = db.transaction();
   const { id } = req.params;
   const sql = 'DELETE FROM account_reference WHERE id = ?';
+  const sqlItems = 'DELETE FROM account_reference_item WHERE account_reference_id = ?';
 
   lookupAccountReference(id)
     .then(() => {
-      return db.exec(sql, [id]);
+      transaction.addQuery(sqlItems, [id]);
+      transaction.addQuery(sql, [id]);
+      return transaction.execute();
     })
     .then(() => {
       res.sendStatus(204);

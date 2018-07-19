@@ -62,6 +62,7 @@
       "UPDATE_REFERENCE":"Update",
       "CREATED":"Accounts reference sucessfully created",
       "UPDATED":"Accounts reference successfully updated",
+      "DELETED":"Accounts reference successfully deleted",
       "ACCOUNT_LIST":"Account list",
       "RECORD_ERROR":"An error occur during the submission",
       "PARENT_REFERENCE":"Parent Reference"

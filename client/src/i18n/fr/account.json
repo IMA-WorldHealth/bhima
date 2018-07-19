@@ -61,6 +61,7 @@
       "UPDATE_REFERENCE":"Mettre à jour",
       "CREATED":"Reference des comptes crée avec succès",
       "UPDATED":"Reference des comptes mise à jour avec succès",
+      "DELETED":"Reference supprimée avec succès",
       "ACCOUNT_LIST":"Liste des comptes",
       "RECORD_ERROR":"Erreur lors de la soumission",
       "PARENT_REFERENCE":"Réference parent"
