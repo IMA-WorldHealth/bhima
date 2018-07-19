@@ -48,7 +48,7 @@ function list(req, res, next) {
   const sql = `
     SELECT 
       ar.id, ar.abbr, ar.description, ar.parent, ar.is_amo_dep, arp.abbr as parent_abbr,
-      GROUP_CONCAT(a.number SEPARATOR ', ') AS accounts
+      GROUP_CONCAT(IF(ari.is_exception = 0, a.number, CONCAT('(sauf ', a.number, ')')) SEPARATOR ', ') AS accounts
     FROM account_reference ar
     LEFT JOIN account_reference arp ON arp.id = ar.parent
     LEFT JOIN account_reference_item ari ON ari.account_reference_id = ar.id
@@ -78,20 +78,26 @@ function create(req, res, next) {
   let accountReferenceId;
   const transaction = db.transaction();
   const record = req.body;
-  const { accounts } = record;
+  const { accounts, accountsException } = record;
 
   const sql = 'INSERT INTO account_reference SET ?;';
   const sqlItems = 'INSERT INTO account_reference_item SET ?;';
 
   delete record.id;
   delete record.accounts;
+  delete record.accountsException;
 
   db.exec(sql, [record])
     .then((result) => {
       accountReferenceId = result.insertId;
 
       accounts.forEach(accountId => {
-        parameters = { account_reference_id : accountReferenceId, account_id : accountId };
+        parameters = { account_reference_id : accountReferenceId, account_id : accountId, is_exception : 0 };
+        transaction.addQuery(sqlItems, [parameters]);
+      });
+
+      accountsException.forEach(accountId => {
+        parameters = { account_reference_id : accountReferenceId, account_id : accountId, is_exception : 1 };
         transaction.addQuery(sqlItems, [parameters]);
       });
 
@@ -116,7 +122,7 @@ function update(req, res, next) {
   let parameters;
   const transaction = db.transaction();
   const record = req.body;
-  const { accounts } = record;
+  const { accounts, accountsException } = record;
   const { id } = req.params;
 
   const sql = 'UPDATE account_reference SET ? WHERE id = ?';
@@ -124,13 +130,22 @@ function update(req, res, next) {
 
   delete record.id;
   delete record.accounts;
+  delete record.accountsException;
 
   lookupAccountReference(id)
     .then(() => db.exec(sql, [record, id]))
     .then(() => {
       transaction.addQuery('DELETE FROM account_reference_item WHERE account_reference_id = ?;', [id]);
+
+      // accounts to use
       accounts.forEach(accountId => {
-        parameters = { account_reference_id : id, account_id : accountId };
+        parameters = { account_reference_id : id, account_id : accountId, is_exception : 0 };
+        transaction.addQuery(sqlItems, [parameters]);
+      });
+
+      // accounts to skip
+      accountsException.forEach(accountId => {
+        parameters = { account_reference_id : id, account_id : accountId, is_exception : 1 };
         transaction.addQuery(sqlItems, [parameters]);
       });
       return transaction.execute();
@@ -145,7 +160,7 @@ function update(req, res, next) {
 
 /**
  * @method remove
- *
+*
  * @description
  * Deletes an account reference from the database
  *
@@ -181,8 +196,14 @@ function remove(req, res, next) {
  */
 function lookupAccountReference(id) {
   let glb = {};
-  const sql = 'SELECT id, abbr, description, parent, is_amo_dep FROM account_reference WHERE id = ?;';
-  const sqlItems = 'SELECT account_id FROM account_reference_item WHERE account_reference_id = ?;';
+  const sql =
+    'SELECT id, abbr, description, parent, is_amo_dep FROM account_reference WHERE id = ?;';
+
+  const sqlItems =
+    'SELECT account_id FROM account_reference_item WHERE account_reference_id = ? AND is_exception = 0;';
+
+  const sqlExceptItems =
+    'SELECT account_id FROM account_reference_item WHERE account_reference_id = ? AND is_exception = 1;';
 
   return db.one(sql, id)
     .then(reference => {
@@ -191,6 +212,10 @@ function lookupAccountReference(id) {
     })
     .then(referenceItems => {
       glb.accounts = referenceItems.map(i => i.account_id);
+      return db.exec(sqlExceptItems, [id])
+    })
+    .then(referenceItems => {
+      glb.accountsException = referenceItems.map(i => i.account_id);
       return glb;
     });
 }

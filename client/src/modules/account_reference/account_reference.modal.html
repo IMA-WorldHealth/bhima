@@ -74,6 +74,32 @@
       </div>
     </div>
 
+    <!-- exceptions -->
+    <div class="form-group" ng-class="{ 'has-error' : AccountReferenceForm.$submitted && AccountReferenceForm.accounts.$invalid }">
+      <label class="control-label" translate>ACCOUNT.REFERENCE.EXCEPTION</label>
+
+      <ui-select
+        multiple="true" 
+        name="accounts" 
+        ng-model="AccountReferenceModalCtrl.accountReference.accountsException"
+        close-on-select="false"
+        append-to-body="true">
+
+        <ui-select-match placeholder="{{ 'FORM.SELECT.ACCOUNTS' | translate }}">
+          <span>{{$item.number}}</span>
+        </ui-select-match>
+
+        <ui-select-choices repeat="account.id as account in AccountReferenceModalCtrl.accounts | filter:{hrlabel: $select.search}">
+          <strong ng-bind-html="account.number | highlight:$select.search"></strong>
+          <span ng-bind-html="account.label | highlight:$select.search"></span>
+        </ui-select-choices>
+      </ui-select>
+
+      <div class="help-block" ng-messages="AccountReferenceForm.accounts.$error" ng-show="AccountReferenceForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
     <!-- parent reference -->
     <div class="form-group" ng-class="{ 'has-error' : AccountReferenceForm.$submitted && AccountReferenceForm.parent.$invalid }">
         <label class="control-label" translate>ACCOUNT.REFERENCE.PARENT_REFERENCE</label>

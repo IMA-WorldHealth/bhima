@@ -33,6 +33,7 @@ function AccountReferenceModalController($state, Accounts, AccountReferences, No
       .catch(Notify.handleError);
   } else {
     vm.accountReference.accounts = [];
+    vm.accountReference.accountsException = [];
   }
 
   // load accounts

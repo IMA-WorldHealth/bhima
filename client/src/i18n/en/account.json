@@ -65,7 +65,8 @@
       "DELETED":"Accounts reference successfully deleted",
       "ACCOUNT_LIST":"Account list",
       "RECORD_ERROR":"An error occur during the submission",
-      "PARENT_REFERENCE":"Parent Reference"
+      "PARENT_REFERENCE":"Parent Reference",
+      "EXCEPTION":"Exception"
     },
     "TYPES":{
       "EXPENSE":"Expense",

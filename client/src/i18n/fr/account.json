@@ -64,7 +64,8 @@
       "DELETED":"Reference supprimée avec succès",
       "ACCOUNT_LIST":"Liste des comptes",
       "RECORD_ERROR":"Erreur lors de la soumission",
-      "PARENT_REFERENCE":"Réference parent"
+      "PARENT_REFERENCE":"Réference parent",
+      "EXCEPTION":"Sauf"
     },
     "TYPES": {
       "BALANCE": "Balance",
