@@ -166,7 +166,8 @@ exports.configure = function configure(app) {
   app.delete('/accounts/categories/:id', accounts.categories.remove);
 
   // API for account reference CRUD
-  app.get('/accounts/references/allValues', accounts.references.getAllValues);
+  app.get('/accounts/references/values/:periodId', accounts.references.getAllValues);
+  app.get('/accounts/references/values/:periodId/:abbr/:isAmoDep?', accounts.references.getValue);
   app.get('/accounts/references', accounts.references.list);
   app.get('/accounts/references/:id', accounts.references.detail);
   app.post('/accounts/references', accounts.references.create);

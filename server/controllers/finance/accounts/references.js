@@ -17,6 +17,7 @@
  * @todo HANDLE ACCOUNT REFERENCE ITEMS
  */
 const Q = require('q');
+const util = require('../../../lib/util');
 const db = require('../../../lib/db');
 
 /**
@@ -193,7 +194,20 @@ function remove(req, res, next) {
  * @method getAllValues
  */
 function getAllValues(req, res, next) {
-  computeAccountReferenceValues(50)
+  const params = util.convertStringToNumber(req.params);
+  computeAllAccountReference(params.periodId)
+    .then(rows => {
+      res.status(200).json(rows);
+    })
+    .catch(next);
+}
+
+/**
+ * @method getValue
+ */
+function getValue(req, res, next) {
+  const params = util.convertStringToNumber(req.params);
+  computeSingleAccountReference(params.abbr, params.isAmoDep, params.periodId)
     .then(rows => {
       res.status(200).json(rows);
     })
@@ -227,7 +241,7 @@ function lookupAccountReference(id) {
     })
     .then(referenceItems => {
       glb.accounts = referenceItems.map(i => i.account_id);
-      return db.exec(sqlExceptItems, [id])
+      return db.exec(sqlExceptItems, [id]);
     })
     .then(referenceItems => {
       glb.accountsException = referenceItems.map(i => i.account_id);
@@ -236,14 +250,14 @@ function lookupAccountReference(id) {
 }
 
 /**
- * @method computeAccountReferenceValues
+ * @method computeAllAccountReference
  *
  * @description
  * compute value of all account references
  *
  * @param {number} periodId - the period needed
  */
-function computeAccountReferenceValues(periodId) {
+function computeAllAccountReference(periodId) {
   const glb = {};
 
   // get fiscal year information for the given period
@@ -277,7 +291,7 @@ function computeAccountReferenceValues(periodId) {
 }
 
 /**
- * @method lookupAccountReferenceValueByAbbr
+ * @method computeSingleAccountReference
  *
  * @description
  * Returns the balance of the account reference given
@@ -286,7 +300,7 @@ function computeAccountReferenceValues(periodId) {
  * @param {number} periodId - the period needed
  * @param {boolean} isAmoDep - the concerned reference is for amortissement, depreciation or provision
  */
-function lookupAccountReferenceValueByAbbr(abbr, isAmoDep = 0, periodId) {
+function computeSingleAccountReference(abbr, isAmoDep = 0, periodId) {
   // get fiscal year information for the given period
   const queryFiscalYear = `
     SELECT fy.id, p.number AS period_number FROM fiscal_year fy
@@ -325,7 +339,6 @@ function getValueForReference(abbr, isAmoDep = 0, periodNumber, fiscalYearId) {
 
   return getAccountsForReference(abbr, isAmoDep)
     .then(accounts => {
-      console.log('accounts : ', accounts);
       const accountIds = accounts.map(a => a.account_id);
       const parameters = [
         abbr,
@@ -386,9 +399,10 @@ exports.update = update;
 exports.remove = remove;
 exports.detail = detail;
 exports.getAllValues = getAllValues;
+exports.getValue = getValue;
 
 // expose methods
 exports.getAccountsForReference = getAccountsForReference;
-exports.lookupAccountReferenceValueByAbbr = lookupAccountReferenceValueByAbbr;
+exports.computeSingleAccountReference = computeSingleAccountReference;
 exports.getValueForReference = getValueForReference;
-exports.computeAccountReferenceValues = computeAccountReferenceValues;
+exports.computeAllAccountReference = computeAllAccountReference;
