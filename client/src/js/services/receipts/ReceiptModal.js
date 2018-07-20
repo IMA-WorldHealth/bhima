@@ -33,6 +33,7 @@ function ReceiptModal(Modal, Receipts) {
   service.payroll = payroll;
   service.voucher = voucher;
   service.creditNote = creditNote;
+  service.payrollReport = payrollReport;
 
   /**
    * Invokes a patient invoice receipt
@@ -242,6 +243,34 @@ function ReceiptModal(Modal, Receipts) {
     };
 
     const payrollRequest = Receipts.payroll(request, { renderer : options.renderer });
+    const reportProvider = {
+      resolve : {
+        receipt : function receiptProvider() { return { promise : payrollRequest }; },
+        options : function optionsProvider() { return options; },
+      },
+    };
+
+    const configuration = angular.extend(modalConfiguration, reportProvider);
+    const instance = Modal.open(configuration);
+    return instance.result;
+  }
+
+
+  function payrollReport (periodPayroll, data, currency, socialCharge, notifyCreated) {
+    const options = {
+      title         : 'TREE.PAYROLL',
+      renderer      : Receipts.renderer,
+      notifyCreated,
+    };
+
+    const request = {
+      idPeriod : periodPayroll,
+      employees : data,
+      currency : currency,
+      socialCharge : socialCharge,
+    };
+
+    const payrollRequest = Receipts.payrollReport(request, { renderer : options.renderer });
     const reportProvider = {
       resolve : {
         receipt : function receiptProvider() { return { promise : payrollRequest }; },

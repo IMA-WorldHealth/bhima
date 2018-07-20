@@ -13,9 +13,13 @@ const _ = require('lodash');
 
 const ReportManager = require('../../../lib/ReportManager');
 const db = require('../../../lib/db');
+const Exchange = require('../../finance/exchange');
 const q = require('q');
 
-const TEMPLATE = './server/controllers/payroll/reports/payslipGenerator.handlebars';
+const templatePayslip = './server/controllers/payroll/reports/payslipGenerator.handlebars';
+const templatePayrollReport = './server/controllers/payroll/reports/payrollReportGenerator.handlebars';
+const templateSocialCharge = './server/controllers/payroll/reports/payrollReportSocialCharge.handlebars';
+
 const PayrollConfig = require('../configuration');
 const configurationData = require('../multiplePayroll/find');
 
@@ -30,16 +34,32 @@ const configurationData = require('../multiplePayroll/find');
  */
 function build(req, res, next) {
   const options = _.clone(req.query);
+  let TEMPLATE;
+  let orientation = 'landscape';
+  const footerRight = '[page] / [toPage]';
 
   const params = {
     payroll_configuration_id : options.idPeriod,
     reference : options.employees,
   };
 
+  if (options.currency && options.socialCharge) {
+    TEMPLATE = templateSocialCharge;
+    orientation = 'portrait';
+    options.footerRight = footerRight;
+
+  } else if (options.currency && !options.socialCharge) {
+    TEMPLATE = templatePayrollReport;
+
+    options.footerRight = footerRight;
+  } else {
+    TEMPLATE = templatePayslip;
+  }
+
   _.extend(options, {
     filename : 'FORM.LABELS.PAYSLIP',
     csvKey : 'payslipGenerator',
-    orientation : 'landscape',
+    orientation,
     footerFontSize : '7',
   });
 
@@ -65,46 +85,43 @@ function build(req, res, next) {
   configurationData.find(params)
     .then(dataEmployees => {
       data.dataEmployees = dataEmployees;
-      
       // Get paiement_uuid for Selected Employee
       const employeesPaiementUuid = dataEmployees.map(emp => db.bid(emp.uuid));
 
-      const sql = `
-        SELECT rubric_paiement.paiement_uuid, rubric_paiement.value AS result, 
-        BUID(paiement.employee_uuid) AS employee_uuid, rubric_payroll.abbr, UPPER(rubric_payroll.label) AS label,
-        rubric_payroll.is_percent, rubric_payroll.value, rubric_payroll.is_discount, 
-        rubric_payroll.is_social_care, rubric_payroll.is_employee
-        FROM rubric_paiement
-        JOIN paiement ON paiement.uuid = rubric_paiement.paiement_uuid
-        JOIN employee ON employee.uuid = paiement.employee_uuid
-        JOIN rubric_payroll ON rubric_payroll.id = rubric_paiement.rubric_payroll_id
-        WHERE paiement.payroll_configuration_id = ? AND employee.reference IN (?)
-        ORDER BY rubric_payroll.label, rubric_payroll.is_social_care ASC, rubric_payroll.is_discount ASC
-      `;
+      return PayrollConfig.payrollReportElements(options.idPeriod, options.employees, employeesPaiementUuid);
 
-      const sqlHolidayPaiement = `
-        SELECT holiday_paiement.holiday_nbdays, holiday_paiement.holiday_nbdays, holiday_paiement.holiday_percentage,
-        holiday_paiement.label, holiday_paiement.value, BUID(holiday_paiement.paiement_uuid) AS paiement_uuid
-        FROM holiday_paiement
-        WHERE holiday_paiement.paiement_uuid IN (?)
-      `;
-
-      const sqlOffDayPaiement = `
-        SELECT offday_paiement.offday_percentage, BUID(offday_paiement.paiement_uuid) AS paiement_uuid,
-        offday_paiement.label, offday_paiement.value
-        FROM offday_paiement
-        WHERE offday_paiement.paiement_uuid IN (?)
-      `;
-
-      return q.all([
-        db.exec(sql, [options.idPeriod, options.employees]),
-        db.exec(sqlHolidayPaiement, [employeesPaiementUuid]),
-        db.exec(sqlOffDayPaiement, [employeesPaiementUuid]),
-      ]);
     })
-    .spread((rubrics, holidays, offDays) => {
-      data.dataEmployees.forEach(employee => {
+    .spread((rubrics, holidays, offDays, aggregateRubrics, aggregatePaiements, rubEmployees, rubEnterprises) => {
+      let TotalChargeEnterprise = 0;
 
+      // Set Aggregate of Rubrics
+      data.aggregateRubrics = aggregateRubrics;
+      data.total_basic_salary = aggregatePaiements[0].total_basic_salary;
+      data.total_base_taxable = aggregatePaiements[0].total_base_taxable;
+      data.total_gross_salary = aggregatePaiements[0].total_gross_salary;
+      data.total_net_salary = aggregatePaiements[0].total_net_salary;
+      data.total_non_taxable = aggregatePaiements[0].total_gross_salary - aggregatePaiements[0].total_base_taxable;
+      data.total_deduction = aggregatePaiements[0].total_gross_salary - aggregatePaiements[0].total_net_salary;
+
+      data.rubrics = rubEmployees;
+      data.rubrics.forEach(rub => {
+        data.aggregateRubrics.forEach(aggr => {
+          if (rub.abbr === aggr.abbr) {
+            rub.total = aggr.result;
+          }
+        });
+      });
+
+      data.rubEnterprises = rubEnterprises;
+      data.rubEnterprises.forEach(rub => {
+        data.aggregateRubrics.forEach(aggr => {
+          if (rub.abbr === aggr.abbr) {
+            rub.total = aggr.result;
+          }
+        });
+      });
+
+      data.dataEmployees.forEach(employee => {
         employee.rubricTaxable = [];
         employee.rubricNonTaxable = [];
         employee.rubricDiscount = [];
@@ -112,10 +129,10 @@ function build(req, res, next) {
         employee.rubricsChargeEmployee = [];
         employee.rubricsChargeEnterprise = [];
 
-        employee.daily_salary = employee.basic_salary / employee.total_day;        
+        employee.daily_salary = employee.basic_salary / employee.total_day;
         employee.dailyWorkedValue = employee.daily_salary * employee.working_day;
 
-        
+
         let somRubTaxable = 0;
         let somRubNonTaxable = 0;
         let somChargeEmployee = 0;
@@ -140,7 +157,7 @@ function build(req, res, next) {
             // Get Charge
             if (rubrics.is_discount) {
               if (rubrics.is_employee) {
-                rubrics.chargeEmployee = rubrics.result;                
+                rubrics.chargeEmployee = rubrics.result;
                 employee.rubricsChargeEmployee.push(rubrics);
                 somChargeEmployee += rubrics.result;
               } else {
@@ -159,6 +176,8 @@ function build(req, res, next) {
         employee.somChargeEnterprise = somChargeEnterprise;
         employee.somChargeEmployee = somChargeEmployee;
 
+        TotalChargeEnterprise += somChargeEnterprise;
+
         holidays.forEach(holiday => {
           if (employee.uuid === holiday.paiement_uuid) {
             holiday.dailyRate = holiday.value / holiday.holiday_nbdays;
@@ -173,10 +192,21 @@ function build(req, res, next) {
         });
       });
 
+      // Total Of Enterprise Charge
+      data.TotalChargeEnterprise = TotalChargeEnterprise;
+
       return PayrollConfig.lookupPayrollConfig(options.idPeriod);
     })
     .then(payrollPeriod => {
       data.payrollPeriod = payrollPeriod;
+
+      return Exchange.getExchangeRate(data.enterprise.id, options.currency, new Date(data.payrollPeriod.dateTo));
+    })
+    .then(exchange => {
+      const exchangeRate = parseInt(options.currency) === parseInt(data.enterprise.currency_id) ? 1 : exchange.rate;
+      data.payrollPeriod.exchangeRate = exchangeRate;
+      data.payrollPeriod.currency = options.currency;
+
       return report.render(data);
     })
     .then(result => {
@@ -184,7 +214,6 @@ function build(req, res, next) {
     })
     .catch(next)
     .done();
-
 }
 
 module.exports = build;

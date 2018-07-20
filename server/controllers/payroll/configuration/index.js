@@ -6,6 +6,7 @@
 
 const db = require('../../../lib/db');
 const NotFound = require('../../../lib/errors/NotFound');
+const q = require('q');
 
 // GET /PAYROLL_CONFIG
 function lookupPayrollConfig(id) {
@@ -108,6 +109,100 @@ function paiementStatus(req, res, next) {
     .done();
 }
 
+/*
+  * This function returns
+  * Payroll rubrics configured for a pay period based on a list of employees
+  * The status of the employee report that was on vacation during the pay period
+  * The status of the holiday payments report
+  * The summation of the rubrics configured for all employees
+  * The summation of the expenses of the employees
+  * The summation of the rubrics in the expenses of the company
+*/
+function payrollReportElements(idPeriod, employees, employeesPaiementUuid) {
+  const sql = `
+    SELECT rubric_paiement.paiement_uuid, rubric_paiement.value AS result,
+    BUID(paiement.employee_uuid) AS employee_uuid, rubric_payroll.abbr, UPPER(rubric_payroll.label) AS label,
+    rubric_payroll.is_percent, rubric_payroll.value, rubric_payroll.is_discount,
+    rubric_payroll.is_social_care, rubric_payroll.is_employee
+    FROM rubric_paiement
+    JOIN paiement ON paiement.uuid = rubric_paiement.paiement_uuid
+    JOIN employee ON employee.uuid = paiement.employee_uuid
+    JOIN rubric_payroll ON rubric_payroll.id = rubric_paiement.rubric_payroll_id
+    WHERE paiement.payroll_configuration_id = ? AND employee.reference IN (?)
+    ORDER BY rubric_payroll.label, rubric_payroll.is_social_care ASC, rubric_payroll.is_discount ASC
+  `;
+
+  const sqlHolidayPaiement = `
+    SELECT holiday_paiement.holiday_nbdays, holiday_paiement.holiday_nbdays, holiday_paiement.holiday_percentage,
+    holiday_paiement.label, holiday_paiement.value, BUID(holiday_paiement.paiement_uuid) AS paiement_uuid
+    FROM holiday_paiement
+    WHERE holiday_paiement.paiement_uuid IN (?)
+  `;
+
+  const sqlOffDayPaiement = `
+    SELECT offday_paiement.offday_percentage, BUID(offday_paiement.paiement_uuid) AS paiement_uuid,
+    offday_paiement.label, offday_paiement.value
+    FROM offday_paiement
+    WHERE offday_paiement.paiement_uuid IN (?)
+  `;
+
+  const sqlAggregateRubrics = `
+    SELECT rubric_paiement.paiement_uuid, ROUND(SUM(rubric_paiement.value), 4) AS result,
+    rubric_payroll.abbr, UPPER(rubric_payroll.label) AS label
+    FROM rubric_paiement
+    JOIN paiement ON paiement.uuid = rubric_paiement.paiement_uuid
+    JOIN employee ON employee.uuid = paiement.employee_uuid
+    JOIN rubric_payroll ON rubric_payroll.id = rubric_paiement.rubric_payroll_id
+    WHERE paiement.payroll_configuration_id = ? AND employee.reference IN (?)
+    GROUP BY rubric_payroll.abbr
+    ORDER BY rubric_payroll.label, rubric_payroll.is_social_care ASC, rubric_payroll.is_discount ASC
+  `;
+
+  const sqlAggregatePaiements = `
+    SELECT paiement.payroll_configuration_id, SUM(paiement.basic_salary) AS total_basic_salary,
+    SUM(paiement.base_taxable) AS total_base_taxable, SUM(paiement.gross_salary) AS total_gross_salary,
+    SUM(paiement.net_salary) AS total_net_salary
+    FROM paiement
+    JOIN employee ON employee.uuid = paiement.employee_uuid
+    WHERE paiement.payroll_configuration_id = ? AND employee.reference IN (?)
+    GROUP BY paiement.payroll_configuration_id
+  `;
+
+  const getRubricPayrollEmployee = `
+    SELECT config_rubric_item.id, config_rubric_item.config_rubric_id, config_rubric_item.rubric_payroll_id,
+    payroll_configuration.label AS PayrollConfig, rubric_payroll.*
+    FROM config_rubric_item
+    JOIN rubric_payroll ON rubric_payroll.id = config_rubric_item.rubric_payroll_id
+    JOIN payroll_configuration ON payroll_configuration.config_rubric_id = config_rubric_item.config_rubric_id
+    WHERE payroll_configuration.id = ?
+    AND (rubric_payroll.is_discount = 0 OR (rubric_payroll.is_discount = 1 AND rubric_payroll.is_employee = 1))
+    ORDER BY rubric_payroll.is_employee ASC, rubric_payroll.is_social_care ASC, rubric_payroll.is_discount ASC,
+    rubric_payroll.label ASC;
+  `;
+
+  const getRubricPayrollEnterprise = `
+    SELECT config_rubric_item.id, config_rubric_item.config_rubric_id, config_rubric_item.rubric_payroll_id,
+    payroll_configuration.label AS PayrollConfig, rubric_payroll.*
+    FROM config_rubric_item
+    JOIN rubric_payroll ON rubric_payroll.id = config_rubric_item.rubric_payroll_id
+    JOIN payroll_configuration ON payroll_configuration.config_rubric_id = config_rubric_item.config_rubric_id
+    WHERE payroll_configuration.id = ?
+    AND (rubric_payroll.is_discount = 1 AND rubric_payroll.is_employee = 0)
+    ORDER BY rubric_payroll.is_employee ASC, rubric_payroll.is_social_care ASC, rubric_payroll.is_discount ASC,
+    rubric_payroll.label ASC;
+  `;
+
+  return q.all([
+    db.exec(sql, [idPeriod, employees]),
+    db.exec(sqlHolidayPaiement, [employeesPaiementUuid]),
+    db.exec(sqlOffDayPaiement, [employeesPaiementUuid]),
+    db.exec(sqlAggregateRubrics, [idPeriod, employees]),
+    db.exec(sqlAggregatePaiements, [idPeriod, employees]),
+    db.exec(getRubricPayrollEmployee, [idPeriod]),
+    db.exec(getRubricPayrollEnterprise, [idPeriod]),
+  ]);
+}
+
 // get list of Payroll configuration
 exports.list = list;
 
@@ -127,3 +222,5 @@ exports.delete = del;
 exports.paiementStatus = paiementStatus;
 
 exports.lookupPayrollConfig = lookupPayrollConfig;
+
+exports.payrollReportElements = payrollReportElements;

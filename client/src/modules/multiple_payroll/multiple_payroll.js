@@ -283,6 +283,44 @@ function MultiplePayrollController(
     }
   };
 
+  /*
+   * The PayrollReport function allows to display two reports related to the Payroll, 
+   * the first to display a condensed report of the bulletins of payrolls of the employees 
+   * and the second a report of the payroll taxes on remuneration (Charges of the company)
+  */
+  vm.viewPaySlipReport = function viewPaySlipReport(socialCharge) {
+    const employees = vm.gridApi.selection.getSelectedRows();
+
+    //get All Employees Reference
+    const employeesRef = employees.map(emp => emp.reference);
+    
+    const filters = MultiplePayroll.filters.formatHTTP(true);
+    const currencyID = filters.currency_id;
+
+    let invalid = false;
+    let employeeStatusId;
+
+    if (employees.length) {
+      employees.forEach(employee => {
+        employeeStatusId = parseInt(employee.status_id, 10);
+
+        if (employeeStatusId === 1) {
+          invalid = true;
+        }
+      });
+
+      if (invalid) {
+        Notify.warn('FORM.WARNINGS.ATTENTION_PAYSLIPS');
+      } else {
+        const idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
+
+        Receipts.payrollReport(idPeriod, employeesRef, currencyID, socialCharge);
+      }
+    } else {
+      Notify.danger('FORM.WARNINGS.NO_EMPLOYE_SELECTED');
+    }
+  };
+
   vm.paySlip = function paySlip(employee) {
     const idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
     Receipts.payroll(idPeriod, employee.reference);

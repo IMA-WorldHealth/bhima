@@ -49,6 +49,7 @@ function ReceiptService($http, util, Language, AppCache, Session) {
   service.setSimplified = setSimplified;
   service.setReceiptCurrency = setReceiptCurrency;
   service.setReceiptRenderer = setReceiptRenderer;
+  service.payrollReport = payrollReport;
 
   /**
    * @method fetch
@@ -131,6 +132,20 @@ function ReceiptService($http, util, Language, AppCache, Session) {
   function payroll(request, options) {
     options.employees = request.employees;
     options.idPeriod = request.idPeriod;
+    // set the session language
+    options.lang = Language.key;
+
+    const route = '/reports/payroll/payslip';
+    return fetch(route, options);
+  }
+
+  // print a payroll Report of payroll payment
+  function payrollReport(request, options) {
+    options.employees = request.employees;
+    options.idPeriod = request.idPeriod;
+    options.currency = request.currency;
+    options.socialCharge = request.socialCharge;
+
     // set the session language
     options.lang = Language.key;
 

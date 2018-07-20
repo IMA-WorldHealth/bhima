@@ -1,0 +1,106 @@
+{{> head title="FORM.LABELS.REPORT"}}
+<body>
+  <!-- body  -->      
+    <header class="row">
+      <div class="col-xs-6" style="font-size: 20px">
+        <h3 style="margin: 0px;"> {{enterprise.name}} </h3>
+        <address style="margin-bottom: 0px;">
+          {{enterprise.location}}
+        </address>
+        <div>{{enterprise.email}}</div>
+        <div>{{enterprise.phone}}</div>
+      </div>
+    </header>    
+    <br>
+    <br>  
+    <h3 class="text-center text-uppercase">
+      <strong> {{ payrollPeriod.label }} </strong>
+    </h3>
+    <br>
+    <br>
+
+  <section>
+    <div class="row">
+      <div class="col-xs-12">
+        <table class="table table-bordered table-condensed table-report table-header-rotated" style="font-size: 10px">
+          <thead>
+            <tr class="text-capitalize">
+              <th style="width: 1%;">{{translate 'TABLE.COLUMNS.NR' }}</th>
+              <th style="width: 15%;">{{translate 'TABLE.COLUMNS.NAME' }}</th>
+              <th></th>
+              {{#each rubrics}}
+                <th><div><span >{{ abbr }}</span></div></th>
+              {{/each}}
+              <th><div><span >{{translate 'TABLE.COLUMNS.BASIC_SALARY' }}</span></div></th>
+              <th><div><span >{{translate 'TABLE.COLUMNS.NET_TAXABLE' }}</span></div></th>
+              <th><div><span >{{translate 'TABLE.COLUMNS.NET_NON_TAXABLE' }}</span></div></th>
+              <th><div><span >{{translate 'TABLE.COLUMNS.GROSS_SALARY' }}</span></div></th>
+              <th><div><span >{{translate 'TABLE.COLUMNS.DEDUCTIONS' }}</span></div></th>
+              <th style="width: 4%;"><div><span >{{translate 'TABLE.COLUMNS.NET_SALARY' }}</span></div></th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each dataEmployees}}
+              <tr class="text-capitalize">
+                <td style="text-align: left;"> {{add @index 1}} </td>
+                <td style="text-align: left;"><strong> {{display_name}} </strong></td>
+                <td style="text-align: right;"> {{text}} </td>
+                {{#each rubricTaxable}}
+                  <td style="text-align: right;">
+                    <div>
+                      <span >
+                        {{#if result}} 
+                          {{currency (multiply result ../../payrollPeriod.exchangeRate) ../../payrollPeriod.currency}}
+                        {{/if}}
+                      </span>
+                    </div>
+                  </td>
+                {{/each}}
+                {{#each rubricNonTaxable}}
+                  <td style="text-align: right;">
+                    <div>
+                      <span >
+                        {{#if result}} 
+                          {{currency (multiply result ../../payrollPeriod.exchangeRate) ../../payrollPeriod.currency}}
+                        {{/if}}
+                      </span>
+                    </div>
+                  </td>
+                {{/each}}
+                {{#each rubricsChargeEmployee}}
+                  <td style="text-align: right;">
+                    <div>
+                      <span >
+                        {{#if result}}
+                          {{currency (multiply result ../../payrollPeriod.exchangeRate) ../../payrollPeriod.currency}}
+                        {{/if}}
+                      </span>
+                    </div>
+                  </td>
+                {{/each}}
+                <td style="text-align: right;"> {{currency (multiply basic_salary ../payrollPeriod.exchangeRate) ../payrollPeriod.currency }} </td>
+                <td style="text-align: right;"> {{currency (multiply somRubTaxable ../payrollPeriod.exchangeRate) ../payrollPeriod.currency}} </td>
+                <td style="text-align: right;"> {{currency (multiply somRubNonTaxable ../payrollPeriod.exchangeRate) ../payrollPeriod.currency}} </td>
+                <td style="text-align: right;"> {{currency (multiply gross_salary ../payrollPeriod.exchangeRate) ../payrollPeriod.currency}} </td>
+                <td style="text-align: right;"> {{currency (multiply somChargeEmployee ../payrollPeriod.exchangeRate) ../payrollPeriod.currency}} </td>
+                <td style="text-align: right;"> <b> {{currency (multiply net_salary ../payrollPeriod.exchangeRate) ../payrollPeriod.currency}} </b></td>
+              </tr>
+            {{/each}}
+          </tbody>
+          <tr class="text-capitalize">
+            <td style="text-align: right; width: 16%;" colspan="3">{{translate 'TABLE.COLUMNS.TOTAL' }} </td>
+            {{#each rubrics}}
+              <td style="text-align: right;"><div><span>{{currency (multiply total ../payrollPeriod.exchangeRate) ../payrollPeriod.currency}}</span></div></td>
+            {{/each}}
+            <td style="text-align: right;"><div><span > {{currency (multiply total_basic_salary payrollPeriod.exchangeRate) payrollPeriod.currency}} </span></div></td>
+            <td style="text-align: right;"><div><span > {{currency (multiply total_base_taxable payrollPeriod.exchangeRate) payrollPeriod.currency}} </span></div></td>
+            <td style="text-align: right;"><div><span > {{currency (multiply total_non_taxable payrollPeriod.exchangeRate) payrollPeriod.currency}} </span></div></td>
+            <td style="text-align: right;"><div><span > {{currency (multiply total_gross_salary payrollPeriod.exchangeRate) payrollPeriod.currency}} </span></div></td>
+            <td style="text-align: right;"><div><span > {{currency (multiply total_deduction payrollPeriod.exchangeRate) payrollPeriod.currency}} </span></div></td>
+            <td style="text-align: right;width: 4%;"><div><span >{{currency (multiply total_net_salary payrollPeriod.exchangeRate) payrollPeriod.currency}}</span></div></td>
+          </tr>
+        </table>
+      <div>    
+    </div>
+  </section>
+</body>
