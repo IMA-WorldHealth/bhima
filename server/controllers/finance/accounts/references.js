@@ -191,6 +191,8 @@ function remove(req, res, next) {
 }
 
 /**
+ * GET /accounts/references/values/:periodId
+ *
  * @method getAllValues
  */
 function getAllValues(req, res, next) {
@@ -203,6 +205,8 @@ function getAllValues(req, res, next) {
 }
 
 /**
+ * GET /accounts/references/values/:periodId/:abbr/:isAmoDep?
+ *
  * @method getValue
  */
 function getValue(req, res, next) {
@@ -253,7 +257,8 @@ function lookupAccountReference(id) {
  * @method computeAllAccountReference
  *
  * @description
- * compute value of all account references
+ * compute value of all account references and returns an array of all accounts reference
+ * with their debit, credit and balance
  *
  * @param {number} periodId - the period needed
  */
@@ -294,7 +299,7 @@ function computeAllAccountReference(periodId) {
  * @method computeSingleAccountReference
  *
  * @description
- * Returns the balance of the account reference given
+ * Returns the debit, credit and balance of the account reference given as an array
  *
  * @param {string} abbr - the reference of accounts. ex. AA or AX
  * @param {number} periodId - the period needed
@@ -311,6 +316,9 @@ function computeSingleAccountReference(abbr, isAmoDep = 0, periodId) {
   return db.one(queryFiscalYear, [periodId])
     .then(fiscalYear => {
       return getValueForReference(abbr, isAmoDep, fiscalYear.period_number, fiscalYear.id);
+    })
+    .then(data => {
+      return data[0];
     });
 }
 

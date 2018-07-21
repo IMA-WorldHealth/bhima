@@ -35,7 +35,9 @@
   <div class="container-fluid">
     <div id="users-grid"
       ui-grid="AccountReferenceCtrl.gridOptions"
-      class="grid-full-height">
+      class="grid-full-height"
+      ui-grid-auto-resize
+      ui-grid-resize-columns>
 
       <bh-grid-loading-indicator
         loading-state="AccountReferenceCtrl.loading"
