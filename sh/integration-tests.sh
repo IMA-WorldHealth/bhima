@@ -35,5 +35,6 @@ echo "[test] running tests using mocha"
 ../node_modules/.bin/mocha --recursive --bail ../test/integration/
 
 echo "[test] cleaning up node process $NODE_PID."
+kill -9 $NODE_PID
 
 echo "[/test]"
