@@ -80,7 +80,7 @@
 
       <ui-select
         multiple="true" 
-        name="accounts" 
+        name="accountsException" 
         ng-model="AccountReferenceModalCtrl.accountReference.accountsException"
         close-on-select="false"
         append-to-body="true">
@@ -125,7 +125,7 @@
   </div>
 
   <div class="modal-footer">
-    <p id="user-same" ng-if="AccountReferenceForm.$submitted && AccountReferenceForm.$pristine && !AccountReferenceModalCtrl.isCreating" class="text-warning">
+    <p id="account-reference-same" ng-if="AccountReferenceForm.$submitted && AccountReferenceForm.$pristine && !AccountReferenceModalCtrl.isCreating" class="text-warning">
       <i class="fa fa-warning"></i> <span translate>ACCOUNT.RECORD_SAME</span>
     </p>
 
@@ -133,7 +133,7 @@
       <i class="fa fa-exclamation-triangle"></i> <span translate>ACCOUNT.REFERENCE.RECORD_ERROR</span>
     </p>
 
-    <button id="user-cancel" type="button" class="btn btn-default" ng-click="AccountReferenceModalCtrl.closeModal()" translate>
+    <button id="account-reference-cancel" type="button" class="btn btn-default" ng-click="AccountReferenceModalCtrl.closeModal()" translate>
       FORM.BUTTONS.CANCEL
     </button>
 
