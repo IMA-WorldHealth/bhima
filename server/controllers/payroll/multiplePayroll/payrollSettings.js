@@ -139,7 +139,7 @@ function setConfig(dataEmployees, rows, enterpriseId, currencyId, payrollConfigu
             // Automatic calcul of Seniority_Bonus & Family_Allowances
             if (rubric.is_seniority_bonus === 1) {
               const seniorityElements = [yearOfSeniority, rubric.value];
-              rubric.result = calculation.automaticRubric(basicSalary, seniorityElements);
+              rubric.result = util.roundDecimal(calculation.automaticRubric(basicSalary, seniorityElements), DECIMAL_PRECISION);
             }
             if (rubric.is_family_allowances === 1) {
               const allowanceElements = [nbChildren];
