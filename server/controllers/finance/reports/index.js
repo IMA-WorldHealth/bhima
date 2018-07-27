@@ -26,3 +26,4 @@ exports.cashReport = require('./cashReport');
 exports.purchases = require('./purchases');
 exports.employee = require('./financial.employee').report;
 exports.priceList = require('./priceList').report;
+exports.accountReference = require('./account_reference');

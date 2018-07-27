@@ -394,6 +394,7 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/general_ledger/', financeReports.generalLedger.report);
   app.get('/reports/finance/creditors/aged', financeReports.creditors.aged);
   app.get('/reports/finance/purchases', financeReports.purchases.report);
+  app.get('/reports/finance/account_reference', financeReports.accountReference.report);
 
   app.get('/reports/finance/employeeStanding/', financeReports.employee);
 

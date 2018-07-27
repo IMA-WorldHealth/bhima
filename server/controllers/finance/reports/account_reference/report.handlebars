@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+{{> head title="TREE.BALANCE"}}
+
+<body>
+
+<main class="container">
+  {{> header}}
+
+  <!-- body  -->
+  <div class="row">
+    <div class="col-xs-12">
+
+      <!-- page title  -->
+      <h2 class="text-center text-capitalize">
+        {{translate 'REPORT.BALANCE'}}
+      </h2>
+
+      <h4 class="text-center">
+        <strong class="text-capitalize">{{date period.fiscalYearStart "MMMM YYYY"}}</strong>
+         -
+        <strong class="text-capitalize">{{date period.end_date "MMMM YYYY"}}</strong>
+      </h4>
+
+      <!-- data  -->
+    </div>
+  </div>
+</main>
+</body>
+</html>
