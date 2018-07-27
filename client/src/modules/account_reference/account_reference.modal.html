@@ -1,0 +1,144 @@
+<form name="AccountReferenceForm" bh-submit="AccountReferenceModalCtrl.submit(AccountReferenceForm)" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.ACCOUNT_REFERENCE_MANAGEMENT</li>
+
+      <li ng-if="AccountReferenceModalCtrl.isCreating" class="title">
+        <span translate>ACCOUNT.REFERENCE.ADD_REFERENCE</span>
+        <label class="badge badge-warning" translate>FORM.LABELS.CREATE</label>
+      </li>
+      <li ng-if="!AccountReferenceModalCtrl.isCreating" class="title">
+        <span translate>ACCOUNT.REFERENCE.UPDATE_REFERENCE</span>
+        <label class="badge badge-warning" translate>FORM.LABELS.UPDATE</label>
+      </li>
+    </ol>
+  </div>
+
+  <div class="modal-body" style="overflow-y: scroll; max-height:600px; ">
+
+    <!-- the reference -->
+    <div class="form-group" ng-class="{ 'has-error' : AccountReferenceForm.$submitted && AccountReferenceForm.abbr.$invalid }">
+      <label class="control-label" translate>ACCOUNT.REFERENCE.REFERENCE</label>
+      <div>
+        <input name="abbr" ng-model="AccountReferenceModalCtrl.accountReference.abbr" autocomplete="off" ng-maxlength="10" class="form-control" required>
+        <div class="help-block" ng-messages="AccountReferenceForm.abbr.$error" ng-show="AccountReferenceForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- description -->
+    <div class="form-group" ng-class="{ 'has-error' : AccountReferenceForm.$submitted && AccountReferenceForm.description.$invalid }">
+      <label class="control-label" translate>ACCOUNT.REFERENCE.DESCRIPTION</label>
+      <div>
+        <input name="description" ng-model="AccountReferenceModalCtrl.accountReference.description" autocomplete="off" ng-maxlength="90" class="form-control" required>
+        <div class="help-block" ng-messages="AccountReferenceForm.description.$error" ng-show="AccountReferenceForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- amortissement and depreciation -->
+    <div class="form-group">
+      <div class="checkbox">
+        <label class="control-label">
+          <input name="is_amo_dep" type="checkbox" ng-model="AccountReferenceModalCtrl.accountReference.is_amo_dep" ng-true-value="1" ng-false-value="0">
+          <span translate>ACCOUNT.REFERENCE.AMO_DEP_LONG</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- accounts list -->
+    <div class="form-group" ng-class="{ 'has-error' : AccountReferenceForm.$submitted && AccountReferenceForm.accounts.$invalid }">
+      <label class="control-label" translate>FORM.SELECT.ACCOUNTS</label>
+
+      <ui-select
+        multiple="true" 
+        name="accounts" 
+        ng-model="AccountReferenceModalCtrl.accountReference.accounts"
+        close-on-select="false"
+        append-to-body="true">
+
+        <ui-select-match placeholder="{{ 'FORM.SELECT.ACCOUNTS' | translate }}">
+          <span>{{$item.number}}</span>
+        </ui-select-match>
+
+        <ui-select-choices repeat="account.id as account in AccountReferenceModalCtrl.accounts | filter:{hrlabel: $select.search}">
+          <strong ng-bind-html="account.number | highlight:$select.search"></strong>
+          <span ng-bind-html="account.label | highlight:$select.search"></span>
+        </ui-select-choices>
+      </ui-select>
+
+      <div class="help-block" ng-messages="AccountReferenceForm.accounts.$error" ng-show="AccountReferenceForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <!-- exceptions -->
+    <div class="form-group" ng-class="{ 'has-error' : AccountReferenceForm.$submitted && AccountReferenceForm.accounts.$invalid }">
+      <label class="control-label" translate>ACCOUNT.REFERENCE.EXCEPTION</label>
+
+      <ui-select
+        multiple="true" 
+        name="accountsException" 
+        ng-model="AccountReferenceModalCtrl.accountReference.accountsException"
+        close-on-select="false"
+        append-to-body="true">
+
+        <ui-select-match placeholder="{{ 'FORM.SELECT.ACCOUNTS' | translate }}">
+          <span>{{$item.number}}</span>
+        </ui-select-match>
+
+        <ui-select-choices repeat="account.id as account in AccountReferenceModalCtrl.accounts | filter:{hrlabel: $select.search}">
+          <strong ng-bind-html="account.number | highlight:$select.search"></strong>
+          <span ng-bind-html="account.label | highlight:$select.search"></span>
+        </ui-select-choices>
+      </ui-select>
+
+      <div class="help-block" ng-messages="AccountReferenceForm.accounts.$error" ng-show="AccountReferenceForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <!-- parent reference -->
+    <div class="form-group" ng-class="{ 'has-error' : AccountReferenceForm.$submitted && AccountReferenceForm.parent.$invalid }">
+        <label class="control-label" translate>ACCOUNT.REFERENCE.PARENT_REFERENCE</label>
+  
+        <ui-select
+          name="parent" 
+          ng-model="AccountReferenceModalCtrl.accountReference.parent"
+          append-to-body="true">
+  
+          <ui-select-match placeholder="{{ 'ACCOUNT.REFERENCE.PARENT_REFERENCE' | translate }}">
+            <span>{{$select.selected.abbr}}</span>
+          </ui-select-match>
+  
+          <ui-select-choices repeat="reference.id as reference in AccountReferenceModalCtrl.references | filter:{abbr: $select.search}">
+            <strong ng-bind-html="reference.abbr | highlight:$select.search"></strong>
+          </ui-select-choices>
+        </ui-select>
+  
+        <div class="help-block" ng-messages="AccountReferenceForm.parent.$error" ng-show="AccountReferenceForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+  </div>
+
+  <div class="modal-footer">
+    <p id="account-reference-same" ng-if="AccountReferenceForm.$submitted && AccountReferenceForm.$pristine && !AccountReferenceModalCtrl.isCreating" class="text-warning">
+      <i class="fa fa-warning"></i> <span translate>ACCOUNT.RECORD_SAME</span>
+    </p>
+
+    <p ng-if="AccountReferenceForm.$submitted && AccountReferenceForm.$invalid" class="text-danger">
+      <i class="fa fa-exclamation-triangle"></i> <span translate>ACCOUNT.REFERENCE.RECORD_ERROR</span>
+    </p>
+
+    <button id="account-reference-cancel" type="button" class="btn btn-default" ng-click="AccountReferenceModalCtrl.closeModal()" translate>
+      FORM.BUTTONS.CANCEL
+    </button>
+
+    <bh-loading-button loading-state="AccountReferenceForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

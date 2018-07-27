@@ -52,6 +52,21 @@
     "CONFIRM_UNHIDE" : "Ce compte est actuellement caché. Êtes-vous sûr de vouloir le révéler pour l'utiliser ?",
     "CONFIRM_LOCK" : "Le verrouillage d'un compte limite la possibilité de publier des transactions en utilisant le compte. Êtes-vous sûr de vouloir le verrouiller ?",
     "CONFIRM_UNLOCK" : "Le compte est bloqué. Le débloquer permettra d'afficher des transactions contenant ce compte. Êtes-vous sûr de vouloir le débloquer ?",
+    "REFERENCE":{
+      "REFERENCE":"Référence",
+      "DESCRIPTION":"Description",
+      "AMO_DEP":"Amortissement",
+      "AMO_DEP_LONG":"Amortissement et dépreciation",
+      "ADD_REFERENCE":"Ajouter reference",
+      "UPDATE_REFERENCE":"Mettre à jour",
+      "CREATED":"Référence des comptes crée avec succès",
+      "UPDATED":"Référence des comptes mise à jour avec succès",
+      "DELETED":"Référence supprimée avec succès",
+      "ACCOUNT_LIST":"Liste des comptes",
+      "RECORD_ERROR":"Erreur lors de la soumission",
+      "PARENT_REFERENCE":"Référence du parent",
+      "EXCEPTION":"Sauf"
+    },
     "TYPES": {
       "BALANCE": "Balance",
       "TITLE": "Titre",

@@ -1,6 +1,7 @@
 {
   "TREE" : {
     "ACCOUNT" : "Account Management",
+    "ACCOUNT_REFERENCE_MANAGEMENT":"Accounts References",
     "ACCOUNT_STATEMENT" : "Account Statement",
     "ADMIN" : "Administration",
     "AGED_CREDITORS" : "Aged Creditor Report",

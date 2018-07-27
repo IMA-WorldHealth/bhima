@@ -165,6 +165,15 @@ exports.configure = function configure(app) {
   app.put('/accounts/categories/:id', accounts.categories.update);
   app.delete('/accounts/categories/:id', accounts.categories.remove);
 
+  // API for account reference CRUD
+  app.get('/accounts/references/values/:periodId', accounts.references.getAllValues);
+  app.get('/accounts/references/values/:periodId/:abbr/:isAmoDep?', accounts.references.getValue);
+  app.get('/accounts/references', accounts.references.list);
+  app.get('/accounts/references/:id', accounts.references.detail);
+  app.post('/accounts/references', accounts.references.create);
+  app.put('/accounts/references/:id', accounts.references.update);
+  app.delete('/accounts/references/:id', accounts.references.remove);
+
   // API for account routes crud
   app.get('/accounts', accounts.list);
   app.get('/accounts/:id', accounts.detail);

@@ -710,6 +710,7 @@
             "EMPLOYEE": "Select an Employee",
             "EMPLOYEE_CONFIGURATION": "Select Employee Configuration",
             "ACCOUNT": "Select an Account",
+            "ACCOUNTS": "Sélect Accounts",
             "ACCOUNT_TYPE": "Select Account Type",
             "ACCOUNT_CONFIGURATION" : "Select account configuration",
             "BALANCE_SECTION": "Select Balance Sheet Section",

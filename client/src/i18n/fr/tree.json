@@ -1,6 +1,7 @@
 {
   "TREE": {
     "ACCOUNT":"Comptes",
+    "ACCOUNT_REFERENCE_MANAGEMENT":"Références des comptes",
     "ACCOUNT_STATEMENT":"Rélevé de Compte",
     "ADMIN":"Administration",
     "AGED_CREDITORS":"Balance âgée des Créances",
