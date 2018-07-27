@@ -1,6 +1,6 @@
 <!doctype html>
 <html>
-{{> head title="TREE.BALANCE"}}
+{{> head title="TREE.ACCOUNT_REFERENCE.TITLE"}}
 
 <body>
 
@@ -12,8 +12,8 @@
     <div class="col-xs-12">
 
       <!-- page title  -->
-      <h2 class="text-center text-capitalize">
-        {{translate 'REPORT.BALANCE'}}
+      <h2 class="text-center">
+        {{translate 'REPORT.ACCOUNT_REFERENCE.TITLE'}}
       </h2>
 
       <h4 class="text-center">
@@ -23,6 +23,28 @@
       </h4>
 
       <!-- data  -->
+      <table class="table table-condensed table-report">
+        <thead>
+          <tr style="background-color:#ddd;">
+            <th>{{translate "ACCOUNT.REFERENCE.REFERENCE"}}</th>
+            <th>{{translate "ACCOUNT.REFERENCE.DESCRIPTION"}}</th>
+            <th class="text-center">{{translate "FORM.LABELS.DEBIT"}}</th>
+            <th class="text-center">{{translate "FORM.LABELS.CREDIT"}}</th>
+            <th class="text-center">{{translate "FORM.LABELS.BALANCE"}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each data as |reference|}}
+            <tr>
+              <td>{{ reference.abbr }}</td>
+              <td>{{ reference.description }}</td>
+              <td>{{currency reference.debit ../currencyId}}</td>
+              <td>{{currency reference.credit ../currencyId}}</td>
+              <td>{{debcred reference.balance ../currencyId}}</td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
     </div>
   </div>
 </main>

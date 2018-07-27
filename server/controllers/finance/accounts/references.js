@@ -285,7 +285,7 @@ function computeAllAccountReference(periodId) {
     })
     .then(accountReferences => {
       const dbPromises = accountReferences.map(ar => {
-        return getValueForReference(ar.abbr, ar.is_amo_dep, glb.fiscalYear.period_number, glb.fiscalYear.id);
+        return getValueForReference(ar.abbr, ar.is_amo_dep, ar.description, glb.fiscalYear.period_number, glb.fiscalYear.id);
       });
       return Q.all(dbPromises);
     })
@@ -306,6 +306,8 @@ function computeAllAccountReference(periodId) {
  * @param {boolean} isAmoDep - the concerned reference is for amortissement, depreciation or provision
  */
 function computeSingleAccountReference(abbr, isAmoDep = 0, periodId) {
+  const glb = {};
+
   // get fiscal year information for the given period
   const queryFiscalYear = `
     SELECT fy.id, p.number AS period_number FROM fiscal_year fy
@@ -313,9 +315,25 @@ function computeSingleAccountReference(abbr, isAmoDep = 0, periodId) {
     WHERE p.id = ?
   `;
 
+  const queryAccountReference = `
+    SELECT id, abbr, description, is_amo_dep FROM account_reference
+    WHERE abbr = ? AND is_amo_dep = ?;
+  `;
+
   return db.one(queryFiscalYear, [periodId])
     .then(fiscalYear => {
-      return getValueForReference(abbr, isAmoDep, fiscalYear.period_number, fiscalYear.id);
+      glb.fiscalYear = fiscalYear;
+
+      return db.one(queryAccountReference, [abbr, isAmoDep]);
+    })
+    .then(ar => {
+      return getValueForReference(
+        ar.abbr,
+        ar.isAmoDep,
+        ar.description,
+        glb.fiscalYear.period_number,
+        glb.fiscalYear.id
+      );
     })
     .then(data => {
       return data[0];
@@ -333,16 +351,17 @@ function computeSingleAccountReference(abbr, isAmoDep = 0, periodId) {
  * @param {string} abbr - the reference of accounts. ex. AA or AX
  * @param {boolean} isAmoDep - the concerned reference is for amortissement, depreciation or provision
  */
-function getValueForReference(abbr, isAmoDep = 0, periodNumber, fiscalYearId) {
+function getValueForReference(abbr, isAmoDep = 0, referenceDescription, periodNumber, fiscalYearId) {
   const queryTotals = `
-  SELECT abbr, is_amo_dep, IFNULL(debit, 0) AS debit, IFNULL(credit, 0) AS credit, IFNULL(balance, 0) AS balance FROM (
-    SELECT ? AS abbr, ? AS is_amo_dep, 
-      SUM(IFNULL(pt.debit, 0)) AS debit, SUM(IFNULL(pt.credit, 0)) AS credit,
-      SUM(IFNULL(pt.debit - pt.credit, 0)) AS balance
-    FROM period_total pt 
-    JOIN period p ON p.id = pt.period_id
-    WHERE pt.fiscal_year_id = ? AND pt.locked = 0 AND p.number BETWEEN 0 AND ? AND pt.account_id IN (?)
-  )z
+  SELECT abbr, is_amo_dep, description,
+    IFNULL(debit, 0) AS debit, IFNULL(credit, 0) AS credit, IFNULL(balance, 0) AS balance FROM (
+      SELECT ? AS abbr, ? AS is_amo_dep, ? AS description,
+        SUM(IFNULL(pt.debit, 0)) AS debit, SUM(IFNULL(pt.credit, 0)) AS credit,
+        SUM(IFNULL(pt.debit - pt.credit, 0)) AS balance
+      FROM period_total pt 
+      JOIN period p ON p.id = pt.period_id
+      WHERE pt.fiscal_year_id = ? AND pt.locked = 0 AND p.number BETWEEN 0 AND ? AND pt.account_id IN (?)
+    )z
   `;
 
   return getAccountsForReference(abbr, isAmoDep)
@@ -351,6 +370,7 @@ function getValueForReference(abbr, isAmoDep = 0, periodNumber, fiscalYearId) {
       const parameters = [
         abbr,
         isAmoDep,
+        referenceDescription,
         fiscalYearId,
         periodNumber,
         accountIds.length ? accountIds : null,

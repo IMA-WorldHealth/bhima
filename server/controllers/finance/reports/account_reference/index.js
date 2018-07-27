@@ -14,6 +14,7 @@
 const _ = require('lodash');
 const AccountReference = require('../../accounts').references;
 // const Tree = require('../../../../lib/Tree');
+const db = require('../../../../lib/db');
 const ReportManager = require('../../../../lib/ReportManager');
 
 // report template
@@ -51,10 +52,20 @@ function report(req, res, next) {
     return;
   }
 
-  AccountReference.computeAllAccountReference(params.period_id)
+  const getFiscalYearSQL = `
+    SELECT p.id, p.start_date, p.end_date, p.fiscal_year_id, p.number,
+      fy.start_date AS fiscalYearStart, fy.end_date AS fiscalYearEnd
+    FROM period p JOIN fiscal_year fy ON p.fiscal_year_id = fy.id
+    WHERE p.id = ?;
+  `;
+
+  db.one(getFiscalYearSQL, [params.period_id])
+    .then(period => {
+      _.merge(context, { period });
+      return AccountReference.computeAllAccountReference(params.period_id);
+    })
     .then(data => {
-      console.log(data);
-      _.merge(context, data);
+      _.merge(context, { data, currencyId : req.session.enterprise.currency_id });
       return reporting.render(context);
     })
     .then(result => {
