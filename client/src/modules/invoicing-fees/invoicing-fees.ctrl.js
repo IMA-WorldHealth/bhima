@@ -24,11 +24,6 @@ function InvoicingFeesController($state, InvoicingServices, Notify, bhConstants,
   vm.toggleFilter = toggleFilter;
 
   columns = [{
-    field : 'id',
-    displayName : 'TABLE.COLUMNS.ID',
-    headerCellFilter: 'translate',
-    width: 45,
-  }, {
     field : 'account',
     displayName : 'TABLE.COLUMNS.ACCOUNT',
     headerCellFilter: 'translate',
