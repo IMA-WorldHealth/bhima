@@ -4,7 +4,7 @@ angular.module('bhima.services')
 PatientInvoiceFormService.$inject = [
   'PatientService', 'PriceListService', 'InventoryService', 'AppCache', 'Store',
   'Pool', 'PatientInvoiceItemService', 'bhConstants', 'ServiceService', '$q',
-  '$translate', 'NotifyService',
+  '$translate', 'NotifyService', '$timeout',
 ];
 
 /**
@@ -21,7 +21,7 @@ PatientInvoiceFormService.$inject = [
  */
 function PatientInvoiceFormService(
   Patients, PriceLists, Inventory, AppCache, Store, Pool, PatientInvoiceItem,
-  Constants, Services, $q, $translate, Notify
+  Constants, Services, $q, $translate, Notify, $timeout
 ) {
   const { ROW_ERROR_FLAG } = Constants.grid;
   const DEFAULT_SERVICE_IDX = 0;
@@ -434,7 +434,7 @@ function PatientInvoiceFormService(
       item.applyPriceList(price);
     }
     // set focus on quantity field
-    setTimeout(() => {
+    $timeout(() => {
       document.getElementById(item.uuid).focus();
     }, 100);
     // make sure to validate and calculate new totals
