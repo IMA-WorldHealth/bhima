@@ -70,12 +70,12 @@ function document(req, res, next) {
 
 
       return Promise.all([
-        getAccountBalances(fiscalYear.id, previousPeriod.number, nexPeriod.number),
-        getAccountBalances(fiscalYear.id, period.number, period.number),
-        getAccountBalances(fiscalYear.id, nexPeriod.number, nexPeriod.number),
+        getAccountBalances(fiscalYear.id, previousPeriod.id),
+        getAccountBalances(fiscalYear.id, period.id),
+        getAccountBalances(fiscalYear.id, nexPeriod.id),
       ]);
     })
-    .then(([currentBalances, previousBalances, nextBalances]) => {
+    .then(([previousBalances, currentBalances, nextBalances]) => {
 
       const dataset = combineIntoSingleDataset(currentBalances, previousBalances, nextBalances);
       // console.log(dataset);
@@ -136,12 +136,8 @@ function variance(current, previous) {
 /**
  * @function getAccountBalances
  *
- * @description
- * Returns the balances of the accounts by fiscal year and period range.  This
- * function uses period _numbers_ instead of period _ids_ to permit reuse of the
- * same function with multiple fiscal year ids.  Period ids embed the FY id.
  */
-function getAccountBalances(fiscalYearId, periodFromNumber, periodToNumber) {
+function getAccountBalances(fiscalYearId, periodId) {
   const sql = `
     SELECT a.id, a.number, a.label, a.type_id, a.label, a.parent,
       a.type_id = ${TITLE_ID} AS isTitleAccount, balance
@@ -150,7 +146,7 @@ function getAccountBalances(fiscalYearId, periodFromNumber, periodToNumber) {
       FROM period_total AS pt
       JOIN period AS p ON p.id = pt.period_id
       WHERE pt.fiscal_year_id = ?
-        AND p.number BETWEEN ? AND ?
+        AND p.id = ?
       GROUP BY pt.account_id
     )s ON a.id = s.account_id
     WHERE a.type_id IN (?)
@@ -163,7 +159,8 @@ function getAccountBalances(fiscalYearId, periodFromNumber, periodToNumber) {
     EXPENSE_TYPE_ID,
   ];
 
-  return db.exec(sql, [fiscalYearId, periodFromNumber, periodToNumber, accountTypes]);
+  const params = [fiscalYearId, periodId, accountTypes];
+  return db.exec(sql, params);
 }
 
 /**
