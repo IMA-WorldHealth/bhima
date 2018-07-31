@@ -11,8 +11,8 @@
         <strong>{{translate "REPORT.INCOME_EXPENSE_BY_MONTH"}}</strong>
       </h3>
 
-      <h5 style="margin:15px;" class="text-center">
-        {{date period.start_date "MMMM"}} ({{ fiscalYear.label }})
+      <h5 style="margin:15px;" class="text-center text-capitalize">
+        {{date thirdPeriod.start_date "MMMM"}} ({{ fiscalYear.label }})
       </h5>
 
       {{#if profits}}
@@ -21,9 +21,9 @@
           <tr style="background-color:#ddd;">
             <th>{{translate 'TABLE.COLUMNS.ACCOUNT'}}</th>
             <th style="width: 45%;">{{translate 'TABLE.COLUMNS.ACCOUNT_NAME'}}</th>
-            <th class="text-center">{{translate 'TABLE.COLUMNS.BALANCE'}} {{date previousPeriod.start_date "MMMM"}}</th>
-            <th class="text-center">{{translate 'TABLE.COLUMNS.BALANCE'}} {{date period.start_date "MMMM"}}</th>
-            <th class="text-center">{{translate 'TABLE.COLUMNS.BALANCE'}} {{date nexPeriod.start_date "MMMM"}}</th>
+            <th class="text-center">{{translate 'TABLE.COLUMNS.BALANCE'}} {{date firstPeriod.start_date "MMMM"}}</th>
+            <th class="text-center">{{translate 'TABLE.COLUMNS.BALANCE'}} {{date secondPeriod.start_date "MMMM"}}</th>
+            <th class="text-center">{{translate 'TABLE.COLUMNS.BALANCE'}} {{date thirdPeriod.start_date "MMMM"}}</th>
           </tr>
         </thead>
         <tbody>
@@ -57,9 +57,9 @@
          <tr style="background-color:#ddd;">
             <th>{{translate 'TABLE.COLUMNS.ACCOUNT'}}</th>
             <th style="width: 45%;">{{translate 'TABLE.COLUMNS.ACCOUNT_NAME'}}</th>
-            <th class="text-center">{{translate 'TABLE.COLUMNS.BALANCE'}} {{date previousPeriod.start_date "MMMM"}}</th>
-            <th class="text-center">{{translate 'TABLE.COLUMNS.BALANCE'}} {{date period.start_date "MMMM"}}</th>
-            <th class="text-center">{{translate 'TABLE.COLUMNS.BALANCE'}} {{date nexPeriod.start_date "MMMM"}}</th>
+            <th class="text-center">{{translate 'TABLE.COLUMNS.BALANCE'}} {{date firstPeriod.start_date "MMMM"}}</th>
+            <th class="text-center">{{translate 'TABLE.COLUMNS.BALANCE'}} {{date secondPeriod.start_date "MMMM"}}</th>
+            <th class="text-center">{{translate 'TABLE.COLUMNS.BALANCE'}} {{date thirdPeriod.start_date "MMMM"}}</th>
           </tr>
         <tbody>
           <tr>

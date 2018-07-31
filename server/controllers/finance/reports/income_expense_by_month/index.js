@@ -59,25 +59,25 @@ function document(req, res, next) {
 
     Fiscal.lookupFiscalYear(fiscalYearId),
   ])
-    .then(([previousPeriod, period, nexPeriod, fiscalYear]) => {
-      if (!previousPeriod.id || !nexPeriod.id) {
+    .then(([firstPeriod, secondPeriod, thirdPeriod, fiscalYear]) => {
+      if (!firstPeriod.id || !thirdPeriod.id) {
         throw new BadRequest('The date range is invalid.');
       }
 
       _.extend(data, {
-        previousPeriod, period, nexPeriod, fiscalYear,
+        firstPeriod, secondPeriod, thirdPeriod, fiscalYear,
       });
 
 
       return Promise.all([
-        getAccountBalances(fiscalYear.id, previousPeriod.id),
-        getAccountBalances(fiscalYear.id, period.id),
-        getAccountBalances(fiscalYear.id, nexPeriod.id),
+        getAccountBalances(fiscalYear.id, firstPeriod.id),
+        getAccountBalances(fiscalYear.id, secondPeriod.id),
+        getAccountBalances(fiscalYear.id, thirdPeriod.id),
       ]);
     })
-    .then(([previousBalances, currentBalances, nextBalances]) => {
+    .then(([firstBalances, secondBalances, thirdBalances]) => {
 
-      const dataset = combineIntoSingleDataset(currentBalances, previousBalances, nextBalances);
+      const dataset = combineIntoSingleDataset(secondBalances, firstBalances, thirdBalances);
       // console.log(dataset);
       const tree = constructAndPruneTree(dataset);
 
@@ -188,21 +188,21 @@ function getPeriodById(id) {
  *
  * @returns Array
  */
-function combineIntoSingleDataset(currentBalances, previousBalances, nextBalances) {
+function combineIntoSingleDataset(secondBalances, firstBalances, thirdBalances) {
   // make an id -> account map for both values
-  const currentMap = new Map(currentBalances.map(a => [a.id, a]));
-  const previousMap = new Map(previousBalances.map(a => [a.id, a]));
-  const nextMap = new Map(nextBalances.map(a => [a.id, a]));
+  const secondMap = new Map(secondBalances.map(a => [a.id, a]));
+  const firstMap = new Map(firstBalances.map(a => [a.id, a]));
+  const thirdMap = new Map(thirdBalances.map(a => [a.id, a]));
 
   // get all account ids in a single list.
-  const combined = _.uniq([...currentMap.keys(), ...previousMap.keys(), ...nextMap.keys()]);
+  const combined = _.uniq([...secondMap.keys(), ...firstMap.keys(), ...thirdMap.keys()]);
 
   return combined.map(id => {
     const record = {};
 
-    const current = currentMap.get(id);
-    const previous = previousMap.get(id);
-    const next = nextMap.get(id);
+    const current = secondMap.get(id);
+    const previous = firstMap.get(id);
+    const next = thirdMap.get(id);
 
     if (current) {
       const previousBalance = previous ? previous.balance : 0;
