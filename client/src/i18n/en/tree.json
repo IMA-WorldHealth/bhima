@@ -53,6 +53,8 @@
     "JOURNAL_VOUCHER" : "Journal Voucher",
     "LOCATION" : "Location Management",
     "MULTI_PAYROLL" : "Multiple Payroll",
+    "OHADA_BILAN":"[OHADA] Bilan",
+    "OHADA_RESULT_ACCOUNT":"[OHADA] Compte de Résultat",
     "OFFDAYS_MANAGEMENT" : "Offdays Management",
     "OPERATING_ACCOUNT" : "Operating account",
     "PAYROLL" : "Payroll",

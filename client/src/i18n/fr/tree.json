@@ -54,6 +54,8 @@
     "LOCATION":"Localisations",
     "MULTI_PAYROLL" : "Payroll Multiple",
     "OFFDAYS_MANAGEMENT" : "Gestion des jours fériés",
+    "OHADA_BILAN":"[OHADA] Bilan",
+    "OHADA_RESULT_ACCOUNT":"[OHADA] Compte de Résultat",
     "OPERATING_ACCOUNT" : "Compte d'exploitation",
     "PHARMACY":"Gestion de pharmacie",
     "PATIENT_DOCUMENT":"Documents de Patient",

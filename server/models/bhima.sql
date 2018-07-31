@@ -93,7 +93,8 @@ INSERT INTO unit VALUES
   (202, 'Patient Standing Report', 'TREE.PATIENT_STANDING_REPORT', 'Patient Standing Report', 144, '/modules/reports/patientStanding', '/reports/patientStanding'),
   (203, 'Employees Configuration','TREE.PAYROLL_EMP_CONFIGURATION','',57,'/modules/payroll/employee_configuration','/payroll/employee_configuration'),
   (204, 'Exchange Rate','TREE.EXCHANGE','',1,'/modules/exchange/exchange','/exchange'),
-  (205, 'Account Reference Management','TREE.ACCOUNT_REFERENCE_MANAGEMENT','',1,'/modules/account_reference','/account_reference');
+  (205, 'Account Reference Management','TREE.ACCOUNT_REFERENCE_MANAGEMENT','',1,'/modules/account_reference','/account_reference'),
+  (206, '[OHADA] Bilan','TREE.OHADA_BILAN','',144,'/modules/ohada_bilan_report','/ohada_bilan_report');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -131,7 +132,8 @@ INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
   (16, 'stock_exit', 'REPORT.STOCK.EXIT_REPORT'),
   (17, 'debtorBalanceReport', 'REPORT.CLIENT_DEBTOR_ACCOUNT_BALANCE_REPORT'),
   (18, 'employeeStanding', 'REPORT.EMPLOYEE_STANDING.TITLE'),
-  (19, 'patientStanding', 'REPORT.PATIENT_STANDING.TITLE');
+  (19, 'patientStanding', 'REPORT.PATIENT_STANDING.TITLE'),
+  (20, 'ohadaBilanReport', 'REPORT.OHADA_BILAN.TITLE');
 
 -- Supported Languages
 INSERT INTO `language` VALUES
