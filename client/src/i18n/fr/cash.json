@@ -4,6 +4,7 @@
     "CAUTION_COVER":"Facture(s) couvert par la caution",
     "CAUTION_PAYMENT":"Paiement Caution",
     "CAUTION_REMAINING":"Caution Restante",
+    "CREDIT_PATIENT_ACCOUNT": "Le compte du patient a été credité",
     "CONFIRM_PAYMENT_WHEN_CAUTION":"Procéder au paiement alors que le patient dispose d'une caution ?",
     "CURRENT_CASHBOX":"Caisse courante",
     "PAYMENT_DESCRIPTION":"Paiement par {{patientName}} ({{patientReference}}) contre les facture(s) {{invoiceReferences}}.",

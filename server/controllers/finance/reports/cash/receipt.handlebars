@@ -72,6 +72,16 @@
       </tr>
     </thead>
     <tbody>
+       {{#with payment}}
+          {{#if is_caution}}
+            <tr>
+              <td>{{ translate "CASH.CREDIT_PATIENT_ACCOUNT"}}</td>
+              <td class="text-right"> {{currency amount currency_id}} </td>
+            
+            </tr>
+          {{/if}}
+        {{/with}}
+      
       {{#each payment.items as |item| }}
         <tr>
           <td>{{item.reference}}</td>
