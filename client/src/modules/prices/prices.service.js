@@ -11,10 +11,14 @@ PriceListService.$inject = ['PrototypeApiService'];
  * Encapsulates common requests to the /prices/ URL.
  */
 function PriceListService(Api) {
-  var service = new Api('/prices/');
+  const baseUrl = '/prices/';
+  const service = new Api(baseUrl);
 
   service.create = create;
+  service.createItem = createItem;
   service.update = update;
+  service.details = details;
+  service.deleteItem = deleteItem;
 
   /**
    * @method create
@@ -31,9 +35,20 @@ function PriceListService(Api) {
    *  });
    */
   function create(list) {
-    return Api.create.call(service, { list : list });
+    return Api.create.call(service, { list });
   }
 
+  function createItem(data) {
+    const url = service.url.concat('item');
+    return service.$http.post(url, data)
+      .then(service.util.unwrapHttpResponse);
+  }
+
+  function deleteItem(uuid) {
+    const url = service.url.concat('item/', uuid);
+    return service.$http.delete(url)
+      .then(service.util.unwrapHttpResponse);
+  }
   /**
    * @method update
    *
@@ -49,7 +64,12 @@ function PriceListService(Api) {
   function update(uuid, list) {
     delete list.created_at;
 
-    return Api.update.call(service, uuid, { list : list });
+    return Api.update.call(service, uuid, { list });
+  }
+
+  function details(uuid) {
+    return service.$http.get(baseUrl.concat(uuid))
+      .then(service.util.unwrapHttpResponse);
   }
 
   return service;
