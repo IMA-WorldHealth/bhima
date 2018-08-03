@@ -36,7 +36,7 @@ function document(req, res, next) {
   let queries;
   let range;
 
-  const getQuery = fiscal.accountBanlanceByTypeId;
+  const getQuery = fiscal.getAccountBalancesByTypeId;
 
   const periods = {
     periodFrom : params.periodFrom,
