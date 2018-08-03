@@ -1,0 +1,39 @@
+<form name="CreateForm" bh-submit="$ctrl.submit(CreateForm)" novalidate>
+<div class="modal-header">
+  <h4 ng-if="$ctrl.isCreate" translate>PRICE_LIST.ADD_PRICE_LIST</h4>
+  <h4 ng-if="!$ctrl.isCreate" translate>PRICE_LIST.UPDATE</h4>
+</div>
+
+<div class="modal-body">
+
+
+    <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.label.$invalid }">
+      <label class="control-label" translate> FORM.LABELS.DESIGNATION </label>
+      <input type="text" class="form-control" ng-maxlength="$ctrl.length250" autocomplete="off" name="label" ng-model="$ctrl.priceList.label"
+        required>
+      <div class="help-block" ng-messages="CreateForm.label.$error" ng-show="CreateForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.description.$invalid }">
+      <label class="control-label" for="description" translate> FORM.LABELS.DESCRIPTION </label>
+      <textarea class="form-control" name="description" ng-maxlength="$ctrl.maxLength" id="description" ng-model="$ctrl.priceList.description"
+        rows="3"></textarea>
+      <div class="help-block" ng-messages="CreateForm.description.$error" ng-show="CreateForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+
+</div>
+
+<div class="modal-footer">
+  <bh-loading-button loading-state="CreateForm.$loading" id="submit-priceList">
+    <span translate> FORM.BUTTONS.SAVE </span>
+  </bh-loading-button>
+  <button type="button" class="btn btn-default" ng-click="$ctrl.close()" translate>
+    FORM.BUTTONS.CLOSE
+  </button>
+</div>
+</form>

@@ -1,4 +1,4 @@
-/* global element, by, browser */
+/* global element, by */
 
 /**
  * @todo - this page is complex enough to merit a PriceList page object.
@@ -10,150 +10,69 @@ helpers.configure(chai);
 
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
+const PriceListPage = require('./price_list.page');
 
 describe('Price Lists', () => {
   const path = '#!/prices';
+  const page = new PriceListPage();
+
   before(() => helpers.navigate(path));
 
-  const priceList2 = {
-    label : 'Price list with two items',
-  };
-
-  const item1 = {
-    label : 'Item 1',
-    value : 15,
-  };
-
-  const item2 = {
-    label : 'Item 2',
-    value : 30,
-  };
-
-  const item3 = {
-    label : 'Item 3',
-    value : 45,
-  };
-
-  const item4 = {
-    label : 'Item 4',
-    value : 60,
-  };
-
-  const item5 = {
-    label : 'Item 5',
-    value : 75,
-  };
-
-  const priceListID1 = 1;
-
-  it('prices should create a price list without price list items', () => {
+  it('prices should create a price list', () => {
     const list = {
       label       : 'Price list without Items',
       description : 'Description of price list without an item.',
     };
 
-    FU.buttons.create();
+    page.openCreateModal();
 
-    FU.input('PriceListCtrl.priceList.label', list.label);
-    FU.input('PriceListCtrl.priceList.description', list.description);
+    FU.input('$ctrl.priceList.label', list.label);
+    FU.input('$ctrl.priceList.description', list.description);
 
     // submit the page to the server
     FU.buttons.submit();
     components.notification.hasSuccess();
   });
 
-  it('add price_list_items to a price list', () => {
-    element(by.id(`price_list_${priceListID1}`)).click();
+  it('prices should update a price list', () => {
+    const list = {
+      label       : 'Price list without Items updated',
+    };
 
-    element(by.id('add_item')).click();
-    FU.input('ModalCtrl.data.label', item1.label);
-    FU.input('ModalCtrl.data.value', item1.value);
-    element(by.id('is_percentage')).click();
-    FU.uiSelect('ModalCtrl.data.inventory_uuid', 'Quinine sulphate 500mg');
+    page.editPriceList(0);
 
-    element(by.id('submit-price-list')).click();
-
-    element(by.id('add_item')).click();
-    FU.input('ModalCtrl.data.label', item2.label);
-    FU.input('ModalCtrl.data.value', item2.value);
-    FU.uiSelect('ModalCtrl.data.inventory_uuid', 'Arinate');
-
-    element(by.id('submit-price-list')).click();
-
+    FU.input('$ctrl.priceList.label', list.label);
+    // submit the page to the server
     FU.buttons.submit();
     components.notification.hasSuccess();
   });
 
-  it('prices should create a price list with two items', () => {
-    FU.buttons.create();
+  it('prices should add a price list item', () => {
+    const priceListItem = {
+      value   : 50,
+      label : 'test item label',
+      is_percentage : 1,
+      inventoryLabel : 'Pyrazinamide 500mg',
+    };
 
-    FU.input('PriceListCtrl.priceList.label', priceList2.label);
+    page.editItems(0);
 
-    // select an inventory item
-    element(by.id('add_item')).click();
-    FU.input('ModalCtrl.data.label', item3.label);
-    FU.input('ModalCtrl.data.value', item3.value);
-    FU.uiSelect('ModalCtrl.data.inventory_uuid', 'Quinine sulphate 500mg');
-    element(by.id('submit-price-list')).click();
-
-    element(by.id('add_item')).click();
-    FU.input('ModalCtrl.data.label', item4.label);
-    FU.input('ModalCtrl.data.value', item4.value);
-    element(by.id('is_percentage')).click();
-    FU.uiSelect('ModalCtrl.data.inventory_uuid', 'Arinate');
-
-    element(by.id('submit-price-list')).click();
-
+    FU.input('ModalCtrl.data.label', priceListItem.label);
+    FU.input('ModalCtrl.data.value', priceListItem.value);
+    element(by.model('ModalCtrl.data.is_percentage')).click();
+    FU.uiSelect('ModalCtrl.data.inventory_uuid', priceListItem.inventoryLabel);
+    // submit the page to the server
     FU.buttons.submit();
+    FU.buttons.cancel();
     components.notification.hasSuccess();
   });
 
-  it('edits a price list ', () => {
-    element(by.id(`price_list_${priceListID1}`)).click();
+  it.skip('prices should delete a price list item', () => {
 
-    FU.input('PriceListCtrl.priceList.label', 'Updated List');
-    FU.input('PriceListCtrl.priceList.description', 'Added description of a price list.');
-
-    element(by.id('remove_item_1')).click();
-
-    // switch to the create form
-    element(by.id('add_item')).click();
-    FU.input('ModalCtrl.data.label', item5.label);
-    FU.input('ModalCtrl.data.value', item5.value);
-
-    // select an inventory item
-    FU.uiSelect('ModalCtrl.data.inventory_uuid', 'Quinine sulphate 500mg');
-
-    // saving item
-    element(by.id('submit-price-list')).click();
-
+    page.editItems(0);
+    page.deletePriceListItem(0);
     FU.buttons.submit();
+    FU.buttons.cancel();
     components.notification.hasSuccess();
-  });
-
-  it('deletes a price list', () => {
-    element(by.id(`price_list_${priceListID1}`)).click();
-
-    // click the "delete" button 
-    FU.buttons.delete();
-
-    // accept the alert
-    components.modalAction.confirm();
-
-    components.notification.hasSuccess();
-  });
-
-  it('blocks invalid form submission with relevant error classes', () => {
-    FU.buttons.create();
-
-    element(by.id('submit-priceList')).click();
-
-    components.notification.hasDanger();
-
-    // the following fields should be required
-    FU.validation.error('PriceListCtrl.priceList.label');
-
-    // the following fields are not required
-    FU.validation.ok('PriceListCtrl.priceList.description');
   });
 });
