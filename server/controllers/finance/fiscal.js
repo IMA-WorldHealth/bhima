@@ -43,7 +43,7 @@ exports.getFirstDateOfFirstFiscalYear = getFirstDateOfFirstFiscalYear;
 exports.getNumberOfFiscalYears = getNumberOfFiscalYears;
 exports.getDateRangeFromPeriods = getDateRangeFromPeriods;
 exports.getPeriodsFromDateRange = getPeriodsFromDateRange;
-exports.getAccountBalancesByTypeId = getAccountBalancesByTypeId
+exports.getAccountBalancesByTypeId = getAccountBalancesByTypeId;
 exports.getOpeningBalance = getOpeningBalance;
 
 /**
