@@ -105,6 +105,8 @@
     "VOUCHER_REGISTRY":"Registre des Bordereaux",
     "AGED_DEBTORS":"Les plus anciens débiteurs",
     "WEEKEND_CONFIGURATION":"Configuration des weekend",
-    "ROLE_MANAGEMENT":"Gestion des rôles"
+    "ROLE_MANAGEMENT":"Gestion des rôles",
+    "OHADA_BALANCE_SHEET":"[OHADA] Bilan",
+    "OHADA_INCOME":"[OHADA] Compte de resultat"
   }
 }

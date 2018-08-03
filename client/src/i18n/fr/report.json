@@ -172,6 +172,9 @@
       "REMOVE_ZERO_ROWS" : "Cacher les colonnes vide?",
       "REMOVE_ZERO_ROWS_HELP" : "Cette option supprime les lignes qui ne contiennent aucune donnée. Produit un rapport plus compacte."
     },
+    "OHADA": {
+      "BALANCE_SHEET" : "Bilan selon le referenciel OHADA"
+    },
     "CLIENT_DEBTOR_ACCOUNT_BALANCE_REPORT" : "Rapport des comptes débiteurs clients"
   }
 }
