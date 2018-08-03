@@ -51,7 +51,7 @@
     "chai-spies-next": "^0.9.3",
     "connect-redis": "^3.0.2",
     "cross-env": "^5.1.1",
-    "csvtojson": "^1.1.9",
+    "csvtojson": "^2.0.8",
     "debug": "^3.1.0",
     "dot": "^1.0.3",
     "dotenv": "^6.0.0",
