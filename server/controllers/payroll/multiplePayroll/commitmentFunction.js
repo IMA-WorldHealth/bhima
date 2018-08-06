@@ -98,7 +98,7 @@ function dataCommitment(employees, exchangeRates, rubrics, identificationCommitm
               0,
               util.roundDecimal(withholding.value, 2),
               voucherWithholdingUuid,
-              employee.creditor_uuid,
+              db.bid(employee.creditor_uuid),
             ]);
           }
         });

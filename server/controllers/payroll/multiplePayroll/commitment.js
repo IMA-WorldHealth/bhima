@@ -33,9 +33,9 @@ function commitments(employees, rubrics, rubricsConfig, account, projectId, user
   const chargeRemunerationUuid = uuid();
   const voucherChargeRemunerationUuid = db.bid(chargeRemunerationUuid);
   const identificationCommitment = {
-    voucherCommitmentUuid : voucherCommitmentUuid,
-    voucherWithholdingUuid : voucherWithholdingUuid,
-    voucherChargeRemunerationUuid : voucherChargeRemunerationUuid,    
+    voucherCommitmentUuid,
+    voucherWithholdingUuid,
+    voucherChargeRemunerationUuid,
   };
   const enterpriseChargeRemunerations = [];
 
@@ -61,10 +61,11 @@ function commitments(employees, rubrics, rubricsConfig, account, projectId, user
           exchangeRate = exchange.rate;
         }
       });
-      rubric.value /= exchangeRate;
 
       if (rubricsConfig.id === rubric.id) {
-        rubricsConfig.totals += rubric.value / exchangeRate;
+        rubric.value /= exchangeRate;
+
+        rubricsConfig.totals += rubric.value;
       }
     });
   });
@@ -76,8 +77,8 @@ function commitments(employees, rubrics, rubricsConfig, account, projectId, user
   rubricsWithholdings = rubricsConfig.filter(item => (item.is_discount && item.is_employee && item.totals > 0));
 
   // Get the list of payment Rubrics Not associated with the identifier
-  rubricsWithholdingsNotAssociat = rubricsConfig.filter(
-    item => (item.is_discount && item.is_employee && item.totals > 0 && item.is_associated_employee !== 1));
+  rubricsWithholdingsNotAssociat = rubricsConfig.filter(item => (
+    item.is_discount && item.is_employee && item.totals > 0 && item.is_associated_employee !== 1));
 
   // Get Enterprise charge on remuneration
   chargesRemunerations =
@@ -92,7 +93,7 @@ function commitments(employees, rubrics, rubricsConfig, account, projectId, user
   });
 
   const dataCommitment = commitmentFunction.dataCommitment(
-    employees, 
+    employees,
     exchangeRates,
     rubrics,
     identificationCommitment
@@ -101,12 +102,6 @@ function commitments(employees, rubrics, rubricsConfig, account, projectId, user
   const transactions = dataCommitment.transactions;
   const employeesBenefitsItem = dataCommitment.employeesBenefitsItem;
   const employeesWithholdingItem = dataCommitment.employeesWithholdingItem;
-
-  // console.log('EMP_BENEFITSSSSSSS');
-  // console.log(employeesBenefitsItem);
-
-  // console.log('WITH_HOLDINGGGggggggg');
-  // console.log(employeesWithholdingItem);
 
   totalCommitments = util.roundDecimal(dataCommitment.totalCommitments, DECIMAL_PRECISION);
   totalBasicSalaries = util.roundDecimal(dataCommitment.totalBasicSalaries, DECIMAL_PRECISION);

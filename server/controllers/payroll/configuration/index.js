@@ -123,7 +123,7 @@ function payrollReportElements(idPeriod, employees, employeesPaiementUuid) {
     SELECT rubric_paiement.paiement_uuid, rubric_paiement.value AS result,
     BUID(paiement.employee_uuid) AS employee_uuid, rubric_payroll.abbr, UPPER(rubric_payroll.label) AS label,
     rubric_payroll.is_percent, rubric_payroll.value, rubric_payroll.is_discount,
-    rubric_payroll.is_social_care, rubric_payroll.is_employee
+    rubric_payroll.is_social_care, rubric_payroll.is_employee, paiement.currency_id
     FROM rubric_paiement
     JOIN paiement ON paiement.uuid = rubric_paiement.paiement_uuid
     JOIN employee ON employee.uuid = paiement.employee_uuid

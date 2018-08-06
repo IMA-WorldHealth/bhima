@@ -220,12 +220,14 @@ function MultiplePayrollController(
     }
   };
 
-
   // Set Configured
   vm.setConfigured = function setConfigured() {
     const employees = vm.gridApi.selection.getSelectedRows();
     let invalid = false;
     let employeeStatusId;
+
+    const filters = MultiplePayroll.filters.formatHTTP(true);
+    const currencyID = filters.currency_id;
 
     if (employees.length) {
       employees.forEach(employee => {
@@ -241,7 +243,12 @@ function MultiplePayrollController(
       } else {
         vm.activeConfig = false;
         const idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
-        MultiplePayroll.configurations(idPeriod, employees)
+        const data = {
+          employees : employees,
+          currencyId : currencyID,
+        };
+
+        MultiplePayroll.configurations(idPeriod, data)
           .then(() => {
             Notify.success('FORM.INFO.CONFIGURED_SUCCESSFULLY');
             vm.activeConfig = true;

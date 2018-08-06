@@ -1,6 +1,5 @@
 /**
  * @description PAYROLL SETTINGS
- *
  * @requires db
  * @requires EmployeeData
  * @requires uuid
@@ -19,15 +18,24 @@ const manageConfig = require('./manageConfig');
 const calculation = require('./calculation');
 const moment = require('moment');
 
-function setConfig(dataEmployees, rows, enterpriseId, currencyId, payrollConfigurationId) {
+function setConfig(dataEmployees, rows, enterpriseId, currencyId, enterpriseCurrencyId, payrollConfigurationId) {
   const periodData = rows[0][0];
   const rubricData = rows[1];
+  const exchange = rows[2];
+  const enterpriseExchangeRate = currencyId === enterpriseCurrencyId ? 1 : exchange.rate;
+  // Conversion of non-percentage currency values to the currency used for payment
+  if (rubricData.length) {
+    rubricData.forEach(rubric => {
+      if (rubric.value && !rubric.is_percent && !rubric.is_seniority_bonus) {
+        rubric.value *= enterpriseExchangeRate;
+      }
+    });
+  }
   const iprCurrencyId = periodData.currency_id;
   const dateFrom = periodData.dateFrom;
   const dateTo = periodData.dateTo;
-  let enterpriseExchangeRate = 0;
-  let allTransactions = [];
   const DECIMAL_PRECISION = 2;
+  let allTransactions = [];
   let iprExchangeRate;
 
   return q.all(dataEmployees.map((employee) => {
@@ -38,13 +46,11 @@ function setConfig(dataEmployees, rows, enterpriseId, currencyId, payrollConfigu
       employeeUuid : employee.employee_uuid,
     };
     const queries2 = [
-      Exchange.getExchangeRate(enterpriseId, employee.currency_id, new Date()),
       Exchange.getExchangeRate(enterpriseId, iprCurrencyId, new Date()),
       EmployeeData.lookupEmployeeAdvantages(employee.employee_uuid),
     ];
     return q.all(queries2)
-      .then(([exchange, exchangeIpr, advantages]) => {
-        enterpriseExchangeRate = currencyId === parseInt(employee.currency_id, 10) ? 1 : exchange.rate;
+      .then(([exchangeIpr, advantages]) => {
         iprExchangeRate = exchangeIpr.rate;
         advantagesEmployee = advantages;
         return getConfig.getConfigurationData(payrollConfigurationId, option);
@@ -107,7 +113,6 @@ function setConfig(dataEmployees, rows, enterpriseId, currencyId, payrollConfigu
             holiday.label,
             util.roundDecimal(holidayValue * enterpriseExchangeRate, DECIMAL_PRECISION)]);
         });
-
         /*
           * Recalculation of base salary on the basis of any holiday or vacation period,
           * where the percentages are respectively equal to 100% of the basic salary will
@@ -115,14 +120,8 @@ function setConfig(dataEmployees, rows, enterpriseId, currencyId, payrollConfigu
           */
         const totalCosts = workingDayCost + offDaysCost + holidaysCost;
         const basicSalary = util.roundDecimal(totalCosts * enterpriseExchangeRate, DECIMAL_PRECISION);
-
         if (rubricData.length) {
           rubricData.forEach(rubric => {
-            // Conversion of non-percentage currency values to the currency used for payment
-            if (rubric.value && !rubric.is_percent && !rubric.is_seniority_bonus) {
-              rubric.value *= enterpriseExchangeRate;
-            }
-
             if (advantagesEmployee.length) {
               advantagesEmployee.forEach(advantage => {
                 if (rubric.rubric_payroll_id === advantage.rubric_payroll_id) {
@@ -134,12 +133,12 @@ function setConfig(dataEmployees, rows, enterpriseId, currencyId, payrollConfigu
               rubric.result = 0;
             }
           });
-
           rubricData.forEach(rubric => {
             // Automatic calcul of Seniority_Bonus & Family_Allowances
             if (rubric.is_seniority_bonus === 1) {
               const seniorityElements = [yearOfSeniority, rubric.value];
-              rubric.result = util.roundDecimal(calculation.automaticRubric(basicSalary, seniorityElements), DECIMAL_PRECISION);
+              rubric.result =
+                util.roundDecimal(calculation.automaticRubric(basicSalary, seniorityElements), DECIMAL_PRECISION);
             }
             if (rubric.is_family_allowances === 1) {
               const allowanceElements = [nbChildren];
@@ -165,6 +164,7 @@ function setConfig(dataEmployees, rows, enterpriseId, currencyId, payrollConfigu
                 util.roundDecimal((basicSalary * nonTaxable.value) / 100, DECIMAL_PRECISION) :
                 nonTaxable.result || nonTaxable.value;
             }
+
             sumNonTaxable += nonTaxable.result;
             allRubrics.push([uid, nonTaxable.rubric_payroll_id, nonTaxable.result]);
           });
@@ -183,6 +183,7 @@ function setConfig(dataEmployees, rows, enterpriseId, currencyId, payrollConfigu
         }
         const baseTaxable = basicSalary + sumTaxable;
         grossSalary = basicSalary + sumTaxable + sumNonTaxable;
+
         if (taxesContributions.length) {
           taxesContributions.forEach(taxContribution => {
             taxContribution.result = taxContribution.is_percent ?
