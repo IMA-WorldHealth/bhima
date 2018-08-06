@@ -189,7 +189,7 @@ function MultiplePayrollController(
     let invalid = false;
     let employeeStatusId;
 
-    //get All Employees Reference
+    // get All Employees Reference
     const employeesRef = employees.map(emp => emp.reference);
 
     if (employees.length) {
@@ -227,7 +227,7 @@ function MultiplePayrollController(
     let employeeStatusId;
 
     const filters = MultiplePayroll.filters.formatHTTP(true);
-    const currencyID = filters.currency_id;
+    const currencyId = filters.currency_id;
 
     if (employees.length) {
       employees.forEach(employee => {
@@ -244,8 +244,8 @@ function MultiplePayrollController(
         vm.activeConfig = false;
         const idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
         const data = {
-          employees : employees,
-          currencyId : currencyID,
+          employees,
+          currencyId,
         };
 
         MultiplePayroll.configurations(idPeriod, data)
@@ -266,7 +266,7 @@ function MultiplePayrollController(
     let invalid = false;
     let employeeStatusId;
 
-    //get All Employees Reference
+    // get All Employees Reference
     const employeesRef = employees.map(emp => emp.reference);
 
     if (employees.length) {
@@ -291,18 +291,18 @@ function MultiplePayrollController(
   };
 
   /*
-   * The PayrollReport function allows to display two reports related to the Payroll, 
-   * the first to display a condensed report of the bulletins of payrolls of the employees 
+   * The PayrollReport function allows to display two reports related to the Payroll,
+   * the first to display a condensed report of the bulletins of payrolls of the employees
    * and the second a report of the payroll taxes on remuneration (Charges of the company)
   */
   vm.viewPaySlipReport = function viewPaySlipReport(socialCharge) {
     const employees = vm.gridApi.selection.getSelectedRows();
 
-    //get All Employees Reference
+    // get All Employees Reference
     const employeesRef = employees.map(emp => emp.reference);
-    
+
     const filters = MultiplePayroll.filters.formatHTTP(true);
-    const currencyID = filters.currency_id;
+    const currencyId = filters.currency_id;
 
     let invalid = false;
     let employeeStatusId;
@@ -321,7 +321,7 @@ function MultiplePayrollController(
       } else {
         const idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
 
-        Receipts.payrollReport(idPeriod, employeesRef, currencyID, socialCharge);
+        Receipts.payrollReport(idPeriod, employeesRef, currencyId, socialCharge);
       }
     } else {
       Notify.danger('FORM.WARNINGS.NO_EMPLOYE_SELECTED');

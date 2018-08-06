@@ -1,9 +1,9 @@
 /**
  * @method dataCommitment
  *
- * This function is used to prepare the data necessary to pass the transactions of payment encumbrance, 
- * this function retrieves in parameter the list of employees, and calculates the total base salaries, 
- * profit totals per employee, the totals of the retentions of the Payments by Employees, and return the lists of 
+ * This function is used to prepare the data necessary to pass the transactions of payment encumbrance,
+ * this function retrieves in parameter the list of employees, and calculates the total base salaries,
+ * profit totals per employee, the totals of the retentions of the Payments by Employees, and return the lists of
  * transactions to be executed, the list of profits, retained
  *
  * @requires util
@@ -22,7 +22,6 @@ function dataCommitment(employees, exchangeRates, rubrics, identificationCommitm
 
   const voucherCommitmentUuid = identificationCommitment.voucherCommitmentUuid;
   const voucherWithholdingUuid = identificationCommitment.voucherWithholdingUuid;
-  const voucherChargeRemunerationUuid = identificationCommitment.voucherChargeRemunerationUuid;
 
   const employeesBenefitsItem = [];
   const employeesWithholdingItem = [];
@@ -41,9 +40,8 @@ function dataCommitment(employees, exchangeRates, rubrics, identificationCommitm
     // {{ exchangeRates }} contains a matrix containing the current exchange rate of all currencies
     // against the currency of the Enterprise
     exchangeRates.forEach(exchange => {
-      if (parseInt(exchange.currency_id) === parseInt(employee.currency_id)) {
-        exchangeRate = exchange.rate;
-      }
+      exchangeRate = parseInt(exchange.currency_id, 10) === parseInt(employee.currency_id, 10)
+        ? exchange.rate : exchangeRate;
     });
 
     const conversionGrossSalary = employee.gross_salary / exchangeRate;
@@ -110,7 +108,7 @@ function dataCommitment(employees, exchangeRates, rubrics, identificationCommitm
     transactions,
     employeesBenefitsItem,
     employeesWithholdingItem,
-    totalCommitments,    
+    totalCommitments,
     totalBasicSalaries,
   };
 

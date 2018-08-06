@@ -256,7 +256,7 @@ function ReceiptModal(Modal, Receipts) {
   }
 
 
-  function payrollReport (periodPayroll, data, currency, socialCharge, notifyCreated) {
+  function payrollReport(periodPayroll, data, currency, socialCharge, notifyCreated) {
     const options = {
       title         : 'TREE.PAYROLL',
       renderer      : Receipts.renderer,
@@ -266,8 +266,8 @@ function ReceiptModal(Modal, Receipts) {
     const request = {
       idPeriod : periodPayroll,
       employees : data,
-      currency : currency,
-      socialCharge : socialCharge,
+      currency,
+      socialCharge,
     };
 
     const payrollRequest = Receipts.payrollReport(request, { renderer : options.renderer });

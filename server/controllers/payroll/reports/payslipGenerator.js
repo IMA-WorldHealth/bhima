@@ -2,7 +2,7 @@
  * @method build
  *
  * @description
- * Generates employee pay slips, reports of pay slips for selected employees, 
+ * Generates employee pay slips, reports of pay slips for selected employees,
  * and reports of payroll taxes related to employee payments
  *
  * GET /reports/payroll/employees
@@ -12,7 +12,6 @@ const _ = require('lodash');
 const ReportManager = require('../../../lib/ReportManager');
 const db = require('../../../lib/db');
 const Exchange = require('../../finance/exchange');
-const q = require('q');
 
 const templatePayslip = './server/controllers/payroll/reports/payslipGenerator.handlebars';
 const templatePayrollReport = './server/controllers/payroll/reports/payrollReportGenerator.handlebars';
@@ -51,12 +50,8 @@ function build(req, res, next) {
     footerFontSize : '7',
   });
 
-  let report;
-  const getPaiementRubrics = [];
-  const getHolidays = [];
-  const getOffDays = [];
-
   const data = {};
+  let report;
 
   data.enterprise = req.session.enterprise;
   data.user = req.session.user;
@@ -76,7 +71,7 @@ function build(req, res, next) {
       return Exchange.getExchangeRate(data.enterprise.id, options.currency, new Date(data.payrollPeriod.dateTo));
     })
     .then(exchange => {
-      data.payrollPeriod.exchangeRate = parseInt(options.currency) === parseInt(data.enterprise.currency_id) ?
+      data.payrollPeriod.exchangeRate = parseInt(options.currency, 10) === parseInt(data.enterprise.currency_id, 10) ?
         1 : exchange.rate;
       return Exchange.getCurrentExchangeRateByCurrency(new Date(data.payrollPeriod.dateTo));
     })
@@ -94,19 +89,19 @@ function build(req, res, next) {
 
       dataEmployees.forEach(employee => {
         data.exchangeRatesByCurrency.forEach(exchange => {
-          employee.net_salary_equiv = parseInt(exchange.currency_id) === parseInt(employee.currency_id) ?
+          employee.net_salary_equiv = parseInt(exchange.currency_id, 10) === parseInt(employee.currency_id, 10) ?
             employee.net_salary / exchange.rate : employee.net_salary;
-          employee.daily_salary_equiv = parseInt(exchange.currency_id) === parseInt(employee.currency_id) ?
+          employee.daily_salary_equiv = parseInt(exchange.currency_id, 10) === parseInt(employee.currency_id, 10) ?
             employee.daily_salary / exchange.rate : employee.daily_salary;
-          employee.base_taxable_equiv = parseInt(exchange.currency_id) === parseInt(employee.currency_id) ?
+          employee.base_taxable_equiv = parseInt(exchange.currency_id, 10) === parseInt(employee.currency_id, 10) ?
             employee.base_taxable / exchange.rate : employee.base_taxable;
-          employee.basic_salary_equiv = parseInt(exchange.currency_id) === parseInt(employee.currency_id) ?
+          employee.basic_salary_equiv = parseInt(exchange.currency_id, 10) === parseInt(employee.currency_id, 10) ?
             employee.basic_salary / exchange.rate : employee.basic_salary;
-          employee.gross_salary_equiv = parseInt(exchange.currency_id) === parseInt(employee.currency_id) ?
+          employee.gross_salary_equiv = parseInt(exchange.currency_id, 10) === parseInt(employee.currency_id, 10) ?
             employee.gross_salary / exchange.rate : employee.gross_salary;
-          employee.net_salary_equiv = parseInt(exchange.currency_id) === parseInt(employee.currency_id) ?
+          employee.net_salary_equiv = parseInt(exchange.currency_id, 10) === parseInt(employee.currency_id, 10) ?
             employee.net_salary / exchange.rate : employee.net_salary;
-          employee.net_salary_equiv = parseInt(exchange.currency_id) === parseInt(employee.currency_id) ?
+          employee.net_salary_equiv = parseInt(exchange.currency_id, 10) === parseInt(employee.currency_id, 10) ?
             employee.net_salary / exchange.rate : employee.net_salary;
           totalNetSalary += employee.net_salary_equiv;
           totalBasicSalary += employee.basic_salary_equiv;
@@ -138,9 +133,9 @@ function build(req, res, next) {
       data.rubrics = rubEmployees;
       data.rubrics.forEach(rub => {
         let totalRub = 0;
-        rubrics.forEach(rubrics => {
-          if (rub.abbr === rubrics.abbr) {
-            totalRub += rubrics.result_equiv;
+        rubrics.forEach(item => {
+          if (rub.abbr === item.abbr) {
+            totalRub += item.result_equiv;
           }
         });
         rub.total = totalRub;
@@ -149,9 +144,9 @@ function build(req, res, next) {
       data.rubEnterprises = rubEnterprises;
       data.rubEnterprises.forEach(rub => {
         let totalRub = 0;
-        rubrics.forEach(rubrics => {
-          if (rub.abbr === rubrics.abbr) {
-            totalRub += rubrics.result_equiv;
+        rubrics.forEach(item => {
+          if (rub.abbr === item.abbr) {
+            totalRub += item.result_equiv;
           }
         });
         rub.total = totalRub;
@@ -171,31 +166,31 @@ function build(req, res, next) {
         let somChargeEmployee = 0;
         let somChargeEnterprise = 0;
 
-        rubrics.forEach(rubrics => {
-          if (employee.employee_uuid === rubrics.employee_uuid) {
-            rubrics.ratePercentage = rubrics.is_percent ? rubrics.value : 0;
+        rubrics.forEach(item => {
+          if (employee.employee_uuid === item.employee_uuid) {
+            item.ratePercentage = item.is_percent ? item.value : 0;
             // Get Rubric Taxable
-            if (!rubrics.is_discount && !rubrics.is_social_care) {
-              somRubTaxable += rubrics.result;
-              employee.rubricTaxable.push(rubrics);
+            if (!item.is_discount && !item.is_social_care) {
+              somRubTaxable += item.result;
+              employee.rubricTaxable.push(item);
             }
             // Get Rubric Non Taxable
-            if (!rubrics.is_discount && rubrics.is_social_care) {
-              somRubNonTaxable += rubrics.result;
-              employee.rubricNonTaxable.push(rubrics);
+            if (!item.is_discount && item.is_social_care) {
+              somRubNonTaxable += item.result;
+              employee.rubricNonTaxable.push(item);
             }
             // Get Charge
-            if (rubrics.is_discount) {
-              if (rubrics.is_employee) {
-                rubrics.chargeEmployee = rubrics.result;
-                employee.rubricsChargeEmployee.push(rubrics);
-                somChargeEmployee += rubrics.result;
+            if (item.is_discount) {
+              if (item.is_employee) {
+                item.chargeEmployee = item.result;
+                employee.rubricsChargeEmployee.push(item);
+                somChargeEmployee += item.result;
               } else {
-                rubrics.chargeEnterprise = rubrics.result;
-                employee.rubricsChargeEnterprise.push(rubrics);
-                somChargeEnterprise += rubrics.result;
+                item.chargeEnterprise = item.result;
+                employee.rubricsChargeEnterprise.push(item);
+                somChargeEnterprise += item.result;
               }
-              employee.rubricDiscount.push(rubrics);
+              employee.rubricDiscount.push(item);
             }
           }
         });
@@ -204,13 +199,14 @@ function build(req, res, next) {
         employee.somChargeEnterprise = somChargeEnterprise;
         employee.somChargeEmployee = somChargeEmployee;
         data.exchangeRatesByCurrency.forEach(exchange => {
-          employee.somRubTaxable_equiv = parseInt(exchange.currency_id) === parseInt(employee.currency_id) ?
+          employee.somRubTaxable_equiv = parseInt(exchange.currency_id, 10) === parseInt(employee.currency_id, 10) ?
             employee.somRubTaxable / exchange.rate : employee.somRubTaxable;
-          employee.somRubNonTaxable_equiv = parseInt(exchange.currency_id) === parseInt(employee.currency_id) ?
+          employee.somRubNonTaxable_equiv = parseInt(exchange.currency_id, 10) === parseInt(employee.currency_id, 10) ?
             employee.somRubNonTaxable / exchange.rate : employee.somRubNonTaxable;
-          employee.somChargeEnterprise_equiv = parseInt(exchange.currency_id) === parseInt(employee.currency_id) ?
-            employee.somChargeEnterprise / exchange.rate : employee.somChargeEnterprise;
-          employee.somChargeEmployee_equiv = parseInt(exchange.currency_id) === parseInt(employee.currency_id) ?
+          employee.somChargeEnterprise_equiv =
+            parseInt(exchange.currency_id, 10) === parseInt(employee.currency_id, 10) ?
+              employee.somChargeEnterprise / exchange.rate : employee.somChargeEnterprise;
+          employee.somChargeEmployee_equiv = parseInt(exchange.currency_id, 10) === parseInt(employee.currency_id, 10) ?
             employee.somChargeEmployee / exchange.rate : employee.somChargeEmployee;
         });
         TotalChargeEnterprise += somChargeEnterprise;

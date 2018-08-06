@@ -26,15 +26,16 @@ function find(options) {
 
 
   const sql = `
-    SELECT payroll.employee_uuid, payroll.reference, payroll.code, payroll.date_embauche, payroll.nb_enfant, payroll.individual_salary,
-     payroll.account_id, payroll.creditor_uuid, payroll.display_name, payroll.sex, payroll.uuid, 
-     payroll.payroll_configuration_id, payroll.currency_id, payroll.paiement_date, payroll.base_taxable, 
-     payroll.basic_salary, payroll.gross_salary, payroll.grade_salary, payroll.text, payroll.net_salary, 
-     payroll.working_day, payroll.total_day, payroll.daily_salary, payroll.amount_paid,
-      payroll.status_id, payroll.status, (payroll.net_salary - payroll.amount_paid) AS balance
+    SELECT payroll.employee_uuid, payroll.reference, payroll.code, payroll.date_embauche, payroll.nb_enfant,
+    payroll.individual_salary, payroll.account_id, payroll.creditor_uuid, payroll.display_name, payroll.sex,
+    payroll.uuid, payroll.payroll_configuration_id, payroll.currency_id, payroll.paiement_date, payroll.base_taxable, 
+    payroll.basic_salary, payroll.gross_salary, payroll.grade_salary, payroll.text, payroll.net_salary, 
+    payroll.working_day, payroll.total_day, payroll.daily_salary, payroll.amount_paid,
+    payroll.status_id, payroll.status, (payroll.net_salary - payroll.amount_paid) AS balance
     FROM(
-      SELECT BUID(employee.uuid) AS employee_uuid, employee.reference, employee.code, employee.date_embauche, employee.nb_enfant, 
-      employee.individual_salary, creditor_group.account_id, BUID(employee.creditor_uuid) AS creditor_uuid,
+      SELECT BUID(employee.uuid) AS employee_uuid, employee.reference, employee.code, employee.date_embauche,
+        employee.nb_enfant,employee.individual_salary, creditor_group.account_id,
+        BUID(employee.creditor_uuid) AS creditor_uuid,
         UPPER(patient.display_name) AS display_name, patient.sex, BUID(paiement.uuid) AS uuid, 
         paiement.payroll_configuration_id,  paiement.currency_id, paiement.paiement_date, paiement.base_taxable, 
         paiement.basic_salary, paiement.gross_salary, grade.basic_salary AS grade_salary, grade.text, 
@@ -52,13 +53,14 @@ function find(options) {
         JOIN paiement_status ON paiement_status.id = paiement.status_id
         WHERE paiement.payroll_configuration_id = '${options.payroll_configuration_id}'
       UNION 
-        SELECT BUID(employee.uuid) AS employee_uuid, employee.reference, employee.code, employee.date_embauche, employee.nb_enfant, 
-        employee.individual_salary, creditor_group.account_id, BUID(employee.creditor_uuid) AS creditor_uuid,
-        UPPER(patient.display_name) AS display_name, patient.sex, NULL AS 'paiement_uuid',
-        '${options.payroll_configuration_id}' AS payroll_configuration_id, '${options.currency_id}' AS currency_id, 
-        NULL AS paiement_date, 0 AS base_taxable, 0 AS basic_salary, 0 AS gross_salary, 
-        grade.basic_salary AS grade_salary, grade.text, 0 AS net_salary, 0 AS working_day, 0 AS total_day,
-        0 AS daily_salary, 0 AS amount_paid, 1 AS status_id, 'PAYROLL_STATUS.WAITING_FOR_CONFIGURATION' AS status
+        SELECT BUID(employee.uuid) AS employee_uuid, employee.reference, employee.code, employee.date_embauche,
+        employee.nb_enfant, employee.individual_salary, creditor_group.account_id,
+        BUID(employee.creditor_uuid) AS creditor_uuid, UPPER(patient.display_name) AS display_name,
+        patient.sex, NULL AS 'paiement_uuid', '${options.payroll_configuration_id}' AS payroll_configuration_id,
+        '${options.currency_id}' AS currency_id, NULL AS paiement_date, 0 AS base_taxable, 0 AS basic_salary,
+        0 AS gross_salary, grade.basic_salary AS grade_salary, grade.text, 0 AS net_salary, 0 AS working_day,
+        0 AS total_day, 0 AS daily_salary, 0 AS amount_paid, 1 AS status_id,
+        'PAYROLL_STATUS.WAITING_FOR_CONFIGURATION' AS status
         FROM employee 
         JOIN creditor ON creditor.uuid = employee.creditor_uuid  
         JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid 

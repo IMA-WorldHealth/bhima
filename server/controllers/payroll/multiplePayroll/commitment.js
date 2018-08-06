@@ -50,22 +50,20 @@ function commitments(employees, rubrics, rubricsConfig, account, projectId, user
   let totalChargesRemuneration = 0;
   let totalWithholdings = 0;
 
-  rubricsConfig.forEach(rubricsConfig => {
-    rubricsConfig.totals = 0;
+  rubricsConfig.forEach(item => {
+    item.totals = 0;
     rubrics.forEach(rubric => {
       let exchangeRate = 1;
       // {{ exchangeRates }} contains a matrix containing the current exchange rate of all currencies
       // against the currency of the Enterprise
       exchangeRates.forEach(exchange => {
-        if (parseInt(exchange.currency_id) === parseInt(rubric.currency_id)) {
-          exchangeRate = exchange.rate;
-        }
+        exchangeRate = parseInt(exchange.currency_id, 10) === parseInt(rubric.currency_id, 10)
+          ? exchange.rate : exchangeRate;
       });
 
-      if (rubricsConfig.id === rubric.id) {
+      if (item.id === rubric.id) {
         rubric.value /= exchangeRate;
-
-        rubricsConfig.totals += rubric.value;
+        item.totals += rubric.value;
       }
     });
   });
