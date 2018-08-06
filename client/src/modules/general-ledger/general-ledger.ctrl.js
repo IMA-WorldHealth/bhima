@@ -22,6 +22,9 @@ function GeneralLedgerController(
   const cacheKey = 'GeneralLedger';
   let columns = [];
   vm.year = {};
+  vm.accounts = [];
+  vm.toggleHideTitleAccount = toggleHideTitleAccount;
+  vm.hideTitleAccount = false;
   const fields = [
     'balance',
     'balance0',
@@ -46,6 +49,7 @@ function GeneralLedgerController(
   vm.aggregates = {};
 
   vm.indentTitleSpace = 15;
+  const isNotTitleAccount = (account) => account.type_id !== bhConstants.accounts.TITLE;
 
   const tmpl = `
     <div class="ui-grid-cell-contents">
@@ -162,12 +166,29 @@ function GeneralLedgerController(
     });
   }
 
+  // specify if titles accounts should be hidden
+  function toggleHideTitleAccount() {
+    vm.hideTitleAccount = !vm.hideTitleAccount;
+    hideTitles();
+  }
+
+  // Hide when possible title account
+  function hideTitles() {
+    if (vm.hideTitleAccount) {
+      vm.gridOptions.data = vm.accounts.filter(isNotTitleAccount);
+    } else {
+      vm.gridOptions.data = vm.accounts;
+    }
+  }
+
   function loadData(accounts = []) {
     accounts.forEach(preProcessAccounts);
     Accounts.order(accounts);
 
     renameGidHeaders(vm.year);
     vm.gridOptions.data = accounts;
+    vm.accounts = accounts;
+    hideTitles();
   }
 
   vm.download = GeneralLedger.download;
