@@ -12,8 +12,8 @@
  */
 
 const _ = require('lodash');
+const Q = require('q');
 const AccountReference = require('../../accounts').references;
-// const Tree = require('../../../../lib/Tree');
 const db = require('../../../../lib/db');
 const ReportManager = require('../../../../lib/ReportManager');
 
@@ -59,13 +59,14 @@ function report(req, res, next) {
     WHERE p.id = ?;
   `;
 
-  db.one(getFiscalYearSQL, [params.period_id])
-    .then(period => {
-      _.merge(context, { period });
-      return AccountReference.computeAllAccountReference(params.period_id);
-    })
-    .then(data => {
-      _.merge(context, { data, currencyId : req.session.enterprise.currency_id });
+  const dbPromises = [
+    db.one(getFiscalYearSQL, [params.period_id]),
+    AccountReference.computeAllAccountReference(params.period_id),
+  ];
+
+  Q.all(dbPromises)
+    .spread((period, data) => {
+      _.merge(context, { period, data });
       return reporting.render(context);
     })
     .then(result => {

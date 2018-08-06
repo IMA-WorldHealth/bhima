@@ -46,10 +46,7 @@ function computeAllAccountReference(periodId) {
       });
       return Q.all(dbPromises);
     })
-    .then(data => {
-      const accountReferenceValues = data.map(line => line[0]);
-      return accountReferenceValues;
-    });
+    .then(data => data);
 }
 
 /**
@@ -92,9 +89,7 @@ function computeSingleAccountReference(abbr, isAmoDep = 0, periodId) {
         glb.fiscalYear.id
       );
     })
-    .then(data => {
-      return data[0];
-    });
+    .then(data => data);
 }
 
 /**
@@ -132,7 +127,7 @@ function getValueForReference(abbr, isAmoDep = 0, referenceDescription, periodNu
         periodNumber,
         accountIds.length ? accountIds : null,
       ];
-      return db.exec(queryTotals, parameters);
+      return db.exec(queryTotals, parameters).then(values => values[0]);
     });
 }
 
@@ -148,7 +143,7 @@ function getValueForReference(abbr, isAmoDep = 0, referenceDescription, periodNu
 function getAccountsForReference(abbr, isAmoDep = 0) {
   /**
    * Get the list of accounts of the reference without excepted accounts
-   * mysql implementation of minus operator
+   * mysql implementation of minus operator with left join
    * @link http://www.mysqltutorial.org/mysql-minus/
    */
   const queryAccounts = `
@@ -159,8 +154,8 @@ function getAccountsForReference(abbr, isAmoDep = 0) {
           SELECT a.id, a.number, ar.is_amo_dep, ari.is_exception FROM account a 
           JOIN account_reference_item ari ON ari.account_id = a.id
           JOIN account_reference ar ON ar.id = ari.account_reference_id
-          WHERE ar.abbr LIKE ? AND ar.is_amo_dep = ? AND ari.is_exception = 0
-        ) AS t ON LEFT(account.number, CHAR_LENGTH(t.number)) LIKE t.number 
+          WHERE ar.abbr = ? AND ar.is_amo_dep = ? AND ari.is_exception = 0
+        ) AS t ON LEFT(account.number, CHAR_LENGTH(t.number)) = t.number 
     ) AS includeTable 
     LEFT JOIN (
       SELECT DISTINCT 
@@ -169,8 +164,8 @@ function getAccountsForReference(abbr, isAmoDep = 0) {
           SELECT a.id, a.number, ar.is_amo_dep, ari.is_exception FROM account a 
           JOIN account_reference_item ari ON ari.account_id = a.id
           JOIN account_reference ar ON ar.id = ari.account_reference_id
-          WHERE ar.abbr LIKE ? AND ar.is_amo_dep = ? AND ari.is_exception = 1
-        ) AS z ON LEFT(account.number, CHAR_LENGTH(z.number)) LIKE z.number
+          WHERE ar.abbr = ? AND ar.is_amo_dep = ? AND ari.is_exception = 1
+        ) AS z ON LEFT(account.number, CHAR_LENGTH(z.number)) = z.number
     ) AS excludeTable ON excludeTable.account_id = includeTable.account_id 
     WHERE excludeTable.account_id IS NULL
     ORDER BY CONVERT(includeTable.account_number, char(10));

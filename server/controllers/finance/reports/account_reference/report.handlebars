@@ -36,11 +36,14 @@
         <tbody>
           {{#each data as |reference|}}
             <tr>
-              <td>{{ reference.abbr }}</td>
+              <td>
+                {{ reference.abbr }} 
+                {{#if reference.is_amo_dep}} <i><small>({{translate 'ACCOUNT.REFERENCE.AMO_DEP'}})</small></i> {{/if}}
+              </td>
               <td>{{ reference.description }}</td>
-              <td>{{currency reference.debit ../currencyId}}</td>
-              <td>{{currency reference.credit ../currencyId}}</td>
-              <td>{{debcred reference.balance ../currencyId}}</td>
+              <td>{{currency reference.debit ../metadata.enterprise.currency_id}}</td>
+              <td>{{currency reference.credit ../metadata.enterprise.currency_id}}</td>
+              <td>{{debcred reference.balance ../metadata.enterprise.currency_id}}</td>
             </tr>
           {{/each}}
         </tbody>
