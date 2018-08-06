@@ -1,12 +1,11 @@
-const dates = require('../../server/lib/template/helpers/dates');
 const { expect } = require('chai');
-
+const dates = require('../../server/lib/template/helpers/dates');
 
 const DateHelperUnitTests = function () {
   it('#date() should format a date is "DD/MM/YYYY" format.', () => {
-    const dat = new Date('2015-03-25');
+    const date = new Date('2015-03-25 12:00:00');
     const expected = '25/03/2015';
-    const formated = dates.date(dat);
+    const formated = dates.date(date);
     expect(formated).to.equal(expected);
   });
 
@@ -50,15 +49,15 @@ const DateHelperUnitTests = function () {
   it('#age() should return 3 for the current date.', () => {
     const current = new Date();
     const dob = new Date((current.getFullYear() - 3), current.getMonth());
-    var formated = dates.age(dob);
-    var expected = 3;
+    const formated = dates.age(dob);
+    const expected = 3;
     expect(formated).to.equal(expected);
   });
 
   it('#month should return the full month name in English for a given month.', () => {
     const dat = new Date('2015-03-25 10:05:15');
-    var formated = dates.month(dat);
-    var expected = 'March';
+    const formated = dates.month(dat);
+    const expected = 'March';
     expect(formated).to.equal(expected);
   });
 };

@@ -1,7 +1,7 @@
-const util = require('../../server/lib/util');
-
 const { expect } = require('chai');
 const _ = require('lodash');
+
+const util = require('../../server/lib/util');
 
 describe('util.js', () => {
   it('#take() should take values from one key of each object in an array of objects', () => {
@@ -19,9 +19,10 @@ describe('util.js', () => {
 
   it('#dateFormatter() should format each javascript datetime value in a array of objects', () => {
     const rows = [
-      { name : 'alice', dob : new Date('2015-03-25') },
-      { name : 'bob', dob : new Date('2015-03-30') },
+      { name : 'alice', dob : new Date('2015-03-25 12:00:00') },
+      { name : 'bob', dob : new Date('2015-03-30 12:00:00') },
     ];
+
     const expected = [
       { name : 'alice', dob : '25/03/2015' },
       { name : 'bob', dob : '30/03/2015' },
