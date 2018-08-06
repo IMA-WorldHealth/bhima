@@ -124,10 +124,10 @@ function build(req, res, next) {
     })
     .spread((rubrics, holidays, offDays, aggregateRubrics, aggregatePaiements, rubEmployees, rubEnterprises) => {
       let TotalChargeEnterprise = 0;
-      rubrics.forEach(rubrics => {
+      rubrics.forEach(item => {
         data.exchangeRatesByCurrency.forEach(exchange => {
-          rubrics.result_equiv =
-            exchange.currency_id === rubrics.currency_id ? rubrics.result / exchange.rate : rubrics.result;
+          item.result_equiv =
+            exchange.currency_id === item.currency_id ? item.result / exchange.rate : item.result;
         });
       });
       data.rubrics = rubEmployees;
