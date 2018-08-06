@@ -5,13 +5,13 @@ const VoucherRegistrySearch = require('./vouchers.search');
 const GridRow = require('../shared/GridRow');
 const components = require('../shared/components');
 
-describe('Voucher Registry', () => {
+describe.only('Voucher Registry', () => {
   const NUM_VOUCHERS = 23;
   const gridId = 'voucher-grid';
 
   before(() => helpers.navigate('vouchers'));
 
-  it(`displays ${NUM_VOUCHERS} vouchers on the page`, () => {
+  it(`displays Above ${NUM_VOUCHERS} vouchers on the page`, () => {
     GU.expectRowCountAbove(gridId, NUM_VOUCHERS);
   });
 
