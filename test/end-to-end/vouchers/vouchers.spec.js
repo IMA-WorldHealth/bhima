@@ -5,7 +5,7 @@ const VoucherRegistrySearch = require('./vouchers.search');
 const GridRow = require('../shared/GridRow');
 const components = require('../shared/components');
 
-describe.only('Voucher Registry', () => {
+describe('Voucher Registry', () => {
   const NUM_VOUCHERS = 23;
   const gridId = 'voucher-grid';
 
