@@ -21,6 +21,7 @@ angular.module('bhima.routes')
       'stock_exit',
       'employeeStanding',
       'patientStanding',
+      'account_reference',
     ];
 
     $stateProvider

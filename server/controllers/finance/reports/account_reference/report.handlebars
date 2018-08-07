@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+{{> head title="TREE.ACCOUNT_REFERENCE.TITLE"}}
+
+<body>
+
+<main class="container">
+  {{> header}}
+
+  <!-- body  -->
+  <div class="row">
+    <div class="col-xs-12">
+
+      <!-- page title  -->
+      <h2 class="text-center">
+        {{translate 'REPORT.ACCOUNT_REFERENCE.TITLE'}}
+      </h2>
+
+      <h4 class="text-center">
+        <strong class="text-capitalize">{{date period.fiscalYearStart "MMMM YYYY"}}</strong>
+         -
+        <strong class="text-capitalize">{{date period.end_date "MMMM YYYY"}}</strong>
+      </h4>
+
+      <!-- data  -->
+      <table class="table table-condensed table-report">
+        <thead>
+          <tr style="background-color:#ddd;">
+            <th>{{translate "ACCOUNT.REFERENCE.REFERENCE"}}</th>
+            <th>{{translate "ACCOUNT.REFERENCE.DESCRIPTION"}}</th>
+            <th class="text-center">{{translate "FORM.LABELS.DEBIT"}}</th>
+            <th class="text-center">{{translate "FORM.LABELS.CREDIT"}}</th>
+            <th class="text-center">{{translate "FORM.LABELS.BALANCE"}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each data as |reference|}}
+            <tr>
+              <td>
+                {{ reference.abbr }} 
+                {{#if reference.is_amo_dep}} <i><small>({{translate 'ACCOUNT.REFERENCE.AMO_DEP'}})</small></i> {{/if}}
+              </td>
+              <td>{{ reference.description }}</td>
+              <td>{{currency reference.debit ../metadata.enterprise.currency_id}}</td>
+              <td>{{currency reference.credit ../metadata.enterprise.currency_id}}</td>
+              <td>{{debcred reference.balance ../metadata.enterprise.currency_id}}</td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+</body>
+</html>
