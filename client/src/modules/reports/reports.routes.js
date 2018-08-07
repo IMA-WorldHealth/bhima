@@ -22,6 +22,7 @@ angular.module('bhima.routes')
       'employeeStanding',
       'patientStanding',
       'ohada_balance_sheet_report',
+      'account_reference',
     ];
 
     $stateProvider

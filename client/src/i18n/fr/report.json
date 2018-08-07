@@ -2,6 +2,10 @@
   "REPORT":{
     "CLIENTS" : "Rapport Clients",
     "ACCOUNT":"Relevé de compte",
+    "ACCOUNT_REFERENCE":{
+      "TITLE":"Valeur des references des comptes",
+      "DESCRIPTION":"Affiche le debit, credit and la balance des groupes de comptes connu sous le nom de référence des comptes"
+    },
     "AGED_CREDITORS":{
       "TITLE":"Balance agée des Créances",
       "DESCRIPTION":"Ce rapport affiche toutes les créances dues aux Créditeurs par période"

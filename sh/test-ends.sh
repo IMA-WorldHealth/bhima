@@ -23,16 +23,13 @@ echo "[test] Spawning server process..."
 ./node_modules/.bin/gulp build
 cd bin
 node server/app.js &
-NODE_PID=$!
 
-echo "[test] Spawned node process $NODE_PID."
+echo "[test] Spawned node process."
 
 echo "[test] Sleeping for $TIMEOUT seconds."
 sleep "$TIMEOUT"
 
 echo "[test] Running tests using protractor."
 ../node_modules/.bin/protractor ../protractor.conf.js
-
-echo "[test] cleaning up node process $NODE_PID."
 
 echo "[/test]"

@@ -43,7 +43,7 @@ exports.getFirstDateOfFirstFiscalYear = getFirstDateOfFirstFiscalYear;
 exports.getNumberOfFiscalYears = getNumberOfFiscalYears;
 exports.getDateRangeFromPeriods = getDateRangeFromPeriods;
 exports.getPeriodsFromDateRange = getPeriodsFromDateRange;
-exports.accountBanlanceByTypeId = accountBanlanceByTypeId;
+exports.getAccountBalancesByTypeId = getAccountBalancesByTypeId;
 exports.getOpeningBalance = getOpeningBalance;
 
 /**
@@ -642,7 +642,7 @@ function getPeriods(req, res, next) {
 /**
  * return a query for retrieving account'balance by type_id and periods
  */
-function accountBanlanceByTypeId() {
+function getAccountBalancesByTypeId() {
   return `
     SELECT ac.id, ac.number, ac.label, ac.parent, IFNULL(s.amount, 0) AS amount, s.type_id
 

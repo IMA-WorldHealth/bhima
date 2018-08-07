@@ -15,7 +15,7 @@ describe('(/locations) Locations Interface', () => {
    */
   const numVillages = 1;
   const numSectors = 1;
-  const numProvinces = 1;
+  const numProvinces = 25;
   const numCountries = 1;
 
   /*
@@ -31,7 +31,7 @@ describe('(/locations) Locations Interface', () => {
    */
   const numFilteredVillages = 1;
   const numFilteredSectors = 1;
-  const numFilteredProvinces = 1;
+  const numFilteredProvinces = 25;
 
   /* the test enterprise's location uuid */
   const detailUuid = '1f162a10-9f67-4788-9eff-c1fea42fcc9b';
