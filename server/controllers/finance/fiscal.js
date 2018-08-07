@@ -45,6 +45,7 @@ exports.getDateRangeFromPeriods = getDateRangeFromPeriods;
 exports.getPeriodsFromDateRange = getPeriodsFromDateRange;
 exports.getAccountBalancesByTypeId = getAccountBalancesByTypeId;
 exports.getOpeningBalance = getOpeningBalance;
+exports.getFiscalYearByPeriodId = getFiscalYearByPeriodId;
 
 /**
  * @method lookupFiscalYear
@@ -66,6 +67,21 @@ function lookupFiscalYear(id) {
 
   return db.one(sql, [id], id, 'fiscal year');
 }
+
+
+function getFiscalYearByPeriodId(periodId) {
+  const sql = `
+    SELECT id, enterprise_id, number_of_months, label, start_date, end_date,
+    previous_fiscal_year_id, locked, note
+    FROM fiscal_year
+    WHERE id IN (
+      SELECT fiscal_year_id FROM period WHERE id = ?
+    );
+  `;
+
+  return db.one(sql, periodId);
+}
+
 
 /**
  * @method list
