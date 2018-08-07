@@ -18,7 +18,9 @@ function GeneralLedgerService(Api, $httpParamSerializer, Languages, Session) {
 
   function download(type, filters, label) {
     const filterOpts = filters;
-    filters.fiscal_year_label = label;
+    if (filters) {
+      filters.fiscal_year_label = label;
+    }
     const defaultOpts = { renderer : type, lang : Languages.key };
 
     // combine options
