@@ -1,8 +1,5 @@
 /* global by */
-const chai = require('chai');
 const helpers = require('../shared/helpers');
-
-helpers.configure(chai);
 
 const GU = require('../shared/GridUtils');
 const GA = require('../shared/GridAction');
@@ -35,7 +32,7 @@ describe('Invoicing Fees', () => {
 
   it('can update a invoicing fee', () => {
     // get the cell with the update button and click it
-    GA.clickOnMethod(0, 6, 'edit', 'InvoicingFeesGrid');
+    GA.clickOnMethod(0, 5, 'edit', 'InvoicingFeesGrid');
 
     // expect to find the update form has loaded
     FU.exists(by.css('[name="InvoicingFeesForm"]'), true);
@@ -50,7 +47,7 @@ describe('Invoicing Fees', () => {
 
   it('can delete a invoicing fee', () => {
     // get the cell with the delete button and click it
-    GA.clickOnMethod(0, 6, 'delete', 'InvoicingFeesGrid');
+    GA.clickOnMethod(0, 5, 'delete', 'InvoicingFeesGrid');
 
     // expect the modal to appear
     FU.exists(by.css('[data-confirm-modal]'), true);

@@ -1,141 +1,125 @@
 // TODO Handle HTTP exception errors (displayed contextually on form)
-angular.module('bhima.controllers')
-.controller('PriceListController', PriceListController);
+angular.module('bhima.controllers').controller('PriceListController', PriceListController);
 
 PriceListController.$inject = [
   'PriceListService', '$uibModal', 'InventoryService',
   'ModalService', 'util', 'NotifyService', 'appcache',
+  'LanguageService', '$httpParamSerializer', 'GridColumnService',
+  'GridStateService', 'uiGridConstants',
 ];
 
-function PriceListController(PriceListService, $uibModal, Inventory,
-   ModalService, util, Notify, AppCache) {
-  var vm = this;
+function PriceListController(
+  PriceListService, $uibModal, Inventory, ModalService, util, Notify, AppCache,
+  Languages, $httpParamSerializer, Columns, GridState, uiGridConstants
+) {
+  const vm = this;
   vm.view = 'default';
+  vm.download = download;
+  vm.openColumnConfigModal = openColumnConfigModal;
+  vm.toggleInlineFilter = toggleInlineFilter;
 
-  // bind methods
-  vm.create   = create;
-  vm.submit   = submit;
-  vm.update   = update;
-  vm.del      = del;
-  vm.cancel   = cancel;
-  vm.addItem  = addItem;
-  vm.getInventory = getInventory;
-  vm.removeItem = removeItem;
+  // set price list items
+  vm.addItem = addItem;
+  // delete a price list
+  vm.del = del;
+  // create a new price list
+  vm.create = create;
 
-  vm.length250 = util.length250;
-  vm.maxLength = util.maxTextLength;
+  const cacheKey = 'priceList';
 
-  // Here we create a cache, all items in the list will be in it
-  var cache = new AppCache('selectedItems');
-
-  // fired on startup
-  function startup() {
-    // start up loading indicator
-    vm.loading = true;
-
-    // load Inventory
-    Inventory.read()
-      .then(function (inventory) {
-        vm.inventories = inventory;
-      })
-      .catch(Notify.handleError);
-
-    // load PriceList
+  function startUp() {
     refreshPriceList();
   }
 
-  function cancel() {
-    vm.view = 'default';
+  const columns = [
+    {
+      field : 'label',
+      displayName : 'FORM.LABELS.LABEL',
+      headerCellFilter : 'translate',
+    },
+    {
+      field : 'description',
+      displayName : 'FORM.LABELS.DESCRIPTION',
+      headerCellFilter : 'translate',
+    },
+    {
+      field : 'FORM.BUTTONS.ACTIONS',
+      width : 100,
+      enableFiltering : false,
+      displayName : '',
+      headerCellFilter : 'translate',
+      cellTemplate : `/modules/prices/templates/action.cell.html`,
+    },
+  ];
+
+  vm.gridOptions = {
+    appScopeProvider : vm,
+    enableColumnMenus : false,
+    columnDefs : columns,
+    enableSorting : true,
+    data : [],
+    fastWatch : true,
+    flatEntityAccess : true,
+  };
+
+  vm.gridOptions.onRegisterApi = function onRegisterApi(gridApi) {
+    vm.gridApi = gridApi;
+  };
+
+  const columnConfig = new Columns(vm.gridOptions, cacheKey);
+  const state = new GridState(vm.gridOptions, cacheKey);
+
+  vm.saveGridState = state.saveGridState;
+
+  function openColumnConfigModal() {
+    // column configuration has direct access to the grid API to alter the current
+    // state of the columns - this will be saved if the user saves the grid configuration
+    columnConfig.openConfigurationModal();
   }
 
-  function getInventory(uuid) {
-    var inventory = vm.inventories.filter(function (item) {
-      return item.uuid  === uuid;
-    });
-
-    return inventory[0].label;
+  function toggleInlineFilter() {
+    vm.gridOptions.enableFiltering = !vm.gridOptions.enableFiltering;
+    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
-  function removeItem(item) {
-    if (vm.pricelistItems.length > 1) {
-      vm.pricelistItems.splice(vm.pricelistItems.indexOf(item), 1);
-    } else {
-      ModalService.alert('PRICE_LIST.UNABLE_TO_DELETE');
-    }
+  // open create price list modal
+  function openCreateModal(priceList) {
+
+    return $uibModal.open({
+      keyboard : false,
+      backdrop : 'static',
+      templateUrl : 'modules/prices/modal/create.html',
+      controller : 'PriceListModalController as $ctrl',
+      resolve : {
+        data : function dataProvider() {
+          return priceList;
+        },
+      },
+    }).result;
   }
 
-  function create() {
-    vm.priceList = null;
-    vm.pricelistItems = [];
-    vm.view = 'create';
-  }
-
-  // switch to update mode
-  // data is an object that contains all the information of a priceList
-  function update(data) {
-    vm.view = 'update';
-    vm.priceList = data;
-
-    PriceListService.read(data.uuid)
-      .then(function (data) {
-        vm.pricelistItems = data.items;
-      })
-      .catch(Notify.handleError);
-  }
-
-
-  // refresh the displayed PriceList
-  function refreshPriceList() {
-    return PriceListService.read(null, { detailed : 1 })
-    .then(function (data) {
-      vm.loading = false;
-      vm.priceLists = data;
-    });
-  }
-
-  // form submission
-  function submit(invalid) {
-    if (invalid) {
-      Notify.danger('FORM.ERRORS.HAS_ERRORS');
-      return;
-    }
-
-    var promise;
-    var creation = (vm.view === 'create');
-
-    vm.priceList.items = vm.pricelistItems.length ? vm.pricelistItems : null;
-
-    var priceList = angular.copy(vm.priceList);
-
-    promise = (creation) ?
-      PriceListService.create(priceList) :
-      PriceListService.update(priceList.uuid, priceList);
-
-    return promise
-      .then(function (response) {
-        return refreshPriceList();
-      })
-      .then(function () {
-        var message = creation ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
-        Notify.success(message);
-        vm.view = 'default';
-      })
+  // create or edit a price list
+  function create(priceList) {
+    openCreateModal(priceList).then(yes => {
+      if (yes) {
+        refreshPriceList();
+      }
+    })
       .catch(Notify.handleError);
   }
 
   // switch to delete warning mode
   function del(priceList) {
-    ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
-    .then(function (bool) {
-       // if the user clicked cancel, reset the view and return
-       if (!bool) {
-          vm.view = 'default';
-          return;
-       }
+    ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE').then(bool => {
+      // if the user clicked cancel, reset the view and return
+      if (!bool) {
+        vm.view = 'default';
+        return;
+      }
 
       // if we get there, the user wants to delete a priceList
       PriceListService.delete(priceList.uuid)
-        .then(function () {
+        .then(() => {
           Notify.success('FORM.INFO.DELETE_SUCCESS');
           return refreshPriceList();
         })
@@ -143,23 +127,38 @@ function PriceListController(PriceListService, $uibModal, Inventory,
     });
   }
 
+  function download() {
+    const options = {
+      renderer : 'pdf',
+      lang : Languages.key,
+    };
+    // return  serialized options
+    return $httpParamSerializer(options);
+  }
+
+
   // Add pricelist Item in a  modal
-  function addItem() {
-
-    // let stock items int our cache, we will use it in the modal
-    cache.items = vm.pricelistItems;
-
+  function addItem(pricelist) {
     return $uibModal.open({
-      templateUrl : 'modules/prices/modal.html',
-      controller : 'PriceListModalController as ModalCtrl',
+      templateUrl : 'modules/prices/modal/createItems.html',
+      controller : 'PriceListItemsModalController as ModalCtrl',
       keyboard : false,
-      backdrop: 'static',
-      size : 'md'
-    }).result
-    .then(function (items) {
-      vm.pricelistItems.push(items);
+      backdrop : 'static',
+      size : 'md',
+      resolve : {
+        data : function dataProvider() {
+          return pricelist || {};
+        },
+      },
     });
   }
 
-  startup();
+  // refresh the displayed PriceList
+  function refreshPriceList() {
+    return PriceListService.read(null, { detailed : 1 }).then(data => {
+      vm.loading = false;
+      vm.gridOptions.data = data;
+    });
+  }
+  startUp();
 }

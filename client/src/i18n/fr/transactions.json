@@ -2,7 +2,7 @@
   "TRANSACTIONS": {
     "VERIFIED_TRANSACTIONS": "Transactions Postées",
     "VIEW_TRANSACTIONS" : "Voir les transactions",
-    "INCLUDE_POSTED_TRANSACTIONS_DETAIL": "Inclure les transactions affichées dans la recherche",
+    "INCLUDE_POSTED_TRANSACTIONS_DETAIL": "Inclure les transactions postées dans la recherche",
     "INCLUDE_POSTED_TRANSACTIONS_SHORT": "Transactions Postées",
     "SINGLE_ACCOUNT_TRANSACTION" : "Cette transaction contient un seul compte.  Veuillez sélectionner plusieurs comptes pour compléter la transaction.",
     "MISSING_TRANSACTION_TYPE" : "Les transactions impliquant des comptes de trésorerie (banques ou caisses) doivent avoir un type de transaction spécifié pour les différencier dans le rapport de trésorerie. Veuillez sélectionner un type de transaction.",

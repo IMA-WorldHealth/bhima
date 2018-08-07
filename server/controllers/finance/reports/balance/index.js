@@ -31,8 +31,6 @@ const DEFAULT_PARAMS = {
 };
 
 const TITLE_ID = 6;
-const INCOME_ID = 4;
-const EXPENSE_ID = 5;
 
 /**
  * @function document
@@ -94,7 +92,7 @@ function document(req, res, next) {
 function getBalanceSummary(periodId, currencyId, shouldPrune) {
   const getFiscalYearSQL = `
     SELECT p.id, p.start_date, p.end_date, p.fiscal_year_id, p.number,
-      fy.start_date AS fiscalYearStart, fy.end_date
+      fy.start_date AS fiscalYearStart, fy.end_date AS fiscalYearEnd
     FROM period p JOIN fiscal_year fy ON p.fiscal_year_id = fy.id
     WHERE p.id = ?;
   `;
@@ -123,7 +121,6 @@ function getBalanceSummary(periodId, currencyId, shouldPrune) {
         JOIN period p ON pt.period_id = p.id
         JOIN account ac ON pt.account_id = ac.id
       WHERE pt.fiscal_year_id = ?
-        AND ac.type_id NOT IN (${INCOME_ID}, ${EXPENSE_ID})
       GROUP BY pt.account_id
     )s ON a.id = s.account_id
     ORDER BY a.number;
@@ -147,8 +144,7 @@ function getBalanceSummary(periodId, currencyId, shouldPrune) {
       FROM period_total AS pt
         JOIN period p ON pt.period_id = p.id
         JOIN account ac ON pt.account_id = ac.id
-      WHERE pt.fiscal_year_id = ?
-        AND ac.type_id NOT IN (${INCOME_ID}, ${EXPENSE_ID})
+      WHERE pt.fiscal_year_id = ? 
       GROUP BY pt.account_id
     )s;
   `;

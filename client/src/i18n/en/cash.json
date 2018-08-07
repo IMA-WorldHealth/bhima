@@ -1,6 +1,7 @@
 {
   "CASH":{
     "CAUTION":"Caution",
+    "CREDIT_PATIENT_ACCOUNT": "Credit to patient account",
     "CAUTION_COVER":"Invoice(s) covered by the caution",
     "CAUTION_PAYMENT":"Caution Payment",
     "CAUTION_REMAINING":"Remaining Caution",

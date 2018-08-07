@@ -146,10 +146,20 @@ function FiscalOpeningBalanceController($state, Fiscal, Notify, uiGridConstants,
    *
    * @description
    * Populates the initial opening balance from the server.
+   *
+   * @param {boolean} showHiddenAccounts show or hide hidden accounts
+   *
+   * @todo hide all pcgc accounts or duplicated accounts
    */
-  function loadOpeningBalance() {
+  function loadOpeningBalance(showHiddenAccounts) {
     return Fiscal.getOpeningBalance(fiscalYearId)
-      .then(accounts => {
+      .then(data => {
+        let accounts = data;
+
+        if (!showHiddenAccounts) {
+          accounts = accounts.filter(account => account.hidden !== 1);
+        }
+
         vm.AccountTree = new Tree(accounts);
 
         // compute properties for rendering pretty indented templates
@@ -160,9 +170,6 @@ function FiscalOpeningBalanceController($state, Fiscal, Notify, uiGridConstants,
 
         // prune all title accounts with empty children
         pruneUntilSettled(vm.AccountTree);
-
-        // sort the accounts by their label
-        vm.AccountTree.sort((a, b) => a.number > b.number);
 
         // compute balances
         vm.balanced = hasBalancedAccount();

@@ -1,0 +1,43 @@
+<div class="ui-grid-cell-contents text-center" uib-dropdown dropdown-append-to-body data-row="{{ row.entity.text }}">
+  <a uib-dropdown-toggle data-method="action" href>
+    <span data-action="open-dropdown-menu" translate>FORM.BUTTONS.ACTIONS</span>
+    <span class="caret" data-method="action"></span>
+  </a>
+
+  <ul data-action="{{rowRenderIndex}}" class="dropdown-menu-right" uib-dropdown-menu>
+    <li>
+      <a href>
+        <span class="text-primary">{{ row.entity.label }}</span>
+      </a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a data-method="edit" ng-click="grid.appScope.create(row.entity)" href>
+        <i class="fa fa-edit"></i>
+        <span translate>FORM.BUTTONS.EDIT</span>
+      </a>
+    </li>
+    <li>
+      <a data-method="edit-items" ng-click="grid.appScope.addItem(row.entity)" href>
+        <i class="fa fa-edit"></i>
+        <span translate>FORM.LABELS.DETAILS</span>
+      </a>
+    </li>
+
+    <li>
+      <a data-method="edit-print" target="_blank" href="/prices/report/{{row.entity.uuid}}?{{grid.appScope.download()}}">
+        <i class="fa fa-print"></i>
+        <span translate>FORM.BUTTONS.PRINT</span>
+      </a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a data-method="delete-record" ng-click="grid.appScope.del(row.entity)" href>
+        <span class="text-danger">
+          <i class="fa fa-trash"></i>
+          <span class="text-danger" translate>FORM.BUTTONS.DELETE</span>
+        </span>
+      </a>
+    </li>
+  </ul>
+</div>

@@ -207,6 +207,28 @@ exports.create = function create(req, res, next) {
     .done();
 };
 
+// add a new price list item
+exports.createItem = function createItem(req, res, next) {
+  const priceListCreateItemSql = `INSERT INTO price_list_item  SET ?`;
+  const data = req.body;
+  db.convert(data, ['inventory_uuid', 'price_list_uuid']);
+  data.uuid = data.uuid ? db.bid(data.uuid) : db.uuid();
+
+  db.exec(priceListCreateItemSql, data).then(() => {
+    res.sendStatus(201);
+  }).catch(next)
+    .done();
+};
+
+exports.deleteItem = function deleteItem(req, res, next) {
+  const priceListDeleteItemSql = `DELETE FROM price_list_item  WHERE uuid = ?`;
+  const itemUuid = db.bid(req.params.uuid);
+  db.exec(priceListDeleteItemSql, itemUuid).then(() => {
+    res.sendStatus(200);
+  }).catch(next)
+    .done();
+};
+
 
 /**
  * Updates a price list (and associated items) in the database.

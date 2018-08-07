@@ -165,6 +165,15 @@ exports.configure = function configure(app) {
   app.put('/accounts/categories/:id', accounts.categories.update);
   app.delete('/accounts/categories/:id', accounts.categories.remove);
 
+  // API for account reference CRUD
+  app.get('/accounts/references/values/:periodId', accounts.references.getAllValues);
+  app.get('/accounts/references/values/:periodId/:abbr/:isAmoDep?', accounts.references.getValue);
+  app.get('/accounts/references', accounts.references.list);
+  app.get('/accounts/references/:id', accounts.references.detail);
+  app.post('/accounts/references', accounts.references.create);
+  app.put('/accounts/references/:id', accounts.references.update);
+  app.delete('/accounts/references/:id', accounts.references.remove);
+
   // API for account routes crud
   app.get('/accounts', accounts.list);
   app.get('/accounts/:id', accounts.detail);
@@ -385,6 +394,7 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/general_ledger/', financeReports.generalLedger.report);
   app.get('/reports/finance/creditors/aged', financeReports.creditors.aged);
   app.get('/reports/finance/purchases', financeReports.purchases.report);
+  app.get('/reports/finance/account_reference', financeReports.accountReference.report);
 
   app.get('/reports/finance/employeeStanding/', financeReports.employee);
 
@@ -508,9 +518,12 @@ exports.configure = function configure(app) {
   // price lists
   app.get('/prices', priceList.list);
   app.get('/prices/:uuid', priceList.details);
+  app.get('/prices/report/:uuid', financeReports.priceList);
   app.post('/prices', priceList.create);
+  app.post('/prices/item', priceList.createItem);
   app.put('/prices/:uuid', priceList.update);
   app.delete('/prices/:uuid', priceList.delete);
+  app.delete('/prices/item/:uuid', priceList.deleteItem);
 
   // cash API
   app.get('/cash', cash.read);

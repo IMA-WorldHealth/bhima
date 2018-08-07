@@ -1,6 +1,10 @@
 {
   "REPORT": {
     "ACCOUNT": "Account Statement",
+    "ACCOUNT_REFERENCE":{
+      "TITLE":"Accounts References Values",
+      "DESCRIPTION":"Show debit, credit and balance of the defined group of accounts known as accounts references"
+    },
     "AGED_CREDITORS":{
      "TITLE":"Aged Creditors",
      "DESCRIPTION":"This report displays all receivables owed to creditors by period."
