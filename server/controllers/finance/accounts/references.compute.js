@@ -5,6 +5,19 @@ const Q = require('q');
 const db = require('../../../lib/db');
 
 /**
+ * @function findFiscalYear
+ * @param {number} periodId
+ */
+function findFiscalYear(periodId) {
+  const queryFiscalYear = `
+    SELECT fy.id, p.number AS period_number FROM fiscal_year fy
+    JOIN period p ON p.fiscal_year_id = fy.id
+    WHERE p.id = ?
+  `;
+  return db.one(queryFiscalYear, [periodId]);
+}
+
+/**
  * @method computeAllAccountReference
  *
  * @description
@@ -16,19 +29,12 @@ const db = require('../../../lib/db');
 function computeAllAccountReference(periodId) {
   const glb = {};
 
-  // get fiscal year information for the given period
-  const queryFiscalYear = `
-    SELECT fy.id, p.number AS period_number FROM fiscal_year fy
-    JOIN period p ON p.fiscal_year_id = fy.id
-    WHERE p.id = ?
-  `;
-
   // get all references
   const queryAccountReferences = `
     SELECT id, abbr, description, is_amo_dep FROM account_reference;
   `;
 
-  return db.one(queryFiscalYear, [periodId])
+  return findFiscalYear(periodId)
     .then(fiscalYear => {
       glb.fiscalYear = fiscalYear;
 
@@ -45,8 +51,7 @@ function computeAllAccountReference(periodId) {
         );
       });
       return Q.all(dbPromises);
-    })
-    .then(data => data);
+    });
 }
 
 /**
@@ -62,19 +67,12 @@ function computeAllAccountReference(periodId) {
 function computeSingleAccountReference(abbr, isAmoDep = 0, periodId) {
   const glb = {};
 
-  // get fiscal year information for the given period
-  const queryFiscalYear = `
-    SELECT fy.id, p.number AS period_number FROM fiscal_year fy
-    JOIN period p ON p.fiscal_year_id = fy.id
-    WHERE p.id = ?
-  `;
-
   const queryAccountReference = `
     SELECT id, abbr, description, is_amo_dep FROM account_reference
     WHERE abbr = ? AND is_amo_dep = ?;
   `;
 
-  return db.one(queryFiscalYear, [periodId])
+  return findFiscalYear(periodId)
     .then(fiscalYear => {
       glb.fiscalYear = fiscalYear;
 
@@ -88,8 +86,7 @@ function computeSingleAccountReference(abbr, isAmoDep = 0, periodId) {
         glb.fiscalYear.period_number,
         glb.fiscalYear.id
       );
-    })
-    .then(data => data);
+    });
 }
 
 /**
@@ -143,7 +140,6 @@ function getValueForReference(abbr, isAmoDep = 0, referenceDescription, periodNu
 function getAccountsForReference(abbr, isAmoDep = 0) {
   /**
    * Get the list of accounts of the reference without excepted accounts
-   * mysql implementation of minus operator with left join
    * @link http://www.mysqltutorial.org/mysql-minus/
    */
   const queryAccounts = `
