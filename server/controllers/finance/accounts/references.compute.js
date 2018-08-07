@@ -145,9 +145,9 @@ function getAccountsForReference(abbr, isAmoDep = 0) {
   const queryAccounts = `
     SELECT includeTable.account_id, includeTable.account_number FROM (
       SELECT DISTINCT 
-        account.id AS account_id, account.number AS account_number, t.is_exception FROM account
+        account.id AS account_id, account.number AS account_number FROM account
         JOIN (
-          SELECT a.id, a.number, ar.is_amo_dep, ari.is_exception FROM account a 
+          SELECT a.id, a.number FROM account a 
           JOIN account_reference_item ari ON ari.account_id = a.id
           JOIN account_reference ar ON ar.id = ari.account_reference_id
           WHERE ar.abbr = ? AND ar.is_amo_dep = ? AND ari.is_exception = 0
@@ -155,9 +155,9 @@ function getAccountsForReference(abbr, isAmoDep = 0) {
     ) AS includeTable 
     LEFT JOIN (
       SELECT DISTINCT 
-        account.id AS account_id, account.number AS account_number, z.is_exception FROM account
+        account.id AS account_id, account.number AS account_number FROM account
         JOIN (
-          SELECT a.id, a.number, ar.is_amo_dep, ari.is_exception FROM account a 
+          SELECT a.id, a.number FROM account a 
           JOIN account_reference_item ari ON ari.account_id = a.id
           JOIN account_reference ar ON ar.id = ari.account_reference_id
           WHERE ar.abbr = ? AND ar.is_amo_dep = ? AND ari.is_exception = 1
