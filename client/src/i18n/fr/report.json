@@ -177,7 +177,8 @@
       "REMOVE_ZERO_ROWS_HELP" : "Cette option supprime les lignes qui ne contiennent aucune donnée. Produit un rapport plus compacte."
     },
     "OHADA": {
-      "BALANCE_SHEET" : "Bilan selon le referenciel OHADA"
+      "BALANCE_SHEET" : "Bilan",
+      "BALANCE_SHEET_DESCRIPTION" : "Ce rapport affiche le bilan de l'entreprise selon le référentiel OHADA"
     },
     "CLIENT_DEBTOR_ACCOUNT_BALANCE_REPORT" : "Rapport des comptes débiteurs clients"
   }

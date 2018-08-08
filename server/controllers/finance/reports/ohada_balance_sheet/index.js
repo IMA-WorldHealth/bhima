@@ -4,7 +4,7 @@
  * This controller is responsible for processing
  * the ohada balance sheet (bilan) report.
  *
- * @module reports/balance_sheet
+ * @module reports/ohada_balance_sheet
  *
  * @requires lodash
  * @requires lib/db
@@ -19,8 +19,16 @@ const AccountReference = require('../../accounts/references');
 const ReportManager = require('../../../../lib/ReportManager');
 
 // report template
-const TEMPLATE = './server/controllers/finance/reports/balance_sheet/report.handlebars';
+const TEMPLATE = './server/controllers/finance/reports/ohada_balance_sheet/report.handlebars';
 const DATE_FORMAT = 'YYYY-MM-DD';
+
+// default report parameters
+const DEFAULT_PARAMS = {
+  csvKey : 'accounts',
+  filename : 'TREE.BALANCE',
+  orientation : 'landscape',
+  footerRight : '[page] / [toPage]',
+};
 
 // expose to the API
 exports.document = document;
@@ -31,21 +39,10 @@ exports.document = document;
  */
 function document(req, res, next) {
   const params = req.query;
-  const session = {};
+  const context = {};
   let report;
 
-  // date options
-  if (params.dateFrom && params.dateTo) {
-    session.dateFrom = moment(params.dateFrom).format(DATE_FORMAT);
-    session.dateTo = moment(params.dateTo).format(DATE_FORMAT);
-  } else {
-    session.date = moment(params.date).format(DATE_FORMAT);
-  }
-
-  session.enterprise = req.session.enterprise;
-  params.enterpriseId = session.enterprise.id;
-
-  _.defaults(params, { user : req.session.user });
+  _.defaults(params, DEFAULT_PARAMS);
 
   try {
     report = new ReportManager(TEMPLATE, req.session, params);
@@ -54,6 +51,14 @@ function document(req, res, next) {
     return;
   }
 
-  console.log(report);
-  res.status(200).send(report);
+  AccountReference.computeAllAccountReference(params.period_id)
+    .then(data => {
+      _.merge(context, data);
+      console.log(data);
+      return report.render(context);
+    })
+    .then(result => {
+      res.set(result.header).send(result.report);
+    })
+    .catch(next);
 }

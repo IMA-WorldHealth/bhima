@@ -8,8 +8,8 @@
 <div ng-show="!ReportConfigCtrl.previewGenerated">
   <div class="row">
     <div class="col-md-12">
-      <h3 class="text-capitalize" translate>REPORT.BALANCE_SHEET.TITLE</h3>
-      <p class="text-info" translate>REPORT.BALANCE_SHEET.DESCRIPTION</p>
+      <h3 class="text-capitalize" translate>REPORT.OHADA.BALANCE_SHEET</h3>
+      <p class="text-info" translate>REPORT.OHADA.BALANCE_SHEET_DESCRIPTION</p>
     </div>
   </div>
 
@@ -23,21 +23,16 @@
         <div class="panel-body">
           <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate>
 
-            <!-- choose date until  -->
-            <bh-date-editor
-              date-value="ReportConfigCtrl.reportDetails.date"
-              on-change="ReportConfigCtrl.onDateChange(date)">
-            </bh-date-editor>
+            <bh-fiscal-year-select
+              fiscal-id="ReportConfigCtrl.reportDetails.fiscal_id"
+              on-select-fiscal-callback="ReportConfigCtrl.onSelectFiscalYear(fiscalYear)">
+            </bh-fiscal-year-select>
 
-            <!--display also revenue and expense-->
-            <div class="checkbox">
-              <label>
-                <input type="checkbox"
-                  ng-model="ReportConfigCtrl.reportDetails.showExploitation"
-                  ng-true-value="1" ng-false-value="0">
-                <span translate>REPORT.BALANCE_SHEET.SHOW_EXPLOITATION</span>
-              </label>
-            </div>
+            <bh-period-selection
+              fiscal-year-id="ReportConfigCtrl.reportDetails.fiscal_id"
+              period-id="ReportConfigCtrl.reportDetails.period_id"
+              on-select-callback="ReportConfigCtrl.onSelectPeriod(period)">
+            </bh-period-selection>
 
             <bh-loading-button loading-state="ConfigForm.$loading">
               <span translate>REPORT.UTIL.PREVIEW</span>

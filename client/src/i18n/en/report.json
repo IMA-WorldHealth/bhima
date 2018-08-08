@@ -177,7 +177,8 @@
       "REMOVE_ZERO_ROWS_HELP" : "This option will remove rows that do not have any data in them.  Produces a more compact output."
     },
     "OHADA": {
-      "BALANCE_SHEET" : "Balance sheet according ohada"
+      "BALANCE_SHEET" : "Balance Sheet",
+      "BALANCE_SHEET_DESCRIPTION" : "This report shows the balance sheet of the enterprise according the ohada standard"
     },
     "CLIENT_DEBTOR_ACCOUNT_BALANCE_REPORT" : "Annual Clients Report"
   }
