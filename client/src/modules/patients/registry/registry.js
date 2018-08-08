@@ -5,7 +5,7 @@ PatientRegistryController.$inject = [
   '$state', 'PatientService', 'NotifyService', 'AppCache', 'util',
   'ReceiptModal', 'uiGridConstants', '$translate', 'GridColumnService',
   'GridSortingService', 'bhConstants', 'GridStateService', '$httpParamSerializer', 'LanguageService',
-  'GridSortingService', 'bhConstants', 'GridStateService', 'LanguageService',
+  'BarcodeService',
 ];
 
 /**
@@ -16,7 +16,8 @@ PatientRegistryController.$inject = [
  */
 function PatientRegistryController(
   $state, Patients, Notify, AppCache, util, Receipts, uiGridConstants,
-  $translate, Columns, Sorting, bhConstants, GridState, $httpParamSerializer, Languages
+  $translate, Columns, Sorting, bhConstants, GridState, $httpParamSerializer, Languages,
+  Barcode
 ) {
   const vm = this;
   const cacheKey = 'PatientRegistry';
@@ -29,6 +30,7 @@ function PatientRegistryController(
   vm.downloadExcel = downloadExcel;
   vm.languageKey = Languages.key;
   vm.toggleInlineFilter = toggleInlineFilter;
+  vm.openBarcodeScanner = openBarcodeScanner;
 
   // track if module is making a HTTP request for patients
   vm.loading = false;
@@ -241,6 +243,25 @@ function PatientRegistryController(
     // return  serialized options
     return $httpParamSerializer(options);
   }
+
+  /**
+   * @function searchByBarcode()
+   *
+   * @description
+   * Gets the barcode from the barcode modal and then
+   */
+  function openBarcodeScanner() {
+    Barcode.modal()
+      .then(record => {
+        Patients.filters.replaceFilters([
+          { key : 'uuid', value : record.uuid, displayValue : record.display_name },
+        ]);
+
+        load(Patients.filters.formatHTTP(true));
+        vm.latestViewFilters = Patients.filters.formatView();
+      });
+  }
+
   // fire up the module
   startup();
 }

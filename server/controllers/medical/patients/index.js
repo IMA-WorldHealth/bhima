@@ -194,8 +194,7 @@ function update(req, res, next) {
   delete data.uuid;
   delete data.reference;
 
-  const updatePatientQuery =
-    'UPDATE patient SET ? WHERE uuid = ?';
+  const updatePatientQuery = 'UPDATE patient SET ? WHERE uuid = ?';
 
   db.exec(updatePatientQuery, [data, buid])
     .then(() => updatePatientDebCred(patientUuid))
@@ -401,8 +400,7 @@ function lookupByDebtorUuid(debtorUuid) {
 function hospitalNumberExists(req, res, next) {
   const hospitalNumber = req.params.id;
 
-  const verifyQuery =
-    'SELECT uuid, hospital_no FROM patient WHERE hospital_no = ?';
+  const verifyQuery = 'SELECT uuid, hospital_no FROM patient WHERE hospital_no = ?';
 
   db.exec(verifyQuery, [hospitalNumber])
     .then((result) => {
@@ -463,11 +461,12 @@ function searchByName(req, res, next) {
  */
 function find(options) {
   // ensure epected options are parsed appropriately as binary
-  db.convert(options, ['patient_group_uuid', 'debtor_group_uuid', 'debtor_uuid']);
+  db.convert(options, ['patient_group_uuid', 'debtor_group_uuid', 'debtor_uuid', 'uuid']);
 
   const filters = new FilterParser(options, {
     tableAlias : 'p',
   });
+
   const sql = patientEntityQuery(options.detailed);
 
   filters.equals('debtor_uuid');
@@ -477,6 +476,7 @@ function find(options) {
   filters.equals('health_zone');
   filters.equals('health_area');
   filters.equals('project_id');
+  filters.equals('uuid');
 
   // filters for location
   const orignSql = `(originVillage.name LIKE ?) OR (originSector.name LIKE ?) OR (originProvince.name LIKE ?)`;
