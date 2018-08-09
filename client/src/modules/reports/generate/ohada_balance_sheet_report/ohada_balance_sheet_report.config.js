@@ -18,10 +18,6 @@ function OhadaBalanceSheetReportConfigController($sce, Notify, SavedReports, App
     vm.reportDetails.fiscal_id = fiscalYear.id;
   };
 
-  vm.onSelectPeriod = (period) => {
-    vm.reportDetails.period_id = period.id;
-  };
-
   vm.clearPreview = function clearPreview() {
     vm.previewGenerated = false;
     vm.previewResult = null;
