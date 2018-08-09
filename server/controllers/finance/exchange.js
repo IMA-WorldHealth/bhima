@@ -146,8 +146,7 @@ exports.delete = function del(req, res, next) {
 };
 
 // This query returns the current exchange rate of all currencies
-function getCurrentExchangeRateByCurrency(date) {
-  const exchangeDate = date || new Date();
+function getCurrentExchangeRateByCurrency(date = new Date()) {
 
   const sql = `
     SELECT e.currency_id, e.id, e.enterprise_id, MAX(e.rate) rate, e.date
@@ -168,5 +167,5 @@ function getCurrentExchangeRateByCurrency(date) {
     GROUP BY e.currency_id;
   `;
 
-  return db.exec(sql, [exchangeDate, exchangeDate]);
+  return db.exec(sql, [date, date]);
 }
