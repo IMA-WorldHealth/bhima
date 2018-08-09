@@ -42,6 +42,7 @@ function VoucherService(
   voucherFilters.registerDefaultFilters(bhConstants.defaultFilters);
 
   voucherFilters.registerCustomFilters([
+    { key : 'uuid', label : 'FORM.LABELS.REFERENCE' },
     { key : 'user_id', label : 'FORM.LABELS.USER' },
     { key : 'reference', label : 'FORM.LABELS.REFERENCE' },
     { key : 'reversed', label : 'FORM.INFO.ANNULLED' },
