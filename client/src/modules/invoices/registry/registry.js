@@ -5,7 +5,7 @@ InvoiceRegistryController.$inject = [
   'PatientInvoiceService', 'bhConstants', 'NotifyService', 'SessionService',
   'ReceiptModal', 'uiGridConstants', 'ModalService', 'GridSortingService',
   'GridColumnService', 'GridStateService', '$state', 'ModalService',
-  'ReceiptModal', 'util',
+  'ReceiptModal', 'util', 'BarcodeService',
 ];
 
 /**
@@ -16,7 +16,8 @@ InvoiceRegistryController.$inject = [
  */
 function InvoiceRegistryController(
   Invoices, bhConstants, Notify, Session, Receipt, uiGridConstants,
-  ModalService, Sorting, Columns, GridState, $state, Modals, Receipts, util
+  ModalService, Sorting, Columns, GridState, $state, Modals, Receipts, util,
+  Barcode
 ) {
   const vm = this;
 
@@ -37,6 +38,7 @@ function InvoiceRegistryController(
   vm.format = util.formatDate;
 
   vm.allowsRecordDeletion = allowsRecordDeletion;
+  vm.openBarcodeScanner = openBarcodeScanner;
 
   // track if module is making a HTTP request for invoices
   vm.loading = false;
@@ -232,6 +234,25 @@ function InvoiceRegistryController(
   function toggleInlineFilter() {
     vm.uiGridOptions.enableFiltering = !vm.uiGridOptions.enableFiltering;
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+  }
+
+  /**
+   * @function openBarcodeScanner
+   *
+   * @description
+   * Opens the barcode scanner component and receives the record from the
+   * modal.
+   */
+  function openBarcodeScanner() {
+    Barcode.modal()
+      .then(record => {
+        Invoices.filters.replaceFilters([
+          { key : 'uuid', value : record.uuid, displayValue : record.reference },
+        ]);
+
+        load(Invoices.filters.formatHTTP(true));
+        vm.latestViewFilters = Invoices.filters.formatView();
+      });
   }
 
   // fire up the module
