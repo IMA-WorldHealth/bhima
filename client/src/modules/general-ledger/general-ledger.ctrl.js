@@ -20,7 +20,7 @@ function GeneralLedgerController(
 ) {
   const vm = this;
   const cacheKey = 'GeneralLedger';
-  vm.columns = [];
+  let columns = [];
   vm.year = {};
   const fields = [
     'balance',
@@ -58,7 +58,7 @@ function GeneralLedgerController(
     return (vm.aggregates[column.field] || 0).toFixed(2);
   }
 
-  vm.columns = [{
+  columns = [{
     field            : 'number',
     displayName      : 'TABLE.COLUMNS.ACCOUNT',
     enableFiltering  : true,
@@ -97,7 +97,7 @@ function GeneralLedgerController(
   vm.toggleFilter = toggleFilter;
 
   vm.gridOptions = {
-    columnDefs : vm.columns,
+    columnDefs : columns,
     fastWatch : true,
     flatEntityAccess  : true,
     enableColumnMenus : false,
@@ -202,8 +202,8 @@ function GeneralLedgerController(
   // add (columns) period's label  in the ui-grid
   //
   function renameGidHeaders(year) {
-    const actions = angular.copy(vm.columns[vm.columns.length - 1]);
-    const newColumns = vm.columns.slice(0, 3);
+    const actions = angular.copy(columns[columns.length - 1]);
+    const newColumns = columns.slice(0, 3);
 
     const header = {
       type : 'number',
@@ -220,14 +220,14 @@ function GeneralLedgerController(
 
     year.periods.forEach((p, index) => {
       newColumns.push(angular.extend({}, header, {
-        field            : 'balance'.concat(index),
+        field            : `balance${index}`,
         displayName      : p.translate_key || 'FORM.LABELS.OPENING_BALANCE',
       }));
     });
 
-    newColumns.push(actions);
-    vm.gridOptions.columnDefs = angular.copy(newColumns);
+    vm.gridOptions.columnDefs = [...newColumns, actions];
   }
+
 
   // fired when the footer changes and on startup.
   function onSelectFiscalYear(year) {

@@ -47,9 +47,23 @@ describe('(/fiscal) Fiscal Year', () => {
     return agent.get('/fiscal')
       .then(res => {
         helpers.api.listed(res, 5);
+        const firstYearPeriods = res.body[0].periods;
+        expect(firstYearPeriods).to.be.equal(undefined);
       })
       .catch(helpers.handler);
   });
+
+
+  it('GET /fiscal returns a list of fiscal_years width their periods', () => {
+    return agent.get('/fiscal?includePeriods=1')
+      .then(res => {
+        helpers.api.listed(res, 5);
+        const firstYearPeriods = res.body[0].periods;
+        expect(firstYearPeriods).to.not.be.empty;
+      })
+      .catch(helpers.handler);
+  });
+
 
   it('GET /fiscal/:id returns one fiscal year', () => {
     return agent.get(`/fiscal/${newFiscalYear.id}`)
