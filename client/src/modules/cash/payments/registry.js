@@ -4,7 +4,7 @@ angular.module('bhima.controllers')
 CashPaymentRegistryController.$inject = [
   'CashService', 'bhConstants', 'NotifyService', 'SessionService', 'uiGridConstants',
   'ModalService', 'GridSortingService', '$state', 'FilterService',
-  'GridColumnService', 'GridStateService', 'util', 'ReceiptModal',
+  'GridColumnService', 'GridStateService', 'util', 'ReceiptModal', 'BarcodeService',
 ];
 
 /**
@@ -15,7 +15,7 @@ CashPaymentRegistryController.$inject = [
  */
 function CashPaymentRegistryController(
   Cash, bhConstants, Notify, Session, uiGridConstants, Modal, Sorting, $state,
-  Filters, Columns, GridState, util, Receipts
+  Filters, Columns, GridState, util, Receipts, Barcode
 ) {
   const vm = this;
 
@@ -43,6 +43,7 @@ function CashPaymentRegistryController(
   vm.download = Cash.download;
 
   vm.allowsRecordDeletion = allowsRecordDeletion;
+  vm.openBarcodeScanner = openBarcodeScanner;
 
   const columnDefs = [{
     field : 'reference',
@@ -223,6 +224,25 @@ function CashPaymentRegistryController(
 
   function allowsRecordDeletion() {
     return Session.enterprise.settings.enable_delete_records;
+  }
+
+  /**
+   * @function openBarcodeScanner
+   *
+   * @description
+   * Opens the barcode scanner component and receives the record from the
+   * modal.
+   */
+  function openBarcodeScanner() {
+    Barcode.modal()
+      .then(record => {
+        Cash.filters.replaceFilters([
+          { key : 'uuid', value : record.uuid, displayValue : record.reference },
+        ]);
+
+        load(Cash.filters.formatHTTP(true));
+        vm.latestViewFilters = Cash.filters.formatView();
+      });
   }
 
   startup();

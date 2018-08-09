@@ -10,6 +10,7 @@ exports.reverseLookup = reverseLookup;
 
 const { lookupPatient } = require('../controllers/medical/patients');
 const { lookupInvoice } = require('../controllers/finance/patientInvoice');
+const lookupCashPayment = require('../controllers/finance/cash').lookup;
 
 const identifiersIndex = {};
 indexIdentifiers();
@@ -79,4 +80,5 @@ function indexIdentifiers() {
   // @TODO this method of mapping should be reviewed
   identifiers.PATIENT.lookup = lookupPatient;
   identifiers.INVOICE.lookup = lookupInvoice;
+  identifiers.CASH_PAYMENT.lookup = lookupCashPayment;
 }
