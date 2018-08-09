@@ -186,20 +186,15 @@ function MultiplePayrollController(
   //
   vm.putOnWaiting = function putOnWaiting() {
     const employees = vm.gridApi.selection.getSelectedRows();
-    let invalid = false;
     let employeeStatusId;
 
     // get All Employees Reference
     const employeesRef = employees.map(emp => emp.reference);
 
     if (employees.length) {
-      employees.forEach(employee => {
-        employeeStatusId = parseInt(employee.status_id, 10);
-
-        if (employeeStatusId !== 2) {
-          invalid = true;
-        }
-      });
+      // returns true If one employee who is not configured is selected
+      const isNotConfigured = employee => parseInt(employee.status_id, 10) !== 2;
+      const invalid = employees.some(isNotConfigured);
 
       if (invalid) {
         Notify.warn('FORM.WARNINGS.ATTENTION_WAITING_LIST');
@@ -223,20 +218,15 @@ function MultiplePayrollController(
   // Set Configured
   vm.setConfigured = function setConfigured() {
     const employees = vm.gridApi.selection.getSelectedRows();
-    let invalid = false;
     let employeeStatusId;
 
     const filters = MultiplePayroll.filters.formatHTTP(true);
     const currencyId = filters.currency_id;
 
     if (employees.length) {
-      employees.forEach(employee => {
-        employeeStatusId = parseInt(employee.status_id, 10);
-
-        if (employeeStatusId !== 1) {
-          invalid = true;
-        }
-      });
+      // returns true If one employee who is no longer waiting for configuration is selected
+      const isNotWaitingConfiguration = employee => parseInt(employee.status_id, 10) !== 1;
+      const invalid = employees.some(isNotWaitingConfiguration);
 
       if (invalid) {
         Notify.warn('FORM.WARNINGS.ATTENTION_CONFIGURED');
@@ -263,20 +253,14 @@ function MultiplePayrollController(
 
   vm.viewPaySlip = function viewPaySlip() {
     const employees = vm.gridApi.selection.getSelectedRows();
-    let invalid = false;
     let employeeStatusId;
-
     // get All Employees Reference
     const employeesRef = employees.map(emp => emp.reference);
 
     if (employees.length) {
-      employees.forEach(employee => {
-        employeeStatusId = parseInt(employee.status_id, 10);
-
-        if (employeeStatusId === 1) {
-          invalid = true;
-        }
-      });
+      // returns true if one employee waiting for configuration is selected
+      const isWaitingConfiguration = employee => parseInt(employee.status_id, 10) === 1;
+      const invalid = employees.some(isWaitingConfiguration);
 
       if (invalid) {
         Notify.warn('FORM.WARNINGS.ATTENTION_PAYSLIPS');
@@ -300,21 +284,15 @@ function MultiplePayrollController(
 
     // get All Employees Reference
     const employeesRef = employees.map(emp => emp.reference);
-
     const filters = MultiplePayroll.filters.formatHTTP(true);
     const currencyId = filters.currency_id;
 
-    let invalid = false;
     let employeeStatusId;
 
     if (employees.length) {
-      employees.forEach(employee => {
-        employeeStatusId = parseInt(employee.status_id, 10);
-
-        if (employeeStatusId === 1) {
-          invalid = true;
-        }
-      });
+      // returns true if one employee waiting for configuration is selected
+      const isWaitingConfiguration = employee => parseInt(employee.status_id, 10) === 1;
+      const invalid = employees.some(isWaitingConfiguration);
 
       if (invalid) {
         Notify.warn('FORM.WARNINGS.ATTENTION_PAYSLIPS');
