@@ -186,17 +186,14 @@ function MultiplePayrollController(
   //
   vm.putOnWaiting = function putOnWaiting() {
     const employees = vm.gridApi.selection.getSelectedRows();
-    let invalid = false;
-    let employeeStatusId;
 
     if (employees.length) {
-      employees.forEach(employee => {
-        employeeStatusId = parseInt(employee.status_id, 10);
+      // get All Employees Reference
+      const employeesRef = employees.map(emp => emp.reference);
 
-        if (employeeStatusId !== 2) {
-          invalid = true;
-        }
-      });
+      // returns true If one employee who is not configured is selected
+      const isNotConfigured = employee => parseInt(employee.status_id, 10) !== 2;
+      const invalid = employees.some(isNotConfigured);
 
       if (invalid) {
         Notify.warn('FORM.WARNINGS.ATTENTION_WAITING_LIST');
@@ -204,7 +201,7 @@ function MultiplePayrollController(
         vm.activePosting = false;
 
         const idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
-        MultiplePayroll.paiementCommitment(idPeriod, employees)
+        MultiplePayroll.paiementCommitment(idPeriod, employeesRef)
           .then(() => {
             Notify.success('FORM.INFO.CONFIGURED_SUCCESSFULLY');
             vm.activePosting = true;
@@ -217,28 +214,29 @@ function MultiplePayrollController(
     }
   };
 
-
   // Set Configured
   vm.setConfigured = function setConfigured() {
     const employees = vm.gridApi.selection.getSelectedRows();
-    let invalid = false;
-    let employeeStatusId;
 
     if (employees.length) {
-      employees.forEach(employee => {
-        employeeStatusId = parseInt(employee.status_id, 10);
+      const filters = MultiplePayroll.filters.formatHTTP(true);
+      const currencyId = filters.currency_id;
 
-        if (employeeStatusId !== 1) {
-          invalid = true;
-        }
-      });
+      // returns true If one employee who is no longer waiting for configuration is selected
+      const isNotWaitingConfiguration = employee => parseInt(employee.status_id, 10) !== 1;
+      const invalid = employees.some(isNotWaitingConfiguration);
 
       if (invalid) {
         Notify.warn('FORM.WARNINGS.ATTENTION_CONFIGURED');
       } else {
         vm.activeConfig = false;
         const idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
-        MultiplePayroll.configurations(idPeriod, employees)
+        const data = {
+          employees,
+          currencyId,
+        };
+
+        MultiplePayroll.configurations(idPeriod, data)
           .then(() => {
             Notify.success('FORM.INFO.CONFIGURED_SUCCESSFULLY');
             vm.activeConfig = true;
@@ -253,24 +251,51 @@ function MultiplePayrollController(
 
   vm.viewPaySlip = function viewPaySlip() {
     const employees = vm.gridApi.selection.getSelectedRows();
-    let invalid = false;
-    let employeeStatusId;
 
     if (employees.length) {
-      employees.forEach(employee => {
-        employeeStatusId = parseInt(employee.status_id, 10);
+      // get All Employees Reference
+      const employeesRef = employees.map(emp => emp.reference);
 
-        if (employeeStatusId === 1) {
-          invalid = true;
-        }
-      });
+      // returns true if one employee waiting for configuration is selected
+      const isWaitingConfiguration = employee => parseInt(employee.status_id, 10) === 1;
+      const invalid = employees.some(isWaitingConfiguration);
 
       if (invalid) {
         Notify.warn('FORM.WARNINGS.ATTENTION_PAYSLIPS');
       } else {
         const idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
 
-        Receipts.payroll(idPeriod, employees);
+        Receipts.payroll(idPeriod, employeesRef);
+      }
+    } else {
+      Notify.danger('FORM.WARNINGS.NO_EMPLOYE_SELECTED');
+    }
+  };
+
+  /*
+   * The PayrollReport function allows to display two reports related to the Payroll,
+   * the first to display a condensed report of the bulletins of payrolls of the employees
+   * and the second a report of the payroll taxes on remuneration (Charges of the company)
+  */
+  vm.viewPaySlipReport = function viewPaySlipReport(socialCharge) {
+    const employees = vm.gridApi.selection.getSelectedRows();
+
+    if (employees.length) {
+      // get All Employees Reference
+      const employeesRef = employees.map(emp => emp.reference);
+      const filters = MultiplePayroll.filters.formatHTTP(true);
+      const currencyId = filters.currency_id;
+
+      // returns true if one employee waiting for configuration is selected
+      const isWaitingConfiguration = employee => parseInt(employee.status_id, 10) === 1;
+      const invalid = employees.some(isWaitingConfiguration);
+
+      if (invalid) {
+        Notify.warn('FORM.WARNINGS.ATTENTION_PAYSLIPS');
+      } else {
+        const idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
+
+        Receipts.payrollReport(idPeriod, employeesRef, currencyId, socialCharge);
       }
     } else {
       Notify.danger('FORM.WARNINGS.NO_EMPLOYE_SELECTED');
@@ -279,7 +304,7 @@ function MultiplePayrollController(
 
   vm.paySlip = function paySlip(employee) {
     const idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
-    Receipts.payroll(idPeriod, employee);
+    Receipts.payroll(idPeriod, employee.reference);
   };
 
   vm.saveGridState = state.saveGridState;

@@ -7,16 +7,19 @@
  * @requires db
  * @requires Exchange
  * @requires q
+ * @requires payrollSettings
  */
 const db = require('../../../lib/db');
+const Exchange = require('../../finance/exchange');
 const q = require('q');
 const payrollSettings = require('./payrollSettings');
 
 function config(req, res, next) {
-  const dataEmployees = req.body.data;
+  const { employees, currencyId } = req.body.data;
+
   const payrollConfigurationId = req.params.id;
   const enterpriseId = req.session.enterprise.id;
-  const currencyId = req.session.enterprise.currency_id;
+  const enterpriseCurrencyId = req.session.enterprise.currency_id;
   const transaction = db.transaction();
   const getPeriodData = `
     SELECT payroll_configuration.id, payroll_configuration.dateFrom, payroll_configuration.dateTo,
@@ -36,13 +39,15 @@ function config(req, res, next) {
   const queries = q.all([
     db.exec(getPeriodData, [payrollConfigurationId]),
     db.exec(getRubricPayroll, [payrollConfigurationId]),
+    Exchange.getExchangeRate(enterpriseId, currencyId, new Date()),
   ]);
   queries.then(rows => {
     return payrollSettings.setConfig(
-      dataEmployees,
+      employees,
       rows,
       enterpriseId,
       currencyId,
+      enterpriseCurrencyId,
       payrollConfigurationId
     );
   })
@@ -50,6 +55,8 @@ function config(req, res, next) {
       const postingJournal = db.transaction();
       results.forEach(transac => {
         transac.forEach(item => {
+
+
           postingJournal.addQuery(item.query, item.params);
         });
       });

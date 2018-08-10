@@ -1,0 +1,67 @@
+{{> head title="FORM.LABELS.PAYSLIP"}}
+<body>
+  <!-- body  -->      
+    <header class="row">
+      <div class="col-xs-6" style="font-size: 20px">
+        <h3 style="margin: 0px;"> {{enterprise.name}} </h3>
+        <address style="margin-bottom: 0px;">
+          {{enterprise.location}}
+        </address>
+        <div>{{enterprise.email}}</div>
+        <div>{{enterprise.phone}}</div>
+      </div>
+    </header>    
+    <br>
+    <br>  
+    <h3 class="text-center text-uppercase">
+      <strong> {{ payrollPeriod.label }} </strong> <br>
+      {{translate 'FORM.LABELS.SOCIAL_CHARGES' }}
+    </h3>
+    <br>
+    <br>
+
+  <section>
+    <div class="row">
+      <div class="col-xs-12">
+        <table class="table table-bordered table-condensed table-report" style="font-size: 10px">
+          <thead>
+            <tr class="text-capitalize">
+              <th style="width: 1%;">{{translate 'TABLE.COLUMNS.NR' }}</th>
+              <th>{{translate 'TABLE.COLUMNS.NAME' }}</th>
+              {{#each rubEnterprises}}
+                <th>{{ abbr }}</th>
+              {{/each}}
+              <th style="width: 4%;">{{translate 'TABLE.COLUMNS.TOTAL' }}</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {{#each dataEmployees}}
+              <tr class="text-capitalize">
+                <td> {{add @index 1}} </td>
+                <td><strong> {{display_name}} </strong></td>
+                {{#each rubricsChargeEnterprise}}
+                  <td style="text-align: right;">
+                    {{#if result}} 
+                      {{currency (multiply result ../../payrollPeriod.exchangeRate) ../../payrollPeriod.currency}}
+                    {{/if}}
+                  </td>
+                {{/each}}
+                <td>
+                  {{currency (multiply somChargeEnterprise ../payrollPeriod.exchangeRate) ../payrollPeriod.currency}}
+                </td>
+              </tr>
+            {{/each}}
+          </tbody>
+          <tr class="text-capitalize">
+            <td style="text-align: right;" colspan="2">{{translate 'TABLE.COLUMNS.TOTAL' }} </td>
+            {{#each rubEnterprises}}
+              <td style="text-align: right;">{{currency (multiply total ../payrollPeriod.exchangeRate) ../payrollPeriod.currency}}</td>
+            {{/each}}
+            <th style="width: 4%;"> {{currency (multiply TotalChargeEnterprise payrollPeriod.exchangeRate) payrollPeriod.currency}} </th> 
+          </tr>
+        </table>
+      <div>    
+    </div>
+  </section>
+</body>
