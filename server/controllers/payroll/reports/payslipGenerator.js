@@ -68,7 +68,7 @@ function build(req, res, next) {
       return Exchange.getExchangeRate(data.enterprise.id, options.currency, new Date(data.payrollPeriod.dateTo));
     })
     .then(exchange => {
-      data.payrollPeriod.exchangeRate = parseInt(options.currency, 10) === parseInt(data.enterprise.currency_id, 10) ?
+      data.payrollPeriod.exchangeRate = parseInt(options.currency, 10) === data.enterprise.currency_id ?
         1 : exchange.rate;
       return Exchange.getCurrentExchangeRateByCurrency(new Date(data.payrollPeriod.dateTo));
     })
