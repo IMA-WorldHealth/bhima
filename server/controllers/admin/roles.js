@@ -1,28 +1,27 @@
-const db = require('../../lib/db');
 const q = require('q');
+const db = require('../../lib/db');
 
-module.exports.list = list;
-module.exports.detail = detail;
-module.exports.create = create;
-module.exports.update = update;
-module.exports.remove = remove;
-module.exports.affectPages = affectPages;
-module.exports.affectToUser = affectToUser;
-module.exports.listForUser = listForUser;
-module.exports.rolesAction = rolesAction;
-module.exports.hasAction = hasAction;
-module.exports.assignActionToRole = assignActionToRole;
+exports.list = list;
+exports.detail = detail;
+exports.create = create;
+exports.update = update;
+exports.remove = remove;
+exports.affectPages = affectPages;
+exports.affectToUser = affectToUser;
+exports.listForUser = listForUser;
+exports.rolesAction = rolesAction;
+exports.hasAction = hasAction;
+exports.assignActionToRole = assignActionToRole;
 
 function list(req, res, next) {
-
   const sql = `
-    SELECT BUID(r.uuid) as uuid, r.label, r.project_id 
+    SELECT BUID(r.uuid) as uuid, r.label, r.project_id
     FROM role  r
     ORDER BY r.label ASC
   `;
 
   db.exec(sql)
-    .then((rows) => {
+    .then(rows => {
       res.json(rows);
     }).catch(next)
     .done();
@@ -30,13 +29,15 @@ function list(req, res, next) {
 
 function detail(req, res, next) {
   const sql = `
-   SELECT BUID(uuid) as uuid, label, project_id 
-   FROM role
-   WHERE  uuid = ?
+    SELECT BUID(uuid) as uuid, label, project_id
+    FROM role
+    WHERE  uuid = ?;
   `;
+
   const binaryUuid = db.bid(req.params.uuid);
+
   db.one(sql, binaryUuid)
-    .then((rows) => {
+    .then(rows => {
       res.json(rows);
     })
     .catch(next)
@@ -49,8 +50,9 @@ function create(req, res, next) {
     INSERT INTO  role(uuid, label, project_id)
     VALUES(?, ?,?)
   `;
+
   db.exec(sql, [db.uuid(), req.body.label, req.body.project_id])
-    .then((rows) => {
+    .then(rows => {
       res.status(201).json(rows);
     })
     .catch(next)
@@ -60,10 +62,11 @@ function create(req, res, next) {
 function update(req, res, next) {
   const role = req.body;
   delete role.uuid;
-  const sql = ` UPDATE role SET ? WHERE uuid = ?`;
+
+  const sql = `UPDATE role SET ? WHERE uuid = ?`;
 
   db.exec(sql, [role, db.bid(req.params.uuid)])
-    .then((rows) => {
+    .then(rows => {
       res.status(200).json(rows);
     })
     .catch(next)
@@ -75,7 +78,7 @@ function remove(req, res, next) {
 
   const sql = `DELETE FROM role WHERE uuid = ?`;
   db.exec(sql, binaryUuid)
-    .then((rows) => {
+    .then(rows => {
       res.json(rows);
     })
     .catch(next)
@@ -83,21 +86,21 @@ function remove(req, res, next) {
 }
 
 // affect permission to a specific role
-
 function affectPages(req, res, next) {
   const data = req.body;
 
   const unitIds = [].concat(data.unit_ids);
   const roleUuid = db.bid(data.role_uuid);
 
-  const deleteFromRole = `DELETE FROM role_unit WHERE role_uuid = ? `;
+  const deleteFromRole = 'DELETE FROM role_unit WHERE role_uuid = ?;';
   const affectPage = `
     INSERT INTO  role_unit(uuid, unit_id, role_uuid)
-    VALUES( ?, ?, ?)`;
+    VALUES( ?, ?, ?);
+  `;
 
   db.exec(deleteFromRole, roleUuid)
     .then(() => {
-      const promises = unitIds.map(id => { return db.exec(affectPage, [db.uuid(), id, roleUuid]); });
+      const promises = unitIds.map(id => db.exec(affectPage, [db.uuid(), id, roleUuid]));
       return q.all(promises);
     })
     .then(() => {
@@ -116,7 +119,7 @@ function listForUser(req, res, next) {
     SELECT BUID(r.uuid) as uuid, r.label, r.project_id , IFNULL(s.affected, 0) as affected
     FROM role r
     LEFT JOIN(
-      select  ro.uuid, 1 as affected 
+      select  ro.uuid, 1 as affected
       FROM user_role ur
       JOIN role ro ON ur.role_uuid = ro.uuid
       WHERE ur.user_id = ?
@@ -134,13 +137,13 @@ function listForUser(req, res, next) {
 
 
 function rolesAction(req, res, next) {
-
   const roleUuid = db.bid(req.params.roleUuid);
+
   const sql = `
     SELECT a.id, a.description, IFNULL(s.affected, 0) as affected
     FROM actions a
-    LEFT JOIN(
-      select  actions_id , 1 as affected 
+    LEFT JOIN (
+      SELECT  actions_id , 1 as affected
       FROM role_actions ra
       JOIN role ro ON ra.role_uuid = ro.uuid
       WHERE ro.uuid = ?
@@ -148,7 +151,7 @@ function rolesAction(req, res, next) {
   `;
 
   db.exec(sql, [roleUuid])
-    .then((actions) => {
+    .then(actions => {
       res.json(actions);
     })
     .catch(next)
@@ -167,7 +170,7 @@ function assignActionToRole(req, res, next) {
   const roleUuid = db.bid(data.role_uuid);
   const transaction = db.transaction();
 
-  const deleleUserRoles = `DELETE FROM role_actions WHERE role_uuid=? `;
+  const deleleUserRoles = `DELETE FROM role_actions WHERE role_uuid = ?`;
   const addAction = `INSERT INTO role_actions SET ?`;
 
   db.exec(deleleUserRoles, roleUuid)
@@ -176,9 +179,11 @@ function assignActionToRole(req, res, next) {
         transaction.addQuery(addAction, { uuid : db.uuid(), role_uuid : roleUuid, actions_id : actionId });
       });
       return transaction.execute();
-    }).then(() => {
+    })
+    .then(() => {
       res.sendStatus(201);
-    }).catch(next)
+    })
+    .catch(next)
     .done();
 }
 
@@ -189,11 +194,14 @@ function hasAction(req, res, next) {
   const sql = `
     SELECT count(ra.uuid) as nbr FROM role_actions ra
     JOIN user_role as ur ON ur.role_uuid = ra.role_uuid
-    WHERE actions_id =? AND ur.user_id=?`;
+    WHERE actions_id =? AND ur.user_id = ?
+  `;
 
-  db.one(sql, [actionId, userId]).then(row => {
-    res.status(200).json(row.nbr > 0);
-  }).catch(next)
+  db.one(sql, [actionId, userId])
+    .then(row => {
+      res.status(200).json(row.nbr > 0);
+    })
+    .catch(next)
     .done();
 }
 
@@ -202,23 +210,21 @@ function hasAction(req, res, next) {
 function affectToUser(req, res, next) {
   const data = req.body;
   const rolesUuids = [].concat(data.role_uuids);
-
   const userId = data.user_id;
 
-
-  const deleleUserRoles = `DELETE FROM user_role WHERE user_id=? `;
-  const addRole = `INSERT INTO user_role SET ?`;
+  const deleleUserRoles = 'DELETE FROM user_role WHERE user_id = ?;';
+  const addRole = 'INSERT INTO user_role SET ?;';
 
   db.exec(deleleUserRoles, userId)
     .then(() => {
+      const promises = rolesUuids
+        .map(roleUuid => db.exec(addRole, { uuid : db.uuid(), role_uuid : db.bid(roleUuid), user_id : userId }));
 
-      const promisses = rolesUuids.map(roleUuid => {
-        return db.exec(addRole, { uuid : db.uuid(), role_uuid : db.bid(roleUuid), user_id : userId });
-      });
-
-      return q.all(promisses);
-    }).then(() => {
+      return q.all(promises);
+    })
+    .then(() => {
       res.sendStatus(201);
-    }).catch(next)
+    })
+    .catch(next)
     .done();
 }
