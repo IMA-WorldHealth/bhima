@@ -19,36 +19,33 @@ const templateSocialCharge = './server/controllers/payroll/reports/payrollReport
 const PayrollConfig = require('../configuration');
 const configurationData = require('../multiplePayroll/find');
 
+const DEFAULT_OPTS = {
+  orientation     : 'landscape',
+  footerRight     : '[page] / [toPage]',
+  filename        : 'FORM.LABELS.PAYSLIP',
+  csvKey          : 'payslipGenerator',
+  footerFontSize  : '7',
+};
+
 function build(req, res, next) {
   const options = _.clone(req.query);
-  let TEMPLATE;
-  let orientation = 'landscape';
-  const footerRight = '[page] / [toPage]';
-
   const params = {
     payroll_configuration_id : options.idPeriod,
     reference : options.employees,
   };
 
+  let template;
+  _.extend(options, DEFAULT_OPTS);
+
   if (options.currency && options.socialCharge) {
-    TEMPLATE = templateSocialCharge;
-    orientation = 'portrait';
-    options.footerRight = footerRight;
-
+    template = templateSocialCharge;
+    options.orientation = 'portrait';
   } else if (options.currency && !options.socialCharge) {
-    TEMPLATE = templatePayrollReport;
-
-    options.footerRight = footerRight;
+    template = templatePayrollReport;
   } else {
-    TEMPLATE = templatePayslip;
+    template = templatePayslip;
+    delete options.footerRight;
   }
-
-  _.extend(options, {
-    filename : 'FORM.LABELS.PAYSLIP',
-    csvKey : 'payslipGenerator',
-    orientation,
-    footerFontSize : '7',
-  });
 
   const data = {};
   let report;
@@ -59,7 +56,7 @@ function build(req, res, next) {
 
   // set up the report with report manager
   try {
-    report = new ReportManager(TEMPLATE, req.session, options);
+    report = new ReportManager(template, req.session, options);
   } catch (e) {
     next(e);
     return;
@@ -88,20 +85,23 @@ function build(req, res, next) {
       let totalGrossSalary = 0;
 
       dataEmployees.forEach(employee => {
+        const employeeCurrencyId = parseInt(employee.currency_id, 10);
         data.exchangeRatesByCurrency.forEach(exchange => {
-          employee.net_salary_equiv = parseInt(exchange.currency_id, 10) === parseInt(employee.currency_id, 10) ?
+          const isSameCurrency = exchange.currency_id === employeeCurrencyId;
+
+          employee.net_salary_equiv = isSameCurrency ?
             employee.net_salary / exchange.rate : employee.net_salary;
-          employee.daily_salary_equiv = parseInt(exchange.currency_id, 10) === parseInt(employee.currency_id, 10) ?
+          employee.daily_salary_equiv = isSameCurrency ?
             employee.daily_salary / exchange.rate : employee.daily_salary;
-          employee.base_taxable_equiv = parseInt(exchange.currency_id, 10) === parseInt(employee.currency_id, 10) ?
+          employee.base_taxable_equiv = isSameCurrency ?
             employee.base_taxable / exchange.rate : employee.base_taxable;
-          employee.basic_salary_equiv = parseInt(exchange.currency_id, 10) === parseInt(employee.currency_id, 10) ?
+          employee.basic_salary_equiv = isSameCurrency ?
             employee.basic_salary / exchange.rate : employee.basic_salary;
-          employee.gross_salary_equiv = parseInt(exchange.currency_id, 10) === parseInt(employee.currency_id, 10) ?
+          employee.gross_salary_equiv = isSameCurrency ?
             employee.gross_salary / exchange.rate : employee.gross_salary;
-          employee.net_salary_equiv = parseInt(exchange.currency_id, 10) === parseInt(employee.currency_id, 10) ?
+          employee.net_salary_equiv = isSameCurrency ?
             employee.net_salary / exchange.rate : employee.net_salary;
-          employee.net_salary_equiv = parseInt(exchange.currency_id, 10) === parseInt(employee.currency_id, 10) ?
+          employee.net_salary_equiv = isSameCurrency ?
             employee.net_salary / exchange.rate : employee.net_salary;
           totalNetSalary += employee.net_salary_equiv;
           totalBasicSalary += employee.basic_salary_equiv;
@@ -153,6 +153,8 @@ function build(req, res, next) {
       });
 
       data.dataEmployees.forEach(employee => {
+        const employeeCurrencyId = parseInt(employee.currency_id, 10);
+
         employee.rubricTaxable = [];
         employee.rubricNonTaxable = [];
         employee.rubricDiscount = [];
@@ -199,14 +201,15 @@ function build(req, res, next) {
         employee.somChargeEnterprise = somChargeEnterprise;
         employee.somChargeEmployee = somChargeEmployee;
         data.exchangeRatesByCurrency.forEach(exchange => {
-          employee.somRubTaxable_equiv = parseInt(exchange.currency_id, 10) === parseInt(employee.currency_id, 10) ?
+          const isSameCurrency = exchange.currency_id === employeeCurrencyId;
+
+          employee.somRubTaxable_equiv = isSameCurrency ?
             employee.somRubTaxable / exchange.rate : employee.somRubTaxable;
-          employee.somRubNonTaxable_equiv = parseInt(exchange.currency_id, 10) === parseInt(employee.currency_id, 10) ?
+          employee.somRubNonTaxable_equiv = isSameCurrency ?
             employee.somRubNonTaxable / exchange.rate : employee.somRubNonTaxable;
-          employee.somChargeEnterprise_equiv =
-            parseInt(exchange.currency_id, 10) === parseInt(employee.currency_id, 10) ?
-              employee.somChargeEnterprise / exchange.rate : employee.somChargeEnterprise;
-          employee.somChargeEmployee_equiv = parseInt(exchange.currency_id, 10) === parseInt(employee.currency_id, 10) ?
+          employee.somChargeEnterprise_equiv = isSameCurrency ?
+            employee.somChargeEnterprise / exchange.rate : employee.somChargeEnterprise;
+          employee.somChargeEmployee_equiv = isSameCurrency ?
             employee.somChargeEmployee / exchange.rate : employee.somChargeEmployee;
         });
         TotalChargeEnterprise += somChargeEnterprise;

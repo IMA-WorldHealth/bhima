@@ -72,14 +72,12 @@ function config(req, res, next) {
     .then(dataEmployees => {
       data.employees = dataEmployees;
 
-      const queries = q.all([
+      return q.all([
         db.exec(sqlGetRubricPayroll, [referenceEmployees, payrollConfigurationId]),
         db.exec(sqlGetRubricConfig, [payrollConfigurationId]),
         db.exec(sqlGetAccountPayroll, [payrollConfigurationId]),
         Exchange.getCurrentExchangeRateByCurrency(),
       ]);
-
-      return queries;
     })
     .spread((rubricsEmployees, rubricsConfig, account, exchangeRates) => {
       const transactions = transac.commitments(

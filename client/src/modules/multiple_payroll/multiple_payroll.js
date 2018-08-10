@@ -186,12 +186,11 @@ function MultiplePayrollController(
   //
   vm.putOnWaiting = function putOnWaiting() {
     const employees = vm.gridApi.selection.getSelectedRows();
-    let employeeStatusId;
-
-    // get All Employees Reference
-    const employeesRef = employees.map(emp => emp.reference);
 
     if (employees.length) {
+      // get All Employees Reference
+      const employeesRef = employees.map(emp => emp.reference);
+
       // returns true If one employee who is not configured is selected
       const isNotConfigured = employee => parseInt(employee.status_id, 10) !== 2;
       const invalid = employees.some(isNotConfigured);
@@ -218,12 +217,11 @@ function MultiplePayrollController(
   // Set Configured
   vm.setConfigured = function setConfigured() {
     const employees = vm.gridApi.selection.getSelectedRows();
-    let employeeStatusId;
-
-    const filters = MultiplePayroll.filters.formatHTTP(true);
-    const currencyId = filters.currency_id;
 
     if (employees.length) {
+      const filters = MultiplePayroll.filters.formatHTTP(true);
+      const currencyId = filters.currency_id;
+
       // returns true If one employee who is no longer waiting for configuration is selected
       const isNotWaitingConfiguration = employee => parseInt(employee.status_id, 10) !== 1;
       const invalid = employees.some(isNotWaitingConfiguration);
@@ -253,11 +251,11 @@ function MultiplePayrollController(
 
   vm.viewPaySlip = function viewPaySlip() {
     const employees = vm.gridApi.selection.getSelectedRows();
-    let employeeStatusId;
-    // get All Employees Reference
-    const employeesRef = employees.map(emp => emp.reference);
 
     if (employees.length) {
+      // get All Employees Reference
+      const employeesRef = employees.map(emp => emp.reference);
+
       // returns true if one employee waiting for configuration is selected
       const isWaitingConfiguration = employee => parseInt(employee.status_id, 10) === 1;
       const invalid = employees.some(isWaitingConfiguration);
@@ -282,14 +280,12 @@ function MultiplePayrollController(
   vm.viewPaySlipReport = function viewPaySlipReport(socialCharge) {
     const employees = vm.gridApi.selection.getSelectedRows();
 
-    // get All Employees Reference
-    const employeesRef = employees.map(emp => emp.reference);
-    const filters = MultiplePayroll.filters.formatHTTP(true);
-    const currencyId = filters.currency_id;
-
-    let employeeStatusId;
-
     if (employees.length) {
+      // get All Employees Reference
+      const employeesRef = employees.map(emp => emp.reference);
+      const filters = MultiplePayroll.filters.formatHTTP(true);
+      const currencyId = filters.currency_id;
+
       // returns true if one employee waiting for configuration is selected
       const isWaitingConfiguration = employee => parseInt(employee.status_id, 10) === 1;
       const invalid = employees.some(isWaitingConfiguration);

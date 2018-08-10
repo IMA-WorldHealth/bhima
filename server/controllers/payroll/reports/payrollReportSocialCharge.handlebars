@@ -23,32 +23,28 @@
   <section>
     <div class="row">
       <div class="col-xs-12">
-        <table class="table table-bordered table-condensed table-report table-header-rotated" style="font-size: 10px">
+        <table class="table table-bordered table-condensed table-report" style="font-size: 10px">
           <thead>
             <tr class="text-capitalize">
               <th style="width: 1%;">{{translate 'TABLE.COLUMNS.NR' }}</th>
               <th>{{translate 'TABLE.COLUMNS.NAME' }}</th>
               {{#each rubEnterprises}}
-                <th><div><span >{{ abbr }}</span></div></th>
+                <th>{{ abbr }}</th>
               {{/each}}
-              <th style="width: 4%;"><div><span >{{translate 'TABLE.COLUMNS.TOTAL' }}</span></div></th>
+              <th style="width: 4%;">{{translate 'TABLE.COLUMNS.TOTAL' }}</th>
             </tr>
           </thead>
 
           <tbody>
             {{#each dataEmployees}}
               <tr class="text-capitalize">
-                <td style="text-align: left;"> {{add @index 1}} </td>
-                <td style="text-align: left;"><strong> {{display_name}} </strong></td>
+                <td> {{add @index 1}} </td>
+                <td><strong> {{display_name}} </strong></td>
                 {{#each rubricsChargeEnterprise}}
                   <td style="text-align: right;">
-                    <div>
-                      <span >
-                        {{#if result}} 
-                          {{currency (multiply result ../../payrollPeriod.exchangeRate) ../../payrollPeriod.currency}}
-                        {{/if}}
-                      </span>
-                    </div>
+                    {{#if result}} 
+                      {{currency (multiply result ../../payrollPeriod.exchangeRate) ../../payrollPeriod.currency}}
+                    {{/if}}
                   </td>
                 {{/each}}
                 <td>
@@ -60,9 +56,9 @@
           <tr class="text-capitalize">
             <td style="text-align: right;" colspan="2">{{translate 'TABLE.COLUMNS.TOTAL' }} </td>
             {{#each rubEnterprises}}
-              <td style="text-align: right;"><div><span>{{currency (multiply total ../payrollPeriod.exchangeRate) ../payrollPeriod.currency}}</span></div></td>
+              <td style="text-align: right;">{{currency (multiply total ../payrollPeriod.exchangeRate) ../payrollPeriod.currency}}</td>
             {{/each}}
-            <th style="width: 4%;"><div><span > {{currency (multiply TotalChargeEnterprise payrollPeriod.exchangeRate) payrollPeriod.currency}} </span></div></th> 
+            <th style="width: 4%;"> {{currency (multiply TotalChargeEnterprise payrollPeriod.exchangeRate) payrollPeriod.currency}} </th> 
           </tr>
         </table>
       <div>    

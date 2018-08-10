@@ -15,8 +15,7 @@ const q = require('q');
 const payrollSettings = require('./payrollSettings');
 
 function config(req, res, next) {
-  const dataEmployees = req.body.data.employees;
-  const currencyId = req.body.data.currencyId;
+  const { employees, currencyId } = req.body.data;
 
   const payrollConfigurationId = req.params.id;
   const enterpriseId = req.session.enterprise.id;
@@ -44,7 +43,7 @@ function config(req, res, next) {
   ]);
   queries.then(rows => {
     return payrollSettings.setConfig(
-      dataEmployees,
+      employees,
       rows,
       enterpriseId,
       currencyId,
