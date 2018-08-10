@@ -33,13 +33,19 @@ function PatientRegistryController(
   // track if module is making a HTTP request for patients
   vm.loading = false;
 
+  const patientCardTemplate = `
+    <div class="ui-grid-cell-contents">
+      <a href ng-click="grid.appScope.patientCard(row.entity.uuid)">{{row.entity.reference}}</a>
+    </div>
+  `;
+
   const columnDefs = [{
     field : 'reference',
     displayName : 'TABLE.COLUMNS.REFERENCE',
     aggregationType : uiGridConstants.aggregationTypes.count,
     aggregationHideLabel : true,
     headerCellFilter : 'translate',
-    cellTemplate : '/modules/templates/grid/patient.card.cell.html',
+    cellTemplate : patientCardTemplate,
     footerCellClass : 'text-center',
     sortingAlgorithm : Sorting.algorithms.sortByReference,
   }, {
