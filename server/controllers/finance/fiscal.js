@@ -45,6 +45,7 @@ exports.getDateRangeFromPeriods = getDateRangeFromPeriods;
 exports.getPeriodsFromDateRange = getPeriodsFromDateRange;
 exports.getAccountBalancesByTypeId = getAccountBalancesByTypeId;
 exports.getOpeningBalance = getOpeningBalance;
+exports.getFiscalYearByPeriodId = getFiscalYearByPeriodId;
 
 /**
  * @method lookupFiscalYear
@@ -67,6 +68,21 @@ function lookupFiscalYear(id) {
   return db.one(sql, [id], id, 'fiscal year');
 }
 
+
+function getFiscalYearByPeriodId(periodId) {
+  const sql = `
+    SELECT id, enterprise_id, number_of_months, label, start_date, end_date,
+    previous_fiscal_year_id, locked, note
+    FROM fiscal_year
+    WHERE id IN (
+      SELECT fiscal_year_id FROM period WHERE id = ?
+    );
+  `;
+
+  return db.one(sql, periodId);
+}
+
+
 /**
  * @method list
  *
@@ -74,7 +90,9 @@ function lookupFiscalYear(id) {
  * Returns a list of all fiscal years in the database.
  */
 function list(req, res, next) {
-  const filters = new FilterParser(req.query, { tableAlias : 'f' });
+  const options = req.query;
+  const { includePeriods } = options;
+  const filters = new FilterParser(options, { tableAlias : 'f' });
   const sql = `
     SELECT f.id, f.enterprise_id, f.number_of_months, f.label, f.start_date, f.end_date,
     f.previous_fiscal_year_id, f.locked, f.created_at, f.updated_at, f.note,
@@ -82,6 +100,15 @@ function list(req, res, next) {
     FROM fiscal_year AS f
     JOIN user AS u ON u.id = f.user_id
   `;
+
+  const periodsSql = `
+    SELECT p.id, p.start_date, p.end_date, p.locked, p.number , 
+    CONCAT('TABLE.COLUMNS.DATE_MONTH.',
+    UPPER(DATE_FORMAT(p.start_date, "%M"))) AS translate_key,
+    CONCAT('balance', number) AS 'balance'
+    FROM period p
+    WHERE p.fiscal_year_id = ?
+    ORDER BY p.number ASC`;
 
   filters.equals('id');
   filters.equals('locked');
@@ -98,13 +125,28 @@ function list(req, res, next) {
   }
 
   filters.setOrder(ordering);
-
   const query = filters.applyQuery(sql);
   const parameters = filters.parameters();
 
+  let fiscals = [];
   db.exec(query, parameters)
     .then((rows) => {
-      res.status(200).json(rows);
+      fiscals = rows;
+      if (!includePeriods) {
+        return null;
+      }
+
+      return q.all(fiscals.map(fiscal => {
+        return db.exec(periodsSql, fiscal.id);
+      }));
+    }).then(periods => {
+
+      if (includePeriods) {
+        fiscals.forEach((fiscal, index) => {
+          fiscal.periods = periods[index];
+        });
+      }
+      res.status(200).json(fiscals);
     })
     .catch(next)
     .done();

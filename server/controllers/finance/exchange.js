@@ -11,6 +11,7 @@ const util = require('../../lib/util');
 
 exports.getExchangeRate = getExchangeRate;
 exports.formatExchangeRateForDisplay = formatExchangeRateForDisplay;
+exports.getCurrentExchangeRateByCurrency = getCurrentExchangeRateByCurrency;
 
 // uses the mysql function getExchangeRate() to find
 // the correct exchange rate
@@ -143,3 +144,28 @@ exports.delete = function del(req, res, next) {
     .catch(next)
     .done();
 };
+
+// This query returns the current exchange rate of all currencies
+function getCurrentExchangeRateByCurrency(date = new Date()) {
+
+  const sql = `
+    SELECT e.currency_id, e.id, e.enterprise_id, MAX(e.rate) rate, e.date
+      FROM (
+        SELECT exchange_rate.currency_id, exchange_rate.id, exchange_rate.enterprise_id,  
+        exchange_rate.rate, exchange_rate.date
+        FROM exchange_rate
+        JOIN (
+        SELECT exchange_rate.currency_id, MAX(exchange_rate.date) AS exchangeDate
+        FROM exchange_rate
+        WHERE exchange_rate.date <= DATE(?)
+        GROUP BY exchange_rate.currency_id
+        ) AS lastExchange
+        ON exchange_rate.currency_id = lastExchange.currency_id AND exchange_rate.date = lastExchange.exchangeDate
+        WHERE exchange_rate.date <= DATE(?)
+        ORDER BY exchange_rate.rate DESC
+      ) AS e
+    GROUP BY e.currency_id;
+  `;
+
+  return db.exec(sql, [date, date]);
+}

@@ -94,17 +94,23 @@ function config(req, res, next) {
       data.holidays.forEach(holiday => {
         const holidayValue = ((dailySalary * holiday.percentage * holiday.numberOfDays) / 100);
         holidaysCost += holidayValue;
-
-        holidaysElements.push([holiday.id, holiday.numberOfDays, holiday.percentage, uid, holiday.label, holidayValue]);
+        holidaysElements.push([
+          holiday.id,
+          holiday.numberOfDays,
+          holiday.percentage,
+          uid,
+          holiday.label,
+          holidayValue,
+        ]);
       });
 
       /*
      * Recalculation of base salary on the basis of any holiday or vacation period,
      * where the percentages are respectively equal to 100% of the basic salary will
-     * remain equal to that defined at the level of the grade table BB
+     * remain equal to that defined at the level of the Holiday table
      */
 
-      const basicSalary = workingDayCost + offDaysCost + holidaysCost;
+      const basicSalary = (workingDayCost + offDaysCost + holidaysCost) * enterpriseExchangeRate;
 
       const sql = `
         SELECT config_rubric_item.id, config_rubric_item.config_rubric_id, config_rubric_item.rubric_payroll_id, 
