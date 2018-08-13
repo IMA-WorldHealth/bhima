@@ -19,7 +19,9 @@
       "ENABLE_PASSWORD_VALIDATION_LABEL" : "Strictement valider les mots de passe",
       "ENABLE_PASSWORD_VALIDATION_HELP_TEXT" : "L'activation de cette fonctionnalité oblige les utilisateurs à utiliser des mots de passe difficiles à deviner. Cette action n'est pas rétroactive. Les anciens mots de passe continueront à fonctionner jusqu'à modification manuelle.",
       "ENABLE_PREPAYMENT_INVOICE_LABEL" : "Activer l'affichage du solde sur la facture",
-      "ENABLE_PREPAYMENT_INVOICE_HELP_TEXT" : "L'activation de cette option permet de voir les montants payés ainsi que le solde pour une facture"
+      "ENABLE_PREPAYMENT_INVOICE_HELP_TEXT" : "L'activation de cette option permet de voir les montants payés ainsi que le solde pour une facture",
+      "ENABLE_BARCODES_LABEL" : "Activer les codes à barres dans l'application",
+      "ENABLE_BARCODES_HELP_TEXT" : "L'activation de cette fonction placera des codes à barres sur la plupart des enregistrements imprimés et activera les options permettant de numériser des codes à barres pour les entrées de document."
     }
   }
 }

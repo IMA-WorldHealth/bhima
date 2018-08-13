@@ -26,11 +26,6 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
   vm.submit = submit;
   vm.onSelectGainAccount = onSelectGainAccount;
   vm.onSelectLossAccount = onSelectLossAccount;
-  vm.enablePriceLockSetting = enablePriceLockSetting;
-  vm.enablePrepaymentsSetting = enablePrepaymentsSetting;
-  vm.enableDeleteRecordsSetting = enableDeleteRecordsSetting;
-  vm.enablePasswordValidationSetting = enablePasswordValidationSetting;
-  vm.enableBalanceOnInvoiceReceipSetting = enableBalanceOnInvoiceReceipSetting;
 
   // fired on startup
   function startup() {
@@ -170,30 +165,28 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
       });
   }
 
-  function enablePriceLockSetting(enabled) {
-    vm.enterprise.settings.enable_price_lock = enabled;
-    $touched = true;
+
+  /**
+   * @function proxy
+   *
+   * @description
+   * Proxies requests for different enterprise settings.
+   *
+   * @returns {function}
+   */
+  function proxy(key) {
+    return (enabled) => {
+      vm.enterprise.settings[key] = enabled;
+      $touched = true;
+    };
   }
 
-  function enablePrepaymentsSetting(enabled) {
-    vm.enterprise.settings.enable_prepayments = enabled;
-    $touched = true;
-  }
-
-  function enableDeleteRecordsSetting(enabled) {
-    vm.enterprise.settings.enable_delete_records = enabled;
-    $touched = true;
-  }
-
-  function enablePasswordValidationSetting(enabled) {
-    vm.enterprise.settings.enable_password_validation = enabled;
-    $touched = true;
-  }
-
-  function enableBalanceOnInvoiceReceipSetting(enabled) {
-    vm.enterprise.settings.enable_balance_on_invoice_receipt = enabled;
-    $touched = true;
-  }
+  vm.enablePriceLockSetting = proxy('enable_price_lock');
+  vm.enablePrepaymentsSetting = proxy('enable_prepayments');
+  vm.enableDeleteRecordsSetting = proxy('enable_delete_records');
+  vm.enablePasswordValidationSetting = proxy('enable_password_validation');
+  vm.enableBalanceOnInvoiceReceipSetting = proxy('enable_balance_on_invoice_receipt');
+  vm.enableBarcodesSetting = proxy('enable_barcodes');
 
   startup();
 }
