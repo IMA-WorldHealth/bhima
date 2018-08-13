@@ -250,9 +250,9 @@ function aggregateReferences(references, currentDb, previousDb) {
 
 function formatReferences(references) {
   const values = {};
-  _.forEach(references, (value, key) => {
-    const [brut] = references[key].filter(elt => elt.is_amo_dep === 0);
-    let [amortissement] = references[key].filter(elt => elt.is_amo_dep === 1);
+  _.forEach(references, (reference, key) => {
+    const [brut] = reference.filter(elt => elt.is_amo_dep === 0);
+    let [amortissement] = reference.filter(elt => elt.is_amo_dep === 1);
 
     if (!amortissement) {
       amortissement = { balance : 0 };
@@ -261,27 +261,11 @@ function formatReferences(references) {
     const net = {
       abbr : brut.abbr,
       description : brut.description,
-      balance : brut.balance - amortissement.balance,
+      balance : brut.balance - (amortissement.balance * -1),
     };
 
     values[key] = { brut, amortissement, net };
   });
-  // Object.keys(references).forEach(key => {
-  //   const [brut] = references[key].filter(elt => elt.is_amo_dep === 0);
-  //   let [amortissement] = references[key].filter(elt => elt.is_amo_dep === 1);
-
-  //   if (!amortissement) {
-  //     amortissement = { balance : 0 };
-  //   }
-
-  //   const net = {
-  //     abbr : brut.abbr,
-  //     description : brut.description,
-  //     balance : brut.balance - amortissement.balance,
-  //   };
-
-  //   values[key] = { brut, amortissement, net };
-  // });
   return values;
 }
 
