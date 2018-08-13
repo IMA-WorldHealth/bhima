@@ -121,13 +121,10 @@ function document(req, res, next) {
     .then(fiscalYear => {
       _.merge(context, { fiscalYear });
 
-      const dbPromises = [];
-      const usePrevious = fiscalYear.previous.period_id ?
+      const currentPeriodReferences = AccountReference.computeAllAccountReference(fiscalYear.current.period_id);
+      const previousPeriodReferences = fiscalYear.previous.period_id ?
         AccountReference.computeAllAccountReference(fiscalYear.previous.period_id) : [];
-
-      dbPromises.push(AccountReference.computeAllAccountReference(fiscalYear.current.period_id));
-      dbPromises.push(usePrevious);
-      return Q.all(dbPromises);
+      return Q.all([currentPeriodReferences, previousPeriodReferences]);
     })
     .spread((current, previous) => {
       let list = [];
@@ -253,7 +250,7 @@ function aggregateReferences(references, currentDb, previousDb) {
 
 function formatReferences(references) {
   const values = {};
-  Object.keys(references).forEach(key => {
+  _.forEach(references, (value, key) => {
     const [brut] = references[key].filter(elt => elt.is_amo_dep === 0);
     let [amortissement] = references[key].filter(elt => elt.is_amo_dep === 1);
 
@@ -269,6 +266,22 @@ function formatReferences(references) {
 
     values[key] = { brut, amortissement, net };
   });
+  // Object.keys(references).forEach(key => {
+  //   const [brut] = references[key].filter(elt => elt.is_amo_dep === 0);
+  //   let [amortissement] = references[key].filter(elt => elt.is_amo_dep === 1);
+
+  //   if (!amortissement) {
+  //     amortissement = { balance : 0 };
+  //   }
+
+  //   const net = {
+  //     abbr : brut.abbr,
+  //     description : brut.description,
+  //     balance : brut.balance - amortissement.balance,
+  //   };
+
+  //   values[key] = { brut, amortissement, net };
+  // });
   return values;
 }
 
