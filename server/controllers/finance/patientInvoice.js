@@ -227,6 +227,12 @@ function find(options) {
   // @FIXME Remove this with client side filter design
   delete options.patientNames;
 
+  let debtorJoin = ``;
+  const debtorKey = 'debtor_group_uuid';
+  const hasDebtorKey = options[debtorKey];
+  if (hasDebtorKey) {
+    debtorJoin = `JOIN debtor d ON d.uuid = invoice.debtor_uuid`;
+  }
   const sql = `
     SELECT BUID(invoice.uuid) as uuid, invoice.project_id, invoice.date,
       patient.display_name as patientName, invoice.cost,
@@ -235,7 +241,7 @@ function find(options) {
       user.display_name, invoice.user_id, invoice.reversed, invoice.edited
     FROM invoice
     JOIN patient FORCE INDEX(debtor_uuid) ON invoice.debtor_uuid = patient.debtor_uuid
-    JOIN debtor d ON d.uuid = invoice.debtor_uuid
+    ${debtorJoin}
     JOIN project AS proj ON proj.id = invoice.project_id
     JOIN entity_map AS em ON em.uuid = patient.uuid
     JOIN document_map AS dm ON dm.uuid = invoice.uuid
