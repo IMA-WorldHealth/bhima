@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('DebtorGroupController', DebtorGroupController);
+  .controller('DebtorGroupController', DebtorGroupController);
 
 DebtorGroupController.$inject = [
   '$state', 'DebtorGroupService',
@@ -16,7 +16,7 @@ DebtorGroupController.$inject = [
  * @module finance/debtors/groups
  */
 function DebtorGroupController($state, DebtorGroups) {
-  var vm = this;
+  const vm = this;
   // pagination configuration
   /** @todo this should all be moved to a component */
   vm.pageSize = 10;
@@ -38,7 +38,7 @@ function DebtorGroupController($state, DebtorGroups) {
   ];
 
   DebtorGroups.read(null, { detailed : 1 })
-    .then(function (debtorGroups) {
+    .then((debtorGroups) => {
       vm.debtorGroups = debtorGroups;
     })
     .catch(handleException);

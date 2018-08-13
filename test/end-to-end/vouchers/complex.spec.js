@@ -151,7 +151,6 @@ describe('Complex Vouchers', () => {
       convention      : 'NGO IMA World Health',
       invoices        : [0, 1],
       description     : 'Convention payment with journal voucher',
-      // transactionType : 'Convention',
     };
 
     // click on the convention tool

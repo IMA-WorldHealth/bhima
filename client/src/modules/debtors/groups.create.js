@@ -2,7 +2,8 @@ angular.module('bhima.controllers')
   .controller('DebtorGroupCreateController', DebtorGroupCreateController);
 
 DebtorGroupCreateController.$inject = [
-  '$state', 'ScrollService', 'SessionService', 'DebtorGroupService', 'AccountService', 'PriceListService', 'uuid', 'NotifyService',
+  '$state', 'ScrollService', 'SessionService', 'DebtorGroupService',
+  'PriceListService', 'uuid', 'NotifyService',
 ];
 
 /**
@@ -13,11 +14,11 @@ DebtorGroupCreateController.$inject = [
  *
  * @module debtor/groups/create
  */
-function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGroups, Accounts, Prices, Uuid, Notify) {
-  var vm = this;
+function DebtorGroupCreateController($state, ScrollTo, Session, DebtorGroups, Prices, Uuid, Notify) {
+  const vm = this;
 
   // default new group policies
-  var policies = {
+  const policies = {
     subsidies       : true,
     discounts       : true,
     invoicingFees : false,
@@ -27,22 +28,18 @@ function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGro
 
   vm.$loading = true;
   vm.$loaded = false;
+
   vm.onSelectAccountCallback = onSelectAccount;
   vm.cancel = cancel;
 
-  /* @todo This should be handled by the accounts directive - this controller should not be concerned with accounts */
-  Accounts.read()
-    .then(function (accounts) {
-      vm.accounts = accounts;
-      return Prices.read();
-    })
+  Prices.read()
   /* @todo This controller should not be concerned about individual price lists */
-    .then(function (priceLists) {
+    .then(priceLists => {
       vm.priceLists = priceLists;
       vm.$loaded = true;
     })
     .catch(Notify.handleError)
-    .finally(function () {
+    .finally(() => {
       vm.$loading = false;
     });
 
@@ -59,7 +56,7 @@ function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGro
     vm.group.uuid = vm.createSessionId;
 
     // set default values
-    vm.group.location_id = SessionService.enterprise.location_id;
+    vm.group.location_id = Session.enterprise.location_id;
 
     // assigning policy logic
     vm.group.apply_discounts = policies.subsidies;
@@ -80,8 +77,6 @@ function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGro
   }
 
   function submit(groupForm) {
-    var submitGroup;
-
     groupForm.$setSubmitted();
 
     // ensure all Angular form validation checks have passed
@@ -92,10 +87,10 @@ function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGro
 
     // in order to display account correctly the entire account is stored in the
     // ng-model, we should extract this
-    submitGroup = angular.copy(vm.group);
+    const submitGroup = angular.copy(vm.group);
 
     DebtorGroups.create(submitGroup)
-      .then(function (result) {
+      .then(() => {
         Notify.success('DEBTOR_GROUP.CREATED');
 
         // Debtor group created
@@ -112,7 +107,7 @@ function DebtorGroupCreateController($state, ScrollTo, SessionService, DebtorGro
         } else {
 
           // navigate back to list view
-          $state.go('debtorGroups.list', null, {reload: true});
+          $state.go('debtorGroups.list', null, { reload : true });
         }
       })
       .catch(Notify.handleError);
