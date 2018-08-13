@@ -10,7 +10,7 @@ function bhBarcodeScannerTests() {
   `;
 
   // make sure the modules are correctly loaded.
-  beforeEach(module('pascalprecht.translate', 'bhima.services', 'templates', 'bhima.components', 'angularMoment'));
+  beforeEach(module('pascalprecht.translate', 'bhima.services', 'templates', 'bhima.components', 'angularMoment', 'ui.bootstrap'));
 
   let $scope;
   let $compile;

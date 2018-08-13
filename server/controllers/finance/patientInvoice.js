@@ -97,8 +97,8 @@ function lookupInvoice(invoiceUuid) {
   let record = {};
   const buid = db.bid(invoiceUuid);
 
-  const invoiceDetailQuery =
-    `SELECT
+  const invoiceDetailQuery = `
+    SELECT
       BUID(invoice.uuid) as uuid, CONCAT_WS('.', '${identifiers.INVOICE.key}',
       project.abbr, invoice.reference) AS reference, invoice.cost,
       invoice.description, BUID(invoice.debtor_uuid) AS debtor_uuid,
@@ -111,27 +111,30 @@ function lookupInvoice(invoiceUuid) {
     JOIN project ON project.id = invoice.project_id
     JOIN enterprise ON enterprise.id = project.enterprise_id
     JOIN user ON user.id = invoice.user_id
-    WHERE invoice.uuid = ?;`;
+    WHERE invoice.uuid = ?;
+  `;
 
-  const invoiceItemsQuery =
-    `SELECT
+  const invoiceItemsQuery = `
+    SELECT
       BUID(invoice_item.uuid) as uuid, invoice_item.quantity, invoice_item.inventory_price,
       invoice_item.transaction_price, inventory.code, inventory.text,
       inventory.consumable
     FROM invoice_item
     LEFT JOIN inventory ON invoice_item.inventory_uuid = inventory.uuid
     WHERE invoice_uuid = ?
-    ORDER BY inventory.code;`;
+    ORDER BY inventory.code;
+  `;
 
-  const invoiceBillingQuery =
-    `SELECT
+  const invoiceBillingQuery = `
+    SELECT
       invoice_invoicing_fee.value, invoicing_fee.label, invoicing_fee.value AS billing_value,
       SUM(invoice_item.quantity * invoice_item.transaction_price) AS invoice_cost
     FROM invoice_invoicing_fee
     JOIN invoicing_fee ON invoicing_fee.id = invoice_invoicing_fee.invoicing_fee_id
     JOIN invoice_item ON invoice_item.invoice_uuid = invoice_invoicing_fee.invoice_uuid
     WHERE invoice_invoicing_fee.invoice_uuid = ?
-    GROUP BY invoicing_fee.id`;
+    GROUP BY invoicing_fee.id
+  `;
 
   const invoiceSubsidyQuery = `
     SELECT invoice_subsidy.value, subsidy.label, subsidy.value AS subsidy_value
@@ -219,7 +222,7 @@ function create(req, res, next) {
 function find(options) {
   // ensure expected options are parsed as binary
   db.convert(options, [
-    'patientUuid', 'debtor_group_uuid', 'cash_uuid', 'debtor_uuid', 'inventory_uuid',
+    'patientUuid', 'debtor_group_uuid', 'cash_uuid', 'debtor_uuid', 'inventory_uuid', 'uuid',
   ]);
 
   const filters = new FilterParser(options, { tableAlias : 'invoice' });
@@ -252,6 +255,7 @@ function find(options) {
   filters.equals('reversed');
   filters.equals('service_id');
   filters.equals('user_id');
+  filters.equals('uuid');
 
   filters.equals('reference', 'text', 'dm');
   filters.equals('patientReference', 'text', 'em');

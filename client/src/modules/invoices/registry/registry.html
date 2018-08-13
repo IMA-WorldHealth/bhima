@@ -6,7 +6,7 @@
     </ol>
 
     <div class="toolbar">
-     
+
       <div class="toolbar-item">
         <div uib-dropdown dropdown-append-to-body data-action="open-menu">
           <a class="btn btn-default" uib-dropdown-toggle>
@@ -49,6 +49,12 @@
                 <span class="fa fa-file-excel-o"></span> <span translate>DOWNLOADS.EXCEL</span>
               </a>
             </li>
+            <li role="separator" class="divider"></li>
+            <li role="menuitem">
+              <a href ng-click="InvoiceRegistryCtrl.openBarcodeScanner()" data-action="scan-barcode">
+                <span class="fa fa-barcode"></span> <span translate>BARCODE.SCAN</span>
+              </a>
+            </li>
           </ul>
         </div>
       </div>
@@ -61,7 +67,7 @@
           <span class="fa fa-search"></span> <span class="hidden-xs" translate>FORM.BUTTONS.SEARCH</span>
         </button>
       </div>
-      
+
       <bh-filter-toggle on-toggle="InvoiceRegistryCtrl.toggleInlineFilter()">
       </bh-filter-toggle>
 
