@@ -265,7 +265,10 @@ function formatReferences(references) {
     const net = {
       abbr : brut.abbr,
       description : brut.description,
-      balance : brut.balance - (amortissement.balance * -1),
+      // reduce amortissement from brut
+      // the amortissement is supposed to be < 0
+      // that the reason we use brut + amortissement which is implicitly brut - amortissement
+      balance : brut.balance + amortissement.balance,
     };
 
     values[key] = { brut, amortissement, net };
