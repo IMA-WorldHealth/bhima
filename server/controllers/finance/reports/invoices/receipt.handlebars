@@ -25,7 +25,10 @@
           <span class="text-uppercase">{{translate 'FORM.LABELS.INVOICE'}}</span> <br>
           <strong>{{reference}}</strong> <br>
           <small>{{date date}}</small> <br>
-          <small>{{> barcode value=barcode}}</small><br>
+
+          {{#if metadata.enterprise.settings.enable_barcodes}}
+            <small>{{> barcode value=barcode}}</small><br>
+          {{/if}}
           <br>
         </h3>
       </div>

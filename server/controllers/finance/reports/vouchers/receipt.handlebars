@@ -19,7 +19,9 @@
         </h3>
         <div>{{translate "REPORT.PRODUCED_ON"}} <time datetime="{{metadata.timestamp}}">{{date metadata.timestamp}}</time></div>
         <div>{{translate "REPORT.PRODUCED_BY"}} {{metadata.user.username}}</div>
-        <div>{{> barcode value=details.barcode}}</div>
+        {{#if metadata.enterprise.settings.enable_barcodes}}
+          <div>{{> barcode value=details.barcode}}</div>
+        {{/if}}
       </div>
     </div>
   </header>
@@ -76,5 +78,7 @@
   <h4>
     <u>{{translate 'FORM.LABELS.SIGNATURE'}}s</u>
   </h4>
-  <script>JsBarcode('.barcode').init();</script>
+  {{#if metadata.enterprise.settings.enable_barcodes}}
+    <script>JsBarcode('.barcode').init();</script>
+  {{/if}}
 </div>
