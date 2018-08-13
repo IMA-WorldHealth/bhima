@@ -184,6 +184,7 @@ gulp.task('client-compile-typescript', (cb) => {
     typescript({
       allowJs : true,
       target : 'es5',
+      lib : ['es6', 'dom'],
       module : 'none',
       outFile : 'js/bhima.min.js',
     }),
