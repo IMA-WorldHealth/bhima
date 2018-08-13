@@ -191,6 +191,7 @@ function PatientService(
   patientFilters.registerDefaultFilters(bhConstants.defaultFilters);
 
   patientFilters.registerCustomFilters([
+    { key : 'uuid', label : 'FORM.LABELS.NAME' },
     { key : 'display_name', label : 'FORM.LABELS.NAME' },
     { key : 'sex', label : 'FORM.LABELS.GENDER' },
     { key : 'hospital_no', label : 'FORM.LABELS.HOSPITAL_NO' },

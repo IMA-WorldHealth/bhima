@@ -20,7 +20,8 @@ function GeneralLedgerController(
 ) {
   const vm = this;
   const cacheKey = 'GeneralLedger';
-
+  let columns = [];
+  vm.year = {};
   const fields = [
     'balance',
     'balance0',
@@ -57,7 +58,7 @@ function GeneralLedgerController(
     return (vm.aggregates[column.field] || 0).toFixed(2);
   }
 
-  const columns = [{
+  columns = [{
     field            : 'number',
     displayName      : 'TABLE.COLUMNS.ACCOUNT',
     enableFiltering  : true,
@@ -74,175 +75,6 @@ function GeneralLedgerController(
     field            : 'balance',
     type : 'number',
     displayName      : 'TABLE.COLUMNS.BALANCE',
-    enableFiltering  : false,
-    headerCellFilter : 'translate',
-    headerCellClass  : 'text-center',
-    cellFilter       : 'currency:'.concat(Session.enterprise.currency_id),
-    cellClass        : 'text-right',
-    footerCellClass  : 'text-right',
-    footerCellFilter : 'currency:'.concat(Session.enterprise.currency_id),
-    aggregationType : customAggregationFn,
-    aggregationHideLabel : true,
-  }, {
-    field            : 'balance0',
-    type : 'number',
-    displayName      : 'FORM.LABELS.OPENING_BALANCE',
-    enableFiltering  : false,
-    headerCellFilter : 'translate',
-    headerCellClass  : 'text-center',
-    cellFilter       : 'currency:'.concat(Session.enterprise.currency_id),
-    cellClass        : 'text-right',
-    footerCellClass  : 'text-right',
-    footerCellFilter : 'currency:'.concat(Session.enterprise.currency_id),
-    aggregationType : customAggregationFn,
-    aggregationHideLabel : true,
-  }, {
-    field            : 'balance1',
-    type : 'number',
-    displayName      : 'TABLE.COLUMNS.DATE_MONTH.JANUARY',
-    enableFiltering  : false,
-    headerCellFilter : 'translate',
-    headerCellClass  : 'text-center',
-    cellFilter       : 'currency:'.concat(Session.enterprise.currency_id),
-    cellClass        : 'text-right',
-    footerCellClass  : 'text-right',
-    footerCellFilter : 'currency:'.concat(Session.enterprise.currency_id),
-    aggregationType : customAggregationFn,
-    aggregationHideLabel : true,
-  }, {
-    field            : 'balance2',
-    type : 'number',
-    displayName      : 'TABLE.COLUMNS.DATE_MONTH.FEBRUARY',
-    enableFiltering  : false,
-    headerCellFilter : 'translate',
-    headerCellClass  : 'text-center',
-    cellFilter       : 'currency:'.concat(Session.enterprise.currency_id),
-    cellClass        : 'text-right',
-    footerCellClass  : 'text-right',
-    footerCellFilter : 'currency:'.concat(Session.enterprise.currency_id),
-    aggregationType : customAggregationFn,
-    aggregationHideLabel : true,
-  }, {
-    field            : 'balance3',
-    type : 'number',
-    displayName      : 'TABLE.COLUMNS.DATE_MONTH.MARCH',
-    enableFiltering  : false,
-    headerCellFilter : 'translate',
-    headerCellClass  : 'text-center',
-    cellFilter       : 'currency:'.concat(Session.enterprise.currency_id),
-    cellClass        : 'text-right',
-    footerCellClass  : 'text-right',
-    footerCellFilter : 'currency:'.concat(Session.enterprise.currency_id),
-    aggregationType : customAggregationFn,
-    aggregationHideLabel : true,
-  }, {
-    field            : 'balance4',
-    type : 'number',
-    displayName      : 'TABLE.COLUMNS.DATE_MONTH.APRIL',
-    enableFiltering  : false,
-    headerCellFilter : 'translate',
-    headerCellClass  : 'text-center',
-    cellFilter       : 'currency:'.concat(Session.enterprise.currency_id),
-    cellClass        : 'text-right',
-    footerCellClass  : 'text-right',
-    footerCellFilter : 'currency:'.concat(Session.enterprise.currency_id),
-    aggregationType : customAggregationFn,
-    aggregationHideLabel : true,
-  }, {
-    field            : 'balance5',
-    type : 'number',
-    displayName      : 'TABLE.COLUMNS.DATE_MONTH.MAY',
-    enableFiltering  : false,
-    headerCellFilter : 'translate',
-    headerCellClass  : 'text-center',
-    cellFilter       : 'currency:'.concat(Session.enterprise.currency_id),
-    cellClass        : 'text-right',
-    footerCellClass  : 'text-right',
-    footerCellFilter : 'currency:'.concat(Session.enterprise.currency_id),
-    aggregationType : customAggregationFn,
-    aggregationHideLabel : true,
-  }, {
-    field            : 'balance6',
-    type : 'number',
-    displayName      : 'TABLE.COLUMNS.DATE_MONTH.JUNE',
-    enableFiltering  : false,
-    headerCellFilter : 'translate',
-    headerCellClass  : 'text-center',
-    cellFilter       : 'currency:'.concat(Session.enterprise.currency_id),
-    cellClass        : 'text-right',
-    footerCellClass  : 'text-right',
-    footerCellFilter : 'currency:'.concat(Session.enterprise.currency_id),
-    aggregationType : customAggregationFn,
-    aggregationHideLabel : true,
-  }, {
-    field            : 'balance7',
-    type : 'number',
-    displayName      : 'TABLE.COLUMNS.DATE_MONTH.JULY',
-    enableFiltering  : false,
-    headerCellFilter : 'translate',
-    headerCellClass  : 'text-center',
-    cellFilter       : 'currency:'.concat(Session.enterprise.currency_id),
-    cellClass        : 'text-right',
-    footerCellClass  : 'text-right',
-    footerCellFilter : 'currency:'.concat(Session.enterprise.currency_id),
-    aggregationType : customAggregationFn,
-    aggregationHideLabel : true,
-  }, {
-    field            : 'balance8',
-    type : 'number',
-    displayName      : 'TABLE.COLUMNS.DATE_MONTH.AUGUST',
-    enableFiltering  : false,
-    headerCellFilter : 'translate',
-    headerCellClass  : 'text-center',
-    cellFilter       : 'currency:'.concat(Session.enterprise.currency_id),
-    cellClass        : 'text-right',
-    footerCellClass  : 'text-right',
-    footerCellFilter : 'currency:'.concat(Session.enterprise.currency_id),
-    aggregationType : customAggregationFn,
-    aggregationHideLabel : true,
-  }, {
-    field            : 'balance9',
-    type : 'number',
-    displayName      : 'TABLE.COLUMNS.DATE_MONTH.SEPTEMBER',
-    enableFiltering  : false,
-    headerCellFilter : 'translate',
-    headerCellClass  : 'text-center',
-    cellFilter       : 'currency:'.concat(Session.enterprise.currency_id),
-    cellClass        : 'text-right',
-    footerCellClass  : 'text-right',
-    footerCellFilter : 'currency:'.concat(Session.enterprise.currency_id),
-    aggregationType : customAggregationFn,
-    aggregationHideLabel : true,
-  }, {
-    field            : 'balance10',
-    type : 'number',
-    displayName      : 'TABLE.COLUMNS.DATE_MONTH.OCTOBER',
-    enableFiltering  : false,
-    headerCellFilter : 'translate',
-    headerCellClass  : 'text-center',
-    cellFilter       : 'currency:'.concat(Session.enterprise.currency_id),
-    cellClass        : 'text-right',
-    footerCellClass  : 'text-right',
-    footerCellFilter : 'currency:'.concat(Session.enterprise.currency_id),
-    aggregationType : customAggregationFn,
-    aggregationHideLabel : true,
-  }, {
-    field            : 'balance11',
-    type : 'number',
-    displayName      : 'TABLE.COLUMNS.DATE_MONTH.NOVEMBER',
-    enableFiltering  : false,
-    headerCellFilter : 'translate',
-    headerCellClass  : 'text-center',
-    cellFilter       : 'currency:'.concat(Session.enterprise.currency_id),
-    cellClass        : 'text-right',
-    footerCellClass  : 'text-right',
-    footerCellFilter : 'currency:'.concat(Session.enterprise.currency_id),
-    aggregationType : customAggregationFn,
-    aggregationHideLabel : true,
-  }, {
-    field            : 'balance12',
-    type : 'number',
-    displayName      : 'TABLE.COLUMNS.DATE_MONTH.DECEMBER',
     enableFiltering  : false,
     headerCellFilter : 'translate',
     headerCellClass  : 'text-center',
@@ -333,6 +165,8 @@ function GeneralLedgerController(
   function loadData(accounts = []) {
     accounts.forEach(preProcessAccounts);
     Accounts.order(accounts);
+
+    renameGidHeaders(vm.year);
     vm.gridOptions.data = accounts;
   }
 
@@ -365,6 +199,36 @@ function GeneralLedgerController(
       });
   }
 
+  // add (columns) period's label  in the ui-grid
+  //
+  function renameGidHeaders(year) {
+    const actions = angular.copy(columns[columns.length - 1]);
+    const newColumns = columns.slice(0, 3);
+
+    const header = {
+      type : 'number',
+      enableFiltering  : false,
+      headerCellFilter : 'translate',
+      headerCellClass  : 'text-center',
+      cellFilter       : 'currency:'.concat(Session.enterprise.currency_id),
+      cellClass        : 'text-right',
+      footerCellClass  : 'text-right',
+      footerCellFilter : 'currency:'.concat(Session.enterprise.currency_id),
+      aggregationType : customAggregationFn,
+      aggregationHideLabel : true,
+    };
+
+    year.periods.forEach((p, index) => {
+      newColumns.push(angular.extend({}, header, {
+        field            : `balance${index}`,
+        displayName      : p.translate_key || 'FORM.LABELS.OPENING_BALANCE',
+      }));
+    });
+
+    vm.gridOptions.columnDefs = [...newColumns, actions];
+  }
+
+
   // fired when the footer changes and on startup.
   function onSelectFiscalYear(year) {
     vm.year = year;
@@ -380,7 +244,7 @@ function GeneralLedgerController(
   // runs on startup
   function startup() {
     // TODO(@jniles) - cache this date
-    Fiscal.read(null, { detailed : 1 })
+    Fiscal.read(null, { detailed : 1, includePeriods : 1 })
       .then((years) => {
         vm.fiscalYears = years;
 

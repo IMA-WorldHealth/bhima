@@ -14,6 +14,7 @@ angular.module('bhima.components')
 
 FindPatientComponent.$inject = [
   'PatientService', 'AppCache', 'NotifyService', 'SessionService', 'bhConstants',
+  'BarcodeService',
 ];
 
 /**
@@ -36,7 +37,7 @@ FindPatientComponent.$inject = [
  *   - validationTrigger: binds a boolean to indicate if the components validation
  *     should be run
  */
-function FindPatientComponent(Patients, AppCache, Notify, SessionService, bhConstants) {
+function FindPatientComponent(Patients, AppCache, Notify, SessionService, bhConstants, Barcode) {
   const vm = this;
 
   /* cache to remember which the search type of the component */
@@ -60,6 +61,10 @@ function FindPatientComponent(Patients, AppCache, Notify, SessionService, bhCons
       findByName : {
         label       : 'FORM.LABELS.PATIENT_NAME',
         placeholder : 'FORM.PLACEHOLDERS.SEARCH_NAME',
+      },
+
+      findByBarcode : {
+        label       : 'BARCODE.SCAN',
       },
     };
 
@@ -110,6 +115,7 @@ function FindPatientComponent(Patients, AppCache, Notify, SessionService, bhCons
       .catch(Notify.handleError);
   }
 
+
   /**
    * @method searchByReference
    *
@@ -125,17 +131,20 @@ function FindPatientComponent(Patients, AppCache, Notify, SessionService, bhCons
 
     const isValidNumber = !Number.isNaN(Number(reference));
 
+    const ref = isValidNumber
+      ? `${bhConstants.identifiers.PATIENT.key}.${SessionService.project.abbr}.${reference}`
+      : reference;
+
     const options = {
-      reference : isValidNumber ?
-        [bhConstants.identifiers.PATIENT.key, SessionService.project.abbr, reference].join('.') : reference,
+      reference : ref,
       detailed : 1,
-      limit     : 1,
+      limit : 1,
     };
 
     // query the patient's search endpoint for the
     // reference
     Patients.read(null, options)
-      .then((patients) => {
+      .then(patients => {
         selectPatient(patients[0]);
       })
       .catch(Notify.handleError);
@@ -188,11 +197,17 @@ function FindPatientComponent(Patients, AppCache, Notify, SessionService, bhCons
    * between ID or Name option of search
    */
   function findBy(key) {
+    if (key === 'findByBarcode') {
+      openBarcodeScanner();
+      return;
+    }
+
     vm.selected = vm.options[key];
     resetState();
 
     // save the option for later
     cache.optionKey = key;
+
   }
 
   // Common base values that can be used to set a new search
@@ -285,5 +300,18 @@ function FindPatientComponent(Patients, AppCache, Notify, SessionService, bhCons
       // make sure we do not submit the parent form!
       event.preventDefault();
     }
+  }
+
+  /**
+   * @method openBarcodeScanner
+   *
+   * @description
+   * Opens the barcode scanner for scanning the
+   */
+  function openBarcodeScanner() {
+    Barcode.modal()
+      .then(record => {
+        searchByUuid(record.uuid);
+      });
   }
 }

@@ -3,13 +3,16 @@
 <body class="container">
 
   <style>
-    span { 
+    span {
       font-size : 18px;
     }
   </style>
   <div class="row">
 
-    <h4 style="margin-bottom : 0px;"><strong>{{patient.enterprise_name}} - {{translate "PATIENT_REG.IDENTITY"}}</strong></h4>
+    <h4 style="margin-bottom : 0px;">
+      <strong>{{patient.enterprise_name}} - {{translate "PATIENT_REG.IDENTITY"}}</strong>
+    </h4>
+
     <hr>
 
     <!-- left side is patient information -->
@@ -29,15 +32,6 @@
       <span><u>{{translate "FORM.LABELS.DEBTOR_GROUP"}}</u></span><br />
       <span>{{ patient.debtor_group_name }}</span>
 
-      {{#unless simplified}}
-      <!-- Information only shown on larger form identities -->
-      <br />
-      <span><u>{{translate "FORM.LABELS.ADDRESS"}}</u></span> <br />
-      <address>
-        <span>{{village.name}}, {{village.sector_name}}, {{village.province_name}}</span> <br />
-        <span>{{village.country_name}}</span>
-      </address>
-      {{/unless}}
     </div>
 
     <!-- right side is enterprise information -->
@@ -45,8 +39,35 @@
       <h2 style="margin-top : 0px"><strong>{{patient.reference}}</strong></h2>
       <span>{{translate "TABLE.COLUMNS.REGISTERED_ON"}} {{date patient.registration_date }}</span><br />
       <span><b>{{translate "FORM.LABELS.HOSPITAL_NO"}}:</b> {{patient.hospital_no}}</span><br />
+      {{#if patient.health_zone}}
+      <span>{{translate "FORM.LABELS.HEALTH_ZONE"}}: {{patient.health_zone}}</span><br />
+      {{/if}}
+      {{#if patient.health_area}}
+      <span>{{translate "FORM.LABELS.HEALTH_AREA"}}: {{patient.health_area}}</span><br />
+      {{/if}}
     </div>
   </div>
+
+  <!-- Information only shown on larger form identities -->
+  {{#unless simplified}}
+  <div class="row">
+    <div class="col-xs-7">
+      <span><u>{{translate "FORM.LABELS.ORIGIN"}}</u></span> <br />
+      <address>
+        <span>{{village.name}}, {{village.sector_name}}, {{village.province_name}}</span> <br />
+        <span>{{village.country_name}}</span>
+      </address>
+    </div>
+
+    <div class="col-xs-5">
+      <span><u>{{translate "FORM.LABELS.ADDRESS"}}</u></span> <br />
+      <address>
+        <span>{{currentVillage.name}}, {{currentVillage.sector_name}}, {{currentVillage.province_name}}</span> <br />
+        <span>{{currentVillage.country_name}}</span>
+      </address>
+    </div>
+  </div>
+  {{/unless}}
 
   <div class="row" style="margin-top: 1em;">
     <div class="col-xs-12">

@@ -99,7 +99,7 @@ function PatientInvoiceService(
       backdrop : 'static',
       controller : 'InvoiceRegistrySearchModalController as $ctrl',
       resolve : {
-        filters : function filtersProvider() { return filters; },
+        filters : () => filters,
       },
     }).result;
   }
@@ -120,6 +120,7 @@ function PatientInvoiceService(
   invoiceFilters.registerDefaultFilters(bhConstants.defaultFilters);
 
   invoiceFilters.registerCustomFilters([
+    { key : 'uuid', label : 'FORM.LABELS.REFERENCE' },
     { key : 'service_id', label : 'FORM.LABELS.SERVICE' },
     { key : 'user_id', label : 'FORM.LABELS.USER' },
     { key : 'reference', label : 'FORM.LABELS.REFERENCE' },

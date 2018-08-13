@@ -5,7 +5,7 @@ VoucherController.$inject = [
   'VoucherService', 'NotifyService', 'uiGridConstants', 'ReceiptModal',
   'TransactionTypeService', 'bhConstants', 'GridSortingService',
   'GridColumnService', 'GridStateService', '$state', 'ModalService', 'util',
-  'SessionService',
+  'SessionService', 'BarcodeService',
 ];
 
 /**
@@ -18,7 +18,7 @@ VoucherController.$inject = [
  */
 function VoucherController(
   Vouchers, Notify, uiGridConstants, Receipts, TransactionTypes, bhConstants,
-  Sorting, Columns, GridState, $state, Modals, util, Session
+  Sorting, Columns, GridState, $state, Modals, util, Session, Barcode
 ) {
   const vm = this;
 
@@ -39,11 +39,13 @@ function VoucherController(
   vm.reverseVoucher = reverseVoucher;
   vm.showReceipt = showReceipt;
   vm.toggleInlineFilter = toggleInlineFilter;
+  vm.openBarcodeScanner = openBarcodeScanner;
 
   // date format function
   vm.format = util.formatDate;
 
   vm.allowsRecordDeletion = allowsRecordDeletion;
+  vm.showReceipt = Receipts.voucher;
 
   vm.loading = false;
 
@@ -282,7 +284,24 @@ function VoucherController(
     return Session.enterprise.settings.enable_delete_records;
   }
 
-  vm.showReceipt = Receipts.voucher;
+  /**
+   * @function openBarcodeScanner
+   *
+   * @description
+   * Opens the barcode scanner component and receives the record from the
+   * modal.
+   */
+  function openBarcodeScanner() {
+    Barcode.modal()
+      .then(record => {
+        Vouchers.filters.replaceFilters([
+          { key : 'uuid', value : record.uuid, displayValue : record.reference },
+        ]);
+
+        load(Vouchers.filters.formatHTTP(true));
+        vm.latestViewFilters = Vouchers.filters.formatView();
+      });
+  }
 
   startup();
 }

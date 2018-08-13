@@ -132,6 +132,7 @@ function CashService(
   cashFilters.registerDefaultFilters(bhConstants.defaultFilters);
 
   cashFilters.registerCustomFilters([
+    { key : 'uuid', label : 'FORM.LABELS.REFERENCE' },
     { key : 'is_caution', label : 'FORM.LABELS.CAUTION' },
     { key : 'cashbox_id', label : 'FORM.LABELS.CASHBOX' },
     { key : 'project_id', label : 'FORM.LABELS.PROJECT' },

@@ -6,6 +6,8 @@ describe('PatientInvoiceForm', () => {
   let Session;
   let form;
   let Mocks;
+  let $document;
+  let $timeout;
 
   beforeEach(module(
     'bhima.services',
@@ -18,10 +20,12 @@ describe('PatientInvoiceForm', () => {
     'bhima.mocks'
   ));
 
-  beforeEach(inject((_PatientInvoiceForm_, $httpBackend, _SessionService_, _MockDataService_) => {
+  beforeEach(inject((_PatientInvoiceForm_, $httpBackend, _SessionService_, _MockDataService_, _$document_, _$timeout_) => {
     PatientInvoiceForm = _PatientInvoiceForm_;
     Session = _SessionService_;
     Mocks = _MockDataService_;
+    $document = _$document_;
+    $timeout = _$timeout_;
 
     // set up the required properties for the session
     Session.create(Mocks.user(), Mocks.enterprise(), Mocks.project());
@@ -216,5 +220,38 @@ describe('PatientInvoiceForm', () => {
     const str = (j) => JSON.stringify(j);
 
     expect(form.totals, `${str(form.totals)} should equal ${str(mockTotals)}`).to.eql(mockTotals);
+  });
+
+  it('#configureItem() calls $document[0].getElementById()', () => {
+    form.addItem();
+
+    const [item] = form.store.data;
+
+    const mefloquine = {
+      uuid : 'd2f7ef71-6f3e-44bd-8056-378c5ca26e20',
+      inventory_uuid : 'd2f7ef71-6f3e-44bd-8056-378c5ca26e20',
+    };
+
+    angular.merge(item, mefloquine);
+
+    // mocks a DOM element for the focus() call
+    const mockDOMElement = {
+      focus : () => console.log('Hello World'),
+    };
+
+    // replace the top level document with a simple chai spy.
+    // NOTE(@jniles) - this is slightly hacky since:
+    //  1. I don't know if anything else in the script depends on $document[0]
+    //  2. $document[0] seems too abstract.
+    // However, this is the AngularJS's official recommendation for mocking
+    // calls to $document.
+    const spy = chai.spy(() => mockDOMElement);
+    $document[0].getElementById = spy;
+
+    form.configureItem(item);
+
+    $timeout.flush();
+
+    expect(spy).to.have.been.called.with(item.uuid);
   });
 });

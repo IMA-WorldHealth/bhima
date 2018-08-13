@@ -13,8 +13,8 @@
  * @requires lib/ReportManager
  */
 
-const Patients = require('../patients');
 const _ = require('lodash');
+const Patients = require('../patients');
 const ReportManager = require('../../../lib/ReportManager');
 const Locations = require('../../admin/locations');
 const pdf = require('../../../lib/renderers/pdf');
@@ -67,10 +67,14 @@ function build(req, res, next) {
       patient.sexFormatted = (patient.sex === 'M') ? 'FORM.LABELS.MALE' : 'FORM.LABELS.FEMALE';
 
       data.patient = patient;
-      return Locations.lookupVillage(patient.origin_location_id);
+      return Promise.all([
+        Locations.lookupVillage(patient.origin_location_id),
+        Locations.lookupVillage(patient.current_location_id),
+      ]);
     })
-    .then(village => {
+    .then(([village, currentVillage]) => {
       data.village = village;
+      data.currentVillage = currentVillage;
       data.simplified = requestedSimplifiedCard;
       return report.render(data);
     })

@@ -194,8 +194,7 @@ function update(req, res, next) {
   delete data.uuid;
   delete data.reference;
 
-  const updatePatientQuery =
-    'UPDATE patient SET ? WHERE uuid = ?';
+  const updatePatientQuery = 'UPDATE patient SET ? WHERE uuid = ?';
 
   db.exec(updatePatientQuery, [data, buid])
     .then(() => updatePatientDebCred(patientUuid))
@@ -242,7 +241,7 @@ function lookupPatient(patientUuid) {
       p.spouse_profession, p.spouse_employer, p.notes, p.avatar, proj.abbr, d.text,
       dg.account_id, BUID(dg.price_list_uuid) AS price_list_uuid, dg.is_convention,
       BUID(dg.uuid) as debtor_group_uuid, dg.locked, dg.name as debtor_group_name, u.username,
-      u.display_name AS userName, a.number, proj.name
+      u.display_name AS userName, a.number, proj.name, p.health_zone, p.health_area
     FROM patient AS p
       JOIN project AS proj ON p.project_id = proj.id
       JOIN debtor AS d ON p.debtor_uuid = d.uuid
@@ -401,8 +400,7 @@ function lookupByDebtorUuid(debtorUuid) {
 function hospitalNumberExists(req, res, next) {
   const hospitalNumber = req.params.id;
 
-  const verifyQuery =
-    'SELECT uuid, hospital_no FROM patient WHERE hospital_no = ?';
+  const verifyQuery = 'SELECT uuid, hospital_no FROM patient WHERE hospital_no = ?';
 
   db.exec(verifyQuery, [hospitalNumber])
     .then((result) => {
@@ -463,11 +461,12 @@ function searchByName(req, res, next) {
  */
 function find(options) {
   // ensure epected options are parsed appropriately as binary
-  db.convert(options, ['patient_group_uuid', 'debtor_group_uuid', 'debtor_uuid']);
+  db.convert(options, ['patient_group_uuid', 'debtor_group_uuid', 'debtor_uuid', 'uuid']);
 
   const filters = new FilterParser(options, {
     tableAlias : 'p',
   });
+
   const sql = patientEntityQuery(options.detailed);
 
   filters.equals('debtor_uuid');
@@ -477,6 +476,7 @@ function find(options) {
   filters.equals('health_zone');
   filters.equals('health_area');
   filters.equals('project_id');
+  filters.equals('uuid');
 
   // filters for location
   const orignSql = `(originVillage.name LIKE ?) OR (originSector.name LIKE ?) OR (originProvince.name LIKE ?)`;
