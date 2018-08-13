@@ -126,18 +126,20 @@ function document(req, res, next) {
         AccountReference.computeAllAccountReference(fiscalYear.previous.period_id) : [];
       return Q.all([currentPeriodReferences, previousPeriodReferences]);
     })
-    .spread((current, previous) => {
+    .spread((currentData, previousData) => {
       let list = [];
-      const currentReferences = formatReferences(_.groupBy(current, 'abbr'));
-      const previousReferences = formatReferences(_.groupBy(previous, 'abbr'));
+      const currentReferences = formatReferences(_.groupBy(currentData, 'abbr'));
+      const previousReferences = formatReferences(_.groupBy(previousData, 'abbr'));
 
       const assetTable = balanceSheetAssetTable.map(item => {
         item.label = 'REPORT.OHADA.REF_DESCRIPTION.'.concat(item.ref);
-        if (currentReferences[item.ref]) {
-          item.currentBrut = currentReferences[item.ref].brut.balance;
-          item.currentAmo = currentReferences[item.ref].amortissement.balance;
-          item.currentNet = currentReferences[item.ref].net.balance;
-          item.previousNet = previousReferences[item.ref] ? previousReferences[item.ref].net.balance : 0;
+        const current = currentReferences[item.ref];
+        const previous = previousReferences[item.ref];
+        if (current) {
+          item.currentBrut = current.brut.balance;
+          item.currentAmo = current.amortissement.balance;
+          item.currentNet = current.net.balance;
+          item.previousNet = previous ? previous.net.balance : 0;
         }
 
         // process manually totals
@@ -181,11 +183,13 @@ function document(req, res, next) {
 
       const liabilityTable = balanceSheetLiabilityTable.map(item => {
         item.label = 'REPORT.OHADA.REF_DESCRIPTION.'.concat(item.ref);
-        if (currentReferences[item.ref]) {
-          item.currentBrut = currentReferences[item.ref].brut.balance;
-          item.currentAmo = currentReferences[item.ref].amortissement.balance;
-          item.currentNet = currentReferences[item.ref].net.balance;
-          item.previousNet = previousReferences[item.ref] ? previousReferences[item.ref].net.balance : 0;
+        const current = currentReferences[item.ref];
+        const previous = previousReferences[item.ref];
+        if (current) {
+          item.currentBrut = current.brut.balance;
+          item.currentAmo = current.amortissement.balance;
+          item.currentNet = current.net.balance;
+          item.previousNet = previous ? previous.net.balance : 0;
         }
 
         // process manually totals
