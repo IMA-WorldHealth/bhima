@@ -124,7 +124,7 @@ function read(req, res, next) {
  */
 function find(options) {
   // ensure expected options are parsed appropriately as binary
-  db.convert(options, ['debtor_uuid', 'debtor_group_uuid', 'invoice_uuid']);
+  db.convert(options, ['debtor_uuid', 'debtor_group_uuid', 'invoice_uuid', 'uuid']);
   const filters = new FilterParser(options, { tableAlias : 'cash' });
 
   const sql = `
@@ -142,6 +142,7 @@ function find(options) {
       JOIN user u ON u.id = cash.user_id
   `;
 
+  filters.equals('uuid');
   filters.dateFrom('custom_period_start', 'date');
   filters.dateTo('custom_period_end', 'date');
   filters.equals('cashbox_id');

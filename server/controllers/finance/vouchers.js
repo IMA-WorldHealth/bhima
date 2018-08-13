@@ -144,6 +144,7 @@ function find(options) {
 
   delete options.detailed;
 
+  filters.equals('uuid');
   filters.period('period', 'date');
   filters.dateFrom('custom_period_start', 'date');
   filters.dateTo('custom_period_end', 'date');
