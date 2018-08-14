@@ -10,6 +10,7 @@
  * @requires config/identifiers
  */
 
+const _ = require('lodash');
 const moment = require('moment');
 const db = require('../../lib/db');
 const FilterParser = require('../../lib/filter');
@@ -163,6 +164,7 @@ function getLotsDepot(depotUuid, params, finalClause) {
         SELECT BUID(l.uuid) AS uuid, l.label, l.initial_quantity,
             SUM(m.quantity * IF(m.is_exit = 1, -1, 1)) AS quantity,
             d.text AS depot_text, l.unit_cost, l.expiration_date,
+            ROUND(DATEDIFF(l.expiration_date, CURRENT_DATE()) / 30.5) AS lifetime,
             BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid,
             i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
             MIN(m.date) AS entry_date,
@@ -182,7 +184,9 @@ function getLotsDepot(depotUuid, params, finalClause) {
   const clause = finalClause || ` GROUP BY l.uuid, m.depot_uuid ${excludeToken} ORDER BY i.code, l.label `;
 
   return getLots(sql, params, clause)
+    .then(inventories => processStockConsumptionAverage(inventories, params.dateTo))
     .then(stockManagementProcess)
+    .then(processMultipleLots)
     .then((rows) => {
       if (_status) {
         return rows.filter(row => row.status === _status);
@@ -293,18 +297,20 @@ function stockManagementProcess(inventories, inventoryDelay, purchaseInterval) {
   const current = moment();
   let CM;
   let Q;
+  let CM_NOT_ZERO;
   let delay;
 
   return inventories.map((inventory) => {
     Q = inventory.quantity; // the quantity
     CM = inventory.avg_consumption; // consommation mensuelle
+    CM_NOT_ZERO = !CM ? 1 : CM;
     inventory.S_SEC = CM * (inventoryDelay || inventory.delay); // stock de securite
     inventory.S_MIN = inventory.S_SEC * 2; // stock minimum
     inventory.S_MAX = (CM * (purchaseInterval || inventory.purchase_interval)) + inventory.S_MIN; // stock maximum
-    inventory.S_MONTH = Math.floor(inventory.quantity / CM); // mois de stock
+    inventory.S_MONTH = Math.floor(inventory.quantity / CM_NOT_ZERO); // mois de stock
     inventory.S_Q = inventory.S_MAX - inventory.quantity; // Commande d'approvisionnement
     inventory.S_Q = inventory.S_Q > 0 ? inventory.S_Q : 0;
-    // todo: risque a perime (RP) = Stock - (Mois avant expiration * CM) // it is relatives to lots
+    inventory.S_RP = inventory.quantity - (inventory.lifetime * CM); // risque peremption
 
     if (Q <= 0) {
       inventory.status = 'sold_out';
@@ -319,9 +325,6 @@ function stockManagementProcess(inventories, inventoryDelay, purchaseInterval) {
     } else {
       inventory.status = '';
     }
-
-    delay = moment(new Date(inventory.expiration_date)).diff(current, 'months');
-    inventory.S_RP = inventory.quantity - (delay * inventory.avg_consumption);
 
     delay = moment(new Date(inventory.expiration_date)).diff(current);
     inventory.delay_expiration = moment.duration(delay).humanize();
@@ -401,7 +404,6 @@ function getStockConsumptionAverage(periodId, periodDate, numberOfMonths) {
  * Inventory Quantity and Consumptions
  */
 function getInventoryQuantityAndConsumption(params) {
-  const bundle = {};
   let _status;
   let delay;
   let purchaseInterval;
@@ -437,6 +439,7 @@ function getInventoryQuantityAndConsumption(params) {
     SELECT BUID(l.uuid) AS uuid, l.label, l.initial_quantity,
         SUM(m.quantity * IF(m.is_exit = 1, -1, 1)) AS quantity,
         d.text AS depot_text, l.unit_cost, l.expiration_date,
+        ROUND(DATEDIFF(l.expiration_date, CURRENT_DATE()) / 30.5) AS lifetime,
         BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid,
         l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
         i.avg_consumption, i.purchase_interval, i.delay,
@@ -455,29 +458,7 @@ function getInventoryQuantityAndConsumption(params) {
   const clause = ` GROUP BY l.inventory_uuid, m.depot_uuid ${excludeToken} ORDER BY i.code, i.text `;
 
   return getLots(sql, params, clause)
-    .then((rows) => {
-      bundle.inventories = rows;
-      return getStockConsumptionAverage(null, params.dateTo);
-    })
-    .then((rows) => {
-      let sameInventory;
-      let sameDepot;
-
-      bundle.consumptions = rows;
-
-      for (let i = 0; i < bundle.consumptions.length; i++) {
-        for (let j = 0; j < bundle.inventories.length; j++) {
-          sameInventory = bundle.consumptions[i].uuid === bundle.inventories[j].inventory_uuid;
-          sameDepot = bundle.consumptions[i].depot_uuid === bundle.inventories[j].depot_uuid;
-          if (sameInventory && sameDepot) {
-            bundle.inventories[j].avg_consumption = bundle.consumptions[i].quantity;
-            break;
-          }
-        }
-      }
-
-      return bundle.inventories;
-    })
+    .then(inventories => processStockConsumptionAverage(inventories, params.dateTo))
     .then((inventories) => stockManagementProcess(inventories, delay, purchaseInterval))
     .then(rows => {
       let filteredRows = rows;
@@ -491,6 +472,59 @@ function getInventoryQuantityAndConsumption(params) {
       }
 
       return filteredRows;
+    });
+}
+
+/**
+ * process multiple stock lots
+ *
+ * @description
+ * the goals of this function is to give the risk of peremption for each lots for
+ * a given inventory
+ */
+function processMultipleLots(inventories) {
+  const flattenLots = [];
+  const inventoryLots = _.groupBy(inventories, 'inventory_uuid');
+
+  _.each(inventoryLots, (inventory) => {
+    // order lots by ascending lifetime
+    const orderedInventoryLots = _.orderBy(inventory, 'lifetime', 'asc');
+
+    // compute the lot coefficient
+    let lotLifetime = 0;
+    _.each(orderedInventoryLots, lot => {
+      lot.S_LOT_LIFETIME = lot.lifetime - lotLifetime;
+      lot.S_RISK = lot.S_LOT_LIFETIME - lot.S_MONTH;
+      lot.S_RISK_QUANTITY = lot.S_RISK * lot.avg_consumption;
+      lotLifetime += lot.lifetime;
+      flattenLots.push(lot);
+    });
+  });
+  return flattenLots;
+}
+
+/**
+ * process stock consumption average
+ */
+function processStockConsumptionAverage(inventories, dateTo) {
+  return getStockConsumptionAverage(null, dateTo)
+    .then(rows => {
+      let sameInventory;
+      let sameDepot;
+      const consumptions = rows;
+
+      for (let i = 0; i < consumptions.length; i++) {
+        for (let j = 0; j < inventories.length; j++) {
+          sameInventory = consumptions[i].uuid === inventories[j].inventory_uuid;
+          sameDepot = consumptions[i].depot_uuid === inventories[j].depot_uuid;
+          if (sameInventory && sameDepot) {
+            inventories[j].avg_consumption = consumptions[i].quantity;
+            break;
+          }
+        }
+      }
+
+      return inventories;
     });
 }
 
