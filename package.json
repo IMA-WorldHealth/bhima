@@ -83,7 +83,6 @@
     "wkhtmltopdf": "^0.3.3"
   },
   "devDependencies": {
-    "@types/node": "^10.5.7",
     "bower": "^1.8.2",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.0",
