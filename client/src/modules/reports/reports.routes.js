@@ -21,6 +21,7 @@ angular.module('bhima.routes')
       'stock_exit',
       'employeeStanding',
       'patientStanding',
+      'ohada_balance_sheet_report',
       'account_reference',
     ];
 

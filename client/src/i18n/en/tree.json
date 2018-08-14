@@ -54,6 +54,8 @@
     "JOURNAL_VOUCHER" : "Journal Voucher",
     "LOCATION" : "Location Management",
     "MULTI_PAYROLL" : "Multiple Payroll",
+    "OHADA_BILAN":"[OHADA] Bilan",
+    "OHADA_RESULT_ACCOUNT":"[OHADA] Compte de Résultat",
     "OFFDAYS_MANAGEMENT" : "Offdays Management",
     "OPERATING_ACCOUNT" : "Operating account",
     "PAYROLL" : "Payroll",
@@ -104,6 +106,8 @@
     "VOUCHER_REGISTRY" : "Voucher Registry",
     "AGED_DEBTORS" : "Aged Debtors Report",
     "WEEKEND_CONFIGURATION" : "Weekend Configuration",
-    "ROLE_MANAGEMENT" : "Role Management"
+    "ROLE_MANAGEMENT" : "Role Management",
+    "OHADA_BALANCE_SHEET":"[OHADA] Balance Sheet",
+    "OHADA_INCOME":"[OHADA] Income Report"
   }
 }

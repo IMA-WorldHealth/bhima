@@ -94,7 +94,8 @@ INSERT INTO unit VALUES
   (203, 'Employees Configuration','TREE.PAYROLL_EMP_CONFIGURATION','',57,'/modules/payroll/employee_configuration','/payroll/employee_configuration'),
   (204, 'Exchange Rate','TREE.EXCHANGE','',1,'/modules/exchange/exchange','/exchange'),
   (205, 'Account Reference Management','TREE.ACCOUNT_REFERENCE_MANAGEMENT','',1,'/modules/account_reference','/account_reference'),
-  (206, 'Account Reference Report','TREE.ACCOUNT_REFERENCE_REPORT','',144,'/modules/reports/account_reference','/reports/account_reference');
+  (206, '[OHADA] Bilan','TREE.OHADA_BALANCE_SHEET','',144,'/modules/reports/ohada_balance_sheet_report','/reports/ohada_balance_sheet_report'),
+  (207, 'Account Reference Report','TREE.ACCOUNT_REFERENCE_REPORT','',144,'/modules/reports/account_reference','/reports/account_reference');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -133,7 +134,8 @@ INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
   (17, 'debtorBalanceReport', 'REPORT.CLIENT_DEBTOR_ACCOUNT_BALANCE_REPORT'),
   (18, 'employeeStanding', 'REPORT.EMPLOYEE_STANDING.TITLE'),
   (19, 'patientStanding', 'REPORT.PATIENT_STANDING.TITLE'),
-  (20, 'account_reference', 'REPORT.ACCOUNT_REFERENCE.TITLE');
+  (20, 'ohada_balance_sheet_report', 'REPORT.OHADA.BALANCE_SHEET'),
+  (21, 'account_reference', 'REPORT.ACCOUNT_REFERENCE.TITLE');
 
 -- Supported Languages
 INSERT INTO `language` VALUES

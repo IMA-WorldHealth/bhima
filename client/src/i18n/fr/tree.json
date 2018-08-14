@@ -55,6 +55,8 @@
     "LOCATION":"Localisations",
     "MULTI_PAYROLL" : "Payroll Multiple",
     "OFFDAYS_MANAGEMENT" : "Gestion des jours fériés",
+    "OHADA_BILAN":"[OHADA] Bilan",
+    "OHADA_RESULT_ACCOUNT":"[OHADA] Compte de Résultat",
     "OPERATING_ACCOUNT" : "Compte d'exploitation",
     "PHARMACY":"Gestion de pharmacie",
     "PATIENT_DOCUMENT":"Documents de Patient",
@@ -104,6 +106,8 @@
     "VOUCHER_REGISTRY":"Registre des Bordereaux",
     "AGED_DEBTORS":"Les plus anciens débiteurs",
     "WEEKEND_CONFIGURATION":"Configuration des weekend",
-    "ROLE_MANAGEMENT":"Gestion des rôles"
+    "ROLE_MANAGEMENT":"Gestion des rôles",
+    "OHADA_BALANCE_SHEET":"[OHADA] Bilan",
+    "OHADA_INCOME":"[OHADA] Compte de resultat"
   }
 }
