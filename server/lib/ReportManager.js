@@ -126,8 +126,7 @@ class ReportManager {
    *    render() function.
    */
   render(data) {
-    const { metadata } = this;
-    const { renderer } = this;
+    const { metadata, renderer } = this;
 
     // set the render timestamp
     metadata.timestamp = new Date();
@@ -139,9 +138,7 @@ class ReportManager {
     // sanitise save report option
     this.options.saveReport = Boolean(Number(this.options.saveReport));
 
-
     // merge the data object before templating
-
     _.merge(data, { metadata });
 
     // some reports(Excel,..) require renaming result's column names
@@ -149,7 +146,6 @@ class ReportManager {
     const { displayNames, renameKeys } = this.options;
 
     const rowsToRename = data.rows || data[this.options.rowsDataKey];
-
 
     data.rows = (renameKeys) ? util.renameKeys(rowsToRename, displayNames) : data.rows;
     //

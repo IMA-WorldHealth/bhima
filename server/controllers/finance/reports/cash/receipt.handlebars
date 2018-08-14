@@ -27,7 +27,9 @@
           </span> <br>
           <strong>{{payment.reference}}</strong> <br>
           <small>{{date payment.date}}</small> <br>
-          <small>{{> barcode value=details.barcode}}</small> <br>
+          {{#if metadata.enterprise.settings.enable_barcodes}}
+            <small>{{> barcode value=details.barcode}}</small> <br>
+          {{/if}}
           <br>
         </h3>
       </div>

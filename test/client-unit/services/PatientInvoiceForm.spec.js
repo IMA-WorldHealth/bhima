@@ -1,5 +1,3 @@
-/* global inject, expect, chai */
-/* eslint no-unused-expressions:off */
 describe('PatientInvoiceForm', () => {
   let PatientInvoiceForm;
   let httpBackend;
@@ -236,7 +234,7 @@ describe('PatientInvoiceForm', () => {
 
     // mocks a DOM element for the focus() call
     const mockDOMElement = {
-      focus : () => console.log('Hello World'),
+      focus : () => {},
     };
 
     // replace the top level document with a simple chai spy.
