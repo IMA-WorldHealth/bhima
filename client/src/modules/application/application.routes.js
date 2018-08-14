@@ -5,5 +5,6 @@ angular.module('bhima.routes')
         url         : '/',
         controller  : 'HomeController as HomeCtrl',
         templateUrl : 'modules/home/home.html',
-      })
+      });
   }]);
+
