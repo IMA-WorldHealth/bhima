@@ -1,13 +1,17 @@
 <head>
- <meta charset="utf-8" />
-  <script src="{{absolutePath}}/vendor/JsBarcode.all.min.js"></script>
+  <meta charset="utf-8" />
+  {{#if metadata.enterprise.settings.enable_barcodes}}
+    <script src="{{absolutePath}}/vendor/JsBarcode.all.min.js"></script>
+  {{/if}}
 </head>
 <body>
 <p><b style="text-transform : uppercase">{{enterprise.name}}</b></p>
 <h2 style="text-align : left; margin : 0px">{{details.reference}}</h2>
 <p style="margin-top : 0px">{{date details.date}} {{translate 'FORM.LABELS.BY'}} {{details.display_name}}</p>
 
-<div style="text-align : center;">{{> barcode value=details.barcode}}</div>
+{{#if metadata.enterprise.settings.enable_barcodes}}
+  <div style="text-align : center;">{{> barcode value=details.barcode}}</div>
+{{/if}}
 
 <h2 style="margin-bottom : 0px">{{translate details.text}}</h2>
 
@@ -42,5 +46,7 @@
 
 <h2 style="text-align : right;">{{translate "FORM.LABELS.TOTAL"}}: {{currency details.amount details.currency_id}}</h2>
 
-<script>JsBarcode('.barcode').init();</script>
+{{#if metadata.enterprise.settings.enable_barcodes}}
+  <script>JsBarcode('.barcode').init();</script>
+{{/if}}
 </body>

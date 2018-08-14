@@ -24,8 +24,8 @@
                 <i class="fa fa-exchange"></i> <span translate>CASH.VOUCHER.CASHBOXES.TRANSFER</span>
               </a>
             </li>
-            <li role="separator" class="divider"></li>
-            <li role="menuitem">
+            <li role="separator" class="divider" bh-require-enterprise-setting="barcodes"></li>
+            <li role="menuitem" bh-require-enterprise-setting="barcodes">
               <!-- TODO(@jniles) remove CashFormInstance -->
               <a href ui-sref="cash.scan({ id: CashCtrl.cashbox.id, CashFormInstance: CashCtrl.Payment })" data-action="scan-barcode">
                 <i class="fa fa-barcode"></i> <span translate>BARCODE.SCAN</span>
@@ -89,7 +89,7 @@
                     NOTE(@jniles): this option is only visible if enable_prepayments
                     is set in the enterprise settings
                   -->
-                  <div class="radio" ng-class="{ 'has-error' : CashVoucherForm.$submitted && CashVoucherForm.type.$invalid }" ng-if="CashCtrl.Payment.hasPrepaymentSupport">
+                  <div class="radio" ng-class="{ 'has-error' : CashVoucherForm.$submitted && CashVoucherForm.type.$invalid }" bh-require-enterprise-setting="prepayments">
                     <p><strong class="control-label" translate>FORM.LABELS.TYPE</strong></p>
                     <label class="radio-inline">
                       <input name="type" type="radio" ng-model="CashCtrl.Payment.details.is_caution" ng-value="1" ng-change="CashCtrl.Payment.setCautionType(CashCtrl.Payment.details.is_caution)" data-caution-option="1" required>
@@ -206,7 +206,7 @@
 
                 <div class="form-group text-right">
 
-                  <div class="checkbox" style="display : inline-block; padding-right:5px;">
+                  <div class="checkbox" style="display: inline-block; padding-right:5px;" bh-require-enterprise-setting="barcodes">
                     <label>
                       <input type="checkbox" ng-model="CashCtrl.openBarcodeModalOnSuccess" ng-true-value="true" ng-false-value="false"> <span translate>CASH.VOUCHER.OPEN_BARCODE_MODAL</span>
                     </label>

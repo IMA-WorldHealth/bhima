@@ -5,8 +5,8 @@ angular.module('bhima.components')
     bindings : {
       patientUuid :       '<', // bind a patient uuid
       onSearchComplete :  '&', // bind callback to call when data is available
-      onRegisterApi :     '&', // expose force refresh API
-      required :          '<', // bind the required (for ng-required)
+      onRegisterApi :     '&?', // expose force refresh API
+      required :          '<?', // bind the required (for ng-required)
       validationTrigger : '<', // bind validation trigger
       suppressReset :     '<', // bind the reset
     },
@@ -37,7 +37,7 @@ FindPatientComponent.$inject = [
  *   - validationTrigger: binds a boolean to indicate if the components validation
  *     should be run
  */
-function FindPatientComponent(Patients, AppCache, Notify, SessionService, bhConstants, Barcode) {
+function FindPatientComponent(Patients, AppCache, Notify, Session, bhConstants, Barcode) {
   const vm = this;
 
   /* cache to remember which the search type of the component */
@@ -62,11 +62,13 @@ function FindPatientComponent(Patients, AppCache, Notify, SessionService, bhCons
         label       : 'FORM.LABELS.PATIENT_NAME',
         placeholder : 'FORM.PLACEHOLDERS.SEARCH_NAME',
       },
-
-      findByBarcode : {
-        label       : 'BARCODE.SCAN',
-      },
     };
+
+    if (Session.isSettingEnabled('barcodes')) {
+      vm.options.findByBarcode = {
+        label : 'BARCODE.SCAN',
+      };
+    }
 
     vm.showSearchView = true;
     vm.loadStatus = null;
@@ -132,7 +134,7 @@ function FindPatientComponent(Patients, AppCache, Notify, SessionService, bhCons
     const isValidNumber = !Number.isNaN(Number(reference));
 
     const ref = isValidNumber
-      ? `${bhConstants.identifiers.PATIENT.key}.${SessionService.project.abbr}.${reference}`
+      ? `${bhConstants.identifiers.PATIENT.key}.${Session.project.abbr}.${reference}`
       : reference;
 
     const options = {

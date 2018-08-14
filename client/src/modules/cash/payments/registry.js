@@ -28,6 +28,7 @@ function CashPaymentRegistryController(
   vm.format = util.formatDate;
   vm.Receipts = Receipts;
   vm.toggleInlineFilter = toggleInlineFilter;
+  vm.isSettingEnabled = Session.isSettingEnabled;
 
   // global variables
   vm.enterprise = Session.enterprise;

@@ -1,13 +1,17 @@
 <head>
   <meta charset="utf-8" />
-  <script src="{{absolutePath}}/vendor/JsBarcode.all.min.js"></script>
+  {{#if metadata.enterprise.settings.enable_barcodes}}
+    <script src="{{absolutePath}}/vendor/JsBarcode.all.min.js"></script>
+  {{/if}}
 </head>
 <body>
 <p><b style="text-transform : uppercase">{{enterprise.name}}</b></p>
 <h2 style="text-align : left; margin : 0px">{{payment.reference}}</h2>
 <p style="margin-top : 0px">{{date payment.date}} {{translate 'FORM.LABELS.BY'}} {{user.display_name}}</p>
 
-<div style="text-align : center;">{{> barcode value=payment.barcode}}</div>
+{{#if metadata.enterprise.settings.enable_barcodes}}
+  <div style="text-align : center;">{{> barcode value=payment.barcode}}</div>
+{{/if}}
 
 <h2 style="margin-bottom : 0px">{{patient.display_name}}</h2>
 ({{patient.reference}}) - {{patient.debtor_group_name}}
@@ -32,7 +36,7 @@
 {{translate "CASH.CAUTION"}}
 {{/if}}
 
-<!-- if !payment.is_caution -->
+{{! if !payment.is_caution }}
 {{#each payment.items as |item| }}
   <p style="font-weight : bold; text-decoration : underline; margin-bottom : 0px;">
     {{translate "FORM.LABELS.INVOICE"}} {{item.reference}} -- {{item.serviceName}}
@@ -73,5 +77,7 @@
 <h2 style="text-align : right;">{{translate "FORM.LABELS.TOTAL_PAID"}}: {{currency payment.amount payment.currency_id}}</h2>
 <h2 style="text-align : right;">{{translate "FORM.LABELS.TOTAL_BALANCE_REMAINING"}} : {{currency debtorTotalBalance enterprise.currency_id}}</h2>
 
-<script>JsBarcode('.barcode').init();</script>
+{{#if metadata.enterprise.settings.enable_barcodes}}
+  <script>JsBarcode('.barcode').init();</script>
+{{/if}}
 </body>

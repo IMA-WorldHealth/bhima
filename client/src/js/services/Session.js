@@ -1,8 +1,8 @@
 angular.module('bhima.services')
-.service('SessionService', SessionService);
+  .service('SessionService', SessionService);
 
 SessionService.$inject = [
-  '$sessionStorage', '$http', '$location', 'util', '$rootScope'
+  '$sessionStorage', '$http', '$location', 'util', '$rootScope', '$q',
 ];
 
 /**
@@ -19,12 +19,12 @@ SessionService.$inject = [
  *
  * @constructor
  */
-function SessionService($sessionStorage, $http, $location, util, $rootScope) {
-  var service = this;
+function SessionService($sessionStorage, $http, $location, util, $rootScope, $q) {
+  const service = this;
 
   // set up the storage instance
   $sessionStorage['client-session'] = $sessionStorage['client-session'] || {};
-  var $storage = $sessionStorage['client-session'];
+  const $storage = $sessionStorage['client-session'];
 
   // creates a new session instance from the cached storage
   service.create = create;
@@ -40,6 +40,8 @@ function SessionService($sessionStorage, $http, $location, util, $rootScope) {
 
   // reloads a user's session
   service.reload = reload;
+
+  service.isSettingEnabled = isSettingEnabled;
 
   // set the user, enterprise, and project for the session
   // this should happen right after login
@@ -78,7 +80,7 @@ function SessionService($sessionStorage, $http, $location, util, $rootScope) {
     /** @todo - should the login reject if a user is already logged in? */
     return $http.post('/auth/login', credentials)
       .then(util.unwrapHttpResponse)
-      .then(function (session) {
+      .then(session => {
 
         // create the user session in the $storage
         create(session.user, session.enterprise, session.project, session.paths);
@@ -100,7 +102,7 @@ function SessionService($sessionStorage, $http, $location, util, $rootScope) {
    */
   function logout() {
     return $http.get('/auth/logout')
-      .then(function () {
+      .then(() => {
 
         // destroy the user's session from $storage
         destroy();
@@ -123,9 +125,9 @@ function SessionService($sessionStorage, $http, $location, util, $rootScope) {
 
   function reload() {
     if ($storage.user) {
-      return $http.post('/auth/reload', { username: $storage.user.username})
+      return $http.post('/auth/reload', { username : $storage.user.username })
         .then(util.unwrapHttpResponse)
-        .then(function (session) {
+        .then((session) => {
 
           // re-create the user session in the $storage
           create(session.user, session.enterprise, session.project, session.paths);
@@ -134,6 +136,22 @@ function SessionService($sessionStorage, $http, $location, util, $rootScope) {
           $rootScope.$emit('session:reload');
         });
     }
+
+    return $q.resolve();
+  }
+
+  /**
+   * @method isSettingEnabled
+   *
+   * @description
+   * Checks if a setting is enabled on the enterprise.
+   *
+   * @param {string} [setting] - the key of the enterprise setting to check.
+   *
+   * @returns {boolean<result>} - true if setting is enabled.
+   */
+  function isSettingEnabled(setting) {
+    return service.enterprise.settings[`enable_${setting}`];
   }
 
   // if the $rootScope emits 'session.destroy', destroy the session
