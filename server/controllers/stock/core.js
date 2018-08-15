@@ -486,9 +486,9 @@ function processMultipleLots(inventories) {
   const flattenLots = [];
   const inventoryLots = _.groupBy(inventories, 'inventory_uuid');
 
-  _.each(inventoryLots, (inventory) => {
+  _.map(inventoryLots, (lots) => {
     // order lots by ascending lifetime
-    const orderedInventoryLots = _.orderBy(inventory, 'lifetime', 'asc');
+    const orderedInventoryLots = _.orderBy(lots, 'lifetime', 'asc');
 
     // compute the lot coefficient
     let lotLifetime = 0;
