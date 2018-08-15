@@ -92,6 +92,46 @@ function StockLotsController(
       displayName : 'STOCK.EXPIRATION',
       headerCellFilter : 'translate',
     },
+    {
+      field : 'avg_consumption',
+      displayName : 'STOCK.CMM',
+      headerCellFilter : 'translate',
+      type : 'number',
+    },
+    {
+      field : 'S_MONTH',
+      displayName : 'STOCK.MSD',
+      headerCellFilter : 'translate',
+      type : 'number',
+    },
+    {
+      field : 'lifetime',
+      displayName : 'STOCK.LIFETIME',
+      headerCellFilter : 'translate',
+      cellTemplate     : 'modules/stock/lots/templates/lifetime.cell.html',
+      type : 'number',
+    },
+    {
+      field : 'S_LOT_LIFETIME',
+      displayName : 'STOCK.LOT_LIFETIME',
+      headerCellFilter : 'translate',
+      cellTemplate     : 'modules/stock/lots/templates/lot_lifetime.cell.html',
+      type : 'number',
+    },
+    {
+      field : 'S_RISK',
+      displayName : 'STOCK.RISK',
+      headerCellFilter : 'translate',
+      cellTemplate     : 'modules/stock/lots/templates/risk.cell.html',
+      type : 'number',
+    },
+    {
+      field : 'S_RISK_QUANTITY',
+      displayName : 'STOCK.RISK_QUANTITY',
+      headerCellFilter : 'translate',
+      cellTemplate     : 'modules/stock/lots/templates/risk_quantity.cell.html',
+      type : 'number',
+    },
   ];
 
   const gridFooterTemplate = `
