@@ -9,7 +9,9 @@
   {{date patient.registration_date}} {{translate 'FORM.LABELS.BY'}} {{patient.userName}}
 </p>
 
-<div style="text-align:center">{{>barcode value=patient.barcode }}</div>
+{{#if metadata.enterprise.settings.enable_barcodes}}
+  <div style="text-align:center;">{{>barcode value=patient.barcode }}</div>
+{{/if}}
 
 <h2 style="margin-bottom : 0px">{{patient.display_name}}</h2>
 ({{patient.reference}}) - {{patient.debtor_group_name}}

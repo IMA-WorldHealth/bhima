@@ -40,5 +40,8 @@ nbproject/
 # ignore istanbul generated folders
 .nyc_output/
 
+# Ignore test files
+sh/build-database-test.sh
+
 yarn-error.log
 *.log

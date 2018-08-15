@@ -69,6 +69,7 @@
   </div>
   {{/unless}}
 
+  {{#if metadata.enterprise.settings.enable_barcodes}}
   <div class="row" style="margin-top: 1em;">
     <div class="col-xs-12">
       {{> barcode value=patient.barcode }}
@@ -76,4 +77,5 @@
   </div>
 
   <script>JsBarcode('.barcode').init();</script>
+  {{/if}}
 </body>

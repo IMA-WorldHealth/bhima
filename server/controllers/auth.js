@@ -19,10 +19,10 @@
 
 const _ = require('lodash');
 const q = require('q');
+const Topic = require('@ima-worldhealth/topic');
 const db = require('../lib/db');
 const Unauthorized = require('../lib/errors/Unauthorized');
 const InternalServerError = require('../lib/errors/InternalServerError');
-const Topic = require('@ima-worldhealth/topic');
 
 // POST /auth/login
 exports.login = login;
@@ -61,15 +61,17 @@ function login(req, res, next) {
 
   const sqlUser = `
     SELECT user.id FROM user
-    WHERE user.username = ? AND user.password = PASSWORD(?)`;
+    WHERE user.username = ? AND user.password = PASSWORD(?);
+  `;
 
   // a role should be assigned to the user
   // each role has some units(paths or urls) that the user is allowed to access(permissions)
-  const sqlPermission =
-    `SELECT  user.id
+  const sqlPermission = `
+    SELECT  user.id
     FROM  user_role
-    JOIN user ON user.id =  user_role.user_id
-    WHERE user.username = ? AND user.password = PASSWORD(?)`;
+      JOIN user ON user.id =  user_role.user_id
+    WHERE user.username = ? AND user.password = PASSWORD(?)
+  `;
 
   q.all([
     db.exec(sql, [username, password, projectId]),
@@ -185,7 +187,7 @@ function loadSessionInformation(user) {
         FROM unit
         LEFT JOIN role_unit ON unit.id = role_unit.unit_id
         LEFT JOIN user_role ON user_role.role_uuid = role_unit.role_uuid
-        WHERE user_role.user_id=?
+        WHERE user_role.user_id = ?
       `;
 
       return db.exec(sql, [session.user.id, session.user.id]);
@@ -201,8 +203,9 @@ function loadSessionInformation(user) {
       session.paths = modules;
 
       // update the database for when the user logged in
-      sql =
-        'UPDATE user SET user.active = 1, user.last_login = ? WHERE user.id = ?;';
+      sql = `
+        UPDATE user SET user.active = 1, user.last_login = ? WHERE user.id = ?;
+      `;
 
       return db.exec(sql, [new Date(), session.user.id]);
     })
@@ -237,7 +240,8 @@ function loadSessionInformation(user) {
           enable_prepayments,
           enable_password_validation,
           enable_delete_records,
-          enable_balance_on_invoice_receipt
+          enable_balance_on_invoice_receipt,
+          enable_barcodes
         FROM enterprise_setting
         WHERE enterprise_id = ?;
       `;
