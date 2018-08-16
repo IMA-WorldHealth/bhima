@@ -35,9 +35,9 @@
             <tr {{#if account.isTitleAccount}} class="text-bold" {{/if}}>
               <td>{{account.number}}</td>
               <td style="padding-left:calc(({{account.depth}} - 1) * 15px);">{{account.label}}</td>
-              <td class="text-right">{{debcred account.previousBalance metadata.enterprise.currency_id}}</td>
-              <td class="text-right">{{debcred account.balance metadata.enterprise.currency_id}}</td>
-              <td class="text-right">{{debcred account.difference metadata.enterprise.currency_id}}</td>
+              <td class="text-right">{{debcred account.previousBalance ../metadata.enterprise.currency_id}}</td>
+              <td class="text-right">{{debcred account.balance ../metadata.enterprise.currency_id}}</td>
+              <td class="text-right">{{debcred account.difference ../metadata.enterprise.currency_id}}</td>
               <td class="text-right">{{percentage account.variance}}</td>
             </tr>
           {{/each}}
@@ -46,7 +46,7 @@
             <td class="text-right">{{debcred totals.income.previousBalance metadata.enterprise.currency_id}}</td>
             <td class="text-right">{{debcred totals.income.balance metadata.enterprise.currency_id}}</td>
             <td class="text-right">{{debcred totals.income.difference metadata.enterprise.currency_id}}</td>
-            <td class="text-right">{{debcred totals.income.variance metadata.enterprise.currency_id}}</td>
+            <td class="text-right">{{percentage totals.income.variance}}</td>
           </tr>
         </tbody>
       </table>
@@ -74,9 +74,9 @@
             <tr {{#if account.isTitleAccount}} class="text-bold" {{/if}}>
               <td>{{account.number}}</td>
               <td style="padding-left:calc(({{account.depth}} - 1) * 15px);">{{account.label}}</td>
-              <td class="text-right">{{debcred account.previousBalance metadata.enterprise.currency_id}}</td>
-              <td class="text-right">{{debcred account.balance metadata.enterprise.currency_id}}</td>
-              <td class="text-right">{{debcred account.difference metadata.enterprise.currency_id}}</td>
+              <td class="text-right">{{debcred account.previousBalance ../metadata.enterprise.currency_id}}</td>
+              <td class="text-right">{{debcred account.balance ../metadata.enterprise.currency_id}}</td>
+              <td class="text-right">{{debcred account.difference ../metadata.enterprise.currency_id}}</td>
               <td class="text-right">{{percentage account.variance}}</td>
             </tr>
           {{else}}
@@ -87,7 +87,7 @@
             <td class="text-right">{{debcred totals.expense.previousBalance metadata.enterprise.currency_id}}</td>
             <td class="text-right">{{debcred totals.expense.balance metadata.enterprise.currency_id}}</td>
             <td class="text-right">{{debcred totals.expense.difference metadata.enterprise.currency_id}}</td>
-            <td class="text-right">{{debcred totals.expense.variance metadata.enterprise.currency_id}}</td>
+            <td class="text-right">{{percentage totals.expense.variance}}</td>
           </tr>
         </tbody>
       </table>
