@@ -84,7 +84,7 @@ function render(data) {
   // writing rows
   rows.forEach((row) => {
     firstLineCols.forEach((key, index) => {
-      setValue(ws, line, index + 1, row[key])
+      setValue(ws, line, index + 1, row[key] || '')
         .style(styleAllBorders)
         .style(normaFontSize);
     });

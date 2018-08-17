@@ -147,7 +147,7 @@ class ReportManager {
 
     const rowsToRename = data.rows || data[this.options.rowsDataKey];
 
-    data.rows = (renameKeys) ? util.renameKeys(rowsToRename, displayNames) : data.rows;
+    data.rows = (renameKeys) ? util.renameKeys(rowsToRename, displayNames) : rowsToRename;
     //
     // render the report using the stored renderer
     const promise = renderer.render(data, this.template, this.options);
