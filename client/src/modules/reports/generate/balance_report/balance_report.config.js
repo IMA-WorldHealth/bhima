@@ -83,5 +83,3 @@ function BalanceReportConfigController($sce, Notify, SavedReports, AppCache, rep
     }
   }
 }
-
-
