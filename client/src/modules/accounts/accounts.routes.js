@@ -19,18 +19,29 @@ function accountStateProvider($stateProvider) {
       onEnter : ['$uibModal', accountsModal],
       onExit : ['$uibModalStack', closeModal],
     })
+
     .state('accounts.list', {
       url : '/:id',
       params : {
         id : { squash : true, value : null },
       },
     })
+
     .state('accounts.edit', {
       url : '/:id/edit',
       params : {
         id : { squash : true, value : null },
       },
       onEnter : ['$uibModal', accountsModal],
+      onExit : ['$uibModalStack', closeModal],
+    })
+
+    .state('accounts.import', {
+      url : '/import',
+      params : {
+        parentId : { squash : true, value : null },
+      },
+      onEnter : ['$uibModal', importAccountsModal],
       onExit : ['$uibModalStack', closeModal],
     });
 }
@@ -41,6 +52,15 @@ function accountsModal($modal) {
     backdrop : 'static',
     templateUrl : 'modules/accounts/edit/accounts.edit.modal.html',
     controller : 'AccountEditController as AccountEditCtrl',
+  });
+}
+
+function importAccountsModal($modal) {
+  $modal.open({
+    keyboard : false,
+    backdrop : 'static',
+    templateUrl : 'modules/accounts/modals/import.html',
+    controller : 'ImportAccountsController as ImportAccountsCtrl',
   });
 }
 

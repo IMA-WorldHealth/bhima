@@ -52,6 +52,20 @@
     "CONFIRM_UNHIDE" : "Ce compte est actuellement caché. Êtes-vous sûr de vouloir le révéler pour l'utiliser ?",
     "CONFIRM_LOCK" : "Le verrouillage d'un compte limite la possibilité de publier des transactions en utilisant le compte. Êtes-vous sûr de vouloir le verrouiller ?",
     "CONFIRM_UNLOCK" : "Le compte est bloqué. Le débloquer permettra d'afficher des transactions contenant ce compte. Êtes-vous sûr de vouloir le débloquer ?",
+    "IMPORT" : {
+      "ACCOUNTS" : "Importer les comptes",
+      "DESCRIPTION" : "Vous êtes sur le point d'importer la liste des comptes à partir d'un fichier CSV",
+      "LOAD_DEFAULT_OHADA_ACCOUNTS" : "Utiliser les comptes par défaut OHADA",
+      "LOAD_OHADA_ACCOUNTS" : "Importer la liste des comptes OHADA de l'entreprise",
+      "LOAD_OTHER_ACCOUNTS" : "Importer une liste des comptes",
+      "LOAD_FROM_FILE" : "Importer à partir d'un fichier",
+      "ACCOUNT_NUMBER_INFO" : "account_number : le numéro du compte",
+      "ACCOUNT_LABEL_INFO" : "account_label : le libellé du compte",
+      "ACCOUNT_TYPE_INFO" : "account_type : le type de compte doit être soit (asset, liability, equity, expense, income, title)",
+      "ACCOUNT_PARENT_INFO" : "account_parent : le numéro du compte parent",
+      "UPLOAD_SUCCESS" : "Envoi du fichier avec succès",
+      "DOWNLOAD_TEMPLATE_HERE" : "Cliquez ici pour télécharger le fichier modèle pour l'importation des comptes"
+    },
     "REFERENCE":{
       "REFERENCE":"Référence",
       "DESCRIPTION":"Description",
