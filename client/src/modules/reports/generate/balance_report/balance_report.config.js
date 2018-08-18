@@ -71,5 +71,15 @@ function BalanceReportConfigController($sce, Notify, SavedReports, AppCache, rep
     if (cache.reportDetails) {
       vm.reportDetails = angular.copy(cache.reportDetails);
     }
+    // Set the defaults for the radio items
+    if (!angular.isDefined(vm.reportDetails.useSeparateDebitsAndCredits)) {
+      vm.reportDetails.useSeparateDebitsAndCredits = 1;
+    }
+    if (!angular.isDefined(vm.reportDetails.shouldPruneEmptyRows)) {
+      vm.reportDetails.shouldPruneEmptyRows = 1;
+    }
+    if (!angular.isDefined(vm.reportDetails.shouldHideTitleAccounts)) {
+      vm.reportDetails.shouldHideTitleAccounts = 0;
+    }
   }
 }
