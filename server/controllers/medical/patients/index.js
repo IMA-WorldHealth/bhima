@@ -185,8 +185,8 @@ function update(req, res, next) {
     data.dob = new Date(data.dob);
   }
 
-  // Remove whitespace from Patient display_name
-  if (data.dob) {
+  // Remove whitespace from patient display_name
+  if (data.display_name) {
     data.display_name = data.display_name.trim();
   }
 
