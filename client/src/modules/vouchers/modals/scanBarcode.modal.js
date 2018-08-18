@@ -2,8 +2,8 @@ angular.module('bhima.controllers')
   .controller('VoucherScanBarcodeController', VoucherScanBarcodeController);
 
 VoucherScanBarcodeController.$inject = [
-  '$state', 'NotifyService', 'BarcodeService', 'PatientService', 'DebtorGroupService',
-  'bhConstants', '$uibModalInstance', '$timeout', 'PatientInvoiceService', '$rootScope',
+  'BarcodeService', 'PatientService', 'DebtorGroupService', 'bhConstants',
+  '$uibModalInstance', '$timeout', 'PatientInvoiceService', '$rootScope',
   '$translate',
 ];
 
@@ -16,68 +16,39 @@ VoucherScanBarcodeController.$inject = [
  *
  * @todo - refactor this whole thing into a component.
 */
-function VoucherScanBarcodeController($state, Notify, Barcodes, Patients, DebtorGroups, bhConstants, Instance, $timeout, Invoices, RS, $translate) {
+function VoucherScanBarcodeController(
+  Barcodes, Patients, DebtorGroups, bhConstants, Instance, $timeout, Invoices,
+  RS, $translate
+) {
   const vm = this;
-  const id = $state.params.id;
 
   const MODAL_CLOSE_TIMEOUT = 0;
 
-  vm.triggerBarcodeRead = triggerBarcodeRead;
+  vm.onScanCallback = onScanCallback;
   vm.dismiss = dismiss;
-
-  vm.loading = true;
-
-  vm.INITIALIZED = 'initialized';
-  vm.LOADING = 'loading';
-  vm.READ_ERROR = 'read-error';
-  vm.READ_SUCCESS = 'found';
-
-  // the first step is initialized
-  vm.step = vm.INITIALIZED;
-
-  // determine if the input was a valid barcode
-  function isValidBarcode(input) {
-    return input.length >= bhConstants.barcodes.LENGTH;
-  }
 
   function dismiss() {
     Instance.dismiss();
   }
 
-  // TODO(@jniles) potentially this should tell you if you are trying to read a
-  // cash payment instead of an invoice
-  // TODO(@jniles) potentially this should clear the input when the barcode
-  // is greater in length than 10.
-  // TODO(@jniles) this should be a component
-  function triggerBarcodeRead() {
-    if (isValidBarcode(vm.barcode)) {
-      searchForBarcode(vm.barcode);
-    } else {
-      vm.step = vm.READ_ERROR;
-    }
-  }
-
-  // send an HTTP request based on the barcode to get the invoice in question,
-  // then load the patient information in the background
-  function searchForBarcode(barcode) {
-
-    // set the loading step
-    vm.step = vm.LOADING;
-
-    Barcodes.search(barcode)
-      .then((invoice) => {
-        vm.invoice = invoice;
-        return Invoices.balance(invoice.uuid);
-      })
-      .then((balance) => {
+  /**
+   * @function onScanCallback
+   *
+   * @description
+   * This function searches for the invoice details after the value is read from
+   * the barcode.  It closes the modal at the end of its activities.
+   */
+  function onScanCallback(record) {
+    vm.invoice = record;
+    Invoices.balance(record.uuid)
+      .then(balance => {
         vm.balance = balance;
         return Patients.read(null, { debtor_uuid : vm.invoice.debtor_uuid });
       })
       .then((patients) => {
 
         // de-structure search array
-        const patient = patients[0];
-
+        const [patient] = patients;
         vm.patient = patient;
 
         return DebtorGroups.read(patient.debtor_group_uuid);
@@ -98,24 +69,13 @@ function VoucherScanBarcodeController($state, Notify, Barcodes, Patients, Debtor
         // emit the configuration event
         RS.$broadcast('voucher:configure', fmt);
 
-        vm.step = vm.READ_SUCCESS;
-
         // close the modal after a timeout
-        $timeout(() => {
-          Instance.close();
-        }, MODAL_CLOSE_TIMEOUT, false);
-      })
-      .catch((error) => {
-        vm.step = vm.READ_ERROR;
-      })
-      .finally(() => {
-        toggleFlickerAnimation();
+        $timeout(() => Instance.close(), MODAL_CLOSE_TIMEOUT, false);
       });
   }
 
   // this function formats the data as needed.
   function barcodeDataFinalizerFn(data) {
-
     data.description = $translate.instant('VOUCHERS.TYPES.SUPPORT_PAYMENT_DESCRIPTION', {
       patientName : data.patient.display_name,
       patientReference : data.patient.reference,
@@ -140,15 +100,4 @@ function VoucherScanBarcodeController($state, Notify, Barcodes, Patients, Debtor
 
     return data;
   }
-
-  function toggleFlickerAnimation() {
-    vm.flicker = !vm.flicker;
-  }
-
-  // fired on state startup
-  function startup() {
-    vm.flicker = true;
-  }
-
-  startup();
 }
