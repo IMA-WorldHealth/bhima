@@ -50,7 +50,6 @@ sudo rm wkhtmltox-0.12.4_linux-generic-amd64.tar.xz  && rm -rf wkhtmltox
 #Installs yarn without re-installing NodeJS
 curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
 echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-
 sudo apt-get update && sudo apt-get install yarn --no-install-recommends
 
 #Run the following command to install git:
