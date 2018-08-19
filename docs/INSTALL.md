@@ -9,12 +9,11 @@ This guide will get you up and running with bhima locally.  Please note that bhi
 Before you begin the installation process, please make sure you have all the bhima dependencies installed locally.  We only test on Linux, so your best bet is to use a Linux flavor you are familiar with.  Please make sure you have recent version of:
  1. [MySQL](http://dev.mysql.com/downloads/) (5.6 or newer)
  2. [Redis](redis.io)
- 3. [NodeJS](https://nodejs.org/en/) (we recommend using [node version manager](https://github.com/creationix/nvm) on linux.  Note that we only test on stable and edge).
- 4. [WKHTMLtoPDF](http://wkhtmltopdf.org/downloads.html) (use the compiled binaries, even if it is distributed with your package manager.  The binaries come with patched Qt).
- 5.	npm
- 6.	curl
- 7.	yarn
- 8.	git
+ 3. curl
+ 4. [NodeJS](https://nodejs.org/en/) (we recommend using [node version manager](https://github.com/creationix/nvm) on linux.  Note that we only test on stable and edge).
+ 5. [WKHTMLtoPDF](http://wkhtmltopdf.org/downloads.html) (use the compiled binaries, even if it is distributed with your package manager.  The binaries come with patched Qt).
+ 6.	yarn
+ 7.	git
  
 ###### Detailed dependency installation instructions for Ubuntu (verified / installed specifically using VirtualBox)
 
@@ -28,8 +27,18 @@ sudo apt-get install mysql-server
 #Run the following commands to install Redis:
 sudo apt-get install redis-server
 
-#Run the following command to install NodeJS:
-sudo apt-get install nodejs
+#Run the following commands to install curl:
+sudo apt-get install curl
+
+#Install node version manager locally
+curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
+
+#Set up the environmental variables for node version manager
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+
+#Download NodeJS version 8
+nvm install 8
 
 #Run the following commands to install WKHTMLtoPDF:
 sudo apt-get install xvfb
@@ -38,16 +47,8 @@ tar xvf wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
 sudo mv wkhtmltox/bin/wkhtmltopdf /usr/bin 
 sudo rm wkhtmltox-0.12.4_linux-generic-amd64.tar.xz  && rm -rf wkhtmltox
 
-#Run the following commands to install npm:
-sudo apt-get install npm
-
-#Run the following commands to install curl:
-sudo apt-get install curl
-
-#Run the following commands to install yarn:
-curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-sudo apt-get update && sudo apt-get install yarn
+#Installs yarn without re-installing NodeJS
+sudo apt-get install yarn --no-install-recommends
 
 #Run the following command to install git:
 sudo apt-get install git
