@@ -1,27 +1,18 @@
 angular.module('bhima.services')
   .service('RolesService', RolesService);
 
-RolesService.$inject = [
-  'PrototypeApiService',
-];
+RolesService.$inject = ['PrototypeApiService'];
 
 /**
- * Account Service
+ * Role Service
  *
- * A service wrapper for the /accounts HTTP endpoint.
+ * A service wrapper for the /roles HTTP endpoint.
  */
 function RolesService(Api) {
-  const baseUrl = '/roles/';
-  const service = new Api(baseUrl);
-
-  service.affectPages = affectPages;
+  const service = new Api('/roles/');
 
   service.unit = function unit(roleUuid) {
     return service.$http.get('/unit/'.concat(roleUuid));
-  };
-
-  service.list = function list() {
-    return service.$http.get(baseUrl);
   };
 
   service.assignToUser = function assignToUser(data) {
@@ -30,12 +21,12 @@ function RolesService(Api) {
   };
 
   service.userRoles = function userRoles(userId, projectId) {
-    const url = '/roles/user/'.concat(userId, '/', projectId);
+    const url = `/roles/user/${userId}/${projectId}`;
     return service.$http.get(url);
   };
 
   service.actions = function actions(roleUuid) {
-    const url = '/roles/actions/'.concat(roleUuid);
+    const url = `/roles/actions/${roleUuid}`;
     return service.$http.get(url);
   };
 
@@ -45,13 +36,13 @@ function RolesService(Api) {
   };
 
   service.userHasAction = function userHasAction(actionId) {
-    const url = '/roles/actions/user/'.concat(actionId);
+    const url = `/roles/actions/user/${actionId}`;
     return service.$http.get(url);
   };
 
-  function affectPages(data) {
+  service.affectPages = function affectPages(data) {
     return service.$http.post('/roles/affectUnits', data);
-  }
+  };
 
   return service;
 }

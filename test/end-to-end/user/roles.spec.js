@@ -5,48 +5,48 @@ const components = require('../shared/components');
 // the page object
 const page = new RolesPage();
 const canEditRoleAction = 1;
+
 function RolesManagementTests() {
+
   // navigate to the page
   before(() => helpers.navigate('#/roles'));
 
-  it(`Should open create modal `, () => {
+  it('should add a new role', () => {
     page.openCreateModal();
-  });
-
-  it(`Should add a new role`, () => {
-    page.setLabel(`Secretaire`);
+    page.setLabel('Secretaire');
     page.submit();
+    components.notification.hasSuccess();
   });
 
-  it(`Should add a edit role`, () => {
-    page.editRole(2);
-    page.setLabel(`Sécretaire`);
+  it('should add a edit role', () => {
+    page.editRole('Secretaire');
+    page.setLabel('Sécretaire');
     page.submit();
+    components.notification.hasSuccess();
   });
 
-  it(`Should edit permissions for a role`, () => {
-    page.editPermissions(2);
+  it('should edit permissions for a role', () => {
+    page.editPermissions('Sécretaire');
     page.checkAllPerimission();
     page.submit();
+    components.notification.hasSuccess();
   });
 
-  it(`Should dismiss the notifaction`, () => {
-    page.dismissNotification();
-  });
-
-  it(`Should add a third role`, () => {
+  it('should add a test role', () => {
     page.openCreateModal();
-    page.setLabel('test_role');
+    page.setLabel('Test Role');
     page.submit();
+    components.notification.hasSuccess();
   });
 
-  it(`Should delete the third role`, () => {
-    page.deleteRole(3);
+  it('should delete the test role', () => {
+    page.deleteRole('Test Role');
     page.submit();
+    components.notification.hasSuccess();
   });
 
-  it(`Shoud assign an action to a role`, () => {
-    page.assignActions(2);
+  it('should assign an action to a role', () => {
+    page.assignActions('Regular');
     page.setAction(canEditRoleAction);
     page.submit();
     components.notification.hasSuccess();
@@ -57,16 +57,16 @@ function assigningRole() {
   // navigate to user page in order to assign a role to a user
   before(() => helpers.navigate('#/users'));
 
-  it(`Shoud assign a role to a user`, () => {
+  it('should assign a role to a user', () => {
     page.assignRole(2);
-    page.setRole(`Sécretaire`);
+    page.setRole('Sécretaire');
     page.submit();
     components.notification.hasSuccess();
   });
 }
 
 
-describe('Role management Test', () => {
-  describe('Role management', RolesManagementTests);
-  describe('Role assignment', assigningRole);
+describe('Role Management Tests', () => {
+  describe('Role Management', RolesManagementTests);
+  describe('Role Assignment', assigningRole);
 });

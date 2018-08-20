@@ -3,6 +3,7 @@
 const FU = require('../shared/FormUtils');
 /* loading grid actions */
 const GA = require('../shared/GridAction');
+const GridRow = require('../shared/GridRow');
 
 function RolesPage() {
   const page = this;
@@ -17,13 +18,11 @@ function RolesPage() {
   page.editPermissions = editPermissions;
   page.openCreateModal = openCreateModal;
   page.checkAllPerimission = checkAllPerimission;
-  page.dismissNotification = dismissNotification;
   page.assignRole = assignRole;
   page.setRole = setRole;
   page.assignActions = assignActions;
   page.setAction = setAction;
 
-  const actionLinkColumn = 1;
   //  label field in the create/edit modal
 
   const roleLabel = element(by.model('RolesAddCtrl.role.label'));
@@ -37,19 +36,27 @@ function RolesPage() {
     return roleLabel.clear().sendKeys(txt);
   }
 
-  function editRole(n) {
-    return GA.clickOnMethod(n, actionLinkColumn, 'edit', gridId);
-  }
-  function deleteRole(n) {
-    return GA.clickOnMethod(n, actionLinkColumn, 'delete', gridId);
+  function openDropdownMenu(label) {
+    const row = new GridRow(label);
+    row.dropdown().click();
+    return row;
   }
 
-  function editPermissions(n) {
-    return GA.clickOnMethod(n, actionLinkColumn, 'edit_permissions', gridId);
+  function editRole(label) {
+    const row = openDropdownMenu(label);
+    row.edit().click();
   }
-  function dismissNotification() {
-    return element(by.css('[data-dismiss="notification"]')).click();
+
+  function deleteRole(label) {
+    const row = openDropdownMenu(label);
+    row.remove().click();
   }
+
+  function editPermissions(label) {
+    const row = openDropdownMenu(label);
+    row.menu.$('[data-method="edit-permissions"]').click();
+  }
+
   function checkAllPerimission() {
     checkAll.click();
   }
@@ -58,22 +65,22 @@ function RolesPage() {
     GA.clickOnMethod(n, 2, 'assign_roles', 'users-grid');
   }
 
-  function assignActions(n) {
-    return GA.clickOnMethod(n, actionLinkColumn, 'edit_actions', gridId);
+  function assignActions(label) {
+    const row = openDropdownMenu(label);
+    row.menu.$('[data-method="edit-actions"]').click();
   }
 
   function setRole(txt) {
-    return element(by.css(`[title="${txt}"]`)).click();
+    return $(`[title="${txt}"]`).click();
   }
 
   function setAction(id) {
-    return element(by.css(`[id="${id}"]`)).click();
+    return $(`[id="${id}"]`).click();
   }
 
   function openCreateModal() {
-    return FU.buttons.add();
+    return FU.buttons.create();
   }
-
 }
 
 module.exports = RolesPage;
