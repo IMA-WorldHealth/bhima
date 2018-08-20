@@ -1,13 +1,13 @@
 /* global element, by  */
-
+const path = require('path');
 const FU = require('../shared/FormUtils');
-const components = require('../shared/components');
-
 const GU = require('../shared/GridUtils.js');
+const components = require('../shared/components');
 
 function AccountsPage() {
   const page = this;
   const gridId = 'account-grid';
+  const fixtures = path.resolve(__dirname, '../../fixtures/');
 
   const getRow = (id) => $(`[data-row="${id}"]`);
   const openMenu = id => {
@@ -42,6 +42,20 @@ function AccountsPage() {
     // click the right thing
     const menu = $(`[data-row-menu="${accountId}"`);
     menu.$(`[data-method="edit"]`).click();
+  };
+
+  page.openImportMenu = () => {
+    element(by.css('[data-action="open-tools"]')).click();
+    element(by.css('[data-action="import-accounts"]')).click();
+  };
+
+  page.chooseImportOption = option => {
+    FU.radio('ImportAccountsCtrl.option', option);
+  };
+
+  page.uploadFile = fileToUpload => {
+    const absolutePath = path.resolve(fixtures, fileToUpload);
+    element.all(by.css('input[type=file]')).get(0).sendKeys(absolutePath);
   };
 
   page.EditModal = {

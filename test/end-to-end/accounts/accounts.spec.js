@@ -7,11 +7,13 @@ const FU = require('../shared/FormUtils');
 const AccountsPage = require('./accounts.page.js');
 const components = require('../shared/components');
 
-describe('Account Management', () => {
+describe.only('Account Management', () => {
   const path = '#/accounts';
   before(() => helpers.navigate(path));
 
   const INITIAL_ACCOUNTS = 20;
+  const OHADA_ACCOUNTS_CSV_FILE = 'ohada-accounts.csv';
+  const BAD_OHADA_ACCOUNTS_CSV_FILE = 'bad-ohada-accounts.csv';
 
   // this is an account at the top of the grid - until this test is improved it relies
   // on the account being visible to verify each test
@@ -135,6 +137,35 @@ describe('Account Management', () => {
 
   it('cannot delete an account with children', () => {
     page.deleteAccount(assetAccountGroup.id);
+    components.notification.hasError();
+  });
+
+  // import default ohada accounts accounts
+  it('import default ohada accounts into the system', () => {
+    page.openImportMenu();
+
+    page.chooseImportOption(0);
+    FU.modal.submit();
+    components.notification.hasSuccess();
+  });
+
+  // import custom ohada accounts
+  it('import default ohada accounts into the system', () => {
+    page.openImportMenu();
+
+    page.chooseImportOption(1);
+    page.uploadFile(OHADA_ACCOUNTS_CSV_FILE);
+    FU.modal.submit();
+    components.notification.hasSuccess();
+  });
+
+  // import custom ohada accounts
+  it('don\'t import accounts from bad file', () => {
+    page.openImportMenu();
+
+    page.chooseImportOption(1);
+    page.uploadFile(BAD_OHADA_ACCOUNTS_CSV_FILE);
+    FU.modal.submit();
     components.notification.hasError();
   });
 });

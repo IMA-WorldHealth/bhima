@@ -43,12 +43,17 @@ function ImportAccountsController(Instance, Accounts, Upload, Notify, $state) {
 
     // upload the file to the server
     Upload.upload(params)
-      .then(handleSuccess, Notify.handleError, handleProgress);
+      .then(handleSuccess, handleError, handleProgress);
 
     // success upload handler
     function handleSuccess() {
       vm.uploadState = 'uploaded';
       Notify.success('ACCOUNT.IMPORT.UPLOAD_SUCCESS');
+      Instance.close();
+    }
+
+    function handleError(err) {
+      Notify.handleError(err);
       Instance.close();
     }
 

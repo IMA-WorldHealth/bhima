@@ -12,17 +12,16 @@
     <div class="form-group">
       <div class="radio">
         <label>
-          <input type="radio" name="option" id="default_ohada_accounts_option" 
+          <input type="radio" name="importingOption" id="default_ohada_accounts_option" 
             ng-model="ImportAccountsCtrl.option" 
             ng-value="1" 
-            ng-change="ImportAccountsCtrl.onChange(ImportAccountsCtrl.option)"
-            checked>
+            ng-change="ImportAccountsCtrl.onChange(ImportAccountsCtrl.option)">
           <span translate>ACCOUNT.IMPORT.LOAD_DEFAULT_OHADA_ACCOUNTS</span>
         </label>
       </div>
       <div class="radio">
         <label>
-          <input type="radio" name="option" id="import_ohada_accounts_option" 
+          <input type="radio" name="importingOption" id="import_ohada_accounts_option" 
             ng-model="ImportAccountsCtrl.option" 
             ng-value="2"
             ng-change="ImportAccountsCtrl.onChange(ImportAccountsCtrl.option)">
@@ -31,7 +30,7 @@
       </div>
       <div class="radio">
         <label>
-          <input type="radio" name="option" id="import_other_accounts_option" 
+          <input type="radio" name="importingOption" id="import_other_accounts_option" 
             ng-model="ImportAccountsCtrl.option" 
             ng-value="3"
             ng-change="ImportAccountsCtrl.onChange(ImportAccountsCtrl.option)">
