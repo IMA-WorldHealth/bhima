@@ -91,4 +91,53 @@ BEGIN
   );
 END $$
 
+/*
+  PredictAccountTypeId(accountNumber)
+
+  Returns the account type id of the given account number
+*/
+CREATE FUNCTION PredictAccountTypeId(accountNumber INT(11))
+RETURNS MEDIUMINT(8) DETERMINISTIC
+BEGIN
+  DECLARE oneDigit CHAR(1);
+  DECLARE twoDigit CHAR(2);
+  DECLARE accountType VARCHAR(20);
+  DECLARE accountTypeId MEDIUMINT(8);
+  SET oneDigit = (SELECT LEFT(accountNumber, 1));
+  SET twoDigit = (SELECT LEFT(accountNumber, 2));
+
+  IF (oneDigit = '1') THEN
+    SET accountType = 'equity';
+  END IF;
+
+  IF (oneDigit = '2' OR oneDigit = '3' OR oneDigit = '4' OR oneDigit = '5') THEN
+    SET accountType = 'asset';
+  END IF;
+
+  IF (oneDigit = '6') THEN
+    SET accountType = 'expense';
+  END IF;
+
+  IF (oneDigit = '7') THEN
+    SET accountType = 'income';
+  END IF;
+
+  IF (twoDigit = '40') THEN
+    SET accountType = 'liability';
+  END IF;
+
+  IF (twoDigit = '80' OR twoDigit = '82' OR twoDigit = '84' OR twoDigit = '86' OR twoDigit = '88') THEN
+    SET accountType = 'income';
+  END IF;
+
+  IF (twoDigit = '81' OR twoDigit = '83' OR twoDigit = '85' OR twoDigit = '87' OR twoDigit = '89') THEN
+    SET accountType = 'expense';
+  END IF;
+
+  SET accountTypeId = (SELECT id FROM account_type WHERE `type` = accountType COLLATE utf8_unicode_ci LIMIT 1);
+
+  RETURN accountTypeId;
+END
+$$
+
 DELIMITER ;
