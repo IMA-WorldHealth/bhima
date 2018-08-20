@@ -8,24 +8,28 @@ PriceListModalController.$inject = [
 
 function PriceListModalController(data, Instance, Notify, PriceList, Session) {
   const vm = this;
-  vm.priceList = angular.copy(data) || { entrprise_id : Session.enterprise.id };
-  vm.isCreate = !data;
+
+  const priceList = data || { enterprise_id : Session.enterprise.id };
+  vm.priceList = angular.copy(priceList);
+
+  vm.isCreate = !angular.isDefined(vm.priceList.uuid);
   vm.submit = submit;
   vm.close = Instance.close;
 
   function submit(form) {
-    form.$setSubmitted();
-
     if (form.$invalid) {
-      Notify.danger('FORM.ERRORS.HAS_ERRORS');
-    } else {
-      const operation = vm.isCreate ? PriceList.create(vm.priceList) : PriceList.update(data.uuid, vm.priceList);
-      operation.then(() => {
-        Notify.success('FORM.INFO.OPERATION_SUCCESS');
-        return Instance.close(true);
-      })
-        .catch(Notify.handleError);
+      return Notify.danger('FORM.ERRORS.HAS_ERRORS');
     }
-  }
 
+    const promise = vm.isCreate
+      ? PriceList.create(vm.priceList)
+      : PriceList.update(vm.priceList.uuid, vm.priceList);
+
+    return promise
+      .then(() => {
+        Notify.success('FORM.INFO.OPERATION_SUCCESS');
+        Instance.close(true);
+      })
+      .catch(Notify.handleError);
+  }
 }

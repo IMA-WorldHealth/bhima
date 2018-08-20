@@ -5,12 +5,7 @@
   </a>
 
   <ul data-action="{{rowRenderIndex}}" class="dropdown-menu-right" uib-dropdown-menu>
-    <li>
-      <a href>
-        <span class="text-primary">{{ row.entity.label }}</span>
-      </a>
-    </li>
-    <li class="divider"></li>
+    <li class="dropdown-header">{{row.entity.label}}</li>
     <li>
       <a data-method="edit" ng-click="grid.appScope.create(row.entity)" href>
         <i class="fa fa-edit"></i>
