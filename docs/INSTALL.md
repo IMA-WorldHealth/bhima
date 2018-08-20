@@ -9,11 +9,55 @@ This guide will get you up and running with bhima locally.  Please note that bhi
 Before you begin the installation process, please make sure you have all the bhima dependencies installed locally.  We only test on Linux, so your best bet is to use a Linux flavor you are familiar with.  Please make sure you have recent version of:
  1. [MySQL](http://dev.mysql.com/downloads/) (5.6 or newer)
  2. [Redis](redis.io)
- 3. [NodeJS](https://nodejs.org/en/) (we recommend using [node version manager](https://github.com/creationix/nvm) on linux.  Note that we only test on stable and edge).
- 4. [WKHTMLtoPDF](http://wkhtmltopdf.org/downloads.html) (use the compiled binaries, even if it is distributed with your package manager.  The binaries come with patched Qt).
+ 3. curl
+ 4. [NodeJS](https://nodejs.org/en/) (we recommend using [node version manager](https://github.com/creationix/nvm) on linux.  Note that we only test on stable and edge).
+ 5. [WKHTMLtoPDF](http://wkhtmltopdf.org/downloads.html) (use the compiled binaries, even if it is distributed with your package manager.  The binaries come with patched Qt).
+ 6.	yarn
+ 7.	git
+ 
+###### Detailed dependency installation instructions for Ubuntu (verified / installed specifically using VirtualBox)
+
+```bash
+#Run the following command to update the package lists:
+sudo apt-get update
+
+#Install MySQL with the following command:
+sudo apt-get install mysql-server
+
+#Run the following commands to install Redis:
+sudo apt-get install redis-server
+
+#Run the following commands to install curl:
+sudo apt-get install curl
+
+#Install node version manager locally
+curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
+
+#Set up the environmental variables for node version manager
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+
+#Download NodeJS version 8
+nvm install 8
+
+#Run the following commands to install WKHTMLtoPDF (note that version 0.12.4 should be installed, 0.12.5 does not currently work with bhima):
+sudo apt-get install xvfb
+wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
+tar xvf wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
+sudo mv wkhtmltox/bin/wkhtmltopdf /usr/bin 
+sudo rm wkhtmltox-0.12.4_linux-generic-amd64.tar.xz  && rm -rf wkhtmltox
+
+#Installs yarn without re-installing NodeJS
+curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+sudo apt-get update && sudo apt-get install yarn --no-install-recommends
+
+#Run the following command to install git:
+sudo apt-get install git
+```
 
 ###### Getting the source
-Clone the source using git from the [github repository](https://github.com/IMA-WorldHealth/bhima-2.x).
+Clone the source using git from the [github repository](https://github.com/IMA-WorldHealth/bhima-2.x) using the following commands:
 
 ```bash
 git clone https://github.com/IMA-WorldHealth/bhima-2.X.git bhima-2.X
@@ -37,6 +81,8 @@ yarn install
 # bower is now installed in ./node_modules/.bin/bower
 # install client-side dependencies with bower
 ./node_modules/.bin/bower install -f
+#If this command gives you an error (I.E. if you’re running Parallels), try running the following command:
+git config -global url.”https://“.insteadOf git://
 ```
 
 The dependencies should now be set!
@@ -50,8 +96,24 @@ the default node instance, `NODE_ENV="development"`.  Please set this globally,
 if it is not set by default on your machine.
 
 Before building, edit your `.env.development` to set up your MySQL database
-connection parameters.  Their variables should be self-explanatory. Then,
-build the app with
+connection parameters.  Their variables should be self-explanatory. 
+
+Use the following command to edit the .env.development file if desired (make your changes and then type ctrl + x to exit and save):
+```bash
+nano .env.development
+```
+
+###### Configure the bhima user in MySQL and build the app
+
+```bash
+#Run the following commands to create the bhima user in MySQL, so that it can build the database (make sure the user and #password both match what you set in the .env.development file):
+sudo mysql -u root -p
+CREATE USER ‘bhima’@‘localhost' IDENTIFIED BY 'password';
+GRANT ALL PRIVILEGES ON * . * TO ‘bhima’@‘localhost';
+#Use ctrl + z to get back to the main terminal prompt
+```
+
+Then, build the app with
 ```bash
 # build the application
 NODE_ENV="development" yarn build
@@ -61,6 +123,14 @@ NODE_ENV="development" yarn build
 _NOTE: BHIMA runs in `sql_mode='STRICT_ALL_TABLES'`.  While it is not necessary
 to have this set to build the database, the test will not pass unless the
 correct SQL_MODE is set._
+
+```bash
+#To configure MySQL with this setting, run the following commands:
+sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf
+#Under the section [mysqld], add in the following text:
+sql-mode = STRICT_ALL_TABLES
+sudo service mysql restart
+```
 
 The database structure is contained in the `server/models/*.sql` files.  You can
 execute these one by one in the order below, or simply run `yarn build:db`.
@@ -76,8 +146,9 @@ will build a basic dataset to begin playing around with:
  2. `server/models/bhima.sql`
  3. `test/data.sql`
 
-You can run all this by using `yarn build:db`.  Alternative, you might use the
-`./sh/build-database.sh` script, customized with your environmental variables as
+You can run all this by using the following command:
+`yarn build:db`
+Alternatively, you might use the `./sh/build-database.sh` script, customized with your environmental variables as
 shown below:
 
 ```sh
