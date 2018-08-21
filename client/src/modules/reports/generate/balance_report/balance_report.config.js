@@ -40,7 +40,7 @@ function BalanceReportConfigController($sce, Notify, SavedReports, AppCache, rep
   vm.preview = function preview(form) {
     if (form.$invalid) {
       Notify.danger('FORM.ERRORS.RECORD_ERROR');
-      return;
+      return 0;
     }
 
     // update cached configuration
