@@ -4,6 +4,7 @@
     "BAD_REQUEST" : "Vous n'etes pas authorisé à faire cette opération",
     "ERR_INTERNET_DISCONNECTED" : "Vous n'êtes pas connecté à un réseau.",
     "BAD_DATA_FORMAT" : "Mauvais format de données",
+    "EVERYTHING_BAD" : "Une erreur s'est produite lors de l'operation",
   	"HOLIDAY_NESTED" : "La periode de vacance définie pour cet employé est imbriqué avec une autre periode",
     "MISSING_INVENTORY_ACCOUNTS" : "Certains articles séléctionnés n'ont pas de compte de stock ou de variation de stock associés",
     "NO_EXCHANGE_RATE" : "Aucun taux de change defini pour aujourd'hui!",
