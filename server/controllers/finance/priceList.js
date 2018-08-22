@@ -13,8 +13,8 @@
  * DELETE /prices/:uuid
  */
 
-const db = require('../../lib/db');
 const uuid = require('uuid/v4');
+const db = require('../../lib/db');
 
 /**
  * Lists all price lists in the database
@@ -25,17 +25,19 @@ exports.list = function list(req, res, next) {
   let sql;
 
   if (req.query.detailed === '1') {
-    sql =
-      `SELECT BUID(uuid) as uuid, label, created_at, description
+    sql = `
+      SELECT BUID(uuid) as uuid, label, created_at, description
       FROM price_list
       WHERE enterprise_id = ?
-      ORDER BY label;`;
+      ORDER BY label;
+    `;
   } else {
-    sql =
-      `SELECT BUID(uuid) as uuid, label
+    sql = `
+      SELECT BUID(uuid) as uuid, label
       FROM price_list
       WHERE enterprise_id = ?
-      ORDER BY label;`;
+      ORDER BY label;
+    `;
   }
 
   db.exec(sql, [req.session.enterprise.id])
@@ -63,21 +65,23 @@ exports.list = function list(req, res, next) {
  */
 function lookupPriceList(uid) {
   let priceList;
-  let sql =
-    `SELECT BUID(uuid) AS uuid, label, description, created_at, updated_at
-    FROM price_list WHERE uuid = ?;`;
+  let sql = `
+    SELECT BUID(uuid) AS uuid, label, description, created_at, updated_at
+    FROM price_list WHERE uuid = ?;
+  `;
 
   return db.one(sql, [uid])
     .then((row) => {
       priceList = row;
 
-      sql =
-        `SELECT BUID(uuid) as uuid, BUID(inventory_uuid) as inventory_uuid, label, value, is_percentage, created_at
-        FROM price_list_item WHERE price_list_uuid = ?;`;
+      sql = `
+        SELECT BUID(uuid) as uuid, BUID(inventory_uuid) as inventory_uuid, label, value, is_percentage, created_at
+        FROM price_list_item WHERE price_list_uuid = ?;
+      `;
 
       return db.exec(sql, [uid]);
     })
-    .then((rows) => {
+    .then(rows => {
       priceList.items = rows;
 
       // return the price list object to the next promise callback
@@ -172,16 +176,20 @@ exports.create = function create(req, res, next) {
   let items;
   const data = req.body.list;
   const trans = db.transaction();
-  const priceListSql =
-    `INSERT INTO price_list (uuid, label, description, enterprise_id)
-    VALUES (?, ?, ?, ?);`;
-  const priceListItemSql =
-    `INSERT INTO price_list_item (uuid, inventory_uuid, price_list_uuid,
-    label, value, is_percentage) VALUES ?;`;
+  const priceListSql = `
+    INSERT INTO price_list (uuid, label, description, enterprise_id)
+    VALUES (?, ?, ?, ?);
+  `;
+
+  const priceListItemSql = `
+    INSERT INTO price_list_item (uuid, inventory_uuid, price_list_uuid,
+    label, value, is_percentage) VALUES ?;
+  `;
 
   // generate a UUID if not provided
   const priceListUuid = data.uuid || uuid();
   data.uuid = db.bid(priceListUuid);
+
   // if the client didn't send price list items, do not create them.
   if (data.items) {
     items = formatPriceListItems(data.uuid, data.items);
@@ -238,15 +246,19 @@ exports.deleteItem = function deleteItem(req, res, next) {
 exports.update = function update(req, res, next) {
   let items;
   const data = req.body.list;
-  const priceListSql =
-    'UPDATE price_list SET ? WHERE uuid = ?;';
+  const priceListSql = `
+    UPDATE price_list SET ? WHERE uuid = ?;
+  `;
 
-  const priceListDeleteItemSql =
-    'DELETE FROM price_list_item WHERE price_list_uuid = ?';
+  const priceListDeleteItemSql = `
+    DELETE FROM price_list_item WHERE price_list_uuid = ?;
+  `;
 
-  const priceListCreateItemSql =
-    `INSERT INTO price_list_item (uuid, inventory_uuid, price_list_uuid,
-    label, value, is_percentage) VALUES ?;`;
+  const priceListCreateItemSql = `
+    INSERT INTO price_list_item
+      (uuid, inventory_uuid, price_list_uuid, label, value, is_percentage)
+    VALUES ?;
+  `;
 
   const trans = db.transaction();
   const uid = db.bid(req.params.uuid);
@@ -300,8 +312,7 @@ exports.update = function update(req, res, next) {
 exports.delete = function del(req, res, next) {
   const uid = db.bid(req.params.uuid);
 
-  const sql =
-    'DELETE FROM price_list WHERE uuid = ?;';
+  const sql = 'DELETE FROM price_list WHERE uuid = ?;';
 
   // ensure that the price list exists
   lookupPriceList(uid)

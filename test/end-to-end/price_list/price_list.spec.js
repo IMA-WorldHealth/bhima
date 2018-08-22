@@ -18,7 +18,7 @@ describe('Price Lists', () => {
 
   before(() => helpers.navigate(path));
 
-  it('prices should create a price list', () => {
+  it('creates a simple price list', () => {
     const list = {
       label       : 'Price list without Items',
       description : 'Description of price list without an item.',
@@ -34,14 +34,14 @@ describe('Price Lists', () => {
     components.notification.hasSuccess();
   });
 
-  it('prices should update a price list', () => {
+  it('updates a price list', () => {
     const list = {
-      label       : 'Price list without Items updated',
+      label : 'Price list without Items updated',
     };
 
     page.editPriceList(0);
-
     FU.input('$ctrl.priceList.label', list.label);
+
     // submit the page to the server
     FU.buttons.submit();
     components.notification.hasSuccess();
@@ -67,8 +67,7 @@ describe('Price Lists', () => {
     components.notification.hasSuccess();
   });
 
-  it.skip('prices should delete a price list item', () => {
-
+  it('prices should delete a price list item', () => {
     page.editItems(0);
     page.deletePriceListItem(0);
     FU.buttons.submit();
