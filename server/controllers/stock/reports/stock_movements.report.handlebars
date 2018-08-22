@@ -19,7 +19,6 @@
 
       <!-- filters  -->
       {{#if hasFilter}}
-
         <p class="pills">
           {{#each filters}}
             <span class="label label-primary text-capitalize">
@@ -33,7 +32,6 @@
             </span>
           {{/each}}
         </p>
-
       {{/if}}
 
       <!-- list of data  -->
@@ -59,41 +57,29 @@
               <th style="border:none; border-bottom: solid black 2px;" class="text-uppercase">
                 {{ name }}
               </th>
-
               <th colspan="7" style="border:none; border-bottom: solid black 2px;" class="text-right">
                 ({{ items.length }} {{ translate "TABLE.AGGREGATES.RECORDS" }})
               </th>
             </tr>
 
             <!-- these are the items for each group -->
-            {{#each items as | item | }}
-              {{#if is_exit}}
-                <tr class="text-danger">
-                  <td>
-                    <span>{{translate 'STOCK.OUTPUT'}}</span>
-                  </td>
-                  <td>{{text}}</td>
-                  <td>{{label}}</td>
-                  <td class="text-right">{{quantity}}</td>
-                  <td class="text-right">{{unit_cost}}</td>
-                  <td class="text-right">{{multiply quantity unit_cost}}</td>
-                  <td>{{date date}}</td>
-                  <td>{{translate flux_label}}</td>
-                </tr>
-              {{else}}
-                <tr>
-                  <td>
-                    <span>{{translate 'STOCK.INPUT'}}</span>
-                  </td>
-                  <td>{{text}}</td>
-                  <td>{{label}}</td>
-                  <td class="text-right">{{quantity}}</td>
-                  <td class="text-right">{{unit_cost}}</td>
-                  <td class="text-right">{{multiply quantity unit_cost}}</td>
-                  <td>{{date date}}</td>
-                  <td>{{translate flux_label}}</td>
-                </tr>
-              {{/if}}
+            {{#each items}}
+              <tr {{#if is_exit}}class="text-danger"{{/if}}>
+                <td>
+                  {{#if is_exit}}
+                    {{translate 'STOCK.OUTPUT'}}
+                  {{else}}
+                    {{translate 'STOCK.INPUT'}}
+                  {{/if}}
+                </td>
+                <td>{{text}}</td>
+                <td>{{label}}</td>
+                <td class="text-right">{{quantity}}</td>
+                <td class="text-right">{{currency unit_cost ../../metadata.enterprise.currency_id}}</td>
+                <td class="text-right">{{currency cost ../../metadata.enterprise.currency_id}}</td>
+                <td>{{date date}}</td>
+                <td>{{translate flux_label}}</td>
+              </tr>
             {{/each}}
 
             <!-- blank row  -->
@@ -105,7 +91,7 @@
             {{/unless}}
 
           {{else}}
-            {{> emptyTable columns=7}}
+            {{> emptyTable columns=8}}
           {{/each}}
         </tbody>
         <tfoot>

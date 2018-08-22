@@ -1,3 +1,4 @@
+const util = require('../../../../lib/util');
 const {
   _, ReportManager, Stock, formatFilters, pdfOptions, STOCK_MOVEMENTS_REPORT_TEMPLATE,
 } = require('../common');
@@ -38,7 +39,10 @@ function stockMovementsReport(req, res, next) {
 
   return Stock.getLotsMovements(null, options)
     .then((rows) => {
-      data.rows = rows;
+      data.rows = rows.map(row => {
+        row.cost = util.roundDecimal(row.quantity * row.unit_cost, 3);
+        return row;
+      });
       data.hasFilter = hasFilter;
       data.csv = rows;
       data.display = display;
