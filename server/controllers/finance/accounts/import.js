@@ -5,7 +5,6 @@
  * and related stock quantities
  */
 const Q = require('q');
-const csvtojson = require('csvtojson');
 const path = require('path');
 
 const util = require('../../../lib/util');
@@ -74,7 +73,7 @@ function importAccounts(req, res, next) {
 function importAccountFromFile(filePath, enterpriseId, option) {
   let query;
   let queryParams;
-  return formatCsvToJson(filePath)
+  return util.formatCsvToJson(filePath)
     .then(data => {
       if (!hasValidDataFormat(data)) {
         throw new BadRequest('The given file has a bad data format for accounts', 'ERRORS.BAD_DATA_FORMAT');
@@ -110,28 +109,4 @@ function hasValidDataFormat(data = []) {
   return data.every(item => {
     return item.account_number && item.account_label && item.account_type;
   });
-}
-
-/**
- * formatCsvToJson
- * @param {object} file the csv file sent by the client
- */
-function formatCsvToJson(file) {
-  const filePath = path.resolve(file);
-  const defer = Q.defer();
-  const rows = [];
-
-  csvtojson()
-    .fromFile(filePath)
-    .on('json', (data) => {
-      rows.push(data);
-    })
-    .on('end', () => {
-      defer.resolve(rows);
-    })
-    .on('error', (error) => {
-      defer.reject(error);
-    });
-
-  return defer.promise;
 }
