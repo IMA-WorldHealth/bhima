@@ -66,6 +66,13 @@ describe('util.js', () => {
   });
 
   it('#formatCsvToJson should return a json from a csv file', () => {
+    /**
+     * The structure of the sample csv file (ohada-accounts.csv)
+     * =========================================================
+     * "account_number",  "account_label",    "account_type", "account_parent"
+     * "10",              "CAPITAL",          "title",        "1"
+     * "12",              "REPORT A NOUVEAU", "title",        "1"
+     */
     const filePath = 'test/fixtures/ohada-accounts.csv';
     const promise = util.formatCsvToJson(path.resolve(filePath));
     return promise
