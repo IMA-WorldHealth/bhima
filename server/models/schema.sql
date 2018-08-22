@@ -2035,5 +2035,40 @@ CREATE TABLE `config_employee_item` (
   FOREIGN KEY (`employee_uuid`) REFERENCES `employee` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
+DROP TABLE IF EXISTS `fee_center`;
+CREATE TABLE `fee_center` (
+  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `label` VARCHAR(200) NOT NULL,
+  `is_principal` tinyint(1) UNSIGNED DEFAULT 0,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `fee_center_1` (`label`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `project_fee_center`;
+CREATE TABLE `project_fee_center` (
+  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `fee_center_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  `project_id` SMALLINT(5) UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `project_fee_center_1` (`fee_center_id`,`project_id`),
+  KEY `fee_center_id` (`fee_center_id`),
+  KEY `project_id` (`project_id`),
+  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
+  FOREIGN KEY (`fee_center_id`) REFERENCES `fee_center` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `reference_fee_center`;
+CREATE TABLE `reference_fee_center` (
+  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `fee_center_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  `account_reference_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  `is_cost` tinyint(1) DEFAULT 0,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `reference_fee_center_1` (`account_reference_id`),
+  KEY `fee_center_id` (`fee_center_id`),
+  KEY `account_reference_id` (`account_reference_id`),
+  FOREIGN KEY (`fee_center_id`) REFERENCES `fee_center` (`id`),
+  FOREIGN KEY (`account_reference_id`) REFERENCES `account_reference` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 SET foreign_key_checks = 1;

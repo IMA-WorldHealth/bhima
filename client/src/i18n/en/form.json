@@ -124,6 +124,9 @@
             "STOCK_LINE": "Stock line"
         },
         "INFO": {
+            "ASSIGNED_COST_CENTER" : "Assigned a cost center",
+            "ASSIGNED_PROFIT_CENTER" : "Assigned a profit center",
+            "ASSIGNED_PROJECTS" : "Assigned to projects",          
             "BY": "by",
             "CANCEL_CASH": "Cancellation of payment",
             "CLEAR_FILTERS": "Remove Filters",
@@ -510,6 +513,7 @@
             "PRICE": "Price",
             "PRICE_LIST": "Price List",
             "PRINCIPAL": "Principal",
+            "PRINCIPAL_2": "Principal",
             "PRINT": "Print",
             "PROFIT": "Profit",
             "PROFIT_CENTER": "Profit Center",
@@ -671,6 +675,7 @@
         "PLACEHOLDERS": {
             "ABBREVIATION": "Abbreviation",
             "ACCOUNT": "Enter an account",
+            "ACCOUNT_REFERENCE" : "Accounts References",
             "CASHBOX": "Enter the cashbox",
             "CODE": "Enter code",
             "COUNTRY": "Enter country",

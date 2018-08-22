@@ -102,6 +102,8 @@ const referenceLookup = require('../lib/referenceLookup');
 
 const operating = require('../controllers/finance/reports/operating/index');
 
+const feeCenter = require('../controllers/finance/feeCenter');
+
 // expose routes to the server.
 exports.configure = function configure(app) {
   debug('configuring routes.');
@@ -743,4 +745,11 @@ exports.configure = function configure(app) {
 
   // unit
   app.get('/unit/:roleUuid', unitCtrl.list);
+
+  // Fees Centers API
+  app.get('/fee_center', feeCenter.list);
+  app.get('/fee_center/:id', feeCenter.detail);
+  app.post('/fee_center', feeCenter.create);
+  app.put('/fee_center/:id', feeCenter.update);
+  app.delete('/fee_center/:id', feeCenter.delete);
 };

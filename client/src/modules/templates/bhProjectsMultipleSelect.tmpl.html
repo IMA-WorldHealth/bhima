@@ -1,0 +1,29 @@
+<div ng-form="ProjectsMultipleForm" bh-projects-multiple-select ng-model-options="{ updateOn: 'default' }">
+  <div
+    class="form-group"
+    ng-class="{ 'has-error' : $ctrl.validationTrigger && ProjectsMultipleForm.projects.$invalid }">
+    <label class="control-label" translate>
+      {{ $ctrl.label }}
+    </label>
+
+    <ui-select
+        multiple
+        name="projects"
+        ng-model="$ctrl.selectedProjects"
+        on-select="$ctrl.handleChange($ctrl.selectedProjects)"
+        on-remove="$ctrl.handleChange($ctrl.selectedProjects)"
+        close-on-select="false"
+        required>
+      <ui-select-match placeholder="{{ 'FORM.SELECT.STATUS' | translate }}">
+        <span>{{ $item.name }}</span>
+      </ui-select-match>
+      <ui-select-choices ui-select-focus-patch repeat="project.id as project in ($ctrl.projects | filter: { name : $select.search })">
+        <span ng-bind-html="project.name | highlight:$select.search"></span>
+      </ui-select-choices>
+    </ui-select>
+
+    <div class="help-block" ng-messages="ProjectsMultipleForm.$error" ng-show="$ctrl.validationTrigger">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+</div>

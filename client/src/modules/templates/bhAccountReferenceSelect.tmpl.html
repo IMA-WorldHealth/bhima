@@ -1,0 +1,34 @@
+<div ng-form="{{ $ctrl.name }}" bh-account-reference-select ng-model-options="{ updateOn: 'default' }">
+  <div
+    class="form-group"
+    ng-class="{ 'has-error' : $ctrl.validationTrigger && AccountReferenceForm.account_reference_id.$invalid }">
+
+    <label class="control-label" translate>
+      {{ ::$ctrl.label }}
+    </label>
+    <ng-transclude></ng-transclude>
+    <div class="text-danger" ng-if="!$ctrl.accountReferences.length">
+      <i class="fa fa-exclamation-triangle"></i> <span translate> FORM.WARNINGS.NO_CONFIGURATION_FOUND </span>  
+    </div>       
+
+    <ui-select
+      name="account_reference_id"
+      ng-model="$ctrl.accountReferenceId"
+      on-select="$ctrl.onSelect($item, $model)"
+      ng-required="$ctrl.required">
+      <ui-select-match placeholder="{{ ::'FORM.PLACEHOLDERS.ACCOUNT_REFERENCE' | translate }}">
+        <span><strong>{{$select.selected.abbr}}</strong> : {{$select.selected.description}}</span>
+      </ui-select-match>
+      <ui-select-choices
+        ui-select-focus-patch
+        repeat="accountReference.id as accountReference in $ctrl.accountReferences | filter: { 'description': $select.search }">        
+        <strong ng-bind-html="accountReference.abbr | highlight:$select.search"></strong> :
+        <span ng-bind-html="accountReference.description | highlight:$select.search"></span>
+      </ui-select-choices>
+    </ui-select>
+
+    <div class="help-block" ng-messages="AccountReferenceForm.account_reference_id.$error" ng-show="$ctrl.validationTrigger && AccountReferenceForm.account_reference_id.$invalid">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+</div>
