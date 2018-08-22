@@ -1836,11 +1836,13 @@ CREATE TABLE IF NOT EXISTS `voucher_item` (
   `voucher_uuid`    BINARY(16) NOT NULL,
   `document_uuid`   binary(16) default null,
   `entity_uuid`     binary(16) default null,
+  `stock_movement_reference` INT(11) UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`uuid`),
   KEY `account_id` (`account_id`),
   KEY `voucher_uuid` (`voucher_uuid`),
   INDEX (`document_uuid`),
   INDEX (`entity_uuid`),
+  FOREIGN KEY (`stock_movement_reference`) REFERENCES `stock_movement` (`reference`),
   FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
   FOREIGN KEY (`voucher_uuid`) REFERENCES `voucher` (`uuid`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
