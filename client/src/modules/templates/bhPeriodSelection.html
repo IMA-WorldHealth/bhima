@@ -1,21 +1,25 @@
-<div
-  class="form-group"
-  ng-class="{ 'has-error' : $ctrl.validationTrigger && PeriodForm.period.$invalid }"
+<fieldset
+  ng-form="PeriodForm"
+  novalidate
   bh-period-selection>
-  <label class="control-label" translate>
-    {{ $ctrl.label }}
-  </label>
 
-  <select
-    class="form-control"
-    ng-model="$ctrl.selectedPeriod"
-    name="period"
-    ng-options="period as period.hrLabel for period in $ctrl.periods"
-    ng-change="$ctrl.onChange($ctrl.selectedPeriod)"
-    required>
-    <option value="" disabled translate>FORM.SELECT.PERIOD</option>
-  </select>
-  <div class="help-block" ng-messages="PeriodForm.$error" ng-show="$ctrl.validationTrigger">
-    <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+  <div class="form-group"
+    ng-class="{ 'has-error' : PeriodForm.$submitted && PeriodForm.period.$invalid }"
+    bh-period-selection>
+    <label class="control-label" translate>
+      {{ $ctrl.label }}
+    </label>
+    <select
+      class="form-control"
+      ng-model="$ctrl.selectedPeriod"
+      name="period"
+      ng-options="period as period.hrLabel for period in $ctrl.periods"
+      ng-change="$ctrl.onChange($ctrl.selectedPeriod)"
+      required>
+      <option value="" disabled translate>FORM.SELECT.PERIOD</option>
+    </select>
+    <div class="help-block" ng-messages="PeriodForm.$error" ng-show="PeriodForm.$submitted">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
   </div>
-</div>
+</fieldset>
