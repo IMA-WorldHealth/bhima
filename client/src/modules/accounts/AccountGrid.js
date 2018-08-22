@@ -51,7 +51,7 @@ function AccountGridService(AccountStore, Accounts, Store, Languages, $httpParam
 
   AccountGrid.prototype.download = function download(type, filters) {
     const filterOpts = filters;
-    const defaultOpts = { renderer : type, lang : Languages.key };
+    const defaultOpts = { renderer : type, lang : Languages.key, rowsDataKey : 'accounts' };
 
     // combine options
     const options = angular.merge(defaultOpts, filterOpts);

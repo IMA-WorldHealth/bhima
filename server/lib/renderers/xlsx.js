@@ -18,6 +18,7 @@ const headers = {
 };
 
 exports.render = render;
+exports.find = find;
 exports.extension = '.xlsx';
 exports.headers = headers;
 
@@ -26,7 +27,7 @@ exports.headers = headers;
  * @param {Object} data   { rows : []}
  */
 
-function render(data) {
+function render(data, template, options) {
   // Create a new instance of a Workbook class
   const wb = new xl.Workbook();
 
@@ -65,9 +66,7 @@ function render(data) {
 
   // Add Worksheets to the workbook
   const ws = wb.addWorksheet('Sheet 1');
-  let { rows } = data;
-  rows = rows || [];
-
+  const rows = find(data, options); // get all rows to set in the sheet
   const firstObject = rows[0] || {};
 
   // writing columns
@@ -84,7 +83,7 @@ function render(data) {
   // writing rows
   rows.forEach((row) => {
     firstLineCols.forEach((key, index) => {
-      setValue(ws, line, index + 1, row[key])
+      setValue(ws, line, index + 1, row[key] || '')
         .style(styleAllBorders)
         .style(normaFontSize);
     });
@@ -93,6 +92,16 @@ function render(data) {
   return wb.writeToBuffer();
 }
 
+
+/*
+ find available data to write in the excel file
+ rows is the default key, if nothing found, this function get look at rowsDataKey
+ it return an empty array if no data found
+*/
+function find(data, _options) {
+  const options = _options || {};
+  return data.rows || data[options.rowsDataKey] || [];
+}
 // set value to a paticular cell
 function setValue(ws, x, y, value) {
   if (_.isNumber(value)) {
