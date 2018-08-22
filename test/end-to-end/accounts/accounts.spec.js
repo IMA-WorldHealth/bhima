@@ -142,7 +142,6 @@ describe('Account Management', () => {
 
   // import default ohada accounts accounts
   it('import default ohada accounts into the system', () => {
-    helpers.navigate(path);
     page.openImportMenu();
 
     page.chooseImportOption(0);
@@ -152,7 +151,6 @@ describe('Account Management', () => {
 
   // import custom ohada accounts
   it('import default ohada accounts into the system', () => {
-    helpers.navigate(path);
     page.openImportMenu();
 
     page.chooseImportOption(1);
@@ -163,7 +161,6 @@ describe('Account Management', () => {
 
   // import custom ohada accounts
   it('don\'t import accounts from bad file', () => {
-    helpers.navigate(path);
     page.openImportMenu();
 
     page.chooseImportOption(1);

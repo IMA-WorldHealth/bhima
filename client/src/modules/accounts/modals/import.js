@@ -49,11 +49,13 @@ function ImportAccountsController(Instance, Accounts, Upload, Notify, $state) {
     function handleSuccess() {
       vm.uploadState = 'uploaded';
       Notify.success('ACCOUNT.IMPORT.UPLOAD_SUCCESS');
+      $state.go('accounts.list');
       Instance.close();
     }
 
     function handleError(err) {
       Notify.handleError(err);
+      $state.go('accounts.list');
       Instance.close();
     }
 
