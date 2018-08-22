@@ -65,6 +65,17 @@
           ng-class="{ 'btn-info' : GeneralLedgerCtrl.filterEnabled }">
           <i class="fa fa-filter"></i>
         </button>
+        <button
+          type="button"
+          ng-click="GeneralLedgerCtrl.toggleHideTitleAccount()"
+          data-method="hide_titles"
+          class="btn btn-default"
+          ng-class="{ 'btn-info' : GeneralLedgerCtrl.hideTitleAccount }">
+          <i 
+            ng-class=" { 'fa-eye-slash': !GeneralLedgerCtrl.hideTitleAccount,
+             'fa-eye': GeneralLedgerCtrl.hideTitleAccount }"
+            class="fa"></i>
+        </button>
       </div>
     </div>
   </div>
