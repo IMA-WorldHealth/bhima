@@ -1,10 +1,11 @@
 {
-    "PATIENT_REG": {
-        "ENTITY" : "Patient",
-        "CARD": "Fiche du patient",
-        "PAGE_TITLE": "Enregistrement des Patients",
-        "PATIENT_DETAILS": "Détails Patient",
-        "SUCCESS": "Patient enregistré avec succès",
-        "IDENTITY": "Identité du patient"
-    }
+  "PATIENT_REG": {
+    "ENTITY" : "Patient",
+    "CARD": "Fiche du patient",
+    "PAGE_TITLE": "Enregistrement des Patients",
+    "PATIENT_DETAILS": "Détails Patient",
+    "SUCCESS": "Patient enregistré avec succès",
+    "IDENTITY": "Identité du patient",
+    "LOOKUP_RETURNING_PATIENT" : "Rechercher l'enregistrement de patient"
+  }
 }
