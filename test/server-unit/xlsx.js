@@ -53,4 +53,21 @@ describe('util.js', () => {
     expect(data.students).to.deep.equal(result);
   });
 
+  it('Should remove unuseful columns for the user such as uuid', () => {
+    const data = {
+      students : [
+        { uuid : '7a9480cc-b2cd-4975-a1dc-e8c167070481', name : 'Alice' },
+        { uuid : '1459ce89-5d67-4019-84d8-b2bcb808eacb', name : 'Bob' }],
+    };
+    const formatedData = [
+      { name : 'Alice' },
+      { name : 'Bob' },
+    ];
+
+    const options = { rowsDataKey : 'students', ignoredColumns : ['uuid'] };
+    const result = xlsx.find(data, options);
+    expect(result).to.deep.equal(formatedData);
+  });
+
+
 });
