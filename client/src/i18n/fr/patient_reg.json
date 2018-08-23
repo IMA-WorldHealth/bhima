@@ -6,6 +6,8 @@
     "PATIENT_DETAILS": "Détails Patient",
     "SUCCESS": "Patient enregistré avec succès",
     "IDENTITY": "Identité du patient",
-    "LOOKUP_RETURNING_PATIENT" : "Rechercher l'enregistrement de patient"
+    "LOOKUP_RETURNING_PATIENT" : "Rechercher l'enregistrement de patient",
+    "NO_PATIENTS_FOUND" : "Aucun patient n'a été trouvé correspondant aux critères. Avez-vous entré les valeurs correctement?",
+    "HAS_MULTIPLE_PATIENTS" : "Attention! Plusieurs patients correspondaient à ces critères. Le premier a été choisi automatiquement."
   }
 }

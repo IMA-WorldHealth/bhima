@@ -13,14 +13,51 @@ function ReturningPatientModalCtrl(ModalInstance, Patients, moment) {
 
   vm.cancel = ModalInstance.close;
 
+
+  function usePatient(patient) {
+    vm.patient = patient;
+    vm.patient.dobFormatted = moment(vm.patient.dob).format('L');
+    vm.patient.age = moment().diff(vm.patient.dob, 'years');
+    vm.isPatientFound = true;
+  }
+
+  function warnNoPatients() {
+    vm.noPatientsFound = true;
+    vm.hasWarning = true;
+  }
+
+  function warnMultiplePatients() {
+    vm.hasMultiplePatients = true;
+    vm.hasWarning = true;
+  }
+
+  // clears all visual warnings
+  function resetWarnings() {
+    vm.isPatientFound = false;
+    vm.noPatientsFound = false;
+    vm.hasMultiplePatients = false;
+    vm.hasWarning = false;
+  }
+
   vm.submit = function submit() {
+    resetWarnings();
+
     return Patients.read(null, vm.params)
       .then(patients => {
-        [vm.patient] = patients;
-        vm.patient.dobFormatted = moment(vm.patient.dob).format('L');
-        vm.patient.age = moment().diff(vm.patient.dob, 'years');
 
-        vm.isPatientFound = true;
+        switch (patients.length) {
+        case 0:
+          warnNoPatients();
+          break;
+
+        case 1:
+          usePatient(patients[0]);
+          break;
+
+        default:
+          warnMultiplePatients();
+          break;
+        }
       });
   };
 }
