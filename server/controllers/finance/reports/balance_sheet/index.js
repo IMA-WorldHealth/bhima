@@ -1,240 +1,153 @@
-/**
- * Balance sheet Controller
- *
- * This controller is responsible for processing
- * the balance sheet (bilan) report.
- *
- * @module reports/balance_sheet
- *
- * @requires lodash
- * @requires lib/db
- * @requires lib/ReportManager
- * @requires lib/errors/BadRequest
- */
-
+const q = require('q');
 const _ = require('lodash');
-const moment = require('moment');
 const db = require('../../../../lib/db');
+const util = require('../../../../lib/util');
+const Tree = require('../../../../lib/Tree');
 const ReportManager = require('../../../../lib/ReportManager');
 
-// report template
+const fiscal = require('../../fiscal');
+
 const TEMPLATE = './server/controllers/finance/reports/balance_sheet/report.handlebars';
 
-const ASSET = 1;
-const LIABILITY = 2;
-const EQUITY = 3;
-const INCOME = 4;
-const EXPENSE = 5;
-const DATE_FORMAT = 'YYYY-MM-DD';
-const FC_CURRENCY = 1;
-
-// expose to the API
 exports.document = document;
+exports.formatData = formatData;
 
-/**
- * @function document
- * @description process and render the balance report document
- */
+
+const ASSET_ACCOUNT_TYPE = 1;
+const LIABILITY_ACCOUNT_TYPE = 2;
+const EQUITY_ACCOUNT_TYPE = 3;
+
+const DECIMAL_PRECISION = 2; // ex: 12.4567 => 12.46
+
 function document(req, res, next) {
   const params = req.query;
-  const session = {};
-  const bundle = {};
-  let report;
 
-  // date options
-  if (params.dateFrom && params.dateTo) {
-    session.dateFrom = moment(params.dateFrom).format(DATE_FORMAT);
-    session.dateTo = moment(params.dateTo).format(DATE_FORMAT);
-  } else {
-    session.date = moment(params.date).format(DATE_FORMAT);
-  }
-
-  session.enterprise = req.session.enterprise;
-  params.enterpriseId = session.enterprise.id;
-
-  _.defaults(params, { user : req.session.user });
+  let docReport;
+  const options = _.extend(req.query, {
+    filename : 'TREE.OPERATING_ACCOUNT',
+    csvKey : 'rows',
+    user : req.session.user,
+  });
 
   try {
-    report = new ReportManager(TEMPLATE, req.session, params);
+    docReport = new ReportManager(TEMPLATE, req.session, options);
   } catch (e) {
     next(e);
     return;
   }
 
-  computeBalanceSheet(params)
-    .then(GroupAccountByType)
-    .then(processAccounts)
-    .then((result) => {
-      bundle.session = session;
-      bundle.showExploitation = Number(params.showExploitation || 0);
-      bundle.assets = result[ASSET] || {};
-      bundle.liabilities = result[LIABILITY] || {};
-      bundle.equity = result[EQUITY] || {};
-      bundle.revenue = result[INCOME] || {};
-      bundle.expense = result[EXPENSE] || {};
-      bundle.result = handleExploitationResult(bundle.revenue, bundle.expense);
-      bundle.totals = getTotalBalance(bundle);
+  let queries;
+  let range;
 
-      // get the exchange rate for the given date
-      const query = `
-        SELECT e.rate, c.symbol, c.name, e.currency_id FROM exchange_rate e
-        JOIN currency c ON c.id = e.currency_id
-        WHERE e.currency_id = ? AND DATE(e.date) <= DATE(?) AND e.enterprise_id = ?
-        ORDER BY e.id DESC LIMIT 1;`;
-      return db.exec(query, [FC_CURRENCY, session.date, session.enterprise.id]);
+  const getQuery = fiscal.accountBanlanceByTypeId;
+
+  const periods = {
+    periodFrom : params.periodFrom,
+    periodTo : params.periodTo,
+  };
+
+  fiscal.getDateRangeFromPeriods(periods).then(dateRange => {
+    range = dateRange;
+
+    const totalSql = `SELECT SUM(r.amount) as total FROM (${getQuery()}) as r`;
+
+    const liabilityParams = [
+      params.fiscal,
+      range.dateFrom,
+      range.dateTo,
+      LIABILITY_ACCOUNT_TYPE,
+    ];
+
+    const assetParams = [
+      params.fiscal,
+      range.dateFrom,
+      range.dateTo,
+      ASSET_ACCOUNT_TYPE,
+    ];
+
+    const equityParams = [
+      params.fiscal,
+      range.dateFrom,
+      range.dateTo,
+      EQUITY_ACCOUNT_TYPE,
+    ];
+
+    queries = [
+      db.exec(getQuery(), assetParams),
+      db.exec(getQuery(), liabilityParams),
+      db.exec(getQuery(), equityParams),
+      db.one(totalSql, assetParams),
+      db.one(totalSql, liabilityParams),
+      db.one(totalSql, equityParams),
+    ];
+
+    return q.all(queries);
+  })
+    .spread((asset, liability, equity, totalAsset, totalLiability, totalEquity) => {
+      const props = [EQUITY_ACCOUNT_TYPE, LIABILITY_ACCOUNT_TYPE];
+      const context = {
+        liability : gatherTrees([equity, liability], props, 'type_id', 'amount'),
+        asset : prepareTree(asset, 'type_id', ASSET_ACCOUNT_TYPE, 'amount'),
+        totalLiability :  (totalLiability.total + totalEquity.total),
+        totalAsset : totalAsset.total,
+        dateFrom : range.dateFrom,
+        dateTo : range.dateTo,
+      };
+
+      formatData(context.asset, context.totalAsset, DECIMAL_PRECISION);
+      formatData(context.liability, context.totalLiability, DECIMAL_PRECISION);
+
+      return docReport.render(context);
     })
-    .then((rate) => {
-      bundle.rate = rate.pop() || {};
-      return report.render(bundle);
+    .then((result) => {
+      res.set(result.headers).send(result.report);
     })
-    .then((result) => res.set(result.headers).send(result.report))
     .catch(next)
     .done();
 }
 
-/**
- * getBalance
- *
- * @param {object} element
- */
-function getBalance(element) {
-  return element.totals ? element.totals.balance : 0;
+// create the tree structure, filter by property and sum nodes' summableProp
+function prepareTree(data, prop, value, summableProp) {
+  const tree = new Tree(data);
+  try {
+    tree.filterByLeaf(prop, value);
+    tree.walk(Tree.common.sumOnProperty(summableProp), false);
+    tree.walk(Tree.common.computeNodeDepth);
+    return tree.toArray();
+  } catch (error) {
+    return [];
+  }
 }
 
-/**
- * handleExploitationResult
- *
- * @param {object} revenue
- * @param {object} expense
- * @returns {object}
- */
-function handleExploitationResult(revenue, expense) {
-  const _revenue = getBalance(revenue) * -1;
-  const _expense = getBalance(expense);
-  return { balance : _revenue - _expense };
-}
-
-
-/**
- * getTotalBalance
- *
- * @param {object} bundle
- */
-function getTotalBalance(bundle) {
-  const assets = getBalance(bundle.assets);
-  const liabilities = getBalance(bundle.liabilities);
-  const equity = getBalance(bundle.equity);
-  const result = bundle.result.balance;
-
-  const totals = { debit : [], credit : [] };
-  if (assets >= 0) { totals.debit.push(assets); } else { totals.credit.push(assets * -1); }
-  if (liabilities >= 0) { totals.debit.push(liabilities); } else { totals.credit.push(liabilities * -1); }
-  if (equity >= 0) { totals.debit.push(equity); } else { totals.credit.push(equity * -1); }
-  if (result >= 0) { totals.credit.push(result); } else { totals.debit.push(result * -1); }
-
-  return {
-    debit : totals.debit.reduce(sum, 0),
-    credit : totals.credit.reduce(sum, 0),
-  };
-}
-
-// sum aggrega
-function sum(a, b) {
-  return a + b;
-}
-
-/**
- * @method processAccounts
- * @description process and format accounts balance
- * @param {object} balances The result of balanceReporting function
- */
-function processAccounts(data) {
-  const collection = Object.keys(data);
-  const bundle = {};
-
-  collection.forEach((type) => {
-    const balances = data[type];
-
-    const accounts = balances.reduce((account, row) => {
-      const id = row.number;
-      const obj = {};
-      account[id] = obj;
-      obj.label = row.label;
-      obj.number = row.number;
-      obj.debit = row.debit;
-      obj.credit = row.credit;
-      obj.balance = row.balance;
-      return account;
-    }, {});
-
-    // process for getting totals
-    const totals = Object.keys(accounts)
-      .reduce((t, key) => {
-        const account = accounts[key];
-        t.debit += (account.debit || 0);
-        t.credit += (account.credit || 0);
-        t.balance += (account.balance || 0);
-        return t;
-      }, {
-        debit   : 0,
-        credit  : 0,
-        balance  : 0,
-      });
-
-    bundle[type] = { accounts, totals };
+// combines two differents trees of accounts
+function gatherTrees(trees, keys, prop, summableProp) {
+  const container = [];
+  trees.forEach((t, index) => {
+    const tree = new Tree(t);
+    tree.filterByLeaf(prop, keys[index]);
+    container.push(...tree.toArray());
   });
 
-  return bundle;
+  const containerTree = new Tree(container);
+  try {
+    containerTree.walk(Tree.common.sumOnProperty(summableProp), false);
+    containerTree.walk(Tree.common.computeNodeDepth);
+    return containerTree.toArray();
+  } catch (error) {
+    return [];
+  }
 }
 
-/**
- * GroupAccountByType
- * @description group accounts by account type
- * @param {array} rows - data from computeBalanceSheet
- * @returns {object}
- */
-function GroupAccountByType(rows) {
-  return _.groupBy(rows, 'type_id');
-}
+// set the percentage of each amoun's row,
+// round amounts
+function formatData(result, total, decimalPrecision) {
+  const _total = (total === 0) ? 1 : total;
+  return result.forEach(row => {
+    row.title = (row.depth < 3);
 
-/**
- * @function computeBalanceSheet
- * @description return the balance sheet data according given parameters
- * @param {object} params An object which contains dates range and the account class
- */
-function computeBalanceSheet(params) {
-  const query = params;
-
-  query.date = moment(query.date).format(DATE_FORMAT);
-
-  // gets the amount up to the current period
-  const sql = `
-    SELECT
-      a.number, a.id, a.label, a.type_id, SUM(pt.credit) AS credit, SUM(pt.debit) AS debit,
-      SUM(pt.debit - pt.credit) AS balance
-    FROM
-      period_total AS pt
-    JOIN
-      account AS a ON pt.account_id = a.id
-    JOIN
-      period AS p ON pt.period_id = p.id
-    WHERE
-      pt.enterprise_id = ? AND
-      (DATE(p.start_date) <= DATE(?) OR (p.start_date IS NULL OR p.end_date IS NULL)) AND
-      pt.fiscal_year_id =
-        (
-          SELECT
-            f.id
-          FROM
-            fiscal_year f
-          WHERE
-            DATE(?) BETWEEN DATE(f.start_date) AND DATE(f.end_date)
-          LIMIT 1
-        )
-    GROUP BY
-      a.id`;
-
-  const queryParameters = [query.enterpriseId, query.date, query.date];
-
-  return db.exec(sql, queryParameters);
+    if (row.title) {
+      row.percent = util.roundDecimal(Math.abs((row.amount / _total) * 100), decimalPrecision);
+    }
+    row.amount = util.roundDecimal(row.amount, decimalPrecision);
+  });
 }

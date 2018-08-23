@@ -10,11 +10,15 @@ describe('Balance Sheet Report', () => {
   const key = 'balance_sheet_report';
 
   const dataset = {
-    date : new Date(),
+    fiscal : 'Test Fiscal Year 2017',
+    periodFrom : 'janvier 2017',
+    periodTo : 'décembre 2017',
+    type : 'Recettes et dépenses',
     showExploitation : false,
     report_name : 'Report Saved by E2E',
     renderer : 'PDF',
   };
+
 
   before(() => {
     helpers.navigate(`#!/reports/${key}`);
@@ -22,7 +26,7 @@ describe('Balance Sheet Report', () => {
   });
 
   it('preview a new balanceSheet report', () => {
-    Page.showBalanceSheetReportPreview(dataset.date);
+    Page.showBalanceSheetReportPreview(dataset.fiscal, dataset.periodFrom, dataset.periodTo, dataset.type);
   });
 
   it('close the previewed report', () => {
@@ -30,7 +34,14 @@ describe('Balance Sheet Report', () => {
   });
 
   it('save a previewed report', () => {
-    Page.saveBalanceSheetReport(dataset.date, dataset.showExploitation, dataset.report_name, dataset.renderer);
+    Page.saveBalanceSheetReport(
+      dataset.fiscal,
+      dataset.periodFrom,
+      dataset.periodTo,
+      dataset.type,
+      dataset.report_name,
+      dataset.renderer
+    );
   });
 
   it('report has been saved into archive', () => {
@@ -38,6 +49,6 @@ describe('Balance Sheet Report', () => {
   });
 
   it('print the previewed report', () => {
-    Page.printBalanceSheetReport(dataset.date);
+    Page.printBalanceSheetReport(dataset.fiscal, dataset.periodFrom, dataset.periodTo);
   });
 });

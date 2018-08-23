@@ -1,19 +1,20 @@
 /* global element, by */
 
+
+const FU = require('../FormUtils');
+
 module.exports = {
-  mainSelector : '[bh-fiscal-period-select]',
-  set : function set(fiscalYearId, periodFromId, periodToId, id) {
-    const getValue = ident => by.css(`option[value="number:${ident}"]`);
+  selector : '[bh-fiscal-period-select]',
+  set      : function set(fiscalId, periodFromId, periodToId, id) {
+    const locator = (id) ? by.id(id) : by.css(this.selector);
+    const target = element(locator);
+    target.click();
 
-    const bhFiscalPeriod = (id) ? element(by.id(id)) : element(by.css(this.mainSelector));
+    FU.uiSelect('$ctrl.selectedFiscal', fiscalId, target);
 
-    let opts = bhFiscalPeriod.element(by.model('$ctrl.selectedFiscal'));
-    opts.element(getValue(fiscalYearId)).click();
-
-    opts = bhFiscalPeriod.element(by.model('$ctrl.selectedPeriodFrom'));
-    opts.element(getValue(periodFromId)).click();
-
-    opts = bhFiscalPeriod.element(by.model('$ctrl.selectedPeriodTo'));
-    opts.element(getValue(periodToId)).click();
+    FU.uiSelect('$ctrl.selectedPeriodFrom', periodFromId, target);
+    // search period to by it label
+    FU.uiSelect('$ctrl.selectedPeriodTo', periodToId, target);
   },
 };
+

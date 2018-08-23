@@ -1,4 +1,5 @@
-/* global browser, element, by */
+
+// global browser, element, by
 
 const chai = require('chai');
 const helpers = require('../../shared/helpers');
@@ -15,17 +16,17 @@ class BalanceSheetReportPage {
   }
 
   // preview an balance sheet report
-  showBalanceSheetReportPreview(date, showExploitation) {
-    components.dateEditor.set(date);
-    if (showExploitation) {
-      element(by.model('ReportConfigCtrl.reportDetails.showExploitation')).click();
-    }
+  showBalanceSheetReportPreview(fiscal, periodFrom, periodTo) {
+    components.fiscalPeriodSelect.set(fiscal, periodFrom, periodTo);
+
+    // FU.select('ReportConfigCtrl.reportDetails.type', type);
     this.page.preview();
   }
 
+
   // save an balanceSheet report
-  saveBalanceSheetReport(date, showExploitation, reportName, reportFormat) {
-    this.showBalanceSheetReportPreview(date, showExploitation);
+  saveBalanceSheetReport(fiscal, periodFrom, periodTo, type, reportName, reportFormat) {
+    this.showBalanceSheetReportPreview(fiscal, periodFrom, periodTo, type);
 
     // save report as PDF
     this.page.saveAs();
@@ -38,9 +39,10 @@ class BalanceSheetReportPage {
     this.page.backToConfig();
   }
 
+
   // print an balanceSheet report
-  printBalanceSheetReport(date, showExploitation) {
-    this.showBalanceSheetReportPreview(date, showExploitation);
+  printBalanceSheetReport(fiscal, periodFrom, periodTo) {
+    this.showBalanceSheetReportPreview(fiscal, periodFrom, periodTo);
     this.page.printPreview();
   }
 

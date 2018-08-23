@@ -14,8 +14,10 @@ FiscalPeriodSelect.$inject = ['FiscalService', 'moment'];
 
 function FiscalPeriodSelect(Fiscal, moment) {
   const $ctrl = this;
+  $ctrl.laterPeriods = [];
 
   $ctrl.$onInit = () => {
+
     Fiscal.read()
       .then(fiscals => {
         $ctrl.fiscals = fiscals;
@@ -25,6 +27,8 @@ function FiscalPeriodSelect(Fiscal, moment) {
   $ctrl.loadPeriod = fiscalId => {
     $ctrl.onSelectFiscalCallback({ fiscal : fiscalId });
     loadPeriodsForFiscalYear(fiscalId);
+    delete $ctrl.selectedPeriodFrom;
+    delete $ctrl.selectedPeriodTo;
   };
 
   function loadPeriodsForFiscalYear(fiscalId) {
@@ -61,6 +65,11 @@ function FiscalPeriodSelect(Fiscal, moment) {
     return (period.number >= $ctrl.selectedPeriodFrom.number);
   };
 
-  $ctrl.onSelectPeriodFrom = period => $ctrl.onSelectPeriodFromCallback({ period });
+  $ctrl.onSelectPeriodFrom = (period) => {
+    $ctrl.laterPeriods = $ctrl.periods.filter(p => {
+      return p.number >= period.number;
+    });
+    return $ctrl.onSelectPeriodFromCallback({ period });
+  };
   $ctrl.onSelectPeriodTo = period => $ctrl.onSelectPeriodToCallback({ period });
 }
