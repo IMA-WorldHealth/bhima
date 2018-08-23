@@ -1,5 +1,4 @@
 <div class="panel panel-default">
-
   <div class="panel-heading clearfix">
     <span translate>PATIENT_RECORDS.VISITS.TITLE</span> ({{$ctrl.visits.length}})
 
@@ -12,16 +11,16 @@
   </div>
 
   <div class="panel-body" style="height : 250px; overflow-y : auto;">
-
-    <div style="text-align : center">
-      <p class="text-info" ng-if="$ctrl.loaded && $ctrl.visits.length===0">
-      <i class="fa fa-info-circle"></i> <span translate>PATIENT_RECORDS.VISITS.ORIGINAL</span>
+    <div class="text-center">
+      <p class="text-info" ng-if="$ctrl.loaded && $ctrl.visits.length === 0">
+        <i class="fa fa-info-circle"></i> <span translate>PATIENT_RECORDS.VISITS.ORIGINAL</span>
       </p>
 
       <button id="submit-visit" class="btn btn-default" ng-click="$ctrl.admit()">
         <span translate>{{ $ctrl.visiting ? "PATIENT_RECORDS.VISITS.DISCHARGE" : "PATIENT_RECORDS.VISITS.ADMIT"}}</span>
       </button>
     </div>
+
     <br />
 
     <div ng-if="$ctrl.loaded && $ctrl.visits.length">
@@ -30,16 +29,17 @@
       </label>
       <table>
         <tbody>
-          <tr data-visit-line ng-repeat="visit in $ctrl.visits | limitTo : CheckInCtrl.limitVisitDisplay">
+          <tr data-visit-line ng-repeat="visit in $ctrl.visits | limitTo : $ctrl.limitVisitDisplay">
 
-          <td><i class="fa fa-sign-in"></i> {{visit.start_date | date}} -
-
-          <span ng-if="visit.end_date">
-            {{visit.end_date | date}}
-            ({{visit.totalDays}} <span translate>PATIENT_REGISTRY.DAYS</span>)
-          </span>
-          <span ng-if="!visit.end_date">(<b class="text-success"><span translate>PATIENT_RECORDS.VISITS.IN_PROGRESS</span></b>)</span>
-
+          <td>
+            <i class="fa fa-sign-in"></i> {{visit.start_date | date}} -
+            <span ng-if="visit.end_date">
+              {{visit.end_date | date}}
+              ({{visit.totalDays}} <span translate>PATIENT_REGISTRY.DAYS</span>)
+            </span>
+            <span ng-if="!visit.end_date">
+              (<b class="text-success"><span translate>PATIENT_RECORDS.VISITS.IN_PROGRESS</span></b>)
+            </span>
           </td>
         </tbody>
       </table>

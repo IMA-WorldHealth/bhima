@@ -16,10 +16,13 @@
       "ADMIT":"Admission à l'hôpital",
       "ADMISSION_DIAGNOSIS":"Diagnostic d'admission",
       "ADMISSION":"Admission",
+      "ADMISSION_TYPE" : "Type de la visite",
       "DISCHARGE":"Décharge",
       "ORIGINAL":"Ce patient n'a pas de visites enregistrées",
       "RECENT":"Dernières Visites",
       "IN_PROGRESS":"En cours",
+      "AMBULATORY" : "Ambulatoire",
+      "HOSPITALISATION" : "Hospitalisé",
       "SEARCH_INFO":"L'entrée recherche le diagnostic après avoir tapé 3 caractères."
     },
     "FINANCIAL_ACTIVITY":{

@@ -1,16 +1,41 @@
 <div class="modal-header">
   <ol class="headercrumb">
-    <li class="static"><span translate>FORM.INFO.PATIENTS</span></li>
-    <li class="title"><span translate>{{ AdmitCtrl.isAdmission ? "PATIENT_RECORDS.VISITS.ADMISSION" : "PATIENT_RECORDS.VISITS.DISCHARGE"}}</span></li>
+    <li class="static" translate>FORM.INFO.PATIENTS</li>
+    <li class="title" translate>{{ AdmitCtrl.isAdmission ? "PATIENT_RECORDS.VISITS.ADMISSION" : "PATIENT_RECORDS.VISITS.DISCHARGE"}}</li>
   </ol>
 </div>
 
 <form name="VisitForm" bh-submit="AdmitCtrl.admit(VisitForm)" novalidate>
+
 <div class="modal-body">
 
   <div ng-if="!AdmitCtrl.isAdmission" class="form-group">
     <label class="control-label"><span translate>PATIENT_RECORDS.VISITS.ADMISSION_DIAGNOSIS</span></label>
     <p class="form-static">{{AdmitCtrl.currentVisit.start_diagnosis_label}}</p>
+  </div>
+
+  <!-- only show admission type on admission -->
+  <div
+    class="form-group"
+    ng-if="AdmitCtrl.isAdmission"
+    ng-class="{ 'has-error' : VisitForm.$submitted && VisitForm.type.$invalid }">
+
+    <div class="radio">
+      <p class="control-label" style="margin-bottom:5px;">
+        <strong translate>PATIENT_RECORDS.VISITS.ADMISSION_TYPE</strong>
+      </p>
+
+      <label>
+        <input type="radio" name="hospitalized" ng-value="0" ng-model="AdmitCtrl.visit.hospitalized">
+        <span translate>PATIENT_RECORDS.VISITS.AMBULATORY</span>
+      </label>
+    </div>
+    <div class="radio">
+      <label>
+        <input type="radio" name="hospitalized" ng-value="1" ng-model="AdmitCtrl.visit.hospitalized">
+        <span translate>PATIENT_RECORDS.VISITS.HOSPITALISATION</span>
+      </label>
+    </div>
   </div>
 
   <div
@@ -29,7 +54,7 @@
       typeahead-on-select="AdmitCtrl.select()"
       autocomplete="off"
       typeahead-min-length="3"
-      required>
+      ng-required="AdmitCtrl.REQUIRE_DIAGNOSES">
     </label>
 
     <div class="help-block" ng-messages="VisitForm.diagnosis.$error" ng-show="VisitForm.$submitted">
@@ -54,8 +79,8 @@
   <button type="button" class="btn btn-default" ng-click="AdmitCtrl.cancel()" data-method="cancel">
     <span translate>FORM.BUTTONS.CANCEL</span>
   </button>
+
   <bh-loading-button loading-state="AdmitCtrl.$loading">
-    <span translate>FORM.BUTTONS.SUBMIT</span>
   </bh-loading-button>
 </div>
 </form>

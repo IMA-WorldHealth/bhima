@@ -104,10 +104,9 @@ function FindDocumentComponent(Patient, Modal, Document, Notify) {
     let ext;
 
     if (mimetype.indexOf('image') > -1) {
-      ext =
-        (mimetype.indexOf('jpg') > -1 || mimetype.indexOf('jpeg') > -1) ? '.jpg' :
-          (mimetype.indexOf('png') > -1) ? '.png' :
-            (mimetype.indexOf('gif') > -1) ? '.gif' : '';
+      ext = (mimetype.indexOf('jpg') > -1 || mimetype.indexOf('jpeg') > -1) ? '.jpg'
+        : (mimetype.indexOf('png') > -1) ? '.png'
+          : (mimetype.indexOf('gif') > -1) ? '.gif' : '';
 
       result = { icon : 'fa-file-image-o', label : 'Image', ext };
     } else if (mimetype.indexOf('pdf') > -1) {
