@@ -21,7 +21,10 @@
       <div>
         <input name="display_name" bh-unique="/users/{{UserModalCtrl.user.display_name}}" ng-model="UserModalCtrl.user.display_name" autocomplete="off" ng-maxlength="UserModalCtrl.maxLength" class="form-control" required>
 
-        <span ng-show="UserForm.display_name.$error.unique" class="glyphicon glyphicon-remove form-control-feedback" id="unique-error-icon"></span>
+        <span ng-show="UserForm.display_name.$error.unique" translate class="help-block">
+          ERRORS.ER_DUP_KEY
+        </span>
+        <span ng-show="UserForm.display_name.$error.unique" class="text-danger glyphicon glyphicon-remove form-control-feedback" id="unique-error-icon"></span>
         <span ng-show="UserForm.display_name.$pending.unique"  class="glyphicon glyphicon-hourglass form-control-feedback"></span>
 
 
