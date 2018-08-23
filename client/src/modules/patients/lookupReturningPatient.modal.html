@@ -70,6 +70,20 @@
       </div>
     </div>
   </div>
+
+  <div class="row" ng-if="ModalCtrl.hasWarning">
+    <div class="col-xs-12">
+      <div class="alert alert-danger" ng-if="ModalCtrl.noPatientsFound">
+        <i class="fa fa-warning"></i>
+        <span translate>PATIENT_REG.NO_PATIENTS_FOUND</span>
+      </div>
+
+      <div class="alert alert-warning" ng-if="ModalCtrl.hasMultiplePatients">
+        <i class="fa fa-warning"></i>
+        <span translate>PATIENT_REG.HAS_MULTIPLE_PATIENTS</span>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="modal-footer">
