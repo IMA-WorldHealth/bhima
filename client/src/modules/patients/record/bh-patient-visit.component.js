@@ -17,7 +17,7 @@ function VisitsController(Patients, Notify, Moment) {
   // number of visits
   const DEFAULT_VISIT_LIMIT = 3;
 
-  this.$onInit = function $onInit() {
+  this.$onInit = () => {
     $ctrl.viewLimit = DEFAULT_VISIT_LIMIT;
     $ctrl.loaded = false;
     $ctrl.loading = true;
@@ -36,11 +36,12 @@ function VisitsController(Patients, Notify, Moment) {
       .then((results) => {
         $ctrl.visits = results;
         $ctrl.visits.forEach(calculateDays);
-        mostRecentVisit = $ctrl.visits[0];
+        [mostRecentVisit] = $ctrl.visits;
 
         if (mostRecentVisit) {
           $ctrl.visiting = Boolean(mostRecentVisit.is_open);
         }
+
         $ctrl.loaded = true;
       })
       .catch(Notify.handleError)
@@ -58,7 +59,7 @@ function VisitsController(Patients, Notify, Moment) {
   function admit() {
     const isAdmission = !$ctrl.visiting;
     Patients.Visits.openAdmission($ctrl.patientUuid, isAdmission, mostRecentVisit)
-      .then((result) => {
+      .then(() => {
         refreshVisitFeed();
       })
       .catch(Notify.handleError);

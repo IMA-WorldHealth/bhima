@@ -21,10 +21,13 @@
       "ADMIT" : "Admit Patient",
       "ADMISSION_DIAGNOSIS" : "Admission Diagnosis",
       "ADMISSION" : "Admission",
+      "ADMISSION_TYPE" : "Admission Type",
       "DISCHARGE" : "Discharge Patient",
       "ORIGINAL" : "This patient has no logged visits.",
       "RECENT" : "Recent Visits",
       "IN_PROGRESS" : "In Progress",
+      "AMBULATORY" : "Outpatient Visit",
+      "HOSPITALISATION" : "Hospitalisation",
       "SEARCH_INFO" : "The input will search for diagnosis after 3 characters have been typed."
     },
     "FINANCIAL_ACTIVITY":{

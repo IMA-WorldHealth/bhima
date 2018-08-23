@@ -28,8 +28,11 @@ exports.discharge = discharge;
 const COLUMNS = `
   BUID(uuid) AS uuid, BUID(patient_uuid) as patient_uuid, start_date, start_notes,
   end_date, end_notes, user_id, user.username, start_diagnosis_id, end_diagnosis_id,
-  ISNULL(end_date) AS is_open, icd10.label as start_diagnosis_label, icd10.code as start_diagnosis_code
+  ISNULL(end_date) AS is_open, icd10.label as start_diagnosis_label, icd10.code as start_diagnosis_code,
+  hospitalized
 `;
+
+const REQUIRE_DIAGNOSES = false;
 
 /**
  * @method list
@@ -51,7 +54,7 @@ function list(req, res, next) {
   const where = [];
 
   // if the limit is properly defined set it.
-  if (!isNaN(limit)) {
+  if (!Number.isNaN(limit)) {
     limitQuery = `LIMIT ${limit}`;
   }
 
@@ -132,7 +135,7 @@ function listByPatient(req, res, next) {
   const limit = Number(req.query.limit);
 
   // if the limit is properly defined set it.
-  if (!isNaN(limit)) {
+  if (!Number.isNaN(limit)) {
     limitQuery = `LIMIT ${limit}`;
   }
 
@@ -194,7 +197,7 @@ function admission(req, res, next) {
 
   // if there is not start_diagnosis_id, return a BAD REQUEST that will insist
   // on a diagnosis.
-  if (!data.start_diagnosis_id) {
+  if (REQUIRE_DIAGNOSES && !data.start_diagnosis_id) {
     next(new BadRequest(
       'An admission diagnosis is required to begin a patient visit.',
       'PATIENT.VISITS.ERR_MISSING_DIAGNOSIS'
@@ -250,7 +253,7 @@ function discharge(req, res, next) {
 
   // if there is not end_diagnosis_id, return a BAD REQUEST that will insist
   // on a diagnosis.
-  if (!data.end_diagnosis_id) {
+  if (REQUIRE_DIAGNOSES && !data.end_diagnosis_id) {
     next(new BadRequest(
       'A discharge diagnosis is required to end a patient visit.  Please select an ICD10 diagnosis code.',
       'PATIENT.VISITS.ERR_MISSING_DIAGNOSIS'

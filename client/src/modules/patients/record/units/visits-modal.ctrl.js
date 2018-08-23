@@ -1,48 +1,51 @@
 angular.module('bhima.controllers')
-.controller('VisitsAdmissionController', VisitsAdmissionController);
+  .controller('VisitsAdmissionController', VisitsAdmissionController);
 
-VisitsAdmissionController.$inject = ['$uibModalInstance', 'PatientService', 'patient', 'isAdmission', 'currentVisit'];
+VisitsAdmissionController.$inject = [
+  '$uibModalInstance', 'PatientService', 'patient', 'isAdmission', 'currentVisit',
+];
 
 function VisitsAdmissionController(ModalInstance, Patients, patient, isAdmission, currentVisit) {
-  var vm = this;
+  const vm = this;
 
   vm.isAdmission = isAdmission;
   vm.currentVisit = currentVisit;
+
+  // TODO(@jniles) - move this into a user-configurable setting
+  vm.REQUIRED_DIAGNOSES = false;
 
   // expose action methods
   vm.cancel = ModalInstance.close;
   vm.admit = admit;
 
-  vm.visit = {};
+  vm.visit = { hospitalized : 0 };
   vm.$loading = false;
 
+  // TODO(@jniles) - load these asynchronously using a MySQL %LIKE% for perf
   Patients.Visits.diagnoses()
-    .then(function (results) {
+    .then(results => {
       vm.diagnoses = results;
     });
 
-  // assign current visit uuid to dischare values
+  // assign current visit uuid to discharge values
   if (!vm.isAdmission) {
     vm.visit.uuid = currentVisit.uuid;
   }
 
   function admit(form) {
-    var submitMethod;
-
     if (form.$invalid) { return; }
 
     vm.$loading = true;
 
     // the columns updated on the patient visit table will depend on the admission/ discharge type
-    submitMethod = vm.isAdmission ? Patients.Visits.admit : Patients.Visits.discharge;
+    const submitMethod = vm.isAdmission ? Patients.Visits.admit : Patients.Visits.discharge;
 
     submitMethod(patient, vm.visit)
-      .then(function (result) {
+      .then(() => {
         ModalInstance.close();
       })
-      .finally(function () {
+      .finally(() => {
         vm.$loading = false;
       });
   }
 }
-
