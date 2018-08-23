@@ -23,8 +23,7 @@
         <div class="panel-body">
           <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate>
             <!-- report format seletion -->
-            <div 
-                class="form-group"
+            <div class="form-group"
                 ng-class="{ 'has-error' : ConfigForm.$submitted && ConfigForm.reportFormat.$invalid }">
                 <label 
                   ng-repeat="reportFormat in ReportConfigCtrl.reportFormats"
@@ -44,8 +43,7 @@
             </div>
             
             <!-- report type selection  -->
-            <div 
-                class="form-group"
+            <div class="form-group"
                 ng-class="{ 'has-error' : ConfigForm.$submitted && ConfigForm.type.$invalid }">
                 <label class="control-label">
                     <i class="fa fa-briefcase"></i> <span translate> FORM.SELECT.REPORT_TYPE</span>
@@ -66,18 +64,17 @@
 
             <!-- cashbox selection  -->
             <bh-cashbox-select
-              cashboxId = "ReportConfigCtrl.reportDetails.account_id"
-              name = "cashbox"
-              on-select-callback = "ReportConfigCtrl.onSelectCashbox(cashbox)">
+              cashboxId="ReportConfigCtrl.reportDetails.account_id"
+              name="cashbox"
+              on-select-callback="ReportConfigCtrl.onSelectCashbox(cashbox)">
             </bh-cashbox-select>
 
             <!-- Date interval  -->
             <bh-date-interval
-                date-from="ReportConfigCtrl.reportDetails.dateFrom"
-                date-to="ReportConfigCtrl.reportDetails.dateTo"
-                required
-                validation-trigger = 'ConfigForm.$submitted'
-                >
+              date-from="ReportConfigCtrl.reportDetails.dateFrom"
+              date-to="ReportConfigCtrl.reportDetails.dateTo"
+              required="true"
+              validation-trigger="ConfigForm.$submitted">
             </bh-date-interval>
 
             <bh-loading-button loading-state="ConfigForm.$loading">

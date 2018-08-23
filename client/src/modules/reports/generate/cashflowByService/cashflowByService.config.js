@@ -40,7 +40,10 @@ function CashFlowByServiceConfigController($sce, Notify, SavedReports, AppCache,
   };
 
   vm.preview = function preview(form) {
-    if (form.$invalid) { return 0; }
+    if (form.$invalid) {
+      Notify.danger('FORM.ERRORS.RECORD_ERROR');
+      return 0;
+    }
 
     // update cached configuration
     cache.reportDetails = angular.copy(vm.reportDetails);
