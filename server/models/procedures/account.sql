@@ -10,10 +10,10 @@ DELIMITER $$
 DROP PROCEDURE IF EXISTS ImportAccount;
 CREATE PROCEDURE ImportAccount (
   IN enterpriseId SMALLINT(5),
-  IN accountNumber INT(11) CHARSET utf8,
-  IN accountLabel VARCHAR(200) CHARSET utf8,
-  IN accountType VARCHAR(100) CHARSET utf8,
-  IN accountParent INT(11) CHARSET utf8,
+  IN accountNumber INT(11),
+  IN accountLabel VARCHAR(200),
+  IN accountType VARCHAR(100),
+  IN accountParent INT(11),
   IN importingOption TINYINT(1)
 )
 BEGIN

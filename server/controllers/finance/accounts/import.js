@@ -85,10 +85,10 @@ function importAccountFromFile(filePath, enterpriseId, option) {
         query = 'CALL ImportAccount(?, ?, ?, ?, ?, ?);';
         queryParams = [
           enterpriseId,
-          item.account_number,
+          Number.parseInt(item.account_number, 10),
           item.account_label,
           item.account_type,
-          item.account_parent || null,
+          Number.parseInt(item.account_parent, 10) || null,
           option,
         ];
         transaction.addQuery(query, queryParams);

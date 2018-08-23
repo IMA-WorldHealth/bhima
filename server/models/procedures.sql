@@ -2,6 +2,7 @@
   This file contains all the stored procedures used in bhima's database.  It
   should be loaded after functions.sql.
 */
+SET NAMES UTF8;
 
 DELIMITER $$
 
