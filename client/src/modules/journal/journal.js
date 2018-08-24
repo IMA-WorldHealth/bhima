@@ -33,7 +33,7 @@ function JournalController(
   Journal, Sorting, Grouping, Filtering, Columns, Session, Notify, bhConstants,
   $state, uiGridConstants, Modal, Languages, AppCache, Store, uiGridGroupingConstants,
   Export, $filter, GridExport, GridState, GridSelection, TrialBalance,
-  $httpParamSerializer, Transactions, util,
+  $httpParamSerializer, Transactions, util
 ) {
   // store journal data
   const journalStore = new Store({
@@ -387,13 +387,18 @@ function JournalController(
   };
 
   vm.downloadExcel = () => {
-
+    const displayNames = columnConfig.getDisplayNames();
     const filterOpts = Journal.filters.formatHTTP();
     const defaultOpts = {
       renderer : 'xlsx',
       lang : Languages.key,
+      ignoredColumns : [
+        displayNames.uuid,
+        displayNames.hrRecord,
+        displayNames.hrEntity,
+      ],
       renameKeys : true,
-      displayNames : columnConfig.getDisplayNames(),
+      displayNames,
     };
     // combine options
     const options = angular.merge(defaultOpts, filterOpts);
