@@ -93,7 +93,7 @@ function SearchTests() {
   });
 
   it(`GET /journal?amount=${amount} should return lines with debit or credit equivalent amounts`, () => {
-    const NUM_MATCHES = 2;
+    const NUM_MATCHES = 4;
     return agent.get('/journal')
       .query({ amount })
       .then((res) => {
