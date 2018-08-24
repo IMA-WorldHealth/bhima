@@ -69,7 +69,7 @@
             debtor-group-uuid = "$ctrl.searchQueries.debtor_group_uuid"
             on-select-callback = "$ctrl.onSelectDebtor(debtorGroup)">
               <bh-clear on-clear="$ctrl.clear('debtor_group_uuid')"></bh-clear>
-          </bh-debtor-group-select>        
+          </bh-debtor-group-select>
 
           <bh-user-select
             user-id="$ctrl.searchQueries.user_id"
@@ -92,7 +92,7 @@
 
           <div class="form-group" ng-class="{ 'has-error' : ModalForm.limit.$invalid }">
             <label class="control-label" translate>FORM.LABELS.LIMIT</label>
-            <input name="limit" type="number" bh-integer class="form-control" ng-model="$ctrl.defaultQueries.limit" ng-change="$ctrl.onSelectLimit($ctrl.defaultQueries.limit)">
+            <input name="limit" type="number" bh-integer bh-max-integer class="form-control" ng-model="$ctrl.defaultQueries.limit" ng-change="$ctrl.onSelectLimit($ctrl.defaultQueries.limit)">
 
             <div class="help-block" ng-messages="ModalForm.limit.$error">
               <div ng-messages-include="modules/templates/messages.tmpl.html"></div>

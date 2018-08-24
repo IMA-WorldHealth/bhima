@@ -88,7 +88,7 @@
                   <input type="radio" name="status" ng-model="$ctrl.searchQueries.status" ng-value="'over_maximum'">
                   <span translate>STOCK.STATUS.OVER_MAX</span>
                 </label>
-              </div>  
+              </div>
           </div>
         </div>
       </uib-tab>
@@ -105,6 +105,7 @@
               name="limit"
               type="number"
               bh-integer
+              bh-max-integer
               class="form-control"
               ng-model="$ctrl.defaultQueries.limit"
               ng-change="$ctrl.onSelectLimit($ctrl.defaultQueries.limit)">
@@ -119,7 +120,7 @@
   </div>
 
   <div class="modal-footer">
-    <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" data-method="cancel" translate> 
+    <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" data-method="cancel" translate>
       FORM.BUTTONS.CLOSE
     </button>
     <bh-loading-button loading-state="ModalForm.$loading">

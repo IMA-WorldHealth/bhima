@@ -1,9 +1,11 @@
 /* global inject, expect */
-describe('(directive) bhInteger', () => {
+describe('(directive) bhMaxInteger', () => {
   let $scope;
   let form;
 
-  beforeEach(module('bhima.directives'));
+  const MAX_INT = 16777215;
+
+  beforeEach(module('bhima.directives', 'bhima.constants'));
 
   // $complile and $rootScope are injected using angular name based dependency
   // injection
@@ -12,7 +14,7 @@ describe('(directive) bhInteger', () => {
 
     const element = angular.element(`
       <form name="form">
-        <input ng-model="models.intValue" name="intValue" bh-integer />
+        <input ng-model="models.intValue" name="intValue" bh-max-integer />
       </form>
     `);
 
@@ -29,7 +31,7 @@ describe('(directive) bhInteger', () => {
   }));
 
 
-  it('validates an integer value', () => {
+  it('allows an integer value', () => {
     const correctIntegerValue = 10;
 
     form.intValue.$setViewValue(correctIntegerValue);
@@ -39,17 +41,16 @@ describe('(directive) bhInteger', () => {
     expect(form.intValue.$valid).to.equal(true);
   });
 
-  it('blocks non integer values (string/decimal)', () => {
-    const incorrectDecimalValue = 10.23;
-    const incorrectStringValue = 'value';
-
-    form.intValue.$setViewValue(incorrectDecimalValue);
+  it('allows the MAX_INT value', () => {
+    form.intValue.$setViewValue(MAX_INT);
     $scope.$digest();
 
-    expect($scope.models.intValue).to.equal(undefined);
-    expect(form.intValue.$valid).to.equal(false);
+    expect($scope.models.intValue).to.equal(MAX_INT);
+    expect(form.intValue.$valid).to.equal(true);
+  });
 
-    form.intValue.$setViewValue(incorrectStringValue);
+  it('blocks values that are larger than the MAX_INT value', () => {
+    form.intValue.$setViewValue(MAX_INT + 1);
     $scope.$digest();
 
     expect($scope.models.intValue).to.equal(undefined);

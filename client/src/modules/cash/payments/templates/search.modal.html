@@ -88,7 +88,7 @@
                 <span translate>CASH.REGISTRY.INCLUDE_ONLY_REVERSED_RECORDS</span>
               </label>
             </div>
-  
+
             <div class="radio">
               <label>
                 <input type="radio" name="reversed" ng-value="0" ng-model="$ctrl.searchQueries.reversed">
@@ -109,12 +109,11 @@
 
           <div class="form-group" ng-class="{ 'has-error' : ModalForm.limit.$invalid }">
             <label class="control-label" translate>FORM.LABELS.LIMIT</label>
-            <input name="limit" type="number" bh-integer class="form-control" ng-model="$ctrl.defaultQueries.limit" ng-change="$ctrl.onSelectLimit($ctrl.defaultQueries.limit)">
+            <input name="limit" type="number" bh-integer bh-max-integer class="form-control" ng-model="$ctrl.defaultQueries.limit" ng-change="$ctrl.onSelectLimit($ctrl.defaultQueries.limit)">
 
             <div class="help-block" ng-messages="ModalForm.limit.$error">
               <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
             </div>
-
           </div>
         </div>
       </uib-tab>
