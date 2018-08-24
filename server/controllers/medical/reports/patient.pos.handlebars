@@ -1,8 +1,11 @@
 <head>
   <meta charset="utf-8" />
+{{#if metadata.enterprise.settings.enable_barcodes}}
   <script src="{{absolutePath}}/vendor/JsBarcode.all.min.js"></script>
+{{/if}}
 </head>
 <body>
+
 <p><b style="text-transform : uppercase">{{patient.enterprise_name}}</b></p>
 <h2 style="text-align : left; margin : 0px">{{patient.reference}}</h2>
 <p style="margin-top : 0px">
@@ -21,7 +24,29 @@
 <p><u>{{translate "FORM.LABELS.GENDER"}}</u>: {{ patient.sex }}</p>
 <p><u>{{translate "TABLE.COLUMNS.REGISTERED_ON"}}</u>: {{date patient.registration_date }}</p>
 <p><u>{{translate "FORM.LABELS.DEBTOR_GROUP"}}</u>: {{ patient.debtor_group_name }}</p>
+{{#if patient.health_zone}}
+  <p><u>{{translate "FORM.LABELS.HEALTH_ZONE"}}</u>: {{patient.health_zone}}</p>
+{{/if}}
+{{#if patient.health_area}}
+  <p><u>{{translate "FORM.LABELS.HEALTH_AREA"}}</u>: {{patient.health_area}}</p>
+{{/if}}
+
 {{> underline}}
 
+<p><u>{{translate "FORM.LABELS.ORIGIN"}}</u>:</p>
+<address>
+  <span>{{village.name}}, {{village.sector_name}}, {{village.province_name}}</span> <br />
+  <span>{{village.country_name}}</span>
+</address>
+
+<p><u>{{translate "FORM.LABELS.ADDRESS"}}</u>:</p>
+<address>
+  <span>{{currentVillage.name}}, {{currentVillage.sector_name}}, {{currentVillage.province_name}}</span> <br />
+  <span>{{currentVillage.country_name}}</span>
+</address>
+{{> underline}}
+
+{{#if metadata.enterprise.settings.enable_barcodes}}
 <script>JsBarcode('.barcode').init();</script>
+{{/if}}
 </body>
