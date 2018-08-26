@@ -36,8 +36,9 @@
 
               <li role="separator" class="divider"></li>
               <li role="menuitem">
-                <a href ng-click="JournalCtrl.openTrialBalanceModal()" data-method="trial">
-                  <i class="fa fa-balance-scale"></i> <span translate>FORM.BUTTONS.TRIAL_BALANCE</span>
+                <a href ng-disabled="JournalCtrl.selection.selected.groups.length==0"
+                        ng-click="JournalCtrl.commentRows()" data-method="comment">
+                  <i class="fa fa-sticky-note-o"></i> <span translate>FORM.LABELS.COMMENT</span>
                 </a>
               </li>
               <li role="separator" class="divider"></li>
@@ -61,8 +62,8 @@
         </div>
 
         <div class="toolbar-item">
-          <button data-method="comment" class="btn btn-default" ng-disabled="JournalCtrl.selection.selected.groups.length==0" ng-click="JournalCtrl.commentRows()">
-            <i class="fa fa-sticky-note-o"></i> <span class="visible-lg-inline" translate>FORM.LABELS.COMMENT</span>
+          <button data-method="trial" class="btn btn-default" ng-click="JournalCtrl.openTrialBalanceModal()">
+            <i class="fa fa-balance-scale"></i> <span class="visible-lg-inline" translate>FORM.BUTTONS.TRIAL_BALANCE</span>
           </button>
         </div>
 
