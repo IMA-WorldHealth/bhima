@@ -1,12 +1,11 @@
-
 angular.module('bhima.routes')
-  .config(['$stateProvider', function ($stateProvider) {
+  .config(['$stateProvider', ($stateProvider) => {
     $stateProvider
       .state('debtorGroups', {
         url      : '/debtors/groups/:uuid',
         abstract : true,
         params   : {
-          uuid  : { squash: true, value: null },
+          uuid  : { squash : true, value : null },
           label : null,
         },
         controller  : 'DebtorGroupController as GroupCtrl',
@@ -28,6 +27,6 @@ angular.module('bhima.routes')
         url         : '/update',
         templateUrl : 'modules/debtors/groups.update.html',
         controller  : 'DebtorGroupUpdateController as GroupUpdateCtrl',
-        data        : { label: null },
+        data        : { label : null },
       });
   }]);

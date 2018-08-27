@@ -13,7 +13,7 @@ DebtorService.$inject = ['$q', '$http', 'util', 'Store'];
  * @example
  * Controller.$inject = ['DebtorService'];
  *
- * var Debtors = DebtorService;
+ * const Debtors = DebtorService;
  *
  * // Returns all debtor groups
  * Debtors.groups()
@@ -26,7 +26,7 @@ DebtorService.$inject = ['$q', '$http', 'util', 'Store'];
  * @module services/DebtorService
  */
 function DebtorService($q, $http, util, Store) {
-  var service = this;
+  const service = this;
 
   /** returns a list of debtors */
   service.read = read;
@@ -47,45 +47,37 @@ function DebtorService($q, $http, util, Store) {
   service.store = store;
 
   function read(uuid) {
-    var path = '/debtors/';
-
-    return $http.get(path.concat(uuid || ''))
+    const path = `/debtors/${uuid || ''}`;
+    return $http.get(path)
       .then(util.unwrapHttpResponse);
   }
 
   function groupDetail(uuid) {
-    var path = '/debtors/groups/';
-
-    return $http.get(path.concat(uuid))
+    const path = `/debtors/groups/${uuid}`;
+    return $http.get(path)
       .then(util.unwrapHttpResponse);
   }
 
   function groups() {
-    var path = '/debtors/groups';
-
+    const path = '/debtors/groups';
     return $http.get(path)
       .then(util.unwrapHttpResponse);
   }
 
   function update(uuid, params) {
-    var path = '/debtors/';
-
-    return $http.put(path.concat(uuid), params)
+    const path = `/debtors/${uuid}`;
+    return $http.put(path, params)
       .then(util.unwrapHttpResponse);
   }
 
   function invoices(uuid, params) {
-    var path = '/debtors/:uuid/invoices';
-
-    return $http.get(path.replace(':uuid', uuid), { params: params })
+    const path = `/debtors/${uuid}/invoices`;
+    return $http.get(path, { params })
       .then(util.unwrapHttpResponse);
   }
 
   function store() {
-    return read().then(function (data) {
-      return new Store({ identifier: 'uuid', data: data });
-    });
+    return read()
+      .then(data => new Store({ identifier : 'uuid', data }));
   }
-
-  return service;
 }

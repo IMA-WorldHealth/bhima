@@ -1,10 +1,13 @@
 angular.module('bhima.controllers')
-.controller('InvoicingFeeSubscriptions', InvoicingFeeSubscriptions);
+  .controller('InvoicingFeeSubscriptions', InvoicingFeeSubscriptions);
 
-InvoicingFeeSubscriptions.$inject = ['$uibModalInstance', 'DebtorGroup', 'InvoicingFeesService', 'DebtorGroupService', 'NotifyService'];
+InvoicingFeeSubscriptions.$inject = [
+  '$uibModalInstance', 'DebtorGroup', 'InvoicingFeesService',
+  'DebtorGroupService', 'NotifyService',
+];
 
 function InvoicingFeeSubscriptions(ModalInstance, DebtorGroup, InvoicingFees, DebtorGroups, Notify) {
-  var vm = this;
+  const vm = this;
 
   vm.close = ModalInstance.dismiss;
   vm.confirmSubscription = confirmSubscription;
@@ -17,7 +20,7 @@ function InvoicingFeeSubscriptions(ModalInstance, DebtorGroup, InvoicingFees, De
   initialiseSubscriptions();
 
   InvoicingFees.read()
-    .then(function (result) {
+    .then(result => {
       vm.invoicingFees = result;
       vm.entities = vm.invoicingFees;
     });
@@ -30,7 +33,7 @@ function InvoicingFeeSubscriptions(ModalInstance, DebtorGroup, InvoicingFees, De
     }
 
     DebtorGroups.updateInvoicingFees(vm.group.uuid, vm.subscriptions)
-      .then(function (results) {
+      .then(() => {
         ModalInstance.close(formatSelection());
       })
       .catch(Notify.handleError);
@@ -45,14 +48,8 @@ function InvoicingFeeSubscriptions(ModalInstance, DebtorGroup, InvoicingFees, De
    */
   function formatSelection() {
     return vm.invoicingFees
-      .filter(function (invoicingFee) {
-        var selectedOption = vm.subscriptions[invoicingFee.id];
-
-        if (selectedOption) {
-          return invoicingFee;
-        }
-      })
-      .map(function (invoicingFee) {
+      .filter(invoicingFee => vm.subscriptions[invoicingFee.id])
+      .map((invoicingFee) => {
         // transform id to invoicing fee specifically; routes could be updated to use id
         invoicingFee.invoicing_fee_id = invoicingFee.id;
         return invoicingFee;
@@ -67,7 +64,7 @@ function InvoicingFeeSubscriptions(ModalInstance, DebtorGroup, InvoicingFees, De
    * the binary flags for current subscriptions
    */
   function initialiseSubscriptions() {
-    vm.group.invoicingFees.forEach(function (invoicingFee) {
+    vm.group.invoicingFees.forEach((invoicingFee) => {
       vm.subscriptions[invoicingFee.invoicing_fee_id] = true;
     });
   }

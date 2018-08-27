@@ -1,10 +1,13 @@
 angular.module('bhima.controllers')
-.controller('SubsidySubscriptions', SubsidySubscriptions);
+  .controller('SubsidySubscriptions', SubsidySubscriptions);
 
-SubsidySubscriptions.$inject = ['$uibModalInstance', 'DebtorGroup', 'SubsidyService', 'DebtorGroupService', 'NotifyService'];
+SubsidySubscriptions.$inject = [
+  '$uibModalInstance', 'DebtorGroup', 'SubsidyService', 'DebtorGroupService',
+  'NotifyService',
+];
 
 function SubsidySubscriptions(ModalInstance, DebtorGroup, Subsidies, DebtorGroups, Notify) {
-  var vm = this;
+  const vm = this;
 
   vm.close = ModalInstance.dismiss;
   vm.confirmSubscription = confirmSubscription;
@@ -18,7 +21,7 @@ function SubsidySubscriptions(ModalInstance, DebtorGroup, Subsidies, DebtorGroup
   initialiseSubscriptions();
 
   Subsidies.read()
-    .then(function (result) {
+    .then((result) => {
       vm.subsidies = result;
 
       // mirror for generic view
@@ -33,7 +36,7 @@ function SubsidySubscriptions(ModalInstance, DebtorGroup, Subsidies, DebtorGroup
     }
 
     DebtorGroups.updateSubsidies(vm.group.uuid, vm.subscriptions)
-      .then(function (results) {
+      .then(() => {
         ModalInstance.close(formatSelection());
       })
       .catch(Notify.handleError);
@@ -48,14 +51,8 @@ function SubsidySubscriptions(ModalInstance, DebtorGroup, Subsidies, DebtorGroup
    */
   function formatSelection() {
     return vm.subsidies
-      .filter(function (subsidy) {
-        var selectedOption = vm.subscriptions[subsidy.id];
-
-        if (selectedOption) {
-          return subsidy;
-        }
-      })
-      .map(function (subsidy) {
+      .filter(subsidy => vm.subscriptions[subsidy.id])
+      .map(subsidy => {
         // transform id to subsidy specifically; routes could be updated to use id
         subsidy.subsidy_id = subsidy.id;
         return subsidy;
@@ -70,7 +67,7 @@ function SubsidySubscriptions(ModalInstance, DebtorGroup, Subsidies, DebtorGroup
    * the binary flags for current subscriptions
    */
   function initialiseSubscriptions() {
-    vm.group.subsidies.forEach(function (subsidy) {
+    vm.group.subsidies.forEach((subsidy) => {
       vm.subscriptions[subsidy.subsidy_id] = true;
     });
   }
