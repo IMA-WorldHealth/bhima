@@ -6,18 +6,16 @@
  */
 
 /* loading grid actions */
-const GA = require('../shared/GridAction');
+const GridRow = require('../shared/GridRow');
+const FU = require('../shared/FormUtils');
 
 function UserPage() {
   const page = this;
-
-  const userGrid = element(by.id('users-grid'));
-  const addUserButon = element(by.css('[data-method="create"]'));
-  const actionLinkColumn = 2;
+  const grid = element(by.id('users-grid'));
 
   /* send back the number of user in the grid */
   function getUserCount() {
-    return userGrid
+    return grid
       .element(by.css('.ui-grid-render-container-body'))
       .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'))
       .count();
@@ -27,57 +25,64 @@ function UserPage() {
    * simulate the add user button click to show the dialog of creation
    */
   function createUser() {
-    return addUserButon.click();
+    return FU.buttons.create();
   }
 
   /**
-   * simulate a click to a link tailed to the user
-   *  listed in the grid to show the dialog for an editing
+   * @method editUser
+   *
+   * @description
+   * Edits a user by their display_name.
    */
-  function editUser(n) {
-    GA.clickOnMethod(n, actionLinkColumn, 'edit', 'users-grid');
+  function editUser(name) {
+    const row = new GridRow(name);
+    row.dropdown().click();
+    row.edit().click();
   }
 
   /**
-   * simulate a link clicking on the grid to show permission dialog
+   * @method editUserDepot
+   *
+   * @description
+   * Clicks on the user's depot permissions
    */
-  function editUserPermission(n) {
-    GA.clickOnMethod(n, actionLinkColumn, 'permission', 'users-grid');
+  function editUserDepot(name) {
+    const row = new GridRow(name);
+    row.dropdown().click();
+    row.menu.$('[data-method="depot"]').click();
   }
 
   /**
-   * simulate a link clicking on the grid to show depot dialog
+   * @method editUserCashbox
+   *
+   * @description
+   * Clicks on the user edit cashbox permission by their name.
    */
-  function editUserDepot(n) {
-    GA.clickOnMethod(n, actionLinkColumn, 'depot', 'users-grid');
+  function editUserCashbox(name) {
+    const row = new GridRow(name);
+    row.dropdown().click();
+    row.menu.$('[data-method="cashbox"]').click();
   }
 
   /**
-   * simulate a link clicking on the grid to show cashbox dialog
+   * @method toggleUser
+   *
+   * @description
+   * Toggles a user on or off.
    */
-  function editUserCashbox(n) {
-    GA.clickOnMethod(n, actionLinkColumn, 'cashbox', 'users-grid');
-  }
-
-  /**
-   * simulate a link clicking on the grid to show activation dialog
-   */
-  function activateUser(n) {
-    GA.clickOnMethod(n, actionLinkColumn, 'activate', 'users-grid');
-  }
-
-  function deactivateUser(n) {
-    GA.clickOnMethod(n, actionLinkColumn, 'deactivate', 'users-grid');
+  function toggleUser(name, on = true) {
+    const row = new GridRow(name);
+    row.dropdown().click();
+    const key = on ? 'activate' : 'deactivate';
+    row.menu.$(`[data-method="${key}"]`).click();
   }
 
   page.getUserCount = getUserCount;
   page.createUser = createUser;
   page.editUser = editUser;
-  page.editUserPermission = editUserPermission;
   page.editUserDepot = editUserDepot;
   page.editUserCashbox = editUserCashbox;
-  page.activateUser = activateUser;
-  page.deactivateUser = deactivateUser;
+  page.toggleUser = toggleUser;
 }
 
 module.exports = UserPage;

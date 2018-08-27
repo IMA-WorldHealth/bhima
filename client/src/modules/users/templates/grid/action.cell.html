@@ -1,20 +1,21 @@
 <div class="ui-grid-cell-contents text-right"
-  uib-dropdown dropdown-append-to-body uib-dropdown-toggle>
-  
-  <a href>
+  uib-dropdown
+  dropdown-append-to-body
+  uib-dropdown-toggle
+  data-row="{{row.entity.display_name}}">
+  <a href data-action="open-dropdown-menu">
     <span data-method="action" translate>FORM.BUTTONS.ACTIONS</span>
     <span class="caret"></span>
   </a>
 
-  <ul data-action="{{ rowRenderIndex}}"  class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
-   
-    <li class="dropdown-header">
-      <a href>
-        <span>{{row.entity.display_name}}</span>
+  <ul data-row-menu="{{row.entity.display_name}}" class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
+    <li class="dropdown-header">{{row.entity.display_name}}</li>
+
+    <li>
+      <a data-method="edit-record" ng-click="grid.appScope.edit(row.entity)" href>
+        <i class="fa fa-edit"></i> <span translate>FORM.BUTTONS.EDIT</span>
       </a>
     </li>
-    <li class="divider"></li>
-    <li><a data-method="edit" ng-click="grid.appScope.edit(row.entity)" href><i class="fa fa-edit"></i> <span translate>FORM.BUTTONS.EDIT</span></a></li>
     <li>
       <a data-method="depot" ng-click="grid.appScope.depotManagement(row.entity)" href>
         <i class="fa fa-cubes"></i> <span translate>FORM.BUTTONS.DEPOT_MANAGEMENT</span>
@@ -30,9 +31,9 @@
         <i class="fa fa-edit"></i><span translate>FORM.LABELS.EDIT_ROLE</span>
       </a>
     </li>
-    
 
     <li class="divider"></li>
+
     <li ng-if="!row.entity.deactivated">
       <a data-method="deactivate" ng-click="grid.appScope.activatePermissions(row.entity, 1, 'FORM.DIALOGS.CONFIRM_DEACTIVATION')" href>
         <span class="text-danger">
@@ -40,6 +41,7 @@
         </span>
       </a>
     </li>
+
     <li ng-if="row.entity.deactivated">
       <a data-method="activate" ng-click="grid.appScope.activatePermissions(row.entity, 0, 'FORM.DIALOGS.CONFIRM_ACTIVATION')" href>
         <span class="text-danger">
