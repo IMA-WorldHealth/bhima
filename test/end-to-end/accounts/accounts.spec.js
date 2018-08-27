@@ -13,6 +13,7 @@ describe('Account Management', () => {
 
   const INITIAL_ACCOUNTS = 20;
   const OHADA_ACCOUNTS_CSV_FILE = 'ohada-accounts.csv';
+  const OHADA_ACCOUNTS_CSV_CHARACTERS_FILE = 'ohada-accounts-characters.csv';
   const BAD_OHADA_ACCOUNTS_CSV_FILE = 'bad-ohada-accounts.csv';
 
   // this is an account at the top of the grid - until this test is improved it relies
@@ -155,6 +156,16 @@ describe('Account Management', () => {
 
     page.chooseImportOption(1);
     page.uploadFile(OHADA_ACCOUNTS_CSV_FILE);
+    FU.modal.submit();
+    components.notification.hasSuccess();
+  });
+
+  // import custom ohada accounts from csv of strings
+  it('import default ohada accounts from csv of strings', () => {
+    page.openImportMenu();
+
+    page.chooseImportOption(1);
+    page.uploadFile(OHADA_ACCOUNTS_CSV_CHARACTERS_FILE);
     FU.modal.submit();
     components.notification.hasSuccess();
   });
