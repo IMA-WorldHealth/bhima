@@ -41,7 +41,9 @@ function importAccounts(req, res, next) {
   const params = util.convertStringToNumber(req.query);
 
   if (params.option !== IMPORT_DEFAULT_OHADA_ACCOUNTS && (!req.files || req.files.length === 0)) {
-    next(new BadRequest('Expected at least one file upload but did not receive any files.', 'ERRORS.MISSING_UPLOAD_FILES'));
+    const errorDetails =
+      new BadRequest('Expected at least one file upload but did not receive any files.', 'ERRORS.MISSING_UPLOAD_FILES');
+    next(errorDetails);
     return;
   }
 
