@@ -77,8 +77,7 @@ describe('util.js', () => {
     const promise = util.formatCsvToJson(path.resolve(filePath));
     return promise
       .then(csvObjectArray => {
-        const [first] = csvObjectArray;
-        const second = csvObjectArray[1];
+        const [first, second] = csvObjectArray;
         expect(csvObjectArray).to.be.an('array');
 
         // check the value contained in the csv file

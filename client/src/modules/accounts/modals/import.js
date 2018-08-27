@@ -8,7 +8,9 @@ ImportAccountsController.$inject = [
 function ImportAccountsController(Instance, Accounts, Upload, Notify, $state) {
   const vm = this;
 
-  const IMPORT_DEFAULT_OHADA_ACCOUNTS = 1;
+  vm.LOAD_DEFAULT_OHADA_ACCOUNTS = 1;
+  vm.LOAD_OHADA_ACCOUNTS = 2;
+  vm.LOAD_OTHER_ACCOUNTS = 3;
 
   vm.downloadTemplate = Accounts.downloadAccountsTemplate;
   vm.cancel = Instance.close;
@@ -19,12 +21,12 @@ function ImportAccountsController(Instance, Accounts, Upload, Notify, $state) {
 
   vm.submit = () => {
     // send data only when a file is selected
-    if ((vm.option !== IMPORT_DEFAULT_OHADA_ACCOUNTS) && !vm.file) {
+    if ((vm.option !== vm.LOAD_DEFAULT_OHADA_ACCOUNTS) && !vm.file) {
       vm.noSelectedFile = true;
-      return;
+      return null;
     }
 
-    uploadFile(vm.file);
+    return uploadFile(vm.file);
   };
 
   vm.cancel = () => {
@@ -42,7 +44,7 @@ function ImportAccountsController(Instance, Accounts, Upload, Notify, $state) {
     };
 
     // upload the file to the server
-    Upload.upload(params)
+    return Upload.upload(params)
       .then(handleSuccess, handleError, handleProgress);
 
     // success upload handler

@@ -2,7 +2,7 @@ angular.module('bhima.services')
   .service('AccountService', AccountService);
 
 AccountService.$inject = [
-  'PrototypeApiService', 'bhConstants', 'util',
+  'PrototypeApiService', 'bhConstants',
 ];
 
 /**
@@ -10,7 +10,7 @@ AccountService.$inject = [
  *
  * A service wrapper for the /accounts HTTP endpoint.
  */
-function AccountService(Api, bhConstants, util) {
+function AccountService(Api, bhConstants) {
   const baseUrl = '/accounts/';
   const service = new Api(baseUrl);
 
@@ -175,7 +175,7 @@ function AccountService(Api, bhConstants, util) {
     const url = baseUrl.concat('template');
     return service.$http.get(url)
       .then(response => {
-        return util.download(response, 'Import Accounts Template', 'csv');
+        return service.util.download(response, 'Import Accounts Template', 'csv');
       });
   }
 

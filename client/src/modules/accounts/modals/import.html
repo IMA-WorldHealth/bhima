@@ -14,7 +14,7 @@
         <label>
           <input type="radio" name="importingOption" id="default_ohada_accounts_option" 
             ng-model="ImportAccountsCtrl.option" 
-            ng-value="1" 
+            ng-value="ImportAccountsCtrl.LOAD_DEFAULT_OHADA_ACCOUNTS" 
             ng-change="ImportAccountsCtrl.onChange(ImportAccountsCtrl.option)">
           <span translate>ACCOUNT.IMPORT.LOAD_DEFAULT_OHADA_ACCOUNTS</span>
         </label>
@@ -23,7 +23,7 @@
         <label>
           <input type="radio" name="importingOption" id="import_ohada_accounts_option" 
             ng-model="ImportAccountsCtrl.option" 
-            ng-value="2"
+            ng-value="ImportAccountsCtrl.LOAD_OHADA_ACCOUNTS"
             ng-change="ImportAccountsCtrl.onChange(ImportAccountsCtrl.option)">
           <span translate>ACCOUNT.IMPORT.LOAD_OHADA_ACCOUNTS</span>
         </label>
@@ -32,14 +32,14 @@
         <label>
           <input type="radio" name="importingOption" id="import_other_accounts_option" 
             ng-model="ImportAccountsCtrl.option" 
-            ng-value="3"
+            ng-value="ImportAccountsCtrl.LOAD_OTHER_ACCOUNTS"
             ng-change="ImportAccountsCtrl.onChange(ImportAccountsCtrl.option)">
           <span translate>ACCOUNT.IMPORT.LOAD_OTHER_ACCOUNTS</span>
         </label>
       </div>
     </div>
 
-    <section ng-if="ImportAccountsCtrl.option === 2 || ImportAccountsCtrl.option === 3">
+    <section ng-if="ImportAccountsCtrl.option === ImportAccountsCtrl.LOAD_OHADA_ACCOUNTS || ImportAccountsCtrl.option === ImportAccountsCtrl.LOAD_OTHER_ACCOUNTS">
       <div class="alert alert-info">
         <p translate>ACCOUNT.IMPORT.DESCRIPTION</p>
         <a ng-click="ImportAccountsCtrl.downloadTemplate()" href>
@@ -91,7 +91,6 @@
     <bh-loading-button 
       disabled="ImportAccountsCtrl.uploadState === 'uploading' || !ImportAccountsCtrl.option" 
       loading-state="ActionForm.$loading">
-      <span translate>FORM.BUTTONS.SUBMIT</span>
     </bh-loading-button>
   </div>
 </form>

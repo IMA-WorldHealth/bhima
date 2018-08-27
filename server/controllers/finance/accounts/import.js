@@ -41,7 +41,7 @@ function importAccounts(req, res, next) {
   const params = util.convertStringToNumber(req.query);
 
   if (params.option !== IMPORT_DEFAULT_OHADA_ACCOUNTS && (!req.files || req.files.length === 0)) {
-    next(new BadRequest('Something broke', 'ERRORS.EVERYTHING_BAD'));
+    next(new BadRequest('Expected at least one file upload but did not receive any files.', 'ERRORS.MISSING_UPLOAD_FILES'));
     return;
   }
 
@@ -58,7 +58,7 @@ function importAccounts(req, res, next) {
   }
 
   Q.all(dbPromises)
-    .then(() => res.sendStatus(200))
+    .then(() => res.sendStatus(201))
     .catch(next)
     .done();
 }
@@ -71,8 +71,6 @@ function importAccounts(req, res, next) {
  * @param {number} option the option (1 | 2 | 3) sent by the client
  */
 function importAccountFromFile(filePath, enterpriseId, option) {
-  let query;
-  let queryParams;
   return util.formatCsvToJson(filePath)
     .then(data => {
       if (!hasValidDataFormat(data)) {
@@ -82,8 +80,8 @@ function importAccountFromFile(filePath, enterpriseId, option) {
       const transaction = db.transaction();
 
       data.forEach(item => {
-        query = 'CALL ImportAccount(?, ?, ?, ?, ?, ?);';
-        queryParams = [
+        const query = 'CALL ImportAccount(?, ?, ?, ?, ?, ?);';
+        const queryParams = [
           enterpriseId,
           Number.parseInt(item.account_number, 10),
           item.account_label,

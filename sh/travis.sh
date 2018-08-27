@@ -30,9 +30,6 @@ mysql -h $DB_HOST -u root -e "FLUSH PRIVILEGES;"
 ## install and configure softwares
 export CHROME_BIN=/usr/bin/google-chrome
 /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16
-sudo apt-get update -qq
-wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-sudo dpkg -i google-chrome*.deb
 wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
 tar -xf wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
 sudo mv ./wkhtmltox/bin/wkhtmltopdf  /usr/bin/wkhtmltopdf

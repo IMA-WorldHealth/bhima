@@ -38,9 +38,6 @@ function accountStateProvider($stateProvider) {
 
     .state('accounts.import', {
       url : '/import',
-      params : {
-        parentId : { squash : true, value : null },
-      },
       onEnter : ['$uibModal', importAccountsModal],
       onExit : ['$uibModalStack', closeModal],
     });
@@ -48,8 +45,6 @@ function accountStateProvider($stateProvider) {
 
 function accountsModal($modal) {
   $modal.open({
-    keyboard : false,
-    backdrop : 'static',
     templateUrl : 'modules/accounts/edit/accounts.edit.modal.html',
     controller : 'AccountEditController as AccountEditCtrl',
   });
@@ -57,8 +52,6 @@ function accountsModal($modal) {
 
 function importAccountsModal($modal) {
   $modal.open({
-    keyboard : false,
-    backdrop : 'static',
     templateUrl : 'modules/accounts/modals/import.html',
     controller : 'ImportAccountsController as ImportAccountsCtrl',
   });
