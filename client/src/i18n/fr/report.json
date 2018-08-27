@@ -156,6 +156,8 @@
       "PDF":"PDF",
       "HTML":"HTML",
       "CSV":"CSV",
+      "WORD" : "WORD",
+      "EXCEL" : "EXCEL",
       "SAVE_SUCCESS":"Rapport enregistré avec succès",
       "BACK":"Revenir en arrière",
       "OPTIONS":"Options",

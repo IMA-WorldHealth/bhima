@@ -75,5 +75,44 @@
       border: none;
     }
   </style>
+
+  <script>
+    function setInlineStyle(element) {
+      var stylearray = document.defaultView.getComputedStyle(element, null);
+      var styleText = '';
+      for (var key in stylearray) {
+        styleText += key + ': ' + stylearray[key] + ';';
+      }
+      element.style = styleText;
+    }
+
+    // Dom walking
+    function loopPageNodes(node) {
+      var nodes = node.childNodes;
+      for (var i = 0; i < nodes.length; i++) {
+        if (!nodes[i]) {
+          continue;
+        }
+        try {
+          setInlineStyle(nodes[i]);
+        } catch (error) {
+        }
+        if (nodes[i].childNodes.length > 0) {
+          loopPageNodes(nodes[i]);
+        }
+      }
+    }
+    //@TODO 
+    // 1. copy the body content (temp1)
+    // 2. add inline styles(temp2)
+    // 3. set body = temp1
+    // 4. return temp2
+    function htmlContent()
+    {
+      var bodys = document.getElementsByTagName('body');
+      loopPageNodes(bodys[0]);
+      return bodys[0].innerHTML;
+    }  
+  </script>
   <meta charset="utf8" />
 </head>
