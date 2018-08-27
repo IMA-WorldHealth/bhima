@@ -1,5 +1,11 @@
-<ng-form name="$ctrl.form">
-  <div class="radio" ng-class="{ 'has-error' : ($ctrl.validationTrigger && $ctrl.form.$invalid) || !$ctrl.valid }" data-bh-currency-select>
+<fieldset
+  ng-form="CurrencySelectForm"
+  novalidate
+  bh-currency-select>
+
+  <div class="form-group"
+       ng-class="{ 'has-error' : CurrencySelectForm.$submitted && CurrencySelectForm.currency.$invalid || !$ctrl.valid }">
+
     <p class="control-label" style="margin-bottom:5px;">
       <strong translate>{{ $ctrl.label }}</strong>
     </p>
@@ -25,7 +31,7 @@
     </label>
 
     <!-- radio button validation messages -->
-    <div class="help-block" ng-messages="$ctrl.form.currency.$error" ng-show="$ctrl.validationTrigger">
+    <div class="help-block" ng-messages="CurrencySelectForm.fiscal.$error" ng-show="CurrencySelectForm.$submitted">
       <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
     </div>
 
@@ -38,4 +44,4 @@
       </a>
     </p>
   </div>
-</ng-form>
+</fieldset>

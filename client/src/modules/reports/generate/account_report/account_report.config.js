@@ -54,7 +54,10 @@ function AccountReportConfigController(
   };
 
   vm.preview = function preview(form) {
-    if (form.$invalid) { return 0; }
+    if (form.$invalid) {
+      Notify.danger('FORM.ERRORS.RECORD_ERROR');
+      return 0;
+    }
 
     parseDateInterval(vm.reportDetails);
 
