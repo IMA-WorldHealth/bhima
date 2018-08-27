@@ -1,9 +1,11 @@
-<ng-form name="DateIntervalForm" novalidate>
+<fieldset 
+  ng-form="DateIntervalForm"
+  novalidate
+  bh-date-interval>
 
-  <div
-    class="form-group"
-    ng-class="{'has-error': $ctrl.validationTrigger && (DateIntervalForm.dateFrom.$invalid || DateIntervalForm.dateTo.$invalid)}"
-    style="margin-bottom:0">
+  <div class="form-group"
+       ng-class="{'has-error': DateIntervalForm.$submitted && (DateIntervalForm.dateFrom.$invalid || DateIntervalForm.dateTo.$invalid)}"
+       style="margin-bottom:0">
     <label class="control-label">
       <span translate>{{ $ctrl.label }}</span>
       <span ng-if="$ctrl.selected" class="label label-warning" translate>{{ $ctrl.selected }}</span>
@@ -17,7 +19,7 @@
       </a>
     </li>
 
-    <li class="pull-right" ng-if = "$ctrl.canClear">
+    <li class="pull-right" ng-if="$ctrl.canClear">
       <a href ng-click="$ctrl.clear()" tabindex="-1">
         <i class="fa fa-eraser"></i> <span translate>FORM.BUTTONS.CLEAR</span>
       </a>
@@ -26,7 +28,7 @@
 
   <div class="row" date-id="$ctrl.dateId" data-bh-date-interval>
     <div class="form-group col-md-5"
-      ng-class="{ 'has-error' : $ctrl.validationTrigger && DateIntervalForm.dateFrom.$invalid }">
+	 ng-class="{ 'has-error' : DateIntervalForm.$submitted && DateIntervalForm.dateFrom.$invalid }">
       <div class="input-group">
         <input
           id="modal-date-from"
@@ -40,13 +42,13 @@
           ng-model="$ctrl.dateFrom"
           ng-change="$ctrl.onChange"
           ng-required="$ctrl.required">
-          <span class="input-group-btn">
-            <button class="btn btn-default" type="button" ng-click="$ctrl.dateFromIsOpen =! $ctrl.dateFromIsOpen">
-              <i class="fa fa-calendar-plus-o"></i>
-            </button>
-          </span>
+        <span class="input-group-btn">
+          <button class="btn btn-default" type="button" ng-click="$ctrl.dateFromIsOpen =! $ctrl.dateFromIsOpen">
+            <i class="fa fa-calendar-plus-o"></i>
+          </button>
+        </span>
       </div>
-      <div class="help-block" ng-messages="DateIntervalForm.dateFrom.$error" ng-show="$ctrl.validationTrigger && DateIntervalForm.dateFrom.$invalid">
+      <div class="help-block" ng-messages="DateIntervalForm.dateFrom.$error" ng-show="DateIntervalForm.$submitted && DateIntervalForm.dateFrom.$invalid">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
       </div>
     </div>
@@ -56,7 +58,7 @@
     </div>
 
     <div class="form-group col-md-5"
-      ng-class="{ 'has-error' : $ctrl.validationTrigger && DateIntervalForm.dateTo.$invalid }">
+	 ng-class="{ 'has-error' : DateIntervalForm.$submitted && DateIntervalForm.dateTo.$invalid }">
       <div class="input-group">
         <input
           id="modal-date-to"
@@ -71,15 +73,15 @@
           ng-change="$ctrl.onChange"
           ng-required="$ctrl.required"
           >
-          <span class="input-group-btn">
-            <button class="btn btn-default" type="button" ng-click="$ctrl.dateToIsOpen =! $ctrl.dateToIsOpen">
-              <i class="fa fa-calendar-plus-o"></i>
-            </button>
-          </span>
+        <span class="input-group-btn">
+          <button class="btn btn-default" type="button" ng-click="$ctrl.dateToIsOpen =! $ctrl.dateToIsOpen">
+            <i class="fa fa-calendar-plus-o"></i>
+          </button>
+        </span>
       </div>
-      <div class="help-block" ng-messages="DateIntervalForm.dateTo.$error" ng-show="$ctrl.validationTrigger && DateIntervalForm.dateTo.$invalid">
+      <div class="help-block" ng-messages="DateIntervalForm.dateTo.$error" ng-show="DateIntervalForm.$submitted && DateIntervalForm.dateTo.$invalid">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
       </div>
     </div>
   </div>
-</ng-form>
+</fieldset>

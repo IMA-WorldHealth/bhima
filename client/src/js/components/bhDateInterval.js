@@ -41,7 +41,9 @@ function bhDateInterval(moment, bhConstants) {
 
   vm.$onInit = function $onInit() {
     // specify if clear button can be displayed
-    vm.canClear = (vm.canClear || true);
+    if (!angular.isDefined(vm.canClear)) {
+      vm.canClear = true;
+    }
 
     vm.options = [
       { translateKey : 'FORM.LABELS.TODAY', fn : day, range : 'day' },
