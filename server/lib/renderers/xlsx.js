@@ -99,8 +99,22 @@ function render(data, template, options) {
  it return an empty array if no data found
 */
 function find(data, _options) {
+  let IGNORED_COLUMNS = [
+    'uuid', 'invoice_uuid', 'entity_uuid',
+    'reference_uuid', 'record_uuid', 'debtor_uuid',
+  ];
   const options = _options || {};
-  return data.rows || data[options.rowsDataKey] || [];
+  const result = data.rows || data[options.rowsDataKey] || [];
+  // check if it's important to remove some unseful columns for the user
+  if (options.ignoredColumns) {
+    IGNORED_COLUMNS = IGNORED_COLUMNS.concat(options.ignoredColumns);
+  }
+  result.forEach(row => {
+    IGNORED_COLUMNS.forEach(col => {
+      delete row[col];
+    });
+  });
+  return result;
 }
 // set value to a paticular cell
 function setValue(ws, x, y, value) {
