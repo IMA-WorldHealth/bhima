@@ -1,7 +1,7 @@
 angular.module('bhima.services')
   .service('ConfigurationService', ConfigurationService);
 
-ConfigurationService.$inject = ['PrototypeApiService', '$uibModal', '$http', 'util'];
+ConfigurationService.$inject = ['PrototypeApiService', '$http', 'util'];
 
 /**
  * @class RubricService
@@ -10,7 +10,7 @@ ConfigurationService.$inject = ['PrototypeApiService', '$uibModal', '$http', 'ut
  * @description
  * Encapsulates common requests to the /rubric_config/ URL.
  */
-function ConfigurationService(Api, Modal, $http, util) {
+function ConfigurationService(Api, $http, util) {
   var service = new Api('/rubric_config/');
 
   service.getRubrics = getRubrics;
