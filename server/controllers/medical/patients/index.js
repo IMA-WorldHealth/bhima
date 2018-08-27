@@ -464,7 +464,7 @@ function find(options) {
   // filters for location
   const orignSql = `(originVillage.name LIKE ?) OR (originSector.name LIKE ?) OR (originProvince.name LIKE ?)`;
   const params1 = _.fill(Array(3), `%${options.originLocationLabel || ''}%`);
-  filters.customMultiParameters('originLocationLabel', orignSql, params1);
+  filters.custom('originLocationLabel', orignSql, params1);
   // default registration date
   filters.period('period', 'registration_date');
   filters.dateFrom('custom_period_start', 'registration_date');
