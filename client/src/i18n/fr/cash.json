@@ -7,6 +7,7 @@
     "CREDIT_PATIENT_ACCOUNT": "Le compte du patient a été credité",
     "CONFIRM_PAYMENT_WHEN_CAUTION":"Procéder au paiement alors que le patient dispose d'une caution ?",
     "CURRENT_CASHBOX":"Caisse courante",
+    "LINK_TO_CASHFLOW":"Lien vers le rapport de trésorerie",
     "PAYMENT_DESCRIPTION":"Paiement par {{patientName}} ({{patientReference}}) contre les facture(s) {{invoiceReferences}}.",
     "PREPAYMENT_DESCRIPTION":"Paiement caution par {{patientName}} ({{patientReference}}).",
     "DEBTOR_INVOICES":{
