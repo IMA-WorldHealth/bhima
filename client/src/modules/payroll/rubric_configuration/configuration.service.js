@@ -18,6 +18,12 @@ function ConfigurationService(Api, $http, util) {
 
   // loads the configuration's rubrics
   function getRubrics(id) {
+    if (angular.isUndefined(id)) {
+      throw new Error(
+        'Trying to get configuration of rubrics without the identity property'
+      );
+    }
+
     return $http.get(`/rubric_config/${id}/setting`)
       .then(util.unwrapHttpResponse);
   }

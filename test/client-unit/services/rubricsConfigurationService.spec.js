@@ -71,4 +71,9 @@ describe('RubricsConfigurationService', () => {
 
     expect(value).to.have.length(4);
   });
+
+  it('Count the Numbers of Rubrics Configured For the period Undefined', () => {
+    let value;
+    expect(RubricsConfigs.getRubrics).to.throw('Trying to get configuration of rubrics without the identity property');
+  });
 });

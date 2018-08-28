@@ -192,5 +192,4 @@ describe('(/payroll/rubrics) The /payroll/rubrics  API endpoint', function () {
       })
       .catch(helpers.handler);
   });
-
 });
