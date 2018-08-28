@@ -42,4 +42,3 @@ branches:
 
 addons:
   chrome: stable
-  artifacts: true
