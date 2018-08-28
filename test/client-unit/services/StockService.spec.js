@@ -1,6 +1,6 @@
 /* global inject, expect */
 
-describe.only('StockService', StockServiceTests);
+describe('StockService', StockServiceTests);
 
 function StockServiceTests() {
   // define modules
@@ -100,4 +100,27 @@ function StockServiceTests() {
     expect(uniformDisplayName).to.have.property('displayName', entityDisplayName.display_name);
   });
 
+  it('#getQueryString() returns a query string with parameters for a request', () => {
+    const FILTER_KEY_MOVEMENT = 'movement';
+    const FILE_TYPE_CSV = 'csv';
+    const query = Stock.getQueryString(FILTER_KEY_MOVEMENT, FILE_TYPE_CSV);
+    const params = query.split('&');
+    let fileTypeRendererExists = false;
+    let periodParamExists = false;
+    let limitParamExists = false;
+    for (let i = 0; i < params.length; i++) {
+      if (params[i] === `renderer=${FILE_TYPE_CSV}`) {
+        fileTypeRendererExists = true;
+      }
+      if (params[i].indexOf('period=') > -1) {
+        periodParamExists = true;
+      }
+      if (params[i].indexOf('limit=') > -1) {
+        limitParamExists = true;
+      }
+    }
+    expect(fileTypeRendererExists).to.be.equal(true);
+    expect(periodParamExists).to.be.equal(true);
+    expect(limitParamExists).to.be.equal(true);
+  });
 }

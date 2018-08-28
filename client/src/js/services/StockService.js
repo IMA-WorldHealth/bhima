@@ -179,8 +179,15 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
     stockFilter[filterKey].loadCache(filterCache[filterKey].filters || {});
   }
 
-  // downloads a type of report based on the
-  function download(filterKey, type) {
+  /**
+   * @function getQueryString
+   * @description
+   * returns a query string with parameters with the consideration
+   * of the current applied filters
+   * @param {string} filterKey
+   * @param {string} type
+   */
+  function getQueryString(filterKey, type) {
     const filterOpts = stockFilter[filterKey].formatHTTP();
     const defaultOpts = { renderer : type, lang : Languages.key };
 
@@ -264,7 +271,7 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
     cacheFilters,
     removeFilter,
     loadCachedFilters,
-    download,
+    getQueryString,
     uniformSelectedEntity,
     processLotsFromStore,
     statusLabelMap,

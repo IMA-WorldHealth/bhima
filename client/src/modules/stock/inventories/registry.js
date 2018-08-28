@@ -148,6 +148,7 @@ function StockInventoriesController(
   vm.enterprise = Session.enterprise;
   vm.gridApi = {};
   vm.saveGridState = state.saveGridState;
+  vm.getQueryString = Stock.getQueryString;
 
   function clearGridState() {
     state.clearGridState();
