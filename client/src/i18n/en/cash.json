@@ -8,6 +8,7 @@
     "CONFIRM_PAYMENT_WHEN_CAUTION":"The debtor has a positive balance with the hospital.  Accepting cash from the debtor will increase their credit with the hospital.  Are you sure you want to accept payment?",
     "CURRENT_CASHBOX":"Current Cashbox",
     "DEBTOR_INVOICES":"Debtor Invoices",
+    "LINK_TO_CASHFLOW":"Link to Cashflow Report",
     "PAYMENT":"Payment",
     "PAYMENT_DESCRIPTION":"Cash payment by {{patientName}} ({{patientReference}}) against invoice(s) {{invoiceReferences}}.",
     "PREPAYMENT_DESCRIPTION":"Prepayment by {{patientName}} ({{patientReference}}).",
