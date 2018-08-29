@@ -45,9 +45,13 @@ function FeeCenterModalController($state, FeeCenter, ModalService, Notify, AppCa
               } else {
                 vm.isCostCenter = 1;
                 vm.auxiliaryCenter = 1;
-              }              
-              vm.feeCenter.is_cost =  reference.is_cost;
+              }
+              vm.feeCenter.is_cost = reference.is_cost;
               vm.feeCenter.reference_cost_id = reference.account_reference_id;
+              vm.costCenterReference = {
+                account_reference_id : reference.account_reference_id,
+                is_cost : reference.is_cost,
+              };
             }
 
             if (!reference.is_cost) {
@@ -60,6 +64,10 @@ function FeeCenterModalController($state, FeeCenter, ModalService, Notify, AppCa
 
               vm.feeCenter.is_cost = reference.is_cost;
               vm.feeCenter.reference_profit_id = reference.account_reference_id;
+              vm.profitCenterReference = {
+                account_reference_id : reference.account_reference_id,
+                is_cost : reference.is_cost,
+              };
             }
           });
         }
@@ -110,7 +118,7 @@ function FeeCenterModalController($state, FeeCenter, ModalService, Notify, AppCa
     let promise;
 
 
-    if (feeCenterForm.$invalid || feeCenterForm.$pristine) { return 0; }
+    if (feeCenterForm.$invalid) { return 0; }
 
     if (vm.isCostCenter || vm.hasCostCenter) {
       vm.referenceFeeCenter.push(vm.costCenterReference);
@@ -127,9 +135,9 @@ function FeeCenterModalController($state, FeeCenter, ModalService, Notify, AppCa
       projects : vm.projects,
     };
 
-    promise = (vm.isCreating) ?
-      FeeCenter.create(data) :
-      FeeCenter.update(vm.feeCenter.id, data);
+    promise = (vm.isCreating)
+      ? FeeCenter.create(data)
+      : FeeCenter.update(vm.feeCenter.id, data);
 
     return promise
       .then(() => {

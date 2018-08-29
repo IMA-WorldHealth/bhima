@@ -27,17 +27,17 @@ function lookupFeeCenter(id) {
     db.exec(sqlReferenceFeeCenter, [id]),
     db.exec(sqlProjectsFeeCenter, [id]),
   ])
-    .spread((feeCenter, references, projectsFeeCenter) => {
-      const projects = projectsFeeCenter.map(project => project.project_id);
+  .spread((feeCenter, references, projectsFeeCenter) => {
+    const projects = projectsFeeCenter.map(project => project.project_id);
 
-      const data = {
-        feeCenter,
-        references,
-        projects,
-      };
+    const data = {
+      feeCenter,
+      references,
+      projects,
+    };
 
-      return data;
-    });
+    return data;
+  });
 }
 
 // Lists
@@ -123,8 +123,8 @@ function create(req, res, next) {
 
       return transaction.execute();
     })
-    .then(() => {
-      res.sendStatus(201);
+    .then((rows) => {
+      res.status(201).json(rows);
     })
     .catch(next)
     .done();
@@ -241,3 +241,4 @@ exports.update = update;
 
 // Delete a feeCenter
 exports.delete = del;
+
