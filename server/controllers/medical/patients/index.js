@@ -8,11 +8,10 @@
  * This module is responsible for handling all crud operations relatives to patients
  * and define all patient API functions.
  *
- *
  * @requires q
  * @requires lodash
  * @requires lib/db
- * @requires lib/uuid/v4
+ * @requires lib/util
  * @requires lib/errors/BadRequest
  * @requires lib/errors/NotFound
  * @requires lib/barcode
@@ -27,10 +26,10 @@
  */
 
 const _ = require('lodash');
-const uuid = require('uuid/v4');
 
 const identifiers = require('../../../config/identifiers');
 
+const { uuid } = require('../../../lib/util');
 const barcode = require('../../../lib/barcode');
 const db = require('../../../lib/db');
 const FilterParser = require('../../../lib/filter');
@@ -276,7 +275,7 @@ function lookupPatientPriceList(patientUuid) {
  *
  * @description
  * This function is used to update the text value of the creditor
- * and debitor tables in case the patient's name was changed
+ * and debtor tables in case the patient's name was changed
  *
  * @param {String} patientUuid - the patient's unique id hex string
  */
@@ -294,16 +293,15 @@ function updatePatientDebCred(patientUuid) {
   `;
 
   return db.exec(sql, buid)
-    .then((row) => {
-      const debtorUuid = db.bid(row[0].debtorUuid);
-      const creditorUuid = db.bid(row[0].creditorUuid);
+    .then(([patient]) => {
+      db.convert(patient, ['debtorUuid', 'creditorUuid']);
 
       const debtorText = {
-        text : `Debiteur [${row[0].display_name}]`,
+        text : `Debiteur [${patient.display_name}]`,
       };
 
       const creditorText = {
-        text : `Crediteur [${row[0].display_name}]`,
+        text : `Crediteur [${patient.display_name}]`,
       };
 
       const updateCreditor = `UPDATE creditor SET ? WHERE creditor.uuid = ?`;
@@ -312,8 +310,11 @@ function updatePatientDebCred(patientUuid) {
       const transaction = db.transaction();
 
       transaction
-        .addQuery(updateDebtor, [debtorText, debtorUuid])
-        .addQuery(updateCreditor, [creditorText, creditorUuid]);
+        .addQuery(updateDebtor, [debtorText, patient.debtorUuid]);
+
+      if (patient.creditorUuid) {
+        transaction.addQuery(updateCreditor, [creditorText, patient.creditorUuid]);
+      }
 
       return transaction.execute();
     });
@@ -469,16 +470,17 @@ function find(options) {
   filters.dateFrom('custom_period_start', 'registration_date');
   filters.dateTo('custom_period_end', 'registration_date');
 
-  const patientGroupStatement =
-    '(SELECT COUNT(uuid) FROM patient_assignment where patient_uuid = p.uuid AND patient_group_uuid = ?) = 1';
+  const patientGroupStatement = `(
+    SELECT COUNT(uuid) FROM patient_assignment where patient_uuid = p.uuid AND patient_group_uuid = ?
+  ) = 1`;
+
   filters.custom('patient_group_uuid', patientGroupStatement);
   filters.equals('debtor_group_uuid', 'group_uuid', 'd');
   filters.equals('sex');
   filters.equals('hospital_no');
   filters.equals('user_id');
 
-  const referenceStatement =
-    `CONCAT_WS('.', '${identifiers.PATIENT.key}', proj.abbr, p.reference) = ?`;
+  const referenceStatement = `CONCAT_WS('.', '${identifiers.PATIENT.key}', proj.abbr, p.reference) = ?`;
   filters.custom('reference', referenceStatement);
 
   // @TODO Support ordering query (reference support for limit)?
@@ -559,37 +561,37 @@ function invoicingFees(req, res, next) {
   const patientsServiceQuery =
 
     // get the final information needed to apply invoicing fees to an invoice
-    'SELECT DISTINCT ' +
-    'invoicing_fee_id, label, description, value, invoicing_fee.created_at ' +
-    'FROM ' +
+    'SELECT DISTINCT '
+    + 'invoicing_fee_id, label, description, value, invoicing_fee.created_at '
+    + 'FROM '
 
     // get all of the invoicing fees from patient group subscriptions
-    '(SELECT * ' +
-    'FROM patient_group_invoicing_fee ' +
-    'WHERE patient_group_invoicing_fee.patient_group_uuid in ' +
+    + '(SELECT * '
+    + 'FROM patient_group_invoicing_fee '
+    + 'WHERE patient_group_invoicing_fee.patient_group_uuid in '
 
     // find all of the patients groups
-    '(SELECT patient_group_uuid ' +
-    'FROM patient_assignment ' +
-    'WHERE patient_uuid = ?) ' +
-    'UNION ' +
+    + '(SELECT patient_group_uuid '
+    + 'FROM patient_assignment '
+    + 'WHERE patient_uuid = ?) '
+    + 'UNION '
 
     // get all of the invoicing fees from debtor group subscriptions
-    'SELECT * ' +
-    'FROM debtor_group_invoicing_fee ' +
-    'WHERE debtor_group_uuid = ' +
+    + 'SELECT * '
+    + 'FROM debtor_group_invoicing_fee '
+    + 'WHERE debtor_group_uuid = '
 
     // find the debtor group uuid
-    '(SELECT debtor.group_uuid ' +
-    'FROM patient ' +
-    'LEFT JOIN debtor ' +
-    'ON patient.debtor_uuid = debtor.uuid ' +
-    'WHERE patient.uuid = ?)' +
-    ') AS patient_services ' +
+    + '(SELECT debtor.group_uuid '
+    + 'FROM patient '
+    + 'LEFT JOIN debtor '
+    + 'ON patient.debtor_uuid = debtor.uuid '
+    + 'WHERE patient.uuid = ?)'
+    + ') AS patient_services '
 
     // apply billing service information to rows retrieved from service subscriptions
-    'LEFT JOIN invoicing_fee ' +
-    'ON invoicing_fee_id = invoicing_fee.id';
+    + 'LEFT JOIN invoicing_fee '
+    + 'ON invoicing_fee_id = invoicing_fee.id';
 
   db.exec(patientsServiceQuery, [uid, uid])
     .then((result) => {
@@ -605,37 +607,37 @@ function subsidies(req, res, next) {
   const patientsSubsidyQuery =
 
     // subsidy information required to apply subsidies to an invoice
-    'SELECT DISTINCT ' +
-    'subsidy_id, label, description, value, subsidy.created_at ' +
-    'FROM ' +
+    'SELECT DISTINCT '
+    + 'subsidy_id, label, description, value, subsidy.created_at '
+    + 'FROM '
 
     // get all of subsidies from patient group subscriptions
-    '(SELECT * ' +
-    'FROM patient_group_subsidy ' +
-    'WHERE patient_group_subsidy.patient_group_uuid in ' +
+    + '(SELECT * '
+    + 'FROM patient_group_subsidy '
+    + 'WHERE patient_group_subsidy.patient_group_uuid in '
 
     // find all of the patients groups
-    '(SELECT patient_group_uuid ' +
-    'FROM patient_assignment ' +
-    'WHERE patient_uuid = ?) ' +
-    'UNION ' +
+    + '(SELECT patient_group_uuid '
+    + 'FROM patient_assignment '
+    + 'WHERE patient_uuid = ?) '
+    + 'UNION '
 
     // get all subsidies from debtor group subscriptions
-    'SELECT * ' +
-    'FROM debtor_group_subsidy ' +
-    'WHERE debtor_group_uuid = ' +
+    + 'SELECT * '
+    + 'FROM debtor_group_subsidy '
+    + 'WHERE debtor_group_uuid = '
 
     // find the debtor group uuid
-    '(SELECT group_uuid ' +
-    'FROM patient ' +
-    'JOIN debtor ' +
-    'ON patient.debtor_uuid = debtor.uuid ' +
-    'WHERE patient.uuid = ?)' +
-    ') AS patient_subsidies ' +
+    + '(SELECT group_uuid '
+    + 'FROM patient '
+    + 'JOIN debtor '
+    + 'ON patient.debtor_uuid = debtor.uuid '
+    + 'WHERE patient.uuid = ?)'
+    + ') AS patient_subsidies '
 
     // apply subsidy information to rows retrieved from subsidy subscriptions
-    'LEFT JOIN subsidy ' +
-    'ON subsidy_id = subsidy.id';
+    + 'LEFT JOIN subsidy '
+    + 'ON subsidy_id = subsidy.id';
 
   db.exec(patientsSubsidyQuery, [uid, uid])
     .then((result) => {

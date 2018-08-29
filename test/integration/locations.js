@@ -1,9 +1,7 @@
 /* global expect, agent */
 
-const helpers = require('./helpers');
-const uuid = require('uuid/v4');
-
 const _ = require('lodash');
+const helpers = require('./helpers');
 
 /*
  * The /locations API endpoint
@@ -135,90 +133,90 @@ describe('(/locations) Locations Interface', () => {
   /* CREATE methods */
 
   const country = {
-    uuid : uuid(),
+    uuid : helpers.uuid(),
     name : 'Test Country',
   };
 
   const province = {
-    uuid : uuid(),
+    uuid : helpers.uuid(),
     name : 'Test Province',
     country_uuid : country.uuid,
   };
 
   const sector = {
-    uuid : uuid(),
+    uuid : helpers.uuid(),
     name : 'Test Sector',
     province_uuid : province.uuid,
   };
 
   const village = {
-    uuid : uuid(),
+    uuid : helpers.uuid(),
     name : 'Test Village',
     sector_uuid : sector.uuid,
   };
 
-  it('POST /locations/countries should create a country', function () {
+  it('POST /locations/countries should create a country', () => {
     return agent.post('/locations/countries')
       .send(country)
-      .then(function (res) {
+      .then((res) => {
         helpers.api.created(res);
       })
       .catch(helpers.handler);
   });
 
-  it('POST /locations/provinces should create a province', function () {
+  it('POST /locations/provinces should create a province', () => {
     return agent.post('/locations/provinces')
       .send(province)
-      .then(function (res) {
+      .then((res) => {
         helpers.api.created(res);
       })
       .catch(helpers.handler);
   });
 
-  it('POST /locations/sectors should create a sector', function () {
+  it('POST /locations/sectors should create a sector', () => {
     return agent.post('/locations/sectors')
       .send(sector)
-      .then(function (res) {
+      .then((res) => {
         helpers.api.created(res);
       })
       .catch(helpers.handler);
   });
 
-  it('POST /locations/villages should create a village', function () {
+  it('POST /locations/villages should create a village', () => {
     return agent.post('/locations/villages')
       .send(village)
-      .then(function (res) {
+      .then((res) => {
         helpers.api.created(res);
       })
       .catch(helpers.handler);
   });
 
-  it('POST /locations/villages should not create the same village twice in the same sector', function () {
+  it('POST /locations/villages should not create the same village twice in the same sector', () => {
     return agent.post('/locations/villages')
       .send(village)
-      .then(function (res) {
+      .then((res) => {
         helpers.api.errored(res, 400);
       })
       .catch(helpers.handler);
   });
 
-  it('POST /locations/villages should create the same village name in a different sector', function () {
+  it('POST /locations/villages should create the same village name in a different sector', () => {
     const copy = _.clone(village);
     copy.sector_uuid = sectorUuid;
-    copy.uuid = uuid();
+    copy.uuid = helpers.uuid();
 
     return agent.post('/locations/villages')
       .send(copy)
-      .then(function (res) {
+      .then((res) => {
         helpers.api.created(res);
       })
       .catch(helpers.handler);
   });
 
-  it('PUT /locations/villages/:uuid should update a Village', function () {
+  it('PUT /locations/villages/:uuid should update a Village', () => {
     return agent.put(`/locations/villages/${village.uuid}`)
       .send({ name : 'Update Village' })
-      .then(function (res) {
+      .then((res) => {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
         expect(res.body).to.not.be.empty;
@@ -227,10 +225,10 @@ describe('(/locations) Locations Interface', () => {
       .catch(helpers.handler);
   });
 
-  it('PUT /locations/sectors/:uuid should update a Sector', function () {
+  it('PUT /locations/sectors/:uuid should update a Sector', () => {
     return agent.put(`/locations/sectors/${sector.uuid}`)
       .send({ name : 'Update New Sector' })
-      .then(function (res) {
+      .then((res) => {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
         expect(res.body).to.not.be.empty;
@@ -239,10 +237,10 @@ describe('(/locations) Locations Interface', () => {
       .catch(helpers.handler);
   });
 
-  it('PUT /locations/provinces/:uuid should update a Province', function () {
+  it('PUT /locations/provinces/:uuid should update a Province', () => {
     return agent.put(`/locations/provinces/${province.uuid}`)
       .send({ name : 'Update New Province' })
-      .then(function (res) {
+      .then((res) => {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
         expect(res.body).to.not.be.empty;
@@ -251,10 +249,10 @@ describe('(/locations) Locations Interface', () => {
       .catch(helpers.handler);
   });
 
-  it('PUT /locations/countries/:uuid should update a Country', function () {
+  it('PUT /locations/countries/:uuid should update a Country', () => {
     return agent.put(`/locations/countries/${country.uuid}`)
       .send({ name : 'Update New Country' })
-      .then(function (res) {
+      .then((res) => {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
         expect(res.body).to.not.be.empty;

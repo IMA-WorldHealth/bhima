@@ -16,8 +16,7 @@ exports.getInventoryLeadTimesById = getInventoryLeadTimesById;
 * @returns {Promise} Returns a database query
 */
 function getInventoryLeadTimes() {
-  const sql =
-    `SELECT i.uuid, ROUND(AVG(CEIL(DATEDIFF(s.entry_date, p.purchase_date)))) AS days
+  const sql = `SELECT i.uuid, ROUND(AVG(CEIL(DATEDIFF(s.entry_date, p.purchase_date)))) AS days
     FROM purchase AS p JOIN stock AS s JOIN purchase_item AS z JOIN inventory AS i ON
       p.uuid = s.purchase_order_uuid AND
       s.inventory_uuid = i.uuid AND
@@ -35,8 +34,7 @@ function getInventoryLeadTimes() {
 * @returns {Promise} Returns a database query
 */
 function getInventoryLeadTimesById(uuid) {
-  const sql =
-    `SELECT ROUND(AVG(CEIL(DATEDIFF(s.entry_date, p.purchase_date)))) AS days
+  const sql = `SELECT ROUND(AVG(CEIL(DATEDIFF(s.entry_date, p.purchase_date)))) AS days
     FROM purchase AS p JOIN stock AS s JOIN purchase_item AS z JOIN inventory AS i ON
       p.uuid = s.purchase_order_uuid AND
       s.inventory_uuid = i.uuid AND

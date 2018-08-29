@@ -1,5 +1,5 @@
-const db = require('../../lib/db');
 const q = require('q');
+const db = require('../../lib/db');
 
 module.exports.list = list;
 

@@ -4,8 +4,8 @@
  */
 
 // requirements
-const uuid = require('uuid/v4');
 const db = require('../../../lib/db');
+const { uuid } = require('../../../lib/util');
 
 // expose module's methods
 exports.list = list;

@@ -289,28 +289,6 @@ exports.configure = function configure(app) {
   app.post('/inventory/import/', upload.middleware('csv', 'file'), inventory.importing.importInventories);
   app.get('/inventory/import/template_file', inventory.importing.downloadTemplate);
 
-
-  /** @todo: These routes below need to be implemented */
-  /*
-  app.get('/inventory/consumption', inventory.getInventoryConsumption);
-  app.get('/inventory/:uuid/consumption', inventory.getInventoryConsumptionById);
-
-  app.get('/inventory/leadtimes', inventory.getInventoryLeadTimes);
-  app.get('/inventory/:uuid/leadtimes', inventory.getInventoryLeadTimesById);
-
-  app.get('/inventory/stock', inventory.getInventoryStockLevels);
-  app.get('/inventory/:uuid/stock', inventory.getInventoryStockLevelsById);
-
-  app.get('/inventory/expirations', inventory.getInventoryExpirations);
-  app.get('/inventory/:uuid/expirations', inventory.getInventoryExpirationsById);
-
-  app.get('/inventory/lots', inventory.getInventoryLots);
-  app.get('/inventory/:uuid/lots', inventory.getInventoryLotsById);
-
-  app.get('/inventory/status', inventory.getInventoryStatus);
-  app.get('/inventory/:uuid/status', inventory.getInventoryStatusById);
-  */
-
   /* Depot routes */
   app.get('/depots', depots.list);
   app.get('/depots/:uuid', depots.detail);
@@ -321,7 +299,7 @@ exports.configure = function configure(app) {
   /* Depot distributions routes */
   app.get('/depots/:depotId/distributions', depots.listDistributions);
   app.get('/depots/:depotId/distributions/:uuid', depots.detailDistributions);
-  app.post('/depots/:depotId/distributions', depots.createDistributions);
+  // app.post('/depots/:depotId/distributions', depots.createDistributions);
 
   /**
    * Depot inventories and lots routes

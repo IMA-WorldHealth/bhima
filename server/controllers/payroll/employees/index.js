@@ -15,12 +15,10 @@
  * @requires filter
  */
 
-
-const uuid = require('uuid/v4');
-
-const db = require('./../../../lib/db');
-const NotFound = require('./../../../lib/errors/NotFound');
-const FilterParser = require('./../../../lib/filter');
+const { uuid } = require('../../../lib/util');
+const db = require('../../../lib/db');
+const NotFound = require('../../../lib/errors/NotFound');
+const FilterParser = require('../../../lib/filter');
 
 exports.list = list;
 exports.create = create;

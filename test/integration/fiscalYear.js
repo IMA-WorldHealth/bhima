@@ -95,7 +95,7 @@ describe('(/fiscal) Fiscal Year', () => {
     const closingAccount = { account_id : newFiscalYear.closing_account };
 
     return agent.put(`/fiscal/${YEAR_TO_CLOSE}/closing`)
-      .send({ params: closingAccount })
+      .send({ params : closingAccount })
       .then(res => {
         expect(res).to.have.status(200);
         expect(res).to.be.json;

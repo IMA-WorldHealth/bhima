@@ -1,4 +1,4 @@
-'use strict';
+
 
 /* global expect, chai, agent */
 
@@ -12,12 +12,12 @@ describe('(/patients/:uuid/visits) Patient Visits', () => {
   const KEYS = [
     'patient_uuid', 'uuid', 'start_date', 'end_date', 'start_notes',
     'end_notes', 'start_diagnosis_id', 'end_diagnosis_id', 'is_open',
-    'user_id', 'username', 'start_diagnosis_code', 'start_diagnosis_label'
+    'user_id', 'username', 'start_diagnosis_code', 'start_diagnosis_label',
   ];
 
   it('GET /patients/:uuid/visits returns a list of all patient visits', () => {
     return agent.get(`/patients/${patientUuid}/visits`)
-      .then(function (res) {
+      .then((res) => {
         helpers.api.listed(res, BASE_VISITS);
         expect(res.body[0]).to.have.keys(KEYS);
       })
@@ -29,7 +29,7 @@ describe('(/patients/:uuid/visits) Patient Visits', () => {
     const LIMIT = 1;
     return agent.get(`/patients/${patientUuid}/visits`)
       .query({ limit : LIMIT })
-      .then(function (res) {
+      .then((res) => {
         helpers.api.listed(res, 1);
         expect(res.body[0]).to.have.keys(KEYS);
       })
@@ -43,13 +43,13 @@ describe('(/patients/:uuid/visits) Patient Visits', () => {
     start_date : new Date(),
     start_notes : 'This was the start',
     start_diagnosis_id : 1234,
-    user_id : 1
+    user_id : 1,
   };
 
   it('POST /patients/:uuid/visits/admission starts a new patient visit', () => {
     return agent.post(`/patients/${patientUuid}/visits/admission`)
       .send(visitOptions)
-      .then(function (res) {
+      .then((res) => {
         helpers.api.created(res);
 
         // cache the uuid
@@ -58,7 +58,7 @@ describe('(/patients/:uuid/visits) Patient Visits', () => {
 
         return agent.get(`/patients/${patientUuid}/visits/`);
       })
-      .then(function (res) {
+      .then((res) => {
         helpers.api.listed(res, BASE_VISITS + 1);
       })
       .catch(helpers.api.handler);
@@ -66,7 +66,7 @@ describe('(/patients/:uuid/visits) Patient Visits', () => {
 
   it('GET /patients/:uuid/visits/:uuid will return a visit by the uuid', () => {
     return agent.get(`/patients/${patientUuid}/visits/${lastVisitUuid}`)
-      .then(function (res) {
+      .then((res) => {
         expect(res).to.have.status(200);
 
         expect(res.body).to.have.keys(KEYS);
@@ -80,7 +80,7 @@ describe('(/patients/:uuid/visits) Patient Visits', () => {
 
   it('GET /patients/visits/:uuid will also return a visit by the uuid', () => {
     return agent.get(`/patients/visits/${lastVisitUuid}`)
-      .then(function (res) {
+      .then((res) => {
         expect(res).to.have.status(200);
 
         expect(res.body).to.have.keys(KEYS);
@@ -96,7 +96,7 @@ describe('(/patients/:uuid/visits) Patient Visits', () => {
   it('GET /patients/:uuid/visits?last=1 will return the last patient visit', () => {
     return agent.get(`/patients/${patientUuid}/visits`)
       .query({ last : 1 })
-      .then(function (res) {
+      .then((res) => {
         expect(res).to.have.status(200);
 
         expect(res.body).to.have.keys(KEYS);
@@ -114,21 +114,23 @@ describe('(/patients/:uuid/visits) Patient Visits', () => {
     const qs = { is_open : 1 };
     return agent.get('/patients/visits')
       .query(qs)
-      .then(function (res) {
+      .then((res) => {
         helpers.api.listed(res, NUM_MATCHES);
       })
       .catch(helpers.api.handler);
   });
 
   it('POST /patients/:uuid/visits/discharge ends a new patient visit', () => {
-    const payload = { uuid : lastVisitUuid, end_date : new Date(), end_notes: 'This was the end', end_diagnosis_id : 1234 };
+    const payload = {
+      uuid : lastVisitUuid, end_date : new Date(), end_notes : 'This was the end', end_diagnosis_id : 1234,
+    };
     return agent.post(`/patients/${patientUuid}/visits/discharge`)
       .send(payload)
-      .then(function (res) {
+      .then((res) => {
         helpers.api.created(res);
         return agent.get(`/patients/${patientUuid}/visits/${lastVisitUuid}`);
       })
-      .then(function (res) {
+      .then((res) => {
         expect(res).to.have.status(200);
 
         expect(res.body).to.have.keys(KEYS);
@@ -147,7 +149,7 @@ describe('(/patients/:uuid/visits) Patient Visits', () => {
     const qs = { diagnosis_id : 1234 };
     return agent.get('/patients/visits')
       .query(qs)
-      .then(function (res) {
+      .then((res) => {
         helpers.api.listed(res, NUM_MATCHES);
       })
       .catch(helpers.api.handler);

@@ -6,17 +6,16 @@
  *
  * @description
  * This controller is responsible for implementing all crud and others custom request
- * on the services table through the `/services` endpoint. *
- * @requires uuid/v4
+ * on the services table through the `/services` endpoint.
+ *
+ * @requires lib/util
  * @requires db
  * @requires NotFound
- * @requires BadRequest
  */
 
 
-const uuid = require('uuid/v4');
-
 const db = require('../../lib/db');
+const { uuid } = require('../../lib/util');
 const NotFound = require('../../lib/errors/NotFound');
 
 /**
@@ -26,8 +25,7 @@ const NotFound = require('../../lib/errors/NotFound');
  * Returns an array of services from the database.
  */
 function list(req, res, next) {
-  let sql =
-    'SELECT s.id, s.name, s.cost_center_id, s.profit_center_id, BUID(s.uuid) AS uuid FROM service AS s';
+  let sql = 'SELECT s.id, s.name, s.cost_center_id, s.profit_center_id, BUID(s.uuid) AS uuid FROM service AS s';
 
   if (req.query.full === '1') {
     sql = `
@@ -158,8 +156,7 @@ function detail(req, res, next) {
  * @returns {Promise} - returns the result of teh database query
  */
 function lookupService(id) {
-  const sql =
-    `
+  const sql = `
     SELECT
       s.id, s.name, s.enterprise_id, s.cost_center_id, s.profit_center_id
     FROM

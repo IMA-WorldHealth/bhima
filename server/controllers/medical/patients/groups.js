@@ -8,14 +8,14 @@
  *
  * @requires lodash
  * @requires lib/db
- * @requires lib/uuid/v4
+ * @requires lib/util
  * @requires lib/errors/BadRequest
  * @requires lib/errors/NotFound
  */
 
 const _ = require('lodash');
-const uuid = require('uuid/v4');
 
+const { uuid } = require('../../../lib/util');
 const db = require('../../../lib/db');
 const BadRequest = require('../../../lib/errors/BadRequest');
 const NotFound = require('../../../lib/errors/NotFound');
@@ -36,8 +36,7 @@ function list(req, res, next) {
   const id = db.bid(req.params.uuid);
 
   // just check if the patient exists
-  const patientExistenceQuery =
-    'SELECT uuid FROM patient WHERE uuid = ?;';
+  const patientExistenceQuery = 'SELECT uuid FROM patient WHERE uuid = ?;';
 
   // read patient groups
   const patientGroupsQuery = `
@@ -83,12 +82,10 @@ function update(req, res, next) {
   }
 
   // Clear assigned groups
-  const removeAssignmentsQuery =
-    'DELETE FROM patient_assignment WHERE patient_uuid = ?';
+  const removeAssignmentsQuery = 'DELETE FROM patient_assignment WHERE patient_uuid = ?';
 
   // Insert new relationships
-  const createAssignmentsQuery =
-    'INSERT INTO patient_assignment (uuid, patient_uuid, patient_group_uuid) VALUES ?';
+  const createAssignmentsQuery = 'INSERT INTO patient_assignment (uuid, patient_uuid, patient_group_uuid) VALUES ?';
 
   // map each requested patient group uuid to the current patient uuid to be
   // inserted into the database

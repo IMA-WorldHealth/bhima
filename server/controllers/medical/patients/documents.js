@@ -10,14 +10,11 @@
  * This controller encapsulates the HTTP API backing the patient documents feature
  * in the application.
  *
- * @requires db
- * @requires uuid/v4
- * @requires BadRequest
- * @requires NotFound
+ * @requires lib/db
+ * @requires lib/BadRequest
+ * @requires lib/NotFound
  */
 
-
-const uuid = require('uuid/v4');
 
 const db = require('../../../lib/db');
 
@@ -48,8 +45,7 @@ function create(req, res, next) {
     return;
   }
 
-  const sql =
-    'INSERT INTO patient_document (uuid, patient_uuid, label, link, mimetype, size, user_id) VALUES ?;';
+  const sql = 'INSERT INTO patient_document (uuid, patient_uuid, label, link, mimetype, size, user_id) VALUES ?;';
 
   // make sure the records are properly formatted
   const records = req.files.map(file => {
@@ -115,8 +111,7 @@ function list(req, res, next) {
 function removeAll(req, res, next) {
   const patientUuid = req.params.uuid;
 
-  const sql =
-    'DELETE FROM patient_document WHERE patient_uuid = ?;';
+  const sql = 'DELETE FROM patient_document WHERE patient_uuid = ?;';
 
   db.exec(sql, [db.bid(patientUuid)])
     .then(() => {
@@ -137,7 +132,7 @@ function removeAll(req, res, next) {
  */
 function remove(req, res, next) {
   const patientUuid = req.params.uuid;
-  const documentUuid = req.params.documentUuid;
+  const { documentUuid } = req.params;
 
   const sql = `
     DELETE FROM patient_document WHERE patient_uuid = ? AND uuid = ?;

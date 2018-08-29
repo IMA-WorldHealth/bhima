@@ -1,8 +1,10 @@
 /* eslint no-unused-expressions:"off" */
 /* global expect, agent */
 
-const helpers = require('./helpers');
 const uuid = require('uuid/v4');
+const helpers = require('./helpers');
+
+const genuuid = () => uuid().toUpperCase().replace(/-/g, '');
 
 /**
  * @todo passing the date as an object causes the invoice request object to
@@ -64,8 +66,8 @@ describe('(/invoices) Patient Invoices', () => {
         .catch(helpers.handler);
     });
 
-    it('GET /invoices?debtor_uuid=3be232f9-a4b9-4af6-984c-5d3f87d5c107 should return two invoices', () => {
-      return agent.get('/invoices?debtor_uuid=3be232f9-a4b9-4af6-984c-5d3f87d5c107')
+    it('GET /invoices?debtor_uuid=3BE232F9A4B94AF6984C5D3F87D5C107 should return two invoices', () => {
+      return agent.get('/invoices?debtor_uuid=3BE232F9A4B94AF6984C5D3F87D5C107')
         .then(res => {
           helpers.api.listed(res, 5);
         })
@@ -137,13 +139,13 @@ function InvoicingFeeScenario() {
    *  5) The 'user_id' should be ignored, and default to the logged in user.
    */
 
-  const SIMPLE_UUID = uuid();
+  const SIMPLE_UUID = genuuid();
   const simpleInvoice = {
     date : new Date(),
     cost : 35.14, // this cost should be calculated by the server (see test).
     description : 'A Simple Invoice of two items costing $35.14',
     service_id : helpers.data.ADMIN_SERVICE,
-    debtor_uuid : '3be232f9-a4b9-4af6-984c-5d3f87d5c107',
+    debtor_uuid : '3BE232F9A4B94AF6984C5D3F87D5C107',
     project_id : helpers.data.PROJECT,
     user_id  : helpers.data.OTHERUSER,
     uuid : SIMPLE_UUID,
@@ -248,7 +250,7 @@ function InvoicingFeeScenario() {
     cost  : 100,
     description : 'An invoice of two items costing $100 + a billing service',
     service_id : helpers.data.ADMIN_SERVICE,
-    debtor_uuid : '3be232f9-a4b9-4af6-984cj5d3f87d5c107',
+    debtor_uuid : '3BE232F9A4B94AF6984CJ5D3F87D5C107',
     project_id : helpers.data.PROJECT,
 
     /* @todo - change this API to not need credit/debit fields */
@@ -303,7 +305,7 @@ function InvoicingFeeScenario() {
     cost : 39.34,
     description : 'An invoice of three items costing $39.34 + a subsidy',
     service_id : helpers.data.ADMIN_SERVICE,
-    debtor_uuid : '3be232f9-a4b9-4af6-984cj5d3f87d5c107',
+    debtor_uuid : '3BE232F9A4B94AF6984CJ5D3F87D5C107',
     project_id : helpers.data.PROJECT,
 
     /* @todo - change this API to not need credit/debit fields */

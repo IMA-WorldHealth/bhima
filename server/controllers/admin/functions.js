@@ -9,8 +9,7 @@ const NotFound = require('../../lib/errors/NotFound');
 
 // GET /Function
 function lookupFunction(id) {
-  const sql =
-    `SELECT id, fonction_txt FROM fonction
+  const sql = `SELECT id, fonction_txt FROM fonction
     WHERE fonction.id = ?`;
 
   return db.one(sql, [id]);

@@ -11,8 +11,7 @@ exports.getExpirationsById = getExpirationsById;
 * @returns {Promise} The database request promise
 */
 function getExpirations(options) {
-  const sql =
-    `SELECT stock.inventory_uuid, stock.lot_number, stock.quantity,
+  const sql = `SELECT stock.inventory_uuid, stock.lot_number, stock.quantity,
       stock.expiration_date, inventory.text
     FROM stock JOIN inventory ON stock.inventory_uuid = inventory.uuid
     WHERE DATE(stock.expiration_date) BETWEEN DATE(?) AND DATE(?) AND
@@ -29,8 +28,7 @@ function getExpirations(options) {
 * @returns {Promise} The database request promise
 */
 function getExpirationsById(uuid, options) {
-  const sql =
-    `SELECT stock.inventory_uuid, stock.lot_number, stock.quantity,
+  const sql = `SELECT stock.inventory_uuid, stock.lot_number, stock.quantity,
       stock.expiration_date, inventory.text
     FROM stock JOIN inventory ON stock.inventory_uuid = inventory.uuid
     WHERE stock.inventory_uuid = ? AND

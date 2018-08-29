@@ -68,8 +68,8 @@ function build(req, res, next) {
       return Exchange.getExchangeRate(data.enterprise.id, options.currency, new Date(data.payrollPeriod.dateTo));
     })
     .then(exchange => {
-      data.payrollPeriod.exchangeRate = parseInt(options.currency, 10) === data.enterprise.currency_id ?
-        1 : exchange.rate;
+      data.payrollPeriod.exchangeRate = parseInt(options.currency, 10) === data.enterprise.currency_id
+        ? 1 : exchange.rate;
       return Exchange.getCurrentExchangeRateByCurrency(new Date(data.payrollPeriod.dateTo));
     })
     .then(exchangeRatesByCurrency => {
@@ -89,20 +89,20 @@ function build(req, res, next) {
         data.exchangeRatesByCurrency.forEach(exchange => {
           const isSameCurrency = exchange.currency_id === employeeCurrencyId;
 
-          employee.net_salary_equiv = isSameCurrency ?
-            employee.net_salary / exchange.rate : employee.net_salary;
-          employee.daily_salary_equiv = isSameCurrency ?
-            employee.daily_salary / exchange.rate : employee.daily_salary;
-          employee.base_taxable_equiv = isSameCurrency ?
-            employee.base_taxable / exchange.rate : employee.base_taxable;
-          employee.basic_salary_equiv = isSameCurrency ?
-            employee.basic_salary / exchange.rate : employee.basic_salary;
-          employee.gross_salary_equiv = isSameCurrency ?
-            employee.gross_salary / exchange.rate : employee.gross_salary;
-          employee.net_salary_equiv = isSameCurrency ?
-            employee.net_salary / exchange.rate : employee.net_salary;
-          employee.net_salary_equiv = isSameCurrency ?
-            employee.net_salary / exchange.rate : employee.net_salary;
+          employee.net_salary_equiv = isSameCurrency
+            ? employee.net_salary / exchange.rate : employee.net_salary;
+          employee.daily_salary_equiv = isSameCurrency
+            ? employee.daily_salary / exchange.rate : employee.daily_salary;
+          employee.base_taxable_equiv = isSameCurrency
+            ? employee.base_taxable / exchange.rate : employee.base_taxable;
+          employee.basic_salary_equiv = isSameCurrency
+            ? employee.basic_salary / exchange.rate : employee.basic_salary;
+          employee.gross_salary_equiv = isSameCurrency
+            ? employee.gross_salary / exchange.rate : employee.gross_salary;
+          employee.net_salary_equiv = isSameCurrency
+            ? employee.net_salary / exchange.rate : employee.net_salary;
+          employee.net_salary_equiv = isSameCurrency
+            ? employee.net_salary / exchange.rate : employee.net_salary;
           totalNetSalary += employee.net_salary_equiv;
           totalBasicSalary += employee.basic_salary_equiv;
           totalBaseTaxable += employee.base_taxable_equiv;
@@ -126,8 +126,7 @@ function build(req, res, next) {
       let TotalChargeEnterprise = 0;
       rubrics.forEach(item => {
         data.exchangeRatesByCurrency.forEach(exchange => {
-          item.result_equiv =
-            exchange.currency_id === item.currency_id ? item.result / exchange.rate : item.result;
+          item.result_equiv = exchange.currency_id === item.currency_id ? item.result / exchange.rate : item.result;
         });
       });
       data.rubrics = rubEmployees;
@@ -203,14 +202,14 @@ function build(req, res, next) {
         data.exchangeRatesByCurrency.forEach(exchange => {
           const isSameCurrency = exchange.currency_id === employeeCurrencyId;
 
-          employee.somRubTaxable_equiv = isSameCurrency ?
-            employee.somRubTaxable / exchange.rate : employee.somRubTaxable;
-          employee.somRubNonTaxable_equiv = isSameCurrency ?
-            employee.somRubNonTaxable / exchange.rate : employee.somRubNonTaxable;
-          employee.somChargeEnterprise_equiv = isSameCurrency ?
-            employee.somChargeEnterprise / exchange.rate : employee.somChargeEnterprise;
-          employee.somChargeEmployee_equiv = isSameCurrency ?
-            employee.somChargeEmployee / exchange.rate : employee.somChargeEmployee;
+          employee.somRubTaxable_equiv = isSameCurrency
+            ? employee.somRubTaxable / exchange.rate : employee.somRubTaxable;
+          employee.somRubNonTaxable_equiv = isSameCurrency
+            ? employee.somRubNonTaxable / exchange.rate : employee.somRubNonTaxable;
+          employee.somChargeEnterprise_equiv = isSameCurrency
+            ? employee.somChargeEnterprise / exchange.rate : employee.somChargeEnterprise;
+          employee.somChargeEmployee_equiv = isSameCurrency
+            ? employee.somChargeEmployee / exchange.rate : employee.somChargeEmployee;
         });
         TotalChargeEnterprise += somChargeEnterprise;
         holidays.forEach(holiday => {

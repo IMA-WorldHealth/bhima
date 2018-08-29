@@ -8,13 +8,14 @@
  * The /patient_groups HTTP API endpoint
  *
  * @requires db
- * @requires uuid/v4
+ * @requires q
+ * @requires lib/util
  * @requires NotFound
  */
 
-const uuid = require('uuid/v4');
 const Q = require('q');
 
+const { uuid } = require('../../lib/util');
 const db = require('../../lib/db');
 const FilterParser = require('../../lib/filter');
 const NotFound = require('../../lib/errors/NotFound');
@@ -119,10 +120,8 @@ function create(req, res, next) {
  */
 function update(req, res, next) {
   const sql = 'UPDATE patient_group SET ? WHERE uuid = ?';
-  const deleteSubsidySql =
-    'DELETE FROM patient_group_subsidy WHERE patient_group_uuid = ?';
-  const deleteInvoicingFeeSql =
-    'DELETE FROM patient_group_invoicing_fee WHERE patient_group_uuid = ?';
+  const deleteSubsidySql = 'DELETE FROM patient_group_subsidy WHERE patient_group_uuid = ?';
+  const deleteInvoicingFeeSql = 'DELETE FROM patient_group_invoicing_fee WHERE patient_group_uuid = ?';
 
   const subsidySql = 'INSERT INTO patient_group_subsidy (subsidy_id, patient_group_uuid) VALUES ?;';
   const invoicingFeeSql = 'INSERT INTO patient_group_invoicing_fee (invoicing_fee_id, patient_group_uuid) VALUES ?;';

@@ -30,18 +30,18 @@ function PurchaseOrderSearch() {
 
   // TODO - implement limit query
   it('GET /purchases/search?limit=1 returns a single purchase order', () => {
-    const options = { limit: 1 };
+    const options = { limit : 1 };
     return SendHTTPQuery(options, 1);
   });
 
   it('GET /purchases/search?dateFrom={date} returns a single purchase order from today', () => {
     const date = new Date('2016-02-19');
-    const options = { dateFrom: date };
+    const options = { dateFrom : date };
     return SendHTTPQuery(options, NUM_PURCHASE_ORDERS);
   });
 
   it('GET /purchases/search?reference=PO.TPA.1  returns a single purchase order', () => {
-    const options = { reference: 'PO.TPA.1' };
+    const options = { reference : 'PO.TPA.1' };
     return SendHTTPQuery(options, 1);
   });
 }

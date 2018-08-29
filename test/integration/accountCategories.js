@@ -3,13 +3,13 @@
 const helpers = require('./helpers');
 
 describe('(/accounts/categories) Account Categories', () => {
-  var newAccountCategory = {
+  const newAccountCategory = {
     category : 'Test Account Category 1',
   };
 
-  var DELETABLE_ACCOUNT_TYPE_ID = 5;
-  var FETCHABLE_ACCOUNT_TYPE_ID = 1;
-  var numAccountCategory = 4;
+  const DELETABLE_ACCOUNT_TYPE_ID = 5;
+  const FETCHABLE_ACCOUNT_TYPE_ID = 1;
+  const numAccountCategory = 4;
 
 
   it('GET /accounts/categories returns a list of account category', () => {
@@ -29,7 +29,7 @@ describe('(/accounts/categories) Account Categories', () => {
         expect(res.body.id).to.be.equal(FETCHABLE_ACCOUNT_TYPE_ID);
         expect(res.body).to.have.all.keys('id', 'category');
       })
-     .catch(helpers.handler);
+      .catch(helpers.handler);
   });
 
   it('POST /accounts/categories adds an account category', () => {
@@ -48,7 +48,7 @@ describe('(/accounts/categories) Account Categories', () => {
   });
 
   it('PUT /accounts/categories/:id updates the newly added account category', () => {
-    var updateInfo = { category : 'updated category' };
+    const updateInfo = { category : 'updated category' };
     return agent.put(`/accounts/categories/${newAccountCategory.id}`)
       .send(updateInfo)
       .then((res) => {
@@ -69,6 +69,6 @@ describe('(/accounts/categories) Account Categories', () => {
       .then((res) => {
         helpers.api.errored(res, 404);
       })
-     .catch(helpers.handler);
+      .catch(helpers.handler);
   });
 });

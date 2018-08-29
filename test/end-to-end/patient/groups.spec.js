@@ -1,10 +1,10 @@
-/* global element, by, browser */
+/* global element, by */
 
 const helpers = require('../shared/helpers');
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 
-describe('Patient Groups', function () {
+describe('Patient Groups', () => {
   // navigate to the page before running test suite
   before(() => helpers.navigate('#!/patients/groups'));
 
@@ -18,9 +18,9 @@ describe('Patient Groups', function () {
   };
 
   // the uuid to delete.
-  const deleteUuid = 'group-112a9fb5-847d-4c6a-9b20-710fa8b4da22';
+  const deleteUuid = 'group-112A9FB5847D4C6A9B20710FA8B4DA22';
 
-  it('creates a patient group', function () {
+  it('creates a patient group', () => {
     FU.buttons.create();
 
     // expect the create form to exist
@@ -38,17 +38,16 @@ describe('Patient Groups', function () {
     FU.exists(by.css('[data-create-form]'), false);
   });
 
-  it('updates a patient group', function () {
-    var row = element(by.id(deleteUuid));
+  it('updates a patient group', () => {
+    const row = element(by.id(deleteUuid));
     row.click();
 
     // expect the update form to exist
     FU.exists(by.css('[data-update-form]'), true);
 
     // change the note
-    FU.input('PatientGroupCtrl.patientGroup.note', 'I like writing end-to-end tests... ' +
-     'They give me so much confidence in the application.'
-    );
+    FU.input('PatientGroupCtrl.patientGroup.note',
+      'I like writing end-to-end tests... They give me so much confidence in the application.');
 
     // submit the form
     FU.buttons.submit();
@@ -57,8 +56,8 @@ describe('Patient Groups', function () {
     FU.exists(by.css('[data-update-form]'), false);
   });
 
-  it('deletes a patient group', function () {
-    var row = element(by.id(deleteUuid));
+  it('deletes a patient group', () => {
+    const row = element(by.id(deleteUuid));
     row.click();
 
     FU.buttons.delete();

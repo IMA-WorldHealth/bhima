@@ -1,7 +1,7 @@
 /* global expect, chai, agent */
 
-const helpers = require('./helpers');
 const uuid = require('uuid/v4');
+const helpers = require('./helpers');
 
 /*
  * The /multiplePayroll  API endpoint
@@ -44,7 +44,7 @@ describe('(/multiplePayroll ) the Payroll API endpoint', () => {
     status_id : 1,
     status : 'PAYROLL_STATUS.WAITING_FOR_CONFIGURATION',
     balance : 0,
-  },{
+  }, {
     employee_uuid : '75e69409-562f-a2a8-45a1-3d7938b02500',
     code : 'WWEFCB',
     date_embauche : '2016-01-01T00:00:00.000Z',
@@ -72,10 +72,10 @@ describe('(/multiplePayroll ) the Payroll API endpoint', () => {
     status : 'PAYROLL_STATUS.WAITING_FOR_CONFIGURATION',
     balance : 0,
   }];
-  
+
   const dataMultiConfiguration = {
     data : {
-      employees : employees,
+      employees,
       currencyId : 2,
     },
   };
@@ -296,7 +296,7 @@ describe('(/multiplePayroll ) the Payroll API endpoint', () => {
   };
 
   const dataCommitment = {
-    data : [1]
+    data : [1],
   };
 
   const employeesNumber = 3;

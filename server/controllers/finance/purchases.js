@@ -5,7 +5,7 @@
  * This module provides an API interface for the Purchase API, responsible for
  * making purchase orders and quotes.
  *
- * @requires uuid/v4
+ * @requires lib/util
  * @requires db
  * @requires NotFound
  * @requires BadRequest
@@ -13,11 +13,11 @@
  */
 
 const q = require('q');
-const uuid = require('uuid/v4');
+const moment = require('moment');
 
+const { uuid } = require('../../lib/util');
 const db = require('../../lib/db');
 const BadRequest = require('../../lib/errors/BadRequest');
-const moment = require('moment');
 
 const identifiers = require('../../config/identifiers');
 const FilterParser = require('../../lib/filter');
@@ -160,8 +160,7 @@ function create(req, res, next) {
   data.project_id = req.session.project.id;
   data.currency_id = req.session.enterprise.currency_id;
 
-  const sql =
-    'INSERT INTO purchase SET ?';
+  const sql = 'INSERT INTO purchase SET ?';
 
   const itemSql = `
     INSERT INTO purchase_item
@@ -277,8 +276,7 @@ function detail(req, res, next) {
  * Updates a purchase order in the database.
  */
 function update(req, res, next) {
-  const sql =
-    'UPDATE purchase SET ? WHERE uuid = ?;';
+  const sql = 'UPDATE purchase SET ? WHERE uuid = ?;';
 
   const data = db.convert(req.body, ['supplier_uuid']);
 
@@ -378,8 +376,8 @@ function purchaseStatus(req, res, next) {
         JOIN purchase_item pi ON pi.purchase_uuid = p.uuid
         WHERE p.uuid = ?
       ) UNION ALL (
-        SELECT 0 AS purchase_quantity, SUM(m.quantity) AS movement_quantity FROM stock_movement m 
-        JOIN lot l ON l.uuid = m.lot_uuid 
+        SELECT 0 AS purchase_quantity, SUM(m.quantity) AS movement_quantity FROM stock_movement m
+        JOIN lot l ON l.uuid = m.lot_uuid
         JOIN purchase p ON p.uuid = l.origin_uuid
         WHERE p.uuid = ? AND m.flux_id = ? AND m.is_exit = 0
       )

@@ -2,61 +2,61 @@
 
 const helpers = require('./helpers');
 
-describe('(/debtors) The /debtors API', function () {
+describe('(/debtors) The /debtors API', () => {
   const debtorKeys = ['uuid', 'group_uuid', 'text'];
-  const debtorUuid = '3be232f9-a4b9-4af6-984c-5d3f87d5c107';
-  const emptyDebtorUuid = 'a11e6b7f-fbbb-432e-ac2a-5312a66dccf4';
+  const debtorUuid = '3BE232F9A4B94AF6984C5D3F87D5C107';
+  const emptyDebtorUuid = 'A11E6B7FFBBB432EAC2A5312A66DCCF4';
 
   const debtorInfo = {
-    group_uuid : '4de0fe47-177f-4d30-b95f-cff8166400b4',
+    group_uuid : '4DE0FE47177F4D30B95FCFF8166400B4',
     text : 'Patient/2/Patient',
   };
 
 
-  it('GET /debtors/:uuid/invoices returns a list of all invoices of a given debtor', function () {
+  it('GET /debtors/:uuid/invoices returns a list of all invoices of a given debtor', () => {
     return agent.get(`/debtors/${debtorUuid}/invoices`)
-      .then(function (res) {
+      .then((res) => {
         helpers.api.listed(res, 3);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /debtors/:uuid/invoices?balanced=0 returns a list of unbalanced invoices of a given debtor', function () {
+  it('GET /debtors/:uuid/invoices?balanced=0 returns a list of unbalanced invoices of a given debtor', () => {
     return agent.get(`/debtors/${debtorUuid}/invoices?balanced=0`)
-      .then(function (res) {
+      .then((res) => {
         helpers.api.listed(res, 2);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /debtors/:uuid/invoices?balanced=1 returns a list of balanced invoices of a given debtor', function () {
+  it('GET /debtors/:uuid/invoices?balanced=1 returns a list of balanced invoices of a given debtor', () => {
     return agent.get(`/debtors/${debtorUuid}/invoices?balanced=1`)
-      .then(function (res) {
+      .then((res) => {
         helpers.api.listed(res, 1);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /debtors/:uuid/invoice should return an empty list if the debtor does not have any invoices', function () {
+  it('GET /debtors/:uuid/invoice should return an empty list if the debtor does not have any invoices', () => {
     return agent.get(`/debtors/${emptyDebtorUuid}/invoices`)
-      .then(function (res) {
+      .then((res) => {
         helpers.api.listed(res, 0);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /debtors should return a list of all debtors', function () {
+  it('GET /debtors should return a list of all debtors', () => {
     return agent.get('/debtors')
-      .then(function (res) {
+      .then((res) => {
         helpers.api.listed(res, 3);
       })
       .catch(helpers.handler);
   });
 
   // FIXME - incredibly hard coded!!
-  it('GET /debtors/:uuid should return detail of a specifying debtor', function () {
+  it('GET /debtors/:uuid should return detail of a specifying debtor', () => {
     return agent.get(`/debtors/${debtorUuid}`)
-      .then(function (res) {
+      .then((res) => {
         expect(res.body).to.contain.all.keys(debtorKeys);
         expect(res.body.uuid).to.be.equal(debtorUuid);
         expect(res.body.group_uuid).to.be.equal(debtorInfo.group_uuid);

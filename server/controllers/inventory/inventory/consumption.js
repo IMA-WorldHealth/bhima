@@ -29,8 +29,7 @@ function getItemConsumption(uuid, options) {
 
   switch (group) {
   case 'year':
-    sql =
-      `SELECT SUM(IF(c.canceled, 0, c.quantity)) AS quantity, DATE_FORMAT(c.date, '%Y-%m-%d') AS 'date'
+    sql = `SELECT SUM(IF(c.canceled, 0, c.quantity)) AS quantity, DATE_FORMAT(c.date, '%Y-%m-%d') AS 'date'
       FROM consumption AS c JOIN stock AS s JOIN inventory AS i
         ON c.tracking_number = s.tracking_number AND
         s.inventory_uuid = i.uuid
@@ -39,8 +38,7 @@ function getItemConsumption(uuid, options) {
     break;
 
   case 'month':
-    sql =
-      `SELECT SUM(IF(c.canceled, 0, c.quantity)) AS quantity, DATE_FORMAT(c.date, '%Y-%m-01') AS 'date'
+    sql = `SELECT SUM(IF(c.canceled, 0, c.quantity)) AS quantity, DATE_FORMAT(c.date, '%Y-%m-01') AS 'date'
       FROM consumption AS c JOIN stock AS s JOIN inventory AS i
         ON c.tracking_number = s.tracking_number AND
         s.inventory_uuid = i.uuid
@@ -49,8 +47,7 @@ function getItemConsumption(uuid, options) {
     break;
 
   case 'week':
-    sql =
-      `SELECT SUM(IF(c.canceled, 0, c.quantity)) AS quantity, c.date
+    sql = `SELECT SUM(IF(c.canceled, 0, c.quantity)) AS quantity, c.date
       FROM consumption AS c JOIN stock AS s JOIN inventory AS i
         ON c.tracking_number = s.tracking_number AND
         s.inventory_uuid = i.uuid
@@ -59,8 +56,7 @@ function getItemConsumption(uuid, options) {
     break;
 
   default:
-    sql =
-      `SELECT SUM(IF(c.canceled, 0, c.quantity)) AS quantity, DATE(c.date) AS 'date'
+    sql = `SELECT SUM(IF(c.canceled, 0, c.quantity)) AS quantity, DATE(c.date) AS 'date'
       FROM consumption AS c JOIN stock AS s JOIN inventory AS i
         ON c.tracking_number = s.tracking_number AND
         s.inventory_uuid = i.uuid
@@ -86,9 +82,9 @@ function getAverageItemConsumption(uuid, options) {
 
   // pre-format queries
   const where = start ? 'c.date BETWEEN DATE(?) AND DATE(?) ' : '1 ';
-  const difference = start ?
-    'DATE(?), DATE(?)' :
-    'CURDATE(), MIN(c.date)';
+  const difference = start
+    ? 'DATE(?), DATE(?)'
+    : 'CURDATE(), MIN(c.date)';
   const params = start ? [end, start, uuid, start, end] : [uuid];
 
   // if the user has predefined a date range, we will compute the consumption
@@ -100,8 +96,7 @@ function getAverageItemConsumption(uuid, options) {
   // spanned by the observed consumptions.
   //
   // We add one to the DATEDIFF to prevent division by 0
-  const sql =
-    `SELECT SUM(c.quantity) / (DATEDIFF(${difference}) + 1) AS average
+  const sql = `SELECT SUM(c.quantity) / (DATEDIFF(${difference}) + 1) AS average
     FROM (
       SELECT i.uuid, c.quantity, c.date
       FROM consumption AS c JOIN stock AS s JOIN inventory AS i

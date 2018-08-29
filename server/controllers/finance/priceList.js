@@ -14,7 +14,7 @@
  */
 
 const db = require('../../lib/db');
-const uuid = require('uuid/v4');
+const { uuid } = require('../../lib/util');
 
 /**
  * Lists all price lists in the database

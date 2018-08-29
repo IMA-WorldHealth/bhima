@@ -62,7 +62,7 @@ describe('(/purchases) Purchases', () => {
   it('GET /purchases/:uuid should return a single JSON purchase order', () => {
     return agent.get(`/purchases/${purchaseOrder.uuid}`)
       .then((res) => {
-        var purchase = res.body;
+        const purchase = res.body;
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
         expect(purchase.uuid).to.exist;

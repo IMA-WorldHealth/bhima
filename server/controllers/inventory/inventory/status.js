@@ -43,8 +43,7 @@ function getInventoryStatusById(uuid) {
       data.consumption = avg;
 
       // calculate the days of stock remaining in the inventory (in days)
-      const daysOfStockRemaining =
-        (data.quantity / data.consumption) - data.leadtime;
+      const daysOfStockRemaining = (data.quantity / data.consumption) - data.leadtime;
 
       data.remaining = daysOfStockRemaining;
 

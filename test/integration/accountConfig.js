@@ -7,7 +7,7 @@ const helpers = require('./helpers');
  *
  * This test suite implements full CRUD on the /payroll/account_configuration  HTTP API endpoint.
  */
-describe('(/payroll/account_configuration) The /payroll/account_configuration  API endpoint', function () {
+describe('(/payroll/account_configuration) The /payroll/account_configuration  API endpoint', () => {
   // Account Payroll Configuration we will add during this test suite.
 
   const accountConfig = {
@@ -20,62 +20,62 @@ describe('(/payroll/account_configuration) The /payroll/account_configuration  A
   };
 
   const NUM_ACCOUNTING = 1;
-  
-  it('GET /ACCOUNT_CONFIG returns a list of Account Configurations ', function () {
+
+  it('GET /ACCOUNT_CONFIG returns a list of Account Configurations ', () => {
     return agent.get('/account_config')
-      .then(function (res) {
+      .then((res) => {
         helpers.api.listed(res, NUM_ACCOUNTING);
       })
       .catch(helpers.handler);
   });
 
-  it('POST /ACCOUNT_CONFIG should create a new Account Configuration', function () {
+  it('POST /ACCOUNT_CONFIG should create a new Account Configuration', () => {
     return agent.post('/account_config')
       .send(accountConfig)
-      .then(function (res) {
+      .then((res) => {
         accountConfig.id = res.body.id;
         helpers.api.created(res);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /ACCOUNT_CONFIG/:ID should not be found for unknown id', function () {
+  it('GET /ACCOUNT_CONFIG/:ID should not be found for unknown id', () => {
     return agent.get('/account_config/unknownAccount')
-      .then(function (res) {
+      .then((res) => {
         helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });
 
-  it('PUT /ACCOUNT_CONFIG  should update an existing Account Configuration', function () {
+  it('PUT /ACCOUNT_CONFIG  should update an existing Account Configuration', () => {
     return agent.put('/account_config/'.concat(accountConfig.id))
       .send(accountConfigUpdate)
-      .then(function (res) {
+      .then((res) => {
         expect(res).to.have.status(200);
         expect(res.body.label).to.equal('Account Configuration 2015');
       })
       .catch(helpers.handler);
   });
 
-  it('GET /ACCOUNT_CONFIG/:ID returns a single Account Configuration', function () {
+  it('GET /ACCOUNT_CONFIG/:ID returns a single Account Configuration', () => {
     return agent.get('/account_config/'.concat(accountConfig.id))
-      .then(function (res) {
+      .then((res) => {
         expect(res).to.have.status(200);
       })
       .catch(helpers.handler);
   });
 
-  it('DELETE /ACCOUNT_CONFIG/:ID will send back a 404 if the Account Configuration does not exist', function () {
+  it('DELETE /ACCOUNT_CONFIG/:ID will send back a 404 if the Account Configuration does not exist', () => {
     return agent.delete('/account_config/inknowRubric')
-      .then(function (res) {
+      .then((res) => {
         helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });
 
-  it('DELETE /ACCOUNT_CONFIG/:ID should delete an Account Configuration ', function () {
+  it('DELETE /ACCOUNT_CONFIG/:ID should delete an Account Configuration ', () => {
     return agent.delete('/account_config/'.concat(accountConfig.id))
-      .then(function (res) {
+      .then((res) => {
         helpers.api.deleted(res);
       })
       .catch(helpers.handler);

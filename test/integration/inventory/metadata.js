@@ -1,7 +1,6 @@
 /* global expect, agent */
 
 const helpers = require('../helpers');
-const uuid = require('uuid/v4');
 const shared = require('./shared');
 
 describe('(/inventory/metadata) The inventory metadata http API', () => {
@@ -9,7 +8,6 @@ describe('(/inventory/metadata) The inventory metadata http API', () => {
 
   // inventory list items
   const metadata = {
-    uuid : uuid(),
     code : '1000012', // code must be unique
     text : '[IT] Inventory Article',
     price : 5,
@@ -38,7 +36,7 @@ describe('(/inventory/metadata) The inventory metadata http API', () => {
       .send(metadata)
       .then(res => {
         helpers.api.created(res);
-        expect(res.body.uuid).to.be.equal(metadata.uuid);
+        metadata.uuid = res.body.uuid;
       })
       .catch(helpers.handler);
   });

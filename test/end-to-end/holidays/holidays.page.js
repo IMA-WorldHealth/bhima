@@ -5,11 +5,6 @@
  * behaviour so it is a holiday page object
  */
 
-const chai = require('chai');
-const helpers = require('../shared/helpers');
-
-helpers.configure(chai);
-
 /* loading grid actions */
 const GA = require('../shared/GridAction');
 const GU = require('../shared/GridUtils');
@@ -53,9 +48,9 @@ class HolidayPage {
 
     FU.buttons.submit();
     FU.buttons.cancel();
-    
+
     // FIX ME TO CHECK ERROR UNDER THE MODAL
-    components.notification.hasError();    
+    components.notification.hasError();
   }
 
   /**
