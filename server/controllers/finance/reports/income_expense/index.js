@@ -59,7 +59,7 @@ function document(req, res, next) {
   ])
     .then(([periodFrom, periodTo, fiscalYear]) => {
       if (periodFrom.start_date > periodTo.start_date) {
-        throw new BadRequest('The date range is inverted.');
+        throw new BadRequest('The date range is inverted.', 'ERRORS.BAD_DATE_INTERVAL');
       }
 
       _.extend(data, { periodFrom, periodTo, fiscalYear });
@@ -76,6 +76,13 @@ function document(req, res, next) {
       const tree = constructAndPruneTree(dataset);
 
       const root = tree.getRootNode();
+
+      if (!Array.isArray(root.children) || root.children.length < 2) {
+        throw new BadRequest(
+          'Could not find both income and expense accounts for the time period',
+          'ERRORS.NO_DATA_FOUND'
+        );
+      }
 
       const isIncomeFirstElement = root.children[0].isIncomeAccount;
 
@@ -99,6 +106,9 @@ function document(req, res, next) {
         income :  profits[0] || emptyTotal,
         expense : losses[0] || emptyTotal,
       };
+
+      // compute the difference between the income and expense
+      totals.result = totals.income.balance + totals.expense.balance;
 
       // computes the variance on the income/expense
       profits.forEach(account => {
