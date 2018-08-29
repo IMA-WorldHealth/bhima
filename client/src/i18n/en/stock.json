@@ -147,5 +147,14 @@
     "TO_SERVICE"       : "To Service",
     "TO_LOSS"          : "To Loss",
     "TO_ADJUSTMENT"    : "Adjustment (Negative)"
+  },
+  "LOTS" : {
+    "REGISTRY" : "Lots Registry"
+  },
+  "MOVEMENTS" : {
+    "REGISTRY" : "Movements Registry"
+  },
+  "INVENTORIES" : {
+    "REGISTRY" : "Inventories Registry"
   }
 }

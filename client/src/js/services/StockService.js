@@ -25,6 +25,15 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
   // API for stock transfer
   const transfers = new Api('/stock/transfers');
 
+  // stock status label keys
+  const stockStatusLabelKeys = {
+    sold_out          : 'STOCK.STATUS.SOLD_OUT',
+    in_stock          : 'STOCK.STATUS.IN_STOCK',
+    security_reached  : 'STOCK.STATUS.SECURITY',
+    minimum_reached   : 'STOCK.STATUS.MINIMUM',
+    over_maximum      : 'STOCK.STATUS.OVER_MAX',
+  };
+
   // Filter service
   const StockLotFilters = new Filters();
   const StockMovementFilters = new Filters();
@@ -248,15 +257,7 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
 
   /** Get label for purchase Status */
   function statusLabelMap(status) {
-    const keys = {
-      sold_out          : 'STOCK.STATUS.SOLD_OUT',
-      in_stock          : 'STOCK.STATUS.IN_STOCK',
-      security_reached  : 'STOCK.STATUS.SECURITY',
-      minimum_reached   : 'STOCK.STATUS.MINIMUM',
-      over_maximum      : 'STOCK.STATUS.OVER_MAX',
-    };
-
-    return keys[status];
+    return stockStatusLabelKeys[status];
   }
 
 
