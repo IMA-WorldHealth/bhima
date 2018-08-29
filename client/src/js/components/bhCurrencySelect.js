@@ -63,15 +63,15 @@ bhCurrencySelect.$inject = ['CurrencyService'];
  * @requires services/CurrencyService
  */
 function bhCurrencySelect(Currencies) {
-  var $ctrl = this;
-  var isArray = angular.isArray;
+  const $ctrl = this;
+  const { isArray } = angular;
 
   $ctrl.$onInit = function onInit() {
     // load all the available currencies
     Currencies.read()
-      .then(function (currencies) {
+      .then(currencies => {
         // cache a label for faster view rendering
-        currencies.forEach(function (currency) {
+        currencies.forEach(currency => {
           currency.label = Currencies.format(currency.id);
         });
 
@@ -104,8 +104,8 @@ function bhCurrencySelect(Currencies) {
 
     // loop through the currencies, disabling the currencies with ids in the
     // disableIds array.
-    $ctrl.currencies.forEach(function (currency) {
-      var disabled = disabledIds.indexOf(currency.id) > -1;
+    $ctrl.currencies.forEach(currency => {
+      const disabled = disabledIds.indexOf(currency.id) > -1;
       currency.disabled = disabled;
       currency.title = disabled ? 'FORM.INFO.DISABLED_CURRENCY' : '';
     });
