@@ -134,7 +134,7 @@ BEGIN
     SET accountType = 'expense';
   END IF;
 
-  SET accountTypeId = (SELECT id FROM account_type WHERE `type` = accountType COLLATE utf8_unicode_ci LIMIT 1);
+  SET accountTypeId = (SELECT id FROM account_type WHERE `type` = accountType LIMIT 1);
 
   RETURN accountTypeId;
 END

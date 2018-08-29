@@ -54,7 +54,7 @@ function reverseLookup(barcodeKey) {
 
   const query = `
     SELECT BUID(uuid) as uuid FROM ${documentDefinition.table}
-    WHERE BUID(uuid) LIKE '${partialUuid}%' COLLATE utf8_unicode_ci;
+    WHERE BUID(uuid) LIKE '${partialUuid}%';
   `;
 
   // search for full UUID
