@@ -7,7 +7,7 @@ function StockServiceTests() {
   beforeEach(module(
     'bhima.services',
     'bhima.constants',
-    'bhima.mocks',
+    'bhima.StockMocks',
     'ngStorage',
     'tmh.dynamicLocale',
     'angularMoment',

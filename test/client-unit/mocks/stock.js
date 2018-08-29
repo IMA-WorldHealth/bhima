@@ -1,5 +1,5 @@
 (() => {
-  angular.module('bhima.mocks', [])
+  angular.module('bhima.StockMocks', [])
     .service('MockStockDataService', MockStockDataService);
 
   function MockStockDataService() {
