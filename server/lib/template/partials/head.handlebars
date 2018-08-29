@@ -1,10 +1,12 @@
 <!-- this partial requires binding the variable 'title' -->
 <head>
+  <meta charset="utf-8">
   <title>{{translate title}}</title>
   <link href="{{absolutePath}}/css/bhima-bootstrap.css" rel="stylesheet">
   <link href="{{absolutePath}}/vendor/components-font-awesome/css/font-awesome.css" rel="stylesheet">
   <script src="{{absolutePath}}/vendor/JsBarcode.all.min.js"></script>
   <style>
+   
     thead {
       display : table-header-group;
     }
@@ -12,11 +14,24 @@
     tr {
       page-break-inside : avoid;
     }
-
+    .text-right {
+      text-align: right;
+    }
+    .text-center{
+      text-align: center;
+    }
+    .row, .col-lg-12, .col-xs-12{
+       width :100%;
+    }
     /* sourced from jimmybonney.com.  Thank you! */
     .table-header-rotated th.row-header{
       width: auto;
     }
+
+    table, td, th{
+      border : 1px solid #001;
+       border-collapse : collapse !important
+    };
 
     .table-header-rotated td{
       width: 40px;
@@ -75,44 +90,5 @@
       border: none;
     }
   </style>
-
-  <script>
-    function setInlineStyle(element) {
-      var stylearray = document.defaultView.getComputedStyle(element, null);
-      var styleText = '';
-      for (var key in stylearray) {
-        styleText += key + ': ' + stylearray[key] + ';';
-      }
-      element.style = styleText;
-    }
-
-    // Dom walking
-    function loopPageNodes(node) {
-      var nodes = node.childNodes;
-      for (var i = 0; i < nodes.length; i++) {
-        if (!nodes[i]) {
-          continue;
-        }
-        try {
-          setInlineStyle(nodes[i]);
-        } catch (error) {
-        }
-        if (nodes[i].childNodes.length > 0) {
-          loopPageNodes(nodes[i]);
-        }
-      }
-    }
-    //@TODO 
-    // 1. copy the body content (temp1)
-    // 2. add inline styles(temp2)
-    // 3. set body = temp1
-    // 4. return temp2
-    function htmlContent()
-    {
-      var bodys = document.getElementsByTagName('body');
-      loopPageNodes(bodys[0]);
-      return bodys[0].innerHTML;
-    }  
-  </script>
   <meta charset="utf8" />
 </head>
