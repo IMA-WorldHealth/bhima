@@ -1,7 +1,7 @@
 angular.module('bhima.services')
   .service('ConfigurationService', ConfigurationService);
 
-ConfigurationService.$inject = ['PrototypeApiService', '$uibModal', '$http', 'util'];
+ConfigurationService.$inject = ['PrototypeApiService', '$http', 'util'];
 
 /**
  * @class RubricService
@@ -10,7 +10,7 @@ ConfigurationService.$inject = ['PrototypeApiService', '$uibModal', '$http', 'ut
  * @description
  * Encapsulates common requests to the /rubric_config/ URL.
  */
-function ConfigurationService(Api, Modal, $http, util) {
+function ConfigurationService(Api, $http, util) {
   var service = new Api('/rubric_config/');
 
   service.getRubrics = getRubrics;
@@ -18,6 +18,12 @@ function ConfigurationService(Api, Modal, $http, util) {
 
   // loads the configuration's rubrics
   function getRubrics(id) {
+    if (angular.isUndefined(id)) {
+      throw new Error(
+        'Trying to get configuration of rubrics without the identity property'
+      );
+    }
+
     return $http.get(`/rubric_config/${id}/setting`)
       .then(util.unwrapHttpResponse);
   }
