@@ -127,8 +127,11 @@ correct SQL_MODE is set._
 ```bash
 #To configure MySQL with this setting, run the following commands:
 sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf
+
 #Under the section [mysqld], add in the following text:
 sql-mode = STRICT_ALL_TABLES
+
+#After saving the mysqld.cnf file, run the following command at the terminal prompt to restart MySQL:
 sudo service mysql restart
 ```
 

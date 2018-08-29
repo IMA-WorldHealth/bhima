@@ -16,8 +16,10 @@
 
 const _ = require('lodash');
 const q = require('q');
+const path = require('path');
 const moment = require('moment');
 const debug = require('debug')('util');
+const csvtojson = require('csvtojson');
 const { exec } = require('child_process');
 
 exports.take = take;
@@ -32,6 +34,7 @@ exports.roundDecimal = roundDecimal;
 exports.loadDictionary = loadDictionary;
 exports.stringToNumber = stringToNumber;
 exports.convertStringToNumber = convertStringToNumber;
+exports.formatCsvToJson = formatCsvToJson;
 
 /**
  * @function take
@@ -207,4 +210,28 @@ function renameObjectKeys(obj, newKeys) {
     return { [newKey] : obj[key] };
   });
   return Object.assign({}, ...keyValues);
+}
+
+/**
+ * @function formatCsvToJson
+ * @description convert a csv file to a json
+ * @return {promise} return a promise
+ */
+function formatCsvToJson(filePath) {
+  const defer = q.defer();
+  const rows = [];
+
+  csvtojson()
+    .fromFile(path.resolve(filePath))
+    .on('json', (data) => {
+      rows.push(data);
+    })
+    .on('end', () => {
+      defer.resolve(rows);
+    })
+    .on('error', (error) => {
+      defer.reject(error);
+    });
+
+  return defer.promise;
 }

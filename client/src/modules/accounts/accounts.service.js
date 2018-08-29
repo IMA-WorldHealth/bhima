@@ -11,8 +11,8 @@ AccountService.$inject = [
  * A service wrapper for the /accounts HTTP endpoint.
  */
 function AccountService(Api, bhConstants) {
-  var baseUrl = '/accounts/';
-  var service = new Api(baseUrl);
+  const baseUrl = '/accounts/';
+  const service = new Api(baseUrl);
 
   service.read = read;
   service.label = label;
@@ -22,6 +22,7 @@ function AccountService(Api, bhConstants) {
   service.getChildren = getChildren;
   service.filterTitleAccounts = filterTitleAccounts;
   service.filterAccountByType = filterAccountsByType;
+  service.downloadAccountsTemplate = downloadAccountsTemplate;
 
   service.flatten = flatten;
   service.order = order;
@@ -35,7 +36,7 @@ function AccountService(Api, bhConstants) {
    * used to load a date range.
    */
   function getOpeningBalanceForPeriod(id, options) {
-    var url = service.url.concat(id, '/openingBalance');
+    const url = service.url.concat(id, '/openingBalance');
     return service.$http.get(url, { params : options })
       .then(service.util.unwrapHttpResponse);
   }
@@ -74,7 +75,7 @@ function AccountService(Api, bhConstants) {
   }
 
   function getBalance(accountId, opt) {
-    var url = baseUrl.concat(accountId, '/balance');
+    const url = baseUrl.concat(accountId, '/balance');
     return service.$http.get(url, opt)
       .then(service.util.unwrapHttpResponse);
   }
@@ -84,7 +85,7 @@ function AccountService(Api, bhConstants) {
   }
 
   function filterAccountsByType(accounts, type) {
-    return accounts.filter(function filterFn(account) {
+    return accounts.filter(account => {
       return account.type_id !== type;
     });
   }
@@ -99,14 +100,12 @@ function AccountService(Api, bhConstants) {
    * @returns {Array} - an array of children
    */
   function getChildren(accounts, parentId) {
-    var children;
-
     // base case: There are no child accounts
     if (accounts.length === 0) { return null; }
 
     // returns all accounts where the parent is the
     // parentId
-    children = accounts.filter(handleParent);
+    const children = accounts.filter(handleParent);
 
     // recursively call getChildren on all child accounts
     // and attach them as childen of their parent account
@@ -132,12 +131,12 @@ function AccountService(Api, bhConstants) {
    * @returns {Array} - the flattened array
    */
   function flatten(_tree, _depth) {
-    var tree = _tree || [];
-    var depth = (!angular.isDefined(_depth) || Number.isNaN(_depth)) ? -1 : _depth;
+    const tree = _tree || [];
+    let depth = (!angular.isDefined(_depth) || Number.isNaN(_depth)) ? -1 : _depth;
     depth += 1;
 
     function handleTreeLevel(array, node) {
-      var items = [node].concat(node.children ? flatten(node.children, depth) : []);
+      const items = [node].concat(node.children ? flatten(node.children, depth) : []);
       node.$$treeLevel = depth;
       return array.concat(items);
     }
@@ -157,13 +156,27 @@ function AccountService(Api, bhConstants) {
    */
   function order(accounts) {
     // NOTE: we assume the root node is 0
-    var ROOT_NODE = 0;
+    const ROOT_NODE = 0;
 
     // build the account tree
-    var tree = getChildren(accounts, ROOT_NODE);
+    const tree = getChildren(accounts, ROOT_NODE);
 
     // return a flattened tree (in order)
     return flatten(tree);
+  }
+
+  /**
+   * @method downloadAccountsTemplate
+   *
+   * @description
+   * Download the template file for importing accounts
+   */
+  function downloadAccountsTemplate() {
+    const url = baseUrl.concat('template');
+    return service.$http.get(url)
+      .then(response => {
+        return service.util.download(response, 'Import Accounts Template', 'csv');
+      });
   }
 
   return service;
