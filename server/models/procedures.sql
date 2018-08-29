@@ -2,7 +2,6 @@
   This file contains all the stored procedures used in bhima's database.  It
   should be loaded after functions.sql.
 */
-
 DELIMITER $$
 
 /*
@@ -51,6 +50,11 @@ SOURCE server/models/procedures/stock.sql
   Inventory procedures include: ImportInventory
 */
 SOURCE server/models/procedures/inventory.sql
+
+/*
+  account procedures
+*/
+SOURCE server/models/procedures/account.sql
 
 /*
   role management procedures

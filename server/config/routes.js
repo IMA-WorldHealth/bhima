@@ -174,6 +174,10 @@ exports.configure = function configure(app) {
   app.put('/accounts/references/:id', accounts.references.update);
   app.delete('/accounts/references/:id', accounts.references.remove);
 
+  // API for account importation
+  app.get('/accounts/template', accounts.importing.downloadTemplate);
+  app.post('/accounts/import', upload.middleware('csv', 'file'), accounts.importing.importAccounts);
+
   // API for account routes crud
   app.get('/accounts', accounts.list);
   app.get('/accounts/:id', accounts.detail);
