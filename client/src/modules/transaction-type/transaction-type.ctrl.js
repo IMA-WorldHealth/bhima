@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 TransactionTypeController.$inject = [
   'TransactionTypeService', 'NotifyService',
-  'ModalService', 'uiGridConstants',
+  'ModalService', 'uiGridConstants', 'bhConstants',
 ];
 
 /**
@@ -12,7 +12,7 @@ TransactionTypeController.$inject = [
  * @description
  * This controller powers the transaction type grid.
  */
-function TransactionTypeController(TransactionType, Notify, Modal, uiGridConstants) {
+function TransactionTypeController(TransactionType, Notify, Modal, uiGridConstants, bhConstants) {
   const vm = this;
 
   // global variables
@@ -32,7 +32,7 @@ function TransactionTypeController(TransactionType, Notify, Modal, uiGridConstan
       priority : 1,
     },
   }, {
-    field : 'type',
+    field : 'typeLabel',
     displayName : 'FORM.LABELS.TYPE',
     headerCellFilter : 'translate',
     cellFilter : 'translate',
@@ -92,9 +92,20 @@ function TransactionTypeController(TransactionType, Notify, Modal, uiGridConstan
   function loadTransactionTypes() {
     TransactionType.read()
       .then(list => {
-        vm.gridOptions.data = list;
+        vm.gridOptions.data = list.map(assignTransactionTypeLabels);
       })
       .catch(Notify.handleError);
+  }
+
+  // Assign translatable labels to each transaction type based on the hardcoded
+  // database strings
+  function assignTransactionTypeLabels(transactionType) {
+    // @TODO(sfount) The `transaction_type` database currently hard codes 'income',
+    //               'expense' and 'other' transaction types. When this is updated
+    //               with a more data driven approach it should include translatable
+    //               labels
+    transactionType.typeLabel = bhConstants.transactionTypesMap[transactionType.type].label;
+    return transactionType;
   }
 
   function startup() {
