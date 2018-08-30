@@ -1,13 +1,18 @@
-<div ng-form="EmployeeForm" bh-employee-select ng-model-options="{ updateOn: 'default' }">
-  <div
-    class="form-group"
-    ng-class="{ 'has-error' : $ctrl.validateTrigger && EmployeeForm.employee_id.$invalid }">
+<fieldset
+  ng-form="EmployeeForm"
+  ng-model-options="{ updateOn: 'default' }"
+  novalidate
+  bh-employee-select>
+
+  <div class="form-group"
+       ng-class="{ 'has-error' : EmployeeForm.$submitted && EmployeeForm.employee_uuid.$invalid }">
 
     <label class="control-label" translate>
       FORM.LABELS.EMPLOYEE_NAME
     </label>
 
     <ng-transclude></ng-transclude>
+
     <ui-select 
       name="employee_uuid"
       ng-model="$ctrl.employeeUuid"
@@ -19,8 +24,8 @@
       </ui-select-choices>
     </ui-select>
 
-    <div class="help-block" ng-messages="EmployeeForm.employee_uuid.$error" ng-show="$ctrl.validateTrigger">
+    <div class="help-block" ng-messages="EmployeeForm.employee_uuid.$error" ng-show="EmployeeForm.$submitted">
       <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
     </div>
   </div>
-</div>
+</fieldset>
