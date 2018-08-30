@@ -150,7 +150,7 @@ function StockMovementsController(
   vm.openReceiptModal = openReceiptModal;
   vm.toggleGroup = toggleGroup;
   vm.selectGroup = selectGroup;
-  vm.download = Stock.download;
+  vm.getQueryString = Stock.getQueryString;
   vm.clearGridState = clearGridState;
 
   const gridColumns = new Columns(vm.gridOptions, cacheKey);

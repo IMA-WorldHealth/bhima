@@ -34,12 +34,12 @@
 
             <li role="separator" class="divider"></li>
             <li role="menuitem">
-              <a ng-href="/reports/stock/inventories/?{{ StockCtrl.download('pdf') }}" download="{{ 'TREE.STOCK_INVENTORY' | translate }}">
+              <a ng-href="/reports/stock/inventories/?{{ StockCtrl.getQueryString('inventory', 'pdf') }}" download="{{ 'TREE.STOCK_INVENTORY' | translate }}">
                 <span class="fa fa-file-pdf-o"></span> <span translate>DOWNLOADS.PDF</span>
               </a>
             </li>
             <li role="menuitem">
-              <a ng-href="/reports/stock/inventories/?{{ StockCtrl.download('csv') }}" download="{{ 'TREE.STOCK_INVENTORY' | translate }}">
+              <a ng-href="/reports/stock/inventories/?{{ StockCtrl.getQueryString('inventory', 'csv') }}" download="{{ 'TREE.STOCK_INVENTORY' | translate }}">
                 <span class="fa fa-file-excel-o"></span> <span translate>DOWNLOADS.CSV</span>
               </a>
             </li>

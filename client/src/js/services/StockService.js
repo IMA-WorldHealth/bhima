@@ -8,31 +8,40 @@ StockService.$inject = [
 
 function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Languages, bhConstants) {
   // API for stock lots
-  var stocks = new Api('/stock/lots');
+  const stocks = new Api('/stock/lots');
 
   // API for stock lots in depots
-  var lots = new Api('/stock/lots/depots');
+  const lots = new Api('/stock/lots/depots');
 
   // API for stock lots movements
-  var movements = new Api('/stock/lots/movements');
+  const movements = new Api('/stock/lots/movements');
 
   // API for stock inventory in depots
-  var inventories = new Api('/stock/inventories/depots');
+  const inventories = new Api('/stock/inventories/depots');
 
   // API for stock integration
-  var integration = new Api('/stock/integration');
+  const integration = new Api('/stock/integration');
 
   // API for stock transfer
-  var transfers = new Api('/stock/transfers');
+  const transfers = new Api('/stock/transfers');
+
+  // stock status label keys
+  const stockStatusLabelKeys = {
+    sold_out          : 'STOCK.STATUS.SOLD_OUT',
+    in_stock          : 'STOCK.STATUS.IN_STOCK',
+    security_reached  : 'STOCK.STATUS.SECURITY',
+    minimum_reached   : 'STOCK.STATUS.MINIMUM',
+    over_maximum      : 'STOCK.STATUS.OVER_MAX',
+  };
 
   // Filter service
-  var StockLotFilters = new Filters();
-  var StockMovementFilters = new Filters();
-  var StockInventoryFilters = new Filters();
+  const StockLotFilters = new Filters();
+  const StockMovementFilters = new Filters();
+  const StockInventoryFilters = new Filters();
 
-  var filterMovementCache = new AppCache('stock-movement-filters');
-  var filterLotCache = new AppCache('stock-lot-filters');
-  var filterInventoryCache = new AppCache('stock-inventory-filters');
+  const filterMovementCache = new AppCache('stock-movement-filters');
+  const filterLotCache = new AppCache('stock-lot-filters');
+  const filterInventoryCache = new AppCache('stock-inventory-filters');
 
   StockLotFilters.registerDefaultFilters(bhConstants.defaultFilters);
   StockMovementFilters.registerDefaultFilters(bhConstants.defaultFilters);
@@ -114,10 +123,10 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
 
   function assignLotDefaultFilters() {
     // get the keys of filters already assigned - on initial load this will be empty
-    var assignedKeys = Object.keys(StockLotFilters.formatHTTP());
+    const assignedKeys = Object.keys(StockLotFilters.formatHTTP());
 
     // assign default period filter
-    var periodDefined =
+    const periodDefined =
       lots.util.arrayIncludes(assignedKeys, ['period']);
 
     if (!periodDefined) {
@@ -132,10 +141,10 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
 
   function assignMovementDefaultFilters() {
     // get the keys of filters already assigned - on initial load this will be empty
-    var assignedKeys = Object.keys(StockMovementFilters.formatHTTP());
+    const assignedKeys = Object.keys(StockMovementFilters.formatHTTP());
 
     // assign default period filter
-    var periodDefined =
+    const periodDefined =
       movements.util.arrayIncludes(assignedKeys, ['period']);
 
     if (!periodDefined) {
@@ -150,10 +159,10 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
 
   function assignInventoryDefaultFilters() {
     // get the keys of filters already assigned - on initial load this will be empty
-    var assignedKeys = Object.keys(StockInventoryFilters.formatHTTP());
+    const assignedKeys = Object.keys(StockInventoryFilters.formatHTTP());
 
     // assign default period filter
-    var periodDefined =
+    const periodDefined =
       inventories.util.arrayIncludes(assignedKeys, ['period']);
 
     if (!periodDefined) {
@@ -179,13 +188,20 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
     stockFilter[filterKey].loadCache(filterCache[filterKey].filters || {});
   }
 
-  // downloads a type of report based on the
-  function download(filterKey, type) {
-    var filterOpts = stockFilter[filterKey].formatHTTP();
-    var defaultOpts = { renderer : type, lang : Languages.key };
+  /**
+   * @function getQueryString
+   * @description
+   * returns a query string with parameters with the consideration
+   * of the current applied filters
+   * @param {string} filterKey
+   * @param {string} type
+   */
+  function getQueryString(filterKey, type) {
+    const filterOpts = stockFilter[filterKey].formatHTTP();
+    const defaultOpts = { renderer : type, lang : Languages.key };
 
     // combine options
-    var options = angular.merge(defaultOpts, filterOpts);
+    const options = angular.merge(defaultOpts, filterOpts);
 
     // return  serialized options
     return $httpParamSerializer(options);
@@ -241,15 +257,7 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
 
   /** Get label for purchase Status */
   function statusLabelMap(status) {
-    var keys = {
-      sold_out          : 'STOCK.STATUS.SOLD_OUT',
-      in_stock          : 'STOCK.STATUS.IN_STOCK',
-      security_reached  : 'STOCK.STATUS.SECURITY',
-      minimum_reached   : 'STOCK.STATUS.MINIMUM',
-      over_maximum      : 'STOCK.STATUS.OVER_MAX',
-    };
-
-    return keys[status];
+    return stockStatusLabelKeys[status];
   }
 
 
@@ -264,7 +272,7 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
     cacheFilters,
     removeFilter,
     loadCachedFilters,
-    download,
+    getQueryString,
     uniformSelectedEntity,
     processLotsFromStore,
     statusLabelMap,

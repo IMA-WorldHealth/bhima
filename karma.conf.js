@@ -15,7 +15,7 @@ module.exports = (config) => {
     files : [
       'bin/client/js/vendor.min.js',
       'client/vendor/angular-mocks/angular-mocks.js',
-      'test/client-unit/mocks/data.js',
+      'test/client-unit/mocks/*.js',
       'bin/client/js/bhima.min.js',
       'bin/client/modules/**/*.html',
       { pattern : 'bin/client/i18n/locale/*.js', included : false, served : true },
