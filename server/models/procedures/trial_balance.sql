@@ -266,11 +266,11 @@ CREATE PROCEDURE PostToGeneralLedger()
 BEGIN
   -- write into the posting journal
   INSERT INTO general_ledger (
-    project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date,
+    project_id, uuid, fiscal_year_id, period_id, trans_id, trans_id_reference_number, trans_date,
     record_uuid, description, account_id, debit, credit, debit_equiv,
     credit_equiv, currency_id, entity_uuid, reference_uuid, comment, transaction_type_id, user_id,
     cc_id, pc_id
-  ) SELECT project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, posting_journal.record_uuid,
+  ) SELECT project_id, uuid, fiscal_year_id, period_id, trans_id, trans_id_reference_number, trans_date, posting_journal.record_uuid,
     description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id,
     entity_uuid, reference_uuid, comment, transaction_type_id, user_id, cc_id, pc_id
   FROM posting_journal JOIN stage_trial_balance_transaction AS staged

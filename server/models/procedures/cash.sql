@@ -162,6 +162,7 @@ BEGIN
   DECLARE cashEnterpriseId SMALLINT(5);
   DECLARE cashCurrencyId TINYINT(3) UNSIGNED;
   DECLARE cashAmount DECIMAL(19,4);
+  DECLARE cashReference MEDIUMINT UNSIGNED;
   DECLARE enterpriseCurrencyId INT;
   DECLARE isCaution BOOLEAN;
 
@@ -188,8 +189,8 @@ BEGIN
   SET cashPaymentOriginId = 2;
 
   -- copy cash payment values into working variables
-  SELECT cash.amount, cash.date, cash.currency_id, enterprise.id, cash.project_id, enterprise.currency_id, cash.is_caution
-    INTO  cashAmount, cashDate, cashCurrencyId, cashEnterpriseId, cashProjectId, enterpriseCurrencyId, isCaution
+  SELECT cash.amount, cash.date, cash.currency_id, enterprise.id, cash.project_id, enterprise.currency_id, cash.is_caution, cash.reference
+    INTO  cashAmount, cashDate, cashCurrencyId, cashEnterpriseId, cashProjectId, enterpriseCurrencyId, isCaution, cashReference
   FROM cash
     JOIN project ON cash.project_id = project.id
     JOIN enterprise ON project.enterprise_id = enterprise.id
@@ -214,11 +215,11 @@ BEGIN
 
   -- write the cash amount going into the cashbox to the posting_journal
   INSERT INTO posting_journal (
-    uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
+    uuid, project_id, fiscal_year_id, period_id, trans_id, trans_id_reference_number, trans_date,
     record_uuid, description, account_id, debit, credit, debit_equiv,
     credit_equiv, currency_id, user_id, transaction_type_id
   ) SELECT
-    HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid, c.description,
+    HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.reference, c.date, c.uuid, c.description,
     cb.account_id, c.amount, 0, (c.amount * (1 / currentExchangeRate)), 0, c.currency_id, c.user_id, cashPaymentOriginId
   FROM cash AS c
     JOIN cash_box_account_currency AS cb ON cb.currency_id = c.currency_id AND cb.cash_box_id = c.cashbox_id
@@ -231,11 +232,11 @@ BEGIN
   IF isCaution THEN
 
     INSERT INTO posting_journal (
-      uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
+      uuid, project_id, fiscal_year_id, period_id, trans_id, trans_id_reference_number, trans_date,
       record_uuid, description, account_id, debit, credit, debit_equiv,
       credit_equiv, currency_id, entity_uuid, user_id, transaction_type_id
     ) SELECT
-      HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid,
+      HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.reference, c.date, c.uuid,
       c.description, dg.account_id, 0, c.amount, 0, (c.amount * (1 / currentExchangeRate)), c.currency_id,
       c.debtor_uuid, c.user_id, cashPaymentOriginId
     FROM cash AS c
@@ -252,11 +253,11 @@ BEGIN
 
     -- write each cash_item into the posting_journal
     INSERT INTO posting_journal (
-      uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
+      uuid, project_id, fiscal_year_id, period_id, trans_id, trans_id_reference_number, trans_date,
       record_uuid, description, account_id, debit, credit, debit_equiv,
       credit_equiv, currency_id, entity_uuid, user_id, reference_uuid, transaction_type_id
     ) SELECT
-      HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid,
+      HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.reference, c.date, c.uuid,
       c.description, dg.account_id, 0, ci.amount, 0, (ci.amount * (1 / currentExchangeRate)), c.currency_id,
       c.debtor_uuid, c.user_id, ci.invoice_uuid, cashPaymentOriginId
     FROM cash AS c
@@ -312,11 +313,11 @@ BEGIN
 
         -- credit the rounding account
         INSERT INTO posting_journal (
-          uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
+          uuid, project_id, fiscal_year_id, period_id, trans_id, trans_id_reference_number, trans_date,
           record_uuid, description, account_id, debit, credit, debit_equiv,
           credit_equiv, currency_id, user_id, transaction_type_id
         ) SELECT
-          HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid, c.description,
+          HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.reference, c.date, c.uuid, c.description,
           gain_account_id, 0, remainder, 0, (remainder * (1 / currentExchangeRate)), c.currency_id, c.user_id, cashPaymentOriginId
         FROM cash AS c
           JOIN debtor AS d ON c.debtor_uuid = d.uuid
@@ -339,11 +340,11 @@ BEGIN
 
         -- credit the debtor
         INSERT INTO posting_journal (
-          uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
+          uuid, project_id, fiscal_year_id, period_id, trans_id, trans_id_reference_number, trans_date,
           record_uuid, description, account_id, debit, credit, debit_equiv,
           credit_equiv, currency_id, entity_uuid, user_id, reference_uuid, transaction_type_id
         ) SELECT
-          HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid, c.description,
+          HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.reference, c.date, c.uuid, c.description,
           dg.account_id, 0, remainder, 0, (remainder * (1 / currentExchangeRate)), c.currency_id,
           c.debtor_uuid, c.user_id, lastInvoiceUuid, cashPaymentOriginId
         FROM cash AS c
@@ -353,11 +354,11 @@ BEGIN
 
         -- debit the rounding account
         INSERT INTO posting_journal (
-          uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date,
+          uuid, project_id, fiscal_year_id, period_id, trans_id, trans_id_reference_number, trans_date,
           record_uuid, description, account_id, debit, credit, debit_equiv,
           credit_equiv, currency_id, user_id, transaction_type_id
         ) SELECT
-          HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.date, c.uuid, c.description,
+          HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, c.reference, c.date, c.uuid, c.description,
           loss_account_id, remainder, 0, (remainder * (1 / currentExchangeRate)), 0, c.currency_id, c.user_id, cashPaymentOriginId
         FROM cash AS c
           JOIN debtor AS d ON c.debtor_uuid = d.uuid

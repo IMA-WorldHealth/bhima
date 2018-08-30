@@ -71,23 +71,31 @@ END $$
   SET transId = SELECT GenerateTransactionid(projectid);
 */
 CREATE FUNCTION GenerateTransactionId(
-  project_id SMALLINT(5)
+  target_project_id SMALLINT(5)
 )
 RETURNS VARCHAR(100) DETERMINISTIC
 BEGIN
   DECLARE trans_id_length TINYINT(1) DEFAULT 4;
   RETURN (
-    SELECT CONCAT(abbr, IFNULL(MAX(increment), 1)) AS id
+    SELECT CONCAT(project_string, IFNULL(MAX(current_max) + 1, 1)) as id
     FROM (
-      SELECT project.abbr, MAX(FLOOR(SUBSTR(trans_id, trans_id_length))) + 1 AS increment
-      FROM posting_journal JOIN project ON posting_journal.project_id = project.id
-      WHERE posting_journal.project_id = project_id
-      GROUP BY abbr
-    UNION
-      SELECT project.abbr, MAX(FLOOR(SUBSTR(trans_id, trans_id_length))) + 1 AS increment
-      FROM general_ledger JOIN project ON general_ledger.project_id = project.id
-      WHERE general_ledger.project_id = project_id)c
-      GROUP BY abbr
+      ( 
+        SELECT abbr AS project_string, trans_id_reference_number AS current_max 
+        FROM general_ledger
+        JOIN project ON project_id = project.id 
+        WHERE project_id = target_project_id
+        ORDER BY trans_id_reference_number DESC 
+        LIMIT 1
+      ) 
+      UNION
+      (
+        SELECT abbr AS project_string, trans_id_reference_number AS current_max FROM posting_journal 
+        JOIN project ON project_id = project.id 
+        WHERE project_id = target_project_id
+        ORDER BY trans_id_reference_number DESC 
+        LIMIT 1
+      )
+    )A
   );
 END $$
 

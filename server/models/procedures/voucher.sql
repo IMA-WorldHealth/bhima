@@ -44,6 +44,7 @@ BEGIN
   DECLARE project_id INT;
   DECLARE currency_id INT;
   DECLARE date TIMESTAMP;
+  DECLARE trans_id_number MEDIUMINT UNSIGNED;
 
   -- variables to store core set-up results
   DECLARE fiscal_year_id MEDIUMINT(8) UNSIGNED;
@@ -55,8 +56,8 @@ BEGIN
   DECLARE loss_account_id INT UNSIGNED;
 
   --
-  SELECT p.enterprise_id, p.id, v.currency_id, v.date
-    INTO enterprise_id, project_id, currency_id, date
+  SELECT p.enterprise_id, p.id, v.currency_id, v.date, v.reference
+    INTO enterprise_id, project_id, currency_id, date, trans_id_number
   FROM voucher AS v JOIN project AS p ON v.project_id = p.id
   WHERE v.uuid = uuid;
 
@@ -69,11 +70,11 @@ BEGIN
 
   -- POST to the posting journal
   INSERT INTO posting_journal (uuid, project_id, fiscal_year_id, period_id,
-    trans_id, trans_date, record_uuid, description, account_id, debit,
+    trans_id, trans_id_reference_number, trans_date, record_uuid, description, account_id, debit,
     credit, debit_equiv, credit_equiv, currency_id, entity_uuid,
     reference_uuid, comment, transaction_type_id, user_id)
   SELECT
-    HUID(UUID()), v.project_id, fiscal_year_id, period_id, transaction_id, v.date,
+    HUID(UUID()), v.project_id, fiscal_year_id, period_id, transaction_id, trans_id_number, v.date,
     v.uuid, v.description, vi.account_id, vi.debit, vi.credit,
     vi.debit * (1 / current_exchange_rate), vi.credit * (1 / current_exchange_rate), v.currency_id,
     vi.entity_uuid, vi.document_uuid, NULL, v.type_id, v.user_id

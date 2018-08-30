@@ -15,11 +15,11 @@ DELIMITER $$
 
 -- Add integer reference numbers to posting journal and general ledger
 ALTER TABLE posting_journal 
-  ADD COLUMN trans_id_reference_number MEDIUMINT UNSIGNED,
+  ADD COLUMN trans_id_reference_number MEDIUMINT UNSIGNED NOT NULL,
   ADD INDEX (trans_id_reference_number);
 
 ALTER TABLE general_ledger 
-  ADD COLUMN trans_id_reference_number MEDIUMINT UNSIGNED,
+  ADD COLUMN trans_id_reference_number MEDIUMINT UNSIGNED NOT NULL,
   ADD INDEX (trans_id_reference_number);
 
 -- Populate new reference numbers using the existing String equivalent
