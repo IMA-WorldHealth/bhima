@@ -1,3 +1,4 @@
+/* Database Schema Version 0.9.0 */
 SET foreign_key_checks = 0;
 
 SET names 'utf8mb4';
