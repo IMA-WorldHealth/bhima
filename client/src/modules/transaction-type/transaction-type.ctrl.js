@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 TransactionTypeController.$inject = [
   'TransactionTypeService', 'TransactionTypeStoreService', 'NotifyService',
-  'ModalService', '$translate',
+  'ModalService', '$translate', 'uiGridConstants',
 ];
 
 /**
@@ -12,7 +12,7 @@ TransactionTypeController.$inject = [
  * @description
  * This controller powers the transaction type grid.
  */
-function TransactionTypeController(TransactionType, TransactionTypeStore, Notify, Modal, $translate) {
+function TransactionTypeController(TransactionType, TransactionTypeStore, Notify, Modal, $translate, uiGridConstants) {
   const vm = this;
 
   // global variables
@@ -48,6 +48,10 @@ function TransactionTypeController(TransactionType, TransactionTypeStore, Notify
     headerCellFilter : 'translate',
     cellFilter : 'translate',
     enableColumnMenu : false,
+    sort : {
+      direction : uiGridConstants.ASC,
+      priority : 1,
+    },
   }, {
     field : 'type',
     displayName : 'FORM.LABELS.TYPE',
@@ -55,11 +59,15 @@ function TransactionTypeController(TransactionType, TransactionTypeStore, Notify
     cellFilter : 'translate',
     enableColumnMenu : false,
   }, {
-    field : 'action',
+    field : 'fixed',
     displayName : '...',
     cellTemplate : editTemplate,
     enableFiltering : false,
     enableColumnMenu : false,
+    sort : {
+      direction : uiGridConstants.DESC,
+      priority : 0,
+    },
   }];
 
   // register API
