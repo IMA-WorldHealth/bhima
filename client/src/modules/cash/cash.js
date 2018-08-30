@@ -2,9 +2,9 @@ angular.module('bhima.controllers')
   .controller('CashController', CashController);
 
 CashController.$inject = [
-  'CashService', 'CashboxService', 'AppCache', 'CurrencyService',
-  'SessionService', 'ModalService', 'NotifyService', '$state',
-  'ReceiptModal', 'CashFormService', '$q', '$rootScope',
+  '$state', '$q', '$rootScope', 'CashService', 'CashboxService',
+  'AppCache', 'CurrencyService', 'SessionService', 'ModalService',
+  'NotifyService', 'ReceiptModal', 'CashFormService',
 ];
 
 /**
@@ -16,7 +16,10 @@ CashController.$inject = [
  * against previous invoices.  The cash payments module provides
  * functionality to pay both in multiple currencies.
  */
-function CashController(Cash, Cashboxes, AppCache, Currencies, Session, Modals, Notify, $state, Receipts, CashForm, $q, RS) {
+function CashController(
+  $state, $q, RootScope, Cash, Cashboxes, AppCache, Currencies,
+  Session, Modals, Notify, Receipts, CashForm,
+) {
   const vm = this;
 
   const cacheKey = 'CashPayments';
@@ -123,8 +126,8 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Session, Modals, 
 
     return $q.resolve()
       .then(() => {
-        return hasCaution ?
-          Modals.confirm('CASH.CONFIRM_PAYMENT_WHEN_CAUTION') : true;
+        return hasCaution
+          ? Modals.confirm('CASH.CONFIRM_PAYMENT_WHEN_CAUTION') : true;
       })
       .then(allowPaymentWithCaution => {
         if (allowPaymentWithCaution) {
@@ -169,14 +172,25 @@ function CashController(Cash, Cashboxes, AppCache, Currencies, Session, Modals, 
     form.$setPristine();
   }
 
-  RS.$on('cash:configure', (event, data) => {
-    vm.Payment.configure(data);
+  // listen on rootscope emit channel, this function accepts invoice
+  // details from other controllers (for example a scanned barcode)
+  // and configures the Cash Window controller with the imported details
+  RootScope.$on('cash:configure', configureInvoiceCashPayment);
+
+  // invoiceData is expected as follows
+  // {
+  //    description : // string value for the _service_ that generated the invoice
+  //    invoices: // a list of invoice objects each with the invoices balance
+  //    patient: // detailed patient object with containing all patient (debtor) details
+  // }
+  function configureInvoiceCashPayment(event, invoiceData) {
+    vm.Payment.configure(invoiceData);
 
     // if the patient UUID is provided, search by that patient
-    if (data.patient) {
-      vm.bhFindPatient.searchByUuid(data.patient.uuid);
+    if (invoiceData.patient) {
+      vm.bhFindPatient.searchByUuid(invoiceData.patient.uuid);
     }
-  });
+  }
 
   // start up the module
   startup();
