@@ -2,9 +2,12 @@
 -- be overriden by individual enterprises however these are the defaults
 
 -- set variables
-SET names 'utf8';
-SET character_set_database = 'utf8';
-SET collation_database = 'utf8_unicode_ci';
+SET foreign_key_checks = 0;
+
+SET names 'utf8mb4';
+SET character_set_database = 'utf8mb4';
+SET collation_database = 'utf8mb4_unicode_ci';
+SET CHARACTER SET utf8mb4, CHARACTER_SET_CONNECTION = utf8mb4;
 
 -- units
 INSERT INTO unit VALUES

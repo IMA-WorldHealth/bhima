@@ -1,17 +1,18 @@
 SET foreign_key_checks = 0;
 
-SET names 'utf8';
-SET character_set_database = 'utf8';
-SET collation_database = 'utf8_unicode_ci';
+SET names 'utf8mb4';
+SET character_set_database = 'utf8mb4';
+SET collation_database = 'utf8mb4_unicode_ci';
+SET CHARACTER SET utf8mb4, CHARACTER_SET_CONNECTION = utf8mb4;
 
 DROP TABLE IF EXISTS `account`;
 
 CREATE TABLE `account` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `type_id` MEDIUMINT(8) UNSIGNED NOT NULL,
   `enterprise_id` SMALLINT(5) UNSIGNED NOT NULL,
   `number` INT(11) UNSIGNED NOT NULL,
-  `label` VARCHAR(200) NOT NULL,
+  `label` VARCHAR(191) NOT NULL,
   `parent` INT(10) UNSIGNED NOT NULL,
   `locked` TINYINT(1) UNSIGNED DEFAULT 0,
   `hidden` TINYINT(1) UNSIGNED DEFAULT 0,
@@ -30,7 +31,7 @@ CREATE TABLE `account` (
   FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
   FOREIGN KEY (`cc_id`) REFERENCES `cost_center` (`id`),
   FOREIGN KEY (`reference_id`) REFERENCES `reference` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `account_category`;
 CREATE TABLE `account_category` (
@@ -39,7 +40,7 @@ CREATE TABLE `account_category` (
   `translation_key` VARCHAR(35) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `account_category_1` (`category`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `account_type`;
 CREATE TABLE `account_type` (
@@ -51,7 +52,7 @@ CREATE TABLE `account_type` (
   UNIQUE KEY `account_type_1` (`type`),
   KEY `account_category_id` (`account_category_id`),
   FOREIGN KEY (`account_category_id`) REFERENCES `account_category` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `account_reference`;
 CREATE TABLE `account_reference` (
@@ -62,7 +63,7 @@ CREATE TABLE `account_reference` (
   `is_amo_dep` TINYINT(1) NULL DEFAULT 0 COMMENT 'Ammortissement or depreciation',
   PRIMARY KEY (`id`),
   UNIQUE KEY `account_reference_1` (`abbr`, `is_amo_dep`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `account_reference_item`;
 CREATE TABLE `account_reference_item` (
@@ -75,7 +76,7 @@ CREATE TABLE `account_reference_item` (
   KEY `account_id` (`account_id`),
   FOREIGN KEY (`account_reference_id`) REFERENCES `account_reference` (`id`),
   FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `patient_assignment`;
 CREATE TABLE `patient_assignment` (
@@ -87,14 +88,14 @@ CREATE TABLE `patient_assignment` (
   KEY `patient_uuid` (`patient_uuid`),
   FOREIGN KEY (`patient_group_uuid`) REFERENCES `patient_group` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`patient_uuid`) REFERENCES `patient` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS invoicing_fee;
 CREATE TABLE invoicing_fee (
   `id`              SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `account_id`      INT(10) UNSIGNED NOT NULL,
-  `label`           VARCHAR(200) NOT NULL,
+  `label`           VARCHAR(191) NOT NULL,
   `description`     TEXT NOT NULL,
   `value`           DECIMAL(10,4) UNSIGNED NOT NULL,
   `created_at`      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -104,7 +105,7 @@ CREATE TABLE invoicing_fee (
   UNIQUE KEY `invoicing_fee_2` (`account_id`, `label`),
   KEY `account_id` (`account_id`),
   FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `budget`;
 CREATE TABLE `budget` (
@@ -118,7 +119,7 @@ CREATE TABLE `budget` (
   FOREIGN KEY (`period_id`) REFERENCES `period` (`id`),
   UNIQUE KEY `budget_1` (`account_id`, `period_id`),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `cash`;
 CREATE TABLE `cash` (
@@ -148,7 +149,7 @@ CREATE TABLE `cash` (
   FOREIGN KEY (`debtor_uuid`) REFERENCES `debtor` (`uuid`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
   FOREIGN KEY (`cashbox_id`) REFERENCES `cash_box` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `cash_item`;
 CREATE TABLE `cash_item` (
@@ -160,7 +161,7 @@ CREATE TABLE `cash_item` (
   KEY `cash_uuid` (`cash_uuid`),
   INDEX (`invoice_uuid`),
   FOREIGN KEY (`cash_uuid`) REFERENCES `cash` (`uuid`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `cash_box`;
 CREATE TABLE `cash_box` (
@@ -172,45 +173,45 @@ CREATE TABLE `cash_box` (
   UNIQUE KEY `cash_box_1` (`label`),
   KEY `project_id` (`project_id`),
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `payroll_configuration`;
 CREATE TABLE `payroll_configuration` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `label` VARCHAR(100) NOT NULL,
   `dateFrom` date NOT NULL,
   `dateTo` date NOT NULL,
-  `config_rubric_id` int(10) unsigned NOT NULL,
-  `config_accounting_id` int(10) unsigned NOT NULL,
-  `config_weekend_id` int(10) unsigned NOT NULL,
-  `config_employee_id` int(10) unsigned NOT NULL,
-  `config_ipr_id`int(10) DEFAULT NULL,
+  `config_rubric_id` INT(10) UNSIGNED NOT NULL,
+  `config_accounting_id` INT(10) UNSIGNED NOT NULL,
+  `config_weekend_id` INT(10) UNSIGNED NOT NULL,
+  `config_employee_id` INT(10) UNSIGNED NOT NULL,
+  `config_ipr_id`INT(10) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `payroll_configuration` (`label`),
   FOREIGN KEY (`config_rubric_id`) REFERENCES `config_rubric` (`id`),
   FOREIGN KEY (`config_accounting_id`) REFERENCES `config_accounting` (`id`),
   FOREIGN KEY (`config_weekend_id`) REFERENCES `weekend_config` (`id`),
   FOREIGN KEY (`config_employee_id`) REFERENCES `config_employee` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `rubric_payroll`;
 CREATE TABLE `rubric_payroll` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `label` VARCHAR(80) NOT NULL,
   `abbr` varchar(20) DEFAULT NULL,
-  `is_employee` tinyint(1) DEFAULT 0,
-  `is_percent` tinyint(1) DEFAULT 0,
-  `is_discount` tinyint(1) DEFAULT 0,
-  `is_tax` tinyint(1) DEFAULT 0,
-  `is_social_care` tinyint(1) DEFAULT 0,
-  `is_defined_employee` tinyint(1) DEFAULT 0,
-  `is_membership_fee` tinyint(1) DEFAULT 0,
-  `debtor_account_id` int(10) unsigned DEFAULT NULL,
-  `expense_account_id` int(10) unsigned DEFAULT NULL,
-  `is_ipr` tinyint(1) DEFAULT 0,
-  `is_associated_employee` tinyint(1) DEFAULT 0,
-  `is_seniority_bonus` tinyint(1) DEFAULT 0,
-  `is_family_allowances` tinyint(1) DEFAULT 0,
+  `is_employee` TINYINT(1) DEFAULT 0,
+  `is_percent` TINYINT(1) DEFAULT 0,
+  `is_discount` TINYINT(1) DEFAULT 0,
+  `is_tax` TINYINT(1) DEFAULT 0,
+  `is_social_care` TINYINT(1) DEFAULT 0,
+  `is_defined_employee` TINYINT(1) DEFAULT 0,
+  `is_membership_fee` TINYINT(1) DEFAULT 0,
+  `debtor_account_id` INT(10) UNSIGNED DEFAULT NULL,
+  `expense_account_id` INT(10) UNSIGNED DEFAULT NULL,
+  `is_ipr` TINYINT(1) DEFAULT 0,
+  `is_associated_employee` TINYINT(1) DEFAULT 0,
+  `is_seniority_bonus` TINYINT(1) DEFAULT 0,
+  `is_family_allowances` TINYINT(1) DEFAULT 0,
   `value` float DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `rubric_payroll_1` (`label`),
@@ -219,7 +220,7 @@ CREATE TABLE `rubric_payroll` (
   KEY `expense_account_id` (`expense_account_id`),
   FOREIGN KEY (`debtor_account_id`) REFERENCES `account` (`id`),
   FOREIGN KEY (`expense_account_id`) REFERENCES `account` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `cash_box_account_currency`;
 CREATE TABLE `cash_box_account_currency` (
@@ -239,38 +240,38 @@ CREATE TABLE `cash_box_account_currency` (
   FOREIGN KEY (`cash_box_id`) REFERENCES `cash_box` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
   FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
   FOREIGN KEY (`transfer_account_id`) REFERENCES `account` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `config_accounting`;
 CREATE TABLE `config_accounting` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `label` VARCHAR(100) NOT NULL,
-  `account_id` int(10) unsigned NOT NULL,
+  `account_id` INT(10) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `config_accounting_1` (`label`),
   UNIQUE KEY `config_accounting_2` (`label`, `account_id`),
   KEY `account_id` (`account_id`),
   FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `weekend_config`;
 CREATE TABLE `weekend_config` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `label` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `weekend_config` (`label`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `config_week_days`;
 CREATE TABLE `config_week_days` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `indice` int(10) unsigned NOT NULL,
-  `weekend_config_id` int(10) unsigned NOT NULL,
+  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `indice` INT(10) UNSIGNED NOT NULL,
+  `weekend_config_id` INT(10) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
   KEY `weekend_config_id` (`weekend_config_id`),
   FOREIGN KEY (`weekend_config_id`) REFERENCES `weekend_config` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `consumption`;
 CREATE TABLE `consumption` (
@@ -288,7 +289,7 @@ CREATE TABLE `consumption` (
   KEY `depot_uuid` (`depot_uuid`),
   FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`document_id`) REFERENCES `invoice` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `consumption_loss`;
 
@@ -296,7 +297,7 @@ CREATE TABLE `consumption_loss` (
   `uuid` BINARY(16) NOT NULL,
   `consumption_uuid` BINARY(16) NOT NULL,
   PRIMARY KEY (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `consumption_patient`;
 
@@ -310,7 +311,7 @@ CREATE TABLE `consumption_patient` (
   KEY `patient_uuid` (`patient_uuid`),
   FOREIGN KEY (`consumption_uuid`) REFERENCES `consumption` (`uuid`),
   FOREIGN KEY (`patient_uuid`) REFERENCES `patient` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `consumption_service`;
 
@@ -324,29 +325,29 @@ CREATE TABLE `consumption_service` (
   KEY `service_id` (`service_id`),
   FOREIGN KEY (`consumption_uuid`) REFERENCES `consumption` (`uuid`),
   FOREIGN KEY (`service_id`) REFERENCES `service` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `cost_center`;
 
 CREATE TABLE `cost_center` (
-  `project_id` smallint(5) unsigned NOT NULL,
-  `id` smallint(6) NOT NULL AUTO_INCREMENT,
+  `project_id` smallINT(5) UNSIGNED NOT NULL,
+  `id` smallINT(6) NOT NULL AUTO_INCREMENT,
   `text` varchar(100) NOT NULL,
   `note` text,
-  `is_principal` tinyint(1) DEFAULT 0,
+  `is_principal` TINYINT(1) DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `const_center_1` (`text`),
   KEY `project_id` (`project_id`),
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `cost_center_assignation`;
 
 CREATE TABLE `cost_center_assignation` (
-  `project_id` smallint(5) unsigned NOT NULL,
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `auxi_cc_id` smallint(6) NOT NULL,
+  `project_id` smallINT(5) UNSIGNED NOT NULL,
+  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `auxi_cc_id` smallINT(6) NOT NULL,
   `cost` float DEFAULT 0,
   `date` date DEFAULT NULL,
   `note` text,
@@ -355,15 +356,15 @@ CREATE TABLE `cost_center_assignation` (
   KEY `auxi_cc_id` (`auxi_cc_id`),
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
   FOREIGN KEY (`auxi_cc_id`) REFERENCES `cost_center` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `cost_center_assignation_item`;
 
 CREATE TABLE `cost_center_assignation_item` (
-  `cost_center_assignation_id` int(10) unsigned NOT NULL,
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `pri_cc_id` smallint(6) NOT NULL,
+  `cost_center_assignation_id` INT(10) UNSIGNED NOT NULL,
+  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `pri_cc_id` smallINT(6) NOT NULL,
   `init_cost` float DEFAULT 0,
   `value_criteria` float DEFAULT '1',
   PRIMARY KEY (`id`),
@@ -371,7 +372,7 @@ CREATE TABLE `cost_center_assignation_item` (
   KEY `pri_cc_id` (`pri_cc_id`),
   FOREIGN KEY (`cost_center_assignation_id`) REFERENCES `cost_center_assignation` (`id`) ON DELETE CASCADE,
   FOREIGN KEY (`pri_cc_id`) REFERENCES `cost_center` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `country`;
 
@@ -380,7 +381,7 @@ CREATE TABLE `country` (
   `name` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `country_1` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `creditor`;
@@ -394,16 +395,16 @@ CREATE TABLE `creditor` (
   UNIQUE KEY `creditor_2` (`text`, `group_uuid`),
   KEY `group_uuid` (`group_uuid`),
   FOREIGN KEY (`group_uuid`) REFERENCES `creditor_group` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `creditor_group`;
 
 CREATE TABLE `creditor_group` (
-  `enterprise_id` smallint(5) unsigned NOT NULL,
+  `enterprise_id` smallINT(5) UNSIGNED NOT NULL,
   `uuid` BINARY(16) NOT NULL,
   `name` varchar(80) NOT NULL,
-  `account_id` int(10) unsigned NOT NULL,
-  `locked` tinyint(1) NOT NULL DEFAULT 0,
+  `account_id` INT(10) UNSIGNED NOT NULL,
+  `locked` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `creditor_group_1` (`name`),
   UNIQUE KEY `credit_group_2` (`name`, `account_id`),
@@ -411,20 +412,20 @@ CREATE TABLE `creditor_group` (
   KEY `enterprise_id` (`enterprise_id`),
   FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`account_id`) REFERENCES `account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `critere`;
 CREATE TABLE `critere` (
-  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `id` smallINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
   `text` varchar(50) NOT NULL,
   `note` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `currency`;
 CREATE TABLE `currency` (
-  `id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
+  `id` TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
   `format_key` varchar(20) NOT NULL,
   `symbol` varchar(15) NOT NULL,
@@ -433,7 +434,7 @@ CREATE TABLE `currency` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `currency_1` (`name`),
   UNIQUE KEY `currency_2` (`symbol`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `debtor`;
@@ -444,7 +445,7 @@ CREATE TABLE `debtor` (
   PRIMARY KEY (`uuid`),
   KEY `group_uuid` (`group_uuid`),
   FOREIGN KEY (`group_uuid`) REFERENCES `debtor_group` (`uuid`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `debtor_group`;
@@ -478,7 +479,7 @@ CREATE TABLE `debtor_group` (
   FOREIGN KEY (`account_id`) REFERENCES `account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`location_id`) REFERENCES `village` (`uuid`),
   FOREIGN KEY (`price_list_uuid`) REFERENCES `price_list` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS debtor_group_invoicing_fee;
 
@@ -492,7 +493,7 @@ CREATE TABLE debtor_group_invoicing_fee (
   KEY `invoicing_fee_id` (`invoicing_fee_id`),
   FOREIGN KEY (`invoicing_fee_id`) REFERENCES `invoicing_fee` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`debtor_group_uuid`) REFERENCES `debtor_group` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `debtor_group_history`;
@@ -501,7 +502,7 @@ CREATE TABLE `debtor_group_history` (
   `debtor_uuid` BINARY(16) DEFAULT NULL,
   `debtor_group_uuid` BINARY(16) DEFAULT NULL,
   `income_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `user_id` smallint(5) unsigned DEFAULT NULL,
+  `user_id` smallINT(5) UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`uuid`),
   KEY `debtor_uuid` (`debtor_uuid`),
   KEY `debtor_group_uuid` (`debtor_group_uuid`),
@@ -509,7 +510,7 @@ CREATE TABLE `debtor_group_history` (
   FOREIGN KEY (`debtor_uuid`) REFERENCES `debtor` (`uuid`),
   FOREIGN KEY (`debtor_group_uuid`) REFERENCES `debtor_group` (`uuid`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS debtor_group_subsidy;
@@ -525,27 +526,27 @@ CREATE TABLE debtor_group_subsidy (
   KEY `subsidy_id` (`subsidy_id`),
   FOREIGN KEY (`subsidy_id`) REFERENCES `subsidy` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`debtor_group_uuid`) REFERENCES `debtor_group` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `depot`;
 CREATE TABLE `depot` (
   `uuid` BINARY(16) NOT NULL,
   `text` VARCHAR(50) NOT NULL,
-  `enterprise_id` smallint(5) unsigned NOT NULL,
-  `is_warehouse` smallint(5) unsigned NOT NULL DEFAULT 0,
-  `allow_entry_purchase` tinyint(1) unsigned NOT NULL DEFAULT 0,
-  `allow_entry_donation` tinyint(1) unsigned NOT NULL DEFAULT 0,
-  `allow_entry_integration` tinyint(1) unsigned NOT NULL DEFAULT 0,
-  `allow_entry_transfer` tinyint(1) unsigned NOT NULL DEFAULT 0,
-  `allow_exit_debtor` tinyint(1) unsigned NOT NULL DEFAULT 0,
-  `allow_exit_service` tinyint(1) unsigned NOT NULL DEFAULT 0,
-  `allow_exit_transfer` tinyint(1) unsigned NOT NULL DEFAULT 0,
-  `allow_exit_loss` tinyint(1) unsigned NOT NULL DEFAULT 0,
+  `enterprise_id` smallINT(5) UNSIGNED NOT NULL,
+  `is_warehouse` smallINT(5) UNSIGNED NOT NULL DEFAULT 0,
+  `allow_entry_purchase` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
+  `allow_entry_donation` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
+  `allow_entry_integration` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
+  `allow_entry_transfer` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
+  `allow_exit_debtor` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
+  `allow_exit_service` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
+  `allow_exit_transfer` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
+  `allow_exit_loss` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
   `location_uuid` BINARY(16) NULL,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `depot_1` (`text`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS discount;
@@ -563,7 +564,7 @@ CREATE TABLE discount (
   KEY `account_id` (`account_id`),
   FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `document_map`;
@@ -571,7 +572,7 @@ CREATE TABLE `document_map` (
   `uuid`              BINARY(16) NOT NULL,
   `text`              TEXT NOT NULL,
   PRIMARY KEY (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `employee`;
 CREATE TABLE `employee` (
@@ -604,20 +605,20 @@ CREATE TABLE `employee` (
   FOREIGN KEY (`creditor_uuid`) REFERENCES `creditor` (`uuid`),
   FOREIGN KEY (`grade_uuid`) REFERENCES `grade` (`uuid`),
   FOREIGN KEY (`patient_uuid`) REFERENCES `patient` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `employee_advantage`;
 CREATE TABLE `employee_advantage` (
-  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `employee_uuid` BINARY(16) NOT NULL,
-  `rubric_payroll_id` int(10) unsigned NOT NULL,
+  `rubric_payroll_id` INT(10) UNSIGNED NOT NULL,
   `value` float DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `employee_uuid` (`employee_uuid`),
   KEY `rubric_payroll_id` (`rubric_payroll_id`),
   FOREIGN KEY (`employee_uuid`) REFERENCES `employee` (`uuid`),
   FOREIGN KEY (`rubric_payroll_id`) REFERENCES `rubric_payroll` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `enterprise`;
@@ -643,7 +644,7 @@ CREATE TABLE `enterprise` (
   FOREIGN KEY (`location_id`) REFERENCES `village` (`uuid`),
   FOREIGN KEY (`gain_account_id`) REFERENCES `account` (`id`),
   FOREIGN KEY (`loss_account_id`) REFERENCES `account` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `enterprise_setting`;
 CREATE TABLE `enterprise_setting` (
@@ -656,14 +657,14 @@ CREATE TABLE `enterprise_setting` (
   `enable_barcodes` TINYINT(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (`enterprise_id`),
   FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `entity_map`;
 CREATE TABLE `entity_map` (
   `uuid`              BINARY(16) NOT NULL,
   `text`              TEXT NOT NULL,
   PRIMARY KEY (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `event`;
 CREATE TABLE `event` (
@@ -678,7 +679,7 @@ CREATE TABLE `event` (
   INDEX event_channel (channel),
   INDEX event_entity (entity),
   INDEX event_type (type)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `exchange_rate`;
 CREATE TABLE `exchange_rate` (
@@ -694,7 +695,7 @@ CREATE TABLE `exchange_rate` (
   INDEX `date` (`date`),
   FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
   FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `fiscal_year`;
@@ -718,16 +719,16 @@ CREATE TABLE `fiscal_year` (
   KEY `user_id` (`user_id`),
   FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `fonction`;
 CREATE TABLE `fonction` (
-  `id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
+  `id` TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
   `fonction_txt` VARCHAR(50) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `fonction_1` (`fonction_txt`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `general_ledger`;
@@ -777,7 +778,7 @@ CREATE TABLE `general_ledger` (
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`cc_id`) REFERENCES `cost_center` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`pc_id`) REFERENCES `profit_center` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `grade`;
@@ -785,16 +786,16 @@ CREATE TABLE `grade` (
   `uuid` BINARY(16) NOT NULL,
   `code` varchar(30) DEFAULT NULL,
   `text` VARCHAR(50) NOT NULL,
-  `basic_salary` decimal(19,4) unsigned DEFAULT NULL,
+  `basic_salary` decimal(19,4) UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `grade_1` (`code`),
   UNIQUE KEY `grade_2` (`text`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `holiday`;
 
 CREATE TABLE `holiday` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `employee_uuid` binary(16) NOT NULL,
   `percentage` float DEFAULT 0,
   `label` varchar(100) NOT NULL,
@@ -804,47 +805,47 @@ CREATE TABLE `holiday` (
   UNIQUE KEY `holiday_1` (`employee_uuid`, `dateFrom`, `dateTo`),
   KEY `employee_uuid` (`employee_uuid`),
   FOREIGN KEY (`employee_uuid`) REFERENCES `employee` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `holiday_paiement`;
 
 CREATE TABLE `holiday_paiement` (
-  `holiday_id` int(10) unsigned NOT NULL,
-  `holiday_nbdays` int(10) unsigned NOT NULL,
+  `holiday_id` INT(10) UNSIGNED NOT NULL,
+  `holiday_nbdays` INT(10) UNSIGNED NOT NULL,
   `holiday_percentage` float DEFAULT 0,
   `paiement_uuid` BINARY(16) NOT NULL,
   `label` varchar(100) NOT NULL,
-  `value` decimal(19,4) unsigned DEFAULT NULL,
+  `value` decimal(19,4) UNSIGNED DEFAULT NULL,
   KEY `paiement_uuid` (`paiement_uuid`),
   KEY `holiday_id` (`holiday_id`),
   FOREIGN KEY (`paiement_uuid`) REFERENCES `paiement` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`holiday_id`) REFERENCES `holiday` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `offday_paiement`;
 
 CREATE TABLE `offday_paiement` (
-  `offday_id` int(10) unsigned NOT NULL,
+  `offday_id` INT(10) UNSIGNED NOT NULL,
   `offday_percentage` float DEFAULT 0,
   `paiement_uuid` BINARY(16) NOT NULL,
   `label` varchar(100) NOT NULL,
-  `value` decimal(19,4) unsigned DEFAULT NULL,
+  `value` decimal(19,4) UNSIGNED DEFAULT NULL,
   KEY `paiement_uuid` (`paiement_uuid`),
   KEY `offday_id` (`offday_id`),
   FOREIGN KEY (`paiement_uuid`) REFERENCES `paiement` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`offday_id`) REFERENCES `offday` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `icd10`;
 
 CREATE TABLE `icd10` (
-  `id` INT(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `code`  VARCHAR(8) NOT NULL,
   `label` TEXT NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `icd10_code` (`code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `inventory`;
 
@@ -869,8 +870,8 @@ CREATE TABLE `inventory` (
   `locked` TINYINT(1) NOT NULL DEFAULT 0,
   `delay` DECIMAL(10,4) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Delivery time',
   `avg_consumption` DECIMAL(10,4) UNSIGNED NOT NULL DEFAULT 1 COMMENT 'Average consumption' ,
-  `purchase_interval` DECIMAL(10,4) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Purchase Order interval' ,
-  `last_purchase` DATE NULL COMMENT 'This element allows to store the date of the last purchase order of the product in order to allow the calculation without making much of the average ordering interval',
+  `purchase_INTerval` DECIMAL(10,4) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Purchase Order INTerval' ,
+  `last_purchase` DATE NULL COMMENT 'This element allows to store the date of the last purchase order of the product in order to allow the calculation without making much of the average ordering INTerval',
   `num_purchase` INT(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Number of purchase orders' ,
   `num_delivery` INT(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Number of stock delivery' ,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -886,7 +887,7 @@ CREATE TABLE `inventory` (
   FOREIGN KEY (`group_uuid`) REFERENCES `inventory_group` (`uuid`),
   FOREIGN KEY (`unit_id`) REFERENCES `inventory_unit` (`id`),
   FOREIGN KEY (`type_id`) REFERENCES `inventory_type` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `inventory_group`;
@@ -895,10 +896,10 @@ CREATE TABLE `inventory_group` (
   `uuid` BINARY(16) NOT NULL,
   `name` varchar(100) NOT NULL,
   `code` varchar(30) NOT NULL,
-  `sales_account` mediumint(8) unsigned DEFAULT NULL,
-  `cogs_account` mediumint(8) unsigned DEFAULT NULL,
-  `stock_account` mediumint(8) unsigned DEFAULT NULL,
-  `donation_account` mediumint(8) unsigned DEFAULT NULL,
+  `sales_account` mediumINT(8) UNSIGNED DEFAULT NULL,
+  `cogs_account` mediumINT(8) UNSIGNED DEFAULT NULL,
+  `stock_account` mediumINT(8) UNSIGNED DEFAULT NULL,
+  `donation_account` mediumINT(8) UNSIGNED DEFAULT NULL,
   `expires` TINYINT(1) DEFAULT 1,
   `unique_item`  TINYINT(1) DEFAULT 0,
   PRIMARY KEY (`uuid`),
@@ -908,7 +909,7 @@ CREATE TABLE `inventory_group` (
   KEY `cogs_account` (`cogs_account`),
   KEY `stock_account` (`stock_account`),
   KEY `donation_account` (`donation_account`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `inventory_log`;
@@ -917,34 +918,34 @@ CREATE TABLE `inventory_log` (
   `uuid` BINARY(16) NOT NULL,
   `inventory_uuid` BINARY(16) NOT NULL,
   `log_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `price` decimal(19,4) unsigned DEFAULT NULL,
+  `price` decimal(19,4) UNSIGNED DEFAULT NULL,
   `code` varchar(30) DEFAULT NULL,
   `text` text,
   PRIMARY KEY (`uuid`),
   KEY `inventory_uuid` (`inventory_uuid`),
   FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `inventory_type`;
 CREATE TABLE `inventory_type` (
-  `id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
+  `id` TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
   `text` varchar(30) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `inventory_type_1` (`text`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `inventory_unit`;
 
 CREATE TABLE `inventory_unit` (
-  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `id` smallINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
   `abbr` varchar(10) NOT NULL,
   `text` varchar(30) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `inventory_unit_1` (`text`),
   UNIQUE KEY `inventory_unit_2` (`abbr`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `journal_log`;
@@ -954,11 +955,11 @@ CREATE TABLE `journal_log` (
   `transaction_id` text NOT NULL,
   `justification` text,
   `date` date NOT NULL,
-  `user_id` smallint(5) unsigned NOT NULL,
+  `user_id` smallINT(5) UNSIGNED NOT NULL,
   PRIMARY KEY (`uuid`),
   KEY `user_id` (`user_id`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `language`;
@@ -972,48 +973,48 @@ CREATE TABLE `language` (
   UNIQUE KEY `language_1` (`name`),
   UNIQUE KEY `language_2` (`key`),
   UNIQUE `locale_key` (`locale_key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `mod_snis_zs`;
 
 CREATE TABLE `mod_snis_zs` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
   `zone` varchar(100) NOT NULL,
   `territoire` varchar(100) NOT NULL,
   `province` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `mod_snis_zs_1` (`zone`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `offday`;
 CREATE TABLE `offday` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `label` varchar(100) NOT NULL,
   `date` date NOT NULL,
   `percent_pay` float DEFAULT '100',
   PRIMARY KEY (`id`),
   UNIQUE KEY `offday_1` (`date`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `paiement`;
 CREATE TABLE `paiement` (
   `uuid` BINARY(16) NOT NULL,
   `employee_uuid` BINARY(16) NOT NULL,
-  `payroll_configuration_id` int(10) unsigned NOT NULL,
-  `currency_id` tinyint(3) unsigned DEFAULT NULL,
+  `payroll_configuration_id` INT(10) UNSIGNED NOT NULL,
+  `currency_id` TINYINT(3) UNSIGNED DEFAULT NULL,
   `paiement_date` date DEFAULT NULL,
-  `total_day` int(10) unsigned DEFAULT 0,
-  `working_day` int(10) unsigned DEFAULT 0,
+  `total_day` INT(10) UNSIGNED DEFAULT 0,
+  `working_day` INT(10) UNSIGNED DEFAULT 0,
   `basic_salary` DECIMAL(19,4) NOT NULL DEFAULT 0.00,
   `daily_salary` DECIMAL(19,4) NOT NULL DEFAULT 0.00,
   `base_taxable` DECIMAL(19,4) NOT NULL DEFAULT 0.00,
   `gross_salary` DECIMAL(19,4) NOT NULL DEFAULT 0.00,
   `net_salary` DECIMAL(19,4) NOT NULL DEFAULT 0.00,
   `amount_paid` DECIMAL(19,4) NOT NULL DEFAULT 0.00,
-  `status_id` tinyint(3) UNSIGNED NOT NULL DEFAULT 1,
+  `status_id` TINYINT(3) UNSIGNED NOT NULL DEFAULT 1,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `paiement_1` (`employee_uuid`, `payroll_configuration_id`),
   KEY `employee_uuid` (`employee_uuid`),
@@ -1024,26 +1025,26 @@ CREATE TABLE `paiement` (
   FOREIGN KEY (`payroll_configuration_id`) REFERENCES `payroll_configuration` (`id`),
   FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`),
   FOREIGN KEY (`status_id`) REFERENCES `paiement_status` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 
 DROP TABLE IF EXISTS `paiement_status`;
 
 CREATE TABLE `paiement_status` (
-  `id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
+  `id` TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
   `text` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `paiement_status` (`id`, `text`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `rubric_paiement`;
 
 CREATE TABLE `rubric_paiement` (
-  `id` INT(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `paiement_uuid` BINARY(16) NOT NULL,
-  `rubric_payroll_id` int(10) unsigned NOT NULL,
+  `rubric_payroll_id` INT(10) UNSIGNED NOT NULL,
   `value` FLOAT DEFAULT '0',
   `posted` TINYINT(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -1051,13 +1052,13 @@ CREATE TABLE `rubric_paiement` (
   KEY `rubric_payroll_id` (`rubric_payroll_id`),
   FOREIGN KEY (`paiement_uuid`) REFERENCES `paiement` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`rubric_payroll_id`) REFERENCES `rubric_payroll` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `price_list`;
 CREATE TABLE `price_list` (
   `uuid`                BINARY(16) NOT NULL,
   `enterprise_id`       SMALLINT(5) UNSIGNED NOT NULL,
-  `label`               VARCHAR(250) NOT NULL,
+  `label`               VARCHAR(191) NOT NULL,
   `description`         TEXT,
   `created_at`          TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`          TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
@@ -1065,7 +1066,7 @@ CREATE TABLE `price_list` (
   UNIQUE KEY `prices_1` (`label`),
   KEY `enterprise_id` (`enterprise_id`),
   FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `price_list_item`;
@@ -1074,7 +1075,7 @@ CREATE TABLE `price_list_item` (
   `uuid`                BINARY(16) NOT NULL,
   `inventory_uuid`      BINARY(16) NOT NULL,
   `price_list_uuid`     BINARY(16) NOT NULL,
-  `label`               VARCHAR(250) NOT NULL,
+  `label`               VARCHAR(191) NOT NULL,
   `value`               DOUBLE NOT NULL,
   `is_percentage`       BOOLEAN NOT NULL DEFAULT 0,
   `created_at`          TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -1085,9 +1086,9 @@ CREATE TABLE `price_list_item` (
   KEY `inventory_uuid` (`inventory_uuid`),
   FOREIGN KEY (`price_list_uuid`) REFERENCES `price_list` (`uuid`) ON DELETE CASCADE,
   FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
--- TODO write schema change (transactions) into SQL update script
+-- TODO write schema change (transactions) INTo SQL update script
 DROP TABLE IF EXISTS `patient`;
 
 CREATE TABLE `patient` (
@@ -1145,7 +1146,7 @@ CREATE TABLE `patient` (
   FOREIGN KEY (`current_location_id`) REFERENCES `village` (`uuid`) ON UPDATE CASCADE,
   FOREIGN KEY (`origin_location_id`) REFERENCES `village` (`uuid`) ON UPDATE CASCADE,
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `patient_document`;
 
@@ -1156,12 +1157,12 @@ CREATE TABLE `patient_document` (
   `link`         TEXT NOT NULL,
   `timestamp`    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `mimetype`     TEXT NOT NULL,
-  `size`         INTEGER unsigned NOT NULL,
-  `user_id`      SMALLINT(5) unsigned NOT NULL,
+  `size`         INTEGER UNSIGNED NOT NULL,
+  `user_id`      SMALLINT(5) UNSIGNED NOT NULL,
   KEY `patient_uuid` (`patient_uuid`),
   FOREIGN KEY (`patient_uuid`) REFERENCES `patient` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `patient_group`;
 
@@ -1178,7 +1179,7 @@ CREATE TABLE `patient_group` (
    KEY `price_list_uuid` (`price_list_uuid`),
    FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
    FOREIGN KEY (`price_list_uuid`) REFERENCES `price_list` (`uuid`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS patient_group_invoicing_fee;
 
@@ -1192,7 +1193,7 @@ CREATE TABLE patient_group_invoicing_fee (
   KEY `invoicing_fee_id` (`invoicing_fee_id`),
   FOREIGN KEY (`invoicing_fee_id`) REFERENCES `invoicing_fee` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`patient_group_uuid`) REFERENCES `patient_group` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS patient_group_subsidy;
@@ -1207,7 +1208,7 @@ CREATE TABLE patient_group_subsidy (
   KEY `subsidy_id` (`subsidy_id`),
   FOREIGN KEY (`subsidy_id`) REFERENCES `subsidy` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`patient_group_uuid`) REFERENCES `patient_group` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `patient_visit`;
 
@@ -1218,9 +1219,9 @@ CREATE TABLE `patient_visit` (
   `end_date` datetime DEFAULT NULL,
   `start_notes` TEXT,
   `end_notes` TEXT,
-  `start_diagnosis_id` INT(10) unsigned,
-  `end_diagnosis_id` INT(10) unsigned,
-  `user_id` smallint(5) unsigned NOT NULL,
+  `start_diagnosis_id` INT(10) UNSIGNED,
+  `end_diagnosis_id` INT(10) UNSIGNED,
+  `user_id` smallINT(5) UNSIGNED NOT NULL,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `patient_visit_1`(`patient_uuid`, `start_date`, `end_date`),
   KEY `patient_uuid` (`patient_uuid`),
@@ -1231,7 +1232,7 @@ CREATE TABLE `patient_visit` (
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`start_diagnosis_id`) REFERENCES `icd10` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`end_diagnosis_id`) REFERENCES `icd10` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `period`;
 
@@ -1246,19 +1247,19 @@ CREATE TABLE `period` (
   UNIQUE KEY `period_1` (`start_date`, `end_date`),
   KEY `fiscal_year_id` (`fiscal_year_id`),
   FOREIGN KEY (`fiscal_year_id`) REFERENCES `fiscal_year` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `period_total`;
 
 CREATE TABLE `period_total` (
   `enterprise_id` SMALLINT(5) UNSIGNED NOT NULL,
-  `fiscal_year_id` mediumint(8) unsigned NOT NULL,
-  `period_id` mediumint(8) unsigned NOT NULL,
-  `account_id` int(10) unsigned NOT NULL,
-  `credit` decimal(19,4) unsigned DEFAULT NULL,
-  `debit` decimal(19,4) unsigned DEFAULT NULL,
-  `locked` tinyint(1) NOT NULL DEFAULT 0,
+  `fiscal_year_id` mediumINT(8) UNSIGNED NOT NULL,
+  `period_id` mediumINT(8) UNSIGNED NOT NULL,
+  `account_id` INT(10) UNSIGNED NOT NULL,
+  `credit` decimal(19,4) UNSIGNED DEFAULT NULL,
+  `debit` decimal(19,4) UNSIGNED DEFAULT NULL,
+  `locked` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`enterprise_id`,`fiscal_year_id`,`period_id`,`account_id`),
   KEY `fiscal_year_id` (`fiscal_year_id`),
   KEY `account_id` (`account_id`),
@@ -1268,22 +1269,22 @@ CREATE TABLE `period_total` (
   FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
   FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
   FOREIGN KEY (`period_id`) REFERENCES `period` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `permission`;
 
 CREATE TABLE `permission` (
-  `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `unit_id` smallint(5) unsigned NOT NULL,
-  `user_id` smallint(5) unsigned NOT NULL,
+  `id` mediumINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `unit_id` smallINT(5) UNSIGNED NOT NULL,
+  `user_id` smallINT(5) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `permission_1` (`unit_id`,`user_id`),
   KEY `unit_id` (`unit_id`),
   KEY `user_id` (`user_id`),
   FOREIGN KEY (`unit_id`) REFERENCES `unit` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `posting_journal`;
 
@@ -1333,20 +1334,20 @@ CREATE TABLE `posting_journal` (
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`cc_id`) REFERENCES `cost_center` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`pc_id`) REFERENCES `profit_center` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `profit_center`;
 
 CREATE TABLE `profit_center` (
-  `project_id` smallint(5) unsigned NOT NULL,
-  `id` smallint(6) NOT NULL AUTO_INCREMENT,
+  `project_id` smallINT(5) UNSIGNED NOT NULL,
+  `id` smallINT(6) NOT NULL AUTO_INCREMENT,
   `text` varchar(100) NOT NULL,
   `note` text,
   PRIMARY KEY (`id`),
   UNIQUE KEY `profit_center_1` (`text`),
   KEY `project_id` (`project_id`),
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `project`;
 
@@ -1362,21 +1363,21 @@ CREATE TABLE `project` (
   UNIQUE KEY `project_2` (`abbr`),
   KEY `enterprise_id` (`enterprise_id`),
   FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `project_permission`;
 
 CREATE TABLE `project_permission` (
-  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` smallint(5) unsigned NOT NULL,
-  `project_id` smallint(5) unsigned NOT NULL,
+  `id` smallINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_id` smallINT(5) UNSIGNED NOT NULL,
+  `project_id` smallINT(5) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `project_permission_1` (`user_id`,`project_id`),
   KEY `user_id` (`user_id`),
   KEY `project_id` (`project_id`),
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `province`;
@@ -1389,7 +1390,7 @@ CREATE TABLE `province` (
   UNIQUE KEY `province_1` (`name`, `country_uuid`),
   KEY `country_uuid` (`country_uuid`),
   FOREIGN KEY (`country_uuid`) REFERENCES `country` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `purchase`;
 
@@ -1417,7 +1418,7 @@ CREATE TABLE `purchase` (
   FOREIGN KEY (`supplier_uuid`) REFERENCES `supplier` (`uuid`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
   FOREIGN KEY (`status_id`) REFERENCES `purchase_status` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `purchase_item`;
 
@@ -1425,69 +1426,69 @@ CREATE TABLE `purchase_item` (
   `uuid` BINARY(16) NOT NULL,
   `purchase_uuid`   BINARY(16) NOT NULL,
   `inventory_uuid`  BINARY(16) NOT NULL,
-  `quantity`        int(11) NOT NULL DEFAULT 0,
-  `unit_price`      decimal(10,4) unsigned NOT NULL,
-  `total`           decimal(10,4) unsigned DEFAULT NULL,
+  `quantity`        INT(11) NOT NULL DEFAULT 0,
+  `unit_price`      decimal(10,4) UNSIGNED NOT NULL,
+  `total`           decimal(10,4) UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `purchase_item_1` (`purchase_uuid`, `inventory_uuid`),
   KEY `purchase_uuid` (`purchase_uuid`),
   KEY `inventory_uuid` (`inventory_uuid`),
   FOREIGN KEY (`purchase_uuid`) REFERENCES `purchase` (`uuid`) ON DELETE CASCADE,
   FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `purchase_status`;
 
 CREATE TABLE `purchase_status` (
-  `id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
+  `id` TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
   `text` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `purchase_status` (`id`, `text`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `reference`;
 
 CREATE TABLE `reference` (
-  `id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
-  `is_report` tinyint(1) DEFAULT NULL,
+  `id` TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `is_report` TINYINT(1) DEFAULT NULL,
   `ref` char(4) NOT NULL,
   `text` text,
-  `position` int(10) unsigned DEFAULT NULL,
-  `reference_group_id` tinyint(3) unsigned DEFAULT NULL,
-  `section_resultat_id` tinyint(3) unsigned DEFAULT NULL,
+  `position` INT(10) UNSIGNED DEFAULT NULL,
+  `reference_group_id` TINYINT(3) UNSIGNED DEFAULT NULL,
+  `section_resultat_id` TINYINT(3) UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `reference_group`;
 
 CREATE TABLE `reference_group` (
-  `id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
+  `id` TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
   `reference_group` char(4) NOT NULL,
   `text` text,
-  `position` int(10) unsigned DEFAULT NULL,
-  `section_bilan_id` tinyint(3) unsigned DEFAULT NULL,
+  `position` INT(10) UNSIGNED DEFAULT NULL,
+  `section_bilan_id` TINYINT(3) UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `section_bilan_id` (`section_bilan_id`),
   FOREIGN KEY (`section_bilan_id`) REFERENCES `section_bilan` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `report`;
 
 CREATE TABLE `report` (
-  `id`                  tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
+  `id`                  TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
   `report_key`          TEXT NOT NULL,
   `title_key`           TEXT NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `saved_report`;
 
 CREATE TABLE `saved_report` (
   `uuid`                BINARY(16) NOT NULL,
   `label`               TEXT NOT NULL,
-  `report_id`           tinyint(3) unsigned NOT NULL,
+  `report_id`           TINYINT(3) UNSIGNED NOT NULL,
   `parameters`          TEXT, /* query string parameters, if they will be displayed on the report (such as filters, etc) */
   `link`                TEXT NOT NULL,
   `timestamp`           TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -1497,7 +1498,7 @@ CREATE TABLE `saved_report` (
   KEY `report_id` (`report_id`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
   FOREIGN KEY (`report_id`) REFERENCES `report` (`id`)
-) ENGINE= InnoDB DEFAULT CHARSET=utf8;
+) ENGINE= InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `invoice`;
 
@@ -1525,7 +1526,7 @@ CREATE TABLE `invoice` (
   FOREIGN KEY (`debtor_uuid`) REFERENCES `debtor` (`uuid`),
   FOREIGN KEY (`service_id`) REFERENCES `service` (`id`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS invoice_invoicing_fee;
 CREATE TABLE invoice_invoicing_fee (
@@ -1538,7 +1539,7 @@ CREATE TABLE invoice_invoicing_fee (
   KEY `invoicing_fee_id` (`invoicing_fee_id`),
   FOREIGN KEY (`invoice_uuid`) REFERENCES `invoice` (`uuid`) ON DELETE CASCADE,
   FOREIGN KEY (`invoicing_fee_id`) REFERENCES `invoicing_fee` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `invoice_item`;
 
@@ -1557,7 +1558,7 @@ CREATE TABLE `invoice_item` (
   KEY `inventory_uuid` (`inventory_uuid`),
   FOREIGN KEY (`invoice_uuid`) REFERENCES `invoice` (`uuid`) ON DELETE CASCADE,
   FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS invoice_subsidy;
 
@@ -1571,27 +1572,27 @@ CREATE TABLE `invoice_subsidy` (
   KEY `subsidy_id` (`subsidy_id`),
   FOREIGN KEY (`invoice_uuid`) REFERENCES `invoice` (`uuid`) ON DELETE CASCADE,
   FOREIGN KEY (`subsidy_id`) REFERENCES `subsidy` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `section_bilan`;
 
 CREATE TABLE `section_bilan` (
-  `id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
+  `id` TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
   `text` text,
-  `is_actif` tinyint(1) DEFAULT NULL,
-  `position` int(10) unsigned DEFAULT NULL,
+  `is_actif` TINYINT(1) DEFAULT NULL,
+  `position` INT(10) UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `section_resultat`;
 
 CREATE TABLE `section_resultat` (
-  `id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
+  `id` TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
   `text` text,
-  `position` int(10) unsigned DEFAULT NULL,
-  `is_charge` tinyint(1) NOT NULL,
+  `position` INT(10) UNSIGNED DEFAULT NULL,
+  `is_charge` TINYINT(1) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `sector`;
@@ -1603,12 +1604,12 @@ CREATE TABLE `sector` (
   UNIQUE KEY `sector_1` (`name`, `province_uuid`),
   KEY `province_id` (`province_uuid`),
   FOREIGN KEY (`province_uuid`) REFERENCES `province` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `service`;
 CREATE TABLE `service` (
-  `id` smallint(5) unsigned not null auto_increment,
+  `id` smallINT(5) UNSIGNED not null auto_increment,
   `uuid` BINARY(16) NULL,
   `enterprise_id` SMALLINT(5) UNSIGNED NOT NULL,
   `name` VARCHAR(80) NOT NULL,
@@ -1624,7 +1625,7 @@ CREATE TABLE `service` (
   FOREIGN KEY (`enterprise_id`) REFERENCES enterprise (`id`),
   FOREIGN KEY (`cost_center_id`) REFERENCES `cost_center` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`profit_center_id`) REFERENCES `profit_center` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `subsidy`;
@@ -1640,7 +1641,7 @@ CREATE TABLE subsidy (
   UNIQUE KEY `subsidy_1` (`label`),
   KEY `account_id` (`account_id`),
   FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `supplier`;
@@ -1655,28 +1656,28 @@ CREATE TABLE `supplier` (
   `fax`             VARCHAR(45) DEFAULT NULL,
   `note`            TEXT,
   `phone`           VARCHAR(15) DEFAULT NULL,
-  `international`   TINYINT(1) NOT NULL DEFAULT 0,
+  `INTernational`   TINYINT(1) NOT NULL DEFAULT 0,
   `locked`          TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `supplier_1` (`display_name`),
   KEY `creditor_uuid` (`creditor_uuid`),
   FOREIGN KEY (`creditor_uuid`) REFERENCES `creditor` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `taxe_ipr`;
 CREATE TABLE `taxe_ipr` (
-  `id` int(10)      UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id` INT(10)      UNSIGNED NOT NULL AUTO_INCREMENT,
   `label`           VARCHAR(100) NOT NULL,
   `description`     TEXT,
   `currency_id`     TINYINT(3) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
   KEY `currency_id` (`currency_id`),
   FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `taxe_ipr_configuration`;
 CREATE TABLE `taxe_ipr_configuration` (
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `rate` float NOT NULL,
   `tranche_annuelle_debut` float DEFAULT NULL,
   `tranche_annuelle_fin` float DEFAULT NULL,
@@ -1688,36 +1689,36 @@ CREATE TABLE `taxe_ipr_configuration` (
   `impot_mensuel` float DEFAULT NULL,
   `cumul_annuel` float DEFAULT NULL,
   `cumul_mensuel` float DEFAULT NULL,
-  `taxe_ipr_id` int(10) UNSIGNED NOT NULL,
+  `taxe_ipr_id` INT(10) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
   KEY `taxe_ipr_id` (`taxe_ipr_id`),
   FOREIGN KEY (`taxe_ipr_id`) REFERENCES `taxe_ipr` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `transaction_type`;
 CREATE TABLE `transaction_type` (
-  `id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
+  `id` TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
   `text` varchar(100) NOT NULL,
   `type` varchar(30) NOT NULL,
-  `fixed` tinyint(1) NOT NULL DEFAULT 0,
+  `fixed` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `transaction_type_1` (`id`, `text`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `unit`;
 
 CREATE TABLE `unit` (
-  `id` smallint(5) unsigned NOT NULL,
+  `id` smallINT(5) UNSIGNED NOT NULL,
   `name` varchar(30) NOT NULL,
   `key` varchar(70) NOT NULL,
   `description` text NOT NULL,
-  `parent` smallint(6) DEFAULT 0,
+  `parent` smallINT(6) DEFAULT 0,
   `url` tinytext,
   `path` tinytext,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unit_1` (`name`, `key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `user`;
 
@@ -1733,7 +1734,7 @@ CREATE TABLE `user` (
   `last_login`    TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_1` (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `role`;
@@ -1745,24 +1746,24 @@ CREATE TABLE `role` (
   PRIMARY kEY(`uuid`),
   UNIQUE `project_role_label` (`project_id`,`label`),
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `actions`;
 CREATE TABLE `actions` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `description` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 CREATE TABLE `role_actions` (
   `uuid` binary(16) NOT NULL,
   `role_uuid` binary(16) NOT NULL,
-  `actions_id`int(10) unsigned NOT NULL,
+  `actions_id`INT(10) UNSIGNED NOT NULL,
   PRIMARY KEY (`uuid`),
   FOREIGN KEY (`actions_id`) REFERENCES `actions` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`role_uuid`) REFERENCES `role` (`uuid`) ON UPDATE CASCADE  ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `user_role`;
 CREATE TABLE `user_role` (
@@ -1773,7 +1774,7 @@ CREATE TABLE `user_role` (
   UNIQUE `role_for_user` (`user_id`,`role_uuid`),
   FOREIGN KEY (`role_uuid`) REFERENCES `role` (`uuid`) ON UPDATE CASCADE,
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `role_unit`;
@@ -1784,7 +1785,7 @@ CREATE TABLE `role_unit` (
   PRIMARY KEY(`uuid`),
   FOREIGN KEY (`role_uuid`) REFERENCES `role` (`uuid`) ON UPDATE CASCADE ON DELETE CASCADE,
   FOREIGN KEY (`unit_id`) REFERENCES `unit` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `village`;
@@ -1798,7 +1799,7 @@ CREATE TABLE `village` (
   UNIQUE KEY `village_1` (`name`, `sector_uuid`),
   KEY `sector_id` (`sector_uuid`),
   FOREIGN KEY (`sector_uuid`) REFERENCES `sector` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 -- NOTE: type_id is the transaction_type table.  FK not possible due to NULLs.
 DROP TABLE IF EXISTS `voucher`;
@@ -1825,7 +1826,7 @@ CREATE TABLE IF NOT EXISTS `voucher` (
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
   UNIQUE KEY `voucher_1` (`project_id`, `reference`),
   PRIMARY KEY (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `voucher_item`;
 CREATE TABLE IF NOT EXISTS `voucher_item` (
@@ -1843,21 +1844,21 @@ CREATE TABLE IF NOT EXISTS `voucher_item` (
   INDEX (`entity_uuid`),
   FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
   FOREIGN KEY (`voucher_uuid`) REFERENCES `voucher` (`uuid`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 -- stock tables
 
 DROP TABLE IF EXISTS `flux`;
 CREATE TABLE `flux` (
   `id`    INT(11) NOT NULL,
-  `label` VARCHAR(255) NOT NULL,
+  `label` VARCHAR(191) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `lot`;
 CREATE TABLE `lot` (
   `uuid`              BINARY(16) NOT NULL,
-  `label`             VARCHAR(255) NOT NULL,
+  `label`             VARCHAR(191) NOT NULL,
   `initial_quantity`  INT(11) NOT NULL DEFAULT 0,
   `quantity`          INT(11) NOT NULL DEFAULT 0,
   `unit_cost`         DECIMAL(19, 4) UNSIGNED NOT NULL,
@@ -1870,7 +1871,7 @@ CREATE TABLE `lot` (
   PRIMARY KEY (`uuid`),
   KEY `inventory_uuid` (`inventory_uuid`),
   FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `stock_movement`;
 CREATE TABLE `stock_movement` (
@@ -1882,7 +1883,7 @@ CREATE TABLE `stock_movement` (
   `description`     TEXT NULL,
   `flux_id`         INT(11) NOT NULL,
   `date`            DATETIME NOT NULL,
-  `quantity`        int(11) NOT NULL DEFAULT 0,
+  `quantity`        INT(11) NOT NULL DEFAULT 0,
   `unit_cost`       DECIMAL(19, 4) UNSIGNED NOT NULL,
   `is_exit`         TINYINT(1) NOT NULL,
   `user_id`         SMALLINT(5) UNSIGNED NOT NULL,
@@ -1898,15 +1899,15 @@ CREATE TABLE `stock_movement` (
   FOREIGN KEY (`lot_uuid`) REFERENCES `lot` (`uuid`),
   FOREIGN KEY (`flux_id`) REFERENCES `flux` (`id`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 -- donor
 DROP TABLE IF EXISTS `donor`;
 CREATE TABLE `donor` (
   `id`           INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `display_name` VARCHAR(255) NOT NULL,
+  `display_name` VARCHAR(191) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 -- donation
 DROP TABLE IF EXISTS `donation`;
@@ -1919,7 +1920,7 @@ CREATE TABLE `donation` (
   `donor_id`        INT(11) NOT NULL,
   PRIMARY KEY (`reference`),
   UNIQUE KEY `donation_uuid` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 -- integration
 DROP TABLE IF EXISTS `integration`;
@@ -1931,7 +1932,7 @@ CREATE TABLE `integration` (
   `date`            DATE NOT NULL,
   PRIMARY KEY (`reference`),
   UNIQUE KEY `integration_uuid` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 -- stock consumption total
 CREATE TABLE `stock_consumption` (
@@ -1943,7 +1944,7 @@ CREATE TABLE `stock_consumption` (
   KEY `inventory_uuid` (`inventory_uuid`),
   KEY `depot_uuid` (`depot_uuid`),
   KEY `period_id` (`period_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 /*
@@ -1960,14 +1961,14 @@ CREATE TABLE `transaction_history` (
   KEY `record_uuid` (`record_uuid`),
   KEY `user_id` (`user_id`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `depot_permission`;
 
 CREATE TABLE `depot_permission` (
-  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` smallint(5) unsigned NOT NULL,
+  `id` smallINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_id` smallINT(5) UNSIGNED NOT NULL,
   `depot_uuid`  BINARY(16) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `depot_permission_1` (`user_id`,`depot_uuid`),
@@ -1975,13 +1976,13 @@ CREATE TABLE `depot_permission` (
   KEY `depot_uuid` (`depot_uuid`),
   FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `cashbox_permission`;
 
 CREATE TABLE `cashbox_permission` (
-  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` smallint(5) unsigned NOT NULL,
+  `id` smallINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_id` smallINT(5) UNSIGNED NOT NULL,
   `cashbox_id`  MEDIUMINT(8) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `cashbox_permission_1` (`user_id`,`cashbox_id`),
@@ -1989,43 +1990,43 @@ CREATE TABLE `cashbox_permission` (
   KEY `cashbox_id` (`cashbox_id`),
   FOREIGN KEY (`cashbox_id`) REFERENCES `cash_box` (`id`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `config_rubric`;
 
 CREATE TABLE `config_rubric` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `label` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `config_rubric_item`;
 
 CREATE TABLE `config_rubric_item` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `config_rubric_id` int(10) unsigned NOT NULL,
-  `rubric_payroll_id` int(10) unsigned NOT NULL,
+  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `config_rubric_id` INT(10) UNSIGNED NOT NULL,
+  `rubric_payroll_id` INT(10) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
   KEY `config_rubric_id` (`config_rubric_id`),
   KEY `rubric_payroll_id` (`rubric_payroll_id`),
   CONSTRAINT `config_rubric_item_ibfk_1` FOREIGN KEY (`config_rubric_id`) REFERENCES `config_rubric` (`id`),
   CONSTRAINT `config_rubric_item_ibfk_2` FOREIGN KEY (`rubric_payroll_id`) REFERENCES `rubric_payroll` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `config_employee`;
 
 CREATE TABLE `config_employee` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `label` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `config_employee_item`;
 
 CREATE TABLE `config_employee_item` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `config_employee_id` int(10) unsigned NOT NULL,
+  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `config_employee_id` INT(10) UNSIGNED NOT NULL,
   `employee_uuid` BINARY(16) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `config_employee_id` (`config_employee_id`),
@@ -2033,7 +2034,7 @@ CREATE TABLE `config_employee_item` (
   UNIQUE KEY  (`config_employee_id`, `employee_uuid`),
   FOREIGN KEY (`config_employee_id`) REFERENCES `config_employee` (`id`),
   FOREIGN KEY (`employee_uuid`) REFERENCES `employee` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 SET foreign_key_checks = 1;
