@@ -931,6 +931,11 @@ a[disabled] {
   padding-left : 5px;
 }
 
+.filter-text-link {
+  color: #fff;
+  margin-left: 5px;
+}
+
 .strike {
   text-decoration : line-through;
 }
