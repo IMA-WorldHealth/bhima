@@ -2,8 +2,8 @@ angular.module('bhima.controllers')
   .controller('TransactionTypeController', TransactionTypeController);
 
 TransactionTypeController.$inject = [
-  'TransactionTypeService', 'TransactionTypeStoreService', 'NotifyService',
-  'ModalService', '$translate', 'uiGridConstants',
+  'TransactionTypeService', 'NotifyService',
+  'ModalService', 'uiGridConstants',
 ];
 
 /**
@@ -12,33 +12,12 @@ TransactionTypeController.$inject = [
  * @description
  * This controller powers the transaction type grid.
  */
-function TransactionTypeController(TransactionType, TransactionTypeStore, Notify, Modal, $translate, uiGridConstants) {
+function TransactionTypeController(TransactionType, Notify, Modal, uiGridConstants) {
   const vm = this;
 
   // global variables
   vm.gridOptions = {};
   vm.gridApi = {};
-
-  // edit button template
-  const editTemplate = `
-    <div class="ui-grid-cell-contents text-right">
-      <a
-        href
-        ng-click="grid.appScope.editType(row.entity)"
-        uib-popover="{{row.entity._popover}}"
-        popover-placement="left"
-        popover-trigger="'mouseenter'"
-        popover-append-to-body="true"
-        data-edit-type="{{ row.entity.text }}">
-        <span ng-show="row.entity.fixed">
-          <i class="fa fa-lock"></i> <span translate>FORM.LABELS.LOCKED</span>
-        </span>
-        <span ng-hide="row.entity.fixed">
-          <i class="fa fa-edit"></i> <span translate>FORM.LABELS.EDIT</span>
-        </span>
-      </a>
-    </div>
-    `;
 
   // grid default options
   vm.gridOptions.appScopeProvider = vm;
@@ -60,8 +39,9 @@ function TransactionTypeController(TransactionType, TransactionTypeStore, Notify
     enableColumnMenu : false,
   }, {
     field : 'fixed',
-    displayName : '...',
-    cellTemplate : editTemplate,
+    displayName : '',
+    maxWidth : '150',
+    cellTemplate : '/modules/transaction-type/templates/fixedStatus.cell.html',
     enableFiltering : false,
     enableColumnMenu : false,
     sort : {
@@ -89,7 +69,7 @@ function TransactionTypeController(TransactionType, TransactionTypeStore, Notify
       .then(res => {
         if (!res) { return; }
         Notify.success('FORM.INFO.SAVE_SUCCESS');
-        load();
+        loadTransactionTypes();
       })
       .catch(Notify.handleError);
   }
@@ -104,25 +84,21 @@ function TransactionTypeController(TransactionType, TransactionTypeStore, Notify
       .then(res => {
         if (!res) { return; }
         Notify.success('FORM.INFO.UPDATE_SUCCESS');
-        load();
+        loadTransactionTypes();
       })
       .catch(Notify.handleError);
   }
 
-  function load() {
+  function loadTransactionTypes() {
     TransactionType.read()
       .then(list => {
         vm.gridOptions.data = list;
-
-        list.forEach(type => {
-          type._popover = type.fixed ? $translate.instant('TRANSACTION_TYPE.FIXED_INFO') : '';
-        });
       })
       .catch(Notify.handleError);
   }
 
   function startup() {
-    load();
+    loadTransactionTypes();
   }
 
   // startup the module
