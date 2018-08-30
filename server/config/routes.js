@@ -117,8 +117,6 @@ exports.configure = function configure(app) {
   app.post('/auth/reload', auth.reload);
 
   // system and event helpers
-  app.get('/system/events', system.events);
-  app.get('/system/stream', system.stream);
   app.get('/system/information', system.info);
 
   // dashbord stats

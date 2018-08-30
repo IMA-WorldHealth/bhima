@@ -7,7 +7,6 @@
  */
 
 const uuid = require('uuid/v4');
-const Topic = require('@ima-worldhealth/topic');
 
 const db = require('../../lib/db');
 
@@ -106,12 +105,6 @@ function create(req, res, next) {
 
   transaction.execute()
     .then(() => {
-      Topic.publish(Topic.channels.INVENTORY, {
-        event : Topic.events.CREATE,
-        entity : Topic.entities.SUPPLIER,
-        user_id : req.session.user.id,
-        uuid : recordUuid,
-      });
       res.status(201).json({ uuid : recordUuid });
     })
     .catch(next)
@@ -156,12 +149,6 @@ function update(req, res, next) {
 
   transaction.execute()
     .then(() => {
-      Topic.publish(Topic.channels.INVENTORY, {
-        event : Topic.events.UPDATE,
-        entity : Topic.entities.SUPPLIER,
-        user_id : req.session.user.id,
-        uuid : req.params.uuid,
-      });
       return lookupSupplier(req.params.uuid);
     })
     .then(record => {

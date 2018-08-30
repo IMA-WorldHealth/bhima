@@ -1,6 +1,5 @@
 const uuid = require('uuid/v4');
 const _ = require('lodash');
-const Topic = require('@ima-worldhealth/topic');
 
 const db = require('../../lib/db');
 const BadRequest = require('../../lib/errors/BadRequest');
@@ -142,16 +141,7 @@ function create(req, res, next) {
   transaction.execute()
     .then(() => {
       res.status(201).json({ uuid : cashUuidString });
-
-      Topic.publish(Topic.channels.FINANCE, {
-        event   : Topic.events.CREATE,
-        entity  : Topic.entities.PAYMENT,
-        user_id : req.session.user.id,
-        user    : req.session.user.display_name,
-        uuid    : cashUuidString,
-      });
     })
     .catch(next)
     .done();
 }
-

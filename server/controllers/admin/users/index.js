@@ -13,7 +13,6 @@
 
 
 const _ = require('lodash');
-const Topic = require('@ima-worldhealth/topic');
 const db = require('../../../lib/db');
 const NotFound = require('../../../lib/errors/NotFound');
 const BadRequest = require('../../../lib/errors/BadRequest');
@@ -174,13 +173,6 @@ function create(req, res, next) {
       return db.exec(sql, [projects]);
     })
     .then(() => {
-      Topic.publish(Topic.channels.ADMIN, {
-        event : Topic.events.CREATE,
-        entity : Topic.entities.USER,
-        user_id : req.session.user.id,
-        id : userId,
-      });
-
       // send the ID back to the client
       res.status(201).json({ id : userId });
     })
@@ -248,13 +240,6 @@ function update(req, res, next) {
   transaction.execute()
     .then(() => lookupUser(req.params.id))
     .then((result) => {
-      Topic.publish(Topic.channels.ADMIN, {
-        event : Topic.events.UPDATE,
-        entity : Topic.entities.USER,
-        user_id : req.session.user.id,
-        id : req.params.id,
-      });
-
       res.status(200).json(result);
     })
     .catch(next)
@@ -301,13 +286,6 @@ function remove(req, res, next) {
       if (row.affectedRows === 0) {
         throw new NotFound(`Could not find a user with id ${req.params.id}`);
       }
-
-      Topic.publish(Topic.channels.ADMIN, {
-        event : Topic.events.DELETE,
-        entity : Topic.entities.USER,
-        user_id : req.session.user.id,
-        id : req.params.id,
-      });
 
       res.sendStatus(204);
     })

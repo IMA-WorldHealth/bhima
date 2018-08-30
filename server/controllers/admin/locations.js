@@ -16,8 +16,6 @@
 
 
 const uuid = require('uuid/v4');
-const Topic = require('@ima-worldhealth/topic');
-
 const db = require('../../lib/db');
 
 exports.lookupVillage = lookupVillage;
@@ -310,13 +308,6 @@ exports.create.country = function createCountry(req, res, next) {
 
   db.exec(sql, [db.bid(req.body.uuid), req.body.name])
     .then(() => {
-      Topic.publish(Topic.channels.ADMIN, {
-        event : Topic.events.CREATE,
-        entity : Topic.entities.LOCATION,
-        user_id : req.session.user.id,
-        uuid : req.body.uuid,
-      });
-
       res.status(201).json({ uuid : req.body.uuid });
     })
     .catch(next)
@@ -345,13 +336,6 @@ exports.create.province = function createProvince(req, res, next) {
 
   db.exec(sql, [[db.bid(data.uuid), data.name, data.country_uuid]])
     .then(() => {
-      Topic.publish(Topic.channels.ADMIN, {
-        event : Topic.events.CREATE,
-        entity : Topic.entities.LOCATION,
-        user_id : req.session.user.id,
-        uuid : data.uuid,
-      });
-
       res.status(201).json({ uuid : data.uuid });
     })
     .catch(next)
@@ -379,13 +363,6 @@ exports.create.sector = function createSector(req, res, next) {
 
   db.exec(sql, [[db.bid(data.uuid), data.name, data.province_uuid]])
     .then(() => {
-      Topic.publish(Topic.channels.ADMIN, {
-        event : Topic.events.CREATE,
-        entity : Topic.entities.LOCATION,
-        user_id : req.session.user.id,
-        uuid : data.uuid,
-      });
-
       res.status(201).json({ uuid : data.uuid });
     })
     .catch(next)
@@ -412,13 +389,6 @@ exports.create.village = function createVillage(req, res, next) {
 
   db.exec(sql, [[db.bid(data.uuid), data.name, data.sector_uuid, data.longitude, data.latitude]])
     .then(() => {
-      Topic.publish(Topic.channels.ADMIN, {
-        event : Topic.events.CREATE,
-        entity : Topic.entities.LOCATION,
-        user_id : req.session.user.id,
-        uuid : data.uuid,
-      });
-
       res.status(201).json({ uuid : data.uuid });
     })
     .catch(next)
