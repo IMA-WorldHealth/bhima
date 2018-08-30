@@ -20,7 +20,8 @@ describe('PasswordMeterService', () => {
     'bhima.services',
     'ngStorage',
     'bhima.mocks',
-    'angularMoment'
+    'angularMoment',
+    'ui.router'
   ));
 
   beforeEach(inject((_PasswordMeterService_, _SessionService_, _MockDataService_) => {
