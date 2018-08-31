@@ -128,6 +128,8 @@ function FeeCenterModalController($state, FeeCenter, ModalService, Notify, AppCa
       vm.referenceFeeCenter.push(vm.profitCenterReference);
     }
 
+    vm.projects = vm.assignedProjects ? vm.projects : [];
+
     const data = {
       label : vm.feeCenter.label,
       is_principal : vm.feeCenter.is_principal,

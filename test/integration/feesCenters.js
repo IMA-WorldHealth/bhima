@@ -47,8 +47,8 @@ describe('(/fee_center) The /fee_center  API endpoint', () => {
     projects: [ 1 ] 
   };
 
-  const numFeeCenter = 4;
-  const feeCenterId = 5;
+  const numFeeCenter = 2;
+  const feeCenterId = 3;
 
   it('GET /FEE_CENTER returns a list of Fees Centers', () => {
     return agent.get('/fee_center')

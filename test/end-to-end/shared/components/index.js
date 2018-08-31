@@ -56,4 +56,6 @@ module.exports = {
   payrollPeriodSelect : require('./bhPayrollPeriodSelect'),
   periodSelection : require('./bhPeriodSelection'),
   employeeConfigSelect : require('./bhEmployeeConfigSelect'),
+  projectsMultipleSelect : require('./bhProjectsMultipleSelect'),
+  accountReferenceSelect : require('./bhAccountReferenceSelect'),
 };

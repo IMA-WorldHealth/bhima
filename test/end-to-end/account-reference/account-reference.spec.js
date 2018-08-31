@@ -38,7 +38,7 @@ describe('AccountReference Management Page', () => {
     accounts : ['31110010', '31110011'],
     accountsException : ['31110011'],
   };
-  let accountReferenceCount = 0;
+  let accountReferenceCount = 9;
 
   before(() => helpers.navigate(path));
 
@@ -56,7 +56,7 @@ describe('AccountReference Management Page', () => {
   });
 
   it('edits an accounts reference successfully', () => {
-    accountReferencePage.editAccountReference(0);
+    accountReferencePage.editAccountReference(9);
     accountReferenceCreateUpdatePage.clearSelectedItems();
     accountReferenceCreateUpdatePage.setAbbr(mockEdit.abbr);
     accountReferenceCreateUpdatePage.setDescription(mockEdit.description);
@@ -82,7 +82,7 @@ describe('AccountReference Management Page', () => {
   });
 
   it('delete an accounts reference successfully', () => {
-    accountReferencePage.deleteAccountReference(1);
+    accountReferencePage.deleteAccountReference(10);
     components.notification.hasSuccess();
     accountReferenceCount--;
   });

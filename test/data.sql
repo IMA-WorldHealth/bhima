@@ -981,18 +981,14 @@ INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`
 -- FEE CENTER 
 INSERT INTO `fee_center` (`id`, `label`, `is_principal`) VALUES
 (1, 'Administration', 1),
-(2, 'Principale TPA', 1),
-(3, 'Section Auxiliaire 1', 0),
-(4, 'Profit Auxiliaire 2', 0);
+(2, 'Principale TPA', 1);
 
 -- REFERENCE FEE CENTER
 INSERT INTO `reference_fee_center` (`id`, `fee_center_id`, `account_reference_id`, `is_cost`) VALUES 
 (1, 1, 1, 1),
 (2, 1, 2, 0),
 (3, 2, 6, 1),
-(4, 2, 3, 0),
-(5, 3, 4, 1),
-(6, 4, 7, 0);
+(4, 2, 3, 0);
 
 -- PROJECT FEE CENTER
 INSERT INTO `project_fee_center` (`id`, `fee_center_id`, `project_id`) VALUES (1, 2, 1);
