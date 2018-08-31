@@ -6,6 +6,7 @@ describe('VoucherForm', () => {
   let Session;
   let form;
   let Mocks;
+  let $timeout;
 
   beforeEach(module(
     'bhima.services',
@@ -19,10 +20,11 @@ describe('VoucherForm', () => {
     'bhima.mocks'
   ));
 
-  beforeEach(inject((_VoucherForm_, $httpBackend, _SessionService_, _MockDataService_) => {
+  beforeEach(inject((_VoucherForm_, $httpBackend, _SessionService_, _MockDataService_, _$timeout_) => {
     VoucherForm = _VoucherForm_;
     Session = _SessionService_;
     Mocks = _MockDataService_;
+    $timeout = _$timeout_;
 
     // set up the required properties for the session
     Session.create(Mocks.user(), Mocks.enterprise(), Mocks.project());
@@ -37,6 +39,7 @@ describe('VoucherForm', () => {
 
   // make sure $http is clean after tests
   afterEach(() => {
+    $timeout.flush();
     httpBackend.flush();
     httpBackend.verifyNoOutstandingExpectation();
     httpBackend.verifyNoOutstandingRequest();
