@@ -1,22 +1,22 @@
 angular.module('bhima.components')
-.component('bhFilters', {
-  templateUrl : 'modules/templates/bhFilters.tmpl.html',
-  controller  : bhFiltersController,
-  bindings    : {
-    filters        : '<',
-    onRemoveFilter : '&',  // fires to remove the filter
-  },
-});
+  .component('bhFilters', {
+    templateUrl : 'modules/templates/bhFilters.tmpl.html',
+    controller  : bhFiltersController,
+    bindings    : {
+      filters        : '<',
+      onRemoveFilter : '&',
+    },
+  });
 
 bhFiltersController.$inject = ['$filter'];
 function bhFiltersController($filter) {
-  var $ctrl = this;
+  const $ctrl = this;
 
   // formats the $viewValue according to any filters passed in
   $ctrl.$onChanges = function onChanges(changes) {
     if (!changes.filters) { return; }
 
-    var filters = changes.filters.currentValue;
+    const filters = changes.filters.currentValue;
 
     if (!filters) { return; }
 
