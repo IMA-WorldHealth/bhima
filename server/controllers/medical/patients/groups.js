@@ -11,12 +11,10 @@
  * @requires lib/uuid/v4
  * @requires lib/errors/BadRequest
  * @requires lib/errors/NotFound
- * @requires @ima-worldhealth/topic
  */
 
 const _ = require('lodash');
 const uuid = require('uuid/v4');
-const Topic = require('@ima-worldhealth/topic');
 
 const db = require('../../../lib/db');
 const BadRequest = require('../../../lib/errors/BadRequest');
@@ -113,13 +111,6 @@ function update(req, res, next) {
 
   transaction.execute()
     .then(result => {
-      Topic.publish(Topic.channels.MEDICAL, {
-        event : Topic.events.UPDATE,
-        entity : Topic.entities.PATIENT,
-        user_id : req.session.user.id,
-        uuid : req.params.uuid,
-      });
-
       // TODO send back correct ids
       res.status(200).json(result);
     })

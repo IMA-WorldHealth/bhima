@@ -11,12 +11,10 @@
  * @requires db
  * @requires NotFound
  * @requires BadRequest
- * @requires Topic
  */
 
 
 const uuid = require('uuid/v4');
-const Topic = require('@ima-worldhealth/topic');
 
 const db = require('../../lib/db');
 const NotFound = require('../../lib/errors/NotFound');
@@ -72,13 +70,6 @@ function create(req, res, next) {
 
   db.exec(sql, [record])
     .then((result) => {
-      Topic.publish(Topic.channels.ADMIN, {
-        event : Topic.events.CREATE,
-        entity : Topic.entities.SERVICE,
-        user_id : req.session.user.id,
-        id : result.insertId,
-      });
-
       res.status(201).json({ id : result.insertId });
     })
     .catch(next)
@@ -115,13 +106,6 @@ function update(req, res, next) {
       return lookupService(req.params.id);
     })
     .then((service) => {
-      Topic.publish(Topic.channels.ADMIN, {
-        event : Topic.events.UPDATE,
-        entity : Topic.entities.SERVICE,
-        user_id : req.session.user.id,
-        id : req.params.id,
-      });
-
       res.status(200).json(service);
     })
     .catch(next)
@@ -142,13 +126,6 @@ function remove(req, res, next) {
       if (!result.affectedRows) {
         throw new NotFound(`Could not find a service with id ${req.params.id}.`);
       }
-
-      Topic.publish(Topic.channels.ADMIN, {
-        event : Topic.events.DELETE,
-        entity : Topic.entities.SERVICE,
-        user_id : req.session.user.id,
-        id : req.params.id,
-      });
 
       res.sendStatus(204);
     })

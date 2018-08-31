@@ -10,11 +10,9 @@
  * @requires db
  * @requires uuid/v4
  * @requires NotFound
- * @requires @ima-worldhealth/topic
  */
 
 const uuid = require('uuid/v4');
-const Topic = require('@ima-worldhealth/topic');
 const Q = require('q');
 
 const db = require('../../lib/db');
@@ -106,13 +104,6 @@ function create(req, res, next) {
 
   transaction.execute()
     .then(() => {
-      Topic.publish(Topic.channels.MEDICAL, {
-        event : Topic.events.CREATE,
-        entity : Topic.entities.PATIENT_GROUP,
-        user_id : req.session.user.id,
-        uuid : uid,
-      });
-
       res.status(201).json({ uuid : uid });
     })
     .catch(next)
@@ -183,13 +174,6 @@ function update(req, res, next) {
   transaction.execute()
     .then(() => lookupPatientGroup(req.params.uuid))
     .then(group => {
-      Topic.publish(Topic.channels.MEDICAL, {
-        event : Topic.events.UPDATE,
-        entity : Topic.entities.PATIENT_GROUP,
-        user_id : req.session.user.id,
-        uuid : req.params.uuid,
-      });
-
       res.status(200).json(group);
     })
     .catch(next)
