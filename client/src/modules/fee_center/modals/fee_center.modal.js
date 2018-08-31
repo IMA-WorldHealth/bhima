@@ -13,7 +13,8 @@ function FeeCenterModalController($state, FeeCenter, ModalService, Notify, AppCa
   const cache = AppCache('FeeCenterModal');
 
   if ($state.params.creating || $state.params.id) {
-    vm.stateParams = cache.stateParams = $state.params;
+    cache.stateParams = $state.params;
+    vm.stateParams = cache.stateParams;
   } else {
     vm.stateParams = cache.stateParams;
   }
@@ -115,9 +116,6 @@ function FeeCenterModalController($state, FeeCenter, ModalService, Notify, AppCa
 
   // submit the data to the server from all two forms (update, create)
   function submit(feeCenterForm) {
-    let promise;
-
-
     if (feeCenterForm.$invalid) { return 0; }
 
     if (vm.isCostCenter || vm.hasCostCenter) {
@@ -137,7 +135,7 @@ function FeeCenterModalController($state, FeeCenter, ModalService, Notify, AppCa
       projects : vm.projects,
     };
 
-    promise = (vm.isCreating)
+    const promise = (vm.isCreating)
       ? FeeCenter.create(data)
       : FeeCenter.update(vm.feeCenter.id, data);
 

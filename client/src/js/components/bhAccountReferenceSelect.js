@@ -21,7 +21,7 @@ AccountReferenceSelectController.$inject = [
  * Account Reference Select Controller
  */
 function AccountReferenceSelectController(AccountReferences, $timeout, $scope, Notify) {
-  var $ctrl = this;
+  const $ctrl = this;
 
   // fired at the beginning of the account configuration select
   $ctrl.$onInit = function $onInit() {

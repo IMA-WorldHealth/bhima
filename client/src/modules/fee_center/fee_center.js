@@ -1,9 +1,9 @@
 angular.module('bhima.controllers')
-.controller('FeeCenterController', FeeCenterController);
+  .controller('FeeCenterController', FeeCenterController);
 
 FeeCenterController.$inject = [
   'FeeCenterService', 'ModalService',
-  'NotifyService', 'uiGridConstants', '$state', 'SessionService',
+  'NotifyService', 'uiGridConstants', '$state',
 ];
 
 /**
@@ -13,8 +13,8 @@ FeeCenterController.$inject = [
  * It's responsible for creating, editing and updating a Fee Center
  */
 function FeeCenterController(FeeCenters, ModalService,
-  Notify, uiGridConstants, $state, Session) {
-  var vm = this;
+  Notify, uiGridConstants, $state) {
+  const vm = this;
 
   // bind methods
   vm.deleteFeeCenter = deleteFeeCenter;
@@ -43,7 +43,8 @@ function FeeCenterController(FeeCenters, ModalService,
         enableSorting : false,
         cellTemplate : '/modules/fee_center/templates/feeCenterType.tmpl.html',
       },
-      { field : 'action',
+      {
+        field : 'action',
         width : 80,
         displayName : '',
         cellTemplate : '/modules/fee_center/templates/action.tmpl.html',
@@ -67,28 +68,28 @@ function FeeCenterController(FeeCenters, ModalService,
     vm.loading = true;
 
     FeeCenters.read()
-    .then(function (data) {
-      vm.gridOptions.data = data;
-    })
-    .catch(Notify.handleError)
-    .finally(function () {
-      vm.loading = false;
-    });
+      .then((data) => {
+        vm.gridOptions.data = data;
+      })
+      .catch(Notify.handleError)
+      .finally(() => {
+        vm.loading = false;
+      });
   }
 
   // switch to delete warning mode
   function deleteFeeCenter(feeCenter) {
     ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
-    .then(function (bool) {
-      if (!bool) { return; }
+      .then((bool) => {
+        if (!bool) { return; }
 
-      FeeCenters.delete(feeCenter.id)
-      .then(function () {
-        Notify.success('FORM.INFO.DELETE_SUCCESS');
-        loadFeeCenters();
-      })
-      .catch(Notify.handleError);
-    });
+        FeeCenters.delete(feeCenter.id)
+          .then(() => {
+            Notify.success('FORM.INFO.DELETE_SUCCESS');
+            loadFeeCenters();
+          })
+          .catch(Notify.handleError);
+      });
   }
 
   // create a new FeeCenter
