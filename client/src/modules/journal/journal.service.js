@@ -74,15 +74,10 @@ function JournalService(Api, AppCache, Filters, Periods, Modal, bhConstants, Tra
       .then(service.util.unwrapHttpResponse);
   }
 
+  // @TODO(sfount) new rows will need to access the transaction shared attribute
+  //               `trans_id_reference_number. This is currently ignored by the API.
   function sanitiseNewRows(rows) {
     rows.data.forEach((row) => {
-      // @TODO(sfount) this value should be properly fetched and then written
-      //               to the DB as part of the shared transaction details
-      //               however it was introduced later and is unkown to all APIs
-      //               This sanitisation temporarily ensures all new rows have the attribute
-      const TRANSACTION_ID_CODE_LENGTH = 3;
-      row.trans_id_reference_number = row.trans_id.substr(TRANSACTION_ID_CODE_LENGTH);
-
       // delete view data required by journal grid
       delete row.transaction;
       delete row.hrRecord;

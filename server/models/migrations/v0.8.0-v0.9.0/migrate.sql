@@ -31,6 +31,7 @@ DROP FUNCTION GenerateTransactionId;
 
 -- Implement the improved performance `GenerateTransactionId` function 
 -- (note_ the API will not change)
+-- (note_ SUBSELECT vs. JOIN was tested, SUBSELECT was used because it works when there are no rows in journals
 CREATE FUNCTION GenerateTransactionId(
   target_project_id SMALLINT(5)
 )
@@ -38,20 +39,21 @@ RETURNS VARCHAR(100) DETERMINISTIC
 BEGIN
   DECLARE trans_id_length TINYINT(1) DEFAULT 4;
   RETURN (
-    SELECT CONCAT(project_string, IFNULL(MAX(current_max) + 1, 1)) as id
+    SELECT CONCAT(
+      (SELECT abbr AS project_string FROM project WHERE id = target_project_id), 
+      IFNULL(MAX(current_max) + 1, 1)
+    ) AS id
     FROM (
       ( 
-        SELECT abbr AS project_string, trans_id_reference_number AS current_max 
+        SELECT trans_id_reference_number AS current_max 
         FROM general_ledger
-        JOIN project ON project_id = project.id 
         WHERE project_id = target_project_id
         ORDER BY trans_id_reference_number DESC 
         LIMIT 1
       ) 
       UNION
       (
-        SELECT abbr AS project_string, trans_id_reference_number AS current_max FROM posting_journal 
-        JOIN project ON project_id = project.id 
+        SELECT trans_id_reference_number AS current_max FROM posting_journal 
         WHERE project_id = target_project_id
         ORDER BY trans_id_reference_number DESC 
         LIMIT 1
@@ -60,4 +62,4 @@ BEGIN
   );
 END $$
 
--- Last updated 30/08/2018 22:15 @sfount
+-- Last updated 30/08/2018 23:53 @sfount
