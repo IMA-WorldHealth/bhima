@@ -1,7 +1,7 @@
 angular.module('bhima.services')
   .service('FeeCenterService', FeeCenterService);
 
-FeeCenterService.$inject = ['PrototypeApiService', '$uibModal'];
+FeeCenterService.$inject = ['PrototypeApiService'];
 
 /**
  * @class FeeCenterService
@@ -10,7 +10,7 @@ FeeCenterService.$inject = ['PrototypeApiService', '$uibModal'];
  * @description
  * Encapsulates common requests to the /fee_center/ URL.
  */
-function FeeCenterService(Api, Modal) {
+function FeeCenterService(Api) {
   const service = new Api('/fee_center/');
 
   return service;
