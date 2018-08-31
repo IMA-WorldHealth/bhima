@@ -37,12 +37,8 @@ function DebtorGroupCreateController(
   vm.onSelectAccountCallback = onSelectAccount;
   vm.cancel = cancel;
 
-  Accounts.read()
-    .then((accounts) => {
-      vm.accounts = accounts;
-      return Prices.read();
-    })
   /* @todo This controller should not be concerned about individual price lists */
+  Prices.read()
     .then((priceLists) => {
       vm.priceLists = priceLists;
       vm.$loaded = true;

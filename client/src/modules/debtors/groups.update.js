@@ -6,12 +6,12 @@ angular.module('bhima.controllers')
   .controller('DebtorGroupUpdateController', DebtorGroupsUpdateController);
 
 DebtorGroupsUpdateController.$inject = [
-  '$state', 'DebtorGroupService', 'AccountService', 'PriceListService',
+  '$state', 'DebtorGroupService', 'PriceListService',
   'ScrollService', 'util', 'NotifyService', 'ModalService', 'ColorService',
 ];
 
 function DebtorGroupsUpdateController(
-  $state, DebtorGroups, Accounts, Prices,
+  $state, DebtorGroups, Prices,
   ScrollTo, util, Notify, Modal, Color
 ) {
   const vm = this;

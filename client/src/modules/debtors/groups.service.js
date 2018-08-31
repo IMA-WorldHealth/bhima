@@ -25,19 +25,6 @@ function DebtorGroupService(Modal, Session, $translate, Api) {
   service.manageInvoicingFees = manageInvoicingFees;
   service.manageSubsidies = manageSubsidies;
 
-
-  /**
-  * @method read
-  * @param {string} uuid The debtor group uuid
-  * @param {object} parameters The query string object
-  * @description This function is responsible for getting debtor groups
-  */
-  function read(uuid, parameters) {
-    const url = baseUrl.concat(uuid || '');
-    return $http.get(url, { params : parameters })
-      .then(util.unwrapHttpResponse);
-  }
-
   /**
   * @method create
   * @param {object} debtorGroup The debtor group object
@@ -49,7 +36,7 @@ function DebtorGroupService(Modal, Session, $translate, Api) {
     /** @todo standardise throughout services/ APIs where this information is populated; client vs. server */
     debtorGroup.enterprise_id = Session.enterprise.id;
 
-    return $http.post(baseUrl, debtorGroup)
+    return service.$http.post(baseUrl, debtorGroup)
       .then(service.util.unwrapHttpResponse);
   }
 
