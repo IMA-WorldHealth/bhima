@@ -144,7 +144,7 @@ function constantConfig() {
       { id : 5, label : 'FORM.LABELS.WEEK_DAYS.FRIDAY' },
       { id : 6, label : 'FORM.LABELS.WEEK_DAYS.SATURDAY' },
     ],
-    transactionTypesMap : {
+    transactionTypeMap : {
       income : { label : 'VOUCHERS.SIMPLE.INCOME', value : 'income' },
       expense : { label : 'VOUCHERS.SIMPLE.EXPENSE', value : 'expense' },
       other : { label : 'FORM.LABELS.OTHER', value : 'other' },

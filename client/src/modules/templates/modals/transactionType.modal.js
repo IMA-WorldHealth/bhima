@@ -13,8 +13,8 @@ function TransactionTypeModalController(Instance, TransactionType, Notify, Data,
   vm.isUpdateState = Data.action === 'edit';
 
   // Convert bhConstants transaction type map object into an array of elements
-  vm.types = Object.keys(bhConstants.transactionTypesMap)
-    .map(key => bhConstants.transactionTypesMap[key]);
+  vm.types = Object.keys(bhConstants.transactionTypeMap)
+    .map(key => bhConstants.transactionTypeMap[key]);
 
   vm.transactionType = {};
 
@@ -36,9 +36,9 @@ function TransactionTypeModalController(Instance, TransactionType, Notify, Data,
 
     const transactionType = angular.copy(vm.transactionType);
 
-    const promise = (vm.isCreateState) ?
-      TransactionType.create(transactionType) :
-      TransactionType.update(transactionType.id, transactionType);
+    const promise = (vm.isCreateState)
+      ? TransactionType.create(transactionType)
+      : TransactionType.update(transactionType.id, transactionType);
 
     return promise
       .then(() => {
