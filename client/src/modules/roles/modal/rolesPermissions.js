@@ -27,7 +27,7 @@ function RolesPermissionsController(data, $state, $uibModalInstance, AppCache, R
 
   // close modal
   function close() {
-    $uibModalInstance.close();
+    $uibModalInstance.dismiss();
   }
 
   function sortUnit(units) {
@@ -83,7 +83,7 @@ function RolesPermissionsController(data, $state, $uibModalInstance, AppCache, R
     RolesService.affectPages(params)
       .then(() => {
         Notify.success('FORM.LABELS.PERMISSION_ASSIGNED_SUCCESS');
-        vm.close();
+        $uibModalInstance.close();
       })
       .catch(Notify.handleError);
   }
