@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('CashboxUpdateController', CashboxUpdateController);
+  .controller('CashboxUpdateController', CashboxUpdateController);
 
 CashboxUpdateController.$inject = [
   '$state', '$uibModal', 'ModalService', 'NotifyService',
@@ -7,14 +7,14 @@ CashboxUpdateController.$inject = [
 ];
 
 function CashboxUpdateController($state, Modal, ModalService, Notify, Boxes, Currencies, Session) {
-  var vm = this;
+  const vm = this;
 
-  var CREATE_STATE = 'cashboxes.create';
+  const CREATE_STATE = 'cashboxes.create';
 
   // temporary method of determining if we're in create state
-  var creating = $state.current.name === CREATE_STATE;
+  const creating = $state.current.name === CREATE_STATE;
 
-  var cashboxUuid = $state.params.uuid;
+  const cashboxUuid = $state.params.uuid;
 
   vm.state = $state;
   vm.box = { project_id : Session.project.id };
@@ -23,14 +23,14 @@ function CashboxUpdateController($state, Modal, ModalService, Notify, Boxes, Cur
   vm.remove = remove;
 
   // TODO this information could be shared by the parent controller
-  Currencies.read().then(function (currencies) {
+  Currencies.read().then((currencies) => {
     vm.currencies = currencies;
 
-      // if we have a cashbox (and are subsequently in the edit state), load its information
+    // if we have a cashbox (and are subsequently in the edit state), load its information
     if (angular.isDefined(cashboxUuid)) {
       loadCashbox(cashboxUuid);
     } else {
-        // FIXME remove convuluted logic
+      // FIXME remove convuluted logic
       vm.box.is_auxiliary = 1;
     }
 
@@ -43,18 +43,16 @@ function CashboxUpdateController($state, Modal, ModalService, Notify, Boxes, Cur
       return;
     }
 
-    var cashboxId;
-    var promise;
-    var box = angular.copy(vm.box);
+    const box = angular.copy(vm.box);
 
-    promise = (creating) ?
-      Boxes.create(box) :
-      Boxes.update(box.id, box);
+    const promise = (creating)
+      ? Boxes.create(box)
+      : Boxes.update(box.id, box);
 
     return promise
-      .then(function () {
+      .then(() => {
         Notify.success(creating ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS');
-        $state.go('cashboxes.list', null, { reload: true });
+        $state.go('cashboxes.list', null, { reload : true });
       })
       .catch(Notify.handleError);
   }
@@ -62,7 +60,7 @@ function CashboxUpdateController($state, Modal, ModalService, Notify, Boxes, Cur
   // asnychronously load a cashbox from the server
   function loadCashbox(id) {
     return Boxes.read(id)
-      .then(function (data) {
+      .then((data) => {
         // bind the cashbox to the view
         vm.box = data;
 
@@ -75,13 +73,13 @@ function CashboxUpdateController($state, Modal, ModalService, Notify, Boxes, Cur
 
   // check if a currency is in the data.currencies array
   function hasCurrency(id) {
-    return vm.box.currencies.some(function (c) {
+    return vm.box.currencies.some((c) => {
       return c.currency_id === id;
     });
   }
 
   function calculateCurrencyDiff() {
-    vm.currencies.forEach(function (currency) {
+    vm.currencies.forEach((currency) => {
       currency.configured = hasCurrency(currency.id);
     });
   }
@@ -92,55 +90,48 @@ function CashboxUpdateController($state, Modal, ModalService, Notify, Boxes, Cur
    */
   function configureCurrency(currency) {
 
-    var instance = Modal.open({
+    const instance = Modal.open({
       templateUrl : 'modules/cash/cashboxes/configure_currency/modal.html',
       controller : 'CashboxCurrencyModalController as CashboxModalCtrl',
       size : 'md',
       backdrop : 'static',
-      animation: false,
+      animation : false,
       resolve : {
-        currency : function () {
-          return currency;
-        },
-        cashbox : function () {
-          return vm.box;
-        },
-        data : function () {
+        currency : () => currency,
+        cashbox : () => vm.box,
+        data : () => {
           // catch in case of 404, none specified default to empty object
           return Boxes.currencies.read(vm.box.id, currency.id)
-            .catch(function () { return {}; });
-        }
-      }
+            .catch(() => {});
+        },
+      },
     });
 
     instance.result
-      .then(function () {
+      .then(() => {
         Notify.success('FORM.INFO.UPDATE_SUCCESS');
 
         // TODO optimistically update without the need for additional connection (unless for verifcation)
         loadCashbox(vm.box.id);
       })
-      .catch(function (data) {
+      .catch((data) => {
         if (data) { Notify.handleError(data); }
       });
   }
 
   function remove(box) {
     ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
-    .then(function (bool) {
+      .then((bool) => {
 
-      if (!bool) { return; }
+        if (!bool) { return; }
 
-      Boxes.delete(box.id)
-      .then(function (message) {
-        Notify.success('FORM.INFO.DELETE_SUCCESS');
+        Boxes.delete(box.id)
+          .then(() => {
+            Notify.success('FORM.INFO.DELETE_SUCCESS');
 
-        $state.go('cashboxes.list', null, { reload : true });
-        return;
-      })
-      .catch(Notify.handleError);
-    });
+            $state.go('cashboxes.list', null, { reload : true });
+          })
+          .catch(Notify.handleError);
+      });
   }
 }
-
-

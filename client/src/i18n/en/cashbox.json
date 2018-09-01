@@ -13,12 +13,11 @@
 
     "USERS": { 
       "TITLE": "Cashbox Users",
-      "SUBTITLE": "Users",
-      "INFO_1": "To update users with access to this cash box, use the",
-      "INFO_2": "tool.",
-      "MANAGEMENT_LINK": "Users Management",
-      "NO_PERMISSIONS": "No users have permission to user this cashbox",
-      "LAST_SEEN": "Last seen"
+      "SUBTITLE": "Users with access to this cash box:",
+      "INFO_LINK": "To update users with acess to this cash box, use the <a ui-sref='users.list'>Users Management</a> tool.",
+      "NO_PERMISSIONS": "No users have permission to use this cashbox",
+      "LAST_SEEN": "Last seen",
+      "DEACTIVATED": "This user is deactivated."
     }
   }
 }

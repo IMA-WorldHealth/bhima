@@ -4,9 +4,12 @@
   </div>
   <div class="panel-body">
     <p>
-      <span translate>CASHBOX.USERS.INFO_1</span>
-      <a ui-sref="users.list" translate>CASHBOX.USERS.MANAGEMENT_LINK</a>
-      <span translate>CASHBOX.USERS.INFO_2</span>
+      <!-- note that this translation is _compiled_ and includes HTML elements -->
+      <!-- this info message includes a `ui-sref` link to "users.list" -->
+      <span
+        translate
+        translate-compile
+        translate-sanitize-strategy="'sce'">CASHBOX.USERS.INFO_LINK</span>
     </p>
 
     <!-- no users with permission for this cashbox -->

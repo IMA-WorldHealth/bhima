@@ -165,7 +165,7 @@ describe('(/cashboxes) The Cashboxes API endpoint', () => {
         helpers.api.listed(result, testDataCashbox.numberOfUsers);
 
         // results should look like users
-        expect(result.body[0]).to.have.keys('user_id', 'username', 'display_name', 'deactivated', 'last_login');
+        expect(result.body[0]).to.have.keys('id', 'username', 'display_name', 'deactivated', 'last_login');
       });
   });
 

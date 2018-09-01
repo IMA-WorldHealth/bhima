@@ -5,7 +5,7 @@ angular.module('bhima.components')
     bindings : {
       details : '<',
       id : '<',
-      fetch: '@',
+      fetch : '@',
     },
   });
 
@@ -15,7 +15,7 @@ bhUser.$inject = ['UserService'];
  * @component bhUser
  *
  * @description
- * Displays a sysyem users details.
+ * Displays a system users details.
  *
  * If a `details` object is provided, this will be used by the component, otherwise
  * a `id` can be provided in combination with `fetch`, the component will be
