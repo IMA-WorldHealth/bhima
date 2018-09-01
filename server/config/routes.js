@@ -495,6 +495,9 @@ exports.configure = function configure(app) {
   app.post('/cashboxes/:id/currencies', cashboxes.currencies.create);
   app.put('/cashboxes/:id/currencies/:currencyId', cashboxes.currencies.update);
 
+  // cashbox users
+  app.get('/cashboxes/:id/users', cashboxes.users);
+
   // price lists
   app.get('/prices', priceList.list);
   app.get('/prices/:uuid', priceList.details);
