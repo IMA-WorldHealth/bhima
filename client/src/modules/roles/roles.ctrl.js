@@ -11,7 +11,10 @@ function RolesController($uibModal, Roles, Session, Modal, Notify, bhConstants) 
 
   vm.canEditRoles = false;
 
-  vm.add = (role = { project_id : Session.project.id }) => {
+  vm.createUpdateRoleModal = function createUpdateRoleModal(selectedRole) {
+    // if no selected role was passed this means we are creating a new role
+    // set the default role parameters to pass the modal (set project ID)
+    const role = selectedRole || { project_id : Session.project.id };
     $uibModal.open({
       templateUrl : 'modules/roles/create.html',
       controller : 'RolesAddController as RolesAddCtrl',
@@ -19,11 +22,11 @@ function RolesController($uibModal, Roles, Session, Modal, Notify, bhConstants) 
     });
   };
 
-  vm.editActions = (role) => {
+  vm.updateRoleActionsModal = function updateRoleActionsModal(selectedRole) {
     $uibModal.open({
       templateUrl : 'modules/roles/modal/roleActions.html',
       controller : 'RoleActionsController as RoleActionsCtrl',
-      resolve : { data : () => role },
+      resolve : { data : () => selectedRole },
     });
   };
 
