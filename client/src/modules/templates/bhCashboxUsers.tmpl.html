@@ -1,42 +1,32 @@
 <div class="panel panel-default">
   <div class="panel-heading" translate>
-    CASHBOX.USERS
+    CASHBOX.USERS.TITLE
   </div>
   <div class="panel-body">
-    <p>To update users with access to this cash box, use the <a ui-sref="users.list">Users Management</a> tool.</p>
+    <p>
+      <span translate>CASHBOX.USERS.INFO_1</span>
+      <a ui-sref="users.list" translate>CASHBOX.USERS.MANAGEMENT_LINK</a>
+      <span translate>CASHBOX.USERS.INFO_2</span>
+    </p>
 
     <!-- no users with permission for this cashbox -->
     <p
       ng-if="!$ctrl.users.length && $ctrl.initialLoad"
       class="text-info">
       <i class="fa fa-info-circle"></i>
-      <span translate>No users have permission to use this cashbox</span>
+      <span translate>CASHBOX.USERS.NO_PERMISSIONS</span>
     </p>
 
     <div ng-if="$ctrl.users.length && $ctrl.initialLoad">
       <div>
-        <u>Users</u>
+        <u translate>CASHBOX.USERS.SUBTITLE</u>
       </div>
       <!-- ordering by !last_login first ensures those with last login information display at the top -->
       <!-- results are then ordered from most recent to oldest -->
       <!-- without !last_login those with no last_login would be shown first -->
       <ul ng-repeat="user in $ctrl.users | orderBy : ['!last_login', '-last_login', 'display_name']">
         <li>
-          <i
-            ng-if="user.deactivated"
-            uib-popover="This user is deactived."
-            popover-trigger="'mouseenter'"
-            popover-append-to-body="true"
-            class="fa fa-ban text-danger">
-          </i>
-          {{user.display_name}}
-          ({{user.username}})
-          <span
-            ng-if="user.last_login"
-            class="text-muted">
-            | Last seen
-            <span am-time-ago="user.last_login"></span>
-          </span>
+          <bh-user details="user"></bh-user>
         </li>
       </ul>
     </div>

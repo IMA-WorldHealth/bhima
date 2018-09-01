@@ -202,7 +202,7 @@ function users(req, res, next) {
   const cashboxId = req.params.id;
 
   const sql = `
-    SELECT user_id, username, display_name, deactivated, last_login
+    SELECT user_id as id, username, display_name, deactivated, last_login
     FROM cashbox_permission
     LEFT JOIN user ON cashbox_permission.user_id = user.id
     WHERE cashbox_id = ?
