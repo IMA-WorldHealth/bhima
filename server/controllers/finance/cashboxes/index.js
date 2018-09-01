@@ -204,7 +204,7 @@ function users(req, res, next) {
   const sql = `
     SELECT user_id, username, display_name, deactivated, last_login
     FROM cashbox_permission
-    LEFT JOIN user ON user.id = cashbox_permission.cashbox_id
+    LEFT JOIN user ON cashbox_permission.user_id = user.id
     WHERE cashbox_id = ?
   `;
 

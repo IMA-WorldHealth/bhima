@@ -65,6 +65,7 @@ function CashboxUpdateController($state, Modal, ModalService, Notify, Boxes, Cur
       .then(function (data) {
         // bind the cashbox to the view
         vm.box = data;
+
         $state.params.label = vm.box.label;
 
         // calculate the currency difference
