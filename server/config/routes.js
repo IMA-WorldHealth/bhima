@@ -299,7 +299,6 @@ exports.configure = function configure(app) {
   /* Depot distributions routes */
   app.get('/depots/:depotId/distributions', depots.listDistributions);
   app.get('/depots/:depotId/distributions/:uuid', depots.detailDistributions);
-  // app.post('/depots/:depotId/distributions', depots.createDistributions);
 
   /**
    * Depot inventories and lots routes
