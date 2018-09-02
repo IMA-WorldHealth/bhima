@@ -6,12 +6,15 @@ RolesController.$inject = [
   'NotifyService', 'bhConstants',
 ];
 
-function RolesController($uibModal, Roles, session, Modal, Notify, bhConstants) {
+function RolesController($uibModal, Roles, Session, Modal, Notify, bhConstants) {
   const vm = this;
 
   vm.canEditRoles = false;
 
-  vm.add = (role = { project_id : session.project.id }) => {
+  vm.createUpdateRoleModal = function createUpdateRoleModal(selectedRole) {
+    // if no selected role was passed this means we are creating a new role
+    // set the default role parameters to pass the modal (set project ID)
+    const role = selectedRole || { project_id : Session.project.id };
     $uibModal.open({
       templateUrl : 'modules/roles/create.html',
       controller : 'RolesAddController as RolesAddCtrl',
@@ -19,21 +22,28 @@ function RolesController($uibModal, Roles, session, Modal, Notify, bhConstants) 
     });
   };
 
-  vm.editActions = (role) => {
+  vm.updateRoleActionsModal = function updateRoleActionsModal(selectedRole) {
     $uibModal.open({
       templateUrl : 'modules/roles/modal/roleActions.html',
       controller : 'RoleActionsController as RoleActionsCtrl',
-      resolve : { data : () => role },
+      resolve : { data : () => selectedRole },
     });
   };
 
   // pages to affect to this role
-  vm.pages = function pages(role) {
+  vm.updateRolePermissionsModal = function updateRolePermissionsModal(selectedRole) {
     $uibModal.open({
       templateUrl : 'modules/roles/modal/rolesPermissions.html',
       controller : 'RolesPermissionsController as RolesPermissionsCtrl',
-      resolve : { data : () => role },
-    });
+      resolve : { data : () => selectedRole },
+    }).result
+      .then(() => {
+        // refresh the application session to ensure the latest versions of roles
+        // and permissions are applied, this will only run on submission
+        // @TODO(sfount) if the session information kept track of the current users
+        //               role, this method could only update if the current role is changed
+        Session.reload();
+      });
   };
 
   vm.remove = function remove(uuid) {
@@ -85,7 +95,7 @@ function RolesController($uibModal, Roles, session, Modal, Notify, bhConstants) 
     width : 100,
     displayName : '',
     headerCellFilter : 'translate',
-    cellTemplate : 'modules/roles/templates/action.tmpl.html',
+    cellTemplate : 'modules/roles/templates/action.cell.html',
   }];
 
   // ng-click="
