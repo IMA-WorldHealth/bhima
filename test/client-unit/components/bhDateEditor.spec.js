@@ -16,18 +16,35 @@ function bhDateEditorTests() {
   `;
 
   // make sure the modules are correctly loaded.
-  beforeEach(module('pascalprecht.translate', 'bhima.services', 'bhima.components', 'bhima.constants', 'templates'));
+  beforeEach(module(
+    'bhima.services',
+    'angularMoment',
+    'ngStorage',
+    'pascalprecht.translate',
+    'bhima.components',
+    'bhima.constants',
+    'templates',
+    'bhima.mocks'
+  ));
 
   let $scope;
   let $compile;
   let element;
+  let Session;
+  let Mocks;
+
   const futureDate = '20120-01-20';
   // utility fns
   const find = (elm, selector) => elm[0].querySelector(selector);
 
-  beforeEach(inject((_$rootScope_, _$compile_) => {
+  beforeEach(inject((_$rootScope_, _$compile_, _SessionService_, _MockDataService_) => {
+    Session = _SessionService_;
+    Mocks = _MockDataService_;
+
     $compile = _$compile_;
     $scope = _$rootScope_.$new();
+
+    Session.create(Mocks.user(), Mocks.enterprise(), Mocks.project());
 
     // spy on the onChange callback
     $scope.date = new Date();
