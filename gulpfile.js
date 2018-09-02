@@ -32,6 +32,9 @@ const less = require('gulp-less');
 const merge = require('gulp-merge-json');
 const typescript = require('gulp-typescript');
 
+const del = require('del');
+const revRewrite = require('gulp-rev-rewrite');
+
 // child process for custom scripts
 const exec = require('child_process').exec;
 
@@ -155,7 +158,7 @@ const paths = {
  * and writes them to the /bin/client/ folder.  There are tasks to do
  * the following:
  *   - [client-minify-css]  minify (via css nano) the css
- *   - [client-compile-js]  minify (via uglify) the client-side js code
+ *   - [client-compile-typescript]  minify (via uglify) the client-side js code
  *   - [client-mv-static]   moves the static files (html, img) to the client
  *                          folder
  * To run all of the above, run the gulp task `gulp build-client`.
@@ -163,18 +166,6 @@ const paths = {
  * Other options include
  *   - [client-watch]       watch the client/src/ for changes and run the build
 */
-
-
-// minify the client javascript code via uglify writes output to bhima.min.js
-gulp.task('client-compile-js', (cb) => {
-  pump([
-    gulp.src(paths.client.javascript),
-    gulpif(isProduction, uglify({ mangle : true })),
-    concat('js/bhima.min.js'),
-    iife(),
-    gulp.dest(CLIENT_FOLDER),
-  ], cb);
-});
 
 // compile client javascript with typescript
 gulp.task('client-compile-typescript', (cb) => {
@@ -277,6 +268,157 @@ gulp.task('watch-client', () => {
 // gather a list of files to rewrite revisions for
 const toHash = ['**/*.min.js', '**/*.css'].map(file => `${CLIENT_FOLDER}${file}`);
 
+gulp.task('build:sfount:js', ['clean:sfount:js'], () => {
+  const typescriptConfig = {
+    allowJs : true,
+    target : 'es5',
+    lib : ['es6', 'dom'],
+    module : 'none',
+    outFile : 'js/bhima.min.js',
+  };
+
+  return gulp.src(paths.client.javascript, { base : 'client/src' })
+    .pipe(concat('bhima.concat.js'))
+    .pipe(typescript(typescriptConfig))
+    .pipe(gulpif(isProduction, uglify({ mangle : true })))
+    .pipe(iife())
+    .pipe(rev())
+    .pipe(gulp.dest(`${CLIENT_FOLDER}`)) // write revisioned javascript to build folder
+    .pipe(rev.manifest(`${CLIENT_FOLDER}/rev-manifest.json`, { merge : true }))
+    .pipe(gulp.dest('')); // write manifest to build folder
+});
+
+gulp.task('clean:sfount:js', () => {
+  return del([`${CLIENT_FOLDER}/js`]);
+});
+
+gulp.task('build:sfount:vendor', () => {
+  return gulp.src(paths.client.vendorJs)
+    .pipe(gulpif(isProduction, uglify({ mangle : true })))
+    .pipe(concat('vendor.min.js'))
+    .pipe(rev())
+    .pipe(gulp.dest(CLIENT_FOLDER))
+    .pipe(rev.manifest(`${CLIENT_FOLDER}/rev-manifest.json`, { merge : true }))
+    .pipe(gulp.dest(''));
+});
+
+gulp.task('build:sfount:vendor-assets', () => {
+  return gulp.src(paths.client.vendorStyle)
+    .pipe(gulp.dest(`${CLIENT_FOLDER}/vendor/`));
+});
+
+gulp.task('build:sfount:css', ['clean:sfount:css'], () => {
+  return gulp.src(paths.client.css)
+    .pipe(cssnano({ zindex : false }))
+    .pipe(concat('bhima.min.css'))
+    .pipe(rev())
+    .pipe(gulp.dest(`${CLIENT_FOLDER}/css`))
+    .pipe(rev.manifest(`${CLIENT_FOLDER}/rev-manifest.json`, { merge }))
+    .pipe(gulp.dest(''));
+});
+
+gulp.task('clean:sfount:css', () => {
+  return del([`${CLIENT_FOLDER}/css`]);
+});
+
+
+gulp.task('build:sfount:bootstrap', () => {
+  const lessConfig = {
+    paths : ['./client/vendor/bootstrap/less']
+  };
+
+  return gulp.src(BHIMA_LESS)
+    .pipe(gulp.dest(lessConfig.paths[0])) // move less file into actual bootrap folder, this feels wrong
+    .pipe(less(lessConfig))
+    .pipe(cssnano({ zindex : false }))
+    .pipe(gulp.dest(CLIENT_FOLDER));
+});
+
+const supportedLanguages = {
+  en : {
+    key : 'en',
+    path : 'client/src/i18n/en/*.json',
+  },
+  fr : {
+    key : 'fr',
+    path : 'client/src/i18n/fr/*.json',
+  },
+};
+
+gulp.task('build:sfount:i18n', ['build:sfount:i18n-en', 'build:sfount:i18n-fr']);
+
+gulp.task('build:sfount:i18n-en', () => {
+  // cleanup previous file if exists
+  return i18n(supportedLanguages.en);
+});
+
+gulp.task('build:sfount:i18n-fr', () => {
+  return i18n(supportedLanguages.fr);
+});
+
+function templateHTML() {
+  const manifest = gulp.src(`${CLIENT_FOLDER}/rev-manifest.json`);
+
+  return gulp.src('client/src/index.html')
+    .pipe(revRewrite({ manifest }))
+    .pipe(gulp.dest(CLIENT_FOLDER));
+};
+
+gulp.task('build:sfount:template', () => {
+  return templateHTML();
+});
+
+
+function i18n(details) {
+  // clean up previous file
+  return del([`${CLIENT_FOLDER}/i18n/${details.key}.json`])
+    .then(() => {
+      // generate new file
+      return gulp.src(details.path)
+        .pipe(merge({ fileName : `${details.key}.json` }))
+        .pipe(gulp.dest(`${CLIENT_FOLDER}/i18n/`));
+    });
+}
+
+gulp.task('build:sfount:static', () => {
+  const staticFiles = [
+    'client/src/**/*',
+    '!client/src/less/**/*',
+    '!client/src/js/app.js',
+    '!client/src/index.html',
+    '!client/src/js/**/*.js',
+    '!client/src/modules/**/*.js',
+    '!client/src/**/*.css',
+    '!client/src/i18n/en/*',
+    '!client/src/i18n/fr/*',
+    '!client/src/i18n/fr/',
+    '!client/src/i18n/en/',
+  ];
+
+  return gulp.src(staticFiles)
+    .pipe(gulp.dest(CLIENT_FOLDER));
+});
+
+gulp.task('watch', () => {
+  gulp.watch(paths.client.javascript, ['watch:sfount:js']);
+  gulp.watch(paths.client.css, ['watch:sfount:css']);
+
+  gulp.watch(supportedLanguages.en.path, ['build:sfount:i18n-en']);
+  gulp.watch(supportedLanguages.fr.path, ['build:sfount:i18n-fr']);
+});
+
+gulp.task('watch:sfount:js', ['build:sfount:js'], () => {
+  return templateHTML();
+});
+
+gulp.task('watch:sfount:css', ['build:sfount:css'], () => {
+  return templateHTML();
+});
+
+gulp.task('build:sfount', ['build:sfount:js', 'build:sfount:vendor', 'build:sfount:vendor-assets', 'build:sfount:css', 'build:sfount:bootstrap', 'build:sfount:i18n', 'build:sfount:static'], () => {
+  return templateHTML();
+});
+
 gulp.task('client-compute-hashes', ['client-compile-typescript', 'client-compile-vendor', 'client-compile-css'], () =>
   gulp.src(toHash)
     .pipe(rev())
@@ -284,11 +426,14 @@ gulp.task('client-compute-hashes', ['client-compile-typescript', 'client-compile
     .pipe(rev.manifest(MANIFEST_PATH))
     .pipe(gulp.dest(CLIENT_FOLDER)));
 
-gulp.task('client-compile-assets', ['client-mv-static', 'client-compute-hashes'], () =>
+gulp.task('client-compile-assets', ['client-mv-static', 'client-compute-hashes'], () => {
+
+  console.log('final callback?');
   gulp.src(paths.client.index)
     .pipe(template({ isProduction, isDevelopment }))
     .pipe(revReplace({ manifest : gulp.src(`${CLIENT_FOLDER}${MANIFEST_PATH}`) }))
-    .pipe(gulp.dest(CLIENT_FOLDER)));
+    .pipe(gulp.dest(CLIENT_FOLDER))
+});
 
 // TODO - streamline piping so that all the assets - CSS, javascript
 // are built with rev() and then written with rev.manifest({ merge : true });
@@ -307,8 +452,7 @@ gulp.task('build-client', () => {
  * writes them to the /bin/server/ folder.  It also copies the package.json
  * folder for convenience.
  *
- * Building will run the following tasks:
- *   - [server-mv-files]   move the server files into the /bin/server folder
+ * Building will run the following tasks: - [server-mv-files]   move the server files into the /bin/server folder
  *
  * To run all of the above, run the gulp task `gulp build-server`.
 */

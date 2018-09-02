@@ -13,7 +13,7 @@ const bhima = angular.module('bhima', [
 ]);
 
 function bhimaConfig($urlMatcherFactoryProvider) {
-  // allow trailing slashes in routes
+  // allow trailing slashes in routess
   $urlMatcherFactoryProvider.strictMode(false);
 }
 
@@ -40,6 +40,8 @@ function startupConfig(
   $rootScope, $state, $uibModalStack, SessionService, amMoment, Notify,
   $location, InstallService
 ) {
+
+  console.log('BHIMA HAS STARTED');
   const installStateRegexp = /#!\/install$/;
   const loginStateRegexp = /#!\/login$/;
 
