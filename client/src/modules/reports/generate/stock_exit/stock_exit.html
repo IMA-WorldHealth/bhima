@@ -33,10 +33,11 @@
           </bh-depot-select>
 
           <!-- date interval -->
-          <bh-date-interval 
-            date-from="ReportConfigCtrl.dateFrom" 
+          <bh-date-interval
+            date-from="ReportConfigCtrl.dateFrom"
             date-to="ReportConfigCtrl.dateTo"
             validation-trigger="ConfigForm.$submitted"
+            limit-min-fiscal
             required="true">
           </bh-date-interval>
 
@@ -48,21 +49,21 @@
                 <span translate>REPORT.STOCK.INCLUDE_PATIENT_EXIT</span>
               </label>
             </div>
-  
+
             <div class="checkbox">
               <label>
                 <input type="checkbox" ng-true-value="1" ng-false-value="0" ng-change="ReportConfigCtrl.onExitTypeChange()" ng-model="ReportConfigCtrl.includeServiceExit">
                 <span translate>REPORT.STOCK.INCLUDE_SERVICE_EXIT</span>
               </label>
             </div>
-  
+
             <div class="checkbox">
               <label>
                 <input type="checkbox" ng-true-value="1" ng-false-value="0" ng-change="ReportConfigCtrl.onExitTypeChange()" ng-model="ReportConfigCtrl.includeDepotExit">
                 <span translate>REPORT.STOCK.INCLUDE_DEPOT_EXIT</span>
               </label>
             </div>
-  
+
             <div class="checkbox">
               <label>
                 <input type="checkbox" ng-true-value="1" ng-false-value="0" ng-change="ReportConfigCtrl.onExitTypeChange()" ng-model="ReportConfigCtrl.includeLossExit">
@@ -80,7 +81,6 @@
               <span translate>REPORT.STOCK.SHOW_DETAILS</span>
             </label>
           </div>
-          
 
           <!-- preview -->
           <bh-loading-button loading-state="ConfigForm.$loading">

@@ -25,7 +25,7 @@
             <!-- report format seletion -->
             <div class="form-group"
                 ng-class="{ 'has-error' : ConfigForm.$submitted && ConfigForm.reportFormat.$invalid }">
-                <label 
+                <label
                   ng-repeat="reportFormat in ReportConfigCtrl.reportFormats"
                   class="radio-inline">
                   <input
@@ -36,12 +36,12 @@
                     data-report-format-option="{{ reportFormat.id }}"
                     required>
                   <span translate>{{reportFormat.label}}</span>
-                </label>               
+                </label>
                 <div class="help-block" ng-messages="ConfigForm.reportFormat.$error" ng-show="ConfigForm.$submitted">
                     <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
                 </div>
             </div>
-            
+
             <!-- report type selection  -->
             <div class="form-group"
                 ng-class="{ 'has-error' : ConfigForm.$submitted && ConfigForm.type.$invalid }">
@@ -53,7 +53,7 @@
                     name="type"
                     ng-model="ReportConfigCtrl.reportDetails.type"
                     ng-options="type.id as (type.label | translate) for type in ReportConfigCtrl.reportTypes"
-                    ng-disabled="ReportConfigCtrl.reportDetails.format === 1"                    
+                    ng-disabled="ReportConfigCtrl.reportDetails.format === 1"
                     required>
                     <option value="" disabled>{{ "FORM.SELECT.REPORT_TYPE" | translate }}<option>
                 </select>
@@ -74,6 +74,7 @@
               date-from="ReportConfigCtrl.reportDetails.dateFrom"
               date-to="ReportConfigCtrl.reportDetails.dateTo"
               required="true"
+              limit-min-fiscal
               validation-trigger="ConfigForm.$submitted">
             </bh-date-interval>
 
