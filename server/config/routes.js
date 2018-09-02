@@ -520,6 +520,7 @@ exports.configure = function configure(app) {
   app.get('/enterprises/:id', enterprises.detail);
   app.post('/enterprises', enterprises.create);
   app.put('/enterprises/:id', enterprises.update);
+  app.get('/enterprises/:id/fiscal_start', fiscal.getEnterpriseFiscalStart);
 
   // employees
   app.get('/employees/search', employees.search);

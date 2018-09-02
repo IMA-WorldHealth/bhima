@@ -47,6 +47,7 @@ exports.getPeriodsFromDateRange = getPeriodsFromDateRange;
 exports.getAccountBalancesByTypeId = getAccountBalancesByTypeId;
 exports.getOpeningBalance = getOpeningBalance;
 exports.getFiscalYearByPeriodId = getFiscalYearByPeriodId;
+exports.getEnterpriseFiscalStart = getEnterpriseFiscalStart;
 
 /**
  * @method lookupFiscalYear
@@ -103,7 +104,7 @@ function list(req, res, next) {
   `;
 
   const periodsSql = `
-    SELECT p.id, p.start_date, p.end_date, p.locked, p.number , 
+    SELECT p.id, p.start_date, p.end_date, p.locked, p.number ,
     CONCAT('TABLE.COLUMNS.DATE_MONTH.',
     UPPER(DATE_FORMAT(p.start_date, "%M"))) AS translate_key,
     CONCAT('balance', number) AS 'balance'
@@ -316,6 +317,16 @@ function getOpeningBalance(req, res, next) {
     })
     .catch(next)
     .done();
+}
+
+async function getEnterpriseFiscalStart(req, res, next) {
+  try {
+    const { id } = req.params;
+    const startDate = await getFirstDateOfFirstFiscalYear(id);
+    res.status(200).json(startDate);
+  } catch (error) {
+    next(error);
+  }
 }
 
 /**
