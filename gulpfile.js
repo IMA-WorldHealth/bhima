@@ -1,22 +1,3 @@
-/**
- * Build Script
- * @TODO
- * Should we make these requires dependent on what path is being taken, so that
- * not all are required to build bhima?  In this format, there is no difference
- * between the install requirements of a developer and a production environment.
- *
- * @TODO
- * Make sure all CSS from vendors are gathered and compiled into a vendor minified
- * CSS file.
- */
-
-// Ubuntu on Windows workaround - network interface is invalid so return empty
-try {
-  require('os').networkInterfaces();
-} catch (e) {
-  require('os').networkInterfaces = () => ({});
-}
-
 const gulp = require('gulp');
 const gulpif = require('gulp-if');
 const concat = require('gulp-concat');
@@ -24,33 +5,29 @@ const uglify = require('gulp-uglify');
 const cssnano = require('gulp-cssnano');
 const template = require('gulp-template');
 const rev = require('gulp-rev');
-const revReplace = require('gulp-rev-replace');
 const iife = require('gulp-iife');
-const pump = require('pump');
-const rimraf = require('rimraf');
 const less = require('gulp-less');
-const merge = require('gulp-merge-json');
+const mergeJson = require('gulp-merge-json');
 const typescript = require('gulp-typescript');
-
-const del = require('del');
+const merge = require('merge-stream');
 const revRewrite = require('gulp-rev-rewrite');
+const del = require('del');
 
 // child process for custom scripts
-const exec = require('child_process').exec;
+const { exec } = require('child_process');
 
 // toggle client javascript minification
 const isProduction = (process.env.NODE_ENV === 'production');
 const isDevelopment = (process.env.NODE_ENV !== 'production');
 
-// the output folder for built server files
+// gulp build output directories
 const SERVER_FOLDER = './bin/server/';
-
-// the output folder for built client files
 const CLIENT_FOLDER = './bin/client/';
 
-// globals
-const MANIFEST_PATH = 'rev-manifest.json';
-const BHIMA_LESS = 'client/src/less/bhima-bootstrap.less';
+const supportedLanguages = {
+  en : { key : 'en', path : 'client/src/i18n/en/' },
+  fr : { key : 'fr', path : 'client/src/i18n/fr/' },
+};
 
 // resource paths
 const paths = {
@@ -61,86 +38,61 @@ const paths = {
       'client/src/**/*.js',
       '!client/src/i18n/**/*.js',
     ],
-    css         : ['client/src/css/*.css'],
-    vendorStyle : [
-      'client/vendor/**/*.{css,ttf,woff,woff2,eot,svg}',
-      // this is very cheeky
-      'client/vendor/moment/moment.js',
-      'client/vendor/JsBarcode/dist/JsBarcode.all.min.js',
-
-      '!client/vendor/**/src{,/**}',
-      '!client/vendor/**/js{,/**}',
-    ],
+    css : ['client/src/css/*.css'],
     vendorJs : [
-      // jquery
-      'client/vendor/jquery/dist/jquery.min.js',
+      'client/vendor/jquery/dist/jquery.min.js', // jquery
       'client/vendor/cropper/dist/cropper.js',
 
       // Angular
       'client/vendor/angular/angular.min.js',
       'client/vendor/angular-messages/angular-messages.min.js',
-
-      // Angular Sanitize
       'client/vendor/angular-sanitize/angular-sanitize.min.js',
-
-      // Angular UI
       'client/vendor/angular-ui-router/release/angular-ui-router.min.js',
-
-      // @TODO - rm this
-      'client/vendor/angular-ui-router/release/stateEvents.min.js',
-
+      'client/vendor/angular-ui-router/release/stateEvents.min.js', // @TODO(rm this?)
       'client/vendor/angular-bootstrap/ui-bootstrap-tpls.min.js',
       'client/vendor/angular-ui-grid/ui-grid.min.js',
-
-      // Angular Touch
       'client/vendor/angular-touch/angular-touch.min.js',
-
-      // Angular UI Select
       'client/vendor/angular-ui-select/dist/select.min.js',
-
-      // Angular Growl
       'client/vendor/angular-growl-notifications/dist/angular-growl-notifications.min.js',
       'client/vendor/angular-animate/angular-animate.min.js',
+      'client/vendor/angular-translate/angular-translate.min.js',
+      'client/vendor/angular-translate-loader-static-files/angular-translate-loader-static-files.min.js',
+      'client/vendor/angular-translate-loader-url/angular-translate-loader-url.min.js',
+      'client/vendor/angular-dynamic-locale/dist/tmhDynamicLocale.js',
+      'client/vendor/ng-file-upload/ng-file-upload.min.js',
+      'client/vendor/ngstorage/ngStorage.min.js', // ng-storage
+      'client/vendor/webcam-directive/dist/webcam.min.js', // webcam directive
 
       // MomentJS
       'client/vendor/moment/moment.js',
       'client/vendor/angular-moment/angular-moment.min.js',
       'client/vendor/moment/locale/fr.js',
-
-      // Angular Translate
-      'client/vendor/angular-translate/angular-translate.min.js',
-      'client/vendor/angular-translate-loader-static-files/angular-translate-loader-static-files.min.js',
-      'client/vendor/angular-translate-loader-url/angular-translate-loader-url.min.js',
-
-      // Angular Locale
-      'client/vendor/angular-dynamic-locale/dist/tmhDynamicLocale.js',
-
-      // Angular File Upload
-      'client/vendor/ng-file-upload/ng-file-upload.min.js',
-
-      // ngStorage
-      'client/vendor/ngstorage/ngStorage.min.js',
-
-      // webcam-directive
-      'client/vendor/webcam-directive/dist/webcam.min.js',
     ],
-    translate_en : ['client/src/i18n/en/*.json'],
-
-    translate_fr : ['client/src/i18n/fr/*.json'],
 
     // these must be globs ("**" syntax) to retain their folder structures
-    static : [
-      'client/src/js/app.js',
-      'client/src/**/*',
-      '!client/src/index.html',
-      '!client/src/js/**/*.js',
-      '!client/src/modules/**/*.js',
-      '!client/src/**/*.css',
-      '!client/src/i18n/en/*',
-      '!client/src/i18n/fr/*',
-      '!client/src/i18n/fr/',
-      '!client/src/i18n/en/',
-    ],
+    static : {
+      bhima : [
+        'client/src/**/*',
+        'client/src/index.html',
+        '!client/src/js/**/*.js',
+        '!client/src/modules/**/*.js',
+        '!client/src/**/*.css',
+        '!client/src/i18n/en/*',
+        '!client/src/i18n/fr/*',
+        '!client/src/i18n/fr/',
+        '!client/src/i18n/en/',
+      ],
+      vendor : [
+        'client/vendor/**/*.{css,ttf,woff,woff2,eot,svg}',
+        '!client/vendor/**/src{,/**}',
+        '!client/vendor/**/js{,/**}',
+
+        // @TODO(sfount) find why these are hacked in here and improve the process
+        'client/vendor/moment/moment.js',
+        'client/vendor/JsBarcode/dist/JsBarcode.all.min.js',
+      ],
+    },
+    less : 'client/src/less/bhima-bootstrap.less',
     index : 'client/src/index.html',
   },
   server : {
@@ -149,135 +101,24 @@ const paths = {
   },
 };
 
-/* -------------------------------------------------------------------------- */
+// external gulp tasks to build the client, server and watch for client changes
+gulp.task('default', ['build']);
+gulp.task('build', ['client', 'server']);
+gulp.task('client', ['js', 'css', 'less', 'i18n', 'vendor', 'static'], templateHTML);
+gulp.task('watch', ['watch-client']);
 
-/*
- * Client Builds
- *
- * The client build process takes files from the client/src/ folder
- * and writes them to the /bin/client/ folder.  There are tasks to do
- * the following:
- *   - [client-minify-css]  minify (via css nano) the css
- *   - [client-compile-typescript]  minify (via uglify) the client-side js code
- *   - [client-mv-static]   moves the static files (html, img) to the client
- *                          folder
- * To run all of the above, run the gulp task `gulp build-client`.
- *
- * Other options include
- *   - [client-watch]       watch the client/src/ for changes and run the build
-*/
-
-// compile client javascript with typescript
-gulp.task('client-compile-typescript', (cb) => {
-  pump([
-    gulp.src(paths.client.javascript),
-    concat('js/bhima.js'),
-    typescript({
-      allowJs : true,
-      target : 'es5',
-      lib : ['es6', 'dom'],
-      module : 'none',
-      outFile : 'js/bhima.min.js',
-    }),
-    gulpif(isProduction, uglify({ mangle : true })),
-    iife(),
-    gulp.dest(CLIENT_FOLDER),
-  ], cb);
-});
-
-// minify the vendor JS code and compact into a vendor.min.js file.
-gulp.task('client-compile-vendor', () =>
-  gulp.src(paths.client.vendorJs)
-    .pipe(gulpif(isProduction, uglify({ mangle : true })))
-    .pipe(concat('js/vendor.min.js'))
-    .pipe(gulp.dest(CLIENT_FOLDER)));
-
-
-// minify the client css styles via cssnano
-// writes output to style.min.css
-gulp.task('client-compile-css', () =>
-  gulp.src(paths.client.css)
-    .pipe(cssnano({ zindex : false }))
-    .pipe(concat('css/style.min.css'))
-    .pipe(gulp.dest(CLIENT_FOLDER)));
-
-// move vendor files over to the /vendor directory
-// TODO - separate movement of fonts from the movement of styles
-gulp.task('client-mv-vendor-style', () =>
-  gulp.src(paths.client.vendorStyle)
-    .pipe(gulp.dest(`${CLIENT_FOLDER}vendor/`)));
-
-gulp.task('client-vendor-build-bootstrap', () =>
-  /**
-   * For now this just moves the latest version of bootstrap into the repository
-   * This build process should compile the latest bhima less definition with the
-   * latest vendor files
-   * - move less file to bootstrap vendor folder
-   * - compile with less
-   * - copy CSS into static file folder
-   */
-  gulp.src(BHIMA_LESS)
-    .pipe(gulp.dest('client/vendor/bootstrap/less/'))
-    .pipe(less({
-      paths : ['./client/vendor/bootstrap/less/'],
-    }))
-    .pipe(gulp.dest(`${CLIENT_FOLDER}css`)));
-
-// move static files to the public directory
-gulp.task('client-mv-static', ['lint-i18n'], () =>
-  gulp.src(paths.client.static)
-    .pipe(gulp.dest(CLIENT_FOLDER)));
-
-// custom task: compare the English and French for missing tokens
-gulp.task('lint-i18n', (cb) => {
-  const progPath = './utilities/translation/tfcomp.js';
-  const enPath = 'client/src/i18n/en/';
-  const frPath = 'client/src/i18n/fr/';
-
-  exec(`node ${progPath} ${enPath} ${frPath}`, (err, _, warning) => {
-    if (err) { throw err; }
-    if (warning) { console.error(warning); }
-    cb();
-  });
-});
-
-// compile i18n files english
-gulp.task('client-compile-i18n-en', () =>
-  gulp.src(paths.client.translate_en)
-    .pipe(merge({ fileName : 'en.json' }))
-    .pipe(gulp.dest(CLIENT_FOLDER + 'i18n/')));
-
-// compile i18n files french
-gulp.task('client-compile-i18n-fr', () =>
-  gulp.src(paths.client.translate_fr)
-    .pipe(merge({ fileName : 'fr.json' }))
-    .pipe(gulp.dest(CLIENT_FOLDER + 'i18n/')));
-
-// watches for any change and builds the appropriate route
-gulp.task('watch-client', () => {
-  gulp.watch(paths.client.css, ['client-compile-css']);
-
-  // client-compile-assets calls client-compute-hashes which in turn runs client-compile-js
-  gulp.watch(paths.client.javascript, ['client-compile-assets']);
-  gulp.watch(paths.client.static, ['client-mv-static']);
-  gulp.watch(paths.client.vendor, ['client-mv-vendor-style', 'client-compile-vendor']);
-  gulp.watch(paths.client.translate_fr, ['client-compile-i18n-fr']);
-  gulp.watch(paths.client.translate_en, ['client-compile-i18n-en']);
-});
-
-// gather a list of files to rewrite revisions for
-const toHash = ['**/*.min.js', '**/*.css'].map(file => `${CLIENT_FOLDER}${file}`);
-
-gulp.task('build:sfount:js', ['clean:sfount:js'], () => {
+// collect all BHIMA application code and return a single versioned JS file
+// ensures previous versioned file is removed before running
+gulp.task('js', ['clean-js'], () => {
   const typescriptConfig = {
     allowJs : true,
     target : 'es5',
     lib : ['es6', 'dom'],
     module : 'none',
-    outFile : 'js/bhima.min.js',
+    outFile : 'js/dist/bhima.min.js',
   };
 
-  return gulp.src(paths.client.javascript, { base : 'client/src' })
+  return gulp.src(paths.client.javascript)
     .pipe(concat('bhima.concat.js'))
     .pipe(typescript(typescriptConfig))
     .pipe(gulpif(isProduction, uglify({ mangle : true })))
@@ -288,11 +129,38 @@ gulp.task('build:sfount:js', ['clean:sfount:js'], () => {
     .pipe(gulp.dest('')); // write manifest to build folder
 });
 
-gulp.task('clean:sfount:js', () => {
-  return del([`${CLIENT_FOLDER}/js`]);
+// collect all BHIMA application style sheets and return a single versioned CSS file
+gulp.task('css', ['clean-css'], () => {
+  return gulp.src(paths.client.css)
+    .pipe(cssnano({ zindex : false }))
+    .pipe(concat('bhima.min.css'))
+    .pipe(rev())
+    .pipe(gulp.dest(`${CLIENT_FOLDER}/css`))
+    .pipe(rev.manifest(`${CLIENT_FOLDER}/rev-manifest.json`, { merge : true }))
+    .pipe(gulp.dest(''));
 });
 
-gulp.task('build:sfount:vendor', () => {
+// copy custom BHIMA bootstrap files and build build bootsrap LESS, returns
+// single CSS file
+gulp.task('less', () => {
+  const lessConfig = { paths : ['./client/vendor/bootstrap/less'] };
+
+  return gulp.src(paths.client.less)
+    .pipe(gulp.dest(lessConfig.paths[0])) // move less file into actual bootstrap folder, this feels wrong
+    .pipe(less(lessConfig))
+    .pipe(cssnano({ zindex : false }))
+    .pipe(gulp.dest(CLIENT_FOLDER));
+});
+
+gulp.task('i18n', ['lint-i18n', 'clean-i18n'], () => {
+  const en = collectTranslationFiles(supportedLanguages.en);
+  const fr = collectTranslationFiles(supportedLanguages.fr);
+
+  return merge(en, fr);
+});
+
+// collect all external vendor code and returns a single versioned JS file
+gulp.task('vendor', () => {
   return gulp.src(paths.client.vendorJs)
     .pipe(gulpif(isProduction, uglify({ mangle : true })))
     .pipe(concat('vendor.min.js'))
@@ -302,185 +170,80 @@ gulp.task('build:sfount:vendor', () => {
     .pipe(gulp.dest(''));
 });
 
-gulp.task('build:sfount:vendor-assets', () => {
-  return gulp.src(paths.client.vendorStyle)
-    .pipe(gulp.dest(`${CLIENT_FOLDER}/vendor/`));
+// collects all static files from the client (BHIMA src and vendor files)
+// and moves them to the build folder, respecting folder structure
+gulp.task('static', () => {
+  const bhima = gulp.src(paths.client.static.bhima)
+    .pipe(gulp.dest(CLIENT_FOLDER));
+  const vendor = gulp.src(paths.client.static.vendor)
+    .pipe(gulp.dest(`${CLIENT_FOLDER}/vendor`));
+
+  return merge(bhima, vendor);
 });
 
-gulp.task('build:sfount:css', ['clean:sfount:css'], () => {
-  return gulp.src(paths.client.css)
-    .pipe(cssnano({ zindex : false }))
-    .pipe(concat('bhima.min.css'))
-    .pipe(rev())
-    .pipe(gulp.dest(`${CLIENT_FOLDER}/css`))
-    .pipe(rev.manifest(`${CLIENT_FOLDER}/rev-manifest.json`, { merge }))
-    .pipe(gulp.dest(''));
+gulp.task('watch-client', () => {
+  gulp.watch(paths.client.index, ['watch-index']);
+  gulp.watch(paths.client.javascript, ['watch-js']);
+  gulp.watch(paths.client.css, ['watch-css']);
+  gulp.watch([`${supportedLanguages.en.path}/**/*.json`, `${supportedLanguages.fr.path}/**/*.json`], ['i18n']);
 });
 
-gulp.task('clean:sfount:css', () => {
+// alias tasks to run client build steps and ensures template is linked following
+gulp.task('watch-index', ['static'], templateHTML);
+gulp.task('watch-js', ['js'], templateHTML);
+gulp.task('watch-css', ['css'], templateHTML);
+
+// server build - copies all files from server/ to bin/server including package.json
+gulp.task('server', ['clean-server'], () => {
+  return gulp.src(paths.server.files)
+    .pipe(gulp.dest(SERVER_FOLDER));
+});
+
+// Cleaner helpers
+// These methods clean up folders that are affected by changes in the repository
+gulp.task('clean-js', () => {
+  return del([`${CLIENT_FOLDER}/js/dist`]);
+});
+
+gulp.task('clean-css', () => {
   return del([`${CLIENT_FOLDER}/css`]);
 });
 
-
-gulp.task('build:sfount:bootstrap', () => {
-  const lessConfig = {
-    paths : ['./client/vendor/bootstrap/less']
-  };
-
-  return gulp.src(BHIMA_LESS)
-    .pipe(gulp.dest(lessConfig.paths[0])) // move less file into actual bootrap folder, this feels wrong
-    .pipe(less(lessConfig))
-    .pipe(cssnano({ zindex : false }))
-    .pipe(gulp.dest(CLIENT_FOLDER));
+gulp.task('clean-i18n', () => {
+  return del([`${CLIENT_FOLDER}/i18n`]);
 });
 
-const supportedLanguages = {
-  en : {
-    key : 'en',
-    path : 'client/src/i18n/en/*.json',
-  },
-  fr : {
-    key : 'fr',
-    path : 'client/src/i18n/fr/*.json',
-  },
-};
-
-gulp.task('build:sfount:i18n', ['build:sfount:i18n-en', 'build:sfount:i18n-fr']);
-
-gulp.task('build:sfount:i18n-en', () => {
-  // cleanup previous file if exists
-  return i18n(supportedLanguages.en);
+gulp.task('clean-server', () => {
+  return del([SERVER_FOLDER]);
 });
 
-gulp.task('build:sfount:i18n-fr', () => {
-  return i18n(supportedLanguages.fr);
-});
-
+// rewrite source HTML files with build versioned files and assets
+// usually run as the final step linking the build together
 function templateHTML() {
   const manifest = gulp.src(`${CLIENT_FOLDER}/rev-manifest.json`);
 
   return gulp.src('client/src/index.html')
+    .pipe(template({ isProduction, isDevelopment }))
     .pipe(revRewrite({ manifest }))
     .pipe(gulp.dest(CLIENT_FOLDER));
-};
-
-gulp.task('build:sfount:template', () => {
-  return templateHTML();
-});
-
-
-function i18n(details) {
-  // clean up previous file
-  return del([`${CLIENT_FOLDER}/i18n/${details.key}.json`])
-    .then(() => {
-      // generate new file
-      return gulp.src(details.path)
-        .pipe(merge({ fileName : `${details.key}.json` }))
-        .pipe(gulp.dest(`${CLIENT_FOLDER}/i18n/`));
-    });
 }
 
-gulp.task('build:sfount:static', () => {
-  const staticFiles = [
-    'client/src/**/*',
-    '!client/src/less/**/*',
-    '!client/src/js/app.js',
-    '!client/src/index.html',
-    '!client/src/js/**/*.js',
-    '!client/src/modules/**/*.js',
-    '!client/src/**/*.css',
-    '!client/src/i18n/en/*',
-    '!client/src/i18n/fr/*',
-    '!client/src/i18n/fr/',
-    '!client/src/i18n/en/',
-  ];
+function collectTranslationFiles(details) {
+  return gulp.src(`${details.path}/**/*.json`)
+    .pipe(mergeJson({ fileName : `${details.key}.json` }))
+    .pipe(gulp.dest(`${CLIENT_FOLDER}/i18n/`));
+}
 
-  return gulp.src(staticFiles)
-    .pipe(gulp.dest(CLIENT_FOLDER));
+// Custom i18n linting task, promise wrapper to work with gulp ecosystem
+gulp.task('lint-i18n', () => {
+  return new Promise((resolve, reject) => {
+    const compareUtilityPath = './utilities/translation/tfcomp.js';
+    const utilityCommand = `node ${compareUtilityPath} ${supportedLanguages.en.path} ${supportedLanguages.fr.path}`;
+
+    exec(utilityCommand, (error, output, warning) => {
+      if (error) { reject(error); return; }
+      if (warning) { console.error(warning); }
+      resolve(output);
+    });
+  });
 });
-
-gulp.task('watch', () => {
-  gulp.watch(paths.client.javascript, ['watch:sfount:js']);
-  gulp.watch(paths.client.css, ['watch:sfount:css']);
-
-  gulp.watch(supportedLanguages.en.path, ['build:sfount:i18n-en']);
-  gulp.watch(supportedLanguages.fr.path, ['build:sfount:i18n-fr']);
-});
-
-gulp.task('watch:sfount:js', ['build:sfount:js'], () => {
-  return templateHTML();
-});
-
-gulp.task('watch:sfount:css', ['build:sfount:css'], () => {
-  return templateHTML();
-});
-
-gulp.task('build:sfount', ['build:sfount:js', 'build:sfount:vendor', 'build:sfount:vendor-assets', 'build:sfount:css', 'build:sfount:bootstrap', 'build:sfount:i18n', 'build:sfount:static'], () => {
-  return templateHTML();
-});
-
-gulp.task('client-compute-hashes', ['client-compile-typescript', 'client-compile-vendor', 'client-compile-css'], () =>
-  gulp.src(toHash)
-    .pipe(rev())
-    .pipe(gulp.dest(CLIENT_FOLDER))
-    .pipe(rev.manifest(MANIFEST_PATH))
-    .pipe(gulp.dest(CLIENT_FOLDER)));
-
-gulp.task('client-compile-assets', ['client-mv-static', 'client-compute-hashes'], () => {
-
-  console.log('final callback?');
-  gulp.src(paths.client.index)
-    .pipe(template({ isProduction, isDevelopment }))
-    .pipe(revReplace({ manifest : gulp.src(`${CLIENT_FOLDER}${MANIFEST_PATH}`) }))
-    .pipe(gulp.dest(CLIENT_FOLDER))
-});
-
-// TODO - streamline piping so that all the assets - CSS, javascript
-// are built with rev() and then written with rev.manifest({ merge : true });
-// Then the last thing will be to rewrite index.html, replacing the values
-// with gulp-replace and then replacing the manifest itself.
-gulp.task('build-client', () => {
-  gulp.start('client-compile-assets', 'client-vendor-build-bootstrap', 'client-mv-vendor-style', 'client-compile-i18n-en', 'client-compile-i18n-fr');
-});
-
-/* -------------------------------------------------------------------------- */
-
-/*
- * Server Builds
- *
- * The server build process takes files from the server/ folder and
- * writes them to the /bin/server/ folder.  It also copies the package.json
- * folder for convenience.
- *
- * Building will run the following tasks: - [server-mv-files]   move the server files into the /bin/server folder
- *
- * To run all of the above, run the gulp task `gulp build-server`.
-*/
-
-// move the server files into /bin/server
-gulp.task('server-mv-files', () =>
-  gulp.src(paths.server.files)
-    .pipe(gulp.dest(SERVER_FOLDER)));
-
-// build the server
-gulp.task('build-server', () =>
-  gulp.start('server-mv-files'));
-
-/* -------------------------------------------------------------------------- */
-
-/** shared utilities */
-
-gulp.task('clean', (cb) => {
-  if (isProduction) { return cb(); }
-  return rimraf('./bin/', cb);
-});
-
-gulp.task('build', ['clean'], () => {
-  gulp.start('build-client', 'build-server');
-});
-
-// run the build-client and build-server tasks when no arguments
-gulp.task('default', ['clean'], () => {
-  gulp.start('build-client', 'build-server');
-});
-
