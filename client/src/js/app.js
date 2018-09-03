@@ -105,8 +105,8 @@ function startupConfig(
 
     // check if we are going to an error state;
     const isErrorState = (
-      next.name.indexOf('404') !== -1 ||
-      next.name.indexOf('403') !== -1
+      next.name.indexOf('404') !== -1
+      || next.name.indexOf('403') !== -1
     );
 
     const isSettingsState = next.name.indexOf('settings') !== -1;
@@ -136,8 +136,42 @@ function startupConfig(
       $state.go('403');
     }
 
+    /**
+     * @method checkUserAuthorization
+     *
+     * @description
+     * Simple method to check the current path the user is accessing against the
+     * users known permissions.
+     *
+     * Checks one known permission (data) against the path the user is accessing (path).
+     *
+     * @param {Object} data - a route object containing a known route path as well as
+     *                        information on if this user is authorised, route
+     *                        objects passed in that match the target path will be aproved
+     */
     function checkUserAuthorization(data) {
-      return path.indexOf(data.path) === 0 && data.authorized;
+      // check to see if the route permission object (data) passed in begins with the path being accessed
+      // only do more expensive check if the path is a valid partial match
+      if (path.indexOf(data.path) === 0) {
+        // split the current target path and the role permission object path into sections
+        const rolePermissionPathSections = data.path.split('/');
+        const targetPathSections = path.split('/');
+
+        // ensure that EVERY section on the role permission path matches the target path
+        // this allows for additional routing beyond exact matching however the base of the
+        // path must EXACTLY match the permission object
+        const targetPathMatches = rolePermissionPathSections.every((permissionPathSection, index) => {
+          // check that this section of the target path exactly matches the required route permission object
+          // at the same index
+          const targetPathSection = targetPathSections[index];
+          return permissionPathSection === targetPathSection;
+        });
+
+        return targetPathMatches && data.authorized;
+      }
+
+      // this was not a valid partial match - the route cannot be authorised with this permission
+      return false;
     }
   }
 
