@@ -115,4 +115,33 @@ describe('(/fiscal) Fiscal Year', () => {
       })
       .catch(helpers.handler);
   });
+
+  it('GET /enterprises/:id/fiscal_start getting the earliest fiscal year date', () => {
+    const mockEnterpriseFiscalEntity = {
+      enterpriseId: 1,
+      earliestFiscalDate: {
+        string: '2015-01-01T00:00:00.000Z',
+        year: 2015,
+        day: 1,
+        month: 0,
+      }
+    };
+
+    return agent.get(`/enterprises/${mockEnterpriseFiscalEntity.enterpriseId}/fiscal_start`)
+      .then((result) => {
+        // set up date objects to ensure the correct date is returned
+        // matching on the exact MySQL string may differ given different machines
+        // or database configurations
+        expect(result).to.have.status(200);
+        expect(result).to.be.json;
+        expect(result.body).to.have.all.keys(['start_date']);
+
+        const startDate = new Date(result.body.start_date);
+
+        expect(startDate.getFullYear()).to.equal(mockEnterpriseFiscalEntity.earliestFiscalDate.year);
+        expect(startDate.getDate()).to.equal(mockEnterpriseFiscalEntity.earliestFiscalDate.day);
+        expect(startDate.getMonth()).to.equal(mockEnterpriseFiscalEntity.earliestFiscalDate.month);
+      });
+
+  });
 });
