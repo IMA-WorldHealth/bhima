@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 
 RolesController.$inject = [
   '$uibModal', 'RolesService', 'SessionService', 'ModalService',
-  'NotifyService', 'bhConstants',
+  'NotifyService', 'bhConstants', 'uiGridConstants'
 ];
 
-function RolesController($uibModal, Roles, Session, Modal, Notify, bhConstants) {
+function RolesController($uibModal, Roles, Session, Modal, Notify, bhConstants, uiGridConstants) {
   const vm = this;
 
   vm.canEditRoles = false;
@@ -113,4 +113,14 @@ function RolesController($uibModal, Roles, Session, Modal, Notify, bhConstants) 
   };
 
   loadRoles();
+  /**
+   * @function toggleInlineFilter
+   *
+   * @description
+   * Switches the inline filter on and off.
+   */
+   vm.toggleInlineFilter = function toggleInlineFilter() {
+    vm.gridOptions.enableFiltering = !vm.gridOptions.enableFiltering;
+    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+  };
 }
