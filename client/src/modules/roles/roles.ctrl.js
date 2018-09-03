@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 RolesController.$inject = [
   '$uibModal', 'RolesService', 'SessionService', 'ModalService',
-  'NotifyService', 'bhConstants', 'uiGridConstants'
+  'NotifyService', 'bhConstants', 'uiGridConstants',
 ];
 
 function RolesController($uibModal, Roles, Session, Modal, Notify, bhConstants, uiGridConstants) {
