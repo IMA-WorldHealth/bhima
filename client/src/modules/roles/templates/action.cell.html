@@ -1,0 +1,37 @@
+<div
+  class="ui-grid-cell-contents text-action"
+  ng-if="grid.appScope.canEditRoles"
+  data-row="{{row.entity.label}}"
+  uib-dropdown dropdown-append-to-body>
+
+  <a uib-dropdown-toggle href data-action="open-dropdown-menu">
+    <span data-method="action" translate>FORM.BUTTONS.ACTIONS</span>
+    <span class="caret"></span>
+  </a>
+
+  <ul data-row-menu="{{ row.entity.label }}" class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
+    <li>
+      <a data-method="edit-record" ng-click="grid.appScope.createUpdateRoleModal(row.entity)" href>
+        <i class="fa fa-edit"></i> <span translate>FORM.BUTTONS.EDIT</span>
+      </a>
+    </li>
+    <li>
+      <a data-method="edit-permissions" ng-click="grid.appScope.updateRolePermissionsModal(row.entity)" href>
+        <i class="fa fa-edit"></i> <span translate>FORM.BUTTONS.EDIT_PERMISSIONS</span>
+      </a>
+    </li>
+    <li>
+      <a data-method="edit-actions" ng-click="grid.appScope.updateRoleActionsModal(row.entity)" href>
+        <i class="fa fa-edit"></i> <span translate>FORM.BUTTONS.ACTIONS</span>
+      </a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a data-method="delete-record" ng-click="grid.appScope.remove(row.entity.uuid)" href>
+        <span class="text-danger">
+          <i class="fa fa-trash"></i> <span translate>FORM.BUTTONS.DELETE</span>
+        </span>
+      </a>
+    </li>
+  </ul>
+</div>

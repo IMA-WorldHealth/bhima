@@ -53,6 +53,20 @@
     "CONFIRM_UNHIDE" : "This account is currently hidden. Are you sure you want to reveal it for use?",
     "CONFIRM_LOCK" : "Locking an account restrict the ability to post transactions using the account.  Are you sure you want to lock it?",
     "CONFIRM_UNLOCK" : "The account is locked.  Unlocking it will allow transactions to be posted containing this account.  Are you sure you want to unlock it?",
+    "IMPORT" : {
+      "ACCOUNTS" : "Import Accounts",
+      "DESCRIPTION" : "You are about to import the list of accounts from a CSV file",
+      "LOAD_DEFAULT_OHADA_ACCOUNTS" : "Use default OHADA accounts",
+      "LOAD_OHADA_ACCOUNTS" : "Import the list of ohada accounts of the enterprise",
+      "LOAD_OTHER_ACCOUNTS" : "Import a list of accounts",
+      "LOAD_FROM_FILE" : "Import from a csv file",
+      "ACCOUNT_NUMBER_INFO" : "account_number : the account number",
+      "ACCOUNT_LABEL_INFO" : "account_label : the account label",
+      "ACCOUNT_TYPE_INFO" : "account_type : the account type must be either (asset, liability, equity, expense, income, title)",
+      "ACCOUNT_PARENT_INFO" : "account_parent : the parent account number",
+      "UPLOAD_SUCCESS" : "Successfully sent",
+      "DOWNLOAD_TEMPLATE_HERE" : "Clic here to download the template file for importing accounts"
+    },
     "REFERENCE":{
       "REFERENCE":"Reference",
       "DESCRIPTION":"Description",

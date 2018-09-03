@@ -1,0 +1,21 @@
+<div class="ui-grid-cell-contents">
+  <span ng-if="row.entity.fixed">
+    <span
+      uib-popover="{{ 'TRANSACTION_TYPE.FIXED_INFO' | translate }}"
+      popover-placement="left"
+      popover-trigger="'mouseenter'"
+      popover-append-to-body="true">
+      <i class="fa fa-lock"></i> <span translate>FORM.LABELS.LOCKED</span>
+    </span>
+  </span>
+
+  <span ng-if="!row.entity.fixed">
+    <!-- edit transaction type tool -->
+    <a
+      href
+      ng-click="grid.appScope.editType(row.entity)"
+      data-edit-type="{{ row.entity.text }}">
+      <i class="fa fa-edit"></i> <span translate>FORM.LABELS.EDIT</span>
+    </a>
+  </span>
+</div>

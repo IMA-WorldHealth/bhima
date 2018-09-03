@@ -42,7 +42,6 @@
     "jeremielodi"
   ],
   "dependencies": {
-    "@ima-worldhealth/topic": "^1.0.1",
     "@types/angular": "^1.6.41",
     "accounting-js": "^1.1.1",
     "body-parser": "^1.15.0",
@@ -73,7 +72,7 @@
     "mysql": "^2.14.0",
     "mz": "^2.7.0",
     "q": "~1.5.0",
-    "snyk": "1.90.1",
+    "snyk": "1.94.0",
     "stream-to-promise": "^2.2.0",
     "tempy": "^0.2.1",
     "use-strict": "^1.0.1",

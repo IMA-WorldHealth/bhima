@@ -82,7 +82,7 @@ FOR EACH ROW
 -- Must be fixed if the system is to manage multiple Enterprises at the same time, which would add the Enterprise identifier to each employee : @lomamech
 CREATE TRIGGER employee_entity_map AFTER INSERT ON employee
 FOR EACH ROW BEGIN
-  INSERT INTO entity_map 
+  INSERT INTO entity_map
     SELECT new.creditor_uuid, CONCAT_WS('.', 'EM', enterprise.abbr, new.reference) FROM enterprise ON DUPLICATE KEY UPDATE text=text;
 END$$
 

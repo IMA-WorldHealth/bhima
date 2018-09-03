@@ -92,6 +92,10 @@ function del(req, res, next) {
     .done();
 }
 
+/**
+ * GET /rubric_config/:id/setting
+ * This function returns the list of items configured for a pay period
+*/
 function listConfig(req, res, next) {
   const sql = `
     SELECT config_rubric_item.id, config_rubric_item.config_rubric_id, config_rubric_item.rubric_payroll_id 

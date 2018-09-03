@@ -3,6 +3,11 @@
   should be loaded after functions.sql.
 */
 
+SET names 'utf8mb4';
+SET character_set_database = 'utf8mb4';
+SET collation_database = 'utf8mb4_unicode_ci';
+SET CHARACTER SET utf8mb4, CHARACTER_SET_CONNECTION = utf8mb4;
+
 DELIMITER $$
 
 /*
@@ -51,6 +56,11 @@ SOURCE server/models/procedures/stock.sql
   Inventory procedures include: ImportInventory
 */
 SOURCE server/models/procedures/inventory.sql
+
+/*
+  account procedures
+*/
+SOURCE server/models/procedures/account.sql
 
 /*
   role management procedures

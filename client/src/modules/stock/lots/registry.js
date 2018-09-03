@@ -160,7 +160,7 @@ function StockLotsController(
 
   // expose to the view model
   vm.grouping = new Grouping(vm.gridOptions, true, 'depot_text', vm.grouped, true);
-  vm.download = Stock.download;
+  vm.getQueryString = Stock.getQueryString;
   vm.clearGridState = clearGridState;
   vm.search = search;
   vm.openColumnConfigModal = openColumnConfigModal;

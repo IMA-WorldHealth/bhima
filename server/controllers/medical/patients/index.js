@@ -11,7 +11,6 @@
  *
  * @requires q
  * @requires lodash
- * @requires @ima-worldhealth/topic
  * @requires lib/db
  * @requires lib/uuid/v4
  * @requires lib/errors/BadRequest
@@ -29,7 +28,6 @@
 
 const _ = require('lodash');
 const uuid = require('uuid/v4');
-const topic = require('@ima-worldhealth/topic');
 
 const identifiers = require('../../../config/identifiers');
 
@@ -135,14 +133,6 @@ function create(req, res, next) {
       res.status(201).json({
         uuid : medicalUuid,
       });
-
-      // publish a CREATE event on the medical channel
-      topic.publish(topic.channels.MEDICAL, {
-        event : topic.events.CREATE,
-        entity : topic.entities.PATIENT,
-        user_id : req.session.user.id,
-        uuid : medicalUuid,
-      });
     })
     .catch(next)
     .done();
@@ -185,8 +175,8 @@ function update(req, res, next) {
     data.dob = new Date(data.dob);
   }
 
-  // Remove whitespace from Patient display_name
-  if (data.dob) {
+  // Remove whitespace from patient display_name
+  if (data.display_name) {
     data.display_name = data.display_name.trim();
   }
 
@@ -201,14 +191,6 @@ function update(req, res, next) {
     .then(() => lookupPatient(patientUuid))
     .then((updatedPatient) => {
       res.status(200).json(updatedPatient);
-
-      // publish an UPDATE event on the medical channel
-      topic.publish(topic.channels.MEDICAL, {
-        event : topic.events.UPDATE,
-        entity : topic.entities.PATIENT,
-        user_id : req.session.user.id,
-        uuid : patientUuid,
-      });
     })
     .catch(next)
     .done();
@@ -563,13 +545,6 @@ function patientEntityQuery(detailed) {
 function read(req, res, next) {
   find(req.query)
     .then((rows) => {
-      // publish a SEARCH event on the medical channel
-      topic.publish(topic.channels.MEDICAL, {
-        event : topic.events.SEARCH,
-        entity : topic.entities.PATIENT,
-        user_id : req.session.user.id,
-      });
-
       res.status(200).json(rows);
     })
     .catch(next)

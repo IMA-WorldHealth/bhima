@@ -1,6 +1,5 @@
 <form name="RoleActionForm" bh-submit="RoleActionsCtrl.assignActionToRole()">
   <div class="modal-header">
-
     <ol class="headercrumb">
       <li class="static" translate>FORM.BUTTONS.ACTIONS</li>
       <li class="title">
@@ -8,15 +7,16 @@
       </li>
     </ol>
 </div>
+
 <div class="modal-body">
 
   <div class="row">
     <div class="col-lg-12">
       <ul class="list-group">
-        <li  class="list-group-item" ng-repeat="action in RoleActionsCtrl.actions">
+        <li  class="list-group-item" ng-repeat="action in RoleActionsCtrl.actions track by action.id">
           <label class="radio-inline">
-            <input type='checkbox' ng-model='action.affected' ng-true-value="1" ng-false-value="0" />
-            <span id="{{action.id}}" translate>{{action.description}}</span>
+            <input type="checkbox" ng-model="action.affected" ng-true-value="1" ng-false-value="0" />
+            <span id="{{::action.id}}" translate>{{::action.description}}</span>
           </label>
         </li>
       </ul>
@@ -25,7 +25,14 @@
 </div>
 
 <div class="modal-footer text-right">
-  <button type="button" class='btn btn-default' ng-click='RoleActionsCtrl.close()' translate>FORM.BUTTONS.CLOSE</button>
-  <bh-loading-button loading-state="RoleActionForm.$loading"></bh-loading-button>
+  <button
+    type="button"
+    class="btn btn-default"
+    ng-click="RoleActionsCtrl.close()"
+    translate>
+    FORM.BUTTONS.CLOSE
+  </button>
+  <bh-loading-button loading-state="RoleActionForm.$loading">
+  </bh-loading-button>
 </div>
 </form>

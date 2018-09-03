@@ -1,0 +1,19 @@
+<span data="filter">
+  <span class="label" ng-class="{ 'label-primary' : $ctrl.filter._isDefault, 'label-emphasize' : !$ctrl.filter._isDefault }">
+    <i class="fa fa-filter"></i>
+
+    <span translate>{{$ctrl.filter._label}}</span>
+    <span>{{$ctrl.filter.comparitorLabel}}</span>
+    <span>{{$ctrl.filter.displayValue}}</span>
+
+    <!-- optional close button, displayed if this is not a default filter -->
+    <a
+       href
+       ng-if="!$ctrl.filter._isDefault"
+       ng-click="$ctrl.onRemove({ filter: $ctrl.filter._key })"
+       class="filter-text-link">
+
+      <i class="fa fa-close"></i>
+    </a>
+  </span>
+</span>

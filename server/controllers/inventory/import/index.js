@@ -4,11 +4,10 @@
  * This module is responsible of handling the import of inventories
  * and related stock quantities
  */
-const Q = require('q');
-const csvtojson = require('csvtojson');
 const path = require('path');
 
 const db = require('../../../lib/db');
+const util = require('../../../lib/util');
 const BadRequest = require('../../../lib/errors/BadRequest');
 
 exports.downloadTemplate = downloadTemplate;
@@ -35,15 +34,15 @@ function downloadTemplate(req, res, next) {
  */
 function importInventories(req, res, next) {
   if (!req.files || req.files.length === 0) {
-    next(new BadRequest('Expected at least one file upload but did not receive any files.'));
+    next(new BadRequest('Something broke', 'ERRORS.EVERYTHING_BAD'));
     return;
   }
 
   let query;
   let queryParams;
-  const file = req.files[0];
+  const filePath = req.files[0].path;
 
-  formatCsvToJson(file)
+  util.formatCsvToJson(filePath)
     .then(data => {
       if (!hasValidDataFormat(data)) {
         throw new BadRequest('The given file has a bad data format for inventories', 'ERRORS.BAD_DATA_FORMAT');
@@ -85,28 +84,4 @@ function hasValidDataFormat(data = []) {
       && item.inventory_text && item.inventory_type && item.inventory_unit
       && item.inventory_unit_price;
   });
-}
-
-/**
- * formatCsvToJson
- * @param {object} file the csv file sent by the client
- */
-function formatCsvToJson(file) {
-  const filePath = path.resolve(file.path);
-  const defer = Q.defer();
-  const rows = [];
-
-  csvtojson()
-    .fromFile(filePath)
-    .on('json', (data) => {
-      rows.push(data);
-    })
-    .on('end', () => {
-      defer.resolve(rows);
-    })
-    .on('error', (error) => {
-      defer.reject(error);
-    });
-
-  return defer.promise;
 }

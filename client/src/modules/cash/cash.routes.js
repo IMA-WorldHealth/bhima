@@ -80,13 +80,18 @@ function transferModal($state, Modal) {
 function scanCashBarcodeModal($state, Modal) {
   Modal.open({
     controller  : 'CashBarcodeScannerModalController as BarcodeModalCtrl',
-    templateUrl : 'modules/cash/modals/barcode-scanner-modal.html',
+    templateUrl : 'modules/templates/barcode-scanner-modal.html',
     size        : 'lg',
     backdrop    : 'static',
     keyboard    : true,
-  }).result.finally(() => {
-    $state.go('^.window', { id : $state.params.id });
-  });
+  }).result
+    .catch(() => {
+      // modal has been cancelled - no action is taken
+      // handling this case stops an unhandled exception being thrown in the console, angular.noop could also be used
+    })
+    .finally(() => {
+      $state.go('^.window', { id : $state.params.id });
+    });
 }
 
 function debtorInvoicesModal($state, Modal) {

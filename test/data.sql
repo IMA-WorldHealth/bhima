@@ -1,5 +1,7 @@
-SET names 'utf8';
-SET character_set_database = 'utf8';
+SET names 'utf8mb4';
+SET character_set_database = 'utf8mb4';
+SET collation_database = 'utf8mb4_unicode_ci';
+SET CHARACTER SET utf8mb4, CHARACTER_SET_CONNECTION = utf8mb4;
 
 -- bhima test database
 SET NAMES 'utf8';
@@ -888,7 +890,7 @@ INSERT INTO `config_accounting` (`label`, `account_id`) VALUES ('Configuration C
 -- Configuration Employee Payroll
 INSERT INTO `config_employee` (`id`, `label`) VALUES ('1', 'Configuration des Employés');
 
-INSERT INTO `config_employee_item` (`id`, `config_employee_id`, `employee_uuid`) VALUES 
+INSERT INTO `config_employee_item` (`id`, `config_employee_id`, `employee_uuid`) VALUES
   (1, 1, 0x75E0969465F245A1A8A28B025003D793),
   (2, 1, 0x75E69409562FA2A845A13D7938B02500);
 

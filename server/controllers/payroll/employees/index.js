@@ -12,13 +12,11 @@
  * @requires db
  * @requires uuid
  * @requires NotFound
- * @requires @ima-worldhealth/topic
  * @requires filter
  */
 
 
 const uuid = require('uuid/v4');
-const topic = require('@ima-worldhealth/topic');
 
 const db = require('./../../../lib/db');
 const NotFound = require('./../../../lib/errors/NotFound');
@@ -55,13 +53,14 @@ function list(req, res, next) {
  */
 exports.listHolidays = function listHolidays(req, res, next) {
   const pp = JSON.parse(req.params.pp);
-  const sql =
-    `SELECT holiday.id, holiday.label, holiday.dateFrom, holiday.percentage, holiday.dateTo
+  const sql = `
+    SELECT holiday.id, holiday.label, holiday.dateFrom, holiday.percentage, holiday.dateTo
      FROM holiday WHERE
-      ((holiday.dateFrom >= ? AND holiday.dateFrom <= ?)
-      (holiday.dateTo >= ? AND holiday.dateTo <= ?) OR
-      (holiday.dateFrom <= ? AND holiday.dateTo >= ?)) AND
-      holiday.employee_uuid = ?;`;
+       ((holiday.dateFrom >= ? AND holiday.dateFrom <= ?)
+       (holiday.dateTo >= ? AND holiday.dateTo <= ?) OR
+       (holiday.dateFrom <= ? AND holiday.dateTo >= ?)) AND
+       holiday.employee_uuid = ?;
+ `;
 
   const data = [
     pp.dateFrom, pp.dateTo,
@@ -83,7 +82,7 @@ exports.listHolidays = function listHolidays(req, res, next) {
  */
 exports.checkHoliday = function checkHoliday(req, res, next) {
   let sql = `
-    SELECT id, BUID(employee_uuid) AS employee_uuid, label, dateTo, percentage, dateFrom FROM holiday 
+    SELECT id, BUID(employee_uuid) AS employee_uuid, label, dateTo, percentage, dateFrom FROM holiday
     WHERE employee_uuid = ?
     AND ((dateFrom >= ?) OR (dateTo >= ?) OR (dateFrom >= ?) OR (dateTo >= ?))
     AND ((dateFrom <= ?) OR (dateTo <= ?) OR (dateFrom <= ?) OR (dateTo <= ?))`;
@@ -130,8 +129,7 @@ exports.checkOffday = function checkHoliday(req, res, next) {
  * @returns {Promise} - the result of the database query.
  */
 function lookupEmployee(uid) {
-  const sql =
-    `
+  const sql = `
     SELECT
       BUID(employee.uuid) AS uuid, employee.code, patient.display_name, patient.sex,
       patient.dob, employee.date_embauche, employee.service_id,
@@ -192,9 +190,9 @@ function advantage(req, res, next) {
 
 function lookupEmployeeAdvantages(uid) {
   const sql = `
-    SELECT employee_advantage.employee_uuid, employee_advantage.rubric_payroll_id, employee_advantage.value 
+    SELECT employee_advantage.employee_uuid, employee_advantage.rubric_payroll_id, employee_advantage.value
     FROM employee_advantage
-    WHERE employee_uuid = ?  
+    WHERE employee_uuid = ?
   `;
 
   return db.exec(sql, [db.bid(uid)]);
@@ -215,7 +213,7 @@ function update(req, res, next) {
   ]);
 
   // Remove whitespace from Patient display_name
-  if (employee.dob) {
+  if (employee.display_name) {
     employee.display_name = employee.display_name.trim();
   }
 
@@ -298,13 +296,6 @@ function update(req, res, next) {
       if (!results[3].affectedRows) {
         throw new NotFound(`Could not find an employee with Uuid ${req.params.uuid}.`);
       }
-
-      topic.publish(topic.channels.ADMIN, {
-        event : topic.events.UPDATE,
-        entity : topic.entities.EMPLOYEE,
-        user_id : req.session.user.id,
-        uuid : req.params.uuid,
-      });
 
       return lookupEmployee(req.params.uuid);
     })
@@ -425,13 +416,6 @@ function create(req, res, next) {
 
   transaction.execute()
     .then(() => {
-      topic.publish(topic.channels.ADMIN, {
-        event : topic.events.CREATE,
-        entity : topic.entities.EMPLOYEE,
-        user_id : req.session.user.id,
-        uuid : employeeUuid,
-      });
-
       res.status(201).json({ uuid : employeeUuid, patient_uuid : patientID });
     })
     .catch(next)
@@ -453,13 +437,6 @@ function create(req, res, next) {
 function search(req, res, next) {
   find(req.query)
     .then((rows) => {
-    // publish a SEARCH event on the medical channel
-      topic.publish(topic.channels.MEDICAL, {
-        event   : topic.events.SEARCH,
-        entity  : topic.entities.PATIENT,
-        user_id : req.session.user.id,
-      });
-
       res.status(200).json(rows);
     })
     .catch(next)
@@ -478,13 +455,13 @@ function search(req, res, next) {
  */
 function find(options) {
 
-  const sql =
-    `SELECT 
-      BUID(employee.uuid) AS uuid, employee.code, patient.display_name, patient.sex, 
-      patient.dob, employee.date_embauche, employee.service_id, employee.nb_spouse, 
+  const sql = `
+    SELECT
+      BUID(employee.uuid) AS uuid, employee.code, patient.display_name, patient.sex,
+      patient.dob, employee.date_embauche, employee.service_id, employee.nb_spouse,
       employee.nb_enfant, BUID(employee.grade_uuid) as grade_uuid, employee.locked,
       grade.text, grade.basic_salary, fonction.id AS fonction_id, fonction.fonction_txt, patient.hospital_no,
-      patient.phone, patient.email, patient.address_1 AS adresse, BUID(employee.patient_uuid) AS patient_uuid, 
+      patient.phone, patient.email, patient.address_1 AS adresse, BUID(employee.patient_uuid) AS patient_uuid,
       employee.bank, employee.bank_account,
       employee.individual_salary, employee.is_medical, grade.code AS code_grade, BUID(debtor.uuid) as debtor_uuid,
       debtor.text AS debtor_text, BUID(debtor.group_uuid) as debtor_group_uuid,
@@ -502,6 +479,7 @@ function find(options) {
      LEFT JOIN service ON service.id = employee.service_id
      LEFT JOIN entity_map ON entity_map.uuid = employee.creditor_uuid
   `;
+
   // ensure epected options are parsed appropriately as binary
   db.convert(options, ['uuid', 'grade_uuid', 'creditor_uuid', 'patient_uuid']);
 
@@ -615,13 +593,6 @@ function patientToEmployee(req, res, next) {
 
   transaction.execute()
     .then(() => {
-      topic.publish(topic.channels.ADMIN, {
-        event : topic.events.CREATE,
-        entity : topic.entities.EMPLOYEE,
-        user_id : req.session.user.id,
-        uuid : employeeUuid,
-      });
-
       res.status(201).json({ uuid : employeeUuid, patient_uuid : patientUuid });
     })
     .catch(next)

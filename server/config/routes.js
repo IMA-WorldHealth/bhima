@@ -117,8 +117,6 @@ exports.configure = function configure(app) {
   app.post('/auth/reload', auth.reload);
 
   // system and event helpers
-  app.get('/system/events', system.events);
-  app.get('/system/stream', system.stream);
   app.get('/system/information', system.info);
 
   // dashbord stats
@@ -173,6 +171,10 @@ exports.configure = function configure(app) {
   app.post('/accounts/references', accounts.references.create);
   app.put('/accounts/references/:id', accounts.references.update);
   app.delete('/accounts/references/:id', accounts.references.remove);
+
+  // API for account importation
+  app.get('/accounts/template', accounts.importing.downloadTemplate);
+  app.post('/accounts/import', upload.middleware('csv', 'file'), accounts.importing.importAccounts);
 
   // API for account routes crud
   app.get('/accounts', accounts.list);

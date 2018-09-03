@@ -1,0 +1,96 @@
+<form name="ActionForm" bh-submit="ImportAccountsCtrl.submit(ActionForm)" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate>FORM.LABELS.ACCOUNT</li>
+      <li class="title text-capitalize" translate>
+        ACCOUNT.IMPORT.ACCOUNTS
+      </li>
+    </ol>
+  </div>
+  <div class="modal-body">
+    <!-- option -->
+    <div class="form-group">
+      <div class="radio">
+        <label>
+          <input type="radio" name="importingOption" id="default_ohada_accounts_option" 
+            ng-model="ImportAccountsCtrl.option" 
+            ng-value="ImportAccountsCtrl.LOAD_DEFAULT_OHADA_ACCOUNTS" 
+            ng-change="ImportAccountsCtrl.onChange(ImportAccountsCtrl.option)">
+          <span translate>ACCOUNT.IMPORT.LOAD_DEFAULT_OHADA_ACCOUNTS</span>
+        </label>
+      </div>
+      <div class="radio">
+        <label>
+          <input type="radio" name="importingOption" id="import_ohada_accounts_option" 
+            ng-model="ImportAccountsCtrl.option" 
+            ng-value="ImportAccountsCtrl.LOAD_OHADA_ACCOUNTS"
+            ng-change="ImportAccountsCtrl.onChange(ImportAccountsCtrl.option)">
+          <span translate>ACCOUNT.IMPORT.LOAD_OHADA_ACCOUNTS</span>
+        </label>
+      </div>
+      <div class="radio">
+        <label>
+          <input type="radio" name="importingOption" id="import_other_accounts_option" 
+            ng-model="ImportAccountsCtrl.option" 
+            ng-value="ImportAccountsCtrl.LOAD_OTHER_ACCOUNTS"
+            ng-change="ImportAccountsCtrl.onChange(ImportAccountsCtrl.option)">
+          <span translate>ACCOUNT.IMPORT.LOAD_OTHER_ACCOUNTS</span>
+        </label>
+      </div>
+    </div>
+
+    <section ng-if="ImportAccountsCtrl.option === ImportAccountsCtrl.LOAD_OHADA_ACCOUNTS || ImportAccountsCtrl.option === ImportAccountsCtrl.LOAD_OTHER_ACCOUNTS">
+      <div class="alert alert-info">
+        <p translate>ACCOUNT.IMPORT.DESCRIPTION</p>
+        <a ng-click="ImportAccountsCtrl.downloadTemplate()" href>
+          <i class="fa fa-cloud-download"></i>
+          <span translate>ACCOUNT.IMPORT.DOWNLOAD_TEMPLATE_HERE</span>
+        </a>
+      </div>
+  
+      <label translate>INVENTORY.COLUMNS_INFO</label>:
+      <ul>
+        <li translate>ACCOUNT.IMPORT.ACCOUNT_NUMBER_INFO</li>
+        <li translate>ACCOUNT.IMPORT.ACCOUNT_LABEL_INFO</li>
+        <li translate>ACCOUNT.IMPORT.ACCOUNT_TYPE_INFO</li>
+        <li translate>ACCOUNT.IMPORT.ACCOUNT_PARENT_INFO</li>
+      </ul>
+  
+      <br>
+  
+      <div class="form-group"
+        ng-class="{ 'has-error' : ImportAccountsCtrl.noSelectedFile }">
+        <label translate>ACCOUNT.IMPORT.LOAD_FROM_FILE</label>
+        <input 
+          accept=".csv"
+          class="form-control" 
+          type="file" 
+          name="file" 
+          ng-model="ImportAccountsCtrl.file"
+          ngf-select="ImportAccountsCtrl.select(ImportAccountsCtrl.file)">
+        
+        <div class="help-block" data-error-message ng-show="ImportAccountsCtrl.noSelectedFile">
+          <i class="fa fa-warning"></i> <span translate>INVENTORY.NO_FILE_SELECTED</span>
+        </div>
+      </div>
+  
+      <!-- progress bar  -->
+      <div class="progress" ng-show="ImportAccountsCtrl.file.progress >= 0">
+        <div class="progress-bar progress-bar-success progress-bar-striped active"
+          ng-style="ImportAccountsCtrl.progressStyle"
+          ng-bind="ImportAccountsCtrl.file.progress + '%'">
+        </div>
+      </div>
+    </section>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-method="cancel" ng-click="ImportAccountsCtrl.cancel()">
+      <span translate>FORM.BUTTONS.CANCEL</span>
+    </button>
+  
+    <bh-loading-button 
+      disabled="ImportAccountsCtrl.uploadState === 'uploading' || !ImportAccountsCtrl.option" 
+      loading-state="ActionForm.$loading">
+    </bh-loading-button>
+  </div>
+</form>

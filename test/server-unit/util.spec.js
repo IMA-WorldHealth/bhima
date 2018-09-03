@@ -1,5 +1,6 @@
 const { expect } = require('chai');
 const _ = require('lodash');
+const path = require('path');
 
 const util = require('../../server/lib/util');
 
@@ -62,5 +63,42 @@ describe('util.js', () => {
     const keyMap = { id : 'hello' };
     const result = util.renameKeys(a, keyMap);
     expect(result).to.deep.equal([]);
+  });
+
+  it('#formatCsvToJson should return a json from a csv file', () => {
+    /**
+     * The structure of the sample csv file (ohada-accounts.csv)
+     * =========================================================
+     * "account_number",  "account_label",    "account_type", "account_parent"
+     * "10",              "CAPITAL",          "title",        "1"
+     * "12",              "REPORT A NOUVEAU", "title",        "1"
+     */
+    const filePath = 'test/fixtures/ohada-accounts.csv';
+    const promise = util.formatCsvToJson(path.resolve(filePath));
+    return promise
+      .then(csvObjectArray => {
+        const [first, second] = csvObjectArray;
+        expect(csvObjectArray).to.be.an('array');
+
+        // check the value contained in the csv file
+        expect(first).to.have.property('account_number', '10');
+        expect(first).to.have.property('account_label', 'CAPITAL');
+        expect(first).to.have.property('account_type', 'title');
+        expect(first).to.have.property('account_parent', '1');
+
+        expect(second).to.have.property('account_number', '12');
+        expect(second).to.have.property('account_label', 'REPORT A NOUVEAU');
+        expect(second).to.have.property('account_type', 'title');
+        expect(second).to.have.property('account_parent', '1');
+
+        // check properties of each element of the array correspond to column of the file
+        csvObjectArray.forEach(csvObject => {
+          expect(csvObject).to.be.an('object');
+          expect(csvObject).to.have.property('account_number');
+          expect(csvObject).to.have.property('account_label');
+          expect(csvObject).to.have.property('account_type');
+          expect(csvObject).to.have.property('account_parent');
+        });
+      });
   });
 });

@@ -8,13 +8,10 @@
  *
  * @requires db
  * @requires NotFound
- * @requires Topic
  * @requires Cashboxes/Currencies
  * @requires FilterParser
- * @requires @ima-worldhealth/topic
  */
 
-const Topic = require('@ima-worldhealth/topic');
 const db = require('../../../lib/db');
 const NotFound = require('../../../lib/errors/NotFound');
 const FilterParser = require('../../../lib/filter');
@@ -141,13 +138,6 @@ function create(req, res, next) {
 
   db.exec(sql, [box])
     .then((row) => {
-      Topic.publish(Topic.channels.FINANCE, {
-        event   : Topic.events.CREATE,
-        entity  : Topic.entities.CASHBOX,
-        user_id : req.session.user.id,
-        id      : row.insertId,
-      });
-
       res.status(201).json({ id : row.insertId });
     })
     .catch(next)
@@ -169,13 +159,6 @@ function update(req, res, next) {
   db.exec(sql, [req.body, req.params.id])
     .then(() => helperGetCashbox(req.params.id))
     .then((cashbox) => {
-      Topic.publish(Topic.channels.FINANCE, {
-        event   : Topic.events.UPDATE,
-        entity  : Topic.entities.CASHBOX,
-        user_id : req.session.user.id,
-        id      : req.params.id,
-      });
-
       res.status(200).json(cashbox);
     })
     .catch(next)
@@ -197,13 +180,6 @@ function remove(req, res, next) {
       if (!rows.affectedRows) {
         throw new NotFound(`Could not find a cash box with id ${req.params.id}.`);
       }
-
-      Topic.publish(Topic.channels.FINANCE, {
-        event   : Topic.events.DELETE,
-        entity  : Topic.entities.CASHBOX,
-        user_id : req.session.user.id,
-        id      : req.params.id,
-      });
 
       res.sendStatus(204);
     })

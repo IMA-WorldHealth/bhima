@@ -157,7 +157,11 @@ function buildTransactionQuery(options, posted) {
 
   filters.custom('uuids', 'p.uuid IN (?)', [options.uuids]);
   filters.custom('record_uuids', 'p.record_uuid IN (?)', [options.record_uuids]);
-  filters.custom('amount', '(credit_equiv = ? OR debit_equiv = ?)', [options.amount, options.amount]);
+  const { amount } = options;
+  filters.custom(
+    'amount', '(credit = ? OR debit = ?) OR (credit_equiv = ? OR debit_equiv = ?)',
+    [amount, amount, amount, amount]
+  );
 
   return {
     sql : filters.applyQuery(sql),

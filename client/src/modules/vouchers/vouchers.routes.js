@@ -1,6 +1,5 @@
-
 angular.module('bhima.routes')
-  .config(['$stateProvider', function ($stateProvider) {
+  .config(['$stateProvider', ($stateProvider) => {
     $stateProvider
       .state('simpleVouchers', {
         url         : '/vouchers/simple',
@@ -30,18 +29,11 @@ angular.module('bhima.routes')
       });
   }]);
 
-
-/**
- * Piggy-backing off the Cash scan barcode modal because these
- * are mad hacks that should never be made in production, but
- * this is a one-man developer team.  Yay!
- */
 function scanBarcodeModal($state, Modal) {
   Modal.open({
     controller  : 'VoucherScanBarcodeController as BarcodeModalCtrl',
-    templateUrl : 'modules/cash/modals/barcode-scanner-modal.html',
+    templateUrl : 'modules/templates/barcode-scanner-modal.html',
     size        : 'lg',
-    backdrop    : 'static',
     keyboard    : true,
   }).result.finally(() => {
     $state.go('simpleVouchers');

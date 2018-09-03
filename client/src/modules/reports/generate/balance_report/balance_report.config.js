@@ -38,7 +38,10 @@ function BalanceReportConfigController($sce, Notify, SavedReports, AppCache, rep
   };
 
   vm.preview = function preview(form) {
-    if (form.$invalid) { return 0; }
+    if (form.$invalid) {
+      Notify.danger('FORM.ERRORS.RECORD_ERROR');
+      return 0;
+    }
 
     // update cached configuration
     cache.reportDetails = angular.copy(vm.reportDetails);
@@ -70,6 +73,16 @@ function BalanceReportConfigController($sce, Notify, SavedReports, AppCache, rep
   function checkCachedConfiguration() {
     if (cache.reportDetails) {
       vm.reportDetails = angular.copy(cache.reportDetails);
+    }
+    // Set the defaults for the radio items
+    if (!angular.isDefined(vm.reportDetails.useSeparateDebitsAndCredits)) {
+      vm.reportDetails.useSeparateDebitsAndCredits = 1;
+    }
+    if (!angular.isDefined(vm.reportDetails.shouldPruneEmptyRows)) {
+      vm.reportDetails.shouldPruneEmptyRows = 1;
+    }
+    if (!angular.isDefined(vm.reportDetails.shouldHideTitleAccounts)) {
+      vm.reportDetails.shouldHideTitleAccounts = 0;
     }
   }
 }

@@ -122,7 +122,6 @@ function ComplexJournalVoucherController(
     gridManager(Toolkit.openPaymentEmployees);
   };
 
-
   // @TODO fixed me to display correctly selected items(invoices, ..) accounts
   // without adding empty items before
   function gridManager(modal) {
@@ -173,7 +172,6 @@ function ComplexJournalVoucherController(
       vm.Voucher.details.currency_id = result.currency_id || vm.Voucher.details.currency_id;
 
       removeNullRows();
-
     }, 0);
   }
 
