@@ -773,7 +773,7 @@
             "EXCEPTION": "Il y avait un problème de validation avec ce champ. S'il vous plaît vérifier votre connexion Internet.",
             "INTEGER": "Cette valeur doit être un nombre entier (Entier).",
             "INVALID_DATE": "Date invalide",
-            "MAX": "Valeur maximale non respectée",
+            "MAX": "Cette valeur est trop grande! Choisissez une valeur inférieure.",
             "MAXLENGTH": "Longueur maximale non respectée",
             "MIN": "Valeur minimale non respectée",
             "MINLENGTH": "Longueur minimale non respectee",

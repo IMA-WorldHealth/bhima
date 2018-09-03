@@ -107,6 +107,7 @@ function constantConfig() {
     },
     precision : {
       MAX_DECIMAL_PRECISION : 4,
+      MAX_INTEGER : 16777215, // maximum unsigned MEDIUM INT in MySQL
     },
     utilBar : {
       height               : UTIL_BAR_HEIGHT,
@@ -127,14 +128,16 @@ function constantConfig() {
         label : 'PERIODS.START',
         comparitor : '>',
         valueFilter : 'date',
-      },
-      {
+      }, {
         key : 'custom_period_end',
         label : 'PERIODS.END',
         comparitor : '<',
         valueFilter : 'date',
+      }, {
+        key : 'limit',
+        label : 'FORM.LABELS.LIMIT',
       },
-      { key : 'limit', label : 'FORM.LABELS.LIMIT' }],
+    ],
     weekDays : [
       { id : 0, label : 'FORM.LABELS.WEEK_DAYS.SUNDAY' },
       { id : 1, label : 'FORM.LABELS.WEEK_DAYS.MONDAY' },

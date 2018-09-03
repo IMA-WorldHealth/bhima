@@ -1,14 +1,15 @@
 /* global inject, expect */
-describe('(directive) bhUnique', function () {
-  'use strict';
+describe('(directive) bhUnique', () => {
 
-  let $scope, form;
+
+  let $scope; let
+    form;
 
   let MockUniqueValidatorService;
 
   // these represent values that the external $http request would return as
   // already registered in the database
-  let existingValues = [100, 110, 120];
+  const existingValues = [100, 110, 120];
 
   beforeEach(module('bhima.directives', 'bhima.services'));
 
@@ -18,9 +19,9 @@ describe('(directive) bhUnique', function () {
     // can be defined in an external /shared folder
     MockUniqueValidatorService = function ($q) {
       return {
-        check : function (validationUrl, viewValue) {
+        check(validationUrl, viewValue) {
           return existingValues.indexOf(viewValue) > -1 ? $q.reject() : $q.resolve();
-        }
+        },
       };
     };
 
@@ -38,17 +39,17 @@ describe('(directive) bhUnique', function () {
     `);
 
     $scope.models = {
-      uniqueValue : null
+      uniqueValue : null,
     };
 
     $compile(element)($scope);
     form = $scope.form;
   }));
 
-  it('rejects a value that already exists', function () {
+  it('rejects a value that already exists', () => {
 
     // take the first exisitng value
-    let existingValue = existingValues[0];
+    const existingValue = existingValues[0];
 
     form.uniqueValue.$setViewValue(existingValue);
     $scope.$digest();
@@ -57,8 +58,8 @@ describe('(directive) bhUnique', function () {
     expect(form.uniqueValue.$valid).to.equal(false);
   });
 
-  it('accepts a value that is unique', function () {
-    let uniqueValue = 200;
+  it('accepts a value that is unique', () => {
+    const uniqueValue = 200;
 
     form.uniqueValue.$setViewValue(uniqueValue);
     $scope.$digest();
