@@ -38,7 +38,7 @@ FindPatientComponent.$inject = [
  *     should be run
  */
 function FindPatientComponent(Patients, AppCache, Notify, Session, bhConstants, Barcode) {
-  const vm = this;
+  const $ctrl = this;
 
   /* cache to remember which the search type of the component */
   const cache = AppCache('FindPatientComponent');
@@ -49,11 +49,11 @@ function FindPatientComponent(Patients, AppCache, Notify, Session, bhConstants, 
   /* @const the enter key keycode */
   const ENTER_KEY = 13;
 
-  vm.$onInit = function onInit() {
-    vm.suppressReset = vm.suppressReset || false;
+  $ctrl.$onInit = function onInit() {
+    $ctrl.suppressReset = $ctrl.suppressReset || false;
 
     /* supported searches: by name or by id */
-    vm.options = {
+    $ctrl.options = {
       findById : {
         label       : 'FORM.LABELS.PATIENT_ID',
         placeholder : 'FORM.PLACEHOLDERS.SEARCH_PATIENT_ID',
@@ -65,37 +65,40 @@ function FindPatientComponent(Patients, AppCache, Notify, Session, bhConstants, 
     };
 
     if (Session.isSettingEnabled('barcodes')) {
-      vm.options.findByBarcode = {
+      $ctrl.options.findByBarcode = {
         label : 'BARCODE.SCAN',
       };
     }
 
-    vm.showSearchView = true;
-    vm.loadStatus = null;
+    $ctrl.showSearchView = true;
+    $ctrl.loadStatus = null;
 
     // fetch the initial setting for the component from appcache
     loadDefaultOption(cache.optionKey);
 
-    // call the onRegisterApi() callback with the
-    vm.onRegisterApi({
-      api : { reset : vm.reset, searchByUuid },
-    });
+    // only expose the external API object if the optional callback has been
+    // provided
+    if (angular.isDefined($ctrl.onRegisterApi)) {
+      $ctrl.onRegisterApi({
+        api : { reset : $ctrl.reset, searchByUuid },
+      });
+    }
   };
 
-  vm.$onChanges = function onChanges(changes) {
+  $ctrl.$onChanges = function onChanges(changes) {
     if (changes.patientUuid && changes.patientUuid.currentValue) {
       searchByUuid(changes.patientUuid.currentValue);
     }
   };
 
   /* Expose functions and variables to the template view */
-  vm.searchByReference = searchByReference;
-  vm.searchByName = searchByName;
-  vm.selectPatient = selectPatient;
-  vm.submit = submit;
-  vm.findBy = findBy;
-  vm.reset = reset;
-  vm.onKeyPress = onKeyPress;
+  $ctrl.searchByReference = searchByReference;
+  $ctrl.searchByName = searchByName;
+  $ctrl.selectPatient = selectPatient;
+  $ctrl.submit = submit;
+  $ctrl.findBy = findBy;
+  $ctrl.reset = reset;
+  $ctrl.onKeyPress = onKeyPress;
 
   /**
    * @method searchByUuid
@@ -129,7 +132,7 @@ function FindPatientComponent(Patients, AppCache, Notify, Session, bhConstants, 
    * with the current user project abbreviation to have HBBXXX for example.
    */
   function searchByReference(reference) {
-    vm.loadStatus = 'loading';
+    $ctrl.loadStatus = 'loading';
 
     const isValidNumber = !Number.isNaN(Number(reference));
 
@@ -163,7 +166,7 @@ function FindPatientComponent(Patients, AppCache, Notify, Session, bhConstants, 
    * @return {Array} An array of patients
    */
   function searchByName(text) {
-    vm.loadStatus = 'loading';
+    $ctrl.loadStatus = 'loading';
 
     // format query string parameters
     const options = {
@@ -181,12 +184,12 @@ function FindPatientComponent(Patients, AppCache, Notify, Session, bhConstants, 
    * according we have a search by ID or a search by Name to get data
    */
   function submit() {
-    if (vm.selected === vm.options.findById && vm.idInput) {
-      searchByReference(vm.idInput);
-    } else if (vm.selected === vm.options.findByName && vm.nameInput) {
+    if ($ctrl.selected === $ctrl.options.findById && $ctrl.idInput) {
+      searchByReference($ctrl.idInput);
+    } else if ($ctrl.selected === $ctrl.options.findByName && $ctrl.nameInput) {
       // patient has been selected from a list of names/ references
       // very limited information is known about the patient - get details by UUID
-      searchByUuid(vm.nameInput.uuid);
+      searchByUuid($ctrl.nameInput.uuid);
     }
   }
 
@@ -204,7 +207,7 @@ function FindPatientComponent(Patients, AppCache, Notify, Session, bhConstants, 
       return;
     }
 
-    vm.selected = vm.options[key];
+    $ctrl.selected = $ctrl.options[key];
     resetState();
 
     // save the option for later
@@ -214,9 +217,9 @@ function FindPatientComponent(Patients, AppCache, Notify, Session, bhConstants, 
 
   // Common base values that can be used to set a new search
   function resetState() {
-    vm.loadStatus = null;
-    delete vm.idInput;
-    delete vm.nameInput;
+    $ctrl.loadStatus = null;
+    delete $ctrl.idInput;
+    delete $ctrl.nameInput;
   }
 
   /**
@@ -227,7 +230,7 @@ function FindPatientComponent(Patients, AppCache, Notify, Session, bhConstants, 
    */
   function reset() {
     resetState();
-    vm.showSearchView = true;
+    $ctrl.showSearchView = true;
   }
 
   /**
@@ -253,21 +256,21 @@ function FindPatientComponent(Patients, AppCache, Notify, Session, bhConstants, 
    * display results and pass the returned patient to the parent controller
    */
   function selectPatient(patient) {
-    vm.showSearchView = false;
+    $ctrl.showSearchView = false;
 
     if (patient && typeof (patient) === 'object') {
-      vm.loadStatus = 'loaded';
-      vm.patient = patient;
+      $ctrl.loadStatus = 'loaded';
+      $ctrl.patient = patient;
 
       // parse patient metadata
       patient.name = formatPatient(patient);
       patient.sex = patient.sex.toUpperCase();
 
       // call the external function with patient
-      vm.onSearchComplete({ patient });
+      $ctrl.onSearchComplete({ patient });
 
     } else {
-      vm.loadStatus = 'error';
+      $ctrl.loadStatus = 'error';
     }
   }
 
@@ -297,7 +300,7 @@ function FindPatientComponent(Patients, AppCache, Notify, Session, bhConstants, 
 
     // submit the find-patient form
     if (event.keyCode === ENTER_KEY) {
-      vm.submit();
+      $ctrl.submit();
 
       // make sure we do not submit the parent form!
       event.preventDefault();
