@@ -92,6 +92,7 @@ function RolesController($uibModal, Roles, Session, Modal, Notify, bhConstants, 
     headerCellFilter : 'translate',
   }, {
     field : 'actions',
+    enableFiltering : false,
     width : 100,
     displayName : '',
     headerCellFilter : 'translate',
