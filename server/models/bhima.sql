@@ -99,7 +99,7 @@ INSERT INTO unit VALUES
   (205, 'Account Reference Management','TREE.ACCOUNT_REFERENCE_MANAGEMENT','',1,'/modules/account_reference','/account_reference'),
   (206, '[OHADA] Bilan','TREE.OHADA_BALANCE_SHEET','',144,'/modules/reports/ohada_balance_sheet_report','/reports/ohada_balance_sheet_report'),
   (207, 'Account Reference Report','TREE.ACCOUNT_REFERENCE_REPORT','',144,'/modules/reports/account_reference','/reports/account_reference'),
-  (208, 'Fee Center Management','TREE.FEE_CENTER','',1,'/modules/fee_center','/fee_center');
+  (209, 'Fee Center Management','TREE.FEE_CENTER','',1,'/modules/fee_center','/fee_center');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
