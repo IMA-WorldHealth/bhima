@@ -6,22 +6,19 @@
  * profit totals per employee, the totals of the retentions of the Payments by Employees, and return the lists of
  * transactions to be executed, the list of profits, retained
  *
- * @requires util
- * @requires db
- * @requires uuid
+ * @requires lib/util
+ * @requires lib/db
  */
 
 const util = require('../../../lib/util');
 const db = require('../../../lib/db');
-const uuid = require('uuid/v4');
 
 function dataCommitment(employees, exchangeRates, rubrics, identificationCommitment) {
   const transactions = [];
   let totalCommitments = 0;
   let totalBasicSalaries = 0;
 
-  const voucherCommitmentUuid = identificationCommitment.voucherCommitmentUuid;
-  const voucherWithholdingUuid = identificationCommitment.voucherWithholdingUuid;
+  const { voucherCommitmentUuid, voucherWithholdingUuid } = identificationCommitment;
 
   const employeesBenefitsItem = [];
   const employeesWithholdingItem = [];
@@ -54,7 +51,7 @@ function dataCommitment(employees, exchangeRates, rubrics, identificationCommitm
     let employeeWithholdings = [];
 
     employeesBenefitsItem.push([
-      db.bid(uuid()),
+      db.bid(util.uuid()),
       employee.account_id,
       0,
       conversionGrossSalary,
@@ -79,7 +76,7 @@ function dataCommitment(employees, exchangeRates, rubrics, identificationCommitm
       });
 
       employeesWithholdingItem.push([
-        db.bid(uuid()),
+        db.bid(util.uuid()),
         employee.account_id,
         util.roundDecimal(totalEmployeeWithholding, 2),
         0,
@@ -91,7 +88,7 @@ function dataCommitment(employees, exchangeRates, rubrics, identificationCommitm
         employeeWithholdings.forEach(withholding => {
           if (withholding.is_associated_employee === 1) {
             employeesWithholdingItem.push([
-              db.bid(uuid()),
+              db.bid(util.uuid()),
               withholding.debtor_account_id,
               0,
               util.roundDecimal(withholding.value, 2),

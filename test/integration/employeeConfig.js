@@ -24,9 +24,9 @@ describe('(/payroll/account_configuration) The /payroll/employee_configuration  
     configuration : [
       '6b4642a7-4577-4768-b6ae-1b3d38f0bbef',
       '75e09694-65f2-45a1-a8a2-8b025003d793',
-      '75e69409-562f-a2a8-45a1-3d7938b02500'
-      ]
-    };
+      '75e69409-562f-a2a8-45a1-3d7938b02500',
+    ],
+  };
 
   const NUM_EMPLOYEE_CONFIG = 1;
 

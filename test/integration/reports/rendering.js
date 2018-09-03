@@ -1,8 +1,8 @@
 /* eslint no-unused-expressions:"off" */
 /* global expect, agent */
 
-const helpers = require('../helpers');
 const _ = require('lodash');
+const helpers = require('../helpers');
 
 // this makes render tests for reports the lazy way.  Just give it a target and it will write describe() tests for you.
 module.exports = function LazyTester(target, keys, options = {}) {

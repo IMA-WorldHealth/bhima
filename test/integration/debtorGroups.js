@@ -1,20 +1,19 @@
 /* global expect, agent */
 
 const helpers = require('./helpers');
-const uuid = require('uuid/v4');
 
 describe('(/debtor_groups) The debtor groups API', () => {
   const numDebtorGroups = 7;
 
   const debtorGroup = {
     enterprise_id : 1,
-    uuid : uuid(),
     name : 'New Debtor Group (Test)',
     account_id : 174,
-    location_id : '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
+    location_id : '1F162A109F6747889EFFC1FEA42FCC9B',
     phone : '0811838662',
     email : 'debtorgroup@info.com',
-    note : 'Nouveau debtor group de test', locked : 0,
+    note : 'Nouveau debtor group de test',
+    locked : 0,
     max_credit : null,
     is_convention : 0,
     price_list_uuid : null,
@@ -27,7 +26,7 @@ describe('(/debtor_groups) The debtor groups API', () => {
     enterprise_id : 1,
     name : 'Updated Debtor Group (Test)',
     account_id : 174,
-    location_id : '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
+    location_id : '1F162A109F6747889EFFC1FEA42FCC9B',
     phone : '0818061031',
     email : 'update@info.com',
     note : 'Updated debtor group de test',
@@ -43,10 +42,9 @@ describe('(/debtor_groups) The debtor groups API', () => {
 
   const lockedGroup = {
     enterprise_id : 1,
-    uuid : uuid(),
     name : 'Locked Debtor Group (Test)',
     account_id : 175,
-    location_id : '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
+    location_id : '1F162A109F6747889EFFC1FEA42FCC9B',
     phone : '0811838662',
     email : 'debtorgroup@info.com',
     note : 'Nouveau debtor group de test',
@@ -61,10 +59,9 @@ describe('(/debtor_groups) The debtor groups API', () => {
 
   const conventionGroup = {
     enterprise_id : 1,
-    uuid : uuid(),
     name : 'Convention Debtor Group (Test)',
     account_id : 176,
-    location_id : '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
+    location_id : '1f162a109f6747889effc1fea42fcc9b',
     phone : '0811838662',
     email : 'debtorgroup@info.com',
     note : 'Nouveau debtor group de test',
@@ -79,10 +76,9 @@ describe('(/debtor_groups) The debtor groups API', () => {
 
   const lockedConventionGroup = {
     enterprise_id : 1,
-    uuid : uuid(),
     name : 'Locked Convention Debtor Group (Test)',
     account_id : 174,
-    location_id : '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
+    location_id : '1F162A109F6747889EFFC1FEA42FCC9B',
     phone : '0811838662',
     email : 'debtorgroup@info.com',
     note : 'Nouveau debtor group de test',
@@ -98,7 +94,7 @@ describe('(/debtor_groups) The debtor groups API', () => {
   const invalidGroup = {
     enterprise_id : 1,
     name : 'Invalid Debtor Group (Test)',
-    location_id : '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
+    location_id : '1F162A109F6747889EFFC1FEA42FCC9B',
     phone : '0811838662',
     email : 'debtorgroup@info.com',
     note : 'Nouveau debtor group de test',
@@ -111,7 +107,7 @@ describe('(/debtor_groups) The debtor groups API', () => {
       .send(debtorGroup)
       .then(res => {
         helpers.api.created(res);
-        expect(res.body.uuid).to.be.equal(debtorGroup.uuid);
+        debtorGroup.uuid = res.body.uuid;
       })
       .catch(helpers.handler);
   });
@@ -121,7 +117,7 @@ describe('(/debtor_groups) The debtor groups API', () => {
       .send(lockedGroup)
       .then(res => {
         helpers.api.created(res);
-        expect(res.body.uuid).to.be.equal(lockedGroup.uuid);
+        lockedGroup.uuid = res.body.uuid;
       })
       .catch(helpers.handler);
   });
@@ -131,7 +127,7 @@ describe('(/debtor_groups) The debtor groups API', () => {
       .send(conventionGroup)
       .then(res => {
         helpers.api.created(res);
-        expect(res.body.uuid).to.be.equal(conventionGroup.uuid);
+        conventionGroup.uuid = res.body.uuid;
       })
       .catch(helpers.handler);
   });
@@ -141,7 +137,7 @@ describe('(/debtor_groups) The debtor groups API', () => {
       .send(lockedConventionGroup)
       .then(res => {
         helpers.api.created(res);
-        expect(res.body.uuid).to.be.equal(lockedConventionGroup.uuid);
+        lockedConventionGroup.uuid = res.body.uuid;
       })
       .catch(helpers.handler);
   });

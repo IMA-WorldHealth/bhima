@@ -6,22 +6,17 @@
  *
  * @requires db
  * @requires EmployeeData
- * @requires uuid
  * @requires Exchange
  * @requires q
  * @requires util
  */
 
-const db = require('../../../lib/db');
-const EmployeeData = require('../employees');
-const uuid = require('uuid/v4');
-const Exchange = require('../../finance/exchange');
-const util = require('../../../lib/util');
 const q = require('q');
 const moment = require('moment');
+const db = require('../../../lib/db');
+const Exchange = require('../../finance/exchange');
+const util = require('../../../lib/util');
 
-const getConfig = require('./getConfig');
-const manageConfig = require('./manageConfig');
 const calculation = require('./calculation');
 
 function config(req, res, next) {
@@ -33,13 +28,12 @@ function config(req, res, next) {
   // If tax IPR is not defined Else Use Currency ID
   const iprCurrencyId = data.iprScales.length ? data.iprScales[0].currency_id : currencyId;
 
-  const iprScales = data.iprScales;
-  const employee = data.employee;
+  const { iprScales, employee } = data;
   const payrollConfigurationId = req.params.id;
-  const paiementUuid = uuid();
+  const paiementUuid = util.uuid();
 
   // End Date of Payroll Period
-  const periodDateTo = data.periodDateTo;
+  const { periodDateTo } = data;
 
   const uid = db.bid(paiementUuid);
 
@@ -66,9 +60,9 @@ function config(req, res, next) {
       // Calcul Daily Salary
       const totalDayPeriod = data.daysPeriod.working_day;
 
-      const dailySalary = employee.individual_salary ?
-        (employee.individual_salary / totalDayPeriod) :
-        (employee.basic_salary / totalDayPeriod);
+      const dailySalary = employee.individual_salary
+        ? (employee.individual_salary / totalDayPeriod)
+        : (employee.basic_salary / totalDayPeriod);
 
       const workingDayCost = dailySalary * data.working_day;
       const nbChildren = employee.nb_enfant;
@@ -113,8 +107,8 @@ function config(req, res, next) {
       const basicSalary = (workingDayCost + offDaysCost + holidaysCost) * enterpriseExchangeRate;
 
       const sql = `
-        SELECT config_rubric_item.id, config_rubric_item.config_rubric_id, config_rubric_item.rubric_payroll_id, 
-        payroll_configuration.label AS PayrollConfig, rubric_payroll.* 
+        SELECT config_rubric_item.id, config_rubric_item.config_rubric_id, config_rubric_item.rubric_payroll_id,
+        payroll_configuration.label AS PayrollConfig, rubric_payroll.*
         FROM config_rubric_item
         JOIN rubric_payroll ON rubric_payroll.id = config_rubric_item.rubric_payroll_id
         JOIN payroll_configuration ON payroll_configuration.config_rubric_id = config_rubric_item.config_rubric_id
@@ -160,24 +154,24 @@ function config(req, res, next) {
             nonTaxables = rubrics.filter(item => item.is_social_care);
 
             // Filtering taxable Rubrics
-            taxables = rubrics.filter(item =>
-              (item.is_tax !== 1 &&
-              item.is_discount !== 1 &&
-              item.is_social_care !== 1 &&
-              item.is_membership_fee !== 1));
+            taxables = rubrics.filter(item => (item.is_tax !== 1
+              && item.is_discount !== 1
+              && item.is_social_care !== 1
+              && item.is_membership_fee !== 1));
 
             // Filtering all taxes and contributions that is calculated from the taxable base
-            taxesContributions = rubrics.filter(item =>
-              item.is_tax || item.is_membership_fee || item.is_discount === 1);
+            taxesContributions = rubrics.filter(
+              item => (item.is_tax || item.is_membership_fee || item.is_discount === 1)
+            );
           }
 
           // Calcul value for non-taxable and automatically calculated Expected Seniority_bonus & Family_allowances
           if (nonTaxables.length) {
             nonTaxables.forEach(nonTaxable => {
               if (!nonTaxable.is_seniority_bonus && !nonTaxable.is_family_allowances) {
-                nonTaxable.result = nonTaxable.is_percent ?
-                  util.roundDecimal((basicSalary * nonTaxable.value) / 100, DECIMAL_PRECISION) :
-                  (nonTaxable.result || nonTaxable.value);
+                nonTaxable.result = nonTaxable.is_percent
+                  ? util.roundDecimal((basicSalary * nonTaxable.value) / 100, DECIMAL_PRECISION)
+                  : (nonTaxable.result || nonTaxable.value);
               }
 
               sumNonTaxable += nonTaxable.result;
@@ -189,9 +183,9 @@ function config(req, res, next) {
           if (taxables.length) {
             taxables.forEach(taxable => {
               if (!taxable.is_seniority_bonus && !taxable.is_family_allowances) {
-                taxable.result = taxable.is_percent ?
-                  util.roundDecimal((basicSalary * taxable.value) / 100, DECIMAL_PRECISION) :
-                  (taxable.result || taxable.value);
+                taxable.result = taxable.is_percent
+                  ? util.roundDecimal((basicSalary * taxable.value) / 100, DECIMAL_PRECISION)
+                  : (taxable.result || taxable.value);
               }
 
               sumTaxable += taxable.result;
@@ -205,9 +199,9 @@ function config(req, res, next) {
 
           if (taxesContributions.length) {
             taxesContributions.forEach(taxContribution => {
-              taxContribution.result = taxContribution.is_percent ?
-                util.roundDecimal((baseTaxable * taxContribution.value) / 100, DECIMAL_PRECISION) :
-                (taxContribution.result || taxContribution.value);
+              taxContribution.result = taxContribution.is_percent
+                ? util.roundDecimal((baseTaxable * taxContribution.value) / 100, DECIMAL_PRECISION)
+                : (taxContribution.result || taxContribution.value);
 
               // Recovery of the value of the Membership Fee worker share
               if (taxContribution.is_membership_fee && taxContribution.is_employee) {
@@ -222,7 +216,6 @@ function config(req, res, next) {
           const annualCumulation = baseIpr * 12;
 
           let iprValue = 0;
-          let scaleIndice;
 
           if (iprScales.length) {
             iprValue = calculation.iprTax(annualCumulation, iprScales);
@@ -279,11 +272,11 @@ function config(req, res, next) {
 
           const deletePaiementData = 'DELETE FROM paiement WHERE employee_uuid = ? AND payroll_configuration_id = ?';
           const setPaiementData = 'INSERT INTO paiement SET ?';
-          const setRubricPaiementData = `INSERT INTO rubric_paiement (paiement_uuid, rubric_payroll_id, value) 
+          const setRubricPaiementData = `INSERT INTO rubric_paiement (paiement_uuid, rubric_payroll_id, value)
             VALUES ?`;
-          const setHolidayPaiement = `INSERT INTO holiday_paiement 
+          const setHolidayPaiement = `INSERT INTO holiday_paiement
             (holiday_id, holiday_nbdays, holiday_percentage, paiement_uuid, label, value) VALUES ?`;
-          const setOffDayPaiement = `INSERT INTO offday_paiement 
+          const setOffDayPaiement = `INSERT INTO offday_paiement
             (offday_id, offday_percentage, paiement_uuid, label, value) VALUES ?`;
 
           transaction

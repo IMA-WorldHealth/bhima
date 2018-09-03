@@ -7,7 +7,7 @@ const helpers = require('./helpers');
  *
  * This test suite implements full CRUD on the /offdays  HTTP API endpoint.
  */
-describe('(/offdays) The /offdays  API endpoint', function () {
+describe('(/offdays) The /offdays  API endpoint', () => {
 
   // Offday we will add during this test suite.
 
@@ -19,61 +19,61 @@ describe('(/offdays) The /offdays  API endpoint', function () {
 
   const NUM_OFFDAYS = 2;
 
-  it('GET /OFFDAYS returns a list of Offday ', function () {
+  it('GET /OFFDAYS returns a list of Offday ', () => {
     return agent.get('/offdays')
-    .then(function (res) {
-      helpers.api.listed(res, NUM_OFFDAYS);
-    })
-    .catch(helpers.handler);
+      .then((res) => {
+        helpers.api.listed(res, NUM_OFFDAYS);
+      })
+      .catch(helpers.handler);
   });
 
-  it('POST /OFFDAYS should create a new Offday', function () {
+  it('POST /OFFDAYS should create a new Offday', () => {
     return agent.post('/offdays')
-    .send(offday)
-    .then(function (res) {
-      offday.id = res.body.id;
-      helpers.api.created(res);
-    })
-    .catch(helpers.handler);
+      .send(offday)
+      .then((res) => {
+        offday.id = res.body.id;
+        helpers.api.created(res);
+      })
+      .catch(helpers.handler);
   });
 
-  it('GET /OFFDAYS/:ID should not be found for unknown id', function () {
+  it('GET /OFFDAYS/:ID should not be found for unknown id', () => {
     return agent.get('/offdays/unknownOffday')
-    .then(function (res) {
-      helpers.api.errored(res, 404);
-    })
-    .catch(helpers.handler);
+      .then((res) => {
+        helpers.api.errored(res, 404);
+      })
+      .catch(helpers.handler);
   });
 
-  it('PUT /OFFDAYS  should update an existing Offday ', function () {
+  it('PUT /OFFDAYS  should update an existing Offday ', () => {
     return agent.put('/offdays/'.concat(offday.id))
       .send({ label : 'Offday Updated' })
-      .then(function (res) {
+      .then((res) => {
         expect(res).to.have.status(200);
         expect(res.body.label).to.equal('Offday Updated');
       })
       .catch(helpers.handler);
   });
 
-  it('GET /OFFDAYS/:ID returns a single Offday ', function () {
+  it('GET /OFFDAYS/:ID returns a single Offday ', () => {
     return agent.get('/offdays/'.concat(offday.id))
-      .then(function (res) {
+      .then((res) => {
         expect(res).to.have.status(200);
       })
       .catch(helpers.handler);
   });
 
-  it('DELETE /OFFDAYS/:ID will send back a 404 if the Offday does not exist', function () {
+  it('DELETE /OFFDAYS/:ID will send back a 404 if the Offday does not exist', () => {
     return agent.delete('/offdays/inknowOffday')
-      .then(function (res) {
+      .then((res) => {
         helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });
 
-  it('DELETE /OFFDAYS/:ID should delete a Offday ', function () {
+  it('DELETE /OFFDAYS/:ID should delete a Offday ', () => {
     return agent.delete('/offdays/'.concat(offday.id))
-      .then(function (res) {
+      .then((res) => {
         helpers.api.deleted(res);
       })
       .catch(helpers.handler);

@@ -1,7 +1,6 @@
 /* global expect, agent */
 
 const helpers = require('./helpers');
-const uuid = require('uuid/v4');
 
 /*
  * The /prices API endpoint
@@ -9,7 +8,7 @@ const uuid = require('uuid/v4');
 describe('(/prices ) Price List', () => {
   // constants
   const emptyPriceList = {
-    uuid : 'da4be62a-4310-4088-97a4-57c14cab49c8',
+    uuid : 'DA4BE62A4310408897A457C14CAB49C8',
     label : 'Test Empty Price List',
     description : 'A price list without items attached yet.',
   };
@@ -67,7 +66,7 @@ describe('(/prices ) Price List', () => {
 
   const invalidPriceList = {
     label : 'An invalid price list',
-    items :[
+    items : [
       {
         inventory_uuid : null,
         label : 'You cannot have a null inventory uuid, if you were wondering...',
@@ -84,7 +83,7 @@ describe('(/prices ) Price List', () => {
   };
 
   const duplicatesPriceList = {
-    uuid : uuid(),
+    uuid : helpers.uuid(),
     label : 'This list contains duplicate labels',
     description : 'The list has a tone of items.',
     items : priceListItemsWithDuplicates,
@@ -246,10 +245,10 @@ describe('(/prices ) Price List', () => {
   });
 
   it('DELETE /prices/:uuid should delete an existing price list', () => {
-    return agent.delete('/prices/' + emptyPriceList.uuid)
+    return agent.delete(`/prices/${emptyPriceList.uuid}`)
       .then(res => {
         expect(res).to.have.status(204);
-        return agent.get('/prices/' + emptyPriceList.uuid);
+        return agent.get(`/prices/${emptyPriceList.uuid}`);
       })
       .then(res => {
         helpers.api.errored(res, 404);

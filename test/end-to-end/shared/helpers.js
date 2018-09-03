@@ -1,4 +1,4 @@
-/* global element, by, browser */
+/* global browser */
 
 /**
  * @overview helpers
@@ -33,7 +33,7 @@ exports.configure = function configure(chai) {
 exports.getCurrentPath = function getCurrentPath() {
   return browser.getCurrentUrl()
     .then((url) => {
-      var partial = url.split('#!')[1];
+      const partial = url.split('#!')[1];
       partial.replace(PATH_REGEXP, '');
       return `#!${partial}`;
     });
@@ -44,9 +44,9 @@ exports.data = {
 
   // location IDs for the location select component
   locations : [
-    'dbe330b6-5cde-4830-8c30-dc00eccd1a5f', // Democratic Republic of the Congo
-    'f6fc7469-7e58-45cb-b87c-f08af93edade', // Bas Congo,
-    '0404e9ea-ebd6-4f20-b1f8-6dc9f9313450', // Tshikapa,
-    '1f162a10-9f67-4788-9eff-c1fea42fcc9b', // kele
+    'DBE330B65CDE48308C30DC00ECCD1A5F', // Democratic Republic of the Congo
+    'F6FC74697E5845CBB87CF08AF93EDADE', // Bas Congo,
+    '0404E9EAEBD64F20B1F86DC9F9313450', // Tshikapa,
+    '1F162A109F6747889EFFC1FEA42FCC9B', // kele
   ],
 };

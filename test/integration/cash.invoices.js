@@ -6,14 +6,13 @@
  * @description
  * This file contains tests for the posting routine of cash payments.
  */
-const helpers = require('./helpers');
 const _ = require('lodash');
+const helpers = require('./helpers');
 
 module.exports = PatientInvoicePayments;
 
 function PatientInvoicePayments() {
-  const DEBTOR_UUID =
-    '3be232f9-a4b9-4af6-984c-5d3f87d5c107';
+  const DEBTOR_UUID = '3be232f9-a4b9-4af6-984c-5d3f87d5c107';
 
   const defaults = {
     currency_id : 1, // FCs
@@ -55,7 +54,7 @@ function PatientInvoicePayments() {
   }, defaults);
 
   // create a cash payment
-  it('POST /cash should create a cash payment against multiple invoices', function () {
+  it('POST /cash should create a cash payment against multiple invoices', () => {
     return agent.post('/cash')
       .send({ payment : INVOICE_PAYMENT })
       .then((res) => {
@@ -83,7 +82,7 @@ function PatientInvoicePayments() {
       .catch(helpers.handler);
   });
 
-  it('POST /cash should not create a cash payment if cash items are empty', function () {
+  it('POST /cash should not create a cash payment if cash items are empty', () => {
     return agent.post('/cash')
       .send({ payment : INVALID_INVOICE_PAYMENT })
       .then((res) => {
@@ -93,7 +92,7 @@ function PatientInvoicePayments() {
       .catch(helpers.handler);
   });
 
-  it('PUT /cash/:uuid should update editable fields on a previous cash payment', function () {
+  it('PUT /cash/:uuid should update editable fields on a previous cash payment', () => {
     const DESC = 'I\'m adding a description!';
 
     return agent.put(`/cash/${INVOICE_PAYMENT.uuid}`)
@@ -117,7 +116,7 @@ function PatientInvoicePayments() {
       .catch(helpers.handler);
   });
 
-  it('PUT /cash/:uuid should not update non-editable fields on a previous cash payment', function () {
+  it('PUT /cash/:uuid should not update non-editable fields on a previous cash payment', () => {
     return agent.put(`/cash/${INVOICE_PAYMENT.uuid}`)
       .send({ amount : 123000.13 })
       .then((res) => {
@@ -127,7 +126,7 @@ function PatientInvoicePayments() {
   });
 
   // make sure we can find the cash payment
-  it('GET /cash/:uuid should return the full payment details of a cash payment', function () {
+  it('GET /cash/:uuid should return the full payment details of a cash payment', () => {
     return agent.get(`/cash/${INVOICE_PAYMENT.uuid}`)
       .then((res) => {
         expect(res).to.have.status(200);
@@ -141,7 +140,7 @@ function PatientInvoicePayments() {
   });
 
   // should not allow nefarious requests
-  it('POST /cash should not process cash_items if is_caution flag is set', function () {
+  it('POST /cash should not process cash_items if is_caution flag is set', () => {
     return agent.post('/cash')
       .send({ payment : CONFUSED_PAYMENT })
       .then((res) => {
@@ -151,25 +150,24 @@ function PatientInvoicePayments() {
   });
 
   // Check if the invoice is paid
-  it('GET /cash/:checkin should found one invoice paid', function () {
+  it('GET /cash/:checkin should found one invoice paid', () => {
     return agent.get(`/cash/checkin/${INV_1}`)
       .then((res) => {
         expect(res).to.be.json;
         expect(res).to.have.status(200);
         expect(res.body.length).to.equal(1);
       })
-     .catch(helpers.handler);
+      .catch(helpers.handler);
   });
 
   // Check if the invoice is not paid
-  it('GET /cash/:checkin sould found zero invoice paid', function () {
+  it('GET /cash/:checkin sould found zero invoice paid', () => {
     return agent.get(`/cash/checkin/${INV_2}`)
       .then((res) => {
         expect(res).to.be.json;
         expect(res).to.have.status(200);
         expect(res.body.length).to.equal(0);
       })
-     .catch(helpers.handler);
+      .catch(helpers.handler);
   });
 }
-

@@ -1,11 +1,10 @@
 /* global expect, agent */
 
-const helpers = require('../helpers');
 const fs = require('fs');
+const helpers = require('../helpers');
 
 describe('(/inventory/import) The inventory import http API', () => {
-  const templateCsvContent =
-    'inventory_group_name, inventory_code, inventory_text, inventory_type, inventory_unit, inventory_unit_price';
+  const templateCsvContent = 'inventory_group_name, inventory_code, inventory_text, inventory_type, inventory_unit, inventory_unit_price';
 
   const file = '../test/fixtures/inventory-to-import.csv';
   const invalidFile = '../test/fixtures/bad-inventory-to-import.csv';

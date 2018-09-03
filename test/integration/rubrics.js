@@ -7,7 +7,7 @@ const helpers = require('./helpers');
  *
  * This test suite implements full CRUD on the /payroll/rubrics  HTTP API endpoint.
  */
-describe('(/payroll/rubrics) The /payroll/rubrics  API endpoint', function () {
+describe('(/payroll/rubrics) The /payroll/rubrics  API endpoint', () => {
   // Rubric we will add during this test suite.
 
   const rubric = {
@@ -40,61 +40,61 @@ describe('(/payroll/rubrics) The /payroll/rubrics  API endpoint', function () {
   const NUM_RUBRICS = 12;
   const NUM_CONFIG_RUBRICS = 1;
 
-  it('GET /RUBRICS returns a list of Rubrics ', function () {
+  it('GET /RUBRICS returns a list of Rubrics ', () => {
     return agent.get('/rubrics')
-      .then(function (res) {
+      .then((res) => {
         helpers.api.listed(res, NUM_RUBRICS);
       })
       .catch(helpers.handler);
   });
 
-  it('POST /RUBRICS should create a new Rubric', function () {
+  it('POST /RUBRICS should create a new Rubric', () => {
     return agent.post('/rubrics')
       .send(rubric)
-      .then(function (res) {
+      .then((res) => {
         rubric.id = res.body.id;
         helpers.api.created(res);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /RUBRICS/:ID should not be found for unknown id', function () {
+  it('GET /RUBRICS/:ID should not be found for unknown id', () => {
     return agent.get('/rubrics/unknownRubric')
-      .then(function (res) {
+      .then((res) => {
         helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });
 
-  it('PUT /RUBRICS  should update an existing Rubric ', function () {
+  it('PUT /RUBRICS  should update an existing Rubric ', () => {
     return agent.put('/rubrics/'.concat(rubric.id))
       .send(rubricUpdate)
-      .then(function (res) {
+      .then((res) => {
         expect(res).to.have.status(200);
         expect(res.body.label).to.equal('Rubric Updated');
       })
       .catch(helpers.handler);
   });
 
-  it('GET /RUBRICS/:ID returns a single Rubric ', function () {
+  it('GET /RUBRICS/:ID returns a single Rubric ', () => {
     return agent.get('/rubrics/'.concat(rubric.id))
-      .then(function (res) {
+      .then((res) => {
         expect(res).to.have.status(200);
       })
       .catch(helpers.handler);
   });
 
-  it('DELETE /RUBRICS/:ID will send back a 404 if the Rubric does not exist', function () {
+  it('DELETE /RUBRICS/:ID will send back a 404 if the Rubric does not exist', () => {
     return agent.delete('/rubrics/inknowRubric')
-      .then(function (res) {
+      .then((res) => {
         helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });
 
-  it('DELETE /RUBRICS/:ID should delete a Rubric ', function () {
+  it('DELETE /RUBRICS/:ID should delete a Rubric ', () => {
     return agent.delete('/rubrics/'.concat(rubric.id))
-      .then(function (res) {
+      .then((res) => {
         helpers.api.deleted(res);
       })
       .catch(helpers.handler);
@@ -102,53 +102,53 @@ describe('(/payroll/rubrics) The /payroll/rubrics  API endpoint', function () {
 
   // INTEGRATION TEST FOR RUBRIC CONFIGURATION
 
-  it('GET /RUBRIC_CONFIG returns a list of function ', function () {
+  it('GET /RUBRIC_CONFIG returns a list of function ', () => {
     return agent.get('/rubric_config')
-      .then(function (res) {
+      .then((res) => {
         helpers.api.listed(res, NUM_CONFIG_RUBRICS);
       })
       .catch(helpers.handler);
   });
 
-  it('POST /RUBRIC_CONFIG should create a new Rubric Configuration', function () {
+  it('POST /RUBRIC_CONFIG should create a new Rubric Configuration', () => {
     return agent.post('/rubric_config')
       .send(rubricConfig)
-      .then(function (res) {
+      .then((res) => {
         rubricConfig.id = res.body.id;
         helpers.api.created(res);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /RUBRIC_CONFIG/:ID should not be found for unknown id', function () {
+  it('GET /RUBRIC_CONFIG/:ID should not be found for unknown id', () => {
     return agent.get('/rubric_config/unknownRubric')
-      .then(function (res) {
+      .then((res) => {
         helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });
 
-  it('PUT /RUBRIC_CONFIG should update an existing Rubric Configuration', function () {
+  it('PUT /RUBRIC_CONFIG should update an existing Rubric Configuration', () => {
     return agent.put('/rubric_config/'.concat(rubricConfig.id))
       .send(rubricConfigUpdate)
-      .then(function (res) {
+      .then((res) => {
         expect(res).to.have.status(200);
         expect(res.body.label).to.equal('Configuration 2013 Updated');
       })
       .catch(helpers.handler);
   });
 
-  it('GET /RUBRIC_CONFIG/:ID returns a single Rubric Configuration', function () {
+  it('GET /RUBRIC_CONFIG/:ID returns a single Rubric Configuration', () => {
     return agent.get('/rubric_config/'.concat(rubricConfig.id))
-      .then(function (res) {
+      .then((res) => {
         expect(res).to.have.status(200);
       })
       .catch(helpers.handler);
   });
 
-  it('DELETE /RUBRIC_CONFIG/:ID will send back a 404 if the Rubric Configuration does not exist', function () {
+  it('DELETE /RUBRIC_CONFIG/:ID will send back a 404 if the Rubric Configuration does not exist', () => {
     return agent.delete('/rubric_config/inknowRubric')
-      .then(function (res) {
+      .then((res) => {
         helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
@@ -156,10 +156,10 @@ describe('(/payroll/rubrics) The /payroll/rubrics  API endpoint', function () {
 
   // INTEGRATION TEST FOR SETTING RUBRICS IN CONFIGURATION
 
-  it('POST /RUBRIC_CONFIG/:ID/SETTING should Set Rubrics in Configuration', function () {
+  it('POST /RUBRIC_CONFIG/:ID/SETTING should Set Rubrics in Configuration', () => {
     return agent.post(`/rubric_config/${rubricConfig.id}/setting`)
       .send(configRubric)
-      .then(function (res) {
+      .then((res) => {
         expect(res).to.have.status(201);
         return agent.get(`/rubric_config/${rubricConfig.id}/setting`);
       })
@@ -171,10 +171,10 @@ describe('(/payroll/rubrics) The /payroll/rubrics  API endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('POST /RUBRIC_CONFIG/:ID/SETTING Update Rubrucs Configuration', function () {
+  it('POST /RUBRIC_CONFIG/:ID/SETTING Update Rubrucs Configuration', () => {
     return agent.post(`/rubric_config/${rubricConfig.id}/setting`)
       .send(configRubricEmpty)
-      .then(function (res) {
+      .then((res) => {
         expect(res).to.have.status(201);
         return agent.get(`/rubric_config/${rubricConfig.id}/setting`);
       })
@@ -185,9 +185,9 @@ describe('(/payroll/rubrics) The /payroll/rubrics  API endpoint', function () {
       .catch(helpers.handler);
   });
 
-  it('DELETE /RUBRICS/:ID should delete a Rubric ', function () {
+  it('DELETE /RUBRICS/:ID should delete a Rubric ', () => {
     return agent.delete('/rubric_config/'.concat(rubricConfig.id))
-      .then(function (res) {
+      .then((res) => {
         helpers.api.deleted(res);
       })
       .catch(helpers.handler);

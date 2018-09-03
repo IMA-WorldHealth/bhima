@@ -1,7 +1,6 @@
 /* global expect, agent */
 
 const helpers = require('./helpers');
-const uuid = require('uuid/v4');
 
 /*
  * The /creditors/groups API endpoint
@@ -12,7 +11,6 @@ describe('(/creditors/groups) Creditor Groups', () => {
   // creditor group we will add during this test suite.
   const creditorGroup = {
     enterprise_id : 1,
-    uuid          : uuid(),
     name          : 'Creditor Test',
     account_id    : 284, // 40111000 - SNEL SUPPLIER
     locked        : 0,
@@ -35,6 +33,7 @@ describe('(/creditors/groups) Creditor Groups', () => {
       .send(creditorGroup)
       .then(res => {
         helpers.api.created(res);
+        creditorGroup.uuid = res.body.uuid;
       })
       .catch(helpers.handler);
   });

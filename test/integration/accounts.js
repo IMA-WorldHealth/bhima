@@ -99,7 +99,7 @@ describe('(/accounts) Accounts', () => {
 
   it('GET /accounts/:id/balance returns an object with zero as balance, debit and credit', () => {
     return agent.get(`/accounts/${FETCHABLE_ACCOUNT_ID}/balance`)
-      .then(function (res){
+      .then((res) => {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
         expect(res.body).to.not.be.empty;

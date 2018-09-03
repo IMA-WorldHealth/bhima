@@ -15,7 +15,7 @@
  * @requires path
  * @requires fs
  * @requires q
- * @requires uuid/v4
+ * @requires lib/util
  * @requires lib/helpers/translate
  * @requires lib/errors/BadRequest
  * @requires lib/errors/InternalServerError
@@ -26,7 +26,6 @@ const _ = require('lodash');
 const path = require('path');
 const fs = require('fs');
 const q = require('q');
-const uuid = require('uuid/v4');
 const translateHelper = require('./helpers/translate');
 const util = require('../lib/util');
 
@@ -198,7 +197,7 @@ class ReportManager {
     }
 
     // generate a unique id for the report name
-    const reportId = uuid();
+    const reportId = util.uuid();
     const { options } = this;
 
     // make the report name using the

@@ -1,4 +1,3 @@
-const uuid = require('uuid/v4');
 const _ = require('lodash');
 
 const db = require('../../lib/db');
@@ -24,7 +23,7 @@ function processCashItems(cashUuid, items) {
 
   items.map((item) => {
     item.cash_uuid = cashUuid;
-    item.uuid = item.uuid || uuid();
+    item.uuid = item.uuid || util.uuid();
     return db.convert(item, ['uuid', 'invoice_uuid']);
   });
 
@@ -85,9 +84,11 @@ function create(req, res, next) {
     next(new BadRequest('You must submit cash items with the payments against previous invoices.'));
 
     return;
+  }
+
   // disallow caution payments with items for more predictable application
   // behavior.
-  } else if (!isInvoicePayment && hasItems) {
+  if (!isInvoicePayment && hasItems) {
     next(new BadRequest(`You must be confused. You submitted payment against items marked as a
         caution payment.  Please submit either a caution with no items or a payment
         marked with is_caution = 0.`));
@@ -96,7 +97,7 @@ function create(req, res, next) {
   }
 
   // generate a UUID if it not provided.
-  const cashUuidString = data.uuid || uuid();
+  const cashUuidString = data.uuid || util.uuid();
   const cashUuid = db.bid(cashUuidString);
 
   // trust the server's session info over the client's

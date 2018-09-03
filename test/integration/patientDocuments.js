@@ -1,13 +1,13 @@
 /* global expect, chai, agent */
 
-const helpers = require('./helpers');
 const fs = require('fs');
 const path = require('path');
+const helpers = require('./helpers');
 
 const fixtures = path.resolve(__dirname, '../fixtures');
 
 describe('(patients/:uuid/documents) Patient Documents', () => {
-  'use strict';
+
 
   const patientUuid = '81af634f-321a-40de-bc6f-ceb1167a9f65';
   let docId = null;
@@ -20,7 +20,7 @@ describe('(patients/:uuid/documents) Patient Documents', () => {
       // You must use fs.createReadStream() to attach files as a multipart type
       // that multer can detect.
       .attach('documents', fs.createReadStream(`${fixtures}/sample.pdf`))
-      .then(function (res) {
+      .then((res) => {
         expect(res).to.have.status(201);
         expect(res.body).to.have.property('uuids');
         docId = res.body.uuids[0];
@@ -38,7 +38,7 @@ describe('(patients/:uuid/documents) Patient Documents', () => {
       .attach('documents', fs.createReadStream(`${fixtures}/sample.pdf`), 'first')
       .attach('documents', fs.createReadStream(`${fixtures}/sample.pdf`), 'second')
       .attach('documents', fs.createReadStream(`${fixtures}/sample.pdf`), 'third')
-      .then(function (res) {
+      .then((res) => {
         expect(res).to.have.status(201);
         expect(res.body).to.have.property('uuids');
         expect(res.body.uuids).to.have.length(3);
@@ -50,7 +50,7 @@ describe('(patients/:uuid/documents) Patient Documents', () => {
     return agent
       .post(`/patients/${patientUuid}/documents`)
       .send({ label : 'record.pdf' })
-      .then(function (res) {
+      .then((res) => {
         helpers.api.errored(res, 400);
       })
       .catch(helpers.api.handler);
@@ -58,7 +58,7 @@ describe('(patients/:uuid/documents) Patient Documents', () => {
 
   it('GET /patients/:uuid/documents should return an array of patient documents', () => {
     return agent.get(`/patients/${patientUuid}/documents`)
-      .then(function (res) {
+      .then((res) => {
         helpers.api.listed(res, 4);
         expect(res.body[0]).to.have.keys('uuid', 'label', 'link', 'timestamp', 'mimetype', 'size', 'user_id', 'display_name');
       })
@@ -67,7 +67,7 @@ describe('(patients/:uuid/documents) Patient Documents', () => {
 
   it('DELETE /patients/:uuid/documents/:documentUuid should remove that attachment from the patient reference', () => {
     return agent.delete(`/patients/${patientUuid}/documents/${docId}`)
-      .then(function (res) {
+      .then((res) => {
         helpers.api.deleted(res);
       })
       .catch(helpers.api.handler);
@@ -75,13 +75,13 @@ describe('(patients/:uuid/documents) Patient Documents', () => {
 
   it('DELETE /patients/:uuid/documents/all should remove all documents from the patient', () => {
     return agent.delete(`/patients/${patientUuid}/documents/all`)
-      .then(function (res) {
+      .then((res) => {
         helpers.api.deleted(res);
 
         // query the database to see if any documents remain
         return agent.get(`/patients/${patientUuid}/documents`);
       })
-      .then(function (res) {
+      .then((res) => {
         helpers.api.listed(res, 0);
       })
       .catch(helpers.api.handler);

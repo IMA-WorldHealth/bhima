@@ -10,7 +10,7 @@ const FU = require('../shared/FormUtils');
 
 describe('Debtor Groups Management', () => {
   const INITIAL_GROUPS = 3;
-  const DELETEABLE_DEBTOR_GROUP = 'a11e6b7f-fbbb-432e-ac2a-5312a66dccf4';
+  const DELETEABLE_DEBTOR_GROUP = 'A11E6B7FFBBB432EAC2A5312A66DCCF4';
 
   const root = '#/debtors/groups';
   before(() => helpers.navigate(root));

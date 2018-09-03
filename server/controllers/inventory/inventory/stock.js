@@ -20,8 +20,7 @@ function getStockLevels() {
   // events with this LEFT JOIN.
   //
   // TODO - is this optimal?
-  const sql =
-    `SELECT i.uuid AS uuid, IFNULL(t.quantity, 0) AS quantity
+  const sql = `SELECT i.uuid AS uuid, IFNULL(t.quantity, 0) AS quantity
     FROM inventory AS i LEFT JOIN (
       SELECT s.inventory_uuid AS uuid,
         SUM(s.quantity - c.quantity) AS quantity
@@ -42,8 +41,7 @@ function getStockLevels() {
 * @returns {Promise} The database request promise
 */
 function getStockLevelsById(uuid) {
-  const sql =
-    `SELECT s.inventory_uuid, SUM(s.quantity - IFNULL(c.quantity, 0)) AS quantity
+  const sql = `SELECT s.inventory_uuid, SUM(s.quantity - IFNULL(c.quantity, 0)) AS quantity
     FROM stock AS s LEFT JOIN consumption AS c ON
       s.tracking_number = c.tracking_number
     WHERE s.inventory_uuid = ?
@@ -61,8 +59,7 @@ function getStockLevelsById(uuid) {
 * @returns {Promise} The database request promise
 */
 function getAverageStockLevels() {
-  const sql =
-    `SELECT s.inventory_uuid AS uuid,
+  const sql = `SELECT s.inventory_uuid AS uuid,
       SUM(s.quantity - c.quantity) AS quantity
     FROM stock AS s LEFT JOIN consumption AS c ON
       s.tracking_number = c.tracking_number

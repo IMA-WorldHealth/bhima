@@ -5,16 +5,14 @@
  * associated with its employees to return transactions to executes in order to pass
  * the accounting transactions for the wage commitments.
  *
- * @requires util
- * @requires db
- * @requires uuid
+ * @requires lib/util
+ * @requires lib/db
  * @requires moment
  */
 
+const moment = require('moment');
 const util = require('../../../lib/util');
 const db = require('../../../lib/db');
-const uuid = require('uuid/v4');
-const moment = require('moment');
 const commitmentFunction = require('./commitmentFunction');
 
 const COMMITMENT_TYPE_ID = 15;
@@ -26,11 +24,11 @@ function commitments(employees, rubrics, rubricsConfig, account, projectId, user
   const accountPayroll = account[0].account_id;
   const periodPayroll = moment(account[0].dateFrom).format('MM-YYYY');
   const labelPayroll = account[0].label;
-  const commitmentUuid = uuid();
+  const commitmentUuid = util.uuid();
   const voucherCommitmentUuid = db.bid(commitmentUuid);
-  const withholdingUuid = uuid();
+  const withholdingUuid = util.uuid();
   const voucherWithholdingUuid = db.bid(withholdingUuid);
-  const chargeRemunerationUuid = uuid();
+  const chargeRemunerationUuid = util.uuid();
   const voucherChargeRemunerationUuid = db.bid(chargeRemunerationUuid);
   const identificationCommitment = {
     voucherCommitmentUuid,
@@ -79,8 +77,9 @@ function commitments(employees, rubrics, rubricsConfig, account, projectId, user
     item.is_discount && item.is_employee && item.totals > 0 && item.is_associated_employee !== 1));
 
   // Get Enterprise charge on remuneration
-  chargesRemunerations =
-    rubricsConfig.filter(item => (item.is_employee !== 1 && item.is_discount === 1 && item.totals > 0));
+  chargesRemunerations = rubricsConfig.filter(
+    item => (item.is_employee !== 1 && item.is_discount === 1 && item.totals > 0)
+  );
 
   chargesRemunerations.forEach(charge => {
     totalChargesRemuneration += charge.totals;
@@ -97,9 +96,11 @@ function commitments(employees, rubrics, rubricsConfig, account, projectId, user
     identificationCommitment
   );
 
-  const transactions = dataCommitment.transactions;
-  const employeesBenefitsItem = dataCommitment.employeesBenefitsItem;
-  const employeesWithholdingItem = dataCommitment.employeesWithholdingItem;
+  const {
+    transactions,
+    employeesBenefitsItem,
+    employeesWithholdingItem,
+  } = dataCommitment;
 
   totalCommitments = util.roundDecimal(dataCommitment.totalCommitments, DECIMAL_PRECISION);
   totalBasicSalaries = util.roundDecimal(dataCommitment.totalBasicSalaries, DECIMAL_PRECISION);
@@ -116,7 +117,7 @@ function commitments(employees, rubrics, rubricsConfig, account, projectId, user
   };
 
   employeesBenefitsItem.push([
-    db.bid(uuid()),
+    db.bid(util.uuid()),
     accountPayroll,
     totalBasicSalaries,
     0,
@@ -127,7 +128,7 @@ function commitments(employees, rubrics, rubricsConfig, account, projectId, user
   if (rubricsBenefits.length) {
     rubricsBenefits.forEach(benefits => {
       employeesBenefitsItem.push([
-        db.bid(uuid()),
+        db.bid(util.uuid()),
         benefits.expense_account_id,
         benefits.totals,
         0,
@@ -152,14 +153,14 @@ function commitments(employees, rubrics, rubricsConfig, account, projectId, user
 
     chargesRemunerations.forEach(chargeRemuneration => {
       enterpriseChargeRemunerations.push([
-        db.bid(uuid()),
+        db.bid(util.uuid()),
         chargeRemuneration.debtor_account_id,
         0,
         chargeRemuneration.totals,
         voucherChargeRemunerationUuid,
         null,
       ], [
-        db.bid(uuid()),
+        db.bid(util.uuid()),
         chargeRemuneration.expense_account_id,
         chargeRemuneration.totals,
         0,
@@ -183,7 +184,7 @@ function commitments(employees, rubrics, rubricsConfig, account, projectId, user
 
     rubricsWithholdingsNotAssociat.forEach(withholding => {
       employeesWithholdingItem.push([
-        db.bid(uuid()),
+        db.bid(util.uuid()),
         withholding.debtor_account_id,
         0,
         util.roundDecimal(withholding.totals, 2),
@@ -224,7 +225,7 @@ function commitments(employees, rubrics, rubricsConfig, account, projectId, user
       query : 'INSERT INTO voucher SET ?',
       params : [voucherWithholding],
     }, {
-      query : `INSERT INTO voucher_item 
+      query : `INSERT INTO voucher_item
         (uuid, account_id, debit, credit, voucher_uuid, entity_uuid) VALUES ?`,
       params : [employeesWithholdingItem],
     }, {

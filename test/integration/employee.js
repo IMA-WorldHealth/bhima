@@ -1,7 +1,6 @@
-/* global expect, chai, agent */
+/* global expect, agent */
 
 const helpers = require('./helpers');
-const uuid = require('uuid/v4');
 
 /*
  * The /employees API endpoint
@@ -10,8 +9,6 @@ const uuid = require('uuid/v4');
  */
 describe('(/employees) the employees API endpoint', () => {
 
-  const numEmployees = 1;
-
   // custom dates
   const embaucheDate = new Date('2016-01-01');
   const dob1 = new Date('1987-04-17');
@@ -19,7 +16,7 @@ describe('(/employees) the employees API endpoint', () => {
 
   // employee we will add during this test suite.
   const employee = {
-    uuid : '6b4642a7-4577-4768-b6ae-1b3d38f0bbef',
+    uuid : '6B4642A745774768B6AE1B3D38F0BBEF',
     code : 'x500',
     display_name : 'Magnus Carolus Charlemagne',
     sex : 'M',
@@ -27,7 +24,7 @@ describe('(/employees) the employees API endpoint', () => {
     date_embauche : embaucheDate,
     nb_spouse : 0,
     nb_enfant : 0,
-    grade_uuid : '9ee06e4a-7b59-48e6-812c-c0f8a00cf7d3',
+    grade_uuid : '9EE06E4A-7B59-48E6-812C-C0F8A00CF7D3',
     bank : 'BIAC',
     bank_account : '00-99-88-77',
     email : 'me@info.com',
@@ -36,10 +33,10 @@ describe('(/employees) the employees API endpoint', () => {
     service_id : 1,
     is_medical : 0,
     hospital_no : 'TP30',
-    creditor_group_uuid : 'b0fa5ed2-04f9-4cb3-92f7-61d6404696e7',
-    debtor_group_uuid : '4de0fe47-177f-4d30-b95f-cff8166400b4',
-    current_location_id : '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
-    origin_location_id :  '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
+    creditor_group_uuid : 'B0FA5ED204F94CB392F761D6404696E7',
+    debtor_group_uuid : '4DE0FE47177F4D30B95FCFF8166400B4',
+    current_location_id : '1F162A109F6747889EFFC1FEA42FCC9B',
+    origin_location_id :  '1F162A109F6747889EFFC1FEA42FCC9B',
     payroll : {
       5 : 10,
       7 : 15,
@@ -55,28 +52,28 @@ describe('(/employees) the employees API endpoint', () => {
     nb_spouse : 0,
     nb_enfant : 0,
     hospital_no : 'HBB 2017',
-    grade_uuid : '9ee06e4a-7b59-48e6-812c-c0f8a00cf7d3',
+    grade_uuid : '9EE06E4A7B5948E6812CC0F8A00CF7D3',
     bank : 'BIAC',
     bank_account : '00-99-88-77',
     email : 'me@info.com',
     fonction_id : 1,
     service_id : 1,
     is_medical : 0,
-    creditor_group_uuid : 'b0fa5ed2-04f9-4cb3-92f7-61d6404696e7',
-    debtor_group_uuid : '4de0fe47-177f-4d30-b95f-cff8166400b4',
-    current_location_id : '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
-    origin_location_id :  '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
+    creditor_group_uuid : 'B0FA5ED204F94CB392F761D6404696E7',
+    debtor_group_uuid : '4DE0FE47177F4D30B95FCFF8166400B4',
+    current_location_id : '1F162A109F6747889EFFC1FEA42FCC9B',
+    origin_location_id :  '1F162A109F6747889EFFC1FEA42FCC9B',
   };
 
-  var patient = {
+  const patient = {
     code : 'bcdc2018',
     display_name : 'Test 1 Patient',
-    patient_uuid : '81af634f-321a-40de-bc6f-ceb1167a9f65',
-    debtor_uuid : 'a11e6b7f-fbbb-432e-ac2a-5312a66dccf4',
+    patient_uuid : '81AF634F321A40DEBC6FCEB1167A9F65',
+    debtor_uuid : 'A11E6B7FFBBB432EAC2A5312A66DCCF4',
     date_embauche : embaucheDate,
     nb_spouse : 0,
     nb_enfant : 0,
-    grade_uuid : '9ee06e4a-7b59-48e6-812c-c0f8a00cf7d3',
+    grade_uuid : '9EE06E4A7B5948E6812CC0F8A00CF7D3',
     bank : 'AIG',
     bank_account : '1986O709',
     email : 'me@info.com',
@@ -85,10 +82,10 @@ describe('(/employees) the employees API endpoint', () => {
     service_id : 1,
     is_medical : 0,
     hospital_no : 'TP30',
-    creditor_group_uuid : 'b0fa5ed2-04f9-4cb3-92f7-61d6404696e7',
-    debtor_group_uuid : '4de0fe47-177f-4d30-b95f-cff8166400b4',
-    current_location_id: '1f162a10-9f67-4788-9eff-c1fea42fcc9b',
-    origin_location_id:  '1f162a10-9f67-4788-9eff-c1fea42fcc9b'
+    creditor_group_uuid : 'B0FA5ED204F94CB392F761D6404696E7',
+    debtor_group_uuid : '4DE0FE47177F4D30B95FCFF8166400B4',
+    current_location_id : '1F162A109F6747889EFFC1FEA42FCC9B',
+    origin_location_id :  '1F162A109F6747889EFFC1FEA42FCC9B',
   };
 
   const searchEmployee = 'Test 2 Patient';
@@ -104,10 +101,10 @@ describe('(/employees) the employees API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('POST /employees/patient_employee Register an employee from a patient', function () {
+  it('POST /employees/patient_employee Register an employee from a patient', () => {
     return agent.post('/employees/patient_employee')
       .send(patient)
-      .then(function (res) {
+      .then((res) => {
         helpers.api.created(res);
       })
       .catch(helpers.handler);

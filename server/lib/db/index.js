@@ -2,13 +2,13 @@
 const q = require('q');
 const mysql = require('mysql');
 const uuidParse = require('uuid-parse');
-const uuidv4 = require('uuid/v4');
 const _ = require('lodash');
 const debug = require('debug')('db');
 
+const Transaction = require('./transaction');
+const { uuid } = require('../util');
 const BadRequest = require('../errors/BadRequest');
 const NotFound = require('../errors/NotFound');
-const Transaction = require('./transaction');
 
 /**
  * @class DatabaseConnector
@@ -175,7 +175,7 @@ class DatabaseConnector {
    * generates a uuid(buffer)
    */
   uuid() {
-    return this.bid(uuidv4());
+    return this.bid(uuid());
   }
 
   /**
@@ -237,7 +237,6 @@ class DatabaseConnector {
   escape(key) {
     return mysql.escape(key);
   }
-
 }
 
 module.exports = new DatabaseConnector();
