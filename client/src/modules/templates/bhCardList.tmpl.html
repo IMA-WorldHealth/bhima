@@ -1,14 +1,49 @@
 <div class="panel panel-default">
   <div class="panel-heading">
+    <a href ng-click="$ctrl.toggleFilter()">
+      <span translate>TABLE.COLUMNS.FILTERING.LABEL</span>
+      <span class="caret" ng-class="{'rotate' : $ctrl.filterOptions.active}"></span>
+    </a>
 
+    <div class="pull-right">
+      <span class="label label-primary" ng-if="$ctrl.orderOptions.active">
+        <span translate>{{$ctrl.orderOptions.current.key }} </span>
+      </span>
+      <span uib-dropdown>
+        <a href uib-dropdown-toggle> <span translate>TABLE.COLUMNS.SORTING.LABEL</span> <span class="caret"></span></a>
+        <ul class="dropdown-menu-right textflow" uib-dropdown-menu>
+          <li ng-repeat="option in $ctrl.orderOptions.available">
+            <a href ng-click="$ctrl.setOrder(option)">
+              <span translate>{{ option.key }}</span>
+            </a>
+          </li>
+          <li role="seperator" class="divider"></li>
+          <li>
+            <a href ng-click="$ctrl.setOrder()">
+              <span class="fa fa-times" aria-hidden="true"></span>
+              <span translate> FORM.BUTTONS.CLEAR </span>
+            </a>
+          </li>
+        </ul>
+      </span>
+    </div>
   </div>
 
-  <div class="panel-body">
-  </div>
+  <input
+    ng-model="$ctrl.filterOptions.value[$ctrl.currentFilterAttribute]"
+    ng-show="$ctrl.filterOptions.active"
+    class="form-control"
+    placeholder="{{'FORM.PLACEHOLDERS.FILTER_NAME' | translate }}"
+    style="border-radius: 0"/>
+
+  <!-- <div class="panel-body"> -->
+  <!-- </div> -->
 </div>
 
-<input ng-model="$ctrl.currentFilterValue">
+<div
+  ng-repeat="card in $ctrl.data
+    | filter : $ctrl.filterOptions.value : strict
+    | orderBy : $ctrl.currentOrderAttribute : $ctrl.currentOrderReversed">
 
-<div ng-repeat="card in $ctrl.data | filter : $ctrl.currentFilterValue : 'id'">
   <ng-include src="$ctrl.template"></ng-include>
 </div>
