@@ -1,0 +1,14 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+
+  </div>
+
+  <div class="panel-body">
+  </div>
+</div>
+
+<input ng-model="$ctrl.currentFilterValue">
+
+<div ng-repeat="card in $ctrl.data | filter : $ctrl.currentFilterValue : 'id'">
+  <ng-include src="$ctrl.template"></ng-include>
+</div>
