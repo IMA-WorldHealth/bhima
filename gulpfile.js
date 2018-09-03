@@ -182,14 +182,17 @@ gulp.task('static', () => {
 });
 
 gulp.task('watch-client', () => {
-  gulp.watch(paths.client.index, ['watch-index']);
   gulp.watch(paths.client.javascript, ['watch-js']);
   gulp.watch(paths.client.css, ['watch-css']);
   gulp.watch([`${supportedLanguages.en.path}/**/*.json`, `${supportedLanguages.fr.path}/**/*.json`], ['i18n']);
+
+  // ensure all static bhima files are copied over to the build given changes
+  // this is important to catch changes in component template files etc.
+  gulp.watch(paths.client.static.bhima, ['watch-static']);
 });
 
 // alias tasks to run client build steps and ensures template is linked following
-gulp.task('watch-index', ['static'], templateHTML);
+gulp.task('watch-static', ['static'], templateHTML);
 gulp.task('watch-js', ['js'], templateHTML);
 gulp.task('watch-css', ['css'], templateHTML);
 
