@@ -9,7 +9,8 @@ describe('ExchangeRateService', () => {
     'bhima.services',
     'angularMoment',
     'bhima.mocks',
-    'ngStorage'
+    'ngStorage',
+    'ui.router'
   ));
 
   beforeEach(inject((_ExchangeRateService_, _SessionService_, _MockDataService_, _$httpBackend_) => {
