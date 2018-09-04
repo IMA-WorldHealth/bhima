@@ -22,60 +22,55 @@ function FeeCenterModalController($state, FeeCenter, ModalService, Notify, AppCa
 
   // exposed methods
   vm.submit = submit;
-  vm.closeModal = closeModal;
   vm.auxiliaryFee = auxiliaryFee;
   vm.costCenter = costCenter;
   vm.onSelectAccountReference = onSelectAccountReference;
-  vm.onProjectsChange = onProjectsChange;
 
   if (!vm.isCreating) {
     FeeCenter.read(vm.stateParams.id)
       .then((data) => {
         vm.feeCenter = data.feeCenter[0];
-
-        if (data.projects) {
-          vm.assignedProjects = data.projects.length ? 1 : 0;
-          vm.projects = data.projects;
-        }
-
-        if (data.references) {
-          data.references.forEach((reference) => {
-            if (reference.is_cost) {
-              if (vm.feeCenter.is_principal) {
-                vm.hasCostCenter = 1;
-              } else {
-                vm.isCostCenter = 1;
-                vm.auxiliaryCenter = 1;
-              }
-              vm.feeCenter.is_cost = reference.is_cost;
-              vm.feeCenter.reference_cost_id = reference.account_reference_id;
-              vm.costCenterReference = {
-                account_reference_id : reference.account_reference_id,
-                is_cost : reference.is_cost,
-              };
-            }
-
-            if (!reference.is_cost) {
-              if (vm.feeCenter.is_principal) {
-                vm.hasProfitCenter = 1;
-              } else {
-                vm.isProfitCenter = 1;
-                vm.auxiliaryCenter = 1;
-              }
-
-              vm.feeCenter.is_cost = reference.is_cost;
-              vm.feeCenter.reference_profit_id = reference.account_reference_id;
-              vm.profitCenterReference = {
-                account_reference_id : reference.account_reference_id,
-                is_cost : reference.is_cost,
-              };
-            }
-          });
-        }
-
+        const dataReferences = processReference(data.references);
         vm.setting = true;
       })
       .catch(Notify.handleError);
+  }
+
+  function processReference(references) {
+    if (references) {
+      references.forEach((reference) => {
+        if (reference.is_cost) {
+          if (vm.feeCenter.is_principal) {
+            vm.hasCostCenter = 1;
+          } else {
+            vm.isCostCenter = 1;
+            vm.auxiliaryCenter = 1;
+          }
+          vm.feeCenter.is_cost = reference.is_cost;
+          vm.feeCenter.reference_cost_id = reference.account_reference_id;
+          vm.costCenterReference = {
+            account_reference_id : reference.account_reference_id,
+            is_cost : reference.is_cost,
+          };
+        }
+
+        if (!reference.is_cost) {
+          if (vm.feeCenter.is_principal) {
+            vm.hasProfitCenter = 1;
+          } else {
+            vm.isProfitCenter = 1;
+            vm.auxiliaryCenter = 1;
+          }
+
+          vm.feeCenter.is_cost = reference.is_cost;
+          vm.feeCenter.reference_profit_id = reference.account_reference_id;
+          vm.profitCenterReference = {
+            account_reference_id : reference.account_reference_id,
+            is_cost : reference.is_cost,
+          };
+        }
+      });
+    }
   }
 
   function auxiliaryFee(value) {
@@ -105,10 +100,6 @@ function FeeCenterModalController($state, FeeCenter, ModalService, Notify, AppCa
     }
   }
 
-  function onProjectsChange(projects) {
-    vm.projects = projects;
-  }
-
   function costCenter(value) {
     vm.isCostCenter = value;
     vm.isProfitCenter = !value;
@@ -126,13 +117,10 @@ function FeeCenterModalController($state, FeeCenter, ModalService, Notify, AppCa
       vm.referenceFeeCenter.push(vm.profitCenterReference);
     }
 
-    vm.projects = vm.assignedProjects ? vm.projects : [];
-
     const data = {
       label : vm.feeCenter.label,
       is_principal : vm.feeCenter.is_principal,
       reference_fee_center : vm.referenceFeeCenter,
-      projects : vm.projects,
     };
 
     const promise = (vm.isCreating)
@@ -146,9 +134,5 @@ function FeeCenterModalController($state, FeeCenter, ModalService, Notify, AppCa
         $state.go('fee_center', null, { reload : true });
       })
       .catch(Notify.handleError);
-  }
-
-  function closeModal() {
-    $state.go('fee_center');
   }
 }

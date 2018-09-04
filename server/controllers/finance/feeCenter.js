@@ -4,9 +4,9 @@
 * This controller exposes an API to the client for reading and writing Fee Center
 */
 
+const q = require('q');
 const db = require('../../lib/db');
 const NotFound = require('../../lib/errors/NotFound');
-const q = require('q');
 
 // GET /fee_center
 function lookupFeeCenter(id) {
@@ -19,25 +19,18 @@ function lookupFeeCenter(id) {
     FROM reference_fee_center 
     WHERE fee_center_id = ?`;
 
-  const sqlProjectsFeeCenter = `
-    SELECT id, fee_center_id, project_id FROM project_fee_center WHERE fee_center_id = ?`;
-
   return q.all([
     db.exec(sqlFeeCenter, [id]),
     db.exec(sqlReferenceFeeCenter, [id]),
-    db.exec(sqlProjectsFeeCenter, [id]),
   ])
-  .spread((feeCenter, references, projectsFeeCenter) => {
-    const projects = projectsFeeCenter.map(project => project.project_id);
+    .spread((feeCenter, references) => {
+      const data = {
+        feeCenter,
+        references,
+      };
 
-    const data = {
-      feeCenter,
-      references,
-      projects,
-    };
-
-    return data;
-  });
+      return data;
+    });
 }
 
 // Lists
@@ -82,43 +75,19 @@ function create(req, res, next) {
   db.exec(sql, [feeCenterData])
     .then((row) => {
       const feeCenterId = row.insertId;
-      const dataReferences = [];
-      const dataProjects = [];
-
-      if (data.reference_fee_center) {
-        data.reference_fee_center.forEach(item => {
-          dataReferences.push([
-            feeCenterId,
-            item.account_reference_id,
-            item.is_cost,
-          ]);
-        });
-      }
-
-      if (data.projects) {
-        data.projects.forEach(item => {
-          dataProjects.push([
-            feeCenterId,
-            item,
-          ]);
-        });
-      }
-
       const transaction = db.transaction();
 
       if (data.reference_fee_center.length) {
+        const dataReferences = data.reference_fee_center.map(item => [
+          feeCenterId,
+          item.account_reference_id,
+          item.is_cost,
+        ]);
+
         const sqlReferences = `
           INSERT INTO reference_fee_center (fee_center_id, account_reference_id, is_cost) VALUES ?`;
-
         transaction
           .addQuery(sqlReferences, [dataReferences]);
-      }
-
-      if (dataProjects.length) {
-        const sqlProjects = `
-          INSERT INTO project_fee_center (fee_center_id, project_id) VALUES ?`;
-        transaction
-          .addQuery(sqlProjects, [dataProjects]);
       }
 
       return transaction.execute();
@@ -143,49 +112,25 @@ function update(req, res, next) {
 
   const sql = `UPDATE fee_center SET ? WHERE id = ?;`;
   const delReferences = `DELETE FROM reference_fee_center WHERE fee_center_id = ?;`;
-  const delProjects = `DELETE FROM project_fee_center WHERE fee_center_id = ?;`;
 
   const feeCenterId = req.params.id;
   const dataReferences = [];
-  const dataProjects = [];
-
-  if (data.reference_fee_center) {
-    data.reference_fee_center.forEach(item => {
-      dataReferences.push([
-        feeCenterId,
-        item.account_reference_id,
-        item.is_cost,
-      ]);
-    });
-  }
-
-  if (data.projects) {
-    data.projects.forEach(item => {
-      dataProjects.push([
-        feeCenterId,
-        item,
-      ]);
-    });
-  }
 
   transaction
     .addQuery(sql, [feeCenterData, feeCenterId])
-    .addQuery(delReferences, [feeCenterId])
-    .addQuery(delProjects, [feeCenterId]);
+    .addQuery(delReferences, [feeCenterId]);
 
   if (data.reference_fee_center.length) {
+    const dataReferences = data.reference_fee_center.map(item => [
+      feeCenterId,
+      item.account_reference_id,
+      item.is_cost,
+    ]);
+
     const sqlReferences = `
       INSERT INTO reference_fee_center (fee_center_id, account_reference_id, is_cost) VALUES ?`;
-
     transaction
       .addQuery(sqlReferences, [dataReferences]);
-  }
-
-  if (dataProjects.length) {
-    const sqlProjects = `
-      INSERT INTO project_fee_center (fee_center_id, project_id) VALUES ?`;
-    transaction
-      .addQuery(sqlProjects, [dataProjects]);
   }
 
   return transaction.execute()
@@ -207,11 +152,9 @@ function del(req, res, next) {
 
   const sql = `DELETE FROM fee_center WHERE id = ?;`;
   const delReferences = `DELETE FROM reference_fee_center WHERE fee_center_id = ?;`;
-  const delProjects = `DELETE FROM project_fee_center WHERE fee_center_id = ?;`;
 
   transaction
     .addQuery(delReferences, [feeCenterId])
-    .addQuery(delProjects, [feeCenterId])
     .addQuery(sql, [feeCenterId]);
 
   transaction.execute()
@@ -241,4 +184,3 @@ exports.update = update;
 
 // Delete a feeCenter
 exports.delete = del;
-

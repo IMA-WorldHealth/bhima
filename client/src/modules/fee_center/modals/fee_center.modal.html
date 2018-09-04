@@ -21,7 +21,7 @@
       </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group" ng-class="{'has-error' : FeeCenterForm.$submitted && FeeCenterForm.is_principal.$invalid }">
       <label translate>FORM.LABELS.TYPE</label>
       <div class="radio">
         <label class="radio-inline">
@@ -32,6 +32,7 @@
             ng-model="FeeCenterModalCtrl.feeCenter.is_principal"
             ng-click="FeeCenterModalCtrl.auxiliaryFee(false)"
             id="principal"
+            required
             >
           <span translate>FORM.LABELS.PRINCIPAL_2</span>
         </label>
@@ -44,9 +45,14 @@
             ng-model="FeeCenterModalCtrl.feeCenter.is_principal"
             ng-click="FeeCenterModalCtrl.auxiliaryFee(true)"
             id="auxiliary"
+            required
             >
           <span translate>FORM.LABELS.AUXILIARY</span>
         </label>
+
+        <div class="help-block" ng-messages="FeeCenterForm.is_principal.$error" ng-show="FeeCenterForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>        
       </div>
     </div>
     <hr />
@@ -103,7 +109,7 @@
           on-select-callback="FeeCenterModalCtrl.onSelectAccountReference(accountReference, 0)"
           required="true"
           validation-trigger="FeeCenterForm.$submitted">
-        </bh-account-config-select>
+        </bh-account-reference-select>
       </div>
       
       <span ng-if="FeeCenterModalCtrl.feeCenter.is_principal">
@@ -134,33 +140,8 @@
           on-select-callback="FeeCenterModalCtrl.onSelectAccountReference(accountReference, 1)"
           required="true"
           validation-trigger="FeeCenterForm.$submitted">
-        </bh-account-config-select>
+        </bh-account-reference-select>
       </div>
-    </div>
-    <hr />
-
-    <div class="checkbox">
-      <label>
-        <input
-          type="checkbox"
-          id="assigned_projects"
-          ng-true-value="1"
-          ng-false-value="0"
-          ng-model="FeeCenterModalCtrl.assignedProjects">
-        <span translate>
-          <strong>
-            FORM.INFO.ASSIGNED_PROJECTS
-          </strong>
-        </span>
-      </label>
-    </div>
-    <div ng-if="FeeCenterModalCtrl.assignedProjects">
-      <bh-projects-multiple-select
-        on-change="FeeCenterModalCtrl.onProjectsChange(projects)"
-        projects-ids="FeeCenterModalCtrl.projects"
-        required="true"
-        validation-trigger="FeeCenterForm.$submitted">
-      </bh-projects-multiple-select>
     </div>
   </div>
 

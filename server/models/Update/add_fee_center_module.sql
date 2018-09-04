@@ -12,19 +12,6 @@ CREATE TABLE `fee_center` (
   UNIQUE KEY `fee_center_1` (`label`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `project_fee_center`;
-CREATE TABLE `project_fee_center` (
-  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `fee_center_id` MEDIUMINT(8) UNSIGNED NOT NULL,
-  `project_id` SMALLINT(5) UNSIGNED NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `project_fee_center_1` (`fee_center_id`,`project_id`),
-  KEY `fee_center_id` (`fee_center_id`),
-  KEY `project_id` (`project_id`),
-  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
-  FOREIGN KEY (`fee_center_id`) REFERENCES `fee_center` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 DROP TABLE IF EXISTS `reference_fee_center`;
 CREATE TABLE `reference_fee_center` (
   `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,

@@ -7,21 +7,15 @@
       
       <div class="toolbar"> 
         <div class="toolbar-item"> 
-          <button class="btn btn-default text-capitalize" id="create" ui-sref="fee_center.create" data-method="create"> 
+          <button class="btn btn-default text-capitalize" ui-sref="fee_center.create" data-method="create"> 
             <span class="fa fa-plus"></span> <span translate>FEE_CENTER.TITLE</span> 
           </button> 
         </div> 
         
         <div class="toolbar-item"> 
-          <button 
-            type="button" 
-            ng-click="FeeCenterCtrl.toggleFilter()" 
-            data-method="filter" 
-            class="btn btn-default" 
-            ng-class="{ 'btn-info' : FeeCenterCtrl.filterEnabled }"> 
-            <i class="fa fa-filter"></i> 
-          </button> 
-        </div> 
+          <bh-filter-toggle on-toggle="FeeCenterCtrl.toggleFilter()">
+          </bh-filter-toggle>
+        </div>
       </div> 
     </div> 
   </div> 

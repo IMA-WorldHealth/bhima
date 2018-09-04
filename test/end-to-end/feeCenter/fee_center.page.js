@@ -53,11 +53,6 @@ class FeeCenterPage {
     }
     components.accountReferenceSelect.set(feeCenter.reference_cost_id, 'account_cost_reference_id');
 
-    if (feeCenter.projects) {
-      element(by.id('assigned_projects')).click();
-      components.projectsMultipleSelect.set(feeCenter.projects);
-    }
-
     FU.buttons.submit();
     components.notification.hasSuccess();
   }
@@ -81,11 +76,6 @@ class FeeCenterPage {
       element(by.id('has_cost_center')).click();
     }
     components.accountReferenceSelect.set(feeCenter.reference_cost_id, 'account_cost_reference_id');
-
-    if (feeCenter.projects) {
-      element(by.id('assigned_projects')).click();
-      components.projectsMultipleSelect.set(feeCenter.projects);
-    }
 
     FU.buttons.submit();
     FU.buttons.cancel();
@@ -128,13 +118,6 @@ class FeeCenterPage {
           } 
         }
 
-        if (updateFeeCenter.is_update_projects) {
-          element(by.id('assigned_projects')).click();
-          if (updateFeeCenter.is_set_projects) {
-            components.projectsMultipleSelect.set(updateFeeCenter.projects);  
-          }
-        }
-
         FU.buttons.submit();
         components.notification.hasSuccess();
       });
@@ -164,13 +147,6 @@ class FeeCenterPage {
           if (!updateFeeCenter.is_profit) {
             components.accountReferenceSelect.set(updateFeeCenter.reference_cost_id, 'account_cost_reference_id');  
           } 
-        }
-
-        if (updateFeeCenter.is_update_projects) {
-          element(by.id('assigned_projects')).click();
-          if (updateFeeCenter.is_set_projects) {
-            components.projectsMultipleSelect.set(updateFeeCenter.projects);  
-          }
         }
 
         FU.buttons.submit();

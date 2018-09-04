@@ -19,7 +19,6 @@ describe('Fee Center Management', () => {
     reference_profit_id : 'Profit Test 2',
     has_cost_center : 1,
     reference_cost_id : 'Cost Test 3',
-    projects : ['Test Project A', 'Test Project B'],
   };
 
   const updateFeeCenter = {
@@ -32,15 +31,6 @@ describe('Fee Center Management', () => {
     is_update_reference : 1,
     is_profit : 1,
     reference_profit_id : 'Profit Test 3',
-    is_update_projects : 0,
-    is_set_projects : 0,
-    is_unset_projects : 0, 
-  };
-
-  const updateProjects = {
-    label : 'Updated Fee Center',
-    is_update_projects : 1,
-    is_set_projects : 0, 
   };
 
   const updateProfitToCost = {
@@ -48,9 +38,6 @@ describe('Fee Center Management', () => {
     is_update_reference : 1,
     is_profit : 0,
     reference_cost_id : 'Cost Test 1',
-    is_update_projects : 1,
-    is_set_projects : 1,
-    projects : ['Test Project C'], 
   };
 
   const ErrorfeeCenterUpdate = {
@@ -59,9 +46,6 @@ describe('Fee Center Management', () => {
     is_update_reference : 1,
     is_profit : 0,
     reference_cost_id : 'Section Administration',
-    is_update_projects : 0,
-    is_set_projects : 0,
-    is_unset_projects : 0, 
   };
 
   const ErrorfeeCenterInsert = {
@@ -71,7 +55,6 @@ describe('Fee Center Management', () => {
     reference_profit_id : 'Profit Administration',
     has_cost_center : 1,
     reference_cost_id : 'Cost Test 1',
-    projects : ['Test Project A', 'Test Project B'],
   };
 
   it('successfully creates a new Fee Center', () => {
@@ -84,14 +67,6 @@ describe('Fee Center Management', () => {
 
   it('successfully Change of the Principal Fee Center to Auxiliary and the modification of the expense center', () => {
     Page.editFeeCenter(updateAuxiliary.label, updateAuxiliary);
-  });
-
-  it('successfully Change Projects assigned to the cost center', () => {
-    Page.editFeeCenter(updateAuxiliary.label, updateProjects);
-  });
-
-  it('successfully Change profit center in cost center in assigns to a project', () => {
-    Page.editFeeCenter(updateProfitToCost.label, updateProfitToCost);
   });
 
   it('successfully delete a Fee Center', () => {

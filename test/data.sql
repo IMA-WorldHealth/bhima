@@ -989,7 +989,4 @@ INSERT INTO `reference_fee_center` (`id`, `fee_center_id`, `account_reference_id
 (2, 1, 2, 0),
 (3, 2, 6, 1),
 (4, 2, 3, 0);
-
--- PROJECT FEE CENTER
-INSERT INTO `project_fee_center` (`id`, `fee_center_id`, `project_id`) VALUES (1, 2, 1);
 -- ----------------------------------------------------------------------------------------

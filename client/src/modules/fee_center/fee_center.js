@@ -18,7 +18,6 @@ function FeeCenterController(FeeCenters, ModalService,
 
   // bind methods
   vm.deleteFeeCenter = deleteFeeCenter;
-  vm.createFeeCenter = createFeeCenter;
   vm.toggleFilter = toggleFilter;
 
   // global variables
@@ -40,7 +39,7 @@ function FeeCenterController(FeeCenters, ModalService,
         displayName : '',
         headerCellFilter : 'translate',
         enableFiltering : false,
-        enableSorting : false,
+        enableSorting : true,
         cellTemplate : '/modules/fee_center/templates/feeCenterType.tmpl.html',
       },
       {
@@ -90,11 +89,6 @@ function FeeCenterController(FeeCenters, ModalService,
           })
           .catch(Notify.handleError);
       });
-  }
-
-  // create a new FeeCenter
-  function createFeeCenter() {
-    $state.go('fee_center.create');
   }
 
   loadFeeCenters();

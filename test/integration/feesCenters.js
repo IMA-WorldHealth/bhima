@@ -9,7 +9,7 @@ const helpers = require('./helpers');
  */
 describe('(/fee_center) The /fee_center  API endpoint', () => {
   // Fee Center we will add during this test suite.
-  
+
   const feeCenter = {
     id : 10,
     label : 'Centre de Frais Test',
@@ -21,30 +21,27 @@ describe('(/fee_center) The /fee_center  API endpoint', () => {
       account_reference_id : 8,
       is_cost : 0,
     }],
-    projects : [1, 2],
   };
 
   const feeCenterUpt1 = {
     label : 'Update Test',
     is_principal : 1,
-    reference_fee_center : [{ 
-      account_reference_id : 9, 
-      is_cost : 1 
-    }, { 
-      account_reference_id : 8, 
-      is_cost : 0
+    reference_fee_center : [{
+      account_reference_id : 9,
+      is_cost : 1,
+    }, {
+      account_reference_id : 8,
+      is_cost : 0,
     }],
-    projects : [1, 2],
   };
 
-  const feeCenterUpt2 = { 
-    label: 'Update Test',
-    is_principal: 0,
-    reference_fee_center: [{ 
-      account_reference_id: 8, 
-      is_cost: 0 
+  const feeCenterUpt2 = {
+    label : 'Update Test',
+    is_principal : 0,
+    reference_fee_center : [{
+      account_reference_id : 8,
+      is_cost : 0,
     }],
-    projects: [ 1 ] 
   };
 
   const numFeeCenter = 2;
@@ -63,8 +60,7 @@ describe('(/fee_center) The /fee_center  API endpoint', () => {
       .send(feeCenter)
       .then((res) => {
         const response = res.body;
-
-        expect(response.length).to.equal(2);
+        expect(response.length).to.equal(1);
       })
       .catch(helpers.handler);
   });
@@ -76,7 +72,6 @@ describe('(/fee_center) The /fee_center  API endpoint', () => {
 
         expect(response.feeCenter.length).to.equal(0);
         expect(response.references.length).to.equal(0);
-        expect(response.projects.length).to.equal(0);
       })
       .catch(helpers.handler);
   });
@@ -93,7 +88,7 @@ describe('(/fee_center) The /fee_center  API endpoint', () => {
   });
 
 
-  it('PUT /FEE_CENTER  should update Fee Center Type, Reference fee Center and Projects for an existing Fee Center ', () => {
+  it('PUT /FEE_CENTER  should update Fee Center Type, Reference fee Center for an existing Fee Center ', () => {
     return agent.put('/fee_center/'.concat(feeCenterId))
       .send(feeCenterUpt2)
       .then((res) => {
@@ -102,22 +97,21 @@ describe('(/fee_center) The /fee_center  API endpoint', () => {
         expect(response.feeCenter[0].is_principal).to.equal(feeCenterUpt2.is_principal);
         expect(response.references[0].account_reference_id).to.equal(feeCenterUpt2.reference_fee_center[0].account_reference_id);
         expect(response.references[0].is_cost).to.equal(feeCenterUpt2.reference_fee_center[0].is_cost);
-        expect(response.projects[0]).to.equal(feeCenterUpt2.projects[0]);
       })
       .catch(helpers.handler);
   });
 
-  it('DELETE /FEE_CENTER/:ID will send back a 404 if the Fee Center does not exist', function () {
+  it('DELETE /FEE_CENTER/:ID will send back a 404 if the Fee Center does not exist', () => {
     return agent.delete('/fee_center/inknowRubric')
-      .then(function (res) {
+      .then((res) => {
         helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });
 
-  it('DELETE /FEE_CENTER/:ID should delete a Fee Center', function () {
+  it('DELETE /FEE_CENTER/:ID should delete a Fee Center', () => {
     return agent.delete('/fee_center/'.concat(feeCenterId))
-      .then(function (res) {
+      .then((res) => {
         helpers.api.deleted(res);
       })
       .catch(helpers.handler);
