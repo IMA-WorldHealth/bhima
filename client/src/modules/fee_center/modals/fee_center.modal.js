@@ -30,7 +30,7 @@ function FeeCenterModalController($state, FeeCenter, ModalService, Notify, AppCa
     FeeCenter.read(vm.stateParams.id)
       .then((data) => {
         vm.feeCenter = data.feeCenter[0];
-        const dataReferences = processReference(data.references);
+        processReference(data.references);
         vm.setting = true;
       })
       .catch(Notify.handleError);

@@ -112,9 +112,7 @@ function update(req, res, next) {
 
   const sql = `UPDATE fee_center SET ? WHERE id = ?;`;
   const delReferences = `DELETE FROM reference_fee_center WHERE fee_center_id = ?;`;
-
   const feeCenterId = req.params.id;
-  const dataReferences = [];
 
   transaction
     .addQuery(sql, [feeCenterData, feeCenterId])
