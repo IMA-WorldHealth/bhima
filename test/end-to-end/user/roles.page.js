@@ -1,7 +1,6 @@
 /* global by, element */
 
 const FU = require('../shared/FormUtils');
-/* loading grid actions */
 const GA = require('../shared/GridAction');
 const GridRow = require('../shared/GridRow');
 
@@ -61,8 +60,10 @@ function RolesPage() {
     checkAll.click();
   }
 
-  function assignRole(n) {
-    GA.clickOnMethod(n, 2, 'assign_roles', 'users-grid');
+  function assignRole(name) {
+    const row = new GridRow(name);
+    row.dropdown().click();
+    row.menu.$('[data-method="assign_roles"]').click();
   }
 
   function assignActions(label) {

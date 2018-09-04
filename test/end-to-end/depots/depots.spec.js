@@ -55,8 +55,7 @@ describe('Depots Management', () => {
 
   it('Set the depot manage by user', () => {
     helpers.navigate('#!/users');
-
-    userPage.editUserDepot(0);
+    userPage.editUserDepot('Super User');
     Page.selectUserDepot([DEPOT_SECONDAIRE]);
     Page.submitUserDepot();
   });
