@@ -121,7 +121,7 @@ function RolesController($uibModal, Roles, Session, Modal, Notify, bhConstants, 
    * Switches the inline filter on and off.
    */
   vm.toggleInlineFilter = function toggleInlineFilter() {
-     vm.gridOptions.enableFiltering = !vm.gridOptions.enableFiltering;
-     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
-   };
+    vm.gridOptions.enableFiltering = !vm.gridOptions.enableFiltering;
+    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+  };
 }
