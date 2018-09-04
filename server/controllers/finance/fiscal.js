@@ -165,8 +165,7 @@ function getFiscalYearsByDate(req, res, next) {
   // select the fiscal year, the previous year, and the progress through the given year
   const sql = `
     SELECT p.fiscal_year_id, f.previous_fiscal_year_id, f.start_date, f.end_date, f.label,
-      DATEDIFF(DATE(?), f.start_date) / (f.number_of_months * 30.5) AS percentage,
-      DATE_ADD(f.start_date, INTERVAL number_of_months MONTH) AS end_date
+      DATEDIFF(DATE(?), f.start_date) / (f.number_of_months * 30.5) AS percentage
     FROM period AS p
     JOIN fiscal_year AS f ON f.id = p.fiscal_year_id
     WHERE p.start_date <= DATE(?) AND DATE(?) <= p.end_date;
@@ -390,6 +389,7 @@ function setOpeningBalance(req, res, next) {
 
   const { accounts } = req.body.params;
   const fiscalYear = req.body.params.fiscal;
+  console.log(req.params, req.body);
 
   debug(`#setOpeningBalance() setting balance for FY${id}.`);
 
