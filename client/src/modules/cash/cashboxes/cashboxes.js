@@ -13,7 +13,7 @@ CashboxController.$inject = [
  * A valid cashbox must have accounts defined for each enterprise currency, for
  * ease of use thought the application.
  */
-function CashboxController(Session, Projects, Boxes, util, Notify, $state) {
+function CashboxController(Session, Projects, CashBoxes, util, Notify, $state) {
   const vm = this;
 
   // bind variables
@@ -54,11 +54,9 @@ function CashboxController(Session, Projects, Boxes, util, Notify, $state) {
       .catch(Notify.handleError);
 
     // load cashboxes
-    Boxes.read()
-      .then((cashboxes) => {
-        vm.cashboxes = cashboxes;
-      })
-      .catch(Notify.handleError);
+    CashBoxes.read(null, { includeUsers : true }).then((cashboxes) => {
+      vm.cashboxes = cashboxes;
+    }).catch(Notify.handleError);
   }
 
   startup();

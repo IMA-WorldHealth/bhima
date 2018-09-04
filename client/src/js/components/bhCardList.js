@@ -58,6 +58,10 @@ function bhCardList($timeout) {
     if (angular.isDefined($ctrl.size)) {
       $ctrl.orderOptions.available.push({ attribute : $ctrl.size, key : 'TABLE.COLUMNS.SORTING.TOTAL_ASC', reverse : true });
     }
+
+    // default to the first order
+    $ctrl.orderOptions.defaultOrder = $ctrl.orderOptions.available[0];
+    $ctrl.orderOptions.current = $ctrl.orderOptions.defaultOrder;
   };
 
   $ctrl.$onChanges = function onChanges(changes) {
@@ -76,8 +80,8 @@ function bhCardList($timeout) {
     }
 
     $ctrl.setOrder = function setOrder(order) {
-      $ctrl.orderOptions.current = order;
       $ctrl.orderOptions.active = angular.isDefined(order);
+      $ctrl.orderOptions.current = order || $ctrl.orderOptions.defaultOrder;
 
       console.log('setting order', $ctrl.orderOptions);
     }

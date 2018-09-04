@@ -1,2 +1,30 @@
 <!-- card is bound to the `ng-repeat` of the bh-card-list component scope -->
-<p>{{card.label}}</p>
+<bh-card>
+  <bh-card-title>
+    <i class="fa fa-exclamation-circle text-danger" ng-if="card.number_of_users===0"></i>
+    <b>{{card.label}}</b>
+  </bh-card-title>
+
+  <bh-card-subtitle>
+    <span translate>TABLE.COLUMNS.PROJECT</span> : <b>{{card.project_name}} ({{card.project_abbr}})</b>
+  </bh-card-subtitle>
+
+  <bh-card-edit>
+    <a data-method="update" ui-sref="cashboxes.update({id : card.id})">
+      <span class="fa fa-pencil-square-o" aria-hidden="true"></span>
+      <span translate>CASHBOXES.CARD.MANAGE_CASHBOX</span>
+    </a>
+  </bh-card-edit>
+
+  <bh-card-detail>
+    <label class="label label-default" ng-class="{'label-primary' : !card.is_auxiliary}" translate>{{card.is_auxiliary ? "CASHBOXES.CARD.AUXILIARY_CASHBOX" : "CASHBOXES.CARD.PRIMARY_CASHBOX"}}</label>
+  </bh-card-detail>
+
+  <bh-card-statistic>
+    <span ng-class="{'text-danger' : card.number_of_users === 0}">
+      <span class="fa fa-users" aria-hidden="true"></span>
+      <b>{{card.number_of_users}}</b>
+      <span translate> CASHBOXES.CARD.USERS_WITH_ACCESS </span>
+    </span>
+  </bh-card-statistic>
+</bh-card>

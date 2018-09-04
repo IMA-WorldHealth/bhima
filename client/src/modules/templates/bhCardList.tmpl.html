@@ -7,7 +7,7 @@
 
     <div class="pull-right">
       <span class="label label-primary" ng-if="$ctrl.orderOptions.active">
-        <span translate>{{$ctrl.orderOptions.current.key }} </span>
+        <span translate>{{$ctrl.orderOptions.current.key}}</span>
       </span>
       <span uib-dropdown>
         <a href uib-dropdown-toggle> <span translate>TABLE.COLUMNS.SORTING.LABEL</span> <span class="caret"></span></a>
@@ -35,15 +35,12 @@
     class="form-control"
     placeholder="{{'FORM.PLACEHOLDERS.FILTER_NAME' | translate }}"
     style="border-radius: 0"/>
-
-  <!-- <div class="panel-body"> -->
-  <!-- </div> -->
 </div>
 
 <div
   ng-repeat="card in $ctrl.data
     | filter : $ctrl.filterOptions.value : strict
-    | orderBy : $ctrl.currentOrderAttribute : $ctrl.currentOrderReversed">
-
+    | orderBy : 'label':$ctrl.orderOptions.current.reverse">
+  <!-- | orderBy:$ctrl.orderOptions.current.attribute:$ctrl.orderOptions.current.reversed"> -->
   <ng-include src="$ctrl.template"></ng-include>
 </div>
