@@ -2,8 +2,9 @@ angular.module('bhima.controllers')
   .controller('DebtorGroupCreateController', DebtorGroupCreateController);
 
 DebtorGroupCreateController.$inject = [
-  '$state', 'ScrollService', 'SessionService', 'DebtorGroupService',
-  'PriceListService', 'uuid', 'NotifyService',
+  '$state', 'ScrollService', 'SessionService',
+  'DebtorGroupService', 'AccountService', 'PriceListService',
+  'uuid', 'NotifyService', 'ColorService',
 ];
 
 /**
@@ -14,7 +15,11 @@ DebtorGroupCreateController.$inject = [
  *
  * @module debtor/groups/create
  */
-function DebtorGroupCreateController($state, ScrollTo, Session, DebtorGroups, Prices, Uuid, Notify) {
+
+function DebtorGroupCreateController(
+  $state, ScrollTo, Session, DebtorGroups,
+  Accounts, Prices, Uuid, Notify, Color
+) {
   const vm = this;
 
   // default new group policies
@@ -24,7 +29,7 @@ function DebtorGroupCreateController($state, ScrollTo, Session, DebtorGroups, Pr
     invoicingFees : false,
   };
 
-  vm.colors = DebtorGroups.colors;
+  vm.colors = Color.list;
 
   vm.$loading = true;
   vm.$loaded = false;
@@ -32,9 +37,9 @@ function DebtorGroupCreateController($state, ScrollTo, Session, DebtorGroups, Pr
   vm.onSelectAccountCallback = onSelectAccount;
   vm.cancel = cancel;
 
-  Prices.read()
   /* @todo This controller should not be concerned about individual price lists */
-    .then(priceLists => {
+  Prices.read()
+    .then((priceLists) => {
       vm.priceLists = priceLists;
       vm.$loaded = true;
     })
@@ -77,6 +82,7 @@ function DebtorGroupCreateController($state, ScrollTo, Session, DebtorGroups, Pr
   }
 
   function submit(groupForm) {
+
     groupForm.$setSubmitted();
 
     // ensure all Angular form validation checks have passed
