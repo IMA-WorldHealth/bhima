@@ -29,11 +29,12 @@
     </div>
   </div>
 
+  <!-- input exclusively applies the filter to the $ctrl.name attribute -->
   <input
-    ng-model="$ctrl.filterOptions.value[$ctrl.currentFilterAttribute]"
+    ng-model="$ctrl.filterOptions.value[$ctrl.name]"
     ng-show="$ctrl.filterOptions.active"
     class="form-control"
-    placeholder="{{'FORM.PLACEHOLDERS.FILTER_NAME' | translate }}"
+    translate-attr="{ placeholder : 'FORM.PLACEHOLDERS.FILTER_NAME' }"
     style="border-radius: 0"/>
 </div>
 

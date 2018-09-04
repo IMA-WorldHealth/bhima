@@ -52,7 +52,8 @@ function bhCardList() {
   };
 
   $ctrl.toggleFilter = function toggleFilter() {
-    $ctrl.filterOptions.active = !$ctrl.filterOptions.active; $ctrl.filterOptions.value = {};
+    $ctrl.filterOptions.active = !$ctrl.filterOptions.active;
+    $ctrl.filterOptions.value = {};
   };
 
   $ctrl.setOrder = function setOrder(order) {
@@ -71,18 +72,14 @@ function bhCardList() {
   function assignAvailableOrders(name, age, size) {
     // name binding is required - assume this is valid
     $ctrl.orderOptions.available.push(
-      { attribute : name, key : 'TABLE.COLUMNS.SORTING.NAME_ASC', reverse : false }
-    );
-    $ctrl.orderOptions.available.push(
+      { attribute : name, key : 'TABLE.COLUMNS.SORTING.NAME_ASC', reverse : false },
       { attribute : name, key : 'TABLE.COLUMNS.SORTING.NAME_DSC', reverse : true }
     );
 
     // parse optional bindings
     if (angular.isDefined(age)) {
       $ctrl.orderOptions.available.push(
-        { attribute : age, key : 'TABLE.COLUMNS.SORTING.CREATED_ASC', reverse : false }
-      );
-      $ctrl.orderOptions.available.push(
+        { attribute : age, key : 'TABLE.COLUMNS.SORTING.CREATED_ASC', reverse : false },
         { attribute : age, key : 'TABLE.COLUMNS.SORTING.CREATED_DSC', reverse : true }
       );
     }
