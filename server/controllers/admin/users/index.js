@@ -61,7 +61,7 @@ function lookupUser(id) {
       }
 
       // bind user data to ship back
-      data = rows[0];
+      [data] = rows;
 
       // query project permissions
       sql = `
@@ -91,9 +91,7 @@ function lookupUser(id) {
  * GET /users
  */
 function list(req, res, next) {
-  const sql =
-    `SELECT user.id, display_name,
-      user.username, user.deactivated FROM user;`;
+  const sql = 'SELECT user.id, display_name, user.username, user.deactivated FROM user;';
 
   db.exec(sql)
     .then((rows) => {
