@@ -1,4 +1,4 @@
-<div class="panel panel-default">
+<div class="panel panel-default bh-card-list">
   <div class="panel-heading">
     <a href ng-click="$ctrl.toggleFilter()">
       <span translate>TABLE.COLUMNS.FILTERING.LABEL</span>
@@ -6,7 +6,7 @@
     </a>
 
     <div class="pull-right">
-      <span class="label label-primary" ng-if="$ctrl.orderOptions.active">
+      <span class="label label-primary" style="margin-right: 5px;" ng-if="$ctrl.orderOptions.active">
         <span translate>{{$ctrl.orderOptions.current.key}}</span>
       </span>
       <span uib-dropdown>
@@ -41,6 +41,5 @@
   ng-repeat="card in $ctrl.data
     | filter : $ctrl.filterOptions.value : strict
     | orderBy : 'label':$ctrl.orderOptions.current.reverse">
-  <!-- | orderBy:$ctrl.orderOptions.current.attribute:$ctrl.orderOptions.current.reversed"> -->
   <ng-include src="$ctrl.template"></ng-include>
 </div>

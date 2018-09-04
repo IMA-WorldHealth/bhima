@@ -18,7 +18,7 @@ describe('Cashboxes', () => {
   };
 
   function update(label) {
-    $(`[data-cashbox="${label}"]`).$$('a').click();
+    $(`[data-cashbox="${label}"]`).click();
   }
 
   it('creates a new cashbox', () => {

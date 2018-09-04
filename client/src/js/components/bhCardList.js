@@ -13,85 +13,88 @@ angular.module('bhima.components')
     ,
   });
 
-bhCardList.$inject = ['$timeout'];
-
 /**
  * @description
  * Component for displaying cards of information, providing sorting and filtering
- * components.
+ * functionality.
  *
  * Requires:
  * `data` : the array to iterate over
  * `name` : the entity display name that should be sorted and filtered
  * `template` : path to an HTML template that should be displayed for each element
+ *
+ * Optional:
+ * `age` : the entity date field key, this will allow it to be sorted by age
+ * `size` : the entity size field key, this will allow it to be sorted by largest
+ * `id` : provide a custom entity identifier override
  */
-function bhCardList($timeout) {
+function bhCardList() {
   const $ctrl = this;
-  const DEFAULT_IDENTIFIER = 'uuid';
 
   // name, age and size options will be added to this _if_ they are defined
-  // by through bindings
+  // through bindings
   $ctrl.orderOptions = { active : false, available : [] };
   $ctrl.filterOptions = { active : false };
 
-  // keep internal copy of data so that it is only exposed to the view once
-  // an identifer has been determined
-
   $ctrl.$onInit = function onInit() {
-
-    // setup defaults
-    $ctrl.currentOrderAttribute = $ctrl.name;
-    $ctrl.currentFilterAttribute = $ctrl.name;
-    $ctrl.currentOrderReversed = false;
-
     $ctrl.identifier = $ctrl.id;
 
-    // name is required
-    $ctrl.orderOptions.available.push({ attribute : $ctrl.name, key : 'TABLE.COLUMNS.SORTING.NAME_ASC', reverse : false });
-    $ctrl.orderOptions.available.push({ attribute : $ctrl.name, key : 'TABLE.COLUMNS.SORTING.NAME_DSC', reverse : true });
-
-    if (angular.isDefined($ctrl.age)) {
-      $ctrl.orderOptions.available.push({ attribute : $ctrl.age, key : 'TABLE.COLUMNS.SORTING.CREATED_ASC', reverse : false });
-      $ctrl.orderOptions.available.push({ attribute : $ctrl.age, key : 'TABLE.COLUMNS.SORTING.CREATED_DSC', reverse : true });
-    }
-
-    if (angular.isDefined($ctrl.size)) {
-      $ctrl.orderOptions.available.push({ attribute : $ctrl.size, key : 'TABLE.COLUMNS.SORTING.TOTAL_ASC', reverse : true });
-    }
-
-    // default to the first order
-    $ctrl.orderOptions.defaultOrder = $ctrl.orderOptions.available[0];
-    $ctrl.orderOptions.current = $ctrl.orderOptions.defaultOrder;
+    assignAvailableOrders($ctrl.name, $ctrl.age, $ctrl.size);
   };
 
   $ctrl.$onChanges = function onChanges(changes) {
-    console.log(changes);
     if (changes.data && angular.isDefined(changes.data.currentValue)) {
       if (!$ctrl.identifier) {
         // no identifier override found
         $ctrl.identifier = defaultIdentifier(changes.data.currentValue);
-        console.log('set up identifier', $ctrl.identifier);
       }
     }
+  };
 
-    $ctrl.toggleFilter = function toggleFilter() {
-      $ctrl.filterOptions.active = !$ctrl.filterOptions.active; $ctrl.filterOptions.value = {};
-      console.log($ctrl.filterOptions);
+  $ctrl.toggleFilter = function toggleFilter() {
+    $ctrl.filterOptions.active = !$ctrl.filterOptions.active; $ctrl.filterOptions.value = {};
+  };
+
+  $ctrl.setOrder = function setOrder(order) {
+    $ctrl.orderOptions.active = angular.isDefined(order);
+    $ctrl.orderOptions.current = order || $ctrl.orderOptions.defaultOrder;
+  };
+
+  // attempt to pick an identifier based on common ids
+  // this is overriden by binding a specific `id`
+  // supported default identifiers are 'id' and 'uuid'
+  function defaultIdentifier(data) {
+    const sampleData = data[0] || {};
+    return angular.isDefined(sampleData.uuid) ? 'uuid' : 'id';
+  }
+
+  function assignAvailableOrders(name, age, size) {
+    // name binding is required - assume this is valid
+    $ctrl.orderOptions.available.push(
+      { attribute : name, key : 'TABLE.COLUMNS.SORTING.NAME_ASC', reverse : false }
+    );
+    $ctrl.orderOptions.available.push(
+      { attribute : name, key : 'TABLE.COLUMNS.SORTING.NAME_DSC', reverse : true }
+    );
+
+    // parse optional bindings
+    if (angular.isDefined(age)) {
+      $ctrl.orderOptions.available.push(
+        { attribute : age, key : 'TABLE.COLUMNS.SORTING.CREATED_ASC', reverse : false }
+      );
+      $ctrl.orderOptions.available.push(
+        { attribute : age, key : 'TABLE.COLUMNS.SORTING.CREATED_DSC', reverse : true }
+      );
     }
 
-    $ctrl.setOrder = function setOrder(order) {
-      $ctrl.orderOptions.active = angular.isDefined(order);
-      $ctrl.orderOptions.current = order || $ctrl.orderOptions.defaultOrder;
-
-      console.log('setting order', $ctrl.orderOptions);
+    if (angular.isDefined(size)) {
+      $ctrl.orderOptions.available.push(
+        { attribute : size, key : 'TABLE.COLUMNS.SORTING.TOTAL_ASC', reverse : true }
+      );
     }
 
-    // attempt to pick an identifier based on common ids
-    // this is overriden by binding a specific `id`
-    // supported default identifiers are 'id' and 'uuid'
-    function defaultIdentifier(data) {
-      const sampleData = data[0] || {};
-      return angular.isDefined(sampleData.uuid) ? 'uuid' : 'id';
-    }
+    // default orders - default to the first order
+    [$ctrl.orderOptions.defaultOrder] = $ctrl.orderOptions.available;
+    $ctrl.orderOptions.current = $ctrl.orderOptions.defaultOrder;
   }
 }
