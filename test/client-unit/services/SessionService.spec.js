@@ -15,13 +15,14 @@ describe('SessionService', () => {
     'ngStorage',
     'angularMoment',
     'bhima.services',
-    'bhima.mocks'
+    'bhima.mocks',
+    'ui.router'
   ));
 
   // bind the services as $injects
-  beforeEach(inject((_SessionService_, $rootScope, $httpBackend, _MockDataService_) => {
+  beforeEach(inject((_SessionService_, _$rootScope_, $httpBackend, _MockDataService_) => {
     Session = _SessionService_;
-    rootScope = $rootScope;
+    rootScope = _$rootScope_;
     httpBackend = $httpBackend;
 
     user = _MockDataService_.user();

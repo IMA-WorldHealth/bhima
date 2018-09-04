@@ -168,7 +168,7 @@ BEGIN
     FROM posting_journal AS pj JOIN stage_trial_balance_transaction AS temp
       ON pj.record_uuid = temp.record_uuid
     GROUP BY pj.record_uuid
-    HAVING SUM(pj.debit_equiv) <> SUM(pj.credit_equiv);
+    HAVING ROUND(SUM(pj.debit_equiv), 2) <> ROUND(SUM(pj.credit_equiv), 2);
 
   -- check that all transactions have two or more lines
   INSERT INTO stage_trial_balance_errors

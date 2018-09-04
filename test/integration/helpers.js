@@ -1,7 +1,8 @@
-'use strict';
+
 
 // import plugins
-const expect = require('chai').expect;
+const uuid = require('uuid/v4');
+const { expect } = require('chai');
 
 /**
  * Clones the object and removes the field, to test if the field is required
@@ -12,7 +13,7 @@ const expect = require('chai').expect;
  * @returns {Object} clone - the copied object missing the propertay
  */
 exports.mask = function mask(object, field) {
-  var clone = JSON.parse(JSON.stringify(object));
+  const clone = JSON.parse(JSON.stringify(object));
   delete clone[field];
   return clone;
 };
@@ -23,11 +24,12 @@ exports.handler = function handler(err) {
 };
 
 /* bindings for API-specific response tests */
-const api = exports.api = {};
+exports.api = {};
+const { api } = exports;
 
 /* ensure that objectA's key/values are contained in and identical to objectB's */
 exports.identical = function identical(objectA, objectB) {
-  return Object.keys(objectA).every(function (key) {
+  return Object.keys(objectA).every((key) => {
     return objectA[key] === objectB[key];
   });
 };
@@ -71,7 +73,7 @@ api.created = function created(res) {
   } else {
     expect(res.body, `${res.req.method} ${res.req.path} returned an invalid uuid.`).to.have.property('uuid');
     expect(res.body.uuid).to.be.a('string');
-    expect(res.body.uuid).to.have.length(36);
+    expect(res.body.uuid).to.have.length(32);
   }
 };
 
@@ -91,7 +93,7 @@ api.created = function created(res) {
  * .catch(helpers.handler);
  */
 api.errored = function errored(res, status, key) {
-  var keys = [ 'code' ];
+  const keys = ['code'];
 
   // make sure the response has the correct HTTP headers
   expect(res).to.have.status(status);
@@ -136,7 +138,7 @@ api.updated = function updated(res, original, changedKeys) {
 
   // loop through the body, asserting that only the correct properties
   // have changed
-  Object.keys(res).forEach(function (key) {
+  Object.keys(res).forEach((key) => {
 
     // if the key is in "changedKeys", it should not equal the original
     if (changedKeys.indexOf(key) > -1) {
@@ -203,12 +205,14 @@ exports.data = {
   USD : 2,
   FC : 1,
   PROJECT : 1,
-  PRICE_LIST : '75e09694-dd5c-11e5-a8a2-6c29955775b0',
+  PRICE_LIST : '75E09694DD5C11E5A8A26C29955775B0',
   ADMIN_SERVICE : 2,
   SUPERUSER : 1,
   OTHERUSER : 2,
-  QUININE : '43f3decb-fce9-426e-940a-bc2150e62186',
-  PARACETEMOL : '6b4825f1-4e6e-4799-8a81-860531281437',
-  MULTIVITAMINE : 'f6556e72-9d05-4799-8cbd-0a03b1810185',
-  PREDNISONE : 'c3fd5a02-6a75-49fc-b2f3-76ee4c3fbfb7',
+  QUININE : '43F3DECBFCE9426E940ABC2150E62186',
+  PARACETEMOL : '6B4825F14E6E47998A81860531281437',
+  MULTIVITAMINE : 'F6556E729D0547998CBD0A03B1810185',
+  PREDNISONE : 'C3FD5A026A7549FCB2F376EE4C3FBFB7',
 };
+
+exports.uuid = () => uuid().toUpperCase().replace(/-/g, '');

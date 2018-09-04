@@ -8,15 +8,14 @@
  * The /patient_groups HTTP API endpoint
  *
  * @requires db
- * @requires uuid/v4
+ * @requires q
+ * @requires lib/util
  * @requires NotFound
- * @requires @ima-worldhealth/topic
  */
 
-const uuid = require('uuid/v4');
-const Topic = require('@ima-worldhealth/topic');
 const Q = require('q');
 
+const { uuid } = require('../../lib/util');
 const db = require('../../lib/db');
 const FilterParser = require('../../lib/filter');
 const NotFound = require('../../lib/errors/NotFound');
@@ -106,13 +105,6 @@ function create(req, res, next) {
 
   transaction.execute()
     .then(() => {
-      Topic.publish(Topic.channels.MEDICAL, {
-        event : Topic.events.CREATE,
-        entity : Topic.entities.PATIENT_GROUP,
-        user_id : req.session.user.id,
-        uuid : uid,
-      });
-
       res.status(201).json({ uuid : uid });
     })
     .catch(next)
@@ -128,10 +120,8 @@ function create(req, res, next) {
  */
 function update(req, res, next) {
   const sql = 'UPDATE patient_group SET ? WHERE uuid = ?';
-  const deleteSubsidySql =
-    'DELETE FROM patient_group_subsidy WHERE patient_group_uuid = ?';
-  const deleteInvoicingFeeSql =
-    'DELETE FROM patient_group_invoicing_fee WHERE patient_group_uuid = ?';
+  const deleteSubsidySql = 'DELETE FROM patient_group_subsidy WHERE patient_group_uuid = ?';
+  const deleteInvoicingFeeSql = 'DELETE FROM patient_group_invoicing_fee WHERE patient_group_uuid = ?';
 
   const subsidySql = 'INSERT INTO patient_group_subsidy (subsidy_id, patient_group_uuid) VALUES ?;';
   const invoicingFeeSql = 'INSERT INTO patient_group_invoicing_fee (invoicing_fee_id, patient_group_uuid) VALUES ?;';
@@ -183,13 +173,6 @@ function update(req, res, next) {
   transaction.execute()
     .then(() => lookupPatientGroup(req.params.uuid))
     .then(group => {
-      Topic.publish(Topic.channels.MEDICAL, {
-        event : Topic.events.UPDATE,
-        entity : Topic.entities.PATIENT_GROUP,
-        user_id : req.session.user.id,
-        uuid : req.params.uuid,
-      });
-
       res.status(200).json(group);
     })
     .catch(next)

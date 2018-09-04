@@ -3,14 +3,14 @@
 const helpers = require('./helpers');
 
 describe('(/accounts/types) Account Types', () => {
-  var newAccountType = {
+  const newAccountType = {
     type : 'Test Account Type 1',
     account_category_id : 1,
   };
 
-  var DELETABLE_ACCOUNT_TYPE_ID = 7;
-  var FETCHABLE_ACCOUNT_TYPE_ID = 1;
-  var numAccountTypes = 6;
+  const DELETABLE_ACCOUNT_TYPE_ID = 7;
+  const FETCHABLE_ACCOUNT_TYPE_ID = 1;
+  const numAccountTypes = 6;
 
 
   it('GET /accounts/types returns a list of account type', () => {
@@ -30,7 +30,7 @@ describe('(/accounts/types) Account Types', () => {
         expect(res.body.id).to.be.equal(FETCHABLE_ACCOUNT_TYPE_ID);
         expect(res.body).to.have.all.keys('id', 'type');
       })
-     .catch(helpers.handler);
+      .catch(helpers.handler);
   });
 
   it('POST /accounts/types adds an account type', () => {
@@ -49,7 +49,7 @@ describe('(/accounts/types) Account Types', () => {
   });
 
   it('PUT /accounts/types/:id updates the newly added account type', () => {
-    var updateInfo = { type : 'updated value' };
+    const updateInfo = { type : 'updated value' };
     return agent.put(`/accounts/types/${newAccountType.id}`)
       .send(updateInfo)
       .then((res) => {
@@ -70,6 +70,6 @@ describe('(/accounts/types) Account Types', () => {
       .then((res) => {
         helpers.api.errored(res, 404);
       })
-     .catch(helpers.handler);
+      .catch(helpers.handler);
   });
 });

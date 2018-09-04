@@ -1,5 +1,6 @@
 /**
  * @description PAYROLL SETTINGS
+ *
  * @requires db
  * @requires EmployeeData
  * @requires uuid
@@ -7,16 +8,16 @@
  * @requires q
  * @requires util
  */
+const q = require('q');
+const moment = require('moment');
+
 const db = require('../../../lib/db');
 const EmployeeData = require('../employees');
-const uuid = require('uuid/v4');
 const Exchange = require('../../finance/exchange');
-const q = require('q');
 const util = require('../../../lib/util');
 const getConfig = require('./getConfig');
 const manageConfig = require('./manageConfig');
 const calculation = require('./calculation');
-const moment = require('moment');
 
 function setConfig(dataEmployees, rows, enterpriseId, currencyId, enterpriseCurrencyId, payrollConfigurationId) {
   const periodData = rows[0][0];
@@ -32,8 +33,7 @@ function setConfig(dataEmployees, rows, enterpriseId, currencyId, enterpriseCurr
     });
   }
   const iprCurrencyId = periodData.currency_id;
-  const dateFrom = periodData.dateFrom;
-  const dateTo = periodData.dateTo;
+  const { dateFrom, dateTo } = periodData;
   const DECIMAL_PRECISION = 2;
   let allTransactions = [];
   let iprExchangeRate;
@@ -76,11 +76,11 @@ function setConfig(dataEmployees, rows, enterpriseId, currencyId, enterpriseCurr
         const allRubrics = [];
         const holidaysElements = [];
         const offDaysElements = [];
-        const paiementUuid = uuid();
+        const paiementUuid = util.uuid();
         const uid = db.bid(paiementUuid);
         // Calcul Daily Salary
-        const dailySalary = employee.individual_salary ?
-          (employee.individual_salary / daysPeriod.working_day) : (employee.grade_salary / daysPeriod.working_day);
+        const dailySalary = employee.individual_salary
+          ? (employee.individual_salary / daysPeriod.working_day) : (employee.grade_salary / daysPeriod.working_day);
         const workingDays = (daysPeriod.working_day - (nbHolidays + nbOffDays));
         const workingDayCost = dailySalary * (daysPeriod.working_day - (nbHolidays + nbOffDays));
         const nbChildren = employee.nb_enfant;
@@ -137,8 +137,8 @@ function setConfig(dataEmployees, rows, enterpriseId, currencyId, enterpriseCurr
             // Automatic calcul of Seniority_Bonus & Family_Allowances
             if (rubric.is_seniority_bonus === 1) {
               const seniorityElements = [yearOfSeniority, rubric.value];
-              rubric.result =
-                util.roundDecimal(calculation.automaticRubric(basicSalary, seniorityElements), DECIMAL_PRECISION);
+              rubric.result = util
+                .roundDecimal(calculation.automaticRubric(basicSalary, seniorityElements), DECIMAL_PRECISION);
             }
             if (rubric.is_family_allowances === 1) {
               const allowanceElements = [nbChildren];
@@ -148,21 +148,21 @@ function setConfig(dataEmployees, rows, enterpriseId, currencyId, enterpriseCurr
           // Filtering non-taxable Rubrics
           nonTaxables = rubricData.filter(item => item.is_social_care);
           // Filtering taxable Rubrics
-          taxables = rubricData.filter(item =>
-            (item.is_tax !== 1 && item.is_social_care !== 1
+          taxables = rubricData.filter(item => (item.is_tax !== 1 && item.is_social_care !== 1
                 && item.is_membership_fee !== 1 && item.is_discount !== 1));
           // Filtering all taxes and contributions that is calculated from the taxable base
-          taxesContributions = rubricData.filter(item =>
-            item.is_tax || item.is_membership_fee || item.is_discount === 1);
+          taxesContributions = rubricData.filter(
+            item => (item.is_tax || item.is_membership_fee || item.is_discount === 1)
+          );
         }
 
         // Calcul value for non-taxable and automatically calculated
         if (nonTaxables.length) {
           nonTaxables.forEach(nonTaxable => {
             if (!nonTaxable.is_seniority_bonus && !nonTaxable.is_family_allowances) {
-              nonTaxable.result = nonTaxable.is_percent ?
-                util.roundDecimal((basicSalary * nonTaxable.value) / 100, DECIMAL_PRECISION) :
-                nonTaxable.result || nonTaxable.value;
+              nonTaxable.result = nonTaxable.is_percent
+                ? util.roundDecimal((basicSalary * nonTaxable.value) / 100, DECIMAL_PRECISION)
+                : nonTaxable.result || nonTaxable.value;
             }
 
             sumNonTaxable += nonTaxable.result;
@@ -173,9 +173,9 @@ function setConfig(dataEmployees, rows, enterpriseId, currencyId, enterpriseCurr
         if (taxables.length) {
           taxables.forEach(taxable => {
             if (!taxable.is_seniority_bonus && !taxable.is_family_allowances) {
-              taxable.result = taxable.is_percent ?
-                util.roundDecimal((basicSalary * taxable.value) / 100, DECIMAL_PRECISION) :
-                taxable.result || taxable.value;
+              taxable.result = taxable.is_percent
+                ? util.roundDecimal((basicSalary * taxable.value) / 100, DECIMAL_PRECISION)
+                : taxable.result || taxable.value;
             }
             sumTaxable += taxable.result;
             allRubrics.push([uid, taxable.rubric_payroll_id, taxable.result]);
@@ -186,9 +186,9 @@ function setConfig(dataEmployees, rows, enterpriseId, currencyId, enterpriseCurr
 
         if (taxesContributions.length) {
           taxesContributions.forEach(taxContribution => {
-            taxContribution.result = taxContribution.is_percent ?
-              util.roundDecimal((baseTaxable * taxContribution.value) / 100, DECIMAL_PRECISION) :
-              taxContribution.result || taxContribution.value;
+            taxContribution.result = taxContribution.is_percent
+              ? util.roundDecimal((baseTaxable * taxContribution.value) / 100, DECIMAL_PRECISION)
+              : taxContribution.result || taxContribution.value;
             // Recovery of the value of the Membership Fee worker share
             if (taxContribution.is_membership_fee && taxContribution.is_employee) {
               membershipFeeEmployee = taxContribution.result;
@@ -238,11 +238,11 @@ function setConfig(dataEmployees, rows, enterpriseId, currencyId, enterpriseCurr
           status_id : 2,
         };
         const setPaiementData = 'INSERT INTO paiement SET ?';
-        const setRubricPaiementData = `INSERT INTO rubric_paiement (paiement_uuid, rubric_payroll_id, value) 
+        const setRubricPaiementData = `INSERT INTO rubric_paiement (paiement_uuid, rubric_payroll_id, value)
             VALUES ?`;
-        const setHolidayPaiement = `INSERT INTO holiday_paiement (holiday_id, holiday_nbdays, holiday_percentage, 
+        const setHolidayPaiement = `INSERT INTO holiday_paiement (holiday_id, holiday_nbdays, holiday_percentage,
            paiement_uuid, label, value) VALUES ?`;
-        const setOffDayPaiement = `INSERT INTO offday_paiement 
+        const setOffDayPaiement = `INSERT INTO offday_paiement
             (offday_id, offday_percentage, paiement_uuid, label, value) VALUES ?`;
           // initialise All transactions handler
         allTransactions = [{

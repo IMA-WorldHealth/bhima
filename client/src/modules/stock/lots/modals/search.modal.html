@@ -15,7 +15,7 @@
     <uib-tabset>
       <uib-tab index="0" heading="{{ 'FORM.LABELS.SEARCH_QUERIES' | translate}}" data-custom-filter-tab>
         <div class="tab-body">
-          <!-- depot -->          
+          <!-- depot -->
           <bh-depot-select
             depot-uuid="$ctrl.searchQueries.depot_uuid"
             required="false"
@@ -60,7 +60,7 @@
               mode="clean">
             </bh-date-interval>
           </fieldset>
-          
+
           <!-- expiration date -->
           <fieldset>
             <legend translate>STOCK.EXPIRATION_DATE</legend>
@@ -79,13 +79,14 @@
             default-period="{{$ctrl.filters.period}}"
             on-select-callback="$ctrl.onSelectPeriod(period)">
           </bh-period-select>
-          
+
           <div class="form-group" ng-class="{ 'has-error' : ModalForm.limit.$invalid }">
             <label class="control-label" translate>FORM.LABELS.LIMIT</label>
-            <input 
+            <input
               name="limit"
               type="number"
               bh-integer
+              bh-max-integer
               class="form-control"
               ng-model="$ctrl.defaultQueries.limit"
               ng-change="$ctrl.onSelectLimit($ctrl.defaultQueries.limit)">
@@ -100,7 +101,7 @@
   </div>
 
   <div class="modal-footer">
-    <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" data-method="cancel" translate> 
+    <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" data-method="cancel" translate>
       FORM.BUTTONS.CLOSE
     </button>
     <bh-loading-button loading-state="ModalForm.$loading">

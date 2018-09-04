@@ -5,10 +5,11 @@
 * handling.
 */
 
-const uuid = require('uuid/v4');
+const _ = require('lodash');
+const { uuid } = require('../../../lib/util');
 const db = require('../../../lib/db');
 const FilterParser = require('../../../lib/filter');
-const _ = require('lodash');
+
 // this should be a const in future ES versions
 const errors = {
   MISSING_PARAMETERS : {
@@ -104,8 +105,7 @@ function updateItemsMetadata(record, identifier) {
 */
 function getIds() {
   // TODO - should we be filtering on enterprise id in these queries?
-  const sql =
-    'SELECT i.uuid FROM inventory AS i;';
+  const sql = 'SELECT i.uuid FROM inventory AS i;';
 
   return db.exec(sql);
 }
@@ -121,12 +121,11 @@ function getItemsMetadata(params) {
   db.convert(params, ['inventory_uuids', 'uuid', 'group_uuid']);
   const filters = new FilterParser(params, { tableAlias : 'inventory', autoParseStatements : false });
 
-  const sql =
-    `SELECT BUID(inventory.uuid) as uuid, inventory.code, inventory.text AS label, inventory.price, iu.abbr AS unit,
+  const sql = `SELECT BUID(inventory.uuid) as uuid, inventory.code, inventory.text AS label, inventory.price, iu.abbr AS unit,
       it.text AS type, ig.name AS groupName, BUID(ig.uuid) AS group_uuid, ig.expires, ig.unique_item, inventory.consumable,inventory.locked, inventory.stock_min,
       inventory.stock_max, inventory.created_at AS timestamp, inventory.type_id, inventory.unit_id,
-      inventory.note,  inventory.unit_weight, inventory.unit_volume, 
-      ig.sales_account, ig.stock_account, ig.donation_account, inventory.sellable, inventory.note, 
+      inventory.note,  inventory.unit_weight, inventory.unit_volume,
+      ig.sales_account, ig.stock_account, ig.donation_account, inventory.sellable, inventory.note,
       inventory.unit_weight, inventory.unit_volume, ig.sales_account, ig.stock_account, ig.donation_account,
       ig.cogs_account, inventory.default_quantity
     FROM inventory JOIN inventory_type AS it
@@ -173,8 +172,7 @@ function remove(_uuid) {
 * @return {Promise} Returns a database query promise
 */
 function getItemsMetadataById(uid) {
-  const sql =
-    `SELECT BUID(i.uuid) as uuid, i.code, i.text AS label, i.price, iu.abbr AS unit,
+  const sql = `SELECT BUID(i.uuid) as uuid, i.code, i.text AS label, i.price, iu.abbr AS unit,
       it.text AS type, ig.name AS groupName, BUID(ig.uuid) AS group_uuid, ig.expires, ig.unique_item, i.consumable, i.locked, i.stock_min,
       i.stock_max, i.created_at AS timestamp, i.type_id, i.unit_id, i.unit_weight, i.unit_volume,
       ig.sales_account, i.default_quantity, i.avg_consumption, i.delay, i.purchase_interval, i.last_purchase, i.num_purchase

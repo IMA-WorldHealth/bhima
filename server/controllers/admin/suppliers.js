@@ -4,11 +4,13 @@
  *
  * @description
  * This controller exposes an API to the client for reading and writing supplier
+ *
+ * @requires lib/util
+ * @requires lib/db
  */
 
-const uuid = require('uuid/v4');
-const Topic = require('@ima-worldhealth/topic');
 
+const { uuid } = require('../../lib/util');
 const db = require('../../lib/db');
 
 function lookupSupplier(uid) {
@@ -94,11 +96,9 @@ function create(req, res, next) {
   data.creditor_uuid = creditorUuid;
   data.uuid = db.bid(recordUuid);
 
-  const writeCreditorQuery =
-    'INSERT INTO creditor VALUES (?, ?, ?);';
+  const writeCreditorQuery = 'INSERT INTO creditor VALUES (?, ?, ?);';
 
-  const writeSupplierQuery =
-    'INSERT INTO supplier SET ?;';
+  const writeSupplierQuery = 'INSERT INTO supplier SET ?;';
 
   transaction
     .addQuery(writeCreditorQuery, [creditorUuid, creditorGroupUuid, data.display_name])
@@ -106,12 +106,6 @@ function create(req, res, next) {
 
   transaction.execute()
     .then(() => {
-      Topic.publish(Topic.channels.INVENTORY, {
-        event : Topic.events.CREATE,
-        entity : Topic.entities.SUPPLIER,
-        user_id : req.session.user.id,
-        uuid : recordUuid,
-      });
       res.status(201).json({ uuid : recordUuid });
     })
     .catch(next)
@@ -137,8 +131,7 @@ function update(req, res, next) {
     delete data.creditor_group_uuid;
   }
 
-  const updateSupplierQuery =
-    'UPDATE supplier SET ? WHERE uuid = ?;';
+  const updateSupplierQuery = 'UPDATE supplier SET ? WHERE uuid = ?;';
 
   const updateCreditorQuery = `
     UPDATE creditor JOIN supplier ON creditor.uuid = supplier.creditor_uuid
@@ -156,12 +149,6 @@ function update(req, res, next) {
 
   transaction.execute()
     .then(() => {
-      Topic.publish(Topic.channels.INVENTORY, {
-        event : Topic.events.UPDATE,
-        entity : Topic.entities.SUPPLIER,
-        user_id : req.session.user.id,
-        uuid : req.params.uuid,
-      });
       return lookupSupplier(req.params.uuid);
     })
     .then(record => {
@@ -190,7 +177,7 @@ function search(req, res, next) {
     WHERE supplier.display_name LIKE "%?%"
   `;
 
-  if (!isNaN(limit)) {
+  if (!Number.isNaN(limit)) {
     sql += `${sql}LIMIT ${Math.floor(limit)};`;
   }
 

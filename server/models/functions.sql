@@ -22,11 +22,9 @@ $$
   Converts a binary uuid (16 bytes) to dash-delimited hex UUID (36 characters).
 */
 CREATE FUNCTION BUID(b BINARY(16))
-RETURNS CHAR(36) DETERMINISTIC
+RETURNS CHAR(32) DETERMINISTIC
 BEGIN
-  DECLARE hex CHAR(32);
-  SET hex = HEX(b);
-  RETURN LCASE(CONCAT_WS('-', SUBSTR(hex,1, 8), SUBSTR(hex, 9,4), SUBSTR(hex, 13,4), SUBSTR(hex, 17,4), SUBSTR(hex, 21, 12)));
+  RETURN HEX(b);
 END
 $$
 
@@ -134,7 +132,7 @@ BEGIN
     SET accountType = 'expense';
   END IF;
 
-  SET accountTypeId = (SELECT id FROM account_type WHERE `type` = accountType COLLATE utf8_unicode_ci LIMIT 1);
+  SET accountTypeId = (SELECT id FROM account_type WHERE `type` = accountType LIMIT 1);
 
   RETURN accountTypeId;
 END

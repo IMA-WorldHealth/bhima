@@ -12,12 +12,9 @@
  *
  * Each endpoint returns a table with all information available.
  * Endpoints taking UUIDs return only the records matching the UUID
- * */
+ */
 
-
-const uuid = require('uuid/v4');
-const Topic = require('@ima-worldhealth/topic');
-
+const { uuid } = require('../../lib/util');
 const db = require('../../lib/db');
 
 exports.lookupVillage = lookupVillage;
@@ -34,12 +31,11 @@ exports.lookupVillage = lookupVillage;
  * @return {Array} an array of (uuid, name)
  */
 exports.villages = function villages(req, res, next) {
-  let sql =
-    'SELECT BUID(village.uuid) as uuid, village.name, village.longitude, village.latitude FROM village ';
+  let sql = 'SELECT BUID(village.uuid) as uuid, village.name, village.longitude, village.latitude FROM village ';
 
-  sql += (req.query.sector) ?
-    'WHERE village.sector_uuid = ? ORDER BY village.name ASC;' :
-    'ORDER BY village.name ASC;';
+  sql += (req.query.sector)
+    ? 'WHERE village.sector_uuid = ? ORDER BY village.name ASC;'
+    : 'ORDER BY village.name ASC;';
 
   if (req.query.sector) {
     req.query.sector = db.bid(req.query.sector);
@@ -69,22 +65,20 @@ exports.sectors = function sectors(req, res, next) {
 
   // send a larger response if detailed is 1
   if (req.query.detailed === '1') {
-    sql =
-      `SELECT BUID(sector.uuid) as uuid, sector.name,
+    sql = `SELECT BUID(sector.uuid) as uuid, sector.name,
         province.name AS province_name, BUID(province.uuid) AS provinceUuid, country.name AS country_name,
         BUID(country.uuid) AS countryUuid
       FROM sector JOIN province JOIN country ON
         sector.province_uuid = province.uuid AND
         province.country_uuid = country.uuid`;
   } else {
-    sql =
-      'SELECT BUID(sector.uuid) as uuid, sector.name FROM sector ';
+    sql = 'SELECT BUID(sector.uuid) as uuid, sector.name FROM sector ';
   }
 
 
-  sql += (req.query.province) ?
-    ' WHERE sector.province_uuid = ? ORDER BY sector.name ASC;' :
-    ' ORDER BY sector.name ASC;';
+  sql += (req.query.province)
+    ? ' WHERE sector.province_uuid = ? ORDER BY sector.name ASC;'
+    : ' ORDER BY sector.name ASC;';
 
   if (req.query.province) {
     req.query.province = db.bid(req.query.province);
@@ -114,8 +108,7 @@ exports.provinces = function provinces(req, res, next) {
 
   // send a larger response if detailed is 1
   if (req.query.detailed === '1') {
-    sql =
-      `
+    sql = `
       SELECT
         BUID(province.uuid) as uuid, province.name, country.name AS country_name,
         BUID(province.country_uuid) AS countryUuid
@@ -124,17 +117,16 @@ exports.provinces = function provinces(req, res, next) {
       JOIN
         country ON province.country_uuid = country.uuid`;
   } else {
-    sql =
-      `
+    sql = `
       SELECT
         BUID(province.uuid) as uuid, province.name
       FROM province`;
   }
 
 
-  sql += (req.query.country) ?
-    ' WHERE province.country_uuid = ? ORDER BY province.name ASC;' :
-    ' ORDER BY province.name ASC;';
+  sql += (req.query.country)
+    ? ' WHERE province.country_uuid = ? ORDER BY province.name ASC;'
+    : ' ORDER BY province.name ASC;';
 
   if (req.query.country) {
     req.query.country = db.bid(req.query.country);
@@ -157,8 +149,7 @@ exports.provinces = function provinces(req, res, next) {
  * @return {array} an array of (uuid, name)
  */
 exports.countries = function countries(req, res, next) {
-  const sql =
-    `
+  const sql = `
     SELECT
       BUID(country.uuid) as uuid, country.name
     FROM
@@ -195,8 +186,7 @@ function lookupSector(uid) {
   // convert hex to binary
   const bid = db.bid(uid);
 
-  const sql =
-    `SELECT BUID(sector.uuid) as uuid, sector.name,
+  const sql = `SELECT BUID(sector.uuid) as uuid, sector.name,
       province.name AS province_name, country.name AS country_name
     FROM sector JOIN province JOIN country ON
       sector.province_uuid = province.uuid AND
@@ -209,8 +199,7 @@ function lookupSector(uid) {
 function lookupProvince(uid) {
   const bid = db.bid(uid);
 
-  const sql =
-    `SELECT BUID(province.uuid) as uuid, province.name, country.name AS country_name
+  const sql = `SELECT BUID(province.uuid) as uuid, province.name, country.name AS country_name
     FROM province JOIN country ON
       province.country_uuid = country.uuid
     WHERE province.uuid = ?;`;
@@ -221,8 +210,7 @@ function lookupProvince(uid) {
 function lookupCountry(uid) {
   const bid = db.bid(uid);
 
-  const sql =
-    `SELECT BUID(country.uuid) as uuid, country.name
+  const sql = `SELECT BUID(country.uuid) as uuid, country.name
     FROM country
     WHERE country.uuid = ?;`;
 
@@ -242,8 +230,7 @@ function lookupCountry(uid) {
 exports.detail = function detail(req, res, next) {
   const bid = db.bid(req.params.uuid);
 
-  const sql =
-    `SELECT BUID(village.uuid) AS villageUuid, village.name AS village, sector.name AS sector,
+  const sql = `SELECT BUID(village.uuid) AS villageUuid, village.name AS village, sector.name AS sector,
       BUID(sector.uuid) AS sectorUuid, province.name AS province, BUID(province.uuid) AS provinceUuid,
       country.name AS country, BUID(country.uuid) AS countryUuid,
       village.longitude, village.latitude
@@ -271,8 +258,7 @@ exports.detail = function detail(req, res, next) {
  * sector, countryUuid, country}
  */
 exports.list = function list(req, res, next) {
-  const sql =
-    `SELECT BUID(village.uuid) AS villageUuid, village.name AS village, sector.name AS sector,
+  const sql = `SELECT BUID(village.uuid) AS villageUuid, village.name AS village, sector.name AS sector,
       BUID(sector.uuid) AS sectorUuid, province.name AS province, BUID(province.uuid) AS provinceUuid,
       country.name AS country, BUID(country.uuid) AS countryUuid,
       village.longitude, village.latitude
@@ -305,18 +291,10 @@ exports.create.country = function createCountry(req, res, next) {
   // create a UUID if not provided
   req.body.uuid = req.body.uuid || uuid();
 
-  const sql =
-    `INSERT INTO country (uuid, name) VALUES (?, ?);`;
+  const sql = `INSERT INTO country (uuid, name) VALUES (?, ?);`;
 
   db.exec(sql, [db.bid(req.body.uuid), req.body.name])
     .then(() => {
-      Topic.publish(Topic.channels.ADMIN, {
-        event : Topic.events.CREATE,
-        entity : Topic.entities.LOCATION,
-        user_id : req.session.user.id,
-        uuid : req.body.uuid,
-      });
-
       res.status(201).json({ uuid : req.body.uuid });
     })
     .catch(next)
@@ -340,18 +318,10 @@ exports.create.province = function createProvince(req, res, next) {
   // create a UUID if not provided
   data.uuid = data.uuid || uuid();
 
-  const sql =
-    'INSERT INTO province (uuid, name, country_uuid) VALUES (?);';
+  const sql = 'INSERT INTO province (uuid, name, country_uuid) VALUES (?);';
 
   db.exec(sql, [[db.bid(data.uuid), data.name, data.country_uuid]])
     .then(() => {
-      Topic.publish(Topic.channels.ADMIN, {
-        event : Topic.events.CREATE,
-        entity : Topic.entities.LOCATION,
-        user_id : req.session.user.id,
-        uuid : data.uuid,
-      });
-
       res.status(201).json({ uuid : data.uuid });
     })
     .catch(next)
@@ -374,18 +344,10 @@ exports.create.sector = function createSector(req, res, next) {
   // create a UUID if not provided
   data.uuid = data.uuid || uuid();
 
-  const sql =
-    `INSERT INTO sector (uuid, name, province_uuid) VALUES (?);`;
+  const sql = `INSERT INTO sector (uuid, name, province_uuid) VALUES (?);`;
 
   db.exec(sql, [[db.bid(data.uuid), data.name, data.province_uuid]])
     .then(() => {
-      Topic.publish(Topic.channels.ADMIN, {
-        event : Topic.events.CREATE,
-        entity : Topic.entities.LOCATION,
-        user_id : req.session.user.id,
-        uuid : data.uuid,
-      });
-
       res.status(201).json({ uuid : data.uuid });
     })
     .catch(next)
@@ -407,18 +369,10 @@ exports.create.village = function createVillage(req, res, next) {
   // create a UUID if not provided
   data.uuid = data.uuid || uuid();
 
-  const sql =
-    `INSERT INTO village (uuid, name, sector_uuid, longitude, latitude) VALUES (?);`;
+  const sql = `INSERT INTO village (uuid, name, sector_uuid, longitude, latitude) VALUES (?);`;
 
   db.exec(sql, [[db.bid(data.uuid), data.name, data.sector_uuid, data.longitude, data.latitude]])
     .then(() => {
-      Topic.publish(Topic.channels.ADMIN, {
-        event : Topic.events.CREATE,
-        entity : Topic.entities.LOCATION,
-        user_id : req.session.user.id,
-        uuid : data.uuid,
-      });
-
       res.status(201).json({ uuid : data.uuid });
     })
     .catch(next)
@@ -438,8 +392,7 @@ exports.update = {};
  */
 exports.update.country = function updateCountry(req, res, next) {
   const bid = db.bid(req.params.uuid);
-  const sql =
-    'UPDATE country SET ? WHERE uuid = ?;';
+  const sql = 'UPDATE country SET ? WHERE uuid = ?;';
 
   // prevent updating the uuid
   delete req.body.uuid;
@@ -468,8 +421,7 @@ exports.update.country = function updateCountry(req, res, next) {
  */
 exports.update.province = function updateProvince(req, res, next) {
   const bid = db.bid(req.params.uuid);
-  const sql =
-    'UPDATE province SET ? WHERE uuid = ?;';
+  const sql = 'UPDATE province SET ? WHERE uuid = ?;';
 
   // prevent updating the uuid
   delete req.body.uuid;
@@ -498,8 +450,7 @@ exports.update.province = function updateProvince(req, res, next) {
  */
 exports.update.sector = function updateSector(req, res, next) {
   const bid = db.bid(req.params.uuid);
-  const sql =
-    `UPDATE sector SET ? WHERE uuid = ?;`;
+  const sql = `UPDATE sector SET ? WHERE uuid = ?;`;
 
   // prevent updating the uuid
   delete req.body.uuid;
@@ -529,8 +480,7 @@ exports.update.sector = function updateSector(req, res, next) {
 exports.update.village = function updateVillage(req, res, next) {
   const bid = db.bid(req.params.uuid);
 
-  const sql =
-    `UPDATE village SET ? WHERE uuid = ?;`;
+  const sql = `UPDATE village SET ? WHERE uuid = ?;`;
 
   // prevent updating the uuid
   delete req.body.uuid;

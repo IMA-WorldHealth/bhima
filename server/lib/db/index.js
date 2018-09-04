@@ -2,14 +2,13 @@
 const q = require('q');
 const mysql = require('mysql');
 const uuidParse = require('uuid-parse');
-const uuidv4 = require('uuid/v4');
-const Transaction = require('./transaction');
 const _ = require('lodash');
+const debug = require('debug')('db');
 
+const Transaction = require('./transaction');
+const { uuid } = require('../util');
 const BadRequest = require('../errors/BadRequest');
 const NotFound = require('../errors/NotFound');
-
-const debug = require('debug')('db');
 
 /**
  * @class DatabaseConnector
@@ -32,7 +31,11 @@ class DatabaseConnector {
       user     : process.env.DB_USER,
       password : process.env.DB_PASS,
       database : process.env.DB_NAME,
-      charset  : 'utf8_unicode_ci',
+
+      // NOTE(@jniles): the MySQL character set variable must be uppercase.  To
+      // see the full list of check out:
+      // https://github.com/mysqljs/mysql/blob/master/lib/protocol/constants/charsets.js
+      charset  : 'UTF8MB4_UNICODE_CI',
     };
 
     this.pool = mysql.createPool(params);
@@ -115,8 +118,8 @@ class DatabaseConnector {
   one(sql, params, id, entity = 'record') {
     return this.exec(sql, params)
       .then(rows => {
-        const errorMessage =
-          `Expected ${entity} to contain a single record with id ${id}, but ${rows.length} were found!`;
+        // eslint-disable-next-line max-len
+        const errorMessage = `Expected ${entity} to contain a single record with id ${id}, but ${rows.length} were found!`;
 
         if (rows.length < 1) {
           debug(`#one(): Found too few records!  Expected 1 but ${rows.length} found.`);
@@ -172,7 +175,7 @@ class DatabaseConnector {
    * generates a uuid(buffer)
    */
   uuid() {
-    return this.bid(uuidv4());
+    return this.bid(uuid());
   }
 
   /**
@@ -234,7 +237,6 @@ class DatabaseConnector {
   escape(key) {
     return mysql.escape(key);
   }
-
 }
 
 module.exports = new DatabaseConnector();

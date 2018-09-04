@@ -10,17 +10,13 @@
  * This controller encapsulates the HTTP API backing the patient documents feature
  * in the application.
  *
- * @requires db
- * @requires uuid/v4
- * @requires BadRequest
- * @requires NotFound
+ * @requires lib/db
+ * @requires lib/BadRequest
+ * @requires lib/NotFound
  */
 
 
-const uuid = require('uuid/v4');
-
 const db = require('../../../lib/db');
-const Topic = require('@ima-worldhealth/topic');
 
 const BadRequest = require('../../../lib/errors/BadRequest');
 const NotFound = require('../../../lib/errors/NotFound');
@@ -49,8 +45,7 @@ function create(req, res, next) {
     return;
   }
 
-  const sql =
-    'INSERT INTO patient_document (uuid, patient_uuid, label, link, mimetype, size, user_id) VALUES ?;';
+  const sql = 'INSERT INTO patient_document (uuid, patient_uuid, label, link, mimetype, size, user_id) VALUES ?;';
 
   // make sure the records are properly formatted
   const records = req.files.map(file => {
@@ -67,14 +62,6 @@ function create(req, res, next) {
 
   db.exec(sql, [records])
     .then(() => {
-      // publish a patient update event
-      Topic.publish(Topic.channels.MEDICAL, {
-        event : Topic.events.UPDATE,
-        entity : Topic.entities.PATIENT,
-        user_id : req.session.user.id,
-        id : req.params.uuid,
-      });
-
       res.status(201).json({
         uuids : req.files.map(file => file.filename),
       });
@@ -104,14 +91,6 @@ function list(req, res, next) {
 
   db.exec(sql, [db.bid(patientUuid)])
     .then(rows => {
-    // publish a patient update event
-      Topic.publish(Topic.channels.MEDICAL, {
-        event : Topic.events.UPDATE,
-        entity : Topic.entities.PATIENT,
-        user_id : req.session.user.id,
-        id : req.params.uuid,
-      });
-
       res.status(200).json(rows);
     })
     .catch(next)
@@ -132,8 +111,7 @@ function list(req, res, next) {
 function removeAll(req, res, next) {
   const patientUuid = req.params.uuid;
 
-  const sql =
-    'DELETE FROM patient_document WHERE patient_uuid = ?;';
+  const sql = 'DELETE FROM patient_document WHERE patient_uuid = ?;';
 
   db.exec(sql, [db.bid(patientUuid)])
     .then(() => {
@@ -154,7 +132,7 @@ function removeAll(req, res, next) {
  */
 function remove(req, res, next) {
   const patientUuid = req.params.uuid;
-  const documentUuid = req.params.documentUuid;
+  const { documentUuid } = req.params;
 
   const sql = `
     DELETE FROM patient_document WHERE patient_uuid = ? AND uuid = ?;
@@ -165,15 +143,6 @@ function remove(req, res, next) {
       if (!rows.affectedRows) {
         throw new NotFound(`Could not find document with uuid ${documentUuid}.`);
       }
-
-      // publish an update event
-      Topic.publish(Topic.channels.MEDICAL, {
-        event : Topic.events.UPDATE,
-        entity : Topic.entities.PATIENT,
-        user_id : req.session.user.id,
-        id : req.params.uuid,
-      });
-
       res.sendStatus(204);
     })
     .catch(next)

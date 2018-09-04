@@ -14,7 +14,7 @@
   <div class="modal-body" style="padding : 0px;">
 
     <uib-tabset>
-      <uib-tab index="0" heading="{{ 'FORM.LABELS.SEARCH_QUERIES' | translate}}">
+      <uib-tab index="0" data-custom-filter-tab heading="{{ 'FORM.LABELS.SEARCH_QUERIES' | translate}}">
         <!-- acting body class="tab-body" -->
         <div class="tab-body">
 
@@ -141,7 +141,7 @@
         </div>
       </uib-tab>
 
-      <uib-tab index="1" heading="{{ 'FORM.LABELS.DEFAULTS' | translate }}">
+      <uib-tab index="1" data-default-filter-tab heading="{{ 'FORM.LABELS.DEFAULTS' | translate }}">
         <div class="tab-body">
 
           <!--
@@ -160,10 +160,12 @@
 
           <!-- Full Transaction applies to the Journal, not the Account Statement -->
           <div ng-if="!ModalCtrl.hasDefaultAccount">
+
+            <!-- Given this components architecture, `value` on onChangeCallback -->
+            <!-- refers to the ng-value of the currently selcted radio button -->
             <bh-yes-no-radios
-              default-value="true"
               value ="ModalCtrl.defaultQueries.showFullTransactions"
-              on-change-callback="ModalCtrl.toggleFullTransaction(ModalCtrl.defaultQueries.showFullTransactions)"
+              on-change-callback="ModalCtrl.toggleFullTransaction(value)"
               label="POSTING_JOURNAL.SHOW_FULL_TRANSACTION_RECORDS"
               help-text="POSTING_JOURNAL.SHOW_FULL_TRANSACTION_RECORDS_HELP">
             </bh-yes-no-radios>
@@ -179,7 +181,7 @@
 
           <div class="form-group" ng-class="{ 'has-error' : ModalForm.limit.$invalid }">
             <label class="control-label" translate>FORM.LABELS.LIMIT</label>
-            <input name="limit" type="number" bh-integer class="form-control" ng-model="ModalCtrl.defaultQueries.limit" ng-change="ModalCtrl.onSelectLimit(ModalCtrl.defaultQueries.limit)">
+            <input name="limit" type="number" bh-integer bh-max-integer class="form-control" ng-model="ModalCtrl.defaultQueries.limit" ng-change="ModalCtrl.onSelectLimit(ModalCtrl.defaultQueries.limit)">
 
             <div class="help-block" ng-messages="ModalForm.limit.$error">
               <div ng-messages-include="modules/templates/messages.tmpl.html"></div>

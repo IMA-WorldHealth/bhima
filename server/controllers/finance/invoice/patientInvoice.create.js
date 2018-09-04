@@ -9,10 +9,9 @@
  * client.
  *
  */
-const db = require('../../../lib/db');
-const uuid = require('uuid/v4');
-const util = require('../../../lib/util');
 const _ = require('lodash');
+const db = require('../../../lib/db');
+const util = require('../../../lib/util');
 
 module.exports = createInvoice;
 
@@ -45,7 +44,7 @@ module.exports = createInvoice;
  */
 function createInvoice(invoiceDetails, hasCreditorBalance, prepaymentDescription) {
   const transaction = db.transaction();
-  const invoiceUuid = db.bid(invoiceDetails.uuid || uuid());
+  const invoiceUuid = db.bid(invoiceDetails.uuid || util.uuid());
 
   const invoicingFees = processInvoicingFees(invoiceUuid, invoiceDetails.invoicingFees);
   const subsidies = processSubsidies(invoiceUuid, invoiceDetails.subsidies);
@@ -56,12 +55,9 @@ function createInvoice(invoiceDetails, hasCreditorBalance, prepaymentDescription
 
   // 'stage' - make all data that will be required for writing an invoice available to the database procedures
   transaction.addQuery('CALL StageInvoice(?)', [invoice]);
-  items.forEach(item =>
-    transaction.addQuery('CALL StageInvoiceItem(?)', [item]));
-  invoicingFees.forEach(invoicingFee =>
-    transaction.addQuery('CALL StageInvoicingFee(?)', [invoicingFee]));
-  subsidies.forEach(subsidy =>
-    transaction.addQuery('CALL StageSubsidy(?)', [subsidy]));
+  items.forEach(item => transaction.addQuery('CALL StageInvoiceItem(?)', [item]));
+  invoicingFees.forEach(invoicingFee => transaction.addQuery('CALL StageInvoicingFee(?)', [invoicingFee]));
+  subsidies.forEach(subsidy => transaction.addQuery('CALL StageSubsidy(?)', [subsidy]));
 
   // write and post invoice to the posting journal
   transaction.addQuery('CALL WriteInvoice(?)', [invoiceUuid]);
@@ -146,7 +142,7 @@ function processInvoiceItems(invoiceUuid, invoiceItems) {
 
   // make sure that invoice items have their uuids
   items.forEach((item) => {
-    item.uuid = db.bid(item.uuid || uuid());
+    item.uuid = db.bid(item.uuid || util.uuid());
     item.invoice_uuid = invoiceUuid;
 
     // should every item have an inventory uuid?
@@ -157,13 +153,11 @@ function processInvoiceItems(invoiceUuid, invoiceItems) {
   });
 
   // create a filter to align invoice item columns to the SQL columns
-  const filter =
-    util.take(
-      'uuid', 'inventory_uuid', 'quantity', 'transaction_price',
-      'inventory_price', 'debit', 'credit', 'invoice_uuid'
-    );
+  const filter = util.take(
+    'uuid', 'inventory_uuid', 'quantity', 'transaction_price',
+    'inventory_price', 'debit', 'credit', 'invoice_uuid'
+  );
 
   // prepare invoice items for insertion into database
   return _.map(items, filter);
 }
-

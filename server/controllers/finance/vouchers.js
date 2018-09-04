@@ -16,7 +16,6 @@
  */
 
 const _ = require('lodash');
-const uuid = require('uuid/v4');
 
 const util = require('../../lib/util');
 const db = require('../../lib/db');
@@ -261,7 +260,7 @@ function create(req, res, next) {
   voucher.project_id = req.session.project.id;
 
   // make sure the voucher has an id
-  const vuid = voucher.uuid || uuid();
+  const vuid = voucher.uuid || util.uuid();
   voucher.uuid = db.bid(vuid);
 
   // preprocess the items so they have uuids as required
@@ -285,7 +284,7 @@ function create(req, res, next) {
     }
 
     // if the item doesn't have a uuid, create one for it.
-    item.uuid = item.uuid || uuid();
+    item.uuid = item.uuid || util.uuid();
 
     // make sure the items reference the voucher correctly
     item.voucher_uuid = item.voucher_uuid || voucher.uuid;

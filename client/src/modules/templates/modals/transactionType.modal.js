@@ -3,20 +3,18 @@ angular.module('bhima.controllers')
 
 // dependencies injections
 TransactionTypeModalController.$inject = [
-  '$uibModalInstance', 'TransactionTypeService', 'NotifyService', 'data',
+  '$uibModalInstance', 'TransactionTypeService', 'NotifyService', 'data', 'bhConstants',
 ];
 
-function TransactionTypeModalController(Instance, TransactionType, Notify, Data) {
+function TransactionTypeModalController(Instance, TransactionType, Notify, Data, bhConstants) {
   const vm = this;
 
   vm.isCreateState = Data.action === 'create';
   vm.isUpdateState = Data.action === 'edit';
 
-  vm.types = [
-    { label : 'VOUCHERS.SIMPLE.INCOME', value : 'income' },
-    { label : 'VOUCHERS.SIMPLE.EXPENSE', value : 'expense' },
-    { label : 'FORM.LABELS.OTHER', value : 'other' },
-  ];
+  // Convert bhConstants transaction type map object into an array of elements
+  vm.types = Object.keys(bhConstants.transactionTypeMap)
+    .map(key => bhConstants.transactionTypeMap[key]);
 
   vm.transactionType = {};
 
@@ -38,9 +36,9 @@ function TransactionTypeModalController(Instance, TransactionType, Notify, Data)
 
     const transactionType = angular.copy(vm.transactionType);
 
-    const promise = (vm.isCreateState) ?
-      TransactionType.create(transactionType) :
-      TransactionType.update(transactionType.id, transactionType);
+    const promise = (vm.isCreateState)
+      ? TransactionType.create(transactionType)
+      : TransactionType.update(transactionType.id, transactionType);
 
     return promise
       .then(() => {

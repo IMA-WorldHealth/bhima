@@ -2,8 +2,8 @@ angular.module('bhima.controllers')
   .controller('TransactionTypeController', TransactionTypeController);
 
 TransactionTypeController.$inject = [
-  'TransactionTypeService', 'TransactionTypeStoreService', 'NotifyService',
-  'ModalService', '$translate',
+  '$translate', '$timeout', 'TransactionTypeService', 'NotifyService',
+  'ModalService', 'uiGridConstants', 'bhConstants',
 ];
 
 /**
@@ -12,54 +12,41 @@ TransactionTypeController.$inject = [
  * @description
  * This controller powers the transaction type grid.
  */
-function TransactionTypeController(TransactionType, TransactionTypeStore, Notify, Modal, $translate) {
+function TransactionTypeController($translate, $timeout, TransactionType, Notify, Modal, uiGridConstants, bhConstants) {
   const vm = this;
 
   // global variables
   vm.gridOptions = {};
   vm.gridApi = {};
 
-  // edit button template
-  const editTemplate = `
-    <div class="ui-grid-cell-contents text-right">
-      <a
-        href
-        ng-click="grid.appScope.editType(row.entity)"
-        uib-popover="{{row.entity._popover}}"
-        popover-placement="left"
-        popover-trigger="'mouseenter'"
-        popover-append-to-body="true"
-        data-edit-type="{{ row.entity.text }}">
-        <span ng-show="row.entity.fixed">
-          <i class="fa fa-lock"></i> <span translate>FORM.LABELS.LOCKED</span>
-        </span>
-        <span ng-hide="row.entity.fixed">
-          <i class="fa fa-edit"></i> <span translate>FORM.LABELS.EDIT</span>
-        </span>
-      </a>
-    </div>
-    `;
-
   // grid default options
   vm.gridOptions.appScopeProvider = vm;
   vm.gridOptions.columnDefs = [{
-    field : 'text',
+    field : 'descriptionLabel',
     displayName : 'FORM.LABELS.TEXT',
     headerCellFilter : 'translate',
-    cellFilter : 'translate',
     enableColumnMenu : false,
+    sort : {
+      direction : uiGridConstants.ASC,
+      priority : 1,
+    },
   }, {
-    field : 'type',
+    field : 'typeLabel',
     displayName : 'FORM.LABELS.TYPE',
     headerCellFilter : 'translate',
     cellFilter : 'translate',
     enableColumnMenu : false,
   }, {
-    field : 'action',
-    displayName : '...',
-    cellTemplate : editTemplate,
+    field : 'fixed',
+    displayName : '',
+    maxWidth : '150',
+    cellTemplate : '/modules/transaction-type/templates/fixedStatus.cell.html',
     enableFiltering : false,
     enableColumnMenu : false,
+    sort : {
+      direction : uiGridConstants.DESC,
+      priority : 0,
+    },
   }];
 
   // register API
@@ -81,7 +68,7 @@ function TransactionTypeController(TransactionType, TransactionTypeStore, Notify
       .then(res => {
         if (!res) { return; }
         Notify.success('FORM.INFO.SAVE_SUCCESS');
-        load();
+        loadTransactionTypes();
       })
       .catch(Notify.handleError);
   }
@@ -96,25 +83,59 @@ function TransactionTypeController(TransactionType, TransactionTypeStore, Notify
       .then(res => {
         if (!res) { return; }
         Notify.success('FORM.INFO.UPDATE_SUCCESS');
-        load();
+        loadTransactionTypes();
       })
       .catch(Notify.handleError);
   }
 
-  function load() {
-    TransactionType.read()
-      .then(list => {
-        vm.gridOptions.data = list;
+  async function loadTransactionTypes() {
+    try {
+      const types = await TransactionType.read();
 
-        list.forEach(type => {
-          type._popover = type.fixed ? $translate.instant('TRANSACTION_TYPE.FIXED_INFO') : '';
-        });
-      })
-      .catch(Notify.handleError);
+      // ensure ALL transaction types have translated keys before displaying data
+      const parsedTypes = await Promise.all(types.map(assignDescriptionTranslation));
+
+      // this promise returns outside of Angular's digest loop for some reason, this
+      // ensures the data change is propegated
+      $timeout(() => {
+        vm.gridOptions.data = parsedTypes.map(assignTransactionTypeLabels);
+      });
+
+    } catch (e) {
+      Notify.handleError(e);
+    }
+  }
+
+  // Assign translatable labels to each transaction type based on the hardcoded
+  // database strings
+  function assignTransactionTypeLabels(transactionType) {
+    // @TODO(sfount) The `transaction_type` database currently hard codes 'income',
+    //               'expense' and 'other' transaction types. When this is updated
+    //               with a more data driven approach it should include translatable
+    //               labels
+    transactionType.typeLabel = bhConstants.transactionTypeMap[transactionType.type].label;
+    return transactionType;
+  }
+
+
+  async function assignDescriptionTranslation(type) {
+    try {
+      const translatedDescription = await $translate(type.text);
+      type.descriptionLabel = translatedDescription;
+    } catch (e) {
+      // there was an issue with the translation, this is most commonly caused
+      // by no value found for this key, throwing an exception
+      // - default to the translate key as the directive does
+      type.descriptionLabel = type.text;
+    }
+    return type;
   }
 
   function startup() {
-    load();
+    // startup executes load only once Angular is initalised and has set the default
+    // language setting correctly, executing this earlier will use the default language
+    // @TODO(sfount) an abstract, clear way of guaranteeing language files are downloaded should be considerd
+    $timeout(() => loadTransactionTypes());
   }
 
   // startup the module

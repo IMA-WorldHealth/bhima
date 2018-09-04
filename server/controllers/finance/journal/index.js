@@ -17,7 +17,7 @@
 
 const q = require('q');
 const _ = require('lodash');
-const uuid = require('uuid/v4');
+const { uuid } = require('../../../lib/util');
 
 // module dependencies
 const db = require('../../../lib/db');

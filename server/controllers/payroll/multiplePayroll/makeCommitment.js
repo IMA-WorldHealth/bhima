@@ -8,12 +8,12 @@
  * @requires EmployeeData
  */
 
+const q = require('q');
 const db = require('../../../lib/db');
 const EmployeeData = require('../employees');
 const configurationData = require('./find');
 const transac = require('./commitment');
 const Exchange = require('../../finance/exchange');
-const q = require('q');
 
 function config(req, res, next) {
   // Collection of employee references select

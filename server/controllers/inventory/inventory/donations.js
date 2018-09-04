@@ -12,8 +12,7 @@ exports.getInventoryDonationsById = getInventoryDonationsById;
 
 // all donations for all inventory items
 function getInventoryDonations() {
-  const sql =
-    `SELECT dr.name, d.date, i.text AS label, s.lot_number, s.quantity
+  const sql = `SELECT dr.name, d.date, i.text AS label, s.lot_number, s.quantity
     FROM donor AS dr JOIN donations AS d JOIN donation_item AS di JOIN inventory AS i JOIN stock AS s ON
       dr.id = d.donor_id AND d.uuid = di.donation_uuid AND
       s.tracking_number = di.tracking_number AND
@@ -26,8 +25,7 @@ function getInventoryDonations() {
 
 // returns all donations for a particular inventory uuid
 function getInventoryDonationsById(uuid) {
-  const sql =
-    `SELECT dr.name, d.date, i.text AS label, s.lot_number, s.quantity
+  const sql = `SELECT dr.name, d.date, i.text AS label, s.lot_number, s.quantity
     FROM donor AS dr JOIN donations AS d JOIN donation_item AS di JOIN inventory AS i JOIN stock AS s ON
       dr.id = d.donor_id AND d.uuid = di.donation_uuid AND
       s.tracking_number = di.tracking_number AND

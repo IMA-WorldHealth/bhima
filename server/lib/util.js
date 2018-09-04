@@ -10,8 +10,7 @@
  * @requires q
  * @requires moment
  * @requires debug
- * @requires child_process
- * @requires util
+ * @requires child_process @requires util
  */
 
 const _ = require('lodash');
@@ -21,6 +20,7 @@ const moment = require('moment');
 const debug = require('debug')('util');
 const csvtojson = require('csvtojson');
 const { exec } = require('child_process');
+const uuid = require('uuid/v4');
 
 exports.take = take;
 exports.loadModuleIfExists = requireModuleIfExists;
@@ -235,3 +235,14 @@ function formatCsvToJson(filePath) {
 
   return defer.promise;
 }
+
+/**
+ * @function uuid
+ *
+ * @description
+ * A replacement for the uuid/v4 function that renders UUIDs in the same format
+ * as the BUID() MySQL function.
+ *
+ * @returns {String} - a version 4 UUID
+ */
+exports.uuid = () => uuid().toUpperCase().replace(/-/g, '');

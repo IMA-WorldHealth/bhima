@@ -58,4 +58,3 @@ function prices(req, res, next) {
     .catch(next)
     .done();
 }
-

@@ -10,7 +10,7 @@ describe('(/discounts) Discounts Interface', () => {
   const ACCOUNT_ID = 220; // 66110011 - Remunération Personnel
 
   // Quinine
-  const INVENTORY_UUID = '43f3decb-fce9-426e-940a-bc2150e62186';
+  const INVENTORY_UUID = '43F3DECBFCE9426E940ABC2150E62186';
 
   const KEYS = [
     'id', 'account_id', 'inventory_uuid', 'number', 'inventoryLabel',

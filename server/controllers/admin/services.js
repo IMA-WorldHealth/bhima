@@ -6,19 +6,16 @@
  *
  * @description
  * This controller is responsible for implementing all crud and others custom request
- * on the services table through the `/services` endpoint. *
- * @requires uuid/v4
+ * on the services table through the `/services` endpoint.
+ *
+ * @requires lib/util
  * @requires db
  * @requires NotFound
- * @requires BadRequest
- * @requires Topic
  */
 
 
-const uuid = require('uuid/v4');
-const Topic = require('@ima-worldhealth/topic');
-
 const db = require('../../lib/db');
+const { uuid } = require('../../lib/util');
 const NotFound = require('../../lib/errors/NotFound');
 
 /**
@@ -28,8 +25,7 @@ const NotFound = require('../../lib/errors/NotFound');
  * Returns an array of services from the database.
  */
 function list(req, res, next) {
-  let sql =
-    'SELECT s.id, s.name, s.cost_center_id, s.profit_center_id, BUID(s.uuid) AS uuid FROM service AS s';
+  let sql = 'SELECT s.id, s.name, s.cost_center_id, s.profit_center_id, BUID(s.uuid) AS uuid FROM service AS s';
 
   if (req.query.full === '1') {
     sql = `
@@ -72,13 +68,6 @@ function create(req, res, next) {
 
   db.exec(sql, [record])
     .then((result) => {
-      Topic.publish(Topic.channels.ADMIN, {
-        event : Topic.events.CREATE,
-        entity : Topic.entities.SERVICE,
-        user_id : req.session.user.id,
-        id : result.insertId,
-      });
-
       res.status(201).json({ id : result.insertId });
     })
     .catch(next)
@@ -115,13 +104,6 @@ function update(req, res, next) {
       return lookupService(req.params.id);
     })
     .then((service) => {
-      Topic.publish(Topic.channels.ADMIN, {
-        event : Topic.events.UPDATE,
-        entity : Topic.entities.SERVICE,
-        user_id : req.session.user.id,
-        id : req.params.id,
-      });
-
       res.status(200).json(service);
     })
     .catch(next)
@@ -142,13 +124,6 @@ function remove(req, res, next) {
       if (!result.affectedRows) {
         throw new NotFound(`Could not find a service with id ${req.params.id}.`);
       }
-
-      Topic.publish(Topic.channels.ADMIN, {
-        event : Topic.events.DELETE,
-        entity : Topic.entities.SERVICE,
-        user_id : req.session.user.id,
-        id : req.params.id,
-      });
 
       res.sendStatus(204);
     })
@@ -181,8 +156,7 @@ function detail(req, res, next) {
  * @returns {Promise} - returns the result of teh database query
  */
 function lookupService(id) {
-  const sql =
-    `
+  const sql = `
     SELECT
       s.id, s.name, s.enterprise_id, s.cost_center_id, s.profit_center_id
     FROM

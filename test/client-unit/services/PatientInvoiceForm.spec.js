@@ -11,6 +11,7 @@ describe('PatientInvoiceForm', () => {
     'bhima.services',
     'angularMoment',
     'ui.bootstrap',
+    'ui.router',
     'bhima.constants',
     'ngStorage',
     'pascalprecht.translate',

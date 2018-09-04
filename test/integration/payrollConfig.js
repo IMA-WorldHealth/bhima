@@ -7,8 +7,8 @@ const helpers = require('./helpers');
  *
  * This test suite implements full CRUD on the /payroll  HTTP API endpoint.
  */
-describe('(/payroll) The /payroll  API endpoint', function () {
-  //Payroll Configuration we will add during this test suite.
+describe('(/payroll) The /payroll  API endpoint', () => {
+  // Payroll Configuration we will add during this test suite.
 
   const payrollConfig = {
     label : 'Account Configuration 2017',
@@ -27,62 +27,62 @@ describe('(/payroll) The /payroll  API endpoint', function () {
   };
 
   const NUM_CONFIG_PAYROLL = 1;
-  
-  it('GET /PAYROLL_CONFIG returns a list of Payroll Configurations ', function () {
+
+  it('GET /PAYROLL_CONFIG returns a list of Payroll Configurations ', () => {
     return agent.get('/payroll_config')
-      .then(function (res) {
+      .then((res) => {
         helpers.api.listed(res, NUM_CONFIG_PAYROLL);
       })
       .catch(helpers.handler);
   });
 
-  it('POST /PAYROLL_CONFIG should create a new Account Configuration', function () {
+  it('POST /PAYROLL_CONFIG should create a new Account Configuration', () => {
     return agent.post('/payroll_config')
       .send(payrollConfig)
-      .then(function (res) {
+      .then((res) => {
         payrollConfig.id = res.body.id;
         helpers.api.created(res);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /PAYROLL_CONFIG/:ID should not be found for unknown id', function () {
+  it('GET /PAYROLL_CONFIG/:ID should not be found for unknown id', () => {
     return agent.get('/payroll_config/unknownPayrollConfig')
-      .then(function (res) {
+      .then((res) => {
         helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });
 
-  it('PUT /PAYROLL_CONFIG  should update an existing Account Configuration', function () {
+  it('PUT /PAYROLL_CONFIG  should update an existing Account Configuration', () => {
     return agent.put('/payroll_config/'.concat(payrollConfig.id))
       .send(PayrollConfigUpdate)
-      .then(function (res) {
+      .then((res) => {
         expect(res).to.have.status(200);
         expect(res.body.label).to.equal(PayrollConfigUpdate.label);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /PAYROLL_CONFIG/:ID returns a single Account Configuration', function () {
+  it('GET /PAYROLL_CONFIG/:ID returns a single Account Configuration', () => {
     return agent.get('/payroll_config/'.concat(payrollConfig.id))
-      .then(function (res) {
+      .then((res) => {
         expect(res).to.have.status(200);
       })
       .catch(helpers.handler);
   });
 
-  it('DELETE /PAYROLL_CONFIG/:ID will send back a 404 if the Account Configuration does not exist', function () {
+  it('DELETE /PAYROLL_CONFIG/:ID will send back a 404 if the Account Configuration does not exist', () => {
     return agent.delete('/payroll_config/inknowRubric')
-      .then(function (res) {
+      .then((res) => {
         helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });
 
-  it('DELETE /PAYROLL_CONFIG/:ID should delete an Account Configuration ', function () {
+  it('DELETE /PAYROLL_CONFIG/:ID should delete an Account Configuration ', () => {
     return agent.delete('/payroll_config/'.concat(payrollConfig.id))
-      .then(function (res) {
+      .then((res) => {
         helpers.api.deleted(res);
       })
       .catch(helpers.handler);

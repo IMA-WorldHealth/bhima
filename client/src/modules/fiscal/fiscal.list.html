@@ -1,7 +1,7 @@
 <div class="container">
   <div class="row">
     <div class="col-md-12">
-
+      <!-- fiscal year list -->
       <div ng-repeat="fiscal in FiscalCtrl.fiscalYears | limitTo : FiscalCtrl.pageSize : (FiscalCtrl.currentPage - 1)*FiscalCtrl.pageSize track by fiscal.id" data-row="{{ $index }}" class="text-left">
         <div class="panel panel-default" style="margin-bottom : 3px;" data-fiscal-entry>
           <div class="panel-body">
@@ -50,31 +50,28 @@
         </div>
       </div>
 
-      <div class="col-lg-12">
-        <br/>
-        <p class="text-center">
-          <span class="text-center" ng-show="FiscalCtrl.loadingState">
-            <span class="fa fa-circle-o-notch fa-spin"></span>
-            <span translate>TABLE.COLUMNS.LOADING</span>
-          </span>
-          <p ng-show="(FiscalCtrl.fiscalYears.length == 0) && !FiscalCtrl.loadingError"
-            class="text-center text-danger" translate>
-            FORM.LABELS.NO_FISCALYEAR_REGISTERED
-          </p>
+      <!-- list status information zone -->
+      <div>
+        <p class="text-center" ng-show="FiscalCtrl.loadingState">
+          <span class="fa fa-circle-o-notch fa-spin"></span>
+          <span translate>TABLE.COLUMNS.LOADING</span>
+        </p>
+        <p ng-show="(FiscalCtrl.fiscalYears.length == 0) && !FiscalCtrl.loadingError"
+          class="text-center text-danger" translate>
+          FORM.LABELS.NO_FISCALYEAR_REGISTERED
         </p>
       </div>
 
-      <div>
-        <uib-pagination
-          total-items="FiscalCtrl.fiscalYears.length"
-          ng-model='FiscalCtrl.currentPage'
-          items-per-page='FiscalCtrl.pageSize'
-          next-text="&rsaquo;"
-          previous-text="&lsaquo;"
-          first-text="&lsaquo;&lsaquo;"
-          last-text="&rsaquo;&rsaquo;"
-          boundary-links="true">
-        </uib-pagination>
+      <!-- list pagination -->
+      <div uib-pagination
+        total-items="FiscalCtrl.fiscalYears.length"
+        ng-model='FiscalCtrl.currentPage'
+        items-per-page='FiscalCtrl.pageSize'
+        next-text="&rsaquo;"
+        previous-text="&lsaquo;"
+        first-text="&lsaquo;&lsaquo;"
+        last-text="&rsaquo;&rsaquo;"
+        boundary-links="true">
       </div>
     </div>
   </div>

@@ -4,9 +4,9 @@
  * @description
  * This controller exposes an API to the client for reading and creditor_groups
  */
+const { uuid } = require('../../lib/util');
 const db = require('../../lib/db');
 const BadRequest = require('../../lib/errors/BadRequest');
-const uuid = require('uuid/v4');
 
 // GET /creditor_groups
 function lookupCreditorGroup(Uuid) {
@@ -22,8 +22,7 @@ function lookupCreditorGroup(Uuid) {
 
 // Lists of Creditor Groups
 function list(req, res, next) {
-  let sql =
-    'SELECT BUID(uuid) as uuid, name FROM creditor_group ;';
+  let sql = 'SELECT BUID(uuid) as uuid, name FROM creditor_group ;';
 
   if (req.query.detailed === '1') {
     sql = `
@@ -72,8 +71,7 @@ function create(req, res, next) {
   data.uuid = db.bid(creditorGroupUuid);
   data.enterprise_id = req.session.enterprise.id;
 
-  const sql =
-    'INSERT INTO creditor_group SET ? ';
+  const sql = 'INSERT INTO creditor_group SET ? ';
 
   db.exec(sql, [data])
     .then(() => {
@@ -90,8 +88,7 @@ function create(req, res, next) {
 * Update a creditor group based on its uuid
 */
 function update(req, res, next) {
-  const sql =
-    'UPDATE creditor_group SET ? WHERE uuid = ?;';
+  const sql = 'UPDATE creditor_group SET ? WHERE uuid = ?;';
 
   const uid = db.bid(req.params.uuid);
 

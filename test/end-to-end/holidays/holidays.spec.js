@@ -1,10 +1,5 @@
 const helpers = require('../shared/helpers');
 const HolidayPage = require('./holidays.page');
-const chai = require('chai');
-
-
-/** configuring helpers**/
-helpers.configure(chai);
 
 describe('Holidays Management', () => {
   // navigate to the page
@@ -13,7 +8,6 @@ describe('Holidays Management', () => {
   const Page = new HolidayPage();
 
   const holiday = {
-    employee_uuid : '75e09694-65f2-45a1-a8a2-8b025003d793',
     percentage  : 100,
     label       : 'Conge de circonstance',
     dateFrom    : '17/05/2017',
@@ -21,7 +15,6 @@ describe('Holidays Management', () => {
   };
 
   const nestedHoliday = {
-    employee_uuid : '75e09694-65f2-45a1-a8a2-8b025003d793',
     percentage  : 100,
     label       : 'Conge de Imbrique',
     dateFrom    : '12/06/2017',
@@ -30,7 +23,7 @@ describe('Holidays Management', () => {
 
   const updateHoliday = {
     label : 'Conge Paye',
-    percentage : 75
+    percentage : 75,
   };
 
   it('successfully creates a new Holiday', () => {

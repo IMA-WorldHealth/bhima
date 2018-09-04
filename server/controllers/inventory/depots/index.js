@@ -8,9 +8,8 @@
 * @todo(jniles) - review this module
 */
 
-const uuid = require('uuid/v4');
+const { uuid } = require('../../../lib/util');
 const db = require('../../../lib/db');
-const distributions = require('./distributions');
 const NotFound = require('../../../lib/errors/NotFound');
 const FilterParser = require('../../../lib/filter');
 
@@ -22,7 +21,6 @@ exports.update = update;
 exports.remove = remove;
 
 /** expose depots distributions routes */
-exports.createDistributions = createDistributions;
 exports.listDistributions = listDistributions;
 exports.detailDistributions = detailDistributions;
 
@@ -223,8 +221,7 @@ function listDistributions(req, res, next) {
   // TODO - this query is suboptimal.  Perhaps rewrite with multiple subqueries
   case 'patients':
   case 'patient':
-    sql =
-      `SELECT c.uuid, c.document_id, COUNT(c.document_id) AS total,
+    sql = `SELECT c.uuid, c.document_id, COUNT(c.document_id) AS total,
         p.uuid AS patientId, p.display_name, d.text, d.uuid AS depotId,
         CONCAT(pr.abbr, p.reference) AS patient, c.date, i.text as label,
         sale.invoice, cp.sale_uuid AS saleId, c.canceled
@@ -248,8 +245,7 @@ function listDistributions(req, res, next) {
     // get distributions to services
   case 'services':
   case 'service':
-    sql =
-      `SELECT c.uuid, c.document_id, COUNT(c.document_id) AS total,
+    sql = `SELECT c.uuid, c.document_id, COUNT(c.document_id) AS total,
       cs.service_id, service.name, c.date, d.text, d.uuid AS depotId,
       i.text AS label, c.canceled
       FROM consumption_service AS cs
@@ -265,8 +261,7 @@ function listDistributions(req, res, next) {
 
     // TODO - this should find all consumption rummages for this depot
   case 'rummage':
-    sql =
-      `SELECT c.uuid, cr.document_uuid AS voucher,
+    sql = `SELECT c.uuid, cr.document_uuid AS voucher,
         COUNT(c.document_id) AS total, c.date, d.text, d.uuid AS depotId,
         i.text AS label, c.canceled
       FROM consumption_rummage AS cr
@@ -282,8 +277,7 @@ function listDistributions(req, res, next) {
     // TODO - this should find all consumption losses for this depot
   case 'loss':
   case 'losses':
-    sql =
-      `SELECT c.uuid, c.document_id AS voucher,
+    sql = `SELECT c.uuid, c.document_id AS voucher,
         COUNT(c.document_id) AS total, c.date, d.text, d.uuid AS depotId,
         i.text AS label, c.canceled
       FROM consumption_loss AS cl
@@ -298,8 +292,7 @@ function listDistributions(req, res, next) {
 
     // TODO - this should find all consumptions for this depot
   default:
-    sql =
-      `SELECT c.uuid, SUM(c.quantity) AS quantity, SUM(c.unit_price) AS price,
+    sql = `SELECT c.uuid, SUM(c.quantity) AS quantity, SUM(c.unit_price) AS price,
         COUNT(c.document_id) AS total, c.date, d.text,
         d.uuid AS depotId, i.text AS label, c.canceled
       FROM consumption AS c
@@ -323,8 +316,7 @@ function listDistributions(req, res, next) {
 function detailDistributions(req, res, next) {
   const uid = req.params.uuid;
 
-  const sql =
-    `SELECT c.uuid, c.document_id, c.date, d.text AS depotName,
+  const sql = `SELECT c.uuid, c.document_id, c.date, d.text AS depotName,
       d.uuid AS depotId, c.quantity, i.text AS label, c.canceled
     FROM consumption AS c
     JOIN depot AS d ON d.uuid = c.depot_uuid
@@ -350,24 +342,6 @@ function detailDistributions(req, res, next) {
     .done();
 }
 
-/**
-* POST /depots/:depotId/distributions
-*
-* Creates a new distribution for services, patients, etc.
-*/
-function createDistributions(req, res, next) {
-  // FIXME
-  // We need a better way of passing the project ID into the requests,
-  // preferably giving access to the entire session variable.
-  distributions.createDistributions(req.params.depotId, req.body, req.session)
-    .then((data) => {
-      res.status(200).json(data);
-    })
-
-  // FIXME -- this needs better error handling, I think.
-    .catch(next)
-    .done();
-}
 
 /**
 * GET /depots/:depotId/inventory
@@ -379,8 +353,7 @@ function createDistributions(req, res, next) {
 function listAvailableLots(req, res, next) {
   const depot = req.params.depotId;
 
-  const sql =
-    `SELECT
+  const sql = `SELECT
       unit_price, tracking_number, lot_number, SUM(quantity) AS quantity, code,
       label, expiration_date
      FROM
@@ -432,8 +405,7 @@ function listAvailableLots(req, res, next) {
 function detailAvailableLots(req, res, next) {
   const depot = req.params.depotId;
   const uid = req.params.uuid;
-  const sql =
-    `SELECT
+  const sql = `SELECT
       tracking_number, lot_number, SUM(quantity) AS quantity, code, expiration_date
      FROM
       (
@@ -475,8 +447,7 @@ function detailAvailableLots(req, res, next) {
 */
 function listExpiredLots(req, res, next) {
   const depot = req.params.depotId;
-  const sql =
-    `SELECT s.tracking_number, s.lot_number, s.quantity, s.code, s.expiration_date FROM (
+  const sql = `SELECT s.tracking_number, s.lot_number, s.quantity, s.code, s.expiration_date FROM (
       SELECT stock.tracking_number, stock.lot_number, outflow.depot_entry, outflow.depot_exit,
         SUM(CASE WHEN outflow.depot_entry = ? THEN outflow.quantity ELSE -outflow.quantity END) AS quantity,
         stock.expiration_date, inventory.code
@@ -512,8 +483,7 @@ function listExpiredLots(req, res, next) {
 */
 function listStockExpirations(req, res, next) {
   const depot = req.params.depotId;
-  const sql =
-    `SELECT s.tracking_number, s.lot_number, s.quantity, s.text, s.code, s.expiration_date FROM (
+  const sql = `SELECT s.tracking_number, s.lot_number, s.quantity, s.text, s.code, s.expiration_date FROM (
       SELECT stock.tracking_number, stock.lot_number, outflow.depot_entry, outflow.depot_exit,
         SUM(CASE WHEN outflow.depot_entry = ? THEN outflow.quantity ELSE -outflow.quantity END) AS quantity,
         stock.expiration_date, inventory.code, inventory.text

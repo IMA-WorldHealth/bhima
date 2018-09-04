@@ -182,18 +182,6 @@ class FilterParser {
     }
   }
 
-  customMultiParameters(filterKey, preparedStatement, preparedValues) {
-    if (this._filters[filterKey]) {
-      const parameters = preparedValues || this._filters[filterKey];
-
-      // add the filters to the custom query, destructing parameters
-      this._statements.push(preparedStatement);
-      this._parameters.push(...parameters);
-
-      delete this._filters[filterKey];
-    }
-  }
-
   /**
    * @method setOrder
    *

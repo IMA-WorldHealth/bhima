@@ -2,12 +2,9 @@
  * Patient Invoice API Controller
  *
  * @module controllers/finance/patientInvoice
- *
- * @todo Factor in subsidies, this depends on price lists and
- * billing services infrastructure
  */
 
-const uuid = require('uuid/v4');
+const { uuid } = require('../../lib/util');
 
 const BadRequest = require('../../lib/errors/BadRequest');
 const Debtors = require('./debtors');

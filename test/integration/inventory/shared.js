@@ -4,8 +4,10 @@
  */
 const uuid = require('uuid/v4');
 
+const genuuid = () => uuid().toUpperCase().replace(/-/g, '');
+
 const inventoryGroup = {
-  uuid : uuid(),
+  uuid : genuuid(),
   code : '99',
   name : 'Test Inventory Group 2',
   stock_account : 162, // 31110010 - 'Medicaments en comprimes *'

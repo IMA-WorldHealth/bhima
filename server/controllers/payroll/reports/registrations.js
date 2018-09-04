@@ -60,8 +60,7 @@ function build(req, res, next) {
   // enforce detailed columns
   options.detailed = 1;
 
-  const sql =
-  `SELECT
+  const sql = `SELECT
     COUNT(employee.id) AS numEmployees, SUM(sex = 'F') AS numFemales,
     ROUND(SUM(sex = 'F') / COUNT(employee.id) * 100) AS percentFemales,
     SUM(sex = 'M') AS numMales, ROUND(SUM(sex = 'M') / COUNT(employee.id) * 100) AS percentMales

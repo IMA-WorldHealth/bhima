@@ -1,20 +1,20 @@
-'use strict';
+
 
 /* global expect, chai, agent */
 
-const helpers = require('./helpers');
 const _ = require('lodash');
+const helpers = require('./helpers');
 
-describe('(/barcode) Barcode Reverse Lookup', function () {
-  let validPatientBarcode = 'PA81af634f';
-  let invalidPatientBarcode = 'PAnotvalid';
+describe('(/barcode) Barcode Reverse Lookup', () => {
+  const validPatientBarcode = 'PA81af634f';
+  const invalidPatientBarcode = 'PAnotvalid';
 
-  let invalidBarcodeType = 'ZZinvalidcode';
+  const invalidBarcodeType = 'ZZinvalidcode';
 
-  it(`/barcode/:key looks up Patient for valid barcode key ${validPatientBarcode}`, function () {
+  it(`/barcode/:key looks up Patient for valid barcode key ${validPatientBarcode}`, () => {
     return agent.get(`/barcode/${validPatientBarcode}`)
-      .then(function (res) {
-        let patientKeys = ['uuid', 'debtor_uuid', 'display_name', 'hospital_no'];
+      .then((res) => {
+        const patientKeys = ['uuid', 'debtor_uuid', 'display_name', 'hospital_no'];
         expect(res).to.have.status(200);
         expect(res).to.be.json;
 
@@ -23,16 +23,16 @@ describe('(/barcode) Barcode Reverse Lookup', function () {
       .catch(helpers.handler);
   });
 
-  it('/barcode/invalid returns 404 for valid PA document type, invalid UUID', function () {
+  it('/barcode/invalid returns 404 for valid PA document type, invalid UUID', () => {
     return agent.get(`/barcode/${invalidPatientBarcode}`)
-      .then(function (res) {
+      .then((res) => {
         helpers.api.errored(res, 404);
       });
   });
 
-  it('/barcode/invalid returns 400 for an invalid barcode document code', function () {
+  it('/barcode/invalid returns 400 for an invalid barcode document code', () => {
     return agent.get(`/barcode/${invalidBarcodeType}`)
-      .then(function (res) {
+      .then((res) => {
         helpers.api.errored(res, 400);
       });
   });
