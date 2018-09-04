@@ -26,10 +26,10 @@ function list(req, res, next) {
   `;
 
   db.exec(sql, [req.params.id])
-    .then((rows) => {
-      rows = rows.map(row => row.cashbox_id);
+    .then((cashboxes) => {
+      const cashboxIds = cashboxes.map(cashbox => cashbox.cashbox_id);
 
-      res.status(200).json(rows);
+      res.status(200).json(cashboxIds);
     })
     .catch(next)
     .done();

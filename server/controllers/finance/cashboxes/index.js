@@ -23,6 +23,8 @@ exports.create = create;
 exports.update = update;
 exports.delete = remove;
 exports.currencies = currencies;
+exports.users = users;
+
 exports.privileges = privileges;
 
 /**
@@ -183,6 +185,31 @@ function remove(req, res, next) {
 
       res.sendStatus(204);
     })
+    .catch(next)
+    .done();
+}
+
+/**
+ * @method users
+ *
+ * @description
+ * GET /cashboxes/:id/users
+ *
+ * Fetch limited user information on all users with permissions to use a
+ * specified cashbox
+ */
+function users(req, res, next) {
+  const cashboxId = req.params.id;
+
+  const sql = `
+    SELECT user_id as id, username, display_name, deactivated, last_login
+    FROM cashbox_permission
+    LEFT JOIN user ON cashbox_permission.user_id = user.id
+    WHERE cashbox_id = ?
+  `;
+
+  return db.exec(sql, [cashboxId])
+    .then((cashboxUsers) => res.status(200).json(cashboxUsers))
     .catch(next)
     .done();
 }

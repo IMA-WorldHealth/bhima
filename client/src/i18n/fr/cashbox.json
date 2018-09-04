@@ -9,6 +9,15 @@
     "DESCRIPTION":"Ce module est responsable de la gestion des caisses",
     "NO_SUPPORTED_CURRENCIES":"Aucune monnaie n'est configuré pour cette caisse.",
     "SET_CURRENCY_ACCOUNTS":"Définir la configuration des comptes des monnaie pour cette caisse.",
-    "TITLE":"Gestion des caisses"
+    "TITLE":"Gestion des caisses",
+
+    "USERS": {
+      "TITLE": "Utilisateurs de cette caisse",
+      "SUBTITLE": "Utilisateurs ayant accès à cette caisse:",
+      "INFO_LINK": "Pour mettre à jour les utilisateurs ayant accès à cette caisse, utilisez <a ui-sref='users.list'>l'outil de gestion des utilisateurs</a>.",
+      "NO_PERMISSIONS": "Aucun utilisateur n'a la permission d'utiliser cette caisse",
+      "LAST_SEEN": "Dernière vue",
+      "DEACTIVATED": "Cet utilisateur est désactivé."
+    }
   }
 }
