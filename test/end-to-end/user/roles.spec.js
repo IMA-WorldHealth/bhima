@@ -58,7 +58,7 @@ function assigningRole() {
   before(() => helpers.navigate('#/users'));
 
   it('should assign a role to a user', () => {
-    page.assignRole('Administrator');
+    page.assignRole('Super User');
     page.setRole(`Sécretaire`);
     page.submit();
     components.notification.hasSuccess();

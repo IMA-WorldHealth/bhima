@@ -131,9 +131,8 @@ describe('User Management Page', () => {
     userCreateUpdatePage.close();
   });
 
-  it(`sets the cashbox ${cashbox.text} management rights for regularuser `, () => {
+  it(`sets the cashbox ${cashbox.text} management rights for "Regular User"`, () => {
     userPage.editUserCashbox('Regular User');
-    userPage.editUser(mockUserEdit.userName);
     components.multipleCashBoxSelect.set([cashbox.text]);
 
     // submit the modal
