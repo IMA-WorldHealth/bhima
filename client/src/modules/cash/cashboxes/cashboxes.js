@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('CashboxController', CashboxController);
+  .controller('CashboxController', CashboxController);
 
 CashboxController.$inject = [
   'SessionService', 'ProjectService', 'CashboxService', 'util',
@@ -14,7 +14,7 @@ CashboxController.$inject = [
  * ease of use thought the application.
  */
 function CashboxController(Session, Projects, Boxes, util, Notify, $state) {
-  var vm = this;
+  const vm = this;
 
   // bind variables
   vm.state = $state;
@@ -47,14 +47,18 @@ function CashboxController(Session, Projects, Boxes, util, Notify, $state) {
   // fired on startup
   function startup() {
     // load projects
-    Projects.read().then(function (projects) {
-      vm.projects = projects;
-    }).catch(Notify.handleError);
+    Projects.read()
+      .then((projects) => {
+        vm.projects = projects;
+      })
+      .catch(Notify.handleError);
 
     // load cashboxes
-    Boxes.read().then(function (cashboxes) {
-      vm.cashboxes = cashboxes;
-    }).catch(Notify.handleError);
+    Boxes.read()
+      .then((cashboxes) => {
+        vm.cashboxes = cashboxes;
+      })
+      .catch(Notify.handleError);
   }
 
   startup();

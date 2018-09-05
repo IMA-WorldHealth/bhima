@@ -12,18 +12,18 @@ CashboxCurrencyModalController.$inject = [
  * cashboxes.  Each cashbox must have a currencied account defined for each currency
  * supported by the application.
  */
-function CashboxCurrencyModalController(ModalInstance, Accounts, Boxes, currency, cashbox, data, Notify) {
-  var vm = this;
+function CashboxCurrencyModalController(ModalInstance, Accounts, CashBoxes, currency, cashbox, data, Notify) {
+  const vm = this;
 
   // if a currency matches, we are updating.  Otherwise, we are creating.
-  var currencyIds = cashbox.currencies.map(function (row) {
+  const currencyIds = cashbox.currencies.map((row) => {
     return row.currency_id;
   });
 
   // determine whether we will send a POST or a PUT request to the server
-  var method = (currencyIds.indexOf(currency.id) > -1) ?
-    'update' :
-    'create';
+  const method = (currencyIds.indexOf(currency.id) > -1)
+    ? 'update'
+    : 'create';
 
   // bind data
   vm.currency = currency;
@@ -51,19 +51,19 @@ function CashboxCurrencyModalController(ModalInstance, Accounts, Boxes, currency
   function submit(form) {
 
     // if the form has errors, exit immediately
-    if (form.$invalid) { return; }
+    if (form.$invalid) { return null; }
 
     // if the form was never touched, just dismiss it.
     if (form.$pristine) { vm.dismiss(); }
 
     // send either a create or an update request to the server
-    var promise = (method === 'create') ?
-      Boxes.currencies.create(vm.cashbox.id, vm.data) :
-      Boxes.currencies.update(vm.cashbox.id, vm.data);
+    const promise = (method === 'create')
+      ? CashBoxes.currencies.create(vm.cashbox.id, vm.data)
+      : CashBoxes.currencies.update(vm.cashbox.id, vm.data);
 
     // upon successful completion, close the modal or error out
     return promise
-      .then(function () { ModalInstance.close(); })
+      .then(() => { ModalInstance.close(); })
       .catch(Notify.handleError);
   }
 }
