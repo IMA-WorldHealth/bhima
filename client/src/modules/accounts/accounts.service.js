@@ -42,9 +42,7 @@ function AccountService(Api, bhConstants, HttpCache) {
       .then(service.util.unwrapHttpResponse);
   }
 
-  const callback = (id, options) => Api.read.call(service, id, options)
-    .then(handleAccounts);
-
+  const callback = (id, options) => Api.read.call(service, id, options);
   const fetcher = HttpCache(callback);
 
   /**
@@ -54,11 +52,14 @@ function AccountService(Api, bhConstants, HttpCache) {
    *
    * @param {Number} id - the id of the account to fetch (optional).
    * @param {Object} options - options to be passed as query strings (optional).
+   * @param {Boolean} cacheBust - ignore the cache and send the HTTP request directly
+   *   to the server.
    * @return {Promise} promise - resolves to either a JSON (if id provided) or
    *   an array of JSONs.
    */
-  function read(id, options) {
-    return fetcher(id, options);
+  function read(id, options, cacheBust = false) {
+    return fetcher(id, options, cacheBust)
+      .then(handleAccounts);
   }
 
   function handleAccounts(accounts) {

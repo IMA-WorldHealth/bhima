@@ -49,17 +49,16 @@ function HttpCacheService($interval) {
   function HttpCache(callback, duration = HTTP_CACHE_DEFAULT_TIMEOUT) {
     const cache = new Map();
 
-
-    function read(...args) {
-      const key = serialize(args);
+    function read(id, parameters, cacheBust = false) {
+      const key = serialize(id, parameters);
 
       // if the cache has been populated return the value from memory
-      if (cache.has(key)) {
+      if (cache.has(key) && !cacheBust) {
         return cache.get(key);
       }
 
       // call the callback to get the result and cache it
-      const promise = callback(...args);
+      const promise = callback(id, parameters);
       cache.set(key, promise);
 
       // remove the result from the cache after a duration.  Repeated only once

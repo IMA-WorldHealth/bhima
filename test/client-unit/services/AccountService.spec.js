@@ -1,7 +1,6 @@
 /* global inject expect */
 
 describe('AccountService', () => {
-
   let Accounts;
   let $httpBackend;
   let $interval;
@@ -84,5 +83,18 @@ describe('AccountService', () => {
 
     expect(a).to.deep.equal(resA);
     expect(b).to.deep.equal(resB);
+  });
+
+  it('#read() will bust cached values with a third parameter', () => {
+    let count = 10;
+
+    while (count--) {
+      // third parameter will bust the cache
+      Accounts.read(1, {}, true);
+    }
+
+    // this would throw if too many requests were called.
+    expect(() => $httpBackend.flush(10)).not.to.throw();
+    expect(() => $httpBackend.flush(1)).to.throw();
   });
 });
