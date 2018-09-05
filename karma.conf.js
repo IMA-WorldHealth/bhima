@@ -15,10 +15,10 @@ module.exports = (config) => {
 
     // list of files / patterns to load in the browser
     files : [
-      `bin/client/${manifest['vendor.min.js']}`,
+      `bin/client/${manifest['js/vendor/vendor.min.js']}`,
       'client/vendor/angular-mocks/angular-mocks.js',
       'test/client-unit/mocks/*.js',
-      `bin/client/${manifest['js/dist/bhima.min.js']}`,
+      `bin/client/${manifest['js/bhima/bhima.min.js']}`,
       'bin/client/modules/**/*.html',
       { pattern : 'bin/client/i18n/locale/*.js', included : false, served : true },
       'test/client-unit/**/*.spec.js',

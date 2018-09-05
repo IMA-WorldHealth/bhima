@@ -115,7 +115,7 @@ gulp.task('js', ['clean-js'], () => {
     target : 'es5',
     lib : ['es6', 'dom'],
     module : 'none',
-    outFile : 'js/dist/bhima.min.js',
+    outFile : 'js/bhima/bhima.min.js',
   };
 
   return gulp.src(paths.client.javascript)
@@ -133,9 +133,9 @@ gulp.task('js', ['clean-js'], () => {
 gulp.task('css', ['clean-css'], () => {
   return gulp.src(paths.client.css)
     .pipe(cssnano({ zindex : false }))
-    .pipe(concat('bhima.min.css'))
+    .pipe(concat('css/bhima/bhima.min.css'))
     .pipe(rev())
-    .pipe(gulp.dest(`${CLIENT_FOLDER}/css`))
+    .pipe(gulp.dest(CLIENT_FOLDER))
     .pipe(rev.manifest(`${CLIENT_FOLDER}/rev-manifest.json`, { merge : true }))
     .pipe(gulp.dest(''));
 });
@@ -149,7 +149,7 @@ gulp.task('less', () => {
     .pipe(gulp.dest(lessConfig.paths[0])) // move less file into actual bootstrap folder, this feels wrong
     .pipe(less(lessConfig))
     .pipe(cssnano({ zindex : false }))
-    .pipe(gulp.dest(CLIENT_FOLDER));
+    .pipe(gulp.dest(`${CLIENT_FOLDER}/css/bootstrap/`));
 });
 
 gulp.task('i18n', ['lint-i18n', 'clean-i18n'], () => {
@@ -163,7 +163,7 @@ gulp.task('i18n', ['lint-i18n', 'clean-i18n'], () => {
 gulp.task('vendor', () => {
   return gulp.src(paths.client.vendorJs)
     .pipe(gulpif(isProduction, uglify({ mangle : true })))
-    .pipe(concat('vendor.min.js'))
+    .pipe(concat('js/vendor/vendor.min.js'))
     .pipe(rev())
     .pipe(gulp.dest(CLIENT_FOLDER))
     .pipe(rev.manifest(`${CLIENT_FOLDER}/rev-manifest.json`, { merge : true }))
@@ -205,11 +205,11 @@ gulp.task('server', ['clean-server'], () => {
 // Cleaner helpers
 // These methods clean up folders that are affected by changes in the repository
 gulp.task('clean-js', () => {
-  return del([`${CLIENT_FOLDER}/js/dist`]);
+  return del([`${CLIENT_FOLDER}/js/bhima`]);
 });
 
 gulp.task('clean-css', () => {
-  return del([`${CLIENT_FOLDER}/css`]);
+  return del([`${CLIENT_FOLDER}/css/bhima`]);
 });
 
 gulp.task('clean-i18n', () => {
