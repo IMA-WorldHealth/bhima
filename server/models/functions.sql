@@ -66,11 +66,11 @@ END $$
   Returns a new transaction id to be stored in the database by scanning for used
   ids in the posting_journal and general_ledger tables.
 
-  Optimisation note: on the second iteration of this function a SUBSELECT to fetch 
-  the project string is used in favour of a table JOIN. This is because the previous function made a call 
-  to `MAX` which aggregates results and actually returns the project string even 
-  if there are no records in either journal table. Without this aggregate call 
-  nothing is returned and a NULL id will be returned if there are no records. 
+  Optimisation note: on the second iteration of this function a SUBSELECT to fetch
+  the project string is used in favour of a table JOIN. This is because the previous function made a call
+  to `MAX` which aggregates results and actually returns the project string even
+  if there are no records in either journal table. Without this aggregate call
+  nothing is returned and a NULL id will be returned if there are no records.
 
   EXAMPLE
 
@@ -81,25 +81,24 @@ CREATE FUNCTION GenerateTransactionId(
 )
 RETURNS VARCHAR(100) DETERMINISTIC
 BEGIN
-  DECLARE trans_id_length TINYINT(1) DEFAULT 4;
   RETURN (
     SELECT CONCAT(
-      (SELECT abbr AS project_string FROM project WHERE id = target_project_id), 
+      (SELECT abbr AS project_string FROM project WHERE id = target_project_id),
       IFNULL(MAX(current_max) + 1, 1)
     ) AS id
     FROM (
-      ( 
-        SELECT trans_id_reference_number AS current_max 
+      (
+        SELECT trans_id_reference_number AS current_max
         FROM general_ledger
         WHERE project_id = target_project_id
-        ORDER BY trans_id_reference_number DESC 
+        ORDER BY trans_id_reference_number DESC
         LIMIT 1
-      ) 
+      )
       UNION
       (
-        SELECT trans_id_reference_number AS current_max FROM posting_journal 
+        SELECT trans_id_reference_number AS current_max FROM posting_journal
         WHERE project_id = target_project_id
-        ORDER BY trans_id_reference_number DESC 
+        ORDER BY trans_id_reference_number DESC
         LIMIT 1
       )
     )A
