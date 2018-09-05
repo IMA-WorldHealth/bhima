@@ -16,6 +16,7 @@ const _ = require('lodash');
 const db = require('../../lib/db');
 const Transaction = require('../../lib/db/transaction');
 const NotFound = require('../../lib/errors/NotFound');
+const BadRequest = require('../../lib/errors/BadRequest');
 const FilterParser = require('../../lib/filter');
 
 const Tree = require('../../lib/Tree');
@@ -389,24 +390,18 @@ function setOpeningBalance(req, res, next) {
 
   const { accounts } = req.body.params;
   const fiscalYear = req.body.params.fiscal;
-  console.log(req.params, req.body);
 
   debug(`#setOpeningBalance() setting balance for FY${id}.`);
 
   // check for previous fiscal year
   hasPreviousFiscalYear(id)
     .then((hasPrevious) => {
-      let promise;
-
       if (hasPrevious) {
-        // load from the period N+1 of the year N-1 into period 0 of the year N
-        promise = loadOpeningBalance(fiscalYear);
-      } else {
-        // set new opening balance
-        promise = newOpeningBalance(fiscalYear, accounts);
+        const msg = `The fiscal year with id ${id} is not the first fiscal year`;
+        return next(new BadRequest(msg, 'ERRORS.NOT_BEGINING_FISCAL_YEAR'));
       }
-
-      return promise;
+      // set the opening balance if the fiscal year doesn't have previous fy
+      return newOpeningBalance(fiscalYear, accounts);
     })
     .then(() => res.sendStatus(201))
     .catch(next)

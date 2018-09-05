@@ -6,11 +6,19 @@ describe('(/fiscal) Fiscal Year extra operations', () => {
   const url = '/fiscal';
   const date = new Date('2017-08-24');
 
-  const fiscalYearDetails = {
+  const fiscalYear2015 = {
+    id : 1,
+    enterprise_id : 1,
+    label : 'Test Fiscal Year 2015',
+  };
+
+  const fiscalYear2017 = {
     id : 3,
     enterprise_id : 1,
     label : 'Test Fiscal Year 2017',
   };
+
+  const fiscalYear2017MonthsNumber = 12;
 
   const accounts = [
     { id : 81, debit : 77, credit : 0 },
@@ -19,17 +27,13 @@ describe('(/fiscal) Fiscal Year extra operations', () => {
     { id : 190, debit : 0, credit : 23 },
   ];
 
-  const opneningBalance = {
-    id : fiscalYearDetails.id,
-    fiscal : fiscalYearDetails,
-    accounts,
-  };
+  const openingBalance = {};
 
   /**
    * this test is supposed to returns the fiscal year 2017
    * from the date 2017-08-24
    */
-  it(`GET /fiscal/date?date=${date} returns the fiscal year from a given date`, () => {
+  it(`GET /fiscal/date?date=${flatDate(date)} returns the fiscal year from a given date`, () => {
     return agent.get(url.concat(`/date?date=${date}`))
       .then(res => {
         helpers.api.listed(res, 1);
@@ -64,17 +68,64 @@ describe('(/fiscal) Fiscal Year extra operations', () => {
       .catch(helpers.handler);
   });
 
-  it('POST /fiscal/:id/opening_balance set the opening balance of a fiscal year', () => {
-    return agent.post(url.concat(`/${fiscalYearDetails.id}/opening_balance`))
-      .send(opneningBalance)
-      .then(v => {
-        console.log(v);
+  it('POST /fiscal/:id/opening_balance forbid to set the opening balance of a fiscal year which is not the first', () => {
+    // define a not first fiscal year information
+    openingBalance.id = fiscalYear2017.id;
+    openingBalance.fiscal = fiscalYear2017;
+    openingBalance.accounts = accounts;
+
+    return agent.post(url.concat(`/${fiscalYear2017.id}/opening_balance`))
+      .send({ params : openingBalance })
+      .then(res => {
+        helpers.api.errored(res, 400, 'ERRORS.NOT_BEGINING_FISCAL_YEAR');
       })
       .catch(helpers.handler);
   });
 
-  it('GET /fiscal/:id/balance get the list of accounts and their balance', () => {
+  it('POST /fiscal/:id/opening_balance set the opening balance of a fiscal year', () => {
+    // define a not first fiscal year information
+    openingBalance.id = fiscalYear2015.id;
+    openingBalance.fiscal = fiscalYear2015;
+    openingBalance.accounts = accounts;
 
+    return agent.post(url.concat(`/${fiscalYear2015.id}/opening_balance`))
+      .send({ params : openingBalance })
+      .then(res => {
+        expect(res).to.have.status(201);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /fiscal/:id/opening_balance returns the opening balance of a given fiscal year', () => {
+    return agent.get(url.concat(`/${fiscalYear2015.id}/opening_balance`))
+      .then(res => {
+        const updatedAccounts = res.body.filter(item => {
+          return [81, 83, 174, 190].indexOf(item.id) > -1;
+        });
+        const [first, second, third, fourth] = updatedAccounts;
+        expect(first.balance).to.be.equal(77);
+        expect(second.balance).to.be.equal(-77);
+        expect(third.balance).to.be.equal(23);
+        expect(fourth.balance).to.be.equal(-23);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /fiscal/:id/periods returns periods of the given fiscal year', () => {
+    return agent.get(url.concat(`/${fiscalYear2017.id}/periods`))
+      .then(res => {
+        expect(res.body).to.have.length(fiscalYear2017MonthsNumber + 1);
+        for (let i = 0; i < res.body.length; i++) {
+          expect(res.body[i].number).to.be.equal(i);
+        }
+        const jan = res.body[1];
+        const dec = res.body[12];
+        expect(flatDate(jan.start_date)).to.be.equal('2017-01-01');
+        expect(flatDate(jan.end_date)).to.be.equal('2017-01-31');
+        expect(flatDate(dec.start_date)).to.be.equal('2017-12-01');
+        expect(flatDate(dec.end_date)).to.be.equal('2017-12-31');
+      })
+      .catch(helpers.handler);
   });
 
   function flatDate(_date_) {
