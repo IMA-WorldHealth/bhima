@@ -93,12 +93,11 @@ function FiscalService(Api) {
     const url = service.url.concat(id, '/periods');
     return service.$http.get(url)
       .then(service.util.unwrapHttpResponse)
-      .then(periods =>
-        periods.map(p => {
-          p.start_date = new Date(p.start_date);
-          p.end_date = new Date(p.end_date);
-          return p;
-        }));
+      .then(periods => periods.map(p => {
+        p.start_date = new Date(p.start_date);
+        p.end_date = new Date(p.end_date);
+        return p;
+      }));
   }
 
   return service;
