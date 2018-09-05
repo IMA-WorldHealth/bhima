@@ -9,6 +9,15 @@
     "DESCRIPTION":"This module is responsible for cashbox management",
     "TITLE":"Cashbox Management",
     "NO_SUPPORTED_CURRENCIES":"This cashbox does not have any supported currencies.",
-    "SET_CURRENCY_ACCOUNTS":"Set currency accounts for this cashbox."
+    "SET_CURRENCY_ACCOUNTS":"Set currency accounts for this cashbox.",
+
+    "USERS": {
+      "TITLE": "Cashbox Users",
+      "SUBTITLE": "Users with access to this cash box:",
+      "INFO_LINK": "To update users with access to this cash box, use the <a ui-sref='users.list'>Users Management</a> tool.",
+      "NO_PERMISSIONS": "No users have permission to use this cashbox",
+      "LAST_SEEN": "Last seen",
+      "DEACTIVATED": "This user is deactivated."
+    }
   }
 }

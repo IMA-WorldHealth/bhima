@@ -774,7 +774,7 @@
             "EXCEPTION": "There was a problem validating this field. Please check your internet connection.",
             "INTEGER": "This value must be a whole number (integer).",
             "INVALID_DATE": "Invalid date",
-            "MAX": "Maximum value not respected",
+            "MAX": "This value is too large!  Choose a lower value.",
             "MAXLENGTH": "This value is too long!",
             "MIN": "This value is too small.",
             "MINLENGTH": "This value is too short",

@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('DebtorGroupController', DebtorGroupController);
 
 DebtorGroupController.$inject = [
-  '$state', 'DebtorGroupService',
+  '$state', 'DebtorGroupService', 'ColorService',
 ];
 
 /**
@@ -15,7 +15,7 @@ DebtorGroupController.$inject = [
  *
  * @module finance/debtors/groups
  */
-function DebtorGroupController($state, DebtorGroups) {
+function DebtorGroupController($state, DebtorGroups, Color) {
   const vm = this;
   // pagination configuration
   /** @todo this should all be moved to a component */
@@ -27,7 +27,7 @@ function DebtorGroupController($state, DebtorGroups) {
   vm.setOrder = setOrder;
 
   vm.state = $state;
-  vm.colors = DebtorGroups.colors;
+  vm.colors = Color.list;
 
   vm.sortOptions = [
     { attribute : 'name', key : 'TABLE.COLUMNS.SORTING.NAME_ASC', reverse : false },

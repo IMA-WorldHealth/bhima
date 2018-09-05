@@ -138,31 +138,28 @@ describe('(/stock/) The Stock HTTP API', () => {
   const lotQuinineUuid = 'ae735e99-8faf-417b-aa63-9b404fca99ac';
 
   // create new stock lots
-  it('POST /stock/lots create a new stock lots entry', () =>
-    agent.post('/stock/lots')
-      .send(movementFirstLots)
-      .then((res) => {
-        helpers.api.created(res);
-      })
-      .catch(helpers.handler));
+  it('POST /stock/lots create a new stock lots entry', () => agent.post('/stock/lots')
+    .send(movementFirstLots)
+    .then((res) => {
+      helpers.api.created(res);
+    })
+    .catch(helpers.handler));
 
   // create stock movement to patient
-  it('POST /stock/lots/movements distribute lots to patients from a depot', () =>
-    agent.post('/stock/lots/movements')
-      .send(movementOutPatient)
-      .then((res) => {
-        helpers.api.created(res);
-      })
-      .catch(helpers.handler));
+  it('POST /stock/lots/movements distribute lots to patients from a depot', () => agent.post('/stock/lots/movements')
+    .send(movementOutPatient)
+    .then((res) => {
+      helpers.api.created(res);
+    })
+    .catch(helpers.handler));
 
   // create stock movement to depot
-  it('POST /stock/lots/movements distributes stock lots to a depot', () =>
-    agent.post('/stock/lots/movements')
-      .send(movementDepot)
-      .then((res) => {
-        helpers.api.created(res);
-      })
-      .catch(helpers.handler));
+  it('POST /stock/lots/movements distributes stock lots to a depot', () => agent.post('/stock/lots/movements')
+    .send(movementDepot)
+    .then((res) => {
+      helpers.api.created(res);
+    })
+    .catch(helpers.handler));
 
   // list all movement relatives to 'Depot Principal'
   it(
@@ -219,46 +216,43 @@ describe('(/stock/) The Stock HTTP API', () => {
   );
 
   // get initial quantity of QUININE-A in 'Depot Principal'
-  it(`GET /stock/lots?lot_uuid=...&depot_uuid=... returns initial quantity of QUININE-A in Depot Principal (100pcs)`, () =>
-    agent.get('/stock/lots')
-      .query({
-        lot_uuid : lotQuinineUuid,
-        depot_uuid : depotPrincipalUuid,
-      })
-      .then(res => {
-        helpers.api.listed(res, 1);
-        const lotQuinine = res.body[0];
-        expect(lotQuinine.initial_quantity).to.be.equal(100);
-      })
-      .catch(helpers.handler));
+  it(`GET /stock/lots?lot_uuid=...&depot_uuid=... returns initial quantity of QUININE-A in Depot Principal (100pcs)`, () => agent.get('/stock/lots')
+    .query({
+      lot_uuid : lotQuinineUuid,
+      depot_uuid : depotPrincipalUuid,
+    })
+    .then(res => {
+      helpers.api.listed(res, 1);
+      const lotQuinine = res.body[0];
+      expect(lotQuinine.initial_quantity).to.be.equal(100);
+    })
+    .catch(helpers.handler));
 
   // list exit of QUININE-A from 'Depot Principal'
-  it(`GET /stock/lots/movements?is_exit=1&lot_uuid=...&depot_uuid=... returns exit of QUININE-A from Depot Principal (20pcs)`, () =>
-    agent.get('/stock/lots/movements')
-      .query({
-        is_exit : 1,
-        lot_uuid : lotQuinineUuid,
-        depot_uuid : depotPrincipalUuid,
-      })
-      .then((res) => {
-        helpers.api.listed(res, 1);
-        let totalExit = 0;
-        res.body.forEach(row => {
-          totalExit += row.quantity;
-        });
-        expect(totalExit).to.be.equal(20);
-      })
-      .catch(helpers.handler));
+  it(`GET /stock/lots/movements?is_exit=1&lot_uuid=...&depot_uuid=... returns exit of QUININE-A from Depot Principal (20pcs)`, () => agent.get('/stock/lots/movements')
+    .query({
+      is_exit : 1,
+      lot_uuid : lotQuinineUuid,
+      depot_uuid : depotPrincipalUuid,
+    })
+    .then((res) => {
+      helpers.api.listed(res, 1);
+      let totalExit = 0;
+      res.body.forEach(row => {
+        totalExit += row.quantity;
+      });
+      expect(totalExit).to.be.equal(20);
+    })
+    .catch(helpers.handler));
 
-  it(`GET /stock/lots/movements filters on user`, () =>
-    agent.get('/stock/lots/movements')
-      .query({
-        user_id : 1, // super user
-      })
-      .then(res => {
-        helpers.api.listed(res, 15);
-      })
-      .catch(helpers.handler));
+  it(`GET /stock/lots/movements filters on user`, () => agent.get('/stock/lots/movements')
+    .query({
+      user_id : 1, // super user
+    })
+    .then(res => {
+      helpers.api.listed(res, 15);
+    })
+    .catch(helpers.handler));
 
   // returns quantity of QUININE-A in 'Depot Principal'
   it(

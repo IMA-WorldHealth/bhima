@@ -1,8 +1,8 @@
 /**
  *
  * @description
- * This function is used to manage different data for the payment configuration, 
- * filter holidays that are not in the configuration of weekends, deconsidere holidays days which are holidays 
+ * This function is used to manage different data for the payment configuration,
+ * filter holidays that are not in the configuration of weekends, deconsidere holidays days which are holidays
  * but also in the configuration of weeks ends and calculates the number of working days in a pay period
  *
  *
@@ -75,13 +75,17 @@ function manageConfigurationData(rows, params) {
 
   // Returns an array of dates between the two dates
   const getDates = function (startDate, endDate) {
-    let dates = [],
-      currentDate = startDate,
-      addDays = function (days) {
-        const date = new Date(this.valueOf());
-        date.setDate(date.getDate() + days);
-        return date;
-      };
+    const dates = [];
+
+
+    let currentDate = startDate;
+
+
+    const addDays = function (days) {
+      const date = new Date(this.valueOf());
+      date.setDate(date.getDate() + days);
+      return date;
+    };
     while (currentDate <= endDate) {
       dates.push(currentDate);
       currentDate = addDays.call(currentDate, 1);

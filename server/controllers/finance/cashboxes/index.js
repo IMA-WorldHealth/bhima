@@ -8,13 +8,10 @@
  *
  * @requires db
  * @requires NotFound
- * @requires Topic
  * @requires Cashboxes/Currencies
  * @requires FilterParser
- * @requires @ima-worldhealth/topic
  */
 
-const Topic = require('@ima-worldhealth/topic');
 const db = require('../../../lib/db');
 const NotFound = require('../../../lib/errors/NotFound');
 const FilterParser = require('../../../lib/filter');
@@ -26,6 +23,8 @@ exports.create = create;
 exports.update = update;
 exports.delete = remove;
 exports.currencies = currencies;
+exports.users = users;
+
 exports.privileges = privileges;
 
 /**
@@ -141,13 +140,6 @@ function create(req, res, next) {
 
   db.exec(sql, [box])
     .then((row) => {
-      Topic.publish(Topic.channels.FINANCE, {
-        event   : Topic.events.CREATE,
-        entity  : Topic.entities.CASHBOX,
-        user_id : req.session.user.id,
-        id      : row.insertId,
-      });
-
       res.status(201).json({ id : row.insertId });
     })
     .catch(next)
@@ -169,13 +161,6 @@ function update(req, res, next) {
   db.exec(sql, [req.body, req.params.id])
     .then(() => helperGetCashbox(req.params.id))
     .then((cashbox) => {
-      Topic.publish(Topic.channels.FINANCE, {
-        event   : Topic.events.UPDATE,
-        entity  : Topic.entities.CASHBOX,
-        user_id : req.session.user.id,
-        id      : req.params.id,
-      });
-
       res.status(200).json(cashbox);
     })
     .catch(next)
@@ -198,15 +183,33 @@ function remove(req, res, next) {
         throw new NotFound(`Could not find a cash box with id ${req.params.id}.`);
       }
 
-      Topic.publish(Topic.channels.FINANCE, {
-        event   : Topic.events.DELETE,
-        entity  : Topic.entities.CASHBOX,
-        user_id : req.session.user.id,
-        id      : req.params.id,
-      });
-
       res.sendStatus(204);
     })
+    .catch(next)
+    .done();
+}
+
+/**
+ * @method users
+ *
+ * @description
+ * GET /cashboxes/:id/users
+ *
+ * Fetch limited user information on all users with permissions to use a
+ * specified cashbox
+ */
+function users(req, res, next) {
+  const cashboxId = req.params.id;
+
+  const sql = `
+    SELECT user_id as id, username, display_name, deactivated, last_login
+    FROM cashbox_permission
+    LEFT JOIN user ON cashbox_permission.user_id = user.id
+    WHERE cashbox_id = ?
+  `;
+
+  return db.exec(sql, [cashboxId])
+    .then((cashboxUsers) => res.status(200).json(cashboxUsers))
     .catch(next)
     .done();
 }

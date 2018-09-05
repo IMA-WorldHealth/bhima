@@ -43,8 +43,7 @@ function set(req, res, next) {
 
   const buid = db.bid(req.params.uuid);
 
-  const sql =
-    'UPDATE patient SET ? WHERE uuid = ?';
+  const sql = 'UPDATE patient SET ? WHERE uuid = ?';
 
   db.exec(sql, [data, buid])
     .then(() => {
@@ -53,4 +52,3 @@ function set(req, res, next) {
     .catch(next)
     .done();
 }
-

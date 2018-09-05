@@ -9,12 +9,12 @@
  * It is responsible for reading and writing to the `patient_visit` database table as well as responding to HTTP
  * requests.
  *
- * @requires  uuid/v4
+ * @requires  lib/util
  * @requires  lib/db
  * @requires  lib/errors/BadRequest
  */
 
-const uuid = require('uuid/v4');
+const { uuid } = require('../../../lib/util');
 const db = require('../../../lib/db');
 const BadRequest = require('../../../lib/errors/BadRequest');
 const NotFound = require('../../../lib/errors/NotFound');

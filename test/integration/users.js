@@ -279,4 +279,13 @@ describe('(/users) Users and Permissions', () => {
       })
       .catch(helpers.handler);
   });
+
+  it('POST /users/:id/cashboxes will reject invalid data formats', () => {
+    return agent.post(`/users/${newUser.id}/cashboxes`)
+      .send({ })
+      .then((result) => {
+        helpers.api.errored(result, 400, 'ERRORS.BAD_DATA_FORMAT');
+      })
+      .catch(helpers.handler);
+  });
 });

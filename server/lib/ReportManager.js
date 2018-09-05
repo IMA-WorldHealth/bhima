@@ -15,7 +15,7 @@
  * @requires path
  * @requires fs
  * @requires q
- * @requires uuid/v4
+ * @requires lib/util
  * @requires lib/helpers/translate
  * @requires lib/errors/BadRequest
  * @requires lib/errors/InternalServerError
@@ -26,7 +26,6 @@ const _ = require('lodash');
 const path = require('path');
 const fs = require('fs');
 const q = require('q');
-const uuid = require('uuid/v4');
 const translateHelper = require('./helpers/translate');
 const util = require('../lib/util');
 
@@ -41,6 +40,8 @@ const renderers = {
   pdf  : require('./renderers/pdf'),
   csv  : require('./renderers/csv'),
   xlsx  : require('./renderers/xlsx'),
+  xls  : require('./renderers/xls'),
+  doc  : require('./renderers/doc'),
   xlsxReceipt : require('./renderers/xlsxReceipt'),
 };
 
@@ -158,6 +159,7 @@ class ReportManager {
 
       const renderHeaders = renderer.headers;
       const report = reportStream;
+
       if (this.options.filename) {
         const translate = translateHelper(this.options.lang);
         const translatedName = translate(this.options.filename);
@@ -198,7 +200,7 @@ class ReportManager {
     }
 
     // generate a unique id for the report name
-    const reportId = uuid();
+    const reportId = util.uuid();
     const { options } = this;
 
     // make the report name using the

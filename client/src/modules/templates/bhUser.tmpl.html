@@ -1,0 +1,18 @@
+<span>
+  <i
+    ng-if="$ctrl.user.deactivated"
+    uib-popover="{ 'CASHBOX.USER.DEACTIVATED' | translate }"
+    popover-trigger="'mouseenter'"
+    popover-append-to-body="true"
+    class="fa fa-ban text-danger">
+  </i>
+  {{$ctrl.user.display_name}}
+  ({{$ctrl.user.username}})
+  <span
+    ng-if="$ctrl.user.last_login"
+    class="text-muted">
+    <span>| </span>
+    <span translate>CASHBOX.USERS.LAST_SEEN</span>
+    <span am-time-ago="$ctrl.user.last_login"></span>
+  </span>
+</span>

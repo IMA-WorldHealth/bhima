@@ -8,16 +8,14 @@
  *
  * @requires lodash
  * @requires lib/db
- * @requires lib/uuid/v4
+ * @requires lib/util
  * @requires lib/errors/BadRequest
  * @requires lib/errors/NotFound
- * @requires @ima-worldhealth/topic
  */
 
 const _ = require('lodash');
-const uuid = require('uuid/v4');
-const Topic = require('@ima-worldhealth/topic');
 
+const { uuid } = require('../../../lib/util');
 const db = require('../../../lib/db');
 const BadRequest = require('../../../lib/errors/BadRequest');
 const NotFound = require('../../../lib/errors/NotFound');
@@ -38,8 +36,7 @@ function list(req, res, next) {
   const id = db.bid(req.params.uuid);
 
   // just check if the patient exists
-  const patientExistenceQuery =
-    'SELECT uuid FROM patient WHERE uuid = ?;';
+  const patientExistenceQuery = 'SELECT uuid FROM patient WHERE uuid = ?;';
 
   // read patient groups
   const patientGroupsQuery = `
@@ -85,12 +82,10 @@ function update(req, res, next) {
   }
 
   // Clear assigned groups
-  const removeAssignmentsQuery =
-    'DELETE FROM patient_assignment WHERE patient_uuid = ?';
+  const removeAssignmentsQuery = 'DELETE FROM patient_assignment WHERE patient_uuid = ?';
 
   // Insert new relationships
-  const createAssignmentsQuery =
-    'INSERT INTO patient_assignment (uuid, patient_uuid, patient_group_uuid) VALUES ?';
+  const createAssignmentsQuery = 'INSERT INTO patient_assignment (uuid, patient_uuid, patient_group_uuid) VALUES ?';
 
   // map each requested patient group uuid to the current patient uuid to be
   // inserted into the database
@@ -113,13 +108,6 @@ function update(req, res, next) {
 
   transaction.execute()
     .then(result => {
-      Topic.publish(Topic.channels.MEDICAL, {
-        event : Topic.events.UPDATE,
-        entity : Topic.entities.PATIENT,
-        user_id : req.session.user.id,
-        uuid : req.params.uuid,
-      });
-
       // TODO send back correct ids
       res.status(200).json(result);
     })

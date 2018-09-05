@@ -9,9 +9,9 @@
  * @requires q
  * @requires payrollSettings
  */
+const q = require('q');
 const db = require('../../../lib/db');
 const Exchange = require('../../finance/exchange');
-const q = require('q');
 const payrollSettings = require('./payrollSettings');
 
 function config(req, res, next) {

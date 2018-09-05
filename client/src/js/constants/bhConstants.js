@@ -6,8 +6,8 @@ angular.module('bhima.constants')
  * populated according to the enterprise configuration.
  */
 function constantConfig() {
-  var UTIL_BAR_HEIGHT = '106px';
-  var JOURNAL_UTIL_HEIGHT = '150px';
+  const UTIL_BAR_HEIGHT = '106px';
+  const JOURNAL_UTIL_HEIGHT = '150px';
 
   return {
     actions : {
@@ -107,6 +107,7 @@ function constantConfig() {
     },
     precision : {
       MAX_DECIMAL_PRECISION : 4,
+      MAX_INTEGER : 16777215, // maximum unsigned MEDIUM INT in MySQL
     },
     utilBar : {
       height               : UTIL_BAR_HEIGHT,
@@ -122,9 +123,21 @@ function constantConfig() {
     },
     defaultFilters : [
       { key : 'period', label : 'TABLE.COLUMNS.PERIOD', valueFilter : 'translate' },
-      { key : 'custom_period_start', label : 'PERIODS.START', comparitor : '>', valueFilter : 'date' },
-      { key : 'custom_period_end', label : 'PERIODS.END', comparitor : '<', valueFilter : 'date' },
-      { key : 'limit', label : 'FORM.LABELS.LIMIT' }],
+      {
+        key : 'custom_period_start',
+        label : 'PERIODS.START',
+        comparitor : '>',
+        valueFilter : 'date',
+      }, {
+        key : 'custom_period_end',
+        label : 'PERIODS.END',
+        comparitor : '<',
+        valueFilter : 'date',
+      }, {
+        key : 'limit',
+        label : 'FORM.LABELS.LIMIT',
+      },
+    ],
     weekDays : [
       { id : 0, label : 'FORM.LABELS.WEEK_DAYS.SUNDAY' },
       { id : 1, label : 'FORM.LABELS.WEEK_DAYS.MONDAY' },
@@ -134,6 +147,10 @@ function constantConfig() {
       { id : 5, label : 'FORM.LABELS.WEEK_DAYS.FRIDAY' },
       { id : 6, label : 'FORM.LABELS.WEEK_DAYS.SATURDAY' },
     ],
+    transactionTypeMap : {
+      income : { label : 'VOUCHERS.SIMPLE.INCOME', value : 'income' },
+      expense : { label : 'VOUCHERS.SIMPLE.EXPENSE', value : 'expense' },
+      other : { label : 'FORM.LABELS.OTHER', value : 'other' },
+    },
   };
 }
-

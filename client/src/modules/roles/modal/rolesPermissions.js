@@ -25,9 +25,9 @@ function RolesPermissionsController(data, $state, $uibModalInstance, AppCache, R
       vm.tree = vm.sortUnit(res.data);
     });
 
-  // close modal
+  // cancel modal without returning success result (`dismiss`)
   function close() {
-    $uibModalInstance.close();
+    $uibModalInstance.dismiss();
   }
 
   function sortUnit(units) {
@@ -83,7 +83,9 @@ function RolesPermissionsController(data, $state, $uibModalInstance, AppCache, R
     RolesService.affectPages(params)
       .then(() => {
         Notify.success('FORM.LABELS.PERMISSION_ASSIGNED_SUCCESS');
-        vm.close();
+
+        // modal action was a success `close` will return correctly
+        $uibModalInstance.close();
       })
       .catch(Notify.handleError);
   }

@@ -1,0 +1,40 @@
+<div class="panel panel-default">
+  <div class="panel-heading" translate>
+    CASHBOX.USERS.TITLE
+  </div>
+  <div class="panel-body">
+    <p>
+      <!-- note that this translation is _compiled_ and includes HTML elements -->
+      <!-- this info message includes a `ui-sref` link to "users.list" -->
+      <span
+        translate
+        translate-compile
+        translate-sanitize-strategy="'sce'">CASHBOX.USERS.INFO_LINK</span>
+    </p>
+
+    <!-- no users with permission for this cashbox -->
+    <p
+      ng-if="!$ctrl.users.length && $ctrl.initialLoad"
+      class="text-info">
+      <i class="fa fa-info-circle"></i>
+      <span translate>CASHBOX.USERS.NO_PERMISSIONS</span>
+    </p>
+
+    <div ng-if="$ctrl.users.length && $ctrl.initialLoad">
+      <div>
+        <u translate>CASHBOX.USERS.SUBTITLE</u>
+      </div>
+      <!-- ordering by !last_login first ensures those with last login information display at the top -->
+      <!-- results are then ordered from most recent to oldest -->
+      <!-- without !last_login those with no last_login would be shown first -->
+      <ul ng-repeat="user in $ctrl.users | orderBy : ['!last_login', '-last_login', 'display_name']">
+        <li>
+          <bh-user details="user"></bh-user>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+

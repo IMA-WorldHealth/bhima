@@ -12,7 +12,7 @@
  * @requires stock/core
  */
 
-const uuid = require('uuid/v4');
+const { uuid } = require('../../lib/util');
 const db = require('../../lib/db');
 const core = require('./core');
 

@@ -7,7 +7,7 @@ const helpers = require('./helpers');
  *
  * This test suite implements full CRUD on the /holidays  HTTP API endpoint.
  */
-describe('(/holidays) The /holidays  API endpoint', function () {
+describe('(/holidays) The /holidays  API endpoint', () => {
 
   // Holiday we will add during this test suite.
 
@@ -20,64 +20,64 @@ describe('(/holidays) The /holidays  API endpoint', function () {
 
   const NUM_HOLIDAYS = 0;
 
-  it('GET /HOLIDAYS returns a list of function ', function () {
+  it('GET /HOLIDAYS returns a list of function ', () => {
     return agent.get('/holidays')
-    .then(function (res) {
-      helpers.api.listed(res, NUM_HOLIDAYS);
-    })
-    .catch(helpers.handler);
+      .then((res) => {
+        helpers.api.listed(res, NUM_HOLIDAYS);
+      })
+      .catch(helpers.handler);
   });
 
-  it('POST /HOLIDAYS should create a new Holiday', function () {
+  it('POST /HOLIDAYS should create a new Holiday', () => {
     return agent.post('/holidays')
-    .send(holiday)
-    .then(function (res) {
-      holiday.id = res.body.id;
-      helpers.api.created(res);
-    })
-    .catch(helpers.handler);
+      .send(holiday)
+      .then((res) => {
+        holiday.id = res.body.id;
+        helpers.api.created(res);
+      })
+      .catch(helpers.handler);
   });
 
-  it('GET /HOLIDAYS/:ID should not be found for unknown id', function () {
+  it('GET /HOLIDAYS/:ID should not be found for unknown id', () => {
     return agent.get('/holidays/unknownHoliday')
-    .then(function (res) {
-      helpers.api.errored(res, 404);
-    })
-    .catch(helpers.handler);
+      .then((res) => {
+        helpers.api.errored(res, 404);
+      })
+      .catch(helpers.handler);
   });
 
-  it('PUT /HOLIDAYS  should update an existing Holiday ', function () {
+  it('PUT /HOLIDAYS  should update an existing Holiday ', () => {
     console.log('HHH');
     console.log(holiday.id);
 
     return agent.put('/holidays/'.concat(holiday.id))
-      .send({ label : 'Holiday Updated', employee_uuid   : '75e09694-65f2-45a1-a8a2-8b025003d793' })
-      .then(function (res) {
+      .send({ label : 'Holiday Updated', employee_uuid : '75e09694-65f2-45a1-a8a2-8b025003d793' })
+      .then((res) => {
         expect(res).to.have.status(200);
         expect(res.body.label).to.equal('Holiday Updated');
       })
       .catch(helpers.handler);
   });
 
-  it('GET /HOLIDAYS/:ID returns a single Holiday ', function () {
+  it('GET /HOLIDAYS/:ID returns a single Holiday ', () => {
     return agent.get('/holidays/'.concat(holiday.id))
-      .then(function (res) {
+      .then((res) => {
         expect(res).to.have.status(200);
       })
       .catch(helpers.handler);
   });
 
-  it('DELETE /HOLIDAYS/:ID will send back a 404 if the Holiday does not exist', function () {
+  it('DELETE /HOLIDAYS/:ID will send back a 404 if the Holiday does not exist', () => {
     return agent.delete('/holidays/inknowHoliday')
-      .then(function (res) {
+      .then((res) => {
         helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });
 
-  it('DELETE /HOLIDAYS/:ID should delete a Holiday ', function () {
+  it('DELETE /HOLIDAYS/:ID should delete a Holiday ', () => {
     return agent.delete('/holidays/'.concat(holiday.id))
-      .then(function (res) {
+      .then((res) => {
         helpers.api.deleted(res);
       })
       .catch(helpers.handler);

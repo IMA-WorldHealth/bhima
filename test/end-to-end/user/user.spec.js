@@ -17,8 +17,10 @@ const { expect } = chai;
 describe('User Management Page', () => {
   const path = '#/users';
   const userPage = new UserPage();
+
   const userCreateUpdatePage = new UserCreateUpdatePage();
   const editPasswordPage = new EditPasswordPage();
+
   const mockUserCreate = {
     userName : 'User test',
     login : 'Login test',
@@ -27,6 +29,7 @@ describe('User Management Page', () => {
     password : 'testtest134@IMA',
     passwordConfirm : 'testtest134@IMA',
   };
+
   const mockUserEdit = {
     userName : 'User test edit',
     login : 'Login test edit',
@@ -34,6 +37,7 @@ describe('User Management Page', () => {
     project : 'Test Project C',
     password : 'testtestedit1233@D',
   };
+
   const userCount = 4;
 
   const cashbox = {
@@ -59,7 +63,7 @@ describe('User Management Page', () => {
   });
 
   it('edits a user successfully without changing the password', () => {
-    userPage.editUser(4);
+    userPage.editUser(mockUserCreate.userName);
     userCreateUpdatePage.setUserName(mockUserEdit.userName);
     userCreateUpdatePage.setLogin(mockUserEdit.login);
     userCreateUpdatePage.setEmail(mockUserEdit.email);
@@ -77,7 +81,7 @@ describe('User Management Page', () => {
   });
 
   it('edits a user password successfully', () => {
-    userPage.editUser(4);
+    userPage.editUser(mockUserEdit.userName);
     userCreateUpdatePage.editPassword();
     editPasswordPage.setPassword(mockUserEdit.password);
     editPasswordPage.setPasswordConfirm(mockUserEdit.password);
@@ -93,7 +97,7 @@ describe('User Management Page', () => {
   });
 
   it('deactivate user system access successfully', () => {
-    userPage.deactivateUser(4);
+    userPage.toggleUser(mockUserEdit.userName, false);
     // submit the confirmation modal
     FU.modal.submit();
 
@@ -101,14 +105,14 @@ describe('User Management Page', () => {
   });
 
   it('refuses to update a user when no changes have been made', () => {
-    userPage.editUser(3);
+    userPage.editUser(mockUserEdit.userName);
     userCreateUpdatePage.submitUser();
     expect(userCreateUpdatePage.isSameUser()).to.eventually.equal(true);
     userCreateUpdatePage.close();
   });
 
   it('validates from on editing password', () => {
-    userPage.editUser(3);
+    userPage.editUser(mockUserEdit.userName);
 
     // check that an empty form is not allowed
     userCreateUpdatePage.editPassword();
@@ -127,8 +131,8 @@ describe('User Management Page', () => {
     userCreateUpdatePage.close();
   });
 
-  it(`Set Cashbox ${cashbox.text} Manage Right to RegularUser `, () => {
-    userPage.editUserCashbox(1);
+  it(`sets the cashbox ${cashbox.text} management rights for "Regular User"`, () => {
+    userPage.editUserCashbox('Regular User');
     components.multipleCashBoxSelect.set([cashbox.text]);
 
     // submit the modal

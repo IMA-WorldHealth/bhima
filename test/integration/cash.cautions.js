@@ -1,6 +1,5 @@
 /* global expect, chai, agent */
 
-'use strict';
 
 /**
  * @overview CautionPayments
@@ -12,30 +11,30 @@
 
 module.exports = CautionPayments;
 
-const helpers = require('./helpers');
 const _ = require('lodash');
+const helpers = require('./helpers');
 
 function CautionPayments() {
-  const DEBTOR_UUID =      // Test Patient
+  const DEBTOR_UUID = // Test Patient
     '3be232f9-a4b9-4af6-984c-5d3f87d5c107';
 
   const CAUTION_PAYMENT = {
-    amount:      15000,
-    currency_id: 1,
-    cashbox_id:  1,
-    debtor_uuid: DEBTOR_UUID,
-    project_id:  1,
-    date:        new Date(),
-    user_id:     1,
-    is_caution:  1,
-    description : 'A caution payment via /cash API'
+    amount :      15000,
+    currency_id : 1,
+    cashbox_id :  1,
+    debtor_uuid : DEBTOR_UUID,
+    project_id :  1,
+    date :        new Date(),
+    user_id :     1,
+    is_caution :  1,
+    description : 'A caution payment via /cash API',
   };
 
   // create a caution payment
-  it('POST /cash should create a caution payment', function () {
+  it('POST /cash should create a caution payment', () => {
     return agent.post('/cash')
       .send({ payment : CAUTION_PAYMENT })
-      .then(function (res) {
+      .then((res) => {
 
         // checks to see if the response correspond to the correct response codes
         helpers.api.created(res);
@@ -44,12 +43,15 @@ function CautionPayments() {
         CAUTION_PAYMENT.uuid = res.body.uuid;
 
         // make sure the payment is retrievable
-        return agent.get('/cash/' + CAUTION_PAYMENT.uuid);
+        return agent.get(`/cash/${CAUTION_PAYMENT.uuid}`);
       })
-      .then(function (res) {
+      .then((res) => {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
         expect(res.body).to.not.be.empty;
+
+        console.log('res.body.uuid', res.body.uuid);
+        console.log('payment.uuid', CAUTION_PAYMENT.uuid);
 
         expect(res.body.uuid).to.equal(CAUTION_PAYMENT.uuid);
         expect(res.body.currency_id).to.equal(CAUTION_PAYMENT.currency_id);

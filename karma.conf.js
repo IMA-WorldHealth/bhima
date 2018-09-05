@@ -1,5 +1,7 @@
 // Karma configuration
 // Generated on Wed Mar 30 2016 15:50:28 GMT+0100 (WAT)
+// Import manifest JSON from latest client build
+const manifest = require('./bin/client/rev-manifest');
 
 module.exports = (config) => {
   config.set({
@@ -13,10 +15,10 @@ module.exports = (config) => {
 
     // list of files / patterns to load in the browser
     files : [
-      'bin/client/js/vendor.min.js',
+      `bin/client/${manifest['js/vendor/vendor.min.js']}`,
       'client/vendor/angular-mocks/angular-mocks.js',
       'test/client-unit/mocks/*.js',
-      'bin/client/js/bhima.min.js',
+      `bin/client/${manifest['js/bhima/bhima.min.js']}`,
       'bin/client/modules/**/*.html',
       { pattern : 'bin/client/i18n/locale/*.js', included : false, served : true },
       'test/client-unit/**/*.spec.js',

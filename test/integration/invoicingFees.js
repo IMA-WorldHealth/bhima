@@ -50,7 +50,7 @@ describe('(/invoicing_fees) Invoicing Fee API', () => {
 
         // bind the database-generated ID
         invoicingFeeA.id = res.body.id;
-        return agent.get('/invoicing_fees/' + invoicingFeeA.id);
+        return agent.get(`/invoicing_fees/${invoicingFeeA.id}`);
       })
       .then(res => {
         expect(res).to.have.status(200);

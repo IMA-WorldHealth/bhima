@@ -1,7 +1,5 @@
 /* global inject, expect */
-describe('(directive) bhInteger', function () {
-  'use strict';
-
+describe('(directive) bhInteger', () => {
   let $scope;
   let form;
 
@@ -20,16 +18,18 @@ describe('(directive) bhInteger', function () {
 
     // initialise models that will be used
     $scope.models = {
-      intValue : null
+      intValue : null,
     };
 
     // compile angular element in with the context of $rootScope
     $compile(element)($scope);
+
+    // eslint-disable-next-line prefer-destructuring
     form = $scope.form;
   }));
 
 
-  it('validates an integer value', function () {
+  it('validates an integer value', () => {
     const correctIntegerValue = 10;
 
     form.intValue.$setViewValue(correctIntegerValue);
@@ -39,7 +39,7 @@ describe('(directive) bhInteger', function () {
     expect(form.intValue.$valid).to.equal(true);
   });
 
-  it('blocks non integer values (string/decimal)', function () {
+  it('blocks non integer values (string/decimal)', () => {
     const incorrectDecimalValue = 10.23;
     const incorrectStringValue = 'value';
 

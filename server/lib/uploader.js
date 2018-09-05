@@ -19,7 +19,7 @@
  * @requires mkdirp
  * @requires multer
  * @requires debug
- * @requires uuid/v4
+ * @requires lib/util
  *
  * @todo
  *  1) Ensure that a max-size is properly handled with error codes
@@ -29,8 +29,9 @@
 const path = require('path');
 const mkdirp = require('mkdirp');
 const multer = require('multer');
-const uuid = require('uuid/v4');
 const debug = require('debug')('app:uploader');
+
+const { uuid } = require('./util');
 
 // configure the uploads directory based on global process variables
 const defaultDir = 'uploads'; // NOTE: this must be a relative path
@@ -38,7 +39,9 @@ const dir = process.env.UPLOAD_DIR || defaultDir; // relative path
 const fsdir = path.join(process.cwd(), dir); // global path
 
 if (!process.env.UPLOAD_DIR) {
-  debug(`The environmental variable $UPLOAD_DIR is not defined.  The application will default to using ${fsdir} as the upload directory.`);
+  debug(
+    `The environmental variable $UPLOAD_DIR is undefined.  The application will use ${fsdir} as the upload directory.`
+  );
 }
 
 // attach the upload directory path for outside consumption

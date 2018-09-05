@@ -3,31 +3,31 @@
 const helpers = require('./helpers');
 
 describe('(/services) The Service API', () => {
-  var newService = {
+  const newService = {
     enterprise_id : 1,
     name : 'tested Service',
     cost_center_id : 2,
     profit_center_id : 1,
   };
 
-  var serviceWithoutCostCenter = {
+  const serviceWithoutCostCenter = {
     name : 'without cost and profit center',
     enterprise_id : 1,
     cost_center_id : null,
     profit_center_id : null,
   };
 
-  var wrongUpdateService = {
+  const wrongUpdateService = {
     cost_center_id : null,
     profit_center_id : 'wrong value',
   };
 
-  var undefinedProfitService = {
+  const undefinedProfitService = {
     cost_center_id : null,
     profit_center_id : undefined,
   };
 
-  var responseKeys = [
+  const responseKeys = [
     'id', 'cost_center_id', 'profit_center_id', 'name', 'enterprise_id',
   ];
 
@@ -43,7 +43,7 @@ describe('(/services) The Service API', () => {
         expect(res).to.have.status(200);
         expect(res.body).to.have.all.keys(responseKeys);
       })
-     .catch(helpers.handler);
+      .catch(helpers.handler);
   });
 
   it('POST /services adds a services with a null cost center', () => {
@@ -58,7 +58,7 @@ describe('(/services) The Service API', () => {
         expect(res).to.have.status(200);
         expect(res.body).to.have.all.keys(responseKeys);
       })
-     .catch(helpers.handler);
+      .catch(helpers.handler);
   });
 
   it('GET /services returns a list of services', () => {
@@ -82,7 +82,7 @@ describe('(/services) The Service API', () => {
   });
 
   it('PUT /services/:id updates the newly added services', () => {
-    var updateInfo = { name : 'other' };
+    const updateInfo = { name : 'other' };
     return agent.put(`/services/${newService.id}`)
       .send(updateInfo)
       .then((res) => {

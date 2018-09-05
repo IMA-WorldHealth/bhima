@@ -109,8 +109,7 @@ exports.detail = function detail(req, res, next) {
  */
 exports.create = function create(req, res, next) {
   const data = req.body;
-  const sql =
-    `INSERT INTO project (name, abbr, enterprise_id, zs_id, locked) VALUES (?, ?, ?, ?, ?);`;
+  const sql = `INSERT INTO project (name, abbr, enterprise_id, zs_id, locked) VALUES (?, ?, ?, ?, ?);`;
 
   db.exec(sql, [data.name, data.abbr, data.enterprise_id, data.zs_id, data.locked])
     .then((row) => {
@@ -128,13 +127,11 @@ exports.create = function create(req, res, next) {
 exports.update = function update(req, res, next) {
   let sql;
 
-  sql =
-    'UPDATE project SET ? WHERE id = ?;';
+  sql = 'UPDATE project SET ? WHERE id = ?;';
 
   db.exec(sql, [req.body, req.params.id])
     .then(() => {
-      sql =
-      `SELECT project.id, project.enterprise_id, project.abbr,
+      sql = `SELECT project.id, project.enterprise_id, project.abbr,
         project.zs_id, project.name, project.locked
       FROM project
       WHERE project.id = ?;`;

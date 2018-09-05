@@ -7,13 +7,11 @@
  *
  * @requires db
  * @requires NotFound
- * @requires @ima-worldhealth/topic
  */
 
 
 const db = require('../../../lib/db');
 const NotFound = require('../../../lib/errors/NotFound');
-const Topic = require('@ima-worldhealth/topic');
 
 exports.list = list;
 exports.detail = detail;
@@ -86,13 +84,6 @@ function create(req, res, next) {
   db.exec(sql, [data])
     .then((row) => {
       // currency account changes are still a cashbox update
-      Topic.publish(Topic.channels.FINANCE, {
-        event : Topic.events.UPDATE,
-        entity : Topic.entities.CASHBOX,
-        user_id : req.session.user.id,
-        id : data.cashbox_id,
-      });
-
       res.status(201).json({ id : row.insertId });
     })
     .catch(next)
@@ -131,14 +122,6 @@ function update(req, res, next) {
         res.status(200).json({});
         return;
       }
-
-      // currency account changes are still a cashbox update
-      Topic.publish(Topic.channels.FINANCE, {
-        event : Topic.events.UPDATE,
-        entity : Topic.entities.CASHBOX,
-        user_id : req.session.user.id,
-        id : req.params.id,
-      });
 
       res.status(200).json(rows[0]);
     })

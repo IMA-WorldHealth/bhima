@@ -12,17 +12,13 @@
  * @requires db
  * @requires uuid
  * @requires NotFound
- * @requires @ima-worldhealth/topic
  * @requires filter
  */
 
-
-const uuid = require('uuid/v4');
-const topic = require('@ima-worldhealth/topic');
-
-const db = require('./../../../lib/db');
-const NotFound = require('./../../../lib/errors/NotFound');
-const FilterParser = require('./../../../lib/filter');
+const { uuid } = require('../../../lib/util');
+const db = require('../../../lib/db');
+const NotFound = require('../../../lib/errors/NotFound');
+const FilterParser = require('../../../lib/filter');
 
 exports.list = list;
 exports.create = create;
@@ -299,13 +295,6 @@ function update(req, res, next) {
         throw new NotFound(`Could not find an employee with Uuid ${req.params.uuid}.`);
       }
 
-      topic.publish(topic.channels.ADMIN, {
-        event : topic.events.UPDATE,
-        entity : topic.entities.EMPLOYEE,
-        user_id : req.session.user.id,
-        uuid : req.params.uuid,
-      });
-
       return lookupEmployee(req.params.uuid);
     })
     .then(rows => {
@@ -425,13 +414,6 @@ function create(req, res, next) {
 
   transaction.execute()
     .then(() => {
-      topic.publish(topic.channels.ADMIN, {
-        event : topic.events.CREATE,
-        entity : topic.entities.EMPLOYEE,
-        user_id : req.session.user.id,
-        uuid : employeeUuid,
-      });
-
       res.status(201).json({ uuid : employeeUuid, patient_uuid : patientID });
     })
     .catch(next)
@@ -453,13 +435,6 @@ function create(req, res, next) {
 function search(req, res, next) {
   find(req.query)
     .then((rows) => {
-    // publish a SEARCH event on the medical channel
-      topic.publish(topic.channels.MEDICAL, {
-        event   : topic.events.SEARCH,
-        entity  : topic.entities.PATIENT,
-        user_id : req.session.user.id,
-      });
-
       res.status(200).json(rows);
     })
     .catch(next)
@@ -616,13 +591,6 @@ function patientToEmployee(req, res, next) {
 
   transaction.execute()
     .then(() => {
-      topic.publish(topic.channels.ADMIN, {
-        event : topic.events.CREATE,
-        entity : topic.entities.EMPLOYEE,
-        user_id : req.session.user.id,
-        uuid : employeeUuid,
-      });
-
       res.status(201).json({ uuid : employeeUuid, patient_uuid : patientUuid });
     })
     .catch(next)

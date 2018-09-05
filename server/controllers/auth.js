@@ -10,7 +10,6 @@
  *
  * @requires lib/db
  * @requires q
- * @requires @ima-worldhealth/Topic
  * @requires lodash
  * @requires lib/errors/Unauthorized
  * @requires lib/errors/Forbidden
@@ -19,7 +18,6 @@
 
 const _ = require('lodash');
 const q = require('q');
-const Topic = require('@ima-worldhealth/topic');
 const db = require('../lib/db');
 const Unauthorized = require('../lib/errors/Unauthorized');
 const InternalServerError = require('../lib/errors/InternalServerError');
@@ -104,14 +102,6 @@ function login(req, res, next) {
       // bind the session variables
       _.merge(req.session, session);
 
-      // broadcast LOGIN event
-      Topic.publish(Topic.channels.APP, {
-        event : Topic.events.LOGIN,
-        entity : Topic.entities.USER,
-        user_id : req.session.user.id,
-        id : session.user.id,
-      });
-
       // send the session data back to the client
       res.status(200).json(session);
     })
@@ -129,14 +119,6 @@ function logout(req, res, next) {
 
   db.exec(sql, [req.session.user.id])
     .then(() => {
-      // broadcast LOGOUT event
-      Topic.publish(Topic.channels.APP, {
-        event : Topic.events.LOGOUT,
-        entity : Topic.entities.USER,
-        user_id : req.session.user.id,
-        id : req.session.user.id,
-      });
-
       // destroy the session
       req.session.destroy();
       res.sendStatus(200);
@@ -287,14 +269,6 @@ function reload(req, res, next) {
     .then(session => {
       // bind the session  variables
       _.merge(req.session, session);
-
-      // broadcast LOGIN event
-      Topic.publish(Topic.channels.APP, {
-        event : Topic.events.RELOAD,
-        entity : Topic.entities.USER,
-        user_id : req.session.user.id,
-        id : session.user.id,
-      });
 
       // send the session data back to the client
       res.status(200).json(session);

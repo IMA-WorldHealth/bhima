@@ -154,6 +154,21 @@ describe('(/cashboxes) The Cashboxes API endpoint', () => {
       .catch(helpers.handler);
   });
 
+  it('GET /cashboxes/:id/users should return users subscribed to a cashbox', () => {
+    // details on the test cashbox as found in the dataset built before integration tests
+    const testDataCashbox = {
+      id: 1,
+      numberOfUsers: 2
+    };
+    return agent.get(`/cashboxes/${testDataCashbox.id}/users`)
+      .then(result => {
+        helpers.api.listed(result, testDataCashbox.numberOfUsers);
+
+        // results should look like users
+        expect(result.body[0]).to.have.keys('id', 'username', 'display_name', 'deactivated', 'last_login');
+      });
+  });
+
   it('DELETE /cashboxes/:id should delete the cashbox and associated currencies', () => {
     return agent.delete(`/cashboxes/${BOX.id}`)
       .then(res => {

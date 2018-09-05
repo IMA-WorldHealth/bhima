@@ -10,12 +10,12 @@
  * @requires chai-datetime
  *
  */
-'use strict';
+
 
 // import plugins
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-const chaiDatetime =  require('chai-datetime');
+const chaiDatetime = require('chai-datetime');
 
 // base URL for all tests
 const port = process.env.PORT || 8080;
@@ -43,7 +43,7 @@ before(() => {
   const agent = global.agent;
 
   // base user defined in test data
-  const user = { username : 'superuser', password : 'superuser', project: 1 };
+  const user = { username : 'superuser', password : 'superuser', project : 1 };
 
   // trigger login
   return (() => agent.post('/auth/login').send(user))();

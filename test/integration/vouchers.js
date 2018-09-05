@@ -1,7 +1,9 @@
 /* global expect, agent */
 
-const helpers = require('./helpers');
 const uuid = require('uuid/v4');
+const helpers = require('./helpers');
+
+const genuuid = () => uuid().toUpperCase().replace(/-/g, '');
 
 /*
  * The /vouchers API endpoint
@@ -11,11 +13,11 @@ const uuid = require('uuid/v4');
 describe('(/vouchers) The vouchers HTTP endpoint', () => {
   const date = new Date();
 
-  const vUuid = 'b140c144-6ca8-47b0-99ba-94732cf6efde';
-  const pUuid = 'c144b140-6ca8-47b0-99ba-6efde94732cf';
+  const vUuid = 'B140C1446CA847B099BA94732CF6EFDE';
+  const pUuid = 'C144B1406CA847B099BA6EFDE94732CF';
   const numVouchers = 11;
 
-  const TO_DELETE_UUID = '3688e9ce-85ea-4b5c-9144-688177edcb63';
+  const TO_DELETE_UUID = '3688E9CE85EA4B5C9144688177EDCB63';
 
   // balanced transaction with two lines (USD)
   const voucher = {
@@ -27,11 +29,11 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
     description : 'Voucher Transaction to BCDC',
     user_id     : 1,
     items       : [{
-      uuid          : uuid(),
+      uuid          : genuuid(),
       account_id    : 184,
       debit         : 10,
       credit        : 0,
-      document_uuid : uuid(),
+      document_uuid : genuuid(),
       voucher_uuid  : vUuid,
     }, {
       account_id   : 217,
@@ -44,10 +46,10 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
   // NOTE: this voucher does not have any uuids
   const items = [
     {
-      account_id : 197, debit : 11, credit : 0, document_uuid : uuid(), entity_uuid : uuid(),
+      account_id : 197, debit : 11, credit : 0, document_uuid : genuuid(), entity_uuid : genuuid(),
     },
     {
-      account_id : 191, debit : 0, credit : 11, document_uuid : uuid(), entity_uuid : uuid(),
+      account_id : 191, debit : 0, credit : 11, document_uuid : genuuid(), entity_uuid : genuuid(),
     },
     { account_id : 197, debit : 0, credit : 12 },
     { account_id : 190, debit : 12, credit : 0 },
@@ -66,13 +68,13 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
   // only one item - bad transaction
   const badVoucher = {
     date,
-    uuid        : uuid(),
+    uuid        : genuuid(),
     project_id  : 1,
     currency_id : helpers.data.USD,
     amount      : 10,
     description : 'Voucher Transaction',
     items       : [{
-      uuid       : uuid(),
+      uuid       : genuuid(),
       account_id : 177,
       debit      : 10,
       credit     : 0,
@@ -81,7 +83,7 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
 
   // this voucher will not have an exchange rate
   const predatedVoucher = {
-    uuid        : uuid(),
+    uuid        : genuuid(),
     date        : new Date('2000-01-01'),
     project_id  : 1,
     currency_id : helpers.data.FC,
@@ -89,12 +91,12 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
     description : 'Voucher Transaction',
     user_id     : 1,
     items       : [{
-      uuid       : uuid(),
+      uuid       : genuuid(),
       account_id : 179,
       debit      : 10,
       credit     : 0,
     }, {
-      uuid       : uuid(),
+      uuid       : genuuid(),
       account_id : 191,
       debit      : 0,
       credit     : 10,
@@ -104,7 +106,7 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
   let mockVoucher;
 
   const voucherPaymentSalary = {
-    date        : date,
+    date,
     uuid        : pUuid,
     project_id  : 1,
     currency_id : helpers.data.USD,
@@ -113,11 +115,11 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
     description : 'Partial Paiement Salary [ 02 - 2018]',
     user_id     : 1,
     items       : [{
-      uuid          : uuid(),
+      uuid          : genuuid(),
       account_id    : 187,
       debit         : 0,
       credit        : 14.07,
-      document_uuid : uuid(),
+      document_uuid : genuuid(),
       voucher_uuid  : pUuid,
     }, {
       account_id   : 179,
@@ -125,11 +127,11 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
       credit       : 0,
       document_uuid   : '2a3f17b0-ae32-42bb-9333-a760825fd257',
       voucher_uuid : pUuid,
-      entity_uuid: '42d3756a-7770-4bb8-a899-7953cd859892',
-      entity: { 
+      entity_uuid : '42d3756a-7770-4bb8-a899-7953cd859892',
+      entity : {
         label : 'TEST 2 PATIENT',
         type  : 'C',
-        uuid  : '42d3756a-7770-4bb8-a899-7953cd859892' 
+        uuid  : '42d3756a-7770-4bb8-a899-7953cd859892',
       },
     }],
   };
@@ -154,7 +156,7 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
   });
 
   it('POST /vouchers doesn\'t register when missing data', () => {
-    const uid = uuid();
+    const uid = genuuid();
     mockVoucher = {
       date,
       uuid          : uid,
@@ -162,7 +164,7 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
       currency_id   : 1,
       amount        : 10,
       description   : 'Bad Voucher Transaction',
-      document_uuid : uuid(), // technically, this should reference something..
+      document_uuid : genuuid(), // technically, this should reference something..
       user_id       : 1,
       items         : [{
         account_id   : 3631,
@@ -183,7 +185,7 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
   it('POST /vouchers will reject a voucher will less than two records', () => {
     // attempt 1 - missing items completely + bad voucher
     return agent.post('/vouchers')
-      .send({ voucher : { uuid : uuid() } })
+      .send({ voucher : { uuid : genuuid() } })
       .then((res) => {
         helpers.api.errored(res, 400);
 
@@ -272,5 +274,4 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
       })
       .catch(helpers.handler);
   });
-
 });

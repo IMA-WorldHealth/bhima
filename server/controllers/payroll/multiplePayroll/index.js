@@ -65,4 +65,3 @@ exports.makeCommitment = makeCommitment;
 
 // Set Multi Configuration
 exports.setMultiConfiguration = setMultiConfiguration;
-

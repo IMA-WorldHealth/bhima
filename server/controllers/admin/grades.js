@@ -1,11 +1,10 @@
-
 /**
  * Grade Controller
  *
  * This controller exposes an API to the client for reading and writing Grade
  * */
 const db = require('../../lib/db');
-const uuid = require('uuid/v4');
+const { uuid } = require('../../lib/util');
 const NotFound = require('../../lib/errors/NotFound');
 
 // GET /Grade
@@ -22,12 +21,10 @@ function lookupGrade(uid) {
 
 // Lists of grades of hospital employees.
 function list(req, res, next) {
-  let sql =
-    'SELECT BUID(uuid) as uuid, text FROM grade ;';
+  let sql = 'SELECT BUID(uuid) as uuid, text FROM grade ;';
 
   if (req.query.detailed === '1') {
-    sql =
-      'SELECT BUID(uuid) as uuid, code, text, basic_salary FROM grade ;';
+    sql = 'SELECT BUID(uuid) as uuid, code, text, basic_salary FROM grade ;';
   }
 
   db.exec(sql)
@@ -61,8 +58,7 @@ function create(req, res, next) {
   // Provide UUID if the client has not specified
   data.uuid = db.bid(recordUuid);
 
-  const sql =
-    'INSERT INTO grade SET ? ';
+  const sql = 'INSERT INTO grade SET ? ';
 
   db.exec(sql, [data])
     .then(() => {
@@ -75,8 +71,7 @@ function create(req, res, next) {
 
 // PUT /grade /:uuid
 function update(req, res, next) {
-  const sql =
-    'UPDATE grade SET ? WHERE uuid = ?;';
+  const sql = 'UPDATE grade SET ? WHERE uuid = ?;';
 
   // make sure you cannot update the uuid
   delete req.body.uuid;
@@ -94,8 +89,7 @@ function update(req, res, next) {
 
 // DELETE /grade/:uuid
 function del(req, res, next) {
-  const sql =
-    'DELETE FROM grade WHERE uuid = ?;';
+  const sql = 'DELETE FROM grade WHERE uuid = ?;';
 
   db.exec(sql, [db.bid(req.params.uuid)])
     .then((row) => {

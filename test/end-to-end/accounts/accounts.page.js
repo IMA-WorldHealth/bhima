@@ -1,8 +1,10 @@
-/* global element, by  */
+/* global element, by, browser  */
 const path = require('path');
+const EC = require('protractor').ExpectedConditions;
 const FU = require('../shared/FormUtils');
 const GU = require('../shared/GridUtils.js');
 const components = require('../shared/components');
+
 
 function AccountsPage() {
   const page = this;
@@ -45,8 +47,9 @@ function AccountsPage() {
   };
 
   page.openImportMenu = () => {
-    element(by.css('[data-action="open-tools"]')).click();
-    element(by.css('[data-action="import-accounts"]')).click();
+    $('[data-action="open-tools"]').click();
+    $('[data-action="import-accounts"]').click();
+    browser.wait(EC.visibilityOf(element(by.css('[data-import-modal]'))), 3000, 'Could not find import modal.');
   };
 
   page.chooseImportOption = option => {
@@ -55,12 +58,11 @@ function AccountsPage() {
 
   page.uploadFile = fileToUpload => {
     const absolutePath = path.resolve(fixtures, fileToUpload);
-    element.all(by.css('input[type=file]')).get(0).sendKeys(absolutePath);
+    element(by.id('import-input')).sendKeys(absolutePath);
   };
 
   page.EditModal = {
-    parent : () =>
-      element(by.model('AccountEditCtrl.account.parent')).getText(),
+    parent : () => element(by.model('AccountEditCtrl.account.parent')).getText(),
   };
 
   page.toggleBatchCreate = function toggleBatchCreate() {

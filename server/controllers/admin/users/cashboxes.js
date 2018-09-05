@@ -6,10 +6,12 @@
  * cashboxes-related functionality in the same place.
  *
  * @requires lib/db
+ * @requires BadRequest
  */
 
 
 const db = require('../../../lib/db');
+const BadRequest = require('../../../lib/errors/BadRequest');
 
 exports.list = list;
 exports.create = create;
@@ -26,10 +28,10 @@ function list(req, res, next) {
   `;
 
   db.exec(sql, [req.params.id])
-    .then((rows) => {
-      rows = rows.map(row => row.cashbox_id);
+    .then((cashboxes) => {
+      const cashboxIds = cashboxes.map(cashbox => cashbox.cashbox_id);
 
-      res.status(200).json(rows);
+      res.status(200).json(cashboxIds);
     })
     .catch(next)
     .done();
@@ -45,22 +47,40 @@ function list(req, res, next) {
 function create(req, res, next) {
   const transaction = db.transaction();
 
-  transaction
-    .addQuery('DELETE FROM cashbox_permission WHERE user_id = ?;', [req.params.id]);
+  // route specific parameters
+  const userId = req.params.id;
+  const cashboxPermissionIds = req.body.cashboxes;
 
-  // if an array of permission has been sent, add them to an INSERT query
-  if (req.body.cashboxes.length) {
-    const data = req.body.cashboxes.map((id) => {
-      return [id, req.params.id];
-    });
+  if (!userId) {
+    next(new BadRequest('You must provide a user ID to update the users cashbox permissions'));
+    return;
+  }
+
+  if (!cashboxPermissionIds) {
+    next(new BadRequest(
+      'You must provide a list of cashbox ids to update the users permissions',
+      'ERRORS.BAD_DATA_FORMAT'
+    ));
+    return;
+  }
+
+  // the request now has enough data to carry out the transaction
+  // remove all cashbox permissions for this user
+  transaction
+    .addQuery('DELETE FROM cashbox_permission WHERE user_id = ?;', [userId]);
+
+  // only insert new cashbox permissions if the provided list contains elements
+  if (cashboxPermissionIds.length) {
+    // bundle provided permission ids with the userid
+    const formattedPermissions = cashboxPermissionIds.map((id) => [id, userId]);
 
     transaction
-      .addQuery('INSERT INTO cashbox_permission (cashbox_id, user_id) VALUES ?', [data]);
+      .addQuery('INSERT INTO cashbox_permission (cashbox_id, user_id) VALUES ?', [formattedPermissions]);
   }
 
   transaction.execute()
     .then(() => {
-      res.sendStatus(201);
+      res.status(201).json({ userId });
     })
     .catch(next)
     .done();

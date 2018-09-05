@@ -14,7 +14,7 @@
 * @requires lib/errors/NotFound
 */
 
-const uuid = require('uuid/v4');
+const { uuid } = require('../../../../lib/util');
 const db = require('../../../../lib/db');
 const NotFound = require('../../../../lib/errors/NotFound');
 const BadRequest = require('../../../../lib/errors/BadRequest');

@@ -1,7 +1,7 @@
 angular.module('bhima.services')
   .service('CashboxService', CashboxService);
 
-CashboxService.$inject = [ '$http', 'util' ];
+CashboxService.$inject = ['$http', 'util'];
 
 /**
 * Cashbox Service
@@ -11,8 +11,8 @@ CashboxService.$inject = [ '$http', 'util' ];
 * exposed behind the service.currencies.* functions.
 */
 function CashboxService($http, util) {
-  var service = this;
-  var baseUrl = '/cashboxes/';
+  const service = this;
+  const baseUrl = '/cashboxes/';
 
   // expose service methods to the client for consumption
   service.read = read;
@@ -27,16 +27,20 @@ function CashboxService($http, util) {
   service.currencies.create = createCurrencies;
   service.currencies.update = updateCurrencies;
 
+  // cashbox-user methods
+  service.users = {};
+  service.users.read = readUsers;
+
   function read(id, params) {
-    var url = baseUrl.concat(id || '');
-    return $http.get(url, { params: params })
+    const url = `${baseUrl}${id || ''}`;
+    return $http.get(url, { params })
       .then(util.unwrapHttpResponse);
   }
 
   function create(box) {
     delete box.currencies;
     delete box.type;
-    return $http.post(baseUrl, { cashbox: box })
+    return $http.post(baseUrl, { cashbox : box })
       .then(util.unwrapHttpResponse);
   }
 
@@ -58,10 +62,11 @@ function CashboxService($http, util) {
       .then(util.unwrapHttpResponse);
   }
 
-  // Reads the user's privileges to the different cashboxes and also lists those for which the user does not have access rights
+  // Reads the user's privileges to the different cashboxes and also lists those
+  // for which the user does not have access rights
   function readPrivileges() {
-    var url = baseUrl.concat('privileges');
-    
+    const url = baseUrl.concat('privileges');
+
     return $http.get(url)
       .then(util.unwrapHttpResponse);
   }
@@ -69,30 +74,34 @@ function CashboxService($http, util) {
   // this will read either all cashbox currency accounts or a specific
   // cashbox currency account.
   function readCurrencies(id, currencyId) {
-    var url = baseUrl + id + '/currencies/';
-
-    // attach the currencyId if it exists
-    url =  url.concat(currencyId || '');
+    // note that if the currencyId is not defined this will request all currencies
+    const url = `${baseUrl}${id}/currencies/${currencyId || ''}`;
 
     return $http.get(url)
       .then(util.unwrapHttpResponse);
   }
 
   function createCurrencies(id, data) {
-    var url = baseUrl + id + '/currencies';
+    const url = `${baseUrl}${id}/currencies`;
     return $http.post(url, data)
       .then(util.unwrapHttpResponse);
   }
 
   function updateCurrencies(cashboxId, data) {
-    var currencyId = data.currency_id;
-    var url = baseUrl + cashboxId + '/currencies/' + currencyId;
+    const currencyId = data.currency_id;
+    const url = `${baseUrl}${cashboxId}/currencies/${currencyId}`;
 
     // delete potentially duplicate data entries
     delete data.currency_id;
     delete data.id;
 
     return $http.put(url, data)
+      .then(util.unwrapHttpResponse);
+  }
+
+  function readUsers(cashboxId) {
+    const url = `${baseUrl}${cashboxId}/users`;
+    return $http.get(url)
       .then(util.unwrapHttpResponse);
   }
 

@@ -7,7 +7,7 @@ const helpers = require('./helpers');
  *
  * This test suite implements full CRUD on the /ipr_tax  HTTP API endpoint.
  */
-describe('(/ipr_tax) The /ipr_tax  API endpoint', function () {
+describe('(/ipr_tax) The /ipr_tax  API endpoint', () => {
   // IPR TAX we will add during this test suite.
 
   const iprTax = {
@@ -33,122 +33,122 @@ describe('(/ipr_tax) The /ipr_tax  API endpoint', function () {
   const NUM_IPRTAX = 1;
   const NUM_CONFIG = 11;
 
-  it('GET /IPRTAX returns a list of Ipr tax ', function () {
+  it('GET /IPRTAX returns a list of Ipr tax ', () => {
     return agent.get('/iprTax')
-      .then(function (res) {
+      .then((res) => {
         helpers.api.listed(res, NUM_IPRTAX);
       })
       .catch(helpers.handler);
   });
 
-  it('POST /iprTax should create a new Ipr Tax', function () {
+  it('POST /iprTax should create a new Ipr Tax', () => {
     return agent.post('/iprTax')
       .send(iprTax)
-      .then(function (res) {
+      .then((res) => {
         iprTax.id = res.body.id;
-        iprTaxConfig.taxe_ipr_id = res.body.id; 
+        iprTaxConfig.taxe_ipr_id = res.body.id;
         helpers.api.created(res);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /IPRTAX/:ID should not be found for unknown id', function () {
+  it('GET /IPRTAX/:ID should not be found for unknown id', () => {
     return agent.get('/iprTax/unknownOffday')
-      .then(function (res) {
+      .then((res) => {
         helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });
 
-  it('PUT /IPRTAX  should update an existing Ipr tax ', function () {
+  it('PUT /IPRTAX  should update an existing Ipr tax ', () => {
     return agent.put('/iprTax/'.concat(iprTax.id))
       .send({ label : 'Ipr Tax Updated' })
-      .then(function (res) {
+      .then((res) => {
         expect(res).to.have.status(200);
         expect(res.body.label).to.equal('Ipr Tax Updated');
       })
       .catch(helpers.handler);
   });
 
-  it('GET /IPRTAX/:ID returns a single Ipr Tax', function () {
+  it('GET /IPRTAX/:ID returns a single Ipr Tax', () => {
     return agent.get('/iprTax/'.concat(iprTax.id))
-      .then(function (res) {
+      .then((res) => {
         expect(res).to.have.status(200);
       })
       .catch(helpers.handler);
   });
 
-  it('POST /iprTaxiprTaxConfig should create a new Ipr Tax Configuration', function () {
+  it('POST /iprTaxiprTaxConfig should create a new Ipr Tax Configuration', () => {
     return agent.post('/iprTaxConfig')
       .send(iprTaxConfig)
-      .then(function (res) {
+      .then((res) => {
         iprTaxConfig.id = res.body.id;
         helpers.api.created(res);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /IPRTAXCONFIG returns a list of Ipr Configuration By tax ', function () {
+  it('GET /IPRTAXCONFIG returns a list of Ipr Configuration By tax ', () => {
     return agent.get('/iprTaxConfig')
-      .then(function (res) {
+      .then((res) => {
         helpers.api.listed(res, NUM_CONFIG);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /IPRTAXCONFIG/:ID should not be found for unknown id', function () {
+  it('GET /IPRTAXCONFIG/:ID should not be found for unknown id', () => {
     return agent.get('/iprTaxConfig/unknownOffday')
-      .then(function (res) {
+      .then((res) => {
         helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });
 
-  it('PUT /IPRTAXCONFIG  should update an existing scale of Ipr tax Confuguration', function () {
+  it('PUT /IPRTAXCONFIG  should update an existing scale of Ipr tax Confuguration', () => {
     return agent.put('/iprTaxConfig/'.concat(iprTaxConfig.id))
       .send({ rate : 15 })
-      .then(function (res) {
+      .then((res) => {
         expect(res).to.have.status(200);
         expect(res.body.rate).to.equal(15);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /IPRTAXCONFIG/:ID returns a scale of Ipr Tax Configuration', function () {
+  it('GET /IPRTAXCONFIG/:ID returns a scale of Ipr Tax Configuration', () => {
     return agent.get('/iprTaxConfig/'.concat(iprTaxConfig.id))
-      .then(function (res) {
+      .then((res) => {
         expect(res).to.have.status(200);
       })
       .catch(helpers.handler);
   });
 
-  it('DELETE /IPRTAXCONFIG/:ID will send back a 404 if the Ipr Tax does not exist', function () {
+  it('DELETE /IPRTAXCONFIG/:ID will send back a 404 if the Ipr Tax does not exist', () => {
     return agent.delete('/iprTaxConfig/inknowOffday')
-      .then(function (res) {
+      .then((res) => {
         helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });
 
-  it('DELETE /IPRTAXCONFIG/:ID should delete a scale of Ipr Tax Configuration', function () {
+  it('DELETE /IPRTAXCONFIG/:ID should delete a scale of Ipr Tax Configuration', () => {
     return agent.delete('/iprTaxConfig/'.concat(iprTaxConfig.id))
-      .then(function (res) {
+      .then((res) => {
         helpers.api.deleted(res);
       })
       .catch(helpers.handler);
   });
 
-  it('DELETE /IPRTAX/:ID will send back a 404 if the Ipr Tax does not exist', function () {
+  it('DELETE /IPRTAX/:ID will send back a 404 if the Ipr Tax does not exist', () => {
     return agent.delete('/iprTax/inknowOffday')
-      .then(function (res) {
+      .then((res) => {
         helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
   });
 
-  it('DELETE /IPRTAX/:ID should delete a Ipr Tax', function () {
+  it('DELETE /IPRTAX/:ID should delete a Ipr Tax', () => {
     return agent.delete('/iprTax/'.concat(iprTax.id))
-      .then(function (res) {
+      .then((res) => {
         helpers.api.deleted(res);
       })
       .catch(helpers.handler);

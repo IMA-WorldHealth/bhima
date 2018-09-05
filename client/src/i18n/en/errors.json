@@ -30,6 +30,7 @@
     "ER_NO_STOCK_SOURCE" : "No stock origin defined",
     "NO_NEXT_FISCAL_YEAR" : "Fiscal years can only be closed into a subsequent year.  Please open a new year before closing this one.",
     "MISSING_UPLOAD_FILES" : "It doesn't look like you have selected files to upload.  Please choose one or more file to upload.",
-    "NO_DATA_FOUND" : "No records matched your criteria."
+    "NO_DATA_FOUND" : "No records matched your criteria.",
+    "NOT_BEGINING_FISCAL_YEAR" : "The fiscal year selected is not a begining fiscal year"
   }
 }
