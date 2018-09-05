@@ -1,10 +1,12 @@
 <!-- this partial requires binding the variable 'title' -->
 <head>
+  <meta charset="utf-8">
   <title>{{translate title}}</title>
   <link href="{{absolutePath}}/css/bhima-bootstrap.css" rel="stylesheet">
   <link href="{{absolutePath}}/vendor/components-font-awesome/css/font-awesome.css" rel="stylesheet">
   <script src="{{absolutePath}}/vendor/JsBarcode.all.min.js"></script>
   <style>
+   
     thead {
       display : table-header-group;
     }
@@ -12,11 +14,24 @@
     tr {
       page-break-inside : avoid;
     }
-
+    .text-right {
+      text-align: right;
+    }
+    .text-center{
+      text-align: center;
+    }
+    .row, .col-lg-12, .col-xs-12{
+       width :100%;
+    }
     /* sourced from jimmybonney.com.  Thank you! */
     .table-header-rotated th.row-header{
       width: auto;
     }
+
+    table, td, th{
+      border : 1px solid #001;
+       border-collapse : collapse !important
+    };
 
     .table-header-rotated td{
       width: 40px;

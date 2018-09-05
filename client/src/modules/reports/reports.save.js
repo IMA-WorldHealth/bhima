@@ -17,12 +17,15 @@ function SaveReportController(ModalInstance, Notify, SavedReports, options, Lang
   //       it should also be possible to override this depending on the support of each individual report
   vm.supportedRenderTypes = [
     { key : 'pdf', label : 'REPORT.UTIL.PDF' },
+    { key : 'doc', label : 'REPORT.UTIL.WORD' },
+    { key : 'xls', label : 'REPORT.UTIL.EXCEL' },
   ];
 
   vm.documentOptions.renderer = vm.supportedRenderTypes[0].key;
-
   vm.submit = function submit(SaveForm) {
     if (SaveForm.$invalid) { return 0; }
+
+    // vm.documentOptions.renderer = vm.supportedRenderTypes[0].key;
     vm.documentOptions.lang = Languages.key;
 
     // @TODO this can directly be loaded from the form
