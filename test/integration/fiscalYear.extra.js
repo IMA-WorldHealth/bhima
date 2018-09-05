@@ -1,5 +1,5 @@
 /* global expect, agent */
-
+const moment = require('moment');
 const helpers = require('./helpers');
 
 describe('(/fiscal) Fiscal Year extra operations', () => {
@@ -46,8 +46,6 @@ describe('(/fiscal) Fiscal Year extra operations', () => {
         /**
          * dates are returned with timezone information
          * we extract just the date information
-         * FIXME: timezone issue : we have 2017-12-31 in the database
-         * but we get 2018-01-01, it is now difficult to test date.
          */
         expect(fy).to.have.property('start_date');
         expect(fy).to.have.property('end_date');
@@ -99,9 +97,8 @@ describe('(/fiscal) Fiscal Year extra operations', () => {
   it('GET /fiscal/:id/opening_balance returns the opening balance of a given fiscal year', () => {
     return agent.get(url.concat(`/${fiscalYear2015.id}/opening_balance`))
       .then(res => {
-        const updatedAccounts = res.body.filter(item => {
-          return [81, 83, 174, 190].indexOf(item.id) > -1;
-        });
+        const accountSubset = [81, 83, 174, 190];
+        const updatedAccounts = res.body.filter(account => accountSubset.includes(account.id)).sort();
         const [first, second, third, fourth] = updatedAccounts;
         expect(first.balance).to.be.equal(77);
         expect(second.balance).to.be.equal(-77);
@@ -114,12 +111,20 @@ describe('(/fiscal) Fiscal Year extra operations', () => {
   it('GET /fiscal/:id/periods returns periods of the given fiscal year', () => {
     return agent.get(url.concat(`/${fiscalYear2017.id}/periods`))
       .then(res => {
+        // checks if the number of returned periods equals total of periods + period 0
         expect(res.body).to.have.length(fiscalYear2017MonthsNumber + 1);
+
+        // checks if each periods are returned in order of their `number`
+        // and if each period has the correct number
         for (let i = 0; i < res.body.length; i++) {
           expect(res.body[i].number).to.be.equal(i);
         }
+
+        // pick two periods as sample, and checks their dates values
+        // we pick periods which correspond to january and december
         const jan = res.body[1];
         const dec = res.body[12];
+
         expect(flatDate(jan.start_date)).to.be.equal('2017-01-01');
         expect(flatDate(jan.end_date)).to.be.equal('2017-01-31');
         expect(flatDate(dec.start_date)).to.be.equal('2017-12-01');
@@ -129,16 +134,7 @@ describe('(/fiscal) Fiscal Year extra operations', () => {
   });
 
   function flatDate(_date_) {
-    const givenDate = new Date(_date_);
-    const y = date.getFullYear();
-    const m = numberWithZero(givenDate.getMonth() + 1);
-    const d = numberWithZero(givenDate.getDate());
-    const output = String(y).concat('-', m, '-', d);
-    return output;
-  }
-
-  function numberWithZero(number) {
-    return number < 10 ? '0'.concat(number) : number;
+    return moment(_date_).format('YYYY-MM-DD');
   }
 
 });
