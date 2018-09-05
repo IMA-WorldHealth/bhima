@@ -1,2 +1,0 @@
-ALTER TABLE fiscal_year MODIFY COLUMN `start_date` DATETIME NOT NULL;
-ALTER TABLE fiscal_year MODIFY COLUMN `end_date` DATETIME NOT NULL;

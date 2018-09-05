@@ -4,7 +4,6 @@
  This procedure help to create fiscal year and fiscal year's periods
  periods include period `0` and period `13`
 */
-SET time_zone = "-00:00";
 
 CREATE PROCEDURE CreateFiscalYear(
   IN p_enterprise_id SMALLINT(5),
