@@ -2,7 +2,7 @@ angular.module('bhima.services')
   .service('AccountService', AccountService);
 
 AccountService.$inject = [
-  'PrototypeApiService', 'bhConstants', 'debounce',
+  'PrototypeApiService', 'bhConstants', 'HttpCacheService',
 ];
 
 /**
@@ -10,12 +10,12 @@ AccountService.$inject = [
  *
  * A service wrapper for the /accounts HTTP endpoint.
  */
-function AccountService(Api, bhConstants, debounce) {
+function AccountService(Api, bhConstants, HttpCache) {
   const baseUrl = '/accounts/';
   const service = new Api(baseUrl);
 
   // debounce the read() method by 250 milliseconds to avoid needless GET requests
-  service.read = debounce(read, 150, false);
+  service.read = read;
   service.label = label;
 
   service.getBalance = getBalance;
@@ -42,6 +42,10 @@ function AccountService(Api, bhConstants, debounce) {
       .then(service.util.unwrapHttpResponse);
   }
 
+  const callback = (id, options) => Api.read.call(service, id, options)
+    .then(handleAccounts);
+
+  const fetcher = HttpCache(callback);
 
   /**
    * The read() method loads data from the api endpoint. If an id is provided,
@@ -54,8 +58,7 @@ function AccountService(Api, bhConstants, debounce) {
    *   an array of JSONs.
    */
   function read(id, options) {
-    return Api.read.call(this, id, options)
-      .then(handleAccounts);
+    return fetcher(id, options);
   }
 
   function handleAccounts(accounts) {
