@@ -7,7 +7,7 @@ function StockExiTests() {
   const DEPOT_PRINCIPAL = 'Depot Principal';
   const DEPOT_SECONDAIRE = 'Depot Secondaire';
   const PATIENT = 'PA.TPA.2';
-  const INVOICE = 'IV.TPA.2';
+  const INVOICE = 'IV.TPA.1';
   const SERVICE = 'Medecine Interne';
   const DESCRIPTION = 'Sortie de stock';
 

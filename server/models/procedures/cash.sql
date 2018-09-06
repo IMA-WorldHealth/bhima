@@ -250,6 +250,9 @@ BEGIN
   */
   ELSE
 
+    -- make sure the temporary tables exist for invoice balances
+    CALL VerifyCashTemporaryTables();
+
     -- write each cash_item into the posting_journal
     INSERT INTO posting_journal (
       uuid, project_id, fiscal_year_id, period_id, trans_id, trans_id_reference_number, trans_date,

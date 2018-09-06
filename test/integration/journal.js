@@ -9,7 +9,7 @@ describe('(/journal) API endpoint', () => {
   const RECORD_UUID = 'a5a5f950-a4c9-47f0-9a9a-2bfc3123e534';
   const MISSING_RECORD_UUID = 'a5a5f950-a4c9-47f0-9a9a-2bfc3123e635';
 
-  const NUM_ROW_ALL_RECORDS = 19;
+  const NUM_ROW_ALL_RECORDS = 21;
   const NUM_ROWS_FETCHING_TRANSACTION = 2;
 
   it('GET /journal returns a set of records', () => agent.get('/journal')
@@ -39,7 +39,7 @@ function SearchTests() {
   const description = 'Sample voucher data one';
   const accountId = 187;
   const amount = 100;
-  const DISTINCT_TRANSACTIONS = 9;
+  const DISTINCT_TRANSACTIONS = 10;
 
   it(`GET /journal?description=${description} should match two records`, () => {
     const NUM_MATCHES = 2;
@@ -90,7 +90,7 @@ function SearchTests() {
   });
 
   it(`GET /journal?amount=${amount} should return lines with debit or credit equivalent amounts`, () => {
-    const NUM_MATCHES = 4;
+    const NUM_MATCHES = 3;
     return agent.get('/journal')
       .query({ amount })
       .then((res) => {
