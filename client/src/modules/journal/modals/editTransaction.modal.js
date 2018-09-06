@@ -35,6 +35,11 @@ function JournalEditTransactionController(
       <bh-exchange-rate></bh-exchange-rate>
     </div>`;
 
+  // Integrating optional voucher-tools
+  vm.voucherTools = { isReversing : false };
+  vm.voucherTools.open = (tool) => { vm.voucherTools[tool] = true; };
+  vm.voucherTools.close = (tool) => { vm.voucherTools[tool] = false; };
+
   // @FIXME(sfount) this is only exposed for the UI grid link component - this should be self contained in the future
   vm.loadingTransaction = false;
   vm.setupComplete = false;
@@ -181,8 +186,6 @@ function JournalEditTransactionController(
       vm.rows.data.forEach((row) => { row.trans_date = new Date(row.trans_date); });
       vm.shared = sharedDetails(vm.rows.data[0]);
       vm.gridOptions.data = vm.rows.data;
-
-      console.log('parsed shared details', vm.shared);
     })
     .catch(() => {
       vm.hasError = true;

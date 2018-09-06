@@ -114,17 +114,22 @@
   </div>
 
   <bh-voucher-tools-reverse
+    ng-if="ModalCtrl.voucherTools.isReversing"
+    on-close="ModalCtrl.voucherTools.close('isReversing')"
     source="ModalCtrl.shared"
     show-badge>
   </bh-voucher-tools-reverse>
 </div>
 
 <div class="modal-footer clearfix">
+
+  <!-- FIXME(sfount) encapsulate click action in function -->
   <button
     class="btn btn-default pull-left"
     ng-if="ModalCtrl.readOnly"
-    disabled
-    ng-click="ModalCtrl.reverseTransaction()" translate>
+    ng-disabled="ModalCtrl.voucherTools.isReversing"
+    ng-click="ModalCtrl.voucherTools.open('isReversing')"
+    translate>
     VOUCHERS.TOOLS.REVERSE.ACTION
   </button>
 

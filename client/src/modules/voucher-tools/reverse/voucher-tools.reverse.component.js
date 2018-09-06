@@ -4,6 +4,7 @@ angular.module('bhima.components')
     controller : bhVoucherToolsReverse,
     bindings : {
       source : '<',
+      onClose : '&?',
       showBadge : '@?',
     },
   });
@@ -42,6 +43,7 @@ function bhVoucherToolsReverse(Vouchers, $translate) {
   const VOUCHER_TOOLS_REVERSE_DESCRIPTION = 'VOUCHERS.TOOLS.REVERSE.DESCRIPTION';
 
   $ctrl.$onInit = function onInit() {
+    window.ctrl = $ctrl;
   };
 
   $ctrl.$onChanges = function onChanges(changes) {

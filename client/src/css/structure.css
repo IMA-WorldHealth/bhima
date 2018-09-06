@@ -932,7 +932,7 @@ a[disabled] {
 }
 
 .voucher-tools-bottom-spacer {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 .label-voucher-tools {
@@ -940,7 +940,8 @@ a[disabled] {
 }
 
 .voucher-tools-underline {
-  margin-top: 0px;
+  margin-top: 2px;
+  margin-bottom: 10px;
 }
 
 .voucher-tools-header {
