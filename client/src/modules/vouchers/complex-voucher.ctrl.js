@@ -35,15 +35,6 @@ function ComplexJournalVoucherController(
   vm.itemIncrement = 1;
   vm.timestamp = new Date();
 
-  vm.currentCurrency = {
-    id : vm.enterprise.currency_id,
-    rate : 1,
-  };
-
-  function roundDecimal(number, precision = 4) {
-    const base = 10 ** precision;
-    return Math.round(number * base) / base;
-  }
   // bind the complex voucher form
   vm.Voucher = new VoucherForm('ComplexVouchers');
 
@@ -59,30 +50,9 @@ function ComplexJournalVoucherController(
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.EDIT);
   };
 
-  vm.currencyChange = function currencyChange(vCurrencyId) {
-    const entCurrencyId = vm.enterprise.currency_id;
-    let exchangeRate = 1;
-    const currentDate = vm.Voucher.details.date;
-
-    Rates.read(true).then(() => {
-      if (vCurrencyId !== entCurrencyId) {
-        exchangeRate = Rates.getExchangeRate(vCurrencyId, currentDate);
-        vm.currentCurrency = { id : vCurrencyId, rate : exchangeRate };
-        vm.gridOptions.data = vm.gridOptions.data.map(row => {
-          row.credit = roundDecimal(row.credit * vm.currentCurrency.rate, 2);
-          row.debit = roundDecimal(row.debit * vm.currentCurrency.rate, 2);
-          return row;
-        });
-      } else {
-        exchangeRate = Rates.getExchangeRate(vm.currentCurrency.id, currentDate);
-        vm.currentCurrency = { id : vCurrencyId, rate : exchangeRate };
-        vm.gridOptions.data = vm.gridOptions.data.map(row => {
-          row.credit = roundDecimal(row.credit / vm.currentCurrency.rate, 2);
-          row.debit = roundDecimal(row.debit / vm.currentCurrency.rate, 2);
-          return row;
-        });
-      }
-    });
+  vm.onCurrencyChange = function onCurrencyChange(currencyId) {
+    vm.Voucher.handleCurrencyChange(currencyId, true);
+    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.EDIT);
   };
 
   // ui-grid options
@@ -201,16 +171,6 @@ function ComplexJournalVoucherController(
   vm.openEntityModal = openEntityModal;
   vm.openReferenceModal = openReferenceModal;
 
-  // load the available currencies
-  Currencies.read()
-    .then((currencies) => {
-      currencies.forEach((currency) => {
-        currency.label = Currencies.format(currency.id);
-      });
-      vm.currencies = currencies;
-    })
-    .catch(Notify.handleError);
-
   /** Entity modal */
   function openEntityModal(row) {
     FindEntity.openModal()
@@ -236,6 +196,10 @@ function ComplexJournalVoucherController(
   /** run the module on startup and refresh */
   function startup() {
     vm.gridOptions.data = vm.Voucher.store.data;
+
+    // NOTE(@jniles) - is this really a good idea?!
+    // queue the exchange rate download
+    Rates.read(true);
   }
 
   /* ============================= Transaction Type ============================= */

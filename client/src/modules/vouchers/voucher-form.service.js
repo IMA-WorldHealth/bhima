@@ -4,6 +4,7 @@ angular.module('bhima.services')
 VoucherFormService.$inject = [
   'VoucherService', 'bhConstants', 'SessionService', 'VoucherItemService',
   'AppCache', 'Store', 'AccountService', '$timeout', '$translate',
+  'ExchangeRateService',
 ];
 
 /**
@@ -18,7 +19,7 @@ VoucherFormService.$inject = [
  */
 function VoucherFormService(
   Vouchers, Constants, Session, VoucherItem, AppCache, Store, Accounts,
-  $timeout, $translate
+  $timeout, $translate, Exchange
 ) {
   // Error Flags
   // must have transaction_type for certain cases
@@ -297,6 +298,43 @@ function VoucherFormService(
    */
   VoucherForm.prototype.hasCacheAvailable = function hasCacheAvailable() {
     return Object.keys(this.cache).length > 0;
+  };
+
+  /**
+   * @method handleCurrencyChange
+   *
+   * @description
+   * Handles the exchange operation for the voucher form - if on currency change,
+   * the user wants the values to update, they will overwrite the user created
+   * values.
+   *
+   * @param {Number} nextCurrencyId - the currency id that will replace the
+   *   current currency id.
+   * @param {Number} shouldConvertValues - tells the function to replace the
+   *   values with a new converted values.
+   */
+  VoucherForm.prototype.handleCurrencyChange = function handleCurrencyChange(nextCurrencyId, shouldConvertValues) {
+    if (shouldConvertValues) {
+      const enterpriseCurrencyId = Session.enterprise.currency_id;
+      const isEnterpriseCurrency = (enterpriseCurrencyId === nextCurrencyId);
+
+      const previousCurrencyId = this.details.currency_id;
+      const { date } = this.details;
+
+      const rate = isEnterpriseCurrency
+        ? 1 / Exchange.getExchangeRate(previousCurrencyId, date)
+        : Exchange.getExchangeRate(nextCurrencyId, date);
+
+      const conversionFn = (value) => Exchange.round(rate * value);
+      const rows = this.store.data;
+
+      rows.forEach(row => {
+        row.credit = conversionFn(row.credit || 0);
+        row.debit = conversionFn(row.debit || 0);
+      });
+    }
+
+    this.validate();
   };
 
   return VoucherForm;

@@ -2,7 +2,7 @@ angular.module('bhima.services')
   .service('ExchangeRateService', ExchangeRateService);
 
 ExchangeRateService.$inject = [
-  '$http', 'util', 'CurrencyService', 'SessionService'
+  '$http', 'util', 'CurrencyService', 'SessionService',
 ];
 
 /**
@@ -26,12 +26,11 @@ ExchangeRateService.$inject = [
  * @todo - documentation improvements
  */
 function ExchangeRateService($http, util, Currencies, Session) {
-  var service = {};
-  var cache;
+  const service = {};
 
   // The cMap object contains rates namespaced by their currency IDs for faster
   // lookups when doing conversions.
-  var cMap = {};
+  let cMap = {};
 
   service.read = read;
   service.create = create;
@@ -43,30 +42,34 @@ function ExchangeRateService($http, util, Currencies, Session) {
   service.getExchangeRate = getExchangeRate;
   service.getCurrentExchange = getCurrentExchange;
 
+  service.round = round;
+
+  function round(value, precision = 4) {
+    const base = 10 ** precision;
+    return Math.round(value * base) / base;
+  }
 
   /* ------------------------------------------------------------------------ */
 
-  function read(options) {
-    var rates;
-
-    options = options || {};
+  function read(options = {}) {
+    let rates;
 
     // if we have local cached rates, return them immediately
-    //if (cache) { return $q.resolve(cache); }
+    // if (cache) { return $q.resolve(cache); }
 
     // query the exchange_rate table on the backend
-    return $http.get('/exchange', { params: options })
+    return $http.get('/exchange', { params : options })
       .then(util.unwrapHttpResponse)
-      .then(function (data) {
+      .then((data) => {
 
         // if there is no data, the controllers should be alerted
         // by throwing an missing exchange rate error.
         if (data.length === 0) {
-          throw 'EXCHANGE.MISSING_EXCHANGE_RATES';
+          throw new Error('EXCHANGE.MISSING_EXCHANGE_RATES');
         }
 
         // share rates on promise chain, converting dates to date objects
-        rates = data.map(function (row) {
+        rates = data.map((row) => {
           row.date = new Date(row.date);
           return row;
         });
@@ -76,16 +79,15 @@ function ExchangeRateService($http, util, Currencies, Session) {
         // enterprise currency) has an exchange rate
         return Currencies.read();
       })
-      .then(function (currencies) {
+      .then((currencyArray) => {
 
-        // filter out the enteprise currency
-        currencies = currencies.filter(function (currency) {
-          return currency.id !== Session.enterprise.currency_id;
-        });
+        // filter out the enterprise currency
+        const currencies = currencyArray
+          .filter((currency) => currency.id !== Session.enterprise.currency_id);
 
         // check if we have a rate for every currency defined
-        var complete = currencies.every(function (currency) {
-          return rates.some(function (rate) {
+        const complete = currencies.every((currency) => {
+          return rates.some((rate) => {
             return rate.currency_id === currency.id;
           });
         });
@@ -93,11 +95,10 @@ function ExchangeRateService($http, util, Currencies, Session) {
         // you must have at least one rate for each currency defined
         // if that doesn't exist, throw an error
         if (!complete) {
-          throw 'EXCHANGE.MISSING_EXCHANGE_RATES';
+          throw new Error('EXCHANGE.MISSING_EXCHANGE_RATES');
         }
 
         // store the exchange rates for the fast future lookup.
-        cache = rates;
         cMap = buildCMap(rates);
 
         // return the rates if all checks passed
@@ -108,32 +109,38 @@ function ExchangeRateService($http, util, Currencies, Session) {
   function create(data) {
     return $http.post('/exchange', { rate : data })
       .then(util.unwrapHttpResponse)
-      .then(function (data) {
-
+      .then((rates) => {
         // force refresh on successful data loading by busting the cached data
-        cache = undefined;
         read();
-
-        return data;
+        return rates;
       });
   }
 
   function update(id, rate) {
-    return $http.put('/exchange/' + id, rate)
+    return $http.put(`/exchange/${id}`, rate)
       .then(util.unwrapHttpResponse);
   }
 
+  function sortByDate(a, b) {
+    if (a.date > b.date) {
+      return 1;
+    }
+
+    if (a.date === b.date) {
+      return 0;
+    }
+
+    return -1;
+  }
 
   // build the cMap object from an array of rates
   function buildCMap(rates) {
 
     // initially sort the rates by date for fast lookups later (we can just take the last rate)!
-    rates.sort(function (a,b) {
-      return (a.date > b.date) ? 1 : (a.date === b.date ? 0 : -1);
-    });
+    rates.sort(sortByDate);
 
     // turn a flat array into an object of currencyId mapped to all relevant rates
-    return rates.reduce(function (map, row) {
+    return rates.reduce((map, row) => {
 
       // make an array for the currencyId if it doesn't already exist
       if (!map[row.currency_id]) { map[row.currency_id] = []; }
@@ -148,14 +155,14 @@ function ExchangeRateService($http, util, Currencies, Session) {
   // converts an {amount} of money from {currencyId} to the enterprise currency
   // using the exchange rate valid for the date {date}
   function convertToEnterpriseCurrency(currencyId, date, amount) {
-    var rate = getExchangeRate(currencyId, date);
+    const rate = getExchangeRate(currencyId, date);
     return amount * (1 / rate);
   }
 
   // converts an {amount} of money to {currencyId} from the enterprise currency
   // using the exchange rate valid for the date {date}
   function convertFromEnterpriseCurrency(currencyId, date, amount) {
-    var rate = getExchangeRate(currencyId, date);
+    const rate = getExchangeRate(currencyId, date);
     return amount * rate;
   }
 
@@ -178,31 +185,28 @@ function ExchangeRateService($http, util, Currencies, Session) {
     }
     return max;
   }
+
   // get the rate for a currency on a given date
   function getExchangeRate(currencyId, date) {
 
     // parse date into a date object (if not already a date)
-    date = new Date(Date.parse(date));
+    const cdate = new Date(Date.parse(date));
 
     // if we passed in the enterprise currency, just return the amount.  Allows
     // you to apply this transformation to a list of mixed currencies.
     if (currencyId === Session.enterprise.currency_id) { return 1; }
 
     // look up the rates for currencyId via the cMap object.
-
-    // @DOTO investigate in this filter , service.getCurrentExchange can be used instead
-    var rates = cMap[currencyId].filter(function (row) {
-      return row.date <= date;
-    });
+    const rates = cMap[currencyId].filter((row) => row.date <= cdate);
 
     // get the last rate for the given currency
-    var rate = rates[rates.length - 1].rate;
+    const { rate } = rates[rates.length - 1];
 
     return rate;
   }
 
   function del(id) {
-    return $http.delete('/exchange/' + id)
+    return $http.delete(`/exchange/${id}`)
       .then(util.unwrapHttpResponse);
   }
 
