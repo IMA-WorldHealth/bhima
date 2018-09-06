@@ -926,3 +926,32 @@ a[disabled] {
 .ima-stat-card-reversed .ui.statistic > .ui-hidable-label {
   color: white;
 }
+
+.voucher-tools-top-spacer {
+  margin-top: 20px;
+}
+
+.voucher-tools-bottom-spacer {
+  margin-bottom: 20px;
+}
+
+.label-voucher-tools {
+  background-color: #9d1cd2;
+}
+
+.voucher-tools-underline {
+  margin-top: 0px;
+}
+
+.voucher-tools-header {
+  display: flex;
+}
+
+.voucher-tools-header-element {
+  /* display : inline-block; */
+}
+
+.voucher-tools-header-element:last-child {
+  /* width : 100%; */
+  flex-grow: 1;
+}

@@ -1,0 +1,43 @@
+<div class="voucher-tools-top-spacer">
+
+  <div class="voucher-tools-header">
+    <div class="voucher-tools-header-element">
+      <span translate>VOUCHERS.TOOLS.REVERSE.TITLE</span>
+    </div>
+
+    <div
+      ng-if="$ctrl.showBadge"
+      class="voucher-tools-header-element text-right">
+      <label class="label label-voucher-tools">
+        <i class="fa fa-shield"></i>
+        <span translate>VOUCHERS.TOOLS.BADGE</span>
+      </label>
+    </div>
+  </div>
+
+  <hr class="voucher-tools-underline">
+
+  <!-- Input explanation details -->
+  <div>
+    <div>
+      <i class="fa fa-info-circle"></i>
+      <span translate>VOUCHERS.TOOLS.REVERSE.DETAILS</span>
+    </div>
+
+    <div>
+      <p>
+        <span translate>VOUCHERS.TOOLS.REVERSE.CONFIGURED_FOR</span>
+        <b>{{$ctrl.source.transaction.hr_id}}</b>
+      </p>
+    </div>
+  </div>
+
+  <!-- Input actions -->
+  <div class="voucher-tools-bottom-spacer">
+    <div><span translate>VOUCHERS.TOOLS.ACTIONS</span></div>
+    <div>
+      <button class="btn btn-default" translate>FORM.BUTTONS.SUBMIT</button>
+      <button class="btn btn-default" translate>FORM.BUTTONS.CANCEL</button>
+    </div>
+  </div>
+</div>

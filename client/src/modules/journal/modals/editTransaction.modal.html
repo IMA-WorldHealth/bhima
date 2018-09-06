@@ -112,11 +112,14 @@
       error-state="ModalCtrl.hasError">
     </bh-grid-loading-indicator>
   </div>
+
+  <bh-voucher-tools-reverse>
+  </bh-voucher-tools-reverse>
 </div>
 
 <div class="modal-footer clearfix">
   <button
-    class="btn btn-danger pull-left" 
+    class="btn btn-danger pull-left"
     ng-if="!ModalCtrl.readOnly"
     data-method="delete"
     ng-click="ModalCtrl.deleteTransaction()" translate>
@@ -124,7 +127,7 @@
   </button>
 
   <button class="btn btn-default" data-method="cancel" ng-click="ModalCtrl.close()" translate>FORM.BUTTONS.CANCEL</button>
-  
+
   <bh-loading-button ng-if="!ModalCtrl.readOnly" disabled="!ModalCtrl.setupComplete" loading-state="ModalCtrl.saving" ng-click="ModalCtrl.saveTransaction()">
     <span translate>POSTING_JOURNAL.SAVE_TRANSACTION</span>
   </bh-loading-button>
