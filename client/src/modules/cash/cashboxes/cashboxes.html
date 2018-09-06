@@ -14,14 +14,14 @@
 
       <!-- edit cashbox -->
       <li ng-if="CashCtrl.isEditState()" class="title">
-        {{ CashCtrl.state.params.label }} 
+        {{ CashCtrl.state.params.label }}
         <span class="label label-info" translate>FORM.LABELS.EDIT</span>
       </li>
 
       <!-- create cashbox -->
-      <li ng-if="CashCtrl.isCreateState()" class="title">
+      <span ng-if="CashCtrl.isCreateState()" class="title">
         <span class="label label-success" translate>FORM.LABELS.CREATE</span>
-      </li>
+      </span>
     </ol>
 
     <div class="toolbar" ng-if="!CashCtrl.isUpdateState()">
