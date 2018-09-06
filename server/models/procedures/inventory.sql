@@ -63,10 +63,12 @@ BEGIN
 
     If the inventory already exists, skip because we are in a loop and
     we have to continue importing other inventories
+
+    Inventory imported are considered by default as stockable (consumbale)
   */
   IF (existInventory = 0) THEN
-    INSERT INTO `inventory` (`enterprise_id`, `uuid`, `code`, `text`, `price`, `group_uuid`, `type_id`, `unit_id`)
+    INSERT INTO `inventory` (`enterprise_id`, `uuid`, `code`, `text`, `price`, `group_uuid`, `type_id`, `unit_id`, `consumable`)
     VALUES
-    (enterpriseId, HUID(UUID()), inventoryCode, inventoryText, inventoryUnitPrice, inventoryGroupUuid, inventoryTypeId, inventoryUnitId);
+    (enterpriseId, HUID(UUID()), inventoryCode, inventoryText, inventoryUnitPrice, inventoryGroupUuid, inventoryTypeId, inventoryUnitId, 1);
   END IF;
 END $$

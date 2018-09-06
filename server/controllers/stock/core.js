@@ -372,9 +372,9 @@ function getStockConsumptionAverage(periodId, periodDate, numberOfMonths) {
     SELECT id FROM period WHERE id BETWEEN ? AND ?;
   `;
 
-  const queryPeriodId = periodId ?
-    'SELECT id FROM period WHERE id = ? LIMIT 1;' :
-    'SELECT id FROM period WHERE DATE(?) BETWEEN DATE(start_date) AND DATE(end_date) LIMIT 1;';
+  const queryPeriodId = periodId
+    ? 'SELECT id FROM period WHERE id = ? LIMIT 1;'
+    : 'SELECT id FROM period WHERE DATE(?) BETWEEN DATE(start_date) AND DATE(end_date) LIMIT 1;';
 
   const queryStockConsumption = `
     SELECT ROUND(AVG(s.quantity)) AS quantity, BUID(i.uuid) AS uuid, i.text, i.code, BUID(d.uuid) AS depot_uuid,

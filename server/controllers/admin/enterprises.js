@@ -24,7 +24,7 @@ exports.list = function list(req, res, next) {
         BUID(location_id) AS location_id, logo, currency_id,
         gain_account_id, loss_account_id, enable_price_lock, enable_prepayments,
         enable_delete_records, enable_password_validation, enable_balance_on_invoice_receipt,
-        enable_barcodes
+        enable_barcodes, enable_auto_stock_accounting
       FROM enterprise LEFT JOIN enterprise_setting
         ON enterprise.id = enterprise_setting.enterprise_id
       ;`;
@@ -46,6 +46,7 @@ exports.list = function list(req, res, next) {
             'enable_password_validation',
             'enable_balance_on_invoice_receipt',
             'enable_barcodes',
+            'enable_auto_stock_accounting',
           ];
 
           row.settings = _.pick(row, settings);
@@ -85,7 +86,8 @@ function lookupEnterprise(id) {
       enable_prepayments,
       enable_password_validation,
       enable_balance_on_invoice_receipt,
-      enable_barcodes
+      enable_barcodes,
+      enable_auto_stock_accounting
     FROM enterprise_setting WHERE enterprise_id = ?;
   `;
 

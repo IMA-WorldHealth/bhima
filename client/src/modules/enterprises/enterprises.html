@@ -63,7 +63,8 @@
                 label="FORM.LABELS.GAIN_ACCOUNT"
                 name="gain_account_id"
                 on-select-callback="EnterpriseCtrl.onSelectGainAccount(account)"
-                exclude-title-accounts="true">
+                exclude-title-accounts="true"
+                required="false">
               </bh-account-select>
 
               <bh-account-select
@@ -72,7 +73,8 @@
                 label="FORM.LABELS.LOSS_ACCOUNT"
                 name="loss_account_id"
                 exclude-title-accounts="true"
-                on-select-callback="EnterpriseCtrl.onSelectLossAccount(account)">
+                on-select-callback="EnterpriseCtrl.onSelectLossAccount(account)"
+                required="false">
               </bh-account-select>
             </div>
 
@@ -221,6 +223,13 @@
               value="EnterpriseCtrl.enterprise.settings.enable_barcodes"
               help-text="ENTERPRISE.SETTINGS.ENABLE_BARCODES_HELP_TEXT"
               on-change-callback="EnterpriseCtrl.enableBarcodesSetting(value)">
+            </bh-yes-no-radios>
+
+            <bh-yes-no-radios
+              label="ENTERPRISE.SETTINGS.ENABLE_AUTO_STOCK_ACCOUNTING_LABEL"
+              value="EnterpriseCtrl.enterprise.settings.enable_auto_stock_accounting"
+              help-text="ENTERPRISE.SETTINGS.ENABLE_AUTO_STOCK_ACCOUNTING_HELP_TEXT"
+              on-change-callback="EnterpriseCtrl.enableAutoStockAccountingSetting(value)">
             </bh-yes-no-radios>
           </div>
         </div>

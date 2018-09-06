@@ -151,8 +151,8 @@ function StockEntryController(
      * the bhAddItems must be deactivated if no entity is selected
      * or if the selected entity is `purchase` or `transfer_reception`
      */
-    vm.entityAllowAddItems = !!(vm.movement.entry_type) &&
-      (vm.movement.entry_type !== 'purchase' && vm.movement.entry_type !== 'transfer_reception');
+    vm.entityAllowAddItems = !!(vm.movement.entry_type)
+      && (vm.movement.entry_type !== 'purchase' && vm.movement.entry_type !== 'transfer_reception');
   }
 
   /**

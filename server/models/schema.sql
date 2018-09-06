@@ -655,6 +655,7 @@ CREATE TABLE `enterprise_setting` (
   `enable_password_validation` TINYINT(1) NOT NULL DEFAULT 1,
   `enable_balance_on_invoice_receipt` TINYINT(1) NOT NULL DEFAULT 0,
   `enable_barcodes` TINYINT(1) NOT NULL DEFAULT 1,
+  `enable_auto_stock_accounting` TINYINT(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (`enterprise_id`),
   FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;

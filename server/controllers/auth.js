@@ -223,7 +223,8 @@ function loadSessionInformation(user) {
           enable_password_validation,
           enable_delete_records,
           enable_balance_on_invoice_receipt,
-          enable_barcodes
+          enable_barcodes,
+          enable_auto_stock_accounting
         FROM enterprise_setting
         WHERE enterprise_id = ?;
       `;
