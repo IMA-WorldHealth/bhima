@@ -181,6 +181,8 @@ function JournalEditTransactionController(
       vm.rows.data.forEach((row) => { row.trans_date = new Date(row.trans_date); });
       vm.shared = sharedDetails(vm.rows.data[0]);
       vm.gridOptions.data = vm.rows.data;
+
+      console.log('parsed shared details', vm.shared);
     })
     .catch(() => {
       vm.hasError = true;

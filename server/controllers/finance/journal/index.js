@@ -32,8 +32,9 @@ _.forEach(identifiers, v => {
   hrRecordToTableMap[v.key] = v.table;
 });
 
-// Fiscal Service
+// services
 const FiscalService = require('../../finance/fiscal');
+const VoucherService = require('../../finance/vouchers');
 
 // expose to the api
 exports.list = list;
@@ -606,7 +607,8 @@ function reverse(req, res, next) {
       }
       return db.exec('CALL ReverseTransaction(?, ?, ?, ?);', params);
     })
-    .then(() => res.status(201).json({ uuid : voucherUuid }))
+    .then(() => VoucherService.lookupVoucher(voucherUuid))
+    .then((voucher) => res.status(201).json({ uuid : voucherUuid, voucher }))
     .catch(next)
     .done();
 }

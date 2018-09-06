@@ -113,11 +113,21 @@
     </bh-grid-loading-indicator>
   </div>
 
-  <bh-voucher-tools-reverse>
+  <bh-voucher-tools-reverse
+    source="ModalCtrl.shared"
+    show-badge>
   </bh-voucher-tools-reverse>
 </div>
 
 <div class="modal-footer clearfix">
+  <button
+    class="btn btn-default pull-left"
+    ng-if="ModalCtrl.readOnly"
+    disabled
+    ng-click="ModalCtrl.reverseTransaction()" translate>
+    VOUCHERS.TOOLS.REVERSE.ACTION
+  </button>
+
   <button
     class="btn btn-danger pull-left"
     ng-if="!ModalCtrl.readOnly"

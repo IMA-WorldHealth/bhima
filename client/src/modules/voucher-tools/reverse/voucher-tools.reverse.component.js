@@ -8,7 +8,7 @@ angular.module('bhima.components')
     },
   });
 
-bhVoucherToolsReverse.$inject = ['VoucherService'];
+bhVoucherToolsReverse.$inject = ['VoucherService', '$translate'];
 
 /**
  * @component bhVoucherToolsReverse
@@ -29,15 +29,30 @@ bhVoucherToolsReverse.$inject = ['VoucherService'];
  * </bh-voucher-tools-reverse>
  * ```
  */
-function bhVoucherToolsReverse(Vouchers) {
+function bhVoucherToolsReverse(Vouchers, $translate) {
   const $ctrl = this;
+
+  $ctrl.state = {
+    input : true,
+    errored : false,
+    pending : false,
+    flag : null,
+  };
+
+  const VOUCHER_TOOLS_REVERSE_DESCRIPTION = 'VOUCHERS.TOOLS.REVERSE.DESCRIPTION';
 
   $ctrl.$onInit = function onInit() {
   };
 
   $ctrl.$onChanges = function onChanges(changes) {
-    if (changes.source && changes.source.currentValue) {
 
+    if (changes.source && changes.source.currentValue) {
+      // standard process naming conventions
+      $ctrl.input = changes.source.currentValue;
+
+
+      console.log('control input updated');
+      console.log($ctrl.input);
     }
 
     if (changes.showBadge && angular.isDefined(changes.showBadge.currentValue)) {
@@ -45,6 +60,53 @@ function bhVoucherToolsReverse(Vouchers) {
       $ctrl.showBadge = true;
     }
 
-    console.log(changes);
   };
+
+  // record_uuid - uuid of transaction to be reversed
+  // trans_id - human readable string version of transaction id
+  $ctrl.actionSubmitInput = function actionSubmitInput() {
+    $ctrl.state.pending = true;
+
+    console.log($ctrl.input);
+    // check component has been configured correctly
+    if (!($ctrl.input && $ctrl.input.record_uuid)) {
+      handleErrors({ data : { code : 'VOUCHERS.TOOLS.ERRORS.NO_INPUT_PROVIDED' } });
+      return null;
+    }
+
+    // get description according to the users language
+    // assume everything has loaded correctly by the time this code is running
+    const description = `${$translate.instant(VOUCHER_TOOLS_REVERSE_DESCRIPTION)} ${$ctrl.input.trans_id}`;
+
+    const packaged = {
+      uuid : $ctrl.input.record_uuid,
+      description
+    };
+    Vouchers.reverse(packaged)
+      .then((result) => {
+        // result should contain voucher uuid along with additional voucher infomration
+
+        $ctrl.state.errored = false;
+        $ctrl.state.input = false;
+        $ctrl.state.pending = false;
+
+        $ctrl.output = result;
+        console.log(result);
+      })
+      .catch(handleErrors);
+  }
+
+  // internally handle errors thrown during the input -> process -> output
+  // steps within this component;
+  function handleErrors(error) {
+
+    $ctrl.state.pending = false;
+
+    console.log(error);
+    $ctrl.state.errored = true;
+
+    console.log(error.data.code);
+    $ctrl.state.flag = error.data.code;
+  }
+
 }

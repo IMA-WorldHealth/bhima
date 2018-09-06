@@ -77,6 +77,27 @@
       "STOCK_EXIT":"Sortie de stock",
       "STOCK_ENTRY":"Entrée de stock"
     },
-    "REPORT": "Report"
+    "REPORT": "Report",
+    "TOOLS": { 
+      "ACTIONS": "Actions:",
+      "ACTION_AUDIT": "Actions Audit:",
+      "BADGE": "Voucher Tools",
+      "ERRORS": { 
+        "NO_INPUT_PROVIDED": "Invalid data supplied to voucher tools."
+      },
+      "REVERSE": { 
+        "ACTION": "Reverse",
+        "ACTION_1": "Transaction {{trans_id}} was marked as <code>reversed</code>",
+        "ACTION_2_1": "Voucher document",
+        "ACTION_2_2": "was created with equal and opposite values to reverse transaction {{trans_id}}",
+        "AUTHORISED_BY": "Reversal document was authorised by user:",
+        "CONFIGURED_FOR": "Please confirm that you authorise reversing transaction:",
+        "DESCRIPTION": "Transaction reversed using Administrative Voucher Tools",
+        "DETAILS": "This transaction will be marked in the system as reversed. A new voucher document will be created with equal and opposite values to reverse any movement of assets.",
+        "SUCCESS": "Transaction was reversed successfully",
+        "TITLE": "Reverse Transaction"
+
+      }
+    }
   }
 }
