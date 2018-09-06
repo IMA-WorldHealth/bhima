@@ -53,11 +53,12 @@ function bhDateInterval(moment, bhConstants) {
     ];
 
     vm.label = vm.label || 'FORM.SELECT.DATE_INTERVAL';
-
     vm.dateFormat = bhConstants.dayOptions.format;
-
     vm.pickerOptions = { showWeeks : false };
+
     startup();
+
+    vm.pickerToOptions = { showWeeks : false, minDate : vm.dateFrom };
   };
 
   function search(selection) {

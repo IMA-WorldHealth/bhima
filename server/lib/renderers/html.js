@@ -11,11 +11,12 @@
  * @requires moment
  * @requires debug
  */
+const moment = require('moment');
+const debug = require('debug')('renderers:html');
 const util = require('../util');
 const hbs = require('../template');
-const moment = require('moment');
 const translateHelperFactory = require('../helpers/translate');
-const debug = require('debug')('renderers:html');
+
 
 const headers = {
   'Content-Type' : 'text/html',
@@ -47,5 +48,6 @@ function renderHTML(data, template, options = {}) {
   hbs.helpers.translate = translate;
 
   debug(`rendering HTML file`);
+
   return hbs.render(template, data);
 }

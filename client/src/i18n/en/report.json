@@ -156,6 +156,8 @@
       "PDF": "PDF",
       "HTML": "HTML",
       "CSV": "CSV",
+      "WORD" : "MS Word",
+      "EXCEL" : "MS Excel",
       "SAVE_SUCCESS": "Report successfully saved",
       "BACK": "Back to the previous page",
       "OPTIONS": "Options",

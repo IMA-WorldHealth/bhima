@@ -16,6 +16,7 @@ const _ = require('lodash');
 const db = require('../../lib/db');
 const Transaction = require('../../lib/db/transaction');
 const NotFound = require('../../lib/errors/NotFound');
+const BadRequest = require('../../lib/errors/BadRequest');
 const FilterParser = require('../../lib/filter');
 
 const Tree = require('../../lib/Tree');
@@ -165,8 +166,7 @@ function getFiscalYearsByDate(req, res, next) {
   // select the fiscal year, the previous year, and the progress through the given year
   const sql = `
     SELECT p.fiscal_year_id, f.previous_fiscal_year_id, f.start_date, f.end_date, f.label,
-      DATEDIFF(DATE(?), f.start_date) / (f.number_of_months * 30.5) AS percentage,
-      DATE_ADD(f.start_date, INTERVAL number_of_months MONTH) AS end_date
+      DATEDIFF(DATE(?), f.start_date) / (f.number_of_months * 30.5) AS percentage
     FROM period AS p
     JOIN fiscal_year AS f ON f.id = p.fiscal_year_id
     WHERE p.start_date <= DATE(?) AND DATE(?) <= p.end_date;
@@ -396,17 +396,12 @@ function setOpeningBalance(req, res, next) {
   // check for previous fiscal year
   hasPreviousFiscalYear(id)
     .then((hasPrevious) => {
-      let promise;
-
       if (hasPrevious) {
-        // load from the period N+1 of the year N-1 into period 0 of the year N
-        promise = loadOpeningBalance(fiscalYear);
-      } else {
-        // set new opening balance
-        promise = newOpeningBalance(fiscalYear, accounts);
+        const msg = `The fiscal year with id ${id} is not the first fiscal year`;
+        return next(new BadRequest(msg, 'ERRORS.NOT_BEGINING_FISCAL_YEAR'));
       }
-
-      return promise;
+      // set the opening balance if the fiscal year doesn't have previous fy
+      return newOpeningBalance(fiscalYear, accounts);
     })
     .then(() => res.sendStatus(201))
     .catch(next)

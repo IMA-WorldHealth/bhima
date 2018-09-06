@@ -20,28 +20,25 @@ MultipleCashboxSelectController.$inject = [
  *
  */
 function MultipleCashboxSelectController(Cashbox, Notify) {
-  var $ctrl = this;
+  const $ctrl = this;
 
   $ctrl.$onInit = function onInit() {
     // label to display
     $ctrl.label = $ctrl.label || 'FORM.LABELS.CASHBOX';
-
-    // fired when a Cashbox has been selected or removed from the list
-    $ctrl.onChange = $ctrl.onChange;
 
     // init the model
     $ctrl.cashboxIds = $ctrl.cashboxIds || [];
 
     // load all Cashbox
     Cashbox.read()
-      .then(function (cashboxes) {
+      .then((cashboxes) => {
         $ctrl.cashboxes = cashboxes;
       })
       .catch(Notify.handleError);
   };
 
   // fires the onSelectCallback bound to the component
-  $ctrl.handleChange = function (models) {
+  $ctrl.handleChange = (models) => {
     $ctrl.onChange({ cashboxes : models });
   };
 }
