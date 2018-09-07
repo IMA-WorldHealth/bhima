@@ -114,7 +114,7 @@
             "MIN_CURRENCY_UNIT": "This value is too small for the selected currency.",
             "MISSING": "This form is missing required fields (marked in red).",
             "MISSING_CASHBOX_ID": "Missing Cashbox",
-            "MISSING_DEBTOR_ID": "Identifying missing Debtor",
+            "MISSING_DEBTOR_ID": "Please select a patient before the invoices",
             "RECORD_ERROR": "Please resolve any errors on the form (marked in red).",
             "REQUIRED": "This value is required.",
             "INVALID": "invalid data",
