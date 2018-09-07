@@ -91,6 +91,7 @@ const creditors = require('../controllers/finance/creditors.js');
 const journal = require('../controllers/finance/journal');
 const transactionType = require('../controllers/admin/transactionType');
 const generalLedger = require('../controllers/finance/generalLedger');
+const voucherTools = require('../controllers/finance/voucherTools');
 
 const dashboardDebtors = require('../controllers/dashboard/debtorGroups');
 const stats = require('../controllers/dashboard/stats');
@@ -215,6 +216,7 @@ exports.configure = function configure(app) {
   app.get('/journal/:record_uuid', journal.getTransaction);
   app.post('/journal/:record_uuid/edit', journal.editTransaction);
   app.post('/journal/:uuid/reverse', journal.reverse);
+  app.post('/journal/:uuid/correct', voucherTools.correct);
   app.put('/transactions/comments', transactions.commentTransactions);
 
   // API for general ledger

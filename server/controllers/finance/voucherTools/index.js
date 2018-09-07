@@ -128,7 +128,7 @@ function correctionErrorHandler(actions) {
   const cleanupVoucherQuery = 'DELETE FROM voucher WHERE uuid IN ?';
 
   const voucherIds = Object.keys(actions)
-    .filter((key) => return key && key.uuid)
+    .filter((key) => key && key.uuid)
     .map((key) => actions[key].uuid);
 
   return db.exec(cleanupVoucherItemsQuery, [voucherIds])

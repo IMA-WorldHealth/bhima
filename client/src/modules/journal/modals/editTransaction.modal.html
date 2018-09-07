@@ -119,6 +119,12 @@
     source="ModalCtrl.shared"
     show-badge>
   </bh-voucher-tools-reverse>
+
+  <bh-voucher-tools-correct
+    ng-if="ModalCtrl.voucherTools.isCorrecting"
+    on-close="ModaslCtrl.voucherTools.close('isCorrecting')"
+    source="ModalCtrl.shared">
+  </bh-voucher-tools-correct>
 </div>
 
 <div class="modal-footer clearfix">
@@ -127,10 +133,19 @@
   <button
     class="btn btn-default pull-left"
     ng-if="ModalCtrl.readOnly"
-    ng-disabled="ModalCtrl.voucherTools.isReversing"
+    ng-disabled="ModalCtrl.voucherTools.isReversing || ModalCtrl.voucherTools.isCorrecting"
     ng-click="ModalCtrl.voucherTools.open('isReversing')"
     translate>
     VOUCHERS.TOOLS.REVERSE.ACTION
+  </button>
+
+  <button
+    class="btn btn-default pull-left"
+    ng-if="ModalCtrl.readOnly"
+    ng-disabled="ModalCtrl.voucherTools.isCorrecting || ModalCtrl.voucherTools.isReversing"
+    ng-click="ModalCtrl.voucherTools.open('isCorrecting')"
+    translate>
+    VOUCHERS.TOOLS.CORRECT.ACTION
   </button>
 
   <button

@@ -42,19 +42,11 @@ function bhVoucherToolsReverse(Vouchers, $translate) {
 
   const VOUCHER_TOOLS_REVERSE_DESCRIPTION = 'VOUCHERS.TOOLS.REVERSE.DESCRIPTION';
 
-  $ctrl.$onInit = function onInit() {
-    window.ctrl = $ctrl;
-  };
-
   $ctrl.$onChanges = function onChanges(changes) {
 
     if (changes.source && changes.source.currentValue) {
       // standard process naming conventions
       $ctrl.input = changes.source.currentValue;
-
-
-      console.log('control input updated');
-      console.log($ctrl.input);
     }
 
     if (changes.showBadge && angular.isDefined(changes.showBadge.currentValue)) {
@@ -69,7 +61,6 @@ function bhVoucherToolsReverse(Vouchers, $translate) {
   $ctrl.actionSubmitInput = function actionSubmitInput() {
     $ctrl.state.pending = true;
 
-    console.log($ctrl.input);
     // check component has been configured correctly
     if (!($ctrl.input && $ctrl.input.record_uuid)) {
       handleErrors({ data : { code : 'VOUCHERS.TOOLS.ERRORS.NO_INPUT_PROVIDED' } });
@@ -82,9 +73,9 @@ function bhVoucherToolsReverse(Vouchers, $translate) {
 
     const packaged = {
       uuid : $ctrl.input.record_uuid,
-      description
+      description,
     };
-    Vouchers.reverse(packaged)
+    return Vouchers.reverse(packaged)
       .then((result) => {
         // result should contain voucher uuid along with additional voucher infomration
 
@@ -93,21 +84,15 @@ function bhVoucherToolsReverse(Vouchers, $translate) {
         $ctrl.state.pending = false;
 
         $ctrl.output = result;
-        console.log(result);
       })
       .catch(handleErrors);
-  }
+  };
 
   // internally handle errors thrown during the input -> process -> output
   // steps within this component;
   function handleErrors(error) {
-
     $ctrl.state.pending = false;
-
-    console.log(error);
     $ctrl.state.errored = true;
-
-    console.log(error.data.code);
     $ctrl.state.flag = error.data.code;
   }
 

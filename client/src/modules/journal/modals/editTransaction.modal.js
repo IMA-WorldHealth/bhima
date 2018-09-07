@@ -36,7 +36,7 @@ function JournalEditTransactionController(
     </div>`;
 
   // Integrating optional voucher-tools
-  vm.voucherTools = { isReversing : false };
+  vm.voucherTools = { isReversing : false, isCorrecting : false };
   vm.voucherTools.open = (tool) => { vm.voucherTools[tool] = true; };
   vm.voucherTools.close = (tool) => { vm.voucherTools[tool] = false; };
 

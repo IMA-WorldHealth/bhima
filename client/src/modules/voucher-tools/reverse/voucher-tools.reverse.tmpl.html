@@ -11,10 +11,8 @@
       <div
         ng-if="$ctrl.showBadge"
         class="voucher-tools-header-element text-right">
-        <label class="label label-voucher-tools">
-          <i class="fa fa-shield"></i>
-          <span translate>VOUCHERS.TOOLS.BADGE</span>
-        </label>
+
+        <bh-badge voucher-tools></bh-badge>
       </div>
     </div>
 
@@ -46,11 +44,11 @@
         <div><span translate>VOUCHERS.TOOLS.ACTIONS</span></div>
         <div>
           <button
-            ng-disabled="$ctrl.state.pending"
-            ng-click="$ctrl.actionSubmitInput()"
             class="btn btn-default"
-            translate>
-            FORM.BUTTONS.SUBMIT
+            ng-disabled="$ctrl.state.pending"
+            ng-click="$ctrl.actionSubmitInput()">
+            <i ng-show="$ctrl.state.pending" class="fa fa-circle-o-notch fa-spin"></i>
+            <span translate>FORM.BUTTONS.SUBMIT</span>
           </button>
           <button
             ng-disabled="$ctrl.state.pending"
