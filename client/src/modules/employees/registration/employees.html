@@ -8,11 +8,11 @@
 
     <!-- ng-if to stop flickering on load -->
     <span
-        ng-if="EmployeeCtrl.isUpdating" 
+        ng-if="EmployeeCtrl.isUpdating"
         style="margin-left : 5px"
         class="label label-warning text-uppercase">
       <span translate>FORM.LABELS.EDIT</span>
-    </span>    
+    </span>
   </div>
 </div>
 
@@ -155,7 +155,7 @@
                     </div>
                   </div>
 
-                  <div class="checkbox" id="locked" 
+                  <div class="checkbox" id="locked"
                     ng-class="{'has-error' : DetailForm.locked.$invalid && EmployeeRegistrationForm.$submitted}">
                     <label class="col-md-3 control-label" translate></label>
                     <div class="col-md-9">
@@ -249,7 +249,6 @@
                       <h4 translate>FORM.LABELS.ORIGIN_LOCATION</h4>
                       <bh-location-select
                         id="origin-location-id"
-                        validation-trigger="EmployeeRegistrationForm.$submitted"
                         location-uuid="EmployeeCtrl.employee.origin_location_id">
                       </bh-location-select>
                     </div>
@@ -261,7 +260,6 @@
                       <h4 translate>FORM.LABELS.CURRENT_LOCATION</h4>
                       <bh-location-select
                         id="current-location-id"
-                        validation-trigger="EmployeeRegistrationForm.$submitted"
                         location-uuid="EmployeeCtrl.employee.current_location_id">
                       </bh-location-select>
                     </div>
@@ -460,7 +458,7 @@
                     min = 0>
                   </bh-currency-input>
 
-                  <div ng-repeat="rubric in EmployeeCtrl.rubrics"> 
+                  <div ng-repeat="rubric in EmployeeCtrl.rubrics">
                     <bh-currency-input
                       data-payment-currency-input
                       label="{{rubric.label}}"

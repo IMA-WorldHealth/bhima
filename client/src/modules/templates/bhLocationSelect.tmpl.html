@@ -18,7 +18,7 @@
 
   <!-- allows a user to select a country -->
   <div class="form-group"
-    ng-class="{ 'has-error' : $ctrl.validationTrigger && LocationForm.country.$invalid }">
+    ng-class="{ 'has-error' : LocationForm.$submitted && LocationForm.country.$invalid }">
 
     <label class="control-label" translate>FORM.LABELS.COUNTRY</label>
     <select
@@ -35,7 +35,7 @@
 
   <!-- allows a user to select a province based on the selected country uuid -->
   <div class="form-group"
-    ng-class="{ 'has-error' : $ctrl.validationTrigger && LocationForm.province.$invalid }"
+    ng-class="{ 'has-error' : LocationForm.$submitted && LocationForm.province.$invalid }"
     >
     <label class="control-label" translate>FORM.LABELS.PROVINCE</label>
     <select
@@ -53,7 +53,7 @@
 
   <!-- allows a user to select a sector based on the selected province uuid -->
   <div class="form-group"
-    ng-class="{ 'has-error' : $ctrl.validationTrigger && LocationForm.sector.$invalid }"
+    ng-class="{ 'has-error' : LocationForm.$submitted && LocationForm.sector.$invalid }"
     >
     <label class="control-label" translate>FORM.LABELS.SECTOR</label>
     <select
@@ -71,7 +71,7 @@
 
   <!-- allows a user to select a village based on the selected sector uuid -->
   <div class="form-group"
-    ng-class="{ 'has-error' : $ctrl.validationTrigger && LocationForm.village.$invalid }"
+    ng-class="{ 'has-error' : LocationForm.$submitted && LocationForm.village.$invalid }"
     >
     <label class="control-label" translate>FORM.LABELS.VILLAGE</label>
     <select
@@ -87,7 +87,7 @@
     </select>
 
     <!-- validation messages shown on form errors-->
-    <p class="help-block text-danger" ng-messages="LocationForm.$error" ng-show="$ctrl.validationTrigger">
+    <p class="help-block text-danger" ng-messages="LocationForm.$error" ng-show="LocationForm.$submitted">
       <span ng-messages-include="modules/templates/messages.tmpl.html"></span>
     </p>
   </div>
