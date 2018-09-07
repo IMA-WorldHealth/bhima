@@ -135,7 +135,7 @@
                   </div>
 
 
-      
+
                   <!-- separate location settings -->
                   <hr>
 
@@ -145,7 +145,6 @@
                       <h4 translate>FORM.LABELS.ORIGIN_LOCATION</h4>
                       <bh-location-select
                         id="origin-location-id"
-                        validation-trigger="PatientRegistrationForm.$submitted"
                         location-uuid="PatientRegCtrl.medical.origin_location_id">
                       </bh-location-select>
                     </div>
@@ -157,7 +156,6 @@
                       <h4 translate>FORM.LABELS.CURRENT_LOCATION</h4>
                       <bh-location-select
                         id="current-location-id"
-                        validation-trigger="PatientRegistrationForm.$submitted"
                         location-uuid="PatientRegCtrl.medical.current_location_id">
                       </bh-location-select>
                     </div>
@@ -309,10 +307,10 @@
               </div>
 
               <div class="form-group" ng-class="{'has-error' : OptionalForm.employer.$invalid && PatientRegistrationForm.$submitted}">
-        
+
                 <label class="control-label" translate>FORM.LABELS.HEALTH_ZONE</label>
                 <input type="text" class="form-control col-md-9" name="health_zone" ng-model="PatientRegCtrl.medical.health_zone">
- 
+
                 <div class="help-block" ng-messages="OptionalForm.health_zone.$error" ng-show="PatientRegistrationForm.$submitted">
                   <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
                 </div>

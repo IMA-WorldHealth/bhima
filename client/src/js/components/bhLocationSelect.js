@@ -9,7 +9,6 @@ angular.module('bhima.components')
     bindings    : {
       locationUuid      : '=', // two-way binding
       disable           : '<?', // one-way binding
-      validationTrigger : '<?', // one-way binding
       name              : '@?',
     },
   });
@@ -41,14 +40,11 @@ LocationSelectController.$inject = ['LocationService', '$rootScope', '$scope', '
  *  should expect this ID to contain the selected location.
  *  2. [disable] : A hook to allow an external controller to disable the entire
  *  component.
- *  3. [validation-trigger] : A hook to trigger validation on the component.
- *  Will usually be ParentForm.$submitted.
  *
  * @constructor
  * @example
  * <bh-location-select
- *   location-uuid="ctrl.locationId"
- *   validation-trigger="ParentForm.$submitted">
+ *   location-uuid="ctrl.locationId">
  * </bh-location-select>
  *
  */
