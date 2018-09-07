@@ -148,8 +148,7 @@ gulp.task('less', () => {
   return gulp.src(paths.client.less)
     .pipe(gulp.dest(lessConfig.paths[0])) // move less file into actual bootstrap folder, this feels wrong
     .pipe(less(lessConfig))
-    .pipe(cssnano({ zindex : false }))
-    .pipe(gulp.dest(`${CLIENT_FOLDER}/css/bootstrap/`));
+    .pipe(gulp.dest(`${CLIENT_FOLDER}/css`));
 });
 
 gulp.task('i18n', ['lint-i18n', 'clean-i18n'], () => {
