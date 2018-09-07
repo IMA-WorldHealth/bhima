@@ -36,6 +36,7 @@ exports.detail = detail;
 
 /** Create a new voucher record */
 exports.create = create;
+exports.createVoucher = createVoucher;
 
 exports.find = find;
 exports.lookupVoucher = lookupVoucher;
@@ -231,37 +232,42 @@ function totalAmountByCurrency(options) {
  * @method create
  */
 function create(req, res, next) {
-  // alias both the voucher and the voucher items
   const { voucher } = req.body;
-  let items = req.body.voucher.items || [];
 
-  const voucherType = voucher.type_id;
+  createVoucher(voucher, req.session.user.id, req.session.project.id)
+    .then((result) => res.status(201).json({ uuid : result.uuid }))
+    .catch(next)
+    .done();
+}
+
+function createVoucher(voucherDetails, userId, projectId) {
+  let items = voucherDetails.items || [];
+
+  const voucherType = voucherDetails.type_id;
   const updatesPaiementData = [];
 
   // a voucher without two items doesn't make any sense in double-entry
   // accounting.  Therefore, throw a bad data error if there are any fewer
   // than two items in the journal voucher.
   if (items.length < 2) {
-    next(new BadRequest(`Expected there to be at least two items, but only received ${items.length} items.`));
-
-    return;
+    throw new BadRequest(`Expected there to be at least two items, but only received ${items.length} items.`);
   }
 
   // remove the voucher items from the request before insertion into the
   // database
-  delete voucher.items;
-  delete voucher.reference;
+  delete voucherDetails.items;
+  delete voucherDetails.reference;
 
   // convert dates to a date objects
-  voucher.date = voucher.date ? new Date(voucher.date) : new Date();
+  voucherDetails.date = voucherDetails.date ? new Date(voucherDetails.date) : new Date();
 
   // attach session information
-  voucher.user_id = req.session.user.id;
-  voucher.project_id = req.session.project.id;
+  voucherDetails.user_id = userId;
+  voucherDetails.project_id = projectId;
 
   // make sure the voucher has an id
-  const vuid = voucher.uuid || util.uuid();
-  voucher.uuid = db.bid(vuid);
+  const vuid = voucherDetails.uuid || util.uuid();
+  voucherDetails.uuid = db.bid(vuid);
 
   // preprocess the items so they have uuids as required
   items.forEach(value => {
@@ -278,7 +284,7 @@ function create(req, res, next) {
 
         updatesPaiementData.push({
           query : updatePaiement,
-          params : [item.debit, item.debit, voucher.date, db.bid(item.document_uuid)],
+          params : [item.debit, item.debit, voucherDetails.date, db.bid(item.document_uuid)],
         });
       }
     }
@@ -287,7 +293,7 @@ function create(req, res, next) {
     item.uuid = item.uuid || util.uuid();
 
     // make sure the items reference the voucher correctly
-    item.voucher_uuid = item.voucher_uuid || voucher.uuid;
+    item.voucher_uuid = item.voucher_uuid || voucherDetails.uuid;
 
     // convert the item's binary uuids
     item = db.convert(item, ['uuid', 'voucher_uuid', 'document_uuid', 'entity_uuid']);
@@ -304,12 +310,12 @@ function create(req, res, next) {
 
   // build the SQL query
   transaction
-    .addQuery('INSERT INTO voucher SET ?', [voucher])
+    .addQuery('INSERT INTO voucher SET ?', [voucherDetails])
     .addQuery(
       'INSERT INTO voucher_item (uuid, account_id, debit, credit, voucher_uuid, document_uuid, entity_uuid) VALUES ?',
       [items]
     )
-    .addQuery('CALL PostVoucher(?);', [voucher.uuid]);
+    .addQuery('CALL PostVoucher(?);', [voucherDetails.uuid]);
 
   // Only for Employee Salary Paiement
   if (voucherType === 7) {
@@ -318,10 +324,10 @@ function create(req, res, next) {
     });
   }
 
-  transaction.execute()
-    .then(() => res.status(201).json({ uuid : vuid }))
-    .catch(next)
-    .done();
+  return transaction.execute()
+    .then((transactionResult) => {
+      return { uuid : vuid, transactionResult };
+    });
 }
 
 

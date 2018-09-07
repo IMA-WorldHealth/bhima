@@ -40,6 +40,7 @@ const VoucherService = require('../../finance/vouchers');
 exports.list = list;
 exports.getTransaction = getTransaction;
 exports.reverse = reverse;
+exports.reverseTransaction = reverseTransaction;
 exports.find = find;
 exports.buildTransactionQuery = buildTransactionQuery;
 
@@ -579,12 +580,25 @@ function transformColumns(rows, newRecord, transactionToEdit, setFiscalData) {
  * POST /journal/:uuid/reverse
  */
 function reverse(req, res, next) {
-  const voucherUuid = uuid();
   const recordUuid = db.bid(req.params.uuid);
+
+  reverseTransaction(recordUuid, req.session.user.id, req.body.description)
+    .then((reverseResult) => VoucherService.lookupVoucher(reverseResult.uuid))
+    .then((voucher) => res.status(201).json({ uuid : voucher.uuid, voucher }))
+    .catch(next)
+    .done();
+}
+
+// wrap functionality in a helper method, this allows us to export this tool
+// for use in other modules on the server
+// returns a string uuid for the newly created reversed
+// transaction
+function reverseTransaction(recordUuid, userId, reverseDescription) {
+  const voucherUuid = uuid();
   const params = [
     recordUuid,
-    req.session.user.id,
-    req.body.description,
+    userId,
+    reverseDescription,
     db.bid(voucherUuid),
   ];
 
@@ -607,10 +621,10 @@ function reverse(req, res, next) {
       }
       return db.exec('CALL ReverseTransaction(?, ?, ?, ?);', params);
     })
-    .then(() => VoucherService.lookupVoucher(voucherUuid))
-    .then((voucher) => res.status(201).json({ uuid : voucherUuid, voucher }))
-    .catch(next)
-    .done();
+    .then(() => {
+      // transaction was correctly executed
+      return { uuid : voucherUuid };
+    });
 }
 
 /**
