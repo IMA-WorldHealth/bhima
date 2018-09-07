@@ -114,7 +114,7 @@
             "MIN_CURRENCY_UNIT": "Cette valeur est trop petite pour la monnaie choisie.",
             "MISSING": "Informations manquantes",
             "MISSING_CASHBOX_ID": "Caisse non definie",
-            "MISSING_DEBTOR_ID": "Identifiant Debiteur manquant",
+            "MISSING_DEBTOR_ID": "Veuillez choisir d'abord un patient avant de la facture",
             "RECORD_ERROR": "S'il vous plaît, veuiller résoudre les erreurs sur le formulaire. (Marqués en rouge)",
             "REQUIRED": "Cette valeur est requise.",
             "INVALID": "Donnees Invalides",
