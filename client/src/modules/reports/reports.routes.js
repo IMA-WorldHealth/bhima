@@ -5,6 +5,7 @@ angular.module('bhima.routes')
     const SUPPORTED_REPORTS = [
       'cash_report',
       'account_report',
+      'account_report_multiple',
       'balance_sheet_report',
       'income_expense',
       'aged_debtors',

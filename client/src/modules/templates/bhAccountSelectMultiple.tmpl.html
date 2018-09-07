@@ -10,10 +10,12 @@
       <ui-select
         multiple
         name="accounts"
-        ng-model="$ctrl.accounts"
+        ng-model="$ctrl.accountIds"
+        on-select = "$ctrl.onSelect($item, $model)"
+        on-remove = "$ctrl.handleChange($model)"
         ng-required="$ctrl.required">
         <ui-select-match placeholder="{{ ::'FORM.PLACEHOLDERS.ACCOUNT' | translate }}">
-          <span><strong>{{$select.selected.number}}</strong> {{$select.selected.label}}</span>
+          <span><strong>{{$item.number}}</strong> {{$item.label}}</span>
         </ui-select-match>
         <ui-select-choices
           ui-select-focus-patch
