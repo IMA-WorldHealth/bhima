@@ -3,7 +3,7 @@
   <div class="form-group has-feedback"
     ng-class="{
       'has-success': !$ctrl.showSearchView && $ctrl.loadStatus=='loaded',
-      'has-error': (!$ctrl.showSearchView && $ctrl.loadStatus=='error') || ($ctrl.validationTrigger && $ctrl.loadStatus != 'loaded')
+      'has-error': (!$ctrl.showSearchView && $ctrl.loadStatus=='error') || (FindPatientForm.$submitted && $ctrl.loadStatus != 'loaded')
     }">
     <label class="control-label text-capitalize" translate>FORM.LABELS.PATIENT</label>
 

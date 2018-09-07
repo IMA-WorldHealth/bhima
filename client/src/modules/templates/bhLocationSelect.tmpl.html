@@ -87,7 +87,7 @@
     </select>
 
     <!-- validation messages shown on form errors-->
-    <p class="help-block text-danger" ng-messages="LocationForm.$error" ng-show="this[$ctrl.name].$submitted">
+    <p class="help-block text-danger" ng-messages="LocationForm.$error" ng-show="LocationForm.$submitted">
       <span ng-messages-include="modules/templates/messages.tmpl.html"></span>
     </p>
   </div>
