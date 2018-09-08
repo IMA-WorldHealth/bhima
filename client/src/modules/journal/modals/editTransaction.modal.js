@@ -47,6 +47,7 @@ function JournalEditTransactionController(
   vm.enterprise = SessionService.enterprise;
 
   // @TODO(sfount) apply read only logic to save buttons and grid editing logic
+  // @TODO(sfount) introduce correcting state to split !readOnly into editing vs. correcting (mostly semantic readOnly && correcting)
   vm.readOnly = readOnly || false;
 
   vm.validation = {

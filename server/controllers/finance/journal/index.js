@@ -610,7 +610,7 @@ function reverseTransaction(recordUuid, userId, reverseDescription) {
   `;
 
   // create and execute a transaction if necessary
-  db.exec(query, [recordUuid])
+  return db.exec(query, [recordUuid])
     .then((rows) => {
       if (rows.length > 0) {
         // transaction already cancelled

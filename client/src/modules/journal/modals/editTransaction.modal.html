@@ -120,10 +120,11 @@
     show-badge>
   </bh-voucher-tools-reverse>
 
+  <!-- @TODO(sfount) pass actual row information into correct tool and format as voucher details -->
   <bh-voucher-tools-correct
     ng-if="ModalCtrl.voucherTools.isCorrecting"
-    on-close="ModaslCtrl.voucherTools.close('isCorrecting')"
-    source="ModalCtrl.shared">
+    on-close="ModalCtrl.voucherTools.close('isCorrecting')"
+    source="{ shared: ModalCtrl.shared, rows: ModalCtrl.rows.data}">
   </bh-voucher-tools-correct>
 </div>
 

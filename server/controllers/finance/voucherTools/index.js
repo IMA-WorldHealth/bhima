@@ -39,10 +39,18 @@ exports.correct = correct;
 function correct(req, res, next) {
   const transactionId = req.params.uuid;
 
-  // this object should contain everything needed to perform a transaction correct
-  // specifically voucher details (row information) for the replacement transaction
-  const correctionVoucherDetails = req.body.correction;
+  // details for the transaction that should be corrected (this is what will be
+  // reversed)
+  const transactionDetails = req.body.transactionDetails;
+
+  // rows that should replace the transaction that is being reversed (these are
+  // used to create the new voucher)
+  const correction = req.body.correction;
+
   const userId = req.session.user.id;
+
+  console.log('Server got transaction details from client', transactionDetails);
+  console.log('Server got proposed correction from client', correction);
 
   // result of correctTransaction call should be a formatted object with details
   // about the correction
@@ -55,11 +63,14 @@ function correct(req, res, next) {
   //    correction : {}
   //  }
   // }
-  correctTransaction(transactionId, correctionVoucherDetails, userId)
+
+  // transactionDetails - details of transaction to be reversed
+  // correction - proposed rows to be included in a new voucher
+  correctTransaction(transactionDetails, correction, userId)
     .then((correctionResults) => fetchCorrectionVoucherDetails)
     .then((correctionVoucherDetails) => res.status(201).json(correctionVoucherDetails))
     .catch((error) => {
-      console.log('external HTTP route error handler');
+      console.log('external HTTP route error handler', error);
       return next(error);
     })
     .done();
@@ -72,8 +83,9 @@ function correct(req, res, next) {
 //
 //
 // }
-function correctTransaction(transactionUuid, voucherDetails, userId) {
+function correctTransaction(transactionDetails, correction, userId) {
   const actions = {};
+  const transactionUuid = transactionDetails.record_uuid;
 
   // first check if this transaction has already been reversed
   // @TODO(sfount) if there is an exisitng reversal on the transaction, package
@@ -87,8 +99,12 @@ function correctTransaction(transactionUuid, voucherDetails, userId) {
   // of one huge custom transaction for two reasons:
   // 1. all of the code for creating vouchers and reversing transactions exist, recreating this would be repeating code
   // 2. large transactions are expensive for the database to perform and can lead to performance issues
-  return journal.reverseTransaction(db.bid(transactionUuid), userId, voucherDetails.description)
+  return journal.reverseTransaction(db.bid(transactionUuid), userId, transactionDetails.description)
     .then((reversalResult) => {
+      // @TODO(sfount) currently all routes that make corrections use system transaction type 10, this is labbeled
+      //               as 'CREDIT_NOTE', this isn't strictly true for all corrections and should be updated
+      const REVERSAL_TYPE_ID = 10;
+
       // reversal has been corectly executed; this returns the voucherUuid for this document
       actions.reversal = { uuid : reversalResult.uuid };
 
@@ -96,7 +112,13 @@ function correctTransaction(transactionUuid, voucherDetails, userId) {
 
       // @FIXME(sfount) in theory the correction should be made towards the same project as the original document
       //                there is no logic in the reversal process design that dictates the method here
-      return vouchers.createVoucher(voucherDetails, req.session.user.id, req.session.project.id)
+      const formatVoucherDetails = {
+        items : correction,
+        type_id : REVERSAL_TYPE_ID,
+        projectId : transactionDetails.project_id,
+        userId,
+      };
+      return vouchers.createVoucher(formatVoucherDetails, userId, transactionDetails.project_id);
     })
     .then((correctionResult) => {
       // new voucher for correction has been correctly executed
@@ -109,13 +131,15 @@ function correctTransaction(transactionUuid, voucherDetails, userId) {
     })
     .catch((error) => {
 
-      console.log('custom internal error handler called');
+      console.log('custom internal error handler called', error);
 
       return correctionErrorHandler(actions)
         .then((result) => {
+
+          console.log('internal error has successfully cleaned up vouchers');
           // database has been correctly cleaned up
           // propegate error back up to HTTP method to return with `next`
-          throw new Error(error);
+          throw error;
         });
     })
 }
@@ -124,15 +148,42 @@ function correctTransaction(transactionUuid, voucherDetails, userId) {
 // server controllers without bundling them all in the same database transaction
 function correctionErrorHandler(actions) {
   // ensure all potential operations that have taken place are cleaned up
-  const cleanupVoucherItemsQuery = 'DELETE FROM voucher_items WHERE voucher_uuid IN ?';
-  const cleanupVoucherQuery = 'DELETE FROM voucher WHERE uuid IN ?';
-
+  const cleanupVoucherItemsQuery = 'DELETE FROM voucher_items WHERE voucher_uuid IN (?)';
+  const cleanupVoucherQuery = 'DELETE FROM voucher WHERE uuid IN (?)';
+  const cleanupEntityQuery = 'CALL UndoEntityReversal(?)';
   const voucherIds = Object.keys(actions)
-    .filter((key) => key && key.uuid)
+    .filter((key) => key && actions[key].uuid)
     .map((key) => actions[key].uuid);
 
-  return db.exec(cleanupVoucherItemsQuery, [voucherIds])
-    .then(() => db.exec(cleanupVoucherQuery, [voucherIds]));
+  console.log('voucher ids', voucherIds);
+  console.log('actions', actions);
+
+
+  // @TODO(rm console logs with this)
+  // return db.exec(cleanupVoucherItemsQuery, [voucherIds])
+  //   .then(() => db.exec(cleanupVoucherQuery, [voucherIds]));
+  //
+  if (voucherIds.length) {
+
+    return db.exec(cleanupVoucherItemsQuery, [voucherIds])
+      .then(() => {
+        console.log('cleanup voucher items run well');
+        return db.exec(cleanupVoucherQuery, [voucherIds])
+      })
+      .then(() => {
+        console.log('cleanup voucher run well');
+
+        // if anything has happened at all successfuly it will be the reversal step
+        // this is the only document that could have been an entity that was reversed
+        return db.exec(cleanupEntityQuery, [actions.reversal.uuid]);
+      })
+      .then(() => {
+        console.log('enetity cleanup run well');
+      });
+  }
+
+  // voucher ids is empty - no actions have been carried out and no cleanup is required
+  return Promise.resolve();
 }
 
 function _fetchCorrectionVoucherDetails(correctionResults) {
