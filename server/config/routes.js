@@ -225,7 +225,7 @@ exports.configure = function configure(app) {
   app.get('/general_ledger/aggregates', generalLedger.getAggregates);
 
   app.get('/transactions/:uuid/history', journal.getTransactionEditHistory);
-  app.delete('/transactions/:uuid', transactions.deleteTransaction);
+  app.delete('/transactions/:uuid', transactions.deleteRoute);
 
   /* fiscal year controller */
   app.get('/fiscal', fiscal.list);

@@ -17,6 +17,7 @@ const BadRequest = require('../../../lib/errors/BadRequest');
 
 const journal = require('../journal');
 const vouchers = require('../vouchers');
+const transactions = require('../transactions');
 
 exports.correct = correct;
 
@@ -49,6 +50,7 @@ function correct(req, res, next) {
 
   const userId = req.session.user.id;
 
+  const response = {};
   console.log('Server got transaction details from client', transactionDetails);
   console.log('Server got proposed correction from client', correction);
 
@@ -67,8 +69,14 @@ function correct(req, res, next) {
   // transactionDetails - details of transaction to be reversed
   // correction - proposed rows to be included in a new voucher
   correctTransaction(transactionDetails, correction, userId)
-    .then((correctionResults) => fetchCorrectionVoucherDetails)
-    .then((correctionVoucherDetails) => res.status(201).json(correctionVoucherDetails))
+    .then((correctionActionResults) => {
+      response.actions = correctionActionResults;
+      return _fetchCorrectionVoucherDetails(correctionActionResults);
+    })
+    .then((details) => {
+      response.details = details;
+      res.status(201).json(response);
+    })
     .catch((error) => {
       console.log('external HTTP route error handler', error);
       return next(error);
@@ -115,8 +123,15 @@ function correctTransaction(transactionDetails, correction, userId) {
       const formatVoucherDetails = {
         items : correction,
         type_id : REVERSAL_TYPE_ID,
-        projectId : transactionDetails.project_id,
-        userId,
+        user_id : userId,
+        currency_id : transactionDetails.currency_id,
+        description : transactionDetails.correctionDescription,
+
+        // @FIXME(sfount) currently voucher amounts are calculated on the client under
+        //                modules/vouchers/vouchers.service.js - this just performs a reduce
+        //                voucher logic should be refactored to calculate amount in MySQL or on the server
+        //                `createVoucher` end point
+        amount : correction.reduce((sum, row) => sum + row.debit, 0),
       };
       return vouchers.createVoucher(formatVoucherDetails, userId, transactionDetails.project_id);
     })
@@ -148,17 +163,19 @@ function correctTransaction(transactionDetails, correction, userId) {
 // server controllers without bundling them all in the same database transaction
 function correctionErrorHandler(actions) {
   // ensure all potential operations that have taken place are cleaned up
-  const cleanupVoucherItemsQuery = 'DELETE FROM voucher_items WHERE voucher_uuid IN (?)';
+  const cleanupVoucherItemsQuery = 'DELETE FROM voucher_item WHERE voucher_uuid IN (?)';
   const cleanupVoucherQuery = 'DELETE FROM voucher WHERE uuid IN (?)';
   const cleanupEntityQuery = 'CALL UndoEntityReversal(?)';
   const voucherIds = Object.keys(actions)
     .filter((key) => key && actions[key].uuid)
-    .map((key) => actions[key].uuid);
+    .map((key) => db.bid(actions[key].uuid));
 
   console.log('voucher ids', voucherIds);
   console.log('actions', actions);
 
 
+  // @TODO(sfount) cleaning up after transactions/ creations turned out to be a lot
+  //               more involved than I had originally anticipated
   // @TODO(rm console logs with this)
   // return db.exec(cleanupVoucherItemsQuery, [voucherIds])
   //   .then(() => db.exec(cleanupVoucherQuery, [voucherIds]));
@@ -175,10 +192,15 @@ function correctionErrorHandler(actions) {
 
         // if anything has happened at all successfuly it will be the reversal step
         // this is the only document that could have been an entity that was reversed
-        return db.exec(cleanupEntityQuery, [actions.reversal.uuid]);
+        return db.exec(cleanupEntityQuery, [db.bid(actions.reversal.uuid)]);
       })
       .then(() => {
         console.log('enetity cleanup run well');
+
+        return transactions.deleteTransaction(actions.reversal.uuid);
+      })
+      .then(() => {
+        console.log('journal transaction cleanup run well');
       });
   }
 
@@ -186,8 +208,18 @@ function correctionErrorHandler(actions) {
   return Promise.resolve();
 }
 
-function _fetchCorrectionVoucherDetails(correctionResults) {
-
+// get full voucher information for both the reversal voucher and the correction voucher
+function _fetchCorrectionVoucherDetails(correctionActions) {
+  const details = {};
+  return vouchers.lookupVoucher(correctionActions.reversal.uuid)
+    .then((reversalVoucher) => {
+      details.reversal = reversalVoucher;
+      return vouchers.lookupVoucher(correctionActions.correction.uuid);
+    })
+    .then((correctionVoucher) => {
+      details.correction = correctionVoucher;
+      return details;
+    });
 }
 
 function _collectReversalQuery(transactionUuid, userId, description) {

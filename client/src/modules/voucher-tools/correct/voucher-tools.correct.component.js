@@ -14,17 +14,38 @@ bhVoucherToolsCorrect.$inject = ['VoucherToolsService', '$translate'];
 function bhVoucherToolsCorrect(VoucherTools, $translate) {
   const $ctrl = this;
   const VOUCHER_TOOLS_REVERSE_DESCRIPTION = 'VOUCHERS.TOOLS.REVERSE.DESCRIPTION';
+  const VOUCHER_TOOLS_CORRECTION_DESCRIPTION = 'VOUCHERS.TOOLS.CORRECT.DESCRIPTION';
+
+  // @TODO(sfount) state management and templates for both voucher tools are very
+  // similar, a component should be used to abstract the duplicated code from both
+  // of these tools
+  $ctrl.state = {
+    input : true,
+    errored : false,
+    pending : false,
+    flag : null
+  };
 
   $ctrl.onTestRoutine = function onTestRoutine() {
     const formattedCorrectionRequest = sanitiseTransactionDetails($ctrl.input.shared, $ctrl.input.rows);
+
+    $ctrl.pending = true;
 
     // @TODO(sfount) format voucher details for the server
     VoucherTools.correctTransaction(formattedCorrectionRequest.transactionDetails.record_uuid, formattedCorrectionRequest)
       .then((result) => {
         console.log('client component got result', result);
+
+        $ctrl.state.input = false;
+        $ctrl.state.errored = false;
+        $ctrl.state.pending = false;
       })
       .catch((error) => {
         console.log('client component failed with', error);
+
+        $ctrl.state.pending = false;
+        $ctrl.state.errored = true;
+        $ctrl.state.flag = error.data.code;
       });
   };
 
@@ -46,6 +67,9 @@ function bhVoucherToolsCorrect(VoucherTools, $translate) {
     formattedCorrection.transactionDetails = _reduceSharedAttributes(voucherSharedAttributes, sharedTransactionDetails);
     formattedCorrection.transactionDetails.description = `
       ${$translate.instant(VOUCHER_TOOLS_REVERSE_DESCRIPTION)} ${formattedCorrection.transactionDetails.trans_id}
+    `;
+    formattedCorrection.transactionDetails.correctionDescription = `
+      ${$translate.instant(VOUCHER_TOOLS_CORRECTION_DESCRIPTION)} ${formattedCorrection.transactionDetails.trans_id}
     `;
 
     // the proposed rows for the new voucher to replace this transaction

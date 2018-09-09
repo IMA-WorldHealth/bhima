@@ -1,8 +1,92 @@
 <div class="voucher-tools-top-spacer">
-  <button
-    ng-click="$ctrl.onTestRoutine()"
-    class="btn btn-default"
-    translate>
-    VOUCHERS.TOOLS.CORRECT.TEST_ROUTINE
-  </button>
+
+  <!-- @TODO(sfount) remove hardcoded styles -->
+  <div style="border : 1px solid rgba(46, 109, 164, 0.8); box-shadow:0px 1px 1px #bdbdbd; padding : 15px;">
+  <!-- <div style="border : 1px solid rgba(0, 0, 0, 0.3); padding : 15px;"> -->
+
+    <div class="voucher-tools-header">
+      <div class="voucher-tools-header-element">
+        <span translate>VOUCHERS.TOOLS.CORRECT.TITLE</span>
+      </div>
+
+      <div
+        ng-if="$ctrl.showBadge"
+        class="voucher-tools-header-element text-right">
+
+        <bh-badge voucher-tools></bh-badge>
+      </div>
+    </div>
+
+    <hr class="voucher-tools-underline">
+
+    <!-- @TODO(sfount) make this a component -->
+    <!-- Internal error handling -->
+    <div class="alert alert-danger pad-alert" ng-if="$ctrl.state.errored">
+      <i class="fa fa-exclamation-circle"></i>
+      <span translate>{{$ctrl.state.flag}}</span>
+    </div>
+
+    <!-- Input explanation details -->
+    <div style="margin-top: 10px;" ng-if="$ctrl.state.input">
+      <div>
+        <p class="text-info">
+          <i class="fa fa-info-circle"></i>
+          <span translate>VOUCHERS.TOOLS.CORRECT.DETAILS</span>
+        </p>
+      </div>
+
+      <!-- Input actions -->
+      <div class="voucher-tools-bottom-spacer">
+        <div><span translate>VOUCHERS.TOOLS.ACTIONS</span></div>
+        <div>
+          <!-- temporary input action -->
+          <button
+            ng-click="$ctrl.onTestRoutine()"
+            class="btn btn-default"
+            translate>
+            VOUCHERS.TOOLS.CORRECT.TEST_ROUTINE
+          </button>
+          <button
+            ng-disabled="$ctrl.state.pending"
+            class="btn btn-default"
+            ng-click="$ctrl.onClose()"
+            translate>
+            FORM.BUTTONS.CANCEL
+          </button>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Output confirmation details -->
+    <div style="margin-top: 10px" ng-if="!$ctrl.state.input && !$ctrl.state.errored">
+      <div class="alert alert-success pad-alert">
+        <i class="fa fa-check-circle"></i>
+        <span translate>VOUCHERS.TOOLS.CORRECT.SUCCESS</span>
+      </div>
+
+      <div>
+        <div><u><span translate>VOUCHERS.TOOLS.ACTION_AUDIT</span></u></div>
+      </div>
+      <div>
+        <ul>
+          <!-- <li> -->
+          <!--   <i class="fa fa-check text-success"></i> -->
+          <!--   <span translate translate-values="$ctrl.input" translate-compile translate-sanitize-strategy="'sce'">VOUCHERS.TOOLS.REVERSE.ACTION_1</span> -->
+          <!-- </li> -->
+        </ul>
+      </div>
+
+      <!-- Output actions -->
+      <div class="voucher-tools-bottom-spacer">
+        <div><span translate>VOUCHERS.TOOLS.ACTIONS</span></div>
+        <button
+          ng-click="$ctrl.onClose()"
+          class="btn btn-default"
+          translate>
+          FORM.BUTTONS.CLOSE
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
