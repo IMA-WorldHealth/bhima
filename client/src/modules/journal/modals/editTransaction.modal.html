@@ -2,8 +2,16 @@
   <ol class="headercrumb clearfix">
     <li class="static" translate>POSTING_JOURNAL.TRANSACTION</li>
     <li class="title" translate>{{ModalCtrl.shared.trans_id}}</li>
-    <span class="badge badge-warning" ng-if="ModalCtrl.readOnly"><i class="fa fa-eye"></i> <span translate>POSTING_JOURNAL.VIEWING</span></span>
+    <span class="badge badge-warning" ng-if="ModalCtrl.readOnly && !ModalCtrl.voucherTools.isCorrecting"><i class="fa fa-eye"></i> <span translate>POSTING_JOURNAL.VIEWING</span></span>
     <span class="badge badge-primary" ng-if="!ModalCtrl.readOnly"><i class="fa fa-pencil"></i> <span translate>POSTING_JOURNAL.EDITING</span></span>
+
+    <!-- Voucher tools integration -->
+    <span class="badge badge-voucher-tools" ng-if="ModalCtrl.readOnly && ModalCtrl.voucherTools.isCorrecting"><i class="fa fa-repeat"></i> <span translate>POSTING_JOURNAL.CORRECTING</span></span>
+
+    <!-- @TODO(sfount) this ol/li/span tag/ class combination is fragile, it happens to work but shouldn't be encouraged -->
+    <span ng-if="ModalCtrl.readOnly && ModalCtrl.voucherTools.isCorrecting" class="pull-right">
+      <bh-badge voucher-tools></bh-badge>
+    </span>
   </ol>
 </div>
 
@@ -101,7 +109,7 @@
   </span>
 
   <!-- Transaction row edit utilities -->
-  <div ng-if="!ModalCtrl.readOnly" style="margin-bottom : 5px" class="text-right">
+  <div ng-if="!ModalCtrl.readOnly || ModalCtrl.voucherTools.isCorrecting" style="margin-bottom : 5px" class="text-right">
     <button ng-disabled="!ModalCtrl.setupComplete" class="btn btn-default btn-sm" ng-click="ModalCtrl.addRow()" translate>POSTING_JOURNAL.ADD_ROW</button>
     <button ng-disabled="!ModalCtrl.setupComplete" class="btn btn-default btn-sm" ng-click="ModalCtrl.removeRows()" translate data-method="delete">POSTING_JOURNAL.REMOVE_ROW</button>
   </div>

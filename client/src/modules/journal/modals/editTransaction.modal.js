@@ -4,12 +4,12 @@ angular.module('bhima.controllers')
 JournalEditTransactionController.$inject = [
   'JournalService', 'Store', 'TransactionService', 'TransactionTypeService', '$uibModalInstance',
   'transactionUuid', 'readOnly', 'uiGridConstants', 'uuid', 'util', 'moment',
-  'ModalService', 'CurrencyService', 'ExchangeRateService', 'SessionService',
+  'ModalService', 'CurrencyService', 'ExchangeRateService', 'SessionService', '$timeout'
 ];
 
 function JournalEditTransactionController(
   Journal, Store, TransactionService, TransactionType, Modal, transactionUuid, readOnly, uiGridConstants,
-  uuid, util, moment, ModalService, CurrencyService, ExchangeRateService, SessionService
+  uuid, util, moment, ModalService, CurrencyService, ExchangeRateService, SessionService, $timeout
 ) {
   const vm = this;
   let gridApi = {};
@@ -18,6 +18,9 @@ function JournalEditTransactionController(
   const removedRows = [];
   const addedRows = [];
   const changes = {};
+
+  // store for caching original rows from the database
+  const cache = {};
 
   // must have transaction_type for certain cases
   const ERROR_MISSING_TRANSACTION_TYPE = 'TRANSACTIONS.MISSING_TRANSACTION_TYPE';
@@ -37,8 +40,8 @@ function JournalEditTransactionController(
 
   // Integrating optional voucher-tools
   vm.voucherTools = { isReversing : false, isCorrecting : false };
-  vm.voucherTools.open = (tool) => { vm.voucherTools[tool] = true; };
-  vm.voucherTools.close = (tool) => { vm.voucherTools[tool] = false; };
+  vm.voucherTools.open = openVoucherTools;
+  vm.voucherTools.close = closeVoucherTools;
 
   // @FIXME(sfount) this is only exposed for the UI grid link component - this should be self contained in the future
   vm.loadingTransaction = false;
@@ -50,6 +53,10 @@ function JournalEditTransactionController(
   // @TODO(sfount) introduce correcting state to split !readOnly into editing vs. correcting (mostly semantic readOnly && correcting)
   vm.readOnly = readOnly || false;
 
+  // readOnly and canEditGrid are seperated to allow voucher tools correction to correct the grid
+  // without changing entire editing modal behaviour
+  vm.canEditGrid = vm.readOnly;
+
   vm.validation = {
     errored : false,
     blockedPostedTransactionEdit : false,
@@ -60,15 +67,15 @@ function JournalEditTransactionController(
     field              : 'description',
     displayName        : 'TABLE.COLUMNS.DESCRIPTION',
     headerCellFilter   : 'translate',
-    allowCellFocus : !vm.readOnly,
-    enableCellEdit : !vm.readOnly,
+    allowCellFocus : !vm.canEditGrid,
+    enableCellEdit : !vm.canEditGrid,
   }, {
     field                : 'account_number',
     displayName          : 'TABLE.COLUMNS.ACCOUNT',
     editableCellTemplate : '<div><div ui-grid-edit-account></div></div>',
     cellTemplate         : '/modules/journal/templates/account.cell.html',
-    enableCellEdit : !vm.readOnly,
-    allowCellFocus : !vm.readOnly,
+    enableCellEdit : !vm.canEditGrid,
+    allowCellFocus : !vm.canEditGrid,
     headerCellFilter     : 'translate',
   }, {
     field                : 'debit',
@@ -78,8 +85,8 @@ function JournalEditTransactionController(
     headerCellFilter     : 'translate',
     type : 'number',
     aggregationHideLabel : true,
-    enableCellEdit : !vm.readOnly,
-    allowCellFocus : !vm.readOnly,
+    enableCellEdit : !vm.canEditGrid,
+    allowCellFocus : !vm.canEditGrid,
     aggregationType : uiGridConstants.aggregationTypes.sum,
   }, {
     field            : 'credit',
@@ -90,8 +97,8 @@ function JournalEditTransactionController(
     enableFiltering : true,
     type : 'number',
     aggregationHideLabel : true,
-    enableCellEdit : !vm.readOnly,
-    allowCellFocus : !vm.readOnly,
+    enableCellEdit : !vm.canEditGrid,
+    allowCellFocus : !vm.canEditGrid,
     aggregationType : uiGridConstants.aggregationTypes.sum,
   }, {
     field                : 'hrEntity',
@@ -101,8 +108,8 @@ function JournalEditTransactionController(
       <div class="ui-grid-cell-contents">
         <bh-reference-link ng-if="row.entity.hrEntity" reference="row.entity.hrEntity" />
       </div>`,
-    enableCellEdit : !vm.readOnly,
-    allowCellFocus : !vm.readOnly,
+    enableCellEdit : !vm.canEditGrid,
+    allowCellFocus : !vm.canEditGrid,
     visible              : true,
   }, {
     field            : 'hrReference',
@@ -112,8 +119,8 @@ function JournalEditTransactionController(
         <bh-reference-link ng-if="row.entity.hrReference" reference="row.entity.hrReference" />
       </div>`,
     headerCellFilter : 'translate',
-    enableCellEdit : !vm.readOnly,
-    allowCellFocus : !vm.readOnly,
+    enableCellEdit : !vm.canEditGrid,
+    allowCellFocus : !vm.canEditGrid,
     visible          : true,
   }];
 
@@ -180,13 +187,9 @@ function JournalEditTransactionController(
 
       verifyEditableTransaction(transaction);
 
-      vm.rows = new Store({ identifier : 'uuid' });
-      vm.rows.setData(transaction);
+      cache.gridQuery = transaction;
+      setupGridRows(cache.gridQuery);
 
-      // @FIXME(sfount) date ng-model hack
-      vm.rows.data.forEach((row) => { row.trans_date = new Date(row.trans_date); });
-      vm.shared = sharedDetails(vm.rows.data[0]);
-      vm.gridOptions.data = vm.rows.data;
     })
     .catch(() => {
       vm.hasError = true;
@@ -194,6 +197,21 @@ function JournalEditTransactionController(
     .finally(() => {
       vm.loadingTransaction = false;
     });
+
+  function setupGridRows(rows) {
+
+    console.log('setting up grid rows');
+
+    vm.rows = new Store({ identifier : 'uuid' });
+
+    // ensure rows are replaced if a cached row version is passed
+    vm.rows.setData(angular.copy(rows));
+
+    // @FIXME(sfount) date ng-model hack
+    vm.rows.data.forEach((row) => { row.trans_date = new Date(row.trans_date); });
+    vm.shared = sharedDetails(vm.rows.data[0]);
+    vm.gridOptions.data = vm.rows.data;
+  }
 
   /**
    * @function offlineTransactionValidation
@@ -271,14 +289,25 @@ function JournalEditTransactionController(
     if (posted) {
       vm.validation.blockedPostedTransactionEdit = true;
       vm.readOnly = true;
+      vm.canEditGrid = vm.readOnly;
 
-      // notify the grid of options change - the grid should no longer be editable
-      vm.gridOptions.columnDefs.forEach((column) => {
-        column.allowCellFocus = !vm.readOnly;
-        column.enableCellEdit = !vm.readOnly;
-      });
-      gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
+      updateGridColumnEditable(!vm.canEditGrid);
     }
+  }
+
+  function updateGridColumnEditable(canEdit) {
+
+    console.log('updateGridColumnEditable', canEdit);
+    // notify the grid of options change - the grid should no longer be editable
+    vm.gridOptions.columnDefs.forEach((column) => {
+      column.allowCellFocus = canEdit;
+      column.enableCellEdit = canEdit;
+      column.cellEditableCondition = canEdit;
+
+      console.log('vm.gridOptions', vm.gridOptions);
+    });
+
+    gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
   }
 
   // Editing global transaction attributes
@@ -455,6 +484,9 @@ function JournalEditTransactionController(
       'project_id', 'fiscal_year_id', 'currency_id', 'user_id', 'posted', 'period_id', 'description',
     ];
 
+    // for some reason no data has been passed in, no shared attributes are possible
+    if (!row) { return {}; }
+
     const shared = {};
 
     columns.forEach((column) => {
@@ -462,5 +494,42 @@ function JournalEditTransactionController(
     });
 
     return shared;
+  }
+
+  function openVoucherTools(tool) {
+
+    // exception for the isCorrecting tool state
+    // @TODO(sfount) this toggle pattern should be refactored
+    if (tool === 'isCorrecting') {
+      // allow grid editing for the correction voucher tool
+      // $timeout(() => {
+      vm.canEditGrid = true;
+      updateGridColumnEditable(vm.canEditGrid);
+
+      // @FIXME(sfount) data is removed from the grid to work around a ui-grid bug that
+      //                does not respect the updated column `editable` flag for rows that were already
+      //                in the grid. Unless data is flushed ui-grid intelligently caches the previous
+      //                rows and will not allow them to be edited. If a fix for this issue can be found
+      //                this line will no longer be needed
+      setupGridRows([]);
+      $timeout(() => { setupGridRows(cache.gridQuery);}, 0);
+      // gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
+      // })
+    }
+    vm.voucherTools[tool] = true;
+  }
+
+  function closeVoucherTools(tool) {
+
+    if (tool === 'isCorrecting') {
+      // reset the rows to the cached value whether successful or not - a new
+      // voucher has been made with the correct values. This transaction hasn't
+      // actually been edited and this should reflect that.
+      vm.canEditGrid = false;
+      updateGridColumnEditable(vm.canEditGrid);
+
+      $timeout(() => { setupGridRows(cache.gridQuery); }, 0);
+    }
+    vm.voucherTools[tool] = false;
   }
 }

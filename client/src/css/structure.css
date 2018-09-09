@@ -939,6 +939,12 @@ a[disabled] {
   background-color: #9d1cd2;
 }
 
+.badge-voucher-tools {
+  background-color: #9d1cd2;
+  border-radius: 2px;
+}
+
+
 .voucher-tools-underline {
   margin-top: 2px;
   margin-bottom: 10px;

@@ -31,6 +31,9 @@ function bhVoucherToolsCorrect(VoucherTools, $translate) {
 
     $ctrl.pending = true;
 
+
+    // @TODO(sfount) this module allows the user to create completely invalid vouchers - potentially it
+    // should be passed through local tests to make sure things roughly balance
     // @TODO(sfount) format voucher details for the server
     VoucherTools.correctTransaction(formattedCorrectionRequest.transactionDetails.record_uuid, formattedCorrectionRequest)
       .then((result) => {
