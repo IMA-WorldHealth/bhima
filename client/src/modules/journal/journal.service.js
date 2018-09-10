@@ -74,6 +74,8 @@ function JournalService(Api, AppCache, Filters, Periods, Modal, bhConstants, Tra
       .then(service.util.unwrapHttpResponse);
   }
 
+  // @TODO(sfount) new rows will need to access the transaction shared attribute
+  //               `trans_id_reference_number. This is currently ignored by the API.
   function sanitiseNewRows(rows) {
     rows.data.forEach((row) => {
       // delete view data required by journal grid
@@ -131,8 +133,10 @@ function JournalService(Api, AppCache, Filters, Periods, Modal, bhConstants, Tra
     const assignedKeys = Object.keys(journalFilters.formatHTTP());
 
     // assign default period filter
-    const periodDefined =
-      service.util.arrayIncludes(assignedKeys, ['period', 'custom_period_start', 'custom_period_end']);
+    const periodDefined = service.util.arrayIncludes(
+      assignedKeys,
+      ['period', 'custom_period_start', 'custom_period_end']
+    );
 
     if (!periodDefined) {
       journalFilters.assignFilters(Periods.defaultFilters());

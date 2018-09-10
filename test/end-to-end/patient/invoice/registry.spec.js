@@ -11,6 +11,8 @@ describe('Invoice Registry', () => {
   const path = '#/invoices';
   const page = new InvoiceRegistryPage();
 
+  const toCreditNote = 'IV.TPA.5';
+
   before(() => helpers.navigate(path));
 
   describe('Search', Search);
@@ -21,15 +23,15 @@ describe('Invoice Registry', () => {
     FU.modal.close();
   });
 
-  it('can be reversed via a credit note', () => {
-    page.reverse('IV.TPA.1');
+  it(`can reverse invoice ${toCreditNote} via a credit note`, () => {
+    page.reverse(toCreditNote);
     FU.input('ModalCtrl.creditNote.description', 'Credit Note Error');
     FU.modal.submit();
     components.notification.hasSuccess();
   });
 
-  it('shows the receipt for the credit note', () => {
-    page.openCreditNoteReceipt('IV.TPA.1');
+  it(`shows the receipt for the credit note on invoice ${toCreditNote}`, () => {
+    page.openCreditNoteReceipt(toCreditNote);
     FU.modal.close();
   });
 

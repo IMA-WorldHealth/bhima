@@ -50,9 +50,6 @@ function CautionPayments() {
         expect(res).to.be.json;
         expect(res.body).to.not.be.empty;
 
-        console.log('res.body.uuid', res.body.uuid);
-        console.log('payment.uuid', CAUTION_PAYMENT.uuid);
-
         expect(res.body.uuid).to.equal(CAUTION_PAYMENT.uuid);
         expect(res.body.currency_id).to.equal(CAUTION_PAYMENT.currency_id);
         expect(res.body.cashbox_id).to.equal(CAUTION_PAYMENT.cashbox_id);

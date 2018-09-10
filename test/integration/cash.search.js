@@ -44,8 +44,13 @@ function CashPaymentsSearch() {
     return SendHTTPQuery(params, 1);
   });
 
-  it('GET /cash?is_caution=1 returns two records', () => {
+  it('GET /cash?is_caution=1 returns one record', () => {
     const params = { is_caution : 1 };
+    return SendHTTPQuery(params, 1);
+  });
+
+  it('GET /cash?is_caution=0 returns two records', () => {
+    const params = { is_caution : 0 };
     return SendHTTPQuery(params, 2);
   });
 
@@ -54,8 +59,8 @@ function CashPaymentsSearch() {
     return SendHTTPQuery(params, 3);
   });
 
-  it('GET /cash?is_caution=1&limit=1 should combine to return a single record', () => {
-    const params = { is_caution : 1, limit : 1 };
+  it('GET /cash?debtor_uuid=?&limit=1 should combine to return a single record', () => {
+    const params = { debtor_uuid : DEBTOR_UUID, limit : 1 };
     return SendHTTPQuery(params, 1);
   });
 

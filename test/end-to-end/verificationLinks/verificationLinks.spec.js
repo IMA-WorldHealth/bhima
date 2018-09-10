@@ -55,7 +55,7 @@ describe('Check Inter-Registry Links', () => {
   it('Checks the link between Invoice Registry -> Voucher Registry', () => {
     helpers.navigate('#!/invoices');
     filters.resetFilters();
-    const row = new GridRow('IV.TPA.2');
+    const row = new GridRow('IV.TPA.1');
     row.dropdown().click();
     row.goToVoucher().click();
 

@@ -28,7 +28,7 @@ function InvoiceRegistrySearch() {
     page.expectNumberOfGridRows(DEFAULT_INVOICES_FOR_TODAY);
   });
 
-  const DEFAULT_INVOICES_FOR_ALL_TIME = 5;
+  const DEFAULT_INVOICES_FOR_ALL_TIME = 6;
   it(`filters ${DEFAULT_INVOICES_FOR_ALL_TIME} invoices for all time`, () => {
     modal.switchToDefaultFilterTab();
     modal.setPeriod('allTime');
@@ -73,7 +73,7 @@ function InvoiceRegistrySearch() {
   });
 
 
-  const SUPER_USER_INVOICES = 5;
+  const SUPER_USER_INVOICES = 6;
   it(`filters by user "Super User" should return ${SUPER_USER_INVOICES} results`, () => {
     modal.setUser('Super User');
     modal.submit();

@@ -16,7 +16,7 @@ describe('(/debtors) The /debtors API', () => {
   it('GET /debtors/:uuid/invoices returns a list of all invoices of a given debtor', () => {
     return agent.get(`/debtors/${debtorUuid}/invoices`)
       .then((res) => {
-        helpers.api.listed(res, 3);
+        helpers.api.listed(res, 4);
       })
       .catch(helpers.handler);
   });
@@ -24,7 +24,7 @@ describe('(/debtors) The /debtors API', () => {
   it('GET /debtors/:uuid/invoices?balanced=0 returns a list of unbalanced invoices of a given debtor', () => {
     return agent.get(`/debtors/${debtorUuid}/invoices?balanced=0`)
       .then((res) => {
-        helpers.api.listed(res, 2);
+        helpers.api.listed(res, 3);
       })
       .catch(helpers.handler);
   });
