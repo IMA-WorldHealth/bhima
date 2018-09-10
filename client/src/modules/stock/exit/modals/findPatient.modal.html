@@ -1,11 +1,11 @@
-<form 
+<form
   name="FindForm"
   bh-submit="$ctrl.submit(FindForm)"
   novalidate>
 
   <div class="modal-header">
-    <i class="fa fa-search"></i> 
-    <span translate>FORM.LABELS.SEARCH</span> 
+    <i class="fa fa-search"></i>
+    <span translate>FORM.LABELS.SEARCH</span>
     <span translate>FORM.LABELS.PATIENT</span>
   </div>
 
@@ -14,8 +14,7 @@
       patient-uuid="$ctrl.selected.uuid"
       suppress-reset="false"
       on-search-complete="$ctrl.setPatient(patient)"
-      on-register-api="$ctrl.onPatientSearchApiCallback(api)"
-      validation-trigger="FindForm.$submitted">
+      on-register-api="$ctrl.onPatientSearchApiCallback(api)">
     </bh-find-patient>
 
     <div class="form-group">

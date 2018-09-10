@@ -599,7 +599,7 @@ INSERT INTO `debtor` (uuid, group_uuid, text) VALUES
 
 -- Patients
 INSERT INTO `patient` VALUES
-  (HUID('274c51ae-efcc-4238-98c6-f402bfb39866'), 1, 2, HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), 'Test 2 Patient', '1990-06-01 00:00:00', FALSE, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'M', NULL, NULL, NULL, NULL, NULL, NULL, HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), NOW(), NULL, NULL, '110', '', 1, '2015-11-14 07:04:49', NULL, NULL),
+  (HUID('274c51ae-efcc-4238-98c6-f402bfb39866'), 1, 2, HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), 'Test 2 Patient', '1990-06-01 00:00:00', FALSE, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'M', NULL, NULL, NULL, NULL, NULL, NULL, HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), (NOW() - INTERVAL 1 HOUR), NULL, NULL, '110', '', 1, '2015-11-14 07:04:49', NULL, NULL),
   (HUID('81af634f-321a-40de-bc6f-ceb1167a9f65'), 1, 1, HUID('a11e6b7f-fbbb-432e-ac2a-5312a66dccf4'), 'Test 1 Patient', '1990-06-01 00:00:00', FALSE, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'F', NULL, NULL, NULL, NULL, NULL, NULL, HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), NOW(), NULL, NULL, '100', '', 2, '2015-11-14 07:04:49', NULL, NULL),
   (HUID('d1d7f856-d414-4400-8b94-8ba9445a2bc0'), 1, 4, HUID('76976710-27eb-46dd-b3f5-cb5eb4abbc92'), 'Employee Test 1', '1960-06-30', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'F', NULL, NULL, NULL, NULL, NULL, NULL, HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), '2018-04-09 13:56:19', NULL, NULL, 'SOF-14', NULL, 1, '2018-04-09 13:56:19', NULL, NULL);
 
@@ -700,11 +700,13 @@ INSERT INTO `debtor_group_subsidy` VALUES
 SET @first_invoice = HUID('957e4e79-a6bb-4b4d-a8f7-c42152b2c2f6');
 SET @second_invoice = HUID('c44619e0-3a88-4754-a750-a414fc9567bf');
 SET @third_invoice = HUID('f24619e0-3a88-4784-a750-a414fc9567bf');
+SET @fourth_invoice = HUID('8460def8-b1b1-11e8-92f9-c3fddff20f76');
 
-INSERT INTO invoice (project_id, reference, uuid, cost, debtor_uuid, service_id, user_id, date, description, created_at) VALUES
-  (1, 2, @first_invoice, 75.0000, HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), 1, 1, NOW(), 'TPA_VENTE/ TODAY GMT+0100 (WAT)/Test 2 Patient', NOW()),
-  (1, 1, @second_invoice, 25.0000, HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), 1, 1, '2016-01-07 14:34:35', 'TPA_VENTE/Thu Jan 07 2016 15:30:59 GMT+0100 (WAT)/Test 2 Patient', '2016-01-07 14:31:14'),
-  (1, 3, @third_invoice, 5.1300, HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), 1, 1, '2016-01-02 09:34:35', 'TPA_VENTE/Thu Jan 02 2016 09:30:59 GMT+0100 (WAT)/Test 2 Patient', '2016-01-02 09:31:14');
+INSERT INTO invoice (project_id, uuid, cost, debtor_uuid, service_id, user_id, date, description, created_at) VALUES
+  (1, @first_invoice, 75.0000, HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), 1, 1, NOW(), 'TPA_VENTE/ TODAY GMT+0100 (WAT)/Test 2 Patient', NOW()),
+  (1, @second_invoice, 25.0000, HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), 1, 1, '2016-01-07 14:34:35', 'TPA_VENTE/Thu Jan 07 2016 15:30:59 GMT+0100 (WAT)/Test 2 Patient', '2016-01-07 14:31:14'),
+  (1, @third_invoice, 5.1300, HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), 1, 1, '2016-01-02 09:34:35', 'TPA_VENTE/Thu Jan 02 2016 09:30:59 GMT+0100 (WAT)/Test 2 Patient', '2016-01-02 09:31:14'),
+  (1, @fourth_invoice, 10, HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), 3, 1, '2016-01-02 11:54:00', 'Facture a Test Patient 2 pour 10$', '2016-01-02 11:54:00');
 
 -- inventory items to use in invoice
 SET @quinine = HUID('43f3decb-fce9-426e-940a-bc2150e62186');
@@ -713,20 +715,22 @@ SET @multivitamine = HUID('f6556e72-9d05-4799-8cbd-0a03b1810185');
 SET @prednisone = HUID('c3fd5a02-6a75-49fc-b2f3-76ee4c3fbfb7');
 
 INSERT INTO invoice_item VALUES
-  (@first_invoice, HUID(UUID()), @quinine, 3,25.0000,25.0000,0.0000,75.0000),
-  (@second_invoice, HUID(UUID()), @paracetemol,1,25.0000,25.0000,0.0000,25.0000),
-  (@third_invoice, HUID(UUID()), @multivitamine,1,5.13,5.13,0.0000,5.130000);
+  (@first_invoice, HUID('507e3594-b1b2-11e8-b9e8-d7a78252f137'), @quinine, 3,25.0000,25.0000,0.0000,75.0000),
+  (@second_invoice, HUID('587008d6-b1b2-11e8-8cc6-df2e118fe467'), @paracetemol,1,25.0000,25.0000,0.0000,25.0000),
+  (@third_invoice, HUID('593f800c-b1b2-11e8-88dd-c7c4fcb9ed4d'), @multivitamine,1,5.13,5.13,0.0000,5.130000),
+  (@fourth_invoice, HUID('54f8d3e0-b1b2-11e8-b839-4b42ae00050a'), @multivitamine,10,1,1,0.0000,10);
 
 CALL PostInvoice(@first_invoice);
 CALL PostInvoice(@second_invoice);
 CALL PostInvoice(@third_invoice);
+CALL PostInvoice(@fourth_invoice);
 
 -- cash payment
 SET @cash_payment = HUID('2e1332b7-3e63-411e-827d-42ad585ff517');
 SET @cash_payment_2 = HUID('2e1332b7-3e23-411e-527d-42ac585ff517');
 
 INSERT INTO cash (uuid, project_id, reference, date, debtor_uuid, currency_id, amount, user_id, cashbox_id, description, is_caution) VALUES
-  (@cash_payment, 1, 1, NOW(), HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), 1, 100, 1, 2, "Some cool description", 1),
+  (@cash_payment, 1, 1, (NOW() - INTERVAL 1 HOUR), HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), 1, 100, 1, 2, "Some cool description", 0),
   (@cash_payment_2, 1, 2, '2016-01-10 15:33:00', HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), 1, 25, 1, 2, "This will be deleted in tests", 1);
 
 INSERT INTO cash_item (uuid, cash_uuid, amount, invoice_uuid) VALUES
@@ -740,19 +744,20 @@ SET @first_voucher = HUID('a5a5f950-a4c9-47f0-9a9a-2bfc3123e534');
 SET @second_voucher = HUID('304cfa94-0249-466c-9870-95eb3c221b0a');
 SET @third_voucher = HUID('3688e9ce-85ea-4b5c-9144-688177edcb63');
 
-INSERT INTO `voucher` (uuid, `date`,  project_id, currency_id, amount, description, user_id, type_id) VALUES
-  (@first_voucher, CURRENT_TIMESTAMP, 1,  2, 100, 'Sample voucher data one', 1, 1),
+INSERT INTO `voucher` (uuid, `date`, project_id, currency_id, amount, description, user_id, type_id) VALUES
+  (@first_voucher, CURRENT_TIMESTAMP, 1, 2, 100, 'Sample voucher data one', 1, 1),
   (@second_voucher, CURRENT_TIMESTAMP, 2, 2, 200, 'Sample voucher data two', 1, 9),
   (@third_voucher, CURRENT_TIMESTAMP, 3, 1, 300, 'Sample voucher data three', 1, 9);
 
 -- voucher items sample data
 INSERT INTO `voucher_item` VALUES
-  (HUID(UUID()), 187, 100, 0, @first_voucher, @first_invoice, HUID(UUID())),
-  (HUID(UUID()), 182, 0, 100, @first_voucher, NULL, NULL),
-  (HUID(UUID()), 188, 200, 0, @second_voucher, NULL, NULL),
-  (HUID(UUID()), 200, 0, 200, @second_voucher, NULL, NULL),
-  (HUID(UUID()), 125, 300, 0, @third_voucher, @cash_payment, HUID(UUID())),
-  (HUID(UUID()), 117, 0, 300, @third_voucher, NULL, NULL);
+  (HUID('90583c32-b1b2-11e8-9689-0b54421d0e49'), 187, 100, 0, @first_voucher, @first_invoice, HUID('2c6c48a2-b1b3-11e8-ae9b-1fa4024347ab')),
+  (HUID('9317a11a-b1b2-11e8-93d6-b30828591803'), 182, 0, 100, @first_voucher, NULL, NULL),
+  (HUID('941ae478-b1b2-11e8-9492-6385e74c37a0'), 188, 200, 0, @second_voucher, NULL, NULL),
+  (HUID('953defee-b1b2-11e8-ac16-3b802412d42d'), 200, 0, 200, @second_voucher, NULL, NULL),
+  (HUID('97ad9a22-b1b2-11e8-acba-6b85fd27d57d'), 125, 300, 0, @third_voucher, @cash_payment, HUID('2f0b966c-b1b3-11e8-8dd2-1715a827ad9b')),
+  (HUID('8ba0571a-b1b2-11e8-8688-fb9547361273'), 117, 0, 300, @third_voucher, NULL, NULL);
+
 
 -- post voucher data to the general ledger
 CALL PostVoucher(@first_voucher);
@@ -768,8 +773,8 @@ INSERT INTO `price_list` VALUES
   (HUID('75e09694-dd5c-11e5-a8a2-6c29955775b0'), 1, 'Test Price List', 'Price list for test purposes', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 INSERT INTO `price_list_item` VALUES
-  (HUID(UUID()), @quinine, HUID('75e09694-dd5c-11e5-a8a2-6c29955775b0'), 'label 1', 100, 1, CURRENT_TIMESTAMP),
-  (HUID(UUID()), @prednisone, HUID('75e09694-dd5c-11e5-a8a2-6c29955775b0'), 'label 2', 100, 1, CURRENT_TIMESTAMP);
+  (HUID('e65b881e-b1b2-11e8-96c6-f730ee8acf0e'), @quinine, HUID('75e09694-dd5c-11e5-a8a2-6c29955775b0'), 'label 1', 100, 1, CURRENT_TIMESTAMP),
+  (HUID('e763764a-b1b2-11e8-bc50-ffc5618e09c7'), @prednisone, HUID('75e09694-dd5c-11e5-a8a2-6c29955775b0'), 'label 2', 100, 1, CURRENT_TIMESTAMP);
 
 UPDATE debtor_group SET price_list_uuid = HUID('75e09694-dd5c-11e5-a8a2-6c29955775b0') WHERE uuid = HUID('4de0fe47-177f-4d30-b95f-cff8166400b4');
 
@@ -778,8 +783,8 @@ INSERT INTO `purchase` VALUES
   (@purchase_order, 1, 1, 300, 2, HUID('3ac4e83c-65f2-45a1-8357-8b025003d793'), DATE('2016-02-19'), CURRENT_TIMESTAMP, 1, NULL, NULL, 1);
 
 INSERT INTO `purchase_item` VALUES
-  (HUID(UUID()), @purchase_order, @quinine, 1, 200, 200),
-  (HUID(UUID()), @purchase_order, @prednisone, 10, 10, 100);
+  (HUID('fca58822-b1b2-11e8-9103-7782f63484ff'), @purchase_order, @quinine, 1, 200, 200),
+  (HUID('fd505f72-b1b2-11e8-bc07-eb08d6c952b1'), @purchase_order, @prednisone, 10, 10, 100);
 
 -- confirmed purchase order
 SET @purchase = HUID('8027d1c8-dd68-4686-9f4c-8860f856f8ba');
@@ -787,7 +792,8 @@ INSERT INTO `purchase` VALUES
   (@purchase, 1, 2, (1000 * 0.05), 2, HUID('3ac4e83c-65f2-45a1-8357-8b025003d793'), DATE('2017-03-29'), CURRENT_TIMESTAMP, 1, NULL, 'Purchase Order Confirmed', 2);
 
 INSERT INTO `purchase_item` VALUES
-  (HUID(UUID()), @purchase, @prednisone, 1000, 0.05, (1000 * 0.05));
+  (HUID('1fcc1316-b1b3-11e8-b276-bfdbdae020fb'), @purchase, @prednisone, 1000, 0.05, (1000 * 0.05));
+
 
 -- default depots
 SET @depot_uuid = HUID("f9caeb16-1684-43c5-a6c4-47dbac1df296");
@@ -838,7 +844,7 @@ INSERT INTO `rubric_payroll` (`id`, `label`, `abbr`, `is_employee`, `is_percent`
   (11, 'Office Nationale de l\'emploie', 'ONEM', 0, 1, 1, 1, 0, 0, 0, 320, 355, 0, 0, 0.2),
   (12, 'Acompte sur salaires', 'ac_sal', 1, 0, 1, 0, 0, 1, 0, 340, 179, 0, 1, NULL);
 
--- Configuration of Rubric
+-- Configuration of Rubrinc
 INSERT INTO `config_rubric` (`id`, `label`) VALUES (1, 'Configuration des rubriques');
 
 -- Configuration of Rubric Items
@@ -924,31 +930,33 @@ INSERT INTO `rubric_paiement` (`id`, `paiement_uuid`, `rubric_payroll_id`, `valu
 
 SET @roleUUID = HUID('5b7dd0d6-9273-4955-a703-126fbd504b61');
 SET @regularRoleUUID = HUID('5f7dd0c6-9273-4955-a703-126fbd504b61');
+
 DELETE FROM role;
 
 INSERT INTO `role`(uuid, label, project_id)
-VALUES(@roleUUID, 'Admin', 1), (@regularRoleUUID, 'Regular', 1);
+  VALUES(@roleUUID, 'Admin', 1), (@regularRoleUUID, 'Regular', 1);
 
 -- superuser
 INSERT INTO role_unit
- SELECT HUID(uuid()) as uuid,@roleUUID, id FROM unit;
+ SELECT HUID(UUID()) as uuid,@roleUUID, id FROM unit;
+
 -- actions
 INSERT INTO role_actions
-SELECT HUID(uuid()) as uuid, @roleUUID, id FROM actions;
-
+  SELECT HUID(UUID()) as uuid, @roleUUID, id FROM actions;
 
 INSERT INTO `user_role`(uuid, user_id, role_uuid)
-VALUES(HUID(uuid()), 1, @roleUUID);
+  VALUES (HUID('9df98fca-b1b3-11e8-a403-1f1cd9345667'), 1, @roleUUID);
 
 -- regular user
 INSERT INTO role_unit
- VALUES(HUID(uuid()), @regularRoleUUID , 0 ),
- (HUID(uuid()), @regularRoleUUID , 1 ),
- (HUID(uuid()), @regularRoleUUID , 2 ),
- (HUID(uuid()), @regularRoleUUID , 3 ),
- (HUID(uuid()), @regularRoleUUID , 4 );
+ VALUES
+  (HUID('76b1c46e-b1b3-11e8-9c1e-87e393921fe3'), @regularRoleUUID , 0 ),
+  (HUID('77af2154-b1b3-11e8-ac24-931d721bd446'), @regularRoleUUID , 1 ),
+  (HUID('78537ee8-b1b3-11e8-9838-3f6a169f8138'), @regularRoleUUID , 2 ),
+  (HUID('78bb7872-b1b3-11e8-ad43-1f4fc435053e'), @regularRoleUUID , 3 ),
+  (HUID('7b35eec0-b1b3-11e8-95b3-37d9cf076502'), @regularRoleUUID , 4 );
 
 INSERT INTO `user_role`(uuid, user_id, role_uuid)
-VALUES(HUID(uuid()), 2, @regularRoleUUID);
+  VALUES (HUID('6050a2bc-b1b3-11e8-a0f5-8b6d28d94cad'), 2, @regularRoleUUID);
 
 -- ----------------------------------------------------------------------------------------

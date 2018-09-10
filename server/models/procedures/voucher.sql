@@ -68,12 +68,13 @@ BEGIN
   SET current_exchange_rate = (SELECT IF(currency_id = enterprise_currency_id, 1, current_exchange_rate));
 
   -- POST to the posting journal
+  -- @TODO(sfount) transaction ID number reference should be fetched seperately from full transaction ID to model this relationship better
   INSERT INTO posting_journal (uuid, project_id, fiscal_year_id, period_id,
-    trans_id, trans_date, record_uuid, description, account_id, debit,
+    trans_id, trans_id_reference_number, trans_date, record_uuid, description, account_id, debit,
     credit, debit_equiv, credit_equiv, currency_id, entity_uuid,
     reference_uuid, comment, transaction_type_id, user_id)
   SELECT
-    HUID(UUID()), v.project_id, fiscal_year_id, period_id, transaction_id, v.date,
+    HUID(UUID()), v.project_id, fiscal_year_id, period_id, transaction_id, SUBSTRING(transaction_id, 4), v.date,
     v.uuid, v.description, vi.account_id, vi.debit, vi.credit,
     vi.debit * (1 / current_exchange_rate), vi.credit * (1 / current_exchange_rate), v.currency_id,
     vi.entity_uuid, vi.document_uuid, NULL, v.type_id, v.user_id

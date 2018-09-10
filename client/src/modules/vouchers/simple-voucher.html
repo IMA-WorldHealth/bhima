@@ -13,7 +13,9 @@
           </a>
           <ul uib-dropdown-menu role="menu" class="dropdown-menu-right">
             <li role="menuitem">
-              <a href ui-sref="simpleVouchers.barcode" data-action="patient-invoice-debt-transfer">
+              <!-- Without binding an object through simpleVouchers.barcode the state transition -->
+              <!-- is not respected unless the /barcode route has already been loaded -->
+              <a href ui-sref="simpleVouchers.barcode({})" data-action="patient-invoice-debt-transfer">
                 <i class="fa fa-barcode"></i> <span translate>VOUCHERS.SIMPLE.TRANSFER_PATIENT_INVOICE_AMOUNT</span>
               </a>
             </li>

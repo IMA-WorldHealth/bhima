@@ -120,8 +120,8 @@ describe('(/accounts) Accounts', () => {
         expect(res.body).to.have.all.keys('account_id', 'debit', 'credit', 'balance');
 
         // FIXME(@jniles) - why is this out of balance?!
-        expect(res.body.debit).to.equal(105.13);
-        expect(res.body.credit).to.equal(125);
+        expect(res.body.debit).to.equal(115.13);
+        expect(res.body.credit).to.equal(35);
         expect(res.body.balance).to.equal(75);
       })
       .catch(helpers.handler);

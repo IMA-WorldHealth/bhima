@@ -61,7 +61,7 @@ function SimpleJournalVoucherController(Vouchers, util, Notify, Receipts, bhCons
     // stop submission if the form is invalid
     if (form.$invalid) {
       Notify.danger('FORM.ERRORS.RECORD_ERROR');
-      return;
+      return null;
     }
 
     // CONVENTION: 0 is debit, 1 is credit
@@ -76,7 +76,7 @@ function SimpleJournalVoucherController(Vouchers, util, Notify, Receipts, bhCons
 
     if (!valid) {
       Notify.danger(vm.Voucher._error);
-      return;
+      return null;
     }
 
     const voucher = vm.Voucher.details;

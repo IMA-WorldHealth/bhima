@@ -14,7 +14,7 @@ const genuuid = () => uuid().toUpperCase().replace(/-/g, '');
 
 /* The /invoices API endpoint */
 describe('(/invoices) Patient Invoices', () => {
-  const numInvoices = 3;
+  const numInvoices = 4;
   const numCreatedInvoices = 3;
   const numDeletedInvoices = 1;
 
@@ -66,10 +66,10 @@ describe('(/invoices) Patient Invoices', () => {
         .catch(helpers.handler);
     });
 
-    it('GET /invoices?debtor_uuid=3BE232F9A4B94AF6984C5D3F87D5C107 should return two invoices', () => {
+    it('GET /invoices?debtor_uuid=3BE232F9A4B94AF6984C5D3F87D5C107 should return six invoices', () => {
       return agent.get('/invoices?debtor_uuid=3BE232F9A4B94AF6984C5D3F87D5C107')
         .then(res => {
-          helpers.api.listed(res, 5);
+          helpers.api.listed(res, 6);
         })
         .catch(helpers.handler);
     });
