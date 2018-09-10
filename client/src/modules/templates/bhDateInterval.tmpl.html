@@ -1,4 +1,4 @@
-<fieldset 
+<fieldset
   ng-form="DateIntervalForm"
   novalidate
   bh-date-interval>
@@ -36,7 +36,7 @@
           type="text"
           class="form-control"
           uib-datepicker-popup="{{ $ctrl.dateFormat }}"
-          datepicker-options="$ctrl.pickerOptions"
+          datepicker-options="$ctrl.pickerFromOptions"
           is-open="$ctrl.dateFromIsOpen"
           show-button-bar="false"
           ng-model="$ctrl.dateFrom"

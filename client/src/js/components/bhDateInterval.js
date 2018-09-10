@@ -40,8 +40,7 @@ bhDateInterval.$inject = ['moment', 'bhConstants', 'FiscalService', 'SessionServ
 function bhDateInterval(moment, bhConstants, Fiscal, Session) {
   const $ctrl = this;
 
-  // Fiscal.getEnterpriseFiscalStartDate();
-  // expose to the viewe
+  // expose to the view
   $ctrl.search = search;
   $ctrl.clear = clear;
 
@@ -60,13 +59,13 @@ function bhDateInterval(moment, bhConstants, Fiscal, Session) {
 
     $ctrl.label = $ctrl.label || 'FORM.SELECT.DATE_INTERVAL';
     $ctrl.dateFormat = bhConstants.dayOptions.format;
-    $ctrl.pickerOptions = { showWeeks : false };
+    $ctrl.pickerFromOptions = { showWeeks : false };
 
     // if controller has requested limit-min-fiscal, fetch required information
     if (angular.isDefined($ctrl.limitMinFiscal)) {
       Fiscal.getEnterpriseFiscalStartDate(Session.enterprise.id)
         .then((response) => {
-          $ctrl.pickerOptions.minDate = new Date(response.start_date);
+          $ctrl.pickerFromOptions.minDate = new Date(response.start_date);
         });
     }
 
@@ -122,7 +121,7 @@ function bhDateInterval(moment, bhConstants, Fiscal, Session) {
     // set the default option according the mode
     if (option !== -1) {
       search($ctrl.options[option]);
-      $ctrl.pickerOptions = $ctrl.mode;
+      $ctrl.pickerFromOptions = $ctrl.mode;
     } else {
       custom();
     }

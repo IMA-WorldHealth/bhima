@@ -24,7 +24,8 @@ function bhDateEditorTests() {
     'bhima.components',
     'bhima.constants',
     'templates',
-    'bhima.mocks'
+    'bhima.mocks',
+    'ui.router'
   ));
 
   let $scope;
