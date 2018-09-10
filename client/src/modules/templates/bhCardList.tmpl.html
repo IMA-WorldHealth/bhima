@@ -29,19 +29,19 @@
     </div>
   </div>
 
-  <!-- input exclusively applies the filter to the $ctrl.name attribute -->
+  <!-- input filters on all data objects attributes that can be matched to a string value  -->
   <input
     data-filter-input
-    ng-model="$ctrl.filterOptions.value[$ctrl.name]"
     ng-show="$ctrl.filterOptions.active"
+    ng-model="$ctrl.filterOptions.value"
     class="form-control"
     translate-attr="{ placeholder : 'FORM.PLACEHOLDERS.FILTER_NAME' }"
-    style="border-radius: 0"/>
+    style="border-radius: 0" >
 </div>
 
 <div
   ng-repeat="card in $ctrl.data
-    | filter : $ctrl.filterOptions.value : strict
-    | orderBy : 'label':$ctrl.orderOptions.current.reverse">
+    | filter : $ctrl.filterOptions.value :false
+    | orderBy : $ctrl.orderOptions.current.key:$ctrl.orderOptions.current.reverse">
   <ng-include src="$ctrl.template"></ng-include>
 </div>

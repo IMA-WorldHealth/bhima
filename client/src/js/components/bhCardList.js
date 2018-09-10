@@ -5,9 +5,9 @@ angular.module('bhima.components')
     bindings : {
       data : '<',
       template : '@',
-      name : '@', // name attribute to be sorted alphabetically and filtered
-      age : '@?', // date attribute to be sorted by date
-      size : '@?', // size attribute to be sorted largest to smallest
+      sortName : '@', // name attribute to be sorted alphabetically and filtered
+      sortAge : '@?', // date attribute to be sorted by date
+      sortSize : '@?', // size attribute to be sorted largest to smallest
       id : '@?', // optional data override
     }
     ,
@@ -20,12 +20,12 @@ angular.module('bhima.components')
  *
  * Requires:
  * `data` : the array to iterate over
- * `name` : the entity display name that should be sorted and filtered
+ * `sort-name` : the entity display name that should be sorted and filtered
  * `template` : path to an HTML template that should be displayed for each element
  *
  * Optional:
- * `age` : the entity date field key, this will allow it to be sorted by age
- * `size` : the entity size field key, this will allow it to be sorted by largest
+ * `sort-age` : the entity date field key, this will allow it to be sorted by age
+ * `sort-size` : the entity size field key, this will allow it to be sorted by largest
  * `id` : provide a custom entity identifier override
  */
 function bhCardList() {
@@ -34,12 +34,12 @@ function bhCardList() {
   // name, age and size options will be added to this _if_ they are defined
   // through bindings
   $ctrl.orderOptions = { active : false, available : [] };
-  $ctrl.filterOptions = { active : false };
+  $ctrl.filterOptions = { active : false, value : {} };
 
   $ctrl.$onInit = function onInit() {
     $ctrl.identifier = $ctrl.id;
 
-    assignAvailableOrders($ctrl.name, $ctrl.age, $ctrl.size);
+    assignAvailableOrders($ctrl.sortName, $ctrl.sortAge, $ctrl.sortSize);
   };
 
   $ctrl.$onChanges = function onChanges(changes) {
@@ -52,8 +52,8 @@ function bhCardList() {
   };
 
   $ctrl.toggleFilter = function toggleFilter() {
+    $ctrl.filterOptions.value = '';
     $ctrl.filterOptions.active = !$ctrl.filterOptions.active;
-    $ctrl.filterOptions.value = {};
   };
 
   $ctrl.setOrder = function setOrder(order) {
@@ -73,14 +73,14 @@ function bhCardList() {
     // name binding is required - assume this is valid
     $ctrl.orderOptions.available.push(
       { attribute : name, key : 'TABLE.COLUMNS.SORTING.NAME_ASC', reverse : false },
-      { attribute : name, key : 'TABLE.COLUMNS.SORTING.NAME_DSC', reverse : true }
+      { attribute : name, key : 'TABLE.COLUMNS.SORTING.NAME_DESC', reverse : true }
     );
 
     // parse optional bindings
     if (angular.isDefined(age)) {
       $ctrl.orderOptions.available.push(
         { attribute : age, key : 'TABLE.COLUMNS.SORTING.CREATED_ASC', reverse : false },
-        { attribute : age, key : 'TABLE.COLUMNS.SORTING.CREATED_DSC', reverse : true }
+        { attribute : age, key : 'TABLE.COLUMNS.SORTING.CREATED_DESC', reverse : true }
       );
     }
 

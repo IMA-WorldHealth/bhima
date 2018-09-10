@@ -117,10 +117,10 @@ function bhCardListTests() {
     expect(filterInput).to.have.class('ng-hide');
   });
 
-  it.skip('should support filtering the values in the DOM', () => {
+  it('should support filtering the values in the DOM', () => {
     const $scope = $rootScope.$new();
     $scope.data = angular.copy(DEFAULT_DATASET);
-    const element = setupTemplate($scope, ' name="title" ');
+    const element = setupTemplate($scope, ' sort-name="title" ');
 
     const toggle = find(element, '[data-toggle-filter]');
     angular.element(toggle).click();
@@ -130,7 +130,7 @@ function bhCardListTests() {
     expect(cards).to.have.length(3);
 
     const filterInput = find(element, '[data-filter-input]');
-    angular.element(filterInput).val('d').trigger('input');
+    angular.element(filterInput).val('B:').trigger('input');
     $scope.$apply();
 
     cards = findAll(element, '[data-test-card]');
@@ -141,12 +141,12 @@ function bhCardListTests() {
   it('#setOrder() should change the order of card elements in the DOM', () => {
     const $scope = $rootScope.$new();
     $scope.data = angular.copy(DEFAULT_DATASET);
-    const element = setupTemplate($scope, ' label="title" ');
+    const element = setupTemplate($scope, ' sort-name="title" ');
 
     let cards = findAll(element, '[data-test-card]');
     expect(cards).to.have.length(3);
 
-    const descKey = 'TABLE.COLUMNS.SORTING.NAME_DSC';
+    const descKey = 'TABLE.COLUMNS.SORTING.NAME_DESC';
     const ascKey = 'TABLE.COLUMNS.SORTING.NAME_ASC';
 
     // TEST - sort descending order

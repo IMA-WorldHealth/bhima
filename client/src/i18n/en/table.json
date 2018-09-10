@@ -167,9 +167,9 @@
             "SORTING": {
                 "LABEL": "Sort",
                 "NAME_ASC": "Name [A-Z]",
-                "NAME_DSC": "Name [Z-A]",
+                "NAME_DESC": "Name [Z-A]",
                 "CREATED_ASC": "Oldest",
-                "CREATED_DSC": "Newest",
+                "CREATED_DESC": "Newest",
                 "TOTAL_ASC": "Largest"
             },
             "SOURCE": "Source",
