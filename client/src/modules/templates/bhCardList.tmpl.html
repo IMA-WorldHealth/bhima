@@ -1,6 +1,6 @@
 <div class="panel panel-default bh-card-list">
   <div class="panel-heading">
-    <a href ng-click="$ctrl.toggleFilter()">
+    <a href ng-click="$ctrl.toggleFilter()" data-toggle-filter>
       <span translate>TABLE.COLUMNS.FILTERING.LABEL</span>
       <span class="caret" ng-class="{'rotate' : $ctrl.filterOptions.active}"></span>
     </a>
@@ -13,7 +13,7 @@
         <a href uib-dropdown-toggle> <span translate>TABLE.COLUMNS.SORTING.LABEL</span> <span class="caret"></span></a>
         <ul class="dropdown-menu-right textflow" uib-dropdown-menu>
           <li ng-repeat="option in $ctrl.orderOptions.available">
-            <a href ng-click="$ctrl.setOrder(option)">
+            <a href ng-click="$ctrl.setOrder(option)" data-key="{{option.key}}">
               <span translate>{{ option.key }}</span>
             </a>
           </li>
@@ -31,6 +31,7 @@
 
   <!-- input exclusively applies the filter to the $ctrl.name attribute -->
   <input
+    data-filter-input
     ng-model="$ctrl.filterOptions.value[$ctrl.name]"
     ng-show="$ctrl.filterOptions.active"
     class="form-control"
