@@ -109,6 +109,10 @@ function FiscalManagementController($state, Fiscal, Notify, Modal, util, moment)
     // get the number of months
     numberOfMonths();
 
+    // remove timezone information by considering just date
+    vm.fiscal.start_date = moment(vm.fiscal.start_date).format('YYYY-MM-DD');
+    vm.fiscal.end_date = moment(vm.fiscal.end_date).format('YYYY-MM-DD');
+
     const promise = isUpdate ? Fiscal.update(id, vm.fiscal) : Fiscal.create(vm.fiscal);
 
     return promise
