@@ -182,3 +182,115 @@ BEGIN
   CALL PostVoucher(voucher_uuid);
 
 END $$
+
+
+/*
+  ---------------------------------------------------
+  Import Stock Procedure
+  ---------------------------------------------------
+*/
+DROP PROCEDURE IF EXISTS ImportStock;
+CREATE PROCEDURE ImportStock (
+  IN enterpriseId SMALLINT(5),
+  IN inventoryGroupName VARCHAR(100),
+  IN inventoryCode VARCHAR(30),
+  IN inventoryText VARCHAR(100),
+  IN inventoryType VARCHAR(30),
+  IN inventoryUnit VARCHAR(30),
+  IN inventoryUnitPrice DECIMAL(10, 4),
+  IN inventoryCmm DECIMAL(10, 4),
+  IN stockLotLabel VARCHAR(191),
+  IN stockLotQuantity INT(11),
+  IN stockLotExpiration DATE
+)
+BEGIN
+  DECLARE existInventoryGroup TINYINT(1);
+  DECLARE existInventoryType TINYINT(1);
+  DECLARE existInventoryUnit TINYINT(1);
+  DECLARE existInventory TINYINT(1);
+  DECLARE existLot TINYINT(1);
+
+  DECLARE randomCode INT(11);
+  DECLARE inventoryGroupUuid BINARY(16);
+  DECLARE inventoryTypeId TINYINT(3);
+  DECLARE inventoryUnitId SMALLINT(5);
+  DECLARE inventoryCode INT(11);
+  DECLARE inventoryUuid BINARY(16);
+
+  SET existInventory = (SELECT IF((SELECT COUNT(`text`) AS total FROM `inventory` WHERE `text` = inventoryText) > 0, 1, 0));
+
+  IF (existInventory = 1) THEN
+
+    SELECT inventory.uuid, inventory.code INTO inventoryUuid, inventoryCode FROM inventory WHERE `text` = inventoryText LIMIT 1;
+
+    /* create the lot movement with inventory information */
+  
+  ELSE 
+
+    /* 
+      ====================================================
+      create the inventory, the lot and the stock movement
+      ====================================================
+    */
+
+    /* calculate the inventory code randomly if necessary */
+    IF (inventoryCode = NULL) THEN 
+      SET inventoryCode = (SELECT ROUND(RAND() * 10000000));
+    END IF;
+
+    /* create the inventory */
+    CALL ImportInventory(enterpriseId, inventoryGroupName, inventoryCode, inventoryText, inventoryType, inventoryUnit, inventoryUnitPrice);
+
+    SET inventoryUuid = (SELECT `uuid` FROM inventory WHERE `text` = inventoryText AND `code` = inventoryCode);
+
+    /* update the consumption (avg_consumption) */
+    UPDATE inventory SET avg_consumption = inventoryCmm WHERE `uuid` = inventoryUuid;
+
+    /* create the lot */
+    INSERT INTO lot (`uuid`, `label`, `initial_quantity`, `quantity`, `unit_cost`, `expiration_date`, `inventory_uuid`, `origin_uuid`) 
+    VALUES (HUID(UUID()), stockLotLabel, stockLotQuantity, stockLotQuantity, inventoryUnitPrice, stockLotExpiration, inventoryUuid, HUID(UUID()));
+
+
+
+
+  END IF;
+
+  
+
+  /* Create group if doesn't exist */
+  IF (existInventoryGroup = 0) THEN
+    SET randomCode = (SELECT ROUND(RAND() * 10000000));
+    SET inventoryGroupUuid = HUID(UUID());
+    INSERT INTO `inventory_group` (`uuid`, `name`, `code`) VALUES (inventoryGroupUuid, inventoryGroupName, randomCode);
+  ELSE
+    SET inventoryGroupUuid = (SELECT `uuid` FROM `inventory_group` WHERE `name` = inventoryGroupName LIMIT 1);
+  END IF;
+
+  /* Create type if doesn't exist */
+  IF (existInventoryType = 0) THEN
+    SET inventoryTypeId = (SELECT MAX(`id`) + 1 FROM `inventory_type`);
+    INSERT INTO `inventory_type` (`id`, `text`) VALUES (inventoryTypeId, inventoryType);
+  ELSE
+    SET inventoryTypeId = (SELECT `id` FROM `inventory_type` WHERE LOWER(`text`) = LOWER(inventoryType) LIMIT 1);
+  END IF;
+
+  /* Create unit if doesn't exist */
+  IF (existInventoryUnit = 0) THEN
+    SET inventoryUnitId = (SELECT MAX(`id`) + 1 FROM `inventory_unit`);
+    INSERT INTO `inventory_unit` (`id`, `abbr`, `text`) VALUES (inventoryUnitId, inventoryUnit, inventoryUnit);
+  ELSE
+    SET inventoryUnitId = (SELECT `id` FROM `inventory_unit` WHERE LOWER(`text`) = LOWER(inventoryUnit) LIMIT 1);
+  END IF;
+
+  /*
+    Create inventory if it doesn't exist
+
+    If the inventory already exists, skip because we are in a loop and
+    we have to continue importing other inventories
+  */
+  IF (existInventory = 0) THEN
+    INSERT INTO `inventory` (`enterprise_id`, `uuid`, `code`, `text`, `price`, `group_uuid`, `type_id`, `unit_id`)
+    VALUES
+    (enterpriseId, HUID(UUID()), inventoryCode, inventoryText, inventoryUnitPrice, inventoryGroupUuid, inventoryTypeId, inventoryUnitId);
+  END IF;
+END $$

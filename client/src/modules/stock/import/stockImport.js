@@ -23,6 +23,7 @@ function StockImportController(
   const cache = new AppCache('StockCache');
 
   vm.changeDepot = changeDepot;
+  vm.downloadTemplate = Stock.downloadTemplate;
 
   function startup() {
     // make sure that the depot is loaded if it doesn't exist at startup.

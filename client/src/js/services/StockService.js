@@ -25,6 +25,9 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
   // API for stock transfer
   const transfers = new Api('/stock/transfers');
 
+  // API for stock import
+  const importing = new Api('/stock/import');
+
   // stock status label keys
   const stockStatusLabelKeys = {
     sold_out          : 'STOCK.STATUS.SOLD_OUT',
@@ -260,6 +263,15 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
     return stockStatusLabelKeys[status];
   }
 
+  // download the template file
+  function downloadTemplate() {
+    const url = importing.url.concat('/template');
+    return importing.$http.get(url)
+      .then(response => {
+        return importing.util.download(response, 'Import Stock Template', 'csv');
+      });
+  }
+
 
   return {
     stocks,
@@ -276,5 +288,6 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
     uniformSelectedEntity,
     processLotsFromStore,
     statusLabelMap,
+    downloadTemplate,
   };
 }

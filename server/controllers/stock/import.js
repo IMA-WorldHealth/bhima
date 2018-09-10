@@ -20,7 +20,7 @@ exports.importStock = importStock;
 */
 function downloadTemplate(req, res, next) {
   try {
-    const file = path.join(__dirname, '../../../resources/templates/import-stock-template.csv');
+    const file = path.join(__dirname, '../../resources/templates/import-stock-template.csv');
     res.download(file);
   } catch (error) {
     next(error);
