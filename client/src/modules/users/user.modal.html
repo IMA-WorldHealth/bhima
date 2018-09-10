@@ -16,34 +16,37 @@
 
   <div class="modal-body" style="overflow-y: scroll; max-height:600px; ">
 
-    <div class="form-group has-feedback" ng-class="{ 'has-error' : (UserForm.$submitted || UserForm.display_name.$error.unique) && UserForm.display_name.$invalid }">
-      <label class="control-label" translate>FORM.LABELS.USERNAME</label>
+    <div class="form-group" ng-class="{ 'has-error' : UserForm.$submitted && UserForm.display_name.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.DISPLAY_NAME</label>
       <input
         name="display_name"
-        bh-unique="/users/"
         ng-model="UserModalCtrl.user.display_name"
         ng-maxlength="UserModalCtrl.maxLength"
         class="form-control"
         autocomplete="off"
         required>
 
-      <span ng-show="UserForm.display_name.$error.unique" translate class="help-block">
-        ERRORS.ER_DUP_KEY
-      </span>
-
-      <i ng-show="UserForm.display_name.$error.unique" class="text-danger glyphicon glyphicon-remove form-control-feedback" id="unique-error-icon"></i>
-      <i ng-show="UserForm.display_name.$pending.unique"  class="glyphicon glyphicon-hourglass form-control-feedback"></i>
-
       <div class="help-block" ng-messages="UserForm.display_name.$error" ng-show="UserForm.$submitted">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
       </div>
+
+      <div class="help-block">
+        <p translate>FORM.INFO.DISPLAY_NAME</p>
+      </div>
     </div>
 
-    <div class="form-group"  ng-class="{ 'has-error' : UserForm.$submitted && UserForm.username.$invalid }">
-      <label class="control-label" translate>FORM.LABELS.LOGIN</label>
-      <input name="username" ng-maxlength="UserModalCtrl.userName" autocomplete="off" ng-model="UserModalCtrl.user.username" class="form-control" required>
-      <div class="help-block" ng-messages="UserForm.username.$error" ng-show="UserForm.$submitted">
+    <div class="form-group has-feedback"  ng-class="{ 'has-error' : (UserForm.$submitted|| UserForm.username.$error.unique) && UserForm.username.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.USERNAME</label>
+      <input name="username" ng-maxlength="UserModalCtrl.userName" autocomplete="off" ng-model="UserModalCtrl.user.username" class="form-control" bh-unique="/users/" required>
+
+      <i ng-show="UserForm.username.$error.unique" class="text-danger glyphicon glyphicon-remove form-control-feedback" id="unique-error-icon"></i>
+      <i ng-show="UserForm.username.$pending.unique"  class="glyphicon glyphicon-hourglass form-control-feedback"></i>
+
+      <div class="help-block" ng-messages="UserForm.username.$error" ng-show="UserForm.username.$dirty">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+      <div class="help-block">
+        <p translate>FORM.INFO.USERNAME</p>
       </div>
     </div>
 
