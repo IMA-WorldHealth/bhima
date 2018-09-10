@@ -128,17 +128,19 @@
     show-badge>
   </bh-voucher-tools-reverse>
 
-  <!-- @TODO(sfount) pass actual row information into correct tool and format as voucher details -->
+  <!-- @TODO(sfount) should the correct tool act as an "import" tool for complex journal vouchers? -->
+  <!-- At the moment this component creates two vouchers, however the edits and actions are performed in the context -->
+  <!-- of a 'Transaction'. It may be clearer that a voucher is being created if the correct action forwarded you to a -->
+  <!-- pre-filled out Complex Voucher with the current rows from this transaction -->
   <bh-voucher-tools-correct
     ng-if="ModalCtrl.voucherTools.isCorrecting"
     on-close="ModalCtrl.voucherTools.close('isCorrecting')"
+    on-success="ModalCtrl.voucherTools.success('isCorrecting')"
     source="{ shared: ModalCtrl.shared, rows: ModalCtrl.rows.data}">
   </bh-voucher-tools-correct>
 </div>
 
 <div class="modal-footer clearfix">
-
-  <!-- FIXME(sfount) encapsulate click action in function -->
   <button
     class="btn btn-default pull-left"
     ng-if="ModalCtrl.readOnly"

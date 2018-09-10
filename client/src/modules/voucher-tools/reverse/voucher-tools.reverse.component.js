@@ -78,22 +78,20 @@ function bhVoucherToolsReverse(Vouchers, $translate) {
     return Vouchers.reverse(packaged)
       .then((result) => {
         // result should contain voucher uuid along with additional voucher infomration
-
         $ctrl.state.errored = false;
         $ctrl.state.input = false;
-        $ctrl.state.pending = false;
-
         $ctrl.output = result;
       })
-      .catch(handleErrors);
+      .catch(handleErrors)
+      .finally(() => {
+        $ctrl.state.pending = false;
+      });
   };
 
   // internally handle errors thrown during the input -> process -> output
   // steps within this component;
   function handleErrors(error) {
-    $ctrl.state.pending = false;
     $ctrl.state.errored = true;
     $ctrl.state.flag = error.data.code;
   }
-
 }

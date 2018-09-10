@@ -97,6 +97,18 @@
         "SUCCESS": "Transaction was reversed successfully",
         "TITLE": "Reverse Transaction"
 
+      },
+      "CORRECT": { 
+        "ACTION": "Correct", 
+        "DETAILS": "This transaction can now be updated with corrections. Submitting this process will create two voucher documents, one reversing the effects of this transaction with equal and opposite values, the second with rows reflected corrections made here.",
+        "CONFIGURED_FOR": "The transaction {{trans_id}} will <b>not be edited</b> as it has realdy been posted. This will create a reversal voucher followed by a second voucher with the corrections made here. Please confirm that you authorise the above corrections to {{trans_id}}.",
+        "ACTION_1": "Transaction {{trans_id}} was marked as <code>reversed</code>",
+        "ACTION_2_1": "Voucher document",
+        "ACTION_2_2": "was created with equal and opposite values to reverse transaction {{trans_id}}",
+        "ACTION_3_2": "was created with corrections provided by this tool",
+        "AUTHORISED_BY": "Voucher documents were authorised by user:",
+        "SUCCESS": "Transaction reversal and correction documents were written successfully",
+        "TITLE": "Correct Transaction"
       }
     }
   }

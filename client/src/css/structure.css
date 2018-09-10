@@ -962,3 +962,9 @@ a[disabled] {
   /* width : 100%; */
   flex-grow: 1;
 }
+
+.voucher-tools-container {
+  border : 1px solid rgba(46, 109, 164, 0.8);
+  box-shadow:0px 1px 1px #bdbdbd;
+  padding : 15px;
+}

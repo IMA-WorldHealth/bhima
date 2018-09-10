@@ -5,6 +5,7 @@ angular.module('bhima.components')
     bindings : {
       source : '<',
       onClose : '&?',
+      onSuccess : '&?',
       showBadge : '@?',
     },
   });
@@ -23,34 +24,37 @@ function bhVoucherToolsCorrect(VoucherTools, $translate) {
     input : true,
     errored : false,
     pending : false,
-    flag : null
+    flag : null,
   };
 
-  $ctrl.onTestRoutine = function onTestRoutine() {
+  $ctrl.onActionSubmitInput = function actionSubmitInput() {
     const formattedCorrectionRequest = sanitiseTransactionDetails($ctrl.input.shared, $ctrl.input.rows);
 
     $ctrl.pending = true;
 
-
     // @TODO(sfount) this module allows the user to create completely invalid vouchers - potentially it
     // should be passed through local tests to make sure things roughly balance
-    // @TODO(sfount) format voucher details for the server
-    VoucherTools.correctTransaction(formattedCorrectionRequest.transactionDetails.record_uuid, formattedCorrectionRequest)
+    VoucherTools.correctTransaction(
+      formattedCorrectionRequest.transactionDetails.record_uuid,
+      formattedCorrectionRequest
+    )
       .then((result) => {
-        console.log('client component got result', result);
+        $ctrl.output = result;
+        $ctrl.onSuccess();
 
         $ctrl.state.input = false;
         $ctrl.state.errored = false;
-        $ctrl.state.pending = false;
       })
-      .catch((error) => {
-        console.log('client component failed with', error);
-
+      .catch(handleErrors)
+      .finally(() => {
         $ctrl.state.pending = false;
-        $ctrl.state.errored = true;
-        $ctrl.state.flag = error.data.code;
       });
   };
+
+  function handleErrors(error) {
+    $ctrl.state.errored = true;
+    $ctrl.state.flag = error.data.code;
+  }
 
   $ctrl.$onChanges = function onChanges(changes) {
     if (changes.source && changes.source.currentValue) {

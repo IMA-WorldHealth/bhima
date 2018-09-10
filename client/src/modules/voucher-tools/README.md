@@ -1,5 +1,6 @@
 # Voucher Tools 
-Voucher Tools is a name given to a collection of components and services that provide administrative tools for quickly creating vouchers based on different inputs. 
+Voucher Tools is a name given to a collection of components and services that automate financial operations through the creation of vouchers. 
+They provide administrative tools for quickly creating vouchers based on different inputs and tasks. 
 
 ## Structure 
 The structure of this unit is to be decided. Currently each tool defines its own Component that is responsible for switching between input, output and error states.
@@ -39,7 +40,7 @@ Example Usage:
 ```html
 <!-- An inline badge element to demonstrate that a voucher tool is active -->
 <!-- on the current module/ component -->
-<bh-voucher-tool-badge></bh-voucher-tool-badge>
+<bh-badge voucher-tools></bh-badge>
 ```
 
 ## Proposed Unify API
