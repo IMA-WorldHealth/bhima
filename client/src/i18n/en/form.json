@@ -762,6 +762,7 @@
             "USER": "Select User",
             "VILLAGE": "Select a Village/Township",
             "WEEKEND_CONFIGURATION": "Select a weekend Configuration",
+            "WEEKEND_DAYS" : "Select the day(s) of the weekend, (example : saturday and sunday) ",
             "ZS": "Select a Health Zone"
         },
         "VALIDATION": {
