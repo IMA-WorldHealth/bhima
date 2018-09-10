@@ -57,6 +57,14 @@
     "INVENTORY_GROUP" : "Inventory Group",
     "INVENTORY_NOT_AVAILABLE" : "Inventories not available",
     "PRODUCT_NOT_AVAILABLE" : "Products not available",
+    "IMPORT" : {
+      "STOCK_FROM_FILE" : "Import stock from a file",
+      "ABOUT_DESCRIPTION" : "You are about to import the stocks for the following deposit",
+      "TEMPLATE_FILE_DESCRIPTION" : "Here is a file template for importing stocks",
+      "DOWNLOAD_TEMPLATE_HERE" : "Download the template here",
+      "DESCRIPTION" : "Please download and then fill in the template file appropriately with the information of your stock then select the completed file via the input box below",
+      "PLEASE_SELECT_DEPOT" : "Please select a depot first"
+    },
     "INVENTORY_UNIT"  : "Unit",
     "INPUT"           : "Input",
     "INTEGRATION"     : "Integration",

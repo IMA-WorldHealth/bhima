@@ -47,6 +47,12 @@ angular.module('bhima.routes')
         controller  : 'StockAdjustmentController as StockCtrl',
         templateUrl : 'modules/stock/adjustment/adjustment.html',
         onExit  : ['$uibModalStack', closeModals],
+      })
+
+      .state('stockImport', {
+        url         : '/stock/import',
+        controller  : 'StockImportController as StockCtrl',
+        templateUrl : 'modules/stock/import/stockImport.html',
       });
   }]);
 

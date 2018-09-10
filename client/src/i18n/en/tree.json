@@ -108,6 +108,7 @@
     "WEEKEND_CONFIGURATION" : "Weekend Configuration",
     "ROLE_MANAGEMENT" : "Role Management",
     "OHADA_BALANCE_SHEET":"[OHADA] Balance Sheet",
-    "OHADA_INCOME":"[OHADA] Income Report"
+    "OHADA_INCOME":"[OHADA] Income Report",
+    "IMPORT_STOCK_FROM_FILE":"Stock Import"
   }
 }

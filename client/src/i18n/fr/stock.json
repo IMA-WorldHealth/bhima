@@ -57,6 +57,14 @@
     "INVENTORY_GROUP" : "Groupe d'inventaire",
     "INVENTORY_NOT_AVAILABLE" : "Inventaire(s) non disponible",
     "PRODUCT_NOT_AVAILABLE" : "Produit(s) non disponible",
+    "IMPORT" : {
+      "STOCK_FROM_FILE" : "Importation de stock à partir d'un fichier",
+      "ABOUT_DESCRIPTION" : "Vous êtes sur le point d'importer les stocks pour le depot suivant",
+      "TEMPLATE_FILE_DESCRIPTION" : "Voici un modèle de fichier pour l'importation des stocks",
+      "DOWNLOAD_TEMPLATE_HERE" : "Télécharger le modèle ici",
+      "DESCRIPTION" : "Veuillez télécharger puis remplir le fichier modèle convenablement avec les informations de votre stock puis séléctionner le fichier rempli grâce à la zone de saisie ci-dessous",
+      "PLEASE_SELECT_DEPOT" : "Veuillez séléctionner un dépot d'abord"
+    },
     "INVENTORY_UNIT"  : "Unité",
     "IO"              : "Entrée/Sortie",
     "INPUT"           : "Entrée",
