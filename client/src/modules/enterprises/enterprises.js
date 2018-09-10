@@ -76,9 +76,9 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
 
     changes.settings = angular.copy(vm.enterprise.settings);
 
-    const promise = (creation) ?
-      Enterprises.create(changes) :
-      Enterprises.update(vm.enterprise.id, changes);
+    const promise = (creation)
+      ? Enterprises.create(changes)
+      : Enterprises.update(vm.enterprise.id, changes);
 
     return promise
       .then(() => {
@@ -187,6 +187,7 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
   vm.enablePasswordValidationSetting = proxy('enable_password_validation');
   vm.enableBalanceOnInvoiceReceipSetting = proxy('enable_balance_on_invoice_receipt');
   vm.enableBarcodesSetting = proxy('enable_barcodes');
+  vm.enableAutoStockAccountingSetting = proxy('enable_auto_stock_accounting');
 
   startup();
 }

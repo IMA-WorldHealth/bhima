@@ -104,7 +104,9 @@ function createStock(req, res, next) {
 
   const postingParams = [db.bid(document.uuid), 0, req.session.project.id, req.session.enterprise.currency_id];
 
-  transaction.addQuery('CALL PostStockMovement(?)', [postingParams]);
+  if (req.session.enterprise.settings.enable_auto_stock_accounting) {
+    transaction.addQuery('CALL PostStockMovement(?)', [postingParams]);
+  }
 
   // transaction - movement reference
   transaction.addQuery('CALL ComputeMovementReference(?);', [db.bid(document.uuid)]);
@@ -173,7 +175,9 @@ function createIntegration(req, res, next) {
 
   const postingParams = [db.bid(documentUuid), 0, req.session.project.id, req.session.enterprise.currency_id];
 
-  transaction.addQuery('CALL PostStockMovement(?)', [postingParams]);
+  if (req.session.enterprise.settings.enable_auto_stock_accounting) {
+    transaction.addQuery('CALL PostStockMovement(?)', [postingParams]);
+  }
 
   // transaction - movement reference
   transaction.addQuery('CALL ComputeMovementReference(?);', [db.bid(documentUuid)]);
@@ -269,7 +273,10 @@ function normalMovement(document, params, metadata) {
   const projectId = metadata.project.id;
   const currencyId = metadata.enterprise.currency_id;
   const postStockParameters = [db.bid(document.uuid), parameters.is_exit, projectId, currencyId];
-  transaction.addQuery('CALL PostStockMovement(?, ?, ?, ?);', postStockParameters);
+
+  if (metadata.enterprise.settings.enable_auto_stock_accounting) {
+    transaction.addQuery('CALL PostStockMovement(?, ?, ?, ?);', postStockParameters);
+  }
 
   return transaction.execute();
 }
