@@ -83,10 +83,15 @@ function importStock(req, res, next) {
         transaction.addQuery(query, queryParams);
       });
 
-      // document text as reference
-      const insertDocumentQuery = 'INSERT INTO document_map VALUE (?, ?);';
-      const documentTextReference = `Stock Import ${moment().format('YYYY-MM-DD')}`;
-      transaction.addQuery(insertDocumentQuery, [documentUuid, documentTextReference]);
+      const isExit = 0;
+      const postingParams = [documentUuid, isExit, req.session.project.id, req.session.enterprise.currency_id];
+
+      if (req.session.enterprise.settings.enable_auto_stock_accounting) {
+        transaction.addQuery('CALL PostStockMovement(?)', [postingParams]);
+      }
+
+      // transaction - movement reference
+      transaction.addQuery('CALL ComputeMovementReference(?);', [documentUuid]);
 
       return transaction.execute();
     })

@@ -104,7 +104,8 @@ function createStock(req, res, next) {
     transaction.addQuery(createMovementQuery, [createMovementObject]);
   });
 
-  const postingParams = [db.bid(document.uuid), 0, req.session.project.id, req.session.enterprise.currency_id];
+  const isExit = 0;
+  const postingParams = [db.bid(document.uuid), isExit, req.session.project.id, req.session.enterprise.currency_id];
 
   if (req.session.enterprise.settings.enable_auto_stock_accounting) {
     transaction.addQuery('CALL PostStockMovement(?)', [postingParams]);
