@@ -12,10 +12,11 @@ angular.module('bhima.components')
       disabled : '<?',
       dateFormat : '@?',
       label : '@?',
+      limitMinFiscal : '@?',
     },
   });
 
-bhDateEditorController.$inject = ['bhConstants'];
+bhDateEditorController.$inject = ['bhConstants', 'SessionService', 'FiscalService'];
 
 /**
  * bhDateEditor Component
@@ -23,6 +24,11 @@ bhDateEditorController.$inject = ['bhConstants'];
  * A component to deal with date, it lets a user choose a date by either typing
  * into an <input> or clicking a calendar dropdown.  It wraps the
  * uib-date-picker to provide the dropdown calendar functionality.
+ *
+ * An optional limit-min-fiscal flag can be provided that will limit the date
+ * selection to after the start of enterprise financial records - note that
+ * limit-min-fiscal will *not* override min-date, it will only be applied if
+ * min-date has not been set.
  *
  * @example
  * <bh-date-editor
@@ -32,12 +38,13 @@ bhDateEditorController.$inject = ['bhConstants'];
  *  min-date="Ctrl.min"
  *  max-date="Ctrl.max"
  *  validation-trigger="Form.$submitted"
+ *  limit-min-fiscal
  *  disabled="Ctrl.isDisabled">
  * </bh-date-editor>
  *
  * @module components/bhDateEditor
  */
-function bhDateEditorController(bhConstants) {
+function bhDateEditorController(bhConstants, Session, Fiscal) {
   const $ctrl = this;
 
   $ctrl.editMode = false;
@@ -52,6 +59,15 @@ function bhDateEditorController(bhConstants) {
     };
     if (!$ctrl.allowFutureDate) {
       $ctrl.options.maxDate = $ctrl.maxDate || new Date();
+    }
+
+    // fetch and apply the first fiscal year start date ONLY if a min date hasn't
+    // been specified
+    if (angular.isDefined($ctrl.limitMinFiscal) && !angular.isDefined($ctrl.minDate)) {
+      Fiscal.getEnterpriseFiscalStartDate(Session.enterprise.id)
+        .then((response) => {
+          $ctrl.options.minDate = new Date(response.start_date);
+        });
     }
   };
 

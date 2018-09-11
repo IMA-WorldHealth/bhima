@@ -16,18 +16,47 @@ function bhDateEditorTests() {
   `;
 
   // make sure the modules are correctly loaded.
-  beforeEach(module('pascalprecht.translate', 'bhima.services', 'bhima.components', 'bhima.constants', 'templates'));
+  beforeEach(module(
+    'bhima.services',
+    'angularMoment',
+    'ngStorage',
+    'pascalprecht.translate',
+    'bhima.components',
+    'bhima.constants',
+    'templates',
+    'bhima.mocks',
+    'ui.router'
+  ));
 
   let $scope;
   let $compile;
   let element;
-  const futureDate = '20120-01-20';
+  let Session;
+  let Fiscal;
+  let Mocks;
+  let httpBackend;
+
+  const enterpriseFiscalStartDate = '2015-01-01T00:00:00.000Z';
+  const futureDate = '2200-01-20';
+  const invalidOldDate = '2001-01-20';
+
   // utility fns
   const find = (elm, selector) => elm[0].querySelector(selector);
 
-  beforeEach(inject((_$rootScope_, _$compile_) => {
+  beforeEach(inject((_$rootScope_, _$compile_, $httpBackend, _SessionService_, _FiscalService_, _MockDataService_) => {
+    Session = _SessionService_;
+    Mocks = _MockDataService_;
+    Fiscal = _FiscalService_;
+
+    httpBackend = $httpBackend;
+
+    httpBackend.when('GET', `/enterprises/${Mocks.enterprise().id}/fiscal_start`)
+      .respond(200, { start_date : enterpriseFiscalStartDate });
+
     $compile = _$compile_;
     $scope = _$rootScope_.$new();
+
+    Session.create(Mocks.user(), Mocks.enterprise(), Mocks.project());
 
     // spy on the onChange callback
     $scope.date = new Date();
@@ -108,4 +137,18 @@ function bhDateEditorTests() {
     expect(ngModel.$modelValue).to.be.equal(futureDate);
   });
 
+  describe('limit-min-fiscal flag', () => {
+    let fiscalLimitElement = `
+      <bh-date-editor date-value="date" limit-min-fiscal></bh-date-editor>
+    `;
+    let fiscalElement;
+
+    it('limit fiscal year requests start date', () => {
+      fiscalElement = $compile(angular.element(fiscalLimitElement))($scope);
+      const spy = chai.spy.on(Fiscal, 'getEnterpriseFiscalStartDate');
+
+      $scope.$digest();
+      expect(spy).to.have.been.called.exactly(1);
+    });
+  });
 }

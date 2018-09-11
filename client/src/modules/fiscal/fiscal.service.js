@@ -21,6 +21,7 @@ function FiscalService(Api) {
   service.setOpeningBalance = setOpeningBalance;
   service.getOpeningBalance = getOpeningBalance;
   service.getPeriods = getPeriods;
+  service.getEnterpriseFiscalStartDate = getEnterpriseFiscalStartDate;
 
   service.getBalance = getBalance;
 
@@ -73,13 +74,26 @@ function FiscalService(Api) {
   }
 
   /**
-   * @method closing
+   * @method closeFiscalYear
    *
    * @description closing a fiscal year
    */
   function closeFiscalYear(id, params) {
     const url = service.url.concat(id, '/closing');
     return service.$http.put(url, { params })
+      .then(service.util.unwrapHttpResponse);
+  }
+
+  /**
+   * @method getEnterpriseFiscalStartDate
+   *
+   * @description
+   * Returns a single date representing the earliest start date of all
+   * the enterprise fiscal years.
+   */
+  function getEnterpriseFiscalStartDate(enterpriseId) {
+    const url = `/enterprises/${enterpriseId}/fiscal_start`;
+    return service.$http.get(url)
       .then(service.util.unwrapHttpResponse);
   }
 
@@ -93,11 +107,12 @@ function FiscalService(Api) {
     const url = service.url.concat(id, '/periods');
     return service.$http.get(url)
       .then(service.util.unwrapHttpResponse)
-      .then(periods => periods.map(p => {
-        p.start_date = new Date(p.start_date);
-        p.end_date = new Date(p.end_date);
-        return p;
-      }));
+      .then(periods => periods
+        .map(p => {
+          p.start_date = new Date(p.start_date);
+          p.end_date = new Date(p.end_date);
+          return p;
+        }));
   }
 
   return service;
