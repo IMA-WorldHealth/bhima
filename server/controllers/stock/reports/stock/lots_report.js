@@ -12,10 +12,10 @@ const {
  * GET /reports/stock/lots
  */
 function stockLotsReport(req, res, next) {
-  let options = req.query;
-  let display = {};
-  let hasFilter = false;
+  const { display } = req.query;
   const data = {};
+  let options = req.query;
+  let hasFilter = false;
   let report;
 
   const optionReport = _.extend(req.query, pdfOptions, {
@@ -25,7 +25,6 @@ function stockLotsReport(req, res, next) {
   try {
     if (req.query.identifiers && req.query.display) {
       options = req.query.identifiers;
-      display = req.query.display;
       hasFilter = Object.keys(display).length > 0;
     }
 

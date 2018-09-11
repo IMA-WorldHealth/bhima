@@ -63,7 +63,8 @@
       "TEMPLATE_FILE_DESCRIPTION" : "Here is a file template for importing stocks",
       "DOWNLOAD_TEMPLATE_HERE" : "Download the template here",
       "DESCRIPTION" : "Please download and then fill in the template file appropriately with the information of your stock then select the completed file via the input box below",
-      "PLEASE_SELECT_DEPOT" : "Please select a depot first"
+      "PLEASE_SELECT_DEPOT" : "Please select a depot first",
+      "UPLOAD_SUCCESS" : "Stock imported with success"
     },
     "INVENTORY_UNIT"  : "Unit",
     "INPUT"           : "Input",

@@ -46,8 +46,14 @@
             <th>{{translate 'STOCK.QUANTITY'}}</th>
             <th>{{translate 'STOCK.INVENTORY_UNIT'}}</th>
             <th>{{translate 'STOCK.ENTRY_DATE'}}</th>
-            <th>{{translate 'STOCK.EXPIRATION_DATE'}}</th>
+            <th>{{translate 'STOCK.EXPIRATION_DATE'}}</th>`
             <th>{{translate 'STOCK.EXPIRATION'}}</th>
+            <th>{{translate 'STOCK.CMM'}}</th>
+            <th>{{translate 'STOCK.MSD'}}</th>
+            <th>{{translate 'STOCK.LIFETIME'}}</th>
+            <th>{{translate 'STOCK.LOT_LIFETIME'}}</th>
+            <th>{{translate 'STOCK.RISK'}}</th>
+            <th>{{translate 'STOCK.RISK_QUANTITY'}}</th>
           </tr>
         </thead>
         <tbody>
@@ -60,7 +66,7 @@
                 {{ name }}
               </th>
 
-              <th colspan="8" style="border:none; border-bottom: solid black 2px;" class="text-right">
+              <th colspan="14" style="border:none; border-bottom: solid black 2px;" class="text-right">
                 ({{ items.length }} {{ translate "TABLE.AGGREGATES.RECORDS" }})
               </th>
             </tr>
@@ -82,6 +88,12 @@
                   <td class="text-center"> - </td>
                   <td class="text-center"> - </td>
                 {{/if}}
+                <td class="text-right">{{avg_consumption}}</td>
+                <td class="text-right">{{S_MONTH}}</td>
+                <td class="text-right">{{lifetime}}</td>
+                <td class="text-right">{{S_LOT_LIFETIME}}</td>
+                <td class="text-right">{{S_RISK}}</td>
+                <td class="text-right">{{S_RISK_QUANTITY}}</td>
               </tr>
             {{/each}}
 

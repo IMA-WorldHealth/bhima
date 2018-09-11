@@ -129,8 +129,7 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
     const assignedKeys = Object.keys(StockLotFilters.formatHTTP());
 
     // assign default period filter
-    const periodDefined =
-      lots.util.arrayIncludes(assignedKeys, ['period']);
+    const periodDefined = lots.util.arrayIncludes(assignedKeys, ['period']);
 
     if (!periodDefined) {
       StockLotFilters.assignFilters(Periods.defaultFilters());
@@ -147,8 +146,7 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
     const assignedKeys = Object.keys(StockMovementFilters.formatHTTP());
 
     // assign default period filter
-    const periodDefined =
-      movements.util.arrayIncludes(assignedKeys, ['period']);
+    const periodDefined = movements.util.arrayIncludes(assignedKeys, ['period']);
 
     if (!periodDefined) {
       StockMovementFilters.assignFilters(Periods.defaultFilters());
@@ -165,8 +163,7 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
     const assignedKeys = Object.keys(StockInventoryFilters.formatHTTP());
 
     // assign default period filter
-    const periodDefined =
-      inventories.util.arrayIncludes(assignedKeys, ['period']);
+    const periodDefined = inventories.util.arrayIncludes(assignedKeys, ['period']);
 
     if (!periodDefined) {
       StockInventoryFilters.assignFilters(Periods.defaultFilters());

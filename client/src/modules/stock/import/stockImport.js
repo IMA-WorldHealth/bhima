@@ -5,7 +5,7 @@ angular.module('bhima.controllers')
 StockImportController.$inject = [
   'DepotService', 'InventoryService', 'NotifyService', 'SessionService', 'util',
   'bhConstants', 'ReceiptModal', 'StockFormService', 'StockService',
-  'StockModalService', 'uiGridConstants', 'appcache',
+  'StockModalService', 'uiGridConstants', 'appcache', 'Upload', '$state',
 ];
 
 /**
@@ -16,7 +16,7 @@ StockImportController.$inject = [
  */
 function StockImportController(
   Depots, Inventory, Notify, Session, util, bhConstants, ReceiptModal, StockForm,
-  Stock, StockModal, uiGridConstants, AppCache
+  Stock, StockModal, uiGridConstants, AppCache, Upload, $state
 ) {
   const vm = this;
 
@@ -24,6 +24,48 @@ function StockImportController(
 
   vm.changeDepot = changeDepot;
   vm.downloadTemplate = Stock.downloadTemplate;
+
+  vm.submit = () => {
+    // send data only when a file is selected
+    if (!vm.depot.uuid || !vm.file) {
+      vm.noSelectedFile = true;
+      return null;
+    }
+
+    return uploadFile(vm.file);
+  };
+
+  /** upload the file to server */
+  function uploadFile(file) {
+    vm.uploadState = 'uploading';
+
+    const params = {
+      url : '/stock/import/',
+      data : { file },
+      params : { depot_uuid : vm.depot.uuid },
+    };
+
+    // upload the file to the server
+    return Upload.upload(params)
+      .then(handleSuccess, handleError, handleProgress);
+
+    // success upload handler
+    function handleSuccess() {
+      vm.uploadState = 'uploaded';
+      Notify.success('STOCK.IMPORT.UPLOAD_SUCCESS');
+      $state.go('stockLots');
+    }
+
+    function handleError(err) {
+      Notify.handleError(err);
+    }
+
+    // progress handler
+    function handleProgress(evt) {
+      file.progress = Math.min(100, parseInt((100.0 * evt.loaded) / evt.total, 10));
+      vm.progressStyle = { width : String(file.progress).concat('%') };
+    }
+  }
 
   function startup() {
     // make sure that the depot is loaded if it doesn't exist at startup.

@@ -63,7 +63,8 @@
       "TEMPLATE_FILE_DESCRIPTION" : "Voici un modèle de fichier pour l'importation des stocks",
       "DOWNLOAD_TEMPLATE_HERE" : "Télécharger le modèle ici",
       "DESCRIPTION" : "Veuillez télécharger puis remplir le fichier modèle convenablement avec les informations de votre stock puis séléctionner le fichier rempli grâce à la zone de saisie ci-dessous",
-      "PLEASE_SELECT_DEPOT" : "Veuillez séléctionner un dépot d'abord"
+      "PLEASE_SELECT_DEPOT" : "Veuillez séléctionner un dépot d'abord",
+      "UPLOAD_SUCCESS" : "Stock importé avec succès"
     },
     "INVENTORY_UNIT"  : "Unité",
     "IO"              : "Entrée/Sortie",

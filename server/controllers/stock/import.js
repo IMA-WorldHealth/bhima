@@ -5,6 +5,8 @@
  * and related stock quantities
  */
 const path = require('path');
+const uuid = require('uuid');
+const moment = require('moment');
 
 const db = require('../../lib/db');
 const util = require('../../lib/util');
@@ -34,15 +36,24 @@ function downloadTemplate(req, res, next) {
  */
 function importStock(req, res, next) {
   if (!req.files || req.files.length === 0) {
-    next(new BadRequest('Something broke', 'ERRORS.EVERYTHING_BAD'));
+    const errorDescription = 'Expected at least one file upload but did not receive any files.';
+    const errorDetails = new BadRequest(errorDescription, 'ERRORS.MISSING_UPLOAD_FILES');
+    next(errorDetails);
     return;
   }
 
   let query;
   let queryParams;
-  const filePath = req.files[0].path;
 
-  util.formatCsvToJson(filePath)
+  const filePath = req.files[0].path;
+  const depotUuid = db.bid(req.query.depot_uuid);
+  const documentUuid = db.bid(uuid.v4());
+
+  // be sure that the depot exist
+  db.one('SELECT uuid FROM depot WHERE uuid = ?', depotUuid)
+    .then(() => {
+      return util.formatCsvToJson(filePath);
+    })
     .then(data => {
       if (!hasValidDataFormat(data)) {
         throw new BadRequest('The given file has a bad data format for stock', 'ERRORS.BAD_DATA_FORMAT');
@@ -51,18 +62,31 @@ function importStock(req, res, next) {
       const transaction = db.transaction();
 
       data.forEach(item => {
-        query = 'CALL ImportStock(?, ?, ?, ?, ?, ?, ?);';
+        query = 'CALL ImportStock(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);';
         queryParams = [
           req.session.enterprise.id,
-          item.stock_group_name,
-          item.stock_code,
-          item.stock_text,
-          item.stock_type,
-          item.stock_unit,
-          item.stock_unit_price,
+          req.session.project.id,
+          req.session.user.id,
+          depotUuid,
+          documentUuid,
+          item.inventory_group_name,
+          item.inventory_code || '',
+          item.inventory_text,
+          item.inventory_type,
+          item.inventory_unit,
+          item.inventory_unit_price,
+          item.inventory_cmm || 0,
+          item.stock_lot_label,
+          item.stock_lot_quantity,
+          moment(item.stock_lot_expiration).format('YYYY-MM-DD'),
         ];
         transaction.addQuery(query, queryParams);
       });
+
+      // document text as reference
+      const insertDocumentQuery = 'INSERT INTO document_map VALUE (?, ?);';
+      const documentTextReference = `Stock Import ${moment().format('YYYY-MM-DD')}`;
+      transaction.addQuery(insertDocumentQuery, [documentUuid, documentTextReference]);
 
       return transaction.execute();
     })
@@ -80,8 +104,9 @@ function importStock(req, res, next) {
  */
 function hasValidDataFormat(data = []) {
   return data.every(item => {
-    return item.stock_code && item.stock_group_name
-      && item.stock_text && item.stock_type && item.stock_unit
-      && item.stock_unit_price;
+    return item.inventory_group_name
+      && item.inventory_text && item.inventory_type && item.inventory_unit
+      && item.inventory_unit_price && item.stock_lot_label
+      && item.stock_lot_quantity && item.stock_lot_expiration;
   });
 }
