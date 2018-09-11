@@ -128,10 +128,6 @@
     show-badge>
   </bh-voucher-tools-reverse>
 
-  <!-- @TODO(sfount) should the correct tool act as an "import" tool for complex journal vouchers? -->
-  <!-- At the moment this component creates two vouchers, however the edits and actions are performed in the context -->
-  <!-- of a 'Transaction'. It may be clearer that a voucher is being created if the correct action forwarded you to a -->
-  <!-- pre-filled out Complex Voucher with the current rows from this transaction -->
   <bh-voucher-tools-correct
     ng-if="ModalCtrl.voucherTools.isCorrecting"
     on-close="ModalCtrl.voucherTools.close('isCorrecting')"
