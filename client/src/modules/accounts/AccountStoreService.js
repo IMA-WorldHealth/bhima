@@ -12,22 +12,22 @@ AccountStoreService.$inject = [
 
 // Temporary service until caching API services is well designed
 function AccountStoreService($q, Accounts, AccountTypes, Store) {
-  var service = this;
-  var initialLoad = true;
-  var initTypeLoad = true;
+  const service = this;
+  let initialLoad = true;
+  let initTypeLoad = true;
 
-  var accounts = new Store();
-  var accountTypes = new Store();
+  const accounts = new Store();
+  const accountTypes = new Store();
 
-  var request = Accounts.read(null, { detailed : 1 })
-    .then(function (result) {
+  const request = Accounts.read(null, { detailed : 1 }, true)
+    .then((result) => {
       accounts.setData(result);
       initialLoad = false;
       return accounts.data;
     });
 
-  var typeRequest = AccountTypes.getAccountType()
-    .then(function (result) {
+  const typeRequest = AccountTypes.getAccountType()
+    .then((result) => {
       accountTypes.setData(result);
       initTypeLoad = false;
       return accountTypes.data;
@@ -38,7 +38,7 @@ function AccountStoreService($q, Accounts, AccountTypes, Store) {
 
   function accountStore() {
     if (initialLoad) {
-      return request.then(function () {
+      return request.then(() => {
         return accounts;
       });
     }
@@ -48,7 +48,7 @@ function AccountStoreService($q, Accounts, AccountTypes, Store) {
 
   function typeStore() {
     if (initTypeLoad) {
-      return typeRequest.then(function () {
+      return typeRequest.then(() => {
         return accountTypes;
       });
     }

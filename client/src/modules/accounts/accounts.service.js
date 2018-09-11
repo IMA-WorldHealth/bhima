@@ -2,7 +2,7 @@ angular.module('bhima.services')
   .service('AccountService', AccountService);
 
 AccountService.$inject = [
-  'PrototypeApiService', 'bhConstants',
+  'PrototypeApiService', 'bhConstants', 'HttpCacheService',
 ];
 
 /**
@@ -10,10 +10,11 @@ AccountService.$inject = [
  *
  * A service wrapper for the /accounts HTTP endpoint.
  */
-function AccountService(Api, bhConstants) {
+function AccountService(Api, bhConstants, HttpCache) {
   const baseUrl = '/accounts/';
   const service = new Api(baseUrl);
 
+  // debounce the read() method by 250 milliseconds to avoid needless GET requests
   service.read = read;
   service.label = label;
 
@@ -41,6 +42,9 @@ function AccountService(Api, bhConstants) {
       .then(service.util.unwrapHttpResponse);
   }
 
+  const callback = (id, options) => Api.read.call(service, id, options);
+  const fetcher = HttpCache(callback);
+
   /**
    * The read() method loads data from the api endpoint. If an id is provided,
    * the $http promise is resolved with a single JSON object, otherwise an array
@@ -48,11 +52,13 @@ function AccountService(Api, bhConstants) {
    *
    * @param {Number} id - the id of the account to fetch (optional).
    * @param {Object} options - options to be passed as query strings (optional).
+   * @param {Boolean} cacheBust - ignore the cache and send the HTTP request directly
+   *   to the server.
    * @return {Promise} promise - resolves to either a JSON (if id provided) or
    *   an array of JSONs.
    */
-  function read(id, options) {
-    return Api.read.call(this, id, options)
+  function read(id, options, cacheBust = false) {
+    return fetcher(id, options, cacheBust)
       .then(handleAccounts);
   }
 
