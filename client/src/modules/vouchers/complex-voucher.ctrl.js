@@ -26,6 +26,9 @@ function ComplexJournalVoucherController(
 ) {
   const vm = this;
 
+  // help to group transaction_types
+  vm.groupTransactionByType = Vouchers.groupTransactionByType;
+
   // bind constants
   vm.bhConstants = bhConstants;
   vm.enterprise = Session.enterprise;

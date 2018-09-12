@@ -117,7 +117,7 @@
                     <ui-select-choices
                       ui-select-focus-patch
                       repeat="item.id as item in ComplexVoucherCtrl.types | filter: { hrText : $select.search }"
-                      group-by="'type'">
+                      group-by= "ComplexVoucherCtrl.groupTransactionByType">
                       <div ng-bind-html="item.hrText | highlight: $select.search"></div>
                     </ui-select-choices>
                   </ui-select>

@@ -39,6 +39,8 @@ function VoucherService(
   service.loadCachedFilters = loadCachedFilters;
   service.download = download;
 
+  service.groupTransactionByType = groupTransactionByType;
+
   voucherFilters.registerDefaultFilters(bhConstants.defaultFilters);
 
   voucherFilters.registerCustomFilters([
@@ -215,6 +217,11 @@ function VoucherService(
     }).result;
   }
 
+
+  function groupTransactionByType(item) {
+    const type = bhConstants.transactionTypeMap[item.type];
+    return $translate.instant(type.label);
+  }
 
   return service;
 }
