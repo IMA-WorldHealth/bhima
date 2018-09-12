@@ -25,9 +25,9 @@ function StockLotsRegistryTests() {
   const gridId = 'stock-lots-grid';
 
   const depotGroupingRow = 1;
-  const LOT_FOR_ALLTIME = 16;
-  const LOT_FOR_TODAY = 11;
-  const LOT_FOR_LAST_YEAR = 11;
+  const LOT_FOR_ALLTIME = 26;
+  const LOT_FOR_TODAY = 14;
+  const LOT_FOR_LAST_YEAR = 21;
 
   const invetoryGroup = 'Injectable';
 
@@ -56,7 +56,7 @@ function StockLotsRegistryTests() {
   it('find lots in depot principal', () => {
     modal.setDepot('Depot Principal');
     modal.submit();
-    GU.expectRowCount(gridId, 8 + depotGroupingRow);
+    GU.expectRowCount(gridId, 18 + depotGroupingRow);
   });
 
   it('find lots by inventory', () => {

@@ -57,7 +57,7 @@ describe('(/stock/) The Stock HTTP API', () => {
     returns exits for all depots (10 OUT)`,
     () => agent.get(`/reports/stock/lots?renderer=json`)
       .then((res) => {
-        expect(res.body.rows.length).to.equal(12);
+        expect(res.body.rows.length).to.equal(22);
       })
       .catch(helpers.handler)
   );
@@ -68,7 +68,7 @@ describe('(/stock/) The Stock HTTP API', () => {
     returns exits for Depot principal(10 OUT)`,
     () => agent.get(`/reports/stock/lots?renderer=json&depot_uuid=${shared.depotPrincipalUuid}`)
       .then((res) => {
-        expect(res.body.rows.length).to.equal(10);
+        expect(res.body.rows.length).to.equal(20);
       })
       .catch(helpers.handler)
   );
@@ -78,7 +78,7 @@ describe('(/stock/) The Stock HTTP API', () => {
     `GET /stock/lots/movements?is_exit=0&depot_uuid=... returns entries for Depot Principal (10 IN)`,
     () => agent.get(`/stock/lots/movements?is_exit=0&depot_uuid=${shared.depotPrincipalUuid}`)
       .then((res) => {
-        helpers.api.listed(res, 10);
+        helpers.api.listed(res, 20);
       })
       .catch(helpers.handler)
   );
@@ -118,7 +118,7 @@ describe('(/stock/) The Stock HTTP API', () => {
       user_id : 1, // super user
     })
     .then(res => {
-      helpers.api.listed(res, 15);
+      helpers.api.listed(res, 25);
     })
     .catch(helpers.handler));
 

@@ -31,7 +31,7 @@ function StockInventoriesRegistryTests() {
   it('find 3 inventory in Depot Principal plus one line for the Grouping', () => {
     modal.setDepot('Depot Principal');
     modal.submit();
-    GU.expectRowCount(gridId, 1 + depotGroupingRow);
+    GU.expectRowCount(gridId, 3 + depotGroupingRow);
     filters.resetFilters();
   });
 
@@ -77,7 +77,7 @@ function StockInventoriesRegistryTests() {
     FU.radio('$ctrl.searchQueries.status', 4);
     FU.modal.submit();
 
-    GU.expectRowCount(gridId, 3 + (2 * depotGroupingRow));
+    GU.expectRowCount(gridId, 7);
     filters.resetFilters();
   });
 
@@ -85,7 +85,7 @@ function StockInventoriesRegistryTests() {
     modal.switchToDefaultFilterTab();
     modal.setPeriod('allTime');
     modal.submit();
-    GU.expectRowCount(gridId, 7);
+    GU.expectRowCount(gridId, 9);
     filters.resetFilters();
   });
 

@@ -133,7 +133,7 @@ const movementDepot = {
 // ==============================================================================
 
 const depotPrincipalUuid = 'f9caeb16-1684-43c5-a6c4-47dbac1df296';
-const depotPrincipalMvt = 13; // 10 initial plus 3 distributions
+const depotPrincipalMvt = 23; // 10 initial plus 3 distributions + 10 imported
 const lotQuinineUuid = 'ae735e99-8faf-417b-aa63-9b404fca99ac';
 
 module.exports = {
