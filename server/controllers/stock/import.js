@@ -46,7 +46,7 @@ function importStock(req, res, next) {
   let queryParams;
 
   const filePath = req.files[0].path;
-  const depotUuid = db.bid(req.query.depot_uuid);
+  const depotUuid = db.bid(req.body.depot_uuid);
   const documentUuid = db.bid(uuid.v4());
 
   // be sure that the depot exist
@@ -95,7 +95,7 @@ function importStock(req, res, next) {
 
       return transaction.execute();
     })
-    .then(() => res.sendStatus(200))
+    .then(() => res.sendStatus(201))
     .catch(next)
     .done();
 }

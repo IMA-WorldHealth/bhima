@@ -1,5 +1,8 @@
 /* global by, element */
+const path = require('path');
 const FU = require('../shared/FormUtils');
+
+const fixtures = path.resolve(__dirname, '../../fixtures/');
 
 /**
  * @function selectDropdownAction
@@ -53,7 +56,20 @@ function setDepot(label) {
   FU.modal.submit();
 }
 
+/**
+ * @method uploadFile
+ *
+ * @description
+ * Use this helper method to use an input type file for uploading
+ * a file
+ */
+function uploadFile(fileToUpload, elementId = 'import-input') {
+  const absolutePath = path.resolve(fixtures, fileToUpload);
+  element(by.id(elementId)).sendKeys(absolutePath);
+}
+
 // make this available to all modules
 module.exports = {
   setDepot,
+  uploadFile,
 };

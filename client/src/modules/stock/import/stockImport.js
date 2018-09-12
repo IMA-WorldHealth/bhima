@@ -39,21 +39,26 @@ function StockImportController(
   function uploadFile(file) {
     vm.uploadState = 'uploading';
 
-    const params = {
+    const parameters = {
       url : '/stock/import/',
-      data : { file },
-      params : { depot_uuid : vm.depot.uuid },
+      data : { file, depot_uuid : vm.depot.uuid },
     };
 
+    const filters = [
+      { key : 'period', value : 'today' },
+      { key : 'limit', value : 10000 },
+      { key : 'depot_uuid', value : vm.depot.uuid },
+    ];
+
     // upload the file to the server
-    return Upload.upload(params)
+    return Upload.upload(parameters)
       .then(handleSuccess, handleError, handleProgress);
 
     // success upload handler
     function handleSuccess() {
       vm.uploadState = 'uploaded';
       Notify.success('STOCK.IMPORT.UPLOAD_SUCCESS');
-      $state.go('stockLots');
+      $state.go('stockLots', { filters });
     }
 
     function handleError(err) {
