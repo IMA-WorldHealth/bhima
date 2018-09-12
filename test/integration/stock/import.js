@@ -25,7 +25,8 @@ describe('(/stock/import) The stock import http API', () => {
     return agent.get('/stock/import/template')
       .then(res => {
         expect(res).to.have.status(200);
-        const [header, content] = String(res.text).split('\r\n');
+        const pattern = String(res.text).includes('\r\n') ? '\r\n' : '\n';
+        const [header, content] = String(res.text).split(pattern);
         expect(header).to.be.equal(templateCsvHeader);
         expect(content).to.be.equal(templateCsvContent);
       })
