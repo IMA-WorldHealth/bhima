@@ -18,6 +18,12 @@
       "NO_PERMISSIONS": "Aucun utilisateur n'a la permission d'utiliser cette caisse",
       "LAST_SEEN": "Dernière vue",
       "DEACTIVATED": "Cet utilisateur est désactivé."
+    },
+    "CARD" : {
+      "PRIMARY_CASHBOX" : "Caisse Principale",
+      "AUXILIARY_CASHBOX" : "Caisse Auxiliaire",
+      "USERS_WITH_ACCESS" : "Utilisateurs avec accès",
+      "MANAGE" : "Gérer la Caisse"
     }
   }
 }

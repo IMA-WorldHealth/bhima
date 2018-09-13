@@ -21,7 +21,7 @@
     "CARD" : { 
       "PRIMARY_CASHBOX" : "Primary Cashbox",
       "AUXILIARY_CASHBOX" : "Auxiliary Cashbox",
-      "USERS_WITH_ACCESS" : "User(s) with acess",
+      "USERS_WITH_ACCESS" : "User(s) with access",
       "MANAGE" : "Manage Cashbox"
     }
   }
