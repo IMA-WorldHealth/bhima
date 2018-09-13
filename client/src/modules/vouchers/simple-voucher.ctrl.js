@@ -34,6 +34,8 @@ function SimpleJournalVoucherController(Vouchers, util, Notify, Receipts, bhCons
   vm.timestamp = new Date();
   vm.maxLength = util.maxTextLength;
 
+  // help to group transaction_types
+  vm.groupTransactionByType = Vouchers.groupTransactionByType;
   // expose methods to the view
   vm.submit = submit;
   vm.clear = clear;
@@ -129,4 +131,5 @@ function SimpleJournalVoucherController(Vouchers, util, Notify, Receipts, bhCons
 
     vm.Voucher.validate();
   });
+
 }
