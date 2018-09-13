@@ -67,6 +67,9 @@
     ng-class="{ 'has-error' : VisitForm.$submitted && VisitForm.notes.$invalid }">
     <label class="control-label"><span translate>FORM.LABELS.NOTES</span></label>
     <textarea name="notes" ng-model="AdmitCtrl.visit.notes" class="form-control"></textarea>
+    <div class="help-block">
+      <p translate>PATIENT_RECORDS.VISITS.NOTES_INFO</p>
+    </div>
 
     <div class="help-block" ng-messages="VisitForm.notes.$error" ng-show="VisitForm.$submitted">
       <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
@@ -77,7 +80,7 @@
 
 <div class="modal-footer">
   <button type="button" class="btn btn-default" ng-click="AdmitCtrl.cancel()" data-method="cancel">
-    <span translate>FORM.BUTTONS.CANCEL</span>
+    <span translate>FORM.BUTTONS.CLOSE</span>
   </button>
 
   <bh-loading-button loading-state="AdmitCtrl.$loading">

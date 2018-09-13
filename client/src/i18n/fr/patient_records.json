@@ -23,7 +23,8 @@
       "IN_PROGRESS":"En cours",
       "AMBULATORY" : "Ambulatoire",
       "HOSPITALISATION" : "Hospitalisé",
-      "SEARCH_INFO":"L'entrée recherche le diagnostic après avoir tapé 3 caractères."
+      "SEARCH_INFO":"L'entrée recherche le diagnostic après avoir tapé 3 caractères.",
+      "NOTES_INFO" : "Plainte principale, temps écoulé depuis la visite précédente, médecin référant, etc..."
     },
     "FINANCIAL_ACTIVITY":{
       "ACCOUNT":"Numéro de compte",

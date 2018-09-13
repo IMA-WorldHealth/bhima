@@ -18,10 +18,10 @@ function VisitsController(Patients, Notify, Moment) {
   const DEFAULT_VISIT_LIMIT = 3;
 
   this.$onInit = () => {
-    $ctrl.viewLimit = DEFAULT_VISIT_LIMIT;
     $ctrl.loaded = false;
-    $ctrl.loading = true;
     $ctrl.visiting = false;
+
+    $ctrl.limitVisitDisplay = DEFAULT_VISIT_LIMIT;
 
     refreshVisitFeed();
   };
@@ -30,23 +30,21 @@ function VisitsController(Patients, Notify, Moment) {
   $ctrl.admit = admit;
 
   function refreshVisitFeed() {
-    $ctrl.loading = true;
+    if (!$ctrl.patientUuid) { return 0; }
+
     $ctrl.loaded = false;
-    Patients.Visits.read($ctrl.patientUuid)
-      .then((results) => {
-        $ctrl.visits = results;
-        $ctrl.visits.forEach(calculateDays);
-        [mostRecentVisit] = $ctrl.visits;
+
+    return Patients.Visits.read($ctrl.patientUuid)
+      .then(visits => {
+        visits.forEach(calculateDays);
+        [mostRecentVisit] = visits;
 
         if (mostRecentVisit) {
           $ctrl.visiting = Boolean(mostRecentVisit.is_open);
         }
 
+        $ctrl.visits = visits;
         $ctrl.loaded = true;
-      })
-      .catch(Notify.handleError)
-      .finally(() => {
-        $ctrl.loading = false;
       });
   }
 
@@ -59,9 +57,7 @@ function VisitsController(Patients, Notify, Moment) {
   function admit() {
     const isAdmission = !$ctrl.visiting;
     Patients.Visits.openAdmission($ctrl.patientUuid, isAdmission, mostRecentVisit)
-      .then(() => {
-        refreshVisitFeed();
-      })
+      .then(() => refreshVisitFeed())
       .catch(Notify.handleError);
   }
 }

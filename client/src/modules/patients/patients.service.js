@@ -315,6 +315,7 @@ function PatientService(
       templateUrl : 'modules/patients/lookupReturningPatient.modal.html',
       controller : 'ReturningPatientModalController as ModalCtrl',
       keyboard : true,
+      animation : false,
     }).result;
   }
 

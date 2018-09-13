@@ -13,7 +13,6 @@ function ReturningPatientModalCtrl(ModalInstance, Patients, moment) {
 
   vm.cancel = ModalInstance.close;
 
-
   function usePatient(patient) {
     vm.patient = patient;
     vm.patient.dobFormatted = moment(vm.patient.dob).format('L');
@@ -33,7 +32,6 @@ function ReturningPatientModalCtrl(ModalInstance, Patients, moment) {
 
   // clears all visual warnings
   function resetWarnings() {
-    vm.isPatientFound = false;
     vm.noPatientsFound = false;
     vm.hasMultiplePatients = false;
     vm.hasWarning = false;
