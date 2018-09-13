@@ -5,7 +5,7 @@ VisitService.$inject = ['$http', 'util', '$uibModal'];
 
 function VisitService($http, util, Modal) {
   const service = this;
-  const baseUrl = '/patients/';
+  const baseUrl = '/patients';
 
   // send/receive with $http
   service.read = read;
@@ -19,7 +19,7 @@ function VisitService($http, util, Modal) {
   function read(patientUuid, options) {
     if (!patientUuid) { return 0; }
 
-    return $http.get(baseUrl.concat(patientUuid, '/visits'), { params : options })
+    return $http.get(`${baseUrl}/${patientUuid}/visits`, { params : options })
       .then(util.unwrapHttpResponse);
   }
 
@@ -36,10 +36,11 @@ function VisitService($http, util, Modal) {
 
     if (details.diagnosis) {
       details.start_diagnosis_id = details.diagnosis.id;
-      delete details.diagnosis;
     }
 
-    return $http.post(baseUrl.concat(patientUuid, '/visits/admission'), details)
+    delete details.diagnosis;
+
+    return $http.post(`${baseUrl}/${patientUuid}/visits/admission`, details)
       .then(util.unwrapHttpResponse);
   }
 
@@ -56,10 +57,11 @@ function VisitService($http, util, Modal) {
 
     if (details.diagnosis) {
       details.end_diagnosis_id = details.diagnosis.id;
-      delete details.diagnosis;
     }
 
-    return $http.post(baseUrl.concat(patientUuid, '/visits/discharge'), details)
+    delete details.diagnosis;
+
+    return $http.post(`${baseUrl}/${patientUuid}/visits/discharge`, details)
       .then(util.unwrapHttpResponse);
   }
 
@@ -74,6 +76,8 @@ function VisitService($http, util, Modal) {
       templateUrl : 'modules/patients/record/units/visits.modal.html',
       controller : 'VisitsAdmissionController',
       controllerAs : 'AdmitCtrl',
+      animation : false,
+      keyboard : false,
       size : 'md',
       resolve : {
         patient : () => patientUuid,

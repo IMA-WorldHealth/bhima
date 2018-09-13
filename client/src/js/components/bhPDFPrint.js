@@ -142,7 +142,10 @@ function bhPDFPrintController($window, $http, $sce, $timeout, Languages, Notify)
       URL.revokeObjectURL($ctrl.blobFileUrl);
     }
 
-    $window.frames[$ctrl.embeddedContentId].removeEventListener('load', printEmbeddedContent);
+    const frame = $window.frames[$ctrl.embeddedContentId];
+    if (frame) {
+      frame.removeEventListener('load', printEmbeddedContent);
+    }
   };
 
   /**

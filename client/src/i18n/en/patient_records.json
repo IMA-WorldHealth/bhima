@@ -28,7 +28,8 @@
       "IN_PROGRESS" : "In Progress",
       "AMBULATORY" : "Outpatient Visit",
       "HOSPITALISATION" : "Hospitalisation",
-      "SEARCH_INFO" : "The input will search for diagnosis after 3 characters have been typed."
+      "SEARCH_INFO" : "The input will search for diagnosis after 3 characters have been typed.",
+      "NOTES_INFO" : "Principal complaint, time since previous visit, referring doctor, etc..."
     },
     "FINANCIAL_ACTIVITY":{
       "ACCOUNT" : "Account Number",
