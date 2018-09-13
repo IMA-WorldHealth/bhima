@@ -10,7 +10,6 @@
     "TITLE":"Cashbox Management",
     "NO_SUPPORTED_CURRENCIES":"This cashbox does not have any supported currencies.",
     "SET_CURRENCY_ACCOUNTS":"Set currency accounts for this cashbox.",
-
     "USERS": {
       "TITLE": "Cashbox Users",
       "SUBTITLE": "Users with access to this cash box:",
@@ -18,6 +17,12 @@
       "NO_PERMISSIONS": "No users have permission to use this cashbox",
       "LAST_SEEN": "Last seen",
       "DEACTIVATED": "This user is deactivated."
+    },
+    "CARD" : { 
+      "PRIMARY_CASHBOX" : "Primary Cashbox",
+      "AUXILIARY_CASHBOX" : "Auxiliary Cashbox",
+      "USERS_WITH_ACCESS" : "User(s) with access",
+      "MANAGE" : "Manage Cashbox"
     }
   }
 }

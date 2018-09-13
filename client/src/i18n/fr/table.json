@@ -168,9 +168,9 @@
             "SORTING": {
                 "LABEL": "Tri",
                 "NAME_ASC": "Nom [A-Z]",
-                "NAME_DSC": "Nom [Z-A]",
+                "NAME_DESC": "Nom [Z-A]",
                 "CREATED_ASC": "Le plus ancien",
-                "CREATED_DSC": "Le plus récent",
+                "CREATED_DESC": "Le plus récent",
                 "TOTAL_ASC": "Le plus grand"
             },
             "SOURCE": "Source",

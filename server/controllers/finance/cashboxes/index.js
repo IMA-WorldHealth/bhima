@@ -38,9 +38,11 @@ exports.privileges = privileges;
 function list(req, res, next) {
   const filters = new FilterParser(req.query);
 
-  let sql =
-    'SELECT id, label, is_auxiliary, project_id FROM cash_box ';
+  let sql = 'SELECT id, label, is_auxiliary, project_id FROM cash_box ';
 
+  // @TODO(sfount) this isn't a detailed query for cashboxes because it returns
+  //               individual supported cashbox accounts, this is essentially a seperate query
+  //               and should be moved
   if (req.query.detailed === '1') {
     sql = `
       SELECT cash_box_account_currency.id, label, account_id, is_auxiliary, transfer_account_id, symbol, cash_box_id,
@@ -49,6 +51,21 @@ function list(req, res, next) {
       cash_box.id = cash_box_account_currency.cash_box_id JOIN currency ON
       currency.id = cash_box_account_currency.currency_id
     `;
+  }
+
+  // @TODO(sfount) this should be renamed `detailed` if it can be confirmed the current
+  //               `detailed` parameter has been fully migrated
+  if (req.query.includeUsers) {
+    // numberOfUsers sub query is ineficient but this should only be used on low volume management pages
+    sql = `
+      SELECT
+        cash_box.id, cash_box.label, cash_box.is_auxiliary, cash_box.project_id,
+        project.name as project_name, project.abbr as project_abbr, (SELECT COUNT(id) from cashbox_permission
+      WHERE cashbox_id = cash_box.id) as number_of_users
+      FROM cash_box
+      LEFT JOIN project ON cash_box.project_id = project.id
+    `;
+
   }
 
   filters.equals('project_id');

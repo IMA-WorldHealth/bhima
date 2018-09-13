@@ -31,8 +31,8 @@ function DebtorGroupController($state, DebtorGroups, Color) {
 
   vm.sortOptions = [
     { attribute : 'name', key : 'TABLE.COLUMNS.SORTING.NAME_ASC', reverse : false },
-    { attribute : 'name', key : 'TABLE.COLUMNS.SORTING.NAME_DSC', reverse : true },
-    { attribute : 'created_at', key : 'TABLE.COLUMNS.SORTING.CREATED_DSC', reverse : true },
+    { attribute : 'name', key : 'TABLE.COLUMNS.SORTING.NAME_DESC', reverse : true },
+    { attribute : 'created_at', key : 'TABLE.COLUMNS.SORTING.CREATED_DESC', reverse : true },
     { attribute : 'created_at', key : 'TABLE.COLUMNS.SORTING.CREATED_ASC', reverse : false },
     { attribute : 'total_debtors', key : 'TABLE.COLUMNS.SORTING.TOTAL_ASC', reverse : true },
   ];

@@ -826,6 +826,14 @@ growl-notification.fading.ng-leave.ng-leave-active {
   max-height: initial;
 }
 
+.bh-card-list {
+  margin-bottom: 0px;
+}
+
+.bh-card {
+  margin-bottom: 3px;
+}
+
 .text-menu-item {
   display : inline-block;
   margin-right : 10px;

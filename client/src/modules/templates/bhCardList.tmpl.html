@@ -1,0 +1,47 @@
+<div class="panel panel-default bh-card-list">
+  <div class="panel-heading">
+    <a href ng-click="$ctrl.toggleFilter()" data-toggle-filter>
+      <span translate>TABLE.COLUMNS.FILTERING.LABEL</span>
+      <span class="caret" ng-class="{'rotate' : $ctrl.filterOptions.active}"></span>
+    </a>
+
+    <div class="pull-right">
+      <span class="label label-primary" style="margin-right: 5px;" ng-if="$ctrl.orderOptions.active">
+        <span translate>{{$ctrl.orderOptions.current.key}}</span>
+      </span>
+      <span uib-dropdown>
+        <a href uib-dropdown-toggle> <span translate>TABLE.COLUMNS.SORTING.LABEL</span> <span class="caret"></span></a>
+        <ul class="dropdown-menu-right textflow" uib-dropdown-menu>
+          <li ng-repeat="option in $ctrl.orderOptions.available">
+            <a href ng-click="$ctrl.setOrder(option)" data-key="{{option.key}}">
+              <span translate>{{ option.key }}</span>
+            </a>
+          </li>
+          <li role="seperator" class="divider"></li>
+          <li>
+            <a href ng-click="$ctrl.setOrder()">
+              <span class="fa fa-times" aria-hidden="true"></span>
+              <span translate> FORM.BUTTONS.CLEAR </span>
+            </a>
+          </li>
+        </ul>
+      </span>
+    </div>
+  </div>
+
+  <!-- input filters on all data objects attributes that can be matched to a string value  -->
+  <input
+    data-filter-input
+    ng-show="$ctrl.filterOptions.active"
+    ng-model="$ctrl.filterOptions.value"
+    class="form-control"
+    translate-attr="{ placeholder : 'FORM.PLACEHOLDERS.FILTER_NAME' }"
+    style="border-radius: 0" >
+</div>
+
+<div
+  ng-repeat="card in $ctrl.data
+    | filter : $ctrl.filterOptions.value :false
+    | orderBy : $ctrl.orderOptions.current.key:$ctrl.orderOptions.current.reverse">
+  <ng-include src="$ctrl.template"></ng-include>
+</div>
