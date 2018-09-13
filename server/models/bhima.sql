@@ -95,7 +95,7 @@ INSERT INTO unit VALUES
   (201, 'Employee Standing Report', 'TREE.EMPLOYEE_STANDING_REPORT', 'Employee Standing Report', 144, '/modules/reports/employeeStanding', '/reports/employeeStanding'),
   (202, 'Patient Standing Report', 'TREE.PATIENT_STANDING_REPORT', 'Patient Standing Report', 144, '/modules/reports/patientStanding', '/reports/patientStanding'),
   (203, 'Employees Configuration','TREE.PAYROLL_EMP_CONFIGURATION','',57,'/modules/payroll/employee_configuration','/payroll/employee_configuration'),
-  (204, 'Exchange Rate','TREE.EXCHANGE','',1,'/modules/exchange/exchange','/exchange'),
+  (204, 'Exchange Rate','TREE.EXCHANGE','', 1,'/modules/exchange/exchange','/exchange'),
   (205, 'Account Reference Management','TREE.ACCOUNT_REFERENCE_MANAGEMENT','',1,'/modules/account_reference','/account_reference'),
   (206, '[OHADA] Bilan','TREE.OHADA_BALANCE_SHEET','',144,'/modules/reports/ohada_balance_sheet_report','/reports/ohada_balance_sheet_report'),
   (207, 'Account Reference Report','TREE.ACCOUNT_REFERENCE_REPORT','',144,'/modules/reports/account_reference','/reports/account_reference'),

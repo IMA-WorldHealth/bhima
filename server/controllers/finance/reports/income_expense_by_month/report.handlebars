@@ -12,7 +12,7 @@
       </h3>
 
       <h5 style="margin:15px;" class="text-center text-capitalize">
-        {{date thirdPeriod.start_date "MMMM"}} ({{ fiscalYear.label }})
+        {{date firstPeriod.start_date "MMMM"}} {{date firstPeriod.start_date "YYYY"}} - {{date thirdPeriod.start_date "MMMM"}} {{date thirdPeriod.start_date "YYYY"}}
       </h5>
 
       {{#if profits}}
@@ -21,31 +21,33 @@
           <tr style="background-color:#ddd;">
             <th>{{translate 'TABLE.COLUMNS.ACCOUNT'}}</th>
             <th style="width: 45%;">{{translate 'TABLE.COLUMNS.ACCOUNT_NAME'}}</th>
-            <th class="text-center">{{translate 'TABLE.COLUMNS.BALANCE'}} {{date firstPeriod.start_date "MMMM"}}</th>
-            <th class="text-center">{{translate 'TABLE.COLUMNS.BALANCE'}} {{date secondPeriod.start_date "MMMM"}}</th>
-            <th class="text-center">{{translate 'TABLE.COLUMNS.BALANCE'}} {{date thirdPeriod.start_date "MMMM"}}</th>
+            <th class="text-center text-capitalize">{{translate 'TABLE.COLUMNS.BALANCE'}} {{date firstPeriod.start_date "MMMM"}}</th>
+            <th class="text-center text-capitalize">{{translate 'TABLE.COLUMNS.BALANCE'}} {{date secondPeriod.start_date "MMMM"}}</th>
+            <th class="text-center text-capitalize">{{translate 'TABLE.COLUMNS.BALANCE'}} {{date thirdPeriod.start_date "MMMM"}}</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <th class="text-center" colspan="6">{{translate 'FORM.LABELS.INCOME'}}</th>
+            <th class="text-center" colspan="5">{{translate 'FORM.LABELS.INCOME'}}</th>
           </tr>
           {{#each profits as |account|}}
             <tr {{#if account.isTitleAccount}} class="text-bold" {{/if}}>
               <td>{{account.number}}</td>
               <td style="padding-left:calc(({{account.depth}} - 1) * 15px);">{{account.label}}</td>
-              <td class="text-right">{{debcred account.previousBalance metadata.enterprise.currency_id}}</td>
+              <td class="text-right">{{debcred account.firstBalance metadata.enterprise.currency_id}}</td>
               <td class="text-right">{{debcred account.balance metadata.enterprise.currency_id}}</td>
-              <td class="text-right">{{debcred account.nextBalance metadata.enterprise.currency_id}}</td>
+              <td class="text-right">{{debcred account.thirdBalance metadata.enterprise.currency_id}}</td>
             </tr>
           {{/each}}
-          <tr>
-            <td colspan="2" class="text-right"><b>{{translate 'FORM.LABELS.TOTAL'}}</b></td>
-            <td class="text-right">{{debcred totals.income.previousBalance metadata.enterprise.currency_id}}</td>
-            <td class="text-right">{{debcred totals.income.balance metadata.enterprise.currency_id}}</td>
-            <td class="text-right">{{debcred totals.income.nextBalance metadata.enterprise.currency_id}}</td>
-          </tr>
         </tbody>
+        <tfoot>
+          <tr>
+            <th colspan="2" class="text-right">{{translate 'FORM.LABELS.TOTAL'}}</th>
+            <th class="text-right">{{debcred totals.income.firstBalance metadata.enterprise.currency_id}}</th>
+            <th class="text-right">{{debcred totals.income.balance metadata.enterprise.currency_id}}</th>
+            <th class="text-right">{{debcred totals.income.thirdBalance metadata.enterprise.currency_id}}</th>
+          </tr>
+        </tfoot>
       </table>
     {{/if}}
 
@@ -57,34 +59,75 @@
          <tr style="background-color:#ddd;">
             <th>{{translate 'TABLE.COLUMNS.ACCOUNT'}}</th>
             <th style="width: 45%;">{{translate 'TABLE.COLUMNS.ACCOUNT_NAME'}}</th>
-            <th class="text-center">{{translate 'TABLE.COLUMNS.BALANCE'}} {{date firstPeriod.start_date "MMMM"}}</th>
-            <th class="text-center">{{translate 'TABLE.COLUMNS.BALANCE'}} {{date secondPeriod.start_date "MMMM"}}</th>
-            <th class="text-center">{{translate 'TABLE.COLUMNS.BALANCE'}} {{date thirdPeriod.start_date "MMMM"}}</th>
+            <th class="text-center text-capitalize">{{translate 'TABLE.COLUMNS.BALANCE'}} {{date firstPeriod.start_date "MMMM"}}</th>
+            <th class="text-center text-capitalize">{{translate 'TABLE.COLUMNS.BALANCE'}} {{date secondPeriod.start_date "MMMM"}}</th>
+            <th class="text-center text-capitalize">{{translate 'TABLE.COLUMNS.BALANCE'}} {{date thirdPeriod.start_date "MMMM"}}</th>
           </tr>
         <tbody>
           <tr>
-            <th class="text-center" colspan="6">{{translate 'FORM.LABELS.EXPENSE'}}</th>
+            <th class="text-center" colspan="5">{{translate 'FORM.LABELS.EXPENSE'}}</th>
           </tr>
           {{#each losses as |account|}}
             <tr {{#if account.isTitleAccount}} class="text-bold" {{/if}}>
               <td>{{account.number}}</td>
               <td style="padding-left:calc(({{account.depth}} - 1) * 15px);">{{account.label}}</td>
-              <td class="text-right">{{debcred account.previousBalance metadata.enterprise.currency_id}}</td>
+              <td class="text-right">{{debcred account.firstBalance metadata.enterprise.currency_id}}</td>
               <td class="text-right">{{debcred account.balance metadata.enterprise.currency_id}}</td>
-              <td class="text-right">{{debcred account.nextBalance metadata.enterprise.currency_id}}</td>
+              <td class="text-right">{{debcred account.thirdBalance metadata.enterprise.currency_id}}</td>
             </tr>
-          {{else}}
-            {{>emptyTable columns=6}}
           {{/each}}
-          <tr>
-            <td colspan="2" class="text-right"><b>{{translate 'FORM.LABELS.TOTAL'}}</b></td>
-            <td class="text-right">{{debcred totals.expense.previousBalance metadata.enterprise.currency_id}}</td>
-            <td class="text-right">{{debcred totals.expense.balance metadata.enterprise.currency_id}}</td>
-            <td class="text-right">{{debcred totals.expense.nextBalance metadata.enterprise.currency_id}}</td>
-          </tr>
         </tbody>
+        <tfoot>
+          <tr>
+            <th colspan="2" class="text-right">{{translate 'FORM.LABELS.TOTAL'}}</th>
+            <th class="text-right">{{debcred totals.expense.firstBalance metadata.enterprise.currency_id}}</th>
+            <th class="text-right">{{debcred totals.expense.balance metadata.enterprise.currency_id}}</th>
+            <th class="text-right">{{debcred totals.expense.thirdBalance metadata.enterprise.currency_id}}</th>
+          </tr>
+        </tfoot>
       </table>
     {{/if}}
+    </div>
+  </div>
+  <br />
+
+  <div class="row">
+    <div class="col-md-offset-6 col-md-6">
+      <table class="table table-condensed">
+        <thead>
+          <tr style="background-color:#ddd;">
+            <th colspan="4" class="text-center text-capitalize">{{translate 'FORM.LABELS.TOTAL'}}</th>
+          </tr>
+          <tr>
+            <th></th>
+            <th class="text-center text-capitalize">{{date firstPeriod.start_date "MMMM"}}</th>
+            <th class="text-center text-capitalize">{{date secondPeriod.start_date "MMMM"}}</th>
+            <th class="text-center text-capitalize">{{date thirdPeriod.start_date "MMMM"}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>{{translate 'FORM.LABELS.INCOME'}}</th>
+            <td class="text-right">{{debcred totals.income.firstBalance metadata.enterprise.currency_id}}</td>
+            <td class="text-right">{{debcred totals.income.balance metadata.enterprise.currency_id}}</td>
+            <td class="text-right">{{debcred totals.income.thirdBalance metadata.enterprise.currency_id}}</td>
+          </tr>
+          <tr>
+            <th>{{translate 'FORM.LABELS.EXPENSE'}}</th>
+            <td class="text-right">{{debcred totals.expense.firstBalance metadata.enterprise.currency_id}}</td>
+            <td class="text-right">{{debcred totals.expense.balance metadata.enterprise.currency_id}}</td>
+            <td class="text-right">{{debcred totals.expense.thirdBalance metadata.enterprise.currency_id}}</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <th>{{translate 'FORM.LABELS.DIFFERENCE'}}</th>
+            <th class="text-right">{{debcred totals.difference.firstBalance metadata.enterprise.currency_id}}</th>
+            <th class="text-right">{{debcred totals.difference.balance metadata.enterprise.currency_id}}</th>
+            <th class="text-right">{{debcred totals.difference.thirdBalance metadata.enterprise.currency_id}}</th>
+          </tr>
+        </tfoot>
+      </table>
     </div>
   </div>
 </div>

@@ -1,16 +1,15 @@
 /**
  * Income Expense by Month Controller
  *
- * This controller is responsible for processing the income and expense by month report.
- *
- * @module finance/incomeExpense
+ * This controller is responsible for processing the income and expense by month
+ * report.
  *
  * @requires lodash
  * @requires lib/db
  * @requires lib/ReportManager
  * @requires lib/errors/BadRequest
  * @requires lib/Tree
- * @requires constrollers/fiscal
+ * @requires controllers/fiscal
  */
 
 
@@ -29,7 +28,7 @@ const TITLE_ID = 6;
 
 const DEFAULT_PARAMS = {
   csvKey : 'rows',
-  filename : 'TREE.INCOME_EXPENSE',
+  filename : 'TREE.INCOME_EXPENSE_BY_MONTH',
   orientation : 'landscape',
   footerRight : '[page] / [toPage]',
 };
@@ -52,11 +51,25 @@ function document(req, res, next) {
   const { periodId, periodNumber, fiscalYearId } = options;
   const data = {};
 
-  Promise.all([
-    getPeriodByNumberAndFiscalId(parseInt(periodNumber, 10) - 2, fiscalYearId),
-    getPeriodByNumberAndFiscalId(parseInt(periodNumber, 10) - 1, fiscalYearId),
-    getPeriodById(periodId),
 
+  const periodNum = parseInt(periodNumber, 10);
+  const isOutOfRange = (periodNum - 2 <= 0);
+
+  // TODO(@jniles) - gracefully change the number of columns if the user selects
+  // a period too close to the start of the fiscal year.  For example, January
+  // should default to a single column, February to two, etc.
+  if (isOutOfRange) {
+    next(new BadRequest(
+      'Period selection is out of range.  Choose a period at least two months past the start of the fiscal year.',
+      'ERRORS.BAD_DATE_INTERVAL'
+    ));
+    return;
+  }
+
+  Promise.all([
+    getPeriodByNumberAndFiscalId(periodNum - 2, fiscalYearId),
+    getPeriodByNumberAndFiscalId(periodNum - 1, fiscalYearId),
+    getPeriodById(periodId),
     Fiscal.lookupFiscalYear(fiscalYearId),
   ])
     .then(([firstPeriod, secondPeriod, thirdPeriod, fiscalYear]) => {
@@ -78,7 +91,6 @@ function document(req, res, next) {
     .then(([firstBalances, secondBalances, thirdBalances]) => {
 
       const dataset = combineIntoSingleDataset(secondBalances, firstBalances, thirdBalances);
-      // console.log(dataset);
       const tree = constructAndPruneTree(dataset);
 
       const root = tree.getRootNode();
@@ -101,20 +113,18 @@ function document(req, res, next) {
       tree.walk(node => losses.push(node), true, expense);
 
       // calculate totals and profit
-      const emptyTotal = { balance : 0, previousBalance : 0, nextBalance : 0 };
+      const emptyTotal = { balance : 0, firstBalance : 0, thirdBalance : 0 };
       const totals = {
         income :  profits[0] || emptyTotal,
         expense : losses[0] || emptyTotal,
       };
 
-      // computes the variance on the income/expense
-      profits.forEach(account => {
-        account.variance = variance(account.balance, account.previousBalance);
-      });
-
-      losses.forEach(account => {
-        account.variance = variance(account.balance, account.previousBalance);
-      });
+      // compute the differences, keeping the same variable names as before.
+      totals.difference = {
+        firstBalance : Math.abs(totals.income.firstBalance) - totals.expense.firstBalance,
+        balance : Math.abs(totals.income.balance) - totals.expense.balance,
+        thirdBalance : Math.abs(totals.income.thirdBalance) - totals.expense.thirdBalance,
+      };
 
       _.extend(data, {
         profits, losses, totals,
@@ -126,11 +136,6 @@ function document(req, res, next) {
       res.set(result.headers).send(result.report);
     })
     .catch(next);
-}
-
-function variance(current, previous) {
-  const difference = (previous - current);
-  return -1 * (difference / previous);
 }
 
 /**
@@ -183,7 +188,7 @@ function getPeriodById(id) {
  * @description
  * This function takes two partially overlapping datasets and combines them into
  * a single dataset.  The current balances set the balance values and the
- * previous balances are assigned to previousBalance property.  Missing data is
+ * previous balances are assigned to firstBalance property.  Missing data is
  * filled in with zeroes.
  *
  * @returns Array
@@ -200,21 +205,20 @@ function combineIntoSingleDataset(secondBalances, firstBalances, thirdBalances) 
   return combined.map(id => {
     const record = {};
 
-    const current = secondMap.get(id);
-    const previous = firstMap.get(id);
-    const next = thirdMap.get(id);
+    const second = secondMap.get(id);
+    const first = firstMap.get(id);
+    const third = thirdMap.get(id);
 
-    if (current) {
-      const previousBalance = previous ? previous.balance : 0;
-      const nextBalance = next ? next.balance : 0;
-      _.extend(record, current, { previousBalance, nextBalance });
-    } else if (previous) {
-      const nextBalance = next ? next.balance : 0;
-      _.extend(record, previous, { balance : 0 }, { previousBalance : previous.balance, nextBalance });
+    if (second) {
+      const firstBalance = first ? first.balance : 0;
+      const thirdBalance = third ? third.balance : 0;
+      _.extend(record, second, { firstBalance, thirdBalance });
+    } else if (first) {
+      const thirdBalance = third ? third.balance : 0;
+      _.extend(record, first, { balance : 0 }, { firstBalance : first.balance, thirdBalance });
     } else {
-      _.extend(record, next, { balance : 0, previousBalance : 0 }, { nextBalance : next.balance });
+      _.extend(record, third, { balance : 0, firstBalance : 0 }, { thirdBalance : third.balance });
     }
-
 
     return record;
   });
@@ -244,7 +248,7 @@ function constructAndPruneTree(dataset) {
   const tree = new Tree(dataset);
 
   const properties = [
-    'balance', 'previousBalance', 'nextBalance', 'variance',
+    'balance', 'firstBalance', 'thirdBalance',
   ];
 
   const bulkSumFn = (currentNode, parentNode) => {
@@ -272,6 +276,7 @@ function constructAndPruneTree(dataset) {
 }
 
 const MAX_ITERATIONS = 25;
+
 /**
  * @function PruneTree
  *
@@ -282,7 +287,7 @@ function pruneTree(tree, removeUnusedAccounts = true) {
   let removed = 0;
 
   const nodesWithNoChildrenFn = node => node.isTitleAccount && node.children.length === 0;
-  const nodesWithNoBalance = node => (node.previousBalance + node.balance) === 0;
+  const nodesWithNoBalance = node => (node.firstBalance + node.balance) === 0;
 
   const pruneFn = (node) => {
     const shouldPrune = nodesWithNoChildrenFn(node);
