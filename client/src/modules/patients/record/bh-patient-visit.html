@@ -31,18 +31,35 @@
         <tbody>
           <tr data-visit-line ng-repeat="visit in $ctrl.visits | limitTo : $ctrl.limitVisitDisplay">
 
-          <td>
-            <i class="fa fa-sign-in"></i> {{visit.start_date | date}} -
-            <span ng-if="visit.end_date">
-              {{visit.end_date | date}}
-              ({{visit.totalDays}} <span translate>PATIENT_REGISTRY.DAYS</span>)
-            </span>
-            <span ng-if="!visit.end_date">
-              (<b class="text-success"><span translate>PATIENT_RECORDS.VISITS.IN_PROGRESS</span></b>)
-            </span>
-          </td>
+            <td>
+              <i class="fa fa-sign-in"></i> {{visit.start_date | date}} -
+              <span ng-if="visit.end_date">
+                {{visit.end_date | date}}
+                ({{visit.totalDays}} <span translate>PATIENT_REGISTRY.DAYS</span>)
+              </span>
+              <span ng-if="!visit.end_date">
+                (<b class="text-success"><span translate>PATIENT_RECORDS.VISITS.IN_PROGRESS</span></b>)
+              </span>
+              <span ng-if="visit.hospitalized" class="label label-primary" translate>
+                PATIENT_RECORDS.VISITS.HOSPITALISATION
+              </span>
+            </td>
+          </tr>
         </tbody>
       </table>
+
+      <!-- if the visits exceed the space, this will show all visits -->
+      <div class="text-center" ng-if="$ctrl.hasOverflowVisits" style="margin-top: 1em;">
+        <a href ng-click="$ctrl.toggleViewLimit()">
+          <span ng-hide="$ctrl.hasExpandedView" >
+            <i class="fa fa-arrow-circle-o-down"></i> <span translate>FORM.BUTTONS.SHOW_ALL_RECORDS</span>
+          </span>
+
+          <span ng-show="$ctrl.hasExpandedView">
+            <i class="fa fa-arrow-circle-o-up"></i> <span translate>FORM.BUTTONS.COLLAPSE_RECORDS</span>
+          </span>
+        </a>
+      </div>
     </div>
   </div>
 </div>

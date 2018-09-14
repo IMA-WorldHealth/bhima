@@ -19,6 +19,7 @@
             "CONFIRM": "Confirmer",
             "CONFIRM_CANCEL": "Confirmer Annulation",
             "CONNECTION": "Connexion",
+            "COLLAPSE_RECORDS" : "Effondrer les enregistrements",
             "DELETE": "Supprimer",
             "DELETE_RECORD": "Supprimer Enregistrement",
             "DEPOT_MANAGEMENT": "Gestion des dépôts",
