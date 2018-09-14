@@ -74,7 +74,7 @@ function VisitService($http, util, Modal) {
   // admission vs. discharge
   function openAdmission(patientUuid, isAdmission, currentVisit) {
     const modalOptions = {
-      templateUrl : 'modules/patients/record/units/visits.modal.html',
+      templateUrl : 'modules/patients/visits/visits.modal.html',
       controller : 'VisitsAdmissionController',
       controllerAs : 'AdmitCtrl',
       keyboard : false,
