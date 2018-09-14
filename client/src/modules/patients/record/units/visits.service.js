@@ -60,6 +60,7 @@ function VisitService($http, util, Modal) {
     }
 
     delete details.diagnosis;
+    delete details.hospitalized;
 
     return $http.post(`${baseUrl}/${patientUuid}/visits/discharge`, details)
       .then(util.unwrapHttpResponse);
@@ -76,7 +77,6 @@ function VisitService($http, util, Modal) {
       templateUrl : 'modules/patients/record/units/visits.modal.html',
       controller : 'VisitsAdmissionController',
       controllerAs : 'AdmitCtrl',
-      animation : false,
       keyboard : false,
       size : 'md',
       resolve : {

@@ -9,7 +9,7 @@
 
 <div class="modal-body">
 
-  <div ng-if="!AdmitCtrl.isAdmission" class="form-group">
+  <div ng-if="!AdmitCtrl.isAdmission && AdmitCtrl.currentVisit.start_diagnosis_label" class="form-group">
     <label class="control-label"><span translate>PATIENT_RECORDS.VISITS.ADMISSION_DIAGNOSIS</span></label>
     <p class="form-static">{{AdmitCtrl.currentVisit.start_diagnosis_label}}</p>
   </div>

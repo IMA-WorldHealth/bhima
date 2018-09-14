@@ -28,10 +28,9 @@ function VisitsController(Patients, Notify, Moment) {
 
   // expose methods to the view
   $ctrl.admit = admit;
+  $ctrl.toggleViewLimit = toggleViewLimit;
 
   function refreshVisitFeed() {
-    if (!$ctrl.patientUuid) { return 0; }
-
     $ctrl.loaded = false;
 
     return Patients.Visits.read($ctrl.patientUuid)
@@ -44,8 +43,15 @@ function VisitsController(Patients, Notify, Moment) {
         }
 
         $ctrl.visits = visits;
+
+        $ctrl.hasOverflowVisits = (visits.length > DEFAULT_VISIT_LIMIT);
         $ctrl.loaded = true;
       });
+  }
+
+  function toggleViewLimit() {
+    $ctrl.hasExpandedView = ($ctrl.limitVisitDisplay === DEFAULT_VISIT_LIMIT);
+    $ctrl.limitVisitDisplay = $ctrl.hasExpandedView ? 1000 : DEFAULT_VISIT_LIMIT;
   }
 
   function calculateDays(visit) {

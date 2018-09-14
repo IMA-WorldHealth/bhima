@@ -233,6 +233,8 @@ function discharge(req, res, next) {
     UPDATE patient_visit SET ? WHERE uuid = ?;
   `;
 
+  console.log('data:', data);
+
   db.exec(sql, [data, db.bid(visitUuid)])
     .then(() => {
       res.status(201).json({ uuid : visitUuid });
