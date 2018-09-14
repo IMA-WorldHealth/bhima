@@ -44,7 +44,7 @@ function find(options) {
   const sql = `
     SELECT ${COLUMNS}
     FROM patient_visit
-    JOIN user on patient_visit.user_id = user.id
+    JOIN user ON patient_visit.user_id = user.id
     LEFT JOIN icd10 ON icd10.id = patient_visit.start_diagnosis_id
   `;
 
@@ -232,8 +232,6 @@ function discharge(req, res, next) {
   const sql = `
     UPDATE patient_visit SET ? WHERE uuid = ?;
   `;
-
-  console.log('data:', data);
 
   db.exec(sql, [data, db.bid(visitUuid)])
     .then(() => {

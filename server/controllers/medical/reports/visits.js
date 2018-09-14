@@ -1,8 +1,8 @@
 /**
- * @overview reports/checkins
+ * @overview reports/visits
  *
  * @description
- * This file contains code to create a PDF report of all patient checkins,
+ * This file contains code to create a PDF report of all patient visits,
  * matching query conditions passed from the patient registry UI grid.
  *
  * @requires lodash
@@ -21,14 +21,14 @@ const Locations = require('../../admin/locations');
 const Patients = require('../patients');
 
 // path to the template to render
-const TEMPLATE = './server/controllers/medical/reports/checkins.handlebars';
+const TEMPLATE = './server/controllers/medical/reports/visits.handlebars';
 
 /**
  * @function getReportData
  *
  * @description
- * Compiles the data for the checkin report from the patient table and previous
- * checkins.
+ * Compiles the data for the visits report from the patient table and previous
+ * visits.
  *
  * @param {String} uuid - the patient uuid to look up
  */
@@ -65,10 +65,10 @@ function getReportData(uuid) {
 
       return db.exec(sql, [db.bid(uuid)]);
     })
-    .then(checkins => {
+    .then(visits => {
       // grouping by year allows pretty table groupings
-      data.checkins = _.groupBy(checkins, 'year');
-      data.total = checkins.length;
+      data.visits = _.groupBy(visits, 'year');
+      data.total = visits.length;
       return data;
     });
 }
@@ -78,10 +78,10 @@ function getReportData(uuid) {
  *
  * @description
  * This function builds a patient checkin report.  The checkin report begins
- * with the patient registration and lists all checkins since the initial
+ * with the patient registration and lists all visits since the initial
  * registration.
  *
- * GET /reports/patients/:uuid/checkins
+ * GET /reports/patients/:uuid/visits
  */
 function build(req, res, next) {
   const options = req.query;

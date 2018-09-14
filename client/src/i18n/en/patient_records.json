@@ -1,21 +1,15 @@
 {
   "PATIENT_RECORDS":{
+    "DOB_NOT_SPECIFIED" : "Only a year of birth was specified during patient registration. This is an approximate date.",
+    "INVOICE_COVERED_BY" : "Invoice covered by",
+    "IS_COVERED_BY" : "is covered by",
+    "NOT_FOUND" : "Unable to find patient with that ID. Please check with your system administrator.",
+    "STAT_TOTAL_NEW" : "New Patients",
+    "STAT_TOTAL_PATIENT" : "Total Patients",
+    "STAT_TOTAL_VISIT" : "Total Visits",
     "TITLE" : "Patients",
     "UPDATE_PICTURE" : "Update Patient Photo",
     "UPLOAD_PICTURE" : "Upload Patient Photo",
-    "NOT_FOUND" : "Unable to find patient with that ID. Please check with your system administrator.",
-    "DOB_NOT_SPECIFIED" : "Only a year of birth was specified during patient registration. This is an approximate date.",
-    "CHECK_IN":{
-      "TITLE" : "Check In",
-      "SUBMIT" : "Check Patient In",
-      "NOT_RECENT" : "This patient has not recently been checked in, check the patient in to track this hospital visit.",
-      "ORIGINAL" : "This patient has never been checked in.",
-      "RECENT" : "Recent Visits",
-      "ITEM" : "Checked in",
-      "BY" : "by",
-      "REPORT_TITLE" : "Patient Checkin Report",
-      "SUCCESS" : "Patient has been checked in"
-    },
     "VISITS":{
       "TITLE" : "Patient Visits",
       "ADMIT" : "Admit Patient",
@@ -36,20 +30,15 @@
       "DEBTOR_GROUP" : "Debtor Group",
       "REPORT_TITLE" : "Patient Financial Activity"
     },
-    "STAT_TOTAL_PATIENT" : "Total Patients",
-    "STAT_TOTAL_VISIT" : "Total Visits",
-    "IS_COVERED_BY" : "is covered by",
-    "INVOICE_COVERED_BY" : "Invoice covered by",
-    "STAT_TOTAL_NEW" : "New Patients",
     "FINANCES" : {
-      "IN_GOOD_STANDING" : "Everything looks normal!",
-      "NOT_IN_GOOD_STANDING" : "There are some irregularities in the financial activity.",
-      "HAS_CREDITOR_BALANCE" : "The patient has a creditor (negative) balance of <b>({{ balance | currency:currency_id}})</b>.  It may be intentional, but may indicate a problem.",
-      "HAS_OVERDUE_BALANCE" : "The patient has debt from <b>{{date | date}}</b>.  Consider writing off the debt or following up with the patient.",
-      "HAS_EXCESS_BALANCE" : "The patient has a debt of <strong>{{ balance | currency:currency_id}}</strong>.  This is a large amount of debt and may present a problem recovering the debt.",
       "FIRST_TRANSACTION" : "First Transaction",
+      "HAS_CREDITOR_BALANCE" : "The patient has a creditor (negative) balance of <b>({{ balance | currency:currency_id}})</b>.  It may be intentional, but may indicate a problem.",
+      "HAS_EXCESS_BALANCE" : "The patient has a debt of <strong>{{ balance | currency:currency_id}}</strong>.  This is a large amount of debt and may present a problem recovering the debt.",
+      "HAS_OVERDUE_BALANCE" : "The patient has debt from <b>{{date | date}}</b>.  Consider writing off the debt or following up with the patient.",
+      "IN_GOOD_STANDING" : "Everything looks normal!",
       "LAST_TRANSACTION" : "Last Transaction",
-      "NO_ACTIVITY" : "The patient doesn't have any activity!"
+      "NO_ACTIVITY" : "The patient doesn't have any activity!",
+      "NOT_IN_GOOD_STANDING" : "There are some irregularities in the financial activity."
     }
   }
 }
