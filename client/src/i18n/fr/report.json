@@ -109,7 +109,8 @@
     },
     "INCOME_EXPENSE_BY_MONTH_REPORT": {
       "TITLE": "Rapport des Comptes d'exploitation par mois",
-      "DESCRIPTION": "Ce rapport affiche la liste des revenus et des dépenses pris en charge dans l'entreprise, il compare le mois précédent, le mois en cours et le mois suivant"
+      "DESCRIPTION": "Ce rapport affiche la liste des revenus et des dépenses pris en charge dans l'entreprise, il compare le mois précédent, le mois en cours et le mois suivant",
+      "REMOVE_UNUSED_ACCOUNT" : "Enlèver les comptes non utilisés"
     },
     "BALANCE_REPORT": {
       "TITLE": "Rapport de la Balance des comptes",

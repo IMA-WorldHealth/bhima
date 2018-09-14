@@ -62,7 +62,7 @@
     "EXPENSE_REPORT": "Expenses Report",
     "GENERATED": "Generated Report",
     "INCOME_EXPENSE": "Profit And Loss Statement",
-    "INCOME_EXPENSE_BY_MONTH": "Statement of revenues and expenses for the current period and the two previous periods",
+    "INCOME_EXPENSE_BY_MONTH": "Statement of revenues and expenses for the current and the two previous periods",
     "INCOME_REPORT": "Incomes Report",
     "MONTHLY_BALANCE": "Monthly Balance",
     "OPEN_DEBTORS": {
@@ -112,7 +112,8 @@
     },
     "INCOME_EXPENSE_BY_MONTH_REPORT": {
       "TITLE": "Income Expense Report by month",
-      "DESCRIPTION": "Creates an income and expense statement for the current period and the previous two periods"
+      "DESCRIPTION": "Creates an income and expense statement for the current and the two previous  periods",
+      "REMOVE_UNUSED_ACCOUNT" : "Remove unused accounts"
     },
     "INCOME_EXPENSE_REPORT": {
       "TITLE": "Income Expense Report",

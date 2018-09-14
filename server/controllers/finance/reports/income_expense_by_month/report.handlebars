@@ -24,19 +24,21 @@
             <th class="text-center text-capitalize">{{translate 'TABLE.COLUMNS.BALANCE'}} {{date firstPeriod.start_date "MMMM"}}</th>
             <th class="text-center text-capitalize">{{translate 'TABLE.COLUMNS.BALANCE'}} {{date secondPeriod.start_date "MMMM"}}</th>
             <th class="text-center text-capitalize">{{translate 'TABLE.COLUMNS.BALANCE'}} {{date thirdPeriod.start_date "MMMM"}}</th>
+            <th class="text-center text-capitalize">{{translate 'FORM.LABELS.AVERAGE_BALANCE'}}</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <th class="text-center" colspan="5">{{translate 'FORM.LABELS.INCOME'}}</th>
+            <th class="text-center" colspan="6">{{translate 'FORM.LABELS.INCOME'}}</th>
           </tr>
           {{#each profits as |account|}}
             <tr {{#if account.isTitleAccount}} class="text-bold" {{/if}}>
               <td>{{account.number}}</td>
               <td style="padding-left:calc(({{account.depth}} - 1) * 15px);">{{account.label}}</td>
-              <td class="text-right">{{debcred account.firstBalance metadata.enterprise.currency_id}}</td>
-              <td class="text-right">{{debcred account.balance metadata.enterprise.currency_id}}</td>
-              <td class="text-right">{{debcred account.thirdBalance metadata.enterprise.currency_id}}</td>
+              <td class="text-right">{{debcred account.firstBalance ../metadata.enterprise.currency_id}}</td>
+              <td class="text-right">{{debcred account.balance ../metadata.enterprise.currency_id}}</td>
+              <td class="text-right">{{debcred account.thirdBalance ../metadata.enterprise.currency_id}}</td>
+              <td class="text-right">{{debcred account.averageBalance ../metadata.enterprise.currency_id}}</td>
             </tr>
           {{/each}}
         </tbody>
@@ -46,6 +48,7 @@
             <th class="text-right">{{debcred totals.income.firstBalance metadata.enterprise.currency_id}}</th>
             <th class="text-right">{{debcred totals.income.balance metadata.enterprise.currency_id}}</th>
             <th class="text-right">{{debcred totals.income.thirdBalance metadata.enterprise.currency_id}}</th>
+            <th></th>
           </tr>
         </tfoot>
       </table>
@@ -62,18 +65,20 @@
             <th class="text-center text-capitalize">{{translate 'TABLE.COLUMNS.BALANCE'}} {{date firstPeriod.start_date "MMMM"}}</th>
             <th class="text-center text-capitalize">{{translate 'TABLE.COLUMNS.BALANCE'}} {{date secondPeriod.start_date "MMMM"}}</th>
             <th class="text-center text-capitalize">{{translate 'TABLE.COLUMNS.BALANCE'}} {{date thirdPeriod.start_date "MMMM"}}</th>
+            <th class="text-center text-capitalize">{{translate 'FORM.LABELS.AVERAGE_BALANCE'}}</th>
           </tr>
         <tbody>
           <tr>
-            <th class="text-center" colspan="5">{{translate 'FORM.LABELS.EXPENSE'}}</th>
+            <th class="text-center" colspan="6">{{translate 'FORM.LABELS.EXPENSE'}}</th>
           </tr>
           {{#each losses as |account|}}
             <tr {{#if account.isTitleAccount}} class="text-bold" {{/if}}>
               <td>{{account.number}}</td>
               <td style="padding-left:calc(({{account.depth}} - 1) * 15px);">{{account.label}}</td>
-              <td class="text-right">{{debcred account.firstBalance metadata.enterprise.currency_id}}</td>
-              <td class="text-right">{{debcred account.balance metadata.enterprise.currency_id}}</td>
-              <td class="text-right">{{debcred account.thirdBalance metadata.enterprise.currency_id}}</td>
+              <td class="text-right">{{debcred account.firstBalance ../metadata.enterprise.currency_id}}</td>
+              <td class="text-right">{{debcred account.balance ../metadata.enterprise.currency_id}}</td>
+              <td class="text-right">{{debcred account.thirdBalance ../metadata.enterprise.currency_id}}</td>
+              <td class="text-right">{{debcred account.averageBalance ../metadata.enterprise.currency_id}}</td>
             </tr>
           {{/each}}
         </tbody>
@@ -83,6 +88,7 @@
             <th class="text-right">{{debcred totals.expense.firstBalance metadata.enterprise.currency_id}}</th>
             <th class="text-right">{{debcred totals.expense.balance metadata.enterprise.currency_id}}</th>
             <th class="text-right">{{debcred totals.expense.thirdBalance metadata.enterprise.currency_id}}</th>
+            <th></th>
           </tr>
         </tfoot>
       </table>

@@ -18,6 +18,7 @@ const db = require('../../../../lib/db');
 const ReportManager = require('../../../../lib/ReportManager');
 const BadRequest = require('../../../../lib/errors/BadRequest');
 const Tree = require('../../../../lib/Tree');
+const util = require('../../../../lib/util');
 const Fiscal = require('../../fiscal');
 
 const TEMPLATE = './server/controllers/finance/reports/income_expense_by_month/report.handlebars';
@@ -40,6 +41,8 @@ function document(req, res, next) {
   let report;
 
   const options = _.defaults(req.query, DEFAULT_PARAMS);
+
+  const removeUnusedAccounts = !!+options.removeUnusedAccounts;
 
   try {
     report = new ReportManager(TEMPLATE, req.session, options);
@@ -91,7 +94,7 @@ function document(req, res, next) {
     .then(([firstBalances, secondBalances, thirdBalances]) => {
 
       const dataset = combineIntoSingleDataset(secondBalances, firstBalances, thirdBalances);
-      const tree = constructAndPruneTree(dataset);
+      const tree = constructAndPruneTree(dataset, removeUnusedAccounts);
 
       const root = tree.getRootNode();
       root.children = root.children || [];
@@ -244,7 +247,7 @@ function getPeriodByNumberAndFiscalId(number, fiscalId) {
  * @description
  * Receives a dataset of balances and creates the account tree.
  */
-function constructAndPruneTree(dataset) {
+function constructAndPruneTree(dataset, removeUnusedAccounts = true) {
   const tree = new Tree(dataset);
 
   const properties = [
@@ -261,7 +264,7 @@ function constructAndPruneTree(dataset) {
   tree.walk(bulkSumFn, false);
 
   // prune tree until all unused unused leaves fall off.
-  pruneTree(tree);
+  pruneTree(tree, removeUnusedAccounts);
 
   // label income/expense branches
   tree.walk((node, parentNode) => {
@@ -271,8 +274,16 @@ function constructAndPruneTree(dataset) {
 
   // label depths of nodes
   tree.walk(Tree.common.computeNodeDepth);
-
+  tree.walk(calculateAverageBalance);
   return tree;
+}
+
+// the average balance for the three periods
+function calculateAverageBalance(node) {
+  function abs(val) {
+    return (val) ? Math.abs(node.firstBalance) : 0;
+  }
+  node.averageBalance = util.roundDecimal((abs(node.firstBalance) + abs(node.balance) + abs(node.thirdBalance)) / 3, 2);
 }
 
 const MAX_ITERATIONS = 25;
