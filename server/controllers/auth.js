@@ -218,12 +218,7 @@ function loadSessionInformation(user) {
 
       sql = `
         SELECT
-          enable_price_lock,
-          enable_prepayments,
-          enable_password_validation,
-          enable_delete_records,
-          enable_balance_on_invoice_receipt,
-          enable_barcodes
+          *
         FROM enterprise_setting
         WHERE enterprise_id = ?;
       `;
