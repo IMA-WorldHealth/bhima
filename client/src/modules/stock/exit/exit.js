@@ -196,10 +196,10 @@ function StockExitController(
       const quantity = row.quantity ? row.quantity : null;
       const type = row.quantity && row.inventory.unit_type ? row.inventory.unit_type : null;
       const available = row.inventory && row.inventory.quantity ? row.inventory.quantity : null;
-      const amount = row.inventory && row.inventory.unit_cost && row.quantity ?
-        row.inventory.unit_cost * row.quantity : 0;
-      const expiration = row.lot && row.lot.expiration_date ?
-        moment(row.lot.expiration_date).format(bhConstants.dates.formatDB) : null;
+      const amount = row.inventory && row.inventory.unit_cost && row.quantity
+        ? row.inventory.unit_cost * row.quantity : 0;
+      const expiration = row.lot && row.lot.expiration_date
+        ? moment(row.lot.expiration_date).format(bhConstants.dates.formatDB) : null;
 
       return [code, description, lot, price, quantity, type, available, amount, expiration].map(value => ({ value }));
     });
@@ -440,8 +440,8 @@ function StockExitController(
 
   // submit patient
   function submitPatient() {
-    const invoiceUuid = vm.movement.entity.instance.invoice && vm.movement.entity.instance.invoice ?
-      vm.movement.entity.instance.invoice.details.uuid : null;
+    const invoiceUuid = vm.movement.entity.instance.invoice && vm.movement.entity.instance.invoice
+      ? vm.movement.entity.instance.invoice.details.uuid : null;
 
     const movement = {
       depot_uuid : vm.depot.uuid,
