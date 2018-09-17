@@ -293,7 +293,7 @@ function getLotsOrigins(depotUuid, params) {
 /**
  * Stock Management Processing
  */
-function stockManagementProcess(inventories, inventoryDelay, purchaseInterval) {
+function stockManagementProcess(inventories, inventoryDelay = 1, purchaseInterval = 1) {
   const current = moment();
   let CM;
   let Q;

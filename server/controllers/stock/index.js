@@ -394,6 +394,7 @@ function listLotsDepot(req, res, next) {
  */
 function listInventoryDepot(req, res, next) {
   const params = req.query;
+
   core.getInventoryQuantityAndConsumption(params)
     .then((rows) => res.status(200).json(rows))
     .catch(next)
