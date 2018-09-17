@@ -1,3 +1,4 @@
+const moment = require('moment');
 const helpers = require('../shared/helpers');
 const EntryPage = require('./stock.entry.page');
 
@@ -5,6 +6,10 @@ function StockEntryTests() {
   const DEPOT_PRINCIPAL = 'Depot Principal';
   const DEPOT_SECONDAIRE = 'Second';
   const DESCRIPTION = 'Entree de stock';
+
+  const expireInOneYear = moment().add(1, 'year').format('YYYY-MM-DD');
+  const expireInTwoYears = moment().add(2, 'year').format('YYYY-MM-DD');
+  const expireInThreeYears = moment().add(3, 'year').format('YYYY-MM-DD');
 
   // the page object
   const page = new EntryPage();
@@ -25,9 +30,9 @@ function StockEntryTests() {
     page.setDescription(DESCRIPTION.concat(' - Purchase order'));
 
     const lots = [
-      { label : 'LX-ONE', quantity : 500, expiration_date : '2020-12-31' },
-      { label : 'LX-TWO', quantity : 300, expiration_date : '2019-06-15' },
-      { label : 'LX-THREE', quantity : 200, expiration_date : '2018-09-15' },
+      { label : 'LX-ONE', quantity : 500, expiration_date : expireInThreeYears },
+      { label : 'LX-TWO', quantity : 300, expiration_date : expireInTwoYears },
+      { label : 'LX-THREE', quantity : 200, expiration_date : expireInOneYear },
     ];
 
     page.setLots(0, lots, false);
@@ -52,11 +57,11 @@ function StockEntryTests() {
     page.addRows(1);
 
     const lots = [
-      { label : 'ASP-ONE', quantity : 100, expiration_date : '2020-12-31' },
-      { label : 'ASP-TWO', quantity : 200, expiration_date : '2019-06-15' },
-      { label : 'ASP-THREE', quantity : 300, expiration_date : '2018-09-15' },
-      { label : 'ASP-FOUR', quantity : 400, expiration_date : '2018-09-15' },
-      { label : 'ASP-FIVE', quantity : 500, expiration_date : '2022-09-15' },
+      { label : 'ASP-ONE', quantity : 100, expiration_date : expireInThreeYears },
+      { label : 'ASP-TWO', quantity : 200, expiration_date : expireInTwoYears },
+      { label : 'ASP-THREE', quantity : 300, expiration_date : expireInOneYear },
+      { label : 'ASP-FOUR', quantity : 400, expiration_date : expireInOneYear },
+      { label : 'ASP-FIVE', quantity : 500, expiration_date : expireInThreeYears },
     ];
 
     page.setItem(0, 'Quinine');
