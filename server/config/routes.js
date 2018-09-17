@@ -679,7 +679,7 @@ exports.configure = function configure(app) {
 
   // stock import from a file
   app.get('/stock/import/template', stock.importing.downloadTemplate);
-  app.post('/stock/import', upload.middleware('csv', 'file'), stock.importing.importStock);
+  app.post('/stock/import', upload.middleware('csv', 'file'), upload.hasFilesToUpload, stock.importing.importStock);
 
   // stock flux
   app.get('/stock/flux', stock.listStockFlux);

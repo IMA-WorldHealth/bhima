@@ -5,7 +5,6 @@
  * and related stock quantities
  */
 const path = require('path');
-const uuid = require('uuid');
 const moment = require('moment');
 
 const db = require('../../lib/db');
@@ -35,19 +34,11 @@ function downloadTemplate(req, res, next) {
  * @description this method allow to do an import of stock and their lots
  */
 function importStock(req, res, next) {
-  if (!req.files || req.files.length === 0) {
-    const errorDescription = 'Expected at least one file upload but did not receive any files.';
-    const errorDetails = new BadRequest(errorDescription, 'ERRORS.MISSING_UPLOAD_FILES');
-    next(errorDetails);
-    return;
-  }
-
-  let query;
   let queryParams;
 
   const filePath = req.files[0].path;
   const depotUuid = db.bid(req.body.depot_uuid);
-  const documentUuid = db.bid(uuid.v4());
+  const documentUuid = db.bid(util.uuid());
 
   // be sure that the depot exist
   db.one('SELECT uuid FROM depot WHERE uuid = ?', depotUuid)
@@ -60,9 +51,9 @@ function importStock(req, res, next) {
       }
 
       const transaction = db.transaction();
+      const query = 'CALL ImportStock(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);';
 
       data.forEach(item => {
-        query = 'CALL ImportStock(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);';
         queryParams = [
           req.session.enterprise.id,
           req.session.project.id,
@@ -109,9 +100,10 @@ function importStock(req, res, next) {
  */
 function hasValidDataFormat(data = []) {
   return data.every(item => {
+    const isUnitPriceDefined = typeof (item.inventory_unit_price) !== 'undefined';
     return item.inventory_group_name
       && item.inventory_text && item.inventory_type && item.inventory_unit
-      && item.inventory_unit_price && item.stock_lot_label
+      && isUnitPriceDefined && item.stock_lot_label
       && item.stock_lot_quantity && item.stock_lot_expiration;
   });
 }

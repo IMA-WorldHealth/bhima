@@ -130,10 +130,12 @@ CREATE TABLE `account_reference_item` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT IGNORE INTO unit VALUES
-  (207, 'Account Reference Management','TREE.ACCOUNT_REFERENCE_MANAGEMENT','',1,'/modules/account_reference','/account_reference'),
-  (208, 'Account Reference Report','TREE.ACCOUNT_REFERENCE_REPORT','',144,'/modules/reports/account_reference','/reports/account_reference');
+  (205, 'Account Reference Management','TREE.ACCOUNT_REFERENCE_MANAGEMENT','',1,'/modules/account_reference','/account_reference'),
+  (206, '[OHADA] Bilan','TREE.OHADA_BALANCE_SHEET','',144,'/modules/reports/ohada_balance_sheet_report','/reports/ohada_balance_sheet_report'),
+  (207, 'Account Reference Report','TREE.ACCOUNT_REFERENCE_REPORT','',144,'/modules/reports/account_reference','/reports/account_reference');
 
 INSERT IGNORE INTO `report` (`id`, `report_key`, `title_key`) VALUES
+  (20, 'ohada_balance_sheet_report', 'REPORT.OHADA.BALANCE_SHEET'),
   (21, 'account_reference', 'REPORT.ACCOUNT_REFERENCE.TITLE');
 
 
@@ -163,3 +165,11 @@ ALTER TABLE `enterprise_setting` ADD COLUMN `enable_auto_stock_accounting` TINYI
 Add enable barcodes setting to the enterprise settings
 */
 ALTER TABLE `enterprise_setting` ADD COLUMN `enable_barcodes` TINYINT(1) NOT NULL DEFAULT 1;
+
+/*
+@author bruce
+@description
+Add stock import module in the navigation tree
+*/
+INSERT IGNORE INTO unit VALUES
+(208, 'Import Stock From File','TREE.IMPORT_STOCK_FROM_FILE','',160,'/modules/stock/import','/stock/import');

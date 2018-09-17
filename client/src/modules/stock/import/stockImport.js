@@ -22,8 +22,15 @@ function StockImportController(
 
   const cache = new AppCache('StockCache');
 
+  vm.depot = {};
   vm.changeDepot = changeDepot;
   vm.downloadTemplate = Stock.downloadTemplate;
+
+  const filters = [
+    { key : 'period', value : 'today' },
+    { key : 'limit', value : 10000 },
+    { key : 'depot_uuid', value : vm.depot.uuid },
+  ];
 
   vm.submit = () => {
     // send data only when a file is selected
@@ -44,15 +51,9 @@ function StockImportController(
       data : { file, depot_uuid : vm.depot.uuid },
     };
 
-    const filters = [
-      { key : 'period', value : 'today' },
-      { key : 'limit', value : 10000 },
-      { key : 'depot_uuid', value : vm.depot.uuid },
-    ];
-
     // upload the file to the server
     return Upload.upload(parameters)
-      .then(handleSuccess, handleError, handleProgress);
+      .then(handleSuccess, handleError);
 
     // success upload handler
     function handleSuccess() {
@@ -63,12 +64,6 @@ function StockImportController(
 
     function handleError(err) {
       Notify.handleError(err);
-    }
-
-    // progress handler
-    function handleProgress(evt) {
-      file.progress = Math.min(100, parseInt((100.0 * evt.loaded) / evt.total, 10));
-      vm.progressStyle = { width : String(file.progress).concat('%') };
     }
   }
 
@@ -88,7 +83,7 @@ function StockImportController(
     const requirement = !cache.depotUuid;
 
     return Depots.openSelectionModal(vm.depot, requirement)
-      .then((depot) => {
+      .then(depot => {
         vm.depot = depot;
         cache.depotUuid = depot.uuid;
         return depot;

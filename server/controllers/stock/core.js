@@ -495,8 +495,7 @@ function processMultipleLots(inventories) {
     _.each(orderedInventoryLots, lot => {
       lot.S_LOT_LIFETIME = lot.lifetime - lotLifetime;
       lot.S_RISK = lot.S_LOT_LIFETIME - lot.S_MONTH;
-      lot.S_RISK_QUANTITY = lot.S_RISK * lot.avg_consumption;
-      lot.S_RISK_QUANTITY = Math.round(lot.S_RISK_QUANTITY);
+      lot.S_RISK_QUANTITY = Math.round(lot.S_RISK * lot.avg_consumption);
       lotLifetime += lot.lifetime;
       flattenLots.push(lot);
     });
