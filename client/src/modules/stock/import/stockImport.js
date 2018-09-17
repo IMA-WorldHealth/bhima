@@ -3,9 +3,7 @@ angular.module('bhima.controllers')
 
 // dependencies injections
 StockImportController.$inject = [
-  'DepotService', 'InventoryService', 'NotifyService', 'SessionService', 'util',
-  'bhConstants', 'ReceiptModal', 'StockFormService', 'StockService',
-  'StockModalService', 'uiGridConstants', 'appcache', 'Upload', '$state',
+  'DepotService', 'NotifyService', 'StockService', 'appcache', 'Upload', '$state',
 ];
 
 /**
@@ -15,8 +13,7 @@ StockImportController.$inject = [
  * This module helps to import stock from a file
  */
 function StockImportController(
-  Depots, Inventory, Notify, Session, util, bhConstants, ReceiptModal, StockForm,
-  Stock, StockModal, uiGridConstants, AppCache, Upload, $state
+  Depots, Notify, Stock, AppCache, Upload, $state
 ) {
   const vm = this;
 
@@ -29,7 +26,6 @@ function StockImportController(
   const filters = [
     { key : 'period', value : 'today' },
     { key : 'limit', value : 10000 },
-    { key : 'depot_uuid', value : vm.depot.uuid },
   ];
 
   vm.submit = () => {
@@ -44,8 +40,6 @@ function StockImportController(
 
   /** upload the file to server */
   function uploadFile(file) {
-    vm.uploadState = 'uploading';
-
     const parameters = {
       url : '/stock/import/',
       data : { file, depot_uuid : vm.depot.uuid },
@@ -57,8 +51,9 @@ function StockImportController(
 
     // success upload handler
     function handleSuccess() {
-      vm.uploadState = 'uploaded';
       Notify.success('STOCK.IMPORT.UPLOAD_SUCCESS');
+
+      filters.push({ key : 'depot_uuid', value : vm.depot.uuid });
       $state.go('stockLots', { filters });
     }
 
