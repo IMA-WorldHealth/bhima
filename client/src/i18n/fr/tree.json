@@ -108,6 +108,7 @@
     "WEEKEND_CONFIGURATION":"Configuration des weekend",
     "ROLE_MANAGEMENT":"Gestion des rôles",
     "OHADA_BALANCE_SHEET":"[OHADA] Bilan",
-    "OHADA_INCOME":"[OHADA] Compte de resultat"
+    "OHADA_INCOME":"[OHADA] Compte de resultat",
+    "IMPORT_STOCK_FROM_FILE":"Imporation de stock"
   }
 }

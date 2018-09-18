@@ -34,7 +34,9 @@ function downloadTemplate(req, res, next) {
  */
 function importInventories(req, res, next) {
   if (!req.files || req.files.length === 0) {
-    next(new BadRequest('Something broke', 'ERRORS.EVERYTHING_BAD'));
+    const errorDescription = 'Expected at least one file upload but did not receive any files.';
+    const errorDetails = new BadRequest(errorDescription, 'ERRORS.MISSING_UPLOAD_FILES');
+    next(errorDetails);
     return;
   }
 

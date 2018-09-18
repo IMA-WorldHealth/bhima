@@ -15,6 +15,7 @@
 const { uuid } = require('../../lib/util');
 const db = require('../../lib/db');
 const core = require('./core');
+const importing = require('./import');
 
 // expose to the API
 exports.createStock = createStock;
@@ -26,6 +27,7 @@ exports.listLotsMovements = listLotsMovements;
 exports.listStockFlux = listStockFlux;
 exports.listLotsOrigins = listLotsOrigins;
 exports.createIntegration = createIntegration;
+exports.importing = importing;
 
 // stock consumption
 exports.getStockConsumption = getStockConsumption;
@@ -102,7 +104,8 @@ function createStock(req, res, next) {
     transaction.addQuery(createMovementQuery, [createMovementObject]);
   });
 
-  const postingParams = [db.bid(document.uuid), 0, req.session.project.id, req.session.enterprise.currency_id];
+  const isExit = 0;
+  const postingParams = [db.bid(document.uuid), isExit, req.session.project.id, req.session.enterprise.currency_id];
 
   if (req.session.enterprise.settings.enable_auto_stock_accounting) {
     transaction.addQuery('CALL PostStockMovement(?)', [postingParams]);
@@ -391,6 +394,7 @@ function listLotsDepot(req, res, next) {
  */
 function listInventoryDepot(req, res, next) {
   const params = req.query;
+
   core.getInventoryQuantityAndConsumption(params)
     .then((rows) => res.status(200).json(rows))
     .catch(next)

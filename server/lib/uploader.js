@@ -32,6 +32,7 @@ const multer = require('multer');
 const debug = require('debug')('app:uploader');
 
 const { uuid } = require('./util');
+const BadRequest = require('../lib/errors/BadRequest');
 
 // configure the uploads directory based on global process variables
 const defaultDir = 'uploads'; // NOTE: this must be a relative path
@@ -49,6 +50,7 @@ exports.directory = dir;
 
 // export the uploader
 exports.middleware = Uploader;
+exports.hasFilesToUpload = hasFilesToUpload;
 
 /**
  * @constructor
@@ -86,4 +88,19 @@ function Uploader(prefix, fields) {
 
   // set up multer as the middleware
   return multer({ storage }).array(fields);
+}
+
+/**
+ * @function hasFilesToUpload
+ *
+ * @description
+ * A middleware which check if files to upload are present, if not throw an error
+ */
+function hasFilesToUpload(req, res, next) {
+  if (!req.files || req.files.length === 0) {
+    const errorDescription = 'Expected at least one file upload but did not receive any files.';
+    const errorDetails = new BadRequest(errorDescription, 'ERRORS.MISSING_UPLOAD_FILES');
+    next(errorDetails);
+  }
+  next();
 }

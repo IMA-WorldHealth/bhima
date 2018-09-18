@@ -182,3 +182,108 @@ BEGIN
   CALL PostVoucher(voucher_uuid);
 
 END $$
+
+
+/*
+  ---------------------------------------------------
+  Import Stock Procedure
+  ---------------------------------------------------
+*/
+DROP PROCEDURE IF EXISTS ImportStock;
+CREATE PROCEDURE ImportStock (
+  IN enterpriseId SMALLINT(5),
+  IN projectId SMALLINT(5),
+  IN userId SMALLINT(5),
+  IN depotUuid BINARY(16),
+  IN documentUuid BINARY(16),
+  IN inventoryGroupName VARCHAR(100),
+  IN inventoryCode VARCHAR(30),
+  IN inventoryText VARCHAR(100),
+  IN inventoryType VARCHAR(30),
+  IN inventoryUnit VARCHAR(30),
+  IN inventoryUnitCost DECIMAL(10, 4),
+  IN inventoryCmm DECIMAL(10, 4),
+  IN stockLotLabel VARCHAR(191),
+  IN stockLotQuantity INT(11),
+  IN stockLotExpiration DATE
+)
+BEGIN
+  DECLARE existInventory TINYINT(1);
+  DECLARE existLot TINYINT(1);
+
+  DECLARE inventoryUuid BINARY(16);
+  DECLARE integrationUuid BINARY(16);
+  DECLARE lotUuid BINARY(16);
+  DECLARE fluxId INT(11);
+
+  /*
+    =======================================================================
+    check if the inventory exist
+    =======================================================================
+
+    if the inventory exists we will use it, if not we will create a new one
+  */
+  SET existInventory = (SELECT IF((SELECT COUNT(`text`) AS total FROM `inventory` WHERE `text` = inventoryText) > 0, 1, 0));
+
+  IF (existInventory = 1) THEN
+
+    /* the inventory exists so we have to get its uuid (inventoryUuid) for using it */
+    SELECT inventory.uuid, inventory.code INTO inventoryUuid, inventoryCode FROM inventory WHERE `text` = inventoryText LIMIT 1;
+  
+  ELSE 
+
+    /* the inventory doesn't exists so we have to create a new one */
+    IF (inventoryCode = NULL OR inventoryCode = '' OR inventoryCode = 'NULL') THEN 
+
+      /* if the inventory code is missing, create a new one randomly */
+      SET inventoryCode = (SELECT ROUND(RAND() * 10000000));
+
+    END IF;
+
+    /* call the procedure ImportInventory for creating a new inventory and its dependencies */
+    CALL ImportInventory(enterpriseId, inventoryGroupName, inventoryCode, inventoryText, inventoryType, inventoryUnit, inventoryUnitCost);
+
+    /* set the inventory uuid */
+    SET inventoryUuid = (SELECT `uuid` FROM inventory WHERE `text` = inventoryText AND `code` = inventoryCode);
+
+  END IF;
+
+  /* update the consumption (avg_consumption) */
+  UPDATE inventory SET avg_consumption = inventoryCmm WHERE `uuid` = inventoryUuid;
+
+  /*
+    =======================================================================
+    check if the lot exists in the depot
+    =======================================================================
+
+    if the lot exists we will use it, if not we will create a new one
+  */
+  SET existLot = (SELECT IF((SELECT COUNT(*) AS total FROM `stock_movement` JOIN `lot` ON `lot`.`uuid` = `stock_movement`.`lot_uuid` WHERE `stock_movement`.`depot_uuid` = depotUuid AND `lot`.`inventory_uuid` = inventoryUuid AND `lot`.`label` = stockLotLabel) > 0, 1, 0));
+  
+  IF (existLot = 1) THEN 
+
+    /* if the lot exist use its uuid */
+    SET lotUuid = (SELECT `stock_movement`.`lot_uuid` FROM `stock_movement` JOIN `lot` ON `lot`.`uuid` = `stock_movement`.`lot_uuid` WHERE `stock_movement`.`depot_uuid` = depotUuid AND `lot`.`inventory_uuid` = inventoryUuid AND `lot`.`label` = stockLotLabel LIMIT 1);
+
+  ELSE 
+
+    /* create integration info for the lot */
+    SET integrationUuid = HUID(UUID());
+    INSERT INTO integration (`uuid`, `project_id`, `date`) 
+    VALUES (integrationUuid, projectId, CURRENT_DATE());
+
+    /* create the lot */
+    SET lotUuid = HUID(UUID());
+    INSERT INTO lot (`uuid`, `label`, `initial_quantity`, `quantity`, `unit_cost`, `expiration_date`, `inventory_uuid`, `origin_uuid`) 
+    VALUES (lotUuid, stockLotLabel, stockLotQuantity, stockLotQuantity, inventoryUnitCost, DATE(stockLotExpiration), inventoryUuid, integrationUuid);
+
+  END IF;
+
+
+  /* create the stock movement */
+  /* 13 is the id of integration flux */
+  SET fluxId = 13;
+  INSERT INTO stock_movement (`uuid`, `document_uuid`, `depot_uuid`, `lot_uuid`, `flux_id`, `date`, `quantity`, `unit_cost`, `is_exit`, `user_id`) 
+  VALUES (HUID(UUID()), documentUuid, depotUuid, lotUuid, fluxId, CURRENT_DATE(), stockLotQuantity, inventoryUnitCost, 0, userId);
+
+END $$

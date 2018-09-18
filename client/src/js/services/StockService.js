@@ -25,6 +25,9 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
   // API for stock transfer
   const transfers = new Api('/stock/transfers');
 
+  // API for stock import
+  const importing = new Api('/stock/import');
+
   // stock status label keys
   const stockStatusLabelKeys = {
     sold_out          : 'STOCK.STATUS.SOLD_OUT',
@@ -126,8 +129,7 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
     const assignedKeys = Object.keys(StockLotFilters.formatHTTP());
 
     // assign default period filter
-    const periodDefined =
-      lots.util.arrayIncludes(assignedKeys, ['period']);
+    const periodDefined = lots.util.arrayIncludes(assignedKeys, ['period']);
 
     if (!periodDefined) {
       StockLotFilters.assignFilters(Periods.defaultFilters());
@@ -144,8 +146,7 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
     const assignedKeys = Object.keys(StockMovementFilters.formatHTTP());
 
     // assign default period filter
-    const periodDefined =
-      movements.util.arrayIncludes(assignedKeys, ['period']);
+    const periodDefined = movements.util.arrayIncludes(assignedKeys, ['period']);
 
     if (!periodDefined) {
       StockMovementFilters.assignFilters(Periods.defaultFilters());
@@ -162,8 +163,7 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
     const assignedKeys = Object.keys(StockInventoryFilters.formatHTTP());
 
     // assign default period filter
-    const periodDefined =
-      inventories.util.arrayIncludes(assignedKeys, ['period']);
+    const periodDefined = inventories.util.arrayIncludes(assignedKeys, ['period']);
 
     if (!periodDefined) {
       StockInventoryFilters.assignFilters(Periods.defaultFilters());
@@ -260,6 +260,15 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
     return stockStatusLabelKeys[status];
   }
 
+  // download the template file
+  function downloadTemplate() {
+    const url = importing.url.concat('/template');
+    return importing.$http.get(url)
+      .then(response => {
+        return importing.util.download(response, 'Import Stock Template', 'csv');
+      });
+  }
+
 
   return {
     stocks,
@@ -276,5 +285,6 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
     uniformSelectedEntity,
     processLotsFromStore,
     statusLabelMap,
+    downloadTemplate,
   };
 }

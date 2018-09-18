@@ -293,7 +293,7 @@ function getLotsOrigins(depotUuid, params) {
 /**
  * Stock Management Processing
  */
-function stockManagementProcess(inventories, inventoryDelay, purchaseInterval) {
+function stockManagementProcess(inventories, inventoryDelay = 1, purchaseInterval = 1) {
   const current = moment();
   let CM;
   let Q;
@@ -495,7 +495,7 @@ function processMultipleLots(inventories) {
     _.each(orderedInventoryLots, lot => {
       lot.S_LOT_LIFETIME = lot.lifetime - lotLifetime;
       lot.S_RISK = lot.S_LOT_LIFETIME - lot.S_MONTH;
-      lot.S_RISK_QUANTITY = lot.S_RISK * lot.avg_consumption;
+      lot.S_RISK_QUANTITY = Math.round(lot.S_RISK * lot.avg_consumption);
       lotLifetime += lot.lifetime;
       flattenLots.push(lot);
     });
