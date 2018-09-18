@@ -65,7 +65,7 @@
     "juice": "^4.3.2",
     "lodash": "^4.16.2",
     "lzma-native": "^3.0.8",
-    "mailgun-js": "^0.20.0",
+    "mailgun-js": "^0.21.0",
     "mkdirp": "^0.5.1",
     "moment": "^2.15.0",
     "morgan": "^1.6.1",
