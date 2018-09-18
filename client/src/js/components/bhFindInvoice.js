@@ -39,14 +39,17 @@ function FindInvoiceComponent(PatientInvoice, Notify, $window) {
    * @method search
    */
   function search(form) {
-    form.$setSubmitted();
-
     PatientInvoice.findConsumableInvoicePatient(vm.invoiceReference, vm.patientUuid)
       .then(invoice => {
         if (!invoice.details) {
           vm.invoiceFound = false;
           return;
         }
+
+        // trigger form validation for the invoice search input
+        form.$setSubmitted();
+
+        // select invoice and fetch articles and services in the invoice
         selectInvoice(invoice);
       })
       .catch(Notify.handleError);
