@@ -173,3 +173,10 @@ Add stock import module in the navigation tree
 */
 INSERT IGNORE INTO unit VALUES
 (208, 'Import Stock From File','TREE.IMPORT_STOCK_FROM_FILE','',160,'/modules/stock/import','/stock/import');
+
+/*
+@author bruce
+@description
+Add created_at column in stock_movement for having the true date
+*/
+ALTER TABLE `stock_movement` ADD COLUMN `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;

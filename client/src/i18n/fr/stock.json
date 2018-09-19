@@ -87,6 +87,7 @@
     "MONTH_OF_STOCK"  : "Mois de stock - Nombre de mois avant epuisement du stock",
     "MONTHLY_CONSUM"  : "Consommation Mensuelle Moyenne",
     "MOTIF"           : "Motif",
+    "MOVEMENT"        : "Mouvement",
     "MOVEMENTS"       : "Mouvements",
     "NO_ORDER"        : "Pas de commandes",
     "NO_DATA"         : "Aucune données",
@@ -140,6 +141,10 @@
     "SUCCESS"         : "Mouvement realisé avec success",
     "TO"              : "Destination",
     "UNIT_COST"       : "Coût unitaire"
+  },
+  "SETTINGS" : {
+    "ORDER_BY_CREATED_AT" : "Ordonner les mouvements de lots par leurs dates de création",
+    "ORDER_BY_CREATED_AT_HELP_TEXT" : "Cette option permet d'ordonner les movements de lots par leurs dates réelles de création dans le système"
   },
   "STOCK_FLUX" : {
     "FROM_PURCHASE"    : "Commande d'achat",
