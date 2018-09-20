@@ -59,11 +59,16 @@ function debcred(value = 0, currencyId) {
   `);
 }
 
-function percentage(value = 0, precision = 2) {
+function percentage(value = 0, decimal = 2) {
   if (!value || !Number.isFinite(value) || Number.isNaN(value)) { return ''; }
 
-  const str = (value * 100).toFixed(precision);
+  const str = (value * 100).toFixed(decimal);
   return `${str}%`;
+}
+
+function precision(value = 0, decimal = 2) {
+  if (!value || !Number.isFinite(value) || Number.isNaN(value)) { return ''; }
+  return new Handlebars.SafeString(value.toFixed(decimal));
 }
 
 exports.debcred = debcred;
@@ -71,3 +76,4 @@ exports.currency = currency;
 exports.indentAccount = indentAccount;
 exports.numberToText = numberToText;
 exports.percentage = percentage;
+exports.precision = precision;

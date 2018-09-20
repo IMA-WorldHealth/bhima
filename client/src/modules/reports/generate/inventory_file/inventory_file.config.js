@@ -12,11 +12,15 @@ function InventoryFileConfigController($sce, Notify, SavedReports, AppCache, rep
   const reportUrl = 'reports/stock/inventory';
 
   vm.previewGenerated = false;
-
+  vm.orderByCreatedAt = 0;
   vm.dateTo = new Date();
 
   vm.onDateChange = (date) => {
     vm.dateTo = date;
+  };
+
+  vm.setOrderByCreatedAt = value => {
+    vm.orderByCreatedAt = value;
   };
 
   // check cached configuration
@@ -46,6 +50,7 @@ function InventoryFileConfigController($sce, Notify, SavedReports, AppCache, rep
       depot_uuid : vm.depot.uuid,
       inventory_uuid : vm.inventory.uuid,
       dateTo : vm.dateTo,
+      orderByCreatedAt : vm.orderByCreatedAt,
     };
 
     // update cached configuration

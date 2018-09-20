@@ -50,6 +50,14 @@
             on-change="ReportConfigCtrl.onDateChange(date)">
           </bh-date-editor>
 
+          <!-- sort by real movement date -->
+          <bh-yes-no-radios
+            label="SETTINGS.ORDER_BY_CREATED_AT"
+            value="ReportConfigCtrl.orderByCreatedAt"
+            help-text="SETTINGS.ORDER_BY_CREATED_AT_HELP_TEXT"
+            on-change-callback="ReportConfigCtrl.setOrderByCreatedAt(value)">
+          </bh-yes-no-radios>
+
           <!-- preview -->
           <bh-loading-button loading-state="ConfigForm.$loading">
             <span translate>REPORT.UTIL.PREVIEW</span>

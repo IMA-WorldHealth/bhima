@@ -173,3 +173,71 @@ Add stock import module in the navigation tree
 */
 INSERT IGNORE INTO unit VALUES
 (208, 'Import Stock From File','TREE.IMPORT_STOCK_FROM_FILE','',160,'/modules/stock/import','/stock/import');
+
+/*
+@author bruce
+@description
+Add created_at column in stock_movement for having the true date
+*/
+ALTER TABLE `stock_movement` ADD COLUMN `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;
+
+
+/*
+@author bruce
+@description
+This procedure add missing stock movement reference inside the table document_map
+it fixes the problem of nothing as reference in the stock movement registry
+*/
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS AddMissingMovementReference$$
+CREATE PROCEDURE AddMissingMovementReference()
+BEGIN
+  -- declaration
+  DECLARE v_document_uuid BINARY(16);
+  DECLARE v_reference INT(11);
+
+  -- cursor variable declaration
+  DECLARE v_finished INTEGER DEFAULT 0;
+
+  -- cursor declaration
+  DECLARE stage_missing_movement_document_cursor CURSOR FOR 
+  	SELECT temp.document_uuid
+	FROM missing_movement_document as temp;
+
+  -- variables for the cursor
+  DECLARE CONTINUE HANDLER FOR NOT FOUND SET v_finished = 1;
+
+  -- temporary table for movement which doesn't have movement reference identifier
+  DROP TABLE IF EXISTS missing_movement_document;
+
+  CREATE TEMPORARY TABLE missing_movement_document (
+    SELECT m.document_uuid FROM stock_movement m 
+    LEFT JOIN document_map dm ON dm.uuid IS NULL
+    GROUP BY m.document_uuid
+  );
+
+  -- open the cursor
+  OPEN stage_missing_movement_document_cursor;
+
+  -- loop inside the cursor
+  missing_document : LOOP
+
+    /* fetch data into variables */
+    FETCH stage_missing_movement_document_cursor INTO v_document_uuid;
+
+    IF v_finished = 1 THEN 
+      LEAVE missing_document;
+    END IF;
+
+    CALL ComputeMovementReference(v_document_uuid);
+
+  END LOOP missing_document;
+
+  -- close the cursor
+  CLOSE stage_missing_movement_document_cursor;
+
+  DROP TEMPORARY TABLE missing_movement_document;
+END $$
+
+DELIMITER ;

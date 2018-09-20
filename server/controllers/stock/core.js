@@ -550,7 +550,9 @@ function getInventoryMovements(params) {
     LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
   `;
 
-  return getLots(sql, params, ' ORDER BY m.date ASC ')
+  const orderBy = params.orderByCreatedAt ? 'm.created_at' : 'm.date';
+
+  return getLots(sql, params, ` ORDER BY ${orderBy} ASC `)
     .then((rows) => {
       bundle.movements = rows;
 
@@ -562,6 +564,7 @@ function getInventoryMovements(params) {
       // stock method CUMP : cout unitaire moyen pondere
       const movements = bundle.movements.map(line => {
         const movement = {
+          reference : line.documentReference,
           date : line.date,
           entry : { quantity : 0, unit_cost : 0, value : 0 },
           exit : { quantity : 0, unit_cost : 0, value : 0 },
