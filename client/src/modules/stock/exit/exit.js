@@ -4,9 +4,9 @@ angular.module('bhima.controllers')
 // dependencies injections
 StockExitController.$inject = [
   'DepotService', 'InventoryService', 'NotifyService', 'SessionService', 'util',
-  'bhConstants', 'ReceiptModal', 'StockItemService', 'StockFormService', 'StockService',
+  'bhConstants', 'ReceiptModal', 'StockFormService', 'StockService',
   'StockModalService', 'uiGridConstants', '$translate', 'appcache',
-  'moment', 'GridExportService', 'Store',
+  'moment', 'GridExportService', 'Store', 'bhConstants', '$timeout',
 ];
 
 /**
@@ -16,8 +16,8 @@ StockExitController.$inject = [
  * This controller is responsible to handle stock exit module.
  */
 function StockExitController(
-  Depots, Inventory, Notify, Session, util, bhConstants, ReceiptModal, StockItem, StockForm, Stock,
-  StockModal, uiGridConstants, $translate, AppCache, moment, GridExportService, Store
+  Depots, Inventory, Notify, Session, util, bhConstants, ReceiptModal, StockForm, Stock,
+  StockModal, uiGridConstants, $translate, AppCache, moment, GridExportService, Store, Constants, $timeout
 ) {
   const vm = this;
   const cache = new AppCache('StockCache');
@@ -27,6 +27,7 @@ function StockExitController(
   vm.gridApi = {};
   vm.selectedLots = [];
   vm.reset = reset;
+  vm.ROW_ERROR_FLAG = Constants.grid;
 
   vm.onDateChange = date => {
     vm.movement.date = date;
@@ -65,6 +66,7 @@ function StockExitController(
     appScopeProvider : vm,
     enableSorting : false,
     enableColumnMenus : false,
+    rowTemplate : 'modules/templates/grid/error.row.html',
     columnDefs : [
       {
         field : 'status',
@@ -240,7 +242,7 @@ function StockExitController(
 
     checkValidity();
 
-    updateSelectedLotsList();
+    refreshSelectedLotsList();
   }
 
   // configure item
@@ -251,6 +253,7 @@ function StockExitController(
       depot_uuid : vm.depot.uuid,
       inventory_uuid : item.inventory.inventory_uuid,
       includeEmptyLot : 0,
+      date : vm.date,
     })
       .then(lots => {
         item.lots = lots.filter(lot => {
@@ -316,11 +319,11 @@ function StockExitController(
 
     checkValidity();
 
-    updateSelectedLotsList();
+    refreshSelectedLotsList();
   }
 
   // update the list of selected lots
-  function updateSelectedLotsList() {
+  function refreshSelectedLotsList() {
     vm.selectedLots = vm.stockForm.store.data
       .filter(item => item.lot && item.lot.uuid)
       .map(item => item.lot.uuid);
@@ -328,9 +331,9 @@ function StockExitController(
 
   // detect the presence of duplicated lots
   function hasDuplicatedLots() {
-    let doublonDetected = false;
-    updateSelectedLotsList();
+    refreshSelectedLotsList();
 
+    let doublonDetected = false;
     for (let i = 0; i < vm.selectedLots.length; i++) {
       let found = 0;
       const lot = vm.selectedLots[i];
@@ -343,6 +346,7 @@ function StockExitController(
       }
       if (found > 1) {
         doublonDetected = true;
+        vm.doublonDetectedLine = i;
         break;
       }
     }
@@ -464,7 +468,9 @@ function StockExitController(
     }
 
     if (hasDuplicatedLots()) {
-      return Notify.warn('ERRORS.ER_DUPLICATED_LOT');
+      // notify on the concerned row
+      errorLineHighlight();
+      return Notify.danger('ERRORS.ER_DUPLICATED_LOT', 20000);
     }
 
     vm.$loading = true;
@@ -472,6 +478,15 @@ function StockExitController(
       .then(toggleLoadingIndicator)
       .catch(Notify.handleError)
       .finally(() => reinit(form));
+  }
+
+  function errorLineHighlight() {
+    // set and unset error flag for allowing to highlight again the row
+    // when the user click again on the submit button
+    vm.stockForm.store.data[vm.doublonDetectedLine][vm.ROW_ERROR_FLAG] = true;
+    $timeout(() => {
+      vm.stockForm.store.data[vm.doublonDetectedLine][vm.ROW_ERROR_FLAG] = false;
+    }, 1000);
   }
 
   function toggleLoadingIndicator() {
