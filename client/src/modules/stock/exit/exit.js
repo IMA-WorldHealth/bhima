@@ -237,7 +237,10 @@ function StockExitController(
       const idx = vm.selectedLots.indexOf(item.lot.uuid);
       vm.selectedLots.splice(idx, 1);
     }
+
     checkValidity();
+
+    updateSelectedLotsList();
   }
 
   // configure item
@@ -313,14 +316,37 @@ function StockExitController(
 
     checkValidity();
 
-    // get the up to date list of selected lots
-    vm.selectedLots = selectedLotsList();
+    updateSelectedLotsList();
   }
 
-  function selectedLotsList() {
-    return vm.stockForm.store.data
+  // update the list of selected lots
+  function updateSelectedLotsList() {
+    vm.selectedLots = vm.stockForm.store.data
       .filter(item => item.lot && item.lot.uuid)
       .map(item => item.lot.uuid);
+  }
+
+  // detect the presence of duplicated lots
+  function hasDuplicatedLots() {
+    let doublonDetected = false;
+    updateSelectedLotsList();
+
+    for (let i = 0; i < vm.selectedLots.length; i++) {
+      let found = 0;
+      const lot = vm.selectedLots[i];
+      for (let j = 0; j < vm.selectedLots.length; j++) {
+        if (lot === vm.selectedLots[j]) {
+          found++;
+
+          if (found > 1) { break; }
+        }
+      }
+      if (found > 1) {
+        doublonDetected = true;
+        break;
+      }
+    }
+    return doublonDetected;
   }
 
   // check validity
@@ -436,6 +462,11 @@ function StockExitController(
     if (!vm.movement.entity.uuid && vm.movement.entity.type !== 'loss') {
       return Notify.danger('ERRORS.ER_NO_STOCK_DESTINATION');
     }
+
+    if (hasDuplicatedLots()) {
+      return Notify.warn('ERRORS.ER_DUPLICATED_LOT');
+    }
+
     vm.$loading = true;
     return mapExit[vm.movement.exit_type].submit()
       .then(toggleLoadingIndicator)
