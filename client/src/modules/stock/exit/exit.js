@@ -25,6 +25,7 @@ function StockExitController(
   vm.stockForm = new StockForm('StockExit');
   vm.movement = {};
   vm.gridApi = {};
+  vm.selectedLots = [];
   vm.reset = reset;
 
   vm.onDateChange = date => {
@@ -44,6 +45,7 @@ function StockExitController(
   vm.submit = submit;
   vm.changeDepot = changeDepot;
   vm.checkValidity = checkValidity;
+  vm.onLotSelect = onLotSelect;
 
   const mapExit = {
     patient : { description : 'STOCK.EXIT_PATIENT', find : findPatient, submit : submitPatient },
@@ -231,6 +233,10 @@ function StockExitController(
   // remove item
   function removeItem(item) {
     vm.stockForm.removeItem(item.id);
+    if (item.lot && item.lot.uuid) {
+      const idx = vm.selectedLots.indexOf(item.lot.uuid);
+      vm.selectedLots.splice(idx, 1);
+    }
     checkValidity();
   }
 
@@ -244,7 +250,9 @@ function StockExitController(
       includeEmptyLot : 0,
     })
       .then(lots => {
-        item.lots = lots;
+        item.lots = lots.filter(lot => {
+          return !vm.selectedLots.includes(lot.uuid);
+        });
       })
       .catch(Notify.handleError);
   }
@@ -297,6 +305,22 @@ function StockExitController(
         checkValidity();
       })
       .catch(Notify.handleError);
+  }
+
+  // on lot select
+  function onLotSelect(row) {
+    if (!row.lot || !row.lot.uuid) { return; }
+
+    checkValidity();
+
+    // get the up to date list of selected lots
+    vm.selectedLots = selectedLotsList();
+  }
+
+  function selectedLotsList() {
+    return vm.stockForm.store.data
+      .filter(item => item.lot && item.lot.uuid)
+      .map(item => item.lot.uuid);
   }
 
   // check validity
@@ -425,6 +449,7 @@ function StockExitController(
 
   function reinit(form) {
     vm.reset(form);
+    vm.selectedLots = [];
     resetSelectedEntity();
   }
 
