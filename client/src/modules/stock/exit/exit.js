@@ -253,7 +253,7 @@ function StockExitController(
       depot_uuid : vm.depot.uuid,
       inventory_uuid : item.inventory.inventory_uuid,
       includeEmptyLot : 0,
-      date : vm.date,
+      entry_date_to : vm.movement.date,
     })
       .then(lots => {
         item.lots = lots.filter(lot => {
