@@ -69,7 +69,7 @@ function GridExportService(Modal, util, bhConstants, uiGridExporterService, mome
    * @param {function} rowsFormatterFn - [optional] callback fn to apply to rows
    * @param {function} columnsFormatterFn - [optional] callback fn to apply to columns
    */
-  GridExport.prototype.exportToCsv = (filename, columnsFormatterFn, rowsFormatterFn) => {
+  GridExport.prototype.exportToCsv = function exportToCsv(filename, columnsFormatterFn, rowsFormatterFn) {
     let columns = this.options.columnDefs || [];
     let rows = this.options.data || [];
 

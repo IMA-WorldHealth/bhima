@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 // dependencies injections
 StockExitController.$inject = [
-  'DepotService', 'InventoryService', 'NotifyService', 'SessionService', 'util',
+  'DepotService', 'NotifyService', 'SessionService', 'util',
   'bhConstants', 'ReceiptModal', 'StockFormService', 'StockService',
   'StockModalService', 'uiGridConstants', '$translate', 'appcache',
   'moment', 'GridExportService', 'Store', 'bhConstants', '$timeout',
@@ -16,7 +16,7 @@ StockExitController.$inject = [
  * This controller is responsible to handle stock exit module.
  */
 function StockExitController(
-  Depots, Inventory, Notify, Session, util, bhConstants, ReceiptModal, StockForm, Stock,
+  Depots, Notify, Session, util, bhConstants, ReceiptModal, StockForm, Stock,
   StockModal, uiGridConstants, $translate, AppCache, moment, GridExportService, Store, Constants, $timeout
 ) {
   const vm = this;
