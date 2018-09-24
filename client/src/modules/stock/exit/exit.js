@@ -31,6 +31,9 @@ function StockExitController(
 
   vm.onDateChange = date => {
     vm.movement.date = date;
+    if (vm.movement.date < new Date()) {
+      vm.dateMessageWarning = true;
+    }
   };
 
   // bind methods
@@ -253,7 +256,7 @@ function StockExitController(
       depot_uuid : vm.depot.uuid,
       inventory_uuid : item.inventory.inventory_uuid,
       includeEmptyLot : 0,
-      entry_date_to : vm.movement.date,
+      dateTo : vm.movement.date,
     })
       .then(lots => {
         item.lots = lots.filter(lot => {

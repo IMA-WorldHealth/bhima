@@ -140,7 +140,8 @@
     },
     "SUCCESS"         : "Mouvement realisé avec success",
     "TO"              : "Destination",
-    "UNIT_COST"       : "Coût unitaire"
+    "UNIT_COST"       : "Coût unitaire",
+    "ANTERIOR_DATE_QUANTITY_MESSAGE" : "Vous avez choisi une date anterieur, seul les lots disponibles à la date choisie seront visibles ainsi que la quantité à cette date"
   },
   "SETTINGS" : {
     "ORDER_BY_CREATED_AT" : "Ordonner les mouvements de lots par leurs dates de création",
