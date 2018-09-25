@@ -7,34 +7,39 @@ angular.module('bhima.components')
       inventoryUuid    : '<',
       onSelectCallback : '&',
       required         : '<?',
-      validateTrigger  : '<?',      
+      validateTrigger  : '<?',
+      onlyConsumable   : '<?',
     },
   });
 
 InventorySelectController.$inject = [
-  'InventoryService', 'NotifyService'
+  'InventoryService', 'NotifyService',
 ];
 
 /**
  * Inventory selection component
  */
 function InventorySelectController(Inventory, Notify) {
-  var $ctrl = this;
+  const $ctrl = this;
 
-  $ctrl.$onInit = function onInit() {    
+  $ctrl.$onInit = function onInit() {
     // fired when an inventory has been selected
     $ctrl.onSelectCallback = $ctrl.onSelectCallback || angular.noop;
 
+    const promise = $ctrl.onlyConsumable
+      ? Inventory.read(null, { consumable : 1 })
+      : Inventory.read();
+
     // load all inventories
-    Inventory.read()
-      .then(function (inventories) { 
+    promise
+      .then((inventories) => {
         $ctrl.inventories = inventories;
       })
       .catch(Notify.handleError);
   };
 
   // fires the onSelectCallback bound to the component boundary
-  $ctrl.onSelect = function ($item, $model) {
+  $ctrl.onSelect = ($item) => {
     $ctrl.onSelectCallback({ inventory : $item });
   };
 }

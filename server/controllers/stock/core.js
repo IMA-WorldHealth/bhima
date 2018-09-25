@@ -96,6 +96,7 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
   filters.equals('document_uuid', 'document_uuid', 'm');
   filters.equals('lot_uuid', 'lot_uuid', 'm');
   filters.equals('inventory_uuid', 'uuid', 'i');
+  filters.equals('consumable', 'consumable', 'i');
   filters.equals('group_uuid', 'uuid', 'ig');
   filters.equals('text', 'text', 'i');
   filters.equals('label', 'label', 'l');
