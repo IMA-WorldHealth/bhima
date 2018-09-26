@@ -121,6 +121,9 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
   filters.dateFrom('dateFrom', 'date', 'm');
   filters.dateTo('dateTo', 'date', 'm');
 
+  filters.dateFrom('custom_period_start', 'date', 'm');
+  filters.dateTo('custom_period_end', 'date', 'm');
+
   filters.equals('user_id', 'user_id', 'm');
 
   // if finalClause is an empty string, filterParser will not group, it will be an empty string
@@ -168,7 +171,7 @@ function getLotsDepot(depotUuid, params, finalClause) {
             ROUND(DATEDIFF(l.expiration_date, CURRENT_DATE()) / 30.5) AS lifetime,
             BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid,
             i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
-            MIN(m.date) AS entry_date,
+            m.date AS entry_date,
             i.avg_consumption, i.purchase_interval, i.delay,
             iu.text AS unit_type,
             ig.name AS group_name, ig.expires,

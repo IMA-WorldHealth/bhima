@@ -3,10 +3,10 @@ angular.module('bhima.controllers')
 
 // dependencies injections
 StockExitController.$inject = [
-  'DepotService', 'InventoryService', 'NotifyService', 'SessionService', 'util',
-  'bhConstants', 'ReceiptModal', 'StockItemService', 'StockFormService', 'StockService',
+  'DepotService', 'NotifyService', 'SessionService', 'util',
+  'bhConstants', 'ReceiptModal', 'StockFormService', 'StockService',
   'StockModalService', 'uiGridConstants', '$translate', 'appcache',
-  'moment', 'GridExportService', 'Store',
+  'moment', 'GridExportService', 'Store', 'bhConstants', '$timeout',
 ];
 
 /**
@@ -16,8 +16,8 @@ StockExitController.$inject = [
  * This controller is responsible to handle stock exit module.
  */
 function StockExitController(
-  Depots, Inventory, Notify, Session, util, bhConstants, ReceiptModal, StockItem, StockForm, Stock,
-  StockModal, uiGridConstants, $translate, AppCache, moment, GridExportService, Store
+  Depots, Notify, Session, util, bhConstants, ReceiptModal, StockForm, Stock,
+  StockModal, uiGridConstants, $translate, AppCache, moment, GridExportService, Store, Constants, $timeout
 ) {
   const vm = this;
   const cache = new AppCache('StockCache');
@@ -25,10 +25,15 @@ function StockExitController(
   vm.stockForm = new StockForm('StockExit');
   vm.movement = {};
   vm.gridApi = {};
+  vm.selectedLots = [];
   vm.reset = reset;
+  vm.ROW_ERROR_FLAG = Constants.grid;
 
   vm.onDateChange = date => {
     vm.movement.date = date;
+    if (vm.movement.date < new Date()) {
+      vm.dateMessageWarning = true;
+    }
   };
 
   // bind methods
@@ -44,6 +49,7 @@ function StockExitController(
   vm.submit = submit;
   vm.changeDepot = changeDepot;
   vm.checkValidity = checkValidity;
+  vm.onLotSelect = onLotSelect;
 
   const mapExit = {
     patient : { description : 'STOCK.EXIT_PATIENT', find : findPatient, submit : submitPatient },
@@ -63,6 +69,7 @@ function StockExitController(
     appScopeProvider : vm,
     enableSorting : false,
     enableColumnMenus : false,
+    rowTemplate : 'modules/templates/grid/error.row.html',
     columnDefs : [
       {
         field : 'status',
@@ -231,7 +238,10 @@ function StockExitController(
   // remove item
   function removeItem(item) {
     vm.stockForm.removeItem(item.id);
+
     checkValidity();
+
+    refreshSelectedLotsList();
   }
 
   // configure item
@@ -242,9 +252,12 @@ function StockExitController(
       depot_uuid : vm.depot.uuid,
       inventory_uuid : item.inventory.inventory_uuid,
       includeEmptyLot : 0,
+      dateTo : vm.movement.date,
     })
       .then(lots => {
-        item.lots = lots;
+        item.lots = lots.filter(lot => {
+          return !vm.selectedLots.includes(lot.uuid);
+        });
       })
       .catch(Notify.handleError);
   }
@@ -297,6 +310,37 @@ function StockExitController(
         checkValidity();
       })
       .catch(Notify.handleError);
+  }
+
+  // on lot select
+  function onLotSelect(row) {
+    if (!row.lot || !row.lot.uuid) { return; }
+
+    checkValidity();
+
+    refreshSelectedLotsList();
+  }
+
+  // update the list of selected lots
+  function refreshSelectedLotsList() {
+    vm.selectedLots = vm.stockForm.store.data
+      .filter(item => item.lot && item.lot.uuid)
+      .map(item => item.lot.uuid);
+  }
+
+  // detect the presence of duplicated lots
+  function hasDuplicatedLots() {
+    refreshSelectedLotsList();
+
+    let doubleIndex;
+    const doublonDetected = vm.selectedLots.some((lot, idx) => {
+      const hasDoubles = vm.selectedLots.lastIndexOf(lot) !== idx;
+      if (hasDoubles) { doubleIndex = idx; }
+      return hasDoubles;
+    });
+
+    vm.doublonDetectedLine = doubleIndex;
+    return doublonDetected;
   }
 
   // check validity
@@ -412,11 +456,29 @@ function StockExitController(
     if (!vm.movement.entity.uuid && vm.movement.entity.type !== 'loss') {
       return Notify.danger('ERRORS.ER_NO_STOCK_DESTINATION');
     }
+
+    if (hasDuplicatedLots()) {
+      // notify on the concerned row
+      errorLineHighlight(vm.doublonDetectedLine);
+      return Notify.danger('ERRORS.ER_DUPLICATED_LOT', 20000);
+    }
+
     vm.$loading = true;
     return mapExit[vm.movement.exit_type].submit()
       .then(toggleLoadingIndicator)
       .catch(Notify.handleError)
       .finally(() => reinit(form));
+  }
+
+  function errorLineHighlight(rowIdx) {
+    // set and unset error flag for allowing to highlight again the row
+    // when the user click again on the submit button
+    const row = vm.stockForm.store.data[rowIdx];
+
+    row[vm.ROW_ERROR_FLAG] = true;
+    $timeout(() => {
+      row[vm.ROW_ERROR_FLAG] = false;
+    }, 1000);
   }
 
   function toggleLoadingIndicator() {
@@ -425,6 +487,7 @@ function StockExitController(
 
   function reinit(form) {
     vm.reset(form);
+    vm.selectedLots = [];
     resetSelectedEntity();
   }
 
