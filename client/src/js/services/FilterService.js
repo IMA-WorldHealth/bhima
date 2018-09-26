@@ -95,20 +95,20 @@ function FilterService() {
      * In case there are period='allTime' and custom_period_start or custom_period_end
      * just considere period='allTime'
      */
-    alltimeOverCustomFilter(this);
+    alltimeOverCustomFilter.call(this);
   };
 
-  function alltimeOverCustomFilter(context) {
-    const filters = context._filterActiveFilters();
-    const alltime = filters.some(f => f._key === 'period' && f._value === 'allTime');
-    const customPeriodStart = filters.some(f => f._key === 'custom_period_start');
-    const customPeriodEnd = filters.some(f => f._key === 'custom_period_end');
+  function alltimeOverCustomFilter() {
+    const alltime = this._filterIndex.period && this._filterIndex.period._value === 'allTime';
+    const customPeriodStart = this._filterIndex.custom_period_start && this._filterIndex.custom_period_start._value;
+    const customPeriodEnd = this._filterIndex.custom_period_end && this._filterIndex.custom_period_end._value;
+
     if (alltime && customPeriodStart) {
-      context.resetFilterState('custom_period_start');
+      this.resetFilterState('custom_period_start');
     }
 
     if (alltime && customPeriodEnd) {
-      context.resetFilterState('custom_period_end');
+      this.resetFilterState('custom_period_end');
     }
   }
 
