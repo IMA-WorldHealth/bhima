@@ -90,7 +90,27 @@ function FilterService() {
     valueList.forEach(valueMap => {
       this.assignFilter(valueMap.key, valueMap.value, valueMap.displayValue, valueMap.comparitor);
     });
+
+    /**
+     * In case there are period='allTime' and custom_period_start or custom_period_end
+     * just considere period='allTime'
+     */
+    alltimeOverCustomFilter(this);
   };
+
+  function alltimeOverCustomFilter(context) {
+    const filters = context._filterActiveFilters();
+    const alltime = filters.some(f => f._key === 'period' && f._value === 'allTime');
+    const customPeriodStart = filters.some(f => f._key === 'custom_period_start');
+    const customPeriodEnd = filters.some(f => f._key === 'custom_period_end');
+    if (alltime && customPeriodStart) {
+      context.resetFilterState('custom_period_start');
+    }
+
+    if (alltime && customPeriodEnd) {
+      context.resetFilterState('custom_period_end');
+    }
+  }
 
   // alias for `assignFilters`, clears the currently active filters before
   // calling the referenced method
