@@ -238,10 +238,6 @@ function StockExitController(
   // remove item
   function removeItem(item) {
     vm.stockForm.removeItem(item.id);
-    if (item.lot && item.lot.uuid) {
-      const idx = vm.selectedLots.indexOf(item.lot.uuid);
-      vm.selectedLots.splice(idx, 1);
-    }
 
     checkValidity();
 
@@ -336,23 +332,14 @@ function StockExitController(
   function hasDuplicatedLots() {
     refreshSelectedLotsList();
 
-    let doublonDetected = false;
-    for (let i = 0; i < vm.selectedLots.length; i++) {
-      let found = 0;
-      const lot = vm.selectedLots[i];
-      for (let j = 0; j < vm.selectedLots.length; j++) {
-        if (lot === vm.selectedLots[j]) {
-          found++;
+    let doubleIndex;
+    const doublonDetected = vm.selectedLots.some((lot, idx) => {
+      const hasDoubles = vm.selectedLots.lastIndexOf(lot) !== idx;
+      if (hasDoubles) { doubleIndex = idx; }
+      return hasDoubles;
+    });
 
-          if (found > 1) { break; }
-        }
-      }
-      if (found > 1) {
-        doublonDetected = true;
-        vm.doublonDetectedLine = i;
-        break;
-      }
-    }
+    vm.doublonDetectedLine = doubleIndex;
     return doublonDetected;
   }
 
@@ -472,7 +459,7 @@ function StockExitController(
 
     if (hasDuplicatedLots()) {
       // notify on the concerned row
-      errorLineHighlight();
+      errorLineHighlight(vm.doublonDetectedLine);
       return Notify.danger('ERRORS.ER_DUPLICATED_LOT', 20000);
     }
 
@@ -483,12 +470,14 @@ function StockExitController(
       .finally(() => reinit(form));
   }
 
-  function errorLineHighlight() {
+  function errorLineHighlight(rowIdx) {
     // set and unset error flag for allowing to highlight again the row
     // when the user click again on the submit button
-    vm.stockForm.store.data[vm.doublonDetectedLine][vm.ROW_ERROR_FLAG] = true;
+    const row = vm.stockForm.store.data[rowIdx];
+
+    row[vm.ROW_ERROR_FLAG] = true;
     $timeout(() => {
-      vm.stockForm.store.data[vm.doublonDetectedLine][vm.ROW_ERROR_FLAG] = false;
+      row[vm.ROW_ERROR_FLAG] = false;
     }, 1000);
   }
 
