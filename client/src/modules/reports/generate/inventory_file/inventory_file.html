@@ -38,7 +38,8 @@
             inventory-uuid="ReportConfigCtrl.inventory.uuid"
             on-select-callback="ReportConfigCtrl.onSelectInventory(inventory)"
             required="true"
-            validate-trigger="ConfigForm.$submitted">
+            validate-trigger="ConfigForm.$submitted"
+            only-consumable="true">
             <bh-clear on-clear="ReportConfigCtrl.clear('inventory')"></bh-clear>
           </bh-inventory-select>
 
