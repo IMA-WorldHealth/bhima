@@ -17,6 +17,7 @@ exports.income_expense = require('./income_expense');
 exports.journal = require('./journal');
 exports.balance = require('./balance');
 exports.reportAccounts = require('./reportAccounts');
+exports.reportAccountsMultiple = require('./reportAccountsMultiple');
 exports.generalLedger = require('./generalLedger');
 exports.clientsReport = require('./clientsReport');
 exports.creditors = require('./creditors');

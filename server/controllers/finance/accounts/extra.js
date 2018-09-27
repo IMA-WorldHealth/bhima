@@ -130,8 +130,7 @@ function getOpeningBalanceForDate(accountId, date, includeMaxDate = true) {
   return getFiscalYearForDate(date)
 
     // 1. Sum period totals up to the current required period
-    .then(fiscalYearId =>
-      getPeriodAccountBalanceUntilDate(accountId, date, fiscalYearId))
+    .then(fiscalYearId => getPeriodAccountBalanceUntilDate(accountId, date, fiscalYearId))
 
     // 2. Fetch the current dates period
     .then((previousPeriodClosing) => {
