@@ -542,6 +542,7 @@ function JournalController(
   // runs on startup
   function startup() {
     const { filters } = $state.params;
+
     if (filters.length > 0) {
       Journal.filters.replaceFiltersFromState(filters);
     } else {
@@ -572,9 +573,9 @@ function JournalController(
     // 4. A dismissable alert will always be shown to the user reminding them their data may be out of date
     Journal.openTransactionEditModal(transactionUuid, false)
       .then((result) => {
-        return result.deleted ?
-          handleDeleteTransactionResult(result) :
-          handleEditTransactionResult(result);
+        return result.deleted
+          ? handleDeleteTransactionResult(result)
+          : handleEditTransactionResult(result);
       });
   }
 
