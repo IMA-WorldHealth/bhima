@@ -1,6 +1,5 @@
 <form
   name="FindForm"
-  bh-submit="$ctrl.submit(FindForm)"
   ng-model-options="{ 'debounce' : { 'default' : 200, 'blur' : 0 }}"
   novalidate>
 
@@ -86,8 +85,8 @@
       FORM.BUTTONS.CLOSE
     </button>
 
-    <bh-loading-button loading-state="FindForm.$loading">
-      <span translate>FORM.BUTTONS.SUBMIT</span>
-    </bh-loading-button>
+    <button type="submit" class="btn btn-primary" ng-click="$ctrl.submit(FindForm, $event)" data-method="submit" translate>
+      FORM.BUTTONS.SUBMIT
+    </button>
   </div>
 </form>

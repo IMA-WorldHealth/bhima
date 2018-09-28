@@ -8,9 +8,9 @@
     ng-if="!grid.appScope.isTransfer"
     class="form-control"
     ng-model="row.entity.lot"
-    ng-model-options="{ 'debounce' : '$inherit' }"
+    ng-model-options="{ 'debounce' : 0 }"
     ng-change="grid.appScope.onChanges()"
-    ng-blur="grid.appScope.onLotBlur(row.entity.lot)"
+    bh-blur="grid.appScope.onLotBlur(row.entity.lot)"
     bh-focus="row.entity.focused"
     required>
 </div>
