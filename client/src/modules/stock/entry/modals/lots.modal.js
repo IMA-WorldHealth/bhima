@@ -16,7 +16,6 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
     rows : Data.stockLine.lots,
   });
 
-  vm.enableFastInsert = false;
   vm.hasMissingLotIdentifier = false;
   vm.hasInvalidLotExpiration = false;
   vm.hasInvalidLotQuantity = false;
@@ -102,10 +101,10 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
    * if the fast insert option is enable do this :
    * - add new row automatically on blur
    * - set the focus in the new row
-   * @param {object} row
+   * @param {string} rowLot the row.entity.lot string
    */
-  function onLotBlur() {
-    if (vm.enableFastInsert) {
+  function onLotBlur(rowLot) {
+    if (vm.enableFastInsert && rowLot) {
       // remove focus on previous rows
       vm.form.rows.forEach(lot => {
         lot.focused = false;
