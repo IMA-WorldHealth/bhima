@@ -47,7 +47,14 @@
     </div>
 
     <div style="margin-bottom: 5px;">
-      <bh-add-item callback="$ctrl.form.addItem()" disable="true">
+      <div class="checkbox">
+        <label>
+          <input ng-model="$ctrl.enableFastInsert" type="checkbox"> <span translate>LOTS.ENABLE_FAST_INSERT</span>
+        </label>
+        <p class="help-block" translate>LOTS.ENABLE_FAST_INSERT_DESCRIPTION</p>
+      </div>
+
+      <bh-add-item callback="$ctrl.form.addItem()" disable="true" inline="true">
       </bh-add-item>
     </div>
 

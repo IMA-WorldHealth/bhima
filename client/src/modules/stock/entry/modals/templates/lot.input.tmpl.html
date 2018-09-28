@@ -10,5 +10,7 @@
     ng-model="row.entity.lot"
     ng-model-options="{ 'debounce' : '$inherit' }"
     ng-change="grid.appScope.onChanges()"
+    ng-blur="grid.appScope.onLotBlur(row.entity)"
+    bh-focus="row.entity.focused"
     required>
 </div>

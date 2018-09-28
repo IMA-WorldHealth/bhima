@@ -16,6 +16,7 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
     rows : Data.stockLine.lots,
   });
 
+  vm.enableFastInsert = false;
   vm.hasMissingLotIdentifier = false;
   vm.hasInvalidLotExpiration = false;
   vm.hasInvalidLotQuantity = false;
@@ -30,6 +31,7 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
   vm.submit = submit;
   vm.cancel = cancel;
 
+  vm.onLotBlur = onLotBlur;
   vm.onChanges = onChanges;
   vm.onDateChange = onDateChange;
 
@@ -91,6 +93,30 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
 
   function onRegisterApi(api) {
     vm.gridApi = api;
+  }
+
+  /**
+   * @method onLotBlur
+   *
+   * @description
+   * if the fast insert option is enable do this :
+   * - add new row automatically on blur
+   * - set the focus in the new row
+   * @param {object} row
+   */
+  function onLotBlur() {
+    if (vm.enableFastInsert) {
+      // remove focus on previous rows
+      vm.form.rows.forEach(lot => {
+        lot.focused = false;
+      });
+
+      // add a new row
+      vm.form.addItem();
+
+      // set the focus on the new row
+      vm.form.rows[vm.form.rows.length - 1].focused = true;
+    }
   }
 
   function onChanges() {

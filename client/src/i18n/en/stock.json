@@ -164,7 +164,9 @@
     "TO_ADJUSTMENT"    : "Adjustment (Negative)"
   },
   "LOTS" : {
-    "REGISTRY" : "Lots Registry"
+    "REGISTRY" : "Lots Registry",
+    "ENABLE_FAST_INSERT": "Enable fast lots insertions",
+    "ENABLE_FAST_INSERT_DESCRIPTION": "This option allows you to quickly insert lots one after the other. It can be useful if you use barcode reader"
   },
   "MOVEMENTS" : {
     "REGISTRY" : "Movements Registry"
