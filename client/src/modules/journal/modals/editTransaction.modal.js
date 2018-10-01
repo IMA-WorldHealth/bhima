@@ -4,9 +4,19 @@ angular.module('bhima.controllers')
 JournalEditTransactionController.$inject = [
   'JournalService', 'Store', 'TransactionService', 'TransactionTypeService', '$uibModalInstance',
   'transactionUuid', 'readOnly', 'uiGridConstants', 'uuid', 'util', 'moment',
-  'ModalService', 'CurrencyService', 'ExchangeRateService', 'SessionService', '$timeout'
+  'ModalService', 'CurrencyService', 'ExchangeRateService', 'SessionService', '$timeout',
 ];
 
+/**
+ * @function JournalEditTransactionController
+ *
+ * @description
+ * This controller handles all the code for editing transactions, as well as
+ * viewing and correcting posted ones.
+ *
+ *
+ * TODO(@jniles) - break this out into services that power the form to be tested.
+ */
 function JournalEditTransactionController(
   Journal, Store, TransactionService, TransactionType, Modal, transactionUuid, readOnly, uiGridConstants,
   uuid, util, moment, ModalService, CurrencyService, ExchangeRateService, SessionService, $timeout
@@ -152,14 +162,14 @@ function JournalEditTransactionController(
 
   // module dependencies
   TransactionType.read()
-    .then((typeResults) => {
+    .then(typeResults => {
       vm.transactionTypes = new Store({ identifier : 'id' });
       vm.transactionTypes.setData(typeResults);
     });
 
   // this is completely optional - it is just for decoration and interest.
   Journal.getTransactionEditHistory(transactionUuid)
-    .then((editHistory) => {
+    .then(editHistory => {
       const hasPreviousEdits = editHistory.length > 0;
       let mostRecentEdit;
       vm.hasPreviousEdits = hasPreviousEdits;
@@ -174,10 +184,9 @@ function JournalEditTransactionController(
       }
     });
 
-
   vm.loadingTransaction = true;
   Journal.grid(transactionUuid)
-    .then((transaction) => {
+    .then(transaction => {
       vm.setupComplete = true;
 
       verifyEditableTransaction(transaction);
@@ -200,7 +209,7 @@ function JournalEditTransactionController(
     vm.rows.setData(angular.copy(rows));
 
     // @FIXME(sfount) date ng-model hack
-    vm.rows.data.forEach((row) => { row.trans_date = new Date(row.trans_date); });
+    vm.rows.data.forEach(row => { row.trans_date = new Date(row.trans_date); });
     vm.shared = sharedDetails(vm.rows.data[0]);
     vm.gridOptions.data = vm.rows.data;
   }
@@ -499,6 +508,7 @@ function JournalEditTransactionController(
       setupGridRows([]);
       $timeout(() => { setupGridRows(cache.gridQuery); });
     }
+
     vm.voucherTools[tool] = true;
   }
 
@@ -512,7 +522,6 @@ function JournalEditTransactionController(
   }
 
   function closeVoucherTools(tool) {
-
     if (tool === 'isCorrecting') {
       // reset the rows to the cached value whether successful or not - a new
       // voucher has been made with the correct values. This transaction hasn't

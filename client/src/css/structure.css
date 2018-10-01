@@ -964,6 +964,7 @@ a[disabled] {
 }
 
 .voucher-tools-container {
+  border : 1px solid rgb(46, 109, 164);
   border : 1px solid rgba(46, 109, 164, 0.8);
   box-shadow:0px 1px 1px #bdbdbd;
   padding : 15px;
