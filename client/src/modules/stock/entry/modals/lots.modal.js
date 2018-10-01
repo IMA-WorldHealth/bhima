@@ -2,11 +2,11 @@ angular.module('bhima.controllers')
   .controller('StockDefineLotsModalController', StockDefineLotsModalController);
 
 StockDefineLotsModalController.$inject = [
-  '$uibModalInstance', 'NotifyService', 'uiGridConstants', 'data',
-  'SessionService', 'bhConstants', 'StockEntryModalForm',
+  '$uibModalInstance', 'uiGridConstants', 'data',
+  'SessionService', 'bhConstants', 'StockEntryModalForm', 'focus',
 ];
 
-function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data, Session, bhConstants, EntryForm) {
+function StockDefineLotsModalController(Instance, uiGridConstants, Data, Session, bhConstants, EntryForm, Focus) {
   const vm = this;
 
   // initialize the form instance
@@ -105,16 +105,11 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
    */
   function onLotBlur(rowLot) {
     if (vm.enableFastInsert && rowLot) {
-      // remove focus on previous rows
-      vm.form.rows.forEach(lot => {
-        lot.focused = false;
-      });
-
       // add a new row
-      vm.form.addItem();
+      const newLotRow = vm.form.addItem();
 
       // set the focus on the new row
-      vm.form.rows[vm.form.rows.length - 1].focused = true;
+      Focus(newLotRow.identifier);
     }
   }
 

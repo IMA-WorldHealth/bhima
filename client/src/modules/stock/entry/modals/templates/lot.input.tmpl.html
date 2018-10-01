@@ -4,6 +4,7 @@
   </span>
 
   <input
+    id="{{ row.entity.identifier }}"
     type="text"
     ng-if="!grid.appScope.isTransfer"
     class="form-control"
@@ -11,6 +12,5 @@
     ng-model-options="{ 'debounce' : 0 }"
     ng-change="grid.appScope.onChanges()"
     bh-blur="grid.appScope.onLotBlur(row.entity.lot)"
-    bh-focus="row.entity.focused"
     required>
 </div>

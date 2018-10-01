@@ -166,7 +166,7 @@
   "LOTS" : {
     "REGISTRY" : "Registre des lots",
     "ENABLE_FAST_INSERT": "Activer les insertions rapides",
-    "ENABLE_FAST_INSERT_DESCRIPTION": "Cette option permet d'inserer rapidement les lots l'un après l'autre. Il peut s'averer utile si vous utiliser lecteur de code barre"
+    "ENABLE_FAST_INSERT_DESCRIPTION": "Cette option selectionne automatiquement une nouvelle ligne de lot lorsque vous finissez d'introduire un libellé de lot ou numéro de serie. C'est très utile lorsque vous utilisez un lecteur de code barre"
   },
   "MOVEMENTS" : {
     "REGISTRY" : "Registre des mouvements"

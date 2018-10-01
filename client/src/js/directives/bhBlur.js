@@ -6,14 +6,19 @@
 angular.module('bhima.directives')
   .directive('bhBlur', () => {
     return (scope, elem, attrs) => {
-      elem.bind('keydown', (event) => {
-        // 13 represents enter button and 9 represents tab button
-        if (event.which === 13 || event.which === 9) {
+      const ENTER_KEY = 13;
+      const TAB_KEY = 9;
+
+      const cb = (event) => {
+        if (event.which === ENTER_KEY || event.which === TAB_KEY) {
           scope.$apply(() => {
             scope.$eval(attrs.bhBlur);
           });
           event.preventDefault();
         }
-      });
+      };
+
+      elem.on('keydown', cb);
+      scope.$on('destroy', () => elem.off('keydown', cb));
     };
   });
