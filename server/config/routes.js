@@ -368,6 +368,7 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/balance', financeReports.balance.document);
   app.get('/reports/finance/balance_sheet', financeReports.balanceSheet.document);
   app.get('/reports/finance/account_report', financeReports.reportAccounts.document);
+  app.get('/reports/finance/account_report_multiple', financeReports.reportAccountsMultiple.document);
   app.get('/reports/finance/journal', financeReports.journal.postingReport);
   app.get('/reports/finance/account_statement', financeReports.accountStatement.report);
   app.get('/reports/finance/clientsReport', financeReports.clientsReport.document);

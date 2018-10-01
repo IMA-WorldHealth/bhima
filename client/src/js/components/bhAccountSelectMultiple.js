@@ -6,6 +6,7 @@ angular.module('bhima.components')
     bindings    : {
       accountIds       : '<',
       onSelectCallback : '&',
+      onChange : '&',
       disable          : '<?',
       required         : '<?',
       accountTypeId    : '<?',
@@ -133,6 +134,11 @@ function AccountSelectController(Accounts, AppCache, $timeout, bhConstants, $sco
 
     // alias the AccountForm name so that we can find it via filterFormElements
     $scope[$ctrl.name].$bhValue = $item.id;
+  };
+
+  // fires the onChange bound to the component boundary
+  $ctrl.handleChange = ($model) => {
+    $ctrl.onChange({ id : $model });
   };
 
   /*

@@ -31,6 +31,7 @@
     "NO_NEXT_FISCAL_YEAR" : "Vous ne pouvez clôturer une année financière que si vous avez défini une année suivante. Veuillez créer un exercice financier avant de fermer celui-ci.",
     "MISSING_UPLOAD_FILES" : "Fichiers à envoyer manquant",
     "NO_DATA_FOUND" : "Aucun enregistrement correspondant à vos critères",
-    "NOT_BEGINING_FISCAL_YEAR" : "L'année fiscale séléctionnée n'est pas une année de commencement avec le système"
+    "NOT_BEGINING_FISCAL_YEAR" : "L'année fiscale séléctionnée n'est pas une année de commencement avec le système",
+    "ER_DUPLICATED_LOT" : "Sélection d'un même lot plusieurs fois"
   }
 }

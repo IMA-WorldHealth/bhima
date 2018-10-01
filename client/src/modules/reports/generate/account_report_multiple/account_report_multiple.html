@@ -1,0 +1,59 @@
+<bh-report-preview
+  ng-if="ReportConfigCtrl.previewGenerated"
+  source-document="ReportConfigCtrl.previewResult"
+  on-clear-callback="ReportConfigCtrl.clearPreview()"
+  on-save-callback="ReportConfigCtrl.requestSaveAs()">
+</bh-report-preview>
+
+<div ng-show="!ReportConfigCtrl.previewGenerated">
+  <div class="row">
+    <div class="col-md-12">
+      <h3 class="text-capitalize" translate>REPORT.REPORT_ACCOUNTS_MULTIPLE.TITLE</h3>
+      <p class="text-info" translate>REPORT.REPORT_ACCOUNTS_MULTIPLE.DESCRIPTION</p>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top : 10px">
+    <div class="col-md-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <span translate>REPORT.UTIL.OPTIONS</span>
+        </div>
+
+        <div class="panel-body">
+          <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate>
+            <bh-account-select-multiple
+              id="account-id"
+              account-ids="ReportConfigCtrl.reportDetails.accountIds"
+              label="FORM.SELECT.ACCOUNTS"
+              name="account"
+              on-select-callback="ReportConfigCtrl.selectAccount(account)"
+              on-change="ReportConfigCtrl.onChangeAccounts(id)"
+              exclude-title-accounts="true"
+              required="true">
+            </bh-account-select-multiple>
+
+            <!-- Date interval  -->
+            <!-- @TODO this should use a component that callback with well defined dates -->
+            <bh-date-interval
+              date-from="ReportConfigCtrl.reportDetails.dateFrom"
+              date-to="ReportConfigCtrl.reportDetails.dateTo"
+              required="true"
+              validation-trigger="ConfigForm.$submitted">
+            </bh-date-interval>
+
+            <!-- the currency to be used in the footer -->
+            <bh-currency-select
+              currency-id="ReportConfigCtrl.reportDetails.currency_id"
+              on-change="ReportConfigCtrl.setCurrency(currency)">
+            </bh-currency-select>
+
+            <bh-loading-button loading-state="ConfigForm.$loading">
+              <span translate>REPORT.UTIL.PREVIEW</span>
+            </bh-loading-button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

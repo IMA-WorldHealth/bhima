@@ -96,6 +96,7 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
   filters.equals('document_uuid', 'document_uuid', 'm');
   filters.equals('lot_uuid', 'lot_uuid', 'm');
   filters.equals('inventory_uuid', 'uuid', 'i');
+  filters.equals('consumable', 'consumable', 'i');
   filters.equals('group_uuid', 'uuid', 'ig');
   filters.equals('text', 'text', 'i');
   filters.equals('label', 'label', 'l');
@@ -119,6 +120,9 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
 
   filters.dateFrom('dateFrom', 'date', 'm');
   filters.dateTo('dateTo', 'date', 'm');
+
+  filters.dateFrom('custom_period_start', 'date', 'm');
+  filters.dateTo('custom_period_end', 'date', 'm');
 
   filters.equals('user_id', 'user_id', 'm');
 
@@ -167,7 +171,7 @@ function getLotsDepot(depotUuid, params, finalClause) {
             ROUND(DATEDIFF(l.expiration_date, CURRENT_DATE()) / 30.5) AS lifetime,
             BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid,
             i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
-            MIN(m.date) AS entry_date,
+            m.date AS entry_date,
             i.avg_consumption, i.purchase_interval, i.delay,
             iu.text AS unit_type,
             ig.name AS group_name, ig.expires,
@@ -550,7 +554,9 @@ function getInventoryMovements(params) {
     LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
   `;
 
-  return getLots(sql, params, ' ORDER BY m.date ASC ')
+  const orderBy = params.orderByCreatedAt ? 'm.created_at' : 'm.date';
+
+  return getLots(sql, params, ` ORDER BY ${orderBy} ASC `)
     .then((rows) => {
       bundle.movements = rows;
 
@@ -562,6 +568,7 @@ function getInventoryMovements(params) {
       // stock method CUMP : cout unitaire moyen pondere
       const movements = bundle.movements.map(line => {
         const movement = {
+          reference : line.documentReference,
           date : line.date,
           entry : { quantity : 0, unit_cost : 0, value : 0 },
           exit : { quantity : 0, unit_cost : 0, value : 0 },

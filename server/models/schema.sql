@@ -1894,6 +1894,7 @@ CREATE TABLE `stock_movement` (
   `user_id`         SMALLINT(5) UNSIGNED NOT NULL,
   `reference`       INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `invoice_uuid`    BINARY(16) NULL,
+  `created_at`      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`reference`),
   UNIQUE KEY `stock_movement_uuid` (`uuid`),
   KEY `depot_uuid` (`depot_uuid`),

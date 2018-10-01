@@ -30,8 +30,7 @@ function document(req, res, next) {
   const params = req.query;
   params.user = req.session.user;
   params.enterprise_id = req.session.enterprise.id;
-  params.isEnterpriseCurrency =
-    (req.session.enterprise.currency_id === Number(params.currency_id));
+  params.isEnterpriseCurrency = (req.session.enterprise.currency_id === Number(params.currency_id));
 
   try {
     report = new ReportManager(TEMPLATE, req.session, params);
@@ -131,8 +130,7 @@ function getGeneralLedgerSQL(options) {
     (balance * rate) AS exchangedBalance, @cumsum := (balance * rate) + @cumsum AS cumsum
   `;
 
-  const columns = options.isEnterpriseCurrency ?
-    enterpriseCurrencyColumns : nonEnterpriseCurrencyColumns;
+  const columns = options.isEnterpriseCurrency ? enterpriseCurrencyColumns : nonEnterpriseCurrencyColumns;
 
 
   const sql = `
@@ -262,3 +260,6 @@ function getAccountTransactions(options, openingBalance = 0) {
 }
 
 exports.document = document;
+exports.getGeneralLedgerSQL = getGeneralLedgerSQL;
+exports.getTotalsSQL = getTotalsSQL;
+exports.getAccountTransactions = getAccountTransactions;

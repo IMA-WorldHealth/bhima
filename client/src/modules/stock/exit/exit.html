@@ -77,6 +77,13 @@
             on-change="StockCtrl.onDateChange(date)">
           </bh-date-editor>
 
+          <div ng-if="StockCtrl.dateMessageWarning" class="form-group">
+            <p>
+              <i class="fa fa-warning"></i>
+              <span translate>STOCK.ANTERIOR_DATE_QUANTITY_MESSAGE</span>
+            </p>
+          </div>
+
           <!-- note -->
           <div class="form-group"
             ng-class="{ 'has-error' : StockExitForm.$submitted && StockExitForm.description.$invalid }">

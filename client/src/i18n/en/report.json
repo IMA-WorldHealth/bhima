@@ -115,6 +115,10 @@
       "DESCRIPTION": "Creates an income and expense statement for the current and the two previous  periods",
       "REMOVE_UNUSED_ACCOUNT" : "Remove unused accounts"
     },
+    "REPORT_ACCOUNTS_MULTIPLE": {
+      "TITLE": "Multiple Accounts Report",
+      "DESCRIPTION": "This report shows all transactions for a group of accounts given a set time period."
+    },
     "INCOME_EXPENSE_REPORT": {
       "TITLE": "Income Expense Report",
       "DESCRIPTION": "Show the list of incomes and expenses that occurred inside the enterprise"
@@ -147,7 +151,7 @@
       "EXITS":"Exits",
       "STOCKS":"Stocks",
       "EXIT_REPORT":"Stock Exit Report",
-      "EXIT_REPORT_DESCRIPTION":"This report shows stocks exit which had occured in different depots",
+      "EXIT_REPORT_DESCRIPTION":"This report shows stocks exit which had occurred in different depots",
       "INCLUDE_INFORMATION":"Information to include",
       "INCLUDE_PATIENT_EXIT":"Include stock exit to patient",
       "INCLUDE_SERVICE_EXIT":"Include stock exit to service",

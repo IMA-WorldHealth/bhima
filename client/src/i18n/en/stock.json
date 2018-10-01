@@ -87,6 +87,7 @@
     "MONTH_OF_STOCK"  : "Stock Months - Months until Stock Out",
     "MONTHLY_CONSUM"  : "Average Monthly Consumption",
     "MOTIF"           : "Motif",
+    "MOVEMENT"        : "Movement",
     "MOVEMENTS"       : "Movements",
     "NO_ORDER"        : "No Orders",
     "NO_DATA"         : "No Data",
@@ -139,7 +140,12 @@
     },
     "SUCCESS"         : "Successfully created a movement",
     "TO"              : "Destination",
-    "UNIT_COST"       : "Unit cost"
+    "UNIT_COST"       : "Unit cost",
+    "ANTERIOR_DATE_QUANTITY_MESSAGE" : "You have chosen a past date, only the lots available on the chosen date will be visible as well as the quantity on this date"
+  },
+  "SETTINGS" : {
+    "ORDER_BY_CREATED_AT" : "Sort lots movements by their true creation date",
+    "ORDER_BY_CREATED_AT_HELP_TEXT" : "This option allow to sort lots movements by their true creation date into the system"
   },
   "STOCK_FLUX" : {
     "FROM_PURCHASE"    : "From Purchase Order",

@@ -36,7 +36,6 @@ function stockInventoryReport(req, res, next) {
     })
     .then((depot) => {
       data.depot = depot;
-
       return Stock.getInventoryMovements(options);
     })
     .then((rows) => {
