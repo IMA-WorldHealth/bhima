@@ -28,13 +28,13 @@ function FiscalController($state, Fiscal, ModalService, Notify, $window) {
   vm.loadingState = true;
   vm.loadingError = false;
 
-
   // refresh Fiscal Year
-  function refreshFiscalYear() {
-    return Fiscal.read(null, { detailed : 1 })
-      .then((fiscalYears) => {
+  function refreshFiscalYear(option = {}) {
+    option.detailed = 1;
+    return Fiscal.read(null, option)
+      .then(fiscalYears => {
         vm.fiscalYears = fiscalYears;
-      }).catch((err) => {
+      }).catch(err => {
         vm.loadingError = true;
         Notify.handleError(err);
       }).finally(() => {
@@ -100,16 +100,7 @@ function FiscalController($state, Fiscal, ModalService, Notify, $window) {
       vm.nbMonthDesc = 'down';
     }
 
-    Fiscal.read(null, option)
-      .then((fiscalYears) => {
-        vm.fiscalYears = fiscalYears;
-      })
-      .catch((err) => {
-        vm.loadingError = true;
-        Notify.handleError(err);
-      }).finally(() => {
-        vm.loadingState = false;
-      });
+    refreshFiscalYear(option);
   }
 
   refreshFiscalYear();
