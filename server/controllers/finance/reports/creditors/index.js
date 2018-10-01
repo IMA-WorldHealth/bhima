@@ -17,6 +17,14 @@ const db = require('../../../../lib/db');
 // path to the template to render
 const TEMPLATE = './server/controllers/finance/reports/creditors/aged.handlebars';
 
+
+const DEFAULT_OPTIONS = {
+  csvKey : 'creditors',
+  orientation : 'landscape',
+  footerRight : '[page] / [toPage]',
+  footerFontSize : '7',
+};
+
 /**
  * @method agedCreditorReport
  *
@@ -24,7 +32,7 @@ const TEMPLATE = './server/controllers/finance/reports/creditors/aged.handlebars
  * The HTTP interface which actually creates the report.
  */
 function agedCreditorReport(req, res, next) {
-  const qs = _.extend(req.query, { csvKey : 'creditors' });
+  const qs = _.extend(req.query, DEFAULT_OPTIONS);
   const metadata = _.clone(req.session);
 
   let report;
@@ -62,14 +70,13 @@ function agedCreditorReport(req, res, next) {
  * @description
  * The HTTP interface which actually creates the report.
  */
-function queryContext(params = {}) {
-  const havingNonZeroValues = ' HAVING total > 0 ';
+async function queryContext(params = {}) {
+  const havingNonZeroValues = ' HAVING total <> 0 ';
   const includeZeroes = Boolean(Number(params.zeroes));
   const useMonthGrouping = Boolean(Number(params.useMonthGrouping));
 
   // format the dates for MySQL escape
   const dates = _.fill(Array(5), params.date);
-
   const data = {};
 
   const groupByMonthColumns = `
@@ -92,11 +99,12 @@ function queryContext(params = {}) {
   const creditorSql = `
     SELECT BUID(cg.uuid) AS id, cg.name, a.number,
       ${columns}
-      SUM(gl.credit_equiv - gl.debit_equiv) AS total
+      SUM(gl.debit_equiv - gl.credit_equiv) AS total
     FROM creditor_group AS cg
       JOIN general_ledger AS gl ON gl.account_id = cg.account_id
       JOIN account AS a ON a.id = cg.account_id
     WHERE DATE(gl.trans_date) <= DATE(?)
+      AND gl.fiscal_year_id = ?
     GROUP BY cg.uuid
     ${includeZeroes ? '' : havingNonZeroValues}
     ORDER BY cg.name;
@@ -106,30 +114,29 @@ function queryContext(params = {}) {
   const aggregateSql = `
     SELECT
       ${columns}
-      SUM(gl.credit_equiv - gl.debit_equiv) AS total
+      SUM(gl.debit_equiv - gl.credit_equiv) AS total
     FROM creditor_group AS cg
       JOIN general_ledger AS gl ON gl.account_id = cg.account_id
     WHERE DATE(gl.trans_date) <= DATE(?)
+      AND gl.fiscal_year_id = ?
     ${includeZeroes ? '' : havingNonZeroValues}
   `;
 
-  return db.exec(creditorSql, dates)
-    .then(creditors => {
-      data.creditors = creditors;
-      data.dateUntil = params.date;
+  const creditors = await db.exec(creditorSql, [...dates, params.fiscal_id]);
+  data.creditors = creditors;
+  data.dateUntil = params.date;
 
-      // this is specific to grouping by months
-      data.firstMonth = params.date;
-      data.secondMonth = moment(params.date).subtract(1, 'month');
-      data.thirdMonth = moment(params.date).subtract(2, 'month');
+  // this is specific to grouping by months
+  data.firstMonth = params.date;
+  data.secondMonth = moment(params.date).subtract(1, 'month');
+  data.thirdMonth = moment(params.date).subtract(2, 'month');
 
-      data.useMonthGrouping = useMonthGrouping;
-      return db.exec(aggregateSql, dates);
-    })
-    .then(aggregates => {
-      [data.aggregates] = aggregates;
-      return data;
-    });
+  data.useMonthGrouping = useMonthGrouping;
+
+  const [aggregates] = await db.exec(aggregateSql, [...dates, params.fiscal_id]);
+  data.aggregates = aggregates;
+
+  return data;
 }
 
 exports.context = queryContext;
