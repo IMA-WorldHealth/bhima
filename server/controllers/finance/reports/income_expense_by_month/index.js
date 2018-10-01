@@ -280,10 +280,7 @@ function constructAndPruneTree(dataset, removeUnusedAccounts = true) {
 
 // the average balance for the three periods
 function calculateAverageBalance(node) {
-  function abs(val) {
-    return (val) ? Math.abs(node.firstBalance) : 0;
-  }
-  node.averageBalance = util.roundDecimal((abs(node.firstBalance) + abs(node.balance) + abs(node.thirdBalance)) / 3, 2);
+  node.averageBalance = util.roundDecimal((node.firstBalance + node.balance + node.thirdBalance) / 3, 2);
 }
 
 const MAX_ITERATIONS = 25;

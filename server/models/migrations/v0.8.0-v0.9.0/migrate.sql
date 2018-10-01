@@ -10,9 +10,7 @@
 **/
 
 -- SQL Function delimiter definition
-DELIMITER $$
-
--- Add integer reference numbers to posting journal and general ledger
+DELIMITER $$ -- Add integer reference numbers to posting journal and general ledger
 ALTER TABLE posting_journal
   ADD COLUMN trans_id_reference_number MEDIUMINT UNSIGNED NOT NULL,
   ADD INDEX (trans_id_reference_number);
@@ -201,7 +199,7 @@ BEGIN
   DECLARE v_finished INTEGER DEFAULT 0;
 
   -- cursor declaration
-  DECLARE stage_missing_movement_document_cursor CURSOR FOR 
+  DECLARE stage_missing_movement_document_cursor CURSOR FOR
   	SELECT temp.document_uuid
 	FROM missing_movement_document as temp;
 
@@ -212,7 +210,7 @@ BEGIN
   DROP TABLE IF EXISTS missing_movement_document;
 
   CREATE TEMPORARY TABLE missing_movement_document (
-    SELECT m.document_uuid FROM stock_movement m 
+    SELECT m.document_uuid FROM stock_movement m
     LEFT JOIN document_map dm ON dm.uuid IS NULL
     GROUP BY m.document_uuid
   );
@@ -226,7 +224,7 @@ BEGIN
     /* fetch data into variables */
     FETCH stage_missing_movement_document_cursor INTO v_document_uuid;
 
-    IF v_finished = 1 THEN 
+    IF v_finished = 1 THEN
       LEAVE missing_document;
     END IF;
 
@@ -241,3 +239,12 @@ BEGIN
 END $$
 
 DELIMITER ;
+
+
+INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
+  (22, 'income_expense_by_month', 'REPORT.INCOME_EXPENSE_BY_MONTH'),
+  (23, 'account_report_multiple', 'REPORT.REPORT_ACCOUNTS_MULTIPLE.TITLE');
+
+INSERT INTO `unit` VALUES
+  (209, 'Income Expenses by month', 'TREE.INCOME_EXPENSE_BY_MONTH', 'The Report of income and expenses', 144, '/modules/finance/income_expense_by_month', '/reports/income_expense_by_month'),
+  (210, 'Accounts Report multiple','TREE.REPORTS_MULTIPLE_ACCOUNTS','',144,'/modules/reports/account_report_multiple','/reports/account_report_multiple');
