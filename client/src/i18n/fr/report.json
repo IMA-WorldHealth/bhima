@@ -7,11 +7,11 @@
       "DESCRIPTION":"Affiche le debit, credit and la balance des groupes de comptes connu sous le nom de référence des comptes"
     },
     "AGED_CREDITORS":{
-      "TITLE":"Balance agée des Créances",
+      "TITLE":"Balance âgée des Créances",
       "DESCRIPTION":"Ce rapport affiche toutes les créances dues aux Créditeurs par période"
     },
     "AGED_DEBTORS":{
-      "TITLE":"Balance agée des Conventionnés",
+      "TITLE":"Balance âgée des Conventionnés",
       "DESCRIPTION":"Ce rapport affiche toutes les dettes des conventionnés, tout en spécifiant les dettes par période"
     },
     "BY_ASC": "Par ordre croissant",

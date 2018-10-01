@@ -25,9 +25,7 @@ function AgedDebtorsConfigController($sce, Notify, SavedReports, AppCache, repor
   };
 
   vm.onSelectPeriod = (period) => {
-    if (!period) {
-      return;
-    }
+    if (!period) { return; }
     vm.reportDetails.period_id = period.id;
   };
 
