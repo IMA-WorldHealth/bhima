@@ -1,29 +1,29 @@
 angular.module('bhima.components')
-.component('bhReportSource', {
-  bindings : {
-    onSelectCallback : '&',
-    label : '@?',
-    name : '@?',
+  .component('bhReportSource', {
+    bindings : {
+      onSelectCallback : '&',
+      label : '@?',
+      name : '@?',
 
-    // allows the controller to set a default value
-    value : '<',
-  },
-  template :
-    '<div class="form-group" bh-report-source>' +
-      '<label class="control-label" translate>{{$ctrl.label}}</span></label>' +
-      '<select ng-change="$ctrl.onSelect($ctrl.value)" class="form-control" ng-model="$ctrl.value" ng-options="source.id as (source.label | translate) for source in $ctrl.sources" required>' +
-        '<option value="" disabled translate>FORM.SELECT.SOURCE</option>' +
-      '</select>' +
-      '{{$ctrl.invalue}}' +
-    '</div>',
-  controller : bhReportSourceController,
-});
+      // allows the controller to set a default value
+      value : '<',
+    },
+    template :
+    '<div class="form-group" bh-report-source>'
+      + '<label class="control-label" translate>{{$ctrl.label}}</span></label>'
+      + '<select ng-change="$ctrl.onSelect($ctrl.value)" class="form-control" ng-model="$ctrl.value" ng-options="source.id as (source.label | translate) for source in $ctrl.sources" required>'
+        + '<option value="" disabled translate>FORM.SELECT.SOURCE</option>'
+      + '</select>'
+      + '{{$ctrl.invalue}}'
+    + '</div>',
+    controller : bhReportSourceController,
+  });
 
 bhReportSourceController.$inject = [];
 
 function bhReportSourceController() {
-  var ctrl = this;
-  var DEFAULT_SOURCE = 1;
+  const ctrl = this;
+  const DEFAULT_SOURCE = 1;
 
   /* @const */
   ctrl.sources = [

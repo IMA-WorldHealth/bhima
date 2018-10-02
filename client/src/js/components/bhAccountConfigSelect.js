@@ -21,7 +21,7 @@ AccountConfigSelectController.$inject = [
  * Account Configuration Select Controller
  */
 function AccountConfigSelectController(AccountConfigs, $timeout, $scope, Notify) {
-  var $ctrl = this;
+  const $ctrl = this;
 
   // fired at the beginning of the account configuration select
   $ctrl.$onInit = function $onInit() {

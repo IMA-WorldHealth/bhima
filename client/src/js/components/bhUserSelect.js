@@ -8,12 +8,12 @@ angular.module('bhima.components')
       disable          : '<?',
       onSelectCallback : '&',
       name             : '@?',
-      required         : '<?',      
+      required         : '<?',
     },
   });
 
 UserSelectController.$inject = [
-  'UserService'
+  'UserService',
 ];
 
 /**
@@ -21,9 +21,9 @@ UserSelectController.$inject = [
  *
  */
 function UserSelectController(Users) {
-  var $ctrl = this;
+  const $ctrl = this;
 
-  $ctrl.$onInit = function onInit() {    
+  $ctrl.$onInit = function onInit() {
     // fired when an user has been selected
     $ctrl.onSelectCallback = $ctrl.onSelectCallback || angular.noop;
 
@@ -32,7 +32,7 @@ function UserSelectController(Users) {
 
     // load all User
     Users.read()
-      .then(function (users) {        
+      .then((users) => {
         $ctrl.users = users;
       });
 

@@ -17,7 +17,7 @@ bhExchangeRateController.$inject = [
 ];
 
 function bhExchangeRateController(Currencies, Rates, Session, Notify, Moment) {
-  var $ctrl = this;
+  const $ctrl = this;
 
   $ctrl.today = new Date();
   $ctrl.primaryExchange = {};

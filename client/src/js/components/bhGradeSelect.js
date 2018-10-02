@@ -5,7 +5,7 @@ angular.module('bhima.components')
     transclude  : true,
     bindings    : {
       gradeUuid        : '<',
-      onSelectCallback : '&',      
+      onSelectCallback : '&',
     },
   });
 
@@ -18,12 +18,12 @@ GradeSelectController.$inject = [
  *
  */
 function GradeSelectController(Grades, Notify) {
-  var $ctrl = this;
+  const $ctrl = this;
 
-  $ctrl.$onInit = function onInit() {    
+  $ctrl.$onInit = function onInit() {
 
     Grades.read()
-      .then(function (grades) {
+      .then((grades) => {
         $ctrl.grades = grades;
       })
       .catch(Notify.handleError);
