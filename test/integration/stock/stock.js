@@ -5,13 +5,16 @@ const helpers = require('../helpers');
 const shared = require('./shared');
 
 describe('(/stock/) The Stock HTTP API', () => {
+
   // create new stock lots
-  it('POST /stock/lots create a new stock lots entry', () => agent.post('/stock/lots')
-    .send(shared.movementFirstLots)
-    .then((res) => {
-      helpers.api.created(res);
-    })
-    .catch(helpers.handler));
+  it('POST /stock/lots create a new stock lots entry', () => {
+    return agent.post('/stock/lots')
+      .send(shared.movementFirstLots)
+      .then((res) => {
+        helpers.api.created(res);
+      })
+      .catch(helpers.handler);
+  });
 
   // create stock movement to patient
   it('POST /stock/lots/movements distribute lots to patients from a depot', () => agent.post('/stock/lots/movements')

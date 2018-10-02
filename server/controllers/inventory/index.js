@@ -1,15 +1,10 @@
 /**
 * This module contains the following routes:
 *   /inventory/consumption
-*   /inventory/donations
 *   /inventory/expiration
-*   /inventory/leadtimes
 *   /inventory/metadata
-*   /inventory/status
 *   /inventory/:uuid/consumption
-*   /inventory/:uuid/donations
 *   /inventory/:uuid/expiration
-*   /inventory/:uuid/leadtimes
 *   /inventory/:uuid/metadata
 *   /inventory/:uuid/stock
 *   /inventory/:uuid/status
@@ -31,12 +26,8 @@ const q = require('q');
 
 const core = require('./inventory/core');
 const consumption = require('./inventory/consumption');
-const stock = require('./inventory/stock');
 const expirations = require('./inventory/expiration');
-const leadtimes = require('./inventory/leadtimes');
 const lots = require('./inventory/lots');
-const donations = require('./inventory/donations');
-const stats = require('./inventory/status');
 const groups = require('./inventory/groups');
 const types = require('./inventory/types');
 const units = require('./inventory/units');
@@ -73,21 +64,12 @@ exports.deleteInventoryUnits = deleteInventoryUnits;
 exports.getInventoryConsumptionById = getInventoryConsumptionById;
 exports.getInventoryConsumption = getInventoryConsumption;
 
-exports.getInventoryStockLevelsById = getInventoryStockLevelsById;
-exports.getInventoryStockLevels = getInventoryStockLevels;
-
 exports.getInventoryExpirations = getInventoryExpirations;
 exports.getInventoryExpirationsById = getInventoryExpirationsById;
 
 exports.getInventoryLots = getInventoryLots;
 exports.getInventoryLotsById = getInventoryLotsById;
 
-exports.getInventoryStatus = getInventoryStatus;
-exports.getInventoryStatusById = getInventoryStatusById;
-
-exports.getInventoryDonations = getInventoryDonations;
-exports.getInventoryDonationsById = getInventoryDonationsById;
-//
 exports.deleteInventory = deleteInventory;
 
 // expose routes for import
@@ -454,9 +436,9 @@ function getInventoryConsumptionById(req, res, next) {
       [data] = rows;
 
       // query consumption data
-      return options.average ?
-        consumption.getAverageItemConsumption(uuid, options) :
-        consumption.getItemConsumption(uuid, options);
+      return options.average
+        ? consumption.getAverageItemConsumption(uuid, options)
+        : consumption.getItemConsumption(uuid, options);
     })
     .then((rows) => {
       if (!rows.length) {
@@ -544,117 +526,6 @@ function getInventoryConsumption(req, res, next) {
     .done();
 }
 
-/**
-* GET /inventory/:uuid/leadtimes
-* Calculates the lead time (delivery delay) associated with purchases on a
-* single inventory item.
-*/
-exports.getInventoryLeadTimesById = function getInventoryLeadTimesById(req, res, next) {
-  const { uuid } = req.params;
-  const options = req.query;
-
-  leadtimes.getInventoryLeadTimesById(uuid, options)
-    .then((rows) => {
-      if (!rows.length) {
-        throw core.errors.NO_STOCK;
-      }
-
-      res.status(200).send(rows[0]);
-    })
-    .catch((error) => {
-      core.errorHandler(error, req, res, next);
-    })
-    .done();
-};
-
-
-/**
-* GET /inventory/:uuid/leadtimes
-* Calculates the lead time (delivery delay) associated with purchases on a
-* single inventory item.
-*/
-exports.getInventoryLeadTimes = function getInventoryLeadTimes(req, res, next) {
-  const options = req.query;
-
-  leadtimes.getInventoryLeadTimes(options)
-    .then((rows) => {
-      if (!rows.length) {
-        throw core.errors.NO_STOCK;
-      }
-
-      res.status(200).send(rows);
-    })
-    .catch((error) => {
-      core.errorHandler(error, req, res, next);
-    })
-    .done();
-};
-
-
-/**
-* GET /inventory/stock
-* Returns the inventory stock levels for a certain inventory item.
-*
-* TODO
-* query options:
-*   group={day|week|month|year}
-*   start={date}
-*   end={date}
-*/
-function getInventoryStockLevels(req, res, next) {
-  const options = req.query;
-
-  // enforce that both parameters exist or neither exist
-  if (!core.hasBoth(options.start, options.end)) {
-    return res.status(400).json(core.errors.MISSING_PARAMETERS);
-  }
-
-  return stock.getStockLevels(options)
-    .then((rows) => {
-      if (!rows.length) {
-        throw core.errors.NO_STOCK;
-      }
-
-      res.status(200).json(rows);
-    })
-    .catch((error) => {
-      core.errorHandler(error, req, res, next);
-    })
-    .done();
-}
-
-/**
-* GET /inventory/:uuid/stock
-* Returns the inventory levels for a certain inventory item.
-*
-* query options:
-*   group={day|week|month|year}
-*   start={date}
-*   end={date}
-*/
-function getInventoryStockLevelsById(req, res, next) {
-  const options = req.query;
-  const { uuid } = req.params;
-
-  // enforce that both parameters exist or neither exist
-  if (!core.hasBoth(options.start, options.end)) {
-    return res.status(400).json(core.errors.MISSING_PARAMETERS);
-  }
-
-  return stock.getStockLevelsById(uuid, options)
-    .then((rows) => {
-      // in case there are no records, make one up.  This makes sense for items
-      // that have never been purchases.  If they have been purchased, rows would
-      // not be empty.
-      const value = (!rows.length) ? { uuid, quantity : 0 } : rows[0];
-
-      res.status(200).json(value);
-    })
-    .catch((error) => {
-      core.errorHandler(error, req, res, next);
-    })
-    .done();
-}
 
 /**
 * GET /inventory/expirations
@@ -772,86 +643,6 @@ function getInventoryLotsById(req, res, next) {
     })
     .catch((error) => {
       core.errorHandler(error, req, res, next);
-    })
-    .done();
-}
-
-/**
-* GET /inventory/status
-* Retrieve the status of all inventory items in stock.  The status includes the
-* following checks:
-*   1) stockout
-*   2) overstock
-*   3) shortage (below minimum required level)
-*/
-function getInventoryStatus(req, res, next) {
-  core.getIds()
-    .then((rows) => {
-      if (!rows.length) {
-        throw core.errors.NO_INVENTORY_ITEMS;
-      }
-
-      return q.all(rows.map(i => stats.getInventoryStatusById(i.uuid)));
-    })
-    .then((rows) => {
-      res.status(200).json(rows);
-    })
-    .catch((error) => {
-      core.errorHandler(error, req, res, next);
-    })
-    .done();
-}
-
-/**
-* GET /inventory/:uuid/status
-* Retrieve the status of a particular inventory item.  The status includes the
-* following checks:
-*   1) stockout
-*   2) overstock
-*   3) shortage (below minimum required level)
-*/
-function getInventoryStatusById(req, res, next) {
-  const { uuid } = req.params;
-
-  stats.getInventoryStatusById(uuid)
-    .then((data) => {
-      res.status(200).json(data);
-    })
-    .catch((error) => {
-      core.errorHandler(error, next);
-    })
-    .done();
-}
-
-/**
-* GET /inventory/donations
-* Retrieve all donations from the inventory.
-*/
-function getInventoryDonations(req, res, next) {
-  donations.getInventoryDonations()
-    .then((data) => {
-      res.status(200).json(data);
-    })
-    .catch((error) => {
-      core.errorHandler(error, next);
-    })
-    .done();
-}
-
-/**
-* GET /inventory/:uuid/donations
-* Retrieve all donations from the inventory for a given inventory
-* type.
-*/
-function getInventoryDonationsById(req, res, next) {
-  const { uuid } = req.params;
-
-  donations.getInventoryDonationsById(uuid)
-    .then((data) => {
-      res.status(200).json(data);
-    })
-    .catch((error) => {
-      core.errorHandler(error, next);
     })
     .done();
 }

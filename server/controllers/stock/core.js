@@ -62,20 +62,20 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
   const finalClause = finalClauseParameter;
   const params = parameters;
   const sql = sqlQuery || `
-        SELECT
-          BUID(l.uuid) AS uuid, l.label, l.initial_quantity, l.unit_cost, BUID(l.origin_uuid) AS origin_uuid,
-          l.expiration_date, BUID(l.inventory_uuid) AS inventory_uuid, i.delay, l.entry_date,
-          i.code, i.text, BUID(m.depot_uuid) AS depot_uuid, d.text AS depot_text, iu.text AS unit_type,
-          BUID(ig.uuid) AS group_uuid, ig.name AS group_name,
-          dm.text AS documentReference
-        FROM lot l
-        JOIN inventory i ON i.uuid = l.inventory_uuid
-        JOIN inventory_unit iu ON iu.id = i.unit_id
-        JOIN inventory_group ig ON ig.uuid = i.group_uuid
-        JOIN stock_movement m ON m.lot_uuid = l.uuid AND m.flux_id = ${flux.FROM_PURCHASE}
-        LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
-        JOIN depot d ON d.uuid = m.depot_uuid
-    `;
+      SELECT
+        BUID(l.uuid) AS uuid, l.label, l.initial_quantity, l.unit_cost, BUID(l.origin_uuid) AS origin_uuid,
+        l.expiration_date, BUID(l.inventory_uuid) AS inventory_uuid, i.delay, l.entry_date,
+        i.code, i.text, BUID(m.depot_uuid) AS depot_uuid, d.text AS depot_text, iu.text AS unit_type,
+        BUID(ig.uuid) AS group_uuid, ig.name AS group_name,
+        dm.text AS documentReference
+      FROM lot l
+      JOIN inventory i ON i.uuid = l.inventory_uuid
+      JOIN inventory_unit iu ON iu.id = i.unit_id
+      JOIN inventory_group ig ON ig.uuid = i.group_uuid
+      JOIN stock_movement m ON m.lot_uuid = l.uuid AND m.flux_id = ${flux.FROM_PURCHASE}
+      LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
+      JOIN depot d ON d.uuid = m.depot_uuid
+  `;
 
   db.convert(params, [
     'uuid',
@@ -504,6 +504,7 @@ function processMultipleLots(inventories) {
       flattenLots.push(lot);
     });
   });
+
   return flattenLots;
 }
 
