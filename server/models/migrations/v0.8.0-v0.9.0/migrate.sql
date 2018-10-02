@@ -201,7 +201,7 @@ BEGIN
   DECLARE v_finished INTEGER DEFAULT 0;
 
   -- cursor declaration
-  DECLARE stage_missing_movement_document_cursor CURSOR FOR 
+  DECLARE stage_missing_movement_document_cursor CURSOR FOR
   	SELECT temp.document_uuid
 	FROM missing_movement_document as temp;
 
@@ -212,7 +212,7 @@ BEGIN
   DROP TABLE IF EXISTS missing_movement_document;
 
   CREATE TEMPORARY TABLE missing_movement_document (
-    SELECT m.document_uuid FROM stock_movement m 
+    SELECT m.document_uuid FROM stock_movement m
     LEFT JOIN document_map dm ON dm.uuid IS NULL
     GROUP BY m.document_uuid
   );
@@ -226,7 +226,7 @@ BEGIN
     /* fetch data into variables */
     FETCH stage_missing_movement_document_cursor INTO v_document_uuid;
 
-    IF v_finished = 1 THEN 
+    IF v_finished = 1 THEN
       LEAVE missing_document;
     END IF;
 
@@ -241,3 +241,14 @@ BEGIN
 END $$
 
 DELIMITER ;
+
+/*
+@author jniles
+@description
+Fix reference_uuid index bug
+@date 2018-10-02
+*/
+ALTER TABLE `general_ledger` DROP INDEX `reference_uuid`;
+ALTER TABLE `posting_journal` DROP INDEX `reference_uuid`;
+ALTER TABLE `posting_journal` ADD INDEX `reference_uuid` (`reference_uuid`);
+ALTER TABLE `general_ledger` ADD INDEX `reference_uuid` (`reference_uuid`);
