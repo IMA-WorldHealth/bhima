@@ -41,8 +41,8 @@ describe('(/inventory/metadata) The inventory metadata http API', () => {
       .catch(helpers.handler);
   });
 
-  it('PUT /inventory/:uuid/metadata update an existing inventory metadata', () => {
-    return agent.put(`/inventory/${metadata.uuid}/metadata`)
+  it('PUT /inventory/metadata/:uuid update an existing inventory metadata', () => {
+    return agent.put(`/inventory/metadata/${metadata.uuid}`)
       .send(metadataUpdate)
       .then(res => {
         // NOTE: Returned data are from the /inventory/:uuid/metadata API

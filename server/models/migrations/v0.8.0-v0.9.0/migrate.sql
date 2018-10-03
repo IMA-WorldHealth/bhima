@@ -240,7 +240,6 @@ BEGIN
   DROP TEMPORARY TABLE missing_movement_document;
 END $$
 
-
 /*
 PROCEDURE UnbalancedInvoicePayments
 
@@ -341,3 +340,14 @@ INSERT INTO unit VALUES
 
 INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
 (23, 'unbalanced_invoice_payments_report', 'REPORT.UNBALANCED_INVOICE_PAYMENTS_REPORT.TITLE');
+
+/*
+@author jniles
+@description
+Fix reference_uuid index bug
+@date 2018-10-02
+*/
+ALTER TABLE `general_ledger` DROP INDEX `reference_uuid`;
+ALTER TABLE `posting_journal` DROP INDEX `reference_uuid`;
+ALTER TABLE `posting_journal` ADD INDEX `reference_uuid` (`reference_uuid`);
+ALTER TABLE `general_ledger` ADD INDEX `reference_uuid` (`reference_uuid`);
