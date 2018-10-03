@@ -5,7 +5,7 @@ angular.module('bhima.components')
     transclude  : true,
     bindings    : {
       typeId        : '<',
-      onSelectCallback : '&',      
+      onSelectCallback : '&',
     },
   });
 
@@ -18,12 +18,12 @@ InventoryTypeSelectController.$inject = [
  *
  */
 function InventoryTypeSelectController(Inventory, Notify) {
-  var $ctrl = this;
+  const $ctrl = this;
 
-  $ctrl.$onInit = function onInit() {    
+  $ctrl.$onInit = function onInit() {
 
     Inventory.Types.read()
-      .then(function (types) {
+      .then((types) => {
         $ctrl.types = types;
       })
       .catch(Notify.handleError);

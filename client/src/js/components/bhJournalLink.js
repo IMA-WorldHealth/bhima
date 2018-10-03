@@ -12,4 +12,3 @@ angular.module('bhima.components')
     template : templateStr,
     bindings : { recordUuid : '<', display : '@' },
   });
-

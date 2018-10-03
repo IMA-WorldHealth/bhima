@@ -17,7 +17,7 @@ angular.module('bhima.components')
   });
 
 function bhHiddenFieldController() {
-  var $ctrl = this;
+  const $ctrl = this;
 
   $ctrl.$onInit = function onInit() {
     $ctrl.visible = false;

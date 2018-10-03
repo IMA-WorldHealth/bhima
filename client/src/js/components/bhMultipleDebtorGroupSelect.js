@@ -2,16 +2,16 @@ angular.module('bhima.components')
   .component('bhMultipleDebtorGroupSelect', {
     templateUrl : 'modules/templates/bhMultipleDebtorGroupSelect.tmpl.html',
     controller  : MultipleDebtorGroupSelectController,
-    bindings    : { 
+    bindings    : {
       label            : '@?',
       onSelectCallback : '&',
       onRemoveCallback : '&',
-      formName         : '@?'
+      formName         : '@?',
     },
   });
 
 MultipleDebtorGroupSelectController.$inject = [
-  'DebtorGroupService', 'NotifyService'
+  'DebtorGroupService', 'NotifyService',
 ];
 
 /**
@@ -19,10 +19,10 @@ MultipleDebtorGroupSelectController.$inject = [
  *
  */
 function MultipleDebtorGroupSelectController(DebtorGroups, Notify) {
-  var $ctrl = this;
+  const $ctrl = this;
 
   $ctrl.$onInit = function onInit() {
-    //label to display
+    // label to display
     $ctrl.label = $ctrl.label || 'FORM.LABELS.DEBTOR_GROUP';
 
     // fired when an debtor group has been selected
@@ -33,7 +33,7 @@ function MultipleDebtorGroupSelectController(DebtorGroups, Notify) {
 
     // load all Debtor Group
     DebtorGroups.read()
-      .then(function (dgs) {
+      .then((dgs) => {
         $ctrl.debtorGroups = dgs;
       })
       .catch(Notify.handleError);

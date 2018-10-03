@@ -21,7 +21,7 @@ RubricConfigSelectController.$inject = [
  * Rubric Configuration Select Controller
  */
 function RubricConfigSelectController(RubricConfigs, $timeout, $scope, Notify) {
-  var $ctrl = this;
+  const $ctrl = this;
 
   // fired at the beginning of the rubric configuration select
   $ctrl.$onInit = function $onInit() {

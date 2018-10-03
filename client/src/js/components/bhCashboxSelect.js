@@ -33,8 +33,8 @@ function CashboxSelectController(Cashbox, Notify, Session) {
     // translated label for the form input
     $ctrl.label = $ctrl.label || 'FORM.SELECT.CASHBOX';
 
-    const restrictCashboxList = angular.isDefined($ctrl.restrictToUser) ?
-      $ctrl.restrictToUser : true;
+    const restrictCashboxList = angular.isDefined($ctrl.restrictToUser)
+      ? $ctrl.restrictToUser : true;
 
     const params = { detailed : 1 };
     if (restrictCashboxList) {

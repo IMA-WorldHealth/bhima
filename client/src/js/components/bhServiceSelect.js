@@ -5,7 +5,7 @@ angular.module('bhima.components')
     transclude  : true,
     bindings    : {
       serviceId        : '<',
-      onSelectCallback : '&',      
+      onSelectCallback : '&',
     },
   });
 
@@ -18,12 +18,12 @@ ServiceSelectController.$inject = [
  *
  */
 function ServiceSelectController(Services, Notify) {
-  var $ctrl = this;
+  const $ctrl = this;
 
-  $ctrl.$onInit = function onInit() {    
+  $ctrl.$onInit = function onInit() {
 
     Services.read()
-      .then(function (services) {
+      .then((services) => {
         $ctrl.services = services;
       })
       .catch(Notify.handleError);
