@@ -138,4 +138,10 @@ BEGIN
   UPDATE account SET classe = LEFT(number, 1);
 END $$
 
+CREATE PROCEDURE zUpdatePatientText()
+BEGIN
+  UPDATE `debtor` JOIN `patient` ON debtor.uuid = patient.debtor_uuid
+    SET debtor.text = CONCAT('Patient/', patient.display_name);
+END $$
+
 DELIMITER ;
