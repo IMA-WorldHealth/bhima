@@ -2,12 +2,10 @@ angular.module('bhima.controllers')
   .controller('unbalanced_invoice_payments_reportController', UnbalancedInvoicePaymentsConfigController);
 
 UnbalancedInvoicePaymentsConfigController.$inject = [
-  '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData',
-  '$state', 'moment', 'bhConstants',
+  '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state',
 ];
 
-function UnbalancedInvoicePaymentsConfigController($sce,
-  Notify, SavedReports, AppCache, reportData, $state, Moment, bhConstants) {
+function UnbalancedInvoicePaymentsConfigController($sce, Notify, SavedReports, AppCache, reportData, $state) {
   const vm = this;
   const cache = new AppCache('configure_unbalanced_invoice_payments_report');
   const reportUrl = 'reports/finance/unbalanced_invoice_payments';
@@ -16,7 +14,6 @@ function UnbalancedInvoicePaymentsConfigController($sce,
   vm.reportDetails = {};
 
   checkCachedConfiguration();
-
 
   vm.clearPreview = function clearPreview() {
     vm.previewGenerated = false;
@@ -27,7 +24,7 @@ function UnbalancedInvoicePaymentsConfigController($sce,
     const options = {
       url : reportUrl,
       report : reportData,
-      reportOptions : sanitiseDateStrings(vm.reportDetails),
+      reportOptions : angular.copy(vm.reportDetails),
     };
 
     return SavedReports.saveAsModal(options)
@@ -41,9 +38,10 @@ function UnbalancedInvoicePaymentsConfigController($sce,
     if (form.$invalid) {
       return;
     }
+
     cache.reportDetails = angular.copy(vm.reportDetails);
 
-    const sendDetails = sanitiseDateStrings(vm.reportDetails);
+    const sendDetails = angular.copy(vm.reportDetails);
     vm.loading = true;
     SavedReports.requestPreview(reportUrl, reportData.id, sendDetails)
       .then((result) => {
@@ -57,18 +55,9 @@ function UnbalancedInvoicePaymentsConfigController($sce,
       });
   };
 
-  function sanitiseDateStrings(options) {
-    const sanitisedOptions = angular.copy(options);
-    sanitisedOptions.dateTo = Moment(sanitisedOptions.dateTo).format(bhConstants.dates.formatDB);
-    sanitisedOptions.dateFrom = Moment(sanitisedOptions.dateFrom).format(bhConstants.dates.formatDB);
-    return sanitisedOptions;
-  }
-
   function checkCachedConfiguration() {
     if (cache.reportDetails) {
       vm.reportDetails = angular.copy(cache.reportDetails);
     }
-    // FIX ME : We don't need the ignored clients list from the cache
-    vm.reportDetails.ignoredClients = [];
   }
 }

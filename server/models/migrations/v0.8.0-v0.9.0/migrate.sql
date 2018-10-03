@@ -201,7 +201,7 @@ BEGIN
   DECLARE v_finished INTEGER DEFAULT 0;
 
   -- cursor declaration
-  DECLARE stage_missing_movement_document_cursor CURSOR FOR 
+  DECLARE stage_missing_movement_document_cursor CURSOR FOR
   	SELECT temp.document_uuid
 	FROM missing_movement_document as temp;
 
@@ -212,7 +212,7 @@ BEGIN
   DROP TABLE IF EXISTS missing_movement_document;
 
   CREATE TEMPORARY TABLE missing_movement_document (
-    SELECT m.document_uuid FROM stock_movement m 
+    SELECT m.document_uuid FROM stock_movement m
     LEFT JOIN document_map dm ON dm.uuid IS NULL
     GROUP BY m.document_uuid
   );
@@ -226,7 +226,7 @@ BEGIN
     /* fetch data into variables */
     FETCH stage_missing_movement_document_cursor INTO v_document_uuid;
 
-    IF v_finished = 1 THEN 
+    IF v_finished = 1 THEN
       LEAVE missing_document;
     END IF;
 
@@ -240,4 +240,104 @@ BEGIN
   DROP TEMPORARY TABLE missing_movement_document;
 END $$
 
+
+/*
+PROCEDURE UnbalancedInvoicePayments
+
+USAGE: Call UnbalancedInvoicePayments(dateFrom, dateTo);
+
+Description:
+This SP retrieves the balance of invoices made during a period of time.  It
+filters out invoices that are reversed (they should be balanced by default),
+as well as balanced invoices.
+
+*/
+DROP PROCEDURE IF EXISTS UnbalancedInvoicePayments$$
+CREATE PROCEDURE UnbalancedInvoicePayments(
+  IN dateFrom DATE,
+  IN dateTo DATE
+) BEGIN
+
+  -- this holds all the invoices that were made during the period
+  -- two copies are needed for the UNION ALL query.
+  DROP TABLE IF EXISTS tmp_invoices_1;
+  CREATE TABLE tmp_invoices_1 (INDEX uuid (uuid)) AS
+    SELECT invoice.uuid, invoice.debtor_uuid, invoice.date
+    FROM invoice
+    WHERE
+      DATE(invoice.date) BETWEEN DATE(dateFrom) AND DATE(dateTo)
+      AND reversed = 0
+    ORDER BY invoice.date;
+
+  DROP TABLE IF EXISTS tmp_invoices_2;
+  CREATE TABLE tmp_invoices_2 AS SELECT * FROM tmp_invoices_1;
+
+  -- This holds the invoices from the PJ/GL
+  DROP TABLE IF EXISTS tmp_records;
+  CREATE TABLE tmp_records AS
+    SELECT ledger.record_uuid AS uuid, ledger.debit_equiv, ledger.credit_equiv
+    FROM (
+      SELECT pj.record_uuid, pj.debit_equiv, pj.credit_equiv
+      FROM posting_journal pj
+        JOIN tmp_invoices_1 i ON i.uuid = pj.record_uuid
+          AND pj.entity_uuid = i.debtor_uuid
+
+      UNION ALL
+
+      SELECT gl.record_uuid, gl.debit_equiv, gl.credit_equiv
+      FROM general_ledger gl
+        JOIN tmp_invoices_2 i ON i.uuid = gl.record_uuid
+            AND gl.entity_uuid = i.debtor_uuid
+  ) AS ledger;
+
+  -- this holds the references/payments against the invoices
+  DROP TABLE IF EXISTS tmp_references;
+  CREATE TABLE tmp_references AS
+    SELECT ledger.reference_uuid AS uuid, ledger.debit_equiv, ledger.credit_equiv
+    FROM (
+      SELECT pj.reference_uuid, pj.debit_equiv, pj.credit_equiv
+      FROM posting_journal pj
+        JOIN tmp_invoices_1 i ON i.uuid = pj.reference_uuid
+          AND pj.entity_uuid = i.debtor_uuid
+
+      UNION ALL
+
+      SELECT gl.reference_uuid, gl.debit_equiv, gl.credit_equiv
+      FROM general_ledger gl
+        JOIN tmp_invoices_2 i ON i.uuid = gl.reference_uuid
+          AND gl.entity_uuid = i.debtor_uuid
+  ) AS ledger;
+
+  -- combine invoices and references to get the balance of each invoice.
+  -- note that we filter out balanced invoices
+  DROP TABLE IF EXISTS tmp_invoice_balances;
+  CREATE TABLE tmp_invoice_balances AS
+    SELECT z.uuid, SUM(z.debit_equiv) AS debit_equiv,
+      SUM(z.credit_equiv) AS credit_equiv,
+      SUM(z.debit_equiv) - SUM(z.credit_equiv) AS balance
+    FROM (
+      SELECT i.uuid, i.debit_equiv, i.credit_equiv FROM tmp_records i
+      UNION ALL
+      SELECT p.uuid, p.debit_equiv, p.credit_equiv FROM tmp_references p
+    )z
+    GROUP BY z.uuid
+    HAVING balance <> 0;
+
+  -- even though this column is called "balance", it is actually the amount remaining
+  -- on the invoice.
+  SELECT BUID(iv.debtor_uuid) AS debtor_uuid, balances.debit_equiv AS debit,
+    balances.credit_equiv AS credit, iv.date AS creation_date, balances.balance,
+    IFNULL(balances.credit_equiv / balances.debit_equiv, 0) AS paymentPercentage,
+    dm.text AS reference
+  FROM tmp_invoices_1 AS iv
+    JOIN tmp_invoice_balances AS balances ON iv.uuid = balances.uuid
+    LEFT JOIN document_map AS dm ON dm.uuid = iv.uuid;
+END$$
+
 DELIMITER ;
+
+INSERT INTO unit VALUES
+(210, 'unbalanced invoice payments','REPORT.UNBALANCED_INVOICE_PAYMENTS_REPORT.TITLE','',144,'/modules/reports/unbalanced_invoice_payments_report','/reports/unbalanced_invoice_payments_report');
+
+INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
+(23, 'unbalanced_invoice_payments_report', 'REPORT.UNBALANCED_INVOICE_PAYMENTS_REPORT.TITLE');

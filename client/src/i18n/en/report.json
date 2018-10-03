@@ -130,8 +130,8 @@
       "DESCRIPTION": "This report shows all entries and exits of cash inside the enterprise"
     },
     "UNBALANCED_INVOICE_PAYMENTS_REPORT": {
-      "TITLE": "Unbalaced invoice payments report",
-      "DESCRIPTION": "This report shows the balance of invoices whitch are not completely paid or overpaid during a period"
+      "TITLE": "Unbalanced Invoices Report",
+      "DESCRIPTION": "This report shows the balance of invoices which are not completely paid or overpaid during a period."
     },
     "STOCK":{
       "TITLE":"Stock Report",

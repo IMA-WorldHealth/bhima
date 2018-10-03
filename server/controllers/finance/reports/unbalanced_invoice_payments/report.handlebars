@@ -1,4 +1,4 @@
-{{> head title="REPORT.INCOME_EXPENSE" }}
+{{> head title="REPORT.UNBALANCED_INVOICE_PAYMENTS_REPORT" }}
 
 <div class="container">
   {{> header}}
@@ -27,11 +27,9 @@
           </tr>
         </thead>
         <tbody>
-          {{#each debtors }}
+          {{#each debtors as |debtor| }}
           <tr>
-            <td colspan="6" style="background: #f8f6f6">
-              <b>{{text}}</b>
-            </td>
+            <th colspan="6" style="background: #f8f6f6">{{debtor.reference}} - {{debtor.text}}</th>
           </tr>
           {{#each invoices }}
           <tr>
@@ -39,7 +37,7 @@
             <td>{{reference}}</td>
             <td class="text-right">{{currency debit ../../metadata.enterprise.currency_id}}</td>
             <td class="text-right">{{currency credit ../../metadata.enterprise.currency_id}}</td>
-            <td class="text-right">{{currency balance ../../metadata.enterprise.currency_id}}</td>
+            <td class="text-right">{{debcred balance ../../metadata.enterprise.currency_id}}</td>
             <td class="text-right">{{ percentage paymentPercentage }} </td>
           </tr>
 
@@ -50,7 +48,7 @@
             </td>
             <td class="text-right">{{currency sumDebit ../metadata.enterprise.currency_id}}</td>
             <td class="text-right">{{currency sumCredit ../metadata.enterprise.currency_id}}</td>
-            <td class="text-right">{{currency sumBalance ../metadata.enterprise.currency_id}}</td>
+            <td class="text-right">{{debcred sumBalance ../metadata.enterprise.currency_id}}</td>
             <td></td>
           </tr>
           {{/if}} {{/each}}
@@ -80,14 +78,15 @@
           <tr>
             <td>{{translate 'FORM.LABELS.BALANCE'}}</td>
             <td class="text-right">
-              {{currency totalBalance metadata.enterprise.currency_id}}
+              {{debcred totalBalance metadata.enterprise.currency_id}}
             </td>
           </tr>
         </tbody>
       </table>
 
-     
-      <br/> <br/>
+      <br/>
+      <br/>
+
       <div class="col-lg-12">
         <table style="width:500px;margin-top:10px; margin-right:-5px; " class="table table-condensed table-report pull-right">
         <thead>
@@ -132,7 +131,6 @@
               {{ paymentInterval.more}}
             </td>
           </tr>
-
         </tbody>
       </table>
       </div>
