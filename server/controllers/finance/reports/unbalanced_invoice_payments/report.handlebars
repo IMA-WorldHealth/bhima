@@ -27,35 +27,35 @@
           </tr>
         </thead>
         <tbody>
-          {{#each debtors as |debtor| }}
-          <tr>
-            <th colspan="6" style="background: #f8f6f6">{{debtor.reference}} - {{debtor.text}}</th>
-          </tr>
-          {{#each invoices }}
-          <tr>
-            <td></td>
-            <td>{{reference}}</td>
-            <td class="text-right">{{currency debit ../../metadata.enterprise.currency_id}}</td>
-            <td class="text-right">{{currency credit ../../metadata.enterprise.currency_id}}</td>
-            <td class="text-right">{{debcred balance ../../metadata.enterprise.currency_id}}</td>
-            <td class="text-right">{{ percentage paymentPercentage }} </td>
-          </tr>
+          {{#each groups as |invoices|}}
+            <tr>
+              <th colspan="6" style="background: #f8f6f6">{{invoices.title}} ({{invoices.totals.numInvoices}})</th>
+            </tr>
 
-          {{/each}} {{#if addSubTotal}}
-          <tr>
-            <td colspan="2" class="text-right">
-              <b>{{translate 'FORM.LABELS.TOTAL'}}</b>
-            </td>
-            <td class="text-right">{{currency sumDebit ../metadata.enterprise.currency_id}}</td>
-            <td class="text-right">{{currency sumCredit ../metadata.enterprise.currency_id}}</td>
-            <td class="text-right">{{debcred sumBalance ../metadata.enterprise.currency_id}}</td>
-            <td></td>
-          </tr>
-          {{/if}} {{/each}}
+            {{#each invoices as |invoice|}}
+              <tr>
+                <td></td>
+                <td>{{invoice.reference}} ({{date invoice.creation_date "DD/MM/YYYY"}})</td>
+                <td class="text-right">{{currency debit ../../metadata.enterprise.currency_id}}</td>
+                <td class="text-right">{{currency credit ../../metadata.enterprise.currency_id}}</td>
+                <td class="text-right">{{debcred balance ../../metadata.enterprise.currency_id}}</td>
+                <td class="text-right">{{percentage paymentPercentage}}</td>
+              </tr>
+            {{/each}}
+
+            <tr>
+              <th class="text-right" colspan="2">{{translate 'FORM.LABELS.TOTAL'}}</th>
+              <th class="text-right">{{currency invoices.totals.sumDebit ../metadata.enterprise.currency_id}}</th>
+              <th class="text-right">{{currency invoices.totals.sumCredit ../metadata.enterprise.currency_id}}</th>
+              <th class="text-right">{{debcred invoices.totals.sumBalance ../metadata.enterprise.currency_id}}</th>
+              <th class="text-right">{{percentage invoices.totals.percentage}}</td>
+            </tr>
+          {{/each}}
         </tbody>
       </table>
 
-      <br>
+      <br/>
+
       <table style="width:500px" class="table table-condensed table-report pull-right">
         <thead>
           <tr style="background-color:#ddd;">
@@ -66,19 +66,19 @@
           <tr>
             <td>{{translate 'TABLE.COLUMNS.DEBIT'}}</td>
             <td class="text-right">
-              {{currency totalDebit metadata.enterprise.currency_id}}
+              {{currency totals.debit metadata.enterprise.currency_id}}
             </td>
           </tr>
           <tr>
             <td>{{translate 'TABLE.COLUMNS.CREDIT'}}</td>
             <td class="text-right">
-              {{currency totalCredit metadata.enterprise.currency_id}}
+              {{currency totals.credit metadata.enterprise.currency_id}}
             </td>
           </tr>
           <tr>
             <td>{{translate 'FORM.LABELS.BALANCE'}}</td>
             <td class="text-right">
-              {{debcred totalBalance metadata.enterprise.currency_id}}
+              {{debcred totals.balance metadata.enterprise.currency_id}}
             </td>
           </tr>
         </tbody>
@@ -88,7 +88,7 @@
       <br/>
 
       <div class="col-lg-12">
-        <table style="width:500px;margin-top:10px; margin-right:-5px; " class="table table-condensed table-report pull-right">
+        <table style="width:500px;margin-top:10px; margin-right:-5px;" class="table table-condensed table-report pull-right">
         <thead>
           <tr style="background-color:#ddd;">
             <th colspan="2" class="text-center">{{translate 'FORM.LABELS.PERCENTAGE'}}</th>
@@ -98,7 +98,7 @@
           <tr>
             <td>0%</td>
             <td class="text-right">
-              {{ paymentInterval._0}}
+              {{paymentInterval._0}}
             </td>
           </tr>
           <tr>
@@ -115,26 +115,19 @@
           </tr>
           <tr>
             <td>50-75%</td>
-            <td class="text-right">
-              {{ paymentInterval._50_75}}
-            </td>
+            <td class="text-right"> {{ paymentInterval._50_75}} </td>
           </tr>
           <tr>
             <td>75-100%</td>
-            <td class="text-right">
-              {{ paymentInterval._75_100}}
-            </td>
+            <td class="text-right"> {{ paymentInterval._75_100}} </td>
           </tr>
           <tr>
             <td>{{translate "FORM.LABELS.OTHERS"}}</td>
-            <td class="text-right">
-              {{ paymentInterval.more}}
-            </td>
+            <td class="text-right"> {{ paymentInterval.more}} </td>
           </tr>
         </tbody>
       </table>
       </div>
     </div>
-
   </div>
 </div>

@@ -330,7 +330,10 @@ CREATE PROCEDURE UnbalancedInvoicePayments(
     dm.text AS reference
   FROM tmp_invoices_1 AS iv
     JOIN tmp_invoice_balances AS balances ON iv.uuid = balances.uuid
-    LEFT JOIN document_map AS dm ON dm.uuid = iv.uuid;
+    LEFT JOIN document_map AS dm ON dm.uuid = iv.uuid
+    JOIN debtor ON debtor.uuid = iv.debtor_uuid
+    LEFT JOIN entity_map AS em ON em.uuid = iv.debtor_uuid
+  ORDER BY iv.date;
 END$$
 
 DELIMITER ;

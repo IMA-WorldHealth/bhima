@@ -45,79 +45,12 @@ async function getBalances(options) {
     new Date(options.dateTo),
   ];
 
-  const debtorsSql = `
-    SELECT BUID(d.uuid) as uuid, em.text AS reference, d.text
-    FROM debtor d
-      JOIN invoice i ON i.debtor_uuid = d.uuid
-      LEFT JOIN entity_map em ON em.uuid = d.uuid
-    WHERE DATE(i.date) BETWEEN DATE(?) AND DATE(?)
-  `;
+  const paymentBalanceSql = 'CALL UnbalancedInvoicePayments(?, ?);';
 
-  const paymentBalanceSql = 'CALL UnbalancedInvoicePayments2(?, ?);';
+  const [invoices] = await db.exec(paymentBalanceSql, params);
 
-  const promises = await Promise.all([
-    db.exec(debtorsSql, params),
-    db.exec(paymentBalanceSql, params),
-  ]);
+  console.time('JS');
 
-  let [debtors] = promises;
-  const result = promises[1];
-
-  const paymentsBalance = result[0];
-
-  const debtorMap = {};
-  debtors.forEach(debtor => {
-    debtorMap[debtor.uuid] = debtor;
-    debtor.invoices = [];
-  });
-
-  // mapping payments to the debtor
-  paymentsBalance.forEach(pay => {
-    if (pay.debtor_uuid) {
-      try {
-        debtorMap[pay.debtor_uuid].invoices.push(pay);
-      } catch (e) {
-        console.error('Could not find:', pay.debtor_uuid);
-      }
-    }
-  });
-
-  // remove all debtor without unbalanced invoices
-
-  debtors = debtors.filter(debtor => {
-    debtor.addSubTotal = debtor.invoices.length > 1;
-    return debtor.invoices.length > 0;
-  });
-
-  // sums calculation
-  let totalDebit = 0;
-  let totalCredit = 0;
-  let totalBalance = 0;
-  debtors.forEach(debtor => {
-    _.extend(debtor, { sumCredit : 0, sumDebit : 0, sumBalance : 0 });
-    debtor.invoices.forEach(invoice => {
-      debtor.sumCredit += invoice.credit;
-      debtor.sumDebit += invoice.debit;
-      debtor.sumBalance += invoice.balance;
-    });
-
-    debtor.sumCredit = util.roundDecimal(debtor.sumCredit, 4);
-    debtor.sumDebit = util.roundDecimal(debtor.sumDebit, 4);
-    debtor.sumBalance = util.roundDecimal(debtor.sumBalance, 4);
-
-    totalCredit += debtor.sumCredit;
-    totalDebit += debtor.sumDebit;
-    totalBalance += debtor.sumBalance;
-  });
-
-  const paymentInterval = getPaymentPercentage(paymentsBalance);
-
-  return {
-    debtors, totalDebit, totalCredit, totalBalance, paymentInterval,
-  };
-}
-
-function getPaymentPercentage(invoicesPayments) {
   let _0 = 0;
   let _0_25 = 0;
   let _25_50 = 0;
@@ -125,8 +58,8 @@ function getPaymentPercentage(invoicesPayments) {
   let _75_100 = 0;
   let more = 0;
 
-  invoicesPayments.forEach(pay => {
-    const { paymentPercentage } = pay;
+  function classifyPercentPaid(inv) {
+    const { paymentPercentage } = inv;
     if (paymentPercentage === 0.00) {
       _0++;
     } else if (paymentPercentage > 0 && paymentPercentage < 0.25) {
@@ -140,9 +73,69 @@ function getPaymentPercentage(invoicesPayments) {
     } else {
       more++;
     }
+  }
+
+  function sumInvoices(group) {
+    let [debits, credits, balances] = [0, 0, 0];
+    let i = group.length;
+
+    while (i--) {
+      const iv = group[i];
+      debits += iv.debit;
+      credits += iv.credit;
+      balances += iv.balance;
+
+      // count the percent paid in each category
+      classifyPercentPaid(iv);
+
+      // this is cheeky: add 'title' property array for handlebars rendering
+      group.title = `${iv.debtorReference} - ${iv.debtorName}`;
+    }
+
+    return [
+      util.roundDecimal(debits, 4),
+      util.roundDecimal(credits, 4),
+      util.roundDecimal(balances, 4),
+    ];
+  }
+
+  // invoice groups
+  const groups = _.groupBy(invoices, 'debtorReference');
+
+  const totals = {
+    debit : 0,
+    credit : 0,
+    balance : 0,
+    numInvoices : 0,
+  };
+
+  // run all calculations on dataset.
+  _.forEach(groups, (group) => {
+    const [sumDebit, sumCredit, sumBalance] = sumInvoices(group);
+
+    // calculate the percentage paid for the group
+    const percentage = sumCredit / sumDebit;
+
+    // compute the number of invoices
+    const numInvoices = group.length;
+
+    totals.debit += sumDebit;
+    totals.credit += sumCredit;
+    totals.balance += sumBalance;
+    totals.numInvoices += numInvoices;
+
+    // attach the totals of each group to the group array
+    group.totals = {
+      sumDebit, sumCredit, sumBalance, percentage, numInvoices,
+    };
   });
 
-  return {
+  const paymentInterval = {
     _0, _0_25, _25_50, _50_75, _75_100, more,
+  };
+
+  console.timeEnd('JS');
+  return {
+    groups, totals, paymentInterval,
   };
 }

@@ -857,12 +857,14 @@ CREATE PROCEDURE UnbalancedInvoicePayments(
 
   -- even though this column is called "balance", it is actually the amount remaining
   -- on the invoice.
-  SELECT BUID(iv.debtor_uuid) AS debtor_uuid, balances.debit_equiv AS debit,
+  SELECT em.text AS debtorReference, debtor.text AS debtorName, balances.debit_equiv AS debit,
     balances.credit_equiv AS credit, iv.date AS creation_date, balances.balance,
     IFNULL(balances.credit_equiv / balances.debit_equiv, 0) AS paymentPercentage,
     dm.text AS reference
   FROM tmp_invoices_1 AS iv
     JOIN tmp_invoice_balances AS balances ON iv.uuid = balances.uuid
-    LEFT JOIN document_map AS dm ON dm.uuid = iv.uuid;
+    LEFT JOIN document_map AS dm ON dm.uuid = iv.uuid
+    JOIN debtor ON debtor.uuid = iv.debtor_uuid
+    LEFT JOIN entity_map AS em ON em.uuid = iv.debtor_uuid
+  ORDER BY iv.date;
 END$$
-
