@@ -53,10 +53,15 @@
           {{/each}}
         </tbody>
       </table>
+    </div>
+  </div>
 
-      <br/>
+  <br />
 
-      <table style="width:500px" class="table table-condensed table-report pull-right">
+  <div class="row">
+    <div class="col-xs-6">
+
+      <table class="table table-condensed table-report">
         <thead>
           <tr style="background-color:#ddd;">
             <th colspan="2" class="text-center">{{translate 'FORM.LABELS.TOTAL'}}</th>
@@ -83,49 +88,56 @@
           </tr>
         </tbody>
       </table>
+    </div>
 
-      <br/>
-      <br/>
-
-      <div class="col-lg-12">
-        <table style="width:500px;margin-top:10px; margin-right:-5px;" class="table table-condensed table-report pull-right">
+    <div class="col-xs-6">
+      <table class="table table-condensed table-report">
         <thead>
           <tr style="background-color:#ddd;">
-            <th colspan="2" class="text-center">{{translate 'FORM.LABELS.PERCENTAGE'}}</th>
+            <th class="text-center">{{translate 'FORM.LABELS.AMOUNT_PAID'}}</th>
+            <th class="text-center">{{translate 'FORM.LABELS.TOTAL'}}</th>
+            <th class="text-center">{{translate 'FORM.LABELS.PERCENTAGE'}}</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td>0%</td>
-            <td class="text-right">
-              {{paymentInterval._0}}
-            </td>
+            <td class="text-right">{{intervals._0.value}}</td>
+            <td class="text-right">{{percentage intervals._0.percentage}}</td>
           </tr>
           <tr>
-            <td>0-25%</td>
-            <td class="text-right">
-              {{ paymentInterval._0_25}}
-            </td>
+            <td>0% &gt; &amp; &lt; 25%</td>
+            <td class="text-right">{{intervals._0_25.value}}</td>
+            <td class="text-right">{{percentage intervals._0_25.percentage}}</td>
           </tr>
           <tr>
-            <td>25-50%</td>
-            <td class="text-right">
-              {{ paymentInterval._25_50}}
-            </td>
+            <td>25% &ge; &amp; &lt; 50%</td>
+            <td class="text-right">{{intervals._25_50.value}}</td>
+            <td class="text-right">{{percentage intervals._25_50.percentage}}</td>
           </tr>
           <tr>
-            <td>50-75%</td>
-            <td class="text-right"> {{ paymentInterval._50_75}} </td>
+            <td>50 &ge; &amp; &lt; 75%</td>
+            <td class="text-right">{{intervals._50_75.value}}</td>
+            <td class="text-right">{{percentage intervals._50_75.percentage}}</td>
           </tr>
           <tr>
-            <td>75-100%</td>
-            <td class="text-right"> {{ paymentInterval._75_100}} </td>
+            <td>75% &ge; &amp; &lt; 100%</td>
+            <td class="text-right">{{intervals._75_100.value}} </td>
+            <td class="text-right">{{percentage intervals._75_100.percentage}}</td>
           </tr>
           <tr>
             <td>{{translate "FORM.LABELS.OTHERS"}}</td>
-            <td class="text-right"> {{ paymentInterval.more}} </td>
+            <td class="text-right">{{intervals.more.value}}</td>
+            <td class="text-right">{{percentage intervals.more.percentage}}</td>
           </tr>
         </tbody>
+        <tfoot>
+          <tr>
+            <th>{{translate 'FORM.LABELS.TOTAL'}}</th>
+            <th>{{totals.numInvoices}}</th>
+            <th>{{percentage 1}}</th>
+          </tr>
+        </tfoot>
       </table>
       </div>
     </div>

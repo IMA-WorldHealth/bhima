@@ -219,6 +219,7 @@
             "ADDR_1": "Address 1",
             "ADDR_2": "Address 2",
             "ALL": "All",
+            "AMOUNT_PAID" : "Amount Paid",
             "ALL_EMPLOYEES": "All Employees",
             "ALL_GENDER": "All Gender",
             "AMOUNT": "Amount",

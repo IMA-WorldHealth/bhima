@@ -46,10 +46,7 @@ async function getBalances(options) {
   ];
 
   const paymentBalanceSql = 'CALL UnbalancedInvoicePayments(?, ?);';
-
   const [invoices] = await db.exec(paymentBalanceSql, params);
-
-  console.time('JS');
 
   let _0 = 0;
   let _0_25 = 0;
@@ -130,12 +127,16 @@ async function getBalances(options) {
     };
   });
 
-  const paymentInterval = {
-    _0, _0_25, _25_50, _50_75, _75_100, more,
+  const intervals = {
+    _0 : { value : _0, percentage : _0 / totals.numInvoices },
+    _0_25 : { value : _0_25, percentage : _0_25 / totals.numInvoices },
+    _25_50 : { value : _25_50, percentage : _25_50 / totals.numInvoices },
+    _50_75 : { value : _50_75, percentage : _50_75 / totals.numInvoices },
+    _75_100 : { value : _75_100, percentage : _75_100 / totals.numInvoices },
+    more : { value : more, percentage : more / totals.numInvoices },
   };
 
-  console.timeEnd('JS');
   return {
-    groups, totals, paymentInterval,
+    groups, totals, intervals,
   };
 }
