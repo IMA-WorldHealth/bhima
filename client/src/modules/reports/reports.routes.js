@@ -26,6 +26,7 @@ angular.module('bhima.routes')
       'ohada_balance_sheet_report',
       'account_reference',
       'unbalanced_invoice_payments_report',
+      'stock_value',
     ];
 
     $stateProvider

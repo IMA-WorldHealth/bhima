@@ -1,0 +1,64 @@
+{{> head title="TREE.STOCK_INVENTORY" }}
+
+<body>
+
+  <div class="container">
+  {{> header}}
+
+  <!-- body  -->
+  <div class="row">
+    <div class="col-xs-12">
+
+      <!-- page title  -->
+      <h2 class="text-center text-uppercase">
+        {{translate 'REPORT.STOCK_VALUE.TITLE'}}
+      </h2>
+
+      <h3 class="text-center">
+        {{#if depot.text}}{{depot.text}}{{/if}}
+      </h3>
+
+      <h4 class="text-center">
+        {{date dateTo}}
+      </h4>
+
+      <br>
+
+      <!-- list of data  -->
+      <table class="table table-condensed table-report">
+        <thead>
+          <tr style="background-color:#ddd;">
+            <th class="text-center">{{translate 'FORM.LABELS.INVENTORY'}}</th>
+            <th class="text-center">{{translate 'FORM.LABELS.QUANTITY'}}</th>
+            <th class="text-center">{{translate 'STOCK.UNIT_COST'}}</th>
+            <th class="text-center">{{translate 'FORM.LABELS.VALUE'}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each stockValues}}
+            <tr>
+              <td style="width:50%">{{inventory_name}}</td>
+              <td class="text-right">{{stockQtt}}</td>
+              <td class="text-right">{{stockUnitCost}}</td>
+              <td class="text-right">{{currency stockValue ../../metadata.enterprise.currency_id}}</td>
+            </tr>
+          {{/each}}
+           <!-- no data -->
+          {{#if emptyResult}}
+            <tr><th class="text-center" colspan="4">{{translate 'STOCK.NO_DATA'}}</th></tr>
+          {{else}}
+            <tr>
+              <th colspan="3" class="text-right">{{ translate "FORM.LABELS.TOTAL"}}</th>
+              <th class="text-right">{{ currency stocktotal ../metadata.enterprise.currency_id }}</th>
+            </tr>  
+          {{/if}}
+
+          
+        </tbody>
+       
+      </table>
+    </div>
+  </div>
+
+  </div>
+</body>

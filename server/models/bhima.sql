@@ -102,7 +102,9 @@ INSERT INTO unit VALUES
   (208, 'Import Stock From File','TREE.IMPORT_STOCK_FROM_FILE','',160,'/modules/stock/import','/stock/import'),
   (209, 'Accounts Report Multiple','TREE.REPORTS_MULTIPLE_ACCOUNTS','',144,'/modules/reports/account_report_multiple','/reports/account_report_multiple'),
   (210, 'Unbalanced Invoice Payments','REPORT.UNBALANCED_INVOICE_PAYMENTS_REPORT.TITLE','',144,'/modules/reports/unbalanced_invoice_payments_report','/reports/unbalanced_invoice_payments_report'),
-  (211, 'Income Expenses by Month', 'TREE.INCOME_EXPENSE_BY_MONTH', 'The Report of income and expenses', 144, '/modules/finance/income_expense_by_month', '/reports/income_expense_by_month');
+  (211, 'Income Expenses by Month', 'TREE.INCOME_EXPENSE_BY_MONTH', 'The Report of income and expenses', 144, '/modules/finance/income_expense_by_month', '/reports/income_expense_by_month'),
+  (212, 'Stock value Report','TREE.STOCK_VALUE','',144,'/modules/reports/stock_value','/reports/stock_value');
+
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -145,7 +147,9 @@ INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
   (21, 'account_reference', 'REPORT.ACCOUNT_REFERENCE.TITLE'),
   (22, 'account_report_multiple', 'REPORT.REPORT_ACCOUNTS_MULTIPLE.TITLE'),
   (23, 'unbalanced_invoice_payments_report', 'REPORT.UNBALANCED_INVOICE_PAYMENTS_REPORT.TITLE'),
-  (24, 'income_expense_by_month', 'REPORT.INCOME_EXPENSE_BY_MONTH');
+  (24, 'income_expense_by_month', 'REPORT.INCOME_EXPENSE_BY_MONTH'),
+  (25, 'stock_value', 'TREE.STOCK_VALUE');
+  
 
 -- Supported Languages
 INSERT INTO `language` VALUES
