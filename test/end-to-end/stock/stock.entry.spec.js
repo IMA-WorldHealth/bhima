@@ -92,6 +92,29 @@ function StockEntryTests() {
     // submit
     page.submit();
   });
+
+  it(`Should add automatically new lot row when fast insert is enabled`, () => {
+    // set another Depot
+    page.setDepot(DEPOT_SECONDAIRE);
+
+    // select the integration option
+    page.setIntegration();
+
+    page.setDate(new Date());
+
+    page.setDescription(DESCRIPTION.concat(' - Integration de stock'));
+
+    page.addRows(1);
+
+    page.setItem(0, 'Quinine');
+
+    page.openLotsModal(0);
+
+    page.enableFastLotsInsert();
+
+    const lots = ['AAA', 'BBB', 'CCC'];
+    page.fastLotsInsert(lots);
+  });
 }
 
 describe('Stock Entry Test', StockEntryTests);

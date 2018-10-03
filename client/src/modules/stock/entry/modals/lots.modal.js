@@ -2,12 +2,16 @@ angular.module('bhima.controllers')
   .controller('StockDefineLotsModalController', StockDefineLotsModalController);
 
 StockDefineLotsModalController.$inject = [
-  '$uibModalInstance', 'NotifyService', 'uiGridConstants', 'data',
-  'SessionService', 'bhConstants', 'StockEntryModalForm',
+  'appcache', '$uibModalInstance', 'uiGridConstants', 'data',
+  'SessionService', 'bhConstants', 'StockEntryModalForm', 'focus',
 ];
 
-function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data, Session, bhConstants, EntryForm) {
+function StockDefineLotsModalController(
+  AppCache, Instance, uiGridConstants, Data, Session, bhConstants, EntryForm, Focus
+) {
   const vm = this;
+
+  const cache = new AppCache('StockEntryModal');
 
   // initialize the form instance
   vm.form = new EntryForm({
@@ -30,7 +34,9 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
   vm.submit = submit;
   vm.cancel = cancel;
 
+  vm.onLotBlur = onLotBlur;
   vm.onChanges = onChanges;
+  vm.onChangeQuantity = onChangeQuantity;
   vm.onDateChange = onDateChange;
 
   vm.isCostEditable = (vm.entryType !== 'transfer_reception');
@@ -85,7 +91,12 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
   };
 
   function init() {
+    if (cache.enableFastInsert) {
+      vm.enableFastInsert = cache.enableFastInsert;
+    }
+
     if (vm.form.rows.length) { return; }
+
     vm.form.addItem();
   }
 
@@ -93,10 +104,54 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
     vm.gridApi = api;
   }
 
+  /**
+   * @method onLotBlur
+   *
+   * @description
+   * if the fast insert option is enable do this :
+   * - add new row automatically on blur
+   * - set the focus in the new row
+   * @param {string} rowLot the row.entity.lot string
+   */
+  function onLotBlur(rowLot) {
+    if (vm.enableFastInsert && rowLot) {
+
+      const emptyLotRow = getFirstEmptyLot();
+
+      if (emptyLotRow) {
+        // don't add new row but focus on the empty lot row
+        Focus(emptyLotRow.identifier);
+      } else {
+        // add a new row
+        const newLotRow = vm.form.addItem();
+        // set the focus on the new row
+        Focus(newLotRow.identifier);
+      }
+    }
+  }
+
+  function getFirstEmptyLot() {
+    let line;
+    for (let i = 0; i < vm.form.rows.length; i++) {
+      const row = vm.form.rows[i];
+      if (!row.lot || row.lot.length === 0) {
+        line = row;
+        break;
+      }
+    }
+    return line;
+  }
+
   function onChanges() {
     vm.form.setMaxQuantity(vm.stockLine.quantity);
     vm.errors = vm.form.validate();
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.EDIT);
+  }
+
+  // validate only if there are lots rows
+  function onChangeQuantity() {
+    if (!vm.form.rows.length) { return; }
+    onChanges();
   }
 
   function onDateChange(date, row) {
@@ -107,6 +162,7 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
   }
 
   function cancel() {
+    saveSetting();
     Instance.close();
   }
 
@@ -121,12 +177,18 @@ function StockDefineLotsModalController(Instance, Notify, uiGridConstants, Data,
     }
 
     if (vm.errors.length === 0) {
+      saveSetting();
       Instance.close({
         lots : vm.form.rows,
         unit_cost : vm.stockLine.unit_cost,
         quantity : vm.form.total(),
       });
     }
+  }
+
+  function saveSetting() {
+    // save the cache setting
+    cache.enableFastInsert = vm.enableFastInsert;
   }
 
   init();

@@ -1,4 +1,4 @@
-/* global by */
+/* global by, protractor */
 
 const FU = require('../shared/FormUtils');
 const GU = require('../shared/GridUtils');
@@ -10,6 +10,7 @@ function StockEntryPage() {
   const page = this;
 
   const gridId = 'stock-entry-grid';
+  const lotGridId = 'LotsGrid';
 
   // the grid id
   page.gridId = gridId;
@@ -92,11 +93,7 @@ function StockEntryPage() {
    */
   page.setLots = function setLots(inventoryRowNumber, lotsArray, isTransferReception, inventoryQuantity, inventoryUnitCost) {
     // lots column
-    const launchLots = GU.getCell(gridId, inventoryRowNumber, 3);
-
-    launchLots.$('[data-lots]').click();
-
-    const lotGridId = 'LotsGrid';
+    this.openLotsModal(inventoryRowNumber);
 
     let lotCell;
     let quantityCell;
@@ -135,6 +132,38 @@ function StockEntryPage() {
     });
 
     FU.modal.submit();
+  };
+
+  /**
+   * open lot modal
+   */
+  page.openLotsModal = (inventoryRowNumber) => {
+    const launchLots = GU.getCell(gridId, inventoryRowNumber, 3);
+    launchLots.$('[data-lots]').click();
+  };
+
+  /**
+   * enable fast lots insertion
+   */
+  page.enableFastLotsInsert = () => {
+    $('#enableFastInsert').click();
+  };
+
+  /**
+   * fast insert lots rows
+   * @param {array} lots an array of strings
+   */
+  page.fastLotsInsert = (lots = []) => {
+    lots.forEach((lot, index) => {
+      const lotCell = GU.getCell(lotGridId, index, 1);
+      const input = FU.input('row.entity.lot', lot, lotCell);
+
+      input.sendKeys(protractor.Key.TAB);
+    });
+
+    // when we insert the last lot and leave with tab there will be
+    // a supplementary row added
+    GU.expectRowCount(lotGridId, lots.length + 1);
   };
 
   /**

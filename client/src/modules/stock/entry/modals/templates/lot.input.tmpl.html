@@ -4,11 +4,13 @@
   </span>
 
   <input
+    id="{{ row.entity.identifier }}"
     type="text"
     ng-if="!grid.appScope.isTransfer"
     class="form-control"
     ng-model="row.entity.lot"
-    ng-model-options="{ 'debounce' : '$inherit' }"
+    ng-model-options="{ 'debounce' : 0 }"
     ng-change="grid.appScope.onChanges()"
+    bh-blur="grid.appScope.onLotBlur(row.entity.lot)"
     required>
 </div>
