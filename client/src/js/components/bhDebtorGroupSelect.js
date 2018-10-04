@@ -25,10 +25,10 @@ DebtorGroupSelectController.$inject = [
  *
  */
 function DebtorGroupSelectController(DebtorGroup) {
-  var $ctrl = this;
+  const $ctrl = this;
 
   $ctrl.$onInit = function onInit() {
-    var filters = $ctrl.filter || {};
+    const filters = $ctrl.filter || {};
 
     // fired when a Debtor Group has been selected
     $ctrl.onSelectCallback = $ctrl.onSelectCallback || angular.noop;

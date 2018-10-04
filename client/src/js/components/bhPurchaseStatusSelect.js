@@ -20,7 +20,7 @@ PurchaseStatusSelectController.$inject = [
  *
  */
 function PurchaseStatusSelectController(PurchaseOrder, Notify, $translate) {
-  var $ctrl = this;
+  const $ctrl = this;
 
   $ctrl.$onInit = function onInit() {
     // label to display
@@ -34,8 +34,8 @@ function PurchaseStatusSelectController(PurchaseOrder, Notify, $translate) {
 
     // load all Purchase status
     PurchaseOrder.purchaseState()
-      .then(function (status) {
-        status.forEach(function (item) {
+      .then((status) => {
+        status.forEach((item) => {
           item.plainText = $translate.instant(item.text);
         });
         $ctrl.purchaseStatus = status;

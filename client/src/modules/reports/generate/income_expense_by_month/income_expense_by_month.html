@@ -8,7 +8,7 @@
 <div ng-show="!ReportConfigCtrl.previewGenerated">
   <div class="row">
     <div class="col-md-12">
-      <h3 class="text-capitalize" translate>REPORT.INCOME_EXPENSE_BY_MONTH_REPORT.TITLE</h3>
+      <h3 class="text-capitalize" translate>REPORT.INCOME_EXPENSE_BY_MONTH_REPORT</h3>
       <p class="text-info" translate>REPORT.INCOME_EXPENSE_BY_MONTH_REPORT.DESCRIPTION</p>
     </div>
   </div>
@@ -33,7 +33,7 @@
             on-select-callback="ReportConfigCtrl.onSelectPeriod(period)">
           </bh-period-selection>
 
-          
+
           <div class="checkbox">
             <label class="text-action">
               <input type="checkbox" name="removeUnusedAccounts"  ng-true-value="1" ng-false-value="0" ng-model="ReportConfigCtrl.reportDetails.removeUnusedAccounts">

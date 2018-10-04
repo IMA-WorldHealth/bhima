@@ -18,7 +18,7 @@ InventoryGroupSelectController.$inject = [
  *
  */
 function InventoryGroupSelectController(Inventory, Notify) {
-  var $ctrl = this;
+  const $ctrl = this;
 
   $ctrl.$onInit = () => {
     Inventory.Groups.read()

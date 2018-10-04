@@ -21,8 +21,8 @@ CurrencyInputController.$inject = ['CurrencyService'];
  * validation based on the currency being validated.
  */
 function CurrencyInputController(Currencies) {
-  var $ctrl = this;
-  var isDefined = angular.isDefined;
+  const $ctrl = this;
+  const isDefined = angular.isDefined;
 
   // translated label for the form input
   $ctrl.label = $ctrl.label || 'FORM.LABELS.AMOUNT';
@@ -39,7 +39,7 @@ function CurrencyInputController(Currencies) {
 
     // load currency from the currency service
     Currencies.detail(id)
-      .then(function (currency) {
+      .then((currency) => {
         $ctrl.currency = currency;
       });
   }

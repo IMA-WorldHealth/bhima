@@ -13,12 +13,12 @@ ReceiptCurrencyController.$inject = ['CurrencyService', 'SessionService', 'AppCa
  * Receipt Currency Component
  */
 function ReceiptCurrencyController(Currencies, Session, AppCache, Store) {
-  var ctrl = this;
-  var cache = new AppCache('ReceiptCurrencyComponent');
+  const ctrl = this;
+  const cache = new AppCache('ReceiptCurrencyComponent');
 
   this.$onInit = function $onInit() {
     Currencies.read()
-      .then(function (currencies) {
+      .then((currencies) => {
         ctrl.currencies = new Store();
         ctrl.currencies.setData(currencies);
         loadDefaultCurrency();
@@ -33,12 +33,12 @@ function ReceiptCurrencyController(Currencies, Session, AppCache, Store) {
     cache.selectedCurrencyId = currency.id;
 
     // update bindings
-    ctrl.onUpdate({ currencyId: currency.id });
+    ctrl.onUpdate({ currencyId : currency.id });
   };
 
   function loadDefaultCurrency() {
     // if the cache exists - use that
-    var cached = cache.selectedCurrencyId;
+    const cached = cache.selectedCurrencyId;
     if (cached) {
       ctrl.update(ctrl.currencies.get(cached));
       return;

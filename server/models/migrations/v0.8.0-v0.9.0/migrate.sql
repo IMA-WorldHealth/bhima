@@ -241,10 +241,21 @@ END $$
 DELIMITER ;
 
 
-INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
-  (22, 'income_expense_by_month', 'REPORT.INCOME_EXPENSE_BY_MONTH'),
-  (23, 'account_report_multiple', 'REPORT.REPORT_ACCOUNTS_MULTIPLE.TITLE');
+INSERT INTO `report` (`report_key`, `title_key`) VALUES
+  ('income_expense_by_month', 'REPORT.INCOME_EXPENSE_BY_MONTH'),
+  ('account_report_multiple', 'REPORT.REPORT_ACCOUNTS_MULTIPLE.TITLE');
 
 INSERT INTO `unit` VALUES
-  (209, 'Income Expenses by month', 'TREE.INCOME_EXPENSE_BY_MONTH', 'The Report of income and expenses', 144, '/modules/finance/income_expense_by_month', '/reports/income_expense_by_month'),
-  (210, 'Accounts Report multiple','TREE.REPORTS_MULTIPLE_ACCOUNTS','',144,'/modules/reports/account_report_multiple','/reports/account_report_multiple');
+  (211, 'Income Expenses by month', 'TREE.INCOME_EXPENSE_BY_MONTH', 'The Report of income and expenses', 144, '/modules/finance/income_expense_by_month', '/reports/income_expense_by_month'),
+  (212, 'Accounts Report multiple','TREE.REPORTS_MULTIPLE_ACCOUNTS','',144,'/modules/reports/account_report_multiple','/reports/account_report_multiple');
+
+/*
+@author jniles
+@description
+Fix reference_uuid index bug
+@date 2018-10-02
+*/
+ALTER TABLE `general_ledger` DROP INDEX `reference_uuid`;
+ALTER TABLE `posting_journal` DROP INDEX `reference_uuid`;
+ALTER TABLE `posting_journal` ADD INDEX `reference_uuid` (`reference_uuid`);
+ALTER TABLE `general_ledger` ADD INDEX `reference_uuid` (`reference_uuid`);

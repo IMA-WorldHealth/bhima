@@ -8,7 +8,7 @@ angular.module('bhima.components')
       disable          : '<?',
       onSelectCallback : '&',
       required         : '<?',
-      validateTrigger  : '<?',    
+      validateTrigger  : '<?',
     },
   });
 
@@ -21,16 +21,16 @@ EmployeeSelectController.$inject = [
  *
  */
 function EmployeeSelectController(Employees, Notify) {
-  var $ctrl = this;
+  const $ctrl = this;
 
-  $ctrl.$onInit = function onInit() {    
+  $ctrl.$onInit = function onInit() {
     // load all Employee
     Employees.read()
-      .then(function (employees) {
+      .then((employees) => {
         $ctrl.employees = employees;
       })
       .catch(Notify.handleError)
-      .finally(function () {
+      .finally(() => {
         $ctrl.loading = false;
       });
 

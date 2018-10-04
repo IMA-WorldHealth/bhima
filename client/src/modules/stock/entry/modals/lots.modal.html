@@ -1,6 +1,5 @@
 <form
   name="FindForm"
-  bh-submit="$ctrl.submit(FindForm)"
   ng-model-options="{ 'debounce' : { 'default' : 200, 'blur' : 0 }}"
   novalidate>
 
@@ -24,6 +23,7 @@
         ng-if="$ctrl.isCostEditable"
         class="form-control"
         type="number"
+        ng-change="$ctrl.onChangeQuantity()"
         ng-model="$ctrl.stockLine.quantity"
         ng-model-options="{ '*' : '$inherit' }"
         min="0">
@@ -47,6 +47,19 @@
     </div>
 
     <div style="margin-bottom: 5px;">
+      <div class="checkbox">
+        <label>
+          <input 
+            id="enableFastInsert" 
+            ng-model="$ctrl.enableFastInsert" 
+            type="checkbox"
+            ng-true-value="1"
+            ng-false-value="0"> 
+          <span translate>LOTS.ENABLE_FAST_INSERT</span>
+        </label>
+        <p class="help-block" translate>LOTS.ENABLE_FAST_INSERT_DESCRIPTION</p>
+      </div>
+
       <bh-add-item callback="$ctrl.form.addItem()" disable="true">
       </bh-add-item>
     </div>
@@ -79,8 +92,8 @@
       FORM.BUTTONS.CLOSE
     </button>
 
-    <bh-loading-button loading-state="FindForm.$loading">
-      <span translate>FORM.BUTTONS.SUBMIT</span>
-    </bh-loading-button>
+    <button type="submit" class="btn btn-primary" ng-click="$ctrl.submit(FindForm, $event)" data-method="submit" translate>
+      FORM.BUTTONS.SUBMIT
+    </button>
   </div>
 </form>

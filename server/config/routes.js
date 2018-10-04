@@ -253,15 +253,6 @@ exports.configure = function configure(app) {
   app.get('/inventory/metadata/:uuid', inventory.getInventoryItemsById);
   app.put('/inventory/metadata/:uuid', inventory.updateInventoryItems);
   app.delete('/inventory/metadata/:uuid', inventory.deleteInventory);
-  // route for inventory list receipt
-
-  /**
-   * @deprecated: /inventory/:uuid/metadata route
-   * these routes below are deprecated
-   * use /inventory/metadata/:uuid route for the API instead
-   */
-  app.get('/inventory/:uuid/metadata', inventory.getInventoryItemsById);
-  app.put('/inventory/:uuid/metadata', inventory.updateInventoryItems);
 
   /** Inventory Group API endpoints */
   app.post('/inventory/groups', inventory.createInventoryGroups);

@@ -123,10 +123,11 @@ function document(req, res, next) {
       };
 
       // compute the differences, keeping the same variable names as before.
+      // income is negative, so we add the income + expense to get the balance
       totals.difference = {
-        firstBalance : Math.abs(totals.income.firstBalance) - totals.expense.firstBalance,
-        balance : Math.abs(totals.income.balance) - totals.expense.balance,
-        thirdBalance : Math.abs(totals.income.thirdBalance) - totals.expense.thirdBalance,
+        firstBalance : totals.income.firstBalance + totals.expense.firstBalance,
+        balance : totals.income.balance + totals.expense.balance,
+        thirdBalance : totals.income.thirdBalance + totals.expense.thirdBalance,
       };
 
       _.extend(data, {

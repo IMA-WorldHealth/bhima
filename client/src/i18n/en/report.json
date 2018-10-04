@@ -58,11 +58,11 @@
       "DESCRIPTION": "This report shows the financial situation of an employee",
       "REPORT": "Employee Standing Report",
       "TITLE": "Employee Standing Report"
-    },    
+    },
     "EXPENSE_REPORT": "Expenses Report",
     "GENERATED": "Generated Report",
-    "INCOME_EXPENSE": "Profit And Loss Statement",
-    "INCOME_EXPENSE_BY_MONTH": "Statement of revenues and expenses for the current and the two previous periods",
+    "INCOME_EXPENSE": "Profit and Loss Statement",
+    "INCOME_EXPENSE_BY_MONTH": "Profit and Loss Statement for the current and the two previous periods",
     "INCOME_REPORT": "Incomes Report",
     "MONTHLY_BALANCE": "Monthly Balance",
     "OPEN_DEBTORS": {
@@ -111,9 +111,8 @@
       "WARN_CURRENCY": "Attention! You are using a currency other than the enterprise currency.  Values on this report are subject to change with changes to the exchange rate and should not be considered final.  Please save a report in the enterprise currency for long term reference."
     },
     "INCOME_EXPENSE_BY_MONTH_REPORT": {
-      "TITLE": "Income Expense Report by month",
-      "DESCRIPTION": "Creates an income and expense statement for the current and the two previous  periods",
-      "REMOVE_UNUSED_ACCOUNT" : "Remove unused accounts"
+      "DESCRIPTION": "Creates a Profit and Loss Statement for the current and the two previous periods.",
+      "REMOVE_UNUSED_ACCOUNT" : "Remove Unused Accounts"
     },
     "REPORT_ACCOUNTS_MULTIPLE": {
       "TITLE": "Multiple Accounts Report",

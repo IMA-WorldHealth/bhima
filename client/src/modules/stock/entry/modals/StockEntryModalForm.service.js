@@ -1,6 +1,8 @@
 angular.module('bhima.services')
   .service('StockEntryModalForm', StockEntryModalForm);
 
+StockEntryModalForm.$inject = ['uuid'];
+
 /**
  * @function StockEntryModalForm
  *
@@ -9,7 +11,7 @@ angular.module('bhima.services')
  * new lots during stock entry.  It also encapsulates the business logic for
  * validation of lots, as well as removal or addition of new ones.
  */
-function StockEntryModalForm() {
+function StockEntryModalForm(uuid) {
   const ERR_NO_ROWS = 'STOCK.ERRORS.NO_ROWS';
   const ERR_LOT_QUANTITY_OVER_GLOBAL = 'STOCK.ERRORS.LOT_QUANTITY_OVER_GLOBAL';
   const ERR_INVALID_QUANTITY = 'STOCK.ERRORS.INVALID_LOT_QUANTITY';
@@ -23,6 +25,7 @@ function StockEntryModalForm() {
     this.lot = row.lot || null;
     this.isInvalid = true;
     this.isValid = false;
+    this.identifier = uuid();
 
     if (row.uuid) {
       this.uuid = row.uuid;
@@ -40,7 +43,9 @@ function StockEntryModalForm() {
   }
 
   StockForm.prototype.addItem = function addItem() {
-    this.rows.push(new Lot());
+    const lot = new Lot();
+    this.rows.push(lot);
+    return lot;
   };
 
   StockForm.prototype.setMaxQuantity = function setMaxQuantity(value) {

@@ -164,7 +164,9 @@
     "TO_ADJUSTMENT"    : "Adjustment (Negative)"
   },
   "LOTS" : {
-    "REGISTRY" : "Lots Registry"
+    "REGISTRY" : "Lots Registry",
+    "ENABLE_FAST_INSERT": "Enable fast lots insertions",
+    "ENABLE_FAST_INSERT_DESCRIPTION": "This option will automatically select the next blank row's serial/lot number in the entry table. If necessary, it adds a new row. Useful for quickly inserting with a barcode reader"
   },
   "MOVEMENTS" : {
     "REGISTRY" : "Movements Registry"

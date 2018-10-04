@@ -21,7 +21,7 @@ WeekConfigSelectController.$inject = [
  * Week Configuration Select Controller
  */
 function WeekConfigSelectController(WeekConfigs, $timeout, $scope, Notify) {
-  var $ctrl = this;
+  const $ctrl = this;
 
   // fired at the beginning of the weekend configuration select
   $ctrl.$onInit = function $onInit() {

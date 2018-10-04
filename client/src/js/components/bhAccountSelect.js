@@ -38,8 +38,8 @@ function AccountSelectController(Accounts, AppCache, $timeout, bhConstants, $sco
     $ctrl.label = $ctrl.label || 'FORM.LABELS.ACCOUNT';
 
     // used to disable title accounts in the select list
-    $ctrl.disableTitleAccounts = angular.isDefined($ctrl.disableTitleAccounts) ?
-      $ctrl.disableTitleAccounts : true;
+    $ctrl.disableTitleAccounts = angular.isDefined($ctrl.disableTitleAccounts)
+      ? $ctrl.disableTitleAccounts : true;
 
     // default for form name
     $ctrl.name = $ctrl.name || 'AccountForm';
@@ -51,8 +51,8 @@ function AccountSelectController(Accounts, AppCache, $timeout, bhConstants, $sco
       $ctrl.required = true;
     }
 
-    $ctrl.excludeTitleAccounts = angular.isDefined($ctrl.excludeTitleAccounts) ?
-      $ctrl.excludeTitleAccounts : true;
+    $ctrl.excludeTitleAccounts = angular.isDefined($ctrl.excludeTitleAccounts)
+      ? $ctrl.excludeTitleAccounts : true;
 
     // load accounts
     loadAccounts();
