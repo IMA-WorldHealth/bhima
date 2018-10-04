@@ -10,9 +10,7 @@
 **/
 
 -- SQL Function delimiter definition
-DELIMITER $$
-
--- Add integer reference numbers to posting journal and general ledger
+DELIMITER $$ -- Add integer reference numbers to posting journal and general ledger
 ALTER TABLE posting_journal
   ADD COLUMN trans_id_reference_number MEDIUMINT UNSIGNED NOT NULL,
   ADD INDEX (trans_id_reference_number);
@@ -241,6 +239,15 @@ BEGIN
 END $$
 
 DELIMITER ;
+
+
+INSERT INTO `report` (`report_key`, `title_key`) VALUES
+  ('income_expense_by_month', 'REPORT.INCOME_EXPENSE_BY_MONTH'),
+  ('account_report_multiple', 'REPORT.REPORT_ACCOUNTS_MULTIPLE.TITLE');
+
+INSERT INTO `unit` VALUES
+  (211, 'Income Expenses by month', 'TREE.INCOME_EXPENSE_BY_MONTH', 'The Report of income and expenses', 144, '/modules/finance/income_expense_by_month', '/reports/income_expense_by_month'),
+  (212, 'Accounts Report multiple','TREE.REPORTS_MULTIPLE_ACCOUNTS','',144,'/modules/reports/account_report_multiple','/reports/account_report_multiple');
 
 /*
 @author jniles
