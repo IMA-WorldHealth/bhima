@@ -18,12 +18,14 @@
 
 // const path = require('path');
 const fs = require('fs');
+
+const debug = require('debug')('reports');
+const path = require('path');
+const moment = require('moment');
 const db = require('../lib/db');
 const barcode = require('../lib/barcode');
 const BadRequest = require('../lib/errors/BadRequest');
-const moment = require('moment');
 const mailer = require('../lib/mailer');
-const debug = require('debug')('reports');
 
 exports.keys = keys;
 exports.list = list;
@@ -129,7 +131,8 @@ function lookupArchivedReport(uuid) {
 function sendArchived(req, res, next) {
   lookupArchivedReport(req.params.uuid)
     .then(report => {
-      res.sendFile(report.link);
+      const extension = path.extname(report.link);
+      res.download(report.link, `${report.label}${extension}`);
     })
     .catch(next)
     .done();
