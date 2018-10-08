@@ -60,7 +60,7 @@
     "express-session": "^1.15.4",
     "gulp-merge-json": "^1.2.0",
     "helmet": "^3.8.0",
-    "ioredis": "^3.1.2",
+    "ioredis": "^4.0.1",
     "json-2-csv": "^2.1.0",
     "juice": "^5.0.0",
     "lodash": "^4.16.2",
