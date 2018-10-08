@@ -2,14 +2,13 @@ angular.module('bhima.controllers')
   .controller('UserModalController', UserModalController);
 
 UserModalController.$inject = [
-  '$state', 'ProjectService', 'UserService',
-  'NotifyService', 'appcache',
+  '$state', 'ProjectService', 'UserService', 'NotifyService', 'appcache',
 ];
 
 function UserModalController($state, Projects, Users, Notify, AppCache) {
-  var vm = this;
+  const vm = this;
 
-  var cache = AppCache('UserModal');
+  const cache = AppCache('UserModal');
 
   // the user object that is either edited or created
   vm.user = {};
@@ -22,14 +21,16 @@ function UserModalController($state, Projects, Users, Notify, AppCache) {
   vm.editPassword = editPassword;
 
   if ($state.params.creating || $state.params.id) {
-    vm.stateParams = cache.stateParams = $state.params;
+    cache.stateParams = $state.params;
+    vm.stateParams = cache.stateParams;
   } else {
     vm.stateParams = cache.stateParams;
   }
+
   vm.isCreating = vm.stateParams.creating;
 
   Projects.read()
-    .then(function (projects) {
+    .then((projects) => {
       vm.projects = projects;
     })
     .catch(Notify.handleError);
@@ -37,7 +38,7 @@ function UserModalController($state, Projects, Users, Notify, AppCache) {
   if (!vm.isCreating) {
 
     Users.read(vm.stateParams.id)
-      .then(function (user) {
+      .then((user) => {
         vm.user = user;
       })
       .catch(Notify.handleError);
@@ -47,16 +48,14 @@ function UserModalController($state, Projects, Users, Notify, AppCache) {
 
   // submit the data to the server from all two forms (update, create)
   function submit(userForm) {
-    var promise;
+    if (userForm.$invalid) { return 0; }
+    if (!userForm.$dirty) { return 0; }
 
-    if (userForm.$invalid) { return; }
-    if (!userForm.$dirty) { return; }
-
-    promise = (vm.isCreating) ? Users.create(vm.user) : Users.update(vm.user.id, vm.user);
+    const promise = (vm.isCreating) ? Users.create(vm.user) : Users.update(vm.user.id, vm.user);
 
     return promise
-      .then(function () {
-        var translateKey = (vm.isCreating) ? 'USERS.CREATED' : 'USERS.UPDATED';
+      .then(() => {
+        const translateKey = (vm.isCreating) ? 'USERS.CREATED' : 'USERS.UPDATED';
         Notify.success(translateKey);
         $state.go('users.list', null, { reload : true });
       })
@@ -77,4 +76,3 @@ function UserModalController($state, Projects, Users, Notify, AppCache) {
     $state.go('users.editPassword', { id : vm.user.id }, { reload : true });
   }
 }
-

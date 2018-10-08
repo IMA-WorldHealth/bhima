@@ -10,7 +10,7 @@ UserService.$inject = ['PrototypeApiService'];
 * This service implements CRUD on the /users endpoint on the client.
 */
 function UserService(Api) {
-  const service = new Api('/users');
+  const service = new Api('/users/');
 
   service.update = update;
   service.projects = projects;
@@ -19,7 +19,7 @@ function UserService(Api) {
   service.updatePassword = updatePassword;
   service.updatePermissions = updatePermissions;
   service.validatePassword = validatePassword;
-  service.depotManagement = depotManagement;
+  service.updateDepots = updateDepots;
   service.cashBoxManagement = cashBoxManagement;
 
   /* ------------------------------------------------------------------------ */
@@ -61,7 +61,7 @@ function UserService(Api) {
   }
 
   // sets a user's Depot Management using the public API
-  function depotManagement(id, data) {
+  function updateDepots(id, data) {
     return service.$http.post(`/users/${id}/depots`, { depots : data })
       .then(service.util.unwrapHttpResponse);
   }

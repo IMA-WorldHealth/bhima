@@ -7,11 +7,12 @@ UsersDepotManagementController.$inject = [
 ];
 
 function UsersDepotManagementController($state, Users, Notify, AppCache) {
-  var vm = this;
-  var cache = AppCache('UserDepot');
+  const vm = this;
+  const cache = AppCache('UserDepot');
 
   if ($state.params.id) {
-    vm.stateParams = cache.stateParams = $state.params;
+    cache.stateParams = $state.params;
+    vm.stateParams = cache.stateParams;
   } else {
     vm.stateParams = cache.stateParams;
   }
@@ -30,9 +31,9 @@ function UsersDepotManagementController($state, Users, Notify, AppCache) {
 
   // submit the data to the server from all two forms (update, create)
   function submit(userForm) {
-    if (userForm.$invalid || !vm.user.id) { return; }
-    return Users.depotManagement(vm.user.id, vm.user.depots)
-      .then(function () {
+    if (userForm.$invalid || !vm.user.id) { return 0; }
+    return Users.updateDepots(vm.user.id, vm.user.depots)
+      .then(() => {
         Notify.success('USERS.UPDATED');
         $state.go('users.list');
       })
@@ -40,13 +41,13 @@ function UsersDepotManagementController($state, Users, Notify, AppCache) {
   }
 
   Users.depots(vm.stateParams.id)
-    .then(function (depots) {
+    .then((depots) => {
       vm.depots = depots;
     })
     .catch(Notify.handleError);
 
   Users.read(vm.stateParams.id)
-    .then(function (user) {
+    .then((user) => {
       vm.user = user;
     })
     .catch(Notify.handleError);
