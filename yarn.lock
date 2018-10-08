@@ -7196,9 +7196,9 @@ snyk-policy@1.12.0:
     snyk-try-require "^1.1.1"
     then-fs "^2.0.0"
 
-snyk-python-plugin@1.8.1:
-  version "1.8.1"
-  resolved "https://registry.yarnpkg.com/snyk-python-plugin/-/snyk-python-plugin-1.8.1.tgz#622427a30c0570726c9a8c9499e0079184d10874"
+snyk-python-plugin@1.8.2:
+  version "1.8.2"
+  resolved "https://registry.yarnpkg.com/snyk-python-plugin/-/snyk-python-plugin-1.8.2.tgz#5cd435f7fed745265cdfef30bb09246e43e8a7f5"
   dependencies:
     tmp "0.0.33"
 
@@ -7248,9 +7248,9 @@ snyk-try-require@1.3.1, snyk-try-require@^1.1.1:
     lru-cache "^4.0.0"
     then-fs "^2.0.0"
 
-snyk@1.101.0:
-  version "1.101.0"
-  resolved "https://registry.yarnpkg.com/snyk/-/snyk-1.101.0.tgz#6c03c9d52437730d53d6b904773a9e6850f539df"
+snyk@1.101.1:
+  version "1.101.1"
+  resolved "https://registry.yarnpkg.com/snyk/-/snyk-1.101.1.tgz#757571dfda565a7e32aa5771387922b1b6e631b7"
   dependencies:
     abbrev "^1.1.1"
     ansi-escapes "^3.1.0"
@@ -7277,7 +7277,7 @@ snyk@1.101.0:
     snyk-nuget-plugin "1.6.5"
     snyk-php-plugin "1.5.1"
     snyk-policy "1.12.0"
-    snyk-python-plugin "1.8.1"
+    snyk-python-plugin "1.8.2"
     snyk-resolve "1.0.1"
     snyk-resolve-deps "4.0.1"
     snyk-sbt-plugin "2.0.0"
