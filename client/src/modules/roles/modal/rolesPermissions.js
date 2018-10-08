@@ -131,7 +131,7 @@ function RolesPermissionsController(data, ModalInstance, Roles, Notify, Tree, $q
 
   function submit() {
     // gather all ids
-    const ids = TreeNodes.values()
+    const ids = Array.from(TreeNodes.values())
       .filter(node => node.checked)
       .map(node => node.id);
 

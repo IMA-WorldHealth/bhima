@@ -70,7 +70,7 @@ function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstant
   function cashBoxManagement(user) {
     $state.go('users.cashBoxManagement', { id: user.id });
   }
-  
+
   function activatePermissions(user, value, message) {
     vm.user.deactivated = value;
 
@@ -111,7 +111,6 @@ function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstant
   }
 
   function editRoles(user) {
-
     $uibModal.open({
       keyboard : false,
       backdrop : 'static',
@@ -127,7 +126,6 @@ function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstant
   function toggleLoadingIndicator() {
     vm.loading = !vm.loading;
   }
-
 
   loadGrid();
 }

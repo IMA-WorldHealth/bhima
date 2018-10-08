@@ -12,7 +12,7 @@
 <ng-form name="DateEditorForm" novalidate>
   <div
     class="form-group"
-    ng-class="{ 'has-error' : $ctrl.validationTrigger && DateEditorForm.$invalid } "
+    ng-class="{ 'has-error' : DateEditorForm.$submitted && DateEditorForm.$invalid } "
     data-date-editor>
 
     <label class="control-label" translate>
@@ -49,7 +49,7 @@
     </div>
 
     <!-- validation/error messages for the form (see discussion at the top -->
-    <div class="help-block" ng-messages="DateEditorForm.$error" ng-show="$ctrl.validationTrigger && DateEditorForm.$invalid">
+    <div class="help-block" ng-messages="DateEditorForm.$error" ng-show="DateEditorForm.$submitted">
 
       <!-- @todo - potentially include this message in the generic date validation messages -->
       <p ng-message="dateDisabled">
@@ -59,7 +59,7 @@
     </div>
 
     <!-- validation/error messages for date input -->
-    <div class="help-block" ng-messages="DateEditorForm.date.$error" ng-show="$ctrl.validationTrigger && DateEditorForm.date.$invalid">
+    <div class="help-block" ng-messages="DateEditorForm.date.$error" ng-show="DateEditorForm.$submitted">
       <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
     </div>
   </div>

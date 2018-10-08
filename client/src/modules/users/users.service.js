@@ -1,22 +1,18 @@
 angular.module('bhima.services')
   .service('UserService', UserService);
 
-UserService.$inject = ['$http', 'util'];
+UserService.$inject = ['PrototypeApiService'];
 
 /**
 * User Service
 *
-* This service implements CRUD on the /users endpoint on the client.  It also
-* provides convience wrappers for the API, wrapping
+* @description
+* This service implements CRUD on the /users endpoint on the client.
 */
-function UserService($http, util) {
-  const service = this;
+function UserService(Api) {
+  const service = new Api('/users');
 
-  service.create = create;
-  service.read = read;
   service.update = update;
-  service.delete = del;
-  service.permissions = permissions;
   service.projects = projects;
   service.depots = depots;
   service.cashboxes = cashboxes;
@@ -28,22 +24,6 @@ function UserService($http, util) {
 
   /* ------------------------------------------------------------------------ */
 
-  // create a new user in the database
-  function create(user) {
-    return $http.post('/users', user)
-      .then(util.unwrapHttpResponse);
-  }
-
-  // reads users from the database.
-  // if an id is supplied with return a single user. Otherwise it will return a
-  // list of users.
-  function read(id) {
-    const url = id ? `/users/${id}` : '/users';
-
-    return $http.get(url)
-      .then(util.unwrapHttpResponse);
-  }
-
   // updates a user with id
   function update(id, user) {
 
@@ -52,62 +32,50 @@ function UserService($http, util) {
     delete user.id;
     delete user.active;
 
-    return $http.put(`/users/${id}`, user)
-      .then(util.unwrapHttpResponse);
-  }
-
-  // deletes a user with the given ID
-  function del(id) {
-    return $http.delete(`/users/${id}`)
-      .then(util.unwrapHttpResponse);
-  }
-
-  // loads the user's permissions
-  function permissions(id) {
-    return $http.get(`/users/${id}/permissions`)
-      .then(util.unwrapHttpResponse);
+    return service.$http.put(`/users/${id}`, user)
+      .then(service.util.unwrapHttpResponse);
   }
 
   // loads the users's project permissions
   function projects(id) {
-    return $http.get(`/users/${id}/projects`)
-      .then(util.unwrapHttpResponse);
+    return service.$http.get(`/users/${id}/projects`)
+      .then(service.util.unwrapHttpResponse);
   }
 
   // loads the users's depot permissions
   function depots(id) {
-    return $http.get(`/users/${id}/depots`)
-      .then(util.unwrapHttpResponse);
+    return service.$http.get(`/users/${id}/depots`)
+      .then(service.util.unwrapHttpResponse);
   }
 
   // loads the users's cashbox permissions
   function cashboxes(id) {
-    return $http.get(`/users/${id}/cashboxes`)
-      .then(util.unwrapHttpResponse);
+    return service.$http.get(`/users/${id}/cashboxes`)
+      .then(service.util.unwrapHttpResponse);
   }
 
   // sets a user's permissions using the public API
   function updatePermissions(id, data) {
-    return $http.post(`/users/${id}/permissions`, { permissions : data })
-      .then(util.unwrapHttpResponse);
+    return service.$http.post(`/users/${id}/permissions`, { permissions : data })
+      .then(service.util.unwrapHttpResponse);
   }
 
   // sets a user's Depot Management using the public API
   function depotManagement(id, data) {
-    return $http.post(`/users/${id}/depots`, { depots : data })
-      .then(util.unwrapHttpResponse);
+    return service.$http.post(`/users/${id}/depots`, { depots : data })
+      .then(service.util.unwrapHttpResponse);
   }
 
   // sets a user's Cashbox Management using the public API
   function cashBoxManagement(id, data) {
-    return $http.post(`/users/${id}/cashboxes`, { cashboxes : data })
-      .then(util.unwrapHttpResponse);
+    return service.$http.post(`/users/${id}/cashboxes`, { cashboxes : data })
+      .then(service.util.unwrapHttpResponse);
   }
 
   // sets a user's password using the public API
   function updatePassword(id, data) {
-    return $http.put(`/users/${id}/password`, data)
-      .then(util.unwrapHttpResponse);
+    return service.$http.put(`/users/${id}/password`, data)
+      .then(service.util.unwrapHttpResponse);
   }
 
   /**
@@ -124,4 +92,6 @@ function UserService($http, util) {
   function validatePassword(passwordA, passwordB) {
     return passwordA && passwordA.length && passwordA === passwordB;
   }
+
+  return service;
 }

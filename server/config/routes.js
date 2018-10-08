@@ -457,8 +457,6 @@ exports.configure = function configure(app) {
   app.put('/users/:id', users.update);
   app.delete('/users/:id', users.delete);
   app.get('/users/:id/projects', users.projects.list);
-  app.get('/users/:id/permissions', users.permissions.list);
-  app.post('/users/:id/permissions', users.permissions.create);
   app.get('/users/:id/depots', users.depots.list);
   app.post('/users/:id/depots', users.depots.create);
   app.put('/users/:id/password', users.password);
