@@ -728,6 +728,10 @@ exports.configure = function configure(app) {
   // roles
   app.get('/roles', rolesCtrl.list);
   app.get('/roles/:uuid', rolesCtrl.detail);
+
+  // TODO(@jniles) - migrate this to the roles controller
+  app.get('/roles/:uuid/units', unitCtrl.list);
+
   app.get('/roles/actions/:roleUuid', rolesCtrl.rolesAction);
   app.get('/roles/actions/user/:action_id', rolesCtrl.hasAction);
   app.get('/roles/user/:user_id/:project_id', rolesCtrl.listForUser);

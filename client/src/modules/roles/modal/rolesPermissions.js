@@ -2,91 +2,153 @@ angular.module('bhima.controllers')
   .controller('RolesPermissionsController', RolesPermissionsController);
 
 RolesPermissionsController.$inject = [
-  'data', '$state', '$uibModalInstance', 'AppCache', 'RolesService', 'NotifyService', 'Tree',
+  'data', '$uibModalInstance', 'RolesService', 'NotifyService', 'Tree', '$q',
 ];
 
-function RolesPermissionsController(data, $state, $uibModalInstance, AppCache, RolesService, Notify, Tree) {
+/**
+ * @function RolesPermissionController
+ *
+ * @description
+ * Powers the modal that assigns units to roles.
+ */
+function RolesPermissionsController(data, ModalInstance, Roles, Notify, Tree, $q) {
   const vm = this;
-  vm.close = close;
+
   vm.role = angular.copy(data);
-  vm.tree = [];
-  vm.selectAll = selectAll;
-  vm.allPage = 0;
-  vm.pageSelected = pageSelected;
-  vm.moduleSelected = moduleSelected;
-  vm.sortUnit = sortUnit;
 
-  // affeted pages(permission) to this role
-  vm.getAffected = getAffected;
+  vm.close = ModalInstance.dismiss;
+  vm.toggleNode = toggleNode;
 
-  // vm.role.uuid
-  RolesService.unit(vm.role.uuid)
-    .then(res => {
-      vm.tree = vm.sortUnit(res.data);
-    });
+  vm.submit = submit;
 
-  // cancel modal without returning success result (`dismiss`)
-  function close() {
-    $uibModalInstance.dismiss();
-  }
+  const TreeNodes = new Map();
+  const ROOT_NODE_ID = 0;
 
-  function sortUnit(units) {
-    Tree.sortByTranslationKey(units);
-    return units;
-  }
+  function startup() {
+    $q.all([Tree.units(), Roles.unit(vm.role.uuid)])
+      .then(([tree, assignedUnits]) => {
+        Tree.sortByTranslationKey(tree);
 
-  function pageSelected(page, _module) {
-    let found = false;
-    _module.pages.forEach(p => {
-      // check is at least a page is selected
-      if (p.affected === 1) {
-        found = true;
-      }
-    });
-    _module.affected = found ? 1 : 0;
-  }
+        // create a map of unit ids -> units
+        createNodeMapRecursive(tree, 1);
 
-  function moduleSelected(_module) {
-    _module.pages.forEach(page => {
-      page.affected = _module.affected;
-    });
-  }
+        // make a virtual root node
+        TreeNodes.set(ROOT_NODE_ID, { id : ROOT_NODE_ID, children : tree });
 
-  function selectAll() {
-    vm.tree.forEach(_module => {
-      _module.affected = vm.allPage;
-      _module.pages.forEach(page => {
-        page.affected = vm.allPage;
+        // check each node that should be checked by default
+        assignedUnits.forEach(unit => {
+          const node = TreeNodes.get(unit.id);
+          node.checked = true;
+        });
+
+        vm.tree = tree;
       });
+  }
+
+
+  /**
+   * @function createNodeMapRecursive
+   *
+   * @param {Array} units - the units sent back from the database, arranged in a
+   *   tree  format.
+   * @param {Number} depth - the depth of tree units
+   *
+   */
+  function createNodeMapRecursive(units, depth) {
+    if (!units || !units.length) { return; }
+
+    units.forEach(unit => {
+      // depth is computed to render nodes indented
+      unit.depth = depth;
+
+      // default all units for not checked
+      unit.checked = false;
+
+      TreeNodes.set(unit.id, unit);
+      createNodeMapRecursive(unit.children, depth + 1);
     });
   }
 
-  function getAffected() {
+  // helper function to figure out if a node has children
+  function isParentNode(node) {
+    return node.children && node.children.length > 0;
+  }
 
-    const ids = [];
-    vm.tree.forEach(_module => {
-      if (_module.affected === 1) {
-        ids.push(_module.id);
-      }
-      _module.pages.forEach(page => {
-        if (page.affected === 1) {
-          ids.push(page.id);
-        }
-      });
-    });
+  /**
+   * @function toggleNode
+   *
+   * @description
+   * Provides an external binding for the setNodeValue() function.
+   */
+  function toggleNode(id, isChecked) {
+    setNodeValue(id, isChecked);
+  }
+
+  /**
+   * @function setNodeValue
+   *
+   * @param {Number} id - the id of the node to set
+   * @param {Boolean} isChecked - a boolean value to set the node to
+   *
+   * @description
+   * This function sets a node's value to the isChecked parameter.  It also sets
+   * any children to the same value if it is a parent node.  Finally, it will
+   * check to make sure the parent is automatically checked if needed.
+   */
+  function setNodeValue(id, isChecked) {
+    const node = TreeNodes.get(id);
+
+    // set the value of the node to isChecked
+    node.checked = isChecked;
+
+    // recursively update all child nodes.
+    if (isParentNode(node)) {
+      node.children.forEach(child => setNodeValue(child.id, isChecked));
+    }
+
+    // make sure the parent is toggled if all children are toggled
+    if (node.id !== ROOT_NODE_ID) {
+      updateParentNodeCheckedState(node.parent);
+    }
+  }
+
+  /**
+   * @function updateParentNodeCheckedState
+   *
+   * @description
+   * This function will check the parent node if some child is checked.
+   * Otherwise, the parent will be unchecked.
+   *
+   * @param {Number} parentId - the id of a node in the tree
+   */
+  function updateParentNodeCheckedState(parentId) {
+    const node = TreeNodes.get(parentId);
+
+    // check if every child node is checked
+    const isChecked = node.children.some(child => child.checked);
+    node.checked = isChecked;
+  }
+
+  function submit() {
+    // gather all ids
+    const ids = TreeNodes.values()
+      .filter(node => node.checked)
+      .map(node => node.id);
 
     const params = {
       role_uuid : vm.role.uuid,
       unit_ids : ids,
     };
 
-    RolesService.affectPages(params)
+    return Roles.affectPages(params)
       .then(() => {
         Notify.success('FORM.LABELS.PERMISSION_ASSIGNED_SUCCESS');
 
         // modal action was a success `close` will return correctly
-        $uibModalInstance.close();
+        ModalInstance.close();
       })
       .catch(Notify.handleError);
   }
+
+  startup();
 }

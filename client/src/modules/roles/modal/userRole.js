@@ -1,9 +1,12 @@
-angular.module('bhima.controllers').controller('UsersRolesController', UsersRolesController);
-UsersRolesController.$inject = ['data', '$uibModal', '$rootScope',
-  '$uibModalInstance', 'RolesService', 'SessionService', 'NotifyService',
+angular.module('bhima.controllers')
+  .controller('UsersRolesController', UsersRolesController);
+
+UsersRolesController.$inject = [
+  'data', '$uibModal', '$uibModalInstance', 'RolesService', 'SessionService',
+  'NotifyService',
 ];
 
-function UsersRolesController(data, $uibModal, $rootScope, $uibModalInstance, RolesService, session, Notify) {
+function UsersRolesController(data, $uibModal, $uibModalInstance, RolesService, Session, Notify) {
   const vm = this;
   vm.close = close;
   vm.user = angular.copy(data);
@@ -11,9 +14,9 @@ function UsersRolesController(data, $uibModal, $rootScope, $uibModalInstance, Ro
   vm.assignRolesToUser = assignRolesToUser;
   vm.roles = [];
 
-  // loa all roles
+  // load all roles
   function loadRoles() {
-    RolesService.userRoles(vm.user.id, session.project.id)
+    RolesService.userRoles(vm.user.id, Session.project.id)
       .then(response => {
         delete vm.gridOptions.data;
         vm.roles = response.data;
@@ -31,26 +34,27 @@ function UsersRolesController(data, $uibModal, $rootScope, $uibModalInstance, Ro
       user_id : vm.user.id,
       role_uuids : codes,
     };
+
     RolesService.assignToUser(param)
       .then(() => {
         Notify.success('FORM.INFO.OPERATION_SUCCESS');
         vm.close();
-      }).catch(Notify.handleError);
+      })
+      .catch(Notify.handleError);
   }
 
   // ui-grid
   const columns = [{
     field : 'label',
     displayName : 'Label',
-  },
-  {
+  }, {
     field : '-',
     width : 100,
     displayName : 'Affecté',
     enableFiltering : false,
     cellTemplate : 'modules/roles/templates/userAssignedRole.cell.html',
-  },
-  ];
+  }];
+
   // ng-click="
   vm.gridOptions = {
     appScopeProvider : vm,
@@ -62,8 +66,7 @@ function UsersRolesController(data, $uibModal, $rootScope, $uibModalInstance, Ro
     flatEntityAccess : true,
   };
 
-
-  vm.gridOptions.onRegisterApi = function intApi(gridApi) {
+  vm.gridOptions.onRegisterApi = gridApi => {
     vm.gridApi = gridApi;
   };
 
