@@ -628,13 +628,14 @@ function reverseTransaction(recordUuid, userId, reverseDescription) {
 }
 
 /**
- * GET /JOURNAL/COUNT
+ * GET /journal/count
  * Getting the number of transaction from the posting journal
  *
  */
 function count(req, res, next) {
   const sql = `
-    SELECT COUNT(DISTINCT posting_journal.trans_id) AS number_transactions FROM posting_journal;
+    SELECT COUNT(DISTINCT posting_journal.record_uuid) AS number_transactions
+    FROM posting_journal;
   `;
 
   db.exec(sql)

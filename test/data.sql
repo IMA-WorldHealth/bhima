@@ -734,7 +734,7 @@ INSERT INTO cash (uuid, project_id, reference, date, debtor_uuid, currency_id, a
   (@cash_payment_2, 1, 2, '2016-01-10 15:33:00', HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), 1, 25, 1, 2, "This will be deleted in tests", 1);
 
 INSERT INTO cash_item (uuid, cash_uuid, amount, invoice_uuid) VALUES
-  (HUID('f21ba860-a4f1-11e7-b598-507b9dd6de91'), @cash_payment, 10, @first_invoice);
+  (HUID('f21ba860-a4f1-11e7-b598-507b9dd6de91'), @cash_payment, 100, @first_invoice);
 
 CALL PostCash(@cash_payment);
 CALL PostCash(@cash_payment_2);

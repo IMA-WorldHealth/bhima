@@ -5,8 +5,10 @@
  * A collection of utilities for automating common financial transactions
  * making use of generating voucher documents.
  *
- * @required db
+ * @requires db
  * @requires journal
+ * @requires vouchers
+ * @requires transactions
  */
 const db = require('../../../lib/db');
 
@@ -39,6 +41,8 @@ function correct(req, res, next) {
   // used to create the new voucher)
   const { transactionDetails, correction } = req.body;
   const userId = req.session.user.id;
+
+  console.log('req.body:', req.body);
 
   const response = {};
 
