@@ -100,7 +100,7 @@ function remove(req, res, next) {
   const uuid = db.bid(req.params.uuid);
 
   db.exec(sql, uuid).then(() => {
-    res.sendStatus(200);
+    res.sendStatus(204);
   })
     .catch(next)
     .done();
