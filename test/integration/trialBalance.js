@@ -13,6 +13,7 @@ describe('(/journal/trialbalance) API endpoint', () => {
     'a5a5f950-a4c9-47f0-9a9a-2bfc3123e534', // TPA1
     '2e1332b7-3e63-411e-827d-42ad585ff517',
     'f24619e0-3a88-4784-a750-a414fc9567bf',
+    '19b4d28c-cbb3-11e8-bf7e-7f323238856c', // fourth voucher
   ];
 
   const formatParams = transactions => ({ transactions });

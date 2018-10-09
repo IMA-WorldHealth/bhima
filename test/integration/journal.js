@@ -9,7 +9,7 @@ describe('(/journal) API endpoint', () => {
   const RECORD_UUID = 'A5A5F950-A4C9-47F0-9A9A-2BFC3123E534';
   const MISSING_RECORD_UUID = 'A5A5F950-A4C9-47F0-9A9A-2BFC3123E635';
 
-  const NUM_ROW_ALL_RECORDS = 21;
+  const NUM_ROW_ALL_RECORDS = 23;
   const NUM_ROWS_FETCHING_TRANSACTION = 2;
 
   it('GET /journal returns a set of records', () => agent.get('/journal')
@@ -45,7 +45,7 @@ function SearchTests() {
   const description = 'Sample voucher data one';
   const accountId = 187;
   const amount = 100;
-  const DISTINCT_TRANSACTIONS = 10;
+  const DISTINCT_TRANSACTIONS = 11;
 
   it(`GET /journal?description=${description} should match two records`, () => {
     const NUM_MATCHES = 2;
@@ -118,7 +118,7 @@ function SearchTests() {
 
 function CorrectionTests() {
   const REVERSE_UUID = 'A5A5F950A4C947F09A9A2BFC3123E534';
-  const CORRECT_UUID = '';
+  const CORRECT_UUID = '19B4D28CCBB311E8BF7E7F323238856C';
 
   const reversal = {
     description : 'Reversal for testing purposes.',
@@ -148,19 +148,55 @@ function CorrectionTests() {
       .catch(helpers.handler);
   });
 
-  it.skip(`POST /journal/${CORRECT_UUID}/correct should correct the transaction`, () => {
+  // Correct "TPA8 / Fourth Voucher"
+  const transactionDetails = {
+    record_uuid : '19B4D28CCBB311E8BF7E7F323238856C',
+    user_id : 1,
+    project_id : 1,
+    currency_id : 1,
+    trans_id : 'TPA8',
+    description : 'Transaction reversed using Administrative Voucher Tools TPA8',
+    correctionDescription : 'VOUCHERS.TOOLS.CORRECT.DESCRIPTION',
+  };
+
+  const correction = [{
+    account_id : 200,
+    credit : 0,
+    debit : 100,
+    description : 'Fourth Voucher to be Posted',
+    entity_uuid : null,
+    reference_uuid : null,
+  }, {
+    account_id : 188,
+    credit : 100,
+    debit : 0,
+    description : 'Fourth Voucher to be Posted',
+    entity_uuid : null,
+    reference_uuid : null,
+  }];
+
+  it(`POST /journal/${CORRECT_UUID}/correct should correct the transaction`, () => {
     return agent.post(`/journal/${CORRECT_UUID}/correct`)
-      .send(reversal)
+      .send({ transactionDetails, correction })
       .then(res => {
-        helpers.api.created(res);
+        expect(res).to.have.status(201);
+        expect(res.body).to.have.keys('actions', 'details');
 
-        expect(res.body.voucher).to.be.an('object');
+        expect(res.body.actions).to.be.an('object');
+        expect(res.body.actions).to.have.keys('reversal', 'correction');
 
-        return agent.get(`/vouchers/${res.body.uuid}`);
+        expect(res.body.details).to.be.an('object');
+        expect(res.body.details).to.have.keys('reversal', 'correction');
+        expect(res.body.details.reversal.description).to.equal(
+          '(CORRECTION) Transaction reversed using Administrative Voucher Tools TPA8'
+        );
+
+        return agent.get(`/vouchers/${CORRECT_UUID}`);
       })
       .then(res => {
+        // check that the original voucher has been marked as reversed
         expect(res).to.have.status(200);
-        expect(res.body.description).to.include(reversal.description);
+        expect(res.body.reversed).to.equal(1);
       })
       .catch(helpers.handler);
   });

@@ -42,8 +42,6 @@ function correct(req, res, next) {
   const { transactionDetails, correction } = req.body;
   const userId = req.session.user.id;
 
-  console.log('req.body:', req.body);
-
   const response = {};
 
   correctTransaction(transactionDetails, correction, userId)

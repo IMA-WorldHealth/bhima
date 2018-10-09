@@ -743,11 +743,14 @@ CALL PostCash(@cash_payment_2);
 SET @first_voucher = HUID('a5a5f950-a4c9-47f0-9a9a-2bfc3123e534');
 SET @second_voucher = HUID('304cfa94-0249-466c-9870-95eb3c221b0a');
 SET @third_voucher = HUID('3688e9ce-85ea-4b5c-9144-688177edcb63');
+SET @fourth_voucher = HUID('19b4d28c-cbb3-11e8-bf7e-7f323238856c');
+
 
 INSERT INTO `voucher` (uuid, `date`, project_id, currency_id, amount, description, user_id, type_id) VALUES
   (@first_voucher, CURRENT_TIMESTAMP, 1, 2, 100, 'Sample voucher data one', 1, 1),
   (@second_voucher, CURRENT_TIMESTAMP, 2, 2, 200, 'Sample voucher data two', 1, 9),
-  (@third_voucher, CURRENT_TIMESTAMP, 3, 1, 300, 'Sample voucher data three', 1, 9);
+  (@third_voucher, CURRENT_TIMESTAMP, 3, 1, 300, 'Sample voucher data three', 1, 9),
+  (@fourth_voucher, CURRENT_TIMESTAMP, 1, 1, 75, 'Fourth Voucher to be Posted', 1, 9);
 
 -- voucher items sample data
 INSERT INTO `voucher_item` VALUES
@@ -756,13 +759,15 @@ INSERT INTO `voucher_item` VALUES
   (HUID('941ae478-b1b2-11e8-9492-6385e74c37a0'), 188, 200, 0, @second_voucher, NULL, NULL),
   (HUID('953defee-b1b2-11e8-ac16-3b802412d42d'), 200, 0, 200, @second_voucher, NULL, NULL),
   (HUID('97ad9a22-b1b2-11e8-acba-6b85fd27d57d'), 125, 300, 0, @third_voucher, @cash_payment, HUID('2f0b966c-b1b3-11e8-8dd2-1715a827ad9b')),
-  (HUID('8ba0571a-b1b2-11e8-8688-fb9547361273'), 117, 0, 300, @third_voucher, NULL, NULL);
-
+  (HUID('8ba0571a-b1b2-11e8-8688-fb9547361273'), 117, 0, 300, @third_voucher, NULL, NULL),
+  (HUID('1033b476-cbbd-11e8-957e-ebcbf45a948a'), 200, 75, 0, @fourth_voucher, NULL, NULL),
+  (HUID('1955afa0-cbbd-11e8-84bd-03f165897e6a'), 188, 0, 75, @fourth_voucher, NULL, NULL);
 
 -- post voucher data to the general ledger
 CALL PostVoucher(@first_voucher);
 CALL PostVoucher(@second_voucher);
 CALL PostVoucher(@third_voucher);
+CALL PostVoucher(@fourth_voucher);
 
 -- zones des santes SNIS
 INSERT INTO `mod_snis_zs` VALUES
