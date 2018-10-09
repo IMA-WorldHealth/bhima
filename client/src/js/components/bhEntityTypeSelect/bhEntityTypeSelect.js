@@ -1,0 +1,45 @@
+angular.module('bhima.components')
+  .component('bhEntityTypeSelect', {
+    templateUrl : 'js/components/bhEntityTypeSelect/bhEntityTypeSelect.tmpl.html',
+    controller  : EntityTypeSelectController,
+    transclude  : true,
+    bindings    : {
+      id               : '<',
+      onSelectCallback : '&',
+      required         : '<?',
+      validateTrigger  : '<?',
+      label            : '<?',
+    },
+  });
+
+EntityTypeSelectController.$inject = ['EntityService', 'NotifyService'];
+
+/**
+ * EntityType selection component
+ */
+function EntityTypeSelectController(Entities, Notify) {
+  const $ctrl = this;
+
+  $ctrl.$onInit = function onInit() {
+    $ctrl.loading = true;
+
+    // load all entity types
+    Entities.types.read(null)
+      .then((types) => {
+        $ctrl.types = types.map(type => {
+          type.hrLabel = type.translation_key || type.label;
+          return type;
+        });
+
+      })
+      .catch(Notify.handleError)
+      .finally(() => {
+        $ctrl.loading = false;
+      });
+  };
+
+  // fires the onSelectCallback bound to the component boundary
+  $ctrl.onSelect = $item => {
+    $ctrl.onSelectCallback({ type : $item });
+  };
+}

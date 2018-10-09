@@ -100,7 +100,8 @@ INSERT INTO unit VALUES
   (206, '[OHADA] Bilan','TREE.OHADA_BALANCE_SHEET','',144,'/modules/reports/ohada_balance_sheet_report','/reports/ohada_balance_sheet_report'),
   (207, 'Account Reference Report','TREE.ACCOUNT_REFERENCE_REPORT','',144,'/modules/reports/account_reference','/reports/account_reference'),
   (208, 'Import Stock From File','TREE.IMPORT_STOCK_FROM_FILE','',160,'/modules/stock/import','/stock/import'),
-  (209, 'Accounts Report multiple','TREE.REPORTS_MULTIPLE_ACCOUNTS','',144,'/modules/reports/account_report_multiple','/reports/account_report_multiple');
+  (209, 'Accounts Report multiple','TREE.REPORTS_MULTIPLE_ACCOUNTS','',144,'/modules/reports/account_report_multiple','/reports/account_report_multiple'),
+  (210, 'Entity Management','ENTITY.MANAGEMENT','',1,'/modules/entities','/entities');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -253,3 +254,9 @@ VALUES (HUID(UUID()), 'Bas-Uele', HUID('dbe330b6-5cde-4830-8c30-dc00eccd1a5f')),
 INSERT INTO `sector` VALUES (HUID('0404e9ea-ebd6-4f20-b1f8-6dc9f9313450'),'Lukunga', HUID('f6fc7469-7e58-45cb-b87c-f08af93edade'));
 INSERT INTO `village` VALUES (HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'),'Gombe', HUID('0404e9ea-ebd6-4f20-b1f8-6dc9f9313450'), NULL, NULL);
 
+-- default entity types
+INSERT INTO `entity_type` (`label`, `translation_key`) VALUES
+  ('person', 'ENTITY.TYPE.PERSON'),
+  ('service', 'ENTITY.TYPE.SERVICE'),
+  ('office', 'ENTITY.TYPE.OFFICE'),
+  ('enterprise', 'ENTITY.TYPE.ENTERPRISE');

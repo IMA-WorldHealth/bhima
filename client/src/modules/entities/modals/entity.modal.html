@@ -1,0 +1,72 @@
+<form name="EntityForm" bh-submit="EntityModalCtrl.submit(EntityForm)" novalidate>
+  <div class="modal-header">
+  <ol class="headercrumb">
+    <li ng-if="EntityModalCtrl.isCreating" class="title">
+      <span translate>ENTITY.ADD_ENTITY</span>
+      <label class="badge badge-warning" translate>FORM.LABELS.CREATE</label>
+    </li>
+    <li ng-if="!EntityModalCtrl.isCreating" class="title">
+      <span translate>ENTITY.EDIT_ENTITY</span>
+      <label class="badge badge-warning" translate>FORM.LABELS.UPDATE</label>
+    </li>
+  </ol>
+</div>
+
+  <div class="modal-body">
+
+    <!-- display name -->
+    <div class="form-group" ng-class="{ 'has-error' : EntityForm.$submitted && EntityForm.display_name.$invalid }">
+      <label class="control-label" translate>ENTITY.NAME</label>
+      <input name="display_name" ng-model="EntityModalCtrl.entity.display_name" autocomplete="off" class="form-control" required>
+      <div class="help-block" ng-messages="EntityForm.display_name.$error" ng-show="EntityForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <!-- entity type -->
+    <bh-entity-type-select 
+      id="EntityModalCtrl.entity.entity_type_id"
+      on-select-callback="EntityModalCtrl.onSelectEntityType(type)"
+      required="true"
+      validate-trigger="EntityForm.$submitted">
+      <bh-clear on-clear="ReportConfigCtrl.clear('type')"></bh-clear>
+    </bh-entity-type-select>
+
+    <!-- gender select -->
+    <bh-gender-select
+      value="EntityModalCtrl.entity.gender"
+      on-select-callback="EntityModalCtrl.onSelectGender(gender)"
+      required="true"
+      validate-trigger="EntityForm.$submitted">
+    </bh-gender-select>
+
+    <!-- phone -->
+    <div class="form-group">
+      <label class="control-label" translate>ENTITY.PHONE</label>
+      <input name="phone" ng-model="EntityModalCtrl.entity.phone" autocomplete="off" class="form-control">
+    </div>
+
+    <!-- email -->
+    <div class="form-group">
+      <label class="control-label" translate>ENTITY.EMAIL</label>
+      <input name="email" ng-model="EntityModalCtrl.entity.email" autocomplete="off" class="form-control">
+    </div>
+
+    <!-- address -->
+    <div class="form-group">
+      <label class="control-label" translate>ENTITY.ADDRESS</label>
+      <textarea name="address" ng-model="EntityModalCtrl.entity.address" class="form-control"></textarea>
+    </div>
+
+  </div>
+
+  <div class="modal-footer">
+    <button data-method="cancel" type="button" class="btn btn-default" ui-sref="entities">
+      <span translate>FORM.BUTTONS.CANCEL</span>
+    </button>
+
+    <bh-loading-button loading-state="EntityForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

@@ -1,0 +1,22 @@
+{
+  "ENTITY":{
+    "MANAGEMENT":"Entity Management",
+    "ADD_ENTITY":"Add Entity",
+    "EDIT_ENTITY":"Edit Entity",
+    "NAME":"Name",
+    "SEX":"Sex",
+    "PHONE":"Phone",
+    "EMAIL":"Email",
+    "ADDRESS":"Address",
+    "SUCCESS":"Successfully Done",
+    "UPDATE":"Update Successfully",
+    "LABEL":"Entity",
+    "TYPE":{
+      "LABEL":"Entity Type",
+      "PERSON":"Person",
+      "ENTERPRISE":"Enterprise",
+      "SERVICE":"Service",
+      "OFFICE":"Office"
+    }
+  }
+}

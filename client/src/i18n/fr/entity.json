@@ -1,0 +1,22 @@
+{
+  "ENTITY":{
+    "MANAGEMENT":"Gestion des entités",
+    "ADD_ENTITY":"Ajouter une entité",
+    "EDIT_ENTITY":"Modifier l'entité",
+    "NAME":"Nom",
+    "SEX":"Sex",
+    "PHONE":"Téléphone",
+    "EMAIL":"Email",
+    "ADDRESS":"Adresse",
+    "SUCCESS":"Opération réussie avec succès",
+    "UPDATE":"Mise à jour réussie avec succès",
+    "LABEL":"Entité",
+    "TYPE":{
+      "LABEL":"Type d'entité",
+      "PERSON":"Personne",
+      "ENTERPRISE":"Entreprise",
+      "SERVICE":"Service",
+      "OFFICE":"Bureau"
+    }
+  }
+}

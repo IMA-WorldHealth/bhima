@@ -711,6 +711,9 @@
             "QUANTITY": "Enter a quantity"
         },
         "SELECT": {
+            "ENTITY":"Select an entity",
+            "ENTITY_TYPE":"Select an entity type",
+            "GENDER":"Select a gender",
             "EMPTY": "Empty",
             "EMPLOYEE": "Select an Employee",
             "EMPLOYEE_CONFIGURATION": "Select Employee Configuration",
