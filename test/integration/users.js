@@ -145,47 +145,6 @@ describe('(/users) Users and Permissions', () => {
       .catch(helpers.handler);
   });
 
-  it('GET /users/:id/permissions will have empty permissions for new user', () => {
-    return agent.get(`/users/${newUser.id}/permissions`)
-      .then(res => {
-        expect(res).to.have.status(200);
-        expect(res.body).to.be.empty;
-      })
-      .catch(helpers.handler);
-  });
-
-  it('POST /users/:id/permissions will create user permissions', () => {
-    return agent.post(`/users/${newUser.id}/permissions`)
-      .send({ permissions : [0] }) // just the root node
-      .then(res => {
-        expect(res).to.have.status(201);
-        return agent.get(`/users/${newUser.id}/permissions`);
-      })
-      .then(res => {
-        helpers.api.listed(res, 1);
-
-        expect(res.body[0]).to.have.keys('id', 'unit_id');
-        expect(res.body[0].unit_id).to.equal(0);
-      })
-      .catch(helpers.handler);
-  });
-
-  // a user is allowed to delete all permissions for a give user.
-  it('POST /users/:id/permissions with no permissions will succeed', () => {
-    return agent.post(`/users/${newUser.id}/permissions`)
-      .send({ permissions : [] })
-      .then(res => {
-        expect(res).to.have.status(201);
-        return agent.get(`/users/${newUser.id}/permissions`);
-      })
-      .then(res => {
-        expect(res).to.have.status(200);
-        expect(res.body).to.be.empty;
-      })
-      .catch(helpers.handler);
-  });
-
-
   it('PUT /users/:id/password will update a user\'s password', () => {
     return agent.put(`/users/${newUser.id}/password`)
       .send({ password : 'WOW' })
@@ -201,16 +160,6 @@ describe('(/users) Users and Permissions', () => {
     return agent.delete(`/users/${newUser.id}`)
       .then(res => {
         helpers.api.errored(res, 400);
-      })
-      .catch(helpers.handler);
-  });
-
-
-  it('GET /users/:id/permissions will be empty for deleted user', () => {
-    return agent.get(`/users/${newUser.id}/permissions`)
-      .then(res => {
-        expect(res).to.have.status(200);
-        expect(res.body).to.be.empty;
       })
       .catch(helpers.handler);
   });

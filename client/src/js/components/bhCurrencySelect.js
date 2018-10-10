@@ -5,7 +5,7 @@ angular.module('bhima.components')
     transclude  : true,
     bindings    : {
       currencyId        : '=',
-      validationTrigger : '<',
+      validationTrigger : '<?',
       onChange          : '&',
       label             : '@?',
       disableIds        : '<?',

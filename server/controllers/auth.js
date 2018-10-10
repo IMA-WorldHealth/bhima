@@ -5,31 +5,39 @@
  * This controller is responsible for managing user authentication and
  * authorization to the entire application stack.
  *
- * @todo - user roles should be designed and implemented to restrict a
- * user's ability to selected routes.
- *
- * @requires lib/db
  * @requires q
  * @requires lodash
+ * @requires lib/db
  * @requires lib/errors/Unauthorized
- * @requires lib/errors/Forbidden
- * @requires lib/errors/InternalServerError
  */
 
 const _ = require('lodash');
 const q = require('q');
 const db = require('../lib/db');
 const Unauthorized = require('../lib/errors/Unauthorized');
-const InternalServerError = require('../lib/errors/InternalServerError');
 
 // POST /auth/login
-exports.login = login;
+exports.login = loginRoute;
 
 // GET /auth/logout
 exports.logout = logout;
 
 // POST /auth/reload
 exports.reload = reload;
+
+
+function loginRoute(req, res, next) {
+  const { username, password, project } = req.body;
+  login(username, password, project)
+    .then(session => {
+      // bind the session variables
+      _.merge(req.session, session);
+
+      // send the session data back to the client
+      res.status(200).json(session);
+    })
+    .catch(next);
+}
 
 /**
  * @method login
@@ -40,11 +48,7 @@ exports.reload = reload;
  * exist in the database, then verifies that the user has permission to access
  * the database all enterprise, project, and user data for easy access.
  */
-function login(req, res, next) {
-  const { username, password } = req.body;
-  const projectId = req.body.project;
-  const param = {};
-
+async function login(username, password, projectId) {
   const sql = `
     SELECT
       user.id, user.username, user.display_name, user.email, user.deactivated,
@@ -58,7 +62,7 @@ function login(req, res, next) {
   `;
 
   const sqlUser = `
-    SELECT user.id FROM user
+    SELECT user.id, user.deactivated FROM user
     WHERE user.username = ? AND user.password = PASSWORD(?);
   `;
 
@@ -71,42 +75,32 @@ function login(req, res, next) {
     WHERE user.username = ? AND user.password = PASSWORD(?)
   `;
 
-  q.all([
+  const [connect, user, permission] = await q.all([
     db.exec(sql, [username, password, projectId]),
     db.exec(sqlUser, [username, password]),
     db.exec(sqlPermission, [username, password]),
-  ])
-    .spread((connect, user, permission) => {
-      _.merge(param, { connect, user, permission });
-      const hasAuthorization = param.connect.length > 0;
-      const isMissingPermissions = param.permission.length === 0;
-      const isUnrecognizedUser = param.user.length === 0;
+  ]);
 
-      if (hasAuthorization) {
-        if (Boolean(param.connect[0].deactivated)) {
-          throw new Unauthorized('The user is not activated, contact the administrator', 'FORM.ERRORS.LOCKED_USER');
-        }
+  const hasAuthorization = connect.length > 0;
+  const isUnrecognizedUser = user.length === 0;
+  const isMissingPermissions = permission.length === 0;
 
-        if (isMissingPermissions) {
-          throw new Unauthorized('No permissions in the database.', 'ERRORS.NO_PERMISSIONS');
-        }
-      } else if (isUnrecognizedUser) {
-        throw new Unauthorized('Bad username and password combination.');
-      } else {
-        throw new Unauthorized('No permissions for that project.', 'ERRORS.NO_PROJECT');
-      }
+  if (hasAuthorization) {
+    if (Boolean(user[0].deactivated)) {
+      throw new Unauthorized('The user is not activated, contact the administrator', 'FORM.ERRORS.LOCKED_USER');
+    }
 
-      return loadSessionInformation(param.connect[0]);
-    })
-    .then(session => {
-      // bind the session variables
-      _.merge(req.session, session);
+    if (isMissingPermissions) {
+      throw new Unauthorized('No permissions in the database.', 'ERRORS.NO_PERMISSIONS');
+    }
+  } else if (isUnrecognizedUser) {
+    throw new Unauthorized('Bad username and password combination.');
+  } else {
+    throw new Unauthorized('No permissions for that project.', 'ERRORS.NO_PROJECT');
+  }
 
-      // send the session data back to the client
-      res.status(200).json(session);
-    })
-    .catch(next)
-    .done();
+  const session = await loadSessionInformation(connect[0]);
+  return session;
 }
 
 /**
@@ -142,7 +136,7 @@ function logout(req, res, next) {
  *
  * @private
  */
-function loadSessionInformation(user) {
+async function loadSessionInformation(user) {
   const session = {};
 
   let sql = `
@@ -152,98 +146,76 @@ function loadSessionInformation(user) {
     WHERE user.id = ? AND project.id = ?;
   `;
 
-  return db.exec(sql, [user.id, user.project_id])
-    .then(rows => {
-      // if no data found, we return a login error
-      if (rows.length === 0) {
-        throw new InternalServerError(`Server could not locate user with id ${user.id}`);
-      }
+  session.user = await db.one(sql, [user.id, user.project_id]);
 
-      // we assume only one match for the user
-      [session.user] = rows;
+  // next make sure this user has permissions
+  // we use now roles for assigning permissions to users
+  sql = `
+    SELECT IF(user_role.user_id = ?, 1, 0) authorized, unit.path
+    FROM unit
+    LEFT JOIN role_unit ON unit.id = role_unit.unit_id
+    LEFT JOIN user_role ON user_role.role_uuid = role_unit.role_uuid
+    WHERE user_role.user_id = ?
+  `;
 
-      // next make sure this user has permissions
-      // we use now roles for assigning permissions to users
-      sql = `
-        SELECT IF(user_role.user_id = ?, 1, 0) authorized, unit.path
-        FROM unit
-        LEFT JOIN role_unit ON unit.id = role_unit.unit_id
-        LEFT JOIN user_role ON user_role.role_uuid = role_unit.role_uuid
-        WHERE user_role.user_id = ?
-      `;
+  const modules = await db.exec(sql, [session.user.id, session.user.id]);
 
-      return db.exec(sql, [session.user.id, session.user.id]);
-    })
-    .then(modules => {
-      const unauthorized = modules.every(mod => !mod.authorized);
+  const isUnauthorized = modules.every(mod => !mod.authorized);
 
-      // if no permissions, notify the user that way
-      if (unauthorized) {
-        throw new Unauthorized('This user does not have any permissions.');
-      }
+  // if no permissions, notify the user
+  if (isUnauthorized) {
+    throw new Unauthorized('This user does not have any permissions.');
+  }
 
-      session.paths = modules;
+  session.paths = modules;
 
-      // update the database for when the user logged in
-      sql = `
-        UPDATE user SET user.active = 1, user.last_login = ? WHERE user.id = ?;
-      `;
+  // update the database for when the user logged in
+  sql = `
+    UPDATE user SET user.active = 1, user.last_login = ? WHERE user.id = ?;
+  `;
 
-      return db.exec(sql, [new Date(), session.user.id]);
-    })
-    .then(() => {
-      // we need to construct the session on the client side, including:
-      //   the current enterprise
-      //   the current project
-      sql = `
-        SELECT e.id, e.name, e.abbr, e.phone, e.email, BUID(e.location_id) as location_id, e.currency_id,
-          c.symbol AS currencySymbol, c.name AS currencyName, e.po_box,
-          CONCAT(village.name, ' / ', sector.name, ' / ', province.name) AS location
-        FROM enterprise AS e
-        JOIN currency AS c ON e.currency_id = c.id
-        JOIN village ON village.uuid = e.location_id
-        JOIN sector ON sector.uuid = village.sector_uuid
-        JOIN province ON province.uuid = sector.province_uuid
-        WHERE e.id = ?;
-      `;
+  await db.exec(sql, [new Date(), session.user.id]);
 
-      return db.exec(sql, [session.user.enterprise_id]);
-    })
-    .then(rows => {
-      if (!rows.length) {
-        throw new InternalServerError('There are no enterprises registered in the database!');
-      }
+  // we need to construct the session on the client side, including:
+  //   the current enterprise
+  //   the current project
+  sql = `
+    SELECT e.id, e.name, e.abbr, e.phone, e.email, BUID(e.location_id) as location_id, e.currency_id,
+      c.symbol AS currencySymbol, c.name AS currencyName, e.po_box,
+      CONCAT_WS(' / ', village.name, sector.name, province.name) AS location
+    FROM enterprise AS e
+      JOIN currency AS c ON e.currency_id = c.id
+      JOIN village ON village.uuid = e.location_id
+      JOIN sector ON sector.uuid = village.sector_uuid
+      JOIN province ON province.uuid = sector.province_uuid
+    WHERE e.id = ?;
+  `;
 
-      [session.enterprise] = rows;
+  session.enterprise = await db.one(sql, [user.enterprise_id]);
 
-      sql = `
-        SELECT
-          *
-        FROM enterprise_setting
-        WHERE enterprise_id = ?;
-      `;
+  sql = `
+    SELECT
+      *
+    FROM enterprise_setting
+    WHERE enterprise_id = ?;
+  `;
 
-      return db.exec(sql, [session.user.enterprise_id]);
-    })
-    .then(rows => {
-      [session.enterprise.settings] = rows;
+  session.enterprise.settings = await db.one(sql, [session.user.enterprise_id]);
 
-      sql = `
-        SELECT p.id, p.name, p.abbr, p.enterprise_id
-        FROM project AS p WHERE p.id = ?;
-      `;
+  sql = `
+   SELECT p.id, p.name, p.abbr, p.enterprise_id
+   FROM project AS p WHERE p.id = ?;
+  `;
 
-      return db.exec(sql, [session.user.project_id]);
-    })
-    .then(rows => {
-      if (!rows.length) {
-        throw new Unauthorized('No project matching the provided id.');
-      }
+  const projects = await db.exec(sql, [session.user.project_id]);
 
-      [session.project] = rows;
+  if (!projects.length) {
+    throw new Unauthorized('No project matching the provided id.');
+  }
 
-      return session;
-    });
+  [session.project] = projects;
+
+  return session;
 }
 
 
@@ -268,6 +240,5 @@ function reload(req, res, next) {
       // send the session data back to the client
       res.status(200).json(session);
     })
-    .catch(next)
-    .done();
+    .catch(next);
 }

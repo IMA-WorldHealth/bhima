@@ -457,8 +457,6 @@ exports.configure = function configure(app) {
   app.put('/users/:id', users.update);
   app.delete('/users/:id', users.delete);
   app.get('/users/:id/projects', users.projects.list);
-  app.get('/users/:id/permissions', users.permissions.list);
-  app.post('/users/:id/permissions', users.permissions.create);
   app.get('/users/:id/depots', users.depots.list);
   app.post('/users/:id/depots', users.depots.create);
   app.put('/users/:id/password', users.password);
@@ -728,6 +726,10 @@ exports.configure = function configure(app) {
   // roles
   app.get('/roles', rolesCtrl.list);
   app.get('/roles/:uuid', rolesCtrl.detail);
+
+  // TODO(@jniles) - migrate this to the roles controller
+  app.get('/roles/:uuid/units', unitCtrl.list);
+
   app.get('/roles/actions/:roleUuid', rolesCtrl.rolesAction);
   app.get('/roles/actions/user/:action_id', rolesCtrl.hasAction);
   app.get('/roles/user/:user_id/:project_id', rolesCtrl.listForUser);

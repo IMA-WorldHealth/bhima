@@ -1,59 +1,63 @@
-<form
-name="permissionForm"
-bh-submit="RolesPermissionsCtrl.getAffected()"
-novalidate>
+<form name="PermissionForm" bh-submit="RolesPermissionsCtrl.submit()" novalidate>
   <div class="modal-header">
     <ol class="headercrumb">
       <li class="static" translate>USERS.PERMISSIONS</li>
-      <li class="title">
-        <span>{{RolesPermissionsCtrl.role.label}}</span>
-      </li>
+      <li class="title">{{RolesPermissionsCtrl.role.label}}</li>
     </ol>
   </div>
-  <div class="modal-body" style="max-height: 70vh; overflow:auto;">
 
-    <div class='row'>
-      <div class="col-lg-12">
+  <div class="modal-body" style="max-height: 75vh; overflow:auto;">
+    <div class="checkbox">
+      <label>
+        <input
+          type="checkbox"
+          ng-change="RolesPermissionsCtrl.toggleNode(0, RolesPermissionsCtrl.isAllChecked)"
+          ng-model="RolesPermissionsCtrl.isAllChecked" />
+        <span id="checkall" translate>FORM.LABELS.CHECK_ALL</span>
+      </label>
+    </div>
 
-        <div>
-          <label class="radio-inline">
-            <input type='checkbox' ng-change="RolesPermissionsCtrl.selectAll()" ng-model='RolesPermissionsCtrl.allPage' ng-true-value="1"
-              ng-false-value="0" />
-            <span id="checkall" translate>FORM.LABELS.CHECK_ALL</span>
-          </label>
-        </div>
-        <div ng-repeat="module in RolesPermissionsCtrl.tree" class="treeview">
+    <hr />
 
-          <h4>
-            <label class="radio-inline" ng-click="RolesPermissionsCtrl.moduleSelected(module)">
-              <input type='checkbox' ng-model='module.affected' ng-true-value="1" ng-false-value="0" />
-              <b translate>{{module.key}}</b>
-            </label>
-          </h4>
-
-          <ul class="list-group">
-            <li ng-repeat="page in RolesPermissionsCtrl.sortUnit(module.pages)" class="list-group-item">
-              <label class="radio-inline" ng-click="RolesPermissionsCtrl.pageSelected(page, module)">
-                <input type='checkbox' ng-model='page.affected' ng-true-value="1" ng-false-value="0" />
-                <span translate>{{page.key}}</span>
-              </label>
-            </li>
-          </ul>
-
-        </div>
+    <div ng-repeat="node in RolesPermissionsCtrl.tree track by node.id">
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" ng-model="node.checked" ng-change="RolesPermissionsCtrl.toggleNode(node.id, node.checked)" />
+          <strong translate>{{node.key}}</strong>
+        </label>
       </div>
 
+      <ul style="margin-left: calc({{node.depth}} * 15px)" class="list-unstyled">
+        <li ng-repeat="child in node.children track by child.id">
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" ng-model="child.checked" ng-change="RolesPermissionsCtrl.toggleNode(child.id, child.checked)" />
+              <span translate>{{child.key}}</span>
+            </label>
+            </div>
+        </li>
+
+        <ul style="margin-left: calc({{child.depth}} * 15px)" class="list-unstyled">
+          <li ng-repeat="grandchild in child.children track by grandchild.id">
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" ng-model="grandchild.checked" ng-change="RolesPermissionsCtrl.toggleNode(grandchild.id, grandchild.checked)" />
+                <span translate>{{grandchild.key}}</span>
+              </label>
+            </div>
+          </li>
+        </ul>
+      </ul>
     </div>
   </div>
+
   <div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="RolesPermissionsCtrl.close()" translate>
+      FORM.BUTTONS.CANCEL
+    </button>
 
-    <div pull-right>
-      
-      <button type="button" class='btn btn-default' ng-click='RolesPermissionsCtrl.close()' translate>FORM.BUTTONS.CANCEL</button>
-
-      <bh-loading-button loading-state="PatientRegistrationForm.$loading">
-        <sapn translate>FORM.BUTTONS.SAVE</sapn>
-      </bh-loading-button>
-    </div>
+    <bh-loading-button loading-state="PermissionForm.$loading">
+      <span translate>FORM.BUTTONS.SAVE</span>
+    </bh-loading-button>
   </div>
 </form>

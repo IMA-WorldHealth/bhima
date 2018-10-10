@@ -6,8 +6,8 @@ angular.module('bhima.routes')
       .state('users', {
         abstract : true,
         url : '/users',
-        controller: 'UsersController as UsersCtrl',
-        templateUrl: 'modules/users/users.html',
+        controller : 'UsersController as UsersCtrl',
+        templateUrl : 'modules/users/users.html',
       })
 
       .state('users.create', {
@@ -15,7 +15,7 @@ angular.module('bhima.routes')
         params : {
           creating : { value : true },
         },
-        onEnter :['$uibModal', usersModal],
+        onEnter : ['$uibModal', usersModal],
         onExit : ['$uibModalStack', closeModal],
       })
       .state('users.list', {
@@ -29,7 +29,7 @@ angular.module('bhima.routes')
         params : {
           id : null,
         },
-        onEnter :['$uibModal', usersModal],
+        onEnter : ['$uibModal', usersModal],
         onExit : ['$uibModalStack', closeModal],
       })
       .state('users.depotManagement', {
@@ -37,7 +37,7 @@ angular.module('bhima.routes')
         params : {
           id : null,
         },
-        onEnter :['$uibModal', depotManagementModal],
+        onEnter : ['$uibModal', depotManagementModal],
         onExit : ['$uibModalStack', closeModal],
       })
       .state('users.cashBoxManagement', {
@@ -45,7 +45,7 @@ angular.module('bhima.routes')
         params : {
           id : null,
         },
-        onEnter :['$uibModal', cashBoxManagementModal],
+        onEnter : ['$uibModal', cashBoxManagementModal],
         onExit : ['$uibModalStack', closeModal],
       })
       .state('users.editPassword', {
@@ -53,7 +53,7 @@ angular.module('bhima.routes')
         params : {
           id : null,
         },
-        onEnter :['$uibModal', userPasswordModal],
+        onEnter : ['$uibModal', userPasswordModal],
         onExit : ['$uibModalStack', closeModal],
       });
   }]);
