@@ -19,7 +19,7 @@ function CreateUpdateDepartmentController(uuid, Session, Department, ModalServic
 
   function init() {
     if (!vm.isCreating) {
-      Department.detail(uuid).then(department => {
+      Department.read(uuid).then(department => {
         vm.department = department;
       });
     }

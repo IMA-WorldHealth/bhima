@@ -15,7 +15,6 @@ function RolesPage() {
   page.editDepartment = editDepartment;
   page.deleteDepartment = deleteDepartment;
   page.openCreateModal = openCreateModal;
-  page.setAction = setAction;
 
   //  label field in the create/edit modal
 
@@ -44,10 +43,6 @@ function RolesPage() {
   function deleteDepartment(label) {
     const row = openDropdownMenu(label);
     row.remove().click();
-  }
-
-  function setAction(id) {
-    return $(`[id="${id}"]`).click();
   }
 
   function openCreateModal() {

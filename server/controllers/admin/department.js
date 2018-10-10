@@ -8,9 +8,7 @@
  * This controller is responsible for implementing all crud and others custom request
  * on the department table through the `/department` endpoint.
  *
- * @requires lib/util
  * @requires db
- * @requires NotFound
  */
 
 

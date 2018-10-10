@@ -1,8 +1,8 @@
 angular.module('bhima.routes')
   .config(['$stateProvider', $stateProvider => {
     $stateProvider
-      .state('department', {
-        url         : '/department',
+      .state('departments', {
+        url         : '/departments',
         controller  : 'DepartementController as DepartmentCtrl',
         templateUrl : 'modules/department/department.html',
       });

@@ -609,4 +609,4 @@ CREATE TABLE `department`(
 
 -- units
 INSERT INTO unit VALUES
-(214, 'Department management','TREE.DEPARTMENT_MANAGEMENT','Department Management', 1,'/modules/department/','/department');
+(214, 'Department management','TREE.DEPARTMENT_MANAGEMENT','Department Management', 1,'/modules/department/','/departments');

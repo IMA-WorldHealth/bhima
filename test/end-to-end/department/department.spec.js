@@ -5,10 +5,10 @@ const components = require('../shared/components');
 // the page object
 const page = new RolesPage();
 
-function RolesManagementTests() {
+function DepartmentManagementTests() {
 
   // navigate to the page
-  before(() => helpers.navigate('#/department'));
+  before(() => helpers.navigate('#/departments'));
 
   it('should add a new department', () => {
     page.openCreateModal();
@@ -47,4 +47,4 @@ function RolesManagementTests() {
 
 }
 
-describe('Department Management Tests', RolesManagementTests);
+describe('Department Management Tests', DepartmentManagementTests);
