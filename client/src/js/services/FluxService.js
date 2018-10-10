@@ -1,12 +1,12 @@
 angular.module('bhima.services')
-.service('FluxService', FluxService);
+  .service('FluxService', FluxService);
 
 // dependencies injection
-FluxService.$inject = ['PrototypeApiService'];
+FluxService.$inject = ['PrototypeApiService', '$translate'];
 
 // service definition
-function FluxService(Api) {
-  var service = new Api('/stock/flux');
+function FluxService(Api, $translate) {
+  const service = new Api('/stock/flux');
 
   service.translate = {
     1  : 'STOCK_FLUX.FROM_PURCHASE',
@@ -24,6 +24,22 @@ function FluxService(Api) {
     13 : 'STOCK_FLUX.FROM_INTEGRATION',
   };
 
+
+  /**
+   * @method addI18nLabelToItems
+   *
+   * @description
+   * Translates the "label" property into a human readable "plainText" label.
+   *
+   * @param {Array} items - an array of fluxes
+   * @returns {Array} - an array of fluxes with translation label
+   */
+  service.addI18nLabelToItems = (items) => {
+    return items.map(item => {
+      item.plainText = $translate.instant(item.label);
+      return item;
+    });
+  };
+
   return service;
 }
-
