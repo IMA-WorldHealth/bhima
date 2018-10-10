@@ -12,7 +12,7 @@ angular.module('bhima.services')
 Tree.$inject = ['$http', '$translate', 'util'];
 
 function Tree($http, $translate, util) {
-  var service = this;
+  const service = this;
 
   /** fetch all units available to the current user. */
   service.units = units;

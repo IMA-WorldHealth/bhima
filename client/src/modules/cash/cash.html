@@ -75,14 +75,12 @@
                 <fieldset ng-disabled="CashCtrl.Payment.messages.isNonCashPatient">
                   <bh-date-editor
                     date-value="CashCtrl.Payment.details.date"
-                    on-change="CashCtrl.Payment.onDateChange(date)"
-                    validation-trigger="CashVoucherForm.$submitted">
+                    on-change="CashCtrl.Payment.onDateChange(date)">
                   </bh-date-editor>
 
                   <!-- currency selection -->
                   <bh-currency-select
                     currency-id="CashCtrl.Payment.details.currency_id"
-                    validation-trigger="CashVoucherForm.$submitted"
                     on-change="CashCtrl.Payment.setCurrency(currency)"
                     disable-ids="CashCtrl.disabledCurrencyIds"
                     cashbox-id="CashCtrl.cashbox.id">
@@ -95,18 +93,17 @@
                   -->
                   <div class="radio" ng-class="{ 'has-error' : CashVoucherForm.$submitted && CashVoucherForm.type.$invalid }" bh-require-enterprise-setting="prepayments">
                     <p><strong class="control-label" translate>FORM.LABELS.TYPE</strong></p>
+
                     <label class="radio-inline">
                       <input name="type" type="radio" ng-model="CashCtrl.Payment.details.is_caution" ng-value="1" ng-change="CashCtrl.Payment.setCautionType(CashCtrl.Payment.details.is_caution)" data-caution-option="1" required>
                       <span translate>FORM.LABELS.CAUTION</span>
                     </label>
+
                     <label class="radio-inline">
                       <input name="type" type="radio" ng-model="CashCtrl.Payment.details.is_caution" ng-value="0" ng-change="CashCtrl.Payment.setCautionType(CashCtrl.Payment.details.is_caution)" data-caution-option="0" required>
                       <span translate>FORM.LABELS.INVOICE</span>
                     </label>
 
-                    <div class="help-block" ng-messages="CashVoucherForm.type.$error" ng-show="CashVoucherForm.$submitted">
-                      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-                    </div>
                   </div>
 
                   <!--

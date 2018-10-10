@@ -16,7 +16,8 @@ function RolesService(Api) {
   const service = new Api('/roles/');
 
   service.unit = function unit(roleUuid) {
-    return service.$http.get('/unit/'.concat(roleUuid));
+    return service.$http.get(`/roles/${roleUuid}/units`)
+      .then(service.util.unwrapHttpResponse);
   };
 
   service.assignToUser = function assignToUser(data) {

@@ -11,14 +11,12 @@
  * @requires BadRequest
  */
 
-
 const _ = require('lodash');
 const db = require('../../../lib/db');
 const NotFound = require('../../../lib/errors/NotFound');
 const BadRequest = require('../../../lib/errors/BadRequest');
 
 // expose submodules
-exports.permissions = require('./permissions');
 exports.projects = require('./projects');
 exports.depots = require('./depots');
 exports.cashboxes = require('./cashboxes');
@@ -45,8 +43,7 @@ exports.lookup = lookupUser;
  * @param {Number} id - the id of a user in the database
  * @returns {Promise} A promise object with
  */
-function lookupUser(id) {
-  let data;
+async function lookupUser(id) {
 
   let sql = `
     SELECT user.id, user.username, user.email, user.display_name,
@@ -54,30 +51,20 @@ function lookupUser(id) {
     FROM user WHERE user.id = ?;
   `;
 
-  return db.exec(sql, [id])
-    .then((rows) => {
-      if (!rows.length) {
-        throw new NotFound(`Could not find an user with id ${id}`);
-      }
+  const user = await db.one(sql, [id]);
 
-      // bind user data to ship back
-      [data] = rows;
+  // query project permissions
+  sql = `
+    SELECT pp.project_id FROM project_permission AS pp
+    WHERE user_id = ?;
+  `;
 
-      // query project permissions
-      sql = `
-        SELECT pp.project_id FROM project_permission AS pp
-        WHERE user_id = ?;
-      `;
+  const rows = await db.exec(sql, [id]);
+  const projects = rows.map(row => row.project_id);
 
-      return db.exec(sql, [id]);
-    })
-    .then(rows => {
-      return rows.map(row => row.project_id);
-    })
-    .then(projects => {
-      data.projects = projects;
-      return data;
-    });
+  user.projects = projects;
+
+  return user;
 }
 
 
@@ -97,8 +84,7 @@ function list(req, res, next) {
     .then((rows) => {
       res.status(200).json(rows);
     })
-    .catch(next)
-    .done();
+    .catch(next);
 }
 
 
@@ -120,8 +106,7 @@ function detail(req, res, next) {
     .then((data) => {
       res.status(200).json(data);
     })
-    .catch(next)
-    .done();
+    .catch(next);
 }
 
 function exists(req, res, next) {
@@ -131,8 +116,7 @@ function exists(req, res, next) {
     .then((data) => {
       res.send(data.nbr !== 0);
     })
-    .catch(next)
-    .done();
+    .catch(next);
 }
 
 
@@ -174,8 +158,7 @@ function create(req, res, next) {
       // send the ID back to the client
       res.status(201).json({ id : userId });
     })
-    .catch(next)
-    .done();
+    .catch(next);
 }
 
 
@@ -240,8 +223,7 @@ function update(req, res, next) {
     .then((result) => {
       res.status(200).json(result);
     })
-    .catch(next)
-    .done();
+    .catch(next);
 }
 
 /**
@@ -263,8 +245,7 @@ function password(req, res, next) {
     .then((data) => {
       res.status(200).json(data);
     })
-    .catch(next)
-    .done();
+    .catch(next);
 }
 
 
@@ -287,6 +268,5 @@ function remove(req, res, next) {
 
       res.sendStatus(204);
     })
-    .catch(next)
-    .done();
+    .catch(next);
 }

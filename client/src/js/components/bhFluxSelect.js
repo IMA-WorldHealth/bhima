@@ -7,44 +7,40 @@ angular.module('bhima.components')
       fluxIds : '<?',
       label : '@?',
       required : '<?',
-      validationTrigger : '<?',
     },
   });
 
 FluxSelectController.$inject = [
-  'FluxService', 'NotifyService', '$translate',
+  'FluxService', 'NotifyService',
 ];
 
 /**
  * Flux Selection Component
  *
+ * @description
+ * Provides a ui-select of the flux options from the database.
  */
-function FluxSelectController(Flux, Notify, $translate) {
-  var $ctrl = this;
+function FluxSelectController(Flux, Notify) {
+  const $ctrl = this;
 
   $ctrl.$onInit = function onInit() {
     // label to display
     $ctrl.label = $ctrl.label || 'STOCK.FLUX';
-
-    // fired when a Flux has been selected or removed from the list
-    $ctrl.onChange = $ctrl.onChange || angular.noop;
 
     // init the model
     $ctrl.selectedFlux = $ctrl.fluxIds || [];
 
     // load all Flux
     Flux.read()
-      .then(function (flux) {
-        flux.forEach(function (item) {
-          item.plainText = $translate.instant(item.label);
-        });
-        $ctrl.fluxes = flux;
+      .then(flux => {
+        $ctrl.fluxes = Flux.addI18nLabelToItems(flux);
+
+        // sort the array in alphabetical order
+        $ctrl.fluxes.sort((a, b) => a.plainText.localeCompare(b.plainText));
       })
       .catch(Notify.handleError);
   };
 
   // fires the onSelectCallback bound to the component
-  $ctrl.handleChange = function (models) {
-    $ctrl.onChange({ flux : models });
-  };
+  $ctrl.handleChange = flux => $ctrl.onChange({ flux });
 }

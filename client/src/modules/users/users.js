@@ -8,7 +8,7 @@ UsersController.$inject = ['$state', '$uibModal', 'UserService', 'NotifyService'
  * This module is responsible for handling the CRUD operation on the user
  */
 function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstants) {
-  var vm = this;
+  const vm = this;
   vm.gridApi = {};
   vm.filterEnabled = false;
   vm.toggleFilter = toggleFilter;
@@ -29,9 +29,15 @@ function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstant
     enableSorting     : true,
     onRegisterApi     : onRegisterApiFn,
     columnDefs : [
-      { field : 'display_name', displayName : 'FORM.LABELS.USERNAME', headerCellFilter : 'translate', cellClass : muteDisabledCells, enableFiltering : true, sort : { priority : 1, direction : 'asc' } },
-      { field : 'username', displayName : 'FORM.LABELS.LOGIN', headerCellFilter : 'translate', cellClass : muteDisabledCells, enableFiltering  : true },
-      { field : 'action', displayName : '', cellTemplate : '/modules/users/templates/grid/action.cell.html', enableSorting : false, enableFiltering  : false },
+      {
+        field : 'display_name', displayName : 'FORM.LABELS.USERNAME', headerCellFilter : 'translate', cellClass : muteDisabledCells, enableFiltering : true, sort : { priority : 1, direction : 'asc' },
+      },
+      {
+        field : 'username', displayName : 'FORM.LABELS.LOGIN', headerCellFilter : 'translate', cellClass : muteDisabledCells, enableFiltering : true,
+      },
+      {
+        field : 'action', displayName : '', cellTemplate : '/modules/users/templates/grid/action.cell.html', enableSorting : false, enableFiltering : false,
+      },
     ],
   };
 
@@ -52,37 +58,37 @@ function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstant
   vm.editPermissions = editPermissions;
   vm.activatePermissions = activatePermissions;
 
-  vm.depotManagement = depotManagement;
+  vm.updateDepots = updateDepots;
   vm.cashBoxManagement = cashBoxManagement;
 
   function edit(user) {
-    $state.go('users.edit', { id: user.id, creating: false });
+    $state.go('users.edit', { id : user.id, creating : false });
   }
 
   function editPermissions(user) {
-    $state.go('users.editPermission', { id: user.id });
+    $state.go('users.editPermission', { id : user.id });
   }
 
-  function depotManagement(user) {
-    $state.go('users.depotManagement', { id: user.id });
+  function updateDepots(user) {
+    $state.go('users.depotManagement', { id : user.id });
   }
 
   function cashBoxManagement(user) {
-    $state.go('users.cashBoxManagement', { id: user.id });
+    $state.go('users.cashBoxManagement', { id : user.id });
   }
-  
+
   function activatePermissions(user, value, message) {
     vm.user.deactivated = value;
 
     Modal.confirm(message)
-      .then(function (confirmResponse) {
+      .then((confirmResponse) => {
         if (!confirmResponse) {
           return false;
         }
 
         // user has confirmed activation or deactivation of debtor group
         return Users.update(user.id, vm.user)
-          .then(function () {
+          .then(() => {
             Notify.success('USERS.UPDATED');
             $state.go('users.list', null, { reload : true });
           })
@@ -101,17 +107,16 @@ function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstant
     vm.hasError = false;
 
     Users.read()
-      .then(function (users) {
+      .then((users) => {
         vm.gridOptions.data = users;
       })
       .catch(handleError)
-      .finally(function () {
+      .finally(() => {
         toggleLoadingIndicator();
       });
   }
 
   function editRoles(user) {
-
     $uibModal.open({
       keyboard : false,
       backdrop : 'static',
@@ -127,7 +132,6 @@ function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstant
   function toggleLoadingIndicator() {
     vm.loading = !vm.loading;
   }
-
 
   loadGrid();
 }
