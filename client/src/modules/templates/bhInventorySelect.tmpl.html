@@ -1,23 +1,23 @@
 <div ng-form="InventoryForm" bh-inventory-select ng-model-options="{ updateOn: 'default' }">
   <div
     class="form-group"
-    ng-class="{ 'has-error' : $ctrl.validateTrigger && InventoryForm.inventory_uuid.$invalid }">
+    ng-class="{ 'has-error' : InventoryForm.$submitted && InventoryForm.inventory_uuid.$invalid }">
 
     <label class="control-label" translate>
       FORM.LABELS.INVENTORY
     </label>
-    
+
     <ng-transclude></ng-transclude>
-    <ui-select 
-      name="inventory_uuid" 
+    <ui-select
+      name="inventory_uuid"
       ng-model="$ctrl.inventoryUuid"
       on-select="$ctrl.onSelect($item, $model)"
       ng-required="$ctrl.required">
       <ui-select-match placeholder="{{ 'FORM.SELECT.INVENTORY' | translate }}">
-        <span>{{$select.selected.label}}</span>
+        <span>{{$select.selected.hrLabel}}</span>
       </ui-select-match>
       <ui-select-choices ui-select-focus-patch repeat="inventory.uuid as inventory in $ctrl.inventories | filter: { 'label': $select.search }">
-        <span ng-bind-html="inventory.label | highlight:$select.search"></span>
+        <span ng-bind-html="inventory.hrLabel | highlight:$select.search"></span>
       </ui-select-choices>
     </ui-select>
 
