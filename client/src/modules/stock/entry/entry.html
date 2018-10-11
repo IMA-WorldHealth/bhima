@@ -78,13 +78,6 @@
       <!-- add and recovery -->
       <div class="row" style="padding-bottom : 5px;">
         <div class="col-xs-12">
-
-          <!-- info -->
-          <p style="padding-top : 10px;" class="text-info" ng-show="!StockCtrl.movement.entry_type">
-            <span class="fa fa-info-circle"></span>
-            <span translate>FORM.INFO.NO_SOURCE</span>
-          </p>
-
           <!-- "Add number of grid rows" input-group -->
           <bh-add-item disable="StockCtrl.entityAllowAddItems" callback="StockCtrl.addItems(numItem)">
           </bh-add-item>
@@ -102,7 +95,14 @@
 
       <!-- footer -->
       <div class="row" style="margin-top: 5px;">
-        <div class="col-xs-6 col-xs-offset-6">
+        <div class="col-md-6">
+          <!-- info -->
+          <p style="padding-top : 10px;" class="text-info" ng-show="!StockCtrl.movement.entry_type">
+            <span class="fa fa-info-circle"></span>
+            <span translate>FORM.INFO.NO_SOURCE</span>
+          </p>
+        </div>
+        <div class="col-md-6">
           <div class="text-right">
             <button class="btn btn-default" ng-click="StockCtrl.reset(StockEntryForm)" type="button" translate>
               FORM.BUTTONS.CLEAR
