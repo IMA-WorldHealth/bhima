@@ -8,7 +8,6 @@
  * @requires db
  */
 
-
 const db = require('../lib/db');
 
 // we assume the root node/unit has id 0
@@ -73,14 +72,7 @@ function buildTree(userId) {
   // For this query to render properly on the client, the user
   // must also have permission to access the parents of leaf nodes
 
-  /*
-    const sql = `
-      SELECT unit.id, unit.name, unit.parent, unit.url, unit.path, unit.key
-      FROM permission JOIN unit ON permission.unit_id = unit.id
-      WHERE permission.user_id = ?;
-    `;
-  */
-  const sql = ` 
+  const sql = `
     SELECT DISTINCT u.* FROM unit u
     JOIN role_unit as ru ON ru.unit_id = u.id
     JOIN user_role as ur ON  ru.role_uuid = ur.role_uuid

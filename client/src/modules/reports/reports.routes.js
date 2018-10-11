@@ -8,6 +8,7 @@ angular.module('bhima.routes')
       'account_report_multiple',
       'balance_sheet_report',
       'income_expense',
+      'income_expense_by_month',
       'aged_debtors',
       'open_debtors',
       'balance_report',

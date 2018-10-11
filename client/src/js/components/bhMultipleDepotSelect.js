@@ -2,16 +2,16 @@ angular.module('bhima.components')
   .component('bhMultipleDepotSelect', {
     templateUrl : 'modules/templates/bhMultipleDepotSelect.tmpl.html',
     controller  : MultipleDepotSelectController,
-    bindings    : { 
+    bindings    : {
       depotsUuids     : '<',
       label           : '@?',
       onChange        : '&',
-      formName        : '@?'
+      formName        : '@?',
     },
   });
 
 MultipleDepotSelectController.$inject = [
-  'DepotService', 'NotifyService'
+  'DepotService', 'NotifyService',
 ];
 
 /**
@@ -19,10 +19,10 @@ MultipleDepotSelectController.$inject = [
  *
  */
 function MultipleDepotSelectController(Depots, Notify) {
-  var $ctrl = this;
+  const $ctrl = this;
 
   $ctrl.$onInit = function onInit() {
-    //label to display
+    // label to display
     $ctrl.label = $ctrl.label || 'STOCK.DEPOT';
 
     // fired when the depots has been selected
@@ -36,7 +36,7 @@ function MultipleDepotSelectController(Depots, Notify) {
 
     // load all Depot
     Depots.read()
-      .then(function (depots) {
+      .then((depots) => {
         $ctrl.depots = depots;
       })
       .catch(Notify.handleError);

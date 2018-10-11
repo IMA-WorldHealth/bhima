@@ -21,7 +21,7 @@ IprConfigSelectController.$inject = [
  * Ipr Configuration Select Controller
  */
 function IprConfigSelectController(IprConfigs, $timeout, $scope, Notify) {
-  var $ctrl = this;
+  const $ctrl = this;
 
   // fired at the beginning of the ipr configuration select
   $ctrl.$onInit = function $onInit() {

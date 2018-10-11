@@ -44,9 +44,9 @@ function PatientFinancialActivityCtrl(Patients, moment, Session, Constants) {
         $ctrl.groups = groupFinancialRecords(data.transactions);
 
         $ctrl.hasWarnings = (
-          $ctrl.status.hasExcessiveDebt ||
-          $ctrl.status.hasCreditorBalance ||
-          $ctrl.status.hasOldDebt
+          $ctrl.status.hasExcessiveDebt
+          || $ctrl.status.hasCreditorBalance
+          || $ctrl.status.hasOldDebt
         );
 
         // used in i18n texts

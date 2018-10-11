@@ -1,7 +1,5 @@
 /* global by, element */
-
 const FU = require('../shared/FormUtils');
-const GA = require('../shared/GridAction');
 const GridRow = require('../shared/GridRow');
 
 function RolesPage() {
@@ -23,7 +21,6 @@ function RolesPage() {
   page.setAction = setAction;
 
   //  label field in the create/edit modal
-
   const roleLabel = element(by.model('RolesAddCtrl.role.label'));
   const checkAll = element(by.id('checkall'));
 

@@ -8,12 +8,12 @@ angular.module('bhima.components')
       onSelectCallback : '&',
       label            : '@?',
       required         : '<?',
-      validateTrigger  : '<?',      
+      validateTrigger  : '<?',
     },
   });
 
 PatientGroupSelectController.$inject = [
-  'PatientGroupService', 'NotifyService'
+  'PatientGroupService', 'NotifyService',
 ];
 
 /**
@@ -21,15 +21,15 @@ PatientGroupSelectController.$inject = [
  *
  */
 function PatientGroupSelectController(PatientGroups, Notify) {
-  var $ctrl = this;
+  const $ctrl = this;
 
-  $ctrl.$onInit = function onInit() {  
+  $ctrl.$onInit = function onInit() {
     // default for label
     $ctrl.label = $ctrl.label || 'PATIENT_GROUP.PATIENT_GROUP';
 
     // load all patient groups
     PatientGroups.read()
-      .then(function (pgs) {        
+      .then((pgs) => {
         $ctrl.patientGroups = pgs;
       })
       .catch(Notify.handleError);

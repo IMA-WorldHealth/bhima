@@ -1,8 +1,8 @@
 
 angular.module('bhima.controllers')
-.controller('UsersPasswordModalController', UsersPasswordModalController);
+  .controller('UsersPasswordModalController', UsersPasswordModalController);
 
-UsersPasswordModalController.$inject = [ '$state', 'UserService', 'NotifyService' ];
+UsersPasswordModalController.$inject = ['$state', 'UserService', 'NotifyService'];
 
 /**
 * User Password Modal Controller
@@ -11,7 +11,7 @@ UsersPasswordModalController.$inject = [ '$state', 'UserService', 'NotifyService
 * simply modal interface to
 */
 function UsersPasswordModalController($state, Users, Notify) {
-  var vm = this;
+  const vm = this;
 
   vm.validPassword = validPassword;
   vm.submit = submit;
@@ -29,19 +29,19 @@ function UsersPasswordModalController($state, Users, Notify) {
 
     // try to update the user's password
     return Users.updatePassword($state.params.id, { password : vm.user.password })
-      .then(function () {
+      .then(() => {
         Notify.success('USERS.UPDATED');
-        $state.go('users.edit', {id : vm.user.id, creating : false});
+        $state.go('users.edit', { id : vm.user.id, creating : false });
       })
       .catch(Notify.handleError);
   }
 
   function cancel() {
-    $state.go('users.edit', {id : vm.user.id, creating : false});
+    $state.go('users.edit', { id : vm.user.id, creating : false });
   }
 
   Users.read($state.params.id)
-    .then(function (user) {
+    .then((user) => {
       vm.user = user;
     })
     .catch(Notify.handleError);

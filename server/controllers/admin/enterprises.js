@@ -82,12 +82,7 @@ function lookupEnterprise(id) {
 
   const settingsSQL = `
     SELECT
-      enable_price_lock,
-      enable_prepayments,
-      enable_password_validation,
-      enable_balance_on_invoice_receipt,
-      enable_barcodes,
-      enable_auto_stock_accounting
+      *
     FROM enterprise_setting WHERE enterprise_id = ?;
   `;
 

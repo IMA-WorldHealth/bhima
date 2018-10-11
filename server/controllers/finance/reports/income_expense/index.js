@@ -136,7 +136,6 @@ function variance(current, previous) {
   return -1 * (difference / previous);
 }
 
-
 /**
  * @function getAccountBalances
  *

@@ -8,12 +8,12 @@ angular.module('bhima.components')
       onSelectCallback : '&',
       label            : '@?',
       required         : '<?',
-      validateTrigger  : '<?',      
+      validateTrigger  : '<?',
     },
   });
 
 SupplierSelectController.$inject = [
-  'SupplierService', 'NotifyService'
+  'SupplierService', 'NotifyService',
 ];
 
 /**
@@ -21,9 +21,9 @@ SupplierSelectController.$inject = [
  *
  */
 function SupplierSelectController(Suppliers, Notify) {
-  var $ctrl = this;
+  const $ctrl = this;
 
-  $ctrl.$onInit = function onInit() {    
+  $ctrl.$onInit = function onInit() {
     // fired when an Supplier has been selected
     $ctrl.onSelectCallback = $ctrl.onSelectCallback || angular.noop;
 
@@ -32,7 +32,7 @@ function SupplierSelectController(Suppliers, Notify) {
 
     // load all Suppliers
     Suppliers.read()
-      .then(function (suppliers) {        
+      .then((suppliers) => {
         $ctrl.suppliers = suppliers;
       })
       .catch(Notify.handleError);

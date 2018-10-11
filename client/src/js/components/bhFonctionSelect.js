@@ -5,7 +5,7 @@ angular.module('bhima.components')
     transclude  : true,
     bindings    : {
       fonctionId        : '<',
-      onSelectCallback : '&',      
+      onSelectCallback : '&',
     },
   });
 
@@ -18,12 +18,12 @@ FonctionSelectController.$inject = [
  *
  */
 function FonctionSelectController(functions, Notify) {
-  var $ctrl = this;
+  const $ctrl = this;
 
-  $ctrl.$onInit = function onInit() {    
+  $ctrl.$onInit = function onInit() {
 
     functions.read()
-      .then(function (functions) {
+      .then((functions) => {
         $ctrl.functions = functions;
       })
       .catch(Notify.handleError);

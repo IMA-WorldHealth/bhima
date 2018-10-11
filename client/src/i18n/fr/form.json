@@ -471,6 +471,7 @@
             "OPENING_BALANCE": "Balance Ouverture",
             "FINAL_BALANCE": "Balance Finale",
             "INTERMEDIATE_BALANCE": "Balance Intermediare",
+            "AVERAGE_BALANCE" : "Balance moyenne",
             "OPTIONAL_INFO": "Informations Optionnelles",
             "ORIGIN": "Origine",
             "ORIGIN_LOCATION": "Localisation d'Origine",

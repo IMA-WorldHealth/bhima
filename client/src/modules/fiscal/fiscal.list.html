@@ -56,7 +56,7 @@
           <span class="fa fa-circle-o-notch fa-spin"></span>
           <span translate>TABLE.COLUMNS.LOADING</span>
         </p>
-        <p ng-show="(FiscalCtrl.fiscalYears.length == 0) && !FiscalCtrl.loadingError"
+        <p ng-show="(FiscalCtrl.fiscalYears.length == 0) && !FiscalCtrl.loadingError && !FiscalCtrl.loadingState"
           class="text-center text-danger" translate>
           FORM.LABELS.NO_FISCALYEAR_REGISTERED
         </p>

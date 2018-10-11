@@ -577,6 +577,7 @@
             "TODAY": "Today",
             "MENU": "Menu",
             "TOTAL": "Total",
+            "AVERAGE_BALANCE" : "Average balance",
             "TOTAL_BALANCE_REMAINING": "Total Balance Remaining",
             "TOTAL_BILLED": "Total Billed",
             "TOTAL_CREDITS": "Total Credits",

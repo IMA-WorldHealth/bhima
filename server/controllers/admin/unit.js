@@ -1,48 +1,30 @@
-const q = require('q');
 const db = require('../../lib/db');
 
-module.exports.list = list;
+exports.list = list;
 
 /**
- *
  * @function list
- * return the tree
- * each modules and his pages
+ *
+ * @description
+ * Returns the list of units associated with a role
+ *
+ * ROUTE:
+ * GET  /roles/${uuid}/units
  */
 function list(req, res, next) {
-  const roleUuid = db.bid(req.params.roleUuid);
+  const roleUuid = db.bid(req.params.uuid);
 
-  // permission(pages) in a module
-  // the column affect will inform is the user has acces to the permission
   const sql = `
-  SELECT  un.*,  IFNULL(s.affected, 0) as affected
-  FROM unit 
-  as un LEFT JOIN (
-    SELECT  u.id, 1 as affected
-    FROM unit u
-    JOIN role_unit as ru ON ru.unit_id = u.id
-    WHERE ru.role_uuid =?
-  )s ON s.id = un.id
+    SELECT unit.id, unit.key, unit.parent
+    FROM role
+      JOIN role_unit ON role.uuid = role_unit.role_uuid
+      JOIN unit ON role_unit.unit_id = unit.id
+    WHERE role.uuid = ?;
   `;
-  // get modules
 
-  // parent nodes
-  const sql1 = `${sql}\n WHERE un.parent=0`;
-  // children
-  const sql2 = `${sql}\n WHERE un.parent=?`;
-
-  let modules = [];
-
-  db.exec(sql1, [roleUuid]).then((rows) => {
-    modules = rows;
-    return q.all(rows.map(row => { return db.exec(sql2, [roleUuid, row.id]); }));
-  })
-    .then((permissions) => {
-      permissions.forEach((permission, idx) => {
-        modules[idx].pages = permission;
-      });
-
-      res.json(modules);
+  db.exec(sql, [roleUuid])
+    .then(units => {
+      res.status(200).json(units);
     })
     .catch(next)
     .done();

@@ -143,9 +143,9 @@ function LocationSelectController(Locations, $rootScope, $scope, $timeout) {
         // if there are countries to select, show a "select a country" message
         // however, if there isn't any data, show a "no data" message. This pattern
         // is used throughout the component.
-        $ctrl.messages.country = (countries.length > 0) ?
-          Locations.messages.country :
-          Locations.messages.empty;
+        $ctrl.messages.country = (countries.length > 0)
+          ? Locations.messages.country
+          : Locations.messages.empty;
       });
   }
 
@@ -164,9 +164,9 @@ function LocationSelectController(Locations, $rootScope, $scope, $timeout) {
         $ctrl.provinces = provinces;
 
         // show the appropriate message to the user
-        $ctrl.messages.province = (provinces.length > 0) ?
-          Locations.messages.province :
-          Locations.messages.empty;
+        $ctrl.messages.province = (provinces.length > 0)
+          ? Locations.messages.province
+          : Locations.messages.empty;
 
         // clear the dependent <select> elements
         $ctrl.sectors = [];
@@ -188,9 +188,9 @@ function LocationSelectController(Locations, $rootScope, $scope, $timeout) {
         $ctrl.sectors = sectors;
 
         // show the appropriate message to the user
-        $ctrl.messages.sector = (sectors.length > 0) ?
-          Locations.messages.sector :
-          Locations.messages.empty;
+        $ctrl.messages.sector = (sectors.length > 0)
+          ? Locations.messages.sector
+          : Locations.messages.empty;
 
         // clear the selected village
         $ctrl.villages = [];
@@ -212,9 +212,9 @@ function LocationSelectController(Locations, $rootScope, $scope, $timeout) {
         $ctrl.villages = villages;
 
         // show the appropriate message to the user
-        $ctrl.messages.village = (villages.length > 0) ?
-          Locations.messages.village :
-          Locations.messages.empty;
+        $ctrl.messages.village = (villages.length > 0)
+          ? Locations.messages.village
+          : Locations.messages.empty;
       });
   }
 

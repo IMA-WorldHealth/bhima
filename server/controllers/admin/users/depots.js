@@ -27,9 +27,8 @@ function list(req, res, next) {
 
   db.exec(sql, [req.params.id])
     .then((rows) => {
-      rows = rows.map(row => row.depot_uuid);
-
-      res.status(200).json(rows);
+      const data = rows.map(row => row.depot_uuid);
+      res.status(200).json(data);
     })
     .catch(next)
     .done();
