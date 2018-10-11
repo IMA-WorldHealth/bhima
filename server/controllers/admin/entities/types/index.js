@@ -61,7 +61,10 @@ function create(req, res, next) {
   `;
   const params = req.body;
   db.exec(query, [params])
-    .then(() => res.sendStatus(201))
+    .then((result) => {
+      console.log(result);
+      res.status(201).json({ id : result.last_insert_id });
+    })
     .catch(next)
     .done();
 }

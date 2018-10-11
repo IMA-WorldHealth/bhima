@@ -70,6 +70,7 @@ function remove(req, res, next) {
 }
 
 function create(req, res, next) {
+  console.log('req : ', req);
   const query = `
     INSERT INTO entity SET ?;
   `;
@@ -78,7 +79,7 @@ function create(req, res, next) {
     params.uuid = db.bid(uuid());
   }
   db.exec(query, [params])
-    .then(() => res.sendStatus(201))
+    .then(() => res.status(201).send({ uuid : params.uuid }))
     .catch(next)
     .done();
 }
