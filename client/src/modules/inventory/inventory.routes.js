@@ -63,13 +63,13 @@ function closeModal($uibModalStack) {
 
 // creates both the create and update states
 function onEnterFactory(stateType) {
-  var isCreateState = (stateType === 'create');
+  const isCreateState = (stateType === 'create');
 
   return function onEnter($state, Modal) {
-    var instance = Modal.openInventoryListActions();
+    const instance = Modal.openInventoryListActions();
     instance
-      .then(function handleOnEnter(_uuid) {
-        var params = { uuid : _uuid };
+      .then((_uuid) => {
+        const params = { uuid : _uuid };
 
         if (isCreateState) {
           params.created = true;
@@ -79,7 +79,7 @@ function onEnterFactory(stateType) {
 
         $state.go('^.list', params, { reload : true });
       })
-      .catch(function handleError() {
+      .catch(() => {
         $state.go('^.list', { uuid : $state.params.id }, { notify : false });
       });
   };

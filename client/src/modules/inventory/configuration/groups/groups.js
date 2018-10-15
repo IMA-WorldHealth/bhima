@@ -12,8 +12,8 @@ InventoryGroupsController.$inject = [
  * This controller is responsible for handling inventory group module
  */
 function InventoryGroupsController($translate, InventoryGroup, Account, Notify, Modal, Store) {
-  var vm = this;
-  var AccountStore;
+  const vm = this;
+  let AccountStore;
 
   /** global variables */
   vm.created = false;
@@ -35,7 +35,7 @@ function InventoryGroupsController($translate, InventoryGroup, Account, Notify, 
 
   /** add inventory group */
   function addInventoryGroup() {
-    var request = { action : 'add' };
+    const request = { action : 'add' };
 
     Modal.openInventoryGroupActions(request)
       .then(handleCreateSuccess)
@@ -50,7 +50,7 @@ function InventoryGroupsController($translate, InventoryGroup, Account, Notify, 
 
   /** edit inventory group */
   function editInventoryGroup(uuid) {
-    var request = { action : 'edit', identifier : uuid };
+    const request = { action : 'edit', identifier : uuid };
 
     Modal.openInventoryGroupActions(request)
       .then(handleUpdateSuccess)
@@ -106,16 +106,16 @@ function InventoryGroupsController($translate, InventoryGroup, Account, Notify, 
     function handleGroupList(list) {
       function setAccountNumber(group) {
         // stock account
-        group.stockAccountNumber = AccountStore.get(group.stock_account) ?
-          AccountStore.get(group.stock_account).number : '';
+        group.stockAccountNumber = AccountStore.get(group.stock_account)
+          ? AccountStore.get(group.stock_account).number : '';
 
         // sales account
-        group.saleAccountNumber = AccountStore.get(group.sales_account) ?
-          AccountStore.get(group.sales_account).number : '';
+        group.saleAccountNumber = AccountStore.get(group.sales_account)
+          ? AccountStore.get(group.sales_account).number : '';
 
         // charge account
-        group.cogsAccountNumber = AccountStore.get(group.cogs_account) ?
-          AccountStore.get(group.cogs_account).number : '';
+        group.cogsAccountNumber = AccountStore.get(group.cogs_account)
+          ? AccountStore.get(group.cogs_account).number : '';
       }
 
       list.forEach(setAccountNumber);
