@@ -243,6 +243,7 @@
             "PRINT_ORIENTATION_LANDSCAPE":"Paysage",
             "PRINT_ORIENTATION_PORTRAIT":"Portrait",
             "BALANCE": "Balance",
+            "BALANCE_PREVIOUS" : "Solde Précédent",
             "BALANCE_INTERMEDIATE" : "Solde Intermediate",
             "BALANCE_FINAL" : "Solde Finale",
             "BALANCE_SECTION": "Section du Bilan",
