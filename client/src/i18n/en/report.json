@@ -197,7 +197,7 @@
     },
     "OHADA": {
       "BALANCE_SHEET" : "Balance Sheet",
-      "BALANCE_SHEET_DESCRIPTION" : "This report shows the balance sheet of the enterprise according the ohada standard",
+      "BALANCE_SHEET_DESCRIPTION" : "This report shows the balance sheet of the enterprise according the OHADA standard",
       "REF" : "Ref",
       "ASSET" : "Asset",
       "LIABILITY" : "Liability",

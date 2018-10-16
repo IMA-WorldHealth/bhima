@@ -241,6 +241,7 @@
             "PRINT_ORIENTATION_LANDSCAPE":"Landscape",
             "PRINT_ORIENTATION_PORTRAIT":"Portrait",
             "BALANCE": "Balance",
+            "BALANCE_PREVIOUS" : "Previous Balance",
             "BALANCE_INTERMEDIATE" : "Intermediate Balance",
             "BEGINNING_VIEW_BALANCE" : "Beginning View Balance",
             "ENDING_VIEW_BALANCE" : "Ending View Balance",
