@@ -21,7 +21,7 @@
       </ui-select-choices>
     </ui-select>
 
-    <div class="help-block" ng-messages="InventoryForm.inventory_uuid.$error" ng-show="$ctrl.validateTrigger">
+    <div class="help-block" ng-messages="InventoryForm.inventory_uuid.$error" ng-show="InventoryForm.$submitted">
       <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
     </div>
   </div>

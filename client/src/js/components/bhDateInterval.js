@@ -20,7 +20,6 @@ angular.module('bhima.components')
     templateUrl : '/modules/templates/bhDateInterval.tmpl.html',
     controller : bhDateInterval,
     bindings : {
-      validationTrigger : '<', // validation trigger action
       dateFrom : '=', // date from
       dateTo : '=', // date to
       dateId : '@?', // date identifier
