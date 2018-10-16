@@ -87,6 +87,10 @@
       "DESCRIPTION": "This report shows the financial situation of a patient",
       "TITLE": "Patient Standing Report"
     },
+    "STOCK_VALUE": {
+      "TITLE":"Stock value report", 
+      "DESCRIPTION":"This report shows the current stock value for each inventory in a depot"
+    },
     "PREVIOUS_MONTHS": "Previous Months",
     "PERIOD_START": "Start",
     "PERIOD_STOP": "Stop",

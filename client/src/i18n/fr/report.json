@@ -80,6 +80,10 @@
       "DESCRIPTION": "Ce rapport permet de connaître la situation financière d'un patient",
       "TITLE": "Situation financière d'un Patient"
     },
+    "STOCK_VALUE": {
+      "TITLE":"Rapport de valeur de stock", 
+      "DESCRIPTION":"Ce rapport affiche la valeur actuelle du stock pour chaque inventaire dans un dépôt."
+    },
     "PREVIOUS_MONTHS": "Mois Précédents",
     "PERIOD_START": "Début",
     "PERIOD_STOP": "Fin",

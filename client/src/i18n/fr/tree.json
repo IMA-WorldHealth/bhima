@@ -101,6 +101,7 @@
     "STOCK_INVENTORY_REPORT":"[Stock] Fiche de stock",
     "STOCK_EXIT_REPORT":"[Stock] Sortie des stocks",
     "STOCK_LOTS":"Lots en stock",
+    "STOCK_VALUE" : "[Stock] Valeur de stock",
     "STOCK_MOVEMENTS":"Movements de stock",
     "TRANSACTION_TYPE":"Types de Transaction",
     "SUBSIDY":"Gestion des subventions",
