@@ -100,7 +100,7 @@
     "gulp-if": "^2.0.0",
     "gulp-iife": "^0.3.0",
     "gulp-less": "^4.0.0",
-    "gulp-rev": "^8.1.0",
+    "gulp-rev": "^9.0.0",
     "gulp-rev-rewrite": "^1.1.1",
     "gulp-template": "^5.0.0",
     "gulp-typescript": "^4.0.1",
