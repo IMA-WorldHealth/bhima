@@ -212,6 +212,7 @@
             "UPLOAD_PICTURE_FAILED": "The selected file is not an picture",
             "USER_CASHBOX": "These are the cashboxes that you have permission for manage",
             "USER_DEPOT": "These are the depots that you have permission for manage",
+            "VALIDATE_DISTRIBUTION": "Please click here to validate the distribution of all Ancillary Cost Centers to the Main Cost Centers according to the respective distribution keys",
             "VIEW_BEGINNING_BALANCE": "View Beginning Balance",
             "VIEW_CLOSING_BALANCE": "View Closing Balance"
         },

@@ -37,7 +37,7 @@ function DistributionCenterService(Api, Filters, AppCache, Modal) {
 
   function getDistributionKey() {
     return service.$http.get(`/distribution_fee_center/getDistributionKey`)
-      .then(service.util.unwrapHttpResponse);    
+      .then(service.util.unwrapHttpResponse);
   }
 
   distributionFilters.registerDefaultFilters([

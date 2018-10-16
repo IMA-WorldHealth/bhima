@@ -66,12 +66,16 @@ function DistributionModalController(
       sumDistributed += vm.transaction.values[key];
     });
 
-    vm.invalidDistribution = sumDistributed !== util.roundDecimal(vm.transaction.amount_equiv, 2);
+    sumDistributed = util.roundDecimal(sumDistributed, 2);
+    const amountEquiv = util.roundDecimal(vm.transaction.amount_equiv, 2);
+    const diffAmount = util.roundDecimal((amountEquiv - sumDistributed), 2);
 
-    vm.diffAmount = (vm.transaction.amount_equiv > sumDistributed) ? 
-      vm.transaction.amount_equiv - sumDistributed : sumDistributed - vm.transaction.amount_equiv;
+    vm.invalidDistribution = sumDistributed !== amountEquiv;
 
-    vm.errorMessage = (vm.transaction.amount_equiv > sumDistributed) 
+    vm.diffAmount = (diffAmount > 0)
+      ? diffAmount : diffAmount * (-1);
+
+    vm.errorMessage = (vm.transaction.amount_equiv > sumDistributed)
       ? $translate.instant('FORM.WARNINGS.REMAINS_DISTRIBUTION', { value : vm.diffAmount })
       : $translate.instant('FORM.WARNINGS.OVERRUN_DISTRIBUTION', { value : vm.diffAmount });
 

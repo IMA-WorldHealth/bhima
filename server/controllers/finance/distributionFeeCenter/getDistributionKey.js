@@ -29,4 +29,14 @@ function getDistributionKey(req, res, next) {
     .catch(next);
 }
 
+function allDistibutionKey() {
+  const sql = `
+    SELECT k.id, k.auxiliary_fee_center_id, k.principal_fee_center_id, k.rate
+    FROM distribution_key AS k
+  `;
+
+  return db.exec(sql);
+}
+
 exports.getDistributionKey = getDistributionKey;
+exports.allDistibutionKey = allDistibutionKey;

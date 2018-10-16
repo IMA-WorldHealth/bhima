@@ -45,14 +45,13 @@ function breackDown(req, res, next) {
     });
   });
 
-
   const sql = `INSERT INTO fee_center_distribution (
     trans_uuid, 
     trans_id, 
     account_id,
     is_cost,
-    auxiliary_fee_center_id, 
-    principal_fee_center_id, 
+    auxiliary_fee_center_id,
+    principal_fee_center_id,
     debit_equiv, 
     credit_equiv, 
     currency_id, 
@@ -66,8 +65,8 @@ function breackDown(req, res, next) {
   }
 
   transaction.execute()
-    .then((results) => {
-      res.status(201).json({ id : results[0].insertId });
+    .then(() => {
+      res.sendStatus(201);
     })
     .catch(next)
     .done();

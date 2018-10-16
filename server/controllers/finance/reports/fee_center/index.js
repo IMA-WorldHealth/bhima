@@ -9,6 +9,7 @@ const fiscal = require('../../fiscal');
 const TEMPLATE = './server/controllers/finance/reports/fee_center/report.handlebars';
 const AccountReference = require('../../accounts').references;
 const setting = require('./setting');
+const getDistributionKey = require('../../distributionFeeCenter/getDistributionKey');
 
 // expose to the API
 exports.report = report;
@@ -33,6 +34,7 @@ function report(req, res, next) {
   const data = {};
   const display = {};
   let reporting;
+
   params.start_date = new Date(params.start_date);
   params.end_date = new Date(params.end_date);
 
@@ -103,16 +105,18 @@ function report(req, res, next) {
     db.exec(getFeeCenterReference),
     AccountReference.computeAllAccountReference(params.period_id),
     db.exec(getFeeCenterDistribution, [params.fiscalYearStart, params.end_date]),
+    getDistributionKey.allDistibutionKey(),
   ];
 
   q.all(dbPromises)
-    .spread((feeCenter, references, accountReferences, dataDistributions) => {
-
+    .spread((feeCenter, references, accountReferences, dataDistributions, distributionKey) => {
       const config = {
         feeCenter,
         references,
         accountReferences,
         dataDistributions,
+        distributionKey,
+        includeManual : params.includeManual,
       };
       const dataConfigured = setting.configuration(config);
 

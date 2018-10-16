@@ -40,7 +40,7 @@
               <td style="width: 55%;"> <strong> {{translate "TABLE.COLUMNS.LABEL"}} </strong></td>
               <td style="width: 15%;"> <strong> {{translate 'TABLE.COLUMNS.DEBIT'}} </strong></td>
               <td style="width: 15%;"> <strong> {{translate 'TABLE.COLUMNS.CREDIT'}} </strong></td>
-              <td style="width: 15%;"> <strong> {{translate 'TABLE.COLUMNS.BALANCE'}} </strong></td>
+              <td style="width: 15%;"> <strong> {{translate 'TABLE.COLUMNS.SOLD'}} </strong></td>
             </tr>
 
             {{#each principalCostCenters}}
@@ -59,7 +59,7 @@
               <td style="width: 55%;"> <strong> {{translate "TABLE.COLUMNS.LABEL"}} </strong></td>
               <td style="width: 15%;"> <strong> {{translate 'TABLE.COLUMNS.DEBIT'}} </strong></td>
               <td style="width: 15%;"> <strong> {{translate 'TABLE.COLUMNS.CREDIT'}} </strong></td>
-              <td style="width: 15%;"> <strong> {{translate 'TABLE.COLUMNS.BALANCE'}} </strong></td>
+              <td style="width: 15%;"> <strong> {{translate 'TABLE.COLUMNS.SOLD'}} </strong></td>
             </tr>
 
             {{#each auxiliaryCostCenters}}
@@ -71,6 +71,20 @@
               </tr>
             {{/each}}
           </tbody>
+          <tfoot>
+            <tr style="width: 5%; background-color: #cfcfcf">
+              <td class="text-uppercase text-right" colspan="3">
+                <i>
+                  <strong> {{translate "TABLE.COLUMNS.TOTAL" }} : {{translate "TABLE.COLUMNS.COST_CENTER_OPERATIONS" }} </strong>
+                </i>
+              </td>
+              <td class="text-right">
+                <i>
+                  <strong> {{debcred allCost metadata.enterprise.currency_id}} </strong>
+                </i>
+              </td>
+            </tr>
+          </tfoot>
         </table>
         <br>
         <br>
@@ -98,7 +112,7 @@
               <td style="width: 55%;"> <strong> {{translate "TABLE.COLUMNS.LABEL"}} </strong></td>
               <td style="width: 15%;"> <strong> {{translate 'TABLE.COLUMNS.DEBIT'}} </strong></td>
               <td style="width: 15%;"> <strong> {{translate 'TABLE.COLUMNS.CREDIT'}} </strong></td>
-              <td style="width: 15%;"> <strong> {{translate 'TABLE.COLUMNS.BALANCE'}} </strong></td>
+              <td style="width: 15%;"> <strong> {{translate 'TABLE.COLUMNS.SOLD'}} </strong></td>
             </tr>
 
             {{#each principalProfitCenters}}
@@ -117,7 +131,7 @@
               <td style="width: 55%;"> <strong> {{translate "TABLE.COLUMNS.LABEL"}} </strong></td>
               <td style="width: 15%;"> <strong> {{translate 'TABLE.COLUMNS.DEBIT'}} </strong></td>
               <td style="width: 15%;"> <strong> {{translate 'TABLE.COLUMNS.CREDIT'}} </strong></td>
-              <td style="width: 15%;"> <strong> {{translate 'TABLE.COLUMNS.BALANCE'}} </strong></td>
+              <td style="width: 15%;"> <strong> {{translate 'TABLE.COLUMNS.SOLD'}} </strong></td>
             </tr>
 
             {{#each auxiliaryProfitCenters}}
@@ -129,6 +143,21 @@
               </tr>
             {{/each}}
           </tbody>
+          <tfoot>
+            <tr style="width: 5%; background-color: #cfcfcf">
+              <td class="text-uppercase text-right" colspan="3">
+                <i>
+                  <strong> {{translate "TABLE.COLUMNS.TOTAL" }} : {{translate "TABLE.COLUMNS.PROFIT_CENTER_OPERATIONS" }} </strong>
+                </i>
+              </td>
+              <td class="text-right">
+                <i>
+                  <strong> {{debcred allProfit metadata.enterprise.currency_id}} </strong>
+                </i>
+              </td>
+            </tr>
+          </tfoot>
+
         </table>
         <br>
         <br>
@@ -201,14 +230,9 @@
 
           <tfoot>
             <tr style="background-color:#efefef; font-size: 12px"> 
-              <td style="width: 15%" class="text-uppercase">
+              <td style="width: 15%" colspan="2" class="text-uppercase">
                 <strong>
                   {{translate "TABLE.COLUMNS.TOTAL_DISTRIBUTE" }}
-                </strong>
-              </td>
-              <td class="text-right">
-                <strong>
-                  {{debcred totalPrincipalCost metadata.enterprise.currency_id}}
                 </strong>
               </td>
               {{#each auxiliaryCostCenters }}
@@ -339,14 +363,9 @@
 
           <tfoot>
             <tr style="background-color:#efefef; font-size: 12px"> 
-              <td style="width: 15%" class="text-uppercase">
+              <td style="width: 15%" colspan="2" class="text-uppercase">
                 <strong>
                   {{translate "TABLE.COLUMNS.TOTAL_DISTRIBUTE" }}
-                </strong>
-              </td>
-              <td class="text-right">
-                <strong>
-                  {{debcred totalPrincipalProfit metadata.enterprise.currency_id}}
                 </strong>
               </td>
               {{#each auxiliaryProfitCenters }}

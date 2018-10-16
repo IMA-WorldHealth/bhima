@@ -13,21 +13,28 @@ const NotFound = require('../../../lib/errors/NotFound');
 const referenceAccount = require('./referenceAccount');
 
 function auxilliary(params) {
-  const typeFeeCenter = params.typeFeeCenter;
+  let sqlIsCost = '';
+
+  const typeFeeCenter = parseInt(params.typeFeeCenter, 10); 
+
+  if (typeFeeCenter === 1 || typeFeeCenter === 0) {
+    sqlIsCost = ` AND reference_fee_center.is_cost = ${typeFeeCenter}`;
+  }
+
   // fee_center_id
   const filter = params.fee_center_id ? ` AND fee_center.id = ${params.fee_center_id} ` : '';
 
   // This request allows to recover for Fees centers auxilliary the incomes and expenses accounts associated.
   const sql1 = `
     SELECT fee_center.id, fee_center.label, fee_center.is_principal, reference_fee_center.account_reference_id, 
-    account_reference_item.account_id, account.number, 
+    reference_fee_center.is_cost, account_reference_item.account_id, account.number, 
     account_reference_item.is_exception, account.type_id
     FROM fee_center
     JOIN reference_fee_center ON reference_fee_center.fee_center_id = fee_center.id
     JOIN account_reference_item 
       ON account_reference_item.account_reference_id = reference_fee_center.account_reference_id
     JOIN account ON account.id = account_reference_item.account_id
-    WHERE fee_center.is_principal = 0 AND reference_fee_center.is_cost = ?
+    WHERE fee_center.is_principal = 0 ${sqlIsCost}
     AND account.type_id IN (4, 5, 6) AND account_reference_item.is_exception = 0 ${filter};
   `;
 
@@ -40,11 +47,11 @@ function auxilliary(params) {
     JOIN account_reference_item 
       ON account_reference_item.account_reference_id = reference_fee_center.account_reference_id
     JOIN account ON account.id = account_reference_item.account_id
-    WHERE fee_center.is_principal = 0 AND reference_fee_center.is_cost = ?
+    WHERE fee_center.is_principal = 0 ${sqlIsCost}
     AND account_reference_item.is_exception = 1;
   `;
 
-  return q.all([db.exec(sql1, [typeFeeCenter]), db.exec(sql2, [typeFeeCenter])])
+  return q.all([db.exec(sql1), db.exec(sql2)])
     .spread((accountsValids, accountsExceptions) => {
       if (!accountsValids.length) {
         return [];
@@ -57,7 +64,7 @@ function auxilliary(params) {
       // Get the child of all accounts title definied in Account Reference Items
       accountsValids.forEach(item => {
         tabAccountsValids.push(`(SELECT ${item.id} AS id, '${item.label}' AS label,
-      ${item.is_principal} AS is_principal,
+      ${item.is_principal} AS is_principal, ${item.is_cost} AS is_cost,
       ${item.account_reference_id} AS account_reference_id, account.id AS account_id, account.number,
       ${item.is_exception} AS is_exception, account.type_id
       FROM account
