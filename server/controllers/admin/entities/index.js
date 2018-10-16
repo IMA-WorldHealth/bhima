@@ -58,8 +58,10 @@ function remove(req, res, next) {
   const query = `
     DELETE FROM entity WHERE uuid = ?;
   `;
-  db.exec(query, [db.bid(req.params.uuid)])
-    .then(() => res.sendStatus(204))
+  const buid = db.bid(req.params.uuid);
+  db.exec(query, [buid])
+    .then(() => fetchEntity(buid, true))
+    .then((rows) => res.status(204).json(rows))
     .catch(next)
     .done();
 }
@@ -80,8 +82,9 @@ function create(req, res, next) {
 /**
  * @function fetchEntity
  * @param {object} uuid a binary uuid
+ * @param {boolean} allowEmpty allow to return an empty array instead of an error
  */
-function fetchEntity(uuid) {
+function fetchEntity(uuid, allowEmpty) {
   const query = `
     SELECT 
       BUID(e.uuid) AS uuid, e.display_name, e.gender, e.email, e.phone, e.address, 
@@ -90,5 +93,5 @@ function fetchEntity(uuid) {
     JOIN entity_type et ON et.id = e.entity_type_id
     WHERE uuid = ?;
   `;
-  db.one(query, [uuid]);
+  return allowEmpty ? db.exec(query, [uuid]).then(rows => rows) : db.one(query, [uuid]);
 }

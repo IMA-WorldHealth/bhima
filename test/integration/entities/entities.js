@@ -73,15 +73,17 @@ describe('(/entities) Entities', () => {
     const updateInfo = {
       display_name : 'IMT/DHIS2 OFFICE',
       gender : 'X',
-      entity_type_id : types.SERVICE,
+      entity_type_id : types.PERSON,
     };
     return agent.put(`/accounts/${service.uuid}`)
       .send(updateInfo)
       .then(res => {
         expect(res).to.have.status(200);
         expect(res).to.be.an('object');
-        expect(res.body.id).to.equal(newAccount.id);
-        expect(res.body.label).to.equal(updateInfo.label);
+        expect(res.body.uuid).to.equal(service.uuid);
+        expect(res.body.display_name).to.equal(updateInfo.updateInfo);
+        expect(res.body.gender).to.equal(updateInfo.gender);
+        expect(res.body.entity_type_id).to.equal(updateInfo.entity_type_id);
         expect(res.body).to.have.all.keys(responseKeys);
       })
       .catch(helpers.handler);
