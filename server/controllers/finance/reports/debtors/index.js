@@ -24,6 +24,13 @@ const db = require('../../../../lib/db');
 // path to the template to render
 const TEMPLATE = './server/controllers/finance/reports/debtors/aged.handlebars';
 
+const DEFAULT_OPTIONS = {
+  csvKey : 'debtors',
+  orientation : 'landscape',
+  footerRight : '[page] / [toPage]',
+  footerFontSize : '7',
+};
+
 /**
  * @method agedDebtorReport
  *
@@ -31,13 +38,7 @@ const TEMPLATE = './server/controllers/finance/reports/debtors/aged.handlebars';
  * The HTTP interface which actually creates the report.
  */
 function agedDebtorReport(req, res, next) {
-
-  const qs = _.extend(req.query, {
-    csvKey : 'debtors',
-    orientation : 'landscape',
-    footerRight : '[page] / [toPage]',
-    footerFontSize : '7',
-  });
+  const qs = _.extend(req.query, DEFAULT_OPTIONS);
 
   const metadata = _.clone(req.session);
 
@@ -77,11 +78,10 @@ function agedDebtorReport(req, res, next) {
  * @description
  * The HTTP interface which actually creates the report.
  */
-function queryContext(params = {}) {
+async function queryContext(params = {}) {
   const havingNonZeroValues = ' HAVING total > 0 ';
   const includeZeroes = Boolean(Number(params.zeroes));
   const useMonthGrouping = Boolean(Number(params.useMonthGrouping));
-  const fiscalId = params.fiscal_id;
 
   // format the dates for MySQL escape
   const dates = _.fill(Array(5), params.date);
@@ -101,8 +101,11 @@ function queryContext(params = {}) {
     SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) > 90, gl.debit_equiv - gl.credit_equiv, 0)) AS excess,
   `;
 
-  const columns = useMonthGrouping ? groupByMonthColumns : groupByRangeColumns;
-  const filterByFiscalId = useMonthGrouping ? `AND gl.fiscal_year_id = ${db.escape(fiscalId)} ` : ``;
+  // switch between grouping by month and grouping by period
+  const columns = useMonthGrouping
+    ? groupByMonthColumns
+    : groupByRangeColumns;
+
   // selects into columns of 30, 60, 90, and >90
   const debtorSql = `
     SELECT BUID(dg.uuid) AS id, dg.name, a.number,
@@ -111,7 +114,8 @@ function queryContext(params = {}) {
     FROM debtor_group AS dg JOIN debtor AS d ON dg.uuid = d.group_uuid
       LEFT JOIN general_ledger AS gl ON gl.entity_uuid = d.uuid
       JOIN account AS a ON a.id = dg.account_id
-    WHERE DATE(gl.trans_date) <= DATE(?) ${filterByFiscalId}
+    WHERE DATE(gl.trans_date) <= DATE(?)
+      AND gl.fiscal_year_id = ?
     GROUP BY dg.uuid
     ${includeZeroes ? '' : havingNonZeroValues}
     ORDER BY a.number;
@@ -125,26 +129,25 @@ function queryContext(params = {}) {
     FROM debtor_group AS dg JOIN debtor AS d ON dg.uuid = d.group_uuid
       LEFT JOIN general_ledger AS gl ON gl.entity_uuid = d.uuid
     WHERE DATE(gl.trans_date) <= DATE(?)
+      AND gl.fiscal_year_id = ?
     ${includeZeroes ? '' : havingNonZeroValues}
   `;
 
-  return db.exec(debtorSql, dates)
-    .then(debtors => {
-      data.debtors = debtors;
-      data.dateUntil = params.date;
+  const debtors = await db.exec(debtorSql, [...dates, params.fiscal_id]);
 
-      // this is specific to grouping by months
-      data.firstMonth = params.date;
-      data.secondMonth = moment(params.date).subtract(1, 'month');
-      data.thirdMonth = moment(params.date).subtract(2, 'month');
+  data.debtors = debtors;
+  data.dateUntil = params.date;
 
-      data.useMonthGrouping = useMonthGrouping;
-      return db.exec(aggregateSql, dates);
-    })
-    .then(aggregates => {
-      [data.aggregates] = aggregates;
-      return data;
-    });
+  // this is specific to grouping by months
+  data.firstMonth = params.date;
+  data.secondMonth = moment(params.date).subtract(1, 'month');
+  data.thirdMonth = moment(params.date).subtract(2, 'month');
+  data.useMonthGrouping = useMonthGrouping;
+
+  const [aggregates] = await db.exec(aggregateSql, [...dates, params.fiscal_id]);
+  data.aggregates = aggregates;
+
+  return data;
 }
 
 exports.context = queryContext;

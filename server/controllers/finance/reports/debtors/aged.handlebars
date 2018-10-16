@@ -22,16 +22,9 @@
             <th style="width:15%" class="text-center">{{translate "FORM.LABELS.ACCOUNT_NUMBER"}}</th>
             <th class="text-center">
               {{#if useMonthGrouping}}
-                {{month firstMonth}}
+                {{translate "REPORT.PREVIOUS_MONTHS"}}
               {{else}}
-                {{translate "REPORT.ZERO_TO_THIRTY_DAYS"}}
-              {{/if}}
-            </th>
-            <th class="text-center">
-              {{#if useMonthGrouping}}
-                {{month secondMonth}}
-              {{else}}
-                {{translate "REPORT.THIRTY_TO_SIXTY_DAYS"}}
+                {{translate "REPORT.OVER_NINETY_DAYS"}}
               {{/if}}
             </th>
             <th class="text-center">
@@ -43,9 +36,16 @@
             </th>
             <th class="text-center">
               {{#if useMonthGrouping}}
-                {{translate "REPORT.PREVIOUS_MONTHS"}}
+                {{month secondMonth}}
               {{else}}
-                {{translate "REPORT.OVER_NINETY_DAYS"}}
+                {{translate "REPORT.THIRTY_TO_SIXTY_DAYS"}}
+              {{/if}}
+            </th>
+            <th class="text-center">
+              {{#if useMonthGrouping}}
+                {{month firstMonth}}
+              {{else}}
+                {{translate "REPORT.ZERO_TO_THIRTY_DAYS"}}
               {{/if}}
             </th>
             <th class="text-center">{{translate "TABLE.COLUMNS.TOTAL"}}</th>
@@ -59,26 +59,26 @@
               <td>{{this.name}}</td>
               <td class="text-left">{{this.number}}</td>
               <td class="text-right">
-                {{#if this.thirty}}
-                  {{currency this.thirty ../metadata.enterprise.currency_id}}
-                {{/if}}  
-              </td>
-              <td class="text-right">
-                {{#if this.sixty}}
-                  {{currency this.sixty ../metadata.enterprise.currency_id}}
+                {{#if this.excess}}
+                  {{debcred this.excess ../metadata.enterprise.currency_id}}
                 {{/if}}
               </td>
               <td class="text-right">
                 {{#if this.ninety}}
-                  {{currency this.ninety ../metadata.enterprise.currency_id}}
+                  {{debcred this.ninety ../metadata.enterprise.currency_id}}
                 {{/if}}
               </td>
               <td class="text-right">
-                {{#if this.excess}}
-                  {{currency this.excess ../metadata.enterprise.currency_id}}
+                {{#if this.sixty}}
+                  {{debcred this.sixty ../metadata.enterprise.currency_id}}
                 {{/if}}
               </td>
-              <td class="text-right">{{currency this.total ../metadata.enterprise.currency_id}}</td>
+              <td class="text-right">
+                {{#if this.thirty}}
+                  {{debcred this.thirty ../metadata.enterprise.currency_id}}
+                {{/if}}
+              </td>
+              <td class="text-right">{{debcred this.total ../metadata.enterprise.currency_id}}</td>
             </tr>
           {{else}}
             {{> emptyTable columns=7}}
@@ -88,11 +88,11 @@
           <tfoot>
             <tr style="background-color: #ddd;">
               <th colspan="2">{{translate "TABLE.COLUMNS.TOTAL"}}</th>
-              <th class="text-right">{{currency aggregates.thirty metadata.enterprise.currency_id}}</th>
-              <th class="text-right">{{currency aggregates.sixty metadata.enterprise.currency_id}}</th>
-              <th class="text-right">{{currency aggregates.ninety metadata.enterprise.currency_id}}</th>
-              <th class="text-right">{{currency aggregates.excess metadata.enterprise.currency_id}}</th>
-              <th class="text-right">{{currency aggregates.total metadata.enterprise.currency_id}}</th>
+              <th class="text-right">{{debcred aggregates.excess metadata.enterprise.currency_id}}</th>
+              <th class="text-right">{{debcred aggregates.ninety metadata.enterprise.currency_id}}</th>
+              <th class="text-right">{{debcred aggregates.sixty metadata.enterprise.currency_id}}</th>
+              <th class="text-right">{{debcred aggregates.thirty metadata.enterprise.currency_id}}</th>
+              <th class="text-right">{{debcred aggregates.total metadata.enterprise.currency_id}}</th>
             </tr>
           </tfoot>
         {{/if}}

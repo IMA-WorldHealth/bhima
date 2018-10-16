@@ -1,14 +1,14 @@
 angular.module('bhima.controllers')
-  .controller('aged_debtorsController', AgedDebtorsConfigController);
+  .controller('unbalanced_invoice_payments_reportController', UnbalancedInvoicePaymentsConfigController);
 
-AgedDebtorsConfigController.$inject = [
+UnbalancedInvoicePaymentsConfigController.$inject = [
   '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state',
 ];
 
-function AgedDebtorsConfigController($sce, Notify, SavedReports, AppCache, reportData, $state) {
+function UnbalancedInvoicePaymentsConfigController($sce, Notify, SavedReports, AppCache, reportData, $state) {
   const vm = this;
-  const cache = new AppCache('configure_aged_debtors');
-  const reportUrl = 'reports/finance/debtors/aged';
+  const cache = new AppCache('configure_unbalanced_invoice_payments_report');
+  const reportUrl = 'reports/finance/unbalanced_invoice_payments';
 
   vm.previewGenerated = false;
   vm.reportDetails = {};
@@ -18,15 +18,6 @@ function AgedDebtorsConfigController($sce, Notify, SavedReports, AppCache, repor
   vm.clearPreview = function clearPreview() {
     vm.previewGenerated = false;
     vm.previewResult = null;
-  };
-
-  vm.onSelectFiscalYear = (fiscalYear) => {
-    vm.reportDetails.fiscal_id = fiscalYear.id;
-  };
-
-  vm.onSelectPeriod = (period) => {
-    if (!period) { return; }
-    vm.reportDetails.period_id = period.id;
   };
 
   vm.requestSaveAs = function requestSaveAs() {
@@ -44,17 +35,24 @@ function AgedDebtorsConfigController($sce, Notify, SavedReports, AppCache, repor
   };
 
   vm.preview = function preview(form) {
-    if (form.$invalid) { return 0; }
+    if (form.$invalid) {
+      return;
+    }
 
-    // update cached configuration
     cache.reportDetails = angular.copy(vm.reportDetails);
 
-    return SavedReports.requestPreview(reportUrl, reportData.id, angular.copy(vm.reportDetails))
+    const sendDetails = angular.copy(vm.reportDetails);
+    vm.loading = true;
+    SavedReports.requestPreview(reportUrl, reportData.id, sendDetails)
       .then((result) => {
+        // update cached configuration
         vm.previewGenerated = true;
         vm.previewResult = $sce.trustAsHtml(result);
       })
-      .catch(Notify.handleError);
+      .catch(Notify.handleError)
+      .finally(() => {
+        vm.loading = false;
+      });
   };
 
   function checkCachedConfiguration() {

@@ -1,13 +1,13 @@
 angular.module('bhima.services')
   .service('InventoryStoreService', InventoryStoreService);
 
-InventoryStoreService.$inject = [ 'InventoryService', 'Store' ];
+InventoryStoreService.$inject = ['InventoryService', 'Store'];
 
 function InventoryStoreService(Inventory, Store) {
 
-  var IDENTIFIER = 'uuid';
-  var service = this;
-  var store = new Store({ identifier : IDENTIFIER, data : [] });
+  const IDENTIFIER = 'uuid';
+  const service = this;
+  const store = new Store({ identifier : IDENTIFIER, data : [] });
 
   // the
   service.load = load;
@@ -17,7 +17,7 @@ function InventoryStoreService(Inventory, Store) {
   // loads data into a store and returns
   function load() {
     return Inventory.read()
-      .then(function (data) {
+      .then((data) => {
         store.setData(data);
         return store;
       });

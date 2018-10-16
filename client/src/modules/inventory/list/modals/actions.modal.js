@@ -10,8 +10,8 @@ function InventoryListActionsModalController(
   Account, Inventory, Notify, Instance,
   $state, util, AppCache, SessionService, $rootScope
 ) {
-  var vm = this;
-  var cache = AppCache('InventoryList');
+  const vm = this;
+  const cache = AppCache('InventoryList');
 
   // this is the model
   vm.item = { sellable : 1 };
@@ -45,27 +45,23 @@ function InventoryListActionsModalController(
 
   /** submit data */
   function submit(form) {
-    var record;
-    var promise;
-    var message;
-
     if (form.$invalid) { return null; }
 
-    record = util.filterFormElements(form, true);
+    const record = util.filterFormElements(form, true);
 
     // if no changes were made, simply dismiss the modal
     if (util.isEmptyObject(record)) { return cancel(); }
 
-    promise = vm.isCreateState ?
-      Inventory.create(record) :
-      Inventory.update(vm.identifier, record);
+    const promise = vm.isCreateState
+      ? Inventory.create(record)
+      : Inventory.update(vm.identifier, record);
 
     return promise
       .then(handleAction)
       .catch(Notify.handleError);
 
     function handleAction(res) {
-      message = vm.isCreateState ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
+      const message = vm.isCreateState ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
 
       $rootScope.$broadcast('INVENTORY_UPDATED');
 
@@ -92,21 +88,21 @@ function InventoryListActionsModalController(
   function startup() {
     // Inventory Group
     Inventory.Groups.read()
-      .then(function handleGroup(groups) {
+      .then((groups) => {
         vm.groups = groups;
       })
       .catch(Notify.handleError);
 
     // Inventory Type
     Inventory.Types.read()
-      .then(function handleType(types) {
+      .then((types) => {
         vm.types = types;
       })
       .catch(Notify.handleError);
 
     // Inventory Unit
     Inventory.Units.read()
-      .then(function handleUnit(units) {
+      .then((units) => {
         vm.units = units;
       })
       .catch(Notify.handleError);
@@ -114,7 +110,7 @@ function InventoryListActionsModalController(
     // if we are in the update state, load the inventory item information
     if (vm.isUpdateState) {
       Inventory.read(vm.identifier)
-        .then(function handleInventoryItem(item) {
+        .then((item) => {
           vm.item = item;
         })
         .catch(Notify.handleError);

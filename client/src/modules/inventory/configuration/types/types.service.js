@@ -1,11 +1,11 @@
 angular.module('bhima.services')
-.service('InventoryTypeService', InventoryTypeService);
+  .service('InventoryTypeService', InventoryTypeService);
 
 /** Dependencies infection */
-InventoryTypeService.$inject = [ 'PrototypeApiService' ];
+InventoryTypeService.$inject = ['PrototypeApiService'];
 
 /** Inventory Type Service */
 function InventoryTypeService(Api) {
-  var service = new Api('/inventory/types/');
+  const service = new Api('/inventory/types/');
   return service;
 }

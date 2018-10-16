@@ -7,11 +7,11 @@
       "DESCRIPTION":"Affiche le debit, credit and la balance des groupes de comptes connu sous le nom de référence des comptes"
     },
     "AGED_CREDITORS":{
-      "TITLE":"Balance agée des Créances",
+      "TITLE":"Balance âgée des Créances",
       "DESCRIPTION":"Ce rapport affiche toutes les créances dues aux Créditeurs par période"
     },
     "AGED_DEBTORS":{
-      "TITLE":"Balance agée des Conventionnés",
+      "TITLE":"Balance âgée des Conventionnés",
       "DESCRIPTION":"Ce rapport affiche toutes les dettes des conventionnés, tout en spécifiant les dettes par période"
     },
     "BY_ASC": "Par ordre croissant",
@@ -136,6 +136,10 @@
       "HIDE_IGNORED_CLIENTS" : "Masquer les clients ignorés",
       "PREVIOUS_MVT" : "Du début Au :",
       "DESCRIPTION" : "Ce rapport affiche tous les groupes de débiteurs, leurs soldes de compte au début de l'exercice, les soldes actuels et leurs soldes de clôture"
+    },
+    "UNBALANCED_INVOICE_PAYMENTS_REPORT": {
+      "TITLE": "Rapport de la balance des paiements non finalisés des factures",
+      "DESCRIPTION": "Ce rapport affiche la balance des factures qui ne pas totalement payées ou surpayées pour une période donnée"
     },
     "STOCK":{
       "TITLE":"Rapport de stock",

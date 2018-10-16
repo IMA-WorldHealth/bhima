@@ -25,6 +25,7 @@ angular.module('bhima.routes')
       'patientStanding',
       'ohada_balance_sheet_report',
       'account_reference',
+      'unbalanced_invoice_payments_report',
     ];
 
     $stateProvider
@@ -57,4 +58,3 @@ angular.module('bhima.routes')
       });
     });
   }]);
-
