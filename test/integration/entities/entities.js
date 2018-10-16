@@ -1,6 +1,4 @@
 /* global expect, agent */
-const uuid = require('uuid/v4');
-
 const helpers = require('../helpers');
 
 describe('(/entities) Entities', () => {
@@ -12,7 +10,7 @@ describe('(/entities) Entities', () => {
   };
 
   const person = {
-    uuid : uuid(),
+    uuid : helpers.uuid(),
     display_name : 'Mr Jean Jacques Rousseau',
     gender : 'M',
     phone : '+330000000000',
@@ -22,7 +20,7 @@ describe('(/entities) Entities', () => {
   };
 
   const service = {
-    uuid : uuid(),
+    uuid : helpers.uuid(),
     display_name : 'IMT OFFICE',
     gender : 'O',
     entity_type_id : types.SERVICE,
@@ -32,6 +30,8 @@ describe('(/entities) Entities', () => {
     'uuid', 'display_name', 'gender', 'email', 'phone',
     'address', 'reference', 'entity_type_id', 'label', 'translation_key',
   ];
+
+  const NUM_ENTITIES = 2;
 
   it('POST /entities Create a new person entity', () => {
     return agent.post('/entities')
@@ -56,6 +56,32 @@ describe('(/entities) Entities', () => {
       })
       .then(res => {
         expect(res).to.have.status(200);
+        expect(res.body).to.have.all.keys(responseKeys);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /entities returns the list of all entities', () => {
+    return agent.get('/entities')
+      .then(res => {
+        helpers.api.listed(res, NUM_ENTITIES);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('PUT /entites/:uuid updates the newly added entity', () => {
+    const updateInfo = {
+      display_name : 'IMT/DHIS2 OFFICE',
+      gender : 'X',
+      entity_type_id : types.SERVICE,
+    };
+    return agent.put(`/accounts/${service.uuid}`)
+      .send(updateInfo)
+      .then(res => {
+        expect(res).to.have.status(200);
+        expect(res).to.be.an('object');
+        expect(res.body.id).to.equal(newAccount.id);
+        expect(res.body.label).to.equal(updateInfo.label);
         expect(res.body).to.have.all.keys(responseKeys);
       })
       .catch(helpers.handler);
