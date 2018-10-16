@@ -7,7 +7,6 @@ angular.module('bhima.components')
       depotUuid        : '<',
       onSelectCallback : '&',
       required         : '<?',
-      validateTrigger  : '<?',
     },
   });
 
@@ -19,22 +18,17 @@ DepotSelectController.$inject = ['DepotService', 'NotifyService'];
 function DepotSelectController(Depots, Notify) {
   const $ctrl = this;
 
-  $ctrl.$onInit = function onInit() {
-    $ctrl.loading = true;
-
+  $ctrl.$onInit = () => {
     // load all depots
-    Depots.read(null)
-      .then((depots) => {
+    Depots.read()
+      .then(depots => {
         $ctrl.depots = depots;
       })
-      .catch(Notify.handleError)
-      .finally(() => {
-        $ctrl.loading = false;
-      });
+      .catch(Notify.handleError);
   };
 
   // fires the onSelectCallback bound to the component boundary
-  $ctrl.onSelect = $item => {
-    $ctrl.onSelectCallback({ depot : $item });
+  $ctrl.onSelect = depot => {
+    $ctrl.onSelectCallback({ depot });
   };
 }
