@@ -18,8 +18,8 @@ const DECIMAL_PRECISION = 2; // ex: 12.4567 => 12.46
 
 /**
  * return a query for retrieving account'balance by type_id and periods
- * This function does exactly the same thing except the
- * value of amount will be debit - credit this will know the expense account
+ * This function does exactly the same thing except the value of amount will be
+ * debit - credit this will know the expense account
  */
 function getQueryExpense() {
   return `
