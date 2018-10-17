@@ -16,6 +16,34 @@ const EXPENSE_ACCOUNT_TYPE = 5;
 const INCOME_ACCOUNT_TYPE = 4;
 const DECIMAL_PRECISION = 2; // ex: 12.4567 => 12.46
 
+/**
+ * return a query for retrieving account'balance by type_id and periods
+ * This function does exactly the same thing except the 
+ * value of amout will be debit - credit this will know the expense account
+ */
+function getQueryExpense() {
+  return `
+    SELECT ac.id, ac.number, ac.label, ac.parent, IFNULL(s.amount, 0) AS amount, s.type_id
+
+    FROM account as ac LEFT JOIN (
+    SELECT SUM(pt.debit - pt.credit) as amount, pt.account_id, act.id as type_id
+    FROM period_total as pt
+    JOIN account as a ON a.id = pt.account_id
+    JOIN account_type as act ON act.id = a.type_id
+    JOIN period as p ON  p.id = pt.period_id
+    JOIN fiscal_year as fy ON fy.id = p.fiscal_year_id
+    WHERE fy.id = ? AND
+      pt.period_id IN (
+        SELECT id FROM period WHERE start_date>= ? AND end_date<= ?
+      )
+      AND act.id = ?
+    GROUP BY pt.account_id
+    )s ON ac.id = s.account_id
+    WHERE ac.locked = 0
+    ORDER BY ac.number
+  `;
+}
+
 function document(req, res, next) {
   const params = req.query;
 
@@ -37,7 +65,6 @@ function document(req, res, next) {
   let range;
 
   const getQueryIncome = fiscal.getAccountBalancesByTypeId;
-  const getQueryExpense = fiscal.getAccountBalancesByTypeIdDebt;
 
   const periods = {
     periodFrom : params.periodFrom,
