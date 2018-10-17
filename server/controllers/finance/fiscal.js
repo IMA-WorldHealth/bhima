@@ -45,6 +45,7 @@ exports.getNumberOfFiscalYears = getNumberOfFiscalYears;
 exports.getDateRangeFromPeriods = getDateRangeFromPeriods;
 exports.getPeriodsFromDateRange = getPeriodsFromDateRange;
 exports.getAccountBalancesByTypeId = getAccountBalancesByTypeId;
+exports.getAccountBalancesByTypeIdDebt = getAccountBalancesByTypeIdDebt;
 exports.getOpeningBalance = getOpeningBalance;
 exports.getFiscalYearByPeriodId = getFiscalYearByPeriodId;
 exports.getEnterpriseFiscalStart = getEnterpriseFiscalStart;
@@ -713,3 +714,30 @@ function getAccountBalancesByTypeId() {
   `;
 }
 
+/**
+ * return a query for retrieving account'balance by type_id and periods
+ * This function does exactly the same thing except the 
+ * value of amout will be debit - credit this will know the expense account
+ */
+function getAccountBalancesByTypeIdDebt() {
+  return `
+    SELECT ac.id, ac.number, ac.label, ac.parent, IFNULL(s.amount, 0) AS amount, s.type_id
+
+    FROM account as ac LEFT JOIN (
+    SELECT SUM(pt.debit - pt.credit) as amount, pt.account_id, act.id as type_id
+    FROM period_total as pt
+    JOIN account as a ON a.id = pt.account_id
+    JOIN account_type as act ON act.id = a.type_id
+    JOIN period as p ON  p.id = pt.period_id
+    JOIN fiscal_year as fy ON fy.id = p.fiscal_year_id
+    WHERE fy.id = ? AND
+      pt.period_id IN (
+        SELECT id FROM period WHERE start_date>= ? AND end_date<= ?
+      )
+      AND act.id = ?
+    GROUP BY pt.account_id
+    )s ON ac.id = s.account_id
+    WHERE ac.locked = 0
+    ORDER BY ac.number
+  `;
+}

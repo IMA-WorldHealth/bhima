@@ -36,7 +36,8 @@ function document(req, res, next) {
   let queries;
   let range;
 
-  const getQuery = fiscal.getAccountBalancesByTypeId;
+  const getQueryIncome = fiscal.getAccountBalancesByTypeId;
+  const getQueryExpense = fiscal.getAccountBalancesByTypeIdDebt;
 
   const periods = {
     periodFrom : params.periodFrom,
@@ -46,8 +47,9 @@ function document(req, res, next) {
   fiscal.getDateRangeFromPeriods(periods).then(dateRange => {
     range = dateRange;
 
-    const totalIncome = `SELECT SUM(r.amount) as total FROM (${getQuery()}) as r`;
-    const totalExpense = `SELECT SUM(r.amount) as total FROM (${getQuery()}) as r`;
+    const totalIncome = `SELECT SUM(r.amount) as total FROM (${getQueryIncome()}) as r`;
+    const totalExpense = `SELECT SUM(r.amount) as total FROM (${getQueryExpense()}) as r`;
+
     const expenseParams = [
       params.fiscal,
       range.dateFrom,
@@ -63,8 +65,8 @@ function document(req, res, next) {
     ];
 
     queries = [
-      db.exec(getQuery(), expenseParams),
-      db.exec(getQuery(), incomeParams),
+      db.exec(getQueryExpense(), expenseParams),
+      db.exec(getQueryIncome(), incomeParams),
       db.one(totalExpense, expenseParams),
       db.one(totalIncome, incomeParams),
     ];
@@ -84,16 +86,10 @@ function document(req, res, next) {
       formatData(context.expense, context.totalExpense, DECIMAL_PRECISION);
       formatData(context.revenue, context.totalIncome, DECIMAL_PRECISION);
 
-      // diff is the result in the report
-      // Obtaining total Expense is done by using debit - credit,
-      // which makes totalExpense negative because the expense accounts
-      // are generally credited, the result should
-      // not be obtained by making totalIncome - totalExpense
-      // but adding up because TotalExpense already has a sign (-)
-      const diff = util.roundDecimal((context.totalIncome + context.totalExpense), DECIMAL_PRECISION);
+      const diff = util.roundDecimal((context.totalIncome - context.totalExpense), DECIMAL_PRECISION);
       context.totalIncome = util.roundDecimal(context.totalIncome, DECIMAL_PRECISION);
       context.totalExpense = util.roundDecimal(context.totalExpense, DECIMAL_PRECISION);
-      const isExpenseHigher = context.totalIncome < (context.totalExpense * (-1));
+      const isExpenseHigher = context.totalIncome < context.totalExpense;
 
       // the result position is usefull for balancing
       context.leftResult = isExpenseHigher ? diff : '';
