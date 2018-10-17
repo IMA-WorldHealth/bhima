@@ -1,6 +1,8 @@
 function configuration(data) {
   const configured = {};
-  const includeManual = data.includeManual;
+  // If the manual repartition is included, the automatic repair is done only after
+  // the deduction of the manually distributed values
+  const includeManual = parseInt(data.includeManual, 10);
 
   data.references.forEach(reference => {
     data.accountReferences.forEach(accountRef => {
@@ -63,53 +65,84 @@ function configuration(data) {
   let totalAuxCost = 0;
   configured.auxiliaryCostCenters.forEach(aux => {
     let total = 0;
+    let totalDistributedByKey = 0;
     let ratio = 0;
 
-    //Retrieving Evaluated Auxiliary Cost Center Distributions to Main Cost Centers to Find the Distribution Rate
-    configured.dataCostDistributions.forEach(cost => {
-      if ((cost.auxiliary_fee_center_id === aux.id)) {
-        total += (cost.debit - cost.credit);
-      }
-    });
-    aux.total = total;
+    // Retrieving Evaluated Auxiliary Cost Center Distributions to Main Cost Centers to Find the Distribution Rate
+    if (includeManual) {
+      configured.dataCostDistributions.forEach(cost => {
+        if ((cost.auxiliary_fee_center_id === aux.id)) {
+          total += (cost.debit - cost.credit);
+        }
+      });
+    }
+
     totalAuxCost += aux.balance;
 
-    if (aux.total && aux.balance) {
-      ratio = (aux.total / aux.balance);
+    // automatic total is the value that should be distributed to the main center taking into account
+    // the distribution keys, from this value is deducted the sum of the distributions carried out manually.
+    aux.automaticTotal = includeManual ? aux.balance - total : aux.balance;
+
+    if (aux.automaticTotal) {
+      data.distributionKey.filter(item => {
+        if (item.auxiliary_fee_center_id === aux.id) {
+          totalDistributedByKey += (aux.automaticTotal * item.rate) / 100;
+        }
+      });
     }
+
+    if ((total || totalDistributedByKey) && aux.balance) {
+      ratio = ((total + totalDistributedByKey) / aux.balance);
+    }
+
+    aux.total = total + totalDistributedByKey;
     aux.ratio = ratio;
-    //automatic total is the value that should be distributed to the main center taking into account 
-    //the distribution keys, from this value is deducted the sum of the distributions carried out manually.
-    aux.automaticTotal = includeManual ? aux.balance - aux.total : aux.balance;
+
   });
 
   // Getting balance of account references associated with auxiliary profit centers
   let totalAuxProfit = 0;
   configured.auxiliaryProfitCenters.forEach(aux => {
     let total = 0;
+    let totalDistributedByKey = 0;
     let ratio = 0;
 
-    //Retrieving Evaluated Auxiliary Profit Center Distributions to Main Profit Centers to Find the Distribution Rate
-    configured.dataProfitDistributions.forEach(profit => {
-      if ((profit.auxiliary_fee_center_id === aux.id)) {
-        total += (profit.debit - profit.credit);
-      }
-    });
-    aux.total = total;
+    // Retrieving Evaluated Auxiliary Profit Center Distributions to Main Profit Centers to Find the Distribution Rate
+    if (includeManual) {
+      configured.dataProfitDistributions.forEach(profit => {
+        if ((profit.auxiliary_fee_center_id === aux.id)) {
+          total += (profit.debit - profit.credit);
+        }
+      });
+    }
+
     totalAuxProfit += aux.balance;
 
     if (aux.total && aux.balance) {
       ratio = (aux.total / aux.balance);
     }
     aux.ratio = ratio;
-    //automatic total is the value that should be distributed to the main center taking into account 
-    //the distribution keys, from this value is deducted the sum of the distributions carried out manually.    
-    aux.automaticTotal = includeManual ? aux.balance - aux.total : aux.balance;
+    // automatic total is the value that should be distributed to the main center taking into account
+    // the distribution keys, from this value is deducted the sum of the distributions carried out manually.
+    aux.automaticTotal = includeManual ? aux.balance - total : aux.balance;
+
+    if (aux.automaticTotal) {
+      data.distributionKey.filter(item => {
+        if (item.auxiliary_fee_center_id === aux.id) {
+          totalDistributedByKey += (aux.automaticTotal * item.rate) / 100;
+        }
+      });
+    }
+    if ((total || totalDistributedByKey) && aux.balance) {
+      ratio = ((total + totalDistributedByKey) / aux.balance);
+    }
+    aux.total = total + totalDistributedByKey;
+    aux.ratio = ratio;
+
   });
 
   let totalGeneralCost = 0;
   let totalGeneralProfit = 0;
-
   configured.principal.forEach(pr => {
     pr.costValues = [];
     pr.profitValues = [];
@@ -131,6 +164,34 @@ function configuration(data) {
       }
     });
 
+    configured.auxiliaryCostCenters.forEach(aux => {
+      let balance = 0;
+      let automaticValue = 0;
+      let distributionKey = [];
+
+      if (aux.automaticTotal) {
+        distributionKey = data.distributionKey.filter(item => {
+          return ((item.auxiliary_fee_center_id === aux.id) && ((item.principal_fee_center_id === pr.id)));
+        });
+
+        if (distributionKey.length && distributionKey[0].rate) {
+          automaticValue = (aux.automaticTotal * distributionKey[0].rate) / 100;
+        }
+      }
+
+      if (includeManual) {
+        configured.dataCostDistributions.forEach(cost => {
+          if ((cost.principal_fee_center_id === pr.id) && (cost.auxiliary_fee_center_id === aux.id)) {
+            balance = cost.debit - cost.credit;
+          }
+        });
+      }
+      const valuePrinCAux = includeManual ? (automaticValue + balance) : automaticValue;
+
+      totalCost += valuePrinCAux;
+      pr.costValues.push({ value : valuePrinCAux });
+    });
+
     configured.auxiliaryProfitCenters.forEach(aux => {
       let balance = 0;
       let automaticValue = 0;
@@ -146,13 +207,15 @@ function configuration(data) {
         }
       }
 
-      configured.dataProfitDistributions.forEach(profit => {
-        if ((profit.principal_fee_center_id === pr.id) && (profit.auxiliary_fee_center_id === aux.id)) {
-          balance = profit.debit - profit.credit;
-        }
-      });
+      if (includeManual) {
+        configured.dataProfitDistributions.forEach(profit => {
+          if ((profit.principal_fee_center_id === pr.id) && (profit.auxiliary_fee_center_id === aux.id)) {
+            balance = profit.debit - profit.credit;
+          }
+        });
+      }
+      const valuePrinCAux = includeManual ? (automaticValue + balance) : automaticValue;
 
-      let valuePrinCAux = includeManual ? (automaticValue + balance) : automaticValue;
       totalProfit += valuePrinCAux;
       pr.profitValues.push({ value : valuePrinCAux });
     });
@@ -164,26 +227,19 @@ function configuration(data) {
     totalGeneralProfit += totalProfit;
     pr.results = totalProfit + totalCost;
     pr.resultCredit = (pr.results < 0);
-
-    // console.log('PR1NC1P4L______1000____-');
-    // console.log(pr);
-
-
-
-
   });
 
-      configured.totalPrincipalCost = totalPrincipalCost; 
-      configured.totalPrincipalProfit = totalPrincipalProfit;
-      configured.allCost = totalAuxCost + totalPrincipalCost;
-      configured.allProfit = totalAuxProfit + totalPrincipalProfit;
-      configured.totalGeneralCost = totalGeneralCost;
-      configured.totalGeneralProfit = totalGeneralProfit;
-      configured.ratioCost = totalGeneralCost / configured.allCost;
-      configured.ratioProfit = totalGeneralProfit / configured.allProfit;
-      configured.results = totalGeneralProfit + totalGeneralCost;
-      configured.resultCredit = (configured.results < 0);
-      configured.resultDebit = (configured.results > 0);
+  configured.totalPrincipalCost = totalPrincipalCost;
+  configured.totalPrincipalProfit = totalPrincipalProfit;
+  configured.allCost = totalAuxCost + totalPrincipalCost;
+  configured.allProfit = totalAuxProfit + totalPrincipalProfit;
+  configured.totalGeneralCost = totalGeneralCost;
+  configured.totalGeneralProfit = totalGeneralProfit;
+  configured.ratioCost = totalGeneralCost / configured.allCost;
+  configured.ratioProfit = totalGeneralProfit / configured.allProfit;
+  configured.results = totalGeneralProfit + totalGeneralCost;
+  configured.resultCredit = (configured.results < 0);
+  configured.resultDebit = (configured.results > 0);
 
   return configured;
 }
