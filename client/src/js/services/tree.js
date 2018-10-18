@@ -7,15 +7,16 @@
  * expected results
  */
 angular.module('bhima.services')
-.service('Tree', Tree);
+  .service('Tree', Tree);
 
-Tree.$inject = ['$http', '$translate', 'util'];
+Tree.$inject = ['$http', '$translate', 'util', 'TreeService'];
 
-function Tree($http, $translate, util) {
+function Tree($http, $translate, util, TreeClass) {
   const service = this;
 
   /** fetch all units available to the current user. */
   service.units = units;
+  service.all = all;
   service.sortByTranslationKey = sortByTranslationKey;
 
   function units() {
@@ -23,18 +24,26 @@ function Tree($http, $translate, util) {
       .then(util.unwrapHttpResponse);
   }
 
+  function all() {
+    return $http.get('/units')
+      .then(util.unwrapHttpResponse)
+      .then(data => new TreeClass(data));
+  }
+
   /** recursively sort an array of BHIMA units respecting translation keys. */
-  function sortByTranslationKey(units) {
-    if (angular.isUndefined(units)) {
+  function sortByTranslationKey(unitArray) {
+    if (angular.isUndefined(unitArray)) {
       return;
     }
 
-    units.sort(function (a, b) {
-      return ($translate.instant(a.key) > $translate.instant(b.key)) ? 1 : -1;
+    unitArray.sort((a, b) => {
+      const aValue = $translate.instant(a.key);
+      const bValue = $translate.instant(b.key);
+      return aValue.localeCompare(bValue);
     });
 
     // recursively step into each set of children
-    units.forEach(function (node) {
+    unitArray.forEach(node => {
       if (angular.isDefined(node.children)) {
         sortByTranslationKey(node.children);
       }
