@@ -1,15 +1,13 @@
 <div ng-form="DepotForm" bh-depot-select ng-model-options="{ updateOn: 'default' }">
   <div
     class="form-group"
-    ng-class="{ 'has-error' : $ctrl.validateTrigger && DepotForm.depot_uuid.$invalid }">
+    ng-class="{ 'has-error' : DepotForm.$submitted && DepotForm.depot_uuid.$invalid }">
 
-    <label class="control-label" translate>
-      STOCK.DEPOT
-    </label>
-    
+    <label class="control-label" translate>STOCK.DEPOT</label>
+
     <ng-transclude></ng-transclude>
-    <ui-select 
-      name="depot_uuid" 
+    <ui-select
+      name="depot_uuid"
       ng-model="$ctrl.depotUuid"
       on-select="$ctrl.onSelect($item, $model)"
       ng-required="$ctrl.required">
@@ -19,9 +17,9 @@
       <ui-select-choices ui-select-focus-patch repeat="depot.uuid as depot in $ctrl.depots | filter: { 'text': $select.search }">
         <span ng-bind-html="depot.text | highlight:$select.search"></span>
       </ui-select-choices>
-    </ui-select>    
+    </ui-select>
 
-    <div class="help-block" ng-messages="DepotForm.depot_uuid.$error" ng-show="$ctrl.validateTrigger">
+    <div class="help-block" ng-messages="DepotForm.depot_uuid.$error" ng-show="DepotForm.$submitted">
       <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
     </div>
   </div>

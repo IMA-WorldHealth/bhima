@@ -17,8 +17,7 @@
       <bh-employee-select
         employee-uuid="HolidayModalCtrl.holiday.employee_uuid"
         on-select-callback="HolidayModalCtrl.onSelectEmployee(employee)"
-        required="true"
-        validate-trigger="HolidayForm.$submitted">
+        required="true">
       </bh-employee-select>
     </div>
 
@@ -29,7 +28,7 @@
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
       </div>
     </div>
-    
+
     <div class="modal-body">
       <bh-date-interval
         label="FORM.LABELS.PERIODES"
@@ -45,7 +44,7 @@
       <div class="help-block" ng-messages="HolidayForm.percentage.$error" ng-show="HolidayForm.$submitted">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
       </div>
-    </div>  
+    </div>
   </div>
 
   <div class="modal-footer">

@@ -8,7 +8,6 @@ angular.module('bhima.components')
       onSelectCallback : '&',
       label            : '@?',
       required         : '<?',
-      validateTrigger  : '<?',
     },
   });
 
@@ -23,23 +22,20 @@ SupplierSelectController.$inject = [
 function SupplierSelectController(Suppliers, Notify) {
   const $ctrl = this;
 
-  $ctrl.$onInit = function onInit() {
-    // fired when an Supplier has been selected
-    $ctrl.onSelectCallback = $ctrl.onSelectCallback || angular.noop;
-
+  $ctrl.$onInit = () => {
     // default for label
     $ctrl.label = $ctrl.label || 'FORM.LABELS.SUPPLIER';
 
     // load all Suppliers
     Suppliers.read()
-      .then((suppliers) => {
+      .then(suppliers => {
         $ctrl.suppliers = suppliers;
       })
       .catch(Notify.handleError);
   };
 
   // fires the onSelectCallback bound to the component boundary
-  $ctrl.onSelect = function ($item, $model) {
-    $ctrl.onSelectCallback({ supplier : $item });
+  $ctrl.onSelect = supplier => {
+    $ctrl.onSelectCallback({ supplier });
   };
 }

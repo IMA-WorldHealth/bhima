@@ -5,10 +5,8 @@ angular.module('bhima.components')
     transclude  : true,
     bindings    : {
       employeeUuid     : '<',
-      disable          : '<?',
       onSelectCallback : '&',
       required         : '<?',
-      validateTrigger  : '<?',
     },
   });
 
@@ -23,22 +21,19 @@ EmployeeSelectController.$inject = [
 function EmployeeSelectController(Employees, Notify) {
   const $ctrl = this;
 
-  $ctrl.$onInit = function onInit() {
+  $ctrl.$onInit = () => {
     // load all Employee
     Employees.read()
-      .then((employees) => {
+      .then(employees => {
         $ctrl.employees = employees;
       })
-      .catch(Notify.handleError)
-      .finally(() => {
-        $ctrl.loading = false;
-      });
+      .catch(Notify.handleError);
 
     $ctrl.valid = true;
   };
 
   // fires the onSelectCallback bound to the component boundary
-  $ctrl.onSelect = function ($item) {
-    $ctrl.onSelectCallback({ employee : $item });
+  $ctrl.onSelect = employee => {
+    $ctrl.onSelectCallback({ employee });
   };
 }
