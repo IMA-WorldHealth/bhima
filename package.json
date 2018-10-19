@@ -4,8 +4,8 @@
   "description": "A rural hospital information management system.",
   "main": "npm run build",
   "scripts": {
-    "app": "cross-env NODE_ENV=production gulp build && cd bin && cross-env NODE_ENV=production node server/app.js",
-    "dev": "cross-env NODE_ENV=development gulp build && cd bin && cross-env NODE_ENV=development node server/app.js",
+    "app": "cross-env-shell NODE_ENV=production gulp build && cd bin && NODE_ENV=production node server/app.js",
+    "dev": "cross-env-shell NODE_ENV=development gulp build && cd bin && NODE_ENV=development node server/app.js",
     "test": "./sh/test.sh",
     "test:integration": "./sh/integration-tests.sh",
     "test:ends": "./sh/test-ends.sh",
@@ -64,7 +64,7 @@
     "json-2-csv": "^2.1.0",
     "juice": "^5.0.0",
     "lodash": "^4.16.2",
-    "lzma-native": "^3.0.8",
+    "lzma-native": "^4.0.1",
     "mailgun-js": "^0.21.0",
     "mkdirp": "^0.5.1",
     "moment": "^2.15.0",
@@ -119,7 +119,7 @@
     "protractor": "^5.0.0",
     "rewire": "^4.0.0",
     "standard-version": "^4.2.0",
-    "typescript": "^2.7.2"
+    "typescript": "^3.1.3"
   },
   "homepage": "https://github.com/IMA-WorldHealth/bhima-2.X#readme",
   "directories": {

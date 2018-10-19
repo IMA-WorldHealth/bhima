@@ -1,5 +1,7 @@
 /* global browser, element, by */
 const chai = require('chai');
+const EC = require('protractor').ExpectedConditions;
+
 const helpers = require('../shared/helpers');
 const FU = require('../shared/FormUtils');
 const GU = require('../shared/GridUtils');
@@ -7,7 +9,7 @@ const components = require('../shared/components');
 
 helpers.configure(chai);
 
-describe('Edit Posting Journal', () => {
+describe.skip('Edit Posting Journal', () => {
   const path = '#!/journal';
   const gridId = 'journal-grid';
 
@@ -32,13 +34,19 @@ describe('Edit Posting Journal', () => {
 
   function editInput(rowIndex, columnIndex, value) {
     const cell = GU.getCell(editingGridId, rowIndex, columnIndex);
-    // clear old clicks and focus the cell
-    cell.click();
+
     // open the editing pane
     doubleClick(cell);
-    cell.element(by.css('input')).clear().sendKeys(value);
-  }
 
+    const input = element(by.css('input[type=number]'));
+
+    browser.wait(EC.visibilityOf(input), 1000, 'Could not find input for data entry.');
+
+    // get the element
+    input.clear().sendKeys(value);
+
+    $('.modal-body').click();
+  }
 
   it('edits a transaction change value of debit and credit', () => {
     GU.selectRow(gridId, 0);
@@ -52,6 +60,7 @@ describe('Edit Posting Journal', () => {
     editInput(1, 3, 100);
 
     FU.buttons.submit();
+
     FU.exists(by.id('validation-errored-alert'), false);
     components.notification.hasSuccess();
   });
