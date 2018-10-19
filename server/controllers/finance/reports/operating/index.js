@@ -16,6 +16,34 @@ const EXPENSE_ACCOUNT_TYPE = 5;
 const INCOME_ACCOUNT_TYPE = 4;
 const DECIMAL_PRECISION = 2; // ex: 12.4567 => 12.46
 
+/**
+ * return a query for retrieving account'balance by type_id and periods
+ * This function does exactly the same thing except the value of amount will be
+ * debit - credit this will know the expense account
+ */
+function getQueryExpense() {
+  return `
+    SELECT ac.id, ac.number, ac.label, ac.parent, IFNULL(s.amount, 0) AS amount, s.type_id
+
+    FROM account as ac LEFT JOIN (
+    SELECT SUM(pt.debit - pt.credit) as amount, pt.account_id, act.id as type_id
+    FROM period_total as pt
+    JOIN account as a ON a.id = pt.account_id
+    JOIN account_type as act ON act.id = a.type_id
+    JOIN period as p ON  p.id = pt.period_id
+    JOIN fiscal_year as fy ON fy.id = p.fiscal_year_id
+    WHERE fy.id = ? AND
+      pt.period_id IN (
+        SELECT id FROM period WHERE start_date>= ? AND end_date<= ?
+      )
+      AND act.id = ?
+    GROUP BY pt.account_id
+    )s ON ac.id = s.account_id
+    WHERE ac.locked = 0
+    ORDER BY ac.number
+  `;
+}
+
 function document(req, res, next) {
   const params = req.query;
 
@@ -36,7 +64,7 @@ function document(req, res, next) {
   let queries;
   let range;
 
-  const getQuery = fiscal.getAccountBalancesByTypeId;
+  const getQueryIncome = fiscal.getAccountBalancesByTypeId;
 
   const periods = {
     periodFrom : params.periodFrom,
@@ -46,8 +74,9 @@ function document(req, res, next) {
   fiscal.getDateRangeFromPeriods(periods).then(dateRange => {
     range = dateRange;
 
-    const totalIncome = `SELECT SUM(r.amount) as total FROM (${getQuery()}) as r`;
-    const totalExpense = `SELECT SUM(r.amount) as total FROM (${getQuery()}) as r`;
+    const totalIncome = `SELECT SUM(r.amount) as total FROM (${getQueryIncome()}) as r`;
+    const totalExpense = `SELECT SUM(r.amount) as total FROM (${getQueryExpense()}) as r`;
+
     const expenseParams = [
       params.fiscal,
       range.dateFrom,
@@ -63,8 +92,8 @@ function document(req, res, next) {
     ];
 
     queries = [
-      db.exec(getQuery(), expenseParams),
-      db.exec(getQuery(), incomeParams),
+      db.exec(getQueryExpense(), expenseParams),
+      db.exec(getQueryIncome(), incomeParams),
       db.one(totalExpense, expenseParams),
       db.one(totalIncome, incomeParams),
     ];
@@ -84,16 +113,10 @@ function document(req, res, next) {
       formatData(context.expense, context.totalExpense, DECIMAL_PRECISION);
       formatData(context.revenue, context.totalIncome, DECIMAL_PRECISION);
 
-      // diff is the result in the report
-      // Obtaining total Expense is done by using debit - credit,
-      // which makes totalExpense negative because the expense accounts
-      // are generally credited, the result should
-      // not be obtained by making totalIncome - totalExpense
-      // but adding up because TotalExpense already has a sign (-)
-      const diff = util.roundDecimal((context.totalIncome + context.totalExpense), DECIMAL_PRECISION);
+      const diff = util.roundDecimal((context.totalIncome - context.totalExpense), DECIMAL_PRECISION);
       context.totalIncome = util.roundDecimal(context.totalIncome, DECIMAL_PRECISION);
       context.totalExpense = util.roundDecimal(context.totalExpense, DECIMAL_PRECISION);
-      const isExpenseHigher = context.totalIncome < (context.totalExpense * (-1));
+      const isExpenseHigher = context.totalIncome < context.totalExpense;
 
       // the result position is usefull for balancing
       context.leftResult = isExpenseHigher ? diff : '';

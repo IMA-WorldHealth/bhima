@@ -51,11 +51,12 @@
       "REPORT": "Situation financière de l'employé",
       "TITLE": "Situation financière d'un employé"
     },
+    "EXPENSE": "Charge",
     "EXPENSE_REPORT":"Rapport des dépenses",
     "GENERATED":"Rapport généré",
+    "INCOME": "Produit",
     "INCOME_EXPENSE":"Rapport  des recettes et des dépenses",
     "INCOME_EXPENSE_BY_MONTH": "Etat des revenus et des dépenses pour la période en cours et les deux périodes précédentes",
-    
     "INCOME_REPORT":"Rapport des recettes",
     "MONTHLY_BALANCE":"Balance mensuelle",
     "OPEN_DEBTORS": {

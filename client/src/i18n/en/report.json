@@ -60,7 +60,9 @@
       "TITLE": "Employee Standing Report"
     },
     "EXPENSE_REPORT": "Expenses Report",
+    "EXPENSE": "Expense",
     "GENERATED": "Generated Report",
+    "INCOME": "Income",
     "INCOME_EXPENSE": "Profit and Loss Statement",
     "INCOME_EXPENSE_BY_MONTH": "Profit and Loss Statement for the current and the two previous periods",
     "INCOME_REPORT": "Incomes Report",

@@ -18,10 +18,10 @@
         <tbody>
           <tr>
             <th class="text-center">
-              {{translate 'ACCOUNT.TYPES.EXPENSE'}}
+              {{translate 'REPORT.EXPENSE'}}
             </th>
             <th class="text-center">
-              {{translate 'ACCOUNT.TYPES.INCOME'}}
+              {{translate 'REPORT.INCOME'}}
             </th>
           </tr>
           <tr>
@@ -74,45 +74,44 @@
               </table>
             </td>
           </tr>
-          <tr>
-            <td>
-            <table class="table table-condensed table-report table-bordered">
-              <tr>
-                <th>
-                </th>
-                <th class="text-center">
-                  {{translate 'FORM.LABELS.TOTAL_EXPENSES'}}
-                </th>
-                 <th class="text-center">
-                   {{translate 'FORM.LABELS.TOTAL_INCOMES'}}
-                </th>
-              </tr>
-               <tr>
-                <th class="text-center">
-                  {{translate 'FORM.LABELS.TOTAL'}}
-                </th>
-                <td class="text-right">
-                  {{debcred this.totalExpense}}
-                </td>
-                 <td class="text-right">
-                  {{debcred this.totalIncome}}
-                </td>
-              </tr>
-              <tr>
-                <th class="text-center">
-                  {{translate 'FORM.LABELS.RESULT'}}
-                </th>
-                <td class="text-right">
-                  {{debcred this.leftResult}}
-                </td>
-                <td class="text-right">
-                  {{debcred this.rightResult}}
-                </td>
-              </tr>
-            </table>
-            </td>
-          </tr>
         </tbody>
+      </table>
+      <br>
+      <br>
+      <br>
+      <table class="table table-condensed table-report table-bordered">
+        <tr>
+          <th>
+          </th>
+          <th class="text-center">
+            {{translate 'FORM.LABELS.TOTAL_EXPENSES'}}
+          </th>
+           <th class="text-center">
+             {{translate 'FORM.LABELS.TOTAL_INCOMES'}}
+          </th>
+        </tr>
+         <tr>
+          <th class="text-center">
+            {{translate 'FORM.LABELS.TOTAL'}}
+          </th>
+          <td class="text-right">
+            {{debcred this.totalExpense}}
+          </td>
+           <td class="text-right">
+            {{debcred this.totalIncome}}
+          </td>
+        </tr>
+        <tr>
+          <th class="text-center">
+            {{translate 'FORM.LABELS.RESULT'}}
+          </th>
+          <td class="text-right">
+            {{debcred this.leftResult}}
+          </td>
+          <td class="text-right">
+            {{debcred this.rightResult}}
+          </td>
+        </tr>
       </table>
     </div>
   </div>
