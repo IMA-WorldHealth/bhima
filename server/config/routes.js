@@ -24,7 +24,6 @@ const install = require('../controllers/install');
 
 // admin routes
 const rolesCtrl = require('../controllers/admin/roles');
-const unitCtrl = require('../controllers/admin/unit');
 const users = require('../controllers/admin/users');
 const projects = require('../controllers/admin/projects');
 const enterprises = require('../controllers/admin/enterprises');
@@ -731,7 +730,7 @@ exports.configure = function configure(app) {
   app.get('/roles/:uuid', rolesCtrl.detail);
 
   // TODO(@jniles) - migrate this to the roles controller
-  app.get('/roles/:uuid/units', unitCtrl.list);
+  app.get('/roles/:uuid/units', rolesCtrl.units);
 
   app.get('/roles/actions/:roleUuid', rolesCtrl.rolesAction);
   app.get('/roles/actions/user/:action_id', rolesCtrl.hasAction);
@@ -743,7 +742,4 @@ exports.configure = function configure(app) {
   app.post('/roles/affectUnits', rolesCtrl.affectPages);
   app.post('/roles/assignTouser', rolesCtrl.affectToUser);
   app.post('/roles/actions', rolesCtrl.assignActionToRole);
-
-  // unit
-  app.get('/unit/:roleUuid', unitCtrl.list);
 };

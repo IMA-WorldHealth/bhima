@@ -25,15 +25,16 @@ function RolesPermissionsController(data, ModalInstance, Roles, Notify, Tree, $q
   const ROOT_NODE_ID = 0;
 
   function startup() {
-    $q.all([Tree.units(), Roles.unit(vm.role.uuid)])
+    $q.all([Tree.all(), Roles.unit(vm.role.uuid)])
       .then(([tree, assignedUnits]) => {
-        Tree.sortByTranslationKey(tree);
+        const root = tree.getRootNode();
+        Tree.sortByTranslationKey(root.children);
+
+        // set the virtual root node
+        TreeNodes.set(root.id, root);
 
         // create a map of unit ids -> units
-        createNodeMapRecursive(tree, 1);
-
-        // make a virtual root node
-        TreeNodes.set(ROOT_NODE_ID, { id : ROOT_NODE_ID, children : tree });
+        createNodeMapRecursive(root.children, 1);
 
         // check each node that should be checked by default
         assignedUnits.forEach(unit => {
@@ -41,7 +42,7 @@ function RolesPermissionsController(data, ModalInstance, Roles, Notify, Tree, $q
           node.checked = true;
         });
 
-        vm.tree = tree;
+        vm.tree = root.children;
       });
   }
 

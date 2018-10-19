@@ -258,7 +258,7 @@ const SearchModal = require('../shared/search.page');
 const GridRow = require('../shared/GridRow');
 
 function CreditNoteTests() {
-  before(() => helpers.navigate('#/payments'));
+  before(() => helpers.navigate('#!/payments'));
 
   it('cancels a payment with a credit note', () => {
     const row = new GridRow('CP.TPA.3');

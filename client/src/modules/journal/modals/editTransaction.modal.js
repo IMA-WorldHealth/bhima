@@ -113,6 +113,8 @@ function JournalEditTransactionController(
 
   vm.gridOptions = {
     columnDefs : editColumns,
+    enableColumnMenus : false,
+    enableSorting : false,
     showColumnFooter : true,
     showGridFooter : true,
     appScopeProvider : vm,
