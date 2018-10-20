@@ -29,4 +29,5 @@ exports.purchases = require('./purchases');
 exports.employee = require('./financial.employee').report;
 exports.priceList = require('./priceList').report;
 exports.ohadaBalanceSheet = require('./ohada_balance_sheet');
+exports.ohadaProfitLoss = require('./ohada_profit_loss');
 exports.accountReference = require('./account_reference');

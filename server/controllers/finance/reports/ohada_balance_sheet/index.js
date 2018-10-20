@@ -36,7 +36,7 @@ const balanceSheetLiabilityTable = balanceSheetElement.balanceSheetLiabilityTabl
 
 // expose to the API
 exports.document = document;
-
+exports.aggregateReferences = aggregateReferences;
 /**
  * @function document
  * @description process and render the balance report document
