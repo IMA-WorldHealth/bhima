@@ -290,13 +290,17 @@ function lookupAccountReference(id) {
   let glb = {};
   const sql = 'SELECT id, abbr, description, parent, is_amo_dep FROM account_reference WHERE id = ?;';
 
-  const sqlItems = 'SELECT account_id FROM account_reference_item WHERE account_reference_id = ? AND is_exception = 0;';
+  const sqlItems = `
+    SELECT account_id FROM account_reference_item WHERE account_reference_id = ? AND is_exception = 0;`;
 
-  const sqlExceptItems = 'SELECT account_id FROM account_reference_item WHERE account_reference_id = ? AND is_exception = 1;';
+  const sqlExceptItems = `
+    SELECT account_id FROM account_reference_item WHERE account_reference_id = ? AND is_exception = 1;`;
 
-  const sqlCreditBalanceItems = 'SELECT account_id FROM account_reference_item WHERE account_reference_id = ? AND credit_balance = 1;';
+  const sqlCreditBalanceItems = `
+    SELECT account_id FROM account_reference_item WHERE account_reference_id = ? AND credit_balance = 1;`;
 
-  const sqlDebitBalanceItems = 'SELECT account_id FROM account_reference_item WHERE account_reference_id = ? AND debit_balance = 1;';
+  const sqlDebitBalanceItems = `
+    SELECT account_id FROM account_reference_item WHERE account_reference_id = ? AND debit_balance = 1;`;
 
   return db.one(sql, id)
     .then(reference => {
