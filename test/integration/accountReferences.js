@@ -61,7 +61,7 @@ describe('(/accounts/references) Accounts References', () => {
       .then((res) => {
         helpers.api.listed(res, numAccountReference);
         console.log('res : ', res.body);
-        expect(res.body[0]).to.have.all.keys('id', 'abbr', 'description', 'parent', 'is_amo_dep', 'accounts', 'parent_abbr');
+        expect(res.body[0]).to.have.all.keys('id', 'abbr', 'description', 'parent', 'is_amo_dep', 'accounts', 'debits', 'credits', 'parent_abbr');
       })
       .catch(helpers.handler);
   });
