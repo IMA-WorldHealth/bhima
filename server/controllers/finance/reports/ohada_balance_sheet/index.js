@@ -7,14 +7,12 @@
  * @module reports/ohada_balance_sheet
  *
  * @requires lodash
- * @requires lib/db
  * @requires lib/ReportManager
  * @requires lib/errors/BadRequest
  */
 
 const Q = require('q');
 const _ = require('lodash');
-const db = require('../../../../lib/db');
 const AccountReference = require('../../accounts/references');
 const ReportManager = require('../../../../lib/ReportManager');
 const conditionalReferences = require('../../accounts/conditionalReferences');
