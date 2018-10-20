@@ -47,7 +47,9 @@ function list(req, res, next) {
   const sql = `
     SELECT 
       ar.id, ar.abbr, ar.description, ar.parent, ar.is_amo_dep, arp.abbr as parent_abbr,
-      GROUP_CONCAT(IF(ari.is_exception = 0, a.number, CONCAT('(sauf ', a.number, ')')) SEPARATOR ', ') AS accounts
+      GROUP_CONCAT(IF(ari.is_exception = 0, a.number, CONCAT('(sauf ', a.number, ')')) SEPARATOR ', ') AS accounts,
+      GROUP_CONCAT(IF(ari.credit_balance = 0, ' ', CONCAT('(SC ', a.number, ')')) SEPARATOR ', ') AS credits,
+    GROUP_CONCAT(IF(ari.debit_balance = 0, ' ', CONCAT('(SD ', a.number, ')')) SEPARATOR ', ') AS debits
     FROM account_reference ar
     LEFT JOIN account_reference arp ON arp.id = ar.parent
     LEFT JOIN account_reference_item ari ON ari.account_reference_id = ar.id

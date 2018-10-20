@@ -17,6 +17,7 @@ const _ = require('lodash');
 const db = require('../../../../lib/db');
 const AccountReference = require('../../accounts/references');
 const ReportManager = require('../../../../lib/ReportManager');
+const conditionalReferences = require('../../accounts/conditionalReferences');
 
 // report template
 const TEMPLATE = './server/controllers/finance/reports/ohada_balance_sheet/report.handlebars';
@@ -122,11 +123,56 @@ function document(req, res, next) {
       _.merge(context, { fiscalYear });
 
       const currentPeriodReferences = AccountReference.computeAllAccountReference(fiscalYear.current.period_id);
-      const previousPeriodReferences = fiscalYear.previous.period_id ?
-        AccountReference.computeAllAccountReference(fiscalYear.previous.period_id) : [];
-      return Q.all([currentPeriodReferences, previousPeriodReferences]);
+      const currentConditionalReferences = conditionalReferences.compute(fiscalYear.current.period_id);
+
+      const previousPeriodReferences = fiscalYear.previous.period_id
+        ? AccountReference.computeAllAccountReference(fiscalYear.previous.period_id) : [];
+
+      const previousConditionalReferences = fiscalYear.previous.period_id
+        ? conditionalReferences.compute(fiscalYear.previous.period_id) : [];
+
+      return Q.all([
+        currentPeriodReferences,
+        previousPeriodReferences,
+        currentConditionalReferences,
+        previousConditionalReferences]);
     })
-    .spread((currentData, previousData) => {
+    .spread((currentData, previousData, currentConditional, previousConditional) => {
+      if (currentConditional.length) {
+        currentConditional.forEach(cond => {
+          const conditional = cond[0];
+          currentData.forEach(current => {
+            if (current.abbr === conditional.abbr) {
+              if ((parseInt(conditional.credit_balance, 10) === 1) && (conditional.balance > 0)) {
+                current.balance -= conditional.balance;
+              }
+
+              if ((parseInt(conditional.debit_balance, 10) === 1) && (conditional.balance < 0)) {
+                current.balance -= conditional.balance;
+              }
+            }
+          });
+        });
+      }
+
+      if (previousConditional.length) {
+        previousConditional.forEach(cond => {
+          const conditional = cond[0];
+
+          previousData.forEach(previous => {
+            if (previous.abbr === conditional.abbr) {
+              if ((parseInt(conditional.credit_balance, 10) === 1) && (conditional.balance > 0)) {
+                previous.balance -= conditional.balance;
+              }
+
+              if ((parseInt(conditional.debit_balance, 10) === 1) && (conditional.balance < 0)) {
+                previous.balance -= conditional.balance;
+              }
+            }
+          });
+        });
+      }
+
       let list = [];
       const currentReferences = formatReferences(_.groupBy(currentData, 'abbr'));
       const previousReferences = formatReferences(_.groupBy(previousData, 'abbr'));
@@ -292,8 +338,8 @@ function getFiscalYearDetails(fiscalYearId) {
     .then(fiscalYear => {
       bundle.current = fiscalYear;
 
-      return bundle.current.previous_fiscal_year_id ?
-        db.one(query, [bundle.current.previous_fiscal_year_id, bundle.current.previous_fiscal_year_id]) : {};
+      return bundle.current.previous_fiscal_year_id
+        ? db.one(query, [bundle.current.previous_fiscal_year_id, bundle.current.previous_fiscal_year_id]) : {};
     })
     .then(previousFiscalYear => {
       bundle.previous = previousFiscalYear;
