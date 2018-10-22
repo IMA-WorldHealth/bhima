@@ -71,10 +71,8 @@
           data-method="hide_titles"
           class="btn btn-default"
           ng-class="{ 'btn-info' : GeneralLedgerCtrl.hideTitleAccount }">
-          <i 
-            ng-class=" { 'fa-eye-slash': !GeneralLedgerCtrl.hideTitleAccount,
-             'fa-eye': GeneralLedgerCtrl.hideTitleAccount }"
-            class="fa"></i>
+          <i class="fa" ng-class="{ 'fa-eye-slash': !GeneralLedgerCtrl.hideTitleAccount, 'fa-eye': GeneralLedgerCtrl.hideTitleAccount }"></i>
+          <span class="hidden-xs text-capitalize" translate>REPORT.OPTIONS.HIDE_TITLE_ACCOUNT</span>
         </button>
       </div>
     </div>
