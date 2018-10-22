@@ -1,6 +1,6 @@
 /* global browser, element, by */
 const chai = require('chai');
-const EC = require('protractor').ExpectedConditions;
+const protractor = require('protractor');
 
 const helpers = require('../shared/helpers');
 const FU = require('../shared/FormUtils');
@@ -9,7 +9,7 @@ const components = require('../shared/components');
 
 helpers.configure(chai);
 
-describe.skip('Edit Posting Journal', () => {
+describe('Edit Posting Journal', () => {
   const path = '#!/journal';
   const gridId = 'journal-grid';
 
@@ -19,6 +19,7 @@ describe.skip('Edit Posting Journal', () => {
   const doubleClick = element => browser.actions().mouseMove(element).doubleClick().perform();
 
   before(() => helpers.navigate(path));
+  afterEach(helpers.takeScreenshotOnFailure);
 
   it('edits a transaction change an account', () => {
     GU.selectRow(gridId, 0);
@@ -38,14 +39,14 @@ describe.skip('Edit Posting Journal', () => {
     // open the editing pane
     doubleClick(cell);
 
+    // get the element
     const input = element(by.css('input[type=number]'));
 
-    browser.wait(EC.visibilityOf(input), 1000, 'Could not find input for data entry.');
-
-    // get the element
-    input.clear().sendKeys(value);
-
-    $('.modal-body').click();
+    // Bug: calling input.clear() will submit the input in ui-grid!  This causes
+    // the ui-grid to hide the input.
+    // Solution: Ctrl-a and then type what you want.
+    const ctrlA = protractor.Key.chord(protractor.Key.CONTROL, 'a');
+    input.sendKeys(ctrlA, value, protractor.Key.ENTER);
   }
 
   it('edits a transaction change value of debit and credit', () => {

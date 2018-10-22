@@ -8,7 +8,12 @@
  * tied to forms or modules.
  */
 
+// eslint-disable-next-line
 const chaiPromise = require('chai-as-promised');
+// eslint-disable-next-line
+const addContext = require('mochawesome/addContext');
+const fs = require('mz/fs');
+const path = require('path');
 
 const PATH_REGEXP = /^#!|^#|^!/g;
 
@@ -18,8 +23,8 @@ exports.random = function random(n) {
 };
 
 // wrapper for browser navigation without reloading the page
-exports.navigate = function navigate(path) {
-  const destination = path.replace(PATH_REGEXP, '');
+exports.navigate = function navigate(browserPath) {
+  const destination = browserPath.replace(PATH_REGEXP, '');
   browser.setLocation(destination);
 };
 
@@ -37,6 +42,28 @@ exports.getCurrentPath = function getCurrentPath() {
       partial.replace(PATH_REGEXP, '');
       return `#!${partial}`;
     });
+};
+
+/**
+ * Adds screenshot to mochawesome test context on failure
+ */
+// eslint-disable-next-line
+exports.takeScreenshotOnFailure = function takeScreenshotOnFailure(done) {
+  if (this.currentTest.state === 'failed') {
+    const filePath = path.resolve(
+      process.cwd(),
+      `../test/artifacts/screenshots/${this.currentTest.title.concat('.png')}`
+    );
+
+    browser.takeScreenshot()
+      .then(png => fs.writeFile(filePath, Buffer.from(png, 'base64')))
+      .then(() => {
+        addContext(this, filePath);
+        done();
+      });
+  } else {
+    done();
+  }
 };
 
 // shared data
