@@ -72,6 +72,8 @@ CREATE TABLE `account_reference_item` (
   `account_reference_id` MEDIUMINT(8) UNSIGNED NOT NULL,
   `account_id` INT(10) UNSIGNED NOT NULL,
   `is_exception` TINYINT(1) NULL DEFAULT 0 COMMENT 'Except this for reference calculation',
+  `credit_balance` TINYINT(1) NULL DEFAULT 0 COMMENT 'Only if credit balance',
+  `debit_balance` TINYINT(1) NULL DEFAULT 0 COMMENT 'Only if debit balance',
   PRIMARY KEY (`id`),
   KEY `account_reference_id` (`account_reference_id`),
   KEY `account_id` (`account_id`),

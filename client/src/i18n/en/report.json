@@ -117,6 +117,7 @@
       "WARN_CURRENCY": "Attention! You are using a currency other than the enterprise currency.  Values on this report are subject to change with changes to the exchange rate and should not be considered final.  Please save a report in the enterprise currency for long term reference."
     },
     "INCOME_EXPENSE_BY_MONTH_REPORT": {
+      "TITLE": "Operating Accounts Report by Month",
       "DESCRIPTION": "Creates a Profit and Loss Statement for the current and the two previous periods.",
       "REMOVE_UNUSED_ACCOUNT" : "Remove Unused Accounts"
     },

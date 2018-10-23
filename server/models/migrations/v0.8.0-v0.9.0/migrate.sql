@@ -570,3 +570,10 @@ BEGIN
 END$$
 
 DELIMITER ;
+
+
+-- BY lomamech 2018-10-19
+-- Added the credit_balance and debit_balance property 
+-- to account for certain account references that have a debit or credit balance
+ALTER TABLE `account_reference_item` ADD COLUMN `credit_balance` TINYINT(1) NOT NULL DEFAULT 0;
+ALTER TABLE `account_reference_item` ADD COLUMN `debit_balance` TINYINT(1) NOT NULL DEFAULT 0;

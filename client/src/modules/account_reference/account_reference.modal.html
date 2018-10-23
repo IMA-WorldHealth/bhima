@@ -99,7 +99,6 @@
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
       </div>
     </div>
-
     <!-- parent reference -->
     <div class="form-group" ng-class="{ 'has-error' : AccountReferenceForm.$submitted && AccountReferenceForm.parent.$invalid }">
         <label class="control-label" translate>ACCOUNT.REFERENCE.PARENT_REFERENCE</label>
@@ -122,6 +121,54 @@
           <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
         </div>
       </div>
+
+    <!-- Credit balance -->
+    <hr>
+    <div class="form-group">
+      <label class="control-label text-danger" translate>FORM.LABELS.CREDIT_BALANCE</label>
+
+      <ui-select
+        multiple="true" 
+        name="accountsCreditBalance" 
+        ng-model="AccountReferenceModalCtrl.accountReference.accountsCreditBalance"
+        close-on-select="false"
+        append-to-body="true">
+
+        <ui-select-match placeholder="{{ 'FORM.SELECT.ACCOUNTS' | translate }}">
+          <span>{{$item.number}}</span>
+        </ui-select-match>
+
+        <ui-select-choices repeat="account.id as account in AccountReferenceModalCtrl.accounts | filter:{hrlabel: $select.search}">
+          <strong ng-bind-html="account.number | highlight:$select.search"></strong>
+          <span ng-bind-html="account.label | highlight:$select.search"></span>
+        </ui-select-choices>
+      </ui-select>
+    </div>
+
+    <!-- Debit balance -->
+    <div class="form-group">
+      <label class="control-label text-danger" translate>FORM.LABELS.DEBIT_BALANCE</label>
+
+      <ui-select
+        multiple="true" 
+        name="accountsDebitBalance" 
+        ng-model="AccountReferenceModalCtrl.accountReference.accountsDebitBalance"
+        close-on-select="false"
+        append-to-body="true">
+
+        <ui-select-match placeholder="{{ 'FORM.SELECT.ACCOUNTS' | translate }}">
+          <span>{{$item.number}}</span>
+        </ui-select-match>
+
+        <ui-select-choices repeat="account.id as account in AccountReferenceModalCtrl.accounts | filter:{hrlabel: $select.search}">
+          <strong ng-bind-html="account.number | highlight:$select.search"></strong>
+          <span ng-bind-html="account.label | highlight:$select.search"></span>
+        </ui-select-choices>
+      </ui-select>
+    </div>
+    <hr>
+
+
   </div>
 
   <div class="modal-footer">
