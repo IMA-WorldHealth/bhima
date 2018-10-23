@@ -7,9 +7,9 @@
   </div>
 
   <div class="modal-body">
-    <div ng-show="!$ctrl.fiscal.locked">
+    <div ng-if="!$ctrl.fiscal.locked">
 
-      <h2 class="text-center">
+      <h2 class="text-center" style="margin-top:0">
         <span translate>FORM.INFO.CLOSE_FISCAL_YEAR</span>
         <br>
         <strong>{{ $ctrl.fiscal.label }}</strong>
@@ -19,7 +19,11 @@
         <div ng-switch-default>
 
           <!--exploitation grid-->
-          <div id="exploitation-grid" style="max-height: 250px;" ui-grid="$ctrl.gridOptions" ui-grid-resize-columns>
+          <div id="exploitation-grid"
+            style="max-height: 450px;"
+            ui-grid="$ctrl.gridOptions"
+            ui-grid-auto-resize
+            ui-grid-resize-columns>
             <bh-grid-loading-indicator
               loading-state="$ctrl.loading"
               empty-state="$ctrl.gridOptions.data.length === 0">
@@ -29,17 +33,17 @@
           <!-- first step  -->
           <dl class="well well-sm dl-horizontal">
             <!-- incomes  -->
-            <h4 class="text-success">
+            <h4>
               <dt translate>FORM.LABELS.PROFIT</dt>
-              <dd class="text-right">
+              <dd class="text-right text-success">
                 {{ $ctrl.totals.income | currency: $ctrl.currency_id }}
               </dd>
             </h4>
 
-            <!-- expenses  -->
-            <h4 style="margin: 10px 0px;" class="text-danger">
+            <!-- expenses -->
+            <h4 style="margin: 10px 0px;">
               <dt translate>FORM.LABELS.CHARGE</dt>
-              <dd class="text-right">
+              <dd class="text-right text-danger">
                 {{ $ctrl.totals.expense | currency: $ctrl.currency_id }}
               </dd>
             </h4>
@@ -55,8 +59,12 @@
             </h4>
           </dl>
 
-          <bh-account-select account-id="$ctrl.resultAccount.id" account-type-id="'1,2,3,6'" on-select-callback="$ctrl.onSelectAccount(account)"
-            label="FORM.SELECT.RESULT_ACCOUNT_SCT" exclude-title-accounts="true">
+          <bh-account-select
+            account-id="$ctrl.resultAccount.id"
+            account-type-id="'1,2,3,6'"
+            on-select-callback="$ctrl.onSelectAccount(account)"
+            label="FORM.SELECT.RESULT_ACCOUNT_SCT"
+            exclude-title-accounts="true">
           </bh-account-select>
         </div>
 
@@ -73,7 +81,7 @@
       </div>
     </div>
 
-    <div ng-show="$ctrl.fiscal.locked">
+    <div ng-if="$ctrl.fiscal.locked">
       <h1 class="text-center">
         <strong>{{ $ctrl.fiscal.label }}</strong>
         <br>

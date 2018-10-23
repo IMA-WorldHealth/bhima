@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-.controller('HomeController', HomeController);
+  .controller('HomeController', HomeController);
 
 HomeController.$inject = [
   'CurrencyService', 'ExchangeRateService', 'SessionService',
@@ -18,7 +18,7 @@ HomeController.$inject = [
  * services and information.
  */
 function HomeController(Currencies, Rates, Session, Notify, Fiscal, DashboardService, Moment) {
-  var vm = this;
+  const vm = this;
 
   vm.today = new Date();
 
@@ -69,14 +69,14 @@ function HomeController(Currencies, Rates, Session, Notify, Fiscal, DashboardSer
       });
 
       // @TODO Method for selecting primary exchange
-      vm.primaryExchange = vm.currencies[0];
+      [vm.primaryExchange] = vm.currencies;
 
     })
     .catch(Notify.handleError);
 
-  Fiscal.fiscalYearDate({ date : vm.today })
-    .then(function (year) {
-      vm.year = year[0];
+  Fiscal.getFiscalYearByDate({ date : vm.today })
+    .then(([year]) => {
+      vm.year = year;
       vm.year.percentage *= 100;
     })
     .catch(Notify.handleError);
