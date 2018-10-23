@@ -44,28 +44,6 @@ exports.getCurrentPath = function getCurrentPath() {
     });
 };
 
-/**
- * Adds screenshot to mochawesome test context on failure
- */
-// eslint-disable-next-line
-exports.takeScreenshotOnFailure = function takeScreenshotOnFailure(done) {
-  if (this.currentTest.state === 'failed') {
-    const filePath = path.resolve(
-      process.cwd(),
-      `../test/artifacts/screenshots/${this.currentTest.title.concat('.png')}`
-    );
-
-    browser.takeScreenshot()
-      .then(png => fs.writeFile(filePath, Buffer.from(png, 'base64')))
-      .then(() => {
-        addContext(this, filePath);
-        done();
-      });
-  } else {
-    done();
-  }
-};
-
 // shared data
 exports.data = {
 

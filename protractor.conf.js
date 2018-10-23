@@ -25,10 +25,9 @@ const config = {
       reportName           : 'end-to-end-tests',
       reportTitle          : 'Bhima End to End Tests',
       showPassed           : false,
-      json : true,
     },
     bail : true,
-    timeout : 30000,
+    timeout : 45000, // 45 second timeout
   },
 
   // default browsers to run
@@ -72,16 +71,16 @@ if (process.env.TRAVIS_BUILD_NUMBER) {
 
   // make Travis take screenshots!
   config.mochaOpts = {
-    reporter        : 'mochawesome-screenshots',
+    reporter        : 'mochawesome',
     reporterOptions : {
       reportDir            : `${__dirname}/test/artifacts/`,
-      reportName           : `protractor-${new Date().toDateString().replace(/\s/g,'-')}-${process.env.TRAVIS_BUILD_NUMBER}`,
+      inline               : true,
+      reportName           : 'end-to-end-tests',
       reportTitle          : 'Bhima End to End Tests',
-      takePassedScreenshot : false,
-      clearOldScreenshots  : true,
+      showPassed           : false,
     },
     bail : true,
-    timeout : 30000,
+    timeout : 45000,
   };
 }
 

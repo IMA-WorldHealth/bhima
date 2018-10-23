@@ -19,7 +19,6 @@ describe('Edit Posting Journal', () => {
   const doubleClick = element => browser.actions().mouseMove(element).doubleClick().perform();
 
   before(() => helpers.navigate(path));
-  afterEach(helpers.takeScreenshotOnFailure);
 
   it('edits a transaction change an account', () => {
     GU.selectRow(gridId, 0);

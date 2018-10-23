@@ -17,7 +17,7 @@ describe('Voucher Registry', () => {
 
   describe('Search', VoucherRegistrySearch);
 
-  it(`deletes a record from the voucher registry`, () => {
+  it('deletes a record from the voucher registry', () => {
     const row = new GridRow('VO.TPA.1');
     row.dropdown().click();
     row.remove().click();
