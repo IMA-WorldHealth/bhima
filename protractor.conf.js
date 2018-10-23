@@ -1,4 +1,4 @@
-/* global by,browser, element */
+/* global browser, element, by */
 const q = require('q');
 const chai = require('chai');
 const helpers = require('./test/end-to-end/shared/helpers');
@@ -12,24 +12,22 @@ helpers.configure(chai);
 // as appropriate.
 
 const config = {
-
   specs : ['test/end-to-end/**/*.spec.js'],
 
   framework : 'mocha',
   baseUrl   : 'http://localhost:8080/',
 
   mochaOpts : {
-    reporter        : 'mochawesome-screenshots',
+    reporter        : 'mochawesome',
     reporterOptions : {
       reportDir            : `${__dirname}/test/artifacts/`,
-      reportName           : 'mochawesome-end-to-end',
+      inline               : true,
+      reportName           : 'end-to-end-tests',
       reportTitle          : 'Bhima End to End Tests',
-      takePassedScreenshot : false,
-      clearOldScreenshots  : true,
-      jsonReport           : false,
+      showPassed           : false,
     },
     bail : true,
-    timeout : 30000,
+    timeout : 45000, // 45 second timeout
   },
 
   // default browsers to run
@@ -73,16 +71,16 @@ if (process.env.TRAVIS_BUILD_NUMBER) {
 
   // make Travis take screenshots!
   config.mochaOpts = {
-    reporter        : 'mochawesome-screenshots',
+    reporter        : 'mochawesome',
     reporterOptions : {
       reportDir            : `${__dirname}/test/artifacts/`,
-      reportName           : `protractor-${new Date().toDateString().replace(/\s/g,'-')}-${process.env.TRAVIS_BUILD_NUMBER}`,
+      inline               : true,
+      reportName           : 'end-to-end-tests',
       reportTitle          : 'Bhima End to End Tests',
-      takePassedScreenshot : false,
-      clearOldScreenshots  : true,
+      showPassed           : false,
     },
     bail : true,
-    timeout : 30000,
+    timeout : 45000,
   };
 }
 
