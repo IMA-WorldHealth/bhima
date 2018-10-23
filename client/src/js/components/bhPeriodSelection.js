@@ -48,7 +48,8 @@ function PeriodSelectionController(Fiscal, moment) {
     Fiscal.getPeriods(fiscalYearId)
       .then(periods => {
         periods.forEach(period => {
-          period.hrLabel = moment(period.start_date).format('MMMM YYYY');
+          // add 2 days to make sure timezone is accounted for
+          period.hrLabel = moment(period.start_date).add(2, 'days').format('MMMM YYYY');
         });
 
         $ctrl.periods = periods.filter(p => p.number !== 0);
