@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 GeneralLedgerController.$inject = [
   'GeneralLedgerService', 'SessionService', 'NotifyService', 'uiGridConstants',
-  'ReceiptModal', 'GridColumnService', 'GridStateService', '$state',
+  'GridColumnService', 'GridStateService', '$state',
   'LanguageService', 'ModalService', 'FiscalService', 'bhConstants',
   'AccountService',
 ];
@@ -15,7 +15,7 @@ GeneralLedgerController.$inject = [
  * This controller is responsible for displaying accounts and their balances
  */
 function GeneralLedgerController(
-  GeneralLedger, Session, Notify, uiGridConstants, Receipts, Columns,
+  GeneralLedger, Session, Notify, uiGridConstants, Columns,
   GridState, $state, Languages, Modal, Fiscal, bhConstants, Accounts
 ) {
   const vm = this;
@@ -25,6 +25,7 @@ function GeneralLedgerController(
   vm.accounts = [];
   vm.toggleHideTitleAccount = toggleHideTitleAccount;
   vm.hideTitleAccount = false;
+
   const fields = [
     'balance',
     'balance0',
@@ -136,7 +137,6 @@ function GeneralLedgerController(
   function onRegisterApiFn(api) {
     vm.gridApi = api;
     api.grid.registerDataChangeCallback(expandOnSetData);
-    window.uiGrid = api;
   }
 
   function expandOnSetData(grid) {
@@ -175,9 +175,25 @@ function GeneralLedgerController(
   // Hide when possible title account
   function hideTitles() {
     if (vm.hideTitleAccount) {
-      vm.gridOptions.data = vm.accounts.filter(isNotTitleAccount);
+      const dataview = vm.accounts.filter(isNotTitleAccount);
+
+      // squash the tree level so that no grouping occurs
+      dataview.forEach(account => {
+        account.$$treeLevel = 0;
+      });
+
+      vm.gridOptions.data = dataview;
+
+      // vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.OPTIONS);
     } else {
-      vm.gridOptions.data = vm.accounts;
+      const dataview = vm.accounts;
+
+      // restore the tree level to restore grouping
+      dataview.forEach(account => {
+        account.$$treeLevel = account._$$treeLevel;
+      });
+
+      vm.gridOptions.data = dataview;
     }
   }
 
@@ -185,9 +201,15 @@ function GeneralLedgerController(
     accounts.forEach(preProcessAccounts);
     Accounts.order(accounts);
 
+    // cache each accounts $$treeLevel
+    accounts.forEach(account => {
+      account._$$treeLevel = account.$$treeLevel;
+    });
+
     renameGidHeaders(vm.year);
     vm.gridOptions.data = accounts;
     vm.accounts = accounts;
+
     hideTitles();
   }
 
