@@ -30,7 +30,6 @@ function ClosingFYModalCtrl(
     bhConstants.accounts.TITLE,
   ];
 
-
   function customAggregationFn(columnDefs, column) {
     if (vm.AccountTree) {
       const root = vm.AccountTree.getRootNode();

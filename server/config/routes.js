@@ -236,6 +236,7 @@ exports.configure = function configure(app) {
   app.get('/fiscal/:id/opening_balance', fiscal.getOpeningBalance);
   app.post('/fiscal/:id/opening_balance', fiscal.setOpeningBalance);
   app.put('/fiscal/:id/closing', fiscal.closing);
+  app.get('/fiscal/:id/closing_balance', fiscal.getClosingBalance);
 
   app.get('/fiscal/:id/periods', fiscal.getPeriods);
 
