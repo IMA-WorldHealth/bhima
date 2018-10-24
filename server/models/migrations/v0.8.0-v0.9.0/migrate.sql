@@ -610,3 +610,9 @@ CREATE TABLE `department`(
 -- units
 INSERT INTO unit VALUES
 (214, 'Department management','TREE.DEPARTMENT_MANAGEMENT','Department Management', 1,'/modules/department/','/departments');
+INSERT INTO unit VALUES
+(215, 'Income Expenses by Year', 'TREE.INCOME_EXPENSE_BY_YEAR', 'The Report of income and expenses', 144, '/modules/finance/income_expense_by_year', '/reports/income_expense_by_year'),
+
+INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
+(27, 'income_expense_by_year', 'REPORT.INCOME_EXPENSE_BY_YEAR');
+  
