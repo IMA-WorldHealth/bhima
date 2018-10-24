@@ -67,6 +67,12 @@ function StockLotsController(
     },
 
     {
+      field : 'unit_cost',
+      displayName : 'STOCK.UNIT_COST',
+      headerCellFilter : 'translate',
+    },
+
+    {
       field : 'unit_type',
       width : 75,
       displayName : 'TABLE.COLUMNS.UNIT',
