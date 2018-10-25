@@ -87,9 +87,9 @@ function balanceSheetLiabilityTable() {
 function getFiscalYearDetails(fiscalYearId) {
   const bundle = {};
   /**
-   * get fiscal year details and the last period id of the fiscal year
-   * NOTA: This function get data from the period zero of the next
-   *       fiscal year
+   * This query get data from the period zero of the next
+   * fiscal year which will correspond to the ending balance of the selected
+   * fiscal year
    */
   const query = `
     SELECT 
@@ -100,33 +100,69 @@ function getFiscalYearDetails(fiscalYearId) {
       AND p.number = 0
     WHERE fy.id = ?;
   `;
+
+  /**
+   * This query help to get temporary data from the last period
+   * of the selected fiscal year which will correspond to the
+   * temporary ending balance of the selected fiscal year
+   */
+  const queryTemporary = `
+    SELECT 
+      p.id AS period_id, fy.end_date,
+      fy.id, fy.label, fy.previous_fiscal_year_id 
+    FROM fiscal_year fy 
+    JOIN period p ON p.fiscal_year_id = fy.id 
+      AND p.number = (SELECT MAX(per.number) FROM period per WHERE per.fiscal_year_id = ?)
+    WHERE fy.id = ?;
+  `;
+
+  /**
+   * this query helps to get information about the selected fiscal year and
+   * the previous fiscal year
+   */
   const queryDetails = `
     SELECT 
       cur.id, cur.label AS current_fiscal_year, cur.start_date, cur.end_date,
-      pre.label AS previous_fiscal_year
+      pre.id AS previous_fiscal_id, pre.label AS previous_fiscal_year
     FROM fiscal_year cur 
     LEFT JOIN fiscal_year pre ON pre.id = cur.previous_fiscal_year_id
     WHERE cur.id = ?;
   `;
+
+  /**
+   * this query helps to get information about the next fiscal year
+   */
   const queryNext = `
     SELECT id FROM fiscal_year WHERE previous_fiscal_year_id = ?;
   `;
   return db.one(queryDetails, [fiscalYearId])
     .then(details => {
       bundle.details = details;
-      return db.one(queryNext, [fiscalYearId]);
+      return db.exec(queryNext, [fiscalYearId]);
     })
-    .then(nextFiscalExist => {
-      return nextFiscalExist.id ? db.one(query, [nextFiscalExist.id]) : {};
+    .then((rows) => {
+      /**
+       * get details of the next fiscal year for totals,
+       * if the next fiscal yean doesn't exists use the selected fiscal year until its last period
+       */
+      const nextFiscalYear = rows.length > 0 ? [rows] : {};
+      return nextFiscalYear.id
+        ? db.one(query, [nextFiscalYear.id]) : db.one(queryTemporary, [fiscalYearId, fiscalYearId]);
     })
     .then(fiscalYear => {
+      /**
+       * use data of the period zero of the next year as current
+       * current referes to the selected fiscal year
+       */
       bundle.current = fiscalYear;
       return fiscalYearId ? db.one(query, [fiscalYearId]) : {};
     })
     .then(previousFiscalYear => {
+      /**
+       * use data of the period zero of the selected year as previous
+       * previous referes to the fiscal year before the selected one
+       */
       bundle.previous = previousFiscalYear;
-
-      // handle fiscal year label
       return bundle;
     });
 }
