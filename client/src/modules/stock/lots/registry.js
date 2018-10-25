@@ -3,9 +3,9 @@ angular.module('bhima.controllers')
 
 StockLotsController.$inject = [
   'StockService', 'NotifyService',
-  'uiGridConstants', '$translate', 'StockModalService', 'LanguageService',
-  'GridGroupingService', 'GridStateService', 'GridColumnService',
-  'bhConstants', '$state', '$httpParamSerializer',
+  'uiGridConstants', 'StockModalService', 'LanguageService', 'GridGroupingService',
+  'GridStateService', 'GridColumnService', '$state', '$httpParamSerializer',
+  'SessionService',
 ];
 
 /**
@@ -14,8 +14,9 @@ StockLotsController.$inject = [
  */
 function StockLotsController(
   Stock, Notify,
-  uiGridConstants, $translate, Modal, Languages, Grouping,
-  GridState, Columns, bhConstants, $state, $httpParamSerializer
+  uiGridConstants, Modal, Languages, Grouping,
+  GridState, Columns, $state, $httpParamSerializer,
+  Session
 ) {
   const vm = this;
   const cacheKey = 'lot-grid';
@@ -70,6 +71,8 @@ function StockLotsController(
       field : 'unit_cost',
       displayName : 'STOCK.UNIT_COST',
       headerCellFilter : 'translate',
+      type : 'number',
+      cellFilter : 'currency: '.concat(Session.enterprise.currency_id),
     },
 
     {
