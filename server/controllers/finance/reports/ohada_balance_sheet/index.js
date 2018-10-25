@@ -27,6 +27,7 @@ const DEFAULT_PARAMS = {
   filename : 'TREE.BALANCE',
   orientation : 'landscape',
   footerRight : '[page] / [toPage]',
+  fontSize : 8,
 };
 
 const balanceSheetAssetTable = balanceSheetElement.balanceSheetAssetTable();
@@ -125,6 +126,12 @@ function document(req, res, next) {
         }
 
         // process manually totals
+
+        if (item.ref === 'AA') {
+          list = ['AX', 'AY', 'AZ'];
+          _.extend(item, aggregateReferences(list, currentReferences, previousReferences));
+        }
+
         if (item.ref === 'AD') {
           list = ['AE', 'AF', 'AG', 'AH'];
           _.extend(item, aggregateReferences(list, currentReferences, previousReferences));
@@ -145,8 +152,18 @@ function document(req, res, next) {
           _.extend(item, aggregateReferences(list, currentReferences, previousReferences));
         }
 
+        if (item.ref === 'BB') {
+          list = ['BC', 'BD', 'BE', 'BF'];
+          _.extend(item, aggregateReferences(list, currentReferences, previousReferences));
+        }
+
+        if (item.ref === 'BG') {
+          list = ['BH', 'BI', 'BJ'];
+          _.extend(item, aggregateReferences(list, currentReferences, previousReferences));
+        }
+
         if (item.ref === 'BK') {
-          list = ['BA', 'BB', 'BG', 'BH', 'BI', 'BJ'];
+          list = ['BA', 'BC', 'BD', 'BE', 'BF', 'BG', 'BH', 'BI', 'BJ'];
           _.extend(item, aggregateReferences(list, currentReferences, previousReferences));
         }
 
@@ -157,7 +174,7 @@ function document(req, res, next) {
 
         if (item.ref === 'BZ') {
           list = ['AE', 'AF', 'AG', 'AH', 'AJ', 'AK', 'AL', 'AM', 'AN', 'AP', 'AR', 'AS']
-            .concat(['BA', 'BB', 'BG', 'BH', 'BI', 'BJ', 'BQ', 'BR', 'BS', 'BU']);
+            .concat(['BA', 'BC', 'BD', 'BE', 'BF', 'BG', 'BH', 'BI', 'BJ', 'BQ', 'BR', 'BS']);
           _.extend(item, aggregateReferences(list, currentReferences, previousReferences));
         }
         return item;
@@ -174,9 +191,19 @@ function document(req, res, next) {
           item.previousNet = previous ? previous.net.balance : 0;
         }
 
-        // process manually totals
-        if (item.ref === 'CP') {
+        if (item.ref === 'CC') {
+          list = ['CD', 'CE', 'CF', 'CG'];
+          _.extend(item, aggregateReferences(list, currentReferences, previousReferences));
+        }
+
+        if (item.ref === 'CK') {
           list = ['CL', 'CM'];
+          _.extend(item, aggregateReferences(list, currentReferences, previousReferences));
+        }
+
+
+        if (item.ref === 'CP') {
+          list = ['CA', 'CB', 'CD', 'CE', 'CF', 'CH', 'CI', 'CK', 'CG', 'CL', 'CM'];
           _.extend(item, aggregateReferences(list, currentReferences, previousReferences));
         }
 
@@ -186,7 +213,7 @@ function document(req, res, next) {
         }
 
         if (item.ref === 'DG') {
-          list = ['CL', 'CM', 'DA', 'DB', 'DC', 'DD'];
+          list = ['CA', 'CB', 'CD', 'CE', 'CF', 'CH', 'CI', 'CK', 'CG', 'CL', 'CM', 'DA', 'DB', 'DC', 'DD'];
           _.extend(item, aggregateReferences(list, currentReferences, previousReferences));
         }
 
@@ -201,10 +228,9 @@ function document(req, res, next) {
         }
 
         if (item.ref === 'DZ') {
-          list = ['CL', 'CM', 'DA', 'DB', 'DC', 'DD']
+          list = ['CA', 'CB', 'CD', 'CE', 'CF', 'CH', 'CI', 'CK', 'CG', 'CL', 'CM', 'DA', 'DB', 'DC', 'DD']
             .concat(['DH', 'DI', 'DJ', 'DK', 'DL', 'DM', 'DN'])
-            .concat(['DQ', 'DR', 'DS'])
-            .concat(['DV']);
+            .concat(['DQ', 'DR', 'DS']);
           _.extend(item, aggregateReferences(list, currentReferences, previousReferences));
         }
         return item;
