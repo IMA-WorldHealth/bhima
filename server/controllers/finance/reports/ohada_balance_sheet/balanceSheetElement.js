@@ -145,7 +145,7 @@ function getFiscalYearDetails(fiscalYearId) {
        * get details of the next fiscal year for totals,
        * if the next fiscal yean doesn't exists use the selected fiscal year until its last period
        */
-      const nextFiscalYear = rows.length > 0 ? [rows] : {};
+      const nextFiscalYear = rows.length > 0 ? rows[0] : {};
       return nextFiscalYear.id
         ? db.one(query, [nextFiscalYear.id]) : db.one(queryTemporary, [fiscalYearId, fiscalYearId]);
     })
