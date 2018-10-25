@@ -18,5 +18,5 @@ describe('Posting Journal Core', () => {
   });
 
   describe('Configuration Modal', JournalConfiguration);
-  describe('Trial balance Process', TrialBalanceTest);
+  describe('Trial Balance Process', TrialBalanceTest);
 });

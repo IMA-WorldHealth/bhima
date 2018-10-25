@@ -19,6 +19,7 @@ function TrialBalanceTest() {
   it('it should post a transaction with success', () => {
     browser.refresh(); // just to uncheck the line selected previously
     journal.checkRow(6);
+
     journal.openTrialBalanceModal();
     trialBalance.submitData();
   });

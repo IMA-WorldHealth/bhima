@@ -1,5 +1,4 @@
 /* global element, by, browser */
-
 const { expect } = require('chai');
 const helpers = require('../shared/helpers');
 

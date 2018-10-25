@@ -8,7 +8,12 @@
  * tied to forms or modules.
  */
 
+// eslint-disable-next-line
 const chaiPromise = require('chai-as-promised');
+// eslint-disable-next-line
+const addContext = require('mochawesome/addContext');
+const fs = require('mz/fs');
+const path = require('path');
 
 const PATH_REGEXP = /^#!|^#|^!/g;
 
@@ -18,8 +23,8 @@ exports.random = function random(n) {
 };
 
 // wrapper for browser navigation without reloading the page
-exports.navigate = function navigate(path) {
-  const destination = path.replace(PATH_REGEXP, '');
+exports.navigate = function navigate(browserPath) {
+  const destination = browserPath.replace(PATH_REGEXP, '');
   browser.setLocation(destination);
 };
 
