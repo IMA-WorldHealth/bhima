@@ -12,7 +12,7 @@ services:
 language: node_js
 node_js:
   - "8"
-  - node
+  - "10:
 
 before_script:
   - sudo /etc/init.d/mysql restart
