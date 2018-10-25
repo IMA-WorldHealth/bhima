@@ -86,26 +86,47 @@ function balanceSheetLiabilityTable() {
 
 function getFiscalYearDetails(fiscalYearId) {
   const bundle = {};
-  // get fiscal year details and the last period id of the fiscal year
+  /**
+   * get fiscal year details and the last period id of the fiscal year
+   * NOTA: This function get data from the period zero of the next
+   *       fiscal year
+   */
   const query = `
     SELECT 
-      p.id AS period_id, p.end_date,
+      p.id AS period_id, fy.end_date,
       fy.id, fy.label, fy.previous_fiscal_year_id 
     FROM fiscal_year fy 
     JOIN period p ON p.fiscal_year_id = fy.id 
-      AND p.number = (SELECT MAX(period.number) FROM period WHERE period.fiscal_year_id = ?)
+      AND p.number = 0
     WHERE fy.id = ?;
   `;
-  return db.one(query, [fiscalYearId, fiscalYearId])
+  const queryDetails = `
+    SELECT 
+      cur.id, cur.label AS current_fiscal_year, cur.start_date, cur.end_date,
+      pre.label AS previous_fiscal_year
+    FROM fiscal_year cur 
+    LEFT JOIN fiscal_year pre ON pre.id = cur.previous_fiscal_year_id
+    WHERE cur.id = ?;
+  `;
+  const queryNext = `
+    SELECT id FROM fiscal_year WHERE previous_fiscal_year_id = ?;
+  `;
+  return db.one(queryDetails, [fiscalYearId])
+    .then(details => {
+      bundle.details = details;
+      return db.one(queryNext, [fiscalYearId]);
+    })
+    .then(nextFiscalExist => {
+      return nextFiscalExist.id ? db.one(query, [nextFiscalExist.id]) : {};
+    })
     .then(fiscalYear => {
       bundle.current = fiscalYear;
-
-      return bundle.current.previous_fiscal_year_id
-        ? db.one(query, [bundle.current.previous_fiscal_year_id, bundle.current.previous_fiscal_year_id]) : {};
+      return fiscalYearId ? db.one(query, [fiscalYearId]) : {};
     })
     .then(previousFiscalYear => {
       bundle.previous = previousFiscalYear;
 
+      // handle fiscal year label
       return bundle;
     });
 }
