@@ -122,8 +122,8 @@ function getFiscalYearDetails(fiscalYearId) {
    */
   const queryDetails = `
     SELECT 
-      cur.id, cur.label AS current_fiscal_year, cur.start_date, cur.end_date,
-      pre.id AS previous_fiscal_id, pre.label AS previous_fiscal_year
+      cur.id, cur.label AS current_fiscal_year, cur.start_date, cur.end_date, cur.locked AS current_locked,
+      pre.id AS previous_fiscal_id, pre.label AS previous_fiscal_year, pre.locked AS previous_locked
     FROM fiscal_year cur 
     LEFT JOIN fiscal_year pre ON pre.id = cur.previous_fiscal_year_id
     WHERE cur.id = ?;
@@ -143,9 +143,9 @@ function getFiscalYearDetails(fiscalYearId) {
     .then((rows) => {
       /**
        * get details of the next fiscal year for totals,
-       * if the next fiscal yean doesn't exists use the selected fiscal year until its last period
+       * if the next fiscal year doesn't exists use the selected fiscal year until its last period
        */
-      const nextFiscalYear = rows.length > 0 ? rows[0] : {};
+      const nextFiscalYear = rows.length > 0 && bundle.details.current_locked === 1 ? rows[0] : {};
       return nextFiscalYear.id
         ? db.one(query, [nextFiscalYear.id]) : db.one(queryTemporary, [fiscalYearId, fiscalYearId]);
     })

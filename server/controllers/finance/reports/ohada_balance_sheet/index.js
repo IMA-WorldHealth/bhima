@@ -235,6 +235,16 @@ function document(req, res, next) {
         return item;
       });
 
+      /**
+       * liabilities have by default a creditor sold (negative value),
+       * in order to present them correctly to users they must be converted into positive
+       * values, so for doing that we will multiply them by -1
+       */
+      liabilityTable.forEach(item => {
+        item.currentNet *= -1;
+        item.previousNet *= -1;
+      });
+
       _.merge(context, { assetTable, liabilityTable });
       return report.render(context);
     })
