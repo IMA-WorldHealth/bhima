@@ -196,7 +196,9 @@
       "SEPARATE_DEBITS_AND_CREDITS" : "Separate Debits and Credits?",
       "SEPARATE_DEBITS_AND_CREDITS_HELP" : "This option breaks out columns from a single positive or negative balance into two columns representing debits and credits.",
       "REMOVE_ZERO_ROWS" : "Hide zero rows?",
-      "REMOVE_ZERO_ROWS_HELP" : "This option will remove rows that do not have any data in them.  Produces a more compact output."
+      "REMOVE_ZERO_ROWS_HELP" : "This option will remove rows that do not have any data in them.  Produces a more compact output.",
+      "INCLUDE_CLOSING_BALANCES" : "Include Closing Balances",
+      "INCLUDE_CLOSING_BALANCES_HELP" : "This option will force the balance sheet to show the entire year's balances, including the closing balances.  Any operations made to close income and expense accounts will be reflected in the balance sheet."
     },
     "OHADA": {
       "BALANCE_SHEET" : "Balance Sheet",

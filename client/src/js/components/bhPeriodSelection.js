@@ -6,6 +6,7 @@ angular.module('bhima.components')
       fiscalYearId : '<',
       onSelectCallback : '&',
       periodId : '<?',
+      disable : '<?',
       label  : '@?',
     },
   });

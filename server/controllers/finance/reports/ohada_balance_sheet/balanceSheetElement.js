@@ -92,11 +92,11 @@ function getFiscalYearDetails(fiscalYearId) {
    * fiscal year
    */
   const query = `
-    SELECT 
+    SELECT
       p.id AS period_id, fy.end_date,
-      fy.id, fy.label, fy.previous_fiscal_year_id 
-    FROM fiscal_year fy 
-    JOIN period p ON p.fiscal_year_id = fy.id 
+      fy.id, fy.label, fy.previous_fiscal_year_id
+    FROM fiscal_year fy
+    JOIN period p ON p.fiscal_year_id = fy.id
       AND p.number = 0
     WHERE fy.id = ?;
   `;
@@ -107,11 +107,11 @@ function getFiscalYearDetails(fiscalYearId) {
    * temporary ending balance of the selected fiscal year
    */
   const queryTemporary = `
-    SELECT 
+    SELECT
       p.id AS period_id, fy.end_date,
-      fy.id, fy.label, fy.previous_fiscal_year_id 
-    FROM fiscal_year fy 
-    JOIN period p ON p.fiscal_year_id = fy.id 
+      fy.id, fy.label, fy.previous_fiscal_year_id
+    FROM fiscal_year fy
+    JOIN period p ON p.fiscal_year_id = fy.id
       AND p.number = (SELECT MAX(per.number) FROM period per WHERE per.fiscal_year_id = ?)
     WHERE fy.id = ?;
   `;
@@ -121,10 +121,10 @@ function getFiscalYearDetails(fiscalYearId) {
    * the previous fiscal year
    */
   const queryDetails = `
-    SELECT 
+    SELECT
       cur.id, cur.label AS current_fiscal_year, cur.start_date, cur.end_date, cur.locked AS current_locked,
       pre.id AS previous_fiscal_id, pre.label AS previous_fiscal_year, pre.locked AS previous_locked
-    FROM fiscal_year cur 
+    FROM fiscal_year cur
     LEFT JOIN fiscal_year pre ON pre.id = cur.previous_fiscal_year_id
     WHERE cur.id = ?;
   `;

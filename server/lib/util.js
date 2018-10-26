@@ -193,7 +193,6 @@ function convertStringToNumber(obj) {
  */
 
 function renameKeys(objs, newKeys) {
-
   const formatedKeys = _.isString(newKeys) ? JSON.parse(newKeys) : newKeys;
   if (_.isArray(objs)) {
     _.forEach(objs, (obj, index) => {

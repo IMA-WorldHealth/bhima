@@ -37,6 +37,13 @@ function BalanceReportConfigController($sce, Notify, SavedReports, AppCache, rep
     vm.reportDetails.shouldHideTitleAccounts = bool;
   };
 
+  vm.onChangeClosingBalances = bool => {
+    vm.reportDetails.includeClosingBalances = bool;
+    if (bool) {
+      delete vm.reportDetails.period_id;
+    }
+  };
+
   vm.preview = function preview(form) {
     if (form.$invalid) {
       Notify.danger('FORM.ERRORS.RECORD_ERROR');

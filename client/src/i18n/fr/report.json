@@ -197,7 +197,9 @@
       "SEPARATE_DEBITS_AND_CREDITS" : "Séparer les débits et les crédits?",
       "SEPARATE_DEBITS_AND_CREDITS_HELP" : "Cette option répartit les colonnes d'un seul solde positif ou négatif en deux colonnes représentant les débits et les crédits.",
       "REMOVE_ZERO_ROWS" : "Cacher les colonnes vide?",
-      "REMOVE_ZERO_ROWS_HELP" : "Cette option supprime les lignes qui ne contiennent aucune donnée. Produit un rapport plus compacte."
+      "REMOVE_ZERO_ROWS_HELP" : "Cette option supprime les lignes qui ne contiennent aucune donnée. Produit un rapport plus compacte.",
+      "INCLUDE_CLOSING_BALANCES" : "Inclure les soldes de clôture",
+      "INCLUDE_CLOSING_BALANCES_HELP" : "Cette option force la balance à afficher les soldes de l’année entière, y compris les soldes de clôture. Toute opération effectuée pour clôturer les comptes de produits et de charges sera reflétée dans la balance."
     },
     "OHADA": {
       "BALANCE_SHEET" : "Bilan",
