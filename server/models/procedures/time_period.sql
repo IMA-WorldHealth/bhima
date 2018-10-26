@@ -1,8 +1,8 @@
 /*
  Create Fiscal Year and Periods
 
- This procedure help to create fiscal year and fiscal year's periods
- periods include period `0` and period `13`
+This procedure help to create fiscal year and fiscal year's periods
+periods include period `0` and period `13`
 */
 
 CREATE PROCEDURE CreateFiscalYear(
@@ -34,8 +34,7 @@ CREATE PROCEDURE GetPeriodRange(
   IN periodNumberIndex SMALLINT(5),
   OUT periodStartDate DATE,
   OUT periodEndDate DATE
-)
-BEGIN
+) BEGIN
   DECLARE `innerDate` DATE;
 
   SET innerDate = (SELECT DATE_ADD(fiscalYearStartDate, INTERVAL periodNumberIndex-1 MONTH));
@@ -76,13 +75,20 @@ BEGIN
   FROM fiscal_year WHERE id = fiscalYearId;
 
   -- insert N+1 period
-  WHILE periodNumber <= fyNumberOfMonths DO
+  WHILE periodNumber <= fyNumberOfMonths + 1 DO
 
     IF periodNumber = 0 THEN
       -- Extremum periods 0 and N+1
       -- Insert periods with null dates - period id is YYYY00
       INSERT INTO period (`id`, `fiscal_year_id`, `number`, `start_date`, `end_date`, `locked`)
       VALUES (CONCAT(YEAR(fyStartDate), periodNumber), fiscalYearId, periodNumber, NULL, NULL, 0);
+
+    ELSEIF periodNumber = 13 THEN
+      -- Extremum periods N+1
+      -- Insert periods with null dates - period id is YYYY13
+      INSERT INTO period (`id`, `fiscal_year_id`, `number`, `start_date`, `end_date`, `locked`)
+      VALUES (CONCAT(YEAR(fyStartDate), periodNumber), fiscalYearId, periodNumber, NULL, NULL, 0);
+
     ELSE
       -- Normal periods
       -- Get period dates range

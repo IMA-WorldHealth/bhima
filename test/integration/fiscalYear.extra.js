@@ -111,19 +111,17 @@ describe('(/fiscal) Fiscal Year extra operations', () => {
   it('GET /fiscal/:id/periods returns periods of the given fiscal year', () => {
     return agent.get(url.concat(`/${fiscalYear2017.id}/periods`))
       .then(res => {
-        // checks if the number of returned periods equals total of periods + period 0
-        expect(res.body).to.have.length(fiscalYear2017MonthsNumber + 1);
+        // checks if the number of returned periods equals total of periods
+        // (w/o extremum periods)
+        expect(res.body).to.have.length(fiscalYear2017MonthsNumber);
 
-        // checks if each periods are returned in order of their `number`
-        // and if each period has the correct number
-        for (let i = 0; i < res.body.length; i++) {
-          expect(res.body[i].number).to.be.equal(i);
-        }
+        // sort the periods by number to make sure they are ordered
+        res.body.sort((a, b) => a.number - b.number);
 
         // pick two periods as sample, and checks their dates values
         // we pick periods which correspond to january and december
-        const jan = res.body[1];
-        const dec = res.body[12];
+        const jan = res.body[0];
+        const dec = res.body[11];
 
         expect(flatDate(jan.start_date)).to.be.equal('2017-01-01');
         expect(flatDate(jan.end_date)).to.be.equal('2017-01-31');
