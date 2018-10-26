@@ -45,8 +45,12 @@ exports.getNumberOfFiscalYears = getNumberOfFiscalYears;
 exports.getDateRangeFromPeriods = getDateRangeFromPeriods;
 exports.getPeriodsFromDateRange = getPeriodsFromDateRange;
 exports.getAccountBalancesByTypeId = getAccountBalancesByTypeId;
+
 exports.getOpeningBalance = getOpeningBalance;
+exports.getOpeningBalanceRoute = getOpeningBalanceRoute;
 exports.getClosingBalance = getClosingBalance;
+exports.getClosingBalanceRoute = getClosingBalanceRoute;
+
 exports.getFiscalYearByPeriodId = getFiscalYearByPeriodId;
 exports.getEnterpriseFiscalStart = getEnterpriseFiscalStart;
 
@@ -310,9 +314,9 @@ function getBalance(req, res, next) {
     .done();
 }
 
-function getOpeningBalance(req, res, next) {
+function getOpeningBalanceRoute(req, res, next) {
   const { id } = req.params;
-  loadOpeningBalance(id)
+  getOpeningBalance(id)
     .then(rows => {
       res.status(200).json(rows);
     })
@@ -474,12 +478,12 @@ function loadBalanceByPeriodNumber(fiscalYearId, periodNumber) {
 }
 
 /**
- * @function loadOpeningBalance
+ * @function getOpeningBalance
  *
  * @description
  * Load the opening balance of a fiscal year from period 0 of that fiscal year.
  */
-function loadOpeningBalance(fiscalYearId) {
+function getOpeningBalance(fiscalYearId) {
   return loadBalanceByPeriodNumber(fiscalYearId, 0);
 }
 
@@ -560,24 +564,38 @@ function notNullBalance(array, exception) {
 }
 
 /**
- * @method getClosingBalance
+ * @method getClosingBalanceRoute
  *
  * @description
- * Returns the closing balance for a fiscal year.
+ * Returns the closing balance for a fiscal year (http interface)
+ *
+ * GET fiscal/:id/closing
  */
-function getClosingBalance(req, res, next) {
+function getClosingBalanceRoute(req, res, next) {
   const { id } = req.params;
 
-  const sql = `
-    SELECT id FROM fiscal_year WHERE previous_fiscal_year_id = ?;
-  `;
-
-  db.exec(sql, id)
-    .then(([year]) => loadBalanceByPeriodNumber(year.id, 0))
+  getClosingBalance(id)
     .then(accounts => {
       res.status(200).json(accounts);
     })
     .catch(next);
+}
+
+/**
+ * @function getClosingBalance
+ *
+ * @description
+ * Returns the closing balance for the fiscal year.
+ *
+ */
+async function getClosingBalance(id) {
+  const sql = `
+    SELECT id FROM fiscal_year WHERE previous_fiscal_year_id = ?;
+  `;
+
+  const [year] = await db.exec(sql, id);
+
+  return loadBalanceByPeriodNumber(year.id, 0);
 }
 
 /**
@@ -619,7 +637,7 @@ function getPeriodByFiscal(fiscalYearId) {
     SELECT period.number, period.id, period.start_date, period.end_date, period.locked
     FROM period
     WHERE period.fiscal_year_id = ?
-      AND period.number <> 13
+      AND period.number <> 0
     ORDER BY period.start_date;
   `;
 

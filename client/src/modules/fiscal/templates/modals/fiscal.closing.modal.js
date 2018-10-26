@@ -153,6 +153,8 @@ function ClosingFYModalCtrl(
 
 
   function startup() {
+    vm.loading = true;
+
     Fiscal.read(fiscalYearId)
       .then(fiscal => {
         vm.fiscal = fiscal;
@@ -189,7 +191,10 @@ function ClosingFYModalCtrl(
         // compute the totals
         computeGridTotals();
       })
-      .catch(Notify.handleError);
+      .catch(Notify.handleError)
+      .finally(() => {
+        vm.loading = false;
+      });
   }
 
   function stepForward(form) {
