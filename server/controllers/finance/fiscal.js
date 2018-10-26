@@ -637,7 +637,7 @@ function getPeriodByFiscal(fiscalYearId) {
     SELECT period.number, period.id, period.start_date, period.end_date, period.locked
     FROM period
     WHERE period.fiscal_year_id = ?
-      AND period.number <> 0
+      AND period.number <> 0 AND period.number <> 13
     ORDER BY period.start_date;
   `;
 
