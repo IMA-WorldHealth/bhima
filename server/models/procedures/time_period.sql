@@ -198,13 +198,23 @@ BEGIN
   ON DUPLICATE KEY UPDATE credit = credit + VALUES(credit), debit = debit + VALUES(debit);
 
   -- copy all balances of non-income and non-expense accounts as the opening
-  -- balance of the next fiscal year
+  -- balance of the next fiscal year.  Leaving off the closing account, since it
+  -- will be migrated from period 13.
   INSERT INTO period_total
     (enterprise_id, fiscal_year_id, period_id, account_id, credit, debit)
   SELECT fyb.enterprise_id, nextFiscalYearId, nextPeriodZeroId, fyb.id,
     fyb.credit, fyb.debit
   FROM FiscalYearBalances AS fyb
-  WHERE fyb.type_id NOT IN (incomeAccountType, expenseAccountType);
+  WHERE fyb.type_id NOT IN (incomeAccountType, expenseAccountType)
+    AND fyb.id <> closingAccountId;
+
+  -- now bring over the closing account from period 13
+  INSERT INTO period_total
+    (enterprise_id, fiscal_year_id, period_id, account_id, credit, debit)
+  SELECT enterprise_id, nextFiscalYearId, nextPeriodZeroId, account_id, credit, debit
+  FROM period_total
+  WHERE period_id = currentFiscalYearPeriod13
+    AND account_id = closingAccountId;
 
   -- lock the fiscal year and associated periods
   UPDATE fiscal_year SET locked = 1 WHERE id = fiscalYearId;
