@@ -236,6 +236,13 @@ function document(req, res, next) {
       });
 
       /**
+       * displays depreciation in positive values
+       */
+      assetTable.forEach(item => {
+        item.currentAmo *= -1;
+      });
+
+      /**
        * liabilities have by default a creditor sold (negative value),
        * in order to present them correctly to users they must be converted into positive
        * values, so for doing that we will multiply them by -1

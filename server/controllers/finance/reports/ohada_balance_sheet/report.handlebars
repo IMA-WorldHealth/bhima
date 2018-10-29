@@ -20,6 +20,7 @@
           <tr style="background-color:#ddd;">
             <th>&nbsp;</th>
             <th>&nbsp;</th>
+            <th>&nbsp;</th>
             <th class="text-center" colspan="3">{{translate "REPORT.OHADA.EXERCISE"}} {{fiscalYear.details.current_fiscal_year}}</th>
             {{#if fiscalYear.details.previous_fiscal_year}}
               <th class="text-center">{{translate "REPORT.OHADA.EXERCISE"}} {{fiscalYear.details.previous_fiscal_year}}</th>
@@ -28,6 +29,7 @@
           <tr style="background-color:#ddd;">
             <th>{{translate "REPORT.OHADA.REF"}}</th>
             <th class="text-center text-uppercase">{{translate "REPORT.OHADA.ASSET"}}</th>
+            <th class="text-center text-uppercase">{{translate "REPORT.OHADA.NOTE"}}</th>
             <th class="text-center">{{translate "REPORT.OHADA.BRUT"}}</th>
             <th class="text-center">{{translate "REPORT.OHADA.ADP"}}</th>
             <th class="text-center">{{translate "REPORT.OHADA.NET"}}</th>
@@ -40,7 +42,7 @@
         <tbody>
           {{#each assetTable as | poste |}}
             <tr {{#if poste.is_title}} class="text-uppercase" style="background-color:#efefef; font-weight: bold;"{{/if}}>
-              <td>{{ poste.ref }}</td><td>{{translate poste.label }}</td>
+              <td>{{ poste.ref }}</td><td>{{translate poste.label }}</td><td class="text-center">{{ poste.note }}</td>
               <td class="text-right">{{debcred poste.currentBrut metadata.enterprise.currency_id}}</td>
               <td class="text-right">{{debcred poste.currentAmo metadata.enterprise.currency_id}}</td>
               <td class="text-right">{{debcred poste.currentNet metadata.enterprise.currency_id}}</td>
@@ -60,6 +62,7 @@
           <tr style="background-color:#ddd;">
             <th>&nbsp;</th>
             <th>&nbsp;</th>
+            <th>&nbsp;</th>
             <th class="text-center">{{translate "REPORT.OHADA.EXERCISE"}} {{fiscalYear.details.current_fiscal_year}}</th>
             {{#if fiscalYear.details.previous_fiscal_year}}
               <th class="text-center">{{translate "REPORT.OHADA.EXERCISE"}} {{fiscalYear.details.previous_fiscal_year}}</th>
@@ -68,6 +71,7 @@
           <tr style="background-color:#ddd;">
             <th>{{translate "REPORT.OHADA.REF"}}</th>
             <th class="text-center text-uppercase">{{translate "REPORT.OHADA.LIABILITY"}}</th>
+            <th class="text-center text-uppercase">{{translate "REPORT.OHADA.NOTE"}}</th>
             <th class="text-center">{{translate "REPORT.OHADA.NET"}}</th>
             {{#if fiscalYear.details.previous_fiscal_year}}
               <th class="text-center">{{translate "REPORT.OHADA.NET"}}</th>
@@ -78,7 +82,7 @@
         <tbody>
           {{#each liabilityTable as | poste |}}
             <tr {{#if poste.is_title}} class="text-uppercase" style="background-color:#efefef; font-weight: bold;"{{/if}}>
-              <td>{{ poste.ref }}</td><td>{{translate poste.label }}</td>
+              <td>{{ poste.ref }}</td><td>{{translate poste.label }}</td><td class="text-center">{{ poste.note }}</td>
               <td class="text-right">{{debcred poste.currentNet metadata.enterprise.currency_id}}</td>
               {{#if ../fiscalYear.details.previous_fiscal_year}}
                 <td class="text-right">{{debcred poste.previousNet metadata.enterprise.currency_id}}</td>
