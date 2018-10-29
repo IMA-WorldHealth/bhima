@@ -39,9 +39,6 @@ function BalanceReportConfigController($sce, Notify, SavedReports, AppCache, rep
 
   vm.onChangeClosingBalances = bool => {
     vm.reportDetails.includeClosingBalances = bool;
-    if (bool) {
-      delete vm.reportDetails.period_id;
-    }
   };
 
   vm.preview = function preview(form) {

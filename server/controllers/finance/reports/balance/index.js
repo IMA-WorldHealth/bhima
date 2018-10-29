@@ -15,7 +15,6 @@ const _ = require('lodash');
 const db = require('../../../../lib/db');
 const Tree = require('../../../../lib/Tree');
 const ReportManager = require('../../../../lib/ReportManager');
-const Fiscal = require('../../../finance/fiscal');
 
 // report template
 const TEMPLATE = './server/controllers/finance/reports/balance/report.handlebars';
@@ -65,14 +64,13 @@ function document(req, res, next) {
 
   const currencyId = req.session.enterprise.currency_id;
 
-  // either get full year or partial year.
-  const promise = context.includeClosingBalances
-    ? getBalanceForWholeYear(params.fiscal_id, currencyId)
-    : getBalanceForPartialYear(params.period_id, currencyId);
-
-  promise
-    .then(({ period, accounts, totals }) => {
-      _.merge(context, { period, totals });
+  getPeriodFromParams(params.fiscal_id, params.period_id, context.includeClosingBalances)
+    .then(period => {
+      _.merge(context, { period });
+      return getBalanceForFiscalYear(period, currencyId);
+    })
+    .then(({ accounts, totals }) => {
+      _.merge(context, { accounts, totals });
       return computeBalanceTree(accounts, totals, context, context.shouldPruneEmptyRows);
     })
     .then(({ accounts, totals }) => {
@@ -91,7 +89,33 @@ function document(req, res, next) {
 }
 
 /**
- * @function getBalanceForPartialYear
+ * @function getPeriodFromParams
+ *
+ * @description
+ * This normalizes the options of fiscal year, period id, and including closing
+ * balances to make them all return the same kind of value - a period object.
+ * If the user chooses to include the closing balances, it goes all the way to period
+ * 13, otherwise, it limits itself to the period chosen.
+ */
+function getPeriodFromParams(fiscalYearId, periodId, includeClosingBalances = false) {
+  const sql = `
+    SELECT p.id, p.start_date, p.end_date, p.fiscal_year_id, p.number,
+      fy.start_date AS fiscalYearStart, fy.end_date AS fiscalYearEnd
+    FROM period p JOIN fiscal_year fy ON p.fiscal_year_id = fy.id
+  `;
+
+  // if we should include the closing balances, go all the way to period 13.
+  if (includeClosingBalances) {
+    const query = `${sql} WHERE fy.id = ? AND p.number = 13;`;
+    return db.one(query, fiscalYearId);
+  }
+
+  const query = `${sql} WHERE p.id = ?;`;
+  return db.one(query, periodId);
+}
+
+/**
+ * @function getBalanceForFiscalYear
  *
  * @description
  * This function constructs the period totals for part of a fiscal year.  It
@@ -101,16 +125,7 @@ function document(req, res, next) {
  * @param {Number} periodId - the period id of the period to stop at
  * @param {Number} currencyId - the currencyId to render
  */
-async function getBalanceForPartialYear(periodId, currencyId) {
-  const getFiscalSQL = `
-    SELECT p.id, p.start_date, p.end_date, p.fiscal_year_id, p.number,
-      fy.start_date AS fiscalYearStart, fy.end_date AS fiscalYearEnd
-    FROM period p JOIN fiscal_year fy ON p.fiscal_year_id = fy.id
-    WHERE p.id = ?;
-  `;
-
-  const period = await db.one(getFiscalSQL, [periodId]);
-
+async function getBalanceForFiscalYear(period, currencyId) {
   const sql = `
     SELECT a.id, a.number, a.label, a.type_id, a.label, a.parent,
       a.type_id = ${TITLE_ID} AS isTitleAccount,
@@ -133,8 +148,7 @@ async function getBalanceForPartialYear(periodId, currencyId) {
         SUM(IF(p.number <= ?, pt.debit - pt.credit, 0)) AS "after"
       FROM period_total AS pt
         JOIN period p ON pt.period_id = p.id
-        JOIN account ac ON pt.account_id = ac.id
-      WHERE pt.fiscal_year_id = ?
+      WHERE pt.fiscal_year_id = ? AND p.fiscal_year_id = ?
       GROUP BY pt.account_id
     )s ON a.id = s.account_id
     ORDER BY a.number;
@@ -157,8 +171,7 @@ async function getBalanceForPartialYear(periodId, currencyId) {
         SUM(IF(p.number <= ?, pt.debit - pt.credit, 0)) AS "after"
       FROM period_total AS pt
         JOIN period p ON pt.period_id = p.id
-        JOIN account ac ON pt.account_id = ac.id
-      WHERE pt.fiscal_year_id = ?
+      WHERE pt.fiscal_year_id = ? AND p.fiscal_year_id = ?
       GROUP BY pt.account_id
     )s;
   `;
@@ -166,110 +179,20 @@ async function getBalanceForPartialYear(periodId, currencyId) {
   const params = _.fill(Array(4), period.number);
 
   const [accounts, totals] = await Promise.all([
-    db.exec(sql, [currencyId, ...params, period.fiscal_year_id]),
-    db.one(aggregateSQL, [...params, period.fiscal_year_id]),
+    db.exec(sql, [currencyId, ...params, period.fiscal_year_id, period.fiscal_year_id]),
+    db.one(aggregateSQL, [...params, period.fiscal_year_id, period.fiscal_year_id]),
   ]);
 
   _.merge(totals, { currencyId });
 
-  return { period, accounts, totals };
+  return { accounts, totals };
 }
-
-/**
- * @function getBalanceForWholeYear
- *
- * @description
- * This function constructs the period totals for the entire fiscal
- * year, including the closing balances.
- *
- * @param {Number} fiscalYearId - the fiscal year id of the year
- * @param {Number} currencyId - the currencyId to render
- */
-async function getBalanceForWholeYear(fiscalYearId, currencyId) {
-  const [opening, closing, [period]] = await Promise.all([
-    Fiscal.getOpeningBalance(fiscalYearId),
-    Fiscal.getClosingBalance(fiscalYearId),
-    Fiscal.getPeriodByFiscal(fiscalYearId),
-  ]);
-
-  // combine datasets into a single line of accounts
-  let accounts = {};
-
-  const keys = ['id', 'number', 'label', 'type_id', 'label', 'locked', 'hidden', 'parent'];
-  opening.forEach(account => {
-    accounts[account.id] = _.pick(account, keys);
-
-    // add the opening balance values
-    accounts[account.id].before = account.balance;
-    accounts[account.id].before_debit = account.debit;
-    accounts[account.id].before_credit = account.credit;
-  });
-
-  closing.forEach(account => {
-    const isAccountMissing = _.isUndefined(accounts[account.id]);
-
-    if (isAccountMissing) {
-      accounts[account.id] = _.pick(account, keys);
-    }
-
-    // add the closing balance values
-    accounts[account.id].after = account.balance;
-    accounts[account.id].after_debit = account.debit;
-    accounts[account.id].after_credit = account.credit;
-  });
-
-  // short hand to default to 0 if values are undefined;
-  const minus = (a = 0, b = 0) => a - b;
-
-  // compute the movements and convert accounts into an array
-  _.forEach(accounts, (account) => {
-    account.during = minus(account.after, account.before);
-    account.during_credit = minus(account.after_credit, account.before_credit);
-    account.during_debit = minus(account.after_debit, account.before_debit);
-    account.isTitleAccount = account.type_id === TITLE_ID ? 1 : 0;
-  });
-
-  accounts = _.values(accounts);
-
-  // set up the totals
-  let totals = {
-    before : 0,
-    before_debit : 0,
-    before_credit : 0,
-    during : 0,
-    during_debit : 0,
-    during_credit : 0,
-    after : 0,
-    after_debit : 0,
-    after_credit : 0,
-  };
-
-  const totalKeys = [
-    'before', 'before_debit', 'before_credit', 'during', 'during_debit',
-    'during_credit', 'after', 'after_debit', 'after_credit',
-  ];
-
-  // compute the totals
-  totals = accounts.reduce((total, account) => {
-    totalKeys.forEach(key => {
-      total[key] += account[key];
-    });
-
-    return total;
-  }, totals);
-
-  _.merge(totals, { currencyId });
-
-  return { period, accounts, totals };
-}
-
 
 /**
  * @function computeBalanceTree
  *
  * @description
- * This i
- *
+ * This function creates a tree for summing balances for each account.
  */
 function computeBalanceTree(accounts, totals, context, shouldPrune) {
   // if the after result is 0, that means no movements occurred
