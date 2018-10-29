@@ -210,6 +210,7 @@
       "ADP_LONG" : "Amortissements, Dépréciations, Provisions",
       "NET" : "Net",
       "EXERCISE" : "Exercice",
+      "NOTE": "Note",
       "REF_DESCRIPTION" : {
         "AD" : "Immobilisations incorporelles",
         "AE" : "Frais de développement",

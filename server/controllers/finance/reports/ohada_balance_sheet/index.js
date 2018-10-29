@@ -58,7 +58,6 @@ function document(req, res, next) {
   balanceSheetElement.getFiscalYearDetails(params.fiscal_id)
     .then(fiscalYear => {
       _.merge(context, { fiscalYear });
-
       const currentPeriodReferences = AccountReference.computeAllAccountReference(fiscalYear.current.period_id);
       const currentConditionalReferences = conditionalReferences.compute(fiscalYear.current.period_id);
 
@@ -126,7 +125,6 @@ function document(req, res, next) {
         }
 
         // process manually totals
-
         if (item.ref === 'AA') {
           list = ['AX', 'AY', 'AZ'];
           _.extend(item, aggregateReferences(list, currentReferences, previousReferences));
@@ -191,6 +189,7 @@ function document(req, res, next) {
           item.previousNet = previous ? previous.net.balance : 0;
         }
 
+        // process manually totals
         if (item.ref === 'CC') {
           list = ['CD', 'CE', 'CF', 'CG'];
           _.extend(item, aggregateReferences(list, currentReferences, previousReferences));
@@ -234,6 +233,23 @@ function document(req, res, next) {
           _.extend(item, aggregateReferences(list, currentReferences, previousReferences));
         }
         return item;
+      });
+
+      /**
+       * displays depreciation in positive values
+       */
+      assetTable.forEach(item => {
+        item.currentAmo *= -1;
+      });
+
+      /**
+       * liabilities have by default a creditor sold (negative value),
+       * in order to present them correctly to users they must be converted into positive
+       * values, so for doing that we will multiply them by -1
+       */
+      liabilityTable.forEach(item => {
+        item.currentNet *= -1;
+        item.previousNet *= -1;
       });
 
       _.merge(context, { assetTable, liabilityTable });

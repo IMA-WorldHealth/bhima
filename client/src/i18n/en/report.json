@@ -209,6 +209,7 @@
       "ADP_LONG" : "Amortissements, Dépréciations, Provisions",
       "NET" : "Net",
       "EXERCISE" : "Fiscal Year",
+      "NOTE": "Note",
       "REF_DESCRIPTION" : {
         "AD": "Intangible assets",
         "AE": "Development costs",
