@@ -13,8 +13,8 @@ FiscalClosingBalanceController.$inject = [
  * This controller is responsible for handling the closing balance of a fiscal year.
  */
 function FiscalClosingBalanceController(
-  $state, Accounts, Fiscal, Notify, Session, uiGridConstants
-  , bhConstants, Tree
+  $state, Accounts, Fiscal, Notify, Session, uiGridConstants,
+  bhConstants, Tree
 ) {
 
   const vm = this;

@@ -15,4 +15,5 @@
 "SET_OPENING_BALANCES":"Configuration de la balance d'ouverture",
 "SOLD_DESCRIPTION":"Cette opération va solder tous les comptes d'exploitation (charge et profit), et le résultat sera verser vers le compte de résultat sélectionné.",
 "TITLE":"Années Fiscales",
+"ACCOUNT_HAS_VALUE":"Le compte de séléctioné n'est pas vide, le montant courant du compte est ",
 "UPDATE_FISCAL_YEAR":"Mettre à jour l'année fiscale"}}

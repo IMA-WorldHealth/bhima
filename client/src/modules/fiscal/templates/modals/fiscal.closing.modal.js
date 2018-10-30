@@ -5,11 +5,11 @@ angular.module('bhima.controllers')
 ClosingFYModalCtrl.$inject = [
   'NotifyService', 'FiscalService', 'ModalService', 'SessionService',
   '$uibModalInstance', 'data', 'uiGridConstants',
-  'bhConstants', 'TreeService',
+  'bhConstants', 'TreeService', 'AccountService',
 ];
 
 // The closing fiscal year controller
-function ClosingFYModalCtrl(Notify, Fiscal, Modal, Session, Instance, Data, uiGridConstants, bhConstants, Tree) {
+function ClosingFYModalCtrl(Notify, Fiscal, Modal, Session, Instance, Data, uiGridConstants, bhConstants, Tree, Accounts) {
   const vm = this;
   const fiscalYearId = Data.id;
 
@@ -99,6 +99,12 @@ function ClosingFYModalCtrl(Notify, Fiscal, Modal, Session, Instance, Data, uiGr
 
   function onSelectAccount(account) {
     vm.resultAccount = account;
+
+    Accounts.getAnnualBalance(vm.resultAccount.id, fiscalYearId)
+      .then(response => {
+        vm.accountBalance = response;
+      })
+      .catch(Notify.handleError);
   }
 
   const debitSumFn = Tree.common.sumOnProperty('debit');
@@ -245,9 +251,8 @@ function ClosingFYModalCtrl(Notify, Fiscal, Modal, Session, Instance, Data, uiGr
     const accountTypeFilter = node => !acceptedAccountTypes.includes(node.type_id);
     const emptyTitleAccountFilter = node => (node.isTitleAccount && node.children.length === 0);
 
-    const pruneFn = node =>
-      emptyTitleAccountFilter(node) ||
-      accountTypeFilter(node);
+    const pruneFn = node => emptyTitleAccountFilter(node)
+      || accountTypeFilter(node);
 
     let settled = tree.prune(pruneFn);
     while (settled > 0) {

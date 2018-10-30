@@ -26,6 +26,7 @@
  */
 
 const q = require('q');
+const debug = require('debug')('accounts');
 const db = require('../../../lib/db');
 const { NotFound, BadRequest } = require('../../../lib/errors');
 const types = require('./types');
@@ -35,7 +36,6 @@ const importing = require('./import');
 const Periods = require('../../../lib/period');
 const AccountExtras = require('./extra');
 const Fiscal = require('../fiscal');
-const debug = require('debug')('accounts');
 const FilterParser = require('../../../lib/filter');
 
 /**
@@ -226,11 +226,44 @@ function getBalance(req, res, next) {
   lookupAccount(id)
     .then(() => db.exec(sql, params))
     .then((rows) => {
-      const response = (rows.length === 0) ?
-        {
+      const response = (rows.length === 0)
+        ? {
           account_id : id, debit : 0, credit : 0, balance : 0,
-        } :
-        rows[0];
+        }
+        : rows[0];
+
+      res.status(200).json(response);
+    })
+    .catch(next)
+    .done();
+}
+
+/**
+ * @method getAnnualBalance
+ *
+ * GET /accounts/:id/balance/:fiscalYearId
+ */
+function getAnnualBalance(req, res, next) {
+  const { id, fiscalYearId } = req.params;
+
+  const query = `
+    SELECT 
+      pt.account_id,
+      IFNULL(SUM(pt.debit), 0) AS debit, 
+      IFNULL(SUM(pt.credit), 0) AS credit,
+      IFNULL(SUM(pt.debit - pt.credit), 0) AS balance 
+    FROM period_total pt 
+    WHERE pt.account_id = ? AND pt.fiscal_year_id = ?
+    GROUP BY pt.account_id;
+  `;
+  lookupAccount(id)
+    .then(() => db.exec(query, [id, fiscalYearId]))
+    .then((rows) => {
+      const response = (rows.length === 0)
+        ? {
+          account_id : id, debit : 0, credit : 0, balance : 0,
+        }
+        : rows[0];
 
       res.status(200).json(response);
     })
@@ -317,8 +350,8 @@ function lookupAccount(id) {
   // Added the restriction to prevent the display when downloading the chart
   // of accounts in Excel, CSV or PDF of the hidden accounts
 
-  sql += id ? ' WHERE a.id = ? ORDER BY CAST(a.number AS CHAR(15)) ASC;' :
-    ' WHERE a.hidden = 0 ORDER BY CAST(a.number AS CHAR(15)) ASC;';
+  sql += id ? ' WHERE a.id = ? ORDER BY CAST(a.number AS CHAR(15)) ASC;'
+    : ' WHERE a.hidden = 0 ORDER BY CAST(a.number AS CHAR(15)) ASC;';
 
   return db.exec(sql, id)
     .then(rows => {
@@ -403,3 +436,4 @@ exports.categories = categories;
 exports.references = references;
 exports.processAccountDepth = processAccountDepth;
 exports.importing = importing;
+exports.getAnnualBalance = getAnnualBalance;
