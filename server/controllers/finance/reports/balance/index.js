@@ -94,8 +94,8 @@ function document(req, res, next) {
  * @description
  * This normalizes the options of fiscal year, period id, and including closing
  * balances to make them all return the same kind of value - a period object.
- * If the user chooses to include the closing balances, it goes all the way to period
- * 13, otherwise, it limits itself to the period chosen.
+ * If the user chooses to include the closing balances, it goes all the way to
+ * the closing period, otherwise, it limits itself to the period chosen.
  */
 function getPeriodFromParams(fiscalYearId, periodId, includeClosingBalances = false) {
   const sql = `
@@ -104,10 +104,13 @@ function getPeriodFromParams(fiscalYearId, periodId, includeClosingBalances = fa
     FROM period p JOIN fiscal_year fy ON p.fiscal_year_id = fy.id
   `;
 
-  // if we should include the closing balances, go all the way to period 13.
+  // if we should include the closing balances, go all the way to the closing period
   if (includeClosingBalances) {
-    const query = `${sql} WHERE fy.id = ? AND p.number = 13;`;
-    return db.one(query, fiscalYearId);
+    return db.one('SELECT MAX(period.number) as number FROM period WHERE fiscal_year_id = ?', fiscalYearId)
+      .then(closingPeriod => {
+        const query = `${sql} WHERE fy.id = ? AND p.number = ?;`;
+        return db.one(query, [fiscalYearId, closingPeriod.number]);
+      });
   }
 
   const query = `${sql} WHERE p.id = ?;`;

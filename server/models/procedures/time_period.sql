@@ -83,7 +83,7 @@ BEGIN
       INSERT INTO period (`id`, `fiscal_year_id`, `number`, `start_date`, `end_date`, `locked`)
       VALUES (CONCAT(YEAR(fyStartDate), periodNumber), fiscalYearId, periodNumber, NULL, NULL, 0);
 
-    ELSEIF periodNumber = 13 THEN
+    ELSEIF periodNumber = fyNumberOfMonths + 1 THEN
       -- Extremum periods N+1
       -- Insert periods with null dates - period id is YYYY13
       INSERT INTO period (`id`, `fiscal_year_id`, `number`, `start_date`, `end_date`, `locked`)
@@ -129,7 +129,7 @@ BEGIN
   DECLARE NoSubsequentFiscalYear CONDITION FOR SQLSTATE '45010';
   DECLARE nextFiscalYearId MEDIUMINT UNSIGNED;
   DECLARE nextPeriodZeroId MEDIUMINT UNSIGNED;
-  DECLARE currentFiscalYearPeriod13 INT;
+  DECLARE currentFiscalYearClosingPeriod INT;
 
   DECLARE incomeAccountType SMALLINT;
   DECLARE expenseAccountType SMALLINT;
@@ -146,8 +146,8 @@ BEGIN
   );
 
   -- get the current fiscal year date
-  SET currentFiscalYearPeriod13 = (
-    SELECT period.id FROM period WHERE period.fiscal_year_id = fiscalYearId AND period.number = 13 LIMIT 1
+  SET currentFiscalYearClosingPeriod = (
+    SELECT period.id FROM period WHERE period.fiscal_year_id = fiscalYearId ORDER BY period.number DESC LIMIT 1
   );
 
   IF nextFiscalYearId IS NULL THEN
@@ -175,22 +175,22 @@ BEGIN
     GROUP BY a.id
     ORDER BY a.number;
 
-  -- reverse the income/expense accounts in period 13 into the closing account
+  -- reverse the income/expense accounts in closing period into the closing account
   -- If they have a debit balance, credit them the difference, if they have a
   -- credit balance, debit them the difference
   INSERT INTO period_total
     (enterprise_id, fiscal_year_id, period_id, account_id, credit, debit)
-  SELECT fyb.enterprise_id, fyb.fiscal_year_id, currentFiscalYearPeriod13, fyb.id,
+  SELECT fyb.enterprise_id, fyb.fiscal_year_id, currentFiscalYearClosingPeriod, fyb.id,
     IF(fyb.debit > fyb.credit, fyb.debit - fyb.credit, 0),
     IF(fyb.debit < fyb.credit, fyb.credit - fyb.debit, 0)
   FROM FiscalYearBalances AS fyb
   WHERE fyb.type_id IN (incomeAccountType, expenseAccountType);
 
   -- sum all income/expense accounts from the fiscal year into the closing
-  -- account in period 13
+  -- account in the closing period
   INSERT INTO period_total
     (enterprise_id, fiscal_year_id, period_id, account_id, credit, debit)
-  SELECT fyb.enterprise_id, fyb.fiscal_year_id, currentFiscalYearPeriod13,
+  SELECT fyb.enterprise_id, fyb.fiscal_year_id, currentFiscalYearClosingPeriod,
     closingAccountId, SUM(fyb.credit) credit, SUM(fyb.debit) debit
   FROM FiscalYearBalances AS fyb
   WHERE fyb.type_id IN (incomeAccountType, expenseAccountType)
@@ -199,7 +199,7 @@ BEGIN
 
   -- copy all balances of non-income and non-expense accounts as the opening
   -- balance of the next fiscal year.  Leaving off the closing account, since it
-  -- will be migrated from period 13.
+  -- will be migrated from the closing period.
   INSERT INTO period_total
     (enterprise_id, fiscal_year_id, period_id, account_id, credit, debit)
   SELECT fyb.enterprise_id, nextFiscalYearId, nextPeriodZeroId, fyb.id,
@@ -208,12 +208,12 @@ BEGIN
   WHERE fyb.type_id NOT IN (incomeAccountType, expenseAccountType)
     AND fyb.id <> closingAccountId;
 
-  -- now bring over the closing account from period 13
+  -- now bring over the closing account from the closing period
   INSERT INTO period_total
     (enterprise_id, fiscal_year_id, period_id, account_id, credit, debit)
   SELECT enterprise_id, nextFiscalYearId, nextPeriodZeroId, account_id, credit, debit
   FROM period_total
-  WHERE period_id = currentFiscalYearPeriod13
+  WHERE period_id = currentFiscalYearClosingPeriod
     AND account_id = closingAccountId;
 
   -- lock the fiscal year and associated periods
