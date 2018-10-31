@@ -215,8 +215,8 @@ function list(req, res, next) {
     .then(journalResults => {
       const hasEmptyResults = journalResults.length === 0;
 
-      const hasFullTransactions = showFullTransactions &&
-        Boolean(Number(showFullTransactions));
+      const hasFullTransactions = showFullTransactions
+        && Boolean(Number(showFullTransactions));
 
       // only do a second pass if we have data and have requested the full transaction
       // records
@@ -459,7 +459,8 @@ function transformColumns(rows, newRecord, transactionToEdit, setFiscalData) {
     // NOTE: To update the amounts, we need to have the enterprise_id, currency_id, and date.
     // These are attained from the old transaction (transactionToEdit) or the changed transaction.
 
-    if (row.debit_equiv) {
+    const isDebitEquivNonZero = row.debit_equiv !== 0;
+    if (!_.isUndefined(row.debit_equiv)) {
       // if the date has been updated, use the new date - otherwise default to the old transaction date
       const transDate = new Date(row.trans_date ? row.trans_date : transactionDate);
 
@@ -469,7 +470,7 @@ function transformColumns(rows, newRecord, transactionToEdit, setFiscalData) {
       assignments.push((result) => {
         const [{ amount }] = result;
 
-        if (!amount) {
+        if (!amount && isDebitEquivNonZero) {
           throw new BadRequest(
             'Missing or corrupt exchange rate for rows',
             'POSTING_JOURNAL.ERRORS.MISSING_EXCHANGE_RATE'
@@ -480,7 +481,8 @@ function transformColumns(rows, newRecord, transactionToEdit, setFiscalData) {
       });
     }
 
-    if (row.debit) {
+    const isDebitNonZero = row.debit !== 0;
+    if (!_.isUndefined(row.debit)) {
       // if the date has been updated, use the new date - otherwise default to the old transaction date
       const transDate = new Date(row.trans_date ? row.trans_date : transactionDate);
 
@@ -490,7 +492,7 @@ function transformColumns(rows, newRecord, transactionToEdit, setFiscalData) {
       assignments.push((result) => {
         const [{ amount }] = result;
 
-        if (!amount) {
+        if (!amount && isDebitNonZero) {
           throw new BadRequest(
             'Missing or corrupt exchange rate for rows',
             'POSTING_JOURNAL.ERRORS.MISSING_EXCHANGE_RATE'
@@ -501,7 +503,8 @@ function transformColumns(rows, newRecord, transactionToEdit, setFiscalData) {
       });
     }
 
-    if (row.credit_equiv) {
+    const isCreditEquivNonZero = row.credit_equiv !== 0;
+    if (!_.isUndefined(row.credit_equiv)) {
       // if the date has been updated, use the new date - otherwise default to the old transaction date
       const transDate = new Date(row.trans_date ? row.trans_date : transactionDate);
 
@@ -511,17 +514,19 @@ function transformColumns(rows, newRecord, transactionToEdit, setFiscalData) {
       assignments.push((result) => {
         const [{ amount }] = result;
 
-        if (!amount) {
+        if (!amount && isCreditEquivNonZero) {
           throw new BadRequest(
             'Missing or corrupt exchange rate for rows',
             'POSTING_JOURNAL.ERRORS.MISSING_EXCHANGE_RATE'
           );
         }
+
         row.credit = amount;
       });
     }
 
-    if (row.credit) {
+    const isCreditNonZero = row.credit !== 0;
+    if (!_.isUndefined(row.credit)) {
       // if the date has been updated, use the new date - otherwise default to the old transaction date
       const transDate = new Date(row.trans_date ? row.trans_date : transactionDate);
 
@@ -531,12 +536,13 @@ function transformColumns(rows, newRecord, transactionToEdit, setFiscalData) {
       assignments.push((result) => {
         const [{ amount }] = result;
 
-        if (!amount) {
+        if (!amount && isCreditNonZero) {
           throw new BadRequest(
             'Missing or corrupt exchange rate for rows',
             'POSTING_JOURNAL.ERRORS.MISSING_EXCHANGE_RATE'
           );
         }
+
         row.credit_equiv = amount;
       });
     }
@@ -552,9 +558,10 @@ function transformColumns(rows, newRecord, transactionToEdit, setFiscalData) {
     }
   });
 
-  promises = databaseRequests.map((request, index) =>
-    db.exec(request, databaseValues[index])
-      .then(results => assignments[index](results)));
+  promises = databaseRequests.map(
+    (request, index) => db.exec(request, databaseValues[index])
+      .then(results => assignments[index](results))
+  );
 
   return q.all(promises)
     .then(() => rows);
