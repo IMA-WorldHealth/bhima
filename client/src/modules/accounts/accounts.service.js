@@ -19,6 +19,7 @@ function AccountService(Api, bhConstants, HttpCache) {
   service.label = label;
 
   service.getBalance = getBalance;
+  service.getAnnualBalance = getAnnualBalance;
   service.getOpeningBalanceForPeriod = getOpeningBalanceForPeriod;
   service.getChildren = getChildren;
   service.filterTitleAccounts = filterTitleAccounts;
@@ -82,6 +83,12 @@ function AccountService(Api, bhConstants, HttpCache) {
 
   function getBalance(accountId, opt) {
     const url = baseUrl.concat(accountId, '/balance');
+    return service.$http.get(url, opt)
+      .then(service.util.unwrapHttpResponse);
+  }
+
+  function getAnnualBalance(accountId, fiscalYearId, opt) {
+    const url = baseUrl.concat(accountId, '/balance/', fiscalYearId);
     return service.$http.get(url, opt)
       .then(service.util.unwrapHttpResponse);
   }

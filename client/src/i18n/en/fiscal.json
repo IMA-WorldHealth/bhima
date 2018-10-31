@@ -15,4 +15,5 @@
 "SET_OPENING_BALANCES":"Set Opening Balances",
 "SOLD_DESCRIPTION":"This operation will sold all exploitation accounts (charge and profit) and the result will be put into the selected result account",
 "TITLE":"Fiscal years",
+"ACCOUNT_HAS_VALUE":"The selected account is not empty, the current amount of the account is ",
 "UPDATE_FISCAL_YEAR":"Update fiscal year"}}

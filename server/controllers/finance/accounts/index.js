@@ -26,6 +26,7 @@
  */
 
 const q = require('q');
+const debug = require('debug')('accounts');
 const db = require('../../../lib/db');
 const { NotFound, BadRequest } = require('../../../lib/errors');
 const types = require('./types');
@@ -35,8 +36,8 @@ const importing = require('./import');
 const Periods = require('../../../lib/period');
 const AccountExtras = require('./extra');
 const Fiscal = require('../fiscal');
-const debug = require('debug')('accounts');
 const FilterParser = require('../../../lib/filter');
+const utility = require('./utility');
 
 /**
  * @method create
@@ -76,9 +77,9 @@ function update(req, res, next) {
 
   delete data.id;
 
-  lookupAccount(id)
+  utility.lookupAccount(id)
     .then(() => db.exec(sql, [data, id]))
-    .then(() => lookupAccount(id))
+    .then(() => utility.lookupAccount(id))
     .then((account) => {
       res.status(200).json(account);
     })
@@ -175,7 +176,7 @@ function list(req, res, next) {
  * GET /accounts/:id
  */
 function detail(req, res, next) {
-  lookupAccount(req.params.id)
+  utility.lookupAccount(req.params.id)
     .then((account) => {
       res.status(200).json(account);
     })
@@ -223,14 +224,47 @@ function getBalance(req, res, next) {
     ) AS t GROUP BY t.account_id;
   `;
 
-  lookupAccount(id)
+  utility.lookupAccount(id)
     .then(() => db.exec(sql, params))
     .then((rows) => {
-      const response = (rows.length === 0) ?
-        {
+      const response = (rows.length === 0)
+        ? {
           account_id : id, debit : 0, credit : 0, balance : 0,
-        } :
-        rows[0];
+        }
+        : rows[0];
+
+      res.status(200).json(response);
+    })
+    .catch(next)
+    .done();
+}
+
+/**
+ * @method getAnnualBalance
+ *
+ * GET /accounts/:id/balance/:fiscalYearId
+ */
+function getAnnualBalance(req, res, next) {
+  const { id, fiscalYearId } = req.params;
+
+  const query = `
+    SELECT 
+      pt.account_id,
+      IFNULL(SUM(pt.debit), 0) AS debit, 
+      IFNULL(SUM(pt.credit), 0) AS credit,
+      IFNULL(SUM(pt.debit - pt.credit), 0) AS balance 
+    FROM period_total pt 
+    WHERE pt.account_id = ? AND pt.fiscal_year_id = ?
+    GROUP BY pt.account_id;
+  `;
+  utility.lookupAccount(id)
+    .then(() => db.exec(query, [id, fiscalYearId]))
+    .then((rows) => {
+      const response = (rows.length === 0)
+        ? {
+          account_id : id, debit : 0, credit : 0, balance : 0,
+        }
+        : rows[0];
 
       res.status(200).json(response);
     })
@@ -292,42 +326,6 @@ function getOpeningBalanceForPeriod(req, res, next) {
     })
     .catch(next)
     .done();
-}
-
-/**
- * @method lookupAccount
- *
- * @description
- * Returns the account details matching the id. If there is no matching account,
- * the function throws a NotFound() error.
- *
- * @param {Number} id - the id of the accout to fetch in the database
- * @returns {Promise} - a promise resolving to the account object.
- */
-function lookupAccount(id) {
-  let sql = `
-    SELECT a.id, a.enterprise_id, a.locked, a.cc_id, a.pc_id, a.created,
-      a.classe, a.reference_id, a.number, a.label, a.parent, a.type_id, at.type,
-      at.translation_key, cc.text AS cost_center_text, pc.text AS profit_center_text
-    FROM account AS a JOIN account_type AS at ON a.type_id = at.id
-    LEFT JOIN cost_center AS cc ON a.cc_id = cc.id
-    LEFT JOIN profit_center AS pc ON a.pc_id = pc.id
-    `;
-
-  // Added the restriction to prevent the display when downloading the chart
-  // of accounts in Excel, CSV or PDF of the hidden accounts
-
-  sql += id ? ' WHERE a.id = ? ORDER BY CAST(a.number AS CHAR(15)) ASC;' :
-    ' WHERE a.hidden = 0 ORDER BY CAST(a.number AS CHAR(15)) ASC;';
-
-  return db.exec(sql, id)
-    .then(rows => {
-      if (rows.length === 0) {
-        throw new NotFound(`Could not find account with id ${id}.`);
-      }
-
-      return id ? rows[0] : rows;
-    });
 }
 
 
@@ -394,7 +392,7 @@ exports.update = update;
 exports.detail = detail;
 exports.getBalance = getBalance;
 exports.types = types;
-exports.lookupAccount = lookupAccount;
+exports.lookupAccount = utility.lookupAccount;
 exports.processAccountDepth = processAccountDepth;
 exports.list = list;
 exports.remove = remove;
@@ -403,3 +401,4 @@ exports.categories = categories;
 exports.references = references;
 exports.processAccountDepth = processAccountDepth;
 exports.importing = importing;
+exports.getAnnualBalance = getAnnualBalance;
