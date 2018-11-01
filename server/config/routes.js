@@ -370,6 +370,7 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/creditors/aged', financeReports.creditors.aged);
   app.get('/reports/finance/purchases', financeReports.purchases.report);
   app.get('/reports/finance/ohada_balance_sheet', financeReports.ohadaBalanceSheet.document);
+  app.get('/reports/finance/ohada_profit_loss', financeReports.ohadaProfitLoss.document);
   app.get('/reports/finance/account_reference', financeReports.accountReference.report);
 
   app.get('/reports/finance/employeeStanding/', financeReports.employee);

@@ -1,0 +1,71 @@
+{{> head title="TREE.OHADA_RESULT_ACCOUNT"}}
+
+<body>
+
+<div class="container">
+  {{> header}}
+
+  <!-- body  -->
+  <div class="row">
+    <div class="col-xs-12">
+
+      <!-- page title  -->
+      <h2 class="text-center text-uppercase">
+        {{translate 'REPORT.OHADA.PROFIT_LOSS'}}
+      </h2>
+
+      <h5 class="text-center text-uppercase">{{ ./fiscalYear.current.label }}</h5>
+      
+
+      {{!-- assets --}}
+      <table class="table table-condensed table-report" style="margin-bottom: 15px;">
+        <thead>
+          <tr style="background-color:#ddd;">
+            <th>&nbsp;</th>
+            <th colspan="3">&nbsp;</th>
+            <th class="text-center">{{translate "REPORT.OHADA.EXERCISE"}} {{date fiscalYear.current.end_date}}</th>
+            {{#if fiscalYear.previous.end_date}}
+              <th class="text-center">{{translate "REPORT.OHADA.EXERCISE"}} {{date fiscalYear.previous.end_date}}</th>
+            {{/if}}
+          </tr>
+          <tr style="background-color:#ddd;">
+            <th>{{translate "REPORT.OHADA.REF"}}</th>
+            <th class="text-center text-uppercase">{{translate "FORM.LABELS.LABEL"}}</th>
+            <th></th>
+            <th class="text-center">{{ translate "FORM.LABELS.NOTES"}}</th>
+            <th class="text-center">{{translate "REPORT.OHADA.NET"}}</th>
+            {{#if fiscalYear.previous.end_date}}
+              <th class="text-center">{{translate "REPORT.OHADA.NET"}}</th>
+            {{/if}}
+          </tr>
+        </thead>
+        
+        <tbody>
+          {{#each assetTable as | poste |}}
+            <tr {{#if poste.is_title}} class="text-uppercase" style="background-color:#efefef; font-weight: bold;"{{/if}}>
+              <td>{{ poste.ref }}</td>
+              <td>{{translate poste.label }}</td>
+              <td class="text-center">{{ poste.sign }}</td>
+              <td class="text-center">{{poste.note }}</td>
+
+              <td class="text-right">{{debcred poste.currentNet metadata.enterprise.currency_id}}</td>
+              {{#if ../fiscalYear.previous.end_date}}
+                <td class="text-right">{{debcred poste.previousNet metadata.enterprise.currency_id}}</td>
+              {{/if}}
+            </tr>
+          {{/each}}
+
+          <!--
+          <tr>
+            <td colspan="4" class="text-right"><b>{{ translate 'FORM.LABELS.TOTAL'}}</b></td>
+            <td  class="text-right">{{ debcred totals.currentNet metadata.enterprise.currency_id }}</td>
+            <td  class="text-right">{{ debcred totals.previousNet metadata.enterprise.currency_id }}</td>
+          </tr>
+          -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+</body>

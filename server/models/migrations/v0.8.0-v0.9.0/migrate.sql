@@ -577,3 +577,21 @@ DELIMITER ;
 -- to account for certain account references that have a debit or credit balance
 ALTER TABLE `account_reference_item` ADD COLUMN `credit_balance` TINYINT(1) NOT NULL DEFAULT 0;
 ALTER TABLE `account_reference_item` ADD COLUMN `debit_balance` TINYINT(1) NOT NULL DEFAULT 0;
+
+
+
+
+
+
+
+
+INSERT INTO unit VALUES
+(213, '[OHADA] Compte de resultat','TREE.OHADA_RESULT_ACCOUNT','',144,'/modules/reports/ohada_profit_loss','/reports/ohada_profit_loss');
+
+INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
+(26, 'ohada_profit_loss', 'TREE.OHADA_RESULT_ACCOUNT');
+
+INSERT INTO `account_reference`(`id`, `abbr`, `description`, `parent`, `is_amo_dep`) VALUES (1,'RA','Achat de marchandises',NULL,0),(2,'RB','Variation de stocks de marchandises',NULL,0),(3,'RC','Achat de matières premières et fournitures liées',NULL,0),(4,'RD','Variation de stocks de matières premières et fournitures liées',NULL,0),(5,'RE','Autres achats',NULL,0),(6,'RH','Services exterieurs',NULL,0),(7,'RI','Impôts et taxes',NULL,0),(8,'RJ','Autres charges',NULL,0),(9,'RK','Charges de personnel',NULL,0),(10,'RL','Dotations aux amortissements, aux provisions et dépréciation',NULL,0),(11,'RP','Autres charges HAO',NULL,0),(12,'RS','Impôts sur le résultat',NULL,0),(20,'TA','Ventes de marchandises',NULL,0),(21,'TD','Produits accessoires',NULL,0),(22,'TE','Production stockée (ou déstockage)',NULL,0),(23,'TF','Production immobilisée',NULL,0),(24,'TL','Reprises de provisions et déciations financières',NULL,0),(25,'TS','Reprises de provisions',NULL,0),(26,'TT','Transport de charges',NULL,0),(35,'TB','Vente des produits fabriqués',NULL,0),(36,'TC','Travaux, service vendus',NULL,0),(37,'TG','Subventions d\'exploitation',NULL,0),(38,'TH','Autres produits',NULL,0),(39,'TI','Transferts de charges d\'exploitationon',NULL,0),(40,'RF','Variation de stock d\'autres approvisionnements',NULL,0),(41,'RG','Transports',NULL,0),(42,'TJ','Reprises d\'amortissements, provisions et dépréciations',NULL,0),(43,'TK','Revenus financiers et assimilés',NULL,0),(44,'TM','Transferts de charges financières',NULL,0),(45,'RM','Frais financiers et charges assimilées',NULL,0),(46,'RN','Dotation aux provisions et aux dépréciations financières',NULL,0),(47,'TN','Produits des cessions d\'immobilisations',NULL,0),(48,'TO','Autres produits HAO',NULL,0),(49,'RO','Valeurs comptables de cession d\'immobilisations',NULL,0),(51,'RQ','Participation des travailleurs',NULL,0);
+
+INSERT INTO `account_reference_item`(`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) 
+VALUES (1,1,2958,0,0,0),(5,5,2996,0,0,0),(6,5,3012,0,0,0),(24,20,3282,0,0,0),(27,23,3346,0,0,0),(29,25,3390,0,0,0),(30,25,3382,0,0,0),(31,26,3385,0,0,0),(45,2,2973,0,0,0),(55,22,3351,0,0,0),(56,3,2967,0,0,0),(57,4,2984,0,0,0),(58,36,3292,0,0,0),(59,37,3321,0,0,0),(60,38,3355,0,0,0),(61,39,3385,0,0,0),(62,40,2987,0,0,0),(63,41,3036,0,0,0),(64,6,3058,0,0,0),(65,6,3100,0,0,0),(66,7,3132,0,0,0),(67,8,3158,0,0,0),(68,9,3178,0,0,0),(69,42,3390,0,0,0),(70,10,3234,0,0,0),(71,10,3260,0,0,0),(75,43,3372,0,0,0),(76,24,3407,0,0,0),(77,44,3387,0,0,0),(78,45,3218,0,0,0),(79,46,3277,0,0,0),(80,47,3415,0,0,0),(81,48,3425,0,0,0),(82,48,3436,0,0,0),(83,48,3442,0,0,0),(84,49,3411,0,0,0),(85,11,3419,0,0,0),(86,11,3431,0,0,0),(87,12,3447,0,0,0);
