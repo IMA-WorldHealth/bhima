@@ -11,8 +11,8 @@ services:
 
 language: node_js
 node_js:
-  - "8"
-  -  10
+  - lts/dubnium
+  - node
 
 before_script:
   - sudo /etc/init.d/mysql restart
