@@ -7,7 +7,7 @@
  * - Added additional transaction ID column to the `posting_journal`
  *   and `general_ledger` tables
  * - Added additional index to `posting_journal` and `general_ledger` tables
-**/
+*/
 
 -- SQL Function delimiter definition
 DELIMITER $$ -- Add integer reference numbers to posting journal and general ledger
@@ -100,7 +100,6 @@ INSERT IGNORE INTO `report` (`id`, `report_key`, `title_key`) VALUES
   ===================================
   NOTE : Please create `account_reference` and `account_reference_item` tables first
 */
-
 
 DROP TABLE IF EXISTS `account_reference_item`;
 DROP TABLE IF EXISTS `account_reference`;
@@ -200,8 +199,8 @@ BEGIN
 
   -- cursor declaration
   DECLARE stage_missing_movement_document_cursor CURSOR FOR
-  	SELECT temp.document_uuid
-	FROM missing_movement_document as temp;
+    SELECT temp.document_uuid
+  FROM missing_movement_document as temp;
 
   -- variables for the cursor
   DECLARE CONTINUE HANDLER FOR NOT FOUND SET v_finished = 1;
@@ -364,7 +363,7 @@ ALTER TABLE `general_ledger` ADD INDEX `reference_uuid` (`reference_uuid`);
 INSERT INTO unit VALUES
 (210, 'Stock value Report','TREE.STOCK_VALUE','',144,'/modules/reports/stock_value','/reports/stock_value');
 
-INSERT INTO `report` (`id`, `report_key`, `title_key`) 
+INSERT INTO `report` (`id`, `report_key`, `title_key`)
 VALUES  (23, 'stock_value', 'TREE.STOCK_VALUE');
 
 
@@ -382,7 +381,7 @@ BEGIN
   DECLARE _documentReference VARCHAR(100);
   DECLARE _date DATETIME;
 
-  DECLARE curs1 CURSOR FOR 
+  DECLARE curs1 CURSOR FOR
     SELECT DISTINCT m.is_exit, l.unit_cost, m.quantity, m.date, dm.text AS documentReference
     FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
@@ -392,7 +391,7 @@ BEGIN
     LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
     WHERE i.uuid = _inventory_uuid AND m.depot_uuid = _depot_uuid AND DATE(m.date) <= _dateTo
     ORDER BY m.created_at ASC;
-      
+
   DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 
   DROP TEMPORARY TABLE IF EXISTS stage_movement;
@@ -414,7 +413,7 @@ BEGIN
 
   OPEN curs1;
     read_loop: LOOP
-    
+
     SET mvtIsExit = 0;
     SET mvtQtt = 0;
     SET mvtUnitCost = 0;
@@ -422,7 +421,7 @@ BEGIN
     SET newQuantity = 0;
     SET newValue = 0;
     SET newCost = 0;
-    
+
     FETCH curs1 INTO mvtIsExit, mvtUnitCost, mvtQtt, _date, _documentReference;
       IF done THEN
         LEAVE read_loop;
@@ -432,15 +431,15 @@ BEGIN
         SET stockQtt = stockQtt - mvtQtt;
         SET stockValue = stockQtt * stockUnitCost;
       ELSE
-	      SET newQuantity = mvtQtt + stockQtt;
+        SET newQuantity = mvtQtt + stockQtt;
         SET newValue = (mvtUnitCost * mvtQtt) + stockValue;
         SET newCost = newValue / IF(newQuantity = 0, 1, newQuantity);
 
         SET stockQtt = newQuantity;
         SET stockUnitCost = newCost;
-        SET stockValue = newValue;         
+        SET stockValue = newValue;
       END IF;
-       
+
       INSERT INTO stage_movement VALUES(
         mvtIsExit, mvtQtt, stockQtt, mvtQtt*mvtUnitCost, _date, _documentReference,  stockQtt, stockUnitCost, stockValue
       );
@@ -465,9 +464,9 @@ BEGIN
   DECLARE _date DATETIME;
   DECLARE _inventory_uuid BINARY(16);
   DECLARE _iteration, _newStock INT;
-  
-  
-  DECLARE curs1 CURSOR FOR 
+
+
+  DECLARE curs1 CURSOR FOR
     SELECT DISTINCT i.uuid, m.is_exit, l.unit_cost, m.quantity, m.date, dm.text AS documentReference
     FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
@@ -477,7 +476,7 @@ BEGIN
     LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
     WHERE m.depot_uuid = _depot_uuid AND DATE(m.date) <= _dateTo
     ORDER BY i.text, m.created_at ASC;
-      
+
   DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 
   DROP TEMPORARY TABLE IF EXISTS stage_movement;
@@ -498,7 +497,7 @@ BEGIN
 
   OPEN curs1;
     read_loop: LOOP
-    
+
     SET mvtIsExit = 0;
     SET mvtQtt = 0;
     SET mvtUnitCost = 0;
@@ -506,19 +505,19 @@ BEGIN
     SET newQuantity = 0;
     SET newValue = 0;
     SET newCost = 0;
-    
+
     FETCH curs1 INTO _inventory_uuid, mvtIsExit, mvtUnitCost, mvtQtt, _date, _documentReference;
       IF done THEN
         LEAVE read_loop;
       END IF;
-      
+
       SELECT COUNT(inventory_uuid) INTO _newStock FROM stage_movement WHERE inventory_uuid = _inventory_uuid;
       -- set stock qtt, value and unit cost for a new inventory
-      IF _newStock = 0 THEN 
+      IF _newStock = 0 THEN
         SET stockQtt= 0;
         SET stockUnitCost = 0;
         SET stockValue = 0;
-        SET _iteration = 0; 
+        SET _iteration = 0;
       END IF;
 
       -- stock exit movement, the stock quantity decreases
@@ -527,15 +526,15 @@ BEGIN
         SET stockValue = stockQtt * stockUnitCost;
       ELSE
        -- stock exit movement, the stock quantity increases
-	      SET newQuantity = mvtQtt + stockQtt;
+        SET newQuantity = mvtQtt + stockQtt;
         SET newValue = (mvtUnitCost * mvtQtt) + stockValue;
         SET newCost = newValue / IF(newQuantity = 0, 1, newQuantity);
 
         SET stockQtt = newQuantity;
         SET stockUnitCost = newCost;
-        SET stockValue = newValue;         
+        SET stockValue = newValue;
       END IF;
-       
+
       INSERT INTO stage_movement VALUES(
         _inventory_uuid, mvtIsExit, mvtQtt, stockQtt, mvtQtt*mvtUnitCost, _date, _documentReference,  stockQtt, stockUnitCost, stockValue, _iteration
       );
@@ -571,30 +570,23 @@ END$$
 
 DELIMITER ;
 
-
 -- BY lomamech 2018-10-19
--- Added the credit_balance and debit_balance property 
+-- Added the credit_balance and debit_balance property
 -- to account for certain account references that have a debit or credit balance
 ALTER TABLE `account_reference_item` ADD COLUMN `credit_balance` TINYINT(1) NOT NULL DEFAULT 0;
 ALTER TABLE `account_reference_item` ADD COLUMN `debit_balance` TINYINT(1) NOT NULL DEFAULT 0;
 
-
-
-
-
-
-
-
 INSERT INTO unit VALUES
-(213, '[OHADA] Compte de resultat','TREE.OHADA_RESULT_ACCOUNT','',144,'/modules/reports/ohada_profit_loss','/reports/ohada_profit_loss');
+  (213, '[OHADA] Compte de resultat','TREE.OHADA_RESULT_ACCOUNT','',144,'/modules/reports/ohada_profit_loss','/reports/ohada_profit_loss');
 
 INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
-(26, 'ohada_profit_loss', 'TREE.OHADA_RESULT_ACCOUNT');
+  (26, 'ohada_profit_loss', 'TREE.OHADA_RESULT_ACCOUNT');
 
 INSERT INTO `account_reference`(`id`, `abbr`, `description`, `parent`, `is_amo_dep`) VALUES (1,'RA','Achat de marchandises',NULL,0),(2,'RB','Variation de stocks de marchandises',NULL,0),(3,'RC','Achat de matières premières et fournitures liées',NULL,0),(4,'RD','Variation de stocks de matières premières et fournitures liées',NULL,0),(5,'RE','Autres achats',NULL,0),(6,'RH','Services exterieurs',NULL,0),(7,'RI','Impôts et taxes',NULL,0),(8,'RJ','Autres charges',NULL,0),(9,'RK','Charges de personnel',NULL,0),(10,'RL','Dotations aux amortissements, aux provisions et dépréciation',NULL,0),(11,'RP','Autres charges HAO',NULL,0),(12,'RS','Impôts sur le résultat',NULL,0),(20,'TA','Ventes de marchandises',NULL,0),(21,'TD','Produits accessoires',NULL,0),(22,'TE','Production stockée (ou déstockage)',NULL,0),(23,'TF','Production immobilisée',NULL,0),(24,'TL','Reprises de provisions et déciations financières',NULL,0),(25,'TS','Reprises de provisions',NULL,0),(26,'TT','Transport de charges',NULL,0),(35,'TB','Vente des produits fabriqués',NULL,0),(36,'TC','Travaux, service vendus',NULL,0),(37,'TG','Subventions d\'exploitation',NULL,0),(38,'TH','Autres produits',NULL,0),(39,'TI','Transferts de charges d\'exploitationon',NULL,0),(40,'RF','Variation de stock d\'autres approvisionnements',NULL,0),(41,'RG','Transports',NULL,0),(42,'TJ','Reprises d\'amortissements, provisions et dépréciations',NULL,0),(43,'TK','Revenus financiers et assimilés',NULL,0),(44,'TM','Transferts de charges financières',NULL,0),(45,'RM','Frais financiers et charges assimilées',NULL,0),(46,'RN','Dotation aux provisions et aux dépréciations financières',NULL,0),(47,'TN','Produits des cessions d\'immobilisations',NULL,0),(48,'TO','Autres produits HAO',NULL,0),(49,'RO','Valeurs comptables de cession d\'immobilisations',NULL,0),(51,'RQ','Participation des travailleurs',NULL,0);
 
-INSERT INTO `account_reference_item`(`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) 
+INSERT INTO `account_reference_item`(`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`)
 VALUES (1,1,2958,0,0,0),(5,5,2996,0,0,0),(6,5,3012,0,0,0),(24,20,3282,0,0,0),(27,23,3346,0,0,0),(29,25,3390,0,0,0),(30,25,3382,0,0,0),(31,26,3385,0,0,0),(45,2,2973,0,0,0),(55,22,3351,0,0,0),(56,3,2967,0,0,0),(57,4,2984,0,0,0),(58,36,3292,0,0,0),(59,37,3321,0,0,0),(60,38,3355,0,0,0),(61,39,3385,0,0,0),(62,40,2987,0,0,0),(63,41,3036,0,0,0),(64,6,3058,0,0,0),(65,6,3100,0,0,0),(66,7,3132,0,0,0),(67,8,3158,0,0,0),(68,9,3178,0,0,0),(69,42,3390,0,0,0),(70,10,3234,0,0,0),(71,10,3260,0,0,0),(75,43,3372,0,0,0),(76,24,3407,0,0,0),(77,44,3387,0,0,0),(78,45,3218,0,0,0),(79,46,3277,0,0,0),(80,47,3415,0,0,0),(81,48,3425,0,0,0),(82,48,3436,0,0,0),(83,48,3442,0,0,0),(84,49,3411,0,0,0),(85,11,3419,0,0,0),(86,11,3431,0,0,0),(87,12,3447,0,0,0);
+
 /*
 department management
 */
@@ -609,10 +601,175 @@ CREATE TABLE `department`(
 
 -- units
 INSERT INTO unit VALUES
-(214, 'Department management','TREE.DEPARTMENT_MANAGEMENT','Department Management', 1,'/modules/department/','/departments');
-INSERT INTO unit VALUES
-(215, 'Income Expenses by Year', 'TREE.INCOME_EXPENSE_BY_YEAR', 'The Report of income and expenses', 144, '/modules/finance/income_expense_by_year', '/reports/income_expense_by_year'),
+  (214, 'Department management','TREE.DEPARTMENT_MANAGEMENT','Department Management', 1,'/modules/department/','/departments'),
+  (215, 'Income Expenses by Year', 'TREE.INCOME_EXPENSE_BY_YEAR', 'The Report of income and expenses', 144, '/modules/finance/income_expense_by_year', '/reports/income_expense_by_year');
 
 INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
-(27, 'income_expense_by_year', 'REPORT.INCOME_EXPENSE_BY_YEAR');
-  
+  (27, 'income_expense_by_year', 'REPORT.INCOME_EXPENSE_BY_YEAR');
+
+-- add the fiscal year changes
+-- author: @jniles
+DELIMITER $$
+
+DROP PROCEDURE CreatePeriods$$
+CREATE PROCEDURE CreatePeriods(
+  IN fiscalYearId MEDIUMINT(8)
+)
+BEGIN
+  DECLARE periodId MEDIUMINT(8);
+  DECLARE periodNumber SMALLINT(5) DEFAULT 0;
+  DECLARE periodStartDate DATE;
+  DECLARE periodEndDate DATE;
+  DECLARE periodLocked TINYINT(1);
+
+  DECLARE fyEnterpriseId SMALLINT(5);
+  DECLARE fyNumberOfMonths MEDIUMINT(8) DEFAULT 0;
+  DECLARE fyLabel VARCHAR(50);
+  DECLARE fyStartDate DATE;
+  DECLARE fyEndDate DATE;
+  DECLARE fyPreviousFYId SMALLINT(5);
+  DECLARE fyLocked TINYINT(1);
+  DECLARE fyCreatedAt TIMESTAMP;
+  DECLARE fyUpdatedAt TIMESTAMP;
+  DECLARE fyUserId MEDIUMINT(5);
+  DECLARE fyNote TEXT;
+
+
+  -- get the fiscal year informations
+  SELECT
+    enterprise_id, number_of_months, label, start_date, end_date,
+    previous_fiscal_year_id, locked, created_at, updated_at, user_id, note
+    INTO
+    fyEnterpriseId, fyNumberOfMonths, fyLabel, fyStartDate, fyEndDate,
+    fyPreviousFYId, fyLocked, fyCreatedAt, fyUpdatedAt, fyUserId, fyNote
+  FROM fiscal_year WHERE id = fiscalYearId;
+
+  -- insert N+1 period
+  WHILE periodNumber <= fyNumberOfMonths + 1 DO
+
+    IF periodNumber = 0 THEN
+      -- Extremum periods 0 and N+1
+      -- Insert periods with null dates - period id is YYYY00
+      INSERT INTO period (`id`, `fiscal_year_id`, `number`, `start_date`, `end_date`, `locked`)
+      VALUES (CONCAT(YEAR(fyStartDate), periodNumber), fiscalYearId, periodNumber, NULL, NULL, 0);
+
+    ELSEIF periodNumber = fyNumberOfMonths + 1 THEN
+      -- Extremum periods N+1
+      -- Insert periods with null dates - period id is YYYY13
+      INSERT INTO period (`id`, `fiscal_year_id`, `number`, `start_date`, `end_date`, `locked`)
+      VALUES (CONCAT(YEAR(fyStartDate), periodNumber), fiscalYearId, periodNumber, NULL, NULL, 0);
+
+    ELSE
+      -- Normal periods
+      -- Get period dates range
+      CALL GetPeriodRange(fyStartDate, periodNumber, periodStartDate, periodEndDate);
+
+      -- Inserting periods -- period id is YYYYMM
+      INSERT INTO period(`id`, `fiscal_year_id`, `number`, `start_date`, `end_date`, `locked`)
+      VALUES (DATE_FORMAT(periodStartDate, '%Y%m'), fiscalYearId, periodNumber, periodStartDate, periodEndDate, 0);
+    END IF;
+
+    SET periodNumber = periodNumber + 1;
+  END WHILE;
+END $$
+
+DROP PROCEDURE CloseFiscalYear$$
+CREATE PROCEDURE CloseFiscalYear(
+  IN fiscalYearId MEDIUMINT UNSIGNED,
+  IN closingAccountId INT UNSIGNED
+)
+BEGIN
+  DECLARE NoSubsequentFiscalYear CONDITION FOR SQLSTATE '45010';
+  DECLARE nextFiscalYearId MEDIUMINT UNSIGNED;
+  DECLARE nextPeriodZeroId MEDIUMINT UNSIGNED;
+  DECLARE currentFiscalYearClosingPeriod INT;
+
+  DECLARE incomeAccountType SMALLINT;
+  DECLARE expenseAccountType SMALLINT;
+
+  -- constants
+  SET incomeAccountType = 4;
+  SET expenseAccountType = 5;
+
+  -- find the subsequent fiscal year
+  SET nextFiscalYearId = (
+    SELECT id FROM fiscal_year
+    WHERE previous_fiscal_year_id = fiscalYearId
+    LIMIT 1
+  );
+
+  -- get the current fiscal year date
+  SET currentFiscalYearClosingPeriod = (
+    SELECT period.id FROM period WHERE period.fiscal_year_id = fiscalYearId ORDER BY period.number DESC LIMIT 1
+  );
+
+  IF nextFiscalYearId IS NULL THEN
+    SIGNAL NoSubsequentFiscalYear
+    SET MESSAGE_TEXT =
+      'A fiscal year can only be closed into a subsequent fiscal year.  There is no following year for this fiscal year.';
+  END IF;
+
+  -- find the period id of the period 0 for the subsequent fiscal year
+  SET nextPeriodZeroId = (
+    SELECT period.id FROM period
+    WHERE period.fiscal_year_id = nextFiscalYearId AND period.number = 0
+  );
+
+  -- create the fiscal year balances
+  CREATE TEMPORARY TABLE FiscalYearBalances AS
+    SELECT a.id, MAX(fy.id) AS fiscal_year_id, MAX(fy.enterprise_id) AS enterprise_id,
+      SUM(pt.credit) AS credit, SUM(pt.debit) AS debit,
+      SUM(pt.debit - pt.credit) AS balance, MAX(a.type_id) AS type_id
+    FROM period_total AS pt
+      JOIN account AS a ON pt.account_id = a.id
+      JOIN account_type AS at ON a.type_id = at.id
+      JOIN fiscal_year AS fy ON pt.fiscal_year_id = fy.id
+    WHERE pt.fiscal_year_id = fiscalYearId
+    GROUP BY a.id
+    ORDER BY a.number;
+
+  -- reverse the income/expense accounts in closing period into the closing account
+  -- If they have a debit balance, credit them the difference, if they have a
+  -- credit balance, debit them the difference
+  INSERT INTO period_total
+    (enterprise_id, fiscal_year_id, period_id, account_id, credit, debit)
+  SELECT fyb.enterprise_id, fyb.fiscal_year_id, currentFiscalYearClosingPeriod, fyb.id,
+    IF(fyb.debit > fyb.credit, fyb.debit - fyb.credit, 0),
+    IF(fyb.debit < fyb.credit, fyb.credit - fyb.debit, 0)
+  FROM FiscalYearBalances AS fyb
+  WHERE fyb.type_id IN (incomeAccountType, expenseAccountType);
+
+  -- sum all income/expense accounts from the fiscal year into the closing
+  -- account in the closing period
+  INSERT INTO period_total
+    (enterprise_id, fiscal_year_id, period_id, account_id, credit, debit)
+  SELECT fyb.enterprise_id, fyb.fiscal_year_id, currentFiscalYearClosingPeriod,
+    closingAccountId, SUM(fyb.credit) credit, SUM(fyb.debit) debit
+  FROM FiscalYearBalances AS fyb
+  WHERE fyb.type_id IN (incomeAccountType, expenseAccountType)
+  GROUP BY fyb.enterprise_id
+  ON DUPLICATE KEY UPDATE credit = credit + VALUES(credit), debit = debit + VALUES(debit);
+
+  -- copy all balances of non-income and non-expense accounts as the opening
+  -- balance of the next fiscal year.  Leaving off the closing account, since it
+  -- will be migrated from the closing period.
+  INSERT INTO period_total
+    (enterprise_id, fiscal_year_id, period_id, account_id, credit, debit)
+  SELECT fyb.enterprise_id, nextFiscalYearId, nextPeriodZeroId, fyb.id,
+    fyb.credit, fyb.debit
+  FROM FiscalYearBalances AS fyb
+  WHERE fyb.type_id NOT IN (incomeAccountType, expenseAccountType)
+    AND fyb.id <> closingAccountId;
+
+  -- now bring over the closing account from the closing period
+  INSERT INTO period_total
+    (enterprise_id, fiscal_year_id, period_id, account_id, credit, debit)
+  SELECT enterprise_id, nextFiscalYearId, nextPeriodZeroId, account_id, credit, debit
+  FROM period_total
+  WHERE period_id = currentFiscalYearClosingPeriod
+    AND account_id = closingAccountId;
+
+  -- lock the fiscal year and associated periods
+  UPDATE fiscal_year SET locked = 1 WHERE id = fiscalYearId;
+  UPDATE period SET locked = 1 WHERE fiscal_year_id = fiscalYearId;
+END $$

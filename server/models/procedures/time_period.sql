@@ -64,7 +64,6 @@ BEGIN
   DECLARE fyUserId MEDIUMINT(5);
   DECLARE fyNote TEXT;
 
-
   -- get the fiscal year informations
   SELECT
     enterprise_id, number_of_months, label, start_date, end_date,
