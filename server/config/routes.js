@@ -102,6 +102,8 @@ const referenceLookup = require('../lib/referenceLookup');
 
 const operating = require('../controllers/finance/reports/operating/index');
 
+const department = require('../controllers/admin/department');
+
 // expose routes to the server.
 exports.configure = function configure(app) {
   debug('configuring routes.');
@@ -744,4 +746,14 @@ exports.configure = function configure(app) {
   app.post('/roles/affectUnits', rolesCtrl.affectPages);
   app.post('/roles/assignTouser', rolesCtrl.affectToUser);
   app.post('/roles/actions', rolesCtrl.assignActionToRole);
+
+  // unit
+  app.get('/unit/:roleUuid', units.list);
+
+  // department
+  app.get('/departments', department.read);
+  app.get('/departments/:uuid', department.detail);
+  app.post('/departments', department.create);
+  app.delete('/departments/:uuid', department.delete);
+  app.put('/departments/:uuid', department.update);
 };
