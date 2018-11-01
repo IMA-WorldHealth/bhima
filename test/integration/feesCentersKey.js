@@ -7,7 +7,7 @@ const helpers = require('./helpers');
  *
  * This test suite implements full CRUD on the /fee_center  HTTP API endpoint.
  */
-describe.only('(/fee_center_distribution_key) The /fee_center  API endpoint', () => {
+describe('(/fee_center_distribution_key) The /fee_center  API endpoint', () => {
   // distribution_center/distribution_key  we will add during this test suite.
 
   const distributionKey1 = {
@@ -24,7 +24,7 @@ describe.only('(/fee_center_distribution_key) The /fee_center  API endpoint', ()
     }
   };
 
-  it('POST /distribution_fee_center/proceed a new Distribution Fee Center Key: 1', () => {
+  it('POST /distribution_fee_center/distributionKey a new Distribution Fee Center Key: 1', () => {
     return agent.post('/distribution_fee_center/distributionKey')
       .send(distributionKey1)
       .then((res) => {
@@ -33,7 +33,7 @@ describe.only('(/fee_center_distribution_key) The /fee_center  API endpoint', ()
       .catch(helpers.handler);
   });
 
-  it('POST /distribution_fee_center/proceed a new Distribution Fee Center Key: 2', () => {
+  it('POST /distribution_fee_center/distributionKey a new Distribution Fee Center Key: 2', () => {
     return agent.post('/distribution_fee_center/distributionKey')
       .send(distributionKey2)
       .then((res) => {
@@ -41,4 +41,14 @@ describe.only('(/fee_center_distribution_key) The /fee_center  API endpoint', ()
       })
       .catch(helpers.handler);
   });
+
+  // it('GET /distribution_fee_center/getDistributed Get Auxiliaries Fees Centers Distributed to Main Fees Centers', () => {
+  //   return agent.post('/distribution_fee_center/getDistributed')
+  //     .send(distributionKey2)
+  //     .then((res) => {
+  //       helpers.api.created(res);
+  //     })
+  //     .catch(helpers.handler);
+  // });
+
 });
