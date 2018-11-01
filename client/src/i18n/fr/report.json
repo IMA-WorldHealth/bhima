@@ -57,6 +57,7 @@
     "INCOME": "Produit",
     "INCOME_EXPENSE":"Rapport  des recettes et des dépenses",
     "INCOME_EXPENSE_BY_MONTH": "Etat des revenus et des dépenses pour la période en cours et les deux périodes précédentes",
+    "INCOME_EXPENSE_BY_YEAR": "Etat des revenus et des dépenses pour l'année fiscale en cours et les deux années précédentes",
     "INCOME_REPORT":"Rapport des recettes",
     "MONTHLY_BALANCE":"Balance mensuelle",
     "OPEN_DEBTORS": {
@@ -119,7 +120,12 @@
     },
     "INCOME_EXPENSE_BY_MONTH_REPORT": {
       "TITLE": "Rapport des Comptes d'exploitation par mois",
-      "DESCRIPTION": "Ce rapport affiche la liste des revenus et des dépenses pris en charge dans l'entreprise, il compare le mois précédent, le mois en cours et le mois suivant",
+      "DESCRIPTION": "Ce rapport affiche la liste des revenus et des dépenses pris en charge dans l'entreprise, il compare le mois en cours et les deux mois princédentes",
+      "REMOVE_UNUSED_ACCOUNT" : "Enlèver les comptes non utilisés"
+    },
+    "INCOME_EXPENSE_BY_YEAR_REPORT": {
+      "TITLE": "Rapport des Comptes d'exploitation par année",
+      "DESCRIPTION": "Ce rapport affiche la liste des revenus et des dépenses pris en charge dans l'entreprise, il compare l'année fiscale en cours et les deux annnées princédentes",
       "REMOVE_UNUSED_ACCOUNT" : "Enlèver les comptes non utilisés"
     },
     "BALANCE_REPORT": {

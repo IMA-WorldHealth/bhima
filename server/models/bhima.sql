@@ -105,8 +105,8 @@ INSERT INTO unit VALUES
   (211, 'Income Expenses by Month', 'TREE.INCOME_EXPENSE_BY_MONTH', 'The Report of income and expenses', 144, '/modules/finance/income_expense_by_month', '/reports/income_expense_by_month'),
   (212, 'Stock value Report','TREE.STOCK_VALUE','',144,'/modules/reports/stock_value','/reports/stock_value'),
   (213, '[OHADA] Compte de resultat','TREE.OHADA_RESULT_ACCOUNT','',144,'/modules/reports/ohada_profit_loss','/reports/ohada_profit_loss'),
-  (214, 'Department management','TREE.DEPARTMENT_MANAGEMENT','Department Management', 1,'/modules/department/','/departments');
- 
+  (214, 'Department management','TREE.DEPARTMENT_MANAGEMENT','Department Management', 1,'/modules/department/','/departments'),
+  (215, 'Income Expenses by Year', 'TREE.INCOME_EXPENSE_BY_YEAR', 'The Report of income and expenses', 144, '/modules/finance/income_expense_by_year', '/reports/income_expense_by_year');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -151,7 +151,8 @@ INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
   (23, 'unbalanced_invoice_payments_report', 'REPORT.UNBALANCED_INVOICE_PAYMENTS_REPORT.TITLE'),
   (24, 'income_expense_by_month', 'REPORT.INCOME_EXPENSE_BY_MONTH'),
   (25, 'stock_value', 'TREE.STOCK_VALUE'),
-  (26, 'ohada_profit_loss', 'TREE.OHADA_RESULT_ACCOUNT');
+  (26, 'ohada_profit_loss', 'TREE.OHADA_RESULT_ACCOUNT'),
+  (27, 'income_expense_by_year', 'REPORT.INCOME_EXPENSE_BY_YEAR');
   
 
 -- Supported Languages

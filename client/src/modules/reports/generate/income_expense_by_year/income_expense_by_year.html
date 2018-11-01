@@ -1,0 +1,52 @@
+<bh-report-preview
+  ng-if="ReportConfigCtrl.previewGenerated"
+  source-document="ReportConfigCtrl.previewResult"
+  on-clear-callback="ReportConfigCtrl.clearPreview()"
+  on-save-callback="ReportConfigCtrl.requestSaveAs()">
+</bh-report-preview>
+
+<div ng-show="!ReportConfigCtrl.previewGenerated">
+  <div class="row">
+    <div class="col-md-12">
+      <h3 translate>TREE.INCOME_EXPENSE_BY_YEAR</h3>
+      <p class="text-info" translate>REPORT.INCOME_EXPENSE_BY_YEAR_REPORT.DESCRIPTION</p>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top : 10px">
+    <div class="col-md-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <span translate>REPORT.UTIL.OPTIONS</span>
+        </div>
+
+        <div class="panel-body">
+          <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate>
+          <bh-fiscal-year-select
+            fiscal-id="ReportConfigCtrl.reportDetails.fiscalYearId"
+            on-select-fiscal-callback="ReportConfigCtrl.onSelectFiscal(fiscalYear)">
+          </bh-fiscal-year-select>
+
+          <bh-yes-no-radios 
+            value = "ReportConfigCtrl.reportDetails.removeUnusedAccounts"
+            on-change-callback = "ReportConfigCtrl.OnRemoveUnusedAccounts(value)"
+            label="REPORT.INCOME_EXPENSE_BY_YEAR_REPORT.REMOVE_UNUSED_ACCOUNT">
+          </bh-yes-no-radios>
+          <!--
+          <div class="checkbox">
+            <label class="text-action">
+              <input type="checkbox" name="removeUnusedAccounts"  ng-true-value="1" ng-false-value="0" ng-model="ReportConfigCtrl.reportDetails.removeUnusedAccounts">
+              <span translate></span>
+            </label>
+          </div>
+          -->
+
+            <bh-loading-button loading-state="ConfigForm.$loading">
+              <span translate>REPORT.UTIL.PREVIEW</span>
+            </bh-loading-button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

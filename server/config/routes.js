@@ -360,6 +360,7 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/unbalanced_invoice_payments', unbalancedInvoicePayments.document);
 
   app.get('/reports/finance/income_expense_by_month', financeReports.income_expense_by_month.document);
+  app.get('/reports/finance/income_expense_by_year', financeReports.income_expense_by_year.document);
   app.get('/reports/finance/cash_report', financeReports.cashReport.document);
   app.get('/reports/finance/balance', financeReports.balance.document);
   app.get('/reports/finance/balance_sheet', financeReports.balanceSheet.document);

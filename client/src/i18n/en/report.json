@@ -65,6 +65,7 @@
     "INCOME": "Income",
     "INCOME_EXPENSE": "Profit and Loss Statement",
     "INCOME_EXPENSE_BY_MONTH": "Profit and Loss Statement for the current and the two previous periods",
+    "INCOME_EXPENSE_BY_YEAR": "Profit and Loss Statement for the current and the two previous fiscal years",
     "INCOME_REPORT": "Incomes Report",
     "MONTHLY_BALANCE": "Monthly Balance",
     "OPEN_DEBTORS": {
@@ -121,6 +122,12 @@
       "DESCRIPTION": "Creates a Profit and Loss Statement for the current and the two previous periods.",
       "REMOVE_UNUSED_ACCOUNT": "Remove Unused Accounts"
     },
+    "INCOME_EXPENSE_BY_YEAR_REPORT": {
+      "DESCRIPTION": "Creates a Profit and Loss Statement for the current and the two previous fiscal years.",
+      "REMOVE_UNUSED_ACCOUNT" : "Remove Unused Accounts"
+    },
+
+
     "REPORT_ACCOUNTS_MULTIPLE": {
       "TITLE": "Multiple Accounts Report",
       "DESCRIPTION": "This report shows all transactions for a group of accounts given a set time period."
