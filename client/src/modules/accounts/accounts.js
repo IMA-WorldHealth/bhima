@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 AccountsController.$inject = [
   '$rootScope', '$timeout', 'AccountGridService', 'NotifyService', 'bhConstants',
-  'LanguageService', 'uiGridConstants', 'ModalService', 'AccountService',
+  'LanguageService', 'uiGridConstants', 'ModalService', 'AccountService', '$state',
 ];
 
 /**
@@ -41,10 +41,17 @@ function AccountsController(
   vm.hiddenAccount = hiddenAccount;
 
   vm.Accounts = new AccountGrid();
-  vm.Accounts.settup()
-    .then(bindGridData)
-    .catch(Notify.handleError)
-    .finally(toggleLoadingIndicator);
+  function init(initialLoad) {
+    vm.loading = true;
+    vm.Accounts.settup(initialLoad)
+      .then(bindGridData)
+      .catch(Notify.handleError)
+      .finally(() => {
+        vm.loading = false;
+      });
+  }
+
+  init();
 
   vm.gridOptions = {
     appScopeProvider : vm,
@@ -63,7 +70,9 @@ function AccountsController(
   // parent state into the onEnter callback. for this reason $rootScope is used for now
   $rootScope.$on('ACCOUNT_CREATED', vm.Accounts.updateViewInsert.bind(vm.Accounts));
   $rootScope.$on('ACCOUNT_UPDATED', handleUpdatedAccount);
-
+  $rootScope.$on('ACCOUNT_IMPORTED', () => {
+    init(true);
+  });
   function gridColumns() {
     return [
       {
@@ -168,12 +177,7 @@ function AccountsController(
   function bindGridData() {
     // Filter unhidden account
     vm.unHiddenAccount = vm.Accounts.data.filter(item => (item.hidden === 0));
-
     vm.gridOptions.data = vm.unHiddenAccount;
-  }
-
-  function toggleLoadingIndicator() {
-    vm.loading = !vm.loading;
   }
 
   /**
