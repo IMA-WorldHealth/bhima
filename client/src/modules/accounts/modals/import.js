@@ -2,10 +2,11 @@ angular.module('bhima.controllers')
   .controller('ImportAccountsController', ImportAccountsController);
 
 ImportAccountsController.$inject = [
-  '$uibModalInstance', 'AccountService', 'Upload', 'NotifyService', '$state',
+  '$uibModalInstance', 'AccountService',
+  'Upload', 'NotifyService', '$state', '$rootScope',
 ];
 
-function ImportAccountsController(Instance, Accounts, Upload, Notify, $state) {
+function ImportAccountsController(Instance, Accounts, Upload, Notify, $state, $rootScope) {
   const vm = this;
 
   vm.LOAD_DEFAULT_OHADA_ACCOUNTS = 1;
@@ -52,6 +53,7 @@ function ImportAccountsController(Instance, Accounts, Upload, Notify, $state) {
       vm.uploadState = 'uploaded';
       Notify.success('ACCOUNT.IMPORT.UPLOAD_SUCCESS');
       $state.go('accounts.list');
+      $rootScope.$broadcast('ACCOUNT_IMPORTED', true);
       Instance.close();
     }
 
@@ -63,6 +65,9 @@ function ImportAccountsController(Instance, Accounts, Upload, Notify, $state) {
 
     // progress handler
     function handleProgress(evt) {
+      if (!file) {
+        return;
+      }
       file.progress = Math.min(100, parseInt((100.0 * evt.loaded) / evt.total, 10));
       vm.progressStyle = { width : String(file.progress).concat('%') };
     }

@@ -15,16 +15,11 @@ function AccountStoreService($q, Accounts, AccountTypes, Store) {
   const service = this;
   let initialLoad = true;
   let initTypeLoad = true;
+  service.accounts = accountStore;
+  service.types = typeStore;
 
   const accounts = new Store();
   const accountTypes = new Store();
-
-  const request = Accounts.read(null, { detailed : 1 }, true)
-    .then((result) => {
-      accounts.setData(result);
-      initialLoad = false;
-      return accounts.data;
-    });
 
   const typeRequest = AccountTypes.getAccountType()
     .then((result) => {
@@ -33,18 +28,19 @@ function AccountStoreService($q, Accounts, AccountTypes, Store) {
       return accountTypes.data;
     });
 
-  service.accounts = accountStore;
-  service.types = typeStore;
-
-  function accountStore() {
-    if (initialLoad) {
-      return request.then(() => {
-        return accounts;
-      });
+  function accountStore(importedAccounts) {
+    if (importedAccounts || initialLoad) {
+      return Accounts.read(null, { detailed : 1 }, true)
+        .then((result) => {
+          accounts.setData(result);
+          initialLoad = false;
+          return $q.resolve(accounts);
+        });
     }
 
     return $q.resolve(accounts);
   }
+
 
   function typeStore() {
     if (initTypeLoad) {
