@@ -34,15 +34,13 @@ function AccountGridService(AccountStore, Accounts, Store, Languages, $httpParam
    * @description
    * Requests the latest account list from the AccountStore service and updates loading variables
    */
-  AccountGrid.prototype.settup = function settup() {
+  AccountGrid.prototype.settup = function settup(importedAccounts) {
     // Fetch initial set of accounts
-    return AccountStore.accounts()
+    return AccountStore.accounts(importedAccounts)
       .then(result => {
         this._store = result;
-
         // order and expose data made available through the store
         this.formatStore();
-
         // update exposed store driven data
         this.data = angular.copy(this._store.data);
       });
