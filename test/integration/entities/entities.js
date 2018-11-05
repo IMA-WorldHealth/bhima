@@ -75,16 +75,25 @@ describe('(/entities) Entities', () => {
       gender : 'X',
       entity_type_id : types.PERSON,
     };
-    return agent.put(`/accounts/${service.uuid}`)
+    return agent.put(`/entities/${service.uuid}`)
       .send(updateInfo)
       .then(res => {
         expect(res).to.have.status(200);
         expect(res).to.be.an('object');
         expect(res.body.uuid).to.equal(service.uuid);
-        expect(res.body.display_name).to.equal(updateInfo.updateInfo);
+        expect(res.body.display_name).to.equal(updateInfo.display_name);
         expect(res.body.gender).to.equal(updateInfo.gender);
         expect(res.body.entity_type_id).to.equal(updateInfo.entity_type_id);
         expect(res.body).to.have.all.keys(responseKeys);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('DELETE /entities/:uuid delete an entity by its uuid', () => {
+    return agent.delete(`/entities/${service.uuid}`)
+      .then(res => {
+        expect(res).to.have.status(200);
+        expect(res.body.length).to.be.equal(0);
       })
       .catch(helpers.handler);
   });

@@ -35,6 +35,10 @@ function details(req, res, next) {
     .done();
 }
 
+/**
+ * PUT /entities/:uuid
+ * return 200 status code instead of 204 because an object is returned for need of tests
+ */
 function update(req, res, next) {
   const query = `
     UPDATE entity SET ? WHERE uuid = ?;
@@ -49,11 +53,15 @@ function update(req, res, next) {
 
   db.exec(query, [params, buid])
     .then(() => fetchEntity(buid))
-    .then(entity => res.status(204).json(entity))
+    .then(entity => res.status(200).json(entity))
     .catch(next)
     .done();
 }
 
+/**
+ * DELETE /entities/:uuid
+ * return 200 status code instead of 204 because an empty array is returned for need of tests
+ */
 function remove(req, res, next) {
   const query = `
     DELETE FROM entity WHERE uuid = ?;
@@ -61,7 +69,7 @@ function remove(req, res, next) {
   const buid = db.bid(req.params.uuid);
   db.exec(query, [buid])
     .then(() => fetchEntity(buid, true))
-    .then((rows) => res.status(204).json(rows))
+    .then((rows) => res.status(200).json(rows))
     .catch(next)
     .done();
 }

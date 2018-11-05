@@ -8,8 +8,9 @@
     "PHONE":"Téléphone",
     "EMAIL":"Email",
     "ADDRESS":"Adresse",
+    "CREATED":"Création de l'entité réussie avec succès",
     "SUCCESS":"Opération réussie avec succès",
-    "UPDATE":"Mise à jour réussie avec succès",
+    "UPDATED":"Mise à jour réussie avec succès",
     "LABEL":"Entité",
     "TYPE":{
       "LABEL":"Type d'entité",

@@ -1299,7 +1299,8 @@ CREATE TABLE `entity_type` (
   `translation_key` VARCHAR(255) NULL,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `label` (`label`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `entity`;
@@ -1316,6 +1317,7 @@ CREATE TABLE `entity` (
   `updated_at`         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`reference`),
   UNIQUE KEY `entity_uuid` (`uuid`),
+  UNIQUE KEY `display_name` (`display_name`),
   KEY `entity_type_id` (`entity_type_id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 

@@ -1,4 +1,8 @@
-<div ng-form="GenderForm" class="form-group"
+<div 
+  ng-form="GenderForm" 
+  class="form-group" 
+  bh-gender-select 
+  ng-model-options="{ updateOn: 'default' }"
   ng-class="{ 'has-error' : $ctrl.validationTrigger && GenderForm.gender.$invalid }">
 
   <!-- label -->

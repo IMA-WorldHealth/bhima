@@ -8,8 +8,9 @@
     "PHONE":"Phone",
     "EMAIL":"Email",
     "ADDRESS":"Address",
+    "CREATED":"Successfully created",
     "SUCCESS":"Successfully Done",
-    "UPDATE":"Update Successfully",
+    "UPDATED":"Successfully Updated",
     "LABEL":"Entity",
     "TYPE":{
       "LABEL":"Entity Type",

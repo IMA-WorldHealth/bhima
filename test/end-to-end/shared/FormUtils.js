@@ -189,7 +189,9 @@ module.exports = {
     select.click();
 
     // type into the <input> element the searchable value
-    this.input('$select.search', label, select);
+    // the code below break the uiSelect method,
+    // this is why it is commented
+    // this.input('$select.search', label, select);
 
     // select the item of the dropdown menu matching the label
     const option = select.element(by.cssContainingText('.dropdown-menu [role="option"]', label));
