@@ -103,7 +103,11 @@ INSERT INTO unit VALUES
   (209, 'Accounts Report Multiple','TREE.REPORTS_MULTIPLE_ACCOUNTS','',144,'/modules/reports/account_report_multiple','/reports/account_report_multiple'),
   (210, 'Unbalanced Invoice Payments','REPORT.UNBALANCED_INVOICE_PAYMENTS_REPORT.TITLE','',144,'/modules/reports/unbalanced_invoice_payments_report','/reports/unbalanced_invoice_payments_report'),
   (211, 'Income Expenses by Month', 'TREE.INCOME_EXPENSE_BY_MONTH', 'The Report of income and expenses', 144, '/modules/finance/income_expense_by_month', '/reports/income_expense_by_month'),
-  (212, 'Entity Management','ENTITY.MANAGEMENT','',1,'/modules/entities','/entities');
+  (212, 'Entity Management','ENTITY.MANAGEMENT','',1,'/modules/entities','/entities'),
+  (213, 'Stock value Report','TREE.STOCK_VALUE','',144,'/modules/reports/stock_value','/reports/stock_value'),
+  (214, '[OHADA] Compte de resultat','TREE.OHADA_RESULT_ACCOUNT','',144,'/modules/reports/ohada_profit_loss','/reports/ohada_profit_loss'),
+  (215, 'Department management','TREE.DEPARTMENT_MANAGEMENT','Department Management', 1,'/modules/department/','/departments'),
+  (216, 'Income Expenses by Year', 'TREE.INCOME_EXPENSE_BY_YEAR', 'The Report of income and expenses', 144, '/modules/finance/income_expense_by_year', '/reports/income_expense_by_year');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -146,7 +150,11 @@ INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
   (21, 'account_reference', 'REPORT.ACCOUNT_REFERENCE.TITLE'),
   (22, 'account_report_multiple', 'REPORT.REPORT_ACCOUNTS_MULTIPLE.TITLE'),
   (23, 'unbalanced_invoice_payments_report', 'REPORT.UNBALANCED_INVOICE_PAYMENTS_REPORT.TITLE'),
-  (24, 'income_expense_by_month', 'REPORT.INCOME_EXPENSE_BY_MONTH');
+  (24, 'income_expense_by_month', 'REPORT.INCOME_EXPENSE_BY_MONTH'),
+  (25, 'stock_value', 'TREE.STOCK_VALUE'),
+  (26, 'ohada_profit_loss', 'TREE.OHADA_RESULT_ACCOUNT'),
+  (27, 'income_expense_by_year', 'REPORT.INCOME_EXPENSE_BY_YEAR');
+  
 
 -- Supported Languages
 INSERT INTO `language` VALUES

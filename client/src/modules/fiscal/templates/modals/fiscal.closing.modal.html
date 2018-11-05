@@ -58,6 +58,10 @@
           <bh-account-select account-id="$ctrl.resultAccount.id" account-type-id="'1,2,3,6'" on-select-callback="$ctrl.onSelectAccount(account)"
             label="FORM.SELECT.RESULT_ACCOUNT_SCT" exclude-title-accounts="true">
           </bh-account-select>
+
+          <div ng-if="$ctrl.accountBalance.account_id && $ctrl.accountBalance.balance !== 0" class="alert alert-danger">
+            <p><span translate>FISCAL.ACCOUNT_HAS_VALUE</span> : <strong>{{ $ctrl.accountBalance.balance | currency : $ctrl.currency_id }}</strong></p>
+          </div>
         </div>
 
         <div class="text-center" ng-switch-when="summary">

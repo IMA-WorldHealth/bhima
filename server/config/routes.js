@@ -24,7 +24,6 @@ const install = require('../controllers/install');
 
 // admin routes
 const rolesCtrl = require('../controllers/admin/roles');
-const unitCtrl = require('../controllers/admin/unit');
 const users = require('../controllers/admin/users');
 const projects = require('../controllers/admin/projects');
 const enterprises = require('../controllers/admin/enterprises');
@@ -104,6 +103,8 @@ const referenceLookup = require('../lib/referenceLookup');
 
 const operating = require('../controllers/finance/reports/operating/index');
 
+const department = require('../controllers/admin/department');
+
 // expose routes to the server.
 exports.configure = function configure(app) {
   debug('configuring routes.');
@@ -182,6 +183,7 @@ exports.configure = function configure(app) {
   app.get('/accounts', accounts.list);
   app.get('/accounts/:id', accounts.detail);
   app.get('/accounts/:id/balance', accounts.getBalance);
+  app.get('/accounts/:id/balance/:fiscalYearId', accounts.getAnnualBalance);
   app.get('/accounts/:id/openingBalance', accounts.getOpeningBalanceForPeriod);
   app.post('/accounts', accounts.create);
   app.put('/accounts/:id', accounts.update);
@@ -359,6 +361,7 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/unbalanced_invoice_payments', unbalancedInvoicePayments.document);
 
   app.get('/reports/finance/income_expense_by_month', financeReports.income_expense_by_month.document);
+  app.get('/reports/finance/income_expense_by_year', financeReports.income_expense_by_year.document);
   app.get('/reports/finance/cash_report', financeReports.cashReport.document);
   app.get('/reports/finance/balance', financeReports.balance.document);
   app.get('/reports/finance/balance_sheet', financeReports.balanceSheet.document);
@@ -371,6 +374,7 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/creditors/aged', financeReports.creditors.aged);
   app.get('/reports/finance/purchases', financeReports.purchases.report);
   app.get('/reports/finance/ohada_balance_sheet', financeReports.ohadaBalanceSheet.document);
+  app.get('/reports/finance/ohada_profit_loss', financeReports.ohadaProfitLoss.document);
   app.get('/reports/finance/account_reference', financeReports.accountReference.report);
 
   app.get('/reports/finance/employeeStanding/', financeReports.employee);
@@ -698,7 +702,7 @@ exports.configure = function configure(app) {
   app.get('/reports/stock/movements', stockReports.stockMovementsReport);
   app.get('/reports/stock/inventories', stockReports.stockInventoriesReport);
   app.get('/reports/stock/inventory', stockReports.stockInventoryReport);
-
+  app.get('/reports/stock/value', stockReports.stockValue);
   // stock receipts API
   app.get('/receipts/stock/exit_patient/:document_uuid', stockReports.stockExitPatientReceipt);
   app.get('/receipts/stock/exit_service/:document_uuid', stockReports.stockExitServiceReceipt);
@@ -732,7 +736,7 @@ exports.configure = function configure(app) {
   app.get('/roles/:uuid', rolesCtrl.detail);
 
   // TODO(@jniles) - migrate this to the roles controller
-  app.get('/roles/:uuid/units', unitCtrl.list);
+  app.get('/roles/:uuid/units', rolesCtrl.units);
 
   app.get('/roles/actions/:roleUuid', rolesCtrl.rolesAction);
   app.get('/roles/actions/user/:action_id', rolesCtrl.hasAction);
@@ -746,7 +750,14 @@ exports.configure = function configure(app) {
   app.post('/roles/actions', rolesCtrl.assignActionToRole);
 
   // unit
-  app.get('/unit/:roleUuid', unitCtrl.list);
+  app.get('/unit/:roleUuid', units.list);
+
+  // department
+  app.get('/departments', department.read);
+  app.get('/departments/:uuid', department.detail);
+  app.post('/departments', department.create);
+  app.delete('/departments/:uuid', department.delete);
+  app.put('/departments/:uuid', department.update);
 
   // entities types API
   app.get('/entities/types', entities.types.list);

@@ -8,7 +8,6 @@ angular.module('bhima.components')
       onSelectCallback : '&',
       label            : '@?',
       required         : '<?',
-      validateTrigger  : '<?',
     },
   });
 
@@ -17,25 +16,25 @@ PatientGroupSelectController.$inject = [
 ];
 
 /**
- * Patient Group selection component
+ * Patient Group Selection Component
  *
  */
 function PatientGroupSelectController(PatientGroups, Notify) {
   const $ctrl = this;
 
-  $ctrl.$onInit = function onInit() {
+  $ctrl.$onInit = () => {
     // default for label
     $ctrl.label = $ctrl.label || 'PATIENT_GROUP.PATIENT_GROUP';
 
     // load all patient groups
     PatientGroups.read()
-      .then((pgs) => {
-        $ctrl.patientGroups = pgs;
+      .then(patientGroups => {
+        $ctrl.patientGroups = patientGroups;
       })
       .catch(Notify.handleError);
   };
 
-  $ctrl.onSelect = function ($item, $model) {
-    $ctrl.onSelectCallback({ patientGroup : $item });
+  $ctrl.onSelect = patientGroup => {
+    $ctrl.onSelectCallback({ patientGroup });
   };
 }

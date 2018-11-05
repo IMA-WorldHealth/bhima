@@ -51,11 +51,13 @@
       "REPORT": "Situation financière de l'employé",
       "TITLE": "Situation financière d'un employé"
     },
+    "EXPENSE": "Charge",
     "EXPENSE_REPORT":"Rapport des dépenses",
     "GENERATED":"Rapport généré",
+    "INCOME": "Produit",
     "INCOME_EXPENSE":"Rapport  des recettes et des dépenses",
     "INCOME_EXPENSE_BY_MONTH": "Etat des revenus et des dépenses pour la période en cours et les deux périodes précédentes",
-    
+    "INCOME_EXPENSE_BY_YEAR": "Etat des revenus et des dépenses pour l'année fiscale en cours et les deux années précédentes",
     "INCOME_REPORT":"Rapport des recettes",
     "MONTHLY_BALANCE":"Balance mensuelle",
     "OPEN_DEBTORS": {
@@ -79,6 +81,10 @@
     "PATIENT_STANDING": {
       "DESCRIPTION": "Ce rapport permet de connaître la situation financière d'un patient",
       "TITLE": "Situation financière d'un Patient"
+    },
+    "STOCK_VALUE": {
+      "TITLE":"Rapport de valeur de stock", 
+      "DESCRIPTION":"Ce rapport affiche la valeur actuelle du stock pour chaque inventaire dans un dépôt."
     },
     "PREVIOUS_MONTHS": "Mois Précédents",
     "PERIOD_START": "Début",
@@ -114,7 +120,12 @@
     },
     "INCOME_EXPENSE_BY_MONTH_REPORT": {
       "TITLE": "Rapport des Comptes d'exploitation par mois",
-      "DESCRIPTION": "Ce rapport affiche la liste des revenus et des dépenses pris en charge dans l'entreprise, il compare le mois précédent, le mois en cours et le mois suivant",
+      "DESCRIPTION": "Ce rapport affiche la liste des revenus et des dépenses pris en charge dans l'entreprise, il compare le mois en cours et les deux mois princédentes",
+      "REMOVE_UNUSED_ACCOUNT" : "Enlèver les comptes non utilisés"
+    },
+    "INCOME_EXPENSE_BY_YEAR_REPORT": {
+      "TITLE": "Rapport des Comptes d'exploitation par année",
+      "DESCRIPTION": "Ce rapport affiche la liste des revenus et des dépenses pris en charge dans l'entreprise, il compare l'année fiscale en cours et les deux annnées princédentes",
       "REMOVE_UNUSED_ACCOUNT" : "Enlèver les comptes non utilisés"
     },
     "BALANCE_REPORT": {
@@ -196,6 +207,7 @@
     },
     "OHADA": {
       "BALANCE_SHEET" : "Bilan",
+      "PROFIT_LOSS" : "Compte de résultat",
       "BALANCE_SHEET_DESCRIPTION" : "Ce rapport affiche le bilan de l'entreprise selon le référentiel OHADA",
       "REF" : "Réf",
       "ASSET" : "Actif",
@@ -205,6 +217,7 @@
       "ADP_LONG" : "Amortissements, Dépréciations, Provisions",
       "NET" : "Net",
       "EXERCISE" : "Exercice",
+      "NOTE": "Note",
       "REF_DESCRIPTION" : {
         "AD" : "Immobilisations incorporelles",
         "AE" : "Frais de développement",
@@ -224,6 +237,10 @@
         "AZ" : "Total actifs immobilisés",
         "BA" : "Actifs circulants HAO",
         "BB" : "Stocks et encours",
+        "BC" : "Marchandises",
+        "BD" : "Matières premières et autres approvisionnements",
+        "BE" : "En-cours",
+        "BF" : "Produits fabriqués",
         "BG" : "Créances et emplois assimilés",
         "BH" : "Fournisseurs avances versées",
         "BI" : "Clients",
@@ -266,7 +283,59 @@
         "DS" : "Banques, découverts",
         "DT" : "Total trésorerie passif",
         "DV" : "Ecart de conversion passif",
-        "DZ" : "Total général"
+        "DZ" : "Total général",
+        "TA" : "Ventes de marchandises   (A)",
+        "TB" : "Vente des produits fabriqués (B)",
+        "TC" : "Travaux, services vendus  (C)",
+        "TD" : "Produits accessoires (D)",
+        "TE" : "Production stockée",
+        "TF" : "Produits immobilisée",
+        "TH" : "Autres produits",
+        "TK" : "Revenus financiers et assimilés",
+        "TL" : "Reprises de provisions et de dépreciations financières",
+        "TS" : "Reprise de provisions",
+        "TT" : "Transferts de charges",
+        "UA" : "Revenus financiers",
+        "UC" : "Gains de change",
+        "UD" : "Reprises de provisions",
+        "UE" : "Transfert de charges",
+        "UK" : "Produits de cessions d'immobilisations",
+        "UL" : "Produits HAO",
+        "UM" : "Reprises HAO",
+        "UN" : "transfert de charges",
+        "RA" : "Achat de marchandises",
+        "RB" : "Variation de stocks de marchandises",
+        "RC" : "Achat de matières premières et fournitures liées",
+        "RD" : "Variation de stocks de matières premières et fournitures liées",
+        "RE" : "Autres achats",
+        "RH" : "Services exterieurs",
+        "RI" : "Impôts et taxes",
+        "RJ" : "Autres charges",
+        "RK" : "Charges de personnel",
+        "RL" : "Dotations aux amortissements, aux provisions et dépréciation",
+        "RP" : "Autres charges HAO",
+        "RS" : "Impôts sur le résultat",
+        "XA": "MARGE COMMERCIALE (Somme TA à RB)",
+        "XB":"CHIFFRE D'AFFAIRE ( A + B + C + D )",
+        "XC":"VALEUR AJOUTEE (XB + RA + RB) + (somme TE à RJ)",
+        "XD": "EXCEDENT BRUT D'EXPLOITATION (XC + RK)",
+        "XE":"RESULTAT D'EXPLOITATION (XD + TJ + RL)",
+        "XF": "RESULTAT FINANCIER (somme TK à RN)",
+        "XG": "RESULTAT DES ACTIVITES ORDINAIRES (XE + XF)",
+        "XH" : "RESULTAT HORS ACTIVITES ORDINAIRES (somme TN à RP)",
+        "XI" : "RESULTAT NET (XG + XH + RQ + RS)",
+        "TG" : "Subventions d'exploitation",
+        "TI":"Transferts de chatges d'exploitation",
+        "RF":"Variation de stock d'autres approvisionnements",
+        "RG" : "Transport",
+        "TJ" : "Reprises d'ammortissement, provisions et dépréciations",
+        "TM" : "Transferts de charges financières",
+        "RM" : "Frais financiers et charges assimilées",
+        "RN": "Dotations aux provisions et aux dépréciations financières",
+        "TN" :"Produits de cessions d'immobilisations",
+        "TO" : "Autres Produits HAO",
+        "RO" : "Valeurs comptables de cessions d'immobilisations",
+        "RQ" : "Participation des travailleurs"
       }
     },
     "CLIENT_DEBTOR_ACCOUNT_BALANCE_REPORT" : "Rapport des comptes débiteurs clients"

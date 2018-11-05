@@ -1,5 +1,7 @@
 /* global browser, element, by */
 const chai = require('chai');
+const protractor = require('protractor');
+
 const helpers = require('../shared/helpers');
 const FU = require('../shared/FormUtils');
 const GU = require('../shared/GridUtils');
@@ -32,13 +34,19 @@ describe('Edit Posting Journal', () => {
 
   function editInput(rowIndex, columnIndex, value) {
     const cell = GU.getCell(editingGridId, rowIndex, columnIndex);
-    // clear old clicks and focus the cell
-    cell.click();
+
     // open the editing pane
     doubleClick(cell);
-    cell.element(by.css('input')).clear().sendKeys(value);
-  }
 
+    // get the element
+    const input = element(by.css('input[type=number]'));
+
+    // Bug: calling input.clear() will submit the input in ui-grid!  This causes
+    // the ui-grid to hide the input.
+    // Solution: Ctrl-a and then type what you want.
+    const ctrlA = protractor.Key.chord(protractor.Key.CONTROL, 'a');
+    input.sendKeys(ctrlA, value, protractor.Key.ENTER);
+  }
 
   it('edits a transaction change value of debit and credit', () => {
     GU.selectRow(gridId, 0);
@@ -52,6 +60,7 @@ describe('Edit Posting Journal', () => {
     editInput(1, 3, 100);
 
     FU.buttons.submit();
+
     FU.exists(by.id('validation-errored-alert'), false);
     components.notification.hasSuccess();
   });

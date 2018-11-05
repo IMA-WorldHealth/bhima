@@ -6,6 +6,7 @@ exports.detail = detail;
 exports.create = create;
 exports.update = update;
 exports.remove = remove;
+exports.units = units;
 exports.affectPages = affectPages;
 exports.affectToUser = affectToUser;
 exports.listForUser = listForUser;
@@ -224,6 +225,35 @@ function affectToUser(req, res, next) {
     })
     .then(() => {
       res.sendStatus(201);
+    })
+    .catch(next)
+    .done();
+}
+
+
+/**
+ * @function units
+ *
+ * @description
+ * Returns the list of units associated with a role
+ *
+ * ROUTE:
+ * GET  /roles/${uuid}/units
+ */
+function units(req, res, next) {
+  const roleUuid = db.bid(req.params.uuid);
+
+  const sql = `
+    SELECT unit.id, unit.key, unit.parent
+    FROM role
+      JOIN role_unit ON role.uuid = role_unit.role_uuid
+      JOIN unit ON role_unit.unit_id = unit.id
+    WHERE role.uuid = ?;
+  `;
+
+  db.exec(sql, [roleUuid])
+    .then(modules => {
+      res.status(200).json(modules);
     })
     .catch(next)
     .done();

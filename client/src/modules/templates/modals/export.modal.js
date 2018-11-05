@@ -33,8 +33,6 @@ function ExportGridModalController(Instance, uiGridConstants, $filter,
     gridOptions.exporterCsvFilename = filename.concat('.csv');
     gridOptions.exporterHeaderFilter = exporterHeaderFilter;
     gridOptions.exporterOlderExcelCompatibility = true;
-
-    window.gridApi = gridApi;
     gridApi.exporter.csvExport(vm.exportRowType, vm.exportColType, myElement);
     Instance.close(true);
   }

@@ -28,8 +28,7 @@
           <bh-depot-select
             depot-uuid="ReportConfigCtrl.depot.uuid"
             on-select-callback="ReportConfigCtrl.onSelectDepot(depot)"
-            required="true"
-            validate-trigger="ConfigForm.$submitted">
+            required="true">
             <bh-clear on-clear="ReportConfigCtrl.clear('depot')"></bh-clear>
           </bh-depot-select>
 
@@ -38,7 +37,6 @@
             inventory-uuid="ReportConfigCtrl.inventory.uuid"
             on-select-callback="ReportConfigCtrl.onSelectInventory(inventory)"
             required="true"
-            validate-trigger="ConfigForm.$submitted"
             only-consumable="true">
             <bh-clear on-clear="ReportConfigCtrl.clear('inventory')"></bh-clear>
           </bh-inventory-select>

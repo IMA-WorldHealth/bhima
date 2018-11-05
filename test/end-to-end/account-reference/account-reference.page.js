@@ -13,7 +13,7 @@ function AccountReferencePage() {
 
   const accountReferenceGrid = element(by.id('account-reference-grid'));
   const addAccountReferenceButton = element(by.css('[data-method="create"]'));
-  const actionLinkColumn = 5;
+  const actionLinkColumn = 7;
 
   /* send back the number of accountReference in the grid */
   function getAccountReferenceCount() {

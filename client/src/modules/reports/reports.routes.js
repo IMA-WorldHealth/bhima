@@ -9,6 +9,7 @@ angular.module('bhima.routes')
       'balance_sheet_report',
       'income_expense',
       'income_expense_by_month',
+      'income_expense_by_year',
       'aged_debtors',
       'open_debtors',
       'balance_report',
@@ -26,6 +27,8 @@ angular.module('bhima.routes')
       'ohada_balance_sheet_report',
       'account_reference',
       'unbalanced_invoice_payments_report',
+      'stock_value',
+      'ohada_profit_loss',
     ];
 
     $stateProvider
