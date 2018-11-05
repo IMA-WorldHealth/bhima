@@ -66,7 +66,7 @@ describe('SessionService', () => {
   });
 
   it('emits a login event', () => {
-    var called = false;
+    let called = false;
     rootScope.$on('session:login', () => { called = true; });
 
     // send a POST /login request
@@ -81,7 +81,7 @@ describe('SessionService', () => {
   });
 
   it('emits a logout event', () => {
-    var called = false;
+    let called = false;
     rootScope.$on('session:logout', () => { called = true; });
 
     Session.logout();

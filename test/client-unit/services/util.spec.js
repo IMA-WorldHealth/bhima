@@ -10,7 +10,7 @@ describe('util', () => {
   }));
 
   it('#unwrapHttpResponse() returns only object data', () => {
-    const data = { headers : [ 1, 2, 3], data : { o : 1 }, other : y => y + 1 };
+    const data = { headers : [1, 2, 3], data : { o : 1 }, other : y => y + 1 };
 
     const result = util.unwrapHttpResponse(data);
     expect(result).to.have.keys('o');

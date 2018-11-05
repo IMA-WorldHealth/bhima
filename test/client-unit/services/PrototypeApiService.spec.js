@@ -1,6 +1,6 @@
 /* global inject, expect */
 describe('PrototypeApiService', () => {
-  'use strict';
+
 
   // shared common data
   let api;
@@ -14,12 +14,12 @@ describe('PrototypeApiService', () => {
   });
 
   const responses = {
-    error: { error: 'resource not found.' },
-    list: [{ id: 1 }, { id: 2 }],
-    detail: { id: 2, hello: 'world' },
-    create: { id: 1 },
-    update: { id: 1, hello: 'monde' },
-    search : { id : 2 }
+    error : { error : 'resource not found.' },
+    list : [{ id : 1 }, { id : 2 }],
+    detail : { id : 2, hello : 'world' },
+    create : { id : 1 },
+    update : { id : 1, hello : 'monde' },
+    search : { id : 2 },
   };
 
   // bind the services as $injects
@@ -65,7 +65,7 @@ describe('PrototypeApiService', () => {
   it('#create() fires a properly formed POST request', () => {
     httpBackend.expectPOST(url);
 
-    api.create({ hello: 'world'})
+    api.create({ hello : 'world' })
       .then(res => expect(res).to.eql(responses.create));
 
     httpBackend.flush();
@@ -97,7 +97,7 @@ describe('PrototypeApiService', () => {
   });
 
   it('#search() formats a search query', () => {
-    const params = { name: 'bob', limit: 50 };
+    const params = { name : 'bob', limit : 50 };
 
     httpBackend.expectGET(url.concat('search?name=bob&limit=50'));
 

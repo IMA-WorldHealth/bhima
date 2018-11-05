@@ -1,6 +1,6 @@
 /* global inject, expect */
-describe('Pool', function () {
-  'use strict';
+describe('Pool', () => {
+
 
   let Pool;
   let data;
@@ -11,8 +11,8 @@ describe('Pool', function () {
     Pool = _Pool_;
 
     data = [
-      { id: 1, name: 'Bob' },
-      { id: 2, name: 'Sarah' }
+      { id : 1, name : 'Bob' },
+      { id : 2, name : 'Sarah' },
     ];
   }));
 
@@ -34,34 +34,34 @@ describe('Pool', function () {
   });
 
   it('#use() retrieves items stored in it', () => {
-    let pool = new Pool('id', data);
+    const pool = new Pool('id', data);
 
-    let bob = pool.use(1);
+    const bob = pool.use(1);
     expect(bob.id).to.equal(1);
     expect(bob.name).to.equal('Bob');
 
-    let sarah = pool.use(2);
+    const sarah = pool.use(2);
     expect(sarah.id).to.equal(2);
     expect(sarah.name).to.equal('Sarah');
 
     // cannot retrieve the same item twice
-    let bobDuplicate = pool.use(1);
+    const bobDuplicate = pool.use(1);
     expect(bobDuplicate).to.be.undefined;
   });
 
   it('#release() returns items to the available pool', () => {
-    let pool = new Pool('id', data);
+    const pool = new Pool('id', data);
 
-    let bob = pool.use(1);
+    const bob = pool.use(1);
     expect(bob.id).to.equal(1);
 
-    let duplicate = pool.use(1);
+    const duplicate = pool.use(1);
     expect(duplicate).to.be.undefined;
 
     // return bob to the pool
     pool.release(1);
 
-    let bobAgain = pool.use(1);
+    const bobAgain = pool.use(1);
     expect(bobAgain.id).to.equal(1);
   });
 
