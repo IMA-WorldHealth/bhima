@@ -79,6 +79,12 @@ function AccountsController(
         headerCellFilter : 'translate',
       },
       {
+        field : 'type',
+        displayName : 'FORM.LABELS.TYPE',
+        headerCellFilter : 'translate',
+        width : 150,
+      },
+      {
         name : 'actions',
         enableFiltering : false,
         displayName : '',
