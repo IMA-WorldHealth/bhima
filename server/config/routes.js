@@ -386,7 +386,7 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/ohada_balance_sheet', financeReports.ohadaBalanceSheet.document);
   app.get('/reports/finance/ohada_profit_loss', financeReports.ohadaProfitLoss.document);
   app.get('/reports/finance/account_reference', financeReports.accountReference.report);
-
+  app.get('/reports/finance/fee_center', financeReports.feeCenter.report);
   app.get('/reports/finance/employeeStanding/', financeReports.employee);
 
   app.get('/reports/keys/:key', report.keys);
