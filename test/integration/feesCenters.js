@@ -47,8 +47,8 @@ describe.only('(/fee_center) The /fee_center  API endpoint', () => {
     services : [],
   };
 
-  const numFeeCenter = 2;
-  const feeCenterId = 3;
+  const numFeeCenter = 6;
+  const feeCenterId = 7;
 
   it('GET /FEE_CENTER returns a list of Fees Centers', () => {
     return agent.get('/fee_center')

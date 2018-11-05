@@ -967,40 +967,43 @@ INSERT INTO `user_role`(uuid, user_id, role_uuid)
 -- ----------------------------------------------------------------------------------------
 -- ACCOUNT REFERENCE 
 INSERT INTO `account_reference` (`id`, `abbr`, `description`, `parent`, `is_amo_dep`) VALUES
-(1, 'c_admin', 'Section Administration', NULL, 0),
-(2, 'p_admin', 'Profit Administration', NULL, 0),
-(3, 'p_test_1', 'Profit Test 1', NULL, 0),
-(4, 'p_test_2', 'Profit Test 2', NULL, 0),
-(5, 'c_test_1', 'Cost Test 1', NULL, 0),
-(6, 'c_test_2', 'Cost Test 2', NULL, 0),
-(7, 'p_test_3', 'Profit Test 3', NULL, 0),
-(8, 'p_test_4', 'Profit Test 4', NULL, 0),
-(9, 'c_test_3', 'Cost Test 3', NULL, 0);
+  (1, 'c_admin', 'Section Administration', NULL, 0),
+  (2, 'p_admin', 'Profit Administration', NULL, 0),
+  (3, 'p_test_1', 'Profit Test 1', NULL, 0),
+  (4, 'p_test_2', 'Profit Test 2', NULL, 0),
+  (5, 'c_test_1', 'Cost Test 1', NULL, 0),
+  (6, 'c_test_2', 'Cost Test 2', NULL, 0),
+  (7, 'p_test_3', 'Profit Test 3', NULL, 0),
+  (8, 'p_test_4', 'Profit Test 4', NULL, 0),
+  (9, 'c_test_3', 'Cost Test 3', NULL, 0);
 
 -- ACCOUNT REFERENCE ITEM
 INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`) VALUES
-(1, 1, 347, 0),
-(2, 1, 220, 0),
-(3, 2, 246, 0),
-(4, 2, 249, 0),
-(5, 2, 248, 0),
-(6, 3, 258, 0),
-(7, 4, 258, 0),
-(8, 5, 201, 0),
-(9, 6, 210, 0),
-(10, 7, 256, 0),
-(11, 9, 215, 0),
-(12, 8, 256, 0);
-
+  (1, 1, 347, 0),
+  (2, 1, 220, 0),
+  (3, 2, 246, 0),
+  (4, 2, 249, 0),
+  (5, 2, 248, 0),
+  (6, 3, 258, 0),
+  (7, 4, 258, 0),
+  (8, 5, 201, 0),
+  (9, 6, 210, 0),
+  (10, 7, 256, 0),
+  (11, 9, 215, 0),
+  (12, 8, 256, 0);
 
 -- FEE CENTER 
 INSERT INTO `fee_center` (`id`, `label`, `is_principal`) VALUES
-(1, 'Administration', 1),
-(2, 'Principale TPA', 1);
+  (1, 'Administration', 1),
+  (2, 'Principale TPA', 1),
+  (3, 'Principale TPB', 1),
+  (4, 'Auxiliary 1', 0),
+  (5, 'Auxiliary 2', 0),
+  (6, 'Auxiliary 3', 0);
 
 -- REFERENCE FEE CENTER
 INSERT INTO `reference_fee_center` (`id`, `fee_center_id`, `account_reference_id`, `is_cost`) VALUES 
-(1, 1, 1, 1),
-(2, 1, 2, 0),
-(3, 2, 6, 1),
-(4, 2, 3, 0);
+  (1, 1, 1, 1),
+  (2, 1, 2, 0),
+  (3, 2, 6, 1),
+  (4, 2, 3, 0);
