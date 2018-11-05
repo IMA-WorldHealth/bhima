@@ -10,9 +10,9 @@ angular.module('bhima.components')
     },
   });
 
-bhVoucherToolsCorrect.$inject = ['VoucherToolsService', '$translate'];
+bhVoucherToolsCorrect.$inject = ['VoucherToolsService', 'TransactionService', '$translate'];
 
-function bhVoucherToolsCorrect(VoucherTools, $translate) {
+function bhVoucherToolsCorrect(VoucherTools, Transactions, $translate) {
   const $ctrl = this;
   const VOUCHER_TOOLS_REVERSE_DESCRIPTION = 'VOUCHERS.TOOLS.REVERSE.DESCRIPTION';
   const VOUCHER_TOOLS_CORRECTION_DESCRIPTION = 'VOUCHERS.TOOLS.CORRECT.DESCRIPTION';
@@ -28,6 +28,13 @@ function bhVoucherToolsCorrect(VoucherTools, $translate) {
   };
 
   $ctrl.onActionSubmitInput = function actionSubmitInput() {
+    const offlineErrors = Transactions.offlineValidation($ctrl.input.rows);
+    if (offlineErrors) {
+      $ctrl.state.errored = true;
+      $ctrl.state.flag = offlineErrors;
+      return;
+    }
+
     const formattedCorrectionRequest = sanitiseTransactionDetails($ctrl.input.shared, $ctrl.input.rows);
 
     $ctrl.pending = true;

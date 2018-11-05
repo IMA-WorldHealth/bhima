@@ -944,28 +944,23 @@ a[disabled] {
   border-radius: 2px;
 }
 
-
 .voucher-tools-underline {
-  margin-top: 2px;
   margin-bottom: 10px;
+  margin-top: 2px;
 }
 
 .voucher-tools-header {
   display: flex;
 }
 
-.voucher-tools-header-element {
-  /* display : inline-block; */
-}
 
 .voucher-tools-header-element:last-child {
-  /* width : 100%; */
   flex-grow: 1;
 }
 
 .voucher-tools-container {
   border : 1px solid rgb(46, 109, 164);
   border : 1px solid rgba(46, 109, 164, 0.8);
-  box-shadow:0px 1px 1px #bdbdbd;
+  box-shadow: 0 1px 1px #bdbdbd;
   padding : 15px;
 }

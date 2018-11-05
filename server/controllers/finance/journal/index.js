@@ -62,7 +62,7 @@ function lookupTransaction(recordUuid) {
   };
 
   return find(options)
-    .then((result) => {
+    .then(result => {
       // if no records matching, throw a 404
       if (result.length === 0) {
         throw new NotFound(`Could not find a transaction with record_uuid: ${recordUuid}.`);
@@ -239,7 +239,7 @@ function list(req, res, next) {
  */
 function getTransaction(req, res, next) {
   lookupTransaction(req.params.record_uuid)
-    .then((transaction) => {
+    .then(transaction => {
       res.status(200).json(transaction);
     })
     .catch(next)
@@ -271,7 +271,7 @@ function editTransaction(req, res, next) {
   // verify that this transaction is NOT in the general ledger already
   // @FIXME(sfount) this logic needs to be updated when allowing super user editing
   lookupTransaction(recordUuid)
-    .then((transactionToEdit) => {
+    .then(transactionToEdit => {
       const [{ posted, hrRecord }] = transactionToEdit;
       const transactionId = transactionToEdit[0].trans_id;
 
@@ -305,7 +305,7 @@ function editTransaction(req, res, next) {
       const transDate = getTransactionDate(rowsChanged, transactionToEdit);
       return FiscalService.lookupFiscalYearByDate(transDate);
     })
-    .then((fiscalYear) => {
+    .then(fiscalYear => {
       _fiscalYear = fiscalYear;
 
       if (fiscalYear.locked) {
@@ -318,15 +318,15 @@ function editTransaction(req, res, next) {
       // continue with editing - transform requested additional columns
       return transformColumns(rowsAdded, true, _transactionToEdit, fiscalYear);
     })
-    .then((result) => {
-      result.forEach((row) => {
+    .then(result => {
+      result.forEach(row => {
         db.convert(row, ['uuid', 'record_uuid', 'entity_uuid', 'reference_uuid']);
         transaction.addQuery(INSERT_JOURNAL_ROW, [row]);
       });
 
       return transformColumns(rowsChanged, false, _transactionToEdit, _fiscalYear);
     })
-    .then((result) => {
+    .then(result => {
       _.each(result, (row, uid) => {
         db.convert(row, ['entity_uuid']);
         transaction.addQuery(UPDATE_JOURNAL_ROW, [row, db.bid(uid)]);
@@ -350,7 +350,7 @@ function editTransaction(req, res, next) {
       // transaction changes written successfully - return latest version of transaction
       return lookupTransaction(recordUuid);
     })
-    .then((updatedRows) => {
+    .then(updatedRows => {
       res.status(200).json(updatedRows);
     })
     .catch(next)
@@ -405,7 +405,7 @@ function transformColumns(rows, newRecord, transactionToEdit, setFiscalData) {
     if (row.account_number) {
       databaseRequests.push(ACCOUNT_NUMBER_QUERY);
       databaseValues.push([row.account_number]);
-      assignments.push((result) => {
+      assignments.push(result => {
         if (!result.length) {
           throw new BadRequest('Invalid accounts for journal rows', 'POSTING_JOURNAL.ERRORS.EDIT_INVALID_ACCOUNT');
         }
@@ -430,7 +430,7 @@ function transformColumns(rows, newRecord, transactionToEdit, setFiscalData) {
       databaseRequests.push(ENTITY_QUERY);
       databaseValues.push([row.hrEntity]);
 
-      assignments.push((result) => {
+      assignments.push(result => {
         if (!result.length) {
           throw new BadRequest('Invalid entity for journal rows', 'POSTING_JOURNAL.ERRORS.EDIT_INVALID_ENTITY');
         }
@@ -447,7 +447,7 @@ function transformColumns(rows, newRecord, transactionToEdit, setFiscalData) {
       databaseRequests.push(REFERENCE_QUERY);
       databaseValues.push([row.hrReference]);
 
-      assignments.push((result) => {
+      assignments.push(result => {
         if (!result.length) {
           throw new BadRequest('Invalid reference for journal rows', 'POSTING_JOURNAL.ERRORS.EDIT_INVALID_REFERENCE');
         }
@@ -469,7 +469,7 @@ function transformColumns(rows, newRecord, transactionToEdit, setFiscalData) {
       databaseRequests.push(EXCHANGE_RATE_QUERY);
       databaseValues.push([row.debit_equiv, currencyId, currencyId, transDate, projectId]);
 
-      assignments.push((result) => {
+      assignments.push(result => {
         const [{ amount }] = result;
 
         if (!amount && isDebitEquivNonZero) {
@@ -491,7 +491,7 @@ function transformColumns(rows, newRecord, transactionToEdit, setFiscalData) {
       databaseRequests.push(EXCHANGE_RATE_REVERSE_QUERY);
       databaseValues.push([row.debit, currencyId, currencyId, transDate, projectId]);
 
-      assignments.push((result) => {
+      assignments.push(result => {
         const [{ amount }] = result;
 
         if (!amount && isDebitNonZero) {
@@ -513,7 +513,7 @@ function transformColumns(rows, newRecord, transactionToEdit, setFiscalData) {
       databaseRequests.push(EXCHANGE_RATE_QUERY);
       databaseValues.push([row.credit_equiv, currencyId, currencyId, transDate, projectId]);
 
-      assignments.push((result) => {
+      assignments.push(result => {
         const [{ amount }] = result;
 
         if (!amount && isCreditEquivNonZero) {
@@ -535,7 +535,7 @@ function transformColumns(rows, newRecord, transactionToEdit, setFiscalData) {
       databaseRequests.push(EXCHANGE_RATE_REVERSE_QUERY);
       databaseValues.push([row.credit, currencyId, currencyId, transDate, projectId]);
 
-      assignments.push((result) => {
+      assignments.push(result => {
         const [{ amount }] = result;
 
         if (!amount && isCreditNonZero) {
@@ -583,8 +583,8 @@ function reverse(req, res, next) {
   const recordUuid = db.bid(req.params.uuid);
 
   reverseTransaction(recordUuid, req.session.user.id, req.body.description)
-    .then((reverseResult) => VoucherService.lookupVoucher(reverseResult.uuid))
-    .then((voucher) => res.status(201).json({ uuid : voucher.uuid, voucher }))
+    .then(reverseResult => VoucherService.lookupVoucher(reverseResult.uuid))
+    .then(voucher => res.status(201).json({ uuid : voucher.uuid, voucher }))
     .catch(next);
 }
 
@@ -647,7 +647,7 @@ function count(req, res, next) {
   `;
 
   db.exec(sql)
-    .then((rows) => {
+    .then(rows => {
       res.status(200).send(rows);
     })
     .catch(next);
