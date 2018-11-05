@@ -585,21 +585,22 @@ function reverse(req, res, next) {
   reverseTransaction(recordUuid, req.session.user.id, req.body.description)
     .then((reverseResult) => VoucherService.lookupVoucher(reverseResult.uuid))
     .then((voucher) => res.status(201).json({ uuid : voucher.uuid, voucher }))
-    .catch(next)
-    .done();
+    .catch(next);
 }
 
-// wrap functionality in a helper method, this allows us to export this tool
-// for use in other modules on the server
-// returns a string uuid for the newly created reversed
-// transaction
-function reverseTransaction(recordUuid, userId, reverseDescription) {
+/**
+ * @method reverseTransaction
+ *
+ * @description
+ * Reverses a transaction in the database by creating a reversing voucher.
+ */
+async function reverseTransaction(recordUuid, userId, reverseDescription) {
   const voucherUuid = uuid();
   const params = [
     recordUuid,
     userId,
     reverseDescription,
-    db.bid(voucherUuid),
+    db.bid(voucherUuid), // this is the reversal voucher uuid
   ];
 
   // Check to see if the record is already canceled.
@@ -610,26 +611,33 @@ function reverseTransaction(recordUuid, userId, reverseDescription) {
   `;
 
   // create and execute a transaction if necessary
-  return db.exec(query, [recordUuid])
-    .then((rows) => {
-      if (rows.length > 0) {
-        // transaction already cancelled
-        throw new BadRequest(
-          'The transaction has been already cancelled',
-          'POSTING_JOURNAL.ERRORS.MULTIPLE_CANCELLING'
-        );
-      }
-      return db.exec('CALL ReverseTransaction(?, ?, ?, ?);', params);
-    })
-    .then(() => {
-      // transaction was correctly executed
-      return { uuid : voucherUuid };
-    });
+  const rows = await db.exec(query, [recordUuid]);
+
+  if (rows.length > 0) {
+    // transaction already cancelled
+    throw new BadRequest(
+      'The transaction has been already cancelled',
+      'POSTING_JOURNAL.ERRORS.MULTIPLE_CANCELLING'
+    );
+  }
+
+  // wrap call in transaction to reverse anything that needs to be reversed if
+  // an error happens
+  await db.transaction()
+    .addQuery('CALL ReverseTransaction(?, ?, ?, ?);', params)
+    .execute();
+
+  return { uuid : voucherUuid };
 }
 
 /**
+ * @method count
+ *
+ *
  * GET /journal/count
- * Getting the number of transaction from the posting journal
+ *
+ * @description
+ * Returns the number of transactions in the posting journal.
  *
  */
 function count(req, res, next) {

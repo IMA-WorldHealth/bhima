@@ -11,6 +11,7 @@
  * @requires transactions
  */
 const db = require('../../../lib/db');
+const debug = require('debug')('voucherTools');
 
 const journal = require('../journal');
 const vouchers = require('../vouchers');
@@ -53,8 +54,7 @@ function correct(req, res, next) {
       response.details = details;
       res.status(201).json(response);
     })
-    .catch(next)
-    .done();
+    .catch(next);
 }
 
 // transactionDetails
@@ -91,7 +91,7 @@ function correctTransaction(transactionDetails, correction, userId) {
       //               as 'CREDIT_NOTE', this isn't strictly true for all corrections and should be updated
       const REVERSAL_TYPE_ID = 10;
 
-      // reversal has been corectly executed; this returns the voucherUuid for this document
+      // reversal has been correctly executed; this returns the voucherUuid for this document
       actions.reversal = { uuid : reversalResult.uuid };
 
       const formatVoucherDetails = {
@@ -107,6 +107,7 @@ function correctTransaction(transactionDetails, correction, userId) {
         //                `createVoucher` end point
         amount : correction.reduce((sum, row) => sum + row.debit, 0),
       };
+
       return vouchers.createVoucher(formatVoucherDetails, userId, transactionDetails.project_id);
     })
     .then((correctionResult) => {
@@ -120,8 +121,8 @@ function correctTransaction(transactionDetails, correction, userId) {
       // internal error handling, undo all potential changes
       return correctionErrorHandler(actions)
         .then(() => {
-          // database has been correctly cleaned up
-          // propegate error back up to HTTP method to return with `next`
+          // database has been cleaned up
+          // propagate error back up to HTTP method to return with `next`
           throw error;
         });
     });
@@ -129,9 +130,10 @@ function correctTransaction(transactionDetails, correction, userId) {
 
 // custom internal error handler to allow multiple transactions across seperate
 // server controllers without bundling them all in the same database transaction
-function correctionErrorHandler(actions) {
+async function correctionErrorHandler(actions) {
   // @TODO(sfount) cleaning up after transactions/ creations turned out to be a lot
   //               more involved than I had originally anticipated
+
   // @TODO(sfount) thoroughly clean test up procedures in integration tests
 
   // ensure all potential operations that have taken place are cleaned up
@@ -139,23 +141,38 @@ function correctionErrorHandler(actions) {
   const cleanupVoucherQuery = 'DELETE FROM voucher WHERE uuid IN (?)';
   const cleanupEntityQuery = 'CALL UndoEntityReversal(?)';
   const voucherIds = Object.keys(actions)
-    .filter((key) => key && actions[key].uuid)
-    .map((key) => db.bid(actions[key].uuid));
+    .filter(key => key && actions[key].uuid)
+    .map(key => db.bid(actions[key].uuid));
 
-  if (voucherIds.length) {
-
-    return db.exec(cleanupVoucherItemsQuery, [voucherIds])
-      .then(() => db.exec(cleanupVoucherQuery, [voucherIds]))
-      .then(() => {
-        // if anything has happened at all successfuly it will be the reversal step
-        // this is the only document that could have been an entity that was reversed
-        return db.exec(cleanupEntityQuery, [db.bid(actions.reversal.uuid)]);
-      })
-      .then(() => transactions.deleteTransaction(actions.reversal.uuid));
+  if (!voucherIds.length) {
+    return;
   }
 
-  // voucher ids is empty - no actions have been carried out and no cleanup is required
-  return Promise.resolve();
+  try {
+    await db.exec(cleanupVoucherItemsQuery, [voucherIds]);
+  } catch (e) {
+    debug('#correctionErrorHandler: voucher items cleanup failed with %j', e);
+  }
+
+  try {
+    await db.exec(cleanupVoucherQuery, [voucherIds]);
+  } catch (e) {
+    debug('#correctionErrorHandler: voucher cleanup failed with %j', e);
+  }
+
+  // if anything has happened at all successfully it will be the reversal step
+  // this is the only document that could have been an entity that was reversed
+  try {
+    await db.exec(cleanupEntityQuery, [db.bid(actions.reversal.uuid)]);
+  } catch (e) {
+    debug('#correctionErrorHandler: voucher cleanup failed with %j', e);
+  }
+
+  try {
+    await transactions.deleteTransaction(actions.reversal.uuid);
+  } catch (e) {
+    debug('#correctionErrorHandler: deleteTransaction failed with %j', e);
+  }
 }
 
 // get full voucher information for both the reversal voucher and the correction voucher

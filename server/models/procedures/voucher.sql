@@ -124,7 +124,6 @@ BEGIN
     SET isCashPayment = (SELECT IFNULL((SELECT 1 FROM cash WHERE cash.uuid = uuid), 0));
   END IF;
 
-
   -- @fixme - why do we have `amount` in the voucher table?
   -- @todo - make only one type of reversal (not cash, credit, or voucher)
 
@@ -178,12 +177,12 @@ END $$
 
 CALL UndoEntityReversal
 
-DESCRIPTION: 
-Reset the reversed = 1 flag if an entity has been incorrectly reversed or an 
+DESCRIPTION:
+Reset the reversed = 1 flag if an entity has been incorrectly reversed or an
 operation that depends on reversal has failed
 
-@TODO(sfount) A generic function for either setting or unsetting this flag would 
-              be prefered - new financial entities would have to be added to both 
+@TODO(sfount) A generic function for either setting or un-setting this flag would
+              be preferred - new financial entities would have to be added to both
               this function and to ReverseTransaction
 */
 CREATE PROCEDURE UndoEntityReversal(
