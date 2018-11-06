@@ -1295,17 +1295,18 @@ CREATE TABLE `permission` (
 DROP TABLE IF EXISTS `entity_type`;
 CREATE TABLE `entity_type` (
   `id` SMALLINT(5) NOT NULL AUTO_INCREMENT,
-  `label` VARCHAR(255) NOT NULL,
+  `label` VARCHAR(190) NOT NULL,
   `translation_key` VARCHAR(255) NULL,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `label` (`label`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `entity`;
 CREATE TABLE `entity` (
   `uuid`               BINARY(16) NOT NULL,
-  `display_name`       VARCHAR(255) NOT NULL,
+  `display_name`       VARCHAR(190) NOT NULL,
   `gender`             CHAR(1) NOT NULL,
   `email`              VARCHAR(150) NULL,
   `phone`              VARCHAR(50) NULL,
@@ -1316,6 +1317,7 @@ CREATE TABLE `entity` (
   `updated_at`         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`reference`),
   UNIQUE KEY `entity_uuid` (`uuid`),
+  UNIQUE KEY `display_name` (`display_name`),
   KEY `entity_type_id` (`entity_type_id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
