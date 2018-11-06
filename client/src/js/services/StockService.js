@@ -71,6 +71,7 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
 
   StockMovementFilters.registerCustomFilters([
     { key : 'is_exit', label : 'STOCK.OUTPUT' },
+    { key : 'reference', label : 'FORM.LABELS.REFERENCE' },
     { key : 'depot_uuid', label : 'STOCK.DEPOT' },
     { key : 'inventory_uuid', label : 'STOCK.INVENTORY' },
     { key : 'label', label : 'STOCK.LOT' },

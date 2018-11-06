@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('StockMovementsController', StockMovementsController);
 
 StockMovementsController.$inject = [
-  'StockService', 'NotifyService', 'uiGridConstants', '$translate',
+  'StockService', 'NotifyService', 'uiGridConstants',
   'StockModalService', 'LanguageService', 'SessionService', 'FluxService',
   'ReceiptModal', 'GridGroupingService', '$state', 'GridColumnService', 'GridStateService', '$httpParamSerializer',
 ];
@@ -12,7 +12,7 @@ StockMovementsController.$inject = [
  * This module is a registry page for stock movements
  */
 function StockMovementsController(
-  Stock, Notify, uiGridConstants, $translate, Modal,
+  Stock, Notify, uiGridConstants, Modal,
   Languages, Session, Flux, ReceiptModal, Grouping, $state, Columns, GridState, $httpParamSerializer
 ) {
   const vm = this;

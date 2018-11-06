@@ -116,9 +116,8 @@ function SearchMovementsModalController(data, Notify, Instance, Flux, $translate
         // To avoid overwriting a real display value, we first determine if the value changed in the current view.
         // If so, we do not use the previous display value.  If the values are identical, we can restore the
         // previous display value without fear of data being out of date.
-        const usePreviousDisplayValue =
-        angular.equals(initialSearchQueries[key], value) &&
-        angular.isDefined(lastDisplayValues[key]);
+        const usePreviousDisplayValue = angular.equals(initialSearchQueries[key], value)
+        && angular.isDefined(lastDisplayValues[key]);
 
         // default to the raw value if no display value is defined
         const displayValue = usePreviousDisplayValue ? lastDisplayValues[key] : displayValues[key] || value;
