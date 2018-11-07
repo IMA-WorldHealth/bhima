@@ -82,6 +82,7 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
       key : 'dateTo', label : 'FORM.LABELS.DATE', comparitor : '<', valueFilter : 'date',
     },
     { key : 'user_id', label : 'FORM.LABELS.USER' },
+    { key : 'documentReference', label : 'TABLE.COLUMNS.REFERENCE' },
   ]);
 
   StockInventoryFilters.registerCustomFilters([

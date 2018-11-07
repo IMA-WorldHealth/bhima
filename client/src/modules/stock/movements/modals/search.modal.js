@@ -12,7 +12,8 @@ function SearchMovementsModalController(data, Notify, Instance, Flux, $translate
   const changes = new Store({ identifier : 'key' });
 
   const searchQueryOptions = [
-    'is_exit', 'depot_uuid', 'inventory_uuid', 'label', 'flux_id', 'dateFrom', 'dateTo', 'user_id',
+    'is_exit', 'depot_uuid', 'inventory_uuid', 'label',
+    'flux_id', 'dateFrom', 'dateTo', 'user_id', 'documentReference',
   ];
 
   vm.filters = data;

@@ -109,6 +109,7 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
 
   filters.dateFrom('expiration_date_from', 'expiration_date', 'l');
   filters.dateTo('expiration_date_to', 'expiration_date', 'l');
+  filters.custom('documentReference', 'dm.text=?');
 
   /**
    * the real entry date for a lot
