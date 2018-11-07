@@ -134,9 +134,6 @@ function update(req, res, next) {
   const data = req.body;
   const transaction = db.transaction();
 
-  console.log('PLUSSsssssss');
-  console.log(data);
-
   const feeCenterData = {
     label : data.label,
     is_principal : data.is_principal,

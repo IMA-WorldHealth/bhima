@@ -47,7 +47,7 @@ describe('Fee Center Management', () => {
     is_principal : 0,
     is_update_reference : 1,
     is_profit : 0,
-    reference_cost_id : 'Section Administration',
+    reference_cost_id : 'Cost Test 3',
   };
 
   const ErrorfeeCenterInsert = {

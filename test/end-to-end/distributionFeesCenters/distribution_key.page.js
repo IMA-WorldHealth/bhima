@@ -1,7 +1,7 @@
 /* global element, by */
 
 /**
- * This class is represents a Fee Center page in term of structure and
+ * This class is represents a Fee Center Distribution Keys Management page in term of structure and
  * behaviour so it is a Fee Center page object
  */
 
@@ -24,7 +24,7 @@ class FeeCenterPage {
   }
 
   /**
-   * send back the number of Fees Centers in the grid
+   * The numbers of transactions related to auxiliary centers to be returned to the main expense centers
    */
   getDistributionKeyCount() {
     return this.rubricGrid
@@ -51,31 +51,31 @@ class FeeCenterPage {
   // Prevent initialization of distribution keys less than 100 percent
   preventGreaterLess100(label) {
     GU.getGridIndexesMatchingText(this.gridId, label)
-    .then(indices => {
-      const { rowIndex } = indices;
+      .then(indices => {
+        const { rowIndex } = indices;
 
-      GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'setting', this.gridId);
-      components.percentageInput.set(19, 'principal_1');
-      components.percentageInput.set(45, 'principal_2');
-      components.percentageInput.set(76, 'principal_3');
+        GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'setting', this.gridId);
+        components.percentageInput.set(19, 'principal_1');
+        components.percentageInput.set(45, 'principal_2');
+        components.percentageInput.set(76, 'principal_3');
 
-      FU.buttons.submit();
-      FU.exists(by.id('validation-error'), true);
+        FU.buttons.submit();
+        FU.exists(by.id('validation-error'), true);
 
-      components.percentageInput.set(1, 'principal_1');
-      components.percentageInput.set(2, 'principal_2');
-      components.percentageInput.set(3, 'principal_3');
+        components.percentageInput.set(1, 'principal_1');
+        components.percentageInput.set(2, 'principal_2');
+        components.percentageInput.set(3, 'principal_3');
 
-      FU.buttons.submit();
-      FU.exists(by.id('validation-error'), true);
+        FU.buttons.submit();
+        FU.exists(by.id('validation-error'), true);
 
-      components.percentageInput.set(33.3, 'principal_1');
-      components.percentageInput.set(33.3, 'principal_2');
-      components.percentageInput.set(33.4, 'principal_3');
+        components.percentageInput.set(33.3, 'principal_1');
+        components.percentageInput.set(33.3, 'principal_2');
+        components.percentageInput.set(33.4, 'principal_3');
 
-      FU.buttons.submit();
-      components.notification.hasSuccess();
-    });
+        FU.buttons.submit();
+        components.notification.hasSuccess();
+      });
   }
 }
 

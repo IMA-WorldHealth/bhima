@@ -25,7 +25,7 @@
       class="form-control"
       ng-model="$ctrl.selectedPeriodFrom"
       name="periodFrom"
-      ng-options="periodFrom as periodFrom.hrLabel for periodFrom in $ctrl.periods"
+      ng-options="periodFrom as periodFrom.hrLabel for periodFrom in $ctrl.periods track by periodFrom.id"
       ng-change="$ctrl.onSelectPeriodFrom($ctrl.selectedPeriodFrom)"
       ng-disabled="!$ctrl.selectedFiscal"
       data-period-from-select
@@ -41,7 +41,7 @@
       class="form-control"
       ng-model="$ctrl.selectedPeriodTo"
       name="periodTo"
-      ng-options="periodTo.hrLabel for periodTo in ($ctrl.periods | filter:$ctrl.filterLaterPeriods)"
+      ng-options="periodTo.hrLabel for periodTo in ($ctrl.periods | filter:$ctrl.filterLaterPeriods) track by periodTo.id"
       ng-change="$ctrl.onSelectPeriodTo($ctrl.selectedPeriodTo)"
       ng-disabled="!$ctrl.selectedFiscal"
       data-period-to-select

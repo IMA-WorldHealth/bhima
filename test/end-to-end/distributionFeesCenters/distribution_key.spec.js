@@ -1,9 +1,9 @@
+const chai = require('chai');
 const helpers = require('../shared/helpers');
 const DistributionKeysPage = require('./distribution_key.page');
-const chai = require('chai');
 
 
-/** configuring helpers**/
+/** configuring helpers* */
 helpers.configure(chai);
 
 const { expect } = chai;
@@ -17,7 +17,7 @@ describe('Distribution keys Management', () => {
   const labelAuxiliary2 = 'Auxiliary 2 (1)';
   const labelAuxiliary3 = 'Auxiliary 3 (1)';
   const distributionKeyElements = 10;
- 
+
   it('Set Distribution key for an Auxiliary Fee Center', () => {
     Page.setDistributionKey(labelAuxiliary1);
   });
