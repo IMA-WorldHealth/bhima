@@ -7,17 +7,16 @@ angular.module('bhima.components')
       id               : '<',
       onSelectCallback : '&',
       required         : '<?',
-      validateTrigger  : '<?',
-      label            : '<?',
+      label            : '@',
     },
   });
 
-EntityTypeSelectController.$inject = ['EntityService', 'NotifyService'];
+EntityTypeSelectController.$inject = ['EntityService', 'NotifyService', '$translate'];
 
 /**
  * EntityType selection component
  */
-function EntityTypeSelectController(Entities, Notify) {
+function EntityTypeSelectController(Entities, Notify, $translate) {
   const $ctrl = this;
 
   $ctrl.$onInit = function onInit() {
@@ -27,7 +26,7 @@ function EntityTypeSelectController(Entities, Notify) {
     Entities.types.read(null)
       .then((types) => {
         $ctrl.types = types.map(type => {
-          type.hrLabel = type.translation_key || type.label;
+          type.hrLabel = $translate.instant(type.translation_key || type.label);
           return type;
         });
 

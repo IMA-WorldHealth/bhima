@@ -2,7 +2,8 @@ angular.module('bhima.controllers')
   .controller('EntityController', EntityController);
 
 EntityController.$inject = [
-  'EntityService', 'ModalService', 'NotifyService', 'uiGridConstants', '$state',
+  'EntityService', 'ModalService', 'NotifyService', 'uiGridConstants',
+  '$state', '$translate',
 ];
 
 /**
@@ -10,7 +11,9 @@ EntityController.$inject = [
  *
  * This controller is responsible of handling entities
  */
-function EntityController(Entity, ModalService, Notify, uiGridConstants, $state) {
+function EntityController(
+  Entity, ModalService, Notify, uiGridConstants, $state, $translate
+) {
   const vm = this;
 
   // bind methods
@@ -56,7 +59,6 @@ function EntityController(Entity, ModalService, Notify, uiGridConstants, $state)
         field : 'translation_key',
         displayName : 'ENTITY.TYPE.LABEL',
         headerCellFilter : 'translate',
-        cellFilter : 'translate',
       },
       {
         field : 'action',
@@ -85,7 +87,10 @@ function EntityController(Entity, ModalService, Notify, uiGridConstants, $state)
     Entity.read()
       .then(data => {
         // format location
-        vm.gridOptions.data = data;
+        vm.gridOptions.data = data.map(entity => {
+          entity.translation_key = $translate.instant(entity.translation_key);
+          return entity;
+        });
       })
       .catch(Notify.handleError)
       .finally(() => {

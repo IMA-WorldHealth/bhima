@@ -1,14 +1,10 @@
 <div ng-form="EntityForm" bh-entity-select ng-model-options="{ updateOn: 'default' }">
   <div
     class="form-group"
-    ng-class="{ 'has-error' : $ctrl.validateTrigger && EntityForm.entity_uuid.$invalid }">
+    ng-class="{ 'has-error' : EntityForm.$submitted && EntityForm.entity_uuid.$invalid }">
 
-    <label ng-hide="$ctrl.label" class="control-label" translate>
-      ENTITY.LABEL
-    </label>
-
-    <label ng-show="$ctrl.label" class="control-label" translate>
-      $ctrl.label
+    <label class="control-label" translate>
+      {{ $ctrl.label }}
     </label>
     
     <ng-transclude></ng-transclude>
@@ -25,7 +21,7 @@
       </ui-select-choices>
     </ui-select>    
 
-    <div class="help-block" ng-messages="EntityForm.entity_uuid.$error" ng-show="$ctrl.validateTrigger">
+    <div class="help-block" ng-messages="EntityForm.entity_uuid.$error" ng-show="EntityForm.$submitted">
       <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
     </div>
   </div>

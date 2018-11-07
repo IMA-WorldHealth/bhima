@@ -37,7 +37,6 @@ function details(req, res, next) {
 
 /**
  * PUT /entities/:uuid
- * return 200 status code instead of 204 because an object is returned for need of tests
  */
 function update(req, res, next) {
   const query = `
@@ -60,7 +59,6 @@ function update(req, res, next) {
 
 /**
  * DELETE /entities/:uuid
- * return 200 status code instead of 204 because an empty array is returned for need of tests
  */
 function remove(req, res, next) {
   const query = `
@@ -68,8 +66,8 @@ function remove(req, res, next) {
   `;
   const buid = db.bid(req.params.uuid);
   db.exec(query, [buid])
-    .then(() => fetchEntity(buid, true))
-    .then((rows) => res.status(200).json(rows))
+    .then(() => fetchEntity(buid))
+    .then(() => res.sendStatus(204))
     .catch(next)
     .done();
 }
@@ -90,9 +88,8 @@ function create(req, res, next) {
 /**
  * @function fetchEntity
  * @param {object} uuid a binary uuid
- * @param {boolean} allowEmpty allow to return an empty array instead of an error
  */
-function fetchEntity(uuid, allowEmpty) {
+function fetchEntity(uuid) {
   const query = `
     SELECT 
       BUID(e.uuid) AS uuid, e.display_name, e.gender, e.email, e.phone, e.address, 
@@ -101,5 +98,5 @@ function fetchEntity(uuid, allowEmpty) {
     JOIN entity_type et ON et.id = e.entity_type_id
     WHERE uuid = ?;
   `;
-  return allowEmpty ? db.exec(query, [uuid]).then(rows => rows) : db.one(query, [uuid]);
+  return db.one(query, [uuid]);
 }

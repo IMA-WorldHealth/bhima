@@ -92,8 +92,8 @@ describe('(/entities) Entities', () => {
   it('DELETE /entities/:uuid delete an entity by its uuid', () => {
     return agent.delete(`/entities/${service.uuid}`)
       .then(res => {
-        expect(res).to.have.status(200);
-        expect(res.body.length).to.be.equal(0);
+        expect(res).to.have.status(404);
+        expect(res.body.code).to.be.equal('ERRORS.NOT_FOUND');
       })
       .catch(helpers.handler);
   });

@@ -3,7 +3,7 @@
   class="form-group" 
   bh-gender-select 
   ng-model-options="{ updateOn: 'default' }"
-  ng-class="{ 'has-error' : $ctrl.validationTrigger && GenderForm.gender.$invalid }">
+  ng-class="{ 'has-error' : GenderForm.$submitted && GenderForm.gender.$invalid }">
 
   <!-- label -->
   <label class="control-label" translate>FORM.LABELS.GENDER</label>
@@ -20,7 +20,7 @@
   </select>
 
   <!-- help block message -->
-  <div class="help-block" ng-messages="GenderForm.gender.$error" ng-show="$ctrl.validateTrigger">
+  <div class="help-block" ng-messages="GenderForm.gender.$error" ng-show="GenderForm.$submitted">
     <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
   </div>
 </div>

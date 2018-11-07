@@ -7,8 +7,7 @@ angular.module('bhima.components')
       entityUuid       : '<',
       onSelectCallback : '&',
       required         : '<?',
-      validateTrigger  : '<?',
-      label            : '<?',
+      label            : '@',
     },
   });
 
@@ -22,6 +21,7 @@ function EntitySelectController(Entities, Notify) {
 
   $ctrl.$onInit = function onInit() {
     $ctrl.loading = true;
+    $ctrl.label = $ctrl.label || 'ENTITY.LABEL';
 
     // load all depots
     Entities.read(null)

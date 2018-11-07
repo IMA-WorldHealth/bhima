@@ -1,7 +1,7 @@
 <div ng-form="EntityTypeForm" bh-entity-type-select ng-model-options="{ updateOn: 'default' }">
   <div
     class="form-group"
-    ng-class="{ 'has-error' : $ctrl.validateTrigger && EntityTypeForm.entity_type_id.$invalid }">
+    ng-class="{ 'has-error' : EntityTypeForm.$submitted && EntityTypeForm.entity_type_id.$invalid }">
 
     <label class="control-label" translate>
       ENTITY.TYPE.LABEL
@@ -17,11 +17,11 @@
         <span translate>{{$select.selected.hrLabel}}</span>
       </ui-select-match>
       <ui-select-choices ui-select-focus-patch repeat="type.id as type in $ctrl.types | filter: { 'label': $select.search }">
-        <span ng-bind-html="type.hrLabel | translate | highlight:$select.search"></span>
+        <span ng-bind-html="type.hrLabel | highlight:$select.search"></span>
       </ui-select-choices>
     </ui-select>    
 
-    <div class="help-block" ng-messages="EntityTypeForm.entity_type_id.$error" ng-show="$ctrl.validateTrigger">
+    <div class="help-block" ng-messages="EntityTypeForm.entity_type_id.$error" ng-show="EntityTypeForm.$submitted">
       <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
     </div>
   </div>

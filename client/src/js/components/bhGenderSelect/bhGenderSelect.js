@@ -6,7 +6,6 @@ angular.module('bhima.components')
       value            : '<',
       onSelectCallback : '&',
       required         : '<?',
-      validateTrigger  : '<?',
     },
   });
 

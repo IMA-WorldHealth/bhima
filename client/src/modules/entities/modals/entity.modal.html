@@ -27,8 +27,7 @@
     <bh-entity-type-select 
       id="EntityModalCtrl.entity.entity_type_id"
       on-select-callback="EntityModalCtrl.onSelectEntityType(type)"
-      required="true"
-      validate-trigger="EntityForm.$submitted">
+      required="true">
       <bh-clear on-clear="ReportConfigCtrl.clear('type')"></bh-clear>
     </bh-entity-type-select>
 
@@ -36,8 +35,7 @@
     <bh-gender-select
       value="EntityModalCtrl.entity.gender"
       on-select-callback="EntityModalCtrl.onSelectGender(gender)"
-      required="true"
-      validate-trigger="EntityForm.$submitted">
+      required="true">
     </bh-gender-select>
 
     <!-- phone -->
