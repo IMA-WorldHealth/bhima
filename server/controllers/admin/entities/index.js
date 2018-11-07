@@ -66,7 +66,6 @@ function remove(req, res, next) {
   `;
   const buid = db.bid(req.params.uuid);
   db.exec(query, [buid])
-    .then(() => fetchEntity(buid))
     .then(() => res.sendStatus(204))
     .catch(next)
     .done();
