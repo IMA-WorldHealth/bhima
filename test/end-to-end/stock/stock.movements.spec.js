@@ -24,6 +24,10 @@ function StockMovementsRegistryTests() {
   const gridId = 'stock-movements-grid';
   const depotGroupingRow = 1;
 
+  const REFERENCE_COLUMN = 2;
+  const FIRST_ROW = 2;
+  let rowReference;
+
   it('finds lot for all time', () => {
     modal.switchToDefaultFilterTab();
     modal.setPeriod('allTime');
@@ -61,6 +65,7 @@ function StockMovementsRegistryTests() {
   it('find movements by lot name', () => {
     modal.setLotLabel('VITAMINE-A');
     FU.modal.submit();
+    rowReference = GU.getCell(gridId, FIRST_ROW, REFERENCE_COLUMN).getText();
     GU.expectRowCount(gridId, 5 + depotGroupingRow);
   });
 
@@ -100,6 +105,13 @@ function StockMovementsRegistryTests() {
     modal.setMovementReason(['Ajustement (Negatif)']);
     modal.submit();
     GU.expectRowCount(gridId, 1 + depotGroupingRow);
+  });
+
+  it('find movements by reference', () => {
+    const VITAMINE_A_LOT_REFERENCE = rowReference;
+    modal.setReference(VITAMINE_A_LOT_REFERENCE);
+    modal.submit();
+    GU.expectRowCount(gridId, 3 + depotGroupingRow);
   });
 }
 
