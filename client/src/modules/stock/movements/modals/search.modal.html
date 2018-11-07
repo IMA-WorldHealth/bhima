@@ -35,6 +35,7 @@
           <!-- reference -->
           <div class="form-group" ng-class="{ 'has-error' : ModalForm.reference.$invalid }">
             <label class="control-label" translate>FORM.LABELS.REFERENCE</label>
+            <bh-clear on-clear="$ctrl.clear('reference')"></bh-clear>
             <input
               name="reference"
               class="form-control"

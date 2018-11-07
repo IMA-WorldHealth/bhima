@@ -17,12 +17,32 @@ describe('(/stock/) The Stock HTTP API', () => {
   });
 
   // create stock movement to patient
-  it('POST /stock/lots/movements distribute lots to patients from a depot', () => agent.post('/stock/lots/movements')
-    .send(shared.movementOutPatient)
-    .then((res) => {
-      helpers.api.created(res);
-    })
-    .catch(helpers.handler));
+  it('POST /stock/lots/movements distribute lots to patients from a depot', () => {
+    let docUuid;
+    let mvtsByDocument;
+    let firstMvt;
+    return agent.post('/stock/lots/movements')
+      .send(shared.movementOutPatient)
+      .then((res) => {
+        helpers.api.created(res);
+        // get details of the movement
+        docUuid = res.body.uuid;
+        return agent.get(`/stock/lots/movements?document_uuid=${docUuid}`);
+      })
+      .then((res) => {
+        mvtsByDocument = res.body;
+        [firstMvt] = mvtsByDocument;
+        return agent.get(`/stock/lots/movements?reference=${firstMvt.documentReference}`);
+      })
+      .then(res => {
+        /**
+         * check if the result with document_uuid is the same with
+         * the reference
+         */
+        expect(res.body).to.be.deep.equal(mvtsByDocument);
+      })
+      .catch(helpers.handler);
+  });
 
   // create stock movement to depot
   it('POST /stock/lots/movements distributes stock lots to a depot', () => agent.post('/stock/lots/movements')
