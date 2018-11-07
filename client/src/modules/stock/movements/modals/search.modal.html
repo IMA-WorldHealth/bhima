@@ -32,6 +32,21 @@
             </div>
           </div>
 
+          <!-- reference -->
+          <div class="form-group" ng-class="{ 'has-error' : ModalForm.reference.$invalid }">
+            <label class="control-label" translate>FORM.LABELS.REFERENCE</label>
+            <bh-clear on-clear="$ctrl.clear('reference')"></bh-clear>
+            <input
+              name="reference"
+              class="form-control"
+              ng-model="$ctrl.searchQueries.reference"
+              ng-change="$ctrl.onSelectReference($ctrl.searchQueries.reference)">
+
+            <div class="help-block" ng-messages="ModalForm.reference.$error">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+
           <!-- depot -->
           <bh-depot-select
             depot-uuid="$ctrl.searchQueries.depot_uuid"

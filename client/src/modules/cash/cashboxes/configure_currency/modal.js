@@ -2,34 +2,44 @@ angular.module('bhima.controllers')
   .controller('CashboxCurrencyModalController', CashboxCurrencyModalController);
 
 CashboxCurrencyModalController.$inject = [
-  '$uibModalInstance', 'AccountService', 'CashboxService', 'currency', 'cashbox', 'data', 'NotifyService',
+  '$uibModalInstance', 'AccountService', 'CashboxService', 'currency',
+  'cashbox', 'NotifyService',
 ];
 
 /**
- * Cashbox Currency Modal Controller
+ * @function CashboxCurrencyModalController
  *
+ * @description
  * This modal is responsible for creating the currency infrastructure behind
- * cashboxes.  Each cashbox must have a currencied account defined for each currency
+ * cashboxes.  Each cashbox must have a currency-ed account defined for each currency
  * supported by the application.
  */
-function CashboxCurrencyModalController(ModalInstance, Accounts, CashBoxes, currency, cashbox, data, Notify) {
+function CashboxCurrencyModalController(ModalInstance, Accounts, Cashboxes, currency, cashbox, Notify) {
   const vm = this;
 
+  // default to an empty array;
+  vm.data = { currency_id : currency.id };
+
   // if a currency matches, we are updating.  Otherwise, we are creating.
-  const currencyIds = cashbox.currencies.map((row) => {
-    return row.currency_id;
-  });
+  const currencyIds = cashbox.currencies.map(row => row.currency_id);
 
   // determine whether we will send a POST or a PUT request to the server
-  const method = (currencyIds.indexOf(currency.id) > -1)
+  const method = currencyIds.includes(currency.id)
     ? 'update'
     : 'create';
 
   // bind data
   vm.currency = currency;
   vm.cashbox = cashbox;
-  vm.data = data;
-  vm.data.currency_id = currency.id;
+
+  Cashboxes.currencies.read(cashbox.id, currency.id)
+    .then(data => {
+      vm.data = data;
+      vm.data.currency_id = currency.id;
+    })
+    // if no accounts found, no problem!  We are in the "create" state then.
+    .catch(angular.noop);
+
   vm.onSelectCashAccount = onSelectCashAccount;
   vm.onSelectTransferAccount = onSelectTransferAccount;
 
@@ -58,8 +68,8 @@ function CashboxCurrencyModalController(ModalInstance, Accounts, CashBoxes, curr
 
     // send either a create or an update request to the server
     const promise = (method === 'create')
-      ? CashBoxes.currencies.create(vm.cashbox.id, vm.data)
-      : CashBoxes.currencies.update(vm.cashbox.id, vm.data);
+      ? Cashboxes.currencies.create(vm.cashbox.id, vm.data)
+      : Cashboxes.currencies.update(vm.cashbox.id, vm.data);
 
     // upon successful completion, close the modal or error out
     return promise

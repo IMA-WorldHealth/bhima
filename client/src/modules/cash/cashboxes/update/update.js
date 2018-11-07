@@ -12,7 +12,7 @@ function CashboxUpdateController($state, Modal, ModalService, Notify, Boxes, Cur
   const CREATE_STATE = 'cashboxes.create';
 
   // temporary method of determining if we're in create state
-  const creating = $state.current.name === CREATE_STATE;
+  const isCreateState = $state.current.name === CREATE_STATE;
 
   const cashboxUuid = $state.params.uuid;
 
@@ -45,22 +45,22 @@ function CashboxUpdateController($state, Modal, ModalService, Notify, Boxes, Cur
 
     const box = angular.copy(vm.box);
 
-    const promise = (creating)
+    const promise = (isCreateState)
       ? Boxes.create(box)
       : Boxes.update(box.id, box);
 
     return promise
       .then(() => {
-        Notify.success(creating ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS');
+        Notify.success(isCreateState ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS');
         $state.go('cashboxes.list', null, { reload : true });
       })
       .catch(Notify.handleError);
   }
 
-  // asnychronously load a cashbox from the server
+  // asynchronously load a cashbox from the server
   function loadCashbox(id) {
     return Boxes.read(id)
-      .then((data) => {
+      .then(data => {
         // bind the cashbox to the view
         vm.box = data;
 
@@ -73,13 +73,11 @@ function CashboxUpdateController($state, Modal, ModalService, Notify, Boxes, Cur
 
   // check if a currency is in the data.currencies array
   function hasCurrency(id) {
-    return vm.box.currencies.some((c) => {
-      return c.currency_id === id;
-    });
+    return vm.box.currencies.some((c) => c.currency_id === id);
   }
 
   function calculateCurrencyDiff() {
-    vm.currencies.forEach((currency) => {
+    vm.currencies.forEach(currency => {
       currency.configured = hasCurrency(currency.id);
     });
   }
@@ -89,7 +87,6 @@ function CashboxUpdateController($state, Modal, ModalService, Notify, Boxes, Cur
    * @todo - should this be in it's own service?
    */
   function configureCurrency(currency) {
-
     const instance = Modal.open({
       templateUrl : 'modules/cash/cashboxes/configure_currency/modal.html',
       controller : 'CashboxCurrencyModalController as CashboxModalCtrl',
@@ -99,11 +96,6 @@ function CashboxUpdateController($state, Modal, ModalService, Notify, Boxes, Cur
       resolve : {
         currency : () => currency,
         cashbox : () => vm.box,
-        data : () => {
-          // catch in case of 404, none specified default to empty object
-          return Boxes.currencies.read(vm.box.id, currency.id)
-            .catch(() => {});
-        },
       },
     });
 

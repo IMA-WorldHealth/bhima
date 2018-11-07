@@ -34,7 +34,6 @@ const barcode = require('../../../lib/barcode');
 const db = require('../../../lib/db');
 const FilterParser = require('../../../lib/filter');
 const BadRequest = require('../../../lib/errors/BadRequest');
-const NotFound = require('../../../lib/errors/NotFound');
 const Debtors = require('../../finance/debtors');
 
 const groups = require('./groups');
@@ -154,8 +153,7 @@ function detail(req, res, next) {
     .then((patient) => {
       res.status(200).json(patient);
     })
-    .catch(next)
-    .done();
+    .catch(next);
 }
 
 /**
@@ -191,8 +189,7 @@ function update(req, res, next) {
     .then((updatedPatient) => {
       res.status(200).json(updatedPatient);
     })
-    .catch(next)
-    .done();
+    .catch(next);
 }
 
 /**
@@ -205,20 +202,17 @@ function update(req, res, next) {
  * @param {String} patientUuid - the patient's unique id hex string
  * @returns {Promise} - the result of the database query
  */
-function lookupPatient(patientUuid) {
-  // convert uuid to patientbase usable binary uuid
+async function lookupPatient(patientUuid) {
   const buid = db.bid(patientUuid);
 
-  let patient;
-
-  // @FIXME(sfount) ALL patient queries should use the same column selection and guarantee the same information
+  // TODO(@sfount) ALL patient queries should use the same column selection and guarantee the same information
   const sql = `
     SELECT BUID(p.uuid) as uuid, p.project_id, BUID(p.debtor_uuid) AS debtor_uuid, p.display_name, p.hospital_no,
       p.sex, p.registration_date, p.email, p.phone, p.dob, p.dob_unknown_date,
       p.health_zone, p.health_area, BUID(p.origin_location_id) as origin_location_id,
-      BUID(p.current_location_id) as current_location_id,
-      CONCAT_WS('.', '${identifiers.PATIENT.key}', proj.abbr, p.reference) AS reference, p.title, p.address_1,
-      p.address_2, p.father_name, p.mother_name, p.religion, p.marital_status, p.profession, p.employer, p.spouse,
+      BUID(p.current_location_id) as current_location_id, em.text AS reference,
+      p.title, p.address_1, p.address_2, p.father_name, p.mother_name,
+      p.religion, p.marital_status, p.profession, p.employer, p.spouse,
       p.spouse_profession, p.spouse_employer, p.notes, p.avatar, proj.abbr, d.text,
       dg.account_id, BUID(dg.price_list_uuid) AS price_list_uuid, dg.is_convention,
       BUID(dg.uuid) as debtor_group_uuid, dg.locked, dg.name as debtor_group_name, u.username,
@@ -229,22 +223,19 @@ function lookupPatient(patientUuid) {
       JOIN debtor_group AS dg ON d.group_uuid = dg.uuid
       JOIN user AS u ON p.user_id = u.id
       JOIN account AS a ON a.id = dg.account_id
+      JOIN entity_map AS em ON p.uuid = em.uuid
     WHERE p.uuid = ?;
   `;
 
-  return db.one(sql, buid, patientUuid, 'patient')
-    .then((data) => {
-      patient = data;
-      _.extend(patient, {
-        barcode : barcode.generate(identifiers.PATIENT.key, patient.uuid),
-      });
+  const patient = await db.one(sql, buid, patientUuid, 'patient');
 
-      return lookupPatientPriceList(buid);
-    })
-    .then(priceList => {
-      patient.price_list_uuid = patient.price_list_uuid || priceList;
-      return patient;
-    });
+  _.extend(patient, {
+    barcode : barcode.generate(identifiers.PATIENT.key, patient.uuid),
+  });
+
+  const priceList = await lookupPatientPriceList(buid);
+  patient.price_list_uuid = patient.price_list_uuid || priceList;
+  return patient;
 }
 
 /**
@@ -255,7 +246,6 @@ function lookupPatient(patientUuid) {
  * list if it exists, or using a random patient group price list if those exist.
  *
  * TODO(@jniles) - how should this logic actually work?
- *
  */
 function lookupPatientPriceList(patientUuid) {
   const sql = `
@@ -275,13 +265,11 @@ function lookupPatientPriceList(patientUuid) {
  *
  * @description
  * This function is used to update the text value of the creditor
- * and debtor tables in case the patient's name was changed
+ * and debtor tables in case the patient's name was changed.
  *
  * @param {String} patientUuid - the patient's unique id hex string
  */
-
-function updatePatientDebCred(patientUuid) {
-  // convert uuid to database usable binary uuid
+async function updatePatientDebCred(patientUuid) {
   const buid = db.bid(patientUuid);
 
   const sql = `
@@ -292,32 +280,42 @@ function updatePatientDebCred(patientUuid) {
     WHERE patient.uuid = ?
   `;
 
-  return db.exec(sql, buid)
-    .then(([patient]) => {
-      db.convert(patient, ['debtorUuid', 'creditorUuid']);
+  const [patient] = await db.exec(sql, buid);
 
-      const debtorText = {
-        text : `Debiteur [${patient.display_name}]`,
-      };
+  db.convert(patient, ['debtorUuid', 'creditorUuid']);
 
-      const creditorText = {
-        text : `Crediteur [${patient.display_name}]`,
-      };
+  const debtorText = {
+    text : `Debiteur [${patient.display_name}]`,
+  };
 
-      const updateCreditor = `UPDATE creditor SET ? WHERE creditor.uuid = ?`;
-      const updateDebtor = `UPDATE debtor SET ? WHERE debtor.uuid = ?`;
+  const creditorText = {
+    text : `Crediteur [${patient.display_name}]`,
+  };
 
-      const transaction = db.transaction();
+  const patientText = {
+    text : `Patient [${patient.display_name}]`,
+  };
 
-      transaction
-        .addQuery(updateDebtor, [debtorText, patient.debtorUuid]);
+  const updateCreditor = `UPDATE creditor SET ? WHERE creditor.uuid = ?`;
+  const updateDebtor = `UPDATE debtor SET ? WHERE debtor.uuid = ?`;
+  const updateEntityMap = `UPDATE entity_map SET text = ? WHERE uuid = ?;`;
 
-      if (patient.creditorUuid) {
-        transaction.addQuery(updateCreditor, [creditorText, patient.creditorUuid]);
-      }
+  const transaction = db.transaction();
 
-      return transaction.execute();
-    });
+  transaction
+    .addQuery(updateDebtor, [debtorText, patient.debtorUuid]);
+
+  if (patient.creditorUuid) {
+    transaction.addQuery(updateCreditor, [creditorText, patient.creditorUuid]);
+  }
+
+  // update entity map tables
+  transaction
+    .addQuery(updateEntityMap, [debtorText.text, patient.debtor_uuid])
+    .addQuery(updateEntityMap, [creditorText.text, patient.creditor_uuid])
+    .addQuery(updateEntityMap, [patientText.text, buid]);
+
+  return transaction.execute();
 }
 
 /**
@@ -332,35 +330,27 @@ function updatePatientDebCred(patientUuid) {
  * @returns {Promise} - the result of the database query
  */
 function lookupByDebtorUuid(debtorUuid) {
-  // convert uuid to database usable binary uuid
   const buid = db.bid(debtorUuid);
 
   const sql = `
     SELECT BUID(p.uuid) as uuid, p.project_id, BUID(p.debtor_uuid) AS debtor_uuid, p.display_name,
       p.hospital_no, p.sex, p.registration_date, p.email, p.phone, p.dob,
-      BUID(p.origin_location_id) as origin_location_id, p.title, p.address_1, p.address_2,
-      CONCAT_WS('.', '${identifiers.PATIENT.key}', proj.abbr, p.reference) AS reference, proj.name AS proj_name,
-      p.father_name, p.mother_name, p.religion, p.marital_status, p.profession, p.employer, p.spouse,
-      p.spouse_profession, p.spouse_employer, p.notes, p.avatar, proj.abbr, d.text,
+      BUID(p.origin_location_id) as origin_location_id, p.title, p.address_1, p.address_2, em.text as reference,
+      proj.name AS proj_name, p.father_name, p.mother_name, p.religion, p.marital_status, p.profession,
+      p.employer, p.spouse, p.spouse_profession, p.spouse_employer, p.notes, p.avatar, proj.abbr, d.text,
       dg.account_id, BUID(dg.price_list_uuid) AS price_list_uuid, dg.is_convention, BUID(dg.uuid) as debtor_group_uuid,
       dg.locked, dg.name as debtor_group_name, u.username, a.number
     FROM patient AS p
-    JOIN project AS proj JOIN debtor AS d JOIN debtor_group AS dg JOIN user AS u JOIN account AS a
+    JOIN project AS proj JOIN debtor AS d JOIN debtor_group AS dg JOIN user AS u JOIN account AS a JOIN entity_map AS em
       ON p.debtor_uuid = d.uuid AND d.group_uuid = dg.uuid
       AND p.project_id = proj.id
       AND p.user_id = u.id
       AND a.id = dg.account_id
+      AND p.uuid = em.uuid
     WHERE p.debtor_uuid = ?;
   `;
 
-  return db.exec(sql, buid)
-    .then((rows) => {
-      if (!rows.length) {
-        throw new NotFound(`Could not find a patient with debtor uuid ${debtorUuid}`);
-      }
-
-      return rows[0];
-    });
+  return db.one(sql, buid, buid, 'debtor');
 }
 
 /**
@@ -419,9 +409,9 @@ function searchByName(req, res, next) {
       BUID(patient.uuid) as uuid, display_name,
       CONCAT_WS('.', '${identifiers.PATIENT.key}', project.abbr, patient.reference) as reference, debtor_group.color
     FROM patient
-    JOIN project ON patient.project_id = project.id
-    JOIN debtor ON patient.debtor_uuid = debtor.uuid
-    JOIN debtor_group ON debtor.group_uuid = debtor_group.uuid
+      JOIN project ON patient.project_id = project.id
+      JOIN debtor ON patient.debtor_uuid = debtor.uuid
+      JOIN debtor_group ON debtor.group_uuid = debtor_group.uuid
     WHERE LOWER(display_name) LIKE ?
     LIMIT ${limit}
   `;
@@ -462,9 +452,9 @@ function find(options) {
   filters.equals('uuid');
 
   // filters for location
-  const orignSql = `(originVillage.name LIKE ?) OR (originSector.name LIKE ?) OR (originProvince.name LIKE ?)`;
-  const params1 = _.fill(Array(3), `%${options.originLocationLabel || ''}%`);
-  filters.custom('originLocationLabel', orignSql, params1);
+  const originNameSql = `(originVillage.name LIKE ?) OR (originSector.name LIKE ?) OR (originProvince.name LIKE ?)`;
+  const originNameParams = _.fill(Array(3), `%${options.originLocationLabel || ''}%`);
+  filters.custom('originLocationLabel', originNameSql, originNameParams);
   // default registration date
   filters.period('period', 'registration_date');
   filters.dateFrom('custom_period_start', 'registration_date');
@@ -480,8 +470,7 @@ function find(options) {
   filters.equals('hospital_no');
   filters.equals('user_id');
 
-  const referenceStatement = `CONCAT_WS('.', '${identifiers.PATIENT.key}', proj.abbr, p.reference) = ?`;
-  filters.custom('reference', referenceStatement);
+  filters.custom('reference', 'em.text = ?');
 
   // @TODO Support ordering query (reference support for limit)?
   filters.setOrder('ORDER BY p.registration_date DESC');
@@ -512,8 +501,7 @@ function patientEntityQuery(detailed) {
   // build the main part of the SQL query
   const sql = `
     SELECT
-      BUID(p.uuid) AS uuid, p.project_id, CONCAT_WS('.', '${identifiers.PATIENT.key}',
-      proj.abbr, p.reference) AS reference, p.display_name, BUID(p.debtor_uuid) as debtor_uuid,
+      BUID(p.uuid) AS uuid, p.project_id, em.text AS reference, p.display_name, BUID(p.debtor_uuid) as debtor_uuid,
       p.sex, p.dob, p.registration_date, BUID(d.group_uuid) as debtor_group_uuid, p.hospital_no,
       p.health_zone, p.health_area, u.display_name as userName, originVillage.name as originVillageName, dg.color,
       originSector.name as originSectorName, dg.name AS debtorGroupName, proj.name AS project_name,
@@ -526,6 +514,7 @@ function patientEntityQuery(detailed) {
       JOIN sector AS originSector ON originVillage.sector_uuid = originSector.uuid
       JOIN province AS originProvince ON originProvince.uuid = originSector.province_uuid
       JOIN user AS u ON p.user_id = u.id
+      JOIN entity_map AS em ON p.uuid = em.uuid
   `;
 
   return sql;

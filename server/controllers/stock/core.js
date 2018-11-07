@@ -102,6 +102,7 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
   filters.equals('label', 'label', 'l');
   filters.equals('is_exit', 'is_exit', 'm');
   filters.equals('flux_id', 'flux_id', 'm', true);
+  filters.equals('reference', 'text', 'dm');
 
   filters.period('defaultPeriod', 'date');
   filters.period('defaultPeriodEntry', 'entry_date', 'l');
