@@ -118,16 +118,15 @@
       "WARN_CURRENCY": "Attention! You are using a currency other than the enterprise currency.  Values on this report are subject to change with changes to the exchange rate and should not be considered final.  Please save a report in the enterprise currency for long term reference."
     },
     "INCOME_EXPENSE_BY_MONTH_REPORT": {
-      "TITLE": "Operating Accounts Report by Month",
+      "TITLE": "Profit and Loss Statement (Monthly)",
       "DESCRIPTION": "Creates a Profit and Loss Statement for the current and the two previous periods.",
       "REMOVE_UNUSED_ACCOUNT": "Remove Unused Accounts"
     },
     "INCOME_EXPENSE_BY_YEAR_REPORT": {
+      "TITLE": "Profit and Loss Statement (Yearly)",
       "DESCRIPTION": "Creates a Profit and Loss Statement for the current and the two previous fiscal years.",
       "REMOVE_UNUSED_ACCOUNT" : "Remove Unused Accounts"
     },
-
-
     "REPORT_ACCOUNTS_MULTIPLE": {
       "TITLE": "Multiple Accounts Report",
       "DESCRIPTION": "This report shows all transactions for a group of accounts given a set time period."

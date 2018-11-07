@@ -109,7 +109,6 @@
       "WARN_MULTIPLE": "N.B. Ce rapport concerne des comptes de produits / charges et s'étend sur plusieurs années fiscales. Les comptes de produits / charges sont remis à 0 au début de chaque exercice financier, le solde cumulatif affiché est destiné aux transactions dans ce délai. Il est recommandé d'utiliser cette déclaration au cours d'un exercice financier unique.",
       "WARN_CURRENCY" : "Attention! Vous utilisez une devise autre que la devise de l'entreprise. Les valeurs de ce rapport sont susceptibles d'être modifiées en fonction du taux de change et ne doivent pas être considérées comme définitives. Veuillez enregistrer un rapport dans la devise de l'entreprise pour référence à long terme."
     },
-    
     "REPORT_ACCOUNTS_MULTIPLE": {
       "TITLE": "Rapports de comptes multiple",
       "DESCRIPTION": "Ce rapport affiche toutes les transactions sur un groupe des comptes pour une période donnée"
