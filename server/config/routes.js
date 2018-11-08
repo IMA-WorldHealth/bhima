@@ -105,6 +105,7 @@ const referenceLookup = require('../lib/referenceLookup');
 const operating = require('../controllers/finance/reports/operating/index');
 
 const department = require('../controllers/admin/department');
+const tags = require('../controllers/admin/tags');
 
 // expose routes to the server.
 exports.configure = function configure(app) {
@@ -775,4 +776,10 @@ exports.configure = function configure(app) {
   app.put('/entities/:uuid', entities.update);
   app.delete('/entities/:uuid', entities.remove);
   app.post('/entities', entities.create);
+  // tags
+  app.get('/tags', tags.read);
+  app.get('/tags/:uuid', tags.detail);
+  app.post('/tags', tags.create);
+  app.delete('/tags/:uuid', tags.delete);
+  app.put('/tags/:uuid', tags.update);
 };
