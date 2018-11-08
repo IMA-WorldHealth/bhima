@@ -7,9 +7,9 @@ function configuration(data) {
   data.references.forEach(reference => {
     data.accountReferences.forEach(accountRef => {
       if (reference.abbr === accountRef.abbr) {
-        reference.debit = accountRef.debit;
-        reference.credit = accountRef.credit;
-        reference.balance = accountRef.balance;
+        reference.debit = reference.is_cost ? accountRef.debit : accountRef.debit * (-1);
+        reference.credit = reference.is_cost ? accountRef.credit : accountRef.credit * (-1);
+        reference.balance = reference.is_cost ? accountRef.balance : accountRef.balance * (-1);
       }
     });
   });
@@ -28,6 +28,11 @@ function configuration(data) {
 
   configured.dataProfitDistributions = data.dataDistributions.filter(item => {
     return !item.is_cost;
+  });
+
+  configured.dataProfitDistributions.forEach(item => {
+    item.debit *= (-1);
+    item.credit *= (-1);
   });
 
   configured.principalFeeCenters = data.references.filter(item => {
@@ -225,8 +230,8 @@ function configuration(data) {
 
     totalGeneralCost += totalCost;
     totalGeneralProfit += totalProfit;
-    pr.results = totalProfit + totalCost;
-    pr.resultCredit = (pr.results < 0);
+    pr.results = totalProfit - totalCost;
+    pr.resultCredit = (pr.results > 0);
   });
 
   configured.totalPrincipalCost = totalPrincipalCost;
@@ -237,9 +242,9 @@ function configuration(data) {
   configured.totalGeneralProfit = totalGeneralProfit;
   configured.ratioCost = totalGeneralCost / configured.allCost;
   configured.ratioProfit = totalGeneralProfit / configured.allProfit;
-  configured.results = totalGeneralProfit + totalGeneralCost;
-  configured.resultCredit = (configured.results < 0);
-  configured.resultDebit = (configured.results > 0);
+  configured.results = totalGeneralProfit - totalGeneralCost;
+  configured.resultCredit = (configured.results > 0);
+  configured.resultDebit = (configured.results < 0);
 
   return configured;
 }
