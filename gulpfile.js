@@ -40,33 +40,33 @@ const paths = {
     ],
     css : ['client/src/css/*.css'],
     vendorJs : [
-      'client/vendor/jquery/dist/jquery.min.js', // jquery
-      'client/vendor/cropper/dist/cropper.js',
+      'node_modules/@bower_components/jquery/dist/jquery.min.js', // jquery
+      'node_modules/@bower_components/cropper/dist/cropper.js',
 
       // Angular
-      'client/vendor/angular/angular.min.js',
-      'client/vendor/angular-messages/angular-messages.min.js',
-      'client/vendor/angular-sanitize/angular-sanitize.min.js',
-      'client/vendor/angular-ui-router/release/angular-ui-router.min.js',
-      'client/vendor/angular-ui-router/release/stateEvents.min.js', // @TODO(rm this?)
-      'client/vendor/angular-bootstrap/ui-bootstrap-tpls.min.js',
-      'client/vendor/angular-ui-grid/ui-grid.min.js',
-      'client/vendor/angular-touch/angular-touch.min.js',
-      'client/vendor/angular-ui-select/dist/select.min.js',
-      'client/vendor/angular-growl-notifications/dist/angular-growl-notifications.min.js',
-      'client/vendor/angular-animate/angular-animate.min.js',
-      'client/vendor/angular-translate/angular-translate.min.js',
-      'client/vendor/angular-translate-loader-static-files/angular-translate-loader-static-files.min.js',
-      'client/vendor/angular-translate-loader-url/angular-translate-loader-url.min.js',
-      'client/vendor/angular-dynamic-locale/dist/tmhDynamicLocale.js',
-      'client/vendor/ng-file-upload/ng-file-upload.min.js',
-      'client/vendor/ngstorage/ngStorage.min.js', // ng-storage
-      'client/vendor/webcam-directive/dist/webcam.min.js', // webcam directive
+      'node_modules/@bower_components/angular/angular.min.js',
+      'node_modules/@bower_components/angular-messages/angular-messages.min.js',
+      'node_modules/@bower_components/angular-sanitize/angular-sanitize.min.js',
+      'node_modules/@bower_components/angular-ui-router/release/angular-ui-router.min.js',
+      'node_modules/@bower_components/angular-ui-router/release/stateEvents.min.js', // @TODO(rm this?)
+      'node_modules/@bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js',
+      'node_modules/@bower_components/angular-ui-grid/ui-grid.min.js',
+      'node_modules/@bower_components/angular-touch/angular-touch.min.js',
+      'node_modules/@bower_components/angular-ui-select/dist/select.min.js',
+      'node_modules/@bower_components/angular-growl-notifications/dist/angular-growl-notifications.min.js',
+      'node_modules/@bower_components/angular-animate/angular-animate.min.js',
+      'node_modules/@bower_components/angular-translate/angular-translate.min.js',
+      'node_modules/@bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files.min.js',
+      'node_modules/@bower_components/angular-translate-loader-url/angular-translate-loader-url.min.js',
+      'node_modules/@bower_components/angular-dynamic-locale/dist/tmhDynamicLocale.js',
+      'node_modules/@bower_components/ng-file-upload/ng-file-upload.min.js',
+      'node_modules/@bower_components/ngstorage/ngStorage.min.js', // ng-storage
+      'node_modules/@bower_components/webcam-directive/dist/webcam.min.js', // webcam directive
 
       // MomentJS
-      'client/vendor/moment/moment.js',
-      'client/vendor/angular-moment/angular-moment.min.js',
-      'client/vendor/moment/locale/fr.js',
+      'node_modules/@bower_components/moment/moment.js',
+      'node_modules/@bower_components/angular-moment/angular-moment.min.js',
+      'node_modules/@bower_components/moment/locale/fr.js',
     ],
 
     // these must be globs ("**" syntax) to retain their folder structures
@@ -83,13 +83,13 @@ const paths = {
         '!client/src/i18n/en/',
       ],
       vendor : [
-        'client/vendor/**/*.{css,ttf,woff,woff2,eot,svg}',
-        '!client/vendor/**/src{,/**}',
-        '!client/vendor/**/js{,/**}',
+        'node_modules/@bower_components/**/*.{css,ttf,woff,woff2,eot,svg}',
+        '!node_modules/@bower_components/**/src{,/**}',
+        '!node_modules/@bower_components/**/js{,/**}',
 
         // @TODO(sfount) find why these are hacked in here and improve the process
-        'client/vendor/moment/moment.js',
-        'client/vendor/JsBarcode/dist/JsBarcode.all.min.js',
+        'node_modules/@bower_components/moment/moment.js',
+        'node_modules/@bower_components/JsBarcode/dist/JsBarcode.all.min.js',
       ],
     },
     less : 'client/src/less/bhima-bootstrap.less',
@@ -143,7 +143,7 @@ gulp.task('css', ['clean-css'], () => {
 // copy custom BHIMA bootstrap files and build build bootsrap LESS, returns
 // single CSS file
 gulp.task('less', () => {
-  const lessConfig = { paths : ['./client/vendor/bootstrap/less'] };
+  const lessConfig = { paths : ['./node_modules/@bower_components/bootstrap/less'] };
 
   return gulp.src(paths.client.less)
     .pipe(gulp.dest(lessConfig.paths[0])) // move less file into actual bootstrap folder, this feels wrong
