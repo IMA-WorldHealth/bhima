@@ -43,7 +43,7 @@ function FiscalController($state, Fiscal, ModalService, Notify, $window) {
   }
 
   // Get the fiscal Year By Date
-  Fiscal.fiscalYearDate({ date : today })
+  Fiscal.getFiscalYearByDate({ date : today })
     .then((current) => {
       vm.current = current;
       vm.currentFiscalYearId = vm.current[0].fiscal_year_id;

@@ -27,10 +27,20 @@
               on-select-fiscal-callback="ReportConfigCtrl.onSelectFiscalYear(fiscalYear)">
             </bh-fiscal-year-select>
 
+            <bh-yes-no-radios
+              label="REPORT.OPTIONS.INCLUDE_CLOSING_BALANCES"
+              id="includeClosingBalances"
+              help-text="REPORT.OPTIONS.INCLUDE_CLOSING_BALANCES_HELP"
+              name="includeClosingBalances"
+              value="ReportConfigCtrl.reportDetails.includeClosingBalances"
+              on-change-callback="ReportConfigCtrl.onChangeClosingBalances(value)">
+            </bh-yes-no-radios>
+
             <bh-period-selection
               fiscal-year-id="ReportConfigCtrl.reportDetails.fiscal_id"
               period-id="ReportConfigCtrl.reportDetails.period_id"
-              on-select-callback="ReportConfigCtrl.onSelectPeriod(period)">
+              on-select-callback="ReportConfigCtrl.onSelectPeriod(period)"
+              disable="ReportConfigCtrl.reportDetails.includeClosingBalances">
             </bh-period-selection>
 
             <bh-yes-no-radios

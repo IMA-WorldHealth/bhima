@@ -3,9 +3,9 @@
 
     <ol class="headercrumb">
       <li class="static" translate>TREE.FINANCE </li>
-      <li 
-        class="title" 
-        ng-if="FiscalCtrl.state.current.name === 'fiscal.list'" 
+      <li
+        class="title"
+        ng-if="FiscalCtrl.state.current.name === 'fiscal.list'"
         translate>TREE.FISCAL_YEAR
       </li>
 
@@ -16,7 +16,7 @@
 
       <!-- edit fiscal year -->
       <li ng-if="FiscalCtrl.state.current.name === 'fiscal.update'" class="title">
-        {{ FiscalCtrl.state.params.label }} 
+        {{ FiscalCtrl.state.params.label }}
         <span class="label label-info" translate>FORM.LABELS.EDIT</span>
       </li>
 
@@ -59,8 +59,6 @@
 
 <div class="flex-content">
   <div class="container">
-
     <ui-view></ui-view>
-
   </div>
 </div>

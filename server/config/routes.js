@@ -233,9 +233,10 @@ exports.configure = function configure(app) {
   app.delete('/fiscal/:id', fiscal.remove);
 
   app.get('/fiscal/:id/balance/:period_number?', fiscal.getBalance);
-  app.get('/fiscal/:id/opening_balance', fiscal.getOpeningBalance);
+  app.get('/fiscal/:id/opening_balance', fiscal.getOpeningBalanceRoute);
   app.post('/fiscal/:id/opening_balance', fiscal.setOpeningBalance);
   app.put('/fiscal/:id/closing', fiscal.closing);
+  app.get('/fiscal/:id/closing_balance', fiscal.getClosingBalanceRoute);
 
   app.get('/fiscal/:id/periods', fiscal.getPeriods);
 

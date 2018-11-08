@@ -30,7 +30,6 @@ function ClosingFYModalCtrl(
     bhConstants.accounts.TITLE,
   ];
 
-
   function customAggregationFn(columnDefs, column) {
     if (vm.AccountTree) {
       const root = vm.AccountTree.getRootNode();
@@ -154,6 +153,8 @@ function ClosingFYModalCtrl(
 
 
   function startup() {
+    vm.loading = true;
+
     Fiscal.read(fiscalYearId)
       .then(fiscal => {
         vm.fiscal = fiscal;
@@ -190,7 +191,10 @@ function ClosingFYModalCtrl(
         // compute the totals
         computeGridTotals();
       })
-      .catch(Notify.handleError);
+      .catch(Notify.handleError)
+      .finally(() => {
+        vm.loading = false;
+      });
   }
 
   function stepForward(form) {

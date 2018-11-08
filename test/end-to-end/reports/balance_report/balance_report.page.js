@@ -12,6 +12,7 @@ class BalanceReportPage {
     components.fiscalYearSelect.set(year);
     components.periodSelection.set(month);
     components.yesNoRadios.set('yes', 'useSeparateDebitsAndCredits');
+    components.yesNoRadios.set('no', 'includeClosingBalances');
     components.yesNoRadios.set('yes', 'shouldPruneEmptyRows');
     components.yesNoRadios.set('yes', 'shouldHideTitleAccounts');
     this.page.preview();

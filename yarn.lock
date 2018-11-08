@@ -3193,6 +3193,7 @@ gulp-if@^2.0.0:
 gulp-iife@^0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/gulp-iife/-/gulp-iife-0.4.0.tgz#5bba4cb951755e0e7b53ad61f406414fc3a3b595"
+  integrity sha512-2XPPYEsCi7sfJyu6LhFWynxgc5cHylHKeGqQo3vp2LWViKm/2eJlsMWX9WvKVzoLkyTf52PwEW0d0X3By+sdFQ==
   dependencies:
     lodash "^4.17.11"
     source-map "^0.5.3"
@@ -4667,6 +4668,7 @@ macos-release@^1.0.0:
 mailgun-js@^0.22.0:
   version "0.22.0"
   resolved "https://registry.yarnpkg.com/mailgun-js/-/mailgun-js-0.22.0.tgz#128942b5e47a364a470791608852bf68c96b3a05"
+  integrity sha512-a2alg5nuTZA9Psa1pSEIEsbxr1Zrmqx4VkgGCQ30xVh0kIH7Bu57AYILo+0v8QLSdXtCyLaS+KVmdCrQo0uWFA==
   dependencies:
     async "^2.6.1"
     debug "^4.1.0"
@@ -5004,6 +5006,7 @@ mochawesome-report-generator@^3.0.1:
 mochawesome@^3.1.0:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/mochawesome/-/mochawesome-3.1.1.tgz#106db6cb75dc6f626bcc559c8752c99ef135ec53"
+  integrity sha512-UzRr6kRIw9UCsJIMuDZh92VKF+3Iu6KQpKHF0lahzmJMUDUjKA4i/7avEURl4a9vPOZWYQCiPRioAAeIpynPpg==
   dependencies:
     babel-runtime "^6.20.0"
     chalk "^2.3.0"

@@ -16,11 +16,17 @@
         {{translate 'REPORT.BALANCE'}}
       </h2>
 
-      <h4 class="text-center">
-        <strong class="text-capitalize">{{date period.fiscalYearStart "MMMM YYYY"}}</strong>
-         -
-        <strong class="text-capitalize">{{date period.end_date "MMMM YYYY"}}</strong>
-      </h4>
+      {{#if includeClosingBalances}}
+        <h4 class="text-center">
+          <strong class="text-capitalize">{{date period.fiscalYearStart "YYYY"}}</strong>
+        </h4>
+      {{else}}
+        <h4 class="text-center">
+          <strong class="text-capitalize">{{date period.fiscalYearStart "MMMM YYYY"}}</strong>
+           -
+          <strong class="text-capitalize">{{date period.end_date "MMMM YYYY"}}</strong>
+        </h4>
+      {{/if}}
 
       <!-- data  -->
       <table class="table table-condensed table-report">

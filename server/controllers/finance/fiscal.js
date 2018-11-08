@@ -13,6 +13,7 @@
 
 const q = require('q');
 const _ = require('lodash');
+const debug = require('debug')('FiscalYear');
 const db = require('../../lib/db');
 const Transaction = require('../../lib/db/transaction');
 const NotFound = require('../../lib/errors/NotFound');
@@ -20,7 +21,6 @@ const BadRequest = require('../../lib/errors/BadRequest');
 const FilterParser = require('../../lib/filter');
 
 const Tree = require('../../lib/Tree');
-const debug = require('debug')('FiscalYear');
 
 // Account Service
 const AccountService = require('./accounts');
@@ -45,7 +45,12 @@ exports.getNumberOfFiscalYears = getNumberOfFiscalYears;
 exports.getDateRangeFromPeriods = getDateRangeFromPeriods;
 exports.getPeriodsFromDateRange = getPeriodsFromDateRange;
 exports.getAccountBalancesByTypeId = getAccountBalancesByTypeId;
+
 exports.getOpeningBalance = getOpeningBalance;
+exports.getOpeningBalanceRoute = getOpeningBalanceRoute;
+exports.getClosingBalance = getClosingBalance;
+exports.getClosingBalanceRoute = getClosingBalanceRoute;
+
 exports.getFiscalYearByPeriodId = getFiscalYearByPeriodId;
 exports.getEnterpriseFiscalStart = getEnterpriseFiscalStart;
 
@@ -138,16 +143,16 @@ function list(req, res, next) {
         return null;
       }
 
-      return q.all(fiscals.map(fiscal => {
-        return db.exec(periodsSql, fiscal.id);
-      }));
-    }).then(periods => {
+      return q.all(fiscals.map(fiscal => db.exec(periodsSql, fiscal.id)));
+    })
+    .then(periods => {
 
       if (includePeriods) {
         fiscals.forEach((fiscal, index) => {
           fiscal.periods = periods[index];
         });
       }
+
       res.status(200).json(fiscals);
     })
     .catch(next)
@@ -309,9 +314,9 @@ function getBalance(req, res, next) {
     .done();
 }
 
-function getOpeningBalance(req, res, next) {
+function getOpeningBalanceRoute(req, res, next) {
   const { id } = req.params;
-  loadOpeningBalance(id)
+  getOpeningBalance(id)
     .then(rows => {
       res.status(200).json(rows);
     })
@@ -438,6 +443,13 @@ function hasPreviousFiscalYear(id) {
     });
 }
 
+/**
+ * @function loadBalanceByPeriodNumber
+ *
+ * @description
+ * This function fetchs the balance for a given fiscal year and periodNumber.
+ * Note that hidden accounts are hidden by default.
+ */
 function loadBalanceByPeriodNumber(fiscalYearId, periodNumber) {
   const sql = `
     SELECT a.id, a.number, a.label, a.type_id, a.label, a.parent, a.locked, a.hidden,
@@ -450,6 +462,7 @@ function loadBalanceByPeriodNumber(fiscalYearId, periodNumber) {
         AND p.number = ${periodNumber}
       GROUP BY pt.account_id
     )s ON a.id = s.account_id
+    WHERE a.hidden = 0
     ORDER BY CONVERT(a.number, CHAR(8)) ASC;
   `;
 
@@ -465,12 +478,12 @@ function loadBalanceByPeriodNumber(fiscalYearId, periodNumber) {
 }
 
 /**
- * @function loadOpeningBalance
+ * @function getOpeningBalance
  *
  * @description
  * Load the opening balance of a fiscal year from period 0 of that fiscal year.
  */
-function loadOpeningBalance(fiscalYearId) {
+function getOpeningBalance(fiscalYearId) {
   return loadBalanceByPeriodNumber(fiscalYearId, 0);
 }
 
@@ -508,11 +521,12 @@ function insertOpeningBalance(fiscalYear, accounts) {
         (?, ?, ?, ?, ?, ?)
         ON DUPLICATE KEY UPDATE credit = VALUES(credit), debit = VALUES(debit);
       `;
-      const dbPromise = periodTotalData.map(item =>
-        db.exec(sql, [
-          item.enterprise_id, item.fiscal_year_id, item.period_id,
-          item.account_id, item.credit, item.debit,
-        ]));
+
+      const dbPromise = periodTotalData.map(item => db.exec(sql, [
+        item.enterprise_id, item.fiscal_year_id, item.period_id,
+        item.account_id, item.credit, item.debit,
+      ]));
+
       return q.all(dbPromise);
     });
 }
@@ -547,6 +561,41 @@ function formatPeriodTotal(account, fiscalYear, periodId) {
  */
 function notNullBalance(array, exception) {
   return exception ? array : array.filter(item => (item.debit !== 0 || item.credit !== 0));
+}
+
+/**
+ * @method getClosingBalanceRoute
+ *
+ * @description
+ * Returns the closing balance for a fiscal year (http interface)
+ *
+ * GET fiscal/:id/closing
+ */
+function getClosingBalanceRoute(req, res, next) {
+  const { id } = req.params;
+
+  getClosingBalance(id)
+    .then(accounts => {
+      res.status(200).json(accounts);
+    })
+    .catch(next);
+}
+
+/**
+ * @function getClosingBalance
+ *
+ * @description
+ * Returns the closing balance for the fiscal year.
+ *
+ */
+async function getClosingBalance(id) {
+  const sql = `
+    SELECT id FROM fiscal_year WHERE previous_fiscal_year_id = ?;
+  `;
+
+  const [year] = await db.exec(sql, id);
+
+  return loadBalanceByPeriodNumber(year.id, 0);
 }
 
 /**
@@ -588,7 +637,7 @@ function getPeriodByFiscal(fiscalYearId) {
     SELECT period.number, period.id, period.start_date, period.end_date, period.locked
     FROM period
     WHERE period.fiscal_year_id = ?
-      AND period.number <> 13
+      AND period.start_date IS NOT NULL
     ORDER BY period.start_date;
   `;
 
@@ -693,7 +742,6 @@ function getPeriods(req, res, next) {
 function getAccountBalancesByTypeId() {
   return `
     SELECT ac.id, ac.number, ac.label, ac.parent, IFNULL(s.amount, 0) AS amount, s.type_id
-
     FROM account as ac LEFT JOIN (
     SELECT SUM(pt.credit - pt.debit) as amount, pt.account_id, act.id as type_id
     FROM period_total as pt
@@ -712,4 +760,3 @@ function getAccountBalancesByTypeId() {
     ORDER BY ac.number
   `;
 }
-
