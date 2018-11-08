@@ -161,6 +161,8 @@ function FiscalClosingBalanceController(
    * Load the balance until a given period.
    */
   function loadFinalBalance(showHiddenAccounts) {
+    vm.loading = false;
+    vm.hasError = false;
     Fiscal.getClosingBalance(fiscalYearId)
       .then(data => {
         let accounts = data;
@@ -186,7 +188,13 @@ function FiscalClosingBalanceController(
 
         vm.gridOptions.data = vm.AccountTree.data;
       })
-      .catch(Notify.handleError);
+      .catch(err => {
+        vm.hasError = true;
+        Notify.handleError(err);
+      })
+      .finally(() => {
+        vm.loading = true;
+      });
   }
 
   /**
