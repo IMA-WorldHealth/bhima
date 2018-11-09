@@ -177,7 +177,7 @@ module.exports = {
    * @param {Element} anchor - a protractor element to search within
    * @returns {Element} - a protractor option element
    */
-  uiSelect: function uiSelect(model, label, anchor) {
+  uiSelect: function uiSelect(model, label, anchor, isMultipleSelection) {
     anchor = anchor || $('body');
 
     // get the HTML <div> element that will trigger the select input
@@ -189,7 +189,10 @@ module.exports = {
     select.click();
 
     // type into the <input> element the searchable value
-    this.input('$select.search', label, select);
+    // only for multiple selection
+    if (isMultipleSelection) {
+      this.input('$select.search', label, select);
+    }
 
     // select the item of the dropdown menu matching the label
     const option = select.element(by.cssContainingText('.dropdown-menu [role="option"]', label));

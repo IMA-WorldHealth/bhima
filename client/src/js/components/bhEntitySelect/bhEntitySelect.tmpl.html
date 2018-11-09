@@ -1,0 +1,28 @@
+<div ng-form="EntityForm" bh-entity-select ng-model-options="{ updateOn: 'default' }">
+  <div
+    class="form-group"
+    ng-class="{ 'has-error' : EntityForm.$submitted && EntityForm.entity_uuid.$invalid }">
+
+    <label class="control-label" translate>
+      {{ $ctrl.label }}
+    </label>
+    
+    <ng-transclude></ng-transclude>
+    <ui-select 
+      name="entity_uuid" 
+      ng-model="$ctrl.entityUuid"
+      on-select="$ctrl.onSelect($item)"
+      ng-required="$ctrl.required">
+      <ui-select-match placeholder="{{ 'FORM.SELECT.ENTITY' | translate }}">
+        <span>{{$select.selected.display_name}}</span>
+      </ui-select-match>
+      <ui-select-choices ui-select-focus-patch repeat="entity.uuid as entity in $ctrl.entities | filter: { 'display_name': $select.search }">
+        <span ng-bind-html="entity.display_name | highlight:$select.search"></span>
+      </ui-select-choices>
+    </ui-select>    
+
+    <div class="help-block" ng-messages="EntityForm.entity_uuid.$error" ng-show="EntityForm.$submitted">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+</div>

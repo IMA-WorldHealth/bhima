@@ -152,5 +152,10 @@ function constantConfig() {
       expense : { label : 'VOUCHERS.SIMPLE.EXPENSE', value : 'expense' },
       other : { label : 'FORM.LABELS.OTHER', value : 'other' },
     },
+    gender : [
+      { translation_key : 'FORM.LABELS.MALE', value : 'M' },
+      { translation_key : 'FORM.LABELS.FEMALE', value : 'F' },
+      { translation_key : 'FORM.LABELS.OTHER', value : 'O' },
+    ],
   };
 }

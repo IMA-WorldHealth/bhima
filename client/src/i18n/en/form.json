@@ -381,7 +381,7 @@
             "FOR": "For",
             "PROFESSION": "Job Title",
             "GAIN_ACCOUNT": "Gain on Exchange Rate Account",
-            "GENDER": "Sex",
+            "GENDER": "Gender",
             "GENERAL_LEDGER": "General Ledger",
             "GLOBAL_QUANTITY": "Global Quantity",
             "GRADE": "Grade",
@@ -716,6 +716,9 @@
             "QUANTITY": "Enter a quantity"
         },
         "SELECT": {
+            "ENTITY":"Select an entity",
+            "ENTITY_TYPE":"Select an entity type",
+            "GENDER":"Select a gender",
             "EMPTY": "Empty",
             "EMPLOYEE": "Select an Employee",
             "EMPLOYEE_CONFIGURATION": "Select Employee Configuration",

@@ -1,0 +1,26 @@
+<div 
+  ng-form="GenderForm" 
+  class="form-group" 
+  bh-gender-select 
+  ng-model-options="{ updateOn: 'default' }"
+  ng-class="{ 'has-error' : GenderForm.$submitted && GenderForm.gender.$invalid }">
+
+  <!-- label -->
+  <label class="control-label" translate>FORM.LABELS.GENDER</label>
+
+  <!-- select -->
+  <select 
+    name="gender"
+    class="form-control" 
+    ng-model="$ctrl.value" 
+    ng-options="g.value as g.hrLabel for g in $ctrl.genderList"
+    ng-change="$ctrl.onSelect($ctrl.value)"
+    ng-required="$ctrl.required">
+    <option value="" disabled translate>FORM.SELECT.GENDER</option>
+  </select>
+
+  <!-- help block message -->
+  <div class="help-block" ng-messages="GenderForm.gender.$error" ng-show="GenderForm.$submitted">
+    <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+  </div>
+</div>

@@ -37,6 +37,7 @@ const iprTax = require('../controllers/admin/iprTax');
 const languages = require('../controllers/admin/languages');
 const locations = require('../controllers/admin/locations');
 const groups = require('../controllers/groups');
+const entities = require('../controllers/admin/entities');
 
 // payroll routes
 const payrollConfig = require('../controllers/payroll/configuration');
@@ -758,4 +759,18 @@ exports.configure = function configure(app) {
   app.post('/departments', department.create);
   app.delete('/departments/:uuid', department.delete);
   app.put('/departments/:uuid', department.update);
+
+  // entities types API
+  app.get('/entities/types', entities.types.list);
+  app.get('/entities/types/:id', entities.types.details);
+  app.put('/entities/types/:id', entities.types.update);
+  app.delete('/entities/types/:id', entities.types.remove);
+  app.post('/entities/types', entities.types.create);
+
+  // entities API
+  app.get('/entities', entities.list);
+  app.get('/entities/:uuid', entities.details);
+  app.put('/entities/:uuid', entities.update);
+  app.delete('/entities/:uuid', entities.remove);
+  app.post('/entities', entities.create);
 };

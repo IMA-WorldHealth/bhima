@@ -379,7 +379,7 @@
             "FROM": "De",
             "FOR": "Pour",
             "GAIN_ACCOUNT": "Compte excedant",
-            "GENDER": "Sexe",
+            "GENDER": "Genre",
             "GENERAL_LEDGER": "Grand Livre",
             "GLOBAL_QUANTITY": "Quantité globale",
             "GRADE": "Grade",
@@ -715,6 +715,9 @@
             "QUANTITY": "Entrer le Quantité"
         },
         "SELECT": {
+            "ENTITY":"Sélectionner une entité",
+            "ENTITY_TYPE":"Sélectionner un type d'entité",
+            "GENDER":"Sélectionner un genre",
             "EMPTY": "Vide",
             "EMPLOYEE": "Sélectionner un Employé",
             "EMPLOYEE_CONFIGURATION": "Sélectionner la configuration des employés",
