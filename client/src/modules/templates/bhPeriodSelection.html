@@ -14,7 +14,8 @@
       name="period"
       ng-options="period as period.hrLabel for period in $ctrl.periods"
       ng-change="$ctrl.onChange($ctrl.selectedPeriod)"
-      required>
+      ng-disabled="$ctrl.disable"
+      ng-required="!$ctrl.disable">
       <option value="" disabled translate>FORM.SELECT.PERIOD</option>
     </select>
     <div class="help-block" ng-messages="PeriodForm.$error" ng-show="PeriodForm.$submitted">

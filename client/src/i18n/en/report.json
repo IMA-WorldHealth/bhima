@@ -118,16 +118,15 @@
       "WARN_CURRENCY": "Attention! You are using a currency other than the enterprise currency.  Values on this report are subject to change with changes to the exchange rate and should not be considered final.  Please save a report in the enterprise currency for long term reference."
     },
     "INCOME_EXPENSE_BY_MONTH_REPORT": {
-      "TITLE": "Operating Accounts Report by Month",
+      "TITLE": "Profit and Loss Statement (Monthly)",
       "DESCRIPTION": "Creates a Profit and Loss Statement for the current and the two previous periods.",
       "REMOVE_UNUSED_ACCOUNT": "Remove Unused Accounts"
     },
     "INCOME_EXPENSE_BY_YEAR_REPORT": {
+      "TITLE": "Profit and Loss Statement (Yearly)",
       "DESCRIPTION": "Creates a Profit and Loss Statement for the current and the two previous fiscal years.",
       "REMOVE_UNUSED_ACCOUNT" : "Remove Unused Accounts"
     },
-
-
     "REPORT_ACCOUNTS_MULTIPLE": {
       "TITLE": "Multiple Accounts Report",
       "DESCRIPTION": "This report shows all transactions for a group of accounts given a set time period."
@@ -195,15 +194,17 @@
     "OPTIONS": {
       "HIDE_TITLE_ACCOUNT": "Hide title accounts",
       "HIDE_TITLE_ACCOUNT_HELP": "If yes, the report will not contain title accounts",
-      "MORE_OPTIONS": "More Options",
-      "USE_ORIGINAL_TRANSACTION_CURRENCY": "Display original transaction currency?",
-      "USE_ORIGINAL_TRANSACTION_CURRENCY_HELP": "If yes, the report will show the recorded currency of the transaction instead of the value in the enterprise's currency.",
-      "TOTALS_CURRENCY": "Select Totals Currency",
-      "TOTALS_CURRENCY_HELP": "This options lets you view the totals in the selected currency by exchanging the totals into the selected currency using today's exchange rate.",
-      "SEPARATE_DEBITS_AND_CREDITS": "Separate Debits and Credits?",
-      "SEPARATE_DEBITS_AND_CREDITS_HELP": "This option breaks out columns from a single positive or negative balance into two columns representing debits and credits.",
-      "REMOVE_ZERO_ROWS": "Hide zero rows?",
-      "REMOVE_ZERO_ROWS_HELP": "This option will remove rows that do not have any data in them.  Produces a more compact output."
+      "MORE_OPTIONS" : "More Options",
+      "USE_ORIGINAL_TRANSACTION_CURRENCY" : "Display original transaction currency?",
+      "USE_ORIGINAL_TRANSACTION_CURRENCY_HELP" : "If yes, the report will show the recorded currency of the transaction instead of the value in the enterprise's currency.",
+      "TOTALS_CURRENCY" : "Select Totals Currency",
+      "TOTALS_CURRENCY_HELP" : "This options lets you view the totals in the selected currency by exchanging the totals into the selected currency using today's exchange rate.",
+      "SEPARATE_DEBITS_AND_CREDITS" : "Separate Debits and Credits?",
+      "SEPARATE_DEBITS_AND_CREDITS_HELP" : "This option breaks out columns from a single positive or negative balance into two columns representing debits and credits.",
+      "REMOVE_ZERO_ROWS" : "Hide zero rows?",
+      "REMOVE_ZERO_ROWS_HELP" : "This option will remove rows that do not have any data in them.  Produces a more compact output.",
+      "INCLUDE_CLOSING_BALANCES" : "Include Closing Balances",
+      "INCLUDE_CLOSING_BALANCES_HELP" : "This option will force the balance sheet to show the entire year's balances, including the closing balances.  Any operations made to close income and expense accounts will be reflected in the balance sheet."
     },
     "OHADA": {
       "BALANCE_SHEET" : "Balance Sheet",

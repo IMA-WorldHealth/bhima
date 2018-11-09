@@ -15,23 +15,23 @@ FiscalService.$inject = ['PrototypeApiService'];
 function FiscalService(Api) {
   const service = new Api('/fiscal/');
 
-  // TODO - rename this something like 'byDate()'
   service.closeFiscalYear = closeFiscalYear;
-  service.fiscalYearDate = fiscalYearDate;
+  service.getFiscalYearByDate = getFiscalYearByDate;
   service.setOpeningBalance = setOpeningBalance;
   service.getOpeningBalance = getOpeningBalance;
+  service.getClosingBalance = getClosingBalance;
   service.getPeriods = getPeriods;
   service.getEnterpriseFiscalStartDate = getEnterpriseFiscalStartDate;
 
   service.getBalance = getBalance;
 
   /**
-   * @method fiscalYearDate
+   * @method getFiscalYearByDate
    *
    * @description
    * Find the fiscal year for a given date.
    */
-  function fiscalYearDate(params) {
+  function getFiscalYearByDate(params) {
     const url = service.url.concat('date');
     return service.$http.get(url, { params })
       .then(service.util.unwrapHttpResponse);
@@ -49,6 +49,7 @@ function FiscalService(Api) {
     return service.$http.get(url, { params })
       .then(service.util.unwrapHttpResponse);
   }
+
 
   /**
    * @function getOpeningBalance
@@ -70,6 +71,20 @@ function FiscalService(Api) {
   function setOpeningBalance(params) {
     const url = service.url.concat(params.id, '/opening_balance/');
     return service.$http.post(url, { params })
+      .then(service.util.unwrapHttpResponse);
+  }
+
+  /**
+   * @method getClosingBalance
+   *
+   * @description
+   * Finds the closing balance for a fiscal year.  Importantly - this method
+   * looks in the period 0 value of the subsequent year, not as a sum of all
+   * periods to date.
+   */
+  function getClosingBalance(fiscalYearId) {
+    const url = service.url.concat(fiscalYearId, '/closing_balance/');
+    return service.$http.get(url)
       .then(service.util.unwrapHttpResponse);
   }
 

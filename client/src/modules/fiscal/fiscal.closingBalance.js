@@ -13,8 +13,8 @@ FiscalClosingBalanceController.$inject = [
  * This controller is responsible for handling the closing balance of a fiscal year.
  */
 function FiscalClosingBalanceController(
-  $state, Accounts, Fiscal, Notify, Session, uiGridConstants,
-  bhConstants, Tree
+  $state, Accounts, Fiscal, Notify, Session, uiGridConstants, bhConstants,
+  Tree
 ) {
 
   const vm = this;
@@ -155,14 +155,15 @@ function FiscalClosingBalanceController(
   }
 
   /**
-   * loadFinalBalance
-   * load the balance until a given period
+   * @method loadFinalBalance
+   *
+   * @description
+   * Load the balance until a given period.
    */
   function loadFinalBalance(showHiddenAccounts) {
-    Fiscal.getBalance(fiscalYearId, {
-      id : fiscalYearId,
-      period_number : vm.fiscal.number_of_months,
-    })
+    vm.loading = false;
+    vm.hasError = false;
+    Fiscal.getClosingBalance(fiscalYearId)
       .then(data => {
         let accounts = data;
 
@@ -187,7 +188,13 @@ function FiscalClosingBalanceController(
 
         vm.gridOptions.data = vm.AccountTree.data;
       })
-      .catch(Notify.handleError);
+      .catch(err => {
+        vm.hasError = true;
+        Notify.handleError(err);
+      })
+      .finally(() => {
+        vm.loading = true;
+      });
   }
 
   /**
