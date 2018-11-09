@@ -8,10 +8,6 @@ const FilterParser = require('../../../lib/filter');
 
 function getDistributed(req, res, next) {
   const options = req.query;
-  console.log('OPTIONSSSS');
-  console.log(options);
-
-
   options.is_cost = options.typeFeeCenter;
   options.limit = 100;
 

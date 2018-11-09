@@ -10,7 +10,6 @@ const NotFound = require('../../../lib/errors/NotFound');
 
 function automatic(req, res, next) {
   const { data } = req.body;
-
   const transUuids = data.map(item => db.bid(item.uuid));
 
   const sql = `

@@ -15,7 +15,7 @@ describe.only('(/fee_center) The /fee_center  API endpoint', () => {
     label : 'Centre de Frais Test',
     is_principal : 1,
     reference_fee_center : [{
-      account_reference_id : 9,
+      account_reference_id : 6,
       is_cost : 1,
     }, {
       account_reference_id : 8,
@@ -28,7 +28,7 @@ describe.only('(/fee_center) The /fee_center  API endpoint', () => {
     label : 'Update Test',
     is_principal : 1,
     reference_fee_center : [{
-      account_reference_id : 9,
+      account_reference_id : 6,
       is_cost : 1,
     }, {
       account_reference_id : 8,
