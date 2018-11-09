@@ -926,3 +926,41 @@ a[disabled] {
 .ima-stat-card-reversed .ui.statistic > .ui-hidable-label {
   color: white;
 }
+
+.voucher-tools-top-spacer {
+  margin-top: 20px;
+}
+
+.voucher-tools-bottom-spacer {
+  margin-bottom: 10px;
+}
+
+.label-voucher-tools {
+  background-color: #9d1cd2;
+}
+
+.badge-voucher-tools {
+  background-color: #9d1cd2;
+  border-radius: 2px;
+}
+
+.voucher-tools-underline {
+  margin-bottom: 10px;
+  margin-top: 2px;
+}
+
+.voucher-tools-header {
+  display: flex;
+}
+
+
+.voucher-tools-header-element:last-child {
+  flex-grow: 1;
+}
+
+.voucher-tools-container {
+  border : 1px solid rgb(46, 109, 164);
+  border : 1px solid rgba(46, 109, 164, 0.8);
+  box-shadow: 0 1px 1px #bdbdbd;
+  padding : 15px;
+}

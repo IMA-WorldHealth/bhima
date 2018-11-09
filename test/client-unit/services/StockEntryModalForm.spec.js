@@ -212,4 +212,3 @@ describe('StockEntryModalForm', () => {
     expect(errors).to.deep.equal([]);
   });
 });
-

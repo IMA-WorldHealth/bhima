@@ -4,7 +4,7 @@
       "ADD_ITEMS": "Add item(s)",
       "CASH_PAYMENT": "Cash Payment",
       "CREATE_SUCCESS": "Successfully posted",
-      "CREATE_ERROR": "An error occurred when post",
+      "CREATE_ERROR": "An error occurred when writing the record.",
       "CREDITOR": "Creditor (C)",
       "DEBTOR": "Debtor (D)",
       "DEB_CRED": "Debtor/Creditor",
@@ -77,6 +77,38 @@
       "STOCK_EXIT":"Sortie de stock",
       "STOCK_ENTRY":"Entrée de stock"
     },
-    "REPORT": "Report"
+    "REPORT": "Report",
+    "TOOLS": {
+      "ACTIONS": "Actions:",
+      "ACTION_AUDIT": "Actions Audit:",
+      "BADGE": "Voucher Tools",
+      "ERRORS": {
+        "NO_INPUT_PROVIDED": "Invalid data supplied to voucher tools."
+      },
+      "REVERSE": {
+        "ACTION": "Reverse",
+        "ACTION_1": "Transaction {{trans_id}} was marked as <code>reversed</code>",
+        "ACTION_2_1": "Voucher document",
+        "ACTION_2_2": "was created with equal and opposite values to reverse transaction {{trans_id}}",
+        "AUTHORISED_BY": "Reversal document was authorised by user:",
+        "CONFIGURED_FOR": "Please confirm that you authorise reversing transaction:",
+        "DESCRIPTION": "Transaction reversed using Administrative Voucher Tools",
+        "DETAILS": "This transaction will be marked in the system as reversed. A new voucher document will be created with equal and opposite values to reverse any movement of assets.",
+        "SUCCESS": "Transaction was reversed successfully",
+        "TITLE": "Reverse Transaction"
+      },
+      "CORRECT": {
+        "ACTION": "Correct",
+        "DETAILS": "This transaction can now be updated with corrections. Submitting this process will create two voucher documents, one reversing the effects of this transaction with equal and opposite values, the second with rows reflected corrections made here.",
+        "CONFIGURED_FOR": "The transaction {{trans_id}} will <b>not be edited</b> as it has already been posted. This will create a reversal voucher followed by a second voucher with the corrections made here. Please confirm that you authorise the above corrections to {{trans_id}}.",
+        "ACTION_1": "Transaction {{trans_id}} was marked as <code>reversed</code>",
+        "ACTION_2_1": "Voucher document",
+        "ACTION_2_2": "was created with equal and opposite values to reverse transaction {{trans_id}}",
+        "ACTION_3_2": "was created with corrections provided by this tool",
+        "AUTHORISED_BY": "Voucher documents were authorised by user:",
+        "SUCCESS": "Transaction reversal and correction documents were written successfully",
+        "TITLE": "Correct Transaction"
+      }
+    }
   }
 }

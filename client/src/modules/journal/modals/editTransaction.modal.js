@@ -4,12 +4,22 @@ angular.module('bhima.controllers')
 JournalEditTransactionController.$inject = [
   'JournalService', 'Store', 'TransactionService', 'TransactionTypeService', '$uibModalInstance',
   'transactionUuid', 'readOnly', 'uiGridConstants', 'uuid', 'util', 'moment',
-  'ModalService', 'CurrencyService', 'ExchangeRateService', 'SessionService',
+  'ModalService', 'CurrencyService', 'ExchangeRateService', 'SessionService', '$timeout',
 ];
 
+/**
+ * @function JournalEditTransactionController
+ *
+ * @description
+ * This controller handles all the code for editing transactions, as well as
+ * viewing and correcting posted ones.
+ *
+ *
+ * TODO(@jniles) - break this out into services that power the form to be tested.
+ */
 function JournalEditTransactionController(
-  Journal, Store, TransactionService, TransactionType, Modal, transactionUuid, readOnly, uiGridConstants,
-  uuid, util, moment, ModalService, CurrencyService, ExchangeRateService, SessionService
+  Journal, Store, Transactions, TransactionType, Modal, transactionUuid, readOnly, uiGridConstants,
+  uuid, util, moment, ModalService, CurrencyService, ExchangeRateService, SessionService, $timeout
 ) {
   const vm = this;
   let gridApi = {};
@@ -19,13 +29,8 @@ function JournalEditTransactionController(
   const addedRows = [];
   const changes = {};
 
-  // must have transaction_type for certain cases
-  const ERROR_MISSING_TRANSACTION_TYPE = 'TRANSACTIONS.MISSING_TRANSACTION_TYPE';
-  const ERROR_IMBALANCED_TRANSACTION = 'TRANSACTIONS.IMBALANCED_TRANSACTION';
-  const ERROR_SINGLE_ACCOUNT_TRANSACTION = 'TRANSACTIONS.SINGLE_ACCOUNT_TRANSACTION';
-  const ERROR_SINGLE_ROW_TRANSACTION = 'TRANSACTIONS.SINGLE_ROW_TRANSACTION';
-  const ERROR_INVALID_DEBITS_AND_CREDITS = 'VOUCHERS.COMPLEX.ERROR_AMOUNT';
-  const ERROR_NEGATIVE_NUMBERS = 'VOUCHERS.COMPLEX.ERROR_NEGATIVE_NUMBERS';
+  // store for caching original rows from the database
+  const cache = {};
 
   const footerTemplate = `
     <div class="ui-grid-cell-contents">
@@ -35,13 +40,18 @@ function JournalEditTransactionController(
       <bh-exchange-rate></bh-exchange-rate>
     </div>`;
 
+  // Integrating optional voucher-tools
+  vm.voucherTools = { isReversing : false, isCorrecting : false };
+  vm.voucherTools.open = openVoucherTools;
+  vm.voucherTools.success = successVoucherTools;
+  vm.voucherTools.close = closeVoucherTools;
+
   // @FIXME(sfount) this is only exposed for the UI grid link component - this should be self contained in the future
   vm.loadingTransaction = false;
   vm.setupComplete = false;
   vm.shared = {};
   vm.enterprise = SessionService.enterprise;
 
-  // @TODO(sfount) apply read only logic to save buttons and grid editing logic
   vm.readOnly = readOnly || false;
 
   vm.validation = {
@@ -144,14 +154,14 @@ function JournalEditTransactionController(
 
   // module dependencies
   TransactionType.read()
-    .then((typeResults) => {
+    .then(typeResults => {
       vm.transactionTypes = new Store({ identifier : 'id' });
       vm.transactionTypes.setData(typeResults);
     });
 
   // this is completely optional - it is just for decoration and interest.
   Journal.getTransactionEditHistory(transactionUuid)
-    .then((editHistory) => {
+    .then(editHistory => {
       const hasPreviousEdits = editHistory.length > 0;
       let mostRecentEdit;
       vm.hasPreviousEdits = hasPreviousEdits;
@@ -166,21 +176,16 @@ function JournalEditTransactionController(
       }
     });
 
-
   vm.loadingTransaction = true;
   Journal.grid(transactionUuid)
-    .then((transaction) => {
+    .then(transaction => {
       vm.setupComplete = true;
 
       verifyEditableTransaction(transaction);
 
-      vm.rows = new Store({ identifier : 'uuid' });
-      vm.rows.setData(transaction);
+      cache.gridQuery = transaction;
+      setupGridRows(cache.gridQuery);
 
-      // @FIXME(sfount) date ng-model hack
-      vm.rows.data.forEach((row) => { row.trans_date = new Date(row.trans_date); });
-      vm.shared = sharedDetails(vm.rows.data[0]);
-      vm.gridOptions.data = vm.rows.data;
     })
     .catch(() => {
       vm.hasError = true;
@@ -189,73 +194,16 @@ function JournalEditTransactionController(
       vm.loadingTransaction = false;
     });
 
-  /**
-   * @function offlineTransactionValidation
-   *
-   * @description
-   * This function validates transactions without doing a round-trip to the server.  It implements some simple checks
-   * such as:
-   *  1. Making sure a transaction has multiple lines
-   *  2. Make sure a transaction is balanced
-   *  3. Making sure a transaction involves at least two accounts
-   *  4. Making sure a transaction has a transaction_type associated with it.
-   *  5. Make sure both the debits and credits are defined and not equal to each other.
-   *
-   * If any of these checks fail, the transaction submission is aborted until the user corrects those mistakes.
-   */
-  function offlineTransactionValidation(rows) {
-    const hasSingleLine = rows.length < 2;
-    if (hasSingleLine) {
-      return ERROR_SINGLE_ROW_TRANSACTION;
-    }
+  function setupGridRows(rows) {
+    vm.rows = new Store({ identifier : 'uuid' });
 
-    let debits = 0;
-    let credits = 0;
+    // ensure rows are replaced if a cached row version is passed
+    vm.rows.setData(angular.copy(rows));
 
-    let i = rows.length;
-    let row;
-
-    while (i--) {
-      row = rows[i];
-
-      const hasTransactionType = typeof row.transaction_type_id === 'number';
-      if (!hasTransactionType) {
-        return ERROR_MISSING_TRANSACTION_TYPE;
-      }
-
-      const hasNegativeNumbers = (row.debit < 0 || row.credit < 0);
-      if (hasNegativeNumbers) {
-        return ERROR_NEGATIVE_NUMBERS;
-      }
-
-      const hasSingleNumericValue = !util.xor(Boolean(row.debit), Boolean(row.credit));
-      if (hasSingleNumericValue) {
-        return ERROR_INVALID_DEBITS_AND_CREDITS;
-      }
-
-      credits += row.credit;
-      debits += row.debit;
-    }
-
-    const uniqueAccountsArray = rows
-      .map((_row) => {
-        return _row.account_id;
-      })
-      .filter((accountId, index, array) => {
-        return array.indexOf(accountId) === index;
-      });
-
-    const hasSingleAccount = uniqueAccountsArray.length === 1;
-    if (hasSingleAccount) {
-      return ERROR_SINGLE_ACCOUNT_TRANSACTION;
-    }
-
-    const hasImbalancedTransaction = Number(debits.toFixed('2')) !== Number(credits.toFixed('2'));
-    if (hasImbalancedTransaction) {
-      return ERROR_IMBALANCED_TRANSACTION;
-    }
-
-    return false;
+    // @FIXME(sfount) date ng-model hack
+    vm.rows.data.forEach(row => { row.trans_date = new Date(row.trans_date); });
+    vm.shared = sharedDetails(vm.rows.data[0]);
+    vm.gridOptions.data = vm.rows.data;
   }
 
 
@@ -266,13 +214,19 @@ function JournalEditTransactionController(
       vm.validation.blockedPostedTransactionEdit = true;
       vm.readOnly = true;
 
-      // notify the grid of options change - the grid should no longer be editable
-      vm.gridOptions.columnDefs.forEach((column) => {
-        column.allowCellFocus = !vm.readOnly;
-        column.enableCellEdit = !vm.readOnly;
-      });
-      gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
+      updateGridColumnEditable(!vm.readOnly);
     }
+  }
+
+  function updateGridColumnEditable(canEdit) {
+    // notify the grid of options change - the grid should no longer be editable
+    vm.gridOptions.columnDefs.forEach((column) => {
+      column.allowCellFocus = canEdit;
+      column.enableCellEdit = canEdit;
+      column.cellEditableCondition = canEdit;
+    });
+
+    gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
   }
 
   // Editing global transaction attributes
@@ -321,7 +275,7 @@ function JournalEditTransactionController(
     }
 
     // run local validation before submission
-    const offlineErrors = offlineTransactionValidation(vm.rows.data);
+    const offlineErrors = Transactions.offlineValidation(vm.rows.data);
     if (offlineErrors) {
       vm.validation.errored = true;
       vm.validation.message = offlineErrors;
@@ -378,7 +332,7 @@ function JournalEditTransactionController(
       .then(ans => {
         if (!ans) { return; }
 
-        TransactionService.remove(vm.shared.record_uuid)
+        Transactions.remove(vm.shared.record_uuid)
           .then(() => {
             const deleteTransactionResult = {
               deleted : true,
@@ -392,9 +346,7 @@ function JournalEditTransactionController(
   };
 
   function getGridRowsUuid() {
-    return vm.rows.data.map((row) => {
-      return row.uuid;
-    });
+    return vm.rows.data.map(row => row.uuid);
   }
 
   // rows - array of rows
@@ -449,12 +401,55 @@ function JournalEditTransactionController(
       'project_id', 'fiscal_year_id', 'currency_id', 'user_id', 'posted', 'period_id', 'description',
     ];
 
+    // for some reason no data has been passed in, no shared attributes are possible
+    if (!row) { return {}; }
+
     const shared = {};
 
-    columns.forEach((column) => {
+    columns.forEach(column => {
       shared[column] = row[column];
     });
 
     return shared;
+  }
+
+  function openVoucherTools(tool) {
+
+    // exception for the isCorrecting tool state
+    // @TODO(sfount) this toggle pattern should be refactored
+    if (tool === 'isCorrecting') {
+      // allow grid editing for the correction voucher tool
+      updateGridColumnEditable(true);
+
+      // @FIXME(sfount) data is removed from the grid to work around a ui-grid bug that
+      //                does not respect the updated column `editable` flag for rows that were already
+      //                in the grid. Unless data is flushed ui-grid intelligently caches the previous
+      //                rows and will not allow them to be edited. If a fix for this issue can be found
+      //                this line will no longer be needed
+      setupGridRows([]);
+      $timeout(() => { setupGridRows(cache.gridQuery); });
+    }
+
+    vm.voucherTools[tool] = true;
+  }
+
+  // voucher tool has fired success
+  function successVoucherTools(tool) {
+    if (tool === 'isCorrecting') {
+      // reset the rows to the cached value on success
+      updateGridColumnEditable(false);
+      $timeout(() => { setupGridRows(cache.gridQuery); });
+    }
+  }
+
+  function closeVoucherTools(tool) {
+    if (tool === 'isCorrecting') {
+      // reset the rows to the cached value whether successful or not - a new
+      // voucher has been made with the correct values. This transaction hasn't
+      // actually been edited and this should reflect that.
+      updateGridColumnEditable(false);
+      $timeout(() => { setupGridRows(cache.gridQuery); });
+    }
+    vm.voucherTools[tool] = false;
   }
 }

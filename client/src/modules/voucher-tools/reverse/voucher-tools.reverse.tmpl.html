@@ -1,0 +1,103 @@
+<div class="voucher-tools-top-spacer">
+  <div class="vouhcer-tools-container">
+    <div class="voucher-tools-header">
+      <div class="voucher-tools-header-element">
+        <span translate>VOUCHERS.TOOLS.REVERSE.TITLE</span>
+      </div>
+
+      <div
+        ng-if="$ctrl.showBadge"
+        class="voucher-tools-header-element text-right">
+        <bh-badge voucher-tools></bh-badge>
+      </div>
+    </div>
+
+    <hr class="voucher-tools-underline">
+    <!-- Internal error handling -->
+    <div class="alert alert-danger pad-alert" ng-if="$ctrl.state.errored">
+      <i class="fa fa-exclamation-circle"></i>
+      <span translate>{{$ctrl.state.flag}}</span>
+    </div>
+
+    <!-- Input explanation details -->
+    <div style="margin-top: 10px;" ng-if="$ctrl.state.input">
+      <div>
+        <p class="text-info">
+          <i class="fa fa-info-circle"></i>
+          <span translate>VOUCHERS.TOOLS.REVERSE.DETAILS</span>
+        </p>
+      </div>
+
+      <div>
+        <p>
+          <span translate>VOUCHERS.TOOLS.REVERSE.CONFIGURED_FOR</span>
+          <b>{{$ctrl.input.trans_id}}</b>
+        </p>
+      </div>
+
+      <!-- Input actions -->
+      <div class="voucher-tools-bottom-spacer">
+        <div><span translate>VOUCHERS.TOOLS.ACTIONS</span></div>
+        <div>
+          <button
+            class="btn btn-default"
+            ng-disabled="$ctrl.state.pending"
+            ng-click="$ctrl.actionSubmitInput()">
+            <i ng-show="$ctrl.state.pending" class="fa fa-circle-o-notch fa-spin"></i>
+            <span translate>FORM.BUTTONS.SUBMIT</span>
+          </button>
+          <button
+            ng-disabled="$ctrl.state.pending"
+            class="btn btn-default"
+            ng-click="$ctrl.onClose()"
+            translate>
+            FORM.BUTTONS.CANCEL
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Output confirmation details -->
+    <div style="margin-top: 10px" ng-if="!$ctrl.state.input && !$ctrl.state.errored">
+      <div class="alert alert-success pad-alert">
+        <i class="fa fa-check-circle"></i>
+        <span translate>VOUCHERS.TOOLS.REVERSE.SUCCESS</span>
+      </div>
+
+      <div>
+        <div><u><span translate>VOUCHERS.TOOLS.ACTION_AUDIT</span></u></div>
+      </div>
+      <div>
+        <ul>
+          <li>
+            <i class="fa fa-check text-success"></i>
+            <span translate translate-values="$ctrl.input" translate-compile translate-sanitize-strategy="'sce'">VOUCHERS.TOOLS.REVERSE.ACTION_1</span>
+          </li>
+          <li>
+            <i class="fa fa-check text-success"></i>
+            <span translate>VOUCHERS.TOOLS.REVERSE.ACTION_2_1</span>
+            <bh-reference-link reference="$ctrl.output.voucher.reference"></bh-reference-link>
+            <span translate translate-values="$ctrl.input" translate-compile translate-sanitize-strategy="'sce'">VOUCHERS.TOOLS.REVERSE.ACTION_2_2</span>
+          </li>
+          <li>
+            <i class="fa fa-check text-success"></i>
+            <span translate>VOUCHERS.TOOLS.REVERSE.AUTHORISED_BY</span>
+            <bh-user id="$ctrl.output.voucher.user_id" fetch></bh-user-id>"
+          </li>
+        </ul>
+      </div>
+
+      <!-- Output actions -->
+      <div class="voucher-tools-bottom-spacer">
+        <div><span translate>VOUCHERS.TOOLS.ACTIONS</span></div>
+        <button
+          ng-click="$ctrl.onClose()"
+          class="btn btn-default"
+          translate>
+          FORM.BUTTONS.CLOSE
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>

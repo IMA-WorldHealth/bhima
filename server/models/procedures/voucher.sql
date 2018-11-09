@@ -124,7 +124,6 @@ BEGIN
     SET isCashPayment = (SELECT IFNULL((SELECT 1 FROM cash WHERE cash.uuid = uuid), 0));
   END IF;
 
-
   -- @fixme - why do we have `amount` in the voucher table?
   -- @todo - make only one type of reversal (not cash, credit, or voucher)
 
@@ -172,4 +171,46 @@ BEGIN
   END IF;
 
   CALL PostVoucher(voucher_uuid);
+END $$
+
+/*
+
+CALL UndoEntityReversal
+
+DESCRIPTION:
+Reset the reversed = 1 flag if an entity has been incorrectly reversed or an
+operation that depends on reversal has failed
+
+@TODO(sfount) A generic function for either setting or un-setting this flag would
+              be preferred - new financial entities would have to be added to both
+              this function and to ReverseTransaction
+*/
+CREATE PROCEDURE UndoEntityReversal(
+  IN uuid BINARY(16)
+)
+BEGIN
+  DECLARE isInvoice BOOLEAN;
+  DECLARE isCashPayment BOOLEAN;
+  DECLARE isVoucher BOOLEAN;
+
+  SET isInvoice = (SELECT IFNULL((SELECT 1 FROM invoice WHERE invoice.uuid = uuid), 0));
+  SET isVoucher = (SELECT IFNULL((SELECT 1 FROM voucher WHERE voucher.uuid = uuid), 0));
+
+  -- avoid a scan of the cash table if we already know this is an invoice reversal
+  IF NOT isInvoice THEN
+    SET isCashPayment = (SELECT IFNULL((SELECT 1 FROM cash WHERE cash.uuid = uuid), 0));
+  END IF;
+
+  IF isInvoice THEN
+    UPDATE invoice SET reversed = 0 WHERE invoice.uuid = uuid;
+  END IF;
+
+  -- make sure we update the cash payment that was reversed
+  IF isCashPayment THEN
+    UPDATE cash SET reversed = 0 WHERE cash.uuid = uuid;
+  END IF;
+
+  IF isVoucher THEN
+    UPDATE voucher SET reversed = 0 where voucher.uuid = uuid;
+  END IF;
 END $$

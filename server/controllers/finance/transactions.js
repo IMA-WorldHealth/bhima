@@ -28,6 +28,7 @@ const safeDeletionMethods = {
   VO : Vouchers.safelyDeleteVoucher,
 };
 
+exports.deleteRoute = deleteRoute;
 exports.deleteTransaction = deleteTransaction;
 exports.commentTransactions = commentTransactions;
 
@@ -48,29 +49,34 @@ function parseDocumentMapString(text) {
 }
 
 /**
- * @function deleteTransation
+ * @function deleteRoute
  *
  * @description
  * This function is the HTTP handler for the delete transactions route.
  *
  * DELETE /transactions/:uuid
  */
-function deleteTransaction(req, res, next) {
+function deleteRoute(req, res, next) {
   const { uuid } = req.params;
 
-  shared.getRecordTextByUuid(uuid)
+  deleteTransaction(uuid)
+    .then(() => {
+      res.sendStatus(201);
+    })
+    .catch(next)
+    .done();
+}
+
+function deleteTransaction(uuid) {
+
+  return shared.getRecordTextByUuid(uuid)
     .then(documentMap => {
       // route to do the correct safe deletion method.
       const safeDeleteFn = parseDocumentMapString(documentMap.text);
 
       // run the safe deletion method
       return safeDeleteFn(uuid);
-    })
-    .then(() => {
-      res.sendStatus(201);
-    })
-    .catch(next)
-    .done();
+    });
 }
 
 

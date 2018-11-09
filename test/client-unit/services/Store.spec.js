@@ -1,6 +1,5 @@
 /* global inject, expect */
-describe('Store', function () {
-  'use strict';
+describe('Store', () => {
 
   let Store;
   let data;
@@ -10,15 +9,15 @@ describe('Store', function () {
   beforeEach(inject(_Store_ => {
     Store = _Store_;
     data = [
-      { id: 1, name: 'Bob' },
-      { id: 2, name: 'Sarah' }
+      { id : 1, name : 'Bob' },
+      { id : 2, name : 'Sarah' },
     ];
   }));
 
   it('constructs a store', () => {
-    let defaultStore = new Store();
-    let customStore = new Store({ identifier : 'x' });
-    let dataStore = new Store({ data : [{ id : 1 }] });
+    const defaultStore = new Store();
+    const customStore = new Store({ identifier : 'x' });
+    const dataStore = new Store({ data : [{ id : 1 }] });
 
     expect(defaultStore.identifier).to.equal('id');
     expect(defaultStore.data).to.be.empty;
@@ -30,7 +29,7 @@ describe('Store', function () {
   });
 
   it('#setData() sets data in a store', () => {
-    let emptyStore = new Store();
+    const emptyStore = new Store();
 
     emptyStore.setData(data);
     expect(emptyStore.data).to.have.length(2);
@@ -41,39 +40,39 @@ describe('Store', function () {
 
 
   it('#get() retrieves items stored in it', () => {
-    let store = new Store({ data : data });
+    const store = new Store({ data });
 
-    let bob = store.get(1);
+    const bob = store.get(1);
     expect(bob.id).to.equal(1);
     expect(bob.name).to.equal('Bob');
 
-    let sarah = store.get(2);
+    const sarah = store.get(2);
     expect(sarah.id).to.equal(2);
     expect(sarah.name).to.equal('Sarah');
 
     // set new data
     store.setData([{ id : 1, name : 'Marshall' }]);
 
-    let marshall = store.get(1);
+    const marshall = store.get(1);
     expect(marshall.name).to.equal('Marshall');
 
     // store should give undefined if the id does not exist
-    let nonexistant = store.get(2);
+    const nonexistant = store.get(2);
     expect(nonexistant).to.be.undefined;
   });
 
   it('#remove() removes items stored in it', () => {
-    let store = new Store({ data : data });
+    const store = new Store({ data });
     expect(store.data).to.have.length(2);
 
-    let sarah = store.get(2);
+    const sarah = store.get(2);
     expect(sarah.id).to.equal(2);
     expect(sarah.name).to.equal('Sarah');
 
     // remove Sarah
     store.remove(2);
     expect(store.data).to.have.length(1);
-    let nonexistant = store.get(2);
+    const nonexistant = store.get(2);
     expect(nonexistant).to.be.undefined;
 
     // should be able to remove all data
@@ -86,11 +85,11 @@ describe('Store', function () {
   });
 
   it('#post() adds items to the store', () => {
-    let store = new Store({ data : data });
+    const store = new Store({ data });
     expect(store.data).to.have.length(2);
 
     // add another item
-    let benjamin = { id : 3, name : 'Benjamin' };
+    const benjamin = { id : 3, name : 'Benjamin' };
     store.post(benjamin);
     expect(store.data).to.have.length(3);
     expect(store.get(3)).to.eql(benjamin);
@@ -104,7 +103,7 @@ describe('Store', function () {
   });
 
   it('#contains() reflects stores contents', () => {
-    let store = new Store({ data : data });
+    const store = new Store({ data });
     expect(store.data).to.have.length(2);
 
     // check the validity of the items
@@ -126,7 +125,7 @@ describe('Store', function () {
   });
 
   it('#clear() removes all data from the store', () => {
-    let store = new Store({ data : data });
+    const store = new Store({ data });
     expect(store.data).to.have.length(2);
 
     store.clear();

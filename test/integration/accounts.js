@@ -1,3 +1,4 @@
+/* eslint no-unused-expressions:off */
 /* global expect, agent */
 
 const helpers = require('./helpers');
@@ -121,7 +122,7 @@ describe('(/accounts) Accounts', () => {
 
         // FIXME(@jniles) - why is this out of balance?!
         expect(res.body.debit).to.equal(115.13);
-        expect(res.body.credit).to.equal(35);
+        expect(res.body.credit).to.equal(125);
         expect(res.body.balance).to.equal(75);
       })
       .catch(helpers.handler);

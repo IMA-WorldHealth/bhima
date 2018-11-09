@@ -1,7 +1,7 @@
 
 /* global inject, expect */
 describe('(service) UniqueValidatorService', () => {
-  'use strict';
+
 
   // these will be injected in the beforeEach() calls
   let UniqueValidatorService;
@@ -13,7 +13,7 @@ describe('(service) UniqueValidatorService', () => {
 
   const targets = {
     exists : '/entity/attribute/123/exists',
-    dne : '/entity/attribute/321/exists'
+    dne : '/entity/attribute/321/exists',
   };
 
   beforeEach(
@@ -26,10 +26,10 @@ describe('(service) UniqueValidatorService', () => {
     $rootScope = _$rootScope_;
 
     $httpBackend.when('GET', targets.exists)
-    .respond(200, true);
+      .respond(200, true);
 
     $httpBackend.when('GET', targets.dne)
-    .respond(200, false);
+      .respond(200, false);
 
   }));
 

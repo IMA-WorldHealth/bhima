@@ -313,7 +313,7 @@ UPDATE enterprise SET `gain_account_id` = 267, `loss_account_id` = 134;
 INSERT INTO user (id, username, password, display_name, email, deactivated) VALUES
   (1, 'superuser', PASSWORD('superuser'), 'Super User', 'SuperUser@test.org', 0),
   (2, 'RegularUser', PASSWORD('RegularUser'), 'Regular User', 'RegUser@test.org', 0),
-  (3, 'NoUserPermissions', PASSWORD('NoUserPermissions'), 'No Permissrepertoireions', 'Invalid@test.org', 0),
+  (3, 'NoUserPermissions', PASSWORD('NoUserPermissions'), 'No Permissrepertoireions', 'Invalid@test.org', 1),
   (4, 'admin', PASSWORD('1'), 'Admin User', 'admin@test.org', 1);
 
 SET @superUser = 1;
@@ -734,7 +734,7 @@ INSERT INTO cash (uuid, project_id, reference, date, debtor_uuid, currency_id, a
   (@cash_payment_2, 1, 2, '2016-01-10 15:33:00', HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), 1, 25, 1, 2, "This will be deleted in tests", 1);
 
 INSERT INTO cash_item (uuid, cash_uuid, amount, invoice_uuid) VALUES
-  (HUID('f21ba860-a4f1-11e7-b598-507b9dd6de91'), @cash_payment, 10, @first_invoice);
+  (HUID('f21ba860-a4f1-11e7-b598-507b9dd6de91'), @cash_payment, 100, @first_invoice);
 
 CALL PostCash(@cash_payment);
 CALL PostCash(@cash_payment_2);
@@ -743,11 +743,14 @@ CALL PostCash(@cash_payment_2);
 SET @first_voucher = HUID('a5a5f950-a4c9-47f0-9a9a-2bfc3123e534');
 SET @second_voucher = HUID('304cfa94-0249-466c-9870-95eb3c221b0a');
 SET @third_voucher = HUID('3688e9ce-85ea-4b5c-9144-688177edcb63');
+SET @fourth_voucher = HUID('19b4d28c-cbb3-11e8-bf7e-7f323238856c');
+
 
 INSERT INTO `voucher` (uuid, `date`, project_id, currency_id, amount, description, user_id, type_id) VALUES
   (@first_voucher, CURRENT_TIMESTAMP, 1, 2, 100, 'Sample voucher data one', 1, 1),
   (@second_voucher, CURRENT_TIMESTAMP, 2, 2, 200, 'Sample voucher data two', 1, 9),
-  (@third_voucher, CURRENT_TIMESTAMP, 3, 1, 300, 'Sample voucher data three', 1, 9);
+  (@third_voucher, CURRENT_TIMESTAMP, 3, 1, 300, 'Sample voucher data three', 1, 9),
+  (@fourth_voucher, CURRENT_TIMESTAMP, 1, 1, 75, 'Fourth Voucher to be Posted', 1, 9);
 
 -- voucher items sample data
 INSERT INTO `voucher_item` VALUES
@@ -756,13 +759,15 @@ INSERT INTO `voucher_item` VALUES
   (HUID('941ae478-b1b2-11e8-9492-6385e74c37a0'), 188, 200, 0, @second_voucher, NULL, NULL),
   (HUID('953defee-b1b2-11e8-ac16-3b802412d42d'), 200, 0, 200, @second_voucher, NULL, NULL),
   (HUID('97ad9a22-b1b2-11e8-acba-6b85fd27d57d'), 125, 300, 0, @third_voucher, @cash_payment, HUID('2f0b966c-b1b3-11e8-8dd2-1715a827ad9b')),
-  (HUID('8ba0571a-b1b2-11e8-8688-fb9547361273'), 117, 0, 300, @third_voucher, NULL, NULL);
-
+  (HUID('8ba0571a-b1b2-11e8-8688-fb9547361273'), 117, 0, 300, @third_voucher, NULL, NULL),
+  (HUID('1033b476-cbbd-11e8-957e-ebcbf45a948a'), 200, 75, 0, @fourth_voucher, NULL, NULL),
+  (HUID('1955afa0-cbbd-11e8-84bd-03f165897e6a'), 188, 0, 75, @fourth_voucher, NULL, NULL);
 
 -- post voucher data to the general ledger
 CALL PostVoucher(@first_voucher);
 CALL PostVoucher(@second_voucher);
 CALL PostVoucher(@third_voucher);
+CALL PostVoucher(@fourth_voucher);
 
 -- zones des santes SNIS
 INSERT INTO `mod_snis_zs` VALUES

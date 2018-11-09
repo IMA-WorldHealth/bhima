@@ -1,0 +1,111 @@
+<div class="voucher-tools-top-spacer">
+  <div class="voucher-tools-container">
+    <div class="voucher-tools-header">
+      <div class="voucher-tools-header-element">
+        <span translate>VOUCHERS.TOOLS.CORRECT.TITLE</span>
+      </div>
+
+      <div
+        ng-if="$ctrl.showBadge"
+        class="voucher-tools-header-element text-right">
+
+        <bh-badge voucher-tools></bh-badge>
+      </div>
+    </div>
+
+    <hr class="voucher-tools-underline">
+
+    <!-- Internal error handling -->
+    <!-- @TODO(sfount) make this a component -->
+    <!-- <bh-error error="$ctrl.state.flag"></bh-error> -->
+    <div class="alert alert-danger pad-alert" ng-if="$ctrl.state.errored">
+      <i class="fa fa-exclamation-circle"></i>
+      <span translate>{{$ctrl.state.flag}}</span>
+    </div>
+
+    <!-- Input explanation details -->
+    <div style="margin-top: 10px;" ng-if="$ctrl.state.input">
+      <div>
+        <p class="text-info">
+          <i class="fa fa-info-circle"></i>
+          <span translate>VOUCHERS.TOOLS.CORRECT.DETAILS</span>
+        </p>
+      </div>
+      <div>
+        <p>
+          <span translate translate-compile translate-values="$ctrl.input.shared" translate-sanitize-strategy="'sce'">VOUCHERS.TOOLS.CORRECT.CONFIGURED_FOR</span>
+        </p>
+      </div>
+
+      <!-- Input actions -->
+      <div class="voucher-tools-bottom-spacer">
+        <div><span translate>VOUCHERS.TOOLS.ACTIONS</span></div>
+        <div>
+          <button
+            ng-disabled="$ctrl.state.pending"
+            ng-click="$ctrl.onActionSubmitInput()"
+            class="btn btn-default">
+            <i ng-show="$ctrl.state.pending" class="fa fa-circle-o-notch fa-spin"></i>
+            <span translate>FORM.BUTTONS.SUBMIT</span>
+          </button>
+          <button
+            ng-disabled="$ctrl.state.pending"
+            class="btn btn-default"
+            ng-click="$ctrl.onClose()"
+            translate>
+            FORM.BUTTONS.CANCEL
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Output confirmation details -->
+    <div style="margin-top: 10px" ng-if="!$ctrl.state.input && !$ctrl.state.errored">
+      <div class="alert alert-success pad-alert">
+        <i class="fa fa-check-circle"></i>
+        <span translate>VOUCHERS.TOOLS.CORRECT.SUCCESS</span>
+      </div>
+
+      <div>
+        <div><u><span translate>VOUCHERS.TOOLS.ACTION_AUDIT</span></u></div>
+      </div>
+      <div>
+        <ul>
+          <li>
+            <i class="fa fa-check text-success"></i>
+            <span translate translate-values="$ctrl.input.shared" translate-compile translate-sanitize-strategy="'sce'">VOUCHERS.TOOLS.CORRECT.ACTION_1</span>
+          </li>
+          <li>
+            <i class="fa fa-check text-success"></i>
+            <span translate>VOUCHERS.TOOLS.CORRECT.ACTION_2_1</span>
+            <bh-reference-link reference="$ctrl.output.details.reversal.reference"></bh-reference-link>
+            <span translate translate-values="$ctrl.input.shared" translate-compile translate-sanitize-strategy="'sce'">VOUCHERS.TOOLS.CORRECT.ACTION_2_2</span>
+          </li>
+          <li>
+            <i class="fa fa-check text-success"></i>
+            <span translate>VOUCHERS.TOOLS.CORRECT.ACTION_2_1</span>
+            <bh-reference-link reference="$ctrl.output.details.correction.reference"></bh-reference-link>
+            <span translate>VOUCHERS.TOOLS.CORRECT.ACTION_3_2</span>
+          </li>
+
+          <li>
+            <i class="fa fa-check text-success"></i>
+            <span translate>VOUCHERS.TOOLS.CORRECT.AUTHORISED_BY</span>
+            <bh-user id="$ctrl.output.details.reversal.user_id" fetch></bh-user-id>"
+          </li>
+        </ul>
+      </div>
+
+      <!-- Output actions -->
+      <div class="voucher-tools-bottom-spacer">
+        <div><span translate>VOUCHERS.TOOLS.ACTIONS</span></div>
+        <button
+          ng-click="$ctrl.onClose()"
+          class="btn btn-default"
+          translate>
+          FORM.BUTTONS.CLOSE
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -136,6 +136,8 @@ function VoucherService(
       return escapedItem;
     });
 
+    // @FIXME(sfount) this uses javascript maths without using something like the
+    //                BigNumber library. Our general default is to do maths in MySQL
     // we pick either the debit or the credit side to assign as the total amount
     // of the voucher
     v.amount = v.items.reduce((sum, row) => {

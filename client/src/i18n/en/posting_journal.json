@@ -6,6 +6,7 @@
     "REMOVE_ROW" : "Remove Row(s)",
     "ROWS" : "Row(s)",
     "EDITING" : "Editing",
+    "CORRECTING" : "Correcting",
     "NO_TRANSACTION_TYPE" : "No assigned transaction type",
     "HAS_PREVIOUS_EDITS" : "Last edit by {{ user }} on {{ date }}",
     "JUSTIFICATION" : "Justification",
