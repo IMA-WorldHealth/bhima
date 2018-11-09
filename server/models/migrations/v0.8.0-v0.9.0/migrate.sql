@@ -938,7 +938,7 @@ INSERT INTO `unit` VALUES
   (223, 'Distribution keys', 'TREE.DISTRIBUTION_KEYS', 'Distribution keys', 218, '/modules/distribution_center/distribution_key', '/distribution_center/distribution_key'); 
 
 -- core BHIMA reports
-INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
+INSERT INTO `report` (`report_key`, `title_key`) VALUES
   ('feeCenter', 'REPORT.FEE_CENTER.TITLE');
 
 DROP TABLE IF EXISTS `distribution_key`;
