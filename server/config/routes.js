@@ -769,7 +769,6 @@ exports.configure = function configure(app) {
   app.delete('/departments/:uuid', department.delete);
   app.put('/departments/:uuid', department.update);
 
-<<<<<<< a0301214fb5bfd039facaa19259b4e877c3ee1ef
   // entities types API
   app.get('/entities/types', entities.types.list);
   app.get('/entities/types/:id', entities.types.details);
@@ -793,8 +792,6 @@ exports.configure = function configure(app) {
 
   app.get('/unit/:roleUuid', unitCtrl.list);
 
-=======
->>>>>>> Resolve some conflict
   // Fees Centers API
   app.get('/fee_center', feeCenter.list);
   app.get('/fee_center/:id', feeCenter.detail);
