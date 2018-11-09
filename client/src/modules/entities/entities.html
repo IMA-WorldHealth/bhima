@@ -13,14 +13,9 @@
       </div>
 
       <div class="toolbar-item">
-        <button
-          type="button"
-          ng-click="EntityCtrl.toggleFilter()"
-          data-method="filter"
-          class="btn btn-default"
-          ng-class="{ 'btn-info' : EntityCtrl.filterEnabled }">
-          <i class="fa fa-filter"></i>
-        </button>
+        <bh-filter-toggle
+          on-toggle="EntityCtrl.toggleFilter()">
+        </bh-filter-toggle>
       </div>
     </div>
   </div>

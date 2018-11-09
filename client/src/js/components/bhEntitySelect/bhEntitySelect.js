@@ -7,7 +7,7 @@ angular.module('bhima.components')
       entityUuid       : '<',
       onSelectCallback : '&',
       required         : '<?',
-      label            : '@',
+      label            : '@?',
     },
   });
 
@@ -20,7 +20,6 @@ function EntitySelectController(Entities, Notify) {
   const $ctrl = this;
 
   $ctrl.$onInit = function onInit() {
-    $ctrl.loading = true;
     $ctrl.label = $ctrl.label || 'ENTITY.LABEL';
 
     // load all depots
@@ -28,10 +27,7 @@ function EntitySelectController(Entities, Notify) {
       .then((entities) => {
         $ctrl.entities = entities;
       })
-      .catch(Notify.handleError)
-      .finally(() => {
-        $ctrl.loading = false;
-      });
+      .catch(Notify.handleError);
   };
 
   // fires the onSelectCallback bound to the component boundary

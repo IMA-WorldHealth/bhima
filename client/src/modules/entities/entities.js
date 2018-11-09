@@ -19,7 +19,6 @@ function EntityController(
   // bind methods
   vm.deleteEntity = deleteEntity;
   vm.editEntity = editEntity;
-  vm.createEntity = createEntity;
   vm.toggleFilter = toggleFilter;
 
   // global variables
@@ -116,11 +115,6 @@ function EntityController(
   // update an existing entity
   function editEntity(entityObject) {
     $state.go('entities.edit', { entity : entityObject });
-  }
-
-  // create a new entity
-  function createEntity() {
-    $state.go('entities.create');
   }
 
   loadEntities();

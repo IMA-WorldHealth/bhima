@@ -11,12 +11,12 @@
     <ui-select 
       name="entity_type_id" 
       ng-model="$ctrl.id"
-      on-select="$ctrl.onSelect($item, $model)"
+      on-select="$ctrl.onSelect($item)"
       ng-required="$ctrl.required">
       <ui-select-match placeholder="{{ 'FORM.SELECT.ENTITY_TYPE' | translate }}">
         <span translate>{{$select.selected.hrLabel}}</span>
       </ui-select-match>
-      <ui-select-choices ui-select-focus-patch repeat="type.id as type in $ctrl.types | filter: { 'label': $select.search }">
+      <ui-select-choices ui-select-focus-patch repeat="type.id as type in $ctrl.types | filter: { 'hrLabel': $select.search }">
         <span ng-bind-html="type.hrLabel | highlight:$select.search"></span>
       </ui-select-choices>
     </ui-select>    

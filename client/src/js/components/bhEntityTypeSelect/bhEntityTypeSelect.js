@@ -7,7 +7,7 @@ angular.module('bhima.components')
       id               : '<',
       onSelectCallback : '&',
       required         : '<?',
-      label            : '@',
+      label            : '@?',
     },
   });
 
@@ -20,7 +20,6 @@ function EntityTypeSelectController(Entities, Notify, $translate) {
   const $ctrl = this;
 
   $ctrl.$onInit = function onInit() {
-    $ctrl.loading = true;
 
     // load all entity types
     Entities.types.read(null)
@@ -31,10 +30,7 @@ function EntityTypeSelectController(Entities, Notify, $translate) {
         });
 
       })
-      .catch(Notify.handleError)
-      .finally(() => {
-        $ctrl.loading = false;
-      });
+      .catch(Notify.handleError);
   };
 
   // fires the onSelectCallback bound to the component boundary
