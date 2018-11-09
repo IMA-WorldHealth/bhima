@@ -27,9 +27,6 @@ set +a
 mysql -h $DB_HOST -u root -e "GRANT ALL PRIVILEGES ON *.* TO '$DB_USER'@'$DB_HOST' IDENTIFIED BY '$DB_PASS' WITH GRANT OPTION;"
 mysql -h $DB_HOST -u root -e "FLUSH PRIVILEGES;"
 
-## install and configure software
-export CHROME_BIN=/usr/bin/google-chrome
-
 # start xvfb will screen size of 1280x1024
 /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16
 
