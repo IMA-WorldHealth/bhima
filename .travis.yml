@@ -30,7 +30,6 @@ after_script: greenkeeper-lockfile-upload
 git:
   depth: 3
 
-#
 cache:
   yarn: true
   directories:
