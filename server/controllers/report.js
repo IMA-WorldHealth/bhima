@@ -240,8 +240,7 @@ function barcodeLookup(req, res, next) {
 
   barcode.reverseLookup(key)
     .then(result => res.send(result))
-    .catch(next)
-    .done();
+    .catch(next);
 }
 
 function barcodeRedirect(req, res, next) {
@@ -255,6 +254,5 @@ function barcodeRedirect(req, res, next) {
       }
       res.redirect(result._redirectPath);
     })
-    .catch(next)
-    .done();
+    .catch(next);
 }

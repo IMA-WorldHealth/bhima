@@ -11,7 +11,7 @@ describe('(/barcode) Barcode Reverse Lookup', () => {
 
   const invalidBarcodeType = 'ZZinvalidcode';
 
-  it(`/barcode/:key looks up Patient for valid barcode key ${validPatientBarcode}`, () => {
+  it(`/barcode/:key looks up patient for valid barcode key ${validPatientBarcode}`, () => {
     return agent.get(`/barcode/${validPatientBarcode}`)
       .then((res) => {
         const patientKeys = ['uuid', 'debtor_uuid', 'display_name', 'hospital_no'];
@@ -36,4 +36,6 @@ describe('(/barcode) Barcode Reverse Lookup', () => {
         helpers.api.errored(res, 400);
       });
   });
+
+
 });
