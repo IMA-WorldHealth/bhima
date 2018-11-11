@@ -656,8 +656,7 @@ function getFinancialStatus(req, res, next) {
 
       res.status(200).send(data);
     })
-    .catch(next)
-    .done();
+    .catch(next);
 }
 
 /**
@@ -671,12 +670,9 @@ function getFinancialStatus(req, res, next) {
 function getDebtorBalance(req, res, next) {
   const uid = req.params.uuid;
   lookupPatient(uid)
-    .then(patient => {
-      return Debtors.balance(patient.debtor_uuid);
-    })
+    .then(patient => Debtors.balance(patient.debtor_uuid))
     .then(([balance]) => {
       res.status(200).send(balance);
     })
-    .catch(next)
-    .done();
+    .catch(next);
 }
