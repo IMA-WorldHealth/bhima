@@ -2081,4 +2081,12 @@ CREATE TABLE `department`(
   FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
+
+CREATE TABLE `tags`(
+  `uuid` BINARY(16) NOT NULL PRIMARY KEY,
+  `name` VARCHAR(100) NOT NULL,
+  UNIQUE KEY  (`name`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+
 SET foreign_key_checks = 1;

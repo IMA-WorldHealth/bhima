@@ -108,6 +108,7 @@
     "STOCK_MOVEMENTS" : "Stock Movements",
     "SUBSIDY" : "Subsidy Management",
     "TRANSACTION_TYPE" : "Transaction Type Management",
+    "TAGS" : "Tags management",
     "USERS" : "User Management",
     "VOUCHER_REGISTRY" : "Voucher Registry",
     "AGED_DEBTORS" : "Aged Debtors Report",

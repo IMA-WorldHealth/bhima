@@ -1,0 +1,40 @@
+<form name="tagsForm" bh-submit="ModalCtrl.submit(tagsForm)" novalidate>
+    <div class="modal-header">
+      <ol class="headercrumb">
+        <li>
+          <span translate>TREE.TAGS</span>
+  
+          <label class="label label-warning text-uppercase" translate>
+            {{ModalCtrl.action}}
+          </label>
+        </li>
+      </ol>
+    </div>
+  
+    <div class="modal-body">
+      <div class="row">
+        <div class="form-group" ng-class="{ 'has-error' : tagsForm.name.$invalid && tagsForm.$submitted }">
+          <label class="control-label" translate>FORM.LABELS.NAME</label>
+          <input type="text" class="form-control col-md-9" name="name" ng-model="ModalCtrl.tags.name" required>
+          <div class="help-block" ng-messages="tagsForm.name.$error" ng-show="tagsForm.$submitted">
+            <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <div class="modal-footer">
+      <button
+        type="button"
+        data-method="cancel"
+        class="btn btn-default"
+        ng-click="ModalCtrl.close()"
+        translate>
+        FORM.BUTTONS.CANCEL
+      </button>
+  
+      <bh-loading-button loading-state="tagsForm.$loading">
+      </bh-loading-button>
+    </div>
+  </form>
+  

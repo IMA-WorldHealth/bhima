@@ -837,3 +837,13 @@ BEGIN
     UPDATE voucher SET reversed = 0 where voucher.uuid = uuid;
   END IF;
 END $$
+
+
+CREATE TABLE `tags`(
+  `uuid` BINARY(16) NOT NULL PRIMARY KEY,
+  `name` VARCHAR(100) NOT NULL,
+  UNIQUE KEY  (`name`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+INSERT INTO unit VALUES
+(217, 'Tags','TREE.TAGS','', 1,'/modules/tags/tags','/tags');
