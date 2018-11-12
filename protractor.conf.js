@@ -14,6 +14,8 @@ helpers.configure(chai);
 const config = {
   specs : ['test/end-to-end/**/*.spec.js'],
 
+  // SELENIUM_PROMISE_MANAGER: false,
+
   framework : 'mocha',
   baseUrl   : 'http://localhost:8080/',
 

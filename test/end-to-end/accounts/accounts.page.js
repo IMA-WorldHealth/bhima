@@ -1,84 +1,86 @@
 /* global element, by, browser  */
+/* eslint class-methods-use-this:off */
 const path = require('path');
 const EC = require('protractor').ExpectedConditions;
 const FU = require('../shared/FormUtils');
 const GU = require('../shared/GridUtils.js');
 const components = require('../shared/components');
+const GridRow = require('../shared/GridRow');
 
+const fixtures = path.resolve(__dirname, '../../fixtures/');
 
-function AccountsPage() {
-  const page = this;
-  const gridId = 'account-grid';
-  const fixtures = path.resolve(__dirname, '../../fixtures/');
+class AccountsPage {
+  constructor() {
+    this.gridId = 'account-grid';
 
-  const getRow = (id) => $(`[data-row="${id}"]`);
-  const openMenu = id => {
-    const cell = $(`[data-action="${id}"]`);
-    cell.$(`[data-action="open-dropdown-menu"]`).click();
-  };
+    this.EditModal = {
+      parent : () => element(by.model('AccountEditCtrl.account.parent')).getText(),
+    };
+  }
 
-  page.expectGridRowsAtLeast = function expectGridRowsAtLeast(numRows) {
-    GU.expectRowCountAbove(gridId, numRows);
-  };
+  getGrid() {
+    return element(by.id(this.gridId));
+  }
 
-  page.expectRowVisible = function isVisible(id) {
-    FU.exists(by.css(`[data-row="${id}"]`), true);
-  };
+  getTitleRow(number) {
+    return this.getGrid().$(`[data-title-row="${number}"]`);
+  }
 
-  page.expectRowHidden = function isHidden(id) {
-    FU.exists(by.css(`[data-row="${id}"]`), false);
-  };
+  expectGridRowsAtLeast(numRows) {
+    GU.expectRowCountAbove(this.gridId, numRows);
+  }
 
-  page.toggleTitleRow = function toggleTitleRow(accountId) {
-    getRow(accountId).$('[data-account-title]').click();
-  };
+  expectRowVisible(number) {
+    FU.exists(by.css(`[data-row="${number}"]`), true);
+  }
 
-  page.openAddChild = function openAddChild(accountId) {
-    getRow(accountId).$('[data-action="add-child"]').click();
-  };
+  expectRowHidden(number) {
+    FU.exists(by.css(`[data-row="${number}"]`), false);
+  }
 
-  page.openEdit = function openEdit(accountId) {
-    // open the menu
-    openMenu(accountId);
+  toggleTitleRow(number) {
+    this.getTitleRow(number)
+      .$('[data-account-title]')
+      .click();
+  }
 
-    // click the right thing
-    const menu = $(`[data-row-menu="${accountId}"`);
-    menu.$(`[data-method="edit"]`).click();
-  };
+  openAddChild(number) {
+    this.getTitleRow(number)
+      .$('[data-action="add-child"]')
+      .click();
+  }
 
-  page.openImportMenu = () => {
+  openEdit(number) {
+    const row = new GridRow(number);
+    row.dropdown().click();
+    row.edit().click();
+  }
+
+  deleteAccount(number) {
+    const row = new GridRow(number);
+    row.dropdown().click();
+    row.remove().click();
+    components.modalAction.confirm();
+  }
+
+  openImportMenu() {
     $('[data-action="open-tools"]').click();
     $('[data-action="import-accounts"]').click();
     browser.wait(EC.visibilityOf(element(by.css('[data-import-modal]'))), 3000, 'Could not find import modal.');
-  };
+  }
 
-  page.chooseImportOption = option => {
+  chooseImportOption(option) {
     FU.radio('ImportAccountsCtrl.option', option);
-  };
+  }
 
-  page.uploadFile = fileToUpload => {
+  uploadFile(fileToUpload) {
     const absolutePath = path.resolve(fixtures, fileToUpload);
     element(by.id('import-input')).sendKeys(absolutePath);
-  };
+  }
 
-  page.EditModal = {
-    parent : () => element(by.model('AccountEditCtrl.account.parent')).getText(),
-  };
-
-  page.toggleBatchCreate = function toggleBatchCreate() {
+  toggleBatchCreate() {
     element(by.model('AccountEditCtrl.batchCreate')).click();
-  };
-
-  page.deleteAccount = function deleteAccount(accountId) {
-    // open the menu
-    openMenu(accountId);
-
-    // click the right thing
-    const menu = $(`[data-row-menu="${accountId}"`);
-    menu.$(`[data-method="delete"]`).click();
-
-    components.modalAction.confirm();
-  };
+  }
 }
 
 module.exports = AccountsPage;

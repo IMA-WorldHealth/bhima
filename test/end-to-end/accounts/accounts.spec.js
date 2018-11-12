@@ -15,22 +15,21 @@ describe('Account Management', () => {
   const OHADA_ACCOUNTS_CSV_CHARACTERS_FILE = 'ohada-accounts-characters.csv';
   const BAD_OHADA_ACCOUNTS_CSV_FILE = 'bad-ohada-accounts.csv';
 
-  // this is an account at the top of the grid - until this test is improved it relies
-  // on the account being visible to verify each test
+  // this is an account at the top of the grid - until this test is improved it
+  // relies on the account being visible to verify each test
   const assetAccountGroup = {
-    id : 9,
-    child_id : 74, // this is an id of a child account in the group with id 9
+    number : 10,
+    child_number : 105, // this is the number ofthe  child account in the group
   };
 
   const account = {
-    id : 90,
     number : '10911010',
-    type : 'Titre',
-    label : 'Actionnaire, Capital souscrit, non appelé *',
+    type : 'Capital',
+    label : 'Compte Actionnaire, Capital souscrit, non appelé',
     parent : { number : '1091' },
   };
 
-  const DELETE_ACCOUNT_ID = 87;
+  const DELETE_ACCOUNT_NUMBER = 10541010;
 
   const page = new AccountsPage();
 
@@ -39,20 +38,22 @@ describe('Account Management', () => {
   });
 
   it('expands and collapses title accounts on title click', () => {
-    page.expectRowVisible(assetAccountGroup.child_id);
-    page.toggleTitleRow(assetAccountGroup.id);
-    page.expectRowHidden(assetAccountGroup.child_id);
-    page.toggleTitleRow(assetAccountGroup.id);
+    page.expectRowVisible(assetAccountGroup.child_number);
+    page.toggleTitleRow(assetAccountGroup.number);
+    page.expectRowHidden(assetAccountGroup.child_number);
+    page.toggleTitleRow(assetAccountGroup.number);
   });
 
   it('create state populates parent field through in-line create', () => {
-    page.openAddChild(account.id);
+    page.openAddChild(account.parent.number);
 
     // this relies on the account select to display the account with account number
     expect(page.EditModal.parent()).to.eventually.include(account.parent.number);
+    FU.modal.cancel();
   });
 
   it('creates a single account', () => {
+    page.openAddChild(account.parent.number);
     FU.input('AccountEditCtrl.account.number', '41111019');
     FU.input('AccountEditCtrl.account.label', 'IMA World Health Account');
 
@@ -64,11 +65,11 @@ describe('Account Management', () => {
   });
 
   it('edit state populates account data on clicking edit', () => {
-    page.openEdit(account.id);
-    expect(element(by.id('number-static')).getText()).to.eventually.equal(String(account.parent.number));
+    page.openEdit(account.number);
+    expect(element(by.id('number-static')).getText()).to.eventually.equal(String(account.number));
 
     // @todo removed to allow types to be updated - this should be reintroduced
-    // expect(element(by.id('type-static')).getText()).to.eventually.equal(account.type);
+    expect(element(by.id('type-static')).getText()).to.eventually.equal(account.type);
     expect(element(by.model('AccountEditCtrl.account.label')).getAttribute('value')).to.eventually.equal(account.label);
   });
 
@@ -131,12 +132,12 @@ describe('Account Management', () => {
   it('can delete a specific account', () => {
     // FIXME(@jniles) - account page does not refresh the grid on updates
     browser.refresh();
-    page.deleteAccount(DELETE_ACCOUNT_ID);
+    page.deleteAccount(DELETE_ACCOUNT_NUMBER);
     components.notification.hasSuccess();
   });
 
   it('cannot delete an account with children', () => {
-    page.deleteAccount(assetAccountGroup.id);
+    page.deleteAccount(assetAccountGroup.number);
     components.notification.hasError();
   });
 
