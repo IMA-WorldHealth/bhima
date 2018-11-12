@@ -43,6 +43,7 @@ module.exports = createInvoice;
  * ids.
  */
 function createInvoice(invoiceDetails, hasCreditorBalance, prepaymentDescription) {
+
   const transaction = db.transaction();
   const invoiceUuid = db.bid(invoiceDetails.uuid || util.uuid());
 

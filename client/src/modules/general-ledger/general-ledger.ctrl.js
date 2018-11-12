@@ -21,6 +21,7 @@ function GeneralLedgerController(
   const vm = this;
   const cacheKey = 'GeneralLedger';
   let columns = [];
+  vm.displayNames = [];
   vm.year = {};
   vm.accounts = [];
   vm.toggleHideTitleAccount = toggleHideTitleAccount;
@@ -269,6 +270,7 @@ function GeneralLedgerController(
     });
 
     vm.gridOptions.columnDefs = [...newColumns, actions];
+    vm.displayNames = columnConfig.getDisplayNames();
   }
 
 

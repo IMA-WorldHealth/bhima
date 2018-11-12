@@ -16,12 +16,15 @@ function GeneralLedgerService(Api, $httpParamSerializer, Languages, Session) {
   service.download = download;
   service.openAccountReport = openAccountReport;
 
-  function download(type, filters, label) {
+  function download(type, filters, label, displayNames, renameKeys) {
     const filterOpts = filters;
     if (filters) {
       filters.fiscal_year_label = label;
     }
-    const defaultOpts = { renderer : type, lang : Languages.key };
+
+    const defaultOpts = {
+      renderer : type, lang : Languages.key, displayNames, renameKeys,
+    };
 
     // combine options
     const options = angular.merge(defaultOpts, filterOpts);
