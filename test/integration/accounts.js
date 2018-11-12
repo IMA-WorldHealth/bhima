@@ -122,9 +122,8 @@ describe('(/accounts) Accounts', () => {
 
         // FIXME(@jniles) - why is this out of balance?!
         expect(res.body.debit).to.equal(376.88);
-        expect(res.body.credit).to.equal(45);
+        expect(res.body.credit).to.equal(135);
         expect(res.body.balance).to.equal(256.62);
-        test(Fee Center)
       })
       .catch(helpers.handler);
   });
