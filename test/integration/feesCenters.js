@@ -7,7 +7,7 @@ const helpers = require('./helpers');
  *
  * This test suite implements full CRUD on the /fee_center  HTTP API endpoint.
  */
-describe.only('(/fee_center) The /fee_center  API endpoint', () => {
+describe('(/fee_center) The /fee_center  API endpoint', () => {
   // Fee Center we will add during this test suite.
 
   const feeCenter = {

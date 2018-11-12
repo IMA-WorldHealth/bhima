@@ -107,6 +107,8 @@ const operating = require('../controllers/finance/reports/operating/index');
 const department = require('../controllers/admin/department');
 const tags = require('../controllers/admin/tags');
 
+const feeCenter = require('../controllers/finance/feeCenter');
+
 const distributionConfiguration = require('../controllers/finance/distributionFeeCenter/configuration');
 const distributionGetDistributed = require('../controllers/finance/distributionFeeCenter/getDistributed');
 const distributionProceed = require('../controllers/finance/distributionFeeCenter/proceed');
@@ -743,10 +745,6 @@ exports.configure = function configure(app) {
 
   app.get('/reports/finance/operating', operating.document);
 
-  // roles
-  app.get('/roles', rolesCtrl.list);
-  app.get('/roles/:uuid', rolesCtrl.detail);
-
   // TODO(@jniles) - migrate this to the roles controller
   app.get('/roles/:uuid/units', rolesCtrl.units);
 
@@ -761,9 +759,6 @@ exports.configure = function configure(app) {
   app.post('/roles/assignTouser', rolesCtrl.assignRolesToUser);
   app.post('/roles/actions', rolesCtrl.assignActionToRole);
 
-  // unit
-  app.get('/unit/:roleUuid', units.list);
-
   // department
   app.get('/departments', department.read);
   app.get('/departments/:uuid', department.detail);
@@ -771,6 +766,7 @@ exports.configure = function configure(app) {
   app.delete('/departments/:uuid', department.delete);
   app.put('/departments/:uuid', department.update);
 
+<<<<<<< a0301214fb5bfd039facaa19259b4e877c3ee1ef
   // entities types API
   app.get('/entities/types', entities.types.list);
   app.get('/entities/types/:id', entities.types.details);
@@ -794,6 +790,8 @@ exports.configure = function configure(app) {
 
   app.get('/unit/:roleUuid', unitCtrl.list);
 
+=======
+>>>>>>> Resolve some conflict
   // Fees Centers API
   app.get('/fee_center', feeCenter.list);
   app.get('/fee_center/:id', feeCenter.detail);
