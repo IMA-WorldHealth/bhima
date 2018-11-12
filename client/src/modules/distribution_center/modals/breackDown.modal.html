@@ -1,0 +1,56 @@
+<form name="BreackDownForm" bh-submit="BreackDownModalCtrl.submit(BreackDownForm)" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate> TREE.FINANCE </li>
+      <li class="static" translate> TREE.DITRIBUTION_AUX_FEES_CENTERS </li>
+      <li class="title" translate> FORM.BUTTONS.BREAKDOWNS_PERCENTAGES </li>
+    </ol>
+    <div>
+      <label class="badge badge-success"> {{ BreackDownModalCtrl.feeCenter.fee_center_label }} </label>
+      <label class="badge badge-info">
+        <span translate> FORM.LABELS.TOTAL_DEBITS </span> : 
+          {{ BreackDownModalCtrl.sumDebits | currency : BreackDownModalCtrl.enterprise.currency_id }}
+      </label>
+
+      <label class="badge badge-info">
+        <span translate> FORM.LABELS.TOTAL_CREDITS </span> : 
+          {{ BreackDownModalCtrl.sumCredits | currency : BreackDownModalCtrl.enterprise.currency_id }}
+      </label>
+
+    </div>
+  </div>
+
+  <div class="modal-body" style="max-height: 70vh; overflow:auto;">
+    <hr>
+    <div ng-repeat="principal in BreackDownModalCtrl.principalFeeCenter" class="form-group">
+      <bh-percentage-input
+        label="{{principal.label}}"
+        symbol="%"
+        id="principal_{{principal.id}}"
+        currency-id="BreackDownModalCtrl.enterprise.currency_id"
+        model="BreackDownModalCtrl.percentage.values[principal.id]"
+        min = "0"
+        max = "100"
+        validation-trigger="BreackDownForm.$submitted">
+      </bh-percentage-input>
+    </div>
+
+    <div class="form-group" ng-if="BreackDownModalCtrl.invalidBreackDown">
+      <label class="badge badge-danger" translate> FORM.INFO.DISTRIBUTION_PERCENT_INVALID </label>
+    </div>
+
+    <div class="form-group" ng-if="BreackDownModalCtrl.noPrincilFeeCenter">
+      <label class="badge badge-warning" translate> FORM.INFO.NO_PRINCIPAL_FEE_CENTER </label>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button data-method="cancel" type="button" class="btn btn-default" ng-click="BreackDownModalCtrl.cancel()">
+      <span translate>FORM.BUTTONS.CANCEL</span>
+    </button>
+
+    <bh-loading-button ng-if="!BreackDownModalCtrl.noPrincilFeeCenter" loading-state="BreackDownForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

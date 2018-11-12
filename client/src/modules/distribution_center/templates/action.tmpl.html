@@ -1,0 +1,15 @@
+<div class="ui-grid-cell-contents" uib-dropdown dropdown-append-to-body uib-dropdown-toggle>
+  <a href>
+    <span data-method="action" translate>FORM.BUTTONS.ACTIONS</span>
+    <span class="caret"></span>
+  </a>
+
+  <ul data-action="{{ rowRenderIndex}}"  class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
+    <li class="dropdown-header">{{row.entity.label}}</li>
+    <li>
+      <a data-method="distribution" ng-click="grid.appScope.distribution(row.entity)" href>
+        <span class="fa fa-share-alt"></span> <span translate>FORM.LABELS.DISTRIBUTE</span>
+      </a>
+    </li>
+  </ul>
+</div>

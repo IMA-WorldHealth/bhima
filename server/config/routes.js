@@ -107,6 +107,12 @@ const operating = require('../controllers/finance/reports/operating/index');
 const department = require('../controllers/admin/department');
 const tags = require('../controllers/admin/tags');
 
+const distributionConfiguration = require('../controllers/finance/distributionFeeCenter/configuration');
+const distributionGetDistributed = require('../controllers/finance/distributionFeeCenter/getDistributed');
+const distributionProceed = require('../controllers/finance/distributionFeeCenter/proceed');
+const distributionBreackDown = require('../controllers/finance/distributionFeeCenter/breackDown');
+const distributionAutomatic = require('../controllers/finance/distributionFeeCenter/automatic');
+
 // expose routes to the server.
 exports.configure = function configure(app) {
   debug('configuring routes.');
@@ -776,10 +782,28 @@ exports.configure = function configure(app) {
   app.put('/entities/:uuid', entities.update);
   app.delete('/entities/:uuid', entities.remove);
   app.post('/entities', entities.create);
+
   // tags
   app.get('/tags', tags.read);
   app.get('/tags/:uuid', tags.detail);
   app.post('/tags', tags.create);
   app.delete('/tags/:uuid', tags.delete);
   app.put('/tags/:uuid', tags.update);
+
+  app.get('/unit/:roleUuid', unitCtrl.list);
+
+  // Fees Centers API
+  app.get('/fee_center', feeCenter.list);
+  app.get('/fee_center/:id', feeCenter.detail);
+  app.post('/fee_center', feeCenter.create);
+  app.put('/fee_center/:id', feeCenter.update);
+  app.delete('/fee_center/:id', feeCenter.delete);
+
+  // Distribution Fees Centers API
+  app.get('/distribution_fee_center', distributionConfiguration.configuration);
+  app.get('/distribution_fee_center/getDistributed', distributionGetDistributed.getDistributed);
+  app.post('/distribution_fee_center/proceed', distributionProceed.proceed);
+  app.post('/distribution_fee_center/breackDown', distributionBreackDown.breackDown);
+  app.post('/distribution_fee_center/automatic', distributionAutomatic.automatic);
+
 };
