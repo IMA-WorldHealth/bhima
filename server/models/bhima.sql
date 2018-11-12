@@ -107,6 +107,7 @@ INSERT INTO unit VALUES
   (214, '[OHADA] Compte de resultat','TREE.OHADA_RESULT_ACCOUNT','',144,'/modules/reports/ohada_profit_loss','/reports/ohada_profit_loss'),
   (215, 'Department management','TREE.DEPARTMENT_MANAGEMENT','Department Management', 1,'/modules/department/','/departments'),
   (216, 'Income Expenses by Year', 'TREE.INCOME_EXPENSE_BY_YEAR', 'The Report of income and expenses', 144, '/modules/finance/income_expense_by_year', '/reports/income_expense_by_year'),
+<<<<<<< 705fe5107831552705a9aae6a924d3980c4d9b91
   (217, 'Tags','TREE.TAGS','', 1,'/modules/tags/tags','/tags'),
   (218, 'Fee Center Management','TREE.FEE_CENTER_MANAGEMENT','', 0,'/modules/fee_center','/fee_center'),
   (219, 'Fee Center Management','TREE.FEE_CENTER','', 218,'/modules/fee_center','/fee_center'),
@@ -115,6 +116,14 @@ INSERT INTO unit VALUES
   (222, 'Fee Center Report', 'TREE.FEE_CENTER_REPORT', 'Fee Center Report', 144, '/modules/reports/feeCenter', '/reports/feeCenter'), 
   (223, 'Distribution keys', 'TREE.DISTRIBUTION_KEYS', 'Distribution keys', 218, '/modules/distribution_center/distribution_key', '/distribution_center/distribution_key'); 
 
+=======
+  (217, 'Fee Center Management','TREE.FEE_CENTER_MANAGEMENT','', 0,'/modules/fee_center','/fee_center'),
+  (218, 'Fee Center Management','TREE.FEE_CENTER','', 217,'/modules/fee_center','/fee_center'),
+  (219, 'Distributions fees Centers','TREE.DITRIBUTION_AUX_FEES_CENTERS','', 217,'/modules/distribution_center','/distribution_center'),
+  (220, 'Update Distributions','TREE.UPDATE_DISTRIBUTION','', 217,'/modules/distribution_center/update','/distribution_center/update'),
+  (221, 'Fee Center Report', 'TREE.FEE_CENTER_REPORT', 'Fee Center Report', 144, '/modules/reports/feeCenter', '/reports/feeCenter'), 
+  (222, 'Distribution keys', 'TREE.DISTRIBUTION_KEYS', 'Distribution keys', 217, '/modules/distribution_center/distribution_key', '/distribution_center/distribution_key'); 
+>>>>>>> Rebase with Branch Master
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
