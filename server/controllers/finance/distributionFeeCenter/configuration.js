@@ -1,15 +1,10 @@
 /**
 * Distribution Fee Center Configuration
 *
-* The configuration function first looks for accounts belonging to account references belonging to auxiliary 
-* cost centers, then finds all existing transactions in the ledger 
+* The configuration function first looks for accounts belonging to account references belonging to auxiliary
+* cost centers, then finds all existing transactions in the ledger
 * related to the accounts found at the end of the distributed
 */
-
-const q = require('q');
-const db = require('../../../lib/db');
-const NotFound = require('../../../lib/errors/NotFound');
-const FilterParser = require('../../../lib/filter');
 const referenceAccount = require('./referenceAccount');
 const generalLedger = require('../generalLedger');
 
@@ -29,12 +24,12 @@ function configuration(req, res, next) {
       }
 
       refAccounts = accounts;
-      const accounts_id = accounts.map(account => account.account_id);
+      const accountsId = accounts.map(account => account.account_id);
 
       const options = {
         custom_period_start : query.periodFrom,
         custom_period_end : query.periodTo,
-        accounts_id,
+        accountsId,
         excludes_distributed : true,
         account_id : query.account_id,
         trans_id : query.trans_id,

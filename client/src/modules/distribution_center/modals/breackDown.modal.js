@@ -53,11 +53,11 @@ function BreackDownModalController(
     });
 
     vm.invalidBreackDown = sumDistributed !== 100;
-    vm.diffPercentage = (100 > sumDistributed) ? 100 - sumDistributed : sumDistributed - 100;
+    vm.diffPercentage = (sumDistributed < 100) ? 100 - sumDistributed : sumDistributed - 100;
 
-    vm.errorMessage = (100 > sumDistributed) 
-      ? $translate.instant('FORM.WARNINGS.REMAINS_DISTRIBUTION', { value : vm.diffPercentage + ' %'})
-      : $translate.instant('FORM.WARNINGS.OVERRUN_DISTRIBUTION', { value : vm.diffPercentage + ' %'});
+    vm.errorMessage = (sumDistributed < 100)
+      ? $translate.instant('FORM.WARNINGS.REMAINS_DISTRIBUTION', { value : `${vm.diffPercentage} %` })
+      : $translate.instant('FORM.WARNINGS.OVERRUN_DISTRIBUTION', { value : `${vm.diffPercentage} %` });
 
     if (DistributionForm.$invalid || vm.invalidBreackDown) {
       return Notify.danger('FORM.ERRORS.INVALID');

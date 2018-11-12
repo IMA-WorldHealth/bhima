@@ -24,7 +24,6 @@ PercentageInputController.$inject = [];
  */
 function PercentageInputController() {
   const $ctrl = this;
-  const isDefined = angular.isDefined;
 
   // translated label for the form input
   $ctrl.label = $ctrl.label || 'FORM.LABELS.VALUE';

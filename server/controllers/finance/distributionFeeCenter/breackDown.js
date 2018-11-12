@@ -1,17 +1,9 @@
 /**
 * Distribution Fee Center Controller
-*
 * This function allows you to make the distributions of
 * one or more transactions at the same time while specifying the percentage distribution rate
 */
-
-const q = require('q');
 const db = require('../../../lib/db');
-const NotFound = require('../../../lib/errors/NotFound');
-const FilterParser = require('../../../lib/filter');
-const referenceAccount = require('./referenceAccount');
-const generalLedger = require('../generalLedger');
-
 
 function breackDown(req, res, next) {
   const { data } = req.body;

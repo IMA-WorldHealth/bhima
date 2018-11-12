@@ -31,7 +31,7 @@ function FeeCenterController(FeeCenters, ModalService, Notify, uiGridConstants) 
     enableSorting     : true,
     onRegisterApi     : onRegisterApiFn,
     columnDefs : [
-      { field : 'label', displayName : 'FORM.LABELS.DESIGNATION', headerCellFilter : 'translate' },      
+      { field : 'label', displayName : 'FORM.LABELS.DESIGNATION', headerCellFilter : 'translate' },
       {
         field : 'abbrs',
         displayName : 'FORM.LABELS.REFERENCE',
@@ -43,7 +43,7 @@ function FeeCenterController(FeeCenters, ModalService, Notify, uiGridConstants) 
         displayName : 'FORM.LABELS.SERVICES',
         headerCellFilter : 'translate',
         visible : true,
-      },      
+      },
       {
         field : 'is_principal',
         displayName : '',

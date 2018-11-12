@@ -6,16 +6,12 @@
  * This function first looks for all accounts in an reference account associated with an auxiliary fee center,
  * but excludes those that are excluded in a refference account.
  */
-
 const q = require('q');
 const db = require('../../../lib/db');
-const NotFound = require('../../../lib/errors/NotFound');
-const referenceAccount = require('./referenceAccount');
 
 function auxilliary(params) {
   let sqlIsCost = '';
-
-  const typeFeeCenter = parseInt(params.typeFeeCenter, 10); 
+  const typeFeeCenter = parseInt(params.typeFeeCenter, 10);
 
   if (typeFeeCenter === 1 || typeFeeCenter === 0) {
     sqlIsCost = ` AND reference_fee_center.is_cost = ${typeFeeCenter}`;

@@ -13,7 +13,7 @@ function setting(req, res, next) {
   const distributionKey = [];
 
   Object.keys(dataValues).forEach((principalCenterId) => {
-    let rateDistribution = dataValues[principalCenterId];
+    const rateDistribution = dataValues[principalCenterId];
 
     if (rateDistribution) {
       distributionKey.push([

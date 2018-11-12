@@ -1,7 +1,7 @@
 angular.module('bhima.services')
   .service('DistributionCenterUpdateService', DistributionCenterUpdateService);
 
-DistributionCenterUpdateService.$inject = ['PrototypeApiService', 'FilterService', 'appcache', '$uibModal'];
+DistributionCenterUpdateService.$inject = ['PrototypeApiService', 'FilterService', 'appcache'];
 
 /**
  * @class DistributionCenterUpdateService
@@ -9,7 +9,7 @@ DistributionCenterUpdateService.$inject = ['PrototypeApiService', 'FilterService
  * @description
  * Encapsulates common requests to the /distribution_fee_center/ URL.
  */
-function DistributionCenterUpdateService(Api, Filters, AppCache, Modal) {
+function DistributionCenterUpdateService(Api, Filters, AppCache) {
   const service = new Api('/distribution_fee_center/');
   const distributionFilters = new Filters();
   const filterCache = new AppCache('distribution-center-update-filters');
@@ -39,10 +39,6 @@ function DistributionCenterUpdateService(Api, Filters, AppCache, Modal) {
   // load filters from cache
   function cacheFilters() {
     filterCache.filters = distributionFilters.formatCache();
-  }
-
-  function loadCachedFilters() {
-    distributionFilters.loadCache(filterCache.filters || {});
   }
 
   function removeFilter(key) {

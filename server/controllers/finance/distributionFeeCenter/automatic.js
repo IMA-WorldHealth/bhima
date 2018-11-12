@@ -3,8 +3,6 @@
 *
 * This function allows automatic distribution of invoices whose services are linked to Principal fee centers
 */
-
-const q = require('q');
 const db = require('../../../lib/db');
 const NotFound = require('../../../lib/errors/NotFound');
 
@@ -28,18 +26,18 @@ function automatic(req, res, next) {
       const userId = req.session.user.id;
 
       rows.forEach((row) => {
-        data.forEach((data) => {
-          if (row.trans_uuid === data.uuid) {
+        data.forEach((item) => {
+          if (row.trans_uuid === item.uuid) {
             dataToDistribute.push([
               db.bid(row.trans_uuid),
               row.trans_id,
-              data.account_id,
+              item.account_id,
               0,
-              data.fee_center_id,
+              item.fee_center_id,
               row.fee_center_id,
               row.debit_equiv,
               row.credit_equiv,
-              data.currency_id,
+              item.currency_id,
               new Date(),
               userId,
             ]);
@@ -51,7 +49,7 @@ function automatic(req, res, next) {
         throw new NotFound(`Could not find any service linked to fee Centers`);
       }
 
-      const sql = `INSERT INTO fee_center_distribution (
+      const sqlFeeCenterDistribution = `INSERT INTO fee_center_distribution (
       trans_uuid, 
       trans_id, 
       account_id,
@@ -63,9 +61,7 @@ function automatic(req, res, next) {
       currency_id, 
       date_distribution, user_id) VALUES ?`;
 
-      const transaction = db.transaction();
-
-      return db.exec(sql, [dataToDistribute]);
+      return db.exec(sqlFeeCenterDistribution, [dataToDistribute]);
     })
     .then((results) => {
       res.status(201).json({ id : results.insertId });

@@ -161,13 +161,13 @@ function update(req, res, next) {
     transaction
       .addQuery(sqlReferences, [dataReferences]);
   }
-  
+
   if (data.services.length) {
     const dataServices = data.services.map(item => [
       feeCenterId,
-      //If we do not modify the services related to a cost center during the update, 
-      //these services remain of types objects reason for which one checks 
-      //the type finally to apply the appropriate formatting for each case
+      // If we do not modify the services related to a cost center during the update,
+      // these services remain of types objects reason for which one checks
+      // the type finally to apply the appropriate formatting for each case
       item.id || item,
     ]);
 

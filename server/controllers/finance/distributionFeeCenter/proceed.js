@@ -1,10 +1,9 @@
 /**
 * Distribution Fee Center Controller
 *
-* This function makes it possible to proceed to a basic distribution 
+* This function makes it possible to proceed to a basic distribution
 * of a profit or a cost, of an auxiliary center towards the main centers
 */
-
 const db = require('../../../lib/db');
 
 function proceed(req, res, next) {

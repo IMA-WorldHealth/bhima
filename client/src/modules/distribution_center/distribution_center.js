@@ -192,11 +192,11 @@ function DistributionCenterController(DistributionCenters, ModalService, Notify,
       } else {
 
         const filtersSnapshot = DistributionCenters.filters.formatHTTP();
-        const is_cost = filtersSnapshot.typeFeeCenter;
+        const isCost = filtersSnapshot.typeFeeCenter;
 
         const data = {
           transactions,
-          is_cost,
+          isCost,
         };
 
         DistributionCenters.breackDownPercentagesModal(data)
@@ -229,7 +229,7 @@ function DistributionCenterController(DistributionCenters, ModalService, Notify,
       } else {
 
         const filtersSnapshot = DistributionCenters.filters.formatHTTP();
-        const is_cost = filtersSnapshot.typeFeeCenter;
+        const isCost = filtersSnapshot.typeFeeCenter;
 
         DistributionCenters.automaticBreackdown(transactions)
           .then(() => {
