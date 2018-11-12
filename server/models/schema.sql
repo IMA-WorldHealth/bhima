@@ -2150,7 +2150,6 @@ CREATE TABLE `tags`(
   UNIQUE KEY  (`name`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
-=======
 DROP TABLE IF EXISTS `distribution_key`;
 CREATE TABLE `distribution_key` (
   `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,

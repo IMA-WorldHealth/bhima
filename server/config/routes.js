@@ -790,8 +790,6 @@ exports.configure = function configure(app) {
   app.delete('/tags/:uuid', tags.delete);
   app.put('/tags/:uuid', tags.update);
 
-  app.get('/unit/:roleUuid', unitCtrl.list);
-
   // Fees Centers API
   app.get('/fee_center', feeCenter.list);
   app.get('/fee_center/:id', feeCenter.detail);
