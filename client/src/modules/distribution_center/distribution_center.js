@@ -131,12 +131,10 @@ function DistributionCenterController(DistributionCenters, ModalService, Notify,
       .then((changes) => {
         if (changes.length) {
           DistributionCenters.filters.replaceFilters(changes);
-          DistributionCenters.cacheFilters();
-          vm.latestViewFilters = DistributionCenters.filters.formatView();
-          return loadDistributionCenters(DistributionCenters.filters.formatHTTP(true));
-        } else {
-          return;
         }
+        DistributionCenters.cacheFilters();
+        vm.latestViewFilters = DistributionCenters.filters.formatView();
+        return loadDistributionCenters(DistributionCenters.filters.formatHTTP(true));
       });
   }
 
@@ -169,12 +167,10 @@ function DistributionCenterController(DistributionCenters, ModalService, Notify,
       .then((changes) => {
         if (changes.length) {
           DistributionCenters.filters.replaceFilters(changes);
-          DistributionCenters.cacheFilters();
-          vm.latestViewFilters = DistributionCenters.filters.formatView();
-          return loadDistributionCenters(DistributionCenters.filters.formatHTTP(true));
-        } else {
-          return;
         }
+        DistributionCenters.cacheFilters();
+        vm.latestViewFilters = DistributionCenters.filters.formatView();
+        return loadDistributionCenters(DistributionCenters.filters.formatHTTP(true));
       })
       .catch(errorHandler)
       .finally(toggleLoadingIndicator);
@@ -192,7 +188,6 @@ function DistributionCenterController(DistributionCenters, ModalService, Notify,
       if (invalid) {
         Notify.warn('FORM.WARNINGS.PERCENTAGE_BREACKDOWN');
       } else {
-
         const filtersSnapshot = DistributionCenters.filters.formatHTTP();
         const isCost = filtersSnapshot.typeFeeCenter;
 
@@ -205,10 +200,10 @@ function DistributionCenterController(DistributionCenters, ModalService, Notify,
           .then((changes) => {
             if (changes.length) {
               DistributionCenters.filters.replaceFilters(changes);
-              DistributionCenters.cacheFilters();
-              vm.latestViewFilters = DistributionCenters.filters.formatView();
-              return loadDistributionCenters(DistributionCenters.filters.formatHTTP(true));
-            }
+            }  
+            DistributionCenters.cacheFilters();
+            vm.latestViewFilters = DistributionCenters.filters.formatView();
+            return loadDistributionCenters(DistributionCenters.filters.formatHTTP(true));            
           })
           .catch(errorHandler)
           .finally(toggleLoadingIndicator);

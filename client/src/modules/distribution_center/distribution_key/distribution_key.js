@@ -99,7 +99,7 @@ function DistributionKeyController(DistributionCenters, ModalService, Notify, ui
     dataSettings.settingsValues = settingsValues;
 
     DistributionCenters.openDistributionKeyModal(dataSettings)
-      .then((changes) => {
+      .then(() => {
         return load();
       })
       .catch(errorHandler)
