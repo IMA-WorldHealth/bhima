@@ -164,10 +164,10 @@ function UpdateCenterController(DistributionUpdateCenters, DistributionCenters, 
       .then((changes) => {
         if (changes.length) {
           DistributionUpdateCenters.filters.replaceFilters(changes);
-          DistributionUpdateCenters.cacheFilters();
-          vm.latestViewFilters = DistributionUpdateCenters.filters.formatView();
-          return loadDistributionCenters(DistributionUpdateCenters.filters.formatHTTP(true));
         }
+        DistributionUpdateCenters.cacheFilters();
+        vm.latestViewFilters = DistributionUpdateCenters.filters.formatView();
+        return loadDistributionCenters(DistributionUpdateCenters.filters.formatHTTP(true));
       })
       .catch(errorHandler)
       .finally(toggleLoadingIndicator);

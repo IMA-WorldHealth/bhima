@@ -200,10 +200,10 @@ function DistributionCenterController(DistributionCenters, ModalService, Notify,
           .then((changes) => {
             if (changes.length) {
               DistributionCenters.filters.replaceFilters(changes);
-            }  
+            }
             DistributionCenters.cacheFilters();
             vm.latestViewFilters = DistributionCenters.filters.formatView();
-            return loadDistributionCenters(DistributionCenters.filters.formatHTTP(true));            
+            return loadDistributionCenters(DistributionCenters.filters.formatHTTP(true));
           })
           .catch(errorHandler)
           .finally(toggleLoadingIndicator);
