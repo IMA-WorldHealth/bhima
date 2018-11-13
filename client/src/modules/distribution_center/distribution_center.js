@@ -162,7 +162,6 @@ function DistributionCenterController(DistributionCenters, ModalService, Notify,
 
   // distribution
   function distribution(data) {
-    const filtersSnapshot = DistributionCenters.filters.formatHTTP();
     data.is_cost = filtersSnapshot.typeFeeCenter;
 
     DistributionCenters.openDistributionModal(data)
@@ -175,7 +174,10 @@ function DistributionCenterController(DistributionCenters, ModalService, Notify,
             return loadDistributionCenters(DistributionCenters.filters.formatHTTP(true));
           }
         }
-      });
+      })
+      .catch(errorHandler)
+      .finally(toggleLoadingIndicator);
+      
   }
 
   function breackdownPercentages() {
@@ -207,7 +209,10 @@ function DistributionCenterController(DistributionCenters, ModalService, Notify,
               vm.latestViewFilters = DistributionCenters.filters.formatView();
               return loadDistributionCenters(DistributionCenters.filters.formatHTTP(true));
             }
-          });
+          })
+          .catch(errorHandler)
+          .finally(toggleLoadingIndicator);
+
       }
     } else {
       Notify.warn('FORM.WARNINGS.ATTENTION_SELECTED');
