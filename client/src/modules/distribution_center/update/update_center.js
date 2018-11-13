@@ -138,8 +138,13 @@ function UpdateCenterController(DistributionUpdateCenters, DistributionCenters, 
           DistributionUpdateCenters.cacheFilters();
           vm.latestViewFilters = DistributionUpdateCenters.filters.formatView();
           return loadDistributionCenters(DistributionUpdateCenters.filters.formatHTTP(true));
+        } else {
+          return;
         }
-      });
+      })
+      .catch(errorHandler)
+      .finally(toggleLoadingIndicator);
+
   }
 
   // Update distribution
@@ -165,8 +170,12 @@ function UpdateCenterController(DistributionUpdateCenters, DistributionCenters, 
           DistributionUpdateCenters.cacheFilters();
           vm.latestViewFilters = DistributionUpdateCenters.filters.formatView();
           return loadDistributionCenters(DistributionUpdateCenters.filters.formatHTTP(true));
+        } else {
+          return;
         }
-      });
+      })
+      .catch(errorHandler)
+      .finally(toggleLoadingIndicator);      
   }
 
   function load(filters) {

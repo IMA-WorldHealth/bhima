@@ -162,22 +162,20 @@ function DistributionCenterController(DistributionCenters, ModalService, Notify,
 
   // distribution
   function distribution(data) {
+    const filtersSnapshot = DistributionCenters.filters.formatHTTP();
     data.is_cost = filtersSnapshot.typeFeeCenter;
 
     DistributionCenters.openDistributionModal(data)
       .then((changes) => {
         if (changes) {
-          if (changes.length) {
-            DistributionCenters.filters.replaceFilters(changes);
-            DistributionCenters.cacheFilters();
-            vm.latestViewFilters = DistributionCenters.filters.formatView();
-            return loadDistributionCenters(DistributionCenters.filters.formatHTTP(true));
-          }
+          DistributionCenters.filters.replaceFilters(changes);
+          DistributionCenters.cacheFilters();
+          vm.latestViewFilters = DistributionCenters.filters.formatView();
+          return loadDistributionCenters(DistributionCenters.filters.formatHTTP(true));
         }
       })
       .catch(errorHandler)
       .finally(toggleLoadingIndicator);
-      
   }
 
   function breackdownPercentages() {
@@ -208,6 +206,8 @@ function DistributionCenterController(DistributionCenters, ModalService, Notify,
               DistributionCenters.cacheFilters();
               vm.latestViewFilters = DistributionCenters.filters.formatView();
               return loadDistributionCenters(DistributionCenters.filters.formatHTTP(true));
+            } else {
+              return;
             }
           })
           .catch(errorHandler)

@@ -105,7 +105,7 @@ function DistributionKeyController(DistributionCenters, ModalService, Notify, ui
         }
       })
       .catch(errorHandler)
-      .finally(toggleLoadingIndicator);      
+      .finally(toggleLoadingIndicator);
   }
 
   function load() {
