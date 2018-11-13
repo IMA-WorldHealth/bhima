@@ -1,7 +1,7 @@
 /**
-* Distribution Fee Center Controller
-* This function allows you to make the distributions of
-* one or more transactions at the same time while specifying the percentage distribution rate
+  *Distribution Fee Center Controller
+  *This function allows you to make the distributions of
+  *one or more transactions at the same time while specifying the percentage distribution rate
 */
 const db = require('../../../lib/db');
 

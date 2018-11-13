@@ -100,9 +100,7 @@ function DistributionKeyController(DistributionCenters, ModalService, Notify, ui
 
     DistributionCenters.openDistributionKeyModal(dataSettings)
       .then((changes) => {
-        if (changes.length) {
-          return load();
-        }
+        return load();
       })
       .catch(errorHandler)
       .finally(toggleLoadingIndicator);

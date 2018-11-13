@@ -92,7 +92,6 @@ function UpdateCenterController(DistributionUpdateCenters, DistributionCenters, 
       type : 'number',
       headerCellFilter : 'translate',
       displayName : 'TABLE.COLUMNS.CREDIT',
-      headerCellFilter : 'translate',
       cellClass : 'text-right',
       footerCellClass : 'text-right',
       footerCellFilter : 'number:2',
@@ -135,12 +134,10 @@ function UpdateCenterController(DistributionUpdateCenters, DistributionCenters, 
       .then((changes) => {
         if (changes.length) {
           DistributionUpdateCenters.filters.replaceFilters(changes);
-          DistributionUpdateCenters.cacheFilters();
-          vm.latestViewFilters = DistributionUpdateCenters.filters.formatView();
-          return loadDistributionCenters(DistributionUpdateCenters.filters.formatHTTP(true));
-        } else {
-          return;
         }
+        DistributionUpdateCenters.cacheFilters();
+        vm.latestViewFilters = DistributionUpdateCenters.filters.formatView();
+        return loadDistributionCenters(DistributionUpdateCenters.filters.formatHTTP(true));
       })
       .catch(errorHandler)
       .finally(toggleLoadingIndicator);
@@ -170,12 +167,10 @@ function UpdateCenterController(DistributionUpdateCenters, DistributionCenters, 
           DistributionUpdateCenters.cacheFilters();
           vm.latestViewFilters = DistributionUpdateCenters.filters.formatView();
           return loadDistributionCenters(DistributionUpdateCenters.filters.formatHTTP(true));
-        } else {
-          return;
         }
       })
       .catch(errorHandler)
-      .finally(toggleLoadingIndicator);      
+      .finally(toggleLoadingIndicator);
   }
 
   function load(filters) {

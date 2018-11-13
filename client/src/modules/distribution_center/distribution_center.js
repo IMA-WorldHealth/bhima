@@ -129,13 +129,13 @@ function DistributionCenterController(DistributionCenters, ModalService, Notify,
     const filtersSnapshot = DistributionCenters.filters.formatHTTP();
     DistributionCenters.openSettingModal(filtersSnapshot)
       .then((changes) => {
-        if (changes) {
-          if (changes.length) {
-            DistributionCenters.filters.replaceFilters(changes);
-            DistributionCenters.cacheFilters();
-            vm.latestViewFilters = DistributionCenters.filters.formatView();
-            return loadDistributionCenters(DistributionCenters.filters.formatHTTP(true));
-          }
+        if (changes.length) {
+          DistributionCenters.filters.replaceFilters(changes);
+          DistributionCenters.cacheFilters();
+          vm.latestViewFilters = DistributionCenters.filters.formatView();
+          return loadDistributionCenters(DistributionCenters.filters.formatHTTP(true));
+        } else {
+          return;
         }
       });
   }
@@ -167,11 +167,13 @@ function DistributionCenterController(DistributionCenters, ModalService, Notify,
 
     DistributionCenters.openDistributionModal(data)
       .then((changes) => {
-        if (changes) {
+        if (changes.length) {
           DistributionCenters.filters.replaceFilters(changes);
           DistributionCenters.cacheFilters();
           vm.latestViewFilters = DistributionCenters.filters.formatView();
           return loadDistributionCenters(DistributionCenters.filters.formatHTTP(true));
+        } else {
+          return;
         }
       })
       .catch(errorHandler)
@@ -206,8 +208,6 @@ function DistributionCenterController(DistributionCenters, ModalService, Notify,
               DistributionCenters.cacheFilters();
               vm.latestViewFilters = DistributionCenters.filters.formatView();
               return loadDistributionCenters(DistributionCenters.filters.formatHTTP(true));
-            } else {
-              return;
             }
           })
           .catch(errorHandler)
@@ -230,7 +230,6 @@ function DistributionCenterController(DistributionCenters, ModalService, Notify,
       if (invalid) {
         Notify.danger('FORM.WARNINGS.PERCENTAGE_BREACKDOWN');
       } else {
-        const filtersSnapshot = DistributionCenters.filters.formatHTTP();
         DistributionCenters.automaticBreackdown(transactions)
           .then(() => {
             Notify.success('FORM.INFO.DISTRIBUTION_SUCCESSFULLY');
