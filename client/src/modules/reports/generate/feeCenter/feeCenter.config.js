@@ -29,7 +29,7 @@ function FeeCenterConfigController($sce, Notify, SavedReports, AppCache, reportD
     if (form.$invalid) { return; }
     cache.reportDetails = angular.copy(vm.reportDetails);
 
-    return SavedReports.requestPreview(reportUrl, reportData.id, angular.copy(vm.reportDetails))
+    SavedReports.requestPreview(reportUrl, reportData.id, angular.copy(vm.reportDetails))
       .then((result) => {
         vm.previewGenerated = true;
         vm.previewResult = $sce.trustAsHtml(result);

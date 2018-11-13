@@ -78,10 +78,8 @@ function UpdateCenterController(DistributionUpdateCenters, DistributionCenters, 
       type : 'number',
       headerCellFilter : 'translate',
       displayName : 'TABLE.COLUMNS.DEBIT',
-      headerCellFilter : 'translate',
       cellClass : 'text-right',
       footerCellClass : 'text-right',
-      cellFilter : 'number: 2',
       footerCellFilter : 'number:2',
       enableFiltering : true,
       treeAggregationType : uiGridGroupingConstants.aggregation.SUM,
@@ -97,7 +95,6 @@ function UpdateCenterController(DistributionUpdateCenters, DistributionCenters, 
       headerCellFilter : 'translate',
       cellClass : 'text-right',
       footerCellClass : 'text-right',
-      cellFilter : 'number: 2',
       footerCellFilter : 'number:2',
       enableFiltering : true,
       treeAggregationType : uiGridGroupingConstants.aggregation.SUM,
@@ -119,7 +116,7 @@ function UpdateCenterController(DistributionUpdateCenters, DistributionCenters, 
     }],
   };
 
-  const grouping = new Grouping(vm.gridOptions, true, 'trans_uuid', vm.grouped, true);
+  vm.grouping = new Grouping(vm.gridOptions, true, 'trans_uuid', vm.grouped, true);
 
   function onRegisterApiFn(gridApi) {
     vm.gridApi = gridApi;
@@ -136,13 +133,11 @@ function UpdateCenterController(DistributionUpdateCenters, DistributionCenters, 
     const filtersSnapshot = DistributionUpdateCenters.filters.formatHTTP();
     DistributionCenters.openSettingModal(filtersSnapshot)
       .then((changes) => {
-        if (changes) {
-          if (changes.length) {
-            DistributionUpdateCenters.filters.replaceFilters(changes);
-            DistributionUpdateCenters.cacheFilters();
-            vm.latestViewFilters = DistributionUpdateCenters.filters.formatView();
-            return loadDistributionCenters(DistributionUpdateCenters.filters.formatHTTP(true));
-          }
+        if (changes.length) {
+          DistributionUpdateCenters.filters.replaceFilters(changes);
+          DistributionUpdateCenters.cacheFilters();
+          vm.latestViewFilters = DistributionUpdateCenters.filters.formatView();
+          return loadDistributionCenters(DistributionUpdateCenters.filters.formatHTTP(true));
         }
       });
   }
@@ -160,18 +155,16 @@ function UpdateCenterController(DistributionUpdateCenters, DistributionCenters, 
       });
     });
 
-    dataUpdate.updating = true,
+    dataUpdate.updating = true;
     dataUpdate.distributionValues = distributionValues;
 
     DistributionCenters.openDistributionModal(dataUpdate)
       .then((changes) => {
-        if (changes) {
-          if (changes.length) {
-            DistributionUpdateCenters.filters.replaceFilters(changes);
-            DistributionUpdateCenters.cacheFilters();
-            vm.latestViewFilters = DistributionUpdateCenters.filters.formatView();
-            return loadDistributionCenters(DistributionUpdateCenters.filters.formatHTTP(true));
-          }
+        if (changes.length) {
+          DistributionUpdateCenters.filters.replaceFilters(changes);
+          DistributionUpdateCenters.cacheFilters();
+          vm.latestViewFilters = DistributionUpdateCenters.filters.formatView();
+          return loadDistributionCenters(DistributionUpdateCenters.filters.formatHTTP(true));
         }
       });
   }

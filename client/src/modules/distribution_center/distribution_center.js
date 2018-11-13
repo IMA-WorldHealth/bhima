@@ -201,13 +201,11 @@ function DistributionCenterController(DistributionCenters, ModalService, Notify,
 
         DistributionCenters.breackDownPercentagesModal(data)
           .then((changes) => {
-            if (changes) {
-              if (changes.length) {
-                DistributionCenters.filters.replaceFilters(changes);
-                DistributionCenters.cacheFilters();
-                vm.latestViewFilters = DistributionCenters.filters.formatView();
-                return loadDistributionCenters(DistributionCenters.filters.formatHTTP(true));
-              }
+            if (changes.length) {
+              DistributionCenters.filters.replaceFilters(changes);
+              DistributionCenters.cacheFilters();
+              vm.latestViewFilters = DistributionCenters.filters.formatView();
+              return loadDistributionCenters(DistributionCenters.filters.formatHTTP(true));
             }
           });
       }
@@ -227,10 +225,7 @@ function DistributionCenterController(DistributionCenters, ModalService, Notify,
       if (invalid) {
         Notify.danger('FORM.WARNINGS.PERCENTAGE_BREACKDOWN');
       } else {
-
         const filtersSnapshot = DistributionCenters.filters.formatHTTP();
-        const isCost = filtersSnapshot.typeFeeCenter;
-
         DistributionCenters.automaticBreackdown(transactions)
           .then(() => {
             Notify.success('FORM.INFO.DISTRIBUTION_SUCCESSFULLY');

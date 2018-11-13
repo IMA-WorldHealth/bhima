@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 DistributionKeyController.$inject = [
   'DistributionCenterService', 'ModalService', 'NotifyService', 'uiGridConstants',
-  '$state', 'GridGroupingService', 'uiGridGroupingConstants', 'SessionService',
+  '$state', 'GridGroupingService', 'uiGridGroupingConstants',
 ];
 
 /**
@@ -13,7 +13,7 @@ DistributionKeyController.$inject = [
  * It's responsible for editing and updating a Distribution Center
  */
 function DistributionKeyController(DistributionCenters, ModalService, Notify, uiGridConstants,
-  $state, Grouping, uiGridGroupingConstants, Session) {
+  $state, Grouping, uiGridGroupingConstants) {
   const vm = this;
 
   // bind methods
@@ -45,7 +45,6 @@ function DistributionKeyController(DistributionCenters, ModalService, Notify, ui
     }, {
       field : 'rate',
       type : 'number',
-      headerCellFilter : 'translate',
       displayName : 'TABLE.COLUMNS.RATE',
       headerCellFilter : 'translate',
       cellClass : 'text-right',
@@ -71,7 +70,7 @@ function DistributionKeyController(DistributionCenters, ModalService, Notify, ui
     }],
   };
 
-  const grouping = new Grouping(vm.gridOptions, true, 'auxiliary_label', vm.grouped, true);
+  vm.grouping = new Grouping(vm.gridOptions, true, 'auxiliary_label', vm.grouped, true);
 
   function onRegisterApiFn(gridApi) {
     vm.gridApi = gridApi;
@@ -101,10 +100,8 @@ function DistributionKeyController(DistributionCenters, ModalService, Notify, ui
 
     DistributionCenters.openDistributionKeyModal(dataSettings)
       .then((changes) => {
-        if (changes) {
-          if (changes.length) {
-            return load();
-          }
+        if (changes.length) {
+          return load();
         }
       });
   }

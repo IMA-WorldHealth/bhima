@@ -14,7 +14,6 @@ function getDistributed(req, res, next) {
   if (options.fee_center_id || options.trans_id) {
     delete options.limit;
   }
-  
   const filters = new FilterParser(options, { tableAlias : 'gl' });
 
   const sql = `

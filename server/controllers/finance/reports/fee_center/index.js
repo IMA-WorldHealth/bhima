@@ -2,11 +2,11 @@ const q = require('q');
 const _ = require('lodash');
 const db = require('../../../../lib/db');
 const ReportManager = require('../../../../lib/ReportManager');
+
 const TEMPLATE = './server/controllers/finance/reports/fee_center/report.handlebars';
 const AccountReference = require('../../accounts').references;
 const setting = require('./setting');
 const getDistributionKey = require('../../distributionFeeCenter/getDistributionKey');
-
 // expose to the API
 exports.report = report;
 

@@ -89,7 +89,7 @@ function configuration(data) {
     aux.automaticTotal = includeManual ? aux.balance - total : aux.balance;
 
     if (aux.automaticTotal) {
-      data.distributionKey.filter(item => {
+      data.distributionKey.forEach(item => {
         if (item.auxiliary_fee_center_id === aux.id) {
           totalDistributedByKey += (aux.automaticTotal * item.rate) / 100;
         }
@@ -132,7 +132,7 @@ function configuration(data) {
     aux.automaticTotal = includeManual ? aux.balance - total : aux.balance;
 
     if (aux.automaticTotal) {
-      data.distributionKey.filter(item => {
+      data.distributionKey.forEach(item => {
         if (item.auxiliary_fee_center_id === aux.id) {
           totalDistributedByKey += (aux.automaticTotal * item.rate) / 100;
         }

@@ -63,10 +63,6 @@ function DistributionCenterService(Api, Filters, AppCache, Modal) {
     filterCache.filters = distributionFilters.formatCache();
   }
 
-  function loadCachedFilters() {
-    distributionFilters.loadCache(filterCache.filters || {});
-  }
-
   function removeFilter(key) {
     distributionFilters.resetFilterState(key);
   }
