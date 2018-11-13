@@ -34,6 +34,10 @@ class GridRow {
     return this.menu.$('[data-method="receipt"]');
   }
 
+  method(methodName) {
+    return this.menu.$(`[data-method="${methodName}"]`);
+  }
+
   goToInvoice() {
     return this.menu.$('[data-method="view-invoice"]');
   }
@@ -57,7 +61,6 @@ class GridRow {
   goToVoucher() {
     return this.menu.$('[data-method="view-voucher"]');
   }
-
 }
 
 module.exports = GridRow;

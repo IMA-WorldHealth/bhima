@@ -9,7 +9,8 @@ AccountsController.$inject = [
 /**
  * @module AccountsController
  *
- * @todo there are performance issues on this page - this should be because of  row/cell templates, investigate
+ * @todo
+ * there are performance issues on this page - this should be because of  row/cell templates, investigate
  *
  * @description
  * This controller is responsible for configuring the Accounts Management UI grid
@@ -70,9 +71,8 @@ function AccountsController(
   // parent state into the onEnter callback. for this reason $rootScope is used for now
   $rootScope.$on('ACCOUNT_CREATED', vm.Accounts.updateViewInsert.bind(vm.Accounts));
   $rootScope.$on('ACCOUNT_UPDATED', handleUpdatedAccount);
-  $rootScope.$on('ACCOUNT_IMPORTED', () => {
-    init(true);
-  });
+  $rootScope.$on('ACCOUNT_IMPORTED', () => init(true));
+
   function gridColumns() {
     return [
       {
