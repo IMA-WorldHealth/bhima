@@ -938,8 +938,8 @@ SET @regularRoleUUID = HUID('5f7dd0c6-9273-4955-a703-126fbd504b61');
 
 DELETE FROM role;
 
-INSERT INTO `role`(uuid, label, project_id)
-  VALUES(@roleUUID, 'Admin', 1), (@regularRoleUUID, 'Regular', 1);
+INSERT INTO `role`(uuid, label)
+  VALUES (@roleUUID, 'Admin'), (@regularRoleUUID, 'Regular');
 
 -- superuser
 INSERT INTO role_unit

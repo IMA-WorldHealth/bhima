@@ -13,11 +13,9 @@ describe('(/roles) The roles API endpoint', () => {
   // role we will add during this test suite.
   const newRole = {
     label : 'Receptionniste',
-    project_id : 1,
   };
 
   const adminUuid = '5B7DD0D692734955A703126FBD504B61';
-
   const regularUserRoleUuid = '5F7DD0C692734955A703126FBD504B61';
   const regularUserRoleUnits = [
     { id : 0, key : 'TREE.ROOT', parent : null },
@@ -110,8 +108,8 @@ describe('(/roles) The roles API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('GET /roles/user/:user_id/:project_id Should test if a action is assigned to the connected user', () => {
-    return agent.get('/roles/user/1/1')
+  it('GET /roles/user/:user_id/ should test if a action is assigned to the connected user', () => {
+    return agent.get('/roles/user/1')
       .then(res => {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;

@@ -1777,11 +1777,7 @@ DROP TABLE IF EXISTS `role`;
 CREATE TABLE `role` (
   `uuid` binary(16) NOT NULL,
   `label` varchar(50) NOT NULL,
-  `project_id` SMALLINT(5) UNSIGNED NOT NULL,
-  KEY `project_id` (`project_id`),
-  PRIMARY kEY(`uuid`),
-  UNIQUE `project_role_label` (`project_id`,`label`),
-  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON UPDATE CASCADE
+  PRIMARY kEY(`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
