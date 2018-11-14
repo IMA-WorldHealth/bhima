@@ -1,55 +1,42 @@
 /* global element, by */
+/* eslint class-methods-use-this:off */
 
 /**
- * This class is represents a accountReference page in term of structure and
+ * This class is represents an accountReference page in term of structure and
  * behaviour so it is a accountReference page object
  */
 
-/* loading grid actions */
-const GA = require('../shared/GridAction');
+const GridRow = require('../shared/GridRow');
 
-function AccountReferencePage() {
-  const page = this;
+class AccountReferencePage {
 
-  const accountReferenceGrid = element(by.id('account-reference-grid'));
-  const addAccountReferenceButton = element(by.css('[data-method="create"]'));
-  const actionLinkColumn = 7;
+  constructor() {
+    this.grid = element(by.id('account-reference-grid'));
+    this.createBtn = element(by.css('[data-method="create"]'));
+  }
 
-  /* send back the number of accountReference in the grid */
-  function getAccountReferenceCount() {
-    return accountReferenceGrid
-      .element(by.css('.ui-grid-render-container-body'))
+  count() {
+    return this.grid
+      .$('.ui-grid-render-container-body')
       .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'))
       .count();
   }
 
-  /**
-   * simulate the add accountReference button click to show the dialog of creation
-   */
-  function createAccountReference() {
-    return addAccountReferenceButton.click();
+  create() {
+    return this.createBtn.click();
   }
 
-  /**
-   * simulate a click to a link tailed to the accountReference
-   *  listed in the grid to show the dialog for an editing
-   */
-  function editAccountReference(n) {
-    GA.clickOnMethod(n, actionLinkColumn, 'edit', 'account-reference-grid');
+  update(reference) {
+    const row = new GridRow(reference);
+    row.dropdown().click();
+    row.edit().click();
   }
 
-  /**
-   * simulate a click to a link tailed to the accountReference
-   *  listed in the grid to show the dialog for a deletion
-   */
-  function deleteAccountReference(n) {
-    GA.clickOnMethod(n, actionLinkColumn, 'delete', 'account-reference-grid');
+  remove(reference) {
+    const row = new GridRow(reference);
+    row.dropdown().click();
+    row.remove().click();
   }
-
-  page.getAccountReferenceCount = getAccountReferenceCount;
-  page.createAccountReference = createAccountReference;
-  page.editAccountReference = editAccountReference;
-  page.deleteAccountReference = deleteAccountReference;
 }
 
 module.exports = AccountReferencePage;
