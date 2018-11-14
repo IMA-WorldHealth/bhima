@@ -80,6 +80,7 @@ function UpdateCenterController(DistributionUpdateCenters, DistributionCenters, 
       displayName : 'TABLE.COLUMNS.DEBIT',
       cellClass : 'text-right',
       footerCellClass : 'text-right',
+      cellFilter : 'number: 2',
       footerCellFilter : 'number:2',
       enableFiltering : true,
       treeAggregationType : uiGridGroupingConstants.aggregation.SUM,
@@ -90,10 +91,11 @@ function UpdateCenterController(DistributionUpdateCenters, DistributionCenters, 
     }, {
       field : 'credit_equiv',
       type : 'number',
-      headerCellFilter : 'translate',
       displayName : 'TABLE.COLUMNS.CREDIT',
+      headerCellFilter : 'translate',
       cellClass : 'text-right',
       footerCellClass : 'text-right',
+      cellFilter : 'number: 2',
       footerCellFilter : 'number:2',
       enableFiltering : true,
       treeAggregationType : uiGridGroupingConstants.aggregation.SUM,
@@ -115,7 +117,7 @@ function UpdateCenterController(DistributionUpdateCenters, DistributionCenters, 
     }],
   };
 
-  vm.grouping = new Grouping(vm.gridOptions, true, 'trans_uuid', vm.grouped, true);
+  const grouping = new Grouping(vm.gridOptions, true, 'trans_uuid', vm.grouped, true);
 
   function onRegisterApiFn(gridApi) {
     vm.gridApi = gridApi;
@@ -135,13 +137,11 @@ function UpdateCenterController(DistributionUpdateCenters, DistributionCenters, 
         if (changes.length) {
           DistributionUpdateCenters.filters.replaceFilters(changes);
         }
+
         DistributionUpdateCenters.cacheFilters();
         vm.latestViewFilters = DistributionUpdateCenters.filters.formatView();
         return loadDistributionCenters(DistributionUpdateCenters.filters.formatHTTP(true));
-      })
-      .catch(errorHandler)
-      .finally(toggleLoadingIndicator);
-
+      });
   }
 
   // Update distribution
@@ -161,10 +161,7 @@ function UpdateCenterController(DistributionUpdateCenters, DistributionCenters, 
     dataUpdate.distributionValues = distributionValues;
 
     DistributionCenters.openDistributionModal(dataUpdate)
-      .then((changes) => {
-        if (changes.length) {
-          DistributionUpdateCenters.filters.replaceFilters(changes);
-        }
+      .then(() => {
         DistributionUpdateCenters.cacheFilters();
         vm.latestViewFilters = DistributionUpdateCenters.filters.formatView();
         return loadDistributionCenters(DistributionUpdateCenters.filters.formatHTTP(true));

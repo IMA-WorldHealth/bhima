@@ -164,10 +164,7 @@ function DistributionCenterController(DistributionCenters, ModalService, Notify,
     data.is_cost = filtersSnapshot.typeFeeCenter;
 
     DistributionCenters.openDistributionModal(data)
-      .then((changes) => {
-        if (changes.length) {
-          DistributionCenters.filters.replaceFilters(changes);
-        }
+      .then(() => {
         DistributionCenters.cacheFilters();
         vm.latestViewFilters = DistributionCenters.filters.formatView();
         return loadDistributionCenters(DistributionCenters.filters.formatHTTP(true));
@@ -197,10 +194,7 @@ function DistributionCenterController(DistributionCenters, ModalService, Notify,
         };
 
         DistributionCenters.breackDownPercentagesModal(data)
-          .then((changes) => {
-            if (changes.length) {
-              DistributionCenters.filters.replaceFilters(changes);
-            }
+          .then(() => {
             DistributionCenters.cacheFilters();
             vm.latestViewFilters = DistributionCenters.filters.formatView();
             return loadDistributionCenters(DistributionCenters.filters.formatHTTP(true));

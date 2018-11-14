@@ -110,8 +110,8 @@ class DistributionPage {
   setUpdatedDistribution(dataset) {
     components.fiscalPeriodSelect.set(dataset.fiscal_id, dataset.periodFrom_id, dataset.periodTo_id);
 
-    if (dataset.profitCenter) {
-      element(by.id('is_profit')).click();
+    if (dataset.costCenter) {
+      element(by.id('is_cost')).click();
     }
     FU.buttons.submit();
 
@@ -120,9 +120,9 @@ class DistributionPage {
         const { rowIndex } = indices;
 
         GA.clickOnMethod(rowIndex, this.actionLinkUpdateColumn, 'edit', this.gridId);
-        components.currencyInput.set(100, 'principal_1');
+        components.currencyInput.set(1000, 'principal_1');
         components.currencyInput.set(100, 'principal_2');
-        components.currencyInput.set(4.9, 'principal_3');
+        components.currencyInput.set(500, 'principal_3');
 
         FU.buttons.submit();
         FU.exists(by.id('validation-error'), true);
@@ -134,9 +134,9 @@ class DistributionPage {
         FU.buttons.submit();
         FU.exists(by.id('validation-error'), true);
 
-        components.percentageInput.set(57, 'principal_1');
-        components.percentageInput.set(98, 'principal_2');
-        components.percentageInput.set(49.8, 'principal_3');
+        components.percentageInput.set(92, 'principal_1');
+        components.percentageInput.set(88.6, 'principal_2');
+        components.percentageInput.set(76.02, 'principal_3');
 
         FU.buttons.submit();
         components.notification.hasSuccess();
