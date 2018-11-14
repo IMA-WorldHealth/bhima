@@ -204,6 +204,8 @@
             "TOTAL_DEBT": "Total des Dettes",
             "TOTAL_GENERAL": "Total général",
             "TOTAL_DISTRIBUTE": "Total de répartition",
+            "TOTAL_UNICORPORATED_CHARGE": "Total charge non incorporé",
+            "TOTAL_UNICORPORARED_PRODUCT": "Total produit non incorporé",            
             "TRANSACTION": "Transaction",
             "TRANSACTION_ID": "ID transaction",
             "TRANSACTION_PRICE": "Coût de la Transaction",

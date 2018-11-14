@@ -278,9 +278,15 @@
                 </strong>
               </td>
             </tr>
-
           </tfoot>
         </table>
+        <p class="text-right">
+          <em>
+            <strong>
+              * {{translate 'TABLE.COLUMNS.TOTAL_UNICORPORATED_CHARGE'}}: {{debcred unDistributedCost metadata.enterprise.currency_id}}    
+            </strong>
+          </em>
+        </p>   
         <br>
         <br>
         {{/if}}
@@ -414,6 +420,11 @@
             </tr>
           </tfoot>
         </table>
+        <p class="text-right">
+          <strong>
+            <em> * {{translate 'TABLE.COLUMNS.TOTAL_UNICORPORARED_PRODUCT'}}: {{debcred unDistributedProfit metadata.enterprise.currency_id}}</em>
+          </strong>
+        </p>
         <br>
         <br>
         {{/if}}

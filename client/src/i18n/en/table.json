@@ -203,6 +203,8 @@
             "TOTAL_DEBT": "Total Debt",
             "TOTAL_DISTRIBUTE": "Total distributions",
             "TOTAL_GENERAL": "Total General",
+            "TOTAL_UNICORPORATED_CHARGE": "Total unincorporated charge",
+            "TOTAL_UNICORPORARED_PRODUCT": "Total unincorporated product",
             "TRANSACTION": "Transaction",
             "TRANSACTION_ID": "Transaction ID",
             "TRANSACTION_PRICE": "Transaction Price",

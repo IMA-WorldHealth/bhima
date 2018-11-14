@@ -241,7 +241,9 @@ function configuration(data) {
   configured.totalGeneralCost = totalGeneralCost;
   configured.totalGeneralProfit = totalGeneralProfit;
   configured.ratioCost = totalGeneralCost / configured.allCost;
+  configured.unDistributedCost = configured.allCost - totalGeneralCost;
   configured.ratioProfit = totalGeneralProfit / configured.allProfit;
+  configured.unDistributedProfit = configured.allProfit - totalGeneralProfit;
   configured.results = totalGeneralProfit - totalGeneralCost;
   configured.resultCredit = (configured.results > 0);
   configured.resultDebit = (configured.results < 0);
