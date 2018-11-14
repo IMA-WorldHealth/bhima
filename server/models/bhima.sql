@@ -1,6 +1,5 @@
 -- core tables that drive system configuration - these configurations could
 -- be overriden by individual enterprises however these are the defaults
-
 -- set variables
 SET foreign_key_checks = 0;
 
@@ -154,7 +153,6 @@ INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
   (25, 'stock_value', 'TREE.STOCK_VALUE'),
   (26, 'ohada_profit_loss', 'TREE.OHADA_RESULT_ACCOUNT'),
   (27, 'income_expense_by_year', 'REPORT.INCOME_EXPENSE_BY_YEAR');
-  
 
 -- Supported Languages
 INSERT INTO `language` VALUES
