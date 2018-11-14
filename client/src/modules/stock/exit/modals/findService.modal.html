@@ -10,9 +10,16 @@
   </div>
 
   <div class="modal-body">
-    <div class="form-group">
+    <div 
+      class="form-group"
+      ng-class="{ 'has-error' : FindForm.$submitted && FindForm.service.$invalid }">
       <label class="control-label" translate>FORM.LABELS.SERVICE</label>
-      <ui-select name="service" ng-model="$ctrl.selected">
+      <bh-clear on-clear="$ctrl.clear('selected')"></bh-clear>
+      <ui-select 
+        name="service" 
+        ng-model="$ctrl.selected" 
+        on-select="$ctrl.onSelect($item)"
+        ng-required="true">
         <ui-select-match>
           <span>{{$select.selected.name}}</span>
         </ui-select-match>
@@ -20,6 +27,10 @@
           <span ng-bind-html="service.name | highlight:$select.search"></span>
         </ui-select-choices>
       </ui-select>
+
+      <div class="help-block" ng-messages="FindForm.service.$error" ng-show="FindForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
     </div>
   </div>
 
