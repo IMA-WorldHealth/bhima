@@ -80,7 +80,6 @@ function UpdateCenterController(DistributionUpdateCenters, DistributionCenters, 
       displayName : 'TABLE.COLUMNS.DEBIT',
       cellClass : 'text-right',
       footerCellClass : 'text-right',
-      cellFilter : 'number: 2',
       footerCellFilter : 'number:2',
       enableFiltering : true,
       treeAggregationType : uiGridGroupingConstants.aggregation.SUM,
@@ -95,7 +94,6 @@ function UpdateCenterController(DistributionUpdateCenters, DistributionCenters, 
       headerCellFilter : 'translate',
       cellClass : 'text-right',
       footerCellClass : 'text-right',
-      cellFilter : 'number: 2',
       footerCellFilter : 'number:2',
       enableFiltering : true,
       treeAggregationType : uiGridGroupingConstants.aggregation.SUM,
@@ -117,7 +115,7 @@ function UpdateCenterController(DistributionUpdateCenters, DistributionCenters, 
     }],
   };
 
-  const grouping = new Grouping(vm.gridOptions, true, 'trans_uuid', vm.grouped, true);
+  vm.grouping = new Grouping(vm.gridOptions, true, 'trans_uuid', vm.grouped, true);
 
   function onRegisterApiFn(gridApi) {
     vm.gridApi = gridApi;
