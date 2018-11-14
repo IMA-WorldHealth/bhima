@@ -99,11 +99,11 @@ function DistributionKeyController(DistributionCenters, ModalService, Notify, ui
     dataSettings.settingsValues = settingsValues;
 
     DistributionCenters.openDistributionKeyModal(dataSettings)
-      .then(() => {
-        return load();
-      })
-      .catch(errorHandler)
-      .finally(toggleLoadingIndicator);
+      .then((changes) => {
+        if (changes) {
+          return load();
+        }
+      });
   }
 
   function load() {

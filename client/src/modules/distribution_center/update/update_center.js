@@ -132,13 +132,12 @@ function UpdateCenterController(DistributionUpdateCenters, DistributionCenters, 
     const filtersSnapshot = DistributionUpdateCenters.filters.formatHTTP();
     DistributionCenters.openSettingModal(filtersSnapshot)
       .then((changes) => {
-        if (changes.length) {
+        if (changes) {
           DistributionUpdateCenters.filters.replaceFilters(changes);
+          DistributionUpdateCenters.cacheFilters();
+          vm.latestViewFilters = DistributionUpdateCenters.filters.formatView();
+          loadDistributionCenters(DistributionUpdateCenters.filters.formatHTTP(true));
         }
-
-        DistributionUpdateCenters.cacheFilters();
-        vm.latestViewFilters = DistributionUpdateCenters.filters.formatView();
-        return loadDistributionCenters(DistributionUpdateCenters.filters.formatHTTP(true));
       });
   }
 
@@ -159,13 +158,13 @@ function UpdateCenterController(DistributionUpdateCenters, DistributionCenters, 
     dataUpdate.distributionValues = distributionValues;
 
     DistributionCenters.openDistributionModal(dataUpdate)
-      .then(() => {
-        DistributionUpdateCenters.cacheFilters();
-        vm.latestViewFilters = DistributionUpdateCenters.filters.formatView();
-        return loadDistributionCenters(DistributionUpdateCenters.filters.formatHTTP(true));
-      })
-      .catch(errorHandler)
-      .finally(toggleLoadingIndicator);
+      .then((changes) => {
+        if (changes) {
+          DistributionUpdateCenters.cacheFilters();
+          vm.latestViewFilters = DistributionUpdateCenters.filters.formatView();
+          loadDistributionCenters(DistributionUpdateCenters.filters.formatHTTP(true));
+        }
+      });
   }
 
   function load(filters) {
