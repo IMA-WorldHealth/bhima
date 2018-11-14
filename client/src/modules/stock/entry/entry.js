@@ -226,13 +226,10 @@ function StockEntryController(
 
   /**
    * @method loadInventories
-   * @description load consumable inventories
+   * @description load inventories
    */
   function loadInventories() {
-    // by definition, an item is consumable if it is purchasable because it can finish or be full used (amorti)
-    // an aspirin or a pen are both consumable because they can be purchased
-    // we will load only purchasable items
-    Inventory.read(null, { consumable : 1 })
+    Inventory.read()
       .then((inventories) => {
         vm.inventories = inventories;
         inventoryStore = new Store({ identifier : 'uuid', data : inventories });
