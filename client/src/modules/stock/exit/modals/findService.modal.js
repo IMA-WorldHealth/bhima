@@ -8,12 +8,10 @@ StockFindServiceModalController.$inject = [
 function StockFindServiceModalController(Instance, Service, Notify, Data) {
   const vm = this;
 
-  // global
-  vm.selected = {};
-
   // bind methods
   vm.submit = submit;
   vm.cancel = cancel;
+  vm.clear = clear;
 
   Service.read()
     .then(services => {
@@ -25,13 +23,18 @@ function StockFindServiceModalController(Instance, Service, Notify, Data) {
           return item.uuid === Data.entity_uuid;
         });
 
-        vm.selected = currentService.length > 0 ? currentService[0] : {};
+        vm.selected = currentService.length > 0 ? currentService[0] : undefined;
       }
     })
     .catch(Notify.handleError);
 
+  function clear(element) {
+    delete vm[element];
+  }
+
   // submit
-  function submit() {
+  function submit(form) {
+    if (form.$invalid) { return; }
     Instance.close(vm.selected);
   }
 

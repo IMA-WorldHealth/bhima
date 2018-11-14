@@ -907,6 +907,7 @@ a[disabled] {
 
 .grid-toolbar-item {
   display: inline-flex;
+  padding-right: 5px;
 }
 
 /* -------------------------------------
