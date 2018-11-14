@@ -101,7 +101,7 @@ function DistributionKeyController(DistributionCenters, ModalService, Notify, ui
     DistributionCenters.openDistributionKeyModal(dataSettings)
       .then((changes) => {
         if (changes) {
-          return load();
+          load();
         }
       });
   }
