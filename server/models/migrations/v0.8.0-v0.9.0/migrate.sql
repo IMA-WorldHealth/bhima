@@ -847,3 +847,8 @@ CREATE TABLE `tags`(
 
 INSERT INTO unit VALUES
 (217, 'Tags','TREE.TAGS','', 1,'/modules/tags/tags','/tags');
+
+-- @jniles: remove project from role
+ALTER TABLE role DROP INDEX project_role_label;
+ALTER TABLE role DROP FOREIGN KEY `role_ibfk_1`;
+ALTER TABLE role DROP column project_id;

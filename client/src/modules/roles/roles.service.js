@@ -25,8 +25,8 @@ function RolesService(Api) {
     return service.$http.post(url, data);
   };
 
-  service.userRoles = function userRoles(userId, projectId) {
-    const url = `/roles/user/${userId}/${projectId}`;
+  service.userRoles = function userRoles(userId) {
+    const url = `/roles/user/${userId}`;
     return service.$http.get(url);
   };
 

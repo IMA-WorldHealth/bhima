@@ -744,13 +744,13 @@ exports.configure = function configure(app) {
 
   app.get('/roles/actions/:roleUuid', rolesCtrl.rolesAction);
   app.get('/roles/actions/user/:action_id', rolesCtrl.hasAction);
-  app.get('/roles/user/:user_id/:project_id', rolesCtrl.listForUser);
+  app.get('/roles/user/:id', rolesCtrl.listForUser);
   app.post('/roles', rolesCtrl.create);
   app.put('/roles/:uuid', rolesCtrl.update);
   app.delete('/roles/:uuid', rolesCtrl.remove);
 
-  app.post('/roles/affectUnits', rolesCtrl.affectPages);
-  app.post('/roles/assignTouser', rolesCtrl.affectToUser);
+  app.post('/roles/affectUnits', rolesCtrl.assignUnitsToRole);
+  app.post('/roles/assignTouser', rolesCtrl.assignRolesToUser);
   app.post('/roles/actions', rolesCtrl.assignActionToRole);
 
   // unit

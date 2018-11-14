@@ -7,8 +7,8 @@ exports.create = create;
 exports.update = update;
 exports.remove = remove;
 exports.units = units;
-exports.affectPages = affectPages;
-exports.affectToUser = affectToUser;
+exports.assignUnitsToRole = assignUnitsToRole;
+exports.assignRolesToUser = assignRolesToUser;
 exports.listForUser = listForUser;
 exports.rolesAction = rolesAction;
 exports.hasAction = hasAction;
@@ -16,8 +16,9 @@ exports.assignActionToRole = assignActionToRole;
 
 function list(req, res, next) {
   const sql = `
-    SELECT BUID(r.uuid) as uuid, r.label, r.project_id
-    FROM role  r
+    SELECT BUID(r.uuid) as uuid, r.label, COUNT(ru.uuid) as numUsers
+    FROM role r LEFT JOIN user_role ru ON r.uuid = ru.role_uuid
+    GROUP BY r.uuid
     ORDER BY r.label ASC
   `;
 
@@ -30,9 +31,9 @@ function list(req, res, next) {
 
 function detail(req, res, next) {
   const sql = `
-    SELECT BUID(uuid) as uuid, label, project_id
-    FROM role
-    WHERE  uuid = ?;
+    SELECT BUID(r.uuid) as uuid, r.label, COUNT(ru.uuid) as numUsers
+    FROM role r LEFT JOIN user_role ru ON r.uuid = ru.role_uuid
+    WHERE uuid = ?;
   `;
 
   const binaryUuid = db.bid(req.params.uuid);
@@ -48,11 +49,11 @@ function detail(req, res, next) {
 // create a new role
 function create(req, res, next) {
   const sql = `
-    INSERT INTO  role(uuid, label, project_id)
-    VALUES(?, ?,?)
+    INSERT INTO  role(uuid, label)
+    VALUES(?, ?)
   `;
 
-  db.exec(sql, [db.uuid(), req.body.label, req.body.project_id])
+  db.exec(sql, [db.uuid(), req.body.label])
     .then(rows => {
       res.status(201).json(rows);
     })
@@ -63,6 +64,7 @@ function create(req, res, next) {
 function update(req, res, next) {
   const role = req.body;
   delete role.uuid;
+  delete role.numUsers;
 
   const sql = `UPDATE role SET ? WHERE uuid = ?`;
 
@@ -87,7 +89,7 @@ function remove(req, res, next) {
 }
 
 // affect permission to a specific role
-function affectPages(req, res, next) {
+function assignUnitsToRole(req, res, next) {
   const data = req.body;
 
   const unitIds = [].concat(data.unit_ids);
@@ -95,7 +97,7 @@ function affectPages(req, res, next) {
 
   const deleteFromRole = 'DELETE FROM role_unit WHERE role_uuid = ?;';
   const affectPage = `
-    INSERT INTO  role_unit(uuid, unit_id, role_uuid)
+    INSERT INTO  role_unit (uuid, unit_id, role_uuid)
     VALUES( ?, ?, ?);
   `;
 
@@ -114,13 +116,12 @@ function affectPages(req, res, next) {
 
 // retrieves affected and not affected role by a user id
 function listForUser(req, res, next) {
-  const userId = req.params.user_id;
-  const projectId = req.params.project_id;
+  const userId = req.params.id;
   const sql = `
-    SELECT BUID(r.uuid) as uuid, r.label, r.project_id , IFNULL(s.affected, 0) as affected
+    SELECT BUID(r.uuid) as uuid, r.label, IFNULL(s.affected, 0) as affected
     FROM role r
-    LEFT JOIN(
-      select  ro.uuid, 1 as affected
+    LEFT JOIN (
+      SELECT ro.uuid, 1 as affected
       FROM user_role ur
       JOIN role ro ON ur.role_uuid = ro.uuid
       WHERE ur.user_id = ?
@@ -128,7 +129,7 @@ function listForUser(req, res, next) {
     ORDER BY r.label
   `;
 
-  db.exec(sql, [userId, userId, projectId])
+  db.exec(sql, [userId, userId])
     .then((roles) => {
       res.json(roles);
     })
@@ -208,7 +209,7 @@ function hasAction(req, res, next) {
 
 // affect roles to a user
 // roles ares permissions
-function affectToUser(req, res, next) {
+function assignRolesToUser(req, res, next) {
   const data = req.body;
   const rolesUuids = [].concat(data.role_uuids);
   const userId = data.user_id;
@@ -219,7 +220,11 @@ function affectToUser(req, res, next) {
   db.exec(deleleUserRoles, userId)
     .then(() => {
       const promises = rolesUuids
-        .map(roleUuid => db.exec(addRole, { uuid : db.uuid(), role_uuid : db.bid(roleUuid), user_id : userId }));
+        .map(roleUuid => db.exec(addRole, {
+          uuid : db.uuid(),
+          role_uuid : db.bid(roleUuid),
+          user_id : userId,
+        }));
 
       return q.all(promises);
     })

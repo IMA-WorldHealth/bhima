@@ -16,7 +16,7 @@ function UsersRolesController(data, $uibModal, $uibModalInstance, RolesService, 
 
   // load all roles
   function loadRoles() {
-    RolesService.userRoles(vm.user.id, Session.project.id)
+    RolesService.userRoles(vm.user.id)
       .then(response => {
         delete vm.gridOptions.data;
         vm.roles = response.data;
