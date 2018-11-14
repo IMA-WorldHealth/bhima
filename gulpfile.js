@@ -32,10 +32,15 @@ const supportedLanguages = {
 // resource paths
 const paths = {
   client : {
+    // this section contains custom js scripts of plugins
+    plugins : [
+      'client/src/js/plugins/*.js',
+    ],
     javascript : [
       'client/src/js/define.js',
       'client/src/js/app.js',
       'client/src/**/*.js',
+      '!client/src/js/plugins/*.js',
       '!client/src/i18n/**/*.js',
     ],
     css : ['client/src/css/*.css'],
@@ -104,7 +109,7 @@ const paths = {
 // external gulp tasks to build the client, server and watch for client changes
 gulp.task('default', ['build']);
 gulp.task('build', ['client', 'server']);
-gulp.task('client', ['js', 'css', 'less', 'i18n', 'vendor', 'static'], templateHTML);
+gulp.task('client', ['js', 'css', 'less', 'i18n', 'vendor', 'static', 'plugins'], templateHTML);
 gulp.task('watch', ['watch-client']);
 
 // collect all BHIMA application code and return a single versioned JS file
@@ -127,6 +132,14 @@ gulp.task('js', ['clean-js'], () => {
     .pipe(gulp.dest(`${CLIENT_FOLDER}`)) // write revisioned javascript to build folder
     .pipe(rev.manifest(`${CLIENT_FOLDER}/rev-manifest.json`, { merge : true }))
     .pipe(gulp.dest('')); // write manifest to build folder
+});
+
+// collects all custom js script of js plugins from client (client/js/scripts)
+// and moves them to the build folder, respecting folder structure
+gulp.task('plugins', () => {
+  return gulp.src(paths.client.plugins)
+    .pipe(concat('plugins.concat.js'))
+    .pipe(gulp.dest(`${CLIENT_FOLDER}/js/plugins`));
 });
 
 // collect all BHIMA application style sheets and return a single versioned CSS file
