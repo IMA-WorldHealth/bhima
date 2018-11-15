@@ -71,7 +71,7 @@ function DistributionModalController(
     const diffAmount = util.roundDecimal((amountEquiv - sumDistributed), 2);
 
     vm.invalidDistribution = sumDistributed !== amountEquiv;
-    vm.diffAmount = Math.abs(vm.diffAmount);
+    vm.diffAmount = Math.abs(diffAmount);
 
     vm.errorMessage = (vm.transaction.amount_equiv > sumDistributed)
       ? $translate.instant('FORM.WARNINGS.REMAINS_DISTRIBUTION', { value : vm.diffAmount })
