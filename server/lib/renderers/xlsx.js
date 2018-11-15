@@ -127,5 +127,9 @@ function setValue(ws, x, y, value) {
       numberFormat : 'yyyy-mm-dd hh:mm:ss',
     });
   }
+  if (_.isBoolean(value)) {
+    const _value = value ? 1 : 0;
+    return ws.cell(x, y).number(_value);
+  }
   return ws.cell(x, y).string(value || '');
 }
