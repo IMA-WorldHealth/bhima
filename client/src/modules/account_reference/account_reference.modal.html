@@ -53,8 +53,8 @@
       <label class="control-label" translate>FORM.SELECT.ACCOUNTS</label>
 
       <ui-select
-        multiple="true" 
-        name="accounts" 
+        multiple="true"
+        name="accounts"
         ng-model="AccountReferenceModalCtrl.accountReference.accounts"
         close-on-select="false"
         append-to-body="true">
@@ -79,8 +79,8 @@
       <label class="control-label" translate>ACCOUNT.REFERENCE.EXCEPTION</label>
 
       <ui-select
-        multiple="true" 
-        name="accountsException" 
+        multiple="true"
+        name="accountsException"
         ng-model="AccountReferenceModalCtrl.accountReference.accountsException"
         close-on-select="false"
         append-to-body="true">
@@ -102,21 +102,21 @@
     <!-- parent reference -->
     <div class="form-group" ng-class="{ 'has-error' : AccountReferenceForm.$submitted && AccountReferenceForm.parent.$invalid }">
         <label class="control-label" translate>ACCOUNT.REFERENCE.PARENT_REFERENCE</label>
-  
+
         <ui-select
-          name="parent" 
+          name="parent"
           ng-model="AccountReferenceModalCtrl.accountReference.parent"
           append-to-body="true">
-  
+
           <ui-select-match placeholder="{{ 'ACCOUNT.REFERENCE.PARENT_REFERENCE' | translate }}">
             <span>{{$select.selected.abbr}}</span>
           </ui-select-match>
-  
+
           <ui-select-choices repeat="reference.id as reference in AccountReferenceModalCtrl.references | filter:{abbr: $select.search}">
             <strong ng-bind-html="reference.abbr | highlight:$select.search"></strong>
           </ui-select-choices>
         </ui-select>
-  
+
         <div class="help-block" ng-messages="AccountReferenceForm.parent.$error" ng-show="AccountReferenceForm.$submitted">
           <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
         </div>
@@ -128,8 +128,8 @@
       <label class="control-label text-danger" translate>FORM.LABELS.CREDIT_BALANCE</label>
 
       <ui-select
-        multiple="true" 
-        name="accountsCreditBalance" 
+        multiple="true"
+        name="accountsCreditBalance"
         ng-model="AccountReferenceModalCtrl.accountReference.accountsCreditBalance"
         close-on-select="false"
         append-to-body="true">
@@ -150,8 +150,8 @@
       <label class="control-label text-danger" translate>FORM.LABELS.DEBIT_BALANCE</label>
 
       <ui-select
-        multiple="true" 
-        name="accountsDebitBalance" 
+        multiple="true"
+        name="accountsDebitBalance"
         ng-model="AccountReferenceModalCtrl.accountReference.accountsDebitBalance"
         close-on-select="false"
         append-to-body="true">
@@ -167,8 +167,6 @@
       </ui-select>
     </div>
     <hr>
-
-
   </div>
 
   <div class="modal-footer">
@@ -180,7 +178,7 @@
       <i class="fa fa-exclamation-triangle"></i> <span translate>ACCOUNT.REFERENCE.RECORD_ERROR</span>
     </p>
 
-    <button id="account-reference-cancel" type="button" class="btn btn-default" ng-click="AccountReferenceModalCtrl.closeModal()" translate>
+    <button data-method="cancel" type="button" class="btn btn-default" ng-click="AccountReferenceModalCtrl.closeModal()" translate>
       FORM.BUTTONS.CANCEL
     </button>
 
