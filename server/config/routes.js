@@ -745,6 +745,9 @@ exports.configure = function configure(app) {
 
   app.get('/reports/finance/operating', operating.document);
 
+  app.get('/roles', rolesCtrl.list);
+  app.get('/roles/:uuid', rolesCtrl.detail);
+
   // TODO(@jniles) - migrate this to the roles controller
   app.get('/roles/:uuid/units', rolesCtrl.units);
 

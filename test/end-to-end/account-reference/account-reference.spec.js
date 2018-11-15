@@ -26,14 +26,14 @@ describe('AccountReference Management Page', () => {
   };
 
   const mockEdit = {
-    abbr : 'AO',
+    abbr : 'BD',
     description : 'Updated Test Accounts Reference',
     is_amo_dep : 1,
     accounts : ['31110010', '31110011'],
     accountsException : ['31110011'],
   };
 
-  const numReferences = 0;
+  const numReferences = 9;
 
   before(() => helpers.navigate(path));
 
