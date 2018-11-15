@@ -29,7 +29,7 @@ function configuration(req, res, next) {
       const options = {
         custom_period_start : query.periodFrom,
         custom_period_end : query.periodTo,
-        accountsId,
+        accounts_id : accountsId,
         excludes_distributed : true,
         account_id : query.account_id,
         trans_id : query.trans_id,

@@ -78,8 +78,10 @@ function UpdateCenterController(DistributionUpdateCenters, DistributionCenters, 
       type : 'number',
       headerCellFilter : 'translate',
       displayName : 'TABLE.COLUMNS.DEBIT',
+      headerCellFilter : 'translate',
       cellClass : 'text-right',
       footerCellClass : 'text-right',
+      cellFilter : 'number: 2',
       footerCellFilter : 'number:2',
       enableFiltering : true,
       treeAggregationType : uiGridGroupingConstants.aggregation.SUM,
@@ -92,8 +94,10 @@ function UpdateCenterController(DistributionUpdateCenters, DistributionCenters, 
       type : 'number',
       headerCellFilter : 'translate',
       displayName : 'TABLE.COLUMNS.CREDIT',
+      headerCellFilter : 'translate',
       cellClass : 'text-right',
       footerCellClass : 'text-right',
+      cellFilter : 'number: 2',
       footerCellFilter : 'number:2',
       enableFiltering : true,
       treeAggregationType : uiGridGroupingConstants.aggregation.SUM,
@@ -114,6 +118,8 @@ function UpdateCenterController(DistributionUpdateCenters, DistributionCenters, 
       enableFiltering : false,
     }],
   };
+
+  const grouping = new Grouping(vm.gridOptions, true, 'trans_uuid', vm.grouped, true);
 
   function onRegisterApiFn(gridApi) {
     vm.gridApi = gridApi;
@@ -154,7 +160,7 @@ function UpdateCenterController(DistributionUpdateCenters, DistributionCenters, 
       });
     });
 
-    dataUpdate.updating = true;
+    dataUpdate.updating = true,
     dataUpdate.distributionValues = distributionValues;
 
     DistributionCenters.openDistributionModal(dataUpdate)

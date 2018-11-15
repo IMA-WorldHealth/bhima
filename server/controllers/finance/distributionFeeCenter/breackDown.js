@@ -7,6 +7,7 @@ const db = require('../../../lib/db');
 
 function breackDown(req, res, next) {
   const { data } = req.body;
+  const isCost = data.is_cost;
   const dataValues = data.values;
 
   const dataToDistribute = [];
@@ -24,7 +25,7 @@ function breackDown(req, res, next) {
           db.bid(transaction.uuid),
           transaction.trans_id,
           transaction.account_id,
-          data.is_cost,
+          isCost,
           transaction.fee_center_id,
           principalCenterId,
           debitValuePercent,

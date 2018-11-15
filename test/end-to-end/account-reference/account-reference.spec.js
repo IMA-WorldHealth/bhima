@@ -89,6 +89,18 @@ describe('AccountReference Management Page', () => {
     expect(page.count()).to.eventually.equal(numReferences + 2);
   });
 
+
+  it('edits an accounts reference successfully', () => {
+    accountReferencePage.editAccountReference(9);
+    accountReferenceCreateUpdatePage.clearSelectedItems();
+    accountReferenceCreateUpdatePage.setAbbr(mockEdit.abbr);
+    accountReferenceCreateUpdatePage.setDescription(mockEdit.description);
+    accountReferenceCreateUpdatePage.setAccountValues(mockEdit.accounts, true);
+    accountReferenceCreateUpdatePage.setAccountExceptionValues(mockEdit.accountsException, true);
+    accountReferenceCreateUpdatePage.submit();
+    components.notification.hasSuccess();
+  });
+
   it('delete an accounts reference successfully', () => {
     page.remove(mockCreate2.abbr);
     components.notification.hasSuccess();

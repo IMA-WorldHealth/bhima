@@ -32,7 +32,7 @@ function automatic(req, res, next) {
               db.bid(row.trans_uuid),
               row.trans_id,
               item.account_id,
-              0,
+              item.is_cost,
               item.fee_center_id,
               row.fee_center_id,
               row.debit_equiv,
@@ -44,6 +44,7 @@ function automatic(req, res, next) {
           }
         });
       });
+
 
       if (!dataToDistribute.length) {
         throw new NotFound(`Could not find any service linked to fee Centers`);

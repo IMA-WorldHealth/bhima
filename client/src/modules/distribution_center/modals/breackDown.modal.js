@@ -29,7 +29,6 @@ function BreackDownModalController(
   vm.sumDebits = sumDebits;
   vm.sumCredits = sumCredits;
 
-
   // exposed methods
   vm.submit = submit;
 
@@ -65,7 +64,7 @@ function BreackDownModalController(
 
     vm.percentage.transactions = vm.transaction;
     vm.percentage.fee_center_id = vm.feeCenter.fee_center_id;
-    vm.percentage.is_cost = data.is_cost;
+    vm.percentage.is_cost = data.isCost;
 
     return DistributionCenter.proceedBreackDownPercent(vm.percentage)
       .then(() => {
