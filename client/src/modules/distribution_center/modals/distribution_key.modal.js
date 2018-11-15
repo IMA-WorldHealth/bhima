@@ -52,7 +52,7 @@ function DistributionKeyModalController(
     });
 
     vm.invalidBreackDown = sumDistributed !== 100;
-    vm.diffPercentage = (sumDistributed < 100) ? 100 - sumDistributed : sumDistributed - 100;
+    vm.diffPercentage = Math.abs(sumDistributed - 100);
 
     vm.errorMessage = (sumDistributed < 100)
       ? $translate.instant('FORM.WARNINGS.REMAINS_DISTRIBUTION', { value : `${vm.diffPercentage} %` })
