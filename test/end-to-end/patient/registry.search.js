@@ -1,5 +1,4 @@
 /* global element, by */
-
 const { expect } = require('chai');
 
 const Filters = require('../shared/components/bhFilters');

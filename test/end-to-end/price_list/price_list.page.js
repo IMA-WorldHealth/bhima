@@ -1,49 +1,38 @@
+/* eslint class-methods-use-this:off */
 const FU = require('../shared/FormUtils');
 /* loading grid actions */
-const GA = require('../shared/GridAction');
+const GridRow = require('../shared/GridRow');
 
-function PriceListPage() {
-  const page = this;
-
-  // the grid id
-  const gridId = 'priceList-grid';
-  const itemsGridId = 'pricelist-items-grid';
-
-  page.gridId = gridId;
-  page.editPriceList = editPriceList;
-
-  page.deleteRole = deleteRole;
-  page.editItems = editItems;
-  page.openCreateModal = openCreateModal;
-  page.deletePriceListItem = deletePriceListItem;
-
-  const actionLinkColumn = 3;
-  const itemsActionLinkColumn = 3;
-
-  page.submit = function submit() {
-    return FU.modal.submit();
-  };
-
-  function editPriceList(n) {
-    return GA.clickOnMethod(n, actionLinkColumn, 'edit', gridId);
+class PriceListPage {
+  constructor() {
+    this.gridId = 'priceList-grid';
+    this.buttons = {
+      create : FU.buttons.create,
+    };
   }
 
-  function deletePriceListItem(n) {
-    return GA.clickOnMethod(n, itemsActionLinkColumn, 'delete-item', itemsGridId);
+  create() {
+    return this.buttons.create();
   }
 
-  function editItems(n) {
-    return GA.clickOnMethod(n, actionLinkColumn, 'edit-items', gridId);
+  update(label) {
+    const row = new GridRow(label);
+    row.dropdown().click();
+    row.edit().click();
   }
 
-  function deleteRole(n) {
-    return GA.clickOnMethod(n, actionLinkColumn, 'delete', gridId);
+  remove(label) {
+    const row = new GridRow(label);
+    row.dropdown().click();
+    row.remove().click();
   }
 
-  function openCreateModal() {
-    return FU.buttons.add();
+  // opens the items menu for configuration
+  configure(label) {
+    const row = new GridRow(label);
+    row.dropdown().click();
+    row.method('edit-items').click();
   }
-
 }
 
 module.exports = PriceListPage;

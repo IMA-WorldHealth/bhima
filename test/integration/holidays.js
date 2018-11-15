@@ -68,7 +68,7 @@ describe('(/holidays) The /holidays  API endpoint', () => {
   });
 
   it('DELETE /HOLIDAYS/:ID will send back a 404 if the Holiday does not exist', () => {
-    return agent.delete('/holidays/inknowHoliday')
+    return agent.delete('/holidays/unknownHoliday')
       .then((res) => {
         helpers.api.errored(res, 404);
       })

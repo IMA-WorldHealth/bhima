@@ -64,7 +64,7 @@ describe('(/offdays) The /offdays  API endpoint', () => {
   });
 
   it('DELETE /OFFDAYS/:ID will send back a 404 if the Offday does not exist', () => {
-    return agent.delete('/offdays/inknowOffday')
+    return agent.delete('/offdays/unknownOffday')
       .then((res) => {
         helpers.api.errored(res, 404);
       })

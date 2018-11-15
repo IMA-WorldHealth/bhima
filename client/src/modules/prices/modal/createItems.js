@@ -7,8 +7,8 @@ PriceListItemsModalController.$inject = [
 ];
 
 function PriceListItemsModalController(
-  data, Instance, Inventory, util
-  , Notify, AppCache, PriceList, Modal
+  data, Instance, Inventory, util,
+  Notify, AppCache, PriceList, Modal
 ) {
   const vm = this;
 
@@ -23,7 +23,7 @@ function PriceListItemsModalController(
   vm.submit = submit;
   vm.cancel = cancel;
   // remove a price list item
-  vm.del = del;
+  vm.remove = remove;
 
   const inventoryMap = {};
 
@@ -67,45 +67,37 @@ function PriceListItemsModalController(
   }
 
   // ui-grid coloumn
-  const columns = [
-    {
-      field : 'label',
-      displayName : 'FORM.LABELS.LABEL',
-      headerCellFilter : 'translate',
-    },
-    {
-      field : 'inventory_label',
-      displayName : 'FORM.LABELS.INVENTORY',
-      headerCellFilter : 'translate',
-    },
-    {
-      field : 'value',
-      displayName : 'FORM.LABELS.VALUE',
-      headerCellFilter : 'translate',
-      cellTemplate : `/modules/prices/templates/price_item_value.tmpl.html`,
-      width : 70,
-    },
-    {
-      field : 'FORM.BUTTONS.ACTIONS',
-      width : 50,
-      enableFiltering : false,
-      displayName : '',
-      headerCellFilter : 'translate',
-      cellTemplate : `/modules/prices/templates/delete_price_item.tmpl.html`,
-    },
-  ];
+  const columns = [{
+    field : 'label',
+    displayName : 'FORM.LABELS.LABEL',
+    headerCellFilter : 'translate',
+  }, {
+    field : 'inventory_label',
+    displayName : 'FORM.LABELS.INVENTORY',
+    headerCellFilter : 'translate',
+  }, {
+    field : 'value',
+    displayName : 'FORM.LABELS.VALUE',
+    headerCellFilter : 'translate',
+    cellTemplate : `/modules/prices/templates/price_item_value.tmpl.html`,
+    width : 70,
+  }, {
+    field : 'actions',
+    width : 25,
+    displayName : '...',
+    cellTemplate : `/modules/prices/templates/delete_price_item.tmpl.html`,
+  }];
 
   vm.gridOptions = {
     appScopeProvider : vm,
     enableColumnMenus : false,
     columnDefs : columns,
     enableSorting : true,
-    data : [],
     fastWatch : true,
     flatEntityAccess : true,
   };
 
-  vm.gridOptions.onRegisterApi = function onRegisterApi(gridApi) {
+  vm.gridOptions.onRegisterApi = gridApi => {
     vm.gridApi = gridApi;
   };
 
@@ -144,20 +136,21 @@ function PriceListItemsModalController(
   }
 
   // switch to delete warning mode
-  function del(uuid) {
-    Modal.confirm('FORM.DIALOGS.CONFIRM_DELETE').then(bool => {
-      // if the user clicked cancel then return
-      if (!bool) {
-        return;
-      }
-      // if we get there, the user wants to delete a priceList item
-      PriceList.deleteItem(uuid)
-        .then(() => {
-          Notify.success('FORM.INFO.DELETE_SUCCESS');
-          refreshList();
-        })
-        .catch(Notify.handleError);
-    });
+  function remove(uuid) {
+    Modal.confirm('FORM.DIALOGS.CONFIRM_DELETE')
+      .then(bool => {
+        // if the user clicked cancel then return
+        if (!bool) {
+          return;
+        }
+        // if we get there, the user wants to delete a priceList item
+        PriceList.deleteItem(uuid)
+          .then(() => {
+            Notify.success('FORM.INFO.DELETE_SUCCESS');
+            refreshList();
+          })
+          .catch(Notify.handleError);
+      });
   }
 
   startUp();

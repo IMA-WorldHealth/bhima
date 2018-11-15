@@ -1,14 +1,15 @@
 <div class="modal-header">
-  <h4 translate>PRICE_LIST.PRICE_LIST_ITEMS</h4>
-  <h5 class="text-primary">{{ ModalCtrl.pricelist.label }}</h5>
+  <ol class="headercrumb">
+    <li class="static" translate>PRICE_LIST.TITLE</li>
+    <li class="title" translate>PRICE_LIST.PRICE_LIST_ITEMS</li>
+  </ol>
 </div>
 
 <div class="modal-body">
   <form name="ModalForm" bh-submit="ModalCtrl.submit(ModalForm)" novalidate>
     <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.label.$invalid }">
       <label class="control-label" translate>FORM.LABELS.DESIGNATION</label>
-      <input type="text" class="form-control" name="label" ng-maxlength="ModalCtrl.length250" autocomplete="off" ng-model="ModalCtrl.data.label"
-        required>
+      <input type="text" class="form-control" name="label" ng-maxlength="ModalCtrl.length250" autocomplete="off" ng-model="ModalCtrl.data.label" required>
       <div class="help-block" ng-messages="ModalForm.label.$error" ng-show="ModalForm.$submitted">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
       </div>
@@ -34,7 +35,8 @@
       <ui-select name="inventory_uuid" ng-model="ModalCtrl.data.inventory_uuid" required>
         <ui-select-match placeholder="{{ 'FORM.SELECT.INVENTORY' | translate }}">
           <span>
-            <strong>{{$select.selected.code }}</strong> {{ $select.selected.label }}</span>
+            <strong>{{$select.selected.code}}</strong> {{ $select.selected.label }}
+          </span>
         </ui-select-match>
         <ui-select-choices ui-select-focus-patch repeat="inventory.uuid as inventory in ModalCtrl.inventories | filter:$select.search">
           <strong ng-bind-html="inventory.code | highlight:$select.search"></strong>
@@ -50,28 +52,33 @@
       <i class="fa fa-alert"></i>
       <span translate>{{ ModalCtrl.error }}</span>
     </span>
-    <div class="row">
-      <div class="col-lg-12">
-        <div class="pull-right">
-          <bh-loading-button loading-state="ModalForm.$loading" id="submit-price-list">
-            <span translate>FORM.BUTTONS.ADD</span>
-          </bh-loading-button>
-        </div>
+
+    <div class="row text-right" style="margin-bottom:15px;">
+      <div class="col-md-12">
+        <bh-loading-button loading-state="ModalForm.$loading">
+          <span translate>FORM.BUTTONS.ADD</span>
+        </bh-loading-button>
       </div>
     </div>
   </form>
-</div>
-<div class="row">
-  <div class="col-lg-12">
-    <div id="pricelist-items-grid" style="height: 250px; margin: 10px;" ui-grid="ModalCtrl.gridOptions" ui-grid-auto-resize ui-grid-resize-columns
-      ui-grid-exporter ui-grid-save-state>
 
-      <bh-grid-loading-indicator l
-        oading-state="ModalCtrl.loading" empty-state="ModalCtrl.gridOptions.data.length === 0" error-state="ModalCtrl.hasError">
-      </bh-grid-loading-indicator>
+  <div class="row">
+    <div class="col-md-12">
+      <div
+        id="pricelist-items-grid"
+        style="height: 250px;"
+        ui-grid="ModalCtrl.gridOptions"
+        ui-grid-auto-resize
+        ui-grid-resize-columns>
+
+        <bh-grid-loading-indicator
+          loading-state="ModalCtrl.loading"
+          empty-state="ModalCtrl.gridOptions.data.length === 0"
+          error-state="ModalCtrl.hasError">
+        </bh-grid-loading-indicator>
+      </div>
     </div>
   </div>
-</div>
 </div>
 
 <div class="modal-footer">
