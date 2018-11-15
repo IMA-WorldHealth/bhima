@@ -4,12 +4,12 @@ angular.module('bhima.controllers')
 BreackDownModalController.$inject = [
   '$state', 'NotifyService', 'DistributionCenterService', 'PayrollConfigurationService',
   'ExchangeRateService', 'SessionService', 'data', '$uibModalInstance', 'PatientInvoiceService',
-  'FeeCenterService', 'util',
+  'FeeCenterService', 'util', '$translate',
 ];
 
 function BreackDownModalController(
   $state, Notify, DistributionCenter, Configuration,
-  Exchange, Session, data, ModalInstance, Invoices, FeeCenters, util,
+  Exchange, Session, data, ModalInstance, Invoices, FeeCenters, util, $translate,
 ) {
   const vm = this;
   vm.transaction = data.transactions;
@@ -53,6 +53,11 @@ function BreackDownModalController(
     });
 
     vm.invalidBreackDown = sumDistributed !== 100;
+    vm.diffPercentage = (100 > sumDistributed) ? 100 - sumDistributed : sumDistributed - 100;
+
+    vm.errorMessage = (100 > sumDistributed) 
+      ? $translate.instant('FORM.WARNINGS.REMAINS_DISTRIBUTION', { value : vm.diffPercentage + ' %'})
+      : $translate.instant('FORM.WARNINGS.OVERRUN_DISTRIBUTION', { value : vm.diffPercentage + ' %'});
 
     if (DistributionForm.$invalid || vm.invalidBreackDown) {
       return Notify.danger('FORM.ERRORS.INVALID');

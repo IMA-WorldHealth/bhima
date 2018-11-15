@@ -14,6 +14,8 @@
 
     <div class="form-group" ng-if="DistributionModalCtrl.invalidDistribution">
       <label class="badge badge-danger" translate> FORM.INFO.DISTRIBUTION_INVALID </label>
+      <br>
+      <label class="badge badge-warning"> {{ DistributionModalCtrl.errorMessage }} </label>      
     </div>
 
     <div class="form-group" ng-if="DistributionModalCtrl.noPrincilFeeCenter">

@@ -20,6 +20,8 @@
 
     <div class="form-group" ng-if="BreackDownModalCtrl.invalidBreackDown">
       <label class="badge badge-danger" translate> FORM.INFO.DISTRIBUTION_PERCENT_INVALID </label>
+      <br>
+      <label class="badge badge-warning"> {{ BreackDownModalCtrl.errorMessage }} </label>    
     </div>
 
     <div class="form-group" ng-if="BreackDownModalCtrl.noPrincilFeeCenter">

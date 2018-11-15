@@ -25,7 +25,6 @@ function DistributionKeyController(DistributionCenters, ModalService, Notify, ui
   vm.filterEnabled = false;
   vm.loading = false;
 
-
   // options for the UI grid
   vm.gridOptions = {
     appScopeProvider  : vm,

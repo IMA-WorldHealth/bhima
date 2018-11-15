@@ -4,12 +4,12 @@ angular.module('bhima.controllers')
 DistributionModalController.$inject = [
   '$state', 'NotifyService', 'DistributionCenterService', 'PayrollConfigurationService',
   'ExchangeRateService', 'SessionService', 'transaction', '$uibModalInstance', 'PatientInvoiceService',
-  'FeeCenterService', 'util',
+  'FeeCenterService', 'util', '$translate',
 ];
 
 function DistributionModalController(
   $state, Notify, DistributionCenter, Configuration,
-  Exchange, Session, transaction, ModalInstance, Invoices, FeeCenters, util,
+  Exchange, Session, transaction, ModalInstance, Invoices, FeeCenters, util, $translate,
 ) {
   const vm = this;
   vm.transaction = transaction;
@@ -67,6 +67,14 @@ function DistributionModalController(
     });
 
     vm.invalidDistribution = sumDistributed !== util.roundDecimal(vm.transaction.amount_equiv, 2);
+
+    vm.diffAmount = (vm.transaction.amount_equiv > sumDistributed) ? 
+      vm.transaction.amount_equiv - sumDistributed : sumDistributed - vm.transaction.amount_equiv;
+
+    vm.errorMessage = (vm.transaction.amount_equiv > sumDistributed) 
+      ? $translate.instant('FORM.WARNINGS.REMAINS_DISTRIBUTION', { value : vm.diffAmount })
+      : $translate.instant('FORM.WARNINGS.OVERRUN_DISTRIBUTION', { value : vm.diffAmount });
+
 
     if (DistributionForm.$invalid || vm.invalidDistribution) {
       return Notify.danger('FORM.ERRORS.INVALID');
