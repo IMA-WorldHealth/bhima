@@ -1,42 +1,39 @@
 angular.module('bhima.controllers')
-.controller('ConfigurationWeekEndController', ConfigurationWeekEndController);
+  .controller('ConfigurationWeekendController', ConfigurationWeekendController);
 
-ConfigurationWeekEndController.$inject = [
-  'ConfigurationWeekEndService', 'ModalService',
-  'NotifyService', 'uiGridConstants', '$state', 'SessionService',
+ConfigurationWeekendController.$inject = [
+  'ConfigurationWeekendService', 'ModalService', 'NotifyService', 'uiGridConstants',
 ];
 
 /**
- * WeekEnd Management Controller
+ * Weekend Management Controller
  *
- * This controller is about the WeekEnd management module in the admin zone
- * It's responsible for creating, editing and updating a WeekEnd
+ * @description
+ * This controller is about the Weekend management module in the admin zone
+ * It's responsible for creating, editing and updating a Weekend
  */
-function ConfigurationWeekEndController(Configs, ModalService,
-  Notify, uiGridConstants, $state, Session) {
-  var vm = this;
+function ConfigurationWeekendController(Configs, Modals, Notify, uiGridConstants) {
+  const vm = this;
 
   // bind methods
   vm.deleteConfig = deleteConfig;
-  vm.editConfig = editConfig;
   vm.toggleFilter = toggleFilter;
-  vm.currencySymbol = Session.enterprise.currencySymbol;
 
   // global variables
   vm.gridApi = {};
-  vm.filterEnabled = false;
 
-  var gridColumn =
-    [
-      { field : 'label', displayName : 'FORM.LABELS.DESIGNATION', headerCellFilter : 'translate' },
-      { field : 'action',
-        width : 80,
-        displayName : '',
-        cellTemplate : '/modules/payroll/weekend_configuration/templates/action.tmpl.html',
-        enableSorting : false,
-        enableFiltering : false,
-      },
-    ];
+  const gridColumn = [{
+    field : 'label',
+    displayName : 'FORM.LABELS.DESIGNATION',
+    headerCellFilter : 'translate',
+  }, {
+    field : 'action',
+    width : 80,
+    displayName : '',
+    cellTemplate : '/modules/payroll/weekend_configuration/templates/action.tmpl.html',
+    enableSorting : false,
+    enableFiltering : false,
+  }];
 
   // options for the UI grid
   vm.gridOptions = {
@@ -54,8 +51,7 @@ function ConfigurationWeekEndController(Configs, ModalService,
   }
 
   function toggleFilter() {
-    vm.filterEnabled = !vm.filterEnabled;
-    vm.gridOptions.enableFiltering = vm.filterEnabled;
+    vm.gridOptions.enableFiltering = !vm.gridOptions.enableFiltering;
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
@@ -63,33 +59,28 @@ function ConfigurationWeekEndController(Configs, ModalService,
     vm.loading = true;
 
     Configs.read()
-    .then(function (data) {
-      vm.gridOptions.data = data;
-    })
-    .catch(Notify.handleError)
-    .finally(function () {
-      vm.loading = false;
-    });
+      .then(data => {
+        vm.gridOptions.data = data;
+      })
+      .catch(Notify.handleError)
+      .finally(() => {
+        vm.loading = false;
+      });
   }
 
   // switch to delete warning mode
   function deleteConfig(title) {
-    ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
-    .then(function (bool) {
-      if (!bool) { return; }
+    Modals.confirm('FORM.DIALOGS.CONFIRM_DELETE')
+      .then(bool => {
+        if (!bool) { return; }
 
-      Configs.delete(title.id)
-      .then(function () {
-        Notify.success('FORM.INFO.DELETE_SUCCESS');
-        loadConfigs();
-      })
-      .catch(Notify.handleError);
-    });
-  }
-
-  // update an existing WeekEnd Configuration
-  function editConfig(title) {
-    $state.go('configurationWeekEnd.edit', { id : title.id });
+        Configs.delete(title.id)
+          .then(() => {
+            Notify.success('FORM.INFO.DELETE_SUCCESS');
+            loadConfigs();
+          })
+          .catch(Notify.handleError);
+      });
   }
 
   loadConfigs();

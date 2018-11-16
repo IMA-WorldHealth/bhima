@@ -1,32 +1,34 @@
-<div ng-form="{{ $ctrl.name }}" bh-weekend-config-select ng-model-options="{ updateOn: 'default' }">
+<div ng-form="WeekendConfigSelectForm" bh-weekend-config-select ng-model-options="{ updateOn: 'default' }">
   <div
     class="form-group"
-    ng-class="{ 'has-error' : $ctrl.validationTrigger && WeekendConfigForm.config_weekend_id.$invalid }">
+    ng-class="{ 'has-error' : WeekendConfigSelectForm.$submitted && WeekendConfigForm.config_weekend_id.$invalid }">
 
     <label class="control-label" translate>
-      {{ ::$ctrl.label }}
+      {{ $ctrl.label }}
     </label>
+
     <ng-transclude></ng-transclude>
+
     <div class="text-danger" ng-if="!$ctrl.weekendConfigs.length">
-      <i class="fa fa-exclamation-triangle"></i> <span translate> FORM.WARNINGS.NO_CONFIGURATION_FOUND </span>  
+      <i class="fa fa-exclamation-triangle"></i> <span translate> FORM.WARNINGS.NO_CONFIGURATION_FOUND </span>
     </div>
-        
+
     <ui-select
       name="config_weekend_id"
       ng-model="$ctrl.configWeekId"
-      on-select="$ctrl.onSelect($item, $model)"
+      on-select="$ctrl.onSelect($item)"
       ng-required="$ctrl.required">
       <ui-select-match placeholder="{{ ::'FORM.SELECT.WEEKEND_CONFIGURATION' | translate }}">
         <span>{{$select.selected.label}}</span>
       </ui-select-match>
       <ui-select-choices
         ui-select-focus-patch
-        repeat="weekendConfig.id as weekendConfig in $ctrl.weekendConfigs | filter: { 'label': $select.search }">        
+        repeat="weekendConfig.id as weekendConfig in $ctrl.weekendConfigs | filter: { 'label': $select.search }">
         <span ng-bind-html="weekendConfig.label | highlight:$select.search"></span>
       </ui-select-choices>
     </ui-select>
 
-    <div class="help-block" ng-messages="WeekendConfigForm.config_weekend_id.$error" ng-show="$ctrl.validationTrigger &&  WeekendConfigForm.config_weekend_id.$invalid">
+    <div class="help-block" ng-messages="WeekendConfigForm.config_weekend_id.$error" ng-show="WeekendConfigSelectForm.$submitted &&  WeekendConfigForm.config_weekend_id.$invalid">
       <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
     </div>
   </div>

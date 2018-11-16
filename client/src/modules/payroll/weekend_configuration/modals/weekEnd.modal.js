@@ -1,55 +1,55 @@
 angular.module('bhima.controllers')
-  .controller('WeekEndModalController', WeekEndModalController);
+  .controller('WeekendModalController', WeekendModalController);
 
-WeekEndModalController.$inject = [
-  '$state', 'ConfigurationWeekEndService', 'NotifyService', 'appcache',
+WeekendModalController.$inject = [
+  '$state', 'ConfigurationWeekendService', 'NotifyService', 'appcache',
 ];
 
-function WeekEndModalController($state, Config, Notify, AppCache) {
-  var vm = this;
+function WeekendModalController($state, Config, Notify, AppCache) {
+  const vm = this;
   vm.weekend = {};
 
-  var cache = AppCache('RubricModal');
+  const cache = AppCache('RubricModal');
 
   if ($state.params.creating || $state.params.id) {
-    vm.stateParams = cache.stateParams = $state.params;
+    cache.stateParams = $state.params;
+    vm.stateParams = cache.stateParams;
   } else {
     vm.stateParams = cache.stateParams;
   }
-  vm.isCreating = vm.stateParams.creating;
+
+  vm.isCreateState = vm.stateParams.creating;
 
   // exposed methods
   vm.submit = submit;
   vm.closeModal = closeModal;
 
-  if (!vm.isCreating) {
+  if (!vm.isCreateState) {
     Config.read(vm.stateParams.id)
-      .then(function (weekConfig) {    
+      .then((weekConfig) => {
         vm.weekend = weekConfig;
       })
       .catch(Notify.handleError);
   }
 
   // submit the data to the server from all two forms (update, create)
-  function submit(WeekEndForm) {
-    var promise;
+  function submit(WeekendForm) {
+    if (WeekendForm.$invalid || WeekendForm.$pristine) { return 0; }
 
-    if (WeekEndForm.$invalid || WeekEndForm.$pristine) { return 0; }
-
-    promise = (vm.isCreating) ?
-      Config.create(vm.weekend) :
-      Config.update(vm.weekend.id, vm.weekend);
+    const promise = (vm.isCreateState)
+      ? Config.create(vm.weekend)
+      : Config.update(vm.weekend.id, vm.weekend);
 
     return promise
-      .then(function () {
-        var translateKey = (vm.isCreating) ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
+      .then(() => {
+        const translateKey = (vm.isCreateState) ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
         Notify.success(translateKey);
-        $state.go('configurationWeekEnd', null, { reload : true });
+        $state.go('configurationWeekend', null, { reload : true });
       })
       .catch(Notify.handleError);
   }
 
   function closeModal() {
-    $state.go('configurationWeekEnd');
+    $state.go('configurationWeekend');
   }
 }
