@@ -10,7 +10,7 @@ describe('Rubrics Management', () => {
     label : 'RUBRIC SYNDICAL',
     abbr  : 'CoSynd',
     is_percent : 1,
-    debtor_account_id : '40111002', //SUPPLIER'S ACCOUNT 1
+    debtor_account_id : '40111002', // SUPPLIER'S ACCOUNT 1
     expense_account_id : '60310015', // Achat Produit  de Perfusion
     value : 6.5,
     is_discount : 1,
@@ -21,7 +21,7 @@ describe('Rubrics Management', () => {
 
   const updateRubric = {
     label : 'CHEF COMPTABLE',
-    is_percent : 0
+    is_percent : 0,
   };
 
   it('successfully creates a new rubric', () => {

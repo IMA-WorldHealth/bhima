@@ -1,10 +1,5 @@
 /* global element, by */
 
-/**
- * This class is represents a user page in term of structure and
- * behaviour so it is a user page object
- */
-
 /* loading grid actions */
 const GridRow = require('../shared/GridRow');
 const FU = require('../shared/FormUtils');
