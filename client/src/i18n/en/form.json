@@ -663,7 +663,8 @@
             "DECEMBER": "December",
             "PERMISSION_ASSIGNED_SUCCESS":"Permissions successfully affected",
             "EDIT_ROLE":"Assign role(s)",
-            "ROLES_FOR":"Role(s) for"
+            "ROLES_FOR":"Role(s) for",
+            "ROLES" : "Roles"
         },
         "LEGENDS": {
             "CREATION": "Creation",
