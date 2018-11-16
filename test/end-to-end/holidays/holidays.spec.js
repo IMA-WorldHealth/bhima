@@ -2,10 +2,9 @@ const helpers = require('../shared/helpers');
 const HolidayPage = require('./holidays.page');
 
 describe('Holidays Management', () => {
-  // navigate to the page
   before(() => helpers.navigate('#!/holidays'));
 
-  const Page = new HolidayPage();
+  const page = new HolidayPage();
 
   const holiday = {
     percentage  : 100,
@@ -26,24 +25,23 @@ describe('Holidays Management', () => {
     percentage : 75,
   };
 
-  it('successfully creates a new Holiday', () => {
-    Page.createHoliday(holiday);
+  it('successfully creates a new holiday', () => {
+    page.create(holiday);
   });
 
-  it('successfully edits a Holiday', () => {
-    Page.editHoliday(holiday.label, updateHoliday);
+  it('successfully edits a holiday', () => {
+    page.update(holiday.label, updateHoliday);
   });
 
-  it('Prevent the definition of a nested vacation period', () => {
-    Page.preventHoliday(nestedHoliday);
+  it('prevent the definition of a nested vacation period', () => {
+    page.preventHoliday(nestedHoliday);
   });
 
   it('don\'t create when incorrect Holiday', () => {
-    Page.errorOnCreateHoliday();
+    page.errorOnCreateHoliday();
   });
 
-  it('successfully delete a Holiday', () => {
-    Page.deleteHoliday(updateHoliday.label);
+  it('successfully delete a holiday', () => {
+    page.remove(updateHoliday.label);
   });
-
 });

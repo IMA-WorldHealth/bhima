@@ -1,11 +1,12 @@
 <form name="HolidayForm" bh-submit="HolidayModalCtrl.submit(HolidayForm)" novalidate>
   <div class="modal-header">
     <ol class="headercrumb">
-      <li ng-if="HolidayModalCtrl.isCreating" class="title">
+      <li class="static" translate>HOLIDAY.TITLE</li>
+      <li ng-if="HolidayModalCtrl.isCreateState" class="title">
         <span translate>HOLIDAY.ADD_HOLIDAY</span>
         <label class="badge badge-success" translate>FORM.LABELS.CREATE</label>
       </li>
-      <li ng-if="!HolidayModalCtrl.isCreating" class="title">
+      <li ng-if="!HolidayModalCtrl.isCreateState" class="title">
         <span translate>HOLIDAY.EDIT_HOLIDAY</span>
         <label class="badge badge-success" translate>FORM.LABELS.UPDATE</label>
       </li>
@@ -13,15 +14,13 @@
   </div>
 
   <div class="modal-body">
-    <div class="form-group">
-      <bh-employee-select
-        employee-uuid="HolidayModalCtrl.holiday.employee_uuid"
-        on-select-callback="HolidayModalCtrl.onSelectEmployee(employee)"
-        required="true">
-      </bh-employee-select>
-    </div>
+    <bh-employee-select
+      employee-uuid="HolidayModalCtrl.holiday.employee_uuid"
+      on-select-callback="HolidayModalCtrl.onSelectEmployee(employee)"
+      required="true">
+    </bh-employee-select>
 
-    <div class="modal-body" ng-class="{ 'has-error' : HolidayForm.$submitted && HolidayForm.label.$invalid }">
+    <div class="form-group" ng-class="{ 'has-error' : HolidayForm.$submitted && HolidayForm.label.$invalid }">
       <label class="control-label" translate>FORM.LABELS.DESIGNATION</label>
       <input name="label" ng-model="HolidayModalCtrl.holiday.label" autocomplete="off" class="form-control" required>
       <div class="help-block" ng-messages="HolidayForm.label.$error" ng-show="HolidayForm.$submitted">
@@ -29,16 +28,14 @@
       </div>
     </div>
 
-    <div class="modal-body">
-      <bh-date-interval
-        label="FORM.LABELS.PERIODES"
-        date-id="holiday-date"
-        date-from="HolidayModalCtrl.holiday.dateFrom"
-        date-to="HolidayModalCtrl.holiday.dateTo">
-      </bh-date-interval>
-    </div>
+    <bh-date-interval
+      label="FORM.LABELS.PERIODES"
+      date-id="holiday-date"
+      date-from="HolidayModalCtrl.holiday.dateFrom"
+      date-to="HolidayModalCtrl.holiday.dateTo">
+    </bh-date-interval>
 
-    <div class="modal-body" ng-class="{ 'has-error' : HolidayForm.$submitted && HolidayForm.percentage.$invalid }">
+    <div class="form-group" ng-class="{ 'has-error' : HolidayForm.$submitted && HolidayForm.percentage.$invalid }">
       <label class="control-label" translate>FORM.LABELS.PERCENTAGE</label>
       <input name="percentage" type="number" max="100" min="0" ng-model="HolidayModalCtrl.holiday.percentage" autocomplete="off" class="form-control" required>
       <div class="help-block" ng-messages="HolidayForm.percentage.$error" ng-show="HolidayForm.$submitted">
@@ -53,7 +50,6 @@
     </button>
 
     <bh-loading-button loading-state="HolidayForm.$loading">
-      <span translate>FORM.BUTTONS.SUBMIT</span>
     </bh-loading-button>
   </div>
 </form>

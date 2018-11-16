@@ -12,17 +12,19 @@ function HolidayModalController($state, Holidays, ModalService, Notify, AppCache
   const cache = AppCache('HolidayModal');
 
   if ($state.params.creating || $state.params.id) {
-    vm.stateParams = cache.stateParams = $state.params;
+    cache.stateParams = $state.params;
+    vm.stateParams = cache.stateParams;
   } else {
     vm.stateParams = cache.stateParams;
   }
-  vm.isCreating = vm.stateParams.creating;
+
+  vm.isCreateState = vm.stateParams.creating;
 
   // exposed methods
   vm.submit = submit;
   vm.closeModal = closeModal;
 
-  if (!vm.isCreating) {
+  if (!vm.isCreateState) {
     Holidays.read(vm.stateParams.id)
       .then((holiday) => {
         holiday.dateFrom = new Date(holiday.dateFrom);
@@ -46,13 +48,13 @@ function HolidayModalController($state, Holidays, ModalService, Notify, AppCache
     vm.holiday.dateFrom = moment(vm.holiday.dateFrom).format('YYYY-MM-DD');
     vm.holiday.dateTo = moment(vm.holiday.dateTo).format('YYYY-MM-DD');
 
-    const promise = (vm.isCreating) ?
-      Holidays.create(vm.holiday) :
-      Holidays.update(vm.holiday.id, vm.holiday);
+    const promise = (vm.isCreateState)
+      ? Holidays.create(vm.holiday)
+      : Holidays.update(vm.holiday.id, vm.holiday);
 
     return promise
       .then(() => {
-        const translateKey = (vm.isCreating) ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
+        const translateKey = (vm.isCreateState) ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
         Notify.success(translateKey);
         $state.go('holidays', null, { reload : true });
       })
