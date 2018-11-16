@@ -1,27 +1,20 @@
 <div class="flex-header">
   <div class="bhima-title">
     <ol class="headercrumb">
-      <li class="static" translate> TREE.ADMIN </li>
-      <li class="title" translate> IPRTAX.TITLE </li>
+      <li class="static" translate>TREE.ADMIN</li>
+      <li class="title" translate>IPRTAX.TITLE</li>
     </ol>
 
     <div class="toolbar">
       <div class="toolbar-item">
         <button class="btn btn-default text-capitalize" ui-sref="ipr_tax.create" data-method="create">
-          <span class="fa fa-plus"></span> <span translate>IPRTAX.ADD_IPRTAX</span>
+          <span class="fa fa-plus"></span> <span class="hidden-xs" translate>IPRTAX.ADD_IPRTAX</span>
         </button>
       </div>
 
-      <div class="toolbar-item">
-        <button
-          type="button"
-          ng-click="IprTaxCtrl.toggleFilter()"
-          data-method="filter"
-          class="btn btn-default"
-          ng-class="{ 'btn-info' : IprTaxCtrl.filterEnabled }">
-          <i class="fa fa-filter"></i>
-        </button>
-      </div>
+      <bh-filter-toggle
+        on-toggle="IprTaxCtrl.toggleFilter()">
+      </bh-filter-toggle>
     </div>
   </div>
 </div>
@@ -29,9 +22,10 @@
 <!-- main content -->
 <div class="flex-content">
   <div class="container-fluid">
-    <div id="ipr-grid"
-      ui-grid="IprTaxCtrl.gridOptions"
+    <div
+      id="ipr-grid"
       class="grid-full-height"
+      ui-grid="IprTaxCtrl.gridOptions"
       ui-grid-auto-resize>
 
       <bh-grid-loading-indicator

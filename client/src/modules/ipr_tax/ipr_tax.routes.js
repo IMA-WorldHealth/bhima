@@ -1,5 +1,5 @@
 angular.module('bhima.routes')
-  .config(['$stateProvider', function ($stateProvider) {
+  .config(['$stateProvider', $stateProvider => {
     $stateProvider
       .state('ipr_tax', {
         url         : '/ipr_tax',
