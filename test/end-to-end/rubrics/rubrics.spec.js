@@ -1,16 +1,10 @@
 const helpers = require('../shared/helpers');
 const RubricPage = require('./rubrics.page');
-const chai = require('chai');
-
-
-/** configuring helpers**/
-helpers.configure(chai);
 
 describe('Rubrics Management', () => {
-  // navigate to the page
   before(() => helpers.navigate('#!/payroll/rubrics'));
 
-  const Page = new RubricPage();
+  const page = new RubricPage();
 
   const rubric = {
     label : 'RUBRIC SYNDICAL',
@@ -30,20 +24,20 @@ describe('Rubrics Management', () => {
     is_percent : 0
   };
 
-  it('successfully creates a new Rubric', () => {
-    Page.createRubric(rubric);
+  it('successfully creates a new rubric', () => {
+    page.create(rubric);
   });
 
-  it('successfully edits a Rubric', () => {
-    Page.editRubric(rubric.label, updateRubric);
+  it('successfully edits a rubric', () => {
+    page.update(rubric.label, updateRubric);
   });
 
-  it('don\'t create when incorrect Rubric', () => {
-    Page.errorOnCreateRubric();
+  it('don\'t create when incorrect rubric', () => {
+    page.errorOnCreateRubric();
   });
 
-  it('successfully delete a Rubric', () => {
-    Page.deleteRubric(updateRubric.label);
+  it('successfully deletes a rubric', () => {
+    page.remove(updateRubric.label);
   });
 
 });
