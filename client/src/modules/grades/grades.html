@@ -1,27 +1,20 @@
 <div class="flex-header">
   <div class="bhima-title">
     <ol class="headercrumb">
-      <li class="static" translate> TREE.ADMIN </li>
-      <li class="title" translate> GRADE.TITLE </li>
+      <li class="static" translate>TREE.ADMIN</li>
+      <li class="title" translate>GRADE.TITLE</li>
     </ol>
 
     <div class="toolbar">
       <div class="toolbar-item">
-        <button class="btn btn-default text-capitalize" id="create" ng-click="GradeCtrl.createGrade()" data-method="create">
-          <span class="fa fa-plus"></span> <span translate>GRADE.ADD_GRADE</span>
+        <button class="btn btn-default text-capitalize" ui-sref="grades.create" data-method="create">
+          <span class="fa fa-plus"></span> <span class="hidden-xs" translate>GRADE.ADD_GRADE</span>
         </button>
       </div>
 
-      <div class="toolbar-item">
-        <button
-          type="button"
-          ng-click="GradeCtrl.toggleFilter()"
-          data-method="filter"
-          class="btn btn-default"
-          ng-class="{ 'btn-info' : GradeCtrl.filterEnabled }">
-          <i class="fa fa-filter"></i>
-        </button>
-      </div>
+      <bh-filter-toggle
+        on-toggle="GradeCtrl.toggleFilter()">
+      </bh-filter-toggle>
     </div>
   </div>
 </div>
@@ -29,9 +22,10 @@
 <!-- main content -->
 <div class="flex-content">
   <div class="container-fluid">
-    <div id="grade-grid"
-      ui-grid="GradeCtrl.gridOptions"
+    <div
+      id="grade-grid"
       class="grid-full-height"
+      ui-grid="GradeCtrl.gridOptions"
       ui-grid-auto-resize>
 
       <bh-grid-loading-indicator

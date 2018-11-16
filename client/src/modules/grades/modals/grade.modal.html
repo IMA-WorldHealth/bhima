@@ -1,19 +1,19 @@
 <form name="GradeForm" bh-submit="GradeModalCtrl.submit(GradeForm)" novalidate>
   <div class="modal-header">
-  <ol class="headercrumb">
-    <li ng-if="GradeModalCtrl.isCreating" class="title">
-      <span translate>GRADE.ADD_GRADE</span>
-      <label class="badge badge-success" translate>FORM.LABELS.CREATE</label>
-    </li>
-    <li ng-if="!GradeModalCtrl.isCreating" class="title">
-      <span translate>GRADE.EDIT_GRADE</span>
-      <label class="badge badge-success" translate>FORM.LABELS.UPDATE</label>
-    </li>
-  </ol>
-</div>
+    <ol class="headercrumb">
+      <li class="static" translate>GRADE.TITLE</li>
+      <li ng-if="GradeModalCtrl.isCreating" class="title">
+        <span translate>GRADE.ADD_GRADE</span>
+        <label class="badge badge-success" translate>FORM.LABELS.CREATE</label>
+      </li>
+      <li ng-if="!GradeModalCtrl.isCreating" class="title">
+        <span translate>GRADE.EDIT_GRADE</span>
+        <label class="badge badge-success" translate>FORM.LABELS.UPDATE</label>
+      </li>
+    </ol>
+  </div>
 
   <div class="modal-body">
-
     <div class="form-group" ng-class="{ 'has-error' : GradeForm.$submitted && GradeForm.text.$invalid }">
       <label class="control-label" translate>FORM.LABELS.DESIGNATION</label>
       <input name="text" ng-model="GradeModalCtrl.grade.text" autocomplete="off" class="form-control" required>
@@ -36,7 +36,7 @@
       <div class="help-block" ng-messages="GradeForm.basic_salary.$error" ng-show="GradeForm.$submitted">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
       </div>
-    </div>    
+    </div>
   </div>
 
   <div class="modal-footer">
