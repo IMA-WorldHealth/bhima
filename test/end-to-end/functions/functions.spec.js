@@ -1,39 +1,32 @@
 const helpers = require('../shared/helpers');
+const { notification } = require('../shared/components');
 const FunctionPage = require('./functions.page');
-const chai = require('chai');
-
-
-/** configuring helpers**/
-helpers.configure(chai);
 
 describe('Job Titles Management', () => {
-  // navigate to the page
   before(() => helpers.navigate('#!/functions'));
 
-  const Page = new FunctionPage();
+  const page = new FunctionPage();
 
-  const title = {
-    fonction_txt : 'Comptable'
-  };
+  const newProfession = 'Comptable';
+  const updateProfession = 'Chef Comptable';
 
-  const updateFunction = {
-    fonction_txt : 'Chef Comptable',
-  };
-
-  it('successfully creates a new Job Title', () => {
-    Page.createFunction(title);
+  it('successfully creates a new job title', () => {
+    page.create(newProfession);
+    notification.hasSuccess();
   });
 
-  it('successfully edits a Job Title', () => {
-    Page.editFunction(title.fonction_txt, updateFunction);
+  it('successfully edits a job title', () => {
+    page.update(newProfession, updateProfession);
+    notification.hasSuccess();
   });
 
-  it('don\'t create when incorrect Job Title', () => {
-    Page.errorOnCreateFunction();
+  it('errors when missing job tit create when incorrect job title', () => {
+    page.errorOnCreateFunction();
   });
 
-  it('successfully delete a Job Title', () => {
-    Page.deleteFunction(updateFunction.fonction_txt);
+  it('successfully delete a job title', () => {
+    page.remove(updateProfession);
+    notification.hasSuccess();
   });
 
 });
