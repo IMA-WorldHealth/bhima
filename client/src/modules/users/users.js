@@ -16,8 +16,8 @@ function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstant
 
   // this function selectively applies the muted cell classes to
   // disabled user entities
-  function muteDisabledCells(grid, row, col, rowRenderIndex, colRenderIndex) {
-    if (row.entity.deactivated) { return 'text-muted strike'; }
+  function muteDisabledCells(grid, row) {
+    return (row.entity.deactivated) ? `text-muted strike` : '';
   }
 
   // options for the UI grid
@@ -30,13 +30,33 @@ function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstant
     onRegisterApi     : onRegisterApiFn,
     columnDefs : [
       {
-        field : 'display_name', displayName : 'FORM.LABELS.USERNAME', headerCellFilter : 'translate', cellClass : muteDisabledCells, enableFiltering : true, sort : { priority : 1, direction : 'asc' },
+        field : 'display_name',
+        displayName : 'FORM.LABELS.USERNAME',
+        headerCellFilter : 'translate',
+        cellClass : muteDisabledCells,
+        enableFiltering : true,
+        sort : { priority : 1, direction : 'asc' },
       },
       {
-        field : 'username', displayName : 'FORM.LABELS.LOGIN', headerCellFilter : 'translate', cellClass : muteDisabledCells, enableFiltering : true,
+        field : 'username',
+        displayName : 'FORM.LABELS.LOGIN',
+        headerCellFilter : 'translate',
+        cellClass : muteDisabledCells,
+        enableFiltering : true,
       },
       {
-        field : 'action', displayName : '', cellTemplate : '/modules/users/templates/grid/action.cell.html', enableSorting : false, enableFiltering : false,
+        field : 'roles',
+        displayName : 'FORM.LABELS.ROLES',
+        headerCellFilter : 'translate',
+        enableFiltering : true,
+        cellClass : muteDisabledCells,
+      },
+      {
+        field : 'action',
+        displayName : '',
+        cellTemplate : '/modules/users/templates/grid/action.cell.html',
+        enableSorting : false,
+        enableFiltering : false,
       },
     ],
   };
@@ -49,7 +69,7 @@ function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstant
   vm.user = {};
 
   function toggleFilter() {
-    vm.gridOptions.enableFiltering = vm.filterEnabled = !vm.filterEnabled;
+    vm.gridOptions.enableFiltering = !vm.filterEnabled;
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 

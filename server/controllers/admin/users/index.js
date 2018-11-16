@@ -81,12 +81,34 @@ function list(req, res, next) {
   const sql = 'SELECT user.id, display_name, user.username, user.deactivated FROM user;';
 
   db.exec(sql)
-    .then((rows) => {
-      res.status(200).json(rows);
+    .then((users) => {
+      return setRoles(users);
+    }).then(users => {
+
+      res.status(200).json(users);
     })
     .catch(next);
 }
 
+async function setRoles(users) {
+  const sql = `
+    SELECT ur.user_id, r.label
+    FROM user_role ur
+    JOIN role r ON r.uuid = ur.role_uuid`;
+
+  const userMap = {};
+  users.forEach(user => {
+    user.roles = '';
+    userMap[user.id] = user;
+  });
+
+  const roles = await db.exec(sql);
+  roles.forEach(role => {
+    userMap[role.user_id].roles += `${role.label}, `;
+  });
+
+  return users;
+}
 
 /**
  * @function detail
