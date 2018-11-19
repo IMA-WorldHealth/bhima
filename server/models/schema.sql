@@ -1905,6 +1905,24 @@ CREATE TABLE `lot` (
   FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
+DROP TABLE IF EXISTS `lot_assign`;
+CREATE TABLE `lot_assign` (
+  `uuid`              BINARY(16) NOT NULL,
+  `lot_uuid`          BINARY(16) NOT NULL,
+  `entity_uuid`       BINARY(16) NOT NULL,
+  `depot_uuid`        BINARY(16) NOT NULL,
+  `quantity`          INT(11) NOT NULL DEFAULT 1,
+  `updated_at`        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_at`        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`uuid`),
+  KEY `lot_uuid` (`lot_uuid`),
+  KEY `entity_uuid` (`entity_uuid`),
+  KEY `depot_uuid` (`depot_uuid`),
+  FOREIGN KEY (`lot_uuid`) REFERENCES `lot` (`uuid`),
+  FOREIGN KEY (`entity_uuid`) REFERENCES `entity` (`uuid`),
+  FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
 DROP TABLE IF EXISTS `stock_movement`;
 CREATE TABLE `stock_movement` (
   `uuid`            BINARY(16) NOT NULL,
