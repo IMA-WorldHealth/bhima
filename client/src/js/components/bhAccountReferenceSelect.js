@@ -28,9 +28,6 @@ function AccountReferenceSelectController(AccountReferences, $timeout, $scope, N
     // translated label for the form input
     $ctrl.label = $ctrl.label || 'FORM.LABELS.REFERENCE';
 
-    // fired when an account reference has been selected
-    $ctrl.onSelectCallback = $ctrl.onSelectCallback || angular.noop;
-
     // default for form name
     $ctrl.name = $ctrl.name || 'AccountReferenceForm';
 

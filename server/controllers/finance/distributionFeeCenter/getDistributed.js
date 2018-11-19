@@ -18,10 +18,10 @@ function getDistributed(req, res, next) {
 
   const sql = `
     SELECT fc.id, BUID(fc.row_uuid) AS row_uuid, fc.trans_id, fc.account_id, fc.is_cost,
-    fc.auxiliary_fee_center_id, fc.principal_fee_center_id, fc.debit_equiv, fc.credit_equiv, fc.currency_id,
+    fc.auxiliary_fee_center_id, fc.principal_fee_center_id, fc.debit_equiv, fc.credit_equiv,
     fc.date_distribution, fc.user_id, gl.project_id, gl.fiscal_year_id, gl.period_id, gl.trans_date,
     gl.description, gl.transaction_type_id, BUID(gl.record_uuid) AS record_uuid, gl.entity_uuid,
-    BUID(gl.reference_uuid) AS reference_uuid, ac.number AS account_number, ac.label AS account_label, gl.currency_id,
+    BUID(gl.reference_uuid) AS reference_uuid, ac.number AS account_number, ac.label AS account_label,
     aux.label AS fee_center_label, pri.label AS principal_label, dm1.text AS hrRecord, dm2.text AS hrReference, 
     u.display_name AS user_name
     FROM fee_center_distribution AS fc

@@ -8,19 +8,17 @@
  */
 const q = require('q');
 const db = require('../../../lib/db');
+const FilterParser = require('../../../lib/filter');
 
 function auxilliary(params) {
-  let sqlIsCost = '';
+  params.is_principal = 0;
+  params.type_id = [4, 5, 6];
+  params.is_exception = 1;
+
   const typeFeeCenter = parseInt(params.typeFeeCenter, 10);
+  const filters = new FilterParser(params, { tableAlias : 'fee_center' });
+  const filters2 = new FilterParser(params, { tableAlias : 'fee_center' });
 
-  if (typeFeeCenter === 1 || typeFeeCenter === 0) {
-    sqlIsCost = ` AND reference_fee_center.is_cost = ${typeFeeCenter}`;
-  }
-
-  // fee_center_id
-  const filter = params.fee_center_id ? ` AND fee_center.id = ${params.fee_center_id} ` : '';
-
-  // This request allows to recover for Fees centers auxilliary the incomes and expenses accounts associated.
   const sql1 = `
     SELECT fee_center.id, fee_center.label, fee_center.is_principal, reference_fee_center.account_reference_id, 
     reference_fee_center.is_cost, account_reference_item.account_id, account.number, 
@@ -30,12 +28,18 @@ function auxilliary(params) {
     JOIN account_reference_item 
       ON account_reference_item.account_reference_id = reference_fee_center.account_reference_id
     JOIN account ON account.id = account_reference_item.account_id
-    WHERE fee_center.is_principal = 0 ${sqlIsCost}
-    AND account.type_id IN (4, 5, 6) AND account_reference_item.is_exception = 0 ${filter};
   `;
 
+  filters.equals('is_principal');
+  filters.equals('fee_center_id', 'id', 'fee_center');
+  filters.equals('typeFeeCenter', 'is_cost', 'reference_fee_center');
+  filters.custom('type_id', 'account.type_id IN (?)', [params.type_id]);
+
+  const query1 = filters.applyQuery(sql1);
+  const parameters1 = filters.parameters();
+
   const sql2 = `
-    SELECT fee_center.id, fee_center.label, fee_center.is_principal, reference_fee_center.account_reference_id, 
+    SELECT fee_center.id, fee_center.label, fee_center.is_principal, reference_fee_center.account_reference_id,
     account_reference_item.account_id, account.number, 
     account_reference_item.is_exception, account.type_id
     FROM fee_center
@@ -43,11 +47,15 @@ function auxilliary(params) {
     JOIN account_reference_item 
       ON account_reference_item.account_reference_id = reference_fee_center.account_reference_id
     JOIN account ON account.id = account_reference_item.account_id
-    WHERE fee_center.is_principal = 0 ${sqlIsCost}
-    AND account_reference_item.is_exception = 1;
-  `;
+    `;
 
-  return q.all([db.exec(sql1), db.exec(sql2)])
+  filters2.equals('typeFeeCenter', 'is_cost', 'reference_fee_center');
+  filters2.equals('is_exception', 'is_exception', 'account_reference_item');
+
+  const query2 = filters2.applyQuery(sql2);
+  const parameters2 = filters2.parameters();
+
+  return q.all([db.exec(query1, parameters1), db.exec(query2, parameters2)])
     .spread((accountsValids, accountsExceptions) => {
       if (!accountsValids.length) {
         return [];
@@ -81,7 +89,6 @@ function auxilliary(params) {
         FROM account
         WHERE account.number LIKE '${item.number}%' AND account.type_id IN (4,5))`);
         });
-
         const sqlGetAllAccountsExceptions = tabAccountsExceptions.join(' UNION ');
 
         transaction

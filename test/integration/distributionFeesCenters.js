@@ -7,9 +7,7 @@ const helpers = require('./helpers');
  *
  * This test suite implements full CRUD on the all fee center distributions  HTTP API endpoint.
  */
-describe('(/fee_center_distribution_key) The /fee_center  API endpoint', () => {
-  // distribution_center/distribution_key  we will add during this test suite.
-
+describe('(/fee_center_distribution) The /fee_center  API endpoint', () => {
   const distributionKey1 = {
     data : {
       auxiliary_fee_center_id : 6,
@@ -70,6 +68,36 @@ describe('(/fee_center_distribution_key) The /fee_center  API endpoint', () => {
      values : { 1 : 20.8, 2 : 100, 3 : 84 },
    },
   };
+
+  // Distribution Proceed Internal Server Error
+  const proceedInternalServerError = {
+    data :
+   {
+     uuid : 'E7011804F507B9DE0DC11E89F4D6DEA5',
+     posted : 1,
+     project_id : 1,
+     fiscal_year_id : 4,
+     period_id : 201811,
+     account_id : 243,
+     debit : 0,
+     credit : 204.8,
+     debit_equiv : 0,
+     credit_equiv : 204.8,
+     transaction_type_id : 11,
+     user_id : 1,
+     abbr : 'TPA',
+     project_name : 'Test Project A',
+     account_label : 'Vente Medicaments en Sirop',
+     display_name : 'Super User',
+     fee_center_id : 6,
+     fee_center_label : 'Auxiliary 3',
+     amount : 204.8,
+     amount_equiv : 204.8,
+     is_cost : 0,
+     values : {},
+   },
+  };
+
   const breackDown = {
     data : {
       values : { 1 : 50, 2 : 50, 3 : 0 },
@@ -166,7 +194,7 @@ describe('(/fee_center_distribution_key) The /fee_center  API endpoint', () => {
   it('GET /distribution_fee_center  ', () => {
     return agent.get('/distribution_fee_center')
       .then(res => {
-        helpers.api.listed(res, 3);
+        helpers.api.listed(res, 4);
       })
       .catch(helpers.handler);
   });
@@ -194,6 +222,15 @@ describe('(/fee_center_distribution_key) The /fee_center  API endpoint', () => {
       .send(proceed)
       .then((res) => {
         helpers.api.created(res);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('POST /distribution_fee_center/proceed : Throwing BadRequest If dataToDistribute.length is 0', () => {
+    return agent.post('/distribution_fee_center/proceed')
+      .send(proceedInternalServerError)
+      .then((res) => {
+        helpers.api.errored(res, 400);
       })
       .catch(helpers.handler);
   });

@@ -29,7 +29,7 @@ function getDistributionKey(req, res, next) {
     .catch(next);
 }
 
-function allDistibutionKey() {
+function allDistributionKey() {
   const sql = `
     SELECT k.id, k.auxiliary_fee_center_id, k.principal_fee_center_id, k.rate
     FROM distribution_key AS k
@@ -39,4 +39,4 @@ function allDistibutionKey() {
 }
 
 exports.getDistributionKey = getDistributionKey;
-exports.allDistibutionKey = allDistibutionKey;
+exports.allDistributionKey = allDistributionKey;

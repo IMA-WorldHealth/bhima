@@ -30,7 +30,6 @@ function breackDown(req, res, next) {
           principalCenterId,
           debitValuePercent,
           creditValuePercent,
-          transaction.currency_id,
           new Date(),
           userId,
         ]);
@@ -39,15 +38,14 @@ function breackDown(req, res, next) {
   });
 
   const sql = `INSERT INTO fee_center_distribution (
-    row_uuid, 
-    trans_id, 
+    row_uuid,
+    trans_id,
     account_id,
     is_cost,
     auxiliary_fee_center_id,
     principal_fee_center_id,
-    debit_equiv, 
-    credit_equiv, 
-    currency_id, 
+    debit_equiv,
+    credit_equiv,
     date_distribution, user_id) VALUES ?`;
 
   const transaction = db.transaction();

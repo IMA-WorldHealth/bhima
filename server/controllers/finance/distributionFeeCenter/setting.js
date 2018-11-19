@@ -12,9 +12,7 @@ function setting(req, res, next) {
   data.user_id = req.session.user.id;
   const distributionKey = [];
 
-  Object.keys(dataValues).forEach((principalCenterId) => {
-    const rateDistribution = dataValues[principalCenterId];
-
+  Object.entries(dataValues).forEach(([principalCenterId, rateDistribution]) => {
     if (rateDistribution) {
       distributionKey.push([
         data.auxiliary_fee_center_id,
@@ -29,7 +27,7 @@ function setting(req, res, next) {
 
   const sql = `
     INSERT INTO distribution_key (
-    auxiliary_fee_center_id, 
+    auxiliary_fee_center_id,
     principal_fee_center_id,
     rate,
     user_id) VALUES ?`;

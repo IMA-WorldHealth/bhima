@@ -5,10 +5,11 @@
 * of a profit or a cost, of an auxiliary center towards the main centers
 */
 const db = require('../../../lib/db');
+const BadRequest = require('../../../lib/errors/BadRequest');
 
 function proceed(req, res, next) {
   const { data } = req.body;
-  const isDebtor = !!data.debit_equiv;
+  const isDebtor = data.debit_equiv > 0;
   const dataValues = data.values;
   const auxiliaryCenterId = data.fee_center_id || data.auxiliary_fee_center_id;
   const dataToDistribute = [];
@@ -19,36 +20,31 @@ function proceed(req, res, next) {
   Object.keys(dataValues).forEach((principalCenterId) => {
     const debitEquivDistributed = isDebtor ? dataValues[principalCenterId] : 0;
     const creditEquivDistributed = isDebtor ? 0 : dataValues[principalCenterId];
-
-    if (debitEquivDistributed || creditEquivDistributed) {
-      dataToDistribute.push([
-        db.bid(data.uuid),
-        data.trans_id,
-        data.account_id,
-        data.is_cost,
-        auxiliaryCenterId,
-        principalCenterId,
-        debitEquivDistributed,
-        creditEquivDistributed,
-        data.currency_id,
-        new Date(),
-        data.user_id,
-      ]);
-    }
+    dataToDistribute.push([
+      db.bid(data.uuid),
+      data.trans_id,
+      data.account_id,
+      data.is_cost,
+      auxiliaryCenterId,
+      principalCenterId,
+      debitEquivDistributed,
+      creditEquivDistributed,
+      new Date(),
+      data.user_id,
+    ]);
   });
 
   const delFeeCenterDistribution = `DELETE FROM fee_center_distribution WHERE row_uuid = ?`;
 
   const sql = `INSERT INTO fee_center_distribution (
-    row_uuid, 
-    trans_id, 
+    row_uuid,
+    trans_id,
     account_id,
     is_cost,
-    auxiliary_fee_center_id, 
-    principal_fee_center_id, 
-    debit_equiv, 
-    credit_equiv, 
-    currency_id, 
+    auxiliary_fee_center_id,
+    principal_fee_center_id,
+    debit_equiv,
+    credit_equiv,
     date_distribution, user_id) VALUES ?`;
 
   const transaction = db.transaction();
@@ -57,6 +53,8 @@ function proceed(req, res, next) {
     transaction
       .addQuery(delFeeCenterDistribution, [db.bid(data.uuid)])
       .addQuery(sql, [dataToDistribute]);
+  } else {
+    throw new BadRequest('ERRORS.ER_EMPTY_QUERY');
   }
 
   transaction.execute()

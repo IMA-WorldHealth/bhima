@@ -44,20 +44,17 @@ function configuration(req, res, next) {
       return generalLedger.findTransactions(options);
     })
     .then((rows) => {
-
-      if (rows.length) {
-        rows.forEach(item => {
-          refAccounts.forEach(ref => {
-            if (ref.account_id === item.account_id) {
-              item.fee_center_id = ref.id;
-              item.fee_center_label = ref.label;
-            }
-          });
-
-          item.amount = item.credit ? item.credit : item.debit;
-          item.amount_equiv = item.credit_equiv ? item.credit_equiv : item.debit_equiv;
+      rows.forEach(item => {
+        refAccounts.forEach(ref => {
+          if (ref.account_id === item.account_id) {
+            item.fee_center_id = ref.id;
+            item.fee_center_label = ref.label;
+          }
         });
-      }
+
+        item.amount = item.credit ? item.credit : item.debit;
+        item.amount_equiv = item.credit_equiv ? item.credit_equiv : item.debit_equiv;
+      });
 
       res.status(200).json(rows);
     })

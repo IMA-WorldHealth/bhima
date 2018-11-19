@@ -101,7 +101,7 @@ function report(req, res, next) {
     db.exec(getFeeCenterReference),
     AccountReference.computeAllAccountReference(params.period_id),
     db.exec(getFeeCenterDistribution, [params.fiscalYearStart, params.end_date]),
-    getDistributionKey.allDistibutionKey(),
+    getDistributionKey.allDistributionKey(),
   ];
 
   q.all(dbPromises)

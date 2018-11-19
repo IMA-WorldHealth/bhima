@@ -2085,7 +2085,7 @@ CREATE TABLE `fee_center` (
   `is_principal` tinyint(1) UNSIGNED DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `fee_center_1` (`label`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `reference_fee_center`;
 CREATE TABLE `reference_fee_center` (
@@ -2112,11 +2112,9 @@ CREATE TABLE `fee_center_distribution` (
   `principal_fee_center_id` MEDIUMINT(8) UNSIGNED NOT NULL,
   `debit_equiv` DECIMAL(19,8) NOT NULL DEFAULT 0.00,
   `credit_equiv` DECIMAL(19,8) NOT NULL DEFAULT 0.00,
-  `currency_id` TINYINT(3) UNSIGNED NOT NULL,
   `date_distribution` DATETIME NOT NULL, 
   `user_id`           SMALLINT(5) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `currency_id` (`currency_id`),
   KEY `user_id` (`user_id`),
   INDEX `row_uuid` (`row_uuid`),
   INDEX `account_id` (`account_id`),
@@ -2127,7 +2125,6 @@ CREATE TABLE `fee_center_distribution` (
   FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
   FOREIGN KEY (`auxiliary_fee_center_id`) REFERENCES `fee_center` (`id`),
   FOREIGN KEY (`principal_fee_center_id`) REFERENCES `fee_center` (`id`),
-  FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

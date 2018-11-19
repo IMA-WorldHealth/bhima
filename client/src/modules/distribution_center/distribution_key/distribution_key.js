@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('DistributionKeyController', DistributionKeyController);
 
 DistributionKeyController.$inject = [
-  'DistributionCenterService', 'ModalService', 'NotifyService', 'uiGridConstants',
+  'DistributionCenterService', 'NotifyService', 'uiGridConstants',
   '$state', 'GridGroupingService', 'uiGridGroupingConstants',
 ];
 
@@ -12,7 +12,7 @@ DistributionKeyController.$inject = [
  * This controller is about the updating Distribution Center module in the Finance zone
  * It's responsible for editing and updating a Distribution Center
  */
-function DistributionKeyController(DistributionCenters, ModalService, Notify, uiGridConstants,
+function DistributionKeyController(DistributionCenters, Notify, uiGridConstants,
   $state, Grouping, uiGridGroupingConstants) {
   const vm = this;
 

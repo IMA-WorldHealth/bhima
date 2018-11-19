@@ -37,7 +37,6 @@ function automatic(req, res, next) {
               row.fee_center_id,
               row.debit_equiv,
               row.credit_equiv,
-              item.currency_id,
               new Date(),
               userId,
             ]);
@@ -52,14 +51,13 @@ function automatic(req, res, next) {
 
       const sqlFeeCenterDistribution = `INSERT INTO fee_center_distribution (
         row_uuid, 
-        trans_id, 
+        trans_id,
         account_id,
         is_cost,
-        auxiliary_fee_center_id, 
-        principal_fee_center_id, 
+        auxiliary_fee_center_id,
+        principal_fee_center_id,
         debit_equiv, 
-        credit_equiv, 
-        currency_id, 
+        credit_equiv,
         date_distribution, user_id) VALUES ?`;
 
       return db.exec(sqlFeeCenterDistribution, [dataToDistribute]);
