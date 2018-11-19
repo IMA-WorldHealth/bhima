@@ -117,9 +117,14 @@ function isRemovableTransaction(uuid) {
   // get all the rows of the transaction
   return getTransactionRecords(uuid)
     .then(rows => {
-      const isPosted = rows[0].posted;
+      const [firstRow] = rows;
+      const isPosted = firstRow.posted;
+
       if (isPosted) {
-        throw new BadRequest('This transaction is already posted.', 'TRANSACTIONS.ERRORS.TRANSACTION_POSTED');
+        throw new BadRequest(
+          `Transaction ${firstRow.trans_id} (${firstRow.identifier}) is already posted.`,
+          'TRANSACTIONS.ERRORS.TRANSACTION_POSTED'
+        );
       }
 
       // check if the transaction has references elsewhere
