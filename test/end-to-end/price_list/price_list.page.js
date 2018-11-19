@@ -17,7 +17,7 @@ function PriceListPage() {
   page.openCreateModal = openCreateModal;
   page.deletePriceListItem = deletePriceListItem;
 
-  const actionLinkColumn = 2;
+  const actionLinkColumn = 3;
   const itemsActionLinkColumn = 3;
 
   page.submit = function submit() {

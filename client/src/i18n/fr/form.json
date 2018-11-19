@@ -423,6 +423,7 @@
             "IS_SOCIAL_CARE" : "Non Imposable",
             "IS_TITLE": "Est ce un titre?",
             "IS_WAREHOUSE": "Entrepôt ?",
+            "ITEMS" : "Items",
             "LABEL": "Désignation",
             "LANGUAGE": "Langue",
             "LAST_NAME": "Nom",
