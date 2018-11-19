@@ -103,8 +103,12 @@ async function setRoles(users) {
   });
 
   const roles = await db.exec(sql);
-  roles.forEach(role => {
-    userMap[role.user_id].roles += `${role.label}, `;
+
+  users.forEach(user => {
+    user.roles = roles
+      .filter(role => role.user_id === user.id)
+      .map(role => role.label)
+      .join(', ');
   });
 
   return users;
