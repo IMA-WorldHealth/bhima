@@ -1,27 +1,21 @@
 <div class="flex-header">
   <div class="bhima-title">
     <ol class="headercrumb">
-      <li class="static" translate> TREE.ADMIN </li>
-      <li class="title" translate> TREE.WEEKEND_CONFIGURATION </li>
+      <li class="static" translate>TREE.ADMIN</li>
+      <li class="title" translate>TREE.WEEKEND_CONFIGURATION</li>
     </ol>
 
     <div class="toolbar">
       <div class="toolbar-item">
-        <button class="btn btn-default text-capitalize" id="create" ui-sref="configurationWeekEnd.create" data-method="create">
-          <span class="fa fa-plus"></span> <span translate>FORM.BUTTONS.ADD_WEEKEND_CONFIGURATION</span>
+        <button class="btn btn-default text-capitalize" ui-sref="configurationWeekend.create" data-method="create">
+          <span class="fa fa-plus"></span>
+          <span translate class="hidden-xs">FORM.BUTTONS.ADD_WEEKEND_CONFIGURATION</span>
         </button>
       </div>
 
-      <div class="toolbar-item">
-        <button
-          type="button"
-          ng-click="ConfigurationCtrl.toggleFilter()"
-          data-method="filter"
-          class="btn btn-default"
-          ng-class="{ 'btn-info' : ConfigurationCtrl.filterEnabled }">
-          <i class="fa fa-filter"></i>
-        </button>
-      </div>
+      <bh-filter-toggle
+        on-toggle="ConfigurationCtrl.toggleFilter()">
+      </bh-filter-toggle>
     </div>
   </div>
 </div>
@@ -29,9 +23,10 @@
 <!-- main content -->
 <div class="flex-content">
   <div class="container-fluid">
-    <div id="weekEnd-config-grid"
-      ui-grid="ConfigurationCtrl.gridOptions"
+    <div
+      id="weekend-config-grid"
       class="grid-full-height"
+      ui-grid="ConfigurationCtrl.gridOptions"
       ui-grid-auto-resize
       ui-grid-resize-columns>
 

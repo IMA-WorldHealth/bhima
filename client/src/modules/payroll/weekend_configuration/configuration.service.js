@@ -1,16 +1,16 @@
 angular.module('bhima.services')
-  .service('ConfigurationWeekEndService', ConfigurationWeekEndService);
+  .service('ConfigurationWeekendService', ConfigurationWeekendService);
 
-ConfigurationWeekEndService.$inject = ['PrototypeApiService'];
+ConfigurationWeekendService.$inject = ['PrototypeApiService'];
 
 /**
- * @class ConfigurationWeekEndService
+ * @class ConfigurationWeekendService
  * @extends PrototypeApiService
  *
  * @description
  * Encapsulates common requests to the /weekend_config/ URL.
  */
-function ConfigurationWeekEndService(Api) {
+function ConfigurationWeekendService(Api) {
   const service = new Api('/weekend_config/');
 
   service.getWeekDays = getWeekDays;

@@ -77,9 +77,9 @@ function PayrollConfigModalController($state, PayrollConfigurations, Notify, App
     vm.payroll.dateFrom = moment(vm.payroll.dateFrom).format('YYYY-MM-DD');
     vm.payroll.dateTo = moment(vm.payroll.dateTo).format('YYYY-MM-DD');
 
-    const promise = (vm.isCreating) ?
-      PayrollConfigurations.create(vm.payroll) :
-      PayrollConfigurations.update(vm.payroll.id, vm.payroll);
+    const promise = (vm.isCreating)
+      ? PayrollConfigurations.create(vm.payroll)
+      : PayrollConfigurations.update(vm.payroll.id, vm.payroll);
 
     return promise
       .then(() => {

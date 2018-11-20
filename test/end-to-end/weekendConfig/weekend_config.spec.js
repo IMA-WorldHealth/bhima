@@ -1,46 +1,36 @@
 const helpers = require('../shared/helpers');
-const WeekEndConfigPage = require('./weekend_config.page');
-const chai = require('chai');
+const WeekendConfigPage = require('./weekend_config.page');
 
-/* configuring helpers */
-helpers.configure(chai);
-
-describe('Week End Configuration Management', () => {
+describe('Weekend Configuration Management', () => {
   // navigate to the page
   before(() => helpers.navigate('#!/payroll/weekend_configuration'));
 
-  const Page = new WeekEndConfigPage();
+  const page = new WeekendConfigPage();
 
-  const weekEndConfig = {
-    label : 'Configuration Week End 2013',
-  };
+  const newWeekendConfigLabel = 'Configuration Weekend 2013';
+  const updateWeekendConfigLabel = 'Configuration Weekend 2013 Updated';
 
-  const updateWeekEndConfig = {
-    label : 'Configuration Week End 2013 Updated',
-  };
-
-  it('successfully creates a new WeekEnd Configuration', () => {
-    Page.createWeekEndConfig(weekEndConfig);
+  it('successfully creates a new weekend configuration', () => {
+    page.create(newWeekendConfigLabel);
   });
 
-  it('successfully edits a WeekEnd Configuration', () => {
-    Page.editWeekEndConfig(weekEndConfig.label, updateWeekEndConfig);
+  it('successfully edits a weekend configuration', () => {
+    page.update(newWeekendConfigLabel, updateWeekendConfigLabel);
   });
 
-  it('successfully Set Week days in WeekEnd Configuration', () => {
-    Page.setWeekEndConfig(updateWeekEndConfig.label);
+  it('successfully set week days in weekend configuration', () => {
+    page.setWeekendConfig(updateWeekendConfigLabel);
   });
 
-  it('successfully InSet Week days in WeekEnd Configuration', () => {
-    Page.inSetWeekEndConfig(updateWeekEndConfig.label);
+  it('successfully inset week days in weekend configuration', () => {
+    page.unsetWeekendConfig(updateWeekendConfigLabel);
   });
 
-  it('don\'t create when incorrect WeekEnd', () => {
-    Page.errorOnCreateWeekEndConfig();
+  it('don\'t create an incorrect weekend', () => {
+    page.errorOnCreateWeekendConfig();
   });
 
-  it('successfully delete a WeekEnd', () => {
-    Page.deleteWeekEndConfig(updateWeekEndConfig.label);
+  it('successfully deletes a weekend', () => {
+    page.remove(updateWeekendConfigLabel);
   });
-
 });

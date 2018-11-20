@@ -1,11 +1,11 @@
-<form name="WeekEndForm" bh-submit="WeekEndModalCtrl.submit(WeekEndForm)" novalidate>
+<form name="WeekendForm" bh-submit="WeekendModalCtrl.submit(WeekendForm)" novalidate>
   <div class="modal-header">
     <ol class="headercrumb">
-      <li ng-if="WeekEndModalCtrl.isCreating" class="title">
+      <li ng-if="WeekendModalCtrl.isCreateState" class="title">
         <span translate>TREE.WEEKEND_CONFIGURATION</span>
         <label class="badge badge-success" translate>FORM.LABELS.CREATE</label>
       </li>
-      <li ng-if="!WeekEndModalCtrl.isCreating" class="title">
+      <li ng-if="!WeekendModalCtrl.isCreateState" class="title">
         <span translate>TREE.WEEKEND_CONFIGURATION</span>
         <label class="badge badge-success" translate>FORM.LABELS.UPDATE</label>
       </li>
@@ -13,21 +13,21 @@
   </div>
 
   <div class="modal-body">
-    <div class="form-group" ng-class="{ 'has-error' : WeekEndForm.$submitted && WeekEndForm.label.$invalid }">
+    <div class="form-group" ng-class="{ 'has-error' : WeekendForm.$submitted && WeekendForm.label.$invalid }">
       <label class="control-label" translate>FORM.LABELS.DESIGNATION</label>
-      <input name="label" ng-model="WeekEndModalCtrl.weekend.label" autocomplete="off" class="form-control" required>
-      <div class="help-block" ng-messages="WeekEndForm.label.$error" ng-show="WeekEndForm.$submitted">
+      <input name="label" ng-model="WeekendModalCtrl.weekend.label" autocomplete="off" class="form-control" required>
+      <div class="help-block" ng-messages="WeekendForm.label.$error" ng-show="WeekendForm.$submitted">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
       </div>
     </div>
   </div>
 
   <div class="modal-footer">
-    <button data-method="cancel" type="button" class="btn btn-default" ng-click="WeekEndModalCtrl.closeModal()">
+    <button data-method="cancel" type="button" class="btn btn-default" ng-click="WeekendModalCtrl.closeModal()">
       <span translate>FORM.BUTTONS.CANCEL</span>
     </button>
 
-    <bh-loading-button loading-state="WeekEndForm.$loading">
+    <bh-loading-button loading-state="WeekendForm.$loading">
       <span translate>FORM.BUTTONS.SUBMIT</span>
     </bh-loading-button>
   </div>

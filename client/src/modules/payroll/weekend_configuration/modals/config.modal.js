@@ -1,22 +1,24 @@
 angular.module('bhima.controllers')
-  .controller('WeekEndConfigModalController', WeekEndConfigModalController);
+  .controller('WeekendConfigModalController', WeekendConfigModalController);
 
-WeekEndConfigModalController.$inject = [
-  '$state', 'ConfigurationWeekEndService', 'NotifyService', 'appcache', 'bhConstants',
+WeekendConfigModalController.$inject = [
+  '$state', 'ConfigurationWeekendService', 'NotifyService', 'appcache', 'bhConstants',
 ];
 
-function WeekEndConfigModalController($state, Config, Notify, AppCache, bhConstants) {
-  var vm = this;
+function WeekendConfigModalController($state, Config, Notify, AppCache, bhConstants) {
+  const vm = this;
   vm.weekend = {};
 
-  var cache = AppCache('RubricModal');
+  const cache = AppCache('RubricModal');
 
   if ($state.params.creating || $state.params.id) {
-    vm.stateParams = cache.stateParams = $state.params;
+    cache.stateParams = $state.params;
+    vm.stateParams = cache.stateParams;
   } else {
     vm.stateParams = cache.stateParams;
   }
-  vm.isCreating = vm.stateParams.creating;
+
+  vm.isCreateState = vm.stateParams.creating;
 
   vm.weekDays = bhConstants.weekDays;
 
@@ -24,16 +26,16 @@ function WeekEndConfigModalController($state, Config, Notify, AppCache, bhConsta
   vm.submit = submit;
   vm.closeModal = closeModal;
 
-  if (!vm.isCreating) {
+  if (!vm.isCreateState) {
     Config.read(vm.stateParams.id)
-      .then(function (weekend) {
+      .then((weekend) => {
         vm.weekend = weekend;
       })
       .catch(Notify.handleError);
   }
 
   Config.getWeekDays(vm.stateParams.id)
-    .then(function (daysConfig) {
+    .then((daysConfig) => {
       daysConfig.forEach(object => {
         vm.weekDays.forEach(days => {
           if (days.id === object.indice) { days.checked = true; }
@@ -44,23 +46,21 @@ function WeekEndConfigModalController($state, Config, Notify, AppCache, bhConsta
 
   // submit the data to the server for configure week day
   function submit(accountForm) {
-    var promise,
-      daysChecked;
-
     if (accountForm.$invalid || accountForm.$pristine) { return 0; }
 
-    daysChecked = vm.weekDays.filter(days => days.checked )
-      .map(days => days.id );
-   
+    const daysChecked = vm.weekDays
+      .filter(days => days.checked)
+      .map(days => days.id);
+
     return Config.setWeekDays(vm.stateParams.id, daysChecked)
-      .then(function () {
+      .then(() => {
         Notify.success('FORM.INFO.UPDATE_SUCCESS');
-        $state.go('configurationWeekEnd', null, { reload : true });
+        $state.go('configurationWeekend', null, { reload : true });
       })
       .catch(Notify.handleError);
   }
 
   function closeModal() {
-    $state.go('configurationWeekEnd');
+    $state.go('configurationWeekend');
   }
 }
