@@ -5,7 +5,6 @@ angular.module('bhima.components')
     bindings : {
       currencyId : '<', // one-way binding
       model : '=', // two way binding
-      validationTrigger : '<', // one-way binding
       label : '@?',
       symbol : '@?',
       disabled : '<?',

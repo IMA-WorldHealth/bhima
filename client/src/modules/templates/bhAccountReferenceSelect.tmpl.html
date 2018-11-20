@@ -1,7 +1,7 @@
-<div ng-form="{{ $ctrl.name }}" bh-account-reference-select ng-model-options="{ updateOn: 'default' }">
+<div ng-form="AccountReferenceForm" bh-account-reference-select ng-model-options="{ updateOn: 'default' }">
   <div
     class="form-group"
-    ng-class="{ 'has-error' : $ctrl.validationTrigger && AccountReferenceForm.account_reference_id.$invalid }">
+    ng-class="{ 'has-error' : AccountReferenceForm.$submitted && AccountReferenceForm.account_reference_id.$invalid }">
 
     <label class="control-label" translate>
       {{ ::$ctrl.label }}
@@ -14,7 +14,7 @@
     <ui-select
       name="account_reference_id"
       ng-model="$ctrl.accountReferenceId"
-      on-select="$ctrl.onSelect($item, $model)"
+      on-select="$ctrl.onSelect($item)"
       ng-required="$ctrl.required">
       <ui-select-match placeholder="{{ ::'FORM.PLACEHOLDERS.ACCOUNT_REFERENCE' | translate }}">
         <span><strong>{{$select.selected.abbr}}</strong> : {{$select.selected.description}}</span>
@@ -27,7 +27,7 @@
       </ui-select-choices>
     </ui-select>
 
-    <div class="help-block" ng-messages="AccountReferenceForm.account_reference_id.$error" ng-show="$ctrl.validationTrigger && AccountReferenceForm.account_reference_id.$invalid">
+    <div class="help-block" ng-messages="AccountReferenceForm.account_reference_id.$error" ng-show="AccountReferenceForm.$submitted">
       <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
     </div>
   </div>

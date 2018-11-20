@@ -1,7 +1,7 @@
 <div ng-form="FeeCenterForm" bh-fee-center-select ng-model-options="{ updateOn: 'default' }">
   <div
     class="form-group"
-    ng-class="{ 'has-error' : $ctrl.validateTrigger && FeeCenterForm.fee_center_id.$invalid }">
+    ng-class="{ 'has-error' : FeeCenterForm.$submitted && FeeCenterForm.fee_center_id.$invalid }">
 
     <label class="control-label" translate>
       FORM.LABELS.FEE_CENTER
@@ -11,7 +11,7 @@
     <ui-select 
       name="fee_center_id" 
       ng-model="$ctrl.feeCenterId"
-      on-select="$ctrl.onSelect($item, $model)"
+      on-select="$ctrl.onSelect($item)"
       ng-required="$ctrl.required">
       <ui-select-match placeholder="{{ 'FORM.SELECT.FEE_CENTER' | translate }}">
         <span>{{$select.selected.label}}</span>
@@ -21,7 +21,7 @@
       </ui-select-choices>
     </ui-select>    
 
-    <div class="help-block" ng-messages="FeeCenterForm.fee_center_id.$error" ng-show="$ctrl.validateTrigger">
+    <div class="help-block" ng-messages="FeeCenterForm.fee_center_id.$error" ng-show="FeeCenterForm.$submitted">
       <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
     </div>
   </div>

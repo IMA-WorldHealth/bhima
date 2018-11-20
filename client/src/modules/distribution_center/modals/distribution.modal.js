@@ -2,14 +2,12 @@ angular.module('bhima.controllers')
   .controller('DistributionModalController', DistributionModalController);
 
 DistributionModalController.$inject = [
-  '$state', 'NotifyService', 'DistributionCenterService', 'PayrollConfigurationService',
-  'ExchangeRateService', 'SessionService', 'transaction', '$uibModalInstance', 'PatientInvoiceService',
-  'FeeCenterService', 'util', '$translate',
+  '$state', 'NotifyService', 'DistributionCenterService',
+  'SessionService', 'transaction', '$uibModalInstance', 'FeeCenterService', 'util', '$translate',
 ];
 
 function DistributionModalController(
-  $state, Notify, DistributionCenter, Configuration,
-  Exchange, Session, transaction, ModalInstance, Invoices, FeeCenters, util, $translate,
+  $state, Notify, DistributionCenter, Session, transaction, ModalInstance, FeeCenters, util, $translate,
 ) {
   const vm = this;
   vm.transaction = transaction;

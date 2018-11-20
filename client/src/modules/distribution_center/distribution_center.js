@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('DistributionCenterController', DistributionCenterController);
 
 DistributionCenterController.$inject = [
-  'DistributionCenterService', 'ModalService', 'NotifyService', 'uiGridConstants', '$state', 'GridColumnService',
+  'DistributionCenterService', 'NotifyService', 'uiGridConstants', '$state', 'GridColumnService',
   'GridStateService', 'util', 'bhConstants',
 ];
 
@@ -12,7 +12,7 @@ DistributionCenterController.$inject = [
  * This controller is about the Distribution Center module in the admin zone
  * It's responsible for creating, editing and updating a Distribution Center
  */
-function DistributionCenterController(DistributionCenters, ModalService, Notify, uiGridConstants, $state, Columns,
+function DistributionCenterController(DistributionCenters, Notify, uiGridConstants, $state, Columns,
   GridState, util, bhConstants) {
   const vm = this;
   const cacheKey = 'distribution_grid';
@@ -28,8 +28,8 @@ function DistributionCenterController(DistributionCenters, ModalService, Notify,
   vm.openColumnConfigModal = openColumnConfigModal;
   vm.clearGridState = clearGridState;
   vm.onRemoveFilter = onRemoveFilter;
-  vm.breackdownPercentages = breackdownPercentages;
-  vm.automaticBreackdown = automaticBreackdown;
+  vm.breakdownPercentages = breakdownPercentages;
+  vm.automaticBreakdown = automaticBreakdown;
   vm.format = util.formatDate;
   const TRANSACTION_TYPE_INVOICING = bhConstants.transactionType.INVOICING;
 
@@ -173,8 +173,9 @@ function DistributionCenterController(DistributionCenters, ModalService, Notify,
       });
   }
 
-  function breackdownPercentages() {
+  function breakdownPercentages() {
     const transactions = vm.gridApi.selection.getSelectedRows();
+
     if (transactions.length) {
       const feeCenterId = transactions[0].fee_center_id;
 
@@ -193,7 +194,7 @@ function DistributionCenterController(DistributionCenters, ModalService, Notify,
           isCost,
         };
 
-        DistributionCenters.breackDownPercentagesModal(data)
+        DistributionCenters.breakDownPercentagesModal(data)
           .then((changes) => {
             if (changes) {
               DistributionCenters.cacheFilters();
@@ -208,7 +209,7 @@ function DistributionCenterController(DistributionCenters, ModalService, Notify,
     }
   }
 
-  function automaticBreackdown() {
+  function automaticBreakdown() {
     const transactions = vm.gridApi.selection.getSelectedRows();
 
     if (transactions.length) {
@@ -219,7 +220,7 @@ function DistributionCenterController(DistributionCenters, ModalService, Notify,
       if (invalid) {
         Notify.danger('FORM.WARNINGS.PERCENTAGE_BREACKDOWN');
       } else {
-        DistributionCenters.automaticBreackdown(transactions)
+        DistributionCenters.automaticBreakdown(transactions)
           .then(() => {
             Notify.success('FORM.INFO.DISTRIBUTION_SUCCESSFULLY');
             vm.activePosting = true;

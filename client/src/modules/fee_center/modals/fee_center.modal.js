@@ -85,9 +85,6 @@ function FeeCenterModalController($state, FeeCenter, ModalService, Notify, AppCa
     if (value) {
       vm.hasProfitCenter = !value;
       vm.hasCostCenter = !value;
-    }
-
-    if (vm.auxiliaryCenter) {
       vm.isCostCenter = 0;
       vm.isProfitCenter = 0;
     }

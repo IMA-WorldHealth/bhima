@@ -2,14 +2,13 @@ angular.module('bhima.controllers')
   .controller('DistributionKeyModalController', DistributionKeyModalController);
 
 DistributionKeyModalController.$inject = [
-  '$state', 'NotifyService', 'DistributionCenterService', 'PayrollConfigurationService',
-  'ExchangeRateService', 'SessionService', '$uibModalInstance', 'PatientInvoiceService',
-  'FeeCenterService', 'util', 'settings', '$translate',
+  '$state', 'NotifyService', 'DistributionCenterService',
+  'SessionService', '$uibModalInstance', 'FeeCenterService', 'settings', '$translate',
 ];
 
 function DistributionKeyModalController(
-  $state, Notify, DistributionCenter, Configuration,
-  Exchange, Session, ModalInstance, Invoices, FeeCenters, util, settings, $translate,
+  $state, Notify, DistributionCenter, Session, ModalInstance,
+  FeeCenters, settings, $translate,
 ) {
   const vm = this;
 
@@ -51,14 +50,14 @@ function DistributionKeyModalController(
       sumDistributed += vm.settings.values[key];
     });
 
-    vm.invalidBreackDown = sumDistributed !== 100;
+    vm.invalidBreakDown = sumDistributed !== 100;
     vm.diffPercentage = Math.abs(sumDistributed - 100);
 
     vm.errorMessage = (sumDistributed < 100)
       ? $translate.instant('FORM.WARNINGS.REMAINS_DISTRIBUTION', { value : `${vm.diffPercentage} %` })
       : $translate.instant('FORM.WARNINGS.OVERRUN_DISTRIBUTION', { value : `${vm.diffPercentage} %` });
 
-    if (DistributionKeyForm.$invalid || vm.invalidBreackDown) {
+    if (DistributionKeyForm.$invalid || vm.invalidBreakDown) {
       return Notify.danger('FORM.ERRORS.INVALID');
     }
 

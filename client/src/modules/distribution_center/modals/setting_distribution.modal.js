@@ -2,12 +2,10 @@ angular.module('bhima.controllers')
   .controller('SettingDistributionModalController', SettingDistributionModalController);
 
 SettingDistributionModalController.$inject = [
-  '$state', 'DistributionCenterService', 'filters',
-  'NotifyService', 'bhConstants', 'Store', 'util', '$uibModalInstance', '$translate'];
+  '$state', 'DistributionCenterService', 'filters', 'Store', 'util', '$uibModalInstance', '$translate'];
 
-function SettingDistributionModalController($state, DistributionCenter, filters, Notify,
-  bhConstants, Store, util, ModalInstance, $translate) {
-
+function SettingDistributionModalController($state, DistributionCenter, filters, Store, util,
+  ModalInstance, $translate) {
   const vm = this;
 
   // exposed methods

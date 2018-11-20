@@ -27,7 +27,6 @@ function AccountReferenceSelectController(AccountReferences, $timeout, $scope, N
   $ctrl.$onInit = function $onInit() {
     // translated label for the form input
     $ctrl.label = $ctrl.label || 'FORM.LABELS.REFERENCE';
-
     // default for form name
     $ctrl.name = $ctrl.name || 'AccountReferenceForm';
 

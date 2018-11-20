@@ -20,11 +20,11 @@ function DistributionCenterService(Api, Filters, AppCache, Modal) {
   service.openDistributionModal = openDistributionModal;
   service.cacheFilters = cacheFilters;
   service.proceedDistribution = proceedDistribution;
-  service.proceedBreackDownPercent = proceedBreackDownPercent;
+  service.proceedBreakDownPercent = proceedBreakDownPercent;
   service.getDistributed = getDistributed;
   service.removeFilter = removeFilter;
-  service.breackDownPercentagesModal = breackDownPercentagesModal;
-  service.automaticBreackdown = automaticBreackdown;
+  service.breakDownPercentagesModal = breakDownPercentagesModal;
+  service.automaticBreakdown = automaticBreakdown;
   service.getDistributionKey = getDistributionKey;
   service.openDistributionKeyModal = openDistributionKeyModal;
   service.proceedDistributionKey = proceedDistributionKey;
@@ -106,18 +106,18 @@ function DistributionCenterService(Api, Filters, AppCache, Modal) {
   }
 
   /**
-   * @function breackDownPercentagesModal
+   * @function breakDownPercentagesModal
    * @description
-   * This functions opens the breackDown Percentages Modal form.
+   * This functions opens the breakDown Percentages Modal form.
    */
-  function breackDownPercentagesModal(data) {
+  function breakDownPercentagesModal(data) {
     return Modal.open({
-      templateUrl : 'modules/distribution_center/modals/breackDown.modal.html',
+      templateUrl : 'modules/distribution_center/modals/breakDown.modal.html',
       size : 'md',
       animation : false,
       keyboard : false,
       backdrop : 'static',
-      controller : 'BreackDownModalController as BreackDownModalCtrl',
+      controller : 'BreakDownModalController as BreakDownModalCtrl',
       resolve : {
         data : () => data,
       },
@@ -126,11 +126,11 @@ function DistributionCenterService(Api, Filters, AppCache, Modal) {
 
 
   /**
-   * @function automatic Breackdown for Invoices
+   * @function automatic Breakdown for Invoices
    * @description
    * This functions opens the distribution Modal form.
    */
-  function automaticBreackdown(data) {
+  function automaticBreakdown(data) {
     return service.$http.post(`/distribution_fee_center/automatic`, { data })
       .then(service.util.unwrapHttpResponse);
   }
@@ -141,9 +141,9 @@ function DistributionCenterService(Api, Filters, AppCache, Modal) {
       .then(service.util.unwrapHttpResponse);
   }
 
-  // Proceed Breack Down Fee Center in Percentage
-  function proceedBreackDownPercent(data) {
-    return service.$http.post(`/distribution_fee_center/breackDown`, { data })
+  // Proceed Break Down Fee Center in Percentage
+  function proceedBreakDownPercent(data) {
+    return service.$http.post(`/distribution_fee_center/breakDown`, { data })
       .then(service.util.unwrapHttpResponse);
   }
 
