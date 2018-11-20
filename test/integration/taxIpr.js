@@ -123,7 +123,7 @@ describe('(/ipr_tax) The /ipr_tax  API endpoint', () => {
   });
 
   it('DELETE /IPRTAXCONFIG/:ID will send back a 404 if the Ipr Tax does not exist', () => {
-    return agent.delete('/iprTaxConfig/inknowOffday')
+    return agent.delete('/iprTaxConfig/unknownOffday')
       .then((res) => {
         helpers.api.errored(res, 404);
       })
@@ -139,7 +139,7 @@ describe('(/ipr_tax) The /ipr_tax  API endpoint', () => {
   });
 
   it('DELETE /IPRTAX/:ID will send back a 404 if the Ipr Tax does not exist', () => {
-    return agent.delete('/iprTax/inknowOffday')
+    return agent.delete('/iprTax/unknownOffday')
       .then((res) => {
         helpers.api.errored(res, 404);
       })

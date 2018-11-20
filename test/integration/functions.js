@@ -64,7 +64,7 @@ describe('(/functions) The /functions  API endpoint', () => {
   });
 
   it('DELETE /FUNCTIONS/:ID will send back a 404 if the Function does not exist', () => {
-    return agent.delete('/functions/inknowFunction')
+    return agent.delete('/functions/unknownFunction')
       .then((res) => {
         helpers.api.errored(res, 404);
       })

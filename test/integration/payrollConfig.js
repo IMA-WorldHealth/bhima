@@ -73,7 +73,7 @@ describe('(/payroll) The /payroll  API endpoint', () => {
   });
 
   it('DELETE /PAYROLL_CONFIG/:ID will send back a 404 if the Account Configuration does not exist', () => {
-    return agent.delete('/payroll_config/inknowRubric')
+    return agent.delete('/payroll_config/unknownRubric')
       .then((res) => {
         helpers.api.errored(res, 404);
       })

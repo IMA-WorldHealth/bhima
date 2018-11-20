@@ -1,5 +1,6 @@
 // TODO Handle HTTP exception errors (displayed contextually on form)
-angular.module('bhima.controllers').controller('PriceListController', PriceListController);
+angular.module('bhima.controllers')
+  .controller('PriceListController', PriceListController);
 
 PriceListController.$inject = [
   'PriceListService', '$uibModal', 'InventoryService',
@@ -21,7 +22,7 @@ function PriceListController(
   // set price list items
   vm.addItem = addItem;
   // delete a price list
-  vm.del = del;
+  vm.remove = remove;
   // create a new price list
   vm.create = create;
 
@@ -115,22 +116,23 @@ function PriceListController(
   }
 
   // switch to delete warning mode
-  function del(priceList) {
-    ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE').then(bool => {
-      // if the user clicked cancel, reset the view and return
-      if (!bool) {
-        vm.view = 'default';
-        return;
-      }
+  function remove(uuid) {
+    ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
+      .then(bool => {
+        // if the user clicked cancel, reset the view and return
+        if (!bool) {
+          vm.view = 'default';
+          return;
+        }
 
-      // if we get there, the user wants to delete a priceList
-      PriceListService.delete(priceList.uuid)
-        .then(() => {
-          Notify.success('FORM.INFO.DELETE_SUCCESS');
-          return refreshPriceList();
-        })
-        .catch(Notify.handleError);
-    });
+        // if we get there, the user wants to delete a priceList
+        PriceListService.delete(uuid)
+          .then(() => {
+            Notify.success('FORM.INFO.DELETE_SUCCESS');
+            return refreshPriceList();
+          })
+          .catch(Notify.handleError);
+      });
   }
 
   function download() {

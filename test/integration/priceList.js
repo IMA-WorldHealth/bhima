@@ -109,7 +109,6 @@ describe('(/prices ) Price List', () => {
       .catch(helpers.handler);
   });
 
-
   it('POST /prices should create a price list (without price list items)', () => {
     return agent.post('/prices')
       .send({ list : emptyPriceList })
@@ -123,6 +122,10 @@ describe('(/prices ) Price List', () => {
       .then(res => {
         expect(res).to.have.status(200);
         expect(res.body).to.have.all.keys(responseKeys);
+        return agent.get('/prices').query({ detailed : 1 });
+      })
+      .then(res => {
+        helpers.api.listed(res, 2);
       })
       .catch(helpers.handler);
   });

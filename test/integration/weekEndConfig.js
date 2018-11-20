@@ -75,7 +75,7 @@ describe('(/payroll/weekend_configuration) The /payroll/weekend_configuration  A
   });
 
   it('DELETE /WEEKEND__CONFIG/:ID will send back a 404 if the WeekEnd Configuration does not exist', () => {
-    return agent.delete('/weekend_config/inknowWeekEnd')
+    return agent.delete('/weekend_config/unknownWeekEnd')
       .then((res) => {
         helpers.api.errored(res, 404);
       })

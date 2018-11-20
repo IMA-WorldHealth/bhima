@@ -66,7 +66,7 @@ describe('(/payroll/account_configuration) The /payroll/account_configuration  A
   });
 
   it('DELETE /ACCOUNT_CONFIG/:ID will send back a 404 if the Account Configuration does not exist', () => {
-    return agent.delete('/account_config/inknowRubric')
+    return agent.delete('/account_config/unknownRubric')
       .then((res) => {
         helpers.api.errored(res, 404);
       })
