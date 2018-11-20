@@ -886,7 +886,7 @@ CREATE TABLE `reference_fee_center` (
 DROP TABLE IF EXISTS `fee_center_distribution`;
 CREATE TABLE `fee_center_distribution` (
   `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `trans_uuid` BINARY(16) NOT NULL,
+  `row_uuid` BINARY(16) NOT NULL,
   `trans_id` VARCHAR(100) NOT NULL,
   `account_id` INT(10) UNSIGNED NOT NULL,
   `is_cost` tinyint(1) DEFAULT 0,
