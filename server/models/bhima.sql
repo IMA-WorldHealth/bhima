@@ -159,7 +159,8 @@ INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
   (24, 'income_expense_by_month', 'REPORT.INCOME_EXPENSE_BY_MONTH'),
   (25, 'stock_value', 'TREE.STOCK_VALUE'),
   (26, 'ohada_profit_loss', 'TREE.OHADA_RESULT_ACCOUNT'),
-  (27, 'income_expense_by_year', 'REPORT.INCOME_EXPENSE_BY_YEAR');
+  (27, 'income_expense_by_year', 'REPORT.INCOME_EXPENSE_BY_YEAR'),
+  (28, 'feeCenter', 'REPORT.FEE_CENTER.TITLE');
 
 -- Supported Languages
 INSERT INTO `language` VALUES
