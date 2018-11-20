@@ -1,125 +1,62 @@
 /* global element, by */
+/* eslint class-methods-use-this:off */
 
-/**
- * This class is represents a grade page in term of structure and
- * behaviour so it is a grade page object
- */
-
-const chai = require('chai');
-const helpers = require('../shared/helpers');
-
-helpers.configure(chai);
-
-/* loading grid actions */
-const GA = require('../shared/GridAction');
-const GU = require('../shared/GridUtils');
+const GridRow = require('../shared/GridRow');
 const FU = require('../shared/FormUtils');
-const components = require('../shared/components');
+const { notification } = require('../shared/components');
 
 class GradePage {
   constructor() {
     this.gridId = 'grade-grid';
-    this.gradeGrid = element(by.id(this.gridId));
-    this.actionLinkColumn = 3;
+    this.modal = $('[uib-modal-window]');
   }
 
-  /**
-   * send back the number of grades in the grid
-   */
-  getGradeCount() {
-    return this.gradeGrid
+  count() {
+    return element(by.id(this.gridId))
       .element(by.css('.ui-grid-render-container-body'))
       .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'))
       .count();
   }
 
-  /**
-   * simulate the create grade button click to show the dialog of creation
-   */
-  createGrade(grade) {
+  create(grade) {
     FU.buttons.create();
 
-    FU.input('GradeModalCtrl.grade.text', grade.text);
-    FU.input('GradeModalCtrl.grade.code', grade.code);
-    FU.input('GradeModalCtrl.grade.basic_salary', grade.basic_salary);
+    FU.input('GradeModalCtrl.grade.text', grade.text, this.modal);
+    FU.input('GradeModalCtrl.grade.code', grade.code, this.modal);
+    FU.input('GradeModalCtrl.grade.basic_salary', grade.basic_salary, this.modal);
 
-    FU.buttons.submit();
-    components.notification.hasSuccess();
+    FU.modal.submit();
+    notification.hasSuccess();
   }
 
-  /**
-   * block creation without the grade name
-   */
   errorOnCreateGrade() {
     FU.buttons.create();
-    FU.buttons.submit();
-    FU.validation.error('GradeModalCtrl.grade.text');
-    FU.buttons.cancel();
+    FU.modal.submit();
+    FU.validation.error('GradeModalCtrl.grade.text', this.modal);
+    FU.modal.cancel();
   }
 
-  /**
-   * simulate a click on the edit link of a grade
-   */
-  editGrade(text, newGrade) {
-    GU.getGridIndexesMatchingText(this.gridId, text)
-      .then(indices => {
-        const { rowIndex } = indices;
-        GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'edit', this.gridId);
+  update(code, newGrade) {
+    const row = new GridRow(code);
+    row.dropdown().click();
+    row.edit().click();
 
-        FU.input('GradeModalCtrl.grade.text', newGrade.text);
-        FU.input('GradeModalCtrl.grade.code', newGrade.code);
-        FU.input('GradeModalCtrl.grade.basic_salary', newGrade.basic_salary);
+    FU.input('GradeModalCtrl.grade.text', newGrade.text, this.modal);
+    FU.input('GradeModalCtrl.grade.code', newGrade.code, this.modal);
+    FU.input('GradeModalCtrl.grade.basic_salary', newGrade.basic_salary, this.modal);
 
-        FU.buttons.submit();
-        components.notification.hasSuccess();
-      });
+    FU.modal.submit();
+    notification.hasSuccess();
   }
 
-  /**
-   * simulate a click on the delete link of a grade
-   */
-  deleteGrade(text) {
-    GU.getGridIndexesMatchingText(this.gridId, text)
-      .then(indices => {
-        const { rowIndex } = indices;
-        GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'delete', this.gridId);
-        components.modalAction.confirm();
-        components.notification.hasSuccess();
-      });
-  }
+  remove(code) {
+    const row = new GridRow(code);
+    row.dropdown().click();
+    row.remove().click();
 
-  /**
-   * cancel deletion process
-   */
-  cancelDeleteGrade(n) {
-    GA.clickOnMethod(n, this.actionLinkColumn, 'delete', this.gridId);
-    components.modalAction.dismiss();
+    FU.modal.submit();
+    notification.hasSuccess();
   }
-
-  /**
-   * forbid deletion of used grade
-   */
-  errorOnDeleteGrade(n) {
-    GA.clickOnMethod(n, this.actionLinkColumn, 'delete', this.gridId);
-    components.modalAction.confirm();
-    components.notification.hasError();
-  }
-
-  /**
-  * select the User Grades
-  */
-  selectUserGrade(grades) {
-    components.multipleGradeSelect.set(grades);    
-  }
-
-  /**
-  * Submit button User Grade
-  */
-  submitUserGrade() {
-    FU.buttons.submit();
-    components.notification.hasSuccess();
-  }
-
 }
 
 module.exports = GradePage;

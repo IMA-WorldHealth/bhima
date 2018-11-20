@@ -1,12 +1,13 @@
+const { expect } = require('chai');
 const helpers = require('../shared/helpers');
 const GradePage = require('./grades.page');
-const chai = require('chai');
 
 describe('Grades Management', () => {
+
   // navigate to the page
   before(() => helpers.navigate('#!/grades'));
 
-  const Page = new GradePage();
+  const page = new GradePage();
 
   const grade = {
     text : 'New Grade',
@@ -21,20 +22,24 @@ describe('Grades Management', () => {
   };
 
 
+  it('begins with 2 grades', () => {
+    expect(page.count()).to.eventually.equal(2);
+  });
+
   it('successfully creates a new grade', () => {
-    Page.createGrade(grade);
+    page.create(grade);
   });
 
   it('successfully edits a grade', () => {
-    Page.editGrade(grade.text, updateGrade);
+    page.update(grade.code, updateGrade);
   });
 
-  it('don\'t create when incorrect grade name', () => {
-    Page.errorOnCreateGrade();
+  it('doesn\'t create a record when grade name is incorrect', () => {
+    page.errorOnCreateGrade();
   });
 
   it('successfully delete a grade', () => {
-    Page.deleteGrade(updateGrade.text);
+    page.remove(updateGrade.code);
   });
 
 });
