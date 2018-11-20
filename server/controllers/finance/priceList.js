@@ -25,18 +25,15 @@ exports.list = function list(req, res, next) {
   let sql;
 
   if (req.query.detailed === '1') {
-    sql =
-      `SELECT BUID(uuid) as uuid, label, created_at, description, items.nbr as itemsNumber
-      FROM price_list
-      LEFT JOIN(
-        SELECT COUNT(uuid) as nbr, price_list_uuid FROM price_list_item GROUP BY price_list_uuid
-
-      )items ON items.price_list_uuid = price_list.uuid
-      WHERE enterprise_id = ?
-      ORDER BY label;`;
+    sql = `
+      SELECT BUID(pl.uuid) as uuid, pl.label, pl.created_at, pl.description, COUNT(pl_it.uuid) as itemsNumber
+      FROM price_list pl
+      LEFT JOIN price_list_item pl_it ON pl_it.price_list_uuid = pl.uuid
+      WHERE pl.enterprise_id = ?
+      ORDER BY pl.label;`;
   } else {
-    sql =
-      `SELECT BUID(uuid) as uuid, label
+    sql = `
+      SELECT BUID(uuid) as uuid, label
       FROM price_list
       WHERE enterprise_id = ?
       ORDER BY label;`;
