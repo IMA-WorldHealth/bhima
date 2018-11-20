@@ -15,7 +15,6 @@ function auxilliary(params) {
   params.type_id = [4, 5, 6];
   params.is_exception = 1;
 
-  const typeFeeCenter = parseInt(params.typeFeeCenter, 10);
   const filters = new FilterParser(params, { tableAlias : 'fee_center' });
   const filters2 = new FilterParser(params, { tableAlias : 'fee_center' });
 
