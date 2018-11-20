@@ -1,94 +1,89 @@
 /* global inject, expect */
+
 describe('PasswordMeterService', () => {
   let PasswordMeterService;
   let Session;
-  let Mocks;
-
-  // has special characters
-  const STRONG_PASSWORD = '8%@Y2kZ!ZzyZ$F#TyKkPPXnRsKoKWfy!2yMo$G6i';
-
-  // only numbers and letters
-  const MEDIUM_PASSWORD = 'g3WpJ3qa9nv3xLRgx7WMtuAxX2BmX3PK3IjhgWSF';
-
-  // too short, no variation
-  const WEAK_PASSWORD = '123';
-
-  // blank
-  const EMPTY_PASSWORD = '';
 
   beforeEach(module(
-    'bhima.services',
     'ngStorage',
-    'bhima.mocks',
     'angularMoment',
+    'bhima.services',
+    'bhima.mocks',
     'ui.router'
   ));
+
+  const WEAK_PASSWORD = 'hello';
+  const MEDIUM_PASSWORD = 'L0b1Ec0simba';
+  const STRONG_PASSWORD = 'N@pM@ch3N@L1my3B0ndy3@!';
 
   beforeEach(inject((_PasswordMeterService_, _SessionService_, _MockDataService_) => {
     PasswordMeterService = _PasswordMeterService_;
     Session = _SessionService_;
-    Mocks = _MockDataService_;
 
-    // set up the required properties for the session
-    Session.create(Mocks.user(), Mocks.enterprise(), Mocks.project());
+    const user = _MockDataService_.user();
+    const project = _MockDataService_.project();
+    const enterprise = _MockDataService_.enterprise();
+
+    Session.create(user, enterprise, project);
+
+    // make sure password validation is on
     Session.enterprise.settings.enable_password_validation = true;
   }));
 
-  it('#validate() return true for a strong password', () => {
-    const validation = PasswordMeterService.validate(STRONG_PASSWORD);
-    expect(validation).to.equal(true);
+  it('#constructor() should expose validate and counter methods', () => {
+    expect(PasswordMeterService.counter).to.be.a('function');
+    expect(PasswordMeterService.validate).to.be.a('function');
   });
 
-  it('#validate() returns true for a medium strength password', () => {
-    const validation = PasswordMeterService.validate(MEDIUM_PASSWORD);
-    expect(validation).to.equal(true);
+  it('#counter() should return -1 for no password', () => {
+    const count = PasswordMeterService.counter();
+    expect(count).to.equal(-1);
   });
 
-  it('#validate() returns false for a weak password', () => {
-    const validation = PasswordMeterService.validate(WEAK_PASSWORD);
-    expect(validation).to.equal(false);
+  it('#validate() should return false for no password', () => {
+    const validate = PasswordMeterService.validate();
+    expect(validate).to.equal(false);
   });
 
-  it('#validate() returns false for an empty password', () => {
-    const validation = PasswordMeterService.validate(EMPTY_PASSWORD);
-    expect(validation).to.equal(false);
+  it('#counter() should return 0 for a weak password', () => {
+    const count = PasswordMeterService.counter(WEAK_PASSWORD);
+    expect(count).to.equal(0);
   });
 
-  it('#validate() returns true for a weak password if password validation is off in enterprise settings', () => {
+  it('#validate() should return false for a weak password', () => {
+    const validate = PasswordMeterService.validate(WEAK_PASSWORD);
+    expect(validate).to.equal(false);
+  });
+
+  it('#counter() should return 3 for a medium password', () => {
+    const count = PasswordMeterService.counter(MEDIUM_PASSWORD);
+    expect(count).to.equal(3);
+  });
+
+  it('#validate() should return true for a medium password', () => {
+    const validate = PasswordMeterService.validate(MEDIUM_PASSWORD);
+    expect(validate).to.equal(true);
+  });
+
+  it('#counter() should return 4 for a strong password', () => {
+    const count = PasswordMeterService.counter(STRONG_PASSWORD);
+    expect(count).to.equal(4);
+  });
+
+  it('#validate() should return true for a strong password', () => {
+    const validate = PasswordMeterService.validate(STRONG_PASSWORD);
+    expect(validate).to.equal(true);
+  });
+
+  it('#validate() should return true if the session is not set', () => {
+    delete Session.enterprise;
+    const validate = PasswordMeterService.validate();
+    expect(validate).to.equal(true);
+  });
+
+  it('#validate() should return true enable_password_validation is false', () => {
     Session.enterprise.settings.enable_password_validation = false;
-    const validation = PasswordMeterService.validate(WEAK_PASSWORD);
-    expect(validation).to.equal(true);
-  });
-
-  it('#validate() returns true for an empty password if password validation is off in enterprise settings', () => {
-    Session.enterprise.settings.enable_password_validation = false;
-    const validation = PasswordMeterService.validate(EMPTY_PASSWORD);
-    expect(validation).to.equal(true);
-  });
-
-  it('#counter() returns 4 for a strong password', () => {
-    const validation = PasswordMeterService.counter(STRONG_PASSWORD);
-    expect(validation).to.equal(4);
-  });
-
-  it('#counter() returns 3 for a medium-strength password', () => {
-    const validation = PasswordMeterService.counter(MEDIUM_PASSWORD);
-    expect(validation).to.equal(3);
-  });
-
-  it('#counter() returns 0 for a weak', () => {
-    const validation = PasswordMeterService.counter(WEAK_PASSWORD);
-    expect(validation).to.equal(0);
-  });
-
-  it('#counter() returns -1 for an empty, null, or undefined password', () => {
-    let validation = PasswordMeterService.counter(EMPTY_PASSWORD);
-    expect(validation).to.equal(-1);
-
-    validation = PasswordMeterService.counter(null);
-    expect(validation).to.equal(-1);
-
-    validation = PasswordMeterService.counter(undefined);
-    expect(validation).to.equal(-1);
+    const validate = PasswordMeterService.validate();
+    expect(validate).to.equal(true);
   });
 });
