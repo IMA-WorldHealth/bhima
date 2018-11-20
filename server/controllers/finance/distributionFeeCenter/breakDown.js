@@ -5,7 +5,7 @@
 */
 const db = require('../../../lib/db');
 
-function breackDown(req, res, next) {
+function breakDown(req, res, next) {
   const { data } = req.body;
   const isCost = data.is_cost;
   const dataValues = data.values;
@@ -64,4 +64,4 @@ function breackDown(req, res, next) {
 
 }
 
-exports.breackDown = breackDown;
+exports.breakDown = breakDown;

@@ -36,7 +36,7 @@ class DistributionPage {
     FU.buttons.submit();
     GU.selectRow(gridId, 0);
     element(by.css('[data-action="open-menu"]')).click();
-    element(by.css('[data-method="breackdown-percentages"]')).click();
+    element(by.css('[data-method="breakdown-percentages"]')).click();
 
     // Prevent initialization of distribution keys greater than 100 percent
     components.percentageInput.set(40, 'principal_1');
@@ -65,7 +65,7 @@ class DistributionPage {
   setDistributionAutomatic() {
     GU.selectRow(gridId, 0);
     element(by.css('[data-action="open-menu"]')).click();
-    element(by.css('[data-method="automatic-breackdown"]')).click();
+    element(by.css('[data-method="automatic-breakdown"]')).click();
     components.notification.hasSuccess();
   }
 

@@ -112,7 +112,7 @@ const feeCenter = require('../controllers/finance/feeCenter');
 const distributionConfiguration = require('../controllers/finance/distributionFeeCenter/configuration');
 const distributionGetDistributed = require('../controllers/finance/distributionFeeCenter/getDistributed');
 const distributionProceed = require('../controllers/finance/distributionFeeCenter/proceed');
-const distributionBreackDown = require('../controllers/finance/distributionFeeCenter/breackDown');
+const distributionBreakDown = require('../controllers/finance/distributionFeeCenter/breakDown');
 const distributionAutomatic = require('../controllers/finance/distributionFeeCenter/automatic');
 const distributionGetDistributionKey = require('../controllers/finance/distributionFeeCenter/getDistributionKey');
 const setDistributionKey = require('../controllers/finance/distributionFeeCenter/setting');
@@ -802,7 +802,7 @@ exports.configure = function configure(app) {
   app.get('/distribution_fee_center/getDistributed', distributionGetDistributed.getDistributed);
   app.get('/distribution_fee_center/getDistributionKey', distributionGetDistributionKey.getDistributionKey);
   app.post('/distribution_fee_center/proceed', distributionProceed.proceed);
-  app.post('/distribution_fee_center/breackDown', distributionBreackDown.breackDown);
+  app.post('/distribution_fee_center/breakDown', distributionBreakDown.breakDown);
   app.post('/distribution_fee_center/automatic', distributionAutomatic.automatic);
   app.post('/distribution_fee_center/distributionKey', setDistributionKey.setting);
 };
