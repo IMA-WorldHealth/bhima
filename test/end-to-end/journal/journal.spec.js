@@ -1,22 +1,16 @@
 const helpers = require('../shared/helpers');
 
-const JournalCorePage = require('./journal.page.js');
-const JournalConfiguration = require('./journal.config.js');
-const TrialBalanceTest = require('./trial_balance/trialBalance.config.js');
+const JournalConfigurationTests = require('./ConfigurationModal.test');
+const TrialBalanceTests = require('./TrialBalance.test');
+const JournalSearchTests = require('./SearchModal.test');
 
-describe('Posting Journal Core', () => {
+describe('Posting Journal', () => {
   const path = '#!/journal';
-  const initialTransactionRows = 14;
-  const journal = new JournalCorePage();
-
-  // this will be run before every single test ('it') - navigating the browser
-  // to the correct page.
   before(() => helpers.navigate(path));
 
-  it('loads initial transactions from the database', () => {
-    journal.expectRowCountAbove(initialTransactionRows);
-  });
+  describe('Configuration Modal Tests', JournalConfigurationTests);
 
-  describe('Configuration Modal', JournalConfiguration);
-  describe('Trial Balance Process', TrialBalanceTest);
+  describe('Search Tests', JournalSearchTests);
+
+  describe('Trial Balance Tests', TrialBalanceTests);
 });
