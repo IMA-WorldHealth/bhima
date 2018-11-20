@@ -30,6 +30,7 @@ exports.list = function list(req, res, next) {
       FROM price_list pl
       LEFT JOIN price_list_item pl_it ON pl_it.price_list_uuid = pl.uuid
       WHERE pl.enterprise_id = ?
+      GROUP BY pl.uuid
       ORDER BY pl.label;`;
   } else {
     sql = `
