@@ -43,6 +43,12 @@ function PriceListController(
       headerCellFilter : 'translate',
     },
     {
+      field : 'itemsNumber',
+      displayName : 'FORM.LABELS.ITEMS',
+      headerCellFilter : 'translate',
+      cellTemplate : `/modules/prices/templates/itemsNumber.cell.html`,
+    },
+    {
       field : 'FORM.BUTTONS.ACTIONS',
       width : 100,
       enableFiltering : false,

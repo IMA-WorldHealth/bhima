@@ -423,6 +423,7 @@
             "IS_TITLE": "Is title ?",
             "IS_WAREHOUSE": "Is warehouse ?",
             "INCLUDE_ZEROES": "Include lines with zero values",
+            "ITEMS" : "Items",
             "LABEL": "Label",
             "LANGUAGE": "Language",
             "LAST_NAME": "Last name",
