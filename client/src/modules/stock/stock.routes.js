@@ -53,6 +53,15 @@ angular.module('bhima.routes')
         url         : '/stock/import',
         controller  : 'StockImportController as StockCtrl',
         templateUrl : 'modules/stock/import/stockImport.html',
+      })
+
+      .state('stockAssign', {
+        url         : '/stock/assign',
+        controller  : 'StockLotsAssignController as StockCtrl',
+        templateUrl : 'modules/stock/assign/registry.html',
+        params : {
+          filters : [],
+        },
       });
   }]);
 

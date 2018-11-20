@@ -1,0 +1,30 @@
+<div class="ui-grid-cell-contents text-action" uib-dropdown dropdown-append-to-body uib-dropdown-toggle ng-if="!row.groupHeader">
+  <a href>
+    <span data-method="action" translate>FORM.BUTTONS.ACTIONS</span>
+    <span class="caret"></span>
+  </a>
+
+  <ul data-action="{{ rowRenderIndex}}"  class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
+    <li>
+      <a href><span>{{ row.entity.label }}</span></a>
+    </li>
+    <li>
+      <a data-method="update-record" href>
+        <i class="fa fa-edit"></i> <span translate>ASSIGN.EDIT_ASSIGN</span>
+      </a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a data-method="delete-record" href>
+        <span class="text-danger"><i class="fa fa-trash"></i> <span translate>ASSIGN.REMOVE_ASSIGN</span></span>
+      </a>
+    </li>
+    <!-- delete assignment record -->
+    <li ng-if="grid.appScope.allowsRecordDeletion()" class="divider"></li>
+    <li ng-if="grid.appScope.allowsRecordDeletion()">
+      <a data-method="delete-record" href ng-click="grid.appScope.forceDeletion(row.entity)">
+        <span class="text-danger"><i class="fa fa-trash-o"></i> <span translate>FORM.BUTTONS.DELETE_RECORD</span></span>
+      </a>
+    </li>
+  </ul>
+</div>

@@ -178,5 +178,11 @@
   },
   "INVENTORIES" : {
     "REGISTRY" : "Registre des inventaires"
+  },
+  "ASSIGN" : {
+    "TITLE" : "Assignation",
+    "STOCK_ASSIGN" : "Assignation de stock",
+    "EDIT_ASSIGN" : "Editer Assignation",
+    "REMOVE_ASSIGN" : "Supprimer Assignation"
   }
 }

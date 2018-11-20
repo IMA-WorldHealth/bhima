@@ -12,6 +12,9 @@ function StockService(Api, StockFilterer) {
   // API for stock lots in depots
   const lots = new Api('/stock/lots/depots');
 
+  // API for stock assignment
+  const lotsAssign = new Api('/stock/assign');
+
   // API for stock lots movements
   const movements = new Api('/stock/lots/movements');
 
@@ -44,6 +47,7 @@ function StockService(Api, StockFilterer) {
   // creating an object of filter to avoid method duplication
   const stockFilter = {
     lot : StockLotFilters,
+    lotAssign : StockLotAssignFilters,
     movement : StockMovementFilters,
     inventory : StockInventoryFilters,
   };
