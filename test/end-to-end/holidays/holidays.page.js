@@ -1,36 +1,28 @@
-/* global element, by */
-
-/**
- * This class is represents a holiday page in term of structure and
- * behaviour so it is a holiday page object
- */
+/* eslint class-methods-use-this:off */
 
 /* loading grid actions */
-const GA = require('../shared/GridAction');
-const GU = require('../shared/GridUtils');
+const GridRow = require('../shared/GridRow');
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 
 class HolidayPage {
   constructor() {
-    this.gridId = 'holiday-grid';
-    this.holidayGrid = element(by.id(this.gridId));
-    this.actionLinkColumn = 5;
+    this.modal = $('[uib-modal-window]');
   }
 
   /**
    * simulate the create holiday button click to show the dialog of creation
    */
-  createHoliday(holiday) {
+  create(holiday) {
     FU.buttons.create();
-    components.employeeSelect.set('Test');
+    components.employeeSelect.set('Employee');
 
     FU.input('HolidayModalCtrl.holiday.label', holiday.label);
     FU.input('HolidayModalCtrl.holiday.percentage', holiday.percentage);
 
     components.dateInterval.range(holiday.dateFrom, holiday.dateTo);
 
-    FU.buttons.submit();
+    FU.modal.submit();
     components.notification.hasSuccess();
   }
 
@@ -39,17 +31,16 @@ class HolidayPage {
    */
   preventHoliday(holiday) {
     FU.buttons.create();
-    components.employeeSelect.set('Test');
+    components.employeeSelect.set('Employee');
 
-    FU.input('HolidayModalCtrl.holiday.label', holiday.label);
-    FU.input('HolidayModalCtrl.holiday.percentage', holiday.percentage);
+    FU.input('HolidayModalCtrl.holiday.label', holiday.label, this.modal);
+    FU.input('HolidayModalCtrl.holiday.percentage', holiday.percentage, this.modal);
 
     components.dateInterval.range(holiday.dateFrom, holiday.dateTo);
 
-    FU.buttons.submit();
+    FU.modal.submit();
     FU.buttons.cancel();
 
-    // FIX ME TO CHECK ERROR UNDER THE MODAL
     components.notification.hasError();
   }
 
@@ -66,29 +57,23 @@ class HolidayPage {
   /**
    * simulate a click on the edit link of a function
    */
-  editHoliday(label, updateHoliday) {
-    GU.getGridIndexesMatchingText(this.gridId, label)
-      .then(indices => {
-        const { rowIndex } = indices;
-        GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'edit', this.gridId);
-        FU.input('HolidayModalCtrl.holiday.label', updateHoliday.label);
+  update(label, updateHoliday) {
+    const row = new GridRow(label);
+    row.dropdown().click();
+    row.edit().click();
 
-        FU.buttons.submit();
-        components.notification.hasSuccess();
-      });
+    FU.input('HolidayModalCtrl.holiday.label', updateHoliday.label, this.modal);
+
+    FU.buttons.submit();
+    components.notification.hasSuccess();
   }
 
-  /**
-   * simulate a click on the delete link of a function
-   */
-  deleteHoliday(label) {
-    GU.getGridIndexesMatchingText(this.gridId, label)
-      .then(indices => {
-        const { rowIndex } = indices;
-        GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'delete', this.gridId);
-        components.modalAction.confirm();
-        components.notification.hasSuccess();
-      });
+  remove(label) {
+    const row = new GridRow(label);
+    row.dropdown().click();
+    row.remove().click();
+    FU.modal.submit();
+    components.notification.hasSuccess();
   }
 }
 

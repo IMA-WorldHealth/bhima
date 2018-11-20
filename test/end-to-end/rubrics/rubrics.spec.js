@@ -1,22 +1,16 @@
 const helpers = require('../shared/helpers');
 const RubricPage = require('./rubrics.page');
-const chai = require('chai');
-
-
-/** configuring helpers**/
-helpers.configure(chai);
 
 describe('Rubrics Management', () => {
-  // navigate to the page
   before(() => helpers.navigate('#!/payroll/rubrics'));
 
-  const Page = new RubricPage();
+  const page = new RubricPage();
 
   const rubric = {
     label : 'RUBRIC SYNDICAL',
     abbr  : 'CoSynd',
     is_percent : 1,
-    debtor_account_id : '40111002', //SUPPLIER'S ACCOUNT 1
+    debtor_account_id : '40111002', // SUPPLIER'S ACCOUNT 1
     expense_account_id : '60310015', // Achat Produit  de Perfusion
     value : 6.5,
     is_discount : 1,
@@ -27,23 +21,23 @@ describe('Rubrics Management', () => {
 
   const updateRubric = {
     label : 'CHEF COMPTABLE',
-    is_percent : 0
+    is_percent : 0,
   };
 
-  it('successfully creates a new Rubric', () => {
-    Page.createRubric(rubric);
+  it('successfully creates a new rubric', () => {
+    page.create(rubric);
   });
 
-  it('successfully edits a Rubric', () => {
-    Page.editRubric(rubric.label, updateRubric);
+  it('successfully edits a rubric', () => {
+    page.update(rubric.label, updateRubric);
   });
 
-  it('don\'t create when incorrect Rubric', () => {
-    Page.errorOnCreateRubric();
+  it('don\'t create when incorrect rubric', () => {
+    page.errorOnCreateRubric();
   });
 
-  it('successfully delete a Rubric', () => {
-    Page.deleteRubric(updateRubric.label);
+  it('successfully deletes a rubric', () => {
+    page.remove(updateRubric.label);
   });
 
 });

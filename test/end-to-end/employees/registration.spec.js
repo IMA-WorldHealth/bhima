@@ -38,7 +38,7 @@ describe('Employees', () => {
     creditor_group : 'Employees',
   };
 
-  const pathPatient = '#!/employees/81af634f-321a-40de-bc6f-ceb1167a9f65/patientAsEmployee';
+  const pathPatient = '#!/employees/81AF634F321A40DEBC6FCEB1167A9F65/patientAsEmployee';
 
   before(() => helpers.navigate(path));
 
@@ -48,7 +48,7 @@ describe('Employees', () => {
 
     registrationPage.createEmployee();
     registrationPage.requiredFieldErrored();
-    registrationPage.noRequiredFieldOk();
+    registrationPage.notRequiredFieldOk();
   });
 
   it('creates a new employee', () => {
@@ -81,7 +81,7 @@ describe('Employees', () => {
     registrationPage.setBankAccount(employee.bank_account);
 
     registrationPage.createEmployee();
-    registrationPage.isEmpoyeeCreated(true);
+    registrationPage.isEmployeeCreated(true);
     browser.refresh();
   });
 

@@ -1,10 +1,7 @@
-const chai = require('chai');
 const helpers = require('../shared/helpers');
 
 const EmployeeRegistryPage = require('./registry.page.js');
 const SearchModalPage = require('./searchModal.page.js');
-
-helpers.configure(chai);
 
 describe('Employees Registry', () => {
   const path = '#!/employees';
@@ -63,7 +60,7 @@ describe('Employees Registry', () => {
     searchModalPage.setReference(parameters.reference);
     searchModalPage.submit();
     employeeRegistryPage.employeeCount(ONE_EMPLOYEE, `The number of filtered employee should be ${ONE_EMPLOYEE}`);
-    employeeRegistryPage.clearFilter();  
+    employeeRegistryPage.clearFilter();
   });
 
   it('clearing filters restores default number of rows to the grid', () => {

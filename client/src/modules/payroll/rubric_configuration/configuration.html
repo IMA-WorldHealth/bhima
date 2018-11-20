@@ -7,21 +7,14 @@
 
     <div class="toolbar">
       <div class="toolbar-item">
-        <button class="btn btn-default text-capitalize" id="create" ui-sref="configurationRubric.create" data-method="create">
-          <span class="fa fa-plus"></span> <span translate>FORM.BUTTONS.ADD_RUBRIC_CONFIGURATION</span>
+        <button class="btn btn-default text-capitalize" ui-sref="configurationRubric.create" data-method="create">
+          <span class="fa fa-plus"></span> <span class="hidden-xs" translate>FORM.BUTTONS.ADD_RUBRIC_CONFIGURATION</span>
         </button>
       </div>
 
-      <div class="toolbar-item">
-        <button
-          type="button"
-          ng-click="ConfigurationCtrl.toggleFilter()"
-          data-method="filter"
-          class="btn btn-default"
-          ng-class="{ 'btn-info' : ConfigurationCtrl.filterEnabled }">
-          <i class="fa fa-filter"></i>
-        </button>
-      </div>
+      <bh-filter-toggle
+        on-toggle="ConfigurationCtrl.toggleFilter()">
+      </bh-filter-toggle>
     </div>
   </div>
 </div>
@@ -29,9 +22,10 @@
 <!-- main content -->
 <div class="flex-content">
   <div class="container-fluid">
-    <div id="rubric-grid"
-      ui-grid="ConfigurationCtrl.gridOptions"
+    <div
+      id="rubric-grid"
       class="grid-full-height"
+      ui-grid="ConfigurationCtrl.gridOptions"
       ui-grid-auto-resize
       ui-grid-resize-columns>
 

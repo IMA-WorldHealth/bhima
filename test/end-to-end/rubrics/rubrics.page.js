@@ -1,48 +1,29 @@
 /* global element, by */
+/* eslint class-methods-use-this:off */
 
-/**
- * This class is represents a rubric page in term of structure and
- * behaviour so it is a rubric page object
- */
-
-const chai = require('chai');
-const helpers = require('../shared/helpers');
-
-helpers.configure(chai);
-
-/* loading grid actions */
-const GA = require('../shared/GridAction');
-const GU = require('../shared/GridUtils');
+const GridRow = require('../shared/GridRow');
 const FU = require('../shared/FormUtils');
-const components = require('../shared/components');
+const { notification, accountSelect } = require('../shared/components');
 
 class RubricPage {
   constructor() {
     this.gridId = 'rubric-grid';
-    this.rubricGrid = element(by.id(this.gridId));
-    this.actionLinkColumn = 14;
   }
 
-  /**
-   * send back the number of rubrics in the grid
-   */
-  getRubricCount() {
-    return this.rubricGrid
+  count() {
+    return element(by.id(this.gridId))
       .element(by.css('.ui-grid-render-container-body'))
       .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'))
       .count();
   }
 
-  /**
-   * simulate the create rubric button click to show the dialog of creation
-   */
-  createRubric(rubric) {
+  create(rubric) {
     FU.buttons.create();
     FU.input('RubricModalCtrl.rubric.label', rubric.label);
     FU.input('RubricModalCtrl.rubric.abbr', rubric.abbr);
 
-    components.accountSelect.set(rubric.debtor_account_id, 'debtor_account_id');
-    components.accountSelect.set(rubric.expense_account_id, 'expense_account_id');
+    accountSelect.set(rubric.debtor_account_id, 'debtor_account_id');
+    accountSelect.set(rubric.expense_account_id, 'expense_account_id');
 
     FU.input('RubricModalCtrl.rubric.value', rubric.value);
 
@@ -62,13 +43,10 @@ class RubricPage {
     const isEmployee = (rubric.is_employee === 1) ? 'is_employee_yes' : 'is_employee_no';
     element(by.id(isEmployee)).click();
 
-    FU.buttons.submit();
-    components.notification.hasSuccess();
+    FU.modal.submit();
+    notification.hasSuccess();
   }
 
-  /**
-   * block creation without the function name
-   */
   errorOnCreateRubric() {
     FU.buttons.create();
     FU.buttons.submit();
@@ -76,32 +54,22 @@ class RubricPage {
     FU.buttons.cancel();
   }
 
-  /**
-   * simulate a click on the edit link of a function
-   */
-  editRubric(label, updateRubric) {
-    GU.getGridIndexesMatchingText(this.gridId, label)
-      .then(indices => {
-        const { rowIndex } = indices;
-        GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'edit', this.gridId);
-        FU.input('RubricModalCtrl.rubric.label', updateRubric.label);
+  update(label, updateRubric) {
+    const row = new GridRow(label);
+    row.dropdown().click();
+    row.edit().click();
+    FU.input('RubricModalCtrl.rubric.label', updateRubric.label);
 
-        FU.buttons.submit();
-        components.notification.hasSuccess();
-      });
+    FU.modal.submit();
+    notification.hasSuccess();
   }
 
-  /**
-   * simulate a click on the delete link of a function
-   */
-  deleteRubric(label) {
-    GU.getGridIndexesMatchingText(this.gridId, label)
-      .then(indices => {
-        const { rowIndex } = indices;
-        GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'delete', this.gridId);
-        components.modalAction.confirm();
-        components.notification.hasSuccess();
-      });
+  remove(label) {
+    const row = new GridRow(label);
+    row.dropdown().click();
+    row.remove().click();
+    FU.modal.submit();
+    notification.hasSuccess();
   }
 }
 

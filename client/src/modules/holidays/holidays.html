@@ -7,21 +7,15 @@
 
     <div class="toolbar">
       <div class="toolbar-item">
-        <button class="btn btn-default text-capitalize" id="create" ui-sref="holidays.create" data-method="create">
+        <button class="btn btn-default text-capitalize" ui-sref="holidays.create" data-method="create">
           <span class="fa fa-plus"></span> <span translate>HOLIDAY.ADD_HOLIDAY</span>
         </button>
       </div>
 
-      <div class="toolbar-item">
-        <button
-          type="button"
-          ng-click="HolidayCtrl.toggleFilter()"
-          data-method="filter"
-          class="btn btn-default"
-          ng-class="{ 'btn-info' : HolidayCtrl.filterEnabled }">
-          <i class="fa fa-filter"></i>
-        </button>
-      </div>
+      <bh-filter-toggle
+        on-toggle="HolidayCtrl.toggleFilter()">
+      </bh-filter-toggle>
+
     </div>
   </div>
 </div>
@@ -29,9 +23,10 @@
 <!-- main content -->
 <div class="flex-content">
   <div class="container-fluid">
-    <div id="holiday-grid"
-      ui-grid="HolidayCtrl.gridOptions"
+    <div
+      id="holiday-grid"
       class="grid-full-height"
+      ui-grid="HolidayCtrl.gridOptions"
       ui-grid-auto-resize>
 
       <bh-grid-loading-indicator

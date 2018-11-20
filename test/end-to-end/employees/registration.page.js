@@ -1,4 +1,5 @@
 /* global element, by */
+/* eslint class-methods-use-this:off */
 
 /**
  * This class is represents an employee registration page
@@ -124,10 +125,10 @@ class RegistrationPage {
 
   // Set RubricPayroll defined value By Employee
   setRubricPayroll(rubrics) {
-    for (let key in rubrics) {
-      let rubricPayroll = element( by.id(key));
-      rubricPayroll.sendKeys(rubrics[key]);    
-    }
+    Object.keys(rubrics).forEach(key => {
+      const rubricPayroll = element(by.id(key));
+      rubricPayroll.sendKeys(rubrics[key]);
+    });
   }
 
   // set origin location
@@ -140,11 +141,11 @@ class RegistrationPage {
     components.locationSelect.set(locations, 'current-location-id');
   }
 
-  isEmpoyeeCreated(resp) {
+  isEmployeeCreated(resp) {
     return FU.exists(by.id('receipt-confirm-created'), resp);
   }
 
-  expectNotificationSuccess(resp) {
+  expectNotificationSuccess() {
     components.notification.hasSuccess();
   }
 
@@ -158,7 +159,7 @@ class RegistrationPage {
     FU.validation.error('EmployeeCtrl.employee.hospital_no');
   }
 
-  noRequiredFieldOk() {
+  notRequiredFieldOk() {
     FU.validation.ok('EmployeeCtrl.employee.nb_enfant');
     FU.validation.ok('EmployeeCtrl.employee.phone');
     FU.validation.ok('EmployeeCtrl.employee.email');

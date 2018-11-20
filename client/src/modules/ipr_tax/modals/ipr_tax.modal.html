@@ -1,6 +1,7 @@
 <form name="IprTaxForm" bh-submit="IprTaxModalCtrl.submit(IprTaxForm)" novalidate>
   <div class="modal-header">
     <ol class="headercrumb">
+      <li class="static" translate>IPRTAX.TITLE</li>
       <li ng-if="IprTaxModalCtrl.isCreating" class="title">
         <span translate>IPRTAX.ADD_IPRTAX</span>
         <label class="badge badge-success" translate>FORM.LABELS.CREATE</label>
@@ -13,7 +14,7 @@
   </div>
 
   <div class="modal-body">
-    <div class="modal-body" ng-class="{ 'has-error' : IprTaxForm.$submitted && IprTaxForm.label.$invalid }">
+    <div class="form-group" ng-class="{ 'has-error' : IprTaxForm.$submitted && IprTaxForm.label.$invalid }">
       <label class="control-label" translate>FORM.LABELS.DESIGNATION</label>
       <input name="label" ng-model="IprTaxModalCtrl.iprTax.label" autocomplete="off" class="form-control" required>
       <div class="help-block" ng-messages="IprTaxForm.label.$error" ng-show="IprTaxForm.$submitted">
@@ -21,7 +22,7 @@
       </div>
     </div>
 
-    <div class="modal-body" ng-class="{ 'has-error' : IprTaxForm.$submitted && IprTaxForm.description.$invalid }">
+    <div class="form-group" ng-class="{ 'has-error' : IprTaxForm.$submitted && IprTaxForm.description.$invalid }">
       <label class="control-label" translate>FORM.LABELS.DESCRIPTION</label>
       <textarea
         ng-model="IprTaxModalCtrl.iprTax.description"
@@ -35,12 +36,10 @@
       </div>
     </div>
 
-    <div class="modal-body">
-      <bh-currency-select
-        currency-id="IprTaxModalCtrl.iprTax.currency_id"
-        validation-trigger="IprTaxForm.$submitted">
-      </bh-currency-select>
-    </div>      
+    <bh-currency-select
+      currency-id="IprTaxModalCtrl.iprTax.currency_id"
+      validation-trigger="IprTaxForm.$submitted">
+    </bh-currency-select>
   </div>
 
   <div class="modal-footer">
