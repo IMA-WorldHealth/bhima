@@ -111,7 +111,7 @@ exports.proceedInstall = (req, res, next) => {
     const sqlUser = `
       INSERT INTO user (username, password, display_name) VALUES (?, PASSWORD(?), ?);`;
 
-    const sqlRole = `CALL superUserRole(${USER_ID}, ${PROJECT_ID})`;
+    const sqlRole = `CALL superUserRole(${USER_ID})`;
 
     const sqlProjectPermission = 'INSERT INTO project_permission SET ? ';
 
