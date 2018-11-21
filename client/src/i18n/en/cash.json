@@ -24,10 +24,10 @@
       "CURRENT_PROJECT_CASHBOXES" : "Current Project Cashboxes",
       "OTHER_PROJECT_CASHBOXES" : "Other Project Cashboxes",
       "NO_OTHER_PROJECT_CASHBOXES" : "No cashboxes found registered to other projects.",
-	  "NO_OTHER_PROJECT_CASHBOXES_ACCESS" : "No cashboxes found registered to other projects that you have access right to.",
+	  "NO_OTHER_PROJECT_CASHBOXES_ACCESS" : "No cashboxes found registered to other projects that you have access rights to.",
     "NO_CURRENT_PROJECT_CASHBOXES" : "No cashboxes found registered to the current project.",
-    "NO_CASHBOXE" : "No cashbox found registered in the system, contact the administrator for creating one.",
-	  "NO_CURRENT_PROJECT_CASHBOXES_ACCESS" : "There are no cashbox in your project that you have access right to"
+    "NO_CASHBOXE" : "No cashboxes found registered in the system, contact the administrator for creating one.",
+	  "NO_CURRENT_PROJECT_CASHBOXES_ACCESS" : "No cashboxes in your project that you have access rights to"
     },
     "TITLE":"Cash Window",
     "RECEIPT":{
@@ -50,7 +50,7 @@
         "MISSING":"Don't see your cashbox?",
         "TRANSFER":"Transfer Funds",
         "NO_INVOICES_ASSIGNED":"You have not assigned any invoices. Please assign at least one invoice to the payment.",
-        "NO_CASHBOX_SELECTED":"You have no selected a cashbox. Please select a cashbox to continue.",
+        "NO_CASHBOX_SELECTED":"You have not selected a cashbox. Please select a cashbox to continue.",
         "SELECTED":"Selected cash"
       },
       "BARCODE":{
