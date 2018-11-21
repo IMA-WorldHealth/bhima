@@ -1,7 +1,8 @@
 angular.module('bhima.routes')
-  .config(['$stateProvider', function ($stateProvider) {
+  .config(['$stateProvider', ($stateProvider) => {
     $stateProvider
       .state('403', {
+        url : '/403',
         templateUrl : 'modules/errors/403.html',
       })
 

@@ -122,13 +122,13 @@ function startupConfig(
 
     const publicRoutes = ['/', '/settings', '/login', '/landing/stats', '/install'];
 
-    const isPublicPath = publicRoutes.indexOf(path) > -1;
+    const isPublicPath = publicRoutes.includes(path);
 
     // pass through
     if (!paths || isPublicPath) { return; }
 
     // check if the user is authorized to access this route.
-    const authorized = paths.some(checkUserAuthorization);
+    const authorized = checkUserAuthorization();
 
     // if the user is not authorized, go to the 403 state instead
     if (!authorized) {
@@ -149,29 +149,17 @@ function startupConfig(
      *                        information on if this user is authorised, route
      *                        objects passed in that match the target path will be aproved
      */
-    function checkUserAuthorization(data) {
-      // check to see if the route permission object (data) passed in begins with the path being accessed
-      // only do more expensive check if the path is a valid partial match
-      if (path.indexOf(data.path) === 0) {
-        // split the current target path and the role permission object path into sections
-        const rolePermissionPathSections = data.path.split('/');
-        const targetPathSections = path.split('/');
+    function checkUserAuthorization() {
 
-        // ensure that EVERY section on the role permission path matches the target path
-        // this allows for additional routing beyond exact matching however the base of the
-        // path must EXACTLY match the permission object
-        const targetPathMatches = rolePermissionPathSections.every((permissionPathSection, index) => {
-          // check that this section of the target path exactly matches the required route permission object
-          // at the same index
-          const targetPathSection = targetPathSections[index];
-          return permissionPathSection === targetPathSection;
-        });
+      const toPath = next.url.split('/');
+      // make sure it them main path (all sub path will then be authorized)
+      const permissionPathSection = `/${toPath[1]}`;
 
-        return targetPathMatches && data.authorized;
-      }
-
-      // this was not a valid partial match - the route cannot be authorised with this permission
-      return false;
+      // check if the path to land is allowed for this user
+      const authorizedPaths = paths.filter(p => {
+        return (p.authorized === 1) && (p.path === permissionPathSection);
+      });
+      return authorizedPaths.length === 1;
     }
   }
 
