@@ -2099,7 +2099,7 @@ CREATE TABLE `reference_fee_center` (
   KEY `account_reference_id` (`account_reference_id`),
   FOREIGN KEY (`fee_center_id`) REFERENCES `fee_center` (`id`),
   FOREIGN KEY (`account_reference_id`) REFERENCES `account_reference` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `fee_center_distribution`;
 CREATE TABLE `fee_center_distribution` (
@@ -2126,7 +2126,7 @@ CREATE TABLE `fee_center_distribution` (
   FOREIGN KEY (`auxiliary_fee_center_id`) REFERENCES `fee_center` (`id`),
   FOREIGN KEY (`principal_fee_center_id`) REFERENCES `fee_center` (`id`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `service_fee_center`;
 CREATE TABLE `service_fee_center` (
@@ -2139,7 +2139,7 @@ CREATE TABLE `service_fee_center` (
   KEY `service_id` (`service_id`),
   FOREIGN KEY (`service_id`) REFERENCES `service` (`id`),
   FOREIGN KEY (`fee_center_id`) REFERENCES `fee_center` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 CREATE TABLE `tags`(
   `uuid` BINARY(16) NOT NULL PRIMARY KEY,
@@ -2160,6 +2160,6 @@ CREATE TABLE `distribution_key` (
   FOREIGN KEY (`auxiliary_fee_center_id`) REFERENCES `fee_center` (`id`),
   FOREIGN KEY (`principal_fee_center_id`) REFERENCES `fee_center` (`id`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 SET foreign_key_checks = 1;
