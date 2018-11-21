@@ -833,8 +833,10 @@
             "NO_CONFIGURATION_FOUND": "Aucune configuration trouvée",
             "NOT_FOUND": "Non trouvee",
             "NO_EMPLOYE_SELECTED": "Aucun employé n'a été sélectionné",
+            "OVERRUN_DISTRIBUTION": "Il y a un dépassement de {{value}}",
             "PAGE_NOT_FOUND": "La page demandée n'a pas été trouvée",
             "PERCENTAGE_BREACKDOWN": "La ventilation par pourcentage n'est pas possible lorsqu'on selectionne des transactions qui appartienent à des centres des frais différents",
+            "REMAINS_DISTRIBUTION": "Il reste {{ value }}",
             "NO_CHANGES": "Vous n'avez pas changé les données dans le formulaire.  Rien a été submis au server."
         }
     }

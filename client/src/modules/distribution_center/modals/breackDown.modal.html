@@ -16,7 +16,14 @@
         <span translate> FORM.LABELS.TOTAL_CREDITS </span> : 
           {{ BreackDownModalCtrl.sumCredits | currency : BreackDownModalCtrl.enterprise.currency_id }}
       </label>
+    </div>
 
+    <div class="form-group" ng-if="BreackDownModalCtrl.invalidBreackDown">
+      <label class="badge badge-danger" translate> FORM.INFO.DISTRIBUTION_PERCENT_INVALID </label>
+    </div>
+
+    <div class="form-group" ng-if="BreackDownModalCtrl.noPrincilFeeCenter">
+      <label class="badge badge-warning" translate> FORM.INFO.NO_PRINCIPAL_FEE_CENTER </label>
     </div>
   </div>
 
@@ -33,14 +40,6 @@
         max = "100"
         validation-trigger="BreackDownForm.$submitted">
       </bh-percentage-input>
-    </div>
-
-    <div class="form-group" ng-if="BreackDownModalCtrl.invalidBreackDown">
-      <label class="badge badge-danger" translate> FORM.INFO.DISTRIBUTION_PERCENT_INVALID </label>
-    </div>
-
-    <div class="form-group" ng-if="BreackDownModalCtrl.noPrincilFeeCenter">
-      <label class="badge badge-warning" translate> FORM.INFO.NO_PRINCIPAL_FEE_CENTER </label>
     </div>
   </div>
 

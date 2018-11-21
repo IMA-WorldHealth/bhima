@@ -25,11 +25,19 @@ function DistributionCenterService(Api, Filters, AppCache, Modal) {
   service.removeFilter = removeFilter;
   service.breackDownPercentagesModal = breackDownPercentagesModal;
   service.automaticBreackdown = automaticBreackdown;
+  service.getDistributionKey = getDistributionKey;
+  service.openDistributionKeyModal = openDistributionKeyModal;
+  service.proceedDistributionKey = proceedDistributionKey;
 
   // get the auxiliary centers already distributed
   function getDistributed(params) {
     return service.$http.get(`/distribution_fee_center/getDistributed`, { params })
       .then(service.util.unwrapHttpResponse);
+  }
+
+  function getDistributionKey() {
+    return service.$http.get(`/distribution_fee_center/getDistributionKey`)
+      .then(service.util.unwrapHttpResponse);    
   }
 
   distributionFilters.registerDefaultFilters([
@@ -131,7 +139,6 @@ function DistributionCenterService(Api, Filters, AppCache, Modal) {
       .then(service.util.unwrapHttpResponse);
   }
 
-
   // Proceed Distribution Fee Center
   function proceedDistribution(data) {
     return service.$http.post(`/distribution_fee_center/proceed`, { data })
@@ -141,6 +148,31 @@ function DistributionCenterService(Api, Filters, AppCache, Modal) {
   // Proceed Breack Down Fee Center in Percentage
   function proceedBreackDownPercent(data) {
     return service.$http.post(`/distribution_fee_center/breackDown`, { data })
+      .then(service.util.unwrapHttpResponse);
+  }
+
+  /**
+   * @function openDistributionKeyModal
+   * @description
+   * This functions opens the distribution key Modal form.
+   */
+  function openDistributionKeyModal(data) {
+    return Modal.open({
+      templateUrl : 'modules/distribution_center/modals/distribution_key.modal.html',
+      size : 'md',
+      animation : false,
+      keyboard : false,
+      backdrop : 'static',
+      controller : 'DistributionKeyModalController as DistributionKeyModalCtrl',
+      resolve : {
+        seetings : () => data,
+      },
+    }).result;
+  }
+
+  // initialization of the distribution keys of the auxiliary centers towards the main center
+  function proceedDistributionKey(data) {
+    return service.$http.post(`/distribution_fee_center/distributionKey`, { data })
       .then(service.util.unwrapHttpResponse);
   }
 

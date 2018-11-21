@@ -107,7 +107,7 @@ INSERT INTO unit VALUES
   (214, '[OHADA] Compte de resultat','TREE.OHADA_RESULT_ACCOUNT','',144,'/modules/reports/ohada_profit_loss','/reports/ohada_profit_loss'),
   (215, 'Department management','TREE.DEPARTMENT_MANAGEMENT','Department Management', 1,'/modules/department/','/departments'),
   (216, 'Income Expenses by Year', 'TREE.INCOME_EXPENSE_BY_YEAR', 'The Report of income and expenses', 144, '/modules/finance/income_expense_by_year', '/reports/income_expense_by_year'),
-  (217, 'Tags','TREE.TAGS','', 1,'/modules/tags/tags','/tags');
+  (217, 'Tags','TREE.TAGS','', 1,'/modules/tags/tags','/tags'),
   (218, 'Fee Center Management','TREE.FEE_CENTER_MANAGEMENT','', 0,'/modules/fee_center','/fee_center'),
   (219, 'Fee Center Management','TREE.FEE_CENTER','', 218,'/modules/fee_center','/fee_center'),
   (220, 'Distributions fees Centers','TREE.DITRIBUTION_AUX_FEES_CENTERS','', 218,'/modules/distribution_center','/distribution_center'),

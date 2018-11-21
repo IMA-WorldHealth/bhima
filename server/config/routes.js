@@ -112,6 +112,8 @@ const distributionGetDistributed = require('../controllers/finance/distributionF
 const distributionProceed = require('../controllers/finance/distributionFeeCenter/proceed');
 const distributionBreackDown = require('../controllers/finance/distributionFeeCenter/breackDown');
 const distributionAutomatic = require('../controllers/finance/distributionFeeCenter/automatic');
+const distributionGetDistributionKey = require('../controllers/finance/distributionFeeCenter/getDistributionKey');
+const setDistributionKey = require('../controllers/finance/distributionFeeCenter/setting');
 
 // expose routes to the server.
 exports.configure = function configure(app) {
@@ -802,8 +804,9 @@ exports.configure = function configure(app) {
   // Distribution Fees Centers API
   app.get('/distribution_fee_center', distributionConfiguration.configuration);
   app.get('/distribution_fee_center/getDistributed', distributionGetDistributed.getDistributed);
+  app.get('/distribution_fee_center/getDistributionKey', distributionGetDistributionKey.getDistributionKey);
   app.post('/distribution_fee_center/proceed', distributionProceed.proceed);
   app.post('/distribution_fee_center/breackDown', distributionBreackDown.breackDown);
   app.post('/distribution_fee_center/automatic', distributionAutomatic.automatic);
-
+  app.post('/distribution_fee_center/distributionKey', setDistributionKey.setting);
 };

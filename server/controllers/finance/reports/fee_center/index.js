@@ -77,13 +77,6 @@ function report(req, res, next) {
     SELECT fc.id, fc.label, fc.is_principal FROM fee_center AS fc ORDER BY fc.label ASC, fc.is_principal DESC
   `;
 
-  const getFiscalYearSQL = `
-    SELECT p.id, p.start_date, p.end_date, p.fiscal_year_id, p.number,
-      fy.start_date AS fiscalYearStart, fy.end_date AS fiscalYearEnd
-    FROM period p JOIN fiscal_year fy ON p.fiscal_year_id = fy.id
-    WHERE p.id = ?;
-  `;
-
   const getFeeCenterReference = `
     SELECT fc.id, fc.label, fc.is_principal, rf.fee_center_id, rf.account_reference_id, 
     rf.is_cost, ar.abbr

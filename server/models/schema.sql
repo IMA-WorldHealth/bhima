@@ -2144,12 +2144,26 @@ CREATE TABLE `service_fee_center` (
   FOREIGN KEY (`fee_center_id`) REFERENCES `fee_center` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
 CREATE TABLE `tags`(
   `uuid` BINARY(16) NOT NULL PRIMARY KEY,
   `name` VARCHAR(100) NOT NULL,
   UNIQUE KEY  (`name`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
+=======
+DROP TABLE IF EXISTS `distribution_key`;
+CREATE TABLE `distribution_key` (
+  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `auxiliary_fee_center_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  `principal_fee_center_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  `rate` DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+  `user_id` SMALLINT(5) UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `auxiliary_fee_center_id` (`auxiliary_fee_center_id`),
+  INDEX `principal_fee_center_id` (`principal_fee_center_id`),  
+  FOREIGN KEY (`auxiliary_fee_center_id`) REFERENCES `fee_center` (`id`),
+  FOREIGN KEY (`principal_fee_center_id`) REFERENCES `fee_center` (`id`),
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 SET foreign_key_checks = 1;

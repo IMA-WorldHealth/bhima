@@ -10,6 +10,12 @@ angular.module('bhima.routes')
         },
       })
 
+      .state('distribution_key', {
+        url : '/distribution_center/distribution_key',
+        controller  : 'DistributionKeyController as DistributionKeyCtrl',
+        templateUrl : 'modules/distribution_center/distribution_key/distribution_key.html',
+      })
+
       .state('update_distribution_center', {
         url : '/distribution_center/update',
         controller  : 'UpdateCenterController as UpdateCenterCtrl',

@@ -48,18 +48,11 @@ function DistributionKeyModalController(
     let sumDistributed = 0;
 
     Object.keys(vm.settings.values).forEach((key) => {
-
-      console.log('ACCCcccccccc');
-      console.log(vm.settings.values[key]);
-
       sumDistributed += vm.settings.values[key];
     });
 
     vm.invalidBreackDown = sumDistributed !== 100;
     vm.diffPercentage = (sumDistributed < 100) ? 100 - sumDistributed : sumDistributed - 100;
-
-    console.log('PLUSSSSSsssssssss');
-    console.log(sumDistributed);
 
     vm.errorMessage = (sumDistributed < 100)
       ? $translate.instant('FORM.WARNINGS.REMAINS_DISTRIBUTION', { value : `${vm.diffPercentage} %` })
