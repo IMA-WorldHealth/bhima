@@ -852,3 +852,8 @@ INSERT INTO unit VALUES
 ALTER TABLE role DROP INDEX project_role_label;
 ALTER TABLE role DROP FOREIGN KEY `role_ibfk_1`;
 ALTER TABLE role DROP column project_id;
+
+-- @lomamech: add Unique Key in rubric_paiement
+
+ALTER TABLE rubric_paiement
+  ADD UNIQUE KEY `rubric_paiement_1` (`paiement_uuid`, `rubric_payroll_id`);
