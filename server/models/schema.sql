@@ -1297,7 +1297,7 @@ DROP TABLE IF EXISTS `entity_type`;
 CREATE TABLE `entity_type` (
   `id` SMALLINT(5) NOT NULL AUTO_INCREMENT,
   `label` VARCHAR(190) NOT NULL,
-  `translation_key` VARCHAR(255) NULL,
+  `translation_key` VARCHAR(190) NULL,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -1311,7 +1311,7 @@ CREATE TABLE `entity` (
   `gender`             CHAR(1) NOT NULL,
   `email`              VARCHAR(150) NULL,
   `phone`              VARCHAR(50) NULL,
-  `address`            VARCHAR(255) NULL,
+  `address`            VARCHAR(190) NULL,
   `entity_type_id`     SMALLINT(5) UNSIGNED NOT NULL,
   `reference`          INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `created_at`         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -2081,7 +2081,7 @@ CREATE TABLE `department`(
 DROP TABLE IF EXISTS `fee_center`;
 CREATE TABLE `fee_center` (
   `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `label` VARCHAR(200) NOT NULL,
+  `label` VARCHAR(100) NOT NULL,
   `is_principal` tinyint(1) UNSIGNED DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `fee_center_1` (`label`)
