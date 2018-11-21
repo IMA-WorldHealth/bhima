@@ -12,8 +12,8 @@ exports.report = report;
 
 // default report parameters
 const DEFAULT_PARAMS = {
-  csvKey : 'account_reference',
-  filename : 'TREE.ACCOUNT_REFERENCE_REPORT',
+  csvKey : 'fee_center_report',
+  filename : 'TREE.FEE_CENTER_REPORT',
   orientation : 'portrait',
   footerRight : '[page] / [toPage]',
 };
@@ -85,11 +85,11 @@ function report(req, res, next) {
   `;
 
   const getFeeCenterDistribution = `
-    SELECT fcd.is_cost, BUID(fcd.trans_uuid) AS trans_uuid, fca.label AS auxiliary, fcp.label AS principal, 
+    SELECT fcd.is_cost, BUID(fcd.row_uuid) AS row_uuid, fca.label AS auxiliary, fcp.label AS principal, 
     SUM(fcd.debit_equiv) AS debit, SUM(fcd.credit_equiv) AS credit, gl.trans_date, fcd.auxiliary_fee_center_id,
     fcd.principal_fee_center_id
     FROM fee_center_distribution AS fcd
-    JOIN general_ledger AS gl ON gl.uuid = fcd.trans_uuid
+    JOIN general_ledger AS gl ON gl.uuid = fcd.row_uuid
     JOIN fee_center AS fcp ON fcp.id = fcd.principal_fee_center_id
     JOIN fee_center AS fca ON fca.id = fcd.auxiliary_fee_center_id
     WHERE DATE(gl.trans_date) >= DATE(?) AND DATE(gl.trans_date) <= DATE(?)

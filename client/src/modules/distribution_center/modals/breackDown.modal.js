@@ -34,12 +34,12 @@ function BreackDownModalController(
 
   FeeCenters.read()
     .then((feeCenter) => {
-      vm.principalFeeCenter = feeCenter.filter(item => {
+      vm.principalFeeCenters = feeCenter.filter(item => {
         return item.is_principal;
       });
 
-      if (!vm.principalFeeCenter.length) {
-        vm.noPrincilFeeCenter = true;
+      if (!vm.principalFeeCenters.length) {
+        vm.noPrincilFeeCenters = true;
       }
     })
     .catch(Notify.handleError);
@@ -52,7 +52,7 @@ function BreackDownModalController(
     });
 
     vm.invalidBreackDown = sumDistributed !== 100;
-    vm.diffPercentage = (sumDistributed < 100) ? 100 - sumDistributed : sumDistributed - 100;
+    vm.diffPercentage = Math.abs((sumDistributed - 100));
 
     vm.errorMessage = (sumDistributed < 100)
       ? $translate.instant('FORM.WARNINGS.REMAINS_DISTRIBUTION', { value : `${vm.diffPercentage} %` })

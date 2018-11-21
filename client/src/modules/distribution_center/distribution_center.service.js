@@ -161,7 +161,7 @@ function DistributionCenterService(Api, Filters, AppCache, Modal) {
       backdrop : 'static',
       controller : 'DistributionKeyModalController as DistributionKeyModalCtrl',
       resolve : {
-        seetings : () => data,
+        settings : () => data,
       },
     }).result;
   }

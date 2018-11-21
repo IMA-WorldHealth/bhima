@@ -165,7 +165,7 @@ function buildTransactionQuery(options, posted) {
     'amount', '(credit = ? OR debit = ?) OR (credit_equiv = ? OR debit_equiv = ?)',
     [amount, amount, amount, amount]
   );
-  filters.custom('excludes_distributed', 'p.uuid NOT IN (SELECT fc.trans_uuid FROM fee_center_distribution AS fc)');
+  filters.custom('excludes_distributed', 'p.uuid NOT IN (SELECT fc.row_uuid FROM fee_center_distribution AS fc)');
   return {
     sql : filters.applyQuery(sql),
     parameters : filters.parameters(),

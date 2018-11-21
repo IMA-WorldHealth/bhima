@@ -2104,7 +2104,7 @@ CREATE TABLE `reference_fee_center` (
 DROP TABLE IF EXISTS `fee_center_distribution`;
 CREATE TABLE `fee_center_distribution` (
   `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `trans_uuid` BINARY(16) NOT NULL,
+  `row_uuid` BINARY(16) NOT NULL,
   `trans_id` VARCHAR(100) NOT NULL,
   `account_id` INT(10) UNSIGNED NOT NULL,
   `is_cost` tinyint(1) DEFAULT 0,
@@ -2118,12 +2118,12 @@ CREATE TABLE `fee_center_distribution` (
   PRIMARY KEY (`id`),
   KEY `currency_id` (`currency_id`),
   KEY `user_id` (`user_id`),
-  INDEX `trans_uuid` (`trans_uuid`),
+  INDEX `row_uuid` (`row_uuid`),
   INDEX `account_id` (`account_id`),
   INDEX `trans_id` (`trans_id`),
   INDEX `auxiliary_fee_center_id` (`auxiliary_fee_center_id`),
   INDEX `principal_fee_center_id` (`principal_fee_center_id`),  
-  FOREIGN KEY (`trans_uuid`) REFERENCES `general_ledger` (`uuid`),
+  FOREIGN KEY (`row_uuid`) REFERENCES `general_ledger` (`uuid`),
   FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
   FOREIGN KEY (`auxiliary_fee_center_id`) REFERENCES `fee_center` (`id`),
   FOREIGN KEY (`principal_fee_center_id`) REFERENCES `fee_center` (`id`),

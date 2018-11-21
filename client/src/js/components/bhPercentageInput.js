@@ -25,6 +25,12 @@ PercentageInputController.$inject = [];
 function PercentageInputController() {
   const $ctrl = this;
 
-  // translated label for the form input
-  $ctrl.label = $ctrl.label || 'FORM.LABELS.VALUE';
+  $ctrl.$onInit = function $onInit() {
+    $ctrl.symbol = $ctrl.symbol || '%';
+    $ctrl.min = $ctrl.min || 0;
+    $ctrl.max = $ctrl.max || 100;
+
+    // translated label for the form input
+    $ctrl.label = $ctrl.label || 'FORM.LABELS.VALUE';
+  };
 }

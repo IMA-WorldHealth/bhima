@@ -26,9 +26,6 @@ function ServicesMultipleSelectController(Services, Notify) {
     // label to display
     $ctrl.label = $ctrl.label || 'FORM.LABELS.SERVICES';
 
-    // fired when the Services has been selected or removed from the list
-    $ctrl.onChange = $ctrl.onChange;
-
     // init the model
     $ctrl.selectedServices = $ctrl.servicesIds || [];
 

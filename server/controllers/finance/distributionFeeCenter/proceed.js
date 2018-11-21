@@ -14,7 +14,7 @@ function proceed(req, res, next) {
   const dataToDistribute = [];
 
   data.user_id = req.session.user.id;
-  data.uuid = data.trans_uuid || data.uuid;
+  data.uuid = data.row_uuid || data.uuid;
 
   Object.keys(dataValues).forEach((principalCenterId) => {
     const debitEquivDistributed = isDebtor ? dataValues[principalCenterId] : 0;
@@ -37,10 +37,10 @@ function proceed(req, res, next) {
     }
   });
 
-  const delFeeCenterDistribution = `DELETE FROM fee_center_distribution WHERE trans_uuid = ?`;
+  const delFeeCenterDistribution = `DELETE FROM fee_center_distribution WHERE row_uuid = ?`;
 
   const sql = `INSERT INTO fee_center_distribution (
-    trans_uuid, 
+    row_uuid, 
     trans_id, 
     account_id,
     is_cost,

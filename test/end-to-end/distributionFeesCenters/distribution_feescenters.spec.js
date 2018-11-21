@@ -11,7 +11,6 @@ const { expect } = chai;
 describe('Distribution Auxiliary Fee Center', () => {
   // navigate to the page
   before(() => helpers.navigate('#!/distribution_center'));
-
   const Page = new DistributionPage();
 
   const dataset = {

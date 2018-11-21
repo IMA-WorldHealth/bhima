@@ -11,7 +11,7 @@ function automatic(req, res, next) {
   const transUuids = data.map(item => db.bid(item.uuid));
 
   const sql = `
-    SELECT BUID(gl.uuid) AS trans_uuid, gl.trans_id, gl.debit_equiv, gl.credit_equiv,
+    SELECT BUID(gl.uuid) AS row_uuid, gl.trans_id, gl.debit_equiv, gl.credit_equiv,
     gl.account_id, gl.record_uuid, sfc.fee_center_id, iv.description, iv.service_id, s.name AS serviceName
     FROM general_ledger AS gl
     JOIN invoice AS iv ON iv.uuid = gl.record_uuid
@@ -27,9 +27,9 @@ function automatic(req, res, next) {
 
       rows.forEach((row) => {
         data.forEach((item) => {
-          if (row.trans_uuid === item.uuid) {
+          if (row.row_uuid === item.uuid) {
             dataToDistribute.push([
-              db.bid(row.trans_uuid),
+              db.bid(row.row_uuid),
               row.trans_id,
               item.account_id,
               item.is_cost,
@@ -51,16 +51,16 @@ function automatic(req, res, next) {
       }
 
       const sqlFeeCenterDistribution = `INSERT INTO fee_center_distribution (
-      trans_uuid, 
-      trans_id, 
-      account_id,
-      is_cost,
-      auxiliary_fee_center_id, 
-      principal_fee_center_id, 
-      debit_equiv, 
-      credit_equiv, 
-      currency_id, 
-      date_distribution, user_id) VALUES ?`;
+        row_uuid, 
+        trans_id, 
+        account_id,
+        is_cost,
+        auxiliary_fee_center_id, 
+        principal_fee_center_id, 
+        debit_equiv, 
+        credit_equiv, 
+        currency_id, 
+        date_distribution, user_id) VALUES ?`;
 
       return db.exec(sqlFeeCenterDistribution, [dataToDistribute]);
     })

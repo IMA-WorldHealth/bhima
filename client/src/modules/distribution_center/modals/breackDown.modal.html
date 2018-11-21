@@ -24,17 +24,16 @@
       <label class="badge badge-warning"> {{ BreackDownModalCtrl.errorMessage }} </label>    
     </div>
 
-    <div class="form-group" ng-if="BreackDownModalCtrl.noPrincilFeeCenter">
+    <div class="form-group" ng-if="BreackDownModalCtrl.noPrincilFeeCenters">
       <label class="badge badge-warning" translate> FORM.INFO.NO_PRINCIPAL_FEE_CENTER </label>
     </div>
   </div>
 
   <div class="modal-body" style="max-height: 70vh; overflow:auto;">
     <hr>
-    <div ng-repeat="principal in BreackDownModalCtrl.principalFeeCenter" class="form-group">
+    <div ng-repeat="principal in BreackDownModalCtrl.principalFeeCenters" class="form-group">
       <bh-percentage-input
         label="{{principal.label}}"
-        symbol="%"
         id="principal_{{principal.id}}"
         currency-id="BreackDownModalCtrl.enterprise.currency_id"
         model="BreackDownModalCtrl.percentage.values[principal.id]"
@@ -50,7 +49,7 @@
       <span translate>FORM.BUTTONS.CANCEL</span>
     </button>
 
-    <bh-loading-button ng-if="!BreackDownModalCtrl.noPrincilFeeCenter" loading-state="BreackDownForm.$loading">
+    <bh-loading-button ng-if="!BreackDownModalCtrl.noPrincilFeeCenters" loading-state="BreackDownForm.$loading">
       <span translate>FORM.BUTTONS.SUBMIT</span>
     </bh-loading-button>
   </div>

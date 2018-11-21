@@ -17,7 +17,7 @@ function getDistributed(req, res, next) {
   const filters = new FilterParser(options, { tableAlias : 'gl' });
 
   const sql = `
-    SELECT fc.id, BUID(fc.trans_uuid) AS trans_uuid, fc.trans_id, fc.account_id, fc.is_cost,
+    SELECT fc.id, BUID(fc.row_uuid) AS row_uuid, fc.trans_id, fc.account_id, fc.is_cost,
     fc.auxiliary_fee_center_id, fc.principal_fee_center_id, fc.debit_equiv, fc.credit_equiv, fc.currency_id,
     fc.date_distribution, fc.user_id, gl.project_id, gl.fiscal_year_id, gl.period_id, gl.trans_date,
     gl.description, gl.transaction_type_id, BUID(gl.record_uuid) AS record_uuid, gl.entity_uuid,
@@ -25,7 +25,7 @@ function getDistributed(req, res, next) {
     aux.label AS fee_center_label, pri.label AS principal_label, dm1.text AS hrRecord, dm2.text AS hrReference, 
     u.display_name AS user_name
     FROM fee_center_distribution AS fc
-    JOIN general_ledger AS gl ON gl.uuid = fc.trans_uuid
+    JOIN general_ledger AS gl ON gl.uuid = fc.row_uuid
     JOIN account AS ac ON ac.id = gl.account_id
     JOIN fee_center AS aux ON aux.id = fc.auxiliary_fee_center_id
     JOIN fee_center AS pri ON pri.id = fc.principal_fee_center_id

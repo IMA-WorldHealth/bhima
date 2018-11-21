@@ -1,7 +1,7 @@
 <div ng-form="ServicesMultipleForm" bh-services-multiple-select ng-model-options="{ updateOn: 'default' }">
   <div
     class="form-group"
-    ng-class="{ 'has-error' : $ctrl.validationTrigger && ServicesMultipleForm.services.$invalid }">
+    ng-class="{ 'has-error' : ServicesMultipleForm.$submitted && ServicesMultipleForm.services.$invalid }">
     <label class="control-label" translate>
       {{ $ctrl.label }}
     </label>
@@ -22,7 +22,7 @@
       </ui-select-choices>
     </ui-select>
 
-    <div class="help-block" ng-messages="ServicesMultipleForm.$error" ng-show="$ctrl.validationTrigger">
+    <div class="help-block" ng-messages="ServicesMultipleForm.$error" ng-show="ServicesMultipleForm.$submitted">
       <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
     </div>
   </div>

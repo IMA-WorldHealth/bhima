@@ -38,12 +38,12 @@ function DistributionModalController(
 
   FeeCenters.read()
     .then((feeCenter) => {
-      vm.principalFeeCenter = feeCenter.filter(item => {
+      vm.principalFeeCenters = feeCenter.filter(item => {
         return item.is_principal;
       });
 
-      if (vm.transaction.updating && vm.principalFeeCenter.length) {
-        vm.principalFeeCenter.forEach(item => {
+      if (vm.transaction.updating && vm.principalFeeCenters.length) {
+        vm.principalFeeCenters.forEach(item => {
 
           vm.transaction.distributionValues.forEach(values => {
             if (item.id === values.id) {
@@ -53,8 +53,8 @@ function DistributionModalController(
         });
       }
 
-      if (!vm.principalFeeCenter.length) {
-        vm.noPrincilFeeCenter = true;
+      if (!vm.principalFeeCenters.length) {
+        vm.noPrincilFeeCenters = true;
       }
     })
     .catch(Notify.handleError);
@@ -71,9 +71,7 @@ function DistributionModalController(
     const diffAmount = util.roundDecimal((amountEquiv - sumDistributed), 2);
 
     vm.invalidDistribution = sumDistributed !== amountEquiv;
-
-    vm.diffAmount = (diffAmount > 0)
-      ? diffAmount : diffAmount * (-1);
+    vm.diffAmount = Math.abs(vm.diffAmount);
 
     vm.errorMessage = (vm.transaction.amount_equiv > sumDistributed)
       ? $translate.instant('FORM.WARNINGS.REMAINS_DISTRIBUTION', { value : vm.diffAmount })

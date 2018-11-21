@@ -39,7 +39,7 @@ function breackDown(req, res, next) {
   });
 
   const sql = `INSERT INTO fee_center_distribution (
-    trans_uuid, 
+    row_uuid, 
     trans_id, 
     account_id,
     is_cost,

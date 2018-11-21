@@ -18,7 +18,7 @@
       <label class="badge badge-warning"> {{ DistributionModalCtrl.errorMessage }} </label>      
     </div>
 
-    <div class="form-group" ng-if="DistributionModalCtrl.noPrincilFeeCenter">
+    <div class="form-group" ng-if="DistributionModalCtrl.noPrincilFeeCenters">
       <label class="badge badge-warning" translate> FORM.INFO.NO_PRINCIPAL_FEE_CENTER </label>
     </div>
   </div>
@@ -61,7 +61,7 @@
     </div>
 
     <hr>
-    <div ng-repeat="principal in DistributionModalCtrl.principalFeeCenter" class="form-group">
+    <div ng-repeat="principal in DistributionModalCtrl.principalFeeCenters" class="form-group">
       <bh-currency-input
         data-payment-currency-input
         label="{{principal.label}}"
@@ -79,7 +79,7 @@
       <span translate>FORM.BUTTONS.CANCEL</span>
     </button>
 
-    <bh-loading-button ng-if="!DistributionModalCtrl.noPrincilFeeCenter" loading-state="DistributionForm.$loading">
+    <bh-loading-button ng-if="!DistributionModalCtrl.noPrincilFeeCenters" loading-state="DistributionForm.$loading">
       <span translate>FORM.BUTTONS.SUBMIT</span>
     </bh-loading-button>
   </div>

@@ -22,28 +22,17 @@ function FeeCenterSelectController(FeeCenters, Notify) {
   const $ctrl = this;
 
   $ctrl.$onInit = function onInit() {
-    $ctrl.loading = true;
 
     FeeCenters.read(null)
       .then((feeCenters) => {
         $ctrl.feeCenters = feeCenters;
-
         if ($ctrl.filter) {
-          if ($ctrl.principal) {
-            $ctrl.feeCenters = feeCenters.filter(item => {
-              return item.is_principal;
-            });
-          } else {
-            $ctrl.feeCenters = feeCenters.filter(item => {
-              return !item.is_principal;
-            });
-          }
+          $ctrl.feeCenters = feeCenters.filter(center => {
+            return $ctrl.principal ? item.is_principal : !item.is_principal;
+          });
         }
       })
-      .catch(Notify.handleError)
-      .finally(() => {
-        $ctrl.loading = false;
-      });
+      .catch(Notify.handleError);
   };
 
   // fires the onSelectCallback bound to the component boundary

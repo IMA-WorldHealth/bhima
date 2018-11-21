@@ -37,7 +37,7 @@ function UpdateCenterController(DistributionUpdateCenters, DistributionCenters, 
     enableSorting     : true,
     onRegisterApi     : onRegisterApiFn,
     columnDefs : [{
-      field : 'trans_uuid',
+      field : 'row_uuid',
       displayName : 'TABLE.COLUMNS.TRANSACTION',
       headerCellFilter : 'translate',
       aggregationType  : uiGridConstants.aggregationTypes.count,
@@ -115,7 +115,7 @@ function UpdateCenterController(DistributionUpdateCenters, DistributionCenters, 
     }],
   };
 
-  vm.grouping = new Grouping(vm.gridOptions, true, 'trans_uuid', vm.grouped, true);
+  vm.grouping = new Grouping(vm.gridOptions, true, 'row_uuid', vm.grouped, true);
 
   function onRegisterApiFn(gridApi) {
     vm.gridApi = gridApi;

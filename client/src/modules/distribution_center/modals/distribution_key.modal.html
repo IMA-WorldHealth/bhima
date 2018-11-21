@@ -5,7 +5,7 @@
       <li class="title" translate> TREE.DISTRIBUTION_KEYS </li>
     </ol>
     <div>
-      <label class="badge badge-success"> {{ DistributionKeyModalCtrl.seetings.auxiliary_label }} </label>
+      <label class="badge badge-success"> {{ DistributionKeyModalCtrl.settings.auxiliary_label }} </label>
     </div>
 
     <div class="form-group" ng-if="DistributionKeyModalCtrl.invalidBreackDown">
@@ -19,9 +19,8 @@
     <div ng-repeat="principal in DistributionKeyModalCtrl.principalFeeCenter" class="form-group">
       <bh-percentage-input
         label="{{principal.label}}"
-        symbol="%"
         id="principal_{{principal.id}}"
-        model="DistributionKeyModalCtrl.seetings.values[principal.id]"
+        model="DistributionKeyModalCtrl.settings.values[principal.id]"
         min = "0"
         max = "100"
         validation-trigger="DistributionKeyForm.$submitted">
