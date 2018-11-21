@@ -1056,6 +1056,7 @@ CREATE TABLE `rubric_paiement` (
   PRIMARY KEY (`id`),
   KEY `paiement_uuid` (`paiement_uuid`),
   KEY `rubric_payroll_id` (`rubric_payroll_id`),
+  UNIQUE KEY `rubric_paiement_1` (`paiement_uuid`, `rubric_payroll_id`),  
   FOREIGN KEY (`paiement_uuid`) REFERENCES `paiement` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`rubric_payroll_id`) REFERENCES `rubric_payroll` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
