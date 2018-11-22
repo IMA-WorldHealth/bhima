@@ -91,6 +91,15 @@
         </div>
       </div>
 
+      <div class="toolbar-item">
+        <button
+          ng-click="StockCtrl.openCreateModal()"
+          data-method="create-record"
+          class="btn btn-success">
+          <span class="fa fa-plus"></span> <span class="hidden-xs" translate>ASSIGN.NEW_ASSIGN</span>
+        </button>
+      </div>
+
       <!-- inline filter -->
       <bh-filter-toggle 
         on-toggle="StockCtrl.toggleInlineFilter()">
@@ -110,7 +119,7 @@
 <div class="flex-content">
   <div class="container-fluid">
     <div
-      id="stock-lots-grid"
+      id="stock-assign-grid"
       ui-grid="StockCtrl.gridOptions"
       class="grid-util-full-height"
       ui-grid-resize-columns

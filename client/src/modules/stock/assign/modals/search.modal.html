@@ -1,12 +1,12 @@
 <form
   name="ModalForm"
   ng-submit="$ctrl.submit(ModalForm)"
-  data-modal="stock-lots-search"
+  data-modal="stock-assign-search"
   novalidate>
 
   <div class="modal-header">
     <ol class="headercrumb">
-      <li class="static" translate>TREE.STOCK_LOTS</li>
+      <li class="static" translate>ASSIGN.TITLE</li>
       <li class="title" translate>FORM.LABELS.SEARCH</li>
     </ol>
   </div>
@@ -31,15 +31,6 @@
             <bh-clear on-clear="$ctrl.clear('inventory_uuid')"></bh-clear>
           </bh-inventory-select>
 
-          <!-- inventory group -->
-          <bh-inventory-group-select
-            group-uuid="$ctrl.searchQueries.group_uuid"
-            name="group_uuid"
-            required="false"
-            on-select-callback="$ctrl.onSelectGroup(group)">
-            <bh-clear on-clear="$ctrl.clear('group_uuid')"></bh-clear>
-          </bh-inventory-group-select>
-
           <!-- lot number  -->
           <div class="form-group">
             <label class="control-label" translate>STOCK.LOT</label>
@@ -49,28 +40,7 @@
               <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
             </div>
           </div>
-
-          <!--entry date -->
-          <fieldset>
-            <legend translate>STOCK.ENTRY_DATE</legend>
-            <bh-date-interval
-              date-id="entry-date"
-              date-from="$ctrl.searchQueries.entry_date_from"
-              date-to="$ctrl.searchQueries.entry_date_to"
-              mode="clean">
-            </bh-date-interval>
-          </fieldset>
-
-          <!-- expiration date -->
-          <fieldset>
-            <legend translate>STOCK.EXPIRATION_DATE</legend>
-            <bh-date-interval
-              date-id="expiration-date"
-              date-from="$ctrl.searchQueries.expiration_date_from"
-              date-to="$ctrl.searchQueries.expiration_date_to"
-              mode="clean">
-            </bh-date-interval>
-          </fieldset>
+          
         </div>
       </uib-tab>
       <uib-tab index="1" heading="{{ 'FORM.LABELS.DEFAULTS' | translate }}" data-default-filter-tab>

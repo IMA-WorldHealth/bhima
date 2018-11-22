@@ -693,6 +693,10 @@ exports.configure = function configure(app) {
   // @todo - this should use the JSON renderer instead of it's own route!
   app.get('/finance/cashflow', financeReports.cashflow.report);
 
+  // API routes for /stock/assign end point
+  app.get('/stock/assign', stock.assign.list);
+  app.post('/stock/assign', stock.assign.create);
+
   // stock import from a file
   app.get('/stock/import/template', stock.importing.downloadTemplate);
   app.post('/stock/import', upload.middleware('csv', 'file'), upload.hasFilesToUpload, stock.importing.importStock);

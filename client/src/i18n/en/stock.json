@@ -183,6 +183,10 @@
     "TITLE" : "Assignment",
     "STOCK_ASSIGN" : "Stock Assignment",
     "EDIT_ASSIGN" : "Edit Assignment",
-    "REMOVE_ASSIGN" : "Remove Assignment"
+    "REMOVE_ASSIGN" : "Remove Assignment",
+    "CREATE_SUCCESS" : "Successfull created",
+    "UPDATE_SUCCESS" : "Successfull updated",
+    "REMOVE_SUCCESS" : "Successfull removed",
+    "NEW_ASSIGN" : "New Assignment"
   }
 }

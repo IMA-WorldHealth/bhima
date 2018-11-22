@@ -17,15 +17,15 @@ function StockLotsAssignController(
   GridState, Columns, $state, $httpParamSerializer,
 ) {
   const vm = this;
-  const cacheKey = 'lot-assign-grid';
-  const filterKey = 'lot-assign';
-  const gridFilter = Stock.filter.lotAssign;
+  const cacheKey = 'stock-assign-grid';
+  const filterKey = 'stock-assign';
+  const gridFilter = Stock.filter.stockAssign;
 
   // grouping box
   vm.groupingBox = [
     { label : 'STOCK.DEPOT', value : 'depot_text' },
     { label : 'STOCK.INVENTORY', value : 'text' },
-    { label : 'ENTITY.LABEL', value : 'entity_display_name' },
+    { label : 'ENTITY.LABEL', value : 'display_name' },
   ];
 
   // grid columns
@@ -55,7 +55,7 @@ function StockLotsAssignController(
     },
 
     {
-      field : 'entity_display_name',
+      field : 'display_name',
       displayName : 'ENTITY.LABEL',
       headerCellFilter : 'translate',
     },
@@ -67,7 +67,7 @@ function StockLotsAssignController(
     },
 
     {
-      field : 'date',
+      field : 'created_at',
       displayName : 'FORM.LABELS.DATE',
       headerCellFilter : 'translate',
       cellFilter : 'date',
@@ -83,7 +83,7 @@ function StockLotsAssignController(
   ];
 
   const gridFooterTemplate = `
-    <div>
+    <div style="padding-left: 10px;">
       <b>{{ grid.appScope.countGridRows() }}</b> 
       <span translate>TABLE.AGGREGATES.ROWS</span>
     </div>
@@ -114,6 +114,7 @@ function StockLotsAssignController(
   vm.openColumnConfigModal = openColumnConfigModal;
   vm.loading = false;
   vm.saveGridState = state.saveGridState;
+  vm.openCreateModal = openCreateModal;
 
   function onRegisterApi(gridApi) {
     vm.gridApi = gridApi;
@@ -140,6 +141,16 @@ function StockLotsAssignController(
       vm.grouped = true;
     }
   };
+
+  // open the create modal
+  function openCreateModal() {
+    Modal.openCreateStockAssign()
+      .then(success => {
+        if (!success) { return; }
+        Notify.success('ASSIGN.CREATE_SUCCESS');
+      })
+      .catch(Notify.handleError);
+  }
 
   // initialize module
   function startup() {
@@ -183,10 +194,9 @@ function StockLotsAssignController(
     // no negative or empty lot
     filters.includeEmptyLot = 0;
 
-    Stock.lots.read(null, filters)
+    Stock.stockAssign.read(null, filters)
       .then((lots) => {
         vm.gridOptions.data = lots;
-        vm.grouping.unfoldAllGroups();
       })
       .catch(errorHandler)
       .finally(toggleLoadingIndicator);
@@ -205,7 +215,7 @@ function StockLotsAssignController(
   function search() {
     const filtersSnapshot = gridFilter.formatHTTP();
 
-    Modal.openSearchLots(filtersSnapshot)
+    Modal.openSearchStockAssign(filtersSnapshot)
       .then((changes) => {
         gridFilter.replaceFilters(changes);
         Stock.cacheFilters(filterKey);
@@ -230,7 +240,6 @@ function StockLotsAssignController(
   }
 
   vm.downloadExcel = () => {
-
     const filterOpts = gridFilter.formatHTTP();
     const defaultOpts = {
       renderer : 'xlsx',

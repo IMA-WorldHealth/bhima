@@ -1,13 +1,12 @@
 angular.module('bhima.controllers')
-  .controller('SearchLotsModalController', SearchLotsModalController);
+  .controller('SearchStockAssignModalController', SearchStockAssignModalController);
 
 // dependencies injections
-SearchLotsModalController.$inject = [
-  'data', 'InventoryService', 'NotifyService',
-  'util', 'Store', '$uibModalInstance', 'PeriodService', 'StockService',
+SearchStockAssignModalController.$inject = [
+  'data', 'util', 'Store', '$uibModalInstance', 'PeriodService', 'StockService',
 ];
 
-function SearchLotsModalController(data, Inventory, Notify, util, Store, Instance, Periods, Stock) {
+function SearchStockAssignModalController(data, util, Store, Instance, Periods, Stock) {
   const vm = this;
   const changes = new Store({ identifier : 'key' });
 
@@ -16,13 +15,12 @@ function SearchLotsModalController(data, Inventory, Notify, util, Store, Instanc
   vm.defaultQueries = {};
 
   const searchQueryOptions = [
-    'depot_uuid', 'inventory_uuid', 'group_uuid', 'label', 'entry_date_from',
-    'entry_date_to', 'expiration_date_from', 'expiration_date_to',
+    'depot_uuid', 'inventory_uuid', 'label', 'date_from', 'date_to',
   ];
 
   // displayValues will be an id:displayValue pair
   const displayValues = {};
-  const lastDisplayValues = Stock.filter.lot.getDisplayValueMap();
+  const lastDisplayValues = Stock.filter.stockAssign.getDisplayValueMap();
 
   // keep track of the initial search queries to make sure we properly restore
   // default display values
@@ -86,9 +84,8 @@ function SearchLotsModalController(data, Inventory, Notify, util, Store, Instanc
         // To avoid overwriting a real display value, we first determine if the value changed in the current view.
         // If so, we do not use the previous display value.  If the values are identical, we can restore the
         // previous display value without fear of data being out of date.
-        const usePreviousDisplayValue =
-        angular.equals(initialSearchQueries[key], value) &&
-        angular.isDefined(lastDisplayValues[key]);
+        const usePreviousDisplayValue = angular.equals(initialSearchQueries[key], value)
+          && angular.isDefined(lastDisplayValues[key]);
 
         // default to the raw value if no display value is defined
         const displayValue = usePreviousDisplayValue ? lastDisplayValues[key] : displayValues[key] || value;
