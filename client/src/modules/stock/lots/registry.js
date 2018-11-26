@@ -204,7 +204,7 @@ function StockLotsController(
   // initialize module
   function startup() {
     if ($state.params.filters.length) {
-      stockLotFilters.filters.replaceFiltersFromState($state.params.filters);
+      stockLotFilters.replaceFiltersFromState($state.params.filters);
       stockLotFilters.cache.formatCache();
     }
 
