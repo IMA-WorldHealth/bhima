@@ -2,20 +2,20 @@ const FU = require('../../shared/FormUtils');
 const ReportPage = require('../page');
 const components = require('../../shared/components');
 
-class DebtorClientAccountBalanceReportPage {
+class AnnualClientsReportPage {
   constructor(key) {
     this.page = new ReportPage(key);
   }
 
   // preview an income expense report
-  showDebtorAccountBalanceReportPreview(fiscalYear) {
+  showAnnualClientsReportPreview(fiscalYear) {
     components.fiscalYearSelect.set(fiscalYear);
     this.page.preview();
   }
 
   // save an income expense report
-  saveDebtorAccountBalanceReport(fiscalYear, reportName, reportFormat) {
-    this.showDebtorAccountBalanceReportPreview(fiscalYear);
+  saveAnnualClientsReport(fiscalYear, reportName, reportFormat) {
+    this.showAnnualClientsReportPreview(fiscalYear);
 
     // save report as PDF
     this.page.saveAs();
@@ -29,22 +29,22 @@ class DebtorClientAccountBalanceReportPage {
   }
 
   // print an income expense report
-  printDebtorAccountBalanceReport(fiscalYear) {
-    this.showDebtorAccountBalanceReportPreview(fiscalYear);
+  printAnnualClientsReport(fiscalYear) {
+    this.showAnnualClientsReportPreview(fiscalYear);
     this.page.printPreview();
   }
 
   // check saved report
-  checkSavedDebtorAccountBalanceReport(reportName) {
+  checkSavedAnnualClientsReport(reportName) {
     this.page.gotoArchive();
     this.page.lastReportMatching(reportName);
     this.page.backToConfig();
   }
 
   // close preview
-  closeDebtorAccountBalanceReportPreview() {
+  closeAnnualClientsReportPreview() {
     this.page.closePreview();
   }
 }
 
-module.exports = DebtorClientAccountBalanceReportPage;
+module.exports = AnnualClientsReportPage;

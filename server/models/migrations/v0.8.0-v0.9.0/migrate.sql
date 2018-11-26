@@ -851,7 +851,7 @@ ALTER TABLE role DROP column project_id;
 ALTER TABLE rubric_paiement
   ADD UNIQUE KEY `rubric_paiement_1` (`paiement_uuid`, `rubric_payroll_id`);
 =======
-  
+
 /*
 @author lomamech
 
@@ -895,7 +895,7 @@ CREATE TABLE `fee_center_distribution` (
   `debit_equiv` DECIMAL(19,4) NOT NULL DEFAULT 0.00,
   `credit_equiv` DECIMAL(19,4) NOT NULL DEFAULT 0.00,
   `currency_id` TINYINT(3) UNSIGNED NOT NULL,
-  `date_distribution` DATETIME NOT NULL, 
+  `date_distribution` DATETIME NOT NULL,
   `user_id`           SMALLINT(5) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
   KEY `currency_id` (`currency_id`),
@@ -904,7 +904,7 @@ CREATE TABLE `fee_center_distribution` (
   INDEX `account_id` (`account_id`),
   INDEX `trans_id` (`trans_id`),
   INDEX `auxiliary_fee_center_id` (`auxiliary_fee_center_id`),
-  INDEX `principal_fee_center_id` (`principal_fee_center_id`),  
+  INDEX `principal_fee_center_id` (`principal_fee_center_id`),
   FOREIGN KEY (`trans_uuid`) REFERENCES `general_ledger` (`uuid`),
   FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
   FOREIGN KEY (`auxiliary_fee_center_id`) REFERENCES `fee_center` (`id`),
@@ -932,8 +932,8 @@ INSERT INTO `unit` VALUES
   (219, 'Fee Center Management','TREE.FEE_CENTER','', 218,'/modules/fee_center','/fee_center'),
   (220, 'Distributions fees Centers','TREE.DITRIBUTION_AUX_FEES_CENTERS','', 218,'/modules/distribution_center','/distribution_center'),
   (221, 'Update Distributions','TREE.UPDATE_DISTRIBUTION','', 218,'/modules/distribution_center/update','/distribution_center/update'),
-  (222, 'Fee Center Report', 'TREE.FEE_CENTER_REPORT', 'Fee Center Report', 144, '/modules/reports/feeCenter', '/reports/feeCenter'), 
-  (223, 'Distribution keys', 'TREE.DISTRIBUTION_KEYS', 'Distribution keys', 218, '/modules/distribution_center/distribution_key', '/distribution_center/distribution_key'); 
+  (222, 'Fee Center Report', 'TREE.FEE_CENTER_REPORT', 'Fee Center Report', 144, '/modules/reports/feeCenter', '/reports/feeCenter'),
+  (223, 'Distribution keys', 'TREE.DISTRIBUTION_KEYS', 'Distribution keys', 218, '/modules/distribution_center/distribution_key', '/distribution_center/distribution_key');
 
 -- core BHIMA reports
 INSERT INTO `report` (`report_key`, `title_key`) VALUES
@@ -948,8 +948,19 @@ CREATE TABLE `distribution_key` (
   `user_id` SMALLINT(5) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `auxiliary_fee_center_id` (`auxiliary_fee_center_id`),
-  INDEX `principal_fee_center_id` (`principal_fee_center_id`),  
+  INDEX `principal_fee_center_id` (`principal_fee_center_id`),
   FOREIGN KEY (`auxiliary_fee_center_id`) REFERENCES `fee_center` (`id`),
   FOREIGN KEY (`principal_fee_center_id`) REFERENCES `fee_center` (`id`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+-- author: @jniles
+-- combine the two client reports into a single report
+UPDATE report SET `report_key` = 'annual-clients-report', title_key = 'REPORT.CLIENTS.TITLE' WHERE id = 17;
+UPDATE unit SET name = 'Annual Clients Report', `key` = 'REPORT.CLIENTS.TITLE',
+  description = 'Annual Clients Report', parent = 144, url = '/modules/reports/clients', paht = '/reports/annual-clients-report'
+WHERE id = 199;
+
+UPDATE role_unit SET unit_id = 199 WHERE unit_id = 159;
+DELETE FROM unit WHERE id = 159;
+DELETE FROM report WHERE id = 9;

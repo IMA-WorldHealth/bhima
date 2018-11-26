@@ -1,6 +1,5 @@
 {
   "REPORT":{
-    "CLIENTS" : "Rapport Clients",
     "ACCOUNT":"Relevé de compte",
     "ACCOUNT_REFERENCE":{
       "TITLE":"Valeur des references des comptes",
@@ -86,7 +85,7 @@
       "TITLE": "Situation financière d'un Patient"
     },
     "STOCK_VALUE": {
-      "TITLE":"Rapport de valeur de stock", 
+      "TITLE":"Rapport de valeur de stock",
       "DESCRIPTION":"Ce rapport affiche la valeur actuelle du stock pour chaque inventaire dans un dépôt."
     },
     "PREVIOUS_MONTHS": "Mois Précédents",
@@ -142,13 +141,9 @@
       "TITLE": "Rapport de caisse",
       "DESCRIPTION": "Ce rapport liste toutes les entrees et sorties d'argent de la caisse au sein de l'entreprise"
     },
-    "CLIENTS_REPORT" : {
-      "TITLE" : "Rapport des clients",
-      "CURRENT_MVT" : "Mouvement Courant",
-      "ADD_IGNORED_CLIENTS" : "Ajouter des clients ignorés",
-      "HIDE_IGNORED_CLIENTS" : "Masquer les clients ignorés",
-      "PREVIOUS_MVT" : "Du début Au :",
-      "DESCRIPTION" : "Ce rapport affiche tous les groupes de débiteurs, leurs soldes de compte au début de l'exercice, les soldes actuels et leurs soldes de clôture"
+    "CLIENTS" : {
+      "TITLE" : "Rapport Annuel des Clients",
+      "DESCRIPTION" : "Ce rapport affiche tous les groupes de débiteurs, leurs soldes de compte au début de l'exercice, les soldes actuels et leurs soldes de clôture."
     },
     "UNBALANCED_INVOICE_PAYMENTS_REPORT": {
       "TITLE": "Rapport de la balance des paiements non finalisés des factures",
@@ -341,7 +336,6 @@
         "RO" : "Valeurs comptables de cessions d'immobilisations",
         "RQ" : "Participation des travailleurs"
       }
-    },
-    "CLIENT_DEBTOR_ACCOUNT_BALANCE_REPORT" : "Rapport des comptes débiteurs clients"
+    }
   }
 }

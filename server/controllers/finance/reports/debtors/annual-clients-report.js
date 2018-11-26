@@ -6,19 +6,19 @@ const Fiscal = require('../../fiscal');
 const Exchange = require('../../exchange');
 
 // path to the template to render
-const TEMPLATE = './server/controllers/finance/reports/debtors/balance.handlebars';
+const TEMPLATE = './server/controllers/finance/reports/debtors/annual-clients-report.handlebars';
 
-exports.debtorAccountBalance = debtorAccountBalance;
+exports.annualClientsReport = annualClientsReport;
 
 /**
- * @method debtorAccountBalance
+ * @method annualClientsReport
  *
  * @description
  * The HTTP interface which actually creates the report.
  */
-function debtorAccountBalance(req, res, next) {
+function annualClientsReport(req, res, next) {
   const options = _.extend(req.query, {
-    filename : 'REPORT.CLIENT_DEBTOR_ACCOUNT_BALANCE_REPORT',
+    filename : 'REPORT.CLIENTS.TITLE',
     orientation : 'portrait',
     csvKey   : 'rows',
     footerRight : '[page] / [toPage]',
@@ -38,7 +38,7 @@ function debtorAccountBalance(req, res, next) {
   const { currencyId } = req.query;
 
   const data = {
-    isEnterpriseCurrency : currencyId === req.session.enterprise.currency_id,
+    isEnterpriseCurrency : parseInt(currencyId, 10) === req.session.enterprise.currency_id,
   };
 
   return Promise.all([
@@ -69,7 +69,8 @@ function debtorAccountBalance(req, res, next) {
  *
  * @description
  * This method takes the fiscal year's id and retrieves the balance of all
- * debtor group's accounts.
+ * debtor group's accounts.  The currency and exchange rate are used to convert
+ * the values into the correct currency rendering.
  */
 function getDebtorGroupMovements(fiscalYearId, currencyId, rate) {
   const sql = `

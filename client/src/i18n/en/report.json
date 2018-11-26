@@ -41,14 +41,9 @@
     },
     "CASH_INCOME": "Incomes",
     "CHART_OF_ACCOUNTS": "Chart of Accounts",
-    "CLIENTS": "Clients Report",
-    "CLIENTS_REPORT": {
-      "TITLE": "Clients Report",
-      "ADD_IGNORED_CLIENTS": "Add Ignored Clients",
-      "HIDE_IGNORED_CLIENTS": "Hide Ignored Clients",
-      "CURRENT_MVT": "Current Movement",
-      "PREVIOUS_MVT": "From Beginning To :",
-      "DESCRIPTION": "This report displays all the debtor groups, their account balances at the beginning of the fiscal year, the current balances, and their ending balances."
+    "CLIENTS": {
+      "TITLE" : "Annual Clients Report",
+      "DESCRIPTION": "This report displays all the debtor groups, their account balances at the beginning of the fiscal year, the debits and credits to their accounts, and their ending balances."
     },
     "CLOSING_BALANCE": "Closing Balance",
     "CONFIGURATION": "Report Configuration",
@@ -341,7 +336,6 @@
         "RO" : "Valeurs comptables de cessions d'immobilisations",
         "RQ" : "Participation des travailleurs"
       }
-    },
-    "CLIENT_DEBTOR_ACCOUNT_BALANCE_REPORT": "Annual Clients Report"
+    }
   }
 }

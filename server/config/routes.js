@@ -98,8 +98,6 @@ const dashboardDebtors = require('../controllers/dashboard/debtorGroups');
 const stats = require('../controllers/dashboard/stats');
 const transactions = require('../controllers/finance/transactions');
 
-const reportDebtor = require('../controllers/finance/reports/debtors/debtorAccountBalance');
-
 // looking up an entity by it reference
 const referenceLookup = require('../lib/referenceLookup');
 
@@ -384,7 +382,6 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/account_report_multiple', financeReports.reportAccountsMultiple.document);
   app.get('/reports/finance/journal', financeReports.journal.postingReport);
   app.get('/reports/finance/account_statement', financeReports.accountStatement.report);
-  app.get('/reports/finance/clientsReport', financeReports.clientsReport.document);
   app.get('/reports/finance/general_ledger/', financeReports.generalLedger.report);
   app.get('/reports/finance/creditors/aged', financeReports.creditors.aged);
   app.get('/reports/finance/purchases', financeReports.purchases.report);
@@ -392,6 +389,8 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/ohada_profit_loss', financeReports.ohadaProfitLoss.document);
   app.get('/reports/finance/account_reference', financeReports.accountReference.report);
   app.get('/reports/finance/fee_center', financeReports.feeCenter.report);
+  app.get('/reports/finance/annual-clients-report', financeReports.annualClientsReport);
+
   app.get('/reports/finance/employeeStanding/', financeReports.employee);
 
   app.get('/reports/keys/:key', report.keys);
@@ -404,7 +403,6 @@ exports.configure = function configure(app) {
   app.post('/reports/archive/:uuid/email', report.emailArchived);
   app.delete('/reports/archive/:uuid', report.deleteArchived);
 
-  app.get('/reports/debtorAccountBalance', reportDebtor.debtorAccountBalance);
   app.get('/dashboard/debtors', dashboardDebtors.getReport);
   // patient group routes
   app.get('/patients/groups', patientGroups.list);
