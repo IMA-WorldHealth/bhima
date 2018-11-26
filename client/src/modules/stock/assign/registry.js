@@ -147,6 +147,7 @@ function StockLotsAssignController(
     Modal.openCreateStockAssign()
       .then(success => {
         if (!success) { return; }
+        load(gridFilter.formatHTTP());
         Notify.success('ASSIGN.CREATE_SUCCESS');
       })
       .catch(Notify.handleError);
