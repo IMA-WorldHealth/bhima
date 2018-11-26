@@ -12,6 +12,12 @@
       {{ fiscalYear.label }}
     </h4>
 
+  {{#unless isEnterpriseCurrency}}
+    <div class="alert alert-warning">
+      <p>{{translate "REPORT.REPORT_ACCOUNTS.WARN_CURRENCY"}}</p>
+    </div>
+  {{/unless}}
+
     <section>
       <table class="table table-condensed table-report table-bordered">
         <thead>
@@ -30,10 +36,10 @@
             <tr>
               <td>{{row.accountNumber}}</td>
               <td>{{row.groupName }}</td>
-              <td class="text-right">{{currency row.openingBalance ../metadata.enterprise.currency_id}}</td>
-              <td class="text-right">{{currency row.debit  ../metadata.enterprise.currency_id}}</td>
-              <td class="text-right">{{currency row.credit  ../metadata.enterprise.currency_id}}</td>
-              <td class="text-right">{{currency row.closingBalance ../metadata.enterprise.currency_id}}</td>
+              <td class="text-right">{{debcred row.openingBalance row.currencyId}}</td>
+              <td class="text-right">{{debcred row.debit row.currencyId}}</td>
+              <td class="text-right">{{debcred row.credit row.currencyId}}</td>
+              <td class="text-right">{{debcred row.closingBalance row.currencyId}}</td>
             </tr>
           {{else}}
             {{> emptyTable columns="6" }}
@@ -42,10 +48,10 @@
 
         <tfoot>
           <th colspan="2">{{translate "TABLE.COLUMNS.TOTAL"}}</th>
-          <th class="text-right">{{currency footer.openingBalance  metadata.enterprise.currency_id}}</th>
-          <th class="text-right">{{currency footer.debit  metadata.enterprise.currency_id}}</th>
-          <th class="text-right">{{currency footer.credit  metadata.enterprise.currency_id}}</th>
-          <th class="text-right">{{currency footer.closingBalance  metadata.enterprise.currency_id}}</th>
+          <th class="text-right">{{debcred footer.openingBalance footer.currencyId}}</th>
+          <th class="text-right">{{debcred footer.debit  footer.currencyId}}</th>
+          <th class="text-right">{{debcred footer.credit  footer.currencyId}}</th>
+          <th class="text-right">{{debcred footer.closingBalance footer.currencyId}}</th>
         </tfoot>
       </table>
     </section>

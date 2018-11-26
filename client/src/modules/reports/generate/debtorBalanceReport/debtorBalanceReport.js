@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 DebtorBalanceReportController.$inject = [
   '$state', '$sce', 'NotifyService', 'BaseReportService', 'AppCache',
-  'BaseReportService', 'reportData',
+  'BaseReportService', 'reportData', 'SessionService',
 ];
 
 /**
@@ -14,18 +14,24 @@ DebtorBalanceReportController.$inject = [
  * debtor group in the enterprise.  It is slightly easier to use than the aged
  * debtors report, but contains the same information, sans aging.
  */
-function DebtorBalanceReportController($state, $sce, Notify, BaseReportService, AppCache, SavedReports, reportData) {
+function DebtorBalanceReportController($state, $sce, Notify, BaseReportService, AppCache, SavedReports, reportData, Session) {
   const vm = this;
   const cache = new AppCache('configure_debtorAccountBalance');
   const reportUrl = 'reports/debtorAccountBalance';
 
-  vm.reportDetails = {};
+  vm.reportDetails = {
+    currencyId : Session.enterprise.currency_id,
+  };
 
   checkCachedConfiguration();
 
   // update the fiscal year on selection
   vm.onSelectFiscal = fiscal => {
     vm.reportDetails.fiscalId = fiscal.id;
+  };
+
+  vm.onSelectCurrency = currency => {
+    vm.reportDetails.currencyId = currency.id;
   };
 
   vm.requestSaveAs = function requestSaveAs() {
