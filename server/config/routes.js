@@ -107,6 +107,16 @@ const operating = require('../controllers/finance/reports/operating/index');
 const department = require('../controllers/admin/department');
 const tags = require('../controllers/admin/tags');
 
+const feeCenter = require('../controllers/finance/feeCenter');
+
+const distributionConfiguration = require('../controllers/finance/distributionFeeCenter/configuration');
+const distributionGetDistributed = require('../controllers/finance/distributionFeeCenter/getDistributed');
+const distributionProceed = require('../controllers/finance/distributionFeeCenter/proceed');
+const distributionBreakDown = require('../controllers/finance/distributionFeeCenter/breakDown');
+const distributionAutomatic = require('../controllers/finance/distributionFeeCenter/automatic');
+const distributionGetDistributionKey = require('../controllers/finance/distributionFeeCenter/getDistributionKey');
+const setDistributionKey = require('../controllers/finance/distributionFeeCenter/setting');
+
 // expose routes to the server.
 exports.configure = function configure(app) {
   debug('configuring routes.');
@@ -380,7 +390,7 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/ohada_balance_sheet', financeReports.ohadaBalanceSheet.document);
   app.get('/reports/finance/ohada_profit_loss', financeReports.ohadaProfitLoss.document);
   app.get('/reports/finance/account_reference', financeReports.accountReference.report);
-
+  app.get('/reports/finance/fee_center', financeReports.feeCenter.report);
   app.get('/reports/finance/employeeStanding/', financeReports.employee);
 
   app.get('/reports/keys/:key', report.keys);
@@ -735,7 +745,6 @@ exports.configure = function configure(app) {
 
   app.get('/reports/finance/operating', operating.document);
 
-  // roles
   app.get('/roles', rolesCtrl.list);
   app.get('/roles/:uuid', rolesCtrl.detail);
 
@@ -752,9 +761,6 @@ exports.configure = function configure(app) {
   app.post('/roles/affectUnits', rolesCtrl.assignUnitsToRole);
   app.post('/roles/assignTouser', rolesCtrl.assignRolesToUser);
   app.post('/roles/actions', rolesCtrl.assignActionToRole);
-
-  // unit
-  app.get('/unit/:roleUuid', units.list);
 
   // department
   app.get('/departments', department.read);
@@ -776,10 +782,28 @@ exports.configure = function configure(app) {
   app.put('/entities/:uuid', entities.update);
   app.delete('/entities/:uuid', entities.remove);
   app.post('/entities', entities.create);
+
   // tags
   app.get('/tags', tags.read);
   app.get('/tags/:uuid', tags.detail);
   app.post('/tags', tags.create);
   app.delete('/tags/:uuid', tags.delete);
   app.put('/tags/:uuid', tags.update);
+
+  // Fees Centers API
+  app.get('/fee_center', feeCenter.list);
+  app.get('/fee_center/:id', feeCenter.detail);
+  app.post('/fee_center', feeCenter.create);
+  app.put('/fee_center/:id', feeCenter.update);
+  app.delete('/fee_center/:id', feeCenter.delete);
+
+  // Distribution Fees Centers API
+  app.get('/distribution_fee_center', distributionConfiguration.configuration);
+  app.get('/distribution_fee_center/getDistributed', distributionGetDistributed.getDistributed);
+  app.get('/distribution_fee_center/getDistributionKey', distributionGetDistributionKey.getDistributionKey);
+  app.post('/distribution_fee_center/proceed', distributionProceed.proceed);
+  app.post('/distribution_fee_center/breakDown', distributionBreakDown.breakDown);
+  app.post('/distribution_fee_center/automatic', distributionAutomatic.automatic);
+  app.post('/distribution_fee_center/distributionKey', setDistributionKey.setting);
+  app.post('/distribution_fee_center/resetKey', setDistributionKey.resetKey);
 };

@@ -2,7 +2,7 @@
 const helpers = require('./helpers');
 
 describe('(/accounts/references) Accounts References', () => {
-  const numAccountReference = 1;
+  const numAccountReference = 10;
 
   const newAccountReference = {
     abbr : 'TX',

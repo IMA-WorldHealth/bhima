@@ -1,0 +1,23 @@
+<ng-form name="bhPercentageInputForm">
+  <div class="form-group"
+    ng-class="{ 'has-error' : bhPercentageInputForm.$submitted && bhPercentageInputForm.percentageInputValue.$invalid }" bh-percentage-input>
+    <label class="control-label" translate>{{ ::$ctrl.label }}</label>
+
+    <div class="input-group">
+      <span class="input-group-addon text-uppercase">{{ $ctrl.symbol }}</span>
+      <input
+        class="form-control"
+        type="number"
+        name="percentageInputValue"
+        ng-model="$ctrl.model"
+        ng-min="$ctrl.min"
+        ng-max="$ctrl.max"
+        required>
+    </div>
+
+    <!-- validation messages -->
+    <div class="help-block" ng-messages="bhPercentageInputForm.percentageInputValue.$error" ng-show="bhPercentageInputForm.$submitted">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+</ng-form>

@@ -59,4 +59,8 @@ module.exports = {
   entitySelect : require('./bhEntitySelect'),
   entityTypeSelect : require('./bhEntityTypeSelect'),
   genderSelect : require('./bhGenderSelect'),
+  projectsMultipleSelect : require('./bhProjectsMultipleSelect'),
+  accountReferenceSelect : require('./bhAccountReferenceSelect'),
+  servicesMultipleSelect : require('./bhServicesMultipleSelect'),
+  percentageInput : require('./bhPercentageInput'),
 };

@@ -53,6 +53,9 @@
     },
     "EXPENSE": "Charge",
     "EXPENSE_REPORT":"Rapport des dépenses",
+    "FEE_CENTER": {
+      "TITLE": "Rapports des centres de frais"
+    },    
     "GENERATED":"Rapport généré",
     "INCOME": "Produit",
     "INCOME_EXPENSE":"Rapport  des recettes et des dépenses",

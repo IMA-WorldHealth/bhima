@@ -1,0 +1,15 @@
+<div class="ui-grid-cell-contents" uib-dropdown dropdown-append-to-body uib-dropdown-toggle ng-if="row.groupHeader">
+  <a href>
+    <span data-method="action" translate>FORM.BUTTONS.ACTIONS</span>
+    <span class="caret"></span>
+  </a>
+
+  <ul data-action="{{ rowRenderIndex}}"  class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
+    <li class="dropdown-header">{{row.entity.label}}</li>
+    <li>
+      <a data-method="edit" ng-click="grid.appScope.updateDistribution(row.treeNode.children)" href>
+        <span class="fa fa-edit"></span> <span translate> FORM.LABELS.EDIT </span>
+      </a>
+    </li>
+  </ul>
+</div>

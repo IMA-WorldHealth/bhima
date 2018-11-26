@@ -930,6 +930,75 @@ INSERT INTO `rubric_paiement` (`id`, `paiement_uuid`, `rubric_payroll_id`, `valu
 (10, @paymentUuid, 4, 19.25, NULL),
 (11, @paymentUuid, 11, 1.1, NULL);
 
+-- ACCOUNT REFERENCE 
+INSERT INTO `account_reference` (`id`, `abbr`, `description`, `parent`, `is_amo_dep`) VALUES
+  (1, 'c_admin', 'Section Administration', NULL, 0),
+  (2, 'p_admin', 'Profit Administration', NULL, 0),
+  (3, 'p_test_1', 'Profit Test 1', NULL, 0),
+  (4, 'p_test_2', 'Profit Test 2', NULL, 0),
+  (5, 'c_test_1', 'Cost Test 1', NULL, 0),
+  (6, 'c_test_2', 'Cost Test 2', NULL, 0),
+  (7, 'p_test_3', 'Profit Test 3', NULL, 0),
+  (8, 'p_test_4', 'Profit Test 4', NULL, 0),
+  (9, 'c_test_3', 'Cost Test 3', NULL, 0);
+
+-- ACCOUNT REFERENCE ITEM
+  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (3, 2, 246, 0, 0, 0);
+  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (4, 2, 249, 0, 0, 0);
+  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (5, 2, 242, 0, 0, 0);
+  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (6, 3, 258, 0, 0, 0);
+  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (7, 4, 243, 0, 0, 0);
+  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (8, 5, 201, 0, 0, 0);
+  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (9, 6, 210, 0, 0, 0);
+  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (10, 7, 256, 0, 0, 0);
+  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (12, 8, 256, 0, 0, 0);
+  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (13, 1, 347, 0, 0, 0);
+  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (14, 9, 215, 0, 0, 0);
+  INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (15, 9, 220, 0, 0, 0);
+
+-- FEE CENTER 
+INSERT INTO `fee_center` (`id`, `label`, `is_principal`) VALUES
+  (1, 'Administration', 1),
+  (2, 'Principale TPA', 1),
+  (3, 'Principale TPB', 1),
+  (4, 'Auxiliary 1', 0),
+  (5, 'Auxiliary 2', 0),
+  (6, 'Auxiliary 3', 0);
+
+-- REFERENCE FEE CENTER
+INSERT INTO `reference_fee_center` (`id`, `fee_center_id`, `account_reference_id`, `is_cost`) VALUES (1, 1, 1, 1);
+INSERT INTO `reference_fee_center` (`id`, `fee_center_id`, `account_reference_id`, `is_cost`) VALUES (2, 1, 2, 0);
+INSERT INTO `reference_fee_center` (`id`, `fee_center_id`, `account_reference_id`, `is_cost`) VALUES (11, 5, 7, 0);
+INSERT INTO `reference_fee_center` (`id`, `fee_center_id`, `account_reference_id`, `is_cost`) VALUES (15, 3, 3, 0);
+INSERT INTO `reference_fee_center` (`id`, `fee_center_id`, `account_reference_id`, `is_cost`) VALUES (21, 6, 4, 0);
+INSERT INTO `reference_fee_center` (`id`, `fee_center_id`, `account_reference_id`, `is_cost`) VALUES (22, 4, 9, 1);
+
+-- GENERAL LEDGER FOR DISTRIBUTION FEE CENTER TEST
+INSERT INTO `general_ledger` (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_id_reference_number`, `trans_date`, `record_uuid`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `entity_uuid`, `reference_uuid`, `comment`, `transaction_type_id`, `user_id`, `cc_id`, `pc_id`, `created_at`, `updated_at`) VALUES (0xE70109CCE0DC11E89F4F507B9DD6DEA5, 1, 4, 201811, 'TPA37', 37, '2018-11-05 10:26:05', 0x79B0393553C54498A5ECA8CA6DFEA7AC, 'Facture de Test 2 Patient (PA.TPA.2) pour 2 items dans le service Medecine Interne. ', 175, 256.6200, 0.0000, 256.6200, 0.0000, 2, 0x3BE232F9A4B94AF6984C5D3F87D5C107, NULL, NULL, 11, 1, NULL, NULL, '2018-11-05 10:29:21', NULL);
+INSERT INTO `general_ledger` (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_id_reference_number`, `trans_date`, `record_uuid`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `entity_uuid`, `reference_uuid`, `comment`, `transaction_type_id`, `user_id`, `cc_id`, `pc_id`, `created_at`, `updated_at`) VALUES (0xE7011804E0DC11E89F4F507B9DD6DEA5, 1, 4, 201811, 'TPA37', 37, '2018-11-05 10:26:05', 0x79B0393553C54498A5ECA8CA6DFEA7AC, 'IV.TPA.1: Tylenol sirop (cold multivit)', 243, 0.0000, 204.8000, 0.0000, 204.8000, 2, NULL, NULL, NULL, 11, 1, NULL, NULL, '2018-11-05 10:29:21', NULL);
+INSERT INTO `general_ledger` (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_id_reference_number`, `trans_date`, `record_uuid`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `entity_uuid`, `reference_uuid`, `comment`, `transaction_type_id`, `user_id`, `cc_id`, `pc_id`, `created_at`, `updated_at`) VALUES (0xE7011C13E0DC11E89F4F507B9DD6DEA5, 1, 4, 201811, 'TPA37', 37, '2018-11-05 10:26:05', 0x79B0393553C54498A5ECA8CA6DFEA7AC, 'IV.TPA.1: Multivitamine sirop500 ml', 243, 0.0000, 190.0000, 0.0000, 190.0000, 2, NULL, NULL, NULL, 11, 1, NULL, NULL, '2018-11-05 10:29:21', NULL);
+INSERT INTO `general_ledger` (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_id_reference_number`, `trans_date`, `record_uuid`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `entity_uuid`, `reference_uuid`, `comment`, `transaction_type_id`, `user_id`, `cc_id`, `pc_id`, `created_at`, `updated_at`) VALUES (0xE701230AE0DC11E89F4F507B9DD6DEA5, 1, 4, 201811, 'TPA37', 37, '2018-11-05 10:26:05', 0x79B0393553C54498A5ECA8CA6DFEA7AC, 'Facture de Test 2 Patient (PA.TPA.2) pour 2 items dans le service Medecine Interne. ', 220, 256.6200, 0.0000, 256.6200, 0.0000, 2, NULL, NULL, NULL, 11, 1, NULL, NULL, '2018-11-05 10:29:21', NULL);
+INSERT INTO `general_ledger` (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_id_reference_number`, `trans_date`, `record_uuid`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `entity_uuid`, `reference_uuid`, `comment`, `transaction_type_id`, `user_id`, `cc_id`, `pc_id`, `created_at`, `updated_at`) VALUES (0xE7012ADCE0DC11E89F4F507B9DD6DEA5, 1, 4, 201811, 'TPA37', 37, '2018-11-05 10:26:05', 0x79B0393553C54498A5ECA8CA6DFEA7AC, 'Facture de Test 2 Patient (PA.TPA.2) pour 2 items dans le service Medecine Interne. ', 260, 0.0000, 78.9600, 0.0000, 78.9600, 2, NULL, NULL, NULL, 11, 1, NULL, NULL, '2018-11-05 10:29:21', NULL);
+INSERT INTO `general_ledger` (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_id_reference_number`, `trans_date`, `record_uuid`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `entity_uuid`, `reference_uuid`, `comment`, `transaction_type_id`, `user_id`, `cc_id`, `pc_id`, `created_at`, `updated_at`) VALUES (0xE702756EE0DC11E89F4F507B9DD6DEA5, 1, 4, 201811, 'TPA37', 37, '2018-11-05 10:26:05', 0x79B0393553C54498A5ECA8CA6DFEA7AC, 'Facture de Test 2 Patient (PA.TPA.2) pour 2 items dans le service Medecine Interne. ', 260, 0.0000, 39.4800, 0.0000, 39.4800, 2, NULL, NULL, NULL, 11, 1, NULL, NULL, '2018-11-05 10:29:21', NULL);
+
+INSERT INTO `general_ledger` (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_id_reference_number`, `trans_date`, `record_uuid`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `entity_uuid`, `reference_uuid`, `comment`, `transaction_type_id`, `user_id`, `cc_id`, `pc_id`, `created_at`, `updated_at`) VALUES (0xF768B326DDB111E8A8B3507B9DD6DEA5, 1, 2, 201601, 'TPA3', 3, '2016-01-02 09:34:35', 0xF24619E03A884784A750A414FC9567BF, 'TPA_VENTE/Thu Jan 02 2016 09:30:59 GMT+0100 (WAT)/Test 2 Patient', 175, 5.1300, 0.0000, 5.1300, 0.0000, 2, 0x3BE232F9A4B94AF6984C5D3F87D5C107, NULL, NULL, 11, 1, NULL, NULL, '2018-11-01 09:42:17', NULL);
+INSERT INTO `general_ledger` (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_id_reference_number`, `trans_date`, `record_uuid`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `entity_uuid`, `reference_uuid`, `comment`, `transaction_type_id`, `user_id`, `cc_id`, `pc_id`, `created_at`, `updated_at`) VALUES (0xF769555FDDB111E8A8B3507B9DD6DEA5, 1, 2, 201601, 'TPA3', 3, '2016-01-02 09:34:35', 0xF24619E03A884784A750A414FC9567BF, 'IV.TPA.3: Multivitamine tab', 242, 0.0000, 5.1300, 0.0000, 5.1300, 2, NULL, NULL, NULL, 11, 1, NULL, NULL, '2018-11-01 09:42:17', NULL);
+INSERT INTO `general_ledger` (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_id_reference_number`, `trans_date`, `record_uuid`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `entity_uuid`, `reference_uuid`, `comment`, `transaction_type_id`, `user_id`, `cc_id`, `pc_id`, `created_at`, `updated_at`) VALUES (0xF76E0838DDB111E8A8B3507B9DD6DEA5, 1, 4, 201811, 'TPA5', 5, '2018-11-01 08:41:46', 0x2E1332B73E63411E827D42AD585FF517, 'Some cool description', 191, 100.0000, 0.0000, 0.1111, 0.0000, 1, NULL, NULL, NULL, 2, 1, NULL, NULL, '2018-11-01 09:42:17', NULL);
+INSERT INTO `general_ledger` (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_id_reference_number`, `trans_date`, `record_uuid`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `entity_uuid`, `reference_uuid`, `comment`, `transaction_type_id`, `user_id`, `cc_id`, `pc_id`, `created_at`, `updated_at`) VALUES (0xF7711ED8DDB111E8A8B3507B9DD6DEA5, 1, 4, 201811, 'TPA5', 5, '2018-11-01 08:41:46', 0x2E1332B73E63411E827D42AD585FF517, 'Some cool description', 175, 0.0000, 10.0000, 0.0000, 0.0111, 1, 0x3BE232F9A4B94AF6984C5D3F87D5C107, 0x957E4E79A6BB4B4DA8F7C42152B2C2F6, NULL, 2, 1, NULL, NULL, '2018-11-01 09:42:17', NULL);
+INSERT INTO `general_ledger` (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_id_reference_number`, `trans_date`, `record_uuid`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `entity_uuid`, `reference_uuid`, `comment`, `transaction_type_id`, `user_id`, `cc_id`, `pc_id`, `created_at`, `updated_at`) VALUES (0xF7773CC1DDB111E8A8B3507B9DD6DEA5, 1, 4, 201811, 'TPA7', 7, '2018-11-01 09:41:46', 0xA5A5F950A4C947F09A9A2BFC3123E534, 'Sample voucher data one', 187, 100.0000, 0.0000, 100.0000, 0.0000, 2, 0x2C6C48A2B1B311E8AE9B1FA4024347AB, 0x957E4E79A6BB4B4DA8F7C42152B2C2F6, NULL, 1, 1, NULL, NULL, '2018-11-01 09:42:17', NULL);
+INSERT INTO `general_ledger` (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_id_reference_number`, `trans_date`, `record_uuid`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `entity_uuid`, `reference_uuid`, `comment`, `transaction_type_id`, `user_id`, `cc_id`, `pc_id`, `created_at`, `updated_at`) VALUES (0xF77740B0DDB111E8A8B3507B9DD6DEA5, 1, 4, 201811, 'TPA7', 7, '2018-11-01 09:41:46', 0xA5A5F950A4C947F09A9A2BFC3123E534, 'Sample voucher data one', 182, 0.0000, 100.0000, 0.0000, 100.0000, 2, NULL, NULL, NULL, 1, 1, NULL, NULL, '2018-11-01 09:42:17', NULL);
+
+-- INVOICE FOR DISTRIBUTION FEE CENTER
+INSERT INTO `invoice` (`project_id`, `uuid`, `cost`, `debtor_uuid`, `service_id`, `user_id`, `date`, `description`, `reversed`, `edited`, `created_at`) 
+VALUES (1, 0x79B0393553C54498A5ECA8CA6DFEA7AC, 256.6200, 0x3BE232F9A4B94AF6984C5D3F87D5C107, 3, 1, '2018-11-05 10:26:05', 'Facture de Test 2 Patient (PA.TPA.2) pour 2 items dans le service Medecine Interne. ', 0, 0, '2018-11-05 10:26:32');
+INSERT INTO `invoice_item` (`invoice_uuid`, `uuid`, `inventory_uuid`, `quantity`, `inventory_price`, `transaction_price`, `debit`, `credit`) 
+VALUES (0x79B0393553C54498A5ECA8CA6DFEA7AC, 0x3B456F6FAA594CE5BD80C91647EB6CF9, 0xDCFBCD6DB50F48B385614A0B8A4EFBA5, 100, 1.9000, 1.9000, 0.0000, 190.0000);
+INSERT INTO `invoice_item` (`invoice_uuid`, `uuid`, `inventory_uuid`, `quantity`, `inventory_price`, `transaction_price`, `debit`, `credit`) 
+VALUES (0x79B0393553C54498A5ECA8CA6DFEA7AC, 0xC150EFE416144C428643BFEA00608800, 0xC560E79CE57A4BC9BA53406AA861F858, 40, 5.1200, 5.1200, 0.0000, 204.8000);
+
+-- SERVICE FEE CENTER
+INSERT INTO `service_fee_center` (`id`, `fee_center_id`, `service_id`) VALUES (1, 2, 3);
+
 -- ------------- AFFECTING ALL unit to admin role ----------------------------------------
 -- creates a default role
 
@@ -963,5 +1032,3 @@ INSERT INTO role_unit
 
 INSERT INTO `user_role`(uuid, user_id, role_uuid)
   VALUES (HUID('6050a2bc-b1b3-11e8-a0f5-8b6d28d94cad'), 2, @regularRoleUUID);
-
--- ----------------------------------------------------------------------------------------
