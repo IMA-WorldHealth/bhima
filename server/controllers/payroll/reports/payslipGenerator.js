@@ -37,10 +37,10 @@ function build(req, res, next) {
   let template;
   _.extend(options, DEFAULT_OPTS);
 
-  if (options.currency && options.socialCharge) {
+  if (!options.payslip && options.socialCharge) {
     template = templateSocialCharge;
     options.orientation = 'portrait';
-  } else if (options.currency && !options.socialCharge) {
+  } else if (!options.payslip && !options.socialCharge) {
     template = templatePayrollReport;
   } else {
     template = templatePayslip;
@@ -75,6 +75,7 @@ function build(req, res, next) {
     .then(exchangeRatesByCurrency => {
       data.exchangeRatesByCurrency = exchangeRatesByCurrency;
       data.payrollPeriod.currency = options.currency;
+
       return configurationData.find(params);
     })
     .then(dataEmployees => {
@@ -152,6 +153,7 @@ function build(req, res, next) {
       });
 
       data.dataEmployees.forEach(employee => {
+
         const employeeCurrencyId = parseInt(employee.currency_id, 10);
 
         employee.rubricTaxable = [];

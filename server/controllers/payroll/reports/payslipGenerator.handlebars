@@ -44,8 +44,8 @@
           <td>  {{translate 'TABLE.COLUMNS.DAY_WORKED'}} </td>
           <td></td>
           <td> {{ working_day }} </td>
-          <td class="text-right"> {{currency daily_salary currency_id}} </td>
-          <td class="text-right">  {{currency dailyWorkedValue currency_id}} </td>
+          <td class="text-right"> {{currency (multiply daily_salary ../payrollPeriod.exchangeRate) ../payrollPeriod.currency }} </td>
+          <td class="text-right"> {{currency (multiply dailyWorkedValue ../payrollPeriod.exchangeRate) ../payrollPeriod.currency }} </td>
         </tr>
 
         {{#each holidaysPaid}}
@@ -53,8 +53,8 @@
             <td> {{ label }} </td>
             <td> {{ holiday_percentage }} </td>
             <td> {{ holiday_nbdays }} </td> 
-            <td class="text-right"> {{currency dailyRate ../currency_id}} </td>
-            <td class="text-right"> {{currency value ../currency_id}} </td>
+            <td class="text-right"> {{currency (multiply daily_salary ../payrollPeriod.exchangeRate) ../payrollPeriod.currency }} </td>
+            <td class="text-right"> {{currency (multiply value ../payrollPeriod.exchangeRate) ../payrollPeriod.currency }} </td>
           </tr>
         {{/each}}
 
@@ -63,14 +63,14 @@
             <td> {{ label }} </td>
             <td> {{ offday_percentage }} </td>
             <td> 1 </td>
-            <td class="text-right"> {{currency value ../currency_id}} </td>
-            <td class="text-right"> {{currency value ../currency_id}} </td>
+            <td class="text-right"> {{currency (multiply value ../payrollPeriod.exchangeRate) ../payrollPeriod.currency }} </td>
+            <td class="text-right"> {{currency (multiply value ../payrollPeriod.exchangeRate) ../payrollPeriod.currency }} </td>
           </tr>
         {{/each}}
         <tr>
           <td class="text-right" colspan="4"> <strong> {{translate 'TABLE.COLUMNS.TOTAL'}} </strong></td>
-          <td class="text-right">  {{currency basic_salary currency_id}} </td>
-        </tr>        
+          <td class="text-right"> {{currency (multiply basic_salary ../payrollPeriod.exchangeRate) ../payrollPeriod.currency }} </td>
+        </tr>
       </table>
       
       <table class="table table-condensed table-bordered table-report" style="margin-bottom: 5px; font-size: 13px">  
@@ -92,14 +92,18 @@
                       ({{ ratePercentage }} %)
                     {{/if}}
                   </td>
-                  <td style=" width: 50%;" class="text-right"> 
-                    {{currency result ../currency_id}}
+                  <td style=" width: 50%;" class="text-right">
+                    {{currency (multiply result ../../payrollPeriod.exchangeRate) ../../payrollPeriod.currency }}
                   </td>
                 </tr>
               {{/each}}
               <tr style="text-transform: uppercase;">
                 <td> <strong> {{translate 'TABLE.COLUMNS.NET_TAXABLE'}} </strong> </td>
-                <td class="text-right"><strong> {{currency somRubTaxable currency_id}} </strong></td>
+                <td class="text-right">
+                  <strong>
+                    {{currency (multiply somRubTaxable ../payrollPeriod.exchangeRate) ../payrollPeriod.currency }}
+                  </strong>
+                </td>
               </tr>
             </table>
           </td>
@@ -114,23 +118,33 @@
                     {{/if}}
                   </td>
                   <td style="width: 50%;" class="text-right"> 
-                    {{currency result ../currency_id}}
+                    {{currency (multiply result ../../payrollPeriod.exchangeRate) ../../payrollPeriod.currency }}
                   </td>
                 </tr>
               {{/each}}
               <tr style="text-transform: uppercase;">
                 <td> <strong> {{translate 'TABLE.COLUMNS.NET_NON_TAXABLE'}} </strong> </td>
-                <td class="text-right"><strong> {{currency somRubNonTaxable currency_id}} </strong></td>
-              </tr>              
+                <td class="text-right">
+                  <strong>
+                    {{currency (multiply somRubNonTaxable ../payrollPeriod.exchangeRate) ../payrollPeriod.currency }}
+                  </strong>
+                </td>
+              </tr>
             </table>
           </td>
         </tr>
         <tr style="background-color:#fefefe;">
           <td class="col-xs-6 text-center" colspan="4">
-            <strong> {{translate 'TABLE.COLUMNS.TAXABLE_GROSS_SALARY'}} = ({{translate 'TABLE.COLUMNS.BASIC_SALARY'}}) + ({{translate 'TABLE.COLUMNS.NET_TAXABLE'}}) </strong> = {{currency basic_salary currency_id}} + {{currency somRubTaxable currency_id}} => <strong> [ {{currency base_taxable currency_id}} ] </strong>
+            <strong>
+              {{translate 'TABLE.COLUMNS.TAXABLE_GROSS_SALARY'}} = ({{translate 'TABLE.COLUMNS.BASIC_SALARY'}}) + ({{translate 'TABLE.COLUMNS.NET_TAXABLE'}})
+            </strong> = {{currency (multiply basic_salary ../payrollPeriod.exchangeRate) ../payrollPeriod.currency }} + 
+            {{currency (multiply somRubTaxable ../payrollPeriod.exchangeRate) ../payrollPeriod.currency }} => 
+            <strong> [ {{currency (multiply base_taxable ../payrollPeriod.exchangeRate) ../payrollPeriod.currency }} ] </strong>
           </td>
           <td class="col-xs-6 text-center" colspan="4">
-            <strong> {{translate 'TABLE.COLUMNS.GROSS_SALARY'}} = ({{translate 'TABLE.COLUMNS.TAXABLE_GROSS_SALARY'}}) + ({{translate 'TABLE.COLUMNS.NET_NON_TAXABLE'}}) </strong> = {{currency base_taxable currency_id}} + {{currency somRubNonTaxable currency_id}} => <strong> [ {{currency gross_salary currency_id}} ]
+            <strong> {{translate 'TABLE.COLUMNS.GROSS_SALARY'}} = ({{translate 'TABLE.COLUMNS.TAXABLE_GROSS_SALARY'}}) + ({{translate 'TABLE.COLUMNS.NET_NON_TAXABLE'}}) </strong> = 
+            {{currency (multiply base_taxable ../payrollPeriod.exchangeRate) ../payrollPeriod.currency }} + {{currency (multiply somRubNonTaxable ../payrollPeriod.exchangeRate) ../payrollPeriod.currency }} 
+            => <strong> [ {{currency (multiply gross_salary ../payrollPeriod.exchangeRate) ../payrollPeriod.currency }} ]
           </td>
         </tr>
       </table>
@@ -154,14 +168,16 @@
                       ({{ ratePercentage }} %)
                     {{/if}}
                   </td>
-                  <td style=" width: 50%;" class="text-right"> 
-                    {{currency result ../currency_id}}
+                  <td style=" width: 50%;" class="text-right">
+                    {{currency (multiply result ../../payrollPeriod.exchangeRate) ../../payrollPeriod.currency }}
                   </td>
                 </tr>
               {{/each}}
               <tr style="text-transform: uppercase;">
                 <td> <strong> {{translate 'TABLE.COLUMNS.TOTAL'}} </strong> </td>
-                <td class="text-right"> {{currency somChargeEmployee currency_id}} </td>
+                <td class="text-right">
+                  {{currency (multiply somChargeEmployee ../payrollPeriod.exchangeRate) ../payrollPeriod.currency }}
+                </td>
               </tr>
             </table>
           </td>
@@ -175,15 +191,15 @@
                       ({{ ratePercentage }} %)
                     {{/if}}
                   </td>
-                  <td style="width: 50%;" class="text-right"> 
-                    {{currency result ../currency_id}}
+                  <td style="width: 50%;" class="text-right">
+                    {{currency (multiply result ../../payrollPeriod.exchangeRate) ../../payrollPeriod.currency }}
                   </td>
                 </tr>
               {{/each}}
               <tr style="text-transform: uppercase;">
                 <td> <strong> {{translate 'TABLE.COLUMNS.TOTAL'}} </strong> </td>
-                <td class="text-right"><strong> {{currency somChargeEnterprise currency_id}} </strong></td>
-              </tr>              
+                <td class="text-right"><strong> {{currency (multiply somChargeEnterprise ../payrollPeriod.exchangeRate) ../payrollPeriod.currency }} </strong></td>
+              </tr>
             </table>
           </td>
         </tr>
@@ -192,18 +208,27 @@
             <strong>({{translate 'TABLE.COLUMNS.GROSS_SALARY'}}) - ({{translate "TABLE.COLUMNS.CONTRIBUTION_DEDUCTIONS"}})</strong>
           </td>
           <td class="col-xs-6 text-right" colspan="4">
-            <strong> {{currency gross_salary currency_id}} - {{currency somChargeEmployee currency_id}} </strong>
+            <strong> {{currency (multiply gross_salary ../payrollPeriod.exchangeRate) ../payrollPeriod.currency }} - 
+              {{currency (multiply somChargeEmployee ../payrollPeriod.exchangeRate) ../payrollPeriod.currency }} </strong>
           </td>
         </tr>
         <tr>
           <td class="col-xs-6 text-right" style="vertical-align : 'top'" rowspan="2" colspan="4">
             <strong>{{translate 'TABLE.COLUMNS.NET_SALARY'}}</strong>
           </td>
-          <td class="col-xs-6 text-right" colspan="4"><strong> {{currency net_salary currency_id}} </strong></td>
+          <td class="col-xs-6 text-right" colspan="4">
+            <strong>
+              {{currency (multiply net_salary ../payrollPeriod.exchangeRate) ../payrollPeriod.currency }}
+            </strong>
+          </td>
         </tr>
-        <tr>  
-          <td class="col-xs-6 text-right" colspan="4"><strong> {{numberToText net_salary ../lang '.'  }} </strong></td>          
-        </tr>        
+        <tr>
+          <td class="col-xs-6 text-right" colspan="4">
+            <strong>
+              {{numberToText (multiply net_salary ../payrollPeriod.exchangeRate) ../lang '.'  }} 
+            </strong>
+          </td>
+        </tr>
      </table>
     </div>
   {{/each}}
