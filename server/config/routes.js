@@ -695,7 +695,11 @@ exports.configure = function configure(app) {
 
   // API routes for /stock/assign end point
   app.get('/stock/assign', stock.assign.list);
+  app.get('/stock/assign/:uuid', stock.assign.detail);
   app.post('/stock/assign', stock.assign.create);
+  app.put('/stock/assign/:uuid', stock.assign.update);
+  app.put('/stock/assign/:uuid/remove', stock.assign.removeAssign);
+  app.delete('/stock/assign/:uuid/delete', stock.assign.deleteAssign);
 
   // stock import from a file
   app.get('/stock/import/template', stock.importing.downloadTemplate);

@@ -18,7 +18,6 @@ function StockLotsAssignController(
 ) {
   const vm = this;
   const cacheKey = 'stock-assign-grid';
-  const filterKey = 'stock-assign';
   const stockAssignFilters = Stock.filter.stockAssign;
 
   // grouping box
@@ -114,7 +113,6 @@ function StockLotsAssignController(
   vm.openColumnConfigModal = openColumnConfigModal;
   vm.loading = false;
   vm.saveGridState = state.saveGridState;
-  vm.openCreateModal = openCreateModal;
 
   function onRegisterApi(gridApi) {
     vm.gridApi = gridApi;
@@ -141,17 +139,6 @@ function StockLotsAssignController(
       vm.grouped = true;
     }
   };
-
-  // open the create modal
-  function openCreateModal() {
-    Modal.openCreateStockAssign()
-      .then(success => {
-        if (!success) { return; }
-        load(stockAssignFilters.formatHTTP());
-        Notify.success('ASSIGN.CREATE_SUCCESS');
-      })
-      .catch(Notify.handleError);
-  }
 
   // initialize module
   function startup() {

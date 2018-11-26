@@ -24,13 +24,13 @@ function StockModalService(Modal) {
   service.openFindPurchase = openFindPurchase;
   service.openDefineLots = openDefineLots;
   service.openFindTansfer = openFindTansfer;
-  service.openCreateStockAssign = openCreateStockAssign;
+  service.openActionStockAssign = openActionStockAssign;
 
   /** create stock assign */
-  function openCreateStockAssign(request) {
+  function openActionStockAssign(request) {
     const params = angular.extend(modalParameters, {
-      templateUrl  : 'modules/stock/assign/modals/create.modal.html',
-      controller   : 'CreateAssignModalController',
+      templateUrl  : 'modules/stock/assign/modals/action.modal.html',
+      controller   : 'ActionAssignModalController',
       controllerAs : '$ctrl',
       resolve      : { data : () => request },
     });

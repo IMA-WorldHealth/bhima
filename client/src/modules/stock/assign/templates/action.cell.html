@@ -9,7 +9,7 @@
       <a href><span>{{ row.entity.label }}</span></a>
     </li>
     <li>
-      <a data-method="update-record" href>
+      <a data-method="update-record" ui-sref="stockAssign.update({uuid : row.entity.uuid })" href>
         <i class="fa fa-edit"></i> <span translate>ASSIGN.EDIT_ASSIGN</span>
       </a>
     </li>

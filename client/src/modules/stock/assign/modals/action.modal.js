@@ -1,46 +1,91 @@
 angular.module('bhima.controllers')
-  .controller('CreateAssignModalController', CreateAssignModalController);
+  .controller('ActionAssignModalController', ActionAssignModalController);
 
 // dependencies injections
-CreateAssignModalController.$inject = [
+ActionAssignModalController.$inject = [
+  'appcache', '$state',
   'DepotService', 'NotifyService', '$uibModalInstance',
-  'StockService', 'util', 'data',
+  'StockService', 'util',
 ];
 
-function CreateAssignModalController(Depots, Notify, Modal, Stock, Util) {
+function ActionAssignModalController(AppCache, $state, Depots, Notify, Modal, Stock, Util) {
   const vm = this;
+  const cache = AppCache('stock-assign-grid');
+
+  // global variables
   vm.model = { quantity : 1 };
   vm.availableInventories = [];
   vm.availableLots = [];
+  vm.stateParams = {};
 
-  vm.onSelectDepot = depot => {
+  cache.stateParams = $state.params;
+  vm.stateParams = cache.stateParams;
+
+  if ($state.params.uuid || $state.params.creating) {
+    cache.stateParams = $state.params;
+    vm.stateParams = cache.stateParams;
+  } else {
+    vm.stateParams = cache.stateParams;
+  }
+
+  // this is the UUID of the update state.
+  vm.identifier = vm.stateParams.uuid;
+  vm.isUpdateState = angular.isDefined(vm.identifier);
+  vm.isCreateState = !angular.isDefined(vm.identifier);
+
+  vm.onSelectDepot = onSelectDepot;
+  function onSelectDepot(depot) {
     vm.model.depot_uuid = depot.uuid;
     loadAvailableInventories(depot.uuid);
-  };
+  }
 
-  vm.onSelectInventory = inventory => {
+  vm.onSelectInventory = onSelectInventory;
+  function onSelectInventory(inventory) {
     vm.availableLots = vm.globalAvailableLots.filter(item => item.inventory_uuid === inventory.inventory_uuid);
-  };
+  }
 
-  vm.onSelectEntity = entity => {
+  vm.onSelectEntity = onSelectEntity;
+  function onSelectEntity(entity) {
     vm.model.entity_uuid = entity.uuid;
-  };
+  }
 
   vm.cancel = Modal.close;
 
   vm.submit = form => {
     if (form.$invalid) { return; }
 
+    const record = Util.filterFormElements(form, true);
+
+    // if no changes were made, simply dismiss the modal
+    if (Util.isEmptyObject(record)) {
+      Modal.close();
+      return;
+    }
+
     Stock.stockAssign.create(vm.model)
       .then(() => Modal.close(true))
       .catch(Notify.handleError);
   };
 
-  Depots.read(null)
-    .then(rows => {
-      vm.depots = rows;
-    })
-    .catch(Notify.handleError);
+  function startup() {
+    Depots.read(null)
+      .then(rows => {
+        vm.depots = rows;
+
+        if (vm.identifier) {
+          readAndAssign(vm.identifier);
+        }
+      })
+      .catch(Notify.handleError);
+  }
+
+  function readAndAssign(uuid) {
+    Stock.stockAssign.read(uuid)
+      .then(assigment => {
+        vm.model = assigment;
+      })
+      .catch(Notify.handleError);
+  }
 
   function loadAvailableInventories(depotUuid) {
     if (!depotUuid) { return; }
@@ -79,4 +124,6 @@ function CreateAssignModalController(Depots, Notify, Modal, Stock, Util) {
     }
     return out;
   }
+
+  startup();
 }
