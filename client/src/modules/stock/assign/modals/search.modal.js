@@ -47,6 +47,12 @@ function SearchStockAssignModalController(data, util, Store, Instance, Periods, 
     displayValues.inventory_uuid = inventory.label;
   };
 
+  // custom filter entity_uuid - assign the value to the params object
+  vm.onSelectEntity = entity => {
+    vm.searchQueries.entity_uuid = entity.uuid;
+    displayValues.entity_uuid = entity.display_name;
+  };
+
   // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(data, searchQueryOptions);
 
@@ -74,7 +80,7 @@ function SearchStockAssignModalController(data, util, Store, Instance, Periods, 
     delete vm.searchQueries[key];
   };
 
-  vm.cancel = function cancel() { Instance.close(); };
+  vm.cancel = Instance.dismiss;
 
   vm.submit = function submit() {
     // push all searchQuery values into the changes array to be applied

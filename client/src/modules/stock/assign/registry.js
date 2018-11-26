@@ -19,7 +19,7 @@ function StockLotsAssignController(
   const vm = this;
   const cacheKey = 'stock-assign-grid';
   const filterKey = 'stock-assign';
-  const gridFilter = Stock.filter.stockAssign;
+  const stockAssignFilters = Stock.filter.stockAssign;
 
   // grouping box
   vm.groupingBox = [
@@ -147,7 +147,7 @@ function StockLotsAssignController(
     Modal.openCreateStockAssign()
       .then(success => {
         if (!success) { return; }
-        load(gridFilter.formatHTTP());
+        load(stockAssignFilters.formatHTTP());
         Notify.success('ASSIGN.CREATE_SUCCESS');
       })
       .catch(Notify.handleError);
@@ -156,12 +156,12 @@ function StockLotsAssignController(
   // initialize module
   function startup() {
     if ($state.params.filters.length) {
-      gridFilter.replaceFiltersFromState($state.params.filters);
-      Stock.cacheFilters(filterKey);
+      stockAssignFilters.replaceFiltersFromState($state.params.filters);
+      stockAssignFilters.formatCache();
     }
 
-    load(gridFilter.formatHTTP(true));
-    vm.latestViewFilters = gridFilter.formatView();
+    load(stockAssignFilters.formatHTTP(true));
+    vm.latestViewFilters = stockAssignFilters.formatView();
   }
 
   /**
@@ -205,24 +205,21 @@ function StockLotsAssignController(
 
   // remove a filter with from the filter object, save the filters and reload
   vm.onRemoveFilter = function onRemoveFilter(key) {
-    Stock.removeFilter(filterKey, key);
-
-    Stock.cacheFilters(filterKey);
-    vm.latestViewFilters = gridFilter.formatView();
-
-    return load(gridFilter.formatHTTP(true));
+    stockAssignFilters.remove(key);
+    stockAssignFilters.formatCache();
+    vm.latestViewFilters = stockAssignFilters.formatView();
+    return load(stockAssignFilters.formatHTTP(true));
   };
 
   function search() {
-    const filtersSnapshot = gridFilter.formatHTTP();
+    const filtersSnapshot = stockAssignFilters.formatHTTP();
 
     Modal.openSearchStockAssign(filtersSnapshot)
       .then((changes) => {
-        gridFilter.replaceFilters(changes);
-        Stock.cacheFilters(filterKey);
-        vm.latestViewFilters = gridFilter.formatView();
-
-        return load(gridFilter.formatHTTP(true));
+        stockAssignFilters.replaceFilters(changes);
+        stockAssignFilters.formatCache();
+        vm.latestViewFilters = stockAssignFilters.formatView();
+        return load(stockAssignFilters.formatHTTP(true));
       });
   }
 
@@ -241,7 +238,7 @@ function StockLotsAssignController(
   }
 
   vm.downloadExcel = () => {
-    const filterOpts = gridFilter.formatHTTP();
+    const filterOpts = stockAssignFilters.formatHTTP();
     const defaultOpts = {
       renderer : 'xlsx',
       lang : Languages.key,

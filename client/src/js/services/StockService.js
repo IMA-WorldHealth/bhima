@@ -41,6 +41,7 @@ function StockService(Api, StockFilterer) {
 
   // Filter service
   const StockLotFilters = new StockFilterer('stock-lot-filters');
+  const StockAssignFilters = new StockFilterer('stock-assign-filters');
   const StockMovementFilters = new StockFilterer('stock-movement-filters');
   const StockInventoryFilters = new StockFilterer('stock-inventory-filters');
 

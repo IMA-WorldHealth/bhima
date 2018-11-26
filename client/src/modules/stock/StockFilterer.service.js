@@ -21,6 +21,8 @@ function StockFiltererService(Filters, AppCache, Periods, $httpParamSerializer, 
     { key : 'user_id', label : 'FORM.LABELS.USER' },
     { key : 'status', label : 'STOCK.STATUS.LABEL', valueFilter : 'translate' },
     { key : 'require_po', label : 'STOCK.REQUIRES_PO' },
+    { key : 'entity_uuid', label : 'ENTITY.LABEL' },
+    { key : 'description', label : 'FORM.LABELS.DESCRIPTION' },
     {
       key : 'dateFrom', label : 'FORM.LABELS.DATE', comparitor : '>', valueFilter : 'date',
     },

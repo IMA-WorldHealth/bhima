@@ -78,15 +78,14 @@ function getStockAssignment(params) {
   const filters = new FilterParser(params);
   filters.equals('uuid', 'uuid', 'l');
   filters.equals('depot_text', 'text', 'd');
-  filters.equals('depot_uuid', 'depot_uuid', 'm');
-  filters.equals('entity_uuid', 'entity_uuid', 'e');
-  filters.equals('document_uuid', 'document_uuid', 'm');
+  filters.equals('depot_uuid', 'depot_uuid', 'sa');
+  filters.equals('entity_uuid', 'entity_uuid', 'sa');
   filters.equals('inventory_uuid', 'uuid', 'i');
   filters.equals('text', 'text', 'i');
   filters.equals('label', 'label', 'l');
   filters.period('period', 'created_at', 'sa');
-  filters.dateFrom('date_from', 'created_at', 'sa');
-  filters.dateTo('date_to', 'created_at', 'sa');
+  filters.dateFrom('custom_period_start', 'created_at', 'sa');
+  filters.dateTo('custom_period_end', 'created_at', 'sa');
 
   const query = filters.applyQuery(sql);
   const queryParameters = filters.parameters();
