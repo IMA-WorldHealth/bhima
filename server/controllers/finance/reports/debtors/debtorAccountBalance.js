@@ -3,6 +3,7 @@ const q = require('q');
 
 const ReportManager = require('../../../../lib/ReportManager');
 const db = require('../../../../lib/db');
+const Fiscal = require('../../fiscal');
 
 // path to the template to render
 const TEMPLATE = './server/controllers/finance/reports/debtors/balance.handlebars';
@@ -38,7 +39,7 @@ function debtorAccountBalance(req, res, next) {
   // none of the queries depend on each other, so we can go ahead and fire them
   // all simultaneously
   return q.all([
-    getFiscalYearById(fiscalYearId),
+    Fiscal.lookupFiscalYear(fiscalYearId),
     getDebtorGroupMovements(fiscalYearId),
     getTotalsFooter(fiscalYearId),
   ])
@@ -99,18 +100,4 @@ function getTotalsFooter(fiscalYearId) {
   `;
 
   return db.one(sql, fiscalYearId);
-}
-
-
-/**
- * @function getFiscalYearById
- *
- * @description
- * This function gets the label of a fiscal year by its id.
- *
- * TODO(@jniles) - move this into the fiscal controller.
- */
-function getFiscalYearById(id) {
-  const sql = 'SELECT label FROM fiscal_year WHERE id = ?';
-  return db.one(sql, id);
 }
