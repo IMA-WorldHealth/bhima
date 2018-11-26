@@ -3,10 +3,10 @@ angular.module('bhima.services')
 
 StockService.$inject = [
   'PrototypeApiService', 'FilterService', 'appcache', 'PeriodService',
-  '$httpParamSerializer', 'LanguageService', 'bhConstants',
+  '$httpParamSerializer', 'LanguageService', 'bhConstants', 'util',
 ];
 
-function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Languages, bhConstants) {
+function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Languages, bhConstants, Util) {
   // API for stock lots
   const stocks = new Api('/stock/lots');
 
@@ -37,24 +37,23 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
     over_maximum      : 'STOCK.STATUS.OVER_MAX',
   };
 
-  // Filter service
-  const StockLotFilters = new Filters();
-  const StockMovementFilters = new Filters();
-  const StockInventoryFilters = new Filters();
-
-  const filterMovementCache = new AppCache('stock-movement-filters');
-  const filterLotCache = new AppCache('stock-lot-filters');
-  const filterInventoryCache = new AppCache('stock-inventory-filters');
-
-  StockLotFilters.registerDefaultFilters(bhConstants.defaultFilters);
-  StockMovementFilters.registerDefaultFilters(bhConstants.defaultFilters);
-  StockInventoryFilters.registerDefaultFilters(bhConstants.defaultFilters);
-
-  StockLotFilters.registerCustomFilters([
+  const customFiltersList = [
     { key : 'depot_uuid', label : 'STOCK.DEPOT' },
     { key : 'inventory_uuid', label : 'STOCK.INVENTORY' },
     { key : 'group_uuid', label : 'STOCK.INVENTORY_GROUP' },
     { key : 'label', label : 'STOCK.LOT' },
+    { key : 'is_exit', label : 'STOCK.OUTPUT' },
+    { key : 'reference', label : 'FORM.LABELS.REFERENCE' },
+    { key : 'flux_id', label : 'STOCK.FLUX' },
+    { key : 'user_id', label : 'FORM.LABELS.USER' },
+    { key : 'status', label : 'STOCK.STATUS.LABEL', valueFilter : 'translate' },
+    { key : 'require_po', label : 'STOCK.REQUIRES_PO' },
+    {
+      key : 'dateFrom', label : 'FORM.LABELS.DATE', comparitor : '>', valueFilter : 'date',
+    },
+    {
+      key : 'dateTo', label : 'FORM.LABELS.DATE', comparitor : '<', valueFilter : 'date',
+    },
     {
       key : 'entry_date_from', label : 'STOCK.ENTRY_DATE', comparitor : '>', valueFilter : 'date',
     },
@@ -67,49 +66,107 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
     {
       key : 'expiration_date_to', label : 'STOCK.EXPIRATION_DATE', comparitor : '<', valueFilter : 'date',
     },
-  ]);
+  ];
 
-  StockMovementFilters.registerCustomFilters([
-    { key : 'is_exit', label : 'STOCK.OUTPUT' },
-    { key : 'reference', label : 'FORM.LABELS.REFERENCE' },
-    { key : 'depot_uuid', label : 'STOCK.DEPOT' },
-    { key : 'inventory_uuid', label : 'STOCK.INVENTORY' },
-    { key : 'label', label : 'STOCK.LOT' },
-    { key : 'flux_id', label : 'STOCK.FLUX' },
-    {
-      key : 'dateFrom', label : 'FORM.LABELS.DATE', comparitor : '>', valueFilter : 'date',
-    },
-    {
-      key : 'dateTo', label : 'FORM.LABELS.DATE', comparitor : '<', valueFilter : 'date',
-    },
-    { key : 'user_id', label : 'FORM.LABELS.USER' },
-  ]);
+  class StockFilterer {
+    constructor(cacheKey = 'stock-filterer-cache') {
+      this._filters = new Filters();
+      this._cache = new AppCache(cacheKey);
 
-  StockInventoryFilters.registerCustomFilters([
-    { key : 'depot_uuid', label : 'STOCK.DEPOT' },
-    { key : 'inventory_uuid', label : 'STOCK.INVENTORY' },
-    { key : 'group_uuid', label : 'STOCK.INVENTORY_GROUP' },
-    { key : 'status', label : 'STOCK.STATUS.LABEL', valueFilter : 'translate' },
-    { key : 'require_po', label : 'STOCK.REQUIRES_PO' },
-  ]);
+      // register default filters
+      this._filters.registerDefaultFilters(bhConstants.defaultFilters);
 
+      // register custom filters
+      this._filters.registerCustomFilters(customFiltersList);
 
-  if (filterLotCache.filters) {
-    StockLotFilters.loadCache(filterLotCache.filters);
+      // load cached filters
+      if (this._cache.filters) {
+        this._filters.loadCache(this._cache.filters);
+      }
+
+      // assign default filters
+      this.assignDefaultFilters();
+    }
+
+    get filters() { return this._filters; }
+
+    get cache() { return this._cache; }
+
+    // remove a filter by its key
+    remove(valueKey) {
+      this._filters.resetFilterState(valueKey);
+    }
+
+    // filter display value map
+    getDisplayValueMap() {
+      return this._filters.getDisplayValueMap();
+    }
+
+    // format http
+    formatHTTP(format = false) {
+      return this._filters.formatHTTP(format);
+    }
+
+    // format view
+    formatView() {
+      return this._filters.formatView();
+    }
+
+    // format cache
+    formatCache() {
+      this._cache.filters = this._filters.formatCache();
+    }
+
+    // replace filters
+    replaceFilters(changes) {
+      this._filters.replaceFilters(changes);
+    }
+
+    // load cached filters
+    loadCachedFilters() {
+      this._filters.loadCache(this._cache.filters || {});
+    }
+
+    /**
+     * @method getQueryString
+     * @description
+     * returns a query string with parameters with the consideration
+     * of the current applied filters
+     * @param {string} type
+     */
+    getQueryString(type) {
+      const filterOpts = this._filters.formatHTTP();
+      const defaultOpts = { renderer : type, lang : Languages.key };
+
+      // combine options
+      const options = angular.merge(defaultOpts, filterOpts);
+
+      // return  serialized options
+      return $httpParamSerializer(options);
+    }
+
+    assignDefaultFilters() {
+      // get the keys of filters already assigned - on initial load this will be empty
+      const assignedKeys = Object.keys(this._filters.formatHTTP());
+
+      // assign default period filter
+      const periodDefined = Util.arrayIncludes(assignedKeys, ['period']);
+
+      if (!periodDefined) {
+        this._filters.assignFilters(Periods.defaultFilters());
+      }
+
+      // assign default limit filter
+      if (assignedKeys.indexOf('limit') === -1) {
+        this._filters.assignFilter('limit', 100);
+      }
+    }
   }
 
-  if (filterMovementCache.filters) {
-    StockMovementFilters.loadCache(filterMovementCache.filters);
-  }
-
-  if (filterInventoryCache.filters) {
-    StockInventoryFilters.loadCache(filterInventoryCache.filters);
-  }
-
-  // once the cache has been loaded - ensure that default filters are provided appropriate values
-  assignLotDefaultFilters();
-  assignMovementDefaultFilters();
-  assignInventoryDefaultFilters();
+  // Filter service
+  const StockLotFilters = new StockFilterer('stock-movement-filters');
+  const StockMovementFilters = new StockFilterer('stock-lot-filters');
+  const StockInventoryFilters = new StockFilterer('stock-inventory-filters');
 
   // creating an object of filter to avoid method duplication
   const stockFilter = {
@@ -117,96 +174,6 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
     movement : StockMovementFilters,
     inventory : StockInventoryFilters,
   };
-
-  // creating an object of filter object to avoid method duplication
-  const filterCache = {
-    lot : filterLotCache,
-    movement : filterMovementCache,
-    inventory : filterInventoryCache,
-  };
-
-  function assignLotDefaultFilters() {
-    // get the keys of filters already assigned - on initial load this will be empty
-    const assignedKeys = Object.keys(StockLotFilters.formatHTTP());
-
-    // assign default period filter
-    const periodDefined = lots.util.arrayIncludes(assignedKeys, ['period']);
-
-    if (!periodDefined) {
-      StockLotFilters.assignFilters(Periods.defaultFilters());
-    }
-
-    // assign default limit filter
-    if (assignedKeys.indexOf('limit') === -1) {
-      StockLotFilters.assignFilter('limit', 100);
-    }
-  }
-
-  function assignMovementDefaultFilters() {
-    // get the keys of filters already assigned - on initial load this will be empty
-    const assignedKeys = Object.keys(StockMovementFilters.formatHTTP());
-
-    // assign default period filter
-    const periodDefined = movements.util.arrayIncludes(assignedKeys, ['period']);
-
-    if (!periodDefined) {
-      StockMovementFilters.assignFilters(Periods.defaultFilters());
-    }
-
-    // assign default limit filter
-    if (assignedKeys.indexOf('limit') === -1) {
-      StockMovementFilters.assignFilter('limit', 100);
-    }
-  }
-
-  function assignInventoryDefaultFilters() {
-    // get the keys of filters already assigned - on initial load this will be empty
-    const assignedKeys = Object.keys(StockInventoryFilters.formatHTTP());
-
-    // assign default period filter
-    const periodDefined = inventories.util.arrayIncludes(assignedKeys, ['period']);
-
-    if (!periodDefined) {
-      StockInventoryFilters.assignFilters(Periods.defaultFilters());
-    }
-
-    // assign default limit filter
-    if (assignedKeys.indexOf('limit') === -1) {
-      StockInventoryFilters.assignFilter('limit', 100);
-    }
-  }
-
-  function removeFilter(filterKey, valueKey) {
-    stockFilter[filterKey].resetFilterState(valueKey);
-  }
-
-  // load filters from cache
-  function cacheFilters(filterKey) {
-    filterCache[filterKey].filters = stockFilter[filterKey].formatCache();
-  }
-
-  function loadCachedFilters(filterKey) {
-    stockFilter[filterKey].loadCache(filterCache[filterKey].filters || {});
-  }
-
-  /**
-   * @function getQueryString
-   * @description
-   * returns a query string with parameters with the consideration
-   * of the current applied filters
-   * @param {string} filterKey
-   * @param {string} type
-   */
-  function getQueryString(filterKey, type) {
-    const filterOpts = stockFilter[filterKey].formatHTTP();
-    const defaultOpts = { renderer : type, lang : Languages.key };
-
-    // combine options
-    const options = angular.merge(defaultOpts, filterOpts);
-
-    // return  serialized options
-    return $httpParamSerializer(options);
-  }
 
   // uniformSelectedEntity function implementation
   // change name, text and display_nam into displayName
@@ -270,7 +237,6 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
       });
   }
 
-
   return {
     stocks,
     lots,
@@ -279,10 +245,6 @@ function StockService(Api, Filters, AppCache, Periods, $httpParamSerializer, Lan
     integration,
     transfers,
     filter : stockFilter,
-    cacheFilters,
-    removeFilter,
-    loadCachedFilters,
-    getQueryString,
     uniformSelectedEntity,
     processLotsFromStore,
     statusLabelMap,

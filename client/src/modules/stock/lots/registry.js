@@ -20,7 +20,6 @@ function StockLotsController(
 ) {
   const vm = this;
   const cacheKey = 'lot-grid';
-  const filterKey = 'lot';
   const stockLotFilters = Stock.filter.lot;
 
   // grouping box
@@ -205,8 +204,8 @@ function StockLotsController(
   // initialize module
   function startup() {
     if ($state.params.filters.length) {
-      stockLotFilters.replaceFiltersFromState($state.params.filters);
-      Stock.cacheFilters(filterKey);
+      stockLotFilters.filters.replaceFiltersFromState($state.params.filters);
+      stockLotFilters.cache.formatCache();
     }
 
     load(stockLotFilters.formatHTTP(true));
@@ -255,11 +254,9 @@ function StockLotsController(
 
   // remove a filter with from the filter object, save the filters and reload
   vm.onRemoveFilter = function onRemoveFilter(key) {
-    Stock.removeFilter(filterKey, key);
-
-    Stock.cacheFilters(filterKey);
+    stockLotFilters.remove(key);
+    stockLotFilters.formatCache();
     vm.latestViewFilters = stockLotFilters.formatView();
-
     return load(stockLotFilters.formatHTTP(true));
   };
 
@@ -269,9 +266,8 @@ function StockLotsController(
     Modal.openSearchLots(filtersSnapshot)
       .then((changes) => {
         stockLotFilters.replaceFilters(changes);
-        Stock.cacheFilters(filterKey);
+        stockLotFilters.formatCache();
         vm.latestViewFilters = stockLotFilters.formatView();
-
         return load(stockLotFilters.formatHTTP(true));
       });
   }
