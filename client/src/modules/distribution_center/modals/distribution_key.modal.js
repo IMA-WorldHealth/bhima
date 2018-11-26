@@ -19,6 +19,7 @@ function DistributionKeyModalController(
 
   // exposed methods
   vm.submit = submit;
+  vm.reset = reset;
 
   FeeCenters.read()
     .then((feeCenter) => {
@@ -72,5 +73,15 @@ function DistributionKeyModalController(
 
   function cancel() {
     ModalInstance.close();
+  }
+
+  function reset(auxiliaryFeeCenter) {
+    return DistributionCenter.resetDistributionKey(auxiliaryFeeCenter)
+      .then(() => {
+        Notify.success('FORM.INFO.DISTRIBUTION_SUCCESSFULLY');
+        cancel();
+        $state.go('distribution_key', null, { reload : true });
+      })
+      .catch(Notify.handleError);
   }
 }

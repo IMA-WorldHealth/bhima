@@ -33,6 +33,10 @@
   </div>
 
   <div class="modal-footer">
+    <button data-method="cancel" type="button" class="btn btn-danger" ng-click="DistributionKeyModalCtrl.reset(DistributionKeyModalCtrl.settings.auxiliary_fee_center_id)">
+      <span translate>FORM.BUTTONS.RESET</span>
+    </button>
+
     <button data-method="cancel" type="button" class="btn btn-default" ng-click="DistributionKeyModalCtrl.cancel()">
       <span translate>FORM.BUTTONS.CANCEL</span>
     </button>

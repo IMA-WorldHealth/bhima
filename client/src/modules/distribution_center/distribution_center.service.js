@@ -28,6 +28,7 @@ function DistributionCenterService(Api, Filters, AppCache, Modal) {
   service.getDistributionKey = getDistributionKey;
   service.openDistributionKeyModal = openDistributionKeyModal;
   service.proceedDistributionKey = proceedDistributionKey;
+  service.resetDistributionKey = resetDistributionKey;
 
   // get the auxiliary centers already distributed
   function getDistributed(params) {
@@ -169,6 +170,12 @@ function DistributionCenterService(Api, Filters, AppCache, Modal) {
   // initialization of the distribution keys of the auxiliary centers towards the main center
   function proceedDistributionKey(data) {
     return service.$http.post(`/distribution_fee_center/distributionKey`, { data })
+      .then(service.util.unwrapHttpResponse);
+  }
+
+  // reset of the distribution keys of the auxiliary centers towards the main center
+  function resetDistributionKey(data) {
+    return service.$http.post(`/distribution_fee_center/resetKey`, { data })
       .then(service.util.unwrapHttpResponse);
   }
 

@@ -805,4 +805,5 @@ exports.configure = function configure(app) {
   app.post('/distribution_fee_center/breakDown', distributionBreakDown.breakDown);
   app.post('/distribution_fee_center/automatic', distributionAutomatic.automatic);
   app.post('/distribution_fee_center/distributionKey', setDistributionKey.setting);
+  app.post('/distribution_fee_center/resetKey', setDistributionKey.resetKey);
 };

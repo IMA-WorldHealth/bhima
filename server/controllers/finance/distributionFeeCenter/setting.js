@@ -46,7 +46,17 @@ function setting(req, res, next) {
     })
     .catch(next)
     .done();
+}
 
+function resetKey(req, res, next) {
+  const { data } = req.body;
+  const delDistribution = `DELETE FROM distribution_key WHERE auxiliary_fee_center_id = ?`;
+
+  db.exec(delDistribution, [data])
+    .then(() => res.sendStatus(204))
+    .catch(next)
+    .done();
 }
 
 exports.setting = setting;
+exports.resetKey = resetKey;
