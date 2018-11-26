@@ -16,10 +16,8 @@ function StockMovementsController(
   Languages, Session, Flux, ReceiptModal, Grouping, $state, Columns, GridState, $httpParamSerializer
 ) {
   const vm = this;
-  const filterKey = 'movement';
-  const stockMovementFilters = Stock.filter.movement;
-
   const cacheKey = 'movements-grid';
+  const stockMovementFilters = Stock.filter.movement;
 
   // grid columns
   const columns = getGridColumns();
@@ -197,11 +195,9 @@ function StockMovementsController(
 
   // on remove one filter
   function onRemoveFilter(key) {
-    Stock.removeFilter(filterKey, key);
-
-    Stock.cacheFilters(filterKey);
+    stockMovementFilters.remove(key);
+    stockMovementFilters.formatCache();
     vm.latestViewFilters = stockMovementFilters.formatView();
-
     return load(stockMovementFilters.formatHTTP(true));
   }
 
@@ -266,7 +262,7 @@ function StockMovementsController(
     if (!changes) { return; }
 
     stockMovementFilters.replaceFilters(changes);
-    Stock.cacheFilters(filterKey);
+    stockMovementFilters.formatCache();
     vm.latestViewFilters = stockMovementFilters.formatView();
     load(stockMovementFilters.formatHTTP(true));
   }
@@ -280,7 +276,7 @@ function StockMovementsController(
   function startup() {
     if ($state.params.filters.length) {
       stockMovementFilters.replaceFiltersFromState($state.params.filters);
-      Stock.cacheFilters(filterKey);
+      stockMovementFilters.formatCache();
     }
 
     load(stockMovementFilters.formatHTTP(true));

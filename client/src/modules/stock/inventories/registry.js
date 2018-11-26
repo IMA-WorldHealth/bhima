@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 StockInventoriesController.$inject = [
   'StockService', 'NotifyService',
-  'uiGridConstants', '$translate', 'StockModalService', 'LanguageService', 'SessionService',
+  'uiGridConstants', 'StockModalService', 'LanguageService', 'SessionService',
   'GridGroupingService', 'bhConstants', 'GridStateService', '$state', 'GridColumnService', '$httpParamSerializer',
 ];
 
@@ -12,13 +12,12 @@ StockInventoriesController.$inject = [
  * This module is a registry page for stock inventories
  */
 function StockInventoriesController(
-  Stock, Notify, uiGridConstants, $translate, Modal, Languages,
+  Stock, Notify, uiGridConstants, Modal, Languages,
   Session, Grouping, bhConstants, GridState, $state, Columns, $httpParamSerializer
 ) {
   const vm = this;
-  const filterKey = 'inventory';
-  const stockInventoryFilters = Stock.filter.inventory;
   const cacheKey = 'stock-inventory-grid';
+  const stockInventoryFilters = Stock.filter.inventory;
 
   const columns = [
     {
@@ -201,11 +200,9 @@ function StockInventoriesController(
 
   // on remove one filter
   function onRemoveFilter(key) {
-    Stock.removeFilter(filterKey, key);
-
-    Stock.cacheFilters(filterKey);
+    stockInventoryFilters.remove(key);
+    stockInventoryFilters.formatCache();
     vm.latestViewFilters = stockInventoryFilters.formatView();
-
     return load(stockInventoryFilters.formatHTTP(true));
   }
 
@@ -241,9 +238,8 @@ function StockInventoriesController(
     Modal.openSearchInventories(filtersSnapshot)
       .then((changes) => {
         stockInventoryFilters.replaceFilters(changes);
-        Stock.cacheFilters(filterKey);
+        stockInventoryFilters.formatCache();
         vm.latestViewFilters = stockInventoryFilters.formatView();
-
         load(stockInventoryFilters.formatHTTP(true));
       });
   }
@@ -251,7 +247,7 @@ function StockInventoriesController(
   function startup() {
     if ($state.params.filters.length) {
       stockInventoryFilters.replaceFiltersFromState($state.params.filters);
-      Stock.cacheFilters(filterKey);
+      stockInventoryFilters.formatCache();
     }
 
     load(stockInventoryFilters.formatHTTP(true));
