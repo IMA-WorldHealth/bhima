@@ -8,7 +8,7 @@ const RegistrationPage = require('./registration.page.js');
 helpers.configure(chai);
 
 describe('Employees', () => {
-  const path = '#!/employees/register';
+  const path = '#!/employees/registration/register';
   const registrationPage = new RegistrationPage();
   const employee = {
     code          : 'HBB80',
@@ -38,7 +38,7 @@ describe('Employees', () => {
     creditor_group : 'Employees',
   };
 
-  const pathPatient = '#!/employees/81AF634F321A40DEBC6FCEB1167A9F65/patientAsEmployee';
+  const pathPatient = '#!/employees/registration/81af634f-321a-40de-bc6f-ceb1167a9f65/patientAsEmployee';
 
   before(() => helpers.navigate(path));
 

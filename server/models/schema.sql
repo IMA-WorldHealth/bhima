@@ -1754,6 +1754,7 @@ CREATE TABLE `unit` (
   `parent` smallINT(6) DEFAULT 0,
   `url` tinytext,
   `path` tinytext,
+  `state_name` varchar(70) NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unit_1` (`name`, `key`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;

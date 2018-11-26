@@ -128,7 +128,7 @@ function startupConfig(
     if (!paths || isPublicPath) { return; }
 
     // check if the user is authorized to access this route.
-    const authorized = paths.some(checkUserAuthorization);
+    const authorized = checkUserAuthorization();
 
     // if the user is not authorized, go to the 403 state instead
     if (!authorized) {
@@ -149,29 +149,31 @@ function startupConfig(
      *                        information on if this user is authorised, route
      *                        objects passed in that match the target path will be aproved
      */
-    function checkUserAuthorization(data) {
-      // check to see if the route permission object (data) passed in begins with the path being accessed
-      // only do more expensive check if the path is a valid partial match
-      if (path.indexOf(data.path) === 0) {
-        // split the current target path and the role permission object path into sections
-        const rolePermissionPathSections = data.path.split('/');
-        const targetPathSections = path.split('/');
 
-        // ensure that EVERY section on the role permission path matches the target path
-        // this allows for additional routing beyond exact matching however the base of the
-        // path must EXACTLY match the permission object
-        const targetPathMatches = rolePermissionPathSections.every((permissionPathSection, index) => {
-          // check that this section of the target path exactly matches the required route permission object
-          // at the same index
-          const targetPathSection = targetPathSections[index];
-          return permissionPathSection === targetPathSection;
-        });
 
-        return targetPathMatches && data.authorized;
+    function checkUserAuthorization() {
+      const nextPageState = next.name;
+
+      console.log(paths);
+      // @Fix me, using abstract routes complicate auhtentification process
+      // abstracte routes are allowed by default
+      if (nextPageState !== 'reportsBase') {
+        const isAbstrateRoute = nextPageState.indexOf('.') !== -1;
+        if (isAbstrateRoute) {
+          return true;
+        }
       }
 
-      // this was not a valid partial match - the route cannot be authorised with this permission
-      return false;
+      if (next.parent) {
+        return true;
+      }
+      const authorizedStates = paths.map(p => {
+        return p.state_name;
+      }).filter(stateName => {
+        return stateName === nextPageState;
+      });
+
+      return authorizedStates.length > 0;
     }
   }
 

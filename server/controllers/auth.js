@@ -151,7 +151,7 @@ async function loadSessionInformation(user) {
   // next make sure this user has permissions
   // we use now roles for assigning permissions to users
   sql = `
-    SELECT IF(user_role.user_id = ?, 1, 0) authorized, unit.path
+    SELECT IF(user_role.user_id = ?, 1, 0) authorized, unit.path, unit.state_name
     FROM unit
     LEFT JOIN role_unit ON unit.id = role_unit.unit_id
     LEFT JOIN user_role ON user_role.role_uuid = role_unit.role_uuid

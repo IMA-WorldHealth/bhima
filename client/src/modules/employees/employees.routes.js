@@ -1,23 +1,25 @@
 angular.module('bhima.routes')
-  .config(['$stateProvider', function ($stateProvider) {
+  .config(['$stateProvider', ($stateProvider) => {
     $stateProvider
       .state('employeeRegister', {
-        url         : '/employees/register',
+        abstract : true,
+        url         : '/employees/registration',
         controller  : 'EmployeeController as EmployeeCtrl',
         templateUrl : 'modules/employees/registration/employees.html',
       })
-      .state('employeeEdit', {
-        url         : '/employees/:uuid/edit',
-        controller  : 'EmployeeController as EmployeeCtrl',
-        templateUrl : 'modules/employees/registration/employees.html',
+
+      .state('employeeRegister.register', {
+        url         : '/register',
       })
-      .state('patientAsEmployee', {
-        url         : '/employees/:uuid/patientAsEmployee',
+
+      .state('employeeRegister.employeeEdit', {
+        url         : '/:uuid/edit',
+      })
+      .state('employeeRegister.patientAsEmployee', {
+        url         : '/:uuid/patientAsEmployee',
         params : {
           saveAsEmployee : { value : true },
         },
-        controller  : 'EmployeeController as EmployeeCtrl',
-        templateUrl : 'modules/employees/registration/employees.html',
       })
       .state('employeeRegistry', {
         url         : '/employees',
