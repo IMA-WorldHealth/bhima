@@ -1,4 +1,4 @@
-/* global expect, agent */
+/* global agent, expect */
 
 const helpers = require('./helpers');
 
@@ -98,55 +98,6 @@ describe('(/fee_center_distribution) The /fee_center  API endpoint', () => {
    },
   };
 
-  const breackDown = {
-    data : {
-      values : { 1 : 50, 2 : 50, 3 : 0 },
-      transactions :
-  [{
-    uuid : '0070D328DDB611E8A8B3507B9DD6DEA5',
-    posted : 1,
-    project_id : 1,
-    fiscal_year_id : 4,
-    period_id : 201811,
-    trans_id : 'TPA20',
-    trans_date : '2018-11-01 10:09:27',
-    record_uuid : 'DB14EA1F777E4791B856B506F4C438E9',
-    hrRecord : null,
-    description : 'Facture de Test 2 Patient (PA.TPA.2) pour 2 items dans le service Medecine Interne. ',
-    account_id : 220,
-    debit : 6825.26,
-    credit : 0,
-    debit_equiv : 6825.26,
-    credit_equiv : 0,
-    currency_id : 2,
-    currencyName : 'United States Dollars',
-    entity_uuid : null,
-    hrEntity : null,
-    reference_uuid : null,
-    hrReference : null,
-    comment : null,
-    transaction_type_id : 11,
-    user_id : 1,
-    cc_id : null,
-    pc_id : null,
-    abbr : 'TPA',
-    project_name : 'Test Project A',
-    period_start : '2018-10-31T23:00:00.000Z',
-    transaction_type_text : 'VOUCHERS.SIMPLE.INVOICING',
-    period_end : '2018-11-29T23:00:00.000Z',
-    account_number : 66110011,
-    account_label : 'Remunération Personnel',
-    display_name : 'Super User',
-    fee_center_id : 4,
-    fee_center_label : 'Auxiliary 1',
-    amount : 6825.26,
-    amount_equiv : 6825.26,
-  }],
-      fee_center_id : 4,
-      is_cost : 1,
-    },
-  };
-
   const automaticInvoices = {
     data :
    [{
@@ -189,6 +140,10 @@ describe('(/fee_center_distribution) The /fee_center  API endpoint', () => {
      amount : 190,
      amount_equiv : 190,
    }],
+  };
+
+  const auxiliaryFeeCenter = {
+    data : 4,
   };
 
   it('GET /distribution_fee_center  ', () => {
@@ -256,6 +211,15 @@ describe('(/fee_center_distribution) The /fee_center  API endpoint', () => {
     return agent.get('/distribution_fee_center/getDistributionKey')
       .then(res => {
         helpers.api.listed(res, 7);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('POST /distribution_fee_center/resetKey : Reset the distribution keys', () => {
+    return agent.post('/distribution_fee_center/resetKey')
+      .send(auxiliaryFeeCenter)
+      .then((res) => {
+        expect(res).to.have.status(204);
       })
       .catch(helpers.handler);
   });

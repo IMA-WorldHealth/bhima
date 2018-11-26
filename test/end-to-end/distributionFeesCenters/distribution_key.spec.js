@@ -8,14 +8,14 @@ helpers.configure(chai);
 
 const { expect } = chai;
 
-describe('Distribution keys Management', () => {
+describe.only('Distribution keys Management', () => {
   // navigate to the page
   before(() => helpers.navigate('#!/distribution_center/distribution_key'));
 
   const Page = new DistributionKeysPage();
   const labelAuxiliary1 = 'Auxiliary 1 (1)';
   const labelAuxiliary2 = 'Auxiliary 2 (1)';
-  const labelAuxiliary3 = 'Auxiliary 3 (1)';
+  const resetAuxiliary2 = 'Auxiliary 2 (3)';
   const distributionKeyElements = 10;
 
   it('Set Distribution key for an Auxiliary Fee Center', () => {
@@ -28,5 +28,13 @@ describe('Distribution keys Management', () => {
 
   it('displays all distributions keys loaded from the database', () => {
     expect(Page.getDistributionKeyCount()).to.eventually.equal(distributionKeyElements);
+  });
+
+  it('displays all distributions keys loaded from the database', () => {
+    expect(Page.getDistributionKeyCount()).to.eventually.equal(distributionKeyElements);
+  });
+
+  it('Reset Distributions key for an Auxiliary Fee Center', () => {
+    Page.resetDistributionKey(resetAuxiliary2);
   });
 });

@@ -1,3 +1,4 @@
+/* eslint-disable lines-between-class-members */
 /* global element, by */
 
 /**
@@ -43,6 +44,17 @@ class FeeCenterPage {
         components.percentageInput.set(25, 'principal_2');
         components.percentageInput.set(25, 'principal_3');
         FU.buttons.submit();
+        components.notification.hasSuccess();
+      });
+  }
+  // Reset Distribution Keys for an auxiliary fee center
+  resetDistributionKey(label) {
+    GU.getGridIndexesMatchingText(this.gridId, label)
+      .then(indices => {
+        const { rowIndex } = indices;
+        GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'setting', this.gridId);
+
+        $('[data-method="reset"]').click();
         components.notification.hasSuccess();
       });
   }
