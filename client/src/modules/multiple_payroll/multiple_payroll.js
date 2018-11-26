@@ -5,7 +5,7 @@ angular.module('bhima.controllers')
 MultiplePayrollController.$inject = [
   'MultiplePayrollService', 'NotifyService',
   'GridSortingService', 'GridColumnService', 'GridStateService', '$state',
-  'ModalService', 'util', 'ReceiptModal', 'uiGridConstants'
+  'ModalService', 'util', 'ReceiptModal', 'uiGridConstants', 'SessionService',
 ];
 
 /**
@@ -18,7 +18,7 @@ MultiplePayrollController.$inject = [
  */
 function MultiplePayrollController(
   MultiplePayroll, Notify,
-  Sorting, Columns, GridState, $state, Modals, util, Receipts, uiGridConstants,
+  Sorting, Columns, GridState, $state, Modals, util, Receipts, uiGridConstants, Session,
 ) {
   const vm = this;
   const cacheKey = 'multiple-payroll-grid';
@@ -221,28 +221,31 @@ function MultiplePayrollController(
     if (employees.length) {
       const filters = MultiplePayroll.filters.formatHTTP(true);
       const currencyId = filters.currency_id;
-
-      // returns true If one employee who is no longer waiting for configuration is selected
-      const isNotWaitingConfiguration = employee => parseInt(employee.status_id, 10) !== 1;
-      const invalid = employees.some(isNotWaitingConfiguration);
-
-      if (invalid) {
-        Notify.warn('FORM.WARNINGS.ATTENTION_CONFIGURED');
+      if (currencyId !== Session.enterprise.currency_id) {
+        Notify.warn('FORM.INFO.SETTING_PAYMENT_CURRENCY');
       } else {
-        vm.activeConfig = false;
-        const idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
-        const data = {
-          employees,
-          currencyId,
-        };
+        // returns true If one employee who is no longer waiting for configuration is selected
+        const isNotWaitingConfiguration = employee => parseInt(employee.status_id, 10) !== 1;
+        const invalid = employees.some(isNotWaitingConfiguration);
 
-        MultiplePayroll.configurations(idPeriod, data)
-          .then(() => {
-            Notify.success('FORM.INFO.CONFIGURED_SUCCESSFULLY');
-            vm.activeConfig = true;
-            $state.go('multiple_payroll', null, { reload : true });
-          })
-          .catch(Notify.handleError);
+        if (invalid) {
+          Notify.warn('FORM.WARNINGS.ATTENTION_CONFIGURED');
+        } else {
+          vm.activeConfig = false;
+          const idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
+          const data = {
+            employees,
+            currencyId,
+          };
+
+          MultiplePayroll.configurations(idPeriod, data)
+            .then(() => {
+              Notify.success('FORM.INFO.CONFIGURED_SUCCESSFULLY');
+              vm.activeConfig = true;
+              $state.go('multiple_payroll', null, { reload : true });
+            })
+            .catch(Notify.handleError);
+        }
       }
     } else {
       Notify.danger('FORM.WARNINGS.NO_EMPLOYE_SELECTED');
