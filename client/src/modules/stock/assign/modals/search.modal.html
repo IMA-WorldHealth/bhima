@@ -11,7 +11,7 @@
     </ol>
   </div>
 
-  <div class="modal-body" style="overflow: auto; max-height: 600px; padding: 0px">
+  <div class="modal-body">
     <uib-tabset>
       <uib-tab index="0" heading="{{ 'FORM.LABELS.SEARCH_QUERIES' | translate}}" data-custom-filter-tab>
         <div class="tab-body">
@@ -40,6 +40,14 @@
               <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
             </div>
           </div>
+
+          <!-- entity -->
+          <bh-entity-select 
+            entity-uuid="$ctrl.searchQueries.entity_uuid"
+            on-select-callback="$ctrl.onSelectEntity(entity)"
+            required="true">
+            <bh-clear on-clear="$ctrl.clear('entity')"></bh-clear>
+          </bh-entity-select>
           
         </div>
       </uib-tab>
