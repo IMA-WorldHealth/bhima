@@ -255,6 +255,8 @@ function MultiplePayrollController(
     if (employees.length) {
       // get All Employees Reference
       const employeesRef = employees.map(emp => emp.reference);
+      const filters = MultiplePayroll.filters.formatHTTP(true);
+      const currency = filters.currency_id;
 
       // returns true if one employee waiting for configuration is selected
       const isWaitingConfiguration = employee => parseInt(employee.status_id, 10) === 1;
@@ -265,7 +267,7 @@ function MultiplePayrollController(
       } else {
         const idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
 
-        Receipts.payroll(idPeriod, employeesRef);
+        Receipts.payroll(idPeriod, employeesRef, currency, true);
       }
     } else {
       Notify.danger('FORM.WARNINGS.NO_EMPLOYE_SELECTED');
