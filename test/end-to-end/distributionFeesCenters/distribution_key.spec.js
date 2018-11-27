@@ -8,7 +8,7 @@ helpers.configure(chai);
 
 const { expect } = chai;
 
-describe.only('Distribution keys Management', () => {
+describe('Distribution keys Management', () => {
   // navigate to the page
   before(() => helpers.navigate('#!/distribution_center/distribution_key'));
 
