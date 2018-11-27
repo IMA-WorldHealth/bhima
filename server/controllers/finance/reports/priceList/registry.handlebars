@@ -1,0 +1,33 @@
+{{> head title="PRICE_LIST.TITLE" }}
+
+<body>
+
+  {{> header }}
+
+  <h3 class="text-center"><u>{{translate "FORM.LABELS.PRICE_LIST"}}</u></h3>
+
+  <!-- body  -->
+  <div class="row">
+
+    <div class="col-xs-12">
+      <table class="table table-condensed table-bordered">
+        <thead>
+          <tr>
+            <th class="text-center">{{translate "FORM.LABELS.LABEL"}}</th>
+            <th class="text-center">{{translate "FORM.LABELS.DESCRIPTION"}}</th>
+            <th class="text-center">{{translate "FORM.LABELS.ITEMS"}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each rows as |price| }}
+          <tr>
+            <td>{{ price.label }}</td>
+            <td>{{ price.description }}</td>
+            <td>{{ price.itemsNumber }}</td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
