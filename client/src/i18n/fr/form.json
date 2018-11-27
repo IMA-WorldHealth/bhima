@@ -412,6 +412,7 @@
             "HEALTH_ZONE":"Zone de santé",
             "HEALTH_AREA":"Air de santé",
             "ID": "ID",
+            "IGNORE_CLOSED_ACCOUNTS" : "ignoré les comptes formés",
             "INCOME": "Recettes",
             "INCOME_EXPENSE": "Recettes et dépenses",
             "INCREASE": "Augmentation",

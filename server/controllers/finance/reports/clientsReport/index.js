@@ -194,8 +194,7 @@ function buildComplexReport(opt) {
  * This function is responsible of returning a correct fiscal year and its period zero Id
  */
 function getFiscalYearByDate(date, periodZeroNumber) {
-  const query =
-    `
+  const query = `
     SELECT
       fy.id AS fiscal_year_id, fy.previous_fiscal_year_id, fy.start_date, fy.end_date, p.id AS period_id
     FROM
@@ -252,15 +251,14 @@ function getClientBalancesFromPeriodTotal(options, isInitial) {
   if (options.simplePreview) {
     cols = `t.number AS accountNumber, t.name, IFNULL(t.balance, 0) AS balance`;
   } else {
-    cols = (isInitial) ?
-      `
+    cols = (isInitial)
+      ? `
       t.number AS accountNumber, t.name, IFNULL(t.debit, 0) AS initDebit,
-      IFNULL(t.credit, 0) AS initCredit, IFNULL(t.balance, 0) AS initBalance` :
-      `t.number AS accountNumber, t.name, IFNULL(t.balance, 0) AS finalBalance`;
+      IFNULL(t.credit, 0) AS initCredit, IFNULL(t.balance, 0) AS initBalance`
+      : `t.number AS accountNumber, t.name, IFNULL(t.balance, 0) AS finalBalance`;
   }
 
-  const finalQuery =
-      `
+  const finalQuery = `
     SELECT
       ${cols}
     FROM
@@ -324,17 +322,12 @@ function getClientTotalsFromPeriodTotal(options, isInitial) {
   if (options.simplePreview) {
     cols = `IFNULL(t.balance, 0) AS balance`;
   } else {
-    cols = (isInitial) ?
-      'IFNULL(debit, 0) totalInitDebit, IFNULL(credit, 0) totalInitCredit, IFNULL(balance, 0) totalInitBalance' :
-      'IFNULL(t.balance, 0) AS totalFinalBalance';
+    cols = (isInitial)
+      ? 'IFNULL(debit, 0) totalInitDebit, IFNULL(credit, 0) totalInitCredit, IFNULL(balance, 0) totalInitBalance'
+      : 'IFNULL(t.balance, 0) AS totalFinalBalance';
   }
 
-  const finalQuery =
-      `
-    SELECT
-      ${cols}
-    FROM
-      (${query}) AS t`;
+  const finalQuery = ` SELECT ${cols}  FROM (${query}) AS t`;
 
   return db.one(finalQuery, parameters);
 }
@@ -342,8 +335,7 @@ function getClientTotalsFromPeriodTotal(options, isInitial) {
 // computes the client totals using the eneral ledger's table
 function getClientTotalsFromGeneralLedger(options) {
   const filterParser = new FilterParser(options, { tableAlias : 'gl', autoParseStatements : false });
-  const sql =
-      `
+  const sql = `
     SELECT
      SUM(gl.debit_equiv) AS debit, SUM(gl.credit_equiv) AS credit,
      SUM(gl.debit_equiv - gl.credit_equiv) AS balance
@@ -357,12 +349,14 @@ function getClientTotalsFromGeneralLedger(options) {
   filterParser.dateFrom('dateFrom', 'trans_date');
   filterParser.dateTo('dateTo', 'trans_date');
   filterParser.custom('ignoredClients', options.notInStatement);
+  filterParser.custom('locked_account', 'ac.locked=?');
+
 
   const query = filterParser.applyQuery(sql);
   const parameters = filterParser.parameters();
 
-  const finalQuery =
-    `SELECT
+  const finalQuery = `
+    SELECT
       IFNULL(t.debit, 0) AS totalCurrentDebit, IFNULL(t.credit, 0) AS totalCurrentCredit,
       IFNULL(t.balance, 0) AS totalCurrentBalance
     FROM

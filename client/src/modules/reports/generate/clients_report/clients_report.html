@@ -45,6 +45,12 @@
                 <span translate>FORM.LABELS.DETAIL_PREVIOUS</span>
               </label>
             </div>
+            <div class="form-group" ng-if="!ReportConfigCtrl.reportDetails.simplePreview">
+              <label class="text-action">
+                <input type="checkbox" name="locked_account" ng-true-value="1" ng-false-value="0" ng-model="ReportConfigCtrl.reportDetails.locked_account">
+                <span translate>FORM.LABELS.IGNORE_CLOSED_ACCOUNTS</span>
+              </label>
+            </div>
 
             <!-- Client to ignore  -->
             <bh-hidden-field

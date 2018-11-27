@@ -412,6 +412,7 @@
             "HOSPITAL_FILE_NR": "Hospital File Number",
             "HOSPITAL_NO": "Hospital No.",
             "ID": "ID",
+            "IGNORE_CLOSED_ACCOUNTS" : "ignore closed accounts",
             "INCLUDE_DATE_INTERVAL": "Include date interval",
             "INCOME": "Income",
             "INCOME_EXPENSE": "Income and Expense",
