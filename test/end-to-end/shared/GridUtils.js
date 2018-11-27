@@ -63,16 +63,14 @@ function getGridIndexesMatchingText(gridId, text) {
   return this.getGrid(gridId)
     .element(by.css('.ui-grid-render-container-body'))
     .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'))
-    .each((row, rowIndex) =>
-      row.all(by.repeater('(colRenderIndex, col) in colContainer.renderedColumns track by col.uid'))
-        .each((column, columnIndex) =>
-          column.getText()
-            .then(elementText => {
-              if (elementText.includes(text)) {
-                rowIdx = rowIndex;
-                colIdx = columnIndex;
-              }
-            })))
+    .each((row, rowIndex) => row.all(by.repeater('(colRenderIndex, col) in colContainer.renderedColumns track by col.uid'))
+      .each((column, columnIndex) => column.getText()
+        .then(elementText => {
+          if (elementText.includes(text)) {
+            rowIdx = rowIndex;
+            colIdx = columnIndex;
+          }
+        })))
     .then(() => ({ rowIndex : rowIdx, columnIndex : colIdx }));
 }
 
@@ -107,7 +105,7 @@ function expectHeaderColumns(gridId, expectedColumns) {
   ).to.eventually.equal(expectedColumns.length);
 
   headerColumns.getText().then(colTexts => {
-    const columnTexts = colTexts.map(function trimText(text) {
+    const columnTexts = colTexts.map((text) => {
       return text.replace(/^\s+/, '').replace(/\s+$/, '');
     });
 
@@ -136,6 +134,18 @@ function selectRow(gridId, rowNum) {
 }
 
 /**
+ * @function selectAll
+ *
+ * @description
+ * Selects all rows in the grid.
+ */
+function selectAll(gridId) {
+  const row = getGrid(gridId).$('ui-grid-header');
+  const btn = row.$('.ui-grid-selection-row-header-buttons');
+  return browser.actions().mouseMove(btn).mouseDown(btn).mouseUp();
+}
+
+/**
   * @name expectCellValueMatch
   * @description Checks that a cell matches the specified value,
   * takes a regEx or a simple string.
@@ -153,7 +163,7 @@ function selectRow(gridId, rowNum) {
   *
   */
 function expectCellValueMatch(gridId, row, col, value) {
-  var dataCell = getCell(gridId, row, col);
+  const dataCell = getCell(gridId, row, col);
   expect(dataCell.getText()).to.eventually.equal(value);
 }
 
@@ -169,4 +179,5 @@ exports.expectRowCountAbove = expectRowCountAbove;
 exports.expectColumnCount = expectColumnCount;
 exports.expectHeaderColumns = expectHeaderColumns;
 exports.selectRow = selectRow;
+exports.selectAll = selectAll;
 exports.expectCellValueMatch = expectCellValueMatch;

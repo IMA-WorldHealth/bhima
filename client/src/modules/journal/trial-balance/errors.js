@@ -19,8 +19,7 @@ function TrialBalanceErrorsController(TrialBalance, Notify, $state) {
   vm.goToOverviewView = () => $state.go('TrialBalanceOverview');
 
   // links the errors to the posting journal via their record uuid
-  const link =
-    `<div class="ui-grid-cell-contents">
+  const link = `<div class="ui-grid-cell-contents">
       <bh-journal-link record-uuid="row.entity.record_uuid" display="{{row.entity.trans_id}}"></bh-journal-link>
     </div>`;
 
