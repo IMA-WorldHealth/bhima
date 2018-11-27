@@ -18,7 +18,6 @@ function PriceListController(
   vm.download = download;
   vm.openColumnConfigModal = openColumnConfigModal;
   vm.toggleInlineFilter = toggleInlineFilter;
-
   // set price list items
   vm.addItem = addItem;
   // delete a price list
@@ -135,11 +134,17 @@ function PriceListController(
       });
   }
 
-  function download() {
+  function download(renderer) {
+    const displayNames = columnConfig.getDisplayNames();
     const options = {
-      renderer : 'pdf',
+      renderer,
       lang : Languages.key,
+      detailed : 1,
     };
+
+    if (renderer !== 'pdf') {
+      angular.extend(options, { displayNames, renameKeys : true });
+    }
     // return  serialized options
     return $httpParamSerializer(options);
   }
@@ -168,5 +173,6 @@ function PriceListController(
       vm.gridOptions.data = data;
     });
   }
+
   startUp();
 }

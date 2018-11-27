@@ -19,6 +19,7 @@ function PriceListService(Api) {
   service.update = update;
   service.details = details;
   service.deleteItem = deleteItem;
+  service.download = download;
 
   /**
    * @method create
@@ -72,5 +73,10 @@ function PriceListService(Api) {
       .then(service.util.unwrapHttpResponse);
   }
 
+  function download(params) {
+    const url = service.url.concat('download/list');
+    return service.$http.get(url, params)
+      .then(service.util.unwrapHttpResponse);
+  }
   return service;
 }

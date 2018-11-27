@@ -12,16 +12,26 @@
  * PUT    /prices/:uuid
  * DELETE /prices/:uuid
  */
-
 const db = require('../../lib/db');
 const { uuid } = require('../../lib/util');
 
+exports.lookup = lookup;
 /**
  * Lists all price lists in the database
  *
  * GET /prices
  */
 exports.list = function list(req, res, next) {
+  lookup(req)
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
+};
+
+
+function lookup(req) {
   let sql;
 
   if (req.query.detailed === '1') {
@@ -39,15 +49,8 @@ exports.list = function list(req, res, next) {
       WHERE enterprise_id = ?
       ORDER BY label;`;
   }
-
-  db.exec(sql, [req.session.enterprise.id])
-    .then((rows) => {
-      res.status(200).json(rows);
-    })
-    .catch(next)
-    .done();
-};
-
+  return db.exec(sql, [req.session.enterprise.id]);
+}
 /**
  * @param {number} id
  * @desc Queries the price_list and price_list_item tables for a pricle list
@@ -65,16 +68,16 @@ exports.list = function list(req, res, next) {
  */
 function lookupPriceList(uid) {
   let priceList;
-  let sql =
-    `SELECT BUID(uuid) AS uuid, label, description, created_at, updated_at
+  let sql = `
+    SELECT BUID(uuid) AS uuid, label, description, created_at, updated_at
     FROM price_list WHERE uuid = ?;`;
 
   return db.one(sql, [uid])
     .then((row) => {
       priceList = row;
 
-      sql =
-        `SELECT BUID(uuid) as uuid, BUID(inventory_uuid) as inventory_uuid, label, value, is_percentage, created_at
+      sql = `
+        SELECT BUID(uuid) as uuid, BUID(inventory_uuid) as inventory_uuid, label, value, is_percentage, created_at
         FROM price_list_item WHERE price_list_uuid = ?;`;
 
       return db.exec(sql, [uid]);
@@ -174,11 +177,12 @@ exports.create = function create(req, res, next) {
   let items;
   const data = req.body.list;
   const trans = db.transaction();
-  const priceListSql =
-    `INSERT INTO price_list (uuid, label, description, enterprise_id)
+  const priceListSql = `
+    INSERT INTO price_list (uuid, label, description, enterprise_id)
     VALUES (?, ?, ?, ?);`;
-  const priceListItemSql =
-    `INSERT INTO price_list_item (uuid, inventory_uuid, price_list_uuid,
+
+  const priceListItemSql = `
+    INSERT INTO price_list_item (uuid, inventory_uuid, price_list_uuid,
     label, value, is_percentage) VALUES ?;`;
 
   // generate a UUID if not provided
@@ -240,14 +244,12 @@ exports.deleteItem = function deleteItem(req, res, next) {
 exports.update = function update(req, res, next) {
   let items;
   const data = req.body.list;
-  const priceListSql =
-    'UPDATE price_list SET ? WHERE uuid = ?;';
+  const priceListSql = 'UPDATE price_list SET ? WHERE uuid = ?;';
 
-  const priceListDeleteItemSql =
-    'DELETE FROM price_list_item WHERE price_list_uuid = ?';
+  const priceListDeleteItemSql = 'DELETE FROM price_list_item WHERE price_list_uuid = ?';
 
-  const priceListCreateItemSql =
-    `INSERT INTO price_list_item (uuid, inventory_uuid, price_list_uuid,
+  const priceListCreateItemSql = `
+    INSERT INTO price_list_item (uuid, inventory_uuid, price_list_uuid,
     label, value, is_percentage) VALUES ?;`;
 
   const trans = db.transaction();
@@ -302,8 +304,7 @@ exports.update = function update(req, res, next) {
 exports.delete = function del(req, res, next) {
   const uid = db.bid(req.params.uuid);
 
-  const sql =
-    'DELETE FROM price_list WHERE uuid = ?;';
+  const sql = 'DELETE FROM price_list WHERE uuid = ?;';
 
   // ensure that the price list exists
   lookupPriceList(uid)
