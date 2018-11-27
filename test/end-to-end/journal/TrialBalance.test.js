@@ -24,21 +24,26 @@ function TrialBalanceTest() {
     filters.resetFilters();
   });
 
-  const TXN_A = 'TPA12'; // VO.TPA.4 reversal
-  const TXN_B = 'TPA8'; // VO.TPA.2 (fourth voucher from test dataste)
+  const TXN_A = 'TPA38'; // CP.TPA.3 (Paiement caution par Test 2 Patient (PA.TPA.2).)
+  const TXN_B = 'TPA6'; // CP.TPA.2 (This will be deleted in tests)
   it(`posts mutiple transactions (${TXN_A}, ${TXN_B}) to the General Ledger`, () => {
+    SearchModal.open();
+    const modal = new SearchModal();
+    modal.setTransactionType(['client']);
+    modal.submit();
+
     page.selectTransaction(TXN_A);
     page.selectTransaction(TXN_B);
 
     page.openTrialBalanceModal();
 
     // should have four lines
-    expect(TrialBalance.countOverviewRows()).to.eventually.equal(4);
+    expect(TrialBalance.countOverviewRows()).to.eventually.equal(2);
 
     TrialBalance.submit();
   });
 
-  const POSTED_TXN = 'TPA8';
+  const POSTED_TXN = 'TPA38';
   it(`blocks ${POSTED_TXN} as it is already posted`, () => {
 
     // make sure we have posted records in our view
