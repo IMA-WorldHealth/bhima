@@ -86,10 +86,10 @@
         "NO_INPUT_PROVIDED": "Données non valides fournies aux outils de transaction."
       },
       "REVERSE": {
-        "ACTION": "Inverser",
         "ACTION_1": "La transaction {{trans_id}} a été marquée comme <code> inversé </code>",
         "ACTION_2_1": "Document",
         "ACTION_2_2": "a été créé avec des valeurs égales et opposées pour inverser la transaction {{trans_id}}",
+        "ACTION": "Inverser",
         "AUTHORISED_BY": "Le document d'inversion a été autorisé par l'utilisateur:",
         "CONFIGURED_FOR": "S'il vous plaît confirmer que vous autorisez l'inversion de transaction:",
         "DESCRIPTION": "Transaction inversée à l'aide des outils administratifs",
@@ -98,14 +98,15 @@
         "TITLE": "Inverser la transaction"
       },
       "CORRECT": {
-        "ACTION": "Corriger",
-        "DETAILS": "Cette transaction peut maintenant être mise à jour avec des corrections. La soumission de ce processus créera deux documents justificatifs, l'un renversant les effets de cette transaction avec des valeurs égales et opposées, le second avec des lignes reflétant les corrections apportées ici.",
-        "CONFIGURED_FOR": "La transaction {{trans_id}} ne sera pas modifiée </b> car elle a déjà été postée. Cela créera un bon de renversement suivi d'un second bon avec les corrections apportées ici. Veuillez confirmer que vous autorisez les corrections ci-dessus à {{trans_id}}.",
-        "AUTHORISED_BY": "Le document d'inversion a été autorisé par l'utilisateur:",
         "ACTION_1": "La transaction {{trans_id}} a été marquée comme <code> inversé </code>",
         "ACTION_2_1": "Document",
         "ACTION_2_2": "a été créé avec des valeurs égales et opposées pour inverser la transaction {{trans_id}}",
         "ACTION_3_2": "a été créé avec les corrections fournies par cet outil",
+        "ACTION": "Corriger",
+        "AUTHORISED_BY": "Le document d'inversion a été autorisé par l'utilisateur:",
+        "CONFIGURED_FOR": "La transaction {{trans_id}} ne sera pas modifiée </b> car elle a déjà été postée. Cela créera un bon de renversement suivi d'un second bon avec les corrections apportées ici. Veuillez confirmer que vous autorisez les corrections ci-dessus à {{trans_id}}.",
+        "DESCRIPTION": "Transaction corrigée à l'aide des outils administratifs",
+        "DETAILS": "Cette transaction peut maintenant être mise à jour avec des corrections. La soumission de ce processus créera deux documents justificatifs, l'un renversant les effets de cette transaction avec des valeurs égales et opposées, le second avec des lignes reflétant les corrections apportées ici.",
         "SUCCESS": "L'inversion de transaction et les documents de correction ont été écrits avec succès",
         "TITLE": "Corriger transaction"
       }
