@@ -71,6 +71,12 @@
               <bh-clear on-clear="$ctrl.clear('debtor_group_uuid')"></bh-clear>
           </bh-debtor-group-select>
 
+          <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.description.$invalid }">
+            <label class="control-label" translate>FORM.LABELS.DESCRIPTION</label>
+            <bh-clear on-clear="$ctrl.clear('description')"></bh-clear>
+            <textarea ng-model="$ctrl.searchQueries.description" class="form-control" rows="2"></textarea>
+          </div>
+
           <bh-user-select
             user-id="$ctrl.searchQueries.user_id"
             name="user_id"

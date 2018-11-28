@@ -137,6 +137,7 @@ function PatientInvoiceService(
     { key : 'defaultPeriod', label : 'TABLE.COLUMNS.PERIOD', valueFilter : 'translate' },
     { key : 'debtor_group_uuid', label : 'FORM.LABELS.DEBTOR_GROUP' },
     { key : 'project_id', label : 'FORM.LABELS.PROJECT' },
+    { key : 'description', label : 'FORM.LABELS.DESCRIPTION' },
     { key : 'cash_uuid', label : 'FORM.INFO.PAYMENT' },
   ]);
 

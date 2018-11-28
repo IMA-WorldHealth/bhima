@@ -235,7 +235,7 @@ function find(options) {
   }
   const sql = `
     SELECT BUID(invoice.uuid) as uuid, invoice.project_id, invoice.date,
-      patient.display_name as patientName, invoice.cost,
+      patient.display_name as patientName, invoice.cost, invoice.description,
       BUID(invoice.debtor_uuid) as debtor_uuid, dm.text AS reference,
       em.text AS patientReference, service.name as serviceName, proj.name AS project_name,
       user.display_name, invoice.user_id, invoice.reversed, invoice.edited
@@ -259,6 +259,8 @@ function find(options) {
   filters.equals('service_id');
   filters.equals('user_id');
   filters.equals('uuid');
+
+  filters.fullText('description');
 
   filters.equals('reference', 'text', 'dm');
   filters.equals('patientReference', 'text', 'em');

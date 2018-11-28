@@ -85,6 +85,15 @@ describe('(/invoices) Patient Invoices', () => {
         .catch(helpers.handler);
     });
 
+    it('GET /invoices should filter by description and return 3 invoices', () => {
+      return agent.get('/invoices')
+        .query({ description : 'TPA_VENTE/' })
+        .then(res => {
+          helpers.api.listed(res, 3);
+        })
+        .catch(helpers.handler);
+    });
+
     // filter should find exactly one result
     it('GET /invoices?cost=75 should return a single invoice', () => {
       return agent.get('/invoices?cost=75')
