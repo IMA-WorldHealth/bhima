@@ -76,6 +76,10 @@ function InvoiceRegistryController(
     type : 'number',
     footerCellFilter : 'currency:'.concat(Session.enterprise.currency_id),
   }, {
+    field : 'description',
+    displayName : 'FORM.LABELS.DESCRIPTION',
+    headerCellFilter : 'translate',
+  }, {
     field : 'project_name',
     displayName : 'TABLE.COLUMNS.PROJECT',
     headerCellFilter : 'translate',

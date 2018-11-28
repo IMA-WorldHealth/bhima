@@ -20,7 +20,7 @@ function SearchCashPaymentModalController(Notify, Instance, filters, Store, Peri
 
   const searchQueryOptions = [
     'is_caution', 'reference', 'cashbox_id', 'user_id', 'reference_patient',
-    'currency_id', 'reversed', 'debtor_group_uuid',
+    'currency_id', 'reversed', 'debtor_group_uuid', 'description',
   ];
 
   vm.searchQueries = {};
@@ -120,9 +120,8 @@ function SearchCashPaymentModalController(Notify, Instance, filters, Store, Peri
         // To avoid overwriting a real display value, we first determine if the value changed in the current view.
         // If so, we do not use the previous display value.  If the values are identical, we can restore the
         // previous display value without fear of data being out of date.
-        const usePreviousDisplayValue =
-          angular.equals(initialSearchQueries[key], value) &&
-          angular.isDefined(lastDisplayValues[key]);
+        const usePreviousDisplayValue = angular.equals(initialSearchQueries[key], value)
+          && angular.isDefined(lastDisplayValues[key]);
 
         // default to the raw value if no display value is defined
         const displayValue = usePreviousDisplayValue ? lastDisplayValues[key] : displayValues[key] || value;
