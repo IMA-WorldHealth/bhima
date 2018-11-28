@@ -44,17 +44,17 @@
         </a>
       </div>
 
-      <div class="toolbar-item" ng-if="AccountsCtrl.showHiddenAccounts">
-        <a class="btn btn-default text-capitalize" ng-click="AccountsCtrl.hiddenAccount(1)">
+      <div class="toolbar-item" ng-if="!AccountsCtrl.showHiddenAccounts">
+        <a class="btn btn-default text-capitalize" ng-click="AccountsCtrl.setShowHiddenAccounts(true)">
           <i class="fa fa-eye"></i>
-          <span class="hidden-xs" translate> ACCOUNT.DISPLAY_HIDDEN </span>
+          <span class="hidden-xs" translate>ACCOUNT.DISPLAY_HIDDEN</span>
         </a>
       </div>
 
-      <div class="toolbar-item" ng-if="!AccountsCtrl.showHiddenAccounts">
-        <a class="btn btn-default text-capitalize" ng-click="AccountsCtrl.hiddenAccount(0)">
+      <div class="toolbar-item" ng-if="AccountsCtrl.showHiddenAccounts">
+        <a class="btn btn-default text-capitalize" ng-click="AccountsCtrl.setShowHiddenAccounts(false)">
           <i class="fa fa-eye-slash"></i>
-          <span class="hidden-xs" translate> ACCOUNT.HIDE_HIDDEN </span>
+          <span class="hidden-xs" translate>ACCOUNT.HIDE_HIDDEN</span>
         </a>
       </div>
 

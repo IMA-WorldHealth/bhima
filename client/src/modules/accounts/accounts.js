@@ -25,7 +25,8 @@ function AccountsController(
 
   vm.Constants = Constants;
   vm.loading = true;
-  vm.showHiddenAccounts = true;
+
+  vm.showHiddenAccounts = false;
 
   // account title indent value in pixels
   vm.indentTitleSpace = 20;
@@ -39,7 +40,7 @@ function AccountsController(
   vm.remove = remove;
   vm.toggleHideAccount = toggleHideAccount;
   vm.toggleLockAccount = toggleLockAccount;
-  vm.hiddenAccount = hiddenAccount;
+  vm.setShowHiddenAccounts = setShowHiddenAccounts;
 
   vm.Accounts = new AccountGrid();
   function init(initialLoad) {
@@ -104,15 +105,9 @@ function AccountsController(
     ];
   }
 
-  function hiddenAccount(value) {
-    if (value === 1) {
-      vm.showHiddenAccounts = false;
-      vm.gridOptions.data = vm.Accounts.data;
-
-    } else {
-      vm.showHiddenAccounts = true;
-      vm.gridOptions.data = vm.unHiddenAccount;
-    }
+  function setShowHiddenAccounts(showHiddenAccounts) {
+    vm.showHiddenAccounts = showHiddenAccounts;
+    vm.Accounts.filterHiddenAccounts(showHiddenAccounts);
   }
 
   function handleUpdatedAccount(event, account) {
@@ -181,9 +176,11 @@ function AccountsController(
   }
 
   function bindGridData() {
-    // Filter unhidden account
-    vm.unHiddenAccount = vm.Accounts.data.filter(item => (item.hidden === 0));
-    vm.gridOptions.data = vm.unHiddenAccount;
+    // format view, filtering if necessary
+    vm.setShowHiddenAccounts(vm.showHiddenAccounts);
+
+    // bind grid data
+    vm.gridOptions.data = vm.Accounts.data;
   }
 
   /**
@@ -229,6 +226,9 @@ function AccountsController(
             .then(() => {
               account.hidden = !account.hidden;
               vm.Accounts.updateViewEdit(null, account);
+
+              // re-filter view
+              setShowHiddenAccounts(vm.showHiddenAccounts);
             });
         }
       });
