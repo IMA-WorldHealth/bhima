@@ -176,7 +176,9 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session,
   }
 
   function changeGrouping (column) {
-    this.gridApi.grouping.groupColumn(column);
+    $timeout(() => {
+      this.gridApi.grouping.groupColumn(column);
+    }, 0);
 
     if (this.expandByDefault) {
       unfoldAllGroups(this.gridApi);
@@ -184,7 +186,9 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session,
   }
 
   function removeGrouping(column) {
-    this.gridApi.grouping.ungroupColumn(column);
+    $timeout(() => {
+      this.gridApi.grouping.ungroupColumn(column);
+    }, 0);
   }
 
   // return the current grouping
