@@ -1,16 +1,22 @@
-{{> head title="REPORT.CLIENT_DEBTOR_ACCOUNT_BALANCE_REPORT"}}
+{{> head title="REPORT.CLIENTS.TITLE"}}
 
 <body>
   <main class="container">
     {{> header }}
 
     <h3 class="text-center text-capitalize">
-      <strong>{{translate "REPORT.CLIENT_DEBTOR_ACCOUNT_BALANCE_REPORT"}}</strong>
+      <strong>{{translate "REPORT.CLIENTS.TITLE"}}</strong>
     </h3>
 
     <h4 class="text-center text-capitalize">
       {{ fiscalYear.label }}
     </h4>
+
+    {{#unless isEnterpriseCurrency}}
+      <div class="alert alert-warning">
+        <p>{{translate "REPORT.REPORT_ACCOUNTS.WARN_CURRENCY"}}</p>
+      </div>
+    {{/unless}}
 
     <section>
       <table class="table table-condensed table-report table-bordered">
@@ -21,6 +27,7 @@
             <th>{{translate "REPORT.OPENING_BALANCE"}}</th>
             <th>{{translate "TABLE.COLUMNS.DEBIT"}}</th>
             <th>{{translate "TABLE.COLUMNS.CREDIT"}}</th>
+            <th>{{translate "FORM.LABELS.DIFFERENCE"}}</th>
             <th>{{translate "REPORT.CLOSING_BALANCE"}}</th>
           </tr>
         </thead>
@@ -30,10 +37,11 @@
             <tr>
               <td>{{row.accountNumber}}</td>
               <td>{{row.groupName }}</td>
-              <td class="text-right">{{currency row.openingBalance ../metadata.enterprise.currency_id}}</td>
-              <td class="text-right">{{currency row.debit  ../metadata.enterprise.currency_id}}</td>
-              <td class="text-right">{{currency row.credit  ../metadata.enterprise.currency_id}}</td>
-              <td class="text-right">{{currency row.closingBalance ../metadata.enterprise.currency_id}}</td>
+              <td class="text-right">{{debcred row.openingBalance row.currencyId}}</td>
+              <td class="text-right">{{debcred row.debit row.currencyId}}</td>
+              <td class="text-right">{{debcred row.credit row.currencyId}}</td>
+              <td class="text-right">{{debcred row.movement row.currencyId}}</td>
+              <td class="text-right">{{debcred row.closingBalance row.currencyId}}</td>
             </tr>
           {{else}}
             {{> emptyTable columns="6" }}
@@ -42,10 +50,11 @@
 
         <tfoot>
           <th colspan="2">{{translate "TABLE.COLUMNS.TOTAL"}}</th>
-          <th class="text-right">{{currency footer.openingBalance  ../metadata.enterprise.currency_id}}</th>
-          <th class="text-right">{{currency footer.debit  ../metadata.enterprise.currency_id}}</th>
-          <th class="text-right">{{currency footer.credit  ../metadata.enterprise.currency_id}}</th>
-          <th class="text-right">{{currency footer.closingBalance  ../metadata.enterprise.currency_id}}</th>
+          <th class="text-right">{{debcred footer.openingBalance footer.currencyId}}</th>
+          <th class="text-right">{{debcred footer.debit  footer.currencyId}}</th>
+          <th class="text-right">{{debcred footer.credit  footer.currencyId}}</th>
+          <th class="text-right">{{debcred footer.movement footer.currencyId}}</th>
+          <th class="text-right">{{debcred footer.closingBalance footer.currencyId}}</th>
         </tfoot>
       </table>
     </section>

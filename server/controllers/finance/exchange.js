@@ -83,8 +83,7 @@ exports.create = function create(req, res, next) {
     data.date = new Date(data.date);
   }
 
-  const sql =
-    `INSERT INTO exchange_rate (enterprise_id, currency_id, rate, date)
+  const sql = `INSERT INTO exchange_rate (enterprise_id, currency_id, rate, date)
     VALUES (?);`;
 
   db.exec(sql, [[data.enterprise_id, data.currency_id, data.rate, data.date]])
@@ -98,8 +97,7 @@ exports.create = function create(req, res, next) {
 
 // PUT /exchange/:id
 exports.update = function update(req, res, next) {
-  let sql =
-    'UPDATE exchange_rate SET ? WHERE id = ?;';
+  let sql = 'UPDATE exchange_rate SET ? WHERE id = ?;';
 
   // should we even be changed the date?
   if (req.body.date) {
@@ -108,8 +106,7 @@ exports.update = function update(req, res, next) {
 
   db.exec(sql, [req.body, req.params.id])
     .then(() => {
-      sql =
-      `SELECT
+      sql = `SELECT
         exchange_rate.id, exchange_rate.enterprise_id, exchange_rate.currency_id,
         exchange_rate.rate, exchange_rate.date, enterprise.currency_id AS enterprise_currency_id
       FROM exchange_rate
@@ -130,8 +127,7 @@ exports.update = function update(req, res, next) {
 
 // DELETE /exchange/:id
 exports.delete = function del(req, res, next) {
-  const sql =
-    'DELETE FROM exchange_rate WHERE id = ?;';
+  const sql = 'DELETE FROM exchange_rate WHERE id = ?;';
 
   db.exec(sql, [req.params.id])
     .then((row) => {
@@ -147,11 +143,10 @@ exports.delete = function del(req, res, next) {
 
 // This query returns the current exchange rate of all currencies
 function getCurrentExchangeRateByCurrency(date = new Date()) {
-
   const sql = `
     SELECT e.currency_id, e.id, e.enterprise_id, MAX(e.rate) rate, e.date
       FROM (
-        SELECT exchange_rate.currency_id, exchange_rate.id, exchange_rate.enterprise_id,  
+        SELECT exchange_rate.currency_id, exchange_rate.id, exchange_rate.enterprise_id,
         exchange_rate.rate, exchange_rate.date
         FROM exchange_rate
         JOIN (

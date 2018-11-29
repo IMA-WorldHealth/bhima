@@ -8,8 +8,8 @@
 <div ng-show="!ReportConfigCtrl.previewGenerated">
 <div class="row">
   <div class="col-md-12">
-    <h3 class="text-capitalize" translate>REPORT.BALANCE_REPORT.TITLE</h3>
-    <p class="text-info" translate>REPORT.BALANCE_REPORT.DESCRIPTION</p>
+    <h3 class="text-capitalize" translate>REPORT.CLIENTS.TITLE</h3>
+    <p class="text-info" translate>REPORT.CLIENTS.DESCRIPTION</p>
   </div>
 </div>
 
@@ -29,6 +29,11 @@
             validation-trigger="ConfigForm.$submitted"
             on-select-fiscal-callback ="ReportConfigCtrl.onSelectFiscal(fiscalYear)">
           </bh-fiscal-year-select>
+
+          <bh-currency-select
+            currency-id="ReportConfigCtrl.reportDetails.currencyId"
+            on-change="ReportConfigCtrl.onSelectCurrency(currency)">
+          </bh-currency-select>
 
           <!--preview-->
           <bh-loading-button loading-state="ConfigForm.$loading">

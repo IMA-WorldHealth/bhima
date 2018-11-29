@@ -1,31 +1,37 @@
 angular.module('bhima.controllers')
-  .controller('debtorBalanceReportController', DebtorBalanceReportController);
+  .controller('annual-clients-reportController', AnnualClientsReportController);
 
-DebtorBalanceReportController.$inject = [
-  '$state', '$sce', 'NotifyService', 'BaseReportService', 'AppCache',
-  'BaseReportService', 'reportData',
+AnnualClientsReportController.$inject = [
+  '$state', '$sce', 'NotifyService', 'AppCache', 'BaseReportService',
+  'reportData', 'SessionService',
 ];
 
 /**
- * @function DebtorBalanceReportController
+ * @function AnnualClientsReportController
  *
  * @description
  * The debtor balance report provides a view of the current balance of each
  * debtor group in the enterprise.  It is slightly easier to use than the aged
  * debtors report, but contains the same information, sans aging.
  */
-function DebtorBalanceReportController($state, $sce, Notify, BaseReportService, AppCache, SavedReports, reportData) {
+function AnnualClientsReportController($state, $sce, Notify, AppCache, SavedReports, reportData, Session) {
   const vm = this;
-  const cache = new AppCache('configure_debtorAccountBalance');
-  const reportUrl = 'reports/debtorAccountBalance';
+  const cache = new AppCache('configure_clients');
+  const reportUrl = 'reports/finance/annual-clients-report';
 
-  vm.reportDetails = {};
+  vm.reportDetails = {
+    currencyId : Session.enterprise.currency_id,
+  };
 
   checkCachedConfiguration();
 
   // update the fiscal year on selection
   vm.onSelectFiscal = fiscal => {
     vm.reportDetails.fiscalId = fiscal.id;
+  };
+
+  vm.onSelectCurrency = currency => {
+    vm.reportDetails.currencyId = currency.id;
   };
 
   vm.requestSaveAs = function requestSaveAs() {
