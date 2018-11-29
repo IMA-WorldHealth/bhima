@@ -29,122 +29,95 @@ function StockLotsController(
   ];
 
   // grid columns
-  const columns = [
-    {
-      field : 'depot_text',
-      displayName : 'STOCK.DEPOT',
-      headerCellFilter : 'translate',
-    },
-
-    {
-      field : 'code',
-      displayName : 'STOCK.CODE',
-      headerCellFilter : 'translate',
-    },
-
-    {
-      field : 'text',
-      displayName : 'STOCK.INVENTORY',
-      headerCellFilter : 'translate',
-    },
-
-    {
-      field : 'group_name',
-      displayName : 'TABLE.COLUMNS.INVENTORY_GROUP',
-      headerCellFilter : 'translate',
-    },
-
-    {
-      field : 'label',
-      displayName : 'STOCK.LOT',
-      headerCellFilter : 'translate',
-    },
-
-    {
-      field : 'quantity',
-      displayName : 'STOCK.QUANTITY',
-      headerCellFilter : 'translate',
-    },
-
-    {
-      field : 'unit_cost',
-      displayName : 'STOCK.UNIT_COST',
-      headerCellFilter : 'translate',
-      type : 'number',
-      cellFilter : 'currency: '.concat(Session.enterprise.currency_id),
-    },
-
-    {
-      field : 'unit_type',
-      width : 75,
-      displayName : 'TABLE.COLUMNS.UNIT',
-      headerCellFilter : 'translate',
-      cellTemplate : 'modules/stock/inventories/templates/unit.tmpl.html',
-    },
-
-    {
-      field : 'entry_date',
-      displayName : 'STOCK.ENTRY_DATE',
-      headerCellFilter : 'translate',
-      cellFilter : 'date',
-    },
-
-    {
-      field : 'expiration_date',
-      displayName : 'STOCK.EXPIRATION_DATE',
-      headerCellFilter : 'translate',
-      cellFilter : 'date',
-    },
-    {
-      field : 'delay_expiration',
-      displayName : 'STOCK.EXPIRATION',
-      headerCellFilter : 'translate',
-    },
-    {
-      field : 'avg_consumption',
-      displayName : 'STOCK.CMM',
-      headerCellFilter : 'translate',
-      type : 'number',
-    },
-    {
-      field : 'S_MONTH',
-      displayName : 'STOCK.MSD',
-      headerCellFilter : 'translate',
-      type : 'number',
-    },
-    {
-      field : 'lifetime',
-      displayName : 'STOCK.LIFETIME',
-      headerCellFilter : 'translate',
-      cellTemplate     : 'modules/stock/lots/templates/lifetime.cell.html',
-      type : 'number',
-    },
-    {
-      field : 'S_LOT_LIFETIME',
-      displayName : 'STOCK.LOT_LIFETIME',
-      headerCellFilter : 'translate',
-      cellTemplate     : 'modules/stock/lots/templates/lot_lifetime.cell.html',
-      type : 'number',
-    },
-    {
-      field : 'S_RISK',
-      displayName : 'STOCK.RISK',
-      headerCellFilter : 'translate',
-      cellTemplate     : 'modules/stock/lots/templates/risk.cell.html',
-      type : 'number',
-    },
-    {
-      field : 'S_RISK_QUANTITY',
-      displayName : 'STOCK.RISK_QUANTITY',
-      headerCellFilter : 'translate',
-      cellTemplate     : 'modules/stock/lots/templates/risk_quantity.cell.html',
-      type : 'number',
-    },
-  ];
+  const columns = [{
+    field : 'depot_text',
+    displayName : 'STOCK.DEPOT',
+    headerCellFilter : 'translate',
+  }, {
+    field : 'code',
+    displayName : 'STOCK.CODE',
+    headerCellFilter : 'translate',
+  }, {
+    field : 'text',
+    displayName : 'STOCK.INVENTORY',
+    headerCellFilter : 'translate',
+  }, {
+    field : 'group_name',
+    displayName : 'TABLE.COLUMNS.INVENTORY_GROUP',
+    headerCellFilter : 'translate',
+  }, {
+    field : 'label',
+    displayName : 'STOCK.LOT',
+    headerCellFilter : 'translate',
+  }, {
+    field : 'quantity',
+    displayName : 'STOCK.QUANTITY',
+    headerCellFilter : 'translate',
+  }, {
+    field : 'unit_cost',
+    displayName : 'STOCK.UNIT_COST',
+    headerCellFilter : 'translate',
+    type : 'number',
+    cellFilter : 'currency: '.concat(Session.enterprise.currency_id),
+  }, {
+    field : 'unit_type',
+    width : 75,
+    displayName : 'TABLE.COLUMNS.UNIT',
+    headerCellFilter : 'translate',
+    cellTemplate : 'modules/stock/inventories/templates/unit.tmpl.html',
+  }, {
+    field : 'entry_date',
+    displayName : 'STOCK.ENTRY_DATE',
+    headerCellFilter : 'translate',
+    cellFilter : 'date',
+  }, {
+    field : 'expiration_date',
+    displayName : 'STOCK.EXPIRATION_DATE',
+    headerCellFilter : 'translate',
+    cellFilter : 'date',
+  }, {
+    field : 'delay_expiration',
+    displayName : 'STOCK.EXPIRATION',
+    headerCellFilter : 'translate',
+  }, {
+    field : 'avg_consumption',
+    displayName : 'STOCK.CMM',
+    headerCellFilter : 'translate',
+    type : 'number',
+  }, {
+    field : 'S_MONTH',
+    displayName : 'STOCK.MSD',
+    headerCellFilter : 'translate',
+    type : 'number',
+  }, {
+    field : 'lifetime',
+    displayName : 'STOCK.LIFETIME',
+    headerCellFilter : 'translate',
+    cellTemplate     : 'modules/stock/lots/templates/lifetime.cell.html',
+    type : 'number',
+  }, {
+    field : 'S_LOT_LIFETIME',
+    displayName : 'STOCK.LOT_LIFETIME',
+    headerCellFilter : 'translate',
+    cellTemplate     : 'modules/stock/lots/templates/lot_lifetime.cell.html',
+    type : 'number',
+  }, {
+    field : 'S_RISK',
+    displayName : 'STOCK.RISK',
+    headerCellFilter : 'translate',
+    cellTemplate     : 'modules/stock/lots/templates/risk.cell.html',
+    type : 'number',
+  }, {
+    field : 'S_RISK_QUANTITY',
+    displayName : 'STOCK.RISK_QUANTITY',
+    headerCellFilter : 'translate',
+    cellTemplate     : 'modules/stock/lots/templates/risk_quantity.cell.html',
+    type : 'number',
+  }];
 
   const gridFooterTemplate = `
     <div>
-      <b>{{ grid.appScope.countGridRows() }}</b> 
+      <b>{{ grid.appScope.countGridRows() }}</b>
       <span translate>TABLE.AGGREGATES.ROWS</span>
     </div>
   `;
@@ -167,7 +140,8 @@ function StockLotsController(
   const state = new GridState(vm.gridOptions, cacheKey);
 
   // expose to the view model
-  vm.grouping = new Grouping(vm.gridOptions, true, 'depot_text', vm.grouped, true);
+  vm.grouping = new Grouping(vm.gridOptions, false, 'depot_text', true, true);
+
   vm.getQueryString = Stock.getQueryString;
   vm.clearGridState = clearGridState;
   vm.search = search;
@@ -180,9 +154,7 @@ function StockLotsController(
   }
 
   // count data rows
-  vm.countGridRows = () => {
-    return vm.gridOptions.data.length;
-  };
+  vm.countGridRows = () => vm.gridOptions.data.length;
 
   // select group
   vm.selectGroup = (group) => {
@@ -235,6 +207,10 @@ function StockLotsController(
     vm.loading = !vm.loading;
   }
 
+  function orderByDepot(rowA, rowB) {
+    return rowA.depot_text > rowB.depot_text ? 1 : -1;
+  }
+
   // load stock lots in the grid
   function load(filters) {
     vm.hasError = false;
@@ -245,8 +221,15 @@ function StockLotsController(
 
     Stock.lots.read(null, filters)
       .then((lots) => {
+
+        // FIXME(@jniles): we should do this ordering on the server via an ORDER BY
+        lots
+          .sort(orderByDepot);
+
         vm.gridOptions.data = lots;
+
         vm.grouping.unfoldAllGroups();
+        vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
       })
       .catch(errorHandler)
       .finally(toggleLoadingIndicator);
@@ -287,7 +270,6 @@ function StockLotsController(
   }
 
   vm.downloadExcel = () => {
-
     const filterOpts = stockLotFilters.formatHTTP();
     const defaultOpts = {
       renderer : 'xlsx',
