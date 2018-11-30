@@ -1,23 +1,19 @@
-/* global element, by, browser */
+/* global by */
 
-const chai = require('chai');
+const { expect } = require('chai');
 const FU = require('../shared/FormUtils');
 const helpers = require('../shared/helpers');
 
-const expect = chai.expect;
-
-helpers.configure(chai);
-
-describe('Countries Management', function () {
+describe('Countries Management', () => {
 
   const path = '#!/locations/country';
 
   // navigate to the page before the test suite
   before(() => helpers.navigate(path));
 
-  const country = { name: 'New Country' };
+  const country = { name : 'New Country' };
 
-  it('creates a new country', function () {
+  it('creates a new country', () => {
     FU.buttons.create();
 
     FU.input('CountryCtrl.country.name', country.name);
@@ -30,18 +26,20 @@ describe('Countries Management', function () {
   });
 
 
-  it('edits a country', function () {
+  it('edits a country', () => {
     $(`[data-country-name="${country.name}"]`).click();
 
     // modify the country name
     FU.input('CountryCtrl.country.name', 'Country Update');
-    element(by.id('change_country')).click();
+
+    // submit the page to the server
+    FU.buttons.submit();
 
     // make sure the success message appears
     FU.exists(by.id('update_success'), true);
   });
 
-  it('blocks invalid form submission with relevant error classes', function () {
+  it('blocks invalid form submission with relevant error classes', () => {
 
     // switch to the create form
     FU.buttons.create();

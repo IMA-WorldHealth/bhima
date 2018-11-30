@@ -1,14 +1,8 @@
-/* global element, by */
+/* global by */
 
-const chai = require('chai');
-
-const { expect } = chai;
-
+const { expect } = require('chai');
 const FU = require('../shared/FormUtils');
-
 const helpers = require('../shared/helpers');
-
-helpers.configure(chai);
 
 describe('Villages Management', () => {
   const path = '#!/locations/village';
@@ -49,7 +43,7 @@ describe('Villages Management', () => {
     FU.select('VillageCtrl.village.sector_uuid', village.sector);
     FU.input('VillageCtrl.village.name', 'Village Update');
 
-    element(by.id('change_village')).click();
+    FU.buttons.submit();
 
     // make sure the success message appears
     FU.exists(by.id('update_success'), true);

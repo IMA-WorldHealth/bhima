@@ -1,4 +1,4 @@
-/* global element, by */
+/* global by */
 
 const chai = require('chai');
 
@@ -40,7 +40,7 @@ describe('Provinces Management', () => {
     FU.select('ProvinceCtrl.province.country_uuid', province.country);
     FU.input('ProvinceCtrl.province.name', 'Province Update');
 
-    element(by.id('change_province')).click();
+    FU.buttons.submit();
 
     // make sure the success message appears
     FU.exists(by.id('update_success'), true);

@@ -1,13 +1,12 @@
-// TODO Handle HTTP exception errors (displayed contextually on form)
 angular.module('bhima.controllers')
-.controller('CountryController', CountryController);
+  .controller('CountryController', CountryController);
 
 CountryController.$inject = [
-  'LocationService', 'util'
+  'LocationService', 'util', 'NotifyService',
 ];
 
-function CountryController(locationService, util) {
-  var vm = this;
+function CountryController(locationService, util, Notify) {
+  const vm = this;
   vm.session = {};
   vm.view = 'default';
 
@@ -17,10 +16,6 @@ function CountryController(locationService, util) {
   vm.update = update;
   vm.cancel = cancel;
   vm.countryLength = util.length45;
-
-  function handler(error) {
-    console.error(error);
-  }
 
   // fired on startup
   function startup() {
@@ -41,21 +36,21 @@ function CountryController(locationService, util) {
   }
 
   vm.messages = {
-    country : locationService.messages.country
+    country : locationService.messages.country,
   };
 
   /** load countries on startup */
   locationService.countries()
-  .then(function (countries) {
+    .then((countries) => {
 
-    // bind the countries to the view for <select>ion
-    vm.countries = countries;
+      // bind the countries to the view for <select>ion
+      vm.countries = countries;
 
-    // make sure that we are showing the proper message to the client
-    vm.messages.country = (countries.length > 0) ?
-      locationService.messages.country :
-      locationService.messages.empty;
-  });
+      // make sure that we are showing the proper message to the client
+      vm.messages.country = (countries.length > 0)
+        ? locationService.messages.country
+        : locationService.messages.empty;
+    });
 
 
   // switch to update mode
@@ -65,10 +60,9 @@ function CountryController(locationService, util) {
     vm.country = data;
   }
 
-
   // refresh the displayed Countrys
   function refreshCountrys() {
-    return locationService.countries({detailed : 1}).then(function (data) {
+    return locationService.countries({ detailed : 1 }).then((data) => {
       vm.countries = data;
       vm.session.loading = false;
     });
@@ -77,24 +71,21 @@ function CountryController(locationService, util) {
   // form submission
   function submit(form) {
     // stop submission if the form is invalid
-    if (form.$invalid) { return; }
+    if (form.$invalid) { return 0; }
 
-    var promise;
-    var creation = (vm.view === 'create');
-    var country = angular.copy(vm.country);
+    const creation = (vm.view === 'create');
+    const country = angular.copy(vm.country);
 
-    promise = (creation) ?
-      locationService.create.country(country) :
-      locationService.update.country(country.uuid, country);
+    const promise = (creation)
+      ? locationService.create.country(country)
+      : locationService.update.country(country.uuid, country);
 
-    promise
-      .then(function (response) {
-        return refreshCountrys();
-      })
-      .then(function () {
+    return promise
+      .then(refreshCountrys)
+      .then(() => {
         vm.view = creation ? 'create_success' : 'update_success';
       })
-      .catch(handler);
+      .catch(Notify.handleError);
   }
 
   startup();

@@ -1,6 +1,5 @@
-// TODO Handle HTTP exception errors (displayed contextually on form)
 angular.module('bhima.controllers')
-.controller('VillageController', VillageController);
+  .controller('VillageController', VillageController);
 
 VillageController.$inject = [
   'LocationService', 'util', 'NotifyService',
@@ -17,7 +16,6 @@ function VillageController(locationService, util, Notify) {
   vm.submit = submit;
   vm.update = update;
   vm.cancel = cancel;
-
 
   vm.loadProvinces = loadProvinces;
   vm.loadSectors = loadSectors;
@@ -49,16 +47,16 @@ function VillageController(locationService, util, Notify) {
 
   /** load countries on startup */
   locationService.countries()
-  .then(function (countries) {
+    .then((countries) => {
 
-    // bind the countries to the view for <select>ion
-    vm.countries = countries;
+      // bind the countries to the view for <select>ion
+      vm.countries = countries;
 
-    // make sure that we are showing the proper message to the client
-    vm.messages.country = (countries.length > 0) ?
-      locationService.messages.country :
-      locationService.messages.empty;
-  });
+      // make sure that we are showing the proper message to the client
+      vm.messages.country = (countries.length > 0)
+        ? locationService.messages.country
+        : locationService.messages.empty;
+    });
 
   /** loads provinces based on the selected country */
   function loadProvinces() {
@@ -67,16 +65,16 @@ function VillageController(locationService, util, Notify) {
     if (!vm.village.country_uuid) { return; }
 
     locationService.provinces({ country : vm.village.country_uuid })
-    .then(function (provinces) {
+      .then((provinces) => {
 
-      // bind the provinces to the view for <select>ion
-      vm.provinces = provinces;
+        // bind the provinces to the view for <select>ion
+        vm.provinces = provinces;
 
-      // make sure that we show the correct message in the <select> option
-      vm.messages.province = (provinces.length > 0) ?
-        locationService.messages.province :
-        locationService.messages.empty;
-    });
+        // make sure that we show the correct message in the <select> option
+        vm.messages.province = (provinces.length > 0)
+          ? locationService.messages.province
+          : locationService.messages.empty;
+      });
   }
 
   /** loads sectors based on the selected province */
@@ -86,16 +84,16 @@ function VillageController(locationService, util, Notify) {
     if (!vm.village.province_uuid) { return; }
 
     locationService.sectors({ province : vm.village.province_uuid })
-    .then(function (sectors) {
+      .then((sectors) => {
 
-      // bind the sectors to the view for <select>ion
-      vm.sectors = sectors;
+        // bind the sectors to the view for <select>ion
+        vm.sectors = sectors;
 
-      // make sure that we show the correct message in the <select> option
-      vm.messages.sector = (sectors.length > 0) ?
-        locationService.messages.sector :
-        locationService.messages.empty;
-    });
+        // make sure that we show the correct message in the <select> option
+        vm.messages.sector = (sectors.length > 0)
+          ? locationService.messages.sector
+          : locationService.messages.empty;
+      });
   }
 
   // switch to update mode
@@ -128,20 +126,18 @@ function VillageController(locationService, util, Notify) {
     // stop submission if the form is invalid
     if (form.$invalid) {
       vm.state.errored = true;
-      return;
+      return 0;
     }
 
     const creation = (vm.view === 'create');
     const village = angular.copy(vm.village);
 
-    const promise = (creation) ?
-      locationService.create.village(village) :
-      locationService.update.village(village.uuid, village);
+    const promise = (creation)
+      ? locationService.create.village(village)
+      : locationService.update.village(village.uuid, village);
 
-    promise
-      .then(() => {
-        return refreshVillages();
-      })
+    return promise
+      .then(() => refreshVillages())
       .then(() => {
         vm.view = creation ? 'create_success' : 'update_success';
       })
