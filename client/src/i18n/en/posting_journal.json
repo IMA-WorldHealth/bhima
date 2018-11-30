@@ -69,7 +69,8 @@
       "SHOW_ERRORS" : "Switch to Error View",
       "RETURN_TO_OVERVIEW" : "Return to Summary View",
       "IS_BALANCED" : "Balanced",
-      "POSTED_TRANSACTIONS" : "Success!  Posted {{ numRecords }} Transactions to the General Ledger."
+      "POSTED_TRANSACTIONS" : "Success!  Posted {{ numRecords }} Transactions to the General Ledger.",
+      "SUMMARY_BY_TYPE" : "Changes by Account Type"
     },
     "TITLE" : "Journal"
   }
