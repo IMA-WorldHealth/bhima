@@ -37,10 +37,18 @@ function StockLotsController(
     field : 'code',
     displayName : 'STOCK.CODE',
     headerCellFilter : 'translate',
+    sort : {
+      direction : uiGridConstants.ASC,
+      priority : 0,
+    },
   }, {
     field : 'text',
     displayName : 'STOCK.INVENTORY',
     headerCellFilter : 'translate',
+    sort : {
+      direction : uiGridConstants.ASC,
+      priority : 1,
+    },
   }, {
     field : 'group_name',
     displayName : 'TABLE.COLUMNS.INVENTORY_GROUP',
@@ -95,6 +103,10 @@ function StockLotsController(
     headerCellFilter : 'translate',
     cellTemplate     : 'modules/stock/lots/templates/lifetime.cell.html',
     type : 'number',
+    sort : {
+      direction : uiGridConstants.ASC,
+      priority : 2,
+    },
   }, {
     field : 'S_LOT_LIFETIME',
     displayName : 'STOCK.LOT_LIFETIME',
@@ -107,6 +119,10 @@ function StockLotsController(
     headerCellFilter : 'translate',
     cellTemplate     : 'modules/stock/lots/templates/risk.cell.html',
     type : 'number',
+    sort : {
+      direction : uiGridConstants.DESC,
+      priority : 3,
+    },
   }, {
     field : 'S_RISK_QUANTITY',
     displayName : 'STOCK.RISK_QUANTITY',
