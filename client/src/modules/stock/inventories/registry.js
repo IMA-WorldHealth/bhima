@@ -19,111 +19,85 @@ function StockInventoriesController(
   const cacheKey = 'stock-inventory-grid';
   const stockInventoryFilters = Stock.filter.inventory;
 
-  const columns = [
-    {
-      field            : 'depot_text',
-      displayName      : 'STOCK.DEPOT',
-      headerCellFilter : 'translate',
-    },
-
-    {
-      field            : 'code',
-      displayName      : 'STOCK.CODE',
-      headerCellFilter : 'translate',
-    },
-
-    {
-      field            : 'text',
-      displayName      : 'STOCK.INVENTORY',
-      headerCellFilter : 'translate',
-      width            : '20%',
-    },
-
-    {
-      field            : 'group_name',
-      displayName      : 'STOCK.INVENTORY_GROUP',
-      headerCellFilter : 'translate',
-    },
-
-    {
-      field            : 'quantity',
-      displayName      : 'STOCK.QUANTITY',
-      headerCellFilter : 'translate',
-      cellClass        : 'text-right',
-    },
-
-    {
-      field            : 'unit_type',
-      width            : 75,
-      displayName      : 'TABLE.COLUMNS.UNIT',
-      headerCellFilter : 'translate',
-      cellTemplate     : 'modules/stock/inventories/templates/unit.tmpl.html',
-    },
-
-    {
-      field            : 'status',
-      displayName      : 'STOCK.STATUS.LABEL',
-      headerCellFilter : 'translate',
-      enableFiltering  : false,
-      enableSorting    : false,
-      cellTemplate     : 'modules/stock/inventories/templates/status.cell.html',
-    },
-
-    {
-      field           : 'avg_consumption',
-      displayName     : 'CMM',
-      enableFiltering : false,
-      enableSorting   : false,
-      cellClass       : 'text-right',
-      cellTemplate    : '',
-    },
-
-    {
-      field            : 'S_MONTH',
-      displayName      : 'MS',
-      enableFiltering  : false,
-      enableSorting    : false,
-      cellClass        : 'text-right',
-      cellTemplate     : '',
-    },
-
-    {
-      field           : 'S_SEC',
-      displayName     : 'SS',
-      enableFiltering : false,
-      enableSorting   : false,
-      cellClass       : 'text-right',
-      cellTemplate    : '',
-    },
-
-    {
-      field           : 'S_MIN',
-      displayName     : 'MIN',
-      enableFiltering : false,
-      enableSorting   : false,
-      cellClass       : 'text-right',
-      cellTemplate    : '',
-    },
-
-    {
-      field           : 'S_MAX',
-      displayName     : 'MAX',
-      enableFiltering : false,
-      enableSorting   : false,
-      cellClass       : 'text-right',
-      cellTemplate    : '',
-    },
-
-    {
-      field            : 'S_Q',
-      displayName      : 'STOCK.ORDERS',
-      headerCellFilter : 'translate',
-      enableFiltering  : false,
-      enableSorting    : false,
-      cellClass        : 'text-right',
-      cellTemplate     : 'modules/stock/inventories/templates/appro.cell.html',
-    },
-  ];
+  const columns = [{
+    field            : 'depot_text',
+    displayName      : 'STOCK.DEPOT',
+    headerCellFilter : 'translate',
+  }, {
+    field            : 'code',
+    displayName      : 'STOCK.CODE',
+    headerCellFilter : 'translate',
+  }, {
+    field            : 'text',
+    displayName      : 'STOCK.INVENTORY',
+    headerCellFilter : 'translate',
+    width            : '20%',
+  }, {
+    field            : 'group_name',
+    displayName      : 'STOCK.INVENTORY_GROUP',
+    headerCellFilter : 'translate',
+  }, {
+    field            : 'quantity',
+    displayName      : 'STOCK.QUANTITY',
+    headerCellFilter : 'translate',
+    cellClass        : 'text-right',
+  }, {
+    field            : 'unit_type',
+    width            : 75,
+    displayName      : 'TABLE.COLUMNS.UNIT',
+    headerCellFilter : 'translate',
+    cellTemplate     : 'modules/stock/inventories/templates/unit.tmpl.html',
+  }, {
+    field            : 'status',
+    displayName      : 'STOCK.STATUS.LABEL',
+    headerCellFilter : 'translate',
+    enableFiltering  : false,
+    enableSorting    : false,
+    cellTemplate     : 'modules/stock/inventories/templates/status.cell.html',
+  }, {
+    field           : 'avg_consumption',
+    displayName     : 'CMM',
+    enableFiltering : false,
+    enableSorting   : false,
+    cellClass       : 'text-right',
+    cellTemplate    : '',
+  }, {
+    field            : 'S_MONTH',
+    displayName      : 'MS',
+    enableFiltering  : false,
+    enableSorting    : false,
+    cellClass        : 'text-right',
+    cellTemplate     : '',
+  }, {
+    field           : 'S_SEC',
+    displayName     : 'SS',
+    enableFiltering : false,
+    enableSorting   : false,
+    cellClass       : 'text-right',
+    cellTemplate    : '',
+  }, {
+    field           : 'S_MIN',
+    displayName     : 'MIN',
+    enableFiltering : false,
+    enableSorting   : false,
+    cellClass       : 'text-right',
+    cellTemplate    : '',
+  }, {
+    field           : 'S_MAX',
+    displayName     : 'MAX',
+    enableFiltering : false,
+    enableSorting   : false,
+    cellClass       : 'text-right',
+    cellTemplate    : '',
+  }, {
+    field            : 'S_Q',
+    displayName      : 'STOCK.ORDERS',
+    headerCellFilter : 'translate',
+    enableFiltering  : false,
+    enableSorting    : false,
+    cellClass        : 'text-right',
+    cellTemplate     : 'modules/stock/inventories/templates/appro.cell.html',
+  }];
 
   // grouping box
   vm.groupingBox = [
@@ -206,6 +180,10 @@ function StockInventoriesController(
     return load(stockInventoryFilters.formatHTTP(true));
   }
 
+  function orderByDepot(rowA, rowB) {
+    return rowA.depot_text > rowB.depot_text ? 1 : -1;
+  }
+
   // load stock lots in the grid
   function load(filters) {
     vm.hasError = false;
@@ -216,10 +194,12 @@ function StockInventoriesController(
 
     Stock.inventories.read(null, filters)
       .then((rows) => {
+
+        // FIXME(@jniles): we should do this ordering on the server via an ORDER BY
+        rows.sort(orderByDepot);
+
         // set status flags
-        rows.forEach((item) => {
-          setStatusFlag(item);
-        });
+        rows.forEach(setStatusFlag);
 
         vm.gridOptions.data = rows;
 
