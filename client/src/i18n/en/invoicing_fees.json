@@ -1,7 +1,7 @@
 {
     "INVOICING_FEES": {
         "BTN": {
-            "CREATE": "Create a Invoicing Fee",
+            "CREATE": "Create an Invoicing Fee",
             "DELETE": "Delete this Invoicing Fee"
         },
         "CREATED": "Created a new Invoicing Fee.",

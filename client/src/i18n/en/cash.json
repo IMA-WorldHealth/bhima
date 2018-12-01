@@ -26,7 +26,7 @@
       "NO_OTHER_PROJECT_CASHBOXES" : "No cashboxes found registered to other projects.",
 	  "NO_OTHER_PROJECT_CASHBOXES_ACCESS" : "No cashboxes found registered to other projects that you have access rights to.",
     "NO_CURRENT_PROJECT_CASHBOXES" : "No cashboxes found registered to the current project.",
-    "NO_CASHBOXE" : "No cashboxes found registered in the system, contact the administrator for creating one.",
+    "NO_CASHBOXE" : "No cashboxes found registered in the system. Contact the administrator to create one.",
 	  "NO_CURRENT_PROJECT_CASHBOXES_ACCESS" : "No cashboxes in your project that you have access rights to"
     },
     "TITLE":"Cash Window",
@@ -56,7 +56,7 @@
       "BARCODE":{
         "SCAN":"Scan the barcode",
         "AWAITING_INPUT":"Waiting input",
-        "AWAITING_HTTP":"Barcode done! search invoice...",
+        "AWAITING_HTTP":"Barcode done! Search invoice...",
         "READ_SUCCESS":"Invoice found",
         "READ_ERROR":"Can't read barcode! Please enter code manually"
       },

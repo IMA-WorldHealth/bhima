@@ -2,18 +2,18 @@
   "PAYROLL_STATUS": {
     "CONFIGURED": "configured",
     "PAID" : "Paid",
-    "PARTIALLY_PAID" : "Partially paid",  
+    "PARTIALLY_PAID" : "Partially paid",
     "WAITING_FOR_CONFIGURATION" : "Waiting for configuration",
     "WAITING_FOR_PAYMENT" : "Waiting for payment"
-  },    
+  },
   "PAYROLL_RUBRIC" : {
     "ADD_PAYROLL_RUBRIC"    : "Add a Payroll Rubric",
     "ADD_PAYROLL_RUBRIC_CONFIGURATION" : "Add a Payroll Rubric Configuration",
     "ALL_PAYROLL_RUBRICS"   : "All Payroll Rubrics",
     "CONFIGURATION"         : "Payroll Rubric Configuration",
     "PAYROLL_RUBRICS_LIST"  : "Payroll Rubrics list",
-    "EDIT_PAYROLL_RUBRIC"   : "Edit the information of Payroll Rubric",
-    "EDIT_PAYROLL_RUBRIC_CONFIGURATION"   : "Edit the information of Payroll Rubric Configuration",
+    "EDIT_PAYROLL_RUBRIC"   : "Edit Payroll Rubric",
+    "EDIT_PAYROLL_RUBRIC_CONFIGURATION"   : "Edit Payroll Rubric Configuration",
     "TITLE"                 : "Payroll Rubric Management"
   }
 }
