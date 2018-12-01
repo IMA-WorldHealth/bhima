@@ -104,7 +104,6 @@
             <legend translate>FORM.LABELS.DOB</legend>
             <bh-date-interval
               date-id="dob-date"
-              validation-trigger="ModalForm.$submitted"
               date-from="$ctrl.searchQueries.dateBirthFrom"
               date-to="$ctrl.searchQueries.dateBirthTo"
               mode="clean">
@@ -115,7 +114,7 @@
 
           <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.originLocationLabel.$invalid }">
             <label class="control-label" translate>
-                FORM.LABELS.ORIGIN_LOCATION
+              FORM.LABELS.ORIGIN_LOCATION
             </label>
             <bh-clear on-clear="$ctrl.clear('originLocationLabel')"></bh-clear>
 

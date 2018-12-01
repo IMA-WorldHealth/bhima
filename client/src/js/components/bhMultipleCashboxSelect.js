@@ -7,7 +7,6 @@ angular.module('bhima.components')
       cashboxIds : '<?',
       label : '@?',
       required : '<?',
-      validationTrigger : '<?',
     },
   });
 
@@ -22,7 +21,7 @@ MultipleCashboxSelectController.$inject = [
 function MultipleCashboxSelectController(Cashbox, Notify) {
   const $ctrl = this;
 
-  $ctrl.$onInit = function onInit() {
+  $ctrl.$onInit = () => {
     // label to display
     $ctrl.label = $ctrl.label || 'FORM.LABELS.CASHBOX';
 
@@ -31,14 +30,12 @@ function MultipleCashboxSelectController(Cashbox, Notify) {
 
     // load all Cashbox
     Cashbox.read()
-      .then((cashboxes) => {
+      .then(cashboxes => {
+        cashboxes.sort((a, b) => a.label > b.label);
         $ctrl.cashboxes = cashboxes;
       })
       .catch(Notify.handleError);
   };
 
-  // fires the onSelectCallback bound to the component
-  $ctrl.handleChange = (models) => {
-    $ctrl.onChange({ cashboxes : models });
-  };
+  $ctrl.handleChange = (cashboxes) => $ctrl.onChange({ cashboxes });
 }

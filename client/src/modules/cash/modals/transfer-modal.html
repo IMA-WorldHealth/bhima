@@ -27,7 +27,6 @@
     <bh-currency-select
       id="transfer-currency-select"
       currency-id="TransferCtrl.voucher.details.currency_id"
-      validation-trigger="TransferForm.$submitted"
       disable-ids="TransferCtrl.disabledCurrencyIds"
       on-change="TransferCtrl.loadAccountDetails(currency)"
       cashbox-id="TransferCtrl.cashbox.id">
@@ -36,8 +35,7 @@
     <bh-currency-input
       id="transfer-currency-input"
       currency-id="TransferCtrl.voucher.details.currency_id"
-      model="TransferCtrl.amount"
-      validation-trigger="TransferForm.$submitted">
+      model="TransferCtrl.amount">
     </bh-currency-input>
 
     <p ng-show="TransferForm.$submitted && TransferCtrl.voucher._error" class="text-danger">

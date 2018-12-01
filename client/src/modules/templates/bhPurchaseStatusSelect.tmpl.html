@@ -1,7 +1,7 @@
 <div ng-form="PurchaseStatusForm" bh-purchase-status-select ng-model-options="{ updateOn: 'default' }">
   <div
     class="form-group"
-    ng-class="{ 'has-error' : $ctrl.validationTrigger && PurchaseStatusForm.purchaseStatus.$invalid }">
+    ng-class="{ 'has-error' : PurchaseStatusForm.$submitted && PurchaseStatusForm.purchaseStatus.$invalid }">
     <label class="control-label" translate>
       {{ $ctrl.label }}
     </label>
@@ -17,12 +17,12 @@
       <ui-select-match placeholder="{{ 'FORM.SELECT.STATUS' | translate }}">
         <span>{{ $item.plainText }}</span>
       </ui-select-match>
-      <ui-select-choices ui-select-focus-patch repeat="status.id as status in ($ctrl.purchaseStatus | filter: { plainText : $select.search } | orderBy: 'plainText')">
+      <ui-select-choices ui-select-focus-patch repeat="status.id as status in ($ctrl.purchaseStatus | filter: { plainText : $select.search })">
         <span ng-bind-html="status.plainText | highlight:$select.search"></span>
       </ui-select-choices>
     </ui-select>
 
-    <div class="help-block" ng-messages="PurchaseStatusForm.$error" ng-show="$ctrl.validationTrigger">
+    <div class="help-block" ng-messages="PurchaseStatusForm.$error" ng-show="PurchaseStatusForm.$submitted">
       <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
     </div>
   </div>

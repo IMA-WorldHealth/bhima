@@ -12,7 +12,7 @@
       <label class="badge badge-danger" id="validation-error" translate> FORM.INFO.DISTRIBUTION_PERCENT_INVALID </label>
       <br>
       <label class="badge badge-warning"> {{ DistributionKeyModalCtrl.errorMessage }} </label>
-    </div>    
+    </div>
   </div>
 
   <div class="modal-body" style="max-height: 70vh; overflow:auto;">
@@ -22,8 +22,7 @@
         id="principal_{{principal.id}}"
         model="DistributionKeyModalCtrl.settings.values[principal.id]"
         min = "0"
-        max = "100"
-        validation-trigger="DistributionKeyForm.$submitted">
+        max = "100">
       </bh-percentage-input>
     </div>
 

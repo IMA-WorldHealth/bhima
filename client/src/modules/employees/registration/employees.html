@@ -237,7 +237,6 @@
                     <div class="col-md-9 col-md-offset-1">
                       <bh-debtor-group-select
                         debtor-group-uuid = "EmployeeCtrl.employee.debtor_group_uuid"
-                        validation-trigger="EmployeeRegistrationForm.$submitted"
                         on-select-callback = "EmployeeCtrl.onSelectDebtor(debtorGroup)">
                       </bh-debtor-group-select>
                     </div>
@@ -454,7 +453,6 @@
                     id="individual_salary"
                     currency-id="EmployeeCtrl.enterprise.currency_id"
                     model="EmployeeCtrl.employee.individual_salary"
-                    validation-trigger="EmployeeRegistrationForm.$submitted"
                     min = 0>
                   </bh-currency-input>
 
@@ -465,7 +463,6 @@
                       id="{{rubric.abbr}}"
                       currency-id="EmployeeCtrl.enterprise.currency_id"
                       model="EmployeeCtrl.employee.payroll[rubric.id]"
-                      validation-trigger="EmployeeRegistrationForm.$submitted"
                       min = 0>
                     </bh-currency-input>
                   </div>

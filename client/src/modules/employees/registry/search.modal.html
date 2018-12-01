@@ -18,7 +18,6 @@
         <bh-date-interval
           label="FORM.LABELS.DATE_EMBAUCHE"
           date-id="embauche-date"
-          validation-trigger="ModalForm.$submitted"
           date-from="ModalCtrl.searchQueries.dateEmbaucheFrom"
           date-to="ModalCtrl.searchQueries.dateEmbaucheTo"
           on-change="ModalCtrl.formatHiringDates()">
@@ -111,7 +110,6 @@
         <bh-date-interval
           label="FORM.LABELS.DOB"
           date-id="dob-date"
-          validation-trigger="ModalForm.$submitted"
           date-from="ModalCtrl.searchQueries.dateBirthFrom"
           date-to="ModalCtrl.searchQueries.dateBirthTo">
         </bh-date-interval>

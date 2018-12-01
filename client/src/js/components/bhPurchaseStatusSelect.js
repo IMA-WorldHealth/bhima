@@ -7,7 +7,6 @@ angular.module('bhima.components')
       statusId : '<?',
       label : '@?',
       required : '<?',
-      validationTrigger : '<?',
     },
   });
 
@@ -22,29 +21,26 @@ PurchaseStatusSelectController.$inject = [
 function PurchaseStatusSelectController(PurchaseOrder, Notify, $translate) {
   const $ctrl = this;
 
-  $ctrl.$onInit = function onInit() {
+  $ctrl.$onInit = () => {
     // label to display
     $ctrl.label = $ctrl.label || 'FORM.LABELS.STATUS';
-
-    // fired when a purchase status has been selected or removed from the list
-    $ctrl.onChange = $ctrl.onChange || angular.noop;
 
     // init the model
     $ctrl.selectedPurchaseStatus = $ctrl.statusId || [];
 
     // load all Purchase status
     PurchaseOrder.purchaseState()
-      .then((status) => {
-        status.forEach((item) => {
+      .then(statuses => {
+        statuses.forEach((item) => {
           item.plainText = $translate.instant(item.text);
         });
-        $ctrl.purchaseStatus = status;
+
+        statuses.sort((a, b) => a.plainText > b.plainText);
+
+        $ctrl.purchaseStatus = statuses;
       })
       .catch(Notify.handleError);
   };
 
-  // fires the onSelectCallback bound to the component
-  $ctrl.handleChange = function (models) {
-    $ctrl.onChange({ purchaseStatus : models });
-  };
+  $ctrl.handleChange = purchaseStatus => $ctrl.onChange({ purchaseStatus });
 }

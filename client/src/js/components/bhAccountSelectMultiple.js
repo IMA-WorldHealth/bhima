@@ -6,7 +6,7 @@ angular.module('bhima.components')
     bindings    : {
       accountIds       : '<',
       onSelectCallback : '&',
-      onChange : '&',
+      onChange    : '&',
       required         : '<?',
       accountTypeId    : '<?',
       label            : '@?',
@@ -78,12 +78,10 @@ function AccountSelectController(Accounts, bhConstants) {
   }
 
   // fires the onSelectCallback bound to the component boundary
-  $ctrl.onSelect = function onSelect($item) {
-    $ctrl.onSelectCallback({ account : $item });
+  $ctrl.onSelect = function onSelect(account) {
+    $ctrl.onSelectCallback({ account });
   };
 
   // fires the onChange bound to the component boundary
-  $ctrl.handleChange = ($model) => {
-    $ctrl.onChange({ id : $model });
-  };
+  $ctrl.handleChange = (id) => $ctrl.onChange({ id });
 }

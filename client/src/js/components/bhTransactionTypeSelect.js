@@ -31,7 +31,7 @@ function transactionTypeSelectController(TransactionTypes, Notify) {
     // load all Transaction types
     TransactionTypes.read()
       .then(transactionTypes => {
-        angular.extend($ctrl, { transactionTypes });
+        $ctrl.transactionTypes = transactionTypes;
       })
       .catch(Notify.handleError);
   };

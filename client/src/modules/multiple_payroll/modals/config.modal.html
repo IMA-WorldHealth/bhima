@@ -40,7 +40,7 @@
 
     <div class="form-group" ng-class="{ 'has-error' : ConfigPaiementForm.$submitted && ConfigPaiementForm.working_day.$invalid }">
       <label class="control-label" translate>FORM.LABELS.DAYS_WORK</label>
-      <input type="number" name="working_day" ng-max="ConfigPaiementModalCtrl.maxWorkingDay" ng-model="ConfigPaiementModalCtrl.payroll.working_day" autocomplete="off" required class="form-control">    
+      <input type="number" name="working_day" ng-max="ConfigPaiementModalCtrl.maxWorkingDay" ng-model="ConfigPaiementModalCtrl.payroll.working_day" autocomplete="off" required class="form-control">
       <div class="help-block" ng-messages="ConfigPaiementForm.working_day.$error" ng-show="ConfigPaiementForm.$submitted">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
       </div>
@@ -49,7 +49,6 @@
     <!-- currency selection -->
     <bh-currency-select
       currency-id="ConfigPaiementModalCtrl.currencyId"
-      validation-trigger="ConfigPaiementForm.$submitted"
       on-change="ConfigPaiementModalCtrl.setCurrency(currency)">
     </bh-currency-select>
 
@@ -60,7 +59,6 @@
         id="{{rubConfigured.abbr}}"
         currency-id="ConfigPaiementModalCtrl.currencyId"
         model="ConfigPaiementModalCtrl.payroll.value[rubConfigured.abbr]"
-        validation-trigger="ConfigPaiementForm.$submitted"
         min = 0>
       </bh-currency-input>
     </div>

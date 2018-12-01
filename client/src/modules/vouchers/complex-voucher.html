@@ -73,8 +73,7 @@
               <div class="col-md-6">
                 <bh-date-editor
                   date-value="ComplexVoucherCtrl.Voucher.details.date"
-                  on-change="ComplexVoucherCtrl.Voucher.onDateChange(date)"
-                  validation-trigger="ComplexVoucherForm.$submitted">
+                  on-change="ComplexVoucherCtrl.Voucher.onDateChange(date)">
                 </bh-date-editor>
 
                 <div
@@ -129,8 +128,7 @@
 
                 <bh-currency-select
                   on-change="ComplexVoucherCtrl.onCurrencyChange(currency)"
-                  currency-id="ComplexVoucherCtrl.Voucher.details.currency_id"
-                  validation-trigger="ComplexVoucherForm.$submitted">
+                  currency-id="ComplexVoucherCtrl.Voucher.details.currency_id">
                 </bh-currency-select>
               </div>
             </div>

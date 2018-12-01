@@ -19,7 +19,7 @@
         <span>{{ $item.plainText }}</span>
       </ui-select-match>
 
-      <ui-select-choices ui-select-focus-patch repeat="type.id as type in ($ctrl.transactionTypes | filter: { plainText : $select.search })">
+      <ui-select-choices ui-select-focus-patch repeat="type.id as type in $ctrl.transactionTypes | filter: { plainText : $select.search }">
         <span ng-bind-html="type.plainText | highlight:$select.search"></span>
       </ui-select-choices>
     </ui-select>

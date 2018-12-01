@@ -1,7 +1,6 @@
 angular.module('bhima.components')
   .component('bhFiscalPeriodSelect', {
     bindings : {
-      validationTrigger : '<?',
       onSelectPeriodFromCallback : '&',
       onSelectPeriodToCallback : '&',
       onSelectFiscalCallback : '&',
@@ -27,6 +26,13 @@ function FiscalPeriodSelect(Fiscal, moment) {
     loadPeriodsForFiscalYear(fiscalId);
   };
 
+  function sortDates(a, b) {
+    if (a.start_date > b.start_date) {
+      return 1;
+    }
+    return -1;
+  }
+
   function loadPeriodsForFiscalYear(fiscalId) {
     Fiscal.getPeriods(fiscalId)
       .then(periods => {
@@ -42,12 +48,7 @@ function FiscalPeriodSelect(Fiscal, moment) {
           });
 
         // sure the period are ordered in an ASC fashion
-        $ctrl.periods.sort((a, b) => {
-          if (a.start_date > b.start_date) {
-            return 1;
-          }
-          return -1;
-        });
+        $ctrl.periods.sort(sortDates);
       });
   }
 

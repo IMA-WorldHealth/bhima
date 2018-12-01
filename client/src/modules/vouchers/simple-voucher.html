@@ -42,8 +42,7 @@
 
               <bh-date-editor
                 date-value="SimpleVoucherCtrl.Voucher.details.date"
-                on-change="SimpleVoucherCtrl.Voucher.onDateChange(date)"
-                validation-trigger="SimpleVoucherForm.$submitted">
+                on-change="SimpleVoucherCtrl.Voucher.onDateChange(date)">
               </bh-date-editor>
 
               <div class="form-group" ng-class="{ 'has-error' : SimpleVoucherForm.$submitted && SimpleVoucherForm.type_id.$invalid }">
@@ -100,8 +99,7 @@
                 account-id="SimpleVoucherCtrl.Voucher.store.data[0].account_id"
                 on-select-callback="SimpleVoucherCtrl.onSelectDebitAccount(account)"
                 label="FORM.LABELS.DEBIT"
-                exclude-title-accounts="true"
-                validation-trigger="SimpleVoucherForm.$submitted">
+                exclude-title-accounts="true">
                 <span>(D)</span>
               </bh-account-select>
 
@@ -111,21 +109,18 @@
                 account-id="SimpleVoucherCtrl.Voucher.store.data[1].account_id"
                 on-select-callback="SimpleVoucherCtrl.onSelectCreditAccount(account)"
                 label="FORM.LABELS.CREDIT"
-                exclude-title-accounts="true"
-                validation-trigger="SimpleVoucherForm.$submitted">
+                exclude-title-accounts="true">
                 <span>(C)</span>
               </bh-account-select>
 
                <bh-currency-select
-                 currency-id="SimpleVoucherCtrl.Voucher.details.currency_id"
-                 validation-trigger="SimpleVoucherForm.$submitted">
+                 currency-id="SimpleVoucherCtrl.Voucher.details.currency_id">
                </bh-currency-select>
 
               <bh-currency-input
                 data-voucher-currency-input
                 currency-id="SimpleVoucherCtrl.Voucher.details.currency_id"
-                model="SimpleVoucherCtrl.amount"
-                validation-trigger="SimpleVoucherForm.$submitted">
+                model="SimpleVoucherCtrl.amount">
               </bh-currency-input>
             </div>
 

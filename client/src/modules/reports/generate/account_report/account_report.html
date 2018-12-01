@@ -30,8 +30,7 @@
               name="account"
               on-select-callback="ReportConfigCtrl.selectAccount(account)"
               exclude-title-accounts="true"
-              required="true"
-              validation-trigger="ConfigForm.$submitted">
+              required="true">
             </bh-account-select>
 
             <!-- Date interval  -->
@@ -40,15 +39,13 @@
               date-from="ReportConfigCtrl.reportDetails.dateFrom"
               date-to="ReportConfigCtrl.reportDetails.dateTo"
               required="true"
-              limit-min-fiscal
-              validation-trigger="ConfigForm.$submitted">
+              limit-min-fiscal>
             </bh-date-interval>
 
             <!-- the currency to be used in the footer -->
             <bh-currency-select
               currency-id="ReportConfigCtrl.reportDetails.currency_id"
-              on-change="ReportConfigCtrl.setCurrency(currency)"
-              validation-trigger="ConfigForm.$submitted">
+              on-change="ReportConfigCtrl.setCurrency(currency)">
             </bh-currency-select>
 
             <bh-loading-button loading-state="ConfigForm.$loading">

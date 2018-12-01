@@ -24,13 +24,16 @@ function TransactionTypeService(Api, $translate) {
     return Api.read.apply(service, args)
       .then(types => {
 
-        // make sure that the transaction types are translated
-        types
-          .forEach(translateTransactionType);
+        if (Array.isArray(types)) {
+          // make sure that the transaction types are translated
+          types
+            .forEach(translateTransactionType);
 
-        // sort them by their translated type
-        types
-          .sort(orderByTransactionType);
+          // sort them by their translated type
+          types
+            .sort(orderByTransactionType);
+        }
+
 
         return types;
       });
