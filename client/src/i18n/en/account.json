@@ -35,7 +35,7 @@
     "LABEL":"Account Label",
     "NOT_BALANCED":"Accounts are not balanced",
     "NOT_FOUND":"No accounts found.",
-    "NOT_POSITIVE":"Contains negatitive value",
+    "NOT_POSITIVE":"Contains negative value",
     "NOT_0_AS_ACCOUNT_NOMBER": "You cannot set 0 as account number",
     "NUMBER":"Account Number",
     "PROFIT_CENTER":"Profit Center",
