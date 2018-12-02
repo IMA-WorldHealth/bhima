@@ -10,11 +10,11 @@
  * @requires ReportManager
  */
 const _ = require('lodash');
+const q = require('q');
 const ReportManager = require('../../../../lib/ReportManager');
 const db = require('../../../../lib/db');
 const util = require('../../../../lib/util');
-const q = require('q');
-
+const priceList = require('../../../../controllers/finance/priceList');
 
 const TEMPLATE = './server/controllers/finance/reports/priceList/report.handlebars';
 
@@ -71,8 +71,8 @@ exports.report = (req, res, next) => {
 
 
 function lookupPriceList(uuid) {
-  const priceListSql =
-    `SELECT BUID(uuid) AS uuid, label, description, created_at, updated_at
+  const priceListSql = `
+    SELECT BUID(uuid) AS uuid, label, description, created_at, updated_at
     FROM price_list WHERE uuid = ?;`;
 
   const inventorySql = `
@@ -103,3 +103,37 @@ function lookupPriceList(uuid) {
     db.exec(inventorySql, [uuid]),
   ]);
 }
+
+
+exports.downloadRegistry = (req, res, next) => {
+
+  const REPORT_TEMPLATE = './server/controllers/finance/reports/priceList/registry.handlebars';
+
+  const options = _.extend(req.query, {
+    filename                 : 'FORM.LABELS.PRICE_LIST',
+    orientation              : 'portrait',
+    csvKey                   : 'rows',
+    suppressDefaultFiltering : true,
+    suppressDefaultFormating : false,
+    footerRight : '[page] / [toPage]',
+    footerFontSize : '7',
+  });
+
+
+  let report;
+
+  try {
+    report = new ReportManager(REPORT_TEMPLATE, req.session, options);
+  } catch (e) {
+    return next(e);
+  }
+
+  return priceList.lookup(req).then(rows => {
+    return report.render({ rows });
+  })
+    .then((result) => {
+      res.set(result.headers).send(result.report);
+    })
+    .catch(next)
+    .done();
+};

@@ -15,11 +15,13 @@ function StockServiceTests() {
   ));
 
   let Stock;
+  let StockFilterer;
   let MockStockData;
 
   // inject dependencies
-  beforeEach(inject((_StockService_, _MockStockDataService_) => {
+  beforeEach(inject((_StockService_, _StockFilterer_, _MockStockDataService_) => {
     Stock = _StockService_;
+    StockFilterer = _StockFilterer_;
     MockStockData = _MockStockDataService_;
   }));
 
@@ -71,9 +73,10 @@ function StockServiceTests() {
   it('#getQueryString() returns a query string with parameters for a request', () => {
     const FILTER_KEY_MOVEMENT = 'movement';
     const FILE_TYPE_CSV = 'csv';
+    const filterer = new StockFilterer(FILTER_KEY_MOVEMENT);
 
     // returns the string "?renderer=csv&limit=100&period=today"
-    const query = Stock.getQueryString(FILTER_KEY_MOVEMENT, FILE_TYPE_CSV);
+    const query = filterer.getQueryString(FILE_TYPE_CSV);
 
     expect(query).to.include(`renderer=${FILE_TYPE_CSV}`);
     expect(query).to.include('period=');

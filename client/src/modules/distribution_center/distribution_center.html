@@ -1,0 +1,95 @@
+<div class="flex-header"> 
+  <div class="bhima-title"> 
+    <ol class="headercrumb"> 
+      <li class="static" translate> TREE.FINANCE </li> 
+      <li class="title" translate> TREE.DITRIBUTION_AUX_FEES_CENTERS </li> 
+    </ol> 
+    
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <div uib-dropdown dropdown-append-to-body data-action="open-menu">
+          <a class="btn btn-default" uib-dropdown-toggle>
+            <span class="fa fa-bars"></span> <span class="hidden-xs" translate>FORM.LABELS.MENU</span> <span class="caret"></span>
+          </a>
+
+          <ul uib-dropdown-menu role="menu" class="dropdown-menu-right">
+            <li role="menuitem">
+              <a href data-method="configure" ng-click="DistributionCenterCtrl.openColumnConfigModal()">
+                <i class="fa fa-columns"></i> <span translate>FORM.LABELS.COLUMNS</span>
+              </a>
+            </li>
+
+            <li role="separator" class="divider"></li>
+            <li role="menuitem">
+              <a href data-method="save-state" ng-click="DistributionCenterCtrl.saveGridState()">
+                <i class="fa fa-save"></i> <span translate>FORM.BUTTONS.SAVE_GRID_CONFIGURATION</span>
+              </a>
+            </li>
+
+            <li role="menuitem">
+              <a href data-method="clear-state" ng-click="DistributionCenterCtrl.clearGridState()">
+                <i class="fa fa-close"></i> <span translate>FORM.BUTTONS.CLEAR_GRID_CONFIGURATION</span>
+              </a>
+            </li>
+
+            <li role="separator" class="divider"></li>
+
+            <li role="menuitem">
+              <a data-method="automatic-breakdown" ng-click="DistributionCenterCtrl.automaticBreakdown()" href>
+                <i class="fa fa-share-alt"></i> <span translate>FORM.BUTTONS.AUTO_INVOICES_BREAKDOWN</span>
+              </a>
+            </li>
+
+            <li role="menuitem">
+              <a data-method="breakdown-percentages" ng-click="DistributionCenterCtrl.breakdownPercentages()" href>
+                <i class="fa fa-pie-chart"></i> <span translate>FORM.BUTTONS.BREAKDOWNS_PERCENTAGES</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="toolbar-item"> 
+        <button
+          ng-click="DistributionCenterCtrl.setting()"
+          data-method="setting"
+          class="btn btn-default">
+          <span class="fa fa-cogs"></span> <span class="hidden-xs" translate> FORM.BUTTONS.SETTING </span>
+        </button>
+      </div> 
+      
+      <div class="toolbar-item"> 
+        <bh-filter-toggle on-toggle="DistributionCenterCtrl.toggleFilter()">
+        </bh-filter-toggle>
+      </div>
+    </div>
+  </div> 
+</div>
+
+<div class="flex-util bh-filter-bar">
+  <bh-filters
+    filters="DistributionCenterCtrl.latestViewFilters"
+    on-remove-filter="DistributionCenterCtrl.onRemoveFilter(filter)">
+  </bh-filters>
+</div>
+
+<!-- main content --> 
+<div class="flex-content"> 
+  <div class="container-fluid"> 
+    <div id="distribution-center-grid"
+      ui-grid="DistributionCenterCtrl.gridOptions" 
+      class="grid-full-height-with-filters" 
+      ui-grid-auto-resize
+      ui-grid-selection
+      ui-grid-save-state
+      ui-grid-move-columns
+      ui-grid-resize-columns> 
+      
+      <bh-grid-loading-indicator 
+        loading-state="DistributionCenterCtrl.loading" 
+        empty-state="DistributionCenterCtrl.gridOptions.data.length === 0" 
+        error-state="DistributionCenterCtrl.hasError"> 
+      </bh-grid-loading-indicator> 
+    </div> 
+  </div> 
+</div> 

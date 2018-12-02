@@ -1,0 +1,22 @@
+<div class="ui-grid-cell-contents" uib-dropdown dropdown-append-to-body uib-dropdown-toggle>
+  <a href>
+    <span data-method="action" translate>FORM.BUTTONS.ACTIONS</span>
+    <span class="caret"></span>
+  </a>
+
+  <ul data-action="{{ rowRenderIndex}}"  class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
+    <li class="dropdown-header">{{row.entity.label}}</li>
+    <li>
+      <a data-method="edit" ui-sref="fee_center.edit({id : row.entity.id})" href>
+        <span class="fa fa-edit"></span> <span translate>TABLE.COLUMNS.EDIT</span>
+      </a>
+    </li>
+    <li>
+      <a data-method="delete" ng-click="grid.appScope.deleteFeeCenter(row.entity)" href>
+        <span class="text-danger">
+          <i class="fa fa-trash"></i> <span translate>FEE_CENTER.DELETE</span>
+        </span>
+      </a>
+    </li>
+  </ul>
+</div>

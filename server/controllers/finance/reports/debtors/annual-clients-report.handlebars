@@ -1,0 +1,62 @@
+{{> head title="REPORT.CLIENTS.TITLE"}}
+
+<body>
+  <main class="container">
+    {{> header }}
+
+    <h3 class="text-center text-capitalize">
+      <strong>{{translate "REPORT.CLIENTS.TITLE"}}</strong>
+    </h3>
+
+    <h4 class="text-center text-capitalize">
+      {{ fiscalYear.label }}
+    </h4>
+
+    {{#unless isEnterpriseCurrency}}
+      <div class="alert alert-warning">
+        <p>{{translate "REPORT.REPORT_ACCOUNTS.WARN_CURRENCY"}}</p>
+      </div>
+    {{/unless}}
+
+    <section>
+      <table class="table table-condensed table-report table-bordered">
+        <thead>
+          <tr class="text-capitalize text-center" style="background-color: #ddd;">
+            <th>{{translate "TABLE.COLUMNS.ACCOUNT"}}</th>
+            <th>{{translate "TABLE.COLUMNS.NAME"}}</th>
+            <th>{{translate "REPORT.OPENING_BALANCE"}}</th>
+            <th>{{translate "TABLE.COLUMNS.DEBIT"}}</th>
+            <th>{{translate "TABLE.COLUMNS.CREDIT"}}</th>
+            <th>{{translate "FORM.LABELS.DIFFERENCE"}}</th>
+            <th>{{translate "REPORT.CLOSING_BALANCE"}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- print a row for each debtor account-->
+          {{#each rows as | row |}}
+            <tr>
+              <td>{{row.accountNumber}}</td>
+              <td>{{row.groupName }}</td>
+              <td class="text-right">{{debcred row.openingBalance row.currencyId}}</td>
+              <td class="text-right">{{debcred row.debit row.currencyId}}</td>
+              <td class="text-right">{{debcred row.credit row.currencyId}}</td>
+              <td class="text-right">{{debcred row.movement row.currencyId}}</td>
+              <td class="text-right">{{debcred row.closingBalance row.currencyId}}</td>
+            </tr>
+          {{else}}
+            {{> emptyTable columns="6" }}
+          {{/each}}
+        </tbody>
+
+        <tfoot>
+          <th colspan="2">{{translate "TABLE.COLUMNS.TOTAL"}}</th>
+          <th class="text-right">{{debcred footer.openingBalance footer.currencyId}}</th>
+          <th class="text-right">{{debcred footer.debit  footer.currencyId}}</th>
+          <th class="text-right">{{debcred footer.credit  footer.currencyId}}</th>
+          <th class="text-right">{{debcred footer.movement footer.currencyId}}</th>
+          <th class="text-right">{{debcred footer.closingBalance footer.currencyId}}</th>
+        </tfoot>
+      </table>
+    </section>
+  </main>
+</body>

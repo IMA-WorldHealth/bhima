@@ -144,5 +144,23 @@ function AccountGridService(AccountStore, Accounts, Store, Languages, $httpParam
     return this._store.get(id);
   };
 
+  AccountGrid.prototype.filterHiddenAccounts = function filterHiddenAccounts(showHiddenAccounts) {
+    const arr = this._store.data;
+
+    // either filter out hidden accounts or passthrough
+    const passthrough = () => true;
+    const filterFn = showHiddenAccounts
+      ? passthrough
+      : account => account.hidden === 0;
+
+    // we want to replace the whole array, so choose the max
+    // if we use a length that is too short, we will leave some behind
+    // if we pick a length that is greater, JS just expands the array
+    const len = Math.max(arr.length, this.data.length);
+
+    // cheekily filters the data in place - thanks stack overflow
+    this.data.splice(0, len, ...arr.filter(filterFn));
+  };
+
   return AccountGrid;
 }

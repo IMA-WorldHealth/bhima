@@ -26,14 +26,14 @@ describe('AccountReference Management Page', () => {
   };
 
   const mockEdit = {
-    abbr : 'AO',
+    abbr : 'BD',
     description : 'Updated Test Accounts Reference',
     is_amo_dep : 1,
     accounts : ['31110010', '31110011'],
     accountsException : ['31110011'],
   };
 
-  const numReferences = 0;
+  const numReferences = 9;
 
   before(() => helpers.navigate(path));
 
@@ -61,19 +61,6 @@ describe('AccountReference Management Page', () => {
     expect(page.count()).to.eventually.equal(numReferences + 1);
   });
 
-  it('edits an accounts reference successfully', () => {
-    page.update(mockCreate.abbr);
-    const modal = new AccountReferenceCreateUpdatePage();
-    modal.clearSelectedItems();
-    modal.setAbbr(mockEdit.abbr);
-    modal.setDescription(mockEdit.description);
-    modal.setAccountValues(mockEdit.accounts, true);
-    modal.setAccountExceptionValues(mockEdit.accountsException, true);
-    modal.submit();
-
-    components.notification.hasSuccess();
-  });
-
   it('creates an accounts reference with a parent', () => {
     page.create();
     const modal = new AccountReferenceCreateUpdatePage();
@@ -89,8 +76,21 @@ describe('AccountReference Management Page', () => {
     expect(page.count()).to.eventually.equal(numReferences + 2);
   });
 
+  it('edits an accounts reference successfully', () => {
+    page.update(mockCreate2.abbr);
+    const modal = new AccountReferenceCreateUpdatePage();
+    modal.clearSelectedItems();
+    modal.setAbbr(mockEdit.abbr);
+    modal.setDescription(mockEdit.description);
+    modal.setAccountValues(mockEdit.accounts, true);
+    modal.setAccountExceptionValues(mockEdit.accountsException, true);
+    modal.submit();
+
+    components.notification.hasSuccess();
+  });
+
   it('delete an accounts reference successfully', () => {
-    page.remove(mockCreate2.abbr);
+    page.remove(mockEdit.abbr);
     components.notification.hasSuccess();
     expect(page.count()).to.eventually.equal(numReferences + 1);
   });

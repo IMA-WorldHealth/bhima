@@ -9,6 +9,7 @@ GridGroupingService.$inject = [
 /**
  * Grid Grouping Service
  *
+ * @description
  * This service is responsible for setting the grouping configuration for the
  * client side posting journal module. It also provides a number of helper
  * methods that can be used to provide custom transaction grouping.
@@ -19,55 +20,7 @@ GridGroupingService.$inject = [
  */
 function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session,
   $timeout, util, uiGridConstants) {
-  /** @const aggregators assigned by column ids */
-  var DEFAULT_AGGREGATORS = GridAggregators.aggregators.tree;
-  var selectedGroupHeaders;
-
-  /**
-   * @method configureDefaultAggregators
-   *
-   * @description
-   * Certain columns will always be aggregated in certain ways.  For example,
-   * debit and credit fields should always be summed, no matter scenario.  This
-   * function will scan the grid columns for common fields and provide pre-made
-   * aggregators for those columns.
-   *
-   * @param {Object} columns - the columns object from the gridOptions
-   *
-   * @private
-   */
-  function configureDefaultAggregators(columns) {
-    columns.forEach(function (column) {
-      var aggregator = DEFAULT_AGGREGATORS[column.field];
-
-      if (aggregator) {
-        GridAggregators.extendColumnWithAggregator(column, aggregator);
-      }
-
-      // show debit or credit total for transaction on transaction header
-      if (column.grouping && column.grouping.groupPriority > -1) {
-
-        column.treeAggregationFn = function (aggregation, fieldValue, numValue, row) {
-          // @todo this will be called for every row in a group but only needs to be called once
-          if (row.entity.transaction) {
-            aggregation.value = row.entity.transaction.debit_equiv;
-          }
-        };
-
-        column.customTreeAggregationFinalizerFn = function (aggregation) {
-          if (typeof(aggregation.groupVal) !== 'undefined') {
-            aggregation.rendered = aggregation.groupVal + ' (' + aggregation.value + ')';
-          } else {
-            aggregation.rendered = null;
-          }
-        };
-        // return true;
-      }
-
-    });
-    return columns;
-  }
-
+  let selectedGroupHeaders;
 
   /**
    * @method selectAllGroupElements
@@ -81,21 +34,20 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session,
    *
    * @private
    */
-  function selectAllGroupElements(rowChanged) {
-    var gridApi = this.gridApi;
-
+  function selectAllGroupElements() {
+    const { gridApi } = this;
     this.selectedRowCount = gridApi.selection.getSelectedCount();
   }
 
   function handleBatchSelection() {
-    var gridApi = this.gridApi;
-    var gridRows = gridApi.selection.getSelectedGridRows();
-    var parents = {};
+    const { gridApi } = this;
+    const gridRows = gridApi.selection.getSelectedGridRows();
+    const parents = {};
 
-    var hasSelections = gridApi.selection.getSelectedRows().length > 0;
+    const hasSelections = gridApi.selection.getSelectedRows().length > 0;
 
-    gridRows.forEach(function (row) {
-      var parentRow = row.treeNode.parentRow;
+    gridRows.forEach((row) => {
+      const { parentRow } = row.treeNode;
 
       if (parentRow && isUnusedParentRow(parentRow)) {
         parentRow.isSelected = true;
@@ -106,13 +58,13 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session,
 
     // handle deselect
     if (hasSelections === false) {
-      angular.forEach(selectedGroupHeaders, function (node) {
+      angular.forEach(selectedGroupHeaders, (node) => {
         node.isSelected = false;
       });
     }
 
     this.selectedRowCount = gridApi.selection.getSelectedCount();
-  
+
     // @FIXME(sfount) why is the data change notify ever called?
     gridApi.grid.notifyDataChange(uiGridConstants.dataChange.COLUMN);
 
@@ -139,7 +91,7 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session,
    */
   function configureDefaultGroupingOptions(gridApi) {
 
-    //this instruction block can be executed if the grid involves selection functionality
+    // this instruction block can be executed if the grid involves selection functionality
     if (gridApi.selection) {
 
       // bind the group selection method
@@ -148,7 +100,7 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session,
     }
 
     // hook into rows rendered call to ensure the grid is ready before expanding initial nodes
-    gridApi.core.on.rowsRendered(null, util.once(function () {
+    gridApi.core.on.rowsRendered(null, util.once(() => {
       if (this.groupByDefault) {
         gridApi.grouping.groupColumn(this.column);
       }
@@ -156,26 +108,20 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session,
       if (this.expandByDefault) {
         unfoldAllGroups(gridApi);
       }
-    }.bind(this)));
+    }));
   }
 
-	// function groupByTransactionView(gridApi) {
-    // var fieldKey = 'trans_id';
-    // gridApi.grouping.groupColumn(fieldKey);
-	// }
-
-  function unfoldAllGroups(api) {
-    api = api || this.gridApi;
+  function unfoldAllGroups(api = this.gridApi) {
     $timeout(api.treeBase.expandAllRows, 0, false);
   }
 
   function unfoldGroup(row) {
-    var api = this.gridApi;
+    const api = this.gridApi;
     api.treeBase.expandRow(row);
     api.grid.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
-  function changeGrouping (column) {
+  function changeGrouping(column) {
     this.gridApi.grouping.groupColumn(column);
 
     if (this.expandByDefault) {
@@ -188,13 +134,14 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session,
   }
 
   // return the current grouping
-  function  getCurrentGroupingColumn () {
-    var groupingDetail = this.gridApi.grouping.getGrouping();
+  function getCurrentGroupingColumn() {
+    const groupingDetail = this.gridApi.grouping.getGrouping();
 
     if (!groupingDetail.grouping.length) {
       // return early - there is no name to choose
-      return;
+      return '';
     }
+
     return groupingDetail.grouping[0].colName;
   }
 
@@ -202,18 +149,19 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session,
    * return back the list of selected rows,
    * if one row is selected so all transaction row will be considered as selected
    * TO DO : make it generic, any kind of group should used, not only trans_id
-   **/
-  function getSelectedGroups (){
+   * */
+  function getSelectedGroups() {
 
-    var parsed = [], processedTransactions = [];
-    var records = this.gridApi.selection.getSelectedGridRows();
+    let parsed = []; const
+      processedTransactions = [];
+    const records = this.gridApi.selection.getSelectedGridRows();
 
-    records.forEach(function (record){
+    records.forEach((record) => {
 
-      if (processedTransactions.indexOf(record.entity.trans_id) === -1){
+      if (processedTransactions.indexOf(record.entity.trans_id) === -1) {
 
-        //take other children of the parent so that every line of the transaction will be present
-        parsed = parsed.concat(record.treeNode.parentRow.treeNode.children.map(function (child){
+        // take other children of the parent so that every line of the transaction will be present
+        parsed = parsed.concat(record.treeNode.parentRow.treeNode.children.map((child) => {
           return child.row.entity;
         }));
 
@@ -233,7 +181,8 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session,
 
     /**
      * contains the number of selected rows
-     * TODO : create a separate service to handle selection functionnality of the grid as grouping and selection are differents
+     * TODO : create a separate service to handle selection functionnality of the grid as grouping
+     * and selection are differents
      */
     this.selectedRowCount = 0;
     this.getSelectedGroups = getSelectedGroups.bind(this);
@@ -253,16 +202,15 @@ function GridGroupingService(GridAggregators, uiGridGroupingConstants, Session,
     gridOptions.treeRowHeaderAlwaysVisible = false;
     gridOptions.showTreeExpandNoChildren = false;
 
-    util.after(gridOptions, 'onRegisterApi', function onRegisterApi(api) {
+    util.after(gridOptions, 'onRegisterApi', (api) => {
       this.gridApi = api;
 
-      // @TODO default aggregators work for now - there is no need to view the total debits and credits by the transaction
-      // var AGGREGATE_PRIORITY = 410;
-			// api.grid.registerColumnsProcessor(configureDefaultAggregators, AGGREGATE_PRIORITY);
+      // @TODO default aggregators work for now - there is no need to view the total debits and
+      // credits by the transaction
 
       // configure default grouping
       configureDefaultGroupingOptions.call(this, api);
-    }.bind(this));
+    });
   }
 
   return GridGrouping;

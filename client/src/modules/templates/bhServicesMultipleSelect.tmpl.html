@@ -1,0 +1,29 @@
+<div ng-form="ServicesMultipleForm" bh-services-multiple-select ng-model-options="{ updateOn: 'default' }">
+  <div
+    class="form-group"
+    ng-class="{ 'has-error' : ServicesMultipleForm.$submitted && ServicesMultipleForm.services.$invalid }">
+    <label class="control-label" translate>
+      {{ $ctrl.label }}
+    </label>
+
+    <ui-select
+        multiple
+        name="services"
+        ng-model="$ctrl.selectedServices"
+        on-select="$ctrl.handleChange($ctrl.selectedServices)"
+        on-remove="$ctrl.handleChange($ctrl.selectedServices)"
+        close-on-select="false"
+        required>
+      <ui-select-match placeholder="{{ 'FORM.SELECT.SERVICE' | translate }}">
+        <span>{{ $item.name }}</span>
+      </ui-select-match>
+      <ui-select-choices ui-select-focus-patch repeat="service.id as service in ($ctrl.services | filter: { name : $select.search })">
+        <span ng-bind-html="service.name | highlight:$select.search"></span>
+      </ui-select-choices>
+    </ui-select>
+
+    <div class="help-block" ng-messages="ServicesMultipleForm.$error" ng-show="ServicesMultipleForm.$submitted">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+</div>

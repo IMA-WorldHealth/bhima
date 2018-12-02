@@ -38,6 +38,16 @@ function CashPaymentsSearch() {
       .catch(helpers.handler);
   });
 
+  it('GET /cash filters by description and returns one record', () => {
+    return agent.get('/cash')
+      .query({ description : 'cool' })
+      .then((res) => {
+        helpers.api.listed(res, 1);
+      })
+      .catch(helpers.handler);
+  });
+
+
   // test limit functionality alone
   it('GET /cash?limit=1 returns a single record', () => {
     const params = { limit : 1 };

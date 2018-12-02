@@ -3,7 +3,7 @@
 module.exports = {
   selector : '[data-bh-yes-no-radios]',
 
-  set : (value, id) => {
+  set : function set(value, id) {
 
     // get the root value of the
     const root = element(id ? by.id(id) : by.css(this.selector));
@@ -18,4 +18,3 @@ module.exports = {
     option.click();
   },
 };
-

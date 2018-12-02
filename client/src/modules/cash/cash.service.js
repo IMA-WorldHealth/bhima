@@ -147,6 +147,7 @@ function CashService(
     },
     { key : 'currency_id', label : 'FORM.LABELS.CURRENCY' },
     { key : 'reversed', label : 'CASH.REGISTRY.REVERSED_RECORDS' },
+    { key : 'description', label : 'FORM.LABELS.DESCRIPTION' },
     { key : 'patientReference', label : 'FORM.LABELS.REFERENCE_PATIENT' },
     { key : 'defaultPeriod', label : 'TABLE.COLUMNS.PERIOD', valueFilter : 'translate' },
     { key : 'invoiceReference', label : 'FORM.LABELS.INVOICE' },
@@ -166,8 +167,9 @@ function CashService(
     const assignedKeys = Object.keys(cashFilters.formatHTTP());
 
     // assign default period filter
-    const periodDefined =
-      service.util.arrayIncludes(assignedKeys, ['period', 'custom_period_start', 'custom_period_end']);
+    const periodDefined = service.util.arrayIncludes(assignedKeys, [
+      'period', 'custom_period_start', 'custom_period_end',
+    ]);
 
     if (!periodDefined) {
       cashFilters.assignFilters(Periods.defaultFilters());

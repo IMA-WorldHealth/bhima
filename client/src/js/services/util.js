@@ -279,4 +279,11 @@ function UtilService(moment) {
       return array.indexOf(value) !== -1;
     });
   };
+
+  // This function retrieves the number as well as
+  // the number of digits after the decimal point by returning the rounded number
+  service.roundDecimal = function roundDecimal(number, precision) {
+    const base = 10 ** precision;
+    return Math.round(number * base) / base;
+  };
 }

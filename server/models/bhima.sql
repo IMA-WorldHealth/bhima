@@ -48,7 +48,6 @@ INSERT INTO unit VALUES
   (143, 'Transaction Type Module', 'TREE.TRANSACTION_TYPE', 'This module is responsible for managing transaction type', 1, '/modules/transaction-type', '/transaction_type'),
   (144, 'Reports (Finance)', 'TREE.REPORTS', 'A folder holding all finance reports', 0, '/modules/finance/reports', '/finance/REPORT_FOLDER'),
   (145, 'Cashflow', 'TREE.CASHFLOW', 'The Cashflow Report', 144, '/modules/reports/cashflow', '/reports/cashflow'),
-  -- (148, 'Chart of Accounts', 'REPORT.CHART_OF_ACCOUNTS', 'The COA Report', 144, '/modules/finance/chart_of_accounts', '/reports/accounts_chart'),
   (146, 'Creditor Groups Management', 'TREE.CREDITOR_GROUP', 'Creditor Groups Management module', 1, '/modules/creditor-groups/', '/creditors/groups'),
   (147, 'Cash Payment Registry', 'TREE.CASH_PAYMENT_REGISTRY', 'Cash Payment Registry', 5, '/modules/cash/payments/registry', '/payments'),
   (149, 'Cash Report', 'TREE.CASH_REPORT', 'The Report of cash entry and exit', 144, '/modules/reports/cash_report', '/reports/cash_report'),
@@ -60,7 +59,6 @@ INSERT INTO unit VALUES
   (155, 'Purchase', 'TREE.PURCHASE', 'The purchase module', 154, '/modules/purchase_order/purchase', '/purchases/create'),
   (156, 'Purchase Registry', 'TREE.PURCHASE_REGISTRY', 'The purchase registry', 154, '/modules/purchase_order/registry', '/purchases'),
   (157, 'Open Debtors', 'REPORT.OPEN_DEBTORS.TREE', 'Open Debtors', 144, '/modules/finance/open_debtors', '/reports/open_debtors'),
-  (159, 'Clients report', 'REPORT.CLIENTS_REPORT.TITLE', 'The Client report', 144, '/modules/reports/clients_report', '/reports/clients_report'),
   (160, 'Stock', 'TREE.STOCK', 'The stock management module', 0, '/modules/stock', '/STOCK_FOLDER'),
   (161, 'Stock Lots', 'TREE.STOCK_LOTS', 'The stock lots registry', 160, '/modules/stock/lots', '/stock/lots'),
   (162, 'Stock Movements', 'TREE.STOCK_MOVEMENTS', 'The stock lots movements registry', 160, '/modules/stock/movements', '/stock/movements'),
@@ -89,7 +87,7 @@ INSERT INTO unit VALUES
   (195, 'Role management','TREE.ROLE_MANAGEMENT','Roles Management', 1,'/modules/role/','/roles'),
   (196, 'Depot Registry','TREE.DEPOTS_REGISTRY','',20,'/modules/depots/','/depots'),
   (197, 'Stock Exit Report','TREE.STOCK_EXIT_REPORT','Stock Exit Report', 144,'/modules/reports/generated/stock_exit','/reports/stock_exit'),
-  (199, 'Client Debtor Account Balance', 'REPORT.CLIENT_DEBTOR_ACCOUNT_BALANCE_REPORT', 'Client Debtor Account Balance', 144, '/modules/reports/debtor_accounts_balance', '/reports/debtorBalanceReport'),
+  (199, 'Annual Clients Report', 'REPORT.CLIENTS.TITLE', 'Annual Clients Report', 144, '/modules/reports/clients', '/reports/annual-clients-report'),
   (200, 'Multiple Payroll','TREE.MULTI_PAYROLL','Multiple Payroll', 57,'/modules/multiple_payroll','/multiple_payroll'),
   (201, 'Employee Standing Report', 'TREE.EMPLOYEE_STANDING_REPORT', 'Employee Standing Report', 144, '/modules/reports/employeeStanding', '/reports/employeeStanding'),
   (202, 'Patient Standing Report', 'TREE.PATIENT_STANDING_REPORT', 'Patient Standing Report', 144, '/modules/reports/patientStanding', '/reports/patientStanding'),
@@ -107,7 +105,14 @@ INSERT INTO unit VALUES
   (214, '[OHADA] Compte de resultat','TREE.OHADA_RESULT_ACCOUNT','',144,'/modules/reports/ohada_profit_loss','/reports/ohada_profit_loss'),
   (215, 'Department management','TREE.DEPARTMENT_MANAGEMENT','Department Management', 1,'/modules/department/','/departments'),
   (216, 'Income Expenses by Year', 'TREE.INCOME_EXPENSE_BY_YEAR', 'The Report of income and expenses', 144, '/modules/finance/income_expense_by_year', '/reports/income_expense_by_year'),
-  (217, 'Tags','TREE.TAGS','', 1,'/modules/tags/tags','/tags');
+  (217, 'Tags','TREE.TAGS','', 1,'/modules/tags/tags','/tags'),
+  (218, 'Fee Center Management','TREE.FEE_CENTER_MANAGEMENT','', 0,'/modules/fee_center','/fee_center'),
+  (219, 'Fee Center Management','TREE.FEE_CENTER','', 218,'/modules/fee_center','/fee_center'),
+  (220, 'Distributions fees Centers','TREE.DITRIBUTION_AUX_FEES_CENTERS','', 218,'/modules/distribution_center','/distribution_center'),
+  (221, 'Update Distributions','TREE.UPDATE_DISTRIBUTION','', 218,'/modules/distribution_center/update','/distribution_center/update'),
+  (222, 'Fee Center Report', 'TREE.FEE_CENTER_REPORT', 'Fee Center Report', 144, '/modules/reports/feeCenter', '/reports/feeCenter'),
+  (223, 'Distribution keys', 'TREE.DISTRIBUTION_KEYS', 'Distribution keys', 218, '/modules/distribution_center/distribution_key', '/distribution_center/distribution_key');
+
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
   (1, 'income', 'ACCOUNT.TYPES.INCOME'),
@@ -134,7 +139,6 @@ INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
   (6, 'account_report', 'REPORT.REPORT_ACCOUNTS.TITLE'),
   (7, 'cashflowByService', 'TREE.CASHFLOW_BY_SERVICE'),
   (8, 'open_debtors', 'REPORT.OPEN_DEBTORS.TITLE'),
-  (9, 'clients_report','REPORT.CLIENTS'),
   (10, 'aged_creditors','TREE.AGED_CREDITORS'),
   (11, 'balance_sheet_report', 'REPORT.BALANCE_SHEET.TITLE'),
   (12, 'cash_report', 'REPORT.CASH_REPORT.TITLE'),
@@ -142,7 +146,7 @@ INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
   (14, 'inventory_file', 'REPORT.STOCK.INVENTORY_REPORT'),
   (15, 'operating', 'TREE.OPERATING_ACCOUNT'),
   (16, 'stock_exit', 'REPORT.STOCK.EXIT_REPORT'),
-  (17, 'debtorBalanceReport', 'REPORT.CLIENT_DEBTOR_ACCOUNT_BALANCE_REPORT'),
+  (17, 'annual-clients-report', 'REPORT.CLIENTS.TITLE'),
   (18, 'employeeStanding', 'REPORT.EMPLOYEE_STANDING.TITLE'),
   (19, 'patientStanding', 'REPORT.PATIENT_STANDING.TITLE'),
   (20, 'ohada_balance_sheet_report', 'REPORT.OHADA.BALANCE_SHEET'),
@@ -152,7 +156,8 @@ INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
   (24, 'income_expense_by_month', 'REPORT.INCOME_EXPENSE_BY_MONTH'),
   (25, 'stock_value', 'TREE.STOCK_VALUE'),
   (26, 'ohada_profit_loss', 'TREE.OHADA_RESULT_ACCOUNT'),
-  (27, 'income_expense_by_year', 'REPORT.INCOME_EXPENSE_BY_YEAR');
+  (27, 'income_expense_by_year', 'REPORT.INCOME_EXPENSE_BY_YEAR'),
+  (28, 'feeCenter', 'REPORT.FEE_CENTER.TITLE');
 
 -- Supported Languages
 INSERT INTO `language` VALUES

@@ -15,7 +15,6 @@
  * in the HTTP query string.
  */
 
-
 const _ = require('lodash');
 const moment = require('moment');
 const ReportManager = require('../../../../lib/ReportManager');

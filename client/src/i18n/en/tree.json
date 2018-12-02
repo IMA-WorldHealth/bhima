@@ -25,11 +25,16 @@
     "DEBTOR_GROUP" : "Debtor Group Management",
     "DEPOTS" : "Depots",
     "DEPOTS_REGISTRY" : "Depots Registry",
+    "DITRIBUTION_AUX_FEES_CENTERS" : "Distributions of Auxiliaries fees Centers",
+    "DISTRIBUTION_KEYS": "Distribution keys Management",
     "EMPLOYEE" : "Employee",
     "EMPLOYEE_REGISTRY" : "Employees registry",
     "EMPLOYEE_STANDING_REPORT" : "Employee Standing Report",
     "ENTERPRISE" : "Enterprise",
     "EXCHANGE" : "Exchange Rate",
+    "FEE_CENTER": "Fees Centers",
+    "FEE_CENTER_MANAGEMENT": "Fee Center Management",
+    "FEE_CENTER_REPORT": "Fee Center Report",    
     "FINANCE" : "Finance",
     "FISCAL_YEAR" : "Fiscal Year",
     "PROFESSION" : "Job titles management",
@@ -116,6 +121,7 @@
     "ROLE_MANAGEMENT" : "Role Management",
     "OHADA_BALANCE_SHEET":"[OHADA] Balance Sheet",
     "OHADA_INCOME":"[OHADA] Income Report",
-    "IMPORT_STOCK_FROM_FILE":"Stock Import"
+    "IMPORT_STOCK_FROM_FILE":"Stock Import",
+    "UPDATE_DISTRIBUTION": "Update Distributions of fees Centers"
   }
 }

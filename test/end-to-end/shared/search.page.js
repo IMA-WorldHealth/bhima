@@ -1,4 +1,5 @@
 const FU = require('../shared/FormUtils');
+
 const bhUserSelect = require('../shared/components/bhUserSelect');
 const bhPeriodSelect = require('../shared/components/bhPeriodSelect');
 const bhDepotSelect = require('../shared/components/bhDepotSelect');
@@ -70,9 +71,11 @@ class SearchModal {
   setDebtorGroup(name) {
     FU.uiSelect('$ctrl.searchQueries.debtor_group_uuid', name, this.element);
   }
+
   setInventoryGroup(name) {
     FU.uiSelect('$ctrl.searchQueries.group_uuid', name, this.element);
   }
+
   setPatientGroup(name) {
     FU.uiSelect('$ctrl.searchQueries.patient_group_uuid', name, this.element);
   }

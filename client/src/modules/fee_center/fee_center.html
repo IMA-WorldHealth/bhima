@@ -1,0 +1,39 @@
+<div class="flex-header"> 
+  <div class="bhima-title"> 
+    <ol class="headercrumb"> 
+      <li class="static" translate> TREE.FINANCE </li> 
+      <li class="title" translate> FEE_CENTER.TITLE </li> 
+    </ol> 
+    
+    <div class="toolbar"> 
+      <div class="toolbar-item"> 
+        <button class="btn btn-default text-capitalize" ui-sref="fee_center.create" data-method="create"> 
+          <span class="fa fa-plus"></span> <span translate>FEE_CENTER.TITLE</span> 
+        </button> 
+      </div> 
+      
+      <div class="toolbar-item"> 
+        <bh-filter-toggle on-toggle="FeeCenterCtrl.toggleFilter()">
+        </bh-filter-toggle>
+      </div>
+    </div> 
+  </div> 
+</div> 
+
+<!-- main content --> 
+<div class="flex-content"> 
+  <div class="container-fluid"> 
+    <div id="fee-center-grid" 
+      ui-grid="FeeCenterCtrl.gridOptions" 
+      class="grid-full-height" 
+      ui-grid-auto-resize 
+      ui-grid-resize-columns> 
+      
+      <bh-grid-loading-indicator 
+        loading-state="FeeCenterCtrl.loading" 
+        empty-state="FeeCenterCtrl.gridOptions.data.length === 0" 
+        error-state="FeeCenterCtrl.hasError"> 
+      </bh-grid-loading-indicator> 
+    </div> 
+  </div> 
+</div>

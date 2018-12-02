@@ -10,7 +10,8 @@ describe('(/journal) API endpoint', () => {
   const MISSING_RECORD_UUID = 'A5A5F950-A4C9-47F0-9A9A-2BFC3123E635';
 
   const NUM_ROW_ALL_RECORDS = 23;
-  const NUM_ROWS_FETCHING_TRANSACTION = 2;
+  const NUM_ROWS_FETCHING_TRANSACTION = 4;
+
 
   it('GET /journal returns a set of records', () => agent.get('/journal')
     .then((res) => {

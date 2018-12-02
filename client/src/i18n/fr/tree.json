@@ -25,11 +25,16 @@
     "DEBTOR_GROUP":"Gestion des Groupes Débiteurs",
     "DEPOTS":"Dépôts",
     "DEPOTS_REGISTRY":"Registre des dépôts",
+    "DITRIBUTION_AUX_FEES_CENTERS" : "Répartitions des centres de frais auxiliaires",
+    "DISTRIBUTION_KEYS": "Gestion des clés de répartitions",
     "EMPLOYEE":"Gestion des Employés",
     "EMPLOYEE_REGISTRY" : "Registre des employés",
     "EMPLOYEE_STANDING_REPORT" : "Rapport des employés",
     "ENTERPRISE":"Entreprise",
     "EXCHANGE":"Taux de change",
+    "FEE_CENTER": "Centres de Frais",
+    "FEE_CENTER_MANAGEMENT": "Gestion des centres de frais",
+    "FEE_CENTER_REPORT": "Rapport des centres de frais",
     "FINANCE":"Finances",
     "FISCAL_YEAR":"Année Fiscale",
     "PROFESSION":"Gestion des Professions",
@@ -116,6 +121,7 @@
     "ROLE_MANAGEMENT":"Gestion des rôles",
     "OHADA_BALANCE_SHEET":"[OHADA] Bilan",
     "OHADA_INCOME":"[OHADA] Compte de resultat",
-    "IMPORT_STOCK_FROM_FILE":"Imporation de stock"
+    "IMPORT_STOCK_FROM_FILE":"Imporation de stock",
+    "UPDATE_DISTRIBUTION": "Mettre à jour la répartition des centres de frais"
   }
 }

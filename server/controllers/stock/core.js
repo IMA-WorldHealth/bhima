@@ -493,7 +493,10 @@ function processMultipleLots(inventories) {
 
   _.map(inventoryLots, (lots) => {
     // order lots by ascending lifetime
-    const orderedInventoryLots = _.orderBy(lots, 'lifetime', 'asc');
+    let orderedInventoryLots = _.orderBy(lots, 'lifetime', 'asc');
+    // order lots also by ascending quantity
+    // assuming the lot with lowest quantity is consumed first
+    orderedInventoryLots = _.orderBy(orderedInventoryLots, 'quantity', 'asc');
 
     // compute the lot coefficient
     let lotLifetime = 0;

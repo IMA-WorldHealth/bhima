@@ -1,0 +1,51 @@
+<div class="flex-header"> 
+  <div class="bhima-title"> 
+    <ol class="headercrumb"> 
+      <li class="static" translate> TREE.FINANCE </li> 
+      <li class="title" translate> TREE.UPDATE_DISTRIBUTION </li> 
+    </ol> 
+    
+    <div class="toolbar"> 
+      <div class="toolbar-item"> 
+        <button
+          ng-click="UpdateCenterCtrl.setting()"
+          data-method="setting"
+          class="btn btn-default">
+          <span class="fa fa-cogs"></span> <span class="hidden-xs" translate> FORM.BUTTONS.SETTING </span>
+        </button>
+      </div> 
+      
+      <div class="toolbar-item"> 
+        <bh-filter-toggle on-toggle="UpdateCenterCtrl.toggleFilter()">
+        </bh-filter-toggle>
+      </div>
+    </div> 
+  </div> 
+</div>
+
+<div class="flex-util bh-filter-bar">
+  <bh-filters
+    filters="UpdateCenterCtrl.latestViewFilters"
+    on-remove-filter="UpdateCenterCtrl.onRemoveFilter(filter)">
+  </bh-filters>
+</div>
+
+<!-- main content --> 
+<div class="flex-content"> 
+  <div class="container-fluid"> 
+    <div id="distribution-center-grid"
+      ui-grid="UpdateCenterCtrl.gridOptions" 
+      class="grid-full-height-with-filters"
+      ui-grid-auto-resize
+      ui-grid-selection
+      ui-grid-grouping
+      ui-grid-resize-columns> 
+      
+      <bh-grid-loading-indicator 
+        loading-state="UpdateCenterCtrl.loading" 
+        empty-state="UpdateCenterCtrl.gridOptions.data.length === 0" 
+        error-state="UpdateCenterCtrl.hasError"> 
+      </bh-grid-loading-indicator> 
+    </div> 
+  </div> 
+</div>

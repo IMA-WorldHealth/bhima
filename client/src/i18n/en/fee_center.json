@@ -1,0 +1,8 @@
+{
+  "FEE_CENTER" : {
+    "ADD_FEE_CENTER" : "Add a Fee Center",
+    "DELETE": "Delete This Fee Center",
+    "EDIT_FEE_CENTER" : "Update the Fee Center Information",
+    "TITLE" : "Fees Centers"
+  }
+}

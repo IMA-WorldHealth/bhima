@@ -31,6 +31,23 @@
                 <i class="fa fa-close"></i> <span translate>FORM.BUTTONS.CLEAR_GRID_CONFIGURATION</span>
               </a>
             </li>
+
+            <li role="separator" class="divider"></li>
+            <li role="menuitem">
+              <a data-method="print" id="print" href="/prices/download/list?{{PriceListCtrl.download('pdf')}}"  translate-attr="{'download': 'DOWNLOADS.PDF'}">
+                <i class="fa fa-print"></i> <span translate>FORM.BUTTONS.PRINT</span>
+              </a>
+            </li>
+            <li role="menuitem">
+              <a data-method="export" id="export" href="/prices/download/list?{{PriceListCtrl.download('csv')}}" translate-attr="{'download': 'DOWNLOADS.CSV'}" >
+                <i class="fa fa-file-excel-o"></i> <span translate>DOWNLOADS.CSV</span>
+              </a>
+            </li>
+            <li role="menuitem">
+              <a target='_blank' ng-href="/prices/download/list?{{PriceListCtrl.download('xlsx')}}" translate-attr="{'download': 'DOWNLOADS.EXCEL'}" >
+                <span class="fa fa-file-excel-o"></span> <span translate>DOWNLOADS.EXCEL</span>
+              </a>
+            </li>
           </ul>
         </div>
       </div>

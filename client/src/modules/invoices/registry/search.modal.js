@@ -32,7 +32,7 @@ function InvoiceRegistrySearchModalController(ModalInstance, filters, Notify, St
   //       these are known when the filter service is defined
   const searchQueryOptions = [
     'is_caution', 'reference', 'cashbox_id', 'user_id', 'reference_patient',
-    'currency_id', 'reversed', 'service_id', 'debtor_group_uuid',
+    'currency_id', 'reversed', 'service_id', 'debtor_group_uuid', 'description',
   ];
 
   // assign already defined custom filters to searchQueries object
