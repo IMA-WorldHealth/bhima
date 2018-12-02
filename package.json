@@ -148,7 +148,7 @@
     "gulp-rev": "^9.0.0",
     "gulp-rev-rewrite": "^1.1.1",
     "gulp-template": "^5.0.0",
-    "gulp-typescript": "^4.0.1",
+    "gulp-typescript": "^5.0.0",
     "gulp-uglify": "^3.0.0",
     "karma": "^3.0.0",
     "karma-chai": "^0.1.0",
