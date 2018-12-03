@@ -83,7 +83,7 @@ function ActionAssignModalController(AppCache, $state, Depots, Notify, Modal, St
     if (!depotUuid) { return; }
 
     // load available inventories of the given depot
-    Stock.lots.read(null, { depot_uuid : depotUuid, is_assigned : 0 })
+    Stock.lots.read(null, { depot_uuid : depotUuid, is_assigned : 0, includeEmptyLot : 0 })
       .then(rows => {
         computeAvailableInventories(rows);
       })
