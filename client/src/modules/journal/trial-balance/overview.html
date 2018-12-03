@@ -20,3 +20,16 @@
     error-state="OverviewCtrl.hasError">
   </bh-grid-loading-indicator>
 </div>
+
+<div class="row" ng-if="OverviewCtrl.summaryByAccountType">
+  <ul style="margin-left: 0; padding-left:0;">
+    <li  style="display: inline-block; padding: 2.5px;">
+      <i class="fa fa-balance-scale"></i>
+      <span translate>POSTING_JOURNAL.TRIAL_BALANCE.SUMMARY_BY_TYPE</span> &vert;
+    </li>
+    <li ng-repeat="(type, balance) in OverviewCtrl.summaryByAccountType" style="display: inline-block; padding: 2.5px;">
+      <strong translate>{{ type }}</strong>: &nbsp;
+      <span>{{ balance | currency:OverviewCtrl.currencyId }}</span>
+    </li>
+  </ul>
+</div>

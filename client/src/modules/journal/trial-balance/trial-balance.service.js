@@ -1,7 +1,7 @@
 angular.module('bhima.services')
   .service('TrialBalanceService', TrialBalanceService);
 
-TrialBalanceService.$inject = ['util', '$http', 'AccountService'];
+TrialBalanceService.$inject = ['util', '$http', 'AccountService', 'bhConstants'];
 
 /**
  * @class TrialBalanceService
@@ -18,14 +18,14 @@ TrialBalanceService.$inject = ['util', '$http', 'AccountService'];
  *     // do something with the summary data
  *   });
  */
-function TrialBalanceService(util, $http, Accounts) {
-  var service = this;
-  var url = '/journal';
+function TrialBalanceService(util, $http, Accounts, Constants) {
+  const service = this;
+  const url = '/journal';
 
   // always start uninitialised
-  var initialised = false;
-  var transactions;
-  var promise;
+  let initialised = false;
+  let transactions;
+  let promise;
 
   service.postToGeneralLedger = postToGeneralLedger;
   service.bindGridExporter = bindGridExporter;
@@ -73,8 +73,8 @@ function TrialBalanceService(util, $http, Accounts) {
   function summary() {
     ensureTrialBalanceInitialised('summary()');
 
-    return promise.then(function (data) {
-      data.summary.forEach(function (account) {
+    return promise.then((data) => {
+      data.summary.forEach((account) => {
         account.hrLabel = Accounts.label(account);
       });
 
@@ -93,7 +93,7 @@ function TrialBalanceService(util, $http, Accounts) {
   function errors() {
     ensureTrialBalanceInitialised('errors()');
 
-    return promise.then(function (data) {
+    return promise.then((data) => {
       return data.errors;
     });
   }
@@ -105,9 +105,9 @@ function TrialBalanceService(util, $http, Accounts) {
    * This function attempts to post to the General Ledger by
    */
   function postToGeneralLedger() {
-    return $http.post(url.concat('/transactions'), { transactions : transactions })
+    return $http.post(url.concat('/transactions'), { transactions })
       .then(util.unwrapHttpResponse)
-      .then(function (data) {
+      .then((data) => {
         uninitialise();
         return data;
       });
@@ -131,19 +131,7 @@ function TrialBalanceService(util, $http, Accounts) {
    * This function runs the grid exporter.
    */
   function exportGrid() {
-    this.exporter && this.exporter.run();
-  }
-
-  /**
-   * @method fetchSubGridRecord
-   *
-   * @description
-   * This function fetches the records associated with the account.
-   *
-   * @TODO
-   */
-  function fetchSubGridRecords(account) {
-    $http.post(url.concat('/trialbalance/subgrid'));
+    return this.exporter && this.exporter.run();
   }
 
   /**
@@ -155,6 +143,24 @@ function TrialBalanceService(util, $http, Accounts) {
   this.transactions = function txns() {
     ensureTrialBalanceInitialised('transactions()');
     return transactions;
+  };
+
+  // map account type ids to their i18n translations
+  const accountTypeI18nMap = {};
+  angular.forEach(Constants.accounts, (value, key) => {
+    accountTypeI18nMap[value] = `ACCOUNT.TYPES.${key}`;
+  });
+
+  this.groupByAccountType = function groupByAccountType(rows) {
+    return rows.reduce((groups, row) => {
+      // get account type mapping
+      const type = accountTypeI18nMap[row.type_id];
+
+      // sum by account type
+      groups[type] = groups[type] || 0;
+      groups[type] += (row.debit_equiv - row.credit_equiv);
+      return groups;
+    }, {});
   };
 
   return service;

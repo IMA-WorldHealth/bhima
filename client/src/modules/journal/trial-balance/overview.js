@@ -14,6 +14,7 @@ TrialBalanceOverviewController.$inject = [
 function TrialBalanceOverviewController(Session, TrialBalance, Notify, uiGridConstants, GridExport, $state) {
   const vm = this;
   const currencyId = Session.enterprise.currency_id;
+  vm.currencyId = currencyId;
 
   const GRID_HEADER_ERROR_CLASS = 'ui-grid-header-cell-error';
   const GRID_HEADER_DEFAULT_CLASS = 'ui-grid-header-cell-primary';
@@ -119,6 +120,7 @@ function TrialBalanceOverviewController(Session, TrialBalance, Notify, uiGridCon
     TrialBalance.summary()
       .then(summary => {
         vm.gridOptions.data = summary;
+        vm.summaryByAccountType = TrialBalance.groupByAccountType(summary);
       })
       .catch(errorHandler)
       .finally(toggleLoadingIndicator);

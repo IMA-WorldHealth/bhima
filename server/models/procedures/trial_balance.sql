@@ -210,6 +210,7 @@ Running this a table with the following type:
 USAGE: CALL TrialBalanceSummary()
 */
 --
+DROP PROCEDURE IF EXISTS TrialBalanceSummary$$
 CREATE PROCEDURE TrialBalanceSummary()
 BEGIN
   -- this assumes lines have been staged using CALL StageTrialBalanceTransaction()
@@ -239,7 +240,7 @@ BEGIN
     ) totals ON u.account_id = totals.account_id
     GROUP BY u.account_id;
 
-  SELECT account_id, account.number AS number, account.label AS label,
+  SELECT account_id, account.number AS number, account.label AS label, account.type_id,
     balance_before, debit_equiv, credit_equiv,
     balance_before + debit_equiv - credit_equiv AS balance_final
   FROM (

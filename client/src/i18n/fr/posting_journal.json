@@ -70,7 +70,8 @@
       "SHOW_ERRORS" : "Passer à la vue d'erreur",
       "RETURN_TO_OVERVIEW" : "Retourner à la vue sommaire",
       "IS_BALANCED" : "Balancé",
-      "POSTED_TRANSACTIONS" : "Succès! Posté {{numRecords}} Transactions au Grand Livre."
+      "POSTED_TRANSACTIONS" : "Succès! Posté {{numRecords}} Transactions au Grand Livre.",
+      "SUMMARY_BY_TYPE" : "Changements par type de compte"
     }
   }
 }
