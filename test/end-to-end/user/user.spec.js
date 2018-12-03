@@ -104,13 +104,6 @@ describe('User Management Page', () => {
     components.notification.hasSuccess();
   });
 
-  it('refuses to update a user when no changes have been made', () => {
-    userPage.editUser(mockUserEdit.userName);
-    userCreateUpdatePage.submitUser();
-    expect(userCreateUpdatePage.isSameUser()).to.eventually.equal(true);
-    userCreateUpdatePage.close();
-  });
-
   it('validates from on editing password', () => {
     userPage.editUser(mockUserEdit.userName);
 
