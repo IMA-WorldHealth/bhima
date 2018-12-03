@@ -188,6 +188,7 @@
     "UPDATE_SUCCESS" : "Mise à jour de l'assignation de stock réussie",
     "REMOVE_SUCCESS" : "Suppression de l'assignation de stock réussie",
     "CONFIRM_REMOVE_MSG" : "Voulez-vous vraiment désassigner ce stock ?",
-    "NEW_ASSIGN" : "Nouvelle assignation"
+    "NEW_ASSIGN" : "Nouvelle assignation",
+    "RECEIVER" : "Bénéficiaire"
   }
 }

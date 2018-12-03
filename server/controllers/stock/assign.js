@@ -35,6 +35,7 @@ exports.list = (req, res, next) => {
 exports.create = (req, res, next) => {
   const identifier = util.uuid();
   req.body.uuid = identifier;
+  req.body.user_id = req.session.user.id;
   const params = binarize(req.body);
   const sql = 'INSERT INTO stock_assign SET ?;';
   db.exec(sql, [params])

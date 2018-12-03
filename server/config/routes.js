@@ -733,6 +733,7 @@ exports.configure = function configure(app) {
   app.get('/receipts/stock/exit_service/:document_uuid', stockReports.stockExitServiceReceipt);
   app.get('/receipts/stock/exit_depot/:document_uuid', stockReports.stockExitDepotReceipt);
   app.get('/receipts/stock/exit_loss/:document_uuid', stockReports.stockExitLossReceipt);
+  app.get('/receipts/stock/assign/:uuid', stockReports.stockAssignReceipt);
 
   app.get('/receipts/stock/entry_depot/:document_uuid', stockReports.stockEntryDepotReceipt);
   app.get('/receipts/stock/entry_purchase/:document_uuid', stockReports.stockEntryPurchaseReceipt);

@@ -1915,6 +1915,7 @@ CREATE TABLE `stock_assign` (
   `quantity`          INT(11) NOT NULL DEFAULT 1,
   `is_active`         TINYINT(1) NOT NULL DEFAULT 1,
   `description`       TEXT NULL,
+  `user_id`           SMALLINT(5) UNSIGNED NOT NULL,
   `updated_at`        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `created_at`        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`uuid`),

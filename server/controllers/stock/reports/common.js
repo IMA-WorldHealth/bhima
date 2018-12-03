@@ -6,6 +6,7 @@ const STOCK_EXIT_PATIENT_TEMPLATE = `${BASE_PATH}/stock_exit_patient.receipt.han
 const STOCK_EXIT_SERVICE_TEMPLATE = `${BASE_PATH}/stock_exit_service.receipt.handlebars`;
 const STOCK_EXIT_DEPOT_TEMPLATE = `${BASE_PATH}/stock_exit_depot.receipt.handlebars`;
 const STOCK_EXIT_LOSS_TEMPLATE = `${BASE_PATH}/stock_exit_loss.receipt.handlebars`;
+const STOCK_ASSIGN_TEMPLATE = `${BASE_PATH}/stock_assign.receipt.handlebars`;
 
 const STOCK_ENTRY_DEPOT_TEMPLATE = `${BASE_PATH}/stock_entry_depot.receipt.handlebars`;
 const STOCK_ENTRY_PURCHASE_TEMPLATE = `${BASE_PATH}/stock_entry_purchase.receipt.handlebars`;
@@ -20,6 +21,8 @@ const STOCK_MOVEMENTS_REPORT_TEMPLATE = `${BASE_PATH}/stock_movements.report.han
 const STOCK_INVENTORIES_REPORT_TEMPLATE = `${BASE_PATH}/stock_inventories.report.handlebars`;
 const STOCK_INVENTORY_REPORT_TEMPLATE = `${BASE_PATH}/stock_inventory.report.handlebars`;
 const STOCK_VALUE_REPORT_TEMPLATE = `${BASE_PATH}/stock_value.report.handlebars`;
+
+
 // General imports
 const _ = require('lodash');
 
@@ -186,6 +189,7 @@ exports.STOCK_EXIT_PATIENT_TEMPLATE = STOCK_EXIT_PATIENT_TEMPLATE;
 exports.STOCK_EXIT_SERVICE_TEMPLATE = STOCK_EXIT_SERVICE_TEMPLATE;
 exports.STOCK_EXIT_DEPOT_TEMPLATE = STOCK_EXIT_DEPOT_TEMPLATE;
 exports.STOCK_EXIT_LOSS_TEMPLATE = STOCK_EXIT_LOSS_TEMPLATE;
+exports.STOCK_ASSIGN_TEMPLATE = STOCK_ASSIGN_TEMPLATE;
 
 exports.STOCK_ENTRY_DEPOT_TEMPLATE = STOCK_ENTRY_DEPOT_TEMPLATE;
 exports.STOCK_ENTRY_PURCHASE_TEMPLATE = STOCK_ENTRY_PURCHASE_TEMPLATE;
