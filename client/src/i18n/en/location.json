@@ -1,5 +1,5 @@
-{"LOCATION":{"DESCRIPTION":"Location Manager Configuration is used to create location and to store it in the system, locations are very importants when you register a patient and so one. Use this module to",
-"DESCRIPTION_2":"The saving and Updating of a Location",
+{"LOCATION":{"DESCRIPTION":"Location Manager Configuration is used to create locations. Locations are very important when you register a patient and so on. Use this module to",
+"DESCRIPTION_2":"The saving and updating of a Location",
 "LOCALITY":"Locality",
 "LOCATION":"Location",
 "LOCATION_MANAGER":"Location Manager",

@@ -16,18 +16,18 @@
     "SAVE_TRANSACTION_SUCCESS" : "Transaction record was updated successfully.",
     "TRANSACTION" : "Transaction",
     "SHOW_FULL_TRANSACTION_RECORDS" : "Show Full Transactions",
-    "SHOW_FULL_TRANSACTION_RECORDS_HELP" : "Enabling this option will make this server return all rows in a transaction matching any of the filter values.  It may slow down performance of Journal slightly.",
+    "SHOW_FULL_TRANSACTION_RECORDS_HELP" : "Enabling this option will make this server return all rows in a transaction matching any of the filter values.  It may slow down journal performance slightly.",
     "VIEWING" : "Viewing",
     "OUTDATED_DATA_MESSAGE_1" : "The data displayed may have changed since it was loaded.",
     "OUTDATED_DATA_MESSAGE_2" : "the latest data.",
     "CLICK_HERE_TO_RELOAD" : "Click here to reload",
     "CONFIGURATION": {
-      "TITLE" : "Configuration des colonnes",
+      "TITLE" : "Column configuration",
       "COLUMNS" : "Columns"
     },
     "ERRORS": {
       "CLOSED_FISCAL_YEAR" : "The fiscal year for this date has already been closed",
-      "CREDITED_DEBITED" : "On the same transaction line an account can not be debited and credited at the same time",
+      "CREDITED_DEBITED" : "An account can not be debited and credited on the same transaction line ",
       "DATE_IN_WRONG_PERIOD" : "Dates in wrong period",
       "DEACTIVATED_USER" : "A transaction was made by a user account that has been deactivated.  Please review this transaction carefully, unlock the user account, and post.",
       "DEB_CRED_NOT_NULL" : "The debits and credits should not be zero",
@@ -53,7 +53,7 @@
       "TRANSACTION_MUST_CONTAIN_ROWS" : "Existing transactions must contain rows",
       "UNBALANCED_TRANSACTIONS" : "Unbalanced Transaction(s)",
       "USER_CANNOT_EDIT_POSTED_TRANSACTION" : "User cannot edit this transaction as it has already been posted",
-      "VARIOUS_TRANSACTION_TYPE" : "Various transaction type for a transaction"
+      "VARIOUS_TRANSACTION_TYPE" : "Various transaction types for a transaction"
     },
     "WARNINGS": {
       "MISSING_ENTITY" : "Record without entity type and entity ID",
