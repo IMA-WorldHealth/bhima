@@ -187,6 +187,7 @@
     "CREATE_SUCCESS" : "Successfull created",
     "UPDATE_SUCCESS" : "Successfull updated",
     "REMOVE_SUCCESS" : "Successfull removed",
+    "CONFIRM_REMOVE_MSG" : "Do you really want to remove this stock assignment ?",
     "NEW_ASSIGN" : "New Assignment"
   }
 }

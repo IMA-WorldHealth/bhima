@@ -183,10 +183,11 @@
     "TITLE" : "Assignation",
     "STOCK_ASSIGN" : "Assignation de stock",
     "EDIT_ASSIGN" : "Editer Assignation",
-    "REMOVE_ASSIGN" : "Supprimer Assignation",
+    "REMOVE_ASSIGN" : "Désassigner",
     "CREATE_SUCCESS" : "Nouvelle assignation de stock réussie",
     "UPDATE_SUCCESS" : "Mise à jour de l'assignation de stock réussie",
     "REMOVE_SUCCESS" : "Suppression de l'assignation de stock réussie",
+    "CONFIRM_REMOVE_MSG" : "Voulez-vous vraiment désassigner ce stock ?",
     "NEW_ASSIGN" : "Nouvelle assignation"
   }
 }

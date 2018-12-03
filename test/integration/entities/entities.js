@@ -31,7 +31,7 @@ describe('(/entities) Entities', () => {
     'address', 'reference', 'entity_type_id', 'label', 'translation_key',
   ];
 
-  const NUM_ENTITIES = 2;
+  const NUM_ENTITIES = 4;
 
   it('POST /entities Create a new person entity', () => {
     return agent.post('/entities')

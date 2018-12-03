@@ -12,9 +12,6 @@ function StockService(Api, StockFilterer) {
   // API for stock lots in depots
   const lots = new Api('/stock/lots/depots');
 
-  // API for stock assignment
-  const stockAssign = new Api('/stock/assign/');
-
   // API for stock lots movements
   const movements = new Api('/stock/lots/movements');
 
@@ -29,6 +26,15 @@ function StockService(Api, StockFilterer) {
 
   // API for stock import
   const importing = new Api('/stock/import');
+
+  // API for stock assignment
+  const stockAssign = new Api('/stock/assign/');
+
+  // Overide the stock assign api
+  stockAssign.remove = uuid => {
+    return stockAssign.$http.put(`/stock/assign/${uuid}/remove`)
+      .then(stockAssign.util.unwrapHttpResponse);
+  };
 
   // stock status label keys
   const stockStatusLabelKeys = {

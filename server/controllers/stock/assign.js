@@ -11,7 +11,7 @@ exports.detail = (req, res, next) => {
     SELECT 
       BUID(sa.uuid) AS uuid, BUID(sa.lot_uuid) AS lot_uuid,
       BUID(sa.depot_uuid) AS depot_uuid, BUID(sa.entity_uuid) AS entity_uuid,
-      sa.quantity, sa.created_at, sa.description
+      sa.quantity, sa.created_at, sa.description, sa.is_active
     FROM stock_assign sa
     WHERE sa.uuid = ?;
   `;
@@ -33,22 +33,30 @@ exports.list = (req, res, next) => {
 };
 
 exports.create = (req, res, next) => {
-  const params = req.body;
-  params.uuid = util.uuid();
+  const identifier = util.uuid();
+  req.body.uuid = identifier;
+  const params = binarize(req.body);
   const sql = 'INSERT INTO stock_assign SET ?;';
-  db.exec(sql, [binarize(params)])
+  db.exec(sql, [params])
     .then(() => {
       const update = 'UPDATE lot SET is_assigned = 1 WHERE uuid = ?;';
-      return db.exec(update, [db.bid(params.lot_uuid)]);
+      return db.exec(update, [params.lot_uuid]);
     })
-    .then(() => res.status(201).json({ uuid : params.uuid }))
+    .then(() => res.status(201).json({ uuid : identifier }))
     .catch(next)
     .done();
 };
 
+/**
+ * TODO: This feature need to be implemented on the client side
+ * in a good way.
+ * Since implementing this feature can be a source of lack of information
+ * we do not implemented it for now.
+ * Stock assignment can just be created (assignment) or unassignment
+ */
 exports.update = (req, res, next) => {
-  const params = req.body;
-  const uuid = db.bid(req.params);
+  const params = binarize(req.body);
+  const uuid = db.bid(req.params.uuid);
 
   if (params.uuid) {
     delete params.uuid;
@@ -70,6 +78,11 @@ exports.update = (req, res, next) => {
     .done();
 };
 
+/**
+ * removeAssign() allow to unassign stock to en entity, which is different to just
+ * delete assignment, the deletion may be a source of lack of information
+ * for tracking historic of lot assignment
+ */
 exports.removeAssign = (req, res, next) => {
   const uuid = db.bid(req.params.uuid);
   const sqlAssignedLot = 'SELECT lot_uuid FROM stock_assign WHERE uuid = ?';
@@ -87,6 +100,9 @@ exports.removeAssign = (req, res, next) => {
     .done();
 };
 
+/**
+ * deleteAssign() allow to delete the assign record in the database
+ */
 exports.deleteAssign = (req, res, next) => {
   const uuid = db.bid(req.params.uuid);
   const sqlAssignedLot = 'SELECT lot_uuid FROM stock_assign WHERE uuid = ?';

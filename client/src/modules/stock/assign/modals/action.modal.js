@@ -28,11 +28,6 @@ function ActionAssignModalController(AppCache, $state, Depots, Notify, Modal, St
     vm.stateParams = cache.stateParams;
   }
 
-  // this is the UUID of the update state.
-  vm.identifier = vm.stateParams.uuid;
-  vm.isUpdateState = angular.isDefined(vm.identifier);
-  vm.isCreateState = !angular.isDefined(vm.identifier);
-
   vm.onSelectDepot = onSelectDepot;
   function onSelectDepot(depot) {
     vm.model.depot_uuid = depot.uuid;
@@ -63,7 +58,10 @@ function ActionAssignModalController(AppCache, $state, Depots, Notify, Modal, St
     }
 
     Stock.stockAssign.create(vm.model)
-      .then(() => Modal.close(true))
+      .then(() => {
+        Notify.success('ASSIGN.CREATE_SUCCESS');
+        Modal.close(true);
+      })
       .catch(Notify.handleError);
   };
 
@@ -71,22 +69,16 @@ function ActionAssignModalController(AppCache, $state, Depots, Notify, Modal, St
     Depots.read(null)
       .then(rows => {
         vm.depots = rows;
-
-        if (vm.identifier) {
-          readAndAssign(vm.identifier);
-        }
       })
       .catch(Notify.handleError);
   }
 
-  function readAndAssign(uuid) {
-    Stock.stockAssign.read(uuid)
-      .then(assigment => {
-        vm.model = assigment;
-      })
-      .catch(Notify.handleError);
-  }
-
+  /**
+   * Load inventories and lots of the given depot which are not assigned
+   * for being used in a new assignment
+   *
+   * @param {string} depotUuid
+   */
   function loadAvailableInventories(depotUuid) {
     if (!depotUuid) { return; }
 
@@ -98,6 +90,12 @@ function ActionAssignModalController(AppCache, $state, Depots, Notify, Modal, St
       .catch(Notify.handleError);
   }
 
+  /**
+   * Since data contains inventories and lots that we need, we do not want to
+   * perform others queries to the server, so we extract inventories and lots
+   * from the data given
+   * @param {array} data
+   */
   function computeAvailableInventories(data) {
     vm.globalAvailableLots = data;
     vm.groupedInventories = groupBy(data, 'inventory_uuid');

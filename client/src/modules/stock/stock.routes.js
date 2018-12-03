@@ -71,14 +71,6 @@ angular.module('bhima.routes')
         },
         onEnter : ['$state', 'StockModalService', onEnterFactory('create')],
         onExit : ['$uibModalStack', closeModals],
-      })
-      .state('stockAssign.update', {
-        url : '/:uuid/update',
-        onEnter : ['$state', 'StockModalService', onEnterFactory('update')],
-        onExit : ['$uibModalStack', closeModals],
-        params : {
-          filters : [],
-        },
       });
   }]);
 

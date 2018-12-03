@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('StockLotsAssignController', StockLotsAssignController);
 
 StockLotsAssignController.$inject = [
-  'StockService', 'NotifyService',
+  'StockService', 'NotifyService', 'ModalService',
   'uiGridConstants', 'StockModalService', 'LanguageService', 'GridGroupingService',
   'GridStateService', 'GridColumnService', '$state', '$httpParamSerializer',
 ];
@@ -12,8 +12,8 @@ StockLotsAssignController.$inject = [
  * This module is a registry page for stock lots assignments
  */
 function StockLotsAssignController(
-  Stock, Notify,
-  uiGridConstants, Modal, Languages, Grouping,
+  Stock, Notify, Modal,
+  uiGridConstants, StockModal, Languages, Grouping,
   GridState, Columns, $state, $httpParamSerializer,
 ) {
   const vm = this;
@@ -113,6 +113,7 @@ function StockLotsAssignController(
   vm.openColumnConfigModal = openColumnConfigModal;
   vm.loading = false;
   vm.saveGridState = state.saveGridState;
+  vm.removeAssign = removeAssign;
 
   function onRegisterApi(gridApi) {
     vm.gridApi = gridApi;
@@ -174,6 +175,28 @@ function StockLotsAssignController(
     vm.loading = !vm.loading;
   }
 
+  /**
+   * @method removeAssign
+   *
+   * @description
+   * remove the stock assignment to the entity
+   *
+   * @param {string} uuid
+   */
+  function removeAssign(uuid) {
+    Modal.confirm('ASSIGN.CONFIRM_REMOVE_MSG')
+      .then(ans => {
+        if (!ans) { return; }
+
+        Stock.stockAssign.remove(uuid)
+          .then(() => {
+            load(stockAssignFilters.formatHTTP(true));
+            Notify.success('ASSIGN.REMOVE_SUCCESS');
+          })
+          .catch(errorHandler);
+      });
+  }
+
   // load stock lots in the grid
   function load(filters) {
     vm.hasError = false;
@@ -201,7 +224,7 @@ function StockLotsAssignController(
   function search() {
     const filtersSnapshot = stockAssignFilters.formatHTTP();
 
-    Modal.openSearchStockAssign(filtersSnapshot)
+    StockModal.openSearchStockAssign(filtersSnapshot)
       .then((changes) => {
         stockAssignFilters.replaceFilters(changes);
         stockAssignFilters.formatCache();
