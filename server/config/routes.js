@@ -106,7 +106,7 @@ const operating = require('../controllers/finance/reports/operating/index');
 const department = require('../controllers/admin/department');
 const tags = require('../controllers/admin/tags');
 
-const pavion = require('../controllers/medical/pavion');
+const pavillion = require('../controllers/medical/pavillion');
 
 const feeCenter = require('../controllers/finance/feeCenter');
 
@@ -809,10 +809,10 @@ exports.configure = function configure(app) {
   app.post('/distribution_fee_center/distributionKey', setDistributionKey.setting);
   app.post('/distribution_fee_center/resetKey', setDistributionKey.resetKey);
 
-  // pavion management
-  app.get('/pavions', pavion.read);
-  app.get('/pavions/:uuid', pavion.detail);
-  app.post('/pavions', pavion.create);
-  app.put('/pavions/:uuid', pavion.update);
-  app.delete('/pavions/:uuid', pavion.delete);
+  // pavillion management
+  app.get('/pavillions', pavillion.read);
+  app.get('/pavillions/:uuid', pavillion.detail);
+  app.post('/pavillions', pavillion.create);
+  app.put('/pavillions/:uuid', pavillion.update);
+  app.delete('/pavillions/:uuid', pavillion.delete);
 };

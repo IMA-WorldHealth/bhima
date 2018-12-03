@@ -3,55 +3,52 @@
 const helpers = require('./helpers');
 
 /*
- * The /pavions API endpoint
+ * The /pavillions API endpoint
  *
  * This test suite implements full CRUD on the /projects HTTP API endpoint.
  */
-describe('(/pavions) The pavion API endpoint', () => {
+describe('(/pavillions) The pavillion API endpoint', () => {
   // project we will add during this test suite.
   const uuid = '5b7dd0d6-9273-4955-a703-126fbd504b61';
   const uuid2 = '7b7dd0d6-9273-4955-a703-126fbd504b61';
 
-  const pavion = {
+  const pavillion = {
     uuid,
-    name : 'Pavion 1',
-    description : 'Frist pavion',
-    project_id : 1,
-    service_id : 1,
+    name : 'pavillion 1',
+    description : 'Frist pavillion',
   };
 
-  const pavion2 = {
+  const pavillion2 = {
     uuid : uuid2,
-    name : 'Pavion 2',
-    description : 'Second pavion',
-    project_id : 1,
+    name : 'pavillion 2',
+    description : 'Second pavillion',
   };
 
-  const pavionUpdate = {
+  const pavillionUpdate = {
     uuid,
-    name : 'Pavion A',
+    name : 'pavillion A',
   };
 
-  it('POST /pavions add a new pavion', () => {
-    return agent.post('/pavions')
-      .send(pavion)
+  it('POST /pavillions add a new pavillion', () => {
+    return agent.post('/pavillions')
+      .send(pavillion)
       .then((res) => {
         expect(res).to.have.status(201);
       })
       .catch(helpers.handler);
   });
 
-  it('POST /pavions add pavion not linked to a service', () => {
-    return agent.post('/pavions')
-      .send(pavion2)
+  it('POST /pavillions add pavillion not linked to a service', () => {
+    return agent.post('/pavillions')
+      .send(pavillion2)
       .then((res) => {
         expect(res).to.have.status(201);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /pavions returns a list of pavions', () => {
-    return agent.get('/pavions')
+  it('GET /pavillions returns a list of pavillions', () => {
+    return agent.get('/pavillions')
       .then((res) => {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
@@ -60,26 +57,26 @@ describe('(/pavions) The pavion API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('PUT /pavions update a pavion', () => {
-    return agent.put(`/pavions/${uuid}`)
-      .send(pavionUpdate)
+  it('PUT /pavillions update a pavillion', () => {
+    return agent.put(`/pavillions/${uuid}`)
+      .send(pavillionUpdate)
       .then((res) => {
         expect(res).to.have.status(200);
-        return agent.get(`/pavions/${uuid}`);
+        return agent.get(`/pavillions/${uuid}`);
       })
       .then(res => {
         expect(res).to.have.status(200);
-        expect(res.body.name).to.equal(pavionUpdate.name);
+        expect(res.body.name).to.equal(pavillionUpdate.name);
       })
       .catch(helpers.handler);
 
   });
 
-  it('DELETE /pavions should delete an existing pavion', () => {
-    return agent.delete(`/pavions/${uuid2}`)
+  it('DELETE /pavillions should delete an existing pavillion', () => {
+    return agent.delete(`/pavillions/${uuid2}`)
       .then((res) => {
         helpers.api.deleted(res);
-        return agent.get(`/pavions`)
+        return agent.get(`/pavillions`)
       })
       .then(res => {
         expect(res.body).to.be.length(1);
