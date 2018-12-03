@@ -298,6 +298,7 @@ function ReceiptModal(Modal, Receipts) {
   service.stockEntryIntegrationReceipt = stockEntryIntegrationReceipt;
   service.stockEntryDonationReceipt = stockEntryDonationReceipt;
   service.stockAdjustmentReceipt = stockAdjustmentReceipt;
+  service.stockAssignReceipt = stockAssignReceipt;
 
   /**
    * @method stockExitPatientReceipt
@@ -307,6 +308,17 @@ function ReceiptModal(Modal, Receipts) {
   function stockExitPatientReceipt(documentUuid, notifyCreated) {
     const opts = { title : 'STOCK.RECEIPT.EXIT_PATIENT', notifyCreated, renderer : Receipts.renderer };
     const promise = Receipts.stockExitPatientReceipt(documentUuid, { renderer : opts.renderer });
+    return ReceiptFactory(promise, opts);
+  }
+
+  /**
+   * @method stockAssignReceipt
+   * @param {string} uuid
+   * @param {boolean} notifyCreated
+   */
+  function stockAssignReceipt(uuid, notifyCreated) {
+    const opts = { title : 'ASSIGN.STOCK_ASSIGN', notifyCreated, renderer : Receipts.renderer };
+    const promise = Receipts.stockAssignReceipt(uuid, { renderer : opts.renderer });
     return ReceiptFactory(promise, opts);
   }
 

@@ -169,10 +169,17 @@ function ReceiptService($http, util, Language, AppCache, Session) {
   service.stockEntryIntegrationReceipt = stockEntryIntegrationReceipt;
   service.stockEntryDonationReceipt = stockEntryDonationReceipt;
   service.stockAdjustmentReceipt = stockAdjustmentReceipt;
+  service.stockAssignReceipt = stockAssignReceipt;
 
   // stock exit patient receipt
   function stockExitPatientReceipt(uuid, options) {
     const route = '/receipts/stock/exit_patient/'.concat(uuid);
+    return fetch(route, options);
+  }
+
+  // stock assign receipt
+  function stockAssignReceipt(uuid, options) {
+    const route = '/receipts/stock/assign/'.concat(uuid);
     return fetch(route, options);
   }
 

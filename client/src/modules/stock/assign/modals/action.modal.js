@@ -5,10 +5,10 @@ angular.module('bhima.controllers')
 ActionAssignModalController.$inject = [
   'appcache', '$state',
   'DepotService', 'NotifyService', '$uibModalInstance',
-  'StockService', 'util',
+  'StockService', 'util', 'ReceiptModal',
 ];
 
-function ActionAssignModalController(AppCache, $state, Depots, Notify, Modal, Stock, Util) {
+function ActionAssignModalController(AppCache, $state, Depots, Notify, Modal, Stock, Util, Receipts) {
   const vm = this;
   const cache = AppCache('stock-assign-grid');
 
@@ -58,8 +58,8 @@ function ActionAssignModalController(AppCache, $state, Depots, Notify, Modal, St
     }
 
     Stock.stockAssign.create(vm.model)
-      .then(() => {
-        Notify.success('ASSIGN.CREATE_SUCCESS');
+      .then(res => {
+        Receipts.stockAssignReceipt(res.uuid, true);
         Modal.close(true);
       })
       .catch(Notify.handleError);

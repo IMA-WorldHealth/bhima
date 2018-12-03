@@ -1,4 +1,4 @@
-/* global element */
+/* global element, by */
 const FU = require('../shared/FormUtils');
 const GU = require('../shared/GridUtils');
 const components = require('../shared/components');
@@ -70,7 +70,10 @@ function StockAssignPage() {
    */
   page.submit = function submit() {
     FU.buttons.submit();
-    components.notification.hasSuccess();
+    // the receipt modal is displayed
+    FU.exists(by.id('receipt-confirm-created'), true);
+    // close the modal
+    element(by.css('[data-action="close"]')).click();
   };
 }
 

@@ -9,6 +9,11 @@
       <a href><span>{{ row.entity.label }}</span></a>
     </li>
     <li>
+      <a data-method="receipt" href ng-click="grid.appScope.showReceipt(row.entity.uuid)">
+        <span><i class="fa fa-file-o"></i> <span translate>FORM.LABELS.DOCUMENT</span></span>
+      </a>
+    </li>
+    <li>
       <a data-method="remove-record" href ng-click="grid.appScope.removeAssign(row.entity.uuid)">
         <span class="text-danger"><i class="fa fa-trash"></i> <span translate>ASSIGN.REMOVE_ASSIGN</span></span>
       </a>

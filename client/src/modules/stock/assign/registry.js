@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('StockLotsAssignController', StockLotsAssignController);
 
 StockLotsAssignController.$inject = [
-  'StockService', 'NotifyService', 'ModalService',
+  'StockService', 'NotifyService', 'ModalService', 'ReceiptModal',
   'uiGridConstants', 'StockModalService', 'LanguageService', 'GridGroupingService',
   'GridStateService', 'GridColumnService', '$state', '$httpParamSerializer',
 ];
@@ -12,7 +12,7 @@ StockLotsAssignController.$inject = [
  * This module is a registry page for stock lots assignments
  */
 function StockLotsAssignController(
-  Stock, Notify, Modal,
+  Stock, Notify, Modal, Receipts,
   uiGridConstants, StockModal, Languages, Grouping,
   GridState, Columns, $state, $httpParamSerializer,
 ) {
@@ -114,6 +114,7 @@ function StockLotsAssignController(
   vm.loading = false;
   vm.saveGridState = state.saveGridState;
   vm.removeAssign = removeAssign;
+  vm.showReceipt = showReceipt;
 
   function onRegisterApi(gridApi) {
     vm.gridApi = gridApi;
@@ -195,6 +196,11 @@ function StockLotsAssignController(
           })
           .catch(errorHandler);
       });
+  }
+
+  // show the receipt
+  function showReceipt(uuid) {
+    return Receipts.stockAssignReceipt(uuid);
   }
 
   // load stock lots in the grid

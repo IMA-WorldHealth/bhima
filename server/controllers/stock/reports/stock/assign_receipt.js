@@ -16,7 +16,7 @@ function stockAssignReceipt(req, res, next) {
   let report;
   const data = {};
   const uuid = db.bid(req.params.uuid);
-  const optionReport = _.extend(req.query, { filename : 'ASSIGN.LABEL' });
+  const optionReport = _.extend(req.query, { filename : 'ASSIGN.STOCK_ASSIGN' });
 
   // set up the report with report manager
   try {
@@ -29,9 +29,9 @@ function stockAssignReceipt(req, res, next) {
     SELECT 
       BUID(sa.uuid) AS uuid, BUID(sa.lot_uuid) AS lot_uuid,
       BUID(sa.depot_uuid) AS depot_uuid, BUID(sa.entity_uuid) AS entity_uuid,
-      sa.quantity, sa.created_at, sa.description, sa.is_active, d.text as depot_name,
+      sa.quantity, DATE_FORMAT(sa.created_at, "%d %m %Y"), sa.description, sa.is_active, d.text as depot_name,
       e.display_name AS entity_display_name, u.display_name AS user_display_name,
-      i.code, i.text AS inventory_text, l.text as lot_name
+      i.code, i.text AS inventory_text, l.label as lot_name
     FROM stock_assign sa
     JOIN depot d ON d.uuid = sa.depot_uuid 
     JOIN lot l ON l.uuid = sa.lot_uuid

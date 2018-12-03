@@ -1,4 +1,4 @@
-{{> head title="ASSIGN.LABEL" }}
+{{> head title="ASSIGN.STOCK_ASSIGN" }}
 
 <!-- body  -->
 <div class="container" style="font-size: 0.9em;">
@@ -16,9 +16,8 @@
       </div>
       <div class="col-xs-6 text-right">
         <h3 style="margin: 0px;">
-          <span class="text-uppercase">{{translate 'ASSIGN.LABEL'}}</span><br>
-          <strong>{{details.display_name}}</strong> <br>
-          <small>{{details.depot_name}}/{{date details.created_at}}</small> <br>
+          <span class="text-uppercase">{{translate 'ASSIGN.STOCK_ASSIGN'}}</span><br>
+          <strong>{{details.entity_display_name}}</strong> <br>
           <br>
         </h3>
       </div>
@@ -32,9 +31,9 @@
       </div>
       <div class="col-xs-6">
         <h4>{{translate 'STOCK.TO'}}</h4>
-        <span class="text-capitalize">{{translate 'STOCK.DEPOT'}}</span>: <strong>{{details.entity_display_name}}</strong> <br>
+        <span class="text-capitalize">{{translate 'ASSIGN.RECEIVER'}}</span>: <strong>{{details.entity_display_name}}</strong> <br>
         <span class="text-capitalize">{{translate 'FORM.LABELS.DATE'}}</span>: <strong>{{date details.created_at}}</strong> <br>
-        <span class="text-capitalize">{{translate 'FORM.LABELS.AUTHOR'}}</span>: <strong>{{date details.user_display_name}}</strong> <br>
+        <span class="text-capitalize">{{translate 'FORM.LABELS.AUTHOR'}}</span>: <strong>{{details.user_display_name}}</strong> <br>
       </div>
     </div>
   </header>
@@ -57,16 +56,16 @@
       </tr>
     </thead>
     <tbody>
-      {{#each rows}}
+      {{#if details}}
         <tr>
-          <td>{{code}}</td>
-          <td>{{text}}</td>
-          <td>{{label}}</td>
-          <td>{{quantity}}</td>
+          <td>{{details.code}}</td>
+          <td>{{details.inventory_text}}</td>
+          <td>{{details.lot_name}}</td>
+          <td>{{details.quantity}}</td>
         </tr>
       {{else}}
         {{> emptyTable columns=4}}
-      {{/each}}
+      {{/if}}
     </tbody>
   </table>
 
@@ -79,10 +78,10 @@
         <hr>
       </div>
 
-      <div class="col-xs-6">
+      <div class="col-xs-6 text-center">
         <h4>{{translate 'ASSIGN.RECEIVER'}}</h4>
         <hr>
-        (<strong>{{details.display_name}}</strong>)
+        (<strong>{{details.entity_display_name}}</strong>)
       </div>
     </div>
   </footer>
