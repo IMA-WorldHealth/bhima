@@ -1,13 +1,14 @@
-<div ng-form="{{ $ctrl.name }}" bh-payroll-period-select ng-model-options="{ updateOn: 'default' }">
+<div ng-form="PayrollPeriodForm" bh-payroll-period-select ng-model-options="{ updateOn: 'default' }">
   <div
     class="form-group"
-    ng-class="{ 'has-error' : $ctrl.validationTrigger && PayrollPeriodForm.payroll_configuration_id.$invalid }">
+    ng-class="{ 'has-error' : PayrollPeriodForm.$submitted && PayrollPeriodForm.payroll_configuration_id.$invalid }">
 
     <label class="control-label" translate>
       {{ ::$ctrl.label }}
     </label>
+
     <ng-transclude></ng-transclude>
-        
+
     <ui-select
       name="payroll_configuration_id"
       ng-model="$ctrl.payrollConfigurationId"
@@ -18,12 +19,12 @@
       </ui-select-match>
       <ui-select-choices
         ui-select-focus-patch
-        repeat="payrollConfig.id as payrollConfig in $ctrl.payrollConfigs | filter: { 'label': $select.search }">        
+        repeat="payrollConfig.id as payrollConfig in $ctrl.payrollConfigs | filter: { 'label': $select.search }">
         <span ng-bind-html="payrollConfig.label | highlight:$select.search"></span>
       </ui-select-choices>
     </ui-select>
 
-    <div class="help-block" ng-messages="PayrollPeriodForm.payroll_configuration_id.$error" ng-show="$ctrl.validationTrigger &&  PayrollPeriodForm.payroll_configuration_id.$invalid">
+    <div class="help-block" ng-messages="PayrollPeriodForm.payroll_configuration_id.$error" ng-show="PayrollPeriodForm.$submitted &&  PayrollPeriodForm.payroll_configuration_id.$invalid">
       <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
     </div>
   </div>

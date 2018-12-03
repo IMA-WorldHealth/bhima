@@ -8,8 +8,6 @@ angular.module('bhima.components')
       onSelectCallback : '&',
       required         : '<?',
       label            : '@?',
-      name             : '@?',
-      validationTrigger :  '<?',
     },
   });
 
@@ -28,9 +26,6 @@ function RubricConfigSelectController(RubricConfigs, $timeout, $scope, Notify) {
     // translated label for the form input
     $ctrl.label = $ctrl.label || 'PAYROLL_RUBRIC.CONFIGURATION';
 
-    // fired when an rubric configuration has been selected
-    $ctrl.onSelectCallback = $ctrl.onSelectCallback || angular.noop;
-
     // default for form name
     $ctrl.name = $ctrl.name || 'RubricConfigForm';
 
@@ -43,22 +38,10 @@ function RubricConfigSelectController(RubricConfigs, $timeout, $scope, Notify) {
         $ctrl.rubricConfigs = rubricConfigs;
       })
       .catch(Notify.handleError);
-
-
-    // alias the name as RubricConfigForm
-    $timeout(aliasComponentForm);
   };
 
-  // this makes the HTML much more readable by reference RubricConfigForm instead of the name
-  function aliasComponentForm() {
-    $scope.RubricConfigForm = $scope[$ctrl.name];
-  }
-
   // fires the onSelectCallback bound to the component boundary
-  $ctrl.onSelect = function onSelect($item) {
-    $ctrl.onSelectCallback({ rubricConfig : $item });
-
-    // alias the RubricConfigForm name so that we can find it via filterFormElements
-    $scope[$ctrl.name].$bhValue = $item.id;
+  $ctrl.onSelect = rubricConfig => {
+    $ctrl.onSelectCallback({ rubricConfig });
   };
 }

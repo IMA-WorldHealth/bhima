@@ -8,7 +8,6 @@ angular.module('bhima.components')
       minDate : '<?',
       maxDate : '<?',
       allowFutureDate : '<?',
-      validationTrigger : '<?',
       disabled : '<?',
       dateFormat : '@?',
       label : '@?',
@@ -37,7 +36,6 @@ bhDateEditorController.$inject = ['bhConstants', 'SessionService', 'FiscalServic
  *  date-format="'yyyy-MM-dd'"
  *  min-date="Ctrl.min"
  *  max-date="Ctrl.max"
- *  validation-trigger="Form.$submitted"
  *  limit-min-fiscal
  *  disabled="Ctrl.isDisabled">
  * </bh-date-editor>

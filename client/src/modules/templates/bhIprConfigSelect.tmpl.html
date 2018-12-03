@@ -1,15 +1,15 @@
-<div ng-form="{{ $ctrl.name }}" bh-ipr-config-select ng-model-options="{ updateOn: 'default' }">
+<div ng-form="IprConfigForm" bh-ipr-config-select ng-model-options="{ updateOn: 'default' }">
   <!-- This component will only be displayed if there is no IPR tax configuration, this will prevent an empty selection list from appearing in cases where the institution or company is not using the IPR tax -->
   <div
     class="form-group"
-    ng-class="{ 'has-error' : $ctrl.validationTrigger && IprConfigForm.config_ipr_id.$invalid }"
-    ng-if="$ctrl.iprConfigLength">
+    ng-class="{ 'has-error' : IprConfigForm.$submitted && IprConfigForm.config_ipr_id.$invalid }"
+    ng-if="$ctrl.iprConfigs.length">
 
     <label class="control-label" translate>
       {{ ::$ctrl.label }}
     </label>
     <ng-transclude></ng-transclude>
-        
+
     <ui-select
       name="config_ipr_id"
       ng-model="$ctrl.configIprId"
@@ -20,12 +20,12 @@
       </ui-select-match>
       <ui-select-choices
         ui-select-focus-patch
-        repeat="iprConfig.id as iprConfig in $ctrl.iprConfigs | filter: { 'label': $select.search }">        
+        repeat="iprConfig.id as iprConfig in $ctrl.iprConfigs | filter: { 'label': $select.search }">
         <span ng-bind-html="iprConfig.label | highlight:$select.search"></span>
       </ui-select-choices>
     </ui-select>
 
-    <div class="help-block" ng-messages="IprConfigForm.config_ipr_id.$error" ng-show="$ctrl.validationTrigger &&  IprConfigForm.config_ipr_id.$invalid">
+    <div class="help-block" ng-messages="IprConfigForm.config_ipr_id.$error" ng-show="IprConfigForm.$submitted">
       <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
     </div>
   </div>

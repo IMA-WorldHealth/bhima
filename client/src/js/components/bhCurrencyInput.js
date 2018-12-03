@@ -5,7 +5,6 @@ angular.module('bhima.components')
     bindings : {
       currencyId : '<', // one-way binding
       model : '=', // two way binding
-      validationTrigger : '<', // one-way binding
       label : '@?',
       disabled : '<?',
       min   : '@?',
@@ -22,10 +21,12 @@ CurrencyInputController.$inject = ['CurrencyService'];
  */
 function CurrencyInputController(Currencies) {
   const $ctrl = this;
-  const isDefined = angular.isDefined;
 
-  // translated label for the form input
-  $ctrl.label = $ctrl.label || 'FORM.LABELS.AMOUNT';
+  $ctrl.$onInit = () => {
+    // translated label for the form input
+    $ctrl.label = $ctrl.label || 'FORM.LABELS.AMOUNT';
+  };
+
 
   $ctrl.$onChanges = function onChanges(changes) {
     if (changes.currencyId) {
@@ -35,11 +36,11 @@ function CurrencyInputController(Currencies) {
 
   /* @private loads a particular currency from the server */
   function loadCurrency(id) {
-    if (!isDefined(id)) { return; }
+    if (!angular.isDefined(id)) { return; }
 
     // load currency from the currency service
     Currencies.detail(id)
-      .then((currency) => {
+      .then(currency => {
         $ctrl.currency = currency;
       });
   }

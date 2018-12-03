@@ -7,7 +7,6 @@ angular.module('bhima.components')
       servicesIds : '<?',
       label : '@?',
       required : '<?',
-      validationTrigger : '<?',
     },
   });
 
@@ -38,7 +37,7 @@ function ServicesMultipleSelectController(Services, Notify) {
   };
 
   // fires the onSelectCallback bound to the component
-  $ctrl.handleChange = function handleChange(models) {
-    $ctrl.onChange({ services : models });
+  $ctrl.handleChange = (services) => {
+    $ctrl.onChange({ services });
   };
 }

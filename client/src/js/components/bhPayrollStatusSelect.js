@@ -7,7 +7,6 @@ angular.module('bhima.components')
       statusIds : '<?',
       label : '@?',
       required : '<?',
-      validationTrigger : '<?',
     },
   });
 
@@ -26,9 +25,6 @@ function PayrollStatusSelectController(Payroll, Notify, $translate) {
     // label to display
     $ctrl.label = $ctrl.label || 'FORM.LABELS.STATUS';
 
-    // fired when a payroll status has been selected or removed from the list
-    $ctrl.onChange = $ctrl.onChange;
-
     // init the model
     $ctrl.selectedPayrollStatus = $ctrl.statusIds || [];
 
@@ -44,7 +40,5 @@ function PayrollStatusSelectController(Payroll, Notify, $translate) {
   };
 
   // fires the onSelectCallback bound to the component
-  $ctrl.handleChange = function handleChange(models) {
-    $ctrl.onChange({ paiementStatus : models });
-  };
+  $ctrl.handleChange = paiementStatus => $ctrl.onChange({ paiementStatus });
 }

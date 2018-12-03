@@ -7,22 +7,21 @@ angular.module('bhima.components')
       transactionTypeIds : '<?',
       label : '@?',
       required : '<?',
-      validationTrigger : '<?',
     },
   });
 
 transactionTypeSelectController.$inject = [
-  'TransactionTypeService', 'NotifyService', '$translate',
+  'TransactionTypeService', 'NotifyService',
 ];
 
 /**
  * transaction type Selection Component
  *
  */
-function transactionTypeSelectController(TransactionTypes, Notify, $translate) {
+function transactionTypeSelectController(TransactionTypes, Notify) {
   const $ctrl = this;
 
-  $ctrl.$onInit = function onInit() {
+  $ctrl.$onInit = () => {
     // label to display
     $ctrl.label = $ctrl.label || 'FORM.LABELS.TRANSACTION_TYPE';
 
@@ -31,12 +30,8 @@ function transactionTypeSelectController(TransactionTypes, Notify, $translate) {
 
     // load all Transaction types
     TransactionTypes.read()
-      .then(tts => {
-        tts.forEach(item => {
-          item.plainText = $translate.instant(item.text);
-        });
-
-        $ctrl.transactionTypes = tts;
+      .then(transactionTypes => {
+        $ctrl.transactionTypes = transactionTypes;
       })
       .catch(Notify.handleError);
   };

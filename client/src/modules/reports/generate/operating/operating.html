@@ -22,12 +22,10 @@
         <div class="panel-body">
           <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate>
             <bh-fiscal-period-select
-              validation-trigger="ConfigForm.$submitted"
               on-select-fiscal-callback="ReportConfigCtrl.onSelectFiscal(fiscal)"
               on-select-period-from-callback="ReportConfigCtrl.onSelectPeriodFrom(period)"
               on-select-period-to-callback="ReportConfigCtrl.onSelectPeriodTo(period)">
             </bh-fiscal-period-select>
-
 
             <bh-loading-button loading-state="ConfigForm.$loading">
               <span translate>REPORT.UTIL.PREVIEW</span>
