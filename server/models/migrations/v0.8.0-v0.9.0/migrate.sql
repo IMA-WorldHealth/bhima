@@ -974,3 +974,33 @@ INSERT INTO `transaction_type` (`text`, `type`, `fixed`) VALUES
   ('VOUCHERS.SIMPLE.TRANSFER_FUNDS_BANKS', 'expense', 1),
   ('VOUCHERS.SIMPLE.EXIT_FUNDS_BANK', 'expense', 1),
   ('VOUCHERS.SIMPLE.BANK_CASH_APPROVALS', 'income', 1);
+-- author: @mbayopanda
+-- stock assignment feature
+-- the stock assign table
+DROP TABLE IF EXISTS `stock_assign`;
+CREATE TABLE `stock_assign` (
+  `uuid`              BINARY(16) NOT NULL,
+  `lot_uuid`          BINARY(16) NOT NULL,
+  `entity_uuid`       BINARY(16) NOT NULL,
+  `depot_uuid`        BINARY(16) NOT NULL,
+  `quantity`          INT(11) NOT NULL DEFAULT 1,
+  `is_active`         TINYINT(1) NOT NULL DEFAULT 1,
+  `description`       TEXT NULL,
+  `user_id`           SMALLINT(5) UNSIGNED NOT NULL,
+  `updated_at`        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_at`        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`uuid`),
+  KEY `lot_uuid` (`lot_uuid`),
+  KEY `entity_uuid` (`entity_uuid`),
+  KEY `depot_uuid` (`depot_uuid`),
+  FOREIGN KEY (`lot_uuid`) REFERENCES `lot` (`uuid`),
+  FOREIGN KEY (`entity_uuid`) REFERENCES `entity` (`uuid`),
+  FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+-- update the lot table
+ALTER TABLE lot ADD COLUMN `is_assigned` TINYINT(1) NULL DEFAULT 0;
+
+-- the stock assignment unit
+INSERT INTO unit VALUES 
+  (224, 'Stock Assignment','ASSIGN.STOCK_ASSIGN','', 160,'/modules/stock/assign','/stock/assign');
