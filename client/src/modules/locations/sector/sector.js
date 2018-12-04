@@ -1,13 +1,12 @@
-// TODO Handle HTTP exception errors (displayed contextually on form)
 angular.module('bhima.controllers')
-.controller('SectorController', SectorController);
+  .controller('SectorController', SectorController);
 
 SectorController.$inject = [
-  'LocationService', 'util'
+  'LocationService', 'util', 'NotifyService',
 ];
 
-function SectorController(locationService, util) {
-  var vm = this;
+function SectorController(locationService, util, Notify) {
+  const vm = this;
   vm.session = {};
   vm.view = 'default';
 
@@ -19,10 +18,6 @@ function SectorController(locationService, util) {
 
   vm.loadProvinces = loadProvinces;
   vm.maxLength = util.maxTextLength;
-
-  function handler(error) {
-    console.error(error);
-  }
 
   // fired on startup
   function startup() {
@@ -45,21 +40,21 @@ function SectorController(locationService, util) {
   vm.messages = {
     country : locationService.messages.country,
     province : locationService.messages.province,
-    sector : locationService.messages.sector
+    sector : locationService.messages.sector,
   };
 
   /** load countries on startup */
   locationService.countries()
-  .then(function (countries) {
+    .then((countries) => {
 
-    // bind the countries to the view for <select>ion
-    vm.countries = countries;
+      // bind the countries to the view for <select>ion
+      vm.countries = countries;
 
-    // make sure that we are showing the proper message to the client
-    vm.messages.country = (countries.length > 0) ?
-      locationService.messages.country :
-      locationService.messages.empty;
-  });
+      // make sure that we are showing the proper message to the client
+      vm.messages.country = (countries.length > 0)
+        ? locationService.messages.country
+        : locationService.messages.empty;
+    });
 
   /** loads provinces based on the selected country */
   function loadProvinces() {
@@ -68,16 +63,16 @@ function SectorController(locationService, util) {
     if (!vm.sector.country_uuid) { return; }
 
     locationService.provinces({ country : vm.sector.country_uuid })
-    .then(function (provinces) {
+      .then((provinces) => {
 
-      // bind the provinces to the view for <select>ion
-      vm.provinces = provinces;
+        // bind the provinces to the view for <select>ion
+        vm.provinces = provinces;
 
-      // make sure that we show the correct message in the <select> option
-      vm.messages.province = (provinces.length > 0) ?
-        locationService.messages.province :
-        locationService.messages.empty;
-    });
+        // make sure that we show the correct message in the <select> option
+        vm.messages.province = (provinces.length > 0)
+          ? locationService.messages.province
+          : locationService.messages.empty;
+      });
   }
 
   // switch to update mode
@@ -92,10 +87,10 @@ function SectorController(locationService, util) {
     loadProvinces();
   }
 
-  
+
   // refresh the displayed Sectors
   function refreshSectors() {
-    return locationService.sectors({detailed : 1}).then(function (data) {
+    return locationService.sectors({ detailed : 1 }).then((data) => {
       vm.sectors = data;
       vm.session.loading = false;
     });
@@ -104,25 +99,22 @@ function SectorController(locationService, util) {
   // form submission
   function submit(form) {
     // stop submission if the form is invalid
-    if (form.$invalid) { return; }
+    if (form.$invalid) { return 0; }
 
-    var promise;
-    var creation = (vm.view === 'create');
-    var sector = angular.copy(vm.sector);
-    
-    promise = (creation) ?
-      locationService.create.sector(sector) :
-      locationService.update.sector(sector.uuid, sector);
+    const creation = (vm.view === 'create');
+    const sector = angular.copy(vm.sector);
 
-    promise
-      .then(function (response) {
-        return refreshSectors();
-      })
-      .then(function () {
+    const promise = (creation)
+      ? locationService.create.sector(sector)
+      : locationService.update.sector(sector.uuid, sector);
+
+    return promise
+      .then(refreshSectors)
+      .then(() => {
         vm.view = creation ? 'create_success' : 'update_success';
-      })      
-      .catch(handler);
+      })
+      .catch(Notify.handleError);
   }
 
-  startup();  
+  startup();
 }

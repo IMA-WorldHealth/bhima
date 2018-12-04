@@ -1,13 +1,12 @@
-// TODO Handle HTTP exception errors (displayed contextually on form)
 angular.module('bhima.controllers')
-.controller('ProvinceController', ProvinceController);
+  .controller('ProvinceController', ProvinceController);
 
 ProvinceController.$inject = [
-  'LocationService', 'util'
+  'LocationService', 'util', 'NotifyService',
 ];
 
-function ProvinceController(locationService, util) {
-  var vm = this;
+function ProvinceController(locationService, util, Notify) {
+  const vm = this;
   vm.session = {};
   vm.view = 'default';
   vm.state = {};
@@ -18,10 +17,6 @@ function ProvinceController(locationService, util) {
   vm.update = update;
   vm.cancel = cancel;
   vm.maxLength = util.maxTextLength;
-
-  function handler(error) {
-    console.error(error);
-  }
 
   // fired on startup
   function startup() {
@@ -42,21 +37,21 @@ function ProvinceController(locationService, util) {
   }
 
   vm.messages = {
-    country : locationService.messages.country
+    country : locationService.messages.country,
   };
 
   /** load countries on startup */
   locationService.countries()
-  .then(function (countries) {
+    .then((countries) => {
 
-    // bind the countries to the view for <select>ion
-    vm.countries = countries;
+      // bind the countries to the view for <select>ion
+      vm.countries = countries;
 
-    // make sure that we are showing the proper message to the client
-    vm.messages.country = (countries.length > 0) ?
-      locationService.messages.country :
-      locationService.messages.empty;
-  });
+      // make sure that we are showing the proper message to the client
+      vm.messages.country = (countries.length > 0)
+        ? locationService.messages.country
+        : locationService.messages.empty;
+    });
 
 
   // switch to update mode
@@ -70,7 +65,7 @@ function ProvinceController(locationService, util) {
 
   // refresh the displayed Provinces
   function refreshProvinces() {
-    return locationService.provinces({detailed : 1}).then(function (data) {
+    return locationService.provinces({ detailed : 1 }).then((data) => {
       vm.provinces = data;
       vm.session.loading = false;
     });
@@ -79,24 +74,21 @@ function ProvinceController(locationService, util) {
   // form submission
   function submit(form) {
     // stop submission if the form is invalid
-    if (form.$invalid) { return; }
+    if (form.$invalid) { return 0; }
 
-    var promise;
-    var creation = (vm.view === 'create');
-    var province = angular.copy(vm.province);
+    const creation = (vm.view === 'create');
+    const province = angular.copy(vm.province);
 
-    promise = (creation) ?
-      locationService.create.province(province) :
-      locationService.update.province(province.uuid, province);
+    const promise = (creation)
+      ? locationService.create.province(province)
+      : locationService.update.province(province.uuid, province);
 
-    promise
-      .then(function (response) {
-        return refreshProvinces();
-      })
-      .then(function () {
+    return promise
+      .then(refreshProvinces)
+      .then(() => {
         vm.view = creation ? 'create_success' : 'update_success';
       })
-      .catch(handler);
+      .catch(Notify.handleError);
   }
 
   startup();
