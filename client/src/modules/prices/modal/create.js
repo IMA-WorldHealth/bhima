@@ -20,6 +20,8 @@ function PriceListModalController(data, Instance, Notify, PriceList, Session) {
       Notify.danger('FORM.ERRORS.HAS_ERRORS');
     } else {
       delete vm.priceList.itemsNumber;
+      delete vm.priceList.subcribedGroupsNumber;
+
       const operation = vm.isCreate ? PriceList.create(vm.priceList) : PriceList.update(data.uuid, vm.priceList);
       operation.then(() => {
         Notify.success('FORM.INFO.OPERATION_SUCCESS');

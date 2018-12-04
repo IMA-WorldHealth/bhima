@@ -36,9 +36,12 @@ function lookup(req) {
 
   if (req.query.detailed === '1') {
     sql = `
-      SELECT BUID(pl.uuid) as uuid, pl.label, pl.created_at, pl.description, COUNT(pl_it.uuid) as itemsNumber
+      SELECT BUID(pl.uuid) as uuid, pl.label, pl.created_at, pl.description,
+        COUNT(pl_it.uuid) as itemsNumber, COUNT(pg.uuid) as subcribedGroupsNumber
       FROM price_list pl
       LEFT JOIN price_list_item pl_it ON pl_it.price_list_uuid = pl.uuid
+      LEFT JOIN patient_group pg ON pg.price_list_uuid = pl.uuid
+
       WHERE pl.enterprise_id = ?
       GROUP BY pl.uuid
       ORDER BY pl.label;`;

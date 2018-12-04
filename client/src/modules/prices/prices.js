@@ -49,6 +49,12 @@ function PriceListController(
       cellTemplate : `/modules/prices/templates/itemsNumber.cell.html`,
     },
     {
+      field : 'subcribedGroupsNumber',
+      displayName : 'PATIENT_GROUP.PATIENT_GROUP',
+      headerCellFilter : 'translate',
+      cellTemplate : `/modules/prices/templates/subscribedGroups.cell.html`,
+    },
+    {
       field : 'FORM.BUTTONS.ACTIONS',
       width : 100,
       enableFiltering : false,
