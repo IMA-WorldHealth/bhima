@@ -1,8 +1,8 @@
 angular.module('bhima.controllers')
-.controller('LocationModalController', LocationModalController);
+  .controller('LocationModalController', LocationModalController);
 
 LocationModalController.$inject = [
-  '$rootScope', 'LocationService', '$uibModalInstance', 'appcache', 'Store', 'NotifyService'
+  '$rootScope', 'LocationService', '$uibModalInstance', 'appcache', 'Store', 'NotifyService',
 ];
 
 /**
@@ -16,10 +16,10 @@ LocationModalController.$inject = [
  * @class LocationModalController
  */
 function LocationModalController($rootScope, Locations, Instance, AppCache, Store, Notify) {
-  var vm = this;
+  const vm = this;
 
   /** caches the current view in local storage */
-  var cache = AppCache('bh-location-select-modal');
+  const cache = AppCache('bh-location-select-modal');
 
   // use to simply refresh the mdoal state
   vm.registerMultiple = false;
@@ -39,26 +39,26 @@ function LocationModalController($rootScope, Locations, Instance, AppCache, Stor
       cacheKey : 'country',
       translateKey : 'FORM.LABELS.COUNTRY',
       index : 1,
-      onEnter : function onEnter() { delete vm.country; }
+      onEnter : function onEnter() { delete vm.country; },
     },
     province : {
       cacheKey : 'province',
       translateKey : 'FORM.LABELS.PROVINCE',
       index : 2,
-      onEnter : function onEnter() { delete vm.province; }
+      onEnter : function onEnter() { delete vm.province; },
     },
     sector : {
       cacheKey : 'sector',
       translateKey : 'FORM.LABELS.SECTOR',
       index : 3,
-      onEnter : function onEnter() { delete vm.sector; }
+      onEnter : function onEnter() { delete vm.sector; },
     },
     village : {
       cacheKey : 'village',
       translateKey : 'FORM.LABELS.VILLAGE',
       index : 4,
-      onEnter : function onEnter() { delete vm.village; }
-    }
+      onEnter : function onEnter() { delete vm.village; },
+    },
   };
 
   /**
@@ -68,7 +68,7 @@ function LocationModalController($rootScope, Locations, Instance, AppCache, Stor
   vm.messages = {
     country : Locations.messages.country,
     province : Locations.messages.province,
-    sector : Locations.messages.sector
+    sector : Locations.messages.sector,
   };
 
   /** cancels the create location modal */
@@ -85,23 +85,25 @@ function LocationModalController($rootScope, Locations, Instance, AppCache, Stor
   loadView(cache.view);
 
   /** load previous/default view */
-  function loadView(key) {
-    key = key ||  vm.views.country.cacheKey;
+  function loadView(key = vm.views.country.cacheKey) {
     setView(key);
   }
 
-  /** load countries on startup */
-  Locations.countries()
-  .then(function (countries) {
+  loadCountries();
 
-    // bind the countries to the view for <select>ion
-    vm.countries = countries;
+  function loadCountries() {
+    Locations.countries()
+      .then((countries) => {
 
-    // make sure that we are showing the proper message to the client
-    vm.messages.country = (countries.length > 0) ?
-      Locations.messages.country :
-      Locations.messages.empty;
-  });
+        // bind the countries to the view for <select>ion
+        vm.countries = countries;
+
+        // make sure that we are showing the proper message to the client
+        vm.messages.country = (countries.length > 0)
+          ? Locations.messages.country
+          : Locations.messages.empty;
+      });
+  }
 
   /** loads provinces based on the selected country */
   function loadProvinces() {
@@ -110,16 +112,16 @@ function LocationModalController($rootScope, Locations, Instance, AppCache, Stor
     if (!vm.country || !vm.country.uuid) { return; }
 
     Locations.provinces({ country : vm.country.uuid })
-    .then(function (provinces) {
+      .then((provinces) => {
 
-      // bind the provinces to the view for <select>ion
-      vm.provinces = provinces;
+        // bind the provinces to the view for <select>ion
+        vm.provinces = provinces;
 
-      // make sure that we show the correct message in the <select> option
-      vm.messages.province = (provinces.length > 0) ?
-        Locations.messages.province :
-        Locations.messages.empty;
-    });
+        // make sure that we show the correct message in the <select> option
+        vm.messages.province = (provinces.length > 0)
+          ? Locations.messages.province
+          : Locations.messages.empty;
+      });
   }
 
   /** loads sectors based on the selected province */
@@ -129,16 +131,16 @@ function LocationModalController($rootScope, Locations, Instance, AppCache, Stor
     if (!vm.province || !vm.province.uuid) { return; }
 
     Locations.sectors({ province : vm.province.uuid })
-    .then(function (sectors) {
+      .then((sectors) => {
 
-      // bind the sectors to the view for <select>ion
-      vm.sectors = sectors;
+        // bind the sectors to the view for <select>ion
+        vm.sectors = sectors;
 
-      // make sure that we show the correct message in the <select> option
-      vm.messages.sector = (sectors.length > 0) ?
-        Locations.messages.sector :
-        Locations.messages.empty;
-    });
+        // make sure that we show the correct message in the <select> option
+        vm.messages.sector = (sectors.length > 0)
+          ? Locations.messages.sector
+          : Locations.messages.empty;
+      });
   }
 
   /** show/hide different values */
@@ -161,49 +163,48 @@ function LocationModalController($rootScope, Locations, Instance, AppCache, Stor
     delete vm.error;
 
     // reject an invalid form
-    if (form.$invalid)  { return; }
+    if (form.$invalid) { return 0; }
 
-    var promise;
+    let promise;
 
     /**
      * determine wht type of location we are creating and send an $http
      * request for it.
      */
     switch (vm.view) {
+    case vm.views.country:
+      promise = Locations.create.country({
+        name : vm.country,
+      });
+      break;
 
-      case vm.views.country:
-        promise = Locations.create.country({
-          name : vm.country
-        });
-        break;
+    case vm.views.province:
+      promise = Locations.create.province({
+        name : vm.province,
+        country_uuid : vm.country.uuid,
+      });
+      break;
 
-      case vm.views.province:
-        promise = Locations.create.province({
-          name : vm.province,
-          country_uuid : vm.country.uuid
-        });
-        break;
+    case vm.views.sector:
+      promise = Locations.create.sector({
+        name : vm.sector,
+        province_uuid : vm.province.uuid,
+      });
+      break;
 
-      case vm.views.sector:
-        promise = Locations.create.sector({
-          name : vm.sector,
-          province_uuid : vm.province.uuid
-        });
-        break;
+    case vm.views.village:
+      promise = Locations.create.village({
+        name : vm.village,
+        sector_uuid : vm.sector.uuid,
+      });
+      break;
 
-      case vm.views.village:
-        promise = Locations.create.village({
-          name : vm.village,
-          sector_uuid : vm.sector.uuid
-        });
-        break;
-
-      default:
-        return;
+    default:
+      return 0;
     }
 
     return promise
-      .then(function (data) {
+      .then(data => {
 
         // notify success
         Notify.success('FORM.INFO.CREATE_SUCCESS');
@@ -216,20 +217,22 @@ function LocationModalController($rootScope, Locations, Instance, AppCache, Stor
 
           if (vm.view === vm.views.country) {
             delete vm.country;
-          } else if (vm.view === vm.views.province) {
+            return loadCountries();
+          } if (vm.view === vm.views.province) {
             delete vm.province;
-          } else if (vm.view === vm.views.sector) {
+            return loadProvinces();
+          } if (vm.view === vm.views.sector) {
             delete vm.sector;
-          } else {
-            delete vm.village;
+            return loadSectors();
           }
+          delete vm.village;
+          return 0;
 
-        } else {
-
-          return Instance.close(data);
         }
+
+        return Instance.close(data);
       })
-      .catch(function (error) {
+      .catch((error) => {
         vm.error = error;
       });
   }
