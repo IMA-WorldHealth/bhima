@@ -62,6 +62,9 @@
                 <td colspan="{{colspan}}">&nbsp;</td>
               </tr>
             {{/each}}
+            <tr>
+              <td colspan="{{colspan}}">&nbsp;</td>
+            </tr>
           </tbody>
 
           <tbody>
@@ -97,28 +100,32 @@
                 <td colspan="{{colspan}}">&nbsp;</td>
               </tr>
             {{/each}}
+            <tr>
+              <td colspan="{{colspan}}">&nbsp;</td>
+            </tr>            
           </tbody>
 
+
           <tbody>
-            {{!-- TRANSFER --}}
+            {{!-- OTHER --}}
             <tr style="background-color: #efefef;font-size:1.3rem;">
-              <th class="text-left text-uppercase">{{translate 'REPORT.CASHFLOW.TRANSFER'}}</th>
+              <th class="text-left text-uppercase">{{translate 'REPORT.CASHFLOW.OTHERS'}}</th>
               {{#each periods as |period| }}
-                <th class="text-right">{{debcred (look ../transferTotal period) ../metadata.enterprise.currency_id}}</th>
+                <th class="text-right">{{debcred (look ../otherTotal period) ../metadata.enterprise.currency_id}}</th>
               {{/each}}
             </tr>
 
-            {{!-- inspect all transaction text for transfer --}}
-            {{#each transferTextKeys as |key|}}
+            {{!-- inspect all transaction text for other --}}
+            {{#each otherTextKeys as |key|}}
               <tr>
                 <th>{{translate key}}</th>
                 {{#each ../periods as |period| }}
-                  <th class="text-right">{{debcred (look ../../transferTotalByTextKeys key period) ../../metadata.enterprise.currency_id}}</th>
+                  <th class="text-right">{{debcred (look ../../otherTotalByTextKeys key period) ../../metadata.enterprise.currency_id}}</th>
                 {{/each}}
               </tr>
 
               {{!-- inspect data for all those transaction text --}}
-              {{#each (look ../transfers key) as |value|}}
+              {{#each (look ../others key) as |value|}}
                 <tr>
                   <td>{{ value.account_label }}</td>
                   {{#each ../../periods as |period| }}

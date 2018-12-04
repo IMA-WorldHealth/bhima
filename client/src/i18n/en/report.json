@@ -35,6 +35,7 @@
       "OPERATION": "Operation",
       "INCOMES": "Income",
       "EXPENSES": "Expenses",
+      "OTHERS": "Others",
       "TRANSFER": "Transfers",
       "IN": "In",
       "CONCERNED_ACCOUNT": "This report concerns these accounts"

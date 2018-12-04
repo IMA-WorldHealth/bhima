@@ -249,12 +249,6 @@ function report(req, res, next) {
 
       data.cashLabelDetails = data.cashboxes.map(cashbox => `${cashbox.account_number} - ${cashbox.account_label}`);
 
-      // get oposite lines to cashbox accounts in transactions as details
-      return getDetailsIdentifiers(data.cashAccountIds, dateFrom, dateTo);
-    })
-    .then(rows => {
-      data.detailsIdentifiers = rows.map(row => row.uuid);
-
       // build periods columns from calculated period
       return Fiscal.getPeriodsFromDateRange(data.dateFrom, data.dateTo);
     })
@@ -264,9 +258,6 @@ function report(req, res, next) {
       data.periods = periods.map(p => p.id);
 
       data.colspan = data.periods.length + 1;
-
-      // skip period matrix if not transactions were identified
-      if (data.detailsIdentifiers.length === 0) { return []; }
 
       // build periods string for query
       const periodParams = [];
@@ -280,54 +271,83 @@ function report(req, res, next) {
           source.transaction_text, source.account_label, ${periodString},
           source.transaction_type, source.transaction_id, source.account_id
         FROM (
-          SELECT
-            a.number AS account_number, a.label AS account_label,
-            SUM(gl.debit_equiv - gl.credit_equiv) AS balance,
-            tt.id AS transaction_id, tt.type AS transaction_type,
-            MAX(tt.text) AS transaction_text,
-            gl.period_id, gl.account_id
-          FROM general_ledger gl
-          JOIN account a ON gl.account_id = a.id
-          JOIN transaction_type tt ON gl.transaction_type_id = tt.id
-          WHERE gl.uuid IN ?
-          GROUP BY a.id, tt.id
+          SELECT 
+          a.number AS account_number, a.label AS account_label, SUM(gl.debit_equiv - gl.credit_equiv) AS balance,
+          gl.transaction_type_id AS transaction_id, tt.type AS transaction_type, tt.text AS transaction_text, 
+          gl.account_id, gl.period_id
+          FROM general_ledger AS gl
+          JOIN account AS a ON a.id = gl.account_id
+          JOIN transaction_type AS tt ON tt.id = gl.transaction_type_id
+          WHERE gl.trans_id IN (
+            SELECT g.trans_id
+            FROM general_ledger AS g
+            JOIN account AS a ON a.id = g.account_id
+            WHERE (DATE(g.trans_date) >= DATE(?) AND DATE(g.trans_date) <= DATE(?))
+            AND g.trans_id NOT IN (
+                SELECT DISTINCT (t.trans_id) AS trans_id
+                FROM general_ledger AS t
+                WHERE t.record_uuid IN (
+                    SELECT rev.uuid
+                    FROM (
+                        SELECT v.uuid, v.date, v.reversed
+                        FROM voucher AS v
+                        UNION
+                        SELECT c.uuid, c.date, c.reversed
+                        FROM cash AS c
+                        UNION
+                        SELECT i.uuid, i.date, i.reversed
+                        FROM invoice AS i
+                    ) AS rev
+                    WHERE rev.reversed = 1
+                    AND DATE(rev.date) >= DATE(?) AND DATE(rev.date) <= DATE(?)
+                )
+            ) AND g.transaction_type_id <> 10 AND g.account_id NOT IN (?)            
+          ) 
+          GROUP BY gl.account_id, gl.transaction_type_id, gl.period_id
         ) AS source
         GROUP BY transaction_type, account_id;
       `;
-      return db.exec(query, [...periodParams, [data.detailsIdentifiers]]);
+
+      const params = [...periodParams,
+        data.dateFrom,
+        data.dateTo,
+        data.dateFrom,
+        data.dateTo,
+        [data.cashAccountIds]];
+      return db.exec(query, params);
     })
     .then(rows => {
       // split incomes from expenses
       const incomes = _.chain(rows).filter({ transaction_type : 'income' }).groupBy('transaction_text').value();
       const expenses = _.chain(rows).filter({ transaction_type : 'expense' }).groupBy('transaction_text').value();
-      const transfers = _.chain(rows).filter({ transaction_type : 'transfer' }).groupBy('transaction_text').value();
+      const others = _.chain(rows).filter({ transaction_type : 'other' }).groupBy('transaction_text').value();
 
       const incomeTextKeys = _.keys(incomes);
       const expenseTextKeys = _.keys(expenses);
-      const transferTextKeys = _.keys(transfers);
+      const otherTextKeys = _.keys(others);
 
       const incomeTotalByTextKeys = aggregateTotalByTextKeys(incomes);
       const expenseTotalByTextKeys = aggregateTotalByTextKeys(expenses);
-      const transferTotalByTextKeys = aggregateTotalByTextKeys(transfers);
+      const otherTotalByTextKeys = aggregateTotalByTextKeys(others);
 
       const incomeTotal = aggregateTotal(incomeTotalByTextKeys);
       const expenseTotal = aggregateTotal(expenseTotalByTextKeys);
-      const transferTotal = aggregateTotal(transferTotalByTextKeys);
-      const totalPeriodColumn = totalPeriods(incomeTotal, expenseTotal, transferTotal);
+      const otherTotal = aggregateTotal(otherTotalByTextKeys);
+      const totalPeriodColumn = totalPeriods(incomeTotal, expenseTotal, otherTotal);
 
       _.extend(data, {
         incomes,
         expenses,
-        transfers,
+        others,
         incomeTextKeys,
         expenseTextKeys,
         incomeTotalByTextKeys,
         expenseTotalByTextKeys,
-        transferTotalByTextKeys,
+        otherTotalByTextKeys,
         incomeTotal,
         expenseTotal,
-        transferTextKeys,
-        transferTotal,
+        otherTextKeys,
+        otherTotal,
         totalPeriodColumn,
       });
 
@@ -378,47 +398,6 @@ function report(req, res, next) {
     });
     return total;
   }
-}
-
-/**
-   * getDetailsIdentifiers
-   *
-   * this function returns uuids of oposites lines to given cashes in transactions as details
-   * @param {array} cashboxesAccountIds - an array of account ids of cashboxes
-   * @param {date} dateFrom
-   * @param {date} dateTo
-   */
-function getDetailsIdentifiers(cashboxesAccountIds, dateFrom, dateTo) {
-  const CANCELLED_VOUCHER_ID = 10;
-  const ids = cashboxesAccountIds;
-  const queryTransactions = `
-      SELECT gl.trans_id
-      FROM general_ledger gl
-      WHERE gl.account_id IN ?
-        AND
-        (DATE(gl.trans_date) >= DATE(?) AND DATE(gl.trans_date) <= DATE(?))
-        AND
-        (
-          gl.transaction_type_id <> ${CANCELLED_VOUCHER_ID} AND
-          gl.record_uuid NOT IN (SELECT v.uuid FROM voucher v WHERE v.type_id = ${CANCELLED_VOUCHER_ID})
-        );
-    `;
-
-  return db.exec(queryTransactions, [[ids], dateFrom, dateTo])
-    .then(rows => {
-      // skip if there is no transId
-      if (rows.length === 0) { return []; }
-
-      const transIds = rows.map(row => row.trans_id);
-
-      const queryUuids = `
-        SELECT gl.uuid
-        FROM general_ledger gl
-        WHERE gl.trans_id IN ? AND gl.account_id NOT IN ?;
-        `;
-
-      return db.exec(queryUuids, [[transIds], [ids]]);
-    });
 }
 
 /**
