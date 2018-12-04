@@ -39,27 +39,16 @@ function UserModalController($state, Projects, Users, Notify, AppCache) {
     Users.read(vm.stateParams.id)
       .then((user) => {
         vm.user = user;
-        vm.oldUsername = angular.copy(vm.user.username);
+        vm.oldUserName = user.username;
       })
       .catch(Notify.handleError);
   } else {
     vm.user.projects = [];
   }
 
-  vm.hasUsernameError = hasUsernameError;
-  function hasUsernameError(UserForm) {
-    const isInvalid = UserForm.username.$dirty && UserForm.username.$invalid;
-    if (vm.isCreating) {
-      return isInvalid && UserForm.username.$error.unique;
-    }
-
-    const isDifferentUsername = UserForm.username.$viewValue !== vm.oldUsername;
-    return isInvalid && isDifferentUsername;
-  }
-
   // submit the data to the server from all two forms (update, create)
   function submit(userForm) {
-    if (userForm.$pristine) { return closeModal(); }
+    if (userForm.$pristine && !vm.isCreating) { return closeModal(); }
     if (userForm.$invalid) { return 0; }
 
     const promise = (vm.isCreating) ? Users.create(vm.user) : Users.update(vm.user.id, vm.user);

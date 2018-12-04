@@ -22,8 +22,8 @@ describe('User Management Page', () => {
   const editPasswordPage = new EditPasswordPage();
 
   const mockUserCreate = {
-    userName : 'User test',
-    login : 'Login test',
+    display_name : 'User test',
+    username : 'Login test',
     email : 'test@bhima.org',
     project : 'Test Project A',
     password : 'testtest134@IMA',
@@ -31,8 +31,8 @@ describe('User Management Page', () => {
   };
 
   const mockUserEdit = {
-    userName : 'User test edit',
-    login : 'Login test edit',
+    display_name : 'User test edit',
+    username : 'Login test edit',
     email : 'test_edit@bhima.org',
     project : 'Test Project C',
     password : 'testtestedit1233@D',
@@ -47,32 +47,32 @@ describe('User Management Page', () => {
   before(() => helpers.navigate(path));
 
   it('displays all users loaded from the database', () => {
-    expect(userPage.getUserCount()).to.eventually.equal(userCount);
+    expect(userPage.count()).to.eventually.equal(userCount);
   });
 
   it('creates a user successfully', () => {
-    userPage.createUser();
-    userCreateUpdatePage.setUserName(mockUserCreate.userName);
-    userCreateUpdatePage.setLogin(mockUserCreate.login);
+    userPage.create();
+    userCreateUpdatePage.setDisplayName(mockUserCreate.display_name);
+    userCreateUpdatePage.setUsername(mockUserCreate.username);
     userCreateUpdatePage.setEmail(mockUserCreate.email);
     userCreateUpdatePage.setProjectValue(mockUserCreate.project, false);
     userCreateUpdatePage.setPassword(mockUserCreate.password);
     userCreateUpdatePage.setPasswordConfirm(mockUserCreate.passwordConfirm);
     userCreateUpdatePage.submitUser();
-    expect(userPage.getUserCount()).to.eventually.equal(userCount + 1);
+    expect(userPage.count()).to.eventually.equal(userCount + 1);
   });
 
   it('edits a user successfully without changing the password', () => {
-    userPage.editUser(mockUserCreate.userName);
-    userCreateUpdatePage.setUserName(mockUserEdit.userName);
-    userCreateUpdatePage.setLogin(mockUserEdit.login);
+    userPage.update(mockUserCreate.display_name);
+    userCreateUpdatePage.setDisplayName(mockUserEdit.display_name);
+    userCreateUpdatePage.setUsername(mockUserEdit.username);
     userCreateUpdatePage.setEmail(mockUserEdit.email);
 
     userCreateUpdatePage.setProjectValue(mockUserEdit.project, true);
 
     userCreateUpdatePage.submitUser();
     /**
-     * TODO : Use the page object correctly for the login page
+     * TODO : Use the page object correctly for the username page
      * to help us access the application with the edited user information
      * from this test
      */
@@ -81,31 +81,26 @@ describe('User Management Page', () => {
   });
 
   it('edits a user password successfully', () => {
-    userPage.editUser(mockUserEdit.userName);
+    userPage.update(mockUserEdit.display_name);
     userCreateUpdatePage.editPassword();
     editPasswordPage.setPassword(mockUserEdit.password);
     editPasswordPage.setPasswordConfirm(mockUserEdit.password);
     editPasswordPage.submitPassword();
-    /**
-     * TODO : Use the page object correctly for the login page
-     * to help us access the application with the edited user information
-     * from this test
-     */
     // if every thing is ok, the modal should disappear
     expect(editPasswordPage.isDisplayed()).to.eventually.equal(false);
     userCreateUpdatePage.close();
   });
 
   it('deactivate user system access successfully', () => {
-    userPage.toggleUser(mockUserEdit.userName, false);
+    userPage.toggleUser(mockUserEdit.display_name, false);
     // submit the confirmation modal
     FU.modal.submit();
 
     components.notification.hasSuccess();
   });
 
-  it('validates from on editing password', () => {
-    userPage.editUser(mockUserEdit.userName);
+  it('validates form on editing password', () => {
+    userPage.update(mockUserEdit.display_name);
 
     // check that an empty form is not allowed
     userCreateUpdatePage.editPassword();
@@ -125,7 +120,7 @@ describe('User Management Page', () => {
   });
 
   it(`sets the cashbox ${cashbox.text} management rights for "Regular User"`, () => {
-    userPage.editUserCashbox('Regular User');
+    userPage.updateCashbox('Regular User');
     components.multipleCashBoxSelect.set([cashbox.text]);
 
     // submit the modal
@@ -134,14 +129,15 @@ describe('User Management Page', () => {
   });
 
   it('validates form on creation', () => {
-    userPage.createUser();
+    userPage.create();
     userCreateUpdatePage.submitUser();
-    expect(userCreateUpdatePage.isUserNameInvalid()).to.eventually.equal(true);
-    expect(userCreateUpdatePage.isLoginInvalid()).to.eventually.equal(true);
-    expect(userCreateUpdatePage.isEmailInvalid()).to.eventually.equal(true);
-    expect(userCreateUpdatePage.isProjectInvalid()).to.eventually.equal(true);
-    expect(userCreateUpdatePage.isPasswordInvalid()).to.eventually.equal(true);
-    expect(userCreateUpdatePage.isPasswordConfirmInvalid()).to.eventually.equal(true);
+
+    userCreateUpdatePage.isUsernameInvalid();
+    userCreateUpdatePage.isDisplayNameInvalid();
+    userCreateUpdatePage.isEmailInvalid();
+    userCreateUpdatePage.isProjectInvalid();
+    userCreateUpdatePage.isPasswordInvalid();
+    userCreateUpdatePage.isPasswordConfirmInvalid();
 
     userCreateUpdatePage.close();
   });

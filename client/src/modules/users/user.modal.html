@@ -35,14 +35,14 @@
       </div>
     </div>
 
-    <div class="form-group has-feedback" ng-class="{ 'has-error' : UserModalCtrl.hasUsernameError(UserForm) }">
+    <div class="form-group has-feedback" ng-class="{ 'has-error' : UserForm.$submitted && UserForm.username.$invalid }">
       <label class="control-label" translate>FORM.LABELS.USERNAME</label>
-      <input name="username" ng-maxlength="UserModalCtrl.userName" autocomplete="off" ng-model="UserModalCtrl.user.username" class="form-control" bh-unique="/users/" required>
+      <input name="username" ng-maxlength="UserModalCtrl.userName" autocomplete="off" ng-model="UserModalCtrl.user.username" class="form-control" bh-unique="/users/" origin="{{UserModalCtrl.oldUserName}}" required>
 
-      <i ng-show="UserModalCtrl.hasUsernameError(UserForm) && UserForm.username.$error.unique" class="text-danger glyphicon glyphicon-remove form-control-feedback" id="unique-error-icon"></i>
+      <i ng-show="UserForm.$submitted && UserForm.username.$error.unique" class="text-danger glyphicon glyphicon-remove form-control-feedback" id="unique-error-icon"></i>
       <i ng-show="UserForm.username.$dirty && UserForm.username.$pending.unique"  class="glyphicon glyphicon-hourglass form-control-feedback"></i>
 
-      <div class="help-block" ng-messages="UserForm.username.$error" ng-show="UserModalCtrl.hasUsernameError(UserForm)">
+      <div class="help-block" ng-messages="UserForm.username.$error" ng-show="UserForm.$submitted">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
       </div>
 

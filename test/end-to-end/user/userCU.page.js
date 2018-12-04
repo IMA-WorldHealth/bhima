@@ -1,142 +1,128 @@
-
 /* global element, by */
+/* eslint class-methods-use-this:off */
 
-/**
- * This class is represents a user creation page in terms of structure and
- * behaviour so it is a user creation page object
- */
-function CreateUpdateUserPage() {
-  const page = this;
+const FU = require('../shared/FormUtils');
 
-  const userNameField = element(by.model('UserModalCtrl.user.display_name'));
-  const loginField = element(by.model('UserModalCtrl.user.username'));
-  const emailField = element(by.model('UserModalCtrl.user.email'));
-  const projects = $('body').element(by.model('UserModalCtrl.user.projects'));
-  const editPassWordButton = element(by.id('user-edit-password'));
+class CreateUpdateUserPage {
 
-  const password = element(by.model('UserModalCtrl.user.password'));
-  const passwordConfirm = element(by.model('UserModalCtrl.user.passwordVerify'));
+  constructor() {
+    this.modal = $('[name="UserForm"]');
 
-  const submitButton = $('[uib-modal-window] [data-method="submit"]');
-  const cancelButton = element(by.id('user-cancel'));
+    this.fields = {
+      display_name : 'UserModalCtrl.user.display_name',
+      username : 'UserModalCtrl.user.username',
+      email : 'UserModalCtrl.user.email',
+      projects : 'UserModalCtrl.user.projects',
+      passwordConfirm : 'UserModalCtrl.user.passwordVerify',
+      password : 'UserModalCtrl.user.password',
+    };
 
-  const sameUserPanel = element(by.id('user-same'));
+    this.buttons = {
+      password : element(by.id('user-edit-password')),
+      submit : $('[uib-modal-window] [data-method="submit"]'),
+      cancel : element(by.id('user-cancel')),
+    };
 
-  /* set a user name value */
-  function setUserName(username) {
-    return userNameField.clear().sendKeys(username);
+    this.messages = {
+      sameUserPanel : element(by.id('user-same')),
+    };
   }
 
-  /* set a login value */
-  function setLogin(login) {
-    return loginField.clear().sendKeys(login);
+
+  setDisplayName(displayName) {
+    return FU.input(this.fields.display_name, displayName);
   }
 
-  /* set an email value */
-  function setEmail(email) {
-    return emailField.clear().sendKeys(email);
+  setUsername(username) {
+    return FU.input(this.fields.username, username);
   }
 
-  /* set a project choice */
-  function setProjectValue(value, append) {
-    projects.click();
+  setEmail(email) {
+    return FU.input(this.fields.email, email);
+  }
+
+  setProjectValue(value, append) {
+    const uiSelect = element(by.model(this.fields.projects));
+    uiSelect.click();
 
     if (append) {
-      projects.element(by.model('$select.search')).sendKeys(value);
+      uiSelect.element(by.model('$select.search')).sendKeys(value);
     } else {
-      projects.element(by.model('$select.search')).clear().sendKeys(value);
+      uiSelect.element(by.model('$select.search')).clear().sendKeys(value);
     }
-    return projects.element(by.cssContainingText('.dropdown-menu [role="option"]', value)).click();
+
+    return uiSelect.element(by.cssContainingText('.dropdown-menu [role="option"]', value)).click();
   }
 
   /* show a dialog to edit password */
-  function editPassword() {
-    return editPassWordButton.click();
+  editPassword() {
+    return this.buttons.password.click();
   }
 
   /* set a password value */
-  function setPassword(pw) {
-    return password.clear().sendKeys(pw);
+  setPassword(pw) {
+    FU.input(this.fields.password, pw);
   }
 
   /* set a password confirmation value */
-  function setPasswordConfirm(pw) {
-    return passwordConfirm.clear().sendKeys(pw);
+  setPasswordConfirm(pw) {
+    FU.input(this.fields.passwordConfirm, pw);
   }
 
   /* submit a user */
-  function submitUser() {
-    return submitButton.click();
+  submitUser() {
+    return this.buttons.submit.click();
   }
 
   /* cancel creation */
-  function close() {
-    return cancelButton.click();
+  close() {
+    return this.buttons.cancel.click();
   }
 
   /* check if the page is displayed */
-  function isDisplayed() {
-    return submitButton.isPresent();
+  isDisplayed() {
+    return this.buttons.submit.isPresent();
   }
 
   /* check if the username field is invalid */
-  function isUserNameInvalid() {
-    return isInvalid(userNameField);
+  isUsernameInvalid() {
+    return this.isInvalid(this.fields.username);
   }
 
   /* check if the login field is invalid */
-  function isLoginInvalid() {
-    return isInvalid(loginField);
+  isDisplayNameInvalid() {
+    return this.isInvalid(this.fields.display_name);
   }
 
   /* check if the email field is invalid */
-  function isEmailInvalid() {
-    return isInvalid(emailField);
+  isEmailInvalid() {
+    return this.isInvalid(this.fields.email);
   }
 
   /* check if the project field is invalid */
-  function isProjectInvalid() {
-    return isInvalid(projects);
+  isProjectInvalid() {
+    return this.isInvalid(this.fields.projects);
   }
 
   /* check if the password field is invalid */
-  function isPasswordInvalid() {
-    return isInvalid(password);
+  isPasswordInvalid() {
+    return this.isInvalid(this.fields.password);
   }
 
   /* check if the passwordConfirm field is invalid */
-  function isPasswordConfirmInvalid() {
-    return isInvalid(passwordConfirm);
+  isPasswordConfirmInvalid() {
+    return this.isInvalid(this.fields.passwordConfirm);
   }
 
   /* check if ng-invalid css class is applied on a component */
-  function isInvalid(component) {
-    return component.getAttribute('class').then(classes =>
-      classes.split(' ').indexOf('ng-invalid') !== -1);
+  isInvalid(field) {
+    return FU.validation.error(field);
   }
 
   /* check if the user tried to edited the same user */
-  function isSameUser() {
-    return sameUserPanel.isPresent();
+  isSameUser() {
+    return this.messages.sameUserPanel.isPresent();
   }
-
-  page.close = close;
-  page.editPassword = editPassword;
-  page.isDisplayed = isDisplayed;
-  page.isEmailInvalid = isEmailInvalid;
-  page.isLoginInvalid = isLoginInvalid;
-  page.isPasswordInvalid = isPasswordInvalid;
-  page.isPasswordConfirmInvalid = isPasswordConfirmInvalid;
-  page.isProjectInvalid = isProjectInvalid;
-  page.isSameUser = isSameUser;
-  page.isUserNameInvalid = isUserNameInvalid;
-  page.setEmail = setEmail;
-  page.setLogin = setLogin;
-  page.setPassword = setPassword;
-  page.setPasswordConfirm = setPasswordConfirm;
-  page.setProjectValue = setProjectValue;
-  page.setUserName = setUserName;
-  page.submitUser = submitUser;
 }
 
 module.exports = CreateUpdateUserPage;
