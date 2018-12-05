@@ -860,7 +860,7 @@ CREATE TABLE `inventory` (
   `uuid` BINARY(16) NOT NULL,
   `code` varchar(30) NOT NULL,
   `text` varchar(100) NOT NULL,
-  `price` DECIMAL(10,4) UNSIGNED NOT NULL DEFAULT 0.0,
+  `price` DECIMAL(18,4) UNSIGNED NOT NULL DEFAULT 0.0,
   `default_quantity` INTEGER UNSIGNED NOT NULL DEFAULT 1,
   `group_uuid` BINARY(16) NOT NULL,
   `unit_id` SMALLINT(5) UNSIGNED DEFAULT NULL,
