@@ -278,42 +278,36 @@ function report(req, res, next) {
           FROM general_ledger AS gl
           JOIN account AS a ON a.id = gl.account_id
           JOIN transaction_type AS tt ON tt.id = gl.transaction_type_id
-          WHERE gl.trans_id IN (
-            SELECT g.trans_id
-            FROM general_ledger AS g
-            JOIN account AS a ON a.id = g.account_id
-            WHERE (DATE(g.trans_date) >= DATE(?) AND DATE(g.trans_date) <= DATE(?))
-            AND g.trans_id NOT IN (
-                SELECT DISTINCT (t.trans_id) AS trans_id
-                FROM general_ledger AS t
-                WHERE t.record_uuid IN (
-                    SELECT rev.uuid
-                    FROM (
-                        SELECT v.uuid, v.date, v.reversed
-                        FROM voucher AS v
-                        UNION
-                        SELECT c.uuid, c.date, c.reversed
-                        FROM cash AS c
-                        UNION
-                        SELECT i.uuid, i.date, i.reversed
-                        FROM invoice AS i
-                    ) AS rev
-                    WHERE rev.reversed = 1
-                    AND DATE(rev.date) >= DATE(?) AND DATE(rev.date) <= DATE(?)
-                )
-            ) AND g.transaction_type_id <> 10 AND g.account_id NOT IN (?)            
-          ) 
-          GROUP BY gl.account_id, gl.transaction_type_id, gl.period_id
+          WHERE gl.account_id IN ? AND ((DATE(gl.trans_date) >= DATE(?)) AND (DATE(gl.trans_date) <= DATE(?)))
+          AND gl.transaction_type_id <> 10 AND gl.trans_id NOT IN (
+            SELECT DISTINCT gl.trans_id
+            FROM general_ledger AS gl
+            WHERE gl.record_uuid IN (
+              SELECT rev.uuid
+              FROM (
+                SELECT v.uuid, v.date, v.reversed
+                FROM voucher AS v
+                UNION
+                SELECT c.uuid, c.date, c.reversed
+                FROM cash AS c
+                UNION
+                SELECT i.uuid, i.date, i.reversed
+                FROM invoice AS i
+              ) AS rev
+              WHERE rev.reversed = 1
+              AND DATE(rev.date) >= DATE(?) AND DATE(rev.date) <= DATE(?)
+            )
+          ) GROUP BY gl.account_id, gl.transaction_type_id, gl.period_id
         ) AS source
         GROUP BY transaction_type, account_id;
       `;
 
       const params = [...periodParams,
+        [data.cashAccountIds],
         data.dateFrom,
         data.dateTo,
         data.dateFrom,
-        data.dateTo,
-        [data.cashAccountIds]];
+        data.dateTo];
       return db.exec(query, params);
     })
     .then(rows => {
