@@ -11,7 +11,7 @@
       "DESCRIPTION": "This module allows you to make advanced journal transactions manually",
       "ENTITY": "Entity (Debtor/Creditor)",
       "ERROR_ACCOUNT": "Selected accounts are invalid",
-      "ERROR_AMOUNT": "Amount's values are invalid",
+      "ERROR_AMOUNT": "Amount is invalid",
       "ERROR_TOTALS": "The totals are not balanced",
       "ERROR_PRECISION": "The amounts entered cannot have more than 4 decimal places in precision",
       "ERROR_NEGATIVE_NUMBERS": "There are negative numbers detected",
@@ -44,12 +44,12 @@
       "CASH_TRANSFER":"Cash Transfer",
       "REPORT":"Voucher Registry",
       "TITLE":"Voucher",
-      "TRANSACTION_TYPE_INFO": "Transaction type depending on whether you have an income or an expense",
-      "USE_FINANCIAL_ACCOUNT": "This transactions uses a cash or bank account.  Be sure to set a transaction type.",
+      "TRANSACTION_TYPE_INFO": "Transaction type, depending on whether you have an income or an expense",
+      "USE_FINANCIAL_ACCOUNT": "This transaction uses a cash or bank account.  Be sure to set a transaction type.",
       "RECEIPT":{
         "SUCCESS":"Voucher Payment recorded successfully."
       },
-      "ERROR_SAME_ACCOUNT": "You cannot use the same account twice to in this transaction. Please select two different accounts.",
+      "ERROR_SAME_ACCOUNT": "You cannot use the same account twice in this transaction. Please select two different accounts.",
       "PAYMENT_EMPLOYEES": "Payment of wages {{date}}"
     },
     "SIMPLE": {
@@ -74,8 +74,8 @@
       "TRANSFER": "Money Transfer",
       "TRANSFER_PATIENT_INVOICE_AMOUNT": "Patient Invoice Debt Transfer",
       "STOCK_INTEGRATION" : "Stock Integration",
-      "STOCK_EXIT":"Sortie de stock",
-      "STOCK_ENTRY":"Entrée de stock"
+      "STOCK_EXIT":"Stock Exit",
+      "STOCK_ENTRY":"Stock Entry"
     },
     "REPORT": "Report",
     "TOOLS": {
@@ -106,7 +106,7 @@
         "AUTHORISED_BY": "Voucher documents were authorised by user:",
         "CONFIGURED_FOR": "The transaction {{trans_id}} will <b>not be edited</b> as it has already been posted. This will create a reversal voucher followed by a second voucher with the corrections made here. Please confirm that you authorise the above corrections to {{trans_id}}.",
         "DESCRIPTION": "Transaction corrected using Administrative Voucher Tools",
-        "DETAILS": "This transaction can now be updated with corrections. Submitting this process will create two voucher documents, one reversing the effects of this transaction with equal and opposite values, the second with rows reflected corrections made here.",
+        "DETAILS": "This transaction can now be updated with corrections. Submitting this process will create two voucher documents, one reversing the effects of this transaction with equal and opposite values, the second with rows reflecting corrections made here.",
         "SUCCESS": "Transaction reversal and correction documents were written successfully",
         "TITLE": "Correct Transaction"
       }

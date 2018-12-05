@@ -15,7 +15,7 @@
     "UPDATING_USER" : "Edit User",
     "UPDATED" : "Updated",
     "CREATED" : "Created",
-    "PASSWORDPOLICY" : "To conform with our Strong Password policy, the password must be more than 7 characters. It must include a special caracter(e.g. @) , one or more numerical digits, both upper-case and lower-case .",
-    "PASSWORD_MISMATCH" : "Passwords given are not the same"
+    "PASSWORDPOLICY" : "To conform with our Strong Password policy, the password must be more than 7 characters. It must include a special character (e.g. @), one or more numerical digits, and both uppercase and lowercase letters.",
+    "PASSWORD_MISMATCH" : "Passwords entered are not the same"
   }
 }
