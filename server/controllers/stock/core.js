@@ -382,7 +382,8 @@ function getStockConsumptionAverage(periodId, periodDate, numberOfMonths) {
     : 'SELECT id FROM period WHERE DATE(?) BETWEEN DATE(start_date) AND DATE(end_date) LIMIT 1;';
 
   const queryStockConsumption = `
-    SELECT ROUND(AVG(s.quantity)) AS quantity, BUID(i.uuid) AS uuid, i.text, i.code, BUID(d.uuid) AS depot_uuid,
+    SELECT IF(i.avg_consumption = 1, ROUND(AVG(s.quantity)), i.avg_consumption) AS quantity,
+      BUID(i.uuid) AS uuid, i.text, i.code, BUID(d.uuid) AS depot_uuid,
       d.text AS depot_text
     FROM stock_consumption s
     JOIN inventory i ON i.uuid = s.inventory_uuid
@@ -489,25 +490,41 @@ function getInventoryQuantityAndConsumption(params) {
  */
 function processMultipleLots(inventories) {
   const flattenLots = [];
-  const inventoryLots = _.groupBy(inventories, 'inventory_uuid');
+  const inventoryByDepots = _.groupBy(inventories, 'depot_uuid');
 
-  _.map(inventoryLots, (lots) => {
-    // order lots also by ascending quantity
-    // assuming the lot with lowest quantity is consumed first
-    let orderedInventoryLots = _.orderBy(lots, 'quantity', 'asc');
+  _.map(inventoryByDepots, (depotInventories) => {
 
-    // order lots by ascending lifetime has a hight priority than quantity
-    orderedInventoryLots = _.orderBy(orderedInventoryLots, 'lifetime', 'asc');
+    const inventoryLots = _.groupBy(depotInventories, 'inventory_uuid');
 
-    // compute the lot coefficient
-    let lotLifetime = 0;
-    _.each(orderedInventoryLots, lot => {
-      lot.S_LOT_LIFETIME = lot.lifetime - lotLifetime;
-      lot.S_RISK = lot.S_LOT_LIFETIME - lot.S_MONTH;
-      lot.S_RISK_QUANTITY = Math.round(lot.S_RISK * lot.avg_consumption);
-      lotLifetime += lot.lifetime;
-      flattenLots.push(lot);
+    _.map(inventoryLots, (lots) => {
+      // if we don't have the default CMM (avg_consumption) use the
+      // defined or computed CMM for each lots
+      const cmm = _.max(lots.map(lot => lot.avg_consumption));
+
+      // order lots also by ascending quantity
+      // assuming the lot with lowest quantity is consumed first
+      let orderedInventoryLots = _.orderBy(lots, 'quantity', 'asc');
+
+      // order lots by ascending lifetime has a hight priority than quantity
+      orderedInventoryLots = _.orderBy(orderedInventoryLots, 'lifetime', 'asc');
+
+      // compute the lot coefficient
+      let lotLifetime = 0;
+      _.each(orderedInventoryLots, lot => {
+        // apply the same CMM to all lots and update monthly consumption
+        lot.avg_consumption = cmm;
+        lot.S_MONTH = cmm ? Math.floor(lot.quantity / cmm) : lot.quantity;
+
+        const zeroMSD = Math.round(lot.S_MONTH) === 0;
+
+        lot.S_LOT_LIFETIME = zeroMSD || lot.lifetime < 0 ? 0 : lot.lifetime - lotLifetime;
+        lot.S_RISK = zeroMSD ? 0 : lot.S_LOT_LIFETIME - lot.S_MONTH;
+        lot.S_RISK_QUANTITY = Math.round(lot.S_RISK * lot.avg_consumption);
+        flattenLots.push(lot);
+        lotLifetime += lot.S_LOT_LIFETIME;
+      });
     });
+
   });
 
   return flattenLots;
