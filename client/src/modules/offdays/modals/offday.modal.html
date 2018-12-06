@@ -13,7 +13,8 @@
   </div>
 
   <div class="modal-body">
-    <div class="modal-body" ng-class="{ 'has-error' : OffdayForm.$submitted && OffdayForm.label.$invalid }">
+
+    <div class="form-group" ng-class="{ 'has-error' : OffdayForm.$submitted && OffdayForm.label.$invalid }">
       <label class="control-label" translate>FORM.LABELS.DESIGNATION</label>
       <input name="label" ng-model="OffdayModalCtrl.offday.label" autocomplete="off" class="form-control" required>
       <div class="help-block" ng-messages="OffdayForm.label.$error" ng-show="OffdayForm.$submitted">
@@ -21,14 +22,12 @@
       </div>
     </div>
 
-    <div class="modal-body">
       <bh-date-editor
         date-value="OffdayModalCtrl.offday.date"
         on-change="OffdayModalCtrl.onDateChange(date)">
       </bh-date-editor>
-    </div>
 
-    <div class="modal-body" ng-class="{ 'has-error' : OffdayForm.$submitted && OffdayForm.percent_pay.$invalid }">
+    <div class="form-group" ng-class="{ 'has-error' : OffdayForm.$submitted && OffdayForm.percent_pay.$invalid }">
       <label class="control-label" translate>FORM.LABELS.PERCENTAGE</label> (%)
       <input name="percent_pay" type="number" max="100" min="0" ng-model="OffdayModalCtrl.offday.percent_pay" autocomplete="off" class="form-control" required>
       <div class="help-block" ng-messages="OffdayForm.percent_pay.$error" ng-show="OffdayForm.$submitted">

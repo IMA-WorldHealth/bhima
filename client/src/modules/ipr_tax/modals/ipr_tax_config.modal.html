@@ -13,7 +13,7 @@
   </div>
 
   <div class="modal-body">
-    <div class="modal-body" ng-class="{ 'has-error' : IprTaxForm.$submitted && IprTaxForm.rate.$invalid }">
+    <div class="form-group" ng-class="{ 'has-error' : IprTaxForm.$submitted && IprTaxForm.rate.$invalid }">
       <label class="control-label" translate>FORM.LABELS.RATE</label>
       <input type="number" name="rate" ng-model="IprTaxConfigModalCtrl.iprTax.rate" ng-max="100" ng-min="0" autocomplete="off" class="form-control" required>
       <div class="help-block" ng-messages="IprTaxForm.rate.$error" ng-show="IprTaxForm.$submitted">
@@ -21,24 +21,20 @@
       </div>
     </div>
 
-    <div class="modal-body">
-      <bh-currency-input
-        id="tranche_annuelle_debut"
-        label="FORM.LABELS.ANNUAL_TRANCH_FROM"
-        min="0"
-        currency-id="IprTaxConfigModalCtrl.iprTax.currency_id"
-        model="IprTaxConfigModalCtrl.iprTax.tranche_annuelle_debut">
-      </bh-currency-input>
-    </div>
+    <bh-currency-input
+      id="tranche_annuelle_debut"
+      label="FORM.LABELS.ANNUAL_TRANCH_FROM"
+      min="0"
+      currency-id="IprTaxConfigModalCtrl.iprTax.currency_id"
+      model="IprTaxConfigModalCtrl.iprTax.tranche_annuelle_debut">
+    </bh-currency-input>
 
-    <div class="modal-body">
-      <bh-currency-input
-        id="tranche_annuelle_fin"
-        label="FORM.LABELS.ANNUAL_TRANCH_TO"
-        currency-id="IprTaxConfigModalCtrl.iprTax.currency_id"
-        model="IprTaxConfigModalCtrl.iprTax.tranche_annuelle_fin">
-      </bh-currency-input>
-    </div>
+    <bh-currency-input
+      id="tranche_annuelle_fin"
+      label="FORM.LABELS.ANNUAL_TRANCH_TO"
+      currency-id="IprTaxConfigModalCtrl.iprTax.currency_id"
+      model="IprTaxConfigModalCtrl.iprTax.tranche_annuelle_fin">
+    </bh-currency-input>
   </div>
 
   <div class="modal-footer">
