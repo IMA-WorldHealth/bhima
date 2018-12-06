@@ -73,7 +73,7 @@
     "ITEMS"           : "Items",
     "LEGEND"          : "Legend",
     "LIFETIME"        : "Lifetime",
-    "LOT_LIFETIME"    : "Lot Lifetime",
+    "LOT_LIFETIME"    : "Lifetime By Lot",
     "RISK"            : "Risk",
     "RISK_QUANTITY"   : "Risk Quantity",
     "CMM"             : "CMM",
