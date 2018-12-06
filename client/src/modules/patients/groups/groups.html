@@ -26,11 +26,12 @@
           <div class="panel-heading">
             <span translate> PATIENT_GROUP.ALL_PATIENT_GROUP </span>
           </div>
-          <table class="table table-condensed">
+          <table class="table table-condensed table-bordered">
             <thead>
               <tr>
                 <th translate> TABLE.COLUMNS.NAME </th>
                 <th translate> TABLE.COLUMNS.PRICE_LIST </th>
+                <th translate> FORM.LABELS.PATIENTS</th>
                 <th translate> TABLE.COLUMNS.ACTION </th>
               </tr>
             </thead>
@@ -38,6 +39,7 @@
               <tr ng-repeat="group in PatientGroupCtrl.groups track by group.uuid" ng-class="{ 'bg-primary' : group.uuid == PatientGroupCtrl.patientGroup.uuid }">
                 <td>{{ group.name}}</td>
                 <td>{{ group.priceListLabel }}</td>
+                <td class="text-right">{{group.patientNumber}}</td>
                 <td>
                   <a class="btn btn-xs btn-default" ng-click="PatientGroupCtrl.update(group.uuid)" id="group-{{group.uuid}}">
                     <span class="glyphicon glyphicon-pencil"></span>

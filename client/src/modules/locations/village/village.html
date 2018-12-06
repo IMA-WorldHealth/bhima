@@ -91,7 +91,7 @@
         <div class="panel panel-primary" ng-switch-when="create">
           <div class="panel-heading" translate> VILLAGE.REGISTER </div>
           <div class="panel-body">
-            <form name="CreateForm" ng-submit="VillageCtrl.submit(CreateForm)" novalidate>
+            <form name="CreateForm" bh-submit="VillageCtrl.submit(CreateForm)" novalidate>
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.country.$invalid }">
                 <label class="control-label" translate> FORM.LABELS.COUNTRY </label>
                 <select
@@ -168,9 +168,9 @@
               </div>
 
               <div class="form-group">
-                <button class="btn btn-primary" id="submit-village" type="submit" data-method="submit" translate>
-                  FORM.BUTTONS.SAVE
-                </button>
+                <bh-loading-button loading-state="UpdateForm.$submitted">
+                  <span translate>FORM.BUTTONS.SAVE</span>
+                </bh-loading-button>
                 <button class="btn btn-default" type="button" ng-click="VillageCtrl.cancel()" data-method="cancel" translate>
                   FORM.BUTTONS.RESET
                 </button>
@@ -190,7 +190,7 @@
         <div class="panel panel-primary" ng-switch-when="update">
           <div class="panel-heading" translate> VILLAGE.EDIT </div>
           <div class="panel-body">
-            <form name="UpdateForm" ng-submit="VillageCtrl.submit(UpdateForm)" novalidate>
+            <form name="UpdateForm" bh-submit="VillageCtrl.submit(UpdateForm)" novalidate>
               <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.country.$invalid }">
                 <label class="control-label" translate> FORM.LABELS.COUNTRY </label>
                 <select
@@ -270,9 +270,10 @@
               </div>
 
               <div class="form-group">
-                <button class="btn btn-primary" id="change_village" type="submit" data-method="submit" translate>
-                  FORM.BUTTONS.SAVE
-                </button>
+                <bh-loading-button loading-state="UpdateForm.$submitted">
+                  <span translate>FORM.BUTTONS.SAVE</span>
+                </bh-loading-button>
+
                 <button class="btn btn-default" type="button" ng-click="VillageCtrl.cancel()" data-method="cancel" translate>
                   FORM.BUTTONS.RESET
                 </button>
