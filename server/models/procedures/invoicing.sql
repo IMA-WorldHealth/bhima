@@ -949,7 +949,7 @@ CREATE PROCEDURE UnbalancedInvoicePaymentsTable(
   DROP TABLE IF EXISTS `unbalanced_invoices`;
   
   CREATE TABLE `unbalanced_invoices` AS (
-  SELECT BUID(ivc.uuid) as invoice_uuid , dm.text AS debtorReference, debtor.text AS debtorName, balances.debit_equiv AS debit,
+  SELECT BUID(ivc.uuid) as invoice_uuid , em.text AS debtorReference, debtor.text AS debtorName, balances.debit_equiv AS debit,
     balances.credit_equiv AS credit, iv.date AS creation_date, balances.balance,
     dm.text AS reference, ivc.project_id, p.name as 'projectName', dbtg.name as 'debtorGroupName',s.name as 'serviceName',
     ((balances.credit_equiv / IF(balances.debit_equiv = 0, 1, balances.debit_equiv )*100)) AS paymentPercentage

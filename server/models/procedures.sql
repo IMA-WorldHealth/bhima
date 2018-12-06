@@ -67,4 +67,8 @@ SOURCE server/models/procedures/account.sql
 */
 SOURCE server/models/procedures/roles.sql
 
+/*
+  analysis procedures
+*/
+SOURCE server/models/procedures/analysis.sql
 DELIMITER ;

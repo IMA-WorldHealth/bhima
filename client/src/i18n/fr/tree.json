@@ -121,7 +121,7 @@
     "ROLE_MANAGEMENT":"Gestion des rôles",
     "OHADA_BALANCE_SHEET":"[OHADA] Bilan",
     "OHADA_INCOME":"[OHADA] Compte de resultat",
-    "IMPORT_STOCK_FROM_FILE":"Imporation de stock",
+    "IMPORT_STOCK_FROM_FILE":"Importation de stock",
     "UPDATE_DISTRIBUTION": "Mettre à jour la répartition des centres de frais"
   }
 }
