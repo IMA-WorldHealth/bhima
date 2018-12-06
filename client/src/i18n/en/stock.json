@@ -145,7 +145,7 @@
   },
   "SETTINGS" : {
     "ORDER_BY_CREATED_AT" : "Sort lots movements by their true creation date",
-    "ORDER_BY_CREATED_AT_HELP_TEXT" : "This option allows you to sort lots movements by their true creation date in the system"
+    "ORDER_BY_CREATED_AT_HELP_TEXT" : "This option allows you to sort lot movements by their true creation date in the system"
   },
   "STOCK_FLUX" : {
     "FROM_PURCHASE"    : "From Purchase Order",
