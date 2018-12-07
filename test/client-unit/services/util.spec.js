@@ -1,4 +1,4 @@
-/* global inject, expect */
+/* global inject, expect, chai */
 describe('util', () => {
   let util;
 
@@ -74,4 +74,140 @@ describe('util', () => {
     api.y(2);
     expect(input).to.be.equal(2);
   });
+
+  it('#formatDate() should take a date and transform it into a string.', () => {
+    const date = new Date('2018-01-31');
+    const expected = 'string';
+
+    const formatedDate = util.formatDate(date);
+    expect(formatedDate).to.be.a(expected);
+  });
+
+  it('#formatDate() should take a date and transform it into a format passed in as a second argument.', () => {
+    const date = new Date('2018-01-31');
+    const expected = '31/01/2018';
+    const format = 'DD/MM/YYYY';
+
+    const formatedDate = util.formatDate(date, format);
+
+    expect(formatedDate).to.be.equal(expected);
+  });
+
+  it('#formatDate() should retun null if no date provided.', () => {
+    const expected = null;
+    const formatedDate = util.formatDate();
+    expect(formatedDate).to.be.equal(expected);
+  });
+
+  it('#filterFormElements() should return an empty object if provided an empty object', () => {
+    const form = {};
+    const expected = {};
+    const elements = util.filterFormElements(form);
+    expect(elements).to.deep.equal(expected);
+  });
+
+  it.skip('#filterFormElements() should return $modelValue or $bhValue properties of sub-objects', () => {
+
+  });
+
+  it('#clean() should filter out all properties that have empty values or that begin with $', () => {
+    const data = {
+      $$hashKey : '8339Gh1',
+      $modelValue : 10,
+      $dirty : true,
+      name : 'Alice',
+      test : null,
+    };
+
+    const expected = {
+      $modelValue : 10,
+      $dirty : true,
+      name : 'Alice',
+    };
+    const formatedData = util.clean(data);
+    expect(formatedData).to.deep.equal(expected);
+  });
+
+  it('#getMomentAge() should return a number', () => {
+    const date = new Date();
+    const expected = 'number';
+    const result = util.getMomentAge(date);
+    expect(typeof result).to.be.equal(expected);
+  });
+
+  it('#defaultBirthMonth should be defined', () => {
+    const { defaultBirthMonth } = util;
+    expect(defaultBirthMonth).to.not.equal(null);
+  });
+
+  it('#uniquelize should turn an array into unique values', () => {
+    const data = ['name', 'gender', 'label', 'name', 'gender'];
+    const expected = ['name', 'gender', 'label'];
+    const formatedData = util.uniquelize(data);
+    expect(formatedData).to.deep.equal(expected);
+  });
+
+  it('#isEmptyObject() should turn true for {}', () => {
+    const data = {};
+    const expected = true;
+    const formatedData = util.isEmptyObject(data);
+    expect(formatedData).to.be.equal(expected);
+  });
+
+  it('#isEmptyObject() should turn true for []', () => {
+    const data = [];
+    const expected = true;
+    const formatedData = util.isEmptyObject(data);
+    expect(formatedData).to.be.equal(expected);
+  });
+
+  it('#xor should returns the logical XOR of two booleans.', () => {
+    const { xor } = util;
+    expect(xor(true, true)).to.equal(false);
+    expect(xor(false, true)).to.equal(true);
+    expect(xor(true, false)).to.equal(true);
+    expect(xor(false, false)).to.equal(false);
+  });
+
+  it('#maskObjectFromKeys should return an object with only the properties specified as a second value', () => {
+    const data = {
+      $$hashKey : '8339Gh1',
+      $modelValue : 10,
+      $dirty : true,
+      name : 'Alice',
+      age : 12,
+    };
+    const mask = ['name', 'age'];
+    const expected = { name : 'Alice', age : 12 };
+    const formatedData = util.maskObjectFromKeys(data, mask);
+    expect(formatedData).to.deep.equal(expected);
+  });
+
+  it('#maskObjectFromKeys should return an empty object if given empty keys', () => {
+    const data = {
+      $modelValue : 10,
+      $dirty : true,
+      name : 'Alice',
+      age : 12,
+    };
+    const mask = [];
+    const expected = {};
+    const formatedData = util.maskObjectFromKeys(data, mask);
+    expect(formatedData).to.deep.equal(expected);
+  });
+
+
+  it('#debounce() should fire a function in the future', (done) => {
+    const spy = chai.spy();
+    const denounced = util.debounce(spy, 200); // debounce spy for 200 milliseconds
+
+    denounced();
+    expect(spy).to.not.have.been.called();
+
+    setTimeout(() => {
+      expect(spy).to.have.been.called();
+      done();
+    }, 250);
+  });
+
 });
