@@ -162,6 +162,7 @@ BEGIN
     uuid, inventory_uuid, quantity, transaction_price, inventory_price, debit,
     credit, invoice_uuid
   )
+
   SELECT * from stage_invoice_item WHERE stage_invoice_item.invoice_uuid = uuid;
 
   -- Total cost of all invoice items.  This is important to determine how much
@@ -401,6 +402,8 @@ BEGIN
   DECLARE idescription TEXT;
   DECLARE iaccountId INT;
 
+  DECLARE transIdNumberPart INT;
+
   -- caution variables
   DECLARE cid BINARY(16);
   DECLARE cbalance DECIMAL(19,4);
@@ -448,6 +451,8 @@ BEGIN
 
   DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 
+  SET transIdNumberPart = GetTransactionNumberPart(transId, projectId);
+
   -- set the invoice variables
   SELECT cost, debtor_uuid, date, user_id, description
     INTO icost, ientityId, idate, iuserId, idescription
@@ -486,7 +491,7 @@ BEGIN
           credit_equiv, currency_id, entity_uuid, reference_uuid,
           user_id, transaction_type_id)
         VALUES (
-          HUID(UUID()), projectId, fiscalYearId, periodId, transId, SUBSTRING(transId, 4), idate, iuuid, cdescription,
+          HUID(UUID()), projectId, fiscalYearId, periodId, transId, transIdNumberPart, idate, iuuid, cdescription,
           iaccountId, icost, 0, icost, 0, currencyId, ientityId, cid, iuserId, 11
         );
 
@@ -510,7 +515,7 @@ BEGIN
           credit_equiv, currency_id, entity_uuid, reference_uuid,
           user_id, transaction_type_id
         ) VALUES (
-          HUID(UUID()), projectId, fiscalYearId, periodId, transId, SUBSTRING(transId, 4), idate,
+          HUID(UUID()), projectId, fiscalYearId, periodId, transId, transIdNumberPart, idate,
           iuuid, cdescription, iaccountId, cbalance, 0, cbalance, 0,
           currencyId, ientityId, cid, iuserId, 11
         );
@@ -529,7 +534,7 @@ BEGIN
       record_uuid, description, account_id, debit, credit, debit_equiv,
       credit_equiv, currency_id, entity_uuid, user_id, transaction_type_id
     ) VALUES (
-      HUID(UUID()), projectId, fiscalYearId, periodId, transId, SUBSTRING(transId, 4), idate,
+      HUID(UUID()), projectId, fiscalYearId, periodId, transId, transIdNumberPart, idate,
       iuuid, idescription, iaccountId, icost, 0, icost, 0,
       currencyId, ientityId, iuserId, 11
     );
@@ -542,7 +547,7 @@ BEGIN
     credit_equiv, currency_id, transaction_type_id, user_id
   )
    SELECT
-    HUID(UUID()), i.project_id, fiscalYearId, periodId, transId, SUBSTRING(transId, 4), i.date, i.uuid,
+    HUID(UUID()), i.project_id, fiscalYearId, periodId, transId, transIdNumberPart, i.date, i.uuid,
     CONCAT(dm.text,': ', inv.text) as txt, ig.sales_account, ii.debit, ii.credit, ii.debit, ii.credit,
     currencyId, 11, i.user_id
   FROM invoice AS i JOIN invoice_item AS ii JOIN inventory as inv JOIN inventory_group AS ig JOIN document_map as dm ON
@@ -558,7 +563,7 @@ BEGIN
     record_uuid, description, account_id, debit, credit, debit_equiv,
     credit_equiv, currency_id, transaction_type_id, user_id
   ) SELECT
-    HUID(UUID()), i.project_id, fiscalYearId, periodId, transId, SUBSTRING(transId, 4), i.date, i.uuid,
+    HUID(UUID()), i.project_id, fiscalYearId, periodId, transId, transIdNumberPart, i.date, i.uuid,
     i.description, su.account_id, isu.value, 0, isu.value, 0, currencyId, 11,
     i.user_id
   FROM invoice AS i JOIN invoice_subsidy AS isu JOIN subsidy AS su ON
@@ -572,7 +577,7 @@ BEGIN
     record_uuid, description, account_id, debit, credit, debit_equiv,
     credit_equiv, currency_id, transaction_type_id, user_id
   ) SELECT
-    HUID(UUID()), i.project_id, fiscalYearId, periodId, transId, SUBSTRING(transId, 4), i.date, i.uuid,
+    HUID(UUID()), i.project_id, fiscalYearId, periodId, transId, transIdNumberPart, i.date, i.uuid,
     i.description, b.account_id, 0, ib.value, 0, ib.value, currencyId, 11,
     i.user_id
   FROM invoice AS i JOIN invoice_invoicing_fee AS ib JOIN invoicing_fee AS b ON
@@ -945,9 +950,9 @@ CREATE PROCEDURE UnbalancedInvoicePaymentsTable(
 
   -- even though this column is called "balance", it is actually the amount remaining
   -- on the invoice.
-  
+
   DROP TABLE IF EXISTS `unbalanced_invoices`;
-  
+
   CREATE TABLE `unbalanced_invoices` AS (
   SELECT BUID(ivc.uuid) as invoice_uuid , em.text AS debtorReference, debtor.text AS debtorName, balances.debit_equiv AS debit,
     balances.credit_equiv AS credit, iv.date AS creation_date, balances.balance,

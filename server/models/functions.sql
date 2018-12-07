@@ -103,6 +103,24 @@ BEGIN
   );
 END $$
 
+/**
+ GetTransactionNumberPart(transId, projectId)
+
+ Returns the number part of a transaction ID.
+*/
+CREATE FUNCTION GetTransactionNumberPart(
+  trans_id TEXT,
+  project_id SMALLINT(5)
+)
+RETURNS INT DETERMINISTIC
+BEGIN
+  RETURN (
+    SELECT SUBSTRING(trans_id, LENGTH(project.abbr) + 1)
+    FROM project
+    WHERE id = project_id
+  );
+END $$
+
 /*
   PredictAccountTypeId(accountNumber)
 
