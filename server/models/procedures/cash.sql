@@ -183,6 +183,7 @@ BEGIN
   DECLARE lastInvoiceUuid BINARY(16);
 
   DECLARE cashPaymentOriginId SMALLINT(5);
+  DECLARE transIdNumberPart INT;
 
   -- set origin to the CASH_PAYMENT transaction type
   SET cashPaymentOriginId = 2;
@@ -202,6 +203,8 @@ BEGIN
   SET currentExchangeRate = GetExchangeRate(cashEnterpriseId, cashCurrencyId, cashDate);
   SET currentExchangeRate = (SELECT IF(cashCurrencyId = enterpriseCurrencyId, 1, currentExchangeRate));
 
+  SET transIdNumberPart = GetTransactionNumberPart(transactionId, cashProjectId);
+
   /*
     Begin the posting process.  We will first write the total value as moving into the cashbox
     (a debit to the cashbox's cash account).  Then, we will loop through each cash_item and credit
@@ -218,7 +221,7 @@ BEGIN
     record_uuid, description, account_id, debit, credit, debit_equiv,
     credit_equiv, currency_id, user_id, transaction_type_id
   ) SELECT
-    HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, SUBSTRING(transactionId, 4), c.date, c.uuid, c.description,
+    HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, transIdNumberPart, c.date, c.uuid, c.description,
     cb.account_id, c.amount, 0, (c.amount * (1 / currentExchangeRate)), 0, c.currency_id, c.user_id, cashPaymentOriginId
   FROM cash AS c
     JOIN cash_box_account_currency AS cb ON cb.currency_id = c.currency_id AND cb.cash_box_id = c.cashbox_id
@@ -235,7 +238,7 @@ BEGIN
       record_uuid, description, account_id, debit, credit, debit_equiv,
       credit_equiv, currency_id, entity_uuid, user_id, transaction_type_id
     ) SELECT
-      HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, SUBSTRING(transactionId, 4), c.date, c.uuid,
+      HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, transIdNumberPart, c.date, c.uuid,
       c.description, dg.account_id, 0, c.amount, 0, (c.amount * (1 / currentExchangeRate)), c.currency_id,
       c.debtor_uuid, c.user_id, cashPaymentOriginId
     FROM cash AS c
@@ -259,7 +262,7 @@ BEGIN
       record_uuid, description, account_id, debit, credit, debit_equiv,
       credit_equiv, currency_id, entity_uuid, user_id, reference_uuid, transaction_type_id
     ) SELECT
-      HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, SUBSTRING(transactionId, 4), c.date, c.uuid,
+      HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, transIdNumberPart, c.date, c.uuid,
       c.description, dg.account_id, 0, ci.amount, 0, (ci.amount * (1 / currentExchangeRate)), c.currency_id,
       c.debtor_uuid, c.user_id, ci.invoice_uuid, cashPaymentOriginId
     FROM cash AS c
@@ -319,7 +322,7 @@ BEGIN
           record_uuid, description, account_id, debit, credit, debit_equiv,
           credit_equiv, currency_id, user_id, transaction_type_id
         ) SELECT
-          HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, SUBSTRING(transactionId, 4), c.date, c.uuid, c.description,
+          HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, transIdNumberPart, c.date, c.uuid, c.description,
           gain_account_id, 0, remainder, 0, (remainder * (1 / currentExchangeRate)), c.currency_id, c.user_id, cashPaymentOriginId
         FROM cash AS c
           JOIN debtor AS d ON c.debtor_uuid = d.uuid
@@ -346,7 +349,7 @@ BEGIN
           record_uuid, description, account_id, debit, credit, debit_equiv,
           credit_equiv, currency_id, entity_uuid, user_id, reference_uuid, transaction_type_id
         ) SELECT
-          HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, SUBSTRING(transactionId, 4), c.date, c.uuid, c.description,
+          HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, transIdNumberPart, c.date, c.uuid, c.description,
           dg.account_id, 0, remainder, 0, (remainder * (1 / currentExchangeRate)), c.currency_id,
           c.debtor_uuid, c.user_id, lastInvoiceUuid, cashPaymentOriginId
         FROM cash AS c
@@ -360,7 +363,7 @@ BEGIN
           record_uuid, description, account_id, debit, credit, debit_equiv,
           credit_equiv, currency_id, user_id, transaction_type_id
         ) SELECT
-          HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, SUBSTRING(transactionId, 4), c.date, c.uuid, c.description,
+          HUID(UUID()), cashProjectId, currentFiscalYearId, currentPeriodId, transactionId, transIdNumberPart, c.date, c.uuid, c.description,
           loss_account_id, remainder, 0, (remainder * (1 / currentExchangeRate)), 0, c.currency_id, c.user_id, cashPaymentOriginId
         FROM cash AS c
           JOIN debtor AS d ON c.debtor_uuid = d.uuid
