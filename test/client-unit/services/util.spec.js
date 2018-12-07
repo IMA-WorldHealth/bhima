@@ -106,8 +106,21 @@ describe('util', () => {
     expect(elements).to.deep.equal(expected);
   });
 
-  it.skip('#filterFormElements() should return $modelValue or $bhValue properties of sub-objects', () => {
+  it('#filterFormElements() should return $modelValue or $bhValue properties of sub-objects', () => {
+    const form = {
+      componentA : { $modelValue : 1 },
+      subform : {
+        $bhValue : 'I am a value',
+        componentB : { $modelValue : 'Well' },
+      },
+    };
 
+    const expected = {
+      componentA : 1,
+      subform : 'I am a value',
+    };
+
+    expect(util.filterFormElements(form)).to.deep.equal(expected);
   });
 
   it('#clean() should filter out all properties that have empty values or that begin with $', () => {
