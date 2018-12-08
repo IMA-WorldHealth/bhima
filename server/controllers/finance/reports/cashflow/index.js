@@ -313,7 +313,6 @@ function report(req, res, next) {
       return db.exec(query, params);
     })
     .then(rows => {
-      
       // split incomes from expenses
       const incomes = _.chain(rows).filter({ transaction_type : 'income' }).groupBy('transaction_text').value();
       const expenses = _.chain(rows).filter({ transaction_type : 'expense' }).groupBy('transaction_text').value();
