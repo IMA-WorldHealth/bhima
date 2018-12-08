@@ -98,29 +98,9 @@ function ActionAssignModalController(AppCache, $state, Depots, Notify, Modal, St
    */
   function computeAvailableInventories(data) {
     vm.globalAvailableLots = data;
-    vm.groupedInventories = groupBy(data, 'inventory_uuid');
+    vm.groupedInventories = Util.groupBy(data, 'inventory_uuid');
     const uniqueInventoriesUuids = Util.uniquelize(data.map(item => item.inventory_uuid));
     vm.availableInventories = uniqueInventoriesUuids.map(inventoryUuid => vm.groupedInventories[inventoryUuid][0]);
-  }
-
-  /**
-   * @function groupBy
-   * @description group an array of objects according a property
-   * @param {array} array
-   * @param {string} property
-   * @returns {object}
-   */
-  function groupBy(array, property) {
-    const out = {};
-    for (let i = 0; i < array.length; i++) {
-      const item = array[i];
-      const value = item[property];
-      if (!out[value]) {
-        out[value] = [];
-      }
-      out[value].push(item);
-    }
-    return out;
   }
 
   startup();

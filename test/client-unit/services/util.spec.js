@@ -223,4 +223,56 @@ describe('util', () => {
     }, 250);
   });
 
+  it(`
+  #grouptBy() should returns an object with properties the values of the given property, 
+  and value an array of objects having for the given property the value which correspond
+  to the property
+  `, () => {
+    const sample = [
+      { name : 'Alpha', region : 'Kinshasa', gender : 'M' },
+      { name : 'Beta', region : 'Goma', gender : 'F' },
+      { name : 'Gamma', region : 'Kananga', gender : 'M' },
+      { name : 'Zeta', region : 'Kinshasa', gender : 'F' },
+      { name : 'Teta', region : 'Kinshasa', gender : 'F' },
+    ];
+
+    const kinshasaRegion = [
+      { name : 'Alpha', region : 'Kinshasa', gender : 'M' },
+      { name : 'Zeta', region : 'Kinshasa', gender : 'F' },
+      { name : 'Teta', region : 'Kinshasa', gender : 'F' },
+    ];
+
+    const gomaRegion = [
+      { name : 'Beta', region : 'Goma', gender : 'F' },
+    ];
+
+    const kanangaRegion = [
+      { name : 'Gamma', region : 'Kananga', gender : 'M' },
+    ];
+
+    const femalGender = [
+      { name : 'Beta', region : 'Goma', gender : 'F' },
+      { name : 'Zeta', region : 'Kinshasa', gender : 'F' },
+      { name : 'Teta', region : 'Kinshasa', gender : 'F' },
+    ];
+
+    const maleGender = [
+      { name : 'Alpha', region : 'Kinshasa', gender : 'M' },
+      { name : 'Gamma', region : 'Kananga', gender : 'M' },
+    ];
+
+    const regions = util.groupBy(sample, 'region');
+    expect(Object.keys(regions)).to.have.length(3);
+    expect(regions).to.have.all.keys(['Kinshasa', 'Goma', 'Kananga']);
+    expect(regions.Kinshasa).to.deep.equal(kinshasaRegion);
+    expect(regions.Goma).to.deep.equal(gomaRegion);
+    expect(regions.Kananga).to.deep.equal(kanangaRegion);
+
+    const gender = util.groupBy(sample, 'gender');
+    expect(Object.keys(gender)).to.have.length(2);
+    expect(gender).to.have.all.keys(['M', 'F']);
+    expect(gender.M).to.deep.equal(maleGender);
+    expect(gender.F).to.deep.equal(femalGender);
+  });
+
 });
