@@ -75,7 +75,11 @@
       "TRANSFER_PATIENT_INVOICE_AMOUNT": "Patient Invoice Debt Transfer",
       "STOCK_INTEGRATION" : "Stock Integration",
       "STOCK_EXIT":"Stock Exit",
-      "STOCK_ENTRY":"Stock Entry"
+      "STOCK_ENTRY":"Stock Entry",
+      "TRANSFER_AUXILIARY" : "Transfer of the funds Auxiliary cashbox",
+      "RECEPTION_FUNDS_AUXILIARY": "Reception of the funds Auxiliary cashbox", 
+      "PROVISIONING_PRINCIPAL": "Provisioning Principal Cashbox",
+      "TRANSFER_FUNDS_BANKS": "Transfer of the funds Banks"
     },
     "REPORT": "Report",
     "TOOLS": {

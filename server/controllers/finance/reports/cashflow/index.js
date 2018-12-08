@@ -272,7 +272,9 @@ function report(req, res, next) {
           source.transaction_type, source.transaction_id, source.account_id
         FROM (
           SELECT 
-          a.number AS account_number, a.label AS account_label, SUM(gl.debit_equiv - gl.credit_equiv) AS balance,
+          a.number AS account_number, a.label AS account_label,
+          IF (tt.text = 'expense', SUM(gl.credit_equiv - gl.debit_equiv),
+          SUM(gl.debit_equiv - gl.credit_equiv)) AS balance,
           gl.transaction_type_id AS transaction_id, tt.type AS transaction_type, tt.text AS transaction_text, 
           gl.account_id, gl.period_id
           FROM general_ledger AS gl
@@ -297,9 +299,9 @@ function report(req, res, next) {
               WHERE rev.reversed = 1
               AND DATE(rev.date) >= DATE(?) AND DATE(rev.date) <= DATE(?)
             )
-          ) GROUP BY gl.account_id, gl.transaction_type_id, gl.period_id
+          ) GROUP BY gl.transaction_type_id, gl.account_id, gl.period_id  
         ) AS source
-        GROUP BY transaction_type, account_id;
+        GROUP BY transaction_id, account_id;
       `;
 
       const params = [...periodParams,
@@ -311,6 +313,7 @@ function report(req, res, next) {
       return db.exec(query, params);
     })
     .then(rows => {
+      
       // split incomes from expenses
       const incomes = _.chain(rows).filter({ transaction_type : 'income' }).groupBy('transaction_text').value();
       const expenses = _.chain(rows).filter({ transaction_type : 'expense' }).groupBy('transaction_text').value();

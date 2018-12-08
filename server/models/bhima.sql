@@ -199,6 +199,12 @@ INSERT INTO `transaction_type` (`id`, `text`, `type`, `fixed`) VALUES
   (18, 'VOUCHERS.SIMPLE.ADJUSTMENT', 'other', 1),
   (19, 'VOUCHERS.SIMPLE.CAUTION_LINK', 'other', 1);
 
+INSERT INTO `transaction_type` (`text`, `type`, `fixed`) VALUES
+  ('VOUCHERS.SIMPLE.TRANSFER_AUXILIARY', 'expense', 1),
+  ('VOUCHERS.SIMPLE.RECEPTION_FUNDS_AUXILIARY', 'income', 1),
+  ('VOUCHERS.SIMPLE.PROVISIONING_PRINCIPAL', 'income', 1),
+  ('VOUCHERS.SIMPLE.TRANSFER_FUNDS_BANKS', 'expense', 1);
+
 -- Stock Movement Flux
 INSERT INTO `flux` VALUES
   (1,  'STOCK_FLUX.FROM_PURCHASE'),

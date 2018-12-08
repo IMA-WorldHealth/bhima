@@ -75,7 +75,11 @@
       "TRANSFER_PATIENT_INVOICE_AMOUNT": "Prise en Charge de Facture de Patient",
       "STOCK_INTEGRATION" : "Intégration Stock",
       "STOCK_EXIT":"Sortie de stock",
-      "STOCK_ENTRY":"Entrée de stock"
+      "STOCK_ENTRY":"Entrée de stock",
+      "TRANSFER_AUXILIARY" : "Virement des fonds caisse Auxiliaire",
+      "RECEPTION_FUNDS_AUXILIARY": "Réception des fonds caisse Auxiliaire", 
+      "PROVISIONING_PRINCIPAL": "Approvisionnement  Caisse Principale ",
+      "TRANSFER_FUNDS_BANKS": "Virement des fonds Banque"
     },
     "REPORT": "Rapport",
     "TOOLS": {

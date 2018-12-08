@@ -72,7 +72,7 @@
             <tr style="background-color: #efefef;font-size:1.3rem;">
               <th class="text-left text-uppercase">{{translate 'REPORT.CASHFLOW.EXPENSES'}}</th>
               {{#each periods as |period| }}
-                <th class="text-right">{{debcred (look ../expenseTotal period) ../metadata.enterprise.currency_id}}</th>
+                <th class="text-right">{{debcred (multiply (look ../expenseTotal period) -1) ../metadata.enterprise.currency_id}}</th>
               {{/each}}
             </tr>
 
@@ -81,7 +81,7 @@
               <tr>
                 <th>{{translate key}}</th>
                 {{#each ../periods as |period| }}
-                  <th class="text-right">{{debcred (look ../../expenseTotalByTextKeys key period) ../../metadata.enterprise.currency_id}}</th>
+                  <th class="text-right">{{debcred (multiply (look ../../expenseTotalByTextKeys key period) -1) ../../metadata.enterprise.currency_id}}</th>
                 {{/each}}
               </tr>
 
@@ -90,7 +90,7 @@
                 <tr>
                   <td>{{ value.account_label }}</td>
                   {{#each ../../periods as |period| }}
-                    <td class="text-right">{{debcred (look value period) ../../../metadata.enterprise.currency_id}}</td>
+                    <td class="text-right">{{debcred (multiply (look value period) -1) ../../../metadata.enterprise.currency_id}}</td>
                   {{/each}}
                 </tr>
               {{/each}}
@@ -105,46 +105,10 @@
             </tr>            
           </tbody>
 
-
           <tbody>
-            {{!-- OTHER --}}
+            {{!-- BALANCE --}}
             <tr style="background-color: #efefef;font-size:1.3rem;">
-              <th class="text-left text-uppercase">{{translate 'REPORT.CASHFLOW.OTHERS'}}</th>
-              {{#each periods as |period| }}
-                <th class="text-right">{{debcred (look ../otherTotal period) ../metadata.enterprise.currency_id}}</th>
-              {{/each}}
-            </tr>
-
-            {{!-- inspect all transaction text for other --}}
-            {{#each otherTextKeys as |key|}}
-              <tr>
-                <th>{{translate key}}</th>
-                {{#each ../periods as |period| }}
-                  <th class="text-right">{{debcred (look ../../otherTotalByTextKeys key period) ../../metadata.enterprise.currency_id}}</th>
-                {{/each}}
-              </tr>
-
-              {{!-- inspect data for all those transaction text --}}
-              {{#each (look ../others key) as |value|}}
-                <tr>
-                  <td>{{ value.account_label }}</td>
-                  {{#each ../../periods as |period| }}
-                    <td class="text-right">{{debcred (look value period) ../../../metadata.enterprise.currency_id}}</td>
-                  {{/each}}
-                </tr>
-              {{/each}}
-
-              {{!-- blank line --}}
-              <tr>
-                <td colspan="{{colspan}}">&nbsp;</td>
-              </tr>
-            {{/each}}
-          </tbody>
-
-          <tbody>
-            {{!-- TOTALS --}}
-            <tr style="background-color: #efefef;font-size:1.3rem;">
-              <th class="text-left text-uppercase">{{translate 'FORM.LABELS.TOTAL'}}</th>
+              <th class="text-left text-uppercase">{{translate 'FORM.LABELS.BALANCE'}}</th>
               {{#each periods as |period| }}
                 <th class="text-right">{{debcred (look ../totalPeriodColumn period) ../metadata.enterprise.currency_id}}</th>
               {{/each}}
