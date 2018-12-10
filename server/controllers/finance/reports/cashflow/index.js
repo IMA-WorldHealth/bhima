@@ -273,8 +273,7 @@ function report(req, res, next) {
         FROM (
           SELECT 
           a.number AS account_number, a.label AS account_label,
-          IF (tt.text = 'expense', SUM(gl.credit_equiv - gl.debit_equiv),
-          SUM(gl.debit_equiv - gl.credit_equiv)) AS balance,
+          SUM(gl.debit_equiv - gl.credit_equiv) AS balance,
           gl.transaction_type_id, tt.type AS transaction_type, tt.text AS transaction_text, 
           gl.account_id, gl.period_id
           FROM general_ledger AS gl
