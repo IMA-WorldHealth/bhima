@@ -287,14 +287,6 @@ function report(req, res, next) {
             WHERE gl.record_uuid IN (
               SELECT rev.uuid
               FROM (
-                SELECT v.uuid, v.date, v.reversed
-                FROM voucher AS v
-                UNION
-                SELECT c.uuid, c.date, c.reversed
-                FROM cash AS c
-                UNION
-                SELECT i.uuid, i.date, i.reversed
-                FROM invoice AS i
                 SELECT v.uuid FROM voucher v WHERE v.reversed = 1
                 AND DATE(v.date) >= DATE(?) AND DATE(v.date) <= DATE(?) UNION
                 SELECT c.uuid FROM cash c WHERE c.reversed = 1
