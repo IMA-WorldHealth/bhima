@@ -199,7 +199,11 @@
             "SALE_DETAILS": "Sale Details",
             "SAVE_SUCCESS": "Save success",
             "SEARCH": "Search",
+<<<<<<< d96c4c918a2a586ad121d7bd92c636ec40704245
             "SELECT_RELATED_SERVICES": "Select related services",
+=======
+            "SETTING_PAYMENT_CURRENCY": "An employee's payment setup can only be done with the enterprise's currency",
+>>>>>>> improvement(Payroll Configuration)
             "SHOWING": "Showing",
             "SUPPORT_COST": " is paid by:",
             "TRANSACTIONS": "Transactions",

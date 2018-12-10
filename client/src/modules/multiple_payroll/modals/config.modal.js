@@ -32,18 +32,21 @@ function ConfigPaiementModalController(
 
   vm.latestViewFilters = MultiplePayroll.filters.formatView();
 
-  //FIXE ME: 
-  //Dont use index but use the property to found label, display value and value for each filter (@lomamech) 
+  // FIXE ME
+  // Dont use index but use the property to found label, display value and value for each filter (@lomamech) 
   vm.label = vm.latestViewFilters.defaultFilters[0]._label;
   vm.displayValue = vm.latestViewFilters.defaultFilters[0]._displayValue;
   vm.idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
   vm.currencyId = vm.latestViewFilters.defaultFilters[1]._value;
+
+  vm.isEnterpriseCurrency = vm.currencyId === Session.enterprise.currency_id;
+
   vm.payroll.currency_id = vm.latestViewFilters.defaultFilters[1]._value;
 
   vm.setCurrency = function setCurrency(currencyId) {
     vm.payroll.currency_id = currencyId;
-     const isSameCurrency = currencyId === vm.lastExchangeRate.currency_id;
-     const rate = isSameCurrency ? vm.lastExchangeRate.rate : (1 / vm.lastExchangeRate.rate);
+    const isSameCurrency = currencyId === vm.lastExchangeRate.currency_id;
+    const rate = isSameCurrency ? vm.lastExchangeRate.rate : (1 / vm.lastExchangeRate.rate);
     calculatePaymentWithExchangeRate(rate);
   };
 

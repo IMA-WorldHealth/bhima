@@ -200,6 +200,7 @@
             "SAVE_SUCCESS": "Enregistrement avec succès",
             "SEARCH": "Recherche",
             "SELECT_RELATED_SERVICES": "Sélectionner les services liées",
+            "SETTING_PAYMENT_CURRENCY": "La configuration du paiement d'un employé ne peut s'effectuer qu'avec la monnaie de l'entreprise",
             "SHOWING": "Aperçue",
             "SUPPORT_COST": " est prise en charge par",
             "TRANSACTIONS": "Transactions",
