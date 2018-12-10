@@ -1,3 +1,5 @@
+DELIMITER $$
+
 /*
 
 --------
@@ -292,3 +294,5 @@ BEGIN
   -- remove from posting journal
   DELETE FROM posting_journal WHERE record_uuid IN (SELECT record_uuid FROM stage_trial_balance_transaction);
 END $$
+
+DELIMITER ;

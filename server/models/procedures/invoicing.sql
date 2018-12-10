@@ -1,3 +1,4 @@
+DELIMITER $$
 /*
   This file contains code for creating and posting invoices made to patients.
 
@@ -971,3 +972,5 @@ CREATE PROCEDURE UnbalancedInvoicePaymentsTable(
   ORDER BY iv.date
   );
 END$$
+
+DELIMITER ;
