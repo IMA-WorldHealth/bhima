@@ -52,39 +52,15 @@ function detail(req, res, next) {
 function create(req, res, next) {
   const sql = `INSERT INTO payroll_configuration SET ?`;
   const data = req.body;
-  const dataCurrencyRates = [];
-  const rateByCurrencies = data.rates;
-  let rowInsertId;
-
-  delete data.rates;
 
   db.exec(sql, [data])
     .then((row) => {
-      rowInsertId = row.insertId;
-      if (rateByCurrencies) {
-        res.status(201).json({ id : rowInsertId });
-      } else {
-        Object.keys(rateByCurrencies).forEach((currencyId) => {
-          const exchangeRate = rateByCurrencies[currencyId];
-          dataCurrencyRates.push([
-            row.insertId,
-            currencyId,
-            exchangeRate,
-          ]);
-        });
-
-        const sqlPayrollRate = `
-          INSERT INTO payroll_currency_rates (payroll_configuration_id, currency_id, rate) VALUES ?
-        `;
-        return db.exec(sqlPayrollRate, [dataCurrencyRates]);
-      }
-    })
-    .then(() => {
-      res.status(201).json({ id : rowInsertId });
+      res.status(201).json({ id : row.insertId });
     })
     .catch(next)
     .done();
 }
+
 
 // PUT /PAYROLL_CONFIG /:ID
 function update(req, res, next) {
