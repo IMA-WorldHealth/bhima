@@ -260,6 +260,7 @@ function MultiplePayrollController(
       const employeesRef = employees.map(emp => emp.reference);
       const filters = MultiplePayroll.filters.formatHTTP(true);
       const currency = filters.currency_id;
+      const conversionRate = filters.conversion_rate;
 
       // returns true if one employee waiting for configuration is selected
       const isWaitingConfiguration = employee => parseInt(employee.status_id, 10) === 1;
@@ -270,7 +271,7 @@ function MultiplePayrollController(
       } else {
         const idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
 
-        Receipts.payroll(idPeriod, employeesRef, currency, true);
+        Receipts.payroll(idPeriod, employeesRef, currency, conversionRate, true);
       }
     } else {
       Notify.danger('FORM.WARNINGS.NO_EMPLOYE_SELECTED');
@@ -290,6 +291,7 @@ function MultiplePayrollController(
       const employeesRef = employees.map(emp => emp.reference);
       const filters = MultiplePayroll.filters.formatHTTP(true);
       const currencyId = filters.currency_id;
+      const conversionRate = filters.conversion_rate;
 
       // returns true if one employee waiting for configuration is selected
       const isWaitingConfiguration = employee => parseInt(employee.status_id, 10) === 1;
@@ -300,7 +302,7 @@ function MultiplePayrollController(
       } else {
         const idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
 
-        Receipts.payrollReport(idPeriod, employeesRef, currencyId, socialCharge);
+        Receipts.payrollReport(idPeriod, employeesRef, currencyId, socialCharge, conversionRate);
       }
     } else {
       Notify.danger('FORM.WARNINGS.NO_EMPLOYE_SELECTED');
@@ -310,9 +312,9 @@ function MultiplePayrollController(
   vm.paySlip = function paySlip(employee) {
     const filters = MultiplePayroll.filters.formatHTTP(true);
     const currency = filters.currency_id;
-
+    const conversionRate = filters.conversion_rate;
     const idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
-    Receipts.payroll(idPeriod, employee.reference, currency, true);
+    Receipts.payroll(idPeriod, employee.reference, currency, conversionRate, true);
   };
 
   vm.saveGridState = state.saveGridState;

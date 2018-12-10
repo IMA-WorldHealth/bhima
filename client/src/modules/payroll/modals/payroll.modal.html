@@ -68,6 +68,31 @@
       required="false">
       <bh-clear on-clear="PayrollConfigModalCtrl.clear('config_ipr_id')"></bh-clear>
     </bh-ipr-config-select>
+
+    <div class="form-group">
+      <div class="checkbox">
+        <label>
+          <input
+            type="checkbox"
+            name="definedRate"
+            ng-true-value="1"
+            ng-false-value="0"
+            ng-model="PayrollConfigModalCtrl.definedRate">
+          <span translate>FORM.INFO.SET_EXCHANGE_CONVERSION</span>
+        </label>
+      </div>
+    </div>
+
+    <div ng-if="PayrollConfigModalCtrl.definedRate" ng-repeat="currency in PayrollConfigModalCtrl.currencies">
+      <bh-currency-input
+        data-payment-currency-input
+        label="{{currency.name}}"
+        id="currency_{{currency.id}}"
+        currency-id="currency.id"
+        model="PayrollConfigModalCtrl.payroll.rates[currency.id]"
+        validation-trigger="PayrollModalForm.$submitted">
+      </bh-currency-input>
+    </div>
   </div>
 
   <div class="modal-footer">

@@ -133,6 +133,7 @@ function ReceiptService($http, util, Language, AppCache, Session) {
     options.idPeriod = request.idPeriod;
     options.currency = request.currency;
     options.payslip = request.payslip;
+    options.conversionRate = request.conversionRate;
 
     // set the session language
     options.lang = Language.key;
@@ -147,6 +148,7 @@ function ReceiptService($http, util, Language, AppCache, Session) {
     options.idPeriod = request.idPeriod;
     options.currency = request.currency;
     options.socialCharge = request.socialCharge;
+    options.conversionRate = request.conversionRate;
 
     // set the session language
     options.lang = Language.key;

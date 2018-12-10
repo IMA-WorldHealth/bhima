@@ -53,6 +53,7 @@ function build(req, res, next) {
   data.enterprise = req.session.enterprise;
   data.user = req.session.user;
   data.lang = options.lang;
+  data.conversionRate = options.conversionRate;
 
   // set up the report with report manager
   try {
@@ -68,6 +69,9 @@ function build(req, res, next) {
       return Exchange.getExchangeRate(data.enterprise.id, options.currency, new Date(data.payrollPeriod.dateTo));
     })
     .then(exchange => {
+      // If the convertion rate is not defini, the rate of exchange
+      // of the period of configuration will be taken into account
+      exchange.rate = data.conversionRate ? data.conversionRate : exchange.rate;
       data.payrollPeriod.exchangeRate = parseInt(options.currency, 10) === data.enterprise.currency_id
         ? 1 : exchange.rate;
       return Exchange.getCurrentExchangeRateByCurrency(new Date(data.payrollPeriod.dateTo));

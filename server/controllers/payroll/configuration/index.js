@@ -40,9 +40,7 @@ function list(req, res, next) {
 * Returns the detail of a single Payroll
 */
 function detail(req, res, next) {
-  const id = req.params.id;
-
-  lookupPayrollConfig(id)
+  lookupPayrollConfig(req.params.id)
     .then((record) => {
       res.status(200).json(record);
     })
@@ -54,15 +52,39 @@ function detail(req, res, next) {
 function create(req, res, next) {
   const sql = `INSERT INTO payroll_configuration SET ?`;
   const data = req.body;
+  const dataCurrencyRates = [];
+  const rateByCurrencies = data.rates;
+  let rowInsertId;
+
+  delete data.rates;
 
   db.exec(sql, [data])
     .then((row) => {
-      res.status(201).json({ id : row.insertId });
+      rowInsertId = row.insertId;
+      if (rateByCurrencies) {
+        res.status(201).json({ id : rowInsertId });
+      } else {
+        Object.keys(rateByCurrencies).forEach((currencyId) => {
+          const exchangeRate = rateByCurrencies[currencyId];
+          dataCurrencyRates.push([
+            row.insertId,
+            currencyId,
+            exchangeRate,
+          ]);
+        });
+
+        const sqlPayrollRate = `
+          INSERT INTO payroll_currency_rates (payroll_configuration_id, currency_id, rate) VALUES ?
+        `;
+        return db.exec(sqlPayrollRate, [dataCurrencyRates]);
+      }
+    })
+    .then(() => {
+      res.status(201).json({ id : rowInsertId });
     })
     .catch(next)
     .done();
 }
-
 
 // PUT /PAYROLL_CONFIG /:ID
 function update(req, res, next) {

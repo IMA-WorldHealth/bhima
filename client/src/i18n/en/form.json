@@ -199,11 +199,9 @@
             "SALE_DETAILS": "Sale Details",
             "SAVE_SUCCESS": "Save success",
             "SEARCH": "Search",
-<<<<<<< d96c4c918a2a586ad121d7bd92c636ec40704245
+            "SET_EXCHANGE_CONVERSION": "Set the exchange rate for the conversion",
             "SELECT_RELATED_SERVICES": "Select related services",
-=======
             "SETTING_PAYMENT_CURRENCY": "An employee's payment setup can only be done with the enterprise's currency",
->>>>>>> improvement(Payroll Configuration)
             "SHOWING": "Showing",
             "SUPPORT_COST": " is paid by:",
             "TRANSACTIONS": "Transactions",
@@ -297,7 +295,8 @@
             "CONFIRMATION": "Confirmation",
             "CONTACT": "Contact",
             "CONTACT_ADMIN": "Please contact the administrator",
-            "COST": "Cost",
+            "CONVERTION_RATE": "Convertion rate",
+			"COST": "Cost",
             "COST_CENTER": "Cost Center",
             "CONSUMABLE": "Consummable",
             "UNCONSUMABLE": "Non-consummable",
