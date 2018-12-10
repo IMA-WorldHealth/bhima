@@ -5,7 +5,7 @@ StockLotsController.$inject = [
   'StockService', 'NotifyService',
   'uiGridConstants', 'StockModalService', 'LanguageService', 'GridGroupingService',
   'GridStateService', 'GridColumnService', '$state', '$httpParamSerializer',
-  'SessionService',
+  'SessionService', 'BarcodeService',
 ];
 
 /**
@@ -16,10 +16,11 @@ function StockLotsController(
   Stock, Notify,
   uiGridConstants, Modal, Languages, Grouping,
   GridState, Columns, $state, $httpParamSerializer,
-  Session
+  Session, Barcode
 ) {
   const vm = this;
   const cacheKey = 'lot-grid';
+  vm.openBarcodeScanner = openBarcodeScanner;
   const stockLotFilters = Stock.filter.lot;
 
   // grouping box
@@ -303,6 +304,27 @@ function StockLotsController(
     vm.gridOptions.enableFiltering = !vm.gridOptions.enableFiltering;
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   };
+
+
+  /**
+   * @function openBarcodeScanner
+   *
+   * @description
+   * Opens the barcode scanner component and receives the record from the
+   * modal.
+   */
+  function openBarcodeScanner() {
+    Barcode.modal({ shouldSearch : false })
+      .then(record => {
+        stockLotFilters.replaceFilters([
+          { key : 'inventory_uuid', value : record.uuid, displayValue : record.reference },
+        ]);
+
+        load(stockLotFilters.formatHTTP(true));
+        vm.latestViewFilters = stockLotFilters.formatView();
+      });
+  }
+
 
   startup();
 }

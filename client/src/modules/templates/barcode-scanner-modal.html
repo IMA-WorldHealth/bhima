@@ -7,8 +7,10 @@
 
   <div class="modal-body text-center" style="min-height:300px;">
     <h2 translate>BARCODE.SCAN</h2>
-
-    <bh-barcode-scanner on-scan-callback="BarcodeModalCtrl.onScanCallback(record)"></bh-barcode-scanner>
+    <bh-barcode-scanner
+      should-search = "BarcodeModalCtrl.options.shouldSearch"
+      on-scan-callback="BarcodeModalCtrl.onScanCallback(record)">
+    </bh-barcode-scanner>
   </div>
 
   <div class="modal-footer text-right">

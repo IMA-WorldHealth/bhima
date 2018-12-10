@@ -4,7 +4,8 @@ angular.module('bhima.controllers')
 StockInventoriesController.$inject = [
   'StockService', 'NotifyService',
   'uiGridConstants', 'StockModalService', 'LanguageService', 'SessionService',
-  'GridGroupingService', 'bhConstants', 'GridStateService', '$state', 'GridColumnService', '$httpParamSerializer',
+  'GridGroupingService', 'bhConstants', 'GridStateService',
+  '$state', 'GridColumnService', '$httpParamSerializer', 'BarcodeService',
 ];
 
 /**
@@ -13,11 +14,13 @@ StockInventoriesController.$inject = [
  */
 function StockInventoriesController(
   Stock, Notify, uiGridConstants, Modal, Languages,
-  Session, Grouping, bhConstants, GridState, $state, Columns, $httpParamSerializer
+  Session, Grouping, bhConstants, GridState, $state, Columns,
+  $httpParamSerializer, Barcode
 ) {
   const vm = this;
   const cacheKey = 'stock-inventory-grid';
   const stockInventoryFilters = Stock.filter.inventory;
+  vm.openBarcodeScanner = openBarcodeScanner;
 
   const columns = [{
     field            : 'depot_text',
@@ -252,6 +255,25 @@ function StockInventoriesController(
     vm.gridOptions.enableFiltering = !vm.gridOptions.enableFiltering;
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   };
+
+  /**
+   * @function openBarcodeScanner
+   *
+   * @description
+   * Opens the barcode scanner component and receives the record from the
+   * modal.
+   */
+  function openBarcodeScanner() {
+    Barcode.modal({ shouldSearch : false })
+      .then(record => {
+        stockInventoryFilters.replaceFilters([
+          { key : 'inventory_uuid', value : record.uuid, displayValue : record.reference },
+        ]);
+
+        load(stockInventoryFilters.formatHTTP(true));
+        vm.latestViewFilters = stockInventoryFilters.formatView();
+      });
+  }
 
   startup();
 }

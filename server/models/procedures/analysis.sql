@@ -3,6 +3,7 @@
 -- Use this Procedure below posted at http://mysql.rjweb.org/doc.php/pivot.
 DELIMITER $$
 DROP PROCEDURE IF EXISTS Pivot $$
+
 CREATE PROCEDURE Pivot(
     IN tbl_name VARCHAR(99),       -- table name (or db.tbl)
     IN base_cols VARCHAR(99),      -- column(s) on the left, separated by commas
