@@ -7,9 +7,7 @@ PayrollConfigModalController.$inject = [
 
 function PayrollConfigModalController($state, PayrollConfigurations, Notify, AppCache, moment, Currencies, Session) {
   const vm = this;
-
   vm.payroll = {};
-  vm.payroll.rates = [];
 
   const cache = AppCache('PayrollModal');
 
