@@ -1,3 +1,4 @@
+DELIMITER $$
 /*
  Create Fiscal Year and Periods
 
@@ -219,3 +220,5 @@ BEGIN
   UPDATE fiscal_year SET locked = 1 WHERE id = fiscalYearId;
   UPDATE period SET locked = 1 WHERE fiscal_year_id = fiscalYearId;
 END $$
+
+DELIMITER ;

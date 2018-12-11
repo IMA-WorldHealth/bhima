@@ -1,3 +1,4 @@
+DELIMITER $$
 /*
 
 --------
@@ -671,3 +672,5 @@ BEGIN
   INSERT INTO cash (uuid, project_id, date, debtor_uuid, currency_id, amount, user_id, cashbox_id, description, is_caution)
     SELECT * FROM stage_cash WHERE stage_cash.uuid = cashUuid;
 END $$
+
+DELIMITER ;

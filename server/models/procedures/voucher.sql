@@ -1,3 +1,4 @@
+DELIMITER $$
 /*
 
 --------
@@ -218,3 +219,5 @@ BEGIN
     UPDATE voucher SET reversed = 0 where voucher.uuid = uuid;
   END IF;
 END $$
+
+DELIMITER ;

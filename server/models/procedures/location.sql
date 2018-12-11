@@ -1,3 +1,4 @@
+DELIMITER $$
 /*
 
 --------
@@ -36,3 +37,5 @@ CREATE PROCEDURE MergeLocations(
   -- delete the beforeUuid village and leave the afterUuid village.
   DELETE FROM village WHERE village.uuid = beforeUuid;
 END $$
+
+DELIMITER ;

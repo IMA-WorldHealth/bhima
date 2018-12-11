@@ -1,4 +1,3 @@
-
 DELIMITER $$
 CREATE PROCEDURE superUserRole(IN user_id INT)
 BEGIN
