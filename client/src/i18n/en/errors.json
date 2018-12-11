@@ -32,6 +32,23 @@
     "MISSING_UPLOAD_FILES" : "You have not selected any files to upload.  Please choose one or more files to upload.",
     "NO_DATA_FOUND" : "No records matched your criteria.",
     "NOT_BEGINING_FISCAL_YEAR" : "The fiscal year selected is not a begining fiscal year",
-    "ER_DUPLICATED_LOT" : "A lot has been selected more than one time"
+    "ER_DUPLICATED_LOT" : "A lot has been selected more than one time",
+    "ER_NO_TABLES_USED": "No table used",
+    "ER_TOO_BIG_SET": "Too many strings for column %s and SET",
+    "ER_WRONG_DB_NAME" : "Wrong database name",
+    "ER_WRONG_TABLE_NAME" : "Wrong table name",
+    "ER_UNKNOWN_ERROR" : "Unknown error",
+    "ER_UNKNOWN_PROCEDURE" : "Unknown procedure",
+    "ER_CANT_FIND_UDF" : "Cannot find an undefined function",
+    "ER_SYNTAX_ERROR" : "Syntax error",
+    "ER_TOO_LONG_STRING" : "Result string is longer than 'max allowed packet' bytes",
+    "ER_WRONG_COLUMN_NAME" : "Incorrect column name",
+    "ER_QUERY_INTERRUPTED" : "Query interrupted!",
+    "ER_TOO_BIG_PRECISION" : "Too big precision specified for the column.",
+    "ER_FK_COLUMN_NOT_NULL" : "The foreign key should not be null",
+    "ER_DUP_FIELDNAME" : "Duplicate column name",
+    "ER_DUP_UNIQUE" : "A unique key is duplicated",
+    "ER_ACCESS_DENIED_ERROR" : "Access denied for the current user",
+    "ER_NO_DB_ERROR" : "No database selected"
   }
 }
