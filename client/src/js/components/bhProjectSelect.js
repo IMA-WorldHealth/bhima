@@ -16,7 +16,6 @@ ProjectSelectController.$inject = [
 
 /**
  * Project Select component
- *
  */
 function ProjectSelectController(Projects, Notify) {
   const $ctrl = this;
@@ -30,7 +29,7 @@ function ProjectSelectController(Projects, Notify) {
   };
 
   // fires the onSelectCallback bound to the component boundary
-  $ctrl.onSelect = ($item) => {
-    $ctrl.onSelectCallback({ project : $item });
+  $ctrl.onSelect = (project) => {
+    $ctrl.onSelectCallback({ project });
   };
 }

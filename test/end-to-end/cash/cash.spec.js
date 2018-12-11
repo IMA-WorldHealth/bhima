@@ -8,12 +8,8 @@ const components = require('../shared/components');
 const GU = require('../shared/gridTestUtils.spec.js');
 const FU = require('../shared/FormUtils');
 
-/** loading User pages **/
-const UserPage = require('../user/user.page.js');
-
 describe('Cash Payments', () => {
   const path = '/cash';
-  const userPage = new UserPage();
 
   const cashboxB = {
     id   : 2,
