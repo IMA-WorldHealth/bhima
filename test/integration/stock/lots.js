@@ -6,7 +6,19 @@ const helpers = require('../helpers');
 const shared = require('./shared');
 
 describe('(/lots/) The lots HTTP API', () => {
-  // edit an existing lot
+  it('GET /lots/:uuid returns details of a lot', () => {
+    return agent.get(`/lots/${shared.lotQuinineUuid}`)
+      .then((res) => {
+        expect(res).to.have.status(200);
+        const expectedKeys = [
+          'uuid', 'label', 'quantity', 'unit_cost', 'description',
+          'expiration_date', 'inventory_uuid', 'text',
+        ];
+        expect(res.body).to.have.all.keys(expectedKeys);
+      })
+      .catch(helpers.handler);
+  });
+
   it('PUT /lots/:uuid update lot label or expiration date', () => {
     const update = {
       label : 'Lot Quinine Updated',

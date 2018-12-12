@@ -23,7 +23,7 @@ function details(req, res, next) {
   const bid = db.bid(req.params.uuid);
   const query = `
     SELECT
-      BUID(l.uuid) AS uuid, l.label, l.initial_quantity, l.quantity, l.unit_cost,
+      BUID(l.uuid) AS uuid, l.label, l.quantity, l.unit_cost,
       l.description, l.expiration_date,
       BUID(i.uuid) AS inventory_uuid, i.text
     FROM lot l 
