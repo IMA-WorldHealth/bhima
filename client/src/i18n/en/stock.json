@@ -91,6 +91,8 @@
     "MOVEMENTS"       : "Movements",
     "NO_ORDER"        : "No Orders",
     "NO_DATA"         : "No Data",
+    "NO_ENTRY_TYPES"  : "There are no entry types defined for {{text}}.  Add at least one entry type in the Depot Management module.",
+    "NO_EXIT_TYPES"  : "There are no exit types defined for {{text}}.  Add at least one exit type in the Depot Management module.",
     "OUTPUT"          : "Output",
     "ORDERS"          : "Orders",
     "ORIGIN"          : "Origin",
