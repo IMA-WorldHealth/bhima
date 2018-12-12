@@ -336,6 +336,15 @@
         "RO" : "Valeurs comptables de cessions d'immobilisations",
         "RQ" : "Participation des travailleurs"
       }
+    },
+    "FOOTER": {
+      "RESPONSIBLE":"Responsible",
+      "RECEIVED_BY":"Received By",
+      "AUTHORIZED_BY":"Authorized By",
+      "APPROVED_BY":"Approved By",
+      "RECEIVER":"Receiver",
+      "DEPOT_MANAGER":"Depot Manager",
+      "SUPPLIER":"Supplier"
     }
   }
 }
