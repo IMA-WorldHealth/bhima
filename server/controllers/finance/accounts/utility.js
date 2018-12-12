@@ -17,7 +17,7 @@ const { NotFound } = require('../../../lib/errors');
 function lookupAccount(id) {
   let sql = `
     SELECT a.id, a.enterprise_id, a.locked, a.cc_id, a.pc_id, a.created,
-      a.classe, a.reference_id, a.number, a.label, a.parent, a.type_id, at.type,
+      a.reference_id, a.number, a.label, a.parent, a.type_id, at.type,
       at.translation_key, cc.text AS cost_center_text, pc.text AS profit_center_text
     FROM account AS a JOIN account_type AS at ON a.type_id = at.id
     LEFT JOIN cost_center AS cc ON a.cc_id = cc.id

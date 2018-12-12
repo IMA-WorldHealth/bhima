@@ -20,7 +20,6 @@ CREATE TABLE `account` (
   `cc_id` SMALLINT(6) DEFAULT NULL,
   `pc_id` SMALLINT(6) DEFAULT NULL,
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `classe` INT(11) DEFAULT NULL,
   `reference_id` TINYINT(3) UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `account_1` (`number`),
