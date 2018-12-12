@@ -139,7 +139,7 @@ function list(req, res, next) {
   if (req.query.detailed === '1') {
     sql = `
       SELECT a.id, a.enterprise_id, a.locked, a.cc_id, a.pc_id, a.created,
-        a.classe, a.reference_id, a.number, a.label, a.parent,
+        a.reference_id, a.number, a.label, a.parent,
         a.type_id, at.type, at.translation_key, cc.text AS cost_center_text,
         pc.text AS profit_center_text, a.hidden
       FROM account AS a JOIN account_type AS at ON a.type_id = at.id
@@ -148,7 +148,6 @@ function list(req, res, next) {
     `;
   }
 
-  filters.equals('classe', 'classe', 'a', true);
   filters.equals('type_id', 'type_id', 'a', true);
   filters.equals('locked');
   filters.equals('hidden');

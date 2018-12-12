@@ -964,3 +964,5 @@ WHERE id = 199;
 UPDATE role_unit SET unit_id = 199 WHERE unit_id = 159;
 DELETE FROM unit WHERE id = 159;
 DELETE FROM report WHERE id = 9;
+
+ALTER TABLE account DROP COLUMN `classe`;
