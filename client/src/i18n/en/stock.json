@@ -168,7 +168,12 @@
   "LOTS" : {
     "REGISTRY" : "Lots Registry",
     "ENABLE_FAST_INSERT": "Enable fast lots insertions",
-    "ENABLE_FAST_INSERT_DESCRIPTION": "This option will automatically select the next blank row's serial/lot number in the entry table. If necessary, it adds a new row. Useful for quickly inserting with a barcode reader"
+    "ENABLE_FAST_INSERT_DESCRIPTION": "This option will automatically select the next blank row's serial/lot number in the entry table. If necessary, it adds a new row. Useful for quickly inserting with a barcode reader",
+    "DETAILS":"Lot Information",
+    "EXPIRATION_DATE":"Expiration Date",
+    "LOT_LABEL":"Lot label",
+    "UNIT_COST":"Unit cost",
+    "SUCCESSFULLY_EDITED":"Lot updated with success"
   },
   "MOVEMENTS" : {
     "REGISTRY" : "Movements Registry"

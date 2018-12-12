@@ -1,0 +1,52 @@
+<form name="ActionForm" bh-submit="$ctrl.submit(ActionForm)" novalidate>
+    <div class="modal-header">
+      <strong translate>LOTS.DETAILS</strong>
+    </div>
+  
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="control-label" translate>FORM.LABELS.INVENTORY</label>
+        <p>{{$ctrl.model.text}}</p>
+      </div>
+
+      <div class="form-group"
+        ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.label.$invalid }">
+        <label class="control-label" translate>LOTS.LOT_LABEL</label>
+        <input ng-model="$ctrl.model.label"
+          class="form-control"
+          type="text"
+          name="label"
+          translate-attr="{ placeholder : 'FORM.PLACEHOLDERS.NAME' }"
+          required>
+        <div class="help-block" ng-messages="ActionForm.label.$error" ng-show="ActionForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+
+      <bh-date-editor
+        label="LOTS.EXPIRATION_DATE"
+        date-value="$ctrl.model.expiration_date"
+        on-change="$ctrl.onDateChange(date)"
+        allow-future-date="true"
+        required="true">
+      </bh-date-editor>
+  
+      <bh-currency-input
+        label="LOTS.UNIT_COST"
+        data-lot-currency-input
+        currency-id="$ctrl.enterprise.currency_id"
+        model="$ctrl.model.unit_cost">
+      </bh-currency-input>
+    </div>
+  
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()">
+        <span translate>FORM.BUTTONS.CLOSE</span>
+      </button>
+
+      <bh-loading-button loading-state="ActionForm.$loading">
+        <span translate>FORM.BUTTONS.SUBMIT</span>
+      </bh-loading-button>
+    </div>
+  </form>
+  

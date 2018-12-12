@@ -23,6 +23,7 @@ describe('(/lots/) The lots HTTP API', () => {
     const update = {
       label : 'Lot Quinine Updated',
       expiration_date : '2020-12-15',
+      unit_cost : 1.7,
     };
 
     return agent.put(`/lots/${shared.lotQuinineUuid}`)

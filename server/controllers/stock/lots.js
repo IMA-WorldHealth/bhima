@@ -10,6 +10,7 @@
  * @requires lib/db
  */
 const _ = require('lodash');
+const moment = require('moment');
 const db = require('../../lib/db');
 
 exports.update = update;
@@ -45,8 +46,13 @@ function details(req, res, next) {
  */
 function update(req, res, next) {
   const bid = db.bid(req.params.uuid);
-  const allowedToEdit = ['label', 'expiration_date'];
+  const allowedToEdit = ['label', 'expiration_date', 'unit_cost'];
   const params = _.pick(req.body, allowedToEdit);
+
+  if (params.expiration_date) {
+    params.expiration_date = moment(params.expiration_date).format('YYYY-MM-DD');
+  }
+
   db.exec('UPDATE lot SET ? WHERE uuid = ?', [params, bid])
     .then(() => {
       res.sendStatus(200);

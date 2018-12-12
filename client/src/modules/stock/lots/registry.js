@@ -130,6 +130,12 @@ function StockLotsController(
     headerCellFilter : 'translate',
     cellTemplate     : 'modules/stock/lots/templates/risk_quantity.cell.html',
     type : 'number',
+  }, {
+    field : 'action',
+    displayName : '',
+    enableFiltering : false,
+    enableSorting : false,
+    cellTemplate : 'modules/stock/lots/templates/action.cell.html',
   }];
 
   const gridFooterTemplate = `
@@ -188,6 +194,15 @@ function StockLotsController(
       vm.grouping.changeGrouping(column);
       vm.grouped = true;
     }
+  };
+
+  // edit lot
+  vm.openLotModal = (uuid) => {
+    Modal.openEditLot({ uuid })
+      .then(ans => {
+        if (!ans) { return; }
+        load(stockLotFilters.formatHTTP(true));
+      });
   };
 
   // initialize module
