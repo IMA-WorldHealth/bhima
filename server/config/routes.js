@@ -116,6 +116,9 @@ const distributionAutomatic = require('../controllers/finance/distributionFeeCen
 const distributionGetDistributionKey = require('../controllers/finance/distributionFeeCenter/getDistributionKey');
 const setDistributionKey = require('../controllers/finance/distributionFeeCenter/setting');
 
+// lots
+const lots = require('../controllers/stock/lots');
+
 // expose routes to the server.
 exports.configure = function configure(app) {
   debug('configuring routes.');
@@ -806,4 +809,8 @@ exports.configure = function configure(app) {
   app.post('/distribution_fee_center/automatic', distributionAutomatic.automatic);
   app.post('/distribution_fee_center/distributionKey', setDistributionKey.setting);
   app.post('/distribution_fee_center/resetKey', setDistributionKey.resetKey);
+
+  // lots API
+  app.get('/lots/:uuid', lots.details);
+  app.put('/lots/:uuid', lots.update);
 };
