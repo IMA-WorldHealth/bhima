@@ -97,7 +97,7 @@ function receipt(req, res, next) {
         patient,
         enterprise,
         invoices,
-        totalInvoices,
+        totalInvoices : totalInvoices[0] || {},
       });
 
       return Exchange.getExchangeRate(enterprise.id, data.payment.currency_id, data.payment.date);
