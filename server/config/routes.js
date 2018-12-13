@@ -106,6 +106,8 @@ const operating = require('../controllers/finance/reports/operating/index');
 const department = require('../controllers/admin/department');
 const tags = require('../controllers/admin/tags');
 
+const pavillion = require('../controllers/medical/pavillion');
+
 const feeCenter = require('../controllers/finance/feeCenter');
 
 const distributionConfiguration = require('../controllers/finance/distributionFeeCenter/configuration');
@@ -806,4 +808,11 @@ exports.configure = function configure(app) {
   app.post('/distribution_fee_center/automatic', distributionAutomatic.automatic);
   app.post('/distribution_fee_center/distributionKey', setDistributionKey.setting);
   app.post('/distribution_fee_center/resetKey', setDistributionKey.resetKey);
+
+  // pavillion management
+  app.get('/pavillions', pavillion.read);
+  app.get('/pavillions/:uuid', pavillion.detail);
+  app.post('/pavillions', pavillion.create);
+  app.put('/pavillions/:uuid', pavillion.update);
+  app.delete('/pavillions/:uuid', pavillion.delete);
 };

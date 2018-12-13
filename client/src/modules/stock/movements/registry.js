@@ -227,7 +227,14 @@ function StockMovementsController(
       .finally(toggleLoading);
   }
 
+  function orderByDepot(rowA, rowB) {
+    return rowA.depot_text > rowB.depot_text ? 1 : -1;
+  }
+
   function handleMovementRows(rows) {
+    // FIXME(@jniles): we should do this ordering on the server via an ORDER BY
+    rows.sort(orderByDepot);
+
     // preprocess data
     rows.forEach(handleMovementRow);
 

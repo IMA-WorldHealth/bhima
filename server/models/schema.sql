@@ -1666,6 +1666,17 @@ CREATE TABLE `service` (
   FOREIGN KEY (`profit_center_id`) REFERENCES `profit_center` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB  DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
+DROP TABLE IF EXISTS `pavillion`;
+CREATE TABLE `pavillion`(
+ `uuid` BINARY(16) NOT NULL,
+ `name` VARCHAR(100) NOT NULL,
+ `description` text NULL,
+ `service_id` SMALLINT(5) UNSIGNED NULL,
+  PRIMARY KEY(`uuid`),
+  KEY `name_1` (`name`),
+  FOREIGN KEY (`service_id`) REFERENCES `service` (`id`)
+)ENGINE=InnoDB  DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
 
 DROP TABLE IF EXISTS `subsidy`;
 CREATE TABLE subsidy (
