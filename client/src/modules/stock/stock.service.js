@@ -13,6 +13,7 @@ function StockModalService(Modal) {
     animation : false,
   };
 
+  service.openEditLot = openEditLot;
   service.openSearchLots = openSearchLots;
   service.openSearchMovements = openSearchMovements;
   service.openSearchInventories = openSearchInventories;
@@ -22,6 +23,19 @@ function StockModalService(Modal) {
   service.openFindPurchase = openFindPurchase;
   service.openDefineLots = openDefineLots;
   service.openFindTansfer = openFindTansfer;
+
+  /** edit lot */
+  function openEditLot(request) {
+    const params = angular.extend(modalParameters, {
+      templateUrl  : 'modules/stock/lots/modals/edit.modal.html',
+      controller   : 'EditLotModalController',
+      controllerAs : '$ctrl',
+      resolve      : { data : () => request },
+    });
+
+    const instance = Modal.open(params);
+    return instance.result;
+  }
 
   /** search stock lots */
   function openSearchLots(request) {
