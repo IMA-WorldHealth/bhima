@@ -32,6 +32,25 @@
     "MISSING_UPLOAD_FILES" : "Fichiers à envoyer manquant",
     "NO_DATA_FOUND" : "Aucun enregistrement correspondant à vos critères",
     "NOT_BEGINING_FISCAL_YEAR" : "L'année fiscale séléctionnée n'est pas une année de commencement avec le système",
-    "ER_DUPLICATED_LOT" : "Sélection d'un même lot plusieurs fois"
+    "ER_DUPLICATED_LOT" : "Sélection d'un même lot plusieurs fois",
+    "ER_NO_TABLES_USED": "Aucune table utilisée",
+    "ER_TOO_BIG_SET": "Trop de chaînes pour la colonne% s et SET",
+    "ER_WRONG_DB_NAME" : "Mauvais non de la base de donnés",
+    "ER_WRONG_TABLE_NAME" : "Mauvais non de la table",
+    "ER_UNKNOWN_ERROR" : "Erreur inconnue",
+    "ER_UNKNOWN_PROCEDURE" : "Procedure inconnue",
+    "ER_TOO_MANY_FIELDS" : "Il y a beaucoup plus de colonnes",
+    "ER_CANT_FIND_UDF" : "Cette function n'est pas definie",
+    "ER_SYNTAX_ERROR" : "Erreur de syntaxe",
+    "ER_TOO_LONG_STRING" : "La chaîne de résultat est plus longue que le nombre maximal d'octets 'paquet autorisé'",
+    "ER_WRONG_COLUMN_NAME" : "Nom de colonne incorrect",
+    "ER_QUERY_INTERRUPTED" : "La requette a été interompue!",
+    "ER_TOO_BIG_PRECISION" : "Trop grande précision% d spécifiée pour la colonne '% s'. Le maximum est% lu.",
+    "ER_FK_COLUMN_NOT_NULL" : "La clé étrangère ne doit pas être null",
+    "ER_DUP_FIELDNAME" : "Le nom de la colonne a été dupliquée",
+    "ER_DUP_UNIQUE" : "Une clé unique a été dupliquée",
+    "ER_ACCESS_DENIED_ERROR" : "Accès interdit pour ce utilisateur",
+    "ER_NO_DB_ERROR" : "Aucune base de donnée selectionée"
+    
   }
 }

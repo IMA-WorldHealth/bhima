@@ -966,3 +966,14 @@ DELETE FROM unit WHERE id = 159;
 DELETE FROM report WHERE id = 9;
 
 ALTER TABLE account DROP COLUMN `classe`;
+
+-- author : @lomamech
+-- Add new transaction type
+-- 2018-12-10
+INSERT INTO `transaction_type` (`text`, `type`, `fixed`) VALUES
+  ('VOUCHERS.SIMPLE.TRANSFER_AUXILIARY', 'expense', 1),
+  ('VOUCHERS.SIMPLE.RECEPTION_FUNDS_AUXILIARY', 'income', 1),
+  ('VOUCHERS.SIMPLE.PROVISIONING_PRINCIPAL', 'income', 1),
+  ('VOUCHERS.SIMPLE.TRANSFER_FUNDS_BANKS', 'expense', 1),
+  ('VOUCHERS.SIMPLE.EXIT_FUNDS_BANK', 'expense', 1),
+  ('VOUCHERS.SIMPLE.BANK_CASH_APPROVALS', 'income', 1);

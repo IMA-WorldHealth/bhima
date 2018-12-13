@@ -36,6 +36,7 @@
       "INCOMES":"Recettes",
       "EXPENSES":"Dépenses",
       "TRANSFER":"Transferts",
+      "OTHERS": "Autres",
       "IN":"En",
       "CONCERNED_ACCOUNT":"Ce rapport concerne les comptes suivants"
     },
