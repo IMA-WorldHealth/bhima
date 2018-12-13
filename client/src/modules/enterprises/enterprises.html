@@ -35,6 +35,45 @@
             </div>
 
             <div class="panel-body">
+              <!-- logo align from the left -->
+              <div style="display: flex; align-items: center; justify-content: flex-start;">
+                <div class="enterprise-logo-editing">
+                  <div class="logo" ng-if="!EnterpriseCtrl.enterprise.logo">
+                    <i class="fa fa-3x fa-file-image-o"></i>
+                  </div>
+                  <div class="logo" ng-if="EnterpriseCtrl.enterprise.logo">
+                    <img ng-src="{{ EnterpriseCtrl.enterprise.logo }}" style="width: 100px !important; height: 100px !important;" onError="this.src='assets/empty.png';" >
+                  </div>
+                </div>
+                <div style="padding: 10px;">
+                  <label class="btn btn-default" >
+                    <i class="fa fa-edit"></i> <span translate>ENTERPRISE.UPDATE_LOGO</span>
+                    <input type="file" accept="image/*" ngf-max-size="2MB" ngf-select="EnterpriseCtrl.updateLogo($file, $invalidFiles)" style="display: none;">
+                  </label>
+                </div>
+              </div>
+
+              <!-- logo aligned in the center -->
+              <!-- <div class="form-group">
+                <div class="enterprise-logo-editing">
+                  <div class="logo" ng-if="!EnterpriseCtrl.enterprise.logo">
+                    <i class="fa fa-3x fa-file-image-o"></i>
+                  </div>
+                  <div class="logo" ng-if="EnterpriseCtrl.enterprise.logo">
+                    <img ng-src="{{ EnterpriseCtrl.enterprise.logo }}" style="width: 100px !important; height: 100px !important;" onError="this.src='assets/empty.png';" >
+                  </div>
+                </div>
+
+                <div class="text-center">
+                  <label class="btn btn-default">
+                    <i class="fa fa-edit"></i> <span translate>ENTERPRISE.UPDATE_LOGO</span>
+                    <input type="file" accept="image/*" ngf-max-size="2MB" ngf-select="EnterpriseCtrl.updateLogo($file, $invalidFiles)" style="display: none;">
+                  </label>
+                </div>
+              </div>
+              
+              <hr> -->
+
               <div class="form-group" ng-class="{ 'has-error' : EnterpriseForm.$submitted && EnterpriseForm.name.$invalid }">
                 <label class="control-label" translate>
                   FORM.LABELS.NAME

@@ -2,7 +2,8 @@ angular.module('bhima.controllers')
   .controller('EnterpriseController', EnterpriseController);
 
 EnterpriseController.$inject = [
-  'EnterpriseService', 'util', 'NotifyService', 'ProjectService', 'ModalService', 'ScrollService', 'SessionService',
+  'EnterpriseService', 'util', 'NotifyService', 'ProjectService', 'ModalService',
+  'ScrollService', 'SessionService', 'Upload', '$timeout',
 ];
 
 /**
@@ -11,7 +12,7 @@ EnterpriseController.$inject = [
  * @description
  * This controller binds the basic CRUD operations on the enterprise.
  */
-function EnterpriseController(Enterprises, util, Notify, Projects, Modal, ScrollTo, Session) {
+function EnterpriseController(Enterprises, util, Notify, Projects, Modal, ScrollTo, Session, Upload, $timeout) {
   const vm = this;
 
   vm.enterprise = {};
@@ -26,6 +27,37 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
   vm.submit = submit;
   vm.onSelectGainAccount = onSelectGainAccount;
   vm.onSelectLossAccount = onSelectLossAccount;
+  vm.updateLogo = updateLogo;
+
+  function updateLogo(file, invalidFiles) {
+    if (invalidFiles.length) {
+      Notify.danger('FORM.WARNINGS.BAD_FILE_TYPE');
+      return;
+    }
+
+    if (file) {
+      const imageCheck = file.type.search('image/');
+      if (imageCheck !== -1) {
+        file.upload = Upload.upload({
+          url : `/enterprises/${Session.enterprise.id}/logo`,
+          data : { logo : file },
+        });
+
+        file.upload
+          .then((response) => {
+            $timeout(() => {
+              vm.enterprise.logo = response.data.link;
+            });
+          })
+          .then(() => Session.reload())
+          .catch((error) => {
+            Notify.handleError(error);
+          });
+      } else {
+        Notify.danger('FORM.INFO.UPLOAD_PICTURE_FAILED');
+      }
+    }
+  }
 
   // fired on startup
   function startup() {

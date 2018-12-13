@@ -36,6 +36,7 @@ function ApplicationController(AppCache, Session, Languages, $state, $rootScope,
   vm.sidebarExpanded = vm.isLoggedIn() ? (cache.sidebar && cache.sidebar.expanded) : false;
 
   vm.project = Session.project;
+  vm.enterprise = Session.enterprise;
 
   /**
    * Application Structure methods

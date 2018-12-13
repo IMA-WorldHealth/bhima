@@ -537,6 +537,7 @@ exports.configure = function configure(app) {
   app.post('/enterprises', enterprises.create);
   app.put('/enterprises/:id', enterprises.update);
   app.get('/enterprises/:id/fiscal_start', fiscal.getEnterpriseFiscalStart);
+  app.post('/enterprises/:id/logo', upload.middleware('pics', 'logo'), enterprises.postLogo);
 
   // employees
   app.get('/employees/search', employees.search);

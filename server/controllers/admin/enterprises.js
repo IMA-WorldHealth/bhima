@@ -10,6 +10,7 @@ const _ = require('lodash');
 
 const db = require('../../lib/db');
 const NotFound = require('../../lib/errors/NotFound');
+const BadRequest = require('../../lib/errors/BadRequest');
 
 exports.lookupEnterprise = lookupEnterprise;
 exports.lookupByProjectId = lookupByProjectId;
@@ -167,6 +168,24 @@ exports.update = function update(req, res, next) {
     .then(() => lookupEnterprise(req.params.id))
     .then((enterprise) => {
       res.status(200).json(enterprise);
+    })
+    .catch(next)
+    .done();
+};
+
+// POST /enterprises/:id/logo
+exports.postLogo = (req, res, next) => {
+  if (req.files.length === 0) {
+    next(BadRequest('Expected at least one file upload but did not receive any files.'));
+    return;
+  }
+
+  const logo = req.files[0].link;
+  const sql = 'UPDATE enterprise SET logo = ? WHERE id = ?';
+
+  db.exec(sql, [logo, req.params.id])
+    .then(() => {
+      res.status(200).json({ link : logo });
     })
     .catch(next)
     .done();
