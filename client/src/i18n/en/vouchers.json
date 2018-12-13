@@ -77,9 +77,11 @@
       "STOCK_EXIT":"Stock Exit",
       "STOCK_ENTRY":"Stock Entry",
       "TRANSFER_AUXILIARY" : "Transfer of the funds Auxiliary cashbox",
-      "RECEPTION_FUNDS_AUXILIARY": "Reception of the funds Auxiliary cashbox", 
+      "RECEPTION_FUNDS_AUXILIARY": "Reception of the funds Auxiliary cashbox",
       "PROVISIONING_PRINCIPAL": "Provisioning Principal Cashbox",
-      "TRANSFER_FUNDS_BANKS": "Transfer of the funds Banks"
+      "TRANSFER_FUNDS_BANKS": "Transfer of the funds Banks",
+      "EXIT_FUNDS_BANK": "Sortie fonds pour appros Banques",
+      "BANK_CASH_APPROVALS": "Appros Banque par Caisse"
     },
     "REPORT": "Report",
     "TOOLS": {
