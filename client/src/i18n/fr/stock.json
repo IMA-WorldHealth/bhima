@@ -36,7 +36,7 @@
       "EXCESSIVE_QUANTITY": "Quantité excessive",
       "LOT_QUANTITY_OVER_GLOBAL": "La quantité totale des lots dépasse la quantity globale fournie",
       "PLEASE_CHECK_EXPIRY_DATE": "Veuillez vérifier la date d'expiration"
-    },    
+    },
     "EXPIRATION_DATE" : "Date d'expiration",
     "EXPIRATION_RISK" : "Risque d'expiration",
     "EXPIRATION"      : "Expiration",
@@ -91,6 +91,8 @@
     "MOVEMENTS"       : "Mouvements",
     "NO_ORDER"        : "Pas de commandes",
     "NO_DATA"         : "Aucune données",
+    "NO_ENTRY_TYPES"  : "Aucun type d'entre n'est défini pour {{text}}. Ajoutez au moins un type d'entre dans le module de gestion des dépôts.",
+    "NO_EXIT_TYPES"  : "Aucun type de sortie n'est défini pour {{text}}. Ajoutez au moins un type de sortie dans le module de gestion des dépôts.",
     "OUTPUT"          : "Sortie",
     "ORDERS"          : "Commandes",
     "ORIGIN"          : "Origine",
