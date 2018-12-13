@@ -134,6 +134,6 @@ function LotsRegistryService(uiGridConstants, Session) {
   `;
 
   service.orderByDepot = (rowA, rowB) => {
-    return rowA.depot_text > rowB.depot_text ? 1 : -1;
+    return String(rowA.depot_text).localeCompare(rowB.depot_text);
   };
 }

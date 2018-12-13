@@ -24,7 +24,7 @@
       </div>
 
       <bh-date-editor
-        label="LOTS.EXPIRATION_DATE"
+        label="STOCK.EXPIRATION_DATE"
         date-value="$ctrl.model.expiration_date"
         on-change="$ctrl.onDateChange(date)"
         allow-future-date="true"
@@ -32,7 +32,7 @@
       </bh-date-editor>
   
       <bh-currency-input
-        label="LOTS.UNIT_COST"
+        label="STOCK.UNIT_COST"
         data-lot-currency-input
         currency-id="$ctrl.enterprise.currency_id"
         model="$ctrl.model.unit_cost">

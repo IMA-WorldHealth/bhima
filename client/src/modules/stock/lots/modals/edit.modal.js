@@ -23,7 +23,6 @@ function EditLotModalController(Data, Session, Lots, Notify, Instance) {
   }
 
   function onDateChange(date) {
-    if (date <= new Date()) { return; }
     vm.model.expiration_date = date;
   }
 

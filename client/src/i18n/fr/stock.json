@@ -170,9 +170,7 @@
     "ENABLE_FAST_INSERT": "Activer les insertions rapides",
     "ENABLE_FAST_INSERT_DESCRIPTION": "Cette option selectionne automatiquement une nouvelle ligne de lot lorsque vous finissez d'introduire un libellé de lot ou numéro de serie. C'est très utile lorsque vous utilisez un lecteur de code barre",
     "DETAILS":"Information sur le lot",
-    "EXPIRATION_DATE":"Date d'expiration",
     "LOT_LABEL":"Designation du lot",
-    "UNIT_COST":"Coût unitaire",
     "SUCCESSFULLY_EDITED":"Mise à jour du lot avec succès"
   },
   "MOVEMENTS" : {
