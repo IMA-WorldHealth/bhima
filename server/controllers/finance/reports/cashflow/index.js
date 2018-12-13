@@ -269,20 +269,20 @@ function report(req, res, next) {
       const query = `
         SELECT
           source.transaction_text, source.account_label, ${periodString},
-          source.transaction_type, source.transaction_id, source.account_id
+          source.transaction_type, source.transaction_type_id, source.account_id
         FROM (
           SELECT 
           a.number AS account_number, a.label AS account_label,
           IF (tt.text = 'expense', SUM(gl.credit_equiv - gl.debit_equiv),
           SUM(gl.debit_equiv - gl.credit_equiv)) AS balance,
-          gl.transaction_type_id AS transaction_id, tt.type AS transaction_type, tt.text AS transaction_text, 
+          gl.transaction_type_id, tt.type AS transaction_type, tt.text AS transaction_text, 
           gl.account_id, gl.period_id
           FROM general_ledger AS gl
           JOIN account AS a ON a.id = gl.account_id
           JOIN transaction_type AS tt ON tt.id = gl.transaction_type_id
           WHERE gl.account_id IN ? AND ((DATE(gl.trans_date) >= DATE(?)) AND (DATE(gl.trans_date) <= DATE(?)))
-          AND gl.transaction_type_id <> 10 AND gl.trans_id NOT IN (
-            SELECT DISTINCT gl.trans_id
+          AND gl.transaction_type_id <> 10 AND gl.record_uuid NOT IN (
+            SELECT DISTINCT gl.record_uuid
             FROM general_ledger AS gl
             WHERE gl.record_uuid IN (
               SELECT rev.uuid
@@ -295,17 +295,25 @@ function report(req, res, next) {
                 UNION
                 SELECT i.uuid, i.date, i.reversed
                 FROM invoice AS i
+                SELECT v.uuid FROM voucher v WHERE v.reversed = 1
+                AND DATE(v.date) >= DATE(?) AND DATE(v.date) <= DATE(?) UNION
+                SELECT c.uuid FROM cash c WHERE c.reversed = 1
+                AND DATE(c.date) >= DATE(?) AND DATE(c.date) <= DATE(?) UNION
+                SELECT i.uuid FROM invoice i WHERE i.reversed = 1
+                AND DATE(i.date) >= DATE(?) AND DATE(i.date) <= DATE(?)
               ) AS rev
-              WHERE rev.reversed = 1
-              AND DATE(rev.date) >= DATE(?) AND DATE(rev.date) <= DATE(?)
             )
           ) GROUP BY gl.transaction_type_id, gl.account_id, gl.period_id  
         ) AS source
-        GROUP BY transaction_id, account_id;
+        GROUP BY transaction_type_id, account_id;
       `;
 
       const params = [...periodParams,
         [data.cashAccountIds],
+        data.dateFrom,
+        data.dateTo,
+        data.dateFrom,
+        data.dateTo,
         data.dateFrom,
         data.dateTo,
         data.dateFrom,
