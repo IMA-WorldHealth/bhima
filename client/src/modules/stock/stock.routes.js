@@ -81,7 +81,7 @@ function closeModals($uibModalStack) {
 
 // creates both the create and update states
 function onEnterFactory(stateType) {
-  const isCreateState = (stateType === 'create');
+  const isCreateState = stateType === 'create';
 
   return function onEnter($state, StockModal) {
     const instance = StockModal.openActionStockAssign();
