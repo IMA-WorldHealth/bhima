@@ -185,7 +185,7 @@ exports.uploadLogo = (req, res, next) => {
 
   db.exec(sql, [logo, req.params.id])
     .then(() => {
-      res.status(200).json({ link : logo });
+      res.status(200).json({ logo });
     })
     .catch(next)
     .done();

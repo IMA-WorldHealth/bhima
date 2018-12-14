@@ -131,7 +131,7 @@ describe('(/enterprises) Enterprises API', () => {
       .attach('logo', fs.createReadStream(`${fixtures}/logo.ico`))
       .then((res) => {
         expect(res).to.have.status(200);
-        expect(res.body).to.have.property('link');
+        expect(res.body).to.have.property('logo');
       })
       .catch(helpers.api.handler);
   });

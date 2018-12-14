@@ -40,7 +40,7 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
     return file.upload
       .then((response) => {
         $timeout(() => {
-          vm.enterprise.logo = response.data.link;
+          vm.enterprise.logo = response.data.logo;
         });
       })
       .catch((error) => {
