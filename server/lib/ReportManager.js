@@ -139,7 +139,7 @@ class ReportManager {
     // sanitise save report option
     this.options.saveReport = Boolean(Number(this.options.saveReport));
 
-    if (metadata.enterprise.logo) {
+    if (metadata.enterprise && metadata.enterprise.logo) {
       // use dynamic path for logo ie client doesn't need absolute path but pdf need it
       // so we use {{absolutePath}} which add or not absolute path part into logo
       // remove the client/ part from logo because it will be injected by {{absolutePath}}
