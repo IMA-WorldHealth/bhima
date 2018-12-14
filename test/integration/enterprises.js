@@ -80,7 +80,7 @@ describe('(/enterprises) Enterprises API', () => {
       .send(updateEnterprise)
       .then(res => {
         expect(res).to.have.status(200);
-        expect(res).to.be.json;
+        expect(res).to.be.an('object');
         expect(res.body).to.have.all.keys(responseKeys);
       })
       .catch(helpers.handler);
@@ -108,7 +108,7 @@ describe('(/enterprises) Enterprises API', () => {
     return agent.get(`/enterprises/${enterprise.id}`)
       .then(res => {
         expect(res).to.have.status(200);
-        expect(res).to.be.json;
+        expect(res).to.be.an('object');
       })
       .catch(helpers.handler);
   });
