@@ -130,11 +130,38 @@ const movementDepot = {
   ],
 };
 
-// ==============================================================================
-
 const depotPrincipalUuid = 'f9caeb16-1684-43c5-a6c4-47dbac1df296';
 const depotPrincipalMvt = 23; // 10 initial plus 3 distributions + 10 imported
 const lotQuinineUuid = 'ae735e99-8faf-417b-aa63-9b404fca99ac';
+
+const depotSecondaireUuid = 'D4BB1452E4FA4742A281814140246877';
+const lotVitamineA = '064AB1D952464402AE8A958FCDB07B35';
+const personEntityUuid = '00099B1D184A48DEB93D45FBD0AB3790';
+const enterpriseEntityUuid = '037AC6C6B75A4E328E9DCDE5DA22BACE';
+
+const newPersonAssign = {
+  depot_uuid : depotPrincipalUuid,
+  lot_uuid : lotQuinineUuid,
+  entity_uuid : personEntityUuid,
+  quantity : 1,
+  description : 'Person stock assignment',
+};
+
+const newPersonAssign2 = {
+  depot_uuid : depotSecondaireUuid,
+  lot_uuid : lotQuinineUuid,
+  entity_uuid : personEntityUuid,
+  quantity : 1,
+  description : 'Person stock assignment again',
+};
+
+const newEnterpriseAssign = {
+  depot_uuid : depotPrincipalUuid,
+  lot_uuid : lotQuinineUuid,
+  entity_uuid : enterpriseEntityUuid,
+  quantity : 1,
+  description : 'Enterprise stock assignment',
+};
 
 module.exports = {
   movementFirstLots,
@@ -143,4 +170,11 @@ module.exports = {
   depotPrincipalMvt,
   depotPrincipalUuid,
   lotQuinineUuid,
+  newPersonAssign,
+  newPersonAssign2,
+  newEnterpriseAssign,
+  depotSecondaireUuid,
+  personEntityUuid,
+  enterpriseEntityUuid,
+  lotVitamineA,
 };

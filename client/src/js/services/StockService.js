@@ -27,6 +27,15 @@ function StockService(Api, StockFilterer) {
   // API for stock import
   const importing = new Api('/stock/import');
 
+  // API for stock assignment
+  const stockAssign = new Api('/stock/assign/');
+
+  // Overide the stock assign api
+  stockAssign.remove = uuid => {
+    return stockAssign.$http.put(`/stock/assign/${uuid}/remove`)
+      .then(stockAssign.util.unwrapHttpResponse);
+  };
+
   // stock status label keys
   const stockStatusLabelKeys = {
     sold_out          : 'STOCK.STATUS.SOLD_OUT',
@@ -38,12 +47,14 @@ function StockService(Api, StockFilterer) {
 
   // Filter service
   const StockLotFilters = new StockFilterer('stock-lot-filters');
+  const StockAssignFilters = new StockFilterer('stock-assign-filters');
   const StockMovementFilters = new StockFilterer('stock-movement-filters');
   const StockInventoryFilters = new StockFilterer('stock-inventory-filters');
 
   // creating an object of filter to avoid method duplication
   const stockFilter = {
     lot : StockLotFilters,
+    stockAssign : StockAssignFilters,
     movement : StockMovementFilters,
     inventory : StockInventoryFilters,
   };
@@ -112,6 +123,7 @@ function StockService(Api, StockFilterer) {
 
   return {
     stocks,
+    stockAssign,
     lots,
     movements,
     inventories,

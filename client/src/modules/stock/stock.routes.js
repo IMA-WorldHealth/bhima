@@ -53,10 +53,52 @@ angular.module('bhima.routes')
         url         : '/stock/import',
         controller  : 'StockImportController as StockCtrl',
         templateUrl : 'modules/stock/import/stockImport.html',
+      })
+
+      .state('stockAssign', {
+        url         : '/stock/assign',
+        controller  : 'StockLotsAssignController as StockCtrl',
+        templateUrl : 'modules/stock/assign/registry.html',
+        params : {
+          filters : [],
+        },
+      })
+      .state('stockAssign.create', {
+        url : '/create',
+        params : {
+          creating : { value : true },
+          filters : [],
+        },
+        onEnter : ['$state', 'StockModalService', onEnterFactory('create')],
+        onExit : ['$uibModalStack', closeModals],
       });
   }]);
 
 
 function closeModals($uibModalStack) {
   $uibModalStack.dismissAll();
+}
+
+// creates both the create and update states
+function onEnterFactory(stateType) {
+  const isCreateState = stateType === 'create';
+
+  return function onEnter($state, StockModal) {
+    const instance = StockModal.openActionStockAssign();
+    instance
+      .then((_uuid) => {
+        const params = { uuid : _uuid };
+
+        if (isCreateState) {
+          params.created = true;
+        } else {
+          params.updated = true;
+        }
+
+        $state.go('stockAssign', params, { reload : true });
+      })
+      .catch(() => {
+        $state.go('stockAssign', { uuid : $state.params.id }, { notify : false });
+      });
+  };
 }

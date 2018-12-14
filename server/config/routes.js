@@ -693,6 +693,14 @@ exports.configure = function configure(app) {
   // @todo - this should use the JSON renderer instead of it's own route!
   app.get('/finance/cashflow', financeReports.cashflow.report);
 
+  // API routes for /stock/assign end point
+  app.get('/stock/assign', stock.assign.list);
+  app.get('/stock/assign/:uuid', stock.assign.detail);
+  app.post('/stock/assign', stock.assign.create);
+  app.put('/stock/assign/:uuid', stock.assign.update);
+  app.put('/stock/assign/:uuid/remove', stock.assign.removeAssign);
+  app.delete('/stock/assign/:uuid/delete', stock.assign.deleteAssign);
+
   // stock import from a file
   app.get('/stock/import/template', stock.importing.downloadTemplate);
   app.post('/stock/import', upload.middleware('csv', 'file'), upload.hasFilesToUpload, stock.importing.importStock);
@@ -725,6 +733,7 @@ exports.configure = function configure(app) {
   app.get('/receipts/stock/exit_service/:document_uuid', stockReports.stockExitServiceReceipt);
   app.get('/receipts/stock/exit_depot/:document_uuid', stockReports.stockExitDepotReceipt);
   app.get('/receipts/stock/exit_loss/:document_uuid', stockReports.stockExitLossReceipt);
+  app.get('/receipts/stock/assign/:uuid', stockReports.stockAssignReceipt);
 
   app.get('/receipts/stock/entry_depot/:document_uuid', stockReports.stockEntryDepotReceipt);
   app.get('/receipts/stock/entry_purchase/:document_uuid', stockReports.stockEntryPurchaseReceipt);

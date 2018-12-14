@@ -15,6 +15,7 @@ function StockModalService(Modal) {
 
   service.openEditLot = openEditLot;
   service.openSearchLots = openSearchLots;
+  service.openSearchStockAssign = openSearchStockAssign;
   service.openSearchMovements = openSearchMovements;
   service.openSearchInventories = openSearchInventories;
   service.openFindPatient = openFindPatient;
@@ -23,6 +24,20 @@ function StockModalService(Modal) {
   service.openFindPurchase = openFindPurchase;
   service.openDefineLots = openDefineLots;
   service.openFindTansfer = openFindTansfer;
+  service.openActionStockAssign = openActionStockAssign;
+
+  /** create stock assign */
+  function openActionStockAssign(request) {
+    const params = angular.extend(modalParameters, {
+      templateUrl  : 'modules/stock/assign/modals/action.modal.html',
+      controller   : 'ActionAssignModalController',
+      controllerAs : '$ctrl',
+      resolve      : { data : () => request },
+    });
+
+    const instance = Modal.open(params);
+    return instance.result;
+  }
 
   /** edit lot */
   function openEditLot(request) {
@@ -42,6 +57,19 @@ function StockModalService(Modal) {
     const params = angular.extend(modalParameters, {
       templateUrl  : 'modules/stock/lots/modals/search.modal.html',
       controller   : 'SearchLotsModalController',
+      controllerAs : '$ctrl',
+      resolve      : { data : () => request },
+    });
+
+    const instance = Modal.open(params);
+    return instance.result;
+  }
+
+  /** search stock assign */
+  function openSearchStockAssign(request) {
+    const params = angular.extend(modalParameters, {
+      templateUrl  : 'modules/stock/assign/modals/search.modal.html',
+      controller   : 'SearchStockAssignModalController',
       controllerAs : '$ctrl',
       resolve      : { data : () => request },
     });

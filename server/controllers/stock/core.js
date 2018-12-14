@@ -90,6 +90,7 @@ function getLots(sqlQuery, parameters, finalClauseParameter) {
   const filters = new FilterParser(params);
 
   filters.equals('uuid', 'uuid', 'l');
+  filters.equals('is_assigned', 'is_assigned', 'l');
   filters.equals('depot_text', 'text', 'd');
   filters.equals('depot_uuid', 'depot_uuid', 'm');
   filters.equals('entity_uuid', 'entity_uuid', 'm');

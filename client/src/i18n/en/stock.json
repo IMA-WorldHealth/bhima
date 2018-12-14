@@ -178,5 +178,17 @@
   },
   "INVENTORIES" : {
     "REGISTRY" : "Inventories Registry"
+  },
+  "ASSIGN" : {
+    "TITLE" : "Assignment",
+    "STOCK_ASSIGN" : "Stock Assignment",
+    "EDIT_ASSIGN" : "Edit Assignment",
+    "REMOVE_ASSIGN" : "Remove Assignment",
+    "CREATE_SUCCESS" : "Successfully created",
+    "UPDATE_SUCCESS" : "Successfully updated",
+    "REMOVE_SUCCESS" : "Successfully removed",
+    "CONFIRM_REMOVE_MSG" : "Do you really want to remove this stock assignment ?",
+    "NEW_ASSIGN" : "New Assignment",
+    "RECEIVER" : "Receiver"
   }
 }
