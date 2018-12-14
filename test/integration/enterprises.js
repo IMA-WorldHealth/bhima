@@ -121,16 +121,15 @@ describe('(/enterprises) Enterprises API', () => {
       .catch(helpers.handler);
   });
 
-  it.only('POST /enterprises/:id/logo should upload a new enterprise logo', () => {
+  it('POST /enterprises/:id/logo should upload a new enterprise logo', () => {
     return agent
       .post(`/enterprises/${enterprise.id}/logo`)
 
       // NOTE: the documentation for chai-http is wrong when it comes to multer.
       // You must use fs.createReadStream() to attach files as a multipart type
       // that multer can detect.
-      .attach('pics', fs.createReadStream(`${fixtures}/logo.ico`))
+      .attach('logo', fs.createReadStream(`${fixtures}/logo.ico`))
       .then((res) => {
-        console.log(res.body);
         expect(res).to.have.status(200);
         expect(res.body).to.have.property('link');
       })
