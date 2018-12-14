@@ -49,6 +49,7 @@
     "ER_DUP_FIELDNAME" : "Duplicate column name",
     "ER_DUP_UNIQUE" : "A unique key is duplicated",
     "ER_ACCESS_DENIED_ERROR" : "Access denied for the current user",
-    "ER_NO_DB_ERROR" : "No database selected"
+    "ER_NO_DB_ERROR" : "No database selected",
+    "ER_TOO_MANY_FIELDS" : "There are many more columns"
   }
 }

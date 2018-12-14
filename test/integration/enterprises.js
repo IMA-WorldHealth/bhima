@@ -1,6 +1,9 @@
 /* global expect, agent */
-
+const fs = require('fs');
+const path = require('path');
 const helpers = require('./helpers');
+
+const fixtures = path.resolve(__dirname, '../fixtures');
 
 /*
  * The /enterprises API endpoint
@@ -77,7 +80,7 @@ describe('(/enterprises) Enterprises API', () => {
       .send(updateEnterprise)
       .then(res => {
         expect(res).to.have.status(200);
-        expect(res).to.be.json;
+        expect(res).to.be.an('object');
         expect(res.body).to.have.all.keys(responseKeys);
       })
       .catch(helpers.handler);
@@ -105,7 +108,7 @@ describe('(/enterprises) Enterprises API', () => {
     return agent.get(`/enterprises/${enterprise.id}`)
       .then(res => {
         expect(res).to.have.status(200);
-        expect(res).to.be.json;
+        expect(res).to.be.an('object');
       })
       .catch(helpers.handler);
   });
@@ -116,5 +119,20 @@ describe('(/enterprises) Enterprises API', () => {
         helpers.api.errored(res, 404);
       })
       .catch(helpers.handler);
+  });
+
+  it('POST /enterprises/:id/logo should upload a new enterprise logo', () => {
+    return agent
+      .post(`/enterprises/${enterprise.id}/logo`)
+
+      // NOTE: the documentation for chai-http is wrong when it comes to multer.
+      // You must use fs.createReadStream() to attach files as a multipart type
+      // that multer can detect.
+      .attach('logo', fs.createReadStream(`${fixtures}/logo.ico`))
+      .then((res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.have.property('logo');
+      })
+      .catch(helpers.api.handler);
   });
 });
