@@ -100,9 +100,9 @@
   version "1.7.5"
   resolved "https://codeload.github.com/angular/bower-angular/tar.gz/a3f5186cd6cd26db5bfe40f08b0c872bd38f446e"
 
-"@bower_components/bootstrap@twbs/bootstrap#3.3.7", bootstrap@twbs/bootstrap#3.3.7:
-  version "3.3.7"
-  resolved "https://codeload.github.com/twbs/bootstrap/tar.gz/0b9c4a4007c44201dce9a6cc1a38407005c26c86"
+"@bower_components/bootstrap@twbs/bootstrap#3.4.0", bootstrap@twbs/bootstrap#3.4.0:
+  version "3.4.0"
+  resolved "https://codeload.github.com/twbs/bootstrap/tar.gz/4c547f2175b9a05aa43551f6927da83fe249ce42"
 
 "@bower_components/components-font-awesome@components/font-awesome#4.7.0", components-font-awesome@components/font-awesome#4.7.0:
   version "4.7.0"
