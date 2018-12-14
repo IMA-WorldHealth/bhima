@@ -977,8 +977,8 @@ a[disabled] {
 }
 .enterprise-logo-editing > .logo {
   display: inline-block;
-  height: 100px !important;
-  width: 100px !important;
+  height: 100px;
+  width: 100px;
   border: 1px solid #efefef;
   color: #efefef;
   text-align: center;
