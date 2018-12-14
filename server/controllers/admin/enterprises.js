@@ -174,7 +174,7 @@ exports.update = function update(req, res, next) {
 };
 
 // POST /enterprises/:id/logo
-exports.postLogo = (req, res, next) => {
+exports.uploadLogo = (req, res, next) => {
   if (req.files.length === 0) {
     next(BadRequest('Expected at least one file upload but did not receive any files.'));
     return;

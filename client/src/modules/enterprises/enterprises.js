@@ -27,36 +27,36 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
   vm.submit = submit;
   vm.onSelectGainAccount = onSelectGainAccount;
   vm.onSelectLossAccount = onSelectLossAccount;
-  vm.updateLogo = updateLogo;
+  vm.setThumbnail = setThumbnail;
 
-  function updateLogo(file, invalidFiles) {
-    if (invalidFiles.length) {
-      Notify.danger('FORM.WARNINGS.BAD_FILE_TYPE');
+  function uploadLogo(file) {
+    if (!vm.hasThumbnail) { return null; }
+
+    file.upload = Upload.upload({
+      url : `/enterprises/${Session.enterprise.id}/logo`,
+      data : { logo : file },
+    });
+
+    return file.upload
+      .then((response) => {
+        $timeout(() => {
+          vm.enterprise.logo = response.data.link;
+        });
+      })
+      .catch((error) => {
+        Notify.handleError(error);
+      });
+  }
+
+  /** set thumbnail for the selected image */
+  function setThumbnail(file) {
+    if (!file) {
+      vm.documentError = true;
       return;
     }
-
-    if (file) {
-      const imageCheck = file.type.search('image/');
-      if (imageCheck !== -1) {
-        file.upload = Upload.upload({
-          url : `/enterprises/${Session.enterprise.id}/logo`,
-          data : { logo : file },
-        });
-
-        file.upload
-          .then((response) => {
-            $timeout(() => {
-              vm.enterprise.logo = response.data.link;
-            });
-          })
-          .then(() => Session.reload())
-          .catch((error) => {
-            Notify.handleError(error);
-          });
-      } else {
-        Notify.danger('FORM.INFO.UPLOAD_PICTURE_FAILED');
-      }
-    }
+    const isImage = file.type.includes('image/');
+    vm.thumbnail = file;
+    vm.hasThumbnail = (vm.thumbnail && isImage);
   }
 
   // fired on startup
@@ -98,7 +98,7 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
     }
 
     // make sure only fresh data is sent to the server.
-    if (form.$pristine && !$touched) {
+    if (form.$pristine && !$touched && !vm.hasThumbnail) {
       Notify.warn('FORM.WARNINGS.NO_CHANGES');
       return 0;
     }
@@ -114,8 +114,9 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
 
     return promise
       .then(() => {
-        Notify.success(creation ? 'FORM.INFO.SAVE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS');
+        return vm.file ? uploadLogo(vm.file) : null;
       })
+      .then(() => Notify.success(creation ? 'FORM.INFO.SAVE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS'))
       .then(() => Session.reload())
       .catch(Notify.handleError);
   }
