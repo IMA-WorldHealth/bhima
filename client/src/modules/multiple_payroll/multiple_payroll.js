@@ -5,7 +5,7 @@ angular.module('bhima.controllers')
 MultiplePayrollController.$inject = [
   'MultiplePayrollService', 'NotifyService',
   'GridSortingService', 'GridColumnService', 'GridStateService', '$state',
-  'ModalService', 'util', 'ReceiptModal', 'uiGridConstants',
+  'ModalService', 'util', 'ReceiptModal', 'uiGridConstants', 'SessionService',
 ];
 
 /**
@@ -18,7 +18,7 @@ MultiplePayrollController.$inject = [
  */
 function MultiplePayrollController(
   MultiplePayroll, Notify,
-  Sorting, Columns, GridState, $state, Modals, util, Receipts, uiGridConstants
+  Sorting, Columns, GridState, $state, Modals, util, Receipts, uiGridConstants, Session,
 ) {
   const vm = this;
   const cacheKey = 'multiple-payroll-grid';
@@ -221,28 +221,31 @@ function MultiplePayrollController(
     if (employees.length) {
       const filters = MultiplePayroll.filters.formatHTTP(true);
       const currencyId = filters.currency_id;
-
-      // returns true If one employee who is no longer waiting for configuration is selected
-      const isNotWaitingConfiguration = employee => parseInt(employee.status_id, 10) !== 1;
-      const invalid = employees.some(isNotWaitingConfiguration);
-
-      if (invalid) {
-        Notify.warn('FORM.WARNINGS.ATTENTION_CONFIGURED');
+      if (currencyId !== Session.enterprise.currency_id) {
+        Notify.warn('FORM.INFO.SETTING_PAYMENT_CURRENCY');
       } else {
-        vm.activeConfig = false;
-        const idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
-        const data = {
-          employees,
-          currencyId,
-        };
+        // returns true If one employee who is no longer waiting for configuration is selected
+        const isNotWaitingConfiguration = employee => parseInt(employee.status_id, 10) !== 1;
+        const invalid = employees.some(isNotWaitingConfiguration);
 
-        MultiplePayroll.configurations(idPeriod, data)
-          .then(() => {
-            Notify.success('FORM.INFO.CONFIGURED_SUCCESSFULLY');
-            vm.activeConfig = true;
-            $state.go('multiple_payroll', null, { reload : true });
-          })
-          .catch(Notify.handleError);
+        if (invalid) {
+          Notify.warn('FORM.WARNINGS.ATTENTION_CONFIGURED');
+        } else {
+          vm.activeConfig = false;
+          const idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
+          const data = {
+            employees,
+            currencyId,
+          };
+
+          MultiplePayroll.configurations(idPeriod, data)
+            .then(() => {
+              Notify.success('FORM.INFO.CONFIGURED_SUCCESSFULLY');
+              vm.activeConfig = true;
+              $state.go('multiple_payroll', null, { reload : true });
+            })
+            .catch(Notify.handleError);
+        }
       }
     } else {
       Notify.danger('FORM.WARNINGS.NO_EMPLOYE_SELECTED');
@@ -255,6 +258,9 @@ function MultiplePayrollController(
     if (employees.length) {
       // get All Employees Reference
       const employeesRef = employees.map(emp => emp.reference);
+      const filters = MultiplePayroll.filters.formatHTTP(true);
+      const currency = filters.currency_id;
+      const conversionRate = filters.conversion_rate;
 
       // returns true if one employee waiting for configuration is selected
       const isWaitingConfiguration = employee => parseInt(employee.status_id, 10) === 1;
@@ -265,7 +271,7 @@ function MultiplePayrollController(
       } else {
         const idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
 
-        Receipts.payroll(idPeriod, employeesRef);
+        Receipts.payroll(idPeriod, employeesRef, currency, conversionRate, true);
       }
     } else {
       Notify.danger('FORM.WARNINGS.NO_EMPLOYE_SELECTED');
@@ -285,6 +291,7 @@ function MultiplePayrollController(
       const employeesRef = employees.map(emp => emp.reference);
       const filters = MultiplePayroll.filters.formatHTTP(true);
       const currencyId = filters.currency_id;
+      const conversionRate = filters.conversion_rate;
 
       // returns true if one employee waiting for configuration is selected
       const isWaitingConfiguration = employee => parseInt(employee.status_id, 10) === 1;
@@ -295,7 +302,7 @@ function MultiplePayrollController(
       } else {
         const idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
 
-        Receipts.payrollReport(idPeriod, employeesRef, currencyId, socialCharge);
+        Receipts.payrollReport(idPeriod, employeesRef, currencyId, socialCharge, conversionRate);
       }
     } else {
       Notify.danger('FORM.WARNINGS.NO_EMPLOYE_SELECTED');
@@ -303,8 +310,11 @@ function MultiplePayrollController(
   };
 
   vm.paySlip = function paySlip(employee) {
+    const filters = MultiplePayroll.filters.formatHTTP(true);
+    const currency = filters.currency_id;
+    const conversionRate = filters.conversion_rate;
     const idPeriod = vm.latestViewFilters.defaultFilters[0]._value;
-    Receipts.payroll(idPeriod, employee.reference);
+    Receipts.payroll(idPeriod, employee.reference, currency, conversionRate, true);
   };
 
   vm.saveGridState = state.saveGridState;

@@ -2,12 +2,11 @@ angular.module('bhima.controllers')
   .controller('PayrollConfigModalController', PayrollConfigModalController);
 
 PayrollConfigModalController.$inject = [
-  '$state', 'PayrollConfigurationService', 'NotifyService', 'appcache', 'moment',
+  '$state', 'PayrollConfigurationService', 'NotifyService', 'appcache', 'moment', 'CurrencyService', 'SessionService',
 ];
 
-function PayrollConfigModalController($state, PayrollConfigurations, Notify, AppCache, moment) {
+function PayrollConfigModalController($state, PayrollConfigurations, Notify, AppCache, moment, Currencies, Session) {
   const vm = this;
-
   vm.payroll = {};
 
   const cache = AppCache('PayrollModal');
@@ -20,6 +19,14 @@ function PayrollConfigModalController($state, PayrollConfigurations, Notify, App
   }
 
   vm.isCreating = vm.stateParams.creating;
+
+  Currencies.read()
+    .then((currencies) => {
+      vm.currencies = currencies.filter(item => {
+        return item.id !== Session.enterprise.currency_id;
+      });
+    })
+    .catch(Notify.handleError);
 
   // exposed methods
   vm.submit = submit;

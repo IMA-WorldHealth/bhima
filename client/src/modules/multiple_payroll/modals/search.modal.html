@@ -24,6 +24,17 @@
       </bh-currency-select>
     </div>
 
+    <span ng-if="$ctrl.enterpriseCurrencyId !== $ctrl.searchQueries.currency_id">
+      <bh-currency-input
+        data-payment-currency-input
+        label="FORM.LABELS.CONVERTION_RATE"
+        id="conversion_rate"
+        currency-id="$ctrl.searchQueries.currency_id"
+        model="$ctrl.searchQueries.conversion_rate"
+        min = 0>
+      </bh-currency-input>
+    </span>
+
     <hr>
     <div class="modal-body" >
       <label class="control-label" translate>FORM.LABELS.NAME</label>

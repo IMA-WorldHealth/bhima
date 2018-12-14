@@ -127,11 +127,14 @@ function ReceiptService($http, util, Language, AppCache, Session) {
     return fetch(route, options);
   }
 
-
   // print a payslip of payroll payment
   function payroll(request, options) {
     options.employees = request.employees;
     options.idPeriod = request.idPeriod;
+    options.currency = request.currency;
+    options.payslip = request.payslip;
+    options.conversionRate = request.conversionRate;
+
     // set the session language
     options.lang = Language.key;
 
@@ -145,6 +148,7 @@ function ReceiptService($http, util, Language, AppCache, Session) {
     options.idPeriod = request.idPeriod;
     options.currency = request.currency;
     options.socialCharge = request.socialCharge;
+    options.conversionRate = request.conversionRate;
 
     // set the session language
     options.lang = Language.key;

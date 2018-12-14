@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 MultiPayrollSearchModalController.$inject = [
   '$uibModalInstance', 'filters', 'NotifyService', 'Store', 'util',
-  'MultiplePayrollService', 'CurrencyService', 'PayrollConfigurationService', '$translate',
+  'MultiplePayrollService', 'CurrencyService', 'PayrollConfigurationService', '$translate', 'SessionService',
 ];
 
 /**
@@ -16,9 +16,11 @@ MultiPayrollSearchModalController.$inject = [
  */
 function MultiPayrollSearchModalController(
   ModalInstance, filters, Notify, Store, util,
-  MultiplePayroll, Currencies, Payroll, $translate
+  MultiplePayroll, Currencies, Payroll, $translate, Session
 ) {
   const vm = this;
+  vm.enterpriseCurrencyId = Session.enterprise.currency_id;
+
   const changes = new Store({ identifier : 'key' });
   const searchQueryOptions = [
     'payroll_configuration_id', 'currency_id', 'display_name', 'code', 'status_id'

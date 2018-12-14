@@ -72,6 +72,7 @@ function MultiplePayrollService(
     { key : 'display_name', label : 'FORM.LABELS.EMPLOYEE_NAME' },
     { key : 'code', label : 'FORM.LABELS.CODE' },
     { key : 'status_id', label : 'FORM.LABELS.STATUS' },
+    { key : 'conversion_rate', label : 'FORM.LABELS.CONVERSION_RATE' },
   ]);
 
 

@@ -850,7 +850,7 @@ ALTER TABLE role DROP column project_id;
 
 ALTER TABLE rubric_paiement
   ADD UNIQUE KEY `rubric_paiement_1` (`paiement_uuid`, `rubric_payroll_id`);
-=======
+
 
 /*
 @author lomamech
@@ -892,24 +892,21 @@ CREATE TABLE `fee_center_distribution` (
   `is_cost` tinyint(1) DEFAULT 0,
   `auxiliary_fee_center_id` MEDIUMINT(8) UNSIGNED NOT NULL,
   `principal_fee_center_id` MEDIUMINT(8) UNSIGNED NOT NULL,
-  `debit_equiv` DECIMAL(19,4) NOT NULL DEFAULT 0.00,
-  `credit_equiv` DECIMAL(19,4) NOT NULL DEFAULT 0.00,
-  `currency_id` TINYINT(3) UNSIGNED NOT NULL,
+  `debit_equiv` DECIMAL(19,8) NOT NULL DEFAULT 0.00,
+  `credit_equiv` DECIMAL(19,8) NOT NULL DEFAULT 0.00,
   `date_distribution` DATETIME NOT NULL,
   `user_id`           SMALLINT(5) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `currency_id` (`currency_id`),
   KEY `user_id` (`user_id`),
-  INDEX `trans_uuid` (`trans_uuid`),
+  INDEX `row_uuid` (`row_uuid`),
   INDEX `account_id` (`account_id`),
   INDEX `trans_id` (`trans_id`),
   INDEX `auxiliary_fee_center_id` (`auxiliary_fee_center_id`),
-  INDEX `principal_fee_center_id` (`principal_fee_center_id`),
-  FOREIGN KEY (`trans_uuid`) REFERENCES `general_ledger` (`uuid`),
+  INDEX `principal_fee_center_id` (`principal_fee_center_id`),  
+  FOREIGN KEY (`row_uuid`) REFERENCES `general_ledger` (`uuid`),
   FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
   FOREIGN KEY (`auxiliary_fee_center_id`) REFERENCES `fee_center` (`id`),
   FOREIGN KEY (`principal_fee_center_id`) REFERENCES `fee_center` (`id`),
-  FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 

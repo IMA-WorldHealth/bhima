@@ -37,10 +37,10 @@ function build(req, res, next) {
   let template;
   _.extend(options, DEFAULT_OPTS);
 
-  if (options.currency && options.socialCharge) {
+  if (!options.payslip && options.socialCharge) {
     template = templateSocialCharge;
     options.orientation = 'portrait';
-  } else if (options.currency && !options.socialCharge) {
+  } else if (!options.payslip && !options.socialCharge) {
     template = templatePayrollReport;
   } else {
     template = templatePayslip;
@@ -53,6 +53,7 @@ function build(req, res, next) {
   data.enterprise = req.session.enterprise;
   data.user = req.session.user;
   data.lang = options.lang;
+  data.conversionRate = options.conversionRate;
 
   // set up the report with report manager
   try {
@@ -68,6 +69,9 @@ function build(req, res, next) {
       return Exchange.getExchangeRate(data.enterprise.id, options.currency, new Date(data.payrollPeriod.dateTo));
     })
     .then(exchange => {
+      // If the convertion rate is not defini, the rate of exchange
+      // of the period of configuration will be taken into account
+      exchange.rate = data.conversionRate ? data.conversionRate : exchange.rate;
       data.payrollPeriod.exchangeRate = parseInt(options.currency, 10) === data.enterprise.currency_id
         ? 1 : exchange.rate;
       return Exchange.getCurrentExchangeRateByCurrency(new Date(data.payrollPeriod.dateTo));
@@ -75,6 +79,7 @@ function build(req, res, next) {
     .then(exchangeRatesByCurrency => {
       data.exchangeRatesByCurrency = exchangeRatesByCurrency;
       data.payrollPeriod.currency = options.currency;
+
       return configurationData.find(params);
     })
     .then(dataEmployees => {
@@ -152,6 +157,7 @@ function build(req, res, next) {
       });
 
       data.dataEmployees.forEach(employee => {
+
         const employeeCurrencyId = parseInt(employee.currency_id, 10);
 
         employee.rubricTaxable = [];
