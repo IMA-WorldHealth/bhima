@@ -1,19 +1,6 @@
 <!-- this partial requires binding the variable 'metadata' -->
 <header class="row">
-  {{#if metadata.enterprise.logo}}
-  <div class="col-xs-1">
-    <img src="{{absolutePath}}/{{slashed metadata.enterprise.logopath}}" width="65" height="65" alt="">
-  </div>
-  {{/if}}
-  <div class="col-xs-6">
-    <h3 style="margin: 0px;">{{metadata.enterprise.name}}</h3>
-    <strong>{{metadata.project.name}} ({{metadata.project.abbr}})</strong>
-    <address style="margin-bottom: 0px;">
-      {{metadata.enterprise.location}}
-    </address>
-    <div>{{metadata.enterprise.email}}</div>
-    <div>{{metadata.enterprise.phone}}<span style="color:#fff">'</span></div>
-  </div>
+  {{> enterpriseDetails }}
   <div class="col-xs-5 text-right">
     <div>{{translate "REPORT.PRODUCED_ON"}} <time datetime="{{metadata.timestamp}}">{{date metadata.timestamp}}</time></div>
     <div>{{translate "REPORT.PRODUCED_BY"}} {{metadata.user.display_name}}</div>

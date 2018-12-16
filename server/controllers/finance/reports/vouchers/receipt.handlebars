@@ -13,15 +13,9 @@
         </div>
       {{/if}}
   
-      <div class="col-xs-6">
-        <h3 style="margin: 0px;">{{metadata.enterprise.name}}</h3>
-        <address style="margin-bottom: 0px;">
-          {{metadata.enterprise.location}}
-        </address>
-        <div>{{metadata.enterprise.email}}</div>
-        <div>{{metadata.enterprise.phone}}</div>
-      </div>
-      <div class="col-xs-6 text-right">
+      {{> enterpriseDetails }}
+
+      <div class="col-xs-5 text-right">
         <h3 style="margin: 0px;">
           <div class="text-uppercase">{{translate details.text}}</div>
           <div><strong>{{details.reference}}</strong></div>
