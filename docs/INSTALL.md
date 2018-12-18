@@ -1,12 +1,10 @@
-Bhima Installation Guide
+BHIMA Installation Guide
 ===========================
 
-*NOTE* This guide is built for bhima version 2.X.  If you are attempting to build version 1.X, see [this repository](https://github.com/IMA-WorldHealth/bhima-1.X).
-
-This guide will get you up and running with bhima locally.  Please note that bhima is under active development and tends to move fast and break things.  If you are interested in development progress, shoot us a line at <developers@imaworldhealth.org>.
+This guide will get you up and running with BHIMA locally.  Please note that BHIMA is under active development and tends to move fast and break things.  If you are interested in development progress, shoot us a line at <developers@imaworldhealth.org>.
 
 ###### Dependencies
-Before you begin the installation process, please make sure you have all the bhima dependencies installed locally.  We only test on Linux, so your best bet is to use a Linux flavor you are familiar with.  Please make sure you have recent version of:
+Before you begin the installation process, please make sure you have all the BHIMA dependencies installed locally.  We only test on Linux, so your best bet is to use a Linux flavor you are familiar with.  Please make sure you have recent version of:
  1. [MySQL](http://dev.mysql.com/downloads/) (5.6 or newer)
  2. [Redis](redis.io)
  3. curl
@@ -14,7 +12,7 @@ Before you begin the installation process, please make sure you have all the bhi
  5. [WKHTMLtoPDF](http://wkhtmltopdf.org/downloads.html) (use the compiled binaries, even if it is distributed with your package manager.  The binaries come with patched Qt).
  6.	yarn
  7.	git
- 
+
 ###### Detailed dependency installation instructions for Ubuntu (verified / installed specifically using VirtualBox)
 
 ```bash
@@ -40,11 +38,11 @@ export NVM_DIR="$HOME/.nvm"
 #Download NodeJS version 8
 nvm install 8
 
-#Run the following commands to install WKHTMLtoPDF (note that version 0.12.4 should be installed, 0.12.5 does not currently work with bhima):
+#Run the following commands to install WKHTMLtoPDF (note that version 0.12.4 should be installed, 0.12.5 does not currently work with BHIMA):
 sudo apt-get install xvfb
 wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
 tar xvf wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
-sudo mv wkhtmltox/bin/wkhtmltopdf /usr/bin 
+sudo mv wkhtmltox/bin/wkhtmltopdf /usr/bin
 sudo rm wkhtmltox-0.12.4_linux-generic-amd64.tar.xz  && rm -rf wkhtmltox
 
 #Installs yarn without re-installing NodeJS
@@ -57,11 +55,11 @@ sudo apt-get install git
 ```
 
 ###### Getting the source
-Clone the source using git from the [github repository](https://github.com/IMA-WorldHealth/bhima-2.x) using the following commands:
+Clone the source using git from the [github repository](https://github.com/IMA-WorldHealth/bhima) using the following commands:
 
 ```bash
-git clone https://github.com/IMA-WorldHealth/bhima-2.X.git bhima-2.X
-cd bhima-2.X
+git clone https://github.com/IMA-WorldHealth/bhima.git bhima
+cd bhima
 ```
 
 ###### Building from source
@@ -73,7 +71,7 @@ To execute the build scripts, you can use either `yarn` or `npm`.  We'll use
 use `npm run` where it says `yarn` below.
 
 ```bash
-# Inside the bhima-2.X/ directory
+# Inside the bhima/ directory
 
 # install all node modules
 yarn install
@@ -93,20 +91,20 @@ the default node instance, `NODE_ENV="development"`.  Please set this globally,
 if it is not set by default on your machine.
 
 Before building, edit your `.env.development` to set up your MySQL database
-connection parameters.  Their variables should be self-explanatory. 
+connection parameters.  Their variables should be self-explanatory.
 
 Use the following command to edit the .env.development file if desired (make your changes and then type ctrl + x to exit and save):
 ```bash
 nano .env.development
 ```
 
-###### Configure the bhima user in MySQL and build the app
+###### Configure the BHIMA user in MySQL and build the app
 
 ```bash
-#Run the following commands to create the bhima user in MySQL, so that it can build the database (make sure the user and #password both match what you set in the .env.development file):
+#Run the following commands to create the BHIMA user in MySQL, so that it can build the database (make sure the user and #password both match what you set in the .env.development file):
 sudo mysql -u root -p
-CREATE USER ‘bhima’@‘localhost' IDENTIFIED BY 'password';
-GRANT ALL PRIVILEGES ON * . * TO ‘bhima’@‘localhost';
+CREATE USER 'bhima'@'localhost' IDENTIFIED BY 'password';
+GRANT ALL PRIVILEGES ON * . * TO 'bhima'@'localhost';
 #Use ctrl + z to get back to the main terminal prompt
 ```
 
@@ -168,7 +166,7 @@ Navigate to [https://localhost:8080](https://localhost:8080) in the browser to
 verify the installation.  You should be greeted with a login page.
 
 ###### Testing the Application
-Our tests are broken into unit tests, end to end tests, and integration tests.  There is more information on testing in the [wiki](https://github.com/IMA-WorldHealth/bhima-2.X/wiki).
+Our tests are broken into unit tests, end to end tests, and integration tests.  There is more information on testing in the [wiki](https://github.com/IMA-WorldHealth/bhima/wiki).
  1. **Integration Tests** - These test the server + database integration and generally our APIs.  All reachable API endpoints should generally have an integration test associated with them.  To run them, type `yarn test:integration`.
  2. **Server Unit Tests** - Server libraries are unit tested with mocha and chai, similar to the integration tests.  To run them, type `yarn test:server-unit`.
  2. **Client Unit Tests** - Client components are unit tested with karma which you should have installed if you installed all dependencies.  Karma launches a chrome browser to execute the tests.  To run them, type `yarn test:client-unit`.
@@ -176,4 +174,4 @@ Our tests are broken into unit tests, end to end tests, and integration tests.  
 
 You can run all tests by simply typing `yarn test`.
 
-Enjoy using bhima!
+Enjoy using BHIMA!

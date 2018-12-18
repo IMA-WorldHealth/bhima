@@ -9,7 +9,7 @@
 * JSON instance or 404 NOT FOUND.  The others return an array of
 * results.
 *
-* TODO: We should migrate the inventory to using the regular bhima 2.x guidelines.
+* TODO: We should migrate the inventory to using the regular bhima guidelines.
 */
 
 const core = require('./inventory/core');
