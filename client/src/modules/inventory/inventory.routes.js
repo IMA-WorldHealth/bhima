@@ -35,12 +35,12 @@ function inventoryStateProvider($stateProvider) {
         creating : { value : true },
         filters : [],
       },
-      onEnter : ['$state', 'ModalService', onEnterFactory('create')],
+      onEnter : ['$state', 'ModalService', onEnterInventoryFactory('create')],
       onExit : ['$uibModalStack', closeModal],
     })
     .state('inventory.update', {
       url : '/:uuid/update',
-      onEnter : ['$state', 'ModalService', onEnterFactory('update')],
+      onEnter : ['$state', 'ModalService', onEnterInventoryFactory('update')],
       onExit : ['$uibModalStack', closeModal],
       params : {
         filters : [],
@@ -62,7 +62,7 @@ function closeModal($uibModalStack) {
 }
 
 // creates both the create and update states
-function onEnterFactory(stateType) {
+function onEnterInventoryFactory(stateType) {
   const isCreateState = (stateType === 'create');
 
   return function onEnter($state, Modal) {

@@ -84,7 +84,7 @@ describe('Enterprises', () => {
     FU.buttons.submit();
 
     // verify form has not been submitted
-    expect(helpers.getCurrentPath()).to.eventually.equal(path);
+    // expect(helpers.getCurrentPath()).to.eventually.equal(path);
 
     // The following fields should be required
     FU.validation.error('EnterpriseCtrl.enterprise.name');
