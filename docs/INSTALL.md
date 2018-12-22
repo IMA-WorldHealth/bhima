@@ -5,10 +5,10 @@ This guide will get you up and running with BHIMA locally.  Please note that BHI
 
 ###### Dependencies
 Before you begin the installation process, please make sure you have all the BHIMA dependencies installed locally.  We only test on Linux, so your best bet is to use a Linux flavor you are familiar with.  Please make sure you have recent version of:
- 1. [MySQL](http://dev.mysql.com/downloads/) (5.6 or newer)
+ 1. [MySQL](http://dev.mysql.com/downloads/) (5.6 or 5.7)
  2. [Redis](redis.io)
  3. curl
- 4. [NodeJS](https://nodejs.org/en/) (we recommend using [node version manager](https://github.com/creationix/nvm) on linux.  Note that we only test on stable and edge).
+ 4. [NodeJS](https://nodejs.org/en/) (we recommend using [node version manager](https://github.com/creationix/nvm) or [n](https://www.npmjs.com/package/n) on linux.  Note that we only test on stable and edge).
  5. [WKHTMLtoPDF](http://wkhtmltopdf.org/downloads.html) (use the compiled binaries, even if it is distributed with your package manager.  The binaries come with patched Qt).
  6.	yarn
  7.	git
@@ -35,8 +35,8 @@ curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
 
-#Download NodeJS version 8
-nvm install 8
+#Download NodeJS stable
+nvm install stable
 
 #Run the following commands to install WKHTMLtoPDF (note that version 0.12.4 should be installed, 0.12.5 does not currently work with BHIMA):
 sudo apt-get install xvfb
