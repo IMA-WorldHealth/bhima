@@ -1,17 +1,17 @@
 {
   "REPORT":{
-    "ACCOUNT":"Relevé de compte",
+    "ACCOUNT" : "Relevé de compte",
     "ACCOUNT_REFERENCE":{
-      "TITLE":"Valeur des references des comptes",
-      "DESCRIPTION":"Affiche le debit, credit and la balance des groupes de comptes connu sous le nom de référence des comptes"
+      "TITLE" : "Valeur des references des comptes",
+      "DESCRIPTION" : "Affiche le debit, credit and la balance des groupes de comptes connu sous le nom de référence des comptes"
     },
     "AGED_CREDITORS":{
-      "TITLE":"Balance âgée des Créances",
-      "DESCRIPTION":"Ce rapport affiche toutes les créances dues aux Créditeurs par période"
+      "TITLE" : "Balance Âgée des Créances",
+      "DESCRIPTION" : "Ce rapport affiche toutes les créances dues aux Créditeurs par période"
     },
     "AGED_DEBTORS":{
-      "TITLE":"Balance âgée des Conventionnés",
-      "DESCRIPTION":"Ce rapport affiche toutes les dettes des conventionnés, tout en spécifiant les dettes par période"
+      "TITLE" : "Balance Âgée des Conventionnés",
+      "DESCRIPTION" : "Ce rapport affiche toutes les dettes des conventionnés, tout en spécifiant les dettes par période"
     },
     "BY_ASC": "Par ordre croissant",
     "BY_DESC": "Par ordre décroissant",
@@ -24,48 +24,48 @@
       "CREDITOR_SOLD": "Crédit",
       "EXPLOITATION_RESULT": "Résultat d'exploitation"
     },
-    "CASH_EXPENSE":"Dépenses",
+    "CASH_EXPENSE" : "Dépenses",
     "CASHFLOW_BY_SERVICE": {
       "TITLE" : "Journal de Ventilation",
       "DESCRIPTION" : "Ce rapport affiche les variations des comptes et des revenus du bilan sur la trésorerie."
     },
     "CASHFLOW" : {
-      "TITLE":"Rapports de flux de trésorerie physique",
-      "DESCRIPTION":"Ce rapport affiche les variations des comptes et des revenus du bilan sur la trésorerie",
-      "OPERATION":"Opération",
-      "INCOMES":"Recettes",
-      "EXPENSES":"Dépenses",
-      "TRANSFER":"Transferts",
+      "TITLE" : "Rapports de flux de trésorerie physique",
+      "DESCRIPTION" : "Ce rapport affiche les variations des comptes et des revenus du bilan sur la trésorerie",
+      "OPERATION" : "Opération",
+      "INCOMES" : "Recettes",
+      "EXPENSES" : "Dépenses",
+      "TRANSFER" : "Transferts",
       "OTHERS": "Autres",
-      "IN":"En",
-      "CONCERNED_ACCOUNT":"Ce rapport concerne les comptes suivants"
+      "IN" : "En",
+      "CONCERNED_ACCOUNT" : "Ce rapport concerne les comptes suivants"
     },
-    "CASH_INCOME":"Recettes",
-    "CHART_OF_ACCOUNTS":"Plan Comptable",
-    "CLOSING_BALANCE":"Balance à la cloture",
-    "CONFIGURATION":"Configuration rapport",
-    "DELETE":"Supprimer un rapport",
-    "DOWNLOAD":"Télécharger",
+    "CASH_INCOME" : "Recettes",
+    "CHART_OF_ACCOUNTS" : "Plan Comptable",
+    "CLOSING_BALANCE" : "Balance à la cloture",
+    "CONFIGURATION" : "Configuration rapport",
+    "DELETE" : "Supprimer un rapport",
+    "DOWNLOAD" : "Télécharger",
     "EMPLOYEE_STANDING" : {
       "DESCRIPTION": "Ce rapport permet de connaître la situation financière d'un employé",
       "REPORT": "Situation financière de l'employé",
       "TITLE": "Situation financière d'un employé"
     },
     "EXPENSE": "Charge",
-    "EXPENSE_REPORT":"Rapport des dépenses",
+    "EXPENSE_REPORT" : "Rapport des dépenses",
     "FEE_CENTER": {
       "TITLE": "Rapports des centres de frais"
-    },    
-    "GENERATED":"Rapport généré",
+    },
+    "GENERATED" : "Rapport généré",
     "INCOME": "Produit",
-    "INCOME_EXPENSE":"Rapport  des recettes et des dépenses",
-    "INCOME_EXPENSE_BY_MONTH": "Etat des revenus et des dépenses pour la période en cours et les deux périodes précédentes",
-    "INCOME_EXPENSE_BY_YEAR": "Etat des revenus et des dépenses pour l'année fiscale en cours et les deux années précédentes",
-    "INCOME_REPORT":"Rapport des recettes",
-    "MONTHLY_BALANCE":"Balance mensuelle",
+    "PROFIT_AND_LOSS" : "Rapport des Produits et des Charges",
+    "PROFIT_AND_LOSS_BY_MONTH": "Rapport des Produit et des Charges par Mois",
+    "PROFIT_AND_LOSS_BY_YEAR": "Rapport des Produit et des Charges par Années",
+    "INCOME_REPORT" : "Rapport des recettes",
+    "MONTHLY_BALANCE" : "Balance mensuelle",
     "OPEN_DEBTORS": {
-      "TITLE":"Débiteurs endettés",
-      "TREE":"Dettes des Débiteurs",
+      "TITLE" : "Débiteurs endettés",
+      "TREE" : "Dettes des Débiteurs",
       "DESCRIPTION": "Ce rapport liste les débiteurs et leurs dettes envers l'institution. Permet de trier les données à lister ainsi que de voir la dernière date de facturation et de paiement pour une analyse assez poussée. Les donnees peuvent être filtrées par date aussi.",
       "SHOW_DATE_LIMIT" : "Limité par Date",
       "DATE_LIMIT_HELP" : "La limite de la date ne fera que numériser les enregistrements de cette date au présent.",
@@ -86,8 +86,8 @@
       "TITLE": "Situation financière d'un Patient"
     },
     "STOCK_VALUE": {
-      "TITLE":"Rapport de valeur de stock",
-      "DESCRIPTION":"Ce rapport affiche la valeur actuelle du stock pour chaque inventaire dans un dépôt."
+      "TITLE" : "Rapport de valeur de stock",
+      "DESCRIPTION" : "Ce rapport affiche la valeur actuelle du stock pour chaque inventaire dans un dépôt."
     },
     "PREVIOUS_MONTHS": "Mois Précédents",
     "PERIOD_START": "Début",
@@ -116,17 +116,17 @@
       "TITLE": "Rapports de comptes multiple",
       "DESCRIPTION": "Ce rapport affiche toutes les transactions sur un groupe des comptes pour une période donnée"
     },
-    "INCOME_EXPENSE_REPORT": {
+    "PROFIT_AND_LOSS_REPORT": {
       "TITLE": "Rapport des Comptes d'exploitation",
       "DESCRIPTION": "Afficher la liste des revenus et des dépenses pris en charge dans l'entreprise"
     },
-    "INCOME_EXPENSE_BY_MONTH_REPORT": {
+    "PROFIT_AND_LOSS_BY_MONTH_REPORT": {
       "TITLE": "Rapport des Comptes d'exploitation par mois",
       "DESCRIPTION": "Ce rapport affiche la liste des revenus et des dépenses pris en charge dans l'entreprise, il compare le mois en cours et les deux mois princédentes",
       "REMOVE_UNUSED_ACCOUNT" : "Enlèver les comptes non utilisés"
     },
-    "INCOME_EXPENSE_BY_YEAR_REPORT": {
-      "TITLE": "Rapport des Comptes d'exploitation par année",
+    "PROFIT_AND_LOSS_BY_YEAR_REPORT": {
+      "TITLE": "Rapport des Comptes d'Exploitation par Année",
       "DESCRIPTION": "Ce rapport affiche la liste des revenus et des dépenses pris en charge dans l'entreprise, il compare l'année fiscale en cours et les deux annnées princédentes",
       "REMOVE_UNUSED_ACCOUNT" : "Enlèver les comptes non utilisés"
     },
@@ -134,7 +134,7 @@
       "TITLE": "Rapport de la Balance des comptes",
       "DESCRIPTION": "Ce rapport affiche la balance des comptes pour une période donnée"
     },
-    "REPORT_INCOME_EXPENSE": {
+    "REPORT_PROFIT_AND_LOSS": {
       "TITLE": "Rapport de recettes et depenses",
       "DESCRIPTION": "Ce rapport affiche toutes les dépenses et recettes de l'entreprise"
     },
@@ -151,43 +151,43 @@
       "DESCRIPTION": "Ce rapport affiche la balance des factures qui ne pas totalement payées ou surpayées pour une période donnée"
     },
     "STOCK":{
-      "TITLE":"Rapport de stock",
-      "DESCRIPTION":"Ce rapport affiche les stocks de produits ansi que leur moyenne de consommation et état",
-      "ALL_DEPOTS":"Tous les dépôts",
-      "ONE_DEPOT":"Un dépôt en particulier",
-      "ALL_INVENTORIES":"Tous les articles",
-      "ONE_INVENTORY":"Un article en particulier",
-      "INVENTORY_REPORT":"Fiche de stock",
-      "INVENTORY_REPORT_DESCRIPTION":"Ce rapport affiche montre les mouvements d'un article ainsi que son état et sa valeur dans le stock",
-      "QUANTITY":"Quantité",
-      "UNIT_COST":"Coût Unitaire",
-      "VALUE":"Valeur",
-      "ENTRIES":"Entrées",
-      "EXITS":"Sorties",
-      "STOCKS":"Stocks",
-      "EXIT_REPORT":"Rapport des sorties de stocks",
-      "EXIT_REPORT_DESCRIPTION":"Ce rapport affiche les sorties de stock qui ont eu lieu dans different dépôts",
-      "INCLUDE_INFORMATION":"Information à inclure",
-      "INCLUDE_PATIENT_EXIT":"Inclure les distributions vers les patients",
-      "INCLUDE_SERVICE_EXIT":"Inclure les distributions vers les services",
-      "INCLUDE_DEPOT_EXIT":"Inclure les distributions vers d'autres dépôts",
-      "INCLUDE_LOSS_EXIT":"Inclure les pertes de stocks",
-      "SHOW_DETAILS":"Afficher les details"
+      "TITLE" : "Rapport de stock",
+      "DESCRIPTION" : "Ce rapport affiche les stocks de produits ansi que leur moyenne de consommation et état",
+      "ALL_DEPOTS" : "Tous les dépôts",
+      "ONE_DEPOT" : "Un dépôt en particulier",
+      "ALL_INVENTORIES" : "Tous les articles",
+      "ONE_INVENTORY" : "Un article en particulier",
+      "INVENTORY_REPORT" : "Fiche de stock",
+      "INVENTORY_REPORT_DESCRIPTION" : "Ce rapport affiche montre les mouvements d'un article ainsi que son état et sa valeur dans le stock",
+      "QUANTITY" : "Quantité",
+      "UNIT_COST" : "Coût Unitaire",
+      "VALUE" : "Valeur",
+      "ENTRIES" : "Entrées",
+      "EXITS" : "Sorties",
+      "STOCKS" : "Stocks",
+      "EXIT_REPORT" : "Rapport des sorties de stocks",
+      "EXIT_REPORT_DESCRIPTION" : "Ce rapport affiche les sorties de stock qui ont eu lieu dans different dépôts",
+      "INCLUDE_INFORMATION" : "Information à inclure",
+      "INCLUDE_PATIENT_EXIT" : "Inclure les distributions vers les patients",
+      "INCLUDE_SERVICE_EXIT" : "Inclure les distributions vers les services",
+      "INCLUDE_DEPOT_EXIT" : "Inclure les distributions vers d'autres dépôts",
+      "INCLUDE_LOSS_EXIT" : "Inclure les pertes de stocks",
+      "SHOW_DETAILS" : "Afficher les details"
     },
     "UTIL":{
-      "CANCEL_PREVIEW":"Fermer l'Aperçu",
-      "SAVE_AS":"Enregistrer sous",
-      "DOCUMENT_PREVIEW":"Aperçu du document",
-      "PDF":"PDF",
-      "HTML":"HTML",
-      "CSV":"CSV",
+      "CANCEL_PREVIEW" : "Fermer l'Aperçu",
+      "SAVE_AS" : "Enregistrer sous",
+      "DOCUMENT_PREVIEW" : "Aperçu du document",
+      "PDF" : "PDF",
+      "HTML" : "HTML",
+      "CSV" : "CSV",
       "WORD" : "MS Word",
       "EXCEL" : "MS Excel",
-      "SAVE_SUCCESS":"Rapport enregistré avec succès",
-      "BACK":"Revenir en arrière",
-      "OPTIONS":"Options",
-      "PREVIEW":"Aperçu",
-      "VIEW_ARCHIVE":"Archives",
+      "SAVE_SUCCESS" : "Rapport enregistré avec succès",
+      "BACK" : "Revenir en arrière",
+      "OPTIONS" : "Options",
+      "PREVIEW" : "Aperçu",
+      "VIEW_ARCHIVE" : "Archives",
       "EMAIL_HELP_TXT" : "L'e-mail ci-dessus recevra le rapport en pièce jointe. Le serveur doit avoir une connexion Internet pour que l'e-mail soit livré avec succès."
     },
     "OPTIONS" : {
@@ -207,7 +207,7 @@
     },
     "OHADA": {
       "BALANCE_SHEET" : "Bilan",
-      "PROFIT_LOSS" : "Compte de résultat",
+      "PROFIT_LOSS" : "Compte de Résultat",
       "BALANCE_SHEET_DESCRIPTION" : "Ce rapport affiche le bilan de l'entreprise selon le référentiel OHADA",
       "REF" : "Réf",
       "ASSET" : "Actif",
@@ -316,17 +316,17 @@
         "RP" : "Autres charges HAO",
         "RS" : "Impôts sur le résultat",
         "XA": "MARGE COMMERCIALE (Somme TA à RB)",
-        "XB":"CHIFFRE D'AFFAIRE ( A + B + C + D )",
-        "XC":"VALEUR AJOUTEE (XB + RA + RB) + (somme TE à RJ)",
+        "XB" : "CHIFFRE D'AFFAIRE ( A + B + C + D )",
+        "XC" : "VALEUR AJOUTEE (XB + RA + RB) + (somme TE à RJ)",
         "XD": "EXCEDENT BRUT D'EXPLOITATION (XC + RK)",
-        "XE":"RESULTAT D'EXPLOITATION (XD + TJ + RL)",
+        "XE" : "RESULTAT D'EXPLOITATION (XD + TJ + RL)",
         "XF": "RESULTAT FINANCIER (somme TK à RN)",
         "XG": "RESULTAT DES ACTIVITES ORDINAIRES (XE + XF)",
         "XH" : "RESULTAT HORS ACTIVITES ORDINAIRES (somme TN à RP)",
         "XI" : "RESULTAT NET (XG + XH + RQ + RS)",
         "TG" : "Subventions d'exploitation",
-        "TI":"Transferts de chatges d'exploitation",
-        "RF":"Variation de stock d'autres approvisionnements",
+        "TI" : "Transferts de chatges d'exploitation",
+        "RF" : "Variation de stock d'autres approvisionnements",
         "RG" : "Transport",
         "TJ" : "Reprises d'ammortissement, provisions et dépréciations",
         "TM" : "Transferts de charges financières",
@@ -339,13 +339,13 @@
       }
     },
     "FOOTER": {
-      "RESPONSIBLE":"Responsable",
-      "RECEIVED_BY":"Receptionné par",
-      "AUTHORIZED_BY":"Autorisé par",
-      "APPROVED_BY":"Approuvé par",
-      "RECEIVER":"Recepteur",
-      "DEPOT_MANAGER":"Gestionnaire du dépot",
-      "SUPPLIER":"Fournisseur"
+      "RESPONSIBLE" : "Responsable",
+      "RECEIVED_BY" : "Receptionné par",
+      "AUTHORIZED_BY" : "Autorisé par",
+      "APPROVED_BY" : "Approuvé par",
+      "RECEIVER" : "Recepteur",
+      "DEPOT_MANAGER" : "Gestionnaire du dépot",
+      "SUPPLIER" : "Fournisseur"
     }
   }
 }
