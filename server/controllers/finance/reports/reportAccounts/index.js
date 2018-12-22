@@ -84,8 +84,8 @@ function document(req, res, next) {
       const expenseAccountId = 5;
 
       const multipleFiscalYears = result.fiscalYearSpan > 1;
-      const incomeExpenseAccount = (bundle.account.type_id === incomeAccountId) ||
-      (bundle.account.type_id === expenseAccountId);
+      const incomeExpenseAccount = (bundle.account.type_id === incomeAccountId)
+      || (bundle.account.type_id === expenseAccountId);
 
       if (multipleFiscalYears && incomeExpenseAccount) {
         _.extend(bundle, {
