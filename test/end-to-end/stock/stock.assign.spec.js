@@ -2,6 +2,8 @@ const helpers = require('../shared/helpers');
 const SearchModal = require('../shared/search.page');
 const Page = require('./stock.assign.page');
 
+const { notification } = require('../shared/components');
+
 function StockAssignTests() {
   let modal;
   let page;
@@ -121,8 +123,9 @@ function StockAssignTests() {
     modal.setEntity(record.entity);
     modal.submit();
     page.removeAssignment();
+    notification.hasSuccess();
     page.expectRowCount(0);
   });
 }
 
-describe.only('Stock Assign Module', StockAssignTests);
+describe('Stock Assign Module', StockAssignTests);

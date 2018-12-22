@@ -1,15 +1,11 @@
 /* global element, by */
 
-const chai = require('chai');
 const GU = require('../shared/GridUtils');
 const FU = require('../shared/FormUtils');
 const helpers = require('../shared/helpers');
 const components = require('../shared/components');
 
 const Filters = require('../shared/components/bhFilters');
-
-
-helpers.configure(chai);
 
 describe('Inventory List', () => {
   // navigate to the page
