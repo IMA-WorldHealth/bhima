@@ -1,3 +1,7 @@
+/**
+ * NOTE(@jniles) - this is the comptes d'exploitation in French.
+ */
+
 const q = require('q');
 const _ = require('lodash');
 const db = require('../../../../lib/db');
@@ -17,7 +21,7 @@ const INCOME_ACCOUNT_TYPE = 4;
 const DECIMAL_PRECISION = 2; // ex: 12.4567 => 12.46
 
 /**
- * return a query for retrieving account'balance by type_id and periods
+ * return a query for retrieving account's balance by type_id and periods
  * This function does exactly the same thing except the value of amount will be
  * debit - credit this will know the expense account
  */
@@ -108,6 +112,7 @@ function document(req, res, next) {
         totalIncome : totalIncome.total,
         dateFrom : range.dateFrom,
         dateTo : range.dateTo,
+        currencyId : req.session.enterprise.currency_id,
       };
 
       formatData(context.expense, context.totalExpense, DECIMAL_PRECISION);
@@ -116,11 +121,7 @@ function document(req, res, next) {
       const diff = util.roundDecimal((context.totalIncome - context.totalExpense), DECIMAL_PRECISION);
       context.totalIncome = util.roundDecimal(context.totalIncome, DECIMAL_PRECISION);
       context.totalExpense = util.roundDecimal(context.totalExpense, DECIMAL_PRECISION);
-      const isExpenseHigher = context.totalIncome < context.totalExpense;
-
-      // the result position is usefull for balancing
-      context.leftResult = isExpenseHigher ? diff : '';
-      context.rightResult = (!isExpenseHigher) ? diff : '';
+      context.total = diff;
 
       return docReport.render(context);
     })
@@ -155,6 +156,7 @@ function formatData(result, total, decimalPrecision) {
     if (row.title) {
       row.percent = util.roundDecimal(Math.abs((row.amount / _total) * 100), decimalPrecision);
     }
+
     row.amount = util.roundDecimal(row.amount, decimalPrecision);
   });
 }

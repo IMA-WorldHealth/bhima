@@ -170,8 +170,7 @@ function deleteArchived(req, res, next) {
 }
 
 // TODO(@jniles) - translate these emails into multiple languages
-const REPORT_EMAIL =
-`Hello!
+const REPORT_EMAIL = `Hello!
 
 Please find the attached report "%filename%" produced by %user% on %date%.
 
@@ -183,8 +182,7 @@ bhi.ma
 
 // this is a really quick and lazy templating scheme
 const template = (str, values) => {
-  return Object.keys(values).reduce((formatted, key) =>
-    formatted.replace(`%${key}%`, values[key]), str);
+  return Object.keys(values).reduce((formatted, key) => formatted.replace(`%${key}%`, values[key]), str);
 };
 
 

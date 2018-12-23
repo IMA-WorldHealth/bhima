@@ -902,7 +902,7 @@ CREATE TABLE `fee_center_distribution` (
   INDEX `account_id` (`account_id`),
   INDEX `trans_id` (`trans_id`),
   INDEX `auxiliary_fee_center_id` (`auxiliary_fee_center_id`),
-  INDEX `principal_fee_center_id` (`principal_fee_center_id`),  
+  INDEX `principal_fee_center_id` (`principal_fee_center_id`),
   FOREIGN KEY (`row_uuid`) REFERENCES `general_ledger` (`uuid`),
   FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
   FOREIGN KEY (`auxiliary_fee_center_id`) REFERENCES `fee_center` (`id`),
@@ -1002,5 +1002,13 @@ CREATE TABLE `stock_assign` (
 ALTER TABLE lot ADD COLUMN `is_assigned` TINYINT(1) NULL DEFAULT 0;
 
 -- the stock assignment unit
-INSERT INTO unit VALUES 
+INSERT INTO unit VALUES
   (224, 'Stock Assignment','ASSIGN.STOCK_ASSIGN','', 160,'/modules/stock/assign','/stock/assign');
+
+UPDATE unit SET `key` = 'REPORT.PROFIT_AND_LOSS' WHERE id = 180;
+UPDATE unit SET `key` = 'REPORT.PROFIT_AND_LOSS_BY_MONTH' WHERE id = 211;
+UPDATE unit SET `key` = 'REPORT.PROFIT_AND_LOSS_BY_YEAR' WHERE id = 216;
+
+UPDATE report SET title_key = 'REPORT.PROFIT_AND_LOSS' WHERE id = 3;
+UPDATE report SET title_key = 'REPORT.PROFIT_AND_LOSS_BY_MONTH' WHERE id = 24;
+UPDATE report SET title_key = 'REPORT.PROFIT_AND_LOSS_BY_YEAR' WHERE id = 27;

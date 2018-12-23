@@ -955,21 +955,22 @@ CREATE PROCEDURE UnbalancedInvoicePaymentsTable(
   DROP TABLE IF EXISTS `unbalanced_invoices`;
 
   CREATE TABLE `unbalanced_invoices` AS (
-  SELECT BUID(ivc.uuid) as invoice_uuid , em.text AS debtorReference, debtor.text AS debtorName, balances.debit_equiv AS debit,
-    balances.credit_equiv AS credit, iv.date AS creation_date, balances.balance,
-    dm.text AS reference, ivc.project_id, p.name as 'projectName', dbtg.name as 'debtorGroupName',s.name as 'serviceName',
-    ((balances.credit_equiv / IF(balances.debit_equiv = 0, 1, balances.debit_equiv )*100)) AS paymentPercentage
-  FROM tmp_invoices_1 AS iv
-  	  JOIN invoice ivc ON ivc.uuid = iv.uuid
-      JOIN service s On s.id= ivc.service_id
-  	  JOIN debtor dbt ON ivc.debtor_uuid = dbt.uuid
-  	  JOIN debtor_group dbtg ON dbtg.uuid = dbt.group_uuid
-  	  JOIN project p ON p.id = ivc.project_id
-    JOIN tmp_invoice_balances AS balances ON iv.uuid = balances.uuid
-    LEFT JOIN document_map AS dm ON dm.uuid = iv.uuid
-    JOIN debtor ON debtor.uuid = iv.debtor_uuid
-    LEFT JOIN entity_map AS em ON em.uuid = iv.debtor_uuid
-  ORDER BY iv.date
+    SELECT BUID(ivc.uuid) as invoice_uuid , em.text AS debtorReference, debtor.text AS debtorName, balances.debit_equiv AS debit,
+      balances.credit_equiv AS credit, iv.date AS creation_date, balances.balance,
+      dm.text AS reference, ivc.project_id, p.name as 'projectName', dbtg.name as 'debtorGroupName',
+      s.name as 'serviceName',
+      ((balances.credit_equiv / IF(balances.debit_equiv = 0, 1, balances.debit_equiv )*100)) AS paymentPercentage
+    FROM tmp_invoices_1 AS iv
+        JOIN invoice ivc ON ivc.uuid = iv.uuid
+        JOIN service s On s.id = ivc.service_id
+        JOIN debtor dbt ON ivc.debtor_uuid = dbt.uuid
+        JOIN debtor_group dbtg ON dbtg.uuid = dbt.group_uuid
+        JOIN project p ON p.id = ivc.project_id
+      JOIN tmp_invoice_balances AS balances ON iv.uuid = balances.uuid
+      LEFT JOIN document_map AS dm ON dm.uuid = iv.uuid
+      JOIN debtor ON debtor.uuid = iv.debtor_uuid
+      LEFT JOIN entity_map AS em ON em.uuid = iv.debtor_uuid
+    ORDER BY iv.date
   );
 END$$
 

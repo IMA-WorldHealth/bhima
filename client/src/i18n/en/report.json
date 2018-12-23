@@ -62,9 +62,9 @@
     },
     "GENERATED": "Generated Report",
     "INCOME": "Income",
-    "INCOME_EXPENSE": "Profit and Loss Statement",
-    "INCOME_EXPENSE_BY_MONTH": "Profit and Loss Statement for the current and the two previous periods",
-    "INCOME_EXPENSE_BY_YEAR": "Profit and Loss Statement for the current and the two previous fiscal years",
+    "PROFIT_AND_LOSS": "Profit and Loss Statement",
+    "PROFIT_AND_LOSS_BY_MONTH": "Profit and Loss Statement By Month",
+    "PROFIT_AND_LOSS_BY_YEAR": "Profit and Loss Statement By Fiscal Year",
     "INCOME_REPORT": "Income Report",
     "MONTHLY_BALANCE": "Monthly Balance",
     "OPEN_DEBTORS": {
@@ -116,12 +116,12 @@
       "WARN_MULTIPLE": "N.B. This report concerns an income/expense account and spans multiple fiscal years. Income/expense accounts are cleared to 0 at the beginning of every fiscal year. The cumulative balance displayed is for the transactions within this period of time. It is recommended to use this statement within a single fiscal year.",
       "WARN_CURRENCY": "Attention! You are using a currency other than the enterprise currency.  Values on this report are subject to change with changes to the exchange rate and should not be considered final.  Please save a report in the enterprise currency for long term reference."
     },
-    "INCOME_EXPENSE_BY_MONTH_REPORT": {
+    "PROFIT_AND_LOSS_BY_MONTH_REPORT": {
       "TITLE": "Profit and Loss Statement (Monthly)",
       "DESCRIPTION": "Creates a Profit and Loss Statement for the current and the two previous periods.",
       "REMOVE_UNUSED_ACCOUNT": "Remove Unused Accounts"
     },
-    "INCOME_EXPENSE_BY_YEAR_REPORT": {
+    "PROFIT_AND_LOSS_BY_YEAR_REPORT": {
       "TITLE": "Profit and Loss Statement (Yearly)",
       "DESCRIPTION": "Creates a Profit and Loss Statement for the current and the two previous fiscal years.",
       "REMOVE_UNUSED_ACCOUNT" : "Remove Unused Accounts"
@@ -130,7 +130,7 @@
       "TITLE": "Multiple Accounts Report",
       "DESCRIPTION": "This report shows all transactions for a group of accounts given a set time period."
     },
-    "INCOME_EXPENSE_REPORT": {
+    "PROFIT_AND_LOSS_REPORT": {
       "TITLE": "Income Expense Report",
       "DESCRIPTION": "Show the list of incomes and expenses that occurred inside the enterprise"
     },
@@ -138,7 +138,7 @@
       "TITLE": "Balance Report",
       "DESCRIPTION": "This report shows the account balance for a given period"
     },
-    "REPORT_INCOME_EXPENSE": {
+    "REPORT_PROFIT_AND_LOSS": {
       "TITLE": "Income Expense Report",
       "DESCRIPTION": "This report shows all incomes and expenses of the enterprise"
     },
@@ -316,17 +316,17 @@
         "RP" : "Autres charges HAO",
         "RS" : "Impôts sur le résultat",
         "XA": "MARGE COMMERCIALE (Somme TA à RB)",
-        "XB":"CHIFFRE D'AFFAIRE ( A + B + C + D )",
-        "XC":"VALEUR AJOUTEE (XB + RA + RB) + (somme TE à RJ)",
+        "XB" : "CHIFFRE D'AFFAIRE ( A + B + C + D )",
+        "XC" : "VALEUR AJOUTEE (XB + RA + RB) + (somme TE à RJ)",
         "XD": "EXCEDENT BRUT D'EXPLOITATION (XC + RK)",
-        "XE":"RESULTAT D'EXPLOITATION (XD + TJ + RL)",
+        "XE" : "RESULTAT D'EXPLOITATION (XD + TJ + RL)",
         "XF": "RESULTAT FINANCIER (somme TK à RN)",
         "XG": "RESULTAT DES ACTIVITES ORDINAIRES (XE + XF)",
         "XH" : "RESULTAT HORS ACTIVITES ORDINAIRES (somme TN à RP)",
         "XI" : "RESULTAT NET (XG + XH + RQ + RS)",
         "TG" : "Subventions d'exploitation",
-        "TI":"Transferts de chatges d'exploitation",
-        "RF":"Variation de stock d'autres approvisionnements",
+        "TI" : "Transferts de chatges d'exploitation",
+        "RF" : "Variation de stock d'autres approvisionnements",
         "RG" : "Transport",
         "TJ" : "Reprises d'ammortissement, provisions et dépréciations",
         "TM" : "Transferts de charges financières",
@@ -339,13 +339,13 @@
       }
     },
     "FOOTER": {
-      "RESPONSIBLE":"Responsible",
-      "RECEIVED_BY":"Received By",
-      "AUTHORIZED_BY":"Authorized By",
-      "APPROVED_BY":"Approved By",
-      "RECEIVER":"Receiver",
-      "DEPOT_MANAGER":"Depot Manager",
-      "SUPPLIER":"Supplier"
+      "RESPONSIBLE" : "Responsible",
+      "RECEIVED_BY" : "Received By",
+      "AUTHORIZED_BY" : "Authorized By",
+      "APPROVED_BY" : "Approved By",
+      "RECEIVER" : "Receiver",
+      "DEPOT_MANAGER" : "Depot Manager",
+      "SUPPLIER" : "Supplier"
     }
   }
 }

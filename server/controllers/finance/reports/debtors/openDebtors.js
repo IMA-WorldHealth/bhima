@@ -137,12 +137,12 @@ function requestOpenDebtors(params) {
 // ONLY show debtors with a debt above 0
 function buildDebtQuery(showDetailedView, source, dateCondition, ordering) {
   // Include complex parameters depending on detailed view Boolean requirements
-  const complexParameters = showDetailedView ?
-    ', MAX(invoice.date) as latestInvoiceDate, MAX(cash.date) as latestCashDate ' :
-    '';
-  const complexJoin = showDetailedView ?
-    'LEFT JOIN invoice on reference_uuid = invoice.uuid LEFT JOIN cash on reference_uuid = cash.uuid ' :
-    '';
+  const complexParameters = showDetailedView
+    ? ', MAX(invoice.date) as latestInvoiceDate, MAX(cash.date) as latestCashDate '
+    : '';
+  const complexJoin = showDetailedView
+    ? 'LEFT JOIN invoice on reference_uuid = invoice.uuid LEFT JOIN cash on reference_uuid = cash.uuid '
+    : '';
 
   // Include all balance and debtor information by default
   const query = `
