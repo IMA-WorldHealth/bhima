@@ -144,6 +144,11 @@ function JournalController(
       <span ng-show="row.groupHeader">{{ COL_FIELD | currency: row.treeNode.children[0].row.entity.currency_id }}</span>
     </div>`;
 
+  const exchangeRateCellTemplate = `
+    <div class="ui-grid-cell-contents text-right">
+      <span ng-if="COL_FIELD">{{ COL_FIELD | currency: appScope.enterprise.currency_id }}</span>
+    </div>`;
+
   /**
    * Column definitions; specify the configuration and behaviour for each column
    * in the journal grid. Initialise each of the journal utilities,
@@ -296,10 +301,7 @@ function JournalController(
     field : 'transaction_type_text',
     displayName : 'FORM.LABELS.TRANSACTION_TYPE',
     headerCellFilter : 'translate',
-    cellTemplate :
-      `<div class="ui-grid-cell-contents" translate>
-        {{ row.entity.transaction_type_text}}
-      </div>`,
+    cellFilter : 'translate',
     visible : false,
   }, {
     field : 'display_name',
@@ -307,9 +309,17 @@ function JournalController(
     headerCellFilter : 'translate',
     visible : false,
   }, {
+    field : 'rate',
+    type : 'number',
+    displayName : 'FORM.LABELS.EXCHANGE_RATE',
+    cellTemplate : exchangeRateCellTemplate,
+    headerCellFilter : 'translate',
+    visible : false,
+  }, {
     field : 'comment',
     displayName : 'FORM.LABELS.COMMENT',
     headerCellFilter : 'translate',
+    visible : false,
   }];
 
   vm.gridOptions.columnDefs = columns;

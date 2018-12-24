@@ -2,7 +2,7 @@ const JournalPage = require('./journal.page.js');
 const ConfigModal = require('./ConfigurationModal.page');
 
 function JournalConfigurationModal() {
-  const defaultVisibleColumnCount = 10;
+  const defaultVisibleColumnCount = 9;
   const page = new JournalPage();
 
   it(`displays ${defaultVisibleColumnCount} visible columns by default`, () => {
