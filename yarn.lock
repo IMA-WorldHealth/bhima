@@ -8036,10 +8036,10 @@ snyk-mvn-plugin@2.0.1:
   resolved "https://registry.yarnpkg.com/snyk-mvn-plugin/-/snyk-mvn-plugin-2.0.1.tgz#c52d5320e34ff3ab6d50d8b9549a4b32243ed6ae"
   integrity sha512-TBrdcFXHdYuRYFCvpyUeFC+mCi6SOV3vdxgHrP7JRNnJwO8PYaKCObLJyhpRWa8IaHv/8CjJTmnEbWIh7BPHAA==
 
-snyk-nodejs-lockfile-parser@1.9.0:
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/snyk-nodejs-lockfile-parser/-/snyk-nodejs-lockfile-parser-1.9.0.tgz#66e7295774e3854a4cc1a61200f01833adb60d25"
-  integrity sha512-GRn70VDe+JISkRbnxc9vxCBV+Ekkdr79krVXbYNDJgQyIjH+FXh6PXVvpregVsvCcNqP1ctbBw/u1w6e9xX1QA==
+snyk-nodejs-lockfile-parser@1.10.1:
+  version "1.10.1"
+  resolved "https://registry.yarnpkg.com/snyk-nodejs-lockfile-parser/-/snyk-nodejs-lockfile-parser-1.10.1.tgz#de5572091e0eda4860e90cc7175144508f842f95"
+  integrity sha512-0k0QWB4bgmIy81GQVEODwaSjkXldJStM6ooSNiTrwT7cjzJmpN9r6r1WXWTZpSuAyADvGwTfSyzdvl2xzQXAEA==
   dependencies:
     "@yarnpkg/lockfile" "^1.0.2"
     graphlib "^2.1.5"
@@ -8067,10 +8067,10 @@ snyk-php-plugin@1.5.1:
     lodash "^4.17.5"
     path "0.12.7"
 
-snyk-policy@1.13.1:
-  version "1.13.1"
-  resolved "https://registry.yarnpkg.com/snyk-policy/-/snyk-policy-1.13.1.tgz#2366cc485e83a6b43f23f45b36085726e0bf448b"
-  integrity sha512-l9evS3Yk70xyvajjg+I6Ij7fr7gxpVRMZl0J1xNpWps/IVu4DSGih3aMmXi47VJozr4A/eFyj7R1lIr2GhqJCA==
+snyk-policy@1.13.3:
+  version "1.13.3"
+  resolved "https://registry.yarnpkg.com/snyk-policy/-/snyk-policy-1.13.3.tgz#83e71ca51c471b9ad01c0e323f13307787a5636d"
+  integrity sha512-6J2a+Wt9zgvTtCwi4x8rLtkDQzFNPqubfIgs3aR35ZsEXPwI4XHGo0cxnJPDriqncp2JK72vnRpNfIZ7v0L1Mw==
   dependencies:
     debug "^3.1.0"
     email-validator "^2.0.4"
@@ -8140,10 +8140,10 @@ snyk-try-require@1.3.1, snyk-try-require@^1.1.1, snyk-try-require@^1.3.1:
     lru-cache "^4.0.0"
     then-fs "^2.0.0"
 
-snyk@1.117.2:
-  version "1.117.2"
-  resolved "https://registry.yarnpkg.com/snyk/-/snyk-1.117.2.tgz#baef13b710afd4ff110103c4df4d22362fa798db"
-  integrity sha512-Ak+eKhOcpyLqMDU9BvBIug4TH92z7N4UCas/EUhEkDBcbaHDOsr+H98eshYkx0mAT4AeL3I2HOGquAedhfTRqA==
+snyk@1.119.0:
+  version "1.119.0"
+  resolved "https://registry.yarnpkg.com/snyk/-/snyk-1.119.0.tgz#c983adc6dd7221a760f12f527cb7a67a12ee1278"
+  integrity sha512-K9uQkzfmOgbrHVFyeXnOqVn/vsJSqnQTPI5DDq90ix2pRPRNKtt+vRs5Ub+M1IKACU6EJQDodCQVX/u3BWQd8g==
   dependencies:
     "@snyk/dep-graph" "1.1.2"
     "@snyk/gemfile" "1.1.0"
@@ -8168,10 +8168,10 @@ snyk@1.117.2:
     snyk-gradle-plugin "2.1.2"
     snyk-module "1.9.1"
     snyk-mvn-plugin "2.0.1"
-    snyk-nodejs-lockfile-parser "1.9.0"
+    snyk-nodejs-lockfile-parser "1.10.1"
     snyk-nuget-plugin "1.6.5"
     snyk-php-plugin "1.5.1"
-    snyk-policy "1.13.1"
+    snyk-policy "1.13.3"
     snyk-python-plugin "1.9.1"
     snyk-resolve "1.0.1"
     snyk-resolve-deps "4.0.2"
