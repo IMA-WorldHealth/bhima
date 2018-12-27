@@ -1,4 +1,4 @@
-{{> head title="REPORT.INCOME_EXPENSE" }}
+{{> head title="REPORT.PROFIT_AND_LOSS_BY_YEAR" }}
 
 <div class="container">
   {{> header}}
@@ -8,7 +8,7 @@
     <div class="col-xs-12">
       <!-- page title  -->
       <h3 class="text-center">
-        <strong>{{translate "REPORT.INCOME_EXPENSE_BY_YEAR"}}</strong>
+        <strong>{{translate "REPORT.PROFIT_AND_LOSS_BY_YEAR"}}</strong>
       </h3>
 
       {{#if profits}}
@@ -25,7 +25,7 @@
         </thead>
         <tbody>
           <tr>
-            <th class="text-center" colspan="6">{{translate 'FORM.LABELS.INCOME'}}</th>
+            <th class="text-center" colspan="6">{{translate 'FORM.LABELS.PROFIT'}}</th>
           </tr>
           {{#each profits as |account|}}
             <tr {{#if account.isTitleAccount}} class="text-bold" {{/if}}>
@@ -109,7 +109,7 @@
         </thead>
         <tbody>
           <tr>
-            <th>{{translate 'FORM.LABELS.INCOME'}}</th>
+            <th>{{translate 'FORM.LABELS.PROFIT'}}</th>
             <td class="text-right">{{debcred totals.income.firstBalance metadata.enterprise.currency_id}}</td>
             <td class="text-right">{{debcred totals.income.balance metadata.enterprise.currency_id}}</td>
             <td class="text-right">{{debcred totals.income.thirdBalance metadata.enterprise.currency_id}}</td>
