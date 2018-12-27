@@ -61,8 +61,8 @@
     "PROFIT_AND_LOSS" : "Rapport des Produits et des Charges",
     "PROFIT_AND_LOSS_BY_MONTH": "Rapport des Produit et des Charges par Mois",
     "PROFIT_AND_LOSS_BY_YEAR": "Rapport des Produit et des Charges par Années",
-    "INCOME_REPORT" : "Rapport des recettes",
-    "MONTHLY_BALANCE" : "Balance mensuelle",
+    "INCOME_REPORT" : "Rapport des Recettes",
+    "MONTHLY_BALANCE" : "Balance Mensuelle",
     "OPEN_DEBTORS": {
       "TITLE" : "Débiteurs endettés",
       "TREE" : "Dettes des Débiteurs",
@@ -122,13 +122,11 @@
     },
     "PROFIT_AND_LOSS_BY_MONTH_REPORT": {
       "TITLE": "Rapport des Comptes d'exploitation par mois",
-      "DESCRIPTION": "Ce rapport affiche la liste des revenus et des dépenses pris en charge dans l'entreprise, il compare le mois en cours et les deux mois princédentes",
-      "REMOVE_UNUSED_ACCOUNT" : "Enlèver les comptes non utilisés"
+      "DESCRIPTION": "Ce rapport affiche la liste des revenus et des dépenses pris en charge dans l'entreprise, il compare le mois en cours et les deux mois princédentes"
     },
     "PROFIT_AND_LOSS_BY_YEAR_REPORT": {
       "TITLE": "Rapport des Comptes d'Exploitation par Année",
-      "DESCRIPTION": "Ce rapport affiche la liste des revenus et des dépenses pris en charge dans l'entreprise, il compare l'année fiscale en cours et les deux annnées princédentes",
-      "REMOVE_UNUSED_ACCOUNT" : "Enlèver les comptes non utilisés"
+      "DESCRIPTION": "Ce rapport affiche la liste des revenus et des dépenses pris en charge dans l'entreprise, il compare l'année fiscale en cours et les deux annnées princédentes"
     },
     "BALANCE_REPORT": {
       "TITLE": "Rapport de la Balance des comptes",
@@ -203,7 +201,8 @@
       "REMOVE_ZERO_ROWS" : "Cacher les lignes vide?",
       "REMOVE_ZERO_ROWS_HELP" : "Cette option supprime les lignes qui ne contiennent aucune donnée. Produit un rapport plus compacte.",
       "INCLUDE_CLOSING_BALANCES" : "Inclure les soldes de clôture",
-      "INCLUDE_CLOSING_BALANCES_HELP" : "Cette option force la balance à afficher les soldes de l’année entière, y compris les soldes de clôture. Toute opération effectuée pour clôturer les comptes de produits et de charges sera reflétée dans la balance."
+      "INCLUDE_CLOSING_BALANCES_HELP" : "Cette option force la balance à afficher les soldes de l’année entière, y compris les soldes de clôture. Toute opération effectuée pour clôturer les comptes de produits et de charges sera reflétée dans la balance.",
+      "REMOVE_UNUSED_ACCOUNT" : "Enlèver les comptes non utilisés"
     },
     "OHADA": {
       "BALANCE_SHEET" : "Bilan",

@@ -8,8 +8,8 @@
 <div ng-show="!ReportConfigCtrl.previewGenerated">
   <div class="row">
     <div class="col-md-12">
-      <h3 translate>TREE.INCOME_EXPENSE_BY_YEAR</h3>
-      <p class="text-info" translate>REPORT.INCOME_EXPENSE_BY_YEAR_REPORT.DESCRIPTION</p>
+      <h3 class="text-capitalize" translate>REPORT.PROFIT_AND_LOSS_BY_YEAR_REPORT.TITLE</h3>
+      <p class="text-info" translate>REPORT.PROFIT_AND_LOSS_BY_YEAR_REPORT.DESCRIPTION</p>
     </div>
   </div>
 
@@ -22,24 +22,16 @@
 
         <div class="panel-body">
           <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate>
-          <bh-fiscal-year-select
-            fiscal-id="ReportConfigCtrl.reportDetails.fiscalYearId"
-            on-select-fiscal-callback="ReportConfigCtrl.onSelectFiscal(fiscalYear)">
-          </bh-fiscal-year-select>
+            <bh-fiscal-year-select
+              fiscal-id="ReportConfigCtrl.reportDetails.fiscalYearId"
+              on-select-fiscal-callback="ReportConfigCtrl.onSelectFiscal(fiscalYear)">
+            </bh-fiscal-year-select>
 
-          <bh-yes-no-radios 
-            value = "ReportConfigCtrl.reportDetails.removeUnusedAccounts"
-            on-change-callback = "ReportConfigCtrl.OnRemoveUnusedAccounts(value)"
-            label="REPORT.INCOME_EXPENSE_BY_YEAR_REPORT.REMOVE_UNUSED_ACCOUNT">
-          </bh-yes-no-radios>
-          <!--
-          <div class="checkbox">
-            <label class="text-action">
-              <input type="checkbox" name="removeUnusedAccounts"  ng-true-value="1" ng-false-value="0" ng-model="ReportConfigCtrl.reportDetails.removeUnusedAccounts">
-              <span translate></span>
-            </label>
-          </div>
-          -->
+            <bh-yes-no-radios
+              value = "ReportConfigCtrl.reportDetails.removeUnusedAccounts"
+              on-change-callback = "ReportConfigCtrl.OnRemoveUnusedAccounts(value)"
+              label="REPORT.OPTIONS.REMOVE_UNUSED_ACCOUNT">
+            </bh-yes-no-radios>
 
             <bh-loading-button loading-state="ConfigForm.$loading">
               <span translate>REPORT.UTIL.PREVIEW</span>
