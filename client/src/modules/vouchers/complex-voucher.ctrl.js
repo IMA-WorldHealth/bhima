@@ -98,17 +98,20 @@ function ComplexJournalVoucherController(
   // @TODO fixed me to display correctly selected items(invoices, ..) accounts
   // without adding empty items before
   function gridManager(modal) {
-    vm.Voucher.addItems(300);
-    modal().then(result => {
-      if (!result) {
-        removeNullRows();
-        if (vm.Voucher.store.data.length === 0) {
-          vm.Voucher.addItems(2);
+    modal()
+      .then(result => {
+        if (!result) {
+          removeNullRows();
+
+          if (vm.Voucher.store.data.length === 0) {
+            vm.Voucher.addItems(2);
+          }
+
+          return;
         }
-        return;
-      }
-      processVoucherToolRows(result);
-    });
+
+        processVoucherToolRows(result);
+      });
   }
   /**
    * @function processVoucherToolRows
@@ -156,7 +159,7 @@ function ComplexJournalVoucherController(
    */
   function removeNullRows() {
     const gridData = JSON.parse(JSON.stringify(vm.gridOptions.data));
-    gridData.forEach((item) => {
+    gridData.forEach(item => {
       if (!item.account_id) {
         vm.Voucher.store.remove(item.uuid);
       }
@@ -174,7 +177,7 @@ function ComplexJournalVoucherController(
   /** Entity modal */
   function openEntityModal(row) {
     FindEntity.openModal()
-      .then((entity) => {
+      .then(entity => {
         row.entity = entity;
       });
   }
@@ -182,7 +185,7 @@ function ComplexJournalVoucherController(
   /** Reference modal */
   function openReferenceModal(row) {
     FindReference.openModal(row.entity)
-      .then((doc) => {
+      .then(doc => {
         row.configure({ document : doc });
       });
   }
