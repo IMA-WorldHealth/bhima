@@ -149,6 +149,7 @@ function getOpeningBalanceForDate(accountId, date, includeMaxDate = true) {
         balance : (balance + runningPeriod.balance).toFixed(4),
         credit : (credit + runningPeriod.credit).toFixed(4),
         debit : (debit + runningPeriod.debit).toFixed(4),
+        accountId,
       };
     });
 }

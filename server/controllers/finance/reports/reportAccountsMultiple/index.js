@@ -1,17 +1,14 @@
 const _ = require('lodash');
-const q = require('q');
 const ReportManager = require('../../../../lib/ReportManager');
 
 const AccountsExtra = require('../../accounts/extra');
 const Exchange = require('../../exchange');
 const Currency = require('../../currencies');
-const accountExtra = require('../../accounts/extra');
-const db = require('../../../../lib/db');
-const util = require('../../../../lib/util');
 
 const TEMPLATE = './server/controllers/finance/reports/reportAccountsMultiple/report.handlebars';
 
 const { getAccountTransactions } = require('../reportAccounts/index');
+
 /**
  * @method document
  *
@@ -33,100 +30,79 @@ async function document(req, res, next) {
   params.enterprise_id = req.session.enterprise.id;
   params.isEnterpriseCurrency = (req.session.enterprise.currency_id === Number(params.currency_id));
 
-  const accountSql = `SELECT id, type_id FROM account WHERE id=?`;
-
   try {
     report = new ReportManager(TEMPLATE, req.session, params);
   } catch (e) {
-    return next(e);
+    next(e);
   }
 
-
   params.dateFrom = (params.dateFrom) ? new Date(params.dateFrom) : new Date();
-  let accountTransactions = []; // list of all account containing transactions
-  const accountIDs = [].concat(params.accountIds);
-  let accounts = [];
 
-  return q.all(accountIDs.map(id => {
-    return db.one(accountSql, id);
-  })).then(_accounts => {
-    accounts = _accounts;
-    //  we look up the currency to have all the parameters we need
-    return Currency.lookupCurrencyById(params.currency_id);
-  })
-    .then(currency => {
-      _.extend(bundle, { currency });
+  const accountIds = [].concat(params.accountIds);
 
-      // get the exchange rate for the opening balance
-      return Exchange.getExchangeRate(params.enterprise_id, params.currency_id, params.dateFrom);
-    })
-    .then(rate => {
-      bundle.rate = rate.rate || 1;
-      bundle.invertedRate = Exchange.formatExchangeRateForDisplay(bundle.rate);
-      return AccountsExtra.getOpeningBalanceForDate(params.account_id, params.dateFrom, false);
-    })
-    .then(balance => {
-      const { rate, invertedRate } = bundle;
+  try {
+    const [currency, rates] = await Promise.all([
+      Currency.lookupCurrencyById(params.currency_id),
+      Exchange.getExchangeRate(params.enterprise_id, params.currency_id, params.dateFrom),
+    ]);
 
-      const header = {
-        date            : params.dateFrom,
-        balance         : Number(balance.balance),
-        credit          : Number(balance.credit),
-        debit           : Number(balance.debit),
-        exchangedCredit : Number(balance.credit) * rate,
-        exchangedDebit : Number(balance.debit) * rate,
-        exchangedBalance : Number(balance.balance) * rate,
-        isCreditBalance : Number(balance.balance) < 0,
-        rate,
-        invertedRate,
-      };
+    _.extend(bundle, { currency });
 
-      _.extend(bundle, { header });
+    const rate = rates.rate || 1;
+    const invertedRate = Exchange.formatExchangeRateForDisplay(rate);
 
+    const sharedHeader = {
+      date            : params.dateFrom,
+      rate,
+      invertedRate,
+    };
 
-      return q.all(accounts.map(account => {
-        params.account_id = account.id;
-        params.account = account;
-        return getAccountTransactions(params, bundle.header.exchangedBalance);
-      }));
-    })
-    .then(_accountTransactions => {
-      accountTransactions = _accountTransactions;
-      // let get the opening balance of each account
-      return q.all(accountTransactions.map(transaction => {
-        return accountExtra.getOpeningBalanceForDate(transaction.account.id, params.dateFrom, false);
-      }));
-    })
-    .then(openingBalances => {
-      openingBalances.forEach((openingHeader, index) => {
-        if (bundle.invertedRate !== 1) {
-          openingHeader.balance = util.roundDecimal(openingHeader.balance / bundle.invertedRate, 4);
+    // get all the opening balances for the accounts concerned
+    const balances = await Promise.all(
+      accountIds
+        .map(accountId => AccountsExtra.getOpeningBalanceForDate(accountId, params.dateFrom, false))
+    );
+
+    // get the transactions for each account
+    const transactions = await Promise.all(
+      balances.map(
+        ({ balance, accountId }) => {
+          return getAccountTransactions(_.extend({ account_id : accountId }, params, bundle), +balance * rate);
         }
-        accountTransactions[index].header = openingHeader;
-        // transactions for each account
-        accountTransactions.forEach(accountTransaction => {
-          accountTransaction.transactions.forEach((transaction, line) => {
-            if (line === 0) {
-              transaction.cumsum = util.roundDecimal((openingHeader.balance + transaction.exchangedBalance), 4);
-            } else {
-              const previosCumSum = accountTransaction.transactions[line - 1].cumsum;
-              transaction.cumsum = util.roundDecimal(previosCumSum + transaction.exchangedBalance, 4);
-            }
-            // last transaction
-            if ((line + 1) === accountTransaction.transactions.length) {
-              accountTransaction.footer.exchangedCumSum = transaction.cumsum;
-            }
-          });
+      )
+    );
+
+    // zip the balances and accounts together
+    const accounts = _
+      .zip(balances, transactions)
+      .map(([balance, rows]) => {
+        const header = _.extend({}, sharedHeader, {
+          balance         : Number(balance.balance),
+          credit          : Number(balance.credit),
+          debit           : Number(balance.debit),
+          exchangedCredit : Number(balance.credit) * rate,
+          exchangedDebit  : Number(balance.debit) * rate,
+          exchangedBalance : Number(balance.balance) * rate,
+          isCreditBalance : Number(balance.balance) < 0,
         });
+
+        return {
+          header,
+          balance,
+          transactions : rows.transactions,
+          footer : rows.footer,
+        };
       });
-      _.extend(bundle, { alltransactions : accountTransactions }, { params });
-      return report.render(bundle);
-    })
-    .then((result) => {
-      res.set(result.headers).send(result.report);
-    })
-    .catch(next)
-    .done();
+
+
+    _.extend(bundle, { accounts }, { params });
+
+    const result = await report.render(bundle);
+
+    res.set(result.headers).send(result.report);
+  } catch (e) {
+    next(e);
+  }
 }
 
 exports.document = document;

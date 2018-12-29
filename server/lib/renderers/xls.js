@@ -18,7 +18,6 @@ exports.headers = headers;
 
 
 async function render(data, template, options) {
-  const htmlStream = await html.render(data, template, options);
-  const htmlString = juice(htmlStream);
-  return Buffer.from(htmlString, 'utf8');
+  const htmlString = juice(await html.render(data, template, options));
+  return Buffer.from(htmlString, 'utf-8');
 }
