@@ -6,7 +6,6 @@
   <link href="{{absolutePath}}/vendor/components-font-awesome/css/font-awesome.css" rel="stylesheet">
   <script src="{{absolutePath}}/vendor/JsBarcode.all.min.js"></script>
   <style>
-   
     thead {
       display : table-header-group;
     }
@@ -14,13 +13,14 @@
     tr {
       page-break-inside : avoid;
     }
+
     .text-right {
       text-align: right;
     }
     .text-center{
       text-align: center;
     }
-    .row, .col-lg-12, .col-xs-12{
+    .row, .col-lg-12, .col-xs-12 {
        width :100%;
     }
     /* sourced from jimmybonney.com.  Thank you! */
@@ -89,5 +89,16 @@
     .table-header-rotated > thead > tr > th {
       border: none;
     }
+
+    .table-subtotal-row {
+      background-color:#eee;
+      font-weight:bold;
+      margin-bottom: 2px;
+    }
+
+    .table-subtotal-row > td {
+      border-bottom : 1px solid #000 !important;
+    }
+
   </style>
 </head>

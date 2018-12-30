@@ -1,5 +1,5 @@
 angular.module('bhima.controllers')
-  .controller('unbalanced_invoice_payments_reportController', UnbalancedInvoicePaymentsConfigController);
+  .controller('unpaid-invoice-paymentsController', UnbalancedInvoicePaymentsConfigController);
 
 UnbalancedInvoicePaymentsConfigController.$inject = [
   '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state',
@@ -7,8 +7,8 @@ UnbalancedInvoicePaymentsConfigController.$inject = [
 
 function UnbalancedInvoicePaymentsConfigController($sce, Notify, SavedReports, AppCache, reportData, $state) {
   const vm = this;
-  const cache = new AppCache('configure_unbalanced_invoice_payments_report');
-  const reportUrl = 'reports/finance/unbalanced_invoice_payments';
+  const cache = new AppCache('configure_unpaid-invoice-payments');
+  const reportUrl = 'reports/finance/unpaid-invoice-payments';
 
   vm.previewGenerated = false;
   vm.reportDetails = {};
@@ -35,24 +35,20 @@ function UnbalancedInvoicePaymentsConfigController($sce, Notify, SavedReports, A
   };
 
   vm.preview = function preview(form) {
-    if (form.$invalid) {
-      return;
-    }
+    if (form.$invalid) { return 0; }
 
     cache.reportDetails = angular.copy(vm.reportDetails);
 
     const sendDetails = angular.copy(vm.reportDetails);
-    vm.loading = true;
-    SavedReports.requestPreview(reportUrl, reportData.id, sendDetails)
+
+    return SavedReports.requestPreview(reportUrl, reportData.id, sendDetails)
       .then((result) => {
+
         // update cached configuration
         vm.previewGenerated = true;
         vm.previewResult = $sce.trustAsHtml(result);
       })
-      .catch(Notify.handleError)
-      .finally(() => {
-        vm.loading = false;
-      });
+      .catch(Notify.handleError);
   };
 
   function checkCachedConfiguration() {

@@ -2,8 +2,8 @@
 
 -- Use this Procedure below posted at http://mysql.rjweb.org/doc.php/pivot.
 DELIMITER $$
-DROP PROCEDURE IF EXISTS Pivot $$
 
+DROP PROCEDURE IF EXISTS Pivot $$
 CREATE PROCEDURE Pivot(
   IN tbl_name VARCHAR(99),    -- table name (or db.tbl)
   IN base_cols VARCHAR(99),   -- column(s) on the left, separated by commas
@@ -54,7 +54,15 @@ BEGIN
   PREPARE _sql FROM @stmt2;
   EXECUTE _sql;           -- The resulting pivot table ouput
   DEALLOCATE PREPARE _sql;
-  -- For debugging / tweaking, SELECT the various @variables after CALLing.
 END; $$
+
+DROP PROCEDURE IF EXISTS GetUnbalancedDebtorsByService$$
+CREATE PROCEDURE GetUnbalancedDebtorsByService(
+  IN dateFrom DATE,
+  IN dateTo DATE
+) BEGIN
+  CALL UnbalancedInvoicePaymentsTable(dateFrom, dateTo);
+  CALL Pivot('unbalanced_invoices', "projectName,debtorGroupName,debtorReference", "serviceName", "balance", "", "");
+END$$
 
 DELIMITER ;
