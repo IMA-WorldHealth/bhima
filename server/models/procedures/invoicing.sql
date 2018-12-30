@@ -886,8 +886,7 @@ CREATE PROCEDURE UnbalancedInvoicePaymentsTable(
 
   -- this holds all the invoices that were made during the period
   -- two copies are needed for the UNION ALL query.
-  DROP TABLE IF EXISTS tmp_invoices_1;
-  CREATE TABLE tmp_invoices_1 (INDEX uuid (uuid)) AS
+  CREATE TEMPORARY TABLE tmp_invoices_1 (INDEX uuid (uuid)) AS
     SELECT invoice.uuid, invoice.debtor_uuid, invoice.date
     FROM invoice
     WHERE
@@ -895,12 +894,10 @@ CREATE PROCEDURE UnbalancedInvoicePaymentsTable(
       AND reversed = 0
     ORDER BY invoice.date;
 
-  DROP TABLE IF EXISTS tmp_invoices_2;
-  CREATE TABLE tmp_invoices_2 AS SELECT * FROM tmp_invoices_1;
+  CREATE TEMPORARY TABLE tmp_invoices_2 AS SELECT * FROM tmp_invoices_1;
 
   -- This holds the invoices from the PJ/GL
-  DROP TABLE IF EXISTS tmp_records;
-  CREATE TABLE tmp_records AS
+  CREATE TEMPORARY TABLE tmp_records AS
     SELECT ledger.record_uuid AS uuid, ledger.debit_equiv, ledger.credit_equiv
     FROM (
       SELECT pj.record_uuid, pj.debit_equiv, pj.credit_equiv
@@ -917,8 +914,7 @@ CREATE PROCEDURE UnbalancedInvoicePaymentsTable(
   ) AS ledger;
 
   -- this holds the references/payments against the invoices
-  DROP TABLE IF EXISTS tmp_references;
-  CREATE TABLE tmp_references AS
+  CREATE TEMPORARY TABLE tmp_references AS
     SELECT ledger.reference_uuid AS uuid, ledger.debit_equiv, ledger.credit_equiv
     FROM (
       SELECT pj.reference_uuid, pj.debit_equiv, pj.credit_equiv
@@ -936,8 +932,7 @@ CREATE PROCEDURE UnbalancedInvoicePaymentsTable(
 
   -- combine invoices and references to get the balance of each invoice.
   -- note that we filter out balanced invoices
-  DROP TABLE IF EXISTS tmp_invoice_balances;
-  CREATE TABLE tmp_invoice_balances AS
+  CREATE TEMPORARY TABLE tmp_invoice_balances AS
     SELECT z.uuid, SUM(z.debit_equiv) AS debit_equiv,
       SUM(z.credit_equiv) AS credit_equiv,
       SUM(z.debit_equiv) - SUM(z.credit_equiv) AS balance
@@ -952,9 +947,7 @@ CREATE PROCEDURE UnbalancedInvoicePaymentsTable(
   -- even though this column is called "balance", it is actually the amount remaining
   -- on the invoice.
 
-  DROP TABLE IF EXISTS `unbalanced_invoices`;
-
-  CREATE TABLE `unbalanced_invoices` AS (
+  CREATE TEMPORARY TABLE `unbalanced_invoices` AS (
     SELECT BUID(ivc.uuid) as invoice_uuid , em.text AS debtorReference, debtor.text AS debtorName, balances.debit_equiv AS debit,
       balances.credit_equiv AS credit, iv.date AS creation_date, balances.balance,
       dm.text AS reference, ivc.project_id, p.name as 'projectName', dbtg.name as 'debtorGroupName',
@@ -972,6 +965,8 @@ CREATE PROCEDURE UnbalancedInvoicePaymentsTable(
       LEFT JOIN entity_map AS em ON em.uuid = iv.debtor_uuid
     ORDER BY iv.date
   );
+
+  SELECT * FROM unbalanced_invoices;
 END$$
 
 DELIMITER ;

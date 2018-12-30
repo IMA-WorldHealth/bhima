@@ -78,7 +78,7 @@ const cash = require('../controllers/finance/cash');
 const priceList = require('../controllers/finance/priceList');
 const priceListPreport = require('../controllers/finance/reports/priceList');
 const invoicingFees = require('../controllers/finance/invoicingFees');
-const unbalancedInvoicePayments = require('../controllers/finance/reports/unbalanced_invoice_payments');
+const unpaidInvoicePayments = require('../controllers/finance/reports/unpaid-invoice-payments');
 const accounts = require('../controllers/finance/accounts');
 const subsidies = require('../controllers/finance/subsidies');
 const patientInvoice = require('../controllers/finance/patientInvoice');
@@ -374,7 +374,7 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/cashflow/services', financeReports.cashflow.byService);
   app.get('/reports/finance/financialPatient/:uuid', financeReports.patient);
   app.get('/reports/finance/income_expense', financeReports.income_expense.document);
-  app.get('/reports/finance/unbalanced_invoice_payments', unbalancedInvoicePayments.document);
+  app.get('/reports/finance/unpaid-invoice-payments', unpaidInvoicePayments.document);
 
   app.get('/reports/finance/income_expense_by_month', financeReports.income_expense_by_month.document);
   app.get('/reports/finance/income_expense_by_year', financeReports.income_expense_by_year.document);

@@ -28,7 +28,7 @@ angular.module('bhima.routes')
       'patientStanding',
       'stock_exit',
       'stock_value',
-      'unbalanced_invoice_payments_report',
+      'unpaid-invoice-payments',
     ];
 
     $stateProvider
