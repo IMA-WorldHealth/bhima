@@ -31,6 +31,7 @@ function document(req, res, next) {
   params.user = req.session.user;
   params.enterprise_id = req.session.enterprise.id;
   params.isEnterpriseCurrency = (req.session.enterprise.currency_id === Number(params.currency_id));
+  params.includeUnpostedValues = params.includeUnpostedValues ? Number(params.includeUnpostedValues) : 0;
 
   try {
     report = new ReportManager(TEMPLATE, req.session, params);
@@ -132,9 +133,11 @@ function getGeneralLedgerSQL(options) {
 
   const columns = options.isEnterpriseCurrency ? enterpriseCurrencyColumns : nonEnterpriseCurrencyColumns;
 
+  // get the underlying table for posted/unposted
+  const table = getBaseTable(options);
 
   const sql = `
-    SELECT trans_id, description, trans_date, document_reference, debit, credit,
+    SELECT trans_id, description, trans_date, document_reference, debit, credit, posted,
       debit_equiv, credit_equiv, currency_id, rate, IF(rate < 1, (1 / rate), rate) AS invertedRate,
       ${columns}
       FROM (
@@ -146,8 +149,9 @@ function getGeneralLedgerSQL(options) {
         )) AS rate,
         SUM(debit_equiv) as debit_equiv, SUM(credit_equiv) AS credit_equiv,
         (SUM(debit) - SUM(credit)) AS balance, SUM(debit) AS debit,
-        SUM(credit) AS credit, MAX(currency_id) AS currency_id
-      FROM general_ledger
+        SUM(credit) AS credit, MAX(currency_id) AS currency_id,
+        ${options.includeUnpostedValues ? 'posted' : '1 as posted'}
+      FROM ${table}
       LEFT JOIN document_map ON record_uuid = document_map.uuid
   `;
 
@@ -165,10 +169,37 @@ function getGeneralLedgerSQL(options) {
   return { query, parameters };
 }
 
+/**
+ * @function getBaseTable
+ *
+ * @description
+ * This function constructs the underlying base tables for posted/unposted values from the general_ledger or
+ * a UNION of the posting_journal and general_ledger.
+ *
+ * TODO(@jniles) - move the WHERE queries into the subquery for performance reasons
+ */
+function getBaseTable(options) {
+  const includeUnpostedValuesTables = `(
+    SELECT trans_id, description, trans_date, debit_equiv, credit_equiv, currency_id, debit, credit,
+    account_id, record_uuid, reference_uuid, 1 as posted
+    FROM general_ledger
+    UNION ALL
+    SELECT trans_id, description, trans_date, debit_equiv, credit_equiv, currency_id, debit, credit,
+    account_id, record_uuid, reference_uuid, 0 as posted
+    FROM posting_journal
+  ) AS ledger`;
+
+  const table = options.includeUnpostedValues ? includeUnpostedValuesTables : `general_ledger as ledger`;
+  return table;
+}
+
 // @TODO define standards for displaying and rounding totals, unless numbers are rounded
 //       uniformly they may be displayed differently from what is recorded
 function getTotalsSQL(options) {
   const currencyId = options.currency_id || options.enterprise_currency_id;
+
+  // get the underlying dataset based on the posted/unposted flag
+  const table = getBaseTable(options);
 
   const sqlTotals = `
     SELECT
@@ -177,7 +208,7 @@ function getTotalsSQL(options) {
       SUM(ROUND(debit, 2)) AS debit, SUM(ROUND(credit, 2)) AS credit,
       SUM(ROUND(debit_equiv, 2)) AS debit_equiv, SUM(ROUND(credit_equiv, 2)) AS credit_equiv,
       (SUM(ROUND(debit_equiv, 2)) - SUM(ROUND(credit_equiv, 2))) AS balance
-    FROM general_ledger
+    FROM ${table}
   `;
 
   const filters = new FilterParser(options);
@@ -210,7 +241,7 @@ function getAccountTransactions(options, openingBalance = 0) {
       groups.credit_equiv, groups.trans_date, groups.document_reference,
       groups.exchangedCredit, groups.exchangedDebit, groups.exchangedBalance,
       groups.rate, ROUND(groups.invertedRate, 2) AS invertedRate, groups.cumsum,
-      groups.description, groups.currency_id
+      groups.description, groups.currency_id, groups.posted
     FROM (${query})c, (SELECT @cumsum := ${openingBalance || 0})z) AS groups
   `;
 
@@ -225,6 +256,16 @@ function getAccountTransactions(options, openingBalance = 0) {
     })
     .then(transactions => {
       _.extend(bundle, { transactions });
+
+      // alias the unposted record flag for styling with italics
+      let hasUnpostedRecords = false;
+      transactions.forEach(txn => {
+        txn.isUnposted = txn.posted === 0;
+        if (txn.isUnposted) { hasUnpostedRecords = true; }
+      });
+
+      _.extend(bundle, { hasUnpostedRecords });
+
       // get totals for this period
       return db.one(totalsQuery, totalsParameters);
     })

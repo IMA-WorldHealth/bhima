@@ -3,7 +3,11 @@
 <body>
   {{> header }}
 
-  <h3 class="text-center text-uppercase"><strong>{{translate "REPORT.ACCOUNT"}}</strong></h3>
+  <h3 class="text-center text-uppercase">
+    <strong>
+      {{#if hasUnpostedRecords}}({{translate "REPORT.PROVISIONARY"}}) {{/if}}
+      {{translate "REPORT.ACCOUNT"}}</strong>
+  </h3>
 
   <h4 class="text-center"><strong>{{ account.number }} | {{ account.label}}</strong></h4>
 
@@ -68,7 +72,7 @@
 
         {{! All transactions within the query range }}
         {{#each transactions}}
-          <tr>
+          <tr {{#if this.isUnposted}}style="font-style:italic;"{{/if}}>
             <td>{{date this.trans_date}}</td>
             <td title="{{this.trans_id}}">{{this.trans_id}}</td>
             <td title="{{this.document_reference}}">{{this.document_reference}}</td>
@@ -100,7 +104,7 @@
 
       {{!  This contains the grid totals }}
       <tfoot>
-        <tr>
+        <tr {{#if hasUnpostedRecords}}style="font-style:italic"{{/if}}>
           <th>{{date footer.date}}</th>
           <th colspan="3">{{translate "FORM.LABELS.TOTAL"}}</th>
           <th class="text-right">{{footer.invertedRate}}</th>
