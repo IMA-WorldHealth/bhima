@@ -202,6 +202,8 @@
       "REMOVE_ZERO_ROWS_HELP" : "Cette option supprime les lignes qui ne contiennent aucune donnée. Produit un rapport plus compacte.",
       "INCLUDE_CLOSING_BALANCES" : "Inclure les soldes de clôture",
       "INCLUDE_CLOSING_BALANCES_HELP" : "Cette option force la balance à afficher les soldes de l’année entière, y compris les soldes de clôture. Toute opération effectuée pour clôturer les comptes de produits et de charges sera reflétée dans la balance.",
+      "INCLUDE_UNPOSTED_RECORDS" : "Inclure les valeurs non-postée",
+      "INCLUDE_UNPOSTED_RECORDS_HELP" : "",
       "REMOVE_UNUSED_ACCOUNT" : "Enlèver les comptes non utilisés"
     },
     "OHADA": {
@@ -337,6 +339,7 @@
         "RQ" : "Participation des travailleurs"
       }
     },
+    "PROVISIONARY" : "Provisoir",
     "FOOTER": {
       "RESPONSIBLE" : "Responsable",
       "RECEIVED_BY" : "Receptionné par",

@@ -18,6 +18,7 @@ function AccountReportConfigController(
 
   vm.reportDetails = {
     currency_id : Session.enterprise.currency_id,
+    includeUnpostedValues : 0,
   };
 
   vm.dateInterval = 1;
@@ -31,6 +32,10 @@ function AccountReportConfigController(
   vm.clearPreview = function clearPreview() {
     vm.previewGenerated = false;
     vm.previewResult = null;
+  };
+
+  vm.onChangeUnpostedValues = (bool) => {
+    vm.reportDetails.includeUnpostedValues = bool;
   };
 
   vm.setCurrency = function setCurrency(currencyId) {
