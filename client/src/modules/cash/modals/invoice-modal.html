@@ -13,14 +13,13 @@
 <div class="modal-body" data-debtor-invoice-modal>
 
   <!-- warn the client if not debtor id has been passed in -->
-  <p ng-show="CashInvoiceModalCtrl.missingId" class="text-danger text-center">
+  <p ng-show="CashInvoiceModalCtrl.hasMissingDebtorUuid" class="text-danger text-center">
     <i class="fa fa-warning"></i> <span translate>FORM.ERRORS.MISSING_DEBTOR_ID</span>
   </p>
 
   <!-- ui-grid to select debtor invoices -->
-  <div ng-if="!CashInvoiceModalCtrl.missingId">
+  <div ng-if="!CashInvoiceModalCtrl.hasMissingDebtorUuid">
     <div ui-grid="CashInvoiceModalCtrl.gridOptions" ui-grid-selection class="modal-grid" id="debtorInvoicesGrid">
-
       <bh-grid-loading-indicator
         loading-state="CashInvoiceModalCtrl.loading"
         empty-state="CashInvoiceModalCtrl.gridOptions.data.length === 0"
@@ -47,7 +46,7 @@
     type="submit"
     class="btn btn-primary"
     ng-click="CashInvoiceModalCtrl.submit()"
-    ng-disabled="(CashInvoiceModalCtrl.missingId || CashInvoiceModalCtrl.hasError)"
+    ng-disabled="(CashInvoiceModalCtrl.hasMissingDebtorUuid || CashInvoiceModalCtrl.hasError)"
     data-method="submit"
     translate>
     FORM.BUTTONS.SUBMIT

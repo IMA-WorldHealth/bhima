@@ -14,15 +14,13 @@ CashInvoiceModalController.$inject = [
  * and allowing selection of any number of invoices.
  */
 function CashInvoiceModalController(Debtors, Session, $timeout, Notify, $state, $rootScope, Instance) {
-  var vm = this;
+  const vm = this;
 
-  var debtorId = $state.params.debtor_uuid;
-  var invoices = $state.params.invoices;
-
-  vm.$params = $state.params;
+  const debtorUuid = $state.params.debtor_uuid;
+  const { invoices } = $state.params;
 
   // defaults to value
-  vm.missingId = !angular.isDefined(debtorId);
+  vm.hasMissingDebtorUuid = !angular.isDefined(debtorUuid);
 
   // bind methods
   vm.submit = submit;
@@ -33,14 +31,13 @@ function CashInvoiceModalController(Debtors, Session, $timeout, Notify, $state, 
     multiSelect       : true,
     fastWatch         : true,
     flatEntityAccess  : true,
-    onRegisterApi     : onRegisterApi,
+    onRegisterApi,
     enableColumnMenus : false,
     columnDefs        : [
-      { name: 'reference' },
-      { name: 'balance', cellFilter: 'currency:' + Session.enterprise.currencyId},
-      { name: 'date', cellFilter: 'date' },
+      { name : 'reference' },
+      { name : 'balance', cellFilter : `currency:${Session.enterprise.currencyId}` },
+      { name : 'date', cellFilter : 'date' },
     ],
-    minRowsToShow : 10,
   };
 
   function selectionChangeCallback() {
@@ -66,34 +63,37 @@ function CashInvoiceModalController(Debtors, Session, $timeout, Notify, $state, 
   function selectPreviouslySelectedInvoices() {
     if (!vm.gridApi) { return; }
 
-    var rows = vm.gridApi.grid.rows;
+    const { rows } = vm.gridApi.grid;
 
     // loop through each invoice id passed in and reselect those that have
     // previously been selected
-    rows.forEach(function (row) {
+    rows.forEach((row) => {
       if (invoices.indexOf(row.entity.uuid) > -1) {
         vm.gridApi.selection.selectRow(row.entity);
       }
     });
   }
 
+  function hasPositiveBalance(invoice) {
+    return invoice.balance > 0;
+  }
+
   // starts up the modal
   function startup() {
-
     // start up the loading indicator
     toggleLoadingState();
 
     // load debtor invoices
-    Debtors.invoices(debtorId, { balanced : 0 })
-      .then(function (invoices) {
-        vm.gridOptions.data = invoices;
+    Debtors.invoices(debtorUuid, { balanced : 0 })
+      .then(data => {
+        vm.gridOptions.data = data.filter(hasPositiveBalance);
 
         // requires timeout to bind angular ids to each row before selecting them.
-        $timeout(function () {
+        $timeout(() => {
           selectPreviouslySelectedInvoices();
         }, 0, false);
       })
-      .catch(function (error) {
+      .catch((error) => {
         vm.hasError = true;
         Notify.handleError(error);
       })
@@ -107,16 +107,13 @@ function CashInvoiceModalController(Debtors, Session, $timeout, Notify, $state, 
 
   // resolve the modal with the selected invoices to add to the cash payment bills
   function submit() {
-    var invoices;
-
     // we start in a neutral state
     vm.loading = false;
     vm.hasError = false;
 
     // retrieve the outstanding patient invoices from the ui grid
-    invoices = vm.getSelectedRows();
-
-    $rootScope.$broadcast('cash:configure', { invoices: invoices });
+    const rows = vm.getSelectedRows();
+    $rootScope.$broadcast('cash:configure', { invoices : rows });
 
     return Instance.close();
   }
