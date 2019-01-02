@@ -149,7 +149,7 @@
             "DISABLED_CURRENCY": "This currency is unusable since there is no account set for it.  Use the Cashbox Management module to set an account for this currency and cashbox.",
             "DISPLAY_NAME": "The user's full name. This is displayed on any formal documents or receipts processed by the system.",
             "DISTRIBUTION_INVALID": "The distribution is invalid. The sum of distributed values must be equal to the amount of the transaction.",
-            "DISTRIBUTION_PERCENT_INVALID": "The distribution is invalid. The sum of percentage values must be equal to 100%",            
+            "DISTRIBUTION_PERCENT_INVALID": "The distribution is invalid. The sum of percentage values must be equal to 100%",
             "DISTRIBUTION_SUCCESSFULLY": "Distributed successfully",
             "EDITED" : "Edited",
             "EMPLOYEE_NOT_FOUND" : "Employee Not Found",
