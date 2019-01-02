@@ -110,8 +110,8 @@ function PatientRegistrySearch() {
   });
 
   // demonstrates that sex + time-delimited filtering works
-  it('should find no female patients registered in the last year.', () => {
-    const NUM_MATCHING = 0;
+  it('should find one female patients registered in the last year.', () => {
+    const NUM_MATCHING = 1;
     element(by.id('female')).click();
     modal.switchToDefaultFilterTab();
     modal.setPeriod('lastYear');
