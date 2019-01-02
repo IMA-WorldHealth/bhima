@@ -42,7 +42,7 @@ describe('Fiscal Year', () => {
     FU.input('FiscalManageCtrl.fiscal.label', fiscalYear.label);
 
     // select the proper date
-    components.dateInterval.range('01/01/2019', '31/12/2019');
+    components.dateInterval.range('01/01/2020', '31/12/2020');
     FU.select('FiscalManageCtrl.fiscal.previous_fiscal_year_id', fiscalYear.previous);
     FU.input('FiscalManageCtrl.fiscal.note', fiscalYear.note);
     FU.buttons.submit();
