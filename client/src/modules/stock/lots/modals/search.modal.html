@@ -51,28 +51,25 @@
           </div>
 
           <!--entry date -->
-          <fieldset>
-            <legend translate>STOCK.ENTRY_DATE</legend>
-            <bh-date-interval
-              date-id="entry-date"
-              date-from="$ctrl.searchQueries.entry_date_from"
-              date-to="$ctrl.searchQueries.entry_date_to"
-              mode="clean">
-            </bh-date-interval>
-          </fieldset>
+          <bh-date-interval
+            label="STOCK.ENTRY_DATE"
+            date-id="entry-date"
+            date-from="$ctrl.searchQueries.entry_date_from"
+            date-to="$ctrl.searchQueries.entry_date_to"
+            mode="clean">
+          </bh-date-interval>
 
           <!-- expiration date -->
-          <fieldset>
-            <legend translate>STOCK.EXPIRATION_DATE</legend>
-            <bh-date-interval
-              date-id="expiration-date"
-              date-from="$ctrl.searchQueries.expiration_date_from"
-              date-to="$ctrl.searchQueries.expiration_date_to"
-              mode="clean">
-            </bh-date-interval>
-          </fieldset>
+          <bh-date-interval
+            label="STOCK.EXPIRATION_DATE"
+            date-id="expiration-date"
+            date-from="$ctrl.searchQueries.expiration_date_from"
+            date-to="$ctrl.searchQueries.expiration_date_to"
+            mode="clean">
+          </bh-date-interval>
         </div>
       </uib-tab>
+
       <uib-tab index="1" heading="{{ 'FORM.LABELS.DEFAULTS' | translate }}" data-default-filter-tab>
         <div class="tab-body">
           <bh-period-select
@@ -104,6 +101,7 @@
     <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" data-method="cancel" translate>
       FORM.BUTTONS.CLOSE
     </button>
+
     <bh-loading-button loading-state="ModalForm.$loading">
       <span translate>FORM.BUTTONS.SUBMIT</span>
     </bh-loading-button>
