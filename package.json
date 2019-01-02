@@ -132,7 +132,7 @@
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.0",
     "chai-datetime": "^1.5.0",
-    "chai-http": "^1.0.0",
+    "chai-http": "^4.2.1",
     "commitizen": "^3.0.0",
     "cz-conventional-changelog": "^2.0.0",
     "del": "^3.0.0",
