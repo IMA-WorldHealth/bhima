@@ -87,8 +87,7 @@ function receipt(req, res, next) {
     .then((result) => {
       res.set(result.headers).send(result.report);
     })
-    .catch(next)
-    .done();
+    .catch(next);
 }
 
 
@@ -139,7 +138,7 @@ function creditNotedRef(uuid) {
   const sql = `
     SELECT dm.text as reference
     FROM voucher v
-    JOIN  document_map dm ON v.uuid = dm.uuid 
+    JOIN  document_map dm ON v.uuid = dm.uuid
     WHERE v.reference_uuid = ?
   `;
   return db.one(sql, db.bid(uuid));

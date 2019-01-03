@@ -19,6 +19,73 @@ exports.isRemovableTransaction = isRemovableTransaction;
 exports.getRecordTextByUuid = getRecordTextByUuid;
 exports.getEntityTextByUuid = getEntityTextByUuid;
 
+exports.getRecordUuidByText = getRecordUuidByText;
+exports.getRecordUuidByTextBulk = getRecordUuidByTextBulk;
+
+exports.getEntityUuidByText = getEntityUuidByText;
+exports.getEntityUuidByTextBulk = getEntityUuidByTextBulk;
+
+/**
+ * @function getRecordUuidByText
+ *
+ * @description
+ * This function gets a record uuid by its human readable text.  It is useful for creating vouchers
+ * or editing records in the journal.
+ */
+function getRecordUuidByText(hrRecord) {
+  const sql = `
+    SELECT uuid FROM document_map WHERE text = ?;
+  `;
+
+  return db.one(sql, hrRecord);
+}
+
+/**
+ * @function getRecordUuidByTextBulk
+ *
+ * @description
+ * This function returns the record uuids associated with an array of human readble document identifiers.
+ */
+function getRecordUuidByTextBulk(hrRecords) {
+  const sql = `
+    SELECT uuid, text FROM document_map WHERE text IN (?);
+  `;
+
+  return db.exec(sql, [hrRecords]);
+}
+
+/**
+ * @function getEntityUuidByText
+ *
+ * @description
+ * This function gets an entity uuid by its human readable text.  It is useful for creating vouchers
+ * or editing records in the journal where entities are specified by their text by users and later
+ * linked up by their uuids in the database.
+ */
+function getEntityUuidByText(hrEntity) {
+  const sql = `
+    SELECT uuid FROM entity_map WHERE text = ?;
+  `;
+
+  return db.one(sql, hrEntity);
+}
+
+/**
+ * @function getEntityUuidByTextBulk
+ *
+ * @description
+ * This function gets multiple entity uuids by their human readable text.  It is useful for creating vouchers
+ * or editing records in the journal where entities are specified by their text by users and later
+ * linked up by their uuids in the database.
+ */
+function getEntityUuidByTextBulk(hrEntities) {
+  const sql = `
+    SELECT uuid, text FROM entity_map WHERE text IN (?);
+  `;
+
+  return db.exec(sql, [hrEntities]);
+}
+
 
 /**
  * @function getRecordTextByUuid
@@ -112,28 +179,30 @@ function getTransactionRecords(uuid) {
   return db.exec(sql, [db.bid(uuid), db.bid(uuid)]);
 }
 
-
-function isRemovableTransaction(uuid) {
+/**
+ * @function isRemovableTransaction
+ *
+ * @description
+ * Checks to see if the transaction meets the criteria for removing. A transaction cannot
+ * be removed if it is:
+ *  1. Posted to the General Ledger
+ *  2. Referenced by another transaction.
+ */
+async function isRemovableTransaction(uuid) {
   // get all the rows of the transaction
-  return getTransactionRecords(uuid)
-    .then(rows => {
-      const [firstRow] = rows;
-      const isPosted = firstRow.posted;
+  const [row] = await getTransactionRecords(uuid);
+  const isPosted = row.posted;
 
-      if (isPosted) {
-        throw new BadRequest(
-          `Transaction ${firstRow.trans_id} (${firstRow.identifier}) is already posted.`,
-          'TRANSACTIONS.ERRORS.TRANSACTION_POSTED'
-        );
-      }
+  if (isPosted) {
+    throw new BadRequest(
+      `Transaction ${row.trans_id} (${row.identifier}) is already posted.`,
+      'TRANSACTIONS.ERRORS.TRANSACTION_POSTED'
+    );
+  }
 
-      // check if the transaction has references elsewhere
-      return getTransactionReferences(uuid);
-    })
-    .then(references => {
-      const isReferenced = references.length > 0;
-      if (isReferenced) {
-        throw new BadRequest('This transaction is referenced.', 'TRANSACTIONS.ERRORS.TRANSACTION_REFERENCED');
-      }
-    });
+  const references = await getTransactionReferences(uuid);
+  const isReferenced = references.length > 0;
+  if (isReferenced) {
+    throw new BadRequest('This transaction is referenced.', 'TRANSACTIONS.ERRORS.TRANSACTION_REFERENCED');
+  }
 }
