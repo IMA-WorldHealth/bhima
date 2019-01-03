@@ -14,9 +14,9 @@
  * @requires lib/errors/BadRequest
  */
 
+const _ = require('lodash');
 const util = require('../../lib/util');
 const db = require('../../lib/db');
-
 const BadRequest = require('../../lib/errors/BadRequest');
 const FilterParser = require('../../lib/filter');
 
@@ -82,6 +82,7 @@ async function lookupVoucher(vUuid) {
     JOIN document_map dm ON dm.uuid = v.uuid
     JOIN project p ON p.id = v.project_id
     JOIN user u ON u.id = v.user_id
+    JOIN document_map dm ON dm.uuid = v.uuid
     LEFT JOIN transaction_type ON v.type_id = transaction_type.id
     WHERE v.uuid = ?;
   `;
@@ -140,6 +141,7 @@ function find(options) {
     JOIN document_map dm ON v.uuid = dm.uuid
     JOIN project p ON p.id = v.project_id
     JOIN user u ON u.id = v.user_id
+    LEFT JOIN document_map dm ON v.uuid = dm.uuid
     LEFT JOIN transaction_type ON v.type_id = transaction_type.id
   `;
 
@@ -217,7 +219,8 @@ function totalAmountByCurrency(options) {
   }
 
   const sql = `
-  SELECT c.id as currencyId, c.symbol as currencySymbol, SUM(v.amount) as totalAmount, COUNT(c.symbol) AS numVouchers
+  SELECT c.id as currencyId, c.symbol as currencySymbol, SUM(v.amount) as totalAmount,
+    COUNT(c.symbol) AS numVouchers, dm.text as reference
   FROM voucher v
     JOIN document_map dm ON v.uuid = dm.uuid
     JOIN currency c ON v.currency_id = c.id
@@ -264,14 +267,13 @@ function create(req, res, next) {
 
   createVoucher(voucher, req.session.user.id, req.session.project.id)
     .then((result) => res.status(201).json({ uuid : result.uuid }))
-    .catch(next)
-    .done();
+    .catch(next);
 }
 
-function createVoucher(voucherDetails, userId, projectId) {
+async function createVoucher(voucherDetails, userId, projectId) {
   const items = voucherDetails.items || [];
 
-  const voucherType = voucherDetails.type_id;
+  const voucherTypeId = voucherDetails.type_id;
   const updatesPaiementData = [];
 
   // a voucher without two items doesn't make any sense in double-entry
@@ -298,13 +300,25 @@ function createVoucher(voucherDetails, userId, projectId) {
   voucherDetails.uuid = db.bid(vuid);
 
   const SALARY_PAYMENT_VOUCHER_TYPE_ID = 7;
+  const referencedEntities = _.uniq(items.map(item => item.hrEntity));
+
+  let hrEntityMap;
+  if (referencedEntities.length) {
+    const hrEntities = await shared.getEntityUuidByTextBulk(referencedEntities);
+    hrEntityMap = _.keyBy(hrEntities, 'text');
+  }
 
   // preprocess the items so they have uuids as required
   items.forEach(value => {
     let item = value;
 
+    // prefer the entity_uuid, and substitute the hrEntity if it exists.
+    if (hrEntityMap) {
+      item.entity_uuid = item.entity_uuid || hrEntityMap[item.hrEntity];
+    }
+
     // Only for Employee Salary Paiement
-    if (voucherType === SALARY_PAYMENT_VOUCHER_TYPE_ID) {
+    if (voucherTypeId === SALARY_PAYMENT_VOUCHER_TYPE_ID) {
       if (item.document_uuid) {
         const updatePaiement = `
           UPDATE payment SET
@@ -358,7 +372,7 @@ function createVoucher(voucherDetails, userId, projectId) {
   transaction.addQuery('CALL PostVoucher(?);', [voucherDetails.uuid]);
 
   // Only for Employee Salary Paiement
-  if (voucherType === 7) {
+  if (voucherTypeId === SALARY_PAYMENT_VOUCHER_TYPE_ID) {
     updatesPaiementData.forEach(updatePaiement => {
       transaction.addQuery(updatePaiement.query, updatePaiement.params);
     });
