@@ -68,7 +68,6 @@ function deleteRoute(req, res, next) {
 }
 
 function deleteTransaction(uuid) {
-
   return shared.getRecordTextByUuid(uuid)
     .then(documentMap => {
       // route to do the correct safe deletion method.

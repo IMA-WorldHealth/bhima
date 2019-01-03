@@ -43,13 +43,13 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
     }],
   };
 
-  // NOTE: this voucher does not have any uuids
+  // NOTE: this voucher does not have any uuids and uses hrEntity tags
   const items = [
     {
-      account_id : 197, debit : 11, credit : 0, document_uuid : genuuid(), entity_uuid : genuuid(),
+      account_id : 197, debit : 11, credit : 0, document_uuid : genuuid(), hrEntity : 'PA.TPA.1',
     },
     {
-      account_id : 191, debit : 0, credit : 11, document_uuid : genuuid(), entity_uuid : genuuid(),
+      account_id : 191, debit : 0, credit : 11, document_uuid : genuuid(),
     },
     { account_id : 197, debit : 0, credit : 12 },
     { account_id : 190, debit : 12, credit : 0 },
@@ -61,7 +61,7 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
     project_id  : 1,
     currency_id : helpers.data.USD,
     amount      : 23,
-    description : 'Multiple Voucher Transaction',
+    description : 'Multiple Voucher Transaction with PA.TPA.1 as entity',
     user_id     : 1,
   };
 
@@ -146,11 +146,28 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
       .catch(helpers.handler);
   });
 
+  function filterUniqueValues(row, index, array) {
+    return array.indexOf(row) === index;
+  }
+
   it('POST /vouchers create a new voucher record with multiple voucher_items', () => {
     return agent.post('/vouchers')
       .send({ voucher : secondVoucher })
       .then((res) => {
         helpers.api.created(res);
+
+        // check that the voucher is linked the entities
+        return agent.get(`/vouchers/${res.body.uuid}`);
+      })
+      .then(res => {
+        expect(res.body.items).to.be.a('array');
+
+        const entityUuids = res.body.items
+          .map(row => row.entity_uuid)
+          .filter(filterUniqueValues)
+          .filter(value => value !== null);
+
+        expect(entityUuids).to.have.length(1);
       })
       .catch(helpers.handler);
   });

@@ -21,12 +21,9 @@ const util = require('../../lib/util');
 const db = require('../../lib/db');
 
 const BadRequest = require('../../lib/errors/BadRequest');
-const identifiers = require('../../config/identifiers');
 const FilterParser = require('../../lib/filter');
 
 const shared = require('./shared');
-
-const entityIdentifier = identifiers.VOUCHER.key;
 
 /** Get list of vouchers */
 exports.list = list;
@@ -42,6 +39,7 @@ exports.find = find;
 exports.lookupVoucher = lookupVoucher;
 exports.safelyDeleteVoucher = safelyDeleteVoucher;
 exports.totalAmountByCurrency = totalAmountByCurrency;
+
 /**
  * GET /vouchers
  *
@@ -69,20 +67,24 @@ function list(req, res, next) {
 function detail(req, res, next) {
   lookupVoucher(req.params.uuid)
     .then(voucher => res.status(200).json(voucher))
-    .catch(next)
-    .done();
+    .catch(next);
 }
 
-function lookupVoucher(vUuid) {
-  let voucher;
-
+/**
+ * @function lookupVoucher
+ *
+ * @description
+ * Look up voucher by its UUID.
+ */
+async function lookupVoucher(vUuid) {
   const sql = `
     SELECT BUID(v.uuid) as uuid, v.date, v.project_id, v.currency_id, v.amount,
       v.description, v.user_id, v.type_id,  u.display_name, transaction_type.text,
-      CONCAT_WS('.', '${entityIdentifier}', p.abbr, v.reference) AS reference, reversed
+      dm.text AS reference, reversed
     FROM voucher v
     JOIN project p ON p.id = v.project_id
     JOIN user u ON u.id = v.user_id
+    JOIN document_map dm ON dm.uuid = v.uuid
     LEFT JOIN transaction_type ON v.type_id = transaction_type.id
     WHERE v.uuid = ?;
   `;
@@ -99,15 +101,9 @@ function lookupVoucher(vUuid) {
     ORDER BY vi.account_id DESC, vi.debit DESC, vi.credit ASC, entity_reference;
   `;
 
-  return db.one(sql, [db.bid(vUuid)])
-    .then((record) => {
-      voucher = record;
-      return db.exec(itemSql, [db.bid(vUuid)]);
-    })
-    .then((items) => {
-      voucher.items = items;
-      return voucher;
-    });
+  const voucher = await db.one(sql, [db.bid(vUuid)]);
+  voucher.items = await db.exec(itemSql, [db.bid(vUuid)]);
+  return voucher;
 }
 
 // NOTE(@jniles) - this is used to find references for both vouchers and credit notes.
@@ -122,7 +118,6 @@ function find(options) {
   db.convert(options, ['uuid', 'reference_uuid', 'entity_uuid', 'cash_uuid', 'invoice_uuid']);
 
   const filters = new FilterParser(options, { tableAlias : 'v' });
-  const referenceStatement = `CONCAT_WS('.', '${entityIdentifier}', p.abbr, v.reference) = ?`;
   let typeIds = [];
 
   if (options.type_ids) {
@@ -133,12 +128,12 @@ function find(options) {
     SELECT
       BUID(v.uuid) as uuid, v.date, v.project_id, v.currency_id, v.amount,
       v.description, v.user_id, v.type_id, u.display_name, transaction_type.text,
-      CONCAT_WS('.', '${entityIdentifier}', p.abbr, v.reference) AS reference,
-      v.edited, BUID(v.reference_uuid) AS reference_uuid, p.name AS project_name,
-      v.reversed
+      dm.text as reference, v.edited, BUID(v.reference_uuid) AS reference_uuid,
+      p.name AS project_name, v.reversed
     FROM voucher v
     JOIN project p ON p.id = v.project_id
     JOIN user u ON u.id = v.user_id
+    LEFT JOIN document_map dm ON v.uuid = dm.uuid
     LEFT JOIN transaction_type ON v.type_id = transaction_type.id
   `;
 
@@ -153,7 +148,7 @@ function find(options) {
   filters.equals('edited');
   filters.equals('currency_id');
 
-  filters.custom('reference', referenceStatement);
+  filters.equals('reference', 'text', 'dm');
 
   filters.fullText('description');
 
@@ -181,7 +176,6 @@ function totalAmountByCurrency(options) {
   db.convert(options, ['uuid', 'reference_uuid', 'entity_uuid', 'cash_uuid', 'invoice_uuid']);
 
   const filters = new FilterParser(options, { tableAlias : 'v' });
-  const referenceStatement = `CONCAT_WS('.', '${entityIdentifier}', p.abbr, v.reference) = ?`;
   let typeIds = [];
 
   if (options.type_ids) {
@@ -189,9 +183,11 @@ function totalAmountByCurrency(options) {
   }
 
   const sql = `
-  SELECT c.id as currencyId, c.symbol as currencySymbol, SUM(v.amount) as totalAmount, COUNT(c.symbol) AS numVouchers
+  SELECT c.id as currencyId, c.symbol as currencySymbol, SUM(v.amount) as totalAmount,
+    COUNT(c.symbol) AS numVouchers, dm.text as reference
   FROM voucher v
   JOIN currency c ON v.currency_id = c.id
+  JOIN document_map dm ON v.uuid = dm.uuid
   `;
 
   delete options.detailed;
@@ -202,7 +198,7 @@ function totalAmountByCurrency(options) {
   filters.equals('user_id');
   filters.equals('edited');
 
-  filters.custom('reference', referenceStatement);
+  filters.equals('reference', 'text', 'dm');
 
   filters.fullText('description');
 
@@ -236,14 +232,13 @@ function create(req, res, next) {
 
   createVoucher(voucher, req.session.user.id, req.session.project.id)
     .then((result) => res.status(201).json({ uuid : result.uuid }))
-    .catch(next)
-    .done();
+    .catch(next);
 }
 
-function createVoucher(voucherDetails, userId, projectId) {
+async function createVoucher(voucherDetails, userId, projectId) {
   let items = voucherDetails.items || [];
 
-  const voucherType = voucherDetails.type_id;
+  const voucherTypeId = voucherDetails.type_id;
   const updatesPaiementData = [];
 
   // a voucher without two items doesn't make any sense in double-entry
@@ -269,11 +264,25 @@ function createVoucher(voucherDetails, userId, projectId) {
   const vuid = voucherDetails.uuid || util.uuid();
   voucherDetails.uuid = db.bid(vuid);
 
+  const referencedEntities = _.uniq(items.map(item => item.hrEntity));
+
+  let hrEntityMap;
+  if (referencedEntities.length) {
+    const hrEntities = await shared.getEntityUuidByTextBulk(referencedEntities);
+    hrEntityMap = _.keyBy(hrEntities, 'text');
+  }
+
   // preprocess the items so they have uuids as required
   items.forEach(value => {
     let item = value;
+
+    // prefer the entity_uuid, and substitute the hrEntity if it exists.
+    if (hrEntityMap) {
+      item.entity_uuid = item.entity_uuid || hrEntityMap[item.hrEntity];
+    }
+
     // Only for Employee Salary Paiement
-    if (voucherType === 7) {
+    if (voucherTypeId === 7) {
       if (item.document_uuid) {
         const updatePaiement = `
           UPDATE paiement SET
@@ -318,7 +327,7 @@ function createVoucher(voucherDetails, userId, projectId) {
     .addQuery('CALL PostVoucher(?);', [voucherDetails.uuid]);
 
   // Only for Employee Salary Paiement
-  if (voucherType === 7) {
+  if (voucherTypeId === 7) {
     updatesPaiementData.forEach(updatePaiement => {
       transaction.addQuery(updatePaiement.query, updatePaiement.params);
     });
