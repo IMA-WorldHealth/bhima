@@ -106,7 +106,7 @@ function VoucherItemService(uuid, Constants, util) {
       } else if (!hasSingleNumericValue) {
         this._error = 'VOUCHERS.COMPLEX.ERROR_AMOUNT';
       } else if (!hasPositiveValues) {
-        this._error = 'VOUCHERS.COMPLEX.ERRORS_NEGATIVE_NUMBERS';
+        this._error = 'VOUCHERS.COMPLEX.ERROR_NEGATIVE_NUMBERS';
       }
 
     // if not invalid, remove the error message
