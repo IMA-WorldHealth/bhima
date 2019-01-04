@@ -15,6 +15,7 @@
 const q = require('q');
 const db = require('../../lib/db');
 const NotFound = require('../../lib/errors/NotFound');
+const FilterParser = require('../../lib/filter');
 
 exports.list = list;
 exports.detail = detail;
@@ -25,21 +26,30 @@ exports.getFinancialActivity = getFinancialActivity;
  * @todo integration tests for this function
  */
 function list(req, res, next) {
+  const options = req.query;
+
+  db.convert(options, ['uuid', 'group_uuid']);
+  const filters = new FilterParser(options, { tableAlias : 'c' });
+
   const sql = `
     SELECT BUID(c.uuid) as uuid, c.text, cg.name, BUID(c.group_uuid) as group_uuid,
-      a.id AS account_id, a.number, map.text as hr_entity
-    FROM creditor AS c 
-    JOIN creditor_group AS cg 
-    JOIN account AS a ON c.group_uuid = cg.uuid AND cg.account_id = a.id 
-    LEFT JOIN entity_map map ON map.uuid = c.uuid;
+      a.id AS account_id, a.number, em.text as hrEntity
+    FROM creditor AS c
+    JOIN creditor_group AS cg
+    JOIN account AS a ON c.group_uuid = cg.uuid AND cg.account_id = a.id
+    LEFT JOIN entity_map me ON em.uuid = c.uuid
   `;
 
-  db.exec(sql)
-    .then((rows) => {
-      res.status(200).json(rows);
-    })
-    .catch(next)
-    .done();
+  filters.equals('uuid');
+  filters.equals('creditor_uuid');
+  filters.custom('hrEntity', 'em.text = ?');
+
+  const query = filters.applyQuery(sql);
+  const parameters = filters.parameters();
+
+  db.exec(query, parameters)
+    .then(rows => { res.status(200).json(rows); })
+    .catch(next);
 }
 
 /**

@@ -20,6 +20,7 @@ const q = require('q');
 const db = require('../../../lib/db');
 const NotFound = require('../../../lib/errors/NotFound');
 const identifiers = require('../../../config/identifiers');
+const FilterParser = require('../../../lib/filter');
 
 const CAUTION_LINK_TYPE_ID = 19;
 
@@ -36,17 +37,26 @@ exports.getFinancialActivity = getFinancialActivity;
  * List of debtors
  */
 function list(req, res, next) {
+  const options = req.query;
+
+  db.convert(options, ['uuid', 'group_uuid']);
+  const filters = new FilterParser(options, { tableAlias : 'd' });
+
   const sql = `
     SELECT BUID(d.uuid) AS uuid, BUID(d.group_uuid) AS group_uuid,
-      d.text, map.text as hr_entity
-    FROM debtor d
-    JOIN entity_map map ON map.uuid = d.uuid;
+      d.text, em.text as hrEntity
+    FROM debtor d JOIN entity_map em ON em.uuid = d.uuid
   `;
 
-  db.exec(sql)
-    .then((rows) => {
-      res.status(200).send(rows);
-    })
+  filters.equals('uuid');
+  filters.equals('group_uuid');
+  filters.custom('hrEntity', 'em.text = ?');
+
+  const query = filters.applyQuery(sql);
+  const parameters = filters.parameters();
+
+  db.exec(query, parameters)
+    .then(rows => { res.status(200).json(rows); })
     .catch(next);
 }
 
@@ -65,8 +75,7 @@ function detail(req, res, next) {
  * Updates a debtor's details (particularly group_uuid)
  */
 function update(req, res, next) {
-  const sql =
-    'UPDATE debtor SET ? WHERE uuid = ?';
+  const sql = 'UPDATE debtor SET ? WHERE uuid = ?';
 
   // delete the uuid if it exists
   delete req.body.uuid;

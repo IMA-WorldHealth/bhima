@@ -64,10 +64,12 @@ function getRecordUuidByTextBulk(hrRecords) {
  */
 function getEntityUuidByText(hrEntity) {
   const sql = `
-    SELECT uuid FROM entity_map WHERE text = ?;
+    SELECT em.uuid FROM entity_map em JOIN debtor ON em.uuid = debtor.uuid WHERE em.text = ?
+    UNION
+    SELECT em.uuid FROM entity_map em JOIN creditor ON em.uuid = creditor.uuid WHERE em.text = ?;
   `;
 
-  return db.one(sql, hrEntity);
+  return db.one(sql, [hrEntity, hrEntity]);
 }
 
 /**
@@ -80,10 +82,12 @@ function getEntityUuidByText(hrEntity) {
  */
 function getEntityUuidByTextBulk(hrEntities) {
   const sql = `
-    SELECT uuid, text FROM entity_map WHERE text IN (?);
+    SELECT em.uuid FROM entity_map em JOIN debtor ON em.uuid = debtor.uuid WHERE em.text IN (?)
+    UNION
+    SELECT em.uuid FROM entity_map em JOIN creditor ON em.uuid = creditor.uuid WHERE em.text IN (?);
   `;
 
-  return db.exec(sql, [hrEntities]);
+  return db.exec(sql, [hrEntities, hrEntities]);
 }
 
 
