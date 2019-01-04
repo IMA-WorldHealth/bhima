@@ -14,7 +14,7 @@
       "ERROR_AMOUNT": "Amount is invalid",
       "ERROR_TOTALS": "The totals are not balanced",
       "ERROR_PRECISION": "The amounts entered cannot have more than 4 decimal places in precision",
-      "ERROR_NEGATIVE_NUMBERS": "There are negative numbers detected",
+      "ERROR_NEGATIVE_NUMBERS": "A transaction cannot contain negative values.  Please correct this by swapping the debits and credits instead of using negative numbers.",
       "INVALID_VALUES": "There are invalid values detected",
       "PATIENT_INVOICE": "Patient Invoice",
       "REFERENCE": "Reference",
