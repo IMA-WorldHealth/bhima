@@ -87,7 +87,7 @@
 
         <div
           id="generalLedger-grid"
-          class="grid-full-height"
+          class="grid-full-height-with-filters"
           ui-grid-tree-view
           ui-grid-resize-columns
           ui-grid-auto-resize
@@ -96,13 +96,24 @@
 
           <bh-grid-loading-indicator
             loading-state="GeneralLedgerCtrl.loading"
-            empty-state="false"
+            empty-state="GeneralLedgerCtrl.gridOptions.data.length===0"
+            empty-state-message="TABLE.COLUMNS.EMPTY"
             error-state="GeneralLedgerCtrl.hasError" >
           </bh-grid-loading-indicator>
 
+        </div>
+        <div class="ui-grid-cell-contents">
+          <select
+            name="fiscalYear"
+            style="cursor: pointer"
+            ng-model="GeneralLedgerCtrl.year"
+            translate-attr="{ placeholder : 'FORM.SELECT.FISCAL_YEAR' }"
+            ng-change="GeneralLedgerCtrl.onSelectFiscalYear(GeneralLedgerCtrl.year)"
+            ng-options="year as year.label for year in GeneralLedgerCtrl.fiscalYears">
+            <option value="" disabled translate>FORM.SELECT.FISCAL_YEAR</option>
+          </select>
         </div>
       </div>
     </div>
   </div>
 </div>
-

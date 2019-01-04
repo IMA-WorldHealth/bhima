@@ -110,7 +110,7 @@ function GeneralLedgerController(
     showTreeExpandNoChildren : false,
     rowTemplate : '/modules/accounts/templates/grid.leafRow.tmpl.html',
     gridFooterTemplate : '/modules/general-ledger/grid.footer.html',
-    showGridFooter : true,
+    showGridFooter : false,
     showColumnFooter : true,
     appScopeProvider  : vm,
     onRegisterApi : onRegisterApiFn,
