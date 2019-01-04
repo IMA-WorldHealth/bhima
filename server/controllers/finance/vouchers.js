@@ -264,13 +264,29 @@ async function createVoucher(voucherDetails, userId, projectId) {
   const vuid = voucherDetails.uuid || util.uuid();
   voucherDetails.uuid = db.bid(vuid);
 
-  const referencedEntities = _.uniq(items.map(item => item.hrEntity));
-
+  // link human readable entity references to their corresponding uuids by precomputing an hrEntity -> uuid map.
   let hrEntityMap;
+  const referencedEntities = _.uniq(items.map(item => item.hrEntity));
   if (referencedEntities.length) {
     const hrEntities = await shared.getEntityUuidByTextBulk(referencedEntities);
     hrEntityMap = _.keyBy(hrEntities, 'text');
   }
+
+  // link human readable records/documents to their corresponding uuids
+  let hrRecordMap;
+  const referencedRecords = _.uniq(items.map(item => item.hrRecord));
+  if (referencedRecords.length) {
+    const hrRecords = await shared.getRecordUuidByTextBulk(referencedRecords);
+    hrRecordMap = _.keyBy(hrRecords, 'text');
+  }
+
+  function getMapUuid(map, key) {
+    if (map[key] && map[key].uuid) {
+      return map[key].uuid;
+    }
+    return null;
+  }
+
 
   // preprocess the items so they have uuids as required
   items.forEach(value => {
@@ -278,7 +294,11 @@ async function createVoucher(voucherDetails, userId, projectId) {
 
     // prefer the entity_uuid, and substitute the hrEntity if it exists.
     if (hrEntityMap) {
-      item.entity_uuid = item.entity_uuid || hrEntityMap[item.hrEntity];
+      item.entity_uuid = item.entity_uuid || getMapUuid(hrEntityMap, item.hrEntity);
+    }
+
+    if (hrRecordMap) {
+      item.document_uuid = item.document_uuid || getMapUuid(hrRecordMap, item.hrRecord);
     }
 
     // Only for Employee Salary Paiement
@@ -333,10 +353,8 @@ async function createVoucher(voucherDetails, userId, projectId) {
     });
   }
 
-  return transaction.execute()
-    .then((transactionResult) => {
-      return { uuid : vuid, transactionResult };
-    });
+  const transactionResult = await transaction.execute();
+  return { uuid : vuid, transactionResult };
 }
 
 

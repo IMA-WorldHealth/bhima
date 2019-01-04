@@ -46,10 +46,10 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
   // NOTE: this voucher does not have any uuids and uses hrEntity tags
   const items = [
     {
-      account_id : 197, debit : 11, credit : 0, document_uuid : genuuid(), hrEntity : 'PA.TPA.1',
+      account_id : 197, debit : 11, credit : 0, hrRecord : 'IV.TPA.1', hrEntity : 'PA.TPA.1',
     },
     {
-      account_id : 191, debit : 0, credit : 11, document_uuid : genuuid(),
+      account_id : 191, debit : 0, credit : 11, hrRecord : 'VO.TPA.1',
     },
     { account_id : 197, debit : 0, credit : 12 },
     { account_id : 190, debit : 12, credit : 0 },
@@ -156,7 +156,7 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
       .then((res) => {
         helpers.api.created(res);
 
-        // check that the voucher is linked the entities
+        // check that the voucher is linked the entities and records
         return agent.get(`/vouchers/${res.body.uuid}`);
       })
       .then(res => {
@@ -168,6 +168,12 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
           .filter(value => value !== null);
 
         expect(entityUuids).to.have.length(1);
+
+        const recordUuids = res.body.items
+          .map(row => row.document_uuid)
+          .filter(filterUniqueValues)
+          .filter(value => value !== null);
+        expect(recordUuids).to.have.length(2);
       })
       .catch(helpers.handler);
   });
