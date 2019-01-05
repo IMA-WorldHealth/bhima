@@ -2,6 +2,7 @@ const _ = require('lodash');
 const ReportManager = require('../../../../lib/ReportManager');
 
 const AccountsExtra = require('../../accounts/extra');
+const AccountsUtil = require('../../accounts/utility');
 const Exchange = require('../../exchange');
 const Currency = require('../../currencies');
 
@@ -72,10 +73,16 @@ async function document(req, res, next) {
       )
     );
 
+    // get the account metadata
+    const details = await Promise.all(accountIds.map(AccountsUtil.lookupAccount));
+
+    // stores the total of all accounts
+    let globalBalance = 0;
+
     // zip the balances and accounts together
     const accounts = _
-      .zip(balances, transactions)
-      .map(([balance, rows]) => {
+      .zip(balances, transactions, details)
+      .map(([balance, rows, meta]) => {
         const header = _.extend({}, sharedHeader, {
           balance         : Number(balance.balance),
           credit          : Number(balance.credit),
@@ -86,19 +93,21 @@ async function document(req, res, next) {
           isCreditBalance : Number(balance.balance) < 0,
         });
 
+        // increase the global balance by the exchanged amount
+        globalBalance += rows.footer.exchangedCumSum;
+
         return {
           header,
+          meta,
           balance,
           transactions : rows.transactions,
           footer : rows.footer,
         };
       });
 
-
-    _.extend(bundle, { accounts }, { params });
+    _.extend(bundle, { accounts, globalBalance }, { params });
 
     const result = await report.render(bundle);
-
     res.set(result.headers).send(result.report);
   } catch (e) {
     next(e);

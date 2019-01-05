@@ -27,6 +27,9 @@
 
   <section>
     {{#each accounts as |account|}}
+
+      <h4>{{account.meta.number}} - {{account.meta.label}}</h4>
+
       <table class="table table-condensed table-report table-bordered">
         <thead>
           <tr class="text-capitalize text-center" style="background-color: #ddd;">
@@ -124,6 +127,14 @@
           </tr>
         </tfoot>
       </table>
+
+      <br />
     {{/each}}
   </section>
+
+  <footer>
+    <div class="pull-right">
+      <strong>{{translate "FORM.LABELS.TOTAL"}}: {{debcred globalBalance currency.id}}</strong>
+    </div>
+  </footer>
 </body>
