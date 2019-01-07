@@ -8,8 +8,8 @@
 <div ng-show="!ReportConfigCtrl.previewGenerated">
   <div class="row">
     <div class="col-md-12">
-      <h3 class="text-capitalize" translate>REPORT.UNBALANCED_INVOICE_PAYMENTS_REPORT.TITLE</h3>
-      <p class="text-info" translate>REPORT.UNBALANCED_INVOICE_PAYMENTS_REPORT.DESCRIPTION</p>
+      <h3 class="text-capitalize" translate>REPORT.UNPAID_INVOICE_PAYMENTS_REPORT.TITLE</h3>
+      <p class="text-info" translate>REPORT.UNPAID_INVOICE_PAYMENTS_REPORT.DESCRIPTION</p>
     </div>
   </div>
 
@@ -25,11 +25,19 @@
 
             <!-- Date interval  -->
             <bh-date-interval
-              ng-if="!ReportConfigCtrl.reportDetails.simplePreview"
               date-from="ReportConfigCtrl.reportDetails.dateFrom"
               date-to="ReportConfigCtrl.reportDetails.dateTo"
               limit-min-fiscal>
             </bh-date-interval>
+
+
+            <!-- Optional Debtor Select -->
+            <bh-debtor-group-select
+              debtor-group-uuid = "ReportConfigCtrl.reportDetails.debtorGroupUuid"
+              on-select-callback = "ReportConfigCtrl.onSelectDebtorGroup(debtorGroup)"
+              required="false">
+              <bh-clear on-clear="ReportConfigCtrl.onClear()"></bh-clear>
+            </bh-debtor-group-select>
 
             <bh-loading-button loading-state="ConfigForm.$loading">
               <span translate>REPORT.UTIL.PREVIEW</span>

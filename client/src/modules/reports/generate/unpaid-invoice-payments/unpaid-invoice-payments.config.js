@@ -15,6 +15,16 @@ function UnbalancedInvoicePaymentsConfigController($sce, Notify, SavedReports, A
 
   checkCachedConfiguration();
 
+  vm.onSelectDebtorGroup = (debtorGroup) => {
+    vm.reportDetails.debtorGroupName = debtorGroup.name;
+    vm.reportDetails.debtorGroupUuid = debtorGroup.uuid;
+  };
+
+  vm.onClear = () => {
+    delete vm.reportDetails.debtorGroupName;
+    delete vm.reportDetails.debtorGroupUuid;
+  };
+
   vm.clearPreview = function clearPreview() {
     vm.previewGenerated = false;
     vm.previewResult = null;

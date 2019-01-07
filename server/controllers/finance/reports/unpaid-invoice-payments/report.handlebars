@@ -1,4 +1,4 @@
-{{> head title="REPORT.UNBALANCED_INVOICE_PAYMENTS_REPORT" }}
+{{> head title="REPORT.UNPAID_INVOICE_PAYMENTS_REPORT" }}
 
 <div class="container">
   {{> header}}
@@ -8,7 +8,7 @@
     <div class="col-xs-12">
       <!-- page title  -->
       <h3 class="text-center">
-        <strong>{{translate "REPORT.UNBALANCED_INVOICE_PAYMENTS_REPORT.TITLE"}}</strong>
+        <strong>{{translate "REPORT.UNPAID_INVOICE_PAYMENTS_REPORT.TITLE"}}</strong>
       </h3>
 
       <h5 style="margin:15px;" class="text-center">
@@ -18,7 +18,6 @@
       <table class="table table-condensed table-report">
         <thead>
           <tr style="background-color:#ddd;">
-            <th style="width: 45%;">{{translate 'FORM.LABELS.PROJECT'}}</th>
             <th class="text-center">{{translate 'FORM.LABELS.DEBTOR_GROUP'}}</th>
             <th class="text-center">{{translate 'FORM.LABELS.PATIENT'}}</th>
             {{#each services as |service|}}
@@ -33,7 +32,6 @@
               {{#if row.isTotalRow}}class="table-subtotal-row"{{/if}}
               {{#if row.isGroupTotalRow}}style="font-style:italic"{{/if}}
               >
-              <td>{{ row.projectName }}</td>
               <td>{{ row.debtorGroupName }}</td>
               <td>{{ row.debtorReference }}</td>
               {{#each ../services as |service|}}
