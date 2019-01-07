@@ -34,8 +34,6 @@ function AccountReferenceModalController($state, Accounts, AccountReferences, No
   } else {
     vm.accountReference.accounts = [];
     vm.accountReference.accountsException = [];
-    vm.accountReference.accountsCreditBalance = [];
-    vm.accountReference.accountsDebitBalance = [];
   }
 
   // load accounts

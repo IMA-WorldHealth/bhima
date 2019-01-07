@@ -37,18 +37,6 @@ function AccountReferenceController($state, AccountReferences, Notify, uiGridCon
         enableFiltering : true,
       },
       {
-        field : 'credits',
-        displayName : 'FORM.LABELS.CREDIT_BALANCE',
-        headerCellFilter : 'translate',
-        enableFiltering : true,
-      },
-      {
-        field : 'debits',
-        displayName : 'FORM.LABELS.DEBIT_BALANCE',
-        headerCellFilter : 'translate',
-        enableFiltering : true,
-      },
-      {
         field : 'description',
         displayName : 'ACCOUNT.REFERENCE.DESCRIPTION',
         headerCellFilter : 'translate',
