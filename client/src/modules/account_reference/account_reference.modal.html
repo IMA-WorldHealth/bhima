@@ -101,25 +101,24 @@
     </div>
     <!-- parent reference -->
     <div class="form-group" ng-class="{ 'has-error' : AccountReferenceForm.$submitted && AccountReferenceForm.parent.$invalid }">
-      <label class="control-label" translate>ACCOUNT.REFERENCE.PARENT_REFERENCE</label>
+        <label class="control-label" translate>ACCOUNT.REFERENCE.PARENT_REFERENCE</label>
+        <bh-clear on-clear="AccountReferenceModalCtrl.clear('parent')"></bh-clear>
+        <ui-select
+          name="parent"
+          ng-model="AccountReferenceModalCtrl.accountReference.parent"
+          append-to-body="true">
 
-      <ui-select
-        name="parent"
-        ng-model="AccountReferenceModalCtrl.accountReference.parent"
-        append-to-body="true">
+          <ui-select-match placeholder="{{ 'ACCOUNT.REFERENCE.PARENT_REFERENCE' | translate }}">
+            <span>{{$select.selected.abbr}}</span>
+          </ui-select-match>
 
-        <ui-select-match placeholder="{{ 'ACCOUNT.REFERENCE.PARENT_REFERENCE' | translate }}">
-          <span>{{$select.selected.abbr}}</span>
-        </ui-select-match>
-
-        <ui-select-choices repeat="reference.id as reference in AccountReferenceModalCtrl.references | filter:{abbr: $select.search}">
-          <strong ng-bind-html="reference.abbr | highlight:$select.search"></strong>
-        </ui-select-choices>
-      </ui-select>
-
-      <div class="help-block" ng-messages="AccountReferenceForm.parent.$error" ng-show="AccountReferenceForm.$submitted">
-        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-      </div>
+          <ui-select-choices repeat="reference.id as reference in AccountReferenceModalCtrl.references | filter:{abbr: $select.search}">
+            <strong ng-bind-html="reference.abbr | highlight:$select.search"></strong>
+          </ui-select-choices>
+        </ui-select>
+        <div class="help-block" ng-messages="AccountReferenceForm.parent.$error" ng-show="AccountReferenceForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
     </div>
   </div>
 

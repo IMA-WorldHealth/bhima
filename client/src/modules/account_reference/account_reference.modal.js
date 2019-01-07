@@ -16,6 +16,7 @@ function AccountReferenceModalController($state, Accounts, AccountReferences, No
   // exposed methods
   vm.submit = submit;
   vm.closeModal = closeModal;
+  vm.clear = clear;
 
   if ($state.params.creating || $state.params.id) {
     cache.stateParams = $state.params;
@@ -55,9 +56,9 @@ function AccountReferenceModalController($state, Accounts, AccountReferences, No
     if (accountReferenceForm.$invalid) { return null; }
     if (!accountReferenceForm.$dirty) { return null; }
 
-    const promise = (vm.isCreating) ?
-      AccountReferences.create(vm.accountReference) :
-      AccountReferences.update(vm.accountReference.id, vm.accountReference);
+    const promise = (vm.isCreating)
+      ? AccountReferences.create(vm.accountReference)
+      : AccountReferences.update(vm.accountReference.id, vm.accountReference);
 
     return promise
       .then(() => {
@@ -68,8 +69,11 @@ function AccountReferenceModalController($state, Accounts, AccountReferences, No
       .catch(Notify.handleError);
   }
 
+  function clear(value) {
+    vm.accountReference[value] = null;
+  }
+
   function closeModal() {
     $state.transitionTo('account_reference.list');
   }
 }
-
