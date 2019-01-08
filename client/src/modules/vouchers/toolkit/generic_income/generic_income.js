@@ -7,7 +7,7 @@ GenericIncomeKitController.$inject = [
 
 // Import transaction rows for a convention payment
 function GenericIncomeKitController(Instance, Notify, Cashbox, bhConstants, ToolKits) {
-  var vm = this;
+  const vm = this;
 
   // expose to the view
   vm.close = Instance.close;
@@ -16,8 +16,8 @@ function GenericIncomeKitController(Instance, Notify, Cashbox, bhConstants, Tool
   vm.onSelectAccountCallback = onSelectAccountCallback;
 
   // load cashboxes
-  Cashbox.read(null, { detailed: 1 })
-    .then(function (data) {
+  Cashbox.read(null, { detailed : 1 })
+    .then((data) => {
       vm.cashboxes = data;
     })
     .catch(Notify.handleError);
@@ -29,13 +29,13 @@ function GenericIncomeKitController(Instance, Notify, Cashbox, bhConstants, Tool
 
   // generate transaction rows
   function generateTransactionRows(params) {
-    var rows = [];
+    const rows = [];
 
-    var debitRow = ToolKits.getBlankVoucherRow();
-    var creditRow = ToolKits.getBlankVoucherRow();
+    const debitRow = ToolKits.getBlankVoucherRow();
+    const creditRow = ToolKits.getBlankVoucherRow();
 
-    var cashboxAccountId = params.cashbox.account_id;
-    var selectedAccountId = params.account.id;
+    const cashboxAccountId = params.cashbox.account_id;
+    const selectedAccountId = params.account.id;
 
     // debit the cashbox
     debitRow.account_id = cashboxAccountId;
@@ -56,7 +56,7 @@ function GenericIncomeKitController(Instance, Notify, Cashbox, bhConstants, Tool
   function submit(form) {
     if (form.$invalid) { return; }
 
-    var bundle = generateTransactionRows({
+    const bundle = generateTransactionRows({
       cashbox : vm.cashbox,
       account : vm.account,
     });
