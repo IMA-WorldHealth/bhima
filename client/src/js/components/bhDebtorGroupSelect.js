@@ -29,6 +29,8 @@ function DebtorGroupSelectController(DebtorGroup) {
     // translated label for the form input
     $ctrl.label = $ctrl.label || 'FORM.LABELS.DEBTOR_GROUP';
 
+    $ctrl.required = angular.isDefined($ctrl.required) ? $ctrl.required : true;
+
     // load all Debtor Group
     DebtorGroup.read(null, filters)
       .then(handleDebtorGroups);

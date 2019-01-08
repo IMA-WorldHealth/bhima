@@ -97,7 +97,7 @@ INSERT INTO unit VALUES
   (207, 'Account Reference Report','TREE.ACCOUNT_REFERENCE_REPORT','',144,'/modules/reports/account_reference','/reports/account_reference'),
   (208, 'Import Stock From File','TREE.IMPORT_STOCK_FROM_FILE','',160,'/modules/stock/import','/stock/import'),
   (209, 'Accounts Report Multiple','TREE.REPORTS_MULTIPLE_ACCOUNTS','',144,'/modules/reports/account_report_multiple','/reports/account_report_multiple'),
-  (210, 'Unbalanced Invoice Payments','REPORT.UNBALANCED_INVOICE_PAYMENTS_REPORT.TITLE','',144,'/modules/reports/unpaid-invoice-payments','/reports/unpaid-invoice-payments'),
+  (210, 'Unbalanced Invoice Payments','REPORT.UNPAID_INVOICE_PAYMENTS_REPORT.TITLE','',144,'/modules/reports/unpaid-invoice-payments','/reports/unpaid-invoice-payments'),
   (211, 'Income Expenses by Month', 'TREE.PROFIT_AND_LOSS_BY_MONTH', 'The Report of income and expenses', 144, '/modules/finance/income_expense_by_month', '/reports/income_expense_by_month'),
   (212, 'Entity Management','ENTITY.MANAGEMENT','',1,'/modules/entities','/entities'),
   (213, 'Stock value Report','TREE.STOCK_VALUE','',144,'/modules/reports/stock_value','/reports/stock_value'),

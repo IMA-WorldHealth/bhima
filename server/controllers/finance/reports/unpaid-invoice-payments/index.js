@@ -21,12 +21,10 @@ async function build(req, res, next) {
   try {
     const report = new ReportManager(TEMPLATE, metadata, qs);
 
-    const { dateFrom, dateTo } = qs;
-
     const { dataset, totals, services } = await getUnbalancedInvoices(qs);
 
-    const data = _.extend({}, {
-      dateFrom, dateTo, dataset, totals, services,
+    const data = _.extend({}, qs, {
+      dataset, totals, services,
     });
 
     const compiled = await report.render(data);
@@ -43,14 +41,16 @@ async function getUnbalancedInvoices(options) {
     new Date(options.dateTo),
   ];
 
+  const wherePart = options.debtorGroupName ? `WHERE debtorGroupName = ${db.escape(options.debtorGroupName)}` : '';
+
   const rows = await db.transaction()
     .addQuery('CALL UnbalancedInvoicePaymentsTable(?, ?);', params)
     .addQuery(`CALL Pivot(
         "unbalanced_invoices",
-        "projectName,debtorGroupName,debtorReference",
+        "debtorGroupName,debtorReference",
         "serviceName",
         "balance",
-        "",
+        "${wherePart}",
         ""
       );
     `)
@@ -62,8 +62,8 @@ async function getUnbalancedInvoices(options) {
   // get a list of the keys in the dataset
   const keys = _.keys(_.clone(dataset[0]));
 
-  // the omit the firs three columns and the last (totals) to get the services
-  const services = _.dropRight(_.drop(keys, 3), 1);
+  // the omit the first three columns and the last (totals) to get the services
+  const services = _.dropRight(_.drop(keys, 2), 1);
 
   // the last line is the total row
   const totals = dataset.pop();

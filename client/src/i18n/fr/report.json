@@ -144,7 +144,7 @@
       "TITLE" : "Rapport Annuel des Clients",
       "DESCRIPTION" : "Ce rapport affiche tous les groupes de débiteurs, leurs soldes de compte au début de l'exercice, les soldes actuels et leurs soldes de clôture."
     },
-    "UNBALANCED_INVOICE_PAYMENTS_REPORT": {
+    "UNPAID_INVOICE_PAYMENTS_REPORT": {
       "TITLE": "Rapport de la balance des paiements non finalisés des factures",
       "DESCRIPTION": "Ce rapport affiche la balance des factures qui ne pas totalement payées ou surpayées pour une période donnée"
     },

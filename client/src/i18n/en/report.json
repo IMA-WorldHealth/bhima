@@ -144,8 +144,8 @@
       "TITLE": "Cash Report",
       "DESCRIPTION": "This report shows all cash entries and exits inside the enterprise"
     },
-    "UNBALANCED_INVOICE_PAYMENTS_REPORT": {
-      "TITLE": "Unbalanced Invoices Report",
+    "UNPAID_INVOICE_PAYMENTS_REPORT": {
+      "TITLE": "Unpaid Invoices Report",
       "DESCRIPTION": "This report shows the balance of invoices which are not completely paid or overpaid during a period."
     },
     "STOCK": {
