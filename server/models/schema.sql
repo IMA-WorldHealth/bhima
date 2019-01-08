@@ -1177,7 +1177,7 @@ CREATE TABLE `patient_group` (
   `enterprise_id`     SMALLINT(5) UNSIGNED NOT NULL,
   `price_list_uuid`   BINARY(16) NULL,
   `name`              VARCHAR(60) NOT NULL,
-  `note`              TEXT NOT NULL,
+  `note`              TEXT NULL,
   `created_at`        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
    PRIMARY KEY (`uuid`),
    UNIQUE KEY `patient_group_1` (`name`),
