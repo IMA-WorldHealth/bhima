@@ -26,7 +26,7 @@
         ng-change="$ctrl.onChange({ currency : $ctrl.currencyId })"
         data-currency-option="{{ currency.id }}"
         ng-disabled="currency.disabled"
-        required>
+        ng-required="$ctrl.required">
       {{ currency.label }}
     </label>
 

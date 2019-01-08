@@ -108,6 +108,7 @@ function JournalService(Api, AppCache, Filters, Periods, Modal, bhConstants, Tra
     { key : 'record_uuid', label : 'FORM.LABELS.TRANS_ID' },
     { key : 'reference', label : 'FORM.LABELS.REFERENCE' },
     { key : 'user_id', label : 'FORM.LABELS.USER' },
+    { key : 'currency_id', label : 'FORM.LABELS.CURRENCY' },
     { key : 'account_id', label : 'FORM.LABELS.ACCOUNT' },
     { key : 'amount', label : 'FORM.LABELS.AMOUNT' },
     { key : 'project_id', label : 'FORM.LABELS.PROJECT' },
