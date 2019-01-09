@@ -47,7 +47,7 @@ async function getUnbalancedInvoices(options) {
     .addQuery('CALL UnbalancedInvoicePaymentsTable(?, ?);', params)
     .addQuery(`CALL Pivot(
         "unbalanced_invoices",
-        "debtorGroupName,debtorReference",
+        "debtorGroupName,debtorUuid",
         "serviceName",
         "balance",
         "${wherePart}",
@@ -62,6 +62,19 @@ async function getUnbalancedInvoices(options) {
   // get a list of the keys in the dataset
   const keys = _.keys(_.clone(dataset[0]));
 
+  const debtorUuids = dataset
+    .filter(row => row.debtorUuid)
+    .map(row => db.bid(row.debtorUuid));
+
+  // make human readable names for the users
+  const debtorNames = await db.exec(`
+    SELECT BUID(debtor.uuid) AS uuid, em.text as reference, debtor.text
+    FROM debtor JOIN entity_map em ON debtor.uuid = em.uuid
+    WHERE debtor.uuid IN (?);
+  `, [debtorUuids]);
+
+  const debtorNameMap = _.keyBy(debtorNames, 'uuid');
+
   // the omit the first three columns and the last (totals) to get the services
   const services = _.dropRight(_.drop(keys, 2), 1);
 
@@ -70,11 +83,19 @@ async function getUnbalancedInvoices(options) {
 
   // add properties for drawing a pretty grid.
   dataset.forEach(row => {
-    if (!row.debtorReference) {
+    if (!row.debtorUuid) {
       row.isTotalRow = true;
     }
+
     if (!row.debtorGroupName) {
       row.isGroupTotalRow = true;
+    }
+
+    // add pretty debtor names
+    const debtor = debtorNameMap[row.debtorUuid];
+    if (debtor) {
+      row.debtorReference = debtor.reference;
+      row.debtorText = debtor.text;
     }
   });
 
