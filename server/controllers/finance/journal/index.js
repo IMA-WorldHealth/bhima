@@ -129,7 +129,7 @@ function buildTransactionQuery(options, posted) {
       BUID(p.reference_uuid) AS reference_uuid, dm2.text AS hrReference,
       p.comment, p.transaction_type_id, p.user_id, p.cc_id, p.pc_id, pro.abbr,
       pro.name AS project_name, tp.text AS transaction_type_text,
-     a.number AS account_number, a.label AS account_label,
+      a.number AS account_number, a.label AS account_label, p.trans_id_reference_number,
       u.display_name ${includeExchangeRate}
     FROM ${table} p
       JOIN project pro ON pro.id = p.project_id

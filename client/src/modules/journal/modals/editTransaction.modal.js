@@ -399,6 +399,7 @@ function JournalEditTransactionController(
     const columns = [
       'hrRecord', 'record_uuid', 'project_name', 'trans_id', 'transaction_type_id', 'display_name', 'trans_date',
       'project_id', 'fiscal_year_id', 'currency_id', 'user_id', 'posted', 'period_id', 'description',
+      'trans_id_reference_number',
     ];
 
     // for some reason no data has been passed in, no shared attributes are possible
