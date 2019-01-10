@@ -948,7 +948,9 @@ CREATE PROCEDURE UnbalancedInvoicePaymentsTable(
   -- on the invoice.
 
   CREATE TEMPORARY TABLE `unbalanced_invoices` AS (
-    SELECT BUID(ivc.uuid) as invoice_uuid , em.text AS debtorReference, debtor.text AS debtorName, balances.debit_equiv AS debit,
+    SELECT BUID(ivc.uuid) as invoice_uuid , em.text AS debtorReference, debtor.text AS debtorName,
+      BUID(debtor.uuid) as debtorUuid,
+      balances.debit_equiv AS debit,
       balances.credit_equiv AS credit, iv.date AS creation_date, balances.balance,
       dm.text AS reference, ivc.project_id, p.name as 'projectName', dbtg.name as 'debtorGroupName',
       s.name as 'serviceName',
@@ -965,8 +967,6 @@ CREATE PROCEDURE UnbalancedInvoicePaymentsTable(
       LEFT JOIN entity_map AS em ON em.uuid = iv.debtor_uuid
     ORDER BY iv.date
   );
-
-  SELECT * FROM unbalanced_invoices;
 END$$
 
 DELIMITER ;

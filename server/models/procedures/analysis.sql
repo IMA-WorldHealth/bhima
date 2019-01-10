@@ -3,7 +3,8 @@
 -- Use this Procedure below posted at http://mysql.rjweb.org/doc.php/pivot.
 DELIMITER $$
 
-DROP PROCEDURE IF EXISTS Pivot $$
+DROP PROCEDURE IF EXISTS Pivot$$
+
 CREATE PROCEDURE Pivot(
   IN tbl_name VARCHAR(99),    -- table name (or db.tbl)
   IN base_cols VARCHAR(99),   -- column(s) on the left, separated by commas
@@ -34,7 +35,7 @@ BEGIN
   SET @stmt = CONCAT(
       'SELECT GROUP_CONCAT(', @cc4, ' SEPARATOR ",\n") INTO @sums',
       ' FROM ( ', @subq, ' ) AS top');
-   select @stmt;
+  SELECT @stmt;
   PREPARE _sql FROM @stmt;
   EXECUTE _sql;           -- Intermediate step: build SQL for columns
   DEALLOCATE PREPARE _sql;
@@ -50,19 +51,10 @@ BEGIN
       '\n WITH ROLLUP',
       '\n', order_by
     );
-  select @stmt2;          -- The statement that generates the result
+  SELECT @stmt2;          -- The statement that generates the result
   PREPARE _sql FROM @stmt2;
   EXECUTE _sql;           -- The resulting pivot table ouput
   DEALLOCATE PREPARE _sql;
-END; $$
-
-DROP PROCEDURE IF EXISTS GetUnbalancedDebtorsByService$$
-CREATE PROCEDURE GetUnbalancedDebtorsByService(
-  IN dateFrom DATE,
-  IN dateTo DATE
-) BEGIN
-  CALL UnbalancedInvoicePaymentsTable(dateFrom, dateTo);
-  CALL Pivot('unbalanced_invoices', "projectName,debtorGroupName,debtorReference", "serviceName", "balance", "", "");
 END$$
 
 DELIMITER ;

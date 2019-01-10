@@ -19,7 +19,7 @@
         <thead>
           <tr style="background-color:#ddd;">
             <th class="text-center">{{translate 'FORM.LABELS.DEBTOR_GROUP'}}</th>
-            <th class="text-center">{{translate 'FORM.LABELS.PATIENT'}}</th>
+            <th class="text-center text-capitalize">{{translate 'FORM.LABELS.PATIENT'}}</th>
             {{#each services as |service|}}
               <th class="text-center">{{service}}</th>
             {{/each}}
@@ -33,7 +33,11 @@
               {{#if row.isGroupTotalRow}}style="font-style:italic"{{/if}}
               >
               <td>{{ row.debtorGroupName }}</td>
-              <td>{{ row.debtorReference }}</td>
+              <td>
+                {{#if row.debtorReference }}
+                  <strong>{{ row.debtorReference }}</strong> - {{row.debtorText}}
+                {{/if}}
+              </td>
               {{#each ../services as |service|}}
                 <td class="text-right">{{look row service}}</td>
               {{/each}}
