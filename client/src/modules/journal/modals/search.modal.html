@@ -137,6 +137,13 @@
           </div>
         </div>
 
+        <bh-currency-select
+          required="false"
+          currency-id="ModalCtrl.searchQueries.currency_id"
+          on-change="ModalCtrl.setCurrency(currency)">
+          <bh-clear on-clear="ModalCtrl.clear('currency_id')"></bh-clear>
+        </bh-currency-select>
+
         </div>
       </uib-tab>
 

@@ -161,6 +161,7 @@ function buildTransactionQuery(options, posted) {
   filters.equals('hrEntity', 'text', 'em');
   filters.equals('hrRecord', 'text', 'dm1');
   filters.equals('hrReference', 'text', 'dm2');
+  filters.custom('currency_id', 'c.id=?');
 
   filters.custom('transaction_type_id', 'p.transaction_type_id IN (?)', options.transaction_type_id);
 

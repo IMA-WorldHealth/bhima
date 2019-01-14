@@ -4,14 +4,15 @@ angular.module('bhima.controllers')
 JournalSearchModalController.$inject = [
   '$uibModalInstance', 'NotifyService', 'Store', 'filters', 'options',
   'PeriodService', '$translate', 'util', 'TransactionTypeService',
-  'JournalService',
+  'JournalService', 'CurrencyService',
 ];
 
 function JournalSearchModalController(
   Instance, Notify, Store, filters, options, Periods, $translate, util,
-  TransactionTypes, Journal
+  TransactionTypes, Journal, Currency
 ) {
   const vm = this;
+  const currenciesMap = {};
 
   // displayValues will be an id:displayValue pair
   const displayValues = {};
@@ -22,7 +23,7 @@ function JournalSearchModalController(
   const searchQueryOptions = [
     'description', 'user_id', 'account_id', 'project_id', 'amount', 'trans_id',
     'transaction_type_id', 'includeNonPosted', 'hrRecord', 'hrEntity', 'comment',
-    'hrReference',
+    'hrReference', 'currency_id',
   ];
 
   const changes = new Store({ identifier : 'key' });
@@ -77,6 +78,14 @@ function JournalSearchModalController(
     })
     .catch(Notify.handleError);
 
+  Currency.read()
+    .then(currencies => {
+      currencies.forEach(c => {
+        currenciesMap[c.id] = c;
+      });
+    })
+    .catch(Notify.handleError);
+
   // handle component selection states
   // custom filter account_id - assign the value to the searchQueries object
   vm.onSelectAccount = function onSelectAccount(account) {
@@ -127,6 +136,10 @@ function JournalSearchModalController(
     if (angular.isDefined(value)) {
       changes.post({ key : 'limit', value });
     }
+  };
+
+  vm.setCurrency = (currencyId) => {
+    displayValues.currency_id = currenciesMap[currencyId].name;
   };
 
   // default filter to show full transactions

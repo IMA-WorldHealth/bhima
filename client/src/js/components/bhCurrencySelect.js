@@ -9,6 +9,7 @@ angular.module('bhima.components')
       label             : '@?',
       disableIds        : '<?',
       cashboxId         : '<?',
+      required          : '<?',
     },
   });
 
@@ -69,6 +70,7 @@ function bhCurrencySelect(Currencies) {
         $ctrl.currencies = currencies;
       });
 
+    $ctrl.required = angular.isDefined($ctrl.required) ? $ctrl.required : true;
     $ctrl.valid = true;
 
     $ctrl.label = $ctrl.label || 'FORM.LABELS.CURRENCY';
