@@ -430,20 +430,23 @@ SELECT  * FROM stage_movement;
 
 END$$
 
-
 /*   retrieve the stock status( current qtt, unit_cost, value) for each inventory in a depot */
 DROP PROCEDURE IF EXISTS `stockValue`$$
 
-CREATE PROCEDURE `stockValue`(IN _depot_uuid BINARY(16), IN _dateTo DATE)
+CREATE PROCEDURE `stockValue`(
+  IN _depot_uuid BINARY(16), 
+  IN _dateTo DATE,
+  IN _currency_id INT
+  )
 BEGIN
   DECLARE done BOOLEAN;
   DECLARE mvtIsExit, mvtQtt,  mvtUnitCost, mvtValue DECIMAL(19, 4);
-  DECLARE newQuantity, newValue, newCost DECIMAL(19, 4);
+  DECLARE newQuantity, newValue, newCost, exchangeRate DECIMAL(19, 4);
   DECLARE stockQtt, stockUnitCost, stockValue DECIMAL(19, 4);
   DECLARE _documentReference VARCHAR(100);
   DECLARE _date DATETIME;
   DECLARE _inventory_uuid BINARY(16);
-  DECLARE _iteration, _newStock INT;
+  DECLARE _iteration, _newStock, _enterprise_id INT;
 
 
   DECLARE curs1 CURSOR FOR
@@ -473,7 +476,9 @@ BEGIN
     stockValue DECIMAL(19, 4),
     iteration INT
   );
-
+ 
+  SET _enterprise_id = (SELECT enterprise_id FROM depot WHERE uuid= _depot_uuid);
+  SET exchangeRate = IFNULL(GetExchangeRate(_enterprise_id,_currency_id ,_dateTo), 1);
 
   OPEN curs1;
     read_loop: LOOP
@@ -499,7 +504,8 @@ BEGIN
         SET stockValue = 0;
         SET _iteration = 0;
       END IF;
-
+		
+		  SET mvtUnitCost = mvtUnitCost*(exchangeRate);
       -- stock exit movement, the stock quantity decreases
       IF mvtIsExit = 1 THEN
         SET stockQtt = stockQtt - mvtQtt;
