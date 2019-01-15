@@ -40,6 +40,11 @@
             on-change="ReportConfigCtrl.onDateChange(date)">
           </bh-date-editor>
 
+           <!-- the currency to be used in the footer -->
+          <bh-currency-select
+           currency-id="ReportConfigCtrl.currency_id">
+          </bh-currency-select>
+
           <!-- preview -->
           <bh-loading-button loading-state="ConfigForm.$loading">
             <span translate>REPORT.UTIL.PREVIEW</span>
