@@ -27,6 +27,11 @@
               on-select-period-to-callback="ReportConfigCtrl.onSelectPeriodTo(period)">
             </bh-fiscal-period-select>
 
+                              <!-- currency selection -->
+            <bh-currency-select
+              currency-id="ReportConfigCtrl.reportDetails.currency_id">
+            </bh-currency-select>
+
             <bh-loading-button loading-state="ConfigForm.$loading">
               <span translate>REPORT.UTIL.PREVIEW</span>
             </bh-loading-button>

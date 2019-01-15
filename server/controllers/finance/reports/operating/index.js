@@ -4,6 +4,7 @@
 
 const q = require('q');
 const _ = require('lodash');
+const Exchange = require('../../../finance/exchange');
 const db = require('../../../../lib/db');
 const util = require('../../../../lib/util');
 const Tree = require('../../../../lib/Tree');
@@ -20,37 +21,9 @@ const EXPENSE_ACCOUNT_TYPE = 5;
 const INCOME_ACCOUNT_TYPE = 4;
 const DECIMAL_PRECISION = 2; // ex: 12.4567 => 12.46
 
-/**
- * return a query for retrieving account's balance by type_id and periods
- * This function does exactly the same thing except the value of amount will be
- * debit - credit this will know the expense account
- */
-function getQueryExpense() {
-  return `
-    SELECT ac.id, ac.number, ac.label, ac.parent, IFNULL(s.amount, 0) AS amount, s.type_id
-
-    FROM account as ac LEFT JOIN (
-    SELECT SUM(pt.debit - pt.credit) as amount, pt.account_id, act.id as type_id
-    FROM period_total as pt
-    JOIN account as a ON a.id = pt.account_id
-    JOIN account_type as act ON act.id = a.type_id
-    JOIN period as p ON  p.id = pt.period_id
-    JOIN fiscal_year as fy ON fy.id = p.fiscal_year_id
-    WHERE fy.id = ? AND
-      pt.period_id IN (
-        SELECT id FROM period WHERE start_date>= ? AND end_date<= ?
-      )
-      AND act.id = ?
-    GROUP BY pt.account_id
-    )s ON ac.id = s.account_id
-    WHERE ac.locked = 0
-    ORDER BY ac.number
-  `;
-}
 
 function document(req, res, next) {
   const params = req.query;
-
   let docReport;
   const options = _.extend(req.query, {
     filename : 'TREE.OPERATING_ACCOUNT',
@@ -67,6 +40,7 @@ function document(req, res, next) {
 
   let queries;
   let range;
+  const enterpriseId = req.session.enterprise.id;
 
   const getQueryIncome = fiscal.getAccountBalancesByTypeId;
 
@@ -77,9 +51,13 @@ function document(req, res, next) {
 
   fiscal.getDateRangeFromPeriods(periods).then(dateRange => {
     range = dateRange;
+    return Exchange.getExchangeRate(enterpriseId, params.currency_id, range.dateTo);
+  }).then(exchangeRate => {
 
-    const totalIncome = `SELECT SUM(r.amount) as total FROM (${getQueryIncome()}) as r`;
-    const totalExpense = `SELECT SUM(r.amount) as total FROM (${getQueryExpense()}) as r`;
+    const rate = exchangeRate.rate || 1;
+
+    const totalIncome = `SELECT SUM(r.amount) as total FROM (${getQueryIncome(rate)}) as r`;
+    const totalExpense = `SELECT SUM(r.amount) as total FROM (${fiscal.getAccountBalancesByTypeId(rate)}) as r`;
 
     const expenseParams = [
       params.fiscal,
@@ -96,8 +74,8 @@ function document(req, res, next) {
     ];
 
     queries = [
-      db.exec(getQueryExpense(), expenseParams),
-      db.exec(getQueryIncome(), incomeParams),
+      db.exec(fiscal.getAccountBalancesByTypeId(rate), expenseParams),
+      db.exec(getQueryIncome(rate), incomeParams),
       db.one(totalExpense, expenseParams),
       db.one(totalIncome, incomeParams),
     ];
@@ -112,7 +90,7 @@ function document(req, res, next) {
         totalIncome : totalIncome.total,
         dateFrom : range.dateFrom,
         dateTo : range.dateTo,
-        currencyId : req.session.enterprise.currency_id,
+        currencyId : params.currency_id,
       };
 
       formatData(context.expense, context.totalExpense, DECIMAL_PRECISION);
