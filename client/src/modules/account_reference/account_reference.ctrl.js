@@ -2,14 +2,14 @@ angular.module('bhima.controllers')
   .controller('AccountReferenceController', AccountReferenceController);
 
 AccountReferenceController.$inject = [
-  '$state', 'AccountReferenceService', 'NotifyService', 'uiGridConstants',
+  '$state', 'AccountReferenceService', 'NotifyService', 'uiGridConstants', '$translate',
 ];
 
 /**
  * AccountReference Controller
  * This module is responsible for handling the CRUD operation on the account references
  */
-function AccountReferenceController($state, AccountReferences, Notify, uiGridConstants) {
+function AccountReferenceController($state, AccountReferences, Notify, uiGridConstants, $translate) {
   const vm = this;
   vm.gridApi = {};
   vm.filterEnabled = false;
@@ -45,6 +45,12 @@ function AccountReferenceController($state, AccountReferences, Notify, uiGridCon
       {
         field : 'parent_abbr',
         displayName : 'ACCOUNT.REFERENCE.PARENT_REFERENCE',
+        headerCellFilter : 'translate',
+        enableFiltering : true,
+      },
+      {
+        field : 'account_reference_type_label',
+        displayName : 'FORM.LABELS.TYPE',
         headerCellFilter : 'translate',
         enableFiltering : true,
       },
@@ -104,6 +110,10 @@ function AccountReferenceController($state, AccountReferences, Notify, uiGridCon
 
     AccountReferences.read()
       .then((references) => {
+        references.forEach((item) => {
+          item.account_reference_type_label = $translate.instant(item.account_reference_type_label);
+        });
+
         vm.gridOptions.data = references;
       })
       .catch(handleError)

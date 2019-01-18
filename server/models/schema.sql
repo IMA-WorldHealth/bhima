@@ -60,6 +60,7 @@ CREATE TABLE `account_reference` (
   `abbr` VARCHAR(35) NOT NULL,
   `description` VARCHAR(100) NOT NULL,
   `parent` MEDIUMINT(8) UNSIGNED NULL,
+  `reference_type_id` MEDIUMINT(8) UNSIGNED NULL,
   `is_amo_dep` TINYINT(1) NULL DEFAULT 0 COMMENT 'Ammortissement or depreciation',
   PRIMARY KEY (`id`),
   UNIQUE KEY `account_reference_1` (`abbr`, `is_amo_dep`)

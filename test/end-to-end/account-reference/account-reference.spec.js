@@ -6,7 +6,7 @@ const components = require('../shared/components');
 const AccountReferencePage = require('./account-reference.page.js');
 const AccountReferenceCreateUpdatePage = require('./account-reference.cu.page.js');
 
-describe('AccountReference Management Page', () => {
+describe.only('AccountReference Management Page', () => {
   const path = '#/account_reference';
   const mockCreate = {
     abbr : 'AO',
@@ -14,6 +14,7 @@ describe('AccountReference Management Page', () => {
     is_amo_dep : 0,
     accounts : ['31110010', '31110011', '57110010', '57110011'],
     accountsException : ['31110011', '57110011'],
+    reference_type_id : 'Compte de Résultat',
   };
 
   const mockCreate2 = {
@@ -55,6 +56,8 @@ describe('AccountReference Management Page', () => {
     modal.setDescription(mockCreate.description);
     modal.setAccountValues(mockCreate.accounts);
     modal.setAccountExceptionValues(mockCreate.accountsException);
+    components.accountReferenceTypeSelect.set(mockCreate.reference_type_id, 'reference_type_id');
+
     modal.submit();
 
     components.notification.hasSuccess();

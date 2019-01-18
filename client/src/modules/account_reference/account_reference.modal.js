@@ -17,6 +17,7 @@ function AccountReferenceModalController($state, Accounts, AccountReferences, No
   vm.submit = submit;
   vm.closeModal = closeModal;
   vm.clear = clear;
+  vm.onSelectAccountReferenceType = onSelectAccountReferenceType;
 
   if ($state.params.creating || $state.params.id) {
     cache.stateParams = $state.params;
@@ -50,6 +51,11 @@ function AccountReferenceModalController($state, Accounts, AccountReferences, No
       vm.references = references;
     })
     .catch(Notify.handleError);
+
+  // callback for Account Reference Type
+  function onSelectAccountReferenceType(referenceType) {
+    vm.accountReference.reference_type_id = referenceType.id;
+  }
 
   // submit the data to the server from all two forms (update, create)
   function submit(accountReferenceForm) {

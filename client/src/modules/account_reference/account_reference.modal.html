@@ -14,7 +14,7 @@
     </ol>
   </div>
 
-  <div class="modal-body" style="overflow-y: scroll; max-height:600px; ">
+  <div class="modal-body" style="overflow-y: scroll; max-height:620px; ">
 
     <!-- the reference -->
     <div class="form-group" ng-class="{ 'has-error' : AccountReferenceForm.$submitted && AccountReferenceForm.abbr.$invalid }">
@@ -120,6 +120,14 @@
           <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
         </div>
     </div>
+
+    <bh-account-reference-type-select
+      reference-type-id="AccountReferenceModalCtrl.accountReference.reference_type_id"
+      id="reference_type_id"
+      name="reference_type_id"
+      on-select-callback="AccountReferenceModalCtrl.onSelectAccountReferenceType(accountReferenceType)">
+      <bh-clear on-clear="AccountReferenceModalCtrl.clear('reference_type_id')"></bh-clear>
+    </bh-account-reference-type-select>
   </div>
 
   <div class="modal-footer">

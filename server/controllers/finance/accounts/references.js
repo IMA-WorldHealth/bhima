@@ -48,12 +48,12 @@ function list(req, res, next) {
     SELECT 
       ar.id, ar.abbr, ar.description, ar.parent, ar.is_amo_dep, arp.abbr as parent_abbr,
       GROUP_CONCAT(IF(ari.is_exception = 0, a.number, CONCAT('(sauf ', a.number, ')')) SEPARATOR ', ') AS accounts,
-      GROUP_CONCAT(IF(ari.credit_balance = 0, ' ', CONCAT('(SC ', a.number, ')')) SEPARATOR ', ') AS credits,
-    GROUP_CONCAT(IF(ari.debit_balance = 0, ' ', CONCAT('(SD ', a.number, ')')) SEPARATOR ', ') AS debits
+      ar.reference_type_id, art.label as account_reference_type_label
     FROM account_reference ar
     LEFT JOIN account_reference arp ON arp.id = ar.parent
     LEFT JOIN account_reference_item ari ON ari.account_reference_id = ar.id
     LEFT JOIN account a ON a.id = ari.account_id
+    LEFT JOIN account_reference_type art ON art.id = ar.reference_type_id
     GROUP BY ar.id;
   `;
 
@@ -242,7 +242,8 @@ function getValue(req, res, next) {
  */
 function lookupAccountReference(id) {
   let glb = {};
-  const sql = 'SELECT id, abbr, description, parent, is_amo_dep FROM account_reference WHERE id = ?;';
+  const sql = `
+    SELECT id, abbr, description, parent, is_amo_dep, reference_type_id FROM account_reference WHERE id = ?;`;
 
   const sqlItems = `
     SELECT account_id FROM account_reference_item WHERE account_reference_id = ? AND is_exception = 0;`;

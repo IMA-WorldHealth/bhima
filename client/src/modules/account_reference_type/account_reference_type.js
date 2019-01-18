@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('AccountReferenceTypeController', AccountReferenceTypeController);
 
 AccountReferenceTypeController.$inject = [
-  '$state', 'AccountReferenceTypeService', 'NotifyService', 'uiGridConstants', 'ModalService',
+  '$state', 'AccountReferenceTypeService', 'NotifyService', 'uiGridConstants', 'ModalService', '$translate',
 ];
 
 /**
@@ -10,7 +10,8 @@ AccountReferenceTypeController.$inject = [
  * This module is responsible for handling the CRUD operation on Account Reference Type
  */
 
-function AccountReferenceTypeController($state, AccountReferenceType, Notify, uiGridConstants, ModalService) {
+function AccountReferenceTypeController($state, AccountReferenceType, Notify, uiGridConstants,
+  ModalService, $translate) {
   const vm = this;
   vm.gridApi = {};
   vm.filterEnabled = false;
@@ -83,6 +84,10 @@ function AccountReferenceTypeController($state, AccountReferenceType, Notify, ui
 
     AccountReferenceType.read()
       .then((accountReferenceType) => {
+        accountReferenceType.forEach((item) => {
+          item.label = $translate.instant(item.label);
+        });
+
         vm.gridOptions.data = accountReferenceType;
       })
       .catch(handleError)

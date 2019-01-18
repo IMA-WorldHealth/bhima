@@ -17,7 +17,7 @@ describe('Account Reference Type', () => {
   };
 
   it('begins with 2 Account Reference Type', () => {
-    expect(page.count()).to.eventually.equal(2);
+    expect(page.count()).to.eventually.equal(3);
   });
 
   it('successfully creates a new Account Reference Type', () => {

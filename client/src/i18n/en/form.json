@@ -225,6 +225,7 @@
             "ACCOUNT_CONFIGURATION" : "Account Setup",
             "ACCOUNT_EXTRACT": "Account Details",
             "ACCOUNT_NUMBER": "Account Number",
+            "ACCOUNT_REFERENCE_TYPE": "Account Reference Type",
             "ACCOUNT_TITLE": "Account Text",
             "ACCOUNT_TYPE": "Account Type",
             "ACTIVATE": "Activate",
@@ -265,6 +266,7 @@
             "ENDING_VIEW_BALANCE" : "Ending View Balance",
             "BALANCE_FINAL" : "Final Balance",
             "BALANCE_SECTION": "Balance Sheet Section",
+            "BALANCE_SHEET": "Balance Sheet",
             "BANK": "Bank",
             "BANK_ACCOUNT": "Bank Account",
             "BASIC_SALARY": "Basic Salary",
@@ -390,6 +392,7 @@
             "COLS_VISIBLE": "Visible columns",
             "COLS_SELECTED": "Selected columns",
             "PERIOD_TOTAL": "Period Total",
+            "PROFIT_LOSS" : "Profit and loss",
             "ROWS_ALL": "All records",
             "ROWS_VISIBLE": "Visible records",
             "ROWS_SELECTED": "Selected records",
@@ -746,6 +749,7 @@
             "QUANTITY": "Enter a quantity"
         },
         "SELECT": {
+            "ACCOUNT_REFERENCE_TYPE" : "Select an Account Reference Type",
             "ENTITY":"Select an entity",
             "ENTITY_TYPE":"Select an entity type",
             "GENDER":"Select a gender",

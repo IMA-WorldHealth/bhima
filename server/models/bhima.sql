@@ -284,3 +284,9 @@ INSERT INTO `entity_type` (`label`, `translation_key`) VALUES
   ('service', 'ENTITY.TYPE.SERVICE'),
   ('office', 'ENTITY.TYPE.OFFICE'),
   ('enterprise', 'ENTITY.TYPE.ENTERPRISE');
+
+-- Default Account Reference Type
+INSERT INTO `account_reference_type` (`id`, `label`, `fixed`) VALUES 
+(1, 'FORM.LABELS.FEE_CENTER', 1),
+(2, 'FORM.LABELS.BALANCE_SHEET', 1),
+(3, 'FORM.LABELS.PROFIT_LOSS', 1);
