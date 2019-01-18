@@ -6,7 +6,7 @@ const components = require('../shared/components');
 const AccountReferencePage = require('./account-reference.page.js');
 const AccountReferenceCreateUpdatePage = require('./account-reference.cu.page.js');
 
-describe.only('AccountReference Management Page', () => {
+describe('AccountReference Management Page', () => {
   const path = '#/account_reference';
   const mockCreate = {
     abbr : 'AO',
