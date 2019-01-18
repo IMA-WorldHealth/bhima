@@ -32,7 +32,6 @@ const PDF_OPTIONS = {
  */
 async function build(req, res, next) {
   const options = req.query;
-
   let report;
 
   _.defaults(options, PDF_OPTIONS);
@@ -46,7 +45,11 @@ async function build(req, res, next) {
 
   try {
 
-    const data = {};
+    const data = {
+      currency_id : options.currency_id,
+    };
+
+
     const sql = `
       SELECT BUID(p.debtor_uuid) as debtor_uuid
       FROM patient p
@@ -60,8 +63,8 @@ async function build(req, res, next) {
 
     // get debtor/creditor information
     const [creditorOperations, debtorOperations] = await Promise.all([
-      Creditors.getFinancialActivity(employee.creditor_uuid),
-      Debtors.getFinancialActivity(patient.debtor_uuid, true),
+      Creditors.getFinancialActivity(employee.creditor_uuid, data.currency_id),
+      Debtors.getFinancialActivity(patient.debtor_uuid, true, data.currency_id),
     ]);
 
     _.extend(data, {

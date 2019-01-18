@@ -294,3 +294,25 @@ WHERE id = 213;
 -- delete unbalanced invoice paiement entry
 DELETE FROM role_unit WHERE unit_id = 210;
 DELETE FROM unit WHERE id = 210;
+
+
+
+
+-- new get exchange rate function, it uses project id
+DROP FUNCTION IF EXISTS  GetExchangeRateByProject $$
+
+CREATE FUNCTION GetExchangeRateByProject(
+  projectId INT,
+  currencyId INT,
+  date TIMESTAMP
+)
+
+RETURNS DECIMAL(19, 8) DETERMINISTIC
+BEGIN
+  RETURN (
+    SELECT e.rate FROM exchange_rate AS e
+    JOIN project p ON p.enterprise_id = e.enterprise_id
+    WHERE p.id = projectId AND e.currency_id = currencyId AND e.date <= date
+    ORDER BY e.date DESC LIMIT 1
+  );
+END $$

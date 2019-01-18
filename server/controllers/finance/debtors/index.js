@@ -256,24 +256,49 @@ function invoiceBalances(debtorUuid, uuids, options = {}) {
  *
  * @method balance
  */
-function balance(debtorUuid, excludeCautionLinks = false) {
+function balance(debtorUuid, excludeCautionLinks = false, currencyId) {
   const debtorUid = db.bid(debtorUuid);
 
   const excludeCautionLinkStatement = `AND transaction_type_id <> ${CAUTION_LINK_TYPE_ID}`;
 
-  const sql = `
+  let sql = `
     SELECT IFNULL(SUM(ledger.debit_equiv), 0) AS debit, IFNULL(SUM(ledger.credit_equiv), 0) AS credit,
       IFNULL(SUM(ledger.debit_equiv - ledger.credit_equiv), 0) AS balance, MIN(trans_date) AS since,
       MAX(trans_date) AS until
     FROM (
-      SELECT debit_equiv, credit_equiv, entity_uuid, trans_date FROM posting_journal
+
+      SELECT debit_equiv, credit_equiv, entity_uuid, trans_date
+      FROM posting_journal
         WHERE entity_uuid = ? ${excludeCautionLinks ? excludeCautionLinkStatement : ''}
       UNION ALL
-      SELECT debit_equiv, credit_equiv, entity_uuid, trans_date FROM general_ledger
+      SELECT debit_equiv, credit_equiv, entity_uuid, trans_date  FROM general_ledger
         WHERE entity_uuid = ? ${excludeCautionLinks ? excludeCautionLinkStatement : ''}
     ) AS ledger
     GROUP BY ledger.entity_uuid;
   `;
+
+  if (currencyId) {
+    sql = `
+    SELECT IFNULL(SUM(ledger.debit_equiv), 0) AS debit, IFNULL(SUM(ledger.credit_equiv), 0) AS credit,
+      (IFNULL(SUM(ledger.debit_equiv - ledger.credit_equiv), 0)*rate) AS balance, MIN(trans_date) AS since,
+      MAX(trans_date) AS until
+    FROM (
+
+      SELECT debit_equiv, credit_equiv, entity_uuid, trans_date, 
+        IFNULL(
+          GetExchangeRateByProject(posting_journal.project_id, ${currencyId}, posting_journal.trans_date), 1
+        ) as rate
+      FROM posting_journal
+        WHERE entity_uuid = ? ${excludeCautionLinks ? excludeCautionLinkStatement : ''}
+      UNION ALL
+      SELECT debit_equiv, credit_equiv, entity_uuid, trans_date, 
+      IFNULL(GetExchangeRateByProject(general_ledger.project_id, ${currencyId}, general_ledger.trans_date), 1) as rate
+      FROM general_ledger
+        WHERE entity_uuid = ? ${excludeCautionLinks ? excludeCautionLinkStatement : ''}
+    ) AS ledger
+    GROUP BY ledger.entity_uuid;
+    `;
+  }
 
   return db.exec(sql, [debtorUid, debtorUid]);
 }
@@ -284,7 +309,7 @@ function balance(debtorUuid, excludeCautionLinks = false) {
  * @description
  * returns all transactions and balances associated with the debtor (or creditor).
  */
-function getFinancialActivity(debtorUuid, excludeCautionLinks = false) {
+function getFinancialActivity(debtorUuid, excludeCautionLinks = false, currencyId) {
   const uid = db.bid(debtorUuid);
 
 
@@ -297,7 +322,7 @@ function getFinancialActivity(debtorUuid, excludeCautionLinks = false) {
     FROM (
       SELECT p.trans_id, p.entity_uuid, p.description, p.record_uuid, p.trans_date,
         SUM(p.debit_equiv) AS debit, SUM(p.credit_equiv) AS credit, dm.text AS document,
-        SUM(p.debit_equiv) - SUM(p.credit_equiv) AS balance, 0 AS posted
+        (SUM(p.debit_equiv) - SUM(p.credit_equiv)) AS balance, 0 AS posted
       FROM posting_journal AS p
         LEFT JOIN document_map AS dm ON dm.uuid = p.record_uuid
       WHERE p.entity_uuid = ? ${excludeCautionLinks ? excludeCautionLinkStatement : ''}
@@ -307,7 +332,7 @@ function getFinancialActivity(debtorUuid, excludeCautionLinks = false) {
 
       SELECT g.trans_id, g.entity_uuid, g.description, g.record_uuid, g.trans_date,
         SUM(g.debit_equiv) AS debit, SUM(g.credit_equiv) AS credit, dm.text AS document,
-        SUM(g.debit_equiv) - SUM(g.credit_equiv) AS balance, 1 AS posted
+        (SUM(g.debit_equiv) - SUM(g.credit_equiv)) AS balance, 1 AS posted
       FROM general_ledger AS g
         LEFT JOIN document_map AS dm ON dm.uuid = g.record_uuid
       WHERE g.entity_uuid = ? ${excludeCautionLinks ? excludeCautionLinkStatement : ''}
@@ -319,7 +344,7 @@ function getFinancialActivity(debtorUuid, excludeCautionLinks = false) {
 
   return q.all([
     db.exec(sql, [uid, uid]),
-    balance(debtorUuid, excludeCautionLinks),
+    balance(debtorUuid, excludeCautionLinks, currencyId),
   ])
     .spread((transactions, aggs) => {
 

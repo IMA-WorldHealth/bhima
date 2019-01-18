@@ -14,7 +14,7 @@
   <h5 class="text-uppercase"><b>{{translate "FORM.LABELS.REGISTRATION_NUMBER"}} : {{ employee.code }}</b></h5>
   <h4 class="text-uppercase" style="background-color: #efefef;">
     <b>
-      {{translate "FORM.LABELS.BALANCE"}}== {{debcred ./employeeBalance metadata.enterprise.currency_id}}
+      {{translate "FORM.LABELS.BALANCE"}}== {{debcred ./employeeBalance ./currency_id}}
     </b>
   </h4>
   <hr/>
@@ -47,7 +47,7 @@
               {{currency this.credit ../metadata.enterprise.currency_id}}
             </td>           
             <td class="text-right">
-              {{debcred this.cumsum ../metadata.enterprise.currency_id}}
+              {{debcred this.cumsum ../currency_id}}
             </td>
           </tr>
         {{else}}
@@ -64,7 +64,7 @@
             <span>{{currency creditorAggregates.credit metadata.enterprise.currency_id}}</span>
           </th>
           <th class="text-right">
-            <span>{{currency creditorAggregates.balance metadata.enterprise.currency_id}}</span>
+            <span>{{currency creditorAggregates.balance ./currency_id}}</span>
           </th>
         </tr>      
       </tfoot>
@@ -99,7 +99,7 @@
               {{currency this.credit ../metadata.enterprise.currency_id}}
             </td>           
             <td class="text-right">
-              {{debcred this.cumsum ../metadata.enterprise.currency_id}}
+              {{debcred this.cumsum ../currency_id}}
             </td>
           </tr>
         {{else}}
@@ -116,7 +116,7 @@
             <span>{{currency debtorAggregates.credit metadata.enterprise.currency_id}}</span>
           </th>
           <th class="text-right">
-            <span>{{currency debtorAggregates.balance metadata.enterprise.currency_id}}</span>
+            <span>{{currency debtorAggregates.balance ./currency_id}}</span>
           </th>
         </tr>      
       </tfoot>

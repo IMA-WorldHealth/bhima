@@ -57,6 +57,25 @@ BEGIN
   );
 END $$
 
+-- new get exchange rate function, it uses project id
+DROP FUNCTION IF EXISTS  GetExchangeRateByProject $$
+
+CREATE FUNCTION GetExchangeRateByProject(
+  projectId INT,
+  currencyId INT,
+  date TIMESTAMP
+)
+
+RETURNS DECIMAL(19, 8) DETERMINISTIC
+BEGIN
+  RETURN (
+    SELECT e.rate FROM exchange_rate AS e
+    JOIN project p ON p.enterprise_id = e.enterprise_id
+    WHERE p.id = projectId AND e.currency_id = currencyId AND e.date <= date
+    ORDER BY e.date DESC LIMIT 1
+  );
+END $$
+
 /*
 Sometime we need to get the exchange rate by the project id
 */
