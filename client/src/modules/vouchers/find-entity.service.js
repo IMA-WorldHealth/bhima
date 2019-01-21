@@ -1,10 +1,10 @@
 angular.module('bhima.services')
   .service('FindEntityService', FindEntityService);
 
-FindEntityService.$inject = ['$uibModal'];
+FindEntityService.$inject = ['$uibModal', 'PrototypeApiService'];
 
-function FindEntityService(Modal) {
-  const service = this;
+function FindEntityService(Modal, Api) {
+  const service = new Api('/finance/entities');
 
   service.openModal = openModal;
 
@@ -16,7 +16,9 @@ function FindEntityService(Modal) {
       size         : 'md',
       animation    : true,
     });
+
     return instance.result;
   }
 
+  return service;
 }
