@@ -48,9 +48,9 @@
               <td class="text-center">{{ poste.sign }}</td>
               <td class="text-center">{{poste.note }}</td>
 
-              <td class="text-right">{{debcred poste.currentNet metadata.enterprise.currency_id}}</td>
+              <td class="text-right">{{debcred poste.currentNet ../metadata.enterprise.currency_id}}</td>
               {{#if ../fiscalYear.previous.end_date}}
-                <td class="text-right">{{debcred poste.previousNet metadata.enterprise.currency_id}}</td>
+                <td class="text-right">{{debcred poste.previousNet ../metadata.enterprise.currency_id}}</td>
               {{/if}}
             </tr>
           {{/each}}
