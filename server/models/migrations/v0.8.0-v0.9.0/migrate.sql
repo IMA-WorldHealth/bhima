@@ -1041,3 +1041,6 @@ INSERT INTO `account_reference_type` (`id`, `label`, `fixed`) VALUES
 (2, 'FORM.LABELS.BALANCE_SHEET', 1),
 (3, 'FORM.LABELS.PROFIT_LOSS', 1);
 
+-- Account Reference Type unit
+INSERT INTO unit VALUES
+(225, 'Account Reference Type','TREE.ACCOUNT_REFERENCE_TYPE','Account Reference Type', 1,'/modules/account_reference_type','/account_reference_type');
