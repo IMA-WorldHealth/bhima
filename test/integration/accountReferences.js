@@ -37,7 +37,9 @@ describe('(/accounts/references) Accounts References', () => {
         expect(res).to.have.status(200);
 
         expect(res).to.be.a('object');
-        expect(res.body).to.have.all.keys('id', 'abbr', 'description', 'parent', 'is_amo_dep', 'accounts', 'accountsException', 'reference_type_id');
+        expect(res.body).to.have.all.keys(
+          'id', 'abbr', 'description', 'parent', 'is_amo_dep', 'accounts', 'accountsException', 'reference_type_id'
+        );
       })
       .catch(helpers.handler);
   });
