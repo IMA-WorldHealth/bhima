@@ -1,25 +1,14 @@
 <ng-form name="EntityForm" data-modal="entity" novalidate>
+  <div class="modal-header clearfix">
+    <ol class="headercrumb">
+      <li class="static"><span class="fa fa-search"></span></li>
+      <li class="title" translate>VOUCHERS.COMPLEX.ENTITY</li>
+    </ol>
+  </div>
 
-  <div class="modal-header">
-    <h4 class="space-between">
-      <!-- title -->
-      <div>
-        <span class="fa fa-search"></span>
-        <span translate>VOUCHERS.COMPLEX.ENTITY</span>
-      </div>
-
-      <!-- refresh -->
-      <div
-        ng-show="$ctrl.result.uuid"
-        ng-click="$ctrl.refresh()"
-        class="btn btn-default btn-sm">
-        <span class="fa fa-refresh"></span>
-      </div>
-    </h4>
   </div>
 
   <div class="modal-body">
-
     <div class="form-group">
       <div ng-if="!$ctrl.result.uuid" class="input-group">
 
@@ -65,12 +54,18 @@
       </p>
       <!-- /inline notification -->
 
-      <div ng-show="$ctrl.result.uuid" class="bg-success">
-        <h4 class="text-center text-success" style="padding:10px; margin:0px;">
-          <span class="fa fa-user"></span>
-          {{ $ctrl.result.label }}
-        </h4>
+      <div ng-if="$ctrl.result.uuid">
+        <p>
+          <strong ng-show="$ctrl.selectedType === 'D'" translate>VOUCHERS.COMPLEX.DEBTOR</strong>
+          <strong ng-show="$ctrl.selectedType === 'C'" translate>VOUCHERS.COMPLEX.CREDITOR</strong>
+          <span class="fa fa-user"></span> {{ $ctrl.result.label }}
+        </p>
+
+        <p>
+          <a href><span translate>FORM.BUTTONS.RESET</span></a>
+        </p>
       </div>
+
     </div>
   </div>
 
