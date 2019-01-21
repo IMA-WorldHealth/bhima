@@ -715,6 +715,8 @@
             "DEBTOR_GROUP": "Enter a Debtor Group",
             "DESCRIPTION": "Enter description",
             "DOCUMENT_NAME": "Enter document name",
+            "ENTITY": "Enter an Entity",
+            "RECORD": "Enter a Record",
             "PATIENT_GROUP": "Enter patient group",
             "EMAIL": "Enter email",
             "LOT":"Enter Batch Number",

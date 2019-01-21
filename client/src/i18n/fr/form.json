@@ -716,6 +716,8 @@
             "DATE": "Entrer la Date",
             "DESCRIPTION": "Entrer une description",
             "DOCUMENT_NAME": "Entrer le nom du document",
+            "ENTITY":"Entrer une entité",
+            "RECORD": "Entrer une enregistrement",
             "EMAIL": "Entrer l'adresse e-mail",
             "LOT":"Entrer le lot",
             "LONGITUDE": "Entrer la longitude",
