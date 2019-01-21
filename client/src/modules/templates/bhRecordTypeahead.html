@@ -1,0 +1,26 @@
+<div ng-form="bhRecordTypeaheadForm" bh-record-typeahead ng-model-options="{ updateOn: 'default' }">
+  <div
+    class="form-group"
+    style="margin-bottom:0;"
+    ng-class="{ 'has-error' : bhRecordTypeaheadForm.record.$error && bhRecordTypeaheadForm.$submitted }">
+    <input
+      type="text"
+      name="record"
+      class="form-control"
+      placeholder="{{ ::'FORM.PLACEHOLDERS.RECORD' | translate }}"
+      ng-model="$ctrl.record"
+      ng-disabled="$ctrl.disabled"
+      uib-typeahead="record as record.text for record in $ctrl.lookupRecords($viewValue)"
+      typeahead-template-url="bhRecordTypeaheadItem.html"
+      typeahead-select-on-blur="true"
+      typeahead-on-select="$ctrl.onSelectRecord($item)"
+      typeahead-append-to-body="true"
+      autocomplete="off">
+  </div>
+
+  <script type="text/ng-template" id="bhRecordTypeaheadItem.html">
+    <a href>
+      [<span ng-bind-html="match.model.text | uibTypeaheadHighlight:query"></span>] {{ match.model.description }} ({{ match.model.date | date }})
+    </a>
+  </script>
+</div>
