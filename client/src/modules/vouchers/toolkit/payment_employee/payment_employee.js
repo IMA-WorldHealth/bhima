@@ -54,7 +54,7 @@ function PaymentEmployeeKitController(
       MultiplePayroll.read(null, params)
         .then((paiements) => {
 
-        // total amount
+          // total amount
           const totals = paiements.reduce(aggregate, 0);
 
           vm.gridOptions.data = paiements || [];

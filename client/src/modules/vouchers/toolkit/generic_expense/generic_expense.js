@@ -7,7 +7,7 @@ GenericExpenseKitController.$inject = [
 
 // Import transaction rows for a convention payment
 function GenericExpenseKitController(Instance, Notify, Cashbox, bhConstants, ToolKits) {
-  var vm = this;
+  const vm = this;
 
   // expose to the view
   vm.close = Instance.close;
@@ -16,20 +16,20 @@ function GenericExpenseKitController(Instance, Notify, Cashbox, bhConstants, Too
   vm.onSelectAccountCallback = onSelectAccountCallback;
 
   Cashbox.read(null, { detailed : 1 })
-    .then(function (data) {
+    .then((data) => {
       vm.cashboxes = data;
     })
     .catch(Notify.handleError);
 
   // generate transaction rows
   function generateTransactionRows(params) {
-    var rows = [];
+    const rows = [];
 
-    var debitRow = ToolKits.getBlankVoucherRow();
-    var creditRow = ToolKits.getBlankVoucherRow();
+    const debitRow = ToolKits.getBlankVoucherRow();
+    const creditRow = ToolKits.getBlankVoucherRow();
 
-    var cashboxAccountId = params.cashbox.account_id;
-    var selectedAccountId = params.account.id;
+    const cashboxAccountId = params.cashbox.account_id;
+    const selectedAccountId = params.account.id;
 
     // debit the selected account
     debitRow.account_id = selectedAccountId;
@@ -54,7 +54,7 @@ function GenericExpenseKitController(Instance, Notify, Cashbox, bhConstants, Too
   function submit(form) {
     if (form.$invalid) { return; }
 
-    var bundle = generateTransactionRows({
+    const bundle = generateTransactionRows({
       cashbox : vm.cashbox,
       account : vm.account,
     });

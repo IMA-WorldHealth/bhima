@@ -8,7 +8,7 @@ CashTransferKitController.$inject = [
 
 // Import transaction rows for a convention payment
 function CashTransferKitController(Instance, Notify, Cashbox, $translate, bhConstants, ToolKits) {
-  var vm = this;
+  const vm = this;
 
   vm.onSelectAccountCallback = onSelectAccountCallback;
 
@@ -19,20 +19,20 @@ function CashTransferKitController(Instance, Notify, Cashbox, $translate, bhCons
   // load cashboxes
   // FIXME(@jniles) - why do we need to set is_auxiliary to be 0?
   Cashbox.read(null, { detailed : 1, is_auxiliary : 0 })
-    .then(function (data) {
+    .then((data) => {
       vm.cashboxes = data;
     })
     .catch(Notify.handleError);
 
   // generate transaction rows
   function generateTransactionRows(params) {
-    var rows = [];
+    const rows = [];
 
-    var debitRow = ToolKits.getBlankVoucherRow();
-    var creditRow = ToolKits.getBlankVoucherRow();
+    const debitRow = ToolKits.getBlankVoucherRow();
+    const creditRow = ToolKits.getBlankVoucherRow();
 
-    var cashboxAccountId = params.cashbox.account_id;
-    var selectedAccountId = params.account.id;
+    const cashboxAccountId = params.cashbox.account_id;
+    const selectedAccountId = params.account.id;
 
     // debit the cashbox
     debitRow.account_id = cashboxAccountId;
@@ -58,12 +58,12 @@ function CashTransferKitController(Instance, Notify, Cashbox, $translate, bhCons
   function submit(form) {
     if (form.$invalid) { return; }
 
-    var bundle = generateTransactionRows({
+    const bundle = generateTransactionRows({
       cashbox : vm.cashbox,
       account : vm.account,
     });
 
-    var msg = $translate.instant('VOUCHERS.GLOBAL.TRANSFER_DESCRIPTION', {
+    const msg = $translate.instant('VOUCHERS.GLOBAL.TRANSFER_DESCRIPTION', {
       fromAccount : vm.account.label,
       toAccount   : vm.cashbox.label,
       amount      : vm.amount,

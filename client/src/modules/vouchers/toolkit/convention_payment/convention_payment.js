@@ -2,18 +2,17 @@ angular.module('bhima.controllers')
   .controller('ConventionPaymentKitController', ConventionPaymentKitController);
 
 ConventionPaymentKitController.$inject = [
-  '$uibModalInstance', 'DebtorGroupService', 'NotifyService', 'CashboxService',
+  '$uibModalInstance', 'DebtorGroupService', 'NotifyService',
   'SessionService', 'bhConstants', '$translate', 'VoucherToolkitService',
 ];
 
 // Import transaction rows for a convention payment
 function ConventionPaymentKitController(
-  Instance, DebtorGroup, Notify, Cashboxes,
-  Session, bhConstants, $translate, ToolKits
+  Instance, DebtorGroup, Notify, Session, bhConstants, $translate, ToolKits
 ) {
-  var vm = this;
+  const vm = this;
 
-  var MAX_DECIMAL_PRECISION = bhConstants.precision.MAX_DECIMAL_PRECISION;
+  const { MAX_DECIMAL_PRECISION } = bhConstants.precision;
 
   // global variables
   vm.debtorGroupFilter = { is_convention : 1 };
@@ -27,52 +26,58 @@ function ConventionPaymentKitController(
 
   // Set up page elements data (debtor select data)
   vm.onSelectDebtor = onSelectDebtor;
+  vm.onSelectCashbox = onSelectCashbox;
 
   function onSelectDebtor(debtorGroup) {
     vm.convention = debtorGroup;
     selectGroupInvoices(vm.convention);
   }
 
-  // load cashboxes
-  Cashboxes.read(null, { detailed : 1 })
-    .then(function (cashboxes) {
-      vm.cashboxList = cashboxes;
-    })
-    .catch(Notify.handleError);
+  function onSelectCashbox(cashbox) {
+    vm.cashbox = cashbox;
+  }
 
   // get debtor group invoices
   function selectGroupInvoices(convention) {
     vm.loading = true;
-    DebtorGroup.invoices(convention.uuid, { is_convention : 1 })
-      .then(function (invoices) {
+
+    DebtorGroup.invoices(convention.uuid)
+      .then((invoices = []) => {
         // total amount
-        var total = invoices.reduce(aggregate, 0);
+        const total = invoices.reduce(aggregate, 0);
+
+        invoices.forEach(invoice => {
+          invoice.date = new Date(invoice.date);
+        });
+
+        // sort in order
+        invoices.sort((a, b) => a.date > b.date);
 
         // invoices
-        vm.gridOptions.data = invoices || [];
+        vm.gridOptions.data = invoices;
 
         // make sure we are always within precision
         vm.totalInvoices = Number.parseFloat(total.toFixed(MAX_DECIMAL_PRECISION));
       })
-      .catch(function (err) {
+      .catch((err) => {
         vm.hasError = true;
         Notify.handleError(err);
       })
-      .finally(function () {
+      .finally(() => {
         vm.loading = false;
       });
   }
 
   // generate transaction rows
   function generateTransactionRows(result) {
-    var rows = [];
+    const rows = [];
 
-    var cashboxAccountId = result.cashbox.account_id;
-    var conventionAccountId = result.convention.account_id;
-    var invoices = result.invoices;
+    const cashboxAccountId = result.cashbox.account_id;
+    const conventionAccountId = result.convention.account_id;
+    const { invoices } = result;
 
     // first, generate a cashbox row
-    var cashboxRow = ToolKits.getBlankVoucherRow();
+    const cashboxRow = ToolKits.getBlankVoucherRow();
     cashboxRow.account_id = cashboxAccountId;
     cashboxRow.debit = vm.totalSelected;
     cashboxRow.credit = 0;
@@ -80,8 +85,8 @@ function ConventionPaymentKitController(
 
 
     // then loop through each selected item and credit it with the convention account
-    invoices.forEach(function (invoice) {
-      var row = ToolKits.getBlankVoucherRow();
+    invoices.forEach(invoice => {
+      const row = ToolKits.getBlankVoucherRow();
 
       row.account_id = conventionAccountId;
       row.reference_uuid = invoice.uuid;
@@ -116,7 +121,7 @@ function ConventionPaymentKitController(
     fastWatch : true,
     flatEntityAccess : true,
     enableSelectionBatchEvent : false,
-    onRegisterApi : onRegisterApi,
+    onRegisterApi,
   };
 
   vm.gridOptions.columnDefs = [{
@@ -152,8 +157,8 @@ function ConventionPaymentKitController(
 
   // called whenever the selection changes in the ui-grid
   function rowSelectionCallback() {
-    var selected = vm.gridApi.selection.getSelectedRows();
-    var aggregation = selected.reduce(aggregate, 0);
+    const selected = vm.gridApi.selection.getSelectedRows();
+    const aggregation = selected.reduce(aggregate, 0);
 
     vm.hasSelectedRows = selected.length > 0;
     vm.totalSelected = Number.parseFloat(aggregation.toFixed(MAX_DECIMAL_PRECISION));
@@ -163,14 +168,11 @@ function ConventionPaymentKitController(
 
   // submission
   function submit(form) {
-    var selected;
-    var bundle;
-
     if (form.$invalid) { return; }
 
-    selected = vm.gridApi.selection.getSelectedRows();
+    const selected = vm.gridApi.selection.getSelectedRows();
 
-    bundle = generateTransactionRows({
+    const bundle = generateTransactionRows({
       cashbox    : vm.cashbox,
       convention : vm.convention,
       invoices   : selected,

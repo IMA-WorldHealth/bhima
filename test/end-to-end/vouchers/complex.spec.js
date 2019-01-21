@@ -9,7 +9,7 @@ const GU = require('../shared/GridUtils');
 describe('Complex Vouchers', () => {
   before(() => helpers.navigate('vouchers/complex'));
 
-  it('creates a complex voucher', function () {
+  it('creates a complex voucher', function create() {
     const page = new ComplexVoucherPage();
 
     // set a new timeout to avoid warnings
@@ -156,8 +156,7 @@ describe('Complex Vouchers', () => {
     // click on the convention tool
     FU.dropdown('[toolbar-dropdown]', detail.tool);
 
-    // select the cashbox
-    FU.uiSelect('ToolCtrl.cashbox', detail.cashbox);
+    components.cashboxSelect.set(detail.cashbox);
 
     // select the convention
     components.debtorGroupSelect.set(detail.convention);
@@ -345,7 +344,7 @@ describe('Complex Vouchers', () => {
     components.cashboxSelect.set(detail.cashbox);
 
     // Select Payroll Period
-    components.payrollPeriodSelect.set(detail.period)
+    components.payrollPeriodSelect.set(detail.period);
 
     GU.selectRow(gridId, 1);
 
