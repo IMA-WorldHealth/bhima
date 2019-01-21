@@ -22,6 +22,8 @@ const system = require('../controllers/system');
 const report = require('../controllers/report');
 const install = require('../controllers/install');
 
+const financeShared = require('../controllers/finance/shared');
+
 // admin routes
 const rolesCtrl = require('../controllers/admin/roles');
 const users = require('../controllers/admin/users');
@@ -78,6 +80,7 @@ const stockSetting = require('../controllers/stock/setting');
 const assets = require('../controllers/asset_management/assets');
 const shipment = require('../controllers/asset_management/shipment');
 const shipmentContainer = require('../controllers/asset_management/shipment/shipment_containers');
+
 
 // finance routes
 const trialBalance = require('../controllers/finance/trialBalance');
@@ -1063,6 +1066,9 @@ exports.configure = function configure(app) {
 
   // on the fly tag numbers
   app.get('/lots/generate_barcodes/:number', lots.generateBarcodes);
+
+  app.get('/finance/entities', financeShared.lookupFinancialEntity);
+  app.get('/finance/records', financeShared.lookupFinancialRecord);
 
   // lots API
   app.get('/lots/:uuid', lots.details);
