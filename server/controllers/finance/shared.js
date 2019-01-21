@@ -5,11 +5,14 @@
  * This module contains helper functions for operating on transactions.  These
  * helper functions do things like like
  *
+ * @requires lodash
  * @requires lib/db
  * @requires lib/errors/BadRequest
  */
 
+const _ = require('lodash');
 const db = require('../../lib/db');
+const FilterParser = require('../../lib/filter');
 const BadRequest = require('../../lib/errors/BadRequest');
 
 exports.getTransactionReferences = getTransactionReferences;
@@ -24,6 +27,102 @@ exports.getRecordUuidByTextBulk = getRecordUuidByTextBulk;
 
 exports.getEntityUuidByText = getEntityUuidByText;
 exports.getEntityUuidByTextBulk = getEntityUuidByTextBulk;
+
+/**
+ * @function lookupFinancialEntity
+ *
+ * @description
+ * An HTTP interface to lookup financial entities (debtors/creditors) in the database.
+ */
+exports.lookupFinancialEntity = (req, res, next) => {
+  const options = req.query;
+  db.convert(options, ['uuid']);
+
+  const { limit } = options;
+  delete options.limit;
+
+  const filters = new FilterParser(options);
+
+  const debtorSQL = `
+    SELECT em.uuid, em.text, d.text as hrLabel FROM entity_map em JOIN debtor d ON em.uuid = d.uuid
+  `;
+
+  const creditorSQL = `
+    SELECT em.uuid, em.text, c.text as hrLabel FROM entity_map em JOIN creditor c ON em.uuid = c.uuid
+  `;
+
+  filters.equals('uuid');
+  filters.fullText('text', 'text', 'em');
+
+  const debtorQuery = filters.applyQuery(debtorSQL);
+  const creditorQuery = filters.applyQuery(creditorSQL);
+  const parameters = filters.parameters();
+
+  const query = `
+    SELECT uuid, text, hrLabel FROM (
+      ${debtorQuery} UNION ${creditorQuery}
+    )z ORDER BY text LIMIT ${limit};
+  `;
+
+  return db.exec(query, [...parameters, ...parameters])
+    .then(rows => { res.status(200).json(rows); })
+    .catch(next);
+};
+
+async function getRecordDetails(uuid) {
+  const ident = db.bid(uuid);
+  const isInvoice = 'SELECT BUID(uuid) AS uuid, date, description FROM invoice WHERE uuid = ?;';
+  const isCash = 'SELECT BUID(uuid) AS uuid, date, description FROM cash WHERE uuid = ?;';
+  const isVoucher = 'SELECT BUID(uuid) AS uuid, date, description FROM voucher WHERE uuid = ?;';
+
+  const [invoice] = await db.exec(isInvoice, ident);
+  if (invoice) {
+    return invoice;
+  }
+
+  const [cash] = await db.exec(isCash, ident);
+  if (cash) {
+    return cash;
+  }
+
+  const [voucher] = await db.exec(isVoucher, ident);
+  return voucher;
+}
+
+/**
+ * @function lookupFinancialRecord
+ *
+ * @description
+ * An HTTP interface to lookup financial records (cash/voucher/invoices) in the database.
+ */
+exports.lookupFinancialRecord = (req, res, next) => {
+  const options = req.query;
+  const filters = new FilterParser(options);
+  db.convert(options, ['uuid']);
+
+  const sql = `
+    SELECT BUID(uuid) AS uuid, text FROM document_map dm
+  `;
+
+  filters.equals('uuid');
+  filters.fullText('text', 'text', 'dm');
+
+  const query = filters.applyQuery(sql);
+  const parameters = filters.parameters();
+
+  let results;
+  return db.exec(query, parameters)
+    .then(rows => {
+      results = rows;
+      return Promise.all(rows.map(row => getRecordDetails(row.uuid)));
+    })
+    .then(rows => {
+      const groups = _.groupBy(rows, g => g.uuid);
+      results.forEach(row => _.extend(row, groups[row.uuid][0]));
+      res.status(200).json(results);
+    })
+    .catch(next);
+};
 
 /**
  * @function getRecordUuidByText
