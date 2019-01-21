@@ -20,10 +20,10 @@ function FindReferenceModalController(
   Instance, Voucher, Cash, GridFilter, entity, Invoices, uiGridConstants,
   Notify, bhConstants, Session
 ) {
-  var vm = this;
-  var filtering;
-  var SHARED_COLUMN_DEFNS;
-  var DEFAULT_DOWNLOAD_LIMIT = 250;
+  const vm = this;
+  let filtering;
+  let SHARED_COLUMN_DEFNS;
+  const DEFAULT_DOWNLOAD_LIMIT = 250;
   vm.DEFAULT_DOWNLOAD_LIMIT = DEFAULT_DOWNLOAD_LIMIT;
 
   vm.result = {};
@@ -95,14 +95,14 @@ function FindReferenceModalController(
     field : 'amount',
     displayName : 'TABLE.COLUMNS.COST',
     headerCellFilter : 'translate',
-    cellFilter: 'currency:'.concat(Session.enterprise.currency_id),
+    cellFilter : 'currency:'.concat(Session.enterprise.currency_id),
     cellClass : 'text-right',
   }];
 
   // this function extends the columns list by splicing in the accounts
   // at the second position.
   function substitute(columns) {
-    var cloned = SHARED_COLUMN_DEFNS.slice();
+    const cloned = SHARED_COLUMN_DEFNS.slice();
     Array.prototype.splice.apply(cloned, [1, 0].concat(columns));
     return cloned;
   }
@@ -110,8 +110,8 @@ function FindReferenceModalController(
   function referencePatientInvoice(limit) {
     toggleLoadingIndicator();
 
-    Invoices.read(null, { limit : limit })
-      .then(function (list) {
+    Invoices.read(null, { limit })
+      .then((list) => {
         vm.gridOptions.columnDefs = substitute([
           { field : 'patientName', displayName : 'TABLE.COLUMNS.PATIENT', headerCellFilter : 'translate' },
           { field : 'serviceName', displayName : 'TABLE.COLUMNS.SERVICE', headerCellFilter : 'translate' },
@@ -119,7 +119,7 @@ function FindReferenceModalController(
         ]);
 
         // map the cost to the "amount" field
-        list.forEach(function (row) {
+        list.forEach((row) => {
           row.amount = row.cost;
         });
 
@@ -134,8 +134,8 @@ function FindReferenceModalController(
   function referenceCashPayment(limit) {
     toggleLoadingIndicator();
 
-    Cash.read(null, { limit : limit })
-      .then(function (list) {
+    Cash.read(null, { limit })
+      .then((list) => {
         vm.gridOptions.columnDefs = substitute([
           { field : 'description', displayName : 'TABLE.COLUMNS.DESCRIPTION', headerCellFilter : 'translate' },
         ]);
@@ -150,14 +150,14 @@ function FindReferenceModalController(
   function referenceVoucher(limit) {
     toggleLoadingIndicator();
 
-    Voucher.read(null, { limit : limit })
-      .then(function (list) {
+    Voucher.read(null, { limit })
+      .then((list) => {
         vm.gridOptions.columnDefs = substitute([
           { field : 'description', displayName : 'TABLE.COLUMNS.DESCRIPTION', headerCellFilter : 'translate' },
         ]);
 
         // format data for the grid
-        var data = list.map(function (item) {
+        const data = list.map((item) => {
           return {
             uuid          : item.uuid,
             reference     : item.reference,
@@ -194,8 +194,8 @@ function FindReferenceModalController(
   }
 
   function submit() {
-    var row = vm.gridApi.selection.getSelectedRows();
-    var e = row[0];
+    const row = vm.gridApi.selection.getSelectedRows();
+    const e = row[0];
     e.document_type = vm.documentTypeLabel;
     Instance.close(e);
   }

@@ -9,15 +9,17 @@ FindEntityModalController.$inject = [
  * Find Entity Modal Controller
  *
  * This controller provides bindings for the find entity modal.
+ *
+ * TODO(@jniles) - rewrite this modal to use a LIKE query.
  */
 function FindEntityModalController(Instance, Debtors, Creditors, $timeout) {
-  var vm = this;
+  const vm = this;
 
   vm.result = {};
 
   vm.types = [
-    { code: 'D', label: 'VOUCHERS.COMPLEX.DEBTOR' },
-    { code: 'C', label: 'VOUCHERS.COMPLEX.CREDITOR' },
+    { code : 'D', label : 'VOUCHERS.COMPLEX.DEBTOR' },
+    { code : 'C', label : 'VOUCHERS.COMPLEX.CREDITOR' },
   ];
 
   vm.selectedTypeLabel = 'VOUCHERS.COMPLEX.DEB_CRED';
@@ -25,25 +27,26 @@ function FindEntityModalController(Instance, Debtors, Creditors, $timeout) {
   vm.selectEntity = selectEntity;
   vm.setType = setType;
   vm.submit = submit;
-  vm.cancel = cancel;
+  vm.cancel = Instance.close;
   vm.refresh = refresh;
 
   Debtors.read()
-    .then(function (debtors) {
+    .then(debtors => {
       vm.debtorList = debtors;
     });
 
   Creditors.read()
-    .then(function (creditors) {
+    .then((creditors) => {
       vm.creditorList = creditors;
     });
+
 
   function selectEntity(item) {
     vm.result = {
       uuid     : item.uuid,
       label    : item.text,
       type     : vm.selectedType.code,
-      hrEntity : item.hr_entity,
+      hrEntity : item.hrEntity,
     };
   }
 
@@ -51,11 +54,15 @@ function FindEntityModalController(Instance, Debtors, Creditors, $timeout) {
     vm.selectedType = type;
     vm.selectedTypeLabel = type.label;
 
-    vm.entities = vm.selectedType.code === 'D' ? vm.debtorList :
-      vm.selectedType.code === 'C' ? vm.creditorList : [];
+    const isDebtor = vm.selectedType.code === 'D';
 
-    vm.placeholder = vm.selectedType.code === 'D' ? 'FORM.PLACEHOLDERS.DEBTOR' :
-      vm.selectedType.code === 'C' ? 'FORM.PLACEHOLDERS.CREDITOR' : '';
+    if (isDebtor) {
+      vm.entities = vm.debtorList;
+      vm.placeholder = 'FORM.PLACEHOLDERS.DEBTOR';
+    } else {
+      vm.entities = vm.creditorList;
+      vm.placeholder = 'FORM.PLACEHOLDERS.CREDITOR';
+    }
   }
 
   function refresh() {
@@ -64,16 +71,11 @@ function FindEntityModalController(Instance, Debtors, Creditors, $timeout) {
 
   function submit() {
     // the $timeout fix the $digest error
-    $timeout(function () {
+    $timeout(() => {
       Instance.close(vm.result);
     }, 0, false);
   }
 
-  function cancel() {
-    // the $timeout fix the $digest error
-    $timeout(function () {
-      Instance.close();
-    }, 0, false);
-  }
-
+  // default to the debtor type
+  setType(vm.types[0]);
 }

@@ -46,9 +46,9 @@ function DebtorService($q, $http, util, Store) {
   // load debtors
   service.store = store;
 
-  function read(uuid) {
+  function read(uuid, params = {}) {
     const path = `/debtors/${uuid || ''}`;
-    return $http.get(path)
+    return $http.get(path, { params })
       .then(util.unwrapHttpResponse);
   }
 

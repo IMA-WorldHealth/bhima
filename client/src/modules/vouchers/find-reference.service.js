@@ -1,10 +1,10 @@
 angular.module('bhima.services')
   .service('FindReferenceService', FindReferenceService);
 
-FindReferenceService.$inject = ['$uibModal'];
+FindReferenceService.$inject = ['$uibModal', 'PrototypeApiService'];
 
-function FindReferenceService(Modal) {
-  const service = this;
+function FindReferenceService(Modal, Api) {
+  const service = new Api('/finance/records');
 
   service.openModal = openModal;
 
@@ -26,7 +26,9 @@ function FindReferenceService(Modal) {
         },
       },
     });
+
     return instance.result;
   }
 
+  return service;
 }

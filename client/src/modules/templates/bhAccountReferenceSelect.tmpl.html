@@ -8,8 +8,8 @@
     </label>
     <ng-transclude></ng-transclude>
     <div class="text-danger" ng-if="!$ctrl.accountReferences.length">
-      <i class="fa fa-exclamation-triangle"></i> <span translate> FORM.WARNINGS.NO_CONFIGURATION_FOUND </span>  
-    </div>       
+      <i class="fa fa-exclamation-triangle"></i> <span translate> FORM.WARNINGS.NO_CONFIGURATION_FOUND </span>
+    </div>
 
     <ui-select
       name="account_reference_id"
@@ -21,7 +21,7 @@
       </ui-select-match>
       <ui-select-choices
         ui-select-focus-patch
-        repeat="accountReference.id as accountReference in $ctrl.accountReferences | filter: { 'description': $select.search }">        
+        repeat="accountReference.id as accountReference in $ctrl.accountReferences | filter: { 'description': $select.search }">
         <strong ng-bind-html="accountReference.abbr | highlight:$select.search"></strong> :
         <span ng-bind-html="accountReference.description | highlight:$select.search"></span>
       </ui-select-choices>

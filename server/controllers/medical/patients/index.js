@@ -93,10 +93,9 @@ function create(req, res, next) {
   }
 
   // optionally allow client to specify UUID
-  const financeUuid = finance.uuid || uuid();
-  finance.uuid = financeUuid;
   const medicalUuid = medical.uuid || uuid();
   medical.uuid = medicalUuid;
+  finance.uuid = medicalUuid;
 
   medical.user_id = req.session.user.id;
 

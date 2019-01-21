@@ -7,23 +7,23 @@ TransactionTypeStoreService.$inject = ['$q', 'TransactionTypeService', 'Store'];
  * Transaction Type Store Controller
  */
 function TransactionTypeStoreService($q, TransactionType, Store) {
-  var service = this;
-  var data = new Store();
-  var initialLoad = true;
+  const service = this;
+  const data = new Store();
+  let initialLoad = true;
 
   service.load = transactionTypeStore;
   service.refresh = refresh;
 
   function refresh() {
     TransactionType.read()
-      .then(function (result) {
+      .then(result => {
         data.setData(result);
       });
   }
 
   function transactionTypeStore() {
-    var request = TransactionType.read()
-      .then(function (result) {
+    const request = TransactionType.read()
+      .then((result) => {
         data.setData(result);
         initialLoad = false;
         return data;

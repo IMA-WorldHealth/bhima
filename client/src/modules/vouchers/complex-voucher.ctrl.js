@@ -5,7 +5,7 @@ ComplexJournalVoucherController.$inject = [
   'VoucherService', 'CurrencyService', 'SessionService', 'FindEntityService',
   'FindReferenceService', 'NotifyService', 'VoucherToolkitService',
   'ReceiptModal', 'bhConstants', 'uiGridConstants', 'VoucherForm', '$timeout',
-  'ExchangeRateService',
+  'ExchangeRateService', 'TransactionTypeService',
 ];
 
 /**
@@ -22,7 +22,7 @@ ComplexJournalVoucherController.$inject = [
  */
 function ComplexJournalVoucherController(
   Vouchers, Currencies, Session, FindEntity, FindReference, Notify, Toolkit,
-  Receipts, bhConstants, uiGridConstants, VoucherForm, $timeout, Rates
+  Receipts, bhConstants, uiGridConstants, VoucherForm, $timeout, Rates, TransactionTypes
 ) {
   const vm = this;
 
@@ -171,24 +171,6 @@ function ComplexJournalVoucherController(
   // bind the startup method as a reset method
   vm.submit = submit;
   vm.currencySymbol = currencySymbol;
-  vm.openEntityModal = openEntityModal;
-  vm.openReferenceModal = openReferenceModal;
-
-  /** Entity modal */
-  function openEntityModal(row) {
-    FindEntity.openModal()
-      .then(entity => {
-        row.entity = entity;
-      });
-  }
-
-  /** Reference modal */
-  function openReferenceModal(row) {
-    FindReference.openModal(row.entity)
-      .then(doc => {
-        row.configure({ document : doc });
-      });
-  }
 
   /** Get the selected currency symbol */
   function currencySymbol(currencyId) {
@@ -207,9 +189,9 @@ function ComplexJournalVoucherController(
 
   /* ============================= Transaction Type ============================= */
 
-  Vouchers.transactionType()
-    .then((list) => {
-      vm.types = list;
+  TransactionTypes.read()
+    .then(types => {
+      vm.types = types;
     })
     .catch(Notify.handleError);
 
@@ -292,6 +274,16 @@ function ComplexJournalVoucherController(
       })
       .catch(Notify.handleError);
   }
+
+  vm.onSelectEntity = function onSelectEntity(row, entity) {
+    console.log('row', row);
+    console.log('entity:', entity);
+  };
+
+  vm.onSelectRecord = (row, record) => {
+    console.log('row', row);
+    console.log('record:', record);
+  };
 
   startup();
 }

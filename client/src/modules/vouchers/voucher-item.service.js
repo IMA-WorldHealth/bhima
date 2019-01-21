@@ -125,6 +125,7 @@ function VoucherItemService(uuid, Constants, util) {
    * the ui-select.
    */
   VoucherItem.prototype.configure = function configure(item) {
+    console.log('item:', item);
 
     if (item.account_id) {
       this.account_id = item.account_id;
