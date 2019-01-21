@@ -26,6 +26,15 @@ function AccountReferenceReportConfigController($sce, Notify, SavedReports, AppC
     vm.previewResult = null;
   };
 
+  vm.onSelectAccountReferenceType = (referenceType) => {
+    vm.reportDetails.reference_type_id = referenceType.id;
+    vm.reportDetails.reference_type_label = referenceType.label;
+  };
+
+  vm.clear = (value) => {
+    delete vm.reportDetails[value];
+  };
+
   vm.preview = function preview(form) {
     if (form.$invalid) { return 0; }
 

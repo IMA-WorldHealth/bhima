@@ -61,7 +61,7 @@ function AccountReferenceModalController($state, Accounts, AccountReferences, No
   function submit(accountReferenceForm) {
     if (accountReferenceForm.$invalid) { return null; }
     // Fixe me @lomamech : Give the possibility to validate the modification
-    // of the 'Parent' input area only
+    // of the 'Parent' or 'Account Reference Type Only' input area only
 
     if (!accountReferenceForm.$dirty) { return null; }
 
