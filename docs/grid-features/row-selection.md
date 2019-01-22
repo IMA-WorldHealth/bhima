@@ -6,11 +6,10 @@ Most grids only allow a single element to be selected at a time, and clicking ad
 
 On grids with multiple row selection, you can select the entire view with the checkbox in the grid's header. The checkbox is a quick way to both select all rows in the view or clear your selection.
 
-> #### info::Quickly clearing a selection
->
-> Any easy way to deselect all rows you have previously selected is to click on the checkbox in the grid header to select all rows, then deselect all rows. You will no longer have any rows selected.
->
-> The trick also works with groups of records, such as transactions. Selecting the group header will select all children, and clicking to select the group header will unselect all the children.
+<div class="bs-callout bs-callout-info">
+<h4>Quickly clearing a selection</h4>
 
+Any easy way to deselect all rows you have previously selected is to click on the checkbox in the grid header to select all rows, then deselect all rows. You will no longer have any rows selected.
 
-
+The trick also works with groups of records, such as transactions. Selecting the group header will select all children, and clicking to select the group header will unselect all the children.
+</div>

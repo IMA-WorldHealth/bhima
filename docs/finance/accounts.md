@@ -19,7 +19,7 @@ BHIMA allows a user to create a detailed chart of accounts.  All accounts must s
 
 BHIMA presents the list of accounts has a tree of parent and child accounts.  Parent accounts are _title_ accounts, are presented in bold, and can contain zero or more child accounts. These child accounts are displayed slightly indented underneath the parent accounts.
 
-<div class="bs-callout-primary">
+<div class="bs-callout bs-callout-primary">
 <h4>Note!</h4>
 It is important to note that the nesting structure in Accounts Management is determined by the parent/child relationships, not by the account number.  However, to avoid confusion, it is advisable to make the level of the account in the tree determinable based on the account number.
 </div>
@@ -51,4 +51,3 @@ Hiding an account is purely for usability and does not affect the accounting pot
 ### Locked Accounts
 
 Locking an account prevents the user from posting any more movements to this account.  To avoid general confusion, this rule is enforced during the trial balance checks, rather than for each cash payment, invoice, or voucher.  Importantly, a locked account will still be available for use throughout the system.  In order to prevent its use, a user should hide it as well.
-
