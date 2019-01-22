@@ -170,7 +170,7 @@ function buildTransactionQuery(options, posted) {
   filters.custom('accounts_id', 'p.account_id IN (?)', [options.accounts_id]);
   const { amount } = options;
   filters.custom(
-    'amount', '(credit = ? OR debit = ?) OR (credit_equiv = ? OR debit_equiv = ?)',
+    'amount', '(credit = ? OR debit = ? OR credit_equiv = ? OR debit_equiv = ?)',
     [amount, amount, amount, amount]
   );
 
