@@ -22,9 +22,9 @@
   version "3.11.0"
   resolved "https://codeload.github.com/lindell/JsBarcode/tar.gz/f5d4c85a2c4642915a4d22b66a4ecab333066a21"
 
-"@bower_components/angular-animate@angular/bower-angular-animate#1.7.5", angular-animate@angular/bower-angular-animate#1.7.5:
-  version "1.7.5"
-  resolved "https://codeload.github.com/angular/bower-angular-animate/tar.gz/8f4f824c0554993737ea6ae7860eac1a4f28ac3c"
+"@bower_components/angular-animate@angular/bower-angular-animate#1.7.6", angular-animate@angular/bower-angular-animate#1.7.6:
+  version "1.7.6"
+  resolved "https://codeload.github.com/angular/bower-angular-animate/tar.gz/e6b6ca95acf2f339172aff6130bafd26b658762a"
 
 "@bower_components/angular-bootstrap@angular-ui/bootstrap-bower#2.5.0", angular-ui-bootstrap@angular-ui/bootstrap-bower#2.5.0:
   version "2.5.0"
@@ -42,13 +42,13 @@
   dependencies:
     angular ">=1.2.22 <2"
 
-"@bower_components/angular-messages@angular/bower-angular-messages#1.7.5", angular-messages@angular/bower-angular-messages#1.7.5:
-  version "1.7.5"
-  resolved "https://codeload.github.com/angular/bower-angular-messages/tar.gz/f978b95254c121aa3f910f92439a4133fd31b5a0"
+"@bower_components/angular-messages@angular/bower-angular-messages#1.7.6", angular-messages@angular/bower-angular-messages#1.7.6:
+  version "1.7.6"
+  resolved "https://codeload.github.com/angular/bower-angular-messages/tar.gz/47b63603eb8d17b89d32460b809d3ab90148dea0"
 
-"@bower_components/angular-mocks@angular/bower-angular-mocks#1.7.5", angular-mocks@angular/bower-angular-mocks#1.7.5:
-  version "1.7.5"
-  resolved "https://codeload.github.com/angular/bower-angular-mocks/tar.gz/f2ef9b1fb9bca5a8fafd107372afe71e6209c238"
+"@bower_components/angular-mocks@angular/bower-angular-mocks#1.7.6", angular-mocks@angular/bower-angular-mocks#1.7.6:
+  version "1.7.6"
+  resolved "https://codeload.github.com/angular/bower-angular-mocks/tar.gz/8e0088c1a2070be656336dce8f3610d5054a8fdf"
 
 "@bower_components/angular-moment@urish/angular-moment#1.3.0", angular-moment@urish/angular-moment#1.3.0:
   version "1.3.0"
@@ -56,13 +56,13 @@
   dependencies:
     moment ">=2.8.0 <3.0.0"
 
-"@bower_components/angular-sanitize@angular/bower-angular-sanitize#1.7.5", angular-sanitize@angular/bower-angular-sanitize#1.7.5:
-  version "1.7.5"
-  resolved "https://codeload.github.com/angular/bower-angular-sanitize/tar.gz/2a7e7b27fc334c7e19278fab1f460e0c56676673"
+"@bower_components/angular-sanitize@angular/bower-angular-sanitize#1.7.6", angular-sanitize@angular/bower-angular-sanitize#1.7.6:
+  version "1.7.6"
+  resolved "https://codeload.github.com/angular/bower-angular-sanitize/tar.gz/669096e906687c2611110d7f2365f71acbc80be7"
 
-"@bower_components/angular-touch@angular/bower-angular-touch#1.7.5", angular-touch@angular/bower-angular-touch#1.7.5:
-  version "1.7.5"
-  resolved "https://codeload.github.com/angular/bower-angular-touch/tar.gz/d43f8dfc5fac2b42d211ecf27c9200e81744510a"
+"@bower_components/angular-touch@angular/bower-angular-touch#1.7.6", angular-touch@angular/bower-angular-touch#1.7.6:
+  version "1.7.6"
+  resolved "https://codeload.github.com/angular/bower-angular-touch/tar.gz/41bbf305965582056a0f03f73a465cba6bbdf56a"
 
 "@bower_components/angular-translate-loader-static-files@PascalPrecht/bower-angular-translate-loader-static-files#2.18.1", angular-translate-loader-static-files@PascalPrecht/bower-angular-translate-loader-static-files#2.18.1:
   version "2.18.1"
@@ -96,9 +96,9 @@
   version "0.17.1"
   resolved "https://codeload.github.com/angular-ui/ui-select/tar.gz/66a2a5e8cae3421cf2c25cc56492e5674b7eeda3"
 
-"@bower_components/angular@angular/bower-angular#1.7.5", angular@angular/bower-angular#1.7.5:
-  version "1.7.5"
-  resolved "https://codeload.github.com/angular/bower-angular/tar.gz/a3f5186cd6cd26db5bfe40f08b0c872bd38f446e"
+"@bower_components/angular@angular/bower-angular#1.7.6", angular@angular/bower-angular#1.7.6:
+  version "1.7.6"
+  resolved "https://codeload.github.com/angular/bower-angular/tar.gz/3d45fe73a86f3d49e6b005577c1853f1487eb14d"
 
 "@bower_components/bootstrap@twbs/bootstrap#3.4.0", bootstrap@twbs/bootstrap#3.4.0:
   version "3.4.0"
@@ -745,7 +745,7 @@ blocking-proxy@^1.0.0:
   dependencies:
     minimist "^1.2.0"
 
-bluebird@3.5.3, bluebird@^3.3.0:
+bluebird@^3.3.0:
   version "3.5.3"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.5.3.tgz#7d01c6f9616c9a51ab0f8c549a79dfe6ec33efa7"
   integrity sha512-/qKPUQlaW1OyR51WeCPBvRnAlnZFUJkCSG5HzGnuIqhgyJtF+T94lFnn33eiazjRm2LAHVy2guNnaq48X9SJuw==
@@ -4864,12 +4864,11 @@ jsbn@~0.1.0:
   resolved "https://registry.yarnpkg.com/jsbn/-/jsbn-0.1.1.tgz#a5e654c2e5a2deb5f201d96cefbca80c0ef2f513"
   integrity sha1-peZUwuWi3rXyAdls77yoDA7y9RM=
 
-json-2-csv@^2.1.0:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/json-2-csv/-/json-2-csv-2.4.0.tgz#1e183f4503372e5dae2fd4733666d92fd3e196cd"
-  integrity sha512-+cM7yutDBl9PbYuVsJWKuNvhhm97/s9RXBKn53dSrP7E6exVL71UVTSJsJQ+M87P8Dw4j9r3odQH2UtubWD3dQ==
+json-2-csv@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/json-2-csv/-/json-2-csv-3.1.1.tgz#2065da89d75adb53662c57450b9b060718126aa1"
+  integrity sha512-CfQF1wvyaOxidyidkvZpDmmAqtDp89Isl8OkTiYftCXqwR7qwQoTAjFwtRDmAjea2lw+bd+K6cQXOcIXj6rt3g==
   dependencies:
-    bluebird "3.5.3"
     deeks "1.0.0"
     doc-path "1.3.1"
     underscore "1.9.1"
