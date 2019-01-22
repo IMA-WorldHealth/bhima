@@ -3,4 +3,9 @@ eslint:
   config_file: .eslintrc.json
   version: 5.7.0
 
+scss:
+  enabled: false
+
 fail_on_violations: true
+
+

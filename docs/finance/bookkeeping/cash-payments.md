@@ -7,9 +7,11 @@ The cash window is responsible for receiving payments by patients.  Two kinds of
 
 Both payment types generate transactions in with a record identifier `CP`.
 
-> #### info::No prepayments?
->
-> Not all institutions ask for advances from patients.  Prepayments may be disabled entirely in the [enterprise settings](/enterprise-settings.md) if the institution does not collect prepayments.
+<div class="bs-callout bs-callout-info">
+<h4>No prepayments?</h4>
+
+Not all institutions ask for advances from patients.  Prepayments may be disabled entirely in the [enterprise settings](/enterprise-settings.md) if the institution does not collect prepayments.
+</div>
 
 ## Configuring the Cash Window
 
@@ -27,15 +29,16 @@ If a user wishes to change their cashbox, they can do so by clicking **Menu &gt;
 A cash payment requires the following fields:
 
 1. **Patient** - all cash payments are made by patients  The patient directly sets the debtor account in the underlying transaction via the patient's debtor group.
-2. **Date** 
+2. **Date**
 3. **Currency **- the currency sets the the underlying cash account.  Cash windows that accept multiple currencies must put each currency value in the correct currency account.  The currency field manages this automatically for the cashier.
 4. **Type** - toggles the choice between a prepayment and an invoice payment.  See the distinction below.
 5. **Notes** - any further information to be included on the invoice.
 6. **Amount** - the amount paid by the patient.
 
-> #### warning::Limiting payments by Debtor Group
->
-> Only cash paying clients should be permitted to make payments at the cash window.  To prevent accidentally receiving cash from a client that should not pay at the cash window, be sure to change the "accept cash payments" setting on their Debtor Group!
+<div class="bs-callout bs-callout-warning">
+<h4>Limiting payments by Debtor Group</h4>
+Only cash paying clients should be permitted to make payments at the cash window.  To prevent accidentally receiving cash from a client that should not pay at the cash window, be sure to change the "accept cash payments" setting on their Debtor Group!
+</div>
 
 ### Invoice Payments
 
@@ -59,4 +62,3 @@ In the above transaction, the cash account \(570001\) is **debited $10.00**, ind
 Some institutions accept _prepayments_.  These payment are made without reference to an invoice, in anticipation of future invoices made against the patient.
 
 As compared to _invoice payments_, creating a prepayment is simple.  The user must select the prepayment option and enter the amount received into the cash payment form.  The underlying transaction generated will contain two lines: one that debits the cash box and a second that credits the patient's account.
-

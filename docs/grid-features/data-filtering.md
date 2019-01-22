@@ -13,11 +13,7 @@ All filters are additive: the filters `limit:10`, `account:X`, and `period:today
 
 Data filtering requires a live connection to the server, since the filtering operation is performed on the server.
 
-> #### danger::Check your limits!
->
-> Be careful!  All grids provide a count of the number of rows in the grid.  If you filter on multiple parameters and the number of rows in the grid is equivalent to the limit you set, you may not have all the data you seek.  Increase the limit to be sure you have the full dataset.
-
-
-
-
-
+<div class="bs-callout bs-callout-danger">
+<h4>Check your limits!</h4>
+Be careful!  All grids provide a count of the number of rows in the grid.  If you filter on multiple parameters and the number of rows in the grid is equivalent to the limit you set, you may not have all the data you seek.  Increase the limit to be sure you have the full dataset.
+</div>
