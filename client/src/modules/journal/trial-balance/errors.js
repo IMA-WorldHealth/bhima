@@ -29,13 +29,14 @@ function TrialBalanceErrorsController(TrialBalance, Notify, $state) {
     headerCellFilter : 'translate',
     cellFilter       : 'translate',
     headerCellClass  : 'ui-grid-header-cell-error',
-  }, {
-    field            : 'trans_id',
-    displayName      : 'TABLE.COLUMNS.TRANSACTION',
+  },
+  {
+    field            : 'error_description',
+    displayName      : 'FORM.LABELS.DESCRIPTION',
     headerCellFilter : 'translate',
     headerCellClass  : 'ui-grid-header-cell-error',
-    cellTemplate     : link,
   }];
+
 
   vm.gridOptions = {
     appScopeProvider : vm,
