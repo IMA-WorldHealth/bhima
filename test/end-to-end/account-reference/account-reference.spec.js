@@ -47,7 +47,7 @@ describe('AccountReference Management Page', () => {
     expect(page.count()).to.eventually.equal(numReferences);
   });
 
-  it('creates an accounts reference successfully', () => {
+  it('creates an account reference successfully', () => {
     page.create();
 
     const modal = new AccountReferenceCreateUpdatePage();
