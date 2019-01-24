@@ -17,7 +17,6 @@ const util = require('../util');
 const hbs = require('../template');
 const translateHelperFactory = require('../helpers/translate');
 
-
 const headers = {
   'Content-Type' : 'text/html',
 };
