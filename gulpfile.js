@@ -4,8 +4,7 @@ const {
 
 const gulp = require('gulp');
 const gulpif = require('gulp-if');
-const concat = require('gulp-concat');
-const uglify = require('gulp-uglify');
+const concat = require('gulp-concat'); const uglify = require('gulp-uglify');
 const cssnano = require('gulp-cssnano');
 const template = require('gulp-template');
 const rev = require('gulp-rev');
@@ -95,8 +94,8 @@ const paths = {
     static : {
       bhima : [
         'client/src/**/*.html',
-        'client/src/{assets,i18n}/**/*',
-        '!client/src/i18n/**/*.json',
+        'client/src/{assets,i18n,currency}/**/*',
+        '!client/src/i18n/{en,fr}/*.json',
       ],
     },
     less : 'client/src/less/bhima-bootstrap.less',
@@ -117,17 +116,25 @@ if (isDevelopment) {
 
     return file;
   });
+
+  paths.client.css = paths.client.css.map(file => file.replace('.min.css', '.css'));
 }
 
 // external tasks to build the client, server and watch for client changes
 gulp.task('default', ['build']);
 gulp.task('build', ['client', 'server']);
-gulp.task('client', ['js', 'css', 'less', 'i18n', 'vendor', 'static', 'fonts'], templateHTML);
+gulp.task('client', ['js', 'css', 'less', 'i18n', 'vendor', 'static', 'fonts', 'fonts-ui-grid'], templateHTML);
 gulp.task('watch', ['watch-client']);
 
 gulp.task('fonts', () => {
   return src(paths.client.fonts)
     .pipe(dest(`${CLIENT_FOLDER}/fonts/`));
+});
+
+// NOTE(@jniles): annoyingly, ui-grid serves fonts out of the /css directory
+gulp.task('fonts-ui-grid', () => {
+  return src('node_modules/angular-ui-grid/fonts/*')
+    .pipe(dest(`${CLIENT_FOLDER}/css/fonts/`));
 });
 
 // collect all BHIMA application code and return a single versioned JS file
@@ -155,8 +162,8 @@ gulp.task('js', ['clean-js'], () => {
 // collect all BHIMA application style sheets and return a single versioned CSS file
 gulp.task('css', ['clean-css'], () => {
   return src(paths.client.css)
-    .pipe(cssnano({ zindex : false }))
     .pipe(concat('css/bhima.min.css'))
+    .pipe(gulpif(isProduction, cssnano({ zindex : false })))
     .pipe(rev())
     .pipe(dest(CLIENT_FOLDER))
     .pipe(rev.manifest(`${CLIENT_FOLDER}/rev-manifest.json`, { merge : true }))
@@ -170,6 +177,7 @@ gulp.task('less', () => {
   return src(paths.client.less)
     .pipe(dest(lessConfig.paths[0])) // move less file into actual bootstrap folder, this feels wrong
     .pipe(less(lessConfig))
+    .pipe(gulpif(isProduction, cssnano({ zindex : false })))
     .pipe(dest(`${CLIENT_FOLDER}/css`));
 });
 

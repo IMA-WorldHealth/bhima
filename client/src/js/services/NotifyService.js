@@ -1,5 +1,5 @@
 angular.module('bhima.services')
-.service('NotifyService', NotifyService);
+  .service('NotifyService', NotifyService);
 
 NotifyService.$inject = ['$translate'];
 
@@ -10,43 +10,43 @@ NotifyService.$inject = ['$translate'];
  * @todo  unit tests
  */
 function NotifyService($translate) {
-  var service = this;
+  const service = this;
 
   // default time to live of 3 seconds
-  var TTL = 3000;
+  const TTL = 1000000;
 
   // this will be used to specify how long a major error will be displayed,
   // these errors are usually out of the control of the user, they will probably
   // only be resolved by system administrators/ restarting the system (resulting
   // in a refreshed page)
-  var ERROR_TTL = 60000;
+  const ERROR_TTL = 60000;
 
   // this stores all notification instances - for now this will only be allowed
   // to store one notification however it can be extended in the future
-  var notifications = [];
+  const notifications = [];
 
-  var formatOptions = {
+  const formatOptions = {
     // success : 'notification-success',
     success : {
       format  : 'notification-success',
-      icon    : 'glyphicon-check'
+      icon    : 'glyphicon-check',
     },
     danger : {
       format  : 'notification-danger',
-      icon    : 'glyphicon-exclamation-sign'
+      icon    : 'glyphicon-exclamation-sign',
     },
     info : {
       format  : 'notification-info',
-      icon    : 'glyphicon-info-sign'
+      icon    : 'glyphicon-info-sign',
     },
     warn : {
       format  : 'notification-warn',
-      icon    : 'glyphicon-warning-sign'
+      icon    : 'glyphicon-warning-sign',
     },
     error : {
       format  : 'notification-error',
-      icon    : 'glyphicon-remove-sign'
-    }
+      icon    : 'glyphicon-remove-sign',
+    },
   };
 
   // alias styles
@@ -91,13 +91,13 @@ function NotifyService($translate) {
 
   /** @todo analysis on the heap allocation implications should be done this */
   function setNotification(key, ttl, options) {
-    var message = $translate.instant(key);
+    const message = $translate.instant(key);
 
     // if the request has overridden the time to live, use that, otherwise use the global default
     ttl = ttl || TTL;
-    var formatNotification = {
-      ttl : ttl,
-      message : message
+    const formatNotification = {
+      ttl,
+      message,
     };
 
     angular.extend(formatNotification, options);
