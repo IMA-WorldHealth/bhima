@@ -1,10 +1,10 @@
 const {
-  src, dest, watch,
+  src, dest, watch, series, parallel,
 } = require('gulp');
 
-const gulp = require('gulp');
 const gulpif = require('gulp-if');
-const concat = require('gulp-concat'); const uglify = require('gulp-uglify');
+const concat = require('gulp-concat');
+const uglify = require('gulp-uglify');
 const cssnano = require('gulp-cssnano');
 const template = require('gulp-template');
 const rev = require('gulp-rev');
@@ -24,13 +24,21 @@ const isProduction = (process.env.NODE_ENV === 'production');
 const isDevelopment = (process.env.NODE_ENV !== 'production');
 
 // gulp build output directories
-const SERVER_FOLDER = './bin/server/';
-const CLIENT_FOLDER = './bin/client/';
+const SERVER_FOLDER = `${__dirname}/bin/server/`;
+const CLIENT_FOLDER = `${__dirname}/bin/client`;
 
 const supportedLanguages = {
   en : { key : 'en', path : 'client/src/i18n/en/' },
   fr : { key : 'fr', path : 'client/src/i18n/fr/' },
 };
+
+// Cleaner helpers
+// These methods clean up folders that are affected by changes in the repository
+const cleanJS = () => del(`${CLIENT_FOLDER}/js/bhima`);
+const cleanCSS = () => del(`${CLIENT_FOLDER}/css/bhima`);
+const cleanI18n = () => del(`${CLIENT_FOLDER}/i18n`);
+const cleanServer = () => del(SERVER_FOLDER);
+
 
 // resource paths
 const paths = {
@@ -120,26 +128,30 @@ if (isDevelopment) {
   paths.client.css = paths.client.css.map(file => file.replace('.min.css', '.css'));
 }
 
-// external tasks to build the client, server and watch for client changes
-gulp.task('default', ['build']);
-gulp.task('build', ['client', 'server']);
-gulp.task('client', ['js', 'css', 'less', 'i18n', 'vendor', 'static', 'fonts', 'fonts-ui-grid'], templateHTML);
-gulp.task('watch', ['watch-client']);
+const buildJS = series(cleanJS, compileTypescript);
+const buildCSS = series(cleanCSS, compileLess, compileCSS);
+const buildI18n = series(parallel(lintI18n, cleanI18n), compileI18n);
+const server = series(cleanServer, moveServerFiles);
+const client = series(
+  parallel(buildJS, buildCSS, buildI18n, buildVendor, buildStatic, fonts, fontsUiGrid),
+  collectRevisionsIntoManifest,
+  templateHTML
+);
+const build = parallel(client, server);
 
-gulp.task('fonts', () => {
+function fonts() {
   return src(paths.client.fonts)
     .pipe(dest(`${CLIENT_FOLDER}/fonts/`));
-});
+}
 
-// NOTE(@jniles): annoyingly, ui-grid serves fonts out of the /css directory
-gulp.task('fonts-ui-grid', () => {
+function fontsUiGrid() {
   return src('node_modules/angular-ui-grid/fonts/*')
     .pipe(dest(`${CLIENT_FOLDER}/css/fonts/`));
-});
+}
 
 // collect all BHIMA application code and return a single versioned JS file
 // ensures previous versioned file is removed before running
-gulp.task('js', ['clean-js'], () => {
+function compileTypescript() {
   const typescriptConfig = {
     allowJs : true,
     target : 'es5',
@@ -154,84 +166,99 @@ gulp.task('js', ['clean-js'], () => {
     .pipe(gulpif(isProduction, uglify({ mangle : true })))
     .pipe(iife())
     .pipe(rev())
-    .pipe(dest(`${CLIENT_FOLDER}`)) // write revisioned javascript to build folder
-    .pipe(rev.manifest(`${CLIENT_FOLDER}/rev-manifest.json`, { merge : true }))
-    .pipe(dest('')); // write manifest to build folder
-});
+    .pipe(dest(CLIENT_FOLDER)) // write revisioned javascript to build folder
+    .pipe(rev.manifest('rev-manifest-js.json', { merge : true }))
+    .pipe(dest(CLIENT_FOLDER)); // write manifest to build folder
+}
+
+function collectRevisionsIntoManifest() {
+  return src(`${CLIENT_FOLDER}/rev-*.json`)
+    .pipe(mergeJson({ fileName : 'rev-manifest.json' }))
+    .pipe(dest(CLIENT_FOLDER));
+}
 
 // collect all BHIMA application style sheets and return a single versioned CSS file
-gulp.task('css', ['clean-css'], () => {
+function compileCSS() {
   return src(paths.client.css)
     .pipe(concat('css/bhima.min.css'))
     .pipe(gulpif(isProduction, cssnano({ zindex : false })))
     .pipe(rev())
     .pipe(dest(CLIENT_FOLDER))
-    .pipe(rev.manifest(`${CLIENT_FOLDER}/rev-manifest.json`, { merge : true }))
-    .pipe(dest(''));
-});
+    .pipe(rev.manifest('rev-manifest-css.json', { merge : true }))
+    .pipe(dest(CLIENT_FOLDER));
+}
 
 // copy custom BHIMA bootstrap files and build build bootsrap LESS, returns
 // single CSS file
-gulp.task('less', () => {
+function compileLess() {
   const lessConfig = { paths : ['./node_modules/bootstrap/less'] };
   return src(paths.client.less)
     .pipe(dest(lessConfig.paths[0])) // move less file into actual bootstrap folder, this feels wrong
     .pipe(less(lessConfig))
     .pipe(gulpif(isProduction, cssnano({ zindex : false })))
     .pipe(dest(`${CLIENT_FOLDER}/css`));
-});
+}
 
-gulp.task('i18n', ['lint-i18n', 'clean-i18n'], () => {
+function compileI18n() {
   const en = collectTranslationFiles(supportedLanguages.en);
   const fr = collectTranslationFiles(supportedLanguages.fr);
-
   return merge(en, fr);
-});
+}
 
 // collect all external vendor code and returns a single versioned JS file
-gulp.task('vendor', () => {
+function buildVendor() {
   return src(paths.client.vendorJs)
     .pipe(concat('js/vendor/vendor.min.js'))
     .pipe(rev())
     .pipe(dest(CLIENT_FOLDER))
-    .pipe(rev.manifest(`${CLIENT_FOLDER}/rev-manifest.json`, { merge : true }))
-    .pipe(dest(''));
-});
+    .pipe(rev.manifest('rev-manifest-vendor.json', { merge : true }))
+    .pipe(dest(CLIENT_FOLDER));
+}
 
 // collects all static files from the client (BHIMA src and vendor files)
 // and moves them to the build folder, respecting folder structure
-gulp.task('static', () => {
+function buildStatic() {
   return src(paths.client.static.bhima)
     .pipe(dest(CLIENT_FOLDER));
-});
+}
 
-gulp.task('watch-client', () => {
-  watch(paths.client.javascript, ['watch-js']);
-  watch(paths.client.css, ['watch-css']);
-  watch([`${supportedLanguages.en.path}/**/*.json`, `${supportedLanguages.fr.path}/**/*.json`], ['i18n']);
+function watchClient() {
+  watch(paths.client.javascript, watchJS);
+  watch(paths.client.css, watchCSS);
+  watch([`${supportedLanguages.en.path}/**/*.json`, `${supportedLanguages.fr.path}/**/*.json`], buildI18n);
 
   // ensure all static bhima files are copied over to the build given changes
   // this is important to catch changes in component template files etc.
-  watch(paths.client.static.bhima, ['watch-static']);
-});
+  watch(paths.client.static.bhima, watchStatic);
+}
 
-// alias tasks to run client build steps and ensures template is linked following
-gulp.task('watch-static', ['static'], templateHTML);
-gulp.task('watch-js', ['js'], templateHTML);
-gulp.task('watch-css', ['css'], templateHTML);
+function watchStatic(done) {
+  series(buildStatic, templateHTML);
+  done();
+}
 
-// server build - copies all files from server/ to bin/server including package.json
-gulp.task('server', ['clean-server'], () => {
+function watchJS(done) {
+  series(buildJS, templateHTML);
+  done();
+}
+
+function watchCSS(done) {
+  series(buildCSS, templateHTML);
+  done();
+}
+
+// server build - copies all files from server/ to bin/server
+/*
+function server(done) {
+  ();
+  done();
+}
+*/
+
+function moveServerFiles() {
   return src(paths.server.files)
     .pipe(dest(SERVER_FOLDER));
-});
-
-// Cleaner helpers
-// These methods clean up folders that are affected by changes in the repository
-gulp.task('clean-js', () => del(`${CLIENT_FOLDER}/js/bhima`));
-gulp.task('clean-css', () => del(`${CLIENT_FOLDER}/css/bhima`));
-gulp.task('clean-i18n', () => del(`${CLIENT_FOLDER}/i18n`));
-gulp.task('clean-server', () => del(SERVER_FOLDER));
+}
 
 // rewrite source HTML files with build versioned files and assets
 // usually run as the final step linking the build together
@@ -251,7 +278,10 @@ function collectTranslationFiles(details) {
 }
 
 // Custom i18n linting task, promise wrapper to work with gulp ecosystem
-gulp.task('lint-i18n', () => {
+// TODO(@jniles) - gulp allows you to return exec().  Can we just return
+// the raw exec() call without the callback wrapper?
+// See: https://gulpjs.com/docs/en/getting-started/async-completion
+function lintI18n() {
   return new Promise((resolve, reject) => {
     const compareUtilityPath = './utilities/translation/tfcomp.js';
     const utilityCommand = `node ${compareUtilityPath} ${supportedLanguages.en.path} ${supportedLanguages.fr.path}`;
@@ -264,4 +294,12 @@ gulp.task('lint-i18n', () => {
       resolve(output);
     });
   });
-});
+}
+
+exports.default = build;
+exports.build = build;
+exports.client = client;
+exports.watch = watchClient;
+exports.cleanServer = cleanServer;
+exports.moveServerFiles = moveServerFiles;
+exports.server = server;
