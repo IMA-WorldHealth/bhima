@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('AccountReferenceTypeController', AccountReferenceTypeController);
 
 AccountReferenceTypeController.$inject = [
-  '$state', 'AccountReferenceTypeService', 'NotifyService', 'uiGridConstants', 'ModalService', '$translate',
+  '$state', 'AccountReferenceTypeService', 'NotifyService', 'uiGridConstants', 'ModalService',
 ];
 
 /**
@@ -11,7 +11,7 @@ AccountReferenceTypeController.$inject = [
  */
 
 function AccountReferenceTypeController($state, AccountReferenceType, Notify, uiGridConstants,
-  ModalService, $translate) {
+  ModalService) {
   const vm = this;
   vm.gridApi = {};
   vm.filterEnabled = false;
@@ -84,11 +84,7 @@ function AccountReferenceTypeController($state, AccountReferenceType, Notify, ui
 
     AccountReferenceType.read()
       .then((accountReferenceType) => {
-        accountReferenceType.forEach((item) => {
-          item.label = $translate.instant(item.label);
-        });
-
-        vm.gridOptions.data = accountReferenceType;
+        vm.gridOptions.data = AccountReferenceType.translateLabel(accountReferenceType);
       })
       .catch(handleError)
       .finally(toggleLoadingIndicator);

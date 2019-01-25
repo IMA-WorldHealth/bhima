@@ -62,6 +62,10 @@ function create(req, res, next) {
 
 // PUT /account_reference_type /:id
 function update(req, res, next) {
+  if (req.body.id) {
+    delete req.body.id;
+  }
+
   const sql = `UPDATE account_reference_type SET ? WHERE id = ?;`;
 
   db.exec(sql, [req.body, req.params.id])
@@ -77,7 +81,7 @@ function update(req, res, next) {
 }
 
 // DELETE /account_reference_type/:id
-function del(req, res, next) {
+function remove(req, res, next) {
   const sql = `DELETE FROM account_reference_type WHERE id = ?;`;
 
   db.exec(sql, [req.params.id])
@@ -106,4 +110,4 @@ exports.create = create;
 exports.update = update;
 
 // Delete a accountReferenceType
-exports.delete = del;
+exports.delete = remove;
