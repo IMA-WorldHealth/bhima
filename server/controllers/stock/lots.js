@@ -8,10 +8,12 @@
  *
  * @requires lodash
  * @requires lib/db
+ * @requires lib/filter
  */
 const _ = require('lodash');
 const moment = require('moment');
 const db = require('../../lib/db');
+const FilterParser = require('../../lib/filter');
 
 exports.update = update;
 exports.details = details;
@@ -59,4 +61,19 @@ function update(req, res, next) {
     })
     .catch(next)
     .done();
+}
+
+function entityAssignment(req, res, next) {
+  const params = req.query;
+  const filters = new FilterParser(params);
+
+  filters.equals('uuid', 'uuid', 'l');
+  
+  const query = `
+    SELECT * FROM stock_assign sa
+    JOIN entity e ON e.uuid = sa.entity_uuid
+    JOIN lot l ON l.uuid = sa.lot_uuid
+    JOIN depot d ON d.uuid = sa.depot_uuid
+    ORDER BY sa.created_at;
+  `;
 }
