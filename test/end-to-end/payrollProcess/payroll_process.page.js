@@ -42,7 +42,7 @@ class PayrollProcessPage {
         components.currencyInput.set(100, 'v_cher');
         components.currencyInput.set(100, 'f_scol');
         components.currencyInput.set(200, 'allc');
-        components.currencyInput.set(0, 'allc');
+        components.currencyInput.set(0, 'ac_sal');
         FU.buttons.submit();
         components.notification.hasSuccess();
       });

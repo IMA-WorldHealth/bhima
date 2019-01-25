@@ -45,6 +45,7 @@ module.exports = {
   fluxSelect : require('./bhFluxSelect'),
   multipleCashBoxSelect : require('./bhMultipleCashBoxSelect'),
   employeeSelect : require('./bhEmployeeSelect'),
+  payrollStatusSelect : require('./bhPayrollStatusSelect'),
   iprScale : require('./bhIprScale'),
   iprConfigSelect : require('./bhIprConfigSelect'),
   rubricConfigSelect : require('./bhRubricConfigSelect'),
