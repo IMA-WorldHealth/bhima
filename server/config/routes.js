@@ -822,4 +822,5 @@ exports.configure = function configure(app) {
   // lots API
   app.get('/lots/:uuid', lots.details);
   app.put('/lots/:uuid', lots.update);
+  app.get('/lots/:uuid/assignments/:depot_uuid', lots.assignments);
 };

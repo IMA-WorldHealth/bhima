@@ -15,6 +15,14 @@
     <uib-tabset>
       <uib-tab index="0" heading="{{ 'FORM.LABELS.SEARCH_QUERIES' | translate}}" data-custom-filter-tab>
         <div class="tab-body">
+          <!-- include exhausted lots  -->
+          <bh-yes-no-radios
+            value="$ctrl.searchQueries.includeEmptyLot"
+            label="LOTS.INCLUDE_EXHAUSTED_LOTS"
+            name="exhaustedLots"
+            on-change-callback="$ctrl.setIncludeEmptyLot()">
+          </bh-yes-no-radios>
+
           <!-- depot -->
           <bh-depot-select
             depot-uuid="$ctrl.searchQueries.depot_uuid"

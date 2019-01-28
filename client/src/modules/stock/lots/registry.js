@@ -83,6 +83,11 @@ function StockLotsController(
       });
   };
 
+  // lot assignment historic
+  vm.openHistoricModal = (uuid, depotUuid) => {
+    Modal.openAssignmentHistoric({ uuid, depotUuid });
+  };
+
   // initialize module
   function startup() {
     if ($state.params.filters.length) {
