@@ -9,7 +9,7 @@ This manual is split into chapters:
 3. Medical Records
 4. Inventory and Stock Management
 5. Reporting and Statistics
-6. Developer Reference
+6. [Developer Reference](./for-developers/index.md)
 
 # About
 
