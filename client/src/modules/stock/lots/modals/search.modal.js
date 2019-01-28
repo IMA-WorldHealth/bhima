@@ -48,6 +48,11 @@ function SearchLotsModalController(data, util, Store, Instance, Periods, Stock) 
     displayValues.inventory_uuid = inventory.label;
   };
 
+  // include empty lots
+  vm.setIncludeEmptyLot = () => {
+    displayValues.includeEmptyLot = vm.searchQueries.includeEmptyLot;
+  };
+
   // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(data, searchQueryOptions);
 
@@ -67,11 +72,6 @@ function SearchLotsModalController(data, util, Store, Instance, Periods, Stock) 
   vm.onSelectGroup = (group) => {
     vm.searchQueries.group_uuid = group.uuid;
     displayValues.group_uuid = group.name;
-  };
-
-  // include empty lots
-  vm.setIncludeEmptyLot = () => {
-    vm.searchQueries.includeEmptyLot = !vm.searchQueries.includeEmptyLot;
   };
 
   // deletes a filter from the custom filter object,

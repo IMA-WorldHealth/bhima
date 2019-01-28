@@ -128,7 +128,7 @@ function StockLotsController(
     toggleLoadingIndicator();
 
     // no negative or empty lot
-    filters.includeEmptyLot = 0;
+    filters.includeEmptyLot = filters.includeEmptyLot || 0;
 
     Stock.lots.read(null, filters)
       .then((lots) => {

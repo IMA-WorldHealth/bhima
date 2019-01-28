@@ -15,13 +15,6 @@
     <uib-tabset>
       <uib-tab index="0" heading="{{ 'FORM.LABELS.SEARCH_QUERIES' | translate}}" data-custom-filter-tab>
         <div class="tab-body">
-          <!-- include exhausted lots  -->
-          <bh-yes-no-radios
-            value="$ctrl.searchQueries.includeEmptyLot"
-            label="LOTS.INCLUDE_EXHAUSTED_LOTS"
-            name="exhaustedLots"
-            on-change-callback="$ctrl.setIncludeEmptyLot()">
-          </bh-yes-no-radios>
 
           <!-- depot -->
           <bh-depot-select
@@ -75,6 +68,20 @@
             date-to="$ctrl.searchQueries.expiration_date_to"
             mode="clean">
           </bh-date-interval>
+
+          <!-- include exhausted lots  -->
+          <div class="checkbox">
+            <label>
+              <input
+                type="checkbox"
+                name="includeEmptyLot"
+                ng-true-value="1"
+                ng-false-value="0"
+                ng-model="$ctrl.searchQueries.includeEmptyLot"
+                ng-change="$ctrl.setIncludeEmptyLot()">
+              <span translate>LOTS.INCLUDE_EXHAUSTED_LOTS</span>
+            </label>
+          </div>
         </div>
       </uib-tab>
 

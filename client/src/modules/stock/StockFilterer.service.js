@@ -23,7 +23,7 @@ function StockFiltererService(Filters, AppCache, Periods, $httpParamSerializer, 
     { key : 'require_po', label : 'STOCK.REQUIRES_PO' },
     { key : 'entity_uuid', label : 'ENTITY.LABEL' },
     { key : 'description', label : 'FORM.LABELS.DESCRIPTION' },
-    { key : 'includeEmtpyLot', label : 'LOTS.INCLUDE_EXHAUSTED_LOTS' },
+    { key : 'includeEmptyLot', label : 'LOTS.INCLUDE_EXHAUSTED_LOTS' },
     {
       key : 'dateFrom', label : 'FORM.LABELS.DATE', comparitor : '>', valueFilter : 'date',
     },
