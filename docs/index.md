@@ -6,7 +6,7 @@ This manual is split into chapters:
 
 1. Getting Started
 2. [Finance Modules](./finance/index.md)
-3. Medical Records
+3. [Medical Records](./medical-records/index.md)
 4. Inventory and Stock Management
 5. Reporting and Statistics
 6. [Developer Reference](./for-developers/index.md)
