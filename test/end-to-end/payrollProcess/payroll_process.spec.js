@@ -1,10 +1,9 @@
 /* global element, by */
-
+const chai = require('chai');
 const helpers = require('../shared/helpers');
 const PayrollProcessPage = require('./payroll_process.page');
 const SearchModalPage = require('./searchModal.page.js');
 const GU = require('../shared/GridUtils');
-const chai = require('chai');
 const components = require('../shared/components');
 
 /** configuring helpers* */
@@ -38,7 +37,6 @@ describe('Payroll Process Management', () => {
 
   it(`Should configure multiple employees for Payment`, () => {
     GU.selectRow(gridId, 0);
-    GU.selectRow(gridId, 1);
 
     element(by.css('[data-action="open-menu"]')).click();
     element(by.css('[data-method="configure-payment"]')).click();
@@ -51,16 +49,22 @@ describe('Payroll Process Management', () => {
   });
 
   it(`Should set multiple employees On Waiting List of Payroll`, () => {
+
+    element(by.css('[data-method="search"]')).click();
+
+    components.payrollStatusSelect.set(['configuré']);
+    searchModalPage.submit();
+
     GU.selectRow(gridId, 0);
     GU.selectRow(gridId, 1);
-    GU.selectRow(gridId, 2);
 
     element(by.css('[data-action="open-menu"]')).click();
     element(by.css('[data-method="put-waiting"]')).click();
 
     components.notification.hasSuccess();
+
   });
 
-  //@lomamech to do how to check the Payslip View
+  // @lomamech to do how to check the Payslip View
 
 });
