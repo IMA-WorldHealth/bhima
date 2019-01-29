@@ -2,14 +2,10 @@
   <div class="modal-header">
     <ol class="headercrumb">
       <li class="static" translate>TREE.ADMIN</li>
-
-      <li ng-if="BreakEvenReferenceModalCtrl.isCreating" class="title">
+      <li class="title">
         <span translate>TREE.BREAK_EVEN_REFERENCE</span>
-        <label class="badge badge-warning" translate>FORM.LABELS.CREATE</label>
-      </li>
-      <li ng-if="!BreakEvenReferenceModalCtrl.isCreating" class="title">
-        <span translate>TREE.BREAK_EVEN_REFERENCE</span>
-        <label class="badge badge-warning" translate>FORM.LABELS.UPDATE</label>
+        <label ng-if="BreakEvenReferenceModalCtrl.isCreating" class="badge badge-warning" translate>FORM.LABELS.CREATE</label>
+        <label ng-if="!BreakEvenReferenceModalCtrl.isCreating" class="badge badge-warning" translate>FORM.LABELS.UPDATE</label>
       </li>
     </ol>
   </div>
@@ -47,7 +43,7 @@
             name="is_cost"
             ng-value="1"
             ng-model="BreakEvenReferenceModalCtrl.breakEvenReferences.is_cost"
-            id="principal"
+            id="is_cost"
             required
             >
           <span translate>FORM.LABELS.CHARGE</span>
@@ -59,7 +55,7 @@
             name="is_cost"
             ng-value="0"
             ng-model="BreakEvenReferenceModalCtrl.breakEvenReferences.is_cost"
-            id="auxiliary"
+            id="is_revenue"
             required
             >
           <span translate>FORM.LABELS.REVENUE</span>
@@ -114,6 +110,7 @@
               name="is_turnover"
               ng-true-value="1"
               ng-false-value="0"
+              id="is_turnover"
               ng-model="BreakEvenReferenceModalCtrl.breakEvenReferences.is_turnover">
             <span translate>FORM.LABELS.IS_TURNOVER</span>
           </label>

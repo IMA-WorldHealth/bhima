@@ -57,20 +57,30 @@ function configuration(data) {
   configured.totalRevenues = totalRevenues;
   configured.marginVariableLoads = configured.accountsTurnOverBalance - totalVariableCharges;
   configured.resultsTurnOver = configured.marginVariableLoads - totalFixedCharges;
-  configured.ratioMarginVariableLoads = configured.marginVariableLoads / configured.accountsTurnOverBalance;
-  configured.breakEvenValue = totalFixedCharges / configured.ratioMarginVariableLoads;
+  configured.ratioMarginVariableLoads = configured.accountsTurnOverBalance
+    ? configured.marginVariableLoads / configured.accountsTurnOverBalance : 0;
 
-  configured.breakEvenPoint = configured.breakEvenValue / (configured.accountsTurnOverBalance / 360);
+  configured.breakEvenValue = configured.ratioMarginVariableLoads
+    ? totalFixedCharges / configured.ratioMarginVariableLoads : 0;
+
+  configured.breakEvenPoint = configured.accountsTurnOverBalance
+    ? configured.breakEvenValue / (configured.accountsTurnOverBalance / 360) : 0;
+
   configured.breakEvenPoint = parseInt(configured.breakEvenPoint, 10);
 
   configured.marginVariableLoadsRevenues = totalRevenues - totalVariableCharges;
   configured.resultsTurnOverRevenues = configured.marginVariableLoadsRevenues - totalFixedCharges;
-  configured.ratioMarginVariableLoadsRevenues = configured.marginVariableLoadsRevenues / totalRevenues;
-  configured.breakEvenValueRevenues = totalFixedCharges / configured.ratioMarginVariableLoadsRevenues;
+  configured.ratioMarginVariableLoadsRevenues = totalRevenues
+    ? configured.marginVariableLoadsRevenues / totalRevenues : 0;
 
-  configured.breakEvenPointRevenues = configured.breakEvenValueRevenues / (configured.totalRevenues / 360);
+  configured.breakEvenValueRevenues = configured.ratioMarginVariableLoadsRevenues
+    ? totalFixedCharges / configured.ratioMarginVariableLoadsRevenues : 0;
+
+  configured.breakEvenPointRevenues = configured.totalRevenues
+    ? configured.breakEvenValueRevenues / (configured.totalRevenues / 360) : 0;
   configured.breakEvenPointRevenues = parseInt(configured.breakEvenPointRevenues, 10);
 
   return configured;
 }
+
 exports.configuration = configuration;

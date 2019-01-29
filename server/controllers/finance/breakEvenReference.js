@@ -82,7 +82,7 @@ function update(req, res, next) {
 }
 
 // DELETE /break_even_reference/:id
-function del(req, res, next) {
+function remove(req, res, next) {
   const sql = `DELETE FROM break_even_reference WHERE id = ?;`;
 
   db.exec(sql, [req.params.id])
@@ -111,4 +111,4 @@ exports.create = create;
 exports.update = update;
 
 // Delete a breakEvenReference
-exports.delete = del;
+exports.delete = remove;
