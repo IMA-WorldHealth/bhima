@@ -54,6 +54,9 @@ function AccountReferenceModalController($state, Accounts, AccountReferences, No
   // submit the data to the server from all two forms (update, create)
   function submit(accountReferenceForm) {
     if (accountReferenceForm.$invalid) { return null; }
+    // Fixe me @lomamech : Give the possibility to validate the modification
+    // of the 'Parent' input area only
+
     if (!accountReferenceForm.$dirty) { return null; }
 
     const promise = (vm.isCreating)
