@@ -1,0 +1,30 @@
+<form>
+  <div class="modal-header">
+    <strong translate>LOTS.ASSIGNMENT_HISTORIC</strong>
+  </div>
+
+  <div class="modal-body" style="min-height: 400px; overflow-y: auto;">
+    <i class="fa fa-caret-right"></i> <span>{{$ctrl.lot.text}}</span>
+    <i class="fa fa-caret-right"></i> <strong>{{$ctrl.lot.label}}</strong>
+
+    <div ng-if="!$ctrl.lotAssignments.length"
+      class="text-center"
+      style="min-height: 400px; line-height: 400px;"
+      translate>LOTS.NO_ASSIGNMENT
+    </div>
+
+    <table style="border:0;" class="table table-condensed">
+      <tr ng-repeat="a in $ctrl.lotAssignments track by $index">
+        <td>{{ a.display_name }}</td>
+        <td>{{ a.created_at | date: "EEEE, d MMMM, y - HH:mm:ss" }}</td>
+        <td><span ng-if="a.is_active" class="label label-success" translate>LOTS.ASSIGNMENT_CURRENT</span></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()">
+      <span translate>FORM.BUTTONS.CLOSE</span>
+    </button>
+  </div>
+</form>

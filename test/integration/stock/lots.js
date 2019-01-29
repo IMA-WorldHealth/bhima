@@ -39,6 +39,21 @@ describe('(/lots/) The lots HTTP API', () => {
       })
       .catch(helpers.handler);
   });
+
+  it('GET /lots/:uuid/assignments/:depot_uuid returns all assignments of a lot for a given depot', () => {
+    const depotUuid = shared.newPersonAssign.depot_uuid;
+    const lotUuid = shared.newPersonAssign.lot_uuid;
+    const lotNotAssignedUuid = shared.lotVitamineA;
+    return agent.get(`/lots/${lotUuid}/assignments/${depotUuid}`)
+      .then(res => {
+        helpers.api.listed(res, 1);
+        return agent.get(`/lots/${lotUuid}/assignments/${lotNotAssignedUuid}`);
+      })
+      .then(res => {
+        helpers.api.listed(res, 0);
+      })
+      .catch(helpers.handler);
+  });
 });
 
 function formatDate(date) {
