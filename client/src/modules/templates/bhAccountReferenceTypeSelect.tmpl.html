@@ -11,7 +11,8 @@
     <ui-select
       name="reference_type_id"
       ng-model="$ctrl.referenceTypeId"
-      on-select="$ctrl.onSelect($item, $model)">
+      on-select="$ctrl.onSelect($item, $model)"
+      append-to-body="true">
       <ui-select-match placeholder="{{ 'FORM.SELECT.ACCOUNT_REFERENCE_TYPE' | translate }}">
         <span>{{$select.selected.label}}</span>
       </ui-select-match>

@@ -23,8 +23,8 @@
   </div>
 
   <div class="modal-footer">
-    <p id="account-reference-type-same" ng-if="AccountReferenceTypeForm.$submitted && AccountReferenceTypeForm.$pristine && !AccountReferenceTypeModalCtrl.isCreating" class="text-warning">
-      <i class="fa fa-warning"></i> <span translate>FORM.INFO.RECORD_SAME</span>
+    <p id="account-reference-type-same" ng-if="AccountReferenceTypeModalCtrl.hasNoChange" class="text-warning">
+      <i class="fa fa-warning"></i> <span translate>FORM.INFO.NO_CHANGE</span>
     </p>
 
     <p ng-if="AccountReferenceTypeForm.$submitted && AccountReferenceTypeForm.$invalid" class="text-danger">

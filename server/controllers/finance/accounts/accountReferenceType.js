@@ -88,7 +88,7 @@ function remove(req, res, next) {
     .then((row) => {
     // if nothing happened, let the client know via a 404 error
       if (row.affectedRows === 0) {
-        throw new NotFound(`Could not find a function with id ${req.params.id}`);
+        throw new NotFound(`Could not find an account reference type with id ${req.params.id}`);
       }
 
       res.status(204).json();

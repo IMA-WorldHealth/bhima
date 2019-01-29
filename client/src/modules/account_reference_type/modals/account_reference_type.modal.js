@@ -46,8 +46,9 @@ function AccountReferenceTypeModalController($state, AccountReferenceType, Notif
 
   // submit the data to the server from all two forms (update, create)
   function submit(accountReferenceTypeForm) {
-    if (accountReferenceTypeForm.$invalid) { return null; }
-    if (!accountReferenceTypeForm.$dirty) { return null; }
+    vm.hasNoChange = accountReferenceTypeForm.$submitted && accountReferenceTypeForm.$pristine && !vm.isCreating;
+
+    if (accountReferenceTypeForm.$invalid || !accountReferenceTypeForm.$dirty) { return null; }
 
     const promise = (vm.isCreating)
       ? AccountReferenceType.create(vm.types)
