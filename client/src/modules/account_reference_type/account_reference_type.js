@@ -81,6 +81,7 @@ function AccountReferenceTypeController($state, AccountReferenceType, Notify, ui
   function loadGrid() {
     toggleLoadingIndicator();
     vm.hasError = false;
+    vm.loading = true;
 
     AccountReferenceType.read()
       .then((accountReferenceType) => {
@@ -91,7 +92,7 @@ function AccountReferenceTypeController($state, AccountReferenceType, Notify, ui
   }
 
   function toggleLoadingIndicator() {
-    vm.loading = !vm.loading;
+    vm.loading = false;
   }
 
   loadGrid();
