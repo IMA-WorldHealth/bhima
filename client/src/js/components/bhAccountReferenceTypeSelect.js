@@ -4,7 +4,7 @@ angular.module('bhima.components')
     controller  : AccountReferenceTypeSelectController,
     transclude  : true,
     bindings    : {
-      referenceTypeId   : '<',
+      referenceTypeId   : '<?',
       onSelectCallback  : '&',
       disable           : '<?',
     },
