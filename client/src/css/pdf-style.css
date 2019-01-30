@@ -5,13 +5,14 @@ thead {
 tr {
   page-break-inside : avoid;
 }
+
 .text-right {
   text-align: right;
 }
 .text-center{
   text-align: center;
 }
-.row, .col-lg-12, .col-xs-12{
+.row, .col-lg-12, .col-xs-12 {
    width :100%;
 }
 /* sourced from jimmybonney.com.  Thank you! */
@@ -58,7 +59,6 @@ table, td, th{
   overflow: hidden;
   border-left: 1px solid #dddddd;
   border-right: 1px solid #dddddd;
-  /* border-top: 1px solid #dddddd; */
 }
 
 .table-header-rotated th.rotate-45 span {
@@ -71,12 +71,20 @@ table, td, th{
   bottom: 30px; /* 40 cos(45) = 28 with an additional 2px margin*/
   left: -25px; /*Because it looked good, but there is probably a mathematical link here as well*/
   display: inline-block;
-  /* width: 100%; */
   width: 85px; /* 80 / cos(45) - 40 cos (45) = 85 where 80 is the height of the cell, 40 the width of the cell and 45 the transform angle*/
   text-align: left;
-  /* white-space: nowrap; /*whether to display in one line or not*/
 }
 
 .table-header-rotated > thead > tr > th {
   border: none;
+}
+
+.table-subtotal-row {
+  background-color:#eee;
+  font-weight:bold;
+  margin-bottom: 2px;
+}
+
+.table-subtotal-row > td {
+  border-bottom : 1px solid #000 !important;
 }

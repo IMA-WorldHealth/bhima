@@ -6,6 +6,7 @@
  *
  * @requires puppeteer
  * @requires lodash
+ * @requires fs
  * @requires stream-to-promise
  * @requires path
  * @requires q
@@ -15,8 +16,9 @@
 
 const pptr = require('puppeteer');
 const _ = require('lodash');
-const path = require('path');
-const process = require('process');
+const fs = require('fs');
+// const path = require('path');
+// const process = require('process');
 const debug = require('debug')('renderer:pdf');
 
 const html = require('./html');
@@ -26,13 +28,27 @@ const headers = {
   'Content-Type' : 'application/pdf',
 };
 
+// load scripts and styles
+const { dbStyles, dbScripts } = environmentStyleAndScripts();
+
+const pptrOptions = {
+  headless : true,
+  args : [
+    '--no-sandbox',
+    '--disable-web-security',
+    '--disable-gpu',
+    '--hide-scrollbars',
+    '--disable-setuid-sandbox',
+  ],
+};
+const browserPromise = pptr.launch(pptrOptions);
+
 exports.render = renderPDF;
 exports.headers = headers;
 exports.extension = '.pdf';
 
 // provide uniform default configurations for reports
-exports.defaultReportOptions = {
-  format : 'A4',
+const defaultReportOptions = {
   margin : {
     top : '5mm',
     left : '5mm',
@@ -42,7 +58,7 @@ exports.defaultReportOptions = {
 };
 
 // standard specification for point of sale receipts
-exports.posReceiptOptions = {
+const posReceiptOptions = {
   width : '72mm',
   height : '290mm',
   margin : {
@@ -54,7 +70,7 @@ exports.posReceiptOptions = {
 };
 
 // smaller format for providing identifications/ receipts with reduced information
-exports.reducedCardOptions = {
+const reducedCardOptions = {
   width : '75mm',
   height : '125mm',
   margin : {
@@ -64,6 +80,10 @@ exports.reducedCardOptions = {
     right : '5mm',
   },
 };
+
+exports.defaultReportOptions = defaultReportOptions;
+exports.posReceiptOptions = posReceiptOptions;
+exports.reducedCardOptions = reducedCardOptions;
 
 /**
  * @function renderPDF
@@ -78,9 +98,8 @@ exports.reducedCardOptions = {
  * @returns {Promise}         Promise resolving in compiled PDF
  */
 function renderPDF(context, template, opts = {}) {
-  // convert option into puppeteer format
-  const options = convertOptions(opts);
-
+  const options = handleOption(opts);
+  console.log('>>> options : ', options);
   debug('received render request for PDF file. Passing to HTML renderer.');
 
   return html.render(context, template, options)
@@ -92,7 +111,7 @@ function renderPDF(context, template, opts = {}) {
         'printBackground', 'displayHeaderFooter',
       ]);
 
-      const pdfOptions = _.keys(_options).length ? _options : this.defaultReportOptions;
+      const pdfOptions = Object.assign(defaultReportOptions, _options);
 
       debug('passing rendered HTML to puppeteer.');
 
@@ -101,44 +120,40 @@ function renderPDF(context, template, opts = {}) {
     });
 }
 
-function pdfGenerator(htmlString, options = {}) {
-  return pptr.launch().then(async browser => {
-    const page = await browser.newPage();
-    await page.setContent(htmlString);
+async function pdfGenerator(htmlString, options = {}) {
+  const browser = await browserPromise;
+  const page = await browser.newPage();
+  await page.setContent(htmlString);
 
-    // include styles
-    const cssPromiseDb = resources.cssPaths.map(async cssPath => {
-      return page.addStyleTag({ path : path.join(process.cwd(), cssPath) });
-    });
-    await Promise.all(cssPromiseDb);
+  // include styles
+  for (let i = 0; i < dbStyles.length; i++) {
+    const content = dbStyles[i];
+    // eslint-disable-next-line no-await-in-loop
+    await page.addStyleTag({ content : content.toString() });
+  }
 
-    // include scripts
-    const jsPromiseDb = resources.jsPaths.map(async jsPath => {
-      return page.addScriptTag({ path : path.join(process.cwd(), jsPath) });
-    });
-    await Promise.all(jsPromiseDb);
+  // include scripts
+  for (let i = 0; i < dbScripts.length; i++) {
+    const content = dbScripts[i];
+    // eslint-disable-next-line no-await-in-loop
+    await page.addScriptTag({ content : content.toString() });
+  }
 
-    const pdf = await page.pdf(options);
-    await browser.close();
-    return pdf;
-  });
+  const pdf = await page.pdf(options);
+  return pdf;
 }
 
-function convertOptions(options) {
-  replaceOption(options, 'pageSize', 'format');
-  replaceOption(options, 'pageWidth', 'width');
-  replaceOption(options, 'pageHeight', 'height');
-
-  if (options.orientation) {
-    options.landscape = (options.orientation === 'landscape');
-    delete options.orientation;
-  }
+function handleOption(options) {
+  options.landscape = !!((options.orientation && options.orientation === 'landscape'));
   return options;
 }
 
-function replaceOption(options, currentOption, finalOption) {
-  if (options[currentOption]) {
-    options[finalOption] = options[currentOption];
-    delete options[currentOption];
-  }
+function environmentStyleAndScripts() {
+  const styles = resources.cssPaths.map(cssPath => {
+    return fs.readFileSync(cssPath);
+  });
+  const scripts = resources.jsPaths.map(jsPath => {
+    return fs.readFileSync(jsPath);
+  });
+  return { dbStyles : styles, dbScripts : scripts };
 }

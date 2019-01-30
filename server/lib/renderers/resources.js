@@ -6,8 +6,9 @@
 module.exports = {
   // an array of style paths to include in html template
   cssPaths : [
-    'client/css/bhima-bootstrap.css',
     'client/vendor/components-font-awesome/css/font-awesome.css',
+    'client/css/bhima-bootstrap.css',
+    'client/css/bhima-pdf.min.css',
   ],
 
   // an array of script paths to include in the html template

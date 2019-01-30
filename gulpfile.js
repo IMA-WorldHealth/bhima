@@ -43,7 +43,13 @@ const paths = {
       '!client/src/js/plugins/*.js',
       '!client/src/i18n/**/*.js',
     ],
-    css : ['client/src/css/*.css'],
+    css : [
+      'client/src/css/*.css',
+      '!client/src/css/pdf-style.css',
+    ],
+    cssForPDF : [
+      'client/src/css/pdf-style.css',
+    ],
     vendorJs : [
       'node_modules/@bower_components/jquery/dist/jquery.min.js', // jquery
       'node_modules/@bower_components/cropper/dist/cropper.js',
@@ -109,7 +115,7 @@ const paths = {
 // external gulp tasks to build the client, server and watch for client changes
 gulp.task('default', ['build']);
 gulp.task('build', ['client', 'server']);
-gulp.task('client', ['js', 'css', 'less', 'i18n', 'vendor', 'static', 'plugins'], templateHTML);
+gulp.task('client', ['js', 'css', 'cssForPDF', 'less', 'i18n', 'vendor', 'static', 'plugins'], templateHTML);
 gulp.task('watch', ['watch-client']);
 
 // collect all BHIMA application code and return a single versioned JS file
@@ -151,6 +157,14 @@ gulp.task('css', ['clean-css'], () => {
     .pipe(gulp.dest(CLIENT_FOLDER))
     .pipe(rev.manifest(`${CLIENT_FOLDER}/rev-manifest.json`, { merge : true }))
     .pipe(gulp.dest(''));
+});
+
+// collect all PDF style sheets and returns a seingle versionned css file
+gulp.task('cssForPDF', () => {
+  return gulp.src(paths.client.cssForPDF)
+    .pipe(cssnano({ zindex : false }))
+    .pipe(concat('bhima-pdf.min.css'))
+    .pipe(gulp.dest(`${CLIENT_FOLDER}/css`));
 });
 
 // copy custom BHIMA bootstrap files and build build bootsrap LESS, returns

@@ -4,7 +4,7 @@ angular.module('bhima.services')
 BaseReportService.$inject = ['$http', '$uibModal', 'util', 'LanguageService'];
 
 function BaseReportService($http, Modal, util, Languages) {
-  var service = this;
+  const service = this;
 
   service.requestKey = requestKey;
   service.listSavedReports = listSavedReports;
@@ -17,26 +17,26 @@ function BaseReportService($http, Modal, util, Languages) {
   service.emailReport = emailReport;
 
   function requestKey(key) {
-    var url = '/reports/keys/';
+    const url = '/reports/keys/';
     return $http.get(url.concat(key))
       .then(util.unwrapHttpResponse);
   }
 
   function listSavedReports(reportId) {
-    var url = '/reports/saved/';
+    const url = '/reports/saved/';
     return $http.get(url.concat(reportId))
       .then(util.unwrapHttpResponse);
   }
 
   function requestPreview(url, reportId, reportOptions) {
-    var htmlParams = {
-      reportId : reportId,
+    const htmlParams = {
+      reportId,
       saveReport : '0',
       renderer : 'html',
       lang : Languages.key,
     };
 
-    var options = angular.merge(reportOptions, htmlParams);
+    const options = angular.merge(reportOptions, htmlParams);
     return $http.get(url, { params : options })
       .then(util.unwrapHttpResponse);
   }
@@ -49,30 +49,30 @@ function BaseReportService($http, Modal, util, Languages) {
    * a request for the PDF document generation.
    */
   function saveReport(url, report, reportOptions) {
-    var params = {
+    const params = {
       // @TODO This should be known by the server
       reportId : report.id,
       saveReport : '1',
     };
-    var options = angular.merge(reportOptions, params);
+    const options = angular.merge(reportOptions, params);
 
     return $http.get(url, { params : options });
   }
 
   function deleteReport(uuid) {
-    var url = '/reports/archive/'.concat(uuid);
+    const url = '/reports/archive/'.concat(uuid);
     return $http.delete(url)
       .then(util.unwrapHttpResponse);
   }
 
   function emailReport(uuid, email) {
-    var url = '/reports/archive/'.concat(uuid, '/email');
+    const url = '/reports/archive/'.concat(uuid, '/email');
     return $http.post(url, { address : email })
       .then(util.unwrapHttpResponse);
   }
 
   function emailReportModal(options) {
-    var instance = Modal.open({
+    const instance = Modal.open({
       keyboard : true,
       resolve : {
         options : function resolveOptions() { return options; },
@@ -85,7 +85,7 @@ function BaseReportService($http, Modal, util, Languages) {
   }
 
   function saveAsModal(options) {
-    var instance = Modal.open({
+    const instance = Modal.open({
       animation : false,
       keyboard : true,
       size : 'md',
@@ -93,7 +93,7 @@ function BaseReportService($http, Modal, util, Languages) {
         options : function resolveOptions() { return options; },
       },
       controller : 'SaveReportController as SaveCtrl',
-      templateUrl : '/modules/templates/modals/report.save.html',
+      templateUrl : '/modules/reports/modals/report.save.html',
     });
 
     return instance.result;

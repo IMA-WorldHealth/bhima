@@ -39,7 +39,7 @@ const renderers = {
   html : require('./renderers/html'),
   pdf  : require('./renderers/pdf'),
   csv  : require('./renderers/csv'),
-  xlsx  : require('./renderers/xlsx'),
+  xlsx : require('./renderers/xlsx'),
   xls  : require('./renderers/xls'),
   doc  : require('./renderers/doc'),
   xlsxReceipt : require('./renderers/xlsxReceipt'),
@@ -47,8 +47,8 @@ const renderers = {
 
 // default report configuration
 const defaults = {
-  pageSize : 'A4',
-  orientation : 'portrait',
+  format : 'A4',
+  landscape : false,
   lang : 'en',
   renderer : 'pdf',
 };
@@ -144,6 +144,7 @@ class ReportManager {
       // so we use {{absolutePath}} which add or not absolute path part into logo
       // remove the client/ part from logo because it will be injected by {{absolutePath}}
       metadata.enterprise.logopath = metadata.enterprise.logo.substring(7);
+      metadata.enterprise.binaryLogo = base64Encode(metadata.enterprise.logo);
     }
 
     // merge the data object before templating
@@ -234,6 +235,14 @@ class ReportManager {
 
     return dfd.promise;
   }
+}
+
+// function to encode file data to base64 encoded string
+function base64Encode(file) {
+  // read binary data
+  const bitmap = fs.readFileSync(file);
+  // convert binary data to base64 encoded string
+  return Buffer.from(bitmap).toString('base64');
 }
 
 module.exports = ReportManager;
