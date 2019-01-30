@@ -99,7 +99,6 @@ exports.reducedCardOptions = reducedCardOptions;
  */
 function renderPDF(context, template, opts = {}) {
   const options = handleOption(opts);
-  console.log('>>> options : ', options);
   debug('received render request for PDF file. Passing to HTML renderer.');
 
   return html.render(context, template, options)
@@ -112,7 +111,6 @@ function renderPDF(context, template, opts = {}) {
       ]);
 
       const pdfOptions = Object.assign(defaultReportOptions, _options);
-
       debug('passing rendered HTML to puppeteer.');
 
       // pass the compiled html string to puppeteer pdf generator

@@ -9,7 +9,6 @@ function SaveReportController(ModalInstance, Notify, SavedReports, options, Lang
   const vm = this;
   vm.documentOptions = {};
   vm.report = options.report;
-
   vm.dismiss = ModalInstance.dismiss;
 
   /* @TODO verify that options passed in are valid */
@@ -30,7 +29,6 @@ function SaveReportController(ModalInstance, Notify, SavedReports, options, Lang
 
     // @TODO this can directly be loaded from the form
     const reportOptions = angular.merge(vm.documentOptions, options.reportOptions);
-
     return SavedReports.saveReport(options.url, options.report, reportOptions)
       .then(result => {
         Notify.success('REPORT.UTIL.SAVE_SUCCESS');

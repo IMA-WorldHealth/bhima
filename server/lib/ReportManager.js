@@ -47,8 +47,6 @@ const renderers = {
 
 // default report configuration
 const defaults = {
-  format : 'A4',
-  landscape : false,
   lang : 'en',
   renderer : 'pdf',
 };

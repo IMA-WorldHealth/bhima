@@ -55,7 +55,6 @@ function BaseReportService($http, Modal, util, Languages) {
       saveReport : '1',
     };
     const options = angular.merge(reportOptions, params);
-
     return $http.get(url, { params : options });
   }
 

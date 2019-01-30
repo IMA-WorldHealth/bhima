@@ -139,9 +139,14 @@ function getDepotMovement(documentUuid, enterprise, isExit) {
 
 // Extensible PDF layout options
 const pdfOptions = {
-  orientation : 'landscape',
-  footerRight : '[page] / [toPage]',
-  footerFontSize : '7',
+  scale : 1,
+  displayHeaderFooter : true,
+  headerTemplate : '<p></p>',
+  footerTemplate : `
+      <div>
+        Page <span class="pageNumber"></span> / <span class="totalPages"></span>
+      </div>
+    `,
 };
 
 /**
