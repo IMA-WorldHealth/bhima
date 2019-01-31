@@ -143,6 +143,15 @@ const pdfOptions = {
   displayHeaderFooter : true,
   headerTemplate : '<p></p>',
   footerTemplate : `
+      <style>
+        div {
+          width: 100%;
+          border: 0px;
+          padding-top:4mm;
+          font-size:8pt;
+          text-align: center;
+        }
+      </style>
       <div>
         Page <span class="pageNumber"></span> / <span class="totalPages"></span>
       </div>

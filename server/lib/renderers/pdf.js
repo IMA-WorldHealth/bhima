@@ -31,7 +31,7 @@ const defaultReportOptions = {
   margin : {
     top : '5mm',
     left : '5mm',
-    bottom : '5mm',
+    bottom : '10mm',
     right : '5mm',
   },
 };
@@ -43,7 +43,7 @@ const posReceiptOptions = {
   margin : {
     top : '0mm',
     left : '0mm',
-    bottom : '0mm',
+    bottom : '5mm',
     right : '0mm',
   },
 };
@@ -55,7 +55,7 @@ const reducedCardOptions = {
   margin : {
     top : '5mm',
     left : '5mm',
-    bottom : '5mm',
+    bottom : '10mm',
     right : '5mm',
   },
 };
