@@ -1069,7 +1069,9 @@ exports.configure = function configure(app) {
   app.get('/lots/generate_barcodes/:number', lots.generateBarcodes);
 
   app.get('/finance/entities', financeShared.lookupFinancialEntity);
+  app.get('/finance/entities/:uuid', financeShared.lookupFinancialEntityByUuid);
   app.get('/finance/records', financeShared.lookupFinancialRecord);
+  app.get('/finance/records/:uuid', financeShared.lookupFinancialRecordByUuid);
 
   // lots API
   app.get('/lots/:uuid', lots.details);

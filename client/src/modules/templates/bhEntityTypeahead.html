@@ -9,6 +9,7 @@
       class="form-control"
       placeholder="{{ ::'FORM.PLACEHOLDERS.ENTITY' | translate }}"
       ng-model="$ctrl.entity"
+      ng-attr-title="{{$ctrl.entity.hrLabel }}"
       ng-disabled="$ctrl.disabled"
       uib-typeahead="entity as entity.text for entity in $ctrl.lookupEntities($viewValue)"
       typeahead-template-url="bhEntityTypeaheadItem.html"
