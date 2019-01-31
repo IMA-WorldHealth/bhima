@@ -10,11 +10,12 @@ angular.module('bhima.components')
   });
 
 bhRecordTypeaheadController.$inject = [
-  'FindReferenceService', 'NotifyService',
+  'FindReferenceService', 'NotifyService', '$q',
 ];
 
-function bhRecordTypeaheadController(FindReferences, Notify) {
+function bhRecordTypeaheadController(FindReferences, Notify, $q) {
   const $ctrl = this;
+  let timer = $q.defer();
 
   $ctrl.$onInit = () => {
     if ($ctrl.recordUuid) {
@@ -36,18 +37,16 @@ function bhRecordTypeaheadController(FindReferences, Notify) {
   };
 
   $ctrl.lookupRecords = (text) => {
+    cancelInProgressRequests();
     if (text.length < 3) { return null; }
-    return FindReferences.read(null, { text, limit : 10 })
-      .then(records => {
-        records.forEach(record => {
-          record.hrLabel = `[${record.text}] ${record.description}`;
-        });
-
-        console.log('records:', records);
-
-        return records;
-      });
+    return FindReferences.read(null, { text, limit : 3 }, { timeout : timer.promise });
   };
+
+  // cancels all pending requests
+  function cancelInProgressRequests() {
+    timer.resolve();
+    timer = $q.defer();
+  }
 
   $ctrl.onSelectRecord = record => {
     $ctrl.onSelectCallback({ record });
