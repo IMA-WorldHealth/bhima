@@ -10,17 +10,20 @@
       placeholder="{{ ::'FORM.PLACEHOLDERS.RECORD' | translate }}"
       ng-model="$ctrl.record"
       ng-disabled="$ctrl.disabled"
-      uib-typeahead="record as record.text for record in $ctrl.lookupRecords($viewValue)"
-      typeahead-template-url="bhRecordTypeaheadItem.html"
+      uib-typeahead="record as record.hrLabel for record in $ctrl.lookupRecords($viewValue)"
       typeahead-select-on-blur="true"
       typeahead-on-select="$ctrl.onSelectRecord($item)"
+      typeahead-popup-template-url="bhRecordTypeaheadPopupTemplate"
       typeahead-append-to-body="true"
       autocomplete="off">
   </div>
 
-  <script type="text/ng-template" id="bhRecordTypeaheadItem.html">
-    <a href>
-      [<span ng-bind-html="match.model.text | uibTypeaheadHighlight:query"></span>] {{ match.model.description }} ({{ match.model.date | date }})
-    </a>
+  <script id="bhRecordTypeaheadPopupTemplate" type="text/ng-template">
+    <ul class="dropdown-menu dropdown-menu-right" ng-show="isOpen() && !moveInProgress" ng-style="{top: position().top+'px' }" role="listbox" aria-hidden="{{!isOpen()}}">
+      <li class="uib-typeahead-match" ng-repeat="match in matches track by $index" ng-class="{active: isActive($index) }" ng-mouseenter="selectActive($index)" ng-click="selectMatch($index, $event)" role="option" id="{{::match.id}}" style="overflow-x:hidden">
+          <div uib-typeahead-match index="$index" match="match" query="query" template-url="templateUrl"></div>
+      </li>
+    </ul>
   </script>
+
 </div>
