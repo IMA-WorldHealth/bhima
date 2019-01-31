@@ -69,24 +69,23 @@ exports.lookupFinancialEntity = (req, res, next) => {
     .catch(next);
 };
 
-async function getRecordDetails(uuid) {
-  const ident = db.bid(uuid);
-  const isInvoice = 'SELECT BUID(uuid) AS uuid, date, description FROM invoice WHERE uuid = ?;';
-  const isCash = 'SELECT BUID(uuid) AS uuid, date, description FROM cash WHERE uuid = ?;';
-  const isVoucher = 'SELECT BUID(uuid) AS uuid, date, description FROM voucher WHERE uuid = ?;';
+function getQueryForTable(table, options) {
+  const filters = new FilterParser(options);
+  db.convert(options, ['uuid']);
 
-  const [invoice] = await db.exec(isInvoice, ident);
-  if (invoice) {
-    return invoice;
-  }
+  const sql = `
+    SELECT BUID(dm.uuid) AS uuid, dm.text, t.description, t.date
+    FROM document_map dm JOIN ${table} t ON dm.uuid = t.uuid
+  `;
 
-  const [cash] = await db.exec(isCash, ident);
-  if (cash) {
-    return cash;
-  }
+  filters.equals('uuid');
+  filters.fullText('text');
+  filters.setOrder('ORDER BY t.date DESC');
 
-  const [voucher] = await db.exec(isVoucher, ident);
-  return voucher;
+  const query = filters.applyQuery(sql);
+  const parameters = filters.parameters();
+
+  return { query, parameters };
 }
 
 /**
@@ -96,30 +95,19 @@ async function getRecordDetails(uuid) {
  * An HTTP interface to lookup financial records (cash/voucher/invoices) in the database.
  */
 exports.lookupFinancialRecord = (req, res, next) => {
-  const options = req.query;
-  const filters = new FilterParser(options);
-  db.convert(options, ['uuid']);
+  const options = _.clone(req.query);
 
-  const sql = `
-    SELECT BUID(uuid) AS uuid, text FROM document_map dm
-  `;
+  const vouchers = getQueryForTable('voucher', options);
+  const invoices = getQueryForTable('invoice', options);
+  const cash = getQueryForTable('cash', options);
 
-  filters.equals('uuid');
-  filters.fullText('text', 'text', 'dm');
-
-  const query = filters.applyQuery(sql);
-  const parameters = filters.parameters();
-
-  let results;
-  return db.exec(query, parameters)
-    .then(rows => {
-      results = rows;
-      return Promise.all(rows.map(row => getRecordDetails(row.uuid)));
-    })
-    .then(rows => {
-      const groups = _.groupBy(rows, g => g.uuid);
-      results.forEach(row => _.extend(row, groups[row.uuid][0]));
-      res.status(200).json(results);
+  return Promise.all([
+    db.exec(vouchers.query, vouchers.parameters),
+    db.exec(invoices.query, invoices.parameters),
+    db.exec(cash.query, cash.parameters),
+  ])
+    .then(records => {
+      res.status(200).json(_.flatten(records));
     })
     .catch(next);
 };
