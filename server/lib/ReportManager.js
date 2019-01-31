@@ -24,7 +24,7 @@
 
 const _ = require('lodash');
 const path = require('path');
-const fs = require('fs');
+const fs = require('mz/fs');
 const q = require('q');
 const translateHelper = require('./helpers/translate');
 const util = require('../lib/util');
@@ -138,11 +138,10 @@ class ReportManager {
     this.options.saveReport = Boolean(Number(this.options.saveReport));
 
     if (metadata.enterprise && metadata.enterprise.logo) {
-      // use dynamic path for logo ie client doesn't need absolute path but pdf need it
-      // so we use {{absolutePath}} which add or not absolute path part into logo
-      // remove the client/ part from logo because it will be injected by {{absolutePath}}
-      metadata.enterprise.logopath = metadata.enterprise.logo.substring(7);
-      metadata.enterprise.binaryLogo = base64Encode(metadata.enterprise.logo);
+      base64Encode(metadata.enterprise.logo)
+        .then(bitmap => {
+          metadata.enterprise.binaryLogo = bitmap;
+        });
     }
 
     // merge the data object before templating
@@ -238,9 +237,7 @@ class ReportManager {
 // function to encode file data to base64 encoded string
 function base64Encode(file) {
   // read binary data
-  const bitmap = fs.readFileSync(file);
-  // convert binary data to base64 encoded string
-  return Buffer.from(bitmap).toString('base64');
+  return fs.readFile(file, 'base64');
 }
 
 module.exports = ReportManager;

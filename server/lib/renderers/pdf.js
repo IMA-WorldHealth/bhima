@@ -16,7 +16,7 @@
 
 const pptr = require('puppeteer');
 const _ = require('lodash');
-const fs = require('fs');
+const fs = require('mz/fs');
 const debug = require('debug')('app');
 
 const html = require('./html');
@@ -25,27 +25,6 @@ const resources = require('./resources');
 const headers = {
   'Content-Type' : 'application/pdf',
 };
-
-// load scripts and styles
-const { dbStyles, dbScripts } = environmentStyleAndScripts();
-
-// pptr options
-const pptrOptions = {
-  headless : true,
-  args : [
-    '--no-sandbox',
-    '--disable-web-security',
-    '--disable-gpu',
-    '--hide-scrollbars',
-    '--disable-setuid-sandbox',
-  ],
-};
-const browserPromise = pptr.launch(pptrOptions)
-  .then(brwsr => {
-    // notify about the pdf service
-    debug('PDF service is running');
-    return brwsr;
-  });
 
 // provide uniform default configurations for reports
 const defaultReportOptions = {
@@ -81,6 +60,23 @@ const reducedCardOptions = {
   },
 };
 
+// load scripts and styles
+const environment = environmentStyleAndScripts();
+let styles;
+let scripts;
+
+// pptr options
+const browserPromise = pptr.launch()
+  .then(async brwsr => {
+    // process styles and scripts when the browser is launched
+    styles = await Promise.all(environment.styles);
+    scripts = await Promise.all(environment.scripts);
+
+    // notify about the pdf service
+    debug('PDF service is running');
+    return brwsr;
+  });
+
 exports.render = renderPDF;
 exports.headers = headers;
 exports.extension = '.pdf';
@@ -103,7 +99,6 @@ exports.reducedCardOptions = reducedCardOptions;
  */
 function renderPDF(context, template, opts = {}) {
   const options = handleOption(opts);
-  debug('received render request for PDF file. Passing to HTML renderer.');
 
   return html.render(context, template, options)
     .then((htmlStringResult) => {
@@ -115,8 +110,6 @@ function renderPDF(context, template, opts = {}) {
       ]);
 
       const pdfOptions = Object.assign(defaultReportOptions, _options);
-      debug('passing rendered HTML to puppeteer.');
-
       // pass the compiled html string to puppeteer pdf generator
       return pdfGenerator(htmlStringResult, pdfOptions);
     });
@@ -128,21 +121,18 @@ async function pdfGenerator(htmlString, options = {}) {
   await page.setContent(htmlString);
 
   // include styles
-  for (let i = 0; i < dbStyles.length; i++) {
-    const content = dbStyles[i];
-    // eslint-disable-next-line no-await-in-loop
-    await page.addStyleTag({ content : content.toString() });
-  }
+  const stylesheets = styles.map(content => {
+    return page.addStyleTag({ content });
+  });
+  Promise.all(stylesheets);
 
   // include scripts
-  for (let i = 0; i < dbScripts.length; i++) {
-    const content = dbScripts[i];
-    // eslint-disable-next-line no-await-in-loop
-    await page.addScriptTag({ content : content.toString() });
-  }
+  const scriptsheets = scripts.map(content => {
+    return page.addScriptTag({ content });
+  });
 
-  const pdf = await page.pdf(options);
-  return pdf;
+  Promise.all(scriptsheets);
+  return page.pdf(options);
 }
 
 function handleOption(options) {
@@ -151,11 +141,7 @@ function handleOption(options) {
 }
 
 function environmentStyleAndScripts() {
-  const styles = resources.cssPaths.map(cssPath => {
-    return fs.readFileSync(cssPath);
-  });
-  const scripts = resources.jsPaths.map(jsPath => {
-    return fs.readFileSync(jsPath);
-  });
-  return { dbStyles : styles, dbScripts : scripts };
+  const stylesPromise = resources.cssPaths.map(path => fs.readFile(path, 'utf8'));
+  const scriptsPromise = resources.jsPaths.map(path => fs.readFile(path, 'utf8'));
+  return { styles : stylesPromise, scripts : scriptsPromise };
 }
