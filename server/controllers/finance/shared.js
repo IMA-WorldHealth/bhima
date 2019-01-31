@@ -28,6 +28,50 @@ exports.getRecordUuidByTextBulk = getRecordUuidByTextBulk;
 exports.getEntityUuidByText = getEntityUuidByText;
 exports.getEntityUuidByTextBulk = getEntityUuidByTextBulk;
 
+exports.lookupFinancialEntityByUuid = (req, res, next) => {
+  const uuid = db.bid(req.params.uuid);
+
+  const debtorSQL = `
+    SELECT em.uuid, em.text, d.text as hrLabel FROM entity_map em JOIN debtor d ON em.uuid = d.uuid
+    WHERE em.uuid = ?
+  `;
+
+  const creditorSQL = `
+    SELECT em.uuid, em.text, c.text as hrLabel FROM entity_map em JOIN creditor c ON em.uuid = c.uuid
+    WHERE em.uuid = ?
+  `;
+
+  const combinedSQL = `
+    SELECT uuid, text, hrLabel FROM (
+      ${debtorSQL} UNION ${creditorSQL}
+    )z ORDER BY text LIMITT 1;
+  `;
+
+  db.one(combinedSQL, [uuid, uuid])
+    .then(record => res.status(200).json(record))
+    .catch(next);
+};
+
+exports.lookupFinancialRecordByUuid = (req, res, next) => {
+  const uuid = db.bid(req.params.uuid);
+
+  const vouchers = getQueryForTable('voucher', { uuid });
+  const invoices = getQueryForTable('invoice', { uuid });
+  const cash = getQueryForTable('cash', { uuid });
+
+  return Promise.all([
+    db.exec(vouchers.query, vouchers.parameters),
+    db.exec(invoices.query, invoices.parameters),
+    db.exec(cash.query, cash.parameters),
+  ])
+    .then(records => {
+      const [record] = _.flatten(records);
+      res.status(200).json(record);
+    })
+    .catch(next);
+
+};
+
 /**
  * @function lookupFinancialEntity
  *
@@ -51,7 +95,7 @@ exports.lookupFinancialEntity = (req, res, next) => {
     SELECT em.uuid, em.text, c.text as hrLabel FROM entity_map em JOIN creditor c ON em.uuid = c.uuid
   `;
 
-  filters.equals('uuid');
+  filters.equals('uuid', 'uuid', 'em');
   filters.fullText('text', 'text', 'em');
 
   const debtorQuery = filters.applyQuery(debtorSQL);
@@ -78,7 +122,7 @@ function getQueryForTable(table, options) {
     FROM document_map dm JOIN ${table} t ON dm.uuid = t.uuid
   `;
 
-  filters.equals('uuid');
+  filters.equals('uuid', 'uuid', 't');
   filters.fullText('text');
   filters.setOrder('ORDER BY t.date DESC');
 

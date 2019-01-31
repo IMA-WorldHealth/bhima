@@ -1,7 +1,7 @@
 <div class="ui-grid-cell-contents">
   <bh-record-typeahead
-    record-uuid="row.record.record_uuid"
-    on-select-record="grid.appScope.onSelectRecord(record)"
+    record-uuid="row.entity.document_uuid"
+    on-select-callback="grid.appScope.onSelectRecord(row, record)"
     disabled="!row.entity._initialized">
   </bh-record-typeahead>
 </div>
