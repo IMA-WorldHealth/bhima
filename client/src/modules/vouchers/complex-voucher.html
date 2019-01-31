@@ -138,19 +138,6 @@
 
       <div class="row" style="margin-bottom : 5px;">
         <div class="col-md-12">
-
-          <!-- "Recover Cache" button -->
-          <div class="pull-right">
-            <button
-              class="btn btn-default"
-              id="recover"
-              ng-class="{ 'btn-primary' : ComplexVoucherCtrl.Voucher.hasCacheAvailable() }"
-              ng-click="ComplexVoucherCtrl.Voucher.readCache()"
-              ng-disabled="!ComplexVoucherCtrl.Voucher.hasCacheAvailable() || ComplexVoucherCtrl.Voucher.hasRecoveredCache || ComplexVoucherForm.$submitted">
-              <i class="fa fa-recycle"></i> <span translate>FORM.BUTTONS.RECOVER_ITEMS</span>
-            </button>
-          </div>
-
           <!-- "Add number of grid rows" input-group -->
           <bh-add-item
             disable="ComplexVoucherCtrl.Voucher.details.currency_id"
