@@ -17,8 +17,6 @@
 const pptr = require('puppeteer');
 const _ = require('lodash');
 const fs = require('fs');
-// const path = require('path');
-// const process = require('process');
 const debug = require('debug')('renderer:pdf');
 
 const html = require('./html');
@@ -31,6 +29,7 @@ const headers = {
 // load scripts and styles
 const { dbStyles, dbScripts } = environmentStyleAndScripts();
 
+// pptr options
 const pptrOptions = {
   headless : true,
   args : [
@@ -41,11 +40,8 @@ const pptrOptions = {
     '--disable-setuid-sandbox',
   ],
 };
+// todo: close the browser correctly
 const browserPromise = pptr.launch(pptrOptions);
-
-exports.render = renderPDF;
-exports.headers = headers;
-exports.extension = '.pdf';
 
 // provide uniform default configurations for reports
 const defaultReportOptions = {
@@ -80,6 +76,10 @@ const reducedCardOptions = {
     right : '5mm',
   },
 };
+
+exports.render = renderPDF;
+exports.headers = headers;
+exports.extension = '.pdf';
 
 exports.defaultReportOptions = defaultReportOptions;
 exports.posReceiptOptions = posReceiptOptions;
