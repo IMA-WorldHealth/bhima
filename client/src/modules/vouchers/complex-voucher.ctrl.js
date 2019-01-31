@@ -16,9 +16,6 @@ ComplexJournalVoucherController.$inject = [
  * specifying two or more lines of transactions and all relative document references
  *
  * @constructor
- *
- * TODO - Implement caching mechanism for incomplete forms (via AppCache)
- * TODO/FIXME - this error notification system needs serious refactor.
  */
 function ComplexJournalVoucherController(
   Vouchers, Currencies, Session, FindEntity, FindReference, Notify, Toolkit,
@@ -58,7 +55,6 @@ function ComplexJournalVoucherController(
   // ui-grid options
   vm.gridOptions = {
     appScopeProvider  : vm,
-    fastWatch         : true,
     flatEntityAccess  : true,
     enableSorting     : false,
     enableColumnMenus : false,
@@ -95,8 +91,6 @@ function ComplexJournalVoucherController(
     gridManager(Toolkit.openPaymentEmployees);
   };
 
-  // @TODO fixed me to display correctly selected items(invoices, ..) accounts
-  // without adding empty items before
   function gridManager(modal) {
     modal()
       .then(result => {
@@ -263,11 +257,12 @@ function ComplexJournalVoucherController(
     }
 
     const voucher = vm.Voucher.details;
-
     voucher.items = vm.Voucher.store.data;
 
+    console.log('voucher:', voucher);
+
     return Vouchers.create(voucher)
-      .then((result) => {
+      .then(result => {
         Receipts.voucher(result.uuid, true);
         vm.Voucher.clear();
         form.$setPristine();
@@ -275,14 +270,12 @@ function ComplexJournalVoucherController(
       .catch(Notify.handleError);
   }
 
-  vm.onSelectEntity = function onSelectEntity(row, entity) {
-    console.log('row', row);
-    console.log('entity:', entity);
+  vm.onSelectEntity = (row, entity) => {
+    row.entity.entity_uuid = entity.uuid;
   };
 
   vm.onSelectRecord = (row, record) => {
-    console.log('row', row);
-    console.log('record:', record);
+    row.entity.document_uuid = record.uuid;
   };
 
   startup();
