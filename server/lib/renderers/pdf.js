@@ -17,7 +17,7 @@
 const pptr = require('puppeteer');
 const _ = require('lodash');
 const fs = require('fs');
-const debug = require('debug')('renderer:pdf');
+const debug = require('debug')('app');
 
 const html = require('./html');
 const resources = require('./resources');
@@ -40,8 +40,12 @@ const pptrOptions = {
     '--disable-setuid-sandbox',
   ],
 };
-// todo: close the browser correctly
-const browserPromise = pptr.launch(pptrOptions);
+const browserPromise = pptr.launch(pptrOptions)
+  .then(brwsr => {
+    // notify about the pdf service
+    debug('PDF service is running');
+    return brwsr;
+  });
 
 // provide uniform default configurations for reports
 const defaultReportOptions = {
