@@ -37,7 +37,16 @@ function bhRecordTypeaheadController(FindReferences, Notify) {
 
   $ctrl.lookupRecords = (text) => {
     if (text.length < 3) { return null; }
-    return FindReferences.read(null, { text, limit : 10 });
+    return FindReferences.read(null, { text, limit : 10 })
+      .then(records => {
+        records.forEach(record => {
+          record.hrLabel = `[${record.text}] ${record.description}`;
+        });
+
+        console.log('records:', records);
+
+        return records;
+      });
   };
 
   $ctrl.onSelectRecord = record => {
