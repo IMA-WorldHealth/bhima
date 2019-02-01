@@ -56,9 +56,11 @@ function ComplexJournalVoucherController(
   vm.gridOptions = {
     appScopeProvider  : vm,
     flatEntityAccess  : true,
+    fastWatch         : true,
     enableSorting     : false,
     enableColumnMenus : false,
     showColumnFooter  : true,
+    virtualizationThreshold : 200,
     onRegisterApi,
   };
 

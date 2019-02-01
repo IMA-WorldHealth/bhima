@@ -36,6 +36,10 @@ function bhRecordTypeaheadController(FindReferences, Notify, $q) {
     }
   };
 
+  $ctrl.isValid = () => {
+    return angular.isObject($ctrl.record);
+  };
+
   $ctrl.lookupRecords = (text) => {
     cancelInProgressRequests();
     if (text.length < 3) { return null; }
