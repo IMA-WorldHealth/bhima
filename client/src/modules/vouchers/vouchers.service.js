@@ -122,19 +122,7 @@ function VoucherService(
     const v = angular.copy(voucher);
 
     // format items for posting, removing validation keys and unlinking old objects
-    v.items = v.items.map(item => {
-      const escapedItem = stripInternalObjectKeys(item);
-
-      if (escapedItem.entity) {
-        escapedItem.entity_uuid = escapedItem.entity.uuid;
-      }
-
-      if (escapedItem.document) {
-        escapedItem.document_uuid = escapedItem.document.uuid;
-      }
-
-      return escapedItem;
-    });
+    v.items = v.items.map(stripInternalObjectKeys);
 
     // @FIXME(sfount) this uses javascript maths without using something like the
     //                BigNumber library. Our general default is to do maths in MySQL
