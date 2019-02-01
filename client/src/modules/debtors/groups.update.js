@@ -15,9 +15,11 @@ function DebtorGroupsUpdateController(
   ScrollTo, util, Notify, Modal, Color
 ) {
   const vm = this;
+  vm.group = {};
   const target = $state.params.uuid;
 
   vm.submit = submit;
+  vm.onSelectAccountCallback = onSelectAccountCallback;
   vm.state = $state;
   vm.invoicingFeeSubscriptions = invoicingFeeSubscriptions;
   vm.subsidySubscriptions = subsidySubscriptions;
@@ -49,6 +51,13 @@ function DebtorGroupsUpdateController(
       vm.$loading = false;
     });
 
+
+  function formatData(group) {
+    delete group.subsidies;
+    delete group.invoicingFees;
+    return group;
+  }
+
   function submit(debtorGroupForm) {
     debtorGroupForm.$setSubmitted();
 
@@ -65,7 +74,8 @@ function DebtorGroupsUpdateController(
       return;
     }
 
-    const submitDebtorGroup = util.filterFormElements(debtorGroupForm, true);
+    let submitDebtorGroup = angular.copy(vm.group);
+    submitDebtorGroup = formatData(submitDebtorGroup);
 
     DebtorGroups.update(target, submitDebtorGroup)
       .then(() => {
@@ -118,5 +128,9 @@ function DebtorGroupsUpdateController(
           })
           .catch(Notify.handleError);
       });
+  }
+
+  function onSelectAccountCallback(account) {
+    vm.group.account_id = account.id;
   }
 }
