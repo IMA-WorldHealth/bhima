@@ -2,11 +2,12 @@
   <div
     class="form-group"
     style="margin-bottom:0;"
-    ng-class="{ 'has-error' : bhRecordTypeaheadForm.record.$error && bhRecordTypeaheadForm.$submitted }">
+    ng-class="{ 'has-error' : bhRecordTypeaheadForm.$dirty && !$ctrl.isValid() }">
     <input
       type="text"
       name="record"
       class="form-control"
+      ng-class="{ 'ng-invalid' : bhRecordTypeaheadForm.$dirty && !$ctrl.isValid() }"
       placeholder="{{ ::'FORM.PLACEHOLDERS.RECORD' | translate }}"
       ng-model="$ctrl.record"
       ng-attr-title="{{$ctrl.record.description}}"
