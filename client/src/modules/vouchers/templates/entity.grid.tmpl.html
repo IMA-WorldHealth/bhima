@@ -1,7 +1,7 @@
 <div class="ui-grid-cell-contents">
   <bh-entity-typeahead
     entity-uuid="row.entity.entity_uuid"
-    on-select-entity="grid.appScope.onSelectEntity(row, entity)"
+    on-select-callback="grid.appScope.onSelectEntity(row, entity)"
     disabled="!row.entity._initialized">
   </bh-entity-typeahead>
 </div>

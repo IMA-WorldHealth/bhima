@@ -42,9 +42,9 @@ exports.lookupFinancialEntityByUuid = (req, res, next) => {
   `;
 
   const combinedSQL = `
-    SELECT uuid, text, hrLabel FROM (
+    SELECT BUID(uuid) as uuid, text, hrLabel FROM (
       ${debtorSQL} UNION ${creditorSQL}
-    )z ORDER BY text LIMITT 1;
+    )z ORDER BY text LIMIT 1;
   `;
 
   db.one(combinedSQL, [uuid, uuid])
@@ -103,7 +103,7 @@ exports.lookupFinancialEntity = (req, res, next) => {
   const parameters = filters.parameters();
 
   const query = `
-    SELECT uuid, text, hrLabel FROM (
+    SELECT BUID(uuid) as uuid, text, hrLabel FROM (
       ${debtorQuery} UNION ${creditorQuery}
     )z ORDER BY text LIMIT ${limit};
   `;
