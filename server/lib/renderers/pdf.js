@@ -66,7 +66,8 @@ let styles;
 let scripts;
 
 // pptr options
-const browserPromise = pptr.launch()
+const pptrOptions = { headless : true };
+const browserPromise = pptr.launch(pptrOptions)
   .then(async brwsr => {
     // process styles and scripts when the browser is launched
     styles = await Promise.all(environment.styles);
@@ -116,7 +117,17 @@ function renderPDF(context, template, opts = {}) {
 }
 
 async function pdfGenerator(htmlString, options = {}) {
-  const browser = await browserPromise;
+  let browser = await browserPromise;
+
+  // check if browser is closed
+  browser._process.once('close', () => {
+    browser.isClose = true;
+  });
+
+  if (browser.isClose) {
+    browser = await pptr.launch(pptrOptions);
+  }
+
   const page = await browser.newPage();
   await page.setContent(htmlString);
 
