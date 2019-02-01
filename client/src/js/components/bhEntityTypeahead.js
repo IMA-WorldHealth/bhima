@@ -10,11 +10,12 @@ angular.module('bhima.components')
   });
 
 bhEntityTypeaheadController.$inject = [
-  'FindEntityService', 'NotifyService',
+  'FindEntityService', 'NotifyService', '$q',
 ];
 
-function bhEntityTypeaheadController(FindEntities, Notify) {
+function bhEntityTypeaheadController(FindEntities, Notify, $q) {
   const $ctrl = this;
+  let timer = $q.defer();
 
   $ctrl.$onInit = () => {
     if ($ctrl.entityUuid) {
@@ -35,10 +36,21 @@ function bhEntityTypeaheadController(FindEntities, Notify) {
     }
   };
 
-  $ctrl.lookupEntities = (text) => {
-    if (text.length < 3) { return null; }
-    return FindEntities.read(null, { text, limit : 10 });
+  $ctrl.isValid = () => {
+    return angular.isObject($ctrl.entity);
   };
+
+  $ctrl.lookupEntities = (text) => {
+    cancelInProgressRequests();
+    if (text.length < 3) { return null; }
+    return FindEntities.read(null, { text, limit : 10 }, { timeout : timer.promise });
+  };
+
+  // cancels all pending requests
+  function cancelInProgressRequests() {
+    timer.resolve();
+    timer = $q.defer();
+  }
 
   $ctrl.onSelectEntity = entity => {
     $ctrl.onSelectCallback({ entity });
