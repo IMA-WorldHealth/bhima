@@ -2,18 +2,19 @@
   <div
     class="form-group"
     style="margin-bottom:0;"
-    ng-class="{ 'has-error' : bhEntityTypeaheadForm.entity.$error && bhEntityTypeaheadForm.$submitted }">
+    ng-class="{ 'has-error' : bhEntityTypeaheadForm.$dirty && !$ctrl.isValid() }">
     <input
       type="text"
       name="entity"
       class="form-control"
+      ng-class="{ 'ng-invalid' : bhEntityTypeaheadForm.$dirty && !$ctrl.isValid() }"
       placeholder="{{ ::'FORM.PLACEHOLDERS.ENTITY' | translate }}"
       ng-model="$ctrl.entity"
       ng-attr-title="{{$ctrl.entity.hrLabel }}"
       ng-disabled="$ctrl.disabled"
       uib-typeahead="entity as entity.text for entity in $ctrl.lookupEntities($viewValue)"
-      typeahead-template-url="bhEntityTypeaheadItem.html"
       typeahead-select-on-blur="true"
+      typeahead-template-url="bhEntityTypeaheadItem.html"
       typeahead-on-select="$ctrl.onSelectEntity($item)"
       typeahead-append-to-body="true"
       autocomplete="off">
