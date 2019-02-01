@@ -261,8 +261,6 @@ function ComplexJournalVoucherController(
     const voucher = vm.Voucher.details;
     voucher.items = vm.Voucher.store.data;
 
-    console.log('voucher:', voucher);
-
     return Vouchers.create(voucher)
       .then(result => {
         Receipts.voucher(result.uuid, true);
