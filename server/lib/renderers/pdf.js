@@ -130,9 +130,12 @@ async function pdfGenerator(htmlString, options = {}) {
   const scriptsheets = scripts.map(content => {
     return page.addScriptTag({ content });
   });
-
   Promise.all(scriptsheets);
-  return page.pdf(options);
+
+  const pdf = await page.pdf(options);
+
+  await page.close();
+  return pdf;
 }
 
 function handleOption(options) {
