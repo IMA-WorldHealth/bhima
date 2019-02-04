@@ -1044,3 +1044,23 @@ INSERT INTO `account_reference_type` (`id`, `label`, `fixed`) VALUES
 -- Account Reference Type unit
 INSERT INTO unit VALUES
 (225, 'Account Reference Type','TREE.ACCOUNT_REFERENCE_TYPE','Account Reference Type', 1,'/modules/account_reference_type','/account_reference_type');
+
+
+DROP TABLE IF EXISTS `debtor_group_history`;
+CREATE TABLE `debtor_group_history` (
+  `uuid` BINARY(16) NOT NULL,
+  `debtor_uuid` BINARY(16) DEFAULT NULL,
+  `previous_debtor_group` BINARY(16) DEFAULT NULL,
+  `next_debtor_group` BINARY(16) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `user_id` smallINT(5) UNSIGNED DEFAULT NULL,
+  PRIMARY KEY (`uuid`),
+  KEY `debtor_uuid` (`debtor_uuid`),
+  KEY `previous_debtor_group` (`previous_debtor_group`),
+  KEY `next_debtor_group` (`next_debtor_group`),
+  KEY `user_id` (`user_id`),
+  FOREIGN KEY (`debtor_uuid`) REFERENCES `debtor` (`uuid`),
+  FOREIGN KEY (`previous_debtor_group`) REFERENCES `debtor_group` (`uuid`),
+  FOREIGN KEY (`next_debtor_group`) REFERENCES `debtor_group` (`uuid`),
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
