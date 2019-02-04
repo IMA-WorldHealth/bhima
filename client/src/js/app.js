@@ -203,6 +203,9 @@ function httpConfig($httpProvider) {
 
   // register error handling interceptor
   $httpProvider.interceptors.push('ErrorInterceptor');
+
+  // perf - applyAsync
+  $httpProvider.useApplyAsync(true);
 }
 
 /**
