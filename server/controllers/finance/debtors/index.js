@@ -303,6 +303,7 @@ function getFinancialActivity(debtorUuid, excludeCautionLinks = false) {
     balance(debtorUuid, excludeCautionLinks),
   ])
     .spread((transactions, aggs) => {
+
       if (!aggs.length) {
         aggs.push({ debit : 0, credit : 0, balance : 0 });
       }
