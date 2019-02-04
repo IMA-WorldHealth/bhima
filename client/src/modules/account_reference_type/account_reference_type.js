@@ -79,7 +79,6 @@ function AccountReferenceTypeController($state, AccountReferenceType, Notify, ui
   }
 
   function loadGrid() {
-    toggleLoadingIndicator();
     vm.hasError = false;
     vm.loading = true;
 
