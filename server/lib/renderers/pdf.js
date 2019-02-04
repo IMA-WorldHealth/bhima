@@ -66,18 +66,19 @@ let styles;
 let scripts;
 
 // pptr options
+let browser;
 const pptrOptions = {
   headless : true,
   args : ['--disable-dev-shm-usage'],
 };
 const browserPromise = pptr.launch(pptrOptions)
-  .then(async brwsr => {
+  .then(async _browser => {
     // process styles and scripts when the browser is launched
     styles = await Promise.all(environment.styles);
     scripts = await Promise.all(environment.scripts);
 
     // add listener on browser close
-    addListenerOnBrowserClose(brwsr);
+    const brwsr = addListenerOnBrowserClose(_browser);
 
     // notify about the pdf service
     debug('PDF service is running');
@@ -127,44 +128,42 @@ function addListenerOnBrowserClose(_browser) {
   _browser._process.once('close', () => {
     _browser.isClose = true;
   });
+  return _browser;
 }
 
-async function canRelaunchBrowser(browser) {
-  if (browser.isClose) {
+async function canRelaunchBrowser(_browser) {
+  if (_browser.isClose) {
     // eslint-disable-next-line no-param-reassign
-    browser = await pptr.launch(pptrOptions);
-    browser.isClose = false;
+    _browser = await pptr.launch(pptrOptions);
+    _browser.isClose = false;
   }
+  return _browser;
 }
 
 async function pdfGenerator(htmlString, options = {}) {
-  try {
-    const browser = await browserPromise;
-    await canRelaunchBrowser(browser);
+  browser = await browserPromise;
+  browser = await canRelaunchBrowser(browser);
 
-    const page = await browser.newPage();
-    await page.setContent(htmlString);
+  const page = await browser.newPage();
+  await page.setContent(htmlString);
 
-    // include styles
-    const stylesheets = styles.map(content => {
-      return page.addStyleTag({ content });
-    });
+  // include styles
+  const stylesheets = styles.map(content => {
+    return page.addStyleTag({ content });
+  });
 
-    await Promise.all(stylesheets);
+  await Promise.all(stylesheets);
 
-    // include scripts
-    const scriptsheets = scripts.map(content => {
-      return page.addScriptTag({ content });
-    });
+  // include scripts
+  const scriptsheets = scripts.map(content => {
+    return page.addScriptTag({ content });
+  });
 
-    await Promise.all(scriptsheets);
+  await Promise.all(scriptsheets);
 
-    const pdf = await page.pdf(options);
-    await page.close();
-    return pdf;
-  } catch (error) {
-    throw new Error(error);
-  }
+  const pdf = await page.pdf(options);
+  await page.close();
+  return pdf;
 }
 
 function handleOption(options) {

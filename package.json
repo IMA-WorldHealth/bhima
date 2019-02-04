@@ -114,7 +114,7 @@
     "mysql": "^2.14.0",
     "mz": "^2.7.0",
     "ngstorage": "gsklee/ngStorage#0.3.11",
-    "puppeteer": "^1.10.0",
+    "puppeteer": "^1.12.1",
     "q": "~1.5.0",
     "snyk": "1.122.4",
     "stream-to-promise": "^2.2.0",
