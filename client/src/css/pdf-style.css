@@ -22,8 +22,8 @@ tr {
 
 table, td, th{
   border : 1px solid #001;
-   border-collapse : collapse !important
-};
+   border-collapse : collapse;
+}
 
 .table-header-rotated td{
   width: 40px;
@@ -86,5 +86,5 @@ table, td, th{
 }
 
 .table-subtotal-row > td {
-  border-bottom : 1px solid #000 !important;
+  border-bottom : 1px solid #000;
 }
