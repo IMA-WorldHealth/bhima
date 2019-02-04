@@ -1021,3 +1021,26 @@ INSERT INTO report VALUES  (23, 'unpaid-invoice-payments', 'REPORT.UNPAID_INVOIC
 UPDATE unit SET
   `name`='Unpaid Invoice Payments', `key`='REPORT.UNPAID_INVOICE_PAYMENTS_REPORT.TITLE', `url`='/modules/reports/unpaid-invoice-payments', `path`='/reports/unpaid-invoice-payments'
 WHERE id = 213;
+
+--@lomamech 2019-01-21 Account Reference Type
+DROP TABLE IF EXISTS `account_reference_type`;
+CREATE TABLE `account_reference_type` (
+  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `label` VARCHAR(100) NOT NULL,
+  `fixed` tinyint(1) DEFAULT 0,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `account_reference_type_1` (`label`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+-- update the account_reference table
+ALTER TABLE account_reference ADD COLUMN `reference_type_id` MEDIUMINT(8) UNSIGNED NULL;
+
+-- Default Account Reference Type
+INSERT INTO `account_reference_type` (`id`, `label`, `fixed`) VALUES
+(1, 'FORM.LABELS.FEE_CENTER', 1),
+(2, 'FORM.LABELS.BALANCE_SHEET', 1),
+(3, 'FORM.LABELS.PROFIT_LOSS', 1);
+
+-- Account Reference Type unit
+INSERT INTO unit VALUES
+(225, 'Account Reference Type','TREE.ACCOUNT_REFERENCE_TYPE','Account Reference Type', 1,'/modules/account_reference_type','/account_reference_type');

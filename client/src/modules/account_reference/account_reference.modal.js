@@ -16,6 +16,8 @@ function AccountReferenceModalController($state, Accounts, AccountReferences, No
   // exposed methods
   vm.submit = submit;
   vm.closeModal = closeModal;
+  vm.clear = clear;
+  vm.onSelectAccountReferenceType = onSelectAccountReferenceType;
 
   if ($state.params.creating || $state.params.id) {
     cache.stateParams = $state.params;
@@ -34,8 +36,6 @@ function AccountReferenceModalController($state, Accounts, AccountReferences, No
   } else {
     vm.accountReference.accounts = [];
     vm.accountReference.accountsException = [];
-    vm.accountReference.accountsCreditBalance = [];
-    vm.accountReference.accountsDebitBalance = [];
   }
 
   // load accounts
@@ -52,14 +52,22 @@ function AccountReferenceModalController($state, Accounts, AccountReferences, No
     })
     .catch(Notify.handleError);
 
+  // callback for Account Reference Type
+  function onSelectAccountReferenceType(referenceType) {
+    vm.accountReference.reference_type_id = referenceType.id;
+  }
+
   // submit the data to the server from all two forms (update, create)
   function submit(accountReferenceForm) {
     if (accountReferenceForm.$invalid) { return null; }
+    // Fixe me @lomamech : Give the possibility to validate the modification
+    // of the 'Parent' or 'Account Reference Type Only' input area only
+
     if (!accountReferenceForm.$dirty) { return null; }
 
-    const promise = (vm.isCreating) ?
-      AccountReferences.create(vm.accountReference) :
-      AccountReferences.update(vm.accountReference.id, vm.accountReference);
+    const promise = (vm.isCreating)
+      ? AccountReferences.create(vm.accountReference)
+      : AccountReferences.update(vm.accountReference.id, vm.accountReference);
 
     return promise
       .then(() => {
@@ -70,8 +78,11 @@ function AccountReferenceModalController($state, Accounts, AccountReferences, No
       .catch(Notify.handleError);
   }
 
+  function clear(value) {
+    vm.accountReference[value] = null;
+  }
+
   function closeModal() {
     $state.transitionTo('account_reference.list');
   }
 }
-

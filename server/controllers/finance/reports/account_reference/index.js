@@ -61,12 +61,14 @@ function report(req, res, next) {
 
   const dbPromises = [
     db.one(getFiscalYearSQL, [params.period_id]),
-    AccountReference.computeAllAccountReference(params.period_id),
+    AccountReference.computeAllAccountReference(params.period_id, params.reference_type_id),
   ];
 
   Q.all(dbPromises)
     .spread((period, data) => {
       _.merge(context, { period, data });
+      context.referenceTypeLabel = params.reference_type_id ? params.reference_type_label : '';
+
       return reporting.render(context);
     })
     .then(result => {

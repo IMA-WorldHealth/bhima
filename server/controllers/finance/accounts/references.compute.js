@@ -3,6 +3,7 @@
  */
 const Q = require('q');
 const db = require('../../../lib/db');
+const FilterParser = require('../../../lib/filter');
 
 /**
  * @function findFiscalYear
@@ -26,19 +27,31 @@ function findFiscalYear(periodId) {
  *
  * @param {number} periodId - the period needed
  */
-function computeAllAccountReference(periodId) {
+function computeAllAccountReference(periodId, referenceTypeId) {
   const glb = {};
+
+  const options = {
+    reference_type_id : referenceTypeId,
+  };
+
+  const filters = new FilterParser(options, { tableAlias : 'ar' });
 
   // get all references
   const queryAccountReferences = `
-    SELECT id, abbr, description, is_amo_dep FROM account_reference;
+    SELECT ar.id, ar.abbr, ar.description, ar.is_amo_dep, ar.reference_type_id
+    FROM account_reference ar
   `;
+
+  filters.equals('reference_type_id');
 
   return findFiscalYear(periodId)
     .then(fiscalYear => {
       glb.fiscalYear = fiscalYear;
 
-      return db.exec(queryAccountReferences);
+      const query = filters.applyQuery(queryAccountReferences);
+      const parameters = filters.parameters();
+
+      return db.exec(query, parameters);
     })
     .then(accountReferences => {
       const dbPromises = accountReferences.map(ar => {

@@ -10,8 +10,7 @@ describe('(/accounts/references) Accounts References', () => {
     is_amo_dep : 0,
     accounts : [160, 185], // 311 Marchandises and 571 Caisses Hopital
     accountsException : [163, 188], // 31110011 Medicaments sirop and 57110011 caisse auxiliaire CDF
-    accountsCreditBalance : [],
-    accountsDebitBalance : [],
+    reference_type_id : 1, // Account Reference Type ID
   };
 
   const updateAccountReference = {
@@ -20,8 +19,6 @@ describe('(/accounts/references) Accounts References', () => {
     is_amo_dep : 1,
     accounts : [160], // 311 Marchandises
     accountsException : [163], // 31110011 Medicaments sirop
-    accountsCreditBalance : [],
-    accountsDebitBalance : [],
   };
 
   it('POST /accounts/references adds a reference for a set of accounts', () => {
@@ -40,7 +37,9 @@ describe('(/accounts/references) Accounts References', () => {
         expect(res).to.have.status(200);
 
         expect(res).to.be.a('object');
-        expect(res.body).to.have.all.keys('id', 'abbr', 'description', 'parent', 'accountsCreditBalance', 'accountsDebitBalance', 'is_amo_dep', 'accounts', 'accountsException');
+        expect(res.body).to.have.all.keys(
+          'id', 'abbr', 'description', 'parent', 'is_amo_dep', 'accounts', 'accountsException', 'reference_type_id'
+        );
       })
       .catch(helpers.handler);
   });
@@ -60,7 +59,10 @@ describe('(/accounts/references) Accounts References', () => {
     return agent.get(`/accounts/references/`)
       .then((res) => {
         helpers.api.listed(res, numAccountReference);
-        expect(res.body[0]).to.have.all.keys('id', 'abbr', 'description', 'parent', 'is_amo_dep', 'accounts', 'debits', 'credits', 'parent_abbr');
+        expect(res.body[0]).to.have.all.keys(
+          'id', 'abbr', 'account_reference_type_label', 'description',
+          'parent', 'reference_type_id', 'is_amo_dep', 'accounts', 'parent_abbr'
+        );
       })
       .catch(helpers.handler);
   });

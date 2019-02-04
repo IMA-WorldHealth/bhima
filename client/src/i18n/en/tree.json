@@ -3,6 +3,7 @@
     "ACCOUNT" : "Account Management",
     "ACCOUNT_REFERENCE_MANAGEMENT":"Account References",
     "ACCOUNT_REFERENCE_REPORT":"Account Reference Values",
+    "ACCOUNT_REFERENCE_TYPE": "Account Reference Type",
     "ACCOUNT_STATEMENT" : "Account Statement",
     "ADMIN" : "Administration",
     "AGED_CREDITORS" : "Aged Creditor Report",

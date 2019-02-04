@@ -48,12 +48,12 @@ function list(req, res, next) {
     SELECT 
       ar.id, ar.abbr, ar.description, ar.parent, ar.is_amo_dep, arp.abbr as parent_abbr,
       GROUP_CONCAT(IF(ari.is_exception = 0, a.number, CONCAT('(sauf ', a.number, ')')) SEPARATOR ', ') AS accounts,
-      GROUP_CONCAT(IF(ari.credit_balance = 0, ' ', CONCAT('(SC ', a.number, ')')) SEPARATOR ', ') AS credits,
-    GROUP_CONCAT(IF(ari.debit_balance = 0, ' ', CONCAT('(SD ', a.number, ')')) SEPARATOR ', ') AS debits
+      ar.reference_type_id, art.label as account_reference_type_label
     FROM account_reference ar
     LEFT JOIN account_reference arp ON arp.id = ar.parent
     LEFT JOIN account_reference_item ari ON ari.account_reference_id = ar.id
     LEFT JOIN account a ON a.id = ari.account_id
+    LEFT JOIN account_reference_type art ON art.id = ar.reference_type_id
     GROUP BY ar.id;
   `;
 
@@ -80,7 +80,7 @@ function create(req, res, next) {
   const transaction = db.transaction();
   const record = req.body;
   const {
-    accounts, accountsException, accountsCreditBalance, accountsDebitBalance,
+    accounts, accountsException,
   } = record;
 
   const sql = 'INSERT INTO account_reference SET ?;';
@@ -91,38 +91,15 @@ function create(req, res, next) {
   delete record.id;
   delete record.accounts;
   delete record.accountsException;
-  delete record.accountsCreditBalance;
-  delete record.accountsDebitBalance;
 
   db.exec(sql, [record])
     .then((result) => {
       accountReferenceId = result.insertId;
       accounts.forEach(accountId => {
-        let isCreditor = 0;
-        let isDebtor = 0;
-
-        if (accountsCreditBalance.length) {
-          accountsCreditBalance.forEach((item) => {
-            if (accountId === item) {
-              isCreditor = 1;
-            }
-          });
-        }
-
-        if (accountsDebitBalance.length) {
-          accountsDebitBalance.forEach((item) => {
-            if (accountId === item) {
-              isDebtor = 1;
-            }
-          });
-        }
-
         parameters = {
           account_reference_id : accountReferenceId,
           account_id : accountId,
           is_exception : 0,
-          credit_balance : isCreditor,
-          debit_balance : isDebtor,
         };
 
         transaction.addQuery(sqlItems, [parameters]);
@@ -155,7 +132,7 @@ function update(req, res, next) {
   const transaction = db.transaction();
   const record = req.body;
   const {
-    accounts, accountsException, accountsCreditBalance, accountsDebitBalance,
+    accounts, accountsException,
   } = record;
   const { id } = req.params;
 
@@ -167,8 +144,6 @@ function update(req, res, next) {
   delete record.id;
   delete record.accounts;
   delete record.accountsException;
-  delete record.accountsCreditBalance;
-  delete record.accountsDebitBalance;
 
   lookupAccountReference(id)
     .then(() => db.exec(sql, [record, id]))
@@ -177,31 +152,10 @@ function update(req, res, next) {
 
       // accounts to use
       accounts.forEach(accountId => {
-        let isCreditor = 0;
-        let isDebtor = 0;
-
-        if (accountsCreditBalance.length) {
-          accountsCreditBalance.forEach((item) => {
-            if (accountId === item) {
-              isCreditor = 1;
-            }
-          });
-        }
-
-        if (accountsDebitBalance.length) {
-          accountsDebitBalance.forEach((item) => {
-            if (accountId === item) {
-              isDebtor = 1;
-            }
-          });
-        }
-
         parameters = {
           account_reference_id : id,
           account_id : accountId,
           is_exception : 0,
-          credit_balance : isCreditor,
-          debit_balance : isDebtor,
         };
 
         transaction.addQuery(sqlItems, [parameters]);
@@ -288,19 +242,14 @@ function getValue(req, res, next) {
  */
 function lookupAccountReference(id) {
   let glb = {};
-  const sql = 'SELECT id, abbr, description, parent, is_amo_dep FROM account_reference WHERE id = ?;';
+  const sql = `
+    SELECT id, abbr, description, parent, is_amo_dep, reference_type_id FROM account_reference WHERE id = ?;`;
 
   const sqlItems = `
     SELECT account_id FROM account_reference_item WHERE account_reference_id = ? AND is_exception = 0;`;
 
   const sqlExceptItems = `
     SELECT account_id FROM account_reference_item WHERE account_reference_id = ? AND is_exception = 1;`;
-
-  const sqlCreditBalanceItems = `
-    SELECT account_id FROM account_reference_item WHERE account_reference_id = ? AND credit_balance = 1;`;
-
-  const sqlDebitBalanceItems = `
-    SELECT account_id FROM account_reference_item WHERE account_reference_id = ? AND debit_balance = 1;`;
 
   return db.one(sql, id)
     .then(reference => {
@@ -313,14 +262,6 @@ function lookupAccountReference(id) {
     })
     .then(referenceItems => {
       glb.accountsException = referenceItems.map(i => i.account_id);
-      return db.exec(sqlCreditBalanceItems, [id]);
-    })
-    .then(referenceItems => {
-      glb.accountsCreditBalance = referenceItems.map(i => i.account_id);
-      return db.exec(sqlDebitBalanceItems, [id]);
-    })
-    .then(referenceItems => {
-      glb.accountsDebitBalance = referenceItems.map(i => i.account_id);
 
       return glb;
     });

@@ -63,4 +63,5 @@ module.exports = {
   accountReferenceSelect : require('./bhAccountReferenceSelect'),
   servicesMultipleSelect : require('./bhServicesMultipleSelect'),
   percentageInput : require('./bhPercentageInput'),
+  accountReferenceTypeSelect : require('./bhAccountReferenceTypeSelect'),
 };

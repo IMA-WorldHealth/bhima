@@ -60,6 +60,7 @@ CREATE TABLE `account_reference` (
   `abbr` VARCHAR(35) NOT NULL,
   `description` VARCHAR(100) NOT NULL,
   `parent` MEDIUMINT(8) UNSIGNED NULL,
+  `reference_type_id` MEDIUMINT(8) UNSIGNED NULL,
   `is_amo_dep` TINYINT(1) NULL DEFAULT 0 COMMENT 'Ammortissement or depreciation',
   PRIMARY KEY (`id`),
   UNIQUE KEY `account_reference_1` (`abbr`, `is_amo_dep`)
@@ -2181,6 +2182,15 @@ CREATE TABLE `distribution_key` (
   FOREIGN KEY (`auxiliary_fee_center_id`) REFERENCES `fee_center` (`id`),
   FOREIGN KEY (`principal_fee_center_id`) REFERENCES `fee_center` (`id`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `account_reference_type`;  
+CREATE TABLE `account_reference_type` (
+  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, 
+  `label` VARCHAR(100) NOT NULL, 
+  `fixed` tinyint(1) DEFAULT 0, 
+  PRIMARY KEY (`id`), 
+  UNIQUE KEY `account_reference_type_1` (`label`) 
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 SET foreign_key_checks = 1;
