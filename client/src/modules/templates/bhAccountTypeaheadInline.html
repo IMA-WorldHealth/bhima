@@ -12,6 +12,7 @@
       uib-typeahead="account as account.hrlabel for account in $ctrl.accounts | filter:{ hrlabel: $viewValue } | limitTo:10"
       typeahead-template-url="bhAccountTypeaheadItem.html"
       typeahead-on-select="$ctrl.onSelect($item)"
+      typeahead-select-on-blur="true"
       typeahead-append-to-body="true"
       autocomplete="off"
       required>
