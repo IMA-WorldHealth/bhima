@@ -9454,7 +9454,7 @@ with-callback@^1.0.2:
   resolved "https://registry.yarnpkg.com/with-callback/-/with-callback-1.0.2.tgz#a09629b9a920028d721404fb435bdcff5c91bc21"
   integrity sha1-oJYpuakgAo1yFAT7Q1vc/1yRvCE=
 
-wkhtmltopdf@^0.3.3:
+wkhtmltopdf@^0.3.4:
   version "0.3.4"
   resolved "https://registry.yarnpkg.com/wkhtmltopdf/-/wkhtmltopdf-0.3.4.tgz#e2db542a7dc2248032bf136754b5cdd7cf2815f0"
   integrity sha1-4ttUKn3CJIAyvxNnVLXN188oFfA=
