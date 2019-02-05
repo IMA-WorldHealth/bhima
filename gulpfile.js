@@ -167,12 +167,12 @@ function compileTypescript() {
     .pipe(iife())
     .pipe(rev())
     .pipe(dest(CLIENT_FOLDER)) // write revisioned javascript to build folder
-    .pipe(rev.manifest('rev-manifest-js.json', { merge : true }))
+    .pipe(rev.manifest('rev-manifest-js.json'))
     .pipe(dest(CLIENT_FOLDER)); // write manifest to build folder
 }
 
 function collectRevisionsIntoManifest() {
-  return src(`${CLIENT_FOLDER}/rev-*.json`)
+  return src(`${CLIENT_FOLDER}/rev-manifest-*.json`)
     .pipe(mergeJson({ fileName : 'rev-manifest.json' }))
     .pipe(dest(CLIENT_FOLDER));
 }
@@ -184,7 +184,7 @@ function compileCSS() {
     .pipe(gulpif(isProduction, cssnano({ zindex : false })))
     .pipe(rev())
     .pipe(dest(CLIENT_FOLDER))
-    .pipe(rev.manifest('rev-manifest-css.json', { merge : true }))
+    .pipe(rev.manifest('rev-manifest-css.json'))
     .pipe(dest(CLIENT_FOLDER));
 }
 
@@ -211,7 +211,7 @@ function buildVendor() {
     .pipe(concat('js/vendor/vendor.min.js'))
     .pipe(rev())
     .pipe(dest(CLIENT_FOLDER))
-    .pipe(rev.manifest('rev-manifest-vendor.json', { merge : true }))
+    .pipe(rev.manifest('rev-manifest-vendor.json'))
     .pipe(dest(CLIENT_FOLDER));
 }
 
