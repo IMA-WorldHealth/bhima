@@ -261,9 +261,14 @@ UPDATE unit SET `key` = 'REPORT.PROFIT_AND_LOSS_BY_YEAR' WHERE id = 215;
 UPDATE report SET title_key = 'REPORT.PROFIT_AND_LOSS' WHERE id = 3;
 UPDATE report SET title_key = 'REPORT.PROFIT_AND_LOSS_BY_MONTH' WHERE id = 24;
 
-DELETE FROM report WHERE id = 23;
-INSERT INTO report VALUES  (23, 'unpaid-invoice-payments', 'REPORT.UNPAID_INVOICE_PAYMENTS_REPORT.TITLE');
+UPDATE report SET 
+  `report_key`='unpaid-invoice-payments', `title_key`='REPORT.UNPAID_INVOICE_PAYMENTS_REPORT.TITLE'
+WHERE id = 23;
 
 UPDATE unit SET
   `name`='Unpaid Invoice Payments', `key`='REPORT.UNPAID_INVOICE_PAYMENTS_REPORT.TITLE', `url`='/modules/reports/unpaid-invoice-payments', `path`='/reports/unpaid-invoice-payments'
 WHERE id = 213;
+
+-- delete unbalanced invoice paiement entry
+DELETE FROM role_unit WHERE unit_id = 210;
+DELETE FROM unit WHERE id = 210;
