@@ -8,12 +8,6 @@
  * =============================================================================
 */
 
--- Fix reference_uuid index bug
-ALTER TABLE `general_ledger` DROP INDEX `reference_uuid`;
-ALTER TABLE `posting_journal` DROP INDEX `reference_uuid`;
-ALTER TABLE `posting_journal` ADD INDEX `reference_uuid` (`reference_uuid`);
-ALTER TABLE `general_ledger` ADD INDEX `reference_uuid` (`reference_uuid`);
-
 -- entity and entity_type table
 DROP TABLE IF EXISTS `entity_type`;
 CREATE TABLE `entity_type` (

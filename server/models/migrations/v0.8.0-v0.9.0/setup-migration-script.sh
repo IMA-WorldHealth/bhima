@@ -1,15 +1,21 @@
 #!/usr/bin/env bash
 
-# this script rebuild function and procedure 
+# usage: DATABASE="my_database_name" BHIMA_PATH="path/to/bhima/" ./setup-migration-script.sh
 
-DATABASE="imck"
+# this script rebuild function and procedure 
 FILENAME="migration"
+
+# database name given as parameter, default is imck
+# usage: DATABASE="bhima_test" ./setup-migration-script.sh
+DEFAULT_DATABASE="imck"
+DATABASE=${DATABASE:-$DEFAULT_DATABASE}
+
+# bhima path
+DEFAULT_BHIMA_PATH="$HOME/IMA/bhima-2.x"
+BHIMA_PATH=${BHIMA_PATH:-$DEFAULT_BHIMA_PATH}
 
 # path to the cleaned migration script
 CLEANED_MIGRATION_SCRIPT="./migrate.revised.sql"
-
-# path to bhima root from ./server/models/migrations/v0.8.0-v0.9.0
-BHIMA_PATH="$HOME/IMA/bhima-2.x"
 
 echo "Setting up script..."
 echo "SET names 'utf8mb4';
