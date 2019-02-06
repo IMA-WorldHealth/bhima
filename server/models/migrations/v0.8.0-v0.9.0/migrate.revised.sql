@@ -180,12 +180,39 @@ ALTER TABLE lot ADD COLUMN `is_assigned` TINYINT(1) NULL DEFAULT 0;
 -- alter the patient group table
 ALTER TABLE `patient_group` MODIFY COLUMN `note` TEXT NULL;
 
+-- missed from migrate
+-- add account reference type table
+DROP TABLE IF EXISTS `account_reference_type`;  
+CREATE TABLE `account_reference_type` (
+  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, 
+  `label` VARCHAR(100) NOT NULL, 
+  `fixed` tinyint(1) DEFAULT 0, 
+  PRIMARY KEY (`id`), 
+  UNIQUE KEY `account_reference_type_1` (`label`) 
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+-- alter account reference table
+ALTER TABLE `account_reference` ADD COLUMN `reference_type_id` MEDIUMINT(8) UNSIGNED NULL;
+
 
 /**
  * =============================================================================
  * DATA
  * =============================================================================
 */
+
+-- default entity types
+INSERT INTO `entity_type` (`label`, `translation_key`) VALUES
+  ('person', 'ENTITY.TYPE.PERSON'),
+  ('service', 'ENTITY.TYPE.SERVICE'),
+  ('office', 'ENTITY.TYPE.OFFICE'),
+  ('enterprise', 'ENTITY.TYPE.ENTERPRISE');
+
+-- Default Account Reference Type
+INSERT INTO `account_reference_type` (`id`, `label`, `fixed`) VALUES 
+  (1, 'FORM.LABELS.FEE_CENTER', 1),
+  (2, 'FORM.LABELS.BALANCE_SHEET', 1),
+  (3, 'FORM.LABELS.PROFIT_LOSS', 1);
 
 -- Populate new reference numbers using the existing String equivalent
 UPDATE posting_journal SET trans_id_reference_number = SUBSTR(trans_id, 4);
