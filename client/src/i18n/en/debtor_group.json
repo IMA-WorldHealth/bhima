@@ -6,7 +6,8 @@
     "CREATE_ANOTHER": "Create another Debtor Group",
     "CREATED": "Debtor group recorded successfully",
     "DEBTOR": {
-      "SUBSCRIBED": "Subcribed debtor(s)"
+      "SUBSCRIBED": "Subcribed debtor(s)",
+      "TRANSACTIONS" : "Debtor transactions"
     },
     "DELETE": "Delete Debtor Group",
     "EDIT": "Edit Debtor Group",
