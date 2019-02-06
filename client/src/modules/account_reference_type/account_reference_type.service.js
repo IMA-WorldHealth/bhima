@@ -15,11 +15,12 @@ function AccountReferenceTypeService(Api, $translate) {
 
   service.translateLabel = translateLabel;
 
-  function translateLabel(data) {
-    data.forEach((item) => {
-      item.label = $translate.instant(item.label);
-    });
+  const label = item => {
+    item.label = $translate.instant(item.label);
+  };
 
+  function translateLabel(data) {
+    data.forEach(label);
     return data;
   }
 

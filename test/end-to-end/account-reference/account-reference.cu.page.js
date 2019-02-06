@@ -1,4 +1,4 @@
-/* global element, by, $$ */
+/* global element, by */
 
 /**
  * This class is represents a accountReference creation page in terms of structure and
@@ -16,6 +16,8 @@ class CreateUpdateAccountReferencePage {
     this.parent = element(by.model('AccountReferenceModalCtrl.accountReference.parent'));
 
     this.sameAccountReferencePanel = element(by.id('account-reference-same'));
+
+    this.modal = $('[uib-modal-window] .modal-header');
 
     this.buttons = {
       submit : $('[uib-modal-window] [data-method="submit"]'),
@@ -48,22 +50,25 @@ class CreateUpdateAccountReferencePage {
   setAccountValues(values) {
     this.accounts.click();
     values.forEach(v => {
-      FU.uiSelectAppended('AccountReferenceModalCtrl.accountReference.accounts', v);
+      FU.uiSelect('AccountReferenceModalCtrl.accountReference.accounts', v);
     });
+    this.modal.click();
   }
 
   /* set accounts exceptions */
   setAccountExceptionValues(values) {
     this.accountsException.click();
     values.forEach(v => {
-      FU.uiSelectAppended('AccountReferenceModalCtrl.accountReference.accountsException', v);
+      FU.uiSelect('AccountReferenceModalCtrl.accountReference.accountsException', v);
     });
+    this.modal.click();
   }
 
   /* set the parent of the reference */
   setParentValue(value) {
     this.parent.click();
-    return FU.uiSelectAppended('AccountReferenceModalCtrl.accountReference.parent', value);
+    FU.uiSelect('AccountReferenceModalCtrl.accountReference.parent', value);
+    this.modal.click();
   }
 
   /* submit */
