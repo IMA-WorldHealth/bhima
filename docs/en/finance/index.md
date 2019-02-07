@@ -11,7 +11,7 @@ The finance modules in BHIMA provide the core of the application.
   3. [Voucher Transactions](./bookkeeping/vouchers.md)
 6. [Ledgers]()
   1. [Posting Journal](./ledgers/posting-journal.md)
-  2. [Trial Balance](./ledger/trial-balance.md)
+  2. [Trial Balance](./ledgers/trial-balance.md)
   3. [General Ledger](./ledgers/general-ledger.md)
   4. [Account Statement](./ledgers/account-statement.md)
 7. [Reports]()
