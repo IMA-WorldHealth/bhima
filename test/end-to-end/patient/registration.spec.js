@@ -21,7 +21,7 @@ describe('Patient Registration', () => {
 
   it('registers a valid patient', () => {
     // patient name
-    FU.input('PatientRegCtrl.medical.display_name', mockPatient.display_name);
+    components.inpuText.set('display_name', mockPatient.display_name);
 
     // hospital number, etc
     FU.input('PatientRegCtrl.medical.hospital_no', mockPatient.hospital_no);
@@ -57,12 +57,12 @@ describe('Patient Registration', () => {
       expect(helpers.getCurrentPath()).to.eventually.equal(path);
 
       // the following fields should be required
-      FU.validation.error('PatientRegCtrl.medical.display_name');
+      components.inpuText.validationError('display_name');
       FU.validation.error('$ctrl.debtorGroupUuid');
       FU.validation.error('PatientRegCtrl.medical.dob');
 
       // first name and title are optional
-      FU.validation.ok('PatientRegCtrl.medical.title');
+      components.inpuText.validationOk('title');
 
       components.notification.hasDanger();
     });
