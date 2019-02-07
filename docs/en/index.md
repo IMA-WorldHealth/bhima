@@ -5,11 +5,11 @@ Welcome! This manual is for the Basic Hospital Information Management Applicatio
 This manual is split into chapters:
 
 1. Getting Started
-2. [Finance Modules](./en/finance/index.md)
-3. [Medical Records](./en/medical-records/index.md)
+2. [Finance Modules](./finance/index.md)
+3. [Medical Records](./medical-records/index.md)
 4. Inventory and Stock Management
 5. Reporting and Statistics
-6. [Developer Reference](./en/for-developers/index.md)
+6. [Developer Reference](./for-developers/index.md)
 
 # About
 

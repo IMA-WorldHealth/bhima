@@ -6,7 +6,7 @@ Le module est divisé en sections: la barre de filtre, la grille et le pied de p
 
 #### Barre de filtre
 
-Le module nécessite les [filtres par défaut] (/ grid-features.md) standard de limite et de période. De plus, vous devez fournir un compte par défaut. Cela permet au module de supposer qu'un compte est toujours défini et d'afficher de manière significative les soldes et mouvements d'ouverture tout au long de la période.
+Le module nécessite les [filtres par défaut](/grid-features.md) standard de limite et de période. De plus, vous devez fournir un compte par défaut. Cela permet au module de supposer qu'un compte est toujours défini et d'afficher de manière significative les soldes et mouvements d'ouverture tout au long de la période.
 
 #### La grille
 

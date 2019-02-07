@@ -16,4 +16,4 @@ La plupart des grilles vous permettent de redimensionner leurs colonnes en cliqu
 
 Certaines grilles permettent à un utilisateur d'afficher ou de masquer des colonnes. Ceci est particulièrement utile lorsque vous souhaitez réduire l'encombrement d'une vue particulière des données en masquant les colonnes inutiles.
 
-Pour modifier la visibilité des colonnes dans la grille, accédez à **Menu **\(&lt;i class="fa fa-hamburger"&gt;&lt;/i&gt;\) &gt; **Columns**.  Un modal de noms de colonnes apparaîtra avec des cases à cocher pour changer leur visibilité. Une fois les modifications apportées, soumettez le modal et la grille affichera uniquement les colonnes sélectionnées
+Pour modifier la visibilité des colonnes dans la grille, accédez à **Menu**\(&lt;i class="fa fa-hamburger"&gt;&lt;/i&gt;\) &gt; **Columns**.  Un modal de noms de colonnes apparaîtra avec des cases à cocher pour changer leur visibilité. Une fois les modifications apportées, soumettez le modal et la grille affichera uniquement les colonnes sélectionnées

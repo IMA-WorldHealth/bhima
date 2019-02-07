@@ -1,15 +1,15 @@
-# BHIMA User Manual
+# BHIMA - Manuel d'utilisation
 
 Bienvenue! Ce manuel est destiné à l’application de base de gestion des informations hospitalières \(BHIMA\). BHIMA est une suite d'outils interdépendants destinés à aider les administrateurs d'hôpitaux ruraux dans quatre domaines: la gestion financière, la gestion des stocks, les dossiers médicaux et les rapports. Il s'agit d'un projet de recherche d'IMA World Health depuis 2013 et la base de code actuelle est en développement depuis la fin de 2015.
 
 Ce manuel est divisé en chapitres:
 
 1. Commencer
-2. [Modules Finance](./fr/finance/index.md)
-3. [Dossiers médicaux](./fr/medical-records/index.md)
+2. [Modules Finance](./finance/index.md)
+3. [Dossiers médicaux](./medical-records/index.md)
 4. Gestion des stocks et des stocks
 5. Rapports et statistiques
-6. [Référence développeur](./fr/for-developers/index.md)
+6. [Référence développeur](./for-developers/index.md)
 
 # A propos
 
