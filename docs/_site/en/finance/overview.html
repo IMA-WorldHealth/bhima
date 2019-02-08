@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Overview of Financial Modules | bhima</title>
+<meta name="generator" content="Jekyll v3.7.4" />
+<meta property="og:title" content="Overview of Financial Modules" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="A hospital information management application for rural Congolese hospitals" />
+<meta property="og:description" content="A hospital information management application for rural Congolese hospitals" />
+<link rel="canonical" href="http://localhost:4000/en/finance/overview.html" />
+<meta property="og:url" content="http://localhost:4000/en/finance/overview.html" />
+<meta property="og:site_name" content="bhima" />
+<script type="application/ld+json">
+{"url":"http://localhost:4000/en/finance/overview.html","description":"A hospital information management application for rural Congolese hospitals","@type":"WebPage","headline":"Overview of Financial Modules","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=5bf72cef9df33e829747e22d959223561d35d111">
+    <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1><a href="http://localhost:4000/">bhima</a></h1>
+        
+        
+
+        <p>A hospital information management application for rural Congolese hospitals</p>
+
+        
+        <p class="view"><a href="http://github.com/IMA-Worldhealth/bhima">View the Project on GitHub <small>IMA-Worldhealth/bhima</small></a></p>
+        
+
+        
+
+        
+      </header>
+      <section>
+
+      <h1 id="overview-of-financial-modules">Overview of Financial Modules</h1>
+
+<p>Before delving into the details of each financial module, it is important to keep the overall flow of data in BHIMA in mind.</p>
+
+<pre><code class="language-mermaid">graph LR;
+    CP[Cash Payments ] --&gt; J[Journal]
+    IV[Patient Invoices ] --&gt; J
+    VO[Journal Vouchers  ] --&gt; J
+    J -- Trial Balance --&gt;G[General Ledger ]
+</code></pre>
+
+<p>The above diagram shows the flow of data entry into the system, covering the three basic records in BHIMA: <strong>Cash Payments</strong>, <strong>Patient Invoices</strong>, and <strong>Journal Vouchers</strong>.  Each record is backed by a transaction written to the <a href="/journal-module.md">Journal</a>.  Through a validation process called the Trial Balance, transactions in the Journal are posted to the <a href="/en/finance/general-ledger.html">General Ledger</a> after which the transaction is unalterable.</p>
+
+<p>All financial activities recorded with BHIMA are represented by two entities:</p>
+
+<ol>
+  <li>The original Record contains all details and meta data about the activity, this could be a Cash Payment, Patient Invoice or Journal Vocher.</li>
+  <li>The actual financial transaction that is written to the Journal and directly links the original Record as the source (reason for existing) for this financial transaction.</li>
+</ol>
+
+<p>While the transaction can be modified in the Journal, the original document cannot be modified and preserves a record of the original values as entered into the application.  The only exception to this is deletion.  If a transaction or record is deleted, both the record and data in the Journal are expunged.  Only unposted transactions may be deleted.</p>
+
+<div class="bs-callout bs-callout-success">
+<h4>To delete or reverse?</h4>
+To correct mistakes, transactions in BHIMA can either be deleted or reversed through a subsequent correction writing.  Deletion is a permanent removal of a transaction and is often used for temporary user mistakes that are immediately corrected. Reversal writes a second transaction that is for the equal and opposite value of the original 'mistaken' transaction - this logically 'reverses' the finances and preserves all history and is often used for processes like an unexpected refund. It is your preference which policy you choose to use, but it is important to have a uniform policy to avoid future headaches trying to audit the books.  Deleting malformed or incorrect transactions results in a cleaner transaction history, but reversals will reflect the real process by which the transactions were derived.
+</div>
+
+<p>Once a transaction is created in the Journal via a Voucher, Invoice, or Cash Payment, the transaction is reviewed by an accountant and posted (verified through the Trial Balance process), after which it will appear in the General Ledger and subsequent reports.</p>
+
+<pre><code class="language-mermaid">graph TD;
+    J[Journal] --&gt; R[Financial Reports]
+    J[Journal] --&gt; AS[Account Statement]
+    J[Journal] --&gt; GL[General Ledger]
+</code></pre>
+
+<h2 id="double-entry-bookkeeping">Double Entry Bookkeeping</h2>
+
+<p>At its heart, BHIMA is a double entry accounting software.  In double entry accounting, transactions are composed of two or more lines, each corresponding to a single account.  The value moved in or out of the accounts are recorded as either <em>debits</em> or <em>credits</em>.  Debits and credits are opposites, but their behavior isn’t always intuitive or well defined.  In general, one can consider debits as positive numbers and credits as negative number.  <a href="https://debitoor.com/dictionary/debit">This source </a>provides the following definitions (the first one is wrong online and is corrected below):</p>
+
+<ol>
+  <li>To debit a debtor account implies an increase in the debtor’s debt.  In contrast, to credit a debtor account implies a reduction in their debt to the enterprise.</li>
+  <li>To debit an asset account implies that the assets increase.  By contrast, to credit an asset account reduces the assets.</li>
+  <li>To debit an income account implies that income decreases.  To credit the income account increases the income.</li>
+  <li>To debit an expense account implies that the cost increases.  To credit an expense account implies that cost decreases.</li>
+</ol>
+
+<p>Debits and credits <em>must</em> balance in a transaction. All things being equal, income accounts will hold a credit balance while expense accounts will hold a debit balance.</p>
+
+<div class="bs-callout bs-callout-info">
+<h4>Keeping debits and credits straight</h4>
+The concept of debits and credits is learned through experience and even seasoned accountants mix up their roles.  An easy scenario to help sort out confusion is to imagine transactions with a cashbox or bank account.
+
+To put money into the cashbox \(an asset account\), you **debit** the cashbox, increasing its value.  Since the transaction must be balanced, the opposite side of the transaction must hold a **credit** value.  If it is a client paying their debts, they must have begun the transaction with a **debit **value.  Therefore, the invoicing operation must have **debited** the client and credited an income account.
+</div>
+
+
+      </section>
+      <footer>
+        
+        <p>This project is maintained by <a href="http://github.com/IMA-Worldhealth">IMA-Worldhealth</a></p>
+        
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="/assets/js/scale.fix.js"></script>
+    
+  </body>
+</html>

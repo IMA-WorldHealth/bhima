@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>General Ledger | bhima</title>
+<meta name="generator" content="Jekyll v3.7.4" />
+<meta property="og:title" content="General Ledger" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="A hospital information management application for rural Congolese hospitals" />
+<meta property="og:description" content="A hospital information management application for rural Congolese hospitals" />
+<link rel="canonical" href="http://localhost:4000/en/finance/general-ledger.html" />
+<meta property="og:url" content="http://localhost:4000/en/finance/general-ledger.html" />
+<meta property="og:site_name" content="bhima" />
+<script type="application/ld+json">
+{"url":"http://localhost:4000/en/finance/general-ledger.html","description":"A hospital information management application for rural Congolese hospitals","@type":"WebPage","headline":"General Ledger","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=5bf72cef9df33e829747e22d959223561d35d111">
+    <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1><a href="http://localhost:4000/">bhima</a></h1>
+        
+        
+
+        <p>A hospital information management application for rural Congolese hospitals</p>
+
+        
+        <p class="view"><a href="http://github.com/IMA-Worldhealth/bhima">View the Project on GitHub <small>IMA-Worldhealth/bhima</small></a></p>
+        
+
+        
+
+        
+      </header>
+      <section>
+
+      <h1 id="general-ledger">General Ledger</h1>
+
+<p>All valid transactions will one day end up in the General Ledger.  It contains all financial transactions made since the installation of the system and powers the reporting capabilities of BHIMA.  The term “General Ledger” refers to all transactions that have been approved and posted from the Journal.  However, BHIMA also contains a module called “General Ledger”.  This section describes the General Ledger module.</p>
+
+<p>The General Ledger module is a matrix of every account in the enterprise in rows by every period in a Fiscal Year in columns.  The cells of the matrix contain the balance of the account on the row for the period on the column.  There are two additional columns: the <strong>Opening Balance</strong> column and the **Balance **column.  The opening balance, as the name implies, is the balance at the beginning of the Fiscal Year, while the balance column sums the values of the opening balance and every period.  See the below table for a simplified representation:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"><em>Header</em></th>
+      <th style="text-align: left">Account Number</th>
+      <th style="text-align: left">Opening Balance</th>
+      <th style="text-align: left">January</th>
+      <th style="text-align: left">February</th>
+      <th style="text-align: left">Balance</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><em>Body</em></td>
+      <td style="text-align: left">1001</td>
+      <td style="text-align: left">$25.00</td>
+      <td style="text-align: left">$1.13</td>
+      <td style="text-align: left">$2.27</td>
+      <td style="text-align: left">$25</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><em>Footer</em></td>
+      <td style="text-align: left"> </td>
+      <td style="text-align: left"> </td>
+      <td style="text-align: left"> </td>
+      <td style="text-align: left"> </td>
+      <td style="text-align: left"> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>You will notice that each column has a sum in the foot of the column.  <em>This value should always be 0</em>.  If the value is not zero, it indicates that there is missing or incoherent information somewhere in the period, likely from an unbalanced transaction.</p>
+
+
+
+      </section>
+      <footer>
+        
+        <p>This project is maintained by <a href="http://github.com/IMA-Worldhealth">IMA-Worldhealth</a></p>
+        
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="/assets/js/scale.fix.js"></script>
+    
+  </body>
+</html>
