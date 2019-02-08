@@ -1059,7 +1059,7 @@ CREATE TABLE `rubric_paiement` (
   PRIMARY KEY (`id`),
   KEY `paiement_uuid` (`paiement_uuid`),
   KEY `rubric_payroll_id` (`rubric_payroll_id`),
-  UNIQUE KEY `rubric_paiement_1` (`paiement_uuid`, `rubric_payroll_id`),  
+  UNIQUE KEY `rubric_paiement_1` (`paiement_uuid`, `rubric_payroll_id`),
   FOREIGN KEY (`paiement_uuid`) REFERENCES `paiement` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`rubric_payroll_id`) REFERENCES `rubric_payroll` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
@@ -1245,7 +1245,6 @@ CREATE TABLE `patient_visit` (
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `period`;
-
 CREATE TABLE `period` (
   `id`                  MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
   `fiscal_year_id`      MEDIUMINT(8) UNSIGNED NOT NULL,
@@ -2137,7 +2136,7 @@ CREATE TABLE `fee_center_distribution` (
   `principal_fee_center_id` MEDIUMINT(8) UNSIGNED NOT NULL,
   `debit_equiv` DECIMAL(19,8) NOT NULL DEFAULT 0.00,
   `credit_equiv` DECIMAL(19,8) NOT NULL DEFAULT 0.00,
-  `date_distribution` DATETIME NOT NULL, 
+  `date_distribution` DATETIME NOT NULL,
   `user_id`           SMALLINT(5) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
@@ -2145,7 +2144,7 @@ CREATE TABLE `fee_center_distribution` (
   INDEX `account_id` (`account_id`),
   INDEX `trans_id` (`trans_id`),
   INDEX `auxiliary_fee_center_id` (`auxiliary_fee_center_id`),
-  INDEX `principal_fee_center_id` (`principal_fee_center_id`),  
+  INDEX `principal_fee_center_id` (`principal_fee_center_id`),
   FOREIGN KEY (`row_uuid`) REFERENCES `general_ledger` (`uuid`),
   FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
   FOREIGN KEY (`auxiliary_fee_center_id`) REFERENCES `fee_center` (`id`),
@@ -2181,7 +2180,7 @@ CREATE TABLE `distribution_key` (
   `user_id` SMALLINT(5) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `auxiliary_fee_center_id` (`auxiliary_fee_center_id`),
-  INDEX `principal_fee_center_id` (`principal_fee_center_id`),  
+  INDEX `principal_fee_center_id` (`principal_fee_center_id`),
   FOREIGN KEY (`auxiliary_fee_center_id`) REFERENCES `fee_center` (`id`),
   FOREIGN KEY (`principal_fee_center_id`) REFERENCES `fee_center` (`id`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE
