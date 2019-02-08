@@ -171,7 +171,12 @@
     "ENABLE_FAST_INSERT_DESCRIPTION": "Cette option selectionne automatiquement une nouvelle ligne de lot lorsque vous finissez d'introduire un libellé de lot ou numéro de serie. C'est très utile lorsque vous utilisez un lecteur de code barre",
     "DETAILS":"Information sur le lot",
     "LOT_LABEL":"Designation du lot",
-    "SUCCESSFULLY_EDITED":"Mise à jour du lot avec succès"
+    "SUCCESSFULLY_EDITED":"Mise à jour du lot avec succès",
+    "ASSIGNMENT_HISTORIC":"Historique d'assignation",
+    "ASSIGNMENT_CURRENT":"En cours",
+    "NO_ASSIGNMENT":"Aucune assignation",
+    "INCLUDE_EXHAUSTED_LOTS":"Inclure les lots épuisés"
+
   },
   "MOVEMENTS" : {
     "REGISTRY" : "Registre des mouvements"

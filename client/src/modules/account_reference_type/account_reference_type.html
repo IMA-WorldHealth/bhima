@@ -1,0 +1,45 @@
+<div class="flex-header"> 
+  <div class="bhima-title"> 
+    <ol class="headercrumb"> 
+      <li class="static" translate> TREE.ADMIN </li>
+      <li class="title" translate> TREE.ACCOUNT_REFERENCE_TYPE </li>
+    </ol> 
+      
+    <div class="toolbar"> 
+      <div class="toolbar-item"> 
+        <button class="btn btn-default text-capitalize" id="create" ui-sref="account_reference_type.create" data-method="create"> 
+          <span class="fa fa-plus"></span> <span translate>FORM.BUTTONS.ADD</span> 
+          </button> 
+        </div>
+
+        <div class="toolbar-item"> 
+          <button 
+            type="button" 
+            ng-click="AccountReferenceTypeCtrl.toggleFilter()" 
+            data-method="filter" 
+            class="btn btn-default" 
+            ng-class="{ 'btn-info' : AccountReferenceTypeCtrl.filterEnabled }"> 
+            <i class="fa fa-filter"></i> 
+          </button> 
+        </div> 
+      </div> 
+    </div> 
+  </div> 
+
+  <!-- main content --> 
+  <div class="flex-content"> 
+    <div class="container-fluid"> 
+      <div id="account-reference-type-grid" 
+        ui-grid="AccountReferenceTypeCtrl.gridOptions" 
+        class="grid-full-height" 
+        ui-grid-auto-resize 
+        ui-grid-resize-columns> 
+    
+      <bh-grid-loading-indicator 
+        loading-state="AccountReferenceTypeCtrl.loading" 
+        empty-state="AccountReferenceTypeCtrl.gridOptions.data.length === 0" 
+        error-state="AccountReferenceTypeCtrl.hasError"> 
+      </bh-grid-loading-indicator> 
+    </div> 
+  </div> 
+</div> 

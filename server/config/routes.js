@@ -116,6 +116,8 @@ const distributionAutomatic = require('../controllers/finance/distributionFeeCen
 const distributionGetDistributionKey = require('../controllers/finance/distributionFeeCenter/getDistributionKey');
 const setDistributionKey = require('../controllers/finance/distributionFeeCenter/setting');
 
+const accountReferenceType = require('../controllers/finance/accounts/accountReferenceType');
+
 // lots
 const lots = require('../controllers/stock/lots');
 
@@ -822,4 +824,13 @@ exports.configure = function configure(app) {
   // lots API
   app.get('/lots/:uuid', lots.details);
   app.put('/lots/:uuid', lots.update);
+  app.get('/lots/:uuid/assignments/:depot_uuid', lots.assignments);
+
+  // API for Account Reference Type routes crud
+  app.get('/account_reference_type', accountReferenceType.list);
+  app.get('/account_reference_type/:id', accountReferenceType.detail);
+  app.post('/account_reference_type', accountReferenceType.create);
+  app.put('/account_reference_type/:id', accountReferenceType.update);
+  app.delete('/account_reference_type/:id', accountReferenceType.delete);
+
 };

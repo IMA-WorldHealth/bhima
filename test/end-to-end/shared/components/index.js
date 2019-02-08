@@ -45,6 +45,7 @@ module.exports = {
   fluxSelect : require('./bhFluxSelect'),
   multipleCashBoxSelect : require('./bhMultipleCashBoxSelect'),
   employeeSelect : require('./bhEmployeeSelect'),
+  payrollStatusSelect : require('./bhPayrollStatusSelect'),
   iprScale : require('./bhIprScale'),
   iprConfigSelect : require('./bhIprConfigSelect'),
   rubricConfigSelect : require('./bhRubricConfigSelect'),
@@ -62,4 +63,5 @@ module.exports = {
   accountReferenceSelect : require('./bhAccountReferenceSelect'),
   servicesMultipleSelect : require('./bhServicesMultipleSelect'),
   percentageInput : require('./bhPercentageInput'),
+  accountReferenceTypeSelect : require('./bhAccountReferenceTypeSelect'),
 };

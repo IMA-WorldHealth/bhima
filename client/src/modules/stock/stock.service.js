@@ -25,6 +25,7 @@ function StockModalService(Modal) {
   service.openDefineLots = openDefineLots;
   service.openFindTansfer = openFindTansfer;
   service.openActionStockAssign = openActionStockAssign;
+  service.openAssignmentHistoric = openAssignmentHistoric;
 
   /** create stock assign */
   function openActionStockAssign(request) {
@@ -44,6 +45,19 @@ function StockModalService(Modal) {
     const params = angular.extend(modalParameters, {
       templateUrl  : 'modules/stock/lots/modals/edit.modal.html',
       controller   : 'EditLotModalController',
+      controllerAs : '$ctrl',
+      resolve      : { data : () => request },
+    });
+
+    const instance = Modal.open(params);
+    return instance.result;
+  }
+
+  /** open assign historic */
+  function openAssignmentHistoric(request) {
+    const params = angular.extend(modalParameters, {
+      templateUrl  : 'modules/stock/lots/modals/historic.modal.html',
+      controller   : 'HistoricModalController',
       controllerAs : '$ctrl',
       resolve      : { data : () => request },
     });

@@ -16,7 +16,7 @@ function SearchLotsModalController(data, util, Store, Instance, Periods, Stock) 
 
   const searchQueryOptions = [
     'depot_uuid', 'inventory_uuid', 'group_uuid', 'label', 'entry_date_from',
-    'entry_date_to', 'expiration_date_from', 'expiration_date_to',
+    'entry_date_to', 'expiration_date_from', 'expiration_date_to', 'includeEmptyLot',
   ];
 
   // displayValues will be an id:displayValue pair
@@ -46,6 +46,11 @@ function SearchLotsModalController(data, util, Store, Instance, Periods, Stock) 
   vm.onSelectInventory = function onSelectInventory(inventory) {
     vm.searchQueries.inventory_uuid = inventory.uuid;
     displayValues.inventory_uuid = inventory.label;
+  };
+
+  // include empty lots
+  vm.setIncludeEmptyLot = () => {
+    displayValues.includeEmptyLot = vm.searchQueries.includeEmptyLot;
   };
 
   // assign already defined custom filters to searchQueries object

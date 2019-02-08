@@ -83,6 +83,11 @@ function StockLotsController(
       });
   };
 
+  // lot assignment historic
+  vm.openHistoricModal = (uuid, depotUuid) => {
+    Modal.openAssignmentHistoric({ uuid, depotUuid });
+  };
+
   // initialize module
   function startup() {
     if ($state.params.filters.length) {
@@ -123,7 +128,7 @@ function StockLotsController(
     toggleLoadingIndicator();
 
     // no negative or empty lot
-    filters.includeEmptyLot = 0;
+    filters.includeEmptyLot = filters.includeEmptyLot || 0;
 
     Stock.lots.read(null, filters)
       .then((lots) => {

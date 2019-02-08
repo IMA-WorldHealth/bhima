@@ -1042,3 +1042,4 @@ INSERT INTO `user_role`(uuid, user_id, role_uuid)
 INSERT INTO entity (uuid, display_name, gender, email, phone, address, entity_type_id) VALUES
   (HUID('00099B1D184A48DEB93D45FBD0AB3790'), 'Bruce Wayne', 'M', 'thebat@bhi.ma', '+243000000', 'Gotham City', 1),
   (HUID('037AC6C6B75A4E328E9DCDE5DA22BACE'), 'Wayne Enterprise', 'o', 'thebat@bhi.ma', '+243000000', 'Gotham City', 4);
+

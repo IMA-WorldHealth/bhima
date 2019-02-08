@@ -102,23 +102,26 @@
     <i class="fa fa-exclamation-circle"></i> <span translate>{{ModalCtrl.validation.message}}</span>
   </div>
 
-  <!-- informational: this record has been edited x times  -->
-  <span ng-if="ModalCtrl.hasPreviousEdits" class="text-muted pull-left" style="margin-top:5px;">
-    <i class="fa fa-info-circle"></i>
-    <span translate translate-values="ModalCtrl.lastEditValues">POSTING_JOURNAL.HAS_PREVIOUS_EDITS</span>
-  </span>
 
   <!-- Transaction row edit utilities -->
   <div ng-if="!ModalCtrl.readOnly || ModalCtrl.voucherTools.isCorrecting" style="margin-bottom : 5px" class="text-right">
     <button ng-disabled="!ModalCtrl.setupComplete" class="btn btn-default btn-sm" ng-click="ModalCtrl.addRow()" translate>POSTING_JOURNAL.ADD_ROW</button>
     <button ng-disabled="!ModalCtrl.setupComplete" class="btn btn-default btn-sm" ng-click="ModalCtrl.removeRows()" translate data-method="delete">POSTING_JOURNAL.REMOVE_ROW</button>
   </div>
-  <div style="height : 230px" id="transaction-edit-grid" ui-grid="ModalCtrl.gridOptions" ui-grid-cellNav ui-grid-selection ui-grid-edit ui-grid-resize-columns ui-grid-auto-resize>
+  <div style="height : 50vh" id="transaction-edit-grid" ui-grid="ModalCtrl.gridOptions" ui-grid-cellNav ui-grid-selection ui-grid-edit ui-grid-resize-columns ui-grid-auto-resize>
     <bh-grid-loading-indicator
       loading-state="ModalCtrl.loadingTransaction"
       empty-state="ModalCtrl.gridOptions.data.length === 0"
       error-state="ModalCtrl.hasError">
     </bh-grid-loading-indicator>
+  </div>
+
+  <div class="row">
+      <!-- informational: this record has been edited x times  -->
+    <span ng-if="ModalCtrl.hasPreviousEdits" class="text-muted pull-left" style="margin-top:5px;">
+      <i class="fa fa-info-circle"></i>
+      <span translate translate-values="ModalCtrl.lastEditValues">POSTING_JOURNAL.HAS_PREVIOUS_EDITS</span>
+    </span>
   </div>
 
   <bh-voucher-tools-reverse
