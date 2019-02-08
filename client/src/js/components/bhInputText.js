@@ -4,15 +4,14 @@ angular.module('bhima.components')
     controller : InputTextController,
     transclude : true,
     bindings : {
-      textValue : '=',
+      textValue : '<',
       required : '@?',
       label : '@?',
-      leftLabel : '<',
+      leftLabel : '<?',
       placeholder : '@?',
       autocomplete : '@?',
       type : '@?',
-      onChange : '<?',
-      validationTrigger : '<',
+      onChange : '&',
       id : '@?',
     },
   });
@@ -32,5 +31,9 @@ function InputTextController() {
     $ctrl.noLabel = $ctrl.noLabel || false;
     $ctrl.onChange = $ctrl.onChange || angular.noop;
     $ctrl.autocomplete = $ctrl.autocomplete || 'on';
+  };
+
+  $ctrl.valueChange = () => {
+    $ctrl.onChange({ key : $ctrl.id, value : $ctrl.textValue });
   };
 }

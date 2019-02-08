@@ -8,6 +8,7 @@ const { expect } = chai;
 helpers.configure(chai);
 
 describe('Patient Registration', () => {
+
   const path = '#!/patients/register';
   beforeEach(() => helpers.navigate(path));
 

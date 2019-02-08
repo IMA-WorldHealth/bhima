@@ -106,4 +106,9 @@ function PatientRegistrationController(
       new Date(`${value}-${util.defaultBirthMonth}`) :
       undefined;
   }
+
+  vm.onInputTextChange = (key, value) => {
+    vm.medical[key] = value;
+  };
+
 }
