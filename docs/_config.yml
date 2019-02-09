@@ -1,2 +1,10 @@
+---
 theme: jekyll-theme-minimal
 repository: IMA-Worldhealth/bhima
+
+plugins:
+  - jekyll-relative-links
+
+relative_links:
+  enabled: true
+  collections: true
