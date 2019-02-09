@@ -4,7 +4,7 @@ The BHIMA software can be complex to install.  We only officially support Linux,
 
 This guide will get you up and running with bhima locally. Please note that bhima is under active development and tends to move fast and break things. If you are interested in development progress, shoot us a line at [developers@imaworldhealth.org](mailto:developers@imaworldhealth.org).
 
-###### Dependencies
+### Dependencies
 
 Before you begin the installation process, please make sure you have all the bhima dependencies installed locally. We only test on Linux, so your best bet is to use a Linux flavor you are familiar with. Please make sure you have recent version of:
 
@@ -16,7 +16,7 @@ Before you begin the installation process, please make sure you have all the bhi
 6. yarn
 7. git
 
-###### Detailed dependency installation instructions for Ubuntu \(verified / installed specifically using VirtualBox\)
+### Detailed dependency installation instructions for Ubuntu \(verified / installed specifically using VirtualBox\)
 
 ```bash
 #Run the following command to update the package lists:
@@ -58,7 +58,7 @@ sudo apt-get update && sudo apt-get install yarn --no-install-recommends
 sudo apt-get install git
 ```
 
-###### Getting the source
+### Getting the source
 
 Clone the source using git from the [github repository](https://github.com/IMA-WorldHealth/bhima-2.x) using the following commands:
 
@@ -67,7 +67,7 @@ git clone https://github.com/IMA-WorldHealth/bhima-2.X.git bhima-2.X
 cd bhima-2.X
 ```
 
-###### Building from source
+### Building from source
 
 All our build scripts are found the `package.json` file. We use [gulpjs](http://www.gulpjs.com) internally, but you shouldn't ever need to call gulp explicitly.
 
@@ -100,7 +100,7 @@ Use the following command to edit the .env.development file if desired \(make yo
 nano .env.development
 ```
 
-###### Configure the bhima user in MySQL and build the app
+### Configure the bhima user in MySQL and build the app
 
 ```bash
 #Run the following commands to create the bhima user in MySQL, so that it can build the database (make sure the user and #password both match what you set in the .env.development file):
@@ -119,7 +119,7 @@ Then, build the app with
 NODE_ENV="development" yarn build
 ```
 
-###### Creating a database
+### Creating a database
 
 _NOTE: BHIMA runs in _`sql_mode='STRICT_ALL_TABLES'`_. While it is not necessary to have this set to build the database, the tests will not pass unless the correct SQL\_MODE is set._
 
@@ -155,17 +155,17 @@ You can run all this by using the following command: `yarn build:db` Alternative
 DB_USER='me' DB_PASS='MyPassword' DB_NAME='bhima' ./sh/build-database.sh
 ```
 
-###### Running the Application
+### Running the Application
 
 Running the application is super easy! Just type `yarn dev` in the application root directory.
 
-###### Verify the Install
+### Verify the Install
 
 If you changed the `$PORT` variable in the `.env` file, your application will be listening on that port. By default it is `8080`.
 
 Navigate to [https://localhost:8080](https://localhost:8080) in the browser to verify the installation. You should be greeted with a login page.
 
-###### Testing the Application
+### Testing the Application
 
 Our tests are broken into unit tests, end to end tests, and integration tests. There is more information on testing in the [wiki](https://github.com/IMA-WorldHealth/bhima-2.X/wiki).
 

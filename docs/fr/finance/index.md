@@ -11,7 +11,7 @@ Les modules de finance dans BHIMA constituent le noyau de l'application.
     3. [Transactions de coupons](./bookkeeping/vouchers.md)
 5. [Ledgers]()
     1. [Journal de publication](./ledgers/posting-journal.md)
-    2. [Balance de vérification](./Ledgers/trial-balance.md)
+    2. [Balance de vérification](./ledgers/trial-balance.md)
     3. [Grand livre général](./ledgers/general-ledger.md)
     4. [Relevé de compte](./ledgers/account-statement.md)
 6. [Rapports]()
