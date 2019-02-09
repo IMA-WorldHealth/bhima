@@ -1,19 +1,23 @@
 # Gestion de compte
 
-_Situé à:**Finance> Gestion de compte**_
+_Situé à : **Finance> Gestion de compte**_
 
 BHIMA permet à un utilisateur de créer un plan comptable détaillé. Tous les comptes doivent spécifier les points d’information suivants:
- 1. **Numéro** - un numéro unique pour identifier le compte. La longueur ne doit pas dépasser 12 caractères.
- 2. **Label** - une étiquette textuelle souvent affichée avec le numéro de compte pour identifier la fonction du compte.
- 3. **Type** - Le type de compte détermine le comportement du compte. Un type de compte peut être:
-    1. _Titre_ - un compte label utilisé pour regrouper les sous-comptes. Les comptes de titres ne sont jamais utilisés directement, mais cumulent des totaux dans les rapports.
-    2. _Liability_ - contient les comptes clients
-    3. _Asset_ - Comptes bancaires, de trésorerie et autres comptes d'actifs
-    4. Capital: contient les gains en capital, les immobilisations matérielles et les autres comptes de capital.
-    5. Revenu
-    6. Expense_
 
- 4. **Parent** - le compte parent détermine le groupe de comptes. Par défaut, un compte de niveau supérieur tombera sous le _nœud racine_. Cependant, tout compte de titre peut être un compte parent, permettant à l'utilisateur de créer une arborescence de comptes.
+1. **Numéro** - un numéro unique pour identifier le compte. La longueur ne doit pas dépasser 12 caractères.
+
+2. **Label** - une étiquette textuelle souvent affichée avec le numéro de compte pour identifier la fonction du compte.
+
+3. **Type** - Le type de compte détermine le comportement du compte. Un type de compte peut être:
+
+    1. _Titre_ - un compte label utilisé pour regrouper les sous-comptes. Les comptes de titres ne sont jamais utilisés directement, mais cumulent des totaux dans les rapports.
+    2. _Liability_ - contient les comptes clients
+    3. _Asset_ - Comptes bancaires, de trésorerie et autres comptes d'actifs
+    4. _Capital_: contient les gains en capital, les immobilisations matérielles et les autres comptes de capital.
+    5. _Revenu_
+    6. _Expense_
+
+4. **Parent** - le compte parent détermine le groupe de comptes. Par défaut, un compte de niveau supérieur tombera sous le _nœud racine_. Cependant, tout compte de titre peut être un compte parent, permettant à l'utilisateur de créer une arborescence de comptes.
 
 ## Navigation dans la liste des comptes
 

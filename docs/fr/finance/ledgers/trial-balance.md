@@ -10,7 +10,7 @@ graphe LR;
 
 ## Exécuter une balance d'essai
 
-La balance de vérification est un rapport exécuté sur les transactions sélectionnées \(voir la section [Sélection de ligne](/grid-features/row-selection.md)\). Une fois qu'une ou plusieurs lignes sont sélectionnées, utilisez la balance d'évaluation du menu \(&lt; span class = "fa fa-hamburger" &gt; &lt;/span&gt; **Menu** &gt; &lt;span class = "fa fa -balance "&gt; &lt;/span&gt; **Balance de vérification** \). Cette action fera apparaître le modal de la balance de vérification.
+La balance de vérification est un rapport exécuté sur les transactions sélectionnées \(voir la section [Sélection de ligne](/grid-features/row-selection.md)\). Une fois qu'une ou plusieurs lignes sont sélectionnées, utilisez la balance d'évaluation du menu \(**Menu** &gt; **Balance de vérification**\). Cette action fera apparaître le modal de la balance de vérification.
 
 <div class = "bs-callout bs-callout-warning">
 <h4> Les pièges communs </h4>

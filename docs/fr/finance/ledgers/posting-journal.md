@@ -1,12 +1,12 @@
 # Journal Module
 
-Le journal est le module central du logiciel BHIMA - toutes les transactions doivent passer par le journal pour entrer dans le [grand livre](/general-ledger.md) et apparaître dans les rapports ultérieurs. C'est un portier pour toutes les transactions proposées, un grand livre où le comptable peut valider, corriger et approuver les transactions qui entrent dans le système. Aucune transaction financière n'est considérée comme finalisée tant qu'elle n'a pas été postée du journal dans le grand livre.
+Le journal est le module central du logiciel BHIMA - toutes les transactions doivent passer par le journal pour entrer dans le [grand livre](../general-ledger.md) et apparaître dans les rapports ultérieurs. C'est un portier pour toutes les transactions proposées, un grand livre où le comptable peut valider, corriger et approuver les transactions qui entrent dans le système. Aucune transaction financière n'est considérée comme finalisée tant qu'elle n'a pas été postée du journal dans le grand livre.
 
 ## Opérations financières en tant que transactions
 
 Dans l'introduction, nous avons noté que toutes les opérations financières sont représentées à la fois comme un enregistrement et une transaction. Dans cette section, nous discuterons des propriétés des transactions en BHIMA.
 
-Comme décrit dans [Comptabilité en partie double](/finance-modules/overview.md##double-entry-bookkeeping), les transactions sont composées de deux lignes ou plus. Certaines informations, telles que la date de transaction, sont partagées sur toutes les lignes. d'autres, comme les comptes, sont spécifiques à une ligne. La liste ci-dessous contient toutes les propriétés d'une transaction. Les propriétés partagées sont désignées par la balise **\[shared\]**.
+Comme décrit dans [Comptabilité en partie double](../overview.md#double-entry-bookkeeping), les transactions sont composées de deux lignes ou plus. Certaines informations, telles que la date de transaction, sont partagées sur toutes les lignes. d'autres, comme les comptes, sont spécifiques à une ligne. La liste ci-dessous contient toutes les propriétés d'une transaction. Les propriétés partagées sont désignées par la balise **\[shared\]**.
 
 * **ID**: utilisé uniquement à des fins internes. Cette chaîne de 36 caractères identifie de manière unique la ligne dans la transaction. En réalité, il est uniquement destiné à être utilisé pour signaler des problèmes au support BHIMA.
 * **Période\[partagé\]**: une version lisible par l'homme de la période.
@@ -19,8 +19,8 @@ Comme décrit dans [Comptabilité en partie double](/finance-modules/overview.md
 * **Débit**: la valeur du débit dans la devise de l'entreprise.
 * **Crédit**: la valeur du crédit dans la devise de l'entreprise.
 * **Currency\[shared\]**: la devise de l'enregistrement d'origine.
-* **Débit\(Source \)**: la valeur du débit dans la devise de l'enregistrement d'origine.
-* **Crédit\(Source \)**: la valeur du crédit dans la devise de l'enregistrement d'origine.
+* **Débit\(Source\)**: la valeur du débit dans la devise de l'enregistrement d'origine.
+* **Crédit\(Source\)**: la valeur du crédit dans la devise de l'enregistrement d'origine.
 * **Destinataire**: le débiteur ou le créancier associé à cette ligne de la transaction. Par exemple, si la transaction représente une facture patient, la colonne de destinataire associera le patient que l'entreprise facture \(ce patient sera modélisé comme un débiteur de l'entreprise dans le système\).
 * **Référence**: la référence pointe vers la colonne d'enregistrement d'un autre enregistrement / transaction auquel la ligne est liée. Un exemple de ceci est un paiement en espèces contre une facture. Dans la transaction sur facture, la référence sera vide. Dans la transaction de paiement en espèces, la ligne de crédit du compte du débiteur contiendra l'identifiant d'enregistrement de la facture dans la colonne "référence".
 * **Type de transaction\[partagé\]**: identifie le type de transaction. Voir [Types de transaction] (# types de transaction) ci-dessous.
@@ -35,14 +35,14 @@ Pour refléter cette propriété réelle, les transactions dans BHIMA sont _link
 
 La notion d'opérations liées est mieux illustrée par un exemple. Vous trouverez ci-dessous deux transactions simplifiées, la dernière liant la première.
 
-| **Transaction **| Record | **Compte **| Débit | Crédit | Entité | Référence |
-| : --- | : --- | : --- | : --- | : --- | : --- | : --- |
+| Transaction | Record | Compte| Débit | Crédit | Entité | Référence |
+| --- | --- | --- | --- | --- | --- | --- |
 | TRANS1 | IV.TPA.1 | 410001 | 10,00 $ | | PA.HEV.1 | |
 | TRANS1 | IV.TPA.1 | 760001 | | 2,50 $ | | |
 | TRANS1 | IV.TPA1 | 760002 | | 7,50 $ | | |
 
-| **Transaction **| Record | **Compte **| Débit | Crédit | Entité | Référence |
-| : --- | : --- | : --- | : --- | : --- | : --- | : --- |
+| Transaction | Record | Compte | Débit | Crédit | Entité | Référence |
+| --- | --- | --- | --- | --- | --- | --- |
 | TRANS2 | CP.TPA.1 | 560001 | 4,50 $ | | | |
 | TRANS2 | CP.TPA.1 | 410001 | | 4,50 $ | PA.HEV.1 | IV.TPA.1 |
 
@@ -57,7 +57,7 @@ BHIMA liant les transactions de cette manière, nous pouvons effectuer les analy
 Nous pouvons prendre les lignes qui ont `PA.HEV.1` comme **Entity **et additionner leurs valeurs comme suit:
 
 | Transaction | Record | **Compte **| Débit | Crédit | Entité | Référence |
-| : --- | : --- | : --- | : --- | : --- | : --- | : --- |
+| --- | --- | --- | --- | --- | --- | --- |
 | TRANS1 | IV.TPA.1 | 410001 | 10,00 $ | | PA.HEV.1 | |
 | TRANS2 | CP.TPA.1 | 410001 | | 4,50 $ | PA.HEV.1 | IV.TPA.1 |
 | | | | **10,00 $**| **4,50 $**| | - |
@@ -69,10 +69,10 @@ Le solde du compte `PA.HEV.1` est de **10,00 $ - 4,50 $** **= 5,50 $**. Comme le
 Cette fois, nous rassemblons la facture via son _record _`IV.TPA.1`, ainsi que toutes les transactions associées via son _reference_ `IV.TPA.1`, comme indiqué ci-dessous:
 
 | Transaction | Record | **Compte **| Débit | Crédit | Entité | Référence |
-| : --- | : --- | : --- | : --- | : --- | : --- | : --- |
+| --- | --- | --- | --- | --- | --- | --- |
 | TRANS1 | IV.TPA.1 | 410001 | 10,00 $ | | PA.HEV.1 | |
 | TRANS2 | CP.TPA.1 | 410001 | | 4,50 $ | PA.HEV.1 | IV.TPA.1 |
-| | | | **10,00 $ **| **4,50 $ **| | - |
+| | | | **10,00 $**| **4,50 $**| | - |
 
 Sans surprise, le solde de la facture «IV.TPA.1» correspond à **10,00 $ - 4,50 $ = 5,50 $**.
 

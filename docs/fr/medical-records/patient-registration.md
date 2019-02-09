@@ -11,7 +11,7 @@ Les patients jouent le rôle duel d'être à la fois une personne malade nécess
 
 **Flux de travail médical**
 
-sirène
+```mermaid
 graphe LR
     PR [Enregistrement du patient] -> PL [Registre des patients]
     PL -> PRec (Dossier Patient)
@@ -19,17 +19,17 @@ graphe LR
     PRec -> OMD {Modifier le groupe de débiteurs}
     PRec -> UP {Télécharger une photo}
     PRec -> UD {Upload Documents}
-`` `
+```
 
 **Workflow financier**
 
-sirène
+```mermaid
 graphe LR
     PR [Enregistrement du patient] -> PL [Registre des patients]
     PL -> IV [Facturation]
     IV -> CP [Paiements en espèces]
     PL -> CP
-`` `
+```
 
 ## Enregistrement du patient
 
@@ -51,7 +51,7 @@ Une fois qu'un patient est enregistré, il apparaîtra dans le [Registre des pat
 
 ## Registre des patients
 
-Le registre des patients est une grille de tous les patients enregistrés. La grille prend en charge les fonctionnalités de grille suivantes: [filtrage de données] (/grid-features/data-filtering.md), [manipulation de colonne] (/grid-features/column-sorting.md), [modifications persistantes] (/grid- features/saving-changes.md) et [exportation de données] (/grid-features/data-exporting.md).
+Le registre des patients est une grille de tous les patients enregistrés. La grille prend en charge les fonctionnalités de grille suivantes: [filtrage de données](/grid-features/data-filtering.md), [manipulation de colonne](/grid-features/column-sorting.md), [modifications persistantes](/grid-features/saving-changes.md) et [exportation de données](/grid-features/data-exporting.md).
 
 La grille contient des liens incorporés pour lier rapidement d'autres parties de l'application. La colonne **Référence** contient un lien vers la fiche du patient pour une inspection rapide. La colonne **Nom** renvoie à la page du dossier du patient. Enfin, le menu déroulant **Actions** à l'extrême droite relie les emplacements suivants:
 
@@ -63,14 +63,14 @@ La grille contient des liens incorporés pour lier rapidement d'autres parties d
 6. **Voir les paiements en espèces** est un lien direct vers le registre des paiements en espèces, préfiltré sur le patient actuel.
 7. **View Vouchers** est un lien direct vers le registre de voucher, préfiltré sur le patient actuel.
 
-## Modification du dossier d'un patient
+## <a id="modifying-a-patients-registration">Modification du dossier d'un patient</a>
 
 Si un patient est mal enregistré, ne paniquez pas - il est toujours possible de mettre à jour et de modifier ses informations via le module Patient Edit. Ce module est accessible de deux manières:
 
 1. Localisez le patient dans le registre des patients. Utilisez le menu déroulant des actions dans la colonne la plus à droite pour cliquer sur **Actions & gt; Modifier**. Cela vous mènera au dossier du patient sous forme modifiable.
 2. Si vous vous trouvez déjà sur la page du dossier du patient, vous pouvez cliquer sur le bouton **Modifier les détails**. Cela vous mènera au dossier du patient sous forme modifiable.
 
-Le formulaire modifiable est divisé en trois sections: Détails du patient, Informations facultatives et Informations financières. Ces trois panneaux correspondent approximativement aux informations d'enregistrement initiales. Vous remarquerez que cette interface permet également à l'utilisateur de modifier [Groupes de patients](/medical-records/patient-groups.md).
+Le formulaire modifiable est divisé en trois sections: Détails du patient, Informations facultatives et Informations financières. Ces trois panneaux correspondent approximativement aux informations d'enregistrement initiales. Vous remarquerez que cette interface permet également à l'utilisateur de modifier [Groupes de patients](./patient-groups.md).
 
 <div class = "bs-callout bs-callout-danger">
 <h4> Changer le groupe de débiteurs </h4>

@@ -7,10 +7,11 @@ Certaines grilles supportent _inline filtering_, la possibilité de filtrer les 
 
 Cependant, il y a quelques inconvénients à garder à l'esprit:
 
-1. Etant donné qu'aucune nouvelle donnée n'est téléchargée, les filtres ne s'appliqueront qu'à l'ensemble de données déjà téléchargé. Si le téléchargement a été pré-filtré sur le serveur, il se peut que vous ne disposiez pas d'un jeu de données complet. Assurez-vous toujours que votre jeu de données local contient suffisamment d'informations pour fournir une analyse.
-2. Sur les machines à faible puissance, cette opération peut ralentir la machine, en particulier dans les modules plus lourds comme le journal ou le relevé de compte.
+1. _Etant donné qu'aucune nouvelle donnée n'est téléchargée, les filtres ne s'appliqueront qu'à l'ensemble de données déjà téléchargé. Si le téléchargement a été pré-filtré sur le serveur, il se peut que vous ne disposiez pas d'un jeu de données complet. Assurez-vous toujours que votre jeu de données local contient suffisamment d'informations pour fournir une analyse._
 
-Par défaut, le filtrage en ligne est désactivé sur toutes les grilles. Pour l'activer, cliquez sur le bouton **Filtre** \(&lt;i class = "fa-filtre-fa" &gt; &lt;/i &gt;\) en haut du module. Lorsqu'il est activé, ce bouton devient bleu clair. Les entrées du filtre en ligne apparaîtront juste sous les en-têtes de colonne de la grille. Taper dans l’un d’eux filtrera le contenu de la grille.
+2. _Sur les machines à faible puissance, cette opération peut ralentir la machine, en particulier dans les modules plus lourds comme le journal ou le relevé de compte._
+
+Par défaut, le filtrage en ligne est désactivé sur toutes les grilles. Pour l'activer, cliquez sur le bouton **Filtre** en haut du module. Lorsqu'il est activé, ce bouton devient bleu clair. Les entrées du filtre en ligne apparaîtront juste sous les en-têtes de colonne de la grille. Taper dans l’un d’eux filtrera le contenu de la grille.
 
 <div class = "bs-callout bs-callout-warning">
 <h4> Assurez-vous de disposer d'un jeu de données complet </h4>
