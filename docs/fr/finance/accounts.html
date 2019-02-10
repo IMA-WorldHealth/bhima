@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Gestion de compte | bhima</title>
+<meta name="generator" content="Jekyll v3.7.4" />
+<meta property="og:title" content="Gestion de compte" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="A hospital information management application for rural Congolese hospitals" />
+<meta property="og:description" content="A hospital information management application for rural Congolese hospitals" />
+<meta property="og:site_name" content="bhima" />
+<script type="application/ld+json">
+{"url":"/fr/finance/accounts.html","headline":"Gestion de compte","description":"A hospital information management application for rural Congolese hospitals","@type":"WebPage","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=">
+    <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1><a href="/">bhima</a></h1>
+        
+        
+
+        <p>A hospital information management application for rural Congolese hospitals</p>
+
+        
+
+        
+
+        
+      </header>
+      <section>
+
+      <h1 id="gestion-de-compte">Gestion de compte</h1>
+
+<p><em>Situé à : <strong>Finance&gt; Gestion de compte</strong></em></p>
+
+<p>BHIMA permet à un utilisateur de créer un plan comptable détaillé. Tous les comptes doivent spécifier les points d’information suivants:</p>
+
+<ol>
+  <li>
+    <p><strong>Numéro</strong> - un numéro unique pour identifier le compte. La longueur ne doit pas dépasser 12 caractères.</p>
+  </li>
+  <li>
+    <p><strong>Label</strong> - une étiquette textuelle souvent affichée avec le numéro de compte pour identifier la fonction du compte.</p>
+  </li>
+  <li>
+    <p><strong>Type</strong> - Le type de compte détermine le comportement du compte. Un type de compte peut être:</p>
+
+    <ol>
+      <li><em>Titre</em> - un compte label utilisé pour regrouper les sous-comptes. Les comptes de titres ne sont jamais utilisés directement, mais cumulent des totaux dans les rapports.</li>
+      <li><em>Liability</em> - contient les comptes clients</li>
+      <li><em>Asset</em> - Comptes bancaires, de trésorerie et autres comptes d’actifs</li>
+      <li><em>Capital</em>: contient les gains en capital, les immobilisations matérielles et les autres comptes de capital.</li>
+      <li><em>Revenu</em></li>
+      <li><em>Expense</em></li>
+    </ol>
+  </li>
+  <li>
+    <p><strong>Parent</strong> - le compte parent détermine le groupe de comptes. Par défaut, un compte de niveau supérieur tombera sous le <em>nœud racine</em>. Cependant, tout compte de titre peut être un compte parent, permettant à l’utilisateur de créer une arborescence de comptes.</p>
+  </li>
+</ol>
+
+<h2 id="navigation-dans-la-liste-des-comptes">Navigation dans la liste des comptes</h2>
+
+<p>BHIMA présente la liste des comptes avec une arborescence de comptes parents et enfants. Les comptes parents sont des comptes <em>title</em>, sont présentés en gras et peuvent contenir zéro ou plusieurs comptes enfants. Ces comptes enfants sont affichés légèrement en retrait sous les comptes parents.</p>
+
+<div class="bs-callout bs-callout-primary">
+<h4> Remarque! </h4>
+Il est important de noter que la structure d'imbrication dans la gestion des comptes est déterminée par les relations parent / enfant et non par le numéro de compte. Toutefois, pour éviter toute confusion, il est conseillé de déterminer le niveau du compte dans l’arborescence en fonction du numéro de compte.
+</div>
+
+<h2 id="créer-un-compte">Créer un compte</h2>
+
+<p>Pour créer un nouveau compte, le bouton <strong>Créer un compte</strong> dans le coin supérieur droit ouvre un formulaire modal pour créer un nouveau compte. Une fois que l’utilisateur a rempli les champs obligatoires, il peut soumettre le modal pour créer un nouveau compte.</p>
+
+<p>Une autre méthode pour créer un compte consiste à cliquer sur le bouton <strong>Ajouter un compte enfant</strong> intégré dans la grille. Ce bouton apparaît sur les comptes de titre et préconfigurera le mode de création de compte avec la propriété parent définie sur le compte de titre choisi.</p>
+
+<p>Si l’utilisateur souhaite créer plusieurs comptes, il peut cocher la case <strong>Ajouter un autre compte</strong>. Cela conservera le modal, permettant à l’utilisateur de soumettre plusieurs comptes sans avoir à rouvrir le modal.</p>
+
+<h2 id="mise-à-jour-dun-compte">Mise à jour d’un compte</h2>
+
+<p>Seules deux propriétés de compte peuvent être mises à jour après la création d’un compte: le libellé du compte et le parent du compte actuel. Cela permet à un certain nombre de comptes de regroupement sans changer leur type de solde sous-jacent. Si des modifications plus importantes doivent être apportées, le compte doit être fermé et / ou supprimé et un deuxième compte doit être créé.</p>
+
+<h2 id="supprimer-un-compte">Supprimer un compte</h2>
+
+<p>Si un compte n’a pas encore été utilisé, il peut être supprimé via le menu déroulant de la grille du compte. Cependant, BHIMA empêchera l’utilisateur de supprimer le compte s’il est utilisé n’importe où dans le système. La protection est en place pour empêcher les utilisateurs de supprimer accidentellement des comptes critiques qui sont utilisés pour des débiteurs ou qui peuvent contenir des soldes.</p>
+
+<h2 id="dautres-actions">D’autres actions</h2>
+
+<p>En plus des opérations CRUD de base sur les comptes, les utilisateurs peuvent éventuellement masquer ou verrouiller des comptes.</p>
+
+<h3 id="comptes-cachés">Comptes cachés</h3>
+
+<p>Cacher un compte sert uniquement à la facilité d’utilisation et n’affecte pas la fonction de comptabilité du système. Les comptes cachés ne sont cachés que des sélections en face de l’utilisateur. Par exemple, ils n’apparaîtront plus dans l’entrée de sélection de compte Gestion de groupe de débiteurs, ni dans la tête de type dans Compenses complexes. Cependant, ils continueront à être présentés dans des rapports pertinents. Cela permet aux comptes anciens, fermés et non utilisés d’être supprimés en toute sécurité de l’interface utilisateur sans changer la nature du compte.</p>
+
+<h3 id="comptes-verrouillés">Comptes verrouillés</h3>
+
+<p>Le verrouillage d’un compte empêche l’utilisateur de publier d’autres mouvements sur ce compte. Pour éviter toute confusion générale, cette règle est appliquée lors des contrôles de la balance de vérification, plutôt que pour chaque paiement en espèces, facture ou pièce justificative. Il est important de noter qu’un compte verrouillé sera toujours disponible pour être utilisé dans tout le système. Pour empêcher son utilisation, un utilisateur doit également le cacher.</p>
+
+
+      </section>
+      <footer>
+        
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="/assets/js/scale.fix.js"></script>
+    
+  </body>
+</html>

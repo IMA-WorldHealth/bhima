@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Patient Management | bhima</title>
+<meta name="generator" content="Jekyll v3.7.4" />
+<meta property="og:title" content="Patient Management" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="A hospital information management application for rural Congolese hospitals" />
+<meta property="og:description" content="A hospital information management application for rural Congolese hospitals" />
+<meta property="og:site_name" content="bhima" />
+<script type="application/ld+json">
+{"url":"/en/medical-records/patient-registration.html","headline":"Patient Management","description":"A hospital information management application for rural Congolese hospitals","@type":"WebPage","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=">
+    <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1><a href="/">bhima</a></h1>
+        
+        
+
+        <p>A hospital information management application for rural Congolese hospitals</p>
+
+        
+
+        
+
+        
+      </header>
+      <section>
+
+      <h1 id="patient-management">Patient Management</h1>
+
+<p>The vast majority of clients of the hospital are patients.  Since BHIMA is primarily focused on the accounting and managerial aspects of the hospital, the medical records component of BHIMA are underdeveloped.  Instead the primary function of patients is to create a debtor to attach a financial history to.  Despite the emphasis on finance, BHIMA supports a few purely medical features, including demographic and biometric data associated with patients, a tool to attach documents to patients, management of patient groups, and management of patient visits.</p>
+
+<div class="bs-callout bs-callout-primary">
+<h4>Have a recommendation?</h4>
+If you have any recommendations for features lacking in BHIMA or ways the medical records might be improved, please get in touch with the developers.  We would love to hear about it!
+</div>
+
+<p>Patients play the duel role of being both a sick person in need of treatment and a debtor that develops a financial history.  It is useful to separate these two concepts since they have different concerns.  The diagrams below attempt to distinguish these concepts:</p>
+
+<p><strong>Medical Workflow</strong></p>
+
+<pre><code class="language-mermaid">graph LR
+    PR[Patient Registration] --&gt; PL[Patient Registry]
+    PL --&gt; PRec(Patient Record)
+    PRec --&gt; MPG{Modify Patient Group}
+    PRec --&gt; MDG{Modify Debtor Group}
+    PRec --&gt; UP{Upload Photo}
+    PRec --&gt; UD{Upload Documents}
+</code></pre>
+
+<p><strong>Financial Workflow</strong></p>
+
+<pre><code class="language-mermaid">graph LR
+    PR[Patient Registration] --&gt; PL[Patient Registry]
+    PL --&gt; IV[Invoicing]
+    IV --&gt; CP[Cash Payments]
+    PL --&gt; CP
+</code></pre>
+
+<h2 id="patient-registration">Patient Registration</h2>
+
+<p>BHIMA expects that Patient Registration is the first step in the start of a patient’s treatment.  The Patient Registration module divides the registration page into <em>required</em> information and <em>optional</em> information.  These panels function as their name implies - a successful registration must contain at minimum the required information.  Once the required information is completed, click the blue button to register the patient.</p>
+
+<div class="bs-callout bs-callout-primary">
+<h4>What is the difference between origin and current location?</h4>
+You will notice a duplicate field set in the required information - "Location of Origin" and "Current Location".  This information is important for locating patients ocunce they have left the hospital.  A patient's "origin" location is where their family is traditionally from, whilst their current location is where they are current from.  Often, a patient's origin location is a better address since their family will always be able to locate them.
+</div>
+
+<p>One a patient is successfully registered, the module will produce a Patient Card.  The patient card is designed to be printed out and carried along with the patient - it bears the minimal set of information required to locate the patient within the system, including a barcode for quick reference.  If possible, these should be carried around with the patient and taken home until their next visit to the hospital.</p>
+
+<div class="bs-callout bs-callout-warning">
+<h4>Get the debtor group right!</h4>
+It is paramount to assign the correct debtor group to a patient.  The debtor group directly determines the patient's account.  You might think of it as "who gets the bill."  If the patient is a cash paying patient and they are assigned to an accrued group, they may be released from the hospital without paying!
+</div>
+
+<p>Once a patient is registered, they will appear in the <a href="#the-patient-registry">Patient Registry</a> and a Patient Record page will be created for them.</p>
+
+<h2 id="patient-registry">Patient Registry</h2>
+
+<p>The Patient Registry is a grid of all registered patients.  The grid supports the following grid features: <a href="/grid-features/data-filtering.md">data filtering</a>, <a href="/grid-features/column-sorting.md">column manipulation</a>, <a href="/grid-features/saving-changes.md">persistent changes</a>, and <a href="/grid-features/data-exporting.md">data exporting</a>.</p>
+
+<p>The grid contains embedded links to quickly link other parts of the application.  The <strong>Reference</strong> column contains a link to the patient’s card for quick inspection.  The <strong>Name</strong> column links to the patient’s record page.  Finally, the <strong>Actions</strong> dropdown menu on the far right links the following locations:</p>
+
+<ol>
+  <li><strong>Record</strong> is an additional link to the Patient Record.</li>
+  <li><strong>Edit</strong> is a link to <a href="#modifying-a-patients-registration">edit the patient’s registration</a>.</li>
+  <li><strong>Card</strong> is an additional link to the patient’s card.</li>
+  <li><strong>View Financial Activity</strong> is a direct link to the Patient Financial Activity document.</li>
+  <li><strong>View Invoices</strong> is a direct link to the Invoice Registry, pre-filtered on the current patient.</li>
+  <li><strong>View Cash Payments</strong> is a direct link to the Cash Payment Registry, pre-filtered on the current patient.</li>
+  <li><strong>View Vouchers</strong> is a direct link to the Voucher Registry, pre-filtered on the current patient.</li>
+</ol>
+
+<h2 id="modifying-a-patients-record">Modifying a Patient’s Record</h2>
+
+<p>If a patient has is incorrectly registered, do not panic - there is still the ability to update and change their information via the Patient Edit module.  This module is accessible two ways:</p>
+
+<ol>
+  <li>Locate the patient in the Patient Registry.  Use the actions dropdown in the far right column to click <strong>Actions &gt; Edit</strong>.  This will take you to the patient’s record in editable form.</li>
+  <li>If you are already on the patient’s record page, you can click the button <strong>Edit Details</strong>.  This will take you to the patient’s record in editable form.</li>
+</ol>
+
+<p>The editable form is divided into three sections: Patient Details, Optional Information, and Financial Information.  These three panels roughly correspond to the initial registration information.  You will notice that this interface also gives the user access to modify <a href="/medical-records/patient-groups.md">Patient Groups</a>.</p>
+
+<div class="bs-callout bs-callout-danger">
+<h4>Changing the debtor group</h4>
+Remember, the debtor group has profound implications on the financial history of the patient.  If the patient has any open invoices, dissociating them with their group may render those invoices unpayable.  It is best to make sure the patient has a clean financial history before attempting to change their debtor group to avoid inconsistencies.
+</div>
+
+
+      </section>
+      <footer>
+        
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="/assets/js/scale.fix.js"></script>
+    
+  </body>
+</html>
