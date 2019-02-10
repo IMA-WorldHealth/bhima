@@ -4,7 +4,7 @@ Welcome! This manual is for the Basic Hospital Information Management Applicatio
 
 Please choose your language
 
-1. [English](./en/index.md)
-2. [Français](./fr/index.md)
+1. [English]()
+2. [Français]()
 
 > This is a living document written by the authors of BHIMA and the material can sometimes be dense and unclear.  If anything doesn't make sense to you, please tell us about it!  You can leave a comment right on this site or you can send us an email at [developers@imaworldhealth.org](mailto:developers@imaworldhealth.org).  Thanks!
