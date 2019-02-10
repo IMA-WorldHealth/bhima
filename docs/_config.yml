@@ -1,8 +1,6 @@
----
 theme: "jekyll-theme-minimal"
 repository: "IMA-Worldhealth/bhima"
 markdown: kramdown
 plugins:
   - "jekyll-github-metadata"
 github: [metadata]
-
