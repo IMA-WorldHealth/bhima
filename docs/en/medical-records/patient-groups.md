@@ -1,4 +1,0 @@
-# Patient Groups
-
-
-
