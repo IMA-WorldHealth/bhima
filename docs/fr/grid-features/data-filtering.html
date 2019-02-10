@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Filtrage des données | bhima</title>
+<meta name="generator" content="Jekyll v3.7.4" />
+<meta property="og:title" content="Filtrage des données" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="A hospital information management application for rural Congolese hospitals" />
+<meta property="og:description" content="A hospital information management application for rural Congolese hospitals" />
+<meta property="og:site_name" content="bhima" />
+<script type="application/ld+json">
+{"url":"/fr/grid-features/data-filtering.html","headline":"Filtrage des données","description":"A hospital information management application for rural Congolese hospitals","@type":"WebPage","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=">
+    <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1><a href="/">bhima</a></h1>
+        
+        
+
+        <p>A hospital information management application for rural Congolese hospitals</p>
+
+        
+
+        
+
+        
+      </header>
+      <section>
+
+      <h2 id="filtrage-des-données">Filtrage des données</h2>
+
+<p>La plupart des grilles ne chargent pas tous les enregistrements de la base de données. Au lieu de cela, ils chargent le jeu de données correspondant à un ensemble de filtres. Les filtres persistent entre les rechargements de page et les sessions. Tous les filtres de données sont configurés à partir d’un modal de recherche lié par un bouton dans l’en-tête du module. Les filtres de données sont classés en deux catégories: <em>default filters</em> ou <em>custom filters</em>.</p>
+
+<p>Les filtres par défaut sont présents sur presque toutes les grilles, surlignés en violet dans l’en-tête. Bien que les valeurs des filtres par défaut puissent être modifiées, elles ne peuvent pas être supprimées. Ils sont configurés dans l’onglet “Filtres par défaut” du modal de recherche. Les filtres par défaut courants sont les suivants:</p>
+
+<ol>
+  <li>
+    <p><strong>Limite</strong> - contrôle le nombre d’enregistrements que le client tentera de télécharger. Cela garantit que l’application ne chargera pas plus de données que nécessaire. Parfois, une limite basse coupera les données que l’utilisateur souhaite voir, et il devrait augmenter la limite pour obtenir le jeu de données complet.</p>
+  </li>
+  <li>
+    <p><strong>Période</strong> - définit les dates de début et de fin du jeu de données. Cela s’applique aux données transactionnelles, telles que les factures, les paiements en espèces, les bons d’achat et les transactions. La période a diverses valeurs prédéfinies telles que <em>today</em>, <em>yesterday</em>, <em>this month</em>, et autres, qui peuvent être utilisées pour choisir rapidement une plage de dates judicieuse. Pour des requêtes de date spécifiques, l’option <em>custom</em> permet à l’utilisateur de choisir n’importe quelle date de début et de fin.</p>
+  </li>
+</ol>
+
+<p>Les filtres personnalisés sont similaires aux filtres par défaut, bien qu’ils puissent être supprimés et rendus en bleu foncé. Ils sont configurés dans l’onglet “Filtres personnalisés” de la recherche modale. Ces filtres varient considérablement en fonction du module. Toutefois, en règle générale, le titre du paramètre flter est identique à celui de la colonne dans la vue en cours de filtrage. Par exemple, si un module a une colonne <em>reference</em>, l’utilisateur devra trouver l’entrée intitulée <em>reference</em> pour configurer le filtre.</p>
+
+<p>Tous les filtres sont additifs: les filtres <code class="highlighter-rouge">limit: 10</code>,<code class="highlighter-rouge"> compte: X</code> et <code class="highlighter-rouge">period: today</code> téléchargeront les 10 premiers enregistrements du jeu de données avec le compte X à partir d’aujourd’hui.</p>
+
+<p>Le filtrage des données nécessite une connexion en direct au serveur, car l’opération de filtrage est effectuée sur le serveur.</p>
+
+<div class="bs-callout bs-callout-danger">
+<h4> Vérifiez vos limites! </h4>
+Faites attention! Toutes les grilles fournissent un décompte du nombre de lignes dans la grille. Si vous filtrez sur plusieurs paramètres et que le nombre de lignes de la grille est équivalent à la limite que vous avez définie, il se peut que vous ne disposiez pas de toutes les données recherchées. Augmentez la limite pour vous assurer que vous disposez de l'ensemble de données complet.
+</div>
+
+
+      </section>
+      <footer>
+        
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="/assets/js/scale.fix.js"></script>
+    
+  </body>
+</html>

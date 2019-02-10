@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Data Filtering | bhima</title>
+<meta name="generator" content="Jekyll v3.7.4" />
+<meta property="og:title" content="Data Filtering" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="A hospital information management application for rural Congolese hospitals" />
+<meta property="og:description" content="A hospital information management application for rural Congolese hospitals" />
+<meta property="og:site_name" content="bhima" />
+<script type="application/ld+json">
+{"url":"/en/grid-features/data-filtering.html","headline":"Data Filtering","description":"A hospital information management application for rural Congolese hospitals","@type":"WebPage","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=">
+    <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1><a href="/">bhima</a></h1>
+        
+        
+
+        <p>A hospital information management application for rural Congolese hospitals</p>
+
+        
+
+        
+
+        
+      </header>
+      <section>
+
+      <h2 id="data-filtering">Data Filtering</h2>
+
+<p>Most grids do not load all records in the database.  Instead, they load the dataset corresponding to a set filters.  The filters persist between page reloads and sessions.   All data filters are configured from a Search Modal linked in a button in the module header.  Data filters are categorized as either <em>default filters</em> or <em>custom filters</em>.</p>
+
+<p><em>Default filters</em> are found on nearly all grids, highlighted in the header in purple.  While the values of default filters can be altered, they cannot be removed.  They are configured in the “Default Filters” tab of the Search Modal.  Common default filters are:</p>
+
+<ol>
+  <li><strong>Limit</strong> - controls the number of records the client will attempt to download.  This ensures the application will not load more data than necessary.  Sometimes, a low limit will cut off data that the user wishes to see, and they should increase the limit to get the full dataset.</li>
+  <li><strong>Period</strong> - sets the start and end date of the dataset.  This applies to transactional data, such as invoices, cash payments, vouchers, and transactions.  The period has various preset values such as <em>today</em>, <em>yesterday</em>, <em>this month</em>, and others, that can be used to quickly choose a sensible date range.  For specific date queries, the <em>custom</em> option allows the user to pick any start and end date.</li>
+</ol>
+
+<p><em>Custom filters</em> are similar to default filters, though they can be removed and are rendered in dark blue.  They are configured in the “Custom Filters” tab of the Search Modal.  These filters vary considerably depending on the module.  However, as a general rule, the title of the flter parameter is the same as the title of the column in the view it is filtering.  For example, if a module has a column <em>reference</em>, user will need to find the input labeled <em>reference</em> to configure the filter.</p>
+
+<p>All filters are additive: the filters <code class="highlighter-rouge">limit:10</code>, <code class="highlighter-rouge">account:X</code>, and <code class="highlighter-rouge">period:today</code> will download the first 10 records of the dataset with account X from today.</p>
+
+<p>Data filtering requires a live connection to the server, since the filtering operation is performed on the server.</p>
+
+<div class="bs-callout bs-callout-danger">
+<h4>Check your limits!</h4>
+Be careful!  All grids provide a count of the number of rows in the grid.  If you filter on multiple parameters and the number of rows in the grid is equivalent to the limit you set, you may not have all the data you seek.  Increase the limit to be sure you have the full dataset.
+</div>
+
+
+      </section>
+      <footer>
+        
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="/assets/js/scale.fix.js"></script>
+    
+  </body>
+</html>

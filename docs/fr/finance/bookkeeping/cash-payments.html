@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>La fenêtre de trésorerie | bhima</title>
+<meta name="generator" content="Jekyll v3.7.4" />
+<meta property="og:title" content="La fenêtre de trésorerie" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="A hospital information management application for rural Congolese hospitals" />
+<meta property="og:description" content="A hospital information management application for rural Congolese hospitals" />
+<meta property="og:site_name" content="bhima" />
+<script type="application/ld+json">
+{"url":"/fr/finance/bookkeeping/cash-payments.html","headline":"La fenêtre de trésorerie","description":"A hospital information management application for rural Congolese hospitals","@type":"WebPage","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=">
+    <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1><a href="/">bhima</a></h1>
+        
+        
+
+        <p>A hospital information management application for rural Congolese hospitals</p>
+
+        
+
+        
+
+        
+      </header>
+      <section>
+
+      <h1 id="la-fenêtre-de-trésorerie">La fenêtre de trésorerie</h1>
+
+<p>La fenêtre de caisse est responsable de recevoir les paiements des patients. Deux types de paiements sont pris en charge:</p>
+
+<ol>
+  <li><strong>Les paiements de factures</strong> sont effectués pour des biens et services facturés dans le module <a href="/fr/finance/bookkeeping/patient-invoices.html">Facture patient</a>.</li>
+  <li><strong>Les paiements anticipés</strong> sont effectués en prévision des biens et services futurs rendus.</li>
+</ol>
+
+<p>Les deux types de paiement génèrent des transactions avec un identifiant d’enregistrement <code class="highlighter-rouge">CP</code>.</p>
+
+<div class="bs-callout bs-callout-info">
+<h4> Aucun paiement anticipé? </h4>
+Toutes les institutions ne demandent pas d'avance aux patients. Les paiements anticipés peuvent être entièrement désactivés dans les paramètres d'entreprise si l'institution ne collecte pas les paiements anticipés.
+</div>
+
+<h2 id="configuration-de-la-fenêtre-de-paiement">Configuration de la fenêtre de paiement</h2>
+
+<p>Lorsqu’un utilisateur accède pour la première fois à la fenêtre de paiement, il lui sera demandé de choisir une caisse à utiliser. La caisse sélectionnée déterminera directement le compte de caisse utilisé dans les transactions financières sous-jacentes. Deux facteurs déterminent quelles caisses un utilisateur est présenté:</p>
+
+<ol>
+  <li>La caisse doit avoir été créée et configurée dans le <a href="#">module caisses</a>.</li>
+  <li>L’utilisateur doit être autorisé à accéder à la caisse depuis le module <a href="#">user management</a>.</li>
+</ol>
+
+<p>Les caisses correspondent généralement à des emplacements physiques et sont donc classées par projet. Si la caisse souhaitée ne figure pas dans la liste, vérifiez que les deux conditions ci-dessus sont remplies pour l’utilisateur et la caisse.</p>
+
+<p>Si un utilisateur souhaite changer de caisse, il peut le faire en cliquant sur <strong>Menu &gt; Changer de caisse</strong>. Cela fera apparaître le modal de sélection de la caisse.</p>
+
+<h2 id="création-dun-paiement-en-espèces">Création d’un paiement en espèces</h2>
+
+<p>Un paiement en espèces nécessite les champs suivants:</p>
+
+<ol>
+  <li><strong>Patient</strong> - Tous les paiements en espèces sont effectués par les patients. Le patient configure directement le compte du débiteur dans la transaction sous-jacente via le groupe de débiteurs du patient.</li>
+  <li><strong>Date</strong></li>
+  <li><strong>Devise</strong> - La devise définit le compte de caisse sous-jacent. Les guichets qui acceptent plusieurs devises doivent mettre chaque valeur de devise dans le compte de devise approprié. Le champ de devise gère cela automatiquement pour le caissier.</li>
+  <li><strong>Type</strong> - permet de choisir entre un paiement anticipé et un paiement sur facture. Voir la distinction ci-dessous.</li>
+  <li><strong>Notes</strong> - toute information supplémentaire à inclure sur la facture.</li>
+  <li><strong>Montant</strong> - le montant payé par le patient.</li>
+</ol>
+
+<div class="bs-callout bs-callout-warning">
+<h4> Limitation des paiements par groupe de débiteurs </h4>
+Seuls les clients payant en espèces devraient être autorisés à effectuer des paiements au guichet. Pour éviter de recevoir accidentellement de l'argent d'un client qui ne devrait pas payer au guichet, assurez-vous de modifier le paramètre "accepter les paiements en espèces" de son groupe de débiteurs!
+</div>
+
+<h3 id="paiements-facture">Paiements Facture</h3>
+
+<p>Le paiement le plus courant concerne une ou plusieurs factures. Pour créer ce paiement, le caissier devra choisir le type <em>invoice payment</em>. Ce faisant, un bouton apparaît avec le texte “Sélectionner les factures”. Cliquez sur ce bouton pour afficher le mode de sélection de la facture.</p>
+
+<p>Les patients ne peuvent payer que pour les factures effectuées sur leur compte personnel. Si un patient n’a pas été sélectionné dans l’entrée <strong>patient</strong>, un message d’erreur s’affiche pour indiquer à l’utilisateur de remplir ce champ avant de sélectionner les factures. Si un patient a été sélectionné, une liste de zéro ou plusieurs factures non équilibrées apparaîtra. Si le patient n’a pas été facturé ou s’il a payé l’intégralité de ses factures, sa liste de factures sera vide. S’il existe une ou plusieurs factures non équilibrées, celles-ci seront répertoriées. La sélection d’une ou plusieurs de ces factures les mettra en file d’attente pour le paiement.</p>
+
+<p>Un patient est autorisé à payer le montant total de toutes les factures facturées. Les paiements partiels seront affectés à chaque facture du plus ancien au plus récent jusqu’à ce que le paiement ait été utilisé. Malgré le paiement de plusieurs factures, un paiement de facture générera toujours une transaction unique contenant une seule ligne déplaçant le paiement total dans le compte de la caisse et une ligne pour chaque facture payée. Un exemple de transaction pour un paiement sur deux factures (`` IV.TPA.1<code class="highlighter-rouge"> et </code>IV.TPA.2` ) pourrait ressembler à ceci:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Transaction</th>
+      <th>Record</th>
+      <th><strong>Compte</strong></th>
+      <th>Débit</th>
+      <th>Crédit</th>
+      <th>Entité</th>
+      <th>Référence</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>TRANS1</td>
+      <td>CP.TPA.1</td>
+      <td>570001</td>
+      <td>10,00 $</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>TRANS1</td>
+      <td>CP.TPA.1</td>
+      <td>410001</td>
+      <td> </td>
+      <td>4,50 $</td>
+      <td>PA.HEV.1</td>
+      <td>IV.TPA.1</td>
+    </tr>
+    <tr>
+      <td>TRANS1</td>
+      <td>CP.TPA.1</td>
+      <td>410001</td>
+      <td> </td>
+      <td>5,50 $</td>
+      <td>PA.HEV.1</td>
+      <td>IV.TPA.2</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td><strong>10,00 $</strong></td>
+      <td><strong>10,00 $</strong></td>
+      <td> </td>
+      <td>-</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Dans la transaction ci-dessus, le compte de caisse (570001 ) est <strong>débité de 10,00 $</strong>, ce qui indique que le patient a versé de l’argent sur ce compte. Le compte du patient (410001) est <strong>crédité pour chaque facture payée</strong>. Les références aux factures sont jointes à la transaction sur la ligne correspondante.</p>
+
+<h3 id="prépaiements">Prépaiements</h3>
+
+<p>Certaines institutions acceptent les «paiements anticipés». Ces paiements sont effectués sans référence à une facture, en prévision de futures factures faites contre le patient.</p>
+
+<p>Par rapport aux paiements de factures, la création d’un paiement anticipé est simple. L’utilisateur doit sélectionner l’option de paiement anticipé et saisir le montant reçu dans le formulaire de paiement en espèces. La transaction sous-jacente générée contiendra deux lignes: une qui débite la caisse et une seconde qui crédite le compte du patient.</p>
+
+
+      </section>
+      <footer>
+        
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="/assets/js/scale.fix.js"></script>
+    
+  </body>
+</html>
