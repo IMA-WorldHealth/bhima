@@ -45,6 +45,7 @@ sh/build-database-test.sh
 
 # ignore documentation bad files
 docs/_site/
+docs/assets/js/scale.fix.js
 docs/.sass-cache/
 
 yarn-error.log
