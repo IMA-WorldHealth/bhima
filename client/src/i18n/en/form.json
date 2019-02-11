@@ -309,6 +309,7 @@
             "CREATE": "Create",
             "CREATE_CREDIT_NOTE": "Issue Credit Note",
             "CREATED": "Created",
+            "CREATED_AT": "Created at",
             "CREATED_BY": "Created by",
             "CREDIT_BALANCE": "Credit balance",
             "CREDIT": "Credit",

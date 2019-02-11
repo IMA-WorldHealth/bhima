@@ -310,6 +310,7 @@
             "CREATE": "CRÉATION",
             "CREATE_CREDIT_NOTE": "Emettre une note de crédit",
             "CREATED": "Crée",
+            "CREATED_AT": "Crée le",
             "CREATED_BY": "Crée par",
             "CREDIT": "Crédit",
             "CREDIT_BALANCE": "Solde Créditeur",
