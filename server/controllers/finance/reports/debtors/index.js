@@ -57,6 +57,7 @@ function agedDebtorReport(req, res, next) {
   db.one(sql, [qs.period_id])
     .then(period => {
       qs.date = period.end_date;
+      qs.enterprise_id = metadata.enterprise.id;
       // fire the SQL for the report
       return queryContext(qs);
     })
@@ -85,19 +86,35 @@ async function queryContext(params = {}) {
   // format the dates for MySQL escape
   const dates = _.fill(Array(5), params.date);
   const data = {};
+  const currencyId = db.escape(params.currency_id);
+  const enterpriseId = db.escape(params.enterprise_id);
 
   const groupByMonthColumns = `
-    SUM(IF(MONTH(?) - MONTH(gl.trans_date) = 0, gl.debit_equiv - gl.credit_equiv, 0)) AS thirty,
-    SUM(IF(MONTH(?) - MONTH(gl.trans_date) = 1, gl.debit_equiv - gl.credit_equiv, 0)) AS sixty,
-    SUM(IF(MONTH(?) - MONTH(gl.trans_date) = 2, gl.debit_equiv - gl.credit_equiv, 0)) AS ninety,
-    SUM(IF(MONTH(?) - MONTH(gl.trans_date) > 2, gl.debit_equiv - gl.credit_equiv, 0)) AS excess,
+    SUM(IF(MONTH(?) - MONTH(gl.trans_date) = 0, (gl.debit_equiv - gl.credit_equiv)*
+     IFNULL(GetExchangeRate(${enterpriseId}, ${currencyId}, gl.trans_date), 1), 0)) AS thirty,
+
+     SUM(IF(MONTH(?) - MONTH(gl.trans_date) = 1, (gl.debit_equiv - gl.credit_equiv)*
+     IFNULL(GetExchangeRate(${enterpriseId}, ${currencyId}, gl.trans_date), 1), 0)) AS sixty,
+    
+     SUM(IF(MONTH(?) - MONTH(gl.trans_date) = 2, (gl.debit_equiv - gl.credit_equiv)*
+     IFNULL(GetExchangeRate(${enterpriseId}, ${currencyId}, gl.trans_date), 1), 0)) AS ninety,
+
+     SUM(IF(MONTH(?) - MONTH(gl.trans_date) > 2, (gl.debit_equiv - gl.credit_equiv)*
+     IFNULL(GetExchangeRate(${enterpriseId}, ${currencyId}, gl.trans_date), 1), 0)) AS excess,
   `;
 
   const groupByRangeColumns = `
-    SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) BETWEEN 0 AND 29, gl.debit_equiv - gl.credit_equiv, 0)) AS thirty,
-    SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) BETWEEN 30 AND 59, gl.debit_equiv - gl.credit_equiv, 0)) AS sixty,
-    SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) BETWEEN 60 AND 89, gl.debit_equiv - gl.credit_equiv, 0)) AS ninety,
-    SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) > 90, gl.debit_equiv - gl.credit_equiv, 0)) AS excess,
+    SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) BETWEEN 0 AND 29, (gl.debit_equiv - gl.credit_equiv) *
+    IFNULL(GetExchangeRate(${enterpriseId}, ${currencyId}, gl.trans_date), 1), 0)) AS thirty,
+
+    SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) BETWEEN 30 AND 59, (gl.debit_equiv - gl.credit_equiv) *
+    IFNULL(GetExchangeRate(${enterpriseId}, ${currencyId}, gl.trans_date), 1), 0)) AS sixty,
+
+    SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) BETWEEN 60 AND 89, (gl.debit_equiv - gl.credit_equiv) * 
+    IFNULL(GetExchangeRate(${enterpriseId}, ${currencyId}, gl.trans_date), 1), 0)) AS ninety,
+    
+    SUM(IF(DATEDIFF(DATE(?), DATE(gl.trans_date)) > 90, (gl.debit_equiv - gl.credit_equiv) * 
+    IFNULL(GetExchangeRate(${enterpriseId}, ${currencyId}, gl.trans_date), 1), 0)) AS excess,
   `;
 
   // switch between grouping by month and grouping by period
@@ -109,7 +126,8 @@ async function queryContext(params = {}) {
   const debtorSql = `
     SELECT BUID(dg.uuid) AS id, dg.name, a.number,
       ${columns}
-      SUM(gl.debit_equiv - gl.credit_equiv) AS total
+      SUM((gl.debit_equiv - gl.credit_equiv) *
+      IFNULL(GetExchangeRate(${enterpriseId}, ${currencyId}, gl.trans_date), 1)) AS total
     FROM debtor_group AS dg JOIN debtor AS d ON dg.uuid = d.group_uuid
       LEFT JOIN general_ledger AS gl ON gl.entity_uuid = d.uuid
       JOIN account AS a ON a.id = dg.account_id
@@ -124,13 +142,15 @@ async function queryContext(params = {}) {
   const aggregateSql = `
     SELECT
       ${columns}
-      SUM(gl.debit_equiv - gl.credit_equiv) AS total
+      SUM((gl.debit_equiv - gl.credit_equiv)*
+      IFNULL(GetExchangeRate(${enterpriseId}, ${currencyId}, gl.trans_date), 1))AS total
     FROM debtor_group AS dg JOIN debtor AS d ON dg.uuid = d.group_uuid
       LEFT JOIN general_ledger AS gl ON gl.entity_uuid = d.uuid
     WHERE DATE(gl.trans_date) <= DATE(?)
       AND gl.fiscal_year_id = ?
     ${includeZeroes ? '' : havingNonZeroValues}
   `;
+
 
   const debtors = await db.exec(debtorSql, [...dates, params.fiscal_id]);
 
@@ -145,6 +165,7 @@ async function queryContext(params = {}) {
 
   const [aggregates] = await db.exec(aggregateSql, [...dates, params.fiscal_id]);
   data.aggregates = aggregates;
+  data.currency_id = params.currency_id;
 
   return data;
 }
