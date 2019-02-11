@@ -12,6 +12,7 @@ describe('Aged Debtors Report', () => {
     year : '2015',
     month : 'mai ',
     month2 : 'juin',
+    currency_id : 2,
   };
 
   before(() => {
@@ -19,9 +20,9 @@ describe('Aged Debtors Report', () => {
     Page = new ReportDebtorsPage(key);
   });
 
-
   it('preview a new Aged Debtors Report', () => {
-    Page.showDebtorsReportPreview(dataset.year, dataset.month, dataset.include_zeroes);
+    Page.showDebtorsReportPreview(dataset.year, dataset.month, dataset.include_zeroes,
+      dataset.currency_id);
   });
 
   it('close the previewed report', () => {
@@ -29,7 +30,8 @@ describe('Aged Debtors Report', () => {
   });
 
   it('save a previewed report', () => {
-    Page.saveDebtorsReport(dataset.year, dataset.month2, false, dataset.report_name, dataset.renderer);
+    Page.saveDebtorsReport(dataset.year, dataset.month2, false, dataset.report_name,
+      dataset.renderer, dataset.currency_id);
   });
 
   it('report has been saved into archive', () => {
@@ -37,6 +39,6 @@ describe('Aged Debtors Report', () => {
   });
 
   it('print the previewed report', () => {
-    Page.printDebtorsReport(dataset.year, dataset.month, dataset.include_zeroes);
+    Page.printDebtorsReport(dataset.year, dataset.month, dataset.include_zeroes, dataset.currency_id);
   });
 });
