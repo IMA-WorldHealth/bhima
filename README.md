@@ -37,13 +37,13 @@ If you just want to jump into to messing with the software, check out [Getting U
 
 If you are new to git/Github check out our [Getting Started Guide](https://github.com/IMA-WorldHealth/bhima/wiki/Getting-Started:-Contributing-on-Github).
 
-Want to jump straight into code?  The [First Time Contributor](https://github.com/IMA-WorldHealth/bhima/issues?q=is%3Aissue+is%3Aopen+label%3A%22first+time+contributor%22)
+Want to jump straight into code?  The [First Time Contributor](https://github.com/IMA-WorldHealth/bhima/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
 issues are a decent place to start.
 
 
 Installation
 -------------------
-See the [installation guide](./docs/INSTALL.md).
+See the [installation guide](./docs/en/for-developers/installing-bhima.md).
 
 License
 ---------------
