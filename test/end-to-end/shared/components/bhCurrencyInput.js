@@ -24,7 +24,5 @@ module.exports = {
   get : function get() {
     var elm = element(by.css(this.selector));
     return elm.getAttribute('value');
-  }
+  },
 };
-
-
