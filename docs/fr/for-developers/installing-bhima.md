@@ -9,11 +9,11 @@ Ce guide vous permettra de vous familiariser avec bhima localement. Veuillez not
 Avant de commencer le processus d'installation, assurez-vous que toutes les dépendances bhima sont installées localement. Nous ne testons que sous Linux. Il est donc préférable d’utiliser une version de Linux que vous connaissez bien. Assurez-vous d'avoir la version récente de:
 
 1. [MySQL](http://dev.mysql.com/downloads/) \(5.6 ou plus récent \)
-2. [Redis](https://github.com/IMA-WorldHealth/bhima-2.X/blob/master/docs/redis.io)
+2. [Redis](https://redis.io)
 3. curl
 4. [NodeJS](https://nodejs.org/en/) \(nous vous recommandons d’utiliser le [gestionnaire de version de node](https://github.com/creationix/nvm) sous Linux. Notez que nous ne testons que sur des versions stables. et bord \).
 5. [WKHTMLtoPDF](http://wkhtmltopdf.org/downloads.html) \(utilisez les fichiers binaires compilés, même s'ils sont distribués avec votre gestionnaire de paquets. Ils sont livrés avec le correctif Qt \).
-6. yarn
+6. [yarn](https://yarnpkg.com)
 7. git
 
 ### Instructions détaillées sur l'installation des dépendances pour Ubuntu \(vérifiées/installées spécifiquement avec VirtualBox\)
@@ -38,12 +38,12 @@ curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | 
 export NVM_DIR = "$ HOME/.nvm"
 [-s "$ NVM_DIR/nvm.sh"] && \. "$ NVM_DIR \ nvm.sh" # Ceci charge nvm
 
-#Téléchargez NodeJS version 8
-nvm install 8
+#Téléchargez NodeJS LTS
+nvm install lts/*
 
 # Exécutez les commandes suivantes pour installer WKHTMLtoPDF (notez que la version 0.12.4 doit être installée, la version 0.12.5 ne fonctionne pas actuellement avec bhima):
 sudo apt-get install xvfb
-wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
+wget -c https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
 tar xvf wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
 sudo mv wkhtmltox/bin/wkhtmltopdf/usr/bin
 sudo rm wkhtmltox-0.12.4_linux-generic-amd64.tar.xz && rm -rf wkhtmltox
@@ -60,11 +60,11 @@ sudo apt-get install git
 
 ### Obtenir la source
 
-Clonez la source à l'aide de git à partir du [référentiel github](https://github.com/IMA-WorldHealth/bhima-2.x) à l'aide des commandes suivantes:
+Clonez la source à l'aide de git à partir du [référentiel github](https://github.com/IMA-WorldHealth/bhima) à l'aide des commandes suivantes:
 
 ```bash
-git clone https://github.com/IMA-WorldHealth/bhima-2.X.git bhima-2.X
-cd bhima-2.X
+git clone https://github.com/IMA-WorldHealth/bhima.git bhima
+cd bhima
 ```
 
 ### Construire à partir de la source
@@ -74,7 +74,7 @@ Tous nos scripts de construction se trouvent dans le fichier `package.json`. Nou
 Pour exécuter les scripts de construction, vous pouvez utiliser `yarn` ou` npm`. Nous utiliserons `fil 'pour le reste de ce guide. Notez que l'utilisation de `npm` peut nécessiter que vous utilisiez` npm run` où il est indiqué `yarn` ci-dessous.
 
 ```bash
-# Dans le répertoire bhima-2.X /
+# Dans le répertoire bhima /
 # installer tous les modules de noeuds
 
 yarn install
@@ -167,13 +167,13 @@ Accédez à [https://localhost:8080](https://localhost:8080) dans le navigateur 
 
 ### Test de l'application
 
-Nos tests sont répartis en tests unitaires, tests de bout en bout et tests d'intégration. Il y a plus d'informations sur les tests dans le [wiki](https://github.com/IMA-WorldHealth/bhima-2.X/wiki).
+Nos tests sont répartis en tests unitaires, tests de bout en bout et tests d'intégration. Il y a plus d'informations sur les tests dans le [wiki](https://github.com/IMA-WorldHealth/bhima/wiki).
 
 1. **Tests d'intégration** - Ils testent l'intégration serveur + base de données et généralement nos API. Tous les points de terminaison API accessibles doivent généralement être associés à un test d'intégration. Pour les exécuter, tapez `test de fil: intégration`.
 2. **Tests unitaires de serveur** - Les bibliothèques de serveur sont testées d'unité avec mocha et chai, de manière similaire aux tests d'intégration. Pour les exécuter, tapez
    `test de fil: unité-serveur.`
 3. **Tests d'unité client** - Les composants client sont testés avec karma et doivent être installés si vous avez installé toutes les dépendances. Karma lance un navigateur chrome pour exécuter les tests. Pour les exécuter, tapez `test de fil: unité-client`.
-4. **Tests de bout en bout** - L'ensemble de la pile est testée avec \(souvent flaky \) des tests de bout en bout à l'aide de [rapporteur](https://github.com/IMA-WorldHealth/bhima-2.X/blob/master/docs/protractortest.org). Le rapporteur dépend de `webdriver-manager` qui doit être installé séparément. Voir leur documentation pour plus d'informations. Les tests de bout en bout peuvent être exécutés avec `yarn test:ends`.
+4. **Tests de bout en bout** - L'ensemble de la pile est testée avec \(souvent flaky \) des tests de bout en bout à l'aide de [rapporteur](https://github.com/IMA-WorldHealth/bhima/blob/master/docs/protractortest.org). Le rapporteur dépend de `webdriver-manager` qui doit être installé séparément. Voir leur documentation pour plus d'informations. Les tests de bout en bout peuvent être exécutés avec `yarn test:ends`.
 
 Vous pouvez exécuter tous les tests en tapant simplement `yarn test`.
 
