@@ -8,6 +8,29 @@
  * =============================================================================
 */
 
+-- the stock assign table
+DROP TABLE IF EXISTS `stock_assign`;
+CREATE TABLE `stock_assign` (
+  `uuid`              BINARY(16) NOT NULL,
+  `lot_uuid`          BINARY(16) NOT NULL,
+  `entity_uuid`       BINARY(16) NOT NULL,
+  `depot_uuid`        BINARY(16) NOT NULL,
+  `quantity`          INT(11) NOT NULL DEFAULT 1,
+  `is_active`         TINYINT(1) NOT NULL DEFAULT 1,
+  `description`       TEXT NULL,
+  `user_id`           SMALLINT(5) UNSIGNED NOT NULL,
+  `updated_at`        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_at`        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`uuid`),
+  KEY `lot_uuid` (`lot_uuid`),
+  KEY `entity_uuid` (`entity_uuid`),
+  KEY `depot_uuid` (`depot_uuid`),
+  FOREIGN KEY (`lot_uuid`) REFERENCES `lot` (`uuid`),
+  FOREIGN KEY (`entity_uuid`) REFERENCES `entity` (`uuid`),
+  FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+
 -- entity and entity_type table
 DROP TABLE IF EXISTS `entity_type`;
 CREATE TABLE `entity_type` (
@@ -36,6 +59,26 @@ CREATE TABLE `entity` (
   UNIQUE KEY `entity_uuid` (`uuid`),
   UNIQUE KEY `display_name` (`display_name`),
   KEY `entity_type_id` (`entity_type_id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+-- debtor_group_history table
+DROP TABLE IF EXISTS `debtor_group_history`;
+CREATE TABLE `debtor_group_history` (
+  `uuid` BINARY(16) NOT NULL,
+  `debtor_uuid` BINARY(16) DEFAULT NULL,
+  `previous_debtor_group` BINARY(16) DEFAULT NULL,
+  `next_debtor_group` BINARY(16) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `user_id` smallINT(5) UNSIGNED DEFAULT NULL,
+  PRIMARY KEY (`uuid`),
+  KEY `debtor_uuid` (`debtor_uuid`),
+  KEY `previous_debtor_group` (`previous_debtor_group`),
+  KEY `next_debtor_group` (`next_debtor_group`),
+  KEY `user_id` (`user_id`),
+  FOREIGN KEY (`debtor_uuid`) REFERENCES `debtor` (`uuid`),
+  FOREIGN KEY (`previous_debtor_group`) REFERENCES `debtor_group` (`uuid`),
+  FOREIGN KEY (`next_debtor_group`) REFERENCES `debtor_group` (`uuid`),
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
@@ -152,28 +195,6 @@ CREATE TABLE `distribution_key` (
 -- alter account table
 ALTER TABLE account DROP COLUMN `classe`;
 
--- the stock assign table
-DROP TABLE IF EXISTS `stock_assign`;
-CREATE TABLE `stock_assign` (
-  `uuid`              BINARY(16) NOT NULL,
-  `lot_uuid`          BINARY(16) NOT NULL,
-  `entity_uuid`       BINARY(16) NOT NULL,
-  `depot_uuid`        BINARY(16) NOT NULL,
-  `quantity`          INT(11) NOT NULL DEFAULT 1,
-  `is_active`         TINYINT(1) NOT NULL DEFAULT 1,
-  `description`       TEXT NULL,
-  `user_id`           SMALLINT(5) UNSIGNED NOT NULL,
-  `updated_at`        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `created_at`        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`uuid`),
-  KEY `lot_uuid` (`lot_uuid`),
-  KEY `entity_uuid` (`entity_uuid`),
-  KEY `depot_uuid` (`depot_uuid`),
-  FOREIGN KEY (`lot_uuid`) REFERENCES `lot` (`uuid`),
-  FOREIGN KEY (`entity_uuid`) REFERENCES `entity` (`uuid`),
-  FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
-
 -- alter the lot table
 ALTER TABLE lot ADD COLUMN `is_assigned` TINYINT(1) NULL DEFAULT 0;
 
@@ -182,13 +203,13 @@ ALTER TABLE `patient_group` MODIFY COLUMN `note` TEXT NULL;
 
 -- missed from migrate
 -- add account reference type table
-DROP TABLE IF EXISTS `account_reference_type`;  
+DROP TABLE IF EXISTS `account_reference_type`;
 CREATE TABLE `account_reference_type` (
-  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, 
-  `label` VARCHAR(100) NOT NULL, 
-  `fixed` tinyint(1) DEFAULT 0, 
-  PRIMARY KEY (`id`), 
-  UNIQUE KEY `account_reference_type_1` (`label`) 
+  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `label` VARCHAR(100) NOT NULL,
+  `fixed` tinyint(1) DEFAULT 0,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `account_reference_type_1` (`label`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 -- alter account reference table
@@ -209,7 +230,7 @@ INSERT INTO `entity_type` (`label`, `translation_key`) VALUES
   ('enterprise', 'ENTITY.TYPE.ENTERPRISE');
 
 -- Default Account Reference Type
-INSERT INTO `account_reference_type` (`id`, `label`, `fixed`) VALUES 
+INSERT INTO `account_reference_type` (`id`, `label`, `fixed`) VALUES
   (1, 'FORM.LABELS.FEE_CENTER', 1),
   (2, 'FORM.LABELS.BALANCE_SHEET', 1),
   (3, 'FORM.LABELS.PROFIT_LOSS', 1);
@@ -229,12 +250,13 @@ INSERT INTO unit VALUES
   (221, 'Update Distributions','TREE.UPDATE_DISTRIBUTION','', 218,'/modules/distribution_center/update','/distribution_center/update'),
   (222, 'Fee Center Report', 'TREE.FEE_CENTER_REPORT', 'Fee Center Report', 144, '/modules/reports/feeCenter', '/reports/feeCenter'),
   (223, 'Distribution keys', 'TREE.DISTRIBUTION_KEYS', 'Distribution keys', 218, '/modules/distribution_center/distribution_key', '/distribution_center/distribution_key'),
-  (224, 'Stock Assignment','ASSIGN.STOCK_ASSIGN','', 160,'/modules/stock/assign','/stock/assign');
+  (224, 'Stock Assignment','ASSIGN.STOCK_ASSIGN','', 160,'/modules/stock/assign','/stock/assign'),
+  (225, 'Account Reference Type','TREE.ACCOUNT_REFERENCE_TYPE','Account Reference Type', 1,'/modules/account_reference_type','/account_reference_type');
 
 INSERT INTO `report` ( `report_key`, `title_key`) VALUES
   ('income_expense_by_year', 'REPORT.PROFIT_AND_LOSS_BY_YEAR'),
   ('feeCenter', 'REPORT.FEE_CENTER.TITLE');
-  
+
 -- combine the two client reports into a single report
 UPDATE report SET `report_key` = 'annual-clients-report', title_key = 'REPORT.CLIENTS.TITLE' WHERE id = 17;
 UPDATE unit SET name = 'Annual Clients Report', `key` = 'REPORT.CLIENTS.TITLE',
@@ -253,7 +275,7 @@ INSERT INTO `transaction_type` (`text`, `type`, `fixed`) VALUES
   ('VOUCHERS.SIMPLE.TRANSFER_FUNDS_BANKS', 'expense', 1),
   ('VOUCHERS.SIMPLE.EXIT_FUNDS_BANK', 'expense', 1),
   ('VOUCHERS.SIMPLE.BANK_CASH_APPROVALS', 'income', 1);
-  
+
 UPDATE unit SET `key` = 'REPORT.PROFIT_AND_LOSS' WHERE id = 180;
 UPDATE unit SET `key` = 'REPORT.PROFIT_AND_LOSS_BY_MONTH' WHERE id = 211;
 UPDATE unit SET `key` = 'REPORT.PROFIT_AND_LOSS_BY_YEAR' WHERE id = 215;
@@ -261,7 +283,7 @@ UPDATE unit SET `key` = 'REPORT.PROFIT_AND_LOSS_BY_YEAR' WHERE id = 215;
 UPDATE report SET title_key = 'REPORT.PROFIT_AND_LOSS' WHERE id = 3;
 UPDATE report SET title_key = 'REPORT.PROFIT_AND_LOSS_BY_MONTH' WHERE id = 24;
 
-UPDATE report SET 
+UPDATE report SET
   `report_key`='unpaid-invoice-payments', `title_key`='REPORT.UNPAID_INVOICE_PAYMENTS_REPORT.TITLE'
 WHERE id = 23;
 
