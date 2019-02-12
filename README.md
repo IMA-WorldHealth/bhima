@@ -43,7 +43,7 @@ issues are a decent place to start.
 
 Installation
 -------------------
-See the [installation guide](./docs/en/for-developers/installing-bhima.md).
+See the [installation guide](https://docs.bhi.ma/en/for-developers/installing-bhima.html).
 
 License
 ---------------
