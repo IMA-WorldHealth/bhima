@@ -18,3 +18,8 @@ Grâce à BHIMA il est possible d'effectuer les mouvements de stock tels que :
 - [Les ajustements des stocks](./movement.adjustment.md) : lorsque les quantités physiques diffèrent des quantités dans BHIMA, il est possible d'ajuster soit positivement, soit négativement la quantité des stocks concernés.
 
 Touts ces mouvements sont enregistrés dans le registre des mouvements de stock, ce qui permet de les consulter à tout moment si besoin se présente.
+
+<div class = "bs-callout bs-callout-warning">
+  <h4>Pré-requis</h4>
+  <strong>Dépot</strong>: les opérations de stock nécessite un ou plusieurs dépots, d'où si aucun dépot n'est défini, le système vous suggerera de choisir un dépot ou d'en créer un nouveau.
+</div>
