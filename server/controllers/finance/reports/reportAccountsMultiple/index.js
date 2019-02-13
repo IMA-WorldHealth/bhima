@@ -8,7 +8,7 @@ const Currency = require('../../currencies');
 
 const TEMPLATE = './server/controllers/finance/reports/reportAccountsMultiple/report.handlebars';
 
-const { getAccountTransactions } = require('../reportAccounts/index');
+const { getAccountTransactions } = require('../../accounts/transactions');
 
 /**
  * @method document

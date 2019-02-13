@@ -1,0 +1,207 @@
+/**
+ * @overview AccountTransactions
+ *
+ * @description
+ * This file provides a common tool for reading the transations associated with an account.
+ * It provides a re-usable interface to access this information, and supports:
+ *  1. Inclusion of non-posted records
+ *  2. Exchange Rate Calculation
+ *  3. Running Balance Calculation
+ *
+ */
+
+const _ = require('lodash');
+const db = require('../../../lib/db');
+const FilterParser = require('../../../lib/filter');
+const Exchange = require('../exchange');
+const Accounts = require('.');
+
+/**
+ * @function getGeneralLedgerSQL
+ *
+ * @description
+ * Used by the getAccountTransactions() function internally.  The internal SQL
+ * just pulls out the values tied to a particular account.
+ *
+ * The exchange rate logic is complicated.  Here is the basic idea:
+ *  1. If you are in the enterprise currency, you want the calculation to
+ *    use ${amount} / rate to calculate the values.
+ *  2. If the you not in the enterprise currency, you want to use ${amount} * rate
+ *    to convert "back" to the enterprise currency.
+ *
+ */
+function getGeneralLedgerSQL(options) {
+  const filters = new FilterParser(options);
+
+  // return the proper way to convert the values depending on if we are in the
+  // exchange rate currency or not.
+  const enterpriseCurrencyColumns = `
+    (debit / rate) AS exchangedDebit, (credit / rate) AS exchangedCredit,
+    (balance / rate) AS exchangedBalance, @cumsum := (balance / rate) + @cumsum AS cumsum
+  `;
+
+  const nonEnterpriseCurrencyColumns = `
+    (debit * rate) AS exchangedDebit, (credit * rate) AS exchangedCredit,
+    (balance * rate) AS exchangedBalance, @cumsum := (balance * rate) + @cumsum AS cumsum
+  `;
+
+  const columns = options.isEnterpriseCurrency ? enterpriseCurrencyColumns : nonEnterpriseCurrencyColumns;
+
+  // get the underlying table for posted/unposted
+  const table = getBaseTable(options);
+
+  const sql = `
+    SELECT trans_id, description, trans_date, document_reference, debit, credit, posted,
+      debit_equiv, credit_equiv, currency_id, rate, IF(rate < 1, (1 / rate), rate) AS invertedRate,
+      ${columns}
+      FROM (
+      SELECT trans_id, description, trans_date, document_map.text AS document_reference,
+        IF(${options.isEnterpriseCurrency},
+          IFNULL(GetExchangeRate(${options.enterprise_id}, currency_id, trans_date), 1),
+          IF(${options.currency_id} = currency_id, 1,
+            IFNULL(GetExchangeRate(${options.enterprise_id}, ${options.currency_id}, trans_date), 1)
+        )) AS rate,
+        SUM(debit_equiv) as debit_equiv, SUM(credit_equiv) AS credit_equiv,
+        (SUM(debit) - SUM(credit)) AS balance, SUM(debit) AS debit,
+        SUM(credit) AS credit, MAX(currency_id) AS currency_id,
+        ${options.includeUnpostedValues ? 'posted' : '1 as posted'}
+      FROM ${table}
+      LEFT JOIN document_map ON record_uuid = document_map.uuid
+  `;
+
+  filters.equals('account_id');
+  filters.dateFrom('dateFrom', 'trans_date');
+  filters.dateTo('dateTo', 'trans_date');
+  filters.period('period', 'date');
+
+  filters.setGroup('GROUP BY record_uuid');
+  filters.setOrder('ORDER BY trans_date ASC');
+
+  const query = filters.applyQuery(sql);
+  const parameters = filters.parameters();
+
+  return { query, parameters };
+}
+
+/**
+ * @function getBaseTable
+ *
+ * @description
+ * This function constructs the underlying base tables for posted/unposted values from the general_ledger or
+ * a UNION of the posting_journal and general_ledger.
+ *
+ * TODO(@jniles) - move the WHERE queries into the subquery for performance reasons
+ */
+function getBaseTable(options) {
+  const includeUnpostedValuesTables = `(
+    SELECT trans_id, description, trans_date, debit_equiv, credit_equiv, currency_id, debit, credit,
+    account_id, record_uuid, reference_uuid, 1 as posted
+    FROM general_ledger
+    UNION ALL
+    SELECT trans_id, description, trans_date, debit_equiv, credit_equiv, currency_id, debit, credit,
+    account_id, record_uuid, reference_uuid, 0 as posted
+    FROM posting_journal
+  ) AS ledger`;
+
+  const table = options.includeUnpostedValues ? includeUnpostedValuesTables : `general_ledger as ledger`;
+  return table;
+}
+
+// @TODO define standards for displaying and rounding totals, unless numbers are rounded
+//       uniformly they may be displayed differently from what is recorded
+function getTotalsSQL(options) {
+  const currencyId = options.currency_id || options.enterprise_currency_id;
+
+  // get the underlying dataset based on the posted/unposted flag
+  const table = getBaseTable(options);
+
+  const sqlTotals = `
+    SELECT
+      IFNULL(GetExchangeRate(${options.enterprise_id}, ${currencyId}, NOW()), 1) AS rate,
+      ${currencyId} AS currency_id,
+      SUM(ROUND(debit, 2)) AS debit, SUM(ROUND(credit, 2)) AS credit,
+      SUM(ROUND(debit_equiv, 2)) AS debit_equiv, SUM(ROUND(credit_equiv, 2)) AS credit_equiv,
+      (SUM(ROUND(debit_equiv, 2)) - SUM(ROUND(credit_equiv, 2))) AS balance
+    FROM ${table}
+  `;
+
+  const filters = new FilterParser(options);
+
+  filters.equals('account_id');
+  filters.dateFrom('dateFrom', 'trans_date');
+  filters.dateTo('dateTo', 'trans_date');
+  filters.period('period', 'date');
+
+  const totalsQuery = filters.applyQuery(sqlTotals);
+  const totalsParameters = filters.parameters();
+
+  return { totalsQuery, totalsParameters };
+}
+
+
+/**
+ * @function getAccountTransactions
+ *
+ * @description
+ * This function returns all the transactions for an account,
+ */
+async function getAccountTransactions(options, openingBalance = 0) {
+  const { query, parameters } = getGeneralLedgerSQL(options);
+
+  // the running balance can only be in the enterprise currency.  It doesn't
+  // make sense to have the running balance in any other currency.
+  const sql = `
+    SELECT groups.trans_id, groups.debit, groups.credit, groups.debit_equiv,
+      groups.credit_equiv, groups.trans_date, groups.document_reference,
+      groups.exchangedCredit, groups.exchangedDebit, groups.exchangedBalance,
+      groups.rate, ROUND(groups.invertedRate, 2) AS invertedRate, groups.cumsum,
+      groups.description, groups.currency_id, groups.posted
+    FROM (${query})c, (SELECT @cumsum := ${openingBalance || 0})z) AS groups
+  `;
+
+  const { totalsQuery, totalsParameters } = getTotalsSQL(options);
+
+  // fire all requests in parallel for performance reasons
+  const [account, transactions, totals] = await Promise.all([
+    Accounts.lookupAccount(options.account_id),
+    db.exec(sql, parameters),
+    db.one(totalsQuery, totalsParameters),
+  ]);
+
+  // alias the unposted record flag for styling with italics
+  let hasUnpostedRecords = false;
+  transactions.forEach(txn => {
+    txn.isUnposted = txn.posted === 0;
+    if (txn.isUnposted) { hasUnpostedRecords = true; }
+  });
+
+  // if there is data in the transaction array, use the date of the last transaction
+  const lastTransaction = transactions[transactions.length - 1];
+  const lastDate = (lastTransaction && lastTransaction.trans_date) || options.dateTo;
+
+  const hasLastCumSum = !_.isUndefined(lastTransaction && lastTransaction.cumsum);
+  const lastCumSum = hasLastCumSum ? lastTransaction.cumsum : (totals.balance * totals.rate);
+
+  const lastCurrencyId = (lastTransaction && lastTransaction.currency_id) || totals.currency_id;
+  const shouldDisplayDebitCredit = transactions.every(txn => txn.currency_id === lastCurrencyId);
+
+  // contains the grid totals for the footer
+  const footer = {
+    date : lastDate,
+    exchangedBalance : totals.balance * totals.rate,
+    exchangedCumSum : lastCumSum,
+    exchangedDate : new Date(),
+    invertedRate : Exchange.formatExchangeRateForDisplay(totals.rate),
+    shouldDisplayDebitCredit,
+    transactionCurrencyId : lastCurrencyId,
+
+    // add totals into the footer
+    totals,
+  };
+
+  return {
+    account, transactions, hasUnpostedRecords, footer,
+  };
+}
+
+exports.getAccountTransactions = getAccountTransactions;

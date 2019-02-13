@@ -32,8 +32,7 @@ function CashReportConfigController($sce, Notify, SavedReports, AppCache, report
 
   vm.preview = function preview(form) {
     if (form.$invalid) {
-      Notify.danger('FORM.ERRORS.RECORD_ERROR');
-      return;
+      return Notify.danger('FORM.ERRORS.RECORD_ERROR');
     }
 
     // update cached configuration
@@ -69,10 +68,12 @@ function CashReportConfigController($sce, Notify, SavedReports, AppCache, report
     if (cache.reportDetails) {
       vm.reportDetails = angular.copy(cache.reportDetails);
     }
+
     // Set the defaults for the format and type
     if (!angular.isDefined(vm.reportDetails.format)) {
       vm.reportDetails.format = 1;
     }
+
     if (!angular.isDefined(vm.reportDetails.type)) {
       vm.reportDetails.type = 1;
     }
