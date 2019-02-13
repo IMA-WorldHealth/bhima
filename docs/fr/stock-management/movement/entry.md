@@ -1,4 +1,4 @@
-> [Accueil](../index.md) / [Gestion des stocks](./index.md) / [les mouvements des stocks](./movement.md) / Entrée de stock
+> [Accueil](../../index.md) / [Gestion des stocks](../index.md) / [les mouvements des stocks](./index.md) / Entrée de stock
 
 # Entrée de stock
 
@@ -23,9 +23,9 @@ Le module d'entrées de stock dispose de quatre options pour les entrées de sto
 
 - **Intégration** : l'intégration concerne des produits qui sont physiquement dans un dépot mais pas encore dans le système, et l'on souhaite les incorporer dans le système.
 
-- **Donation** : Si vous voulez faire entréer dans un dépôt les produits en provenance d'une donation, elle est comme similaire à l'intégration mais avec une indication que c'est une donation.
+- **Donation** : Si vous voulez faire entrer dans un dépôt les produits en provenance d'une donation, elle est similaire à l'intégration mais avec une indication que c'est une donation.
 
-- **Dépot** : Si vous voulez faire entréer dans un dépôt les produits en provenance d'un autre dépôt.
+- **Transfer** : Si vous voulez faire entrer dans un dépôt les produits en provenance d'un autre dépôt.
 
 ## Achat
 
@@ -70,7 +70,7 @@ Pour entrer le stock par intégration :
 
 Pour entrer le stock par donation la procédure est la même que celle avec l'intégration mais il faut cliquer sur le bouton `Donation`
 
-## Dépot
+## Transfer
 
 Pour entrer le stock en provenance d'un autre dépot : 
 - Cliquer sur le bouton `Transfert`

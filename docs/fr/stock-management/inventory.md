@@ -62,11 +62,7 @@ Les groupes d'inventaires ont comme pré-requis : les comptes, il faut que les c
 
 <div class = "bs-callout bs-callout-warning">
   <h4>Pré-requis</h4>
-  <ul>
-    <li>
-      <strong>Les comptes</strong>: voir le module compte dans Finance.
-    </li>
-  </ul>
+  <strong>Les comptes</strong>: voir le module compte dans Finance.
 </div>
 
 #### Les types d'inventaires
