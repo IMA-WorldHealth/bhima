@@ -138,8 +138,8 @@ function receipt(req, res, next) {
 
   Invoices.lookupInvoice(invoiceUuid)
     .then(reportResult => {
-      const recipientUuid = reportResult.patient_uuid;
 
+      const recipientUuid = reportResult.patient_uuid;
       _.extend(invoiceResponse, reportResult);
 
       return Promise.all([
