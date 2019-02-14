@@ -15,6 +15,7 @@ Les modules de la gestion des stocks permettent d'efféctuer des mouvements de s
     1. [Fiches de stock](./report/stock_sheet.md)
     2. [Etat des stocks](./report/stock_status.md)
     3. [Valeur des stocks](./report/stock_value.md)
+    4. [Sortie des stocks](./report/stock_exit.md)
 6. [Les registres de stock](./registry/index.md)
     1. [Registre des lots](./registry/lot.md)
     2. [Registre des inventaires](./registry/inventory.md)
@@ -22,4 +23,3 @@ Les modules de la gestion des stocks permettent d'efféctuer des mouvements de s
 7. [Outils additionnels](./tools/index.md)
     1. [Importation des stocks à partir d'un fichier CSV](./tools/stock_import.md)
     2. [Assignation des lots](./tools/lot_assign.md)
-    2. [Historique d'assignation de lot](./tools/lot_assign_historic.md)
