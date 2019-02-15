@@ -113,9 +113,10 @@
                 <span>(C)</span>
               </bh-account-select>
 
-               <bh-currency-select
-                 currency-id="SimpleVoucherCtrl.Voucher.details.currency_id">
-               </bh-currency-select>
+              <bh-currency-select
+                on-change="SimpleVoucherCtrl.onCurrencyChange(currencyId)"
+                currency-id="SimpleVoucherCtrl.Voucher.details.currency_id">
+              </bh-currency-select>
 
               <bh-currency-input
                 data-voucher-currency-input

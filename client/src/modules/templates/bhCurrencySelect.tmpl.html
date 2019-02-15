@@ -23,7 +23,7 @@
         type="radio"
         ng-model="$ctrl.currencyId"
         ng-value="currency.id"
-        ng-change="$ctrl.onChange({ currency : $ctrl.currencyId })"
+        ng-change="$ctrl.valueChange()"
         data-currency-option="{{ currency.id }}"
         ng-disabled="currency.disabled"
         ng-required="$ctrl.required">

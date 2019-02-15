@@ -22,6 +22,10 @@ function OperatingConfigController($sce, Notify, SavedReports, AppCache, reportD
     vm.reportDetails.periodFrom = period.id;
   };
 
+  vm.onSelectCurrency = (currencyId) => {
+    vm.reportDetails.currency_id = currencyId;
+  };
+
   vm.onSelectPeriodTo = function onSelectPeriodTo(period) {
     vm.reportDetails.periodTo = period.id;
   };
