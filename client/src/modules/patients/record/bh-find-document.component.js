@@ -66,7 +66,7 @@ function FindDocumentComponent(Patient, Modal, Document, Notify) {
       .then((ans) => {
         if (!ans) { return; }
 
-        return Document.remove(vm.session.patientUuid, uuid)
+        Document.remove(vm.session.patientUuid, uuid)
           .then(() => {
             Notify.success('FORM.INFO.DELETE_SUCCESS');
             startup();
@@ -104,6 +104,7 @@ function FindDocumentComponent(Patient, Modal, Document, Notify) {
     let ext;
 
     if (mimetype.indexOf('image') > -1) {
+      /* eslint-disable no-nested-ternary */
       ext = (mimetype.indexOf('jpg') > -1 || mimetype.indexOf('jpeg') > -1) ? '.jpg'
         : (mimetype.indexOf('png') > -1) ? '.png'
           : (mimetype.indexOf('gif') > -1) ? '.gif' : '';

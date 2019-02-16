@@ -122,10 +122,6 @@ function StockLotsController(
     vm.loading = !vm.loading;
   }
 
-  function orderByDepot(rowA, rowB) {
-    return rowA.depot_text > rowB.depot_text ? 1 : -1;
-  }
-
   // load stock lots in the grid
   function load(filters) {
     vm.hasError = false;

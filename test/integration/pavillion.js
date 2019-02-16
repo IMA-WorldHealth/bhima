@@ -1,4 +1,4 @@
-/* global expect, chai, agent */
+/* global expect, agent */
 
 const helpers = require('./helpers');
 
@@ -51,7 +51,6 @@ describe('(/pavillions) The pavillion API endpoint', () => {
     return agent.get('/pavillions')
       .then((res) => {
         expect(res).to.have.status(200);
-        expect(res.body).to.not.be.empty;
         expect(res.body).to.be.length(2);
       })
       .catch(helpers.handler);
@@ -76,7 +75,7 @@ describe('(/pavillions) The pavillion API endpoint', () => {
     return agent.delete(`/pavillions/${uuid2}`)
       .then((res) => {
         helpers.api.deleted(res);
-        return agent.get(`/pavillions`)
+        return agent.get(`/pavillions`);
       })
       .then(res => {
         expect(res.body).to.be.length(1);
