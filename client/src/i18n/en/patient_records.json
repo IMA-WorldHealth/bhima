@@ -34,7 +34,13 @@
       "AMBULATORY" : "Outpatient Visit",
       "HOSPITALISATION" : "Hospitalisation",
       "SEARCH_INFO" : "The input will search for diagnosis after 3 characters have been typed.",
-      "NOTES_INFO" : "Principal complaint, time since previous visit, referring doctor, etc..."
+      "NOTES_INFO" : "Principal complaint, time since previous visit, referring doctor, etc...",
+      "ADMISSION_DATE": "Admission Date",
+      "DURATION": "Duration",
+      "DISCHARGE_DATE": "Discharge Date",
+      "DISCHARGE_DIAGNOSIS": "Discharge Diagnosis",
+      "PATIENT_INFO": "Patient Information",
+      "VISITS_INFO": "Visits Information"
     },
     "FINANCIAL_ACTIVITY":{
       "ACCOUNT" : "Account Number",

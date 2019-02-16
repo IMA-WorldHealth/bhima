@@ -10,8 +10,19 @@
     "TITLE":"Patients",
     "UPDATE_PICTURE":"Mettre à jour la Photo",
     "UPLOAD_PICTURE":"Télécharger Photo Patient",
+    "CHECK_IN":{
+      "TITLE" : "Admission",
+      "SUBMIT" : "Admettre le patient",
+      "NOT_RECENT" : "Ce patient n'a pas été récemment enregistré. Enregistrez le patient pour suivre sa visite à l'hôpital.",
+      "ORIGINAL" : "Ce patient n'a jamais été admis à l'hopital",
+      "RECENT" : "Visites récentes",
+      "ITEM" : "Admis",
+      "BY" : "Par",
+      "REPORT_TITLE" : "Rapport des visites du patient",
+      "SUCCESS" : "Le patient a été admis"
+    },
     "VISITS":{
-      "TITLE":"Visites des patients",
+      "TITLE":"Visites du patient",
       "ADMIT":"Admission à l'hôpital",
       "ADMISSION_DIAGNOSIS":"Diagnostic d'admission",
       "ADMISSION":"Admission",
@@ -23,7 +34,13 @@
       "AMBULATORY" : "Ambulatoire",
       "HOSPITALISATION" : "Hospitalisé",
       "SEARCH_INFO":"L'entrée recherche le diagnostic après avoir tapé 3 caractères.",
-      "NOTES_INFO" : "Plainte principale, temps écoulé depuis la visite précédente, médecin référant, etc..."
+      "NOTES_INFO" : "Plainte principale, temps écoulé depuis la visite précédente, médecin référant, etc...",
+      "ADMISSION_DATE": "Date d'admission",
+      "DURATION": "Durée",
+      "DISCHARGE_DATE": "Date de sortie",
+      "DISCHARGE_DIAGNOSIS": "Diagnostique à la sortie",
+      "PATIENT_INFO": "Informations sur le patient",
+      "VISITS_INFO": "Informations sur les visites"
     },
     "FINANCIAL_ACTIVITY":{
       "ACCOUNT":"Numéro de compte",

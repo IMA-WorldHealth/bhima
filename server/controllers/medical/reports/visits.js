@@ -56,19 +56,28 @@ function getReportData(uuid) {
 
       const sql = `
         SELECT BUID(patient_uuid) AS patient_uuid, start_date, YEAR(start_date) AS year,
-          end_date, user.display_name
+          end_date, user.display_name,
+          DATEDIFF(IFNULL(patient_visit.end_date, CURRENT_DATE()), patient_visit.start_date) AS duration,
+          IFNULL(patient_visit.end_date, 1) AS in_progress,
+          patient_visit.hospitalized, patient_visit.start_notes, patient_visit.end_notes,
+          icds.label AS start_diagnosis_label, icds.code AS start_diagnosis_code,
+          icde.label AS end_diagnosis_label, icde.code AS end_diagnosis_code
         FROM patient_visit
         JOIN user ON patient_visit.user_id = user.id
+        LEFT JOIN icd10 icds ON icds.id = patient_visit.start_diagnosis_id
+        LEFT JOIN icd10 icde ON icde.id = patient_visit.end_diagnosis_id
         WHERE patient_uuid = ?
-        ORDER BY start_date;
+        ORDER BY start_date DESC;
       `;
 
       return db.exec(sql, [db.bid(uuid)]);
     })
     .then(visits => {
       // grouping by year allows pretty table groupings
-      data.visits = _.groupBy(visits, 'year');
+      // data.visits = _.groupBy(visits, 'year');
+      data.visits = visits;
       data.total = visits.length;
+      data.showMedicalInfo = true;
       return data;
     });
 }
