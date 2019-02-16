@@ -30,12 +30,11 @@
             <div class="input-group">
               <span class="input-group-addon"><i class="fa fa-filter"></i></span>
               <input
-                type="text" 
                 ng-model="GroupsCtrl.searchValue"
                 type="search"
                 class="form-control input-sm"
                 style="display: inline"
-                placeholder="{{ 'FORM.LABELS.SEARCH' | translate }}">
+                translate-attr="{ placeholder: 'FORM.LABELS.SEARCH' }">
             </div>
           </th>
           <th></th>
