@@ -1,6 +1,6 @@
 <ng-form name="bhCurrencyInputForm">
   <div class="form-group"
-    ng-class="{ 'has-error' : $ctrl.validationTrigger && bhCurrencyInputForm.currencyInputValue.$invalid }"
+    ng-class="{ 'has-error' : bhCurrencyInputForm.$submitted && bhCurrencyInputForm.currencyInputValue.$invalid }"
     data-bh-currency-input>
     <label class="control-label" translate>{{ ::$ctrl.label }}</label>
 
@@ -16,7 +16,7 @@
     </div>
 
     <!-- validation messages -->
-    <p class="help-block" ng-messages="bhCurrencyInputForm.currencyInputValue.$error" ng-show="$ctrl.validationTrigger">
+    <p class="help-block" ng-messages="bhCurrencyInputForm.currencyInputValue.$error" ng-show="bhCurrencyInputForm.$submitted">
 
       <!-- displays: "This value is required" -->
       <span ng-message="required">

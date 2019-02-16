@@ -9,34 +9,36 @@ angular.module('bhima.components')
       principal        : '<',
       onSelectCallback : '&',
       required         : '<?',
-      validateTrigger  : '<?',
     },
   });
 
 FeeCenterSelectController.$inject = ['FeeCenterService', 'NotifyService'];
 
 /**
+ * @function FeeCenterSelectionController
+ *
+ * @description
  * FeeCenter selection component
  */
 function FeeCenterSelectController(FeeCenters, Notify) {
   const $ctrl = this;
 
-  $ctrl.$onInit = function onInit() {
-
+  $ctrl.$onInit = () => {
     FeeCenters.read(null)
-      .then((feeCenters) => {
-        $ctrl.feeCenters = feeCenters;
+      .then(feeCenters => {
+
         if ($ctrl.filter) {
-          $ctrl.feeCenters = feeCenters.filter(item => {
-            return $ctrl.principal ? item.is_principal : !item.is_principal;
-          });
+          $ctrl.feeCenters = feeCenters
+            .filter(item => ($ctrl.principal ? item.is_principal : !item.is_principal));
+        } else {
+          $ctrl.feeCenters = feeCenters;
         }
       })
       .catch(Notify.handleError);
   };
 
   // fires the onSelectCallback bound to the component boundary
-  $ctrl.onSelect = $item => {
-    $ctrl.onSelectCallback({ feeCenter : $item });
+  $ctrl.onSelect = feeCenter => {
+    $ctrl.onSelectCallback({ feeCenter });
   };
 }

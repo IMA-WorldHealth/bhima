@@ -11,7 +11,7 @@ ConfirmModalController.$inject = ['$uibModalInstance', 'prompt'];
  * the user should be able to perform an action or not.
  */
 function ConfirmModalController(Instance, prompt) {
-  var vm = this;
+  const vm = this;
 
   vm.dismiss = function dismis() { return Instance.dismiss(false); };
   vm.submit = function submit() { return Instance.close(true); };

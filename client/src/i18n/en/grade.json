@@ -2,9 +2,9 @@
   "GRADE" : {
     "ADD_GRADE" : "Add a Grade",
     "ALL_GRADES" : "All Grades",
-    "CREATED" : "Grade created with success",
+    "CREATED" : "Grade created successfully",
     "CHANGE" : "Change Grade",
-    "DELETED" : "Grade deleted with success",
+    "DELETED" : "Grade deleted successfully",
     "DELETE" : "Delete",
     "GRADES_LIST" : "Grades list",
     "EDIT_GRADE" : "Edit the information in a Grade",
@@ -12,10 +12,10 @@
     "LABEL" : "Grade",
     "NO_GRADE" : "No Grade",
     "TITLE" : "Grade Management",
-    "UPDATED" : "Grade updated with success",
+    "UPDATED" : "Grade updated successfully",
     "MODAL" : {
       "SELECTION" : "Grade Selection",
-      "NO_GRADES" : "Do not see any grades?",
+      "NO_GRADES" : "Don't see any grades?",
       "SELECT_A_GRADE" : "Select a grade"
     }
   }

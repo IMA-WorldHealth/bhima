@@ -16,6 +16,7 @@ const { uuid } = require('../../lib/util');
 const db = require('../../lib/db');
 const core = require('./core');
 const importing = require('./import');
+const assign = require('./assign');
 
 // expose to the API
 exports.createStock = createStock;
@@ -28,6 +29,7 @@ exports.listStockFlux = listStockFlux;
 exports.listLotsOrigins = listLotsOrigins;
 exports.createIntegration = createIntegration;
 exports.importing = importing;
+exports.assign = assign;
 
 // stock consumption
 exports.getStockConsumption = getStockConsumption;

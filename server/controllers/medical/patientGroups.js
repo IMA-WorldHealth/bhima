@@ -30,8 +30,15 @@ function list(req, res, next) {
   const filters = new FilterParser(req.query, { tableAlias : 'pg' });
   const sql = `
     SELECT BUID(pg.uuid) as uuid, pg.name, BUID(pg.price_list_uuid) AS price_list_uuid,
-      pg.note, pg.created_at, pl.label AS priceListLabel, pl.description
-    FROM patient_group AS pg LEFT JOIN price_list AS pl ON pg.price_list_uuid = pl.uuid
+      pg.note, pg.created_at, pl.label AS priceListLabel, pl.description,
+      assignment.patientNumber
+    FROM patient_group AS pg 
+    LEFT JOIN price_list AS pl ON pg.price_list_uuid = pl.uuid
+    LEFT JOIN (
+      SELECT count(uuid) as patientNumber , patient_group_uuid
+      FROM patient_assignment
+      GROUP BY patient_group_uuid
+    )assignment ON assignment.patient_group_uuid = pg.uuid
   `;
 
   filters.equals('name');

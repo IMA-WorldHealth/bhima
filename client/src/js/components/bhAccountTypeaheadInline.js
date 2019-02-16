@@ -26,9 +26,6 @@ function AccountTypeaheadInlineController(Accounts, $timeout, $scope, Store) {
 
   // fired at the beginning of the account select
   $ctrl.$onInit = function $onInit() {
-    // fired when an account has been selected
-    $ctrl.onSelectCallback = $ctrl.onSelectCallback || angular.noop;
-
     // default for form name
     $ctrl.name = $ctrl.name || 'AccountForm';
 
@@ -50,21 +47,29 @@ function AccountTypeaheadInlineController(Accounts, $timeout, $scope, Store) {
     const params = { hidden : 0 };
 
     Accounts.read(null, params)
-      .then((elements) => {
+      .then(elements => {
         // bind the accounts to the controller
         const accounts = Accounts.order(elements);
         $ctrl.accounts = Accounts.filterTitleAccounts(accounts);
 
         store.setData($ctrl.accounts);
+
+        if ($ctrl.accountId) {
+          setAccount($ctrl.accountId);
+        }
       });
   }
 
   $ctrl.$onChanges = function $onChanges(changes) {
     const accountId = changes.accountId && changes.accountId.currentValue;
     if (accountId) {
-      $ctrl.account = store.get(accountId);
+      setAccount(accountId);
     }
   };
+
+  function setAccount(id) {
+    $ctrl.account = store.get(id);
+  }
 
   // fires the onSelectCallback bound to the component boundary
   $ctrl.onSelect = function onSelect($item) {

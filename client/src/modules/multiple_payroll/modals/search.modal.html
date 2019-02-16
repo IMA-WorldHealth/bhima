@@ -1,4 +1,4 @@
-<form name="ModalForm" bh-submit="$ctrl.submit(ModalForm)" novalidate>  
+<form name="ModalForm" bh-submit="$ctrl.submit(ModalForm)" novalidate>
   <div class="modal-header">
     <ol class="headercrumb">
       <li class="static" translate>TREE.PAYROLL</li>
@@ -13,19 +13,27 @@
         payroll-configuration-id="$ctrl.searchQueries.payroll_configuration_id"
         name="PayrollPeriodForm"
         on-select-callback="$ctrl.onSelectPayrollPeriod(payrollConfig)"
-        required="true"
-        validation-trigger="ModalForm.$submitted">
+        required="true">
       </bh-payroll-period-select>
     </div>
 
     <div class="modal-body">
       <bh-currency-select
         currency-id="$ctrl.searchQueries.currency_id"
-        on-change="$ctrl.setCurrency(currency)"
-        validation-trigger="ModalForm.$submitted">
+        on-change="$ctrl.setCurrency(currency)">
       </bh-currency-select>
     </div>
 
+    <span ng-if="$ctrl.enterpriseCurrencyId !== $ctrl.searchQueries.currency_id">
+      <bh-currency-input
+        data-payment-currency-input
+        label="FORM.LABELS.CONVERTION_RATE"
+        id="conversion_rate"
+        currency-id="$ctrl.searchQueries.currency_id"
+        model="$ctrl.searchQueries.conversion_rate"
+        min = 0>
+      </bh-currency-input>
+    </span>
     <hr>
     <div class="modal-body" >
       <label class="control-label" translate>FORM.LABELS.NAME</label>

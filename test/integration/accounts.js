@@ -18,7 +18,6 @@ describe('(/accounts) Accounts', () => {
     locked : 0,
     cc_id : null,
     pc_id : null,
-    classe : 4,
     reference_id : null,
   };
 
@@ -28,7 +27,7 @@ describe('(/accounts) Accounts', () => {
   const NUM_ACCOUNTS = 281;
 
   const responseKeys = [
-    'id', 'enterprise_id', 'locked', 'cc_id', 'pc_id', 'created', 'classe',
+    'id', 'enterprise_id', 'locked', 'cc_id', 'pc_id', 'created',
     'reference_id', 'number', 'label', 'parent', 'type_id', 'type', 'translation_key',
     'cost_center_text', 'profit_center_text',
   ];

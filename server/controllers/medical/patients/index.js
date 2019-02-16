@@ -273,9 +273,11 @@ async function updatePatientDebCred(patientUuid) {
   const buid = db.bid(patientUuid);
 
   const sql = `
-    SELECT BUID(debtor.uuid) AS debtorUuid, BUID(employee.creditor_uuid) AS creditorUuid, patient.display_name
+    SELECT BUID(debtor.uuid) AS debtorUuid, BUID(employee.creditor_uuid) AS creditorUuid, patient.display_name,
+      CONCAT_WS('.', 'PA', project.abbr, patient.reference) as patientReference
     FROM debtor
     JOIN patient ON patient.debtor_uuid = debtor.uuid
+    JOIN project ON project.id = patient.project_id
     LEFT JOIN employee ON employee.patient_uuid = patient.uuid
     WHERE patient.uuid = ?
   `;
@@ -290,10 +292,6 @@ async function updatePatientDebCred(patientUuid) {
 
   const creditorText = {
     text : `Crediteur [${patient.display_name}]`,
-  };
-
-  const patientText = {
-    text : `Patient [${patient.display_name}]`,
   };
 
   const updateCreditor = `UPDATE creditor SET ? WHERE creditor.uuid = ?`;
@@ -311,9 +309,9 @@ async function updatePatientDebCred(patientUuid) {
 
   // update entity map tables
   transaction
-    .addQuery(updateEntityMap, [debtorText.text, patient.debtor_uuid])
-    .addQuery(updateEntityMap, [creditorText.text, patient.creditor_uuid])
-    .addQuery(updateEntityMap, [patientText.text, buid]);
+    .addQuery(updateEntityMap, [patient.patientReference, patient.debtor_uuid])
+    .addQuery(updateEntityMap, [patient.patientReference, patient.creditor_uuid])
+    .addQuery(updateEntityMap, [patient.patientReference, buid]);
 
   return transaction.execute();
 }

@@ -30,8 +30,8 @@ function GridSortingService() {
   function transactionIds(a, b) {
     // determine integer (reference) value by extracting it from the transaction ID
     // match returns an array of mathces - take the first element
-    var first = Number(/[a-z,A-Z]*([0-9]*)/g.exec(a)[1]);
-    var second = Number(/[a-z,A-Z]*([0-9]*)/g.exec(b)[1]);
+    const first = Number(/[a-z,A-Z]*([0-9]*)/g.exec(a)[1]);
+    const second = Number(/[a-z,A-Z]*([0-9]*)/g.exec(b)[1]);
 
     if (first < second) {
       return 1;
@@ -61,26 +61,31 @@ function GridSortingService() {
    * @function sortByReferece
    *
    * @description
-   * Sorts references as if they were numerical values.
+   * Sorts references as if they were numerical values
    *
    * @public
    */
   function sortByReference(a, b) {
     // get the last index of the dot in the reference (plus offset)
-    var aIdx = a.lastIndexOf('.') + 1;
-    var bIdx = b.lastIndexOf('.') + 1;
+    const aIdx = a.lastIndexOf('.') + 1;
+    const bIdx = b.lastIndexOf('.') + 1;
 
-    // get the numerical value
-    var aReference = parseInt(a.slice(aIdx), 10);
-    var bReference = parseInt(b.slice(bIdx), 10);
+    // in case of malformed data, still try and sort
+    try {
+      // get the numerical value
+      const aReference = parseInt(a.slice(aIdx), 10);
+      const bReference = parseInt(b.slice(bIdx), 10);
 
-    // return the correct numerical value
-    return aReference - bReference;
+      // return the correct numerical value
+      return aReference - bReference;
+    } catch (e) {
+      return a.localeCompare(b);
+    }
   }
 
   // bind all algorithms for public consumption
   GridSorting.algorithms = {
-    sortByReference : sortByReference,
+    sortByReference,
   };
 
   return GridSorting;

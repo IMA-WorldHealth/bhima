@@ -109,8 +109,6 @@ function GeneralLedgerController(
     enableColumnMenus : false,
     showTreeExpandNoChildren : false,
     rowTemplate : '/modules/accounts/templates/grid.leafRow.tmpl.html',
-    gridFooterTemplate : '/modules/general-ledger/grid.footer.html',
-    showGridFooter : true,
     showColumnFooter : true,
     appScopeProvider  : vm,
     onRegisterApi : onRegisterApiFn,

@@ -286,4 +286,24 @@ function UtilService(moment) {
     const base = 10 ** precision;
     return Math.round(number * base) / base;
   };
+
+  /**
+   * @function groupBy
+   * @description group an array of objects according a property
+   * @param {array} array
+   * @param {string} property
+   * @returns {object}
+   */
+  service.groupBy = (array, property) => {
+    const out = {};
+    for (let i = 0; i < array.length; i++) {
+      const item = array[i];
+      const value = item[property];
+      if (!out[value]) {
+        out[value] = [];
+      }
+      out[value].push(item);
+    }
+    return out;
+  };
 }

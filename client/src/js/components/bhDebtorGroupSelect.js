@@ -5,24 +5,20 @@ angular.module('bhima.components')
     transclude  : true,
     bindings    : {
       debtorGroupUuid   : '<',
-      disable           : '<?',
       onSelectCallback  : '&',
+      disable           : '<?',
       name              : '@?',
       label             : '@?',
       required          : '<?',
-      validationTrigger : '<',
       filter            : '<?',
       warnNoGroup       : '<?',
     },
   });
 
-DebtorGroupSelectController.$inject = [
-  'DebtorGroupService',
-];
+DebtorGroupSelectController.$inject = ['DebtorGroupService'];
 
 /**
  * Debtor Group selection component
- *
  */
 function DebtorGroupSelectController(DebtorGroup) {
   const $ctrl = this;
@@ -30,14 +26,10 @@ function DebtorGroupSelectController(DebtorGroup) {
   $ctrl.$onInit = function onInit() {
     const filters = $ctrl.filter || {};
 
-    // fired when a Debtor Group has been selected
-    $ctrl.onSelectCallback = $ctrl.onSelectCallback || angular.noop;
-
-    // default for form name
-    $ctrl.name = $ctrl.name || 'DebtorForm';
-
     // translated label for the form input
     $ctrl.label = $ctrl.label || 'FORM.LABELS.DEBTOR_GROUP';
+
+    $ctrl.required = angular.isDefined($ctrl.required) ? $ctrl.required : true;
 
     // load all Debtor Group
     DebtorGroup.read(null, filters)
@@ -52,7 +44,7 @@ function DebtorGroupSelectController(DebtorGroup) {
   }
 
   // fires the onSelectCallback bound to the component boundary
-  $ctrl.onSelect = function onSelect($item) {
-    $ctrl.onSelectCallback({ debtorGroup : $item });
+  $ctrl.onSelect = debtorGroup => {
+    $ctrl.onSelectCallback({ debtorGroup });
   };
 }

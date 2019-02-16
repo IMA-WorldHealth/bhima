@@ -78,7 +78,7 @@ const cash = require('../controllers/finance/cash');
 const priceList = require('../controllers/finance/priceList');
 const priceListPreport = require('../controllers/finance/reports/priceList');
 const invoicingFees = require('../controllers/finance/invoicingFees');
-const unbalancedInvoicePayments = require('../controllers/finance/reports/unbalanced_invoice_payments');
+const unpaidInvoicePayments = require('../controllers/finance/reports/unpaid-invoice-payments');
 const accounts = require('../controllers/finance/accounts');
 const subsidies = require('../controllers/finance/subsidies');
 const patientInvoice = require('../controllers/finance/patientInvoice');
@@ -117,6 +117,11 @@ const distributionBreakDown = require('../controllers/finance/distributionFeeCen
 const distributionAutomatic = require('../controllers/finance/distributionFeeCenter/automatic');
 const distributionGetDistributionKey = require('../controllers/finance/distributionFeeCenter/getDistributionKey');
 const setDistributionKey = require('../controllers/finance/distributionFeeCenter/setting');
+
+const accountReferenceType = require('../controllers/finance/accounts/accountReferenceType');
+
+// lots
+const lots = require('../controllers/stock/lots');
 
 // expose routes to the server.
 exports.configure = function configure(app) {
@@ -373,13 +378,12 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/cashflow/services', financeReports.cashflow.byService);
   app.get('/reports/finance/financialPatient/:uuid', financeReports.patient);
   app.get('/reports/finance/income_expense', financeReports.income_expense.document);
-  app.get('/reports/finance/unbalanced_invoice_payments', unbalancedInvoicePayments.document);
+  app.get('/reports/finance/unpaid-invoice-payments', unpaidInvoicePayments.document);
 
   app.get('/reports/finance/income_expense_by_month', financeReports.income_expense_by_month.document);
   app.get('/reports/finance/income_expense_by_year', financeReports.income_expense_by_year.document);
   app.get('/reports/finance/cash_report', financeReports.cashReport.document);
   app.get('/reports/finance/balance', financeReports.balance.document);
-  app.get('/reports/finance/balance_sheet', financeReports.balanceSheet.document);
   app.get('/reports/finance/account_report', financeReports.reportAccounts.document);
   app.get('/reports/finance/account_report_multiple', financeReports.reportAccountsMultiple.document);
   app.get('/reports/finance/journal', financeReports.journal.postingReport);
@@ -536,6 +540,7 @@ exports.configure = function configure(app) {
   app.post('/enterprises', enterprises.create);
   app.put('/enterprises/:id', enterprises.update);
   app.get('/enterprises/:id/fiscal_start', fiscal.getEnterpriseFiscalStart);
+  app.post('/enterprises/:id/logo', upload.middleware('pics', 'logo'), enterprises.uploadLogo);
 
   // employees
   app.get('/employees/search', employees.search);
@@ -692,6 +697,14 @@ exports.configure = function configure(app) {
   // @todo - this should use the JSON renderer instead of it's own route!
   app.get('/finance/cashflow', financeReports.cashflow.report);
 
+  // API routes for /stock/assign end point
+  app.get('/stock/assign', stock.assign.list);
+  app.get('/stock/assign/:uuid', stock.assign.detail);
+  app.post('/stock/assign', stock.assign.create);
+  app.put('/stock/assign/:uuid', stock.assign.update);
+  app.put('/stock/assign/:uuid/remove', stock.assign.removeAssign);
+  app.delete('/stock/assign/:uuid/delete', stock.assign.deleteAssign);
+
   // stock import from a file
   app.get('/stock/import/template', stock.importing.downloadTemplate);
   app.post('/stock/import', upload.middleware('csv', 'file'), upload.hasFilesToUpload, stock.importing.importStock);
@@ -724,6 +737,7 @@ exports.configure = function configure(app) {
   app.get('/receipts/stock/exit_service/:document_uuid', stockReports.stockExitServiceReceipt);
   app.get('/receipts/stock/exit_depot/:document_uuid', stockReports.stockExitDepotReceipt);
   app.get('/receipts/stock/exit_loss/:document_uuid', stockReports.stockExitLossReceipt);
+  app.get('/receipts/stock/assign/:uuid', stockReports.stockAssignReceipt);
 
   app.get('/receipts/stock/entry_depot/:document_uuid', stockReports.stockEntryDepotReceipt);
   app.get('/receipts/stock/entry_purchase/:document_uuid', stockReports.stockEntryPurchaseReceipt);
@@ -815,4 +829,17 @@ exports.configure = function configure(app) {
   app.post('/pavillions', pavillion.create);
   app.put('/pavillions/:uuid', pavillion.update);
   app.delete('/pavillions/:uuid', pavillion.delete);
+
+  // lots API
+  app.get('/lots/:uuid', lots.details);
+  app.put('/lots/:uuid', lots.update);
+  app.get('/lots/:uuid/assignments/:depot_uuid', lots.assignments);
+
+  // API for Account Reference Type routes crud
+  app.get('/account_reference_type', accountReferenceType.list);
+  app.get('/account_reference_type/:id', accountReferenceType.detail);
+  app.post('/account_reference_type', accountReferenceType.create);
+  app.put('/account_reference_type/:id', accountReferenceType.update);
+  app.delete('/account_reference_type/:id', accountReferenceType.delete);
+
 };

@@ -6,10 +6,10 @@
     <label class="control-label" translate>
       FORM.LABELS.FEE_CENTER
     </label>
-    
+
     <ng-transclude></ng-transclude>
-    <ui-select 
-      name="fee_center_id" 
+    <ui-select
+      name="fee_center_id"
       ng-model="$ctrl.feeCenterId"
       on-select="$ctrl.onSelect($item)"
       ng-required="$ctrl.required">
@@ -19,7 +19,7 @@
       <ui-select-choices ui-select-focus-patch repeat="fee_center.id as fee_center in $ctrl.feeCenters | filter: { 'label': $select.search }">
         <span ng-bind-html="fee_center.label | highlight:$select.search"></span>
       </ui-select-choices>
-    </ui-select>    
+    </ui-select>
 
     <div class="help-block" ng-messages="FeeCenterForm.fee_center_id.$error" ng-show="FeeCenterForm.$submitted">
       <div ng-messages-include="modules/templates/messages.tmpl.html"></div>

@@ -2,10 +2,8 @@ angular.module('bhima.controllers')
   .controller('StockLotsController', StockLotsController);
 
 StockLotsController.$inject = [
-  'StockService', 'NotifyService',
-  'uiGridConstants', 'StockModalService', 'LanguageService', 'GridGroupingService',
-  'GridStateService', 'GridColumnService', '$state', '$httpParamSerializer',
-  'SessionService',
+  'StockService', 'NotifyService', 'uiGridConstants', 'StockModalService', 'LanguageService', 'GridGroupingService',
+  'GridStateService', 'GridColumnService', '$state', '$httpParamSerializer', 'BarcodeService', 'LotsRegistryService',
 ];
 
 /**
@@ -13,126 +11,29 @@ StockLotsController.$inject = [
  * This module is a registry page for stock lots
  */
 function StockLotsController(
-  Stock, Notify,
-  uiGridConstants, Modal, Languages, Grouping,
-  GridState, Columns, $state, $httpParamSerializer,
-  Session
+  Stock, Notify, uiGridConstants, Modal, Languages, Grouping,
+  GridState, Columns, $state, $httpParamSerializer, Barcode, LotsRegistry
 ) {
   const vm = this;
   const cacheKey = 'lot-grid';
   const stockLotFilters = Stock.filter.lot;
 
   // grouping box
-  vm.groupingBox = [
-    { label : 'STOCK.INVENTORY', value : 'text' },
-    { label : 'STOCK.INVENTORY_GROUP', value : 'group_name' },
-  ];
-
-  // grid columns
-  const columns = [{
-    field : 'depot_text',
-    displayName : 'STOCK.DEPOT',
-    headerCellFilter : 'translate',
-  }, {
-    field : 'code',
-    displayName : 'STOCK.CODE',
-    headerCellFilter : 'translate',
-  }, {
-    field : 'text',
-    displayName : 'STOCK.INVENTORY',
-    headerCellFilter : 'translate',
-  }, {
-    field : 'group_name',
-    displayName : 'TABLE.COLUMNS.INVENTORY_GROUP',
-    headerCellFilter : 'translate',
-  }, {
-    field : 'label',
-    displayName : 'STOCK.LOT',
-    headerCellFilter : 'translate',
-  }, {
-    field : 'quantity',
-    displayName : 'STOCK.QUANTITY',
-    headerCellFilter : 'translate',
-  }, {
-    field : 'unit_cost',
-    displayName : 'STOCK.UNIT_COST',
-    headerCellFilter : 'translate',
-    type : 'number',
-    cellFilter : 'currency: '.concat(Session.enterprise.currency_id),
-  }, {
-    field : 'unit_type',
-    width : 75,
-    displayName : 'TABLE.COLUMNS.UNIT',
-    headerCellFilter : 'translate',
-    cellTemplate : 'modules/stock/inventories/templates/unit.tmpl.html',
-  }, {
-    field : 'entry_date',
-    displayName : 'STOCK.ENTRY_DATE',
-    headerCellFilter : 'translate',
-    cellFilter : 'date',
-  }, {
-    field : 'expiration_date',
-    displayName : 'STOCK.EXPIRATION_DATE',
-    headerCellFilter : 'translate',
-    cellFilter : 'date',
-  }, {
-    field : 'delay_expiration',
-    displayName : 'STOCK.EXPIRATION',
-    headerCellFilter : 'translate',
-  }, {
-    field : 'avg_consumption',
-    displayName : 'STOCK.CMM',
-    headerCellFilter : 'translate',
-    type : 'number',
-  }, {
-    field : 'S_MONTH',
-    displayName : 'STOCK.MSD',
-    headerCellFilter : 'translate',
-    type : 'number',
-  }, {
-    field : 'lifetime',
-    displayName : 'STOCK.LIFETIME',
-    headerCellFilter : 'translate',
-    cellTemplate     : 'modules/stock/lots/templates/lifetime.cell.html',
-    type : 'number',
-  }, {
-    field : 'S_LOT_LIFETIME',
-    displayName : 'STOCK.LOT_LIFETIME',
-    headerCellFilter : 'translate',
-    cellTemplate     : 'modules/stock/lots/templates/lot_lifetime.cell.html',
-    type : 'number',
-  }, {
-    field : 'S_RISK',
-    displayName : 'STOCK.RISK',
-    headerCellFilter : 'translate',
-    cellTemplate     : 'modules/stock/lots/templates/risk.cell.html',
-    type : 'number',
-  }, {
-    field : 'S_RISK_QUANTITY',
-    displayName : 'STOCK.RISK_QUANTITY',
-    headerCellFilter : 'translate',
-    cellTemplate     : 'modules/stock/lots/templates/risk_quantity.cell.html',
-    type : 'number',
-  }];
-
-  const gridFooterTemplate = `
-    <div>
-      <b>{{ grid.appScope.countGridRows() }}</b>
-      <span translate>TABLE.AGGREGATES.ROWS</span>
-    </div>
-  `;
+  vm.groupingBox = LotsRegistry.groupingBox;
+  // barcode scanner
+  vm.openBarcodeScanner = openBarcodeScanner;
 
   // options for the UI grid
   vm.gridOptions = {
     appScopeProvider : vm,
     enableColumnMenus : false,
-    columnDefs : columns,
+    columnDefs : LotsRegistry.columnDefs,
     enableSorting : true,
     showColumnFooter : true,
     fastWatch : true,
     flatEntityAccess : true,
     showGridFooter : true,
-    gridFooterTemplate,
+    gridFooterTemplate : LotsRegistry.gridFooterTemplate,
     onRegisterApi,
   };
 
@@ -171,6 +72,20 @@ function StockLotsController(
       vm.grouping.changeGrouping(column);
       vm.grouped = true;
     }
+  };
+
+  // edit lot
+  vm.openLotModal = (uuid) => {
+    Modal.openEditLot({ uuid })
+      .then(ans => {
+        if (!ans) { return; }
+        load(stockLotFilters.formatHTTP(true));
+      });
+  };
+
+  // lot assignment historic
+  vm.openHistoricModal = (uuid, depotUuid) => {
+    Modal.openAssignmentHistoric({ uuid, depotUuid });
   };
 
   // initialize module
@@ -217,14 +132,13 @@ function StockLotsController(
     toggleLoadingIndicator();
 
     // no negative or empty lot
-    filters.includeEmptyLot = 0;
+    filters.includeEmptyLot = filters.includeEmptyLot || 0;
 
     Stock.lots.read(null, filters)
       .then((lots) => {
 
         // FIXME(@jniles): we should do this ordering on the server via an ORDER BY
-        lots
-          .sort(orderByDepot);
+        lots.sort(LotsRegistry.orderByDepot);
 
         vm.gridOptions.data = lots;
 
@@ -287,6 +201,27 @@ function StockLotsController(
     vm.gridOptions.enableFiltering = !vm.gridOptions.enableFiltering;
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   };
+
+
+  /**
+   * @function openBarcodeScanner
+   *
+   * @description
+   * Opens the barcode scanner component and receives the record from the
+   * modal.
+   */
+  function openBarcodeScanner() {
+    Barcode.modal({ shouldSearch : false })
+      .then(record => {
+        stockLotFilters.replaceFilters([
+          { key : 'inventory_uuid', value : record.uuid, displayValue : record.reference },
+        ]);
+
+        load(stockLotFilters.formatHTTP(true));
+        vm.latestViewFilters = stockLotFilters.formatView();
+      });
+  }
+
 
   startup();
 }

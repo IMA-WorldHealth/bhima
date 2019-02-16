@@ -8,7 +8,7 @@
     </ol>
   </div>
 
-  <div class="modal-body" style="max-height: 70vh; overflow:auto;">
+  <div ng-if="ConfigPaiementModalCtrl.isEnterpriseCurrency" class="modal-body" style="max-height: 70vh; overflow:auto;">
     <div class="form-group">
       <label class="control-label" translate>FORM.LABELS.GRADE</label>
       <p class="form-control-static" style="background: #eee"> {{ ConfigPaiementModalCtrl.employee.code_grade }} </p>
@@ -40,7 +40,7 @@
 
     <div class="form-group" ng-class="{ 'has-error' : ConfigPaiementForm.$submitted && ConfigPaiementForm.working_day.$invalid }">
       <label class="control-label" translate>FORM.LABELS.DAYS_WORK</label>
-      <input type="number" name="working_day" ng-max="ConfigPaiementModalCtrl.maxWorkingDay" ng-model="ConfigPaiementModalCtrl.payroll.working_day" autocomplete="off" required class="form-control">    
+      <input type="number" name="working_day" ng-max="ConfigPaiementModalCtrl.maxWorkingDay" ng-model="ConfigPaiementModalCtrl.payroll.working_day" autocomplete="off" required class="form-control">
       <div class="help-block" ng-messages="ConfigPaiementForm.working_day.$error" ng-show="ConfigPaiementForm.$submitted">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
       </div>
@@ -49,7 +49,6 @@
     <!-- currency selection -->
     <bh-currency-select
       currency-id="ConfigPaiementModalCtrl.currencyId"
-      validation-trigger="ConfigPaiementForm.$submitted"
       on-change="ConfigPaiementModalCtrl.setCurrency(currency)">
     </bh-currency-select>
 
@@ -60,10 +59,13 @@
         id="{{rubConfigured.abbr}}"
         currency-id="ConfigPaiementModalCtrl.currencyId"
         model="ConfigPaiementModalCtrl.payroll.value[rubConfigured.abbr]"
-        validation-trigger="ConfigPaiementForm.$submitted"
         min = 0>
       </bh-currency-input>
     </div>
+  </div>
+
+  <div ng-if="!ConfigPaiementModalCtrl.isEnterpriseCurrency" class="modal-body badge badge-warning" style="max-height: 70vh; overflow:auto;">
+    <span translate> FORM.INFO.SETTING_PAYMENT_CURRENCY </span>
   </div>
 
   <div class="modal-footer">

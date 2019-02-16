@@ -5,16 +5,9 @@
   <header>
     <!-- headings  -->
     <div class="row">
-      <div class="col-xs-6">
-        <h3 style="margin: 0px;">{{enterprise.name}}</h3>
-        <p>
-          <span class="text-capitalize">{{translate 'FORM.LABELS.ADDRESS'}}</span>: {{enterprise.location}} <br>
-          <span class="text-capitalize">{{translate 'FORM.LABELS.PHONE'}}</span>: {{enterprise.phone}} <br>
-          <span class="text-capitalize">{{translate 'FORM.LABELS.EMAIL'}}</span>: {{enterprise.email}}
-        </p>
-      </div>
+      {{> enterpriseDetails }}
 
-      <div class="col-xs-6 text-right">
+      <div class="col-xs-5 text-right">
         <h3 style="margin: 0px;">
           <span class="text-uppercase">
             {{#with payment}}
@@ -47,6 +40,7 @@
         <span class="text-capitalize">{{translate 'FORM.LABELS.PAYMENT'}}</span>: <strong>{{payment.reference}}</strong> <br>
         <span class="text-capitalize">{{translate 'FORM.LABELS.AMOUNT'}}</span>: <strong>{{currency payment.amount payment.currency_id}}</strong> <br>
         <span class="text-capitalize">{{translate 'FORM.LABELS.DATE'}}</span>: {{date payment.date}} <br>
+         <span class="text-capitalize">{{translate 'FORM.LABELS.CREATED_AT'}}</span>: {{date payment.created_at}} <br>
         {{#if hasRate}}
           <span class="text-capitalize">{{translate 'FORM.LABELS.EXCHANGE_RATE'}} {{currency rate payment.currency_id}}</span> <br>
         {{/if}}

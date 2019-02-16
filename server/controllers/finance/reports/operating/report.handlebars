@@ -24,8 +24,8 @@
               {{translate 'REPORT.INCOME'}}
             </th>
           </tr>
-          <tr>
-            <td>
+          <tr style="padding:0;margin:0;border:none;">
+            <td style="padding:0;margin:0;border:none;">
               <table class="table table-condensed table-report table-bordered">
                 <thead>
                   <th>{{translate 'FORM.LABELS.ACCOUNT_NUMBER'}}</th>
@@ -37,19 +37,17 @@
                   {{#each this.expense}}
                   <tr>
                     <td class="text-right">{{number}}</td>
-                    <td
-                      {{#if title}}class="text-bold text-center"{{/if}}
-                        style="padding-left:calc(({{depth}} - 1) * 5px);">
+                    <td {{#if title}}class="text-bold text-center"{{/if}}>
                       {{label}}
                     </td>
-                    <td class="text-right">{{debcred amount}}</td>
+                    <td class="text-right">{{debcred amount ../currencyId}}</td>
                     <td class="text-right">{{percent}}</td>
                   </tr>
                   {{/each}}
                 </tbody>
               </table>
             </td>
-            <td>
+            <td style="padding:0;margin:0;border:none;">
               <table class="table table-condensed table-report table-bordered">
                 <thead>
                   <th>{{translate 'FORM.LABELS.ACCOUNT_NUMBER'}}</th>
@@ -61,12 +59,10 @@
                   {{#each this.revenue}}
                   <tr>
                     <td class="text-right">{{number}}</td>
-                    <td
-                      {{#if title}}class="text-bold text-center"{{/if}}
-                        style="padding-left:calc(({{depth}} - 1) * 5px);">
+                    <td {{#if title}}class="text-bold text-center"{{/if}}>
                       {{label}}
                     </td>
-                    <td class="text-right">{{debcred amount}}</td>
+                    <td class="text-right">{{debcred amount ../currencyId}}</td>
                     <td class="text-right">{{percent}}</td>
                   </tr>
                   {{/each}}
@@ -95,22 +91,19 @@
             {{translate 'FORM.LABELS.TOTAL'}}
           </th>
           <td class="text-right">
-            {{debcred this.totalExpense}}
+            {{debcred this.totalExpense currencyId}}
           </td>
            <td class="text-right">
-            {{debcred this.totalIncome}}
+            {{debcred this.totalIncome currencyId}}
           </td>
         </tr>
         <tr>
           <th class="text-center">
             {{translate 'FORM.LABELS.RESULT'}}
           </th>
-          <td class="text-right">
-            {{debcred this.leftResult}}
-          </td>
-          <td class="text-right">
-            {{debcred this.rightResult}}
-          </td>
+          <th class="text-right" colspan=2>
+            {{currency this.total currencyId}}
+          </th>
         </tr>
       </table>
     </div>

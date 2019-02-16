@@ -1,0 +1,104 @@
+<form
+  name="ModalForm"
+  ng-submit="$ctrl.submit(ModalForm)"
+  data-modal="stock-assign-create"
+  novalidate>
+
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate>ASSIGN.STOCK_ASSIGN</li>
+      <li class="title" translate>FORM.LABELS.CREATE</li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+    <!-- depot -->
+    <bh-depot-select
+      depot-uuid="$ctrl.model.depot_uuid"
+      required="true"
+      on-select-callback="$ctrl.onSelectDepot(depot)">
+    </bh-depot-select>
+
+    <!-- Inventaire -->
+    <div
+      class="form-group"
+      ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.inventory_uuid.$invalid }">
+      <label class="control-label" translate>STOCK.INVENTORY</label>
+      <ui-select 
+        name="inventory_uuid" 
+        ng-model="$ctrl.inventory_uuid"
+        on-select="$ctrl.onSelectInventory($item)"
+        ng-disabled="!$ctrl.availableInventories.length">
+        <ui-select-match placeholder="{{ 'FORM.SELECT.INVENTORY' | translate }}">
+          <span>{{$select.selected.text}}</span>
+        </ui-select-match>
+        <ui-select-choices ui-select-focus-patch repeat="i.uuid as i in $ctrl.availableInventories | filter: { 'text': $select.search }">
+          <span ng-bind-html="i.text | highlight:$select.search"></span>
+        </ui-select-choices>
+      </ui-select>    
+
+      <div class="help-block" ng-messages="ModalForm.inventory_uuid.$error" ng-show="ModalForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <!-- lot number  -->
+    <div
+      class="form-group"
+      ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.lot_uuid.$invalid }">
+      <label class="control-label" translate>STOCK.LOT</label>
+      <ui-select 
+        name="lot_uuid" 
+        ng-model="$ctrl.model.lot_uuid"
+        on-select="$ctrl.onSelectLot($item)"
+        ng-required="true"
+        ng-disabled="!$ctrl.availableLots.length">
+        <ui-select-match placeholder="{{ 'FORM.SELECT.LOT' | translate }}">
+          <span>{{$select.selected.label}}</span>
+        </ui-select-match>
+        <ui-select-choices ui-select-focus-patch repeat="l.uuid as l in $ctrl.availableLots | filter: { 'label': $select.search }">
+          <span ng-bind-html="l.label | highlight:$select.search"></span>
+        </ui-select-choices>
+      </ui-select>    
+
+      <div class="help-block" ng-messages="ModalForm.lot_uuid.$error" ng-show="ModalForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <!-- entity -->
+    <bh-entity-select 
+      entity-uuid="$ctrl.model.entity_uuid"
+      on-select-callback="$ctrl.onSelectEntity(entity)"
+      required="true">
+      <bh-clear on-clear="$ctrl.clear('entity')"></bh-clear>
+    </bh-entity-select>
+
+
+    <!-- quantity -->
+    <div class="form-group">
+      <label class="control-label" translate>FORM.LABELS.QUANTITY</label>
+      <bh-clear on-clear="$ctrl.clear('quantity')"></bh-clear>
+      <input type="number" min="1" class="form-control" name="quantity" ng-model="$ctrl.model.quantity">
+      <div class="help-block" ng-messages="ModalForm.quantity.$error" ng-show="ModalForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <!-- note -->
+    <div class="form-group">
+      <label class="control-label" translate>FORM.LABELS.DESCRIPTION</label>
+      <bh-clear on-clear="$ctrl.clear('description')"></bh-clear>
+      <textarea ng-model="$ctrl.model.description" class="form-control" name="description" id="description"></textarea>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" data-method="cancel" translate>
+      FORM.BUTTONS.CLOSE
+    </button>
+    <bh-loading-button loading-state="ModalForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

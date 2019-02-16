@@ -7,7 +7,7 @@
     <div>
       <label class="badge badge-success"> {{ DistributionModalCtrl.transaction.fee_center_label }} </label>
       <label class="badge badge-info">
-        <span translate> FORM.LABELS.AMOUNT </span> : 
+        <span translate> FORM.LABELS.AMOUNT </span> :
           {{ DistributionModalCtrl.transaction.amount_equiv | currency : DistributionModalCtrl.enterprise.currency_id }}
       </label>
     </div>
@@ -15,7 +15,7 @@
     <div class="form-group" ng-if="DistributionModalCtrl.invalidDistribution">
       <label class="badge badge-danger" id="validation-error" translate> FORM.INFO.DISTRIBUTION_INVALID </label>
       <br>
-      <label class="badge badge-warning"> {{ DistributionModalCtrl.errorMessage }} </label>      
+      <label class="badge badge-warning"> {{ DistributionModalCtrl.errorMessage }} </label>
     </div>
 
     <div class="form-group" ng-if="DistributionModalCtrl.noPrincilFeeCenters">
@@ -68,7 +68,6 @@
         id="principal_{{principal.id}}"
         currency-id="DistributionModalCtrl.enterprise.currency_id"
         model="DistributionModalCtrl.transaction.values[principal.id]"
-        validation-trigger="DistributionForm.$submitted"
         min = 0>
       </bh-currency-input>
     </div>

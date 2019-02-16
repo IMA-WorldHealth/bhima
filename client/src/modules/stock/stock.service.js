@@ -13,7 +13,9 @@ function StockModalService(Modal) {
     animation : false,
   };
 
+  service.openEditLot = openEditLot;
   service.openSearchLots = openSearchLots;
+  service.openSearchStockAssign = openSearchStockAssign;
   service.openSearchMovements = openSearchMovements;
   service.openSearchInventories = openSearchInventories;
   service.openFindPatient = openFindPatient;
@@ -22,12 +24,66 @@ function StockModalService(Modal) {
   service.openFindPurchase = openFindPurchase;
   service.openDefineLots = openDefineLots;
   service.openFindTansfer = openFindTansfer;
+  service.openActionStockAssign = openActionStockAssign;
+  service.openAssignmentHistoric = openAssignmentHistoric;
+
+  /** create stock assign */
+  function openActionStockAssign(request) {
+    const params = angular.extend(modalParameters, {
+      templateUrl  : 'modules/stock/assign/modals/action.modal.html',
+      controller   : 'ActionAssignModalController',
+      controllerAs : '$ctrl',
+      resolve      : { data : () => request },
+    });
+
+    const instance = Modal.open(params);
+    return instance.result;
+  }
+
+  /** edit lot */
+  function openEditLot(request) {
+    const params = angular.extend(modalParameters, {
+      templateUrl  : 'modules/stock/lots/modals/edit.modal.html',
+      controller   : 'EditLotModalController',
+      controllerAs : '$ctrl',
+      resolve      : { data : () => request },
+    });
+
+    const instance = Modal.open(params);
+    return instance.result;
+  }
+
+  /** open assign historic */
+  function openAssignmentHistoric(request) {
+    const params = angular.extend(modalParameters, {
+      templateUrl  : 'modules/stock/lots/modals/historic.modal.html',
+      controller   : 'HistoricModalController',
+      controllerAs : '$ctrl',
+      resolve      : { data : () => request },
+    });
+
+    const instance = Modal.open(params);
+    return instance.result;
+  }
 
   /** search stock lots */
   function openSearchLots(request) {
     const params = angular.extend(modalParameters, {
       templateUrl  : 'modules/stock/lots/modals/search.modal.html',
       controller   : 'SearchLotsModalController',
+      controllerAs : '$ctrl',
+      resolve      : { data : () => request },
+    });
+
+    const instance = Modal.open(params);
+    return instance.result;
+  }
+
+  /** search stock assign */
+  function openSearchStockAssign(request) {
+    const params = angular.extend(modalParameters, {
+      templateUrl  : 'modules/stock/assign/modals/search.modal.html',
+      controller   : 'SearchStockAssignModalController',
       controllerAs : '$ctrl',
       resolve      : { data : () => request },
     });

@@ -1,3 +1,5 @@
+DELIMITER $$
+
 -- stock consumption
 CREATE PROCEDURE ComputeStockConsumptionByPeriod (
   IN inventory_uuid BINARY(16),
@@ -70,7 +72,7 @@ BEGIN
   DECLARE voucher_item_account_credit DECIMAL(19, 4);
   DECLARE voucher_item_voucher_uuid BINARY(16);
   DECLARE voucher_item_document_uuid BINARY(16);
-  
+
   -- variables
 	DECLARE v_stock_account INT(10);
 	DECLARE v_cogs_account INT(10);
@@ -79,27 +81,27 @@ BEGIN
 	DECLARE v_document_uuid BINARY(16);
 	DECLARE v_is_exit TINYINT(1);
 
-  -- transaction type 
+  -- transaction type
   DECLARE STOCK_EXIT_TYPE SMALLINT(5) DEFAULT 13;
   DECLARE STOCK_ENTRY_TYPE SMALLINT(5) DEFAULT 14;
 
   -- variables for checking invalid accounts
   DECLARE ERR_INVALID_INVENTORY_ACCOUNTS CONDITION FOR SQLSTATE '45006';
   DECLARE v_has_invalid_accounts SMALLINT(5);
-  
+
   -- cursor declaration
   DECLARE v_finished INTEGER DEFAULT 0;
-  
-  DECLARE stage_stock_movement_cursor CURSOR FOR 
-  	SELECT temp.stock_account, temp.cogs_account, temp.unit_cost, temp.quantity, temp.document_uuid, temp.is_exit 
+
+  DECLARE stage_stock_movement_cursor CURSOR FOR
+  	SELECT temp.stock_account, temp.cogs_account, temp.unit_cost, temp.quantity, temp.document_uuid, temp.is_exit
 	FROM stage_stock_movement as temp;
-  
+
   -- variables for the cursor
   DECLARE CONTINUE HANDLER FOR NOT FOUND SET v_finished = 1;
 
-  -- Check that every inventory has a stock account and a variation account 
+  -- Check that every inventory has a stock account and a variation account
   -- if they do not, the transaction will be Unbalanced, so the operation will not continue
-  SELECT COUNT(l.uuid) 
+  SELECT COUNT(l.uuid)
     INTO v_has_invalid_accounts
   FROM stock_movement AS sm
   JOIN lot l ON l.uuid = sm.lot_uuid
@@ -107,30 +109,30 @@ BEGIN
   JOIN inventory_group ig ON ig.uuid = i.group_uuid
   WHERE ig.stock_account IS NULL AND ig.cogs_account IS NULL AND sm.document_uuid = documentUuid AND sm.is_exit = isExit;
 
-  IF (v_has_invalid_accounts > 0) THEN 
+  IF (v_has_invalid_accounts > 0) THEN
     SIGNAL ERR_INVALID_INVENTORY_ACCOUNTS SET MESSAGE_TEXT = 'Every inventory should belong to a group with a cogs account and stock account.';
   END IF;
 
   -- temporarise the stock movement
   CREATE TEMPORARY TABLE stage_stock_movement (
-      SELECT 
+      SELECT
         projectId as project_id, currencyId as currency_id,
         m.uuid, m.description, m.date, m.flux_id, m.is_exit, m.document_uuid, m.quantity, m.unit_cost, m.user_id,
-        ig.cogs_account, ig.stock_account 
-      FROM stock_movement m  
-      JOIN lot l ON l.uuid = m.lot_uuid 
-      JOIN inventory i ON i.uuid = l.inventory_uuid 
-      JOIN inventory_group ig 
-        ON ig.uuid = i.group_uuid AND (ig.stock_account IS NOT NULL AND ig.cogs_account IS NOT NULL) 
+        ig.cogs_account, ig.stock_account
+      FROM stock_movement m
+      JOIN lot l ON l.uuid = m.lot_uuid
+      JOIN inventory i ON i.uuid = l.inventory_uuid
+      JOIN inventory_group ig
+        ON ig.uuid = i.group_uuid AND (ig.stock_account IS NOT NULL AND ig.cogs_account IS NOT NULL)
       WHERE m.document_uuid = documentUuid AND m.is_exit = isExit
     );
 
   -- define voucher variables
-  SELECT HUID(UUID()), date, project_id, currency_id, user_id, description, SUM(unit_cost * quantity) 
-    INTO voucher_uuid, voucher_date, voucher_project_id, voucher_currency_id, voucher_user_id, voucher_description, voucher_amount 
+  SELECT HUID(UUID()), date, project_id, currency_id, user_id, description, SUM(unit_cost * quantity)
+    INTO voucher_uuid, voucher_date, voucher_project_id, voucher_currency_id, voucher_user_id, voucher_description, voucher_amount
   FROM stage_stock_movement;
 
-  IF (isExit = 1) THEN 
+  IF (isExit = 1) THEN
     SET voucher_type_id = STOCK_EXIT_TYPE;
   ELSE
     SET voucher_type_id = STOCK_ENTRY_TYPE;
@@ -150,7 +152,7 @@ BEGIN
 
     FETCH stage_stock_movement_cursor INTO v_stock_account, v_cogs_account, v_unit_cost, v_quantity, v_document_uuid, v_is_exit;
 
-    IF v_finished = 1 THEN 
+    IF v_finished = 1 THEN
       LEAVE insert_voucher_item;
     END IF;
 
@@ -201,7 +203,7 @@ BEGIN
   DECLARE v_finished INTEGER DEFAULT 0;
 
   -- cursor declaration
-  DECLARE stage_missing_movement_document_cursor CURSOR FOR 
+  DECLARE stage_missing_movement_document_cursor CURSOR FOR
   	SELECT temp.document_uuid
 	FROM missing_movement_document as temp;
 
@@ -212,7 +214,7 @@ BEGIN
   DROP TABLE IF EXISTS missing_movement_document;
 
   CREATE TEMPORARY TABLE missing_movement_document (
-    SELECT m.document_uuid FROM stock_movement m 
+    SELECT m.document_uuid FROM stock_movement m
     LEFT JOIN document_map dm ON dm.uuid IS NULL
     GROUP BY m.document_uuid
   );
@@ -226,7 +228,7 @@ BEGIN
     /* fetch data into variables */
     FETCH stage_missing_movement_document_cursor INTO v_document_uuid;
 
-    IF v_finished = 1 THEN 
+    IF v_finished = 1 THEN
       LEAVE missing_document;
     END IF;
 
@@ -286,11 +288,11 @@ BEGIN
 
     /* the inventory exists so we have to get its uuid (inventoryUuid) for using it */
     SELECT inventory.uuid, inventory.code INTO inventoryUuid, inventoryCode FROM inventory WHERE `text` = inventoryText LIMIT 1;
-  
-  ELSE 
+
+  ELSE
 
     /* the inventory doesn't exists so we have to create a new one */
-    IF (inventoryCode = NULL OR inventoryCode = '' OR inventoryCode = 'NULL') THEN 
+    IF (inventoryCode = NULL OR inventoryCode = '' OR inventoryCode = 'NULL') THEN
 
       /* if the inventory code is missing, create a new one randomly */
       SET inventoryCode = (SELECT ROUND(RAND() * 10000000));
@@ -316,22 +318,22 @@ BEGIN
     if the lot exists we will use it, if not we will create a new one
   */
   SET existLot = (SELECT IF((SELECT COUNT(*) AS total FROM `stock_movement` JOIN `lot` ON `lot`.`uuid` = `stock_movement`.`lot_uuid` WHERE `stock_movement`.`depot_uuid` = depotUuid AND `lot`.`inventory_uuid` = inventoryUuid AND `lot`.`label` = stockLotLabel) > 0, 1, 0));
-  
-  IF (existLot = 1) THEN 
+
+  IF (existLot = 1) THEN
 
     /* if the lot exist use its uuid */
     SET lotUuid = (SELECT `stock_movement`.`lot_uuid` FROM `stock_movement` JOIN `lot` ON `lot`.`uuid` = `stock_movement`.`lot_uuid` WHERE `stock_movement`.`depot_uuid` = depotUuid AND `lot`.`inventory_uuid` = inventoryUuid AND `lot`.`label` = stockLotLabel LIMIT 1);
 
-  ELSE 
+  ELSE
 
     /* create integration info for the lot */
     SET integrationUuid = HUID(UUID());
-    INSERT INTO integration (`uuid`, `project_id`, `date`) 
+    INSERT INTO integration (`uuid`, `project_id`, `date`)
     VALUES (integrationUuid, projectId, CURRENT_DATE());
 
     /* create the lot */
     SET lotUuid = HUID(UUID());
-    INSERT INTO lot (`uuid`, `label`, `initial_quantity`, `quantity`, `unit_cost`, `expiration_date`, `inventory_uuid`, `origin_uuid`) 
+    INSERT INTO lot (`uuid`, `label`, `initial_quantity`, `quantity`, `unit_cost`, `expiration_date`, `inventory_uuid`, `origin_uuid`)
     VALUES (lotUuid, stockLotLabel, stockLotQuantity, stockLotQuantity, inventoryUnitCost, DATE(stockLotExpiration), inventoryUuid, integrationUuid);
 
   END IF;
@@ -340,7 +342,7 @@ BEGIN
   /* create the stock movement */
   /* 13 is the id of integration flux */
   SET fluxId = 13;
-  INSERT INTO stock_movement (`uuid`, `document_uuid`, `depot_uuid`, `lot_uuid`, `flux_id`, `date`, `quantity`, `unit_cost`, `is_exit`, `user_id`) 
+  INSERT INTO stock_movement (`uuid`, `document_uuid`, `depot_uuid`, `lot_uuid`, `flux_id`, `date`, `quantity`, `unit_cost`, `is_exit`, `user_id`)
   VALUES (HUID(UUID()), documentUuid, depotUuid, lotUuid, fluxId, CURRENT_DATE(), stockLotQuantity, inventoryUnitCost, 0, userId);
 
 END $$
@@ -359,7 +361,7 @@ BEGIN
   DECLARE _documentReference VARCHAR(100);
   DECLARE _date DATETIME;
 
-  DECLARE curs1 CURSOR FOR 
+  DECLARE curs1 CURSOR FOR
     SELECT DISTINCT m.is_exit, l.unit_cost, m.quantity, m.date, dm.text AS documentReference
     FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
@@ -369,7 +371,7 @@ BEGIN
     LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
     WHERE i.uuid = _inventory_uuid AND m.depot_uuid = _depot_uuid AND DATE(m.date) <= _dateTo
     ORDER BY m.created_at ASC;
-      
+
   DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 
   DROP TEMPORARY TABLE IF EXISTS stage_movement;
@@ -391,7 +393,7 @@ BEGIN
 
   OPEN curs1;
     read_loop: LOOP
-    
+
     SET mvtIsExit = 0;
     SET mvtQtt = 0;
     SET mvtUnitCost = 0;
@@ -399,7 +401,7 @@ BEGIN
     SET newQuantity = 0;
     SET newValue = 0;
     SET newCost = 0;
-    
+
     FETCH curs1 INTO mvtIsExit, mvtUnitCost, mvtQtt, _date, _documentReference;
       IF done THEN
         LEAVE read_loop;
@@ -415,9 +417,9 @@ BEGIN
 
         SET stockQtt = newQuantity;
         SET stockUnitCost = newCost;
-        SET stockValue = newValue;         
+        SET stockValue = newValue;
       END IF;
-       
+
       INSERT INTO stage_movement VALUES(
         mvtIsExit, mvtQtt, stockQtt, mvtQtt*mvtUnitCost, _date, _documentReference,  stockQtt, stockUnitCost, stockValue
       );
@@ -428,23 +430,26 @@ SELECT  * FROM stage_movement;
 
 END$$
 
-
 /*   retrieve the stock status( current qtt, unit_cost, value) for each inventory in a depot */
 DROP PROCEDURE IF EXISTS `stockValue`$$
 
-CREATE PROCEDURE `stockValue`(IN _depot_uuid BINARY(16), IN _dateTo DATE)
+CREATE PROCEDURE `stockValue`(
+  IN _depot_uuid BINARY(16), 
+  IN _dateTo DATE,
+  IN _currency_id INT
+  )
 BEGIN
   DECLARE done BOOLEAN;
   DECLARE mvtIsExit, mvtQtt,  mvtUnitCost, mvtValue DECIMAL(19, 4);
-  DECLARE newQuantity, newValue, newCost DECIMAL(19, 4);
+  DECLARE newQuantity, newValue, newCost, exchangeRate DECIMAL(19, 4);
   DECLARE stockQtt, stockUnitCost, stockValue DECIMAL(19, 4);
   DECLARE _documentReference VARCHAR(100);
   DECLARE _date DATETIME;
   DECLARE _inventory_uuid BINARY(16);
-  DECLARE _iteration, _newStock INT;
-  
-  
-  DECLARE curs1 CURSOR FOR 
+  DECLARE _iteration, _newStock, _enterprise_id INT;
+
+
+  DECLARE curs1 CURSOR FOR
     SELECT DISTINCT i.uuid, m.is_exit, l.unit_cost, m.quantity, m.date, dm.text AS documentReference
     FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
@@ -454,7 +459,7 @@ BEGIN
     LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
     WHERE m.depot_uuid = _depot_uuid AND DATE(m.date) <= _dateTo
     ORDER BY i.text, m.created_at ASC;
-      
+
   DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 
   DROP TEMPORARY TABLE IF EXISTS stage_movement;
@@ -471,11 +476,13 @@ BEGIN
     stockValue DECIMAL(19, 4),
     iteration INT
   );
-
+ 
+  SET _enterprise_id = (SELECT enterprise_id FROM depot WHERE uuid= _depot_uuid);
+  SET exchangeRate = IFNULL(GetExchangeRate(_enterprise_id,_currency_id ,_dateTo), 1);
 
   OPEN curs1;
     read_loop: LOOP
-    
+
     SET mvtIsExit = 0;
     SET mvtQtt = 0;
     SET mvtUnitCost = 0;
@@ -483,21 +490,22 @@ BEGIN
     SET newQuantity = 0;
     SET newValue = 0;
     SET newCost = 0;
-    
+
     FETCH curs1 INTO _inventory_uuid, mvtIsExit, mvtUnitCost, mvtQtt, _date, _documentReference;
       IF done THEN
         LEAVE read_loop;
       END IF;
-      
+
       SELECT COUNT(inventory_uuid) INTO _newStock FROM stage_movement WHERE inventory_uuid = _inventory_uuid;
       -- set stock qtt, value and unit cost for a new inventory
-      IF _newStock = 0 THEN 
+      IF _newStock = 0 THEN
         SET stockQtt= 0;
         SET stockUnitCost = 0;
         SET stockValue = 0;
-        SET _iteration = 0; 
+        SET _iteration = 0;
       END IF;
-
+		
+		  SET mvtUnitCost = mvtUnitCost*(exchangeRate);
       -- stock exit movement, the stock quantity decreases
       IF mvtIsExit = 1 THEN
         SET stockQtt = stockQtt - mvtQtt;
@@ -510,9 +518,9 @@ BEGIN
 
         SET stockQtt = newQuantity;
         SET stockUnitCost = newCost;
-        SET stockValue = newValue;         
+        SET stockValue = newValue;
       END IF;
-       
+
       INSERT INTO stage_movement VALUES(
         _inventory_uuid, mvtIsExit, mvtQtt, stockQtt, mvtQtt*mvtUnitCost, _date, _documentReference,  stockQtt, stockUnitCost, stockValue, _iteration
       );
@@ -545,4 +553,6 @@ BEGIN
   )x ON x.inventory_uuid = sm.inventory_uuid AND x.max_iteration = sm.iteration;
 
 
-END$$
+END $$
+
+DELIMITER ;

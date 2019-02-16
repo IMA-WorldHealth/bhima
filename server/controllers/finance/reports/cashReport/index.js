@@ -28,8 +28,7 @@ function getRecordQuery(token, format, openingBalance) {
   let query;
 
   if (format === 1) {
-    query =
-      `
+    query = `
       SELECT
         t.trans_id, t.trans_date, t.debit, t.credit, t.description, t.account_id, 
         a.number, a.label, t.balance, t.cbalance, c.reference AS cashReference, 
@@ -74,8 +73,7 @@ function getRecordQuery(token, format, openingBalance) {
       LEFT JOIN
         voucher v ON v.uuid = t.record_uuid;`;
   } else {
-    query =
-      `
+    query = `
       SELECT
         t.trans_id, t.trans_date, t.debit_equiv AS debit, t.credit_equiv AS credit, t.description, 
         t.transaction_type_id, t.user_id, u.username, a.number, 
@@ -122,8 +120,7 @@ function getCashRecord(accountId, dateFrom, dateTo, format, type) {
   let promise;
 
   if (format === 1) {
-    promise =
-    accountExtrat.getOpeningBalanceForDate(accountId, dateFrom, false)
+    promise = accountExtrat.getOpeningBalanceForDate(accountId, dateFrom, false)
       .then((openingBalance) => {
         _.merge(reportContext, { openingBalance : openingBalance.balance });
         return db.exec(getRecordQuery(null, format, openingBalance.balance), [
@@ -139,8 +136,7 @@ function getCashRecord(accountId, dateFrom, dateTo, format, type) {
         return { records, isEmpty : records.length === 0 };
       });
   } else {
-    promise =
-    accountExtrat.getOpeningBalanceForDate(accountId, dateFrom, false)
+    promise = accountExtrat.getOpeningBalanceForDate(accountId, dateFrom, false)
       .then((openingBalance) => {
         _.merge(reportContext, { openingBalance : openingBalance.balance });
         return db.exec(getRecordQuery('t.debit_equiv > 0', format), [
@@ -200,8 +196,7 @@ function getCashRecord(accountId, dateFrom, dateTo, format, type) {
   return promise
     .then((data) => {
       _.merge(reportContext, data);
-      const sql =
-        `
+      const sql = `
       SELECT
         c.label AS cashName, cu.symbol AS cashCurrency
       FROM
@@ -220,8 +215,7 @@ function getCashRecord(accountId, dateFrom, dateTo, format, type) {
 }
 
 function aggregateRecordQuery(token = 1, openingBalance) {
-  const query =
-    `
+  const query = `
   SELECT
     ABS(SUM(t.debit - t.credit)) AS arithmeticBalance, SUM(t.debit - t.credit) AS algebricBalance
   FROM

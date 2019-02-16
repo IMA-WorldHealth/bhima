@@ -5,7 +5,6 @@ angular.module('bhima.components')
     bindings : {
       onSelectFiscalCallback : '&',
       fiscalId : '<?',
-      validationTrigger : '<?',
     },
   });
 

@@ -127,11 +127,14 @@ function ReceiptService($http, util, Language, AppCache, Session) {
     return fetch(route, options);
   }
 
-
   // print a payslip of payroll payment
   function payroll(request, options) {
     options.employees = request.employees;
     options.idPeriod = request.idPeriod;
+    options.currency = request.currency;
+    options.payslip = request.payslip;
+    options.conversionRate = request.conversionRate;
+
     // set the session language
     options.lang = Language.key;
 
@@ -145,6 +148,7 @@ function ReceiptService($http, util, Language, AppCache, Session) {
     options.idPeriod = request.idPeriod;
     options.currency = request.currency;
     options.socialCharge = request.socialCharge;
+    options.conversionRate = request.conversionRate;
 
     // set the session language
     options.lang = Language.key;
@@ -165,10 +169,17 @@ function ReceiptService($http, util, Language, AppCache, Session) {
   service.stockEntryIntegrationReceipt = stockEntryIntegrationReceipt;
   service.stockEntryDonationReceipt = stockEntryDonationReceipt;
   service.stockAdjustmentReceipt = stockAdjustmentReceipt;
+  service.stockAssignReceipt = stockAssignReceipt;
 
   // stock exit patient receipt
   function stockExitPatientReceipt(uuid, options) {
     const route = '/receipts/stock/exit_patient/'.concat(uuid);
+    return fetch(route, options);
+  }
+
+  // stock assign receipt
+  function stockAssignReceipt(uuid, options) {
+    const route = '/receipts/stock/assign/'.concat(uuid);
     return fetch(route, options);
   }
 

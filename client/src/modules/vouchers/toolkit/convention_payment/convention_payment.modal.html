@@ -9,30 +9,11 @@
   <div class="modal-body">
 
     <!-- select the cashbox  -->
-    <div
-      class="form-group"
-      ng-class="{ 'has-error' : ToolForm.$submitted && ToolForm.cashbox.$invalid }">
-      <label class="control-label" translate>
-        FORM.LABELS.CASHBOX
-      </label>
-
-      <ui-select
-        name="cashbox"
-        ng-model="ToolCtrl.cashbox"
-        required>
-        <ui-select-match placeholder="{{ 'FORM.PLACEHOLDERS.CASHBOX' | translate }}">
-          <span>{{$select.selected.label}} ({{$select.selected.symbol}})</span>
-        </ui-select-match>
-        <ui-select-choices ui-select-focus-patch repeat="cashbox in ToolCtrl.cashboxList | filter:$select.search">
-          <span ng-bind-html="cashbox.label | highlight:$select.search"></span>
-          (<span ng-bind-html="cashbox.symbol | highlight:$select.search"></span>)
-        </ui-select-choices>
-      </ui-select>
-
-      <div class="help-block" ng-messages="ToolForm.cashbox.$error" ng-show="ToolForm.$submitted">
-        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-      </div>
-    </div>
+    <bh-cashbox-select
+      cashbox-id="ToolCtrl.cashbox.id"
+      on-select-callback="ToolCtrl.onSelectCashbox(cashbox)"
+      required="true">
+    </bh-cashbox-select>
 
     <bh-debtor-group-select
       debtor-group-uuid="ToolCtrl.convention"

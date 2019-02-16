@@ -1,3 +1,4 @@
+DELIMITER $$
 /*
   ---------------------------------------------------
   Import Inventory Procedure
@@ -72,3 +73,5 @@ BEGIN
     (enterpriseId, HUID(UUID()), inventoryCode, inventoryText, inventoryUnitPrice, inventoryGroupUuid, inventoryTypeId, inventoryUnitId, 1);
   END IF;
 END $$
+
+DELIMITER ;

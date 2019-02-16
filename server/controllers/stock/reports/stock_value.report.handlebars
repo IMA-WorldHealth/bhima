@@ -40,7 +40,7 @@
               <td style="width:50%">{{inventory_name}}</td>
               <td class="text-right">{{stockQtt}}</td>
               <td class="text-right">{{stockUnitCost}}</td>
-              <td class="text-right">{{currency stockValue ../../metadata.enterprise.currency_id}}</td>
+              <td class="text-right">{{currency stockValue ../currency_id}}</td>
             </tr>
           {{/each}}
            <!-- no data -->
@@ -49,7 +49,7 @@
           {{else}}
             <tr>
               <th colspan="3" class="text-right">{{ translate "FORM.LABELS.TOTAL"}}</th>
-              <th class="text-right">{{ currency stocktotal ../metadata.enterprise.currency_id }}</th>
+              <th class="text-right">{{ currency stocktotal ./currency_id }}</th>
             </tr>  
           {{/if}}
 

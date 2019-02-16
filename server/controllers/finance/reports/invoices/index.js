@@ -12,8 +12,8 @@
 
 const _ = require('lodash');
 
-const shared = require('../shared');
 const Moment = require('moment');
+const shared = require('../shared');
 
 const db = require('../../../../lib/db');
 const ReportManager = require('../../../../lib/ReportManager');
@@ -138,8 +138,8 @@ function receipt(req, res, next) {
 
   Invoices.lookupInvoice(invoiceUuid)
     .then(reportResult => {
-      const recipientUuid = reportResult.patient_uuid;
 
+      const recipientUuid = reportResult.patient_uuid;
       _.extend(invoiceResponse, reportResult);
 
       return Promise.all([
@@ -169,18 +169,22 @@ function receipt(req, res, next) {
       return balanceOnInvoiceReceipt ? Debtors.invoiceBalances(invoiceResponse.debtor_uuid, [invoiceUuid]) : [];
     })
     .then(invoiceBalance => {
+
       if (invoiceBalance.length > 0) {
         [invoiceResponse.invoiceBalance] = invoiceBalance;
 
         if (invoiceResponse.exchange) {
-          invoiceResponse.invoiceBalance.exchangedDebit =
-            _.round(invoiceResponse.invoiceBalance.debit * invoiceResponse.exchange);
+          invoiceResponse.invoiceBalance.exchangedDebit = _.round(
+            invoiceResponse.invoiceBalance.debit * invoiceResponse.exchange
+          );
 
-          invoiceResponse.invoiceBalance.exchangedCredit =
-            _.round(invoiceResponse.invoiceBalance.credit * invoiceResponse.exchange);
+          invoiceResponse.invoiceBalance.exchangedCredit = _.round(
+            invoiceResponse.invoiceBalance.credit * invoiceResponse.exchange
+          );
 
-          invoiceResponse.invoiceBalance.exchangedBalance =
-            _.round(invoiceResponse.invoiceBalance.balance * invoiceResponse.exchange);
+          invoiceResponse.invoiceBalance.exchangedBalance = _.round(
+            invoiceResponse.invoiceBalance.balance * invoiceResponse.exchange
+          );
         }
       }
 

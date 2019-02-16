@@ -31,7 +31,8 @@
     <div class="form-group"
       ng-class="{ 'has-error' : ActionForm.$submitted && ActionForm.text.$invalid }">
       <label class="control-label" translate>FORM.LABELS.NAME</label>
-      <input ng-model="$ctrl.item.label"
+      <input
+        ng-model="$ctrl.item.label"
         class="form-control"
         type="text"
         name="text"

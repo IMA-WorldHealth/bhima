@@ -5,7 +5,6 @@ BarcodeService.$inject = ['$http', 'util', '$uibModal'];
 
 function BarcodeService($http, util, Modal) {
   const service = this;
-
   // TODO - barcode redirection
   service.redirect = angular.noop;
 
@@ -14,12 +13,15 @@ function BarcodeService($http, util, Modal) {
       .then(util.unwrapHttpResponse);
   };
 
-  service.modal = () => Modal.open({
+  service.modal = (options) => Modal.open({
     controller  : 'BarcodeModalController as BarcodeModalCtrl',
     templateUrl : 'modules/templates/barcode-scanner-modal.html',
     size        : 'lg',
     backdrop    : 'static',
     keyboard    : true,
+    resolve : {
+      options : () => options,
+    },
   }).result;
 
   return service;

@@ -49,6 +49,7 @@ const hbs = exphbs.create({
     isIncomeViewable : presentation.isIncomeViewable,
     isExpenseViewable : presentation.isExpenseViewable,
     isResultViewable : presentation.isResultViewable,
+    slashed       : presentation.slashed,
   },
 
   // load partials from the partials sub-directory

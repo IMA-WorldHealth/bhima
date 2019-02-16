@@ -68,9 +68,9 @@ function bhDateInterval(moment, bhConstants, Fiscal, Session) {
         });
     }
 
-    startup();
-
     $ctrl.pickerToOptions = { showWeeks : false, minDate : $ctrl.dateFrom };
+
+    startup();
   };
 
   function search(selection) {

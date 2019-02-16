@@ -26,8 +26,7 @@
       date-id="periodes-date"
       date-from="PayrollConfigModalCtrl.payroll.dateFrom"
       date-to="PayrollConfigModalCtrl.payroll.dateTo"
-      required="true"
-      validation-trigger="PayrollModalForm.$submitted">
+      required="true">
     </bh-date-interval>
 
     <bh-employee-config-select
@@ -35,8 +34,7 @@
       config-employee-id="PayrollConfigModalCtrl.payroll.config_employee_id"
       name="EmployeeConfigForm"
       on-select-callback="PayrollConfigModalCtrl.onSelectEmployeeConfig(employeeConfig)"
-      required="true"
-      validation-trigger="PayrollModalForm.$submitted">
+      required="true">
     </bh-employee-config-select>
 
     <bh-rubric-config-select
@@ -44,8 +42,7 @@
       config-rubric-id="PayrollConfigModalCtrl.payroll.config_rubric_id"
       name="RubricConfigForm"
       on-select-callback="PayrollConfigModalCtrl.onSelectRubricConfig(rubricConfig)"
-      required="true"
-      validation-trigger="PayrollModalForm.$submitted">
+      required="true">
     </bh-rubric-config-select>
 
     <bh-account-config-select
@@ -53,8 +50,7 @@
       config-accounting-id="PayrollConfigModalCtrl.payroll.config_accounting_id"
       name="AccountConfigForm"
       on-select-callback="PayrollConfigModalCtrl.onSelectAccountConfig(accountConfig)"
-      required="true"
-      validation-trigger="PayrollModalForm.$submitted">
+      required="true">
     </bh-account-config-select>
 
     <bh-weekend-config-select
@@ -69,8 +65,7 @@
       config-ipr-id="PayrollConfigModalCtrl.payroll.config_ipr_id"
       name="IprConfigForm"
       on-select-callback="PayrollConfigModalCtrl.onSelectIprConfig(iprConfig)"
-      required="false"
-      validation-trigger="PayrollModalForm.$submitted">
+      required="false">
       <bh-clear on-clear="PayrollConfigModalCtrl.clear('config_ipr_id')"></bh-clear>
     </bh-ipr-config-select>
   </div>

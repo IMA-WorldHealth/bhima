@@ -1,9 +1,11 @@
-{{> head title="REPORT.REPORTS_MULTIPLE_ACCOUNTS" }}
+{{> head title="REPORT.REPORT_ACCOUNTS_MULTIPLE.TITLE" }}
 
 <body>
   {{> header }}
 
-  <h3 class="text-center text-uppercase"><strong>{{translate "TREE.REPORTS_MULTIPLE_ACCOUNTS"}}</strong></h3>
+  <h3 class="text-center text-uppercase">
+    <strong>{{translate "REPORT.REPORT_ACCOUNTS_MULTIPLE.TITLE"}}</strong>
+  </h3>
 
   {{#if params.dateFrom }}
     <h5 style="margin:15px; font-weight:bold" class="text-center text-uppercase">
@@ -24,106 +26,115 @@
   {{/unless}}
 
   <section>
-     {{#each alltransactions}}
-     <h5><u><b>{{account.number}} | {{translate account.label}}</b></u></h5>
-    <table class="table table-condensed table-report table-bordered">
-      <thead>
-        <tr class="text-capitalize text-center" style="background-color: #ddd;">
-          <th>{{translate "TABLE.COLUMNS.DATE" }}</th>
-          <th>{{translate "TABLE.COLUMNS.TRANSACTION" }}</th>
-          <th>{{translate "TABLE.COLUMNS.DOCUMENT" }}</th>
-          <th>{{translate "TABLE.COLUMNS.DESCRIPTION" }}</th>
-          <th class="text-center">{{translate "FORM.LABELS.RATE" }}</th>
-          <th class="text-center" style="min-width:12%">{{translate "TABLE.COLUMNS.DEBIT" }}</th>
-          <th class="text-center" style="min-width:12%">{{translate "TABLE.COLUMNS.CREDIT" }}</th>
-          <th class="text-center">{{translate "FORM.LABELS.VALUE" }} ({{../currency.symbol}})</th>
-          <th class="text-center" style="min-width:12%">{{translate "TABLE.COLUMNS.BALANCE" }} ({{../currency.symbol}})</th>
-        </tr>
-      </thead>
-      <tbody>
+    {{#each accounts as |account|}}
 
-        {{! Opening Balance Line }}
-        <tr>
-          <th>{{ date header.date }}</th>
-          <th colspan="3">{{translate "REPORT.OPENING_BALANCE"}}</th>
+      <h4>{{account.meta.number}} - {{account.meta.label}}</h4>
 
-          <th class="text-right">
-            {{ ../invertedRate }}
-          </th>
-
-          <th class="text-right">
-            {{currency header.debit ../metadata.enterprise.currency_id}}
-          </th>
-
-          <th class="text-right">
-            {{currency header.credit ../metadata.enterprise.currency_id }}
-          </th>
-
-          <th></th>
-
-          <th class="text-right">
-            {{debcred header.balance ../params.currency_id }}
-          </th>
-        </tr>
-
-        {{! All transactions within the query range }}
-        {{#each transactions}}
-          <tr>
-            <td>{{date this.trans_date}}</td>
-            <td title="{{this.trans_id}}">{{this.trans_id}}</td>
-            <td title="{{this.document_reference}}">{{this.document_reference}}</td>
-            <td title="{{this.description}}" style="max-width : 200px; white-space : nowrap; overflow : hidden; text-overflow : ellipsis;">{{this.description}}</td>
-            <td class="text-right">{{this.invertedRate}}</td>
-            <td class="text-right">
-              {{#if this.debit}}
-                {{currency this.debit this.currency_id}}
-              {{/if}}
-            </td>
-
-            <td class="text-right">
-              {{#if this.credit}}
-                {{currency this.credit this.currency_id}}
-              {{/if}}
-            </td>
-
-            <td class="text-right">
-              {{debcred this.exchangedBalance ../footer.currency_id }}
-            </td>
-            <td class="text-right">
-              {{debcred this.cumsum ../footer.currency_id }}
-            </td>
+      <table class="table table-condensed table-report table-bordered">
+        <thead>
+          <tr class="text-capitalize text-center" style="background-color: #ddd;">
+            <th>{{translate "TABLE.COLUMNS.DATE" }}</th>
+            <th>{{translate "TABLE.COLUMNS.TRANSACTION" }}</th>
+            <th>{{translate "TABLE.COLUMNS.DOCUMENT" }}</th>
+            <th>{{translate "TABLE.COLUMNS.DESCRIPTION" }}</th>
+            <th class="text-center">{{translate "FORM.LABELS.RATE" }}</th>
+            <th class="text-center" style="min-width:12%">{{translate "TABLE.COLUMNS.DEBIT" }}</th>
+            <th class="text-center" style="min-width:12%">{{translate "TABLE.COLUMNS.CREDIT" }}</th>
+            <th class="text-center">{{translate "FORM.LABELS.VALUE" }} ({{../currency.symbol}})</th>
+            <th class="text-center" style="min-width:12%">{{translate "TABLE.COLUMNS.BALANCE" }} ({{../currency.symbol}})</th>
           </tr>
-        {{else}}
-          {{> emptyTable columns=9}}
-        {{/each}}
-      </tbody>
+        </thead>
+        <tbody>
 
-      {{!  This contains the grid totals }}
-      <tfoot>
-        <tr>
-          <th>{{date footer.date}}</th>
-          <th colspan="3">{{translate "FORM.LABELS.TOTAL"}}</th>
-          <th class="text-right">{{footer.invertedRate}}</th>
-          <th class="text-right">
-            {{#if footer.shouldDisplayDebitCredit}}
-              {{currency footer.debit footer.transactionCurrencyId}}
-            {{/if}}
-          </th>
-          <th class="text-right">
-            {{#if footer.shouldDisplayDebitCredit}}
-              {{currency footer.credit footer.transactionCurrencyId}}
-            {{/if}}
-          </th>
-          <th class="text-right">
-            {{debcred footer.exchangedBalance footer.currency_id }}
-          </th>
-          <th class="text-right">
-            {{debcred footer.exchangedCumSum footer.currency_id }}
-          </th>
-        </tr>
-      </tfoot>
-    </table>
-    <br/><br/>
-     {{/each}}
+          {{! Opening Balance Line }}
+          <tr>
+            <th>{{ date account.header.date }}</th>
+            <th colspan="3">{{translate "REPORT.OPENING_BALANCE"}}</th>
+
+            <th class="text-right">
+              {{ account.header.invertedRate }}
+            </th>
+
+            <th class="text-right">
+              {{currency account.header.debit ../metadata.enterprise.currency_id}}
+            </th>
+
+            <th class="text-right">
+              {{currency account.header.credit ../metadata.enterprise.currency_id }}
+            </th>
+
+            <th></th>
+
+            <th class="text-right">
+              {{debcred account.header.exchangedBalance ../params.currency_id }}
+            </th>
+          </tr>
+
+          {{! All transactions within the query range }}
+          {{#each account.transactions as | transaction |}}
+            <tr>
+              <td>{{date transaction.trans_date}}</td>
+              <td title="{{this.trans_id}}">{{transaction.trans_id}}</td>
+              <td title="{{this.document_reference}}">{{transaction.document_reference}}</td>
+              <td title="{{this.description}}" style="max-width : 200px; white-space : nowrap; overflow : hidden; text-overflow : ellipsis;">{{transaction.description}}</td>
+              <td class="text-right">{{transaction.invertedRate}}</td>
+              <td class="text-right">
+                {{#if transaction.debit}}
+                  {{currency transaction.debit transaction.currency_id}}
+                {{/if}}
+              </td>
+
+              <td class="text-right">
+                {{#if transaction.credit}}
+                  {{currency transaction.credit transaction.currency_id}}
+                {{/if}}
+              </td>
+
+              <td class="text-right">
+                {{debcred transaction.exchangedBalance ../../params.currency_id }}
+              </td>
+              <td class="text-right">
+                {{debcred transaction.cumsum ../../params.currency_id }}
+              </td>
+            </tr>
+          {{else}}
+            {{> emptyTable columns=9}}
+          {{/each}}
+        </tbody>
+
+        {{!  This contains the grid totals }}
+        <tfoot>
+          <tr>
+            <th>{{date footer.date}}</th>
+            <th colspan="3">{{translate "FORM.LABELS.TOTAL"}}</th>
+            <th class="text-right">{{footer.invertedRate}}</th>
+            <th class="text-right">
+              {{#if footer.shouldDisplayDebitCredit}}
+                {{currency footer.debit footer.transactionCurrencyId}}
+              {{/if}}
+            </th>
+            <th class="text-right">
+              {{#if footer.shouldDisplayDebitCredit}}
+                {{currency footer.credit footer.transactionCurrencyId}}
+              {{/if}}
+            </th>
+            <th class="text-right">
+              {{debcred footer.exchangedBalance footer.currency_id }}
+            </th>
+            <th class="text-right">
+              {{debcred footer.exchangedCumSum footer.currency_id }}
+            </th>
+          </tr>
+        </tfoot>
+      </table>
+
+      <br />
+    {{/each}}
   </section>
+
+  <footer>
+    <div class="pull-right">
+      <strong>{{translate "FORM.LABELS.TOTAL"}}: {{debcred globalBalance currency.id}}</strong>
+    </div>
+  </footer>
 </body>

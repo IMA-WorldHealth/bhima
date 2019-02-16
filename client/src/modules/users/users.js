@@ -69,7 +69,7 @@ function UsersController($state, $uibModal, Users, Notify, Modal, uiGridConstant
   vm.user = {};
 
   function toggleFilter() {
-    vm.gridOptions.enableFiltering = !vm.filterEnabled;
+    vm.gridOptions.enableFiltering = !vm.gridOptions.enableFiltering;
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 

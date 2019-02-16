@@ -8,6 +8,7 @@
     "DESCRIPTION_3" : "Ajouter une nouvelle entreprises",
     "EDITING_ENTERPRISE" : "Edition entreprise",
     "TITLE" : "Gestion des entreprises",
+    "UPDATE_LOGO":"Mettre à jour le logo",
     "SETTINGS" : {
       "TITLE" : "Parametres de l'Enterprise",
       "ENABLE_PRICE_LOCK_LABEL" : "Verrouiller les changements de prix pour la facturation des patients",

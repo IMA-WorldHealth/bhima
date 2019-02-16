@@ -2,7 +2,8 @@ angular.module('bhima.controllers')
   .controller('EnterpriseController', EnterpriseController);
 
 EnterpriseController.$inject = [
-  'EnterpriseService', 'util', 'NotifyService', 'ProjectService', 'ModalService', 'ScrollService', 'SessionService',
+  'EnterpriseService', 'util', 'NotifyService', 'ProjectService', 'ModalService',
+  'ScrollService', 'SessionService', 'Upload', '$timeout',
 ];
 
 /**
@@ -11,7 +12,7 @@ EnterpriseController.$inject = [
  * @description
  * This controller binds the basic CRUD operations on the enterprise.
  */
-function EnterpriseController(Enterprises, util, Notify, Projects, Modal, ScrollTo, Session) {
+function EnterpriseController(Enterprises, util, Notify, Projects, Modal, ScrollTo, Session, Upload, $timeout) {
   const vm = this;
 
   vm.enterprise = {};
@@ -26,6 +27,37 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
   vm.submit = submit;
   vm.onSelectGainAccount = onSelectGainAccount;
   vm.onSelectLossAccount = onSelectLossAccount;
+  vm.setThumbnail = setThumbnail;
+
+  function uploadLogo(file) {
+    if (!vm.hasThumbnail) { return null; }
+
+    file.upload = Upload.upload({
+      url : `/enterprises/${Session.enterprise.id}/logo`,
+      data : { logo : file },
+    });
+
+    return file.upload
+      .then((response) => {
+        $timeout(() => {
+          vm.enterprise.logo = response.data.logo;
+        });
+      })
+      .catch((error) => {
+        Notify.handleError(error);
+      });
+  }
+
+  /** set thumbnail for the selected image */
+  function setThumbnail(file) {
+    if (!file) {
+      vm.documentError = true;
+      return;
+    }
+    const isImage = file.type.includes('image/');
+    vm.thumbnail = file;
+    vm.hasThumbnail = (vm.thumbnail && isImage);
+  }
 
   // fired on startup
   function startup() {
@@ -66,7 +98,7 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
     }
 
     // make sure only fresh data is sent to the server.
-    if (form.$pristine && !$touched) {
+    if (form.$pristine && !$touched && !vm.hasThumbnail) {
       Notify.warn('FORM.WARNINGS.NO_CHANGES');
       return 0;
     }
@@ -82,8 +114,9 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
 
     return promise
       .then(() => {
-        Notify.success(creation ? 'FORM.INFO.SAVE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS');
+        return vm.file ? uploadLogo(vm.file) : null;
       })
+      .then(() => Notify.success(creation ? 'FORM.INFO.SAVE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS'))
       .then(() => Session.reload())
       .catch(Notify.handleError);
   }

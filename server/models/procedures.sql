@@ -11,18 +11,18 @@ SET CHARACTER SET utf8mb4, CHARACTER_SET_CONNECTION = utf8mb4;
 DELIMITER $$
 
 /*
-  Invoicing procedures include: StageInvoice, StageInvoiceItem,
-  StageInvoiceFee, VerifySubsidyStageTable, PostInvoice, PostingSetupUtil,
-  PostingJournalErrorHandler, CopyInvoiceToPostingJournal and PostToGeneralLedger
-*/
-SOURCE server/models/procedures/invoicing.sql
-
-/*
   Cash procedures include: HandleCashRounding, PostCash, StageCash,
   StageCashItem, VerifyCashTemporaryTables, CalculateCashInvoiceBalances,
   WriteCashItems and WriteCash
 */
 SOURCE server/models/procedures/cash.sql
+
+/*
+  Invoicing procedures include: StageInvoice, StageInvoiceItem,
+  StageInvoiceFee, VerifySubsidyStageTable, PostInvoice, PostingSetupUtil,
+  PostingJournalErrorHandler, CopyInvoiceToPostingJournal and PostToGeneralLedger
+*/
+SOURCE server/models/procedures/invoicing.sql
 
 /*
   Time period procedures include: CreateFiscalYear, GetPeriodRange and
@@ -67,4 +67,8 @@ SOURCE server/models/procedures/account.sql
 */
 SOURCE server/models/procedures/roles.sql
 
+/*
+  analysis procedures
+*/
+SOURCE server/models/procedures/analysis.sql
 DELIMITER ;

@@ -8,12 +8,12 @@
     <div>
       <label class="badge badge-success"> {{ BreakDownModalCtrl.feeCenter.fee_center_label }} </label>
       <label class="badge badge-info">
-        <span translate> FORM.LABELS.TOTAL_DEBITS </span> : 
+        <span translate> FORM.LABELS.TOTAL_DEBITS </span> :
           {{ BreakDownModalCtrl.sumDebits | currency : BreakDownModalCtrl.enterprise.currency_id }}
       </label>
 
       <label class="badge badge-info">
-        <span translate> FORM.LABELS.TOTAL_CREDITS </span> : 
+        <span translate> FORM.LABELS.TOTAL_CREDITS </span> :
           {{ BreakDownModalCtrl.sumCredits | currency : BreakDownModalCtrl.enterprise.currency_id }}
       </label>
     </div>
@@ -21,7 +21,7 @@
     <div class="form-group" ng-if="BreakDownModalCtrl.invalidBreakDown">
       <label class="badge badge-danger" id="validation-error" translate> FORM.INFO.DISTRIBUTION_PERCENT_INVALID </label>
       <br>
-      <label class="badge badge-warning"> {{ BreakDownModalCtrl.errorMessage }} </label>    
+      <label class="badge badge-warning"> {{ BreakDownModalCtrl.errorMessage }} </label>
     </div>
 
     <div class="form-group" ng-if="BreakDownModalCtrl.noPrincilFeeCenters">
@@ -38,8 +38,7 @@
         currency-id="BreakDownModalCtrl.enterprise.currency_id"
         model="BreakDownModalCtrl.percentage.values[principal.id]"
         min = "0"
-        max = "100"
-        validation-trigger="BreakDownForm.$submitted">
+        max = "100">
       </bh-percentage-input>
     </div>
   </div>

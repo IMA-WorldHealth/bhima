@@ -34,6 +34,14 @@
               on-select-callback="ReportConfigCtrl.onSelectPeriod(period)">
             </bh-period-selection>
 
+            <bh-account-reference-type-select
+              reference-type-id="ReportConfigCtrl.reportDetails.reference_type_id"
+              id="reference_type_id"
+              name="reference_type_id"
+              on-select-callback="ReportConfigCtrl.onSelectAccountReferenceType(accountReferenceType)">
+              <bh-clear on-clear="ReportConfigCtrl.clear('reference_type_id')"></bh-clear>
+            </bh-account-reference-type-select>
+
             <bh-loading-button loading-state="ConfigForm.$loading">
               <span translate>REPORT.UTIL.PREVIEW</span>
             </bh-loading-button>

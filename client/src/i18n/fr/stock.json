@@ -36,7 +36,7 @@
       "EXCESSIVE_QUANTITY": "Quantité excessive",
       "LOT_QUANTITY_OVER_GLOBAL": "La quantité totale des lots dépasse la quantity globale fournie",
       "PLEASE_CHECK_EXPIRY_DATE": "Veuillez vérifier la date d'expiration"
-    },    
+    },
     "EXPIRATION_DATE" : "Date d'expiration",
     "EXPIRATION_RISK" : "Risque d'expiration",
     "EXPIRATION"      : "Expiration",
@@ -73,7 +73,7 @@
     "ITEMS"           : "Items",
     "LEGEND"          : "Legende",
     "LIFETIME"        : "Durée de vie",
-    "LOT_LIFETIME"    : "Durée lot",
+    "LOT_LIFETIME"    : "Durée par lot",
     "RISK"            : "Risque",
     "RISK_QUANTITY"   : "Quantité à risque",
     "CMM"             : "CMM",
@@ -91,6 +91,8 @@
     "MOVEMENTS"       : "Mouvements",
     "NO_ORDER"        : "Pas de commandes",
     "NO_DATA"         : "Aucune données",
+    "NO_ENTRY_TYPES"  : "Aucun type d'entre n'est défini pour {{text}}. Ajoutez au moins un type d'entre dans le module de gestion des dépôts.",
+    "NO_EXIT_TYPES"  : "Aucun type de sortie n'est défini pour {{text}}. Ajoutez au moins un type de sortie dans le module de gestion des dépôts.",
     "OUTPUT"          : "Sortie",
     "ORDERS"          : "Commandes",
     "ORIGIN"          : "Origine",
@@ -166,12 +168,32 @@
   "LOTS" : {
     "REGISTRY" : "Registre des lots",
     "ENABLE_FAST_INSERT": "Activer les insertions rapides",
-    "ENABLE_FAST_INSERT_DESCRIPTION": "Cette option selectionne automatiquement une nouvelle ligne de lot lorsque vous finissez d'introduire un libellé de lot ou numéro de serie. C'est très utile lorsque vous utilisez un lecteur de code barre"
+    "ENABLE_FAST_INSERT_DESCRIPTION": "Cette option selectionne automatiquement une nouvelle ligne de lot lorsque vous finissez d'introduire un libellé de lot ou numéro de serie. C'est très utile lorsque vous utilisez un lecteur de code barre",
+    "DETAILS":"Information sur le lot",
+    "LOT_LABEL":"Designation du lot",
+    "SUCCESSFULLY_EDITED":"Mise à jour du lot avec succès",
+    "ASSIGNMENT_HISTORIC":"Historique d'assignation",
+    "ASSIGNMENT_CURRENT":"En cours",
+    "NO_ASSIGNMENT":"Aucune assignation",
+    "INCLUDE_EXHAUSTED_LOTS":"Inclure les lots épuisés"
+
   },
   "MOVEMENTS" : {
     "REGISTRY" : "Registre des mouvements"
   },
   "INVENTORIES" : {
     "REGISTRY" : "Registre des inventaires"
+  },
+  "ASSIGN" : {
+    "TITLE" : "Assignation",
+    "STOCK_ASSIGN" : "Assignation de stock",
+    "EDIT_ASSIGN" : "Editer Assignation",
+    "REMOVE_ASSIGN" : "Désassigner",
+    "CREATE_SUCCESS" : "Nouvelle assignation de stock réussie",
+    "UPDATE_SUCCESS" : "Mise à jour de l'assignation de stock réussie",
+    "REMOVE_SUCCESS" : "Suppression de l'assignation de stock réussie",
+    "CONFIRM_REMOVE_MSG" : "Voulez-vous vraiment désassigner ce stock ?",
+    "NEW_ASSIGN" : "Nouvelle assignation",
+    "RECEIVER" : "Bénéficiaire"
   }
 }

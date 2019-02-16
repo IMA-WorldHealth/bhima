@@ -20,7 +20,6 @@ CREATE TABLE `account` (
   `cc_id` SMALLINT(6) DEFAULT NULL,
   `pc_id` SMALLINT(6) DEFAULT NULL,
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `classe` INT(11) DEFAULT NULL,
   `reference_id` TINYINT(3) UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `account_1` (`number`),
@@ -61,6 +60,7 @@ CREATE TABLE `account_reference` (
   `abbr` VARCHAR(35) NOT NULL,
   `description` VARCHAR(100) NOT NULL,
   `parent` MEDIUMINT(8) UNSIGNED NULL,
+  `reference_type_id` MEDIUMINT(8) UNSIGNED NULL,
   `is_amo_dep` TINYINT(1) NULL DEFAULT 0 COMMENT 'Ammortissement or depreciation',
   PRIMARY KEY (`id`),
   UNIQUE KEY `account_reference_1` (`abbr`, `is_amo_dep`)
@@ -503,15 +503,18 @@ DROP TABLE IF EXISTS `debtor_group_history`;
 CREATE TABLE `debtor_group_history` (
   `uuid` BINARY(16) NOT NULL,
   `debtor_uuid` BINARY(16) DEFAULT NULL,
-  `debtor_group_uuid` BINARY(16) DEFAULT NULL,
-  `income_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `previous_debtor_group` BINARY(16) DEFAULT NULL,
+  `next_debtor_group` BINARY(16) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `user_id` smallINT(5) UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`uuid`),
   KEY `debtor_uuid` (`debtor_uuid`),
-  KEY `debtor_group_uuid` (`debtor_group_uuid`),
+  KEY `previous_debtor_group` (`previous_debtor_group`),
+  KEY `next_debtor_group` (`next_debtor_group`),
   KEY `user_id` (`user_id`),
   FOREIGN KEY (`debtor_uuid`) REFERENCES `debtor` (`uuid`),
-  FOREIGN KEY (`debtor_group_uuid`) REFERENCES `debtor_group` (`uuid`),
+  FOREIGN KEY (`previous_debtor_group`) REFERENCES `debtor_group` (`uuid`),
+  FOREIGN KEY (`next_debtor_group`) REFERENCES `debtor_group` (`uuid`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
@@ -860,7 +863,7 @@ CREATE TABLE `inventory` (
   `uuid` BINARY(16) NOT NULL,
   `code` varchar(30) NOT NULL,
   `text` varchar(100) NOT NULL,
-  `price` DECIMAL(10,4) UNSIGNED NOT NULL DEFAULT 0.0,
+  `price` DECIMAL(18,4) UNSIGNED NOT NULL DEFAULT 0.0,
   `default_quantity` INTEGER UNSIGNED NOT NULL DEFAULT 1,
   `group_uuid` BINARY(16) NOT NULL,
   `unit_id` SMALLINT(5) UNSIGNED DEFAULT NULL,
@@ -1056,7 +1059,7 @@ CREATE TABLE `rubric_paiement` (
   PRIMARY KEY (`id`),
   KEY `paiement_uuid` (`paiement_uuid`),
   KEY `rubric_payroll_id` (`rubric_payroll_id`),
-  UNIQUE KEY `rubric_paiement_1` (`paiement_uuid`, `rubric_payroll_id`),  
+  UNIQUE KEY `rubric_paiement_1` (`paiement_uuid`, `rubric_payroll_id`),
   FOREIGN KEY (`paiement_uuid`) REFERENCES `paiement` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`rubric_payroll_id`) REFERENCES `rubric_payroll` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
@@ -1178,7 +1181,7 @@ CREATE TABLE `patient_group` (
   `enterprise_id`     SMALLINT(5) UNSIGNED NOT NULL,
   `price_list_uuid`   BINARY(16) NULL,
   `name`              VARCHAR(60) NOT NULL,
-  `note`              TEXT NOT NULL,
+  `note`              TEXT NULL,
   `created_at`        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
    PRIMARY KEY (`uuid`),
    UNIQUE KEY `patient_group_1` (`name`),
@@ -1243,7 +1246,6 @@ CREATE TABLE `patient_visit` (
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `period`;
-
 CREATE TABLE `period` (
   `id`                  MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
   `fiscal_year_id`      MEDIUMINT(8) UNSIGNED NOT NULL,
@@ -1913,9 +1915,31 @@ CREATE TABLE `lot` (
   `origin_uuid`       BINARY(16) NOT NULL,
   `delay`             INT(11) NOT NULL DEFAULT 0,
   `entry_date`        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `is_assigned`       TINYINT(1) NULL DEFAULT 0,
   PRIMARY KEY (`uuid`),
   KEY `inventory_uuid` (`inventory_uuid`),
   FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `stock_assign`;
+CREATE TABLE `stock_assign` (
+  `uuid`              BINARY(16) NOT NULL,
+  `lot_uuid`          BINARY(16) NOT NULL,
+  `entity_uuid`       BINARY(16) NOT NULL,
+  `depot_uuid`        BINARY(16) NOT NULL,
+  `quantity`          INT(11) NOT NULL DEFAULT 1,
+  `is_active`         TINYINT(1) NOT NULL DEFAULT 1,
+  `description`       TEXT NULL,
+  `user_id`           SMALLINT(5) UNSIGNED NOT NULL,
+  `updated_at`        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_at`        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`uuid`),
+  KEY `lot_uuid` (`lot_uuid`),
+  KEY `entity_uuid` (`entity_uuid`),
+  KEY `depot_uuid` (`depot_uuid`),
+  FOREIGN KEY (`lot_uuid`) REFERENCES `lot` (`uuid`),
+  FOREIGN KEY (`entity_uuid`) REFERENCES `entity` (`uuid`),
+  FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `stock_movement`;
@@ -2124,7 +2148,7 @@ CREATE TABLE `fee_center_distribution` (
   `principal_fee_center_id` MEDIUMINT(8) UNSIGNED NOT NULL,
   `debit_equiv` DECIMAL(19,8) NOT NULL DEFAULT 0.00,
   `credit_equiv` DECIMAL(19,8) NOT NULL DEFAULT 0.00,
-  `date_distribution` DATETIME NOT NULL, 
+  `date_distribution` DATETIME NOT NULL,
   `user_id`           SMALLINT(5) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
@@ -2132,7 +2156,7 @@ CREATE TABLE `fee_center_distribution` (
   INDEX `account_id` (`account_id`),
   INDEX `trans_id` (`trans_id`),
   INDEX `auxiliary_fee_center_id` (`auxiliary_fee_center_id`),
-  INDEX `principal_fee_center_id` (`principal_fee_center_id`),  
+  INDEX `principal_fee_center_id` (`principal_fee_center_id`),
   FOREIGN KEY (`row_uuid`) REFERENCES `general_ledger` (`uuid`),
   FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
   FOREIGN KEY (`auxiliary_fee_center_id`) REFERENCES `fee_center` (`id`),
@@ -2168,10 +2192,19 @@ CREATE TABLE `distribution_key` (
   `user_id` SMALLINT(5) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `auxiliary_fee_center_id` (`auxiliary_fee_center_id`),
-  INDEX `principal_fee_center_id` (`principal_fee_center_id`),  
+  INDEX `principal_fee_center_id` (`principal_fee_center_id`),
   FOREIGN KEY (`auxiliary_fee_center_id`) REFERENCES `fee_center` (`id`),
   FOREIGN KEY (`principal_fee_center_id`) REFERENCES `fee_center` (`id`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `account_reference_type`;  
+CREATE TABLE `account_reference_type` (
+  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, 
+  `label` VARCHAR(100) NOT NULL, 
+  `fixed` tinyint(1) DEFAULT 0, 
+  PRIMARY KEY (`id`), 
+  UNIQUE KEY `account_reference_type_1` (`label`) 
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 SET foreign_key_checks = 1;

@@ -40,6 +40,8 @@ exports.list = list;
 /** [HTTP API ENDPOINT] get debtor groups invoices list */
 exports.invoices = invoices;
 
+exports.lookupDebtorGroup = lookupDebtorGroup;
+
 /**
  * Looks up a debtor group in the database by uuid.
  *

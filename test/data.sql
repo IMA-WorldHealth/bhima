@@ -348,6 +348,9 @@ CALL CreateFiscalYear(1, @fiscalYear2016, @superUser, 'Test Fiscal Year 2017', 1
 SET @fiscalYear2018 = 0;
 CALL CreateFiscalYear(1, @fiscalYear2017, @superUser, 'Fiscal Year 2018', 12, DATE('2018-01-01'), DATE('2018-12-31'), 'Notes for 2018', @fiscalYear2018);
 
+SET @fiscalYear2019 = 0;
+CALL CreateFiscalYear(1, @fiscalYear2018, @superUser, 'Fiscal Year 2019', 12, DATE('2019-01-01'), DATE('2019-12-31'), 'Notes for 2019', @fiscalYear2019);
+
 -- give test permission to all projects
 INSERT INTO `project_permission` VALUES (1, 1, 1),(2, 1, 2),(3, 2, 1),(4, 4, 1);
 
@@ -930,7 +933,7 @@ INSERT INTO `rubric_paiement` (`id`, `paiement_uuid`, `rubric_payroll_id`, `valu
 (10, @paymentUuid, 4, 19.25, NULL),
 (11, @paymentUuid, 11, 1.1, NULL);
 
--- ACCOUNT REFERENCE 
+-- ACCOUNT REFERENCE
 INSERT INTO `account_reference` (`id`, `abbr`, `description`, `parent`, `is_amo_dep`) VALUES
   (1, 'c_admin', 'Section Administration', NULL, 0),
   (2, 'p_admin', 'Profit Administration', NULL, 0),
@@ -956,7 +959,7 @@ INSERT INTO `account_reference` (`id`, `abbr`, `description`, `parent`, `is_amo_
   INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (14, 9, 215, 0, 0, 0);
   INSERT INTO `account_reference_item` (`id`, `account_reference_id`, `account_id`, `is_exception`, `credit_balance`, `debit_balance`) VALUES (15, 9, 220, 0, 0, 0);
 
--- FEE CENTER 
+-- FEE CENTER
 INSERT INTO `fee_center` (`id`, `label`, `is_principal`) VALUES
   (1, 'Administration', 1),
   (2, 'Principale TPA', 1),
@@ -989,11 +992,11 @@ INSERT INTO `general_ledger` (`uuid`, `project_id`, `fiscal_year_id`, `period_id
 INSERT INTO `general_ledger` (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_id_reference_number`, `trans_date`, `record_uuid`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `entity_uuid`, `reference_uuid`, `comment`, `transaction_type_id`, `user_id`, `cc_id`, `pc_id`, `created_at`, `updated_at`) VALUES (0xF77740B0DDB111E8A8B3507B9DD6DEA5, 1, 4, 201811, 'TPA7', 7, '2018-11-01 09:41:46', 0xA5A5F950A4C947F09A9A2BFC3123E534, 'Sample voucher data one', 182, 0.0000, 100.0000, 0.0000, 100.0000, 2, NULL, NULL, NULL, 1, 1, NULL, NULL, '2018-11-01 09:42:17', NULL);
 
 -- INVOICE FOR DISTRIBUTION FEE CENTER
-INSERT INTO `invoice` (`project_id`, `uuid`, `cost`, `debtor_uuid`, `service_id`, `user_id`, `date`, `description`, `reversed`, `edited`, `created_at`) 
+INSERT INTO `invoice` (`project_id`, `uuid`, `cost`, `debtor_uuid`, `service_id`, `user_id`, `date`, `description`, `reversed`, `edited`, `created_at`)
 VALUES (1, 0x79B0393553C54498A5ECA8CA6DFEA7AC, 256.6200, 0x3BE232F9A4B94AF6984C5D3F87D5C107, 3, 1, '2018-11-05 10:26:05', 'Facture de Test 2 Patient (PA.TPA.2) pour 2 items dans le service Medecine Interne. ', 0, 0, '2018-11-05 10:26:32');
-INSERT INTO `invoice_item` (`invoice_uuid`, `uuid`, `inventory_uuid`, `quantity`, `inventory_price`, `transaction_price`, `debit`, `credit`) 
+INSERT INTO `invoice_item` (`invoice_uuid`, `uuid`, `inventory_uuid`, `quantity`, `inventory_price`, `transaction_price`, `debit`, `credit`)
 VALUES (0x79B0393553C54498A5ECA8CA6DFEA7AC, 0x3B456F6FAA594CE5BD80C91647EB6CF9, 0xDCFBCD6DB50F48B385614A0B8A4EFBA5, 100, 1.9000, 1.9000, 0.0000, 190.0000);
-INSERT INTO `invoice_item` (`invoice_uuid`, `uuid`, `inventory_uuid`, `quantity`, `inventory_price`, `transaction_price`, `debit`, `credit`) 
+INSERT INTO `invoice_item` (`invoice_uuid`, `uuid`, `inventory_uuid`, `quantity`, `inventory_price`, `transaction_price`, `debit`, `credit`)
 VALUES (0x79B0393553C54498A5ECA8CA6DFEA7AC, 0xC150EFE416144C428643BFEA00608800, 0xC560E79CE57A4BC9BA53406AA861F858, 40, 5.1200, 5.1200, 0.0000, 204.8000);
 
 -- SERVICE FEE CENTER
@@ -1032,3 +1035,11 @@ INSERT INTO role_unit
 
 INSERT INTO `user_role`(uuid, user_id, role_uuid)
   VALUES (HUID('6050a2bc-b1b3-11e8-a0f5-8b6d28d94cad'), 2, @regularRoleUUID);
+
+-- ----------------------------------------------------------------------------------------
+
+-- default entities
+INSERT INTO entity (uuid, display_name, gender, email, phone, address, entity_type_id) VALUES
+  (HUID('00099B1D184A48DEB93D45FBD0AB3790'), 'Bruce Wayne', 'M', 'thebat@bhi.ma', '+243000000', 'Gotham City', 1),
+  (HUID('037AC6C6B75A4E328E9DCDE5DA22BACE'), 'Wayne Enterprise', 'o', 'thebat@bhi.ma', '+243000000', 'Gotham City', 4);
+

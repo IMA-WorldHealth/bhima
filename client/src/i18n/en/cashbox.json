@@ -4,7 +4,7 @@
     "ADD_CASHBOX":"Add cashbox",
     "BACK":"Back to Cashboxes",
     "CASHBOX":"Cashbox",
-    "CONFIG_ACCOUNTS":"Configuration of Account",
+    "CONFIG_ACCOUNTS":"Account Configuration",
     "DANGER_ZONE":"Danger Zone",
     "DESCRIPTION":"This module is responsible for cashbox management",
     "TITLE":"Cashbox Management",
@@ -18,7 +18,7 @@
       "LAST_SEEN": "Last seen",
       "DEACTIVATED": "This user is deactivated."
     },
-    "CARD" : { 
+    "CARD" : {
       "PRIMARY_CASHBOX" : "Primary Cashbox",
       "AUXILIARY_CASHBOX" : "Auxiliary Cashbox",
       "USERS_WITH_ACCESS" : "User(s) with access",

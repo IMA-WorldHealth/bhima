@@ -40,9 +40,7 @@ function list(req, res, next) {
 * Returns the detail of a single Payroll
 */
 function detail(req, res, next) {
-  const id = req.params.id;
-
-  lookupPayrollConfig(id)
+  lookupPayrollConfig(req.params.id)
     .then((record) => {
       res.status(200).json(record);
     })

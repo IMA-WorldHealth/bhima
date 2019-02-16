@@ -108,11 +108,17 @@ function naiveTransactionSearch(options, includeNonPosted) {
 // if posted ONLY return posted transactions
 // if not posted ONLY return non-posted transactions
 function buildTransactionQuery(options, posted) {
-  db.convert(options, ['uuid', 'record_uuid', 'uuids', 'record_uuids']);
+  db.convert(options, ['uuid', 'record_uuid', 'uuids', 'record_uuids', 'reference_uuid']);
 
   const filters = new FilterParser(options, { tableAlias : 'p' });
 
   const table = posted ? 'general_ledger' : 'posting_journal';
+
+  // TODO(@jniles) - make this a toggle that we can turn on/off on the client.
+  options.includeExchangeRate = true;
+  const includeExchangeRate = options.includeExchangeRate
+    ? ', 1 / GetExchangeRate(pro.enterprise_id, c.id, p.trans_date) AS rate'
+    : '';
 
   const sql = `
     SELECT BUID(p.uuid) AS uuid, ${posted} as posted, p.project_id, p.fiscal_year_id, p.period_id,
@@ -122,11 +128,11 @@ function buildTransactionQuery(options, posted) {
       BUID(p.entity_uuid) AS entity_uuid, em.text AS hrEntity,
       BUID(p.reference_uuid) AS reference_uuid, dm2.text AS hrReference,
       p.comment, p.transaction_type_id, p.user_id, p.cc_id, p.pc_id, pro.abbr,
-      pro.name AS project_name, per.start_date AS period_start, tp.text AS transaction_type_text,
-      per.end_date AS period_end, a.number AS account_number, a.label AS account_label, u.display_name
+      pro.name AS project_name, tp.text AS transaction_type_text,
+      a.number AS account_number, a.label AS account_label, p.trans_id_reference_number,
+      u.display_name ${includeExchangeRate}
     FROM ${table} p
       JOIN project pro ON pro.id = p.project_id
-      JOIN period per ON per.id = p.period_id
       JOIN account a ON a.id = p.account_id
       LEFT JOIN transaction_type tp ON tp.id = p.transaction_type_id
       JOIN user u ON u.id = p.user_id
@@ -148,12 +154,14 @@ function buildTransactionQuery(options, posted) {
   filters.equals('project_id');
   filters.equals('trans_id');
   filters.equals('record_uuid');
+  filters.equals('reference_uuid');
   filters.equals('currency_id');
 
   filters.equals('comment');
   filters.equals('hrEntity', 'text', 'em');
   filters.equals('hrRecord', 'text', 'dm1');
   filters.equals('hrReference', 'text', 'dm2');
+  filters.custom('currency_id', 'c.id=?');
 
   filters.custom('transaction_type_id', 'p.transaction_type_id IN (?)', options.transaction_type_id);
 
@@ -162,10 +170,12 @@ function buildTransactionQuery(options, posted) {
   filters.custom('accounts_id', 'p.account_id IN (?)', [options.accounts_id]);
   const { amount } = options;
   filters.custom(
-    'amount', '(credit = ? OR debit = ?) OR (credit_equiv = ? OR debit_equiv = ?)',
+    'amount', '(credit = ? OR debit = ? OR credit_equiv = ? OR debit_equiv = ?)',
     [amount, amount, amount, amount]
   );
+
   filters.custom('excludes_distributed', 'p.uuid NOT IN (SELECT fc.row_uuid FROM fee_center_distribution AS fc)');
+
   return {
     sql : filters.applyQuery(sql),
     parameters : filters.parameters(),

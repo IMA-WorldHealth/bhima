@@ -8,8 +8,8 @@
 <div ng-show="!ReportConfigCtrl.previewGenerated">
   <div class="row">
     <div class="col-md-12">
-      <h3 class="text-capitalize" translate>REPORT.INCOME_EXPENSE_REPORT.TITLE</h3>
-      <p class="text-info" translate>REPORT.INCOME_EXPENSE_REPORT.DESCRIPTION</p>
+      <h3 class="text-capitalize" translate>REPORT.PROFIT_AND_LOSS</h3>
+      <p class="text-info" translate>REPORT.PROFIT_AND_LOSS_REPORT.DESCRIPTION</p>
     </div>
   </div>
 
@@ -23,7 +23,6 @@
         <div class="panel-body">
           <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate>
             <bh-fiscal-period-select
-              validation-trigger="ConfigForm.$submitted"
               on-select-fiscal-callback="ReportConfigCtrl.onSelectFiscal(fiscal)"
               on-select-period-from-callback="ReportConfigCtrl.onSelectPeriodFrom(period)"
               on-select-period-to-callback="ReportConfigCtrl.onSelectPeriodTo(period)">

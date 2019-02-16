@@ -10,6 +10,17 @@
     "TITLE" : "Patients",
     "UPDATE_PICTURE" : "Update Patient Photo",
     "UPLOAD_PICTURE" : "Upload Patient Photo",
+    "CHECK_IN":{
+      "TITLE" : "Check In",
+      "SUBMIT" : "Check Patient In",
+      "NOT_RECENT" : "This patient has not recently been checked in. Check the patient in to track this hospital visit.",
+      "ORIGINAL" : "This patient has never been checked in.",
+      "RECENT" : "Recent Visits",
+      "ITEM" : "Checked in",
+      "BY" : "by",
+      "REPORT_TITLE" : "Patient Checkin Report",
+      "SUCCESS" : "Patient has been checked in"
+    },
     "VISITS":{
       "TITLE" : "Patient Visits",
       "ADMIT" : "Admit Patient",

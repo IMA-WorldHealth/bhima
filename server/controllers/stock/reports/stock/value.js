@@ -1,3 +1,5 @@
+const Exchange = require('../../../finance/exchange');
+
 const {
   _, db, ReportManager, pdfOptions, STOCK_VALUE_REPORT_TEMPLATE,
 } = require('../common');
@@ -13,6 +15,7 @@ const {
  */
 function stockValue(req, res, next) {
   const data = {};
+  const enterpriseId = req.session.enterprise.id;
   let options;
   let report;
 
@@ -30,14 +33,15 @@ function stockValue(req, res, next) {
   data.dateTo = options.dateTo;
   return db.one('SELECT * FROM depot WHERE uuid=?', [db.bid(options.depot_uuid)]).then(depot => {
     data.depot = depot;
-    return db.exec('CALL stockValue(?, ?);', [db.bid(options.depot_uuid), options.dateTo]);
+    return db.exec('CALL stockValue(?,?,?);', [db.bid(options.depot_uuid), options.dateTo, options.currency_id]);
   })
     .then((stockValues) => {
       data.stockValues = stockValues[0] || [];
-
       const stokTolal = stockValues[1][0] || {};
       data.stocktotal = stokTolal.total;
       data.emptyResult = data.stockValues.length === 0;
+      data.rate = Exchange.getExchangeRate(enterpriseId, options.currency_id, new Date());
+      data.currency_id = options.currency_id;
       return report.render(data);
     })
     .then((result) => {

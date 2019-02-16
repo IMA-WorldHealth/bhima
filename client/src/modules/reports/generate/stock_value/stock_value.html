@@ -28,8 +28,7 @@
           <bh-depot-select
             depot-uuid="ReportConfigCtrl.depot.uuid"
             on-select-callback="ReportConfigCtrl.onSelectDepot(depot)"
-            required="true"
-            validate-trigger="ConfigForm.$submitted">
+            required="true">
             <bh-clear on-clear="ReportConfigCtrl.clear('depot')"></bh-clear>
           </bh-depot-select>
 
@@ -40,6 +39,11 @@
             date-value="ReportConfigCtrl.dateTo"
             on-change="ReportConfigCtrl.onDateChange(date)">
           </bh-date-editor>
+
+           <!-- the currency to be used in the footer -->
+          <bh-currency-select
+           currency-id="ReportConfigCtrl.currency_id">
+          </bh-currency-select>
 
           <!-- preview -->
           <bh-loading-button loading-state="ConfigForm.$loading">

@@ -4,9 +4,9 @@ angular.module('bhima.components')
     controller : StockEntryExitTypeController,
     bindings : {
       onEntryExitTypeSelectCallback : '&',
+      isEntry : '@',
       reference : '<?',
       displayName : '<?',
-      isEntry : '@',
       depot : '<?',
       reset : '<?', // when changes to true the component will be reseted
     },
@@ -17,11 +17,13 @@ StockEntryExitTypeController.$inject = ['StockEntryExitTypeService'];
 /**
  * Stock Entry Exit Type component
  */
-function StockEntryExitTypeController(StockEntryExitType) {
+function StockEntryExitTypeController(StockEntryExitTypes) {
   const $ctrl = this;
 
+  let isEntry;
+
   $ctrl.$onInit = function onInit() {
-    $ctrl.isEntry = $ctrl.isEntry === 'true';
+    isEntry = $ctrl.isEntry === 'true';
 
     reloadEntryExitTypes();
   };
@@ -31,9 +33,20 @@ function StockEntryExitTypeController(StockEntryExitType) {
       reloadEntryExitTypes();
     }
 
-    if (changes.reset && changes.reset.currentValue === true) {
+    if (changes.reset && changes.reset.currentValue) {
       reloadEntryExitTypes();
     }
+  };
+
+  $ctrl.getLabel = (type) => {
+    const hasDisplayLabel = ($ctrl.reference || $ctrl.displayName)
+      && type.label === $ctrl.selectedEntryExitType.label;
+
+    if (hasDisplayLabel) {
+      return $ctrl.display();
+    }
+
+    return type.descriptionKey;
   };
 
   $ctrl.display = () => {
@@ -54,6 +67,10 @@ function StockEntryExitTypeController(StockEntryExitType) {
     return list.join(' - ');
   };
 
+  $ctrl.isTypeSelected = (type) => {
+    return angular.equals(type, $ctrl.selectedEntryExitType);
+  };
+
   $ctrl.selectEntryExitType = (type) => {
     $ctrl.selectedEntryExitType = type;
     $ctrl.onEntryExitTypeSelectCallback({ type });
@@ -61,9 +78,23 @@ function StockEntryExitTypeController(StockEntryExitType) {
 
   // reload entry/exit types
   function reloadEntryExitTypes() {
-    $ctrl.selectedEntryExitType = null;
-    $ctrl.depot = $ctrl.depot || {};
+    delete $ctrl.selectedEntryExitType;
 
-    $ctrl.entryExitTypeList = StockEntryExitType.getAllowedTypes($ctrl.depot);
+    if (!$ctrl.depot) { return; }
+
+    let types;
+
+    // source list depends on whether we are entering or exiting stock
+    if (isEntry) {
+      types = StockEntryExitTypes.entryTypes;
+    } else {
+      types = StockEntryExitTypes.exitTypes;
+    }
+
+    // get the final types by filtering on what is allowed in the depot
+    $ctrl.types = types
+      .filter(type => $ctrl.depot[type.allowedKey]);
+
+    $ctrl.hasNoTypesDefined = $ctrl.types.length === 0;
   }
 }

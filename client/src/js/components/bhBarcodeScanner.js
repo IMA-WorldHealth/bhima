@@ -4,6 +4,7 @@ angular.module('bhima.components')
     controller  : bhBarcodeScanner,
     bindings    : {
       onScanCallback : '&',
+      shouldSearch : '<',
     },
   });
 
@@ -25,6 +26,7 @@ function bhBarcodeScanner($timeout, $window, Barcode) {
   };
 
   $ctrl.$onInit = () => {
+    $ctrl.shouldSearch = angular.isDefined($ctrl.shouldSearch) ? $ctrl.shouldSearch : true;
     angular.extend($ctrl, { steps });
     $ctrl.currentStep = steps.AWAIT_READ;
     $ctrl.setFocusOnHiddenInput();
@@ -51,6 +53,11 @@ function bhBarcodeScanner($timeout, $window, Barcode) {
   $ctrl.triggerBarcodeRead = () => {
     $ctrl.currentStep = steps.AWAIT_HTTP;
 
+    if (!$ctrl.shouldSearch) {
+      $ctrl.onScanCallback({ record : { uuid : $ctrl.barcode } });
+      return;
+    }
+
     Barcode.search($ctrl.barcode)
       .then(record => {
         $ctrl.currentStep = steps.READ_SUCCESS;
@@ -62,6 +69,7 @@ function bhBarcodeScanner($timeout, $window, Barcode) {
         $ctrl.currentStep = isNotFound ? steps.NOT_FOUND : steps.READ_ERROR;
         $ctrl.isResetButtonVisible = true;
       });
+
   };
 
   $ctrl.showResetButton = () => {

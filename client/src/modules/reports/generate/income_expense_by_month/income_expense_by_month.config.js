@@ -24,6 +24,10 @@ function IncomeExpenseByMonthConfigController($sce, Notify, SavedReports, AppCac
     vm.reportDetails.periodNumber = period.number;
   };
 
+  vm.OnRemoveUnusedAccounts = (val) => {
+    vm.reportDetails.removeUnusedAccounts = val;
+  };
+
   vm.preview = function preview(form) {
     if (form.$invalid) { return 0; }
     // update cached configuration

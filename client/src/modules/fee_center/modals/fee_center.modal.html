@@ -52,7 +52,7 @@
 
         <div class="help-block" ng-messages="FeeCenterForm.is_principal.$error" ng-show="FeeCenterForm.$submitted">
           <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-        </div>        
+        </div>
       </div>
     </div>
     <hr />
@@ -84,7 +84,7 @@
             <span translate>FORM.LABELS.PROFIT_CENTER </span>
           </label>
         </div>
-      </div>  
+      </div>
 
       <div ng-if="FeeCenterModalCtrl.feeCenter.is_principal" class="checkbox">
         <label>
@@ -107,11 +107,10 @@
           account-reference-id="FeeCenterModalCtrl.feeCenter.reference_profit_id"
           label="FORM.LABELS.PROFIT_CENTER"
           on-select-callback="FeeCenterModalCtrl.onSelectAccountReference(accountReference, 0)"
-          required="true"
-          validation-trigger="FeeCenterForm.$submitted">
+          required="true">
         </bh-account-reference-select>
       </div>
-      
+
       <span ng-if="FeeCenterModalCtrl.feeCenter.is_principal">
         <hr />
       </span>
@@ -138,8 +137,7 @@
           account-reference-id="FeeCenterModalCtrl.feeCenter.reference_cost_id"
           label="FORM.LABELS.COST_CENTER"
           on-select-callback="FeeCenterModalCtrl.onSelectAccountReference(accountReference, 1)"
-          required="true"
-          validation-trigger="FeeCenterForm.$submitted">
+          required="true">
         </bh-account-reference-select>
       </div>
     </div>
@@ -164,8 +162,7 @@
         id="services"
         on-change="FeeCenterModalCtrl.onServicesChange(services)"
         services-ids="FeeCenterModalCtrl.services"
-        required="true"
-        validation-trigger="FeeCenterForm.$submitted">
+        required="true">
       </bh-services-multiple-select>
     </div>
   </div>

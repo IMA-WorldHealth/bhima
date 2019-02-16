@@ -1,28 +1,30 @@
 <div ng-form="PayrollStatusForm" bh-payroll-status-select ng-model-options="{ updateOn: 'default' }">
   <div
     class="form-group"
-    ng-class="{ 'has-error' : $ctrl.validationTrigger && PayrollStatusForm.paiementStatus.$invalid }">
+    ng-class="{ 'has-error' : PayrollStatusForm.$submitted && PayrollStatusForm.paiementStatus.$invalid }">
     <label class="control-label" translate>
       {{ $ctrl.label }}
     </label>
 
     <ui-select
-        multiple
-        name="paiementStatus"
-        ng-model="$ctrl.selectedPayrollStatus"
-        on-select="$ctrl.handleChange($ctrl.selectedPayrollStatus)"
-        on-remove="$ctrl.handleChange($ctrl.selectedPayrollStatus)"
-        close-on-select="false"
-        ng-required="$ctrl.required">
+      multiple
+      name="paiementStatus"
+      ng-model="$ctrl.selectedPayrollStatus"
+      on-select="$ctrl.handleChange($ctrl.selectedPayrollStatus)"
+      on-remove="$ctrl.handleChange($ctrl.selectedPayrollStatus)"
+      close-on-select="false"
+      ng-required="$ctrl.required">
+
       <ui-select-match placeholder="{{ 'FORM.SELECT.STATUS' | translate }}">
         <span>{{ $item.plainText }}</span>
       </ui-select-match>
+
       <ui-select-choices ui-select-focus-patch repeat="status.id as status in ($ctrl.paiementStatus | filter: { plainText : $select.search } | orderBy: 'plainText')">
         <span ng-bind-html="status.plainText | highlight:$select.search"></span>
       </ui-select-choices>
     </ui-select>
 
-    <div class="help-block" ng-messages="PayrollStatusForm.$error" ng-show="$ctrl.validationTrigger">
+    <div class="help-block" ng-messages="PayrollStatusForm.$error" ng-show="PayrollStatusForm.$submitted">
       <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
     </div>
   </div>

@@ -1,5 +1,5 @@
 angular.module('bhima.directives')
-.directive('bhUnique', UniqueDirective);
+  .directive('bhUnique', UniqueDirective);
 
 UniqueDirective.$inject = ['$q', 'UniqueValidatorService'];
 
@@ -28,20 +28,20 @@ function UniqueDirective($q, UniqueValidator) {
     require : 'ngModel',
     scope : {
       bhUnique : '@bhUnique',
-      origin : '@origin'
+      origin : '@origin',
     },
     link : function uniqueLink(scope, element, attrs, ctrl) {
-      var validationUrl = attrs.bhUnique;
+      const validationUrl = attrs.bhUnique;
 
       // the $error that will be passed on to ng-messages if this directive fails
       // to validate the input
-      var exceptionKey = 'exception';
+      const exceptionKey = 'exception';
 
-      ctrl.$asyncValidators.unique = function (modelValue, viewValue) {
+      ctrl.$asyncValidators.unique = (modelValue, viewValue) => {
 
         // deferred object must be used to handle catch statement within
         // this scope - $q does not currently support chaining catch statements
-        var deferred = $q.defer();
+        const deferred = $q.defer();
 
         // don't make an HTTP request unless there is content to validate
         if (ctrl.$isEmpty(modelValue)) {
@@ -49,16 +49,16 @@ function UniqueDirective($q, UniqueValidator) {
         }
 
         UniqueValidator.check(validationUrl, viewValue)
-          .then(function (valueExists) {
+          .then((valueExists) => {
             // Check if hospital_no change
-            var originUpdated = viewValue !== attrs.origin;
+            const originUpdated = viewValue !== attrs.origin;
 
-            // This section prevents you to validate the function UniqueValidator when 
+            // This section prevents you to validate the function UniqueValidator when
             // it is an update operation and the hospital_no number has not been changed.
             if (valueExists) {
-              valueExists = !originUpdated ? false : true;
+              valueExists = !!originUpdated;
             }
-            
+
             // as we have recieved a valid HTTP response there is nothing wrong
             // with the connection to the server
             ctrl.$setValidity(exceptionKey, true);
@@ -69,7 +69,7 @@ function UniqueDirective($q, UniqueValidator) {
               deferred.resolve();
             }
           })
-          .catch(function (error) {
+          .catch(() => {
 
             // expose that there has been an issue beyond the directives control
             // to the view
@@ -79,6 +79,6 @@ function UniqueDirective($q, UniqueValidator) {
 
         return deferred.promise;
       };
-    }
+    },
   };
 }

@@ -2,8 +2,8 @@ angular.module('bhima.controllers')
   .controller('PriceListItemsModalController', PriceListItemsModalController);
 
 PriceListItemsModalController.$inject = [
-  'data', '$uibModalInstance', 'InventoryService',
-  'util', 'NotifyService', 'appcache', 'PriceListService', 'ModalService',
+  'data', '$uibModalInstance', 'InventoryService', 'util', 'NotifyService',
+  'appcache', 'PriceListService', 'ModalService',
 ];
 
 function PriceListItemsModalController(
@@ -35,6 +35,7 @@ function PriceListItemsModalController(
         inventory.forEach(item => {
           inventoryMap[item.uuid] = item;
         });
+
         vm.inventories = inventory;
         // load price list item
         refreshList();
@@ -48,6 +49,7 @@ function PriceListItemsModalController(
       is_percentage : 0,
       price_list_uuid : vm.pricelist.uuid,
     };
+
     if (form) {
       form.$setPristine();
       form.$setUntouched();
@@ -56,14 +58,18 @@ function PriceListItemsModalController(
 
   // load price list items
   function refreshList() {
-    PriceList.details(vm.pricelist.uuid).then(pricelist => {
-      vm.pricelist = pricelist;
-      vm.gridOptions.data = pricelist.items.map((item) => {
-        const row = angular.copy(item);
-        row.inventory_label = inventoryMap[row.inventory_uuid].label;
-        return row;
+
+    const labelInventory = (item) => {
+      const row = angular.copy(item);
+      row.inventory_label = inventoryMap[row.inventory_uuid].label;
+      return row;
+    };
+
+    PriceList.details(vm.pricelist.uuid)
+      .then(pricelist => {
+        vm.pricelist = pricelist;
+        vm.gridOptions.data = pricelist.items.map(labelInventory);
       });
-    });
   }
 
   // ui-grid coloumn
@@ -122,11 +128,13 @@ function PriceListItemsModalController(
     if (!isValidItem()) {
       return;
     }
-    PriceList.createItem(vm.data).then(() => {
-      Notify.success('FORM.INFO.OPERATION_SUCCESS');
-      init(form);
-      refreshList();
-    })
+
+    PriceList.createItem(vm.data)
+      .then(() => {
+        Notify.success('FORM.INFO.OPERATION_SUCCESS');
+        init(form);
+        refreshList();
+      })
       .catch(Notify.handleError);
   }
 

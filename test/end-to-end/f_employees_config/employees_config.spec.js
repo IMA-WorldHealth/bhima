@@ -1,9 +1,9 @@
+const chai = require('chai');
 const helpers = require('../shared/helpers');
 const EmployeeConfigPage = require('./employees_config.page');
-const chai = require('chai');
 
 
-/** configuring helpers**/
+/** configuring helpers* */
 helpers.configure(chai);
 
 describe('Employees Configuration Management', () => {
@@ -22,22 +22,22 @@ describe('Employees Configuration Management', () => {
   };
 
   it('successfully creates a new Employee Configuration', () => {
-    Page.createEmployeeConfig(employeeConfig);
+    Page.create(employeeConfig);
   });
 
   it('successfully edits a Employee Configuration', () => {
-    Page.editEmployeeConfig(employeeConfig.label, updateEmployeeConfig);
+    Page.update(employeeConfig.label, updateEmployeeConfig);
   });
 
   it('successfully Set Employees in Employee Configuration', () => {
     Page.setEmployeeConfig(updateEmployeeConfig.label);
   });
 
-  it('successfully InSet Employees in Employee Configuration', () => {
-    Page.inSetEmployeeConfig(updateEmployeeConfig.label);
+  it('successfully unset Employees in Employee Configuration', () => {
+    Page.unsetEmployeeConfig(updateEmployeeConfig.label);
   });
 
-  it('successfully InSet Employees in Employee Configuration', () => {
+  it('successfully set Employees in Employee Configuration', () => {
     Page.setEmployeeConfig(employeeConfig.oldConfig);
   });
 
@@ -45,8 +45,8 @@ describe('Employees Configuration Management', () => {
     Page.errorOnCreateEmployeeConfig();
   });
 
-  it('successfully delete a Employee', () => {
-    Page.deleteEmployeeConfig(updateEmployeeConfig.label);
+  it('successfully delete a employee', () => {
+    Page.remove(updateEmployeeConfig.label);
   });
 
 });

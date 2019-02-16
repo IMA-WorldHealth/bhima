@@ -64,8 +64,8 @@ describe('(/journal/trialbalance) API endpoint', () => {
         expect(summary).to.have.length(2);
 
         // all accounts have 0 balance before
-        expect(summary[0].balance_before).to.equal(-100);
-        expect(summary[1].balance_before).to.equal(100);
+        expect(summary[0].balance_before).to.equal(0);
+        expect(summary[1].balance_before).to.equal(0);
 
         expect(summary[0].debit_equiv).to.equal(0);
         expect(summary[1].debit_equiv).to.equal(100);
@@ -73,8 +73,8 @@ describe('(/journal/trialbalance) API endpoint', () => {
         expect(summary[0].credit_equiv).to.equal(100);
         expect(summary[1].credit_equiv).to.equal(0);
 
-        expect(summary[0].balance_final).to.equal(-200);
-        expect(summary[1].balance_final).to.equal(200);
+        expect(summary[0].balance_final).to.equal(-100);
+        expect(summary[1].balance_final).to.equal(100);
       })
       .catch(helpers.handler);
   });

@@ -230,7 +230,7 @@ function ReceiptModal(Modal, Receipts) {
     return instance.result;
   }
 
-  function payroll(periodPayroll, data, notifyCreated) {
+  function payroll(periodPayroll, data, currency, conversionRate, payslip, notifyCreated) {
     const options = {
       title         : 'TREE.PAYROLL',
       renderer      : Receipts.renderer,
@@ -240,6 +240,9 @@ function ReceiptModal(Modal, Receipts) {
     const request = {
       idPeriod : periodPayroll,
       employees : data,
+      currency,
+      payslip,
+      conversionRate,
     };
 
     const payrollRequest = Receipts.payroll(request, { renderer : options.renderer });
@@ -256,7 +259,7 @@ function ReceiptModal(Modal, Receipts) {
   }
 
 
-  function payrollReport(periodPayroll, data, currency, socialCharge, notifyCreated) {
+  function payrollReport(periodPayroll, data, currency, socialCharge, conversionRate, notifyCreated) {
     const options = {
       title         : 'TREE.PAYROLL',
       renderer      : Receipts.renderer,
@@ -268,6 +271,7 @@ function ReceiptModal(Modal, Receipts) {
       employees : data,
       currency,
       socialCharge,
+      conversionRate,
     };
 
     const payrollRequest = Receipts.payrollReport(request, { renderer : options.renderer });
@@ -294,6 +298,7 @@ function ReceiptModal(Modal, Receipts) {
   service.stockEntryIntegrationReceipt = stockEntryIntegrationReceipt;
   service.stockEntryDonationReceipt = stockEntryDonationReceipt;
   service.stockAdjustmentReceipt = stockAdjustmentReceipt;
+  service.stockAssignReceipt = stockAssignReceipt;
 
   /**
    * @method stockExitPatientReceipt
@@ -303,6 +308,17 @@ function ReceiptModal(Modal, Receipts) {
   function stockExitPatientReceipt(documentUuid, notifyCreated) {
     const opts = { title : 'STOCK.RECEIPT.EXIT_PATIENT', notifyCreated, renderer : Receipts.renderer };
     const promise = Receipts.stockExitPatientReceipt(documentUuid, { renderer : opts.renderer });
+    return ReceiptFactory(promise, opts);
+  }
+
+  /**
+   * @method stockAssignReceipt
+   * @param {string} uuid
+   * @param {boolean} notifyCreated
+   */
+  function stockAssignReceipt(uuid, notifyCreated) {
+    const opts = { title : 'ASSIGN.STOCK_ASSIGN', notifyCreated, renderer : Receipts.renderer };
+    const promise = Receipts.stockAssignReceipt(uuid, { renderer : opts.renderer });
     return ReceiptFactory(promise, opts);
   }
 

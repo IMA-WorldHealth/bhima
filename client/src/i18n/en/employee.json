@@ -1,6 +1,6 @@
 {
  "EMPLOYEE" : {
-  "CONFIGURATION": "Employees Configuration",
+  "CONFIGURATION": "Employee Configuration",
   "EDIT" : "Update Employee Details",
   "EMPLOYEES" : "All Employees",
   "EMPLOYEE_DETAILS" : "Employee Details",

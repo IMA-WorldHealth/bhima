@@ -5,7 +5,7 @@
   </a>
 
   <ul data-action="{{ rowRenderIndex}}"  class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
-    <li class="dropdown-header">{{row.entity.code}}</li>
+    <li class="dropdown-header">{{row.entity.reference}}</li>
     <li>
       <a data-method="edit" ui-sref="employeeEdit({uuid : row.entity.uuid})" href>
         <span class="fa fa-edit"></span> <span translate>TABLE.COLUMNS.EDIT</span>
@@ -13,7 +13,7 @@
     </li>
     <li class="divider"></li>
     <li>
-      <a data-method="record" ui-sref="patientRecord.details({ patientID : row.entity.patient_uuid })" href>
+      <a data-method="record" ui-sref="patientRecord.details({ patientUuid : row.entity.patient_uuid })" href>
         <span class="fa fa-book"></span> <span translate>EMPLOYEE.HOSPITAL_DATA</span>
       </a>
     </li>

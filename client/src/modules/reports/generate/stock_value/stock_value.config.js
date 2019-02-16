@@ -42,6 +42,7 @@ function StockValueConfigController($sce, Notify, SavedReports, AppCache, report
     const params = {
       depot_uuid : vm.depot.uuid,
       dateTo : vm.dateTo,
+      currency_id : vm.currency_id,
     };
 
     // update cached configuration

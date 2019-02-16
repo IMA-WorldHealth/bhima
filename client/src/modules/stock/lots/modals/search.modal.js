@@ -3,11 +3,10 @@ angular.module('bhima.controllers')
 
 // dependencies injections
 SearchLotsModalController.$inject = [
-  'data', 'InventoryService', 'NotifyService',
-  'util', 'Store', '$uibModalInstance', 'PeriodService', 'StockService',
+  'data', 'util', 'Store', '$uibModalInstance', 'PeriodService', 'StockService',
 ];
 
-function SearchLotsModalController(data, Inventory, Notify, util, Store, Instance, Periods, Stock) {
+function SearchLotsModalController(data, util, Store, Instance, Periods, Stock) {
   const vm = this;
   const changes = new Store({ identifier : 'key' });
 
@@ -17,7 +16,7 @@ function SearchLotsModalController(data, Inventory, Notify, util, Store, Instanc
 
   const searchQueryOptions = [
     'depot_uuid', 'inventory_uuid', 'group_uuid', 'label', 'entry_date_from',
-    'entry_date_to', 'expiration_date_from', 'expiration_date_to',
+    'entry_date_to', 'expiration_date_from', 'expiration_date_to', 'includeEmptyLot',
   ];
 
   // displayValues will be an id:displayValue pair
@@ -47,6 +46,11 @@ function SearchLotsModalController(data, Inventory, Notify, util, Store, Instanc
   vm.onSelectInventory = function onSelectInventory(inventory) {
     vm.searchQueries.inventory_uuid = inventory.uuid;
     displayValues.inventory_uuid = inventory.label;
+  };
+
+  // include empty lots
+  vm.setIncludeEmptyLot = () => {
+    displayValues.includeEmptyLot = vm.searchQueries.includeEmptyLot;
   };
 
   // assign already defined custom filters to searchQueries object

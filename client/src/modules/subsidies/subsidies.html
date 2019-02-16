@@ -105,7 +105,7 @@
               <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.value.$invalid }">
                 <label class="control-label">
                   <span translate>FORM.LABELS.VALUE</span> (%)
-                </label>                
+                </label>
                 <input type="number" class="form-control" autocomplete="off" name="value" ng-model="SubsidyCtrl.subsidy.value" required>
                 <div class="help-block" ng-messages="CreateForm.value.$error" ng-show="CreateForm.$submitted">
                   <div ng-messages-include="modules/templates/messages.tmpl.html"></div>

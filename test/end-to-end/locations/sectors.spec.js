@@ -1,14 +1,8 @@
-/* global element, by */
+/* global by */
 
-const chai = require('chai');
-
-const { expect } = chai;
-
+const { expect } = require('chai');
 const FU = require('../shared/FormUtils');
-
 const helpers = require('../shared/helpers');
-
-helpers.configure(chai);
 
 describe('Sectors Management', () => {
 
@@ -43,7 +37,8 @@ describe('Sectors Management', () => {
     FU.select('SectorCtrl.sector.province_uuid', sector.province);
     FU.input('SectorCtrl.sector.name', 'Sector Update');
 
-    element(by.id('change_sector')).click();
+    // submit the page to the server
+    FU.buttons.submit();
 
     // make sure the success message appears
     FU.exists(by.id('update_success'), true);
