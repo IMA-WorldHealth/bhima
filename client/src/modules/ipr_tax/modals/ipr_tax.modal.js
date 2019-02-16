@@ -2,17 +2,19 @@ angular.module('bhima.controllers')
   .controller('IprTaxModalController', IprTaxModalController);
 
 IprTaxModalController.$inject = [
-  '$state', 'IprTaxService', 'NotifyService', 'appcache', 'moment',
+  '$state', 'IprTaxService', 'NotifyService', 'appcache',
 ];
 
-function IprTaxModalController($state, IprTaxes, Notify, AppCache, moment) {
-  var vm = this;
+function IprTaxModalController($state, IprTaxes, Notify, AppCache) {
+  const vm = this;
   vm.iprTax = {};
 
-  var cache = AppCache('IprTaxModal');
+  const cache = AppCache('IprTaxModal');
 
   if ($state.params.creating || $state.params.id) {
-    vm.stateParams = cache.stateParams = $state.params;
+    vm.stateParams = $state.params;
+    cache.stateParams = $state.params;
+
   } else {
     vm.stateParams = cache.stateParams;
   }
@@ -24,7 +26,7 @@ function IprTaxModalController($state, IprTaxes, Notify, AppCache, moment) {
 
   if (!vm.isCreating) {
     IprTaxes.read(vm.stateParams.id)
-      .then(function (iprTax) {
+      .then((iprTax) => {
         vm.iprTax = iprTax;
       })
       .catch(Notify.handleError);
@@ -32,21 +34,26 @@ function IprTaxModalController($state, IprTaxes, Notify, AppCache, moment) {
 
   // submit the data to the server from all two forms (update, create)
   function submit(iprTaxForm) {
-    var promise;
+
     if (iprTaxForm.$invalid) { return 0; }
-    
+
     delete vm.iprTax.symbol;
 
-    promise = (vm.isCreating) ?
-      IprTaxes.create(vm.iprTax) :
-      IprTaxes.update(vm.iprTax.id, vm.iprTax);
+    const promise = (vm.isCreating)
+      ? IprTaxes.create(vm.iprTax)
+      : IprTaxes.update(vm.iprTax.id, vm.iprTax);
 
     return promise
-      .then(function () {
-        var translateKey = (vm.isCreating) ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
+      .then(() => {
+        const translateKey = (vm.isCreating) ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
         Notify.success(translateKey);
         $state.go('ipr_tax', null, { reload : true });
       })
       .catch(Notify.handleError);
   }
+
+  vm.setCurrency = (currencyId) => {
+    vm.iprTax.currency_id = currencyId;
+  };
+
 }

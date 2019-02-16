@@ -117,4 +117,9 @@ function PatientRegistrationController(
   function lookupReturningPatient() {
     Patients.openReturningPatientModal();
   }
+
+  vm.onInputTextChange = (key, value) => {
+    vm.medical[key] = value;
+  };
+
 }

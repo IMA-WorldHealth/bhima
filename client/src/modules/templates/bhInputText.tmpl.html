@@ -1,0 +1,30 @@
+<div
+  ng-form="textValueForm"
+  ng-class="{ 'has-error' : textValueForm.$submitted && textValueForm.inputTextElement.$invalid}"
+  class="form-group"
+  input-text>
+
+<label class="control-label" ng-class="{ 'col-md-3' : $ctrl.leftLabel}" translate> {{$ctrl.label}}</label> 
+
+<div ng-class="{ 'col-md-9' : $ctrl.leftLabel}">
+  <input type="{{$ctrl.type}}"
+    ng-class="{'required': $ctrl.required}",
+    name ='inputTextElement'
+    ng-model="$ctrl.textValue"
+    title="{{ $ctrl.placeholder | translate}}"
+    placeholder = "{{ $ctrl.placeholder | translate}}"
+    id="{{$ctrl.id}}"
+    autocomplete="{{$ctrl.autocomplete}}"
+    ng-change="$ctrl.valueChange()"
+    input-text-field
+    class='form-control'
+    ng-required="$ctrl.required"/>
+
+  <div class="help-block"
+    ng-messages="textValueForm.inputTextElement.$error"
+    ng-show="textValueForm.$submitted && textValueForm.inputTextElement.$invalid">
+      
+    <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+  </div>
+</div>
+</div>

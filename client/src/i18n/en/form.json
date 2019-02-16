@@ -317,6 +317,7 @@
             "CREDITOR_GROUP": "Creditor Group",
             "CREDITOR_SUBCRIBED": "Subscribed Creditors",
             "CURRENCIES": "Currencies",
+            "CONVERTION_RATE" : "Conversion rate",
             "CURRENCY": "Currency",
             "CURRENT_LOCATION": "Current Location",
             "DAILY_SALARY": "Daily Salary",
