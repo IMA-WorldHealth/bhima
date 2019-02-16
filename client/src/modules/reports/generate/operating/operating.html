@@ -29,7 +29,8 @@
 
                               <!-- currency selection -->
             <bh-currency-select
-              currency-id="ReportConfigCtrl.reportDetails.currency_id">
+              currency-id="ReportConfigCtrl.reportDetails.currency_id"
+              on-change="ReportConfigCtrl.onSelectCurrency(currencyId)">
             </bh-currency-select>
 
             <bh-loading-button loading-state="ConfigForm.$loading">
