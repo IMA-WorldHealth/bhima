@@ -20,12 +20,27 @@
           <th>#</th>
           <th translate>FORM.LABELS.ABBREVIATION</th>
           <th translate>FORM.LABELS.LABEL</th>
-          <th>&nbsp;</th>
+          <th colspan="2">&nbsp;</th>
+        </tr>
+        <tr>
+          <td></td>
+          <td>
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-filter"></i></span>
+              <input
+                type="text" 
+                ng-model="UnitsCtrl.searchValue"
+                type="search"
+                class="form-control input-sm"
+                style="display: inline"
+                placeholder="{{ 'FORM.LABELS.SEARCH' | translate }}">
+            </div>
+          </td>
         </tr>
       </thead>
 
       <tbody>
-        <tr ng-repeat="unit in UnitsCtrl.unitList | orderBy: 'text' track by unit.id">
+        <tr ng-repeat="unit in UnitsCtrl.unitList | filter: UnitsCtrl.searchValue | orderBy: 'text' track by unit.id">
           <td>{{ $index + 1 }}</td>
           <td>{{ unit.abbr }}</td>
           <td>{{ unit.text }}</td>
