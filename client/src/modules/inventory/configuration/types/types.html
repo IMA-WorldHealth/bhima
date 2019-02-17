@@ -19,12 +19,26 @@
         <tr>
           <th>#</th>
           <th translate>FORM.LABELS.LABEL</th>
-          <th>&nbsp;</th>
+          <th colspan="2">&nbsp;</th>
+        </tr>
+        <tr>
+          <td></td>
+          <td>
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-filter"></i></span>
+              <input
+                ng-model="TypesCtrl.searchValue"
+                type="search"
+                class="form-control input-sm"
+                style="display: inline"
+                translate-attr="{ placeholder: 'FORM.LABELS.SEARCH' }">
+            </div>
+          </td>
         </tr>
       </thead>
 
       <tbody>
-        <tr ng-repeat="type in TypesCtrl.typeList | orderBy: 'text'">
+        <tr ng-repeat="type in TypesCtrl.typeList | filter: TypesCtrl.searchValue | orderBy: 'text'">
           <td>{{ $index + 1 }}</td>
           <td>{{ type.text }}</td>
           <td>
