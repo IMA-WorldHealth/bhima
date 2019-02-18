@@ -18,6 +18,18 @@ function UtilService(moment) {
     return response.data;
   };
 
+  service.formatObjectDates = (obj, format) => {
+    const f = format || 'YYYY-MM-DD HH:mm:ss';
+    const keys = Object.keys(obj);
+    keys.forEach(k => {
+      if (angular.isDate(obj[k])) {
+        obj[k] = moment(obj[k]).format(f);
+      }
+    });
+    return obj;
+  };
+
+
   service.formatDate = (date, format) => {
     const f = format || 'DD/MM/YYYY HH:mm:ss';
     if (date) {

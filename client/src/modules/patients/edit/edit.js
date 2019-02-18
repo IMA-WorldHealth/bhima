@@ -96,6 +96,24 @@ function PatientEdit($stateParams, Patients, util, moment, Notify, ScrollTo, Gro
     vm.finance.patientGroups = updated;
   }
 
+  // arrange data before sending to the server
+  // some importants informations displayed in this page are not contained in the patient table(debtor informations)
+  // So they have to be removed
+  function formatData(data) {
+    function remove(array, keys) {
+      keys.forEach(k => {
+        delete array[k];
+      });
+    }
+    const keys = [
+      'abbr', 'account_id', 'text', 'debtor_group_uuid', 'username', 'userName',
+      'price_list_uuid', 'is_convention', 'locked', 'debtor_group_name',
+      'displayGender', 'displayAge', 'number', 'name', 'barcode',
+    ];
+    remove(data, keys);
+    data.registration_date = util.formatDate(data.registration_date, 'YYYY-MM-DD HH:mm:ss');
+  }
+
   // TODO Clearer naming conventions
   vm.updatePatient = function updatePatient(patientDetailsForm) {
     if (patientDetailsForm.$pristine) {
@@ -108,7 +126,9 @@ function PatientEdit($stateParams, Patients, util, moment, Notify, ScrollTo, Gro
       return 0;
     }
 
-    const submitPatient = util.filterFormElements(patientDetailsForm, true);
+    const submitPatient = angular.copy(vm.medical);
+    formatData(submitPatient);
+    util.formatObjectDates(submitPatient);
 
     return Patients.update(vm.medical.uuid, submitPatient)
       .then((updatedPatient) => {

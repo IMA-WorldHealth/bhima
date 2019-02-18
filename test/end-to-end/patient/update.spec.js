@@ -21,11 +21,12 @@ describe('Patient Edit', () => {
 
   it('updates a patients details', () => {
     // required information
-    FU.input('PatientEditCtrl.medical.display_name', 'Updated Last Name');
+    components.inpuText.set('display_name', 'Updated Last Name');
 
     // optional information
-    FU.input('PatientEditCtrl.medical.title', 'Mr.');
-    FU.input('PatientEditCtrl.medical.email', 'update@email.com');
+    components.inpuText.set('title', 'Mr.');
+    components.inpuText.set('email', 'update@email.com');
+
     FU.buttons.submit();
     components.notification.hasSuccess();
   });
