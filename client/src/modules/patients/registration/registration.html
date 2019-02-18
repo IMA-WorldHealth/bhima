@@ -2,8 +2,17 @@
   <div class="bhima-title">
     <ol class="headercrumb">
       <li class="static" translate>TREE.HOSPITAL</li>
-      <li class="title" translate> PATIENT_REG.PAGE_TITLE</li>
+      <li class="title" translate>PATIENT_REG.PAGE_TITLE</li>
     </ol>
+
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <button type="button" data-method="lookup-patient" class="btn btn-default" ng-click="PatientRegCtrl.lookupReturningPatient()">
+          <i class="fa fa-search"></i>
+          <span class="hidden-xs" translate>PATIENT_REG.LOOKUP_RETURNING_PATIENT</span>
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 

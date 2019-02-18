@@ -137,6 +137,7 @@ function StockLotsController(
         lots.sort(LotsRegistry.orderByDepot);
 
         vm.gridOptions.data = lots;
+
         vm.grouping.unfoldAllGroups();
         vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
       })

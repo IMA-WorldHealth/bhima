@@ -1,0 +1,99 @@
+<form name="ReturningPatientForm" bh-submit="ModalCtrl.submit(ReturningPatientForm)" novalidate>
+
+<div class="modal-header">
+  <ol class="headercrumb">
+    <li class="static" translate>PATIENT_REG.PAGE_TITLE</li>
+    <li class="title" translate>PATIENT_REG.LOOKUP_RETURNING_PATIENT</li>
+  </ol>
+</div>
+
+<div class="modal-body">
+
+  <div ng-if="!ModalCtrl.isPatientFound">
+    <div class="form-group"  ng-class="{ 'has-error' : ReturningPatientForm.$submitted && ReturningPatientForm.reference.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.REFERENCE</label>
+      <input name="reference" autocomplete="off" ng-model="ModalCtrl.params.reference" class="form-control">
+    </div>
+
+    <div class="form-group"  ng-class="{ 'has-error' : ReturningPatientForm.$submitted && ReturningPatientForm.hospital_no.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.HOSPITAL_NO</label>
+      <input name="hospital_no" autocomplete="off" ng-model="ModalCtrl.params.hospital_no" class="form-control">
+    </div>
+  </div>
+
+  <div ng-if="ModalCtrl.isPatientFound">
+
+    <!-- basic patient information panel -->
+    <div class="row">
+      <div class="col-xs-6">
+        <dl>
+          <dt translate>FORM.LABELS.NAME</dt>
+          <dd>{{ModalCtrl.patient.display_name}}</dd>
+
+          <dt translate>FORM.LABELS.PATIENT_ID</dt>
+          <dd>{{ModalCtrl.patient.reference}}</dd>
+
+          <dt translate>FORM.LABELS.HOSPITAL_FILE_NR</dt>
+          <dd>{{ModalCtrl.patient.hospital_no}}</dd>
+
+          <dt translate>FORM.LABELS.DEBTOR_GROUP</dt>
+          <dd>{{ModalCtrl.patient.debtorGroupName}}</dd>
+
+          <dt translate>TABLE.COLUMNS.DATE_REGISTERED</dt>
+          <dd><span am-time-ago="ModalCtrl.patient.registration_date"></span></dd>
+        </dl>
+      </div>
+
+      <div class="col-xs-6">
+        <dl>
+          <dt translate>TABLE.COLUMNS.AGE</dt>
+          <dd>{{ModalCtrl.patient.age}}</dd>
+
+          <dt translate>TABLE.COLUMNS.DOB</dt>
+          <dd>{{ModalCtrl.patient.dobFormatted}}</dd>
+          <p ng-if="ModalCtrl.patient.dob_unknown_date" class="text-info">
+            <i class="fa fa-info-circle"></i>
+            <span translate>PATIENT_RECORDS.DOB_NOT_SPECIFIED</span>
+          </p>
+
+          <dt translate>TABLE.COLUMNS.GENDER</dt>
+          <dd>{{ModalCtrl.patient.sex}}</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- embedded patient visits toggle -->
+    <div class="row">
+      <div class="col-xs-12">
+        <bh-patient-visit patient-uuid="ModalCtrl.patient.uuid">
+        </bh-patient-visit>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" ng-if="ModalCtrl.hasWarning">
+    <div class="col-xs-12">
+      <div class="alert alert-danger" ng-if="ModalCtrl.noPatientsFound">
+        <i class="fa fa-warning"></i>
+        <span translate>PATIENT_REG.NO_PATIENTS_FOUND</span>
+      </div>
+
+      <div class="alert alert-warning" ng-if="ModalCtrl.hasMultiplePatients">
+        <i class="fa fa-warning"></i>
+        <span translate>PATIENT_REG.HAS_MULTIPLE_PATIENTS</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button class="btn btn-default" type="button" ng-click="ModalCtrl.cancel()" data-method="cancel" translate>
+    FORM.BUTTONS.CLOSE
+  </button>
+
+  <bh-loading-button loading-state="ReturningPatientForm.$loading" ng-if="!ModalCtrl.isPatientFound">
+    <span translate>FORM.BUTTONS.SEARCH</span>
+  </bh-loading-button>
+</div>
+
+</form>

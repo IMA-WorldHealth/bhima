@@ -1,13 +1,13 @@
 angular.module('bhima.services')
-.service('VisitService', VisitService);
+  .service('VisitService', VisitService);
 
-VisitService.$inject = [ '$http', 'util', '$uibModal' ];
+VisitService.$inject = ['$http', 'util', '$uibModal'];
 
 function VisitService($http, util, Modal) {
-  var service = this;
-  var baseUrl = '/patients/';
+  const service = this;
+  const baseUrl = '/patients';
 
-  // send/recieve with $http
+  // send/receive with $http
   service.read = read;
   service.admit = admit;
   service.discharge = discharge;
@@ -17,46 +17,52 @@ function VisitService($http, util, Modal) {
   service.openAdmission = openAdmission;
 
   function read(patientUuid, options) {
-    if (!patientUuid) {
-      return;
-    }
-    return $http.get(baseUrl.concat(patientUuid, '/visits'), { params : options })
+    if (!patientUuid) { return 0; }
+
+    return $http.get(`${baseUrl}/${patientUuid}/visits`, { params : options })
       .then(util.unwrapHttpResponse);
   }
 
   function admit(patientUuid, visitDetails) {
-    if (!patientUuid) { return; }
+    if (!patientUuid) { return 0; }
 
     // format admission specific information
-    var details = angular.copy(visitDetails);
-    details.start_diagnosis_id = details.diagnosis.id;
+    const details = angular.copy(visitDetails);
 
     if (details.notes) {
       details.start_notes = details.notes;
       delete details.notes;
     }
 
+    if (details.diagnosis) {
+      details.start_diagnosis_id = details.diagnosis.id;
+    }
+
     delete details.diagnosis;
 
-    return $http.post(baseUrl.concat(patientUuid, '/visits/admission'), details)
+    return $http.post(`${baseUrl}/${patientUuid}/visits/admission`, details)
       .then(util.unwrapHttpResponse);
   }
 
   function discharge(patientUuid, visitDetails) {
-    if (!patientUuid) { return; }
+    if (!patientUuid) { return 0; }
 
     // format admission specific information
-    var details = angular.copy(visitDetails);
+    const details = angular.copy(visitDetails);
 
     if (details.notes) {
       details.end_notes = details.notes;
       delete details.notes;
     }
 
-    details.end_diagnosis_id = details.diagnosis.id;
-    delete details.diagnosis;
+    if (details.diagnosis) {
+      details.end_diagnosis_id = details.diagnosis.id;
+    }
 
-    return $http.post(baseUrl.concat(patientUuid, '/visits/discharge'), details)
+    delete details.diagnosis;
+    delete details.hospitalized;
+
+    return $http.post(`${baseUrl}/${patientUuid}/visits/discharge`, details)
       .then(util.unwrapHttpResponse);
   }
 
@@ -67,21 +73,20 @@ function VisitService($http, util, Modal) {
 
   // admission vs. discharge
   function openAdmission(patientUuid, isAdmission, currentVisit) {
-    var modalOptions = {
-      templateUrl : 'modules/patients/record/units/visits.modal.html',
+    const modalOptions = {
+      templateUrl : 'modules/patients/visits/visits.modal.html',
       controller : 'VisitsAdmissionController',
       controllerAs : 'AdmitCtrl',
+      keyboard : false,
       size : 'md',
-      backdrop : 'static',
-      animation : false,
       resolve : {
-        patient : function patientProvider() { return patientUuid; },
-        isAdmission : function isAdmissionProvider() { return isAdmission; },
-        currentVisit : function currentVisitProvider() { return currentVisit; }
-      }
+        patient : () => patientUuid,
+        isAdmission : () => isAdmission,
+        currentVisit : () => currentVisit,
+      },
     };
 
-    var instance = Modal.open(modalOptions);
+    const instance = Modal.open(modalOptions);
     return instance.result;
   }
 }

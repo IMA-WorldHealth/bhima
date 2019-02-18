@@ -1,0 +1,152 @@
+{{> head title="PATIENT_RECORDS.VISITS.TITLE"}}
+
+<div class="container" style="font-size: 0.9em;">
+
+  <!-- patient header -->
+  <header>
+    <section class="row">
+      {{> enterpriseDetails }}
+
+      <div class="col-xs-5 text-right">
+        <h3 style="margin: 0px;">
+          <span class="text-uppercase">{{translate 'PATIENT_RECORDS.VISITS.TITLE'}}</span>
+
+          {{!-- patient details --}}
+          <div>
+            <strong>{{patient.reference}}</strong> <br>
+            <span>{{patient.display_name}}</span><br>
+            <small>{{patient.hospital_no}}</small><br>
+
+            <!-- patient locked indicator -->
+            {{#if patient.locked}}
+              <i class="fa fa-locked"></i>
+            {{/if}}
+          </div>
+        </h3>
+      </div>
+    </div>
+  </header>
+  <br>
+  
+  <!-- patient information -->
+  <span><i class="fa fa-caret-right"></i> {{translate 'PATIENT_RECORDS.VISITS.PATIENT_INFO'}}</span>
+  <div class="row" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 15px;">
+    <div class="col-xs-12">
+      <div>
+        <strong>{{patient.display_name}}</strong>
+
+        <!-- patient age/sex symbol -->
+        <span>
+          {{#if patient.isMale}}
+            <i class="fa fa-mars"></i>
+          {{else}}
+            <i class="fa fa-venus"></i>
+          {{/if}}
+          {{age patient.dob}}
+        </span>
+
+        <!-- patient locked indicator -->
+        {{#if patient.locked}}
+          <i class="fa fa-locked"></i>
+        {{/if}}
+      </div>
+
+      <!-- patient identifier & registration date -->
+      <div>{{patient.reference}} <span class="text-lowercase">{{translate "REPORT.SINCE"}}</span> {{date patient.registration_date}}</div>
+      <div><i class="fa fa-h-square"></i> {{patient.hospital_no}}</div>
+
+      <!-- patient group information -->
+      <div><i class="fa fa-group"></i> {{patient.debtor_group_name}}</div>
+
+      <!-- patient origin location information -->
+      <div><i class="fa fa-home"></i> {{location.name}}, {{location.sector_name}}, {{location.province_name}}, {{location.country_name}}</div>
+    </div>
+  </div>
+
+  <span><i class="fa fa-caret-right"></i> {{translate 'PATIENT_RECORDS.VISITS.VISITS_INFO'}}</span>
+  <section>
+    <table class="table table-condensed table-report">
+      <thead>
+        <tr class="text-capitalize">
+          <th class="text-center">{{translate "PATIENT_RECORDS.VISITS.ADMISSION_DATE"}}</th>
+          <th class="text-center">{{translate "PATIENT_RECORDS.VISITS.ADMISSION_TYPE"}}</th>
+          <th class="text-center">{{translate "PATIENT_RECORDS.VISITS.DURATION"}}</th>
+          <th class="text-center">{{translate "PATIENT_RECORDS.VISITS.DISCHARGE_DATE"}}</th>
+          <th class="text-center">{{translate "FORM.LABELS.USER"}}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- initial patient registration -->
+        <tr>
+          <td>{{date patient.registration_date 'DD/MM/YYYY hh:mm'}}</td>
+          <td colspan="4">{{translate "FORM.LABELS.DATE_REGISTRATION"}}</td>
+        </tr>
+
+        {{#each visits as |visit|}}
+          <tr>
+            <td>{{date visit.start_date 'DD/MM/YYYY hh:mm'}}</td>
+            <td>
+              {{#if visit.hospitalized}}
+                {{translate "PATIENT_RECORDS.VISITS.HOSPITALISATION"}}
+              {{else}}
+                {{translate "PATIENT_RECORDS.VISITS.AMBULATORY"}}
+              {{/if}}
+            </td>
+            <td>{{visit.duration}} {{translate 'FORM.LABELS.DAYS'}}</td>
+            <td>
+              {{#equal visit.in_progress '1'}}
+                {{translate "PATIENT_RECORDS.VISITS.IN_PROGRESS"}}
+              {{else}}
+                {{date visit.end_date 'DD/MM/YYYY hh:mm'}}
+              {{/equal}}
+            </td>
+            <td>{{visit.display_name}}</td>
+          </tr>
+
+          {{#if ../showMedicalInfo}}
+            <tr>
+              {{!-- start visit --}}
+              <td colspan="5" style="padding:10px;">
+                <div class="row">
+                  <div class="col-xs-12">
+                    <b><i class="fa fa-arrow-circle-o-down"></i> {{translate "PATIENT_RECORDS.VISITS.ADMISSION_DIAGNOSIS"}}:</b><br>
+                    <b>{{visit.start_diagnosis_code}}</b> {{visit.start_diagnosis_label}}
+                  </div>
+                  <div class="col-xs-12">
+                    <span>{{translate 'FORM.LABELS.NOTE'}} : </span>
+                    <em>{{visit.start_notes}}</em>
+                  </div>
+                </div>
+              </td>
+            </tr>
+
+            {{!-- end visit --}}
+            {{#if visit.end_diagnosis_code}}
+            <tr>
+              <td colspan="5" style="padding:10px;">
+                <div class="row">
+                  <div class="col-xs-12">
+                    <b><i class="fa fa-arrow-circle-o-up"></i> {{translate "PATIENT_RECORDS.VISITS.DISCHARGE_DIAGNOSIS"}}:</b><br>
+                    <b>{{visit.end_diagnosis_code}}</b> {{visit.end_diagnosis_label}}
+                  </div>
+                  <div class="col-xs-12">
+                    <span>{{translate 'FORM.LABELS.NOTE'}} : </span>
+                    <em>{{visit.end_notes}}</em>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            {{/if}}
+          {{/if}}
+
+          {{!-- ending visit with blank line --}}
+          <tr>
+            <td colspan="5" style="background: #999;">&nbsp;</td>
+          </tr>
+        {{else}}
+          {{> emptyTable columns=6}}
+        {{/each}}
+      </tbody>
+    </table>
+  </section>
+</div>

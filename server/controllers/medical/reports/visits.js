@@ -1,8 +1,8 @@
 /**
- * @overview reports/checkins
+ * @overview reports/visits
  *
  * @description
- * This file contains code to create a PDF report of all patient checkins,
+ * This file contains code to create a PDF report of all patient visits,
  * matching query conditions passed from the patient registry UI grid.
  *
  * @requires lodash
@@ -21,14 +21,14 @@ const Locations = require('../../admin/locations');
 const Patients = require('../patients');
 
 // path to the template to render
-const TEMPLATE = './server/controllers/medical/reports/checkins.handlebars';
+const TEMPLATE = './server/controllers/medical/reports/visits.handlebars';
 
 /**
  * @function getReportData
  *
  * @description
- * Compiles the data for the checkin report from the patient table and previous
- * checkins.
+ * Compiles the data for the visits report from the patient table and previous
+ * visits.
  *
  * @param {String} uuid - the patient uuid to look up
  */
@@ -56,19 +56,28 @@ function getReportData(uuid) {
 
       const sql = `
         SELECT BUID(patient_uuid) AS patient_uuid, start_date, YEAR(start_date) AS year,
-          end_date, user.display_name
+          end_date, user.display_name,
+          DATEDIFF(IFNULL(patient_visit.end_date, CURRENT_DATE()), patient_visit.start_date) AS duration,
+          IFNULL(patient_visit.end_date, 1) AS in_progress,
+          patient_visit.hospitalized, patient_visit.start_notes, patient_visit.end_notes,
+          icds.label AS start_diagnosis_label, icds.code AS start_diagnosis_code,
+          icde.label AS end_diagnosis_label, icde.code AS end_diagnosis_code
         FROM patient_visit
         JOIN user ON patient_visit.user_id = user.id
+        LEFT JOIN icd10 icds ON icds.id = patient_visit.start_diagnosis_id
+        LEFT JOIN icd10 icde ON icde.id = patient_visit.end_diagnosis_id
         WHERE patient_uuid = ?
-        ORDER BY start_date;
+        ORDER BY start_date DESC;
       `;
 
       return db.exec(sql, [db.bid(uuid)]);
     })
-    .then(checkins => {
+    .then(visits => {
       // grouping by year allows pretty table groupings
-      data.checkins = _.groupBy(checkins, 'year');
-      data.total = checkins.length;
+      // data.visits = _.groupBy(visits, 'year');
+      data.visits = visits;
+      data.total = visits.length;
+      data.showMedicalInfo = true;
       return data;
     });
 }
@@ -78,10 +87,10 @@ function getReportData(uuid) {
  *
  * @description
  * This function builds a patient checkin report.  The checkin report begins
- * with the patient registration and lists all checkins since the initial
+ * with the patient registration and lists all visits since the initial
  * registration.
  *
- * GET /reports/patients/:uuid/checkins
+ * GET /reports/patients/:uuid/visits
  */
 function build(req, res, next) {
   const options = req.query;
