@@ -9,7 +9,7 @@ const page = new WardPage();
 function WardManagementTests() {
 
   // navigate to the page
-  before(() => helpers.navigate('#/wards'));
+  before(() => helpers.navigate('#/ward'));
 
   it('should add a new Ward', () => {
     page.openCreateModal();

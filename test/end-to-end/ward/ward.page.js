@@ -1,6 +1,7 @@
 /* global by, element */
 
 const FU = require('../shared/FormUtils');
+const components = require('../shared/components');
 const GridRow = require('../shared/GridRow');
 
 function WardPage() {
@@ -24,7 +25,7 @@ function WardPage() {
   };
 
   function selectService(name) {
-    FU.select('ModalCtrl.ward.service_id', name);
+    components.serviceSelect.set(name);
   }
   function setName(txt) {
     const WardName = element(by.model('ModalCtrl.ward.name'));
