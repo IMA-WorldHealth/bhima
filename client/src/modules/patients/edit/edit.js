@@ -136,4 +136,8 @@ function PatientEdit($stateParams, Patients, util, moment, Notify, ScrollTo, Gro
   vm.scrollToSubmission = function scrollToSubmission() {
     ScrollTo('submission');
   };
+
+  vm.onInputTextChange = (key, value) => {
+    vm.medical[key] = value;
+  };
 }
