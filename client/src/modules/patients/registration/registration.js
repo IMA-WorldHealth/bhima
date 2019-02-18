@@ -97,6 +97,7 @@ function PatientRegistrationController(
   function toggleFullDate() {
     vm.fullDateEnabled = !vm.fullDateEnabled;
     vm.dateIndicatorLabel = vm.fullDateEnabled ? 'FORM.LABELS.ENTER_BIRTH_YEAR' : 'FORM.LABELS.ENTER_BIRTH_DAY';
+    vm.dateIndicatorIcon = vm.fullDateEnabled ? 'fa fa-circle-o' : 'fa fa-circle';
     vm.dateComponentLabel = vm.fullDateEnabled ? 'FORM.LABELS.DOB' : 'FORM.LABELS.YOB';
     setDateComponent();
   }
