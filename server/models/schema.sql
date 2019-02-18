@@ -2206,6 +2206,8 @@ CREATE TABLE `reference_fee_center` (
   `fee_center_id` MEDIUMINT(8) UNSIGNED NOT NULL,
   `account_reference_id` MEDIUMINT(8) UNSIGNED NOT NULL,
   `is_cost` tinyint(1) UNSIGNED DEFAULT 0,
+  `is_variable` tinyint(1) UNSIGNED DEFAULT,
+  `is_turnover` tinyint(1) UNSIGNED DEFAULT,
   PRIMARY KEY (`id`),
   UNIQUE KEY `reference_fee_center_1` (`account_reference_id`),
   KEY `fee_center_id` (`fee_center_id`),

@@ -103,11 +103,19 @@
       </div>
       <div ng-if="(FeeCenterModalCtrl.feeCenter.is_principal && FeeCenterModalCtrl.hasProfitCenter) || (FeeCenterModalCtrl.auxiliaryCenter && FeeCenterModalCtrl.isProfitCenter)">
         <bh-account-reference-select
-          id="account_profit_reference_id"
-          account-reference-id="FeeCenterModalCtrl.feeCenter.reference_profit_id"
-          label="FORM.LABELS.PROFIT_CENTER"
-          on-select-callback="FeeCenterModalCtrl.onSelectAccountReference(accountReference, 0)"
-          required="true">
+          id="account_profit_turnover_id"
+          account-reference-id="FeeCenterModalCtrl.feeCenter.reference_profit_turnover_id"
+          label="FORM.LABELS.TURNOVER"
+          on-select-callback="FeeCenterModalCtrl.onSelectAccountReference(accountReference, 0, 0, 1)"
+          required="false">
+        </bh-account-reference-select>
+
+        <bh-account-reference-select
+          id="account_other_profit_reference_id"
+          account-reference-id="FeeCenterModalCtrl.feeCenter.reference_other_profit_id"
+          label="FORM.LABELS.OTHERS_PROFITS"
+          on-select-callback="FeeCenterModalCtrl.onSelectAccountReference(accountReference, 0, 0, 0)"
+          required="false">
         </bh-account-reference-select>
       </div>
 
@@ -133,11 +141,19 @@
 
       <div ng-if="(FeeCenterModalCtrl.feeCenter.is_principal && FeeCenterModalCtrl.hasCostCenter) || (FeeCenterModalCtrl.auxiliaryCenter && FeeCenterModalCtrl.isCostCenter)">
         <bh-account-reference-select
-          id="account_cost_reference_id"
-          account-reference-id="FeeCenterModalCtrl.feeCenter.reference_cost_id"
-          label="FORM.LABELS.COST_CENTER"
-          on-select-callback="FeeCenterModalCtrl.onSelectAccountReference(accountReference, 1)"
-          required="true">
+          id="account_cost_variable_reference_id"
+          account-reference-id="FeeCenterModalCtrl.feeCenter.reference_cost_variable_id"
+          label="FORM.LABELS.VARIABLE_CHARGE"
+          on-select-callback="FeeCenterModalCtrl.onSelectAccountReference(accountReference, 1, 1, 0)"
+          required="false">
+        </bh-account-reference-select>
+
+        <bh-account-reference-select
+          id="account_cost_fixed_reference_id"
+          account-reference-id="FeeCenterModalCtrl.feeCenter.reference_cost_fixed_id"
+          label="FORM.LABELS.FIXED_CHARGE"
+          on-select-callback="FeeCenterModalCtrl.onSelectAccountReference(accountReference, 1, 0, 0)"
+          required="false">
         </bh-account-reference-select>
       </div>
     </div>

@@ -131,8 +131,8 @@
             "GRID_CACHE_KEY_MISSING":"The cache of the grid is missing"
         },
         "INFO": {
-            "ASSIGNED_COST_CENTER" : "Assigned a cost center",
-            "ASSIGNED_PROFIT_CENTER" : "Assigned a profit center",
+            "ASSIGNED_COST_CENTER" : "Assigned cost references",
+            "ASSIGNED_PROFIT_CENTER" : "Assigned profit references",
             "ASSIGNED_PROJECTS" : "Assigned to projects",
             "VISIT_RECORDED_SUCCESSFULLY":"Visit Successfully Recorded",
             "VISIT_RECORDED_UNSUCCESSFULLY":"Visit Not Recorded",
@@ -522,6 +522,7 @@
             "ON_PURCHASE": "On Purchase",
             "OTHER": "Other",
             "OTHERS": "Others",
+            "OTHERS_PROFITS": "Other Profits",
             "ORDER": "Order",
             "ORDER_BY": "Order By",
             "PARENT_ACCOUNT": "Parent Account",

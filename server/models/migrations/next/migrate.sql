@@ -155,3 +155,6 @@ CREATE TABLE `break_even_reference` (
 ALTER TABLE `fee_center` CHANGE COLUMN `is_principal` `is_principal` TINYINT(1) UNSIGNED DEFAULT '0';
 ALTER TABLE `reference_fee_center` CHANGE COLUMN `is_cost` `is_cost` TINYINT(1) UNSIGNED DEFAULT '0';
 ALTER TABLE `fee_center_distribution` CHANGE COLUMN `is_cost` `is_cost` TINYINT(1) UNSIGNED DEFAULT '0';
+
+ALTER TABLE `reference_fee_center` ADD COLUMN `is_variable` TINYINT(1) UNSIGNED DEFAULT '0';
+ALTER TABLE `reference_fee_center` ADD COLUMN `is_turnover` TINYINT(1) UNSIGNED DEFAULT '0';

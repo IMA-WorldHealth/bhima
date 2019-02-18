@@ -131,8 +131,8 @@
             "GRID_CACHE_KEY_MISSING":"Le cache pour la grille est manquante"
         },
         "INFO": {
-            "ASSIGNED_COST_CENTER" : "Assigné un centre de coût",
-            "ASSIGNED_PROFIT_CENTER" : "Assigné un centre de profit",
+            "ASSIGNED_COST_CENTER" : "Assigné les references des coûts",
+            "ASSIGNED_PROFIT_CENTER" : "Assigné les references des profits",
             "ASSIGNED_PROJECTS" : "Assignée à des projets",
             "VISIT_RECORDED_SUCCESSFULLY":"Visite enregistrée avec succès",
             "VISIT_RECORDED_UNSUCCESSFULLY":"Visite non enregistrée",
@@ -514,6 +514,7 @@
             "ON_PURCHASE": "Lors de l'achat",
             "OTHER": "Autre",
             "OTHERS": "Autres",
+            "OTHERS_PROFITS": "Autres Profits",
             "OPENING_BALANCE": "Balance Ouverture",
             "FINAL_BALANCE": "Balance Finale",
             "INTERMEDIATE_BALANCE": "Balance Intermediare",
