@@ -3,52 +3,52 @@
 const helpers = require('./helpers');
 
 /*
- * The /pavillions API endpoint
+ * The /wards API endpoint
  *
  * This test suite implements full CRUD on the /projects HTTP API endpoint.
  */
-describe('(/pavillions) The pavillion API endpoint', () => {
+describe('(/wards) The ward API endpoint', () => {
   // project we will add during this test suite.
   const uuid = '5b7dd0d6-9273-4955-a703-126fbd504b61';
   const uuid2 = '7b7dd0d6-9273-4955-a703-126fbd504b61';
 
-  const pavillion = {
+  const ward = {
     uuid,
-    name : 'pavillion 1',
-    description : 'Frist pavillion',
+    name : 'ward 1',
+    description : 'Frist ward',
   };
 
-  const pavillion2 = {
+  const ward2 = {
     uuid : uuid2,
-    name : 'pavillion 2',
-    description : 'Second pavillion',
+    name : 'ward 2',
+    description : 'Second ward',
   };
 
-  const pavillionUpdate = {
+  const wardUpdate = {
     uuid,
-    name : 'pavillion A',
+    name : 'ward A',
   };
 
-  it('POST /pavillions add a new pavillion', () => {
-    return agent.post('/pavillions')
-      .send(pavillion)
+  it('POST /wards add a new ward', () => {
+    return agent.post('/wards')
+      .send(ward)
       .then((res) => {
         expect(res).to.have.status(201);
       })
       .catch(helpers.handler);
   });
 
-  it('POST /pavillions add pavillion not linked to a service', () => {
-    return agent.post('/pavillions')
-      .send(pavillion2)
+  it('POST /wards add ward not linked to a service', () => {
+    return agent.post('/wards')
+      .send(ward2)
       .then((res) => {
         expect(res).to.have.status(201);
       })
       .catch(helpers.handler);
   });
 
-  it('GET /pavillions returns a list of pavillions', () => {
-    return agent.get('/pavillions')
+  it('GET /wards returns a list of wards', () => {
+    return agent.get('/wards')
       .then((res) => {
         expect(res).to.have.status(200);
         expect(res.body).to.be.length(2);
@@ -56,26 +56,26 @@ describe('(/pavillions) The pavillion API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('PUT /pavillions update a pavillion', () => {
-    return agent.put(`/pavillions/${uuid}`)
-      .send(pavillionUpdate)
+  it('PUT /wards update a ward', () => {
+    return agent.put(`/wards/${uuid}`)
+      .send(wardUpdate)
       .then((res) => {
         expect(res).to.have.status(200);
-        return agent.get(`/pavillions/${uuid}`);
+        return agent.get(`/wards/${uuid}`);
       })
       .then(res => {
         expect(res).to.have.status(200);
-        expect(res.body.name).to.equal(pavillionUpdate.name);
+        expect(res.body.name).to.equal(wardUpdate.name);
       })
       .catch(helpers.handler);
 
   });
 
-  it('DELETE /pavillions should delete an existing pavillion', () => {
-    return agent.delete(`/pavillions/${uuid2}`)
+  it('DELETE /wards should delete an existing ward', () => {
+    return agent.delete(`/wards/${uuid2}`)
       .then((res) => {
         helpers.api.deleted(res);
-        return agent.get(`/pavillions`);
+        return agent.get(`/wards`);
       })
       .then(res => {
         expect(res.body).to.be.length(1);

@@ -1,21 +1,21 @@
 
 angular.module('bhima.controllers')
-  .controller('PavillionController', PavillionController);
+  .controller('WardController', WardController);
 
-PavillionController.$inject = [
-  'PavillionService', '$uibModal', 'ModalService',
+WardController.$inject = [
+  'WardService', '$uibModal', 'ModalService',
   'NotifyService', 'uiGridConstants', 'SessionService',
 ];
 
-function PavillionController(Pavillion, Modal, ModalService, Notify, uiGridConstants, Session) {
+function WardController(Ward, Modal, ModalService, Notify, uiGridConstants, Session) {
   const vm = this;
   const { enterprise } = Session;
   // global variables
   vm.gridApi = {};
   vm.filterEnabled = false;
   vm.toggleFilter = toggleFilter;
-  vm.createPavillion = createPavillion;
-  vm.deletePavillion = deletePavillion;
+  vm.createWard = createWard;
+  vm.deleteWard = deleteWard;
 
   // options for the UI grid
   vm.gridOptions = {
@@ -40,7 +40,7 @@ function PavillionController(Pavillion, Modal, ModalService, Notify, uiGridConst
         field : 'action',
         width : 80,
         displayName : '',
-        cellTemplate : '/modules/pavillion/templates/action.tmpl.html',
+        cellTemplate : '/modules/ward/templates/action.tmpl.html',
         enableSorting : false,
         enableFiltering : false,
       },
@@ -58,18 +58,23 @@ function PavillionController(Pavillion, Modal, ModalService, Notify, uiGridConst
   }
 
   // get all enterprise's depatments
-  function loadPavillions() {
-    Pavillion.read(null, { enterprise_id : enterprise.id })
-      .then(Pavillions => {
-        vm.gridOptions.data = Pavillions;
+  function loadWards() {
+    Ward.read(null, { enterprise_id : enterprise.id })
+      .then(Wards => {
+        vm.gridOptions.data = Wards;
       })
-      .catch(Notify.handleError);
+      .catch(handleError);
+  }
+
+  function handleError(err) {
+    vm.hasError = true;
+    Notify.handleError(err);
   }
 
   function openCreateUpdateModal(uuid) {
     return Modal.open({
-      templateUrl : 'modules/pavillion/modals/createUpdate.html',
-      controller :  'CreateUpdatePavillionController as ModalCtrl',
+      templateUrl : 'modules/ward/modals/createUpdate.html',
+      controller :  'CreateUpdateWardController as ModalCtrl',
       backdrop : 'static',
       resolve : {
         uuid : () => uuid,
@@ -78,30 +83,30 @@ function PavillionController(Pavillion, Modal, ModalService, Notify, uiGridConst
   }
 
 
-  function createPavillion(uuid) {
+  function createWard(uuid) {
     openCreateUpdateModal(uuid).then(result => {
       if (result) {
-        loadPavillions();
+        loadWards();
       }
     });
   }
 
 
   // switch to delete warning mode
-  function deletePavillion(uuid) {
+  function deleteWard(uuid) {
     ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
       .then(bool => {
         if (!bool) { return; }
 
-        Pavillion.delete(uuid)
+        Ward.delete(uuid)
           .then(() => {
             Notify.success('FORM.INFO.OPERATION_SUCCESS');
-            loadPavillions();
+            loadWards();
           })
           .catch(Notify.handleError);
       });
   }
 
 
-  loadPavillions();
+  loadWards();
 }

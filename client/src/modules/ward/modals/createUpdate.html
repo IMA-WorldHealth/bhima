@@ -1,43 +1,35 @@
-<form name="PavillionForm" bh-submit="ModalCtrl.submit(PavillionForm)" novalidate>
+<form name="WardForm" bh-submit="ModalCtrl.submit(WardForm)" novalidate>
   <div class="modal-header">
   <ol class="headercrumb">
     <li ng-if="ModalCtrl.isCreating" class="title">
-      <span translate>FORM.LABELS.PAVILLION</span>
+      <span translate>FORM.LABELS.WARD</span>
       <label class="badge badge-warning" translate>FORM.LABELS.CREATE</label>
     </li>
     <li ng-if="!ModalCtrl.isCreating" class="title">
-      <span translate>FORM.LABELS.PAVILLION</span>
+      <span translate>FORM.LABELS.WARD</span>
       <label class="badge badge-warning" translate>FORM.LABELS.UPDATE</label>
     </li>
   </ol>
 </div>
 
   <div class="modal-body">
-    <div class="form-group" ng-class="{ 'has-error' : PavillionForm.$submitted && PavillionForm.name.$invalid }">
+    <div class="form-group" ng-class="{ 'has-error' : WardForm.$submitted && WardForm.name.$invalid }">
       <label class="control-label" translate>FORM.LABELS.NAME</label>
-      <input name="name" ng-model="ModalCtrl.pavillion.name" autocomplete="off" class="form-control" required>
-      <div class="help-block" ng-messages="PavillionForm.text.$error" ng-show="PavillionForm.$submitted">
+      <input name="name" ng-model="ModalCtrl.ward.name" autocomplete="off" class="form-control" required>
+      <div class="help-block" ng-messages="WardForm.text.$error" ng-show="WardForm.$submitted">
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
       </div>
     </div>
 
-    <div class="form-group"
-      ng-class="{'has-error' : ModalForm.$submitted && ModalForm.service.$invalid }">
-      <label class="control-label" translate>FORM.LABELS.SERVICE</label>
-      <select
-        class="form-control"
-        name="service"
-        ng-model="ModalCtrl.pavillion.service_id"
-        ng-options="service.id as service.name for service in ModalCtrl.services"
-      >
-        <option disabled="disabled" value="" translate>FORM.LABELS.SERVICE</option>
-      </select>
-    </div>
+    <bh-service-select 
+      service-id="ModalCtrl.ward.service_id"
+      on-select-callback="ModalCtrl.onSelectService(service)">
+    </bh-service-select>
 
     <div class="form-group" ng-class="{'has-error': ModalForm.$submitted && ModalForm.description.$invalid }">
       <label class="control-label" translate>TABLE.COLUMNS.DESCRIPTION</label>
       <textarea
-        ng-model="ModalCtrl.pavillion.description"
+        ng-model="ModalCtrl.ward.description"
         name="description"
         class="form-control"
         rows="3"
@@ -51,7 +43,7 @@
       <span translate>FORM.BUTTONS.CANCEL</span>
     </button>
 
-    <bh-loading-button loading-state="PavillionForm.$loading">
+    <bh-loading-button loading-state="WardForm.$loading">
       <span translate>FORM.BUTTONS.SUBMIT</span>
     </bh-loading-button>
   </div>

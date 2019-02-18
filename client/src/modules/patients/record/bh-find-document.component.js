@@ -14,21 +14,21 @@ angular.module('bhima.components')
   });
 
 FindDocumentComponent.$inject = [
-  'PatientService', 'ModalService', 'DocumentService', 'NotifyService',
+  'PatientService', 'ModalService', 'DocumentService', 'NotifyService', 'util',
 ];
 
 /**
  * Find Document Component
  * This component is responsible for displaying documents for specific patient given
  */
-function FindDocumentComponent(Patient, Modal, Document, Notify) {
+function FindDocumentComponent(Patient, Modal, Document, Notify, util) {
   const vm = this;
 
   /** expose to the view */
   vm.switchDisplay = switchDisplay;
   vm.addDocument = addDocument;
   vm.deleteDocument = deleteDocument;
-  vm.mimeIcon = mimeIcon;
+  vm.mimeIcon = util.mimeIcon;
 
   this.$onInit = function $onInit() {
     vm.session = {
@@ -90,38 +90,11 @@ function FindDocumentComponent(Patient, Modal, Document, Notify) {
         vm.session.patientDocuments = documents;
 
         vm.session.patientDocuments.forEach((doc) => {
-          doc.downloadLink = doc.label + mimeIcon(doc.mimetype).ext;
-          doc.icon = mimeIcon(doc.mimetype).icon;
-          doc.type = mimeIcon(doc.mimetype).label;
+          doc.downloadLink = doc.label + util.mimeIcon(doc.mimetype).ext;
+          doc.icon = util.mimeIcon(doc.mimetype).icon;
+          doc.type = util.mimeIcon(doc.mimetype).label;
         });
       })
       .catch(Notify.handleError);
-  }
-
-  /** format the image type */
-  function mimeIcon(mimetype) {
-    let result = {};
-    let ext;
-
-    if (mimetype.indexOf('image') > -1) {
-      /* eslint-disable no-nested-ternary */
-      ext = (mimetype.indexOf('jpg') > -1 || mimetype.indexOf('jpeg') > -1) ? '.jpg'
-        : (mimetype.indexOf('png') > -1) ? '.png'
-          : (mimetype.indexOf('gif') > -1) ? '.gif' : '';
-
-      result = { icon : 'fa-file-image-o', label : 'Image', ext };
-    } else if (mimetype.indexOf('pdf') > -1) {
-      result = { icon : 'fa-file-pdf-o', label : 'PDF', ext : '.pdf' };
-    } else if (mimetype.indexOf('word') > -1) {
-      result = { icon : 'fa-file-word-o', label : 'MS WORD', ext : '.doc' };
-    } else if (mimetype.indexOf('sheet') > -1) {
-      result = { icon : 'fa-file-excel-o', label : 'MS EXCEL', ext : '.xls' };
-    } else if (mimetype.indexOf('presentation') > -1) {
-      result = { icon : 'fa-file-powerpoint-o', label : 'MS Power Point', ext : '.ppt' };
-    } else {
-      result = { icon : 'fa-file-o', label : 'Fichier', ext : '' };
-    }
-
-    return result;
   }
 }

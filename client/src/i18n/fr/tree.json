@@ -66,7 +66,7 @@
     "OHADA_RESULT_ACCOUNT":"[OHADA] Compte de Résultat",
     "OPERATING_ACCOUNT" : "Compte d'exploitation",
     "PHARMACY":"Gestion de pharmacies",
-    "PAVILLION" : "Gestion de pavillons",
+    "WARD" : "Gestion des pavillons",
     "PATIENT_DOCUMENT":"Documents de Patient",
     "PATIENT_GRP":"Groupe des Patients",
     "PATIENT_GRP_ASSIGNMENT":"Assignation Groupe",

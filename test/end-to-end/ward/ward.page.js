@@ -3,17 +3,17 @@
 const FU = require('../shared/FormUtils');
 const GridRow = require('../shared/GridRow');
 
-function PavillionPage() {
+function WardPage() {
   const page = this;
 
   // the grid id
-  const gridId = 'pavillion-grid';
+  const gridId = 'ward-grid';
 
   page.gridId = gridId;
   page.setName = setName;
-  page.editPavillion = editPavillion;
+  page.editWard = editWard;
   page.setDescription = setDescription;
-  page.deletePavillion = deletePavillion;
+  page.deleteWard = deleteWard;
   page.selectService = selectService;
   page.openCreateModal = openCreateModal;
 
@@ -24,16 +24,16 @@ function PavillionPage() {
   };
 
   function selectService(name) {
-    FU.select('ModalCtrl.pavillion.service_id', name);
+    FU.select('ModalCtrl.ward.service_id', name);
   }
   function setName(txt) {
-    const PavillionName = element(by.model('ModalCtrl.pavillion.name'));
-    return PavillionName.clear().sendKeys(txt);
+    const WardName = element(by.model('ModalCtrl.ward.name'));
+    return WardName.clear().sendKeys(txt);
   }
 
   function setDescription(txt) {
-    const PavillionDescription = element(by.model('ModalCtrl.pavillion.description'));
-    return PavillionDescription.clear().sendKeys(txt);
+    const WardDescription = element(by.model('ModalCtrl.ward.description'));
+    return WardDescription.clear().sendKeys(txt);
   }
 
   function openDropdownMenu(label) {
@@ -42,12 +42,12 @@ function PavillionPage() {
     return row;
   }
 
-  function editPavillion(label) {
+  function editWard(label) {
     const row = openDropdownMenu(label);
     row.edit().click();
   }
 
-  function deletePavillion(label) {
+  function deleteWard(label) {
     const row = openDropdownMenu(label);
     row.remove().click();
   }
@@ -57,4 +57,4 @@ function PavillionPage() {
   }
 }
 
-module.exports = PavillionPage;
+module.exports = WardPage;

@@ -1668,8 +1668,8 @@ CREATE TABLE `service` (
   FOREIGN KEY (`profit_center_id`) REFERENCES `profit_center` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB  DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
-DROP TABLE IF EXISTS `pavillion`;
-CREATE TABLE `pavillion`(
+DROP TABLE IF EXISTS `ward`;
+CREATE TABLE `ward`(
  `uuid` BINARY(16) NOT NULL,
  `name` VARCHAR(100) NOT NULL,
  `description` text NULL,

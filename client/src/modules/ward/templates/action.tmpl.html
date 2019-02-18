@@ -9,13 +9,13 @@
 
   <ul class="dropdown-menu-right" uib-dropdown-menu data-row-menu="{{ row.entity.name }}">
     <li>
-      <a data-method="edit-record" ng-click="grid.appScope.createPavillion(row.entity.uuid)" href>
+      <a data-method="edit-record" ng-click="grid.appScope.createWard(row.entity.uuid)" href>
         <i class="fa fa-edit"></i> <span translate>FORM.BUTTONS.EDIT</span>
       </a>
     </li>
     <li class="divider"></li>
     <li>
-      <a data-method="delete-record" ng-click="grid.appScope.deletePavillion(row.entity.uuid)" href>
+      <a data-method="delete-record" ng-click="grid.appScope.deleteWard(row.entity.uuid)" href>
         <span class="text-danger">
           <i class="fa fa-trash"></i> <span translate>DEPOT.DELETE</span>
         </span>
