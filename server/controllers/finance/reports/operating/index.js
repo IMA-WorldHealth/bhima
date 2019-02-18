@@ -83,6 +83,15 @@ function document(req, res, next) {
     return q.all(queries);
   })
     .spread((expense, revenue, totalExpense, totalIncome) => {
+      // Income accounts usually have a negative balance,
+      // which is why to display these values you will need to multiply it by (-1)
+      revenue.forEach(item => {
+        item.amount *= (-1);
+      });
+
+      // The Total Income is also multiplied by -1 for not having to display a negative value
+      totalIncome.total *= (-1);
+
       const context = {
         expense : prepareTree(expense, 'type_id', EXPENSE_ACCOUNT_TYPE, 'amount'),
         revenue : prepareTree(revenue, 'type_id', INCOME_ACCOUNT_TYPE, 'amount'),
@@ -95,7 +104,6 @@ function document(req, res, next) {
 
       formatData(context.expense, context.totalExpense, DECIMAL_PRECISION);
       formatData(context.revenue, context.totalIncome, DECIMAL_PRECISION);
-
       const diff = util.roundDecimal((context.totalIncome - context.totalExpense), DECIMAL_PRECISION);
       context.totalIncome = util.roundDecimal(context.totalIncome, DECIMAL_PRECISION);
       context.totalExpense = util.roundDecimal(context.totalExpense, DECIMAL_PRECISION);
