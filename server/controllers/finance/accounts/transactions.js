@@ -57,7 +57,7 @@ function getGeneralLedgerSQL(options) {
       debit_equiv, credit_equiv, currency_id, rate, IF(rate < 1, (1 / rate), rate) AS invertedRate,
       ${columns}
       FROM (
-      SELECT trans_id, description, trans_date, document_map.text AS document_reference, created_at,
+      SELECT trans_id, description, trans_date, document_map.text AS document_reference,
         IF(${options.isEnterpriseCurrency},
           IFNULL(GetExchangeRate(${options.enterprise_id}, currency_id, trans_date), 1),
           IF(${options.currency_id} = currency_id, 1,
@@ -66,7 +66,7 @@ function getGeneralLedgerSQL(options) {
         SUM(debit_equiv) as debit_equiv, SUM(credit_equiv) AS credit_equiv,
         (SUM(debit) - SUM(credit)) AS balance, SUM(debit) AS debit,
         SUM(credit) AS credit, MAX(currency_id) AS currency_id,
-        ${options.includeUnpostedValues ? 'posted' : '1 as posted'}
+        ${options.includeUnpostedValues ? 'posted' : '1 as posted'}, created_at
       FROM ${subquery.query}
       LEFT JOIN document_map ON record_uuid = document_map.uuid
   `;
@@ -116,8 +116,6 @@ function getTableSubquery(options, table) {
  * @description
  * This function constructs the underlying base tables for posted/unposted values from the general_ledger or
  * a UNION of the posting_journal and general_ledger.
- *
- * TODO(@jniles) - move the WHERE queries into the subquery for performance reasons
  */
 function getSubquery(options) {
   const postingJournalQuery = getTableSubquery(options, 'posting_journal');
@@ -129,7 +127,7 @@ function getSubquery(options) {
     return { query, parameters };
   }
 
-  const query = `${generalLedgerQuery.query}`;
+  const query = `(${generalLedgerQuery.query})z`;
   const { parameters } = generalLedgerQuery;
   return { query, parameters };
 }
@@ -174,7 +172,7 @@ async function getAccountTransactions(options, openingBalance = 0) {
       groups.credit_equiv, groups.trans_date, groups.document_reference,
       groups.exchangedCredit, groups.exchangedDebit, groups.exchangedBalance,
       groups.rate, ROUND(groups.invertedRate, 2) AS invertedRate, groups.cumsum,
-      groups.description, groups.currency_id, groups.posted
+      groups.description, groups.currency_id, groups.posted, created_at
     FROM (${query})c, (SELECT @cumsum := ${openingBalance || 0})z) AS groups
   `;
 
