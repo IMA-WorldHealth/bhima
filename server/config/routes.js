@@ -470,6 +470,7 @@ exports.configure = function configure(app) {
   // Debtor Groups API
   app.get('/debtor_groups', debtorGroups.list);
   app.get('/debtor_groups/:uuid', debtorGroups.detail);
+  app.get('/debtor_groups/history/:debtorUuid', debtorGroups.history);
   app.get('/debtor_groups/:uuid/invoices', debtorGroups.invoices);
   app.post('/debtor_groups', debtorGroups.create);
   app.put('/debtor_groups/:uuid', debtorGroups.update);
