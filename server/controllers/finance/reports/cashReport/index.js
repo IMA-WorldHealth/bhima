@@ -45,6 +45,11 @@ function getCashboxByAccountId(accountId) {
   return db.one(sql, [accountId]);
 }
 
+const templates = {
+  NORMAL : TEMPLATE_COMBINED,
+  SPLIT : TEMPLATE_SEPARATED,
+};
+
 
 /**
  * @function document
@@ -67,11 +72,10 @@ function document(req, res, next) {
   }
 
   params.user = req.session.user;
-  params.format = Number(params.format);
   params.account_id = Number(params.account_id);
 
   try {
-    const TEMPLATE = params.format === 1 ? TEMPLATE_COMBINED : TEMPLATE_SEPARATED;
+    const TEMPLATE = templates[params.format] || templates.NORMAL;
     report = new ReportManager(TEMPLATE, req.session, params);
   } catch (e) {
     next(e);
@@ -83,6 +87,11 @@ function document(req, res, next) {
   params.includeUnpostedValues = true;
 
   const context = {};
+
+  // determine if we are showing the income and/or expense categories
+  context.hasIncome = ['ENTRY_AND_EXIT', 'ENTRY'].includes(params.type);
+  context.hasExpense = ['ENTRY_AND_EXIT', 'EXIT'].includes(params.type);
+  context.hasBoth = context.hasIncome && context.hasExpense;
 
   getCashboxByAccountId(params.account_id)
     .then(cashbox => {
@@ -105,6 +114,13 @@ function document(req, res, next) {
         dateFrom : params.dateFrom,
         dateTo : params.dateTo,
       });
+
+      // if we have a split format, split along the lines of income and expense.
+      if (params.format === 'SPLIT') {
+        const income = txns.transactions.filter(txn => txn.debit > 0);
+        const expense = txns.transactions.filter(txn => txn.credit > 0);
+        _.merge(context, { income, expense });
+      }
 
       return report.render(context);
     })

@@ -10,24 +10,9 @@ function getTitle(reportType) {
   return map[reportType];
 }
 
-function isIncomeViewable(reportType) {
-  return reportType === 1 || reportType === 2;
-}
-
-function isExpenseViewable(reportType) {
-  return reportType === 1 || reportType === 3;
-}
-
-function isResultViewable(reportType) {
-  return reportType === 1;
-}
-
 function slashed(text) {
   return text.replace(/\\/g, '/');
 }
 
 exports.getTitle = getTitle;
-exports.isIncomeViewable = isIncomeViewable;
-exports.isExpenseViewable = isExpenseViewable;
-exports.isResultViewable = isResultViewable;
 exports.slashed = slashed;

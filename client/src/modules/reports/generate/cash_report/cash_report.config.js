@@ -12,15 +12,16 @@ function CashReportConfigController($sce, Notify, SavedReports, AppCache, report
 
   vm.previewGenerated = false;
   vm.reportDetails = {};
+
   vm.reportTypes = [
-    { id : 1, label : 'FORM.LABELS.ENTRY_EXIT' },
-    { id : 2, label : 'FORM.LABELS.ENTRY' },
-    { id : 3, label : 'FORM.LABELS.EXIT' },
+    { id : 'ENTRY_AND_EXIT', label : 'FORM.LABELS.ENTRY_EXIT' },
+    { id : 'ENTRY', label : 'FORM.LABELS.ENTRY' },
+    { id : 'EXIT', label : 'FORM.LABELS.EXIT' },
   ];
 
   vm.reportFormats = [
-    { id : 1, label : 'FORM.LABELS.CASH_JOURNAL' },
-    { id : 2, label : 'FORM.LABELS.CASH_SPLITED' },
+    { id : 'NORMAL', label : 'FORM.LABELS.CASH_JOURNAL' },
+    { id : 'SPLIT', label : 'FORM.LABELS.CASH_SPLIT' },
   ];
 
   checkCachedConfiguration();
@@ -71,11 +72,11 @@ function CashReportConfigController($sce, Notify, SavedReports, AppCache, report
 
     // Set the defaults for the format and type
     if (!angular.isDefined(vm.reportDetails.format)) {
-      vm.reportDetails.format = 1;
+      vm.reportDetails.format = vm.reportFormats[0].id;
     }
 
     if (!angular.isDefined(vm.reportDetails.type)) {
-      vm.reportDetails.type = 1;
+      vm.reportDetails.type = vm.reportTypes[0].id;
     }
   }
 }
