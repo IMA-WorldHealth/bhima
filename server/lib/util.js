@@ -28,6 +28,7 @@ exports.dateFormatter = dateFormatter;
 exports.execp = execp;
 exports.format = require('util').format;
 
+exports.calcualteAge = calcualteAge;
 exports.renameKeys = renameKeys;
 
 exports.roundDecimal = roundDecimal;
@@ -234,6 +235,12 @@ function formatCsvToJson(filePath) {
 
   return defer.promise;
 }
+
+// calcualte age function
+function calcualteAge(dob) {
+  return moment().diff(dob, 'years');
+}
+
 
 /**
  * @function uuid
