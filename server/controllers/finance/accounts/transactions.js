@@ -33,6 +33,8 @@ const Accounts = require('.');
 function getGeneralLedgerSQL(options) {
   const filters = new FilterParser(options);
 
+  options.isEnterpriseCurrency = options.isEnterpriseCurrency || false;
+
   // return the proper way to convert the values depending on if we are in the
   // exchange rate currency or not.
   const enterpriseCurrencyColumns = `
@@ -48,14 +50,14 @@ function getGeneralLedgerSQL(options) {
   const columns = options.isEnterpriseCurrency ? enterpriseCurrencyColumns : nonEnterpriseCurrencyColumns;
 
   // get the underlying table for posted/unposted
-  const table = getBaseTable(options);
+  const subquery = getSubquery(options);
 
   const sql = `
-    SELECT trans_id, description, trans_date, document_reference, debit, credit, posted,
+    SELECT trans_id, description, trans_date, document_reference, debit, credit, posted, created_at,
       debit_equiv, credit_equiv, currency_id, rate, IF(rate < 1, (1 / rate), rate) AS invertedRate,
       ${columns}
       FROM (
-      SELECT trans_id, description, trans_date, document_map.text AS document_reference,
+      SELECT trans_id, description, trans_date, document_map.text AS document_reference, created_at,
         IF(${options.isEnterpriseCurrency},
           IFNULL(GetExchangeRate(${options.enterprise_id}, currency_id, trans_date), 1),
           IF(${options.currency_id} = currency_id, 1,
@@ -65,17 +67,41 @@ function getGeneralLedgerSQL(options) {
         (SUM(debit) - SUM(credit)) AS balance, SUM(debit) AS debit,
         SUM(credit) AS credit, MAX(currency_id) AS currency_id,
         ${options.includeUnpostedValues ? 'posted' : '1 as posted'}
-      FROM ${table}
+      FROM ${subquery.query}
       LEFT JOIN document_map ON record_uuid = document_map.uuid
   `;
+
+  filters.setGroup('GROUP BY record_uuid');
+  filters.setOrder('ORDER BY created_at ASC, trans_date ASC');
+
+  const query = filters.applyQuery(sql);
+  const parameters = [...subquery.parameters, ...filters.parameters()];
+
+  return { query, parameters };
+}
+
+/**
+ * @function getTableSubquery
+ *
+ * @description
+ * This function creates the subquery for each table (posting_journal and general_ledger)
+ * depending on which table is passed in.
+ */
+function getTableSubquery(options, table) {
+  const filters = new FilterParser(options);
+
+  // selects 1 if the table is general_ledger or 0 if it is posting_journal
+  const postedValue = (table === 'posting_journal') ? 0 : 1;
+
+  const sql = `
+  SELECT trans_id, description, trans_date, debit_equiv, credit_equiv, currency_id, debit, credit,
+    account_id, record_uuid, reference_uuid, ${postedValue} as posted, created_at
+  FROM ${table}`;
 
   filters.equals('account_id');
   filters.dateFrom('dateFrom', 'trans_date');
   filters.dateTo('dateTo', 'trans_date');
   filters.period('period', 'date');
-
-  filters.setGroup('GROUP BY record_uuid');
-  filters.setOrder('ORDER BY trans_date ASC');
 
   const query = filters.applyQuery(sql);
   const parameters = filters.parameters();
@@ -83,8 +109,9 @@ function getGeneralLedgerSQL(options) {
   return { query, parameters };
 }
 
+
 /**
- * @function getBaseTable
+ * @function getSubquery
  *
  * @description
  * This function constructs the underlying base tables for posted/unposted values from the general_ledger or
@@ -92,19 +119,19 @@ function getGeneralLedgerSQL(options) {
  *
  * TODO(@jniles) - move the WHERE queries into the subquery for performance reasons
  */
-function getBaseTable(options) {
-  const includeUnpostedValuesTables = `(
-    SELECT trans_id, description, trans_date, debit_equiv, credit_equiv, currency_id, debit, credit,
-    account_id, record_uuid, reference_uuid, 1 as posted
-    FROM general_ledger
-    UNION ALL
-    SELECT trans_id, description, trans_date, debit_equiv, credit_equiv, currency_id, debit, credit,
-    account_id, record_uuid, reference_uuid, 0 as posted
-    FROM posting_journal
-  ) AS ledger`;
+function getSubquery(options) {
+  const postingJournalQuery = getTableSubquery(options, 'posting_journal');
+  const generalLedgerQuery = getTableSubquery(options, 'general_ledger');
 
-  const table = options.includeUnpostedValues ? includeUnpostedValuesTables : `general_ledger as ledger`;
-  return table;
+  if (options.includeUnpostedValues) {
+    const query = `(${postingJournalQuery.query} UNION ALL ${generalLedgerQuery.query}) AS ledger`;
+    const parameters = [...postingJournalQuery.parameters, ...generalLedgerQuery.parameters];
+    return { query, parameters };
+  }
+
+  const query = `${generalLedgerQuery.query}`;
+  const { parameters } = generalLedgerQuery;
+  return { query, parameters };
 }
 
 // @TODO define standards for displaying and rounding totals, unless numbers are rounded
@@ -113,27 +140,19 @@ function getTotalsSQL(options) {
   const currencyId = options.currency_id || options.enterprise_currency_id;
 
   // get the underlying dataset based on the posted/unposted flag
-  const table = getBaseTable(options);
+  const subquery = getSubquery(options);
 
-  const sqlTotals = `
+  const totalsQuery = `
     SELECT
       IFNULL(GetExchangeRate(${options.enterprise_id}, ${currencyId}, NOW()), 1) AS rate,
       ${currencyId} AS currency_id,
       SUM(ROUND(debit, 2)) AS debit, SUM(ROUND(credit, 2)) AS credit,
       SUM(ROUND(debit_equiv, 2)) AS debit_equiv, SUM(ROUND(credit_equiv, 2)) AS credit_equiv,
       (SUM(ROUND(debit_equiv, 2)) - SUM(ROUND(credit_equiv, 2))) AS balance
-    FROM ${table}
+    FROM ${subquery.query}
   `;
 
-  const filters = new FilterParser(options);
-
-  filters.equals('account_id');
-  filters.dateFrom('dateFrom', 'trans_date');
-  filters.dateTo('dateTo', 'trans_date');
-  filters.period('period', 'date');
-
-  const totalsQuery = filters.applyQuery(sqlTotals);
-  const totalsParameters = filters.parameters();
+  const totalsParameters = subquery.parameters;
 
   return { totalsQuery, totalsParameters };
 }
