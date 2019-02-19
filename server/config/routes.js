@@ -106,7 +106,9 @@ const operating = require('../controllers/finance/reports/operating/index');
 const department = require('../controllers/admin/department');
 const tags = require('../controllers/admin/tags');
 
-const ward = require('../controllers/medical/ward');
+const ward = require('../controllers/medical/ward/ward');
+const room = require('../controllers/medical/ward/room');
+const bed = require('../controllers/medical/ward/bed');
 
 const feeCenter = require('../controllers/finance/feeCenter');
 
@@ -829,6 +831,20 @@ exports.configure = function configure(app) {
   app.post('/wards', ward.create);
   app.put('/wards/:uuid', ward.update);
   app.delete('/wards/:uuid', ward.delete);
+
+  // room management
+  app.get('/rooms', room.read);
+  app.get('/rooms/:uuid', room.detail);
+  app.post('/rooms', room.create);
+  app.put('/rooms/:uuid', room.update);
+  app.delete('/rooms/:uuid', room.delete);
+
+  // bed management
+  app.get('/beds', bed.read);
+  app.get('/beds/:id', bed.detail);
+  app.post('/beds', bed.create);
+  app.put('/beds/:id', bed.update);
+  app.delete('/beds/:id', bed.delete);
 
   // lots API
   app.get('/lots/:uuid', lots.details);

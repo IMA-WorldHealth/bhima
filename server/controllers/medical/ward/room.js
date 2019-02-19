@@ -1,0 +1,86 @@
+const db = require('../../../lib/db');
+
+module.exports.create = create;
+module.exports.update = update;
+module.exports.delete = remove;
+module.exports.read = read;
+module.exports.detail = detail;
+
+
+// register a new room
+function create(req, res, next) {
+  const data = req.body;
+  data.uuid = db.bid(data.uuid || db.uuid());
+  db.convert(data, ['ward_uuid']);
+  const sql = 'INSERT INTO room SET ?';
+
+  db.exec(sql, data).then(() => {
+    res.sendStatus(201);
+  })
+    .catch(next);
+}
+
+// modify a room informations
+function update(req, res, next) {
+  const data = req.body;
+  delete data.uuid;
+  const uuid = db.bid(req.params.uuid);
+  db.convert(data, ['ward_uuid']);
+  const sql = `UPDATE room SET ? WHERE uuid =?`;
+
+  db.exec(sql, [data, uuid])
+    .then(() => {
+      res.sendStatus(200);
+    })
+    .catch(next);
+}
+
+// delete a room
+function remove(req, res, next) {
+  const uuid = db.bid(req.params.uuid);
+  const sql = `DELETE FROM room WHERE uuid=?`;
+
+  db.exec(sql, uuid)
+    .then(() => {
+      res.sendStatus(204);
+    })
+    .catch(next);
+}
+
+// get all rooms
+// todo: add nb of beds
+function read(req, res, next) {
+  const sql = `
+    SELECT BUID(r.uuid) as uuid, r.label, 
+      BUID(w.uuid) AS ward_uuid, w.name, w.description,
+      s.name as serviceName
+    FROM room r
+    JOIN ward w ON w.uuid = r.ward_uuid
+    LEFT JOIN service s ON s.id = w.service_id
+  `;
+
+  db.exec(sql)
+    .then(rooms => {
+      res.status(200).json(rooms);
+    })
+    .catch(next);
+}
+
+// get a specific room
+function detail(req, res, next) {
+  const sql = `
+    SELECT BUID(r.uuid) as uuid, r.label, 
+      BUID(w.uuid) AS ward_uuid, w.name, w.description,
+      s.name as serviceName
+    FROM room r
+    JOIN ward w ON w.uuid = r.ward_uuid
+    LEFT JOIN service s ON s.id = w.service_id
+    WHERE r.uuid=?
+  `;
+  const uuid = db.bid(req.params.uuid);
+  db.one(sql, uuid)
+    .then(room => {
+      res.status(200).json(room);
+    })
+    .catch(next);
+}

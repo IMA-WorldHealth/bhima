@@ -1,4 +1,4 @@
-const db = require('../../lib/db');
+const db = require('../../../lib/db');
 
 module.exports.create = create;
 module.exports.update = update;

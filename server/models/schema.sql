@@ -1679,6 +1679,34 @@ CREATE TABLE `ward`(
   FOREIGN KEY (`service_id`) REFERENCES `service` (`id`)
 )ENGINE=InnoDB  DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
+DROP TABLE IF EXISTS `room_type`;
+CREATE TABLE `room_type`(
+ `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+ `label` VARCHAR(50) NOT NULL,
+  PRIMARY KEY(`id`)
+)ENGINE=InnoDB  DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `room`;
+CREATE TABLE `room`(
+ `uuid` BINARY(16) NOT NULL,
+ `label` VARCHAR(50) NOT NULL,
+ `ward_uuid` BINARY(16) NOT NULL,
+ `room_type_id` SMALLINT(5) UNSIGNED NULL,
+  PRIMARY KEY(`uuid`),
+  FOREIGN KEY (`ward_uuid`) REFERENCES ward (`uuid`),
+  FOREIGN KEY (`room_type_id`) REFERENCES room_type (`id`)
+)ENGINE=InnoDB  DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `bed`;
+CREATE TABLE `bed`(
+ `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+ `label` VARCHAR(20) NOT NULL,
+ `room_uuid` BINARY(16) NOT NULL,
+ `is_occupied` TINYINT(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY(`id`),
+  FOREIGN KEY (`room_uuid`) REFERENCES room (`uuid`)
+)ENGINE=InnoDB  DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
 
 DROP TABLE IF EXISTS `subsidy`;
 CREATE TABLE subsidy (
