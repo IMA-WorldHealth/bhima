@@ -3,7 +3,7 @@ version: 1.0.0
 theme: jekyll-theme-minimal
 repository: "IMA-WorldHealth/bhima"
 title: "Basic Hospital Information Management Application"
-abbreviation: "BIHMA"
+abbreviation: "BHIMA"
 logo: "logo.png"
 description: "Bhima is a free, open source accounting and hospital information management system (HIMS) tailored for rural hospitals in Africa. We are an international team based in the Democratic Republic of the Congo."
 markdown: kramdown
