@@ -5,9 +5,10 @@ angular.module('bhima.controllers')
 WardController.$inject = [
   'WardService', '$uibModal', 'ModalService',
   'NotifyService', 'uiGridConstants', 'SessionService',
+  '$rootScope',
 ];
 
-function WardController(Ward, Modal, ModalService, Notify, uiGridConstants, Session) {
+function WardController(Ward, Modal, ModalService, Notify, uiGridConstants, Session, $rootScope) {
   const vm = this;
   const { enterprise } = Session;
   // global variables
@@ -34,6 +35,12 @@ function WardController(Ward, Modal, ModalService, Notify, uiGridConstants, Sess
       {
         field : 'nb_rooms',
         displayName : 'ROOM.NB_ROOMS',
+        headerCellFilter : 'translate',
+        type : 'number',
+      },
+      {
+        field : 'nb_beds',
+        displayName : 'BED.NB_BEDS',
         headerCellFilter : 'translate',
         type : 'number',
       },
@@ -65,11 +72,17 @@ function WardController(Ward, Modal, ModalService, Notify, uiGridConstants, Sess
 
   // get all enterprise's depatments
   function loadWards() {
+    vm.loading = true;
     Ward.read(null, { enterprise_id : enterprise.id })
       .then(Wards => {
         vm.gridOptions.data = Wards;
       })
-      .catch(handleError);
+      .catch(handleError)
+      .finally(toggleLoading);
+  }
+
+  function toggleLoading() {
+    vm.loading = !vm.loading;
   }
 
   function handleError(err) {
@@ -91,7 +104,7 @@ function WardController(Ward, Modal, ModalService, Notify, uiGridConstants, Sess
   function createWard(uuid) {
     openCreateUpdateModal(uuid).then(result => {
       if (result) {
-        loadWards();
+        $rootScope.$broadcast('ward-configuration-changes');
       }
     });
   }
@@ -105,11 +118,14 @@ function WardController(Ward, Modal, ModalService, Notify, uiGridConstants, Sess
         Ward.delete(uuid)
           .then(() => {
             Notify.success('FORM.INFO.OPERATION_SUCCESS');
-            loadWards();
+            $rootScope.$broadcast('ward-configuration-changes');
           })
           .catch(Notify.handleError);
       });
   }
+
+  // listen ward configuration changes
+  $rootScope.$on('ward-configuration-changes', loadWards);
 
   loadWards();
 }

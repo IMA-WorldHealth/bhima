@@ -7,7 +7,7 @@
     <span class="caret"></span>
   </a>
 
-  <ul class="dropdown-menu-right" uib-dropdown-menu data-row-menu="{{ row.entity.name }}">
+  <ul class="dropdown-menu-right" uib-dropdown-menu data-row-menu="{{ row.entity.label }}">
     <li>
       <a data-method="edit-record" ng-click="grid.appScope.createRoom(row.entity.uuid)" href>
         <i class="fa fa-edit"></i> <span translate>FORM.BUTTONS.EDIT</span>

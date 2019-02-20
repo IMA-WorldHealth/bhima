@@ -41,6 +41,8 @@ function CreateUpdateRoomController(uuid, Room, Notify, Instance) {
       return false;
     }
 
+    delete vm.room.ward_name;
+    delete vm.room.service_name;
     const operation = vm.isCreating ? Room.create(vm.room) : Room.update(uuid, vm.room);
 
     return operation

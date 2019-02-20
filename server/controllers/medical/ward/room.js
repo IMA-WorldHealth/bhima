@@ -53,7 +53,7 @@ function remove(req, res, next) {
 function read(req, res, next) {
   const sql = `
     SELECT BUID(r.uuid) as uuid, r.label, 
-      BUID(w.uuid) AS ward_uuid, w.name AS ward_name, w.description,
+      BUID(w.uuid) AS ward_uuid, w.name AS ward_name, r.description,
       s.name AS service_name,
       (SELECT COUNT(*) FROM bed WHERE bed.room_uuid = r.uuid) AS nb_beds
     FROM room r
@@ -80,7 +80,7 @@ function read(req, res, next) {
 function detail(req, res, next) {
   const sql = `
     SELECT BUID(r.uuid) as uuid, r.label, 
-      BUID(w.uuid) AS ward_uuid, w.name AS ward_name, w.description,
+      BUID(w.uuid) AS ward_uuid, w.name AS ward_name, r.description,
       s.name AS service_name
     FROM room r
     JOIN ward w ON w.uuid = r.ward_uuid

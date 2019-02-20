@@ -5,9 +5,10 @@ angular.module('bhima.controllers')
 RoomController.$inject = [
   'RoomService', '$uibModal', 'ModalService',
   'NotifyService', 'uiGridConstants', 'SessionService',
+  '$rootScope',
 ];
 
-function RoomController(Room, Modal, ModalService, Notify, uiGridConstants, Session) {
+function RoomController(Room, Modal, ModalService, Notify, uiGridConstants, Session, $rootScope) {
   const vm = this;
   const { enterprise } = Session;
   // global variables
@@ -64,11 +65,17 @@ function RoomController(Room, Modal, ModalService, Notify, uiGridConstants, Sess
 
   // get all enterprise's depatments
   function loadRooms() {
+    vm.loading = true;
     Room.read(null, { enterprise_id : enterprise.id })
       .then(Rooms => {
         vm.gridOptions.data = Rooms;
       })
-      .catch(handleError);
+      .catch(handleError)
+      .finally(toggleLoading);
+  }
+
+  function toggleLoading() {
+    vm.loading = !vm.loading;
   }
 
   function handleError(err) {
@@ -90,7 +97,7 @@ function RoomController(Room, Modal, ModalService, Notify, uiGridConstants, Sess
   function createRoom(uuid) {
     openCreateUpdateModal(uuid).then(result => {
       if (result) {
-        loadRooms();
+        $rootScope.$broadcast('ward-configuration-changes');
       }
     });
   }
@@ -104,11 +111,14 @@ function RoomController(Room, Modal, ModalService, Notify, uiGridConstants, Sess
         Room.delete(uuid)
           .then(() => {
             Notify.success('FORM.INFO.OPERATION_SUCCESS');
-            loadRooms();
+            $rootScope.$broadcast('ward-configuration-changes');
           })
           .catch(Notify.handleError);
       });
   }
+
+  // listen ward configuration changes
+  $rootScope.$on('ward-configuration-changes', loadRooms);
 
   loadRooms();
 }

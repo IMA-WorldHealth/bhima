@@ -49,7 +49,8 @@ function read(req, res, next) {
     SELECT BUID(w.uuid) as uuid, w.name, 
       w.description, w.service_id,
       s.name as serviceName,
-      (SELECT COUNT(*) FROM room WHERE room.ward_uuid = w.uuid) AS nb_rooms
+      (SELECT COUNT(*) FROM room WHERE room.ward_uuid = w.uuid) AS nb_rooms,
+      (SELECT COUNT(*) FROM bed JOIN room ir ON ir.uuid = bed.room_uuid WHERE ir.ward_uuid = w.uuid) AS nb_beds
     FROM ward w
     LEFT JOIN service s ON s.id = w.service_id
   `;

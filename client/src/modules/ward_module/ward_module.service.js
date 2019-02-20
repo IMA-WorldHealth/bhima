@@ -1,10 +1,7 @@
 angular.module('bhima.services')
   .service('WardModuleService', WardModuleService);
 
-WardModuleService.$inject = [
-  'PrototypeApiService', '$uibModal', 'FilterService', 'appcache',
-  'LanguageService', '$httpParamSerializer', 'util', '$http',
-];
+WardModuleService.$inject = [];
 
 function WardModuleService() {
   const service = this;

@@ -1058,5 +1058,5 @@ INSERT INTO ward VALUES
 
 -- default rooms for tests
 INSERT INTO room VALUES
-  (HUID('A6F9527BA7B44A2C9F4FDD7323BBCF72'), 'Room A in Ward A', @ward1, 1),
-  (HUID('3BD2C0DB6A574B748AE774554BCBC35D'), 'Room B in Ward B', @ward2, NULL);
+  (HUID('A6F9527BA7B44A2C9F4FDD7323BBCF72'), 'Room A in Ward A', 'Room A description', @ward1, 1),
+  (HUID('3BD2C0DB6A574B748AE774554BCBC35D'), 'Room B in Ward B', 'Room B description', @ward2, NULL);

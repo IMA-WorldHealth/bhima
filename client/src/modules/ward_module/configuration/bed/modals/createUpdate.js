@@ -26,6 +26,7 @@ function CreateUpdateBedController(uuid, Bed, Notify, Instance) {
       Bed.read(uuid)
         .then(bed => {
           vm.bed = bed;
+          vm.ward_uuid = bed.ward_uuid;
         })
         .catch(Notify.handleError);
     }
@@ -46,6 +47,11 @@ function CreateUpdateBedController(uuid, Bed, Notify, Instance) {
       return false;
     }
 
+    delete vm.bed.ward_name;
+    delete vm.bed.ward_uuid;
+    delete vm.bed.room_label;
+    delete vm.bed.service_name;
+    delete vm.bed.description;
     const operation = vm.isCreating ? Bed.create(vm.bed) : Bed.update(uuid, vm.bed);
 
     return operation

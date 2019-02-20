@@ -1694,6 +1694,7 @@ CREATE TABLE `room`(
  `ward_uuid` BINARY(16) NOT NULL,
  `room_type_id` SMALLINT(5) UNSIGNED NULL,
   PRIMARY KEY(`uuid`),
+  UNIQUE KEY `room_label_0` (`label`, `ward_uuid`),
   FOREIGN KEY (`ward_uuid`) REFERENCES ward (`uuid`),
   FOREIGN KEY (`room_type_id`) REFERENCES room_type (`id`)
 )ENGINE=InnoDB  DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
@@ -1705,6 +1706,7 @@ CREATE TABLE `bed`(
  `room_uuid` BINARY(16) NOT NULL,
  `is_occupied` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY(`id`),
+  UNIQUE KEY `bel_label_0` (`label`, `room_uuid`),
   FOREIGN KEY (`room_uuid`) REFERENCES room (`uuid`)
 )ENGINE=InnoDB  DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 

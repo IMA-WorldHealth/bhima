@@ -5,9 +5,10 @@ angular.module('bhima.controllers')
 BedController.$inject = [
   'BedService', '$uibModal', 'ModalService',
   'NotifyService', 'uiGridConstants', 'SessionService',
+  '$rootScope',
 ];
 
-function BedController(Bed, Modal, ModalService, Notify, uiGridConstants, Session) {
+function BedController(Bed, Modal, ModalService, Notify, uiGridConstants, Session, $rootScope) {
   const vm = this;
   const { enterprise } = Session;
   // global variables
@@ -24,6 +25,7 @@ function BedController(Bed, Modal, ModalService, Notify, uiGridConstants, Sessio
     fastWatch         : true,
     flatEntityAccess  : true,
     enableSorting     : true,
+    treeRowHeaderAlwaysVisible : false,
     onRegisterApi     : onRegisterApiFn,
     columnDefs : [
       {
@@ -35,11 +37,13 @@ function BedController(Bed, Modal, ModalService, Notify, uiGridConstants, Sessio
         field : 'room_label',
         displayName : 'ROOM.TITLE',
         headerCellFilter : 'translate',
+        grouping : { groupPriority : 1 },
       },
       {
         field : 'ward_name',
         displayName : 'WARD.TITLE',
         headerCellFilter : 'translate',
+        grouping : { groupPriority : 0 },
       },
       {
         field : 'action',
@@ -64,11 +68,17 @@ function BedController(Bed, Modal, ModalService, Notify, uiGridConstants, Sessio
 
   // get all enterprise's depatments
   function loadBeds() {
+    vm.loading = true;
     Bed.read(null, { enterprise_id : enterprise.id })
       .then(Beds => {
         vm.gridOptions.data = Beds;
       })
-      .catch(handleError);
+      .catch(handleError)
+      .finally(toggleLoading);
+  }
+
+  function toggleLoading() {
+    vm.loading = !vm.loading;
   }
 
   function handleError(err) {
@@ -90,7 +100,7 @@ function BedController(Bed, Modal, ModalService, Notify, uiGridConstants, Sessio
   function createBed(uuid) {
     openCreateUpdateModal(uuid).then(result => {
       if (result) {
-        loadBeds();
+        $rootScope.$broadcast('ward-configuration-changes');
       }
     });
   }
@@ -104,11 +114,14 @@ function BedController(Bed, Modal, ModalService, Notify, uiGridConstants, Sessio
         Bed.delete(uuid)
           .then(() => {
             Notify.success('FORM.INFO.OPERATION_SUCCESS');
-            loadBeds();
+            $rootScope.$broadcast('ward-configuration-changes');
           })
           .catch(Notify.handleError);
       });
   }
+
+  // listen ward configuration changes
+  $rootScope.$on('ward-configuration-changes', loadBeds);
 
   loadBeds();
 }
