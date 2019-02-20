@@ -1,5 +1,6 @@
 function configuration(data) {
   const configured = {};
+
   // If the manual repartition is included, the automatic repair is done only after
   // the deduction of the manually distributed values
   const includeManual = parseInt(data.includeManual, 10);
@@ -13,6 +14,33 @@ function configuration(data) {
       }
     });
   });
+
+  data.feeCenter.forEach(center => {
+    center.cost_debit = 0;
+    center.cost_credit = 0;
+    center.cost_balance = 0;
+
+    center.profit_debit = 0;
+    center.profit_credit = 0;
+    center.profit_balance = 0;
+
+    data.references.forEach(reference => {
+      if (center.id === reference.fee_center_id) {
+        if (reference.is_cost) {
+          center.hasCostReference = 1;
+          center.cost_debit += reference.debit;
+          center.cost_credit += reference.credit;
+          center.cost_balance += reference.balance;
+        } else {
+          center.hasProfitReference = 1;
+          center.profit_debit += reference.debit;
+          center.profit_credit += reference.credit;
+          center.profit_balance += reference.balance;
+        }
+      }
+    });
+  });
+
 
   configured.principal = data.feeCenter.filter(item => {
     return item.is_principal;
@@ -35,30 +63,30 @@ function configuration(data) {
     item.credit *= (-1);
   });
 
-  configured.principalFeeCenters = data.references.filter(item => {
-    return item.is_principal;
+  configured.principalFeeCenters = data.feeCenter.filter(item => {
+    return item.is_principal && (item.hasProfitReference || item.hasCostReference);
   });
 
-  configured.principalCostCenters = data.references.filter(item => {
-    return item.is_principal && item.is_cost;
+  configured.principalCostCenters = data.feeCenter.filter(item => {
+    return item.is_principal && item.hasCostReference;
   });
 
-  configured.principalProfitCenters = data.references.filter(item => {
-    return item.is_principal && !item.is_cost;
+  configured.principalProfitCenters = data.feeCenter.filter(item => {
+    return item.is_principal && item.hasProfitReference;
   });
 
-  configured.auxiliaryFeeCenters = data.references.filter(item => {
-    return !item.is_principal;
+  configured.auxiliaryFeeCenters = data.feeCenter.filter(item => {
+    return !item.is_principal && (item.hasProfitReference || item.hasCostReference);
   });
 
-  configured.auxiliaryCostCenters = data.references.filter(item => {
-    return !item.is_principal && item.is_cost;
+  configured.auxiliaryCostCenters = data.feeCenter.filter(item => {
+    return !item.is_principal && item.hasCostReference;
   });
 
   configured.colspanAuxCost = configured.auxiliaryCostCenters.length + 3;
 
-  configured.auxiliaryProfitCenters = data.references.filter(item => {
-    return !item.is_principal && !item.is_cost;
+  configured.auxiliaryProfitCenters = data.feeCenter.filter(item => {
+    return !item.is_principal && item.hasProfitReference;
   });
 
   configured.colspanAuxProfit = configured.auxiliaryProfitCenters.length + 3;
@@ -69,6 +97,7 @@ function configuration(data) {
   // Getting balance of account references associated with auxiliary cost centers
   let totalAuxCost = 0;
   configured.auxiliaryCostCenters.forEach(aux => {
+
     let total = 0;
     let totalDistributedByKey = 0;
     let ratio = 0;
@@ -82,11 +111,11 @@ function configuration(data) {
       });
     }
 
-    totalAuxCost += aux.balance;
+    totalAuxCost += aux.cost_balance;
 
     // automatic total is the value that should be distributed to the main center taking into account
     // the distribution keys, from this value is deducted the sum of the distributions carried out manually.
-    aux.automaticTotal = includeManual ? aux.balance - total : aux.balance;
+    aux.automaticTotal = includeManual ? aux.cost_balance - total : aux.cost_balance;
 
     if (aux.automaticTotal) {
       data.distributionKey.forEach(item => {
@@ -96,13 +125,12 @@ function configuration(data) {
       });
     }
 
-    if ((total || totalDistributedByKey) && aux.balance) {
-      ratio = ((total + totalDistributedByKey) / aux.balance);
+    if ((total || totalDistributedByKey) && aux.cost_balance) {
+      ratio = ((total + totalDistributedByKey) / aux.cost_balance);
     }
 
     aux.total = total + totalDistributedByKey;
     aux.ratio = ratio;
-
   });
 
   // Getting balance of account references associated with auxiliary profit centers
@@ -121,15 +149,15 @@ function configuration(data) {
       });
     }
 
-    totalAuxProfit += aux.balance;
+    totalAuxProfit += aux.profit_balance;
 
-    if (aux.total && aux.balance) {
-      ratio = (aux.total / aux.balance);
+    if (aux.total && aux.profit_balance) {
+      ratio = (aux.total / aux.profit_balance);
     }
     aux.ratio = ratio;
     // automatic total is the value that should be distributed to the main center taking into account
     // the distribution keys, from this value is deducted the sum of the distributions carried out manually.
-    aux.automaticTotal = includeManual ? aux.balance - total : aux.balance;
+    aux.automaticTotal = includeManual ? aux.profit_balance - total : aux.profit_balance;
 
     if (aux.automaticTotal) {
       data.distributionKey.forEach(item => {
@@ -138,12 +166,11 @@ function configuration(data) {
         }
       });
     }
-    if ((total || totalDistributedByKey) && aux.balance) {
-      ratio = ((total + totalDistributedByKey) / aux.balance);
+    if ((total || totalDistributedByKey) && aux.profit_balance) {
+      ratio = ((total + totalDistributedByKey) / aux.profit_balance);
     }
     aux.total = total + totalDistributedByKey;
     aux.ratio = ratio;
-
   });
 
   let totalGeneralCost = 0;
@@ -155,17 +182,17 @@ function configuration(data) {
     let totalProfit = 0;
     configured.principalCostCenters.forEach(dPrincCost => {
       if (pr.id === dPrincCost.id) {
-        totalCost += dPrincCost.balance;
-        totalPrincipalCost += dPrincCost.balance;
-        pr.balanceCost = dPrincCost.balance;
+        totalCost += dPrincCost.cost_balance;
+        totalPrincipalCost += dPrincCost.cost_balance;
+        pr.balanceCost = dPrincCost.cost_balance;
       }
     });
 
     configured.principalProfitCenters.forEach(dPrincProfit => {
       if (pr.id === dPrincProfit.id) {
-        totalProfit += dPrincProfit.balance;
-        totalPrincipalProfit += dPrincProfit.balance;
-        pr.balanceProfit = dPrincProfit.balance;
+        totalProfit += dPrincProfit.profit_balance;
+        totalPrincipalProfit += dPrincProfit.profit_balance;
+        pr.balanceProfit = dPrincProfit.profit_balance;
       }
     });
 

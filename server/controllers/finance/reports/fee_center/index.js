@@ -77,7 +77,7 @@ function report(req, res, next) {
 
   const getFeeCenterReference = `
     SELECT fc.id, fc.label, fc.is_principal, rf.fee_center_id, rf.account_reference_id, 
-    rf.is_cost, ar.abbr
+    rf.is_cost, rf.is_variable, rf.is_turnover, ar.abbr
     FROM fee_center AS fc
     JOIN reference_fee_center AS rf ON rf.fee_center_id = fc.id
     JOIN account_reference AS ar ON ar.id = rf.account_reference_id

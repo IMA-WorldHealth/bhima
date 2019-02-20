@@ -26,6 +26,7 @@ function FeeCenterModalController($state, FeeCenter, ModalService, Notify, AppCa
   vm.costCenter = costCenter;
   vm.onSelectAccountReference = onSelectAccountReference;
   vm.onServicesChange = onServicesChange;
+  vm.clear = clear;
 
   if (!vm.isCreating) {
     FeeCenter.read(vm.stateParams.id)
@@ -102,6 +103,14 @@ function FeeCenterModalController($state, FeeCenter, ModalService, Notify, AppCa
         }
       });
     }
+  }
+
+  function clear(value, index) {
+    vm[value] = null;
+    vm.feeCenter[index] = null;
+
+    delete vm[value];
+    delete vm.feeCenter[index];
   }
 
   function auxiliaryFee(value) {
