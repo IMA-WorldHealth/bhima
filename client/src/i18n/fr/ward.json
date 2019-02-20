@@ -1,0 +1,19 @@
+{
+  "WARD":{
+    "TITLE":"Pavillon",
+    "LIST":"Liste des pavillons",
+    "ADD":"Ajouter pavillon"
+  },
+  "ROOM":{
+    "TITLE":"Chambre",
+    "LIST":"Liste des chambres",
+    "ADD":"Ajouter chambre",
+    "NB_ROOMS":"Nombre des chambres"
+  },
+  "BED":{
+    "TITLE":"Lit",
+    "LIST":"Liste des lits",
+    "ADD":"Ajouter lit",
+    "NB_BEDS":"Nombre des lits"
+  }
+}

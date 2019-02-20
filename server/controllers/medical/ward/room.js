@@ -1,4 +1,5 @@
 const db = require('../../../lib/db');
+const FilterParser = require('../../../lib/filter');
 
 module.exports.create = create;
 module.exports.update = update;
@@ -52,14 +53,23 @@ function remove(req, res, next) {
 function read(req, res, next) {
   const sql = `
     SELECT BUID(r.uuid) as uuid, r.label, 
-      BUID(w.uuid) AS ward_uuid, w.name, w.description,
-      s.name as serviceName
+      BUID(w.uuid) AS ward_uuid, w.name AS ward_name, w.description,
+      s.name AS service_name,
+      (SELECT COUNT(*) FROM bed WHERE bed.room_uuid = r.uuid) AS nb_beds
     FROM room r
     JOIN ward w ON w.uuid = r.ward_uuid
     LEFT JOIN service s ON s.id = w.service_id
   `;
 
-  db.exec(sql)
+  db.convert(req.query, ['ward_uuid']);
+
+  const filters = new FilterParser(req.query);
+  filters.equals('ward_uuid', 'uuid', 'w');
+
+  const query = filters.applyQuery(sql);
+  const queryParameters = filters.parameters();
+
+  db.exec(query, queryParameters)
     .then(rooms => {
       res.status(200).json(rooms);
     })
@@ -70,8 +80,8 @@ function read(req, res, next) {
 function detail(req, res, next) {
   const sql = `
     SELECT BUID(r.uuid) as uuid, r.label, 
-      BUID(w.uuid) AS ward_uuid, w.name, w.description,
-      s.name as serviceName
+      BUID(w.uuid) AS ward_uuid, w.name AS ward_name, w.description,
+      s.name AS service_name
     FROM room r
     JOIN ward w ON w.uuid = r.ward_uuid
     LEFT JOIN service s ON s.id = w.service_id

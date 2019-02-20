@@ -46,11 +46,12 @@ function remove(req, res, next) {
 // get all wards
 function read(req, res, next) {
   const sql = `
-    SELECT BUID(p.uuid) as uuid, p.name, 
-      p.description, p.service_id,
-      s.name as serviceName
-    FROM ward p
-    LEFT JOIN service s ON s.id = p.service_id
+    SELECT BUID(w.uuid) as uuid, w.name, 
+      w.description, w.service_id,
+      s.name as serviceName,
+      (SELECT COUNT(*) FROM room WHERE room.ward_uuid = w.uuid) AS nb_rooms
+    FROM ward w
+    LEFT JOIN service s ON s.id = w.service_id
   `;
 
   db.exec(sql).then(wards => {

@@ -1,0 +1,32 @@
+<div class="panel panel-default">
+  <div class="panel-heading" style="display: flex; justify-content: space-between;">
+    <span>
+      <i class="fa fa-bed"></i>
+      <span translate>BED.LIST</span> ({{ BedCtrl.gridOptions.data.length }})
+    </span>
+
+    <div>
+      <bh-filter-toggle on-toggle="BedCtrl.toggleFilter()"></bh-filter-toggle>
+      <button
+        ng-click="BedCtrl.createBed()"
+        class="btn btn-primary"
+        type="button" data-create-type>
+        <i class="fa fa-plus"></i> <span translate>BED.ADD</span>
+      </button>
+    </div>
+  </div>
+
+  <section>
+    <div id="bed-grid"
+      style="height: 270px;"
+      ui-grid="BedCtrl.gridOptions">
+
+      <bh-grid-loading-indicator
+        loading-state="BedCtrl.loading"
+        empty-state="BedCtrl.gridOptions.data.length === 0"
+        error-state="BedCtrl.hasError">
+      </bh-grid-loading-indicator>
+    </div>
+  </section>
+</div>
+

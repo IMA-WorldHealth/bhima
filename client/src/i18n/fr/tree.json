@@ -67,6 +67,7 @@
     "OPERATING_ACCOUNT" : "Compte d'exploitation",
     "PHARMACY":"Gestion de pharmacies",
     "WARD" : "Gestion des pavillons",
+    "WARD_CONFIGURATION" : "Configurations",
     "PATIENT_DOCUMENT":"Documents de Patient",
     "PATIENT_GRP":"Groupe des Patients",
     "PATIENT_GRP_ASSIGNMENT":"Assignation Groupe",

@@ -1690,6 +1690,7 @@ DROP TABLE IF EXISTS `room`;
 CREATE TABLE `room`(
  `uuid` BINARY(16) NOT NULL,
  `label` VARCHAR(50) NOT NULL,
+ `description` text NULL,
  `ward_uuid` BINARY(16) NOT NULL,
  `room_type_id` SMALLINT(5) UNSIGNED NULL,
   PRIMARY KEY(`uuid`),
