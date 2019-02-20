@@ -110,12 +110,21 @@ function document(req, res, next) {
     .then(header => {
       _.merge(context, { header });
       // get the account's transactions
-      return AccountTransactions.getAccountTransactions(params, header.balance);
+      return Promise.all([
+        AccountTransactions.getAccountTransactions(params, header.balance),
+        db.exec(`SELECT id, text FROM transaction_type;`),
+      ]);
     })
-    .then((txns) => {
+    .then(([txns, transactionTypes]) => {
       _.merge(context, txns, {
         dateFrom : params.dateFrom,
         dateTo : params.dateTo,
+      });
+
+      // map the transaction types to each transaction by their ID
+      const map = _.keyBy(transactionTypes, 'id');
+      context.transactions.forEach(txn => {
+        txn.transactionType = map[txn.transaction_type_id].text;
       });
 
       // if we have a split format, split along the lines of income and expense.

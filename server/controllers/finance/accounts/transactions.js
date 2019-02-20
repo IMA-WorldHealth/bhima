@@ -54,7 +54,7 @@ function getGeneralLedgerSQL(options) {
 
   const sql = `
     SELECT trans_id, description, trans_date, document_reference, debit, credit, posted, created_at,
-      debit_equiv, credit_equiv, currency_id, rate, IF(rate < 1, (1 / rate), rate) AS invertedRate,
+      transaction_type_id, debit_equiv, credit_equiv, currency_id, rate, IF(rate < 1, (1 / rate), rate) AS invertedRate,
       ${columns}
       FROM (
       SELECT trans_id, description, trans_date, document_map.text AS document_reference,
@@ -66,7 +66,7 @@ function getGeneralLedgerSQL(options) {
         SUM(debit_equiv) as debit_equiv, SUM(credit_equiv) AS credit_equiv,
         (SUM(debit) - SUM(credit)) AS balance, SUM(debit) AS debit,
         SUM(credit) AS credit, MAX(currency_id) AS currency_id,
-        ${options.includeUnpostedValues ? 'posted' : '1 as posted'}, created_at
+        ${options.includeUnpostedValues ? 'posted' : '1 as posted'}, created_at, transaction_type_id
       FROM ${subquery.query}
       LEFT JOIN document_map ON record_uuid = document_map.uuid
   `;
@@ -95,13 +95,14 @@ function getTableSubquery(options, table) {
 
   const sql = `
   SELECT trans_id, description, trans_date, debit_equiv, credit_equiv, currency_id, debit, credit,
-    account_id, record_uuid, reference_uuid, ${postedValue} as posted, created_at
+    account_id, record_uuid, reference_uuid, ${postedValue} as posted, created_at, transaction_type_id
   FROM ${table}`;
 
   filters.equals('account_id');
   filters.dateFrom('dateFrom', 'trans_date');
   filters.dateTo('dateTo', 'trans_date');
   filters.period('period', 'date');
+  filters.equals('transaction_type_id');
 
   const query = filters.applyQuery(sql);
   const parameters = filters.parameters();
@@ -172,7 +173,7 @@ async function getAccountTransactions(options, openingBalance = 0) {
       groups.credit_equiv, groups.trans_date, groups.document_reference,
       groups.exchangedCredit, groups.exchangedDebit, groups.exchangedBalance,
       groups.rate, ROUND(groups.invertedRate, 2) AS invertedRate, groups.cumsum,
-      groups.description, groups.currency_id, groups.posted, created_at
+      groups.description, groups.currency_id, groups.posted, created_at, transaction_type_id
     FROM (${query})c, (SELECT @cumsum := ${openingBalance || 0})z) AS groups
   `;
 
