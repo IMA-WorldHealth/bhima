@@ -17,6 +17,7 @@ function BedController(Bed, Modal, ModalService, Notify, uiGridConstants, Sessio
   vm.toggleFilter = toggleFilter;
   vm.createBed = createBed;
   vm.deleteBed = deleteBed;
+  vm.expandAll = expandAll;
 
   // options for the UI grid
   vm.gridOptions = {
@@ -103,6 +104,10 @@ function BedController(Bed, Modal, ModalService, Notify, uiGridConstants, Sessio
         $rootScope.$broadcast('ward-configuration-changes');
       }
     });
+  }
+
+  function expandAll() {
+    vm.gridApi.treeBase.expandAllRows();
   }
 
   // switch to delete warning mode

@@ -1,8 +1,8 @@
 /* global by, element */
 
-const FU = require('../shared/FormUtils');
-const components = require('../shared/components');
-const GridRow = require('../shared/GridRow');
+const FU = require('../../shared/FormUtils');
+const components = require('../../shared/components');
+const GridRow = require('../../shared/GridRow');
 
 function WardPage() {
   const page = this;
@@ -54,7 +54,7 @@ function WardPage() {
   }
 
   function openCreateModal() {
-    return FU.buttons.create();
+    return element(by.css('[data-create-ward]')).click();
   }
 }
 

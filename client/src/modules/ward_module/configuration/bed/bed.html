@@ -8,9 +8,15 @@
     <div>
       <bh-filter-toggle on-toggle="BedCtrl.toggleFilter()"></bh-filter-toggle>
       <button
+        ng-click="BedCtrl.expandAll()"
+        class="btn btn-default"
+        type="button" data-expand>
+        <i class="fa fa-sitemap"></i>
+      </button>
+      <button
         ng-click="BedCtrl.createBed()"
         class="btn btn-primary"
-        type="button" data-create-type>
+        type="button" data-create-bed>
         <i class="fa fa-plus"></i> <span translate>BED.ADD</span>
       </button>
     </div>
