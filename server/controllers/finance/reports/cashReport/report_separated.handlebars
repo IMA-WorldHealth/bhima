@@ -1,12 +1,12 @@
 {{> head title="TREE.CASH_REPORT" }}
 
-4div class="container">
+<div class="container">
   {{> header}}
 
   <div class="row">
     <div class="col-xs-12">
       <h3 class="text-center text-uppercase">
-        <strong>{{translate 'TREE.CASH_REPORT'}}</strong>
+        <strong>{{translate "TREE.CASH_REPORT"}}</strong>
       </h3>
       <h5 class="text-center text-uppercase">
         {{ cashbox.label }} ({{ cashbox.symbol}})
@@ -16,7 +16,7 @@
       </h6>
 
       <div class="text-right">
-        <strong>{{ translate 'FORM.LABELS.OPENING_BALANCE' }} : {{debcred header.balance metadata.enterprise.currency_id}}</strong>
+        <strong>{{ translate "FORM.LABELS.OPENING_BALANCE" }} : {{debcred header.balance metadata.enterprise.currency_id}}</strong>
       </div>
 
       {{#if hasIncome }}
@@ -24,12 +24,12 @@
         <table class="table table-condensed table-report">
           <thead>
             <tr style="background-color:#ddd;">
-              <th>{{ translate 'TABLE.COLUMNS.DATE' }}</th>
-              <th>{{ translate 'TABLE.COLUMNS.TRANSACTION_ID' }}</th>
-              <th>{{ translate 'TABLE.COLUMNS.RECORD' }}</th>
-              <th style="min-width: 50%">{{ translate 'TABLE.COLUMNS.DESCRIPTION'}}</th>
-              <th>{{ translate 'TABLE.COLUMNS.SOURCE' }}</th>
-              <th>{{ translate 'TABLE.COLUMNS.AMOUNT' }}</th>
+              <th>{{ translate "TABLE.COLUMNS.DATE" }}</th>
+              <th>{{ translate "TABLE.COLUMNS.TRANSACTION_ID" }}</th>
+              <th>{{ translate "TABLE.COLUMNS.RECORD" }}</th>
+              <th style="min-width: 50%">{{ translate "TABLE.COLUMNS.DESCRIPTION"}}</th>
+              <th>{{ translate "TABLE.COLUMNS.SOURCE" }}</th>
+              <th>{{ translate "TABLE.COLUMNS.AMOUNT" }}</th>
             </tr>
           </thead>
           <tbody>
@@ -50,7 +50,7 @@
           </tbody>
           <tfoot>
             <tr style="background-color:#ddd;">
-              <th colspan="5">{{ translate 'TABLE.COLUMNS.TOTAL' }}</th>
+              <th colspan="5">{{ translate "TABLE.COLUMNS.TOTAL" }}</th>
               <th class="text-right">
                 {{ currency footer.totals.debit cashbox.currency_id}}
               </th>
@@ -60,19 +60,18 @@
       {{/if}}
 
       <br />
-      <br />
 
       {{#if hasExpense}}
         <h4>{{translate "FORM.LABELS.EXPENSE"}}</h4>
         <table class="table table-condensed table-report">
           <thead>
             <tr style="background-color:#ddd;">
-              <th>{{ translate 'TABLE.COLUMNS.DATE' }}</th>
-              <th>{{ translate 'TABLE.COLUMNS.TRANSACTION_ID' }}</th>
-              <th>{{ translate 'TABLE.COLUMNS.RECORD' }}</th>
-              <th style="min-width: 50%">{{ translate 'TABLE.COLUMNS.DESCRIPTION'}}</th>
-              <th>{{ translate 'TABLE.COLUMNS.SOURCE' }}</th>
-              <th>{{ translate 'TABLE.COLUMNS.AMOUNT' }}</th>
+              <th>{{ translate "TABLE.COLUMNS.DATE" }}</th>
+              <th>{{ translate "TABLE.COLUMNS.TRANSACTION_ID" }}</th>
+              <th>{{ translate "TABLE.COLUMNS.RECORD" }}</th>
+              <th style="min-width: 50%">{{ translate "TABLE.COLUMNS.DESCRIPTION"}}</th>
+              <th>{{ translate "TABLE.COLUMNS.SOURCE" }}</th>
+              <th>{{ translate "TABLE.COLUMNS.AMOUNT" }}</th>
             </tr>
           </thead>
           <tbody>
@@ -93,7 +92,7 @@
           </tbody>
           <tfoot>
             <tr style="background-color:#ddd;">
-              <th colspan="5">{{ translate 'TABLE.COLUMNS.TOTAL' }}</th>
+              <th colspan="5">{{ translate "TABLE.COLUMNS.TOTAL" }}</th>
               <th class="text-right">
                 {{ currency footer.totals.credit cashbox.currency_id}}
               </th>
@@ -102,9 +101,16 @@
         </table>
       {{/if}}
 
-      {{#if hasBoth}}
+      <br />
 
+      {{#if hasBoth}}
+        <p class="text-right">
+          <strong>{{translate "TABLE.COLUMNS.BALANCE"}}:</strong>
+          <span>{{debcred footer.totals.balance cashbox.currency_id}}</span>
+        </p>
       {{/if}}
+
+      <br />
     </div>
   </div>
 </div>

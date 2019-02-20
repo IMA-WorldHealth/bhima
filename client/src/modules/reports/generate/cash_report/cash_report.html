@@ -51,7 +51,7 @@
                 name="type"
                 ng-model="ReportConfigCtrl.reportDetails.type"
                 ng-options="type.id as (type.label | translate) for type in ReportConfigCtrl.reportTypes"
-                ng-disabled="ReportConfigCtrl.reportDetails.format === 1"
+                ng-disabled="ReportConfigCtrl.reportDetails.format === 'NORMAL'"
                 required>
                 <option value="" disabled>{{ "FORM.SELECT.REPORT_TYPE" | translate }}<option>
               </select>

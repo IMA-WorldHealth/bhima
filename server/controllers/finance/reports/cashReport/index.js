@@ -1,15 +1,18 @@
 /**
- * cashReport Controller
+ * @module finance/reports/cashReport
  *
- *
- * This controller is responsible for processing cash report.
- *
- * @module finance/cashReport
+ * @description
+ * The Cash Report presents a colloquial view of receipts and expenses from
+ * a cashbox.  A user is able to view the report in two templates:
+ *   1. a combined view where all transactions are ordered by date
+ *   2. a separated view that puts income and expense in two separate tables
  *
  * @requires lodash
  * @requires lib/db
  * @requires lib/ReportManager
  * @requires lib/errors/BadRequest
+ * @requires finance/accounts/extra
+ * @requires finance/accounts/transactions
  */
 
 const _ = require('lodash');
