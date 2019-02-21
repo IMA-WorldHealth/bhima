@@ -2,36 +2,60 @@ angular.module('bhima.controllers')
   .controller('ModalCancelCashController', ModalCancelCashController);
 
 ModalCancelCashController.$inject = [
-  '$uibModalInstance', 'CashService', 'data', 'VoucherService', 'NotifyService'
+  '$filter', '$state', '$uibModalInstance',
+  'CashService', 'data', 'VoucherService', 'NotifyService',
 ];
 
-function ModalCancelCashController(Instance, Cash, data, Vouchers, Notify) {
-  var vm = this;
+function ModalCancelCashController($filter, $state, Instance, Cash, data, Vouchers, Notify) {
+  const vm = this;
 
   vm.cancelCash = {};
   vm.submit = submit;
-  vm.cancel = function () { Instance.close(false); };
+  vm.goToPatientLink = goToPatientLink;
+  const $currency = $filter('currency');
+
+  vm.cancel = () => Instance.close(false);
 
   vm.cancelCash.uuid = data.invoice.uuid;
   vm.patientInvoice = data.invoice;
 
   Cash.read(data.invoice.uuid)
-    .then(function (response) {
+    .then((response) => {
       vm.cashData = response;
+
+      vm.alertI18nValues = {
+        invoiceReference : vm.cashData.reference,
+        patientName : vm.cashData.debtorName,
+        patientReference : vm.cashData.debtorReference,
+        cost : $currency(vm.cashData.amount, vm.cashData.currency_id),
+      };
     })
     .catch(Notify.handleError);
 
   function submit(form) {
-     // stop submission if the form is invalid
-    if (form.$invalid) { return; }
+    // stop submission if the form is invalid
+    if (!form.$invalid) {
+      return Vouchers.reverse(vm.cancelCash)
+        .then(() => {
+          return Instance.close(true);
+        })
+        .catch(Notify.handleError)
+        .finally(() => {
+          Instance.close();
+        });
+    }
+    return false;
+  }
 
-    return Vouchers.reverse(vm.cancelCash)
-      .then(function () {
-        return Instance.close(true);
-      })
-      .catch(Notify.handleError)
-      .finally(function () {
-        Instance.close();
-      });
+  // Link to the patient registry
+  function goToPatientLink() {
+    Instance.close(false);
+    $state.go('patientRegistry', {
+      filters : [{
+        key : 'debtor_uuid',
+        value : vm.cashData.debtor_uuid,
+        displayValue : vm.cashData.debtorName,
+      }],
+    });
   }
 }

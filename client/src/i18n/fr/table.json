@@ -137,6 +137,7 @@
             "PASSIVE": "Passive",
             "PATIENT": "Patient",
             "PATIENT_ID": "Patient Id",
+            "PAYMENT_ID" : "ID Paiement",
             "PAYMENT_INVOICE": "paiement pour cette facture",
             "PAYSLIP": "Bulletin de paie",
             "PAYROLL_BULLETINS": "Bulletins des paies",

@@ -64,6 +64,7 @@
       "TITLE":"Recu de caisse",
       "SELECTED":"Facture selectionnée"
     },
-    "MOTIVE":"Motif"
+    "MOTIVE":"Motif",
+    "ALERT_CREDIT_NOTE" : "Vous annulez du paiement <strong>{{ invoiceReference }}</strong> de <u><span class='text-capitalize'>{{ patientName }}</span> ({{ patientReference }})</u> avec un valeur total de {{ cost }}. Veuillez vous assurer que les informations ci-dessous sont correctes. Cette action n'est pas réversible."
   }
 }

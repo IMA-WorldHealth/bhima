@@ -51,11 +51,14 @@ function lookup(uuid) {
   let record;
 
   const cashRecordSql = `
-    SELECT BUID(cash.uuid) as uuid, cash.project_id, dm.text AS reference,
+    SELECT BUID(cash.uuid) as uuid, cash.project_id, dm.text AS reference, 
+      d.text as debtorName, em.text as debtorReference,
       cash.date, cash.created_at, BUID(cash.debtor_uuid) AS debtor_uuid, cash.currency_id, cash.amount,
       cash.description, cash.cashbox_id, cash.is_caution, cash.user_id, cash.edited, cash.posted
     FROM cash JOIN project ON cash.project_id = project.id
       JOIN document_map dm ON cash.uuid = dm.uuid
+      JOIN debtor d ON d.uuid = cash.debtor_uuid
+      JOIN entity_map em On d.uuid = em.uuid
     WHERE cash.uuid = ?;
   `;
 

@@ -68,6 +68,7 @@
       "TITLE":"Cash Window",
       "SELECTED":"Selected Invoices"
     },
-  "MOTIVE":"Notes"
+  "MOTIVE":"Notes",
+  "ALERT_CREDIT_NOTE" : "You are reversing payment <strong>{{ invoiceReference }}</strong> belonging to <u><span class='text-capitalize'>{{ patientName }}</span> ({{ patientReference }})</u> with a total value of {{ cost }}.  Please ensure the information below is correct. This action is not reversible."
   }
 }

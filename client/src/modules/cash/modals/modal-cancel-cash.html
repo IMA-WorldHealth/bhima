@@ -9,8 +9,14 @@
   </div>
 
   <div class="modal-body">
+    <div class="col-sm-12">
+      <div class="alert alert-warning" ng-hide="ModalCtrl.hasPaymentsAgainstInvoice">
+        <i class="fa fa-exclamation-triangle"></i>
+          <span translate translate-values="ModalCtrl.alertI18nValues" translate-sanitize-strategy="'sce'">CASH.ALERT_CREDIT_NOTE</span>
+        </div>      
+    </div>
     <legend>
-      <span translate>TABLE.COLUMNS.INVOICE_ID</span> : {{ ModalCtrl.patientInvoice.reference }}
+      <span translate>TABLE.COLUMNS.PAYMENT_ID</span> : {{ ModalCtrl.cashData.reference }}
     </legend>
     <fieldset>
       <table class="table table-bordered table-condensed">
@@ -18,21 +24,22 @@
           <tr>
             <th colspan="4">
               {{ ModalCtrl.patientInvoice.debtor_name }}
+              (<a href ng-click="ModalCtrl.goToPatientLink()">{{ ModalCtrl.cashData.debtorReference }}</a>)
             </th>
           </tr>
           <tr>
+            <th rowspan="{{(ModalCtrl.cashData.items.length +1)}}" translate>FORM.LABELS.INVOICES</th>
             <th translate>TABLE.COLUMNS.REFERENCE</th>
-            <th translate>TABLE.COLUMNS.DESCRIPTION</th>
-            <th translate>TABLE.COLUMNS.DATE</th>
-            <th translate>TABLE.COLUMNS.AMOUNT</th>
+            <th translate>FORM.LABELS.AMOUNT</th>
+            <th translate>FORM.LABELS.SERVICE</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>{{ModalCtrl.cashData.reference}}</td>
-            <td>{{ModalCtrl.cashData.description}}</td>
-            <td>{{ModalCtrl.cashData.date | date }}</td>
-            <td>{{ModalCtrl.cashData.amount | currency:ModalCtrl.cashData.currency_id}}</td>
+          <tr ng-repeat="invoice in ModalCtrl.cashData.items">
+            <td></td>
+            <td>{{invoice.reference}}</td>
+            <td class="text-right">{{invoice.amount | currency:ModalCtrl.cashData.currency_id}}</td>
+            <td>{{invoice.serviceName}}</td>
           </tr>
           <tr>
             <td colspan="4">
