@@ -1705,8 +1705,10 @@ CREATE TABLE `bed`(
  `label` VARCHAR(120) NOT NULL,
  `room_uuid` BINARY(16) NOT NULL,
  `is_occupied` TINYINT(1) NOT NULL DEFAULT 0,
+ `user_id` SMALLINT(5) UNSIGNED NOT NULL,
   PRIMARY KEY(`id`),
   UNIQUE KEY `bed_label_0` (`label`, `room_uuid`),
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`room_uuid`) REFERENCES room (`uuid`)
 )ENGINE=InnoDB  DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 

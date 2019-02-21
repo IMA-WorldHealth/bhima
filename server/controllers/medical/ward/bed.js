@@ -12,7 +12,7 @@ module.exports.detail = detail;
 function create(req, res, next) {
   const data = req.body;
   db.convert(data, ['room_uuid']);
-
+  data.user_id = req.session.user.id;
   const sql = 'INSERT INTO bed SET ?';
   db.exec(sql, data)
     .then((row) => {
