@@ -1,22 +1,22 @@
 
 angular.module('bhima.controllers')
-  .controller('WardController', WardController);
+  .controller('RoomController', RoomController);
 
-WardController.$inject = [
-  'WardService', '$uibModal', 'ModalService',
+RoomController.$inject = [
+  'RoomService', '$uibModal', 'ModalService',
   'NotifyService', 'uiGridConstants', 'SessionService',
   '$rootScope',
 ];
 
-function WardController(Ward, Modal, ModalService, Notify, uiGridConstants, Session, $rootScope) {
+function RoomController(Room, Modal, ModalService, Notify, uiGridConstants, Session, $rootScope) {
   const vm = this;
   const { enterprise } = Session;
   // global variables
   vm.gridApi = {};
   vm.filterEnabled = false;
   vm.toggleFilter = toggleFilter;
-  vm.createWard = createWard;
-  vm.deleteWard = deleteWard;
+  vm.createRoom = createRoom;
+  vm.deleteRoom = deleteRoom;
 
   // options for the UI grid
   vm.gridOptions = {
@@ -28,32 +28,25 @@ function WardController(Ward, Modal, ModalService, Notify, uiGridConstants, Sess
     onRegisterApi     : onRegisterApiFn,
     columnDefs : [
       {
-        field : 'name',
-        displayName : 'FORM.LABELS.NAME',
+        field : 'label',
+        displayName : 'ROOM.TITLE',
         headerCellFilter : 'translate',
-      },
-      {
-        field : 'nb_rooms',
-        displayName : 'ROOM.NB_ROOMS',
-        headerCellFilter : 'translate',
-        type : 'number',
       },
       {
         field : 'nb_beds',
         displayName : 'BED.NB_BEDS',
         headerCellFilter : 'translate',
-        type : 'number',
       },
       {
-        field : 'serviceName',
-        displayName : 'FORM.LABELS.SERVICE',
+        field : 'ward_name',
+        displayName : 'WARD.TITLE',
         headerCellFilter : 'translate',
       },
       {
         field : 'action',
         width : 80,
         displayName : '',
-        cellTemplate : '/modules/ward_module/configuration/ward/templates/action.tmpl.html',
+        cellTemplate : '/modules/ward/configuration/room/templates/action.tmpl.html',
         enableSorting : false,
         enableFiltering : false,
       },
@@ -71,11 +64,11 @@ function WardController(Ward, Modal, ModalService, Notify, uiGridConstants, Sess
   }
 
   // get all enterprise's depatments
-  function loadWards() {
+  function loadRooms() {
     vm.loading = true;
-    Ward.read(null, { enterprise_id : enterprise.id })
-      .then(Wards => {
-        vm.gridOptions.data = Wards;
+    Room.read(null, { enterprise_id : enterprise.id })
+      .then(Rooms => {
+        vm.gridOptions.data = Rooms;
       })
       .catch(handleError)
       .finally(toggleLoading);
@@ -92,8 +85,8 @@ function WardController(Ward, Modal, ModalService, Notify, uiGridConstants, Sess
 
   function openCreateUpdateModal(uuid) {
     return Modal.open({
-      templateUrl : 'modules/ward_module/configuration/ward/modals/createUpdate.html',
-      controller :  'CreateUpdateWardController as ModalCtrl',
+      templateUrl : 'modules/ward/configuration/room/modals/createUpdate.html',
+      controller :  'CreateUpdateRoomController as ModalCtrl',
       backdrop : 'static',
       resolve : {
         uuid : () => uuid,
@@ -101,7 +94,7 @@ function WardController(Ward, Modal, ModalService, Notify, uiGridConstants, Sess
     }).result;
   }
 
-  function createWard(uuid) {
+  function createRoom(uuid) {
     openCreateUpdateModal(uuid).then(result => {
       if (result) {
         $rootScope.$broadcast('ward-configuration-changes');
@@ -110,12 +103,12 @@ function WardController(Ward, Modal, ModalService, Notify, uiGridConstants, Sess
   }
 
   // switch to delete warning mode
-  function deleteWard(uuid) {
+  function deleteRoom(uuid) {
     ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
       .then(bool => {
         if (!bool) { return; }
 
-        Ward.delete(uuid)
+        Room.delete(uuid)
           .then(() => {
             Notify.success('FORM.INFO.OPERATION_SUCCESS');
             $rootScope.$broadcast('ward-configuration-changes');
@@ -125,7 +118,7 @@ function WardController(Ward, Modal, ModalService, Notify, uiGridConstants, Sess
   }
 
   // listen ward configuration changes
-  $rootScope.$on('ward-configuration-changes', loadWards);
+  $rootScope.$on('ward-configuration-changes', loadRooms);
 
-  loadWards();
+  loadRooms();
 }

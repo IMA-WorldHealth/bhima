@@ -9,7 +9,7 @@ const page = new RoomPage();
 function RoomManagementTests() {
 
   // navigate to the page
-  before(() => helpers.navigate('#/ward_module/configuration'));
+  before(() => helpers.navigate('#/ward/configuration'));
 
   const room = 'CH.A.001';
 

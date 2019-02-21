@@ -49,8 +49,39 @@ function remove(req, res, next) {
 }
 
 // get all rooms
-// todo: add nb of beds
 function read(req, res, next) {
+  lookupRooms(req.query)
+    .then(rooms => {
+      res.status(200).json(rooms);
+    })
+    .catch(next);
+}
+
+// get a specific room
+function detail(req, res, next) {
+  lookupRoom(req.params.uuid)
+    .then(room => {
+      res.status(200).json(room);
+    })
+    .catch(next);
+}
+
+// lookup a room
+function lookupRoom(uuid) {
+  const sql = `
+    SELECT BUID(r.uuid) as uuid, r.label, 
+      BUID(w.uuid) AS ward_uuid, w.name AS ward_name, r.description,
+      s.name AS service_name
+    FROM room r
+    JOIN ward w ON w.uuid = r.ward_uuid
+    LEFT JOIN service s ON s.id = w.service_id
+    WHERE r.uuid=?
+  `;
+  return db.one(sql, uuid);
+}
+
+// lookup rooms
+function lookupRooms(options) {
   const sql = `
     SELECT BUID(r.uuid) as uuid, r.label, 
       BUID(w.uuid) AS ward_uuid, w.name AS ward_name, r.description,
@@ -61,36 +92,14 @@ function read(req, res, next) {
     LEFT JOIN service s ON s.id = w.service_id
   `;
 
-  db.convert(req.query, ['ward_uuid']);
+  db.convert(options, ['ward_uuid']);
 
-  const filters = new FilterParser(req.query);
+  const filters = new FilterParser(options);
   filters.equals('ward_uuid', 'uuid', 'w');
+  filters.setOrder('ORDER BY ward_name, label');
 
   const query = filters.applyQuery(sql);
   const queryParameters = filters.parameters();
 
-  db.exec(query, queryParameters)
-    .then(rooms => {
-      res.status(200).json(rooms);
-    })
-    .catch(next);
-}
-
-// get a specific room
-function detail(req, res, next) {
-  const sql = `
-    SELECT BUID(r.uuid) as uuid, r.label, 
-      BUID(w.uuid) AS ward_uuid, w.name AS ward_name, r.description,
-      s.name AS service_name
-    FROM room r
-    JOIN ward w ON w.uuid = r.ward_uuid
-    LEFT JOIN service s ON s.id = w.service_id
-    WHERE r.uuid=?
-  `;
-  const uuid = db.bid(req.params.uuid);
-  db.one(sql, uuid)
-    .then(room => {
-      res.status(200).json(room);
-    })
-    .catch(next);
+  return db.exec(query, queryParameters);
 }

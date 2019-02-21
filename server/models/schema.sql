@@ -1682,14 +1682,14 @@ CREATE TABLE `ward`(
 DROP TABLE IF EXISTS `room_type`;
 CREATE TABLE `room_type`(
  `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
- `label` VARCHAR(50) NOT NULL,
+ `label` VARCHAR(120) NOT NULL,
   PRIMARY KEY(`id`)
 )ENGINE=InnoDB  DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `room`;
 CREATE TABLE `room`(
  `uuid` BINARY(16) NOT NULL,
- `label` VARCHAR(50) NOT NULL,
+ `label` VARCHAR(120) NOT NULL,
  `description` text NULL,
  `ward_uuid` BINARY(16) NOT NULL,
  `room_type_id` SMALLINT(5) UNSIGNED NULL,
@@ -1702,11 +1702,11 @@ CREATE TABLE `room`(
 DROP TABLE IF EXISTS `bed`;
 CREATE TABLE `bed`(
  `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
- `label` VARCHAR(20) NOT NULL,
+ `label` VARCHAR(120) NOT NULL,
  `room_uuid` BINARY(16) NOT NULL,
  `is_occupied` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY(`id`),
-  UNIQUE KEY `bel_label_0` (`label`, `room_uuid`),
+  UNIQUE KEY `bed_label_0` (`label`, `room_uuid`),
   FOREIGN KEY (`room_uuid`) REFERENCES room (`uuid`)
 )ENGINE=InnoDB  DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 

@@ -32,8 +32,8 @@ function RoomSelectController(Room, Notify) {
   };
 
   $ctrl.$onChanges = (changes) => {
-    if (changes.wardUuid) {
-      Room.read(null, { ward_uuid : $ctrl.wardUuid })
+    if (changes.wardUuid && changes.wardUuid.currentValue) {
+      Room.read(null, { ward_uuid : changes.wardUuid.currentValue })
         .then(rooms => {
           $ctrl.rooms = rooms;
         })

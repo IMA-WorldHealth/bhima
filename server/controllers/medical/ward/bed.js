@@ -1,4 +1,5 @@
 const db = require('../../../lib/db');
+const FilterParser = require('../../../lib/filter');
 
 module.exports.create = create;
 module.exports.update = update;
@@ -52,6 +53,26 @@ function remove(req, res, next) {
 
 // get all beds
 function read(req, res, next) {
+  lookupBeds(req.query)
+    .then(beds => {
+      res.status(200).json(beds);
+    })
+    .catch(next);
+}
+
+// get a specific bed
+function detail(req, res, next) {
+  lookupBed(req.params.id)
+    .then(bed => {
+      res.status(200).json(bed);
+    })
+    .catch(next);
+}
+
+// lookup beds
+function lookupBeds(options) {
+  db.convert(options, ['ward_uuid', 'room_uuid']);
+
   const sql = `
     SELECT b.id, b.label, 
       BUID(r.uuid) as room_uuid, r.label AS room_label,
@@ -63,15 +84,18 @@ function read(req, res, next) {
     LEFT JOIN service s ON s.id = w.service_id
   `;
 
-  db.exec(sql)
-    .then(beds => {
-      res.status(200).json(beds);
-    })
-    .catch(next);
+  const filters = new FilterParser(options);
+  filters.equals('ward_uuid', 'uuid', 'w');
+  filters.equals('room_uuid', 'uuid', 'r');
+  filters.setOrder('ORDER BY ward_name, room_label, label');
+
+  const query = filters.applyQuery(sql);
+  const queryParameters = filters.parameters();
+  return db.exec(query, queryParameters);
 }
 
-// get a specific bed
-function detail(req, res, next) {
+// lookup bed
+function lookupBed(id) {
   const sql = `
     SELECT b.id, b.label, 
       BUID(r.uuid) as room_uuid, r.label AS room_label, 
@@ -83,10 +107,5 @@ function detail(req, res, next) {
     LEFT JOIN service s ON s.id = w.service_id
     WHERE b.id = ?
   `;
-  const { id } = req.params;
-  db.one(sql, [id])
-    .then(bed => {
-      res.status(200).json(bed);
-    })
-    .catch(next);
+  return db.one(sql, [id]);
 }
