@@ -41,12 +41,11 @@ function BedSelectController(Bed, Notify) {
         $ctrl.beds = beds;
 
         if ($ctrl.autoSelect && beds.length > 0) {
-          $ctrl.onSelectCallback({ bed : beds[0] });
+          $ctrl.id = beds[0].id;
+          $ctrl.onSelectCallback({ bed : $ctrl.id });
         }
 
-        if (beds.length === 0) {
-          $ctrl.noBedAvailable = true;
-        }
+        $ctrl.noBedAvailable = !!(beds.length === 0);
       })
       .catch(Notify.handleError);
   };
@@ -61,12 +60,11 @@ function BedSelectController(Bed, Notify) {
           $ctrl.beds = beds;
 
           if ($ctrl.autoSelect && beds.length > 0) {
-            $ctrl.onSelectCallback({ bed : beds[0] });
+            $ctrl.id = beds[0].id;
+            $ctrl.onSelectCallback({ bed : $ctrl.id });
           }
 
-          if (beds.length === 0) {
-            $ctrl.noBedAvailable = true;
-          }
+          $ctrl.noBedAvailable = !!(beds.length === 0);
         })
         .catch(Notify.handleError);
     }

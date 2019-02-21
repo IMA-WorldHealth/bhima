@@ -14,7 +14,7 @@
       on-select="$ctrl.onSelect($item)"
       ng-required="$ctrl.required"
       ng-if="!$ctrl.noBedAvailable"
-      ng-disabled="$ctrl.disabled">
+      ng-disabled="$ctrl.disabled || $ctrl.autoSelect">
       <ui-select-match placeholder="{{ 'FORM.SELECT.BED' | translate }}">
         <span>{{$select.selected.label}}</span>
       </ui-select-match>
