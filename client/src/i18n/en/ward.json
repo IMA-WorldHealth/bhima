@@ -14,6 +14,9 @@
     "TITLE":"Bed",
     "LIST":"Bed List",
     "ADD":"Add Bed",
-    "NB_BEDS":"Number of beds"
+    "NB_BEDS":"Number of beds",
+    "AUTO_ASSIGN_AVAILABLE_BED":"Assign the available bed automatically",
+    "MANUAL_ASSIGN_AVAILABLE_BED":"Assign the available bed manually",
+    "NO_BED_AVAILABLE":"No Bed Available"
   }
 }

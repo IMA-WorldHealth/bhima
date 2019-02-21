@@ -1,0 +1,32 @@
+<div ng-form="BedForm" bh-bed-select ng-model-options="{ updateOn: 'default' }">
+  <div
+    class="form-group"
+    ng-class="{ 'has-error' : BedForm.$submitted && BedForm.bed_uuid.$invalid }">
+
+    <label class="control-label" translate>
+      {{ $ctrl.label }}
+    </label>
+    
+    <ng-transclude></ng-transclude>
+    <ui-select 
+      name="bed_id" 
+      ng-model="$ctrl.id"
+      on-select="$ctrl.onSelect($item)"
+      ng-required="$ctrl.required"
+      ng-if="!$ctrl.noBedAvailable"
+      ng-disabled="$ctrl.disabled">
+      <ui-select-match placeholder="{{ 'FORM.SELECT.BED' | translate }}">
+        <span>{{$select.selected.label}}</span>
+      </ui-select-match>
+      <ui-select-choices ui-select-focus-patch repeat="bed.id as bed in $ctrl.beds | filter: { 'label': $select.search }">
+        <span ng-bind-html="bed.label | highlight:$select.search"></span>
+      </ui-select-choices>
+    </ui-select>
+
+    <p class="text-info" ng-if="$ctrl.noBedAvailable" translate>BED.NO_BED_AVAILABLE</p>
+
+    <div class="help-block" ng-messages="BedForm.bed_uuid.$error" ng-show="BedForm.$submitted">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,38 @@
+<div>
+  <!-- select the ward -->
+  <bh-ward-select
+    uuid="$ctrl.ward_uuid"
+    on-select-callback="$ctrl.onSelectWard(ward)"
+    required="true">
+  </bh-ward-select>
+
+  <!-- select the room -->
+  <bh-room-select
+    uuid="$ctrl.bed.room_uuid"
+    ward-uuid="$ctrl.ward_uuid"
+    on-select-callback="$ctrl.onSelectRoom(room)"
+    required="true">
+  </bh-room-select>
+
+  <!-- select the bed -->
+  <bh-bed-select
+    id="$ctrl.bed.id"
+    room-uuid="$ctrl.bed.room_uuid"
+    on-select-callback="$ctrl.onSelectBed(bed)"
+    auto-select="!$ctrl.bed.isManualAssign"
+    occupied="false"
+    required="true">
+  </bh-bed-select>
+
+  <div class="checkbox">
+    <label>
+      <input 
+        type="checkbox" 
+        ng-model="$ctrl.bed.isManualAssign" 
+        ng-change="$ctrl.onSelectAuto()"
+        ng-true-value="1" 
+        ng-false-value="0"> 
+        <span translate>BED.MANUAL_ASSIGN_AVAILABLE_BED</span>
+    </label>
+  </div>
+</div>

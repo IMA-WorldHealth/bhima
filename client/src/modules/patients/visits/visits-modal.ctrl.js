@@ -21,6 +21,10 @@ function VisitsAdmissionController(ModalInstance, Patients, patient, isAdmission
   vm.visit = { hospitalized : 0 };
   vm.$loading = false;
 
+  vm.onBedRoomSelect = bed => {
+    console.log(bed);
+  };
+
   // TODO(@jniles) - load these asynchronously using a MySQL %LIKE% for perf
   Patients.Visits.diagnoses()
     .then(results => {
