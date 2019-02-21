@@ -77,7 +77,7 @@ function lookupRoom(uuid) {
     LEFT JOIN service s ON s.id = w.service_id
     WHERE r.uuid=?
   `;
-  return db.one(sql, uuid);
+  return db.one(sql, [db.bid(uuid)]);
 }
 
 // lookup rooms
