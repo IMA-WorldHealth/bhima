@@ -38,13 +38,12 @@ function BedManagementTests() {
     components.notification.hasSuccess();
   });
 
-  // it seems like there is UI design issue for running this test
-  it.skip('should delete the test Bed', () => {
-    page.deleteBed(bed);
+  it('should delete the test Bed', () => {
+    page.deleteBed(bed.concat(' edited'));
     page.submit();
     components.notification.hasSuccess();
   });
 
 }
 
-describe.only('Bed Management Tests', BedManagementTests);
+describe('Bed Management Tests', BedManagementTests);

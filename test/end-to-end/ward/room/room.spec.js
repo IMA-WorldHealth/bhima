@@ -47,9 +47,8 @@ function RoomManagementTests() {
     page.cancel();
   });
 
-  // it seems like there is UI design issue for running this test
-  it.skip('should delete the test Room', () => {
-    page.deleteRoom(room);
+  it('should delete the test Room', () => {
+    page.deleteRoom(room.concat(' edited'));
     page.submit();
     components.notification.hasSuccess();
   });
