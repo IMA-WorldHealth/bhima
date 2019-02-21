@@ -1,21 +1,23 @@
 
 angular.module('bhima.controllers')
-  .controller('WardController', WardController);
+  .controller('BedController', BedController);
 
-WardController.$inject = [
-  'WardService', '$uibModal', 'ModalService',
+BedController.$inject = [
+  'BedService', '$uibModal', 'ModalService',
   'NotifyService', 'uiGridConstants', 'SessionService',
+  '$rootScope',
 ];
 
-function WardController(Ward, Modal, ModalService, Notify, uiGridConstants, Session) {
+function BedController(Bed, Modal, ModalService, Notify, uiGridConstants, Session, $rootScope) {
   const vm = this;
   const { enterprise } = Session;
   // global variables
   vm.gridApi = {};
   vm.filterEnabled = false;
   vm.toggleFilter = toggleFilter;
-  vm.createWard = createWard;
-  vm.deleteWard = deleteWard;
+  vm.createBed = createBed;
+  vm.deleteBed = deleteBed;
+  vm.expandAll = expandAll;
 
   // options for the UI grid
   vm.gridOptions = {
@@ -24,23 +26,31 @@ function WardController(Ward, Modal, ModalService, Notify, uiGridConstants, Sess
     fastWatch         : true,
     flatEntityAccess  : true,
     enableSorting     : true,
+    treeRowHeaderAlwaysVisible : false,
     onRegisterApi     : onRegisterApiFn,
     columnDefs : [
       {
-        field : 'name',
-        displayName : 'FORM.LABELS.NAME',
+        field : 'label',
+        displayName : 'BED.TITLE',
         headerCellFilter : 'translate',
       },
       {
-        field : 'serviceName',
-        displayName : 'FORM.LABELS.SERVICE',
+        field : 'room_label',
+        displayName : 'ROOM.TITLE',
         headerCellFilter : 'translate',
+        grouping : { groupPriority : 1 },
+      },
+      {
+        field : 'ward_name',
+        displayName : 'WARD.TITLE',
+        headerCellFilter : 'translate',
+        grouping : { groupPriority : 0 },
       },
       {
         field : 'action',
         width : 80,
         displayName : '',
-        cellTemplate : '/modules/ward/templates/action.tmpl.html',
+        cellTemplate : '/modules/ward/configuration/bed/templates/action.tmpl.html',
         enableSorting : false,
         enableFiltering : false,
       },
@@ -58,12 +68,18 @@ function WardController(Ward, Modal, ModalService, Notify, uiGridConstants, Sess
   }
 
   // get all enterprise's depatments
-  function loadWards() {
-    Ward.read(null, { enterprise_id : enterprise.id })
-      .then(Wards => {
-        vm.gridOptions.data = Wards;
+  function loadBeds() {
+    vm.loading = true;
+    Bed.read(null, { enterprise_id : enterprise.id })
+      .then(Beds => {
+        vm.gridOptions.data = Beds;
       })
-      .catch(handleError);
+      .catch(handleError)
+      .finally(toggleLoading);
+  }
+
+  function toggleLoading() {
+    vm.loading = !vm.loading;
   }
 
   function handleError(err) {
@@ -73,8 +89,8 @@ function WardController(Ward, Modal, ModalService, Notify, uiGridConstants, Sess
 
   function openCreateUpdateModal(uuid) {
     return Modal.open({
-      templateUrl : 'modules/ward/modals/createUpdate.html',
-      controller :  'CreateUpdateWardController as ModalCtrl',
+      templateUrl : 'modules/ward/configuration/bed/modals/createUpdate.html',
+      controller :  'CreateUpdateBedController as ModalCtrl',
       backdrop : 'static',
       resolve : {
         uuid : () => uuid,
@@ -82,31 +98,35 @@ function WardController(Ward, Modal, ModalService, Notify, uiGridConstants, Sess
     }).result;
   }
 
-
-  function createWard(uuid) {
+  function createBed(uuid) {
     openCreateUpdateModal(uuid).then(result => {
       if (result) {
-        loadWards();
+        $rootScope.$broadcast('ward-configuration-changes');
       }
     });
   }
 
+  function expandAll() {
+    vm.gridApi.treeBase.expandAllRows();
+  }
 
   // switch to delete warning mode
-  function deleteWard(uuid) {
+  function deleteBed(uuid) {
     ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
       .then(bool => {
         if (!bool) { return; }
 
-        Ward.delete(uuid)
+        Bed.delete(uuid)
           .then(() => {
             Notify.success('FORM.INFO.OPERATION_SUCCESS');
-            loadWards();
+            $rootScope.$broadcast('ward-configuration-changes');
           })
           .catch(Notify.handleError);
       });
   }
 
+  // listen ward configuration changes
+  $rootScope.$on('ward-configuration-changes', loadBeds);
 
-  loadWards();
+  loadBeds();
 }

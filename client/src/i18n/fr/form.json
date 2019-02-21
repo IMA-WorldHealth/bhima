@@ -812,6 +812,10 @@
             "TYPE": "Sélectionner un Type",
             "USER": "Selectionner Utilisateur",
             "VILLAGE": "Sélectionner Village/Commune",
+            "WARD":"Sélectionner un pavillon",
+            "ROOM":"Sélectionner une chambre",
+            "ROOM_TYPE":"Sélectionner un type de lit",
+            "BED":"Sélectionner un lit",
             "WEEKEND_CONFIGURATION": "Sélectionner la configuration des weekends",
             "WEEKEND_DAYS" : "Sélectionner le(s) jour(s) du weekend, (exemple : samedi et dimanche)",
             "ZS": "Sélectionner zone de sante"

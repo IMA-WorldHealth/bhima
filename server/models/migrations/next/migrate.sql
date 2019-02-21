@@ -1,14 +1,38 @@
 -- change the pavillion table to ward table
 RENAME TABLE pavillion TO ward;
--- account references
-INSERT INTO
-  `account_reference_item`(
-    `id`,
-    `account_reference_id`,
-    `account_id`,
-    `is_exception`,
-    `credit_balance`,
-    `debit_balance`
-  )
-VALUES
-  (1, 1, 2958, 0, 0, 0),(5, 5, 2996, 0, 0, 0),(6, 5, 3012, 0, 0, 0),(24, 20, 3282, 0, 0, 0),(27, 23, 3346, 0, 0, 0),(29, 25, 3390, 0, 0, 0),(30, 25, 3382, 0, 0, 0),(31, 26, 3385, 0, 0, 0),(45, 2, 2973, 0, 0, 0),(55, 22, 3351, 0, 0, 0),(56, 3, 2967, 0, 0, 0),(57, 4, 2984, 0, 0, 0),(58, 36, 3292, 0, 0, 0),(59, 37, 3321, 0, 0, 0),(60, 38, 3355, 0, 0, 0),(61, 39, 3385, 0, 0, 0),(62, 40, 2987, 0, 0, 0),(63, 41, 3036, 0, 0, 0),(64, 6, 3058, 0, 0, 0),(65, 6, 3100, 0, 0, 0),(66, 7, 3132, 0, 0, 0),(67, 8, 3158, 0, 0, 0),(68, 9, 3178, 0, 0, 0),(69, 42, 3390, 0, 0, 0),(70, 10, 3234, 0, 0, 0),(71, 10, 3260, 0, 0, 0),(75, 43, 3372, 0, 0, 0),(76, 24, 3407, 0, 0, 0),(77, 44, 3387, 0, 0, 0),(78, 45, 3218, 0, 0, 0),(79, 46, 3277, 0, 0, 0),(80, 47, 3415, 0, 0, 0),(81, 48, 3425, 0, 0, 0),(82, 48, 3436, 0, 0, 0),(83, 48, 3442, 0, 0, 0),(84, 49, 3411, 0, 0, 0),(85, 11, 3419, 0, 0, 0),(86, 11, 3431, 0, 0, 0),(87, 12, 3447, 0, 0, 0);
+
+-- insert unit
+INSERT INTO unit VALUES 
+  (228, 'Ward Configurations', 'TREE.WARD_CONFIGURATION', 'Ward configuration module', 227, '/modules/ward/configuration', '/ward/configuration');
+
+-- patient management tables
+DROP TABLE IF EXISTS `room_type`;
+CREATE TABLE `room_type`(
+ `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+ `label` VARCHAR(120) NOT NULL,
+  PRIMARY KEY(`id`)
+)ENGINE=InnoDB  DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `room`;
+CREATE TABLE `room`(
+ `uuid` BINARY(16) NOT NULL,
+ `label` VARCHAR(120) NOT NULL,
+ `description` text NULL,
+ `ward_uuid` BINARY(16) NOT NULL,
+ `room_type_id` SMALLINT(5) UNSIGNED NULL,
+  PRIMARY KEY(`uuid`),
+  UNIQUE KEY `room_label_0` (`label`, `ward_uuid`),
+  FOREIGN KEY (`ward_uuid`) REFERENCES ward (`uuid`),
+  FOREIGN KEY (`room_type_id`) REFERENCES room_type (`id`)
+)ENGINE=InnoDB  DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `bed`;
+CREATE TABLE `bed`(
+ `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+ `label` VARCHAR(120) NOT NULL,
+ `room_uuid` BINARY(16) NOT NULL,
+ `is_occupied` TINYINT(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY(`id`),
+  UNIQUE KEY `bed_label_0` (`label`, `room_uuid`),
+  FOREIGN KEY (`room_uuid`) REFERENCES room (`uuid`)
+)ENGINE=InnoDB  DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;

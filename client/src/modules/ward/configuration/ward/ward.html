@@ -1,0 +1,32 @@
+<div class="panel panel-default">
+  <div class="panel-heading" style="display: flex; justify-content: space-between;">
+    <span>
+      <i class="fa fa-home"></i>
+      <span translate>WARD.LIST</span> ({{ WardCtrl.gridOptions.data.length }})
+    </span>
+
+    <div>
+      <bh-filter-toggle on-toggle="WardCtrl.toggleFilter()"></bh-filter-toggle>
+      <button
+        ng-click="WardCtrl.createWard()"
+        class="btn btn-primary"
+        type="button" data-create-ward>
+        <i class="fa fa-plus"></i> <span translate>WARD.ADD</span>
+      </button>
+    </div>
+  </div>
+
+  <section>
+    <div id="ward-grid"
+      style="height: 270px;"
+      ui-grid="WardCtrl.gridOptions">
+
+      <bh-grid-loading-indicator
+        loading-state="WardCtrl.loading"
+        empty-state="WardCtrl.gridOptions.data.length === 0"
+        error-state="WardCtrl.hasError">
+      </bh-grid-loading-indicator>
+    </div>
+  </section>
+</div>
+

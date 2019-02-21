@@ -8,7 +8,7 @@ WardService.$inject = ['PrototypeApiService'];
  * @extends PrototypeApiService
  *
  * @description
- * Encapsulates common requests to the /Pavions/ URL.
+ * Encapsulates common requests to the /wards/ URL.
  */
 function WardService(Api) {
   const service = new Api('/wards/');

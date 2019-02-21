@@ -1,7 +1,7 @@
 
 const WardPage = require('./ward.page');
-const helpers = require('../shared/helpers');
-const components = require('../shared/components');
+const helpers = require('../../shared/helpers');
+const components = require('../../shared/components');
 
 // the page object
 const page = new WardPage();
@@ -9,7 +9,7 @@ const page = new WardPage();
 function WardManagementTests() {
 
   // navigate to the page
-  before(() => helpers.navigate('#/ward'));
+  before(() => helpers.navigate('#/ward/configuration'));
 
   it('should add a new Ward', () => {
     page.openCreateModal();

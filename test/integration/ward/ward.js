@@ -1,14 +1,14 @@
 /* global expect, agent */
-
-const helpers = require('./helpers');
+const helpers = require('../helpers');
 
 /*
  * The /wards API endpoint
  *
- * This test suite implements full CRUD on the /projects HTTP API endpoint.
+ * This test suite implements full CRUD on the /wards HTTP API endpoint.
  */
 describe('(/wards) The ward API endpoint', () => {
-  // project we will add during this test suite.
+  const EXISTING_WARDS_IN_DB = 2;
+  // wards we will add during this test suite.
   const uuid = '5b7dd0d6-9273-4955-a703-126fbd504b61';
   const uuid2 = '7b7dd0d6-9273-4955-a703-126fbd504b61';
 
@@ -51,7 +51,7 @@ describe('(/wards) The ward API endpoint', () => {
     return agent.get('/wards')
       .then((res) => {
         expect(res).to.have.status(200);
-        expect(res.body).to.be.length(2);
+        expect(res.body).to.be.length(2 + EXISTING_WARDS_IN_DB);
       })
       .catch(helpers.handler);
   });
@@ -78,7 +78,7 @@ describe('(/wards) The ward API endpoint', () => {
         return agent.get(`/wards`);
       })
       .then(res => {
-        expect(res.body).to.be.length(1);
+        expect(res.body).to.be.length(1 + EXISTING_WARDS_IN_DB);
       })
       .catch(helpers.handler);
   });
