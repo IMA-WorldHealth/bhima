@@ -1,4 +1,4 @@
-> [Home](../index.md) / [Inventory Management](./index.md) / Overview of Inventory Management
+&raquo; [Home](../index.md) / [Inventory Management](./index.md) / Overview of Inventory Management
 
 # Overview of inventory management
 
