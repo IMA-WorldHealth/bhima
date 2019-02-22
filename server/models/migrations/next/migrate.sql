@@ -36,3 +36,8 @@ CREATE TABLE `bed`(
   UNIQUE KEY `bed_label_0` (`label`, `room_uuid`),
   FOREIGN KEY (`room_uuid`) REFERENCES room (`uuid`)
 )ENGINE=InnoDB  DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+-- Putting depot to stock module
+UPDATE unit SET parent = 160, `key` = 'DEPOT.TITLE' WHERE id = 20;
+DELETE FROM role_unit WHERE unit_id=196;
+DELETE FROM unit WHERE id=196;
