@@ -42,6 +42,8 @@ exports.invoices = invoices;
 
 exports.lookupDebtorGroup = lookupDebtorGroup;
 
+exports.history = history;
+
 /**
  * Looks up a debtor group in the database by uuid.
  *
@@ -196,8 +198,7 @@ function detail(req, res, next) {
  * @function list
  */
 function list(req, res, next) {
-  let sql =
-    'SELECT BUID(uuid) AS uuid, name, locked, account_id, is_convention, created_at FROM debtor_group ';
+  let sql = `SELECT BUID(uuid) AS uuid, name, locked, account_id, is_convention, created_at FROM debtor_group `;
 
   if (req.query.detailed === '1') {
     /**
@@ -350,6 +351,31 @@ function remove(req, res, next) {
       }
 
       res.sendStatus(204);
+    })
+    .catch(next)
+    .done();
+}
+
+// retrieve all informations about patient's debtor group change
+function history(req, res, next) {
+
+  const { debtorUuid } = req.params;
+  const limit = req.query.limit || 5;
+  const sql = `
+    SELECT dg_prev.name AS group_prev, dg_next.name AS group_next, dgh.created_at,
+      u.display_name AS 'user'
+    FROM debtor_group_history dgh 
+    JOIN debtor_group dg_prev ON dg_prev.uuid = dgh.previous_debtor_group
+    JOIN debtor_group dg_next ON dg_next.uuid = dgh.next_debtor_group
+    JOIN user u ON u.id = dgh.user_id
+    WHERE dgh.debtor_uuid = ?
+    ORDER BY dgh.created_at DESC
+    LIMIT ${limit}
+  `;
+
+  db.exec(sql, db.bid(debtorUuid))
+    .then((rows) => {
+      res.status(200).json(rows);
     })
     .catch(next)
     .done();
