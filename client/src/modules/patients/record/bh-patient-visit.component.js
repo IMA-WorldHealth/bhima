@@ -36,6 +36,7 @@ function VisitsController(Patients, Notify, Moment) {
     return Patients.Visits.read($ctrl.patientUuid)
       .then(visits => {
         visits.forEach(calculateDays);
+        visits.forEach(hrBedLocation);
         [mostRecentVisit] = visits;
 
         if (mostRecentVisit) {
@@ -58,6 +59,10 @@ function VisitsController(Patients, Notify, Moment) {
     const startDate = new Moment(visit.start_date);
     const endDate = new Moment(visit.end_date);
     visit.totalDays = endDate.diff(startDate, 'days');
+  }
+
+  function hrBedLocation(visit) {
+    visit.hrBedLocation = (visit.ward_name || '').concat('/', visit.room_label, '/', visit.bed_label);
   }
 
   function admit() {

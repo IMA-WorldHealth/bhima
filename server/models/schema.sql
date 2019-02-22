@@ -1176,7 +1176,6 @@ CREATE TABLE `patient_document` (
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `patient_group`;
-
 CREATE TABLE `patient_group` (
   `uuid`              BINARY(16) NOT NULL,
   `enterprise_id`     SMALLINT(5) UNSIGNED NOT NULL,
@@ -1193,7 +1192,6 @@ CREATE TABLE `patient_group` (
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS patient_group_invoicing_fee;
-
 CREATE TABLE patient_group_invoicing_fee (
   `id`                      SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `patient_group_uuid`      BINARY(16) NOT NULL,
@@ -1222,7 +1220,6 @@ CREATE TABLE patient_group_subsidy (
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `patient_visit`;
-
 CREATE TABLE `patient_visit` (
   `uuid` BINARY(16) NOT NULL,
   `patient_uuid` BINARY(16) NOT NULL,
@@ -1245,6 +1242,23 @@ CREATE TABLE `patient_visit` (
   FOREIGN KEY (`start_diagnosis_id`) REFERENCES `icd10` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`end_diagnosis_id`) REFERENCES `icd10` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `patient_hospitalization`;
+CREATE TABLE `patient_hospitalization` (
+  `uuid`               BINARY(16) NOT NULL,
+  `date`               DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `patient_visit_uuid` BINARY(16) NOT NULL,
+  `patient_uuid`       BINARY(16) NOT NULL,
+  `room_uuid`          BINARY(16) NOT NULL,
+  `bed_id`             SMALLINT(5) UNSIGNED NOT NULL,
+  `created_at`         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+   PRIMARY KEY (`uuid`),
+   FOREIGN KEY (`patient_visit_uuid`) REFERENCES `patient_visit` (`uuid`) ON UPDATE CASCADE,
+   FOREIGN KEY (`patient_uuid`) REFERENCES `patient` (`uuid`) ON UPDATE CASCADE,
+   FOREIGN KEY (`room_uuid`) REFERENCES `room` (`uuid`) ON UPDATE CASCADE,
+   FOREIGN KEY (`bed_id`) REFERENCES `bed` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
 
 DROP TABLE IF EXISTS `period`;
 CREATE TABLE `period` (

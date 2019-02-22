@@ -43,6 +43,9 @@
               <span ng-if="visit.hospitalized" class="label label-primary" translate>
                 PATIENT_RECORDS.VISITS.HOSPITALISATION
               </span>
+              <span ng-if="visit.bed_label" class="label label-success" translate>
+                {{ visit.hrBedLocation }}
+              </span>
             </td>
           </tr>
         </tbody>

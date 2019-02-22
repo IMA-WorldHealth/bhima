@@ -25,41 +25,19 @@ function BedSelectController(Bed, Notify) {
   $ctrl.$onInit = function onInit() {
     $ctrl.label = $ctrl.label || 'BED.TITLE';
     $ctrl.disabled = !$ctrl.roomUuid;
-
-    // load all beds
-    Bed.read(null, loadParams())
-      .then(beds => {
-        $ctrl.beds = beds;
-
-        if ($ctrl.autoSelect && beds.length > 0) {
-          $ctrl.id = beds[0].id;
-          $ctrl.onSelectCallback({ bed : $ctrl.id });
-        }
-
-        $ctrl.noBedAvailable = !!(beds.length === 0);
-      })
-      .catch(Notify.handleError);
+    loadBeds();
   };
 
   $ctrl.$onChanges = (changes) => {
-    if ((changes.roomUuid && changes.roomUuid.currentValue) || changes.autoSelect) {
+    if (changes.roomUuid && changes.roomUuid.currentValue) {
       $ctrl.disabled = !changes.roomUuid.currentValue;
+      const roomUuid = changes.roomUuid.currentValue || 'x';
+      loadBeds(roomUuid);
+    }
 
-      const params = loadParams();
-      params.room_uuid = changes.roomUuid.currentValue;
-
-      Bed.read(null, params)
-        .then(beds => {
-          $ctrl.beds = beds;
-
-          if ($ctrl.autoSelect && beds.length > 0) {
-            $ctrl.id = beds[0].id;
-            $ctrl.onSelectCallback({ bed : $ctrl.id });
-          }
-
-          $ctrl.noBedAvailable = !!(beds.length === 0);
-        })
-        .catch(Notify.handleError);
+    if (changes.autoSelect && $ctrl.roomUuid) {
+      $ctrl.disabled = false;
+      loadBeds();
     }
   };
 
@@ -68,6 +46,25 @@ function BedSelectController(Bed, Notify) {
     $ctrl.onSelectCallback({ bed : $item });
   };
 
+  function loadBeds(roomUuid) {
+    const params = loadParams();
+    params.room_uuid = roomUuid || params.room_uuid;
+    Bed.read(null, params)
+      .then(beds => {
+        $ctrl.beds = beds;
+
+        if ($ctrl.autoSelect && beds.length > 0) {
+          [$ctrl.bed] = beds;
+          $ctrl.bed.hrLabel = $ctrl.bed.ward_name.concat('/', $ctrl.bed.room_label, '/', $ctrl.bed.label);
+          $ctrl.id = $ctrl.bed.id;
+          $ctrl.onSelectCallback({ bed : $ctrl.id });
+        }
+
+        $ctrl.noBedAvailable = !!(beds.length === 0);
+      })
+      .catch(Notify.handleError);
+  }
+
   function loadParams() {
     // load only beds for a given room
     const allBeds = { room_uuid : $ctrl.roomUuid || 'x' };
@@ -75,8 +72,8 @@ function BedSelectController(Bed, Notify) {
     const notOccupiedBeds = { room_uuid : $ctrl.roomUuid || 'x', is_occupied : 0 };
 
     // eslint-disable-next-line no-nested-ternary
-    return $ctrl.occupied === 'true' ? occupiedBeds
-      : $ctrl.occupied === 'false' ? notOccupiedBeds
+    return $ctrl.occupied === true ? occupiedBeds
+      : $ctrl.occupied === false ? notOccupiedBeds
         : allBeds;
   }
 }

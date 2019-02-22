@@ -17,6 +17,8 @@
     "NB_BEDS":"Number of beds",
     "AUTO_ASSIGN_AVAILABLE_BED":"Assign the available bed automatically",
     "MANUAL_ASSIGN_AVAILABLE_BED":"Assign the available bed manually",
-    "NO_BED_AVAILABLE":"No Bed Available"
+    "NO_BED_AVAILABLE":"No Bed Available",
+    "PATIENT_AUTO_BED":"The patient will be on the bed : {{BED_LABEL}}",
+    "CHANGE_BED":"Change the bed of the patient"
   }
 }

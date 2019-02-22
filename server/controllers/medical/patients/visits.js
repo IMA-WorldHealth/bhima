@@ -10,12 +10,14 @@
  * requests.
  *
  * @requires  lodash
+ * @requires  q
  * @requires  lib/util
  * @requires  lib/db
  * @requires  lib/errors/BadRequest
  */
 
 const _ = require('lodash');
+const Q = require('q');
 const { uuid } = require('../../../lib/util');
 const db = require('../../../lib/db');
 const BadRequest = require('../../../lib/errors/BadRequest');
@@ -29,10 +31,12 @@ exports.admission = admission;
 exports.discharge = discharge;
 
 const COLUMNS = `
-  BUID(uuid) AS uuid, BUID(patient_uuid) as patient_uuid, start_date, start_notes,
-  end_date, end_notes, user_id, user.username, start_diagnosis_id, end_diagnosis_id,
-  ISNULL(end_date) AS is_open, icd10.label as start_diagnosis_label, icd10.code as start_diagnosis_code,
-  hospitalized
+  BUID(patient_visit.uuid) AS uuid, BUID(patient_visit.patient_uuid) as patient_uuid,
+  patient_visit.start_date, patient_visit.start_notes, patient_visit.end_date, patient_visit.end_notes,
+  patient_visit.user_id, user.username, patient_visit.start_diagnosis_id, patient_visit.end_diagnosis_id,
+  ISNULL(patient_visit.end_date) AS is_open, icd10.label as start_diagnosis_label, icd10.code as start_diagnosis_code,
+  patient_visit.hospitalized,
+  b.label AS bed_label, r.label AS room_label, w.name AS ward_name 
 `;
 
 const REQUIRE_DIAGNOSES = false;
@@ -45,22 +49,26 @@ function find(options) {
     SELECT ${COLUMNS}
     FROM patient_visit
     JOIN user ON patient_visit.user_id = user.id
+    JOIN patient_hospitalization ph ON ph.patient_visit_uuid = patient_visit.uuid
+    JOIN bed b ON b.id = ph.bed_id
+    JOIN room r ON r.uuid = b.room_uuid
+    JOIN ward w ON w.uuid = r.ward_uuid
     LEFT JOIN icd10 ON icd10.id = patient_visit.start_diagnosis_id
   `;
 
-  filters.equals('uuid');
-  filters.equals('patient_uuid');
-  filters.custom('is_open', 'ISNULL(end_date) = ?');
+  filters.equals('uuid', 'uuid', 'patient_visit');
+  filters.equals('patient_uuid', 'patient_uuid', 'patient_visit');
+  filters.custom('is_open', 'ISNULL(patient_visit.end_date) = ?');
   filters.custom(
     'diagnosis_id',
-    '(start_diagnosis_id = ? OR end_diagnosis_id = ?)',
+    '(patient_visit.start_diagnosis_id = ? OR patient_visit.end_diagnosis_id = ?)',
     _.fill(Array(2), options.diagnosis_id)
   );
 
-  filters.fullText('start_notes');
-  filters.fullText('end_notes');
+  filters.fullText('start_notes', 'start_notes', 'patient_visit');
+  filters.fullText('end_notes', 'end_notes', 'patient_visit');
 
-  filters.setOrder('ORDER BY start_date DESC');
+  filters.setOrder('ORDER BY patient_visit.start_date DESC');
 
   const query = filters.applyQuery(sql);
   const parameters = filters.parameters();
@@ -102,6 +110,10 @@ function detail(req, res, next) {
     SELECT ${COLUMNS}
     FROM patient_visit
     JOIN user on patient_visit.user_id = user.id
+    JOIN patient_hospitalization ph ON ph.patient_visit_uuid = patient_visit.uuid
+    JOIN bed b ON b.id = ph.bed_id
+    JOIN room r ON r.uuid = b.room_uuid
+    JOIN ward w ON w.uuid = r.ward_uuid
     LEFT JOIN icd10 ON icd10.id = patient_visit.start_diagnosis_id
     WHERE uuid = ?;
   `;
@@ -178,16 +190,59 @@ function admission(req, res, next) {
     data.patient_uuid = db.bid(data.patient_uuid);
   }
 
-  const sql = `
-    INSERT INTO patient_visit SET ?;
-  `;
-
-  db.exec(sql, [data])
+  createHospitalization(data)
     .then(() => {
       res.status(201).json({ uuid : visitUuid });
     })
     .catch(next)
     .done();
+}
+
+function createHospitalization(data) {
+  const { bed } = data;
+  const visit = _.omit(data, 'bed');
+
+  return Q.fcall(() => {
+    return lookupAutoAvailableBed(bed);
+  })
+    .then(b => {
+      const sqlInsertVisit = `
+        INSERT INTO patient_visit SET ?;
+      `;
+      const sqlInsertHospitalization = `
+        INSERT INTO patient_hospitalization SET ?
+      `;
+      const sqlUpdateBed = `
+        UPDATE bed SET is_occupied = 1 WHERE id = ?;
+      `;
+      const paramInsertHospitalization = {
+        uuid : db.bid(uuid()),
+        patient_visit_uuid : visit.uuid,
+        patient_uuid : visit.patient_uuid,
+        room_uuid : db.bid(bed.room_uuid),
+        bed_id : b.id,
+      };
+      const transaction = db.transaction();
+      // insert a new patient visit
+      transaction.addQuery(sqlInsertVisit, [visit]);
+      // insert a new patient hospitalization
+      transaction.addQuery(sqlInsertHospitalization, [paramInsertHospitalization]);
+      // update the bed for the hopitalized patient
+      transaction.addQuery(sqlUpdateBed, [paramInsertHospitalization.bed_id]);
+      return transaction.execute();
+    });
+
+}
+
+function lookupAutoAvailableBed(bedOptions) {
+  const sql = `
+    SELECT b.id FROM bed b 
+    JOIN room r ON r.uuid = b.room_uuid
+    WHERE r.uuid = ? AND b.is_occupied = 0
+    ORDER BY r.label, b.label
+    LIMIT 1;
+  `;
+  return bedOptions.id ? { id : bedOptions.id } : db.one(sql, [db.bid(bedOptions.room_uuid)]);
 }
 
 /**
@@ -232,8 +287,17 @@ function discharge(req, res, next) {
   const sql = `
     UPDATE patient_visit SET ? WHERE uuid = ?;
   `;
-
-  db.exec(sql, [data, db.bid(visitUuid)])
+  const sqlSetFreeBed = `
+    UPDATE bed b
+    JOIN patient_hospitalization ph ON ph.bed_id = b.id
+    JOIN patient_visit pv ON pv.uuid = ph.patient_visit_uuid
+    SET b.is_occupied = 0 
+    WHERE pv.uuid = ?;
+  `;
+  const transaction = db.transaction();
+  transaction.addQuery(sql, [data, db.bid(visitUuid)]);
+  transaction.addQuery(sqlSetFreeBed, [db.bid(visitUuid)]);
+  transaction.execute()
     .then(() => {
       res.status(201).json({ uuid : visitUuid });
     })

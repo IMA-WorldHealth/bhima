@@ -22,7 +22,7 @@ function VisitsAdmissionController(ModalInstance, Patients, patient, isAdmission
   vm.$loading = false;
 
   vm.onBedRoomSelect = bed => {
-    console.log(bed);
+    vm.visit.bed = bed;
   };
 
   // TODO(@jniles) - load these asynchronously using a MySQL %LIKE% for perf

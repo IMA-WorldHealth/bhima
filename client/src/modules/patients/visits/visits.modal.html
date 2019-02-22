@@ -79,7 +79,9 @@
 
   <hr>
 
-  <bh-room-assign on-select-callback="AdmitCtrl.onBedRoomSelect(bed)"></bh-room-assign>
+  <div ng-if="AdmitCtrl.isAdmission">
+    <bh-room-assign on-select-callback="AdmitCtrl.onBedRoomSelect(bed)"></bh-room-assign>
+  </div>
 </div>
 
 <div class="modal-footer">
