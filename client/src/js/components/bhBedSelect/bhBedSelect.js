@@ -22,21 +22,12 @@ BedSelectController.$inject = ['BedService', 'NotifyService'];
 function BedSelectController(Bed, Notify) {
   const $ctrl = this;
 
-  const allBeds = { room_uuid : $ctrl.roomUuid };
-  const occupiedBeds = { room_uuid : $ctrl.roomUuid, is_occupied : 1 };
-  const notOccupiedBeds = { room_uuid : $ctrl.roomUuid, is_occupied : 0 };
-
-  // eslint-disable-next-line no-nested-ternary
-  const params = $ctrl.occupied === 'true' ? occupiedBeds
-    : $ctrl.occupied === 'false' ? notOccupiedBeds
-      : allBeds;
-
   $ctrl.$onInit = function onInit() {
     $ctrl.label = $ctrl.label || 'BED.TITLE';
     $ctrl.disabled = !$ctrl.roomUuid;
 
     // load all beds
-    Bed.read(null, params)
+    Bed.read(null, loadParams())
       .then(beds => {
         $ctrl.beds = beds;
 
@@ -51,9 +42,11 @@ function BedSelectController(Bed, Notify) {
   };
 
   $ctrl.$onChanges = (changes) => {
-    if (changes.roomUuid || changes.autoSelect) {
-      params.room_uuid = $ctrl.roomUuid;
-      $ctrl.disabled = !$ctrl.roomUuid;
+    if ((changes.roomUuid && changes.roomUuid.currentValue) || changes.autoSelect) {
+      $ctrl.disabled = !changes.roomUuid.currentValue;
+
+      const params = loadParams();
+      params.room_uuid = changes.roomUuid.currentValue;
 
       Bed.read(null, params)
         .then(beds => {
@@ -74,4 +67,16 @@ function BedSelectController(Bed, Notify) {
   $ctrl.onSelect = $item => {
     $ctrl.onSelectCallback({ bed : $item });
   };
+
+  function loadParams() {
+    // load only beds for a given room
+    const allBeds = { room_uuid : $ctrl.roomUuid || 'x' };
+    const occupiedBeds = { room_uuid : $ctrl.roomUuid || 'x', is_occupied : 1 };
+    const notOccupiedBeds = { room_uuid : $ctrl.roomUuid || 'x', is_occupied : 0 };
+
+    // eslint-disable-next-line no-nested-ternary
+    return $ctrl.occupied === 'true' ? occupiedBeds
+      : $ctrl.occupied === 'false' ? notOccupiedBeds
+        : allBeds;
+  }
 }
