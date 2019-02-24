@@ -1,11 +1,18 @@
 angular.module('bhima.services')
   .service('VisitService', VisitService);
 
-VisitService.$inject = ['$http', 'util', '$uibModal'];
+VisitService.$inject = [
+  '$http', 'util', '$uibModal', 'GridFilterer',
+];
 
-function VisitService($http, util, Modal) {
+function VisitService(
+  $http, util, $uibModal, GridFilterer,
+) {
   const service = this;
   const baseUrl = '/patients';
+
+  // expose the grid filterer
+  service.filters = new GridFilterer('patient-admission-filters');
 
   // send/receive with $http
   service.read = read;
@@ -13,8 +20,13 @@ function VisitService($http, util, Modal) {
   service.discharge = discharge;
   service.diagnoses = diagnoses;
 
+  // methods for admissions
+  service.admissions = {};
+  service.admissions.read = admissionRead;
+
   // open modal configuration
   service.openAdmission = openAdmission;
+  service.openAdmissionSearchModal = openAdmissionSearchModal;
 
   function read(patientUuid, options) {
     if (!patientUuid) { return 0; }
@@ -86,7 +98,40 @@ function VisitService($http, util, Modal) {
       },
     };
 
-    const instance = Modal.open(modalOptions);
+    const instance = $uibModal.open(modalOptions);
     return instance.result;
   }
+
+  function admissionRead(uuid, options) {
+    if (uuid) {
+      return $http.get(`${baseUrl}/visits/${uuid}`, { params : options })
+        .then(util.unwrapHttpResponse);
+    }
+
+    return $http.get(`${baseUrl}/visits`, { params : options })
+      .then(util.unwrapHttpResponse);
+  }
+
+
+  /**
+   * @method openSearchModal
+   *
+   * @param {Object} params - an object of filter parameters to be passed to
+   *   the modal.
+   * @returns {Promise} modalInstance
+   */
+  function openAdmissionSearchModal(params) {
+    return $uibModal.open({
+      templateUrl : 'modules/patients/admissions/search.modal.html',
+      size : 'md',
+      keyboard : false,
+      animation : false,
+      backdrop : 'static',
+      controller : 'AdmissionRegistryModalController as $ctrl',
+      resolve : {
+        filters : function paramsProvider() { return params; },
+      },
+    }).result;
+  }
+
 }

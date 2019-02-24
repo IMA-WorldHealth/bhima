@@ -34,9 +34,11 @@ const COLUMNS = `
   BUID(patient_visit.uuid) AS uuid, BUID(patient_visit.patient_uuid) as patient_uuid,
   patient_visit.start_date, patient_visit.start_notes, patient_visit.end_date, patient_visit.end_notes,
   patient_visit.user_id, user.username, patient_visit.start_diagnosis_id, patient_visit.end_diagnosis_id,
+  DATEDIFF(IFNULL(patient_visit.end_date, CURRENT_DATE()), patient_visit.start_date) AS duration,
   ISNULL(patient_visit.end_date) AS is_open, icd10.label as start_diagnosis_label, icd10.code as start_diagnosis_code,
   patient_visit.hospitalized,
-  b.label AS bed_label, r.label AS room_label, w.name AS ward_name 
+  b.label AS bed_label, r.label AS room_label, w.name AS ward_name,
+  patient.display_name, patient.reference, patient.hospital_no
 `;
 
 const REQUIRE_DIAGNOSES = false;
@@ -48,6 +50,7 @@ function find(options) {
   const sql = `
     SELECT ${COLUMNS}
     FROM patient_visit
+    JOIN patient ON patient.uuid = patient_visit.patient_uuid
     JOIN user ON patient_visit.user_id = user.id
     JOIN patient_hospitalization ph ON ph.patient_visit_uuid = patient_visit.uuid
     JOIN bed b ON b.id = ph.bed_id
@@ -72,7 +75,8 @@ function find(options) {
 
   const query = filters.applyQuery(sql);
   const parameters = filters.parameters();
-
+  console.log('query : ', query);
+  console.log('params : ', parameters);
   return db.exec(query, parameters);
 }
 
@@ -99,9 +103,9 @@ function list(req, res, next) {
  * @method detail
  *
  * @description
- * Load a patient visit by uuid.
+ * Load details of a visit by its uuid
  *
- * GET /patients/:patientUuid/visits/:uuid
+ * GET /patients/visits/:uuid
  */
 function detail(req, res, next) {
   const visitUuid = req.params.uuid;
@@ -109,6 +113,7 @@ function detail(req, res, next) {
   const sql = `
     SELECT ${COLUMNS}
     FROM patient_visit
+    JOIN patient ON patient.uuid = patient_visit.uuid
     JOIN user on patient_visit.user_id = user.id
     JOIN patient_hospitalization ph ON ph.patient_visit_uuid = patient_visit.uuid
     JOIN bed b ON b.id = ph.bed_id

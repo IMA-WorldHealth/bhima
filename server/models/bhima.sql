@@ -113,7 +113,8 @@ INSERT INTO unit VALUES
   (225, 'Stock Assignment','ASSIGN.STOCK_ASSIGN','', 160,'/modules/stock/assign','/stock/assign'),
   (226, 'Account Reference Type','TREE.ACCOUNT_REFERENCE_TYPE','Account Reference Type', 1,'/modules/account_reference_type','/account_reference_type'),
   (227, 'Ward Module', 'TREE.WARD', 'Ward folder', 0, '/modules/ward/configuration', '/WARD_FOLDER'),
-  (228, 'Ward Configurations', 'TREE.WARD_CONFIGURATION', 'Ward configuration module', 227, '/modules/ward/configuration', '/ward/configuration');
+  (228, 'Ward Configurations', 'TREE.WARD_CONFIGURATION', 'Ward configuration module', 227, '/modules/ward/configuration', '/ward/configuration'),
+  (229, 'Admission Registry', 'TREE.ADMISSION_REGISTRY', 'Admission registry', 12, '/modules/patient/admissions', '/patients/admissions');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES

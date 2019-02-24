@@ -40,7 +40,8 @@
       "DISCHARGE_DATE": "Date de sortie",
       "DISCHARGE_DIAGNOSIS": "Diagnostique à la sortie",
       "PATIENT_INFO": "Informations sur le patient",
-      "VISITS_INFO": "Informations sur les visites"
+      "VISITS_INFO": "Informations sur les visites",
+      "ADMISSION_REGISTRY":"Registre des Admissions"
     },
     "FINANCIAL_ACTIVITY":{
       "ACCOUNT":"Numéro de compte",

@@ -423,6 +423,7 @@ exports.configure = function configure(app) {
   app.get('/patients/search/name', patients.searchByName);
 
   app.get('/patients/visits', patients.visits.list);
+  app.get('/patients/visits/:uuid', patients.visits.detail);
 
   // Patients API
   app.get('/patients', patients.read);

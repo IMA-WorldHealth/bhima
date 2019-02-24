@@ -38,5 +38,14 @@ angular.module('bhima.routes')
         params      : { patientUuid : null },
         templateUrl : 'modules/patients/record/patient-record.html',
         controller  : 'PatientRecordController as PatientRecordCtrl',
+      })
+
+      .state('admissionRegistry', {
+        url         : '/patients/admissions',
+        templateUrl : 'modules/patients/admissions/registry.html',
+        controller  : 'AdmissionRegistryController as AdmissionRegistryCtrl',
+        params      : {
+          filters : [],
+        },
       });
   }]);

@@ -40,7 +40,8 @@
       "DISCHARGE_DATE": "Discharge Date",
       "DISCHARGE_DIAGNOSIS": "Discharge Diagnosis",
       "PATIENT_INFO": "Patient Information",
-      "VISITS_INFO": "Visits Information"
+      "VISITS_INFO": "Visits Information",
+      "ADMISSION_REGISTRY":"Admissions Registry"
     },
     "FINANCIAL_ACTIVITY":{
       "ACCOUNT" : "Account Number",
