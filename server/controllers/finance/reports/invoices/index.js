@@ -140,7 +140,7 @@ function receipt(req, res, next) {
     SELECT IF(COUNT(gl.uuid) > 0, 1, 0) as isPosted
     FROM general_ledger gl
     JOIN invoice i ON i.uuid =?
-    AND gl.entity_uuid = i.debtor_uuid`;
+    AND i.uuid = gl.record_uuid`;
 
   Invoices.lookupInvoice(invoiceUuid)
     .then(reportResult => {

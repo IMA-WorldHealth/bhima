@@ -5,6 +5,15 @@
   <header>
     <!-- headings  -->
     <div class="row">
+  
+      {{#if isPosted}}
+        <div class="text-center" style="position: absolute; border: 5px solid green; -webkit-transform: rotate(10deg); transform: rotate(10deg); left: 35%; top: 20px;">
+          <span style="font-size: 24px; color: green;">
+            {{translate 'FORM.LABELS.POSTED'}}
+          </span>
+        </div>
+      {{/if}}
+
       {{> enterpriseDetails }}
 
       <div class="col-xs-5 text-right">
