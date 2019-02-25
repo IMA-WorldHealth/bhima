@@ -136,6 +136,12 @@ function receipt(req, res, next) {
     return;
   }
 
+  const postedInvoiceSql = ` 
+    SELECT IF(COUNT(gl.uuid) > 0, 1, 0) as isPosted
+    FROM general_ledger gl
+    JOIN invoice i ON i.uuid =?
+    AND gl.entity_uuid = i.debtor_uuid`;
+
   Invoices.lookupInvoice(invoiceUuid)
     .then(reportResult => {
 
@@ -187,7 +193,11 @@ function receipt(req, res, next) {
           );
         }
       }
-
+      // let check is this invoice is posted
+      return db.one(postedInvoiceSql, db.bid(invoiceResponse.uuid));
+    })
+    .then(postedInvoice => {
+      invoiceResponse.isPosted = postedInvoice.isPosted === 1;
       return receiptReport.render(invoiceResponse);
     })
     .then(result => {

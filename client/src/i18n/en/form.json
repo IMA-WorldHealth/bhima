@@ -633,6 +633,7 @@
             "TRANSPORT": "Transport",
             "TRANSACTION": "Transaction",
             "POSTED_TRANSACTIONS": "Posted transaction(s)",
+            "POSTED" : "Posted",
             "NON_POSTED_TRANSACTIONS": "Non-posted transaction(s)",
             "TRANSACTION_DATE": "Transaction Date",
             "TRANSACTION_TYPE": "Transaction Type",
