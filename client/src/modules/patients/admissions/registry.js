@@ -3,9 +3,9 @@ angular.module('bhima.controllers')
 
 AdmissionRegistryController.$inject = [
   '$state', 'VisitService', 'NotifyService', 'util', 'uiGridConstants',
-  'GridColumnService', 'GridSortingService', 'GridStateService',
+  'GridColumnService', 'GridStateService',
   '$httpParamSerializer', 'LanguageService',
-  'BarcodeService',
+  'BarcodeService', 'ReceiptModal',
 ];
 
 /**
@@ -16,7 +16,7 @@ AdmissionRegistryController.$inject = [
  */
 function AdmissionRegistryController(
   $state, Visits, Notify, util, uiGridConstants,
-  Columns, Sorting, GridState, $httpParamSerializer, Languages, Barcode
+  Columns, GridState, $httpParamSerializer, Languages, Barcode, Receipts
 ) {
   const vm = this;
   const cacheKey = 'AdmissionRegistry';
@@ -29,50 +29,23 @@ function AdmissionRegistryController(
   vm.downloadExcel = downloadExcel;
   vm.languageKey = Languages.key;
   vm.toggleInlineFilter = toggleInlineFilter;
-  vm.openBarcodeScanner = openBarcodeScanner;
+  vm.openTransferModal = openTransferModal;
 
   // track if module is making a HTTP request for admissions
   vm.loading = false;
 
   const patientCardTemplate = `
     <div class="ui-grid-cell-contents">
-      <a href ng-click="grid.appScope.patientCard(row.entity.uuid)">{{row.entity.reference}}</a>
+      <a href ng-click="grid.appScope.patientCard(row.entity.patient_uuid)">{{row.entity.patient_reference}}</a>
+    </div>
+  `;
+  const patientDetailsTemplate = `
+    <div class="ui-grid-cell-contents">
+      <a ui-sref="patientRecord({ patientUuid : row.entity.patient_uuid })">{{row.entity.display_name}}</a>
     </div>
   `;
 
   const columnDefs = [{
-    field : 'reference',
-    displayName : 'TABLE.COLUMNS.REFERENCE',
-    aggregationType : uiGridConstants.aggregationTypes.count,
-    aggregationHideLabel : true,
-    headerCellFilter : 'translate',
-    cellTemplate : patientCardTemplate,
-    footerCellClass : 'text-center',
-    sortingAlgorithm : Sorting.algorithms.sortByReference,
-  }, {
-    field : 'display_name',
-    displayName : 'TABLE.COLUMNS.NAME',
-    headerCellFilter : 'translate',
-    cellTemplate : '/modules/templates/grid/patient.cell.html',
-  }, {
-    field : 'start_date',
-    displayName : 'PATIENT_RECORDS.VISITS.ADMISSION_DATE',
-    headerCellFilter : 'translate',
-    type : 'date',
-  }, {
-    field : 'end_date',
-    displayName : 'PATIENT_RECORDS.VISITS.DISCHARGE_DATE',
-    headerCellFilter : 'translate',
-    type : 'date',
-  }, {
-    field : 'hospitalized',
-    displayName : 'PATIENT_RECORDS.VISITS.HOSPITALISATION',
-    headerCellFilter : 'translate',
-  }, {
-    field : 'duration',
-    displayName : 'PATIENT_RECORDS.VISITS.DURATION',
-    headerCellFilter : 'number',
-  }, {
     field : 'ward_name',
     displayName : 'WARD.TITLE',
     headerCellFilter : 'translate',
@@ -85,6 +58,44 @@ function AdmissionRegistryController(
     displayName : 'BED.TITLE',
     headerCellFilter : 'translate',
   }, {
+    field : 'patient_reference',
+    displayName : 'TABLE.COLUMNS.REFERENCE',
+    headerCellFilter : 'translate',
+    cellTemplate : patientCardTemplate,
+  }, {
+    field : 'display_name',
+    displayName : 'TABLE.COLUMNS.NAME',
+    headerCellFilter : 'translate',
+    cellTemplate : patientDetailsTemplate,
+  }, {
+    field : 'hospital_no',
+    displayName : 'PATIENT_RECORDS.HOSPITAL_NO',
+    headerCellFilter : 'translate',
+  }, {
+    field : 'start_date',
+    displayName : 'PATIENT_RECORDS.VISITS.ADMISSION_DATE',
+    headerCellFilter : 'translate',
+    cellFilter : 'date',
+    type : 'date',
+  }, {
+    field : 'end_date',
+    displayName : 'PATIENT_RECORDS.VISITS.DISCHARGE_DATE',
+    headerCellFilter : 'translate',
+    cellFilter : 'date',
+    type : 'date',
+    cellTemplate : '/modules/patients/admissions/templates/end_date.cell.html',
+  }, {
+    field : 'duration',
+    displayName : 'PATIENT_RECORDS.VISITS.DURATION',
+    headerCellFilter : 'translate',
+    type : 'number',
+    cellTemplate : '/modules/patients/admissions/templates/duration.cell.html',
+  }, {
+    field : 'hospitalized',
+    displayName : 'PATIENT_RECORDS.VISITS.ADMISSION_TYPE',
+    headerCellFilter : 'translate',
+    cellTemplate : '/modules/patients/admissions/templates/type.cell.html',
+  }, {
     name : 'actions',
     displayName : '',
     cellTemplate : '/modules/patients/admissions/templates/action.cell.html',
@@ -94,7 +105,7 @@ function AdmissionRegistryController(
 
   vm.uiGridOptions = {
     appScopeProvider : vm,
-    showColumnFooter : true,
+    showGridFooter : true,
     enableSorting : true,
     enableColumnMenus : false,
     flatEntityAccess : true,
@@ -138,7 +149,7 @@ function AdmissionRegistryController(
     request
       .then((admissions) => {
         admissions.forEach((admission) => {
-          admission.admissionAge = util.getMomentAge(admission.dob, 'years');
+          admission.durationAge = util.getDuration(admission.duration);
         });
 
         // put data in the grid
@@ -182,7 +193,7 @@ function AdmissionRegistryController(
 
   // admission card
   function patientCard(uuid) {
-    patientCard.patient(uuid);
+    Receipts.patient(uuid);
   }
 
   // startup function. Checks for cached filters and loads them.  This behavior could be changed.
@@ -211,22 +222,15 @@ function AdmissionRegistryController(
     return $httpParamSerializer(options);
   }
 
-  /**
-   * @function searchByBarcode()
-   *
-   * @description
-   * Gets the barcode from the barcode modal and then
-   */
-  function openBarcodeScanner() {
-    Barcode.modal()
-      .then(record => {
-        Visits.filters.replaceFilters([
-          { key : 'uuid', value : record.uuid, displayValue : record.display_name },
-        ]);
-
-        load(Visits.filters.formatHTTP(true));
-        vm.latestViewFilters = Visits.filters.formatView();
-      });
+  // patient transfer
+  function openTransferModal(row) {
+    const location = row.ward_name.concat('/', row.room_label, '/', row.bed_label);
+    Visits.openTransferModal({
+      patient_visit_uuid : row.uuid,
+      patient_uuid : row.patient_uuid,
+      patient_display_name : row.display_name,
+      location,
+    });
   }
 
   // fire up the module

@@ -10,6 +10,7 @@
     "TITLE":"Patients",
     "UPDATE_PICTURE":"Mettre à jour la Photo",
     "UPLOAD_PICTURE":"Télécharger Photo Patient",
+    "HOSPITAL_NO":"Numéro de fiche",
     "CHECK_IN":{
       "TITLE" : "Admission",
       "SUBMIT" : "Admettre le patient",
@@ -42,6 +43,11 @@
       "PATIENT_INFO": "Informations sur le patient",
       "VISITS_INFO": "Informations sur les visites",
       "ADMISSION_REGISTRY":"Registre des Admissions"
+    },
+    "TRANSFER":{
+      "TITLE":"Transfert",
+      "NEW_DESTINATION_DESCRIPTION":"Veuillez séléctionner la nouvelle destination (pavillon, chambre et lit) du patient",
+      "SUCCESSFULLY_TRANSFERED":"Le patient a été transferé avec succès"
     },
     "FINANCIAL_ACTIVITY":{
       "ACCOUNT":"Numéro de compte",

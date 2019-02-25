@@ -29,6 +29,7 @@ exports.detail = detail;
 exports.listByPatient = listByPatient;
 exports.admission = admission;
 exports.discharge = discharge;
+exports.transfer = transfer;
 
 const COLUMNS = `
   BUID(patient_visit.uuid) AS uuid, BUID(patient_visit.patient_uuid) as patient_uuid,
@@ -38,7 +39,7 @@ const COLUMNS = `
   ISNULL(patient_visit.end_date) AS is_open, icd10.label as start_diagnosis_label, icd10.code as start_diagnosis_code,
   patient_visit.hospitalized,
   b.label AS bed_label, r.label AS room_label, w.name AS ward_name,
-  patient.display_name, patient.reference, patient.hospital_no
+  patient.display_name, patient.hospital_no, em.text AS patient_reference
 `;
 
 const REQUIRE_DIAGNOSES = false;
@@ -51,8 +52,14 @@ function find(options) {
     SELECT ${COLUMNS}
     FROM patient_visit
     JOIN patient ON patient.uuid = patient_visit.patient_uuid
+    JOIN entity_map em ON em.uuid = patient.uuid
     JOIN user ON patient_visit.user_id = user.id
     JOIN patient_hospitalization ph ON ph.patient_visit_uuid = patient_visit.uuid
+      AND ph.created_at = (
+        SELECT ph2.created_at FROM patient_hospitalization ph2 
+        WHERE ph2.patient_visit_uuid = ph.patient_visit_uuid
+        ORDER BY ph2.created_at DESC LIMIT 1
+      )
     JOIN bed b ON b.id = ph.bed_id
     JOIN room r ON r.uuid = b.room_uuid
     JOIN ward w ON w.uuid = r.ward_uuid
@@ -75,8 +82,6 @@ function find(options) {
 
   const query = filters.applyQuery(sql);
   const parameters = filters.parameters();
-  console.log('query : ', query);
-  console.log('params : ', parameters);
   return db.exec(query, parameters);
 }
 
@@ -110,12 +115,21 @@ function list(req, res, next) {
 function detail(req, res, next) {
   const visitUuid = req.params.uuid;
 
+  /**
+   * return visit of patients by considering the last location (bed) of the
+   * patient during a visit
+   */
   const sql = `
     SELECT ${COLUMNS}
     FROM patient_visit
     JOIN patient ON patient.uuid = patient_visit.uuid
     JOIN user on patient_visit.user_id = user.id
-    JOIN patient_hospitalization ph ON ph.patient_visit_uuid = patient_visit.uuid
+    JOIN patient_hospitalization ph ON ph.patient_visit_uuid = patient_visit.uuid 
+      AND ph.created_at = (
+        SELECT ph2.created_at FROM patient_hospitalization ph2 
+        WHERE ph2.patient_visit_uuid = ph.patient_visit_uuid
+        ORDER BY ph2.created_at DESC LIMIT 1
+      )
     JOIN bed b ON b.id = ph.bed_id
     JOIN room r ON r.uuid = b.room_uuid
     JOIN ward w ON w.uuid = r.ward_uuid
@@ -248,6 +262,70 @@ function lookupAutoAvailableBed(bedOptions) {
     LIMIT 1;
   `;
   return bedOptions.id ? { id : bedOptions.id } : db.one(sql, [db.bid(bedOptions.room_uuid)]);
+}
+
+/**
+ * @method transfer
+ *
+ * @description
+ * The transfer() method will create a new record in the patient_hospitalization
+ * table as a transfer.
+ *
+ * The required data is :
+ *  1. patient_uuid
+ *  2. patient_visit_uuid
+ */
+function transfer(req, res, next) {
+  const patientUuid = db.bid(req.params.uuid);
+  const patientVisitUuid = db.bid(req.params.patient_visit_uuid);
+  const params = db.convert(req.body, ['room_uuid']);
+  const glb = {};
+
+  const lookupLastLocation = `
+    SELECT ph.patient_uuid, ph.room_uuid, ph.bed_id
+    FROM patient_hospitalization ph 
+    JOIN patient_visit pv ON pv.uuid = ph.patient_visit_uuid
+    WHERE pv.uuid = ? AND pv.patient_uuid = ?
+    ORDER BY ph.created_at DESC
+    LIMIT 1;
+  `;
+  const addNewLocation = `
+    INSERT INTO patient_hospitalization SET ?
+  `;
+  const setOccupiedNewBed = `
+    UPDATE bed SET is_occupied = 1 WHERE id = ?;
+  `;
+  const setFreeOldBed = `
+    UPDATE bed SET is_occupied = 0 WHERE id = ?;
+  `;
+  db.one(lookupLastLocation, [patientVisitUuid, patientUuid])
+    .then(previousBed => {
+      glb.previousBed = previousBed;
+      return lookupAutoAvailableBed(params);
+    })
+    .then(availableBed => {
+      glb.newHospitalizationUuid = uuid();
+      const paramInsertHospitalization = {
+        uuid : db.bid(glb.newHospitalizationUuid),
+        patient_visit_uuid : patientVisitUuid,
+        patient_uuid : patientUuid,
+        room_uuid : params.room_uuid,
+        bed_id : availableBed.id,
+      };
+      const transaction = db.transaction();
+      // insert a new patient location as hospitalization
+      transaction.addQuery(addNewLocation, [paramInsertHospitalization]);
+      // update the bed for the hopitalized patient
+      transaction.addQuery(setOccupiedNewBed, [paramInsertHospitalization.bed_id]);
+      // set free the old bed
+      transaction.addQuery(setFreeOldBed, [glb.previousBed.bed_id]);
+      return transaction.execute();
+    })
+    .then(() => {
+      res.status(201).json({ uuid : glb.newHospitalizationUuid });
+    })
+    .catch(next)
+    .done();
 }
 
 /**

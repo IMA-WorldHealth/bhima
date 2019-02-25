@@ -19,6 +19,7 @@ function VisitService(
   service.admit = admit;
   service.discharge = discharge;
   service.diagnoses = diagnoses;
+  service.transfer = transfer;
 
   // methods for admissions
   service.admissions = {};
@@ -27,6 +28,7 @@ function VisitService(
   // open modal configuration
   service.openAdmission = openAdmission;
   service.openAdmissionSearchModal = openAdmissionSearchModal;
+  service.openTransferModal = openTransferModal;
 
   function read(patientUuid, options) {
     if (!patientUuid) { return 0; }
@@ -75,6 +77,14 @@ function VisitService(
     delete details.hospitalized;
 
     return $http.post(`${baseUrl}/${patientUuid}/visits/discharge`, details)
+      .then(util.unwrapHttpResponse);
+  }
+
+  function transfer(patientUuid, visitUuid, bedDetails) {
+    // format admission specific information
+    const details = angular.copy(bedDetails);
+
+    return $http.post(`${baseUrl}/${patientUuid}/visits/${visitUuid}/transfer`, details)
       .then(util.unwrapHttpResponse);
   }
 
@@ -130,6 +140,23 @@ function VisitService(
       controller : 'AdmissionRegistryModalController as $ctrl',
       resolve : {
         filters : function paramsProvider() { return params; },
+      },
+    }).result;
+  }
+
+  /**
+   * @method openTransferModal
+   */
+  function openTransferModal(params) {
+    return $uibModal.open({
+      templateUrl : 'modules/patients/visits/transfer.modal.html',
+      size : 'md',
+      keyboard : false,
+      animation : false,
+      backdrop : 'static',
+      controller : 'PatientTransferModalController as $ctrl',
+      resolve : {
+        params : function paramsProvider() { return params; },
       },
     }).result;
   }

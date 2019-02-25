@@ -449,6 +449,7 @@ exports.configure = function configure(app) {
   app.get('/patients/:uuid/visits', patients.visits.listByPatient);
   app.post('/patients/:uuid/visits/admission', patients.visits.admission);
   app.post('/patients/:uuid/visits/discharge', patients.visits.discharge);
+  app.post('/patients/:uuid/visits/:patient_visit_uuid/transfer', patients.visits.transfer);
 
   // misc patients financial routes
   app.get('/patients/:uuid/finance/activity', patients.getFinancialStatus);

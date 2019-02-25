@@ -10,6 +10,7 @@
     "TITLE" : "Patients",
     "UPDATE_PICTURE" : "Update Patient Photo",
     "UPLOAD_PICTURE" : "Upload Patient Photo",
+    "HOSPITAL_NO":"Hospital Number",
     "CHECK_IN":{
       "TITLE" : "Check In",
       "SUBMIT" : "Check Patient In",
@@ -42,6 +43,11 @@
       "PATIENT_INFO": "Patient Information",
       "VISITS_INFO": "Visits Information",
       "ADMISSION_REGISTRY":"Admissions Registry"
+    },
+    "TRANSFER":{
+      "TITLE":"Transfer",
+      "NEW_DESTINATION_DESCRIPTION":"Please select the new destination (ward, room and bed) of the patient",
+      "SUCCESSFULLY_TRANSFERED":"The patient has been successfully transfered"
     },
     "FINANCIAL_ACTIVITY":{
       "ACCOUNT" : "Account Number",
