@@ -137,10 +137,10 @@ function receipt(req, res, next) {
   }
 
   const postedInvoiceSql = ` 
-    SELECT IF(COUNT(gl.uuid) > 0, 1, 0) as isPosted
+    SELECT IF(COUNT(gl.uuid) > 0, 1, 0) as isPosted, trans_id
     FROM general_ledger gl
-    JOIN invoice i ON i.uuid =?
-    AND i.uuid = gl.record_uuid`;
+    JOIN invoice i ON i.uuid = gl.record_uuid
+     AND i.uuid =? `;
 
   Invoices.lookupInvoice(invoiceUuid)
     .then(reportResult => {
@@ -198,6 +198,7 @@ function receipt(req, res, next) {
     })
     .then(postedInvoice => {
       invoiceResponse.isPosted = postedInvoice.isPosted === 1;
+      invoiceResponse.trans_id = postedInvoice.trans_id;
       return receiptReport.render(invoiceResponse);
     })
     .then(result => {

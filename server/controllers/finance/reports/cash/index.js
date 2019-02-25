@@ -61,7 +61,7 @@ function receipt(req, res, next) {
   }
 
   const postedPaymentSql = ` 
-    SELECT IF(COUNT(gl.uuid) > 0, 1, 0) as isPosted
+    SELECT IF(COUNT(gl.uuid) > 0, 1, 0) as isPosted, trans_id
     FROM general_ledger gl
     JOIN cash c ON c.uuid = gl.record_uuid
      AND c.uuid =? `;
@@ -134,6 +134,7 @@ function receipt(req, res, next) {
     })
     .then(postedPayment => {
       data.isPosted = postedPayment.isPosted === 1;
+      data.trans_id = postedPayment.trans_id;
       return receiptReport.render(data);
     })
     .then((result) => {
