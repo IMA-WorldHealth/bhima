@@ -104,7 +104,7 @@ function UtilService(moment) {
 
   service.getDuration = (duration, durationKey = 'days') => {
     return duration ? moment.duration(duration, durationKey).humanize()
-      : moment.duration(0, durationKey);
+      : moment.duration(0, durationKey).humanize();
   };
 
   /**

@@ -38,14 +38,14 @@ const COLUMNS = `
   DATEDIFF(IFNULL(patient_visit.end_date, CURRENT_DATE()), patient_visit.start_date) AS duration,
   ISNULL(patient_visit.end_date) AS is_open, icd10.label as start_diagnosis_label, icd10.code as start_diagnosis_code,
   patient_visit.hospitalized,
-  b.label AS bed_label, r.label AS room_label, w.name AS ward_name,
-  patient.display_name, patient.hospital_no, em.text AS patient_reference
+  z.bed_label, z.room_label, z.ward_name,
+  patient.display_name, patient.hospital_no, em.text AS reference
 `;
 
 const REQUIRE_DIAGNOSES = false;
 
 function find(options) {
-  db.convert(options, ['uuid', 'patient_uuid']);
+  db.convert(options, ['uuid', 'patient_uuid', 'ward_uuid', 'room_uuid']);
   const filters = new FilterParser(options);
 
   const sql = `
@@ -54,15 +54,20 @@ function find(options) {
     JOIN patient ON patient.uuid = patient_visit.patient_uuid
     JOIN entity_map em ON em.uuid = patient.uuid
     JOIN user ON patient_visit.user_id = user.id
-    JOIN patient_hospitalization ph ON ph.patient_visit_uuid = patient_visit.uuid
-      AND ph.created_at = (
+    LEFT JOIN (
+      SELECT
+        ph.patient_visit_uuid, ph.created_at, b.label AS bed_label, r.label AS room_label, w.name AS ward_name,
+        w.uuid AS ward_uuid, r.uuid AS room_uuid, b.id AS bed_id
+      FROM patient_hospitalization ph 
+      JOIN bed b ON b.id = ph.bed_id
+      JOIN room r ON r.uuid = ph.room_uuid
+      JOIN ward w ON w.uuid = r.ward_uuid
+    ) AS z ON z.patient_visit_uuid = patient_visit.uuid 
+      AND z.created_at = (
         SELECT ph2.created_at FROM patient_hospitalization ph2 
-        WHERE ph2.patient_visit_uuid = ph.patient_visit_uuid
+        WHERE ph2.patient_visit_uuid = z.patient_visit_uuid
         ORDER BY ph2.created_at DESC LIMIT 1
       )
-    JOIN bed b ON b.id = ph.bed_id
-    JOIN room r ON r.uuid = b.room_uuid
-    JOIN ward w ON w.uuid = r.ward_uuid
     LEFT JOIN icd10 ON icd10.id = patient_visit.start_diagnosis_id
   `;
 
@@ -77,6 +82,18 @@ function find(options) {
 
   filters.fullText('start_notes', 'start_notes', 'patient_visit');
   filters.fullText('end_notes', 'end_notes', 'patient_visit');
+  filters.period('period', 'start_date', 'patient_visit');
+  filters.dateFrom('custom_period_start', 'start_date', 'patient_visit');
+  filters.dateTo('custom_period_end', 'start_date', 'patient_visit');
+
+  filters.fullText('display_name', 'display_name', 'patient');
+  filters.custom('reference', 'em.text = ?');
+  filters.equals('hospital_no');
+  filters.equals('user_id', 'user_id', 'patient_visit');
+
+  filters.equals('ward_uuid', 'ward_uuid', 'z');
+  filters.equals('room_uuid', 'room_uuid', 'z');
+  filters.equals('bed_id', 'bed_id', 'z');
 
   filters.setOrder('ORDER BY patient_visit.start_date DESC');
 
@@ -124,15 +141,20 @@ function detail(req, res, next) {
     FROM patient_visit
     JOIN patient ON patient.uuid = patient_visit.uuid
     JOIN user on patient_visit.user_id = user.id
-    JOIN patient_hospitalization ph ON ph.patient_visit_uuid = patient_visit.uuid 
-      AND ph.created_at = (
+    LEFT JOIN (
+      SELECT
+        ph.patient_visit_uuid, ph.created_at, b.label AS bed_label, r.label AS room_label, w.name AS ward_name,
+        w.uuid AS ward_uuid, r.uuid AS room_uuid, b.id AS bed_id
+      FROM patient_hospitalization ph 
+      JOIN bed b ON b.id = ph.bed_id
+      JOIN room r ON r.uuid = ph.room_uuid
+      JOIN ward w ON w.uuid = r.ward_uuid
+    ) AS z ON z.patient_visit_uuid = patient_visit.uuid 
+      AND z.created_at = (
         SELECT ph2.created_at FROM patient_hospitalization ph2 
-        WHERE ph2.patient_visit_uuid = ph.patient_visit_uuid
+        WHERE ph2.patient_visit_uuid = z.patient_visit_uuid
         ORDER BY ph2.created_at DESC LIMIT 1
       )
-    JOIN bed b ON b.id = ph.bed_id
-    JOIN room r ON r.uuid = b.room_uuid
-    JOIN ward w ON w.uuid = r.ward_uuid
     LEFT JOIN icd10 ON icd10.id = patient_visit.start_diagnosis_id
     WHERE uuid = ?;
   `;
@@ -209,12 +231,21 @@ function admission(req, res, next) {
     data.patient_uuid = db.bid(data.patient_uuid);
   }
 
-  createHospitalization(data)
+  const create = data.hospitalized ? createHospitalization : createSimpleVisit;
+  create(data)
     .then(() => {
       res.status(201).json({ uuid : visitUuid });
     })
     .catch(next)
     .done();
+}
+
+function createSimpleVisit(data) {
+  const visit = _.omit(data, 'bed');
+  const sqlInsertVisit = `
+    INSERT INTO patient_visit SET ?;
+  `;
+  return db.exec(sqlInsertVisit, [visit]);
 }
 
 function createHospitalization(data) {

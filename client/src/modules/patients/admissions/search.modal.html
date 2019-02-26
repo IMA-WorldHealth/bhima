@@ -15,7 +15,7 @@
     <uib-tabset>
       <uib-tab index="0" heading="{{ 'FORM.LABELS.SEARCH_QUERIES' | translate }}" data-custom-filter-tab>
         <div class="tab-body">
-          <!--admission name-->
+          <!--patient name-->
           <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.display_name.$invalid }">
             <label class="control-label" translate> FORM.LABELS.NAME </label>
             <bh-clear on-clear="$ctrl.clear('display_name')"></bh-clear>
@@ -25,7 +25,7 @@
             </div>
           </div>
 
-          <!-- admission reference -->
+          <!-- patient reference -->
           <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.reference.$invalid }">
             <label class="control-label" translate> FORM.LABELS.REFERENCE </label>
             <bh-clear on-clear="$ctrl.clear('reference')"></bh-clear>
@@ -36,7 +36,7 @@
             </div>
           </div>
 
-          <!-- admission hospital number-->
+          <!-- patient hospital number-->
           <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.hospital_no.$invalid }">
             <label class="control-label" translate>
                 FORM.LABELS.HOSPITAL_FILE_NR
@@ -49,48 +49,6 @@
             </div>
           </div>
 
-          <!-- admission gender-->
-          <div class="radio">
-            <p class="control-label">
-              <strong translate>FORM.LABELS.GENDER</strong>
-              <bh-clear on-clear="$ctrl.clear('sex')"></bh-clear>
-            </p>
-
-            <label>
-              <input type="radio" name="sex" id="male" value="M" ng-model="$ctrl.searchQueries.sex">
-              <span translate>FORM.LABELS.MALE</span>
-            </label>
-          </div>
-
-          <div class="radio">
-            <label>
-              <input type="radio" name="sex" id="female" value="F" ng-model="$ctrl.searchQueries.sex">
-              <span translate>FORM.LABELS.FEMALE</span>
-            </label>
-          </div>
-
-          <!-- filter by project -->
-          <bh-project-select
-            project-id="$ctrl.searchQueries.project_id"
-            name="project_id"
-            on-select-callback="$ctrl.onSelectProject(project)">
-            <bh-clear on-clear="$ctrl.clear('project_id')"></bh-clear>
-          </bh-project-select>
-
-          <!-- admission debtor group -->
-          <bh-debtor-group-select
-            debtor-group-uuid = "$ctrl.searchQueries.debtor_group_uuid"
-            on-select-callback = "$ctrl.onSelectDebtor(debtorGroup)">
-            <bh-clear on-clear="$ctrl.clear('debtor_group_uuid')"></bh-clear>
-          </bh-debtor-group-select>
-
-          <!-- admission admission group -->
-          <bh-admission-group-select
-            admission-group-uuid = "$ctrl.searchQueries.admission_group_uuid"
-            on-select-callback = "$ctrl.onSelectAdmissionGroup(admissionGroup)">
-            <bh-clear on-clear="$ctrl.clear('admission_group_uuid')"></bh-clear>
-          </bh-admission-group-select>
-
           <!-- admission user selection -->
           <bh-user-select
             user-id="$ctrl.searchQueries.user_id"
@@ -99,28 +57,25 @@
             <bh-clear on-clear="$ctrl.clear('user_id')"></bh-clear>
           </bh-user-select>
 
-          <!-- admission date interval components -->
-          <bh-date-interval
-            label="FORM.LABELS.DOB"
-            date-id="dob-date"
-            date-from="$ctrl.searchQueries.dateBirthFrom"
-            date-to="$ctrl.searchQueries.dateBirthTo"
-            mode="clean">
-          </bh-date-interval>
+          <!-- select the ward -->
+          <bh-ward-select
+            uuid="$ctrl.ward_uuid"
+            on-select-callback="$ctrl.onSelectWard(ward)">
+          </bh-ward-select>
 
-          <!-- location -->
+          <!-- select the room -->
+          <bh-room-select
+            uuid="$ctrl.bed.room_uuid"
+            ward-uuid="$ctrl.searchQueries.ward_uuid"
+            on-select-callback="$ctrl.onSelectRoom(room)">
+          </bh-room-select>
 
-          <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.originLocationLabel.$invalid }">
-            <label class="control-label" translate>
-              FORM.LABELS.ORIGIN_LOCATION
-            </label>
-            <bh-clear on-clear="$ctrl.clear('originLocationLabel')"></bh-clear>
-
-            <input type="text" class="form-control" name="originLocationLabel" ng-model="$ctrl.searchQueries.originLocationLabel">
-            <div class="help-block" ng-messages="ModalForm.originLocationLabel.$error" ng-show="ModalForm.$submitted">
-              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-            </div>
-          </div>
+          <!-- select the bed -->
+          <bh-bed-select
+            id="$ctrl.bed.id"
+            room-uuid="$ctrl.searchQueries.room_uuid"
+            on-select-callback="$ctrl.onSelectBed(bed)">
+          </bh-bed-select>
         </div>
       </uib-tab>
 

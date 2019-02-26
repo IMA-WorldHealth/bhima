@@ -28,12 +28,10 @@ function AdmissionRegistryModalController(ModalInstance, filters, Store, util, P
     vm.defaultQueries.limit = filters.limit;
   }
 
-  const lastDisplayValues = Visits.filters.getDisplayValueMap();
+  const lastDisplayValues = Visits.grid.getDisplayValueMap();
 
-  // assign already defined custom filters to searchQueries object
   vm.searchQueries = util.maskObjectFromKeys(filters, searchQueryOptions);
-  // keep track of the initial search queries to make sure we properly restore
-  // default display values
+
   const initialSearchQueries = angular.copy(vm.searchQueries);
 
   // bind methods
@@ -41,22 +39,22 @@ function AdmissionRegistryModalController(ModalInstance, filters, Store, util, P
   vm.cancel = cancel;
   vm.clear = clear;
 
-  vm.onSelectDebtor = function onSelectDebtor(debtorGroup) {
-    vm.searchQueries.debtor_group_uuid = debtorGroup.uuid;
-    displayValues.debtor_group_uuid = debtorGroup.name;
+  vm.onSelectWard = ward => {
+    vm.searchQueries.ward_uuid = ward.uuid;
+    displayValues.ward_uuid = ward.name;
   };
 
-  vm.onSelectProject = (project) => {
-    displayValues.project_id = project.name;
-    vm.searchQueries.project_id = project.id;
+  vm.onSelectRoom = room => {
+    vm.searchQueries.room_uuid = room.uuid;
+    displayValues.room_uuid = room.label;
   };
 
-  vm.onSelectAdmissionGroup = function onSelectAdmissionGroup(admissionGroup) {
-    vm.searchQueries.admission_group_uuid = admissionGroup.uuid;
-    displayValues.admission_group_uuid = admissionGroup.name;
+  vm.onSelectBed = bed => {
+    vm.searchQueries.bed_id = bed.id;
+    displayValues.bed_id = bed.label;
   };
 
-  // custom filter user_id - assign the value to the searchQueries object
+  // custom filter user_id
   vm.onSelectUser = function onSelectUser(user) {
     vm.searchQueries.user_id = user.id;
     displayValues.user_id = user.display_name;

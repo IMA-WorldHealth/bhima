@@ -14,7 +14,6 @@ function GridFiltererService(Filters, AppCache, Periods, $httpParamSerializer, L
     { key : 'display_name', label : 'FORM.LABELS.NAME' },
     { key : 'sex', label : 'FORM.LABELS.GENDER' },
     { key : 'hospital_no', label : 'FORM.LABELS.HOSPITAL_NO' },
-    { key : 'reference', label : 'FORM.LABELS.REFERENCE' },
     { key : 'depot_uuid', label : 'STOCK.DEPOT' },
     { key : 'inventory_uuid', label : 'STOCK.INVENTORY' },
     { key : 'group_uuid', label : 'STOCK.INVENTORY_GROUP' },
@@ -31,15 +30,23 @@ function GridFiltererService(Filters, AppCache, Periods, $httpParamSerializer, L
     { key : 'debtor_group_uuid', label : 'FORM.LABELS.DEBTOR_GROUP' },
     { key : 'debtor_uuid', label : 'FORM.LABELS.PATIENT' },
     { key : 'patient_group_uuid', label : 'PATIENT_GROUP.PATIENT_GROUP' },
-    { key : 'user_id', label : 'FORM.LABELS.USER' },
     { key : 'project_id', label : 'FORM.LABELS.PROJECT' },
     { key : 'defaultPeriod', label : 'TABLE.COLUMNS.PERIOD' },
     { key : 'originLocationLabel', label : 'FORM.LABELS.ORIGIN_LOCATION' },
+    { key : 'ward_uuid', label : 'WARD.TITLE' },
+    { key : 'room_uuid', label : 'ROOM.TITLE' },
+    { key : 'bed_id', label : 'BED.TITLE' },
     {
       key : 'dateFrom', label : 'FORM.LABELS.DATE', comparitor : '>', valueFilter : 'date',
     },
     {
       key : 'dateTo', label : 'FORM.LABELS.DATE', comparitor : '<', valueFilter : 'date',
+    },
+    {
+      key : 'custom_date_start', label : 'FORM.LABELS.DATE', comparitor : '>', valueFilter : 'date',
+    },
+    {
+      key : 'custom_date_end', label : 'FORM.LABELS.DATE', comparitor : '<', valueFilter : 'date',
     },
     {
       key : 'dateBirthFrom', label : 'FORM.LABELS.DOB', comparitor : '>', valueFilter : 'date',

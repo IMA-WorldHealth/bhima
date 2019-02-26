@@ -3,9 +3,7 @@ angular.module('bhima.controllers')
 
 AdmissionRegistryController.$inject = [
   '$state', 'VisitService', 'NotifyService', 'util', 'uiGridConstants',
-  'GridColumnService', 'GridStateService',
-  '$httpParamSerializer', 'LanguageService',
-  'BarcodeService', 'ReceiptModal',
+  'GridColumnService', 'GridStateService', 'LanguageService', 'ReceiptModal',
 ];
 
 /**
@@ -16,23 +14,22 @@ AdmissionRegistryController.$inject = [
  */
 function AdmissionRegistryController(
   $state, Visits, Notify, util, uiGridConstants,
-  Columns, GridState, $httpParamSerializer, Languages, Barcode, Receipts
+  Columns, GridState, Languages, Receipts
 ) {
   const vm = this;
   const cacheKey = 'AdmissionRegistry';
 
+  // the grid registry filterer
+  const { grid } = Visits;
+
+  vm.loading = false;
   vm.search = search;
   vm.patientCard = patientCard;
   vm.openColumnConfiguration = openColumnConfiguration;
   vm.onRemoveFilter = onRemoveFilter;
-  vm.download = Visits.download;
-  vm.downloadExcel = downloadExcel;
   vm.languageKey = Languages.key;
   vm.toggleInlineFilter = toggleInlineFilter;
   vm.openTransferModal = openTransferModal;
-
-  // track if module is making a HTTP request for admissions
-  vm.loading = false;
 
   const patientCardTemplate = `
     <div class="ui-grid-cell-contents">
@@ -58,7 +55,7 @@ function AdmissionRegistryController(
     displayName : 'BED.TITLE',
     headerCellFilter : 'translate',
   }, {
-    field : 'patient_reference',
+    field : 'reference',
     displayName : 'TABLE.COLUMNS.REFERENCE',
     headerCellFilter : 'translate',
     cellTemplate : patientCardTemplate,
@@ -141,12 +138,10 @@ function AdmissionRegistryController(
 
     // flush error and loading states
     vm.hasError = false;
-    toggleLoadingIndicator();
-
-    const request = Visits.admissions.read(null, filters);
+    vm.loading = true;
 
     // hook the returned admissions up to the grid.
-    request
+    return Visits.admissions.read(null, filters)
       .then((admissions) => {
         admissions.forEach((admission) => {
           admission.durationAge = util.getDuration(admission.duration);
@@ -154,6 +149,7 @@ function AdmissionRegistryController(
 
         // put data in the grid
         vm.uiGridOptions.data = admissions;
+        vm.latestViewFilters = grid.latestViewFilters();
       })
       .catch(handler)
       .finally(() => {
@@ -161,25 +157,19 @@ function AdmissionRegistryController(
       });
   }
 
+  // grid : search modal
   function search() {
-    const filtersSnapshot = Visits.filters.formatHTTP();
-
-    Visits.openAdmissionSearchModal(filtersSnapshot)
-      .then((changes) => {
-        Visits.filters.replaceFilters(changes);
-
-        Visits.cacheFilters();
-        vm.latestViewFilters = Visits.filters.formatView();
-        return load(Visits.filters.formatHTTP(true));
-      });
+    grid.search(Visits.openAdmissionSearchModal, load);
   }
 
-  // remove a filter with from the filter object, save the filters and reload
+  // grid : on remove a filter
   function onRemoveFilter(key) {
-    Visits.removeFilter(key);
-    Visits.cacheFilters();
-    vm.latestViewFilters = Visits.filters.formatView();
-    return load(Visits.filters.formatHTTP(true));
+    grid.onRemoveFilter(key, load);
+  }
+
+  // grid : on startup
+  function startup() {
+    grid.startup($state.params, load);
   }
 
   function openColumnConfiguration() {
@@ -194,32 +184,6 @@ function AdmissionRegistryController(
   // admission card
   function patientCard(uuid) {
     Receipts.patient(uuid);
-  }
-
-  // startup function. Checks for cached filters and loads them.  This behavior could be changed.
-  function startup() {
-    if ($state.params.filters.length) {
-      Visits.filters.replaceFiltersFromState($state.params.filters);
-      Visits.cacheFilters();
-    }
-
-    load(Visits.filters.formatHTTP(true));
-    vm.latestViewFilters = Visits.filters.formatView();
-  }
-
-  function downloadExcel() {
-    const filterOpts = Visits.filters.formatHTTP();
-    const defaultOpts = {
-      renderer : 'xlsx',
-      lang : Languages.key,
-      rowsDataKey : 'admissions',
-      renameKeys : true,
-      displayNames : columnConfig.getDisplayNames(),
-    };
-    // combine options
-    const options = angular.merge(defaultOpts, filterOpts);
-    // return  serialized options
-    return $httpParamSerializer(options);
   }
 
   // patient transfer

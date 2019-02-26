@@ -79,7 +79,7 @@
 
   <hr>
 
-  <div ng-if="AdmitCtrl.isAdmission">
+  <div ng-if="AdmitCtrl.isAdmission && AdmitCtrl.visit.hospitalized">
     <bh-room-assign on-select-callback="AdmitCtrl.onBedRoomSelect(bed)"></bh-room-assign>
   </div>
 </div>

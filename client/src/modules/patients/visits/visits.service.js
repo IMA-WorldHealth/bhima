@@ -2,17 +2,18 @@ angular.module('bhima.services')
   .service('VisitService', VisitService);
 
 VisitService.$inject = [
-  '$http', 'util', '$uibModal', 'GridFilterer',
+  '$http', 'util', '$uibModal', 'GridRegistryFilterer',
 ];
 
 function VisitService(
-  $http, util, $uibModal, GridFilterer,
+  $http, util, $uibModal, GridRegistryFilterer
 ) {
   const service = this;
   const baseUrl = '/patients';
+  const grid = new GridRegistryFilterer('PatientAdmissionRegistryFilterer');
 
-  // expose the grid filterer
-  service.filters = new GridFilterer('patient-admission-filters');
+  // expose the grid registry filterers
+  service.grid = grid;
 
   // send/receive with $http
   service.read = read;
