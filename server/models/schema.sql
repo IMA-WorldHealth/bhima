@@ -1231,6 +1231,7 @@ CREATE TABLE `patient_visit` (
   `end_diagnosis_id` INT(10) UNSIGNED,
   `hospitalized` TINYINT(1) NOT NULL DEFAULT 0,
   `user_id` SMALLINT(5) UNSIGNED NOT NULL,
+  `last_service_id` SMALLINT(5) UNSIGNED NOT NULL,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `patient_visit_1`(`patient_uuid`, `start_date`, `end_date`),
   KEY `patient_uuid` (`patient_uuid`),
@@ -1241,6 +1242,18 @@ CREATE TABLE `patient_visit` (
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`start_diagnosis_id`) REFERENCES `icd10` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`end_diagnosis_id`) REFERENCES `icd10` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `patient_visit_service`;
+CREATE TABLE `patient_visit_service` (
+  `uuid`               BINARY(16) NOT NULL,
+  `date`               DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `patient_visit_uuid` BINARY(16) NOT NULL,
+  `service_id`         SMALLINT(5) UNSIGNED NOT NULL,
+  `created_at`         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+   PRIMARY KEY (`uuid`),
+   FOREIGN KEY (`patient_visit_uuid`) REFERENCES `patient_visit` (`uuid`) ON UPDATE CASCADE,
+   FOREIGN KEY (`service_id`) REFERENCES `service` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `patient_hospitalization`;

@@ -21,6 +21,7 @@ function VisitService(
   service.discharge = discharge;
   service.diagnoses = diagnoses;
   service.transfer = transfer;
+  service.admissionStatus = admissionStatus;
 
   // methods for admissions
   service.admissions = {};
@@ -35,6 +36,11 @@ function VisitService(
     if (!patientUuid) { return 0; }
 
     return $http.get(`${baseUrl}/${patientUuid}/visits`, { params : options })
+      .then(util.unwrapHttpResponse);
+  }
+
+  function admissionStatus(patientUuid) {
+    return $http.get(`${baseUrl}/${patientUuid}/visits/status`)
       .then(util.unwrapHttpResponse);
   }
 
@@ -97,7 +103,7 @@ function VisitService(
   // admission vs. discharge
   function openAdmission(patientUuid, isAdmission, currentVisit) {
     const modalOptions = {
-      templateUrl : 'modules/patients/visits/visits.modal.html',
+      templateUrl : 'modules/patients/visits/modals/visits.modal.html',
       controller : 'VisitsAdmissionController',
       controllerAs : 'AdmitCtrl',
       keyboard : false,
@@ -133,7 +139,7 @@ function VisitService(
    */
   function openAdmissionSearchModal(params) {
     return $uibModal.open({
-      templateUrl : 'modules/patients/admissions/search.modal.html',
+      templateUrl : 'modules/patients/visits/modals/search.modal.html',
       size : 'md',
       keyboard : false,
       animation : false,
@@ -150,7 +156,7 @@ function VisitService(
    */
   function openTransferModal(params) {
     return $uibModal.open({
-      templateUrl : 'modules/patients/visits/transfer.modal.html',
+      templateUrl : 'modules/patients/visits/modals/transfer.modal.html',
       size : 'md',
       keyboard : false,
       animation : false,

@@ -45,6 +45,15 @@
         </button>
       </div>
 
+      <div class="toolbar-item">
+        <button
+          ng-click="AdmissionRegistryCtrl.openVisitModal()"
+          data-method="new-visit"
+          class="btn btn-primary">
+          <span class="fa fa-plus"></span> <span class="hidden-xs" translate>PATIENT_RECORDS.VISITS.NEW</span>
+        </button>
+      </div>
+
       <bh-filter-toggle on-toggle="AdmissionRegistryCtrl.toggleInlineFilter()">
       </bh-filter-toggle>
     </div>

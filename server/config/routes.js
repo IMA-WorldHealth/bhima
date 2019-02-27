@@ -445,6 +445,7 @@ exports.configure = function configure(app) {
   app.post('/patients/:uuid/pictures', upload.middleware('pics', 'pictures'), patients.pictures.set);
 
   app.get('/patients/visits/:uuid', patients.visits.detail);
+  app.get('/patients/:uuid/visits/status', patients.visits.patientAdmissionStatus);
   app.get('/patients/:patientUuid/visits/:uuid', patients.visits.detail);
   app.get('/patients/:uuid/visits', patients.visits.listByPatient);
   app.post('/patients/:uuid/visits/admission', patients.visits.admission);

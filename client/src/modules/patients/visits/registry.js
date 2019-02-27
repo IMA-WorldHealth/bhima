@@ -30,10 +30,11 @@ function AdmissionRegistryController(
   vm.languageKey = Languages.key;
   vm.toggleInlineFilter = toggleInlineFilter;
   vm.openTransferModal = openTransferModal;
+  vm.openVisitModal = openVisitModal;
 
   const patientCardTemplate = `
     <div class="ui-grid-cell-contents">
-      <a href ng-click="grid.appScope.patientCard(row.entity.patient_uuid)">{{row.entity.patient_reference}}</a>
+      <a ui-sref="patientRecord({ patientUuid : row.entity.patient_uuid })">{{row.entity.reference}}</a>
     </div>
   `;
   const patientDetailsTemplate = `
@@ -43,6 +44,10 @@ function AdmissionRegistryController(
   `;
 
   const columnDefs = [{
+    field : 'service_name',
+    displayName : 'FORM.LABELS.SERVICE',
+    headerCellFilter : 'translate',
+  }, {
     field : 'ward_name',
     displayName : 'WARD.TITLE',
     headerCellFilter : 'translate',
@@ -80,22 +85,22 @@ function AdmissionRegistryController(
     headerCellFilter : 'translate',
     cellFilter : 'date',
     type : 'date',
-    cellTemplate : '/modules/patients/admissions/templates/end_date.cell.html',
+    cellTemplate : '/modules/patients/visits/templates/end_date.cell.html',
   }, {
     field : 'duration',
     displayName : 'PATIENT_RECORDS.VISITS.DURATION',
     headerCellFilter : 'translate',
     type : 'number',
-    cellTemplate : '/modules/patients/admissions/templates/duration.cell.html',
+    cellTemplate : '/modules/patients/visits/templates/duration.cell.html',
   }, {
     field : 'hospitalized',
     displayName : 'PATIENT_RECORDS.VISITS.ADMISSION_TYPE',
     headerCellFilter : 'translate',
-    cellTemplate : '/modules/patients/admissions/templates/type.cell.html',
+    cellTemplate : '/modules/patients/visits/templates/type.cell.html',
   }, {
     name : 'actions',
     displayName : '',
-    cellTemplate : '/modules/patients/admissions/templates/action.cell.html',
+    cellTemplate : '/modules/patients/visits/templates/action.cell.html',
     enableSorting : false,
     enableFiltering : false,
   }];
@@ -149,6 +154,7 @@ function AdmissionRegistryController(
 
         // put data in the grid
         vm.uiGridOptions.data = admissions;
+        // grid : update view filters
         vm.latestViewFilters = grid.latestViewFilters();
       })
       .catch(handler)
@@ -184,6 +190,16 @@ function AdmissionRegistryController(
   // admission card
   function patientCard(uuid) {
     Receipts.patient(uuid);
+  }
+
+  // new patient visit
+  function openVisitModal() {
+    Visits.openAdmission(null, true)
+      .then(result => {
+        if (!result) { return; }
+        // reload the grid
+        grid.startup($state.params, load);
+      });
   }
 
   // patient transfer

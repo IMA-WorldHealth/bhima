@@ -11,6 +11,7 @@
     "UPDATE_PICTURE" : "Update Patient Photo",
     "UPLOAD_PICTURE" : "Upload Patient Photo",
     "HOSPITAL_NO":"Hospital Number",
+    "DETAILS":"Details",
     "CHECK_IN":{
       "TITLE" : "Check In",
       "SUBMIT" : "Check Patient In",
@@ -42,7 +43,11 @@
       "DISCHARGE_DIAGNOSIS": "Discharge Diagnosis",
       "PATIENT_INFO": "Patient Information",
       "VISITS_INFO": "Visits Information",
-      "ADMISSION_REGISTRY":"Admissions Registry"
+      "ADMISSION_REGISTRY":"Admissions Registry",
+      "ONLY_HOSPITALIZED":"Only hospitalized patients",
+      "NEW":"New Visit",
+      "ALREADY_ADMITTED":"The patient is already admitted, and his visit is not discharged"
+      
     },
     "TRANSFER":{
       "TITLE":"Transfer",

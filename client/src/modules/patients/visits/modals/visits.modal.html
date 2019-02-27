@@ -9,6 +9,23 @@
 
 <div class="modal-body">
 
+  <!-- patient -->
+  <div class="form-group" ng-if="!AdmitCtrl.hasPatient">
+    <bh-find-patient
+      patient-uuid="AdmitCtrl.patientUuid"
+      on-search-complete="AdmitCtrl.onSelectPatient(patient)"
+      required="true">
+    </bh-find-patient>
+    <span class="text-danger" ng-if="AdmitCtrl.alreadyAdmitted">
+      <i class="fa fa-warning"></i> <span translate>PATIENT_RECORDS.VISITS.ALREADY_ADMITTED</span>
+    </span>
+  </div>
+
+  <!-- service -->
+  <div ng-if="AdmitCtrl.isAdmission">
+    <bh-service-select on-select-callback="AdmitCtrl.onServiceSelect(service)"></bh-service-select>
+  </div>
+
   <div ng-if="!AdmitCtrl.isAdmission && AdmitCtrl.currentVisit.start_diagnosis_label" class="form-group">
     <label class="control-label"><span translate>PATIENT_RECORDS.VISITS.ADMISSION_DIAGNOSIS</span></label>
     <p class="form-static">{{AdmitCtrl.currentVisit.start_diagnosis_label}}</p>
@@ -76,10 +93,10 @@
     </div>
 
   </div>
-
-  <hr>
-
+  
+  <!-- ward and bed -->
   <div ng-if="AdmitCtrl.isAdmission && AdmitCtrl.visit.hospitalized">
+    <hr>
     <bh-room-assign on-select-callback="AdmitCtrl.onBedRoomSelect(bed)"></bh-room-assign>
   </div>
 </div>

@@ -15,6 +15,14 @@
     <uib-tabset>
       <uib-tab index="0" heading="{{ 'FORM.LABELS.SEARCH_QUERIES' | translate }}" data-custom-filter-tab>
         <div class="tab-body">
+          <!-- hospitalized -->
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" ng-true-value="1" ng-false-value=0 ng-model="$ctrl.searchQueries.hospitalized">
+              <span translate>PATIENT_RECORDS.VISITS.ONLY_HOSPITALIZED</span>
+            </label>
+          </div>
+
           <!--patient name-->
           <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.display_name.$invalid }">
             <label class="control-label" translate> FORM.LABELS.NAME </label>

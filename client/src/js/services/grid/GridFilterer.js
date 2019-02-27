@@ -36,6 +36,7 @@ function GridFiltererService(Filters, AppCache, Periods, $httpParamSerializer, L
     { key : 'ward_uuid', label : 'WARD.TITLE' },
     { key : 'room_uuid', label : 'ROOM.TITLE' },
     { key : 'bed_id', label : 'BED.TITLE' },
+    { key : 'hospitalized', label : 'PATIENT_RECORDS.VISITS.ONLY_HOSPITALIZED' },
     {
       key : 'dateFrom', label : 'FORM.LABELS.DATE', comparitor : '>', valueFilter : 'date',
     },

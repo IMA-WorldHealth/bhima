@@ -14,7 +14,7 @@ function AdmissionRegistryModalController(ModalInstance, filters, Store, util, P
 
   const searchQueryOptions = [
     'display_name', 'hospital_no', 'reference', 'start_date', 'end_date',
-    'ward_name', 'room_label', 'bed_label',
+    'ward_name', 'room_label', 'bed_label', 'hospitalized',
   ];
 
   vm.filters = filters;

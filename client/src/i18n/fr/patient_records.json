@@ -11,6 +11,7 @@
     "UPDATE_PICTURE":"Mettre à jour la Photo",
     "UPLOAD_PICTURE":"Télécharger Photo Patient",
     "HOSPITAL_NO":"Numéro de fiche",
+    "DETAILS":"Details",
     "CHECK_IN":{
       "TITLE" : "Admission",
       "SUBMIT" : "Admettre le patient",
@@ -42,7 +43,10 @@
       "DISCHARGE_DIAGNOSIS": "Diagnostique à la sortie",
       "PATIENT_INFO": "Informations sur le patient",
       "VISITS_INFO": "Informations sur les visites",
-      "ADMISSION_REGISTRY":"Registre des Admissions"
+      "ADMISSION_REGISTRY":"Registre des Admissions",
+      "ONLY_HOSPITALIZED":"Seulement les patients hospitalisés",
+      "NEW":"Nouvelle visite",
+      "ALREADY_ADMITTED":"Le patient est déjà admit, et sa visite n'est pas encore déchargée"
     },
     "TRANSFER":{
       "TITLE":"Transfert",
