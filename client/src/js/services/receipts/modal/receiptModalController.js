@@ -2,7 +2,8 @@ angular.module('bhima.controllers')
   .controller('ReceiptModalController', ReceiptModalController);
 
 ReceiptModalController.$inject = [
-  '$scope', '$uibModalInstance', '$window', '$sce', 'ReceiptService', 'NotifyService', 'receipt', 'options',
+  '$scope', '$uibModalInstance', '$window', '$sce', 'ReceiptService',
+  'NotifyService', 'receipt', 'options', 'document',
 ];
 
 /**
@@ -15,7 +16,8 @@ ReceiptModalController.$inject = [
  * @param {String} template  Path to the template or resource to load
  * @param {String} render    Render target used to generate report
  */
-function ReceiptModalController($scope, $modalInstance, $window, $sce, Receipts, Notify, receipt, options) {
+function ReceiptModalController($scope, $modalInstance, $window, $sce,
+  Receipts, Notify, receipt, options, document) {
   const vm = this;
 
   // expose available receipt renderers to view
@@ -26,6 +28,7 @@ function ReceiptModalController($scope, $modalInstance, $window, $sce, Receipts,
 
   // expose options to the view
   angular.extend(vm, options);
+  vm.document = document || {};
 
   receipt.promise
     .then(result => {

@@ -70,7 +70,7 @@ function JournalService(Api, AppCache, Filters, Periods, Modal, bhConstants, Tra
       removed : entity.removedRows,
     };
 
-    return service.$http.post(URL.concat(entity.uuid, '/edit'), saveRequest)
+    return service.$http.post(`/journal/${entity.uuid}/edit`, saveRequest)
       .then(service.util.unwrapHttpResponse);
   }
 

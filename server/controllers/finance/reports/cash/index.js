@@ -60,12 +60,6 @@ function receipt(req, res, next) {
     return;
   }
 
-  const postedPaymentSql = ` 
-    SELECT IF(COUNT(gl.uuid) > 0, 1, 0) as isPosted, trans_id
-    FROM general_ledger gl
-    JOIN cash c ON c.uuid = gl.record_uuid
-     AND c.uuid =? `;
-
   const data = {};
 
   CashPayments.lookup(req.params.uuid)
@@ -129,12 +123,6 @@ function receipt(req, res, next) {
         invoiceItem.payment_complete = invoiceItem.balance === 0;
       });
 
-      // let check is this cash payment is posted
-      return db.one(postedPaymentSql, db.bid(data.payment.uuid));
-    })
-    .then(postedPayment => {
-      data.isPosted = postedPayment.isPosted === 1;
-      data.trans_id = postedPayment.trans_id;
       return receiptReport.render(data);
     })
     .then((result) => {

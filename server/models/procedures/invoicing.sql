@@ -284,6 +284,7 @@ BEGIN
     uuid, transaction_id, project_id, current_fiscal_year_id, current_period_id,
     currency_id
   );
+
 END $$
 
 

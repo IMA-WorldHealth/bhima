@@ -537,6 +537,7 @@ exports.configure = function configure(app) {
   app.put('/cash/:uuid', cash.update);
   app.get('/cash/checkin/:invoiceUuid', cash.checkInvoicePayment);
 
+
   // Enterprises api
   app.get('/enterprises', enterprises.list);
   app.get('/enterprises/:id', enterprises.detail);

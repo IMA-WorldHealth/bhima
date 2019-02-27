@@ -53,7 +53,7 @@ function lookup(uuid) {
   const cashRecordSql = `
     SELECT BUID(cash.uuid) as uuid, cash.project_id, dm.text AS reference,
       cash.date, cash.created_at, BUID(cash.debtor_uuid) AS debtor_uuid, cash.currency_id, cash.amount,
-      cash.description, cash.cashbox_id, cash.is_caution, cash.user_id, cash.edited
+      cash.description, cash.cashbox_id, cash.is_caution, cash.user_id, cash.edited, cash.posted
     FROM cash JOIN project ON cash.project_id = project.id
       JOIN document_map dm ON cash.uuid = dm.uuid
     WHERE cash.uuid = ?;

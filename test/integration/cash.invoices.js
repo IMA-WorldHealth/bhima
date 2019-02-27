@@ -133,7 +133,7 @@ function PatientInvoicePayments() {
         expect(res.body).to.not.be.empty;
         expect(res.body).to.have.keys(
           'uuid', 'barcode', 'reference', 'date', 'created_at', 'debtor_uuid', 'project_id', 'currency_id', 'items',
-          'cashbox_id', 'amount', 'user_id', 'description', 'is_caution', 'edited'
+          'cashbox_id', 'amount', 'user_id', 'description', 'is_caution', 'edited', 'posted',
         );
       })
       .catch(helpers.handler);
