@@ -10,7 +10,7 @@ graph LR;
     J -- Trial Balance -->G[General Ledger ]
 ```
 
-The above diagram shows the flow of data entry into the system, covering the three basic records in BHIMA: **Cash Payments**, **Patient Invoices**, and **Journal Vouchers**.  Each record is backed by a transaction written to the [Journal](/journal-module.md).  Through a validation process called the Trial Balance, transactions in the Journal are posted to the [General Ledger](/general-ledger.md) after which the transaction is unalterable.
+The above diagram shows the flow of data entry into the system, covering the three basic records in BHIMA: **Cash Payments**, **Patient Invoices**, and **Journal Vouchers**.  Each record is backed by a transaction written to the [Journal](./ledgers/journal-module.md).  Through a validation process called the [Trial Balance](./ledger/trial-balance.md), transactions in the Journal are posted to the [General Ledger](./ledgers/general-ledger.md) after which the transaction is unalterable.
 
 All financial activities recorded with BHIMA are represented by two entities:
 
@@ -35,7 +35,7 @@ graph TD;
 
 ## Double Entry Bookkeeping
 
-At its heart, BHIMA is a double entry accounting software.  In double entry accounting, transactions are composed of two or more lines, each corresponding to a single account.  The value moved in or out of the accounts are recorded as either _debits_ or _credits_.  Debits and credits are opposites, but their behavior isn't always intuitive or well defined.  In general, one can consider debits as positive numbers and credits as negative number.  [This source ](https://debitoor.com/dictionary/debit)provides the following definitions \(the first one is wrong online and is corrected below\):
+At its heart, BHIMA is a double entry accounting software.  In double entry accounting, transactions are composed of two or more lines, each corresponding to a single account.  The value moved in or out of the accounts are recorded as either _debits_ or _credits_.  Debits and credits are opposites, but their behavior isn't always intuitive or well defined.  In general, one can consider debits as positive numbers and credits as negative number.  [This source](https://debitoor.com/dictionary/debit)provides the following definitions \(the first one is wrong online and is corrected below\):
 
 1. To debit a debtor account implies an increase in the debtor's debt.  In contrast, to credit a debtor account implies a reduction in their debt to the enterprise.
 2. To debit an asset account implies that the assets increase.  By contrast, to credit an asset account reduces the assets.
@@ -46,7 +46,10 @@ Debits and credits _must_ balance in a transaction. All things being equal, inco
 
 <div class="bs-callout bs-callout-info">
 <h4>Keeping debits and credits straight</h4>
+<p>
 The concept of debits and credits is learned through experience and even seasoned accountants mix up their roles.  An easy scenario to help sort out confusion is to imagine transactions with a cashbox or bank account.
-
-To put money into the cashbox \(an asset account\), you **debit** the cashbox, increasing its value.  Since the transaction must be balanced, the opposite side of the transaction must hold a **credit** value.  If it is a client paying their debts, they must have begun the transaction with a **debit **value.  Therefore, the invoicing operation must have **debited** the client and credited an income account.
+</p>
+<p>
+To put money into the cashbox (an asset account), you <b>debit</b> the cashbox, increasing its value.  Since the transaction must be balanced, the opposite side of the transaction must hold a <b>credit</b> value.  If it is a client paying their debts, they must have begun the transaction with a **debit** value.  Therefore, the invoicing operation must have **debited** the client and credited an income account.
+</p>
 </div>
