@@ -10,9 +10,9 @@ graphe LR;
     J - Balance de vérification -> G [Grand livre]
 ```
 
-Le diagramme ci-dessus montre le flux de saisie des données dans le système, couvrant les trois enregistrements de base de BHIMA: **Paiements en espèce**, **Factures patient** et **Pièces de journal**. 
+Le diagramme ci-dessus montre le flux de saisie des données dans le système, couvrant les trois enregistrements de base de BHIMA: **Paiements en espèce**, **Factures patient** et **Pièces de journal**.
 
-Chaque enregistrement est sauvegardé par une transaction écrite dans le [Journal](/ledgers/posting-journal.md). Grâce à un processus de validation appelé balance de contrôle, les transactions dans le journal sont enregistrées dans le [grand livre](/general-ledger.md), après quoi la transaction est inaltérable.
+Chaque enregistrement est sauvegardé par une transaction écrite dans le [Journal](/ledgers/posting-journal.md). Grâce à un processus de validation appelé balance de contrôle, les transactions dans le journal sont enregistrées dans le [grand livre](/ledgers/general-ledger.md), après quoi la transaction est inaltérable.
 
 Toutes les activités financières enregistrées avec BHIMA sont représentées par deux entités:
 
@@ -22,7 +22,7 @@ Toutes les activités financières enregistrées avec BHIMA sont représentées 
 
 <p style="text-align:justify">
 Bien que la transaction puisse être modifiée dans le journal, le document d'origine ne peut pas être modifié et conserve un enregistrement des valeurs d'origine telles qu'elles ont été entrées dans l'application.
-</p> 
+</p>
 
 <p style="text-align:justify">
 La seule exception à cette règle est la suppression. Si une transaction ou un enregistrement est supprimé, l’enregistrement et les données du journal sont supprimés. Seules les transactions non postées peuvent être supprimées.
@@ -53,9 +53,9 @@ graphe TD;
 ## Comptabilité en partie double
 
 <p style="text-align:justify">
-BHIMA est un logiciel de comptabilité en partie double. Dans la comptabilité en partie double, les transactions sont composées de deux lignes ou plus, chacune correspondant à un seul compte. Les valeurs entrées ou sorties des comptes sont enregistrées sous la forme <em>debits</em> ou <em>credits</em>. 
+BHIMA est un logiciel de comptabilité en partie double. Dans la comptabilité en partie double, les transactions sont composées de deux lignes ou plus, chacune correspondant à un seul compte. Les valeurs entrées ou sorties des comptes sont enregistrées sous la forme <em>debits</em> ou <em>credits</em>.
 
-Les débits et les crédits sont des opposés, mais leur comportement n'est pas toujours intuitif ni bien défini. En général, on peut considérer les débits comme des nombres positifs et les crédits comme des nombres négatifs. 
+Les débits et les crédits sont des opposés, mais leur comportement n'est pas toujours intuitif ni bien défini. En général, on peut considérer les débits comme des nombres positifs et les crédits comme des nombres négatifs.
 </p>
 
 [Cette source](https://debitoor.com/dictionary/debit) fournit les définitions suivantes la première est erronée en ligne et est corrigée ci-dessous:
