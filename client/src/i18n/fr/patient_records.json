@@ -53,6 +53,17 @@
       "NEW_DESTINATION_DESCRIPTION":"Veuillez séléctionner la nouvelle destination (pavillon, chambre et lit) du patient",
       "SUCCESSFULLY_TRANSFERED":"Le patient a été transferé avec succès"
     },
+    "DISCHARGE":{
+      "TITLE":"Décharge",
+      "TYPE":"Type de décharge",
+      "REGULAR":"Décharge regulière",
+      "ON_PATIENT_WILL":"Le patient ayant quitté l'Hopital sur sa propre volonté",
+      "EMERGENCY":"Décharge d'urgence",
+      "SERVICE_CHANGE":"Changement de service",
+      "DEATH":"Décès du malade",
+      "EVASION":"Le malade s'est évadé de l'Hopital",
+      "DISCHARGE_BUT_ON_BED":"Décharge médical mais le patient reste dans le lit"
+    },
     "FINANCIAL_ACTIVITY":{
       "ACCOUNT":"Numéro de compte",
       "DEBTOR_GROUP":"Groupe débiteur",

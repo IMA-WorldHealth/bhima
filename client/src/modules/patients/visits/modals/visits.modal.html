@@ -55,6 +55,11 @@
     </div>
   </div>
 
+  <!-- only on discharge -->
+  <div ng-if="!AdmitCtrl.isAdmission">
+    <bh-discharge-select on-change-callback="AdmitCtrl.onSelectDischarge(dischargeType)"></bh-discharge-select>
+  </div>
+
   <div
     class="form-group"
     ng-class="{ 'has-error' : VisitForm.$submitted && VisitForm.diagnosis.$invalid }">

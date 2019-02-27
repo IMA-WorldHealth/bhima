@@ -1272,6 +1272,14 @@ CREATE TABLE `patient_hospitalization` (
    FOREIGN KEY (`bed_id`) REFERENCES `bed` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
+DROP TABLE IF EXISTS `discharge_type`;
+CREATE TABLE `discharge_type` (
+  `id` TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `label` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `discharge_type_1` (`id`, `label`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
 
 DROP TABLE IF EXISTS `period`;
 CREATE TABLE `period` (

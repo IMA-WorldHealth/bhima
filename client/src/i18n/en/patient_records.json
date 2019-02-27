@@ -47,12 +47,22 @@
       "ONLY_HOSPITALIZED":"Only hospitalized patients",
       "NEW":"New Visit",
       "ALREADY_ADMITTED":"The patient is already admitted, and his visit is not discharged"
-      
     },
     "TRANSFER":{
       "TITLE":"Transfer",
       "NEW_DESTINATION_DESCRIPTION":"Please select the new destination (ward, room and bed) of the patient",
       "SUCCESSFULLY_TRANSFERED":"The patient has been successfully transfered"
+    },
+    "DISCHARGE":{
+      "TITLE":"Discharge",
+      "TYPE":"Type of discharge",
+      "REGULAR":"Regular Discharge",
+      "ON_PATIENT_WILL":"The patient having left the hospital on his own will",
+      "EMERGENCY":"Emergency Discharge",
+      "SERVICE_CHANGE":"Service Change",
+      "DEATH":"Death of the patient",
+      "EVASION":"The patient escaped from the hospital",
+      "DISCHARGE_BUT_ON_BED":"Medical discharge but the patient stays in the bed"
     },
     "FINANCIAL_ACTIVITY":{
       "ACCOUNT" : "Account Number",

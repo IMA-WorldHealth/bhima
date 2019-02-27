@@ -109,6 +109,7 @@ const tags = require('../controllers/admin/tags');
 const ward = require('../controllers/medical/ward/ward');
 const room = require('../controllers/medical/ward/room');
 const bed = require('../controllers/medical/ward/bed');
+const dischargeType = require('../controllers/medical/dischargeType');
 
 const feeCenter = require('../controllers/finance/feeCenter');
 
@@ -862,5 +863,8 @@ exports.configure = function configure(app) {
   app.post('/account_reference_type', accountReferenceType.create);
   app.put('/account_reference_type/:id', accountReferenceType.update);
   app.delete('/account_reference_type/:id', accountReferenceType.delete);
+
+  // API for discharge type
+  app.get('/discharge_type', dischargeType.list);
 
 };
