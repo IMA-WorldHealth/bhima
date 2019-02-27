@@ -64,4 +64,7 @@ module.exports = {
   servicesMultipleSelect : require('./bhServicesMultipleSelect'),
   percentageInput : require('./bhPercentageInput'),
   accountReferenceTypeSelect : require('./bhAccountReferenceTypeSelect'),
+  inpuText : require('./bhInputText'),
+  wardSelect : require('./bhWardSelect'),
+  roomSelect : require('./bhRoomSelect'),
 };

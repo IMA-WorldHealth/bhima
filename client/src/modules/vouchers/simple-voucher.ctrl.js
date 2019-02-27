@@ -132,4 +132,9 @@ function SimpleJournalVoucherController(Vouchers, util, Notify, Receipts, bhCons
     vm.Voucher.validate();
   });
 
+
+  vm.onCurrencyChange = (currencyId) => {
+    vm.Voucher.details.currency_id = currencyId;
+  };
+
 }

@@ -9,11 +9,11 @@ This guide will get you up and running with bhima locally. Please note that bhim
 Before you begin the installation process, please make sure you have all the bhima dependencies installed locally. We only test on Linux, so your best bet is to use a Linux flavor you are familiar with. Please make sure you have recent version of:
 
 1. [MySQL](http://dev.mysql.com/downloads/) \(5.6 or newer\)
-2. [Redis](https://github.com/IMA-WorldHealth/bhima-2.X/blob/master/docs/redis.io)
+2. [Redis](https://redis.io)
 3. curl
 4. [NodeJS](https://nodejs.org/en/) \(we recommend using [node version manager](https://github.com/creationix/nvm) on linux. Note that we only test on stable and edge\).
 5. [WKHTMLtoPDF](http://wkhtmltopdf.org/downloads.html) \(use the compiled binaries, even if it is distributed with your package manager. The binaries come with patched Qt\).
-6. yarn
+6. [yarn](https://yarnpkg.com/)
 7. git
 
 ### Detailed dependency installation instructions for Ubuntu \(verified / installed specifically using VirtualBox\)
@@ -39,13 +39,13 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \."$NVM_DIR\nvm.sh" # This loads nvm
 
 #Download NodeJS version 8
-nvm install 8
+nvm install lts/*
 
 #Run the following commands to install WKHTMLtoPDF (note that version 0.12.4 should be installed, 0.12.5 does not currently work with bhima):
 sudo apt-get install xvfb
-wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
+wget -c https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
 tar xvf wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
-sudo mv wkhtmltox/bin/wkhtmltopdf /usr/bin 
+sudo mv wkhtmltox/bin/wkhtmltopdf /usr/bin
 sudo rm wkhtmltox-0.12.4_linux-generic-amd64.tar.xz  && rm -rf wkhtmltox
 
 #Installs yarn without re-installing NodeJS
@@ -60,11 +60,11 @@ sudo apt-get install git
 
 ### Getting the source
 
-Clone the source using git from the [github repository](https://github.com/IMA-WorldHealth/bhima-2.x) using the following commands:
+Clone the source using git from the [github repository](https://github.com/IMA-WorldHealth/bhima) using the following commands:
 
 ```bash
-git clone https://github.com/IMA-WorldHealth/bhima-2.X.git bhima-2.X
-cd bhima-2.X
+git clone https://github.com/IMA-WorldHealth/bhima.git bhima
+cd bhima
 ```
 
 ### Building from source
@@ -74,7 +74,7 @@ All our build scripts are found the `package.json` file. We use [gulpjs](http://
 To execute the build scripts, you can use either `yarn` or `npm`. We'll use `yarn` for the remainder of this guide. Note that using `npm` may require you to use `npm run` where it says `yarn` below.
 
 ```bash
-# Inside the bhima-2.X/ directory
+# Inside the bhima/ directory
 # install all node modules
 
 yarn install
@@ -167,16 +167,15 @@ Navigate to [https://localhost:8080](https://localhost:8080) in the browser to v
 
 ### Testing the Application
 
-Our tests are broken into unit tests, end to end tests, and integration tests. There is more information on testing in the [wiki](https://github.com/IMA-WorldHealth/bhima-2.X/wiki).
+Our tests are broken into unit tests, end to end tests, and integration tests. There is more information on testing in the [wiki](https://github.com/IMA-WorldHealth/bhima/wiki).
 
-1. **Integration Tests ** - These test the server + database integration and generally our APIs. All reachable API endpoints should generally have an integration test associated with them. To run them, type `yarn test:integration`.
-2. **Server Unit Tests ** - Server libraries are unit tested with mocha and chai, similar to the integration tests. To run them, type 
+1. **Integration Tests** - These test the server + database integration and generally our APIs. All reachable API endpoints should generally have an integration test associated with them. To run them, type `yarn test:integration`.
+2. **Server Unit Tests** - Server libraries are unit tested with mocha and chai, similar to the integration tests. To run them, type
    `yarn test:server-unit.`
-3. **Client Unit Tests ** - Client components are unit tested with karma which you should have installed if you installed all dependencies. Karma launches a chrome browser to execute the tests. To run them, type `yarn test:client-unit`.
-4. **End to End Tests** - The entire stack is tested with \(often flaky\) end to end tests using [protractor](https://github.com/IMA-WorldHealth/bhima-2.X/blob/master/docs/protractortest.org). Protractor depends on 
+3. **Client Unit Tests** - Client components are unit tested with karma which you should have installed if you installed all dependencies. Karma launches a chrome browser to execute the tests. To run them, type `yarn test:client-unit`.
+4. **End to End Tests** - The entire stack is tested with \(often flaky\) end to end tests using [protractor](https://github.com/IMA-WorldHealth/bhima/blob/master/docs/protractortest.org). Protractor depends on
    `webdriver-manager` which must be installed separately. See their documentation for more information. The end to end tests can be run with `yarn test:ends`.
 
 You can run all tests by simply typing `yarn test`.
 
 Enjoy using bhima!
-

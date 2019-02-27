@@ -42,7 +42,8 @@
 
            <!-- the currency to be used in the footer -->
           <bh-currency-select
-           currency-id="ReportConfigCtrl.currency_id">
+           currency-id="ReportConfigCtrl.currency_id"
+           on-change="ReportConfigCtrl.onSelectCurrency(currencyId)">
           </bh-currency-select>
 
           <!-- preview -->

@@ -20,6 +20,7 @@ function DebtorGroupService(Modal, Session, $translate, Api) {
   service.updateInvoicingFees = updateInvoicingFees;
   service.updateSubsidies = updateSubsidies;
   service.invoices = invoices;
+  service.history = history;
   service.remove = service.delete;
 
   service.manageInvoicingFees = manageInvoicingFees;
@@ -114,6 +115,12 @@ function DebtorGroupService(Modal, Session, $translate, Api) {
   function invoices(uuid, parameters) {
     const url = `${baseUrl}${uuid}/invoices`;
     return service.$http.get(url, { params : parameters })
+      .then(service.util.unwrapHttpResponse);
+  }
+
+  function history(debtorUuid, parameters) {
+    const url = `${baseUrl}history/${debtorUuid}`;
+    return service.$http.get(url, { params : parameters || {} })
       .then(service.util.unwrapHttpResponse);
   }
 

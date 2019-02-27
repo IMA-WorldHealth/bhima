@@ -52,7 +52,7 @@ function lookup(uuid) {
 
   const cashRecordSql = `
     SELECT BUID(cash.uuid) as uuid, cash.project_id, dm.text AS reference,
-      cash.date, BUID(cash.debtor_uuid) AS debtor_uuid, cash.currency_id, cash.amount,
+      cash.date, cash.created_at, BUID(cash.debtor_uuid) AS debtor_uuid, cash.currency_id, cash.amount,
       cash.description, cash.cashbox_id, cash.is_caution, cash.user_id, cash.edited
     FROM cash JOIN project ON cash.project_id = project.id
       JOIN document_map dm ON cash.uuid = dm.uuid
@@ -130,7 +130,7 @@ function find(options) {
   const sql = `
     SELECT BUID(cash.uuid) as uuid, cash.project_id,
       CONCAT_WS('.', '${CASH_KEY}', project.abbr, cash.reference) AS reference,
-      cash.date, BUID(cash.debtor_uuid) AS debtor_uuid, cash.currency_id, cash.amount,
+      cash.date, cash.created_at,  BUID(cash.debtor_uuid) AS debtor_uuid, cash.currency_id, cash.amount,
       cash.description, cash.cashbox_id, cash.is_caution, cash.user_id, cash.reversed,
       d.text AS debtor_name, cb.label AS cashbox_label, u.display_name,
       p.display_name AS patientName, cash.edited

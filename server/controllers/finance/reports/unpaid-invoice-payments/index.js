@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const ReportManager = require('../../../../lib/ReportManager');
 const db = require('../../../../lib/db');
-
+const util = require('../../../../lib/util');
 // path to the template to render
 const TEMPLATE = './server/controllers/finance/reports/unpaid-invoice-payments/report.handlebars';
 
@@ -68,8 +68,9 @@ async function getUnbalancedInvoices(options) {
 
   // make human readable names for the users
   const debtorNames = await db.exec(`
-    SELECT BUID(debtor.uuid) AS uuid, em.text as reference, debtor.text
+    SELECT BUID(debtor.uuid) AS uuid, em.text as reference, debtor.text, p.dob
     FROM debtor JOIN entity_map em ON debtor.uuid = em.uuid
+    LEFT JOIN patient p ON p.debtor_uuid = debtor.uuid
     WHERE debtor.uuid IN (?);
   `, [debtorUuids]);
 
@@ -96,6 +97,7 @@ async function getUnbalancedInvoices(options) {
     if (debtor) {
       row.debtorReference = debtor.reference;
       row.debtorText = debtor.text;
+      row.debtorAge = util.calcualteAge(debtor.dob);
     }
   });
 

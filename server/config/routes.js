@@ -106,6 +106,10 @@ const operating = require('../controllers/finance/reports/operating/index');
 const department = require('../controllers/admin/department');
 const tags = require('../controllers/admin/tags');
 
+const ward = require('../controllers/medical/ward/ward');
+const room = require('../controllers/medical/ward/room');
+const bed = require('../controllers/medical/ward/bed');
+
 const feeCenter = require('../controllers/finance/feeCenter');
 
 const distributionConfiguration = require('../controllers/finance/distributionFeeCenter/configuration');
@@ -357,7 +361,7 @@ exports.configure = function configure(app) {
   // reports API: Invoices (receipts)
   app.get('/reports/medical/patients', medicalReports.patientRegistrations);
   app.get('/reports/medical/patients/:uuid', medicalReports.receipts.patients);
-  app.get('/reports/medical/patients/:uuid/checkins', medicalReports.patientCheckins);
+  app.get('/reports/medical/patients/:uuid/visits', medicalReports.patientVisits);
 
   app.get('/reports/inventory/purchases/:uuid', inventoryReports.receipts.purchases);
   app.get('/reports/inventory/items', inventoryReports.reports.prices);
@@ -468,6 +472,7 @@ exports.configure = function configure(app) {
   // Debtor Groups API
   app.get('/debtor_groups', debtorGroups.list);
   app.get('/debtor_groups/:uuid', debtorGroups.detail);
+  app.get('/debtor_groups/history/:debtorUuid', debtorGroups.history);
   app.get('/debtor_groups/:uuid/invoices', debtorGroups.invoices);
   app.post('/debtor_groups', debtorGroups.create);
   app.put('/debtor_groups/:uuid', debtorGroups.update);
@@ -820,6 +825,27 @@ exports.configure = function configure(app) {
   app.post('/distribution_fee_center/automatic', distributionAutomatic.automatic);
   app.post('/distribution_fee_center/distributionKey', setDistributionKey.setting);
   app.post('/distribution_fee_center/resetKey', setDistributionKey.resetKey);
+
+  // ward management
+  app.get('/wards', ward.read);
+  app.get('/wards/:uuid', ward.detail);
+  app.post('/wards', ward.create);
+  app.put('/wards/:uuid', ward.update);
+  app.delete('/wards/:uuid', ward.delete);
+
+  // room management
+  app.get('/rooms', room.read);
+  app.get('/rooms/:uuid', room.detail);
+  app.post('/rooms', room.create);
+  app.put('/rooms/:uuid', room.update);
+  app.delete('/rooms/:uuid', room.delete);
+
+  // bed management
+  app.get('/beds', bed.read);
+  app.get('/beds/:id', bed.detail);
+  app.post('/beds', bed.create);
+  app.put('/beds/:id', bed.update);
+  app.delete('/beds/:id', bed.delete);
 
   // lots API
   app.get('/lots/:uuid', lots.details);

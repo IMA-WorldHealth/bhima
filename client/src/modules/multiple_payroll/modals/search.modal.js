@@ -81,6 +81,7 @@ function MultiPayrollSearchModalController(
     vm.currencies.forEach((currency) => {
       if (currency.id === currencyId) {
         displayValues.currency_id = currency.label;
+        vm.searchQueries.currency_id = currencyId;
       }
     });
   };

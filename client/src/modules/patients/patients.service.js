@@ -49,6 +49,7 @@ function PatientService(
   service.Visits = Visits;
   service.balance = balance;
   service.download = download;
+  service.openReturningPatientModal = openReturningPatientModal;
 
   /**
    * @method balance
@@ -230,8 +231,8 @@ function PatientService(
     const assignedKeys = Object.keys(patientFilters.formatHTTP());
 
     // assign default period filter
-    const periodDefined =
-      service.util.arrayIncludes(assignedKeys, ['period', 'custom_period_start', 'custom_period_end']);
+    const periodDefined = service.util
+      .arrayIncludes(assignedKeys, ['period', 'custom_period_start', 'custom_period_end']);
 
     if (!periodDefined) {
       patientFilters.assignFilters(Periods.defaultFilters());
@@ -299,6 +300,23 @@ function PatientService(
     const path = 'patients/:uuid/finance/activity';
     return service.$http.get(path.replace(':uuid', uuid))
       .then(service.util.unwrapHttpResponse);
+  }
+
+  /**
+   * @method openReturningPatientModal
+   *
+   * @description
+   * Opens a modal to search for a returning patient.
+   *
+   * @returns - promise resolving to the patient's record
+   */
+  function openReturningPatientModal() {
+    return $uibModal.open({
+      templateUrl : 'modules/patients/lookupReturningPatient.modal.html',
+      controller : 'ReturningPatientModalController as ModalCtrl',
+      keyboard : true,
+      animation : false,
+    }).result;
   }
 
   return service;

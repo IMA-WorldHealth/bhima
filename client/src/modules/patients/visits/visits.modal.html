@@ -1,0 +1,89 @@
+<div class="modal-header">
+  <ol class="headercrumb">
+    <li class="static" translate>FORM.INFO.PATIENTS</li>
+    <li class="title" translate>{{ AdmitCtrl.isAdmission ? "PATIENT_RECORDS.VISITS.ADMISSION" : "PATIENT_RECORDS.VISITS.DISCHARGE"}}</li>
+  </ol>
+</div>
+
+<form name="VisitForm" bh-submit="AdmitCtrl.admit(VisitForm)" novalidate>
+
+<div class="modal-body">
+
+  <div ng-if="!AdmitCtrl.isAdmission && AdmitCtrl.currentVisit.start_diagnosis_label" class="form-group">
+    <label class="control-label"><span translate>PATIENT_RECORDS.VISITS.ADMISSION_DIAGNOSIS</span></label>
+    <p class="form-static">{{AdmitCtrl.currentVisit.start_diagnosis_label}}</p>
+  </div>
+
+  <!-- only show admission type on admission -->
+  <div
+    class="form-group"
+    ng-if="AdmitCtrl.isAdmission"
+    ng-class="{ 'has-error' : VisitForm.$submitted && VisitForm.type.$invalid }">
+
+    <div class="radio">
+      <p class="control-label" style="margin-bottom:5px;">
+        <strong translate>PATIENT_RECORDS.VISITS.ADMISSION_TYPE</strong>
+      </p>
+
+      <label>
+        <input type="radio" name="hospitalized" ng-value="0" ng-model="AdmitCtrl.visit.hospitalized">
+        <span translate>PATIENT_RECORDS.VISITS.AMBULATORY</span>
+      </label>
+    </div>
+    <div class="radio">
+      <label>
+        <input type="radio" name="hospitalized" ng-value="1" ng-model="AdmitCtrl.visit.hospitalized">
+        <span translate>PATIENT_RECORDS.VISITS.HOSPITALISATION</span>
+      </label>
+    </div>
+  </div>
+
+  <div
+    class="form-group"
+    ng-class="{ 'has-error' : VisitForm.$submitted && VisitForm.diagnosis.$invalid }">
+
+    <label class="control-label"><span translate>FORM.LABELS.DIAGNOSIS</span></label>
+
+    <p class="text-info"><i class="fa fa-info-circle"></i> <span translate>PATIENT_RECORDS.VISITS.SEARCH_INFO</span></p>
+    <input
+      type="text"
+      name="diagnosis"
+      class="form-control"
+      ng-model="AdmitCtrl.visit.diagnosis"
+      uib-typeahead="diagnosis as diagnosis.label for diagnosis in AdmitCtrl.diagnoses | filter:$viewValue | limitTo:8"
+      typeahead-on-select="AdmitCtrl.select()"
+      autocomplete="off"
+      typeahead-min-length="3"
+      ng-required="AdmitCtrl.REQUIRE_DIAGNOSES">
+    </label>
+
+    <div class="help-block" ng-messages="VisitForm.diagnosis.$error" ng-show="VisitForm.$submitted">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+
+  <div
+    class="form-group"
+    ng-class="{ 'has-error' : VisitForm.$submitted && VisitForm.notes.$invalid }">
+    <label class="control-label"><span translate>FORM.LABELS.NOTES</span></label>
+    <textarea name="notes" ng-model="AdmitCtrl.visit.notes" class="form-control"></textarea>
+    <div class="help-block">
+      <p translate>PATIENT_RECORDS.VISITS.NOTES_INFO</p>
+    </div>
+
+    <div class="help-block" ng-messages="VisitForm.notes.$error" ng-show="VisitForm.$submitted">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-default" ng-click="AdmitCtrl.cancel()" data-method="cancel">
+    <span translate>FORM.BUTTONS.CLOSE</span>
+  </button>
+
+  <bh-loading-button loading-state="AdmitCtrl.$loading">
+  </bh-loading-button>
+</div>
+</form>

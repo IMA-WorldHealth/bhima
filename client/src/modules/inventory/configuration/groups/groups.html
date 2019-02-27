@@ -22,10 +22,22 @@
           <th translate> FORM.LABELS.NAME </th>
           <th translate> INVENTORY.CONTAINS </th>
           <th class="text-center" colspan="3" translate> FORM.LABELS.ACCOUNT </th>
-          <th>&nbsp;</th>
+          <th colspan="2">&nbsp;</th>
         </tr>
         <tr>
-          <th></th><th></th><th></th>
+          <th></th>
+          <th>
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-filter"></i></span>
+              <input
+                ng-model="GroupsCtrl.searchValue"
+                type="search"
+                class="form-control input-sm"
+                style="display: inline"
+                translate-attr="{ placeholder: 'FORM.LABELS.SEARCH' }">
+            </div>
+          </th>
+          <th></th>
           <th class="text-center"><small translate> FORM.LABELS.SALE </small></th>
           <th class="text-center"><small translate> FORM.LABELS.STOCK </small></th>
           <th class="text-center"><small translate> FORM.LABELS.CHARGE </small></th>
@@ -33,7 +45,7 @@
       </thead>
 
       <tbody>
-        <tr ng-repeat="group in GroupsCtrl.groupList | orderBy:'name' track by group.code">
+        <tr ng-repeat="group in GroupsCtrl.groupList | filter: GroupsCtrl.searchValue | orderBy:'name' track by group.code">
           <td>{{ group.code }}</td>
           <td>{{ group.name }}</td>
           <td>

@@ -7,7 +7,7 @@ Ce manuel est divisé en chapitres:
 1. Commencer
 2. [Modules Finance](./finance/index.md)
 3. [Dossiers médicaux](./medical-records/index.md)
-4. Gestion des stocks et des stocks
+4. [Gestion des stocks](./stock-management/index.md)
 5. Rapports et statistiques
 6. [Référence développeur](./for-developers/index.md)
 
@@ -17,7 +17,7 @@ BHIMA est un logiciel libre, publié sous la licence GPL-2.0. En tant que tel, i
 
 > Ceci est un document vivant écrit par les auteurs de BHIMA et le matériel peut parfois être dense et flou. Si quelque chose ne vous dit rien, parlez-nous-en! Vous pouvez laisser un commentaire directement sur ce site ou nous envoyer un email à [developers@imaworldhealth.org](mailto:developers@imaworldhealth.org). Merci!
 
-## Contribuant
+## Contributions
 
 Nous apprécions les contributions sous toutes leurs formes!
 
@@ -31,10 +31,10 @@ Si vous êtes un administrateur d’hôpital, veuillez donner votre avis sur le 
 
 ### Développeurs
 
-Si vous êtes un développeur, nous apprécions les contributions de code - un bon endroit pour commencer est notre [Premier contributeur](https://github.com/IMA-WorldHealth/bhima-2.X/wiki/Getting-Started) sur GitHub.
+Si vous êtes un développeur, nous apprécions les contributions de code - un bon endroit pour commencer est notre [Premier contributeur](https://github.com/IMA-WorldHealth/bhima/wiki/Getting-Started) sur GitHub.
 
 Vous pouvez généralement contacter notre équipe pour toute question via l'adresse électronique [developers@imaworldhealth.org](mailto: developers@imaworldhealth.org).
 
-Vous pensez avoir trouvé un bug? Faites-nous savoir en [déposant un problème](https://github.com/IMA-WorldHealth/bhima-2.X/issues/new) et nous le corrigerons dès que possible!
+Vous pensez avoir trouvé un bug? Faites-nous savoir en [déposant un problème](https://github.com/IMA-WorldHealth/bhima/issues/new) et nous le corrigerons dès que possible!
 
-Quelque chose manque-t-il dans ce manuel? Consultez le [wiki du développeur](https://github.com/IMA-WorldHealth/bhima-2.X/wiki), nous l’aurions peut-être couvert ici.
+Quelque chose manque-t-il dans ce manuel? Consultez le [wiki du développeur](https://github.com/IMA-WorldHealth/bhima/wiki), nous l’aurions peut-être couvert ici.

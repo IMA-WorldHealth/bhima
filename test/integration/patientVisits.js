@@ -1,6 +1,4 @@
-
-
-/* global expect, chai, agent */
+/* global expect, agent */
 
 const helpers = require('./helpers');
 
@@ -13,6 +11,7 @@ describe('(/patients/:uuid/visits) Patient Visits', () => {
     'patient_uuid', 'uuid', 'start_date', 'end_date', 'start_notes',
     'end_notes', 'start_diagnosis_id', 'end_diagnosis_id', 'is_open',
     'user_id', 'username', 'start_diagnosis_code', 'start_diagnosis_label',
+    'hospitalized',
   ];
 
   it('GET /patients/:uuid/visits returns a list of all patient visits', () => {
@@ -93,17 +92,19 @@ describe('(/patients/:uuid/visits) Patient Visits', () => {
   });
 
   // synonym for limit = 1, but returns a JSON object instead of an ARRAY
-  it('GET /patients/:uuid/visits?last=1 will return the last patient visit', () => {
+  it('GET /patients/:uuid/visits?limit=1 will return the last patient visit', () => {
     return agent.get(`/patients/${patientUuid}/visits`)
-      .query({ last : 1 })
+      .query({ limit : 1 })
       .then((res) => {
         expect(res).to.have.status(200);
 
-        expect(res.body).to.have.keys(KEYS);
+        const [data] = res.body;
 
-        expect(res.body.uuid).to.equal(lastVisitUuid);
-        expect(res.body.start_notes).to.equal(visitOptions.start_notes);
-        expect(res.body.is_open).to.equal(1);
+        expect(data).to.have.keys(KEYS);
+
+        expect(data.uuid).to.equal(lastVisitUuid);
+        expect(data.start_notes).to.equal(visitOptions.start_notes);
+        expect(data.is_open).to.equal(1);
       })
       .catch(helpers.api.handler);
   });

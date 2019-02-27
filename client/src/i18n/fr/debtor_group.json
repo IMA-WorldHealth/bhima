@@ -1,6 +1,7 @@
 {
   "DEBTOR_GROUP": {
     "BACK": "Retour vers les Groupes Débiteurs",
+    "CHANGE" : "Changement de group débiteur",
     "CLICK_TO_ADD" : "Cliquer ici pour ajouter un Groupe Débiteur",
     "CREATE": "Créer un Groupe Débiteur",
     "CREATE_ANOTHER": "Créer un autre Groupe Débiteur",

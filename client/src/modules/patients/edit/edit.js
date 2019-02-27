@@ -10,6 +10,7 @@ function PatientEdit($stateParams, Patients, util, moment, Notify, ScrollTo, Gro
   const vm = this;
   const referenceId = $stateParams.uuid;
 
+  vm.medical = {};
   vm.patient = null;
   vm.unknownId = false;
 

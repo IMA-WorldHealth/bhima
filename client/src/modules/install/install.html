@@ -35,7 +35,9 @@
         </div>
       </div>
 
-      <bh-currency-select currency-id="InstallCtrl.setup.enterprise.currency_id">
+      <bh-currency-select      
+        on-change="InstallCtrl.setCurrency(currencyId)"
+        currency-id="InstallCtrl.setup.enterprise.currency_id">
       </bh-currency-select>
     </div>
   </div>

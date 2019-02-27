@@ -77,7 +77,7 @@ function lookupVoucher(vUuid) {
   let voucher;
 
   const sql = `
-    SELECT BUID(v.uuid) as uuid, v.date, v.project_id, v.currency_id, v.amount,
+    SELECT BUID(v.uuid) as uuid, v.date, v.created_at, v.project_id, v.currency_id, v.amount,
       v.description, v.user_id, v.type_id,  u.display_name, transaction_type.text,
       CONCAT_WS('.', '${entityIdentifier}', p.abbr, v.reference) AS reference, reversed
     FROM voucher v

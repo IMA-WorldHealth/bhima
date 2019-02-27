@@ -1231,7 +1231,8 @@ CREATE TABLE `patient_visit` (
   `end_notes` TEXT,
   `start_diagnosis_id` INT(10) UNSIGNED,
   `end_diagnosis_id` INT(10) UNSIGNED,
-  `user_id` smallINT(5) UNSIGNED NOT NULL,
+  `hospitalized` TINYINT(1) NOT NULL DEFAULT 0,
+  `user_id` SMALLINT(5) UNSIGNED NOT NULL,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `patient_visit_1`(`patient_uuid`, `start_date`, `end_date`),
   KEY `patient_uuid` (`patient_uuid`),
@@ -1666,6 +1667,50 @@ CREATE TABLE `service` (
   FOREIGN KEY (`cost_center_id`) REFERENCES `cost_center` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`profit_center_id`) REFERENCES `profit_center` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB  DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `ward`;
+CREATE TABLE `ward`(
+ `uuid` BINARY(16) NOT NULL,
+ `name` VARCHAR(100) NOT NULL,
+ `description` text NULL,
+ `service_id` SMALLINT(5) UNSIGNED NULL,
+  PRIMARY KEY(`uuid`),
+  KEY `name_1` (`name`),
+  FOREIGN KEY (`service_id`) REFERENCES `service` (`id`)
+)ENGINE=InnoDB  DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `room_type`;
+CREATE TABLE `room_type`(
+ `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+ `label` VARCHAR(120) NOT NULL,
+  PRIMARY KEY(`id`)
+)ENGINE=InnoDB  DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `room`;
+CREATE TABLE `room`(
+ `uuid` BINARY(16) NOT NULL,
+ `label` VARCHAR(120) NOT NULL,
+ `description` text NULL,
+ `ward_uuid` BINARY(16) NOT NULL,
+ `room_type_id` SMALLINT(5) UNSIGNED NULL,
+  PRIMARY KEY(`uuid`),
+  UNIQUE KEY `room_label_0` (`label`, `ward_uuid`),
+  FOREIGN KEY (`ward_uuid`) REFERENCES ward (`uuid`),
+  FOREIGN KEY (`room_type_id`) REFERENCES room_type (`id`)
+)ENGINE=InnoDB  DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `bed`;
+CREATE TABLE `bed`(
+ `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+ `label` VARCHAR(120) NOT NULL,
+ `room_uuid` BINARY(16) NOT NULL,
+ `is_occupied` TINYINT(1) NOT NULL DEFAULT 0,
+ `user_id` SMALLINT(5) UNSIGNED NOT NULL,
+  PRIMARY KEY(`id`),
+  UNIQUE KEY `bed_label_0` (`label`, `room_uuid`),
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE,
+  FOREIGN KEY (`room_uuid`) REFERENCES room (`uuid`)
+)ENGINE=InnoDB  DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `subsidy`;

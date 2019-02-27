@@ -9,15 +9,18 @@
  * It is responsible for reading and writing to the `patient_visit` database table as well as responding to HTTP
  * requests.
  *
+ * @requires  lodash
  * @requires  lib/util
  * @requires  lib/db
  * @requires  lib/errors/BadRequest
  */
 
+const _ = require('lodash');
 const { uuid } = require('../../../lib/util');
 const db = require('../../../lib/db');
 const BadRequest = require('../../../lib/errors/BadRequest');
 const NotFound = require('../../../lib/errors/NotFound');
+const FilterParser = require('../../../lib/filter');
 
 exports.list = list;
 exports.detail = detail;
@@ -28,8 +31,42 @@ exports.discharge = discharge;
 const COLUMNS = `
   BUID(uuid) AS uuid, BUID(patient_uuid) as patient_uuid, start_date, start_notes,
   end_date, end_notes, user_id, user.username, start_diagnosis_id, end_diagnosis_id,
-  ISNULL(end_date) AS is_open, icd10.label as start_diagnosis_label, icd10.code as start_diagnosis_code
+  ISNULL(end_date) AS is_open, icd10.label as start_diagnosis_label, icd10.code as start_diagnosis_code,
+  hospitalized
 `;
+
+const REQUIRE_DIAGNOSES = false;
+
+function find(options) {
+  db.convert(options, ['uuid', 'patient_uuid']);
+  const filters = new FilterParser(options);
+
+  const sql = `
+    SELECT ${COLUMNS}
+    FROM patient_visit
+    JOIN user ON patient_visit.user_id = user.id
+    LEFT JOIN icd10 ON icd10.id = patient_visit.start_diagnosis_id
+  `;
+
+  filters.equals('uuid');
+  filters.equals('patient_uuid');
+  filters.custom('is_open', 'ISNULL(end_date) = ?');
+  filters.custom(
+    'diagnosis_id',
+    '(start_diagnosis_id = ? OR end_diagnosis_id = ?)',
+    _.fill(Array(2), options.diagnosis_id)
+  );
+
+  filters.fullText('start_notes');
+  filters.fullText('end_notes');
+
+  filters.setOrder('ORDER BY start_date DESC');
+
+  const query = filters.applyQuery(sql);
+  const parameters = filters.parameters();
+
+  return db.exec(query, parameters);
+}
 
 /**
  * @method list
@@ -43,43 +80,7 @@ const COLUMNS = `
  * GET /patients/visits
  */
 function list(req, res, next) {
-  const limit = Number(req.query.limit);
-
-  // @todo - refactor this SQL
-  let limitQuery = '';
-  const params = [];
-  const where = [];
-
-  // if the limit is properly defined set it.
-  if (!isNaN(limit)) {
-    limitQuery = `LIMIT ${limit}`;
-  }
-
-  if (req.query.is_open) {
-    params.push(req.query.is_open);
-    where.push('ISNULL(end_date) = ?');
-  }
-
-  if (req.query.diagnosis_id) {
-    where.push('(start_diagnosis_id = ? OR end_diagnosis_id = ?)');
-    params.push(req.query.diagnosis_id);
-    params.push(req.query.diagnosis_id);
-  }
-
-  // if there is no where query, default to WHERE 1
-  const whereQuery = where.length === 0 ? '1' : where.join(' AND ');
-
-  const sql = `
-    SELECT ${COLUMNS}
-    FROM patient_visit
-    JOIN user on patient_visit.user_id = user.id
-    LEFT JOIN icd10 ON icd10.id = patient_visit.start_diagnosis_id
-    WHERE ${whereQuery}
-    ORDER BY start_date DESC
-    ${limitQuery}
-  `;
-
-  db.exec(sql, params)
+  find(req.query)
     .then(rows => res.status(200).json(rows))
     .catch(next)
     .done();
@@ -126,46 +127,12 @@ function detail(req, res, next) {
  */
 function listByPatient(req, res, next) {
   const patientUuid = req.params.uuid;
-  let limitQuery = '';
-  let diagnosisQuery = '';
 
-  const limit = Number(req.query.limit);
+  const options = req.query;
+  options.patient_uuid = patientUuid;
 
-  // if the limit is properly defined set it.
-  if (!isNaN(limit)) {
-    limitQuery = `LIMIT ${limit}`;
-  }
-
-  // if the 'last' option is set, get the last
-  if (req.query.last) {
-    limitQuery = `LIMIT 1;`;
-  }
-
-  //  if a diagnosis id is passed in, it should filter on diagnosis
-  if (req.query.diagnosis_id) {
-    diagnosisQuery = ' AND (start_diagnosis_id = ? OR end_diagnosis_id = ?) ';
-  }
-
-  const listVisitsQuery = `
-    SELECT ${COLUMNS}
-    FROM patient_visit
-    JOIN user on patient_visit.user_id = user.id
-    LEFT JOIN icd10 on patient_visit.start_diagnosis_id = icd10.id
-    WHERE patient_uuid = ?
-    ${diagnosisQuery}
-    ORDER BY start_date DESC
-    ${limitQuery}
-  `;
-
-  db.exec(listVisitsQuery, [db.bid(patientUuid), req.query.diagnosis_id, req.query.diagnosis_id])
+  find(options)
     .then(visits => {
-      // if the 'last' option is set, unwrap the returned value
-      if (req.query.last) {
-        const lastVisit = visits[0];
-        res.status(200).json(lastVisit || {});
-        return;
-      }
-
       res.status(200).json(visits);
     })
     .catch(next)
@@ -194,7 +161,7 @@ function admission(req, res, next) {
 
   // if there is not start_diagnosis_id, return a BAD REQUEST that will insist
   // on a diagnosis.
-  if (!data.start_diagnosis_id) {
+  if (REQUIRE_DIAGNOSES && !data.start_diagnosis_id) {
     next(new BadRequest(
       'An admission diagnosis is required to begin a patient visit.',
       'PATIENT.VISITS.ERR_MISSING_DIAGNOSIS'
@@ -250,7 +217,7 @@ function discharge(req, res, next) {
 
   // if there is not end_diagnosis_id, return a BAD REQUEST that will insist
   // on a diagnosis.
-  if (!data.end_diagnosis_id) {
+  if (REQUIRE_DIAGNOSES && !data.end_diagnosis_id) {
     next(new BadRequest(
       'A discharge diagnosis is required to end a patient visit.  Please select an ICD10 diagnosis code.',
       'PATIENT.VISITS.ERR_MISSING_DIAGNOSIS'
