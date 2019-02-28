@@ -63,7 +63,8 @@
             <!-- cashbox selection  -->
             <bh-cashbox-select
               cashboxId="ReportConfigCtrl.reportDetails.account_id"
-              on-select-callback="ReportConfigCtrl.onSelectCashbox(cashbox)">
+              on-select-callback="ReportConfigCtrl.onSelectCashbox(cashbox)"
+              restrict-to-user="false">
             </bh-cashbox-select>
 
             <!-- Date interval  -->
