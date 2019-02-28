@@ -22,7 +22,11 @@ function VisitsAdmissionController(ModalInstance, Patients, Visits, Notify,
   vm.cancel = ModalInstance.close;
   vm.admit = admit;
 
-  vm.visit = { hospitalized : 0 };
+  vm.visit = {
+    hospitalized : 0,
+    inside_health_zone : 1,
+    is_new_case : 1,
+  };
   vm.$loading = false;
 
   vm.onBedRoomSelect = bed => {
@@ -34,6 +38,8 @@ function VisitsAdmissionController(ModalInstance, Patients, Visits, Notify,
   };
 
   vm.onSelectPatient = p => {
+    vm.isFemale = p.sex === 'F';
+
     Visits.admissionStatus(p.uuid)
       .then(result => {
         if (!result.is_admitted) {
@@ -60,6 +66,14 @@ function VisitsAdmissionController(ModalInstance, Patients, Visits, Notify,
   // assign current visit uuid to discharge values
   if (!vm.isAdmission && currentVisit) {
     vm.visit.uuid = currentVisit.uuid;
+  }
+
+  if (vm.isAdmission && patient) {
+    Patients.read(patient)
+      .then(patientDetails => {
+        vm.isFemale = patientDetails.sex === 'F';
+      })
+      .catch(Notify.handleError);
   }
 
   function admit(form) {
