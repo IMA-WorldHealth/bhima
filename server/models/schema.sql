@@ -1219,6 +1219,14 @@ CREATE TABLE patient_group_subsidy (
   FOREIGN KEY (`patient_group_uuid`) REFERENCES `patient_group` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
+DROP TABLE IF EXISTS `discharge_type`;
+CREATE TABLE `discharge_type` (
+  `id` TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `label` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `discharge_type_1` (`id`, `label`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
 DROP TABLE IF EXISTS `patient_visit`;
 CREATE TABLE `patient_visit` (
   `uuid` BINARY(16) NOT NULL,
@@ -1232,12 +1240,22 @@ CREATE TABLE `patient_visit` (
   `hospitalized` TINYINT(1) NOT NULL DEFAULT 0,
   `user_id` SMALLINT(5) UNSIGNED NOT NULL,
   `last_service_id` SMALLINT(5) UNSIGNED NOT NULL,
+  `discharge_type_id` SMALLINT(5) UNSIGNED NULL,
+  `weight` VARCHAR(50),
+  `height` VARCHAR(50),
+  `tension` VARCHAR(50),
+  `is_hz` TINYINT(1),
+  `is_pregnant` TINYINT(1),
+  `is_refere` TINYINT(1),
+  `is_new_case` TINYINT(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `patient_visit_1`(`patient_uuid`, `start_date`, `end_date`),
   KEY `patient_uuid` (`patient_uuid`),
   KEY `user_id` (`user_id`),
   KEY `start_diagnosis_id` (`start_diagnosis_id`),
   KEY `end_diagnosis_id` (`end_diagnosis_id`),
+  KEY `last_service_id` (`last_service_id`),
+  KEY `discharge_type_id` (`discharge_type_id`),
   FOREIGN KEY (`patient_uuid`) REFERENCES `patient` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`start_diagnosis_id`) REFERENCES `icd10` (`id`) ON UPDATE CASCADE,
@@ -1271,15 +1289,6 @@ CREATE TABLE `patient_hospitalization` (
    FOREIGN KEY (`room_uuid`) REFERENCES `room` (`uuid`) ON UPDATE CASCADE,
    FOREIGN KEY (`bed_id`) REFERENCES `bed` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
-
-DROP TABLE IF EXISTS `discharge_type`;
-CREATE TABLE `discharge_type` (
-  `id` TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `label` varchar(100) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `discharge_type_1` (`id`, `label`)
-) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
-
 
 DROP TABLE IF EXISTS `period`;
 CREATE TABLE `period` (
