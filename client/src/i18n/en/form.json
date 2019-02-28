@@ -286,7 +286,7 @@
             "CASHIER": "Cashier",
             "CASH_ACCOUNT": "Cash Account",
             "CASH_JOURNAL": "Cash Journal",
-            "CASH_SPLITED": "Separate Income Expenditure",
+            "CASH_SPLIT": "Separate Receipts and Expenses",
             "CASH_PAYMENTS": "Cash Payments",
             "CHECK_ALL":"Check all",
             "CAUTION": "Caution",
