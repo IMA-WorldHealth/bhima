@@ -5,7 +5,7 @@ describe('(/break_even_reference) Break Even Reference', () => {
   const numBreakEvenReference = 1;
 
   const newBreakEvenReference = {
-    id: 1,
+    id : 1,
     label : 'Break Even Reference 1',
     is_cost : 1,
     is_variable : 0,
