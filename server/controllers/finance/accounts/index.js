@@ -247,12 +247,12 @@ function getAnnualBalance(req, res, next) {
   const { id, fiscalYearId } = req.params;
 
   const query = `
-    SELECT 
+    SELECT
       pt.account_id,
-      IFNULL(SUM(pt.debit), 0) AS debit, 
+      IFNULL(SUM(pt.debit), 0) AS debit,
       IFNULL(SUM(pt.credit), 0) AS credit,
-      IFNULL(SUM(pt.debit - pt.credit), 0) AS balance 
-    FROM period_total pt 
+      IFNULL(SUM(pt.debit - pt.credit), 0) AS balance
+    FROM period_total pt
     WHERE pt.account_id = ? AND pt.fiscal_year_id = ?
     GROUP BY pt.account_id;
   `;
