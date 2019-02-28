@@ -9,8 +9,6 @@ function breakDown(req, res, next) {
   const { data } = req.body;
 
   const isCost = data.is_cost;
-  const isVariable = data.is_variable;
-  const isTurnover = data.is_turnover;
   const dataValues = data.values;
 
   const dataToDistribute = [];
@@ -23,7 +21,6 @@ function breakDown(req, res, next) {
       if (percentageValue) {
         const debitValuePercent = transaction.debit_equiv * (percentageValue / 100);
         const creditValuePercent = transaction.credit_equiv * (percentageValue / 100);
-        
         if (debitValuePercent > 0 || creditValuePercent > 0) {
           dataToDistribute.push([
             db.bid(transaction.uuid),

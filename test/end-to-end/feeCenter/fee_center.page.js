@@ -116,7 +116,10 @@ class FeeCenterPage {
           element(by.id(isCostProfit)).click();
 
           if (updateFeeCenter.is_profit) {
-            components.accountReferenceSelect.set(updateFeeCenter.reference_profit_id, 'account_other_profit_reference_id');
+            components.accountReferenceSelect.set(
+              updateFeeCenter.reference_profit_id,
+              'account_other_profit_reference_id'
+            );
           }
 
           if (!updateFeeCenter.is_profit) {
@@ -148,7 +151,10 @@ class FeeCenterPage {
           element(by.id(isCostProfit)).click();
 
           if (updateFeeCenter.is_profit) {
-            components.accountReferenceSelect.set(updateFeeCenter.reference_profit_id, 'account_other_profit_reference_id');
+            components.accountReferenceSelect.set(
+              updateFeeCenter.reference_profit_id,
+              'account_other_profit_reference_id'
+            );
           }
 
           if (!updateFeeCenter.is_profit) {

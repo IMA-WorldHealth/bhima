@@ -33,7 +33,10 @@ describe('(/break_even_reference) Break Even Reference', () => {
     return agent.get(`/break_even_reference/`)
       .then((res) => {
         helpers.api.listed(res, numBreakEvenReference);
-        expect(res.body[0]).to.have.all.keys('id', 'label', 'abbr', 'is_cost', 'is_turnover', 'is_variable', 'account_reference_id');
+        expect(res.body[0]).to.have.all.keys(
+          'id', 'label', 'abbr', 'is_cost', 'is_turnover',
+          'is_variable', 'account_reference_id'
+        );
       })
       .catch(helpers.handler);
   });
@@ -43,7 +46,10 @@ describe('(/break_even_reference) Break Even Reference', () => {
       .then((res) => {
         expect(res).to.have.status(200);
         expect(res).to.be.a('object');
-        expect(res.body).to.have.all.keys('id', 'label', 'is_turnover', 'is_cost', 'is_variable', 'account_reference_id');
+        expect(res.body).to.have.all.keys(
+          'id', 'label', 'is_turnover', 'is_cost',
+          'is_variable', 'account_reference_id'
+        );
       })
       .catch(helpers.handler);
   });
