@@ -87,6 +87,11 @@ function AdmissionRegistryController(
     type : 'date',
     cellTemplate : '/modules/patients/visits/templates/end_date.cell.html',
   }, {
+    field : 'discharge_label',
+    displayName : 'PATIENT_RECORDS.DISCHARGE.TITLE',
+    headerCellFilter : 'translate',
+    cellFilter : 'translate',
+  }, {
     field : 'duration',
     displayName : 'PATIENT_RECORDS.VISITS.DURATION',
     headerCellFilter : 'translate',
@@ -198,7 +203,7 @@ function AdmissionRegistryController(
       .then(result => {
         if (!result) { return; }
         // reload the grid
-        grid.startup($state.params, load);
+        grid.reload(load);
       });
   }
 

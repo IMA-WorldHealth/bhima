@@ -48,8 +48,7 @@ function VisitsAdmissionController(ModalInstance, Patients, Visits, Notify,
   };
 
   vm.onSelectDischarge = discharge => {
-    console.log('discharge : ', discharge);
-    vm.visit.discharge = discharge;
+    vm.visit.discharge_type_id = discharge;
   };
 
   // TODO(@jniles) - load these asynchronously using a MySQL %LIKE% for perf
