@@ -42,7 +42,32 @@ const COLUMNS = `
   z.bed_label, z.room_label, z.ward_name,
   patient.display_name, patient.hospital_no, em.text AS reference,
   s.name AS service_name,
-  dt.label AS discharge_label
+  dt.label AS discharge_label,
+  inside_health_zone, is_new_case, is_refered, is_pregnant, last_service_id, discharge_type_id
+`;
+
+const TABLES = `
+  patient_visit
+  JOIN service s ON s.id = patient_visit.last_service_id
+  JOIN patient ON patient.uuid = patient_visit.patient_uuid
+  JOIN entity_map em ON em.uuid = patient.uuid
+  JOIN user ON patient_visit.user_id = user.id
+  LEFT JOIN (
+    SELECT
+      ph.patient_visit_uuid, ph.created_at, b.label AS bed_label, r.label AS room_label, w.name AS ward_name,
+      w.uuid AS ward_uuid, r.uuid AS room_uuid, b.id AS bed_id
+    FROM patient_hospitalization ph 
+    JOIN bed b ON b.id = ph.bed_id
+    JOIN room r ON r.uuid = ph.room_uuid
+    JOIN ward w ON w.uuid = r.ward_uuid
+  ) AS z ON z.patient_visit_uuid = patient_visit.uuid 
+    AND z.created_at = (
+      SELECT ph2.created_at FROM patient_hospitalization ph2 
+      WHERE ph2.patient_visit_uuid = z.patient_visit_uuid
+      ORDER BY ph2.created_at DESC LIMIT 1
+    )
+  LEFT JOIN discharge_type dt ON dt.id = patient_visit.discharge_type_id
+  LEFT JOIN icd10 ON icd10.id = patient_visit.start_diagnosis_id
 `;
 
 const REQUIRE_DIAGNOSES = false;
@@ -51,30 +76,7 @@ function find(options) {
   db.convert(options, ['uuid', 'patient_uuid', 'ward_uuid', 'room_uuid']);
   const filters = new FilterParser(options);
 
-  const sql = `
-    SELECT ${COLUMNS}
-    FROM patient_visit
-    JOIN service s ON s.id = patient_visit.last_service_id
-    JOIN patient ON patient.uuid = patient_visit.patient_uuid
-    JOIN entity_map em ON em.uuid = patient.uuid
-    JOIN user ON patient_visit.user_id = user.id
-    LEFT JOIN (
-      SELECT
-        ph.patient_visit_uuid, ph.created_at, b.label AS bed_label, r.label AS room_label, w.name AS ward_name,
-        w.uuid AS ward_uuid, r.uuid AS room_uuid, b.id AS bed_id
-      FROM patient_hospitalization ph 
-      JOIN bed b ON b.id = ph.bed_id
-      JOIN room r ON r.uuid = ph.room_uuid
-      JOIN ward w ON w.uuid = r.ward_uuid
-    ) AS z ON z.patient_visit_uuid = patient_visit.uuid 
-      AND z.created_at = (
-        SELECT ph2.created_at FROM patient_hospitalization ph2 
-        WHERE ph2.patient_visit_uuid = z.patient_visit_uuid
-        ORDER BY ph2.created_at DESC LIMIT 1
-      )
-    LEFT JOIN discharge_type dt ON dt.id = patient_visit.discharge_type_id
-    LEFT JOIN icd10 ON icd10.id = patient_visit.start_diagnosis_id
-  `;
+  const sql = `SELECT ${COLUMNS} FROM ${TABLES}`;
 
   filters.equals('uuid', 'uuid', 'patient_visit');
   filters.equals('patient_uuid', 'patient_uuid', 'patient_visit');
@@ -141,6 +143,7 @@ function list(req, res, next) {
  * Load details of a visit by its uuid
  *
  * GET /patients/visits/:uuid
+ * GET /patients/:patientUuid/visits/:uuid
  */
 function detail(req, res, next) {
   const visitUuid = req.params.uuid;
@@ -150,27 +153,8 @@ function detail(req, res, next) {
    * patient during a visit
    */
   const sql = `
-    SELECT ${COLUMNS}
-    FROM patient_visit
-    JOIN service s ON s.id = patient_visit.last_service_id
-    JOIN patient ON patient.uuid = patient_visit.uuid
-    JOIN user on patient_visit.user_id = user.id
-    LEFT JOIN (
-      SELECT
-        ph.patient_visit_uuid, ph.created_at, b.label AS bed_label, r.label AS room_label, w.name AS ward_name,
-        w.uuid AS ward_uuid, r.uuid AS room_uuid, b.id AS bed_id
-      FROM patient_hospitalization ph 
-      JOIN bed b ON b.id = ph.bed_id
-      JOIN room r ON r.uuid = ph.room_uuid
-      JOIN ward w ON w.uuid = r.ward_uuid
-    ) AS z ON z.patient_visit_uuid = patient_visit.uuid 
-      AND z.created_at = (
-        SELECT ph2.created_at FROM patient_hospitalization ph2 
-        WHERE ph2.patient_visit_uuid = z.patient_visit_uuid
-        ORDER BY ph2.created_at DESC LIMIT 1
-      )
-    LEFT JOIN icd10 ON icd10.id = patient_visit.start_diagnosis_id
-    WHERE uuid = ?;
+    SELECT ${COLUMNS} FROM ${TABLES}
+    WHERE patient_visit.uuid = ?;
   `;
 
   // get the correct record
