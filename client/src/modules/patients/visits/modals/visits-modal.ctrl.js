@@ -86,7 +86,7 @@ function VisitsAdmissionController(ModalInstance, Patients, Visits, Notify,
 
     return submitMethod(patient, vm.visit)
       .then(() => {
-        ModalInstance.close();
+        ModalInstance.close(true);
       })
       .finally(() => {
         vm.$loading = false;
