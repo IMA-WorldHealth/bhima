@@ -36,7 +36,11 @@ function GridFiltererService(Filters, AppCache, Periods, $httpParamSerializer, L
     { key : 'ward_uuid', label : 'WARD.TITLE' },
     { key : 'room_uuid', label : 'ROOM.TITLE' },
     { key : 'bed_id', label : 'BED.TITLE' },
-    { key : 'hospitalized', label : 'PATIENT_RECORDS.VISITS.ONLY_HOSPITALIZED' },
+    { key : 'service_id', label : 'FORM.LABELS.SERVICE' },
+    { key : 'is_new_case', label : 'PATIENT_RECORDS.VISITS.CASE' },
+    { key : 'is_pregnant', label : 'PATIENT_RECORDS.VISITS.PREGNANT' },
+    { key : 'is_refered', label : 'PATIENT_RECORDS.VISITS.REFERED' },
+    { key : 'inside_health_zone', label : 'PATIENT_RECORDS.VISITS.HEALTH_ZONE' },
     {
       key : 'dateFrom', label : 'FORM.LABELS.DATE', comparitor : '>', valueFilter : 'date',
     },

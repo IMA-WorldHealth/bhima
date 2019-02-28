@@ -100,7 +100,13 @@ function find(options) {
   filters.equals('ward_uuid', 'ward_uuid', 'z');
   filters.equals('room_uuid', 'room_uuid', 'z');
   filters.equals('bed_id', 'bed_id', 'z');
+
+  filters.equals('service_id', 'id', 's');
   filters.equals('hospitalized');
+  filters.equals('is_new_case');
+  filters.equals('is_pregnant');
+  filters.equals('is_refered');
+  filters.equals('inside_health_zone');
 
   filters.setOrder('ORDER BY patient_visit.start_date DESC');
 

@@ -23,6 +23,74 @@
             </label>
           </div>
 
+          <!-- refered -->
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" ng-true-value="1" ng-false-value=0 ng-model="$ctrl.searchQueries.is_refered">
+              <span translate>PATIENT_RECORDS.VISITS.IS_REFERED</span>
+            </label>
+          </div>
+
+          <!-- pregnant -->
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" ng-true-value="1" ng-false-value=0 ng-model="$ctrl.searchQueries.is_pregnant">
+              <span translate>PATIENT_RECORDS.VISITS.IS_PREGNANT</span>
+            </label>
+          </div>
+
+          <!-- case -->
+          <div>
+            <div class="radio-inline">
+              <label style="font-weight: 100;">
+                <input 
+                  type="radio" 
+                  name="is_new_case" 
+                  id="yes" 
+                  ng-value="1" 
+                  ng-model="$ctrl.searchQueries.is_new_case">
+                <span translate>PATIENT_RECORDS.VISITS.IS_NEW_CASE</span>
+              </label>
+            </div>
+            <div class="radio-inline">
+              <label style="font-weight: 100;">
+                <input 
+                  type="radio" 
+                  name="is_new_case" 
+                  id="no" 
+                  ng-value="0" 
+                  ng-model="$ctrl.searchQueries.is_new_case">
+                <span translate>PATIENT_RECORDS.VISITS.IS_NOT_NEW_CASE</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- health zone -->
+          <div>
+            <div class="radio-inline">
+              <label style="font-weight: 100;">
+                <input 
+                  type="radio" 
+                  name="inside_health_zone" 
+                  id="yes" 
+                  ng-value="1" 
+                  ng-model="$ctrl.searchQueries.inside_health_zone">
+                <span translate>PATIENT_RECORDS.VISITS.IS_IN_HEALTH_ZONE</span>
+              </label>
+            </div>
+            <div class="radio-inline">
+              <label style="font-weight: 100;">
+                <input 
+                  type="radio" 
+                  name="inside_health_zone" 
+                  id="no" 
+                  ng-value="0" 
+                  ng-model="$ctrl.searchQueries.inside_health_zone">
+                <span translate>PATIENT_RECORDS.VISITS.IS_NOT_IN_HEALTH_ZONE</span>
+              </label>
+            </div>
+          </div>
+
           <!--patient name-->
           <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.display_name.$invalid }">
             <label class="control-label" translate> FORM.LABELS.NAME </label>
@@ -57,13 +125,10 @@
             </div>
           </div>
 
-          <!-- admission user selection -->
-          <bh-user-select
-            user-id="$ctrl.searchQueries.user_id"
-            name="user_id"
-            on-select-callback="$ctrl.onSelectUser(user)">
-            <bh-clear on-clear="$ctrl.clear('user_id')"></bh-clear>
-          </bh-user-select>
+          <!-- service -->
+          <bh-service-select on-select-callback="$ctrl.onSelectService(service)">
+            <bh-clear on-clear="$ctrl.clear('service_id')"></bh-clear>
+          </bh-service-select>
 
           <!-- select the ward -->
           <bh-ward-select
