@@ -30,13 +30,13 @@ const room2 = {
 };
 
 const bed1 = {
-  id : 1,
+  id : 10,
   label : 'Bed 1',
   room_uuid : room1.uuid,
 };
 
 const bed2 = {
-  id : 2,
+  id : 11,
   label : 'Bed 2',
   room_uuid : room2.uuid,
 };
