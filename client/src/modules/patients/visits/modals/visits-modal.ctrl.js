@@ -77,6 +77,11 @@ function VisitsAdmissionController(ModalInstance, Patients, Visits, Notify,
   }
 
   function admit(form) {
+    if (vm.alreadyAdmitted) {
+      Notify.danger('FORM.INFO.PATIENT_VISIT_PENDING');
+      return null;
+    }
+
     if (form.$invalid || !patient) { return null; }
 
     vm.$loading = true;
@@ -86,6 +91,9 @@ function VisitsAdmissionController(ModalInstance, Patients, Visits, Notify,
 
     return submitMethod(patient, vm.visit)
       .then(() => {
+        const notifyMessage = vm.isAdmission
+          ? 'FORM.INFO.VISIT_RECORDED_SUCCESSFULLY' : 'FORM.INFO.DISCHARGE_RECORDED_SUCCESSFULLY';
+        Notify.success(notifyMessage);
         ModalInstance.close(true);
       })
       .finally(() => {

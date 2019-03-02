@@ -17,27 +17,6 @@ describe('(/patients/:uuid/visits) Patient Visits', () => {
     'hospital_no', 'service_name', 'discharge_label', 'duration', 'display_name', 'reference',
   ];
 
-  it('GET /patients/:uuid/visits returns a list of all patient visits', () => {
-    return agent.get(`/patients/${patientUuid}/visits`)
-      .then((res) => {
-        helpers.api.listed(res, BASE_VISITS);
-        expect(res.body[0]).to.have.keys(KEYS);
-      })
-      .catch(helpers.api.handler);
-  });
-
-
-  it('GET /patients/:uuid/visits?limit={N} limits the results', () => {
-    const LIMIT = 1;
-    return agent.get(`/patients/${patientUuid}/visits`)
-      .query({ limit : LIMIT })
-      .then((res) => {
-        helpers.api.listed(res, 1);
-        expect(res.body[0]).to.have.keys(KEYS);
-      })
-      .catch(helpers.api.handler);
-  });
-
   // this will cache the last visit uuid
   let lastVisitUuid;
   let pregnantLastVisitUuid;
@@ -63,6 +42,27 @@ describe('(/patients/:uuid/visits) Patient Visits', () => {
     service : { id : 1 },
     bed : { room_uuid : 'A6F9527BA7B44A2C9F4FDD7323BBCF72' },
   };
+
+  it('GET /patients/:uuid/visits returns a list of all patient visits', () => {
+    return agent.get(`/patients/${patientUuid}/visits`)
+      .then((res) => {
+        helpers.api.listed(res, BASE_VISITS);
+        expect(res.body[0]).to.have.keys(KEYS);
+      })
+      .catch(helpers.api.handler);
+  });
+
+
+  it('GET /patients/:uuid/visits?limit={N} limits the results', () => {
+    const LIMIT = 1;
+    return agent.get(`/patients/${patientUuid}/visits`)
+      .query({ limit : LIMIT })
+      .then((res) => {
+        helpers.api.listed(res, 1);
+        expect(res.body[0]).to.have.keys(KEYS);
+      })
+      .catch(helpers.api.handler);
+  });
 
   it('POST /patients/:uuid/visits/admission starts a new patient visit', () => {
     return agent.post(`/patients/${patientUuid}/visits/admission`)

@@ -16,7 +16,7 @@
       on-search-complete="AdmitCtrl.onSelectPatient(patient)"
       required="true">
     </bh-find-patient>
-    <span class="text-danger" ng-if="AdmitCtrl.alreadyAdmitted">
+    <span data-patient-already-admitted class="text-danger" ng-if="AdmitCtrl.alreadyAdmitted">
       <i class="fa fa-warning"></i> <span translate>PATIENT_RECORDS.VISITS.ALREADY_ADMITTED</span>
     </span>
   </div>
@@ -189,7 +189,6 @@
     <div class="help-block" ng-messages="VisitForm.notes.$error" ng-show="VisitForm.$submitted">
       <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
     </div>
-
   </div>
   
   <!-- ward and bed -->

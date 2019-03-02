@@ -1,10 +1,12 @@
-/* global browser, by, element */
-'use strict';
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-shadow */
+/* global by, element */
 
 const chai = require('chai');
 const helpers = require('./helpers');
 
-const expect = chai.expect;
+const { expect } = chai;
+
 helpers.configure(chai);
 
 // These buttons depend on custom data tags to indicate actions.  This seems
@@ -30,18 +32,18 @@ const buttons = {
 // This methods are for easily working with modals.  Works with the same custom
 // data tags used in form buttons.
 const modal = {
-  submit: function submit() { return $('[uib-modal-window] [data-method="submit"]').click(); },
-  cancel: function cancel() { return $('[uib-modal-window] [data-method="cancel"]').click(); },
-  close: function close() { return $('[uib-modal-window] [data-method="close"]').click(); },
-  print: function print() { return $('[uib-modal-window] [data-method="print"]').click(); }
+  submit : function submit() { return $('[uib-modal-window] [data-method="submit"]').click(); },
+  cancel : function cancel() { return $('[uib-modal-window] [data-method="cancel"]').click(); },
+  close : function close() { return $('[uib-modal-window] [data-method="close"]').click(); },
+  print : function print() { return $('[uib-modal-window] [data-method="print"]').click(); },
 };
 
 // convenience methods to see if the form contains feedback text.  Returns locators.
 const feedback = {
-  success: function success() { return by.css('[data-role="feedback"] > .text-success'); },
-  error: function error() { return by.css('[data-role="feedback"] > .text-danger'); },
-  warning: function warning() { return by.css('[data-role="feedback"] > .text-warning'); },
-  info: function info() { return by.css('[data-role="feedback"] > .text-info'); }
+  success : function success() { return by.css('[data-role="feedback"] > .text-success'); },
+  error : function error() { return by.css('[data-role="feedback"] > .text-danger'); },
+  warning : function warning() { return by.css('[data-role="feedback"] > .text-warning'); },
+  info : function info() { return by.css('[data-role="feedback"] > .text-info'); },
 };
 
 // convenience methods to check form element validation states
@@ -61,7 +63,7 @@ const validation = {
       element(by.model(model)).getAttribute('class'),
       `Expected ${model} to be valid, but could not find the ng-valid class.`
     ).to.eventually.contain('ng-valid');
-  }
+  },
 };
 
 // expose routes to the view
@@ -71,9 +73,9 @@ module.exports = {
   input : function input(model, value, anchor) {
 
     // get the HTML <input> element
-    let input = anchor ?
-      anchor.element(by.model(model)) :
-      element(by.model(model));
+    const input = anchor
+      ? anchor.element(by.model(model))
+      : element(by.model(model));
 
     return input.clear().sendKeys(value);
   },
@@ -91,31 +93,31 @@ module.exports = {
    * @param {Element} anchor - a protractor element to search within
    * @returns {Element} - a protractor <option> element
    */
-  select: function select(model, option, anchor) {
+  select : function select(model, option, anchor) {
     anchor = anchor || $('body');
-    let select = anchor.element(by.model(model));
-    let choice = select.element(by.cssContainingText('option', option));
+    const select = anchor.element(by.model(model));
+    const choice = select.element(by.cssContainingText('option', option));
     return choice.click();
   },
 
   // get a radio button by its position and click
-  radio: function radio(model, n) {
+  radio : function radio(model, n) {
     return element.all(by.model(model)).get(n).click();
   },
 
   // asserts whether an element exists or not
-  exists: function exists(locator, bool) {
+  exists : function exists(locator, bool) {
     expect(
       element(locator).isPresent(),
-      `Expected locator ${locator.toString()} to ${bool ? 'not ' : ' ' }exist.`
+      `Expected locator ${locator.toString()} to ${bool ? 'not ' : ' '}exist.`
     ).to.eventually.equal(bool);
   },
 
   // asserts whether an element is visible on the page or not.
-  visible: function visible(locator, bool) {
+  visible : function visible(locator, bool) {
     expect(
       element(locator).isDisplayed(),
-      `Expected locator ${locator.toString()} to ${bool ? 'not ' : ' ' }be visible.`
+      `Expected locator ${locator.toString()} to ${bool ? 'not ' : ' '}be visible.`
     ).to.eventually.equal(bool);
   },
 
@@ -132,7 +134,7 @@ module.exports = {
    * @param {Element} anchor - a protractor element to search within
    * @returns {Element} - a protractor option element
    */
-  typeahead: function typeahead(model, label, anchor) {
+  typeahead : function typeahead(model, label, anchor) {
     anchor = anchor || $('body');
 
     // type into the <input> element
@@ -155,7 +157,7 @@ module.exports = {
    * @param {Element} anchor - a protractor element to search within
    * @returns {Element} - a protractor option element
    */
-  typeaheadAppended: function typeaheadAppended(model, label, anchor) {
+  typeaheadAppended : function typeaheadAppended(model, label, anchor) {
     const externalAnchor = $('body > ul.dropdown-menu.ng-isolate-scope:not(.ng-hide)');
 
     // type into the <input> element the searchable value
@@ -177,13 +179,13 @@ module.exports = {
    * @param {Element} anchor - a protractor element to search within
    * @returns {Element} - a protractor option element
    */
-  uiSelect: function uiSelect(model, label, anchor, isMultipleSelection) {
+  uiSelect : function uiSelect(model, label, anchor, isMultipleSelection) {
     anchor = anchor || $('body');
 
     // get the HTML <div> element that will trigger the select input
-    const select = anchor ?
-      anchor.element(by.model(model)) :
-      element(by.model(model));
+    const select = anchor
+      ? anchor.element(by.model(model))
+      : element(by.model(model));
 
     // trigger the <input> rendering
     select.click();
@@ -211,7 +213,7 @@ module.exports = {
    * @param {Element} anchor - a protractor element to search within
    * @returns {Element} - a protractor option element
    */
-  uiSelectAppended: function uiSelectAppended(model, label, anchor) {
+  uiSelectAppended : function uiSelectAppended(model, label, anchor) {
     const externalAnchor = $('body > div.ui-select-bootstrap.dropdown');
 
     // click on the element
@@ -239,13 +241,13 @@ module.exports = {
    * @param {Element} anchor - a protractor element to search within
    * @returns {Element} - a protractor option element
    */
-  dropdown: function dropdown(selector, label, anchor) {
+  dropdown : function dropdown(selector, label, anchor) {
     anchor = anchor || $('body');
 
     // open the dropdown menu
     $(selector).click();
 
-    let option = anchor.element(by.cssContainingText('[uib-dropdown-menu] > li', label));
+    const option = anchor.element(by.cssContainingText('[uib-dropdown-menu] > li', label));
     return option.click();
   },
 
@@ -259,7 +261,7 @@ module.exports = {
    * @param {Object} locator - a protractor web-driver locator
    * @param {String} text - the text to search for within the element.
    */
-  hasText: function hasText(locator, text) {
+  hasText : function hasText(locator, text) {
     expect(
       element(locator).getText(),
       `Expected locator ${locator.toString()} to contain "${text}".`
@@ -268,17 +270,17 @@ module.exports = {
 
   // bind commonly used form buttons  These require specific data tags to be
   // leveraged effectively.
-  buttons: buttons,
+  buttons,
 
   // bind commonly shown feedback utilities
   // to detect feedback, the parent element must have the
   // [data-role="feedback"] attribute assigned to it.
-  feedback: feedback,
+  feedback,
 
   // bind validation states.  Each method takes in a model's string and asserts
   // the validation state.
-  validation: validation,
+  validation,
 
   // bindings for modal overlay forms
-  modal: modal
+  modal,
 };

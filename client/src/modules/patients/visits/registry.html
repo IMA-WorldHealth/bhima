@@ -48,7 +48,7 @@
       <div class="toolbar-item">
         <button
           ng-click="AdmissionRegistryCtrl.openVisitModal()"
-          data-method="new-visit"
+          data-method="create"
           class="btn btn-primary">
           <span class="fa fa-plus"></span> <span class="hidden-xs" translate>PATIENT_RECORDS.VISITS.NEW</span>
         </button>
@@ -71,7 +71,7 @@
 <div class="flex-content">
   <div class="container-fluid">
     <div
-      id="admission-registry"
+      id="visit-grid"
       class="grid-full-height-with-filters"
       ui-grid="AdmissionRegistryCtrl.uiGridOptions"
       ui-grid-auto-resize
