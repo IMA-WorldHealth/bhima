@@ -11,7 +11,7 @@
     <ui-select name="service_id" 
       ng-model="$ctrl.serviceId"
       on-select="$ctrl.onSelect($item, $model)"
-      required="$ctrl.required">
+      ng-required="$ctrl.required">
       <ui-select-match placeholder="{{ 'FORM.SELECT.SERVICE' | translate }}"><span>{{$select.selected.name}}</span></ui-select-match>
       <ui-select-choices ui-select-focus-patch repeat="service.id as service in $ctrl.services | filter: { 'name': $select.search }">
         <span ng-bind-html="service.name | highlight:$select.search"></span>

@@ -21,7 +21,7 @@ describe('Patient Visits', () => {
   };
 
   const hospiVisit = {
-    patient : 'Test 1 Patient', // a female patient
+    patient : 'Employee Test 1', // a female patient
     service : 'Medecine Interne',
     note : 'Femme enceint',
     ward : 'Pavillon A',
