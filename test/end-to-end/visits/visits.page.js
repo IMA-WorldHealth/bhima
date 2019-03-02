@@ -1,4 +1,4 @@
-/* global element, by */
+/* global element, by, $$ */
 /* eslint class-methods-use-this:off */
 
 /**
@@ -11,7 +11,7 @@ const helpers = require('../shared/helpers');
 
 helpers.configure(chai);
 
-// const GA = require('../shared/GridAction');
+const GU = require('../shared/GridUtils');
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 
@@ -20,17 +20,14 @@ class VisitPage {
   constructor() {
     this.gridId = 'visit-grid';
     this.visitGrid = element(by.id(this.gridId));
-    this.actionLinkColumn = 1;
+    this.actionLinkColumn = 12;
   }
 
   /**
    * send back the number of visits in the grid
    */
-  getVisitCount() {
-    return this.visitGrid
-      .element(by.css('.ui-grid-render-container-body'))
-      .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'))
-      .count();
+  expectNumberOfGridRows(number) {
+    GU.expectRowCount(this.gridId, number, `Expected Visit Registry's ui-grid row count to be ${number}.`);
   }
 
   /**
@@ -115,6 +112,73 @@ class VisitPage {
     }
 
     FU.buttons.submit();
+  }
+
+  /**
+   * search
+   */
+  search(options) {
+    FU.buttons.search();
+
+    // set to default values the form
+    this.reset();
+
+    if (options.isHospitalized) {
+      element(by.model('$ctrl.searchQueries.hospitalized')).click();
+    }
+
+    if (options.isRefered) {
+      element(by.model('$ctrl.searchQueries.is_refered')).click();
+    }
+
+    if (options.isPregnant) {
+      element(by.model('$ctrl.searchQueries.is_pregnant')).click();
+    }
+
+    if (options.isNewCase === 1 || options.isNewCase === 0) {
+      FU.input('$ctrl.searchQueries.is_new_case', options.isNewCase);
+    }
+
+    if (options.insideHealthZone === 1 || options.insideHealthZone === 0) {
+      FU.input('$ctrl.searchQueries.is_new_case', options.insideHealthZone);
+    }
+
+    if (options.displayName) {
+      FU.input('$ctrl.searchQueries.display_name', options.displayName);
+    }
+
+    if (options.reference) {
+      FU.input('$ctrl.searchQueries.reference', options.reference);
+    }
+
+    if (options.hospital_no) {
+      FU.input('$ctrl.searchQueries.hospital_no', options.hospital_no);
+    }
+
+    if (options.service) {
+      components.serviceSelect.set(options.service);
+    }
+
+    if (options.ward) {
+      components.wardSelect.set(options.ward);
+    }
+
+    if (options.room) {
+      components.roomSelect.set(options.room);
+    }
+
+    FU.buttons.submit();
+  }
+
+  /**
+   * reset
+   */
+  reset() {
+    $$('[data-clear').then(clearButtons => {
+      clearButtons.forEach(clearBtn => {
+        clearBtn.click();
+      });
+    });
   }
 }
 

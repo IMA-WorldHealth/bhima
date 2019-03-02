@@ -21,6 +21,7 @@
               <input type="checkbox" ng-true-value="1" ng-false-value=0 ng-model="$ctrl.searchQueries.hospitalized">
               <span translate>PATIENT_RECORDS.VISITS.ONLY_HOSPITALIZED</span>
             </label>
+            <bh-clear on-clear="$ctrl.clear('hospitalized')"></bh-clear>
           </div>
 
           <!-- refered -->
@@ -29,6 +30,7 @@
               <input type="checkbox" ng-true-value="1" ng-false-value=0 ng-model="$ctrl.searchQueries.is_refered">
               <span translate>PATIENT_RECORDS.VISITS.IS_REFERED</span>
             </label>
+            <bh-clear on-clear="$ctrl.clear('is_refered')"></bh-clear>
           </div>
 
           <!-- pregnant -->
@@ -37,6 +39,7 @@
               <input type="checkbox" ng-true-value="1" ng-false-value=0 ng-model="$ctrl.searchQueries.is_pregnant">
               <span translate>PATIENT_RECORDS.VISITS.IS_PREGNANT</span>
             </label>
+            <bh-clear on-clear="$ctrl.clear('is_pregnant')"></bh-clear>
           </div>
 
           <!-- case -->
@@ -46,7 +49,7 @@
                 <input 
                   type="radio" 
                   name="is_new_case" 
-                  id="yes" 
+                  id="is_new_case_yes" 
                   ng-value="1" 
                   ng-model="$ctrl.searchQueries.is_new_case">
                 <span translate>PATIENT_RECORDS.VISITS.IS_NEW_CASE</span>
@@ -57,12 +60,13 @@
                 <input 
                   type="radio" 
                   name="is_new_case" 
-                  id="no" 
+                  id="is_new_case_no" 
                   ng-value="0" 
                   ng-model="$ctrl.searchQueries.is_new_case">
                 <span translate>PATIENT_RECORDS.VISITS.IS_NOT_NEW_CASE</span>
               </label>
             </div>
+            <bh-clear on-clear="$ctrl.clear('is_new_case')"></bh-clear>
           </div>
 
           <!-- health zone -->
@@ -72,7 +76,7 @@
                 <input 
                   type="radio" 
                   name="inside_health_zone" 
-                  id="yes" 
+                  id="inside_health_zone_yes" 
                   ng-value="1" 
                   ng-model="$ctrl.searchQueries.inside_health_zone">
                 <span translate>PATIENT_RECORDS.VISITS.IS_IN_HEALTH_ZONE</span>
@@ -83,12 +87,13 @@
                 <input 
                   type="radio" 
                   name="inside_health_zone" 
-                  id="no" 
+                  id="inside_health_zone_no" 
                   ng-value="0" 
                   ng-model="$ctrl.searchQueries.inside_health_zone">
                 <span translate>PATIENT_RECORDS.VISITS.IS_NOT_IN_HEALTH_ZONE</span>
               </label>
             </div>
+            <bh-clear on-clear="$ctrl.clear('inside_health_zone')"></bh-clear>
           </div>
 
           <!--patient name-->
@@ -134,6 +139,7 @@
           <bh-ward-select
             uuid="$ctrl.ward_uuid"
             on-select-callback="$ctrl.onSelectWard(ward)">
+            <bh-clear on-clear="$ctrl.clear('ward_uuid')"></bh-clear>
           </bh-ward-select>
 
           <!-- select the room -->
@@ -141,6 +147,7 @@
             uuid="$ctrl.bed.room_uuid"
             ward-uuid="$ctrl.searchQueries.ward_uuid"
             on-select-callback="$ctrl.onSelectRoom(room)">
+            <bh-clear on-clear="$ctrl.clear('room_uuid')"></bh-clear>
           </bh-room-select>
 
           <!-- select the bed -->
@@ -148,6 +155,7 @@
             id="$ctrl.bed.id"
             room-uuid="$ctrl.searchQueries.room_uuid"
             on-select-callback="$ctrl.onSelectBed(bed)">
+            <bh-clear on-clear="$ctrl.clear('bed_id')"></bh-clear>
           </bh-bed-select>
         </div>
       </uib-tab>
