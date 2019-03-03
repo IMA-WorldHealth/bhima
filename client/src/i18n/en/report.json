@@ -44,7 +44,9 @@
     "CHART_OF_ACCOUNTS": "Chart of Accounts",
     "CLIENTS": {
       "TITLE" : "Annual Clients Report",
-      "DESCRIPTION": "This report displays all the debtor groups, their account balances at the beginning of the fiscal year, the debits and credits to their accounts, and their ending balances."
+      "DESCRIPTION": "This report displays all the debtor groups, their account balances at the beginning of the fiscal year, the debits and credits to their accounts, and their ending balances.",
+      "HIDE_LOCKED_CLIENTS" : "Hide Locked Clients",
+      "HIDE_LOCKED_CLIENTS_HELP_TEXT" : "Selecting yes will filter out all locked clients from the report.  By default, the value is no."
     },
     "CLOSING_BALANCE": "Closing Balance",
     "CONFIGURATION": "Report Configuration",

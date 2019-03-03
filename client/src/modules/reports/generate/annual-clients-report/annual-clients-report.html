@@ -34,6 +34,13 @@
             on-change="ReportConfigCtrl.onSelectCurrency(currencyId)">
           </bh-currency-select>
 
+          <bh-yes-no-radios
+            label="REPORT.CLIENTS.HIDE_LOCKED_CLIENTS"
+            value="ReportConfigCtrl.reportDetails.hideLockedClients"
+            help-text="REPORT.CLIENTS.HIDE_LOCKED_CLIENTS_HELP_TEXT"
+            on-change-callback="ReportConfigCtrl.onHideLockedClientsToggle(value)">
+          </bh-yes-no-radios>
+
           <!--preview-->
           <bh-loading-button loading-state="ConfigForm.$loading">
             <span translate>REPORT.UTIL.PREVIEW</span>
