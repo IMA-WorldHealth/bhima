@@ -28,6 +28,9 @@ describe('Patient Visits', () => {
     room : 'Room A in Ward A',
   };
 
+  const OLD_VISITS = 1;
+  const NEW_VISITS = 2;
+
   it('successfully creates a new visit', () => {
     Page.createVisitSuccess(
       defaultVisit.patient,
@@ -59,7 +62,7 @@ describe('Patient Visits', () => {
   });
 
   it('counts visits in the registry', () => {
-    Page.expectNumberOfGridRows(2);
+    Page.expectNumberOfGridRows(OLD_VISITS + NEW_VISITS);
   });
 
   it('search only hospitalized patients', () => {
@@ -75,7 +78,7 @@ describe('Patient Visits', () => {
       displayName : 'Test 2 Patient',
     };
     Page.search(options);
-    Page.expectNumberOfGridRows(1);
+    Page.expectNumberOfGridRows(OLD_VISITS + 1);
   });
 
   it('search pregnant visits', () => {
@@ -91,7 +94,7 @@ describe('Patient Visits', () => {
       service : 'Medecine Interne',
     };
     Page.search(options);
-    Page.expectNumberOfGridRows(2);
+    Page.expectNumberOfGridRows(OLD_VISITS + 2);
   });
 
   it('search patient visits by ward', () => {
