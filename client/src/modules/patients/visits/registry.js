@@ -211,6 +211,10 @@ function AdmissionRegistryController(
       patient_uuid : row.patient_uuid,
       patient_display_name : row.display_name,
       location,
+    }).then(result => {
+      if (!result) { return; }
+      // reload the grid
+      grid.reload(load);
     });
   }
 

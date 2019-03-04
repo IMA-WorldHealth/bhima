@@ -374,36 +374,34 @@ function transfer(req, res, next) {
     ORDER BY ph.created_at DESC
     LIMIT 1;
   `;
-  const addNewLocation = `
-    INSERT INTO patient_hospitalization SET ?
-  `;
-  const setOccupiedNewBed = `
-    UPDATE bed SET is_occupied = 1 WHERE id = ?;
-  `;
-  const setFreeOldBed = `
-    UPDATE bed SET is_occupied = 0 WHERE id = ?;
-  `;
+
   db.one(lookupLastLocation, [patientVisitUuid, patientUuid])
     .then(previousBed => {
       glb.previousBed = previousBed;
-      return lookupNextAvailableBed(params);
+      return params.id ? { id : params.id } : lookupNextAvailableBed(params);
     })
-    .then(availableBed => {
+    .then(selectedBed => {
       glb.newHospitalizationUuid = uuid();
+
       const paramInsertHospitalization = {
         uuid : db.bid(glb.newHospitalizationUuid),
         patient_visit_uuid : patientVisitUuid,
         patient_uuid : patientUuid,
         room_uuid : params.room_uuid,
-        bed_id : availableBed.id,
+        bed_id : selectedBed.id,
       };
+
       const transaction = db.transaction();
+
       // insert a new patient location as hospitalization
-      transaction.addQuery(addNewLocation, [paramInsertHospitalization]);
+      transaction.addQuery('INSERT INTO patient_hospitalization SET ?;', [paramInsertHospitalization]);
+
       // update the bed for the hopitalized patient
-      transaction.addQuery(setOccupiedNewBed, [paramInsertHospitalization.bed_id]);
+      transaction.addQuery('UPDATE bed SET is_occupied = 1 WHERE id = ?;', [paramInsertHospitalization.bed_id]);
+
       // set free the old bed
-      transaction.addQuery(setFreeOldBed, [glb.previousBed.bed_id]);
+      transaction.addQuery('UPDATE bed SET is_occupied = 0 WHERE id = ?;', [glb.previousBed.bed_id]);
+
       return transaction.execute();
     })
     .then(() => {
