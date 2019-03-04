@@ -134,7 +134,7 @@
     "chai-http": "^1.0.0",
     "commitizen": "^3.0.0",
     "cz-conventional-changelog": "^2.0.0",
-    "del": "^3.0.0",
+    "del": "^4.0.0",
     "eslint": "^5.0.0",
     "eslint-config-airbnb-base": "^13.0.0",
     "eslint-plugin-import": "^2.7.0",
