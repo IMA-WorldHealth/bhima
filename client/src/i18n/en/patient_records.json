@@ -51,7 +51,7 @@
       "HEALTH_ZONE":"health Zone",
       "CASE":"Type of case",
       "REFERED":"Refered",
-      "IS_PREGNANT":"Does she pregnant ?",
+      "IS_PREGNANT":"Is the patient pregnant ?",
       "IS_IN_HEALTH_ZONE":"In the health zone (ZS)",
       "IS_NOT_IN_HEALTH_ZONE":"Not in the health zone (HZ)",
       "IS_NEW_CASE":"New Case",

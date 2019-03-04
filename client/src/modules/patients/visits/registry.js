@@ -96,7 +96,7 @@ function AdmissionRegistryController(
     displayName : 'PATIENT_RECORDS.VISITS.DURATION',
     headerCellFilter : 'translate',
     type : 'number',
-    cellTemplate : '/modules/patients/visits/templates/duration.cell.html',
+    cellFilter : 'amDurationFormat:"day"',
   }, {
     field : 'hospitalized',
     displayName : 'PATIENT_RECORDS.VISITS.ADMISSION_TYPE',
@@ -153,10 +153,6 @@ function AdmissionRegistryController(
     // hook the returned admissions up to the grid.
     return Visits.admissions.read(null, filters)
       .then((admissions) => {
-        admissions.forEach((admission) => {
-          admission.durationAge = util.getDuration(admission.duration);
-        });
-
         // put data in the grid
         vm.uiGridOptions.data = admissions;
         // grid : update view filters

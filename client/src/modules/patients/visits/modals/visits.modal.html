@@ -23,7 +23,7 @@
 
   <!-- service -->
   <div ng-if="AdmitCtrl.isAdmission">
-    <bh-service-select on-select-callback="AdmitCtrl.onServiceSelect(service)"></bh-service-select>
+    <bh-service-select on-select-callback="AdmitCtrl.onServiceSelect(service)" required="true"></bh-service-select>
   </div>
 
   <div ng-if="!AdmitCtrl.isAdmission && AdmitCtrl.currentVisit.start_diagnosis_label" class="form-group">

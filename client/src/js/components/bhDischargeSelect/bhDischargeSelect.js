@@ -1,6 +1,7 @@
 angular.module('bhima.components')
   .component('bhDischargeSelect', {
     bindings : {
+      value : '<?',
       onChangeCallback : '&',
     },
     templateUrl : 'js/components/bhDischargeSelect/bhDischargeSelect.html',
