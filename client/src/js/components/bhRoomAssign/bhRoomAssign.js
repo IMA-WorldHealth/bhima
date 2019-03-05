@@ -26,6 +26,7 @@ function RoomAssignController() {
   };
 
   $ctrl.onSelectAuto = () => {
+    $ctrl.bed.isManualAssign = 1;
     $ctrl.onSelectCallback({ bed : $ctrl.bed });
   };
 

@@ -16,11 +16,29 @@
       <uib-tab index="0" heading="{{ 'FORM.LABELS.SEARCH_QUERIES' | translate }}" data-custom-filter-tab>
         <div class="tab-body">
           <!-- hospitalized -->
-          <div class="checkbox">
-            <label>
-              <input type="checkbox" ng-true-value="1" ng-false-value=0 ng-model="$ctrl.searchQueries.hospitalized">
-              <span translate>PATIENT_RECORDS.VISITS.ONLY_HOSPITALIZED</span>
-            </label>
+          <div>
+            <div class="radio-inline">
+              <label style="font-weight: 100;">
+                <input 
+                  type="radio" 
+                  name="hospitalized" 
+                  id="hospitalized_yes" 
+                  ng-value="1" 
+                  ng-model="$ctrl.searchQueries.hospitalized">
+                <span translate>PATIENT_RECORDS.VISITS.HOSPITALISATION</span>
+              </label>
+            </div>
+            <div class="radio-inline">
+              <label style="font-weight: 100;">
+                <input 
+                  type="radio" 
+                  name="hospitalized" 
+                  id="hospitalized_no" 
+                  ng-value="0" 
+                  ng-model="$ctrl.searchQueries.hospitalized">
+                <span translate>PATIENT_RECORDS.VISITS.AMBULATORY</span>
+              </label>
+            </div>
             <bh-clear on-clear="$ctrl.clear('hospitalized')"></bh-clear>
           </div>
 

@@ -5,12 +5,12 @@ angular.module('bhima.components')
     transclude  : true,
     bindings    : {
       uuid      : '<',
+      roomUuid : '<',
       onSelectCallback : '&',
       required : '<?',
       label    : '@?',
       autoSelect : '<?',
-      roomUuid : '<?',
-      occupied : '<?',
+      showOccupiedBeds : '<?',
     },
   });
 
@@ -72,8 +72,8 @@ function BedSelectController(Bed, Notify) {
     const notOccupiedBeds = { room_uuid : $ctrl.roomUuid || 'x', is_occupied : 0 };
 
     // eslint-disable-next-line no-nested-ternary
-    return $ctrl.occupied === true ? occupiedBeds
-      : $ctrl.occupied === false ? notOccupiedBeds
+    return $ctrl.showOccupiedBeds === true ? occupiedBeds
+      : $ctrl.showOccupiedBeds === false ? notOccupiedBeds
         : allBeds;
   }
 }

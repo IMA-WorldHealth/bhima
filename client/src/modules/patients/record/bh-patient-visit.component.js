@@ -35,8 +35,10 @@ function VisitsController(Patients, Notify, Moment) {
 
     return Patients.Visits.read($ctrl.patientUuid)
       .then(visits => {
-        visits.forEach(calculateDays);
-        visits.forEach(hrBedLocation);
+        visits.forEach(visit => {
+          calculateDays(visit);
+          hrBedLocation(visit);
+        });
         [mostRecentVisit] = visits;
 
         if (mostRecentVisit) {

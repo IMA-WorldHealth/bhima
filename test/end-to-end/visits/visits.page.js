@@ -123,10 +123,6 @@ class VisitPage {
     // set to default values the form
     this.reset();
 
-    if (options.isHospitalized) {
-      element(by.model('$ctrl.searchQueries.hospitalized')).click();
-    }
-
     if (options.isRefered) {
       element(by.model('$ctrl.searchQueries.is_refered')).click();
     }
@@ -135,12 +131,31 @@ class VisitPage {
       element(by.model('$ctrl.searchQueries.is_pregnant')).click();
     }
 
-    if (options.isNewCase === 1 || options.isNewCase === 0) {
-      FU.input('$ctrl.searchQueries.is_new_case', options.isNewCase);
+    // hospitalization
+    if (options.isHospitalized === 1) {
+      FU.radio('$ctrl.searchQueries.hospitalized', 0);
     }
 
-    if (options.insideHealthZone === 1 || options.insideHealthZone === 0) {
-      FU.input('$ctrl.searchQueries.is_new_case', options.insideHealthZone);
+    if (options.isHospitalized === 0) {
+      FU.radio('$ctrl.searchQueries.hospitalized', 1);
+    }
+
+    // new case
+    if (options.isNewCase === 1) {
+      FU.radio('$ctrl.searchQueries.is_new_case', 0);
+    }
+
+    if (options.isNewCase === 0) {
+      FU.radio('$ctrl.searchQueries.is_new_case', 1);
+    }
+
+    // inside health zone
+    if (options.insideHealthZone === 1) {
+      FU.radio('$ctrl.searchQueries.inside_health_zone', 0);
+    }
+
+    if (options.insideHealthZone === 0) {
+      FU.radio('$ctrl.searchQueries.inside_health_zone', 1);
     }
 
     if (options.displayName) {

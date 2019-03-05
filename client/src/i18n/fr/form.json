@@ -127,7 +127,8 @@
             "PERIOD_DIFF_FISCAL": "Les perodes doivent appartenir a une meme annee fiscale",
             "STOCK_LINE": "Ligne de Stock",
             "VALUE_LESS": "Cette valeur est inférieure à la valeur minimale",
-            "VALUE_GREATER": "Cette valeur est supérieure à la valeur maximale"
+            "VALUE_GREATER": "Cette valeur est supérieure à la valeur maximale",
+            "GRID_CACHE_KEY_MISSING":"Le cache pour la grille est manquante"
         },
         "INFO": {
             "ASSIGNED_COST_CENTER" : "Assigné un centre de coût",

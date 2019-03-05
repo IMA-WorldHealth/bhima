@@ -127,7 +127,8 @@
             "PERIOD_DIFF_FISCAL": "Periods should be in the same fiscal year",
             "STOCK_LINE": "Stock line",
             "VALUE_LESS": "This value is less than the minimum value",
-            "VALUE_GREATER": "This value is greater than the maximum value"
+            "VALUE_GREATER": "This value is greater than the maximum value",
+            "GRID_CACHE_KEY_MISSING":"The cache of the grid is missing"
         },
         "INFO": {
             "ASSIGNED_COST_CENTER" : "Assigned a cost center",

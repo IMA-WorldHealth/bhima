@@ -21,9 +21,9 @@ function PatientTransferModalController(Visits, Modal, Notify, Params) {
   };
 
   vm.transfer = () => {
-    if (!vm.bed) { return; }
+    if (!vm.bed) { return null; }
 
-    Visits.transfer(Params.patient_uuid, Params.patient_visit_uuid, vm.bed)
+    return Visits.transfer(Params.patient_uuid, Params.patient_visit_uuid, vm.bed)
       .then(transfered => {
         if (!transfered) { return; }
 

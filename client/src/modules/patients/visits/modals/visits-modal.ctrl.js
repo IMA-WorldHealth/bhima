@@ -27,7 +27,6 @@ function VisitsAdmissionController(ModalInstance, Patients, Visits, Notify,
     inside_health_zone : 1,
     is_new_case : 1,
   };
-  vm.$loading = false;
 
   vm.onBedRoomSelect = bed => {
     vm.visit.bed = bed;
@@ -84,8 +83,6 @@ function VisitsAdmissionController(ModalInstance, Patients, Visits, Notify,
 
     if (form.$invalid || !patient) { return null; }
 
-    vm.$loading = true;
-
     // the columns updated on the patient visit table will depend on the admission/ discharge type
     const submitMethod = vm.isAdmission ? Patients.Visits.admit : Patients.Visits.discharge;
 
@@ -95,9 +92,6 @@ function VisitsAdmissionController(ModalInstance, Patients, Visits, Notify,
           ? 'FORM.INFO.VISIT_RECORDED_SUCCESSFULLY' : 'FORM.INFO.DISCHARGE_RECORDED_SUCCESSFULLY';
         Notify.success(notifyMessage);
         ModalInstance.close(true);
-      })
-      .finally(() => {
-        vm.$loading = false;
       });
   }
 }

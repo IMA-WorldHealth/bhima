@@ -3,13 +3,16 @@ angular.module('bhima.services')
 
 GridFiltererService.$inject = [
   'FilterService', 'appcache', 'PeriodService',
-  '$httpParamSerializer', 'LanguageService', 'bhConstants', 'util',
+  'bhConstants', 'util', 'NotifyService',
 ];
 
 /**
  * @class GridFilterer
  */
-function GridFiltererService(Filters, AppCache, Periods, $httpParamSerializer, Languages, bhConstants, Util) {
+function GridFiltererService(
+  Filters, AppCache, Periods,
+  bhConstants, Util, Notify
+) {
   const customFiltersList = [
     { key : 'display_name', label : 'FORM.LABELS.NAME' },
     { key : 'sex', label : 'FORM.LABELS.GENDER' },
@@ -81,7 +84,12 @@ function GridFiltererService(Filters, AppCache, Periods, $httpParamSerializer, L
   ];
 
   class GridFilterer {
-    constructor(cacheKey = 'grid-filterer-cache') {
+    constructor(cacheKey) {
+      if (!cacheKey) {
+        Notify.danger('FORM.LABELS.GRID_CACHE_KEY_MISSING');
+        return;
+      }
+
       this._filters = new Filters();
       this._cache = new AppCache(cacheKey);
 

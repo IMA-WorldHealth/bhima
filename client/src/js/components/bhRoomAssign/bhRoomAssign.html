@@ -20,19 +20,11 @@
     room-uuid="$ctrl.bed.room_uuid"
     on-select-callback="$ctrl.onSelectBed(bed)"
     auto-select="!$ctrl.bed.isManualAssign"
-    occupied="false"
+    show-occupied-beds="false"
     required="true">
   </bh-bed-select>
 
-  <div class="checkbox">
-    <label>
-      <input 
-        type="checkbox" 
-        ng-model="$ctrl.bed.isManualAssign" 
-        ng-change="$ctrl.onSelectAuto()"
-        ng-true-value="1" 
-        ng-false-value="0"> 
-        <span translate>BED.CHANGE_BED</span>
-    </label>
-  </div>
+  <button type="button" ng-click="$ctrl.onSelectAuto()" class="btn btn-primary" translate>
+    BED.CHANGE_BED
+  </button>
 </div>

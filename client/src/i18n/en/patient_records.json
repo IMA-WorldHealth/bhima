@@ -50,13 +50,13 @@
       "PREGNANT":"Pregnant",
       "HEALTH_ZONE":"health Zone",
       "CASE":"Type of case",
-      "REFERED":"Refered",
+      "REFERED":"Referred",
       "IS_PREGNANT":"Is the patient pregnant ?",
       "IS_IN_HEALTH_ZONE":"In the health zone (ZS)",
-      "IS_NOT_IN_HEALTH_ZONE":"Not in the health zone (HZ)",
+      "IS_NOT_IN_HEALTH_ZONE":"Outside of the health zone (HZ)",
       "IS_NEW_CASE":"New Case",
       "IS_NOT_NEW_CASE":"Old Case",
-      "IS_REFERED":"Does he or she a refered patient ?"
+      "IS_REFERED":"Is the patient a referral ?"
     },
     "TRANSFER":{
       "TITLE":"Transfer",
@@ -71,7 +71,7 @@
       "EMERGENCY":"Emergency Discharge",
       "SERVICE_CHANGE":"Service Change",
       "DEATH":"Death of the patient",
-      "EVASION":"The patient escaped from the hospital",
+      "EVASION":"The patient fled the hospital",
       "DISCHARGE_BUT_ON_BED":"Medical discharge but the patient stays in the bed",
       "STATUQUO_CLINIC":"Statuquo Clinic",
       "TRANSFER":"Transfer"
