@@ -296,7 +296,6 @@ function document(req, res, next) {
         return item;
       });
 
-      // console.log(assetTable);
       _.merge(context, { assetTable }, { totals });
 
       return report.render(context);
@@ -350,11 +349,11 @@ function getFiscalYearDetails(fiscalYearId) {
   const bundle = {};
   // get fiscal year details and the last period id of the fiscal year
   const query = `
-    SELECT 
+    SELECT
       p.id AS period_id, p.end_date,
-      fy.id, fy.label, fy.previous_fiscal_year_id 
-    FROM fiscal_year fy 
-    JOIN period p ON p.fiscal_year_id = fy.id 
+      fy.id, fy.label, fy.previous_fiscal_year_id
+    FROM fiscal_year fy
+    JOIN period p ON p.fiscal_year_id = fy.id
       AND p.number = (SELECT MAX(period.number) FROM period WHERE period.fiscal_year_id = ?)
     WHERE fy.id = ?;
   `;

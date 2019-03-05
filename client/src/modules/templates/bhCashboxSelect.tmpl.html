@@ -1,17 +1,16 @@
-<fieldset 
+<fieldset
   ng-form="CashboxForm"
   novalidate
   bh-cashbox-select>
-  <div class="form-group"
-       ng-class="{ 'has-error' : CashboxForm.$submitted && CashboxForm.cashbox_id.$invalid }">
+  <div class="form-group" ng-class="{ 'has-error' : CashboxForm.$submitted && CashboxForm.cashbox_id.$invalid }">
     <label class="control-label" translate>
       {{ $ctrl.label }}
     </label>
     <ng-transclude></ng-transclude>
     <ui-select name="cashbox_id"
-	       ng-model="$ctrl.cashboxId"
-	       required 
-	       on-select="$ctrl.onSelect($item, $model)">
+      ng-model="$ctrl.cashboxId"
+      on-select="$ctrl.onSelect($item, $model)"
+      required>
       <ui-select-match placeholder="{{ 'FORM.SELECT.CASHBOX' | translate }}"><span translate>{{$select.selected.hrlabel}}</span></ui-select-match>
       <ui-select-choices ui-select-focus-patch repeat="cashbox.id as cashbox in ($ctrl.cashboxes | filter:$select.search) track by cashbox.id">
         <span ng-bind-html="cashbox.hrlabel | highlight:$select.search"></span>

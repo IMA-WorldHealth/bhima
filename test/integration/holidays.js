@@ -47,9 +47,6 @@ describe('(/holidays) The /holidays  API endpoint', () => {
   });
 
   it('PUT /HOLIDAYS  should update an existing Holiday ', () => {
-    console.log('HHH');
-    console.log(holiday.id);
-
     return agent.put('/holidays/'.concat(holiday.id))
       .send({ label : 'Holiday Updated', employee_uuid : '75e09694-65f2-45a1-a8a2-8b025003d793' })
       .then((res) => {
