@@ -15,6 +15,24 @@
     <uib-tabset>
       <uib-tab index="0" heading="{{ 'FORM.LABELS.SEARCH_QUERIES' | translate }}" data-custom-filter-tab>
         <div class="tab-body">
+          <!-- refered -->
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" ng-true-value="1" ng-false-value=0 ng-model="$ctrl.searchQueries.is_refered">
+              <span translate>PATIENT_RECORDS.VISITS.IS_REFERED</span>
+            </label>
+            <bh-clear on-clear="$ctrl.clear('is_refered')"></bh-clear>
+          </div>
+
+          <!-- pregnant -->
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" ng-true-value="1" ng-false-value=0 ng-model="$ctrl.searchQueries.is_pregnant">
+              <span translate>PATIENT_RECORDS.VISITS.IS_PREGNANT</span>
+            </label>
+            <bh-clear on-clear="$ctrl.clear('is_pregnant')"></bh-clear>
+          </div>
+
           <!-- hospitalized -->
           <div>
             <div class="radio-inline">
@@ -40,24 +58,6 @@
               </label>
             </div>
             <bh-clear on-clear="$ctrl.clear('hospitalized')"></bh-clear>
-          </div>
-
-          <!-- refered -->
-          <div class="checkbox">
-            <label>
-              <input type="checkbox" ng-true-value="1" ng-false-value=0 ng-model="$ctrl.searchQueries.is_refered">
-              <span translate>PATIENT_RECORDS.VISITS.IS_REFERED</span>
-            </label>
-            <bh-clear on-clear="$ctrl.clear('is_refered')"></bh-clear>
-          </div>
-
-          <!-- pregnant -->
-          <div class="checkbox">
-            <label>
-              <input type="checkbox" ng-true-value="1" ng-false-value=0 ng-model="$ctrl.searchQueries.is_pregnant">
-              <span translate>PATIENT_RECORDS.VISITS.IS_PREGNANT</span>
-            </label>
-            <bh-clear on-clear="$ctrl.clear('is_pregnant')"></bh-clear>
           </div>
 
           <!-- case -->

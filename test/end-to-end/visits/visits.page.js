@@ -133,29 +133,29 @@ class VisitPage {
 
     // hospitalization
     if (options.isHospitalized === 1) {
-      FU.radio('$ctrl.searchQueries.hospitalized', 0);
+      element(by.id('hospitalized_yes')).click();
     }
 
     if (options.isHospitalized === 0) {
-      FU.radio('$ctrl.searchQueries.hospitalized', 1);
+      element(by.id('hospitalized_no')).click();
     }
 
     // new case
     if (options.isNewCase === 1) {
-      FU.radio('$ctrl.searchQueries.is_new_case', 0);
+      element(by.id('is_new_case_yes')).click();
     }
 
     if (options.isNewCase === 0) {
-      FU.radio('$ctrl.searchQueries.is_new_case', 1);
+      element(by.id('is_new_case_no')).click();
     }
 
     // inside health zone
     if (options.insideHealthZone === 1) {
-      FU.radio('$ctrl.searchQueries.inside_health_zone', 0);
+      element(by.id('inside_health_zone_yes')).click();
     }
 
     if (options.insideHealthZone === 0) {
-      FU.radio('$ctrl.searchQueries.inside_health_zone', 1);
+      element(by.id('inside_health_zone_no')).click();
     }
 
     if (options.displayName) {
