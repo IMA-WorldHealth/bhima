@@ -149,24 +149,6 @@ function GridFiltererService(Filters, AppCache, Periods, $httpParamSerializer, L
       this._filters.loadCache(this._cache.filters || {});
     }
 
-    /**
-     * @method getQueryString
-     * @description
-     * returns a query string with parameters with the consideration
-     * of the current applied filters
-     * @param {string} type
-     */
-    getQueryString(type) {
-      const filterOpts = this._filters.formatHTTP();
-      const defaultOpts = { renderer : type, lang : Languages.key };
-
-      // combine options
-      const options = angular.merge(defaultOpts, filterOpts);
-
-      // return  serialized options
-      return $httpParamSerializer(options);
-    }
-
     assignDefaultFilters() {
       // get the keys of filters already assigned - on initial load this will be empty
       const assignedKeys = Object.keys(this._filters.formatHTTP());

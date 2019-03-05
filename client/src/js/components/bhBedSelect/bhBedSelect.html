@@ -1,7 +1,7 @@
 <div ng-form="BedForm" bh-bed-select ng-model-options="{ updateOn: 'default' }">
   <div
     class="form-group"
-    ng-class="{ 'has-error' : BedForm.$submitted && BedForm.bed_uuid.$invalid }">
+    ng-class="{ 'has-error' : BedForm.$submitted && BedForm.bed_id.$invalid }">
 
     <label ng-if="!$ctrl.noBedAvailable && !$ctrl.autoSelect" class="control-label" translate>
       {{ $ctrl.label }}

@@ -16,7 +16,8 @@ function DischargeSelectController(DischargeTypes) {
   $ctrl.$onInit = () => {
     DischargeTypes.read()
       .then(data => {
-        if (data.length) {
+        const hasDefaultValue = angular.isDefined($ctrl.value);
+        if (!hasDefaultValue && data.length) {
           $ctrl.value = data[0].id;
         }
         $ctrl.dischargeTypeList = data;
