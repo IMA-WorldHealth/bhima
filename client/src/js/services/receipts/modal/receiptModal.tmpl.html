@@ -18,6 +18,16 @@
       <span translate>{{ReceiptCtrl.createdKey}}</span>
     </span>
   </div>
+  <div
+      id="receipt-confirm-posted"
+      ng-if="ReceiptCtrl.document.posted"
+      style="padding-top : 8px"
+      class="pull-right">
+    <span class="text-success">
+      <span class="fa fa-check-circle-o"></span>
+      <span translate>FORM.LABELS.POSTED</span>
+    </span>
+  </div>
 </div>
 
 <!-- Temporary Loading State -->

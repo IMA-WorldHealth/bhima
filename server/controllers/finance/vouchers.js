@@ -79,7 +79,7 @@ function lookupVoucher(vUuid) {
   const sql = `
     SELECT BUID(v.uuid) as uuid, v.date, v.created_at, v.project_id, v.currency_id, v.amount,
       v.description, v.user_id, v.type_id,  u.display_name, transaction_type.text,
-      CONCAT_WS('.', '${entityIdentifier}', p.abbr, v.reference) AS reference, reversed
+      CONCAT_WS('.', '${entityIdentifier}', p.abbr, v.reference) AS reference, reversed, v.posted
     FROM voucher v
     JOIN project p ON p.id = v.project_id
     JOIN user u ON u.id = v.user_id

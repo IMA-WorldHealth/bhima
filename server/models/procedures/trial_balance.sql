@@ -272,6 +272,9 @@ from the posting_journal table to the General Ledger table.
 */
 CREATE PROCEDURE PostToGeneralLedger()
 BEGIN
+
+  DECLARE isInvoice, isCash, isVoucher INT;
+
   -- write into the posting journal
   INSERT INTO general_ledger (
     project_id, uuid, fiscal_year_id, period_id, trans_id, trans_id_reference_number, trans_date,
@@ -296,8 +299,29 @@ BEGIN
   GROUP BY fiscal_year_id, period_id, account_id
   ON DUPLICATE KEY UPDATE credit = credit + VALUES(credit), debit = debit + VALUES(debit);
 
+
+  
   -- remove from posting journal
   DELETE FROM posting_journal WHERE record_uuid IN (SELECT record_uuid FROM stage_trial_balance_transaction);
+
+  -- Let specify that this invoice or the cash payment is posted
+  SELECT COUNT(uuid) INTO isInvoice  FROM invoice  WHERE invoice.uuid IN (SELECT record_uuid FROM stage_trial_balance_transaction);
+  SELECT COUNT(uuid) INTO isCash  FROM cash  WHERE cash.uuid IN (SELECT record_uuid FROM stage_trial_balance_transaction);
+  SELECT COUNT(uuid) INTO isVoucher  FROM voucher  WHERE voucher.uuid IN (SELECT record_uuid FROM stage_trial_balance_transaction);
+
+  IF isInvoice > 0 THEN
+    UPDATE invoice SET posted = 1 WHERE uuid IN (SELECT record_uuid FROM stage_trial_balance_transaction);
+  END IF;
+
+  IF isCash > 0 THEN
+    UPDATE cash SET posted = 1 WHERE uuid IN (SELECT record_uuid FROM stage_trial_balance_transaction);
+  END IF;
+
+  IF isVoucher > 0 THEN
+    UPDATE voucher SET posted = 1 WHERE uuid IN (SELECT record_uuid FROM stage_trial_balance_transaction);
+  END IF;
+
+
 END $$
 
 DELIMITER ;

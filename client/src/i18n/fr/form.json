@@ -228,6 +228,7 @@
             "ACCOUNT_REFERENCE_TYPE": "Types des références des comptes",
             "NON_POSTED_TRANSACTIONS": "Transaction(s) non postée(s)",
             "POSTED_TRANSACTIONS": "Transactions postés",
+            "POSTED" : "Posté",
             "ACCOUNT_NUMBER": "Numéro de Compte",
             "ACCOUNT_TITLE": "Libelle de Compte",
             "ACCOUNT_TYPE": "Type de Compte",
