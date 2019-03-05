@@ -190,9 +190,13 @@ class VisitPage {
    */
   reset() {
     $$('[data-reset-input]').then(clearButtons => {
-      clearButtons.forEach(clearBtn => {
+      // start clean from the bottom to the top
+      // because if the clean start from the top and arrive in the bottom, top elements
+      // are not visible
+      for (let i = clearButtons.length - 1; i >= 0; i--) {
+        const clearBtn = clearButtons[i];
         clearBtn.click();
-      });
+      }
     });
   }
 }
