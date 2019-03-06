@@ -1044,11 +1044,6 @@ INSERT INTO `user_role`(uuid, user_id, role_uuid)
 INSERT INTO entity (uuid, display_name, gender, email, phone, address, entity_type_id) VALUES
   (HUID('00099B1D184A48DEB93D45FBD0AB3790'), 'Bruce Wayne', 'M', 'thebat@bhi.ma', '+243000000', 'Gotham City', 1),
   (HUID('037AC6C6B75A4E328E9DCDE5DA22BACE'), 'Wayne Enterprise', 'o', 'thebat@bhi.ma', '+243000000', 'Gotham City', 4);
-<<<<<<< 7e36b68a0e2a18b553e54df1934d953564f78fe5
-=======
-<<<<<<< dffb30f24559241368e70a0f4e64a124aba0095e
-<<<<<<< 5702b7521d7de3e61f96f1d1ac5bd5a15da96af4
->>>>>>> Resolso conflict with Branch Master
 
 -- default room type
 INSERT INTO room_type VALUES
@@ -1067,22 +1062,14 @@ INSERT INTO ward VALUES
 INSERT INTO room VALUES
   (HUID('A6F9527BA7B44A2C9F4FDD7323BBCF72'), 'Room A in Ward A', 'Room A description', @ward1, 1),
   (HUID('3BD2C0DB6A574B748AE774554BCBC35D'), 'Room B in Ward B', 'Room B description', @ward2, NULL);
-<<<<<<< 7e36b68a0e2a18b553e54df1934d953564f78fe5
 
 -- default bed
 INSERT INTO bed VALUES
   (1, 'BED 001', HUID('A6F9527BA7B44A2C9F4FDD7323BBCF72'), 0, 1),
   (2, 'BED 002', HUID('A6F9527BA7B44A2C9F4FDD7323BBCF72'), 0, 1),
   (3, 'BED 003', HUID('A6F9527BA7B44A2C9F4FDD7323BBCF72'), 0, 1);
-=======
-=======
->>>>>>> Resolve conflict
-=======
 
 -- Default Auxiliary Fee Center Distribution Key
 INSERT INTO `distribution_key` (`id`, `auxiliary_fee_center_id`, `principal_fee_center_id`, `rate`, `user_id`) VALUES (1, 4, 1, 60.00, 1);
 INSERT INTO `distribution_key` (`id`, `auxiliary_fee_center_id`, `principal_fee_center_id`, `rate`, `user_id`) VALUES (2, 4, 2, 20.00, 1);
 INSERT INTO `distribution_key` (`id`, `auxiliary_fee_center_id`, `principal_fee_center_id`, `rate`, `user_id`) VALUES (3, 4, 3, 20.00, 1);
-
->>>>>>> refactor(Fee Center and Break Even)
->>>>>>> Resolso conflict with Branch Master
