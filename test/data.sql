@@ -851,7 +851,7 @@ INSERT INTO `rubric_payroll` (`id`, `label`, `abbr`, `is_employee`, `is_percent`
   (8, 'Frais scolarité', 'f_scol', 0, 0, 0, 0, 0, 1, 0, 179, 343, 0, 0, NULL),
   (9, 'Logement', 'logm', 0, 1, 0, 0, 1, 0, 0, 179, 350, 0, 0, 30),
   (10, 'Allocation Familiale', 'allc', 0, 0, 0, 0, 1, 1, 0, 179, 347, 0, 0, NULL),
-  (11, 'Office Nationale de l\'emploie', 'ONEM', 0, 1, 1, 1, 0, 0, 0, 320, 355, 0, 0, 0.2),
+  (11, 'Office Nationale de l\emploie', 'ONEM', 0, 1, 1, 1, 0, 0, 0, 320, 355, 0, 0, 0.2),
   (12, 'Acompte sur salaires', 'ac_sal', 1, 0, 1, 0, 0, 1, 0, 340, 179, 0, 1, NULL);
 
 -- Configuration of Rubrinc

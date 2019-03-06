@@ -203,6 +203,7 @@
             "PATIENT_INVOICE_NOT_FOUND": "No invoices found for the patient: {{name}}",
             "PAYMENT": "Cash Payment",
             "PREVIOUS": "Previous",
+            "RECORD_SAME":"No changes have been made to the form",
             "ROWS": "Rows",
             "SALE_DETAILS": "Sale Details",
             "SAVE_SUCCESS": "Save success",

@@ -203,6 +203,7 @@
             "PATIENT_INVOICE_NOT_FOUND": "La facture est inexistante pour le patient: {{name}}",
             "PAYMENT": "Référence du Paiement",
             "PREVIOUS": "Précédent",
+            "RECORD_SAME":"Aucun changement n'a été apporté sur le formulaire",
             "ROWS": "enregistrements",
             "SALE_DETAILS": "Détaille de la Facture",
             "SAVE_SUCCESS": "Enregistrement avec succès",
