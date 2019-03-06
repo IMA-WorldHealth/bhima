@@ -140,6 +140,8 @@
             "PATIENT_VISIT_PENDING":"Le patient a une visite en cours non déchargée",
             "BY": "Par",
             "CANCEL_CASH": "Annulation de paiement",
+            "CAN_NOT_BREAKEVEN": "Impossible de calculer le seuil de rentabilité",
+            "CHECK_DEFINE_FEE_CENTERS": "Cocher la case pour definir les Centres de frais à Analyser",
             "CLEAR_FILTERS": "Supprimer les filtres",
             "CLOSED": "Fermée",
             "CLOSE_FISCAL_YEAR": "Clôturer l'année fiscale",

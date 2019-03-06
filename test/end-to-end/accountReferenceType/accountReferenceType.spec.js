@@ -16,8 +16,8 @@ describe('Account Reference Type', () => {
     label : 'Update Account Reference Type',
   };
 
-  it('begins with 2 Account Reference Type', () => {
-    expect(page.count()).to.eventually.equal(3);
+  it('begins with 4 Account Reference Type', () => {
+    expect(page.count()).to.eventually.equal(4);
   });
 
   it('successfully creates a new Account Reference Type', () => {

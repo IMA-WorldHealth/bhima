@@ -11,6 +11,7 @@ function BreakDownModalController(
 ) {
   const vm = this;
   vm.transaction = data.transactions;
+
   vm.feeCenter = vm.transaction[0];
 
   vm.cancel = cancel;

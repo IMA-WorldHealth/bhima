@@ -9,6 +9,7 @@ const BadRequest = require('../../../lib/errors/BadRequest');
 
 function proceed(req, res, next) {
   const { data } = req.body;
+
   const isDebtor = data.debit_equiv > 0;
   const dataValues = data.values;
   const auxiliaryCenterId = data.fee_center_id || data.auxiliary_fee_center_id;
@@ -20,18 +21,22 @@ function proceed(req, res, next) {
   Object.keys(dataValues).forEach((principalCenterId) => {
     const debitEquivDistributed = isDebtor ? dataValues[principalCenterId] : 0;
     const creditEquivDistributed = isDebtor ? 0 : dataValues[principalCenterId];
-    dataToDistribute.push([
-      db.bid(data.uuid),
-      data.trans_id,
-      data.account_id,
-      data.is_cost,
-      auxiliaryCenterId,
-      principalCenterId,
-      debitEquivDistributed,
-      creditEquivDistributed,
-      new Date(),
-      data.user_id,
-    ]);
+    if (debitEquivDistributed > 0 || creditEquivDistributed > 0) {
+      dataToDistribute.push([
+        db.bid(data.uuid),
+        data.trans_id,
+        data.account_id,
+        data.is_variable,
+        data.is_turnover,
+        data.is_cost,
+        auxiliaryCenterId,
+        principalCenterId,
+        debitEquivDistributed,
+        creditEquivDistributed,
+        new Date(),
+        data.user_id,
+      ]);
+    }
   });
 
   const delFeeCenterDistribution = `DELETE FROM fee_center_distribution WHERE row_uuid = ?`;
@@ -40,6 +45,8 @@ function proceed(req, res, next) {
     row_uuid,
     trans_id,
     account_id,
+    is_variable,
+    is_turnover,
     is_cost,
     auxiliary_fee_center_id,
     principal_fee_center_id,

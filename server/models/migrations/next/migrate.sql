@@ -128,8 +128,8 @@ INSERT INTO `indicator_status`(`id`, `text`,`translate_key`)VALUES
   (3, 'validated', 'FORM.LABELS.VALIDATED');
 
 -- @lomamech 2019-01-22 Break Even
-INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
-  (29, 'breakEven', 'TREE.BREAK_EVEN_REPORT');
+INSERT INTO `report` (`report_key`, `title_key`) VALUES
+  ('breakEven', 'TREE.BREAK_EVEN_REPORT');
 
 -- the Break Even Reference unit
 INSERT INTO unit VALUES
@@ -158,3 +158,15 @@ ALTER TABLE `fee_center_distribution` CHANGE COLUMN `is_cost` `is_cost` TINYINT(
 
 ALTER TABLE `reference_fee_center` ADD COLUMN `is_variable` TINYINT(1) UNSIGNED DEFAULT '0';
 ALTER TABLE `reference_fee_center` ADD COLUMN `is_turnover` TINYINT(1) UNSIGNED DEFAULT '0';
+
+-- Break Even By Fee Center unit
+INSERT INTO unit VALUES
+(231, 'Break Even By Fee Center', 'TREE.BREAK_EVEN_FEE_CENTER_REPORT', 'Break-even By Fee Center Report', 144, '/modules/reports/breakEvenFeeCenter', '/reports/breakEvenFeeCenter');
+
+-- @lomamech 2019-02-21 Break Even
+INSERT INTO `report` (`report_key`, `title_key`) VALUES
+('breakEvenFeeCenter', 'TREE.BREAK_EVEN_FEE_CENTER_REPORT');
+
+-- @lomamech 2019-02-25 fee center distribution
+ALTER TABLE `fee_center_distribution` ADD COLUMN `is_variable` TINYINT(1) UNSIGNED DEFAULT '0';
+ALTER TABLE `fee_center_distribution` ADD COLUMN `is_turnover` TINYINT(1) UNSIGNED DEFAULT '0';

@@ -409,6 +409,7 @@ exports.configure = function configure(app) {
 
   app.get('/reports/finance/employeeStanding/', financeReports.employee);
   app.get('/reports/finance/break_even', financeReports.breakEven.report);
+  app.get('/reports/finance/break_even_fee_center', financeReports.breakEvenFeeCenter.report);
 
   app.get('/reports/keys/:key', report.keys);
 

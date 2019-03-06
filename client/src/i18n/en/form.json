@@ -140,6 +140,8 @@
             "PATIENT_VISIT_PENDING":"The patient has a pending visit",
             "BY": "by",
             "CANCEL_CASH": "Cancellation of payment",
+            "CAN_NOT_BREAKEVEN": "Can not calculate breakeven",
+            "CHECK_DEFINE_FEE_CENTERS": "Check to define the fee centers to analyzed",
             "CLEAR_FILTERS": "Remove Filters",
             "CLOSED": "Closed",
             "CLOSE_FISCAL_YEAR": "Close fiscal year",

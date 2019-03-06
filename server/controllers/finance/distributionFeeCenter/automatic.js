@@ -8,6 +8,7 @@ const NotFound = require('../../../lib/errors/NotFound');
 
 function automatic(req, res, next) {
   const { data } = req.body;
+
   const transUuids = data.map(item => db.bid(item.uuid));
 
   const sql = `
@@ -35,6 +36,8 @@ function automatic(req, res, next) {
               row.trans_id,
               item.account_id,
               item.is_cost,
+              item.is_variable,
+              item.is_turnover,
               item.fee_center_id,
               row.fee_center_id,
               row.debit_equiv,
@@ -56,6 +59,8 @@ function automatic(req, res, next) {
         trans_id,
         account_id,
         is_cost,
+        is_variable,
+        is_turnover,
         auxiliary_fee_center_id,
         principal_fee_center_id,
         debit_equiv, 

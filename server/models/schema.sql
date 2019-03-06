@@ -2223,6 +2223,8 @@ CREATE TABLE `fee_center_distribution` (
   `trans_id` VARCHAR(100) NOT NULL,
   `account_id` INT(10) UNSIGNED NOT NULL,
   `is_cost` tinyint(1) UNSIGNED DEFAULT 0,
+  `is_variable` tinyint(1) UNSIGNED DEFAULT 0,
+  `is_turnover` tinyint(1) UNSIGNED DEFAULT 0,
   `auxiliary_fee_center_id` MEDIUMINT(8) UNSIGNED NOT NULL,
   `principal_fee_center_id` MEDIUMINT(8) UNSIGNED NOT NULL,
   `debit_equiv` DECIMAL(19,8) NOT NULL DEFAULT 0.00,

@@ -8,7 +8,7 @@
 <div ng-show="!ReportConfigCtrl.previewGenerated">
   <div class="row">
     <div class="col-md-12">
-      <h3 class="text-capitalize" translate>TREE.BREAK_EVEN_REPORT</h3>
+      <h3 translate>TREE.BREAK_EVEN_FEE_CENTER_REPORT</h3>
     </div>
   </div>
 
@@ -32,6 +32,31 @@
               on-select-callback="ReportConfigCtrl.onSelectPeriod(period)">
             </bh-period-selection>
             <hr>
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" ng-model="ReportConfigCtrl.reportDetails.includeManual" ng-true-value="1" ng-false-value="0">
+                <span translate>TABLE.COLUMNS.INCLUDE_MANUAL_DISTRIBUTIONS</span>
+              </label>
+            </div>
+            
+            <hr>
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" ng-model="ReportConfigCtrl.reportDetails.defineFeeCenters" ng-true-value="1" ng-false-value="0">
+                <span translate>FORM.INFO.CHECK_DEFINE_FEE_CENTERS</span>
+              </label>
+            </div>
+            <hr>
+
+            <div ng-if="ReportConfigCtrl.reportDetails.defineFeeCenters" ng-repeat="fee in ReportConfigCtrl.principalFeeCenter">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" ng-model="ReportConfigCtrl.reportDetails.feeCenters[fee.id]" ng-true-value="{{fee.id}}" ng-false-value="0">
+                  <span> <strong> {{fee.label}} </strong> </span>
+                </label>
+              </div>
+            </div>
+            </hr>
 
             <bh-loading-button loading-state="ConfigForm.$loading">
               <span translate>REPORT.UTIL.PREVIEW</span>

@@ -116,8 +116,8 @@ INSERT INTO unit VALUES
   (228, 'Ward Configurations', 'TREE.WARD_CONFIGURATION', 'Ward configuration module', 227, '/modules/ward/configuration', '/ward/configuration'),
   (229, 'Visits Registry', 'TREE.VISITS_REGISTRY', 'Visits registry', 12, '/modules/patient/visits', '/patients/visits'),
   (230, 'Break Even Reference','TREE.BREAK_EVEN_REFERENCE','Break Even Reference', 1,'/modules/break_even_reference','/break_even_reference'),
-  (231, 'Break Even Reference','TREE.BREAK_EVEN_REFERENCE','Break Even Reference', 1,'/modules/break_even_reference','/break_even_reference'),
-  (232, 'Break-even Report', 'TREE.BREAK_EVEN_REPORT', 'Break-even Report', 144, '/modules/reports/breakEven', '/reports/breakEven');
+  (231, 'Break-even Report', 'TREE.BREAK_EVEN_REPORT', 'Break-even Report', 144, '/modules/reports/breakEven', '/reports/breakEven'),
+  (232, 'Break Even By Fee Center', 'TREE.BREAK_EVEN_FEE_CENTER_REPORT', 'Break-even By Fee Center Report', 144, '/modules/reports/breakEvenFeeCenter', '/reports/breakEvenFeeCenter');
 
 
 -- Reserved system account type
@@ -165,7 +165,8 @@ INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
   (26, 'ohada_profit_loss', 'TREE.OHADA_RESULT_ACCOUNT'),
   (27, 'income_expense_by_year', 'REPORT.PROFIT_AND_LOSS_BY_YEAR'),
   (28, 'feeCenter', 'REPORT.FEE_CENTER.TITLE'),
-  (29, 'breakEven', 'TREE.BREAK_EVEN_REPORT');
+  (29, 'breakEven', 'TREE.BREAK_EVEN_REPORT'),
+  (30, 'breakEvenFeeCenter', 'TREE.BREAK_EVEN_FEE_CENTER_REPORT');
 
 -- Supported Languages
 INSERT INTO `language` VALUES

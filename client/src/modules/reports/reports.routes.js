@@ -30,6 +30,7 @@ angular.module('bhima.routes')
       'stock_value',
       'unpaid-invoice-payments',
       'breakEven',
+      'breakEvenFeeCenter',
     ];
 
     $stateProvider
