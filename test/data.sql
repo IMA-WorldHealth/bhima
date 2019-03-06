@@ -18,6 +18,24 @@ INSERT INTO `project` VALUES
   (2, 'Test Project B', 'TPB', 1, 2, 0),
   (3, 'Test Project C', 'TPC', 1, 2, 0);
 
+-- Cost center
+INSERT INTO `cost_center` VALUES
+  (1, 1, 'cost center 1', 'cost note', 1),
+  (1, 2, 'cost center 2', 'cost note 2', 0),
+  (1, 3, 'cost center 3', 'cost note 3', 1);
+
+-- Profit center
+INSERT INTO `profit_center` VALUES
+  (1, 1, 'profit center 1', 'profit note'),
+  (1, 2, 'profit center 2', 'profit note 2'),
+  (1, 3, 'profit center 3', 'profit note 3');
+
+-- Services
+INSERT INTO `service` VALUES
+  (1, HUID('aff85bdc-d7c6-4047-afe7-1724f8cd369e'), 1, 'Test Service', 1, 1),
+  (2, HUID('b1816006-5558-45f9-93a0-c222b5efa6cb'), 1, 'Administration', 2, 2),
+  (3, HUID('e3988489-ef66-41df-88fa-8b8ed6aa03ac'), 1, 'Medecine Interne', 1, 2);
+
 -- Accounts
 INSERT INTO `account` (`id`, `type_id`, `enterprise_id`, `number`, `label`, `parent`, `locked`, `cc_id`, `pc_id`, `created`, `reference_id`) VALUES
   (1, 6, 1, 1, 'CLASSE 1: COMPTES DE RESSOURCES DURABLES', 0, 0, NULL, NULL, '2016-10-22 14:37:09', NULL),
@@ -607,9 +625,9 @@ INSERT INTO `patient` VALUES
   (HUID('d1d7f856-d414-4400-8b94-8ba9445a2bc0'), 1, 4, HUID('76976710-27eb-46dd-b3f5-cb5eb4abbc92'), 'Employee Test 1', '1960-06-30', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'F', NULL, NULL, NULL, NULL, NULL, NULL, HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), '2018-04-09 13:56:19', NULL, NULL, 'SOF-14', NULL, 1, '2018-04-09 13:56:19', NULL, NULL);
 
 -- Patient Visits
-INSERT INTO `patient_visit` (`uuid`, `patient_uuid`, `start_date`, `end_date`, `start_notes`, `end_notes`, `start_diagnosis_id`, `end_diagnosis_id`, `user_id`) VALUES
-  (HUID('5d3f87d5c107-a4b9-4af6-984c-3be232f9'), HUID('274c51ae-efcc-4238-98c6-f402bfb39866'), '2016-04-25 00:00:00', '2016-04-29 00:00:00', 'He was sick', 'He got better', NULL, NULL, 1),
-  (HUID('710fa8b4da22-847d-4c6a-9b20-112a9fb5'), HUID('81af634f-321a-40de-bc6f-ceb1167a9f65'), '2015-11-14 14:25:00', '2015-11-15 00:00:00', 'He was sick', 'He got better', NULL, NULL, 1);
+INSERT INTO `patient_visit` (`uuid`, `patient_uuid`, `start_date`, `end_date`, `start_notes`, `end_notes`, `start_diagnosis_id`, `end_diagnosis_id`, `user_id`, `last_service_id`) VALUES
+  (HUID('5d3f87d5c107-a4b9-4af6-984c-3be232f9'), HUID('274c51ae-efcc-4238-98c6-f402bfb39866'), '2016-04-25 00:00:00', '2016-04-29 00:00:00', 'He was sick', 'He got better', NULL, NULL, 1, 1),
+  (HUID('710fa8b4da22-847d-4c6a-9b20-112a9fb5'), HUID('81af634f-321a-40de-bc6f-ceb1167a9f65'), '2015-11-14 14:25:00', '2015-11-15 00:00:00', 'He was sick', 'He got better', NULL, NULL, 1, 1);
 
 INSERT INTO `patient_assignment` VALUES
   (HUID('49b90fec-e69c-11e5-8606-843a4bc830ac'),HUID('112a9fb5-847d-4c6a-9b20-710fa8b4da24'),HUID('81af634f-321a-40de-bc6f-ceb1167a9f65')),
@@ -649,22 +667,6 @@ INSERT INTO `reference` VALUES
   (1, 0, 'AB', 'Reference bilan 1', 1, 1, NULL),
   (3, 0, 'AC', 'Reference resultat 1', 1, NULL, 1),
   (4, 0, 'XX', 'Deletable reference 1', 1, NULL, NULL);
-
-INSERT INTO `cost_center` VALUES
-  (1, 1, 'cost center 1', 'cost note', 1),
-  (1, 2, 'cost center 2', 'cost note 2', 0),
-  (1, 3, 'cost center 3', 'cost note 3', 1);
-
-INSERT INTO `profit_center` VALUES
-  (1, 1, 'profit center 1', 'profit note'),
-  (1, 2, 'profit center 2', 'profit note 2'),
-  (1, 3, 'profit center 3', 'profit note 3');
-
--- Services
-INSERT INTO `service` VALUES
-  (1, HUID('aff85bdc-d7c6-4047-afe7-1724f8cd369e'), 1, 'Test Service', 1, 1),
-  (2, HUID('b1816006-5558-45f9-93a0-c222b5efa6cb'), 1, 'Administration', 2, 2),
-  (3, HUID('e3988489-ef66-41df-88fa-8b8ed6aa03ac'), 1, 'Medecine Interne', 1, 2);
 
 INSERT INTO `employee` (`uuid`, `code`, `date_embauche`, `grade_uuid`, `nb_spouse`, `nb_enfant`, `individual_salary`, `bank`, `bank_account`, `fonction_id`, `service_id`, `creditor_uuid`, `locked`, `patient_uuid`, `is_medical`) VALUES
   (HUID('75e09694-65f2-45a1-a8a2-8b025003d793'),'E1','2016-02-02 00:00:00',HUID('71e9f21c-d9b1-11e5-8ab7-78eb2f2a46e0'),1,3,500,'TMB', '1201-3456-5423-03',1,3,HUID('42d3756a-7770-4bb8-a899-7953cd859892'),NULL,HUID('274c51ae-efcc-4238-98c6-f402bfb39866'), 0),
@@ -1060,3 +1062,9 @@ INSERT INTO ward VALUES
 INSERT INTO room VALUES
   (HUID('A6F9527BA7B44A2C9F4FDD7323BBCF72'), 'Room A in Ward A', 'Room A description', @ward1, 1),
   (HUID('3BD2C0DB6A574B748AE774554BCBC35D'), 'Room B in Ward B', 'Room B description', @ward2, NULL);
+
+-- default bed
+INSERT INTO bed VALUES 
+  (1, 'BED 001', HUID('A6F9527BA7B44A2C9F4FDD7323BBCF72'), 0, 1),
+  (2, 'BED 002', HUID('A6F9527BA7B44A2C9F4FDD7323BBCF72'), 0, 1),
+  (3, 'BED 003', HUID('A6F9527BA7B44A2C9F4FDD7323BBCF72'), 0, 1);

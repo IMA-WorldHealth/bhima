@@ -1,0 +1,8 @@
+<div class="ui-grid-cell-contents">
+  <div ng-show="row.entity.end_date">
+    {{ row.entity.end_date | date }}
+  </div>
+  <div ng-hide="row.entity.end_date">
+    <strong class="text-success" translate>PATIENT_RECORDS.VISITS.IN_PROGRESS</strong>...
+  </div>
+</div>

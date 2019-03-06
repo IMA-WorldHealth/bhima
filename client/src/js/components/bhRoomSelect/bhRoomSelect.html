@@ -12,7 +12,8 @@
       name="room_uuid" 
       ng-model="$ctrl.uuid"
       on-select="$ctrl.onSelect($item)"
-      ng-required="$ctrl.required">
+      ng-required="$ctrl.required"
+      ng-disabled="$ctrl.disabled">
       <ui-select-match placeholder="{{ 'FORM.SELECT.ROOM' | translate }}">
         <span>{{$select.selected.label}}</span>
       </ui-select-match>

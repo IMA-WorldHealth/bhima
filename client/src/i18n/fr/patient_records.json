@@ -10,6 +10,8 @@
     "TITLE":"Patients",
     "UPDATE_PICTURE":"Mettre à jour la Photo",
     "UPLOAD_PICTURE":"Télécharger Photo Patient",
+    "HOSPITAL_NO":"Numéro de fiche",
+    "DETAILS":"Details",
     "CHECK_IN":{
       "TITLE" : "Admission",
       "SUBMIT" : "Admettre le patient",
@@ -40,7 +42,39 @@
       "DISCHARGE_DATE": "Date de sortie",
       "DISCHARGE_DIAGNOSIS": "Diagnostique à la sortie",
       "PATIENT_INFO": "Informations sur le patient",
-      "VISITS_INFO": "Informations sur les visites"
+      "VISITS_INFO": "Informations sur les visites",
+      "ADMISSION_REGISTRY":"Registre des Admissions",
+      "ONLY_HOSPITALIZED":"Seulement les patients hospitalisés",
+      "NEW":"Nouvelle visite",
+      "ALREADY_ADMITTED":"Le patient est déjà admit, et sa visite n'est pas encore déchargée",
+      "PREGNANT":"Femme enceinte",
+      "HEALTH_ZONE":"Zone de santé",
+      "CASE":"Type de cas",
+      "REFERED":"Referé",
+      "IS_PREGNANT":"Est-ce une femme enceinte ?",
+      "IS_IN_HEALTH_ZONE":"Zone de santé (ZS)",
+      "IS_NOT_IN_HEALTH_ZONE":"Hors zone de santé (HZ)",
+      "IS_NEW_CASE":"Nouveau cas",
+      "IS_NOT_NEW_CASE":"Ancien cas",
+      "IS_REFERED":"Est-ce un patient referé ?"
+    },
+    "TRANSFER":{
+      "TITLE":"Transfert",
+      "NEW_DESTINATION_DESCRIPTION":"Veuillez séléctionner la nouvelle destination (pavillon, chambre et lit) du patient",
+      "SUCCESSFULLY_TRANSFERED":"Le patient a été transferé avec succès"
+    },
+    "DISCHARGE":{
+      "TITLE":"Décharge",
+      "TYPE":"Type de décharge",
+      "REGULAR":"Décharge regulière",
+      "ON_PATIENT_WILL":"Le patient ayant quitté l'Hopital sur sa propre volonté",
+      "EMERGENCY":"Décharge d'urgence",
+      "SERVICE_CHANGE":"Changement de service",
+      "DEATH":"Décès du malade",
+      "EVASION":"Le malade s'est évadé de l'Hopital",
+      "DISCHARGE_BUT_ON_BED":"Décharge médical mais le patient reste dans le lit",
+      "STATUQUO_CLINIC":"Statuquo Clinique",
+      "TRANSFER":"Transfert"
     },
     "FINANCIAL_ACTIVITY":{
       "ACCOUNT":"Numéro de compte",

@@ -14,6 +14,8 @@ describe('(/beds) The bed API endpoint', () => {
   let id1;
   let id2;
 
+  const EXPECTED_BEDS = 5;
+
   const bedUpdate = {
     id : bed1.id,
     label : 'Bed 1 change room',
@@ -44,7 +46,7 @@ describe('(/beds) The bed API endpoint', () => {
     return agent.get('/beds')
       .then((res) => {
         expect(res).to.have.status(200);
-        expect(res.body).to.be.length(2);
+        expect(res.body).to.be.length(EXPECTED_BEDS);
       })
       .catch(helpers.handler);
   });
@@ -71,7 +73,7 @@ describe('(/beds) The bed API endpoint', () => {
         return agent.get(`/beds`);
       })
       .then(res => {
-        expect(res.body).to.be.length(1);
+        expect(res.body).to.be.length(EXPECTED_BEDS - 1);
       })
       .catch(helpers.handler);
   });

@@ -109,6 +109,7 @@ const tags = require('../controllers/admin/tags');
 const ward = require('../controllers/medical/ward/ward');
 const room = require('../controllers/medical/ward/room');
 const bed = require('../controllers/medical/ward/bed');
+const dischargeTypes = require('../controllers/medical/dischargeTypes');
 
 const feeCenter = require('../controllers/finance/feeCenter');
 
@@ -423,6 +424,7 @@ exports.configure = function configure(app) {
   app.get('/patients/search/name', patients.searchByName);
 
   app.get('/patients/visits', patients.visits.list);
+  app.get('/patients/visits/:uuid', patients.visits.detail);
 
   // Patients API
   app.get('/patients', patients.read);
@@ -444,10 +446,12 @@ exports.configure = function configure(app) {
   app.post('/patients/:uuid/pictures', upload.middleware('pics', 'pictures'), patients.pictures.set);
 
   app.get('/patients/visits/:uuid', patients.visits.detail);
+  app.get('/patients/:uuid/visits/status', patients.visits.patientAdmissionStatus);
   app.get('/patients/:patientUuid/visits/:uuid', patients.visits.detail);
   app.get('/patients/:uuid/visits', patients.visits.listByPatient);
   app.post('/patients/:uuid/visits/admission', patients.visits.admission);
   app.post('/patients/:uuid/visits/discharge', patients.visits.discharge);
+  app.post('/patients/:uuid/visits/:patient_visit_uuid/transfer', patients.visits.transfer);
 
   // misc patients financial routes
   app.get('/patients/:uuid/finance/activity', patients.getFinancialStatus);
@@ -859,5 +863,8 @@ exports.configure = function configure(app) {
   app.post('/account_reference_type', accountReferenceType.create);
   app.put('/account_reference_type/:id', accountReferenceType.update);
   app.delete('/account_reference_type/:id', accountReferenceType.delete);
+
+  // API for discharge type
+  app.get('/discharge_types', dischargeTypes.list);
 
 };

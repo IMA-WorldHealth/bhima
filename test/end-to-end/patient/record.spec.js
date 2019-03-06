@@ -51,6 +51,7 @@ describe('Patient Record', () => {
     element(by.id('submit-visit')).click();
 
     FU.typeahead('AdmitCtrl.visit.diagnosis', diagnosisLabel);
+    components.serviceSelect.set('Medecine Interne');
     FU.modal.submit();
 
     // check to see a new visit has been added

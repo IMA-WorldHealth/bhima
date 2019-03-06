@@ -33,6 +33,7 @@ function BedController(Bed, Modal, ModalService, Notify, uiGridConstants, Sessio
         field : 'label',
         displayName : 'BED.TITLE',
         headerCellFilter : 'translate',
+        cellTemplate : '/modules/ward/configuration/bed/templates/bed.tmpl.html',
       },
       {
         field : 'room_label',

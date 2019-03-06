@@ -22,6 +22,7 @@ function RoomSelectController(Room, Notify) {
 
   $ctrl.$onInit = function onInit() {
     $ctrl.label = $ctrl.label || 'ROOM.TITLE';
+    $ctrl.disabled = !$ctrl.wardUuid;
 
     // load all depots
     Room.read(null, { ward_uuid : $ctrl.wardUuid })
@@ -33,6 +34,8 @@ function RoomSelectController(Room, Notify) {
 
   $ctrl.$onChanges = (changes) => {
     if (changes.wardUuid && changes.wardUuid.currentValue) {
+      $ctrl.disabled = !$ctrl.wardUuid;
+
       Room.read(null, { ward_uuid : changes.wardUuid.currentValue })
         .then(rooms => {
           $ctrl.rooms = rooms;

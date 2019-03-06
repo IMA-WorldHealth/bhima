@@ -6,6 +6,8 @@
     "ACCOUNT_REFERENCE_TYPE": "Account Reference Type",
     "ACCOUNT_STATEMENT" : "Account Statement",
     "ADMIN" : "Administration",
+    "ADMISSION_REGISTRY": "Admission Registry",
+    "VISITS_REGISTRY": "Visits Registry",
     "AGED_CREDITORS" : "Aged Creditor Report",
     "BALANCE" : "Balance",
     "BALANCE_SHEET" : "Balance Sheet",

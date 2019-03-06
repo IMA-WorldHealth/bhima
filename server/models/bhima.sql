@@ -113,7 +113,8 @@ INSERT INTO unit VALUES
   (225, 'Stock Assignment','ASSIGN.STOCK_ASSIGN','', 160,'/modules/stock/assign','/stock/assign'),
   (226, 'Account Reference Type','TREE.ACCOUNT_REFERENCE_TYPE','Account Reference Type', 1,'/modules/account_reference_type','/account_reference_type'),
   (227, 'Ward Module', 'TREE.WARD', 'Ward folder', 0, '/modules/ward/configuration', '/WARD_FOLDER'),
-  (228, 'Ward Configurations', 'TREE.WARD_CONFIGURATION', 'Ward configuration module', 227, '/modules/ward/configuration', '/ward/configuration');
+  (228, 'Ward Configurations', 'TREE.WARD_CONFIGURATION', 'Ward configuration module', 227, '/modules/ward/configuration', '/ward/configuration'),
+  (229, 'Visits Registry', 'TREE.VISITS_REGISTRY', 'Visits registry', 12, '/modules/patient/visits', '/patients/visits');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -291,3 +292,15 @@ INSERT INTO `account_reference_type` (`id`, `label`, `fixed`) VALUES
 (1, 'FORM.LABELS.FEE_CENTER', 1),
 (2, 'FORM.LABELS.BALANCE_SHEET', 1),
 (3, 'FORM.LABELS.PROFIT_LOSS', 1);
+
+-- Default Discharge types
+INSERT INTO `discharge_type` (`id`, `label`) VALUES 
+  (1, 'PATIENT_RECORDS.DISCHARGE.REGULAR'),
+  (2, 'PATIENT_RECORDS.DISCHARGE.ON_PATIENT_WILL'),
+  (3, 'PATIENT_RECORDS.DISCHARGE.EMERGENCY'),
+  (4, 'PATIENT_RECORDS.DISCHARGE.SERVICE_CHANGE'),
+  (5, 'PATIENT_RECORDS.DISCHARGE.DEATH'),
+  (6, 'PATIENT_RECORDS.DISCHARGE.EVASION'),
+  (7, 'PATIENT_RECORDS.DISCHARGE.DISCHARGE_BUT_ON_BED'),
+  (8, 'PATIENT_RECORDS.DISCHARGE.STATUQUO_CLINIC'),
+  (9, 'PATIENT_RECORDS.DISCHARGE.TRANSFER');

@@ -1,0 +1,27 @@
+<div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate>FORM.INFO.PATIENTS</li>
+      <li class="title" translate>PATIENT_RECORDS.TRANSFER.TITLE</li>
+      <li>
+        <span class="label label-primary">{{ $ctrl.details.display_name }}</span>
+        <span class="label label-success">{{ $ctrl.details.location }}</span>
+      </li>
+    </ol>
+  </div>
+  
+  <form name="TransferForm" bh-submit="$ctrl.transfer(TransferForm)" novalidate>
+    <div class="modal-body">
+      <p translate>PATIENT_RECORDS.TRANSFER.NEW_DESTINATION_DESCRIPTION</p>
+      <bh-room-assign on-select-callback="$ctrl.onBedRoomSelect(bed)"></bh-room-assign>
+    </div>
+    
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" data-method="cancel">
+        <span translate>FORM.BUTTONS.CLOSE</span>
+      </button>
+    
+      <bh-loading-button loading-state="TransferForm.$loading">
+      </bh-loading-button>
+    </div>
+  </form>
+  

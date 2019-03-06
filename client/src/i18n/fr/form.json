@@ -127,12 +127,17 @@
             "PERIOD_DIFF_FISCAL": "Les perodes doivent appartenir a une meme annee fiscale",
             "STOCK_LINE": "Ligne de Stock",
             "VALUE_LESS": "Cette valeur est inférieure à la valeur minimale",
-            "VALUE_GREATER": "Cette valeur est supérieure à la valeur maximale"
+            "VALUE_GREATER": "Cette valeur est supérieure à la valeur maximale",
+            "GRID_CACHE_KEY_MISSING":"Le cache pour la grille est manquante"
         },
         "INFO": {
             "ASSIGNED_COST_CENTER" : "Assigné un centre de coût",
             "ASSIGNED_PROFIT_CENTER" : "Assigné un centre de profit",
             "ASSIGNED_PROJECTS" : "Assignée à des projets",
+            "VISIT_RECORDED_SUCCESSFULLY":"Visite enregistrée avec succès",
+            "VISIT_RECORDED_UNSUCCESSFULLY":"Visite non enregistrée",
+            "DISCHARGE_RECORDED_SUCCESSFULLY":"Décharge enregistrée avec succès",
+            "PATIENT_VISIT_PENDING":"Le patient a une visite en cours non déchargée",
             "BY": "Par",
             "CANCEL_CASH": "Annulation de paiement",
             "CLEAR_FILTERS": "Supprimer les filtres",

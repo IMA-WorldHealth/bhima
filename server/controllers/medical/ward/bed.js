@@ -74,7 +74,7 @@ function lookupBeds(options) {
   db.convert(options, ['ward_uuid', 'room_uuid']);
 
   const sql = `
-    SELECT b.id, b.label, 
+    SELECT b.id, b.label, b.is_occupied,
       BUID(r.uuid) as room_uuid, r.label AS room_label,
       BUID(w.uuid) AS ward_uuid, w.name AS ward_name, w.description,
       s.name as service_name
@@ -85,6 +85,7 @@ function lookupBeds(options) {
   `;
 
   const filters = new FilterParser(options);
+  filters.equals('is_occupied');
   filters.equals('ward_uuid', 'uuid', 'w');
   filters.equals('room_uuid', 'uuid', 'r');
   filters.setOrder('ORDER BY ward_name, room_label, label');
@@ -97,7 +98,7 @@ function lookupBeds(options) {
 // lookup bed
 function lookupBed(id) {
   const sql = `
-    SELECT b.id, b.label, 
+    SELECT b.id, b.label, b.is_occupied,
       BUID(r.uuid) as room_uuid, r.label AS room_label, 
       BUID(w.uuid) AS ward_uuid, w.name AS ward_name, w.description,
       s.name as service_name
