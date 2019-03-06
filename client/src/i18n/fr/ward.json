@@ -5,10 +5,10 @@
     "ADD":"Ajouter Pavillon"
   },
   "ROOM":{
-    "TITLE":"Chambre",
-    "LIST":"Liste des chambres",
-    "ADD":"Ajouter Chambre",
-    "NB_ROOMS":"Nombre des chambres"
+    "TITLE":"Salle",
+    "LIST":"Liste des salles",
+    "ADD":"Ajouter une salle",
+    "NB_ROOMS":"Nombre des salles"
   },
   "BED":{
     "TITLE":"Lit",
