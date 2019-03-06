@@ -58,6 +58,18 @@
       "IS_NOT_NEW_CASE":"Ancien cas",
       "IS_REFERED":"Est-ce un patient referé ?"
     },
+    "REPORT":{
+      "VISITS":"Rapport des visites des patients",
+      "DESCRIPTION":"Ce rapport affiche les statistiques des visites des patients par service",
+      "NEW_CASES":"Nouveaux cas",
+      "OLD_CASES":"Anciens cas",
+      "HOSPITALIZED":"Hospitalisations",
+      "AMBULATORY":"Ambulatoires",
+      "PREGNANT":"Femmes enceintes",
+      "REFERRED":"Patients referés",
+      "INSIDE_HEALTH_ZONE":"Zone de santé",
+      "OUTSIDE_HEALTH_ZONE":"Hors zone de santé"
+    },
     "TRANSFER":{
       "TITLE":"Transfert",
       "NEW_DESTINATION_DESCRIPTION":"Veuillez séléctionner la nouvelle destination (pavillon, chambre et lit) du patient",

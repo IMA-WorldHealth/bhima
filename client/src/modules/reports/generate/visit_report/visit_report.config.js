@@ -18,10 +18,6 @@ function VisitReportController(
   vm.dateFrom = new Date();
   vm.dateTo = new Date();
 
-  vm.onDateChange = (date) => {
-    vm.dateTo = date;
-  };
-
   // check cached configuration
   checkCachedConfiguration();
 

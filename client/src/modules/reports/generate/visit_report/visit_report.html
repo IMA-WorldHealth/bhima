@@ -8,8 +8,8 @@
 <div ng-show="!ReportConfigCtrl.previewGenerated">
   <div class="row">
     <div class="col-md-12">
-      <h3 translate>REPORT.STOCK_VALUE.TITLE</h3>
-      <p class="text-info" translate>REPORT.STOCK_VALUE.DESCRIPTION</p>
+      <h3 translate>PATIENT_RECORDS.REPORT.VISITS</h3>
+      <p class="text-info" translate>PATIENT_RECORDS.REPORT.DESCRIPTION</p>
     </div>
   </div>
 
@@ -24,27 +24,12 @@
 
         <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate autocomplete="off">
 
-          <!-- select depot -->
-          <bh-depot-select
-            depot-uuid="ReportConfigCtrl.depot.uuid"
-            on-select-callback="ReportConfigCtrl.onSelectDepot(depot)"
+          <!-- date interval -->
+          <bh-date-interval
+            date-from="ReportConfigCtrl.dateFrom"
+            date-to="ReportConfigCtrl.dateTo"
             required="true">
-            <bh-clear on-clear="ReportConfigCtrl.clear('depot')"></bh-clear>
-          </bh-depot-select>
-
-          <!-- choose date until  -->
-          <bh-date-editor
-            label="FORM.LABELS.UNTIL_DATE"
-            limit-min-fiscal
-            date-value="ReportConfigCtrl.dateTo"
-            on-change="ReportConfigCtrl.onDateChange(date)">
-          </bh-date-editor>
-
-           <!-- the currency to be used in the footer -->
-          <bh-currency-select
-           currency-id="ReportConfigCtrl.currency_id"
-           on-change="ReportConfigCtrl.onSelectCurrency(currencyId)">
-          </bh-currency-select>
+          </bh-date-interval>
 
           <!-- preview -->
           <bh-loading-button loading-state="ConfigForm.$loading">

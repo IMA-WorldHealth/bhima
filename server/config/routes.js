@@ -416,7 +416,7 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/break_even_fee_center', financeReports.breakEvenFeeCenter.report);
 
   // visits reports
-  app.get('/reports/visits', medicalReports.visitsReports);
+  app.get('/reports/visits', medicalReports.visitsReports.document);
 
   app.get('/reports/keys/:key', report.keys);
 
