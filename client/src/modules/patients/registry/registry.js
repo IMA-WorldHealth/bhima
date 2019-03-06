@@ -5,7 +5,7 @@ PatientRegistryController.$inject = [
   '$state', 'PatientService', 'NotifyService', 'AppCache', 'util',
   'ReceiptModal', 'uiGridConstants', '$translate', 'GridColumnService',
   'GridSortingService', 'bhConstants', 'GridStateService', '$httpParamSerializer', 'LanguageService',
-  'BarcodeService',
+  'BarcodeService', 'ModalService',
 ];
 
 /**
@@ -17,7 +17,7 @@ PatientRegistryController.$inject = [
 function PatientRegistryController(
   $state, Patients, Notify, AppCache, util, Receipts, uiGridConstants,
   $translate, Columns, Sorting, bhConstants, GridState, $httpParamSerializer, Languages,
-  Barcode
+  Barcode, Modal
 ) {
   const vm = this;
   const cacheKey = 'PatientRegistry';
@@ -291,6 +291,24 @@ function PatientRegistryController(
     const patients = selectedRows.map(p => p);
     $state.go('patientRegistry.merge', { patients });
   }
+
+  vm.changePatientGroup = () => {
+    const patients = vm.gridApi.selection.getSelectedRows();
+    if (patients.length === 0) {
+      Notify.danger('FORM.WARNINGS.EMPTY_SELECTION');
+      return;
+    }
+    const data = [];
+    patients.forEach(p => {
+      data.push(p.uuid);
+    });
+
+    Modal.editPatientGroup(data).then((result) => {
+      if (result) {
+        Notify.success('FORM.INFO.OPERATION_SUCCESS');
+      }
+    });
+  };
 
   // fire up the module
   startup();

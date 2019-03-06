@@ -6,6 +6,7 @@
     "SUCCESS": "Patient Registered Successfully",
     "CARD": "Patient Card",
     "IDENTITY": "Patient Identity",
+  "REMOVE_PREVIOUS_ASSIGNMENT" : "Remove all aleady assigned groups to this patients",
     "LOOKUP_RETURNING_PATIENT" : "Lookup Returning Patient",
     "NO_PATIENTS_FOUND" : "No patients found matching that criteria.  Did you enter the values correctly?",
     "HAS_MULTIPLE_PATIENTS" : "Caution! Multiple patients matched that criteria.  The first one was chosen automatically."

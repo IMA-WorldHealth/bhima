@@ -309,6 +309,7 @@
             "CASHBOX": "Caisse",
             "CASHIER": "Caissier",
             "CHECK_ALL":"Tout cocher",
+            "CHANGE_PATIENT_GROUP":"Changer group de patient",
             "CASH_ACCOUNT": "Compte caisse",
             "CASH_PAYMENTS": "Paiements",
             "CAUTION": "Caution",

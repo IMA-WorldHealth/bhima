@@ -42,6 +42,12 @@
 
             <li role="separator" class="divider"></li>
             <li role="menuitem">
+                <a href data-method="clear-state" ng-click="PatientRegistryCtrl.changePatientGroup()">
+                  <i class="fa fa-edit"></i> <span translate>FORM.LABELS.CHANGE_PATIENT_GROUP</span>
+                </a>
+              </li>
+            <li role="separator" class="divider"></li>
+            <li role="menuitem">
               <a ng-href="/reports/medical/patients/?{{ PatientRegistryCtrl.download('pdf') }}" download="{{ 'PATIENT_REGISTRY.TITLE' | translate }}">
                 <span class="fa fa-file-pdf-o"></span> <span translate>DOWNLOADS.PDF</span>
               </a>
@@ -91,6 +97,7 @@
       ui-grid="PatientRegistryCtrl.uiGridOptions"
       ui-grid-auto-resize
       ui-grid-resize-columns
+      ui-grid-selection
       ui-grid-move-columns
       ui-grid-selection
       ui-grid-save-state>
