@@ -24,7 +24,7 @@ angular.module('bhima.components')
       dateTo : '=', // date to
       dateId : '@?', // date identifier
       required : '<?', // true or false
-      onChange : '<?', // on change action
+      onChange : '&?', // on change action
       canClear : '<?', // flag for displaying clear button
       label : '@?',
       mode : '@?', // the date mode (day|month|year)
@@ -62,10 +62,7 @@ function bhDateInterval(moment, bhConstants, Fiscal, Session) {
 
     // if controller has requested limit-min-fiscal, fetch required information
     if (angular.isDefined($ctrl.limitMinFiscal)) {
-      Fiscal.getEnterpriseFiscalStartDate(Session.enterprise.id)
-        .then((response) => {
-          $ctrl.pickerFromOptions.minDate = new Date(response.start_date);
-        });
+      getMinimumFiscalYearDate();
     }
 
     $ctrl.pickerToOptions = { showWeeks : false, minDate : $ctrl.dateFrom };
@@ -73,9 +70,24 @@ function bhDateInterval(moment, bhConstants, Fiscal, Session) {
     startup();
   };
 
+  function getMinimumFiscalYearDate() {
+    Fiscal.getEnterpriseFiscalStartDate(Session.enterprise.id)
+      .then(response => {
+        $ctrl.pickerFromOptions.minDate = new Date(response.start_date);
+      });
+  }
+
+  $ctrl.onChangeDate = () => {
+    angular.extend($ctrl.pickerToOptions, { minDate : $ctrl.dateFrom });
+    if ($ctrl.onChange) {
+      $ctrl.onChange();
+    }
+  };
+
   function search(selection) {
     $ctrl.selected = selection.translateKey;
     selection.fn();
+    $ctrl.onChangeDate();
   }
 
   function day() {
@@ -120,7 +132,7 @@ function bhDateInterval(moment, bhConstants, Fiscal, Session) {
     // set the default option according the mode
     if (option !== -1) {
       search($ctrl.options[option]);
-      $ctrl.pickerFromOptions = $ctrl.mode;
+      angular.extend($ctrl.pickerFromOptions, { mode : $ctrl.mode });
     } else {
       custom();
     }
