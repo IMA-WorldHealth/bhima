@@ -39,6 +39,7 @@ function renderHTML(data, template, options = {}) {
 
   moment.locale(options.lang);
 
+
   debug(`initializing ${options.lang} translation locale`);
   // make sure that we have the appropriate language set.  If options.lang is
   // not specified, will default to English.  To change this behavior, see the

@@ -96,6 +96,9 @@ const paths = {
       'node_modules/moment/min/moment.min.js',
       'node_modules/moment/locale/fr.js',
       'node_modules/angular-moment/angular-moment.min.js',
+
+      // barcode
+      'node_modules/jsbarcode/dist/JsBarcode.all.min.js',
     ],
 
     // these must be globs ("**" syntax) to retain their folder structures
