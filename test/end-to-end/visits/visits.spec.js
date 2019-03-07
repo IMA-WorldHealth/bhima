@@ -7,7 +7,7 @@ helpers.configure(chai);
 
 const VisitsPage = require('./visits.page');
 
-describe.only('Patient Visits', () => {
+describe('Patient Visits', () => {
   const path = '#!/patients/visits';
   beforeEach(() => helpers.navigate(path));
 
