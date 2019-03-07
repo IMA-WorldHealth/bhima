@@ -77,7 +77,7 @@ class VisitPage {
 
     // select diagnosis
     if (diagnosis) {
-      FU.typeahead('AdmitCtrl.visit.diagnosis', diagnosis);
+      components.diagnosisSelect.set(diagnosis);
     }
 
     // set note

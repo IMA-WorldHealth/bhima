@@ -57,8 +57,21 @@
             {{> emptyTable columns=6}}
           {{/each}}
         </tbody>
+        <tfoot>
+          <tr>
+            <th></th>
+            <th>{{sum visits 'total'}}</th>
+            <th>{{sum visits 'total_new_case'}}</th>
+            <th>{{sum visits 'total_old_case'}}</th>
+            <th>{{sum visits 'total_hospitalized'}}</th>
+            <th>{{sum visits 'total_ambulatory'}}</th>
+            <th>{{sum visits 'total_pregnant'}}</th>
+            <th>{{sum visits 'total_referred'}}</th>
+            <th>{{sum visits 'total_inside_health_zone'}}</th>
+            <th>{{sum visits 'total_outside_health_zone'}}</th>
+          </tr>
+        </tfoot>
       </table>
-
     </div>
   </div>
 </div>
