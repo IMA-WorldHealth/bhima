@@ -290,6 +290,7 @@
             "CASH_PAYMENTS": "Cash Payments",
             "CHECK_ALL":"Check all",
             "CAUTION": "Caution",
+            "CAUTION_AMOUNT": "Prepayment Amount",
             "CHARGE": "Charge",
             "CLIENT": "Client",
             "CLIENT_ID": "Client ID",

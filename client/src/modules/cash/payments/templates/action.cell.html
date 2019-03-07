@@ -48,16 +48,16 @@
 
     <!-- reverse or remove records -->
     <li>
-      <a data-method="reverse-record" href ng-click="grid.appScope.cancelCash(row.entity)" ng-hide="row.entity._hasCreditNote">
+      <a ng-hide="row.entity.reversed" data-method="reverse-record" href ng-click="grid.appScope.cancelCash(row.entity)" ng-hide="row.entity._hasCreditNote">
         <span class="text-danger"><i class="fa fa-clone"></i> <span translate>TABLE.COLUMNS.CANCEL_CASH</span></span>
       </a>
 
-      <a ng-show="row.entity._hasCreditNote" href>
+      <a ng-show="row.entity.reversed" href>
         <span class="text-danger"><i class="fa fa-ban"></i> <span translate>FORM.LABELS.CANCELED</span></span>
       </a>
     </li>
 
-    <li ng-hide="row.entity._hasCreditNote"  ng-if="grid.appScope.allowsRecordDeletion()">
+    <li ng-if="grid.appScope.allowsRecordDeletion()" ng-hide="row.entity.reversed" >
       <a data-method="delete-record" href ng-click="grid.appScope.deleteCashPayment(row.entity)">
         <span class="text-danger"><i class="fa fa-trash"></i> <span translate>FORM.BUTTONS.DELETE_RECORD</span></span>
       </a>

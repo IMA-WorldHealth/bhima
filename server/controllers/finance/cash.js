@@ -210,7 +210,7 @@ function update(req, res, next) {
   // protected database fields that are unavailable for updates.
   const protect = [
     'is_caution', 'amount', 'user_id', 'cashbox_id',
-    'currency_id', 'date', 'project_id',
+    'currency_id', 'date', 'project_id', 'posted',
   ];
 
   // loop through update keys and ensure that we are only updating non-protected
