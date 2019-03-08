@@ -5,6 +5,7 @@ const Filters = require('../shared/components/bhFilters');
 const SearchModal = require('../shared/search.page');
 const components = require('../shared/components');
 const FU = require('../shared/FormUtils');
+const GU = require('../shared/GridUtils');
 
 function PatientRegistrySearch() {
   let modal;
@@ -152,6 +153,29 @@ function PatientRegistrySearch() {
 
     await expectNumberOfGridRows(NUM_MATCHING);
   });
+
+  it('bulk group assignment without selecting patients', async () => {
+    await element(by.id('menu')).click();
+    await $('[data-method="change-patient-group"]').click();
+    await components.notification.hasWarn();
+  });
+
+  it('Patient group bulk assignment', () => {
+    const gridId = 'patient-registry';
+    GU.selectRow(gridId, 0);
+    GU.selectRow(gridId, 1);
+    element(by.id('menu')).click();
+    $('[data-method="change-patient-group"]').click();
+
+    const group1 = '0B8FCC008640479D872A31D36361FCFD';
+    const group2 = '112A9FB5847D4C6A9B20710FA8B4DA22';
+
+    element(by.id(group1)).click();
+    element(by.id(group2)).click();
+    FU.modal.submit();
+    components.notification.hasSuccess();
+  });
+
 }
 
 module.exports = PatientRegistrySearch;

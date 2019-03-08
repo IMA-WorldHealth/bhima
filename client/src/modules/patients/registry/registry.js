@@ -295,7 +295,7 @@ function PatientRegistryController(
   vm.changePatientGroup = () => {
     const patients = vm.gridApi.selection.getSelectedRows();
     if (patients.length === 0) {
-      Notify.danger('FORM.WARNINGS.EMPTY_SELECTION');
+      Notify.warn('FORM.WARNINGS.EMPTY_SELECTION');
       return;
     }
     const data = [];
