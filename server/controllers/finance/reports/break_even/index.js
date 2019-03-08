@@ -63,15 +63,23 @@ function report(req, res, next) {
     ORDER BY br.is_cost DESC, br.label ASC ;
   `;
 
+  const getEncounters = `
+    SELECT count(pv.uuid) AS numberCase 
+    FROM patient_visit AS pv
+    WHERE DATE(pv.start_date) >= DATE(?) AND DATE(pv.start_date) <= DATE(?)   
+  `;
+
   const dbPromises = [
     db.exec(getBreakEvenReference),
+    db.exec(getEncounters, [params.fiscalYearStart, params.end_date]),
     AccountReference.computeAllAccountReference(params.period_id, BREAK_EVEN_ACCOUNT_REFERENCE_TYPE),
   ];
 
   q.all(dbPromises)
-    .spread((breakEvenReference, accountReferences) => {
+    .spread((breakEvenReference, encounters, accountReferences) => {
       const config = {
         breakEvenReference,
+        encounters,
         accountReferences,
       };
       const dataConfigured = setting.configuration(config);

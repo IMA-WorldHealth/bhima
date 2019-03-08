@@ -85,22 +85,34 @@ function report(req, res, next) {
     GROUP BY fcd.principal_fee_center_id, fcd.auxiliary_fee_center_id;
   `;
 
+  const getEncounterFeeCenter = `
+    SELECT f.label AS feeCenter, sfc.fee_center_id, count(pv.uuid) AS numberCase 
+    FROM patient_visit AS pv
+    JOIN patient_visit_service AS pvs ON pvs.patient_visit_uuid = pv.uuid
+    JOIN service_fee_center AS sfc ON sfc.service_id = pvs.service_id
+    JOIN fee_center AS f ON f.id = sfc.fee_center_id
+    WHERE DATE(pv.start_date) >= DATE(?) AND DATE(pv.start_date) <= DATE(?)
+    GROUP BY sfc.fee_center_id   
+  `;
+
   const dbPromises = [
     db.exec(getFeeCenter),
     db.exec(getFeeCenterReference),
     AccountReference.computeAllAccountReference(params.period_id),
     db.exec(getFeeCenterDistribution, [params.fiscalYearStart, params.end_date]),
+    db.exec(getEncounterFeeCenter, [params.fiscalYearStart, params.end_date]),
     getDistributionKey.allDistributionKey(),
   ];
 
   q.all(dbPromises)
-    .spread((feeCenter, references, accountReferences, dataDistributions, distributionKey) => {
+    .spread((feeCenter, references, accountReferences, dataDistributions, encounters, distributionKey) => {
       const config = {
         feeCenter,
         references,
         accountReferences,
         dataDistributions,
         distributionKey,
+        encounters,
         includeManual : params.includeManual,
       };
       const dataConfigured = setting.configuration(config);
