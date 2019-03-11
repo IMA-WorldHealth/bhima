@@ -76,7 +76,7 @@ function report(req, res, next) {
   ];
 
   q.all(dbPromises)
-    .spread((breakEvenReference, encounters, accountReferences) => {
+    .spread((breakEvenReference, encounters, accountReferences) => {     
       const config = {
         breakEvenReference,
         encounters,

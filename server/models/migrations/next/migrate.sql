@@ -241,3 +241,6 @@ ALTER TABLE `fee_center_distribution` ADD COLUMN `is_turnover` TINYINT(1) UNSIGN
 -- Default Account Reference Type
 INSERT INTO `account_reference_type` (`id`, `label`, `fixed`) VALUES 
 (4, 'FORM.LABELS.BREAK_EVEN', 1);
+
+-- @lomamech 2019-03-11
+ALTER TABLE `voucher` ADD COLUMN `posted` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0;
