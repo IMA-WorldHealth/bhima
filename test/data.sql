@@ -1046,7 +1046,7 @@ INSERT INTO entity (uuid, display_name, gender, email, phone, address, entity_ty
   (HUID('037AC6C6B75A4E328E9DCDE5DA22BACE'), 'Wayne Enterprise', 'o', 'thebat@bhi.ma', '+243000000', 'Gotham City', 4);
 
 -- default room type
-INSERT INTO room_type VALUES 
+INSERT INTO room_type VALUES
   (1, 'Public Room'),
   (2, 'Private Room'),
   (3, 'Privilege Room');
@@ -1054,7 +1054,7 @@ INSERT INTO room_type VALUES
 -- default wards for test
 SET @ward1 = HUID('f5a72649-26c9-4f5d-bffa-098207a7f24d');
 SET @ward2 = HUID('f4ce5f9f-edd3-4bd2-9b9c-43b116c02747');
-INSERT INTO ward VALUES 
+INSERT INTO ward VALUES
   (@ward1, 'Pavillon A', 'Test pavillon A', 1),
   (@ward2, 'Pavillon B', 'Test pavillon B', 2);
 
@@ -1064,7 +1064,7 @@ INSERT INTO room VALUES
   (HUID('3BD2C0DB6A574B748AE774554BCBC35D'), 'Room B in Ward B', 'Room B description', @ward2, NULL);
 
 -- default bed
-INSERT INTO bed VALUES 
+INSERT INTO bed VALUES
   (1, 'BED 001', HUID('A6F9527BA7B44A2C9F4FDD7323BBCF72'), 0, 1),
   (2, 'BED 002', HUID('A6F9527BA7B44A2C9F4FDD7323BBCF72'), 0, 1),
   (3, 'BED 003', HUID('A6F9527BA7B44A2C9F4FDD7323BBCF72'), 0, 1);
