@@ -41,3 +41,48 @@ CREATE TABLE `bed`(
 UPDATE unit SET parent = 160, `key` = 'DEPOT.TITLE' WHERE id = 20;
 DELETE FROM role_unit WHERE unit_id=196;
 DELETE FROM unit WHERE id=196;
+
+
+
+
+
+-- indicators
+
+DROP TABLE IF EXISTS `indictor_status`;
+CREATE TABLE `indictor_status` (
+  `id` SMALLINT(5) UNSIGNED NOT NULL,
+  `text` VARCHAR(40) NOT NULL,
+  `translate_key` VARCHAR(100) NOT NULL,
+  PRIMARY KEY(`id`)
+)ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+
+DROP TABLE IF EXISTS `hospitalization_indicator`;
+CREATE TABLE `hospitalization_indicator` (
+  `uuid` BINARY(16),
+  `period_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  `service_id`SMALLINT(5) UNSIGNED NOT NULL,
+  `day_realized` INT,
+  `bed_number` INT,
+  `daysOfHospitalization` INT,
+  `hospitalizedPatients` INT,
+  `hospitalizedPatientPerDay` INT,
+  `PatientsDied` INT,
+  `status_id` SMALLINT(5) UNSIGNED NOT NULL,
+  `user_id` SMALLINT(5) UNSIGNED NOT NULL,
+  PRIMARY KEY (`uuid`),
+  UNIQUE KEY `periodServiceIndicator` (`period_id`, `service_id`),
+  FOREIGN KEY (`period_id`) REFERENCES `period` (`id`) ON UPDATE CASCADE,
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE,
+  FOREIGN KEY (`service_id`) REFERENCES `service` (`id`) ON UPDATE CASCADE,
+  FOREIGN KEY (`status_id`) REFERENCES `indictor_status` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+
+INSERT INTO `indictor_status`(`id`, `text`,`translate_key`)VALUES
+  (1, 'incomplete', 'FORM.LABELS.INCOMPLETE'),
+  (2, 'complete', 'FORM.LABELS.COMPLETE'),
+  (3, 'validated', 'FORM.LABELS.VALIDATED');
+
+  INSERT INTO unit
+   (230, 'Indicators Registry', 'TREE.INDICATORS', 'Indicators registry', 5, '/modules/indicators', '/indicators');

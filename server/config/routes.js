@@ -122,7 +122,7 @@ const distributionGetDistributionKey = require('../controllers/finance/distribut
 const setDistributionKey = require('../controllers/finance/distributionFeeCenter/setting');
 
 const accountReferenceType = require('../controllers/finance/accounts/accountReferenceType');
-
+const indicators = require('../controllers/finance/indicator');
 // lots
 const lots = require('../controllers/stock/lots');
 
@@ -867,4 +867,11 @@ exports.configure = function configure(app) {
   // API for discharge type
   app.get('/discharge_types', dischargeTypes.list);
 
+  // API for indicators
+  app.get('/indicators/hospitalization/:uuid', indicators.hospitalization.detail);
+  app.post('/indicators/hospitalization', indicators.hospitalization.create);
+  app.put('/indicators/hospitalization/:uuid', indicators.hospitalization.update);
+  app.delete('/indicators/hospitalization/:uuid', indicators.hospitalization.delete);
+
+  app.get('/indicators/status', indicators.status.list);
 };

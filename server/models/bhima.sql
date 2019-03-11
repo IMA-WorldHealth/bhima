@@ -114,7 +114,8 @@ INSERT INTO unit VALUES
   (226, 'Account Reference Type','TREE.ACCOUNT_REFERENCE_TYPE','Account Reference Type', 1,'/modules/account_reference_type','/account_reference_type'),
   (227, 'Ward Module', 'TREE.WARD', 'Ward folder', 0, '/modules/ward/configuration', '/WARD_FOLDER'),
   (228, 'Ward Configurations', 'TREE.WARD_CONFIGURATION', 'Ward configuration module', 227, '/modules/ward/configuration', '/ward/configuration'),
-  (229, 'Visits Registry', 'TREE.VISITS_REGISTRY', 'Visits registry', 12, '/modules/patient/visits', '/patients/visits');
+  (229, 'Visits Registry', 'TREE.VISITS_REGISTRY', 'Visits registry', 12, '/modules/patient/visits', '/patients/visits'),
+  (230, 'Indicators Registry', 'TREE.INDICATORS', 'Indicators registry', 5, '/modules/indicators', '/indicators');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -304,3 +305,9 @@ INSERT INTO `discharge_type` (`id`, `label`) VALUES
   (7, 'PATIENT_RECORDS.DISCHARGE.DISCHARGE_BUT_ON_BED'),
   (8, 'PATIENT_RECORDS.DISCHARGE.STATUQUO_CLINIC'),
   (9, 'PATIENT_RECORDS.DISCHARGE.TRANSFER');
+
+
+INSERT INTO `indictor_status`(`id`, `text`,`translate_key`)VALUES
+  (1, 'incomplete', 'FORM.LABELS.INCOMPLETE'),
+  (2, 'complete', 'FORM.LABELS.COMPLETE'),
+  (3, 'validated', 'FORM.LABELS.VALIDATED');

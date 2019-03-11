@@ -2284,4 +2284,35 @@ CREATE TABLE `account_reference_type` (
   UNIQUE KEY `account_reference_type_1` (`label`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
+
+DROP TABLE IF EXISTS `indictor_status`;
+CREATE TABLE `indictor_status` (
+  `id` SMALLINT(5) UNSIGNED NOT NULL,
+  `text` VARCHAR(40) NOT NULL,
+  `translate_key` VARCHAR(100) NOT NULL,
+  PRIMARY KEY(`id`)
+)ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+
+DROP TABLE IF EXISTS `hospitalization_indicator`;
+CREATE TABLE `hospitalization_indicator` (
+  `uuid` BINARY(16),
+  `period_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  `service_id`SMALLINT(5) UNSIGNED NOT NULL,
+  `day_realized` INT,
+  `bed_number` INT,
+  `daysOfHospitalization` INT,
+  `hospitalizedPatients` INT,
+  `hospitalizedPatientPerDay` INT,
+  `PatientsDied` INT,
+  `status_id` SMALLINT(5) UNSIGNED NOT NULL,
+  `user_id` SMALLINT(5) UNSIGNED NOT NULL,
+  PRIMARY KEY (`uuid`),
+  UNIQUE KEY `periodServiceIndicator` (`period_id`, `service_id`),
+  FOREIGN KEY (`period_id`) REFERENCES `period` (`id`) ON UPDATE CASCADE,
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE,
+  FOREIGN KEY (`service_id`) REFERENCES `service` (`id`) ON UPDATE CASCADE,
+  FOREIGN KEY (`status_id`) REFERENCES `indictor_status` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
 SET foreign_key_checks = 1;
