@@ -66,13 +66,13 @@ function configuration(data) {
 
   configured.breakEvenPoint = configured.accountsTurnOverBalance
     ? configured.breakEvenValue / (configured.accountsTurnOverBalance / 360) : 0;
-  
+
   configured.breakEvenPoint = parseInt(configured.breakEvenPoint, 10);
 
   // Break Even By Cases
   configured.breakEvenPointCase = configured.accountsTurnOverBalance
     ? configured.breakEvenValue / (configured.accountsTurnOverBalance / configured.numberCase) : 0;
-  
+
   configured.calculateBreakEven = (configured.marginVariableLoads > 0) ? 1 : 0;
   configured.cantCalculateBreakEven = (configured.marginVariableLoads <= 0) ? 1 : 0;
 
@@ -98,7 +98,6 @@ function configuration(data) {
   configured.breakEvenPointRevenuesCase = configured.totalRevenues
     ? configured.breakEvenValueRevenues / (configured.totalRevenues / configured.numberCase) : 0;
   configured.breakEvenPointRevenuesCase = parseInt(configured.breakEvenPointRevenuesCase, 10);
-
 
   return configured;
 }

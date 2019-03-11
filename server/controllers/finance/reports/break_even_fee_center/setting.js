@@ -256,29 +256,26 @@ function configuration(data) {
     pr.breakEvenPoint = parseInt(pr.breakEvenPoint, 10);
     // Break Even Point By Cases
     pr.breakEventPointByCase = pr.balanceTurnover
-    ? pr.breakEvenValue / (pr.balanceTurnover / pr.numberCase) : 0;
+      ? pr.breakEvenValue / (pr.balanceTurnover / pr.numberCase) : 0;
     pr.breakEventPointByCase = parseInt(pr.breakEventPointByCase, 10);
-
+    // Margin Variable load for All Products
     pr.marginVariableLoadsP = pr.totalProduct - pr.balanceVariableCost;
     pr.calculateBreakEvenP = (pr.marginVariableLoads > 0) ? 1 : 0;
     pr.cantCalculateBreakEvenP = (pr.marginVariableLoads <= 0) ? 1 : 0;
-
+    //Results TurnOver Products
     pr.resultsTurnOverP = pr.marginVariableLoadsP - pr.balanceFixedCost;
     pr.ratioMarginVariableLoadsP = pr.totalProduct
       ? pr.marginVariableLoadsP / pr.totalProduct : 0;
     pr.breakEvenValueP = pr.ratioMarginVariableLoadsP
       ? pr.balanceFixedCost / pr.ratioMarginVariableLoadsP : 0;
-    // Break Even Point By Days for All Products      
+    // Break Even Point By Days for All Products
     pr.breakEvenPointP = pr.totalProduct
       ? pr.breakEvenValueP / (pr.totalProduct / 360) : 0;
     pr.breakEvenPointP = parseInt(pr.breakEvenPointP, 10);
-    // Break Even Point By Cases for All Products      
+    // Break Even Point By Cases for All Products
     pr.breakEvenPointCaseP = pr.totalProduct
       ? pr.breakEvenValueP / (pr.totalProduct / pr.numberCase) : 0;
     pr.breakEvenPointCaseP = parseInt(pr.breakEvenPointCaseP, 10);
-
-
-
   });
 
   return configured;
