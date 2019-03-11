@@ -1,60 +1,93 @@
 <form name="ModalForm" bh-submit="ModalCtrl.submit(ModalForm)" novalidate>
   <div class="modal-header">
-    <div class="bhima-title">
-      <ol class="headercrumb">
-        <li class="static" translate>TREE.INVOICE_REGISTRY</li>
-        <li class="title" translate>FORM.INFO.CANCEL_CASH</li>
-      </ol>
-    </div>
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.INVOICE_REGISTRY</li>
+      <li class="title" translate>TREE.CASH_PAYMENT_REGISTRY</li>
+    </ol>
   </div>
 
   <div class="modal-body">
-    <legend>
-      <span translate>TABLE.COLUMNS.INVOICE_ID</span> : {{ ModalCtrl.patientInvoice.reference }}
-    </legend>
-    <fieldset>
-      <table class="table table-bordered table-condensed">
+    <div class="alert alert-warning" ng-hide="ModalCtrl.hasPaymentsAgainstInvoice">
+      <i class="fa fa-exclamation-triangle"></i>
+      <span translate translate-values="ModalCtrl.alertI18nValues" translate-sanitize-strategy="'sce'">CASH.ALERT_CREDIT_NOTE</span>
+    </div>
+
+    <div class="row">
+      <div class="col-xs-6">
+        <dl>
+          <dt class="text-capitalize" translate>FORM.LABELS.PATIENT</dt>
+          <dd>
+            <span class="text-capitalize">{{ ModalCtrl.payment.patientName }}</span>
+            (<a href ng-click="ModalCtrl.goToPatientLink()">{{ ModalCtrl.payment.patientReference }}</a>)
+          </dd>
+          <dt translate>FORM.LABELS.REFERENCE</dt>
+          <dd>{{ ModalCtrl.payment.reference }}</dd>
+        </dl>
+      </div>
+
+      <div class="col-xs-6">
+        <dl>
+          <dt translate>FORM.LABELS.DATE</dt>
+          <dd>{{ ModalCtrl.payment.date | date:ModalCtrl.Constants.dates.format }}</dd>
+          <dt translate>FORM.LABELS.CASHBOX</dt>
+          <dd>{{ ModalCtrl.payment.cashbox_label }}</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- cash payments's description -->
+    <dl>
+      <dt translate>FORM.LABELS.DESCRIPTION</dt>
+      <dd>{{ ModalCtrl.payment.description }}</span></dd>
+    </dl>
+
+    <div ng-if="!ModalCtrl.payment.is_caution">
+      <table class="table table-condensed">
         <thead>
           <tr>
-            <th colspan="4">
-              {{ ModalCtrl.patientInvoice.debtor_name }}
-            </th>
-          </tr>
-          <tr>
-            <th translate>TABLE.COLUMNS.REFERENCE</th>
-            <th translate>TABLE.COLUMNS.DESCRIPTION</th>
-            <th translate>TABLE.COLUMNS.DATE</th>
-            <th translate>TABLE.COLUMNS.AMOUNT</th>
+            <th translate>FORM.LABELS.INVOICE</th>
+            <th translate>FORM.LABELS.SERVICE</th>
+            <th translate class="text-right">FORM.LABELS.AMOUNT</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>{{ModalCtrl.cashData.reference}}</td>
-            <td>{{ModalCtrl.cashData.description}}</td>
-            <td>{{ModalCtrl.cashData.date | date }}</td>
-            <td>{{ModalCtrl.cashData.amount | currency:ModalCtrl.cashData.currency_id}}</td>
-          </tr>
-          <tr>
-            <td colspan="4">
-              <div class="form-group" ng-class="{'has-error': ModalForm.$submitted && ModalForm.description.$invalid }">
-                <label class="control-label" translate>TABLE.COLUMNS.DESCRIPTION</label>
-                <textarea
-                  ng-model="ModalCtrl.cancelCash.description"
-                  name="description"
-                  class="form-control"
-                  ng-maxlength="ModalCtrl.maxLength"
-                  rows="4"
-                  required>
-                </textarea>
-                <div class="help-block" ng-messages="ModalForm.description.$error" ng-show="ModalForm.$submitted">
-                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-                </div>
-              </div>
+          <tr ng-repeat="invoice in ModalCtrl.payment.items">
+            <td>
+              <bh-receipt value="invoice.invoice_uuid" display-value="invoice.reference" type="invoice">
             </td>
+            <td>{{invoice.serviceName}}</td>
+            <td class="text-right">{{invoice.amount | currency:ModalCtrl.payment.currency_id}}</td>
           </tr>
         </tbody>
+        <tfoot>
+          <tr>
+            <th translate colspan="2">FORM.LABELS.TOTAL</th>
+            <th translate class="text-right">{{ModalCtrl.payment.amount | currency:ModalCtrl.payment.currency_id }}</th>
+          </tr>
+        </tfoot>
       </table>
-    </fieldset>
+    </div>
+
+    <div ng-if="ModalCtrl.payment.is_caution">
+      <dl>
+        <dt translate>FORM.LABELS.CAUTION_AMOUNT</dt>
+        <dd>{{ ModalCtrl.payment.amount | currency:ModalCtrl.payment.currency_id }}</span></dd>
+      </dl>
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': ModalForm.$submitted && ModalForm.description.$invalid }">
+      <label class="control-label" translate>TABLE.COLUMNS.DESCRIPTION</label>
+      <textarea
+        ng-model="ModalCtrl.cancelCash.description"
+        name="description"
+        class="form-control"
+        rows="3"
+        required>
+      </textarea>
+      <div class="help-block" ng-messages="ModalForm.description.$error" ng-show="ModalForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
   </div>
 
   <div class="modal-footer">

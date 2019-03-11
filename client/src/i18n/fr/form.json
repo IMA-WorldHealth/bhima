@@ -297,6 +297,7 @@
             "CASH_ACCOUNT": "Compte caisse",
             "CASH_PAYMENTS": "Paiements",
             "CAUTION": "Caution",
+            "CAUTION_AMOUNT": "Total de la Caution",
             "CHARGE": "Charge",
             "CLIENT": "Client",
             "CLIENT_ID": "Identifiant client",
