@@ -1,0 +1,107 @@
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.DASHBOARDS.TITLE</li>
+      <li class="title" translate>TREE.DASHBOARDS.INDICATORS_FILES_REGISTRY</li>
+    </ol>
+
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <div uib-dropdown dropdown-append-to-body data-action="open-tools">
+          <a class="btn btn-default" uib-dropdown-toggle>
+            <span class="fa fa-bars"></span> <span class="hidden-xs" translate>FORM.LABELS.MENU</span> <span class="caret"></span>
+          </a>
+
+          <ul uib-dropdown-menu role="menu" class="dropdown-menu-right">
+            <li role="menuitem">
+              <a href data-method="configure" ng-click="$ctrl.openColumnConfiguration()">
+                <i class="fa fa-columns"></i> <span translate>FORM.LABELS.COLUMNS</span>
+              </a>
+            </li>
+
+            <li role="separator" class="divider"></li>
+            <li role="menuitem">
+              <a href data-method="save-state" ng-click="$ctrl.saveGridState()">
+                <i class="fa fa-save"></i> <span translate>FORM.BUTTONS.SAVE_GRID_CONFIGURATION</span>
+              </a>
+            </li>
+
+            <li role="menuitem">
+              <a href data-method="clear-state" ng-click="$ctrl.clearGridState()">
+                <i class="fa fa-close"></i> <span translate>FORM.BUTTONS.CLEAR_GRID_CONFIGURATION</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="toolbar-item">
+        <button
+          ng-click="$ctrl.search()"
+          data-method="search"
+          class="btn btn-default">
+          <span class="fa fa-search"></span> <span class="hidden-xs" translate>FORM.BUTTONS.SEARCH</span>
+        </button>
+      </div>
+
+      <div class="toolbar-item">
+          <div uib-dropdown dropdown-append-to-body data-action="open-tools">
+            <a class="btn btn-primary" uib-dropdown-toggle>
+              <span class="fa fa-plus"></span> <span class="hidden-xs" translate>DASHBOARD.INDICATORS_FILES.ADD_MONTHLY_INDICATORS</span> <span class="caret"></span>
+            </a>
+  
+            <ul uib-dropdown-menu role="add" class="dropdown-menu-right">
+              <li role="additem">
+                <a href data-method="configure" ng-click="$ctrl.newHospitalizationFile()">
+                  <i class="fa fa-h-square"></i> <span translate>DASHBOARD.INDICATORS_FILES.HOSPITALIZATIONS_INDICATORS</span>
+                </a>
+              </li>
+  
+              <li role="additem">
+                <a href data-method="configure" ng-click="$ctrl.newHumanResourceFile()">
+                  <i class="fa fa-users"></i> <span translate>DASHBOARD.INDICATORS_FILES.HUMAN_RESOURCES_INDICATORS</span>
+                </a>
+              </li>
+  
+              <li role="additem">
+                <a href data-method="configure" ng-click="$ctrl.newFinanceFile()">
+                  <i class="fa fa-dollar"></i> <span translate>DASHBOARD.INDICATORS_FILES.FINANCES_INDICATORS</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+      <bh-filter-toggle on-toggle="$ctrl.toggleInlineFilter()">
+      </bh-filter-toggle>
+    </div>
+  </div>
+</div>
+
+<div class="flex-util bh-filter-bar">
+  <bh-filters
+    style="max-width:90%"
+    filters="$ctrl.latestViewFilters"
+    on-remove-filter="$ctrl.onRemoveFilter(filter)">
+  </bh-filters>
+</div>
+
+<div class="flex-content">
+  <div class="container-fluid">
+    <div
+      id="indicators-files-grid"
+      class="grid-full-height-with-filters"
+      ui-grid="$ctrl.uiGridOptions"
+      ui-grid-auto-resize
+      ui-grid-resize-columns
+      ui-grid-move-columns
+      ui-grid-save-state>
+
+      <bh-grid-loading-indicator
+        loading-state="$ctrl.loading"
+        empty-state="$ctrl.uiGridOptions.data.length === 0"
+        error-state="$ctrl.hasError">
+      </bh-grid-loading-indicator>
+    </div>
+  </div>
+</div>

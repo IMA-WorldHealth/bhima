@@ -1,0 +1,23 @@
+{
+  "DASHBOARD":{
+    "INDICATORS_FILES":{
+      "FISCAL_YEAR":"Fiscal Year",
+      "PERIOD":"Period",
+      "SERVICE":"Service",
+      "TYPE":"File Type",
+      "STATUS":"Status",
+      "VALIDATED":"Validate",
+      "LAST_EDIT":"Last Edit",
+      "OVERVIEW":"Overview",
+      "PRINT":"Print",
+      "DELETE":"Delete",
+      "EDIT":"Edit",
+      "HOSPITALIZATIONS_INDICATORS":"Hospitalizations Indicators",
+      "FINANCES_INDICATORS":"Finances Indicators",
+      "HUMAN_RESOURCES_INDICATORS":"Human Resources Indicators",
+      "MONTHLY_INDICATORS":"Monthly Indicators",
+      "ADD_MONTHLY_INDICATORS":"Add Monthly Indicators",
+      "SEARCH":"Search Indicators Files"
+    }
+  }
+}

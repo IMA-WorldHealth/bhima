@@ -1,0 +1,76 @@
+<form
+  name="ModalForm"
+  ng-submit="$ctrl.submit(ModalForm)"
+  data-modal="admission-search"
+  novalidate>
+
+  <div class="modal-header search-modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.DASHBOARDS.TITLE</li>
+      <li class="title" translate>DASHBOARD.INDICATORS_FILES.SEARCH</li>
+    </ol>
+  </div>
+
+  <div class="modal-body search-modal">
+    <uib-tabset>
+      <uib-tab index="0" heading="{{ 'FORM.LABELS.SEARCH_QUERIES' | translate }}" data-custom-filter-tab>
+        <div class="tab-body">
+          
+          <!-- fiscal year -->
+          <bh-fiscal-year-select
+            fiscal-id="$ctrl.fiscal_id"
+            on-select-fiscal-callback="$ctrl.onSelectFiscal(fiscal)">
+            <bh-clear on-clear="$ctrl.clear('fiscal_year_id')"></bh-clear>
+          </bh-fiscal-year-select>
+
+          <!-- period -->
+          <bh-period-select
+            default-period="$ctrl.period_id"
+            on-select-callback="$ctrl.onSelectFiscal(fiscal)">
+            <bh-clear on-clear="$ctrl.clear('period_id')"></bh-clear>
+          </bh-period-select>
+
+          <!-- type -->
+
+          <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.display_name.$invalid }">
+            <label class="control-label" translate> FORM.LABELS.NAME </label>
+            <bh-clear on-clear="$ctrl.clear('display_name')"></bh-clear>
+            <input type="text" class="form-control" name="display_name" ng-model="$ctrl.searchQueries.display_name">
+            <div class="help-block" ng-messages="ModalForm.display_name.$error" ng-show="ModalForm.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+
+        </div>
+      </uib-tab>
+
+      <uib-tab index="1" heading="{{ 'FORM.LABELS.DEFAULTS' | translate }}" data-default-filter-tab>
+        <div class="tab-body">
+          <!-- period selection -->
+          <bh-period-select
+            default-period="{{$ctrl.filters.period}}"
+            on-select-callback="$ctrl.onSelectPeriod(period)">
+          </bh-period-select>
+
+          <div class="form-group" ng-class="{ 'has-error' : ModalForm.limit.$invalid }">
+            <label class="control-label" translate>FORM.LABELS.LIMIT</label>
+            <input name="limit" type="number" bh-integer bh-max-integer class="form-control" ng-model="$ctrl.defaultQueries.limit" ng-change="$ctrl.onSelectLimit($ctrl.defaultQueries.limit)">
+
+            <div class="help-block" ng-messages="ModalForm.limit.$error">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+        </div>
+      </uib-tab>
+    </uib-tabset>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" data-method="cancel" translate>
+      FORM.BUTTONS.CLOSE
+    </button>
+    <button type="submit" class="btn btn-primary" data-method="submit" translate>
+      FORM.BUTTONS.SUBMIT
+    </button>
+  </div>
+</form>
