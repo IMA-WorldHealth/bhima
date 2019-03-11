@@ -68,7 +68,7 @@ INSERT INTO unit VALUES
   (167, 'Stock Adjustment', 'STOCK.ADJUSTMENT', 'The stock adjustment module', 160, '/modules/stock/adjustment', '/stock/adjustment'),
   (168, 'Aged Creditors', 'TREE.AGED_CREDITORS', 'Aged Creditors', 144, '/modules/reports/aged_creditors', '/reports/aged_creditors'),
   (170, 'Account Statement', 'TREE.ACCOUNT_STATEMENT', 'Account Statement Module', 5, '/modules/account_statement/', '/account_statement'),
-  (180, 'Income Expenses', 'TREE.PROFIT_AND_LOSS', 'The Report of income and expenses', 144, '/modules/finance/income_expense', '/reports/income_expense'),
+  (180, 'Income Expenses', 'REPORT.PROFIT_AND_LOSS', 'The Report of income and expenses', 144, '/modules/finance/income_expense', '/reports/income_expense'),
   (181, 'Stock Report', 'TREE.STOCK_REPORT', 'The Report of inventories in stock', 144, '/modules/reports/inventory_report', '/reports/inventory_report'),
   (182, 'Stock File Report', 'TREE.STOCK_INVENTORY_REPORT', 'The Report of an inventory in stock', 144, '/modules/reports/inventory_file', '/reports/inventory_file'),
   (183, 'Grade Management','TREE.GRADES','', 57,'/modules/grades/','/grades'),
@@ -97,12 +97,12 @@ INSERT INTO unit VALUES
   (208, 'Import Stock From File','TREE.IMPORT_STOCK_FROM_FILE','',160,'/modules/stock/import','/stock/import'),
   (209, 'Accounts Report Multiple','TREE.REPORTS_MULTIPLE_ACCOUNTS','',144,'/modules/reports/account_report_multiple','/reports/account_report_multiple'),
   (210, 'Unbalanced Invoice Payments','REPORT.UNPAID_INVOICE_PAYMENTS_REPORT.TITLE','',144,'/modules/reports/unpaid-invoice-payments','/reports/unpaid-invoice-payments'),
-  (211, 'Income Expenses by Month', 'TREE.PROFIT_AND_LOSS_BY_MONTH', 'The Report of income and expenses', 144, '/modules/finance/income_expense_by_month', '/reports/income_expense_by_month'),
+  (211, 'Income Expenses by Month', 'REPORT.PROFIT_AND_LOSS_BY_MONTH', 'The Report of income and expenses', 144, '/modules/finance/income_expense_by_month', '/reports/income_expense_by_month'),
   (212, 'Entity Management','ENTITY.MANAGEMENT','',1,'/modules/entities','/entities'),
   (213, 'Stock value Report','TREE.STOCK_VALUE','',144,'/modules/reports/stock_value','/reports/stock_value'),
   (214, '[OHADA] Compte de resultat','TREE.OHADA_RESULT_ACCOUNT','',144,'/modules/reports/ohada_profit_loss','/reports/ohada_profit_loss'),
   (215, 'Department management','TREE.DEPARTMENT_MANAGEMENT','Department Management', 1,'/modules/department/','/departments'),
-  (216, 'Income Expenses by Year', 'TREE.PROFIT_AND_LOSS_BY_YEAR', 'The Report of income and expenses', 144, '/modules/finance/income_expense_by_year', '/reports/income_expense_by_year'),
+  (216, 'Income Expenses by Year', 'REPORT.PROFIT_AND_LOSS_BY_YEAR', 'The Report of income and expenses', 144, '/modules/finance/income_expense_by_year', '/reports/income_expense_by_year'),
   (217, 'Tags','TREE.TAGS','', 1,'/modules/tags/tags','/tags'),
   (218, 'Fee Center Management','TREE.FEE_CENTER_MANAGEMENT','', 0,'/modules/fee_center','/fee_center'),
   (219, 'Fee Center Management','TREE.FEE_CENTER','', 218,'/modules/fee_center','/fee_center'),
@@ -288,13 +288,13 @@ INSERT INTO `entity_type` (`label`, `translation_key`) VALUES
   ('enterprise', 'ENTITY.TYPE.ENTERPRISE');
 
 -- Default Account Reference Type
-INSERT INTO `account_reference_type` (`id`, `label`, `fixed`) VALUES 
+INSERT INTO `account_reference_type` (`id`, `label`, `fixed`) VALUES
 (1, 'FORM.LABELS.FEE_CENTER', 1),
 (2, 'FORM.LABELS.BALANCE_SHEET', 1),
 (3, 'FORM.LABELS.PROFIT_LOSS', 1);
 
 -- Default Discharge types
-INSERT INTO `discharge_type` (`id`, `label`) VALUES 
+INSERT INTO `discharge_type` (`id`, `label`) VALUES
   (1, 'PATIENT_RECORDS.DISCHARGE.REGULAR'),
   (2, 'PATIENT_RECORDS.DISCHARGE.ON_PATIENT_WILL'),
   (3, 'PATIENT_RECORDS.DISCHARGE.EMERGENCY'),
