@@ -59,13 +59,12 @@ function bhDateInterval(moment, bhConstants, Fiscal, Session) {
     $ctrl.label = $ctrl.label || 'FORM.SELECT.DATE_INTERVAL';
     $ctrl.dateFormat = bhConstants.dayOptions.format;
     $ctrl.pickerFromOptions = { showWeeks : false };
+    $ctrl.pickerToOptions = { showWeeks : false, minDate : $ctrl.dateFrom };
 
     // if controller has requested limit-min-fiscal, fetch required information
     if (angular.isDefined($ctrl.limitMinFiscal)) {
       getMinimumFiscalYearDate();
     }
-
-    $ctrl.pickerToOptions = { showWeeks : false, minDate : $ctrl.dateFrom };
 
     startup();
   };
@@ -79,8 +78,9 @@ function bhDateInterval(moment, bhConstants, Fiscal, Session) {
 
   $ctrl.onChangeDate = () => {
     angular.extend($ctrl.pickerToOptions, { minDate : $ctrl.dateFrom });
+
     if ($ctrl.onChange) {
-      $ctrl.onChange();
+      $ctrl.onChange({ dateFrom : $ctrl.dateFrom, dateTo : $ctrl.dateTo });
     }
   };
 
