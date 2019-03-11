@@ -45,7 +45,7 @@
     "@types/angular": "^1.6.53",
     "accounting-js": "^1.1.1",
     "angular": "^1.7.8",
-    "angular-animate": "^1.7.7",
+    "angular-animate": "^1.7.8",
     "angular-dynamic-locale": "^0.1.37",
     "angular-growl-notifications": "^2.6.0",
     "angular-messages": "^1.7.7",
