@@ -8,8 +8,11 @@ module.exports.detail = detail;
 
 function create(req, res, next) {
   const { indicator, hospitalization } = req.body;
-  indicator.uuid = db.bid(uuid());
+
+  indicator.uuid = indicator.uuid ? db.bid(indicator.uuid) : db.bid(uuid());
   indicator.user_id = req.session.user.id;
+
+  hospitalization.uuid = hospitalization.uuid ? db.bid(hospitalization.uuid) : db.bid(uuid());
   hospitalization.indicator_uuid = indicator.uuid;
 
   const transaction = db.transaction();
@@ -64,14 +67,28 @@ function remove(req, res, next) {
 }
 
 
-function detail(req, res, next) {
+async function detail(req, res, next) {
   const _uuid = db.bid(req.params.uuid);
-  const sql = `
+
+  const indicatorSql = `
+    SELECT BUID(uuid) as uuid, status_id, period_id, user_id, type
+    FROM indicator
+    WHERE uuid IN (SELECT indicator_uuid FROM hospitalization_indicator WHERE uuid=?)
+  `;
+  const hospitalizationSql = `
     SELECT BUID(uuid) as uuid, BUID(indicator_uuid), service_id, day_realized, bed_number,
       daysOfHospitalization, hospitalizedPatients, hospitalizedPatientPerDay, PatientsDied
     FROM hospitalization_indicator
     WHERE uuid=?`;
-  db.one(sql, _uuid).then(indicator => {
-    res.status(200).json(indicator);
-  }).catch(next);
+
+  try {
+    const indicator = await db.one(indicatorSql, _uuid);
+    const hospitalization = await db.one(hospitalizationSql, _uuid);
+
+    res.status(200).json({ indicator, hospitalization });
+
+  } catch (error) {
+    next(error);
+  }
+
 }

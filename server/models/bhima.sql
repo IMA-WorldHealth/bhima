@@ -305,7 +305,7 @@ INSERT INTO `discharge_type` (`id`, `label`) VALUES
   (9, 'PATIENT_RECORDS.DISCHARGE.TRANSFER');
 
 -- indicators status values
-INSERT INTO `indictor_status`(`id`, `text`,`translate_key`)VALUES
+INSERT INTO `indicator_status`(`id`, `text`,`translate_key`)VALUES
   (1, 'incomplete', 'FORM.LABELS.INCOMPLETE'),
   (2, 'complete', 'FORM.LABELS.COMPLETE'),
   (3, 'validated', 'FORM.LABELS.VALIDATED');

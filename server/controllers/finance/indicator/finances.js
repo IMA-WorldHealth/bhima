@@ -8,8 +8,10 @@ module.exports.detail = detail;
 
 function create(req, res, next) {
   const { indicator, finances } = req.body;
-  indicator.uuid = db.bid(uuid());
+  indicator.uuid = indicator.uuid ? db.bid(indicator.uuid) : db.bid(uuid());
   indicator.user_id = req.session.user.id;
+
+  finances.uuid = finances.uuid ? db.bid(finances.uuid) : db.bid(uuid());
   finances.indicator_uuid = indicator.uuid;
 
   const transaction = db.transaction();
@@ -63,18 +65,30 @@ function remove(req, res, next) {
   }).catch(next);
 }
 
-
-function detail(req, res, next) {
+async function detail(req, res, next) {
   const _uuid = db.bid(req.params.uuid);
-  const sql = `
+
+  const indicatorSql = `
+    SELECT BUID(uuid) as uuid, status_id, period_id, user_id, type
+    FROM indicator
+    WHERE uuid IN (SELECT indicator_uuid FROM finances_indicator WHERE uuid=?)
+  `;
+  const financesSql = `
     SELECT BUID(uuid) as uuid, BUID(indicator_uuid), totalReceiptAmount,
-    subsidyAmount, medicationSaleAmount, totalExpenseAmount,
-    variousChargesAmount, purchaseMedicationAmount, personalChargeAmount,
-    totalOperatingExpenditureAmount, totalDepreciationAmount, totalDebtAmount,
-    totalCashAmount, totalStockValueAmount, personelNumber
+      subsidyAmount, medicationSaleAmount, totalExpenseAmount,
+      variousChargesAmount, purchaseMedicationAmount, personalChargeAmount,
+      totalOperatingExpenditureAmount, totalDepreciationAmount, totalDebtAmount,
+      totalCashAmount, totalStockValueAmount, personelNumber
     FROM finances_indicator
     WHERE uuid=?`;
-  db.one(sql, _uuid).then(indicator => {
-    res.status(200).json(indicator);
-  }).catch(next);
+
+  try {
+    const indicator = await db.one(indicatorSql, _uuid);
+    const finances = await db.one(financesSql, _uuid);
+
+    res.status(200).json({ indicator, finances });
+
+  } catch (error) {
+    next(error);
+  }
 }

@@ -126,7 +126,7 @@ CREATE TABLE `finances_indicator` (
   FOREIGN KEY (`indicator_uuid`) REFERENCES `indicator` (`uuid`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
-INSERT INTO `indictor_status`(`id`, `text`,`translate_key`)VALUES
+INSERT INTO `indicator_status`(`id`, `text`,`translate_key`)VALUES
   (1, 'incomplete', 'FORM.LABELS.INCOMPLETE'),
   (2, 'complete', 'FORM.LABELS.COMPLETE'),
   (3, 'validated', 'FORM.LABELS.VALIDATED');

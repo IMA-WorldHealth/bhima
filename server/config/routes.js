@@ -870,6 +870,7 @@ exports.configure = function configure(app) {
   // API for indicators
 
   app.get('/indicators', indicators.read);
+  app.get('/indicators/status', indicators.status.list);
 
   app.get('/indicators/hospitalization/:uuid', indicators.hospitalization.detail);
   app.post('/indicators/hospitalization', indicators.hospitalization.create);
@@ -885,6 +886,4 @@ exports.configure = function configure(app) {
   app.post('/indicators/finances', indicators.finances.create);
   app.put('/indicators/finances/:uuid', indicators.finances.update);
   app.delete('/indicators/finances/:uuid', indicators.finances.delete);
-
-  app.get('/indicators/status', indicators.status.list);
 };
