@@ -42,6 +42,8 @@ function StaffModalController(
       return 0;
     }
 
+    vm.file.status = isFormCompleted() ? 'complete' : 'incomplete';
+
     const promise = (vm.isCreating)
       ? IndicatorsFile.create(vm.staff)
       : IndicatorsFile.update(vm.staff.uuid, vm.staff);
@@ -59,5 +61,9 @@ function StaffModalController(
 
   function cancel() {
     $state.go('indicatorsFilesRegistry');
+  }
+
+  function isFormCompleted() {
+    return Object.keys(vm.indicators).every(indicator => typeof (indicator) !== 'undefined');
   }
 }

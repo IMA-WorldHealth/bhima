@@ -47,6 +47,8 @@ function HospitalizationModalController(
       return 0;
     }
 
+    vm.file.status = isFormCompleted() ? 'complete' : 'incomplete';
+
     const promise = (vm.isCreating)
       ? IndicatorsFile.create(vm.hospitalization)
       : IndicatorsFile.update(vm.hospitalization.uuid, vm.hospitalization);
@@ -64,5 +66,9 @@ function HospitalizationModalController(
 
   function cancel() {
     $state.go('indicatorsFilesRegistry');
+  }
+
+  function isFormCompleted() {
+    return Object.keys(vm.indicators).every(indicator => typeof (indicator) !== 'undefined');
   }
 }

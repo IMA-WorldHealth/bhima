@@ -41,6 +41,24 @@ angular.module('bhima.routes')
         },
         onEnter : ['$uibModal', staffModal],
         onExit : ['$uibModalStack', closeModal],
+      })
+
+      .state('indicatorsFilesRegistry.addFinanceFile', {
+        url : '/addFinanceFile',
+        params : {
+          creating : { value : true },
+        },
+        onEnter : ['$uibModal', financeModal],
+        onExit : ['$uibModalStack', closeModal],
+      })
+
+      .state('indicatorsFilesRegistry.editFinanceFile', {
+        url : '/editFinanceFile',
+        params : {
+          creating : { value : false },
+        },
+        onEnter : ['$uibModal', financeModal],
+        onExit : ['$uibModalStack', closeModal],
       });
   }]);
 
@@ -61,6 +79,16 @@ function staffModal($modal) {
     size : 'lg',
     templateUrl : 'modules/dashboards/indicators_files_registry/modals/staff.modal.html',
     controller : 'StaffModalController as $ctrl',
+  });
+}
+
+function financeModal($modal) {
+  $modal.open({
+    keyboard : false,
+    backdrop : 'static',
+    size : 'lg',
+    templateUrl : 'modules/dashboards/indicators_files_registry/modals/finance.modal.html',
+    controller : 'FinanceModalController as $ctrl',
   });
 }
 
