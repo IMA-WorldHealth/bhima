@@ -23,6 +23,24 @@ angular.module('bhima.routes')
         },
         onEnter : ['$uibModal', hospitalizationModal],
         onExit : ['$uibModalStack', closeModal],
+      })
+
+      .state('indicatorsFilesRegistry.addStaffFile', {
+        url : '/addStaffFile',
+        params : {
+          creating : { value : true },
+        },
+        onEnter : ['$uibModal', staffModal],
+        onExit : ['$uibModalStack', closeModal],
+      })
+
+      .state('indicatorsFilesRegistry.editStaffFile', {
+        url : '/editStaffFile',
+        params : {
+          creating : { value : false },
+        },
+        onEnter : ['$uibModal', staffModal],
+        onExit : ['$uibModalStack', closeModal],
       });
   }]);
 
@@ -33,6 +51,16 @@ function hospitalizationModal($modal) {
     size : 'lg',
     templateUrl : 'modules/dashboards/indicators_files_registry/modals/hospitalization.modal.html',
     controller : 'HospitalizationModalController as $ctrl',
+  });
+}
+
+function staffModal($modal) {
+  $modal.open({
+    keyboard : false,
+    backdrop : 'static',
+    size : 'lg',
+    templateUrl : 'modules/dashboards/indicators_files_registry/modals/staff.modal.html',
+    controller : 'StaffModalController as $ctrl',
   });
 }
 
