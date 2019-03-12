@@ -9,9 +9,9 @@
 <i
   ng-if="$ctrl.description"
   class="fa fa-info-circle text-primary"
-  uib-popover="{{ $ctrl.description | translate }}"
-  popover-placement="right"
-  popover-trigger="mouseenter">
+  uib-tooltip="{{ $ctrl.description | translate }}"
+  tooltip-placement="right"
+  tooltip-trigger="'mouseenter'">
 </i>
 
 <div ng-class="{ 'col-md-9' : $ctrl.leftLabel}">

@@ -34,7 +34,7 @@
       "TOTAL_MEDECINS":"Nombre des medecins",
       "TOTAL_MEDECINS_DESC":"Le nombre total des medecins de l'hopital durant la periode",
       "TOTAL_NURSES":"Nombre des infirmiers",
-      "TOTAL_NURSES_DESC":"Le nombre total des infirmier de l'hopital durant la periode",
+      "TOTAL_NURSES_DESC":"Le nombre total des infirmiers de l'hopital durant la periode",
       "TOTAL_HELPERS":"Nombre des aides-soignants",
       "TOTAL_HELPERS_DESC":"Le nombre total des aides-soignants de l'hopital durant la periode",
       "TOTAL_STAFF":"Effectif total du Personnel",
