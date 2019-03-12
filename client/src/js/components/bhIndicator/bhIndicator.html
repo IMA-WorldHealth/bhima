@@ -1,0 +1,44 @@
+<style>
+  .card {
+    border: 1px solid #A0A0A0;
+    padding: 10px;
+    min-height: 130px;
+  }
+  .card .title {
+    margin: 0;
+    padding: 0;
+    margin-bottom: 5px;
+  }
+  .card .details {
+    display: grid;
+    grid-template-columns: 30% auto;
+  }
+  .card .description {
+    margin-bottom: 5px;
+  }
+  .card .value {
+    font-size: 3em;
+  }
+  .card .norm {
+    color: #4174DC;
+  }
+</style>
+
+<div class="card">
+  <h4 class="title" translate>{{ $ctrl.label }}</h4>
+  <div class="details">
+    <div class="left-side" ng-class="{'text-success':$ctrl.isAcceptable, 'text-danger':!$ctrl.isAcceptable}">
+      <span class="value">{{ $ctrl.value }}</span>
+      <sup class="value-symbol" translate>{{ $ctrl.valueSymbol }}</sup>
+    </div>
+    <div class="right-side">
+        <div class="description" translate>
+          {{ $ctrl.description }}
+        </div>
+        <div class="norm">
+          <span translate>DASHBOARD.NORM</span>
+          <span translate>{{ $ctrl.norm }}</span>
+        </div>
+    </div>
+  </div>
+</div>

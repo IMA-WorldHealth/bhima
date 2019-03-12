@@ -71,6 +71,24 @@
       "TOTAL_STOCK_VALUE_DESC":"Le montant total des valeurs en stock durant la periode",
       "INCOMPLETE":"Incomplet",
       "COMPLETE":"Complet"
-    }
+    },
+    "NORM":"Norme",
+    "BEDS_OCCUPATION_RATE":"Taux d'occupation des lits",
+    "BEDS_OCCUPATION_RATE_DESC":"l'usage d'investissement, l'acceptation par la communauté et une mesure des tarifs appropriés",
+    "BEDS_OCCUPATION_RATE_CALCUL":"journée réalisées / 365 / nombre des lits",
+    "BEDS_OCCUPATION_RATE_NORM":"60% et 90%",
+    "HOSP_DAYS":"Jours hospitalisés",
+    "HOSP_DAYS_DESC":"l'efficacité de soin et la sévérité de la maladie",
+    "HOSP_DAYS_CALCUL":"Nombre de jours total que les malades restent à l'hôpital / hospitalisés",
+    "HOSP_DAYS_NORM":"8 à 10 jours",
+    "HOSP_BY_DAY":"Hospitalisé / jour",
+    "HOSP_BY_DAY_DESC":"Le niveau d'activité et l'acceptation par la communauté",
+    "HOSP_BY_DAY_CALCUL":"Nombre de malades hospitalisés par jour",
+    "HOSP_BY_DAY_NORM":"Pas de norme",
+    "DEATH_RATE":"% Décès",
+    "DEATH_RATE_DESC":"l'efficacité de soin et la sévérité de la maladie",
+    "DEATH_RATE_CALCUL":"Nombre de morts à l'hôpital divisée par le nombre de malades hospitalisés",
+    "DEATH_RATE_NORM":"< 4%",
+    "ALL_SERVICES":"Tous les services"
   }
 }

@@ -59,6 +59,12 @@ angular.module('bhima.routes')
         },
         onEnter : ['$uibModal', financeModal],
         onExit : ['$uibModalStack', closeModal],
+      })
+
+      .state('hospitalizationDashboard', {
+        url         : '/dashboards/hospitalization',
+        controller  : 'HospitalizationDashboardController as $ctrl',
+        templateUrl : 'modules/dashboards/hospitalization/hospitalization.html',
       });
   }]);
 

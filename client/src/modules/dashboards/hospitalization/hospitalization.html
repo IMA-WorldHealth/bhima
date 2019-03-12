@@ -1,0 +1,91 @@
+<style>
+  .dashboard {
+    display: grid;
+    grid-auto-rows: minmax(125px, auto);
+    grid-gap: 15px;
+  }
+
+  /* Small devices (tablets, 768px and up) */
+  @media (min-width: 768px) {
+    .dashboard {
+      grid-template-columns: repeat(1, 1fr);
+    }
+  }
+
+  /* Medium devices (desktops, 992px and up) */
+  @media (min-width: 992px) {
+    .dashboard {
+      grid-template-columns: repeat(2, 1fr); 
+    }
+  }
+
+</style>
+
+<div class="flex-header">
+    <div class="bhima-title">
+      <ol class="headercrumb">
+        <li class="static" translate>TREE.DASHBOARDS.TITLE</li>
+        <li class="title" translate>TREE.DASHBOARDS.HOSPITALIZATION</li>
+      </ol>
+  
+      <div class="toolbar">
+        <div class="toolbar-item">
+          <bh-dashboard-filter on-change="$ctrl.onChangeFilter(selected)"></bh-dashboard-filter>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="flex-content">
+    <div class="container">
+      <div class="dashboard">
+        <bh-indicator
+          key="hospi_occupation_rate"
+          label="DASHBOARD.BEDS_OCCUPATION_RATE"
+          description="DASHBOARD.BEDS_OCCUPATION_RATE_DESC"
+          calcul="DASHBOARD.BEDS_OCCUPATION_RATE_CALCUL"
+          norm="DASHBOARD.BEDS_OCCUPATION_RATE_NORM"
+          value="80"
+          value-symbol="%"
+          min-value="60"
+          max-value="90">
+        </bh-indicator>
+
+        <bh-indicator
+          key="hospi_days"
+          label="DASHBOARD.HOSP_DAYS"
+          description="DASHBOARD.HOSP_DAYS_DESC"
+          calcul="DASHBOARD.HOSP_DAYS_CALCUL"
+          norm="DASHBOARD.HOSP_DAYS_NORM"
+          value="20"
+          value-symbol="FORM.LABELS.DAYS"
+          min-value="8"
+          max-value="10">
+        </bh-indicator>
+
+        <bh-indicator
+          key="hospi_by_day"
+          label="DASHBOARD.HOSP_BY_DAY"
+          description="DASHBOARD.HOSP_BY_DAY_DESC"
+          calcul="DASHBOARD.HOSP_BY_DAY_CALCUL"
+          norm="DASHBOARD.HOSP_BY_DAY_NORM"
+          value="1704"
+          value-symbol=""
+          min-value=""
+          max-value="">
+        </bh-indicator>
+
+        <bh-indicator
+          key="hospi_death_rate"
+          label="DASHBOARD.DEATH_RATE"
+          description="DASHBOARD.DEATH_RATE_DESC"
+          calcul="DASHBOARD.DEATH_RATE_CALCUL"
+          norm="DASHBOARD.DEATH_RATE_NORM"
+          value="2"
+          value-symbol="%"
+          max-value="4">
+        </bh-indicator>
+      </div>
+    </div>
+  </div>
+  

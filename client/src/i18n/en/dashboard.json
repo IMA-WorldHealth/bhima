@@ -71,6 +71,24 @@
       "TOTAL_STOCK_VALUE_DESC":"The total amount of stocks in stock during the period",
       "INCOMPLETE":"Incomplete",
       "COMPLETE":"Complete"
-    }
+    },
+    "NORM":"Standard",
+    "BEDS_OCCUPATION_RATE":"Beds Occupation Rate",
+    "BEDS_OCCUPATION_RATE_DESC":"investment use, community acceptance and appropriate rate measurement",
+    "BEDS_OCCUPATION_RATE_CALCUL":"completed day / 365 / number of beds",
+    "BEDS_OCCUPATION_RATE_NORM":"60% and 90%",
+    "HOSP_DAYS":"Hospitalized days",
+    "HOSP_DAYS_DESC":"the effectiveness of care and the severity of the disease",
+    "HOSP_DAYS_CALCUL":"Total number of days patients stay in hospital / hospitalized",
+    "HOSP_DAYS_NORM":"8 to 10 days",
+    "HOSP_BY_DAY":"Hospitalized / day",
+    "HOSP_BY_DAY_DESC":"Level of activity and acceptance by the community",
+    "HOSP_BY_DAY_CALCUL":"Number of patients hospitalized per day",
+    "HOSP_BY_DAY_NORM":"No standard",
+    "DEATH_RATE":"% Deaths",
+    "DEATH_RATE_DESC":"the effectiveness of care and the severity of the disease",
+    "DEATH_RATE_CALCUL":"Number of hospital deaths divided by number of hospitalized patients",
+    "DEATH_RATE_NORM":"< 4%",
+    "ALL_SERVICES":"All Services"
   }
 }
