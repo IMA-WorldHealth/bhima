@@ -55,7 +55,6 @@ function IndicatorsFilesRegistryController(
 
   vm.uiGridOptions = {
     appScopeProvider : vm,
-    showGridFooter : true,
     enableSorting : true,
     enableColumnMenus : false,
     flatEntityAccess : true,
