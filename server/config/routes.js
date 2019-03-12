@@ -868,6 +868,9 @@ exports.configure = function configure(app) {
   app.get('/discharge_types', dischargeTypes.list);
 
   // API for indicators
+
+  app.get('/indicators', indicators.read);
+
   app.get('/indicators/hospitalization/:uuid', indicators.hospitalization.detail);
   app.post('/indicators/hospitalization', indicators.hospitalization.create);
   app.put('/indicators/hospitalization/:uuid', indicators.hospitalization.update);

@@ -7,39 +7,68 @@ module.exports.delete = remove;
 module.exports.detail = detail;
 
 function create(req, res, next) {
-  const data = req.body;
-  data.uuid = db.bid(uuid());
-  data.user_id = req.session.user.id;
-  const sql = `INSERT INTO hospitalization_indicator SET ?`;
-  db.exec(sql, data).then(() => {
+  const { indicator, hospitalization } = req.body;
+  indicator.uuid = db.bid(uuid());
+  indicator.user_id = req.session.user.id;
+  hospitalization.indicator_uuid = indicator.uuid;
+
+  const transaction = db.transaction();
+  const indicatorSql = `INSERT INTO indicator SET ?`;
+  const hospitalizationSql = `INSERT INTO hospitalization_indicator SET ?`;
+
+  transaction.addQuery(indicatorSql, indicator);
+  transaction.addQuery(hospitalizationSql, hospitalization);
+
+  transaction.execute().then(() => {
     res.sendStatus(201);
   }).catch(next);
 }
 
+
 function update(req, res, next) {
-  const data = req.body;
+  const { indicator, hospitalization } = req.body;
+  db.convert(hospitalization, ['indicator_uuid']);
   const _uuid = db.bid(req.params.uuid);
-  delete data.uuid;
-  const sql = `UPDATE hospitalization_indicator SET ? WHERE uuid=?`;
-  db.exec(sql, [data, _uuid]).then(() => {
+  delete hospitalization.uuid;
+  delete indicator.uuid;
+
+  const transaction = db.transaction();
+  const indicatorSql = `UPDATE indicator SET ? WHERE uuid=?`;
+  const hospitalizationSql = `UPDATE hospitalization_indicator SET ? WHERE uuid=?`;
+
+  transaction.addQuery(indicatorSql, [indicator, hospitalization.indicator_uuid]);
+  transaction.addQuery(hospitalizationSql, [hospitalization, _uuid]);
+
+  transaction.execute().then(() => {
     res.sendStatus(200);
   }).catch(next);
 }
 
+
 function remove(req, res, next) {
   const _uuid = db.bid(req.params.uuid);
-  const sql = `DELETE FROM hospitalization_indicator WHERE uuid=?`;
-  db.exec(sql, _uuid).then(() => {
+
+  const indicatorSql = `
+    DELETE FROM indicator
+    WHERE uuid IN (SELECT indicator_uuid FROM hospitalization_indicator WHERE uuid=?)
+  `;
+  const hospitalizationSql = `DELETE FROM hospitalization_indicator WHERE uuid=?`;
+
+  const transaction = db.transaction();
+  transaction.addQuery(hospitalizationSql, _uuid);
+  transaction.addQuery(indicatorSql, _uuid);
+
+  transaction.execute().then(() => {
     res.sendStatus(200);
   }).catch(next);
 }
+
 
 function detail(req, res, next) {
   const _uuid = db.bid(req.params.uuid);
   const sql = `
-    SELECT BUID(uuid) as uuid, period_id, service_id, day_realized, bed_number,
-      daysOfHospitalization, hospitalizedPatients, hospitalizedPatientPerDay,
-      PatientsDied, status_id
+    SELECT BUID(uuid) as uuid, BUID(indicator_uuid), service_id, day_realized, bed_number,
+      daysOfHospitalization, hospitalizedPatients, hospitalizedPatientPerDay, PatientsDied
     FROM hospitalization_indicator
     WHERE uuid=?`;
   db.one(sql, _uuid).then(indicator => {

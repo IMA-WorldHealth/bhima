@@ -7,29 +7,58 @@ module.exports.delete = remove;
 module.exports.detail = detail;
 
 function create(req, res, next) {
-  const data = req.body;
-  data.uuid = db.bid(uuid());
-  data.user_id = req.session.user.id;
-  const sql = `INSERT INTO personel_indicator SET ?`;
-  db.exec(sql, data).then(() => {
+  const { indicator, personel } = req.body;
+  indicator.uuid = db.bid(uuid());
+  indicator.user_id = req.session.user.id;
+  personel.indicator_uuid = indicator.uuid;
+
+  const transaction = db.transaction();
+  const indicatorSql = `INSERT INTO indicator SET ?`;
+  const personelSql = `INSERT INTO personel_indicator SET ?`;
+
+  transaction.addQuery(indicatorSql, indicator);
+  transaction.addQuery(personelSql, personel);
+
+  transaction.execute().then(() => {
     res.sendStatus(201);
   }).catch(next);
 }
 
+
 function update(req, res, next) {
-  const data = req.body;
+  const { indicator, personel } = req.body;
+  db.convert(personel, ['indicator_uuid']);
   const _uuid = db.bid(req.params.uuid);
-  delete data.uuid;
-  const sql = `UPDATE personel_indicator SET ? WHERE uuid=?`;
-  db.exec(sql, [data, _uuid]).then(() => {
+  delete personel.uuid;
+  delete indicator.uuid;
+
+  const transaction = db.transaction();
+  const indicatorSql = `UPDATE indicator SET ? WHERE uuid=?`;
+  const personelSql = `UPDATE personel_indicator SET ? WHERE uuid=?`;
+
+  transaction.addQuery(indicatorSql, [indicator, personel.indicator_uuid]);
+  transaction.addQuery(personelSql, [personel, _uuid]);
+
+  transaction.execute().then(() => {
     res.sendStatus(200);
   }).catch(next);
 }
 
+
 function remove(req, res, next) {
   const _uuid = db.bid(req.params.uuid);
-  const sql = `DELETE FROM personel_indicator WHERE uuid=?`;
-  db.exec(sql, _uuid).then(() => {
+
+  const indicatorSql = `
+    DELETE FROM indicator
+    WHERE uuid IN (SELECT indicator_uuid FROM personel_indicator WHERE uuid=?)
+  `;
+  const personelSql = `DELETE FROM personel_indicator WHERE uuid=?`;
+
+  const transaction = db.transaction();
+  transaction.addQuery(personelSql, _uuid);
+  transaction.addQuery(indicatorSql, _uuid);
+
+  transaction.execute().then(() => {
     res.sendStatus(200);
   }).catch(next);
 }
@@ -37,10 +66,10 @@ function remove(req, res, next) {
 function detail(req, res, next) {
   const _uuid = db.bid(req.params.uuid);
   const sql = `
-    SELECT BUID(uuid) as uuid, period_id, bed_number, doctorsNumber, nurseNumber,
+    SELECT BUID(uuid) as uuid,  BUID(indicator_uuid), bed_number, doctorsNumber, nurseNumber,
       caregiversNumber, totalStaff, externalConsultationNumber,
       consultationNumber, surgeryByDoctor, day_realized,
-      hospitalizedPatients, status_id
+      hospitalizedPatients
     FROM personel_indicator
     WHERE uuid=?`;
   db.one(sql, _uuid).then(indicator => {
