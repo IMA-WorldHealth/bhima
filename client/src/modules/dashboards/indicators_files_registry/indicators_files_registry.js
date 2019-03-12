@@ -42,10 +42,6 @@ function IndicatorsFilesRegistryController(
     displayName : 'DASHBOARD.INDICATORS_FILES.STATUS',
     headerCellFilter : 'translate',
   }, {
-    field : 'validated',
-    displayName : 'DASHBOARD.INDICATORS_FILES.VALIDATED',
-    headerCellFilter : 'translate',
-  }, {
     field : 'last_edit_display_name',
     displayName : 'DASHBOARD.INDICATORS_FILES.LAST_EDIT',
     headerCellFilter : 'translate',
@@ -85,30 +81,42 @@ function IndicatorsFilesRegistryController(
   };
 
   // error handler
+  // eslint-disable-next-line no-unused-vars
   function handler(error) {
     vm.hasError = true;
     Notify.handleError(error);
   }
 
   // this function loads admissions from the database with search filters, if passed in.
+  // eslint-disable-next-line no-unused-vars
   function load(filters) {
+    const sampleData = [
+      {
+        uuid : 'xyz',
+        period_label : 'Mars 2019',
+        fiscal_year_label : 'Fiscal Year 2019',
+        type_label : 'Hospitalisation',
+        status : 'Incomplete',
+        last_edit_display_name : 'Bruce Mbayo',
+      },
+    ];
+    vm.uiGridOptions.data = sampleData;
 
+    // must be uncommented
     // flush error and loading states
-    vm.hasError = false;
-    vm.loading = true;
-
-    // hook the returned admissions up to the grid.
-    return IndicatorsDashboard.indicatorsFiles.read(null, filters)
-      .then((admissions) => {
-        // put data in the grid
-        vm.uiGridOptions.data = admissions;
-        // grid : update view filters
-        vm.latestViewFilters = grid.latestViewFilters();
-      })
-      .catch(handler)
-      .finally(() => {
-        toggleLoadingIndicator();
-      });
+    // vm.hasError = false;
+    // vm.loading = true;
+    // return IndicatorsDashboard.indicatorsFiles.read(null, filters)
+    //   .then((admissions) => {
+    //     // put data in the grid
+    //     vm.uiGridOptions.data = admissions;
+    //     // grid : update view filters
+    //     vm.latestViewFilters = grid.latestViewFilters();
+    //   })
+    //   .catch(handler)
+    //   .finally(() => {
+    //     toggleLoadingIndicator();
+    //   });
   }
 
   // grid : on startup
@@ -131,6 +139,7 @@ function IndicatorsFilesRegistryController(
   }
 
   // toggles the loading indicator on or off
+  // eslint-disable-next-line no-unused-vars
   function toggleLoadingIndicator() {
     vm.loading = !vm.loading;
   }

@@ -1,12 +1,10 @@
 <form name="HospitalizationForm" bh-submit="HospitalizationModalCtrl.submit(HospitalizationForm)" novalidate>
     <div class="modal-body">
-      <h3>
+      <h3 style="padding:0; margin:0; margin-bottom: 20px;">
         <span translate>DASHBOARD.INDICATORS_FILES.WRITE_HOSPITALIZATIONS_INDICATORS</span><br>
-        <small ng-if="$ctrl.selectedService">{{ $ctrl.selectedService }} / </small>
-        <small ng-if="$ctrl.selectedPeriod"><strong>{{ $ctrl.selectedPeriod }}</strong></small>
+        <small ng-show="$ctrl.selectedService">{{ $ctrl.selectedService }} / </small>
+        <small ng-show="$ctrl.selectedPeriod"><strong>{{ $ctrl.selectedPeriod }}</strong></small>
       </h3>
-
-      <br>
 
       <div class="row">
         <div class="col-xs-4">
@@ -64,6 +62,18 @@
             description="DASHBOARD.INDICATORS_FILES.TOTAL_DECESEAD_DESC"
             autocomplete="off">
           </bh-input-text>
+
+          <hr>
+
+          <div class="form-group">
+            <label translate>DASHBOARD.INDICATORS_FILES.STATUS</label>
+            <select
+              class="form-control"
+              name="status"
+              ng-model="$ctrl.file.status"
+              ng-options="opt.key as opt.value for opt in $ctrl.statusOptions">
+            </select>
+          </div>
         </div>
       </div>
   

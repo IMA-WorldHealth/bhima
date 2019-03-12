@@ -16,15 +16,6 @@
       <uib-tab index="0" heading="{{ 'FORM.LABELS.SEARCH_QUERIES' | translate }}" data-custom-filter-tab>
         <div class="tab-body">
 
-          <!-- validated -->
-          <div class="checkbox">
-            <label>
-              <input type="checkbox" ng-true-value="1" ng-false-value=0 ng-model="$ctrl.searchQueries.validated">
-              <span translate>DASHBOARD.INDICATORS_FILES.VALIDATED</span>
-            </label>
-            <bh-clear on-clear="$ctrl.clear('validated')"></bh-clear>
-          </div>
-
           <!-- fiscal year -->
           <bh-fiscal-year-select
             fiscal-id="$ctrl.fiscal_id"
@@ -66,12 +57,12 @@
             <ui-select
               name="type"
               ng-model="$ctrl.status"
-              on-select="$ctrl.onSelectType($item, $model)">
+              on-select="$ctrl.onSelectStatus($item, $model)">
               <ui-select-match placeholder="{{ 'DASHBOARD.INDICATORS_FILES.STATUS' | translate }}">
-                <span>{{$select.selected.label}}</span>
+                <span>{{$select.selected.value}}</span>
               </ui-select-match>
-              <ui-select-choices ui-select-focus-patch repeat="type.id as type in $ctrl.types | filter: { 'label': $select.search }">
-                <span ng-bind-html="type.label | highlight:$select.search"></span>
+              <ui-select-choices ui-select-focus-patch repeat="opt.key as opt in $ctrl.statusOptions | filter: { 'value': $select.search }">
+                <span ng-bind-html="opt.value | highlight:$select.search"></span>
               </ui-select-choices>
             </ui-select>
           </div>

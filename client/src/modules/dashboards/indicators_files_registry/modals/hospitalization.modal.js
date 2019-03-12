@@ -5,12 +5,18 @@ HospitalizationModalController.$inject = [
   '$state', 'IndicatorsDashboardService', 'ModalService', 'NotifyService',
 ];
 
-function HospitalizationModalController($state, IndicatorsDashboard, ModalService, Notify) {
+function HospitalizationModalController(
+  $state, IndicatorsDashboard, ModalService, Notify
+) {
   const vm = this;
 
   const { IndicatorsFile } = IndicatorsDashboard;
 
+  vm.statusOptions = IndicatorsDashboard.statusOptions;
+
   vm.file = {};
+  vm.file.status = vm.file.status || vm.statusOptions[0].key;
+
   vm.hospitalization = $state.params.hospitalization;
   vm.isCreating = !!($state.params.creating);
 
@@ -19,7 +25,6 @@ function HospitalizationModalController($state, IndicatorsDashboard, ModalServic
   };
 
   vm.onSelectPeriod = period => {
-    vm.file.period_id = period.id;
     vm.selectedPeriod = period.hrLabel;
   };
 
@@ -48,7 +53,9 @@ function HospitalizationModalController($state, IndicatorsDashboard, ModalServic
 
     return promise
       .then(() => {
-        const translateKey = (vm.isCreating) ? 'DEPOT.CREATED' : 'DEPOT.UPDATED';
+        const translateKey = (vm.isCreating)
+          ? 'DASHBOARD.INDICATORS_FILES.SUCCESSFULLY_ADDED'
+          : 'DASHBOARD.INDICATORS_FILES.SUCCESSFULLY_UPDATED';
         Notify.success(translateKey);
         $state.go('indicatorsFilesRegistry', null, { reload : true });
       })

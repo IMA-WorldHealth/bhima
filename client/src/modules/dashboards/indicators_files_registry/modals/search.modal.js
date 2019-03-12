@@ -21,7 +21,7 @@ function SearchIndicatorsFilesModalController(
   ];
 
   vm.filters = filters;
-
+  vm.statusOptions = IndicatorsDashboard.statusOptions;
   vm.today = new Date();
   vm.defaultQueries = {};
   vm.searchQueries = {};

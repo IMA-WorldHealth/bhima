@@ -2,18 +2,23 @@ angular.module('bhima.services')
   .service('IndicatorsDashboardService', IndicatorsDashboardService);
 
 IndicatorsDashboardService.$inject = [
-  'PrototypeApiService', 'GridRegistryFilterer', '$uibModal',
+  'PrototypeApiService', 'GridRegistryFilterer', '$uibModal', '$translate',
 ];
 
-function IndicatorsDashboardService(Api, GridRegistryFilterer, $uibModal) {
+function IndicatorsDashboardService(Api, GridRegistryFilterer, $uibModal, $translate) {
   const service = this;
   const indicatorsFiles = new Api('/indicators_files');
   const grid = new GridRegistryFilterer('IndicatorsFilesRegistryFilterer');
 
   service.indicatorsFiles = indicatorsFiles;
   service.indicatorsFilesGridFilterer = grid;
-
   service.openIndicatorsFilesSearchModal = openIndicatorsFilesSearchModal;
+
+  service.statusOptions = [
+    { key : 'incomplete', value : $translate.instant('DASHBOARD.INDICATORS_FILES.INCOMPLETE') },
+    { key : 'complete', value : $translate.instant('DASHBOARD.INDICATORS_FILES.COMPLETE') },
+    { key : 'validated', value : $translate.instant('DASHBOARD.INDICATORS_FILES.VALIDATED') },
+  ];
 
   /**
    * @method openSearchModal
