@@ -2299,12 +2299,12 @@ CREATE TABLE `hospitalization_indicator` (
   `uuid` BINARY(16),
   `period_id` MEDIUMINT(8) UNSIGNED NOT NULL,
   `service_id`SMALLINT(5) UNSIGNED NOT NULL,
-  `day_realized` INT,
-  `bed_number` INT,
-  `daysOfHospitalization` INT,
-  `hospitalizedPatients` INT,
-  `hospitalizedPatientPerDay` INT,
-  `PatientsDied` INT,
+  `day_realized` INT DEFAULT 0,
+  `bed_number` INT DEFAULT 0,
+  `daysOfHospitalization` INT DEFAULT 0,
+  `hospitalizedPatients` INT DEFAULT 0,
+  `hospitalizedPatientPerDay` INT DEFAULT 0,
+  `PatientsDied` INT DEFAULT 0,
   `status_id` SMALLINT(5) UNSIGNED NOT NULL,
   `user_id` SMALLINT(5) UNSIGNED NOT NULL,
   PRIMARY KEY (`uuid`),
@@ -2312,6 +2312,56 @@ CREATE TABLE `hospitalization_indicator` (
   FOREIGN KEY (`period_id`) REFERENCES `period` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`service_id`) REFERENCES `service` (`id`) ON UPDATE CASCADE,
+  FOREIGN KEY (`status_id`) REFERENCES `indictor_status` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `personel_indicator`;
+CREATE TABLE `personel_indicator` (
+  `uuid` BINARY(16),
+  `period_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  `bed_number` INT DEFAULT 0,
+  `doctorsNumber` INT DEFAULT 0,
+  `nurseNumber` INT DEFAULT 0,
+  `caregiversNumber` INT DEFAULT 0,
+  `totalStaff` INT DEFAULT 0,
+  `externalConsultationNumber` INT DEFAULT 0,
+  `consultationNumber` INT DEFAULT 0,
+  `surgeryByDoctor` INT DEFAULT 0,
+  `day_realized` INT DEFAULT 0,
+  `hospitalizedPatients` INT DEFAULT 0,
+  `status_id` SMALLINT(5) UNSIGNED NOT NULL,
+  `user_id` SMALLINT(5) UNSIGNED NOT NULL,
+  PRIMARY KEY (`uuid`),
+  UNIQUE KEY `periodunic` (`period_id`),
+  FOREIGN KEY (`period_id`) REFERENCES `period` (`id`) ON UPDATE CASCADE,
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE,
+  FOREIGN KEY (`status_id`) REFERENCES `indictor_status` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `finances_indicator`;
+CREATE TABLE `finances_indicator` (
+  `uuid` BINARY(16),
+  `period_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  `bed_number` INT DEFAULT 0,
+  `totalReceiptAmount` INT DEFAULT 0,
+  `subsidyAmount` INT DEFAULT 0,
+  `medicationSaleAmount` INT DEFAULT 0,
+  `totalExpenseAmount` INT DEFAULT 0,
+  `variousChargesAmount` INT DEFAULT 0,
+  `purchaseMedicationAmount` INT DEFAULT 0,
+  `personalChargeAmount` INT DEFAULT 0,
+  `totalOperatingExpenditureAmount` INT DEFAULT 0,
+  `totalDepreciationAmount` INT DEFAULT 0,
+  `totalDebtAmount` INT DEFAULT 0,
+  `totalCashAmount` INT DEFAULT 0,
+  `totalStockValueAmount` INT DEFAULT 0,
+  `personelNumber` INT DEFAULT 0,
+  `status_id` SMALLINT(5) UNSIGNED NOT NULL,
+  `user_id` SMALLINT(5) UNSIGNED NOT NULL,
+  PRIMARY KEY (`uuid`),
+  UNIQUE KEY `periodunic` (`period_id`),
+  FOREIGN KEY (`period_id`) REFERENCES `period` (`id`) ON UPDATE CASCADE,
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`status_id`) REFERENCES `indictor_status` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 

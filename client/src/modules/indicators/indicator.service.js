@@ -12,7 +12,7 @@ function IndicatorService(Api) {
   const service = this;
   service.hospitalization = new Api('/indicators/hospitalization');
   service.personel = new Api('/indicators/personel');
-  service.fincance = new Api('/indicators/fincance');
+  service.fincances = new Api('/indicators/fincances');
   service.status = new Api('/indicators/status');
   return service;
 }

@@ -873,5 +873,15 @@ exports.configure = function configure(app) {
   app.put('/indicators/hospitalization/:uuid', indicators.hospitalization.update);
   app.delete('/indicators/hospitalization/:uuid', indicators.hospitalization.delete);
 
+  app.get('/indicators/personel/:uuid', indicators.personel.detail);
+  app.post('/indicators/personel', indicators.personel.create);
+  app.put('/indicators/personel/:uuid', indicators.personel.update);
+  app.delete('/indicators/personel/:uuid', indicators.personel.delete);
+
+  app.get('/indicators/finances/:uuid', indicators.finances.detail);
+  app.post('/indicators/finances', indicators.finances.create);
+  app.put('/indicators/finances/:uuid', indicators.finances.update);
+  app.delete('/indicators/finances/:uuid', indicators.finances.delete);
+
   app.get('/indicators/status', indicators.status.list);
 };
