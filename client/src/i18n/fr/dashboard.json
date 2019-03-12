@@ -6,7 +6,7 @@
       "SERVICE":"Service",
       "TYPE":"Type de fiche",
       "STATUS":"Etat",
-      "VALIDATED":"Validation",
+      "VALIDATED":"Validé",
       "LAST_EDIT":"Modification",
       "OVERVIEW":"Aperçu",
       "PRINT":"Imprimer",
@@ -17,7 +17,20 @@
       "HUMAN_RESOURCES_INDICATORS":"Indicateurs Ressources Humaines",
       "MONTHLY_INDICATORS":"Indicateurs Mensuel",
       "ADD_MONTHLY_INDICATORS":"Ajouter Indicateurs Mensuels",
-      "SEARCH":"Rechercher des fiches d'indicateurs"
+      "SEARCH":"Rechercher des fiches d'indicateurs",
+      "SUCCESSFULLY_ADDED":"La fiche des indicateurs a été ajoutée avec succès",
+      "SUCCESSFULLY_UPDATED":"La fiche des indicateurs a été modifiée avec succès",
+      "WRITE_HOSPITALIZATIONS_INDICATORS":"Saisie des indicateurs clés - Hospitalisations",
+      "WRITE_HUMAN_RESOURCES_INDICATORS":"Saisie des indicateurs clés - Ressources Humaines",
+      "WRITE_FINANCES_INDICATORS":"Saisie des indicateurs clés - Finances",
+      "HOSP_DAYS":"Journées réalisées",
+      "HOSP_DAYS_DESC":"Total des nombres de jours d'hospitalisations réalisés",
+      "TOTAL_BED":"Nombre des lits",
+      "TOTAL_BED_DESC":"Le nombre total des lits de l'hopital",
+      "TOTAL_HOSPI_PATIENT":"Nombre des patients hospitalisés",
+      "TOTAL_HOSPI_PATIENT_DESC":"Le nombre total des patients hopitalisés durant la période",
+      "TOTAL_DECESEAD":"Nombre des décès",
+      "TOTAL_DECESEAD_DESC":"Le nombre total des patients qui sont mort durant la periode"
     }
   }
 }

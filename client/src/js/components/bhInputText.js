@@ -13,6 +13,7 @@ angular.module('bhima.components')
       type : '@?',
       onChange : '&',
       id : '@?',
+      description : '@?',
     },
   });
 

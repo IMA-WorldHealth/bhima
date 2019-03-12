@@ -8,6 +8,8 @@
     <label class="control-label" translate>
       {{ $ctrl.label }}
     </label>
+
+    <ng-transclude></ng-transclude>
     <select
       class="form-control"
       ng-model="$ctrl.selectedPeriod"

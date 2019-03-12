@@ -2,6 +2,7 @@ angular.module('bhima.components')
   .component('bhFiscalYearSelect', {
     templateUrl : 'modules/templates/bhFiscalYearSelect.tmpl.html',
     controller : FiscalYearSelect,
+    transclude  : true,
     bindings : {
       onSelectFiscalCallback : '&',
       fiscalId : '<?',

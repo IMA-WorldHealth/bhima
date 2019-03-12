@@ -2,6 +2,7 @@ angular.module('bhima.components')
   .component('bhPeriodSelection', {
     templateUrl : 'modules/templates/bhPeriodSelection.html',
     controller  : PeriodSelectionController,
+    transclude  : true,
     bindings    : {
       fiscalYearId : '<',
       onSelectCallback : '&',

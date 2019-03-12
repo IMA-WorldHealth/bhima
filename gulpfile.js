@@ -223,13 +223,17 @@ function buildStatic() {
 }
 
 function watchClient(done) {
-  watch(paths.client.javascript, watchJS);
-  watch(paths.client.css, watchCSS);
-  watch([`${supportedLanguages.en.path}/**/*.json`, `${supportedLanguages.fr.path}/**/*.json`], buildI18n);
+  watch(paths.client.javascript, { events : 'all' }, watchJS);
+  watch(paths.client.css, { events : 'all' }, watchCSS);
+  watch(
+    [`${supportedLanguages.en.path}/**/*.json`, `${supportedLanguages.fr.path}/**/*.json`],
+    { events : 'all' },
+    buildI18n
+  );
 
   // ensure all static bhima files are copied over to the build given changes
   // this is important to catch changes in component template files etc.
-  watch(paths.client.static.bhima, watchStatic);
+  watch(paths.client.static.bhima, { events : 'all' }, watchStatic);
   done();
 }
 

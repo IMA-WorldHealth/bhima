@@ -15,43 +15,77 @@
     <uib-tabset>
       <uib-tab index="0" heading="{{ 'FORM.LABELS.SEARCH_QUERIES' | translate }}" data-custom-filter-tab>
         <div class="tab-body">
-          
+
+          <!-- validated -->
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" ng-true-value="1" ng-false-value=0 ng-model="$ctrl.searchQueries.validated">
+              <span translate>DASHBOARD.INDICATORS_FILES.VALIDATED</span>
+            </label>
+            <bh-clear on-clear="$ctrl.clear('validated')"></bh-clear>
+          </div>
+
           <!-- fiscal year -->
           <bh-fiscal-year-select
             fiscal-id="$ctrl.fiscal_id"
             on-select-fiscal-callback="$ctrl.onSelectFiscal(fiscal)">
-            <bh-clear on-clear="$ctrl.clear('fiscal_year_id')"></bh-clear>
+            <bh-clear on-clear="$ctrl.clear('fiscal_id')"></bh-clear>
           </bh-fiscal-year-select>
 
           <!-- period -->
-          <bh-period-select
-            default-period="$ctrl.period_id"
-            on-select-callback="$ctrl.onSelectFiscal(fiscal)">
+          <bh-period-selection
+            fiscal-year-id="$ctrl.fiscal_id"
+            period-id="$ctrl.period_id"
+            on-select-callback="$ctrl.onSelectPeriod(fiscal)">
             <bh-clear on-clear="$ctrl.clear('period_id')"></bh-clear>
-          </bh-period-select>
+          </bh-period-selection>
 
           <!-- type -->
+          <div class="form-group">
+            <label class="control-label" translate>DASHBOARD.INDICATORS_FILES.TYPE</label>
+            <bh-clear on-clear="$ctrl.clear('type')"></bh-clear>
 
-          <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.display_name.$invalid }">
-            <label class="control-label" translate> FORM.LABELS.NAME </label>
-            <bh-clear on-clear="$ctrl.clear('display_name')"></bh-clear>
-            <input type="text" class="form-control" name="display_name" ng-model="$ctrl.searchQueries.display_name">
-            <div class="help-block" ng-messages="ModalForm.display_name.$error" ng-show="ModalForm.$submitted">
-              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-            </div>
+            <ui-select
+              name="type"
+              ng-model="$ctrl.type"
+              on-select="$ctrl.onSelectType($item, $model)">
+              <ui-select-match placeholder="{{ 'DASHBOARD.INDICATORS_FILES.TYPE' | translate }}">
+                <span>{{$select.selected.label}}</span>
+              </ui-select-match>
+              <ui-select-choices ui-select-focus-patch repeat="type.id as type in $ctrl.types | filter: { 'label': $select.search }">
+                <span ng-bind-html="type.label | highlight:$select.search"></span>
+              </ui-select-choices>
+            </ui-select>
           </div>
 
+          <!-- status -->
+          <div class="form-group">
+            <label class="control-label" translate>DASHBOARD.INDICATORS_FILES.STATUS</label>
+            <bh-clear on-clear="$ctrl.clear('status')"></bh-clear>
+
+            <ui-select
+              name="type"
+              ng-model="$ctrl.status"
+              on-select="$ctrl.onSelectType($item, $model)">
+              <ui-select-match placeholder="{{ 'DASHBOARD.INDICATORS_FILES.STATUS' | translate }}">
+                <span>{{$select.selected.label}}</span>
+              </ui-select-match>
+              <ui-select-choices ui-select-focus-patch repeat="type.id as type in $ctrl.types | filter: { 'label': $select.search }">
+                <span ng-bind-html="type.label | highlight:$select.search"></span>
+              </ui-select-choices>
+            </ui-select>
+          </div>
+
+          <!-- users -->
+          <bh-user-select 
+            on-select-callback="$ctrl.onSelectUser(user)">
+            <bh-clear on-clear="$ctrl.clear('user_id')"></bh-clear>
+          </bh-user-select>
         </div>
       </uib-tab>
 
       <uib-tab index="1" heading="{{ 'FORM.LABELS.DEFAULTS' | translate }}" data-default-filter-tab>
         <div class="tab-body">
-          <!-- period selection -->
-          <bh-period-select
-            default-period="{{$ctrl.filters.period}}"
-            on-select-callback="$ctrl.onSelectPeriod(period)">
-          </bh-period-select>
-
           <div class="form-group" ng-class="{ 'has-error' : ModalForm.limit.$invalid }">
             <label class="control-label" translate>FORM.LABELS.LIMIT</label>
             <input name="limit" type="number" bh-integer bh-max-integer class="form-control" ng-model="$ctrl.defaultQueries.limit" ng-change="$ctrl.onSelectLimit($ctrl.defaultQueries.limit)">

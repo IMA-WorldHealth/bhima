@@ -118,7 +118,7 @@ function IndicatorsFilesRegistryController(
 
   // grid : search modal
   function search() {
-    // grid.search(IndicatorsDashboard.indicatorsFiles.openAdmissionSearchModal, load);
+    grid.search(IndicatorsDashboard.openIndicatorsFilesSearchModal, load);
   }
 
   // grid : on remove a filter
