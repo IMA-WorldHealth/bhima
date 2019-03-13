@@ -31,8 +31,7 @@ function FeeCenterModalController($state, FeeCenter, ModalService, Notify, AppCa
   if (!vm.isCreating) {
     FeeCenter.read(vm.stateParams.id)
       .then((data) => {
-        vm.feeCenter = data.feeCenter[0];
-
+        [vm.feeCenter] = data.feeCenter;
         if (data.services) {
           vm.relatedServices = data.services.length ? 1 : 0;
           vm.services = data.services;
@@ -112,18 +111,18 @@ function FeeCenterModalController($state, FeeCenter, ModalService, Notify, AppCa
 
   function onSelectAccountReference(accountReference, isCostCenter, isVariable, isTurnOver) {
     const config = {
-      account_reference_id : accountReference.id, 
-      is_cost : isCostCenter, 
+      account_reference_id : accountReference.id,
+      is_cost : isCostCenter,
       is_variable : isVariable,
       is_turnover : isTurnOver,
     };
 
     if (isCostCenter && isVariable) {
-      vm.variableCostCenterReference  = config;
+      vm.variableCostCenterReference = config;
     } else if (isCostCenter && !isVariable) {
-      vm.fixCostCenterReference  = config;
+      vm.fixCostCenterReference = config;
     } else if (!isCostCenter && isTurnOver) {
-      vm.turnoverProfitCenterReference = config; 
+      vm.turnoverProfitCenterReference = config;
     } else if (!isCostCenter && !isTurnOver) {
       vm.otherProfitCenterReference = config;
     }

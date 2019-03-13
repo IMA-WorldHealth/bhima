@@ -35,7 +35,7 @@ function BreakEvenReferenceModalController($state, BreakEvenReference, Notify, A
     BreakEvenReference.read(vm.stateParams.id)
       .then(data => {
         vm.reference = data;
-        vm.revenueType = !vm.reference.is_cost;  
+        vm.revenueType = !vm.reference.is_cost;
       })
       .catch(Notify.handleError);
   }

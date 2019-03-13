@@ -13,10 +13,10 @@ exports.report = report;
 
 // default report parameters
 const DEFAULT_PARAMS = {
-  csvKey: 'brea_report',
-  filename: 'TREE.BREAK_EVEN_REPORT',
-  orientation: 'portrait',
-  footerRight: '[page] / [toPage]',
+  csvKey : 'brea_report',
+  filename : 'TREE.BREAK_EVEN_REPORT',
+  orientation : 'portrait',
+  footerRight : '[page] / [toPage]',
 };
 
 /**
@@ -28,7 +28,7 @@ const DEFAULT_PARAMS = {
  */
 function report(req, res, next) {
   const params = req.query;
-  const feeCentersChecked = [];
+  let feeCentersChecked = [];
 
   if (params.feeCenters) {
     feeCentersChecked = params.feeCenters.map(item => parseInt(item, 10));
