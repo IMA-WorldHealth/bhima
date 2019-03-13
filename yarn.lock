@@ -392,11 +392,6 @@ append-field@^1.0.0:
   resolved "https://registry.yarnpkg.com/append-field/-/append-field-1.0.0.tgz#1e3440e915f0b1203d23748e78edd7b9b5b43e56"
   integrity sha1-HjRA6RXwsSA9I3SOeO3XubW0PlY=
 
-apply@0.0.0:
-  version "0.0.0"
-  resolved "https://registry.yarnpkg.com/apply/-/apply-0.0.0.tgz#94ea44fa7bc8cfc53e862ef5d58a9c09323b5688"
-  integrity sha1-lOpE+nvIz8U+hi711YqcCTI7Vog=
-
 aproba@^1.0.3:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/aproba/-/aproba-1.2.0.tgz#6802e6264efd18c790a1b0d517f0f2627bf2c94a"

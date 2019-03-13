@@ -47,6 +47,13 @@ function FeeCenterModalController($state, FeeCenter, ModalService, Notify, AppCa
   function processReference(references) {
     if (references) {
       references.forEach((reference) => {
+        const feeCenterReferenceBundle = {
+          account_reference_id : reference.account_reference_id,
+          is_cost : reference.is_cost,
+          is_variable : reference.is_variable,
+          is_turnover : reference.is_turnover,
+        }
+
         if (reference.is_cost) {
           if (vm.feeCenter.is_principal) {
             vm.hasCostCenter = 1;
@@ -58,20 +65,10 @@ function FeeCenterModalController($state, FeeCenter, ModalService, Notify, AppCa
 
           if (reference.is_variable) {
             vm.feeCenter.reference_cost_variable_id = reference.account_reference_id;
-            vm.variableCostCenterReference = {
-              account_reference_id : reference.account_reference_id,
-              is_cost : reference.is_cost,
-              is_variable : reference.is_variable,
-              is_turnover : reference.is_turnover,
-            };
+            vm.variableCostCenterReference = feeCenterReferenceBundle;
           } else {
             vm.feeCenter.reference_cost_fixed_id = reference.account_reference_id;
-            vm.fixCostCenterReference = {
-              account_reference_id : reference.account_reference_id,
-              is_cost : reference.is_cost,
-              is_variable : reference.is_variable,
-              is_turnover : reference.is_turnover,
-            };
+            vm.fixCostCenterReference = feeCenterReferenceBundle;
           }
         }
 
@@ -85,20 +82,10 @@ function FeeCenterModalController($state, FeeCenter, ModalService, Notify, AppCa
 
           if (reference.is_turnover) {
             vm.feeCenter.reference_profit_turnover_id = reference.account_reference_id;
-            vm.turnoverProfitCenterReference = {
-              account_reference_id : reference.account_reference_id,
-              is_cost : reference.is_cost,
-              is_variable : reference.is_variable,
-              is_turnover : reference.is_turnover,
-            };
+            vm.turnoverProfitCenterReference = feeCenterReferenceBundle;
           } else {
             vm.feeCenter.reference_other_profit_id = reference.account_reference_id;
-            vm.otherProfitCenterReference = {
-              account_reference_id : reference.account_reference_id,
-              is_cost : reference.is_cost,
-              is_variable : reference.is_variable,
-              is_turnover : reference.is_turnover,
-            };
+            vm.otherProfitCenterReference = feeCenterReferenceBundle;
           }
         }
       });
@@ -124,38 +111,21 @@ function FeeCenterModalController($state, FeeCenter, ModalService, Notify, AppCa
   }
 
   function onSelectAccountReference(accountReference, isCostCenter, isVariable, isTurnOver) {
-    if (isCostCenter) {
-      if (isVariable) {
-        vm.variableCostCenterReference = {
-          account_reference_id : accountReference.id,
-          is_cost : isCostCenter,
-          is_variable : isVariable,
-          is_turnover : isTurnOver,
-        };
-      } else {
-        vm.fixCostCenterReference = {
-          account_reference_id : accountReference.id,
-          is_cost : isCostCenter,
-          is_variable : isVariable,
-          is_turnover : isTurnOver,
-        };
-      }
-    } else if (!isCostCenter) {
-      if (isTurnOver) {
-        vm.turnoverProfitCenterReference = {
-          account_reference_id : accountReference.id,
-          is_cost : isCostCenter,
-          is_variable : isVariable,
-          is_turnover : isTurnOver,
-        };
-      } else {
-        vm.otherProfitCenterReference = {
-          account_reference_id : accountReference.id,
-          is_cost : isCostCenter,
-          is_variable : isVariable,
-          is_turnover : isTurnOver,
-        };
-      }
+    const config = {
+      account_reference_id : accountReference.id, 
+      is_cost : isCostCenter, 
+      is_variable : isVariable,
+      is_turnover : isTurnOver,
+    };
+
+    if (isCostCenter && isVariable) {
+      vm.variableCostCenterReference  = config;
+    } else if (isCostCenter && !isVariable) {
+      vm.fixCostCenterReference  = config;
+    } else if (!isCostCenter && isTurnOver) {
+      vm.turnoverProfitCenterReference = config; 
+    } else if (!isCostCenter && !isTurnOver) {
+      vm.otherProfitCenterReference = config;
     }
   }
 

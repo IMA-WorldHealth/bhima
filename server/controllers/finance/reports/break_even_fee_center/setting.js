@@ -138,10 +138,10 @@ function configuration(data) {
   });
   configured.principal.forEach(pr => {
     // Set a number of case By Fee Center
-    pr.numberCase = 0;
+    pr.numberOfCases = 0;
     data.encounters.forEach(encounter => {
       if (pr.id === encounter.fee_center_id) {
-        pr.numberCase = encounter.numberCase;
+        pr.numberOfCases = encounter.numberOfCases;
       }
     });
 
@@ -256,7 +256,7 @@ function configuration(data) {
     pr.breakEvenPoint = parseInt(pr.breakEvenPoint, 10);
     // Break Even Point By Cases
     pr.breakEventPointByCase = pr.balanceTurnover
-      ? pr.breakEvenValue / (pr.balanceTurnover / pr.numberCase) : 0;
+      ? pr.breakEvenValue / (pr.balanceTurnover / pr.numberOfCases) : 0;
     pr.breakEventPointByCase = parseInt(pr.breakEventPointByCase, 10);
     // Margin Variable load for All Products
     pr.marginVariableLoadsP = pr.totalProduct - pr.balanceVariableCost;
@@ -274,7 +274,7 @@ function configuration(data) {
     pr.breakEvenPointP = parseInt(pr.breakEvenPointP, 10);
     // Break Even Point By Cases for All Products
     pr.breakEvenPointCaseP = pr.totalProduct
-      ? pr.breakEvenValueP / (pr.totalProduct / pr.numberCase) : 0;
+      ? pr.breakEvenValueP / (pr.totalProduct / pr.numberOfCases) : 0;
     pr.breakEvenPointCaseP = parseInt(pr.breakEvenPointCaseP, 10);
   });
 

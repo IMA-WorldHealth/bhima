@@ -38,7 +38,7 @@ function BreakEvenReferenceController($state, BreakEvenReference, Notify, uiGrid
         headerCellFilter : 'translate',
       },
       {
-        field : 'property',
+        field : 'hrLabel',
         displayName : '',
         enableFiltering : true,
         headerCellFilter : 'translate',
@@ -96,13 +96,13 @@ function BreakEvenReferenceController($state, BreakEvenReference, Notify, uiGrid
       .then((breakEvenReference) => {
         breakEvenReference.forEach((item) => {
           if (item.is_cost && item.is_variable) {
-            item.property = $translate.instant('FORM.LABELS.VARIABLE_CHARGE');
+            item.hrLabel = $translate.instant('FORM.LABELS.VARIABLE_CHARGE');
           } else if (item.is_cost && !item.is_variable) {
-            item.property = $translate.instant('FORM.LABELS.FIXED_CHARGE');
+            item.hrLabel = $translate.instant('FORM.LABELS.FIXED_CHARGE');
           } else if (!item.is_cost && item.is_turnover) {
-            item.property = $translate.instant('FORM.LABELS.TURNOVER_REVENUE');
+            item.hrLabel = $translate.instant('FORM.LABELS.TURNOVER_REVENUE');
           } else {
-            item.property = $translate.instant('FORM.LABELS.REVENUE');
+            item.hrLabel = $translate.instant('FORM.LABELS.REVENUE');
           }
         });
 

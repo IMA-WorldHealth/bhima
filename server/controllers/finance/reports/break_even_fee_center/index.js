@@ -13,10 +13,10 @@ exports.report = report;
 
 // default report parameters
 const DEFAULT_PARAMS = {
-  csvKey : 'brea_report',
-  filename : 'TREE.BREAK_EVEN_REPORT',
-  orientation : 'portrait',
-  footerRight : '[page] / [toPage]',
+  csvKey: 'brea_report',
+  filename: 'TREE.BREAK_EVEN_REPORT',
+  orientation: 'portrait',
+  footerRight: '[page] / [toPage]',
 };
 
 /**
@@ -30,12 +30,8 @@ function report(req, res, next) {
   const params = req.query;
   const feeCentersChecked = [];
 
-  if (params.defineFeeCenters && params.feeCenters) {
-    params.feeCenters.forEach(item => {
-      if (parseInt(item, 10)) {
-        feeCentersChecked.push(item);
-      }
-    });
+  if (params.feeCenters) {
+    feeCentersChecked = params.feeCenters.map(item => parseInt(item, 10));
   }
 
   const data = {};
@@ -64,7 +60,7 @@ function report(req, res, next) {
   `;
 
   const getFeeCenterReference = `
-    SELECT fc.id, fc.label, fc.is_principal, rf.fee_center_id, rf.account_reference_id, 
+    SELECT fc.label, fc.id, fc.is_principal, rf.fee_center_id, rf.account_reference_id, 
     rf.is_cost, rf.is_variable, rf.is_turnover, ar.abbr
     FROM fee_center AS fc
     JOIN reference_fee_center AS rf ON rf.fee_center_id = fc.id
@@ -73,10 +69,10 @@ function report(req, res, next) {
   `;
 
   const getFeeCenterDistribution = `
-    SELECT fcd.is_cost, fcd.is_variable, fcd.is_turnover, BUID(fcd.row_uuid) AS row_uuid,
+    SELECT fcd.principal_fee_center_id, fcd.auxiliary_fee_center_id, fcd.is_cost,
+    fcd.is_variable, fcd.is_turnover, BUID(fcd.row_uuid) AS row_uuid,    
     fca.label AS auxiliary, fcp.label AS principal, SUM(fcd.debit_equiv) AS debit,
-    SUM(fcd.credit_equiv) AS credit, gl.trans_date, fcd.auxiliary_fee_center_id,
-    fcd.principal_fee_center_id
+    SUM(fcd.credit_equiv) AS credit, gl.trans_date
     FROM fee_center_distribution AS fcd
     JOIN general_ledger AS gl ON gl.uuid = fcd.row_uuid
     JOIN fee_center AS fcp ON fcp.id = fcd.principal_fee_center_id
@@ -86,7 +82,7 @@ function report(req, res, next) {
   `;
 
   const getEncounterFeeCenter = `
-    SELECT f.label AS feeCenter, sfc.fee_center_id, count(pv.uuid) AS numberCase 
+    SELECT sfc.fee_center_id, f.label AS feeCenter, count(pv.uuid) AS numberOfCases 
     FROM patient_visit AS pv
     JOIN patient_visit_service AS pvs ON pvs.patient_visit_uuid = pv.uuid
     JOIN service_fee_center AS sfc ON sfc.service_id = pvs.service_id
@@ -118,19 +114,8 @@ function report(req, res, next) {
       const dataConfigured = setting.configuration(config);
 
       if (feeCentersChecked.length) {
-        dataConfigured.principal.forEach(item => {
-          item.selected = 0;
-          feeCentersChecked.forEach(feeCenterId => {
-
-            if (item.id === (parseInt(feeCenterId, 10))) {
-              item.selected = 1;
-            }
-          });
-        });
-
-        dataConfigured.principalSelected = dataConfigured.principal.filter(item => {
-          return item.selected;
-        });
+        dataConfigured.prinicpalSelected = dataConfigured.principal
+          .filter(item => feeCentersChecked.includes(item.id));
 
       } else {
         dataConfigured.principalSelected = dataConfigured.principal;

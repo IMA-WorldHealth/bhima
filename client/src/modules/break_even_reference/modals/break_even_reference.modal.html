@@ -12,10 +12,10 @@
 
   <div class="modal-body" style="overflow-y: scroll; height:300px;">
     <!-- label -->
-    <div class="form-group" ng-class="{ 'has-error' : BreakEvenReferenceForm.$submitted && BreakEvenReferenceForm.description.$invalid }">
+    <div class="form-group" ng-class="{ 'has-error' : BreakEvenReferenceForm.$submitted && BreakEvenReferenceForm.label.$invalid }">
       <label class="control-label" translate>FORM.LABELS.DESIGNATION</label>
       <div>
-        <input name="label" ng-model="BreakEvenReferenceModalCtrl.breakEvenReferences.label" autocomplete="off" ng-maxlength="90" class="form-control" required>
+        <input name="label" ng-model="BreakEvenReferenceModalCtrl.reference.label" autocomplete="off" ng-maxlength="90" class="form-control" required>
         <div class="help-block" ng-messages="BreakEvenReferenceForm.label.$error" ng-show="BreakEvenReferenceForm.$submitted">
           <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
         </div>
@@ -23,15 +23,13 @@
     </div>
 
     <!-- account_reference_id -->
-    <div>
-      <bh-account-reference-select
-        id="account_reference_id"
-        account-reference-id="BreakEvenReferenceModalCtrl.breakEvenReferences.account_reference_id"
-        label="FORM.SELECT.ACCOUNT_REFERENCE"
-        on-select-callback="BreakEvenReferenceModalCtrl.onSelectAccountReference(accountReference)"
-        required="true">
-      </bh-account-reference-select>      
-    </div>
+    <bh-account-reference-select
+      id="account_reference_id"
+      account-reference-id="BreakEvenReferenceModalCtrl.reference.account_reference_id"
+      label="FORM.SELECT.ACCOUNT_REFERENCE"
+      on-select-callback="BreakEvenReferenceModalCtrl.onSelectAccountReference(accountReference)"
+      required="true">
+    </bh-account-reference-select>
 
     <!-- is_cost -->
     <div class="form-group" ng-class="{'has-error' : BreakEvenReferenceForm.$submitted && BreakEvenReferenceForm.is_cost.$invalid }">
@@ -42,7 +40,8 @@
             type="radio"
             name="is_cost"
             ng-value="1"
-            ng-model="BreakEvenReferenceModalCtrl.breakEvenReferences.is_cost"
+            ng-click="BreakEvenReferenceModalCtrl.inSetRevenueType()"
+            ng-model="BreakEvenReferenceModalCtrl.reference.is_cost"
             id="is_cost"
             required
             >
@@ -54,7 +53,8 @@
             type="radio"
             name="is_cost"
             ng-value="0"
-            ng-model="BreakEvenReferenceModalCtrl.breakEvenReferences.is_cost"
+            ng-click="BreakEvenReferenceModalCtrl.setRevenueType()"
+            ng-model="BreakEvenReferenceModalCtrl.reference.is_cost"
             id="is_revenue"
             required
             >
@@ -67,7 +67,7 @@
     </div>
 
     <!-- is_variable -->
-    <div class="form-group" ng-if="BreakEvenReferenceModalCtrl.breakEvenReferences.is_cost" ng-class="{'has-error' : BreakEvenReferenceForm.$submitted && BreakEvenReferenceForm.is_variable.$invalid }">
+    <div class="form-group" ng-if="BreakEvenReferenceModalCtrl.reference.is_cost" ng-class="{'has-error' : BreakEvenReferenceForm.$submitted && BreakEvenReferenceForm.is_variable.$invalid }">
       <hr>
       <div class="radio">
         <label class="radio-inline">
@@ -75,7 +75,7 @@
             type="radio"
             name="is_variable"
             ng-value="1"
-            ng-model="BreakEvenReferenceModalCtrl.breakEvenReferences.is_variable"
+            ng-model="BreakEvenReferenceModalCtrl.reference.is_variable"
             id="is_variable"
             required
             >
@@ -87,7 +87,7 @@
             type="radio"
             name="is_variable"
             ng-value="0"
-            ng-model="BreakEvenReferenceModalCtrl.breakEvenReferences.is_variable"
+            ng-model="BreakEvenReferenceModalCtrl.reference.is_variable"
             id="is_fixed"
             required
             >
@@ -100,21 +100,19 @@
     </div>
 
     <!-- is_turnover -->
-    <div class="form-group" ng-if="!BreakEvenReferenceModalCtrl.breakEvenReferences.is_cost">
+    <div class="form-group" ng-if="BreakEvenReferenceModalCtrl.revenueType">
       <hr>
-      <div class="form-group">
-        <div class="checkbox">
-          <label>
-            <input
-              type="checkbox"
-              name="is_turnover"
-              ng-true-value="1"
-              ng-false-value="0"
-              id="is_turnover"
-              ng-model="BreakEvenReferenceModalCtrl.breakEvenReferences.is_turnover">
-            <span translate>FORM.LABELS.IS_TURNOVER</span>
-          </label>
-        </div>
+      <div class="checkbox">
+        <label>
+          <input
+            type="checkbox"
+            name="is_turnover"
+            ng-true-value="1"
+            ng-false-value="0"
+            id="is_turnover"
+            ng-model="BreakEvenReferenceModalCtrl.reference.is_turnover">
+          <span translate>FORM.LABELS.IS_TURNOVER</span>
+        </label>
       </div>
     </div>
   </div>

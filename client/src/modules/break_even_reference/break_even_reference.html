@@ -11,16 +11,9 @@
           <span class="fa fa-plus"></span> <span translate>FORM.BUTTONS.ADD</span>
         </button>
       </div>
-
       <div class="toolbar-item">
-        <button
-          type="button"
-          ng-click="BreakEvenReferenceCtrl.toggleFilter()"
-          data-method="filter"
-          class="btn btn-default"
-          ng-class="{ 'btn-info' : BreakEvenReferenceCtrl.filterEnabled }">
-          <i class="fa fa-filter"></i>
-        </button>
+        <bh-filter-toggle on-toggle="BreakEvenReferenceCtrl.toggleFilter()">
+        </bh-filter-toggle>
       </div>
     </div>
   </div>

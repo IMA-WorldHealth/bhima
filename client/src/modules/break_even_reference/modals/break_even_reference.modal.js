@@ -13,13 +13,15 @@ function BreakEvenReferenceModalController($state, BreakEvenReference, Notify, A
   const vm = this;
   const cache = AppCache('AccountReferenceModal');
 
-  vm.breakEvenReferences = {};
+  vm.reference = {};
   vm.stateParams = {};
 
   // exposed methods
   vm.submit = submit;
   vm.closeModal = closeModal;
   vm.onSelectAccountReference = onSelectAccountReference;
+  vm.setRevenueType = setRevenueType;
+  vm.inSetRevenueType = inSetRevenueType;
 
   if ($state.params.creating || $state.params.id) {
     cache.stateParams = $state.params;
@@ -32,20 +34,22 @@ function BreakEvenReferenceModalController($state, BreakEvenReference, Notify, A
   if (!vm.isCreating) {
     BreakEvenReference.read(vm.stateParams.id)
       .then(data => {
-        vm.breakEvenReferences = data;
+        vm.reference = data;
+        vm.revenueType = !vm.reference.is_cost;  
       })
       .catch(Notify.handleError);
   }
 
-  // load Break Even Reference
-  BreakEvenReference.read()
-    .then(BreakEvenReferences => {
-      vm.BreakEvenReferences = BreakEvenReferences;
-    })
-    .catch(Notify.handleError);
-
   function onSelectAccountReference(accountReference) {
-    vm.breakEvenReferences.account_reference_id = accountReference.id;
+    vm.reference.account_reference_id = accountReference.id;
+  }
+
+  function setRevenueType() {
+    vm.revenueType = 1;
+  }
+
+  function inSetRevenueType() {
+    vm.revenueType = 0;
   }
 
   // submit the data to the server from all two forms (update, create)
@@ -53,17 +57,17 @@ function BreakEvenReferenceModalController($state, BreakEvenReference, Notify, A
     if (breakEvenReferenceForm.$invalid) { return null; }
     if (!breakEvenReferenceForm.$dirty) { return null; }
 
-    if (!vm.breakEvenReferences.is_cost) {
-      vm.breakEvenReferences.is_variable = null;
+    if (!vm.reference.is_cost) {
+      vm.reference.is_variable = null;
     }
 
-    if (vm.breakEvenReferences.is_cost) {
-      vm.breakEvenReferences.is_turnover = null;
+    if (vm.reference.is_cost) {
+      vm.reference.is_turnover = null;
     }
 
     const promise = (vm.isCreating)
-      ? BreakEvenReference.create(vm.breakEvenReferences)
-      : BreakEvenReference.update(vm.breakEvenReferences.id, vm.breakEvenReferences);
+      ? BreakEvenReference.create(vm.reference)
+      : BreakEvenReference.update(vm.reference.id, vm.reference);
 
     return promise
       .then(() => {
@@ -75,6 +79,6 @@ function BreakEvenReferenceModalController($state, BreakEvenReference, Notify, A
   }
 
   function closeModal() {
-    $state.transitionTo('break_even_reference');
+    $state.go('break_even_reference');
   }
 }
