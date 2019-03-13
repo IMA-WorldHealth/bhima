@@ -57,6 +57,10 @@ function BreakEvenReferenceModalController($state, BreakEvenReference, Notify, A
       vm.breakEvenReferences.is_variable = null;
     }
 
+    if (vm.breakEvenReferences.is_cost) {
+      vm.breakEvenReferences.is_turnover = null;
+    }
+
     const promise = (vm.isCreating)
       ? BreakEvenReference.create(vm.breakEvenReferences)
       : BreakEvenReference.update(vm.breakEvenReferences.id, vm.breakEvenReferences);

@@ -71,7 +71,7 @@
     </div>
 
     <!-- is_variable -->
-    <div class="form-group" ng-if="BreakEvenReferenceModalCtrl.breakEvenReferences.is_cost" ng-class="{'has-error' : BreakEvenReferenceForm.$submitted && BreakEvenReferenceForm.is_cost.$invalid }">
+    <div class="form-group" ng-if="BreakEvenReferenceModalCtrl.breakEvenReferences.is_cost" ng-class="{'has-error' : BreakEvenReferenceForm.$submitted && BreakEvenReferenceForm.is_variable.$invalid }">
       <hr>
       <div class="radio">
         <label class="radio-inline">
@@ -99,6 +99,24 @@
         </label>
         <div class="help-block" ng-messages="BreakEvenReferenceForm.is_variable.$error" ng-show="BreakEvenReferenceForm.$submitted">
           <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- is_turnover -->
+    <div class="form-group" ng-if="!BreakEvenReferenceModalCtrl.breakEvenReferences.is_cost">
+      <hr>
+      <div class="form-group">
+        <div class="checkbox">
+          <label>
+            <input
+              type="checkbox"
+              name="is_turnover"
+              ng-true-value="1"
+              ng-false-value="0"
+              ng-model="BreakEvenReferenceModalCtrl.breakEvenReferences.is_turnover">
+            <span translate>FORM.LABELS.IS_TURNOVER</span>
+          </label>
         </div>
       </div>
     </div>

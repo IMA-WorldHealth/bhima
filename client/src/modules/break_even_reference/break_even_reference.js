@@ -99,6 +99,8 @@ function BreakEvenReferenceController($state, BreakEvenReference, Notify, uiGrid
             item.property = $translate.instant('FORM.LABELS.VARIABLE_CHARGE');
           } else if (item.is_cost && !item.is_variable) {
             item.property = $translate.instant('FORM.LABELS.FIXED_CHARGE');
+          } else if (!item.is_cost && item.is_turnover) {
+            item.property = $translate.instant('FORM.LABELS.TURNOVER_REVENUE');
           } else {
             item.property = $translate.instant('FORM.LABELS.REVENUE');
           }

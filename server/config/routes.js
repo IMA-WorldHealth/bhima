@@ -404,6 +404,7 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/annual-clients-report', financeReports.annualClientsReport);
 
   app.get('/reports/finance/employeeStanding/', financeReports.employee);
+  app.get('/reports/finance/break_even', financeReports.breakEven.report);
 
   app.get('/reports/keys/:key', report.keys);
 

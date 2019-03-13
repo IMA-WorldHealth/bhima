@@ -10,7 +10,7 @@ const NotFound = require('../../lib/errors/NotFound');
 // GET /break_even_reference
 function lookupBreakEvenReference(id) {
   const sql = `
-    SELECT id, label, is_cost, is_variable, account_reference_id FROM break_even_reference
+    SELECT id, label, is_cost, is_variable, is_turnover, account_reference_id FROM break_even_reference
     WHERE break_even_reference.id = ?`;
 
   return db.one(sql, [id]);
@@ -19,7 +19,7 @@ function lookupBreakEvenReference(id) {
 // List
 function list(req, res, next) {
   const sql = `
-    SELECT br.id, br.label, br.is_cost, br.is_variable, br.account_reference_id,
+    SELECT br.id, br.label, br.is_cost, br.is_variable, is_turnover, br.account_reference_id,
     ar.abbr 
     FROM break_even_reference AS br
     JOIN account_reference AS ar ON ar.id = br.account_reference_id

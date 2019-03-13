@@ -3,6 +3,7 @@
         "COLUMNS": {
             "ABBREVIATION": "Abréviation",
             "ACCOUNT": "Compte",
+            "ACCOUNTS": "Comptes",
             "ACCOUNT_NAME": "Intitulé du Compte",
             "ACTION": "Action",
             "AFTER": "Après",
@@ -23,6 +24,19 @@
             "BILL": "Facture",
             "BILLING_DATE": "Date de facturation",
             "BILLED_BY": "Facturé par",
+            "BREAK_EVEN": {
+              "BREAK_EVEN": "Seuil de rentabilité",  
+              "BREAK_EVEN_ANALYSIS": "Analyse du seuil de rentabilité",
+              "BREAK_EVEN_GRAPH_ANALYSI": "Analyse Graphique du seuil de rentabilité",
+              "BREAK_EVEN_POINT": "Point mort",
+              "DETERMINATION_FIXED_VARIABLE_CHARGE" : "Détermination des charges fixes et variables",
+              "DETERMINATION_INCOME_TURNOVER" : "Détermination du revenu et chiffre d'affaire",
+              "DIFFERENTIAL_INCOME_STATEMENT" : "Compte de résultat différentiel",
+              "ENLARGED_TURNOVER": "Chiffre d'affaire élargi",
+              "MARGINS_VARIABLE_EXPENSES": "Taux Marges sur charges variables",
+              "MARGIN_VARIABLE_LOADS": "Marge sur charges variables (Ms/CV) avec",
+              "TURNOVER" : "Chiffre d'affaire"
+            },
             "CANCEL_CASH": "Annuler le paiement",
             "BY": "Par",
             "CASHBOX": "Caisse",
@@ -91,6 +105,7 @@
                 "LABEL": "Filtre"
             },
             "FIRST_NAME": "Prénom",
+            "FIXED_CHARGES": "Charges fixes",
             "PROFESSION": "Profession",
             "GENDER": "Genre",
             "GRADE": "Grade",
@@ -130,7 +145,6 @@
             "NON_TAXABLE": "Non imposable",
             "CREDIT_NOTE": "Note de Crédit",
             "NR": "N°",
-            "CREDIT_NOTE": "Note de Crédit",
             "NO_PAYMENTS": "Aucun paiement n'a été effectué sur cette facture.",
             "NUM": "Numéro",
             "OF": "sur",
@@ -176,7 +190,7 @@
             "REGISTRATION_NUMBER": "Matricule",
             "REGISTERED_ON": "Enregistré le",
             "RESPONSIBLE": "Responsable",
-            "RESULT": "Resultat",
+            "RESULT": "Résultat",
             "RESULTS": "Résultats",
             "RESULT_ACCOUNT_SCT": "Section Compte Résultat",
             "RUBRICS": "Rubriques",
@@ -200,6 +214,7 @@
             "TEXT": "Text",
             "THIS_INVOICE_FULL": "Cette facture est payée en totalité",
             "TITLE": "Titre",
+            "TITLES": "Intitulés",
             "TOTAL": "Total",
             "TOTAL_COST": "Total",
             "TOTAL_DEBT": "Total des Dettes",
@@ -217,6 +232,7 @@
             "UNPAID_INVOICE_2": " jours. Veuillez vous rassuré que le débiteur n'a pas encore effectué un paiement ni même planifié une reprise.",
             "USER": "Utilisateur",
             "VALUE": "Valeur",
+            "VARIABLE_CHARGES": "Charges variables",
             "VILLAGE": "Village/Commune"
         },
         "AGGREGATES": {
