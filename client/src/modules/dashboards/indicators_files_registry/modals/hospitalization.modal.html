@@ -1,4 +1,4 @@
-<form name="HospitalizationForm" bh-submit="HospitalizationModalCtrl.submit(HospitalizationForm)" novalidate>
+<form name="HospitalizationForm" bh-submit="$ctrl.submit(HospitalizationForm)" novalidate>
     <div class="modal-body">
       <h3 style="padding:0; margin:0; margin-bottom: 20px;">
         <span translate>DASHBOARD.INDICATORS_FILES.WRITE_HOSPITALIZATIONS_INDICATORS</span><br>
@@ -10,55 +10,52 @@
         <div class="col-xs-4">
           <!-- period -->
           <bh-fiscal-year-select
-            fiscal-id="$ctrl.file.fiscal_year_id"
+            fiscal-id="$ctrl.fiscal_year_id"
             on-select-fiscal-callback="$ctrl.onSelectFiscalYear(fiscalYear)">
-            <bh-clear on-clear="$ctrl.clear('fiscal_year_id')"></bh-clear>
           </bh-fiscal-year-select>
 
           <!-- period -->
           <bh-period-selection
-            fiscal-year-id="$ctrl.file.fiscal_year_id"
+            fiscal-year-id="$ctrl.fiscal_year_id"
             period-id="$ctrl.file.period_id"
             on-select-callback="$ctrl.onSelectPeriod(period)">
-            <bh-clear on-clear="$ctrl.clear('period_id')"></bh-clear>
           </bh-period-selection>
 
           <!-- service -->
           <bh-service-select
-            service-id="$ctrl.service_id"
+            service-id="$ctrl.file.service_id"
             on-select-callback="$ctrl.onSelectService(service)">
-            <bh-clear on-clear="$ctrl.clear('service_id')"></bh-clear>
           </bh-service-select>
         </div>
         <div class="col-xs-7 col-xs-offset-1">
           <fieldset>
             <bh-input-text
-              id="hospDays"
-              text-value="$ctrl.indicators.hospDays"
+              id="total_day_realized"
+              text-value="$ctrl.indicators.total_day_realized"
               label="DASHBOARD.INDICATORS_FILES.HOSP_DAYS"
               description="DASHBOARD.INDICATORS_FILES.HOSP_DAYS_DESC"
               autocomplete="off">
             </bh-input-text>
 
             <bh-input-text
-              id="totalBeds"
-              text-value="$ctrl.indicators.totalBeds"
+              id="total_beds"
+              text-value="$ctrl.indicators.total_beds"
               label="DASHBOARD.INDICATORS_FILES.TOTAL_BED"
               description="DASHBOARD.INDICATORS_FILES.TOTAL_BED_DESC"
               autocomplete="off">
             </bh-input-text>
 
             <bh-input-text
-              id="totalHospiPatient"
-              text-value="$ctrl.indicators.totalHospiPatient"
+              id="total_hospitalized_patient"
+              text-value="$ctrl.indicators.total_hospitalized_patient"
               label="DASHBOARD.INDICATORS_FILES.TOTAL_HOSPI_PATIENT"
               description="DASHBOARD.INDICATORS_FILES.TOTAL_HOSPI_PATIENT_DESC"
               autocomplete="off">
             </bh-input-text>
 
             <bh-input-text
-              id="totalDeceseadPatient"
-              text-value="$ctrl.indicators.totalDeceseadPatient"
+              id="total_death"
+              text-value="$ctrl.indicators.total_death"
               label="DASHBOARD.INDICATORS_FILES.TOTAL_DECESEAD"
               description="DASHBOARD.INDICATORS_FILES.TOTAL_DECESEAD_DESC"
               autocomplete="off">

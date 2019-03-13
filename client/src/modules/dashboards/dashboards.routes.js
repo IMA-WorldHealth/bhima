@@ -20,6 +20,7 @@ angular.module('bhima.routes')
         url : '/editHospitalizationFile',
         params : {
           creating : { value : false },
+          uuid : null,
         },
         onEnter : ['$uibModal', hospitalizationModal],
         onExit : ['$uibModalStack', closeModal],
@@ -38,6 +39,7 @@ angular.module('bhima.routes')
         url : '/editStaffFile',
         params : {
           creating : { value : false },
+          uuid : null,
         },
         onEnter : ['$uibModal', staffModal],
         onExit : ['$uibModalStack', closeModal],
@@ -56,6 +58,7 @@ angular.module('bhima.routes')
         url : '/editFinanceFile',
         params : {
           creating : { value : false },
+          uuid : null,
         },
         onEnter : ['$uibModal', financeModal],
         onExit : ['$uibModalStack', closeModal],

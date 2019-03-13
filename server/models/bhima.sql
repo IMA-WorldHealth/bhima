@@ -321,3 +321,9 @@ INSERT INTO `indicator_status`(`id`, `text`,`translate_key`)VALUES
   (1, 'incomplete', 'FORM.LABELS.INCOMPLETE'),
   (2, 'complete', 'FORM.LABELS.COMPLETE'),
   (3, 'validated', 'FORM.LABELS.VALIDATED');
+
+-- indicators types
+INSERT INTO `indicator_type`(`id`, `text`,`translate_key`)VALUES
+  (1, 'hospitalization', 'DASHBOARD.HOSPITALIZATION'),
+  (2, 'staff', 'DASHBOARD.STAFF'),
+  (3, 'fianance', 'DASHBOARD.FINANCE');

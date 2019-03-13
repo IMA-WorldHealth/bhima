@@ -7,10 +7,19 @@ IndicatorsDashboardService.$inject = [
 
 function IndicatorsDashboardService(Api, GridRegistryFilterer, $uibModal, $translate) {
   const service = this;
-  const indicatorsFiles = new Api('/indicators_files');
-  const grid = new GridRegistryFilterer('IndicatorsFilesRegistryFilterer');
 
-  service.indicatorsFiles = indicatorsFiles;
+  const defaultFilters = [
+    { key : 'limit', label : 'FORM.LABELS.LIMIT', defaultValue : 100 },
+  ];
+  const grid = new GridRegistryFilterer('IndicatorsFilesRegistryFilterer', defaultFilters);
+
+  service.indicatorsFiles = new Api('/indicators_files/');
+  service.hospitalization = new Api('/indicators_files/hospitalization/');
+  service.staff = new Api('/indicators_files/staff/');
+  service.finances = new Api('/indicators_files/finances/');
+  service.status = new Api('/indicators_files/status/');
+  service.types = new Api('/indicators_files/types/');
+
   service.indicatorsFilesGridFilterer = grid;
   service.openIndicatorsFilesSearchModal = openIndicatorsFilesSearchModal;
 

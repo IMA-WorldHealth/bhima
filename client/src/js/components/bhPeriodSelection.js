@@ -30,8 +30,12 @@ function PeriodSelectionController(Fiscal, moment) {
   $ctrl.$onInit = () => {
     $ctrl.label = $ctrl.label || 'FORM.LABELS.PERIOD';
 
-    if ($ctrl.fiscalYearId) {
+    if ($ctrl.fiscalYearId && !$ctrl.periodId) {
       loadPeriods($ctrl.fiscalYearId);
+    }
+
+    if ($ctrl.fiscalYearId && $ctrl.periodId) {
+      loadPeriods($ctrl.fiscalYearId, $ctrl.periodId);
     }
   };
 
@@ -46,7 +50,7 @@ function PeriodSelectionController(Fiscal, moment) {
     }
   };
 
-  function loadPeriods(fiscalYearId) {
+  function loadPeriods(fiscalYearId, periodId) {
     Fiscal.getPeriods(fiscalYearId)
       .then(periods => {
         periods.forEach(period => {
@@ -55,6 +59,10 @@ function PeriodSelectionController(Fiscal, moment) {
         });
 
         $ctrl.periods = periods.filter(p => p.number !== 0);
+
+        if (periodId) {
+          [$ctrl.selectedPeriod] = $ctrl.periods.filter(p => p.id === periodId);
+        }
       });
   }
 

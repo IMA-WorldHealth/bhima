@@ -84,7 +84,7 @@ function GridFiltererService(
   ];
 
   class GridFilterer {
-    constructor(cacheKey) {
+    constructor(cacheKey, defaultFilters) {
       if (!cacheKey) {
         Notify.danger('FORM.LABELS.GRID_CACHE_KEY_MISSING');
         return;
@@ -94,7 +94,7 @@ function GridFiltererService(
       this._cache = new AppCache(cacheKey);
 
       // register default filters
-      this._filters.registerDefaultFilters(bhConstants.defaultFilters);
+      this._filters.registerDefaultFilters(defaultFilters || bhConstants.defaultFilters);
 
       // register custom filters
       this._filters.registerCustomFilters(customFiltersList);
@@ -105,7 +105,7 @@ function GridFiltererService(
       }
 
       // assign default filters
-      this.assignDefaultFilters();
+      this.assignDefaultFilters(defaultFilters);
     }
 
     get filters() { return this._filters; }
@@ -157,20 +157,26 @@ function GridFiltererService(
       this._filters.loadCache(this._cache.filters || {});
     }
 
-    assignDefaultFilters() {
+    assignDefaultFilters(defaultFilters) {
       // get the keys of filters already assigned - on initial load this will be empty
       const assignedKeys = Object.keys(this._filters.formatHTTP());
 
       // assign default period filter
       const periodDefined = Util.arrayIncludes(assignedKeys, ['period']);
 
-      if (!periodDefined) {
+      if (!periodDefined && !defaultFilters) {
         this._filters.assignFilters(Periods.defaultFilters());
       }
 
       // assign default limit filter
-      if (assignedKeys.indexOf('limit') === -1) {
+      if (assignedKeys.indexOf('limit') === -1 && !defaultFilters) {
         this._filters.assignFilter('limit', 100);
+      }
+
+      if (defaultFilters && defaultFilters.length) {
+        defaultFilters.forEach(filter => {
+          this._filters.assignFilter(filter.key, filter.defaultValue);
+        });
       }
     }
   }

@@ -2,34 +2,51 @@ angular.module('bhima.controllers')
   .controller('StaffModalController', StaffModalController);
 
 StaffModalController.$inject = [
-  '$state', 'IndicatorsDashboardService', 'ModalService', 'NotifyService',
+  '$state', 'IndicatorsDashboardService', 'NotifyService',
 ];
 
 function StaffModalController(
-  $state, IndicatorsDashboard, ModalService, Notify
+  $state, IndicatorsDashboard, Notify
 ) {
   const vm = this;
-
-  const { IndicatorsFile } = IndicatorsDashboard;
+  const STAFF_TYPE_ID = 2;
+  const INCOMPLETE_STATUS_ID = 1;
+  const COMPLETE_STATUS_ID = 2;
 
   vm.statusOptions = IndicatorsDashboard.statusOptions;
 
-  vm.file = {};
-  vm.file.status = vm.file.status || vm.statusOptions[0].key;
+  vm.file = { type_id : STAFF_TYPE_ID };
+  vm.indicators = {};
 
-  vm.staff = $state.params.staff;
+  const { uuid } = $state.params;
   vm.isCreating = !!($state.params.creating);
 
   vm.onSelectFiscalYear = fiscal => {
-    vm.file.fiscal_year_id = fiscal.id;
+    vm.fiscal_year_id = fiscal.id;
   };
 
   vm.onSelectPeriod = period => {
+    vm.file.period_id = period.id;
     vm.selectedPeriod = period.hrLabel;
   };
 
   // exposed methods
   vm.submit = submit;
+
+  // load details
+  loadDetails();
+
+  function loadDetails() {
+    if (uuid) {
+      IndicatorsDashboard.staff.read(uuid)
+        .then(details => {
+          vm.indicators = details;
+          vm.fiscal_year_id = details.fiscal_year_id;
+          vm.file.period_id = details.period_id;
+        })
+        .catch(Notify.errorHandler);
+    }
+  }
 
   // submit the data to the server from all two forms (update, create)
   function submit(staffForm) {
@@ -42,11 +59,16 @@ function StaffModalController(
       return 0;
     }
 
-    vm.file.status = isFormCompleted() ? 'complete' : 'incomplete';
+    // remove before submit
+    delete vm.indicators.uuid;
+    delete vm.indicators.fiscal_year_id;
 
+    vm.file.status_id = isFormCompleted() ? COMPLETE_STATUS_ID : INCOMPLETE_STATUS_ID;
+    // hack for server match
+    const bundle = { indicator : vm.file, personel : vm.indicators };
     const promise = (vm.isCreating)
-      ? IndicatorsFile.create(vm.staff)
-      : IndicatorsFile.update(vm.staff.uuid, vm.staff);
+      ? IndicatorsDashboard.staff.create(bundle)
+      : IndicatorsDashboard.staff.update(uuid, bundle);
 
     return promise
       .then(() => {

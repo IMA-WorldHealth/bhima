@@ -14,7 +14,7 @@
       class="form-control"
       ng-model="$ctrl.selectedPeriod"
       name="period"
-      ng-options="period as period.hrLabel for period in $ctrl.periods"
+      ng-options="period as period.hrLabel for period in $ctrl.periods track by period.id"
       ng-change="$ctrl.onChange($ctrl.selectedPeriod)"
       ng-disabled="$ctrl.disable"
       ng-required="!$ctrl.disable">

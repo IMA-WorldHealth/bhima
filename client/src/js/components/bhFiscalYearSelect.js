@@ -18,7 +18,7 @@ function FiscalYearSelect(FiscalYears) {
     FiscalYears.read()
       .then(years => {
         $ctrl.years = years;
-        [$ctrl.selectedYear] = years.filter(id => id === $ctrl.fiscalId);
+        [$ctrl.selectedYear] = $ctrl.years.filter(fy => fy.id === $ctrl.fiscalId);
       });
   };
 

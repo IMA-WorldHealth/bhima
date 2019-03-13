@@ -16,7 +16,7 @@ function create(req, res, next) {
 
   const transaction = db.transaction();
   const indicatorSql = `INSERT INTO indicator SET ?`;
-  const personelSql = `INSERT INTO personel_indicator SET ?`;
+  const personelSql = `INSERT INTO staff_indicator SET ?`;
 
   transaction.addQuery(indicatorSql, indicator);
   transaction.addQuery(personelSql, personel);
@@ -36,9 +36,9 @@ function update(req, res, next) {
 
   const transaction = db.transaction();
   const indicatorSql = `UPDATE indicator SET ? WHERE uuid=?`;
-  const personelSql = `UPDATE personel_indicator SET ? WHERE uuid=?`;
+  const personelSql = `UPDATE staff_indicator SET ? WHERE indicator_uuid=?`;
 
-  transaction.addQuery(indicatorSql, [indicator, personel.indicator_uuid]);
+  transaction.addQuery(indicatorSql, [indicator, _uuid]);
   transaction.addQuery(personelSql, [personel, _uuid]);
 
   transaction.execute().then(() => {
@@ -52,9 +52,9 @@ function remove(req, res, next) {
 
   const indicatorSql = `
     DELETE FROM indicator
-    WHERE uuid IN (SELECT indicator_uuid FROM personel_indicator WHERE uuid=?)
+    WHERE uuid = ?
   `;
-  const personelSql = `DELETE FROM personel_indicator WHERE uuid=?`;
+  const personelSql = `DELETE FROM staff_indicator WHERE indicator_uuid=?`;
 
   const transaction = db.transaction();
   transaction.addQuery(personelSql, _uuid);
@@ -69,24 +69,23 @@ function remove(req, res, next) {
 async function detail(req, res, next) {
   const _uuid = db.bid(req.params.uuid);
 
-  const indicatorSql = `
-    SELECT BUID(uuid) as uuid, status_id, period_id, user_id, type
-    FROM indicator
-    WHERE uuid IN (SELECT indicator_uuid FROM personel_indicator WHERE uuid=?)
+  const query = `
+    SELECT 
+      BUID(i.uuid) as uuid, i.status_id, i.period_id, i.user_id, i.type_id,
+      hi.total_day_realized, hi.total_beds,
+      hi.total_hospitalized_patient, hi.total_doctors, hi.total_nurses, total_caregivers,
+      hi.total_staff, hi.total_external_visit, hi.total_visit, hi.total_surgery_by_doctor,
+      hi.total_day_realized, hi.total_hospitalized_patient,
+      p.fiscal_year_id
+    FROM indicator i
+    JOIN period p ON p.id = i.period_id
+    JOIN staff_indicator hi ON hi.indicator_uuid = i.uuid
+    WHERE i.uuid = ?
   `;
-  const personelSql = `
-    SELECT BUID(uuid) as uuid,  BUID(indicator_uuid), bed_number, doctorsNumber, nurseNumber,
-      caregiversNumber, totalStaff, externalConsultationNumber,
-      consultationNumber, surgeryByDoctor, day_realized,
-      hospitalizedPatients
-    FROM personel_indicator
-    WHERE uuid=?`;
 
   try {
-    const indicator = await db.one(indicatorSql, _uuid);
-    const personel = await db.one(personelSql, _uuid);
-
-    res.status(200).json({ indicator, personel });
+    const rows = await db.one(query, _uuid);
+    res.status(200).json(rows);
 
   } catch (error) {
     next(error);

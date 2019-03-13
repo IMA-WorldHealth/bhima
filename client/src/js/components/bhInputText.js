@@ -4,7 +4,7 @@ angular.module('bhima.components')
     controller : InputTextController,
     transclude : true,
     bindings : {
-      textValue : '<',
+      textValue : '=',
       required : '@?',
       label : '@?',
       leftLabel : '<?',
