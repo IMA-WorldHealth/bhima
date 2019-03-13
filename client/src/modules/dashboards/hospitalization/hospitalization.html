@@ -3,6 +3,13 @@
     margin: 0;
     padding: 0;
   }
+  .summary {
+    border: 1px solid #A0A0A0;
+    padding : 10px;
+    margin-top: 15px;
+    display: block;
+    min-height: 300px;
+  }
   .dashboard {
     display: grid;
     grid-auto-rows: minmax(125px, auto);
@@ -22,7 +29,6 @@
       grid-template-columns: repeat(2, 1fr); 
     }
   }
-
 </style>
 
 <div class="flex-header">
@@ -34,7 +40,7 @@
   
       <div class="toolbar">
         <div class="toolbar-item">
-          <bh-dashboard-filter on-change="$ctrl.onChangeFilter(selected)"></bh-dashboard-filter>
+          <bh-dashboard-filter show-service-filter="true" on-change="$ctrl.onChangeFilter(selected)"></bh-dashboard-filter>
         </div>
       </div>
     </div>
@@ -97,6 +103,10 @@
           value-symbol="%"
           max-value="4">
         </bh-indicator>
+      </div>
+
+      <div class="summary">
+        <h4 translate>FORM.LABELS.SUMMARY</h4>
       </div>
     </div>
   </div>

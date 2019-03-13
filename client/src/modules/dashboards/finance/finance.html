@@ -1,0 +1,177 @@
+<style>
+  .no-space {
+    margin: 0;
+    padding: 0;
+  }
+  .summary {
+    border: 1px solid #A0A0A0;
+    padding : 10px;
+    margin-top: 15px;
+    display: block;
+    min-height: 300px;
+  }
+  .dashboard {
+    display: grid;
+    grid-auto-rows: minmax(125px, auto);
+    grid-gap: 15px;
+  }
+
+  /* Small devices (tablets, 768px and up) */
+  @media (min-width: 768px) {
+    .dashboard {
+      grid-template-columns: repeat(1, 1fr);
+    }
+  }
+
+  /* Medium devices (desktops, 992px and up) */
+  @media (min-width: 992px) {
+    .dashboard {
+      grid-template-columns: repeat(2, 1fr); 
+    }
+  }
+</style>
+
+<div class="flex-header">
+    <div class="bhima-title">
+      <ol class="headercrumb">
+        <li class="static" translate>TREE.DASHBOARDS.TITLE</li>
+        <li class="title" translate>TREE.DASHBOARDS.FINANCES</li>
+      </ol>
+  
+      <div class="toolbar">
+        <div class="toolbar-item">
+          <bh-dashboard-filter on-change="$ctrl.onChangeFilter(selected)"></bh-dashboard-filter>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="flex-content">
+    <div class="container">
+      <h3 class="no-space" translate>DASHBOARD.INDICATORS_FILES.FINANCES_INDICATORS</h3>
+      <small ng-if="$ctrl.selected.dateFrom && $ctrl.selected.dateTo">
+        {{ $ctrl.selected.dateFrom | date }} - {{ $ctrl.selected.dateTo | date }}
+      </small>
+
+      <br><br>
+
+      <div class="dashboard">
+        <bh-indicator
+          key="finance_operating_revenu_on_staff_charge"
+          label="DASHBOARD.FINANCE_OP_REVENU_ON_STAFF_CHARGE"
+          description="DASHBOARD.FINANCE_OP_REVENU_ON_STAFF_CHARGE_DESC"
+          calcul="DASHBOARD.FINANCE_OP_REVENU_ON_STAFF_CHARGE_CALC"
+          norm="DASHBOARD.FINANCE_OP_REVENU_ON_STAFF_CHARGE_NORM"
+          value="80"
+          value-symbol="%"
+          min-value="125"
+          max-value="150">
+        </bh-indicator>
+
+        <bh-indicator
+          key="finance_staff_charge_on_local_revenue"
+          label="DASHBOARD.FINANCE_STAFF_CHARGE_ON_LOCAL_REVENU"
+          description="DASHBOARD.FINANCE_STAFF_CHARGE_ON_LOCAL_REVENU_DESC"
+          calcul="DASHBOARD.FINANCE_STAFF_CHARGE_ON_LOCAL_REVENU_CALC"
+          norm="DASHBOARD.FINANCE_STAFF_CHARGE_ON_LOCAL_REVENU_NORM"
+          value="45"
+          value-symbol="%"
+          min-value="35"
+          max-value="45">
+        </bh-indicator>
+
+        <bh-indicator
+          key="finance_avg_salary_by_month"
+          label="DASHBOARD.FINANCE_AVERAGE_SALARY_BY_MONTH"
+          description="DASHBOARD.FINANCE_AVERAGE_SALARY_BY_MONTH_DESC"
+          calcul="DASHBOARD.FINANCE_AVERAGE_SALARY_BY_MONTH_CALC"
+          norm="DASHBOARD.FINANCE_AVERAGE_SALARY_BY_MONTH_NORM"
+          value="200000"
+          value-symbol="Fc"
+          min-value=""
+          max-value="">
+        </bh-indicator>
+
+        <bh-indicator
+          key="finance_auto_financing"
+          label="DASHBOARD.FINANCE_AUTO_FINANCING"
+          description="DASHBOARD.FINANCE_AUTO_FINANCING_DESC"
+          calcul="DASHBOARD.FINANCE_AUTO_FINANCING_CALC"
+          norm="DASHBOARD.FINANCE_AUTO_FINANCING_NORM"
+          value="80"
+          value-symbol="%"
+          min-value="100">
+        </bh-indicator>
+
+        <bh-indicator
+          key="finance_drugs_sale_on_purchased"
+          label="DASHBOARD.FINANCE_DRUG_SALE_ON_PURCHASED"
+          description="DASHBOARD.FINANCE_DRUG_SALE_ON_PURCHASED_DESC"
+          calcul="DASHBOARD.FINANCE_DRUG_SALE_ON_PURCHASED_CALC"
+          norm="DASHBOARD.FINANCE_DRUG_SALE_ON_PURCHASED_NORM"
+          value="101"
+          value-symbol="%"
+          min-value="125"
+          max-value="150">
+        </bh-indicator>
+
+        <bh-indicator
+          key="finance_other_charge"
+          label="DASHBOARD.FINANCE_OTHER_CHARGE"
+          description="DASHBOARD.FINANCE_OTHER_CHARGE_DESC"
+          calcul="DASHBOARD.FINANCE_OTHER_CHARGE_CALC"
+          norm="DASHBOARD.FINANCE_OTHER_CHARGE_NORM"
+          value="7"
+          value-symbol="%"
+          min-value="8">
+        </bh-indicator>
+
+        <bh-indicator
+          key="finance_daily_cash_ratio"
+          label="DASHBOARD.FINANCE_DAILY_CASH_RATIO"
+          description="DASHBOARD.FINANCE_DAILY_CASH_RATIO_DESC"
+          calcul="DASHBOARD.FINANCE_DAILY_CASH_RATIO_CALC"
+          norm="DASHBOARD.FINANCE_DAILY_CASH_RATIO_NORM"
+          value="23"
+          value-symbol=""
+          min-value="20">
+        </bh-indicator>
+
+        <bh-indicator
+          key="finance_turnover_ratio"
+          label="DASHBOARD.FINANCE_TURNOVER_RATIO"
+          description="DASHBOARD.FINANCE_TURNOVER_RATIO_DESC"
+          calcul="DASHBOARD.FINANCE_TURNOVER_RATIO_CALC"
+          norm="DASHBOARD.FINANCE_TURNOVER_RATIO_NORM"
+          value="5"
+          value-symbol=""
+          min-value="3.5"
+          max-value="7">
+        </bh-indicator>
+
+        <bh-indicator
+          key="finance_total_marge_ratio"
+          label="DASHBOARD.FINANCE_TOTAL_MARGE_RATIO"
+          description="DASHBOARD.FINANCE_TOTAL_MARGE_RATIO_DESC"
+          calcul="DASHBOARD.FINANCE_TOTAL_MARGE_RATIO_CALC"
+          norm="DASHBOARD.FINANCE_TOTAL_MARGE_RATIO_NORM"
+          value="3.9"
+          value-symbol=""
+          min-value="3.8">
+        </bh-indicator>
+
+        <bh-indicator
+          key="finance_current_ratio"
+          label="DASHBOARD.FINANCE_CURRENT_RATIO"
+          description="DASHBOARD.FINANCE_CURRENT_RATIO_DESC"
+          calcul="DASHBOARD.FINANCE_CURRENT_RATIO_CALC"
+          norm="DASHBOARD.FINANCE_CURRENT_RATIO_NORM"
+          value="0"
+          value-symbol=""
+          min-value=""
+          max-value="">
+        </bh-indicator>
+      </div>
+    </div>
+  </div>
+  

@@ -3,7 +3,7 @@ angular.module('bhima.components')
     templateUrl : 'js/components/bhDashboardFilter/bhDashboardFilter.html',
     controller  : DashboardFilterController,
     bindings    : {
-      hasServiceFilter : '<?',
+      showServiceFilter : '<?',
       onChange : '&?',
     },
   });
@@ -25,11 +25,13 @@ function DashboardFilterController(Services, Notify, bhConstants) {
     $ctrl.pickerFromOptions = { showWeeks : false };
     $ctrl.pickerToOptions = { showWeeks : false, minDate : $ctrl.dateFrom };
 
-    Services.read()
-      .then((services) => {
-        $ctrl.services = services;
-      })
-      .catch(Notify.handleError);
+    if ($ctrl.showServiceFilter) {
+      Services.read()
+        .then((services) => {
+          $ctrl.services = services;
+        })
+        .catch(Notify.handleError);
+    }
   };
 
   $ctrl.onServiceSelect = service => {

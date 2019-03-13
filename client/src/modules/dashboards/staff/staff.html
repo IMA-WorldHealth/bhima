@@ -1,0 +1,132 @@
+<style>
+  .no-space {
+    margin: 0;
+    padding: 0;
+  }
+  .summary {
+    border: 1px solid #A0A0A0;
+    padding : 10px;
+    margin-top: 15px;
+    display: block;
+    min-height: 300px;
+  }
+  .dashboard {
+    display: grid;
+    grid-auto-rows: minmax(125px, auto);
+    grid-gap: 15px;
+  }
+
+  /* Small devices (tablets, 768px and up) */
+  @media (min-width: 768px) {
+    .dashboard {
+      grid-template-columns: repeat(1, 1fr);
+    }
+  }
+
+  /* Medium devices (desktops, 992px and up) */
+  @media (min-width: 992px) {
+    .dashboard {
+      grid-template-columns: repeat(2, 1fr); 
+    }
+  }
+</style>
+
+<div class="flex-header">
+    <div class="bhima-title">
+      <ol class="headercrumb">
+        <li class="static" translate>TREE.DASHBOARDS.TITLE</li>
+        <li class="title" translate>TREE.DASHBOARDS.HUMAN_RESOURCES</li>
+      </ol>
+  
+      <div class="toolbar">
+        <div class="toolbar-item">
+          <bh-dashboard-filter on-change="$ctrl.onChangeFilter(selected)"></bh-dashboard-filter>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="flex-content">
+    <div class="container">
+      <h3 class="no-space" translate>DASHBOARD.INDICATORS_FILES.HUMAN_RESOURCES_INDICATORS</h3>
+      <small ng-if="$ctrl.selected.dateFrom && $ctrl.selected.dateTo">
+        {{ $ctrl.selected.dateFrom | date }} - {{ $ctrl.selected.dateTo | date }}
+      </small>
+
+      <br><br>
+
+      <div class="dashboard">
+        <bh-indicator
+          key="staff_med_on_total"
+          label="DASHBOARD.STAFF_MEDICAL_ON_TOTAL"
+          description="DASHBOARD.STAFF_MEDICAL_ON_TOTAL_DESC"
+          calcul="DASHBOARD.STAFF_MEDICAL_ON_TOTAL_CALC"
+          norm="DASHBOARD.STAFF_MEDICAL_ON_TOTAL_NORM"
+          value="80"
+          value-symbol="%"
+          min-value="50"
+          max-value="60">
+        </bh-indicator>
+
+        <bh-indicator
+          key="staff_visit_by_day"
+          label="DASHBOARD.STAFF_VISIT_BY_DAY"
+          description="DASHBOARD.STAFF_VISIT_BY_DAY_DESC"
+          calcul="DASHBOARD.STAFF_VISIT_BY_DAY_CALC"
+          norm="DASHBOARD.STAFF_VISIT_BY_DAY_NORM"
+          value="20"
+          value-symbol=""
+          min-value=""
+          max-value="">
+        </bh-indicator>
+
+        <bh-indicator
+          key="staff_charge_by_staff"
+          label="DASHBOARD.STAFF_CHARGE_CASE_BY_STAFF"
+          description="DASHBOARD.STAFF_CHARGE_CASE_BY_STAFF_DESC"
+          calcul="DASHBOARD.STAFF_CHARGE_CASE_BY_STAFF_CALC"
+          norm="DASHBOARD.STAFF_CHARGE_CASE_BY_STAFF_NORM"
+          value="8"
+          value-symbol=""
+          min-value="7"
+          max-value="10">
+        </bh-indicator>
+
+        <bh-indicator
+          key="staff_charge_by_staff_med"
+          label="DASHBOARD.STAFF_CHARGE_CASE_BY_STAFF_MED"
+          description="DASHBOARD.STAFF_CHARGE_CASE_BY_STAFF_MED_DESC"
+          calcul="DASHBOARD.STAFF_CHARGE_CASE_BY_STAFF_MED_CALC"
+          norm="DASHBOARD.STAFF_CHARGE_CASE_BY_STAFF_MED_NORM"
+          value="8"
+          value-symbol=""
+          min-value="12"
+          max-value="16">
+        </bh-indicator>
+
+        <bh-indicator
+          key="staff_surgery_by_doctor"
+          label="DASHBOARD.STAFF_SURGERY_BY_DOCTOR"
+          description="DASHBOARD.STAFF_SURGERY_BY_DOCTOR_DESC"
+          calcul="DASHBOARD.STAFF_SURGERY_BY_DOCTOR_CALC"
+          norm="DASHBOARD.STAFF_SURGERY_BY_DOCTOR_NORM"
+          value="280"
+          value-symbol=""
+          min-value="400">
+        </bh-indicator>
+
+        <bh-indicator
+          key="staff_patient_by_doctor"
+          label="DASHBOARD.STAFF_PATIENT_BY_DOCTOR"
+          description="DASHBOARD.STAFF_PATIENT_BY_DOCTOR_DESC"
+          calcul="DASHBOARD.STAFF_PATIENT_BY_DOCTOR_CALC"
+          norm="DASHBOARD.STAFF_PATIENT_BY_DOCTOR_NORM"
+          value="33"
+          value-symbol=""
+          min-value="32"
+          max-value="35">
+        </bh-indicator>
+      </div>
+    </div>
+  </div>
+  

@@ -65,6 +65,18 @@ angular.module('bhima.routes')
         url         : '/dashboards/hospitalization',
         controller  : 'HospitalizationDashboardController as $ctrl',
         templateUrl : 'modules/dashboards/hospitalization/hospitalization.html',
+      })
+
+      .state('staffDashboard', {
+        url         : '/dashboards/staff',
+        controller  : 'StaffDashboardController as $ctrl',
+        templateUrl : 'modules/dashboards/staff/staff.html',
+      })
+
+      .state('financeDashboard', {
+        url         : '/dashboards/finances',
+        controller  : 'FinanceDashboardController as $ctrl',
+        templateUrl : 'modules/dashboards/finance/finance.html',
       });
   }]);
 

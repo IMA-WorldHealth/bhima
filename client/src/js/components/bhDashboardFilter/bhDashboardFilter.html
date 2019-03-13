@@ -1,6 +1,7 @@
 <div class="form-inline">
   <!-- service -->
   <select
+    ng-if="$ctrl.showServiceFilter"
     class="form-control input-sm"
     name="service"
     ng-model="$ctrl.service"
