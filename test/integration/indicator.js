@@ -12,6 +12,7 @@ describe('(/indicators) The roles API endpoint', () => {
 
   const hospUuid = 'A6F9527BA7B44A2C9F4FDD7323BBCF72';
   const hospUuid2 = '13014ac9457411e9ae4d54e1ad68cdc0';
+
   const newIndicator = {
     indicator : {
       uuid : 'fd48517c457311e9ae4d54e1ad68cdc0',
