@@ -51,7 +51,7 @@ function FeeCenterModalController($state, FeeCenter, ModalService, Notify, AppCa
           is_cost : reference.is_cost,
           is_variable : reference.is_variable,
           is_turnover : reference.is_turnover,
-        }
+        };
 
         if (reference.is_cost) {
           if (vm.feeCenter.is_principal) {
