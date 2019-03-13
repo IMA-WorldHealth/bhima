@@ -72,6 +72,7 @@ function ModalService(Modal) {
   // search fiscal year
   service.openSelectFiscalYear = openSelectFiscalYear;
 
+  service.openHostpitaliationIndicator = openHostpitaliationIndicator;
   /**
    * Opens a "confirm delete" modal with a button for "Confirm" or "Cancel".
    * The modal is a safe replacement for $window.confirm(), since you cannot
@@ -300,42 +301,42 @@ function ModalService(Modal) {
     return instance.result;
   }
 
-  /** purchase order status */
-  function openPurchaseOrderStatus(request) {
+  function openModal(request, url, ctrl, size) {
     const params = angular.extend(modalParameters, {
-      templateUrl  : 'modules/purchases/modals/status.tmpl.html',
-      controller   : 'PurchaseOrderStatusModalController',
+      templateUrl : url,
+      controller : ctrl,
+      size : size || 'xs',
       controllerAs : '$ctrl',
       resolve : { data : () => request },
     });
 
     const instance = Modal.open(params);
     return instance.result;
+  }
+  /** purchase order status */
+  function openPurchaseOrderStatus(request) {
+    const templateUrl = 'modules/purchases/modals/status.tmpl.html';
+    const controller = 'PurchaseOrderStatusModalController';
+    return openModal(request, templateUrl, controller);
   }
 
   /** search purchase order */
   function openSearchPurchaseOrder(request) {
-    const params = angular.extend(modalParameters, {
-      templateUrl  : 'modules/purchases/modals/search.tmpl.html',
-      controller   : 'SearchPurchaseOrderModalController',
-      controllerAs : '$ctrl',
-      resolve : { data : () => request },
-    });
-
-    const instance = Modal.open(params);
-    return instance.result;
+    const templateUrl = 'modules/purchases/modals/search.tmpl.html';
+    const controller = 'SearchPurchaseOrderModalController';
+    return openModal(request, templateUrl, controller);
   }
 
   function openSelectFiscalYear(request) {
-    const params = angular.extend(modalParameters, {
-      templateUrl  : 'modules/general-ledger/modals/search.tmpl.html',
-      controller   : 'SearchFiscalYearModalController',
-      controllerAs : '$ctrl',
-      resolve : { data : () => request },
-    });
+    const templateUrl = 'modules/general-ledger/modals/search.tmpl.html';
+    const controller = 'SearchFiscalYearModalController';
+    return openModal(request, templateUrl, controller);
+  }
 
-    const instance = Modal.open(params);
-    return instance.result;
+  function openHostpitaliationIndicator(request) {
+    const templateUrl = 'modules/indicators/modal/createUpdateHospitalization.html';
+    const controller = 'HospitalizationIndicatorModalController';
+    return openModal(request, templateUrl, controller, 'lg');
   }
 
 }

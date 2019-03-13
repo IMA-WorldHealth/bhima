@@ -56,6 +56,7 @@
     "INVENTORY_TYPE":"Type",
     "INVENTORY_UNIT":"Forme Galénique",
     "INVENTORY_VIEW":"Stocks",
+    "INDICATORS" : "Indicateurs",
     "INVOICE_REGISTRY":"Registre des factures",
     "IPR_MANAGEMENT":"Gestion de la Taxe IPR",
     "IPR_TAX_CONFIGURATION": "Configuration de la taxe IPR",

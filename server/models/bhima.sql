@@ -115,7 +115,6 @@ INSERT INTO unit VALUES
   (227, 'Ward Module', 'TREE.WARD', 'Ward folder', 0, '/modules/ward/configuration', '/WARD_FOLDER'),
   (228, 'Ward Configurations', 'TREE.WARD_CONFIGURATION', 'Ward configuration module', 227, '/modules/ward/configuration', '/ward/configuration'),
   (229, 'Visits Registry', 'TREE.VISITS_REGISTRY', 'Visits registry', 12, '/modules/patient/visits', '/patients/visits');
-
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
   (1, 'income', 'ACCOUNT.TYPES.INCOME'),
@@ -304,3 +303,9 @@ INSERT INTO `discharge_type` (`id`, `label`) VALUES
   (7, 'PATIENT_RECORDS.DISCHARGE.DISCHARGE_BUT_ON_BED'),
   (8, 'PATIENT_RECORDS.DISCHARGE.STATUQUO_CLINIC'),
   (9, 'PATIENT_RECORDS.DISCHARGE.TRANSFER');
+
+-- indicators status values
+INSERT INTO `indicator_status`(`id`, `text`,`translate_key`)VALUES
+  (1, 'incomplete', 'FORM.LABELS.INCOMPLETE'),
+  (2, 'complete', 'FORM.LABELS.COMPLETE'),
+  (3, 'validated', 'FORM.LABELS.VALIDATED');
