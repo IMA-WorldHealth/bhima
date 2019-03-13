@@ -89,6 +89,8 @@
     "DEATH_RATE_DESC":"the effectiveness of care and the severity of the disease",
     "DEATH_RATE_CALCUL":"Number of hospital deaths divided by number of hospitalized patients",
     "DEATH_RATE_NORM":"< 4%",
-    "ALL_SERVICES":"All Services"
+    "ALL_SERVICES":"All Services",
+    "MEANING":"Meaning",
+    "CALCUL":"Calculation"
   }
 }

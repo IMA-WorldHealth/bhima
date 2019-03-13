@@ -5856,6 +5856,11 @@ mute-stream@0.0.7:
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.7.tgz#3075ce93bc21b8fab43e1bc4da7e8115ed1e7bab"
   integrity sha1-MHXOk7whuPq0PhvE2n6BFe0ee6s=
 
+muze@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/muze/-/muze-1.1.0.tgz#981c1572aee3cc3c4a9822df57b8cbbf9f7e5a09"
+  integrity sha512-26kgmY+9lv1pmlYTuXEVYMUHyxQJpgwIJdUqe3nYmz8CDFXa4rbPASd4ql5STggObwxMLp2VL+hvZi26iMUYsQ==
+
 mysql@^2.16.0:
   version "2.16.0"
   resolved "https://registry.yarnpkg.com/mysql/-/mysql-2.16.0.tgz#b23b22ab5de44fc2d5d32bd4f5af6653fc45e2ba"

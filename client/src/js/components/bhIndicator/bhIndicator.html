@@ -3,6 +3,7 @@
     border: 1px solid #A0A0A0;
     padding: 10px;
     min-height: 130px;
+    cursor: pointer;
   }
   .card .title {
     margin: 0;
@@ -24,7 +25,7 @@
   }
 </style>
 
-<div class="card">
+<div class="card" ng-click="$ctrl.showDetails()">
   <h4 class="title" translate>{{ $ctrl.label }}</h4>
   <div class="details">
     <div class="left-side" ng-class="{'text-success':$ctrl.isAcceptable, 'text-danger':!$ctrl.isAcceptable}">

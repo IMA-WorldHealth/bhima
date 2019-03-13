@@ -55,6 +55,7 @@ const paths = {
       'node_modules/angular-ui-grid/ui-grid.min.css',
       'node_modules/font-awesome/css/font-awesome.min.css',
       'node_modules/angular-ui-bootstrap/dist/ui-bootstrap-csp.css',
+      'node_modules/muze/dist/muze.css',
     ],
     fonts : [
       'node_modules/typeface-open-sans/files/*',
@@ -96,6 +97,9 @@ const paths = {
       'node_modules/moment/min/moment.min.js',
       'node_modules/moment/locale/fr.js',
       'node_modules/angular-moment/angular-moment.min.js',
+
+      // Muze
+      'node_modules/muze/dist/muze.js',
     ],
 
     // these must be globs ("**" syntax) to retain their folder structures

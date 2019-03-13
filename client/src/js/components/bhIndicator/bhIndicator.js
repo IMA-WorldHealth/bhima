@@ -13,12 +13,15 @@ angular.module('bhima.components')
       norm : '@?',
       minValue : '@?',
       maxValue : '@?',
+      params : '<?', // contains service and dates given
     },
   });
 
-IndicatorController.$inject = [];
+IndicatorController.$inject = [
+  '$uibModal',
+];
 
-function IndicatorController() {
+function IndicatorController($uibModal) {
   const $ctrl = this;
 
   $ctrl.$onInit = () => {
@@ -37,5 +40,32 @@ function IndicatorController() {
     if (!$ctrl.minValue && !$ctrl.maxValue) {
       $ctrl.isAcceptable = true;
     }
+  };
+
+  $ctrl.showDetails = () => {
+    const params = {
+      key : $ctrl.key,
+      params : $ctrl.params,
+      label : $ctrl.label,
+      value : $ctrl.value,
+      valueSymbol : $ctrl.valueSymbol,
+      description : $ctrl.description,
+      calcul : $ctrl.calcul,
+      norm : $ctrl.norm,
+      minValue : $ctrl.minValue,
+      maxValue : $ctrl.maxValue,
+      isAcceptable : $ctrl.isAcceptable,
+    };
+
+    $uibModal.open({
+      keyboard : false,
+      backdrop : true,
+      size : 'lg',
+      templateUrl : 'modules/dashboards/modals/details.modal.html',
+      controller : 'IndicatorDetailsModalController as $ctrl',
+      resolve : {
+        data : function paramsProvider() { return params; },
+      },
+    });
   };
 }

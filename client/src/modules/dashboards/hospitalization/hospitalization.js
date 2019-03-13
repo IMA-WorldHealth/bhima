@@ -6,6 +6,6 @@ function HospitalizationDashboardController() {
   vm.search = { date : new Date() };
 
   vm.onChangeFilter = selected => {
-    console.log('selected : ', selected);
+    vm.selected = selected;
   };
 }

@@ -1,4 +1,8 @@
 <style>
+  .no-space {
+    margin: 0;
+    padding: 0;
+  }
   .dashboard {
     display: grid;
     grid-auto-rows: minmax(125px, auto);
@@ -38,6 +42,14 @@
   
   <div class="flex-content">
     <div class="container">
+      <h3 class="no-space" translate>DASHBOARD.INDICATORS_FILES.HOSPITALIZATIONS_INDICATORS</h3>
+      <small ng-if="$ctrl.selected.dateFrom && $ctrl.selected.dateTo">
+        {{ $ctrl.selected.dateFrom | date }} - {{ $ctrl.selected.dateTo | date }}
+      </small>
+      <small ng-if="$ctrl.selected.service.name"> | {{ $ctrl.selected.service.name }}</small>
+
+      <br><br>
+
       <div class="dashboard">
         <bh-indicator
           key="hospi_occupation_rate"

@@ -89,6 +89,8 @@
     "DEATH_RATE_DESC":"l'efficacité de soin et la sévérité de la maladie",
     "DEATH_RATE_CALCUL":"Nombre de morts à l'hôpital divisée par le nombre de malades hospitalisés",
     "DEATH_RATE_NORM":"< 4%",
-    "ALL_SERVICES":"Tous les services"
+    "ALL_SERVICES":"Tous les services",
+    "MEANING":"Signification",
+    "CALCUL":"Calcul"
   }
 }
