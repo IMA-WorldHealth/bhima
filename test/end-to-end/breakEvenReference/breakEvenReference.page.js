@@ -22,7 +22,7 @@ class BreakEvenReferencePage {
   create(breakEvenReference) {
     FU.buttons.create();
 
-    FU.input('BreakEvenReferenceModalCtrl.breakEvenReferences.label', breakEvenReference.label, this.modal);
+    FU.input('BreakEvenReferenceModalCtrl.reference.label', breakEvenReference.label, this.modal);
     components.accountReferenceSelect.set(breakEvenReference.account_reference_id, 'account_reference_id');
     element(by.id('is_cost')).click();
     element(by.id('is_variable')).click();
@@ -33,7 +33,7 @@ class BreakEvenReferencePage {
   errorOnCreateBreakEvenReference() {
     FU.buttons.create();
     FU.modal.submit();
-    FU.validation.error('BreakEvenReferenceModalCtrl.breakEvenReferences.label', this.modal);
+    FU.validation.error('BreakEvenReferenceModalCtrl.reference.label', this.modal);
     FU.modal.cancel();
   }
 
@@ -42,7 +42,7 @@ class BreakEvenReferencePage {
     row.dropdown().click();
     row.edit().click();
 
-    FU.input('BreakEvenReferenceModalCtrl.breakEvenReferences.label', breakEvenReference.label, this.modal);
+    FU.input('BreakEvenReferenceModalCtrl.reference.label', breakEvenReference.label, this.modal);
     components.accountReferenceSelect.set(breakEvenReference.account_reference_id, 'account_reference_id');
     element(by.id('is_revenue')).click();
     element(by.id('is_turnover')).click();
