@@ -42,10 +42,6 @@ UPDATE unit SET parent = 160, `key` = 'DEPOT.TITLE' WHERE id = 20;
 DELETE FROM role_unit WHERE unit_id=196;
 DELETE FROM unit WHERE id=196;
 
-
-
-
-
 -- indicators
 
 DROP TABLE IF EXISTS `indictor_status`;
@@ -130,3 +126,32 @@ INSERT INTO `indicator_status`(`id`, `text`,`translate_key`)VALUES
   (1, 'incomplete', 'FORM.LABELS.INCOMPLETE'),
   (2, 'complete', 'FORM.LABELS.COMPLETE'),
   (3, 'validated', 'FORM.LABELS.VALIDATED');
+
+-- @lomamech 2019-01-22 Break Even
+INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
+  (29, 'breakEven', 'TREE.BREAK_EVEN_REPORT');
+
+-- the Break Even Reference unit
+INSERT INTO unit VALUES
+  (229, 'Break Even Reference','TREE.BREAK_EVEN_REFERENCE','Break Even Reference', 1,'/modules/break_even_reference','/break_even_reference'),
+  (230, 'Break-even Report', 'TREE.BREAK_EVEN_REPORT', 'Break-even Report', 144, '/modules/reports/breakEven', '/reports/breakEven');
+
+DROP TABLE IF EXISTS `break_even_reference`;
+CREATE TABLE `break_even_reference` (
+  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, 
+  `label` VARCHAR(100) NOT NULL, 
+  `is_cost` tinyint(1) DEFAULT 0, 
+  `is_variable` tinyint(1) DEFAULT 0,
+  `is_turnover` tinyint(1) DEFAULT 0,   
+  `account_reference_id` MEDIUMINT(8) UNSIGNED NOT NULL, 
+  PRIMARY KEY (`id`), 
+  UNIQUE KEY `break_even_reference_1` (`label`), 
+  KEY `account_reference_id` (`account_reference_id`), 
+  FOREIGN KEY (`account_reference_id`) REFERENCES `account_reference` (`id`)   
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+-- End Break Even
+
+-- @lomamech 2019-02-13
+ALTER TABLE `fee_center` CHANGE COLUMN `is_principal` `is_principal` TINYINT(1) UNSIGNED DEFAULT '0';
+ALTER TABLE `reference_fee_center` CHANGE COLUMN `is_cost` `is_cost` TINYINT(1) UNSIGNED DEFAULT '0';
+ALTER TABLE `fee_center_distribution` CHANGE COLUMN `is_cost` `is_cost` TINYINT(1) UNSIGNED DEFAULT '0';

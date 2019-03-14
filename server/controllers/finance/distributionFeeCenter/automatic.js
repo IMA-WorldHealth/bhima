@@ -27,6 +27,8 @@ function automatic(req, res, next) {
 
       rows.forEach((row) => {
         data.forEach((item) => {
+          item.is_cost = item.is_cost || 0;
+
           if (row.row_uuid === item.uuid) {
             dataToDistribute.push([
               db.bid(row.row_uuid),
