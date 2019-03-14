@@ -114,7 +114,10 @@ INSERT INTO unit VALUES
   (226, 'Account Reference Type','TREE.ACCOUNT_REFERENCE_TYPE','Account Reference Type', 1,'/modules/account_reference_type','/account_reference_type'),
   (227, 'Ward Module', 'TREE.WARD', 'Ward folder', 0, '/modules/ward/configuration', '/WARD_FOLDER'),
   (228, 'Ward Configurations', 'TREE.WARD_CONFIGURATION', 'Ward configuration module', 227, '/modules/ward/configuration', '/ward/configuration'),
-  (229, 'Visits Registry', 'TREE.VISITS_REGISTRY', 'Visits registry', 12, '/modules/patient/visits', '/patients/visits');
+  (229, 'Visits Registry', 'TREE.VISITS_REGISTRY', 'Visits registry', 12, '/modules/patient/visits', '/patients/visits'),
+  (230, 'Break Even Reference','TREE.BREAK_EVEN_REFERENCE','Break Even Reference', 1,'/modules/break_even_reference','/break_even_reference');
+
+
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
   (1, 'income', 'ACCOUNT.TYPES.INCOME'),

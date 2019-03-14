@@ -123,6 +123,9 @@ const setDistributionKey = require('../controllers/finance/distributionFeeCenter
 
 const accountReferenceType = require('../controllers/finance/accounts/accountReferenceType');
 const indicators = require('../controllers/finance/indicator');
+const breakEvenReference = require('../controllers/finance/breakEvenReference');
+
+
 // lots
 const lots = require('../controllers/stock/lots');
 
@@ -886,4 +889,12 @@ exports.configure = function configure(app) {
   app.post('/indicators/finances', indicators.finances.create);
   app.put('/indicators/finances/:uuid', indicators.finances.update);
   app.delete('/indicators/finances/:uuid', indicators.finances.delete);
+
+  // API for Break Even Reference routes crud
+  app.get('/break_even_reference', breakEvenReference.list);
+  app.get('/break_even_reference/:id', breakEvenReference.detail);
+  app.post('/break_even_reference', breakEvenReference.create);
+  app.put('/break_even_reference/:id', breakEvenReference.update);
+  app.delete('/break_even_reference/:id', breakEvenReference.delete);
+
 };

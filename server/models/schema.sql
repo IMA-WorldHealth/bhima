@@ -2284,6 +2284,7 @@ CREATE TABLE `account_reference_type` (
   UNIQUE KEY `account_reference_type_1` (`label`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
+<<<<<<< 41356c42d1bd191e5b995c70686b6fa41881d0d6
 
 DROP TABLE IF EXISTS `indicator_status`;
 CREATE TABLE `indicator_status` (
@@ -2362,6 +2363,19 @@ CREATE TABLE `finances_indicator` (
   `indicator_uuid` BINARY(16) NOT NULL,
   PRIMARY KEY (`uuid`),
   FOREIGN KEY (`indicator_uuid`) REFERENCES `indicator` (`uuid`) ON UPDATE CASCADE
+=======
+DROP TABLE IF EXISTS `break_even_reference`;
+CREATE TABLE `break_even_reference` (
+  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, 
+  `label` VARCHAR(100) NOT NULL, 
+  `is_cost` tinyint(1) DEFAULT 0, 
+  `is_variable` tinyint(1) DEFAULT 0, 
+  `account_reference_id` MEDIUMINT(8) UNSIGNED NOT NULL, 
+  PRIMARY KEY (`id`), 
+  UNIQUE KEY `break_even_reference_1` (`label`), 
+  KEY `account_reference_id` (`account_reference_id`), 
+  FOREIGN KEY (`account_reference_id`) REFERENCES `account_reference` (`id`)   
+>>>>>>> Resolve conflict with bhima.sql and routes.js
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 SET foreign_key_checks = 1;

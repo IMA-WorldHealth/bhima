@@ -396,6 +396,7 @@
             "FATHER_NAME": "Father's Name",
             "FAX": "Fax",
             "FEMALE": "Female",
+            "FIXED_CHARGE": "Fixed charge",
             "RECORDS": "Records (Rows)",
             "FILE_NAME": "File Name",
             "HEALTH_ZONE":"Health Zone",
@@ -575,6 +576,7 @@
             "RESULT": "Results",
             "RESULT_ACCOUNT_SCT": "Result Account section",
             "RETYPE": "Retype",
+            "REVENUE": "Revenu",
             "SALE": "Sale",
             "SALE_ID": "Sale ID",
             "SALE_RESPONSIBLE": "Seller",
@@ -670,6 +672,7 @@
             "VALIDATED": "Validated",
             "INDICATOR_HOSPITALIZATION" : "Indicator's hospitalization",
             "VALUE": "Value",
+            "VARIABLE_CHARGE": "Variable charge",
             "VARIANCE" : "Variance",
             "VILLAGE": "Village/Township",
             "VILLAGE_NAME": "Village/Township Name",
@@ -766,6 +769,7 @@
             "QUANTITY": "Enter a quantity"
         },
         "SELECT": {
+            "ACCOUNT_REFERENCE" : "Select an Account Reference",
             "ACCOUNT_REFERENCE_TYPE" : "Select an Account Reference Type",
             "ENTITY":"Select an entity",
             "ENTITY_TYPE":"Select an entity type",

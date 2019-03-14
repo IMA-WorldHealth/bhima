@@ -398,6 +398,7 @@
             "FATHER_NAME": "Nom du Père",
             "FAX": "Fax",
             "FEE_CENTER": "Centre de frais",
+            "FIXED_CHARGE": "Charge fixe",
             "FEMALE": "Femme",
             "RECORDS": "Enregistrements (Lignes)",
             "FILE_NAME": "Nom de fichier",
@@ -580,6 +581,7 @@
             "RESULT": "Resultats",
             "RESULT_ACCOUNT_SCT": "Section Compte de Résultat",
             "RETYPE": "Retaper",
+            "REVENUE": "Revenue",
             "SALE": "Vente",
             "SALE_ID": "Vente ID",
             "SALE_RESPONSIBLE": "Responsable des ventes",
@@ -670,6 +672,7 @@
             "USER": "Utilisateur",
             "VALIDATED": "Validé",
             "VALUE": "Valeur",
+            "VARIABLE_CHARGE": "Charge variable",
             "VARIANCE" : "Variance",
             "VILLAGE": "Village/Commune",
             "VILLAGE_NAME": "Nom du Village/Commune",
@@ -766,6 +769,7 @@
             "QUANTITY": "Entrer le Quantité"
         },
         "SELECT": {
+            "ACCOUNT_REFERENCE" : "Sélectionner la référence des comptes",
             "ACCOUNT_REFERENCE_TYPE" : "Sélectionner le type de référence des comptes",
             "ENTITY":"Sélectionner une entité",
             "ENTITY_TYPE":"Sélectionner un type d'entité",
