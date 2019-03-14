@@ -7,18 +7,12 @@
 
     <div class="row">
       <div class="col-xs-4">
-        <!-- period -->
-        <bh-fiscal-year-select
+        <!-- fiscal year and period -->
+        <bh-fiscal-year-period-select
           fiscal-id="$ctrl.fiscal_year_id"
-          on-select-fiscal-callback="$ctrl.onSelectFiscalYear(fiscalYear)">
-        </bh-fiscal-year-select>
-
-        <!-- period -->
-        <bh-period-selection
-          fiscal-year-id="$ctrl.fiscal_year_id"
           period-id="$ctrl.file.period_id"
-          on-select-callback="$ctrl.onSelectPeriod(period)">
-        </bh-period-selection>
+          on-select-callback="$ctrl.onSelectPeriod(selected)">
+        </bh-fiscal-year-period-select>
       </div>
       <div class="col-xs-7 col-xs-offset-1">
         <fieldset>

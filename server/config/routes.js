@@ -125,6 +125,9 @@ const accountReferenceType = require('../controllers/finance/accounts/accountRef
 const indicators = require('../controllers/finance/indicator');
 const breakEvenReference = require('../controllers/finance/breakEvenReference');
 
+// periods
+const period = require('../controllers/finance/period');
+
 // lots
 const lots = require('../controllers/stock/lots');
 
@@ -264,6 +267,10 @@ exports.configure = function configure(app) {
   app.get('/fiscal/:id/closing_balance', fiscal.getClosingBalanceRoute);
 
   app.get('/fiscal/:id/periods', fiscal.getPeriods);
+
+  // periods API
+  app.get('/periods', period.list);
+  app.get('/periods/:id', period.details);
 
   /* load a user's tree */
   app.get('/tree', tree.generate);

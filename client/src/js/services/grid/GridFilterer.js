@@ -45,6 +45,10 @@ function GridFiltererService(
     { key : 'is_pregnant', label : 'PATIENT_RECORDS.VISITS.PREGNANT' },
     { key : 'is_refered', label : 'PATIENT_RECORDS.VISITS.REFERED' },
     { key : 'inside_health_zone', label : 'PATIENT_RECORDS.VISITS.HEALTH_ZONE' },
+    { key : 'type_id', label : 'DASHBOARD.INDICATORS_FILES.TYPE' },
+    { key : 'status_id', label : 'DASHBOARD.INDICATORS_FILES.STATUS' },
+    { key : 'fiscal_year_id', label : 'FORM.LABELS.FISCAL_YEAR' },
+    { key : 'period_id', label : 'FORM.LABELS.PERIOD' },
     {
       key : 'dateFrom', label : 'FORM.LABELS.DATE', comparitor : '>', valueFilter : 'date',
     },

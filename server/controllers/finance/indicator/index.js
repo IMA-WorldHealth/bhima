@@ -40,6 +40,7 @@ function read(req, res, next) {
   filters.equals('status_id');
   filters.equals('period_id');
   filters.equals('type_id');
+  filters.equals('service_id');
   filters.custom('fiscal_year_id', 'f.id=?');
   filters.period('period', 'created_date');
   filters.dateFrom('custom_period_start', 'created_date');

@@ -131,13 +131,26 @@ function IndicatorsFilesRegistryController(
 
   // edit
   vm.edit = (uuid, typeId) => {
-    console.log('uuid given : ', uuid);
     const map = {
       1 : 'indicatorsFilesRegistry.editHospitalizationFile',
       2 : 'indicatorsFilesRegistry.editStaffFile',
       3 : 'indicatorsFilesRegistry.editFinanceFile',
     };
     $state.go(map[typeId], { uuid });
+  };
+
+  // remove
+  vm.remove = (uuid, typeId) => {
+    const map = {
+      1 : IndicatorsDashboard.hospitalization,
+      2 : IndicatorsDashboard.staff,
+      3 : IndicatorsDashboard.finances,
+    };
+    map[typeId].delete(uuid)
+      .then(() => {
+        Notify.success('FORM.INFO.DELETE_SUCCESS');
+        grid.startup($state.params, load);
+      });
   };
 
   // fire up the module

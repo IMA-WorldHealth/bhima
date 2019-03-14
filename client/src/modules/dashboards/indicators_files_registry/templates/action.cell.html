@@ -23,7 +23,7 @@
     </li>
     <li class="divider"></li>
     <li>
-      <a data-method="delete" href>
+      <a data-method="delete" ng-click="grid.appScope.remove(row.entity.uuid, row.entity.type_id)" href>
         <span class="text-danger">
           <span class="fa fa-trash"></span> <span translate>DASHBOARD.INDICATORS_FILES.DELETE</span>
         </span>

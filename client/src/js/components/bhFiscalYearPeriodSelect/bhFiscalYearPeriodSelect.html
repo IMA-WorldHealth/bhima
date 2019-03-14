@@ -1,0 +1,57 @@
+<div ng-form="FiscalPeriodForm" bh-room-select ng-model-options="{ updateOn: 'default' }">
+  <div
+    class="form-group"
+    ng-class="{ 'has-error' : FiscalPeriodForm.$submitted && FiscalPeriodForm.fiscal_year_id.$invalid }">
+
+    <label class="control-label" translate>
+      FORM.LABELS.FISCAL_YEAR
+    </label>
+    
+    <ng-transclude></ng-transclude>
+    <ui-select 
+      name="fiscal_year_id" 
+      ng-model="$ctrl.fiscalId"
+      on-select="$ctrl.onSelectFiscal($item)"
+      ng-required="$ctrl.required"
+      ng-disabled="$ctrl.disabled">
+      <ui-select-match placeholder="{{ 'FORM.LABELS.FISCAL_YEAR' | translate }}">
+        <span>{{$select.selected.label}}</span>
+      </ui-select-match>
+      <ui-select-choices ui-select-focus-patch repeat="year.id as year in $ctrl.years | filter: { 'label': $select.search }">
+        <span ng-bind-html="year.label | highlight:$select.search"></span>
+      </ui-select-choices>
+    </ui-select>    
+
+    <div class="help-block" ng-messages="FiscalPeriodForm.fiscal_year_id.$error" ng-show="FiscalPeriodForm.$submitted">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+
+  <div
+    class="form-group"
+    ng-class="{ 'has-error' : FiscalPeriodForm.$submitted && FiscalPeriodForm.period_id.$invalid }">
+
+    <label class="control-label" translate>
+      FORM.SELECT.PERIOD
+    </label>
+    
+    <ng-transclude></ng-transclude>
+    <ui-select 
+      name="period_id" 
+      ng-model="$ctrl.periodId"
+      on-select="$ctrl.onSelectPeriod($item)"
+      ng-required="$ctrl.required"
+      ng-disabled="!$ctrl.fiscalId">
+      <ui-select-match placeholder="{{ 'FORM.SELECT.PERIOD' | translate }}">
+        <span>{{$select.selected.hrLabel}}</span>
+      </ui-select-match>
+      <ui-select-choices ui-select-focus-patch repeat="period.id as period in $ctrl.periods | filter: { 'hrLabel': $select.search }">
+        <span ng-bind-html="period.hrLabel | highlight:$select.search"></span>
+      </ui-select-choices>
+    </ui-select>    
+
+    <div class="help-block" ng-messages="FiscalPeriodForm.period_id.$error" ng-show="FiscalPeriodForm.$submitted">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+</div>

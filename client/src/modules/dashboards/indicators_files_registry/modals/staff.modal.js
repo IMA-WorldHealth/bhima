@@ -9,25 +9,17 @@ function StaffModalController(
   $state, IndicatorsDashboard, Notify
 ) {
   const vm = this;
-  const STAFF_TYPE_ID = 2;
-  const INCOMPLETE_STATUS_ID = 1;
-  const COMPLETE_STATUS_ID = 2;
 
-  vm.statusOptions = IndicatorsDashboard.statusOptions;
-
-  vm.file = { type_id : STAFF_TYPE_ID };
+  vm.file = { type_id : IndicatorsDashboard.STAFF_TYPE_ID };
   vm.indicators = {};
 
   const { uuid } = $state.params;
   vm.isCreating = !!($state.params.creating);
 
-  vm.onSelectFiscalYear = fiscal => {
-    vm.fiscal_year_id = fiscal.id;
-  };
-
-  vm.onSelectPeriod = period => {
-    vm.file.period_id = period.id;
-    vm.selectedPeriod = period.hrLabel;
+  vm.onSelectPeriod = selected => {
+    vm.fiscal_year_id = selected.fiscal && selected.fiscal.id ? selected.fiscal.id : undefined;
+    vm.file.period_id = selected.period && selected.period.id ? selected.period.id : undefined;
+    vm.selectedPeriod = selected.period && selected.period.id ? selected.period.hrLabel : undefined;
   };
 
   // exposed methods
@@ -60,10 +52,14 @@ function StaffModalController(
     }
 
     // remove before submit
-    delete vm.indicators.uuid;
-    delete vm.indicators.fiscal_year_id;
+    IndicatorsDashboard.clean(vm.indicators);
 
-    vm.file.status_id = isFormCompleted() ? COMPLETE_STATUS_ID : INCOMPLETE_STATUS_ID;
+    vm.file.status_id = IndicatorsDashboard.isFormCompleted(vm.indicators)
+      ? IndicatorsDashboard.COMPLETE_STATUS_ID
+      : IndicatorsDashboard.INCOMPLETE_STATUS_ID;
+
+    vm.indicators = IndicatorsDashboard.handleNullString(vm.indicators);
+
     // hack for server match
     const bundle = { indicator : vm.file, personel : vm.indicators };
     const promise = (vm.isCreating)
@@ -83,9 +79,5 @@ function StaffModalController(
 
   function cancel() {
     $state.go('indicatorsFilesRegistry');
-  }
-
-  function isFormCompleted() {
-    return Object.keys(vm.indicators).every(indicator => typeof (indicator) !== 'undefined');
   }
 }
