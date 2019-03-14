@@ -260,8 +260,8 @@ function configuration(data) {
     pr.breakEventPointByCase = parseInt(pr.breakEventPointByCase, 10);
     // Margin Variable load for All Products
     pr.marginVariableLoadsP = pr.totalProduct - pr.balanceVariableCost;
-    pr.calculateBreakEvenP = (pr.marginVariableLoads > 0) ? 1 : 0;
-    pr.cantCalculateBreakEvenP = (pr.marginVariableLoads <= 0) ? 1 : 0;
+    pr.calculateBreakEvenP = (pr.marginVariableLoadsP > 0) ? 1 : 0;
+    pr.cantCalculateBreakEvenP = (pr.marginVariableLoadsP <= 0) ? 1 : 0;
     // Results TurnOver Products
     pr.resultsTurnOverP = pr.marginVariableLoadsP - pr.balanceFixedCost;
     pr.ratioMarginVariableLoadsP = pr.totalProduct

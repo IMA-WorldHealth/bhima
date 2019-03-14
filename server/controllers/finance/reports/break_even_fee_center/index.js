@@ -114,9 +114,18 @@ function report(req, res, next) {
       const dataConfigured = setting.configuration(config);
 
       if (feeCentersChecked.length) {
-        dataConfigured.prinicpalSelected = dataConfigured.principal
-          .filter(item => feeCentersChecked.includes(item.id));
+        dataConfigured.principal.forEach(item => {
+          item.selected = 0;
+          feeCentersChecked.forEach(feeCenterId => {
+            if (item.id === (parseInt(feeCenterId, 10))) {
+              item.selected = 1;
+            }
+          });
+        });
 
+        dataConfigured.principalSelected = dataConfigured.principal.filter(item => {
+          return item.selected;
+        });
       } else {
         dataConfigured.principalSelected = dataConfigured.principal;
       }

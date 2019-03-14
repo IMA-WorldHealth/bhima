@@ -64,15 +64,15 @@
               <tr class="text-right" style="font-size: 15px">
                 <td style="width: 10%"> {{ accounts_numbers }} </td>
                 <td class="text-left"> {{ label }} </td>
-                <td style="width: 15%"><strong> {{debcred balance metadata.enterprise.currency_id}} </strong> </td>
+                <td style="width: 15%"><strong> {{debcred balance ../metadata.enterprise.currency_id}} </strong> </td>
                 <td style="width: 15%">
                   {{#if fixed_charge }}
-                    <em> {{debcred balance metadata.enterprise.currency_id}} </em>
+                    <em> {{debcred balance ../metadata.enterprise.currency_id}} </em>
                   {{/if}}
                 </td>
                 <td style="width: 15%">
                   {{#if variable_charge }}
-                    <em> {{debcred balance metadata.enterprise.currency_id}} </em>
+                    <em> {{debcred balance ../metadata.enterprise.currency_id}} </em>
                   {{/if}}
                 </td>
               </tr>
@@ -128,7 +128,7 @@
               <tr class="text-right" style="font-size: 15px">
                 <td style="width: 10%"> {{ accounts_numbers }} </td>
                 <td class="text-left"> {{ label }} </td>
-                <td style="width: 30%"><strong> {{debcred balance metadata.enterprise.currency_id}} </strong> </td>
+                <td style="width: 30%"><strong> {{debcred balance ../metadata.enterprise.currency_id}} </strong> </td>
               </tr>
             {{/each}}
           </tbody>
