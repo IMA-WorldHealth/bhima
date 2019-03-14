@@ -46,7 +46,14 @@ function PDFRenderUnitTest() {
     const slicedRendered = sliceOutRandomMetadata(sliceOutHeaderInfo(rendered));
     const slicedCached = sliceOutRandomMetadata(sliceOutHeaderInfo(cached));
 
-    expect(slicedRendered).to.deep.equal(slicedCached);
+    // patch suggested in https://github.com/mochajs/mocha/issues/1624
+    // to prevent overloads from diffing large buffers.
+    try {
+      expect(slicedRendered).to.deep.equal(slicedCached);
+    } catch (e) {
+      e.showDiff = false;
+      throw e;
+    }
   });
 }
 
@@ -63,7 +70,7 @@ function PDFRenderUnitTest() {
  */
 function sliceOutHeaderInfo(buffer) {
   const start = buffer.indexOf('<</Creator');
-  const end = buffer.indexOf('>>', start) + 1;
+  const end = buffer.indexOf('>>', start) + 2;
   const firstPart = buffer.slice(0, start);
   const secondPart = buffer.slice(end);
   return Buffer.concat([firstPart, secondPart]);
