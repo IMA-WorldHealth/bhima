@@ -52,15 +52,6 @@ describe('(/account_reference_type) Account Reference Type', () => {
       .catch(helpers.handler);
   });
 
-  it('GET /account_reference_type returns all Account Reference Type', () => {
-    return agent.get(`/account_reference_type/`)
-      .then((res) => {
-        helpers.api.listed(res, numAccountReferenceType);
-        expect(res.body[0]).to.have.all.keys('id', 'label', 'fixed');
-      })
-      .catch(helpers.handler);
-  });
-
   it('DELETE /account_reference_type/:id deletes a Account Reference Type', () => {
     return agent.delete(`/account_reference_type/${newAccountReferenceType.id}`)
       .then((res) => {

@@ -122,9 +122,13 @@ const distributionGetDistributionKey = require('../controllers/finance/distribut
 const setDistributionKey = require('../controllers/finance/distributionFeeCenter/setting');
 
 const accountReferenceType = require('../controllers/finance/accounts/accountReferenceType');
+<<<<<<< ed37bbb104b433b3143946512217bdbb3086f734
 const indicators = require('../controllers/finance/indicator');
 const breakEvenReference = require('../controllers/finance/breakEvenReference');
 
+=======
+const breakEvenReference = require('../controllers/finance/breakEvenReference');
+>>>>>>> Resolve Conflict with Branch Master
 
 // lots
 const lots = require('../controllers/stock/lots');
