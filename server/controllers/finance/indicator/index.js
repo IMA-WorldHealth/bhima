@@ -15,10 +15,7 @@ module.exports.status = status;
 module.exports.types = types;
 module.exports.read = read;
 
-
-// Indicator Variables Registry
-function read(req, res, next) {
-  const options = req.query;
+function find(options) {
   db.convert(options, ['uuid']);
 
   const filters = new FilterParser(options, { tableAlias : 'ind' });
@@ -51,7 +48,14 @@ function read(req, res, next) {
     parameters : filters.parameters(),
   };
 
-  db.exec(resqt.query, resqt.parameters).then(indicators => {
-    res.status(200).json(indicators);
-  }).catch(next);
+  return db.exec(resqt.query, resqt.parameters);
+}
+
+
+// Indicator Variables Registry
+function read(req, res, next) {
+  find(req.query)
+    .then(indicators => {
+      res.status(200).json(indicators);
+    }).catch(next);
 }

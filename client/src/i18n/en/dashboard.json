@@ -1,6 +1,7 @@
 {
   "DASHBOARD":{
     "INDICATORS_FILES":{
+      "ALREADY_EXISTS":"The indicators files already exists for this period",
       "FISCAL_YEAR":"Fiscal Year",
       "PERIOD":"Period",
       "SERVICE":"Service",

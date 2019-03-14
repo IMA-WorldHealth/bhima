@@ -13,9 +13,14 @@
           period-id="$ctrl.file.period_id"
           on-select-callback="$ctrl.onSelectPeriod(selected)">
         </bh-fiscal-year-period-select>
+
+        <div ng-if="$ctrl.isExisting" class="alert alert-danger">
+          <i class="fa fa-warning"></i> <strong translate>FORM.DIALOGS.WARNING</strong>
+          <p translate>DASHBOARD.INDICATORS_FILES.ALREADY_EXISTS</p>
+        </div>
       </div>
       <div class="col-xs-7 col-xs-offset-1">
-        <fieldset>
+        <fieldset ng-disabled="$ctrl.loading">
             <bh-input-text
             id="total_revenue"
             text-value="$ctrl.indicators.total_revenue"

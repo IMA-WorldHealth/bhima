@@ -20,6 +20,7 @@ function StaffModalController(
     vm.fiscal_year_id = selected.fiscal && selected.fiscal.id ? selected.fiscal.id : undefined;
     vm.file.period_id = selected.period && selected.period.id ? selected.period.id : undefined;
     vm.selectedPeriod = selected.period && selected.period.id ? selected.period.hrLabel : undefined;
+    doesIndicatorsFileExists();
   };
 
   // exposed methods
@@ -60,14 +61,23 @@ function StaffModalController(
 
     vm.indicators = IndicatorsDashboard.handleNullString(vm.indicators);
 
-    // hack for server match
-    const bundle = { indicator : vm.file, personel : vm.indicators };
-    const promise = (vm.isCreating)
-      ? IndicatorsDashboard.staff.create(bundle)
-      : IndicatorsDashboard.staff.update(uuid, bundle);
+    return checkDuplicated()
+      .then(isExisting => {
+        if (isExisting) {
+          vm.isExisting = true;
+          return null;
+        }
 
-    return promise
+        // hack for server match
+        const bundle = { indicator : vm.file, personel : vm.indicators };
+        const promise = (vm.isCreating)
+          ? IndicatorsDashboard.staff.create(bundle)
+          : IndicatorsDashboard.staff.update(uuid, bundle);
+        return promise;
+      })
       .then(() => {
+        if (vm.isExisting) { return; }
+
         const translateKey = (vm.isCreating)
           ? 'DASHBOARD.INDICATORS_FILES.SUCCESSFULLY_ADDED'
           : 'DASHBOARD.INDICATORS_FILES.SUCCESSFULLY_UPDATED';
@@ -75,6 +85,33 @@ function StaffModalController(
         $state.go('indicatorsFilesRegistry', null, { reload : true });
       })
       .catch(Notify.handleError);
+  }
+
+  function doesIndicatorsFileExists() {
+    if (!vm.file.period_id) { return; }
+
+    vm.isExisting = false;
+    vm.loading = true;
+    checkDuplicated()
+      .then(isExisting => {
+        if (isExisting) {
+          vm.isExisting = true;
+        }
+      })
+      .catch(Notify.handleError)
+      .finally(() => {
+        vm.loading = false;
+      });
+  }
+
+  function checkDuplicated() {
+    return IndicatorsDashboard.indicatorsFiles.read(null, {
+      period_id : vm.file.period_id,
+      service_id : vm.file.service_id,
+      type_id : vm.file.type_id,
+    }).then(rows => {
+      return rows.length > 0;
+    });
   }
 
   function cancel() {

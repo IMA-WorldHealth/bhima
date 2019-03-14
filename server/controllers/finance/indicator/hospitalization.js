@@ -7,7 +7,6 @@ module.exports.delete = remove;
 module.exports.detail = detail;
 
 function create(req, res, next) {
-  console.log('>>> ', req.body);
   const { indicator, hospitalization } = req.body;
 
   indicator.uuid = indicator.uuid ? db.bid(indicator.uuid) : db.bid(uuid());
