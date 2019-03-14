@@ -43,5 +43,9 @@ nbproject/
 # Ignore test files
 sh/build-database-test.sh
 
+# ignore documentation bad files
+docs/_site/
+docs/.sass-cache/
+
 yarn-error.log
 *.log

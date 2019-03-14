@@ -7,52 +7,54 @@
   </div>
 
   <div class="modal-body">
-    <div class="modal-body">
-      <bh-payroll-period-select
-        id="payroll_configuration_id"
-        payroll-configuration-id="$ctrl.searchQueries.payroll_configuration_id"
-        name="PayrollPeriodForm"
-        on-select-callback="$ctrl.onSelectPayrollPeriod(payrollConfig)"
-        required="true">
-      </bh-payroll-period-select>
-    </div>
-
-    <div class="modal-body">
-      <bh-currency-select
-        currency-id="$ctrl.searchQueries.currency_id"
-        on-change="$ctrl.setCurrency(currency)">
-      </bh-currency-select>
-    </div>
-
-    <span ng-if="$ctrl.enterpriseCurrencyId !== $ctrl.searchQueries.currency_id">
-      <bh-currency-input
-        data-payment-currency-input
-        label="FORM.LABELS.CONVERTION_RATE"
-        id="conversion_rate"
-        currency-id="$ctrl.searchQueries.currency_id"
-        model="$ctrl.searchQueries.conversion_rate"
-        min = 0>
-      </bh-currency-input>
-    </span>
-    <hr>
-    <div class="modal-body" >
-      <label class="control-label" translate>FORM.LABELS.NAME</label>
-      <bh-clear on-clear="$ctrl.clear('display_name')"></bh-clear>
-      <input type="text" class="form-control" name="display_name" ng-model="$ctrl.searchQueries.display_name">
-    </div>
-
-    <div class="modal-body" >
-      <label class="control-label" translate>FORM.LABELS.CODE</label>
-      <bh-clear on-clear="$ctrl.clear('code')"></bh-clear>
-      <input type="text" class="form-control" name="code" ng-model="$ctrl.searchQueries.code">
-    </div>
-
-    <!-- status -->
-    <div class="modal-body" >
-      <bh-payroll-status-select
-        on-change="$ctrl.onPayrollStatusChange(paiementStatus)"
-        status-ids="$ctrl.searchQueries.status_id">
-      </bh-payroll-status-select>
+    <div class="row">
+      <div class="col-sm-12">
+        <bh-payroll-period-select
+          id="payroll_configuration_id"
+          payroll-configuration-id="$ctrl.searchQueries.payroll_configuration_id"
+          name="PayrollPeriodForm"
+          on-select-callback="$ctrl.onSelectPayrollPeriod(payrollConfig)"
+          required="true">
+        </bh-payroll-period-select>
+      </div>
+  
+      <div class="col-sm-12">
+        <bh-currency-select
+          currency-id="$ctrl.searchQueries.currency_id"
+          on-change="$ctrl.setCurrency(currencyId)">
+        </bh-currency-select>
+      </div>
+  
+      <span ng-if="$ctrl.enterpriseCurrencyId !== $ctrl.searchQueries.currency_id">
+        <bh-currency-input
+          data-payment-currency-input
+          label="FORM.LABELS.CONVERTION_RATE"
+          id="conversion_rate"
+          currency-id="$ctrl.searchQueries.currency_id"
+          model="$ctrl.searchQueries.conversion_rate"
+          min = 0>
+        </bh-currency-input>
+      </span>
+      <hr>
+      <div class="col-sm-12" >
+        <label class="control-label" translate>FORM.LABELS.NAME</label>
+        <bh-clear on-clear="$ctrl.clear('display_name')"></bh-clear>
+        <input type="text" class="form-control" name="display_name" ng-model="$ctrl.searchQueries.display_name">
+      </div>
+  
+      <div class="col-sm-12" >
+        <label class="control-label" translate>FORM.LABELS.CODE</label>
+        <bh-clear on-clear="$ctrl.clear('code')"></bh-clear>
+        <input type="text" class="form-control" name="code" ng-model="$ctrl.searchQueries.code">
+      </div>
+  
+      <!-- status -->
+      <div class="col-sm-12" >
+        <bh-payroll-status-select
+          on-change="$ctrl.onPayrollStatusChange(paiementStatus)"
+          status-ids="$ctrl.searchQueries.status_id">
+        </bh-payroll-status-select>
+      </div>
     </div>
   </div>
 

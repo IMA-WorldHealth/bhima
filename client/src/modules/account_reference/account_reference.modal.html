@@ -14,7 +14,7 @@
     </ol>
   </div>
 
-  <div class="modal-body" style="overflow-y: scroll; max-height:600px; ">
+  <div class="modal-body" style="overflow-y: scroll; max-height:620px; ">
 
     <!-- the reference -->
     <div class="form-group" ng-class="{ 'has-error' : AccountReferenceForm.$submitted && AccountReferenceForm.abbr.$invalid }">
@@ -56,8 +56,7 @@
         multiple="true"
         name="accounts"
         ng-model="AccountReferenceModalCtrl.accountReference.accounts"
-        close-on-select="false"
-        append-to-body="true">
+        close-on-select="false">
 
         <ui-select-match placeholder="{{ 'FORM.SELECT.ACCOUNTS' | translate }}">
           <span>{{$item.number}}</span>
@@ -82,8 +81,7 @@
         multiple="true"
         name="accountsException"
         ng-model="AccountReferenceModalCtrl.accountReference.accountsException"
-        close-on-select="false"
-        append-to-body="true">
+        close-on-select="false">
 
         <ui-select-match placeholder="{{ 'FORM.SELECT.ACCOUNTS' | translate }}">
           <span>{{$item.number}}</span>
@@ -99,74 +97,35 @@
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
       </div>
     </div>
+
     <!-- parent reference -->
     <div class="form-group" ng-class="{ 'has-error' : AccountReferenceForm.$submitted && AccountReferenceForm.parent.$invalid }">
-        <label class="control-label" translate>ACCOUNT.REFERENCE.PARENT_REFERENCE</label>
+      <label class="control-label" translate>ACCOUNT.REFERENCE.PARENT_REFERENCE</label>
+      <bh-clear on-clear="AccountReferenceModalCtrl.clear('parent')"></bh-clear>
+      <ui-select
+        name="parent"
+        ng-model="AccountReferenceModalCtrl.accountReference.parent">
 
-        <ui-select
-          name="parent"
-          ng-model="AccountReferenceModalCtrl.accountReference.parent"
-          append-to-body="true">
+        <ui-select-match placeholder="{{ 'ACCOUNT.REFERENCE.PARENT_REFERENCE' | translate }}">
+          <span>{{$select.selected.abbr}}</span>
+        </ui-select-match>
 
-          <ui-select-match placeholder="{{ 'ACCOUNT.REFERENCE.PARENT_REFERENCE' | translate }}">
-            <span>{{$select.selected.abbr}}</span>
-          </ui-select-match>
-
-          <ui-select-choices repeat="reference.id as reference in AccountReferenceModalCtrl.references | filter:{abbr: $select.search}">
-            <strong ng-bind-html="reference.abbr | highlight:$select.search"></strong>
-          </ui-select-choices>
-        </ui-select>
-
-        <div class="help-block" ng-messages="AccountReferenceForm.parent.$error" ng-show="AccountReferenceForm.$submitted">
-          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-        </div>
+        <ui-select-choices repeat="reference.id as reference in AccountReferenceModalCtrl.references | filter:{abbr: $select.search}">
+          <strong ng-bind-html="reference.abbr | highlight:$select.search"></strong>
+        </ui-select-choices>
+      </ui-select>
+      <div class="help-block" ng-messages="AccountReferenceForm.parent.$error" ng-show="AccountReferenceForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
       </div>
-
-    <!-- Credit balance -->
-    <hr>
-    <div class="form-group">
-      <label class="control-label text-danger" translate>FORM.LABELS.CREDIT_BALANCE</label>
-
-      <ui-select
-        multiple="true"
-        name="accountsCreditBalance"
-        ng-model="AccountReferenceModalCtrl.accountReference.accountsCreditBalance"
-        close-on-select="false"
-        append-to-body="true">
-
-        <ui-select-match placeholder="{{ 'FORM.SELECT.ACCOUNTS' | translate }}">
-          <span>{{$item.number}}</span>
-        </ui-select-match>
-
-        <ui-select-choices repeat="account.id as account in AccountReferenceModalCtrl.accounts | filter:{hrlabel: $select.search}">
-          <strong ng-bind-html="account.number | highlight:$select.search"></strong>
-          <span ng-bind-html="account.label | highlight:$select.search"></span>
-        </ui-select-choices>
-      </ui-select>
     </div>
 
-    <!-- Debit balance -->
-    <div class="form-group">
-      <label class="control-label text-danger" translate>FORM.LABELS.DEBIT_BALANCE</label>
-
-      <ui-select
-        multiple="true"
-        name="accountsDebitBalance"
-        ng-model="AccountReferenceModalCtrl.accountReference.accountsDebitBalance"
-        close-on-select="false"
-        append-to-body="true">
-
-        <ui-select-match placeholder="{{ 'FORM.SELECT.ACCOUNTS' | translate }}">
-          <span>{{$item.number}}</span>
-        </ui-select-match>
-
-        <ui-select-choices repeat="account.id as account in AccountReferenceModalCtrl.accounts | filter:{hrlabel: $select.search}">
-          <strong ng-bind-html="account.number | highlight:$select.search"></strong>
-          <span ng-bind-html="account.label | highlight:$select.search"></span>
-        </ui-select-choices>
-      </ui-select>
-    </div>
-    <hr>
+    <bh-account-reference-type-select
+      reference-type-id="AccountReferenceModalCtrl.accountReference.reference_type_id"
+      id="reference_type_id"
+      name="reference_type_id"
+      on-select-callback="AccountReferenceModalCtrl.onSelectAccountReferenceType(accountReferenceType)">
+      <bh-clear on-clear="AccountReferenceModalCtrl.clear('reference_type_id')"></bh-clear>
+    </bh-account-reference-type-select>
   </div>
 
   <div class="modal-footer">

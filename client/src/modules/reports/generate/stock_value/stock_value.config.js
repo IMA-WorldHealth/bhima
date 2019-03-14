@@ -35,6 +35,10 @@ function StockValueConfigController($sce, Notify, SavedReports, AppCache, report
     vm.previewGenerated = false;
     vm.previewResult = null;
   };
+  vm.onSelectCurrency = (currencyId) => {
+    vm.reportDetails.currency_id = currencyId;
+    vm.currency_id = currencyId;
+  };
 
   vm.preview = function preview(form) {
     if (form.$invalid) { return 0; }

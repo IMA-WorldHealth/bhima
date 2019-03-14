@@ -87,10 +87,10 @@ function FiscalManagementController($state, Fiscal, Notify, Modal, util, moment)
    * @function numberOfMonths
    * @description get the number of months between two dates
    */
-  function numberOfMonths() {
+  function numberOfMonths(dateFrom, dateTo) {
     if (!vm.fiscal) { return; }
-    const startDate = moment(vm.fiscal.start_date);
-    const endDate = moment(vm.fiscal.end_date);
+    const startDate = moment(dateFrom);
+    const endDate = moment(dateTo);
     vm.fiscal.number_of_months = Math.ceil(endDate.diff(startDate, 'months', true));
   }
 
@@ -107,7 +107,7 @@ function FiscalManagementController($state, Fiscal, Notify, Modal, util, moment)
     }
 
     // get the number of months
-    numberOfMonths();
+    numberOfMonths(vm.fiscal.start_date, vm.fiscal.end_date);
 
     // remove timezone information by considering just date
     vm.fiscal.start_date = moment(vm.fiscal.start_date).format('YYYY-MM-DD');

@@ -33,4 +33,8 @@ function InstallApplicationController(InstallService, $state, Notify, Users) {
       .then(notifyInstallSucess)
       .catch(Notify.handleError);
   }
+
+  vm.setCurrency = (currencyId) => {
+    vm.setup.enterprise.currency_id = currencyId;
+  };
 }

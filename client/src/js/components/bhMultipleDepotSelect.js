@@ -25,9 +25,6 @@ function MultipleDepotSelectController(Depots, Notify) {
     // label to display
     $ctrl.label = $ctrl.label || 'STOCK.DEPOT';
 
-    // fired when the depots has been selected
-    $ctrl.onSelectCallback = $ctrl.onSelectCallback || angular.noop;
-
     // default for form name
     $ctrl.formName = $ctrl.formName || 'DepotForm';
 
@@ -36,7 +33,7 @@ function MultipleDepotSelectController(Depots, Notify) {
 
     // load all Depot
     Depots.read()
-      .then((depots) => {
+      .then(depots => {
         $ctrl.depots = depots;
       })
       .catch(Notify.handleError);
@@ -44,7 +41,7 @@ function MultipleDepotSelectController(Depots, Notify) {
 
 
   // fires the onChange bound to the component boundary
-  $ctrl.handleChange = function (models) {
-    $ctrl.onChange({ depots : models });
+  $ctrl.handleChange = (depots) => {
+    $ctrl.onChange({ depots });
   };
 }

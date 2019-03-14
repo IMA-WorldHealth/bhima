@@ -4,7 +4,7 @@ angular.module('bhima.components')
     templateUrl : 'modules/templates/bhCurrencySelect.tmpl.html',
     transclude  : true,
     bindings    : {
-      currencyId        : '=',
+      currencyId        : '<',
       onChange          : '&',
       label             : '@?',
       disableIds        : '<?',
@@ -74,9 +74,10 @@ function bhCurrencySelect(Currencies) {
     $ctrl.valid = true;
 
     $ctrl.label = $ctrl.label || 'FORM.LABELS.CURRENCY';
+  };
 
-    // default to noop() if an onChange() method was not passed in
-    $ctrl.onChange = $ctrl.onChange || angular.noop;
+  $ctrl.valueChange = () => {
+    $ctrl.onChange({ currencyId : $ctrl.currencyId });
   };
 
   $ctrl.$onChanges = function onChanges(changes) {

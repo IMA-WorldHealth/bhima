@@ -35,7 +35,10 @@ function annualClientsReport(req, res, next) {
 
   // fire the SQL for the report
   const fiscalYearId = req.query.fiscalId;
-  const { currencyId } = req.query;
+  const { currencyId, hideLockedClients } = req.query;
+
+  // convert to an integer
+  const shouldHideLockedClients = Number(hideLockedClients);
 
   const data = {
     isEnterpriseCurrency : parseInt(currencyId, 10) === req.session.enterprise.currency_id,
@@ -50,8 +53,8 @@ function annualClientsReport(req, res, next) {
       _.extend(data, { fiscalYear, rate });
 
       return Promise.all([
-        getDebtorGroupMovements(fiscalYearId, currencyId, rate),
-        getTotalsFooter(fiscalYearId, currencyId, rate),
+        getDebtorGroupMovements(fiscalYearId, currencyId, rate, shouldHideLockedClients),
+        getTotalsFooter(fiscalYearId, currencyId, rate, shouldHideLockedClients),
       ]);
     })
     .then(([rows, footer]) => {
@@ -72,7 +75,8 @@ function annualClientsReport(req, res, next) {
  * debtor group's accounts.  The currency and exchange rate are used to convert
  * the values into the correct currency rendering.
  */
-function getDebtorGroupMovements(fiscalYearId, currencyId, rate) {
+function getDebtorGroupMovements(fiscalYearId, currencyId, rate, hideLockedClients = 0) {
+  const hiddenClientsCondition = ' AND dg.locked = 0 ';
   const sql = `
     SELECT ac.number AS accountNumber, dg.name AS groupName,
       IFNULL(SUM(IF(p.number = 0, pt.debit - pt.credit, 0)), 0) * ${rate} AS openingBalance,
@@ -85,7 +89,7 @@ function getDebtorGroupMovements(fiscalYearId, currencyId, rate) {
       LEFT JOIN period_total pt ON dg.account_id = pt.account_id
       LEFT JOIN account ac ON ac.id = pt.account_id
       LEFT JOIN period p ON p.id = pt.period_id
-    WHERE pt.fiscal_year_id = ?
+    WHERE pt.fiscal_year_id = ? ${hideLockedClients ? hiddenClientsCondition : ''}
     GROUP BY pt.account_id;
   `;
 
@@ -99,7 +103,8 @@ function getDebtorGroupMovements(fiscalYearId, currencyId, rate) {
  * This function computes the sum of all the values from the table of debtors
  * groups.
  */
-function getTotalsFooter(fiscalYearId, currencyId, rate) {
+function getTotalsFooter(fiscalYearId, currencyId, rate, hideLockedClients = 0) {
+  const hiddenClientsCondition = ' AND dg.locked = 0 ';
   const sql = `
     SELECT ac.number AS accountNumber, ac.label AS accountLabel,
       IFNULL(SUM(IF(p.number = 0, pt.debit - pt.credit, 0)), 0) * ${rate} AS openingBalance,
@@ -112,7 +117,7 @@ function getTotalsFooter(fiscalYearId, currencyId, rate) {
       LEFT JOIN period_total pt ON dg.account_id = pt.account_id
       LEFT JOIN account ac ON ac.id = pt.account_id
       LEFT JOIN period p ON p.id = pt.period_id
-    WHERE pt.fiscal_year_id = ?;
+    WHERE pt.fiscal_year_id = ? ${hideLockedClients ? hiddenClientsCondition : ''};
   `;
 
   return db.one(sql, fiscalYearId);

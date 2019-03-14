@@ -1,0 +1,19 @@
+<div class="form-group" data-bh-discharge-select>
+  <label class="control-label" translate>
+    PATIENT_RECORDS.DISCHARGE.TYPE
+  </label>
+
+  <div ng-repeat="dt in $ctrl.dischargeTypeList" class="radio">
+    <label>
+      <input
+        type="radio"
+        name="dischargeType"
+        data-choice="{{ dt.id }}"
+        ng-value="{{ dt.id }}"
+        ng-model="$ctrl.value"
+        ng-change="$ctrl.onChange($ctrl.value)">
+      <span translate>{{ dt.label }}</span>
+    </label>
+  </div>
+</div>
+  

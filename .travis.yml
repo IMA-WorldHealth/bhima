@@ -23,7 +23,7 @@ before_script:
 
 script:
   - mkdir test/artifacts
-  - npm run test
+  - yarn test
 
 after_script: greenkeeper-lockfile-upload
 

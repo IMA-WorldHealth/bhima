@@ -2,36 +2,62 @@ angular.module('bhima.controllers')
   .controller('ModalCancelCashController', ModalCancelCashController);
 
 ModalCancelCashController.$inject = [
-  '$uibModalInstance', 'CashService', 'data', 'VoucherService', 'NotifyService'
+  '$filter', '$state', '$uibModalInstance', 'bhConstants',
+  'CashService', 'data', 'VoucherService', 'NotifyService',
 ];
 
-function ModalCancelCashController(Instance, Cash, data, Vouchers, Notify) {
-  var vm = this;
+function ModalCancelCashController($filter, $state, Instance, Constants, Cash, data, Vouchers, Notify) {
+  const vm = this;
+
+  vm.Constants = Constants;
 
   vm.cancelCash = {};
   vm.submit = submit;
-  vm.cancel = function () { Instance.close(false); };
+  vm.goToPatientLink = goToPatientLink;
+  const $currency = $filter('currency');
 
-  vm.cancelCash.uuid = data.invoice.uuid;
-  vm.patientInvoice = data.invoice;
+  vm.cancel = () => Instance.close(false);
 
-  Cash.read(data.invoice.uuid)
-    .then(function (response) {
-      vm.cashData = response;
+  vm.cancelCash.uuid = data.cash.uuid;
+
+  Cash.read(data.cash.uuid)
+    .then(response => {
+      vm.payment = response;
+
+      vm.payment.patientName = data.cash.patientName;
+      vm.payment.patientReference = data.cash.patientReference;
+      vm.payment.cashbox_label = data.cash.cashbox_label;
+
+      vm.alertI18nValues = {
+        cashReference : vm.payment.reference,
+        patientName : vm.payment.patientName,
+        patientReference : vm.payment.patientReference,
+        cost : $currency(vm.payment.amount, vm.payment.currency_id),
+      };
     })
     .catch(Notify.handleError);
 
   function submit(form) {
-     // stop submission if the form is invalid
-    if (form.$invalid) { return; }
+    // stop submission if the form is invalid
+    if (form.$invalid) {
+      return false;
+    }
 
     return Vouchers.reverse(vm.cancelCash)
-      .then(function () {
-        return Instance.close(true);
-      })
+      .then(() => Instance.close(true))
       .catch(Notify.handleError)
-      .finally(function () {
-        Instance.close();
-      });
+      .finally(() => Instance.close());
+  }
+
+  // Link to the patient registry
+  function goToPatientLink() {
+    Instance.close(false);
+    $state.go('patientRegistry', {
+      filters : [{
+        key : 'debtor_uuid',
+        value : vm.payment.debtor_uuid,
+        displayValue : vm.payment.debtorName,
+      }],
+    });
   }
 }

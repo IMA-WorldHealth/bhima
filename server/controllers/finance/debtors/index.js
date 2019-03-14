@@ -17,6 +17,7 @@
 */
 
 const q = require('q');
+const _ = require('lodash');
 const db = require('../../../lib/db');
 const NotFound = require('../../../lib/errors/NotFound');
 const identifiers = require('../../../config/identifiers');
@@ -64,28 +65,46 @@ function detail(req, res, next) {
 /**
  * Updates a debtor's details (particularly group_uuid)
  */
-function update(req, res, next) {
-  const sql =
-    'UPDATE debtor SET ? WHERE uuid = ?';
-
+async function update(req, res, next) {
+  const sql = `UPDATE debtor SET ? WHERE uuid = ?`;
+  const previousGroupSql = 'SELECT BUID(group_uuid) as group_uuid  FROM debtor WHERE uuid=?';
+  const historicSQL = `INSERT INTO debtor_group_history SET ?`;
+  const { user } = req.session;
+  const data = _.clone(req.body);
   // delete the uuid if it exists
-  delete req.body.uuid;
+  delete data.uuid;
 
   // cache the incoming uuid for fast lookups
   const uid = db.bid(req.params.uuid);
 
-  // escape the group_uuid if it exists
-  if (req.body.group_uuid) {
-    req.body.group_uuid = db.bid(req.body.group_uuid);
+  try {
+    // let get some informations for historic
+    const previousGroup = await db.one(previousGroupSql, uid);
+    // escape the group_uuid if it exists
+    if (req.body.group_uuid) {
+      data.group_uuid = db.bid(req.body.group_uuid);
+    }
+    const transaction = db.transaction();
+    transaction.addQuery(sql, [data, uid]);
+
+    // check if we should update the historic table
+    transaction.addQuery(historicSQL, {
+      uuid : db.uuid(),
+      user_id : user.id,
+      debtor_uuid : uid,
+      previous_debtor_group : db.bid(previousGroup.group_uuid),
+      next_debtor_group : data.group_uuid,
+    });
+
+
+    await transaction.execute();
+    const debtor = await lookupDebtor(req.params.uuid);
+    res.status(200).json(debtor);
+
+  } catch (error) {
+    next(error);
   }
 
-  db.exec(sql, [req.body, uid])
-    .then(() => lookupDebtor(req.params.uuid))
-    .then((debtor) => {
-      res.status(200).json(debtor);
-    })
-    .catch(next)
-    .done();
 }
 
 /**
@@ -303,6 +322,7 @@ function getFinancialActivity(debtorUuid, excludeCautionLinks = false) {
     balance(debtorUuid, excludeCautionLinks),
   ])
     .spread((transactions, aggs) => {
+
       if (!aggs.length) {
         aggs.push({ debit : 0, credit : 0, balance : 0 });
       }

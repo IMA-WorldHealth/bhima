@@ -1,0 +1,32 @@
+<div class="panel panel-default">
+  <div class="panel-heading" style="display: flex; justify-content: space-between;">
+    <span>
+      <i class="fa fa-list"></i>
+      <span translate>ROOM.LIST</span> ({{ RoomCtrl.gridOptions.data.length }})
+    </span>
+
+    <div>
+      <bh-filter-toggle on-toggle="RoomCtrl.toggleFilter()"></bh-filter-toggle>
+      <button
+        ng-click="RoomCtrl.createRoom()"
+        class="btn btn-primary"
+        type="button" data-create-room>
+        <i class="fa fa-plus"></i> <span translate>ROOM.ADD</span>
+      </button>
+    </div>
+  </div>
+
+  <section>
+    <div id="room-grid"
+      style="height: 270px;"
+      ui-grid="RoomCtrl.gridOptions">
+
+      <bh-grid-loading-indicator
+        loading-state="RoomCtrl.loading"
+        empty-state="RoomCtrl.gridOptions.data.length === 0"
+        error-state="RoomCtrl.hasError">
+      </bh-grid-loading-indicator>
+    </div>
+  </section>
+</div>
+

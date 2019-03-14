@@ -5,6 +5,7 @@
   <header>
     <!-- headings  -->
     <div class="row">
+
       {{> enterpriseDetails }}
 
       <div class="col-xs-5 text-right">
@@ -40,6 +41,7 @@
         <span class="text-capitalize">{{translate 'FORM.LABELS.PAYMENT'}}</span>: <strong>{{payment.reference}}</strong> <br>
         <span class="text-capitalize">{{translate 'FORM.LABELS.AMOUNT'}}</span>: <strong>{{currency payment.amount payment.currency_id}}</strong> <br>
         <span class="text-capitalize">{{translate 'FORM.LABELS.DATE'}}</span>: {{date payment.date}} <br>
+         <span class="text-capitalize">{{translate 'FORM.LABELS.CREATED_AT'}}</span>: {{date payment.created_at}} <br>
         {{#if hasRate}}
           <span class="text-capitalize">{{translate 'FORM.LABELS.EXCHANGE_RATE'}} {{currency rate payment.currency_id}}</span> <br>
         {{/if}}

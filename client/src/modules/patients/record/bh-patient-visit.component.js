@@ -17,36 +17,44 @@ function VisitsController(Patients, Notify, Moment) {
   // number of visits
   const DEFAULT_VISIT_LIMIT = 3;
 
-  this.$onInit = function $onInit() {
-    $ctrl.viewLimit = DEFAULT_VISIT_LIMIT;
+  this.$onInit = () => {
     $ctrl.loaded = false;
-    $ctrl.loading = true;
     $ctrl.visiting = false;
+
+    $ctrl.limitVisitDisplay = DEFAULT_VISIT_LIMIT;
 
     refreshVisitFeed();
   };
 
   // expose methods to the view
   $ctrl.admit = admit;
+  $ctrl.toggleViewLimit = toggleViewLimit;
 
   function refreshVisitFeed() {
-    $ctrl.loading = true;
     $ctrl.loaded = false;
-    Patients.Visits.read($ctrl.patientUuid)
-      .then((results) => {
-        $ctrl.visits = results;
-        $ctrl.visits.forEach(calculateDays);
-        mostRecentVisit = $ctrl.visits[0];
+
+    return Patients.Visits.read($ctrl.patientUuid)
+      .then(visits => {
+        visits.forEach(visit => {
+          calculateDays(visit);
+          hrBedLocation(visit);
+        });
+        [mostRecentVisit] = visits;
 
         if (mostRecentVisit) {
           $ctrl.visiting = Boolean(mostRecentVisit.is_open);
         }
+
+        $ctrl.visits = visits;
+
+        $ctrl.hasOverflowVisits = (visits.length > DEFAULT_VISIT_LIMIT);
         $ctrl.loaded = true;
-      })
-      .catch(Notify.handleError)
-      .finally(() => {
-        $ctrl.loading = false;
       });
+  }
+
+  function toggleViewLimit() {
+    $ctrl.hasExpandedView = ($ctrl.limitVisitDisplay === DEFAULT_VISIT_LIMIT);
+    $ctrl.limitVisitDisplay = $ctrl.hasExpandedView ? 1000 : DEFAULT_VISIT_LIMIT;
   }
 
   function calculateDays(visit) {
@@ -55,12 +63,14 @@ function VisitsController(Patients, Notify, Moment) {
     visit.totalDays = endDate.diff(startDate, 'days');
   }
 
+  function hrBedLocation(visit) {
+    visit.hrBedLocation = (visit.ward_name || '').concat('/', visit.room_label, '/', visit.bed_label);
+  }
+
   function admit() {
     const isAdmission = !$ctrl.visiting;
     Patients.Visits.openAdmission($ctrl.patientUuid, isAdmission, mostRecentVisit)
-      .then((result) => {
-        refreshVisitFeed();
-      })
+      .then(() => refreshVisitFeed())
       .catch(Notify.handleError);
   }
 }

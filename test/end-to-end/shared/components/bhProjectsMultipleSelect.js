@@ -10,8 +10,8 @@ module.exports = {
 
     target.click();
 
-    projectsMultipleStatus.forEach(function (projects){
-        FU.uiSelect('$ctrl.selectedServices', projects);
+    projectsMultipleStatus.forEach((projects) => {
+      FU.uiSelect('$ctrl.selectedServices', projects);
     });
   },
 };

@@ -96,11 +96,16 @@ CREATE PROCEDURE TrialBalanceErrors()
 BEGIN
 
   -- this will hold our error cases
-  CREATE TEMPORARY TABLE IF NOT EXISTS stage_trial_balance_errors (record_uuid BINARY(16), trans_id TEXT, code TEXT);
+  CREATE TEMPORARY TABLE IF NOT EXISTS stage_trial_balance_errors (
+    record_uuid BINARY(16),
+    trans_id TEXT,
+    error_description TEXT,
+    code TEXT
+  );
 
   -- check if dates are in the correct period
   INSERT INTO stage_trial_balance_errors
-    SELECT pj.record_uuid, MAX(pj.trans_id), 'POSTING_JOURNAL.ERRORS.DATE_IN_WRONG_PERIOD' AS code
+    SELECT pj.record_uuid, MAX(pj.trans_id), CONCAT(pj.trans_id, ' : ', pj.trans_date) as error_description, 'POSTING_JOURNAL.ERRORS.DATE_IN_WRONG_PERIOD' AS code
     FROM posting_journal AS pj
       JOIN stage_trial_balance_transaction AS temp ON pj.record_uuid = temp.record_uuid
       JOIN period AS p ON pj.period_id = p.id
@@ -109,7 +114,7 @@ BEGIN
 
   -- check to make sure that the fiscal year is not closed
   INSERT INTO stage_trial_balance_errors
-    SELECT pj.record_uuid, MAX(pj.trans_id), 'POSTING_JOURNAL.ERRORS.CLOSED_FISCAL_YEAR' AS code
+    SELECT pj.record_uuid, MAX(pj.trans_id), fiscal_year.label as error_description,'POSTING_JOURNAL.ERRORS.CLOSED_FISCAL_YEAR' AS code
     FROM posting_journal AS pj JOIN stage_trial_balance_transaction AS temp
       ON pj.record_uuid = temp.record_uuid
       JOIN fiscal_year ON pj.fiscal_year_id = fiscal_year.id
@@ -118,7 +123,7 @@ BEGIN
 
   -- check to make sure that all lines of a transaction have a description
   INSERT INTO stage_trial_balance_errors
-    SELECT pj.record_uuid, MAX(pj.trans_id), 'POSTING_JOURNAL.ERRORS.MISSING_DESCRIPTION' AS code
+    SELECT pj.record_uuid, MAX(pj.trans_id), pj.trans_id as error_description, 'POSTING_JOURNAL.ERRORS.MISSING_DESCRIPTION' AS code
     FROM posting_journal AS pj JOIN stage_trial_balance_transaction AS temp
       ON pj.record_uuid = temp.record_uuid
     WHERE pj.description IS NULL
@@ -126,7 +131,7 @@ BEGIN
 
   -- check that all periods are unlocked
   INSERT INTO stage_trial_balance_errors
-    SELECT pj.record_uuid, MAX(pj.trans_id), 'POSTING_JOURNAL.ERRORS.LOCKED_PERIOD' AS code
+    SELECT pj.record_uuid, MAX(pj.trans_id), CONCAT(p.start_date, ' ', p.end_date) as error_description, 'POSTING_JOURNAL.ERRORS.LOCKED_PERIOD' AS code
     FROM posting_journal AS pj JOIN stage_trial_balance_transaction AS temp
       ON pj.record_uuid = temp.record_uuid
     JOIN period p ON pj.period_id = p.id
@@ -134,7 +139,7 @@ BEGIN
 
   -- check that there are no transactions with accounts of locked creditor groups
   INSERT INTO stage_trial_balance_errors
-    SELECT pj.record_uuid, MAX(pj.trans_id), 'POSTING_JOURNAL.ERRORS.LOCKED_CREDITOR_GROUP_ACCOUNT' AS code
+    SELECT pj.record_uuid, MAX(pj.trans_id), cg.name as error_description, 'POSTING_JOURNAL.ERRORS.LOCKED_CREDITOR_GROUP_ACCOUNT' AS code
     FROM posting_journal AS pj JOIN stage_trial_balance_transaction AS temp
       ON pj.record_uuid = temp.record_uuid
     JOIN creditor_group cg ON pj.account_id = cg.account_id
@@ -142,7 +147,7 @@ BEGIN
 
   -- check that there are no transactions with accounts of locked debtor groups
   INSERT INTO stage_trial_balance_errors
-    SELECT pj.record_uuid, MAX(pj.trans_id), 'POSTING_JOURNAL.ERRORS.LOCKED_DEBTOR_GROUP_ACCOUNT' AS code
+    SELECT pj.record_uuid, MAX(pj.trans_id), dg.name as error_description, 'POSTING_JOURNAL.ERRORS.LOCKED_DEBTOR_GROUP_ACCOUNT' AS code
     FROM posting_journal AS pj JOIN stage_trial_balance_transaction AS temp
       ON pj.record_uuid = temp.record_uuid
     JOIN debtor_group dg ON pj.account_id = dg.account_id
@@ -150,7 +155,7 @@ BEGIN
 
   -- check that all accounts are unlocked
   INSERT INTO stage_trial_balance_errors
-    SELECT pj.record_uuid, MAX(pj.trans_id), 'POSTING_JOURNAL.ERRORS.LOCKED_ACCOUNT' AS code
+    SELECT pj.record_uuid, MAX(pj.trans_id), CONCAT(a.number,' - ', a.label) as error_description, 'POSTING_JOURNAL.ERRORS.LOCKED_ACCOUNT' AS code
     FROM posting_journal AS pj JOIN stage_trial_balance_transaction AS temp
       ON pj.record_uuid = temp.record_uuid
     JOIN account a ON pj.account_id = a.id
@@ -158,7 +163,7 @@ BEGIN
 
   -- check that users are active (no deactivated users)
   INSERT INTO stage_trial_balance_errors
-    SELECT pj.record_uuid, MAX(pj.trans_id), 'POSTING_JOURNAL.ERRORS.DEACTIVATED_USER' AS code
+    SELECT pj.record_uuid, MAX(pj.trans_id), u.display_name as error_description, 'POSTING_JOURNAL.ERRORS.DEACTIVATED_USER' AS code
     FROM posting_journal AS pj JOIN stage_trial_balance_transaction AS temp
       ON pj.record_uuid = temp.record_uuid
     JOIN user u ON pj.user_id = u.id
@@ -166,7 +171,7 @@ BEGIN
 
   -- check that all transactions are balanced
   INSERT INTO stage_trial_balance_errors
-    SELECT pj.record_uuid, MAX(pj.trans_id), 'POSTING_JOURNAL.ERRORS.UNBALANCED_TRANSACTIONS' AS code
+    SELECT pj.record_uuid, MAX(pj.trans_id), pj.trans_id as error_description, 'POSTING_JOURNAL.ERRORS.UNBALANCED_TRANSACTIONS' AS code
     FROM posting_journal AS pj JOIN stage_trial_balance_transaction AS temp
       ON pj.record_uuid = temp.record_uuid
     GROUP BY pj.record_uuid
@@ -174,13 +179,13 @@ BEGIN
 
   -- check that all transactions have two or more lines
   INSERT INTO stage_trial_balance_errors
-    SELECT pj.record_uuid, MAX(pj.trans_id), 'POSTING_JOURNAL.ERRORS.SINGLE_LINE_TRANSACTION' AS code
+    SELECT pj.record_uuid, MAX(pj.trans_id), pj.trans_id as error_description, 'POSTING_JOURNAL.ERRORS.SINGLE_LINE_TRANSACTION' AS code
     FROM posting_journal AS pj JOIN stage_trial_balance_transaction AS temp
       ON pj.record_uuid = temp.record_uuid
     GROUP BY pj.record_uuid
     HAVING COUNT(pj.record_uuid) < 2;
 
-  SELECT DISTINCT BUID(record_uuid) AS record_uuid, trans_id, code FROM stage_trial_balance_errors ORDER BY code, trans_id;
+  SELECT DISTINCT BUID(record_uuid) AS record_uuid, trans_id, error_description, code FROM stage_trial_balance_errors ORDER BY code, trans_id;
 END $$
 
 /*
@@ -267,6 +272,9 @@ from the posting_journal table to the General Ledger table.
 */
 CREATE PROCEDURE PostToGeneralLedger()
 BEGIN
+
+  DECLARE isInvoice, isCash, isVoucher INT;
+
   -- write into the posting journal
   INSERT INTO general_ledger (
     project_id, uuid, fiscal_year_id, period_id, trans_id, trans_id_reference_number, trans_date,
@@ -291,8 +299,29 @@ BEGIN
   GROUP BY fiscal_year_id, period_id, account_id
   ON DUPLICATE KEY UPDATE credit = credit + VALUES(credit), debit = debit + VALUES(debit);
 
+
+  
   -- remove from posting journal
   DELETE FROM posting_journal WHERE record_uuid IN (SELECT record_uuid FROM stage_trial_balance_transaction);
+
+  -- Let specify that this invoice or the cash payment is posted
+  SELECT COUNT(uuid) INTO isInvoice  FROM invoice  WHERE invoice.uuid IN (SELECT record_uuid FROM stage_trial_balance_transaction);
+  SELECT COUNT(uuid) INTO isCash  FROM cash  WHERE cash.uuid IN (SELECT record_uuid FROM stage_trial_balance_transaction);
+  SELECT COUNT(uuid) INTO isVoucher  FROM voucher  WHERE voucher.uuid IN (SELECT record_uuid FROM stage_trial_balance_transaction);
+
+  IF isInvoice > 0 THEN
+    UPDATE invoice SET posted = 1 WHERE uuid IN (SELECT record_uuid FROM stage_trial_balance_transaction);
+  END IF;
+
+  IF isCash > 0 THEN
+    UPDATE cash SET posted = 1 WHERE uuid IN (SELECT record_uuid FROM stage_trial_balance_transaction);
+  END IF;
+
+  IF isVoucher > 0 THEN
+    UPDATE voucher SET posted = 1 WHERE uuid IN (SELECT record_uuid FROM stage_trial_balance_transaction);
+  END IF;
+
+
 END $$
 
 DELIMITER ;

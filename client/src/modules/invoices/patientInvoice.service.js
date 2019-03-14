@@ -154,8 +154,8 @@ function PatientInvoiceService(
     const assignedKeys = Object.keys(invoiceFilters.formatHTTP());
 
     // assign default period filter
-    const periodDefined =
-      service.util.arrayIncludes(assignedKeys, ['period', 'custom_period_start', 'custom_period_end']);
+    const periodDefined = service.util.arrayIncludes(assignedKeys,
+      ['period', 'custom_period_start', 'custom_period_end']);
 
     if (!periodDefined) {
       invoiceFilters.assignFilters(Periods.defaultFilters());

@@ -60,6 +60,7 @@ CREATE TABLE `account_reference` (
   `abbr` VARCHAR(35) NOT NULL,
   `description` VARCHAR(100) NOT NULL,
   `parent` MEDIUMINT(8) UNSIGNED NULL,
+  `reference_type_id` MEDIUMINT(8) UNSIGNED NULL,
   `is_amo_dep` TINYINT(1) NULL DEFAULT 0 COMMENT 'Ammortissement or depreciation',
   PRIMARY KEY (`id`),
   UNIQUE KEY `account_reference_1` (`abbr`, `is_amo_dep`)
@@ -139,6 +140,7 @@ CREATE TABLE `cash` (
   `created_at`      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `reversed`        TINYINT NOT NULL DEFAULT 0,
   `edited`          TINYINT NOT NULL DEFAULT 0,
+  `posted`            TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `cash_1` (`reference`, `project_id`),
   KEY `project_id` (`project_id`),
@@ -502,15 +504,18 @@ DROP TABLE IF EXISTS `debtor_group_history`;
 CREATE TABLE `debtor_group_history` (
   `uuid` BINARY(16) NOT NULL,
   `debtor_uuid` BINARY(16) DEFAULT NULL,
-  `debtor_group_uuid` BINARY(16) DEFAULT NULL,
-  `income_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `previous_debtor_group` BINARY(16) DEFAULT NULL,
+  `next_debtor_group` BINARY(16) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `user_id` smallINT(5) UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`uuid`),
   KEY `debtor_uuid` (`debtor_uuid`),
-  KEY `debtor_group_uuid` (`debtor_group_uuid`),
+  KEY `previous_debtor_group` (`previous_debtor_group`),
+  KEY `next_debtor_group` (`next_debtor_group`),
   KEY `user_id` (`user_id`),
   FOREIGN KEY (`debtor_uuid`) REFERENCES `debtor` (`uuid`),
-  FOREIGN KEY (`debtor_group_uuid`) REFERENCES `debtor_group` (`uuid`),
+  FOREIGN KEY (`previous_debtor_group`) REFERENCES `debtor_group` (`uuid`),
+  FOREIGN KEY (`next_debtor_group`) REFERENCES `debtor_group` (`uuid`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
@@ -1055,7 +1060,7 @@ CREATE TABLE `rubric_paiement` (
   PRIMARY KEY (`id`),
   KEY `paiement_uuid` (`paiement_uuid`),
   KEY `rubric_payroll_id` (`rubric_payroll_id`),
-  UNIQUE KEY `rubric_paiement_1` (`paiement_uuid`, `rubric_payroll_id`),  
+  UNIQUE KEY `rubric_paiement_1` (`paiement_uuid`, `rubric_payroll_id`),
   FOREIGN KEY (`paiement_uuid`) REFERENCES `paiement` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`rubric_payroll_id`) REFERENCES `rubric_payroll` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
@@ -1171,7 +1176,6 @@ CREATE TABLE `patient_document` (
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `patient_group`;
-
 CREATE TABLE `patient_group` (
   `uuid`              BINARY(16) NOT NULL,
   `enterprise_id`     SMALLINT(5) UNSIGNED NOT NULL,
@@ -1188,7 +1192,6 @@ CREATE TABLE `patient_group` (
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS patient_group_invoicing_fee;
-
 CREATE TABLE patient_group_invoicing_fee (
   `id`                      SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `patient_group_uuid`      BINARY(16) NOT NULL,
@@ -1216,8 +1219,15 @@ CREATE TABLE patient_group_subsidy (
   FOREIGN KEY (`patient_group_uuid`) REFERENCES `patient_group` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
-DROP TABLE IF EXISTS `patient_visit`;
+DROP TABLE IF EXISTS `discharge_type`;
+CREATE TABLE `discharge_type` (
+  `id` TINYINT(3) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `label` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `discharge_type_1` (`id`, `label`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
+DROP TABLE IF EXISTS `patient_visit`;
 CREATE TABLE `patient_visit` (
   `uuid` BINARY(16) NOT NULL,
   `patient_uuid` BINARY(16) NOT NULL,
@@ -1227,21 +1237,57 @@ CREATE TABLE `patient_visit` (
   `end_notes` TEXT,
   `start_diagnosis_id` INT(10) UNSIGNED,
   `end_diagnosis_id` INT(10) UNSIGNED,
-  `user_id` smallINT(5) UNSIGNED NOT NULL,
+  `hospitalized` TINYINT(1) NOT NULL DEFAULT 0,
+  `user_id` SMALLINT(5) UNSIGNED NOT NULL,
+  `last_service_id` SMALLINT(5) UNSIGNED NOT NULL,
+  `discharge_type_id` SMALLINT(5) UNSIGNED NULL,
+  `inside_health_zone` TINYINT(1),
+  `is_pregnant` TINYINT(1) DEFAULT 0,
+  `is_refered` TINYINT(1) DEFAULT 0,
+  `is_new_case` TINYINT(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `patient_visit_1`(`patient_uuid`, `start_date`, `end_date`),
   KEY `patient_uuid` (`patient_uuid`),
   KEY `user_id` (`user_id`),
   KEY `start_diagnosis_id` (`start_diagnosis_id`),
   KEY `end_diagnosis_id` (`end_diagnosis_id`),
+  KEY `last_service_id` (`last_service_id`),
+  KEY `discharge_type_id` (`discharge_type_id`),
   FOREIGN KEY (`patient_uuid`) REFERENCES `patient` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`start_diagnosis_id`) REFERENCES `icd10` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`end_diagnosis_id`) REFERENCES `icd10` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
-DROP TABLE IF EXISTS `period`;
+DROP TABLE IF EXISTS `patient_visit_service`;
+CREATE TABLE `patient_visit_service` (
+  `uuid`               BINARY(16) NOT NULL,
+  `date`               DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `patient_visit_uuid` BINARY(16) NOT NULL,
+  `service_id`         SMALLINT(5) UNSIGNED NOT NULL,
+  `created_at`         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+   PRIMARY KEY (`uuid`),
+   FOREIGN KEY (`patient_visit_uuid`) REFERENCES `patient_visit` (`uuid`) ON UPDATE CASCADE,
+   FOREIGN KEY (`service_id`) REFERENCES `service` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
+DROP TABLE IF EXISTS `patient_hospitalization`;
+CREATE TABLE `patient_hospitalization` (
+  `uuid`               BINARY(16) NOT NULL,
+  `date`               DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `patient_visit_uuid` BINARY(16) NOT NULL,
+  `patient_uuid`       BINARY(16) NOT NULL,
+  `room_uuid`          BINARY(16) NOT NULL,
+  `bed_id`             SMALLINT(5) UNSIGNED NOT NULL,
+  `created_at`         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+   PRIMARY KEY (`uuid`),
+   FOREIGN KEY (`patient_visit_uuid`) REFERENCES `patient_visit` (`uuid`) ON UPDATE CASCADE,
+   FOREIGN KEY (`patient_uuid`) REFERENCES `patient` (`uuid`) ON UPDATE CASCADE,
+   FOREIGN KEY (`room_uuid`) REFERENCES `room` (`uuid`) ON UPDATE CASCADE,
+   FOREIGN KEY (`bed_id`) REFERENCES `bed` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `period`;
 CREATE TABLE `period` (
   `id`                  MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
   `fiscal_year_id`      MEDIUMINT(8) UNSIGNED NOT NULL,
@@ -1552,6 +1598,7 @@ CREATE TABLE `invoice` (
   `reversed`            TINYINT NOT NULL DEFAULT 0,
   `edited`              TINYINT NOT NULL DEFAULT 0,
   `created_at`          TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `posted`            TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `invoice_1` (`project_id`, `reference`),
   KEY `reference` (`reference`),
@@ -1663,6 +1710,50 @@ CREATE TABLE `service` (
   FOREIGN KEY (`cost_center_id`) REFERENCES `cost_center` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`profit_center_id`) REFERENCES `profit_center` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB  DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `ward`;
+CREATE TABLE `ward`(
+ `uuid` BINARY(16) NOT NULL,
+ `name` VARCHAR(100) NOT NULL,
+ `description` text NULL,
+ `service_id` SMALLINT(5) UNSIGNED NULL,
+  PRIMARY KEY(`uuid`),
+  KEY `name_1` (`name`),
+  FOREIGN KEY (`service_id`) REFERENCES `service` (`id`)
+)ENGINE=InnoDB  DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `room_type`;
+CREATE TABLE `room_type`(
+ `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+ `label` VARCHAR(120) NOT NULL,
+  PRIMARY KEY(`id`)
+)ENGINE=InnoDB  DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `room`;
+CREATE TABLE `room`(
+ `uuid` BINARY(16) NOT NULL,
+ `label` VARCHAR(120) NOT NULL,
+ `description` text NULL,
+ `ward_uuid` BINARY(16) NOT NULL,
+ `room_type_id` SMALLINT(5) UNSIGNED NULL,
+  PRIMARY KEY(`uuid`),
+  UNIQUE KEY `room_label_0` (`label`, `ward_uuid`),
+  FOREIGN KEY (`ward_uuid`) REFERENCES ward (`uuid`),
+  FOREIGN KEY (`room_type_id`) REFERENCES room_type (`id`)
+)ENGINE=InnoDB  DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `bed`;
+CREATE TABLE `bed`(
+ `id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+ `label` VARCHAR(120) NOT NULL,
+ `room_uuid` BINARY(16) NOT NULL,
+ `is_occupied` TINYINT(1) NOT NULL DEFAULT 0,
+ `user_id` SMALLINT(5) UNSIGNED NOT NULL,
+  PRIMARY KEY(`id`),
+  UNIQUE KEY `bed_label_0` (`label`, `room_uuid`),
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE,
+  FOREIGN KEY (`room_uuid`) REFERENCES room (`uuid`)
+)ENGINE=InnoDB  DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `subsidy`;
@@ -1849,6 +1940,7 @@ CREATE TABLE IF NOT EXISTS `voucher` (
   `reference_uuid`  BINARY(16),
   `edited`          TINYINT NOT NULL DEFAULT 0,
   `reversed`        TINYINT NOT NULL DEFAULT 0,
+  `posted`            TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
   KEY `project_id` (`project_id`),
   KEY `currency_id` (`currency_id`),
   KEY `user_id` (`user_id`),
@@ -2133,7 +2225,7 @@ CREATE TABLE `fee_center_distribution` (
   `principal_fee_center_id` MEDIUMINT(8) UNSIGNED NOT NULL,
   `debit_equiv` DECIMAL(19,8) NOT NULL DEFAULT 0.00,
   `credit_equiv` DECIMAL(19,8) NOT NULL DEFAULT 0.00,
-  `date_distribution` DATETIME NOT NULL, 
+  `date_distribution` DATETIME NOT NULL,
   `user_id`           SMALLINT(5) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
@@ -2141,7 +2233,7 @@ CREATE TABLE `fee_center_distribution` (
   INDEX `account_id` (`account_id`),
   INDEX `trans_id` (`trans_id`),
   INDEX `auxiliary_fee_center_id` (`auxiliary_fee_center_id`),
-  INDEX `principal_fee_center_id` (`principal_fee_center_id`),  
+  INDEX `principal_fee_center_id` (`principal_fee_center_id`),
   FOREIGN KEY (`row_uuid`) REFERENCES `general_ledger` (`uuid`),
   FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
   FOREIGN KEY (`auxiliary_fee_center_id`) REFERENCES `fee_center` (`id`),
@@ -2177,10 +2269,99 @@ CREATE TABLE `distribution_key` (
   `user_id` SMALLINT(5) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `auxiliary_fee_center_id` (`auxiliary_fee_center_id`),
-  INDEX `principal_fee_center_id` (`principal_fee_center_id`),  
+  INDEX `principal_fee_center_id` (`principal_fee_center_id`),
   FOREIGN KEY (`auxiliary_fee_center_id`) REFERENCES `fee_center` (`id`),
   FOREIGN KEY (`principal_fee_center_id`) REFERENCES `fee_center` (`id`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `account_reference_type`;
+CREATE TABLE `account_reference_type` (
+  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `label` VARCHAR(100) NOT NULL,
+  `fixed` tinyint(1) DEFAULT 0,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `account_reference_type_1` (`label`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+
+DROP TABLE IF EXISTS `indicator_status`;
+CREATE TABLE `indicator_status` (
+  `id` SMALLINT(5) UNSIGNED NOT NULL,
+  `text` VARCHAR(40) NOT NULL,
+  `translate_key` VARCHAR(100) NOT NULL,
+  PRIMARY KEY(`id`)
+)ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `indicator`;
+CREATE TABLE `indicator` (
+  `uuid` BINARY(16) NOT NULL,
+  `status_id` SMALLINT(5) UNSIGNED NOT NULL,
+  `period_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  `user_id` SMALLINT(5) UNSIGNED NOT NULL,
+  `type` VARCHAR(40) NOT NULL,
+  `created_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY(`uuid`),
+  FOREIGN KEY (`period_id`) REFERENCES `period` (`id`) ON UPDATE CASCADE,
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE,
+  FOREIGN KEY (`status_id`) REFERENCES `indicator_status` (`id`) ON UPDATE CASCADE
+)ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+
+DROP TABLE IF EXISTS `hospitalization_indicator`;
+CREATE TABLE `hospitalization_indicator` (
+  `uuid` BINARY(16),
+  `service_id`SMALLINT(5) UNSIGNED NOT NULL,
+  `day_realized` INT DEFAULT 0,
+  `bed_number` INT DEFAULT 0,
+  `daysOfHospitalization` INT DEFAULT 0,
+  `hospitalizedPatients` INT DEFAULT 0,
+  `hospitalizedPatientPerDay` INT DEFAULT 0,
+  `PatientsDied` INT DEFAULT 0,  
+  `indicator_uuid` BINARY(16) NOT NULL,
+  PRIMARY KEY (`uuid`),
+  FOREIGN KEY (`service_id`) REFERENCES `service` (`id`) ON UPDATE CASCADE,
+  FOREIGN KEY (`indicator_uuid`) REFERENCES `indicator` (`uuid`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `personel_indicator`;
+CREATE TABLE `personel_indicator` (
+  `uuid` BINARY(16),
+  `bed_number` INT DEFAULT 0,
+  `doctorsNumber` INT DEFAULT 0,
+  `nurseNumber` INT DEFAULT 0,
+  `caregiversNumber` INT DEFAULT 0,
+  `totalStaff` INT DEFAULT 0,
+  `externalConsultationNumber` INT DEFAULT 0,
+  `consultationNumber` INT DEFAULT 0,
+  `surgeryByDoctor` INT DEFAULT 0,
+  `day_realized` INT DEFAULT 0,
+  `hospitalizedPatients` INT DEFAULT 0,
+  `indicator_uuid` BINARY(16) NOT NULL,
+  PRIMARY KEY (`uuid`),
+  FOREIGN KEY (`indicator_uuid`) REFERENCES `indicator` (`uuid`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `finances_indicator`;
+CREATE TABLE `finances_indicator` (
+  `uuid` BINARY(16),
+  `bed_number` INT DEFAULT 0,
+  `totalReceiptAmount` INT DEFAULT 0,
+  `subsidyAmount` INT DEFAULT 0,
+  `medicationSaleAmount` INT DEFAULT 0,
+  `totalExpenseAmount` INT DEFAULT 0,
+  `variousChargesAmount` INT DEFAULT 0,
+  `purchaseMedicationAmount` INT DEFAULT 0,
+  `personalChargeAmount` INT DEFAULT 0,
+  `totalOperatingExpenditureAmount` INT DEFAULT 0,
+  `totalDepreciationAmount` INT DEFAULT 0,
+  `totalDebtAmount` INT DEFAULT 0,
+  `totalCashAmount` INT DEFAULT 0,
+  `totalStockValueAmount` INT DEFAULT 0,
+  `personelNumber` INT DEFAULT 0,
+  `indicator_uuid` BINARY(16) NOT NULL,
+  PRIMARY KEY (`uuid`),
+  FOREIGN KEY (`indicator_uuid`) REFERENCES `indicator` (`uuid`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 SET foreign_key_checks = 1;

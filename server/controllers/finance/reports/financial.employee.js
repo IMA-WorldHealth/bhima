@@ -12,6 +12,9 @@ const ReportManager = require('../../../lib/ReportManager');
 
 const Employee = require('../../payroll/employees');
 const Creditors = require('../../finance/creditors');
+const Debtors = require('../../finance/debtors');
+const db = require('../../../lib/db');
+const util = require('../../../lib/util');
 
 const TEMPLATE = './server/controllers/finance/reports/financial.employee.handlebars';
 
@@ -27,7 +30,7 @@ const PDF_OPTIONS = {
  *
  * GET /reports/finance/employeeStanding/:uuid
  */
-function build(req, res, next) {
+async function build(req, res, next) {
   const options = req.query;
 
   let report;
@@ -41,23 +44,43 @@ function build(req, res, next) {
     return next(e);
   }
 
-  const data = {};
+  try {
 
-  return Employee.lookupEmployee(options.employee_uuid)
-    .then(employee => {
-      _.extend(data, { employee });
-      return Creditors.getFinancialActivity(employee.creditor_uuid);
-    })
-    .then(({ transactions, aggregates }) => {
-      aggregates.balanceText = aggregates.balance >= 0 ? 'FORM.LABELS.CREDIT_BALANCE' : 'FORM.LABELS.DEBIT_BALANCE';
-      _.extend(data, { transactions, aggregates });
-    })
-    .then(() => report.render(data))
-    .then(result => {
-      res.set(result.headers).send(result.report);
-    })
-    .catch(next)
-    .done();
+    const data = {};
+    const sql = `
+      SELECT BUID(p.debtor_uuid) as debtor_uuid
+      FROM patient p
+      JOIN employee em ON p.uuid = em.patient_uuid
+      WHERE em.uuid = ?`;
+
+    const [employee, patient] = await Promise.all([
+      Employee.lookupEmployee(options.employee_uuid),
+      db.one(sql, db.bid(options.employee_uuid)),
+    ]);
+
+    // get debtor/creditor information
+    const [creditorOperations, debtorOperations] = await Promise.all([
+      Creditors.getFinancialActivity(employee.creditor_uuid),
+      Debtors.getFinancialActivity(patient.debtor_uuid, true),
+    ]);
+
+    _.extend(data, {
+      employee,
+      creditorTransactions : creditorOperations.transactions,
+      creditorAggregates : creditorOperations.aggregates,
+      debtorTransactions : debtorOperations.transactions,
+      debtorAggregates : debtorOperations.aggregates,
+    });
+
+    // employee balance
+    data.employeeBalance = util.roundDecimal(data.debtorAggregates.balance - data.creditorAggregates.balance, 2);
+    // let render
+    const result = await report.render(data);
+    return res.set(result.headers).send(result.report);
+
+  } catch (error) {
+    return next(error);
+  }
 }
 
 exports.report = build;

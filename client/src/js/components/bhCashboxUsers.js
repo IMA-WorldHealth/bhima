@@ -13,12 +13,15 @@ bhCashboxUsers.$inject = ['CashboxService'];
 function bhCashboxUsers(Cashboxes) {
   const $ctrl = this;
 
-  // track intiial load to allow good empty user experience
-  $ctrl.initialLoad = false;
+  $ctrl.$onInit = () => {
+    // track intiial load to allow good empty user experience
+    $ctrl.initialLoad = false;
+  };
 
-  function _loadCashboxUsers(cashbox) {
+
+  function loadCashboxUsers(cashbox) {
     Cashboxes.users.read(cashbox)
-      .then((users) => {
+      .then(users => {
         $ctrl.initialLoad = true;
         $ctrl.users = users;
       });
@@ -28,7 +31,7 @@ function bhCashboxUsers(Cashboxes) {
   // this to be set any time
   $ctrl.$onChanges = function onChanges(changes) {
     if (changes.cashbox && changes.cashbox.currentValue) {
-      _loadCashboxUsers(changes.cashbox.currentValue);
+      loadCashboxUsers(changes.cashbox.currentValue);
     }
   };
 }

@@ -1,4 +1,7 @@
-const gulp = require('gulp');
+const {
+  src, dest, watch, series, parallel,
+} = require('gulp');
+
 const gulpif = require('gulp-if');
 const concat = require('gulp-concat');
 const uglify = require('gulp-uglify');
@@ -21,13 +24,21 @@ const isProduction = (process.env.NODE_ENV === 'production');
 const isDevelopment = (process.env.NODE_ENV !== 'production');
 
 // gulp build output directories
-const SERVER_FOLDER = './bin/server/';
-const CLIENT_FOLDER = './bin/client/';
+const SERVER_FOLDER = `${__dirname}/bin/server/`;
+const CLIENT_FOLDER = `${__dirname}/bin/client`;
 
 const supportedLanguages = {
   en : { key : 'en', path : 'client/src/i18n/en/' },
   fr : { key : 'fr', path : 'client/src/i18n/fr/' },
 };
+
+// Cleaner helpers
+// These methods clean up folders that are affected by changes in the repository
+const cleanJS = () => del(`${CLIENT_FOLDER}/js/bhima`);
+const cleanCSS = () => del(`${CLIENT_FOLDER}/css/bhima`);
+const cleanI18n = () => del(`${CLIENT_FOLDER}/i18n`);
+const cleanServer = () => del(SERVER_FOLDER);
+
 
 // resource paths
 const paths = {
@@ -51,60 +62,51 @@ const paths = {
       'client/src/css/pdf-style.css',
     ],
     vendorJs : [
-      'node_modules/@bower_components/jquery/dist/jquery.min.js', // jquery
-      'node_modules/@bower_components/cropper/dist/cropper.js',
+      'node_modules/jquery/dist/jquery.min.js', // jquery
+      'node_modules/cropper/dist/cropper.js', // TODO(@jniles) - do we need this?
 
       // Angular
-      'node_modules/@bower_components/angular/angular.min.js',
-      'node_modules/@bower_components/angular-messages/angular-messages.min.js',
-      'node_modules/@bower_components/angular-sanitize/angular-sanitize.min.js',
+      'node_modules/angular/angular.min.js',
+      'node_modules/angular-messages/angular-messages.min.js',
+      'node_modules/angular-sanitize/angular-sanitize.min.js',
+      'node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js',
+      'node_modules/angular-ui-grid/ui-grid.min.js',
+
+      'node_modules/angular-touch/angular-touch.min.js',
+      'node_modules/ui-select/dist/select.min.js',
+
+      'node_modules/angular-growl-notifications/dist/angular-growl-notifications.min.js',
+      'node_modules/angular-animate/angular-animate.min.js',
+
+      'node_modules/angular-translate/dist/angular-translate.min.js',
+      'node_modules/angular-translate-loader-static-files/angular-translate-loader-static-files.min.js',
+      'node_modules/angular-translate-loader-url/angular-translate-loader-url.min.js',
+      'node_modules/angular-dynamic-locale/dist/tmhDynamicLocale.js',
+
+      'node_modules/ng-file-upload/dist/ng-file-upload.min.js',
+
+      'node_modules/ngstorage/ngStorage.min.js', // ng-storage
+      'node_modules/webcam/dist/webcam.min.js', // webcam directive
+
+      // UI Router
       'node_modules/@bower_components/angular-ui-router/release/angular-ui-router.min.js',
       'node_modules/@bower_components/angular-ui-router/release/stateEvents.min.js', // @TODO(rm this?)
-      'node_modules/@bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js',
-      'node_modules/@bower_components/angular-ui-grid/ui-grid.min.js',
-      'node_modules/@bower_components/angular-touch/angular-touch.min.js',
-      'node_modules/@bower_components/angular-ui-select/dist/select.min.js',
-      'node_modules/@bower_components/angular-growl-notifications/dist/angular-growl-notifications.min.js',
-      'node_modules/@bower_components/angular-animate/angular-animate.min.js',
-      'node_modules/@bower_components/angular-translate/angular-translate.min.js',
-      'node_modules/@bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files.min.js',
-      'node_modules/@bower_components/angular-translate-loader-url/angular-translate-loader-url.min.js',
-      'node_modules/@bower_components/angular-dynamic-locale/dist/tmhDynamicLocale.js',
-      'node_modules/@bower_components/ng-file-upload/ng-file-upload.min.js',
-      'node_modules/@bower_components/ngstorage/ngStorage.min.js', // ng-storage
-      'node_modules/@bower_components/webcam-directive/dist/webcam.min.js', // webcam directive
 
       // MomentJS
-      'node_modules/@bower_components/moment/moment.js',
-      'node_modules/@bower_components/angular-moment/angular-moment.min.js',
-      'node_modules/@bower_components/moment/locale/fr.js',
+      'node_modules/moment/min/moment.min.js',
+      'node_modules/moment/locale/fr.js',
+      'node_modules/angular-moment/angular-moment.min.js',
     ],
 
     // these must be globs ("**" syntax) to retain their folder structures
     static : {
       bhima : [
-        'client/src/**/*',
-        'client/src/index.html',
-        '!client/src/js/**/*.js',
-        '!client/src/modules/**/*.js',
-        '!client/src/**/*.css',
-        '!client/src/i18n/en/*',
-        '!client/src/i18n/fr/*',
-        '!client/src/i18n/fr/',
-        '!client/src/i18n/en/',
-      ],
-      vendor : [
-        'node_modules/@bower_components/**/*.{css,ttf,woff,woff2,eot,svg}',
-        '!node_modules/@bower_components/**/src{,/**}',
-        '!node_modules/@bower_components/**/js{,/**}',
-
-        // @TODO(sfount) find why these are hacked in here and improve the process
-        'node_modules/@bower_components/moment/moment.js',
-        'node_modules/@bower_components/JsBarcode/dist/JsBarcode.all.min.js',
+        'client/src/**/*.html',
+        'client/src/{assets,i18n,currency}/**/*',
+        '!client/src/i18n/{en,fr}/*.json',
       ],
     },
     less : 'client/src/less/bhima-bootstrap.less',
-    index : 'client/src/index.html',
   },
   server : {
     javascript : ['server/*.js', 'server/**/*.js'],
@@ -112,15 +114,44 @@ const paths = {
   },
 };
 
-// external gulp tasks to build the client, server and watch for client changes
-gulp.task('default', ['build']);
-gulp.task('build', ['client', 'server']);
-gulp.task('client', ['js', 'css', 'cssForPDF', 'less', 'i18n', 'vendor', 'static', 'plugins'], templateHTML);
-gulp.task('watch', ['watch-client']);
+// TODO(@jniles) - make this cleaner.  We filter on angular because moment has a different
+// folder structure for non-minified
+if (isDevelopment) {
+  paths.client.vendorJs = paths.client.vendorJs.map(file => {
+    if (file.includes('angular')) {
+      return file.replace('min.js', 'js');
+    }
+
+    return file;
+  });
+
+  paths.client.css = paths.client.css.map(file => file.replace('.min.css', '.css'));
+}
+
+const buildJS = series(cleanJS, compileTypescript);
+const buildCSS = series(cleanCSS, cssForPDF, compileLess, compileCSS);
+const buildI18n = series(parallel(lintI18n, cleanI18n), compileI18n);
+const server = series(cleanServer, moveServerFiles);
+const client = series(
+  parallel(buildJS, buildCSS, buildI18n, buildVendor, buildStatic, fonts, fontsUiGrid),
+  collectRevisionsIntoManifest,
+  templateHTML
+);
+const build = parallel(client, server);
+
+function fonts() {
+  return src(paths.client.fonts)
+    .pipe(dest(`${CLIENT_FOLDER}/fonts/`));
+}
+
+function fontsUiGrid() {
+  return src('node_modules/angular-ui-grid/fonts/*')
+    .pipe(dest(`${CLIENT_FOLDER}/css/fonts/`));
+}
 
 // collect all BHIMA application code and return a single versioned JS file
 // ensures previous versioned file is removed before running
-gulp.task('js', ['clean-js'], () => {
+function compileTypescript() {
   const typescriptConfig = {
     allowJs : true,
     target : 'es5',
@@ -129,150 +160,154 @@ gulp.task('js', ['clean-js'], () => {
     outFile : 'js/bhima/bhima.min.js',
   };
 
-  return gulp.src(paths.client.javascript)
+  return src(paths.client.javascript)
     .pipe(concat('bhima.concat.js'))
     .pipe(typescript(typescriptConfig))
     .pipe(gulpif(isProduction, uglify({ mangle : true })))
     .pipe(iife())
     .pipe(rev())
-    .pipe(gulp.dest(`${CLIENT_FOLDER}`)) // write revisioned javascript to build folder
-    .pipe(rev.manifest(`${CLIENT_FOLDER}/rev-manifest.json`, { merge : true }))
-    .pipe(gulp.dest('')); // write manifest to build folder
-});
+    .pipe(dest(CLIENT_FOLDER)) // write revisioned javascript to build folder
+    .pipe(rev.manifest('rev-manifest-js.json'))
+    .pipe(dest(CLIENT_FOLDER)); // write manifest to build folder
+}
 
-// collects all custom js script of js plugins from client (client/js/scripts)
-// and moves them to the build folder, respecting folder structure
-gulp.task('plugins', () => {
-  return gulp.src(paths.client.plugins)
-    .pipe(concat('plugins.concat.js'))
-    .pipe(gulp.dest(`${CLIENT_FOLDER}/js/plugins`));
-});
+function collectRevisionsIntoManifest() {
+  return src(`${CLIENT_FOLDER}/rev-manifest-*.json`)
+    .pipe(mergeJson({ fileName : 'rev-manifest.json' }))
+    .pipe(dest(CLIENT_FOLDER));
+}
 
 // collect all BHIMA application style sheets and return a single versioned CSS file
-gulp.task('css', ['clean-css'], () => {
-  return gulp.src(paths.client.css)
-    .pipe(cssnano({ zindex : false }))
-    .pipe(concat('css/bhima/bhima.min.css'))
+function compileCSS() {
+  return src(paths.client.css)
+    .pipe(concat('css/bhima.min.css'))
+    .pipe(gulpif(isProduction, cssnano({ zindex : false })))
     .pipe(rev())
-    .pipe(gulp.dest(CLIENT_FOLDER))
-    .pipe(rev.manifest(`${CLIENT_FOLDER}/rev-manifest.json`, { merge : true }))
-    .pipe(gulp.dest(''));
-});
+    .pipe(dest(CLIENT_FOLDER))
+    .pipe(rev.manifest('rev-manifest-css.json'))
+    .pipe(dest(CLIENT_FOLDER));
+}
 
 // collect all PDF style sheets and returns a seingle versionned css file
-gulp.task('cssForPDF', () => {
-  return gulp.src(paths.client.cssForPDF)
+function cssForPDF() {
+  return src(paths.client.cssForPDF)
     .pipe(cssnano({ zindex : false }))
     .pipe(concat('bhima-pdf.min.css'))
-    .pipe(gulp.dest(`${CLIENT_FOLDER}/css`));
-});
+    .pipe(dest(`${CLIENT_FOLDER}/css`));
+}
 
 // copy custom BHIMA bootstrap files and build build bootsrap LESS, returns
 // single CSS file
-gulp.task('less', () => {
-  const lessConfig = { paths : ['./node_modules/@bower_components/bootstrap/less'] };
-
-  return gulp.src(paths.client.less)
-    .pipe(gulp.dest(lessConfig.paths[0])) // move less file into actual bootstrap folder, this feels wrong
+function compileLess() {
+  const lessConfig = { paths : ['./node_modules/bootstrap/less'] };
+  return src(paths.client.less)
+    .pipe(dest(lessConfig.paths[0])) // move less file into actual bootstrap folder, this feels wrong
     .pipe(less(lessConfig))
-    .pipe(gulp.dest(`${CLIENT_FOLDER}/css`));
-});
+    .pipe(gulpif(isProduction, cssnano({ zindex : false })))
+    .pipe(dest(`${CLIENT_FOLDER}/css`));
+}
 
-gulp.task('i18n', ['lint-i18n', 'clean-i18n'], () => {
+function compileI18n() {
   const en = collectTranslationFiles(supportedLanguages.en);
   const fr = collectTranslationFiles(supportedLanguages.fr);
-
   return merge(en, fr);
-});
+}
 
 // collect all external vendor code and returns a single versioned JS file
-gulp.task('vendor', () => {
-  return gulp.src(paths.client.vendorJs)
-    .pipe(gulpif(isProduction, uglify({ mangle : true })))
+function buildVendor() {
+  return src(paths.client.vendorJs)
     .pipe(concat('js/vendor/vendor.min.js'))
     .pipe(rev())
-    .pipe(gulp.dest(CLIENT_FOLDER))
-    .pipe(rev.manifest(`${CLIENT_FOLDER}/rev-manifest.json`, { merge : true }))
-    .pipe(gulp.dest(''));
-});
+    .pipe(dest(CLIENT_FOLDER))
+    .pipe(rev.manifest('rev-manifest-vendor.json'))
+    .pipe(dest(CLIENT_FOLDER));
+}
 
 // collects all static files from the client (BHIMA src and vendor files)
 // and moves them to the build folder, respecting folder structure
-gulp.task('static', () => {
-  const bhima = gulp.src(paths.client.static.bhima)
-    .pipe(gulp.dest(CLIENT_FOLDER));
-  const vendor = gulp.src(paths.client.static.vendor)
-    .pipe(gulp.dest(`${CLIENT_FOLDER}/vendor`));
+function buildStatic() {
+  return src(paths.client.static.bhima)
+    .pipe(dest(CLIENT_FOLDER));
+}
 
-  return merge(bhima, vendor);
-});
-
-gulp.task('watch-client', () => {
-  gulp.watch(paths.client.javascript, ['watch-js']);
-  gulp.watch(paths.client.css, ['watch-css']);
-  gulp.watch([`${supportedLanguages.en.path}/**/*.json`, `${supportedLanguages.fr.path}/**/*.json`], ['i18n']);
+function watchClient() {
+  watch(paths.client.javascript, watchJS);
+  watch(paths.client.css, watchCSS);
+  watch([`${supportedLanguages.en.path}/**/*.json`, `${supportedLanguages.fr.path}/**/*.json`], buildI18n);
 
   // ensure all static bhima files are copied over to the build given changes
   // this is important to catch changes in component template files etc.
-  gulp.watch(paths.client.static.bhima, ['watch-static']);
-});
+  watch(paths.client.static.bhima, watchStatic);
+}
 
-// alias tasks to run client build steps and ensures template is linked following
-gulp.task('watch-static', ['static'], templateHTML);
-gulp.task('watch-js', ['js'], templateHTML);
-gulp.task('watch-css', ['css'], templateHTML);
+function watchStatic(done) {
+  series(buildStatic, templateHTML);
+  done();
+}
 
-// server build - copies all files from server/ to bin/server including package.json
-gulp.task('server', ['clean-server'], () => {
-  return gulp.src(paths.server.files)
-    .pipe(gulp.dest(SERVER_FOLDER));
-});
+function watchJS(done) {
+  series(buildJS, templateHTML);
+  done();
+}
 
-// Cleaner helpers
-// These methods clean up folders that are affected by changes in the repository
-gulp.task('clean-js', () => {
-  return del([`${CLIENT_FOLDER}/js/bhima`]);
-});
+function watchCSS(done) {
+  series(buildCSS, templateHTML);
+  done();
+}
 
-gulp.task('clean-css', () => {
-  return del([`${CLIENT_FOLDER}/css/bhima`]);
-});
+// server build - copies all files from server/ to bin/server
+/*
+function server(done) {
+  ();
+  done();
+}
+*/
 
-gulp.task('clean-i18n', () => {
-  return del([`${CLIENT_FOLDER}/i18n`]);
-});
-
-gulp.task('clean-server', () => {
-  return del([SERVER_FOLDER]);
-});
+function moveServerFiles() {
+  return src(paths.server.files)
+    .pipe(dest(SERVER_FOLDER));
+}
 
 // rewrite source HTML files with build versioned files and assets
 // usually run as the final step linking the build together
 function templateHTML() {
-  const manifest = gulp.src(`${CLIENT_FOLDER}/rev-manifest.json`);
+  const manifest = src(`${CLIENT_FOLDER}/rev-manifest.json`);
 
-  return gulp.src('client/src/index.html')
+  return src('client/src/index.html')
     .pipe(template({ isProduction, isDevelopment }))
     .pipe(revRewrite({ manifest }))
-    .pipe(gulp.dest(CLIENT_FOLDER));
+    .pipe(dest(CLIENT_FOLDER));
 }
 
 function collectTranslationFiles(details) {
-  return gulp.src(`${details.path}/**/*.json`)
+  return src(`${details.path}/**/*.json`)
     .pipe(mergeJson({ fileName : `${details.key}.json` }))
-    .pipe(gulp.dest(`${CLIENT_FOLDER}/i18n/`));
+    .pipe(dest(`${CLIENT_FOLDER}/i18n/`));
 }
 
 // Custom i18n linting task, promise wrapper to work with gulp ecosystem
-gulp.task('lint-i18n', () => {
+// TODO(@jniles) - gulp allows you to return exec().  Can we just return
+// the raw exec() call without the callback wrapper?
+// See: https://gulpjs.com/docs/en/getting-started/async-completion
+function lintI18n() {
   return new Promise((resolve, reject) => {
     const compareUtilityPath = './utilities/translation/tfcomp.js';
     const utilityCommand = `node ${compareUtilityPath} ${supportedLanguages.en.path} ${supportedLanguages.fr.path}`;
 
     exec(utilityCommand, (error, output, warning) => {
       if (error) { reject(error); return; }
+
+      // eslint-disable-next-line
       if (warning) { console.error(warning); }
       resolve(output);
     });
   });
-});
+}
+
+exports.default = build;
+exports.build = build;
+exports.client = client;
+exports.watch = watchClient;
+exports.cleanServer = cleanServer;
+exports.moveServerFiles = moveServerFiles;
+exports.server = server;

@@ -47,6 +47,7 @@ CREATE FUNCTION GetExchangeRate(
   currencyId INT,
   date TIMESTAMP
 )
+
 RETURNS DECIMAL(19, 8) DETERMINISTIC
 BEGIN
   RETURN (
@@ -54,6 +55,19 @@ BEGIN
     WHERE e.enterprise_id = enterpriseId AND e.currency_id = currencyId AND e.date <= date
     ORDER BY e.date DESC LIMIT 1
   );
+END $$
+
+/*
+Sometime we need to get the exchange rate by the project id
+*/
+CREATE FUNCTION GetExchangeRateByProject(
+  projectId INT,
+  currencyId INT,
+  date TIMESTAMP
+)
+RETURNS DECIMAL(19, 8) DETERMINISTIC
+BEGIN
+  RETURN (SELECT GetExchangeRate(p.enterprise_id, currencyId, date) FROM project p WHERE p.id = projectId);
 END $$
 
 

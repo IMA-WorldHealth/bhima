@@ -1,0 +1,4 @@
+<div class="ui-grid-cell-contents text-center" ng-if="!row.groupHeader">
+  <i class="fa fa-circle" ng-class="{'text-danger': row.entity.is_occupied, 'text-success': !row.entity.is_occupied }"></i> 
+  {{ row.entity.label }}
+</div>

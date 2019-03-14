@@ -222,10 +222,10 @@ function CashService(
   }
 
   // open a dialog box to Cancel Cash Payment
-  function openCancelCashModal(invoice) {
+  function openCancelCashModal(cash) {
     return Modal.open({
       templateUrl : 'modules/cash/modals/modal-cancel-cash.html',
-      resolve     : { data : { invoice } },
+      resolve     : { data : { cash } },
       size        : 'md',
       animation   : false,
       keyboard    : false,

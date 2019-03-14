@@ -86,9 +86,9 @@ function PatientGroupController(
     /** @todo - discuss if this should happen on the server */
     patientGroup.enterprise_id = Session.enterprise.id;
 
-    const promise = (creation) ?
-      PatientGroups.create(patientGroup) :
-      PatientGroups.update(patientGroup.uuid, patientGroup);
+    const promise = (creation)
+      ? PatientGroups.create(patientGroup)
+      : PatientGroups.update(patientGroup.uuid, patientGroup);
 
     return promise
       .then(() => {

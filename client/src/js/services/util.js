@@ -12,6 +12,7 @@ UtilService.$inject = ['moment'];
  * @requires moment
  */
 function UtilService(moment) {
+  /* eslint-disable prefer-rest-params */
   const service = this;
 
   service.unwrapHttpResponse = function unwrapHttpResponse(response) {
@@ -121,6 +122,7 @@ function UtilService(moment) {
 
       // call the function only once
       result = fn.apply(context || this, arguments);
+      // eslint-disable-next-line no-param-reassign
       fn = null;
 
       return result;
@@ -260,6 +262,7 @@ function UtilService(moment) {
     let timeout;
     return function out() {
       const context = this;
+
       const args = arguments;
       const later = function () {
         timeout = null;
@@ -305,5 +308,35 @@ function UtilService(moment) {
       out[value].push(item);
     }
     return out;
+  };
+
+  /**
+   * @function mimeIcon
+   * @param {string} mimetype
+   */
+  service.mimeIcon = (mimetype) => {
+    let result = {};
+    let ext;
+
+    if (mimetype.indexOf('image') > -1) {
+      /* eslint-disable no-nested-ternary */
+      ext = (mimetype.indexOf('jpg') > -1 || mimetype.indexOf('jpeg') > -1) ? '.jpg'
+        : (mimetype.indexOf('png') > -1) ? '.png'
+          : (mimetype.indexOf('gif') > -1) ? '.gif' : '';
+
+      result = { icon : 'fa-file-image-o', label : 'Image', ext };
+    } else if (mimetype.indexOf('pdf') > -1) {
+      result = { icon : 'fa-file-pdf-o', label : 'PDF', ext : '.pdf' };
+    } else if (mimetype.indexOf('word') > -1) {
+      result = { icon : 'fa-file-word-o', label : 'MS WORD', ext : '.doc' };
+    } else if (mimetype.indexOf('sheet') > -1) {
+      result = { icon : 'fa-file-excel-o', label : 'MS EXCEL', ext : '.xls' };
+    } else if (mimetype.indexOf('presentation') > -1) {
+      result = { icon : 'fa-file-powerpoint-o', label : 'MS Power Point', ext : '.ppt' };
+    } else {
+      result = { icon : 'fa-file-o', label : 'Fichier', ext : '' };
+    }
+
+    return result;
   };
 }

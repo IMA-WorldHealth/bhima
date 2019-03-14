@@ -32,7 +32,7 @@ startfold "Running server Unit Tests ......" "server-unit"
 endfold "server-unit" ;
 
 # run end to end tests
-startfold "Running Client Unit Tests..." "test-end-to-end";
+startfold "Running Client End to End Tests..." "test-end-to-end";
 ./sh/test-ends.sh
 endfold "test-end-to-end" ;
 

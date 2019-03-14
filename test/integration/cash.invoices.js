@@ -132,8 +132,9 @@ function PatientInvoicePayments() {
         expect(res).to.have.status(200);
         expect(res.body).to.not.be.empty;
         expect(res.body).to.have.keys(
-          'uuid', 'barcode', 'reference', 'date', 'debtor_uuid', 'project_id', 'currency_id', 'items',
-          'cashbox_id', 'amount', 'user_id', 'description', 'is_caution', 'edited'
+          'uuid', 'barcode', 'reference', 'date', 'debtorName',
+          'debtorReference', 'created_at', 'debtor_uuid', 'project_id', 'currency_id', 'items',
+          'cashbox_id', 'amount', 'user_id', 'description', 'is_caution', 'edited', 'posted',
         );
       })
       .catch(helpers.handler);

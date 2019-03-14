@@ -1,0 +1,210 @@
+<form
+  name="ModalForm"
+  ng-submit="$ctrl.submit(ModalForm)"
+  data-modal="admission-search"
+  novalidate>
+
+  <div class="modal-header search-modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate>FORM.INFO.PATIENTS</li>
+      <li class="title" translate>FORM.INFO.SEARCH</li>
+    </ol>
+  </div>
+
+  <div class="modal-body search-modal">
+    <uib-tabset>
+      <uib-tab index="0" heading="{{ 'FORM.LABELS.SEARCH_QUERIES' | translate }}" data-custom-filter-tab>
+        <div class="tab-body">
+          <!-- refered -->
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" ng-true-value="1" ng-false-value=0 ng-model="$ctrl.searchQueries.is_refered">
+              <span translate>PATIENT_RECORDS.VISITS.IS_REFERED</span>
+            </label>
+            <bh-clear on-clear="$ctrl.clear('is_refered')"></bh-clear>
+          </div>
+
+          <!-- pregnant -->
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" ng-true-value="1" ng-false-value=0 ng-model="$ctrl.searchQueries.is_pregnant">
+              <span translate>PATIENT_RECORDS.VISITS.IS_PREGNANT</span>
+            </label>
+            <bh-clear on-clear="$ctrl.clear('is_pregnant')"></bh-clear>
+          </div>
+
+          <!-- hospitalized -->
+          <div>
+            <div class="radio-inline">
+              <label style="font-weight: 100;">
+                <input 
+                  type="radio" 
+                  name="hospitalized" 
+                  id="hospitalized_yes" 
+                  ng-value="1" 
+                  ng-model="$ctrl.searchQueries.hospitalized">
+                <span translate>PATIENT_RECORDS.VISITS.HOSPITALISATION</span>
+              </label>
+            </div>
+            <div class="radio-inline">
+              <label style="font-weight: 100;">
+                <input 
+                  type="radio" 
+                  name="hospitalized" 
+                  id="hospitalized_no" 
+                  ng-value="0" 
+                  ng-model="$ctrl.searchQueries.hospitalized">
+                <span translate>PATIENT_RECORDS.VISITS.AMBULATORY</span>
+              </label>
+            </div>
+            <bh-clear on-clear="$ctrl.clear('hospitalized')"></bh-clear>
+          </div>
+
+          <!-- case -->
+          <div>
+            <div class="radio-inline">
+              <label style="font-weight: 100;">
+                <input 
+                  type="radio" 
+                  name="is_new_case" 
+                  id="is_new_case_yes" 
+                  ng-value="1" 
+                  ng-model="$ctrl.searchQueries.is_new_case">
+                <span translate>PATIENT_RECORDS.VISITS.IS_NEW_CASE</span>
+              </label>
+            </div>
+            <div class="radio-inline">
+              <label style="font-weight: 100;">
+                <input 
+                  type="radio" 
+                  name="is_new_case" 
+                  id="is_new_case_no" 
+                  ng-value="0" 
+                  ng-model="$ctrl.searchQueries.is_new_case">
+                <span translate>PATIENT_RECORDS.VISITS.IS_NOT_NEW_CASE</span>
+              </label>
+            </div>
+            <bh-clear on-clear="$ctrl.clear('is_new_case')"></bh-clear>
+          </div>
+
+          <!-- health zone -->
+          <div>
+            <div class="radio-inline">
+              <label style="font-weight: 100;">
+                <input 
+                  type="radio" 
+                  name="inside_health_zone" 
+                  id="inside_health_zone_yes" 
+                  ng-value="1" 
+                  ng-model="$ctrl.searchQueries.inside_health_zone">
+                <span translate>PATIENT_RECORDS.VISITS.IS_IN_HEALTH_ZONE</span>
+              </label>
+            </div>
+            <div class="radio-inline">
+              <label style="font-weight: 100;">
+                <input 
+                  type="radio" 
+                  name="inside_health_zone" 
+                  id="inside_health_zone_no" 
+                  ng-value="0" 
+                  ng-model="$ctrl.searchQueries.inside_health_zone">
+                <span translate>PATIENT_RECORDS.VISITS.IS_NOT_IN_HEALTH_ZONE</span>
+              </label>
+            </div>
+            <bh-clear on-clear="$ctrl.clear('inside_health_zone')"></bh-clear>
+          </div>
+
+          <!--patient name-->
+          <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.display_name.$invalid }">
+            <label class="control-label" translate> FORM.LABELS.NAME </label>
+            <bh-clear on-clear="$ctrl.clear('display_name')"></bh-clear>
+            <input type="text" class="form-control" name="display_name" ng-model="$ctrl.searchQueries.display_name">
+            <div class="help-block" ng-messages="ModalForm.display_name.$error" ng-show="ModalForm.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+
+          <!-- patient reference -->
+          <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.reference.$invalid }">
+            <label class="control-label" translate> FORM.LABELS.REFERENCE </label>
+            <bh-clear on-clear="$ctrl.clear('reference')"></bh-clear>
+
+            <input type="text" class="form-control" name="reference" ng-model="$ctrl.searchQueries.reference">
+            <div class="help-block" ng-messages="ModalForm.reference.$error" ng-show="ModalForm.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+
+          <!-- patient hospital number-->
+          <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.hospital_no.$invalid }">
+            <label class="control-label" translate>
+                FORM.LABELS.HOSPITAL_FILE_NR
+            </label>
+            <bh-clear on-clear="$ctrl.clear('hospital_no')"></bh-clear>
+
+            <input type="text" class="form-control" name="hospital_no" ng-model="$ctrl.searchQueries.hospital_no">
+            <div class="help-block" ng-messages="ModalForm.reference.$error" ng-show="ModalForm.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+
+          <!-- service -->
+          <bh-service-select on-select-callback="$ctrl.onSelectService(service)">
+            <bh-clear on-clear="$ctrl.clear('service_id')"></bh-clear>
+          </bh-service-select>
+
+          <!-- select the ward -->
+          <bh-ward-select
+            uuid="$ctrl.ward_uuid"
+            on-select-callback="$ctrl.onSelectWard(ward)">
+            <bh-clear on-clear="$ctrl.clear('ward_uuid')"></bh-clear>
+          </bh-ward-select>
+
+          <!-- select the room -->
+          <bh-room-select
+            uuid="$ctrl.bed.room_uuid"
+            ward-uuid="$ctrl.searchQueries.ward_uuid"
+            on-select-callback="$ctrl.onSelectRoom(room)">
+            <bh-clear on-clear="$ctrl.clear('room_uuid')"></bh-clear>
+          </bh-room-select>
+
+          <!-- select the bed -->
+          <bh-bed-select
+            id="$ctrl.bed.id"
+            room-uuid="$ctrl.searchQueries.room_uuid"
+            on-select-callback="$ctrl.onSelectBed(bed)">
+            <bh-clear on-clear="$ctrl.clear('bed_id')"></bh-clear>
+          </bh-bed-select>
+        </div>
+      </uib-tab>
+
+      <uib-tab index="1" heading="{{ 'FORM.LABELS.DEFAULTS' | translate }}" data-default-filter-tab>
+        <div class="tab-body">
+          <!-- period selection -->
+          <bh-period-select
+            default-period="{{$ctrl.filters.period}}"
+            on-select-callback="$ctrl.onSelectPeriod(period)">
+          </bh-period-select>
+
+          <div class="form-group" ng-class="{ 'has-error' : ModalForm.limit.$invalid }">
+            <label class="control-label" translate>FORM.LABELS.LIMIT</label>
+            <input name="limit" type="number" bh-integer bh-max-integer class="form-control" ng-model="$ctrl.defaultQueries.limit" ng-change="$ctrl.onSelectLimit($ctrl.defaultQueries.limit)">
+
+            <div class="help-block" ng-messages="ModalForm.limit.$error">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+        </div>
+      </uib-tab>
+    </uib-tabset>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" data-method="cancel" translate>
+      FORM.BUTTONS.CLOSE
+    </button>
+    <button type="submit" class="btn btn-primary" data-method="submit" translate>
+      FORM.BUTTONS.SUBMIT
+    </button>
+  </div>
+</form>

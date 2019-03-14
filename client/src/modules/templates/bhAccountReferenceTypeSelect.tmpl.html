@@ -1,0 +1,28 @@
+<div ng-form="AccountRefenceTypeForm" bh-account-reference-type-select ng-model-options="{ updateOn: 'default' }">
+  <div
+    class="form-group"
+    ng-class="{ 'has-error' : AccountRefenceTypeForm.$submitted && AccountRefenceTypeForm.reference_type_id.$invalid }">
+
+    <label class="control-label" translate>
+      FORM.LABELS.ACCOUNT_REFERENCE_TYPE
+    </label>
+
+    <ng-transclude></ng-transclude>
+
+    <ui-select
+      name="reference_type_id"
+      ng-model="$ctrl.referenceTypeId"
+      on-select="$ctrl.onSelect($item, $model)">
+      <ui-select-match placeholder="{{ 'FORM.SELECT.ACCOUNT_REFERENCE_TYPE' | translate }}">
+        <span>{{$select.selected.label}}</span>
+      </ui-select-match>
+      <ui-select-choices ui-select-focus-patch repeat="accountReferenceType.id as accountReferenceType in $ctrl.accountReferenceTypes | filter: { 'label': $select.search }">
+        <span ng-bind-html="accountReferenceType.label | highlight:$select.search"></span>
+      </ui-select-choices>
+    </ui-select>
+
+    <div class="help-block" ng-messages="AccountRefenceTypeForm.reference_type_id.$error" ng-show="AccountRefenceTypeForm.$submitted">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+</div>

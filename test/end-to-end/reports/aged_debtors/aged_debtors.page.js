@@ -10,10 +10,10 @@ class DebtorsReportPage {
   }
 
   // preview a Debtors report
-  showDebtorsReportPreview(year, month, includeZero) {
+  showDebtorsReportPreview(year, month, includeZero, currencyId) {
     components.fiscalYearSelect.set(year);
     components.periodSelection.set(month);
-
+    components.currencySelect.set(currencyId);
 
     if (includeZero) {
       element(by.css('input[type="checkbox"]')).click();
@@ -23,8 +23,8 @@ class DebtorsReportPage {
   }
 
   // save a Debtors report
-  saveDebtorsReport(year, month, includeZero, reportName, reportFormat) {
-    this.showDebtorsReportPreview(year, month, includeZero);
+  saveDebtorsReport(year, month, includeZero, reportName, reportFormat, currencyId) {
+    this.showDebtorsReportPreview(year, month, includeZero, currencyId);
 
     // save report as PDF
     this.page.saveAs();
@@ -38,8 +38,8 @@ class DebtorsReportPage {
   }
 
   // print a debtors report
-  printDebtorsReport(year, month, includeZero) {
-    this.showDebtorsReportPreview(year, month, includeZero);
+  printDebtorsReport(year, month, includeZero, currencyId) {
+    this.showDebtorsReportPreview(year, month, includeZero, currencyId);
     this.page.printPreview();
   }
 

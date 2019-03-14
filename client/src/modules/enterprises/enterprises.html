@@ -40,18 +40,18 @@
               <div class="form-group">
                 <div class="enterprise-logo-editing">
                   <div class="logo" ng-if="!EnterpriseCtrl.enterprise.logo">
-                    <span ng-if="!EnterpriseCtrl.hasThumbnail"> 
+                    <span ng-if="!EnterpriseCtrl.hasThumbnail">
                       <i class="fa fa-3x fa-file-image-o"></i>
                     </span>
-                    <span ng-if="EnterpriseCtrl.hasThumbnail"> 
+                    <span ng-if="EnterpriseCtrl.hasThumbnail">
                       <img ngf-thumbnail="{{ 'EnterpriseCtrl.thumbnail' }}" style="width: 100px !important; height: 100px !important;">
                     </span>
                   </div>
                   <div class="logo" ng-if="EnterpriseCtrl.enterprise.logo">
-                    <span ng-if="!EnterpriseCtrl.hasThumbnail"> 
+                    <span ng-if="!EnterpriseCtrl.hasThumbnail">
                       <img ng-src="{{ EnterpriseCtrl.enterprise.logo }}" style="width: 100px !important; height: 100px !important;" onError="this.src='assets/empty.png';" >
                     </span>
-                    <span ng-if="EnterpriseCtrl.hasThumbnail"> 
+                    <span ng-if="EnterpriseCtrl.hasThumbnail">
                       <img ngf-thumbnail="{{ 'EnterpriseCtrl.thumbnail' }}" style="width: 100px !important; height: 100px !important;">
                     </span>
                   </div>
@@ -61,11 +61,11 @@
                   <label data-method="upload-logo" class="btn btn-default">
                     <i class="fa fa-edit"></i> <span translate>ENTERPRISE.UPDATE_LOGO</span>
                     <input
-                      type="file" 
-                      accept="image/*" 
+                      type="file"
+                      accept="image/*"
                       ng-model="EnterpriseCtrl.file"
-                      ngf-max-size="2MB" 
-                      ngf-select="EnterpriseCtrl.setThumbnail($file)" 
+                      ngf-max-size="2MB"
+                      ngf-select="EnterpriseCtrl.setThumbnail($file)"
                       style="display: none;">
                   </label>
                 </div>
