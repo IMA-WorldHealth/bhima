@@ -241,6 +241,23 @@ function calcualteAge(dob) {
   return moment().diff(dob, 'years');
 }
 
+/**
+ * @function getNodeModulesPath
+ *
+ * @description
+ * This function returns the node_modules path, no matter where this file
+ * lies by using node's underlying require() algorithm.
+ *
+ * @return {string} the node_modules path
+ */
+function getNodeModulesPath() {
+  const expressPath = require.resolve('express');
+  const [nodeModulesDir] = expressPath.split('node_modules/');
+  return path.join(nodeModulesDir, 'node_modules');
+}
+
+exports.getNodeModulesPath = getNodeModulesPath;
+
 
 /**
  * @function uuid

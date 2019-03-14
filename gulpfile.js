@@ -43,10 +43,6 @@ const cleanServer = () => del(SERVER_FOLDER);
 // resource paths
 const paths = {
   client : {
-    // this section contains custom js scripts of plugins
-    plugins : [
-      'client/src/js/plugins/*.js',
-    ],
     javascript : [
       'client/src/js/define.js',
       'client/src/js/app.js',
@@ -56,7 +52,16 @@ const paths = {
     ],
     css : [
       'client/src/css/*.css',
+      'node_modules/ui-select/dist/select.min.css',
+      'node_modules/angular-ui-grid/ui-grid.min.css',
+      'node_modules/font-awesome/css/font-awesome.min.css',
+      'node_modules/angular-ui-bootstrap/dist/ui-bootstrap-csp.css',
       '!client/src/css/pdf-style.css',
+    ],
+    fonts : [
+      'node_modules/typeface-open-sans/files/*',
+      'node_modules/bootstrap/fonts/*',
+      'node_modules/font-awesome/fonts/*',
     ],
     cssForPDF : [
       'client/src/css/pdf-style.css',
@@ -96,6 +101,9 @@ const paths = {
       'node_modules/moment/min/moment.min.js',
       'node_modules/moment/locale/fr.js',
       'node_modules/angular-moment/angular-moment.min.js',
+
+      // barcode rendering
+      'node_modules/jsbarcode/dist/JsBarcode.all.min.js',
     ],
 
     // these must be globs ("**" syntax) to retain their folder structures

@@ -1,12 +1,10 @@
 /* eslint global-require: "off" */
 const { expect } = require('chai');
 const rewire = require('rewire');
-const util = require('util');
 const path = require('path');
 const fs = require('mz/fs');
-const exec = util.promisify(require('child_process').exec);
 
-const pdf = rewire('../../server/lib/renderers/pdf');
+const pdf = rewire('../../../server/lib/renderers/pdf');
 pdf.__set__('html', { render : noop });
 
 // mock handlebars template file
@@ -20,23 +18,19 @@ const data = {
   lang : 'fr',
 };
 
-const random = Math.ceil(Math.random() * (10 ** 9));
-
 const fixturesPath = path.resolve('test/fixtures');
-const artifactsPath = path.resolve('test/artifacts');
 const htmlFile = path.join(fixturesPath, '/pdf-sample.html');
 const pdfFile = path.join(fixturesPath, '/pdf-sample.pdf');
-const temporaryFile = path.join(artifactsPath, `/pdf-${random}.pdf`);
 
 function PDFRenderUnitTest() {
-  it.skip('#pdf.render() renders a valid PDF file', async () => {
+  it('#pdf.render() renders a valid PDF file', async () => {
     const result = await pdf.render(data, template, {});
     const hasValidVersion = hasValidPdfVersion(result.toString());
     const isBuffer = isBufferInstance(result);
     expect(isBuffer && hasValidVersion).to.be.equal(true);
   });
 
-  it.skip('#pdf.render() renders an identical PDF given an HTML template', async () => {
+  it('#pdf.render() renders an identical PDF given an HTML template', async () => {
 
     // load the HTML template into memory as a giant string
     const tmpl = await fs.readFile(htmlFile, 'utf8');
@@ -49,33 +43,40 @@ function PDFRenderUnitTest() {
     expect(isBufferInstance(cached)).to.equal(true);
 
     // pdf DateCreation must be ignored when comparing
-    const slicedRendered = sliceOutCreationDate(rendered);
-    const slicedCached = sliceOutCreationDate(cached);
+    const slicedRendered = sliceOutRandomMetadata(sliceOutHeaderInfo(rendered));
+    const slicedCached = sliceOutRandomMetadata(sliceOutHeaderInfo(cached));
 
-    // write file to artifacts for AWS S3 storage.
-    // await fs.writeFile(path.join(artifactsPath, 'generated.pdf'), rendered);
-
-    expect(sliceOutRandomMetadata(slicedRendered)).to.deep.equal(sliceOutRandomMetadata(slicedCached));
+    expect(slicedRendered).to.deep.equal(slicedCached);
   });
 }
 
 /**
- * sliceOutCreationDate
- * @description remove the CreationDate from the PDF buffer
- * @param {buffer} buffer
+ * @function sliceOutHeader
+ *
+ * @description
+ * Removes the header form the PDF before comparison. The header contains the
+ * CreationDate and ModDate properties, which will differ between the PDFs and
+ * fail the test without actually being a problem with the rendering.
+ *
+ * @param {buffer} buffer - the PDF passed in as a buffer
+ * @returns {buffer} the original PDF w/o the header seaction
  */
-function sliceOutCreationDate(buffer) {
-  const start = buffer.indexOf('/CreationDate');
-  const end = buffer.indexOf(')', start) + 1;
+function sliceOutHeaderInfo(buffer) {
+  const start = buffer.indexOf('<</Creator');
+  const end = buffer.indexOf('>>', start) + 1;
   const firstPart = buffer.slice(0, start);
   const secondPart = buffer.slice(end);
   return Buffer.concat([firstPart, secondPart]);
 }
 
 /**
- * hasValidPdfVersion
- * @description check if the pdf version is valid
- * @param {string} fileInString the pdf file in string
+ * @function hasValidPdfVersion
+ *
+ * @description
+ * Checks if the pdf version string exists in the string passed in
+ *
+ * @param {string} fileInString the pdf file contents
+ * @returns {boolean} true if the contents are a PDF.
  */
 function hasValidPdfVersion(fileInString) {
   const pdfHeader = fileInString.substr(0, 8); // This gets the first 8 bytes/characters of the file

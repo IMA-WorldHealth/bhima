@@ -9,16 +9,17 @@
 
 const fs = require('fs');
 const debug = require('debug')('renders:resources');
+const path = require('path');
+const util = require('../util');
 
 const styles = [
-  'client/vendor/components-font-awesome/css/font-awesome.css',
+  path.join(util.getNodeModulesPath(), '/font-awesome/css/font-awesome.min.css'),
   'client/css/bhima-bootstrap.css',
   'client/css/bhima-pdf.min.css',
 ];
 
 const scripts = [
-  'client/vendor/JsBarcode.all.min.js',
-  'client/js/plugins/plugins.concat.js',
+  path.join(util.getNodeModulesPath(), '/jsbarcode/dist/JsBarcode.all.min.js'),
 ];
 
 // TODO(@jniles): this try/catch exists for unit tests.  Should we be passing in an environmental
@@ -30,9 +31,11 @@ let javascripts;
 try {
   stylesheets = styles.map(file => fs.readFileSync(file, 'utf8'));
   javascripts = scripts.map(file => fs.readFileSync(file, 'utf8'));
-} catch (e) {
-  debug('Could not load scripts and stylesheets!');
 
+  // run the barcode configuration after all dependencies have been loaded
+  javascripts.push(`JsBarcode('.barcode').init();`);
+} catch (e) {
+  debug(`Could not load scripts and stylesheets due to error ${e.toString()}`);
   stylesheets = [];
   javascripts = [];
 }

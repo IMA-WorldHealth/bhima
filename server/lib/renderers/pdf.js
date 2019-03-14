@@ -31,7 +31,7 @@ const headers = {
 // pptr options
 const pptrOptions = {
   headless : true,
-  args : ['--disable-dev-shm-usage'],
+  args : ['--disable-dev-shm-usage', '--disable-extensions'],
 };
 
 

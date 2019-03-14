@@ -101,4 +101,12 @@ describe('util.js', () => {
         });
       });
   });
+
+  it('#getNodeModulesPath() returns the current working directory node_modules path', () => {
+    const pwd = __dirname.split('/test/server-unit');
+    const [basePath] = pwd;
+
+    const nmPath = util.getNodeModulesPath();
+    expect(`${basePath}/node_modules`).to.equal(nmPath);
+  });
 });
