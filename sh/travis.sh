@@ -27,9 +27,6 @@ set +a
 mysql -h $DB_HOST -u root -e "GRANT ALL PRIVILEGES ON *.* TO '$DB_USER'@'$DB_HOST' IDENTIFIED BY '$DB_PASS' WITH GRANT OPTION;"
 mysql -h $DB_HOST -u root -e "FLUSH PRIVILEGES;"
 
-# start xvfb will screen size of 1280x1024
-/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16
-
 # install greenkeeper lockfile
 yarn global add greenkeeper-lockfile@1
 export GK_LOCK_YARN_OPTS="--ignore-engines"
