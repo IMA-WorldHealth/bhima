@@ -69,9 +69,16 @@ if (process.env.TRAVIS_BUILD_NUMBER) {
     browserName         : 'chrome',
     'tunnel-identifier' : process.env.TRAVIS_JOB_NUMBER,
     build               : process.env.TRAVIS_BUILD_NUMBER,
+    chromeOptions : {
+      args : [
+        '--headless',
+        '--window-size=1280,1024',
+        '--disable-dev-shm-usage',
+        '--disable-extensions',
+      ],
+    },
   }];
 
-  // make Travis take screenshots!
   config.mochaOpts = {
     reporter        : 'mochawesome',
     reporterOptions : {

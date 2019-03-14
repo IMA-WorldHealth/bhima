@@ -2,35 +2,22 @@ const { expect } = require('chai');
 const _ = require('lodash');
 const xlsx = require('../../../server/lib/renderers/xlsx');
 
-describe('util.js', () => {
-
-  it('Should return a xlsx buffer', (done) => {
+describe('renderers/xlsx.js', () => {
+  it('should return a xlsx buffer', async () => {
     const data = {
       rows : [{ Firstname : 'Alice', Lastname : 'Bob' }],
     };
-    xlsx.render(data)
-      .then(reportStream => {
-        expect(_.isBuffer(reportStream)).to.be.equal(true);
-        done();
-      })
-      .catch((error) => {
-        done(error);
-      });
+    const reportStream = await xlsx.render(data);
+    expect(_.isBuffer(reportStream)).to.be.equal(true);
   });
 
-  it('Should work for an empty object', (done) => {
+  it('should work for an empty object', async () => {
     const data = {};
-    xlsx.render(data)
-      .then(reportStream => {
-        expect(_.isBuffer(reportStream)).to.be.equal(true);
-        done();
-      })
-      .catch((error) => {
-        done(error);
-      });
+    const reportStream = await xlsx.render(data);
+    expect(_.isBuffer(reportStream)).to.be.equal(true);
   });
 
-  it('Should check the number of rows to write in the xlsx file', () => {
+  it('should check the number of rows to write in the xlsx file', () => {
     const data = {
       rows : [{ Firstname : 'Alice', Lastname : 'Bob' }],
     };
@@ -38,7 +25,7 @@ describe('util.js', () => {
     expect(result.length).to.be.equal(1);
   });
 
-  it('Should check the number of rows to write in the xlsx file by specifying a key', () => {
+  it('should check the number of rows to write in the xlsx file by specifying a key', () => {
     const data = {
       students : [
         { name : 'Alice' },
@@ -52,7 +39,7 @@ describe('util.js', () => {
     expect(data.students).to.deep.equal(result);
   });
 
-  it('Should remove unuseful columns for the user such as uuid', () => {
+  it('should remove unuseful columns for the user such as uuid', () => {
     const data = {
       students : [
         { uuid : '7a9480cc-b2cd-4975-a1dc-e8c167070481', name : 'Alice' },
