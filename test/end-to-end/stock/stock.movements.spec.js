@@ -39,7 +39,7 @@ function StockMovementsRegistryTests() {
     // for Entry
     modal.setEntryExit(0);
     modal.submit();
-    GU.expectRowCount(gridId, 29);
+    GU.expectRowCountAbove(gridId, 29);
   });
 
   it('filters by entry/exit', () => {
@@ -52,7 +52,7 @@ function StockMovementsRegistryTests() {
   it('find movements by depot', () => {
     modal.setDepot('Depot Principal');
     modal.submit();
-    GU.expectRowCount(gridId, 29);
+    GU.expectRowCountAbove(gridId, 29);
   });
 
   it('find movements by inventory', () => {
