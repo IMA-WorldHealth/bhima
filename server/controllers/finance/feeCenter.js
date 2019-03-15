@@ -7,6 +7,7 @@
 const q = require('q');
 const db = require('../../lib/db');
 const NotFound = require('../../lib/errors/NotFound');
+const FilterParser = require('../../lib/filter');
 
 // GET /fee_center
 function lookupFeeCenter(id) {
@@ -15,7 +16,7 @@ function lookupFeeCenter(id) {
     SELECT id, label, is_principal FROM fee_center WHERE id = ?`;
 
   const sqlReferenceFeeCenter = `
-    SELECT id, fee_center_id, account_reference_id, is_cost 
+    SELECT id, fee_center_id, account_reference_id, is_cost, is_variable, is_turnover
     FROM reference_fee_center 
     WHERE fee_center_id = ?`;
 
@@ -43,18 +44,24 @@ function lookupFeeCenter(id) {
 
 // Lists
 function list(req, res, next) {
+  const filters = new FilterParser(req.query, { tableAlias : 'f' });
   const sql = `
-    SELECT f.id, f.label, f.is_principal, GROUP_CONCAT(' ', LOWER(ar.abbr)) AS abbrs, 
+    SELECT f.id, f.label, f.is_principal, GROUP_CONCAT(' ', LOWER(ar.description)) AS abbrs, 
     GROUP_CONCAT(' ', s.name) serviceNames
     FROM fee_center AS f
     LEFT JOIN reference_fee_center AS r ON r.fee_center_id = f.id
     LEFT JOIN account_reference AS ar ON ar.id = r.account_reference_id
     LEFT JOIN service_fee_center AS sf ON sf.fee_center_id = f.id
-    LEFT JOIN service AS s ON s.id = sf.service_id
-    GROUP BY f.id
-    ORDER BY f.is_principal DESC, f.label ASC;`;
+    LEFT JOIN service AS s ON s.id = sf.service_id`;
 
-  db.exec(sql)
+  filters.equals('is_principal');
+  filters.setGroup('GROUP BY f.id');
+  filters.setOrder('ORDER BY f.is_principal DESC, f.label ASC');
+
+  const query = filters.applyQuery(sql);
+  const parameters = filters.parameters();
+
+  db.exec(query, parameters)
     .then((rows) => {
       res.status(200).json(rows);
     })
@@ -99,10 +106,13 @@ function create(req, res, next) {
           feeCenterId,
           item.account_reference_id,
           item.is_cost,
+          item.is_variable,
+          item.is_turnover,
         ]);
 
         const sqlReferences = `
-          INSERT INTO reference_fee_center (fee_center_id, account_reference_id, is_cost) VALUES ?`;
+          INSERT INTO reference_fee_center
+          (fee_center_id, account_reference_id, is_cost, is_variable, is_turnover) VALUES ?`;
         transaction
           .addQuery(sqlReferences, [dataReferences]);
       }
@@ -154,10 +164,13 @@ function update(req, res, next) {
       feeCenterId,
       item.account_reference_id,
       item.is_cost,
+      item.is_variable,
+      item.is_turnover,
     ]);
 
     const sqlReferences = `
-      INSERT INTO reference_fee_center (fee_center_id, account_reference_id, is_cost) VALUES ?`;
+      INSERT INTO reference_fee_center
+      (fee_center_id, account_reference_id, is_cost, is_variable, is_turnover) VALUES ?`;
     transaction
       .addQuery(sqlReferences, [dataReferences]);
   }

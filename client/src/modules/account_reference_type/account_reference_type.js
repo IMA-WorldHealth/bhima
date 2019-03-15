@@ -95,5 +95,4 @@ function AccountReferenceTypeController($state, AccountReferenceType, Notify, ui
   }
 
   loadGrid();
-
 }

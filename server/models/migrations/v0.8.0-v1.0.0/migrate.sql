@@ -1029,7 +1029,7 @@ UPDATE unit SET
   `name`='Unpaid Invoice Payments', `key`='REPORT.UNPAID_INVOICE_PAYMENTS_REPORT.TITLE', `url`='/modules/reports/unpaid-invoice-payments', `path`='/reports/unpaid-invoice-payments'
 WHERE id = 213;
 
---@lomamech 2019-01-21 Account Reference Type
+-- @lomamech 2019-01-21 Account Reference Type
 DROP TABLE IF EXISTS `account_reference_type`;
 CREATE TABLE `account_reference_type` (
   `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1046,7 +1046,8 @@ ALTER TABLE account_reference ADD COLUMN `reference_type_id` MEDIUMINT(8) UNSIGN
 INSERT INTO `account_reference_type` (`id`, `label`, `fixed`) VALUES
 (1, 'FORM.LABELS.FEE_CENTER', 1),
 (2, 'FORM.LABELS.BALANCE_SHEET', 1),
-(3, 'FORM.LABELS.PROFIT_LOSS', 1);
+(3, 'FORM.LABELS.PROFIT_LOSS', 1),
+(4, 'FORM.LABELS.BREAK_EVEN', 1);
 
 -- Account Reference Type unit
 INSERT INTO unit VALUES
