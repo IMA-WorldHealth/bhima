@@ -161,8 +161,6 @@ function DistributionCenterController(DistributionCenters, Notify, uiGridConstan
   // distribution
   function distribution(data) {
     const filtersSnapshot = DistributionCenters.filters.formatHTTP();
-    data.is_cost = filtersSnapshot.typeFeeCenter;
-
     DistributionCenters.openDistributionModal(data)
       .then((changes) => {
         if (changes) {

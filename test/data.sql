@@ -851,7 +851,7 @@ INSERT INTO `rubric_payroll` (`id`, `label`, `abbr`, `is_employee`, `is_percent`
   (8, 'Frais scolarité', 'f_scol', 0, 0, 0, 0, 0, 1, 0, 179, 343, 0, 0, NULL),
   (9, 'Logement', 'logm', 0, 1, 0, 0, 1, 0, 0, 179, 350, 0, 0, 30),
   (10, 'Allocation Familiale', 'allc', 0, 0, 0, 0, 1, 1, 0, 179, 347, 0, 0, NULL),
-  (11, 'Office Nationale de l\'emploie', 'ONEM', 0, 1, 1, 1, 0, 0, 0, 320, 355, 0, 0, 0.2),
+  (11, 'Office Nationale de l\emploie', 'ONEM', 0, 1, 1, 1, 0, 0, 0, 320, 355, 0, 0, 0.2),
   (12, 'Acompte sur salaires', 'ac_sal', 1, 0, 1, 0, 0, 1, 0, 340, 179, 0, 1, NULL);
 
 -- Configuration of Rubrinc
@@ -971,12 +971,12 @@ INSERT INTO `fee_center` (`id`, `label`, `is_principal`) VALUES
   (6, 'Auxiliary 3', 0);
 
 -- REFERENCE FEE CENTER
-INSERT INTO `reference_fee_center` (`id`, `fee_center_id`, `account_reference_id`, `is_cost`) VALUES (1, 1, 1, 1);
-INSERT INTO `reference_fee_center` (`id`, `fee_center_id`, `account_reference_id`, `is_cost`) VALUES (2, 1, 2, 0);
-INSERT INTO `reference_fee_center` (`id`, `fee_center_id`, `account_reference_id`, `is_cost`) VALUES (11, 5, 7, 0);
-INSERT INTO `reference_fee_center` (`id`, `fee_center_id`, `account_reference_id`, `is_cost`) VALUES (15, 3, 3, 0);
-INSERT INTO `reference_fee_center` (`id`, `fee_center_id`, `account_reference_id`, `is_cost`) VALUES (21, 6, 4, 0);
-INSERT INTO `reference_fee_center` (`id`, `fee_center_id`, `account_reference_id`, `is_cost`) VALUES (22, 4, 9, 1);
+INSERT INTO `reference_fee_center` (`id`, `fee_center_id`, `account_reference_id`, `is_cost`, `is_variable`, `is_turnover`) VALUES (1, 1, 1, 1, 1, 0);
+INSERT INTO `reference_fee_center` (`id`, `fee_center_id`, `account_reference_id`, `is_cost`, `is_variable`, `is_turnover`) VALUES (2, 1, 2, 0, 0, 1);
+INSERT INTO `reference_fee_center` (`id`, `fee_center_id`, `account_reference_id`, `is_cost`, `is_variable`, `is_turnover`) VALUES (11, 5, 7, 0, 0, 1);
+INSERT INTO `reference_fee_center` (`id`, `fee_center_id`, `account_reference_id`, `is_cost`, `is_variable`, `is_turnover`) VALUES (15, 3, 3, 0, 0, 1);
+INSERT INTO `reference_fee_center` (`id`, `fee_center_id`, `account_reference_id`, `is_cost`, `is_variable`, `is_turnover`) VALUES (21, 6, 4, 0, 0, 1);
+INSERT INTO `reference_fee_center` (`id`, `fee_center_id`, `account_reference_id`, `is_cost`, `is_variable`, `is_turnover`) VALUES (22, 4, 9, 1, 0, 0);
 
 -- GENERAL LEDGER FOR DISTRIBUTION FEE CENTER TEST
 INSERT INTO `general_ledger` (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_id_reference_number`, `trans_date`, `record_uuid`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `entity_uuid`, `reference_uuid`, `comment`, `transaction_type_id`, `user_id`, `cc_id`, `pc_id`, `created_at`, `updated_at`) VALUES (0xE70109CCE0DC11E89F4F507B9DD6DEA5, 1, 4, 201811, 'TPA37', 37, '2018-11-05 10:26:05', 0x79B0393553C54498A5ECA8CA6DFEA7AC, 'Facture de Test 2 Patient (PA.TPA.2) pour 2 items dans le service Medecine Interne. ', 175, 256.6200, 0.0000, 256.6200, 0.0000, 2, 0x3BE232F9A4B94AF6984C5D3F87D5C107, NULL, NULL, 11, 1, NULL, NULL, '2018-11-05 10:29:21', NULL);
@@ -1068,3 +1068,8 @@ INSERT INTO bed VALUES
   (1, 'BED 001', HUID('A6F9527BA7B44A2C9F4FDD7323BBCF72'), 0, 1),
   (2, 'BED 002', HUID('A6F9527BA7B44A2C9F4FDD7323BBCF72'), 0, 1),
   (3, 'BED 003', HUID('A6F9527BA7B44A2C9F4FDD7323BBCF72'), 0, 1);
+
+-- Default Auxiliary Fee Center Distribution Key
+INSERT INTO `distribution_key` (`id`, `auxiliary_fee_center_id`, `principal_fee_center_id`, `rate`, `user_id`) VALUES (1, 4, 1, 60.00, 1);
+INSERT INTO `distribution_key` (`id`, `auxiliary_fee_center_id`, `principal_fee_center_id`, `rate`, `user_id`) VALUES (2, 4, 2, 20.00, 1);
+INSERT INTO `distribution_key` (`id`, `auxiliary_fee_center_id`, `principal_fee_center_id`, `rate`, `user_id`) VALUES (3, 4, 3, 20.00, 1);

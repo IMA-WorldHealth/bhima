@@ -114,7 +114,12 @@ INSERT INTO unit VALUES
   (226, 'Account Reference Type','TREE.ACCOUNT_REFERENCE_TYPE','Account Reference Type', 1,'/modules/account_reference_type','/account_reference_type'),
   (227, 'Ward Module', 'TREE.WARD', 'Ward folder', 0, '/modules/ward/configuration', '/WARD_FOLDER'),
   (228, 'Ward Configurations', 'TREE.WARD_CONFIGURATION', 'Ward configuration module', 227, '/modules/ward/configuration', '/ward/configuration'),
-  (229, 'Visits Registry', 'TREE.VISITS_REGISTRY', 'Visits registry', 12, '/modules/patient/visits', '/patients/visits');
+  (229, 'Visits Registry', 'TREE.VISITS_REGISTRY', 'Visits registry', 12, '/modules/patient/visits', '/patients/visits'),
+  (230, 'Break Even Reference','TREE.BREAK_EVEN_REFERENCE','Break Even Reference', 1,'/modules/break_even_reference','/break_even_reference'),
+  (231, 'Break-even Report', 'TREE.BREAK_EVEN_REPORT', 'Break-even Report', 144, '/modules/reports/breakEven', '/reports/breakEven'),
+  (232, 'Break Even By Fee Center', 'TREE.BREAK_EVEN_FEE_CENTER_REPORT', 'Break-even By Fee Center Report', 144, '/modules/reports/breakEvenFeeCenter', '/reports/breakEvenFeeCenter');
+
+
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
   (1, 'income', 'ACCOUNT.TYPES.INCOME'),
@@ -159,7 +164,9 @@ INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
   (25, 'stock_value', 'TREE.STOCK_VALUE'),
   (26, 'ohada_profit_loss', 'TREE.OHADA_RESULT_ACCOUNT'),
   (27, 'income_expense_by_year', 'REPORT.PROFIT_AND_LOSS_BY_YEAR'),
-  (28, 'feeCenter', 'REPORT.FEE_CENTER.TITLE');
+  (28, 'feeCenter', 'REPORT.FEE_CENTER.TITLE'),
+  (29, 'breakEven', 'TREE.BREAK_EVEN_REPORT'),
+  (30, 'breakEvenFeeCenter', 'TREE.BREAK_EVEN_FEE_CENTER_REPORT');
 
 -- Supported Languages
 INSERT INTO `language` VALUES
@@ -290,7 +297,8 @@ INSERT INTO `entity_type` (`label`, `translation_key`) VALUES
 INSERT INTO `account_reference_type` (`id`, `label`, `fixed`) VALUES
 (1, 'FORM.LABELS.FEE_CENTER', 1),
 (2, 'FORM.LABELS.BALANCE_SHEET', 1),
-(3, 'FORM.LABELS.PROFIT_LOSS', 1);
+(3, 'FORM.LABELS.PROFIT_LOSS', 1),
+(4, 'FORM.LABELS.BREAK_EVEN', 1);
 
 -- Default Discharge types
 INSERT INTO `discharge_type` (`id`, `label`) VALUES

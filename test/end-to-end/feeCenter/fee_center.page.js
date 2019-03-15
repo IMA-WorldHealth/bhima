@@ -46,12 +46,12 @@ class FeeCenterPage {
     if (feeCenter.has_profit_center) {
       element(by.id('has_profit_center')).click();
     }
-    components.accountReferenceSelect.set(feeCenter.reference_profit_id, 'account_profit_reference_id');
+    components.accountReferenceSelect.set(feeCenter.reference_profit_id, 'account_profit_turnover_id');
 
     if (feeCenter.has_cost_center) {
       element(by.id('has_cost_center')).click();
     }
-    components.accountReferenceSelect.set(feeCenter.reference_cost_id, 'account_cost_reference_id');
+    components.accountReferenceSelect.set(feeCenter.reference_cost_id, 'account_cost_variable_reference_id');
 
     if (feeCenter.has_service) {
       element(by.id('has_service')).click();
@@ -63,7 +63,8 @@ class FeeCenterPage {
   }
 
   /**
-   * simulate the unableing to assign to another expense center a reference already used in another expense center when creating
+   * simulate the unableing to assign to another expense center a reference already
+   * used in another expense center when creating
    */
   errorCreateFeeCenter(feeCenter) {
     FU.buttons.create();
@@ -75,12 +76,12 @@ class FeeCenterPage {
     if (feeCenter.has_profit_center) {
       element(by.id('has_profit_center')).click();
     }
-    components.accountReferenceSelect.set(feeCenter.reference_profit_id, 'account_profit_reference_id');
+    components.accountReferenceSelect.set(feeCenter.reference_profit_id, 'account_other_profit_reference_id');
 
     if (feeCenter.has_cost_center) {
       element(by.id('has_cost_center')).click();
     }
-    components.accountReferenceSelect.set(feeCenter.reference_cost_id, 'account_cost_reference_id');
+    components.accountReferenceSelect.set(feeCenter.reference_cost_id, 'account_cost_fixed_reference_id');
 
     FU.buttons.submit();
     FU.buttons.cancel();
@@ -115,12 +116,15 @@ class FeeCenterPage {
           element(by.id(isCostProfit)).click();
 
           if (updateFeeCenter.is_profit) {
-            components.accountReferenceSelect.set(updateFeeCenter.reference_profit_id, 'account_profit_reference_id');  
+            components.accountReferenceSelect.set(
+              updateFeeCenter.reference_profit_id,
+              'account_other_profit_reference_id'
+            );
           }
-          
+
           if (!updateFeeCenter.is_profit) {
-            components.accountReferenceSelect.set(updateFeeCenter.reference_cost_id, 'account_cost_reference_id');  
-          } 
+            components.accountReferenceSelect.set(updateFeeCenter.reference_cost_id, 'account_cost_fixed_reference_id');
+          }
         }
 
         FU.buttons.submit();
@@ -129,7 +133,8 @@ class FeeCenterPage {
   }
 
   /**
-   * simulate the unableing to assign to another expense center a reference already used in another expense center when Updating
+   * simulate the unableing to assign to another expense center a
+   * reference already used in another expense center when Updating
    */
   errorEditFeeCenter(label, updateFeeCenter) {
     GU.getGridIndexesMatchingText(this.gridId, label)
@@ -146,12 +151,15 @@ class FeeCenterPage {
           element(by.id(isCostProfit)).click();
 
           if (updateFeeCenter.is_profit) {
-            components.accountReferenceSelect.set(updateFeeCenter.reference_profit_id, 'account_profit_reference_id');  
+            components.accountReferenceSelect.set(
+              updateFeeCenter.reference_profit_id,
+              'account_other_profit_reference_id'
+            );
           }
-          
+
           if (!updateFeeCenter.is_profit) {
-            components.accountReferenceSelect.set(updateFeeCenter.reference_cost_id, 'account_cost_reference_id');  
-          } 
+            components.accountReferenceSelect.set(updateFeeCenter.reference_cost_id, 'account_cost_fixed_reference_id');
+          }
         }
 
         FU.buttons.submit();

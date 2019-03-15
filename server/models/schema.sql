@@ -2205,7 +2205,9 @@ CREATE TABLE `reference_fee_center` (
   `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
   `fee_center_id` MEDIUMINT(8) UNSIGNED NOT NULL,
   `account_reference_id` MEDIUMINT(8) UNSIGNED NOT NULL,
-  `is_cost` tinyint(1) DEFAULT 0,
+  `is_cost` tinyint(1) UNSIGNED DEFAULT 0,
+  `is_variable` tinyint(1) UNSIGNED DEFAULT 0,
+  `is_turnover` tinyint(1) UNSIGNED DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `reference_fee_center_1` (`account_reference_id`),
   KEY `fee_center_id` (`fee_center_id`),
@@ -2220,7 +2222,9 @@ CREATE TABLE `fee_center_distribution` (
   `row_uuid` BINARY(16) NOT NULL,
   `trans_id` VARCHAR(100) NOT NULL,
   `account_id` INT(10) UNSIGNED NOT NULL,
-  `is_cost` tinyint(1) DEFAULT 0,
+  `is_cost` tinyint(1) UNSIGNED DEFAULT 0,
+  `is_variable` tinyint(1) UNSIGNED DEFAULT 0,
+  `is_turnover` tinyint(1) UNSIGNED DEFAULT 0,
   `auxiliary_fee_center_id` MEDIUMINT(8) UNSIGNED NOT NULL,
   `principal_fee_center_id` MEDIUMINT(8) UNSIGNED NOT NULL,
   `debit_equiv` DECIMAL(19,8) NOT NULL DEFAULT 0.00,
@@ -2362,6 +2366,20 @@ CREATE TABLE `finances_indicator` (
   `indicator_uuid` BINARY(16) NOT NULL,
   PRIMARY KEY (`uuid`),
   FOREIGN KEY (`indicator_uuid`) REFERENCES `indicator` (`uuid`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;  
+
+DROP TABLE IF EXISTS `break_even_reference`;
+CREATE TABLE `break_even_reference` (
+  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, 
+  `label` VARCHAR(100) NOT NULL, 
+  `is_cost` tinyint(1) DEFAULT 0, 
+  `is_variable` tinyint(1) DEFAULT 0,
+  `is_turnover` tinyint(1) DEFAULT 0,   
+  `account_reference_id` MEDIUMINT(8) UNSIGNED NOT NULL, 
+  PRIMARY KEY (`id`), 
+  UNIQUE KEY `break_even_reference_1` (`label`), 
+  KEY `account_reference_id` (`account_reference_id`), 
+  FOREIGN KEY (`account_reference_id`) REFERENCES `account_reference` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 SET foreign_key_checks = 1;

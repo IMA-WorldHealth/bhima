@@ -5,7 +5,7 @@
   </a>
 
   <ul data-action="{{ rowRenderIndex}}"  class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
-    <li class="dropdown-header">{{row.entity.label}}</li>
+    <li class="dropdown-header text-ellipsis">{{row.entity.label}}</li>
     <li>
       <a data-method="edit" ui-sref="fee_center.edit({id : row.entity.id})" href>
         <span class="fa fa-edit"></span> <span translate>TABLE.COLUMNS.EDIT</span>
