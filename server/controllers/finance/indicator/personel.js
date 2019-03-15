@@ -75,7 +75,6 @@ async function detail(req, res, next) {
       hi.total_day_realized, hi.total_beds,
       hi.total_hospitalized_patient, hi.total_doctors, hi.total_nurses, total_caregivers,
       hi.total_staff, hi.total_external_visit, hi.total_visit, hi.total_surgery_by_doctor,
-      hi.total_day_realized, hi.total_hospitalized_patient,
       p.fiscal_year_id
     FROM indicator i
     JOIN period p ON p.id = i.period_id
