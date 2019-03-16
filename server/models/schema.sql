@@ -2338,7 +2338,6 @@ CREATE TABLE `hospitalization_indicator` (
 DROP TABLE IF EXISTS `staff_indicator`;
 CREATE TABLE `staff_indicator` (
   `uuid` BINARY(16),
-  `total_beds` INT DEFAULT 0,
   `total_doctors` INT DEFAULT 0,
   `total_nurses` INT DEFAULT 0,
   `total_caregivers` INT DEFAULT 0,
