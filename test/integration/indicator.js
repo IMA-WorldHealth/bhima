@@ -117,8 +117,8 @@ describe('(/indicators_file) The roles API endpoint', () => {
   ];
 
 
-  it('GET /indicators_files returns a list of indicators files (should be empty)', () => {
-    return agent.get('/indicators_files')
+  it('GET /indicators returns a list of indicators files (should be empty)', () => {
+    return agent.get('/indicators')
       .then(res => {
         expect(res).to.have.status(200);
         expect(res.body).to.be.an('array');
@@ -127,8 +127,8 @@ describe('(/indicators_file) The roles API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('POST /indicators_files/hospitalization add a new indicator file', () => {
-    return agent.post('/indicators_files/hospitalization')
+  it('POST /indicators/hospitalization add a new indicator file', () => {
+    return agent.post('/indicators/hospitalization')
       .send(hospitalizationIndicatorFile)
       .then(res => {
         expect(res).to.have.status(201);
@@ -136,8 +136,8 @@ describe('(/indicators_file) The roles API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('POST /indicators_files/staff add another indicator file', () => {
-    return agent.post('/indicators_files/staff')
+  it('POST /indicators/staff add another indicator file', () => {
+    return agent.post('/indicators/staff')
       .send(staffIndicatorFile)
       .then(res => {
         expect(res).to.have.status(201);
@@ -145,8 +145,8 @@ describe('(/indicators_file) The roles API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('POST /indicators_files/finance add another indicator file', () => {
-    return agent.post('/indicators_files/finances')
+  it('POST /indicators/finance add another indicator file', () => {
+    return agent.post('/indicators/finances')
       .send(financeIndicatorFile)
       .then(res => {
         expect(res).to.have.status(201);
@@ -154,8 +154,8 @@ describe('(/indicators_file) The roles API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('GET /indicators_files returns a list of insdicators (3 added indicators files)', () => {
-    return agent.get('/indicators_files')
+  it('GET /indicators returns a list of insdicators (3 added indicators files)', () => {
+    return agent.get('/indicators')
       .then(res => {
         expect(res).to.have.status(200);
         expect(res.body).to.be.an('array');
@@ -165,8 +165,8 @@ describe('(/indicators_file) The roles API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('GET /indicators_files/hospitalizations/:uuid returns details of hosp. indicator file)', () => {
-    return agent.get(`/indicators_files/hospitalization/${hospitalizationIndicatorFile.indicator.uuid}`)
+  it('GET /indicators/hospitalizations/:uuid returns details of hosp. indicator file)', () => {
+    return agent.get(`/indicators/hospitalization/${hospitalizationIndicatorFile.indicator.uuid}`)
       .then(res => {
         expect(res).to.have.status(200);
         expect(res.body).to.have.keys(hopitalizationKeys);
@@ -180,8 +180,8 @@ describe('(/indicators_file) The roles API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('GET /indicators_files/staff/:uuid returns details of staff indicator file)', () => {
-    return agent.get(`/indicators_files/staff/${staffIndicatorFile.indicator.uuid}`)
+  it('GET /indicators/staff/:uuid returns details of staff indicator file)', () => {
+    return agent.get(`/indicators/staff/${staffIndicatorFile.indicator.uuid}`)
       .then(res => {
         expect(res).to.have.status(200);
         expect(res.body).to.have.keys(staffKeys);
@@ -195,8 +195,8 @@ describe('(/indicators_file) The roles API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('GET /indicators_files/finances/:uuid returns details of finances indicator file)', () => {
-    return agent.get(`/indicators_files/finances/${financeIndicatorFile.indicator.uuid}`)
+  it('GET /indicators/finances/:uuid returns details of finances indicator file)', () => {
+    return agent.get(`/indicators/finances/${financeIndicatorFile.indicator.uuid}`)
       .then(res => {
         expect(res).to.have.status(200);
         expect(res.body).to.have.keys(financeKeys);
@@ -210,8 +210,8 @@ describe('(/indicators_file) The roles API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('POST /indicators_files/hospitalization forbid creation of existing indicator file', () => {
-    return agent.post('/indicators_files/hospitalization')
+  it('POST /indicators/hospitalization forbid creation of existing indicator file', () => {
+    return agent.post('/indicators/hospitalization')
       .send(hospitalizationIndicatorFile)
       .then(res => {
         expect(res).to.have.status(400);
@@ -220,8 +220,8 @@ describe('(/indicators_file) The roles API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('PUT /indicators_files/hospitalization/:uuid update an existing indicator', () => {
-    return agent.put(`/indicators_files/hospitalization/${hospitalizationIndicatorFile.indicator.uuid}`)
+  it('PUT /indicators/hospitalization/:uuid update an existing indicator', () => {
+    return agent.put(`/indicators/hospitalization/${hospitalizationIndicatorFile.indicator.uuid}`)
       .send(hospitalizationIndicatorFileUpdate)
       .then(res => {
         expect(res).to.have.status(200);
@@ -230,8 +230,8 @@ describe('(/indicators_file) The roles API endpoint', () => {
   });
 
 
-  it('DELETE /indicators_files/hospitalization/:uuid delete an indicator', () => {
-    return agent.delete(`/indicators_files/hospitalization/${hospitalizationIndicatorFile.indicator.uuid}`)
+  it('DELETE /indicators/hospitalization/:uuid delete an indicator', () => {
+    return agent.delete(`/indicators/hospitalization/${hospitalizationIndicatorFile.indicator.uuid}`)
       .then(res => {
         expect(res).to.have.status(200);
       })

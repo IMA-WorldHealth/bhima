@@ -40,7 +40,12 @@
   
       <div class="toolbar">
         <div class="toolbar-item">
-          <bh-dashboard-filter show-service-filter="true" on-change="$ctrl.onChangeFilter(selected)"></bh-dashboard-filter>
+          <bh-dashboard-filter
+            show-service-filter="true" 
+            date-from="$ctrl.selected.dateFrom"
+            date-to="$ctrl.selected.dateTo"
+            on-change="$ctrl.onChangeFilter(selected)">
+          </bh-dashboard-filter>
         </div>
       </div>
     </div>
@@ -58,48 +63,52 @@
 
       <div class="dashboard">
         <bh-indicator
-          key="hospi_occupation_rate"
+          key="bedOccupationRate"
           label="DASHBOARD.BEDS_OCCUPATION_RATE"
           description="DASHBOARD.BEDS_OCCUPATION_RATE_DESC"
           calcul="DASHBOARD.BEDS_OCCUPATION_RATE_CALCUL"
           norm="DASHBOARD.BEDS_OCCUPATION_RATE_NORM"
-          value="80"
+          value="$ctrl.indicators.bedOccupationRate.value"
+          dependencies="$ctrl.indicators.bedOccupationRate.dependencies"
           value-symbol="%"
           min-value="60"
           max-value="90">
         </bh-indicator>
 
         <bh-indicator
-          key="hospi_days"
+          key="averageHospitalizationDays"
           label="DASHBOARD.HOSP_DAYS"
           description="DASHBOARD.HOSP_DAYS_DESC"
           calcul="DASHBOARD.HOSP_DAYS_CALCUL"
           norm="DASHBOARD.HOSP_DAYS_NORM"
-          value="20"
+          value="$ctrl.indicators.averageHospitalizationDays.value"
+          dependencies="$ctrl.indicators.averageHospitalizationDays.dependencies"
           value-symbol="FORM.LABELS.DAYS"
           min-value="8"
           max-value="10">
         </bh-indicator>
 
         <bh-indicator
-          key="hospi_by_day"
+          key="dailyHospitalization"
           label="DASHBOARD.HOSP_BY_DAY"
           description="DASHBOARD.HOSP_BY_DAY_DESC"
           calcul="DASHBOARD.HOSP_BY_DAY_CALCUL"
           norm="DASHBOARD.HOSP_BY_DAY_NORM"
-          value="1704"
+          value="$ctrl.indicators.dailyHospitalization.value"
+          dependencies="$ctrl.indicators.dailyHospitalization.dependencies"
           value-symbol=""
           min-value=""
           max-value="">
         </bh-indicator>
 
         <bh-indicator
-          key="hospi_death_rate"
+          key="deathRate"
           label="DASHBOARD.DEATH_RATE"
           description="DASHBOARD.DEATH_RATE_DESC"
           calcul="DASHBOARD.DEATH_RATE_CALCUL"
           norm="DASHBOARD.DEATH_RATE_NORM"
-          value="2"
+          value="$ctrl.indicators.deathRate.value"
+          dependencies="$ctrl.indicators.deathRate.dependencies"
           value-symbol="%"
           max-value="4">
         </bh-indicator>

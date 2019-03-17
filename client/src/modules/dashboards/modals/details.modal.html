@@ -48,15 +48,15 @@
   <div class="details">
     <!-- values -->
     <div class="value-section" ng-class="{'text-success':$ctrl.params.isAcceptable, 'text-danger':!$ctrl.params.isAcceptable}">
-      <span class="value">{{ $ctrl.params.value }}</span>
+      <span class="value" title="{{ $ctrl.params.value | number : 6 }}">{{ $ctrl.params.value | number }}</span>
       <sup class="value-symbol" translate>{{ $ctrl.params.valueSymbol }}</sup>
     </div>
 
     <!-- description -->
     <div class="description-section">
         <div class="description">
-          <strong translate>DASHBOARD.MEANING</strong> : <br>
-          <span translate>{{ $ctrl.params.description }}</span>
+          <strong translate>DASHBOARD.MEANING</strong> :
+          <p translate>{{ $ctrl.params.description }}</p>
         </div>
         <div class="norm">
           <strong translate>DASHBOARD.NORM</strong> : 
@@ -66,9 +66,16 @@
 
     <!-- calcul -->
     <div class="calcul-section">
-        <strong translate>DASHBOARD.CALCUL</strong> : <br>
-      <span translate>{{ $ctrl.params.calcul }}</span>
+      <strong translate>DASHBOARD.CALCUL</strong> :
+      <p translate>{{ $ctrl.params.calcul }}</p>
+      <ul ng-if="$ctrl.params.dependencies && $ctrl.params.dependencies.length">
+        <li ng-repeat="deps in $ctrl.params.dependencies">
+          <span translate>{{ 'DASHBOARD.INDICATORS_FILES.' + deps.key }}</span>
+          <span>{{ deps.value | number }}</span>
+        </li>
+      </ul>
     </div>
+
   </div>
   <div class="chart" id="indicator-chart"></div>
 </div>

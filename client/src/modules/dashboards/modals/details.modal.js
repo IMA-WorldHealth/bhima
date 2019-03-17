@@ -9,7 +9,6 @@ function IndicatorDetailsModalController(Data, Instance, $timeout) {
   vm.params = Data;
   vm.close = Instance.close;
 
-
   const data = [
     { value : 20, name : 'Janvier' },
     { value : 35, name : 'Fevrier' },

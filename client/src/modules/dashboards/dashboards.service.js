@@ -20,12 +20,13 @@ function IndicatorsDashboardService(Api, GridRegistryFilterer, $uibModal) {
   service.COMPLETE_STATUS_ID = 2;
   service.VALIDATED_STATUS_ID = 3;
 
-  service.indicatorsFiles = new Api('/indicators_files/');
-  service.hospitalization = new Api('/indicators_files/hospitalization/');
-  service.staff = new Api('/indicators_files/staff/');
-  service.finances = new Api('/indicators_files/finances/');
-  service.status = new Api('/indicators_files/status/');
-  service.types = new Api('/indicators_files/types/');
+  service.indicatorsFiles = new Api('/indicators/');
+  service.hospitalization = new Api('/indicators/hospitalization/');
+  service.staff = new Api('/indicators/staff/');
+  service.finances = new Api('/indicators/finances/');
+  service.status = new Api('/indicators/status/');
+  service.types = new Api('/indicators/types/');
+  service.dashboards = new Api('/indicators/dashboards');
 
   service.indicatorsFilesGridFilterer = grid;
   service.openIndicatorsFilesSearchModal = openIndicatorsFilesSearchModal;

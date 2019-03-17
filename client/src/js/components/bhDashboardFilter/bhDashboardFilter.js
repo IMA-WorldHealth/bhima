@@ -4,6 +4,8 @@ angular.module('bhima.components')
     controller  : DashboardFilterController,
     bindings    : {
       showServiceFilter : '<?',
+      dateFrom : '<?',
+      dateTo : '<?',
       onChange : '&?',
     },
   });
@@ -18,8 +20,8 @@ function DashboardFilterController(Services, Notify, bhConstants) {
   $ctrl.selected = {};
 
   $ctrl.$onInit = function onInit() {
-    $ctrl.dateFrom = new Date();
-    $ctrl.dateTo = new Date();
+    $ctrl.dateFrom = $ctrl.dateFrom || new Date();
+    $ctrl.dateTo = $ctrl.dateTo || new Date();
 
     $ctrl.dateFormat = bhConstants.dayOptions.format;
     $ctrl.pickerFromOptions = { showWeeks : false };

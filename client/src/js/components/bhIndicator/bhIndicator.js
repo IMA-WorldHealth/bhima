@@ -6,14 +6,14 @@ angular.module('bhima.components')
     bindings    : {
       key : '@',
       label : '@',
-      value : '@',
+      value : '<',
       valueSymbol : '@?',
       description : '@?',
       calcul : '@?',
       norm : '@?',
       minValue : '@?',
       maxValue : '@?',
-      params : '<?', // contains service and dates given
+      dependencies : '<?', // an array of object [{ key:..., value:...}]
     },
   });
 
@@ -45,7 +45,7 @@ function IndicatorController($uibModal) {
   $ctrl.showDetails = () => {
     const params = {
       key : $ctrl.key,
-      params : $ctrl.params,
+      dependencies : $ctrl.dependencies,
       label : $ctrl.label,
       value : $ctrl.value,
       valueSymbol : $ctrl.valueSymbol,
