@@ -39,8 +39,9 @@ function HospitalizationDashboardController(IndicatorsDashboard, Notify) {
 
   function load(options) {
     IndicatorsDashboard.dashboards.read(null, options)
-      .then(indicators => {
-        vm.indicators = indicators.hospitalization;
+      .then(data => {
+        vm.indicators = data.indicators.hospitalization;
+        vm.periodicIndicators = data.periodicIndicators.hospitalization;
       })
       .catch(Notify.errorHandler);
   }

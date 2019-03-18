@@ -1,45 +1,57 @@
 angular.module('bhima.controllers')
   .controller('IndicatorDetailsModalController', IndicatorDetailsModalController);
 
-IndicatorDetailsModalController.$inject = ['data', '$uibModalInstance', '$timeout'];
+IndicatorDetailsModalController.$inject = [
+  'data', '$uibModalInstance', '$timeout', 'moment',
+];
 
-function IndicatorDetailsModalController(Data, Instance, $timeout) {
+function IndicatorDetailsModalController(Data, Instance, $timeout, moment) {
   /* global muze */
   const vm = this;
   vm.params = Data;
   vm.close = Instance.close;
 
-  const data = [
-    { value : 20, name : 'Janvier' },
-    { value : 35, name : 'Fevrier' },
-    { value : 14, name : 'Mars' },
-    { value : 21, name : 'Avril' },
-    { value : 27, name : 'Mai' },
-    { value : 40, name : 'Juin' },
-    { value : 18, name : 'Juillet' },
-    { value : 10, name : 'Aout' },
-    { value : 22, name : 'Septembre' },
-    { value : 50, name : 'Octobre' },
-  ];
+  function orderPeriods(periodicValues) {
+    return (periodicValues || []).sort(compare);
+  }
 
-  const schema = [
-    { name : 'value', type : 'measure' },
-    { name : 'name' },
-  ];
+  function compare(_a, _b) {
+    const a = new Date(_a.period);
+    const b = new Date(_b.period);
+    if (a < b) { return -1; }
+    if (a > b) { return 1; }
+    return 0;
+  }
 
-  const { DataModel } = muze;
-  const dm = new DataModel(data, schema);
+  function formatPeriod(row) {
+    row.period = moment(row.period).format('MMMM YYYY');
+    return row;
+  }
 
-  const env = muze(); // Initialize the Muze environment
-  const canvas = env.canvas(); // Create a container canvas
+  function drawChart() {
+    const unorderedData = orderPeriods(vm.params.periodicValues) || [{ value : 0, period : 0 }];
+    const data = unorderedData.map(formatPeriod);
+    const schema = [
+      { name : 'value', type : 'measure' },
+      { name : 'period' },
+    ];
 
-  $timeout(() => {
-    canvas
-      .data(dm)
-      .width(600) // Specify width of visualization (canvas) in pixels
-      .height(400) // Specify height of visualization (canvas) in pixels
-      .rows(['value'])
-      .columns(['name'])
-      .mount('#indicator-chart');
-  }, 0);
+    const { DataModel } = muze;
+    const dm = new DataModel(data, schema);
+
+    const env = muze(); // Initialize the Muze environment
+    const canvas = env.canvas(); // Create a container canvas
+
+    $timeout(() => {
+      canvas
+        .data(dm)
+        .width(600) // Specify width of visualization (canvas) in pixels
+        .height(400) // Specify height of visualization (canvas) in pixels
+        .rows(['value'])
+        .columns(['period'])
+        .mount('#indicator-chart');
+    }, 0);
+  }
+
+  drawChart();
 }

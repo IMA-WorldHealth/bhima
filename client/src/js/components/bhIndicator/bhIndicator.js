@@ -13,7 +13,8 @@ angular.module('bhima.components')
       norm : '@?',
       minValue : '@?',
       maxValue : '@?',
-      dependencies : '<?', // an array of object [{ key:..., value:...}]
+      dependencies : '<?', // an array of object [{ key:..., value:...}],
+      periodicValues : '<?', // periodic values [{ period:..., value:... }]
     },
   });
 
@@ -55,6 +56,7 @@ function IndicatorController($uibModal) {
       minValue : $ctrl.minValue,
       maxValue : $ctrl.maxValue,
       isAcceptable : $ctrl.isAcceptable,
+      periodicValues : $ctrl.periodicValues,
     };
 
     $uibModal.open({

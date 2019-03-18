@@ -15,8 +15,8 @@ async function getIndicators(req, res, next) {
   options.end_date = dates.endDate;
 
   process.processIndicators(options)
-    .then(indicators => {
-      res.status(200).json(indicators);
+    .then(rows => {
+      res.status(200).json(rows);
     })
     .catch(next);
 }
@@ -26,7 +26,6 @@ async function getIndicators(req, res, next) {
  * this fn helps to get defaults dates values set to 01 jan and 31 dec of the current year
  */
 function getDates(options) {
-  console.log('options : ', options);
   const current = new Date();
   const year = current.getFullYear();
 
