@@ -13,7 +13,6 @@ function HospitalizationDashboardController(IndicatorsDashboard, Notify) {
   vm.selected = { dateFrom : new Date(`${year}-01-01`), dateTo : new Date(`${year}-12-31`) };
 
   vm.onChangeFilter = selected => {
-    const params = {};
 
     if (selected.service === null) {
       delete vm.selected.service_id;
@@ -21,8 +20,8 @@ function HospitalizationDashboardController(IndicatorsDashboard, Notify) {
     }
 
     if (selected.service && selected.service.id) {
-      params.service_id = selected.service.id;
       vm.selected.service = selected.service;
+      vm.selected.service_id = selected.service.id;
     }
 
     if (selected.dateFrom) {

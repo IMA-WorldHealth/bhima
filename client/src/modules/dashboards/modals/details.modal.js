@@ -28,7 +28,7 @@ function IndicatorDetailsModalController(Data, Instance, $timeout, moment) {
   function formatData(row) {
     row.minimum = Data.minValue || 0;
     row.maximum = Data.maxValue || 0;
-    row.periodLabel = moment(row.period).format('MMMM YYYY');
+    row['Period Name'] = moment(row.period).format('MMMM YYYY');
     return row;
   }
 
@@ -39,7 +39,7 @@ function IndicatorDetailsModalController(Data, Instance, $timeout, moment) {
       { name : 'value', type : 'measure' },
       { name : 'minimum', type : 'measure', defAggFn : 'max' },
       { name : 'maximum', type : 'measure', defAggFn : 'min' },
-      { name : 'periodLabel' },
+      { name : 'Period Name' },
     ];
 
     const dm = new DataModel(data, schema);
@@ -100,10 +100,10 @@ function IndicatorDetailsModalController(Data, Instance, $timeout, moment) {
 
       canvas
         .data(dm)
-        .width(600) // Specify width of visualization (canvas) in pixels
+        .width(700) // Specify width of visualization (canvas) in pixels
         .height(400) // Specify height of visualization (canvas) in pixels
         .rows(['value'])
-        .columns(['periodLabel'])
+        .columns(['Period Name'])
         .color('value')
         .transform(transforms)
         .layers(layers)
