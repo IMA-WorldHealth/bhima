@@ -26,14 +26,13 @@ function HospitalizationDashboardController(IndicatorsDashboard, Notify) {
     }
 
     if (selected.dateFrom) {
-      params.start_date = vm.selected.dateFrom;
+      vm.selected.dateFrom = selected.dateFrom;
     }
 
     if (selected.dateTo) {
-      params.end_date = vm.selected.dateTo;
+      vm.selected.dateTo = selected.dateTo;
     }
 
-    angular.extend(vm.selected, params);
     load(vm.selected);
   };
 

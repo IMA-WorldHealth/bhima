@@ -8,6 +8,7 @@ angular.module('bhima.components')
       label : '@',
       value : '<',
       valueSymbol : '@?',
+      decimals : '@?',
       description : '@?',
       calcul : '@?',
       norm : '@?',
@@ -43,6 +44,22 @@ function IndicatorController($uibModal) {
     }
   };
 
+  $ctrl.$onChanges = changes => {
+    if (changes.value && changes.value.currentValue) {
+      if ($ctrl.value && $ctrl.minValue && !$ctrl.maxValue) {
+        $ctrl.isAcceptable = $ctrl.value >= $ctrl.minValue;
+      }
+
+      if ($ctrl.value && !$ctrl.minValue && $ctrl.maxValue) {
+        $ctrl.isAcceptable = $ctrl.value <= $ctrl.maxValue;
+      }
+
+      if ($ctrl.value && $ctrl.minValue && $ctrl.maxValue) {
+        $ctrl.isAcceptable = $ctrl.value >= $ctrl.minValue && $ctrl.value <= $ctrl.maxValue;
+      }
+    }
+  };
+
   $ctrl.showDetails = () => {
     const params = {
       key : $ctrl.key,
@@ -50,6 +67,7 @@ function IndicatorController($uibModal) {
       label : $ctrl.label,
       value : $ctrl.value,
       valueSymbol : $ctrl.valueSymbol,
+      decimals : $ctrl.decimals,
       description : $ctrl.description,
       calcul : $ctrl.calcul,
       norm : $ctrl.norm,

@@ -6,10 +6,8 @@ module.exports.finances = finances;
 module.exports.staff = staff;
 
 function getDaysOfPeriods(options) {
-  const query = `
-    SELECT DATEDIFF(DATE(?), DATE(?)) AS nb_days;
-  `;
-  return db.one(query, [options.end_date, options.start_date]);
+  const query = `SELECT DATEDIFF(DATE(?), DATE(?)) AS nb_days;`;
+  return db.one(query, [options.dateTo, options.dateFrom]);
 }
 
 async function hospitalization(options) {
@@ -22,6 +20,7 @@ async function hospitalization(options) {
         SUM(IFNULL(hi.total_hospitalized_patient, 0)) AS total_hospitalized_patient,
         SUM(IFNULL(hi.total_death, 0)) AS total_death,
         DATE_FORMAT(p.start_date, "%Y-%m-%d") as period_start,
+        DATEDIFF(p.end_date, p.start_date) AS total_period_days,
         s.name as service_name
       FROM hospitalization_indicator hi  
       JOIN indicator ind ON ind.uuid = hi.indicator_uuid
@@ -34,6 +33,7 @@ async function hospitalization(options) {
       SELECT 
         IFNULL(hi.total_beds, 0) AS total_beds,
         DATE_FORMAT(p.start_date, "%Y-%m-%d") as period_start,
+        DATEDIFF(p.end_date, p.start_date) AS total_period_days,
         s.name as service_name
       FROM hospitalization_indicator hi  
       JOIN indicator ind ON ind.uuid = hi.indicator_uuid
@@ -72,7 +72,7 @@ async function hospitalization(options) {
     // last value query
     const data2 = await db.exec(filters2.applyQuery(sqlLastAggregated), filters2.parameters());
     // number of days between end date and start date
-    const totalDaysOfPeriods = await getDaysOfPeriods({ start_date : options.start_date, end_date : options.end_date });
+    const totalDaysOfPeriods = await getDaysOfPeriods({ dateFrom : options.dateFrom, dateTo : options.dateTo });
 
     return { summaryIndicators : data1, lastValueIndicators : data2, totalDaysOfPeriods };
   } catch (error) {
@@ -99,7 +99,8 @@ async function finances(options) {
         SUM(IFNULL(fi.total_depreciation, 0)) AS total_depreciation,
         SUM(IFNULL(fi.total_debts, 0)) AS total_debts,
         SUM(IFNULL(fi.total_staff, 0)) AS total_staff,
-        DATE_FORMAT(p.start_date, "%Y-%m-%d") as period_start
+        DATE_FORMAT(p.start_date, "%Y-%m-%d") as period_start,
+        DATEDIFF(p.end_date, p.start_date) AS total_period_days
       FROM finance_indicator fi  
       JOIN indicator ind ON ind.uuid = fi.indicator_uuid
       JOIN period p ON p.id = ind.period_id
@@ -110,7 +111,8 @@ async function finances(options) {
       SELECT 
         SUM(IFNULL(fi.total_cash, 0)) AS total_cash,
         SUM(IFNULL(fi.total_stock_value, 0)) AS total_stock_value,
-        DATE_FORMAT(p.start_date, "%Y-%m-%d") as period_start
+        DATE_FORMAT(p.start_date, "%Y-%m-%d") as period_start,
+        DATEDIFF(p.end_date, p.start_date) AS total_period_days
       FROM finance_indicator fi  
       JOIN indicator ind ON ind.uuid = fi.indicator_uuid
       JOIN period p ON p.id = ind.period_id
@@ -136,7 +138,7 @@ async function finances(options) {
     // last value query
     const data2 = await db.exec(filters2.applyQuery(sqlLastAggregated), filters2.parameters());
     // number of days between end date and start date
-    const totalDaysOfPeriods = await getDaysOfPeriods({ start_date : options.start_date, end_date : options.end_date });
+    const totalDaysOfPeriods = await getDaysOfPeriods({ dateFrom : options.dateFrom, dateTo : options.dateTo });
 
     return { summaryIndicators : data1, lastValueIndicators : data2, totalDaysOfPeriods };
   } catch (error) {
@@ -157,7 +159,8 @@ async function staff(options) {
         SUM(IFNULL(si.total_surgery_by_doctor, 0)) AS total_surgery_by_doctor,
         SUM(IFNULL(si.total_day_realized, 0)) AS total_day_realized,
         SUM(IFNULL(si.total_hospitalized_patient, 0)) AS total_hospitalized_patient,
-        DATE_FORMAT(p.start_date, "%Y-%m-%d") as period_start
+        DATE_FORMAT(p.start_date, "%Y-%m-%d") as period_start,
+        DATEDIFF(p.end_date, p.start_date) AS total_period_days
       FROM staff_indicator si
       JOIN indicator ind ON ind.uuid = si.indicator_uuid
       JOIN period p ON p.id = ind.period_id
@@ -170,7 +173,8 @@ async function staff(options) {
         SUM(IFNULL(si.total_nurses, 0)) AS total_nurses,
         SUM(IFNULL(si.total_caregivers, 0)) AS total_caregivers ,
         SUM(IFNULL(si.total_staff, 0)) AS total_staff,
-        DATE_FORMAT(p.start_date, "%Y-%m-%d") as period_start
+        DATE_FORMAT(p.start_date, "%Y-%m-%d") as period_start,
+        DATEDIFF(p.end_date, p.start_date) AS total_period_days
       FROM staff_indicator si  
       JOIN indicator ind ON ind.uuid = si.indicator_uuid
       JOIN period p ON p.id = ind.period_id
@@ -196,7 +200,7 @@ async function staff(options) {
     // last value query
     const data2 = await db.exec(filters2.applyQuery(sqlLastAggregated), filters2.parameters());
     // number of days between end date and start date
-    const totalDaysOfPeriods = await getDaysOfPeriods({ start_date : options.start_date, end_date : options.end_date });
+    const totalDaysOfPeriods = await getDaysOfPeriods({ dateFrom : options.dateFrom, dateTo : options.dateTo });
 
     return { summaryIndicators : data1, lastValueIndicators : data2, totalDaysOfPeriods };
   } catch (error) {
@@ -212,8 +216,8 @@ function defaultFilters(filters) {
   filters.custom('user_id', 'ind.user_id=?');
   filters.custom('status_id', 'ind.status_id=?');
   filters.custom('period_id', 'ind.period_id=?');
-  filters.custom('start_date', 'DATE(p.start_date) >= DATE(?)');
-  filters.custom('end_date', 'DATE(p.end_date) <= DATE(?)');
+  filters.custom('dateFrom', 'DATE(p.start_date) >= DATE(?)');
+  filters.custom('dateTo', 'DATE(p.end_date) <= DATE(?)');
   filters.equals('service_id', 'service_id', 'ind');
   filters.setOrder('ORDER BY p.start_date DESC');
   return filters;

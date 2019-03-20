@@ -29,7 +29,7 @@
   <h4 class="title" translate>{{ $ctrl.label }}</h4>
   <div class="details">
     <div class="value-section" ng-class="{'text-success':$ctrl.isAcceptable, 'text-danger':!$ctrl.isAcceptable}">
-      <span class="value">{{ $ctrl.value | number }}</span>
+      <span class="value">{{ $ctrl.value | number : $ctrl.decimals || 0 }}</span>
       <sup class="value-symbol" translate>{{ $ctrl.valueSymbol }}</sup>
     </div>
     <div class="description-section">

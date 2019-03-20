@@ -7,7 +7,9 @@ IndicatorDetailsModalController.$inject = [
 
 function IndicatorDetailsModalController(Data, Instance, $timeout, moment) {
   /* global muze */
+  const { DataModel, layerFactory } = muze;
   const vm = this;
+
   vm.params = Data;
   vm.close = Instance.close;
 
@@ -23,34 +25,135 @@ function IndicatorDetailsModalController(Data, Instance, $timeout, moment) {
     return 0;
   }
 
-  function formatPeriod(row) {
-    row.period = moment(row.period).format('MMMM YYYY');
+  function formatData(row) {
+    row.minimum = Data.minValue || 0;
+    row.maximum = Data.maxValue || 0;
+    row.periodLabel = moment(row.period).format('MMMM YYYY');
     return row;
   }
 
   function drawChart() {
-    const unorderedData = orderPeriods(vm.params.periodicValues) || [{ value : 0, period : 0 }];
-    const data = unorderedData.map(formatPeriod);
+    const unorderedData = orderPeriods(vm.params.periodicValues);
+    const data = unorderedData.map(formatData);
     const schema = [
       { name : 'value', type : 'measure' },
-      { name : 'period' },
+      { name : 'minimum', type : 'measure', defAggFn : 'max' },
+      { name : 'maximum', type : 'measure', defAggFn : 'min' },
+      { name : 'periodLabel' },
     ];
 
-    const { DataModel } = muze;
     const dm = new DataModel(data, schema);
-
     const env = muze(); // Initialize the Muze environment
     const canvas = env.canvas(); // Create a container canvas
 
     $timeout(() => {
+      const layers = [{ mark : 'bar' }];
+      const transforms = {};
+
+      if (vm.params.value) {
+        createChartLayer(
+          'referenceLine', 'averageLine', 'calulatedAverage', 'averageText', 'calulatedAverage', '#218fdb'
+        );
+        layers.push({
+          mark : 'referenceLine',
+          encoding : {
+            text : {
+              field : 'value',
+              formatter : value => `Average : ${Number(value).toFixed(2)}`,
+            },
+          },
+        });
+        transforms.calulatedAverage = (dt) => dt.groupBy([''], { value : 'avg' });
+      }
+
+      if (vm.params.minValue) {
+        createChartLayer(
+          'referenceMinLine', 'minLine', 'calculatedMin', 'minText', 'calculatedMin', '#dba021'
+        );
+        layers.push({
+          mark : 'referenceMinLine',
+          encoding : {
+            text : {
+              field : 'value',
+              formatter : value => `Minimum : ${Number(value).toFixed(2)}`,
+            },
+          },
+        });
+        transforms.calculatedMin = (dt) => dt.groupBy([''], { value : 'min' });
+      }
+
+      if (vm.params.maxValue) {
+        createChartLayer(
+          'referenceMaxLine', 'maxLine', 'calculatedMax', 'maxText', 'calculatedMax', '#db212f'
+        );
+        layers.push({
+          mark : 'referenceMaxLine',
+          encoding : {
+            text : {
+              field : 'value',
+              formatter : value => `Maximum : ${Number(value).toFixed(2)}`,
+            },
+          },
+        });
+        transforms.calculatedMax = (dt) => dt.groupBy([''], { value : 'max' });
+      }
+
       canvas
         .data(dm)
         .width(600) // Specify width of visualization (canvas) in pixels
         .height(400) // Specify height of visualization (canvas) in pixels
         .rows(['value'])
-        .columns(['period'])
+        .columns(['periodLabel'])
+        .color('value')
+        .transform(transforms)
+        .layers(layers)
         .mount('#indicator-chart');
     }, 0);
+  }
+
+  /**
+   * Add a layer in the chart
+   * @source : https://www.charts.com/muze/docs/Trendlines#implicit-encoding-and-resolving-encoding-for-composed-layer
+   */
+  function createChartLayer(
+    name, nameOfLine, sourceOfLine, nameOfText, sourceOfText, color
+  ) {
+    layerFactory.composeLayers(`${name}` /* name of composite layer */, [
+      {
+        name : nameOfLine, // Name of the line layer only
+        mark : 'tick', // Defines what kind of plot to be used
+        source : sourceOfLine, // Defines datasource from which it gets the data
+        className : 'average-line', // CSS class name which the layer appends on group
+        encoding : {
+          y : `${name}.encoding.y`,
+          color : { value : () => color || '#414141' },
+        },
+        calculateDomain : false, // Dont calculate domain of axis from this layer
+      },
+      {
+        name : nameOfText,
+        mark : 'text',
+        source : sourceOfText,
+        className : 'average-text',
+        encoding : {
+          y : `${name}.encoding.y`,
+          text : `${name}.encoding.text`,
+          color : { value : () => color || '#414141' },
+        },
+        encodingTransform : (points, layer, dependencies) => { /* Use this to change text position */
+          const { width } = layer.measurement();
+          const { smartLabel } = dependencies;
+          for (let i = 0; i < points.length; i++) {
+            const size = smartLabel.getOriSize(points[i].text);
+            points[i].update.x = width - 5;
+            points[i].textanchor = 'end';
+            points[i].update.y -= size.height / 2;
+          }
+          return points;
+        },
+        calculateDomain : false, /* No calculation of domain from this layer */
+      },
+    ]);
   }
 
   drawChart();

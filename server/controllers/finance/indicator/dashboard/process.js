@@ -171,11 +171,14 @@ function getIndicatorsVariables(collection) {
  * @param {object} - dependencies
  * An object which contains indicators variables, returned by the getIndicatorsVariables function
  */
-function getHospitalizationIndicators(dependencies, totalDaysOfPeriods = 356, period) {
-  const bedOccupationRate = dependencies.total_day_realized
+function getHospitalizationIndicators(dependencies, nbDays = 356, period) {
+  const totalDaysOfPeriods = period ? dependencies.total_period_days : nbDays;
+  const bedOccupation = dependencies.total_day_realized
     / (totalDaysOfPeriods || 1)
     / (dependencies.total_beds || 1);
 
+  const bedOccupationRate = bedOccupation * 100;
+
   const averageHospitalizationDays = dependencies.total_day_realized / dependencies.total_hospitalized_patient;
 
   const dailyHospitalization = dependencies.total_hospitalized_patient / totalDaysOfPeriods;
@@ -219,59 +222,6 @@ function getHospitalizationIndicators(dependencies, totalDaysOfPeriods = 356, pe
         { key : 'TOTAL_HOSPI_PATIENT', value : dependencies.total_hospitalized_patient },
       ],
       period : period || undefined,
-    },
-  };
-  return indicators;
-}
-
-/**
-   * staff indicators
-   */
-function getStaffIndicators(dependencies, totalDaysOfPeriods = 356, period) {
-  const bedOccupationRate = dependencies.total_day_realized
-      / (totalDaysOfPeriods || 1)
-      / (dependencies.total_beds || 1);
-
-  const averageHospitalizationDays = dependencies.total_day_realized / dependencies.total_hospitalized_patient;
-
-  const dailyHospitalization = dependencies.total_hospitalized_patient / totalDaysOfPeriods;
-
-  const deathRate = (dependencies.total_death / dependencies.total_hospitalized_patient) * 100;
-
-  // format the result for having indicators and dependencies
-  const indicators = {
-    bedOccupationRate : {
-      value : bedOccupationRate,
-      dependencies : [
-        { key : 'HOSP_DAYS', value : dependencies.total_day_realized },
-        { key : 'NB_DAYS', value : totalDaysOfPeriods },
-        { key : 'TOTAL_BED', value : dependencies.total_beds },
-      ],
-      period : period || undefined,
-    },
-
-    averageHospitalizationDays : {
-      value : averageHospitalizationDays,
-      dependencies : [
-        { key : 'HOSP_DAYS', value : dependencies.total_day_realized },
-        { key : 'TOTAL_HOSPI_PATIENT', value : dependencies.total_hospitalized_patient },
-      ],
-    },
-
-    dailyHospitalization : {
-      value : dailyHospitalization,
-      dependencies : [
-        { key : 'TOTAL_HOSPI_PATIENT', value : dependencies.total_hospitalized_patient },
-        { key : 'NB_DAYS', value : totalDaysOfPeriods },
-      ],
-    },
-
-    deathRate : {
-      value : deathRate,
-      dependencies : [
-        { key : 'TOTAL_DEATH', value : dependencies.total_death },
-        { key : 'TOTAL_HOSPI_PATIENT', value : dependencies.total_hospitalized_patient },
-      ],
     },
   };
   return indicators;

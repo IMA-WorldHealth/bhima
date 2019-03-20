@@ -48,7 +48,7 @@
   <div class="details">
     <!-- values -->
     <div class="value-section" ng-class="{'text-success':$ctrl.params.isAcceptable, 'text-danger':!$ctrl.params.isAcceptable}">
-      <span class="value" title="{{ $ctrl.params.value | number : 6 }}">{{ $ctrl.params.value | number }}</span>
+      <span class="value" title="{{ $ctrl.params.value | number : 6 }}">{{ $ctrl.params.value | number : $ctrl.decimals || 0 }}</span>
       <sup class="value-symbol" translate>{{ $ctrl.params.valueSymbol }}</sup>
     </div>
 
