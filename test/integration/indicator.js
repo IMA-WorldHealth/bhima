@@ -40,7 +40,6 @@ describe('(/indicators_file) The roles API endpoint', () => {
     },
     personel : {
       uuid : 'A29AE07761764D0E9EA9438E2F6DF52F',
-      total_beds : 40,
       total_doctors : 45,
       total_nurses : 10,
       total_caregivers : 10,
@@ -104,7 +103,7 @@ describe('(/indicators_file) The roles API endpoint', () => {
 
   const staffKeys = [
     'uuid', 'status_id', 'period_id', 'user_id', 'type_id',
-    'total_day_realized', 'total_beds', 'total_doctors', 'total_nurses', 'total_caregivers',
+    'total_day_realized', 'total_doctors', 'total_nurses', 'total_caregivers',
     'total_staff', 'total_external_visit', 'total_visit', 'total_surgery_by_doctor',
     'total_hospitalized_patient', 'fiscal_year_id',
   ];
