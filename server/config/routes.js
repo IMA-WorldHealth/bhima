@@ -909,5 +909,5 @@ exports.configure = function configure(app) {
   app.delete('/break_even_reference/:id', breakEvenReference.delete);
 
   // API dashboard
-  app.get('/indicators/dashboards/', dashboard.getIndicators);
+  app.get('/indicators/dashboards', dashboard.getIndicators);
 };

@@ -377,19 +377,19 @@ function getFinanceIndicators(dependencies, nbDays = 356, period) {
 
   const ratioCashHand = (dependencies.total_cash / (
     dependencies.total_operating_charge - dependencies.total_depreciation
-  ) / totalDaysOfPeriods) * 100;
+  ) / totalDaysOfPeriods);
 
   const ratioTurnOver = (dependencies.total_revenue / (
     dependencies.total_cash + dependencies.total_stock_value
-  )) * 100;
+  ));
 
   const ratioTotalMarge = ((
     (dependencies.total_revenue - dependencies.total_expenses) / dependencies.total_revenue
-  )) * 100;
+  ));
 
   const ratioCurrent = ((
     (dependencies.total_cash + dependencies.total_stock_value) / dependencies.total_debts
-  )) * 100;
+  ));
 
   // format the result for having indicators and dependencies
   const indicators = {
