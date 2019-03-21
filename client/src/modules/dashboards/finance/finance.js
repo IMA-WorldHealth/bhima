@@ -1,11 +1,36 @@
 angular.module('bhima.controllers')
   .controller('FinanceDashboardController', FinanceDashboardController);
 
-function FinanceDashboardController() {
+FinanceDashboardController.$inject = [
+  'IndicatorsDashboardService', 'NotifyService',
+];
+
+function FinanceDashboardController(IndicatorsDashboard, Notify) {
   const vm = this;
-  vm.search = { date : new Date() };
+  const current = new Date();
+  const year = current.getFullYear();
+  vm.search = { date : current };
+  vm.selected = { dateFrom : new Date(`${year}-01-01`), dateTo : new Date(`${year}-12-31`) };
 
   vm.onChangeFilter = selected => {
-    vm.selected = selected;
+    if (selected.dateFrom) {
+      vm.selected.dateFrom = selected.dateFrom;
+    }
+
+    if (selected.dateTo) {
+      vm.selected.dateTo = selected.dateTo;
+    }
+    load(vm.selected);
   };
+
+  function load(options) {
+    IndicatorsDashboard.dashboards.read(null, options)
+      .then(data => {
+        vm.indicators = data.indicators.finance;
+        vm.periodicIndicators = data.periodicIndicators.finance;
+      })
+      .catch(Notify.errorHandler);
+  }
+
+  load(vm.selected);
 }

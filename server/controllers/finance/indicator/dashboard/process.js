@@ -49,6 +49,22 @@ async function processIndicators(options) {
       );
     });
 
+    // staff indicators
+    _.keys(dependencies.staff).forEach(period => {
+      const periodicDependencies = dependencies.staff[period];
+      indicators.staff = getStaffIndicators(
+        periodicDependencies, staffCollection.totalDaysOfPeriods.nb_days
+      );
+    });
+
+    // finance indicators
+    _.keys(dependencies.finance).forEach(period => {
+      const periodicDependencies = dependencies.finance[period];
+      indicators.finance = getFinanceIndicators(
+        periodicDependencies, financeCollection.totalDaysOfPeriods.nb_days
+      );
+    });
+
     const periodicIndicators = await processPeriodicIndicators(options);
 
     return { indicators, periodicIndicators };
@@ -90,13 +106,24 @@ async function processPeriodicIndicators(options) {
     indicators.periodicStaff = {};
     _.keys(dependencies.staff).forEach(period => {
       const periodicDependencies = dependencies.staff[period];
-      indicators.periodicStaff[period] = getHospitalizationIndicators(
-        periodicDependencies, hospitalizationCollection.totalDaysOfPeriods.nb_days, period
+      indicators.periodicStaff[period] = getStaffIndicators(
+        periodicDependencies, staffCollection.totalDaysOfPeriods.nb_days, period
+      );
+    });
+
+    // finance
+    indicators.periodicFinance = {};
+    _.keys(dependencies.finance).forEach(period => {
+      const periodicDependencies = dependencies.finance[period];
+      indicators.periodicFinance[period] = getFinanceIndicators(
+        periodicDependencies, financeCollection.totalDaysOfPeriods.nb_days, period
       );
     });
 
     return {
       hospitalization : formatIndicatorsPeriodicValues(indicators.periodicHospitalization),
+      staff : formatIndicatorsPeriodicValues(indicators.periodicStaff),
+      finance : formatIndicatorsPeriodicValues(indicators.periodicFinance),
     };
   } catch (error) {
     throw error;
@@ -220,6 +247,247 @@ function getHospitalizationIndicators(dependencies, nbDays = 356, period) {
       dependencies : [
         { key : 'TOTAL_DEATH', value : dependencies.total_death },
         { key : 'TOTAL_HOSPI_PATIENT', value : dependencies.total_hospitalized_patient },
+      ],
+      period : period || undefined,
+    },
+  };
+  return indicators;
+}
+
+/**
+ * staff indicators
+ * @param {object} - dependencies
+ * An object which contains indicators variables, returned by the getIndicatorsVariables function
+ */
+function getStaffIndicators(dependencies, nbDays = 356, period) {
+  const totalDaysOfPeriods = period ? dependencies.total_period_days : nbDays;
+  const totalMedicalStaff = dependencies.total_doctors + dependencies.total_nurses + dependencies.total_caregivers;
+
+  const doctorOverStaff = (totalMedicalStaff / (dependencies.total_staff || 1)) * 100;
+
+  const dailyVisit = dependencies.total_external_visit / (totalDaysOfPeriods || 1);
+
+  const chargeOverStaff = (
+    dependencies.total_visit + (dependencies.total_hospitalized_patient * 6)
+  ) / (dependencies.total_staff || 1) / (totalDaysOfPeriods || 1);
+
+  const chargeOverMedicalStaff = (
+    dependencies.total_visit + (dependencies.total_hospitalized_patient * 6)
+  ) / (totalMedicalStaff || 1) / (totalDaysOfPeriods || 1);
+
+  const surgeryByDoctor = dependencies.total_surgery_by_doctor / (totalDaysOfPeriods || 1);
+
+  const patientByDoctor = (
+    dependencies.total_visit + dependencies.total_day_realized
+  ) / dependencies.total_doctors / (totalDaysOfPeriods || 1);
+
+  // format the result for having indicators and dependencies
+  const indicators = {
+    doctorOverStaff : {
+      value : doctorOverStaff,
+      dependencies : [
+        { key : 'TOTAL_MEDECINS', value : dependencies.total_doctors },
+        { key : 'TOTAL_NURSES', value : dependencies.total_nurses },
+        { key : 'TOTAL_HELPERS', value : dependencies.total_caregivers },
+        { key : 'TOTAL_STAFF', value : dependencies.total_staff },
+      ],
+      period : period || undefined,
+    },
+
+    dailyVisit : {
+      value : dailyVisit,
+      dependencies : [
+        { key : 'TOTAL_EXTERNAL_CONSULTING', value : dependencies.total_external_visit },
+        { key : 'NB_DAYS', value : totalDaysOfPeriods },
+      ],
+      period : period || undefined,
+    },
+
+    chargeOverStaff : {
+      value : chargeOverStaff,
+      dependencies : [
+        { key : 'TOTAL_CONSULTING', value : dependencies.total_visit },
+        { key : 'TOTAL_HOSPI_PATIENT', value : dependencies.total_hospitalized_patient },
+        { key : 'TOTAL_STAFF', value : dependencies.total_staff },
+        { key : 'NB_DAYS', value : totalDaysOfPeriods },
+      ],
+      period : period || undefined,
+    },
+
+    chargeOverMedicalStaff : {
+      value : chargeOverMedicalStaff,
+      dependencies : [
+        { key : 'TOTAL_CONSULTING', value : dependencies.total_visit },
+        { key : 'TOTAL_HOSPI_PATIENT', value : dependencies.total_hospitalized_patient },
+        { key : 'TOTAL_MEDICAL_STAFF', value : totalMedicalStaff },
+        { key : 'NB_DAYS', value : totalDaysOfPeriods },
+      ],
+      period : period || undefined,
+    },
+
+    patientByDoctor : {
+      value : patientByDoctor,
+      dependencies : [
+        { key : 'TOTAL_CONSULTING', value : dependencies.total_visit },
+        { key : 'HOSP_DAYS', value : dependencies.total_day_realized },
+        { key : 'TOTAL_MEDECINS', value : dependencies.total_doctors },
+        { key : 'NB_DAYS', value : totalDaysOfPeriods },
+      ],
+      period : period || undefined,
+    },
+
+    surgeryByDoctor : {
+      value : surgeryByDoctor,
+      dependencies : [
+        { key : 'TOTAL_SURGERY_BY_DOCTOR', value : dependencies.total_surgery_by_doctor },
+        { key : 'NB_DAYS', value : totalDaysOfPeriods },
+      ],
+      period : period || undefined,
+    },
+  };
+  return indicators;
+}
+
+/**
+ * finance indicators
+ * @param {object} - dependencies
+ * An object which contains indicators variables, returned by the getIndicatorsVariables function
+ */
+function getFinanceIndicators(dependencies, nbDays = 356, period) {
+  const totalDaysOfPeriods = period ? dependencies.total_period_days : nbDays;
+  const totalPeriods = Math.ceil(totalDaysOfPeriods / 31);
+
+  const operatingRevenueOverStaffCharge = ((
+    dependencies.total_revenue - dependencies.total_subsidies - dependencies.total_drugs_sale
+  ) / dependencies.total_staff_charge) * 100;
+
+  const staffChargeOverLocalRevenue = (
+    dependencies.total_staff_charge / (dependencies.total_revenue - dependencies.total_subsidies)
+  ) * 100;
+
+  const averageSalary = dependencies.total_staff_charge / dependencies.total_staff / totalPeriods;
+
+  const autoFinancing = (
+    (dependencies.total_revenue - dependencies.total_subsidies) / dependencies.total_expenses
+  ) * 100;
+
+  const drugSalesOverPurchased = (dependencies.total_drugs_sale / dependencies.total_drugs_purchased) * 100;
+
+  const ratioVariousExpense = (dependencies.total_other_charge / dependencies.total_expenses) * 100;
+
+  const ratioCashHand = (dependencies.total_cash / (
+    dependencies.total_operating_charge - dependencies.total_depreciation
+  ) / totalDaysOfPeriods) * 100;
+
+  const ratioTurnOver = (dependencies.total_revenue / (
+    dependencies.total_cash + dependencies.total_stock_value
+  )) * 100;
+
+  const ratioTotalMarge = ((
+    (dependencies.total_revenue - dependencies.total_expenses) / dependencies.total_revenue
+  )) * 100;
+
+  const ratioCurrent = ((
+    (dependencies.total_cash + dependencies.total_stock_value) / dependencies.total_debts
+  )) * 100;
+
+  // format the result for having indicators and dependencies
+  const indicators = {
+    operatingRevenueOverStaffCharge : {
+      value : operatingRevenueOverStaffCharge,
+      dependencies : [
+        { key : 'TOTAL_INCOMES', value : dependencies.total_revenue },
+        { key : 'TOTAL_SUBVENTION', value : dependencies.total_subsidies },
+        { key : 'TOTAL_DRUGS_SALES', value : dependencies.total_drugs_sale },
+        { key : 'TOTAL_STAFF_CHARGE', value : dependencies.total_staff_charge },
+      ],
+      period : period || undefined,
+    },
+
+    staffChargeOverLocalRevenue : {
+      value : staffChargeOverLocalRevenue,
+      dependencies : [
+        { key : 'TOTAL_INCOMES', value : dependencies.total_revenue },
+        { key : 'TOTAL_SUBVENTION', value : dependencies.total_subsidies },
+        { key : 'TOTAL_STAFF_CHARGE', value : dependencies.total_staff_charge },
+      ],
+      period : period || undefined,
+    },
+
+    averageSalary : {
+      value : averageSalary,
+      dependencies : [
+        { key : 'TOTAL_STAFF', value : dependencies.total_staff },
+        { key : 'TOTAL_STAFF_CHARGE', value : dependencies.total_staff_charge },
+        { key : 'NB_PERIODS', value : totalPeriods },
+      ],
+      period : period || undefined,
+    },
+
+    autoFinancing : {
+      value : autoFinancing,
+      dependencies : [
+        { key : 'TOTAL_INCOMES', value : dependencies.total_revenue },
+        { key : 'TOTAL_SUBVENTION', value : dependencies.total_subsidies },
+        { key : 'TOTAL_EXPENSES', value : dependencies.total_expenses },
+      ],
+      period : period || undefined,
+    },
+
+    drugSalesOverPurchased : {
+      value : drugSalesOverPurchased,
+      dependencies : [
+        { key : 'TOTAL_DRUGS_SALES', value : dependencies.total_drugs_sale },
+        { key : 'TOTAL_DRUGS_PURCHASE', value : dependencies.total_drugs_purchased },
+      ],
+      period : period || undefined,
+    },
+
+    ratioVariousExpense : {
+      value : ratioVariousExpense,
+      dependencies : [
+        { key : 'TOTAL_OTHER_EXPENSES', value : dependencies.total_other_charge },
+        { key : 'TOTAL_EXPENSES', value : dependencies.total_expenses },
+      ],
+      period : period || undefined,
+    },
+
+    ratioCashHand : {
+      value : ratioCashHand,
+      dependencies : [
+        { key : 'TOTAL_CASH', value : dependencies.total_cash },
+        { key : 'TOTAL_OPERATING_CHARGE', value : dependencies.total_operating_charge },
+        { key : 'TOTAL_DEPRECIATION', value : dependencies.total_depreciation },
+        { key : 'NB_DAYS', value : totalDaysOfPeriods },
+      ],
+      period : period || undefined,
+    },
+
+    ratioTurnOver : {
+      value : ratioTurnOver,
+      dependencies : [
+        { key : 'TOTAL_INCOMES', value : dependencies.total_revenue },
+        { key : 'TOTAL_CASH', value : dependencies.total_cash },
+        { key : 'TOTAL_STOCK_VALUE', value : dependencies.total_stock_value },
+      ],
+      period : period || undefined,
+    },
+
+    ratioTotalMarge : {
+      value : ratioTotalMarge,
+      dependencies : [
+        { key : 'TOTAL_INCOMES', value : dependencies.total_revenue },
+        { key : 'TOTAL_EXPENSES', value : dependencies.total_expenses },
+      ],
+      period : period || undefined,
+    },
+
+    ratioCurrent : {
+      value : ratioCurrent,
+      dependencies : [
+        { key : 'TOTAL_CASH', value : dependencies.total_cash },
+        { key : 'TOTAL_STOCK_VALUE', value : dependencies.total_stock_value },
+        { key : 'TOTAL_DEBTS', value : dependencies.total_debts },
       ],
       period : period || undefined,
     },

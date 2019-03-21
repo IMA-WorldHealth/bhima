@@ -52,7 +52,7 @@ function IndicatorDetailsModalController(Data, Instance, $timeout, moment) {
 
       if (vm.params.value) {
         createChartLayer(
-          'referenceLine', 'averageLine', 'calulatedAverage', 'averageText', 'calulatedAverage', '#218fdb'
+          'referenceLine', 'averageLine', 'calulatedAverage', 'averageText', 'calulatedAverage'
         );
         layers.push({
           mark : 'referenceLine',
@@ -66,47 +66,14 @@ function IndicatorDetailsModalController(Data, Instance, $timeout, moment) {
         transforms.calulatedAverage = (dt) => dt.groupBy([''], { value : 'avg' });
       }
 
-      if (vm.params.minValue) {
-        createChartLayer(
-          'referenceMinLine', 'minLine', 'calculatedMin', 'minText', 'calculatedMin', '#dba021'
-        );
-        layers.push({
-          mark : 'referenceMinLine',
-          encoding : {
-            text : {
-              field : 'value',
-              formatter : value => `Minimum : ${Number(value).toFixed(2)}`,
-            },
-          },
-        });
-        transforms.calculatedMin = (dt) => dt.groupBy([''], { value : 'min' });
-      }
-
-      if (vm.params.maxValue) {
-        createChartLayer(
-          'referenceMaxLine', 'maxLine', 'calculatedMax', 'maxText', 'calculatedMax', '#db212f'
-        );
-        layers.push({
-          mark : 'referenceMaxLine',
-          encoding : {
-            text : {
-              field : 'value',
-              formatter : value => `Maximum : ${Number(value).toFixed(2)}`,
-            },
-          },
-        });
-        transforms.calculatedMax = (dt) => dt.groupBy([''], { value : 'max' });
-      }
-
       canvas
         .data(dm)
-        .width(700) // Specify width of visualization (canvas) in pixels
-        .height(400) // Specify height of visualization (canvas) in pixels
         .rows(['value'])
         .columns(['Period Name'])
-        .color('value')
         .transform(transforms)
         .layers(layers)
+        .width(700) // Specify width of visualization (canvas) in pixels
+        .height(400) // Specify height of visualization (canvas) in pixels
         .mount('#indicator-chart');
     }, 0);
   }
