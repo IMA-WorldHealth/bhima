@@ -119,10 +119,10 @@ INSERT INTO unit VALUES
   (231, 'Break-even Report', 'TREE.BREAK_EVEN_REPORT', 'Break-even Report', 144, '/modules/reports/breakEven', '/reports/breakEven'),
   (232, 'Break Even By Fee Center', 'TREE.BREAK_EVEN_FEE_CENTER_REPORT', 'Break-even By Fee Center Report', 144, '/modules/reports/breakEvenFeeCenter', '/reports/breakEvenFeeCenter'),
   (233, 'Dashboards Folder', 'TREE.DASHBOARDS.TITLE', 'Tableaux de bord', 0, '/modules/patient/visits', '/DASHBOARDS_FOLDER'),
-  (234, 'Indicators Files Registry', 'TREE.DASHBOARDS.INDICATORS_FILES_REGISTRY', 'Registre des fiches des indicateurs', 230, '/modules/dashboards/indicators_files_registry/', '/dashboards/indicators_files_registry'),
-  (235, 'Hospitalization dashboard', 'TREE.DASHBOARDS.HOSPITALIZATION', 'Tableau de bord des hospitalisations', 230, '/modules/dashboards/hospitalization/', '/dashboards/hospitalization'),
-  (236, 'Human Resources dashboard', 'TREE.DASHBOARDS.HUMAN_RESOURCES', 'Tableau de bord du Personnel', 230, '/modules/dashboards/human_resources/', '/dashboards/human_resources'),
-  (237, 'Finances dashboard', 'TREE.DASHBOARDS.FINANCES', 'Tableau de bord des finances', 230, '/modules/dashboards/finances/', '/dashboards/finances');
+  (234, 'Indicators Files Registry', 'TREE.DASHBOARDS.INDICATORS_FILES_REGISTRY', 'Registre des fiches des indicateurs', 233, '/modules/dashboards/indicators_files_registry/', '/dashboards/indicators_files_registry'),
+  (235, 'Hospitalization dashboard', 'TREE.DASHBOARDS.HOSPITALIZATION', 'Tableau de bord des hospitalisations', 233, '/modules/dashboards/hospitalization/', '/dashboards/hospitalization'),
+  (236, 'Human Resources dashboard', 'TREE.DASHBOARDS.HUMAN_RESOURCES', 'Tableau de bord du Personnel', 233, '/modules/dashboards/staff/', '/dashboards/staff'),
+  (237, 'Finances dashboard', 'TREE.DASHBOARDS.FINANCES', 'Tableau de bord des finances', 233, '/modules/dashboards/finances/', '/dashboards/finances');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
