@@ -64,11 +64,11 @@ describe('Patient IndicatorsFiles', () => {
   it('search indicators files by period', () => {
     const options = {
       fiscalYear : 'Fiscal Year 2019',
-      period : 'January 2019',
+      period : 'janvier 2019',
     };
     Page.search(options);
     Page.expectNumberOfGridRows(3);
-    options.period = 'February 2019';
+    options.period = 'février 2019';
     Page.search(options);
     Page.expectNumberOfGridRows(0);
   });
