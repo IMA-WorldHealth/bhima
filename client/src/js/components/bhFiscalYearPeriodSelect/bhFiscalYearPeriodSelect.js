@@ -10,9 +10,9 @@ angular.module('bhima.components')
     },
   });
 
-FiscalYearPeriodSelect.$inject = ['FiscalService', 'PeriodApi'];
+FiscalYearPeriodSelect.$inject = ['FiscalService', 'PeriodApi', 'moment'];
 
-function FiscalYearPeriodSelect(FiscalYears, Periods) {
+function FiscalYearPeriodSelect(FiscalYears, Periods, moment) {
   const $ctrl = this;
 
   $ctrl.$onInit = () => {
@@ -25,7 +25,7 @@ function FiscalYearPeriodSelect(FiscalYears, Periods) {
 
     Periods.read(null, { fiscal_year_id : $ctrl.fiscalId })
       .then(periods => {
-        $ctrl.periods = periods.filter(p => p.number !== 0);
+        $ctrl.periods = periods.map(hrLabel).filter(p => p.number !== 0);
       });
   };
 
@@ -34,7 +34,8 @@ function FiscalYearPeriodSelect(FiscalYears, Periods) {
 
     Periods.read(null, { fiscal_year_id : $ctrl.fiscalId })
       .then(periods => {
-        $ctrl.periods = periods.filter(p => p.start_date !== null && p.end_date !== null);
+
+        $ctrl.periods = periods.map(hrLabel).filter(p => p.start_date !== null && p.end_date !== null);
       });
 
     $ctrl.onSelectCallback({ selected : $ctrl.selected });
@@ -44,4 +45,9 @@ function FiscalYearPeriodSelect(FiscalYears, Periods) {
     $ctrl.selected.period = period;
     $ctrl.onSelectCallback({ selected : $ctrl.selected });
   };
+
+  function hrLabel(period) {
+    period.hrLabel = moment(period.start_date).format('MMMM YYYY');
+    return period;
+  }
 }

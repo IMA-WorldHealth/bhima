@@ -14,7 +14,7 @@ describe('Patient IndicatorsFiles', () => {
   const Page = new IndicatorsFilesPage();
 
   const fiscalYearLabel = 'Fiscal Year 2019';
-  const periodLabel = 'January 2019';
+  const periodLabel = 'janvier 2019';
   const service = 'Medecine Interne';
   const hospitalizationIndicators = {
     total_day_realized : 10,

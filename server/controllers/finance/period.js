@@ -1,5 +1,4 @@
 // period API
-const moment = require('moment');
 const db = require('../../lib/db');
 const FilterParser = require('../../lib/filter');
 
@@ -26,7 +25,6 @@ function list(req, res, next) {
 
   db.exec(sql.query, sql.parameters)
     .then(periods => {
-      periods.forEach(hrLabel);
       res.status(200).json(periods);
     })
     .catch(next);
@@ -41,14 +39,7 @@ function details(req, res, next) {
 
   db.one(query, [id])
     .then(period => {
-      // add 2 days to make sure timezone is accounted for
-      period.hrLabel = hrLabel(period);
       res.status(200).json(period);
     })
     .catch(next);
-}
-
-function hrLabel(period) {
-  period.hrLabel = moment(period.start_date).add(2, 'days').format('MMMM YYYY');
-  return period;
 }
