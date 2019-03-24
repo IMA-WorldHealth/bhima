@@ -1,5 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 const path = require('path');
+const mkdirp = require('mkdirp');
 const {
   src, dest, series,
 } = require('gulp');
@@ -36,5 +37,17 @@ function moveServerFiles() {
     .pipe(dest(SERVER_FOLDER));
 }
 
+/**
+ * @function createReportsDirectory
+ *
+ * @description
+ * Creates the server/reports/ directory in the server folder to save reports.
+ * NOTE(@jniles) - there is an open issue (#3650) to move this to an environmental
+ * variable.
+ */
+function createReportsDirectory(cb) {
+  mkdirp(path.join(SERVER_FOLDER, 'reports/'), cb);
+}
+
 // expose the gulp functions to the outside world
-module.exports = series(cleanServer, moveServerFiles);
+module.exports = series(cleanServer, createReportsDirectory, moveServerFiles);
