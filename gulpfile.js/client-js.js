@@ -1,6 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 const {
-  src, dest, series,
+  src, dest, series, watch,
 } = require('gulp');
 
 const concat = require('gulp-concat');
@@ -77,4 +77,6 @@ const compileTypescript = isProduction
   ? compileTypescriptForProduction
   : compileTypescriptForDevelopment;
 
-module.exports = series(cleanJS, compileTypescript);
+const compile = series(cleanJS, compileTypescript);
+exports.watch = () => watch(CLIENT_JS, compile);
+exports.compile = compile;

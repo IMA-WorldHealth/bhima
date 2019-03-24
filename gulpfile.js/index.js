@@ -54,14 +54,22 @@ const templateHTML = isProduction
   : templateHTMLForDevelopment;
 
 const client = series(
-  parallel(js, css, i18n, vendor, buildStatic, fonts),
+  parallel(js.compile, css.compile, i18n.compile, vendor, buildStatic.compile, fonts),
   collectRevisionsIntoManifest,
   templateHTML
 );
 
 const build = parallel(client, server);
 
+const watch = () => {
+  js.watch();
+  css.watch();
+  buildStatic.watch();
+  i18n.watch();
+};
+
 exports.default = build;
 exports.build = build;
 exports.client = client;
 exports.server = server;
+exports.watch = watch;

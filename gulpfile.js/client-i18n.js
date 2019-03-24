@@ -5,7 +5,7 @@ const { exec } = require('child_process');
 const mergeJson = require('gulp-merge-json');
 
 const {
-  src, dest, series, parallel,
+  src, dest, series, parallel, watch,
 } = require('gulp');
 
 const {
@@ -45,4 +45,6 @@ function compileI18n() {
 const cleanI18n = () => del(`${CLIENT_FOLDER}/i18n`);
 const buildI18n = series(parallel(lintI18n, cleanI18n), compileI18n);
 
-module.exports = buildI18n;
+const compile = buildI18n;
+exports.watch = () => watch('client/src/i18n/**/*.json', compile);
+exports.compile = compile;

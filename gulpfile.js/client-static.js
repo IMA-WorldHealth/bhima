@@ -1,6 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 const {
-  src, dest,
+  src, dest, watch,
 } = require('gulp');
 
 const {
@@ -20,4 +20,6 @@ function buildStatic() {
     .pipe(dest(CLIENT_FOLDER));
 }
 
-module.exports = buildStatic;
+const compile = buildStatic;
+exports.watch = () => watch(STATIC_PATHS, compile);
+exports.compile = compile;

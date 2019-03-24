@@ -8,7 +8,7 @@ const del = require('del');
 const rev = require('gulp-rev');
 
 const {
-  src, dest, series,
+  src, dest, series, watch,
 } = require('gulp');
 
 const {
@@ -92,4 +92,8 @@ function compileLess() {
     .pipe(dest(`${CLIENT_FOLDER}/css`));
 }
 
-module.exports = series(cleanCSS, compileLess, compileCSS);
+const PATHS = [...CSS_PATHS, LESS_PATH];
+
+const compile = series(cleanCSS, compileLess, compileCSS);
+exports.watch = () => watch(PATHS, compile);
+exports.compile = compile;
