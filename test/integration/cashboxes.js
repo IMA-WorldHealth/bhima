@@ -1,4 +1,5 @@
 /* global expect, agent */
+/* eslint-disable no-unused-expressions */
 
 const helpers = require('./helpers');
 
@@ -157,8 +158,8 @@ describe('(/cashboxes) The Cashboxes API endpoint', () => {
   it('GET /cashboxes/:id/users should return users subscribed to a cashbox', () => {
     // details on the test cashbox as found in the dataset built before integration tests
     const testDataCashbox = {
-      id: 1,
-      numberOfUsers: 2
+      id : 1,
+      numberOfUsers : 2,
     };
     return agent.get(`/cashboxes/${testDataCashbox.id}/users`)
       .then(result => {

@@ -1,8 +1,6 @@
+/* global expect, agent */
+/* eslint-disable no-unused-expressions */
 
-
-/* global expect, chai, agent */
-
-const _ = require('lodash');
 const helpers = require('./helpers');
 
 describe('(/barcode) Barcode Reverse Lookup', () => {
@@ -36,6 +34,4 @@ describe('(/barcode) Barcode Reverse Lookup', () => {
         helpers.api.errored(res, 400);
       });
   });
-
-
 });

@@ -1,4 +1,5 @@
 /* global expect, agent */
+/* eslint-disable no-unused-expressions */
 const moment = require('moment');
 const helpers = require('./helpers');
 
@@ -66,7 +67,7 @@ describe('(/fiscal) Fiscal Year extra operations', () => {
       .catch(helpers.handler);
   });
 
-  it('POST /fiscal/:id/opening_balance forbid to set the opening balance of a fiscal year which is not the first', () => {
+  it('POST /fiscal/:id/opening_balance cannot set opening balance for second fiscal year', () => {
     // define a not first fiscal year information
     openingBalance.id = fiscalYear2017.id;
     openingBalance.fiscal = fiscalYear2017;
@@ -134,5 +135,4 @@ describe('(/fiscal) Fiscal Year extra operations', () => {
   function flatDate(_date_) {
     return moment(_date_).format('YYYY-MM-DD');
   }
-
 });

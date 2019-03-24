@@ -1,4 +1,5 @@
 /* global expect, agent */
+/* eslint-disable no-unused-expressions */
 
 const helpers = require('./helpers');
 
@@ -8,12 +9,6 @@ const helpers = require('./helpers');
  * This test suite implements full CRUD on the /payroll/weekend_configuration  HTTP API endpoint.
  */
 describe('(/payroll/weekend_configuration) The /payroll/weekend_configuration  API endpoint', () => {
-  // weekend_configuration we will add during this test suite.
-
-  const weekEndUpdate = {
-    label : 'WeekEnd Updated',
-  };
-
   const weekEndConfig = {
     label : 'Configuration Week end 2013',
   };

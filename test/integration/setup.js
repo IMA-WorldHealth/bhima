@@ -8,7 +8,6 @@
  * @requires q
  * @requires chai-http
  * @requires chai-datetime
- *
  */
 
 
@@ -26,12 +25,6 @@ global.baseUrl = baseUrl;
 before(() => {
   console.log('Setting up test suite...');
 
-  // workaround for low node versions
-  if (!global.Promise) {
-    const q = require('q');
-    chai.request.addPromises(q.Promise);
-  }
-
   // attach plugins
   chai.use(chaiHttp);
   chai.use(chaiDatetime);
@@ -40,7 +33,7 @@ before(() => {
   global.chai = chai;
   global.expect = chai.expect;
   global.agent = chai.request.agent(baseUrl);
-  const agent = global.agent;
+  const { agent } = global;
 
   // base user defined in test data
   const user = { username : 'superuser', password : 'superuser', project : 1 };
