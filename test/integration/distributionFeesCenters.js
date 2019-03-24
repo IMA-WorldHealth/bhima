@@ -163,7 +163,7 @@ describe('(/fee_center_distribution) The /fee_center  API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('POST /distribution_fee_center/distributionKey a new Distribution Fee Center Key: 2', () => {
+  it('POST /distribution_fee_center/distributionKey a new distribution fee center key: 2', () => {
     return agent.post('/distribution_fee_center/distributionKey')
       .send(distributionKey2)
       .then((res) => {
@@ -172,7 +172,7 @@ describe('(/fee_center_distribution) The /fee_center  API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('POST /distribution_fee_center/proceed : Distribution of Ancillary Cost Centers to Main Centers by Monetary Values', () => {
+  it('POST /distribution_fee_center/proceed distribution of aux cost centers to main centers by currency', () => {
     return agent.post('/distribution_fee_center/proceed')
       .send(proceed)
       .then((res) => {
@@ -181,7 +181,7 @@ describe('(/fee_center_distribution) The /fee_center  API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('POST /distribution_fee_center/proceed : Throwing BadRequest If dataToDistribute.length is 0', () => {
+  it('POST /distribution_fee_center/proceed throws BadRequest if dataToDistribute.length is 0', () => {
     return agent.post('/distribution_fee_center/proceed')
       .send(proceedInternalServerError)
       .then((res) => {
@@ -190,7 +190,8 @@ describe('(/fee_center_distribution) The /fee_center  API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('/distribution_fee_center/automatic Automatic distribution of invoices whose services are referenced to main expense centers', () => {
+  // eslint-disable-next-line
+  it('/distribution_fee_center/automatic Automatically distributes invoices with referenced services to main expense centers', () => {
     return agent.post('/distribution_fee_center/automatic')
       .send(automaticInvoices)
       .then((res) => {
@@ -199,7 +200,7 @@ describe('(/fee_center_distribution) The /fee_center  API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('GET /distribution_fee_center/getDistributed  Obtaining the list of all distributions of costs and profits made manually', () => {
+  it('GET /distribution_fee_center/getDistributed retunrs all distributions of costs and profits made manually', () => {
     return agent.get('/distribution_fee_center/getDistributed')
       .then(res => {
         helpers.api.listed(res, 4);

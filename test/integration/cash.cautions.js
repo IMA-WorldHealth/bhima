@@ -1,5 +1,5 @@
-/* global expect, chai, agent */
-
+/* global expect, agent */
+/* eslint-disable no-unused-expressions */
 
 /**
  * @overview CautionPayments
@@ -8,15 +8,12 @@
  * This contains the test cases for creating cautions via the /cash API.
  *
  */
-
 module.exports = CautionPayments;
 
-const _ = require('lodash');
 const helpers = require('./helpers');
 
 function CautionPayments() {
-  const DEBTOR_UUID = // Test Patient
-    '3be232f9-a4b9-4af6-984c-5d3f87d5c107';
+  const DEBTOR_UUID = '3be232f9-a4b9-4af6-984c-5d3f87d5c107';
 
   const CAUTION_PAYMENT = {
     amount :      15000,

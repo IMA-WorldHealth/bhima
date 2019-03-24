@@ -1,6 +1,6 @@
-/* global expect, chai, agent */
+/* global expect, agent */
+/* eslint-disable no-unused-expressions */
 
-const uuid = require('uuid/v4');
 const helpers = require('./helpers');
 
 /*

@@ -1,4 +1,5 @@
-/* global expect, chai, agent */
+/* global expect, agent */
+/* eslint-disable no-unused-expressions */
 
 const helpers = require('./helpers');
 
@@ -10,7 +11,6 @@ describe('(/accounts/categories) Account Categories', () => {
   const DELETABLE_ACCOUNT_TYPE_ID = 5;
   const FETCHABLE_ACCOUNT_TYPE_ID = 1;
   const numAccountCategory = 4;
-
 
   it('GET /accounts/categories returns a list of account category', () => {
     return agent.get('/accounts/categories/')
