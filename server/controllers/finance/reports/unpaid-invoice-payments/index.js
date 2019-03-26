@@ -18,20 +18,30 @@ async function build(req, res, next) {
 
   const metadata = _.clone(req.session);
 
+  let report;
+  let results;
+
   try {
-    const report = new ReportManager(TEMPLATE, metadata, qs);
+    report = new ReportManager(TEMPLATE, metadata, qs);
+    results = await getUnbalancedInvoices(qs);
+  } catch (err) {
 
-    const { dataset, totals, services } = await getUnbalancedInvoices(qs);
+    // NOTE(@jniles) we throw for all errors except the 3COLLATIONS error and
+    // parse error.  These errors mean that we didn't pick up enough data in
+    // our query, so it is empty.  We'll show the client an empty table instead.
+    if (err.code !== 'ER_CANT_AGGREGATE_3COLLATIONS' && err.code !== 'ER_PARSE_ERROR') {
+      next(err);
+      return;
+    }
 
-    const data = _.extend({}, qs, {
-      dataset, totals, services,
-    });
-
-    const compiled = await report.render(data);
-    res.set(compiled.headers).send(compiled.report);
-  } catch (e) {
-    next(e);
+    // provide empty data for the report to render
+    results = { dataset : [], totals : {}, services : [] };
   }
+
+  const data = _.extend({}, qs, results);
+
+  const compiled = await report.render(data);
+  res.set(compiled.headers).send(compiled.report);
 }
 
 // invoice payements balance
