@@ -14,7 +14,8 @@
   tooltip-trigger="'mouseenter'">
 </i>
 
-<div ng-class="{ 'col-md-9' : $ctrl.leftLabel}">
+<div ng-class="{ 'col-md-9' : $ctrl.leftLabel, 'input-group': $ctrl.isCurrency }">
+  <span ng-if="$ctrl.isCurrency" class="input-group-addon text-uppercase">{{ $ctrl.currency.symbol }}</span>
   <input type="{{$ctrl.type}}"
     ng-class="{'required': $ctrl.required}",
     name ='inputTextElement'
@@ -31,7 +32,6 @@
   <div class="help-block"
     ng-messages="textValueForm.inputTextElement.$error"
     ng-show="textValueForm.$submitted && textValueForm.inputTextElement.$invalid">
-      
     <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
   </div>
 </div>

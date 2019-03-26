@@ -14,14 +14,17 @@ angular.module('bhima.components')
       onChange : '&',
       id : '@?',
       description : '@?',
+      isCurrency : '<?',
     },
   });
+
+InputTextController.$inject = ['CurrencyService', 'SessionService'];
 
 /**
  * input fiel component
  *
  */
-function InputTextController() {
+function InputTextController(Currencies, Session) {
   const $ctrl = this;
 
   // fired at the beginning
@@ -32,9 +35,24 @@ function InputTextController() {
     $ctrl.noLabel = $ctrl.noLabel || false;
     $ctrl.onChange = $ctrl.onChange || angular.noop;
     $ctrl.autocomplete = $ctrl.autocomplete || 'on';
+
+    if ($ctrl.isCurrency) {
+      loadCurrency(Session.enterprise.currency_id);
+    }
   };
 
   $ctrl.valueChange = () => {
     $ctrl.onChange({ key : $ctrl.id, value : $ctrl.textValue });
   };
+
+  /* @private loads a particular currency from the server */
+  function loadCurrency(id) {
+    if (!angular.isDefined(id)) { return; }
+
+    // load currency from the currency service
+    Currencies.detail(id)
+      .then(currency => {
+        $ctrl.currency = currency;
+      });
+  }
 }
