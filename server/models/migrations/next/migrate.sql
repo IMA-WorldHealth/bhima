@@ -244,3 +244,11 @@ INSERT INTO `account_reference_type` (`id`, `label`, `fixed`) VALUES
 
 -- @lomamech 2019-03-11
 ALTER TABLE `voucher` ADD COLUMN `posted` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0;
+
+-- dashbord folder
+INSERT INTO `unit` VALUES 
+  (233, 'Dashboards Folder', 'TREE.DASHBOARDS.TITLE', 'Tableaux de bord', 0, '/modules/patient/visits', '/DASHBOARDS_FOLDER'),
+  (234, 'Indicators Files Registry', 'TREE.DASHBOARDS.INDICATORS_FILES_REGISTRY', 'Registre des fiches des indicateurs', 233, '/modules/dashboards/indicators_files_registry/', '/dashboards/indicators_files_registry'),
+  (235, 'Hospitalization dashboard', 'TREE.DASHBOARDS.HOSPITALIZATION', 'Tableau de bord des hospitalisations', 233, '/modules/dashboards/hospitalization/', '/dashboards/hospitalization'),
+  (236, 'Human Resources dashboard', 'TREE.DASHBOARDS.HUMAN_RESOURCES', 'Tableau de bord du Personnel', 233, '/modules/dashboards/staff/', '/dashboards/staff'),
+  (237, 'Finances dashboard', 'TREE.DASHBOARDS.FINANCES', 'Tableau de bord des finances', 233, '/modules/dashboards/finances/', '/dashboards/finances');
