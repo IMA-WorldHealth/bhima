@@ -1,4 +1,4 @@
-/* global expect, chai, agent */
+/* global agent */
 
 /**
  * @overview PurchaseOrderSearch
@@ -6,7 +6,6 @@
  * @description
  * This file contains search tests for the purchase orders API.
  */
-
 const helpers = require('./helpers');
 
 module.exports = PurchaseOrderSearch;

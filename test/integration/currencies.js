@@ -1,10 +1,9 @@
-/* global expect, chai, agent */
+/* global expect, agent */
+/* eslint-disable no-unused-expressions */
 
 const helpers = require('./helpers');
 
 describe('(/currencies) currencies API routes', () => {
-
-
   const currencyId = 1;
   const keys = [
     'id', 'name', 'note', 'format_key', 'symbol', 'min_monentary_unit',

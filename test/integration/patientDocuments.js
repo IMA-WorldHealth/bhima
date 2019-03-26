@@ -1,4 +1,5 @@
-/* global expect, chai, agent */
+/* global expect, agent */
+/* eslint-disable no-unused-expressions */
 
 const fs = require('fs');
 const path = require('path');
@@ -23,7 +24,7 @@ describe('(patients/:uuid/documents) Patient Documents', () => {
       .then((res) => {
         expect(res).to.have.status(201);
         expect(res.body).to.have.property('uuids');
-        docId = res.body.uuids[0];
+        [docId] = res.body.uuids;
       })
       .catch(helpers.api.handler);
   });
@@ -60,7 +61,9 @@ describe('(patients/:uuid/documents) Patient Documents', () => {
     return agent.get(`/patients/${patientUuid}/documents`)
       .then((res) => {
         helpers.api.listed(res, 4);
-        expect(res.body[0]).to.have.keys('uuid', 'label', 'link', 'timestamp', 'mimetype', 'size', 'user_id', 'display_name');
+        expect(res.body[0]).to.have.keys(
+          'uuid', 'label', 'link', 'timestamp', 'mimetype', 'size', 'user_id', 'display_name'
+        );
       })
       .catch(helpers.api.handler);
   });

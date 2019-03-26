@@ -106,7 +106,9 @@ describe('(/auth/login) The login API', () => {
 
         expect(res).to.have.status(200);
         expect(res.body).to.have.keys('enterprise', 'user', 'project', 'paths');
-        expect(res.body.user).to.contain.all.keys('id', 'enterprise_id', 'display_name', 'project_id', 'username', 'email');
+        expect(res.body.user).to.contain.all.keys(
+          'id', 'enterprise_id', 'display_name', 'project_id', 'username', 'email'
+        );
         expect(res.body.enterprise).to.contain.all.keys('id', 'currency_id', 'currencySymbol', 'settings');
         expect(res.body.project).to.contain.all.keys('id', 'name', 'abbr', 'enterprise_id');
         expect(res.body.paths[0]).to.contain.all.keys('path', 'authorized');
