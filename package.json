@@ -138,6 +138,7 @@
     "merge-stream": "^1.0.1",
     "mocha": "^6.0.2",
     "mochawesome": "^3.1.1",
+    "nodemon": "^1.18.10",
     "protractor": "^5.4.2",
     "rewire": "^4.0.1",
     "standard-version": "^5.0.0",
