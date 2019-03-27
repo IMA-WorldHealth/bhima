@@ -98,6 +98,7 @@ function correctTransaction(transactionDetails, correction, userId) {
         items : correction,
         type_id : REVERSAL_TYPE_ID,
         user_id : userId,
+        date : transactionDetails.trans_date,
         currency_id : transactionDetails.currency_id,
         description : transactionDetails.correctionDescription,
 
