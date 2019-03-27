@@ -6,7 +6,7 @@ module.exports.finances = finances;
 module.exports.staff = staff;
 
 function getDaysOfPeriods(options) {
-  const query = `SELECT DATEDIFF(DATE(?), DATE(?)) AS nb_days;`;
+  const query = `SELECT DATEDIFF(DATE(?), DATE(?)) + 1 AS nb_days;`;
   return db.one(query, [options.dateTo, options.dateFrom]);
 }
 
