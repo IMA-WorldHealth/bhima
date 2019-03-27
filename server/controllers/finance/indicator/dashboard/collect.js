@@ -98,7 +98,6 @@ async function finances(options) {
         SUM(IFNULL(fi.total_operating_charge, 0)) AS total_operating_charge,
         SUM(IFNULL(fi.total_depreciation, 0)) AS total_depreciation,
         SUM(IFNULL(fi.total_debts, 0)) AS total_debts,
-        SUM(IFNULL(fi.total_staff, 0)) AS total_staff,
         DATE_FORMAT(p.start_date, "%Y-%m-%d") as period_start,
         DATEDIFF(p.end_date, p.start_date) AS total_period_days
       FROM finance_indicator fi  
@@ -110,6 +109,7 @@ async function finances(options) {
     const sqlLastAggregated = `
       SELECT 
         SUM(IFNULL(fi.total_cash, 0)) AS total_cash,
+        SUM(IFNULL(fi.total_staff, 0)) AS total_staff,
         SUM(IFNULL(fi.total_stock_value, 0)) AS total_stock_value,
         DATE_FORMAT(p.start_date, "%Y-%m-%d") as period_start,
         DATEDIFF(p.end_date, p.start_date) AS total_period_days

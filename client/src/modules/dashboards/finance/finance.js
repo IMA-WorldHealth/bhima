@@ -2,15 +2,16 @@ angular.module('bhima.controllers')
   .controller('FinanceDashboardController', FinanceDashboardController);
 
 FinanceDashboardController.$inject = [
-  'IndicatorsDashboardService', 'NotifyService',
+  'IndicatorsDashboardService', 'NotifyService', 'SessionService',
 ];
 
-function FinanceDashboardController(IndicatorsDashboard, Notify) {
+function FinanceDashboardController(IndicatorsDashboard, Notify, Session) {
   const vm = this;
   const current = new Date();
   const year = current.getFullYear();
   vm.search = { date : current };
   vm.selected = { dateFrom : new Date(`${year}-01-01`), dateTo : new Date(`${year}-12-31`) };
+  vm.enterprise = Session.enterprise;
 
   vm.onChangeFilter = selected => {
     if (selected.dateFrom) {
