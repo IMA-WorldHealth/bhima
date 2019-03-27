@@ -108,9 +108,9 @@ async function finances(options) {
     // indicators variables are collected by considering just values of the last period
     const sqlLastAggregated = `
       SELECT 
-        SUM(IFNULL(fi.total_cash, 0)) AS total_cash,
-        SUM(IFNULL(fi.total_staff, 0)) AS total_staff,
-        SUM(IFNULL(fi.total_stock_value, 0)) AS total_stock_value,
+        IFNULL(fi.total_cash, 0) AS total_cash,
+        IFNULL(fi.total_staff, 0) AS total_staff,
+        IFNULL(fi.total_stock_value, 0) AS total_stock_value,
         DATE_FORMAT(p.start_date, "%Y-%m-%d") as period_start,
         DATEDIFF(p.end_date, p.start_date) AS total_period_days
       FROM finance_indicator fi  
@@ -169,10 +169,10 @@ async function staff(options) {
     // indicators variables are collected by considering just values of the last period
     const sqlLastAggregated = `
       SELECT 
-        SUM(IFNULL(si.total_doctors, 0)) AS total_doctors,
-        SUM(IFNULL(si.total_nurses, 0)) AS total_nurses,
-        SUM(IFNULL(si.total_caregivers, 0)) AS total_caregivers ,
-        SUM(IFNULL(si.total_staff, 0)) AS total_staff,
+        IFNULL(si.total_doctors, 0) AS total_doctors,
+        IFNULL(si.total_nurses, 0) AS total_nurses,
+        IFNULL(si.total_caregivers, 0) AS total_caregivers ,
+        IFNULL(si.total_staff, 0) AS total_staff,
         DATE_FORMAT(p.start_date, "%Y-%m-%d") as period_start,
         DATEDIFF(p.end_date, p.start_date) AS total_period_days
       FROM staff_indicator si  
