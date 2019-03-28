@@ -32,6 +32,8 @@
       "TOTAL_BED_DESC":"The total number of beds of the hospital",
       "TOTAL_HOSPI_PATIENT":"Total of hospitalized patients",
       "TOTAL_HOSPI_PATIENT_DESC":"The total number of hospitalized patients during the period",
+      "TOTAL_EXTERNAL_PATIENT":"Total of external patients",
+      "TOTAL_EXTERNAL_PATIENT_DESC":"The total number of external patients during the period",
       "TOTAL_DEATH":"Total of deceased",
       "TOTAL_DEATH_DESC":"The number of patient deceased during the period",
       "TOTAL_MEDICAL_STAFF":"Total medical staff",

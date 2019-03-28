@@ -20,7 +20,7 @@ async function hospitalization(options) {
         SUM(IFNULL(hi.total_hospitalized_patient, 0)) AS total_hospitalized_patient,
         SUM(IFNULL(hi.total_death, 0)) AS total_death,
         DATE_FORMAT(p.start_date, "%Y-%m-%d") as period_start,
-        DATEDIFF(p.end_date, p.start_date) AS total_period_days,
+        DATEDIFF(p.end_date, p.start_date) + 1 AS total_period_days,
         s.name as service_name
       FROM hospitalization_indicator hi  
       JOIN indicator ind ON ind.uuid = hi.indicator_uuid
@@ -64,7 +64,7 @@ async function hospitalization(options) {
       SELECT 
         ${sqlBeds},
         DATE_FORMAT(p.start_date, "%Y-%m-%d") as period_start,
-        DATEDIFF(p.end_date, p.start_date) AS total_period_days,
+        DATEDIFF(p.end_date, p.start_date) + 1 AS total_period_days,
         s.name as service_name
       FROM hospitalization_indicator hi  
       JOIN indicator ind ON ind.uuid = hi.indicator_uuid

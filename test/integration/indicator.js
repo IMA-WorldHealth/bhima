@@ -27,6 +27,7 @@ describe('(/indicators_file) The roles API endpoint', () => {
       total_day_realized : 10,
       total_beds : 10,
       total_hospitalized_patient : 10,
+      total_external_patient : 10,
       total_death : 1,
     },
   };
@@ -98,7 +99,7 @@ describe('(/indicators_file) The roles API endpoint', () => {
   const hopitalizationKeys = [
     'uuid', 'status_id', 'period_id', 'user_id', 'type_id', 'service_id',
     'total_day_realized', 'total_beds', 'total_hospitalized_patient', 'total_death',
-    'service_name', 'fiscal_year_id',
+    'service_name', 'fiscal_year_id', 'total_external_patient',
   ];
 
   const staffKeys = [

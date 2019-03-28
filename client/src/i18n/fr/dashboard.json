@@ -32,6 +32,8 @@
       "TOTAL_BED_DESC":"Le nombre total des lits de l'hopital",
       "TOTAL_HOSPI_PATIENT":"Nombre des patients hospitalisés",
       "TOTAL_HOSPI_PATIENT_DESC":"Le nombre total des patients hopitalisés durant la période",
+      "TOTAL_EXTERNAL_PATIENT":"Nombre des patients ambulants",
+      "TOTAL_EXTERNAL_PATIENT_DESC":"Le nombre total des patients ambulants durant la période",
       "TOTAL_DEATH":"Nombre des décès",
       "TOTAL_DEATH_DESC":"Le nombre total des patients qui sont mort durant la periode",
       "TOTAL_MEDICAL_STAFF":"Nombre total du Personel medical",

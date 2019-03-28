@@ -73,7 +73,7 @@ async function detail(req, res, next) {
   const query = `
     SELECT 
       BUID(i.uuid) as uuid, i.status_id, i.period_id, i.user_id, i.type_id, i.service_id,
-      hi.total_day_realized, hi.total_beds,
+      hi.total_day_realized, hi.total_beds, hi.total_external_patient,
       hi.total_hospitalized_patient, hi.total_death, s.name as service_name,
       p.fiscal_year_id
     FROM indicator i

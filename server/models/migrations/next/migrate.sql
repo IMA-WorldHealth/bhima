@@ -205,6 +205,7 @@ CREATE TABLE `hospitalization_indicator` (
   `total_day_realized` INT DEFAULT 0,
   `total_beds` INT DEFAULT 0,
   `total_hospitalized_patient` INT DEFAULT 0,
+  `total_external_patient` INT DEFAULT 0,
   `total_death` INT DEFAULT 0,  
   `indicator_uuid` BINARY(16) NOT NULL,
   PRIMARY KEY (`uuid`),
