@@ -8,8 +8,8 @@ describe('(/stock/import) The stock import http API', () => {
   const templateCsvHeader = 'inventory_group_name,inventory_code,inventory_text,inventory_type,inventory_unit,inventory_unit_price,inventory_cmm,stock_lot_label,stock_lot_quantity,stock_lot_expiration';
   const templateCsvContent = '"Comprimé", "00001", "Quinine sulfate 500mg", "article", "comprimé", "0.02", "300", "QNN2020", "24000", "2020-12-31"';
 
-  const file = '../test/fixtures/stock-to-import.csv';
-  const invalidFile = '../test/fixtures/bad-stock-to-import.csv';
+  const file = 'test/fixtures/stock-to-import.csv';
+  const invalidFile = 'test/fixtures/bad-stock-to-import.csv';
   const filename = 'stock-to-import.csv';
   const numberOfStockToAdd = 10;
 

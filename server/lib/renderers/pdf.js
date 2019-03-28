@@ -72,7 +72,7 @@ exports.reducedCardOptions = {
  */
 function renderPDF(context, template, options = {}) {
   // pdf requires absolute path to be passed to templates to be picked up by wkhtmltopdf on windows
-  context.absolutePath = path.join(process.cwd(), 'client');
+  context.absolutePath = path.join(process.cwd(), './bin/client');
 
   debug('received render request for PDF file. Passing to HTML renderer.');
 

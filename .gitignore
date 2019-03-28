@@ -25,6 +25,9 @@ bin/
 
 # ignore the upload folder
 client/src/upload/
+client/upload/
+server/reports/
+server/.env.development
 test/artifacts/
 
 # ignore configuration

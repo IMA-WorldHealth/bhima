@@ -12,10 +12,11 @@ const {
 } = require('./util');
 
 // static variables
-const SERVER_FOLDER = path.join(__dirname, '../bin/server/');
+const SERVER_FOLDER = path.join(__dirname, 'server/');
 
-const ENV = `../.env.${isProduction ? 'production' : 'development'}`;
-const SERVER_FILES = ['../server/**/*{.js,.handlebars,.csv}', ENV]
+const ENV = `.env.${isProduction ? 'production' : 'development'}`;
+
+const SERVER_FILES = ['server/**/*{.js,.handlebars,.csv}', ENV]
   .map(p => path.join(__dirname, p));
 
 /**
@@ -50,4 +51,5 @@ function createReportsDirectory(cb) {
 }
 
 // expose the gulp functions to the outside world
-module.exports = series(cleanServer, createReportsDirectory, moveServerFiles);
+// module.exports = series(cleanServer, createReportsDirectory, moveServerFiles);
+module.exports = series(createReportsDirectory);

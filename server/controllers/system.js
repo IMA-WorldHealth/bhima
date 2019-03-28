@@ -10,7 +10,7 @@
 const os = require('os');
 
 // this path is correct _when compiled_
-const pkg = require('../../../package.json');
+const pkg = require('../../package.json');
 
 // GET system/info
 exports.info = info;

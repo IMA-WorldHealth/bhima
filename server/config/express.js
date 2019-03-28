@@ -89,7 +89,7 @@ exports.configure = function configure(app) {
     maxAge : isProduction ? 7 * days : 0,
   };
 
-  app.use(express.static('client/', params));
+  app.use(express.static('bin/client/', params));
   app.use(`/${uploads.directory}`, express.static(uploads.directory));
 
   // quick way to find out if a value is in an array

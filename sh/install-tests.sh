@@ -19,7 +19,7 @@ TIMEOUT=${BUILD_TIMEOUT:-8}
 echo "[install test] Spawning server process..."
 # build and start the server
 ./node_modules/.bin/gulp build
-cd bin
+# cd bin
 node server/app.js &
 NODE_PID=$!
 

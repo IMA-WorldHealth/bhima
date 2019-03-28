@@ -156,7 +156,7 @@ function loadDictionary(key, dictionaries = {}) {
   const dictionary = dictionaries[key];
   if (dictionary) { return dictionary; }
 
-  dictionaries[key] = require(`../../client/i18n/${key}.json`);
+  dictionaries[key] = require(`../../bin/client/i18n/${key}.json`);
   return dictionaries[key];
 }
 
