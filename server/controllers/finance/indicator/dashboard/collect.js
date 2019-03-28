@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const db = require('../../../../lib/db');
 const FilterParser = require('../../../../lib/filter');
 
@@ -28,41 +29,9 @@ async function hospitalization(options) {
       JOIN service s ON s.id = ind.service_id
     `;
 
-    // indicators variables are collected by considering just values of the last period
-    let sqlBeds = 'IFNULL(hi.total_beds, 0) AS total_beds';
-
-    db.convert(options, ['uuid', 'indicator_uuid']);
-
-    // this first filter will be used for the sums query
-    let filters1 = new FilterParser(options, { tableAlias : 'hi' });
-
-    // this second filter will be used for the last value query
-    let filters2 = new FilterParser(options, { tableAlias : 'hi', limitKey : 1 });
-
-    filters1 = defaultFilters(filters1);
-    filters2 = defaultFilters(filters2);
-
-    // apply group by service for lastAggregated
-    options.groupByService = true;
-
-    // groupByPeriod key specify if it is necessary to group by period
-    if (options.groupByPeriod && !options.groupByService) {
-      filters1.setGroup('GROUP BY p.id');
-    }
-
-    if (!options.groupByPeriod && options.groupByService) {
-      filters2.setGroup('GROUP BY s.id');
-    }
-
-    if (options.groupByPeriod && options.groupByService) {
-      sqlBeds = 'SUM(IFNULL(hi.total_beds, 0)) AS total_beds';
-      filters1.setGroup('GROUP BY p.id');
-      filters2.setGroup('GROUP BY p.id');
-    }
-
     const sqlLastAggregated = `
       SELECT 
-        ${sqlBeds},
+        SUM(IFNULL(hi.total_beds, 0)) AS total_beds,
         DATE_FORMAT(p.start_date, "%Y-%m-%d") as period_start,
         DATEDIFF(p.end_date, p.start_date) + 1 AS total_period_days,
         s.name as service_name
@@ -72,20 +41,35 @@ async function hospitalization(options) {
       JOIN service s ON s.id = ind.service_id
     `;
 
+    db.convert(options, ['uuid', 'indicator_uuid']);
+
+    // this first filter will be used for the sums query
+    let filters1 = new FilterParser(options, { tableAlias : 'hi' });
+
+    // this second filter will be used for the last value query
+    const limitedOptions = !options.groupByPeriod ? _.extend({ limit : 1 }, options) : options;
+    let filters2 = new FilterParser(limitedOptions, { tableAlias : 'hi' });
+
+    filters1 = defaultFilters(filters1);
+    filters2 = defaultFilters(filters2);
+
+    // group by periods
+    if (options.groupByPeriod) {
+      filters1.setGroup('GROUP BY p.id');
+    }
+
+    // allow to get data of the latest period only for this filter2
+    filters2.setGroup('GROUP BY p.id');
+
+    const sqlSummary = filters1.applyQuery(sqlSumAggregated);
+    const sqlLast = filters2.applyQuery(sqlLastAggregated);
+
     // sums query
-    const data1 = await db.exec(filters1.applyQuery(sqlSumAggregated), filters1.parameters());
+    const data1 = await db.exec(sqlSummary, filters1.parameters());
     // last value query
-    let data2 = await db.exec(filters2.applyQuery(sqlLastAggregated), filters2.parameters());
+    const data2 = await db.exec(sqlLast, filters2.parameters());
     // number of days between end date and start date
     const totalDaysOfPeriods = await getDaysOfPeriods({ dateFrom : options.dateFrom, dateTo : options.dateTo });
-
-    if (!options.groupByPeriod) {
-      const lastValueIndicators = data2.reduce((previous, current) => {
-        current.total_beds += previous.total_beds;
-        return current;
-      }, { total_beds : 0 });
-      data2 = [lastValueIndicators];
-    }
 
     return { summaryIndicators : data1, lastValueIndicators : data2, totalDaysOfPeriods };
   } catch (error) {

@@ -24,9 +24,9 @@ async function processIndicators(options) {
     const staffCollection = await collect.staff(options);
     const financeCollection = await collect.finances(options);
 
-    dependencies.hospitalization = getIndicatorsVariables(hospitalizationCollection);
-    dependencies.staff = getIndicatorsVariables(staffCollection);
-    dependencies.finance = getIndicatorsVariables(financeCollection);
+    dependencies.hospitalization = mergeIndicatorsByPeriod(hospitalizationCollection);
+    dependencies.staff = mergeIndicatorsByPeriod(staffCollection);
+    dependencies.finance = mergeIndicatorsByPeriod(financeCollection);
 
     /**
      * for the given period range, calculate inducators
@@ -89,9 +89,9 @@ async function processPeriodicIndicators(options) {
     const staffCollection = await collect.staff(options);
     const financeCollection = await collect.finances(options);
 
-    dependencies.hospitalization = getIndicatorsVariables(hospitalizationCollection);
-    dependencies.staff = getIndicatorsVariables(staffCollection);
-    dependencies.finance = getIndicatorsVariables(financeCollection);
+    dependencies.hospitalization = mergeIndicatorsByPeriod(hospitalizationCollection);
+    dependencies.staff = mergeIndicatorsByPeriod(staffCollection);
+    dependencies.finance = mergeIndicatorsByPeriod(financeCollection);
 
     // hospitalization
     indicators.periodicHospitalization = {};
@@ -158,45 +158,32 @@ function formatIndicatorsPeriodicValues(periodicIndicators) {
 }
 
 /**
+ * @method mergeIndicatorsByPeriod
+ * @description
+ * this method merge summary and last values indicators variables by periods
  * @param {object} collection
  * an object returned by collect.fn which must be { summaryIndicators: ..., lastValueIndicators: ... }
  */
-function getIndicatorsVariables(collection) {
-  const periodicIndicatorsVariables = {};
+function mergeIndicatorsByPeriod(collection) {
   const { summaryIndicators, lastValueIndicators } = collection;
+  const merged = _.merge(objectize(lastValueIndicators), objectize(summaryIndicators));
+  const grouped = _.groupBy(merged, 'period_start');
 
-  const groupOfSummaryByPeriodStartDate = _.groupBy(summaryIndicators, 'period_start');
-  const groupOfLastValueByPeriodStartDate = _.groupBy(lastValueIndicators, 'period_start');
+  _.keys(grouped).forEach(period => {
+    [grouped[period]] = grouped[period];
+  });
 
-  // merge summary and last by periods
-  const groupOfSummaryByPeriodStartDateKeys = _.keys(groupOfSummaryByPeriodStartDate);
-  const groupOfLastValueByPeriodStartDateKeys = _.keys(groupOfLastValueByPeriodStartDate);
+  return grouped;
+}
 
-  for (let i = 0; i < groupOfSummaryByPeriodStartDateKeys.length; i++) {
-    const periodLabel = groupOfSummaryByPeriodStartDateKeys[i];
-    periodicIndicatorsVariables[periodLabel] = {};
-
-    for (let j = 0; j < groupOfLastValueByPeriodStartDateKeys.length; j++) {
-      const periodLastValueLabel = groupOfLastValueByPeriodStartDateKeys[j];
-
-      if (periodLabel === periodLastValueLabel) {
-        // merge summary properties with last values properties
-        periodicIndicatorsVariables[periodLabel] = _.extend(
-          periodicIndicatorsVariables[periodLabel],
-          groupOfSummaryByPeriodStartDate[periodLabel][0],
-          groupOfLastValueByPeriodStartDate[periodLabel][0]
-        );
-      }
-    }
-  }
-
-  return periodicIndicatorsVariables;
+function objectize(obj) {
+  return JSON.parse(JSON.stringify(obj));
 }
 
 /**
  * hospitalization indicators
  * @param {object} - dependencies
- * An object which contains indicators variables, returned by the getIndicatorsVariables function
+ * An object which contains indicators variables, returned by the mergeIndicatorsByPeriod function
  */
 function getHospitalizationIndicators(dependencies, nbDays = 356, period) {
   const totalDaysOfPeriods = period ? dependencies.total_period_days : nbDays;
@@ -257,7 +244,7 @@ function getHospitalizationIndicators(dependencies, nbDays = 356, period) {
 /**
  * staff indicators
  * @param {object} - dependencies
- * An object which contains indicators variables, returned by the getIndicatorsVariables function
+ * An object which contains indicators variables, returned by the mergeIndicatorsByPeriod function
  */
 function getStaffIndicators(dependencies, nbDays = 356, period) {
   const totalDaysOfPeriods = period ? dependencies.total_period_days : nbDays;
@@ -353,7 +340,7 @@ function getStaffIndicators(dependencies, nbDays = 356, period) {
 /**
  * finance indicators
  * @param {object} - dependencies
- * An object which contains indicators variables, returned by the getIndicatorsVariables function
+ * An object which contains indicators variables, returned by the mergeIndicatorsByPeriod function
  */
 function getFinanceIndicators(dependencies, nbDays = 356, period) {
   const totalDaysOfPeriods = period ? dependencies.total_period_days : nbDays;
