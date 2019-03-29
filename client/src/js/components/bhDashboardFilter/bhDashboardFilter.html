@@ -1,0 +1,59 @@
+<div class="form-inline">
+  <!-- service -->
+  <select
+    ng-if="$ctrl.showServiceFilter"
+    class="form-control input-sm"
+    name="service"
+    ng-model="$ctrl.service"
+    ng-change="$ctrl.onServiceSelect($ctrl.service)"
+    ng-options="s as s.name for s in $ctrl.services">
+    <option value="" translate>DASHBOARD.ALL_SERVICES</option>
+  </select>
+
+  <!-- date from -->
+  <div class="form-group form-group-sm">
+    <div class="input-group">
+      <input
+        id="date-from"
+        name="dateFrom"
+        type="text"
+        class="form-control"
+        uib-datepicker-popup="{{ $ctrl.dateFormat }}"
+        datepicker-options="$ctrl.pickerFromOptions"
+        is-open="$ctrl.dateFromIsOpen"
+        show-button-bar="false"
+        ng-model="$ctrl.dateFrom"
+        ng-change="$ctrl.onDateFromChange($ctrl.dateFrom)"
+        ng-required="$ctrl.required">
+      <span class="input-group-btn">
+        <button class="btn btn-default btn-sm" type="button" ng-click="$ctrl.dateFromIsOpen =! $ctrl.dateFromIsOpen">
+          <i class="fa fa-calendar-plus-o"></i>
+        </button>
+      </span>
+    </div>
+  </div>
+  
+
+  <!-- date to -->
+  <div class="form-group form-group-sm">
+    <div class="input-group">
+      <input
+        id="date-to"
+        name="dateTo"
+        type="text"
+        class="form-control"
+        uib-datepicker-popup="{{ $ctrl.dateFormat }}"
+        datepicker-options="$ctrl.pickerFromOptions"
+        is-open="$ctrl.dateToIsOpen"
+        show-button-bar="false"
+        ng-model="$ctrl.dateTo"
+        ng-change="$ctrl.onDateToChange($ctrl.dateTo)"
+        ng-required="$ctrl.required">
+      <span class="input-group-btn">
+        <button class="btn btn-default btn-sm" type="button" ng-click="$ctrl.dateToIsOpen =! $ctrl.dateToIsOpen">
+          <i class="fa fa-calendar-plus-o"></i>
+        </button>
+      </span>
+    </div>
+  </div>
+</div>

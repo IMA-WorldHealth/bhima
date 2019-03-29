@@ -34,9 +34,9 @@ function DepotModalController($state, Depots, ModalService, Notify) {
       vm.depot.location_uuid = null;
     }
 
-    const promise = (vm.isCreating) ?
-      Depots.create(vm.depot) :
-      Depots.update(vm.depot.uuid, vm.depot);
+    const promise = (vm.isCreating)
+      ? Depots.create(vm.depot)
+      : Depots.update(vm.depot.uuid, vm.depot);
 
     return promise
       .then(() => {

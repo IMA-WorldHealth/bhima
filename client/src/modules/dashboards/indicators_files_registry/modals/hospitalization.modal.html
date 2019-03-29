@@ -1,0 +1,87 @@
+<form name="HospitalizationForm" bh-submit="$ctrl.submit(HospitalizationForm)" novalidate>
+    <div class="modal-body">
+      <h3 style="padding:0; margin:0; margin-bottom: 20px;">
+        <span translate>DASHBOARD.INDICATORS_FILES.WRITE_HOSPITALIZATIONS_INDICATORS</span><br>
+        <small ng-show="$ctrl.selectedService">{{ $ctrl.selectedService }} / </small>
+        <small ng-show="$ctrl.selectedPeriod"><strong>{{ $ctrl.selectedPeriod }}</strong></small>
+      </h3>
+
+      <div class="row">
+        <div class="col-xs-4">
+
+          <!-- fiscal year and period -->
+          <bh-fiscal-year-period-select
+            fiscal-id="$ctrl.fiscal_year_id"
+            period-id="$ctrl.file.period_id"
+            on-select-callback="$ctrl.onSelectPeriod(selected)">
+          </bh-fiscal-year-period-select>
+
+          <!-- service -->
+          <bh-service-select
+            service-id="$ctrl.file.service_id"
+            on-select-callback="$ctrl.onSelectService(service)">
+          </bh-service-select>
+
+          <div ng-if="$ctrl.isExisting" class="alert alert-danger">
+            <i class="fa fa-warning"></i> <strong translate>FORM.DIALOGS.WARNING</strong>
+            <p translate>DASHBOARD.INDICATORS_FILES.ALREADY_EXISTS</p>
+          </div>
+        </div>
+        <div class="col-xs-7 col-xs-offset-1">
+          <fieldset ng-disabled="$ctrl.loading">
+            <bh-input-text
+              id="total_day_realized"
+              text-value="$ctrl.indicators.total_day_realized"
+              label="DASHBOARD.INDICATORS_FILES.HOSP_DAYS"
+              description="DASHBOARD.INDICATORS_FILES.HOSP_DAYS_DESC"
+              autocomplete="off">
+            </bh-input-text>
+
+            <bh-input-text
+              id="total_beds"
+              text-value="$ctrl.indicators.total_beds"
+              label="DASHBOARD.INDICATORS_FILES.TOTAL_BED"
+              description="DASHBOARD.INDICATORS_FILES.TOTAL_BED_DESC"
+              autocomplete="off">
+            </bh-input-text>
+
+            <bh-input-text
+              id="total_hospitalized_patient"
+              text-value="$ctrl.indicators.total_hospitalized_patient"
+              label="DASHBOARD.INDICATORS_FILES.TOTAL_HOSPI_PATIENT"
+              description="DASHBOARD.INDICATORS_FILES.TOTAL_HOSPI_PATIENT_DESC"
+              autocomplete="off">
+            </bh-input-text>
+
+            <bh-input-text
+              id="total_external_patient"
+              text-value="$ctrl.indicators.total_external_patient"
+              label="DASHBOARD.INDICATORS_FILES.TOTAL_EXTERNAL_PATIENT"
+              description="DASHBOARD.INDICATORS_FILES.TOTAL_EXTERNAL_PATIENT_DESC"
+              autocomplete="off">
+            </bh-input-text>
+
+            <bh-input-text
+              id="total_death"
+              text-value="$ctrl.indicators.total_death"
+              label="DASHBOARD.INDICATORS_FILES.TOTAL_DEATH"
+              description="DASHBOARD.INDICATORS_FILES.TOTAL_DEATH_DESC"
+              autocomplete="off">
+            </bh-input-text>
+          </fieldset>
+        </div>
+      </div>
+  
+    </div>
+  
+    <div class="modal-footer">
+      <button data-method="cancel" type="button" class="btn btn-default" ui-sref="indicatorsFilesRegistry">
+        <span translate>FORM.BUTTONS.CANCEL</span>
+      </button>
+  
+      <bh-loading-button loading-state="HospitalizationForm.$loading">
+        <span translate>FORM.BUTTONS.SUBMIT</span>
+      </bh-loading-button>
+    </div>
+  </form>
+  

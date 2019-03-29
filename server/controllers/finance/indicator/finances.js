@@ -16,7 +16,7 @@ function create(req, res, next) {
 
   const transaction = db.transaction();
   const indicatorSql = `INSERT INTO indicator SET ?`;
-  const financesSql = `INSERT INTO finances_indicator SET ?`;
+  const financesSql = `INSERT INTO finance_indicator SET ?`;
 
   transaction.addQuery(indicatorSql, indicator);
   transaction.addQuery(financesSql, finances);
@@ -36,9 +36,9 @@ function update(req, res, next) {
 
   const transaction = db.transaction();
   const indicatorSql = `UPDATE indicator SET ? WHERE uuid=?`;
-  const financesSql = `UPDATE finances_indicator SET ? WHERE uuid=?`;
+  const financesSql = `UPDATE finance_indicator SET ? WHERE indicator_uuid=?`;
 
-  transaction.addQuery(indicatorSql, [indicator, finances.indicator_uuid]);
+  transaction.addQuery(indicatorSql, [indicator, _uuid]);
   transaction.addQuery(financesSql, [finances, _uuid]);
 
   transaction.execute().then(() => {
@@ -52,9 +52,9 @@ function remove(req, res, next) {
 
   const indicatorSql = `
     DELETE FROM indicator
-    WHERE uuid IN (SELECT indicator_uuid FROM finances_indicator WHERE uuid=?)
+    WHERE uuid = ?
   `;
-  const financesSql = `DELETE FROM finances_indicator WHERE uuid=?`;
+  const financesSql = `DELETE FROM finance_indicator WHERE indicator_uuid=?`;
 
   const transaction = db.transaction();
   transaction.addQuery(financesSql, _uuid);
@@ -68,25 +68,23 @@ function remove(req, res, next) {
 async function detail(req, res, next) {
   const _uuid = db.bid(req.params.uuid);
 
-  const indicatorSql = `
-    SELECT BUID(uuid) as uuid, status_id, period_id, user_id, type
-    FROM indicator
-    WHERE uuid IN (SELECT indicator_uuid FROM finances_indicator WHERE uuid=?)
+  const query = `
+    SELECT 
+      BUID(i.uuid) as uuid, i.status_id, i.period_id, i.user_id, i.type_id,
+      hi.total_revenue, hi.total_subsidies,
+      hi.total_drugs_sale, hi.total_expenses, hi.total_other_charge, total_drugs_purchased,
+      hi.total_staff_charge, hi.total_operating_charge, hi.total_depreciation, hi.total_debts,
+      hi.total_cash, hi.total_stock_value, hi.total_staff,
+      p.fiscal_year_id
+    FROM indicator i
+    JOIN period p ON p.id = i.period_id
+    JOIN finance_indicator hi ON hi.indicator_uuid = i.uuid
+    WHERE i.uuid = ?
   `;
-  const financesSql = `
-    SELECT BUID(uuid) as uuid, BUID(indicator_uuid), totalReceiptAmount,
-      subsidyAmount, medicationSaleAmount, totalExpenseAmount,
-      variousChargesAmount, purchaseMedicationAmount, personalChargeAmount,
-      totalOperatingExpenditureAmount, totalDepreciationAmount, totalDebtAmount,
-      totalCashAmount, totalStockValueAmount, personelNumber
-    FROM finances_indicator
-    WHERE uuid=?`;
 
   try {
-    const indicator = await db.one(indicatorSql, _uuid);
-    const finances = await db.one(financesSql, _uuid);
-
-    res.status(200).json({ indicator, finances });
+    const rows = await db.one(query, _uuid);
+    res.status(200).json(rows);
 
   } catch (error) {
     next(error);

@@ -67,4 +67,5 @@ module.exports = {
   inpuText : require('./bhInputText'),
   wardSelect : require('./bhWardSelect'),
   roomSelect : require('./bhRoomSelect'),
+  fiscalYearPeriodSelect : require('./bhFiscalYearPeriodSelect'),
 };

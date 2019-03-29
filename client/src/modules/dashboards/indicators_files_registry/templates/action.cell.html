@@ -1,0 +1,23 @@
+<div class="ui-grid-cell-contents" uib-dropdown dropdown-append-to-body uib-dropdown-toggle>
+  <a href>
+    <span data-method="action" translate>FORM.BUTTONS.ACTIONS</span>
+    <span class="caret"></span>
+  </a>
+
+  <ul data-action="{{ rowRenderIndex}}"  class="dropdown-menu" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
+    <li class="dropdown-header">{{row.entity.type_label}} {{ row.entity.period_label}}</li>
+    <li>
+      <a data-method="edit" ng-click="grid.appScope.edit(row.entity.uuid, row.entity.type_id)" href>
+        <span class="fa fa-edit"></span> <span translate>TABLE.COLUMNS.EDIT</span>
+      </a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a data-method="delete" ng-click="grid.appScope.remove(row.entity.uuid, row.entity.type_id)" href>
+        <span class="text-danger">
+          <span class="fa fa-trash"></span> <span translate>DASHBOARD.INDICATORS_FILES.DELETE</span>
+        </span>
+      </a>
+    </li>
+  </ul>
+</div>
