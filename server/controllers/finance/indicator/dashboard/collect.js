@@ -121,7 +121,8 @@ async function finances(options) {
     let filters1 = new FilterParser(options, { tableAlias : 'fi' });
 
     // this second filter will be used for the last value query
-    let filters2 = new FilterParser(options, { tableAlias : 'fi', limitKey : 1 });
+    const limitedOptions = !options.groupByPeriod ? _.extend({ limit : 1 }, options) : options;
+    let filters2 = new FilterParser(limitedOptions, { tableAlias : 'fi' });
 
     filters1 = defaultFilters(filters1);
     filters2 = defaultFilters(filters2);
@@ -183,7 +184,8 @@ async function staff(options) {
     let filters1 = new FilterParser(options, { tableAlias : 'si' });
 
     // this second filter will be used for the last value query
-    let filters2 = new FilterParser(options, { tableAlias : 'si', limitKey : 1 });
+    const limitedOptions = !options.groupByPeriod ? _.extend({ limit : 1 }, options) : options;
+    let filters2 = new FilterParser(limitedOptions, { tableAlias : 'si' });
 
     filters1 = defaultFilters(filters1);
     filters2 = defaultFilters(filters2);
