@@ -223,6 +223,8 @@
             "UPLOAD_PICTURE_FAILED": "Le fichier selectionné n'est pas une image",
             "USER_CASHBOX": "Voici les caisses dont vous avez la permission de gérer",
             "USER_DEPOT": "Voici les dépôts dont vous avez la permission de gérer",
+            "USE_PATIENT_VISIT": "Utiliser les nombres de cas provenant de la gestion des visites des patients",
+            "USE_INDICATOR_DASHBOARD": "Utiliser les nombres de cas provenant du tableau de bords des indicateurs",
             "USERNAME" : "Ceci est l'identifiant de l'utilisateur pour le système, il doit être court et mémorable et sera utilisé à chaque connexion.",
             "VALIDATE_DISTRIBUTION": "Cliquez ici pour valider la répartition automatique de tous les centres de coûts auxiliaires vers les principaux centres de dépenses en fonction des clés de répartition respectives.",
             "VIEW_BEGINNING_BALANCE": "Aperçue de la balance d'ouverture",

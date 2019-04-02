@@ -224,6 +224,8 @@
             "UPLOAD_PICTURE_FAILED": "The selected file is not a picture",
             "USER_CASHBOX": "These are the cashboxes that you have permission to manage",
             "USER_DEPOT": "These are the depots that you have permission to manage",
+            "USE_PATIENT_VISIT": "Use case numbers from patient visit management",
+            "USE_INDICATOR_DASHBOARD": "Use case numbers from indicator dashboard",
             "VALIDATE_DISTRIBUTION": "Please click here to validate the distribution of all Ancillary Cost Centers to the Main Cost Centers according to the respective distribution keys",
             "VIEW_BEGINNING_BALANCE": "View Beginning Balance",
             "VIEW_CLOSING_BALANCE": "View Closing Balance"
