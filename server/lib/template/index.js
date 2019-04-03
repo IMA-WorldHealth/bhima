@@ -50,6 +50,7 @@ const hbs = exphbs.create({
     isExpenseViewable : presentation.isExpenseViewable,
     isResultViewable : presentation.isResultViewable,
     slashed       : presentation.slashed,
+    setdefault : logic.setdefault
   },
 
   // load partials from the partials sub-directory

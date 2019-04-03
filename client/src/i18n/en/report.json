@@ -130,6 +130,10 @@
       "TITLE": "Multiple Accounts Report",
       "DESCRIPTION": "This report shows all transactions for a group of accounts given a set time period."
     },
+    "REPORT_INDICATORS": {
+      "TITLE": "Indicators Report",
+      "DESCRIPTION": "This report sum up  indications in a hospital"
+    },
     "PROFIT_AND_LOSS_REPORT": {
       "TITLE": "Income Expense Report",
       "DESCRIPTION": "Show the list of incomes and expenses that occurred inside the enterprise"

@@ -122,7 +122,8 @@ INSERT INTO unit VALUES
   (234, 'Indicators Files Registry', 'TREE.DASHBOARDS.INDICATORS_FILES_REGISTRY', 'Registre des fiches des indicateurs', 233, '/modules/dashboards/indicators_files_registry/', '/dashboards/indicators_files_registry'),
   (235, 'Hospitalization dashboard', 'TREE.DASHBOARDS.HOSPITALIZATION', 'Tableau de bord des hospitalisations', 233, '/modules/dashboards/hospitalization/', '/dashboards/hospitalization'),
   (236, 'Human Resources dashboard', 'TREE.DASHBOARDS.HUMAN_RESOURCES', 'Tableau de bord du Personnel', 233, '/modules/dashboards/staff/', '/dashboards/staff'),
-  (237, 'Finances dashboard', 'TREE.DASHBOARDS.FINANCES', 'Tableau de bord des finances', 233, '/modules/dashboards/finances/', '/dashboards/finances');
+  (237, 'Finances dashboard', 'TREE.DASHBOARDS.FINANCES', 'Tableau de bord des finances', 233, '/modules/dashboards/finances/', '/dashboards/finances'),
+  (238, 'Indicators report', 'TREE.INDICATORS_REPORT', 'Rapport sur les indicateurs', 144,'/modules/reports/indicatorsReport', '/reports/indicatorsReport');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -170,7 +171,8 @@ INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
   (27, 'income_expense_by_year', 'REPORT.PROFIT_AND_LOSS_BY_YEAR'),
   (28, 'feeCenter', 'REPORT.FEE_CENTER.TITLE'),
   (29, 'breakEven', 'TREE.BREAK_EVEN_REPORT'),
-  (30, 'breakEvenFeeCenter', 'TREE.BREAK_EVEN_FEE_CENTER_REPORT');
+  (30, 'breakEvenFeeCenter', 'TREE.BREAK_EVEN_FEE_CENTER_REPORT'),
+  (31, 'indicatorsReport', 'TREE.INDICATORS_REPORT');
 
 -- Supported Languages
 INSERT INTO `language` VALUES

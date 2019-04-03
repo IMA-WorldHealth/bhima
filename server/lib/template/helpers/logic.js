@@ -1,4 +1,3 @@
-
 // test equality
 function equal(a, b, options) {
   if (a === b) {
@@ -23,6 +22,11 @@ function lt(a, b, options) {
   return options.inverse(this);
 }
 
+function setdefault(val, _default) {
+  return (val >= 0 || val < 0) ? val : _default;
+}
+
 exports.equal = equal;
 exports.gt = gt;
 exports.lt = lt;
+exports.setdefault = setdefault;

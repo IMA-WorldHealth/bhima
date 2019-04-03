@@ -158,5 +158,6 @@ describe('Patient Invoice', () => {
     FU.modal.close();
   });
 
+
   // it('can calculate totals correctly');
 });
