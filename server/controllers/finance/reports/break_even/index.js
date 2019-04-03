@@ -32,9 +32,11 @@ function report(req, res, next) {
   const BREAK_EVEN_ACCOUNT_REFERENCE_TYPE = 4;
 
   let reporting;
+  let getEncounters;
 
   params.start_date = new Date(params.start_date);
   params.end_date = new Date(params.end_date);
+  params.type = parseInt(params.type, 10);
 
   data.period = {
     start_date : params.start_date,
@@ -51,7 +53,6 @@ function report(req, res, next) {
     return;
   }
 
-
   const getBreakEvenReference = `
     SELECT br.id, br.label, br.is_cost, br.is_variable, br.is_turnover, br.account_reference_id,
     ar.description AS desc_ref, ar.abbr, ari.account_id, GROUP_CONCAT(a.number SEPARATOR ', ') AS accounts_numbers
@@ -63,11 +64,20 @@ function report(req, res, next) {
     ORDER BY br.is_cost DESC, br.label ASC ;
   `;
 
-  const getEncounters = `
-    SELECT count(pv.uuid) AS numberCase 
-    FROM patient_visit AS pv
-    WHERE DATE(pv.start_date) >= DATE(?) AND DATE(pv.start_date) <= DATE(?)   
-  `;
+  if (params.type) {
+    getEncounters = `
+      SELECT count(pv.uuid) AS numberCase
+      FROM patient_visit AS pv
+      WHERE DATE(pv.start_date) >= DATE(?) AND DATE(pv.start_date) <= DATE(?)
+    `;
+  } else {
+    getEncounters = `
+      SELECT SUM(hi.total_hospitalized_patient + hi.total_external_patient) AS numberCase
+      FROM indicator AS i
+      JOIN hospitalization_indicator AS hi ON hi.indicator_uuid = i.uuid
+      JOIN period AS p ON p.id = i.period_id
+      WHERE DATE(p.start_date) >= DATE(?) AND DATE(p.end_date) <= DATE(?)`;
+  }
 
   const dbPromises = [
     db.exec(getBreakEvenReference),
