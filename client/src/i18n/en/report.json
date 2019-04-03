@@ -132,7 +132,7 @@
     },
     "REPORT_INDICATORS": {
       "TITLE": "Indicators Report",
-      "DESCRIPTION": "This report sum up  indications in a hospital"
+      "DESCRIPTION": "This report summarizes the indicators for a hospital"
     },
     "PROFIT_AND_LOSS_REPORT": {
       "TITLE": "Income Expense Report",

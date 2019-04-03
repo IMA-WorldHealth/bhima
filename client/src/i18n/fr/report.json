@@ -117,7 +117,7 @@
       "DESCRIPTION": "Ce rapport affiche toutes les transactions sur un groupe des comptes pour une période donnée"
     },
     "REPORT_INDICATORS": {
-      "TITLE": " Raport des indicateurs",
+      "TITLE": " Rapport des indicateurs",
       "DESCRIPTION": "Ce rapport resume les indicateurs pour un hôpital"
     },
     "PROFIT_AND_LOSS_REPORT": {

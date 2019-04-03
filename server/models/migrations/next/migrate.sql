@@ -269,3 +269,10 @@ INSERT INTO `unit` VALUES
   (235, 'Hospitalization dashboard', 'TREE.DASHBOARDS.HOSPITALIZATION', 'Tableau de bord des hospitalisations', 233, '/modules/dashboards/hospitalization/', '/dashboards/hospitalization'),
   (236, 'Human Resources dashboard', 'TREE.DASHBOARDS.HUMAN_RESOURCES', 'Tableau de bord du Personnel', 233, '/modules/dashboards/staff/', '/dashboards/staff'),
   (237, 'Finances dashboard', 'TREE.DASHBOARDS.FINANCES', 'Tableau de bord des finances', 233, '/modules/dashboards/finances/', '/dashboards/finances');
+
+
+-- jeremie lodi, indicators report
+INSERT INTO `unit` VALUES 
+(238, 'Indicators report', 'TREE.INDICATORS_REPORT', 'Rapport sur les indicateurs', 144,'/modules/reports/indicatorsReport', '/reports/indicatorsReport');
+INSERT INTO `report` (`id`, `report_key`, `title_key`) 
+VALUES  (31, 'indicatorsReport', 'TREE.INDICATORS_REPORT');

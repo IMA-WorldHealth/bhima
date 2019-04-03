@@ -22,43 +22,43 @@
         </thead>
         <tbody>
           <tr>
-            <td class="text-right">{{ setdefault indicators.finances.operatingRevenueOverStaffCharge.value ''}}%</td>
+            <td class="text-right">{{ ignoreNan indicators.finances.operatingRevenueOverStaffCharge.value}}%</td>
             <td>{{translate 'DASHBOARD.FINANCE_OP_REVENU_ON_STAFF_CHARGE'}}</td>
           </tr>
           <tr>
-            <td  class="text-right">{{ setdefault indicators.finances.staffChargeOverLocalRevenue.value ''}}%</td>
+            <td  class="text-right">{{ ignoreNan indicators.finances.staffChargeOverLocalRevenue.value}}%</td>
             <td>{{translate 'DASHBOARD.FINANCE_STAFF_CHARGE_ON_LOCAL_REVENU'}}</td>
           </tr>
           <tr>
-            <td  class="text-right">{{ setdefault indicators.finances.averageSalary.value ''}}</td>
+            <td  class="text-right">{{ ignoreNan indicators.finances.averageSalary.value}}</td>
             <td>{{translate 'DASHBOARD.FINANCE_AVERAGE_SALARY_BY_MONTH'}}</td>
           </tr>
           <tr>
-            <td  class="text-right">{{ setdefault indicators.staff.surgeryByDoctor.value ''}}</td>
+            <td  class="text-right">{{ ignoreNan indicators.staff.surgeryByDoctor.value}}</td>
             <td>{{translate 'DASHBOARD.STAFF_SURGERY_BY_DOCTOR'}}</td>
           </tr>
           <tr>
-            <td  class="text-right">{{ setdefault indicators.finances.autoFinancing.value '' }}%</td>
+            <td  class="text-right">{{ ignoreNan indicators.finances.autoFinancing.value }}%</td>
             <td>{{translate 'DASHBOARD.FINANCE_AUTO_FINANCING'}}</td>
           </tr>
           <tr>
-            <td  class="text-right">{{ setdefault indicators.finances.drugSalesOverPurchased.value '' }}%</td>
+            <td  class="text-right">{{ ignoreNan indicators.finances.drugSalesOverPurchased.value }}%</td>
             <td>{{translate 'DASHBOARD.FINANCE_DRUG_SALE_ON_PURCHASED'}}</td>
           </tr>
           <tr>
-            <td  class="text-right">{{ setdefault indicators.finances.ratioVariousExpense.value '' }}%</td>
+            <td  class="text-right">{{ ignoreNan indicators.finances.ratioVariousExpense.value }}%</td>
             <td>{{translate 'DASHBOARD.FINANCE_OTHER_CHARGE'}}</td>
           </tr>
           <tr>
-            <td  class="text-right">{{ setdefault indicators.finances.ratioCashHand.value '' }}</td>
+            <td  class="text-right">{{ ignoreNan indicators.finances.ratioCashHand.value }}</td>
             <td>{{translate 'DASHBOARD.FINANCE_DAILY_CASH_RATIO'}}</td>
           </tr>
           <tr>
-            <td  class="text-right">{{ setdefault indicators.finances.ratioTotalMarge.value '' }}</td>
+            <td  class="text-right">{{ ignoreNan indicators.finances.ratioTotalMarge.value }}</td>
             <td>{{translate 'DASHBOARD.FINANCE_TOTAL_MARGE_RATIO'}}</td>
           </tr>
           <tr>
-            <td  class="text-right">{{ setdefault indicators.finances.ratioCurrent.value '' }}</td>
+            <td  class="text-right">{{ ignoreNan indicators.finances.ratioCurrent.value }}</td>
             <td>{{translate 'DASHBOARD.FINANCE_CURRENT_RATIO'}}</td>
           </tr>
 
@@ -77,23 +77,23 @@
         </thead>
         <tbody>
           <tr>
-            <td class="text-right">{{ setdefault indicators.hospitalization.bedOccupationRate.value ''}}</td>
+            <td class="text-right">{{ ignoreNan indicators.hospitalization.bedOccupationRate.value}}</td>
             <td>{{translate 'DASHBOARD.BEDS_OCCUPATION_RATE'}}</td>
           </tr>
           <tr>
-            <td class="text-right">{{ setdefault indicators.hospitalization.bedOccupationRate.value ''}}%</td>
+            <td class="text-right">{{ ignoreNan indicators.hospitalization.bedOccupationRate.value}}%</td>
             <td>{{translate 'DASHBOARD.BEDS_OCCUPATION_RATE'}}</td>
           </tr>
           <tr>
-            <td class="text-right">{{ setdefault indicators.hospitalization.averageHospitalizationDays.value ''}}</td>
+            <td class="text-right">{{ ignoreNan indicators.hospitalization.averageHospitalizationDays.value}}</td>
             <td>{{translate 'DASHBOARD.HOSP_DAYS'}}</td>
           </tr>
           <tr>
-            <td class="text-right">{{ setdefault indicators.hospitalization.dailyHospitalization.value ''}}</td>
+            <td class="text-right">{{ ignoreNan indicators.hospitalization.dailyHospitalization.value}}</td>
             <td>{{translate 'DASHBOARD.HOSP_BY_DAY'}}</td>
           </tr>
           <tr>
-            <td class="text-right">{{ setdefault indicators.hospitalization.deathRate.value ''}} %</td>
+            <td class="text-right">{{ ignoreNan indicators.hospitalization.deathRate.value}} %</td>
             <td>{{translate 'DASHBOARD.DEATH_RATE'}}</td>
           </tr>
         </tbody>
@@ -111,24 +111,24 @@
         </thead>
         <tbody>
           <tr>
-            <td class="text-right">{{ setdefault indicators.staff.doctorOverStaff.value ''}}%</td>
+            <td class="text-right">{{ ignoreNan indicators.staff.doctorOverStaff.value}}%</td>
             <td>{{translate 'DASHBOARD.STAFF_MEDICAL_ON_TOTAL'}}</td>
           </tr>
           <tr>
-            <td class="text-right">{{ setdefault indicators.staff.dailyVisit.value ''}}</td>
+            <td class="text-right">{{ ignoreNan indicators.staff.dailyVisit.value}}</td>
             <td>{{translate 'DASHBOARD.STAFF_VISIT_BY_DAY'}}</td>
           </tr>
           <tr>
-            <td class="text-right">{{ setdefault indicators.staff.chargeOverStaff.value ''}}</td>
+            <td class="text-right">{{ ignoreNan indicators.staff.chargeOverStaff.value}}</td>
             <td>{{translate 'DASHBOARD.STAFF_CHARGE_CASE_BY_STAFF_MED'}}</td>
           </tr>
           <tr>
-            <td class="text-right">{{ setdefault indicators.staff.surgeryByDoctor.value ''}}</td>
+            <td class="text-right">{{ ignoreNan indicators.staff.surgeryByDoctor.value}}</td>
             <td>{{translate 'DASHBOARD.STAFF_SURGERY_BY_DOCTOR'}}</td>
 
           </tr>
           <tr>
-            <td  class="text-right">{{ setdefault indicators.staff.patientByDoctor.value '' }}</td>
+            <td  class="text-right">{{ ignoreNan indicators.staff.patientByDoctor.value }}</td>
             <td>{{translate 'DASHBOARD.STAFF_PATIENT_BY_DOCTOR'}}</td>
           </tr>
         </tbody>
