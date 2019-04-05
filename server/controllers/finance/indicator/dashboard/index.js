@@ -5,7 +5,6 @@ const moment = require('moment');
 const process = require('./process');
 
 exports.getIndicators = getIndicators;
-
 function getIndicators(req, res, next) {
   const options = req.query;
   lookupIndicators(options)

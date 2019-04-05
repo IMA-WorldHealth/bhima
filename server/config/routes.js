@@ -133,7 +133,7 @@ const lots = require('../controllers/stock/lots');
 
 // todo: the indicator folder must not be inside the finance folder
 const dashboard = require('../controllers/finance/indicator/dashboard');
-
+const indicatorRerpor = require('../controllers/finance/indicator/dashboard/report');
 // expose routes to the server.
 exports.configure = function configure(app) {
   debug('configuring routes.');
@@ -910,4 +910,5 @@ exports.configure = function configure(app) {
 
   // API dashboard
   app.get('/indicators/dashboards', dashboard.getIndicators);
+  app.get('/reports/indicatorsReport', indicatorRerpor.report);
 };

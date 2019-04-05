@@ -31,6 +31,7 @@ angular.module('bhima.routes')
       'unpaid-invoice-payments',
       'breakEven',
       'breakEvenFeeCenter',
+      'indicatorsReport',
     ];
 
     $stateProvider

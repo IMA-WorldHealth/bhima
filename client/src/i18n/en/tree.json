@@ -61,6 +61,7 @@
     "INVENTORY_VIEW" : "Stock",
     "INVOICE_REGISTRY" : "Invoice Registry",
     "INDICATORS" : "Indicators",
+    "INDICATORS_REPORT" : "Indicators report",
     "IPR_MANAGEMENT" : "IPR Management",
     "IPR_TAX_CONFIGURATION" : "IPR Tax Configuration",
     "JOURNAL_VOUCHER" : "Journal Voucher",

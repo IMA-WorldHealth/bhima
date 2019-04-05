@@ -116,6 +116,10 @@
       "TITLE": "Rapports de comptes multiple",
       "DESCRIPTION": "Ce rapport affiche toutes les transactions sur un groupe des comptes pour une période donnée"
     },
+    "REPORT_INDICATORS": {
+      "TITLE": " Rapport des indicateurs",
+      "DESCRIPTION": "Ce rapport resume les indicateurs pour un hôpital"
+    },
     "PROFIT_AND_LOSS_REPORT": {
       "TITLE": "Rapport des Comptes d'exploitation",
       "DESCRIPTION": "Afficher la liste des revenus et des dépenses pris en charge dans l'entreprise"
