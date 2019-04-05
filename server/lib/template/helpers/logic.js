@@ -1,3 +1,4 @@
+const util = require('../../util');
 // test equality
 function equal(a, b, options) {
   if (a === b) {
@@ -22,8 +23,9 @@ function lt(a, b, options) {
   return options.inverse(this);
 }
 
-function ignoreNan(val) {
-  return (val >= 0 || val < 0) ? val : '';
+function ignoreNan(val, symbol) {
+  const isNumber = (val >= 0 || val < 0);
+  return isNumber ? `${util.roundDecimal(val, 2)} ${symbol}` : '';
 }
 
 exports.equal = equal;
