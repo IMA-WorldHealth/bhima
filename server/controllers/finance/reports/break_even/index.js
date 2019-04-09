@@ -34,6 +34,9 @@ function report(req, res, next) {
   let reporting;
   let getEncounters;
 
+  console.log('PLUSSSSSSSsssssss');
+  console.log(params);
+
   params.start_date = new Date(params.start_date);
   params.end_date = new Date(params.end_date);
   params.type = parseInt(params.type, 10);
