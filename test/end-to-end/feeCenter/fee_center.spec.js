@@ -21,6 +21,8 @@ describe('Fee Center Management', () => {
     reference_cost_id : 'Profit Test 4',
     has_service : 1,
     services : ['Administration', 'Test Service'],
+    assigned_project : 1,
+    project_id : 'Test Project C',
   };
 
   const updateFeeCenter = {

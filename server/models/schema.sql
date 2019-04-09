@@ -2196,6 +2196,7 @@ CREATE TABLE `fee_center` (
   `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
   `label` VARCHAR(100) NOT NULL,
   `is_principal` tinyint(1) UNSIGNED DEFAULT 0,
+  `project_id` SMALLINT(5) UNSIGNED NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `fee_center_1` (`label`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
