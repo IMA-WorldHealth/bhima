@@ -29,6 +29,7 @@ exports.list = list;
 exports.getFiscalYearsByDate = getFiscalYearsByDate;
 exports.setOpeningBalance = setOpeningBalance;
 exports.getBalance = getBalance;
+exports.summedBalance = summedBalance;
 exports.closing = closing;
 exports.create = create;
 exports.detail = detail;
@@ -297,21 +298,24 @@ function remove(req, res, next) {
  * The balance for a specified fiscal year and period with all accounts
  * the period must be given
  */
-function getBalance(req, res, next) {
-  const { id } = req.params;
-  const period = req.params.period_number || 12;
-  debug(`#getBalance() looking up balance for FY${id} and period ${period}.`);
+async function getBalance(req, res, next) {
+  try {
+    const { id } = req.params;
+    const period = req.params.period_number || 12;
+    debug(`#getBalance() looking up balance for FY${id} and period ${period}.`);
 
-  lookupBalance(id, period)
-    .then(rows => {
-      const tree = new Tree(rows);
-      tree.walk(Tree.common.sumOnProperty('debit'), false);
-      tree.walk(Tree.common.sumOnProperty('credit'), false);
-      const result = tree.toArray();
-      res.status(200).json(result);
-    })
-    .catch(next)
-    .done();
+    const result = await summedBalance(id, period);
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function summedBalance(id, period) {
+  const tree = new Tree(await lookupBalance(id, period));
+  tree.walk(Tree.common.sumOnProperty('debit'), false);
+  tree.walk(Tree.common.sumOnProperty('credit'), false);
+  return tree.toArray();
 }
 
 function getOpeningBalanceRoute(req, res, next) {

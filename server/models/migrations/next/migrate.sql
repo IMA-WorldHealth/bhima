@@ -279,3 +279,95 @@ VALUES  (31, 'indicatorsReport', 'TREE.INDICATORS_REPORT');
 
 -- @lomamech 2019-04-09 Add Property project_id on fee_center table
 ALTER TABLE `fee_center` ADD COLUMN `project_id` SMALLINT(5) UNSIGNED NULL;
+
+
+
+-- jeremie lodi
+DELIMITER $$
+
+-- this is handled on change rate changed
+DROP PROCEDURE IF EXISTS `UpdateGainOrLossOnExchangeAccounts`$$
+CREATE   PROCEDURE `UpdateGainOrLossOnExchangeAccounts`(
+  IN _enterpriseId INT,
+  IN _project_id INT, 
+  IN _user_id INT,
+  IN _currencyId INT,
+  IN _date DATE, 
+  IN _rate DECIMAL(19, 4)
+  )
+BEGIN
+DECLARE _account_id, _loss_account_id, _gain_account_id INT(10) UNSIGNED;
+DECLARE _previous_rate, _balance, _difference DECIMAL(19, 4);
+DECLARE _fiscalyear_id, _period_id  mediumint(8) UNSIGNED;
+DECLARE voucherUUID BINARY(16);
+DECLARE _description, _account_label VARCHAR(255);
+
+DECLARE done BOOLEAN;
+DECLARE curs1 CURSOR FOR 
+  SELECT c.account_id , CONCAT(a.number , ' - ', a.label) 
+  FROM cash_box_account_currency c
+  JOIN account a ON a.id =  c.account_id
+  WHERE currency_id = _currencyId;
+   
+DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+SET _previous_rate = (SELECT GetExchangeRate(_enterpriseId, _currencyId, _date)  LIMIT 1);
+
+SET _fiscalyear_id = (SELECT f.id FROM fiscal_year f WHERE f.start_date <= DATE(_date) AND DATE(_date) <= f.end_date  LIMIT 1);
+
+SET _period_id = (SELECT p.id FROM period p WHERE p.start_date <= DATE(_date) AND DATE(_date) <= p.end_date LIMIT 1);
+
+SELECT loss_account_id, gain_account_id INTO _loss_account_id, _gain_account_id 
+FROM enterprise WHERE id = _enterpriseId;
+
+
+SET _description = "Gain ou perte pour le nouveau taux d'echange(Gain Or Loss for New exchange rate)";
+
+OPEN curs1;
+    read_loop: LOOP
+    
+    FETCH curs1 INTO _account_id, _account_label;
+    
+    IF done THEN
+      LEAVE read_loop;
+    END IF;
+        
+    SET _balance = ( 
+		 	SELECT SUM(debit - credit) 
+			FROM period_total 
+			WHERE account_id = _account_id and fiscal_year_id= _fiscalyear_id
+      GROUP BY fiscal_year_id
+      );
+		
+		SET _difference = (_rate*_balance) - (_previous_rate*_balance);
+		
+		IF (_balance <> NULL) AND (_balance <> 0)  THEN
+			SET voucherUUID = HUID(uuid());
+			
+			INSERT INTO voucher(uuid, date, project_id, currency_id, amount, description, user_id, type_id)
+			VALUES(voucherUUID, _date, _project_id, _currencyId, ABS(_difference), CONCAT(_description,', ', _account_label), _user_id, 18);
+			
+			IF (_difference > 0) THEN
+				INSERT INTO voucher_item(uuid, account_id, debit, credit,voucher_uuid)
+				VALUES(HUID(uuid()), _loss_account_id, ABS(_difference), 0, voucherUUID);
+
+        INSERT INTO voucher_item(uuid, account_id, debit, credit,voucher_uuid)
+				VALUES(HUID(uuid()), _account_id, 0, ABS(_difference), voucherUUID);	
+			ELSE
+				
+        INSERT INTO voucher_item(uuid, account_id, debit, credit,voucher_uuid)
+				VALUES(HUID(uuid()), _gain_account_id, 0,  ABS(_difference), voucherUUID);
+
+        INSERT INTO voucher_item(uuid, account_id, debit, credit,voucher_uuid)
+				VALUES(HUID(uuid()), _account_id, ABS(_difference), 0, voucherUUID);
+			END IF;
+			CALL PostVoucher(voucherUUID);
+		END IF;
+      
+    END LOOP;
+
+CLOSE curs1;
+
+END$$
+
+DELIMITER ;
