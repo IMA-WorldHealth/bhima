@@ -68,8 +68,9 @@ exports.reducedCardOptions = {
  * @return {string} the node_modules path
  */
 function getNodeModulesPath() {
+  const isWin = process.platform === 'win32';
   const barcodePath = require.resolve('jsbarcode');
-  const [nodeModulesDir] = barcodePath.split('node_modules/');
+  const [nodeModulesDir] = barcodePath.split(isWin ? 'node_modules\\' : 'node_modules/');
   return path.join(nodeModulesDir, 'node_modules');
 }
 
