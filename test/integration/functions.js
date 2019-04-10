@@ -1,4 +1,5 @@
-/* global expect, chai, agent */
+/* global expect, agent */
+/* eslint-disable no-unused-expressions */
 
 const helpers = require('./helpers');
 
@@ -25,7 +26,7 @@ describe('(/functions) The /functions  API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('POST /FUNCTIONS should create a new Function', () => {
+  it('POST /functions should create a new Function', () => {
     return agent.post('/functions')
       .send(fonction)
       .then((res) => {
@@ -35,7 +36,7 @@ describe('(/functions) The /functions  API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('GET /FUNCTIONS/:ID should not be found for unknown id', () => {
+  it('GET /functions/:id should not be found for unknown id', () => {
     return agent.get('/functions/unknownFunction')
       .then((res) => {
         helpers.api.errored(res, 404);
@@ -43,7 +44,7 @@ describe('(/functions) The /functions  API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('PUT /FUNCTIONS  should update an existing Function ', () => {
+  it('PUT /functions should update an existing Function ', () => {
     return agent.put(`/functions/${fonction.id}`)
       .send({ fonction_txt : 'Imagerie Medicale' })
       .then((res) => {
@@ -54,7 +55,7 @@ describe('(/functions) The /functions  API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('GET /FUNCTIONS/:ID returns a single Function ', () => {
+  it('GET /functions/:id returns a single Function ', () => {
     return agent.get(`/functions/${fonction.id}`)
       .then((res) => {
         expect(res).to.have.status(200);
@@ -63,7 +64,7 @@ describe('(/functions) The /functions  API endpoint', () => {
       .catch(helpers.handler);
   });
 
-  it('DELETE /FUNCTIONS/:ID will send back a 404 if the Function does not exist', () => {
+  it('DELETE /functions/:id will send back a 404 if the Function does not exist', () => {
     return agent.delete('/functions/unknownFunction')
       .then((res) => {
         helpers.api.errored(res, 404);

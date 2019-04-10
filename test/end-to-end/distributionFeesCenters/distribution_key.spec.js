@@ -13,9 +13,9 @@ describe('Distribution keys Management', () => {
   before(() => helpers.navigate('#!/distribution_center/distribution_key'));
 
   const Page = new DistributionKeysPage();
-  const labelAuxiliary1 = 'Auxiliary 1 (1)';
-  const labelAuxiliary2 = 'Auxiliary 2 (1)';
-  const resetAuxiliary2 = 'Auxiliary 2 (3)';
+  const labelAuxiliary1 = 'Auxiliary 2 (1)';
+  const labelAuxiliary2 = 'Auxiliary 2 (3)';
+  const resetAuxiliary2 = 'Auxiliary 3 (1)';
   const distributionKeyElements = 10;
 
   it('Set Distribution key for an Auxiliary Fee Center', () => {

@@ -1,4 +1,4 @@
-/* global expect inject chai */
+/* global expect inject */
 describe('RubricsConfigurationService', () => {
   let RubricsConfigs;
   let $httpBackend;

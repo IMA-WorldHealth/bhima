@@ -6,11 +6,13 @@
   <div class="form-group"
       ng-class="{ 'has-error' : FiscalYearSelectForm.$submitted && FiscalYearSelectForm.fiscal.$invalid }">
       <label class="control-label" translate>FORM.LABELS.FISCAL_YEAR</label>
+
+      <ng-transclude></ng-transclude>
       <select
         class="form-control"
         ng-model="$ctrl.selectedYear"
         name="fiscal"
-        ng-options="year as year.label for year in $ctrl.years"
+        ng-options="year as year.label for year in $ctrl.years track by year.id"
         ng-change="$ctrl.onChange($ctrl.selectedYear)"
         required>
         <option value="" disabled translate>FORM.SELECT.FISCAL_YEAR</option>

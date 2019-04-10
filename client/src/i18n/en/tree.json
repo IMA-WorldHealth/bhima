@@ -12,6 +12,9 @@
     "BALANCE" : "Balance",
     "BALANCE_SHEET" : "Balance Sheet",
     "BALANCE_REPORT" : "Balance of Accounts",
+    "BREAK_EVEN_REFERENCE":"Break-even references",
+    "BREAK_EVEN_REPORT": "Break-even Report",
+    "BREAK_EVEN_FEE_CENTER_REPORT" : "Break-even Report by Fee Center",
     "INVOICING_FEES" : "Invoicing Fees",
     "CASH_REPORT" : "Cash Report",
     "CASHBOX_MANAGEMENT" : "Cashbox Management",
@@ -57,6 +60,8 @@
     "INVENTORY_UNIT" : "Dosage Form",
     "INVENTORY_VIEW" : "Stock",
     "INVOICE_REGISTRY" : "Invoice Registry",
+    "INDICATORS" : "Indicators",
+    "INDICATORS_REPORT" : "Indicators report",
     "IPR_MANAGEMENT" : "IPR Management",
     "IPR_TAX_CONFIGURATION" : "IPR Tax Configuration",
     "JOURNAL_VOUCHER" : "Journal Voucher",
@@ -124,6 +129,13 @@
     "OHADA_BALANCE_SHEET":"[OHADA] Balance Sheet",
     "OHADA_INCOME":"[OHADA] Income Report",
     "IMPORT_STOCK_FROM_FILE":"Stock Import",
-    "UPDATE_DISTRIBUTION": "Update Distribution of Fee Centers"
+    "UPDATE_DISTRIBUTION": "Update Distribution of Fee Centers",
+    "DASHBOARDS": {
+      "TITLE":"Dashboards",
+      "INDICATORS_FILES_REGISTRY":"Indicators Files",
+      "HOSPITALIZATION":"Hospitalizations",
+      "HUMAN_RESOURCES":"Human Resources",
+      "FINANCES":"Finances"
+    }
   }
 }

@@ -7,6 +7,7 @@ const db = require('../../../lib/db');
 
 function breakDown(req, res, next) {
   const { data } = req.body;
+
   const isCost = data.is_cost;
   const dataValues = data.values;
 
@@ -20,19 +21,22 @@ function breakDown(req, res, next) {
       if (percentageValue) {
         const debitValuePercent = transaction.debit_equiv * (percentageValue / 100);
         const creditValuePercent = transaction.credit_equiv * (percentageValue / 100);
-
-        dataToDistribute.push([
-          db.bid(transaction.uuid),
-          transaction.trans_id,
-          transaction.account_id,
-          isCost,
-          transaction.fee_center_id,
-          principalCenterId,
-          debitValuePercent,
-          creditValuePercent,
-          new Date(),
-          userId,
-        ]);
+        if (debitValuePercent > 0 || creditValuePercent > 0) {
+          dataToDistribute.push([
+            db.bid(transaction.uuid),
+            transaction.trans_id,
+            transaction.account_id,
+            isCost,
+            transaction.is_variable,
+            transaction.is_turnover,
+            transaction.fee_center_id,
+            principalCenterId,
+            debitValuePercent,
+            creditValuePercent,
+            new Date(),
+            userId,
+          ]);
+        }
       }
     });
   });
@@ -42,6 +46,8 @@ function breakDown(req, res, next) {
     trans_id,
     account_id,
     is_cost,
+    is_variable,
+    is_turnover,    
     auxiliary_fee_center_id,
     principal_fee_center_id,
     debit_equiv,

@@ -1,0 +1,154 @@
+<form name="FinanceForm" bh-submit="$ctrl.submit(FinanceForm)" novalidate>
+  <div class="modal-body">
+    <h3 style="padding:0; margin:0; margin-bottom: 20px;">
+      <span translate>DASHBOARD.INDICATORS_FILES.WRITE_FINANCES_INDICATORS</span> 
+      <small ng-show="$ctrl.selectedPeriod"><strong>{{ $ctrl.selectedPeriod }}</strong></small>
+    </h3>
+
+    <div class="row">
+      <div class="col-xs-4">
+        <!-- fiscal year and period -->
+        <bh-fiscal-year-period-select
+          fiscal-id="$ctrl.fiscal_year_id"
+          period-id="$ctrl.file.period_id"
+          on-select-callback="$ctrl.onSelectPeriod(selected)">
+        </bh-fiscal-year-period-select>
+
+        <div ng-if="$ctrl.isExisting" class="alert alert-danger">
+          <i class="fa fa-warning"></i> <strong translate>FORM.DIALOGS.WARNING</strong>
+          <p translate>DASHBOARD.INDICATORS_FILES.ALREADY_EXISTS</p>
+        </div>
+      </div>
+      <div class="col-xs-7 col-xs-offset-1">
+        <fieldset ng-disabled="$ctrl.loading">
+            <bh-input-text
+            id="total_revenue"
+            text-value="$ctrl.indicators.total_revenue"
+            label="DASHBOARD.INDICATORS_FILES.TOTAL_INCOMES"
+            description="DASHBOARD.INDICATORS_FILES.TOTAL_INCOMES_DESC"
+            is-currency="true"
+            autocomplete="off">
+          </bh-input-text>
+  
+          <bh-input-text
+            id="total_subsidies"
+            text-value="$ctrl.indicators.total_subsidies"
+            label="DASHBOARD.INDICATORS_FILES.TOTAL_SUBVENTION"
+            description="DASHBOARD.INDICATORS_FILES.TOTAL_SUBVENTION_DESC"
+            is-currency="true"
+            autocomplete="off">
+          </bh-input-text>
+  
+          <bh-input-text
+            id="total_drugs_sale"
+            text-value="$ctrl.indicators.total_drugs_sale"
+            label="DASHBOARD.INDICATORS_FILES.TOTAL_DRUGS_SALES"
+            description="DASHBOARD.INDICATORS_FILES.TOTAL_DRUGS_SALES_DESC"
+            is-currency="true"
+            autocomplete="off">
+          </bh-input-text>
+  
+          <bh-input-text
+            id="total_expenses"
+            text-value="$ctrl.indicators.total_expenses"
+            label="DASHBOARD.INDICATORS_FILES.TOTAL_EXPENSES"
+            description="DASHBOARD.INDICATORS_FILES.TOTAL_EXPENSES_DESC"
+            is-currency="true"
+            autocomplete="off">
+          </bh-input-text>
+  
+          <bh-input-text
+            id="total_other_charge"
+            text-value="$ctrl.indicators.total_other_charge"
+            label="DASHBOARD.INDICATORS_FILES.TOTAL_OTHER_EXPENSES"
+            description="DASHBOARD.INDICATORS_FILES.TOTAL_OTHER_EXPENSES_DESC"
+            is-currency="true"
+            autocomplete="off">
+          </bh-input-text>
+  
+          <bh-input-text
+            id="total_drugs_purchased"
+            text-value="$ctrl.indicators.total_drugs_purchased"
+            label="DASHBOARD.INDICATORS_FILES.TOTAL_DRUGS_PURCHASE"
+            description="DASHBOARD.INDICATORS_FILES.TOTAL_DRUGS_PURCHASE_DESC"
+            is-currency="true"
+            autocomplete="off">
+          </bh-input-text>
+  
+          <bh-input-text
+            id="total_staff_charge"
+            text-value="$ctrl.indicators.total_staff_charge"
+            label="DASHBOARD.INDICATORS_FILES.TOTAL_STAFF_CHARGE"
+            description="DASHBOARD.INDICATORS_FILES.TOTAL_STAFF_CHARGE_DESC"
+            is-currency="true"
+            autocomplete="off">
+          </bh-input-text>
+  
+          <bh-input-text
+            id="total_operating_charge"
+            text-value="$ctrl.indicators.total_operating_charge"
+            label="DASHBOARD.INDICATORS_FILES.TOTAL_OPERATING_CHARGE"
+            description="DASHBOARD.INDICATORS_FILES.TOTAL_OPERATING_CHARGE_DESC"
+            is-currency="true"
+            autocomplete="off">
+          </bh-input-text>
+  
+          <bh-input-text
+            id="total_depreciation"
+            text-value="$ctrl.indicators.total_depreciation"
+            label="DASHBOARD.INDICATORS_FILES.TOTAL_DEPRECIATION"
+            description="DASHBOARD.INDICATORS_FILES.TOTAL_DEPRECIATION_DESC"
+            is-currency="true"
+            autocomplete="off">
+          </bh-input-text>
+  
+          <bh-input-text
+            id="total_debts"
+            text-value="$ctrl.indicators.total_debts"
+            label="DASHBOARD.INDICATORS_FILES.TOTAL_DEBTS"
+            description="DASHBOARD.INDICATORS_FILES.TOTAL_DEBTS_DESC"
+            is-currency="true"
+            autocomplete="off">
+          </bh-input-text>
+  
+          <bh-input-text
+            id="total_cash"
+            text-value="$ctrl.indicators.total_cash"
+            label="DASHBOARD.INDICATORS_FILES.TOTAL_CASH"
+            description="DASHBOARD.INDICATORS_FILES.TOTAL_CASH_DESC"
+            is-currency="true"
+            autocomplete="off">
+          </bh-input-text>
+  
+          <bh-input-text
+            id="total_stock_value"
+            text-value="$ctrl.indicators.total_stock_value"
+            label="DASHBOARD.INDICATORS_FILES.TOTAL_STOCK_VALUE"
+            description="DASHBOARD.INDICATORS_FILES.TOTAL_STOCK_VALUE_DESC"
+            is-currency="true"
+            autocomplete="off">
+          </bh-input-text>
+  
+          <bh-input-text
+            id="total_staff"
+            text-value="$ctrl.indicators.total_staff"
+            label="DASHBOARD.INDICATORS_FILES.TOTAL_STAFF"
+            description="DASHBOARD.INDICATORS_FILES.TOTAL_STAFF_DESC"
+            autocomplete="off">
+          </bh-input-text>
+        </fieldset>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="modal-footer">
+    <button data-method="cancel" type="button" class="btn btn-default" ui-sref="indicatorsFilesRegistry">
+      <span translate>FORM.BUTTONS.CANCEL</span>
+    </button>
+
+    <bh-loading-button loading-state="FinanceForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

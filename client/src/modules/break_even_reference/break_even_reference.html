@@ -1,0 +1,38 @@
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static" translate> TREE.ADMIN </li>
+      <li class="title" translate> TREE.BREAK_EVEN_REFERENCE </li>
+    </ol>
+
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <button class="btn btn-default text-capitalize" id="create" ui-sref="break_even_reference.create" data-method="create">
+          <span class="fa fa-plus"></span> <span translate>FORM.BUTTONS.ADD</span>
+        </button>
+      </div>
+      <div class="toolbar-item">
+        <bh-filter-toggle on-toggle="BreakEvenReferenceCtrl.toggleFilter()">
+        </bh-filter-toggle>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- main content -->
+<div class="flex-content">
+  <div class="container-fluid">
+    <div id="break-even-reference-grid"
+      ui-grid="BreakEvenReferenceCtrl.gridOptions"
+      class="grid-full-height"
+      ui-grid-auto-resize
+      ui-grid-resize-columns>
+      
+      <bh-grid-loading-indicator
+        loading-state="BreakEvenReferenceCtrl.loading"
+        empty-state="BreakEvenReferenceCtrl.gridOptions.data.length === 0"
+        error-state="BreakEvenReferenceCtrl.hasError">
+      </bh-grid-loading-indicator>
+    </div>
+  </div>
+</div> 

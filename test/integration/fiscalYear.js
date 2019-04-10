@@ -1,4 +1,5 @@
 /* global expect, agent */
+/* eslint-disable no-unused-expressions */
 
 const helpers = require('./helpers');
 
@@ -118,13 +119,13 @@ describe('(/fiscal) Fiscal Year', () => {
 
   it('GET /enterprises/:id/fiscal_start getting the earliest fiscal year date', () => {
     const mockEnterpriseFiscalEntity = {
-      enterpriseId: 1,
-      earliestFiscalDate: {
-        string: '2015-01-01T00:00:00.000Z',
-        year: 2015,
-        day: 1,
-        month: 0,
-      }
+      enterpriseId : 1,
+      earliestFiscalDate : {
+        string : '2015-01-01T00:00:00.000Z',
+        year : 2015,
+        day : 1,
+        month : 0,
+      },
     };
 
     return agent.get(`/enterprises/${mockEnterpriseFiscalEntity.enterpriseId}/fiscal_start`)

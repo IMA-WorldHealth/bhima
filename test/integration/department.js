@@ -1,4 +1,5 @@
-/* global expect, chai, agent */
+/* global expect, agent */
+/* eslint-disable no-unused-expressions */
 
 const helpers = require('./helpers');
 
@@ -8,7 +9,6 @@ const helpers = require('./helpers');
  * This test suite implements full CRUD on the /projects HTTP API endpoint.
  */
 describe('(/departments) The department API endpoint', () => {
-  // project we will add during this test suite.
   const uuid = '5b7dd0d6-9273-4955-a703-126fbd504b61';
   const uuid2 = '7b7dd0d6-9273-4955-a703-126fbd504b61';
   const department = {

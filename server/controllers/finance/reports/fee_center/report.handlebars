@@ -45,7 +45,7 @@
               <tr style="font-size: 12px">
                 <td class="text-right"> {{add @index 1}} </td>
                 <td> {{ label }} </td>
-                <td class="text-right"> {{debcred balance metadata.enterprise.currency_id}} </td>
+                <td class="text-right"> {{debcred cost_balance ../metadata.enterprise.currency_id}} </td>
               </tr>
             {{/each}}
 
@@ -65,7 +65,7 @@
               <tr style="font-size: 12px">
                 <td  class="text-right"> {{add @index 1}} </td>
                 <td> {{ label }} </td>
-                <td class="text-right"> {{debcred balance metadata.enterprise.currency_id}} </td>
+                <td class="text-right"> {{debcred cost_balance ../metadata.enterprise.currency_id}} </td>
               </tr>
             {{/each}}
           </tbody>
@@ -109,7 +109,7 @@
               <tr>
                 <td class="text-right"> {{add @index 1}} </td>
                 <td> {{ label }} </td>
-                <td class="text-right"> {{debcred balance metadata.enterprise.currency_id}} </td>
+                <td class="text-right"> {{debcred profit_balance ../metadata.enterprise.currency_id}} </td>
               </tr>
             {{/each}}
 
@@ -124,7 +124,7 @@
               <tr>
                 <td class="text-right"> {{add @index 1}} </td>
                 <td> {{ label }} </td>
-                <td class="text-right"> {{debcred balance metadata.enterprise.currency_id}} </td>
+                <td class="text-right"> {{debcred profit_balance ../metadata.enterprise.currency_id}} </td>
               </tr>
             {{/each}}
           </tbody>
@@ -195,18 +195,18 @@
               <td> {{ label}} </td>
               <td class="text-right">
                 <strong>
-                  {{debcred balanceCost metadata.enterprise.currency_id}}
+                  {{debcred balanceCost ../metadata.enterprise.currency_id}}
                 </strong>
               </td>
               {{#each costValues }}
                 <td class="text-right">
                   {{#if value}}
-                    {{debcred value metadata.enterprise.currency_id}}
+                    {{debcred value ../../metadata.enterprise.currency_id}}
                   {{/if}}
                 </td>
               {{/each}}
               <td class="text-right">
-                {{debcred totalCost metadata.enterprise.currency_id}}
+                {{debcred totalCost ../metadata.enterprise.currency_id}}
               </td>
             </tr>
             {{/each}}
@@ -222,7 +222,7 @@
               {{#each auxiliaryCostCenters }}
                 <td class="text-right">
                   <strong>
-                    {{debcred total metadata.enterprise.currency_id}}
+                    {{debcred total ../metadata.enterprise.currency_id}}
                   </strong>
                 </td>
               {{/each}}
@@ -268,7 +268,7 @@
               {{#each auxiliaryCostCenters }}
                 <td class="text-right">
                   <strong>
-                    {{debcred balance metadata.enterprise.currency_id}}
+                    {{debcred balance ../metadata.enterprise.currency_id}}
                   </strong>
                 </td>
               {{/each}}
@@ -334,18 +334,18 @@
               <td> {{ label}} </td>
               <td class="text-right">
                 <strong>
-                  {{debcred balanceProfit metadata.enterprise.currency_id}}
+                  {{debcred balanceProfit ../metadata.enterprise.currency_id}}
                 </strong>
               </td>
               {{#each profitValues }}
                 <td class="text-right">
                   {{#if value}}
-                    {{debcred value metadata.enterprise.currency_id}}
+                    {{debcred value ../../metadata.enterprise.currency_id}}
                   {{/if}}
                 </td>
               {{/each}}
               <td class="text-right">
-                {{debcred totalProfit metadata.enterprise.currency_id}}
+                {{debcred totalProfit ../../metadata.enterprise.currency_id}}
               </td>
             </tr>
             {{/each}}
@@ -361,7 +361,7 @@
               {{#each auxiliaryProfitCenters }}
                 <td class="text-right">
                   <strong>
-                    {{debcred total metadata.enterprise.currency_id}}
+                    {{debcred total ../metadata.enterprise.currency_id}}
                   </strong>
                 </td>
               {{/each}}
@@ -408,7 +408,7 @@
               {{#each auxiliaryProfitCenters }}
                 <td class="text-right">
                   <strong>
-                    {{debcred balance metadata.enterprise.currency_id}}
+                    {{debcred balance ../metadata.enterprise.currency_id}}
                   </strong>
                 </td>
               {{/each}}
@@ -461,17 +461,17 @@
               <td> {{ label}} </td>
               <td class="text-right">
                 <strong>
-                  {{debcred totalProfit metadata.enterprise.currency_id}}
+                  {{debcred totalProfit ../metadata.enterprise.currency_id}}
                 </strong>
               </td>
               <td class="text-right">
                 <strong>
-                  {{debcred totalCost metadata.enterprise.currency_id}}
+                  {{debcred totalCost ../metadata.enterprise.currency_id}}
                 </strong>
               </td>
               <td class="text-right">
                 <strong>
-                  {{debcred results metadata.enterprise.currency_id}}
+                  {{debcred results ../metadata.enterprise.currency_id}}
                 </strong>
               </td>
               <td>

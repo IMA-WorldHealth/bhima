@@ -122,10 +122,18 @@ const distributionGetDistributionKey = require('../controllers/finance/distribut
 const setDistributionKey = require('../controllers/finance/distributionFeeCenter/setting');
 
 const accountReferenceType = require('../controllers/finance/accounts/accountReferenceType');
+const indicators = require('../controllers/finance/indicator');
+const breakEvenReference = require('../controllers/finance/breakEvenReference');
+
+// periods
+const period = require('../controllers/finance/period');
 
 // lots
 const lots = require('../controllers/stock/lots');
 
+// todo: the indicator folder must not be inside the finance folder
+const dashboard = require('../controllers/finance/indicator/dashboard');
+const indicatorRerpor = require('../controllers/finance/indicator/dashboard/report');
 // expose routes to the server.
 exports.configure = function configure(app) {
   debug('configuring routes.');
@@ -262,6 +270,10 @@ exports.configure = function configure(app) {
   app.get('/fiscal/:id/closing_balance', fiscal.getClosingBalanceRoute);
 
   app.get('/fiscal/:id/periods', fiscal.getPeriods);
+
+  // periods API
+  app.get('/periods', period.list);
+  app.get('/periods/:id', period.details);
 
   /* load a user's tree */
   app.get('/tree', tree.generate);
@@ -401,6 +413,8 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/annual-clients-report', financeReports.annualClientsReport);
 
   app.get('/reports/finance/employeeStanding/', financeReports.employee);
+  app.get('/reports/finance/break_even', financeReports.breakEven.report);
+  app.get('/reports/finance/break_even_fee_center', financeReports.breakEvenFeeCenter.report);
 
   app.get('/reports/keys/:key', report.keys);
 
@@ -867,4 +881,34 @@ exports.configure = function configure(app) {
   // API for discharge type
   app.get('/discharge_types', dischargeTypes.list);
 
+  // API for indicators
+  app.get('/indicators', indicators.read);
+  app.get('/indicators/status', indicators.status.list);
+  app.get('/indicators/types', indicators.types.list);
+
+  app.get('/indicators/hospitalization/:uuid', indicators.hospitalization.detail);
+  app.post('/indicators/hospitalization', indicators.hospitalization.create);
+  app.put('/indicators/hospitalization/:uuid', indicators.hospitalization.update);
+  app.delete('/indicators/hospitalization/:uuid', indicators.hospitalization.delete);
+
+  app.get('/indicators/staff/:uuid', indicators.personel.detail);
+  app.post('/indicators/staff', indicators.personel.create);
+  app.put('/indicators/staff/:uuid', indicators.personel.update);
+  app.delete('/indicators/staff/:uuid', indicators.personel.delete);
+
+  app.get('/indicators/finances/:uuid', indicators.finances.detail);
+  app.post('/indicators/finances', indicators.finances.create);
+  app.put('/indicators/finances/:uuid', indicators.finances.update);
+  app.delete('/indicators/finances/:uuid', indicators.finances.delete);
+
+  // API for Break Even Reference routes crud
+  app.get('/break_even_reference', breakEvenReference.list);
+  app.get('/break_even_reference/:id', breakEvenReference.detail);
+  app.post('/break_even_reference', breakEvenReference.create);
+  app.put('/break_even_reference/:id', breakEvenReference.update);
+  app.delete('/break_even_reference/:id', breakEvenReference.delete);
+
+  // API dashboard
+  app.get('/indicators/dashboards', dashboard.getIndicators);
+  app.get('/reports/indicatorsReport', indicatorRerpor.report);
 };

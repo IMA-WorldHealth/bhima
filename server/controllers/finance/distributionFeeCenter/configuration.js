@@ -49,6 +49,9 @@ function configuration(req, res, next) {
           if (ref.account_id === item.account_id) {
             item.fee_center_id = ref.id;
             item.fee_center_label = ref.label;
+            item.is_variable = ref.is_variable;
+            item.is_turnover = ref.is_turnover;
+            item.is_cost = ref.is_cost;
           }
         });
 

@@ -12,6 +12,9 @@
     "BALANCE":"Balance",
     "BALANCE_SHEET":"Bilan",
     "BALANCE_REPORT":"Balance des comptes",
+    "BREAK_EVEN_REFERENCE":"Références du seuil de rentabilité",
+    "BREAK_EVEN_REPORT": "Rapport du seuil de rentabilité",
+    "BREAK_EVEN_FEE_CENTER_REPORT" : "Rapport du seuil de rentabilité par centre de frais",
     "INVOICING_FEES":"Frais de Facturations",
     "CASH_REPORT" : "Rapport de Caisse",
     "CASHBOX_MANAGEMENT":"Caisses et Banques",
@@ -56,6 +59,8 @@
     "INVENTORY_TYPE":"Type",
     "INVENTORY_UNIT":"Forme Galénique",
     "INVENTORY_VIEW":"Stocks",
+    "INDICATORS" : "Indicateurs",
+    "INDICATORS_REPORT" : "Rapport sur les indicateurs",
     "INVOICE_REGISTRY":"Registre des factures",
     "IPR_MANAGEMENT":"Gestion de la Taxe IPR",
     "IPR_TAX_CONFIGURATION": "Configuration de la taxe IPR",
@@ -124,6 +129,13 @@
     "OHADA_BALANCE_SHEET":"[OHADA] Bilan",
     "OHADA_INCOME":"[OHADA] Compte de resultat",
     "IMPORT_STOCK_FROM_FILE":"Importation de stock",
-    "UPDATE_DISTRIBUTION": "Mettre à jour la répartition des centres de frais"
+    "UPDATE_DISTRIBUTION": "Mettre à jour la répartition des centres de frais",
+    "DASHBOARDS": {
+      "TITLE":"Tableaux de bord",
+      "INDICATORS_FILES_REGISTRY":"Fiches des indicateurs",
+      "HOSPITALIZATION":"Hospitalisations",
+      "HUMAN_RESOURCES":"Personnel",
+      "FINANCES":"Finances"
+    }
   }
 }
