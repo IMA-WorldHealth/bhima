@@ -4826,10 +4826,10 @@ js-yaml@~3.7.0:
     argparse "^1.0.7"
     esprima "^2.6.0"
 
-jsbarcode@^4.0.0-alpha.5:
-  version "4.0.0-alpha.5"
-  resolved "https://registry.yarnpkg.com/jsbarcode/-/jsbarcode-4.0.0-alpha.5.tgz#d9b9c25adff19280e02e20f92d72a440490cb3d1"
-  integrity sha512-YVBAjFgNKGzUGmSAmzU1dsNTR5omfwWhvusKR+SRRXcuSg4xT3Wl7hYfovt8eZK2LZyFJviQ+Glt9W6T7caQYw==
+jsbarcode@^3.11.0:
+  version "3.11.0"
+  resolved "https://registry.yarnpkg.com/jsbarcode/-/jsbarcode-3.11.0.tgz#20623e008b101ef45d0cce9c8022cdf49be28547"
+  integrity sha512-/ozCd7wsa+VIHo9sUc03HneVEQrH7cVWfJolUT/WOW1m8mJ2e3iYZje6C9X3LFHdczlesqFHRpxLtbVsNtjyow==
 
 jsbn@~0.1.0:
   version "0.1.1"

@@ -35,7 +35,7 @@ const publicRoutes = [
 // accept generic express instances (initialised in app.js)
 exports.configure = function configure(app) {
   // TODO - things don't work well yet.
-  // const isProduction = (process.env.NODE_ENV === 'production');
+// const isProduction = (process.env.NODE_ENV === 'production');
   const isProduction = false;
 
   debug('configuring middleware.');
