@@ -6,11 +6,22 @@ const path = require('path');
 const fs = require('mz/fs');
 const exec = util.promisify(require('child_process').exec);
 
+/**
+ * Mock an HTML renderer without the complexity of BHIMA's bundle one
+ */
+const mockHTMLRenderer = (data, template) => {
+  // eslint-disable-next-line
+  const compiled = require('handlebars').compile(template);
+  return Promise.resolve(compiled(data));
+};
+
 const pdf = rewire('../../server/lib/renderers/pdf');
-pdf.__set__('html', { render : noop });
+pdf.__set__('html', { render : mockHTMLRenderer });
+
 
 // mock handlebars template file
 const template = 'test/fixtures/file.handlebars';
+const templateWithBarcode = 'pdf-template-with-barcode.handlebars';
 
 // mock data
 const data = {
@@ -35,14 +46,14 @@ function PDFRenderUnitTest() {
   });
 
   it('#pdf.render() renders a valid PDF file', async () => {
-    const result = await pdf.render(data, template, {});
+    const htmlString = await fs.readFile(template, 'utf8');
+    const result = await pdf.render(data, htmlString, {});
     const hasValidVersion = hasValidPdfVersion(result.toString());
     const isBuffer = isBufferInstance(result);
     expect(isBuffer && hasValidVersion).to.be.equal(true);
   });
 
   it('#pdf.render() renders an identical PDF given an HTML template', async () => {
-
     // load the HTML template into memory as a giant string
     const tmpl = await fs.readFile(htmlFile, 'utf8');
 
@@ -57,10 +68,16 @@ function PDFRenderUnitTest() {
     const slicedRendered = sliceOutCreationDate(rendered);
     const slicedCached = sliceOutCreationDate(cached);
 
-    // write file to artifacts for AWS S3 storage.
-    // await fs.writeFile(path.join(artifactsPath, 'generated.pdf'), rendered);
-
     expect(sliceOutRandomMetadata(slicedRendered)).to.deep.equal(sliceOutRandomMetadata(slicedCached));
+  });
+
+  it('#pdf.render() templates in a barcode to the pdf file', async () => {
+    const tmpl = await fs.readFile(path.join(fixturesPath, templateWithBarcode), 'utf8');
+    const params = { main : 'This is a test', value : 'hi' };
+    const result = await pdf.render(params, tmpl, {});
+    const hasValidVersion = hasValidPdfVersion(result.toString());
+    const isBuffer = isBufferInstance(result);
+    expect(isBuffer && hasValidVersion).to.be.equal(true);
   });
 }
 
@@ -110,13 +127,6 @@ function sliceOutRandomMetadata(buffer) {
  */
 function isBufferInstance(file) {
   return file instanceof Buffer;
-}
-
-// the actual HTML renderer is mocked here.  Remember, it takes in three arguments:
-// context, template, and options and returns and HTML string.  We'll make it just
-// return the template.
-function noop(context, tmpl) {
-  return Promise.resolve(tmpl);
 }
 
 describe('PDF renderer', PDFRenderUnitTest);

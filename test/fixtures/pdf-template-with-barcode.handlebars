@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head>
+  <title>Unit Test for PDF + Barcode Integration</title>
+  <!--
+    NOTE(@jniles)- this must be **non-minified**! The barcode minification
+    causes rendering errors in Chrome.  Not sure why it works in production.
+    See: https://github.com/lindell/JsBarcode/issues/163
+  -->
+  <script src="{{nodeModulesPath}}/jsbarcode/dist/JsBarcode.all.js"></script>
+</head>
+<body>
+  <p>{{ main }}</p>
+
+  <div>
+    <svg class="barcode"
+      jsbarcode-format="code128"
+      jsbarcode-value="{{value}}"
+      jsbarcode-width="2"
+      jsbarcode-height="50"
+      jsbarcode-displayvalue="false"
+      jsbarcode-margin="0"
+      jsbarcode-textmargin="0">
+    </svg>
+  </div>
+
+  <script>JsBarcode('.barcode').init();</script>
+</body>
+</html>
