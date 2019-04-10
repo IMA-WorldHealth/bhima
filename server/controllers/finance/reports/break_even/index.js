@@ -33,9 +33,7 @@ function report(req, res, next) {
 
   let reporting;
   let getEncounters;
-
-  console.log('PLUSSSSSSSsssssss');
-  console.log(params);
+  let dbPromises;
 
   params.start_date = new Date(params.start_date);
   params.end_date = new Date(params.end_date);
@@ -56,37 +54,96 @@ function report(req, res, next) {
     return;
   }
 
-  const getBreakEvenReference = `
-    SELECT br.id, br.label, br.is_cost, br.is_variable, br.is_turnover, br.account_reference_id,
-    ar.description AS desc_ref, ar.abbr, ari.account_id, GROUP_CONCAT(a.number SEPARATOR ', ') AS accounts_numbers
-    FROM break_even_reference AS br
-    JOIN account_reference AS ar ON ar.id = br.account_reference_id
-    JOIN account_reference_item AS ari ON ari.account_reference_id = ar.id
-    JOIN account AS a ON a.id = ari.account_id
-    GROUP BY br.id
-    ORDER BY br.is_cost DESC, br.label ASC ;
-  `;
-
-  if (params.type) {
-    getEncounters = `
-      SELECT count(pv.uuid) AS numberCase
-      FROM patient_visit AS pv
-      WHERE DATE(pv.start_date) >= DATE(?) AND DATE(pv.start_date) <= DATE(?)
+  if (params.breakEvenProject) {
+    const getBreakEvenReference = `
+      SELECT br.id, br.label, br.is_cost, br.is_variable, br.is_turnover, br.account_reference_id,
+      ar.description AS desc_ref, ar.abbr, ari.account_id, GROUP_CONCAT(a.number SEPARATOR ', ') AS accounts_numbers
+      FROM break_even_reference AS br
+      JOIN account_reference AS ar ON ar.id = br.account_reference_id
+      JOIN account_reference_item AS ari ON ari.account_reference_id = ar.id
+      JOIN account AS a ON a.id = ari.account_id
+      GROUP BY br.id
+      ORDER BY br.is_cost DESC, br.label ASC ;
     `;
-  } else {
-    getEncounters = `
-      SELECT SUM(hi.total_hospitalized_patient + hi.total_external_patient) AS numberCase
-      FROM indicator AS i
-      JOIN hospitalization_indicator AS hi ON hi.indicator_uuid = i.uuid
-      JOIN period AS p ON p.id = i.period_id
-      WHERE DATE(p.start_date) >= DATE(?) AND DATE(p.end_date) <= DATE(?)`;
-  }
 
-  const dbPromises = [
-    db.exec(getBreakEvenReference),
-    db.exec(getEncounters, [params.fiscalYearStart, params.end_date]),
-    AccountReference.computeAllAccountReference(params.period_id, BREAK_EVEN_ACCOUNT_REFERENCE_TYPE),
-  ];
+    if (params.type) {
+      getEncounters = `
+        SELECT sfc.fee_center_id, f.label AS feeCenter, count(pv.uuid) AS numberOfCases, p.id, p.name
+        FROM patient_visit AS pv
+        JOIN patient_visit_service AS pvs ON pvs.patient_visit_uuid = pv.uuid
+        JOIN service_fee_center AS sfc ON sfc.service_id = pvs.service_id
+        JOIN fee_center AS f ON f.id = sfc.fee_center_id
+        JOIN project AS p ON p.id = f.project_id
+        WHERE DATE(pv.start_date) >= DATE(?) AND DATE(pv.start_date) <= DATE(?)
+        GROUP BY f.project_id;
+      `;
+    } else {
+
+      // SELECT sfc.fee_center_id, f.label AS feeCenter, count(pv.uuid) AS numberOfCases, p.id, p.name
+      // FROM patient_visit AS pv
+      // JOIN patient_visit_service AS pvs ON pvs.patient_visit_uuid = pv.uuid
+      // JOIN service_fee_center AS sfc ON sfc.service_id = pvs.service_id
+      // JOIN fee_center AS f ON f.id = sfc.fee_center_id
+      // JOIN project AS p ON p.id = f.project_id
+      // WHERE DATE(pv.start_date) >= DATE('2018-01-01') AND DATE(pv.start_date) <= DATE('2018-12-31');
+
+    //   SELECT sfc.fee_center_id, s.name, COUNT(s.id) AS numberCases, f.label AS feeCenter, p.id, p.name
+    //   FROM patient_visit AS pv
+    //   JOIN patient_visit_service AS pvs ON pvs.patient_visit_uuid = pv.uuid
+    //   JOIN service_fee_center AS sfc ON sfc.service_id = pvs.service_id
+    //   JOIN fee_center AS f ON f.id = sfc.fee_center_id
+    //   JOIN project AS p ON p.id = f.project_id
+    //   JOIN service AS s ON s.id = sfc.service_id
+    //   WHERE DATE(pv.start_date) >= DATE('2018-01-01') AND DATE(pv.start_date) <= DATE('2018-12-31')
+		// GROUP BY sfc.service_id;
+      
+
+      getEncounters = `
+        SELECT SUM(hi.total_hospitalized_patient + hi.total_external_patient) AS numberCase
+        FROM indicator AS i
+        JOIN hospitalization_indicator AS hi ON hi.indicator_uuid = i.uuid
+        JOIN period AS p ON p.id = i.period_id
+        WHERE DATE(p.start_date) >= DATE(?) AND DATE(p.end_date) <= DATE(?)`;
+    }
+
+    dbPromises = [
+      db.exec(getBreakEvenReference),
+      db.exec(getEncounters, [params.fiscalYearStart, params.end_date]),
+      AccountReference.computeAllAccountReference(params.period_id, BREAK_EVEN_ACCOUNT_REFERENCE_TYPE),
+    ];
+  } else {
+    const getBreakEvenReference = `
+      SELECT br.id, br.label, br.is_cost, br.is_variable, br.is_turnover, br.account_reference_id,
+      ar.description AS desc_ref, ar.abbr, ari.account_id, GROUP_CONCAT(a.number SEPARATOR ', ') AS accounts_numbers
+      FROM break_even_reference AS br
+      JOIN account_reference AS ar ON ar.id = br.account_reference_id
+      JOIN account_reference_item AS ari ON ari.account_reference_id = ar.id
+      JOIN account AS a ON a.id = ari.account_id
+      GROUP BY br.id
+      ORDER BY br.is_cost DESC, br.label ASC ;
+    `;
+
+    if (params.type) {
+      getEncounters = `
+        SELECT count(pv.uuid) AS numberCase
+        FROM patient_visit AS pv
+        WHERE DATE(pv.start_date) >= DATE(?) AND DATE(pv.start_date) <= DATE(?)
+      `;
+    } else {
+      getEncounters = `
+        SELECT SUM(hi.total_hospitalized_patient + hi.total_external_patient) AS numberCase
+        FROM indicator AS i
+        JOIN hospitalization_indicator AS hi ON hi.indicator_uuid = i.uuid
+        JOIN period AS p ON p.id = i.period_id
+        WHERE DATE(p.start_date) >= DATE(?) AND DATE(p.end_date) <= DATE(?)`;
+    }
+
+    dbPromises = [
+      db.exec(getBreakEvenReference),
+      db.exec(getEncounters, [params.fiscalYearStart, params.end_date]),
+      AccountReference.computeAllAccountReference(params.period_id, BREAK_EVEN_ACCOUNT_REFERENCE_TYPE),
+    ];
+  }
 
   q.all(dbPromises)
     .spread((breakEvenReference, encounters, accountReferences) => {
