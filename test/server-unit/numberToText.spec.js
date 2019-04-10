@@ -4,16 +4,16 @@ const en = require('../../client/src/i18n/en/numbers.json');
 const fr = require('../../client/src/i18n/fr/numbers.json');
 const util = require('../../server/lib/util');
 
-const loadDictionary = util.loadDictionary;
+const { loadDictionary } = util;
 
 describe('NumberToText convert number to text', () => {
 
-   // use local dictionary
-    before(() => {
-     util.loadDictionary = lang => lang === 'fr' ? fr : en;
-    });
+  // use local dictionary
+  before(() => {
+    util.loadDictionary = lang => (lang === 'fr' ? fr : en);
+  });
 
-  
+
   // mock translation dictionaries
   const dictionaries = { en, fr };
 
@@ -63,9 +63,9 @@ describe('NumberToText convert number to text', () => {
     expect(convertedNumber).to.be.equal(expected);
   });
 
-  it(`#Test when a null number is passed, undefied will be used as default value'.`, () => {
+  it(`#Test when a null number is passed, 0 will be used as default value'.`, () => {
     const input = null;
-    const expected = `undefined ${currencies.fr.x}`;
+    const expected = `Zéro ${currencies.fr.x}`;
     const convertedNumber = numberToText.convert(input, 'fr', currencies.fr.x, dictionaries.fr);
 
     expect(convertedNumber).to.be.equal(expected);
@@ -73,5 +73,5 @@ describe('NumberToText convert number to text', () => {
 
   after(() => {
     util.loadDictionary = loadDictionary;
-   });
+  });
 });
