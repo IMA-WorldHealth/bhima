@@ -43,6 +43,8 @@
               {{/each}}
               <td class="text-right">{{ row.Total }}</td>
             </tr>
+          {{else}}
+            {{> emptyTable columns=3}}
           {{/each}}
           <tr>
             {{#each totals as |value key|}}
