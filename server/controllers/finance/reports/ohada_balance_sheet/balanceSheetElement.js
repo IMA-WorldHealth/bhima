@@ -69,7 +69,6 @@ function balanceSheetLiabilityTable() {
     { ref : 'DI', is_title : 0, note : 7 },
     { ref : 'DJ', is_title : 0, note : 17 },
     { ref : 'DK', is_title : 0, note : 18 },
-    { ref : 'DL', is_title : 0, note : 19 },
     { ref : 'DM', is_title : 0, note : 19 },
     { ref : 'DN', is_title : 0 },
     { ref : 'DP', is_title : 1 },
