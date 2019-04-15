@@ -154,6 +154,9 @@ function report(req, res, next) {
       };
       const dataConfigured = setting.configuration(config);
 
+      console.log('AAAAAAAAAAAAAaaaaaaaaa');
+      console.log(dataConfigured);
+
       _.merge(data, dataConfigured);
       return reporting.render(data);
     })
