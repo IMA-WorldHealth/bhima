@@ -217,7 +217,7 @@ function document(req, res, next) {
         }
 
         if (item.ref === 'DP') {
-          list = ['DH', 'DI', 'DJ', 'DK', 'DL', 'DM', 'DN'];
+          list = ['DH', 'DI', 'DJ', 'DK', 'DM', 'DN'];
           _.extend(item, aggregateReferences(list, currentReferences, previousReferences));
         }
 
@@ -228,7 +228,7 @@ function document(req, res, next) {
 
         if (item.ref === 'DZ') {
           list = ['CA', 'CB', 'CD', 'CE', 'CF', 'CH', 'CI', 'CK', 'CG', 'CL', 'CM', 'DA', 'DB', 'DC', 'DD']
-            .concat(['DH', 'DI', 'DJ', 'DK', 'DL', 'DM', 'DN'])
+            .concat(['DH', 'DI', 'DJ', 'DK', 'DM', 'DN'])
             .concat(['DQ', 'DR', 'DS']);
           _.extend(item, aggregateReferences(list, currentReferences, previousReferences));
         }
