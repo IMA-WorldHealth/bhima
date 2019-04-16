@@ -38,6 +38,17 @@
                 <span translate>TABLE.COLUMNS.BREAK_EVEN.BREAK_EVEN_PROJECT</span>
               </label>
             </div>
+            
+            <div ng-if="ReportConfigCtrl.reportDetails.breakEvenProject" class="checkbox">
+              <hr>
+              <label style="margin-left: 2.5%;">
+                <input type="checkbox" ng-model="ReportConfigCtrl.reportDetails.includeManual" ng-true-value="1" ng-false-value="0">
+                <strong><em>
+                  <span translate>TABLE.COLUMNS.INCLUDE_MANUAL_DISTRIBUTIONS</span>
+                </em></strong>
+              </label>
+            </div>
+
             <hr>
             <!-- type -->
             <div class="panel-body" ng-class="{'has-error' : ConfigForm.$submitted && ConfigForm.type.$invalid }">

@@ -137,14 +137,6 @@ function configuration(data) {
     aux.ratio = ratio;
   });
   configured.principal.forEach(pr => {
-    // Set a number of case By Fee Center
-    pr.numberOfCases = 0;
-    data.encounters.forEach(encounter => {
-      if (pr.id === encounter.fee_center_id) {
-        pr.numberOfCases = encounter.numberOfCases;
-      }
-    });
-
     pr.balanceVariableCost = 0;
     pr.balanceFixedCost = 0;
     pr.balanceTurnover = 0;
@@ -242,4 +234,49 @@ function configuration(data) {
 
   return configured;
 }
+
+function breakEvenCalcul(project) {
+  const breakEven = {};
+
+  breakEven.totalCost = project.balanceVariableCost + project.balanceFixedCost;
+  breakEven.totalProduct = project.balanceTurnover + project.balanceOtherRevenue;
+  breakEven.marginVariableLoads = project.balanceTurnover - project.balanceVariableCost;
+  breakEven.calculateBreakEven = (project.marginVariableLoads > 0) ? 1 : 0;
+  breakEven.cantCalculateBreakEven = (project.marginVariableLoads <= 0) ? 1 : 0;
+  breakEven.resultsTurnOver = breakEven.marginVariableLoads - project.balanceFixedCost;
+  breakEven.ratioMarginVariableLoads = project.balanceTurnover
+    ? breakEven.marginVariableLoads / project.balanceTurnover : 0;
+  // BreakEven Value
+  breakEven.breakEvenValue = breakEven.ratioMarginVariableLoads
+    ? project.balanceFixedCost / breakEven.ratioMarginVariableLoads : 0;
+  // Break Even Point By Days
+  breakEven.breakEvenPoint = project.balanceTurnover
+    ? breakEven.breakEvenValue / (project.balanceTurnover / 360) : 0;
+  breakEven.breakEvenPoint = parseInt(breakEven.breakEvenPoint, 10);
+  // Break Even Point By Cases
+  breakEven.breakEventPointByCase = project.balanceTurnover
+    ? breakEven.breakEvenValue / (project.balanceTurnover / project.numberOfCases) : 0;
+  breakEven.breakEventPointByCase = parseInt(breakEven.breakEventPointByCase, 10);
+  // Margin Variable load for All Products
+  breakEven.marginVariableLoadsP = breakEven.totalProduct - project.balanceVariableCost;
+  breakEven.calculateBreakEvenP = (breakEven.marginVariableLoadsP > 0) ? 1 : 0;
+  breakEven.cantCalculateBreakEvenP = (breakEven.marginVariableLoadsP <= 0) ? 1 : 0;
+  // Results TurnOver Products
+  breakEven.resultsTurnOverP = breakEven.marginVariableLoadsP - project.balanceFixedCost;
+  breakEven.ratioMarginVariableLoadsP = breakEven.totalProduct
+    ? breakEven.marginVariableLoadsP / breakEven.totalProduct : 0;
+  breakEven.breakEvenValueP = breakEven.ratioMarginVariableLoadsP
+    ? project.balanceFixedCost / breakEven.ratioMarginVariableLoadsP : 0;
+  // Break Even Point By Days for All Products
+  breakEven.breakEvenPointP = breakEven.totalProduct
+    ? breakEven.breakEvenValueP / (breakEven.totalProduct / 360) : 0;
+  breakEven.breakEvenPointP = parseInt(breakEven.breakEvenPointP, 10);
+  // Break Even Point By Cases for All Products
+  breakEven.breakEvenPointCaseP = breakEven.totalProduct
+    ? breakEven.breakEvenValueP / (breakEven.totalProduct / project.numberOfCases) : 0;
+  breakEven.breakEvenPointCaseP = parseInt(breakEven.breakEvenPointCaseP, 10);
+  return breakEven;
+}
+
 exports.configuration = configuration;
+exports.breakEvenCalcul = breakEvenCalcul;
