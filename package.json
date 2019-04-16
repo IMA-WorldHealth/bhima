@@ -95,7 +95,7 @@
     "q": "~1.5.1",
     "snyk": "^1.126.0",
     "stream-to-promise": "^2.2.0",
-    "tempy": "^0.2.1",
+    "tempy": "^0.3.0",
     "typeface-open-sans": "^0.0.54",
     "ui-select": "0.17.1",
     "use-strict": "^1.0.1",
