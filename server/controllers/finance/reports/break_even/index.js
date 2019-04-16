@@ -209,10 +209,6 @@ function report(req, res, next) {
           projects,
         };
         _.merge(data, dataProjects);
-
-        console.log('DAAAAAAaaaaaaaa');
-        console.log(data);
-
         return reporting.render(data);
       })
       .then(result => {

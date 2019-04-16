@@ -241,8 +241,8 @@ function breakEvenCalcul(project) {
   breakEven.totalCost = project.balanceVariableCost + project.balanceFixedCost;
   breakEven.totalProduct = project.balanceTurnover + project.balanceOtherRevenue;
   breakEven.marginVariableLoads = project.balanceTurnover - project.balanceVariableCost;
-  breakEven.calculateBreakEven = (project.marginVariableLoads > 0) ? 1 : 0;
-  breakEven.cantCalculateBreakEven = (project.marginVariableLoads <= 0) ? 1 : 0;
+  breakEven.calculateBreakEven = (breakEven.marginVariableLoads > 0) ? 1 : 0;
+  breakEven.cantCalculateBreakEven = (breakEven.marginVariableLoads <= 0) ? 1 : 0;
   breakEven.resultsTurnOver = breakEven.marginVariableLoads - project.balanceFixedCost;
   breakEven.ratioMarginVariableLoads = project.balanceTurnover
     ? breakEven.marginVariableLoads / project.balanceTurnover : 0;
