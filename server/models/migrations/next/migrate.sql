@@ -276,3 +276,8 @@ INSERT INTO `unit` VALUES
 (238, 'Indicators report', 'TREE.INDICATORS_REPORT', 'Rapport sur les indicateurs', 144,'/modules/reports/indicatorsReport', '/reports/indicatorsReport');
 INSERT INTO `report` (`id`, `report_key`, `title_key`) 
 VALUES  (31, 'indicatorsReport', 'TREE.INDICATORS_REPORT');
+
+-- jeremielodi
+-- add posted columns
+ALTER TABLE `invoice` ADD COLUMN `posted` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0;
+ALTER TABLE `cash` ADD COLUMN `posted` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0;
