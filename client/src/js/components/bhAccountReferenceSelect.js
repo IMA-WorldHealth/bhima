@@ -31,12 +31,14 @@ function AccountReferenceSelectController(AccountReferences, Notify) {
     if (!angular.isDefined($ctrl.required)) {
       $ctrl.required = true;
     }
-
+    $ctrl.accountLoading = true;
     AccountReferences.read()
       .then(accountReferences => {
         $ctrl.accountReferences = accountReferences;
       })
-      .catch(Notify.handleError);
+      .catch(Notify.handleError).finaly(() => {
+        $ctrl.accountLoading = false;
+      });
   };
 
   // fires the onSelectCallback bound to the component boundary
