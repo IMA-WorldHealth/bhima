@@ -1,3 +1,33 @@
+/**
+ * configuration
+ *
+ * @method configuration
+ *
+ * @description
+ *
+ * The configuration function has only one parameter data,
+ * data is a large object that has the following elements:
+ *
+ *  feeCenter,
+ *  references,
+ *  accountReferences,
+ *  dataDistributions,
+ *  distributionKey,
+ *  includeManual,
+ * The fees Center, the account references, the values of the account references,
+ * the different types of distribution key of the auxiliary centers to the main centers,
+ * as well as the option to include manually made reparations,
+ * This function allows to link expense centers to account references, then,
+ * if the option to include manual reparations is enabled, the data contained in dataDistrutions
+ * was used to add this data to the main centers, and the manual undistributed data was it via
+ * the distribution keys The different references of the accounts are categorized
+ * for the charges there are the fixed and variable charges and for the profits
+ * there are the turnover and the other products,
+ * The configuration function returns each main center with the different
+ * values for each main center is linked to the projects
+ *
+ */
+
 function configuration(data) {
   const configured = {};
   // If the manual repartition is included, the automatic repair is done only after
