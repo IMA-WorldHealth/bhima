@@ -276,3 +276,6 @@ INSERT INTO `unit` VALUES
 (238, 'Indicators report', 'TREE.INDICATORS_REPORT', 'Rapport sur les indicateurs', 144,'/modules/reports/indicatorsReport', '/reports/indicatorsReport');
 INSERT INTO `report` (`id`, `report_key`, `title_key`) 
 VALUES  (31, 'indicatorsReport', 'TREE.INDICATORS_REPORT');
+
+-- @lomamech 2019-04-09 Add Property project_id on fee_center table
+ALTER TABLE `fee_center` ADD COLUMN `project_id` SMALLINT(5) UNSIGNED NULL;

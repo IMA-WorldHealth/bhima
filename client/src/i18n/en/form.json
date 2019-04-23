@@ -133,7 +133,7 @@
         "INFO": {
             "ASSIGNED_COST_CENTER" : "Assigned cost references",
             "ASSIGNED_PROFIT_CENTER" : "Assigned profit references",
-            "ASSIGNED_PROJECTS" : "Assigned to projects",
+            "ASSIGNED_PROJECT" : "Assigned to project",
             "VISIT_RECORDED_SUCCESSFULLY":"Visit Successfully Recorded",
             "VISIT_RECORDED_UNSUCCESSFULLY":"Visit Not Recorded",
             "DISCHARGE_RECORDED_SUCCESSFULLY":"Discharge Successfully Recorded",

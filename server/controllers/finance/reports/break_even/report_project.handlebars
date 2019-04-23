@@ -1,6 +1,6 @@
 <!doctype html>
 <html>
-  {{> head title="TREE.BREAK_EVEN_FEE_CENTER_REPORT"}}
+  {{> head title="TREE.BREAK_EVEN_PROJECT_REPORT"}}
   <body>
   <div class="container">
     {{> header}}
@@ -10,7 +10,7 @@
       <div class="col-xs-12">
         <!-- page title  -->
         <h3 class="text-center text-uppercase">
-          <strong>{{translate 'TREE.BREAK_EVEN_FEE_CENTER_REPORT'}}</strong>
+          <strong>{{translate 'TREE.BREAK_EVEN_PROJECT_REPORT'}}</strong>
         </h3>
 
         <h4 class="text-center">
@@ -18,14 +18,14 @@
            -
           <strong class="text-capitalize">{{date period.end_date "MMMM YYYY"}}</strong>
         </h4>
-        {{#each principalSelected}}
+        {{#each projects}}
           <table style="page-break-after: always; width: 80%; margin-right: auto; margin-left: auto" class="table table-striped table-condensed table-report table-bordered">
             <thead>
               <tr style="background-color:#dcdcdc"> 
                 <th colspan="3" class="text-uppercase">
                   <h5>
                     <strong>
-                      {{ label }}
+                      {{ project_name }}
                     </strong>
                   </h5>
                 </th> 
@@ -69,7 +69,7 @@
                 </td>
                 <td class="text-right" style="width: 20%; font-size: 15px">
                   <strong>
-                    {{debcred totalCost ../metadata.enterprise.currency_id}}
+                    {{debcred data.totalCost ../metadata.enterprise.currency_id}}
                   </strong>
                 </td>
               </tr>
@@ -104,14 +104,14 @@
                 </td>
                 <td class="text-right" style="width: 20%; font-size: 15px">
                   <strong>
-                    {{debcred totalProduct ../metadata.enterprise.currency_id}}
+                    {{debcred data.totalProduct ../metadata.enterprise.currency_id}}
                   </strong>                  
                 </td>
               </tr> 
               <tr colspan="3">
                 <td style="background-color:#dcdcdc"></td>
               </tr>
-              {{#if calculateBreakEven}}
+              {{#if data.calculateBreakEven}}
               <tr>
                 <th style="width: 40%; font-size: 15px; text-align: center;" rowspan="7" scope="row">
                   <strong>
@@ -124,7 +124,7 @@
                   </i>              
                 </td>
                 <td class="text-right" style="width: 20%; font-size: 15px">
-                  {{debcred marginVariableLoads metadata.enterprise.currency_id}}
+                  {{debcred data.marginVariableLoads metadata.enterprise.currency_id}}
                 </td>
               </tr>
               <tr>
@@ -135,7 +135,7 @@
                 </td>
                 <td class="text-right" style="width: 20%; font-size: 15px">
                   <strong>
-                    {{debcred resultsTurnOver metadata.enterprise.currency_id}}
+                    {{debcred data.resultsTurnOver metadata.enterprise.currency_id}}
                   </strong>                  
                 </td>
               </tr>
@@ -147,7 +147,7 @@
                 </td>
                 <td class="text-right" style="width: 20%; font-size: 15px">
                   <strong>
-                    {{debcred ratioMarginVariableLoads ../metadata.enterprise.currency_id}}
+                    {{debcred data.ratioMarginVariableLoads ../metadata.enterprise.currency_id}}
                   </strong>                  
                 </td>
               </tr>
@@ -159,7 +159,7 @@
                 </td>
                 <td class="text-right" style="width: 20%; font-size: 15px">
                   <strong>
-                    {{debcred breakEvenValue ../metadata.enterprise.currency_id}}
+                    {{debcred data.breakEvenValue ../metadata.enterprise.currency_id}}
                   </strong>
                 </td>
               </tr>
@@ -171,7 +171,7 @@
                 </td>
                 <td class="text-right" style="width: 20%; font-size: 15px">
                   <em>
-                    {{ breakEvenPoint }} {{translate "TABLE.COLUMNS.DAYS"}}
+                    {{ data.breakEvenPoint }} {{translate "TABLE.COLUMNS.DAYS"}}
                   </em>
                 </td>
               </tr>
@@ -183,13 +183,13 @@
                 </td>
                 <td class="text-right" style="width: 20%; font-size: 15px">
                   <strong>
-                    {{ breakEventPointByCase }} {{translate "TABLE.COLUMNS.CASES"}}
+                    {{ data.breakEventPointByCase }} {{translate "TABLE.COLUMNS.CASES"}}
                   </strong>
                 </td>
               </tr>
               {{/if}}
               <!-- BREAK_EVEN DIFFERENTIAL -->
-              {{#if calculateBreakEvenP}}
+              {{#if data.calculateBreakEvenP}}
               <tr colspan="3">
                 <td style="background-color:#dcdcdc"></td>
               </tr>
@@ -205,7 +205,7 @@
                   </i>              
                 </td>
                 <td class="text-right" style="width: 20%; font-size: 15px">
-                  {{debcred marginVariableLoadsP ../metadata.enterprise.currency_id}}
+                  {{debcred data.marginVariableLoadsP ../metadata.enterprise.currency_id}}
                 </td>
               </tr>
               <tr>
@@ -216,7 +216,7 @@
                 </td>
                 <td class="text-right" style="width: 20%; font-size: 15px">
                   <strong>
-                    {{debcred resultsTurnOverP ../metadata.enterprise.currency_id}}
+                    {{debcred data.resultsTurnOverP ../metadata.enterprise.currency_id}}
                   </strong>                  
                 </td>
               </tr>
@@ -228,7 +228,7 @@
                 </td>
                 <td class="text-right" style="width: 20%; font-size: 15px">
                   <strong>
-                    {{debcred ratioMarginVariableLoadsP ../metadata.enterprise.currency_id}}
+                    {{debcred data.ratioMarginVariableLoadsP ../metadata.enterprise.currency_id}}
                   </strong>                  
                 </td>
               </tr>
@@ -240,7 +240,7 @@
                 </td>
                 <td class="text-right" style="width: 20%; font-size: 15px">
                   <strong>
-                    {{debcred breakEvenValueP ../metadata.enterprise.currency_id}}
+                    {{debcred data.breakEvenValueP ../metadata.enterprise.currency_id}}
                   </strong>
                 </td>
               </tr>
@@ -252,7 +252,7 @@
                 </td>
                 <td class="text-right" style="width: 20%; font-size: 15px">
                   <em>
-                    {{ breakEvenPointP }} {{translate "TABLE.COLUMNS.DAYS"}}
+                    {{ data.breakEvenPointP }} {{translate "TABLE.COLUMNS.DAYS"}}
                   </em>
                 </td>
               </tr>
@@ -264,14 +264,14 @@
                 </td>
                 <td class="text-right" style="width: 20%; font-size: 15px">
                   <strong>
-                    {{ breakEvenPointCaseP }} {{translate "TABLE.COLUMNS.CASES"}}
+                    {{ data.breakEvenPointCaseP }} {{translate "TABLE.COLUMNS.CASES"}}
                   </strong>
                 </td>
               </tr>
               {{/if}}
             </tbody>
             <tfoot>
-              {{#if cantCalculateBreakEven}}
+              {{#if data.cantCalculateBreakEven}}
               <tr style="width: 40%; font-size: 15px; text-align: center;" colspan="3" scope="row">
                 <td>
                   <strong>
@@ -286,7 +286,7 @@
               </tr>
               {{/if}}
 
-              {{#if cantCalculateBreakEvenP}}
+              {{#if data.cantCalculateBreakEvenP}}
               <tr style="width: 40%; font-size: 15px; text-align: center;" colspan="3" scope="row">
                 <td>
                   <strong>
@@ -299,14 +299,13 @@
                   </strong>
                 </td>
               </tr>
-              {{/if}}              
+              {{/if}}          
             </tfoot>
           </table>
           <br>
           <br>
           <br>
         {{/each}}
-
         <table style="width: 80%; margin-right: auto; margin-left: auto; font-size: 15px; border:none;">
           <tr>
             <td style="border:none;">

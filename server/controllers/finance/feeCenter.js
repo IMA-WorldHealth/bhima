@@ -13,7 +13,7 @@ const FilterParser = require('../../lib/filter');
 function lookupFeeCenter(id) {
 
   const sqlFeeCenter = `
-    SELECT id, label, is_principal FROM fee_center WHERE id = ?`;
+    SELECT id, label, is_principal, project_id FROM fee_center WHERE id = ?`;
 
   const sqlReferenceFeeCenter = `
     SELECT id, fee_center_id, account_reference_id, is_cost, is_variable, is_turnover
@@ -46,13 +46,14 @@ function lookupFeeCenter(id) {
 function list(req, res, next) {
   const filters = new FilterParser(req.query, { tableAlias : 'f' });
   const sql = `
-    SELECT f.id, f.label, f.is_principal, GROUP_CONCAT(' ', LOWER(ar.description)) AS abbrs, 
-    GROUP_CONCAT(' ', s.name) serviceNames
+    SELECT f.id, f.label, f.is_principal, f.project_id, GROUP_CONCAT(' ', LOWER(ar.description)) AS abbrs, 
+    GROUP_CONCAT(' ', s.name) serviceNames, p.name AS projectName
     FROM fee_center AS f
     LEFT JOIN reference_fee_center AS r ON r.fee_center_id = f.id
     LEFT JOIN account_reference AS ar ON ar.id = r.account_reference_id
     LEFT JOIN service_fee_center AS sf ON sf.fee_center_id = f.id
-    LEFT JOIN service AS s ON s.id = sf.service_id`;
+    LEFT JOIN service AS s ON s.id = sf.service_id
+    LEFT JOIN project AS p ON p.id = f.project_id`;
 
   filters.equals('is_principal');
   filters.setGroup('GROUP BY f.id');
@@ -94,6 +95,7 @@ function create(req, res, next) {
   const feeCenterData = {
     label : data.label,
     is_principal : data.is_principal,
+    project_id : data.project_id,
   };
 
   db.exec(sql, [feeCenterData])
@@ -147,6 +149,7 @@ function update(req, res, next) {
   const feeCenterData = {
     label : data.label,
     is_principal : data.is_principal,
+    project_id : data.project_id,
   };
 
   const sql = `UPDATE fee_center SET ? WHERE id = ?;`;
