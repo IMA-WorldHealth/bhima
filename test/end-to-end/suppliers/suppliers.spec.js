@@ -3,6 +3,7 @@ const chai = require('chai');
 const FU = require('../shared/FormUtils');
 const helpers = require('../shared/helpers');
 const components = require('../shared/components');
+const GridRow = require('../shared/GridRow');
 
 const expect = chai.expect;
 helpers.configure(chai);
@@ -10,6 +11,7 @@ helpers.configure(chai);
 
 describe('Suppliers', () => {
   const path = '#!/suppliers';
+
   before(() => helpers.navigate(path));
 
   const supplier = {
@@ -22,39 +24,38 @@ describe('Suppliers', () => {
     phone        : '025495950001',
   };
 
-  const supplierRank = 1;
-
   it('creates a new supplier', () => {
     FU.buttons.create();
 
-    FU.input('SupplierCtrl.supplier.display_name', supplier.display_name);
+    components.inpuText.set('display_name', supplier.display_name);
 
-    element(by.model('SupplierCtrl.supplier.international')).click();
+    element(by.model('ModalCtrl.supplier.international')).click();
 
     // select an Creditor
-    FU.select('SupplierCtrl.supplier.creditor_group_uuid', 'Regideso');
+    FU.select('ModalCtrl.supplier.creditor_group_uuid', 'Regideso');
 
-    FU.input('SupplierCtrl.supplier.phone', supplier.phone);
-    FU.input('SupplierCtrl.supplier.email', supplier.email);
-    FU.input('SupplierCtrl.supplier.address_1', supplier.address_1);
-    FU.input('SupplierCtrl.supplier.address_2', supplier.address_2);
-    FU.input('SupplierCtrl.supplier.fax', supplier.fax);
-    FU.input('SupplierCtrl.supplier.note', supplier.note);
+    components.inpuText.set('phone', supplier.phone);
+    components.inpuText.set('email', supplier.email);
+    components.inpuText.set('address_1', supplier.address_1);
+    components.inpuText.set('address_2', supplier.address_2);
+    components.inpuText.set('fax', supplier.fax);
+    FU.input('ModalCtrl.supplier.note', supplier.note);
 
     // submit the page to the server
     FU.buttons.submit();
     components.notification.hasSuccess();
   });
 
-  it('edits an supplier', () => {
-    element(by.id(`supplier-upd-${supplierRank}`)).click();
+
+  it('edits a supplier', () => {
+    editSupplier(supplier.display_name);
 
     // modify the supplier display_name
-    FU.input('SupplierCtrl.supplier.display_name', 'Updated');
+    components.inpuText.set('display_name', 'Updated');
 
     // modify the supplier note
-    FU.input('SupplierCtrl.supplier.note', ' IMCK Tshikaji update for the test E2E');
-    FU.input('SupplierCtrl.supplier.address_1', supplier.address_1);
+    FU.input('ModalCtrl.supplier.note', ' IMCK Tshikaji update for the test E2E');
+    components.inpuText.set('address_1', supplier.address_1);
 
     FU.buttons.submit();
     components.notification.hasSuccess();
@@ -68,18 +69,32 @@ describe('Suppliers', () => {
     expect(helpers.getCurrentPath()).to.eventually.equal(path);
 
     // the following fields should be required
-    FU.validation.error('SupplierCtrl.supplier.display_name');
-    FU.validation.error('SupplierCtrl.supplier.creditor_group_uuid');
-    FU.validation.error('SupplierCtrl.supplier.address_1');
+    components.inpuText.validationError('display_name');
+    FU.validation.error('ModalCtrl.supplier.creditor_group_uuid');
+    components.inpuText.validationError('address_1');
 
     // the following fields are not required
-    FU.validation.ok('SupplierCtrl.supplier.phone');
-    FU.validation.ok('SupplierCtrl.supplier.email');
-    FU.validation.ok('SupplierCtrl.supplier.address_2');
-    FU.validation.ok('SupplierCtrl.supplier.fax');
-    FU.validation.ok('SupplierCtrl.supplier.note');
+    components.inpuText.validationError('phone');
+    components.inpuText.validationError('email');
 
+    // optional
+    components.inpuText.validationOk('address_2');
+    components.inpuText.validationOk('fax');
+    FU.validation.ok('ModalCtrl.supplier.note');
+    FU.buttons.cancel();
     components.notification.hasDanger();
 
   });
+
+  function openDropdownMenu(label) {
+    const row = new GridRow(label);
+    row.dropdown().click();
+    return row;
+  }
+
+  function editSupplier(name) {
+    const row = openDropdownMenu(name);
+    row.edit().click();
+  }
+
 });

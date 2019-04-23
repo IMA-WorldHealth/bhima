@@ -605,6 +605,7 @@ exports.configure = function configure(app) {
   app.get('/suppliers/:uuid', suppliers.detail);
   app.post('/suppliers', suppliers.create);
   app.put('/suppliers/:uuid', suppliers.update);
+  app.delete('/suppliers/:uuid', suppliers.remove);
 
   // purchase
   app.post('/purchases', purchases.create);
