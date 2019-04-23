@@ -12,7 +12,7 @@ angular.module('bhima.components')
       autocomplete : '@?',
       type : '@?',
       onChange : '&',
-      id : '@?',
+      key : '@?',
       description : '@?',
       isCurrency : '<?',
     },
@@ -30,7 +30,7 @@ function InputTextController(Currencies, Session) {
   // fired at the beginning
   $ctrl.$onInit = () => {
     $ctrl.type = $ctrl.type || 'text';
-    $ctrl.id = $ctrl.id || 'inputText';
+    $ctrl.key = $ctrl.key || 'inputText';
     $ctrl.placeholder = $ctrl.placeholder || '';
     $ctrl.noLabel = $ctrl.noLabel || false;
     $ctrl.onChange = $ctrl.onChange || angular.noop;
@@ -42,7 +42,7 @@ function InputTextController(Currencies, Session) {
   };
 
   $ctrl.valueChange = () => {
-    $ctrl.onChange({ key : $ctrl.id, value : $ctrl.textValue });
+    $ctrl.onChange({ key : $ctrl.key, value : $ctrl.textValue });
   };
 
   /* @private loads a particular currency from the server */
