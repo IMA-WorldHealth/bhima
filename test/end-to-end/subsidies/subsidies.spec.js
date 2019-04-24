@@ -1,7 +1,6 @@
 const chai = require('chai');
 const helpers = require('../shared/helpers');
 
-const { expect } = chai;
 helpers.configure(chai);
 
 const FU = require('../shared/FormUtils');
@@ -50,10 +49,6 @@ describe('Subsidies', () => {
 
   it('blocks invalid form submission with relevant error classes', () => {
     FU.buttons.create();
-
-    // verify form has not been submitted
-    expect(helpers.getCurrentPath()).to.eventually.equal(path);
-
     FU.buttons.submit();
 
     // the following fields should be required
@@ -61,20 +56,19 @@ describe('Subsidies', () => {
     FU.validation.error('SubsidyModalCtrl.subsidy.value');
     // the following fields are not required
     FU.validation.ok('SubsidyModalCtrl.subsidy.description');
+    FU.buttons.cancel();
   });
 
   it('deletes a subsidy', () => {
-    const row = new GridRow('IMA SUBSIDY');
+    const row = new GridRow('Updated');
     row.dropdown().click();
     row.remove().click();
 
-    // click the "delete" button
-    FU.buttons.delete();
-
     // click the alert asking for permission
-    components.modalAction.confirm();
+    FU.buttons.submit();
 
     // make sure that the delete message appears
     components.notification.hasSuccess();
   });
+
 });
