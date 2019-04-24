@@ -4,100 +4,98 @@ angular.module('bhima.controllers')
 
 SubsidyController.$inject = [
   'SubsidyService', 'ModalService', 'util', 'NotifyService',
+  'uiGridConstants', '$state',
 ];
 
-function SubsidyController(Subsidy, ModalService, util, Notify) {
-  var vm = this;
-  vm.session = {};
-  vm.view = 'default';
+function SubsidyController(Subsidy, ModalService, util, Notify, uiGridConstants, $state) {
+  const vm = this;
 
   // bind methods
   vm.create = create;
-  vm.submit = submit;
   vm.update = update;
-  vm.del = del;
-  vm.cancel = cancel;
-  vm.onAccountSelect = onAccountSelect;
+  vm.remove = remove;
+  vm.toggleFilter = toggleFilter;
 
-  vm.length250 = 200;
-  vm.maxLength = util.maxTextLength;
+  // global variables
+  vm.gridApi = {};
+  vm.filterEnabled = false;
 
-  // fired on startup
-  function startup() {
-    // load Subsidies
-    refreshSubsidies();
+  // options for the UI grid
+  vm.gridOptions = {
+    appScopeProvider  : vm,
+    enableColumnMenus : false,
+    fastWatch         : true,
+    flatEntityAccess  : true,
+    enableSorting     : true,
+    onRegisterApi     : onRegisterApiFn,
+    columnDefs : [
+      {
+        field : 'label',
+        displayName : 'TABLE.COLUMNS.LABEL',
+        headerCellFilter : 'translate',
+      },
+      {
+        field : 'value',
+        displayName : 'TABLE.COLUMNS.VALUE',
+        headerCellFilter : 'translate',
+      },
+      {
+        field : 'number',
+        displayName : 'TABLE.COLUMNS.ACCOUNT',
+        headerCellFilter : 'translate',
+      },
+      {
+        field : 'action',
+        width : 80,
+        displayName : '',
+        cellTemplate : '/modules/subsidies/templates/action.tmpl.html',
+        enableSorting : false,
+        enableFiltering : false,
+      },
+    ],
+  };
+
+  function onRegisterApiFn(gridApi) {
+    vm.gridApi = gridApi;
   }
 
-  function onAccountSelect(account) {
-    vm.subsidy.account_id = account.id;
-  }
-
-  function cancel() {
-    vm.view = 'default';
+  function toggleFilter() {
+    vm.filterEnabled = !vm.filterEnabled;
+    vm.gridOptions.enableFiltering = vm.filterEnabled;
+    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
   function create() {
-    vm.view = 'create';
-    vm.subsidy = {};
+    $state.go('subsidies.create');
   }
 
-  // switch to update mode
-  // data is an object that contains all the information of a subsidy
-  function update(data) {
-    vm.view = 'update';
-    vm.subsidy = data;
+  function update(subsidy) {
+    $state.go('subsidies.edit', { subsidy });
   }
 
   // refresh the displayed Subsidies
   function refreshSubsidies() {
     return Subsidy.read(null, { detailed : 1 })
-      .then(function (data) {
-        vm.subsidies = data;
+      .then(data => {
+        vm.gridOptions.data = data;
       });
   }
 
-  // form submission
-  function submit(invalid) {
-    if (invalid) { return; }
-
-    var promise;
-    var creation = (vm.view === 'create');
-    var subsidy = angular.copy(vm.subsidy);
-
-    promise = (creation) ?
-      Subsidy.create(subsidy) :
-      Subsidy.update(subsidy.id, subsidy);
-
-    promise
-      .then(function (response) {
-        return refreshSubsidies();
-      })
-      .then(function () {
-        vm.view = creation ? 'create_success' : 'update_success';
-      })
-      .catch(Notify.handleError);
-  }
-
   // switch to delete warning mode
-  function del(subsidy) {
+  function remove(subsidy) {
     ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
-      .then(function (bool){
-         // if the user clicked cancel, reset the view and return
-         if (!bool) {
-            vm.view = 'default';
-            return;
-         }
+      .then((bool) => {
+        // if the user clicked cancel, reset the view and return
+        if (!bool) { return; }
 
-        // if we get there, the user wants to delete a subsidy
-        vm.view = 'delete_confirm';
         Subsidy.delete(subsidy.id)
-          .then(function () {
-             vm.view = 'delete_success';
-             return refreshSubsidies();
+          .then(() => {
+            refreshSubsidies();
+            Notify.success('SUBSIDY.DELETED');
           })
           .catch(Notify.handleError);
       });
   }
 
-  startup();
+  refreshSubsidies();
 }
