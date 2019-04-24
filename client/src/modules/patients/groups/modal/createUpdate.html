@@ -1,0 +1,90 @@
+<form name="patientGroupForm" bh-submit="ModalCtrl.submit(patientGroupForm)" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li>
+        <span translate>PATIENT_GROUP.TITLE</span>
+
+        <label class="label label-warning text-uppercase" translate>
+          {{ModalCtrl.action}}
+        </label>
+      </li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+    <div class="row">
+        <div class="form-group" ng-class="{ 'has-error' : patientGroupForm.$submitted && patientGroupForm.name.$invalid }">
+              <label class="control-label" translate>
+                FORM.LABELS.NAME
+              </label>
+              <input class="form-control" name="name" autocomplete="off" ng-maxlength="ModalCtrl.length100" ng-model="ModalCtrl.patientGroup.name" required>
+              <div class="help-block" ng-messages="patientGroupForm.name.$error" ng-show="patientGroupForm.$submitted">
+                <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+              </div>
+            </div>
+
+            <div class="form-group" ng-class="{ 'has-error' : patientGroupForm.$submitted && patientGroupForm.priceList.$invalid }">
+              <label class="control-label" translate>
+                FORM.LABELS.PRICE_LIST
+              </label>
+              <select
+                class="form-control"
+                name="priceList"
+                ng-model="ModalCtrl.patientGroup.price_list_uuid"
+                ng-options="p.uuid as p.label for p in ModalCtrl.priceLists">
+                <option value="" disabled translate> FORM.SELECT.PRICE_LIST </option>
+              </select>
+              <div class="help-block" ng-messages="patientGroupForm.priceList.$error" ng-show="patientGroupForm.$submitted">
+                <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label" translate>
+                FORM.LABELS.INVOICING_FEES
+              </label>
+
+              <ui-select multiple ng-model="ModalCtrl.patientGroup.invoicingFees">
+              <ui-select-match>{{$item.label}}</ui-select-match>
+              <ui-select-choices repeat="fee.id as fee in ModalCtrl.invoicingFees | filter:$select.search">
+                  {{fee.label}}
+              </ui-select-choices>
+              </ui-select>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label" translate>
+                FORM.LABELS.SUBSIDIES
+              </label>
+
+              <ui-select multiple ng-model="ModalCtrl.patientGroup.subsidies">
+              <ui-select-match>{{$item.label}}</ui-select-match>
+              <ui-select-choices repeat="subsidy.id as subsidy in ModalCtrl.subsidies | filter:$select.search">
+                  {{subsidy.label}}
+              </ui-select-choices>
+              </ui-select>
+            </div>
+
+            <div class="form-group">
+              <label class="control-label" translate>
+                FORM.LABELS.NOTES
+              </label>
+              <textarea class="form-control" ng-maxlength="ModalCtrl.maxLength" name="note" ng-model="ModalCtrl.patientGroup.note"></textarea>
+            </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button
+      type="button"
+      data-method="cancel"
+      class="btn btn-default"
+      ng-click="ModalCtrl.close()"
+      translate>
+      FORM.BUTTONS.CANCEL
+    </button>
+
+    <bh-loading-button loading-state="patientGroupForm.$loading">
+    </bh-loading-button>
+  </div>
+</form>

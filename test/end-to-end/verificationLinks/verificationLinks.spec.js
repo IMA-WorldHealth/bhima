@@ -12,7 +12,8 @@ describe('Check Inter-Registry Links', () => {
 
   it('Checks the link between Patient Groups -> Patient Registry', async () => {
     await helpers.navigate('#!/patients/groups');
-    await element.all(by.css('[class="fa fa-list"]')).get(2).click();
+    const menu = await openDropdownMenu('Test Patient Group 2');
+    await menu.goToPatient().click();
     await GU.expectRowCount('patient-registry', 2);
   });
 
@@ -72,4 +73,10 @@ describe('Check Inter-Registry Links', () => {
     await GU.expectRowCount('voucher-grid', 1);
     await filters.resetFilters();
   });
+
+  async function openDropdownMenu(label) {
+    const row = new GridRow(label);
+    await row.dropdown().click();
+    return row;
+  }
 });
