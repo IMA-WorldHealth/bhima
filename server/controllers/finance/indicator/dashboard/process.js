@@ -264,7 +264,7 @@ function getStaffIndicators(dependencies, nbDays = 356, period) {
 
   const surgeryByDoctor = (
     dependencies.total_surgery_by_doctor
-  ) / dependencies.total_doctors / (totalDaysOfPeriods || 1);
+  ) / dependencies.total_doctors;
 
   const patientByDoctor = (
     dependencies.total_visit + dependencies.total_day_realized
@@ -329,7 +329,7 @@ function getStaffIndicators(dependencies, nbDays = 356, period) {
       value : surgeryByDoctor,
       dependencies : [
         { key : 'TOTAL_SURGERY_BY_DOCTOR', value : dependencies.total_surgery_by_doctor },
-        { key : 'NB_DAYS', value : totalDaysOfPeriods },
+        { key : 'TOTAL_MEDECINS', value : dependencies.total_doctors },
       ],
       period : period || undefined,
     },
