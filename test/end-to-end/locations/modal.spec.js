@@ -1,5 +1,4 @@
 /* global element, by */
-
 const FU = require('../shared/FormUtils');
 const helpers = require('../shared/helpers');
 const notification = require('../shared/components/notify');
@@ -15,7 +14,6 @@ describe('Locations (create modal)', () => {
   };
 
   const selector = '[data-location-modal]';
-  const link = '#origin-location-id [data-location-modal-open]';
 
   // switch to a certain view on the modal
   async function view(key) {
@@ -31,7 +29,8 @@ describe('Locations (create modal)', () => {
 
   // open the modal
   async function open() {
-    await element(by.css(link)).click();
+    const _root = element(by.id('origin-location-id'));
+    await _root.element(by.css('[data-location-modal-open]')).click();
   }
 
   // submit the modal
@@ -55,6 +54,7 @@ describe('Locations (create modal)', () => {
 
     // it should close the modal
     await FU.exists(by.css(selector), false);
+
   });
 
   it('registers a new province', async () => {

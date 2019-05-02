@@ -1,0 +1,60 @@
+<form name="sectorForm" bh-submit="ModalCtrl.submit(sectorForm)" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li>
+        <span translate>SECTOR.TITLE</span>
+
+        <label class="label label-warning text-uppercase" translate>
+          {{ModalCtrl.action}}
+        </label>
+      </li>
+    </ol>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-xs-12">
+      <div class="form-group" ng-class="{ 'has-error' : sectorForm.$submitted && sectorForm.country.$invalid }">
+        <label class="control-label" translate> FORM.LABELS.COUNTRY </label>
+        <select class="form-control" name="country" 
+          ng-model="ModalCtrl.sector.country_uuid" id="country"
+          ng-change="ModalCtrl.loadProvinces()"
+          ng-options="c.uuid as c.name for c in ModalCtrl.countries | orderBy:'name'" required>
+          <option value="" disabled translate> FORM.PLACEHOLDERS.COUNTRY </option>
+        </select>
+        <div class="help-block" ng-messages="sectorForm.country.$error" ng-show="sectorForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+
+      
+      <div class="form-group" ng-class="{ 'has-error' : sectorForm.$submitted && sectorForm.province.$invalid }">
+          <label class="control-label" translate> FORM.LABELS.PROVINCE </label>
+          <select class="form-control" name="province" ng-model="ModalCtrl.sector.province_uuid" id="country"
+            ng-options="c.uuid as c.name for c in ModalCtrl.provinces | orderBy:'name'" required>
+            <option value="" disabled translate> FORM.PLACEHOLDERS.PROVINCE </option>
+          </select>
+          <div class="help-block" ng-messages="sectorForm.province.$error" ng-show="sectorForm.$submitted">
+            <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+          </div>
+        </div>
+
+      <div class="form-group" ng-class="{ 'has-error' : sectorForm.$submitted && sectorForm.sector.$invalid }">
+        <label class="control-label" translate> FORM.LABELS.SECTOR </label>
+        <input type="text" placeholder="{{ 'FORM.PLACEHOLDERS.SECTOR' | translate }}" autocomplete="off"
+          ng-maxlength="ModalCtrl.provinceLength" class="form-control" name="sector"
+          ng-model="ModalCtrl.sector.name" required>
+        <div class="help-block" ng-messages="sectorForm.sector.$error" ng-show="sectorForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" data-method="cancel" class="btn btn-default" ng-click="ModalCtrl.close()" translate>
+        FORM.BUTTONS.CANCEL
+      </button>
+
+      <bh-loading-button loading-state="sectorForm.$loading">
+      </bh-loading-button>
+    </div>
+</form>

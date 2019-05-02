@@ -3,90 +3,96 @@ angular.module('bhima.controllers')
 
 CountryController.$inject = [
   'LocationService', 'util', 'NotifyService',
+  '$uibModal', 'ModalService', 'uiGridConstants',
 ];
 
-function CountryController(locationService, util, Notify) {
+function CountryController(locationService, util, Notify, $uibModal, Modal, uiGridConstants) {
   const vm = this;
   vm.session = {};
   vm.view = 'default';
 
   // bind methods
-  vm.create = create;
-  vm.submit = submit;
-  vm.update = update;
-  vm.cancel = cancel;
   vm.countryLength = util.length45;
 
   // fired on startup
   function startup() {
     // start up loading indicator
     vm.session.loading = true;
-
     // load Country
-    refreshCountrys();
-  }
-
-  function cancel() {
-    vm.view = 'default';
-  }
-
-  function create() {
-    vm.view = 'create';
-    vm.country = {};
+    refreshCountries();
   }
 
   vm.messages = {
     country : locationService.messages.country,
   };
 
-  /** load countries on startup */
-  locationService.countries()
-    .then((countries) => {
-
-      // bind the countries to the view for <select>ion
-      vm.countries = countries;
-
+  // refresh the displayed Countrys
+  function refreshCountries() {
+    return locationService.countries({ detailed : 1 }).then((countries) => {
+      vm.gridOptions.data = countries;
+      vm.session.loading = false;
       // make sure that we are showing the proper message to the client
       vm.messages.country = (countries.length > 0)
         ? locationService.messages.country
         : locationService.messages.empty;
+    }).catch(angular.noop);
+  }
+
+  vm.createUpdateModal = (selectedCountry = {}) => {
+    return $uibModal.open({
+      templateUrl : 'modules/locations/country/modal/createUpdate.html',
+      controller : 'CreateUpdateCountryController as ModalCtrl',
+      resolve : { data : () => selectedCountry },
+    }).result.then(result => {
+      if (result) refreshCountries();
     });
+  };
 
+  const columns = [{
+    field : 'name',
+    displayName : 'TABLE.COLUMNS.COUNTRY',
+    headerCellFilter : 'translate',
+  }, {
+    field : 'actions',
+    enableFiltering : false,
+    width : 100,
+    displayName : '',
+    headerCellFilter : 'translate',
+    cellTemplate : 'modules/locations/country/templates/action.cell.html',
+  }];
 
-  // switch to update mode
-  // data is an object that contains all the information of a country
-  function update(data) {
-    vm.view = 'update';
-    vm.country = data;
-  }
+  vm.gridOptions = {
+    appScopeProvider : vm,
+    enableColumnMenus : false,
+    columnDefs : columns,
+    enableSorting : true,
+    fastWatch : true,
+    flatEntityAccess : true,
+    onRegisterApi : (gridApi) => {
+      vm.gridApi = gridApi;
+    },
+  };
 
-  // refresh the displayed Countrys
-  function refreshCountrys() {
-    return locationService.countries({ detailed : 1 }).then((data) => {
-      vm.countries = data;
-      vm.session.loading = false;
-    });
-  }
+  vm.remove = function remove(uuid) {
+    const message = 'FORM.DIALOGS.DELETE_ROLE';
+    Modal.confirm(message)
+      .then(confirmResponse => {
+        if (!confirmResponse) {
+          return;
+        }
+        locationService.delete.country(uuid)
+          .then(() => {
+            Notify.success('FORM.INFO.DELETE_SUCCESS');
+            refreshCountries();
+          })
+          .catch(Notify.handleError);
+      });
+  };
 
-  // form submission
-  function submit(form) {
-    // stop submission if the form is invalid
-    if (form.$invalid) { return 0; }
-
-    const creation = (vm.view === 'create');
-    const country = angular.copy(vm.country);
-
-    const promise = (creation)
-      ? locationService.create.country(country)
-      : locationService.update.country(country.uuid, country);
-
-    return promise
-      .then(refreshCountrys)
-      .then(() => {
-        vm.view = creation ? 'create_success' : 'update_success';
-      })
-      .catch(Notify.handleError);
-  }
+  vm.toggleInlineFilter = function toggleInlineFilter() {
+    vm.gridOptions.enableFiltering = !vm.gridOptions.enableFiltering;
+    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+  };
 
   startup();
 }

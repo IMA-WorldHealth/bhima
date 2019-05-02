@@ -1,0 +1,94 @@
+<form name="villageForm" bh-submit="ModalCtrl.submit(villageForm)" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li>
+        <span translate>VILLAGE.TITLE</span>
+
+        <label class="label label-warning text-uppercase" translate>
+          {{ModalCtrl.action}}
+        </label>
+      </li>
+    </ol>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="form-group" ng-class="{ 'has-error' : villageForm.$submitted && villageForm.country.$invalid }">
+        <label class="control-label" translate> FORM.LABELS.COUNTRY </label>
+        <select class="form-control" name="country" ng-model="ModalCtrl.village.country_uuid" id="country"
+          ng-options="c.uuid as c.name for c in ModalCtrl.countries | orderBy:'name'"
+          ng-change="ModalCtrl.loadProvinces()" required>
+          <option value="" disabled translate> FORM.PLACEHOLDERS.COUNTRY</option>
+        </select>
+        <div class="help-block" ng-messages="villageForm.country.$error" ng-show="villageForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+
+      <div class="form-group" ng-class="{ 'has-error' : villageForm.$submitted && villageForm.province.$invalid }">
+        <label class="control-label" translate> FORM.LABELS.PROVINCE </label>
+        <select class="form-control" name="province" ng-model="ModalCtrl.village.province_uuid" id="province"
+          ng-options="p.uuid as p.name for p in ModalCtrl.provinces | orderBy:'name'"
+          ng-change="ModalCtrl.loadSectors()" required>
+          <option value="" disabled translate>FORM.PLACEHOLDERS.PROVINCE</option>
+        </select>
+        <div class="help-block" ng-messages="villageForm.province.$error" ng-show="villageForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+
+      <div class="form-group" ng-class="{ 'has-error' : villageForm.$submitted && villageForm.sector.$invalid }">
+        <label class="control-label" translate>FORM.LABELS.SECTOR</label>
+        <select class="form-control" name="sector" ng-model="ModalCtrl.village.sector_uuid" id="sector"
+          ng-options="s.uuid as s.name for s in ModalCtrl.sectors | orderBy:'name'" required>
+          <option value="" disabled translate>FORM.PLACEHOLDERS.SECTOR</option>
+        </select>
+        <div class="help-block" ng-messages="villageForm.sector.$error" ng-show="villageForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+
+      <div class="form-group" ng-class="{ 'has-error' : villageForm.$submitted && villageForm.village.$invalid }">
+        <label class="control-label" translate> FORM.LABELS.VILLAGE </label>
+        <input type="text" placeholder="{{ 'FORM.PLACEHOLDERS.VILLAGE' | translate }}" autocomplete="off"
+          ng-maxlength="ModalCtrl.maxLength" class="form-control" name="village" ng-model="ModalCtrl.village.name"
+          required>
+        <div class="help-block" ng-messages="villageForm.village.$error" ng-show="villageForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+
+      <div class="row">
+
+        <div class="col-xs-6">
+          <div class="form-group">
+            <label class="control-label" translate> FORM.LABELS.LONGITUDE </label>
+            <input type="number" step="1.0" placeholder="{{ 'FORM.PLACEHOLDERS.LONGITUDE' | translate }}"
+              autocomplete="off" class="form-control" name="longitude" ng-model="ModalCtrl.village.longitude">
+          </div>
+        </div>
+
+        <div class="col-xs-6">
+          <div class="form-group">
+            <label class="control-label" translate> FORM.LABELS.LATITUDE </label>
+            <input type="number" step="1.0" placeholder="{{ 'FORM.PLACEHOLDERS.LATITUDE' | translate }}"
+              autocomplete="off" class="form-control" name="latitude" ng-model="ModalCtrl.village.latitude">
+          </div>
+        </div>
+      </div>
+
+      <!-- error feedback area -->
+      <div ng-if="ModalCtrl.state.errored && villageForm.$submitted" class="text-danger" data-role="feedback"
+        style="margin-top:10px;">
+        <i class="glyphicon glyphicon-remove-sign"></i><span translate> FORM.ERRORS.HAS_ERRORS </span>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" data-method="cancel" class="btn btn-default" ng-click="ModalCtrl.close()" translate>
+      FORM.BUTTONS.CANCEL
+    </button>
+
+    <bh-loading-button loading-state="villageForm.$loading">
+    </bh-loading-button>
+  </div>
+</form>
