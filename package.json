@@ -68,7 +68,7 @@
     "csvtojson": "^1.0.0",
     "debug": "^4.1.1",
     "dot": "^1.1.2",
-    "dotenv": "^7.0.0",
+    "dotenv": "^8.0.0",
     "excel4node": "^1.7.0",
     "express": "^4.16.4",
     "express-handlebars": "^3.0.0",
