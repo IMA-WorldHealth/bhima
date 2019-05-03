@@ -13,7 +13,7 @@ function RolesController($uibModal, Roles, Session, Modal, Notify, bhConstants, 
 
   vm.createUpdateRoleModal = function createUpdateRoleModal(selectedRole = {}) {
     $uibModal.open({
-      templateUrl : 'modules/roles/create.html',
+      templateUrl : 'modules/roles/createUpdate.html',
       controller : 'RolesAddController as RolesAddCtrl',
       resolve : { data : () => selectedRole },
     });

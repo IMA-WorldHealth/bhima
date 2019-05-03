@@ -84,7 +84,7 @@ function StockEntryTests() {
     page.setDescription(DESCRIPTION.concat(' - Transfer reception'));
 
     const lots = [
-      { quantity : 75 },
+      { quantity : 75, expiration_date : expireInThreeYears },
     ];
 
     page.setLots(0, lots, true);

@@ -100,7 +100,7 @@ function PriceListController(
     return $uibModal.open({
       keyboard : false,
       backdrop : 'static',
-      templateUrl : 'modules/prices/modal/create.html',
+      templateUrl : 'modules/prices/modal/createUpdate.html',
       controller : 'PriceListModalController as $ctrl',
       resolve : {
         data : function dataProvider() {
