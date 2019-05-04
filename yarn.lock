@@ -4089,10 +4089,10 @@ helmet-csp@2.7.1:
     dasherize "2.0.0"
     platform "1.3.5"
 
-helmet@^3.15.0:
-  version "3.16.0"
-  resolved "https://registry.yarnpkg.com/helmet/-/helmet-3.16.0.tgz#7df41a4bfe4c83d90147c1e30d70893f92a9d97c"
-  integrity sha512-rsTKRogc5OYGlvSHuq5QsmOsOzF6uDoMqpfh+Np8r23+QxDq+SUx90Rf8HyIKQVl7H6NswZEwfcykinbAeZ6UQ==
+helmet@^3.16.0:
+  version "3.17.0"
+  resolved "https://registry.yarnpkg.com/helmet/-/helmet-3.17.0.tgz#6348767c4ee8f273485ecd60476edcb490ef6125"
+  integrity sha512-3cJBDC9G4t2D/tcGfW7Y2pnbBSyAjYShtxTTg0wiXafkkGiK/GJyoCcHwux4kBHzG42nWE+IiXdsX0NtvhPuWw==
   dependencies:
     depd "2.0.0"
     dns-prefetch-control "0.1.0"
@@ -4107,7 +4107,7 @@ helmet@^3.15.0:
     hsts "2.2.0"
     ienoopen "1.1.0"
     nocache "2.0.0"
-    referrer-policy "1.1.0"
+    referrer-policy "1.2.0"
     x-xss-protection "1.1.0"
 
 hex-color-regex@^1.1.0:
@@ -5960,10 +5960,10 @@ mute-stream@0.0.7:
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.7.tgz#3075ce93bc21b8fab43e1bc4da7e8115ed1e7bab"
   integrity sha1-MHXOk7whuPq0PhvE2n6BFe0ee6s=
 
-muze@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/muze/-/muze-1.2.0.tgz#4a1a048231d7c510c0234f2ff93604f0dd3ecbfa"
-  integrity sha512-CjC521K9TRpj2wzsa77QBX8w/k8+W/5193z2BMlrF/DXJuKWlLH2vPyi6szN6XNARltlxyv43KNDzDsBwyg7cg==
+muze@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/muze/-/muze-1.2.1.tgz#be84415c13f8d7bde6e2c06cb0ff9eb4a289947a"
+  integrity sha512-J0mFK6vKFiryYi5nv/7psK2u33GyjdOZnKFYVvz5w6GBJy49gclwT0V22nmY2CHjDPbn1pLTjJpfOLJR7YJM/g==
 
 mysql@^2.16.0:
   version "2.17.1"
@@ -7513,10 +7513,10 @@ reduce-component@1.0.1:
   resolved "https://registry.yarnpkg.com/reduce-component/-/reduce-component-1.0.1.tgz#e0c93542c574521bea13df0f9488ed82ab77c5da"
   integrity sha1-4Mk1QsV0UhvqE98PlIjtgqt3xdo=
 
-referrer-policy@1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/referrer-policy/-/referrer-policy-1.1.0.tgz#35774eb735bf50fb6c078e83334b472350207d79"
-  integrity sha1-NXdOtzW/UPtsB46DM0tHI1AgfXk=
+referrer-policy@1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/referrer-policy/-/referrer-policy-1.2.0.tgz#b99cfb8b57090dc454895ef897a4cc35ef67a98e"
+  integrity sha512-LgQJIuS6nAy1Jd88DCQRemyE3mS+ispwlqMk3b0yjZ257fI1v9c+/p6SD5gP5FGyXUIgrNOAfmyioHwZtYv2VA==
 
 regenerator-runtime@^0.11.0:
   version "0.11.1"
