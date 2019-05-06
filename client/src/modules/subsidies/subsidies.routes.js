@@ -17,7 +17,7 @@ angular.module('bhima.routes')
       })
 
       .state('subsidies.edit', {
-        url : '/edit/:id',
+        url : '/:id/edit',
         params : {
           id : { value : null },
           creating : { value : false },
