@@ -1,5 +1,3 @@
-/* global by */
-
 const helpers = require('../shared/helpers');
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
@@ -20,9 +18,6 @@ describe('Patient Groups', () => {
 
   it('creates a patient group', () => {
     FU.buttons.create();
-
-    // expect the create form to exist
-    FU.exists(by.css('[data-create-form]'), true);
 
     // fill in the form details
     FU.input('PatientGroupModalCtrl.patientGroup.name', group.name);
