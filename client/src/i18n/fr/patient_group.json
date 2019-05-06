@@ -7,4 +7,7 @@
 "PRICE_LIST":"Liste des Prix",
 "REGISTER":"Enregistrer Groupe Patient",
 "SUBSIDY":"Subventions",
+"CREATED":"Groupe de patient crée avec succès",
+"UPDATAED":"Groupe de patient mis à jour avec succès",
+"SUCCESSFULLY_DELETED": "Groupe de patient supprimer avec succès",
 "TITLE":"Gestion des Groupes Patients"}}

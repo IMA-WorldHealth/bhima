@@ -1,8 +1,9 @@
-/* global element, by */
+/* global by */
 
 const helpers = require('../shared/helpers');
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
+const GridRow = require('../shared/GridRow');
 
 describe('Patient Groups', () => {
   // navigate to the page before running test suite
@@ -17,9 +18,6 @@ describe('Patient Groups', () => {
     `,
   };
 
-  // the uuid to delete.
-  const deleteUuid = 'group-112A9FB5847D4C6A9B20710FA8B4DA22';
-
   it('creates a patient group', () => {
     FU.buttons.create();
 
@@ -27,45 +25,42 @@ describe('Patient Groups', () => {
     FU.exists(by.css('[data-create-form]'), true);
 
     // fill in the form details
-    FU.input('PatientGroupCtrl.patientGroup.name', group.name);
-    FU.select('PatientGroupCtrl.patientGroup.price_list_uuid', 'Test Price List');
-    FU.input('PatientGroupCtrl.patientGroup.note', group.note);
+    FU.input('PatientGroupModalCtrl.patientGroup.name', group.name);
+    FU.select('PatientGroupModalCtrl.patientGroup.price_list_uuid', 'Test Price List');
+    FU.input('PatientGroupModalCtrl.patientGroup.note', group.note);
 
     // submit the form
     FU.buttons.submit();
 
-    // expect the form element to eventually be removed.
-    FU.exists(by.css('[data-create-form]'), false);
+    // notify success
+    components.notification.hasSuccess();
   });
 
   it('updates a patient group', () => {
-    const row = element(by.id(deleteUuid));
-    row.click();
-
-    // expect the update form to exist
-    FU.exists(by.css('[data-update-form]'), true);
+    const row = new GridRow(group.name);
+    row.dropdown().click();
+    row.edit().click();
 
     // change the note
-    FU.input('PatientGroupCtrl.patientGroup.note',
+    FU.input('PatientGroupModalCtrl.patientGroup.note',
       'I like writing end-to-end tests... They give me so much confidence in the application.');
 
     // submit the form
     FU.buttons.submit();
 
-    // expect the form element to eventually be removed.
-    FU.exists(by.css('[data-update-form]'), false);
+    // notify success
+    components.notification.hasSuccess();
   });
 
   it('deletes a patient group', () => {
-    const row = element(by.id(deleteUuid));
-    row.click();
+    const row = new GridRow(group.name);
+    row.dropdown().click();
+    row.remove().click();
 
-    FU.buttons.delete();
+    // confirm the deletion
+    FU.buttons.submit();
 
-    // reject the alert that appears
-    components.modalAction.confirm();
-
-    // expect the row to eventually be cleared
-    FU.exists(by.id(deleteUuid), false);
+    // expect success notification
+    components.notification.hasSuccess();
   });
 });

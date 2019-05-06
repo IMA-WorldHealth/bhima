@@ -2,8 +2,8 @@ angular.module('bhima.controllers')
   .controller('PatientGroupController', PatientGroupController);
 
 PatientGroupController.$inject = [
-  'PatientGroupService', 'PriceListService', 'SessionService', 'ModalService',
-  'util', 'NotifyService', 'SubsidyService', 'InvoicingFeesService',
+  'PatientGroupService', 'PriceListService', 'ModalService',
+  'util', 'NotifyService', 'uiGridConstants', '$state',
 ];
 
 /**
@@ -19,31 +19,67 @@ PatientGroupController.$inject = [
  *  @constructor
  */
 function PatientGroupController(
-  PatientGroups, PriceLists, Session, ModalService, util, Notify, Subsidies,
-  InvoicingFees
+  PatientGroups, PriceLists, ModalService, util, Notify, uiGridConstants, $state
 ) {
   const vm = this;
 
-  vm.length100 = util.length100;
-  vm.maxLength = util.maxTextLength;
-
   // by default, set loading to false.
   vm.loading = false;
+  vm.toggleFilter = toggleFilter;
+
+  // global variables
+  vm.gridApi = {};
+  vm.filterEnabled = false;
+
+  // options for the UI grid
+  vm.gridOptions = {
+    appScopeProvider  : vm,
+    enableColumnMenus : false,
+    fastWatch         : true,
+    flatEntityAccess  : true,
+    enableSorting     : true,
+    onRegisterApi     : onRegisterApiFn,
+    columnDefs : [
+      {
+        field : 'name',
+        displayName : 'TABLE.COLUMNS.NAME',
+        headerCellFilter : 'translate',
+      },
+      {
+        field : 'priceListLabel',
+        displayName : 'TABLE.COLUMNS.PRICE_LIST',
+        headerCellFilter : 'translate',
+      },
+      {
+        field : 'patientNumber',
+        displayName : 'FORM.INFO.PATIENTS',
+        headerCellFilter : 'translate',
+      },
+      {
+        field : 'action',
+        width : 80,
+        displayName : '',
+        cellTemplate : '/modules/patients/groups/templates/action.cell.html',
+        enableSorting : false,
+        enableFiltering : false,
+      },
+    ],
+  };
+
+  function onRegisterApiFn(gridApi) {
+    vm.gridApi = gridApi;
+  }
+
+  function toggleFilter() {
+    vm.filterEnabled = !vm.filterEnabled;
+    vm.gridOptions.enableFiltering = vm.filterEnabled;
+    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+  }
 
   // This method is responsible of initializing data
   function startup() {
     // make the loading state into true, while loading data
     toggleLoadingIndicator();
-
-    InvoicingFees.read()
-      .then(invoicingFees => {
-        vm.invoicingFees = invoicingFees;
-      });
-
-    Subsidies.read()
-      .then(subsidies => {
-        vm.subsidies = subsidies;
-      });
 
     // fetching all price list
     PriceLists.read()
@@ -56,7 +92,7 @@ function PatientGroupController(
         return loadPatientGroups();
       })
       .then(patientGroups => {
-        vm.groups = patientGroups;
+        vm.gridOptions.data = patientGroups;
       })
       .catch(Notify.handleError)
       .finally(toggleLoadingIndicator);
@@ -66,75 +102,25 @@ function PatientGroupController(
     vm.loading = !vm.loading;
   }
 
-  // this method is responsible to propose a GUI to user for creation
   function create() {
-    // init the patient group
-    vm.patientGroup = {};
-
-    // switch the view to create
-    vm.view = 'create';
+    $state.go('patientGroups.create');
   }
 
-  // this function is responsible of submitting the patient group to the server for creation
-  function submit(form) {
-    // if the form is not valid do nothing
-    if (form.$invalid) { return 0; }
-
-    const creation = (vm.view === 'create');
-    const patientGroup = angular.copy(vm.patientGroup);
-
-    /** @todo - discuss if this should happen on the server */
-    patientGroup.enterprise_id = Session.enterprise.id;
-
-    const promise = (creation)
-      ? PatientGroups.create(patientGroup)
-      : PatientGroups.update(patientGroup.uuid, patientGroup);
-
-    return promise
-      .then(() => {
-        return loadPatientGroups();
-      })
-      .then((groups) => {
-        vm.groups = groups;
-        vm.view = 'default';
-      })
-      .catch(Notify.handleError);
-  }
-
-
-  // this method is changing the view for the update
   function update(uuid) {
-    // switch view to update
-    vm.view = 'update';
-
-    PatientGroups.read(uuid)
-      .then((data) => {
-        data.invoicingFees = data.invoicingFees.map(fee => fee.id);
-        data.subsidies = data.subsidies.map(subsidy => subsidy.id);
-        vm.patientGroup = data;
-      })
-      .catch(Notify.handleError);
-  }
-
-  // this function clears the selected form
-  function cancel() {
-    vm.view = 'default';
+    $state.go('patientGroups.edit', { uuid });
   }
 
   // this function is responsible of removing a patient group
-  function remove() {
+  function remove(uuid) {
     ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
       .then((bool) => {
         // if the user cancels, return immediately.
         if (!bool) { return; }
 
-        PatientGroups.delete(vm.patientGroup.uuid)
+        PatientGroups.delete(uuid)
           .then(() => {
-            vm.view = 'default';
-            return loadPatientGroups();
-          })
-          .then((groups) => {
-            vm.groups = groups;
+            Notify.success('PATIENT_GROUP.SUCCESSFULLY_DELETED');
+            $state.go('patientGroups', null, { reload : true });
           })
           .catch(Notify.handleError);
       });
@@ -149,8 +135,6 @@ function PatientGroupController(
 
   // exposing interfaces to the view
   vm.create = create;
-  vm.submit = submit;
   vm.update = update;
   vm.remove = remove;
-  vm.cancel = cancel;
 }

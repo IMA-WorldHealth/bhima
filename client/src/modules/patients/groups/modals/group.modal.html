@@ -1,0 +1,93 @@
+<form name="PatientGroupForm" bh-submit="PatientGroupModalCtrl.submit(PatientGroupForm)" novalidate>
+    <div class="modal-header">
+      <ol class="headercrumb">
+        <li ng-if="PatientGroupModalCtrl.isCreating" class="title">
+          <span translate>PATIENT_GROUP.ADD_PATIENT_GROUP</span>
+          <label class="badge badge-success" translate>FORM.LABELS.CREATE</label>
+        </li>
+        <li ng-if="!PatientGroupModalCtrl.isCreating" class="title">
+          <span translate>PATIENT_GROUP.EDIT_PATIENT_GROUP</span>
+          <label class="badge badge-warning" translate>FORM.LABELS.UPDATE</label>
+        </li>
+      </ol>
+    </div>
+  
+    <div class="modal-body">
+  
+      <div class="form-group" ng-class="{ 'has-error' : PatientGroupForm.$submitted && PatientGroupForm.name.$invalid }">
+        <label class="control-label" translate>
+          FORM.LABELS.NAME
+        </label>
+        <input
+          class="form-control" 
+          name="name" 
+          autocomplete="off" 
+          ng-maxlength="PatientGroupModalCtrl.length100" 
+          ng-model="PatientGroupModalCtrl.patientGroup.name" 
+          required>
+        <div class="help-block" ng-messages="PatientGroupForm.name.$error" ng-show="PatientGroupForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+
+      <div class="form-group" ng-class="{ 'has-error' : PatientGroupForm.$submitted && PatientGroupForm.priceList.$invalid }">
+        <label class="control-label" translate>
+          FORM.LABELS.PRICE_LIST
+        </label>
+        <select
+          class="form-control"
+          name="priceList"
+          ng-model="PatientGroupModalCtrl.patientGroup.price_list_uuid"
+          ng-options="p.uuid as p.label for p in PatientGroupModalCtrl.priceLists">
+          <option value="" disabled translate> FORM.SELECT.PRICE_LIST </option>
+        </select>
+        <div class="help-block" ng-messages="PatientGroupForm.priceList.$error" ng-show="PatientGroupForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="control-label" translate>
+          FORM.LABELS.INVOICING_FEES
+        </label>
+
+        <ui-select multiple ng-model="PatientGroupModalCtrl.patientGroup.invoicingFees">
+        <ui-select-match>{{$item.label}}</ui-select-match>
+        <ui-select-choices repeat="fee.id as fee in PatientGroupModalCtrl.invoicingFees | filter:$select.search">
+            {{fee.label}}
+        </ui-select-choices>
+        </ui-select>
+      </div>
+
+      <div class="form-group">
+        <label class="control-label" translate>
+          FORM.LABELS.SUBSIDIES
+        </label>
+
+        <ui-select multiple ng-model="PatientGroupModalCtrl.patientGroup.subsidies">
+        <ui-select-match>{{$item.label}}</ui-select-match>
+        <ui-select-choices repeat="subsidy.id as subsidy in PatientGroupModalCtrl.subsidies | filter:$select.search">
+            {{subsidy.label}}
+        </ui-select-choices>
+        </ui-select>
+      </div>
+
+      <div class="form-group">
+        <label class="control-label" translate>
+          FORM.LABELS.NOTES
+        </label>
+        <textarea class="form-control" ng-maxlength="PatientGroupModalCtrl.maxLength" name="note" ng-model="PatientGroupModalCtrl.patientGroup.note"></textarea>
+      </div>
+  
+    </div>
+  
+    <div class="modal-footer">
+      <button data-method="cancel" type="button" class="btn btn-default" ui-sref="patientGroups">
+        <span translate>FORM.BUTTONS.CANCEL</span>
+      </button>
+  
+      <bh-loading-button loading-state="PatientGroupForm.$loading">
+        <span translate>FORM.BUTTONS.SUBMIT</span>
+      </bh-loading-button>
+    </div>
+  </form>

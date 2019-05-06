@@ -27,10 +27,30 @@ angular.module('bhima.routes')
           filters : [],
         },
       })
+
       .state('patientGroups', {
         url         : '/patients/groups',
         controller  : 'PatientGroupController as PatientGroupCtrl',
         templateUrl : 'modules/patients/groups/groups.html',
+      })
+
+      .state('patientGroups.create', {
+        url : '/create',
+        params : {
+          creating : { value : true },
+        },
+        onEnter : ['$uibModal', patientGroupModal],
+        onExit : ['$uibModalStack', closeModal],
+      })
+
+      .state('patientGroups.edit', {
+        url : '/edit/:uuid',
+        params : {
+          uuid : { value : null },
+          creating : { value : false },
+        },
+        onEnter : ['$uibModal', patientGroupModal],
+        onExit : ['$uibModalStack', closeModal],
       })
 
       .state('patientRecord', {
@@ -49,3 +69,16 @@ angular.module('bhima.routes')
         },
       });
   }]);
+
+function patientGroupModal($modal) {
+  $modal.open({
+    keyboard : false,
+    backdrop : 'static',
+    templateUrl : 'modules/patients/groups/modals/group.modal.html',
+    controller : 'PatientGroupModalController as PatientGroupModalCtrl',
+  });
+}
+
+function closeModal(ModalStack) {
+  ModalStack.dismissAll();
+}

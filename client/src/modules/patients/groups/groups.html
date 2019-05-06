@@ -6,252 +6,41 @@
     </ol>
 
    <div class="toolbar">
-     <div class="toolbar-item">
-      <button class="btn btn-default text-capitalize" ng-click="PatientGroupCtrl.create()" data-method="create">
-        <span class="fa fa-plus"></span>
-        <span translate>PATIENT_GROUP.ADD_PATIENT_GROUP</span>
-      </button>
-     </div>
+      <div class="toolbar-item">
+        <button class="btn btn-default text-capitalize" ng-click="PatientGroupCtrl.create()" data-method="create">
+          <span class="fa fa-plus"></span>
+          <span translate>PATIENT_GROUP.ADD_PATIENT_GROUP</span>
+        </button>
+      </div>
+
+      <div class="toolbar-item">
+        <button
+          type="button"
+          ng-click="PatientGroupCtrl.toggleFilter()"
+          data-method="filter"
+          class="btn btn-default"
+          ng-class="{ 'btn-info' : PatientGroupCtrl.filterEnabled }">
+          <i class="fa fa-filter"></i>
+        </button>
+      </div>
    </div>
   </div>
 </div>
 
+<!-- main content -->
 <div class="flex-content">
   <div class="container-fluid">
-    <div class="row">
-      <div class="col-md-6">
+    <div id="patient-group-grid"
+      ui-grid="PatientGroupCtrl.gridOptions"
+      class="grid-full-height"
+      ui-grid-auto-resize
+      ui-grid-resize-columns>
 
-        <!-- @todo - better design! -->
-        <div class="panel panel-default" style="max-height: 500px; overflow: auto;">
-          <div class="panel-heading">
-            <span translate> PATIENT_GROUP.ALL_PATIENT_GROUP </span>
-          </div>
-          <table class="table table-condensed table-bordered">
-            <thead>
-              <tr>
-                <th translate> TABLE.COLUMNS.NAME </th>
-                <th translate> TABLE.COLUMNS.PRICE_LIST </th>
-                <th translate> FORM.INFO.PATIENTS</th>
-                <th translate> TABLE.COLUMNS.ACTION </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr ng-repeat="group in PatientGroupCtrl.groups track by group.uuid" ng-class="{ 'bg-primary' : group.uuid == PatientGroupCtrl.patientGroup.uuid }">
-                <td>{{ group.name}}</td>
-                <td>{{ group.priceListLabel }}</td>
-                <td class="text-right">{{group.patientNumber}}</td>
-                <td>
-                  <a class="btn btn-xs btn-default" ng-click="PatientGroupCtrl.update(group.uuid)" id="group-{{group.uuid}}">
-                    <span class="glyphicon glyphicon-pencil"></span>
-                  </a>
-                  <a class="btn btn-xs btn-default" ui-sref="patientRegistry({
-                    filters : [
-                      { key : 'patient_group_uuid', value : group.uuid, displayValue: group.name },
-                      { key : 'period', value : 'allTime' }
-                    ]})">
-                    <span class="fa fa-list"></span> <span translate> FORM.LABELS.PATIENT_LIST </span>
-                  </a>
-                </td>
-              </tr>
-              <tr ng-if="PatientGroupCtrl.loading" class="text-center">
-                <td colspan="3"><loading-indicator></loading-indicator></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="col-md-6" ng-switch="PatientGroupCtrl.view">
-
-        <div ng-switch-default>
-          <div class="alert alert-info">
-            <h4 translate> PATIENT_GROUP.TITLE </h4>
-            <p translate> PATIENT_GROUP.DESCRIPTION1 </p>
-            <ul class="list-unstyled">
-              <li><i class="glyphicon glyphicon-pencil"></i><span translate> PATIENT_GROUP.DESCRIPTION2 </span></li>
-            </ul>
-          </div>
-        </div>
-
-        <div ng-switch-when="create">
-          <div class="panel panel-primary">
-            <div class="panel-heading" translate>
-              PATIENT_GROUP.ADD_PATIENT_GROUP
-            </div>
-
-            <div class="panel-body">
-              <form name="CreateForm" bh-submit="PatientGroupCtrl.submit(CreateForm)" novalidate data-create-form>
-
-                <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.name.$invalid }">
-                  <label class="control-label" translate>
-                    FORM.LABELS.NAME
-                  </label>
-                  <input class="form-control" name="name" autocomplete="off" ng-maxlength="PatientGroupCtrl.length100" ng-model="PatientGroupCtrl.patientGroup.name" required>
-                  <div class="help-block" ng-messages="CreateForm.name.$error" ng-show="CreateForm.$submitted">
-                    <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-                  </div>
-                </div>
-
-                <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.priceList.$invalid }">
-                  <label class="control-label" translate>
-                    FORM.LABELS.PRICE_LIST
-                  </label>
-                  <select
-                    class="form-control"
-                    name="priceList"
-                    ng-model="PatientGroupCtrl.patientGroup.price_list_uuid"
-                    ng-options="p.uuid as p.label for p in PatientGroupCtrl.priceLists">
-                    <option value="" disabled translate> FORM.SELECT.PRICE_LIST </option>
-                  </select>
-                  <div class="help-block" ng-messages="CreateForm.priceList.$error" ng-show="CreateForm.$submitted">
-                    <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-                  </div>
-                </div>
-
-                <div class="form-group">
-                  <label class="control-label" translate>
-                    FORM.LABELS.INVOICING_FEES
-                  </label>
-
-                  <ui-select multiple ng-model="PatientGroupCtrl.patientGroup.invoicingFees">
-                  <ui-select-match>{{$item.label}}</ui-select-match>
-                  <ui-select-choices repeat="fee.id as fee in PatientGroupCtrl.invoicingFees | filter:$select.search">
-                      {{fee.label}}
-                  </ui-select-choices>
-                  </ui-select>
-                </div>
-
-                <div class="form-group">
-                  <label class="control-label" translate>
-                    FORM.LABELS.SUBSIDIES
-                  </label>
-
-                  <ui-select multiple ng-model="PatientGroupCtrl.patientGroup.subsidies">
-                  <ui-select-match>{{$item.label}}</ui-select-match>
-                  <ui-select-choices repeat="subsidy.id as subsidy in PatientGroupCtrl.subsidies | filter:$select.search">
-                      {{subsidy.label}}
-                  </ui-select-choices>
-                  </ui-select>
-                </div>
-
-                <div class="form-group">
-                  <label class="control-label" translate>
-                    FORM.LABELS.NOTES
-                  </label>
-                  <textarea class="form-control" ng-maxlength="PatientGroupCtrl.maxLength" name="note" ng-model="PatientGroupCtrl.patientGroup.note"></textarea>
-                </div>
-
-                <div class="form-group">
-                  <bh-loading-button loading-state="CreateForm.$loading">
-                    <span translate>FORM.BUTTONS.SUBMIT</span>
-                  </bh-loading-button>
-                  <button class="btn btn-default" type="button" ng-click="PatientGroupCtrl.cancel()" data-method="cancel" translate>
-                    FORM.BUTTONS.CANCEL
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-
-        <!-- @todo - update and create forms should use the same form -->
-        <div ng-switch-when="update">
-          <div class="panel panel-primary">
-
-            <div class="panel-heading" translate>
-              PATIENT_GROUP.EDIT_PATIENT_GROUP
-            </div>
-
-            <div class="panel-body">
-              <form bh-submit="PatientGroupCtrl.submit(UpdateForm)" name="UpdateForm" novalidate data-update-form>
-                <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.name.$invalid }">
-                  <label class="control-label" translate>
-                    FORM.LABELS.NAME
-                  </label>
-                  <input class="form-control" name="name" autocomplete="off" ng-maxlength="PatientGroupCtrl.length100" ng-model="PatientGroupCtrl.patientGroup.name" required>
-                  <div class="help-block" ng-messages="UpdateForm.name.$error" ng-show="UpdateForm.$submitted">
-                    <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-                  </div>
-                </div>
-
-                <div class="form-group">
-                  <label class="control-label">
-                    <span translate> FORM.LABELS.PRICE_LIST</span>&nbsp;&nbsp;&nbsp;
-
-                  </label>
-                  <select
-                    class="form-control"
-                    name="priceList"
-                    ng-model="PatientGroupCtrl.patientGroup.price_list_uuid"
-                    ng-options="p.uuid as p.label for p in PatientGroupCtrl.priceLists">
-                    <option value="" translate>FORM.LABELS.NO_PRICE_LIST </option>
-                  </select>
-                  <div class="help-block" ng-messages="UpdateForm.priceList.$error" ng-show="UpdateForm.$submitted">
-                    <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-                  </div>
-                </div>
-
-                <div class="form-group">
-                  <label class="control-label" translate>
-                    FORM.LABELS.INVOICING_FEES
-                  </label>
-
-                  <ui-select multiple ng-model="PatientGroupCtrl.patientGroup.invoicingFees">
-                  <ui-select-match>{{$item.label}}</ui-select-match>
-                  <ui-select-choices repeat="fee.id as fee in PatientGroupCtrl.invoicingFees | filter:$select.search">
-                      {{fee.label}}
-                  </ui-select-choices>
-                  </ui-select>
-                </div>
-
-                <div class="form-group">
-                  <label class="control-label" translate>
-                    FORM.LABELS.SUBSIDIES
-                  </label>
-
-                  <ui-select multiple ng-model="PatientGroupCtrl.patientGroup.subsidies">
-                  <ui-select-match>{{$item.label}}</ui-select-match>
-                  <ui-select-choices repeat="subsidy.id as subsidy in PatientGroupCtrl.subsidies | filter:$select.search">
-                      {{subsidy.label}}
-                  </ui-select-choices>
-                  </ui-select>
-                </div>
-
-                <div class="form-group" ng-class="{ 'has-error' : UpdateForm.$submitted && UpdateForm.note.$invalid }">
-                  <label class="control-label" translate>
-                    FORM.LABELS.NOTES
-                  </label>
-                  <textarea class="form-control" ng-maxlength="PatientGroupCtrl.maxLength" name="note" ng-model="PatientGroupCtrl.patientGroup.note"></textarea>
-                  <div class="help-block" ng-messages="UpdateForm.note.$error" ng-show="UpdateForm.$submitted">
-                    <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-                  </div>
-                </div>
-
-                <!-- form submit/cancel buttons -->
-                <div class="form-group">
-                  <bh-loading-button loading-state="UpdateForm.$loading">
-                    <span translate> FORM.BUTTONS.SUBMIT </span>
-                  </bh-loading-button>
-                  <button class="btn btn-default" type="button" ng-click="PatientGroupCtrl.cancel()" data-method="cancel" translate>
-                    FORM.BUTTONS.CANCEL
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-
-          <div class="panel panel-warning">
-            <div class="panel-heading">
-              <span class="glyphicon glyphicon-lock"></span> <span translate> FORM.INFO.DANGER_ZONE </span>
-            </div>
-            <div class="panel-body">
-              <button class="btn btn-danger" type="button" ng-click="PatientGroupCtrl.remove()" data-method="delete">
-                <span class="glyphicon glyphicon-trash"></span> <span translate> FORM.BUTTONS.DELETE </span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <bh-grid-loading-indicator
+        loading-state="PatientGroupCtrl.loading"
+        empty-state="PatientGroupCtrl.gridOptions.data.length === 0"
+        error-state="PatientGroupCtrl.hasError">
+      </bh-grid-loading-indicator>
     </div>
   </div>
 </div>

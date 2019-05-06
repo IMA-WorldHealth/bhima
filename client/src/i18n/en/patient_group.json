@@ -7,4 +7,7 @@
 "PRICE_LIST":"Price List",
 "REGISTER":"Register a Patient Group",
 "SUBSIDY":"Subsidy",
+"CREATED":"Successfully created",
+"UPDATAED":"Successfully updated",
+"SUCCESSFULLY_DELETED": "Successfully deleted",
 "TITLE":"Patient Group Management"}}
