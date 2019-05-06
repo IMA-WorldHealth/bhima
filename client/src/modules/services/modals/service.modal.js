@@ -11,7 +11,7 @@ function ServiceModalController($state, Services, Depots, $translate,
   var vm = this;
   var paramService = $state.params.service || {};
 
-  vm.service = { id : paramService.id, name : paramService.name };
+  vm.service = { id : paramService.id, name : paramService.name, hidden : paramService.hidden };
   vm.isCreating = !!($state.params.creating);
 
   // exposed methods
