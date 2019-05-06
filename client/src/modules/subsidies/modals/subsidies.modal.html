@@ -1,0 +1,60 @@
+<form name="SubsidyForm" bh-submit="SubsidyModalCtrl.submit(SubsidyForm)" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li ng-if="SubsidyModalCtrl.isCreating" class="title">
+        <span translate>SUBSIDY.ADD_SUBSIDY</span>
+        <label class="badge badge-success" translate>FORM.LABELS.CREATE</label>
+      </li>
+      <li ng-if="!SubsidyModalCtrl.isCreating" class="title">
+        <span translate>SUBSIDY.EDIT_SUBSIDY</span>
+        <label class="badge badge-warning" translate>FORM.LABELS.UPDATE</label>
+      </li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+
+    <div class="form-group" ng-class="{ 'has-error' : SubsidyForm.$submitted && SubsidyForm.label.$invalid }">
+      <label class="control-label" translate> FORM.LABELS.NAME </label>
+      <input type="text" class="form-control" name="label" autocomplete="off" ng-model="SubsidyModalCtrl.subsidy.label" required>
+      <div class="help-block" ng-messages="SubsidyForm.label.$error" ng-show="SubsidyForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <div class="form-group" ng-class="{ 'has-error' : SubsidyForm.$submitted && SubsidyForm.value.$invalid }">
+      <label class="control-label">
+        <span translate>FORM.LABELS.VALUE</span> (%)
+      </label>
+      <input type="number" class="form-control" name="value" autocomplete="off" ng-model="SubsidyModalCtrl.subsidy.value" required>
+      <div class="help-block" ng-messages="SubsidyForm.value.$error" ng-show="SubsidyForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <bh-account-select
+      account-id="SubsidyModalCtrl.subsidy.account_id"
+      name="account_id"
+      on-select-callback="SubsidyModalCtrl.onAccountSelect(account)">
+    </bh-account-select>
+
+    <div class="form-group" ng-class="{ 'has-error' : SubsidyForm.$submitted && SubsidyForm.description.$invalid }">
+      <label class="control-label" for="description" translate> FORM.LABELS.DESCRIPTION </label>
+      <textarea class="form-control" id="description" name="description" ng-maxlength="SubsidyModalCtrl.maxLength" ng-model="SubsidyModalCtrl.subsidy.description" rows="3"></textarea>
+      <div class="help-block" ng-messages="SubsidyForm.description.$error" ng-show="SubsidyForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="modal-footer">
+    <button data-method="cancel" type="button" class="btn btn-default" ui-sref="subsidies">
+      <span translate>FORM.BUTTONS.CANCEL</span>
+    </button>
+
+    <bh-loading-button loading-state="SubsidyForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>
