@@ -63,7 +63,7 @@ function StaffModalController(
 
     return checkDuplicated()
       .then(isExisting => {
-        if (isExisting) {
+        if (isExisting && vm.isCreating) {
           vm.isExisting = true;
           return null;
         }

@@ -189,6 +189,14 @@ function search(req, res, next) {
     .done();
 }
 
+function remove(req, res, next) {
+  const _uuid = req.params.uuid;
+  const sql = 'DELETE FROM supplier WHERE uuid=?';
+  db.exec(sql, db.bid(_uuid)).then(() => {
+    res.sendStatus(200);
+  }).catch(next);
+}
+
 
 // get list of a supplier
 exports.list = list;
@@ -204,3 +212,5 @@ exports.update = update;
 
 // search suppliers data
 exports.search = search;
+
+exports.remove = remove;

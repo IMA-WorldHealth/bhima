@@ -166,7 +166,7 @@ function GridFiltererService(
       const assignedKeys = Object.keys(this._filters.formatHTTP());
 
       // assign default period filter
-      const periodDefined = Util.arrayIncludes(assignedKeys, ['period']);
+      const periodDefined = assignedKeys.includes('period');
 
       if (!periodDefined && !defaultFilters) {
         this._filters.assignFilters(Periods.defaultFilters());

@@ -105,7 +105,8 @@
             "UNDERSTAND_ACTION": "I accept the consequences of this action",
             "WARNING": "Warning",
             "CONFIRM_MODAL": "Confirmation Needed",
-            "DELETE_ROLE": "Do you really want to delete this role?"
+            "DELETE_ROLE": "Do you really want to delete this role?",
+            "DELETE_SUPPLIER" : "Do you really want to delete this supplier?"
         },
         "ERRORS": {
             "AT_LEAST_1_COL": "At least one column must be selected",

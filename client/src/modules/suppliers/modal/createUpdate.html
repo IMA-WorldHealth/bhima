@@ -1,0 +1,124 @@
+<form name="supplierForm" bh-submit="ModalCtrl.submit(supplierForm)" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li>
+        <span translate> SUPPLIER.TITLE</span>
+
+        <label class="label label-warning text-uppercase" translate>
+          {{ModalCtrl.action}}
+        </label>
+      </li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+   <div class="row">
+    <div class="col-lg-12">
+      <div class="col-lg-6">
+    
+        <bh-input-text 
+          label="FORM.LABELS.NAME" 
+          key='display_name'
+          required = "true"
+          autocomplete="off"
+          on-change="ModalCtrl.onInputTextChange(key, value)"
+          text-value='ModalCtrl.supplier.display_name'>
+        </bh-input-text>
+
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" name="international" ng-true-value="1" ng-false-value="0" ng-model="ModalCtrl.supplier.international">
+            <span translate> FORM.LABELS.INTL </span>
+          </label>
+        </div>
+
+        <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.creditor_group_uuid.$invalid }">
+          <label class="control-label" translate> FORM.LABELS.GROUP </label>
+          <select class="form-control" name="creditor_group_uuid" ng-model="ModalCtrl.supplier.creditor_group_uuid" ng-options="group.uuid as group.name for group in ModalCtrl.groups | orderBy:'name'" required>
+            <option value="" disabled translate> FORM.SELECT.CREDITOR_GROUP </option>
+          </select>
+          <div class="help-block" ng-messages="CreateForm.creditor_group_uuid.$error" ng-show="CreateForm.$submitted">
+            <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+          </div>
+        </div>
+
+        <bh-input-text 
+          label="FORM.LABELS.PHONE" 
+          key='phone'
+          required = "true"
+          autocomplete="off"
+          on-change="ModalCtrl.onInputTextChange(key, value)"
+          text-value='ModalCtrl.supplier.phone'>
+        </bh-input-text>
+
+        <bh-input-text 
+          label="FORM.LABELS.EMAIL" 
+          key='email'
+          required = "true"
+          autocomplete="off"
+          on-change="ModalCtrl.onInputTextChange(key, value)"
+          text-value='ModalCtrl.supplier.email'>
+        </bh-input-text>
+                
+        <bh-input-text 
+          label="FORM.LABELS.ADDR_1" 
+          key='address_1'
+          required = "true"
+          autocomplete="off"
+          on-change="ModalCtrl.onInputTextChange(key, value)"
+          text-value='ModalCtrl.supplier.address_1'>
+        </bh-input-text>
+
+        <div class="checkbox" ng-show="!ModalCtrl.isCreate">
+          <label>
+            <input type="checkbox" name="locked" ng-true-value="1" ng-false-value="0" ng-model="SupplierCtrl.supplier.locked" translate>     <span translate> FORM.LABELS.LOCKED </span>
+          </label>
+        </div>
+      </div>
+      <div class="col-lg-1"></div>
+      <div class="col-lg-5">
+        <fieldset>
+          <legend translate> FORM.LABELS.OPTIONAL_INFO </legend>
+
+          <bh-input-text 
+            label="FORM.LABELS.ADDR_2" 
+            key='address_2'
+            autocomplete="off"
+            on-change="ModalCtrl.onInputTextChange(key, value)"
+            text-value='ModalCtrl.supplier.address_2'>
+          </bh-input-text>
+
+          <bh-input-text 
+            label="FORM.LABELS.FAX" 
+            key='fax'
+            autocomplete="off"
+            on-change="ModalCtrl.onInputTextChange(key, value)"
+            text-value='ModalCtrl.supplier.fax'>
+          </bh-input-text>
+
+          <div class="form-group" ng-class="{ 'has-error' : CreateForm.$submitted && CreateForm.note.$invalid }">
+            <label class="control-label" for="note" translate> FORM.LABELS.NOTES </label>
+            <textarea class="form-control" name="note" ng-maxlength="ModalCtrl.maxLength" ng-model="ModalCtrl.supplier.note" rows="3"></textarea>
+            <div class="help-block" ng-messages="CreateForm.note.$error" ng-show="CreateForm.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+    </div>
+   </div>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      data-method="cancel"
+      class="btn btn-default"
+      ng-click="ModalCtrl.close()"
+      translate>
+      FORM.BUTTONS.CANCEL
+    </button>
+
+    <bh-loading-button loading-state="supplierForm.$loading">
+    </bh-loading-button>
+  </div>
+</form>
