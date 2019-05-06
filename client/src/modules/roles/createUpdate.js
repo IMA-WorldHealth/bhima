@@ -16,6 +16,7 @@ function RolesAddController(data, $state, RolesService, Notify, $uibModalInstanc
 
   function submit(form) {
     if (form.$invalid) {
+      Notify.danger('FORM.ERRORS.HAS_ERRORS');
       return false;
     }
 
