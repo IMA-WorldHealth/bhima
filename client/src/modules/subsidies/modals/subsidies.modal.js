@@ -8,7 +8,7 @@ SubsidyModalController.$inject = [
 function SubsidyModalController($state, Subsidy, Notify) {
   const vm = this;
 
-  vm.subsidy = $state.params.subsidy;
+  vm.identifier = $state.params.id;
   vm.isCreating = !!($state.params.creating);
 
   // exposed methods
@@ -17,6 +17,18 @@ function SubsidyModalController($state, Subsidy, Notify) {
 
   function onAccountSelect(account) {
     vm.subsidy.account_id = account.id;
+  }
+
+  function startup() {
+    if (!vm.isCreating) {
+      Subsidy.read(vm.identifier)
+        .then(subsidy => {
+          vm.subsidy = subsidy;
+        })
+        .catch(Notify.handleError);
+    } else {
+      vm.subsidy = {};
+    }
   }
 
   // submit the data to the server from all two forms (update, create)
@@ -47,4 +59,6 @@ function SubsidyModalController($state, Subsidy, Notify) {
   function cancel() {
     $state.go('subsidies');
   }
+
+  startup();
 }

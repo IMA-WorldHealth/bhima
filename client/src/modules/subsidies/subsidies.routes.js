@@ -10,7 +10,6 @@ angular.module('bhima.routes')
       .state('subsidies.create', {
         url : '/create',
         params : {
-          subsidy : { value : {} },
           creating : { value : true },
         },
         onEnter : ['$uibModal', subsidyModal],
@@ -18,9 +17,9 @@ angular.module('bhima.routes')
       })
 
       .state('subsidies.edit', {
-        url : '/edit',
+        url : '/edit/:id',
         params : {
-          subsidy : { value : {} },
+          id : { value : null },
           creating : { value : false },
         },
         onEnter : ['$uibModal', subsidyModal],

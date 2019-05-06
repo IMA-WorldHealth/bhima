@@ -6,15 +6,15 @@
   
     <ul class="dropdown-menu-right" uib-dropdown-menu data-row-menu="{{ row.entity.label }}">
       <li>
-        <a data-method="edit-record" ng-click="grid.appScope.update(row.entity)" href>
+        <a data-method="edit-record" ng-click="grid.appScope.update(row.entity.id)" href>
           <i class="fa fa-edit"></i> <span translate>FORM.BUTTONS.EDIT</span>
         </a>
       </li>
       <li class="divider"></li>
       <li>
-        <a data-method="delete-record" ng-click="grid.appScope.remove(row.entity)" href>
+        <a data-method="delete-record" ng-click="grid.appScope.remove(row.entity.id)" href>
           <span class="text-danger">
-            <i class="fa fa-trash"></i> <span translate>DEPOT.DELETE</span>
+            <i class="fa fa-trash"></i> <span translate>FORM.BUTTONS.DELETE</span>
           </span>
         </a>
       </li>

@@ -69,8 +69,8 @@ function SubsidyController(Subsidy, ModalService, util, Notify, uiGridConstants,
     $state.go('subsidies.create');
   }
 
-  function update(subsidy) {
-    $state.go('subsidies.edit', { subsidy });
+  function update(id) {
+    $state.go('subsidies.edit', { id });
   }
 
   // refresh the displayed Subsidies
@@ -82,13 +82,13 @@ function SubsidyController(Subsidy, ModalService, util, Notify, uiGridConstants,
   }
 
   // switch to delete warning mode
-  function remove(subsidy) {
+  function remove(id) {
     ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
       .then((bool) => {
         // if the user clicked cancel, reset the view and return
         if (!bool) { return; }
 
-        Subsidy.delete(subsidy.id)
+        Subsidy.delete(id)
           .then(() => {
             refreshSubsidies();
             Notify.success('SUBSIDY.DELETED');
