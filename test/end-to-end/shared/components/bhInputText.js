@@ -14,7 +14,7 @@ module.exports = {
 
   getInput : (id) => {
     const root = element((id) ? by.id(id) : by.css(this.selector));
-    return root.element(by.css('[input-text-field]'));
+    return id ? root : root.element(by.css('[input-text-field]'));
   },
 
   /**

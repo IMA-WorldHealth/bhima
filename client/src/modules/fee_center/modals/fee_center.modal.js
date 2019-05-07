@@ -25,8 +25,11 @@ function FeeCenterModalController($state, FeeCenter, ModalService, Notify, AppCa
   vm.auxiliaryFee = auxiliaryFee;
   vm.costCenter = costCenter;
   vm.onSelectAccountReference = onSelectAccountReference;
+  vm.onSelectProject = onSelectProject;
+
   vm.onServicesChange = onServicesChange;
   vm.clear = clear;
+  vm.reset = reset;
 
   if (!vm.isCreating) {
     FeeCenter.read(vm.stateParams.id)
@@ -34,6 +37,7 @@ function FeeCenterModalController($state, FeeCenter, ModalService, Notify, AppCa
         [vm.feeCenter] = data.feeCenter;
         if (data.services) {
           vm.relatedServices = data.services.length ? 1 : 0;
+          vm.assignedProject = data.feeCenter[0].project_id ? 1 : 0;
           vm.services = data.services;
         }
 
@@ -99,6 +103,10 @@ function FeeCenterModalController($state, FeeCenter, ModalService, Notify, AppCa
     delete vm.feeCenter[index];
   }
 
+  function reset(value) {
+    vm.feeCenter[value] = null;
+  }
+
   function auxiliaryFee(value) {
     vm.auxiliaryCenter = value ? 1 : 0;
     if (value) {
@@ -137,6 +145,10 @@ function FeeCenterModalController($state, FeeCenter, ModalService, Notify, AppCa
     vm.services = services;
   }
 
+  function onSelectProject(project) {
+    vm.feeCenter.project_id = project.id;
+  }
+
   // submit the data to the server from all two forms (update, create)
   function submit(feeCenterForm) {
     if (feeCenterForm.$invalid) { return 0; }
@@ -166,6 +178,7 @@ function FeeCenterModalController($state, FeeCenter, ModalService, Notify, AppCa
       is_principal : vm.feeCenter.is_principal,
       reference_fee_center : vm.referenceFeeCenter,
       services : vm.services,
+      project_id : vm.feeCenter.project_id,
     };
 
     const promise = (vm.isCreating)

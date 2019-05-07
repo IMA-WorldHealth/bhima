@@ -119,16 +119,16 @@ INSERT INTO unit VALUES
 
 DROP TABLE IF EXISTS `break_even_reference`;
 CREATE TABLE `break_even_reference` (
-  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, 
-  `label` VARCHAR(100) NOT NULL, 
-  `is_cost` tinyint(1) DEFAULT 0, 
+  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `label` VARCHAR(100) NOT NULL,
+  `is_cost` tinyint(1) DEFAULT 0,
   `is_variable` tinyint(1) UNSIGNED DEFAULT 0,
-  `is_turnover` tinyint(1) UNSIGNED DEFAULT 0,   
-  `account_reference_id` MEDIUMINT(8) UNSIGNED NOT NULL, 
-  PRIMARY KEY (`id`), 
-  UNIQUE KEY `break_even_reference_1` (`label`), 
-  KEY `account_reference_id` (`account_reference_id`), 
-  FOREIGN KEY (`account_reference_id`) REFERENCES `account_reference` (`id`)   
+  `is_turnover` tinyint(1) UNSIGNED DEFAULT 0,
+  `account_reference_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `break_even_reference_1` (`label`),
+  KEY `account_reference_id` (`account_reference_id`),
+  FOREIGN KEY (`account_reference_id`) REFERENCES `account_reference` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 -- End Break Even
 
@@ -154,7 +154,7 @@ ALTER TABLE `fee_center_distribution` ADD COLUMN `is_turnover` TINYINT(1) UNSIGN
 
 -- @lomamech 2019-03-07
 -- Default Account Reference Type
-INSERT INTO `account_reference_type` (`id`, `label`, `fixed`) VALUES 
+INSERT INTO `account_reference_type` (`id`, `label`, `fixed`) VALUES
 (4, 'FORM.LABELS.BREAK_EVEN', 1);
 
 -- @lomamech 2019-03-11
@@ -206,7 +206,7 @@ CREATE TABLE `hospitalization_indicator` (
   `total_beds` INT DEFAULT 0,
   `total_hospitalized_patient` INT DEFAULT 0,
   `total_external_patient` INT DEFAULT 0,
-  `total_death` INT DEFAULT 0,  
+  `total_death` INT DEFAULT 0,
   `indicator_uuid` BINARY(16) NOT NULL,
   PRIMARY KEY (`uuid`),
   FOREIGN KEY (`indicator_uuid`) REFERENCES `indicator` (`uuid`) ON UPDATE CASCADE
@@ -248,7 +248,7 @@ CREATE TABLE `finance_indicator` (
   `indicator_uuid` BINARY(16) NOT NULL,
   PRIMARY KEY (`uuid`),
   FOREIGN KEY (`indicator_uuid`) REFERENCES `indicator` (`uuid`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci; 
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 -- indicators status values
 INSERT INTO `indicator_status`(`id`, `text`,`translate_key`)VALUES
@@ -263,7 +263,7 @@ INSERT INTO `indicator_type`(`id`, `text`,`translate_key`)VALUES
   (3, 'fianance', 'DASHBOARD.FINANCE');
 
 -- dashbord folder
-INSERT INTO `unit` VALUES 
+INSERT INTO `unit` VALUES
   (233, 'Dashboards Folder', 'TREE.DASHBOARDS.TITLE', 'Tableaux de bord', 0, '/modules/patient/visits', '/DASHBOARDS_FOLDER'),
   (234, 'Indicators Files Registry', 'TREE.DASHBOARDS.INDICATORS_FILES_REGISTRY', 'Registre des fiches des indicateurs', 233, '/modules/dashboards/indicators_files_registry/', '/dashboards/indicators_files_registry'),
   (235, 'Hospitalization dashboard', 'TREE.DASHBOARDS.HOSPITALIZATION', 'Tableau de bord des hospitalisations', 233, '/modules/dashboards/hospitalization/', '/dashboards/hospitalization'),
@@ -272,10 +272,13 @@ INSERT INTO `unit` VALUES
 
 
 -- jeremie lodi, indicators report
-INSERT INTO `unit` VALUES 
+INSERT INTO `unit` VALUES
 (238, 'Indicators report', 'TREE.INDICATORS_REPORT', 'Rapport sur les indicateurs', 144,'/modules/reports/indicatorsReport', '/reports/indicatorsReport');
-INSERT INTO `report` (`id`, `report_key`, `title_key`) 
+INSERT INTO `report` (`id`, `report_key`, `title_key`)
 VALUES  (31, 'indicatorsReport', 'TREE.INDICATORS_REPORT');
+
+-- @lomamech 2019-04-09 Add Property project_id on fee_center table
+ALTER TABLE `fee_center` ADD COLUMN `project_id` SMALLINT(5) UNSIGNED NULL;
 
 -- jeremielodi
 -- add posted columns

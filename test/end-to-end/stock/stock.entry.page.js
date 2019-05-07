@@ -121,7 +121,7 @@ function StockEntryPage() {
       FU.input('row.entity.quantity', lot.quantity, quantityCell);
 
       // enter lot expiration date
-      if (!isTransferReception) {
+      if (lot.expiration_date) {
         components.datePicker.set(lot.expiration_date, expirationDateCell);
       }
 

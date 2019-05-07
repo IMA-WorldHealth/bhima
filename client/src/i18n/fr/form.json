@@ -105,7 +105,8 @@
             "UNDERSTAND_ACTION": "J'accepte les consequences de cette action",
             "WARNING": "Attention",
             "CONFIRM_MODAL": "La confirmation est nécessaire",
-            "DELETE_ROLE": "Voulez-vous vraiment supprimer ce rôle?"
+            "DELETE_ROLE": "Voulez-vous vraiment supprimer ce rôle?",
+            "DELETE_SUPPLIER" : "Voulez-vous supprimer ce fournisseur?"
         },
         "ERRORS": {
             "AT_LEAST_1_COL": "Au moins une colonne doit être sélectionnée",
@@ -133,7 +134,7 @@
         "INFO": {
             "ASSIGNED_COST_CENTER" : "Assigné les references des coûts",
             "ASSIGNED_PROFIT_CENTER" : "Assigné les references des profits",
-            "ASSIGNED_PROJECTS" : "Assignée à des projets",
+            "ASSIGNED_PROJECT" : "Assignée à un projet",
             "VISIT_RECORDED_SUCCESSFULLY":"Visite enregistrée avec succès",
             "VISIT_RECORDED_UNSUCCESSFULLY":"Visite non enregistrée",
             "DISCHARGE_RECORDED_SUCCESSFULLY":"Décharge enregistrée avec succès",
@@ -579,7 +580,7 @@
             "RATE": "TAUX",
             "RUBRICS": "rubriques",
             "RECIPIENT": "Facture de ",
-            "RECEIPT_RENDERER_SETTING": "Format du Recu",
+            "RECEIPT_RENDERER_SETTING": "Format du Reçu",
             "RECORD": "Enregistrement",
             "REFERENCE": "Référence",
             "REFERENCE_PATIENT": "Référence Patient",

@@ -186,8 +186,36 @@
         required="true">
       </bh-services-multiple-select>
     </div>
-  </div>
 
+    <!-- Project -->
+    <div ng-if="FeeCenterModalCtrl.feeCenter.is_principal">
+      <hr>
+      <div class="checkbox">
+        <label>
+          <input
+            type="checkbox"
+            id="assigned_project"
+            ng-true-value="1"
+            ng-false-value="0"
+            ng-model="FeeCenterModalCtrl.assignedProject">
+          <span translate>
+            <strong>
+              FORM.INFO.ASSIGNED_PROJECT
+            </strong>
+          </span>
+        </label>
+      </div>
+
+      <div ng-if="FeeCenterModalCtrl.assignedProject">
+        <bh-project-select
+          id="project_id"
+          project-id="FeeCenterModalCtrl.feeCenter.project_id"
+          name="project_id"
+          on-select-callback="FeeCenterModalCtrl.onSelectProject(project)">
+          <bh-clear on-clear="FeeCenterModalCtrl.reset('project_id')"></bh-clear>
+        </bh-project-select>
+      </div>
+    </div>
   </div>
 
   <div class="modal-footer">

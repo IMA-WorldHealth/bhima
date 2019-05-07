@@ -20,7 +20,7 @@ class FeeCenterPage {
   constructor() {
     this.gridId = 'fee-center-grid';
     this.rubricGrid = element(by.id(this.gridId));
-    this.actionLinkColumn = 4;
+    this.actionLinkColumn = 5;
   }
 
   /**
@@ -57,6 +57,12 @@ class FeeCenterPage {
       element(by.id('has_service')).click();
     }
     components.servicesMultipleSelect.set(feeCenter.services, 'services');
+
+    if (feeCenter.assigned_project) {
+      element(by.id('assigned_project')).click();
+    }
+
+    components.projectSelect.set(feeCenter.project_id, 'project_id');
 
     FU.buttons.submit();
     components.notification.hasSuccess();
