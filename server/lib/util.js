@@ -217,23 +217,11 @@ function renameObjectKeys(obj, newKeys) {
  * @description convert a csv file to a json
  * @return {promise} return a promise
  */
-function formatCsvToJson(filePath) {
-  const defer = q.defer();
-  const rows = [];
+async function formatCsvToJson(filePath) {
+  const rows = await csvtojson()
+    .fromFile(path.resolve(filePath));
 
-  csvtojson()
-    .fromFile(path.resolve(filePath))
-    .on('json', (data) => {
-      rows.push(data);
-    })
-    .on('end', () => {
-      defer.resolve(rows);
-    })
-    .on('error', (error) => {
-      defer.reject(error);
-    });
-
-  return defer.promise;
+  return rows;
 }
 
 // calcualte age function

@@ -1,7 +1,8 @@
 /* eslint-disable import/no-extraneous-dependencies */
 const path = require('path');
 const gulpif = require('gulp-if');
-const cssnano = require('gulp-cssnano');
+const postcss = require('gulp-postcss');
+const cssnano = require('cssnano');
 const gulpLess = require('gulp-less');
 const concat = require('gulp-concat');
 const del = require('del');
@@ -53,7 +54,7 @@ const cleanCSS = () => del(`${CLIENT_FOLDER}/css/bhima`);
 function compileCSSForProduction() {
   return src(CSS_PATHS)
     .pipe(concat('css/bhima.min.css'))
-    .pipe(cssnano({ zindex : false }))
+    .pipe(postcss([cssnano({ zindex : false })]))
     .pipe(rev())
     .pipe(dest(CLIENT_FOLDER))
     .pipe(rev.manifest('rev-manifest-css.json'))
