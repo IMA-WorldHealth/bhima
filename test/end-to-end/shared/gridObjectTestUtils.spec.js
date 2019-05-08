@@ -1,12 +1,10 @@
-/* globals element, by */
-
-var gridTestUtils = require('./gridTestUtils.spec.js');
+const gridTestUtils = require('./gridTestUtils.spec.js');
 
 function getProxyToRealMethod(gridId, method) {
-    return function() {
-        var callArgs = [gridId].concat(Array.prototype.slice.call(arguments));
-        return gridTestUtils[method].apply(gridTestUtils, callArgs);
-    };
+  return function () {
+    const callArgs = [gridId].concat(Array.prototype.slice.call(arguments));
+    return gridTestUtils[method].apply(gridTestUtils, callArgs);
+  };
 }
 
 /**
@@ -22,9 +20,8 @@ function getProxyToRealMethod(gridId, method) {
  * @description
  * End to end test functions.
  */
-module.exports = function(gridId) {
-    for (var method in gridTestUtils) {
-        this[method] = getProxyToRealMethod(gridId, method);
-    }
+module.exports = function (gridId) {
+  for (const method in gridTestUtils) {
+    this[method] = getProxyToRealMethod(gridId, method);
+  }
 };
-

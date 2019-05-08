@@ -17,96 +17,93 @@ function StockExiTests() {
   // navigate to the page
   before(() => helpers.navigate('#/stock/exit'));
 
-  it(`Should select the ${DEPOT_PRINCIPAL} `, () => {
-    page.setDepot(DEPOT_PRINCIPAL);
+  it(`Should select the ${DEPOT_PRINCIPAL}`, async () => {
+    await page.setDepot(DEPOT_PRINCIPAL);
   });
 
-  it(`Should distribute the stock to the patient ${PATIENT} `, () => {
+  it(`Should distribute the stock to the patient ${PATIENT} `, async () => {
     // select the patient
-    page.setPatient(PATIENT);
-
-    page.setDate(new Date());
-
-    page.setDescription(DESCRIPTION.concat(' - Patient'));
-
-    page.addRows(2);
+    await page.setPatient(PATIENT);
+    await page.setDate(new Date());
+    await page.setDescription(DESCRIPTION.concat(' - Patient'));
+    await page.addRows(2);
 
     // first item
-    page.setItem(0, 'Quinine', 'QUININE-A', 20);
+    await page.setItem(0, 'Quinine', 'QUININE-A', 20);
 
     // second item
-    page.setItem(1, 'Multivitamine', 'VITAMINE-A', 10);
+    await page.setItem(1, 'Multivitamine', 'VITAMINE-A', 10);
 
     // submit
-    page.submit();
+    await page.submit();
   });
 
-  it(`Should distribute the stock to the patient ${PATIENT} linked with the invoice ${INVOICE} `, () => {
+  it(`Should distribute the stock to the patient ${PATIENT} linked with the invoice ${INVOICE} `, async () => {
     // select the patient
-    page.setPatient(PATIENT, INVOICE, true);
+    await page.setPatient(PATIENT, INVOICE, true);
 
-    page.setDate(new Date());
+    await page.setDate(new Date());
 
-    page.setDescription(DESCRIPTION.concat(' - Patient'));
+    await page.setDescription(DESCRIPTION.concat(' - Patient'));
 
-    page.setLot(0, 'QUININE-A');
+    await page.setLot(0, 'QUININE-A');
 
     // submit
-    page.submit();
+    await page.submit();
   });
 
-  it(`should distribute the stock to the service ${SERVICE} `, () => {
+  it(`should distribute the stock to the service ${SERVICE} `, async () => {
     // select the service
-    page.setService(SERVICE);
+    await page.setService(SERVICE);
 
-    page.setDate(new Date());
+    await page.setDate(new Date());
 
-    page.setDescription(DESCRIPTION.concat(' - Service'));
+    await page.setDescription(DESCRIPTION.concat(' - Service'));
 
-    page.addRows(2);
+    await page.addRows(2);
 
     // first item
-    page.setItem(0, 'Quinine', 'QUININE-B', 25);
+    await page.setItem(0, 'Quinine', 'QUININE-B', 25);
 
     // second item
-    page.setItem(1, 'Multivitamine', 'VITAMINE-B', 5);
+    await page.setItem(1, 'Multivitamine', 'VITAMINE-B', 5);
 
     // submit
-    page.submit();
+    await page.submit();
   });
 
-  it(`should distribute the stock to the depot ${DEPOT_SECONDAIRE} `, () => {
+  it(`should distribute the stock to the depot ${DEPOT_SECONDAIRE} `, async () => {
     // select the depot of destination
-    page.setDestinationDepot(DEPOT_SECONDAIRE);
+    await page.setDestinationDepot(DEPOT_SECONDAIRE);
 
-    page.setDate(new Date());
+    await page.setDate(new Date());
 
-    page.setDescription(DESCRIPTION.concat(' - Depot'));
+    await page.setDescription(DESCRIPTION.concat(' - Depot'));
 
-    page.addRows(1);
+    await page.addRows(1);
 
     // first item
-    page.setItem(0, 'Quinine', 'QUININE-B', 75);
+    await page.setItem(0, 'Quinine', 'QUININE-B', 75);
 
     // submit
-    page.submit();
+    await page.submit();
   });
 
-  it('should distribute the stock as a loss ', () => {
+  it('should distribute the stock as a loss ', async () => {
     // select the depot of destination
-    page.setLoss();
+    await page.setLoss();
 
-    page.setDate(new Date());
+    await page.setDate(new Date());
 
-    page.setDescription(DESCRIPTION.concat(' - Loss'));
+    await page.setDescription(DESCRIPTION.concat(' - Loss'));
 
-    page.addRows(1);
+    await page.addRows(1);
 
     // first item
-    page.setItem(0, 'Multivitamine', 'VITAMINE-B', 5);
+    await page.setItem(0, 'Multivitamine', 'VITAMINE-B', 5);
 
     // submit
-    page.submit();
+    await page.submit();
   });
 }
 

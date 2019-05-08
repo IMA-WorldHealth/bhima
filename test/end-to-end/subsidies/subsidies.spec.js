@@ -1,8 +1,4 @@
-const chai = require('chai');
 const helpers = require('../shared/helpers');
-
-helpers.configure(chai);
-
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 const GridRow = require('../shared/GridRow');
@@ -17,58 +13,57 @@ describe('Subsidies', () => {
     value       : 12.5,
   };
 
-  it('creates a new subsidy', () => {
+  it('creates a new subsidy', async () => {
     // switch to the create form
-    FU.buttons.create();
-    FU.input('SubsidyModalCtrl.subsidy.label', subsidy.label);
-    FU.input('SubsidyModalCtrl.subsidy.value', subsidy.value);
-    components.accountSelect.set('NGO');
-    FU.input('SubsidyModalCtrl.subsidy.description', subsidy.description);
+    await FU.buttons.create();
+    await FU.input('SubsidyModalCtrl.subsidy.label', subsidy.label);
+    await FU.input('SubsidyModalCtrl.subsidy.value', subsidy.value);
+    await components.accountSelect.set('NGO');
+    await FU.input('SubsidyModalCtrl.subsidy.description', subsidy.description);
 
     // submit the page to the server
-    FU.buttons.submit();
+    await FU.buttons.submit();
 
     // expect a nice validation message
-    components.notification.hasSuccess();
+    await components.notification.hasSuccess();
   });
 
 
-  it('edits an subsidy', () => {
+  it('edits an subsidy', async () => {
     const row = new GridRow('IMA SUBSIDY');
-    row.dropdown().click();
-    row.edit().click();
+    await row.dropdown().click();
+    await row.edit().click();
 
-    FU.input('SubsidyModalCtrl.subsidy.label', 'Updated');
-    FU.input('SubsidyModalCtrl.subsidy.description', ' IMCK Tshikaji');
+    await FU.input('SubsidyModalCtrl.subsidy.label', 'Updated');
+    await FU.input('SubsidyModalCtrl.subsidy.description', ' IMCK Tshikaji');
 
-    FU.buttons.submit();
+    await FU.buttons.submit();
 
     // make sure the success message appears
-    components.notification.hasSuccess();
+    await components.notification.hasSuccess();
   });
 
-  it('blocks invalid form submission with relevant error classes', () => {
-    FU.buttons.create();
-    FU.buttons.submit();
+  it('blocks invalid form submission with relevant error classes', async () => {
+    await FU.buttons.create();
+    await FU.buttons.submit();
 
     // the following fields should be required
-    FU.validation.error('SubsidyModalCtrl.subsidy.label');
-    FU.validation.error('SubsidyModalCtrl.subsidy.value');
+    await FU.validation.error('SubsidyModalCtrl.subsidy.label');
+    await FU.validation.error('SubsidyModalCtrl.subsidy.value');
     // the following fields are not required
-    FU.validation.ok('SubsidyModalCtrl.subsidy.description');
-    FU.buttons.cancel();
+    await FU.validation.ok('SubsidyModalCtrl.subsidy.description');
+    await FU.buttons.cancel();
   });
 
-  it('deletes a subsidy', () => {
+  it('deletes a subsidy', async () => {
     const row = new GridRow('Updated');
-    row.dropdown().click();
-    row.remove().click();
+    await row.dropdown().click();
+    await row.remove().click();
 
     // click the alert asking for permission
-    FU.buttons.submit();
+    await FU.buttons.submit();
 
     // make sure that the delete message appears
-    components.notification.hasSuccess();
+    await components.notification.hasSuccess();
   });
-
 });

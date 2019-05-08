@@ -17,17 +17,17 @@ function StockEntryTests() {
   // navigate to the page
   before(() => helpers.navigate('#/stock/entry'));
 
-  it(`Should select the ${DEPOT_PRINCIPAL} `, () => {
-    page.setDepot(DEPOT_PRINCIPAL);
+  it(`Should select the ${DEPOT_PRINCIPAL}`, async () => {
+    await page.setDepot(DEPOT_PRINCIPAL);
   });
 
-  it('Should entry stock from a purchase order', () => {
+  it('Should entry stock from a purchase order', async () => {
     // select the purchase order
-    page.setPurchase(0);
+    await page.setPurchase(0);
 
-    page.setDate(new Date());
+    await page.setDate(new Date());
 
-    page.setDescription(DESCRIPTION.concat(' - Purchase order'));
+    await page.setDescription(DESCRIPTION.concat(' - Purchase order'));
 
     const lots = [
       { label : 'LX-ONE', quantity : 500, expiration_date : expireInThreeYears },
@@ -35,26 +35,26 @@ function StockEntryTests() {
       { label : 'LX-THREE', quantity : 200, expiration_date : expireInOneYear },
     ];
 
-    page.setLots(0, lots, false);
+    await page.setLots(0, lots, false);
 
     // submit
-    page.submit();
+    await page.submit();
   });
 
-  it(`Should entry stock in ${DEPOT_SECONDAIRE} from an integration`, function t() {
-    this.timeout(60000);
+  it(`Should entry stock in ${DEPOT_SECONDAIRE} from an integration`, async function t() {
+    await this.timeout(60000);
 
     // set another Depot
-    page.setDepot(DEPOT_SECONDAIRE);
+    await page.setDepot(DEPOT_SECONDAIRE);
 
     // select the integration option
-    page.setIntegration();
+    await page.setIntegration();
 
-    page.setDate(new Date());
+    await page.setDate(new Date());
 
-    page.setDescription(DESCRIPTION.concat(' - Integration de stock'));
+    await page.setDescription(DESCRIPTION.concat(' - Integration de stock'));
 
-    page.addRows(1);
+    await page.addRows(1);
 
     const lots = [
       { label : 'ASP-ONE', quantity : 100, expiration_date : expireInThreeYears },
@@ -64,56 +64,56 @@ function StockEntryTests() {
       { label : 'ASP-FIVE', quantity : 500, expiration_date : expireInThreeYears },
     ];
 
-    page.setItem(0, 'Quinine');
+    await page.setItem(0, 'Quinine');
 
-    page.setLots(0, lots, false, 1500, 0.09);
+    await page.setLots(0, lots, false, 1500, 0.09);
 
     // submit
-    page.submit();
+    await page.submit();
   });
 
-  it('Should entry stock from a transfer reception', () => {
+  it('Should entry stock from a transfer reception', async () => {
     // set another Depot
-    page.setDepot(DEPOT_SECONDAIRE);
+    await page.setDepot(DEPOT_SECONDAIRE);
 
     // select the movement
-    page.setTransfer(0);
+    await page.setTransfer(0);
 
-    page.setDate(new Date());
+    await page.setDate(new Date());
 
-    page.setDescription(DESCRIPTION.concat(' - Transfer reception'));
+    await page.setDescription(DESCRIPTION.concat(' - Transfer reception'));
 
     const lots = [
       { quantity : 75, expiration_date : expireInThreeYears },
     ];
 
-    page.setLots(0, lots, true);
+    await page.setLots(0, lots, true);
 
     // submit
-    page.submit();
+    await page.submit();
   });
 
-  it(`Should add automatically new lot row when fast insert is enabled`, () => {
+  it(`Should add automatically new lot row when fast insert is enabled`, async () => {
     // set another Depot
-    page.setDepot(DEPOT_SECONDAIRE);
+    await page.setDepot(DEPOT_SECONDAIRE);
 
     // select the integration option
-    page.setIntegration();
+    await page.setIntegration();
 
-    page.setDate(new Date());
+    await page.setDate(new Date());
 
-    page.setDescription(DESCRIPTION.concat(' - Integration de stock'));
+    await page.setDescription(DESCRIPTION.concat(' - Integration de stock'));
 
-    page.addRows(1);
+    await page.addRows(1);
 
-    page.setItem(0, 'Quinine');
+    await page.setItem(0, 'Quinine');
 
-    page.openLotsModal(0);
+    await page.openLotsModal(0);
 
-    page.enableFastLotsInsert();
+    await page.enableFastLotsInsert();
 
     const lots = ['AAA', 'BBB', 'CCC'];
-    page.fastLotsInsert(lots);
+    await page.fastLotsInsert(lots);
   });
 }
 

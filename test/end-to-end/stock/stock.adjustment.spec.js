@@ -13,42 +13,42 @@ function StockAdjustmentTests() {
   // navigate to the page
   before(() => helpers.navigate('#/stock/adjustment'));
 
-  it(`Should select the ${DEPOT_PRINCIPAL} `, () => {
-    page.setDepot(DEPOT_PRINCIPAL);
+  it(`Should select the ${DEPOT_PRINCIPAL}`, () => {
+    return page.setDepot(DEPOT_PRINCIPAL);
   });
 
-  it('Should make a positive adjustment ', () => {
+  it('Should make a positive adjustment ', async () => {
     // select the positive adjustment
-    page.setAdjustment('increase');
+    await page.setAdjustment('increase');
 
-    page.setDate(new Date());
+    await page.setDate(new Date());
 
-    page.setDescription(DESCRIPTION.concat(' - Positive'));
+    await page.setDescription(DESCRIPTION.concat(' - Positive'));
 
-    page.addRows(1);
+    await page.addRows(1);
 
     // increase the QUININE-A for 20
-    page.setItem(0, 'Quinine', 'QUININE-A', 20);
+    await page.setItem(0, 'Quinine', 'QUININE-A', 20);
 
     // submit
-    page.submit();
+    await page.submit();
   });
 
-  it('Should make a negative adjustment ', () => {
+  it('Should make a negative adjustment ', async () => {
     // select the negative adjustment
-    page.setAdjustment('decrease');
+    await page.setAdjustment('decrease');
 
-    page.setDate(new Date());
+    await page.setDate(new Date());
 
-    page.setDescription(DESCRIPTION.concat(' - Negative'));
+    await page.setDescription(DESCRIPTION.concat(' - Negative'));
 
-    page.addRows(1);
+    await page.addRows(1);
 
     // increase the QUININE-A for 20
-    page.setItem(0, 'Quinine', 'QUININE-A', 20);
+    await page.setItem(0, 'Quinine', 'QUININE-A', 20);
 
     // submit
-    page.submit();
+    await page.submit();
   });
 }
 
