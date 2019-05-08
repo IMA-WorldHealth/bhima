@@ -1,9 +1,6 @@
 /* global element, by */
-const chai = require('chai');
+const { expect } = require('chai');
 const helpers = require('../shared/helpers');
-
-helpers.configure(chai);
-const { expect } = chai;
 
 const components = require('../shared/components');
 const FU = require('../shared/FormUtils');
@@ -18,76 +15,76 @@ describe('Debtor Groups Management', () => {
   // helper to quickly get a group by uuid
   const getGroupRow = (uuid) => $(`[data-group-entry="${uuid}"]`);
 
-  it('lists base test debtor groups', () => {
-    expect(element.all(by.css('[data-group-entry]')).count()).to.eventually.equal(INITIAL_GROUPS);
+  it('lists base test debtor groups', async () => {
+    expect(await element.all(by.css('[data-group-entry]')).count()).to.eventually.equal(INITIAL_GROUPS);
   });
 
-  it('creates a debtor group', () => {
-    FU.buttons.create();
+  it('creates a debtor group', async () => {
+    await FU.buttons.create();
 
-    FU.input('GroupUpdateCtrl.group.name', 'E2E Debtor Group');
+    await FU.input('GroupUpdateCtrl.group.name', 'E2E Debtor Group');
 
-    FU.uiSelect('GroupUpdateCtrl.group.color', 'Jaune');
+    await FU.uiSelect('GroupUpdateCtrl.group.color', 'Jaune');
 
-    components.accountSelect.set('41111010'); // CHURCH
-    FU.input('GroupUpdateCtrl.group.max_credit', '1200');
-    FU.input('GroupUpdateCtrl.group.note', 'This debtor group was created by an automated end to end test.');
-    FU.input('GroupUpdateCtrl.group.phone', '+243 834 443');
-    FU.input('GroupUpdateCtrl.group.email', 'e2e@email.com');
+    await components.accountSelect.set('41111010'); // CHURCH
+    await FU.input('GroupUpdateCtrl.group.max_credit', '1200');
+    await FU.input('GroupUpdateCtrl.group.note', 'This debtor group was created by an automated end to end test.');
+    await FU.input('GroupUpdateCtrl.group.phone', '+243 834 443');
+    await FU.input('GroupUpdateCtrl.group.email', 'e2e@email.com');
 
-    FU.select('GroupUpdateCtrl.group.price_list_uuid', 'Test Price List');
+    await FU.select('GroupUpdateCtrl.group.price_list_uuid', 'Test Price List');
 
-    FU.buttons.submit();
+    await FU.buttons.submit();
 
-    components.notification.hasSuccess();
+    await components.notification.hasSuccess();
 
-    expect(element.all(by.css('[data-group-entry]')).count()).to.eventually.equal(INITIAL_GROUPS + 1);
+    expect(await element.all(by.css('[data-group-entry]')).count()).to.eventually.equal(INITIAL_GROUPS + 1);
   });
 
-  it('deletes a debtor group', () => {
+  it('deletes a debtor group', async () => {
     // find the group by uuid
     const group = getGroupRow(DELETEABLE_DEBTOR_GROUP);
 
     // delete the creditor group
-    group.$('[data-method="update"]').click();
+    await group.$('[data-method="update"]').click();
 
     // click the "delete" button
-    FU.buttons.delete();
+    await FU.buttons.delete();
 
     // submit the confirmation modal
-    FU.modal.submit();
+    await FU.modal.submit();
 
-    components.notification.hasSuccess();
+    await components.notification.hasSuccess();
   });
 
 
-  it('updates a debtor group', () => {
+  it('updates a debtor group', async () => {
     const updateGroup = element.all(by.css('[data-group-entry]'));
-    updateGroup.all(by.css('[data-method="update"]')).first().click();
+    await updateGroup.all(by.css('[data-method="update"]')).first().click();
 
-    FU.input('GroupUpdateCtrl.group.max_credit', '500');
-    FU.input('GroupUpdateCtrl.group.name', '[Updated]');
+    await FU.input('GroupUpdateCtrl.group.max_credit', '500');
+    await FU.input('GroupUpdateCtrl.group.name', '[Updated]');
 
-    FU.buttons.submit();
+    await FU.buttons.submit();
 
-    components.notification.hasSuccess();
+    await components.notification.hasSuccess();
   });
 
-  it('updates debtor group invoicing fee subscriptions', () => {
+  it('updates debtor group invoicing fee subscriptions', async () => {
     const updateGroup = element.all(by.css('[data-group-entry]')).first();
 
-    updateGroup.$('[data-method="update"]').click();
+    await updateGroup.$('[data-method="update"]').click();
 
-    element(by.css('#invoicingFeeSubscription')).click();
-    element.all(by.css('[data-group-option]')).get(1).click();
-    FU.modal.submit();
-    components.notification.hasSuccess();
+    await element(by.css('#invoicingFeeSubscription')).click();
+    await element.all(by.css('[data-group-option]')).get(1).click();
+    await FU.modal.submit();
+    await components.notification.hasSuccess();
   });
 
-  it('updates debtor group subsidy subscriptions', () => {
-    element(by.css('#subsidySubscription')).click();
-    element.all(by.css('[data-group-option]')).get(1).click();
-    FU.modal.submit();
-    components.notification.hasSuccess();
+  it('updates debtor group subsidy subscriptions', async () => {
+    await element(by.css('#subsidySubscription')).click();
+    await element.all(by.css('[data-group-option]')).get(1).click();
+    await FU.modal.submit();
+    await components.notification.hasSuccess();
   });
 });

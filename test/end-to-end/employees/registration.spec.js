@@ -1,11 +1,7 @@
 /* global browser */
-const chai = require('chai');
+const { expect } = require('chai');
 const helpers = require('../shared/helpers');
-
-const { expect } = chai;
 const RegistrationPage = require('./registration.page.js');
-
-helpers.configure(chai);
 
 describe('Employees', () => {
   const path = '#!/employees/register';
@@ -42,74 +38,74 @@ describe('Employees', () => {
 
   before(() => helpers.navigate(path));
 
-  it('blocks invalid form submission with relevant error classes', () => {
+  it('blocks invalid form submission with relevant error classes', async () => {
     // verify we are in the current path
-    expect(helpers.getCurrentPath()).to.eventually.equal(path);
+    expect(await helpers.getCurrentPath()).to.eventually.equal(path);
 
-    registrationPage.createEmployee();
-    registrationPage.requiredFieldErrored();
-    registrationPage.notRequiredFieldOk();
+    await registrationPage.createEmployee();
+    await registrationPage.requiredFieldErrored();
+    await registrationPage.notRequiredFieldOk();
   });
 
-  it('creates a new employee', () => {
-    registrationPage.setDisplayName(employee.display_name);
-    registrationPage.setDob(employee.dob);
-    registrationPage.setSex(employee.sex);
-    registrationPage.setCode(employee.code);
-    registrationPage.setGrade('A1');
-    registrationPage.setHospitalNumber(employee.hospital_no);
-    registrationPage.setCreditorGroup('Employees');
-    registrationPage.setDebtorGroup('NGO IMA World Health');
-    registrationPage.setOriginLocation(helpers.data.locations);
-    registrationPage.setCurrentLocation(helpers.data.locations);
-    registrationPage.setHiringDate(employee.date_embauche);
-    registrationPage.setNumberChild(employee.nb_enfant);
-    registrationPage.setService('Administration');
-    registrationPage.setFonction('Infirmier');
-    registrationPage.setIsMedical();
-    registrationPage.setEmail(employee.email);
-    registrationPage.setAddress(employee.adresse);
-    registrationPage.setCurrencyInput('individual_salary', 0);
+  it('creates a new employee', async () => {
+    await registrationPage.setDisplayName(employee.display_name);
+    await registrationPage.setDob(employee.dob);
+    await registrationPage.setSex(employee.sex);
+    await registrationPage.setCode(employee.code);
+    await registrationPage.setGrade('A1');
+    await registrationPage.setHospitalNumber(employee.hospital_no);
+    await registrationPage.setCreditorGroup('Employees');
+    await registrationPage.setDebtorGroup('NGO IMA World Health');
+    await registrationPage.setOriginLocation(helpers.data.locations);
+    await registrationPage.setCurrentLocation(helpers.data.locations);
+    await registrationPage.setHiringDate(employee.date_embauche);
+    await registrationPage.setNumberChild(employee.nb_enfant);
+    await registrationPage.setService('Administration');
+    await registrationPage.setFonction('Infirmier');
+    await registrationPage.setIsMedical();
+    await registrationPage.setEmail(employee.email);
+    await registrationPage.setAddress(employee.adresse);
+    await registrationPage.setCurrencyInput('individual_salary', 0);
 
-    registrationPage.setCurrencyInput('TPR', 0);
-    registrationPage.setCurrencyInput('v_cher', 30);
-    registrationPage.setCurrencyInput('f_scol', 0);
-    registrationPage.setCurrencyInput('allc', 120);
-    registrationPage.setCurrencyInput('ac_sal', 0);
+    await registrationPage.setCurrencyInput('TPR', 0);
+    await registrationPage.setCurrencyInput('v_cher', 30);
+    await registrationPage.setCurrencyInput('f_scol', 0);
+    await registrationPage.setCurrencyInput('allc', 120);
+    await registrationPage.setCurrencyInput('ac_sal', 0);
 
-    registrationPage.setBank(employee.bank);
-    registrationPage.setBankAccount(employee.bank_account);
+    await registrationPage.setBank(employee.bank);
+    await registrationPage.setBankAccount(employee.bank_account);
 
-    registrationPage.createEmployee();
-    registrationPage.isEmployeeCreated(true);
-    browser.refresh();
+    await registrationPage.createEmployee();
+    await registrationPage.isEmployeeCreated(true);
+    await browser.refresh();
   });
 
-  it('Register an employee from a patient', () => {
-    browser.get(pathPatient);
+  it('register an employee from a patient', async () => {
+    await browser.get(pathPatient);
 
-    registrationPage.setCode(patient.code);
-    registrationPage.setGrade('A1');
-    registrationPage.setCreditorGroup(patient.creditor_group);
-    registrationPage.setDebtorGroup(patient.debtor_group);
-    registrationPage.setHiringDate(patient.date_embauche);
-    registrationPage.setNumberChild(patient.nb_enfant);
-    registrationPage.setService('Administration');
-    registrationPage.setFonction('Infirmier');
-    registrationPage.setIsMedical();
-    registrationPage.setEmail(patient.email);
-    registrationPage.setAddress(patient.adresse);
-    registrationPage.setCurrencyInput('individual_salary', 0);
-    registrationPage.setCurrencyInput('TPR', 0);
-    registrationPage.setCurrencyInput('v_cher', 0);
-    registrationPage.setCurrencyInput('f_scol', 0);
-    registrationPage.setCurrencyInput('allc', 50);
-    registrationPage.setCurrencyInput('ac_sal', 0);
-    registrationPage.setBank(patient.bank);
-    registrationPage.setBankAccount(patient.bank_account);
+    await registrationPage.setCode(patient.code);
+    await registrationPage.setGrade('A1');
+    await registrationPage.setCreditorGroup(patient.creditor_group);
+    await registrationPage.setDebtorGroup(patient.debtor_group);
+    await registrationPage.setHiringDate(patient.date_embauche);
+    await registrationPage.setNumberChild(patient.nb_enfant);
+    await registrationPage.setService('Administration');
+    await registrationPage.setFonction('Infirmier');
+    await registrationPage.setIsMedical();
+    await registrationPage.setEmail(patient.email);
+    await registrationPage.setAddress(patient.adresse);
+    await registrationPage.setCurrencyInput('individual_salary', 0);
+    await registrationPage.setCurrencyInput('TPR', 0);
+    await registrationPage.setCurrencyInput('v_cher', 0);
+    await registrationPage.setCurrencyInput('f_scol', 0);
+    await registrationPage.setCurrencyInput('allc', 50);
+    await registrationPage.setCurrencyInput('ac_sal', 0);
+    await registrationPage.setBank(patient.bank);
+    await registrationPage.setBankAccount(patient.bank_account);
 
-    registrationPage.createEmployee();
-    registrationPage.expectNotificationSuccess();
-    browser.refresh();
+    await registrationPage.createEmployee();
+    await registrationPage.expectNotificationSuccess();
+    await browser.refresh();
   });
 });

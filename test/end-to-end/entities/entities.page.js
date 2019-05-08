@@ -5,12 +5,6 @@
  * This class is represents a entity page in term of structure and
  * behaviour so it is a entity page object.
  */
-const chai = require('chai');
-const helpers = require('../shared/helpers');
-
-helpers.configure(chai);
-
-/* loading grid actions */
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 
@@ -25,86 +19,86 @@ class EntityPage {
   /**
    * create an entity
    */
-  createEntity(name, type, gender, phone, email, address) {
-    FU.buttons.create();
+  async createEntity(name, type, gender, phone, email, address) {
+    await FU.buttons.create();
     // entity name
-    FU.input('EntityModalCtrl.entity.display_name', name);
+    await FU.input('EntityModalCtrl.entity.display_name', name);
 
     // entity type
-    components.entityTypeSelect.set(type);
+    await components.entityTypeSelect.set(type);
 
     // entity gender
-    components.genderSelect.set(gender);
+    await components.genderSelect.set(gender);
 
     // entity phone
-    FU.input('EntityModalCtrl.entity.phone', phone);
+    await FU.input('EntityModalCtrl.entity.phone', phone);
 
     // entity email
-    FU.input('EntityModalCtrl.entity.email', email);
+    await FU.input('EntityModalCtrl.entity.email', email);
 
     // entity address
-    FU.input('EntityModalCtrl.entity.address', address);
+    await FU.input('EntityModalCtrl.entity.address', address);
 
-    FU.buttons.submit();
-    components.notification.hasSuccess();
+    await FU.buttons.submit();
+    await components.notification.hasSuccess();
   }
 
   /**
    * block creation without the entity name
    */
-  errorOnCreateEntity() {
-    FU.buttons.create();
-    FU.buttons.submit();
-    FU.validation.error('EntityModalCtrl.entity.display_name');
-    FU.buttons.cancel();
+  async errorOnCreateEntity() {
+    await FU.buttons.create();
+    await FU.buttons.submit();
+    await FU.validation.error('EntityModalCtrl.entity.display_name');
+    await FU.buttons.cancel();
   }
 
   /**
    * simulate a click on the edit link of a entity
    */
-  editEntity(name, newName, type, gender, phone, email, address) {
+  async editEntity(name, newName, type, gender, phone, email, address) {
     const row = new GridRow(name);
-    row.dropdown().click();
-    row.edit().click();
+    await row.dropdown().click();
+    await row.edit().click();
 
     if (newName) {
-      FU.input('EntityModalCtrl.entity.display_name', newName);
+      await FU.input('EntityModalCtrl.entity.display_name', newName);
     }
 
     if (type) {
-      components.entityTypeSelect.set(type);
+      await components.entityTypeSelect.set(type);
     }
 
     if (gender) {
-      components.genderSelect.set(gender);
+      await components.genderSelect.set(gender);
     }
 
     if (phone) {
-      FU.input('EntityModalCtrl.entity.phone', phone);
+      await FU.input('EntityModalCtrl.entity.phone', phone);
     }
 
     if (email) {
-      FU.input('EntityModalCtrl.entity.email', email);
+      await FU.input('EntityModalCtrl.entity.email', email);
     }
 
     if (address) {
-      FU.input('EntityModalCtrl.entity.address', address);
+      await FU.input('EntityModalCtrl.entity.address', address);
     }
 
-    FU.modal.submit();
-    components.notification.hasSuccess();
+    await FU.modal.submit();
+    await components.notification.hasSuccess();
   }
 
   /**
    * simulate a click on the delete link of a entity
    */
-  deleteEntity(name) {
+  async deleteEntity(name) {
     const row = new GridRow(name);
-    row.dropdown().click();
-    row.remove().click();
+    await row.dropdown().click();
+    await row.remove().click();
 
-    components.modalAction.confirm();
-    components.notification.hasSuccess();
+    await components.modalAction.confirm();
+    await components.notification.hasSuccess();
   }
 }
 

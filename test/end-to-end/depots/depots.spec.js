@@ -1,7 +1,6 @@
 const helpers = require('../shared/helpers');
 const DepotPage = require('./depots.page');
 
-/* loading User pages */
 const UserPage = require('../user/user.page.js');
 
 describe('Depots Management', () => {
@@ -29,34 +28,34 @@ describe('Depots Management', () => {
     is_warehouse : 1,
   };
 
-  it('successfully creates a new depot', () => {
-    Page.createDepot(depot.text, false, true, helpers.data.locations);
+  it('successfully creates a new depot', async () => {
+    await Page.createDepot(depot.text, false, true, helpers.data.locations);
   });
 
-  it('successfully edits a depot', () => {
-    Page.editDepot(depot.text, updateDepot.text);
+  it('successfully edits a depot', async () => {
+    await Page.editDepot(depot.text, updateDepot.text);
   });
 
-  it.skip('join a location to a depot', () => {
-    Page.joinLocation(DEPOT_SECONDAIRE, helpers.data.locations);
+  it.skip('join a location to a depot', async () => {
+    await Page.joinLocation(DEPOT_SECONDAIRE, helpers.data.locations);
   });
 
-  it.skip('remove a location to a depot', () => {
-    Page.removeLocation(DEPOT_SECONDAIRE);
+  it.skip('remove a location to a depot', async () => {
+    await Page.removeLocation(DEPOT_SECONDAIRE);
   });
 
-  it('don\'t create when incorrect depot name', () => {
-    Page.errorOnCreateDepot();
+  it('don\'t create when incorrect depot name', async () => {
+    await Page.errorOnCreateDepot();
   });
 
-  it('successfully delete a depot', () => {
-    Page.deleteDepot(updateDepot.text);
+  it('successfully delete a depot', async () => {
+    await Page.deleteDepot(updateDepot.text);
   });
 
-  it('set the depot manage by user', () => {
-    helpers.navigate('#!/users');
-    userPage.updateDepot('Super User');
-    Page.selectUserDepot([DEPOT_SECONDAIRE]);
-    Page.submitUserDepot();
+  it('set the depot manage by user', async () => {
+    await helpers.navigate('#!/users');
+    await userPage.updateDepot('Super User');
+    await Page.selectUserDepot([DEPOT_SECONDAIRE]);
+    await Page.submitUserDepot();
   });
 });

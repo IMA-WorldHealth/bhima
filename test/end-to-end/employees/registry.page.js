@@ -1,3 +1,4 @@
+/* eslint class-methods-use-this:off */
 /**
  * This class represents an employee registry page
  * behaviour so it is an employee page object
@@ -14,15 +15,15 @@ class EmployeeRegistryPage {
   }
 
   employeeCount(number, message) {
-    grid.expectRowCount(this.gridId, number, message);
+    return grid.expectRowCount(this.gridId, number, message);
   }
 
   search() {
-    FU.buttons.search();
+    return FU.buttons.search();
   }
 
   clearFilter() {
-    this.filters.resetFilters();
+    return this.filters.resetFilters();
   }
 }
 

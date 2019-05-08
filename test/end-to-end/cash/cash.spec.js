@@ -22,71 +22,71 @@ describe('Cash Payments', () => {
   };
 
   // this is a shortcut function for clicking an action in the cash page
-  function selectDropdownAction(action) {
+  async function selectDropdownAction(action) {
     // open the dropdown menu
-    $('[data-action="open-tools"]').click();
+    await $('[data-action="open-tools"]').click();
 
     // get the action and click it
-    $(`[data-action="${action}"]`).click();
+    await $(`[data-action="${action}"]`).click();
   }
 
   describe('Cashbox Select Interface', () => {
-    it('navigating to /cash/:unknown should send a notification error ', () => {
+    it('navigating to /cash/:unknown should send a notification error ', async () => {
       // navigate to an invalid cashbox
-      helpers.navigate(`${path}/unknown`);
+      await helpers.navigate(`${path}/unknown`);
 
       // expect the 'cashbox selection' modal to appear
-      FU.exists(by.css('[data-cashbox-modal]'), true);
+      await FU.exists(by.css('[data-cashbox-modal]'), true);
 
       // select a cashbox
-      element(by.id('cashbox-2')).click();
-      element(by.css('[data-cashbox-modal-submit]')).click();
+      await element(by.id('cashbox-2')).click();
+      await element(by.css('[data-cashbox-modal-submit]')).click();
 
       // expect the 'cashbox selection' modal to disappear
-      FU.exists(by.css('[data-cashbox-modal]'), false);
+      await FU.exists(by.css('[data-cashbox-modal]'), false);
     });
 
-    it('navigating directly to /cash should be re-routed to selected cashbox after a selection is made', () => {
+    it('navigating directly to /cash should be re-routed to selected cashbox after a selection is made', async () => {
       // our target is cashbox B
       const target = `#!${path}/${cashboxB.id}`;
 
       // implicitly choose cashbox B by navigating to it directly
-      browser.get(target);
+      await browser.get(target);
 
-      expect(helpers.getCurrentPath()).to.eventually.equal(target);
+      expect(await helpers.getCurrentPath()).to.eventually.equal(target);
 
-      browser.get(`#!${path}`);
+      await browser.get(`#!${path}`);
 
       // the cashbox selection modal should not appear
-      FU.exists(by.css('[data-cashbox-modal]'), false);
+      await FU.exists(by.css('[data-cashbox-modal]'), false);
 
       // the url should be the original target
-      expect(helpers.getCurrentPath()).to.eventually.equal(target);
+      expect(await helpers.getCurrentPath()).to.eventually.equal(target);
     });
 
-    it('should allow a user to select and deselect a cashbox', () => {
+    it('should allow a user to select and deselect a cashbox', async () => {
       // the auxiliary cashbox is the target
       const targetAuxiliary1 = `#!${path}/${cashboxC.id}`;
 
-      helpers.navigate(targetAuxiliary1);
+      await helpers.navigate(targetAuxiliary1);
 
       // verify that we get to the cashboxC page
-      expect(helpers.getCurrentPath()).to.eventually.equal(targetAuxiliary1);
+      expect(await helpers.getCurrentPath()).to.eventually.equal(targetAuxiliary1);
 
       // the auxiliary cashbox is the target
       const targetAuxiliary2 = `#!${path}/${cashboxB.id}`;
 
       // use the button to navigate back to the cashbox select module
-      selectDropdownAction('change-cashbox');
+      await selectDropdownAction('change-cashbox');
 
       // select the auxiliary cashbox B displayed
-      element(by.id(`cashbox-${cashboxB.id}`)).click();
+      await element(by.id(`cashbox-${cashboxB.id}`)).click();
 
       // click on the ok button of the modal box
-      element(by.css('[data-cashbox-modal-submit]')).click();
+      await element(by.css('[data-cashbox-modal-submit]')).click();
 
       // verify that we get to the cashboxB page
-      expect(helpers.getCurrentPath()).to.eventually.equal(targetAuxiliary2);
+      expect(await helpers.getCurrentPath()).to.eventually.equal(targetAuxiliary2);
     });
   });
 
@@ -111,100 +111,100 @@ describe('Cash Payments', () => {
       amount    : 5.12,
     };
 
-    it('should make a caution payment', () => {
+    it('should make a caution payment', async () => {
       // select the proper patient
-      components.findPatient.findByName(mockCautionPayment.patientName);
+      await components.findPatient.findByName(mockCautionPayment.patientName);
 
       // we will leave the date input as default
 
       // select the proper is caution type
       const cautionOption = element(by.css('[data-caution-option="1"]'));
-      cautionOption.click();
+      await cautionOption.click();
 
       // select the FC currency from the currency select
-      components.currencySelect.set(1);
+      await components.currencySelect.set(1);
 
       // enter the amount to pay for a caution
-      components.currencyInput.set(mockCautionPayment.amount);
+      await components.currencyInput.set(mockCautionPayment.amount);
 
       // click the submit button
-      FU.buttons.submit();
+      await FU.buttons.submit();
 
       // expect the receipt modal to appear
-      FU.exists(by.id('receipt-confirm-created'), true);
+      await FU.exists(by.id('receipt-confirm-created'), true);
 
       // dismiss the modal
-      $('[data-action="close"]').click();
+      await $('[data-action="close"]').click();
     });
 
-    it('should block invoice payments without invoices', () => {
+    it('should block invoice payments without invoices', async () => {
       // select the proper patient
-      components.findPatient.findByName(mockCautionPayment.patientName);
+      await components.findPatient.findByName(mockCautionPayment.patientName);
 
       // we will leave the date input as default
 
       // select the proper is caution type
       const cautionOption = element(by.css('[data-caution-option="0"]'));
-      cautionOption.click();
+      await cautionOption.click();
 
       // select the FC currency from the currency select
-      components.currencySelect.set(1);
+      await components.currencySelect.set(1);
 
       // enter the amount to pay for a caution
-      components.currencyInput.set(mockCautionPayment.amount);
+      await components.currencyInput.set(mockCautionPayment.amount);
 
       // click the submit button
-      FU.buttons.submit();
+      await FU.buttons.submit();
 
       // expect a danger notification
-      components.notification.hasDanger();
+      await components.notification.hasDanger();
 
-      $('[data-method="clear"]').click();
+      await $('[data-method="clear"]').click();
     });
 
-    it('should make a payment against previous invoices', () => {
+    it('should make a payment against previous invoices', async () => {
       // @fixme - why is this better?
-      browser.refresh();
+      await browser.refresh();
 
       const gridId = 'debtorInvoicesGrid';
 
       // select the proper patient
-      components.findPatient.findById(mockInvoicesPayment.patientId);
+      await components.findPatient.findById(mockInvoicesPayment.patientId);
 
       // select the proper date
-      components.dateEditor.set(mockInvoicesPayment.date);
+      await components.dateEditor.set(mockInvoicesPayment.date);
 
       // select the "invoices payment" option type
       const cautionOption = element(by.css('[data-caution-option="0"]'));
-      cautionOption.click();
+      await cautionOption.click();
 
       // open the invoices modal to select constious invoices
-      FU.exists(by.css('[data-open-invoices-btn]'), true);
-      element(by.css('[data-open-invoices-btn]')).click();
+      await FU.exists(by.css('[data-open-invoices-btn]'), true);
+      await element(by.css('[data-open-invoices-btn]')).click();
 
       // be sure that the modal opened
-      FU.exists(by.css('[data-debtor-invoice-modal]'), true);
+      await FU.exists(by.css('[data-debtor-invoice-modal]'), true);
 
       // inside the modal, we want to select the first row to pay against
-      GU.selectRow(gridId, 0);
+      await GU.selectRow(gridId, 0);
 
       // submit the modal
-      FU.modal.submit();
+      await FU.modal.submit();
 
       // select the USD currency from the currency radio buttons
-      components.currencySelect.set(2);
+      await components.currencySelect.set(2);
 
       // enter the amount to pay for an invoice
-      components.currencyInput.set(mockInvoicesPayment.amount);
+      await components.currencyInput.set(mockInvoicesPayment.amount);
 
       // click the submit button
-      FU.buttons.submit();
+      await FU.buttons.submit();
 
       // expect the receipt modal to appear
-      FU.exists(by.id('receipt-confirm-created'), true);
+      await FU.exists(by.id('receipt-confirm-created'), true);
 
       // dismiss the modal
-      $('[data-action="close"]').click();
+      await $('[data-action="close"]').click();
     });
   });
 
@@ -223,30 +223,30 @@ function CashTransfer() {
   // this transfer should succeed
   const mockTransfer = { amount : 100 };
 
-  it('should make a transfer between accounts', () => {
+  it('should make a transfer between accounts', async () => {
     // open the dropdown menu
-    $('[data-action="open-tools"]').click();
+    await $('[data-action="open-tools"]').click();
 
     // get the transfer button and click it
-    $('[data-action="transfer"]').click();
+    await $('[data-action="transfer"]').click();
 
     // choose CDF as transfer currency
-    components.currencySelect.set(2, 'transfer-currency-select');
+    await components.currencySelect.set(2, 'transfer-currency-select');
 
     // set a value in the currency component by model to avoid conflict
-    components.currencyInput.set(mockTransfer.amount, 'transfer-currency-input');
+    await components.currencyInput.set(mockTransfer.amount, 'transfer-currency-input');
 
     // submit the modal button
-    FU.modal.submit();
+    await FU.modal.submit();
 
     // expect the receipt modal to appear
-    FU.exists(by.id('receipt-confirm-created'), true);
+    await FU.exists(by.id('receipt-confirm-created'), true);
 
     // dismiss the modal
-    $('[data-action="close"]').click();
+    await $('[data-action="close"]').click();
 
     // make sure we have a success notification shown
-    components.notification.hasSuccess();
+    await components.notification.hasSuccess();
   });
 }
 
@@ -256,31 +256,31 @@ const GridRow = require('../shared/GridRow');
 function CreditNoteTests() {
   before(() => helpers.navigate('#!/payments'));
 
-  it('cancels a payment with a credit note', () => {
+  it('cancels a payment with a credit note', async () => {
     const row = new GridRow('CP.TPA.3');
-    row.dropdown().click();
-    row.reverse().click();
+    await row.dropdown().click();
+    await row.reverse().click();
 
-    FU.input('ModalCtrl.cancelCash.description', 'Cancel This Payment');
-    FU.modal.submit();
-    components.notification.hasSuccess();
+    await FU.input('ModalCtrl.cancelCash.description', 'Cancel This Payment');
+    await FU.modal.submit();
+    await components.notification.hasSuccess();
   });
 
-  it('deletes a cash payment from the database', () => {
-    SearchModal.open();
+  it('deletes a cash payment from the database', async () => {
+    await SearchModal.open();
     const modal = new SearchModal('cash-payment-search');
-    modal.switchToDefaultFilterTab();
-    modal.setPeriod('allTime');
-    modal.setLimit(1000);
-    modal.submit();
+    await modal.switchToDefaultFilterTab();
+    await modal.setPeriod('allTime');
+    await modal.setLimit(1000);
+    await modal.submit();
 
     const row = new GridRow('CP.TPA.4');
-    row.dropdown().click();
-    row.remove().click();
+    await row.dropdown().click();
+    await row.remove().click();
 
     // accept the confirm modal
-    FU.modal.submit();
+    await FU.modal.submit();
 
-    components.notification.hasSuccess();
+    await components.notification.hasSuccess();
   });
 }
