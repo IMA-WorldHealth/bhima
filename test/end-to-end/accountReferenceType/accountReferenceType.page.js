@@ -18,38 +18,38 @@ class AccountReferenceTypePage {
       .count();
   }
 
-  create(accountReferenceType) {
-    FU.buttons.create();
-    FU.input('AccountReferenceTypeModalCtrl.types.label', accountReferenceType.label, this.modal);
-    FU.modal.submit();
-    notification.hasSuccess();
+  async create(accountReferenceType) {
+    await FU.buttons.create();
+    await FU.input('AccountReferenceTypeModalCtrl.types.label', accountReferenceType.label, this.modal);
+    await FU.modal.submit();
+    await notification.hasSuccess();
   }
 
-  errorOnCreateAccountReferenceType() {
-    FU.buttons.create();
-    FU.modal.submit();
-    FU.validation.error('AccountReferenceTypeModalCtrl.types.label', this.modal);
-    FU.modal.cancel();
+  async errorOnCreateAccountReferenceType() {
+    await FU.buttons.create();
+    await FU.modal.submit();
+    await FU.validation.error('AccountReferenceTypeModalCtrl.types.label', this.modal);
+    await FU.modal.cancel();
   }
 
-  update(code, newAccountReferenceType) {
+  async update(code, newAccountReferenceType) {
     const row = new GridRow(code);
 
-    row.dropdown().click();
-    row.edit().click();
-    FU.input('AccountReferenceTypeModalCtrl.types.label', newAccountReferenceType.label, this.modal);
+    await row.dropdown().click();
+    await row.edit().click();
+    await FU.input('AccountReferenceTypeModalCtrl.types.label', newAccountReferenceType.label, this.modal);
 
-    FU.modal.submit();
-    notification.hasSuccess();
+    await FU.modal.submit();
+    await notification.hasSuccess();
   }
 
-  remove(code) {
+  async remove(code) {
     const row = new GridRow(code);
-    row.dropdown().click();
-    row.remove().click();
+    await row.dropdown().click();
+    await row.remove().click();
 
-    FU.modal.submit();
-    notification.hasSuccess();
+    await FU.modal.submit();
+    await notification.hasSuccess();
   }
 }
 

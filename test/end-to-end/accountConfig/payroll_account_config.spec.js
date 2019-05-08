@@ -1,9 +1,7 @@
+const chai = require('chai');
 const helpers = require('../shared/helpers');
 const AccountConfigPage = require('./payroll_account_config.page');
-const chai = require('chai');
 
-
-/** configuring helpers**/
 helpers.configure(chai);
 
 describe('Payroll Account Configuration Management', () => {
@@ -22,20 +20,19 @@ describe('Payroll Account Configuration Management', () => {
     account_id : '57110010',
   };
 
-  it('successfully creates a Configuration Account', () => {
-    Page.createAccountConfig(accountConfig);
+  it('successfully creates a Configuration Account', async () => {
+    await Page.createAccountConfig(accountConfig);
   });
 
-  it('successfully edits a Configuration Account', () => {
-    Page.editAccountConfig(accountConfig.label, updateAccountConfig);
+  it('successfully edits a Configuration Account', async () => {
+    await Page.editAccountConfig(accountConfig.label, updateAccountConfig);
   });
 
-  it('don\'t create when incorrect Configuration Account', () => {
-    Page.errorOnCreateAccountConfig();
+  it('don\'t create when incorrect Configuration Account', async () => {
+    await Page.errorOnCreateAccountConfig();
   });
 
-  it('successfully delete a Configuration Account', () => {
-    Page.deleteAccountConfig(updateAccountConfig.label);
+  it('successfully delete a Configuration Account', async () => {
+    await Page.deleteAccountConfig(updateAccountConfig.label);
   });
-
 });

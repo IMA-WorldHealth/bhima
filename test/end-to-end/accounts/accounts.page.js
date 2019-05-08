@@ -12,10 +12,6 @@ const fixtures = path.resolve(__dirname, '../../fixtures/');
 class AccountsPage {
   constructor() {
     this.gridId = 'account-grid';
-
-    this.EditModal = {
-      parent : () => element(by.model('AccountEditCtrl.account.parent')).getText(),
-    };
   }
 
   getGrid() {
@@ -27,59 +23,59 @@ class AccountsPage {
   }
 
   expectGridRowsAtLeast(numRows) {
-    GU.expectRowCountAbove(this.gridId, numRows);
+    return GU.expectRowCountAbove(this.gridId, numRows);
   }
 
   expectRowVisible(number) {
-    FU.exists(by.css(`[data-row="${number}"]`), true);
+    return FU.exists(by.css(`[data-row="${number}"]`), true);
   }
 
   expectRowHidden(number) {
-    FU.exists(by.css(`[data-row="${number}"]`), false);
+    return FU.exists(by.css(`[data-row="${number}"]`), false);
   }
 
   toggleTitleRow(number) {
-    this.getTitleRow(number)
+    return this.getTitleRow(number)
       .$('[data-account-title]')
       .click();
   }
 
   openAddChild(number) {
-    this.getTitleRow(number)
+    return this.getTitleRow(number)
       .$('[data-action="add-child"]')
       .click();
   }
 
-  openEdit(number) {
+  async openEdit(number) {
     const row = new GridRow(number);
-    row.dropdown().click();
-    row.edit().click();
+    await row.dropdown().click();
+    await row.edit().click();
   }
 
-  deleteAccount(number) {
+  async deleteAccount(number) {
     const row = new GridRow(number);
-    row.dropdown().click();
-    row.remove().click();
-    components.modalAction.confirm();
+    await row.dropdown().click();
+    await row.remove().click();
+    await components.modalAction.confirm();
   }
 
-  openImportMenu() {
-    $('[data-action="open-tools"]').click();
-    $('[data-action="import-accounts"]').click();
-    browser.wait(EC.visibilityOf(element(by.css('[data-import-modal]'))), 3000, 'Could not find import modal.');
+  async openImportMenu() {
+    await $('[data-action="open-tools"]').click();
+    await $('[data-action="import-accounts"]').click();
+    await browser.wait(EC.visibilityOf(element(by.css('[data-import-modal]'))), 3000, 'Could not find import modal.');
   }
 
   chooseImportOption(option) {
-    FU.radio('ImportAccountsCtrl.option', option);
+    return FU.radio('ImportAccountsCtrl.option', option);
   }
 
   uploadFile(fileToUpload) {
     const absolutePath = path.resolve(fixtures, fileToUpload);
-    element(by.id('import-input')).sendKeys(absolutePath);
+    return element(by.id('import-input')).sendKeys(absolutePath);
   }
 
   toggleBatchCreate() {
-    element(by.model('AccountEditCtrl.batchCreate')).click();
+    return element(by.model('AccountEditCtrl.batchCreate')).click();
   }
 }
 

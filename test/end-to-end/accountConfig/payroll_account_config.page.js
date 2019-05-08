@@ -1,14 +1,11 @@
 /* global element, by */
+/* eslint class-methods-use-this:off */
+
 
 /**
- * This class is represents a account configuration page in term of structure and
+ * This class is represents an account configuration page in term of structure and
  * behaviour so it is a account configuration page object
  */
-
-const chai = require('chai');
-const helpers = require('../shared/helpers');
-
-helpers.configure(chai);
 
 /* loading grid actions */
 const GA = require('../shared/GridAction');
@@ -36,51 +33,45 @@ class AccountConfigPage {
   /**
    * simulate the create accountConfig button click to show the dialog of creation
    */
-  createAccountConfig(accountConfig) {
-    FU.buttons.create();
-    FU.input('AccountConfigModalCtrl.accountConfig.label', accountConfig.label);
-    components.accountSelect.set(accountConfig.account_id, 'account_id');
-    FU.buttons.submit();
-    components.notification.hasSuccess();
+  async createAccountConfig(accountConfig) {
+    await FU.buttons.create();
+    await FU.input('AccountConfigModalCtrl.accountConfig.label', accountConfig.label);
+    await components.accountSelect.set(accountConfig.account_id, 'account_id');
+    await FU.buttons.submit();
+    await components.notification.hasSuccess();
   }
 
   /**
    * block creation without the function name
    */
-  errorOnCreateAccountConfig() {
-    FU.buttons.create();
-    FU.buttons.submit();
-    FU.validation.error('AccountConfigModalCtrl.accountConfig.label');
-    FU.buttons.cancel();
+  async errorOnCreateAccountConfig() {
+    await FU.buttons.create();
+    await FU.buttons.submit();
+    await FU.validation.error('AccountConfigModalCtrl.accountConfig.label');
+    await FU.buttons.cancel();
   }
 
   /**
    * simulate a click on the edit link of a function
    */
-  editAccountConfig(label, updateAccountConfig) {
-    GU.getGridIndexesMatchingText(this.gridId, label)
-      .then(indices => {
-        const { rowIndex } = indices;
-        GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'edit', this.gridId);
-        FU.input('AccountConfigModalCtrl.accountConfig.label', updateAccountConfig.label);
-        components.accountSelect.set(updateAccountConfig.account_id, 'account_id');
+  async editAccountConfig(label, updateAccountConfig) {
+    const { rowIndex } = await GU.getGridIndexesMatchingText(this.gridId, label);
+    await GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'edit', this.gridId);
+    await FU.input('AccountConfigModalCtrl.accountConfig.label', updateAccountConfig.label);
+    await components.accountSelect.set(updateAccountConfig.account_id, 'account_id');
 
-        FU.buttons.submit();
-        components.notification.hasSuccess();
-      });
+    await FU.buttons.submit();
+    await components.notification.hasSuccess();
   }
 
   /**
    * simulate a click on the delete link of a function
    */
-  deleteAccountConfig(label) {
-    GU.getGridIndexesMatchingText(this.gridId, label)
-      .then(indices => {
-        const { rowIndex } = indices;
-        GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'delete', this.gridId);
-        components.modalAction.confirm();
-        components.notification.hasSuccess();
-      });
+  async deleteAccountConfig(label) {
+    const { rowIndex } = await GU.getGridIndexesMatchingText(this.gridId, label);
+    await GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'delete', this.gridId);
+    await components.modalAction.confirm();
+    await components.notification.hasSuccess();
   }
 }
 
