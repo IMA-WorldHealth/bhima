@@ -67,7 +67,6 @@
     "cross-env": "^5.2.0",
     "csvtojson": "^2.0.8",
     "debug": "^4.1.1",
-    "dot": "^1.1.2",
     "dotenv": "^8.0.0",
     "excel4node": "^1.7.0",
     "express": "^4.16.4",
