@@ -1,10 +1,5 @@
 /* global by */
 
-const chai = require('chai');
-const helpers = require('../shared/helpers');
-
-helpers.configure(chai);
-
 const FU = require('../shared/FormUtils');
 const GU = require('../shared/GridUtils');
 
@@ -24,41 +19,41 @@ class ReportPage {
   }
 
   // close the preview
-  closePreview() {
+  async closePreview() {
     const anchor = $(this.previewAnchor);
-    anchor.element(by.css('[data-method="close"]')).click();
+    await anchor.element(by.css('[data-method="close"]')).click();
   }
 
   // print the preview
-  printPreview() {
+  async printPreview() {
     const anchor = $(this.previewAnchor);
-    anchor.element(by.css('[data-method="print"]'));
+    await anchor.element(by.css('[data-method="print"]'));
   }
 
   // saveAs
-  saveAs() {
+  async saveAs() {
     const anchor = $(this.previewAnchor);
-    anchor.element(by.css('[data-method="save"]')).click();
+    await anchor.element(by.css('[data-method="save"]')).click();
   }
 
   // config report
-  backToConfig() {
-    $(this.configAnchor).click();
+  async backToConfig() {
+    await $(this.configAnchor).click();
   }
 
   // goto archive
-  gotoArchive() {
-    $(this.archiveAnchor).click();
+  async gotoArchive() {
+    await $(this.archiveAnchor).click();
   }
 
   // preview
-  preview() {
-    FU.buttons.submit();
+  async preview() {
+    await FU.buttons.submit();
   }
 
   // lastReportMatching
-  lastReportMatching(name) {
-    GU.expectCellValueMatch(gridId, 0, 1, name);
+  async lastReportMatching(name) {
+    await GU.expectCellValueMatch(gridId, 0, 1, name);
   }
 }
 

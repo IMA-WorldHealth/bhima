@@ -1,14 +1,10 @@
 /* global element, by */
+/* eslint class-methods-use-this:off */
 
 /**
  * This class is represents a offday page in term of structure and
  * behaviour so it is a offday page object
  */
-
-const chai = require('chai');
-const helpers = require('../shared/helpers');
-
-helpers.configure(chai);
 
 /* loading grid actions */
 const GU = require('../shared/GridUtils');
@@ -36,60 +32,54 @@ class OffdayPage {
   /**
    * simulate the create offday button click to show the dialog of creation
    */
-  createOffday(offday) {
-    FU.buttons.create();
-    FU.input('OffdayModalCtrl.offday.label', offday.label);
-    
-    // FIX ME TO SET OFFDAY DATE WITH COMPONENTS DATE EDITOR
-    //components.dateEditor.set(new Date(offday.date));
+  async createOffday(offday) {
+    await FU.buttons.create();
+    await FU.input('OffdayModalCtrl.offday.label', offday.label);
 
-    FU.input('OffdayModalCtrl.offday.percent_pay', offday.percent_pay);
-    
-    FU.buttons.submit();
-    components.notification.hasSuccess();
+    // FIX ME TO SET OFFDAY DATE WITH COMPONENTS DATE EDITOR
+    // components.dateEditor.set(new Date(offday.date));
+
+    await FU.input('OffdayModalCtrl.offday.percent_pay', offday.percent_pay);
+
+    await FU.buttons.submit();
+    await components.notification.hasSuccess();
   }
 
   /**
    * block creation without the function name
    */
-  errorOnCreateOffday() {
-    FU.buttons.create();
-    FU.buttons.submit();
-    FU.validation.error('OffdayModalCtrl.offday.label');
-    FU.buttons.cancel();
+  async errorOnCreateOffday() {
+    await FU.buttons.create();
+    await FU.buttons.submit();
+    await FU.validation.error('OffdayModalCtrl.offday.label');
+    await FU.buttons.cancel();
   }
 
   /**
    * simulate a click on the edit link of a function
    */
-  editOffday(label, updateOffday) {
-    GU.getGridIndexesMatchingText(this.gridId, label)
-      .then(indices => {
-        const { rowIndex } = indices;
-        GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'edit', this.gridId);
-        FU.input('OffdayModalCtrl.offday.label', updateOffday.label);
+  async editOffday(label, updateOffday) {
+    const { rowIndex } = GU.getGridIndexesMatchingText(this.gridId, label);
+    await GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'edit', this.gridId);
+    await FU.input('OffdayModalCtrl.offday.label', updateOffday.label);
 
-        // FIX ME TO SET OFFDAY DATE WITH COMPONENTS DATE EDITOR
-        //components.dateEditor.set(new Date(updateOffday.date));
+    // FIX ME TO SET OFFDAY DATE WITH COMPONENTS DATE EDITOR
+    // components.dateEditor.set(new Date(updateOffday.date));
 
-        FU.input('OffdayModalCtrl.offday.percent_pay', updateOffday.percent_pay);
+    await FU.input('OffdayModalCtrl.offday.percent_pay', updateOffday.percent_pay);
 
-        FU.buttons.submit();
-        components.notification.hasSuccess();
-      });
+    await FU.buttons.submit();
+    await components.notification.hasSuccess();
   }
 
   /**
    * simulate a click on the delete link of a function
    */
-  deleteOffday(label) {
-    GU.getGridIndexesMatchingText(this.gridId, label)
-      .then(indices => {
-        const { rowIndex } = indices;
-        GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'delete', this.gridId);
-        components.modalAction.confirm();
-        components.notification.hasSuccess();
-      });
+  async deleteOffday(label) {
+    const { rowIndex } = GU.getGridIndexesMatchingText(this.gridId, label);
+    await GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'delete', this.gridId);
+    await components.modalAction.confirm();
+    await components.notification.hasSuccess();
   }
 }
 

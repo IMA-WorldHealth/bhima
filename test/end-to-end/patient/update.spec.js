@@ -21,26 +21,26 @@ describe('Patient Edit', () => {
 
   it('updates a patients details', () => {
     // required information
-    FU.input('PatientEditCtrl.medical.display_name', 'Updated Last Name');
+    await FU.input('PatientEditCtrl.medical.display_name', 'Updated Last Name');
 
     // optional information
-    FU.input('PatientEditCtrl.medical.title', 'Mr.');
-    FU.input('PatientEditCtrl.medical.email', 'update@email.com');
-    FU.buttons.submit();
-    components.notification.hasSuccess();
+    await FU.input('PatientEditCtrl.medical.title', 'Mr.');
+    await FU.input('PatientEditCtrl.medical.email', 'update@email.com');
+    await FU.buttons.submit();
+    await components.notification.hasSuccess();
   });
 
   it('updates a patients debtor group subscription', () => {
     // opens update modal
-    element(by.css('[data-update-group-debtor]')).click();
-    components.debtorGroupSelect.set('NGO IMA World Health');
+    await element(by.css('[data-update-group-debtor]')).click();
+    await components.debtorGroupSelect.set('NGO IMA World Health');
 
-    FU.modal.submit();
-    components.notification.hasSuccess();
+    await FU.modal.submit();
+    await components.notification.hasSuccess();
   });
 
   it('updates a patients group subscriptions', () => {
-    element(by.css('[data-update-group-patient]')).click();
+    await element(by.css('[data-update-group-patient]')).click();
 
     element.all(by.css('[data-group-option]')).get(1).click();
     FU.modal.submit();

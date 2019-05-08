@@ -28,49 +28,49 @@ describe('Price Lists', () => {
   };
 
 
-  it('prices should create a price list', () => {
-    page.create();
+  it('prices should create a price list', async () => {
+    await page.create();
 
-    FU.input('$ctrl.priceList.label', list.label);
-    FU.input('$ctrl.priceList.description', list.description);
+    await FU.input('$ctrl.priceList.label', list.label);
+    await FU.input('$ctrl.priceList.description', list.description);
 
-    FU.modal.submit();
-    components.notification.hasSuccess();
+    await FU.modal.submit();
+    await components.notification.hasSuccess();
   });
 
-  it('prices should update a price list', () => {
-    page.update(list.label);
+  it('prices should update a price list', async () => {
+    await page.update(list.label);
 
-    FU.input('$ctrl.priceList.label', updateListLabel);
+    await FU.input('$ctrl.priceList.label', updateListLabel);
 
-    FU.modal.submit();
-    components.notification.hasSuccess();
+    await FU.modal.submit();
+    await components.notification.hasSuccess();
   });
 
-  it('prices should add a price list item', () => {
-    page.configure(updateListLabel);
+  it('prices should add a price list item', async () => {
+    await page.configure(updateListLabel);
 
     const modal = new PriceListItemsModal();
 
-    modal.setLabel(priceListItem.label);
-    modal.setValue(priceListItem.value);
-    modal.setIsPercentage(priceListItem.is_percentage);
-    modal.setInventory(priceListItem.inventoryLabel);
+    await modal.setLabel(priceListItem.label);
+    await modal.setValue(priceListItem.value);
+    await modal.setIsPercentage(priceListItem.is_percentage);
+    await modal.setInventory(priceListItem.inventoryLabel);
 
-    modal.submit();
-    modal.close();
+    await modal.submit();
+    await modal.close();
 
-    components.notification.hasSuccess();
+    await components.notification.hasSuccess();
   });
 
-  it('prices should delete a price list item', () => {
-    page.configure(updateListLabel);
+  it('prices should delete a price list item', async () => {
+    await page.configure(updateListLabel);
 
     const modal = new PriceListItemsModal();
-    modal.remove(priceListItem.label);
-    modal.submit();
-    modal.close();
+    await modal.remove(priceListItem.label);
+    await modal.submit();
+    await modal.close();
 
-    components.notification.hasSuccess();
+    await components.notification.hasSuccess();
   });
 });

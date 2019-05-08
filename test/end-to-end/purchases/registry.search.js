@@ -23,76 +23,75 @@ function PurchaseOrderSearch() {
   const rows = grid.element(by.css('.ui-grid-render-container-body'))
     .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'));
 
-  beforeEach(() => {
-    SearchModal.open();
+  beforeEach(async () => {
+    await SearchModal.open();
     modal = new SearchModal('purchase-search');
     filters = new Filters();
   });
 
-  afterEach(() => {
-    filters.resetFilters();
+  afterEach(async () => {
+    await filters.resetFilters();
   });
 
-  function expectNumberOfGridRows(number) {
-    expect(rows.count(),
-      `Expected Patient Registry ui-grid's row count to be ${number}.`
-    ).to.eventually.equal(number);
+  async function expectNumberOfGridRows(number) {
+    await expect(rows.count(),
+      `Expected Patient Registry ui-grid's row count to be ${number}.`).to.eventually.equal(number);
   }
 
-  it('grid should have 0 visible rows', () => {
+  it('grid should have 0 visible rows', async () => {
     const DEFAULT_PURCHASES_FOR_TODAY = 0;
-    modal.switchToDefaultFilterTab();
-    modal.setPeriod('today');
-    modal.submit();
+    await modal.switchToDefaultFilterTab();
+    await modal.setPeriod('today');
+    await modal.submit();
 
-    expectNumberOfGridRows(DEFAULT_PURCHASES_FOR_TODAY);
+    await expectNumberOfGridRows(DEFAULT_PURCHASES_FOR_TODAY);
   });
 
   // demonstrates that filtering works
-  it(`should find one Purchase Order with Reference "${parameters.reference}" for all time`, () => {
+  it(`should find one Purchase Order with Reference "${parameters.reference}" for all time`, async () => {
     const NUM_MATCHING = 1;
-    modal.setReference(parameters.reference);
+    await modal.setReference(parameters.reference);
 
-    modal.switchToDefaultFilterTab();
-    modal.setPeriod('allTime');
-    FU.modal.submit();
+    await modal.switchToDefaultFilterTab();
+    await modal.setPeriod('allTime');
+    await FU.modal.submit();
 
-    expectNumberOfGridRows(NUM_MATCHING);
+    await expectNumberOfGridRows(NUM_MATCHING);
   });
 
-  it(`should find four Purchases Orders authored By "${parameters.author}" for all time`, () => {
+  it(`should find four Purchases Orders authored By "${parameters.author}" for all time`, async () => {
     const NUM_MATCHING = 4;
-    modal.setUser(parameters.author);
+    await modal.setUser(parameters.author);
 
-    modal.switchToDefaultFilterTab();
-    modal.setPeriod('allTime');
-    FU.modal.submit();
+    await modal.switchToDefaultFilterTab();
+    await modal.setPeriod('allTime');
+    await FU.modal.submit();
 
-    expectNumberOfGridRows(NUM_MATCHING);
+    await expectNumberOfGridRows(NUM_MATCHING);
   });
 
-  it(`should list all purchase orders ordered to "${parameters.supplier}" for all time`, () => {
+  it(`should list all purchase orders ordered to "${parameters.supplier}" for all time`, async () => {
     const NUM_MATCHING = 4;
-    modal.setSupplier(parameters.supplier);
+    await modal.setSupplier(parameters.supplier);
 
-    modal.switchToDefaultFilterTab();
-    modal.setPeriod('allTime');
-    FU.modal.submit();
+    await modal.switchToDefaultFilterTab();
+    await modal.setPeriod('allTime');
+    await FU.modal.submit();
 
-    expectNumberOfGridRows(NUM_MATCHING);
+    await expectNumberOfGridRows(NUM_MATCHING);
   });
 
 
-  it(`choose the status confirmed and should find two purchases orders status by "${parameters.status}" for all time`, function () {
-    const NUM_MATCHING = 1;
-    components.purchaseStatusSelect.set(parameters.status);
-    modal.switchToDefaultFilterTab();
-    modal.setPeriod('allTime');
-    FU.modal.submit();
+  it(`choose the status confirmed and should find two purchases orders status by "${parameters.status}" for all time`,
+    async () => {
+      const NUM_MATCHING = 1;
+      await components.purchaseStatusSelect.set(parameters.status);
+      await modal.switchToDefaultFilterTab();
+      await modal.setPeriod('allTime');
+      await FU.modal.submit();
 
-    expectNumberOfGridRows(NUM_MATCHING);
-  });
-
+      await expectNumberOfGridRows(NUM_MATCHING);
+    });
 }
 
 module.exports = PurchaseOrderSearch;
