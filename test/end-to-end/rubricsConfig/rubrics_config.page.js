@@ -1,6 +1,7 @@
-/* global element, by */
+/* global element, by, browser */
 /* eslint class-methods-use-this:off */
 
+const EC = require('protractor').ExpectedConditions;
 const GridRow = require('../shared/GridRow');
 const FU = require('../shared/FormUtils');
 const { notification } = require('../shared/components');
@@ -58,11 +59,14 @@ class RubricConfigPage {
   unsetRubricConfig(label) {
     const row = new GridRow(label);
     row.dropdown().click();
-    row.method('configure').click();
+    row.method('conigure').click();
+
+    const checkbox = element(by.id('all'));
+    browser.wait(EC.elementToBeClickable(checkbox), 1500);
 
     // double click to set all, then unset
-    element(by.id('all')).click();
-    element(by.id('all')).click();
+    checkbox.click();
+    checkbox.click();
 
     FU.modal.submit();
     notification.hasSuccess();

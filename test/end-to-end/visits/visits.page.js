@@ -5,12 +5,6 @@
  * This class is represents a visit page in term of structure and
  * behaviour so it is a visit page object
  * */
-const chai = require('chai');
-
-const helpers = require('../shared/helpers');
-
-helpers.configure(chai);
-
 const GU = require('../shared/GridUtils');
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');

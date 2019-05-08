@@ -4,36 +4,32 @@ const GridRow = require('../shared/GridRow');
 const FU = require('../shared/FormUtils');
 
 class FunctionPage {
-  create(label) {
-    FU.buttons.create();
-
-    FU.input('FunctionModalCtrl.function.fonction_txt', label);
-
-    FU.buttons.submit();
+  async create(label) {
+    await FU.buttons.create();
+    await FU.input('FunctionModalCtrl.function.fonction_txt', label);
+    await FU.buttons.submit();
   }
 
-  errorOnCreateFunction() {
-    FU.buttons.create();
-    FU.buttons.submit();
-    FU.validation.error('FunctionModalCtrl.function.fonction_txt');
-    FU.buttons.cancel();
+  async errorOnCreateFunction() {
+    await FU.buttons.create();
+    await FU.buttons.submit();
+    await FU.validation.error('FunctionModalCtrl.function.fonction_txt');
+    await FU.buttons.cancel();
   }
 
-  update(oldLabel, newLabel) {
+  async update(oldLabel, newLabel) {
     const row = new GridRow(oldLabel);
-    row.dropdown().click();
-    row.edit().click();
-
-    FU.input('FunctionModalCtrl.function.fonction_txt', newLabel);
-
-    FU.modal.submit();
+    await row.dropdown().click();
+    await row.edit().click();
+    await FU.input('FunctionModalCtrl.function.fonction_txt', newLabel);
+    await FU.modal.submit();
   }
 
-  remove(label) {
+  async remove(label) {
     const row = new GridRow(label);
-    row.dropdown().click();
-    row.remove().click();
-    FU.modal.submit();
+    await row.dropdown().click();
+    await row.remove().click();
+    await FU.modal.submit();
   }
 }
 

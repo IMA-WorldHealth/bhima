@@ -1,16 +1,11 @@
 /* global by */
 
-const chai = require('chai');
-
-const { expect } = chai;
+const { expect } = require('chai');
 
 const FU = require('../shared/FormUtils');
 const helpers = require('../shared/helpers');
 
-helpers.configure(chai);
-
 describe('Provinces Management', () => {
-
   const path = '#!/locations/province';
 
   before(() => helpers.navigate(path));
@@ -20,44 +15,44 @@ describe('Provinces Management', () => {
     name : 'New Province',
   };
 
-  it('creates a new province', () => {
+  it('creates a new province', async () => {
     // switch to the create form
-    FU.buttons.create();
+    await FU.buttons.create();
 
-    FU.select('ProvinceCtrl.province.country_uuid', province.country);
-    FU.input('ProvinceCtrl.province.name', province.name);
+    await FU.select('ProvinceCtrl.province.country_uuid', province.country);
+    await FU.input('ProvinceCtrl.province.name', province.name);
 
     // submit the page to the server
-    FU.buttons.submit();
+    await FU.buttons.submit();
 
     // expect a nice validation message
-    FU.exists(by.id('create_success'), true);
+    await FU.exists(by.id('create_success'), true);
   });
 
-  it('edits a province', () => {
-    $(`[data-province-name="${province.name}"]`).click();
+  it('edits a province', async () => {
+    await $(`[data-province-name="${province.name}"]`).click();
 
-    FU.select('ProvinceCtrl.province.country_uuid', province.country);
-    FU.input('ProvinceCtrl.province.name', 'Province Update');
+    await FU.select('ProvinceCtrl.province.country_uuid', province.country);
+    await FU.input('ProvinceCtrl.province.name', 'Province Update');
 
-    FU.buttons.submit();
+    await FU.buttons.submit();
 
     // make sure the success message appears
-    FU.exists(by.id('update_success'), true);
+    await FU.exists(by.id('update_success'), true);
   });
 
-  it('blocks invalid form submission with relevant error classes', () => {
+  it('blocks invalid form submission with relevant error classes', async () => {
     // switch to the create form
-    FU.buttons.create();
+    await FU.buttons.create();
 
     // verify form has not been successfully submitted
-    expect(helpers.getCurrentPath()).to.eventually.equal(path);
+    await expect(helpers.getCurrentPath()).to.eventually.equal(path);
 
     // submit the page to the server
-    FU.buttons.submit();
+    await FU.buttons.submit();
 
     // the following fields should be required
-    FU.validation.error('ProvinceCtrl.province.country_uuid');
-    FU.validation.error('ProvinceCtrl.province.name');
+    await FU.validation.error('ProvinceCtrl.province.country_uuid');
+    await FU.validation.error('ProvinceCtrl.province.name');
   });
 });

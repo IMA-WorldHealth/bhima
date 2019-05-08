@@ -10,13 +10,6 @@ class RubricPage {
     this.gridId = 'rubric-grid';
   }
 
-  count() {
-    return element(by.id(this.gridId))
-      .element(by.css('.ui-grid-render-container-body'))
-      .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'))
-      .count();
-  }
-
   create(rubric) {
     FU.buttons.create();
     FU.input('RubricModalCtrl.rubric.label', rubric.label);

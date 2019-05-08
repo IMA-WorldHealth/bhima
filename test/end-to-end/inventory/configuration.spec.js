@@ -42,45 +42,45 @@ describe('Inventory Configuration', () => {
     // navigate to the page
     before(() => helpers.navigate(url));
 
-    it('creates a new inventory group', () => {
-      $('[data-create-group]').click();
-      FU.input('$ctrl.session.name', group.name);
-      FU.input('$ctrl.session.code', group.code);
+    it('creates a new inventory group', async () => {
+      await $('[data-create-group]').click();
+      await FU.input('$ctrl.session.name', group.name);
+      await FU.input('$ctrl.session.code', group.code);
 
-      components.accountSelect.set(group.sales_account, 'sales_account');
-      components.accountSelect.set(group.stock_account, 'stock_account');
-      components.accountSelect.set(group.cogs_account, 'cogs_account');
+      await components.accountSelect.set(group.sales_account, 'sales_account');
+      await components.accountSelect.set(group.stock_account, 'stock_account');
+      await components.accountSelect.set(group.cogs_account, 'cogs_account');
 
-      FU.buttons.submit();
-      components.notification.hasSuccess();
+      await FU.buttons.submit();
+      await components.notification.hasSuccess();
     });
 
-    it('updates an existing inventory group', () => {
-      $(`[data-edit-group="${group.code}"]`).click();
-      FU.input('$ctrl.session.name', updateGroup.name);
-      FU.input('$ctrl.session.code', updateGroup.code);
+    it('updates an existing inventory group', async () => {
+      await $(`[data-edit-group="${group.code}"]`).click();
+      await FU.input('$ctrl.session.name', updateGroup.name);
+      await FU.input('$ctrl.session.code', updateGroup.code);
 
-      components.accountSelect.set(updateGroup.sales_account, 'sales_account');
+      await components.accountSelect.set(updateGroup.sales_account, 'sales_account');
 
-      FU.buttons.submit();
-      components.notification.hasSuccess();
+      await FU.buttons.submit();
+      await components.notification.hasSuccess();
     });
 
-    it('deletes an existing inventory group', () => {
-      $(`[data-delete-group="${updateGroup.code}"]`).click();
-      FU.buttons.submit();
-      components.notification.hasSuccess();
+    it('deletes an existing inventory group', async () => {
+      await $(`[data-delete-group="${updateGroup.code}"]`).click();
+      await FU.buttons.submit();
+      await components.notification.hasSuccess();
     });
 
-    it('creates an inventory group with only a sales account', () => {
-      $('[data-create-group]').click();
-      FU.input('$ctrl.session.name', groupWithOnlySalesAccount.name);
-      FU.input('$ctrl.session.code', groupWithOnlySalesAccount.code);
+    it('creates an inventory group with only a sales account', async () => {
+      await $('[data-create-group]').click();
+      await FU.input('$ctrl.session.name', groupWithOnlySalesAccount.name);
+      await FU.input('$ctrl.session.code', groupWithOnlySalesAccount.code);
 
-      components.accountSelect.set(groupWithOnlySalesAccount.sales_account, 'sales_account');
+      await components.accountSelect.set(groupWithOnlySalesAccount.sales_account, 'sales_account');
 
-      FU.buttons.submit();
-      components.notification.hasSuccess();
+      await FU.buttons.submit();
+      await components.notification.hasSuccess();
     });
   });
 
@@ -89,24 +89,24 @@ describe('Inventory Configuration', () => {
     // navigate to the page
     before(() => helpers.navigate(url));
 
-    it('creates a new inventory type', () => {
-      $('[data-create-type]').click();
-      FU.input('$ctrl.session.text', type.text);
-      FU.buttons.submit();
-      components.notification.hasSuccess();
+    it('creates a new inventory type', async () => {
+      await $('[data-create-type]').click();
+      await FU.input('$ctrl.session.text', type.text);
+      await FU.buttons.submit();
+      await components.notification.hasSuccess();
     });
 
-    it('updates an existing inventory type', () => {
-      $(`[data-edit-type="${type.text}"]`).click();
-      FU.input('$ctrl.session.text', updateType.text);
-      FU.buttons.submit();
-      components.notification.hasSuccess();
+    it('updates an existing inventory type', async () => {
+      await $(`[data-edit-type="${type.text}"]`).click();
+      await FU.input('$ctrl.session.text', updateType.text);
+      await FU.buttons.submit();
+      await components.notification.hasSuccess();
     });
 
-    it('deletes an existing inventory type', () => {
-      $(`[data-delete-type="${updateType.text}"]`).click();
-      FU.buttons.submit();
-      components.notification.hasSuccess();
+    it('deletes an existing inventory type', async () => {
+      await $(`[data-delete-type="${updateType.text}"]`).click();
+      await FU.buttons.submit();
+      await components.notification.hasSuccess();
     });
   });
 
@@ -115,26 +115,26 @@ describe('Inventory Configuration', () => {
     // navigate to the page
     before(() => helpers.navigate(url));
 
-    it('creates a new inventory unit', () => {
-      $('[data-create-unit]').click();
-      FU.input('$ctrl.session.text', unit.text);
-      FU.input('$ctrl.session.abbr', unit.abbr);
-      FU.buttons.submit();
-      components.notification.hasSuccess();
+    it('creates a new inventory unit', async () => {
+      await $('[data-create-unit]').click();
+      await FU.input('$ctrl.session.text', unit.text);
+      await FU.input('$ctrl.session.abbr', unit.abbr);
+      await FU.buttons.submit();
+      await components.notification.hasSuccess();
     });
 
-    it('updates an existing inventory unit', () => {
-      $(`[data-edit-unit="${unit.abbr}"]`).click();
-      FU.input('$ctrl.session.text', updateUnit.text);
-      FU.input('$ctrl.session.abbr', updateUnit.abbr);
-      FU.buttons.submit();
-      components.notification.hasSuccess();
+    it('updates an existing inventory unit', async () => {
+      await $(`[data-edit-unit="${unit.abbr}"]`).click();
+      await FU.input('$ctrl.session.text', updateUnit.text);
+      await FU.input('$ctrl.session.abbr', updateUnit.abbr);
+      await FU.buttons.submit();
+      await components.notification.hasSuccess();
     });
 
-    it('deletes an existing inventory unit', () => {
-      $(`[data-delete-unit="${updateUnit.abbr}"]`).click();
-      FU.buttons.submit();
-      components.notification.hasSuccess();
+    it('deletes an existing inventory unit', async () => {
+      await $(`[data-delete-unit="${updateUnit.abbr}"]`).click();
+      await FU.buttons.submit();
+      await components.notification.hasSuccess();
     });
   });
 });

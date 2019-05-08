@@ -14,7 +14,8 @@ helpers.configure(chai);
 const config = {
   specs : ['test/end-to-end/**/*.spec.js'],
 
-  // SELENIUM_PROMISE_MANAGER: false,
+  // turn off the internal promis manager.
+  SELENIUM_PROMISE_MANAGER : false,
 
   framework : 'mocha',
   baseUrl   : 'http://localhost:8080/',
@@ -41,12 +42,12 @@ const config = {
 
   // this will log the user in to begin with
   onPrepare : () => {
-    return q.fcall(() => {
-      browser.get('http://localhost:8080/#!/login');
+    return q.fcall(async () => {
+      await browser.get('http://localhost:8080/#!/login');
 
-      element(by.model('LoginCtrl.credentials.username')).sendKeys('superuser');
-      element(by.model('LoginCtrl.credentials.password')).sendKeys('superuser');
-      element(by.css('[data-method="submit"]')).click();
+      await element(by.model('LoginCtrl.credentials.username')).sendKeys('superuser');
+      await element(by.model('LoginCtrl.credentials.password')).sendKeys('superuser');
+      await element(by.css('[data-method="submit"]')).click();
 
       // NOTE - you may need to play with the delay time to get this to work properly
       // Give this plenty of time to run

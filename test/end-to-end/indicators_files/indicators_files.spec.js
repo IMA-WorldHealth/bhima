@@ -1,10 +1,5 @@
 /* global */
-const chai = require('chai');
-
 const helpers = require('../shared/helpers');
-
-helpers.configure(chai);
-
 const IndicatorsFilesPage = require('./indicators_files.page');
 
 describe('Patient IndicatorsFiles', () => {
@@ -49,28 +44,27 @@ describe('Patient IndicatorsFiles', () => {
     total_staff : 10,
   };
 
-  it('successfully creates a new hospitalization file', () => {
-    Page.createHospitalizationIndicatorsFiles(fiscalYearLabel, periodLabel, hospitalizationIndicators, service);
+  it('successfully creates a new hospitalization file', async () => {
+    await Page.createHospitalizationIndicatorsFiles(fiscalYearLabel, periodLabel, hospitalizationIndicators, service);
   });
 
-  it('successfully creates a new staff file', () => {
-    Page.createStaffIndicatorsFiles(fiscalYearLabel, periodLabel, staffIndicators);
+  it('successfully creates a new staff file', async () => {
+    await Page.createStaffIndicatorsFiles(fiscalYearLabel, periodLabel, staffIndicators);
   });
 
-  it('successfully creates a new finance file', () => {
-    Page.createFinanceIndicatorsFiles(fiscalYearLabel, periodLabel, financeIndicators);
+  it('successfully creates a new finance file', async () => {
+    await Page.createFinanceIndicatorsFiles(fiscalYearLabel, periodLabel, financeIndicators);
   });
 
-  it('search indicators files by period', () => {
+  it('search indicators files by period', async () => {
     const options = {
       fiscalYear : 'Fiscal Year 2019',
       period : 'janvier 2019',
     };
-    Page.search(options);
-    Page.expectNumberOfGridRows(3);
+    await Page.search(options);
+    await Page.expectNumberOfGridRows(3);
     options.period = 'février 2019';
-    Page.search(options);
-    Page.expectNumberOfGridRows(0);
+    await Page.search(options);
+    await Page.expectNumberOfGridRows(0);
   });
-
 });

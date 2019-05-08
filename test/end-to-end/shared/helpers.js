@@ -12,9 +12,6 @@
 const chaiPromise = require('chai-as-promised');
 // eslint-disable-next-line
 const addContext = require('mochawesome/addContext');
-const fs = require('mz/fs');
-const path = require('path');
-
 const PATH_REGEXP = /^#!|^#|^!/g;
 
 // gets a random number within the range(0, n)
@@ -23,9 +20,9 @@ exports.random = function random(n) {
 };
 
 // wrapper for browser navigation without reloading the page
-exports.navigate = function navigate(browserPath) {
+exports.navigate = async function navigate(browserPath) {
   const destination = browserPath.replace(PATH_REGEXP, '');
-  browser.setLocation(destination);
+  await browser.setLocation(destination);
 };
 
 // configures the chai assertion library
@@ -35,13 +32,13 @@ exports.configure = function configure(chai) {
 };
 
 // get the browser path after the hash
-exports.getCurrentPath = function getCurrentPath() {
-  return browser.getCurrentUrl()
-    .then((url) => {
-      const partial = url.split('#!')[1];
-      partial.replace(PATH_REGEXP, '');
-      return `#!${partial}`;
-    });
+exports.getCurrentPath = async function getCurrentPath() {
+  const url = await browser.getCurrentUrl();
+
+  const partial = url.split('#!')[1];
+  partial.replace(PATH_REGEXP, '');
+
+  return `#!${partial}`;
 };
 
 // shared data

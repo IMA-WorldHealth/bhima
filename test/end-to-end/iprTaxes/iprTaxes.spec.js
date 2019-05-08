@@ -31,35 +31,35 @@ describe('Ipr Tax Management', () => {
     currency_id   : 2,
   };
 
-  it('should start with one IPR taxes', () => {
-    expect(page.count()).to.eventually.equal(1);
+  it('should start with one IPR taxes', async () => {
+    await expect(page.count()).to.eventually.equal(1);
   });
 
-  it('successfully creates a new IPR Scale 1995', () => {
-    page.create(iprTax1);
+  it('successfully creates a new IPR Scale 1995', async () => {
+    await page.create(iprTax1);
   });
 
-  it('successfully creates a new IPR Scale 2000', () => {
-    page.create(iprTax2);
+  it('successfully creates a new IPR Scale 2000', async () => {
+    await page.create(iprTax2);
   });
 
-  it('successfully creates a new IPR Scale 2013', () => {
-    page.create(iprTax3);
+  it('successfully creates a new IPR Scale 2013', async () => {
+    await page.create(iprTax3);
   });
 
-  it('successfully edits an IPR Tax', () => {
-    page.update(iprTax1.label, updateIPR);
+  it('successfully edits an IPR Tax', async () => {
+    await page.update(iprTax1.label, updateIPR);
   });
 
-  it('successfully delete a Ipr tax Scale', () => {
-    page.remove(updateIPR.label);
+  it('successfully delete a Ipr tax Scale', async () => {
+    await page.remove(updateIPR.label);
   });
 
-  it('don\'t create when incorrect Ipr Tax', () => {
-    page.errorOnCreateIprTax();
+  it('don\'t create when incorrect Ipr Tax', async () => {
+    await page.errorOnCreateIprTax();
   });
 
-  it('should end with three IPR taxes', () => {
-    expect(page.count()).to.eventually.equal(3);
+  it('should end with three IPR taxes', async () => {
+    await expect(page.count()).to.eventually.equal(3);
   });
 });

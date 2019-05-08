@@ -1,10 +1,6 @@
+const chai = require('chai');
 const helpers = require('../shared/helpers');
 const FeeCenterPage = require('./fee_center.page');
-const chai = require('chai');
-
-
-/** configuring helpers**/
-helpers.configure(chai);
 
 describe('Fee Center Management', () => {
   // navigate to the page
@@ -61,31 +57,31 @@ describe('Fee Center Management', () => {
     reference_cost_id : 'Cost Test 1',
   };
 
-  it('successfully creates a new Fee Center', () => {
-    Page.createFeeCenter(feeCenter);
+  it('creates a new Fee Center', async () => {
+    await Page.createFeeCenter(feeCenter);
   });
 
-  it('successfully edits a Fee Center label', () => {
-    Page.editFeeCenter(feeCenter.label, updateFeeCenter);
+  it('edits a Fee Center label', async () => {
+    await Page.editFeeCenter(feeCenter.label, updateFeeCenter);
   });
 
-  it('successfully Change of the Principal Fee Center to Auxiliary and the modification of the expense center', () => {
-    Page.editFeeCenter(updateAuxiliary.label, updateAuxiliary);
+  it('change of the Principal Fee Center to Auxiliary and the modification of the expense center', async () => {
+    await Page.editFeeCenter(updateAuxiliary.label, updateAuxiliary);
   });
 
-  it('successfully delete a Fee Center', () => {
-    Page.deleteFeeCenter(updateProfitToCost.label);
+  it('deletes a Fee Center', async () => {
+    await Page.deleteFeeCenter(updateProfitToCost.label);
   });
 
-  it('unable to assign to another expense center a reference already used in another expense center when creating', () => {
-    Page.errorCreateFeeCenter(ErrorfeeCenterInsert);
+  it('unable to assign an expense center a reference already used during creation', async () => {
+    await Page.errorCreateFeeCenter(ErrorfeeCenterInsert);
   });
 
-  it('unable to assign to another expense center a reference already used in another expense center when updating', () => {
-    Page.errorEditFeeCenter(ErrorfeeCenterUpdate.label, ErrorfeeCenterUpdate);
+  it('unable to assign an expense center a reference already used during update', async () => {
+    await Page.errorEditFeeCenter(ErrorfeeCenterUpdate.label, ErrorfeeCenterUpdate);
   });
 
-  it('don\'t create when incorrect Fee Center', () => {
-    Page.errorOnCreateFeeCenter();
+  it('don\'t create when incorrect Fee Center', async () => {
+    await Page.errorOnCreateFeeCenter();
   });
 });

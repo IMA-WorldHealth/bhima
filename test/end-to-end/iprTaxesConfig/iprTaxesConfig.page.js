@@ -1,14 +1,10 @@
 /* global element, by */
+/* eslint class-methods-use-this: off */
 
 /**
  * This class is represents a Ipr Tax page in term of structure and
  * behaviour so it is a Ipr Tax page object
  */
-
-const chai = require('chai');
-const helpers = require('../shared/helpers');
-
-helpers.configure(chai);
 
 /* loading grid actions */
 const GU = require('../shared/GridUtils');
@@ -36,58 +32,52 @@ class IprTaxConfigPage {
   /**
    * simulate the create Ipr Scale button click to show the dialog of creation
    */
-  createIprTaxConfig(iprTaxConfig) {
-    components.iprScale.set(iprTaxConfig.scale);
+  async createIprTaxConfig(iprTaxConfig) {
+    await components.iprScale.set(iprTaxConfig.scale);
 
-    FU.buttons.create();
-    FU.input('IprTaxConfigModalCtrl.iprTax.rate', iprTaxConfig.rate);
-    components.currencyInput.set(iprTaxConfig.tranche_annuelle_debut, 'tranche_annuelle_debut');
-    components.currencyInput.set(iprTaxConfig.tranche_annuelle_fin, 'tranche_annuelle_fin');
-    FU.buttons.submit();
-    components.notification.hasSuccess();
+    await FU.buttons.create();
+    await FU.input('IprTaxConfigModalCtrl.iprTax.rate', iprTaxConfig.rate);
+    await components.currencyInput.set(iprTaxConfig.tranche_annuelle_debut, 'tranche_annuelle_debut');
+    await components.currencyInput.set(iprTaxConfig.tranche_annuelle_fin, 'tranche_annuelle_fin');
+    await FU.buttons.submit();
+    await components.notification.hasSuccess();
   }
 
   /**
    * block creation without the function name
    */
-  errorOnCreateIprTaxConfig(scale) {
-    components.iprScale.set(scale);
-    FU.buttons.create();
-    FU.buttons.submit();
-    FU.validation.error('IprTaxConfigModalCtrl.iprTax.rate');
-    FU.buttons.cancel();
+  async errorOnCreateIprTaxConfig(scale) {
+    await components.iprScale.set(scale);
+    await FU.buttons.create();
+    await FU.buttons.submit();
+    await FU.validation.error('IprTaxConfigModalCtrl.iprTax.rate');
+    await FU.buttons.cancel();
   }
 
   /**
    * simulate a click on the edit link of a function
    */
-  editIprTaxConfig(rate, updateIprTaxConfig) {
-    components.iprScale.set(updateIprTaxConfig.scale);
+  async editIprTaxConfig(rate, updateIprTaxConfig) {
+    await components.iprScale.set(updateIprTaxConfig.scale);
 
-    GU.getGridIndexesMatchingText(this.gridId, rate)
-      .then(indices => {
-        const { rowIndex } = indices;
-        GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'edit', this.gridId);
+    const { rowIndex } = GU.getGridIndexesMatchingText(this.gridId, rate);
+    await GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'edit', this.gridId);
 
-        FU.input('IprTaxConfigModalCtrl.iprTax.rate', updateIprTaxConfig.rate);
-        components.currencyInput.set(updateIprTaxConfig.tranche_annuelle_debut, 'tranche_annuelle_debut');
-        components.currencyInput.set(updateIprTaxConfig.tranche_annuelle_fin, 'tranche_annuelle_fin');
-        FU.buttons.submit();
-        components.notification.hasSuccess();
-      });
+    await FU.input('IprTaxConfigModalCtrl.iprTax.rate', updateIprTaxConfig.rate);
+    await components.currencyInput.set(updateIprTaxConfig.tranche_annuelle_debut, 'tranche_annuelle_debut');
+    await components.currencyInput.set(updateIprTaxConfig.tranche_annuelle_fin, 'tranche_annuelle_fin');
+    await FU.buttons.submit();
+    await components.notification.hasSuccess();
   }
 
   /**
    * simulate a click on the delete link of a function
    */
-  deleteIprTaxConfig(label) {
-    GU.getGridIndexesMatchingText(this.gridId, label)
-      .then(indices => {
-        const { rowIndex } = indices;
-        GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'delete', this.gridId);
-        components.modalAction.confirm();
-        components.notification.hasSuccess();
-      });
+  async deleteIprTaxConfig(label) {
+    const { rowIndex } = await GU.getGridIndexesMatchingText(this.gridId, label);
+    await GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'delete', this.gridId);
+    await components.modalAction.confirm();
+    await components.notification.hasSuccess();
   }
 }
 
