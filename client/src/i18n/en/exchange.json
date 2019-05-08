@@ -8,6 +8,8 @@
     "INVOICE_DISCLAIMER" : "Exchange rate based on the latest enterprise exchange:",
     "NEW_RATE" : "New Exchange Rate",
     "ON" : "on",
+    "FOR" : "for",
+    "AT_THE_DATE": "at the date",
     "RATE_SET" : "Rate last set",
     "REVIEW" : "Review Rates",
     "REVIEW_RATE" : "Review the exchange rate",
