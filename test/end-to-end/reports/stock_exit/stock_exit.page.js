@@ -19,7 +19,8 @@ class StockExitReportPage {
     await element(by.model('ReportConfigCtrl.includeDepotExit')).click();
     await element(by.model('ReportConfigCtrl.includeLossExit')).click();
 
-    await this.page.preview(); }
+    await this.page.preview();
+  }
 
   // save a StockExit report
   async saveStockExitReport(dateFrom, dateTo, depotName, reportName, reportFormat) {
