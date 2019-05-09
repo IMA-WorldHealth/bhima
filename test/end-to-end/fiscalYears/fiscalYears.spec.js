@@ -21,7 +21,7 @@ describe('Fiscal Year', () => {
     await FU.buttons.create();
 
     // verify form has not been successfully submitted
-    await expect(helpers.getCurrentPath()).to.eventually.equal(pathNew);
+    expect(await helpers.getCurrentPath()).to.eventually.equal(pathNew);
 
     // set invalid date range to test `number_of_months`
     await components.dateInterval.range('01/02/2016', '01/01/2016');
@@ -112,7 +112,7 @@ describe('Fiscal Year', () => {
 
     await FU.buttons.submit();
     await components.notification.hasDanger();
-    await expect(element(by.css('[data-status="not-balanced"]')).isPresent()).to.eventually.equal(true);
+    expect(await element(by.css('[data-status="not-balanced"]')).isPresent()).to.eventually.equal(true);
   });
 
   it('closing a fiscal year in normal way', async () => {

@@ -38,7 +38,7 @@ function TrialBalanceTest() {
     await page.openTrialBalanceModal();
 
     // should have four lines
-    await expect(TrialBalance.countOverviewRows()).to.eventually.equal(2);
+    expect(await TrialBalance.countOverviewRows()).to.eventually.equal(2);
 
     await TrialBalance.submit();
   });

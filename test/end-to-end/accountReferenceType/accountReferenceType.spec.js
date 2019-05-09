@@ -17,7 +17,7 @@ describe('Account Reference Type', () => {
   };
 
   it('begins with 4 Account Reference Type', async () => {
-    await expect(page.count()).to.eventually.equal(4);
+    expect(await page.count()).to.eventually.equal(4);
   });
 
   it('successfully creates a new Account Reference Type', async () => {

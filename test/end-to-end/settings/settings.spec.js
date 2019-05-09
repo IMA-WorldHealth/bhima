@@ -23,12 +23,12 @@ describe('Settings', () => {
     await helpers.navigate('#!/settings');
 
     // ensure we navigate back to the main page.
-    await expect(helpers.getCurrentPath()).to.eventually.equal('#!/settings');
+    expect(await helpers.getCurrentPath()).to.eventually.equal('#!/settings');
 
     // click the back button
     await element(btn).click();
 
     // ensure we navigate back to the main page.
-    await expect(helpers.getCurrentPath()).to.eventually.equal(start);
+    expect(await helpers.getCurrentPath()).to.eventually.equal(start);
   });
 });

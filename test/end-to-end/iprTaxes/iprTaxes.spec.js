@@ -32,7 +32,7 @@ describe('Ipr Tax Management', () => {
   };
 
   it('should start with one IPR taxes', async () => {
-    await expect(page.count()).to.eventually.equal(1);
+    expect(await page.count()).to.eventually.equal(1);
   });
 
   it('successfully creates a new IPR Scale 1995', async () => {
@@ -60,6 +60,6 @@ describe('Ipr Tax Management', () => {
   });
 
   it('should end with three IPR taxes', async () => {
-    await expect(page.count()).to.eventually.equal(3);
+    expect(await page.count()).to.eventually.equal(3);
   });
 });

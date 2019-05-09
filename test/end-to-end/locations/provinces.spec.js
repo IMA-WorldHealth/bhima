@@ -46,7 +46,7 @@ describe('Provinces Management', () => {
     await FU.buttons.create();
 
     // verify form has not been successfully submitted
-    await expect(helpers.getCurrentPath()).to.eventually.equal(path);
+    expect(await helpers.getCurrentPath()).to.eventually.equal(path);
 
     // submit the page to the server
     await FU.buttons.submit();

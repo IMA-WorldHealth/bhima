@@ -48,7 +48,7 @@ describe('Sectors Management', () => {
     await FU.buttons.create();
 
     // Verify form has not been successfully submitted
-    await expect(helpers.getCurrentPath()).to.eventually.equal('#!/locations/sector');
+    expect(await helpers.getCurrentPath()).to.eventually.equal('#!/locations/sector');
 
     // submit the page to the server
     await FU.buttons.submit();

@@ -63,8 +63,8 @@ describe('Login Page', () => {
   it('has a default project value', async () => {
     const defaultProject = await element(by.model('LoginCtrl.credentials.project'))
       .$('option:checked').getText();
-    await expect(defaultProject).to.exist;
-    await expect(defaultProject).to.not.be.empty;
+    expect(await defaultProject).to.exist;
+    expect(await defaultProject).to.not.be.empty;
   });
 
   it('allows a valid user to log in to the application', async () => {
@@ -72,13 +72,13 @@ describe('Login Page', () => {
     await FU.input('LoginCtrl.credentials.password', 'superuser');
     await FU.buttons.submit();
 
-    await expect(helpers.getCurrentPath()).to.eventually.equal('#!/');
+    expect(await helpers.getCurrentPath()).to.eventually.equal('#!/');
   });
 
   it('page refresh preserves the use session', async () => {
     await helpers.navigate(settings);
     await browser.refresh();
-    await expect(helpers.getCurrentPath()).to.eventually.equal(`#!/${settings}`);
+    expect(await helpers.getCurrentPath()).to.eventually.equal(`#!/${settings}`);
   });
 
   it('prevents access to the login page after login', async () => {
@@ -86,7 +86,7 @@ describe('Login Page', () => {
     await helpers.navigate(settings);
 
     // assert that we get to the settings page
-    await expect(helpers.getCurrentPath()).to.eventually.equal(`#!/${settings}`);
+    expect(await helpers.getCurrentPath()).to.eventually.equal(`#!/${settings}`);
 
     // attempt to access the login page.
     await helpers.navigate(login);
@@ -95,6 +95,6 @@ describe('Login Page', () => {
     await components.notification.hasWarn();
 
     // assert that we did not get to the login page
-    await expect(helpers.getCurrentPath()).to.eventually.equal(`#!/${settings}`);
+    expect(await helpers.getCurrentPath()).to.eventually.equal(`#!/${settings}`);
   });
 });

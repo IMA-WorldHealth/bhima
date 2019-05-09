@@ -34,7 +34,7 @@ function PurchaseOrderSearch() {
   });
 
   async function expectNumberOfGridRows(number) {
-    await expect(rows.count(),
+    expect(await rows.count(),
       `Expected Patient Registry ui-grid's row count to be ${number}.`).to.eventually.equal(number);
   }
 

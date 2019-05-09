@@ -63,7 +63,7 @@ describe('Suppliers', () => {
 
     // verify form has not been submitted
     await FU.buttons.submit();
-    await expect(helpers.getCurrentPath()).to.eventually.equal(path);
+    expect(await helpers.getCurrentPath()).to.eventually.equal(path);
 
     // the following fields should be required
     await components.inpuText.validationError('display_name');
