@@ -9,7 +9,7 @@ const GU = require('../shared/GridUtils');
 describe('Complex Vouchers', () => {
   before(() => helpers.navigate('vouchers/complex'));
 
-  it('creates a complex voucher', function create() {
+  it('creates a complex voucher', async function create() {
     const page = new ComplexVoucherPage();
 
     // set a new timeout to avoid warnings
@@ -46,52 +46,54 @@ describe('Complex Vouchers', () => {
     };
 
     // configure the date to today
-    page.date(voucher.date);
+    await page.date(voucher.date);
 
     // set the description
-    page.description(voucher.description);
+    await page.description(voucher.description);
 
     // set the currency to USD
-    page.currency(2);
+    await page.currency(2);
 
     // add four rows
-    page.addRow();
-    page.addRow();
-    page.addRow();
-    page.addRow();
+    await page.addRow();
+    await page.addRow();
+    await page.addRow();
+    await page.addRow();
 
     // loop through each row and assign the correct form values
-    voucher.rows.forEach((row, idx) => {
+    const promises = voucher.rows.map(async (row, idx) => {
       const current = page.row(idx);
-      current.account(row.account);
-      current.debit(row.debit);
-      current.credit(row.credit);
+      await current.account(row.account);
+      await current.debit(row.debit);
+      await current.credit(row.credit);
       if (row.entity) {
-        current.entity(row.entity.type, row.entity.name);
+        await current.entity(row.entity.type, row.entity.name);
       }
       if (row.reference) {
-        current.reference(row.reference.type, row.reference.index);
+        await current.reference(row.reference.type, row.reference.index);
       }
     });
+
+    await Promise.all(promises);
 
     /*
      * set the transaction type to one which have a specific Id
      * (e.g. cash payment Id is 1)
      * @see client/src/js/services/VoucherService.js
      */
-    page.transactionType('Autres R');
+    await page.transactionType('Autres R');
 
     // submit the page
-    page.submit();
+    await page.submit();
 
     // make sure a receipt was opened
-    FU.exists(by.id('receipt-confirm-created'), true);
+    await FU.exists(by.id('receipt-confirm-created'), true);
 
     // close the modal
-    $('[data-method="close"]').click();
+    await $('[data-method="close"]').click();
   });
 
-  it.skip('forbid submit when there is no transfer type for financial account', () => {
+  it.skip('forbid submit when there is no transfer type for financial account', async () => {
     const page = new ComplexVoucherPage();
 
     /*
@@ -113,36 +115,38 @@ describe('Complex Vouchers', () => {
     };
 
     // configure the date to today
-    page.date(voucher.date);
+    await page.date(voucher.date);
 
     // set the description
-    page.description(voucher.description);
+    await page.description(voucher.description);
 
     // set the currency to USD
-    page.currency(2);
+    await page.currency(2);
 
     // loop through each row and assign the correct form values
-    voucher.rows.forEach((row, idx) => {
+    const promises = voucher.rows.map(async (row, idx) => {
       const current = page.row(idx);
-      current.account(row.account);
-      current.debit(row.debit);
-      current.credit(row.credit);
+      await current.account(row.account);
+      await current.debit(row.debit);
+      await current.credit(row.credit);
       if (row.entity) {
-        current.entity(row.entity.type, row.entity.name);
+        await current.entity(row.entity.type, row.entity.name);
       }
       if (row.reference) {
-        current.reference(row.reference.type, row.reference.index);
+        await current.reference(row.reference.type, row.reference.index);
       }
     });
 
+    await Promise.all(promises);
+
     // submit the page
-    page.submit();
+    await page.submit();
 
     // expect a danger notification
-    components.notification.hasDanger();
+    await components.notification.hasDanger();
   });
 
-  it('Convention import invoices and payment via the tool', () => {
+  it('Convention import invoices and payment via the tool', async () => {
     const page = new ComplexVoucherPage();
 
     const detail = {
@@ -154,33 +158,33 @@ describe('Complex Vouchers', () => {
     };
 
     // click on the convention tool
-    FU.dropdown('[toolbar-dropdown]', detail.tool);
+    await FU.dropdown('[toolbar-dropdown]', detail.tool);
 
-    components.cashboxSelect.set(detail.cashbox);
+    await components.cashboxSelect.set(detail.cashbox);
 
     // select the convention
-    components.debtorGroupSelect.set(detail.convention);
+    await components.debtorGroupSelect.set(detail.convention);
 
     // select invoices
-    GU.selectRow('invoiceGrid', detail.invoices[0]);
+    await GU.selectRow('invoiceGrid', detail.invoices[0]);
 
     // validate selection
-    FU.modal.submit();
+    await FU.modal.submit();
 
     // description
-    page.description(detail.description);
+    await page.description(detail.description);
 
     // submit voucher
-    FU.buttons.submit();
+    await FU.buttons.submit();
 
     // make sure a receipt was opened
-    FU.exists(by.id('receipt-confirm-created'), true);
+    await FU.exists(by.id('receipt-confirm-created'), true);
 
     // close the modal
-    $('[data-method="close"]').click();
+    await $('[data-method="close"]').click();
   });
 
-  it('Support Patient Invoices by an Account via the tool', () => {
+  it('Support Patient Invoices by an Account via the tool', async () => {
     const page = new ComplexVoucherPage();
 
     const detail = {
@@ -192,34 +196,34 @@ describe('Complex Vouchers', () => {
     };
 
     // click on the Support Patient Tool
-    FU.dropdown('[toolbar-dropdown]', detail.tool);
+    await FU.dropdown('[toolbar-dropdown]', detail.tool);
 
     // select account
-    components.accountSelect.set(detail.accountNumber);
+    await components.accountSelect.set(detail.accountNumber);
 
     // Find Patient
-    components.findPatient.findByName(detail.patientName);
+    await components.findPatient.findByName(detail.patientName);
 
     // select invoices
-    GU.selectRow('invoiceGrid', detail.invoices[0]);
+    await GU.selectRow('invoiceGrid', detail.invoices[0]);
 
     // validate selection
-    FU.modal.submit();
+    await FU.modal.submit();
 
     // description
-    page.description(detail.description);
+    await page.description(detail.description);
 
     // submit voucher
-    FU.buttons.submit();
+    await FU.buttons.submit();
 
     // make sure a receipt was opened
-    FU.exists(by.id('receipt-confirm-created'), true);
+    await FU.exists(by.id('receipt-confirm-created'), true);
 
     // close the modal
-    $('[data-method="close"]').click();
+    await $('[data-method="close"]').click();
   });
 
-  it('Generic Income via the tool', () => {
+  it('Generic Income via the tool', async () => {
     const detail = {
       tool        : 'Recette Générique',
       cashbox     : 'Caisse Aux',
@@ -229,34 +233,34 @@ describe('Complex Vouchers', () => {
     };
 
     // click on the convention tool
-    FU.dropdown('[toolbar-dropdown]', detail.tool);
+    await FU.dropdown('[toolbar-dropdown]', detail.tool);
 
     // select the cashbox (the first ie Fc)
-    FU.uiSelect('ToolCtrl.cashbox', detail.cashbox);
+    await FU.uiSelect('ToolCtrl.cashbox', detail.cashbox);
 
     // select the account
-    components.accountSelect.set(detail.account);
+    await components.accountSelect.set(detail.account);
 
     // description
-    FU.input('ToolCtrl.description', detail.description);
+    await FU.input('ToolCtrl.description', detail.description);
 
     // amount
-    components.currencyInput.set(detail.amount);
+    await components.currencyInput.set(detail.amount);
 
     // validate selection
-    FU.modal.submit();
+    await FU.modal.submit();
 
     // submit voucher
-    FU.buttons.submit();
+    await FU.buttons.submit();
 
     // make sure a receipt was opened
-    FU.exists(by.id('receipt-confirm-created'), true);
+    await FU.exists(by.id('receipt-confirm-created'), true);
 
     // close the modal
-    $('[data-method="close"]').click();
+    await $('[data-method="close"]').click();
   });
 
-  it('Generic Expense via the tool', () => {
+  it('Generic Expense via the tool', async () => {
     const detail = {
       tool        : 'Dépense Générique',
       cashbox     : 'Caisse Aux',
@@ -266,34 +270,34 @@ describe('Complex Vouchers', () => {
     };
 
     // click on the convention tool
-    FU.dropdown('[toolbar-dropdown]', detail.tool);
+    await FU.dropdown('[toolbar-dropdown]', detail.tool);
 
     // select the cashbox (the first ie Fc)
-    FU.uiSelect('ToolCtrl.cashbox', detail.cashbox);
+    await FU.uiSelect('ToolCtrl.cashbox', detail.cashbox);
 
     // select the account
-    components.accountSelect.set(detail.account);
+    await components.accountSelect.set(detail.account);
 
     // description
-    FU.input('ToolCtrl.description', detail.description);
+    await FU.input('ToolCtrl.description', detail.description);
 
     // amount
-    components.currencyInput.set(detail.amount);
+    await components.currencyInput.set(detail.amount);
 
     // validate selection
-    FU.modal.submit();
+    await FU.modal.submit();
 
     // submit voucher
-    FU.buttons.submit();
+    await FU.buttons.submit();
 
     // make sure a receipt was opened
-    FU.exists(by.id('receipt-confirm-created'), true);
+    await FU.exists(by.id('receipt-confirm-created'), true);
 
     // close the modal
-    $('[data-method="close"]').click();
+    await $('[data-method="close"]').click();
   });
 
-  it.skip('Cash Transfer via the tool', () => {
+  it.skip('Cash Transfer via the tool', async () => {
     const detail = {
       tool    : 'Transfert d\'argent',
       cashbox : 'Caisse Aux',
@@ -302,31 +306,31 @@ describe('Complex Vouchers', () => {
     };
 
     // click on the convention tool
-    FU.dropdown('[toolbar-dropdown]', detail.tool);
+    await FU.dropdown('[toolbar-dropdown]', detail.tool);
 
     // select the cashbox (the first ie $)
-    FU.uiSelect('ToolCtrl.cashbox', detail.cashbox);
+    await FU.uiSelect('ToolCtrl.cashbox', detail.cashbox);
 
     // select the account
-    components.accountSelect.set(detail.account);
+    await components.accountSelect.set(detail.account);
 
     // amount
-    components.currencyInput.set(detail.amount);
+    await components.currencyInput.set(detail.amount);
 
     // validate selection
-    FU.modal.submit();
+    await FU.modal.submit();
 
     // submit voucher
-    FU.buttons.submit();
+    await FU.buttons.submit();
 
     // make sure a receipt was opened
-    FU.exists(by.id('receipt-confirm-created'), true);
+    await FU.exists(by.id('receipt-confirm-created'), true);
 
     // close the modal
-    $('[data-method="close"]').click();
+    await $('[data-method="close"]').click();
   });
 
-  it('Employees Salary Paiement via the tool', () => {
+  it('Employees Salary Paiement via the tool', async () => {
     const page = new ComplexVoucherPage();
     const gridId = 'paymentGrid';
 
@@ -338,30 +342,29 @@ describe('Complex Vouchers', () => {
     };
 
     // click on the Support Patient Tool
-    FU.dropdown('[toolbar-dropdown]', detail.tool);
+    await FU.dropdown('[toolbar-dropdown]', detail.tool);
 
     // Select Cashbox
-    components.cashboxSelect.set(detail.cashbox);
+    await components.cashboxSelect.set(detail.cashbox);
 
     // Select Payroll Period
-    components.payrollPeriodSelect.set(detail.period);
+    await components.payrollPeriodSelect.set(detail.period);
 
-    GU.selectRow(gridId, 1);
+    await GU.selectRow(gridId, 1);
 
     // validate selection
-    FU.modal.submit();
+    await FU.modal.submit();
 
     // description
-    page.description(detail.description);
+    await page.description(detail.description);
 
     // submit voucher
-    FU.buttons.submit();
+    await FU.buttons.submit();
 
     // make sure a receipt was opened
-    FU.exists(by.id('receipt-confirm-created'), true);
+    await FU.exists(by.id('receipt-confirm-created'), true);
 
     // close the modal
-    $('[data-method="close"]').click();
+    await $('[data-method="close"]').click();
   });
-
 });

@@ -21,27 +21,27 @@ describe('Simple Vouchers', () => {
     amount : 100.12,
   };
 
-  it('can create a simple voucher', () => {
+  it('can create a simple voucher', async () => {
     // configure the date to yesterday
-    components.dateEditor.set(voucher.date);
+    await components.dateEditor.set(voucher.date);
 
-    FU.input('SimpleVoucherCtrl.Voucher.details.description', voucher.description);
-    FU.uiSelect('SimpleVoucherCtrl.Voucher.details.type_id', voucher.type);
+    await FU.input('SimpleVoucherCtrl.Voucher.details.description', voucher.description);
+    await FU.uiSelect('SimpleVoucherCtrl.Voucher.details.type_id', voucher.type);
 
     // select the appropriate accounts
-    components.accountSelect.set(voucher.fromAccount, 'fromAccount');
-    components.accountSelect.set(voucher.toAccount, 'toAccount');
+    await components.accountSelect.set(voucher.fromAccount, 'fromAccount');
+    await components.accountSelect.set(voucher.toAccount, 'toAccount');
 
-    components.currencySelect.set(2);
-    components.currencyInput.set(voucher.amount);
+    await components.currencySelect.set(2);
+    await components.currencyInput.set(voucher.amount);
 
     // submit the form
-    FU.buttons.submit();
+    await FU.buttons.submit();
 
     // make sure a receipt is displayed
-    FU.exists(by.id('receipt-confirm-created'), true);
+    await FU.exists(by.id('receipt-confirm-created'), true);
 
     // close the modal
-    FU.modal.close();
+    await FU.modal.close();
   });
 });

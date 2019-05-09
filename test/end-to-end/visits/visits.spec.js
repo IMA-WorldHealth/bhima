@@ -1,10 +1,4 @@
-/* global */
-const chai = require('chai');
-
 const helpers = require('../shared/helpers');
-
-helpers.configure(chai);
-
 const VisitsPage = require('./visits.page');
 
 describe('Patient Visits', () => {
@@ -31,8 +25,8 @@ describe('Patient Visits', () => {
   const OLD_VISITS = 1;
   const NEW_VISITS = 2;
 
-  it('successfully creates a new visit', () => {
-    Page.createVisitSuccess(
+  it('successfully creates a new visit', async () => {
+    return Page.createVisitSuccess(
       defaultVisit.patient,
       defaultVisit.service,
       defaultVisit.diagnosis,
@@ -40,8 +34,8 @@ describe('Patient Visits', () => {
     );
   });
 
-  it('forbid to create a new visit for a pending patient', () => {
-    Page.createVisitFail(
+  it('forbid to create a new visit for a pending patient', async () => {
+    return Page.createVisitFail(
       defaultVisit.patient,
       defaultVisit.service,
       defaultVisit.diagnosis,
@@ -49,8 +43,8 @@ describe('Patient Visits', () => {
     );
   });
 
-  it('successfully creates a new hospitalization visit', () => {
-    Page.createVisitSuccess(
+  it('successfully creates a new hospitalization visit', async () => {
+    await Page.createVisitSuccess(
       hospiVisit.patient,
       hospiVisit.service,
       hospiVisit.diagnosis,
@@ -61,59 +55,59 @@ describe('Patient Visits', () => {
     );
   });
 
-  it('counts visits in the registry', () => {
-    Page.expectNumberOfGridRows(OLD_VISITS + NEW_VISITS);
+  it('counts visits in the registry', async () => {
+    await Page.expectNumberOfGridRows(OLD_VISITS + NEW_VISITS);
   });
 
-  it('search only hospitalized patients', () => {
+  it('search only hospitalized patients', async () => {
     const options = {
       isHospitalized : 1,
     };
-    Page.search(options);
-    Page.expectNumberOfGridRows(1);
+    await Page.search(options);
+    await Page.expectNumberOfGridRows(1);
   });
 
-  it('search by patient name', () => {
+  it('search by patient name', async () => {
     const options = {
       displayName : 'Test 2 Patient',
     };
-    Page.search(options);
-    Page.expectNumberOfGridRows(OLD_VISITS + 1);
+    await Page.search(options);
+    await Page.expectNumberOfGridRows(OLD_VISITS + 1);
   });
 
-  it('search pregnant visits', () => {
+  it('search pregnant visits', async () => {
     const options = {
       isPregnant : 1,
     };
-    Page.search(options);
-    Page.expectNumberOfGridRows(1);
+    await Page.search(options);
+    await Page.expectNumberOfGridRows(1);
   });
 
-  it('search patient visits by service', () => {
+  it('search patient visits by service', async () => {
     const options = {
       service : 'Medecine Interne',
     };
-    Page.search(options);
-    Page.expectNumberOfGridRows(OLD_VISITS + 2);
+    await Page.search(options);
+    await Page.expectNumberOfGridRows(OLD_VISITS + 2);
   });
 
-  it('search patient visits by ward', () => {
+  it('search patient visits by ward', async () => {
     const options = {
       ward : 'Pavillon A',
     };
-    Page.search(options);
-    Page.expectNumberOfGridRows(1);
+    await Page.search(options);
+    await Page.expectNumberOfGridRows(1);
     options.ward = 'Pavillon B';
-    Page.search(options);
-    Page.expectNumberOfGridRows(0);
+    await Page.search(options);
+    await Page.expectNumberOfGridRows(0);
   });
 
-  it('search patient visits', () => {
+  it('search patient visits', async () => {
     const options = {
       isHospitalized : 1,
       displayName : 'Test 2 Patient',
     };
-    Page.search(options);
-    Page.expectNumberOfGridRows(0);
+    await Page.search(options);
+    await Page.expectNumberOfGridRows(0);
   });
 });
