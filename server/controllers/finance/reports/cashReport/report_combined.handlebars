@@ -28,6 +28,7 @@
             <th style="width: 45%">{{ translate 'TABLE.COLUMNS.DESCRIPTION'}}</th>
             <th>{{ translate 'TABLE.COLUMNS.ENTRY' }}</th>
             <th>{{ translate 'TABLE.COLUMNS.EXIT' }}</th>
+            <th>{{ translate 'TABLE.COLUMNS.VALUE' }}</th>
             <th>{{ translate 'TABLE.COLUMNS.BALANCE' }}</th>
           </tr>
         </thead>
@@ -41,22 +42,25 @@
                 {{ txn.description }}
               </td>
               <td class="text-right">
-                {{ currency txn.debit txn.currency_id}}
+                {{currency txn.debit txn.currency_id}}
               </td>
               <td class="text-right">
-                {{ currency txn.credit txn.currency_id}}
+                {{currency txn.credit txn.currency_id}}
               </td>
               <td class="text-right">
-                {{ currency txn.cumsum ../metadata.enterprise.currency_id}}
+                {{debcred this.exchangedBalance ../metadata.enterprise.currency_id}}
+              </td>
+              <td class="text-right">
+                {{debcred txn.cumsum ../metadata.enterprise.currency_id}}
               </td>
             </tr>
           {{else}}
-            {{>emptyTable columns=7}}
+            {{>emptyTable columns=8}}
           {{/each}}
         </tbody>
         <tfoot>
           <tr>
-            <th colspan="6">{{ date footer.date }}</th>
+            <th colspan="7">{{ date footer.date }}</th>
             <th class="text-right">{{ debcred footer.exchangedCumSum metadata.enterprise.currency_id}}</th>
           </tr>
         </tfoot>

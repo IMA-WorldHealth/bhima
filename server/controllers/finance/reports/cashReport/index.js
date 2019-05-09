@@ -101,8 +101,12 @@ function document(req, res, next) {
       _.merge(context, { cashbox });
 
       // determine the currency rendering
-      params.currency_id = cashbox.currency_id;
-      params.isEnterpriseCurrency = params.currency_id === req.session.enterprise.currency_id;
+      // Update By @lomamech
+      // As the report of the boxes can only be viewed in the company currency,
+      // we set the variable isEnterpriseCurrency to true
+
+      params.currency_id = req.session.enterprise.currency_id;
+      params.isEnterpriseCurrency = true;
 
       // get the opening balance for the acount
       return AccountExtras.getOpeningBalanceForDate(cashbox.account_id, params.dateFrom);
