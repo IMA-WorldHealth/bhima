@@ -63,8 +63,11 @@ describe('Login Page', () => {
   it('has a default project value', async () => {
     const defaultProject = await element(by.model('LoginCtrl.credentials.project'))
       .$('option:checked').getText();
-    expect(await defaultProject).to.exist;
-    expect(await defaultProject).to.not.be.empty;
+
+    // eslint-disable-next-line
+    expect(defaultProject).to.exist;
+    // eslint-disable-next-line
+    expect(defaultProject).to.not.be.empty;
   });
 
   it('allows a valid user to log in to the application', async () => {

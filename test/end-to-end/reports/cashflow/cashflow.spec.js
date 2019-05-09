@@ -1,12 +1,8 @@
-const chai = require('chai');
 const helpers = require('../../shared/helpers');
-
-helpers.configure(chai);
-
 const ReportCashflowPage = require('./cashflow.page');
 
 describe('Cashflow Report', () => {
-  let Page;
+  let page;
   const key = 'cashflow';
 
   const dataset = {
@@ -18,21 +14,21 @@ describe('Cashflow Report', () => {
     previousCashbox : [],
   };
 
-  before(() => {
-    helpers.navigate(`#!/reports/${key}`);
-    Page = new ReportCashflowPage(key);
+  before(async () => {
+    await helpers.navigate(`#!/reports/${key}`);
+    page = new ReportCashflowPage(key);
   });
 
-  it('preview a new Cashflow Report', () => {
-    Page.showCashflowReportPreview(dataset.cashboxes, dataset.dateFrom, dataset.dateTo);
+  it('preview a new Cashflow Report', async () => {
+    await page.showCashflowReportPreview(dataset.cashboxes, dataset.dateFrom, dataset.dateTo);
   });
 
-  it('close the previewed report', () => {
-    Page.closeCashflowReportPreview();
+  it('close the previewed report', async () => {
+    await page.closeCashflowReportPreview();
   });
 
-  it('save a previewed report', () => {
-    Page.saveCashflowReport(
+  it('save a previewed report', async () => {
+    await page.saveCashflowReport(
       dataset.dateFrom,
       dataset.dateTo,
       dataset.previousCashbox,
@@ -41,11 +37,11 @@ describe('Cashflow Report', () => {
     );
   });
 
-  it('report has been saved into archive', () => {
-    Page.checkSavedCashflowReport(dataset.report_name);
+  it('report has been saved into archive', async () => {
+    await page.checkSavedCashflowReport(dataset.report_name);
   });
 
-  it('print the previewed report', () => {
-    Page.printCashflowReport(dataset.cashboxes, dataset.dateFrom, dataset.dateTo);
+  it('print the previewed report', async () => {
+    await page.printCashflowReport(dataset.cashboxes, dataset.dateFrom, dataset.dateTo);
   });
 });

@@ -1,7 +1,6 @@
 /* global element, by */
 /* eslint class-methods-use-this:off */
 
-
 /**
  * This class is represents an account configuration page in term of structure and
  * behaviour so it is a account configuration page object

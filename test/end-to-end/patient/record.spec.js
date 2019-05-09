@@ -29,7 +29,7 @@ describe('Patient Record', () => {
 
   before(() => helpers.navigate(url));
 
-  it('downloads and correctly displays patient information', () => {
+  it('downloads and correctly displays patient information', async () => {
     await FU.hasText(by.id('name'), patient.name);
     await FU.hasText(by.id('patientID'), patient.id);
     await FU.hasText(by.id('hospitalNo'), patient.hospital_no);
@@ -38,11 +38,11 @@ describe('Patient Record', () => {
   });
 
   // sub unit tests - these can be moved to individual files if they become too large
-  it('displays the correct number of patient visits', () => {
+  it('displays the correct number of patient visits', async () => {
     expect(await element.all(by.css('[data-visit-line]')).count()).to.eventually.equal(1);
   });
 
-  it('admits a patient', () => {
+  it('admits a patient', async () => {
     const diagnosisLabel = 'Melioidose a';
     await element(by.id('submit-visit')).click();
 
@@ -54,7 +54,7 @@ describe('Patient Record', () => {
     expect(element.all(by.css('[data-visit-line]')).count()).to.eventually.equal(2);
   });
 
-  it('dicharges a patient with a new diagnosis', () => {
+  it('dicharges a patient with a new diagnosis', async () => {
     const diagnosisLabel = 'Melioidose a';
     element(by.id('submit-visit')).click();
 
@@ -68,7 +68,7 @@ describe('Patient Record', () => {
   });
 
   // Upload patient documents
-  it('upload a valid image as document', () => {
+  it('upload a valid image as document', async () => {
     const title = '[e2e] New Image As Document';
     const fileToUpload = 'file.jpg';
     const absolutePath = path.resolve(fixtures, fileToUpload);
@@ -84,7 +84,7 @@ describe('Patient Record', () => {
   });
 
   // upload patient documents
-  it('upload a PDF document', () => {
+  it('upload a PDF document', async () => {
     const title = '[e2e] New Document';
     const fileToUpload = 'file.pdf';
     const absolutePath = path.resolve(fixtures, fileToUpload);
@@ -98,7 +98,7 @@ describe('Patient Record', () => {
   });
 
   // test invalid file upload
-  it('cannot upload invalid document', () => {
+  it('cannot upload invalid document', async () => {
     const title = '[e2e] Invalid Document';
     const fileToUpload = 'file.virus';
     const absolutePath = path.resolve(fixtures, fileToUpload);
@@ -113,7 +113,7 @@ describe('Patient Record', () => {
   });
 
   // change document view
-  it('change document view', () => {
+  it('change document view', async () => {
     element(by.css('[data-document-action="thumbnail"]')).click();
     FU.exists(by.css('[data-view="thumbnail"]'), true);
 
@@ -122,7 +122,7 @@ describe('Patient Record', () => {
   });
 
 
-  it(' thumbnail should not be shown if the upload is not an image', () => {
+  it(' thumbnail should not be shown if the upload is not an image', async () => {
     const title = '[e2e] New pdf As Document';
     const fileToUpload = 'file.pdf';
     const absolutePath = path.resolve(fixtures, fileToUpload);
@@ -135,7 +135,7 @@ describe('Patient Record', () => {
     FU.modal.close();
   });
 
-  it('Should check if upload_thumbnail is displayed if the upload is an image', () => {
+  it('Should check if upload_thumbnail is displayed if the upload is an image', async () => {
     const title = '[e2e] New Image As Document';
     const fileToUpload = 'file.jpg';
     const absolutePath = path.resolve(fixtures, fileToUpload);
@@ -148,7 +148,7 @@ describe('Patient Record', () => {
     await FU.modal.close();
   });
 
-  it('informs the user that there is no patient for invalid request', () => {
+  it('informs the user that there is no patient for invalid request', async () => {
     await helpers.navigate(root.concat('invalidid'));
     await components.notification.hasError();
     await FU.exists(by.id('nopatient'), true);

@@ -91,7 +91,9 @@ function StockEntryPage() {
    *  { label: '...', quantity: '...', expiration_date: '...' }
    * ]
    */
-  page.setLots = async function setLots(inventoryRowNumber, lotsArray, isTransferReception, inventoryQuantity, inventoryUnitCost) {
+  page.setLots = async function setLots(
+    inventoryRowNumber, lotsArray, isTransferReception, inventoryQuantity, inventoryUnitCost
+  ) {
     // lots column
     await this.openLotsModal(inventoryRowNumber);
 

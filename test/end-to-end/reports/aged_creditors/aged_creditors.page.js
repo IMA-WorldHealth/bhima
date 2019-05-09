@@ -10,48 +10,48 @@ class CreditorsReportPage {
   }
 
   // preview a Creditors report
-  showCreditorsReportPreview(year, month, includeZero) {
-    components.fiscalYearSelect.set(year);
-    components.periodSelection.set(month);
+  async showCreditorsReportPreview(year, month, includeZero) {
+    await components.fiscalYearSelect.set(year);
+    await components.periodSelection.set(month);
 
     if (includeZero) {
-      element(by.css('input[type="checkbox"]')).click();
+      await element(by.css('input[type="checkbox"]')).click();
     }
 
-    this.page.preview();
+    await this.page.preview();
   }
 
   // save a Creditors report
-  saveCreditorsReport(year, month, includeZero, reportName, reportFormat) {
-    this.showCreditorsReportPreview(year, month, includeZero);
+  async saveCreditorsReport(year, month, includeZero, reportName, reportFormat) {
+    await this.showCreditorsReportPreview(year, month, includeZero);
 
     // save report as PDF
-    this.page.saveAs();
-    FU.input('SaveCtrl.documentOptions.label', reportName);
-    FU.select('SaveCtrl.documentOptions.renderer', reportFormat);
-    FU.modal.submit();
+    await this.page.saveAs();
+    await FU.input('SaveCtrl.documentOptions.label', reportName);
+    await FU.select('SaveCtrl.documentOptions.renderer', reportFormat);
+    await FU.modal.submit();
 
     // successfully saved notification
-    components.notification.hasSuccess();
-    this.page.backToConfig();
+    await components.notification.hasSuccess();
+    await this.page.backToConfig();
   }
 
   // print a debtors report
-  printCreditorsReport(year, month, includeZero) {
-    this.showCreditorsReportPreview(year, month, includeZero);
-    this.page.printPreview();
+  async printCreditorsReport(year, month, includeZero) {
+    await this.showCreditorsReportPreview(year, month, includeZero);
+    await this.page.printPreview();
   }
 
   // check saved report
-  checkSavedCreditorsReport(reportName) {
-    this.page.gotoArchive();
-    this.page.lastReportMatching(reportName);
-    this.page.backToConfig();
+  async checkSavedCreditorsReport(reportName) {
+    await this.page.gotoArchive();
+    await this.page.lastReportMatching(reportName);
+    await this.page.backToConfig();
   }
 
   // close preview
-  closeCreditorsReportPreview() {
-    this.page.closePreview();
+  async closeCreditorsReportPreview() {
+    await this.page.closePreview();
   }
 }
 

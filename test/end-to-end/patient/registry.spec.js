@@ -1,5 +1,4 @@
 const helpers = require('../shared/helpers');
-
 const PatientRegistrySearch = require('./registry.search');
 
 // patient registry tests

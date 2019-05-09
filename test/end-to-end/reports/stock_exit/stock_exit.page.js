@@ -10,49 +10,48 @@ class StockExitReportPage {
   }
 
   // preview a StockExit report
-  showStockExitReportPreview(depotName, dateFrom, dateTo) {
-    components.depotSelect.set(depotName);
-    components.dateInterval.range(dateFrom, dateTo);
+  async showStockExitReportPreview(depotName, dateFrom, dateTo) {
+    await components.depotSelect.set(depotName);
+    await components.dateInterval.range(dateFrom, dateTo);
 
-    element(by.model('ReportConfigCtrl.includePatientExit')).click();
-    element(by.model('ReportConfigCtrl.includeServiceExit')).click();
-    element(by.model('ReportConfigCtrl.includeDepotExit')).click();
-    element(by.model('ReportConfigCtrl.includeLossExit')).click();
+    await element(by.model('ReportConfigCtrl.includePatientExit')).click();
+    await element(by.model('ReportConfigCtrl.includeServiceExit')).click();
+    await element(by.model('ReportConfigCtrl.includeDepotExit')).click();
+    await element(by.model('ReportConfigCtrl.includeLossExit')).click();
 
-    this.page.preview();
-  }
+    await this.page.preview(); }
 
   // save a StockExit report
-  saveStockExitReport(dateFrom, dateTo, depotName, reportName, reportFormat) {
-    this.showStockExitReportPreview(depotName, dateFrom, dateTo);
+  async saveStockExitReport(dateFrom, dateTo, depotName, reportName, reportFormat) {
+    await this.showStockExitReportPreview(depotName, dateFrom, dateTo);
 
     // save report as PDF
-    this.page.saveAs();
-    FU.input('SaveCtrl.documentOptions.label', reportName);
-    FU.select('SaveCtrl.documentOptions.renderer', reportFormat);
-    FU.modal.submit();
+    await this.page.saveAs();
+    await FU.input('SaveCtrl.documentOptions.label', reportName);
+    await FU.select('SaveCtrl.documentOptions.renderer', reportFormat);
+    await FU.modal.submit();
 
     // successfully saved notification
-    components.notification.hasSuccess();
-    this.page.backToConfig();
+    await components.notification.hasSuccess();
+    await this.page.backToConfig();
   }
 
   // print the report
-  printStockExitReport(depotName, dateFrom, dateTo) {
-    this.showStockExitReportPreview(depotName, dateFrom, dateTo);
-    this.page.printPreview();
+  async printStockExitReport(depotName, dateFrom, dateTo) {
+    await this.showStockExitReportPreview(depotName, dateFrom, dateTo);
+    await this.page.printPreview();
   }
 
   // check saved report
-  checkSavedStockExitReport(reportName) {
-    this.page.gotoArchive();
-    this.page.lastReportMatching(reportName);
-    this.page.backToConfig();
+  async checkSavedStockExitReport(reportName) {
+    await this.page.gotoArchive();
+    await this.page.lastReportMatching(reportName);
+    await this.page.backToConfig();
   }
 
   // close preview
-  closeStockExitReportPreview() {
-    this.page.closePreview();
+  async closeStockExitReportPreview() {
+    await this.page.closePreview();
   }
 }
 

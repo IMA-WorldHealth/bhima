@@ -1,10 +1,3 @@
-/* global */
-
-const chai = require('chai');
-const helpers = require('../../shared/helpers');
-
-helpers.configure(chai);
-
 const FU = require('../../shared/FormUtils');
 const ReportPage = require('../page');
 const components = require('../../shared/components');
@@ -15,43 +8,43 @@ class CashflowReportPage {
   }
 
   // preview a Cashflow report
-  showCashflowReportPreview(cashboxes, dateFrom, dateTo) {
-    components.dateInterval.range(dateFrom, dateTo);
-    components.multipleCashBoxSelect.set(cashboxes);
-    this.page.preview();
+  async showCashflowReportPreview(cashboxes, dateFrom, dateTo) {
+    await components.dateInterval.range(dateFrom, dateTo);
+    await components.multipleCashBoxSelect.set(cashboxes);
+    await this.page.preview();
   }
 
   // save a Cashflow report
-  saveCashflowReport(dateFrom, dateTo, cashboxes, reportName, reportFormat) {
-    this.showCashflowReportPreview(cashboxes, dateFrom, dateTo);
+  async saveCashflowReport(dateFrom, dateTo, cashboxes, reportName, reportFormat) {
+    await this.showCashflowReportPreview(cashboxes, dateFrom, dateTo);
 
     // save report as PDF
-    this.page.saveAs();
-    FU.input('SaveCtrl.documentOptions.label', reportName);
-    FU.select('SaveCtrl.documentOptions.renderer', reportFormat);
-    FU.modal.submit();
+    await this.page.saveAs();
+    await FU.input('SaveCtrl.documentOptions.label', reportName);
+    await FU.select('SaveCtrl.documentOptions.renderer', reportFormat);
+    await FU.modal.submit();
 
     // successfully saved notification
-    components.notification.hasSuccess();
-    this.page.backToConfig();
+    await components.notification.hasSuccess();
+    await this.page.backToConfig();
   }
 
   // print the report
-  printCashflowReport(cashboxes, dateFrom, dateTo) {
-    this.showCashflowReportPreview(cashboxes, dateFrom, dateTo);
-    this.page.printPreview();
+  async printCashflowReport(cashboxes, dateFrom, dateTo) {
+    await this.showCashflowReportPreview(cashboxes, dateFrom, dateTo);
+    await this.page.printPreview();
   }
 
   // check saved report
-  checkSavedCashflowReport(reportName) {
-    this.page.gotoArchive();
-    this.page.lastReportMatching(reportName);
-    this.page.backToConfig();
+  async checkSavedCashflowReport(reportName) {
+    await this.page.gotoArchive();
+    await this.page.lastReportMatching(reportName);
+    await this.page.backToConfig();
   }
 
   // close preview
-  closeCashflowReportPreview() {
-    this.page.closePreview();
+  async closeCashflowReportPreview() {
+    await this.page.closePreview();
   }
 }
 

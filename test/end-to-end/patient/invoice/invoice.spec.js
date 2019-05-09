@@ -1,11 +1,7 @@
 /* global by, browser */
 
-const chai = require('chai');
+const { expect } = require('chai');
 const helpers = require('../../shared/helpers');
-
-const { expect } = chai;
-helpers.configure(chai);
-
 const FU = require('../../shared/FormUtils');
 const PatientInvoicePage = require('./invoice.page.js');
 const components = require('../../shared/components');
@@ -24,140 +20,139 @@ describe('Patient Invoice', () => {
   // navigate to the patient invoice page
   before(() => helpers.navigate(path));
 
-  it('invoices a patient for a single item', () => {
+  it('invoices a patient for a single item', async () => {
     const page = new PatientInvoicePage();
 
     // prepare the page with default patient, service, etc
-    page.prepare();
+    await page.prepare();
 
     // add the following inventory item
-    page.addInventoryItem(0, '100099');
+    await page.addInventoryItem(0, '100099');
 
     // make sure the submit button is not disabled
-    expect(page.btns.submit.isEnabled()).to.eventually.equal(true);
+    expect(await page.btns.submit.isEnabled()).to.eventually.equal(true);
 
     // attempt to submit the page.
-    page.submit();
+    await page.submit();
 
-    FU.exists(by.id('receipt-confirm-created'), true);
-    page.reset();
+    await FU.exists(by.id('receipt-confirm-created'), true);
+    await page.reset();
   });
 
-  it('invoices a patient for multiple items', () => {
+  it('invoices a patient for multiple items', async () => {
     const page = new PatientInvoicePage();
 
     // prepare the page with default patient, service, etc
-    page.prepare();
+    await page.prepare();
 
     // add a two rows to the grid
-    page.addRows(2);
+    await page.addRows(2);
 
     // the grid now has three rows
-    expect(page.getRows().count()).to.eventually.equal(3);
+    expect(await page.getRows().count()).to.eventually.equal(3);
 
     // add two inventory items to each row (0-indexing)
-    page.addInventoryItem(0, '100099');
-    page.addInventoryItem(1, '110016');
-    page.addInventoryItem(2, '170448');
+    await page.addInventoryItem(0, '100099');
+    await page.addInventoryItem(1, '110016');
+    await page.addInventoryItem(2, '170448');
 
     // change the required quantities
-    page.adjustItemQuantity(0, 17);
-    page.adjustItemQuantity(1, 12);
-    page.adjustItemQuantity(2, 56);
+    await page.adjustItemQuantity(0, 17);
+    await page.adjustItemQuantity(1, 12);
+    await page.adjustItemQuantity(2, 56);
 
     // change the prices
-    page.adjustItemPrice(0, 3.12);
-    page.adjustItemPrice(1, 15.13);
-    page.adjustItemPrice(2, 0.13);
+    await page.adjustItemPrice(0, 3.12);
+    await page.adjustItemPrice(1, 15.13);
+    await page.adjustItemPrice(2, 0.13);
 
     // adjust the item quantity again, for good measure
-    page.adjustItemQuantity(2, 46);
+    await page.adjustItemQuantity(2, 46);
 
     // make sure the submit button is not disabled
-    expect(page.btns.submit.isEnabled()).to.eventually.equal(true);
+    expect(await page.btns.submit.isEnabled()).to.eventually.equal(true);
 
     // submit the page
-    page.submit();
+    await page.submit();
 
     /** @todo - this can validate totals and receipt content in the future */
-    FU.exists(by.id('receipt-confirm-created'), true);
-    page.reset();
+    await FU.exists(by.id('receipt-confirm-created'), true);
+    await page.reset();
   });
 
-  it('blocks submission if no patient is available', () => {
+  it('blocks submission if no patient is available', async () => {
     const page = new PatientInvoicePage();
 
     // this patient doesn't exist
-    page.patient('TPA1.1');
+    await page.patient('TPA1.1');
 
     // make sure the "add rows" button is still disabled
-    expect(page.btns.add.isEnabled(), 'The add rows button is not disabled').to.eventually.equal(false);
+    expect(await page.btns.add.isEnabled(), 'The add rows button is not disabled').to.eventually.equal(false);
   });
 
-  it('blocks submission for an invalid grid', () => {
+  it('blocks submission for an invalid grid', async () => {
     const page = new PatientInvoicePage();
-    page.btns.clear.click();
+    await page.btns.clear.click();
 
     // set up a valid invoice
-    page.prepare();
+    await page.prepare();
 
     // add two rows to grid.
-    page.addRows(1);
+    await page.addRows(1);
 
-    page.submit();
+    await page.submit();
 
     // there should be a danger notification
-    components.notification.hasDanger();
+    await components.notification.hasDanger();
   });
 
-  it('saves and loads cached items correctly', () => {
+  it('saves and loads cached items correctly', async () => {
     const page = new PatientInvoicePage();
-    page.btns.clear.click();
+    await page.btns.clear.click();
 
-    page.prepare();
+    await page.prepare();
 
     // add a two rows to the grid
-    page.addRows(1);
+    await page.addRows(1);
 
     // add two inventory items to each row (0-indexing)
-    page.addInventoryItem(0, '100099'); // Propantheline bromide15mg
-    page.addInventoryItem(1, '110016'); // Tylenol sirop (cold multivit)
+    await page.addInventoryItem(0, '100099'); // Propantheline bromide15mg
+    await page.addInventoryItem(1, '110016'); // Tylenol sirop (cold multivit)
 
     // change the required quantities
-    page.adjustItemQuantity(0, 1);
-    page.adjustItemQuantity(1, 2);
+    await page.adjustItemQuantity(0, 1);
+    await page.adjustItemQuantity(1, 2);
 
     // change the prices
     // make the form invalid by adjusting the final price to 0.00
-    page.adjustItemPrice(0, 1.11);
-    page.adjustItemPrice(1, 0.00);
+    await page.adjustItemPrice(0, 1.11);
+    await page.adjustItemPrice(1, 0.00);
 
     // submit the form and clear the error message
-    page.submit();
+    await page.submit();
 
-    components.notification.hasDanger();
+    await components.notification.hasDanger();
 
     // refresh the browser
-    browser.refresh();
+    await browser.refresh();
 
     // need to have a patient to recover data
-    page.patient('PA.TPA.1');
+    await page.patient('PA.TPA.1');
 
     // click recover cache button
-    page.recover();
+    await page.recover();
 
     // make sure that information was correctly recovered
-    page.expectRowCount(2);
+    await page.expectRowCount(2);
 
     // make the price something more reasonable that validation will accept
-    page.adjustItemPrice(1, 2.22);
+    await page.adjustItemPrice(1, 2.22);
 
-    page.submit();
+    await page.submit();
 
-    FU.exists(by.id('receipt-confirm-created'), true);
-    FU.modal.close();
+    await FU.exists(by.id('receipt-confirm-created'), true);
+    await FU.modal.close();
   });
-
 
   // it('can calculate totals correctly');
 });

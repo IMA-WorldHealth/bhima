@@ -1,8 +1,5 @@
-const chai = require('chai');
 const helpers = require('../shared/helpers');
 const AccountConfigPage = require('./payroll_account_config.page');
-
-helpers.configure(chai);
 
 describe('Payroll Account Configuration Management', () => {
   // navigate to the page

@@ -8,47 +8,47 @@ class BalanceReportPage {
   }
 
   // preview an account report
-  showBalanceReportPreview(year, month) {
-    components.fiscalYearSelect.set(year);
-    components.periodSelection.set(month);
-    components.yesNoRadios.set('yes', 'useSeparateDebitsAndCredits');
-    components.yesNoRadios.set('no', 'includeClosingBalances');
-    components.yesNoRadios.set('yes', 'shouldPruneEmptyRows');
-    components.yesNoRadios.set('yes', 'shouldHideTitleAccounts');
-    this.page.preview();
+  async showBalanceReportPreview(year, month) {
+    await components.fiscalYearSelect.set(year);
+    await components.periodSelection.set(month);
+    await components.yesNoRadios.set('yes', 'useSeparateDebitsAndCredits');
+    await components.yesNoRadios.set('no', 'includeClosingBalances');
+    await components.yesNoRadios.set('yes', 'shouldPruneEmptyRows');
+    await components.yesNoRadios.set('yes', 'shouldHideTitleAccounts');
+    await this.page.preview();
   }
 
   // save an account report
-  saveBalanceReport(year, month, reportName, reportFormat) {
-    this.showBalanceReportPreview(year, month);
+  async saveBalanceReport(year, month, reportName, reportFormat) {
+    await this.showBalanceReportPreview(year, month);
 
     // save report as PDF
-    this.page.saveAs();
-    FU.input('SaveCtrl.documentOptions.label', reportName);
-    FU.select('SaveCtrl.documentOptions.renderer', reportFormat);
-    FU.modal.submit();
+    await this.page.saveAs();
+    await FU.input('SaveCtrl.documentOptions.label', reportName);
+    await FU.select('SaveCtrl.documentOptions.renderer', reportFormat);
+    await FU.modal.submit();
 
     // successfully saved notification
-    components.notification.hasSuccess();
-    this.page.backToConfig();
+    await components.notification.hasSuccess();
+    await this.page.backToConfig();
   }
 
   // print an account report
-  printBalanceReport(year, month) {
-    this.showBalanceReportPreview(year, month);
-    this.page.printPreview();
+  async printBalanceReport(year, month) {
+    await this.showBalanceReportPreview(year, month);
+    await this.page.printPreview();
   }
 
   // check saved report
-  checkSavedBalanceReport(reportName) {
-    this.page.gotoArchive();
-    this.page.lastReportMatching(reportName);
-    this.page.backToConfig();
+  async checkSavedBalanceReport(reportName) {
+    await this.page.gotoArchive();
+    await this.page.lastReportMatching(reportName);
+    await this.page.backToConfig();
   }
 
   // close preview
-  closeBalanceReportPreview() {
-    this.page.closePreview();
+  async closeBalanceReportPreview() {
+    await this.page.closePreview();
   }
 }
 

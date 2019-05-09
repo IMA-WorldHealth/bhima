@@ -1,14 +1,10 @@
 /* global element, by, browser */
-const chai = require('chai');
+const { expect } = require('chai');
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 const helpers = require('../shared/helpers');
 
-const { expect } = chai;
-helpers.configure(chai);
-
 describe('Patient Registration', () => {
-
   const path = '#!/patients/register';
   beforeEach(() => helpers.navigate(path));
 
@@ -20,28 +16,28 @@ describe('Patient Registration', () => {
     hospital_no  : 120,
   };
 
-  it('registers a valid patient', () => {
+  it('registers a valid patient', async () => {
     // patient name
-    components.inpuText.set('display_name', mockPatient.display_name);
+    await components.inpuText.set('display_name', mockPatient.display_name);
 
     // hospital number, etc
-    FU.input('PatientRegCtrl.medical.hospital_no', mockPatient.hospital_no);
-    FU.input('PatientRegCtrl.medical.dob', mockPatient.dob);
+    await FU.input('PatientRegCtrl.medical.hospital_no', mockPatient.hospital_no);
+    await FU.input('PatientRegCtrl.medical.dob', mockPatient.dob);
 
     // set the gender of the patient
-    element(by.id('male')).click();
+    await element(by.id('male')).click();
 
     // set the locations via the "locations" array
-    components.locationSelect.set(helpers.data.locations, 'origin-location-id');
-    components.locationSelect.set(helpers.data.locations, 'current-location-id');
+    await components.locationSelect.set(helpers.data.locations, 'origin-location-id');
+    await components.locationSelect.set(helpers.data.locations, 'current-location-id');
 
     // set the debtor group
-    components.debtorGroupSelect.set('NGO IMA World Health');
+    await components.debtorGroupSelect.set('NGO IMA World Health');
 
 
     // submit the patient registration form
-    FU.buttons.submit();
-    FU.exists(by.id('receipt-confirm-created'), true);
+    await FU.buttons.submit();
+    await FU.exists(by.id('receipt-confirm-created'), true);
   });
 
   // This test group assumes the previous mock patient has been successfully registered
@@ -50,38 +46,37 @@ describe('Patient Registration', () => {
     // refresh the page to make sure previous data is cleared
     before(() => browser.refresh());
 
-    it('blocks invalid form submission with relevent error classes', () => {
+    it('blocks invalid form submission with relevent error classes', async () => {
       // submit the patient registration form
-      FU.buttons.submit();
+      await FU.buttons.submit();
 
       // verify form has not been submitted
-      expect(helpers.getCurrentPath()).to.eventually.equal(path);
+      expect(await helpers.getCurrentPath()).to.eventually.equal(path);
 
       // the following fields should be required
-      components.inpuText.validationError('display_name');
-      FU.validation.error('$ctrl.debtorGroupUuid');
-      FU.validation.error('PatientRegCtrl.medical.dob');
+      await components.inpuText.validationError('display_name');
+      await FU.validation.error('$ctrl.debtorGroupUuid');
+      await FU.validation.error('PatientRegCtrl.medical.dob');
 
       // first name and title are optional
-      components.inpuText.validationOk('title');
+      await components.inpuText.validationOk('title');
 
-      components.notification.hasDanger();
+      await components.notification.hasDanger();
     });
 
-    it('alerts for minimum and maximum dates', () => {
+    it('alerts for minimum and maximum dates', async () => {
       const testMaxYear = '01/01/9000';
       const validYear = '01/01/2000';
       const testMinYear = '01/01/1000';
 
+      await FU.input('PatientRegCtrl.medical.dob', testMaxYear);
+      await FU.exists(by.css('[data-date-error]'), true);
 
-      FU.input('PatientRegCtrl.medical.dob', testMaxYear);
-      FU.exists(by.css('[data-date-error]'), true);
+      await FU.input('PatientRegCtrl.medical.dob', validYear);
+      await FU.exists(by.css('[data-date-error]'), false);
 
-      FU.input('PatientRegCtrl.medical.dob', validYear);
-      FU.exists(by.css('[data-date-error]'), false);
-
-      FU.input('PatientRegCtrl.medical.dob', testMinYear);
-      FU.exists(by.css('[data-date-error]'), true);
+      await FU.input('PatientRegCtrl.medical.dob', testMinYear);
+      await FU.exists(by.css('[data-date-error]'), true);
     });
   });
 });
