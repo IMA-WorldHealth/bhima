@@ -14,9 +14,6 @@ helpers.configure(chai);
 const config = {
   specs : ['test/end-to-end/**/*.spec.js'],
 
-  // turn off the internal promis manager.
-  SELENIUM_PROMISE_MANAGER : false,
-
   framework : 'mocha',
   baseUrl   : 'http://localhost:8080/',
 

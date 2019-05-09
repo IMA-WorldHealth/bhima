@@ -55,7 +55,7 @@ describe('filter.js', () => {
     sql2 = `SELECT t.id, t.street, t.town, t.country, t.location FROM geographic AS t`;
     sql3 = `SELECT a.id, a.label, a.number, a.dateCentury FROM accounts AS a`;
   });
-  
+
   it('#fullText Format the sql query when filtered by full text', () => {
     // fullText matches the SQL "LIKE" filter.
     filters.fullText('name');
@@ -63,10 +63,10 @@ describe('filter.js', () => {
     const formatted = filters.applyQuery(sql).trim();
     const params = filters.parameters();
     const expected = `SELECT t.id, t.name, t.date_object, t.value, t.country_id FROM tables AS t WHERE LOWER(t.name) LIKE ?`;
-    
+
     // Check that param param is working properly
     expect(params).to.deep.equal(['%Unit Test%']);
-    
+
     // assert that the SQL is formatted correctly.
     expect(formatted).to.equal(expected);
   });
@@ -77,7 +77,7 @@ describe('filter.js', () => {
 
     const expected = `SELECT t.id, t.name, t.date_object, t.value, t.country_id FROM tables AS t WHERE DATE(t.date_object) >= DATE(?) AND DATE(t.date_object) <= DATE(?)`;
     const formatted = filters.applyQuery(sql).trim();
-    
+
     // assert that the SQL is formatted correctly.
     expect(formatted).to.equal(expected);
   });
@@ -88,7 +88,7 @@ describe('filter.js', () => {
 
     const expected = `SELECT t.id, t.name, t.date_object, t.value, t.country_id FROM tables AS t WHERE DATE(t.date_object) >= DATE(?)`;
     const formatted = filters.applyQuery(sql).trim();
-    
+
     // assert that the SQL is formatted correctly.
     expect(formatted).to.equal(expected);
   });
@@ -110,7 +110,7 @@ describe('filter.js', () => {
     filters.dateTo('dateTo', 'date_object');
 
     const expected = `SELECT t.id, t.name, t.date_object, t.value, t.country_id FROM tables AS t WHERE DATE(t.date_object) >= DATE(?) AND DATE(t.date_object) <= DATE(?)`;
-    
+
     const formatted = filters.applyQuery(sql).trim();
     expect(formatted).to.equal(expected);
   });
@@ -121,13 +121,13 @@ describe('filter.js', () => {
 
     const expected = `SELECT t.id, t.name, t.date_object, t.value, t.country_id FROM tables AS t WHERE t.value = ?`;
     const formatted = filters.applyQuery(sql).trim();
-    
+
     // assert that the SQL is formatted correctly.
     expect(formatted).to.equal(expected);
   });
 
   it('#custom Format the sql query when filtered by custom', () => {
-    // custom matches the SQL  custom SQL with either single or multiple parameters. 
+    // custom matches the SQL  custom SQL with either single or multiple parameters.
     filters.custom('list', 't.id IN (?)', [object1.list]);
     const expected = `SELECT t.id, t.name, t.date_object, t.value, t.country_id FROM tables AS t WHERE t.id IN (?)`;
     const formatted = filters.applyQuery(sql).trim();
@@ -167,25 +167,25 @@ describe('filter.js', () => {
 
     const formatted = filters2.applyQuery(sql3).trim();
     const expected = `SELECT a.id, a.label, a.number, a.dateCentury FROM accounts AS a WHERE LOWER(a.label) LIKE ?  AND DATE(a.date_century) >= DATE(?) AND DATE(a.date_century) <= DATE(?)   LIMIT 3`;
-   // assert that the SQL is formatted correctly.
+    // assert that the SQL is formatted correctly.
     expect(formatted).to.equal(expected);
   });
 
   it('#Test a query with autoParseStatments with autoParseStatments is true.', () => {
-    //Verify parr is true, to format the query to filter against all columns in the table
-    const filters = new filter(object3, { tableAlias : 'j' , autoParseStatements : true});
+    // Verify parr is true, to format the query to filter against all columns in the table
+    const filters = new filter(object3, { tableAlias : 'j', autoParseStatements : true });
     const sql = `SELECT j.id, j.abbr, j.display_name FROM javascript AS j`;
     const formatted = filters.applyQuery(sql).trim();
 
     const expected = `SELECT j.id, j.abbr, j.display_name FROM javascript AS j WHERE j.id = ? AND j.abbr = ? AND j.display_name = ?`;
-    
+
     // assert that the SQL is formatted correctly.
     expect(formatted).to.equal(expected);
   });
 
   it('Format the SQL when Parsed Automatically Uuid.', () => {
     // Check on autoParseStatements is true, look in the query if a column is of type uuid for formatter
-    const filters = new filter(object4, { tableAlias : 'g' , autoParseStatements : true});
+    const filters = new filter(object4, { tableAlias : 'g', autoParseStatements : true });
     const sql = `SELECT g.grade_uuid, g.grade FROM grade AS g`;
     const formatted = filters.applyQuery(sql).trim();
 
