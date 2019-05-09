@@ -14,6 +14,13 @@
       <h5 style="margin:15px; font-weight:bold" class="text-center text-uppercase">
         {{date this.dateFrom}} - {{date this.dateTo}}
       </h5>
+      <h5 class="text-center">
+        {{#if this.rate}}
+          {{translate 'EXCHANGE.EXCHANGE_RATES'}} : 
+          {{currency 1 this.firstCurrency}} = {{currency this.rate this.secondCurrency}} 
+          <i>(<span>{{translate 'EXCHANGE.AT_THE_DATE'}}</span> {{date this.dateTo}})</i>
+        {{/if}}
+      </h5>
       <table class="table table-condensed table-report table-bordered">
         <tbody>
           <tr>
