@@ -440,6 +440,7 @@
             "HOSPITAL_FILE_NR": "Numero Fiche",
             "HEALTH_ZONE":"Zone de santé",
             "HEALTH_AREA":"Air de santé",
+            "HIDDEN": "Caché",
             "ID": "ID",
             "INCOME": "Recettes",
             "INCOME_EXPENSE": "Recettes et dépenses",

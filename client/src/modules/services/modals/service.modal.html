@@ -22,6 +22,17 @@
       </div>
     </div>
 
+    
+    <!-- amortissement and depreciation -->
+    <div class="form-group" ng-hide="ServiceModalCtrl.isCreating">
+        <div class="checkbox">
+          <label class="control-label">
+            <input name="hidden" type="checkbox" ng-model="ServiceModalCtrl.service.hidden" ng-true-value="1" ng-false-value="0">
+            <span translate>FORM.LABELS.HIDDEN</span>
+          </label>
+        </div>
+      </div>
+
   </div>
 
   <div class="modal-footer">

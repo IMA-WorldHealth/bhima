@@ -59,6 +59,7 @@ class ServicePage {
   editService(n, name) {
     GA.clickOnMethod(n, this.actionLinkColumn, 'edit', this.gridId);
     FU.input('ServiceModalCtrl.service.name', name);
+    element(by.css('[name="hidden"]')).click();
     FU.buttons.submit();
     components.notification.hasSuccess();
   }

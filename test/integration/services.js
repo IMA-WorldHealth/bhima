@@ -29,7 +29,8 @@ describe('(/services) The Service API', () => {
   };
 
   const responseKeys = [
-    'id', 'cost_center_id', 'profit_center_id', 'name', 'enterprise_id',
+    'id', 'cost_center_id', 'profit_center_id',
+    'name', 'enterprise_id', 'hidden',
   ];
 
   it('POST /services adds a services', () => {

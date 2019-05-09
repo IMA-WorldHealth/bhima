@@ -1697,6 +1697,7 @@ CREATE TABLE `service` (
   `uuid` BINARY(16) NULL,
   `enterprise_id` SMALLINT(5) UNSIGNED NOT NULL,
   `name` VARCHAR(80) NOT NULL,
+  `hidden` TINYINT(1) DEFAULT 0,
   `cost_center_id` SMALLINT(6) DEFAULT NULL,
   `profit_center_id` SMALLINT(6) DEFAULT NULL,
   PRIMARY KEY (`id`),
