@@ -5,7 +5,7 @@ const { expect } = require('chai');
 const helpers = require('../shared/helpers');
 
 const components = require('../shared/components');
-const GU = require('../shared/gridTestUtils.spec.js');
+const GU = require('../shared/GridUtils.js');
 const FU = require('../shared/FormUtils');
 
 describe('Cash Payments', () => {

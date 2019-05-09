@@ -1,4 +1,3 @@
-const chai = require('chai');
 const helpers = require('../shared/helpers');
 const FeeCenterPage = require('./fee_center.page');
 

@@ -1,7 +1,7 @@
 /* global element, by */
 
 const FU = require('../shared/FormUtils');
-const GU = require('../shared/gridTestUtils.spec.js');
+const GU = require('../shared/GridUtils.js');
 const addItem = require('../shared/components/bhAddItem');
 
 function PurchaseOrderPage() {
