@@ -114,7 +114,7 @@ describe('Account Management', () => {
     // set to income
     await select.element(by.css('[data-key="ACCOUNT.TYPES.INCOME"]')).click();
 
-    await accounts.forEach(accnt => createAccount(accnt));
+    await Promise.all(accounts.map(accnt => createAccount(accnt)));
 
     await page.toggleBatchCreate();
 
