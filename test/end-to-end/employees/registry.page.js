@@ -1,4 +1,4 @@
-/* eslint class-methods-use-this:off */
+/* eslint  */
 /**
  * This class represents an employee registry page
  * behaviour so it is an employee page object

@@ -1,5 +1,5 @@
 /* global element, by */
-/* eslint class-methods-use-this:off */
+/* eslint  */
 
 const FU = require('../shared/FormUtils');
 

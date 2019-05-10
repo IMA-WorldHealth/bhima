@@ -1,5 +1,5 @@
 /* global by, element */
-/* eslint class-methods-use-this:off */
+/* eslint  */
 
 const GU = require('../shared/GridUtils');
 

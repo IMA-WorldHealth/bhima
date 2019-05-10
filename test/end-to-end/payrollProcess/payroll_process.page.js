@@ -1,5 +1,5 @@
 /* global element, by */
-/* eslint class-methods-use-this:off */
+/* eslint  */
 
 /**
  * This class is represents a Payroll Process Page in term of structure and

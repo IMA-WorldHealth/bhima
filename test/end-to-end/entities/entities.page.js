@@ -1,4 +1,4 @@
-/* eslint class-methods-use-this:"off" */
+/* eslint  */
 /* global element, by */
 
 /**

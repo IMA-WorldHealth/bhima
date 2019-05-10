@@ -1,5 +1,5 @@
 /* global by */
-/* eslint class-methods-use-this:off */
+/* eslint  */
 const SearchModal = require('../shared/search.page');
 const bhAccountSelect = require('../shared/components/bhAccountSelect');
 const bhYesNoRadios = require('../shared/components/bhYesNoRadios');

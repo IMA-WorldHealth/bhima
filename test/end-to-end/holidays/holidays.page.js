@@ -1,4 +1,4 @@
-/* eslint class-methods-use-this:off */
+/* eslint  */
 
 /* loading grid actions */
 const GridRow = require('../shared/GridRow');

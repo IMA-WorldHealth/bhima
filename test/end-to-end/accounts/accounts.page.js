@@ -1,5 +1,5 @@
 /* global element, by, browser  */
-/* eslint class-methods-use-this:off */
+/* eslint  */
 const path = require('path');
 const EC = require('protractor').ExpectedConditions;
 const FU = require('../shared/FormUtils');

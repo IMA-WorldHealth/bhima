@@ -1,4 +1,4 @@
-/* eslint class-methods-use-this:off */
+/* eslint  */
 const FU = require('../shared/FormUtils');
 const GU = require('../shared/GridUtils');
 const components = require('../shared/components');

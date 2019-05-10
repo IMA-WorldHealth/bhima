@@ -1,4 +1,4 @@
-/* eslint class-methods-use-this:off */
+/* eslint  */
 /**
  * This class represents a modal search page
  * behaviour so it is a modal search page object

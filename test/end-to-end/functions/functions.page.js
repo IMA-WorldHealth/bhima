@@ -1,4 +1,4 @@
-/* eslint class-methods-use-this:off */
+/* eslint  */
 
 const GridRow = require('../shared/GridRow');
 const FU = require('../shared/FormUtils');

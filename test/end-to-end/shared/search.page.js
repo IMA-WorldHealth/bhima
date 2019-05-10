@@ -117,7 +117,7 @@ class SearchModal {
     return FU.input('$ctrl.defaultQueries.limit', limit, this.element);
   }
 
-  /* eslint class-methods-use-this: "off" */
+  /* eslint  */
   setUser(user) {
     return bhUserSelect.set(user);
   }
