@@ -9,8 +9,6 @@
  */
 
 // eslint-disable-next-line
-const chaiPromise = require('chai-as-promised');
-// eslint-disable-next-line
 const addContext = require('mochawesome/addContext');
 const PATH_REGEXP = /^#!|^#|^!/g;
 
@@ -23,12 +21,6 @@ exports.random = function random(n) {
 exports.navigate = async function navigate(browserPath) {
   const destination = browserPath.replace(PATH_REGEXP, '');
   await browser.setLocation(destination);
-};
-
-// configures the chai assertion library
-exports.configure = function configure(chai) {
-  // enable promise chaining for chai assertions
-  chai.use(chaiPromise);
 };
 
 // get the browser path after the hash

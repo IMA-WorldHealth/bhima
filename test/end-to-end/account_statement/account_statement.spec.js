@@ -31,7 +31,7 @@ describe('Account Statement Core', () => {
 
   // TODO(@jniles) - make this test work correctly
   // skip throw error : Test `title` should be a "string" but "function" was given instead.
-  it(`comment the rows for account ${sample.account} with ${sample.comment}`, async () => {
+  it.skip(`comment the rows for account ${sample.account} with ${sample.comment}`, async () => {
     // select the first row
     await AccountStatement.selectRow(0);
 

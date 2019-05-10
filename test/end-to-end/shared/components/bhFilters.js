@@ -16,18 +16,13 @@ class Filters {
     return this.defaultFilters.$$('li').count();
   }
 
-  resetFilters() {
-    this.customFilters.isPresent()
-      .then(hasCustomFilters => {
-        let promise;
+  async resetFilters() {
+    const hasCustomFilters = await this.customFilters.isPresent();
 
-        if (hasCustomFilters) {
-          promise = this.customFilters
-            .$$('a > .fa-close').each(button => button.click());
-        }
-
-        return promise;
-      });
+    if (hasCustomFilters) {
+      await this.customFilters
+        .$$('a > .fa-close').each(button => button.click());
+    }
   }
 }
 

@@ -34,18 +34,18 @@ function getCellName(gridId, row, col) {
 
 async function expectRowCount(gridId, number, message) {
   const rows = getRows(gridId);
-  expect(await rows.count(), message).to.eventually.equal(number);
+  expect(await rows.count(), message).to.equal(number);
 }
 
 async function expectRowCountAbove(gridId, number) {
   const rows = getRows(gridId);
-  expect(await rows.count()).to.eventually.be.above(number);
+  expect(await rows.count()).to.be.above(number);
 }
 
 // assert that the grids's column count is the number passed in
 async function expectColumnCount(gridId, number) {
   const columns = getColumns(gridId);
-  expect(await columns.count()).to.eventually.equal(number);
+  expect(await columns.count()).to.equal(number);
 }
 
 // Provide a text in a cell and this will give the grid indexes for where to find that text
@@ -84,7 +84,7 @@ async function getGridIndexesMatchingText(gridId, text) {
  *   const row = this.getRow( gridId, rowNum );
  * </pre>
  */
-async function getRow(gridId, rowNum) {
+function getRow(gridId, rowNum) {
   return getGrid(gridId)
     .element(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index').row(rowNum));
 }
@@ -98,7 +98,7 @@ async function expectHeaderColumns(gridId, expectedColumns) {
 
   expect(
     await headerColumns.count()
-  ).to.eventually.equal(expectedColumns.length);
+  ).to.equal(expectedColumns.length);
 
   const colTexts = await headerColumns.getText();
 
@@ -125,7 +125,7 @@ function selectRow(gridId, rowNum) {
   // NOTE: Can't do .click() as it doesn't work when webdriving Firefox
   const row = getRow(gridId, rowNum);
   const btn = row.element(by.css('.ui-grid-selection-row-header-buttons'));
-  return browser.actions().mouseMove(btn).mouseDown(btn).mouseUp()
+  return browser.actions().move(btn).press(btn).release(btn)
     .perform();
 }
 
@@ -138,7 +138,7 @@ function selectRow(gridId, rowNum) {
 function selectAll(gridId) {
   const row = getGrid(gridId).$('ui-grid-header');
   const btn = row.$('.ui-grid-selection-row-header-buttons');
-  return browser.actions().mouseMove(btn).mouseDown(btn).mouseUp();
+  return browser.actions().move(btn).press(btn).release(btn);
 }
 
 /**
@@ -160,7 +160,7 @@ function selectAll(gridId) {
   */
 async function expectCellValueMatch(gridId, row, col, value) {
   const dataCell = getCell(gridId, row, col);
-  expect(await dataCell.getText()).to.eventually.equal(value);
+  expect(await dataCell.getText()).to.equal(value);
 }
 
 exports.getGrid = getGrid;

@@ -1,4 +1,4 @@
-/* global browser, element, by */
+/* global element, by */
 
 /**
 * Date editor component interface for e2e test
@@ -17,40 +17,39 @@ module.exports = {
    * @param {String} elementClick - determine a css class that will clicked to
    *   close the selection component Dates.
    */
-  set: function set(date, id, elementClick) {
-    elementClick = (elementClick || '.header-image');
+  set : async function set(date, id, elementClick = '.header-image') {
 
     // fail hard if the user did not pass into
-    /*if (!(date instanceof Date)) {
+    /* if (!(date instanceof Date)) {
       throw new TypeError('You  must provide a date object to the set() method.');
-    }*/
+    } */
 
     // find the component in the DOM by its selector
-    var root = element((id) ? by.id(id) : by.css(this.selector));
+    const root = element((id) ? by.id(id) : by.css(this.selector));
 
     // get the dropdown toggle and click it.
-    var btn = root.element(by.css('[data-date-editor-dropdown-toggle]'));
-    btn.click();
+    const btn = root.element(by.css('[data-date-editor-dropdown-toggle]'));
+    await btn.click();
 
-    var input = root.element(by.css('[data-date-editor-input]'));
-    input.clear();
+    const input = root.element(by.css('[data-date-editor-input]'));
+    await input.clear();
 
     // format the date appropriately.
-    var year = date.getFullYear();
+    const year = date.getFullYear();
 
-    var _month = String(date.getMonth() + 1) ;
-    var month = (_month.length < 2) ? '0' + _month : _month;
+    const _month = String(date.getMonth() + 1);
+    const month = (_month.length < 2) ? `0${_month}` : _month;
 
-    var _day = String(date.getDate()) ;
-    var day = (_day.length < 2) ? '0' + _day : _day;
+    const _day = String(date.getDate());
+    const day = (_day.length < 2) ? `0${_day}` : _day;
 
     // set the date on the input
-    input.sendKeys([day, month, year].join('/'));
+    await input.sendKeys([day, month, year].join('/'));
 
     // at this point, the datepicker is still open, and will intercept all
     // clicks that are made to any elements it is covering.  In order to make
     // the dropdown go away, we will click on the top-left bhima logo to blur
     // the dropdown and remove it.
-    element(by.css(elementClick)).click();
-  }
+    await element(by.css(elementClick)).click();
+  },
 };

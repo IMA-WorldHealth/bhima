@@ -1,9 +1,5 @@
 /* global browser, element, by */
 const q = require('q');
-const chai = require('chai');
-const helpers = require('./test/end-to-end/shared/helpers');
-
-helpers.configure(chai);
 
 // we want to make sure we run tests locally, but TravisCI
 // should run tests on it's own driver.  To find out if it
@@ -30,6 +26,10 @@ const config = {
     timeout : 45000, // 45 second timeout
   },
 
+  localSeleniumStandaloneOpts : {
+    loopback : true,
+  },
+
   // default browsers to run
   multiCapabilities : [{
     // 'browserName': 'firefox',
@@ -48,7 +48,7 @@ const config = {
 
       // NOTE - you may need to play with the delay time to get this to work properly
       // Give this plenty of time to run
-    }).delay(5000);
+    }).delay(3000);
   },
 };
 
