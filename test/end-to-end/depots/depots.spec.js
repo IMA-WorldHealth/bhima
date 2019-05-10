@@ -7,7 +7,7 @@ describe('Depots Management', () => {
   // navigate to the page
   before(() => helpers.navigate('#!/depots'));
 
-  const Page = new DepotPage();
+  const page = new DepotPage();
 
   /**
    * The implementation of the E2E test of the assignment of a Depot
@@ -29,33 +29,33 @@ describe('Depots Management', () => {
   };
 
   it('successfully creates a new depot', async () => {
-    await Page.createDepot(depot.text, false, true, helpers.data.locations);
+    await page.createDepot(depot.text, false, true, helpers.data.locations);
   });
 
   it('successfully edits a depot', async () => {
-    await Page.editDepot(depot.text, updateDepot.text);
+    await page.editDepot(depot.text, updateDepot.text);
   });
 
   it.skip('join a location to a depot', async () => {
-    await Page.joinLocation(DEPOT_SECONDAIRE, helpers.data.locations);
+    await page.joinLocation(DEPOT_SECONDAIRE, helpers.data.locations);
   });
 
   it.skip('remove a location to a depot', async () => {
-    await Page.removeLocation(DEPOT_SECONDAIRE);
+    await page.removeLocation(DEPOT_SECONDAIRE);
   });
 
   it('don\'t create when incorrect depot name', async () => {
-    await Page.errorOnCreateDepot();
+    await page.errorOnCreateDepot();
   });
 
   it('successfully delete a depot', async () => {
-    await Page.deleteDepot(updateDepot.text);
+    await page.deleteDepot(updateDepot.text);
   });
 
   it('set the depot manage by user', async () => {
     await helpers.navigate('#!/users');
     await userPage.updateDepot('Super User');
-    await Page.selectUserDepot([DEPOT_SECONDAIRE]);
-    await Page.submitUserDepot();
+    await page.selectUserDepot([DEPOT_SECONDAIRE]);
+    await page.submitUserDepot();
   });
 });

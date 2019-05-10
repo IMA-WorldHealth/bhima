@@ -114,7 +114,11 @@ describe('Account Management', () => {
     // set to income
     await select.element(by.css('[data-key="ACCOUNT.TYPES.INCOME"]')).click();
 
-    await Promise.all(accounts.map(accnt => createAccount(accnt)));
+    // eslint-disable-next-line
+    for (const accnt of accounts) {
+    // eslint-disable-next-line
+      await createAccount(accnt);
+    }
 
     await page.toggleBatchCreate();
 

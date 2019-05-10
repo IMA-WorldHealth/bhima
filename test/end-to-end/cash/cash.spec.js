@@ -163,9 +163,6 @@ describe('Cash Payments', () => {
     });
 
     it('should make a payment against previous invoices', async () => {
-      // @fixme - why is this better?
-      await browser.refresh();
-
       const gridId = 'debtorInvoicesGrid';
 
       // select the proper patient
@@ -186,7 +183,7 @@ describe('Cash Payments', () => {
       await FU.exists(by.css('[data-debtor-invoice-modal]'), true);
 
       // inside the modal, we want to select the first row to pay against
-      await GU.selectRow(gridId, 0);
+      await GU.selectRow(gridId, 2);
 
       // submit the modal
       await FU.modal.submit();
