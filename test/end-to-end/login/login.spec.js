@@ -75,13 +75,13 @@ describe('Login Page', () => {
     await FU.input('LoginCtrl.credentials.password', 'superuser');
     await FU.buttons.submit();
 
-    expect(await helpers.getCurrentPath()).to.eventually.equal('#!/');
+    expect(await helpers.getCurrentPath()).to.equal('#!/');
   });
 
   it('page refresh preserves the use session', async () => {
     await helpers.navigate(settings);
     await browser.refresh();
-    expect(await helpers.getCurrentPath()).to.eventually.equal(`#!/${settings}`);
+    expect(await helpers.getCurrentPath()).to.equal(`#!/${settings}`);
   });
 
   it('prevents access to the login page after login', async () => {
@@ -89,7 +89,7 @@ describe('Login Page', () => {
     await helpers.navigate(settings);
 
     // assert that we get to the settings page
-    expect(await helpers.getCurrentPath()).to.eventually.equal(`#!/${settings}`);
+    expect(await helpers.getCurrentPath()).to.equal(`#!/${settings}`);
 
     // attempt to access the login page.
     await helpers.navigate(login);
@@ -98,6 +98,6 @@ describe('Login Page', () => {
     await components.notification.hasWarn();
 
     // assert that we did not get to the login page
-    expect(await helpers.getCurrentPath()).to.eventually.equal(`#!/${settings}`);
+    expect(await helpers.getCurrentPath()).to.equal(`#!/${settings}`);
   });
 });

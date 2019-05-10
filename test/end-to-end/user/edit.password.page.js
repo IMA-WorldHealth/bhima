@@ -55,7 +55,7 @@ function EditPasswordPage() {
 
   /** check if ng-invalid css class is applied on a component * */
   function isInvalid(component) {
-    expect(component.getAttribute('class')).to.eventually.contain('ng-invalid');
+    expect(component.getAttribute('class')).to.contain('ng-invalid');
   }
 
   page.setPassword = setPassword;

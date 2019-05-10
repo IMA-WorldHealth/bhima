@@ -20,11 +20,11 @@ describe('Distribution keys Management', () => {
   });
 
   it('displays all distributions keys loaded from the database', async () => {
-    expect(await Page.getDistributionKeyCount()).to.eventually.equal(distributionKeyElements);
+    expect(await Page.getDistributionKeyCount()).to.equal(distributionKeyElements);
   });
 
   it('displays all distributions keys loaded from the database', async () => {
-    expect(await Page.getDistributionKeyCount()).to.eventually.equal(distributionKeyElements);
+    expect(await Page.getDistributionKeyCount()).to.equal(distributionKeyElements);
   });
 
   it('Reset Distributions key for an Auxiliary Fee Center', async () => {

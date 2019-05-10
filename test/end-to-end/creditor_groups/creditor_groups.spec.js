@@ -24,7 +24,7 @@ describe('Creditor Groups Management', () => {
   };
 
   it(`has an initial list of ${INITIAL_GROUP} creditor groups`, async () => {
-    expect(await element.all(by.css('[data-group-entry]')).count()).to.eventually.equal(INITIAL_GROUP);
+    expect(await element.all(by.css('[data-group-entry]')).count()).to.equal(INITIAL_GROUP);
   });
 
   it('creates a creditor group', async () => {
@@ -35,7 +35,7 @@ describe('Creditor Groups Management', () => {
 
     await FU.buttons.submit();
     await components.notification.hasSuccess();
-    expect(await element.all(by.css('[data-group-entry]')).count()).to.eventually.equal(INITIAL_GROUP + 1);
+    expect(await element.all(by.css('[data-group-entry]')).count()).to.equal(INITIAL_GROUP + 1);
   });
 
   it('updates a creditor group', async () => {

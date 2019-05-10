@@ -48,7 +48,7 @@ describe('Account Management', () => {
     await page.openAddChild(account.parent.number);
 
     // this relies on the account select to display the account with account number
-    expect(await page.EditModal.parent()).to.eventually.include(account.parent.number);
+    expect(await page.EditModal.parent()).to.include(account.parent.number);
     await FU.modal.cancel();
   });
 
@@ -66,13 +66,13 @@ describe('Account Management', () => {
 
   it('edit state populates account data on clicking edit', async () => {
     await page.openEdit(account.number);
-    expect(await element(by.id('number-static')).getText()).to.eventually.equal(String(account.number));
+    expect(await element(by.id('number-static')).getText()).to.equal(String(account.number));
 
     // @todo removed to allow types to be updated - this should be reintroduced
-    expect(await element(by.id('type-static')).getText()).to.eventually.equal(account.type);
+    expect(await element(by.id('type-static')).getText()).to.equal(account.type);
     expect(
       await element(by.model('AccountEditCtrl.account.label')).getAttribute('value')
-    ).to.eventually.equal(account.label);
+    ).to.equal(account.label);
   });
 
   it('updates an account title and parent', async () => {

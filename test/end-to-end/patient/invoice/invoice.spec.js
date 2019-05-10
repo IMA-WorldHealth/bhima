@@ -30,7 +30,7 @@ describe('Patient Invoice', () => {
     await page.addInventoryItem(0, '100099');
 
     // make sure the submit button is not disabled
-    expect(await page.btns.submit.isEnabled()).to.eventually.equal(true);
+    expect(await page.btns.submit.isEnabled()).to.equal(true);
 
     // attempt to submit the page.
     await page.submit();
@@ -49,7 +49,7 @@ describe('Patient Invoice', () => {
     await page.addRows(2);
 
     // the grid now has three rows
-    expect(await page.getRows().count()).to.eventually.equal(3);
+    expect(await page.getRows().count()).to.equal(3);
 
     // add two inventory items to each row (0-indexing)
     await page.addInventoryItem(0, '100099');
@@ -70,7 +70,7 @@ describe('Patient Invoice', () => {
     await page.adjustItemQuantity(2, 46);
 
     // make sure the submit button is not disabled
-    expect(await page.btns.submit.isEnabled()).to.eventually.equal(true);
+    expect(await page.btns.submit.isEnabled()).to.equal(true);
 
     // submit the page
     await page.submit();
@@ -87,7 +87,7 @@ describe('Patient Invoice', () => {
     await page.patient('TPA1.1');
 
     // make sure the "add rows" button is still disabled
-    expect(await page.btns.add.isEnabled(), 'The add rows button is not disabled').to.eventually.equal(false);
+    expect(await page.btns.add.isEnabled(), 'The add rows button is not disabled').to.equal(false);
   });
 
   it('blocks submission for an invalid grid', async () => {

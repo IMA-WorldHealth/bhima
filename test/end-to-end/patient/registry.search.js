@@ -40,7 +40,7 @@ function PatientRegistrySearch() {
   function expectNumberOfGridRows(number) {
     expect(rows.count(),
       `Expected Patient Registry ui-grid's row count to be ${number}.`
-    ).to.eventually.equal(number);
+    ).to.equal(number);
   }
 
   it('grid should have 4 visible rows', () => {

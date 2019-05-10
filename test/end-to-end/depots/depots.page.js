@@ -85,7 +85,7 @@ class DepotPage {
     const elm = $('[name="has_location"]');
     await elm.click();
 
-    expect(await elm.isSelected()).to.eventually.equal(true);
+    expect(await elm.isSelected()).to.equal(true);
 
     await components.locationSelect.set(locations);
 
@@ -103,7 +103,7 @@ class DepotPage {
 
     const elm = $('[name="has_location"]');
     await elm.click();
-    expect(await elm.isSelected()).to.eventually.equal(false);
+    expect(await elm.isSelected()).to.equal(false);
 
     await FU.buttons.submit();
     await components.notification.hasSuccess();

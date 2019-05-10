@@ -51,7 +51,7 @@ describe('Patient Registration', () => {
       await FU.buttons.submit();
 
       // verify form has not been submitted
-      expect(await helpers.getCurrentPath()).to.eventually.equal(path);
+      expect(await helpers.getCurrentPath()).to.equal(path);
 
       // the following fields should be required
       await components.inpuText.validationError('display_name');

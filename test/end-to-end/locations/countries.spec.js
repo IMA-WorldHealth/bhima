@@ -44,7 +44,7 @@ describe('Countries Management', () => {
     await FU.buttons.create();
 
     // verify form has not been successfully submitted
-    expect(await helpers.getCurrentPath()).to.eventually.equal(path);
+    expect(await helpers.getCurrentPath()).to.equal(path);
 
     // submit the page to the server
     await FU.buttons.submit();

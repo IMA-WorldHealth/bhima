@@ -40,7 +40,7 @@ describe('User Management Page', () => {
   before(() => helpers.navigate(path));
 
   it('displays all users loaded from the database', async () => {
-    expect(await userPage.count()).to.eventually.equal(userCount);
+    expect(await userPage.count()).to.equal(userCount);
   });
 
   it('creates a user successfully', async () => {
@@ -52,7 +52,7 @@ describe('User Management Page', () => {
     await userCreateUpdatePage.setPassword(mockUserCreate.password);
     await userCreateUpdatePage.setPasswordConfirm(mockUserCreate.passwordConfirm);
     await userCreateUpdatePage.submitUser();
-    expect(await userPage.count()).to.eventually.equal(userCount + 1);
+    expect(await userPage.count()).to.equal(userCount + 1);
   });
 
   it('edits a user successfully without changing the password', async () => {
@@ -70,7 +70,7 @@ describe('User Management Page', () => {
      * from this test
      */
     // if every thing is ok, the modal should disappear
-    expect(await userCreateUpdatePage.isDisplayed()).to.eventually.equal(false);
+    expect(await userCreateUpdatePage.isDisplayed()).to.equal(false);
   });
 
   it('edits a user password successfully', async () => {
@@ -80,7 +80,7 @@ describe('User Management Page', () => {
     await editPasswordPage.setPasswordConfirm(mockUserEdit.password);
     await editPasswordPage.submitPassword();
     // if every thing is ok, the modal should disappear
-    expect(await editPasswordPage.isDisplayed()).to.eventually.equal(false);
+    expect(await editPasswordPage.isDisplayed()).to.equal(false);
     await userCreateUpdatePage.close();
   });
 

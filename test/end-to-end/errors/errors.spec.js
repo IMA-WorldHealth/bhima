@@ -20,12 +20,12 @@ function Test404ErrorHandling() {
     await FU.exists(by.css('[data-error="404"]'), true);
 
     // make sure URL is preserved
-    expect(await helpers.getCurrentPath()).to.eventually.equal(path);
+    expect(await helpers.getCurrentPath()).to.equal(path);
 
     // make sure we can navigate away
     const settings = '#!/settings';
     await helpers.navigate(settings);
-    expect(await helpers.getCurrentPath()).to.eventually.equal(settings);
+    expect(await helpers.getCurrentPath()).to.equal(settings);
   });
 
 }
@@ -47,7 +47,7 @@ function Test403ErrorHandling() {
   async function navigateToUnauthorizedRoute(route) {
     await helpers.navigate(route);
     await FU.exists(by.css('[data-error="403"]'), true);
-    expect(await helpers.getCurrentPath()).to.eventually.equal(route);
+    expect(await helpers.getCurrentPath()).to.equal(route);
     await helpers.navigate('#!/settings');
   }
 

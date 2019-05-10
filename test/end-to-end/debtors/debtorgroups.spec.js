@@ -16,7 +16,7 @@ describe('Debtor Groups Management', () => {
   const getGroupRow = (uuid) => $(`[data-group-entry="${uuid}"]`);
 
   it('lists base test debtor groups', async () => {
-    expect(await element.all(by.css('[data-group-entry]')).count()).to.eventually.equal(INITIAL_GROUPS);
+    expect(await element.all(by.css('[data-group-entry]')).count()).to.equal(INITIAL_GROUPS);
   });
 
   it('creates a debtor group', async () => {
@@ -38,7 +38,7 @@ describe('Debtor Groups Management', () => {
 
     await components.notification.hasSuccess();
 
-    expect(await element.all(by.css('[data-group-entry]')).count()).to.eventually.equal(INITIAL_GROUPS + 1);
+    expect(await element.all(by.css('[data-group-entry]')).count()).to.equal(INITIAL_GROUPS + 1);
   });
 
   it('deletes a debtor group', async () => {

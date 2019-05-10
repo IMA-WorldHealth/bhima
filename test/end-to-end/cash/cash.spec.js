@@ -53,7 +53,7 @@ describe('Cash Payments', () => {
       // implicitly choose cashbox B by navigating to it directly
       await browser.get(target);
 
-      expect(await helpers.getCurrentPath()).to.eventually.equal(target);
+      expect(await helpers.getCurrentPath()).to.equal(target);
 
       await browser.get(`#!${path}`);
 
@@ -61,7 +61,7 @@ describe('Cash Payments', () => {
       await FU.exists(by.css('[data-cashbox-modal]'), false);
 
       // the url should be the original target
-      expect(await helpers.getCurrentPath()).to.eventually.equal(target);
+      expect(await helpers.getCurrentPath()).to.equal(target);
     });
 
     it('should allow a user to select and deselect a cashbox', async () => {
@@ -71,7 +71,7 @@ describe('Cash Payments', () => {
       await helpers.navigate(targetAuxiliary1);
 
       // verify that we get to the cashboxC page
-      expect(await helpers.getCurrentPath()).to.eventually.equal(targetAuxiliary1);
+      expect(await helpers.getCurrentPath()).to.equal(targetAuxiliary1);
 
       // the auxiliary cashbox is the target
       const targetAuxiliary2 = `#!${path}/${cashboxB.id}`;
@@ -86,7 +86,7 @@ describe('Cash Payments', () => {
       await element(by.css('[data-cashbox-modal-submit]')).click();
 
       // verify that we get to the cashboxB page
-      expect(await helpers.getCurrentPath()).to.eventually.equal(targetAuxiliary2);
+      expect(await helpers.getCurrentPath()).to.equal(targetAuxiliary2);
     });
   });
 

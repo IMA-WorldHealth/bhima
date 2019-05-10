@@ -34,7 +34,7 @@ describe('Patient Groups', () => {
     // submit the form
     await FU.buttons.submit();
 
-    // expect the form element to eventually be removed.
+    // expect the form element to.be removed.
     await FU.exists(by.css('[data-create-form]'), false);
   });
 
@@ -52,7 +52,7 @@ describe('Patient Groups', () => {
     // submit the form
     await FU.buttons.submit();
 
-    // expect the form element to eventually be removed.
+    // expect the form element to.be removed.
     await FU.exists(by.css('[data-update-form]'), false);
   });
 
@@ -65,7 +65,7 @@ describe('Patient Groups', () => {
     // reject the alert that appears
     await components.modalAction.confirm();
 
-    // expect the row to eventually be cleared
+    // expect the row to.be cleared
     await FU.exists(by.id(deleteUuid), false);
   });
 });

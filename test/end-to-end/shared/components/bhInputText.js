@@ -32,13 +32,13 @@ module.exports = {
     expect(
       await this.getInput(id).getAttribute('class'),
       `Expected ${id} to be invalid, but could not find the ng-invalid class.`
-    ).to.eventually.contain('ng-invalid');
+    ).to.contain('ng-invalid');
   },
 
   validationOk : async function err(id) {
     expect(
       await this.getInput(id).getAttribute('class'),
       `Expected ${id} to be invalid, but could not find the ng-invalid class.`
-    ).to.eventually.contain('ng-valid');
+    ).to.contain('ng-valid');
   },
 };

@@ -1,13 +1,7 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-shadow */
 /* global by, element */
-
-const chai = require('chai');
-const helpers = require('./helpers');
-
-const { expect } = chai;
-
-helpers.configure(chai);
+const { expect } = require('chai');
 
 // These buttons depend on custom data tags to indicate actions.  This seems
 // cleaner than using a whole bunch of ids which may potentially collide.
@@ -54,7 +48,7 @@ const validation = {
     expect(
       await element(by.model(model)).getAttribute('class'),
       `Expected ${model} to be invalid, but could not find the ng-invalid class.`
-    ).to.eventually.contain('ng-invalid');
+    ).to.contain('ng-invalid');
   },
 
   // no error state present
@@ -62,7 +56,7 @@ const validation = {
     expect(
       await element(by.model(model)).getAttribute('class'),
       `Expected ${model} to be valid, but could not find the ng-valid class.`
-    ).to.eventually.contain('ng-valid');
+    ).to.contain('ng-valid');
   },
 };
 
@@ -110,7 +104,7 @@ module.exports = {
     expect(
       await element(locator).isPresent(),
       `Expected locator ${locator.toString()} to ${bool ? 'not ' : ' '}exist.`
-    ).to.eventually.equal(bool);
+    ).to.equal(bool);
   },
 
   // asserts whether an element is visible on the page or not.
@@ -118,7 +112,7 @@ module.exports = {
     expect(
       await element(locator).isDisplayed(),
       `Expected locator ${locator.toString()} to ${bool ? 'not ' : ' '}be visible.`
-    ).to.eventually.equal(bool);
+    ).to.equal(bool);
   },
 
   /**
@@ -265,7 +259,7 @@ module.exports = {
     expect(
       await element(locator).getText(),
       `Expected locator ${locator.toString()} to contain "${text}".`
-    ).to.eventually.equal(text);
+    ).to.equal(text);
   },
 
   // bind commonly used form buttons  These require specific data tags to be

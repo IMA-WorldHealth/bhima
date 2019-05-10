@@ -23,7 +23,7 @@ describe('Grades Management', () => {
 
 
   it('begins with 2 grades', async () => {
-    expect(await page.count()).to.eventually.equal(2);
+    expect(await page.count()).to.equal(2);
   });
 
   it('successfully creates a new grade', async () => {

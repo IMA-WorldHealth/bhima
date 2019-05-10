@@ -40,6 +40,6 @@ describe('Rubrics Configuration Management', () => {
   });
 
   it('should have 1 rubric to end with', async () => {
-    expect(await page.count()).to.eventually.equal(1);
+    expect(await page.count()).to.equal(1);
   });
 });

@@ -44,7 +44,7 @@ describe('AccountReference Management Page', () => {
   });
 
   it(`should begin with ${numReferences + 1} account references`, async () => {
-    expect(await page.count()).to.eventually.equal(numReferences);
+    expect(await page.count()).to.equal(numReferences);
   });
 
   it('creates an account reference successfully', async () => {
@@ -61,7 +61,7 @@ describe('AccountReference Management Page', () => {
     await modal.submit();
 
     await components.notification.hasSuccess();
-    expect(await page.count()).to.eventually.equal(numReferences + 1);
+    expect(await page.count()).to.equal(numReferences + 1);
   });
 
   it('creates an accounts reference with a parent', async () => {
@@ -76,7 +76,7 @@ describe('AccountReference Management Page', () => {
     await modal.submit();
 
     await components.notification.hasSuccess();
-    expect(await page.count()).to.eventually.equal(numReferences + 2);
+    expect(await page.count()).to.equal(numReferences + 2);
   });
 
   it('edits an accounts reference successfully', async () => {
@@ -95,10 +95,10 @@ describe('AccountReference Management Page', () => {
   it('delete an accounts reference successfully', async () => {
     await page.remove(mockEdit.abbr);
     await components.notification.hasSuccess();
-    expect(await page.count()).to.eventually.equal(numReferences + 1);
+    expect(await page.count()).to.equal(numReferences + 1);
   });
 
   it(`should end with ${numReferences + 1} account references`, async () => {
-    expect(await page.count()).to.eventually.equal(numReferences + 1);
+    expect(await page.count()).to.equal(numReferences + 1);
   });
 });

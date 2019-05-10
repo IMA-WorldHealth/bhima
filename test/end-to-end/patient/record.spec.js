@@ -39,7 +39,7 @@ describe('Patient Record', () => {
 
   // sub unit tests - these can be moved to individual files if they become too large
   it('displays the correct number of patient visits', async () => {
-    expect(await element.all(by.css('[data-visit-line]')).count()).to.eventually.equal(1);
+    expect(await element.all(by.css('[data-visit-line]')).count()).to.equal(1);
   });
 
   it('admits a patient', async () => {
@@ -51,7 +51,7 @@ describe('Patient Record', () => {
     await FU.modal.submit();
 
     // check to see a new visit has been added
-    expect(element.all(by.css('[data-visit-line]')).count()).to.eventually.equal(2);
+    expect(element.all(by.css('[data-visit-line]')).count()).to.equal(2);
   });
 
   it('dicharges a patient with a new diagnosis', async () => {
@@ -64,7 +64,7 @@ describe('Patient Record', () => {
     FU.modal.submit();
 
     // this is part of the same visit so expect no difference in number of visits
-    expect(await element.all(by.css('[data-visit-line]')).count()).to.eventually.equal(2);
+    expect(await element.all(by.css('[data-visit-line]')).count()).to.equal(2);
   });
 
   // Upload patient documents

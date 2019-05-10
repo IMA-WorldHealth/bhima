@@ -38,7 +38,7 @@ describe('Purchase Orders', () => {
     await page.adjustItemPrice(0, 25);
 
     // make sure the submit button is not disabled
-    expect(await page.btns.submit.isEnabled()).to.eventually.equal(true);
+    expect(await page.btns.submit.isEnabled()).to.equal(true);
 
     // attempt to submit the page.
     await page.submit();
@@ -62,7 +62,7 @@ describe('Purchase Orders', () => {
     await page.addRows(2);
 
     // the grid now has three rows
-    expect(await page.getRows().count()).to.eventually.equal(3);
+    expect(await page.getRows().count()).to.equal(3);
 
     // add two inventory items to each row (0-indexing)
     await page.addInventoryItem(0, 'Quinine');
@@ -83,7 +83,7 @@ describe('Purchase Orders', () => {
     await page.adjustItemQuantity(2, 16);
 
     // make sure the submit button is not disabled
-    expect(await page.btns.submit.isEnabled()).to.eventually.equal(true);
+    expect(await page.btns.submit.isEnabled()).to.equal(true);
 
     // submit the page
     await page.submit();
@@ -98,10 +98,10 @@ describe('Purchase Orders', () => {
     FU.input('PurchaseCtrl.order.details.note', 'We need more purchases.');
 
     // make sure the "add rows" button is still disabled
-    expect(await page.btns.add.isEnabled()).to.eventually.equal(false);
+    expect(await page.btns.add.isEnabled()).to.equal(false);
 
     // make sure the "submit" button is still disabled
-    expect(await page.btns.submit.isEnabled()).to.eventually.equal(false);
+    expect(await page.btns.submit.isEnabled()).to.equal(false);
   });
 
   it('blocks submission for an invalid grid', async () => {

@@ -40,7 +40,7 @@ describe('Employees', () => {
 
   it('blocks invalid form submission with relevant error classes', async () => {
     // verify we are in the current path
-    expect(await helpers.getCurrentPath()).to.eventually.equal(path);
+    expect(await helpers.getCurrentPath()).to.equal(path);
 
     await registrationPage.createEmployee();
     await registrationPage.requiredFieldErrored();

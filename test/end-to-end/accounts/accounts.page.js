@@ -12,7 +12,12 @@ const fixtures = path.resolve(__dirname, '../../fixtures/');
 class AccountsPage {
   constructor() {
     this.gridId = 'account-grid';
+
+    this.EditModal = {
+      parent : () => element(by.model('AccountEditCtrl.account.parent')).getText(),
+    };
   }
+
 
   getGrid() {
     return element(by.id(this.gridId));

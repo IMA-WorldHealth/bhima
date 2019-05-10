@@ -34,7 +34,7 @@ describe('Break Even Reference', () => {
   });
 
   it('begins with 1 Break Even Reference', async () => {
-    expect(await page.count()).to.eventually.equal(1);
+    expect(await page.count()).to.equal(1);
   });
 
   it('successfully delete Break Even Reference', async () => {
