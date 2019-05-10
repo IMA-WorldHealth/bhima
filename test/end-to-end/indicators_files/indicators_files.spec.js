@@ -28,6 +28,7 @@ describe('Patient IndicatorsFiles', () => {
     total_surgery_by_doctor : 10,
     total_hospitalized_patient : 10,
   };
+
   const financeIndicators = {
     total_revenue : 10,
     total_subsidies : 10,

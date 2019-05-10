@@ -119,33 +119,33 @@ class IndicatorsFilesPage {
   /**
    * search
    */
-  search(options) {
-    FU.buttons.search();
+  async search(options) {
+    await FU.buttons.search();
 
     // set to default values the form
-    this.reset();
+    await this.reset();
 
     if (options.fiscalYear && options.period) {
-      components.fiscalYearPeriodSelect.set(options.fiscalYear, options.period);
+      await components.fiscalYearPeriodSelect.set(options.fiscalYear, options.period);
     }
 
     if (options.service) {
-      components.serviceSelect.set(options.service);
+      await components.serviceSelect.set(options.service);
     }
 
     if (options.type) {
-      FU.uiSelect('$ctrl.searchQuery.type_id', options.type);
+      await FU.uiSelect('$ctrl.searchQuery.type_id', options.type);
     }
 
     if (options.status) {
-      FU.uiSelect('$ctrl.searchQuery.status_id', options.status);
+      await FU.uiSelect('$ctrl.searchQuery.status_id', options.status);
     }
 
     if (options.user) {
-      components.userSelect.set(options.user);
+      await components.userSelect.set(options.user);
     }
 
-    FU.buttons.submit();
+    await FU.buttons.submit();
   }
 
   /**

@@ -6,14 +6,14 @@ const FU = require('../shared/FormUtils');
 const GU = require('../shared/GridUtils');
 const components = require('../shared/components');
 
-describe('Edit Posting Journal', () => {
+describe.skip('Edit Posting Journal', () => {
   const path = '#!/journal';
   const gridId = 'journal-grid';
 
   const editingGridId = 'transaction-edit-grid';
 
   // simulates a double click
-  const doubleClick = element => browser.actions().mouseMove(element).doubleClick().perform();
+  const doubleClick = element => browser.actions({ bridge : true }).move(element).doubleClick(element).perform();
 
   before(() => helpers.navigate(path));
 
