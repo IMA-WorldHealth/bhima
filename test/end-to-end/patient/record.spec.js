@@ -56,12 +56,12 @@ describe('Patient Record', () => {
 
   it('dicharges a patient with a new diagnosis', async () => {
     const diagnosisLabel = 'Melioidose a';
-    element(by.id('submit-visit')).click();
+    await element(by.id('submit-visit')).click();
 
-    FU.typeahead('AdmitCtrl.visit.diagnosis', diagnosisLabel);
-    FU.input('AdmitCtrl.visit.notes', 'Patient discharge has optional notes.');
+    await FU.typeahead('AdmitCtrl.visit.diagnosis', diagnosisLabel);
+    await FU.input('AdmitCtrl.visit.notes', 'Patient discharge has optional notes.');
 
-    FU.modal.submit();
+    await FU.modal.submit();
 
     // this is part of the same visit so expect no difference in number of visits
     expect(await element.all(by.css('[data-visit-line]')).count()).to.equal(2);
@@ -73,14 +73,14 @@ describe('Patient Record', () => {
     const fileToUpload = 'file.jpg';
     const absolutePath = path.resolve(fixtures, fileToUpload);
 
-    element(by.css('[data-document-action="add"]')).click();
+    await element(by.css('[data-document-action="add"]')).click();
 
-    FU.input('$ctrl.title', title);
-    FU.input('$ctrl.file', absolutePath);
+    await FU.input('$ctrl.title', title);
+    await FU.input('$ctrl.file', absolutePath);
 
-    FU.modal.submit();
+    await FU.modal.submit();
 
-    components.notification.hasSuccess();
+    await components.notification.hasSuccess();
   });
 
   // upload patient documents
@@ -89,12 +89,12 @@ describe('Patient Record', () => {
     const fileToUpload = 'file.pdf';
     const absolutePath = path.resolve(fixtures, fileToUpload);
 
-    element(by.css('[data-document-action="add"]')).click();
-    FU.input('$ctrl.title', title);
-    FU.input('$ctrl.file', absolutePath);
+    await element(by.css('[data-document-action="add"]')).click();
+    await FU.input('$ctrl.title', title);
+    await FU.input('$ctrl.file', absolutePath);
 
-    FU.modal.submit();
-    components.notification.hasSuccess();
+    await FU.modal.submit();
+    await components.notification.hasSuccess();
   });
 
   // test invalid file upload
@@ -103,22 +103,22 @@ describe('Patient Record', () => {
     const fileToUpload = 'file.virus';
     const absolutePath = path.resolve(fixtures, fileToUpload);
 
-    element(by.css('[data-document-action="add"]')).click();
+    await element(by.css('[data-document-action="add"]')).click();
 
-    FU.input('$ctrl.title', title);
-    FU.input('$ctrl.file', absolutePath);
+    await FU.input('$ctrl.title', title);
+    await FU.input('$ctrl.file', absolutePath);
 
-    FU.exists(by.css('[data-error-message]'), true);
-    FU.modal.close();
+    await FU.exists(by.css('[data-error-message]'), true);
+    await FU.modal.close();
   });
 
   // change document view
   it('change document view', async () => {
-    element(by.css('[data-document-action="thumbnail"]')).click();
-    FU.exists(by.css('[data-view="thumbnail"]'), true);
+    await element(by.css('[data-document-action="thumbnail"]')).click();
+    await FU.exists(by.css('[data-view="thumbnail"]'), true);
 
-    element(by.css('[data-document-action="list"]')).click();
-    FU.exists(by.css('[data-view="list"]'), true);
+    await element(by.css('[data-document-action="list"]')).click();
+    await FU.exists(by.css('[data-view="list"]'), true);
   });
 
 
@@ -127,12 +127,12 @@ describe('Patient Record', () => {
     const fileToUpload = 'file.pdf';
     const absolutePath = path.resolve(fixtures, fileToUpload);
 
-    $('[data-document-action="add"]').click();
+    await $('[data-document-action="add"]').click();
 
     await FU.input('$ctrl.title', title);
-    FU.input('$ctrl.file', absolutePath);
-    FU.exists(by.id('upload_thumbnail'), false);
-    FU.modal.close();
+    await FU.input('$ctrl.file', absolutePath);
+    await FU.exists(by.id('upload_thumbnail'), false);
+    await FU.modal.close();
   });
 
   it('Should check if upload_thumbnail is displayed if the upload is an image', async () => {
@@ -140,7 +140,7 @@ describe('Patient Record', () => {
     const fileToUpload = 'file.jpg';
     const absolutePath = path.resolve(fixtures, fileToUpload);
 
-    $('[data-document-action="add"]').click();
+    await $('[data-document-action="add"]').click();
 
     await FU.input('$ctrl.title', title);
     await FU.input('$ctrl.file', absolutePath);
