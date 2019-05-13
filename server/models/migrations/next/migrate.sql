@@ -132,9 +132,17 @@ BEGIN
 
 
 END $$
-
 DELIMITER ;
-
 
 DELETE FROM role_unit WHERE  unit_id = 171;
 DELETE FROM unit WHERE id=171;
+
+/*
+ @author: mbayopanda
+ @description: patient visits report
+*/
+INSERT INTO unit VALUES 
+  (239, 'Visits Report', 'TREE.VISITS_REPORT', 'Visits registry', 144, '/modules/reports/visit_report', '/reports/visit_report');
+
+INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES 
+  (32, 'visit_report', 'PATIENT_RECORDS.REPORT.VISITS');
