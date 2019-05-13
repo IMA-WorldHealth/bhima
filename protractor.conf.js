@@ -35,6 +35,9 @@ const config = {
     // 'browserName': 'firefox',
   // }, {
     browserName : 'chrome',
+    chromeOptions : {
+      args : ['--window-size=1280,1024'],
+    },
   }],
 
   // this will log the user in to begin with
@@ -68,7 +71,7 @@ if (process.env.TRAVIS_BUILD_NUMBER) {
     'tunnel-identifier' : process.env.TRAVIS_JOB_NUMBER,
     build               : process.env.TRAVIS_BUILD_NUMBER,
     chromeOptions : {
-      args : ['--headless', '--disable-gpu', '--window-size=800,600'],
+      args : ['--headless', '--disable-gpu', '--window-size=1280,1024'],
     },
   }];
 

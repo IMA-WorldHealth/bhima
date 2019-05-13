@@ -16,7 +16,7 @@ node_js:
 before_script:
   - sudo /etc/init.d/mysql restart
   - yarn build
-  - yarn webdriver-manager update --versions.chrome=$(google-chrome --version | cut -d ' ' -f 3) --gecko false
+  - yarn webdriver-manager update --versions.chrome="$(google-chrome --version | cut -d ' ' -f 3)" --gecko false
   - greenkeeper-lockfile-update
 
 script:
