@@ -32,87 +32,58 @@ function document(req, res, next) {
   getData(details)
     .then(visits => report.render({ visits, details }))
     .then(result => res.set(result.headers).send(result.report))
-    .catch(next)
-    .done();
+    .catch(next);
 }
 
-function getData(options) {
-  const baseQuery = `
-    SELECT COUNT(*) FROM patient_visit pv
-    JOIN patient_visit_service pvs ON pvs.patient_visit_uuid = pv.uuid 
+async function getData(options) {
+  const queryData = `
+    SELECT
+      s.name AS service_name,
+      SUM(1) AS total,
+      SUM(IF(is_new_case, 1, 0)) AS total_new_case,
+      SUM(IF(is_new_case, 0, 1)) AS total_old_case,
+      SUM(IF(is_pregnant, 1, 0)) AS total_pregnant,
+      SUM(IF(is_refered, 1, 0)) AS total_referred,
+      SUM(IF(hospitalized, 1, 0)) AS total_hospitalized,
+      SUM(IF(hospitalized = 0, 1, 0)) AS total_ambulatory,
+      SUM(IF(inside_health_zone, 1, 0)) AS total_inside_health_zone,
+      SUM(IF(inside_health_zone = 0, 1, 0)) AS total_outside_health_zone
+    FROM service s 
+      LEFT JOIN patient_visit_service pvs ON s.id = pvs.service_id
+      JOIN patient_visit pv ON pvs.patient_visit_uuid = pv.uuid 
+    WHERE DATE(pvs.created_at) BETWEEN DATE(?) AND DATE(?)
+    GROUP BY s.id;
   `;
 
-  options.dateFrom = moment(options.dateFrom).format('YYYY-MM-DD');
-  options.dateTo = moment(options.dateTo).format('YYYY-MM-DD');
-
-  const totalVisit = `
-    (${baseQuery} WHERE pvs.service_id = s.id AND (pvs.created_at BETWEEN DATE(?) AND DATE(?))) AS total
-  `;
-
-  const totalNewCase = `
-    (${baseQuery} WHERE pvs.service_id = s.id AND (pvs.created_at BETWEEN DATE(?) AND DATE(?)) 
-      AND is_new_case = 1) AS total_new_case
-  `;
-
-  const totalOldCase = `
-    (${baseQuery} WHERE pvs.service_id = s.id AND (pvs.created_at BETWEEN DATE(?) AND DATE(?)) 
-      AND is_new_case = 0) AS total_old_case
-  `;
-
-  const totalPregnant = `
-    (${baseQuery} WHERE pvs.service_id = s.id AND (pvs.created_at BETWEEN DATE(?) AND DATE(?)) 
-      AND is_pregnant = 1) AS total_pregnant
-  `;
-
-  const totalReferred = `
-    (${baseQuery} WHERE pvs.service_id = s.id AND (pvs.created_at BETWEEN DATE(?) AND DATE(?)) 
-      AND is_refered = 1) AS total_referred
-  `;
-
-  const totalHospitalized = `
-    (${baseQuery} WHERE pvs.service_id = s.id AND (pvs.created_at BETWEEN DATE(?) AND DATE(?)) 
-      AND hospitalized = 1) AS total_hospitalized
-  `;
-
-  const totalAmbulatory = `
-    (${baseQuery} WHERE pvs.service_id = s.id AND (pvs.created_at BETWEEN DATE(?) AND DATE(?))
-      AND hospitalized = 0) AS total_ambulatory
-  `;
-
-  const totalInsideHZ = `
-    (${baseQuery} WHERE pvs.service_id = s.id AND (pvs.created_at BETWEEN DATE(?) AND DATE(?)) 
-      AND inside_health_zone = 1) AS total_inside_health_zone
-  `;
-
-  const totalOutsideHZ = `
-    (${baseQuery} WHERE pvs.service_id = s.id AND (pvs.created_at BETWEEN DATE(?) AND DATE(?))
-      AND inside_health_zone = 0) AS total_outside_health_zone
+  const queryTotal = `
+    SELECT
+      s.name AS service_name,
+      SUM(1) AS total,
+      SUM(IF(is_new_case, 1, 0)) AS total_new_case,
+      SUM(IF(is_new_case, 0, 1)) AS total_old_case,
+      SUM(IF(is_pregnant, 1, 0)) AS total_pregnant,
+      SUM(IF(is_refered, 1, 0)) AS total_referred,
+      SUM(IF(hospitalized, 1, 0)) AS total_hospitalized,
+      SUM(IF(hospitalized = 0, 1, 0)) AS total_ambulatory,
+      SUM(IF(inside_health_zone, 1, 0)) AS total_inside_health_zone,
+      SUM(IF(inside_health_zone = 0, 1, 0)) AS total_outside_health_zone
+    FROM service s 
+      LEFT JOIN patient_visit_service pvs ON s.id = pvs.service_id
+      JOIN patient_visit pv ON pvs.patient_visit_uuid = pv.uuid 
+    WHERE DATE(pvs.created_at) BETWEEN DATE(?) AND DATE(?);
   `;
 
   const queryParams = [
-    options.dateFrom, options.dateTo,
-    options.dateFrom, options.dateTo,
-    options.dateFrom, options.dateTo,
-    options.dateFrom, options.dateTo,
-    options.dateFrom, options.dateTo,
-    options.dateFrom, options.dateTo,
-    options.dateFrom, options.dateTo,
-    options.dateFrom, options.dateTo,
-    options.dateFrom, options.dateTo,
+    moment(options.dateFrom).format('YYYY-MM-DD'),
+    moment(options.dateTo).format('YYYY-MM-DD'),
   ];
 
-  const query = `
-    SELECT s.name AS service_name,
-      ${totalVisit},
-      ${totalNewCase},
-      ${totalOldCase},
-      ${totalPregnant},
-      ${totalReferred},
-      ${totalHospitalized},
-      ${totalAmbulatory},
-      ${totalInsideHZ},
-      ${totalOutsideHZ}
-    FROM service s;
-  `;
-  return db.exec(query, queryParams);
+  try {
+    const data = await db.exec(queryData, queryParams);
+    const [total] = await db.exec(queryTotal, queryParams);
+    return { data, total };
+
+  } catch (error) {
+    throw error;
+  }
 }

@@ -40,7 +40,7 @@
           </tr>
         </thead>
         <tbody>
-          {{#each visits as |visit|}}
+          {{#each visits.data as |visit|}}
             <tr>
               <td>{{ visit.service_name }}</td>
               <td>{{ visit.total }}</td>
@@ -54,21 +54,21 @@
               <td>{{ visit.total_outside_health_zone }}</td>
             </tr>
           {{else}}
-            {{> emptyTable columns=6}}
+            {{> emptyTable columns=10}}
           {{/each}}
         </tbody>
         <tfoot>
           <tr>
             <th></th>
-            <th>{{sum visits 'total'}}</th>
-            <th>{{sum visits 'total_new_case'}}</th>
-            <th>{{sum visits 'total_old_case'}}</th>
-            <th>{{sum visits 'total_hospitalized'}}</th>
-            <th>{{sum visits 'total_ambulatory'}}</th>
-            <th>{{sum visits 'total_pregnant'}}</th>
-            <th>{{sum visits 'total_referred'}}</th>
-            <th>{{sum visits 'total_inside_health_zone'}}</th>
-            <th>{{sum visits 'total_outside_health_zone'}}</th>
+            <td>{{ visits.total.total }}</td>
+            <td>{{ visits.total.total_new_case }}</td>
+            <td>{{ visits.total.total_old_case }}</td>
+            <td>{{ visits.total.total_hospitalized }}</td>
+            <td>{{ visits.total.total_ambulatory }}</td>
+            <td>{{ visits.total.total_pregnant }}</td>
+            <td>{{ visits.total.total_referred }}</td>
+            <td>{{ visits.total.total_inside_health_zone }}</td>
+            <td>{{ visits.total.total_outside_health_zone }}</td>
           </tr>
         </tfoot>
       </table>
