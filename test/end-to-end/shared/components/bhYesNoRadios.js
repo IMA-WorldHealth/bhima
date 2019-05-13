@@ -15,6 +15,6 @@ module.exports = {
     const option = root.element(by.css(locator));
 
     // click it!
-    option.click();
+    return option.click();
   },
 };

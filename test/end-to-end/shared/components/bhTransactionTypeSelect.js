@@ -8,6 +8,6 @@ module.exports = {
     const locator = (id) ? by.id(id) : by.css(this.selector);
     await element(locator).click();
 
-    await Promise.all(transactionTypes.mpa(type => FU.uiSelect('$ctrl.selectedTransactionTypes', type)));
+    await Promise.all(transactionTypes.map(type => FU.uiSelect('$ctrl.selectedTransactionTypes', type)));
   },
 };

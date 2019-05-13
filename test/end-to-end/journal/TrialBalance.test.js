@@ -27,7 +27,7 @@ function TrialBalanceTest() {
   const TXN_A = 'TPA38'; // CP.TPA.3 (Paiement caution par Test 2 Patient (PA.TPA.2).)
   const TXN_B = 'TPA6'; // CP.TPA.2 (This will be deleted in tests)
   it(`posts mutiple transactions (${TXN_A}, ${TXN_B}) to the General Ledger`, async () => {
-    SearchModal.open();
+    await SearchModal.open();
     const modal = new SearchModal();
     await modal.setTransactionType(['client']);
     await modal.submit();
@@ -47,7 +47,7 @@ function TrialBalanceTest() {
   it(`blocks ${POSTED_TXN} as it is already posted`, async () => {
 
     // make sure we have posted records in our view
-    SearchModal.open();
+    await SearchModal.open();
     const modal = new SearchModal();
     await modal.showPostedRecords(true);
     await modal.submit();

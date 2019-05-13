@@ -13,7 +13,10 @@ describe.skip('Edit Posting Journal', () => {
   const editingGridId = 'transaction-edit-grid';
 
   // simulates a double click
-  const doubleClick = element => browser.actions({ bridge : true }).move(element).doubleClick(element).perform();
+  const doubleClick = async element => browser
+    .actions()
+    .move({ origin : await element.getWebElement() })
+    .doubleClick(await element.getWebElement()).perform();
 
   before(() => helpers.navigate(path));
 

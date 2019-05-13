@@ -59,7 +59,7 @@ class OffdayPage {
    * simulate a click on the edit link of a function
    */
   async editOffday(label, updateOffday) {
-    const { rowIndex } = GU.getGridIndexesMatchingText(this.gridId, label);
+    const { rowIndex } = await GU.getGridIndexesMatchingText(this.gridId, label);
     await GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'edit', this.gridId);
     await FU.input('OffdayModalCtrl.offday.label', updateOffday.label);
 
@@ -76,7 +76,7 @@ class OffdayPage {
    * simulate a click on the delete link of a function
    */
   async deleteOffday(label) {
-    const { rowIndex } = GU.getGridIndexesMatchingText(this.gridId, label);
+    const { rowIndex } = await GU.getGridIndexesMatchingText(this.gridId, label);
     await GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'delete', this.gridId);
     await components.modalAction.confirm();
     await components.notification.hasSuccess();

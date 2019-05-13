@@ -14,7 +14,7 @@ const config = {
   baseUrl   : 'http://localhost:8080/',
 
   mochaOpts : {
-    // reporter        : 'mochawesome',
+    reporter        : 'mochawesome',
     reporterOptions : {
       reportDir            : `${__dirname}/test/artifacts/`,
       inline               : true,
