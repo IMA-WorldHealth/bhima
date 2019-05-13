@@ -51,7 +51,7 @@ describe('Patient Record', () => {
     await FU.modal.submit();
 
     // check to see a new visit has been added
-    expect(element.all(by.css('[data-visit-line]')).count()).to.equal(2);
+    expect(await element.all(by.css('[data-visit-line]')).count()).to.equal(2);
   });
 
   it('dicharges a patient with a new diagnosis', async () => {
