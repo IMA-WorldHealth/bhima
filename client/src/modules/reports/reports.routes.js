@@ -27,6 +27,7 @@ angular.module('bhima.routes')
       'operating',
       'patientStanding',
       'stock_exit',
+      'stock_entry',
       'stock_value',
       'unpaid-invoice-payments',
       'breakEven',

@@ -8,6 +8,7 @@
  */
 
 const stockExitReport = require('./stock/exit_report');
+const stockEntryReport = require('./stock/entry_report');
 const stockLotsReport = require('./stock/lots_report');
 const stockMovementsReport = require('./stock/movements_report');
 const stockInventoriesReport = require('./stock/inventories_report');
@@ -26,6 +27,7 @@ const stockAssignReceipt = require('./stock/assign_receipt');
 
 // expose to the api
 exports.stockExitReport = stockExitReport;
+exports.stockEntryReport = stockEntryReport;
 exports.stockLotsReport = stockLotsReport;
 exports.stockMovementsReport = stockMovementsReport;
 exports.stockInventoriesReport = stockInventoriesReport;

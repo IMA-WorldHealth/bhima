@@ -124,7 +124,8 @@ INSERT INTO unit VALUES
   (236, 'Human Resources dashboard', 'TREE.DASHBOARDS.HUMAN_RESOURCES', 'Tableau de bord du Personnel', 233, '/modules/dashboards/staff/', '/dashboards/staff'),
   (237, 'Finances dashboard', 'TREE.DASHBOARDS.FINANCES', 'Tableau de bord des finances', 233, '/modules/dashboards/finances/', '/dashboards/finances'),
   (238, 'Indicators report', 'TREE.INDICATORS_REPORT', 'Rapport sur les indicateurs', 144,'/modules/reports/indicatorsReport', '/reports/indicatorsReport'),
-  (239, 'Visits Report', 'TREE.VISITS_REPORT', 'Visits registry', 144, '/modules/reports/visit_report', '/reports/visit_report');
+  (239, 'Visits Report', 'TREE.VISITS_REPORT', 'Visits registry', 144, '/modules/reports/visit_report', '/reports/visit_report'),
+  (240, '[Stock] Stock Entry Report','TREE.STOCK_ENTRY_REPORT','Stock Entry Report', 144,'/modules/reports/generated/stock_entry','/reports/stock_entry');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -174,7 +175,8 @@ INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
   (29, 'breakEven', 'TREE.BREAK_EVEN_REPORT'),
   (30, 'breakEvenFeeCenter', 'TREE.BREAK_EVEN_FEE_CENTER_REPORT'),
   (31, 'indicatorsReport', 'TREE.INDICATORS_REPORT'),
-  (32, 'visit_report', 'PATIENT_RECORDS.REPORT.VISITS');
+  (32, 'visit_report', 'PATIENT_RECORDS.REPORT.VISITS'),
+  (33, 'stock_entry', 'REPORT.STOCK.ENTRY_REPORT');
 
 -- Supported Languages
 INSERT INTO `language` VALUES

@@ -177,7 +177,13 @@
       "INCLUDE_SERVICE_EXIT": "Include stock exit to service",
       "INCLUDE_DEPOT_EXIT": "Include stock exit to other depots",
       "INCLUDE_LOSS_EXIT": "Include stock loss",
-      "SHOW_DETAILS": "Show Details"
+      "SHOW_DETAILS": "Show Details",
+      "ENTRY_REPORT": "Stock Entry Report",
+      "ENTRY_REPORT_DESCRIPTION": "this report displays the different stock entries that took place in depots",
+      "INCLUDE_PURCHASE_ENTRY": "Include entries from purchases",
+      "INCLUDE_INTEGRATION_ENTRY": "Include entries from integrations",
+      "INCLUDE_DONATION_ENTRY": "Include entries from donation",
+      "INCLUDE_TRANSFER_ENTRY": "Include entries from transfers"
     },
     "UTIL": {
       "CANCEL_PREVIEW": "Cancel Preview",
