@@ -257,6 +257,7 @@ function ReceiptModal(Modal, Receipts, Invoice, Cash, Voucher) {
       resolve : {
         receipt : function receiptProvider() { return { promise : payrollRequest }; },
         options : function optionsProvider() { return options; },
+        document : function documentProvider() { return {}; },
       },
     };
 
