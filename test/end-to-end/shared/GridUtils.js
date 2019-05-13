@@ -125,7 +125,7 @@ function selectRow(gridId, rowNum) {
   // NOTE: Can't do .click() as it doesn't work when webdriving Firefox
   const row = getRow(gridId, rowNum);
   const btn = row.element(by.css('.ui-grid-selection-row-header-buttons'));
-  // return browser.actions().move(btn).press(btn).release().perform();
+  // return browser.actions().move({ origin: await btn.getWebElement() }).press(await btn.getWebElement()).release().perform();
   return btn.click();
 }
 
@@ -138,7 +138,7 @@ function selectRow(gridId, rowNum) {
 function selectAll(gridId) {
   const row = getGrid(gridId).$('ui-grid-header');
   const btn = row.$('.ui-grid-selection-row-header-buttons');
-  // return browser.actions().move(btn).press(btn).release().perform();
+  // return browser.actions().move({ origin: await btn.getWebElement() }).press(await btn.getWebElement()).release().perform();
   return btn.click();
 }
 

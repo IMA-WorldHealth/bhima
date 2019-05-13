@@ -6,7 +6,7 @@ const FU = require('../shared/FormUtils');
 const GU = require('../shared/GridUtils');
 const components = require('../shared/components');
 
-describe.skip('Edit Posting Journal', () => {
+describe('Edit Posting Journal', () => {
   const path = '#!/journal';
   const gridId = 'journal-grid';
 
@@ -15,8 +15,8 @@ describe.skip('Edit Posting Journal', () => {
   // simulates a double click
   const doubleClick = async element => browser
     .actions()
-    .move({ origin : await element.getWebElement() })
-    .doubleClick(await element.getWebElement()).perform();
+    .doubleClick(await element.getWebElement())
+    .perform();
 
   before(() => helpers.navigate(path));
 

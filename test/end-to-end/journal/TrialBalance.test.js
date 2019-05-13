@@ -20,8 +20,8 @@ function TrialBalanceTest() {
     filters = new Filters();
   });
 
-  afterEach(() => {
-    filters.resetFilters();
+  afterEach(async () => {
+    await filters.resetFilters();
   });
 
   const TXN_A = 'TPA38'; // CP.TPA.3 (Paiement caution par Test 2 Patient (PA.TPA.2).)
