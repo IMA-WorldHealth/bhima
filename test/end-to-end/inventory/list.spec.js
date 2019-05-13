@@ -75,7 +75,7 @@ describe('Inventory List', () => {
     await FU.input('$ctrl.item.unit_volume', metadataUpdate.unit_volume);
 
     await FU.modal.submit();
-    components.notification.hasSuccess();
+    await components.notification.hasSuccess();
   });
 
   // demonstrates that filtering works

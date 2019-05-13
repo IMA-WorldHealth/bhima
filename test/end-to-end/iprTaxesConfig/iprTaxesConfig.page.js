@@ -60,7 +60,8 @@ class IprTaxConfigPage {
   async editIprTaxConfig(rate, updateIprTaxConfig) {
     await components.iprScale.set(updateIprTaxConfig.scale);
 
-    const { rowIndex } = GU.getGridIndexesMatchingText(this.gridId, rate);
+    const { rowIndex } = await GU.getGridIndexesMatchingText(this.gridId, rate);
+
     await GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'edit', this.gridId);
 
     await FU.input('IprTaxConfigModalCtrl.iprTax.rate', updateIprTaxConfig.rate);

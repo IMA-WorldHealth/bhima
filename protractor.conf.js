@@ -67,6 +67,9 @@ if (process.env.TRAVIS_BUILD_NUMBER) {
     browserName         : 'chrome',
     'tunnel-identifier' : process.env.TRAVIS_JOB_NUMBER,
     build               : process.env.TRAVIS_BUILD_NUMBER,
+    chromeOptions : {
+      args : ['--headless', '--disable-gpu', '--window-size=800,600'],
+    },
   }];
 
   // make Travis take screenshots!
