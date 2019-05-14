@@ -134,3 +134,7 @@ BEGIN
 END $$
 
 DELIMITER ;
+
+
+DELETE FROM role_unit WHERE  unit_id = 171;
+DELETE FROM unit WHERE id=171;
