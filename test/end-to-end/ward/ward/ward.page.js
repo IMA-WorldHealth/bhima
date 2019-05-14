@@ -4,56 +4,46 @@ const FU = require('../../shared/FormUtils');
 const components = require('../../shared/components');
 const GridRow = require('../../shared/GridRow');
 
-function WardPage() {
-  const page = this;
-
-  // the grid id
-  const gridId = 'ward-grid';
-
-  page.gridId = gridId;
-  page.setName = setName;
-  page.editWard = editWard;
-  page.setDescription = setDescription;
-  page.deleteWard = deleteWard;
-  page.selectService = selectService;
-  page.openCreateModal = openCreateModal;
-
-  //  label field in the create/edit modal
-
-  page.submit = function submit() {
-    return FU.modal.submit();
-  };
-
-  function selectService(name) {
-    components.serviceSelect.set(name);
+class WardPage {
+  constructor() {
+    this.gridId = 'ward-grid';
   }
-  function setName(txt) {
+
+  submit() {
+    return FU.modal.submit();
+  }
+
+  selectService(name) {
+    return components.serviceSelect.set(name);
+  }
+
+  setName(txt) {
     const WardName = element(by.model('ModalCtrl.ward.name'));
     return WardName.clear().sendKeys(txt);
   }
 
-  function setDescription(txt) {
+  setDescription(txt) {
     const WardDescription = element(by.model('ModalCtrl.ward.description'));
     return WardDescription.clear().sendKeys(txt);
   }
 
-  function openDropdownMenu(label) {
+  async openDropdownMenu(label) {
     const row = new GridRow(label);
-    row.dropdown().click();
+    await row.dropdown().click();
     return row;
   }
 
-  function editWard(label) {
-    const row = openDropdownMenu(label);
-    row.edit().click();
+  async editWard(label) {
+    const row = await this.openDropdownMenu(label);
+    await row.edit().click();
   }
 
-  function deleteWard(label) {
-    const row = openDropdownMenu(label);
-    row.remove().click();
+  async deleteWard(label) {
+    const row = await this.openDropdownMenu(label);
+    await row.remove().click();
   }
 
-  function openCreateModal() {
+  openCreateModal() {
     return element(by.css('[data-create-ward]')).click();
   }
 }

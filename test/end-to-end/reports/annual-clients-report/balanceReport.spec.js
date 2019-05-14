@@ -1,9 +1,7 @@
-/* global browser */
-
 const helpers = require('../../shared/helpers');
 const AnnualClientsReportReportPage = require('./balance.page');
 
-describe('Annual Clients Report', () => {
+describe.skip('Annual Clients Report', () => {
   const key = 'annual-clients-report';
   let Page;
 

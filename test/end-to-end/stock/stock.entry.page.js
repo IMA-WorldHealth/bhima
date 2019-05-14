@@ -1,4 +1,5 @@
 /* global by, protractor */
+/* eslint no-await-in-loop:off */
 
 const FU = require('../shared/FormUtils');
 const GU = require('../shared/GridUtils');
@@ -109,7 +110,9 @@ function StockEntryPage() {
       await FU.input('$ctrl.stockLine.unit_cost', inventoryUnitCost);
     }
 
-    Promise.all(lotsArray.map(async (lot, index) => {
+    let index = 0;
+    // eslint-disable-next-line
+    for (const lot of lotsArray) {
       lotCell = await GU.getCell(lotGridId, index, 1);
       quantityCell = await GU.getCell(lotGridId, index, 2);
       expirationDateCell = await GU.getCell(lotGridId, index, 3);
@@ -131,7 +134,9 @@ function StockEntryPage() {
         // Add another lot line
         await components.addItem.set(1, $('[uib-modal-transclude]'));
       }
-    }));
+
+      index += 1;
+    }
 
     await FU.modal.submit();
   };
@@ -156,12 +161,16 @@ function StockEntryPage() {
    * @param {array} lots an array of strings
    */
   page.fastLotsInsert = async (lots = []) => {
-    await Promise.all(lots.map(async (lot, index) => {
+    let index = 0;
+
+    // eslint-disable-next-line
+    for (const lot of lots) {
       const lotCell = await GU.getCell(lotGridId, index, 1);
       const input = await FU.input('row.entity.lot', lot, lotCell);
 
       await input.sendKeys(protractor.Key.TAB);
-    }));
+      index += 1;
+    }
 
     // when we insert the last lot and leave with tab there will be
     // a supplementary row added

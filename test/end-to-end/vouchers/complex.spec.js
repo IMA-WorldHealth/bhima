@@ -1,4 +1,5 @@
 /* global by */
+/* eslint no-await-in-loop:off */
 
 const helpers = require('../shared/helpers');
 const components = require('../shared/components');
@@ -61,7 +62,9 @@ describe('Complex Vouchers', () => {
     await page.addRow();
 
     // loop through each row and assign the correct form values
-    const promises = voucher.rows.map(async (row, idx) => {
+    let idx = 0;
+    // eslint-disable-next-line
+    for (const row of voucher.rows) {
       const current = page.row(idx);
       await current.account(row.account);
       await current.debit(row.debit);
@@ -72,9 +75,9 @@ describe('Complex Vouchers', () => {
       if (row.reference) {
         await current.reference(row.reference.type, row.reference.index);
       }
-    });
 
-    await Promise.all(promises);
+      idx += 1;
+    }
 
     /*
      * set the transaction type to one which have a specific Id
@@ -124,7 +127,9 @@ describe('Complex Vouchers', () => {
     await page.currency(2);
 
     // loop through each row and assign the correct form values
-    const promises = voucher.rows.map(async (row, idx) => {
+    let idx = 0;
+    // eslint-disable-next-line
+    for (const row of voucher.rows) {
       const current = page.row(idx);
       await current.account(row.account);
       await current.debit(row.debit);
@@ -135,9 +140,9 @@ describe('Complex Vouchers', () => {
       if (row.reference) {
         await current.reference(row.reference.type, row.reference.index);
       }
-    });
 
-    await Promise.all(promises);
+      idx += 1;
+    }
 
     // submit the page
     await page.submit();

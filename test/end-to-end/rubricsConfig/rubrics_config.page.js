@@ -59,7 +59,7 @@ class RubricConfigPage {
   async unsetRubricConfig(label) {
     const row = new GridRow(label);
     await row.dropdown().click();
-    await row.method('conigure').click();
+    await row.method('configure').click();
 
     const checkbox = element(by.id('all'));
     await browser.wait(EC.elementToBeClickable(checkbox), 1500);

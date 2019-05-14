@@ -64,14 +64,16 @@ const validation = {
 module.exports = {
 
   // get an <input> element by its ng-model
-  input : function input(model, value, anchor) {
+  input : async function input(model, value, anchor) {
 
     // get the HTML <input> element
     const input = anchor
       ? anchor.element(by.model(model))
       : element(by.model(model));
 
-    return input.clear().sendKeys(value);
+    await input.clear().sendKeys(value);
+
+    return input;
   },
 
   /**

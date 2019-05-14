@@ -4,76 +4,62 @@ const FU = require('../../shared/FormUtils');
 const components = require('../../shared/components');
 const GridRow = require('../../shared/GridRow');
 
-function BedPage() {
-  const page = this;
+class BedPage {
+  constructor() {
+    this.gridId = 'bed-grid';
+  }
 
-  // the grid id
-  const gridId = 'bed-grid';
-
-  page.gridId = gridId;
-  page.setLabel = setLabel;
-  page.editBed = editBed;
-  page.deleteBed = deleteBed;
-  page.openCreateModal = openCreateModal;
-  page.setWard = setWard;
-  page.labelValidationError = labelValidationError;
-  page.wardValidationError = wardValidationError;
-  page.roomValidationError = roomValidationError;
-  page.setRoom = setRoom;
-
-  //  label field in the create/edit modal
-
-  page.submit = function submit() {
+  submit() {
     return FU.modal.submit();
-  };
-
-  page.cancel = () => {
-    FU.modal.cancel();
-  };
-
-  function setLabel(txt) {
-    components.inpuText.set('label', txt);
   }
 
-  function labelValidationError() {
-    components.inpuText.validationError('label');
+  cancel() {
+    return FU.modal.cancel();
   }
 
-  function setWard(ward) {
-    components.wardSelect.set(ward);
+  setLabel(txt) {
+    return components.inpuText.set('label', txt);
   }
 
-  function wardValidationError() {
-    components.wardSelect.validationError();
+  labelValidationError() {
+    return components.inpuText.validationError('label');
   }
 
-  function setRoom(room, id) {
-    components.roomSelect.set(room, id);
+  setWard(ward) {
+    return components.wardSelect.set(ward);
   }
 
-  function roomValidationError() {
-    components.roomSelect.validationError();
+  wardValidationError() {
+    return components.wardSelect.validationError();
   }
 
-  function openDropdownMenu(label) {
+  setRoom(room, id) {
+    return components.roomSelect.set(room, id);
+  }
+
+  roomValidationError() {
+    return components.roomSelect.validationError();
+  }
+
+  async openDropdownMenu(label) {
     const row = new GridRow(label);
-    row.dropdown().click();
+    await row.dropdown().click();
     return row;
   }
 
-  function editBed(label) {
-    element(by.css('[data-expand]')).click();
-    const row = openDropdownMenu(label);
-    row.edit().click();
+  async editBed(label) {
+    await element(by.css('[data-expand]')).click();
+    const row = await this.openDropdownMenu(label);
+    await row.edit().click();
   }
 
-  function deleteBed(label) {
-    element(by.css('[data-expand]')).click();
-    const row = openDropdownMenu(label);
-    row.remove().click();
+  async deleteBed(label) {
+    await element(by.css('[data-expand]')).click();
+    const row = await this.openDropdownMenu(label);
+    await row.remove().click();
   }
 
-  function openCreateModal() {
+  openCreateModal() {
     return element(by.css('[data-create-bed]')).click();
   }
 }

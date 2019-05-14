@@ -3,7 +3,7 @@
 const FU = require('../shared/FormUtils');
 const GridRow = require('../shared/GridRow');
 
-function RolesPage() {
+function TagsPage() {
   const page = this;
 
   // the grid id
@@ -37,7 +37,7 @@ function RolesPage() {
   }
 
   async function deleteTags(label) {
-    const row = openDropdownMenu(label);
+    const row = await openDropdownMenu(label);
     await row.remove().click();
   }
 
@@ -46,4 +46,4 @@ function RolesPage() {
   }
 }
 
-module.exports = RolesPage;
+module.exports = TagsPage;

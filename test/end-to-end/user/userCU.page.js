@@ -41,14 +41,14 @@ class CreateUpdateUserPage {
     return FU.input(this.fields.email, email);
   }
 
-  setProjectValue(value, append) {
+  async setProjectValue(value, append) {
     const uiSelect = element(by.model(this.fields.projects));
-    uiSelect.click();
+    await uiSelect.click();
 
     if (append) {
-      uiSelect.element(by.model('$select.search')).sendKeys(value);
+      await uiSelect.element(by.model('$select.search')).sendKeys(value);
     } else {
-      uiSelect.element(by.model('$select.search')).clear().sendKeys(value);
+      await uiSelect.element(by.model('$select.search')).clear().sendKeys(value);
     }
 
     return uiSelect.element(by.cssContainingText('.dropdown-menu [role="option"]', value)).click();
@@ -61,12 +61,12 @@ class CreateUpdateUserPage {
 
   /* set a password value */
   setPassword(pw) {
-    FU.input(this.fields.password, pw);
+    return FU.input(this.fields.password, pw);
   }
 
   /* set a password confirmation value */
   setPasswordConfirm(pw) {
-    FU.input(this.fields.passwordConfirm, pw);
+    return FU.input(this.fields.passwordConfirm, pw);
   }
 
   /* submit a user */

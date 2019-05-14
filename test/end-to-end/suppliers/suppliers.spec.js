@@ -89,7 +89,7 @@ describe('Suppliers', () => {
   }
 
   async function editSupplier(name) {
-    const row = openDropdownMenu(name);
+    const row = await openDropdownMenu(name);
     await row.edit().click();
   }
 });

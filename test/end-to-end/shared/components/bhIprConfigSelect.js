@@ -1,4 +1,4 @@
-/* global browser, element, by */
+/* global element, by */
 
 const FU = require('../FormUtils');
 

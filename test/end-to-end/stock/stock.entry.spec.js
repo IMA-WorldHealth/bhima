@@ -21,7 +21,7 @@ function StockEntryTests() {
     await page.setDepot(DEPOT_PRINCIPAL);
   });
 
-  it('Should entry stock from a purchase order', async () => {
+  it('Should enter stock from a purchase order', async () => {
     // select the purchase order
     await page.setPurchase(0);
 
@@ -41,7 +41,7 @@ function StockEntryTests() {
     await page.submit();
   });
 
-  it(`Should entry stock in ${DEPOT_SECONDAIRE} from an integration`, async function t() {
+  it(`Should enter stock in ${DEPOT_SECONDAIRE} from an integration`, async function t() {
     await this.timeout(60000);
 
     // set another Depot
@@ -72,7 +72,7 @@ function StockEntryTests() {
     await page.submit();
   });
 
-  it('Should entry stock from a transfer reception', async () => {
+  it('Should enter stock from a transfer reception', async () => {
     // set another Depot
     await page.setDepot(DEPOT_SECONDAIRE);
 

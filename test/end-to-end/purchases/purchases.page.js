@@ -42,7 +42,7 @@ function PurchaseOrderPage() {
   page.addInventoryItem = async function addInvoiceItem(rowNumber, code) {
 
     // first column of the nth row
-    const itemCell = await GU.dataCell(gridId, rowNumber, 1);
+    const itemCell = await GU.getCell(gridId, rowNumber, 1);
 
     // enter data into the typeahead input.  We cannot use FU.typeahead because it is appended to the body.
     await FU.input('row.entity.inventory_uuid', code, itemCell);
@@ -63,7 +63,7 @@ function PurchaseOrderPage() {
   page.adjustItemPrice = async function adjustItemPrice(rowNumber, price) {
 
     // fourth column of the last nth row
-    const priceCell = await GU.dataCell(gridId, rowNumber, 5);
+    const priceCell = await GU.getCell(gridId, rowNumber, 5);
     await FU.input('row.entity.unit_price', price, priceCell);
   };
 
@@ -78,7 +78,7 @@ function PurchaseOrderPage() {
   page.adjustItemQuantity = async function adjustItemQuantity(rowNumber, quantity) {
 
     // third column column of the nth row
-    const quantityCell = await GU.dataCell(gridId, rowNumber, 4);
+    const quantityCell = await GU.getCell(gridId, rowNumber, 4);
     await FU.input('row.entity.quantity', quantity, quantityCell);
   };
 

@@ -25,7 +25,7 @@ describe('Patient Visits', () => {
   const OLD_VISITS = 1;
   const NEW_VISITS = 2;
 
-  it('successfully creates a new visit', async () => {
+  it('successfully creates a new visit', () => {
     return Page.createVisitSuccess(
       defaultVisit.patient,
       defaultVisit.service,
@@ -34,7 +34,7 @@ describe('Patient Visits', () => {
     );
   });
 
-  it('forbid to create a new visit for a pending patient', async () => {
+  it('forbid to create a new visit for a pending patient', () => {
     return Page.createVisitFail(
       defaultVisit.patient,
       defaultVisit.service,

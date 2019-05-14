@@ -4,70 +4,57 @@ const FU = require('../../shared/FormUtils');
 const components = require('../../shared/components');
 const GridRow = require('../../shared/GridRow');
 
-function RoomPage() {
-  const page = this;
+class RoomPage {
+  constructor() {
+    this.gridId = 'room-grid';
+  }
 
-  // the grid id
-  const gridId = 'room-grid';
-
-  page.gridId = gridId;
-  page.setLabel = setLabel;
-  page.editRoom = editRoom;
-  page.setDescription = setDescription;
-  page.deleteRoom = deleteRoom;
-  page.openCreateModal = openCreateModal;
-  page.setWard = setWard;
-  page.labelValidationError = labelValidationError;
-  page.wardValidationError = wardValidationError;
-
-  //  label field in the create/edit modal
-
-  page.submit = function submit() {
+  submit() {
     return FU.modal.submit();
-  };
-
-  page.cancel = () => {
-    FU.modal.cancel();
-  };
-
-  function setLabel(txt) {
-    components.inpuText.set('label', txt);
   }
 
-  function labelValidationError() {
-    components.inpuText.validationError('label');
+  cancel() {
+    return FU.modal.cancel();
   }
 
-  function wardValidationError() {
-    components.wardSelect.validationError();
+  setLabel(txt) {
+    return components.inpuText.set('label', txt);
   }
 
-  function setDescription(txt) {
+  labelValidationError() {
+    return components.inpuText.validationError('label');
+  }
+
+  wardValidationError() {
+    return components.wardSelect.validationError();
+  }
+
+  setDescription(txt) {
     const RoomDescription = element(by.model('ModalCtrl.room.description'));
     return RoomDescription.clear().sendKeys(txt);
   }
 
-  function setWard(ward) {
-    components.wardSelect.set(ward);
+  setWard(ward) {
+    return components.wardSelect.set(ward);
   }
 
-  function openDropdownMenu(label) {
+  async openDropdownMenu(label) {
     const row = new GridRow(label);
-    row.dropdown().click();
+    await row.dropdown().click();
     return row;
   }
 
-  function editRoom(label) {
-    const row = openDropdownMenu(label);
-    row.edit().click();
+  async editRoom(label) {
+    const row = await this.openDropdownMenu(label);
+    await row.edit().click();
   }
 
-  function deleteRoom(label) {
-    const row = openDropdownMenu(label);
-    row.remove().click();
+  async deleteRoom(label) {
+    const row = await this.openDropdownMenu(label);
+    await row.remove().click();
   }
 
-  function openCreateModal() {
+  openCreateModal() {
     return element(by.css('[data-create-room]')).click();
   }
 }
