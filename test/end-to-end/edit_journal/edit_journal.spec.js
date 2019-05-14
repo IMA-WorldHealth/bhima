@@ -14,7 +14,7 @@ describe('Edit Posting Journal', () => {
 
   // simulates a double click
   const doubleClick = async element => browser
-    .actions()
+    .actions({ bridge : true })
     .doubleClick(await element.getWebElement())
     .perform();
 
