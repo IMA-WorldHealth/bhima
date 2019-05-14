@@ -39,9 +39,9 @@
                 {{/if}}
               </td>
               {{#each ../services as |service|}}
-                <td class="text-right">{{look row service}}</td>
+                <td class="text-right">{{currency (look row service) ../../metadata.enterprise.currency_id}}</td>
               {{/each}}
-              <td class="text-right">{{ row.Total }}</td>
+              <td class="text-right">{{currency row.Total ../metadata.enterprise.currency_id}}</td>
             </tr>
           {{else}}
             {{> emptyTable columns=3}}
@@ -51,7 +51,11 @@
               {{#if @first}}
                 <th>{{translate 'FORM.LABELS.TOTAL'}}</th>
               {{else}}
-                <th class="text-right">{{ value }}</th>
+                <th class="text-right">
+                  {{#if value}}
+                    {{currency value ../metadata.enterprise.currency_id}}
+                  {{/if}}
+                </th>
               {{/if}}
             {{/each}}
           </tr>
