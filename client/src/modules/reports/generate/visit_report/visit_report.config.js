@@ -3,12 +3,11 @@ angular.module('bhima.controllers')
 
 VisitReportController.$inject = [
   '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state',
-  'LanguageService', 'moment',
 ];
 
 function VisitReportController(
   $sce, Notify, SavedReports, AppCache,
-  reportData, $state, Languages
+  reportData, $state
 ) {
   const vm = this;
   const cache = new AppCache('configure_visit_report');
@@ -33,20 +32,8 @@ function VisitReportController(
   vm.preview = function preview(form) {
     if (form.$invalid) { return 0; }
 
-    const params = {
-      dateFrom : vm.dateFrom,
-      dateTo : vm.dateTo,
-    };
-
     // update cached configuration
-    cache.reportDetails = angular.copy(params);
-
-    const options = {
-      params,
-      lang : Languages.key,
-    };
-
-    vm.reportDetails = options;
+    cache.reportDetails = angular.copy(vm.reportDetails);
 
     return SavedReports.requestPreview(reportUrl, reportData.id, angular.copy(vm.reportDetails))
       .then((result) => {

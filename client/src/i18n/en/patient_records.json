@@ -60,14 +60,14 @@
     },
     "REPORT":{
       "VISITS":"Patients Visits Report",
-      "DESCRIPTION":"This report shows visits stats by service",
+      "DESCRIPTION":"This report shows patient visitation statistics by service",
       "NEW_CASES":"New Cases",
       "OLD_CASES":"Old Cases",
       "HOSPITALIZED":"Hospitalized",
       "AMBULATORY":"Ambulatory",
       "PREGNANT":"Pregnants",
       "REFERRED":"Referred",
-      "INSIDE_HEALTH_ZONE":"Inside Health Zone",
+      "INSIDE_HEALTH_ZONE":"Within Health Zone",
       "OUTSIDE_HEALTH_ZONE":"Outside Health Zone"
     },
     "TRANSFER":{

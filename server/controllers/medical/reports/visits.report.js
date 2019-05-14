@@ -13,7 +13,6 @@ exports.document = document;
 
 function document(req, res, next) {
   let report;
-  let details;
 
   const params = req.query;
 
@@ -22,15 +21,14 @@ function document(req, res, next) {
   });
 
   try {
-    details = req.query.params ? JSON.parse(req.query.params) : {};
     report = new ReportManager(TEMPLATE, req.session, optionReport);
   } catch (e) {
     next(e);
     return;
   }
 
-  getData(details)
-    .then(visits => report.render({ visits, details }))
+  getData(params)
+    .then(visits => report.render({ visits, params }))
     .then(result => res.set(result.headers).send(result.report))
     .catch(next);
 }
@@ -79,10 +77,11 @@ async function getData(options) {
   ];
 
   try {
-    const data = await db.exec(queryData, queryParams);
-    const [total] = await db.exec(queryTotal, queryParams);
+    const [data, [total]] = await Promise.all([
+      db.exec(queryData, queryParams),
+      db.exec(queryTotal, queryParams),
+    ]);
     return { data, total };
-
   } catch (error) {
     throw error;
   }
