@@ -1,5 +1,4 @@
 /* global element, by */
-/* eslint  */
 
 /**
  * This class is represents a offday page in term of structure and
@@ -7,16 +6,13 @@
  */
 
 /* loading grid actions */
-const GU = require('../shared/GridUtils');
-const GA = require('../shared/GridAction');
 const FU = require('../shared/FormUtils');
+const GridRow = require('../shared/GridRow');
 const components = require('../shared/components');
 
 class OffdayPage {
   constructor() {
-    this.gridId = 'offday-grid';
-    this.offdayGrid = element(by.id(this.gridId));
-    this.actionLinkColumn = 3;
+    this.offdayGrid = element(by.id('offday-grid'));
   }
 
   /**
@@ -55,12 +51,19 @@ class OffdayPage {
     await FU.buttons.cancel();
   }
 
+  async openDropdownMenu(label) {
+    const row = new GridRow(label);
+    await row.dropdown().click();
+    return row;
+  }
+
   /**
    * simulate a click on the edit link of a function
    */
   async editOffday(label, updateOffday) {
-    const { rowIndex } = await GU.getGridIndexesMatchingText(this.gridId, label);
-    await GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'edit', this.gridId);
+    const row = await this.openDropdownMenu(label);
+    await row.edit().click();
+
     await FU.input('OffdayModalCtrl.offday.label', updateOffday.label);
 
     // FIX ME TO SET OFFDAY DATE WITH COMPONENTS DATE EDITOR
@@ -76,8 +79,9 @@ class OffdayPage {
    * simulate a click on the delete link of a function
    */
   async deleteOffday(label) {
-    const { rowIndex } = await GU.getGridIndexesMatchingText(this.gridId, label);
-    await GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'delete', this.gridId);
+    const row = await this.openDropdownMenu(label);
+    await row.remove().click();
+
     await components.modalAction.confirm();
     await components.notification.hasSuccess();
   }
