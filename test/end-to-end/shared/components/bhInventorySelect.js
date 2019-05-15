@@ -4,12 +4,12 @@ const FU = require('../FormUtils');
 
 module.exports = {
   selector : '[bh-inventory-select]',
-  set      : function set(inventory, id) {
+  set      : async function set(inventory, id) {
     const locator = (id) ? by.id(id) : by.css(this.selector);
     const target = element(locator);
 
-    target.click();
+    await target.click();
 
-    FU.uiSelect('$ctrl.inventoryUuid', inventory, target);
+    await FU.uiSelect('$ctrl.inventoryUuid', inventory, target);
   },
 };

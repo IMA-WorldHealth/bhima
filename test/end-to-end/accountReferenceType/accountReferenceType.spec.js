@@ -16,23 +16,23 @@ describe('Account Reference Type', () => {
     label : 'Update Account Reference Type',
   };
 
-  it('begins with 4 Account Reference Type', () => {
-    expect(page.count()).to.eventually.equal(4);
+  it('begins with 4 Account Reference Type', async () => {
+    expect(await page.count()).to.equal(4);
   });
 
-  it('successfully creates a new Account Reference Type', () => {
-    page.create(newAccountReferenceType);
+  it('successfully creates a new Account Reference Type', async () => {
+    await page.create(newAccountReferenceType);
   });
 
-  it('successfully edits a Account Reference Type', () => {
-    page.update(newAccountReferenceType.label, updateAccountReferenceType);
+  it('successfully edits a Account Reference Type', async () => {
+    await page.update(newAccountReferenceType.label, updateAccountReferenceType);
   });
 
-  it('errors when missing Account Reference Type create when incorrect Account Reference Type', () => {
-    page.errorOnCreateAccountReferenceType();
+  it('errors when missing Account Reference Type create when incorrect Account Reference Type', async () => {
+    await page.errorOnCreateAccountReferenceType();
   });
 
-  it('successfully delete Account Reference Type', () => {
-    page.remove(updateAccountReferenceType.label);
+  it('successfully delete Account Reference Type', async () => {
+    await page.remove(updateAccountReferenceType.label);
   });
 });

@@ -1,9 +1,8 @@
 const helpers = require('../../shared/helpers');
-
 const ReportStockExitPage = require('./stock_exit.page');
 
 describe('StockExit Report', () => {
-  let Page;
+  let page;
   const key = 'stock_exit';
 
   const dataset = {
@@ -14,21 +13,21 @@ describe('StockExit Report', () => {
     renderer        : 'PDF',
   };
 
-  before(() => {
-    helpers.navigate(`#!/reports/${key}`);
-    Page = new ReportStockExitPage(key);
+  before(async () => {
+    await helpers.navigate(`#!/reports/${key}`);
+    page = new ReportStockExitPage(key);
   });
 
-  it('preview a new StockExit Report', () => {
-    Page.showStockExitReportPreview(dataset.depot, dataset.dateFrom, dataset.dateTo);
+  it('preview a new StockExit Report', async () => {
+    await page.showStockExitReportPreview(dataset.depot, dataset.dateFrom, dataset.dateTo);
   });
 
-  it('close the previewed report', () => {
-    Page.closeStockExitReportPreview();
+  it('close the previewed report', async () => {
+    await page.closeStockExitReportPreview();
   });
 
-  it('save a previewed report', () => {
-    Page.saveStockExitReport(
+  it('save a previewed report', async () => {
+    await page.saveStockExitReport(
       dataset.dateFrom,
       dataset.dateTo,
       dataset.depot,
@@ -37,11 +36,11 @@ describe('StockExit Report', () => {
     );
   });
 
-  it('report has been saved into archive', () => {
-    Page.checkSavedStockExitReport(dataset.report_name);
+  it('report has been saved into archive', async () => {
+    await page.checkSavedStockExitReport(dataset.report_name);
   });
 
-  it('print the previewed report', () => {
-    Page.printStockExitReport(dataset.depot, dataset.dateFrom, dataset.dateTo);
+  it('print the previewed report', async () => {
+    await page.printStockExitReport(dataset.depot, dataset.dateFrom, dataset.dateTo);
   });
 });

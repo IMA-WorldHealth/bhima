@@ -1,10 +1,5 @@
 const helpers = require('../shared/helpers');
 const PayrollConfigPage = require('./payroll_config.page');
-const chai = require('chai');
-
-
-/** configuring helpers* */
-helpers.configure(chai);
 
 describe('Payroll Configuration Management', () => {
   // navigate to the page
@@ -27,19 +22,19 @@ describe('Payroll Configuration Management', () => {
     period : 'week',
   };
 
-  it('successfully creates a Configuration Payroll Period', () => {
-    Page.createPayrollConfig(payrollConfig);
+  it('successfully creates a Configuration Payroll Period', async () => {
+    await Page.createPayrollConfig(payrollConfig);
   });
 
-  it('successfully edits a Configuration Payroll Period', () => {
-    Page.editPayrollConfig(payrollConfig.label, updatePayrollConfig);
+  it('successfully edits a Configuration Payroll Period', async () => {
+    await Page.editPayrollConfig(payrollConfig.label, updatePayrollConfig);
   });
 
-  it('don\'t create when incorrect Configuration Payroll Period', () => {
-    Page.errorOnCreatePayrollConfig();
+  it('don\'t create when incorrect Configuration Payroll Period', async () => {
+    await Page.errorOnCreatePayrollConfig();
   });
 
-  it('successfully delete a Configuration Payroll Period', () => {
-    Page.deletePayrollConfig(updatePayrollConfig.label);
+  it('successfully delete a Configuration Payroll Period', async () => {
+    await Page.deletePayrollConfig(updatePayrollConfig.label);
   });
 });

@@ -13,16 +13,16 @@ module.exports = {
   */
   set : function set(value, id) {
   // it might be clearer to do this in two steps.
-    var root = element(id ? by.id(id) : by.css(this.selector));
-    var elm  = root.element(by.model('$ctrl.model'));
-    elm.clear().sendKeys(value);
+    const root = element(id ? by.id(id) : by.css(this.selector));
+    const elm = root.element(by.model('$ctrl.model'));
+    return elm.clear().sendKeys(value);
   },
 
   /**
    * get the value of the currency input.
    */
   get : function get() {
-    var elm = element(by.css(this.selector));
+    const elm = element(by.css(this.selector));
     return elm.getAttribute('value');
   },
 };

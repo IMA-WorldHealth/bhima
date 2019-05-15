@@ -1,5 +1,4 @@
 /* global element, by */
-'use strict';
 
 /**
  * test harness for the currency select component described in the component
@@ -16,16 +15,15 @@ module.exports = {
   set : function set(value, id) {
 
     // get the root value of the
-    let root = element(id ? by.id(id) : by.css(this.selector));
+    const root = element(id ? by.id(id) : by.css(this.selector));
 
     // construct a locator for the value
-    let locator = `[data-currency-option="${value}"]`;
+    const locator = `[data-currency-option="${value}"]`;
 
     // get the approrpriate option by the locator
-    let option = root.element(by.css(locator));
+    const option = root.element(by.css(locator));
 
     // click it!
-    option.click();
-  }
+    return option.click();
+  },
 };
-

@@ -43,62 +43,62 @@ describe('AccountReference Management Page', () => {
     page = new AccountReferencePage();
   });
 
-  it(`should begin with ${numReferences + 1} account references`, () => {
-    expect(page.count()).to.eventually.equal(numReferences);
+  it(`should begin with ${numReferences + 1} account references`, async () => {
+    expect(await page.count()).to.equal(numReferences);
   });
 
-  it('creates an account reference successfully', () => {
-    page.create();
+  it('creates an account reference successfully', async () => {
+    await page.create();
 
     const modal = new AccountReferenceCreateUpdatePage();
 
-    modal.setAbbr(mockCreate.abbr);
-    modal.setDescription(mockCreate.description);
-    modal.setAccountValues(mockCreate.accounts);
-    modal.setAccountExceptionValues(mockCreate.accountsException);
-    components.accountReferenceTypeSelect.set(mockCreate.reference_type_id, 'reference_type_id');
+    await modal.setAbbr(mockCreate.abbr);
+    await modal.setDescription(mockCreate.description);
+    await modal.setAccountValues(mockCreate.accounts);
+    await modal.setAccountExceptionValues(mockCreate.accountsException);
+    await components.accountReferenceTypeSelect.set(mockCreate.reference_type_id, 'reference_type_id');
 
-    modal.submit();
+    await modal.submit();
 
-    components.notification.hasSuccess();
-    expect(page.count()).to.eventually.equal(numReferences + 1);
+    await components.notification.hasSuccess();
+    expect(await page.count()).to.equal(numReferences + 1);
   });
 
-  it('creates an accounts reference with a parent', () => {
-    page.create();
+  it('creates an accounts reference with a parent', async () => {
+    await page.create();
     const modal = new AccountReferenceCreateUpdatePage();
 
-    modal.setAbbr(mockCreate2.abbr);
-    modal.setDescription(mockCreate2.description);
-    modal.setAccountValues(mockCreate2.accounts);
-    modal.setAccountExceptionValues(mockCreate2.accountsException);
-    modal.setParentValue(mockCreate2.parent);
-    modal.submit();
+    await modal.setAbbr(mockCreate2.abbr);
+    await modal.setDescription(mockCreate2.description);
+    await modal.setAccountValues(mockCreate2.accounts);
+    await modal.setAccountExceptionValues(mockCreate2.accountsException);
+    await modal.setParentValue(mockCreate2.parent);
+    await modal.submit();
 
-    components.notification.hasSuccess();
-    expect(page.count()).to.eventually.equal(numReferences + 2);
+    await components.notification.hasSuccess();
+    expect(await page.count()).to.equal(numReferences + 2);
   });
 
-  it('edits an accounts reference successfully', () => {
-    page.update(mockCreate2.abbr);
+  it('edits an accounts reference successfully', async () => {
+    await page.update(mockCreate2.abbr);
     const modal = new AccountReferenceCreateUpdatePage();
-    modal.clearSelectedItems();
-    modal.setAbbr(mockEdit.abbr);
-    modal.setDescription(mockEdit.description);
-    modal.setAccountValues(mockEdit.accounts, true);
-    modal.setAccountExceptionValues(mockEdit.accountsException, true);
-    modal.submit();
+    await modal.clearSelectedItems();
+    await modal.setAbbr(mockEdit.abbr);
+    await modal.setDescription(mockEdit.description);
+    await modal.setAccountValues(mockEdit.accounts, true);
+    await modal.setAccountExceptionValues(mockEdit.accountsException, true);
+    await modal.submit();
 
-    components.notification.hasSuccess();
+    await components.notification.hasSuccess();
   });
 
-  it('delete an accounts reference successfully', () => {
-    page.remove(mockEdit.abbr);
-    components.notification.hasSuccess();
-    expect(page.count()).to.eventually.equal(numReferences + 1);
+  it('delete an accounts reference successfully', async () => {
+    await page.remove(mockEdit.abbr);
+    await components.notification.hasSuccess();
+    expect(await page.count()).to.equal(numReferences + 1);
   });
 
-  it(`should end with ${numReferences + 1} account references`, () => {
-    expect(page.count()).to.eventually.equal(numReferences + 1);
+  it(`should end with ${numReferences + 1} account references`, async () => {
+    expect(await page.count()).to.equal(numReferences + 1);
   });
 });

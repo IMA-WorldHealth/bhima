@@ -12,8 +12,8 @@ function StockInventoriesRegistryTests() {
   // navigate to the page
   before(() => helpers.navigate('#/stock/inventories'));
 
-  beforeEach(() => {
-    SearchModal.open();
+  beforeEach(async () => {
+    await SearchModal.open();
     modal = new SearchModal('stock-inventories-search');
     filters = new Filters();
   });
@@ -22,78 +22,78 @@ function StockInventoriesRegistryTests() {
 
   const depotGroupingRow = 1;
 
-  it('find 2 inventory in Depot Secondaire plus one line for the Grouping', () => {
-    modal.setDepot('Depot Secondaire');
-    modal.submit();
-    GU.expectRowCount(gridId, 2 + depotGroupingRow);
+  it('find 2 inventory in Depot Secondaire plus one line for the Grouping', async () => {
+    await modal.setDepot('Depot Secondaire');
+    await modal.submit();
+    await GU.expectRowCount(gridId, 2 + depotGroupingRow);
   });
 
-  it('find 3 inventory in Depot Principal plus one line for the Grouping', () => {
-    modal.setDepot('Depot Principal');
-    modal.submit();
-    GU.expectRowCount(gridId, 3 + depotGroupingRow);
-    filters.resetFilters();
+  it('find 3 inventory in Depot Principal plus one line for the Grouping', async () => {
+    await modal.setDepot('Depot Principal');
+    await modal.submit();
+    await GU.expectRowCount(gridId, 3 + depotGroupingRow);
+    await filters.resetFilters();
   });
 
-  it('find inventory by name', () => {
-    modal.setInventory('Quinine sulphate 500mg');
-    modal.submit();
-    GU.expectRowCount(gridId, 2);
-    filters.resetFilters();
+  it('find inventory by name', async () => {
+    await modal.setInventory('Quinine sulphate 500mg');
+    await modal.submit();
+    await GU.expectRowCount(gridId, 2);
+    await filters.resetFilters();
   });
 
-  it('find 0 inventory by state sold out', () => {
-    FU.radio('$ctrl.searchQueries.status', 0);
-    FU.modal.submit();
-    GU.expectRowCount(gridId, 0);
-    filters.resetFilters();
+  it('find 0 inventory by state sold out', async () => {
+    await FU.radio('$ctrl.searchQueries.status', 0);
+    await FU.modal.submit();
+    await GU.expectRowCount(gridId, 0);
+    await filters.resetFilters();
   });
 
-  it('find 0 inventory by state in stock', () => {
-    FU.radio('$ctrl.searchQueries.status', 1);
-    FU.modal.submit();
-    GU.expectRowCount(gridId, 0);
+  it('find 0 inventory by state in stock', async () => {
+    await FU.radio('$ctrl.searchQueries.status', 1);
+    await FU.modal.submit();
+    await GU.expectRowCount(gridId, 0);
 
-    filters.resetFilters();
+    await filters.resetFilters();
   });
 
-  it('find 0 inventory by state (security reached)', () => {
-    FU.radio('$ctrl.searchQueries.status', 2);
-    FU.modal.submit();
-    GU.expectRowCount(gridId, 0);
+  it('find 0 inventory by state (security reached)', async () => {
+    await FU.radio('$ctrl.searchQueries.status', 2);
+    await FU.modal.submit();
+    await GU.expectRowCount(gridId, 0);
 
-    filters.resetFilters();
+    await filters.resetFilters();
   });
 
-  it('find 0 inventories  by state plus one line for grouping (minimum reached)', () => {
-    FU.radio('$ctrl.searchQueries.status', 3);
-    FU.modal.submit();
+  it('find 0 inventories  by state plus one line for grouping (minimum reached)', async () => {
+    await FU.radio('$ctrl.searchQueries.status', 3);
+    await FU.modal.submit();
 
-    GU.expectRowCount(gridId, 0);
-    filters.resetFilters();
+    await GU.expectRowCount(gridId, 0);
+    await filters.resetFilters();
   });
 
-  it('find 3 inventories  by state plus two lines for grouping (over maximum)', () => {
-    FU.radio('$ctrl.searchQueries.status', 4);
-    FU.modal.submit();
+  it('find 3 inventories  by state plus two lines for grouping (over maximum)', async () => {
+    await FU.radio('$ctrl.searchQueries.status', 4);
+    await FU.modal.submit();
 
-    GU.expectRowCount(gridId, 7);
-    filters.resetFilters();
+    await GU.expectRowCount(gridId, 7);
+    await filters.resetFilters();
   });
 
-  it('find 7 inventories For All time ', () => {
-    modal.switchToDefaultFilterTab();
-    modal.setPeriod('allTime');
-    modal.submit();
-    GU.expectRowCount(gridId, 9);
-    filters.resetFilters();
+  it('find 7 inventories For All time ', async () => {
+    await modal.switchToDefaultFilterTab();
+    await modal.setPeriod('allTime');
+    await modal.submit();
+    await GU.expectRowCount(gridId, 9);
+    await filters.resetFilters();
   });
 
-  it('find 3 inventories who Requires a purchase order', () => {
-    element(by.model('$ctrl.searchQueries.require_po')).click();
-    FU.modal.submit();
-    GU.expectRowCount(gridId, 3);
-    filters.resetFilters();
+  it('find 3 inventories who Requires a purchase order', async () => {
+    await element(by.model('$ctrl.searchQueries.require_po')).click();
+    await FU.modal.submit();
+    await GU.expectRowCount(gridId, 3);
+    await filters.resetFilters();
   });
 }
 

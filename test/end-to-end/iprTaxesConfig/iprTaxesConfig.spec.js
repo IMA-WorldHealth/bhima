@@ -1,10 +1,5 @@
 const helpers = require('../shared/helpers');
 const IprTaxConfigPage = require('./iprTaxesConfig.page');
-const chai = require('chai');
-
-
-/** configuring helpers* */
-helpers.configure(chai);
 
 describe('Ipr Tax Configuration Scale Management', () => {
   // navigate to the page
@@ -40,27 +35,27 @@ describe('Ipr Tax Configuration Scale Management', () => {
     tranche_annuelle_fin : 72000,
   };
 
-  it('successfully creates a Scale 1 in IPR Scale 2013', () => {
-    Page.createIprTaxConfig(iprTaxScale);
+  it('successfully creates a Scale 1 in IPR Scale 2013', async () => {
+    await Page.createIprTaxConfig(iprTaxScale);
   });
 
-  it('successfully creates a Scale 2 in IPR Scale 2013', () => {
-    Page.createIprTaxConfig(iprTaxScale2);
+  it('successfully creates a Scale 2 in IPR Scale 2013', async () => {
+    await Page.createIprTaxConfig(iprTaxScale2);
   });
 
-  it('successfully creates a Scale 1 in IPR Scale 2000', () => {
-    Page.createIprTaxConfig(iprTaxScale2000);
+  it('successfully creates a Scale 1 in IPR Scale 2000', async () => {
+    await Page.createIprTaxConfig(iprTaxScale2000);
   });
 
-  it('successfully edits Scale for IPR 2000', () => {
-    Page.editIprTaxConfig(iprTaxScale2000.rate, iprTaxScale2000Update);
+  it('successfully edits Scale for IPR 2000', async () => {
+    await Page.editIprTaxConfig(iprTaxScale2000.rate, iprTaxScale2000Update);
   });
 
-  it('successfully delete a Ipr tax Scale', () => {
-    Page.deleteIprTaxConfig(iprTaxScale2000Update.rate);
+  it('successfully delete a Ipr tax Scale', async () => {
+    await Page.deleteIprTaxConfig(iprTaxScale2000Update.rate);
   });
 
-  it('don\'t create when incorrect Ipr Tax', () => {
-    Page.errorOnCreateIprTaxConfig(iprTaxScale.scale);
+  it('don\'t create when incorrect Ipr Tax', async () => {
+    await Page.errorOnCreateIprTaxConfig(iprTaxScale.scale);
   });
 });

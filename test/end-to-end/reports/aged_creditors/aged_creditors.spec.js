@@ -14,28 +14,28 @@ describe('Aged Creditors Report', () => {
     month2 : 'juin',
   };
 
-  before(() => {
-    helpers.navigate(`#!/reports/${key}`);
+  before(async () => {
+    await helpers.navigate(`#!/reports/${key}`);
     Page = new ReportCreditorsPage(key);
   });
 
-  it('preview a new Aged Creditors Report', () => {
-    Page.showCreditorsReportPreview(dataset.year, dataset.month, dataset.include_zeroes);
+  it('preview a new Aged Creditors Report', async () => {
+    await Page.showCreditorsReportPreview(dataset.year, dataset.month, dataset.include_zeroes);
   });
 
-  it('close the previewed report', () => {
-    Page.closeCreditorsReportPreview();
+  it('close the previewed report', async () => {
+    await Page.closeCreditorsReportPreview();
   });
 
-  it('save a previewed report', () => {
-    Page.saveCreditorsReport(dataset.year, dataset.month2, false, dataset.report_name, dataset.renderer);
+  it('save a previewed report', async () => {
+    await Page.saveCreditorsReport(dataset.year, dataset.month2, false, dataset.report_name, dataset.renderer);
   });
 
-  it('report has been saved into archive', () => {
-    Page.checkSavedCreditorsReport(dataset.report_name);
+  it('report has been saved into archive', async () => {
+    await Page.checkSavedCreditorsReport(dataset.report_name);
   });
 
-  it('print the previewed report', () => {
-    Page.printCreditorsReport(dataset.year, dataset.month, dataset.include_zeroes);
+  it('print the previewed report', async () => {
+    await Page.printCreditorsReport(dataset.year, dataset.month, dataset.include_zeroes);
   });
 });

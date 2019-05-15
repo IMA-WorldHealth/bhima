@@ -4,9 +4,8 @@
 * Date editor component interface for e2e test
 * @public
 */
-const chai = require('chai');
+const { expect } = require('chai');
 
-const { expect } = chai;
 module.exports = {
 
   // root level css selector for this component
@@ -23,23 +22,23 @@ module.exports = {
    * @param {Date} value - the text value
    * @param {String} id - a CSS id to select on.
    */
-  set : function set(id, value) {
+  set : async function set(id, value) {
     const input = this.getInput(id);
-    input.clear();
-    input.sendKeys(value); // set the input value
+    await input.clear();
+    await input.sendKeys(value); // set the input value
   },
 
-  validationError : function err(id) {
+  validationError : async function err(id) {
     expect(
-      this.getInput(id).getAttribute('class'),
+      await this.getInput(id).getAttribute('class'),
       `Expected ${id} to be invalid, but could not find the ng-invalid class.`
-    ).to.eventually.contain('ng-invalid');
+    ).to.contain('ng-invalid');
   },
 
-  validationOk : function err(id) {
+  validationOk : async function err(id) {
     expect(
-      this.getInput(id).getAttribute('class'),
+      await this.getInput(id).getAttribute('class'),
       `Expected ${id} to be invalid, but could not find the ng-invalid class.`
-    ).to.eventually.contain('ng-valid');
+    ).to.contain('ng-valid');
   },
 };

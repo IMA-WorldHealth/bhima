@@ -1,17 +1,17 @@
-/* global browser, element, by */
+/* global element, by */
 
 const FU = require('../FormUtils');
 
 module.exports = {
   selector : '[bh-multiple-depot-select]',
-  set      : function set(depots, uuid) {
+  set      : async function set(depots, uuid) {
     const locator = (uuid) ? by.id(uuid) : by.css(this.selector);
     const target = element(locator);
 
-    target.click();
+    await target.click();
 
-    depots.forEach(function (depots){
-        FU.uiSelect('$ctrl.depotsUuids', depots);
-    });
+    return Promise.all(
+      depots.map(uid => FU.uiSelect('$ctrl.depotsUuids', uid))
+    );
   },
 };

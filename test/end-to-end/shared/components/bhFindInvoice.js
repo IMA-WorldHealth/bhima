@@ -10,9 +10,8 @@ const FU = require('../FormUtils');
 module.exports = {
   selector : '[data-find-invoice]',
 
-  set : (value) => {
-    FU.input('$ctrl.invoiceReference', value);
-
-    element(by.id('search-button')).click();
+  set : async (value) => {
+    await FU.input('$ctrl.invoiceReference', value);
+    await element(by.id('search-button')).click();
   },
 };

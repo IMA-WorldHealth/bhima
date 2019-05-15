@@ -1,18 +1,19 @@
+/* global element, by */
 /**
  *  The object modeling the receipt modal
- *  TODO : complete the page model
- *  **/
+ *  TODO: complete the page model
+ */
 
-function ReceiptModalPage(){
-    var page = this;
+function ReceiptModalPage() {
+  const page = this;
 
-    var closeButton = element(by.id('receipt_modal_close'));
+  const closeButton = element(by.id('receipt_modal_close'));
 
-    function close() {
-        closeButton.click();
-    }
+  function close() {
+    return closeButton.click();
+  }
 
-    page.close = close;
+  page.close = close;
 }
 
 module.exports = ReceiptModalPage;

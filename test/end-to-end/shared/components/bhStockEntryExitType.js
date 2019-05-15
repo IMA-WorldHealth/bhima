@@ -1,13 +1,11 @@
-/* global browser, element, by */
-
-const FU = require('../FormUtils');
+/* global element, by */
 
 module.exports = {
-    set : function set(id) {
-        var prefix = 'entry-exit-type-';
-        const locator = by.id(prefix.concat(id));
-        const target = element(locator);
+  set : async function set(id) {
+    const prefix = 'entry-exit-type-';
+    const locator = by.id(prefix.concat(id));
+    const target = element(locator);
 
-        target.click();
-    }
+    await target.click();
+  },
 };

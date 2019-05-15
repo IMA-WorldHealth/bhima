@@ -32,99 +32,99 @@ function StockAssignTests() {
     entity : 'Wayne Enterprise',
   };
 
-  it('Create a new stock assignment', () => {
-    page.showCreateModal();
-    page.setDepot(record.depot);
-    page.setInventory(record.inventory);
-    page.setLot(record.lot);
-    page.setEntity(record.entity);
-    page.setQuantity(record.quantity);
-    page.setDescription(record.description);
-    page.submit();
+  it('Create a new stock assignment', async () => {
+    await page.showCreateModal();
+    await page.setDepot(record.depot);
+    await page.setInventory(record.inventory);
+    await page.setLot(record.lot);
+    await page.setEntity(record.entity);
+    await page.setQuantity(record.quantity);
+    await page.setDescription(record.description);
+    await page.submit();
   });
 
-  it('Search assignment by depot', () => {
-    SearchModal.open();
-    modal.setDepot(record.depot);
-    modal.submit();
-    page.expectRowCount(1);
-    page.expectCellValueMatch(0, 0, record.depot);
+  it('Search assignment by depot', async () => {
+    await SearchModal.open();
+    await modal.setDepot(record.depot);
+    await modal.submit();
+    await page.expectRowCount(1);
+    await page.expectCellValueMatch(0, 0, record.depot);
   });
 
-  it('Search assignment by a bad depot', () => {
-    SearchModal.open();
-    modal.setDepot(record2.depot);
-    modal.submit();
-    page.expectRowCount(0);
+  it('Search assignment by a bad depot', async () => {
+    await SearchModal.open();
+    await modal.setDepot(record2.depot);
+    await modal.submit();
+    await page.expectRowCount(0);
   });
 
-  it('Search assignment by inventory', () => {
-    SearchModal.open();
-    modal.setDepot(record.depot);
-    modal.setInventory(record.inventory);
-    modal.submit();
-    page.expectRowCount(1);
-    page.expectCellValueMatch(0, 2, record.inventory);
+  it('Search assignment by inventory', async () => {
+    await SearchModal.open();
+    await modal.setDepot(record.depot);
+    await modal.setInventory(record.inventory);
+    await modal.submit();
+    await page.expectRowCount(1);
+    await page.expectCellValueMatch(0, 2, record.inventory);
   });
 
-  it('Search assignment by a bad inventory', () => {
-    SearchModal.open();
-    modal.setDepot(record.depot);
-    modal.setInventory(record2.inventory);
-    modal.submit();
-    page.expectRowCount(0);
+  it('Search assignment by a bad inventory', async () => {
+    await SearchModal.open();
+    await modal.setDepot(record.depot);
+    await modal.setInventory(record2.inventory);
+    await modal.submit();
+    await page.expectRowCount(0);
   });
 
-  it('Search assignment by lot', () => {
-    SearchModal.open();
-    modal.setDepot(record.depot);
-    modal.setInventory(record.inventory);
-    modal.setLotLabel(record.lot);
-    modal.submit();
-    page.expectRowCount(1);
-    page.expectCellValueMatch(0, 3, record.lot);
+  it('Search assignment by lot', async () => {
+    await SearchModal.open();
+    await modal.setDepot(record.depot);
+    await modal.setInventory(record.inventory);
+    await modal.setLotLabel(record.lot);
+    await modal.submit();
+    await page.expectRowCount(1);
+    await page.expectCellValueMatch(0, 3, record.lot);
   });
 
-  it('Search assignment by a bad lot', () => {
-    SearchModal.open();
-    modal.setDepot(record.depot);
-    modal.setInventory(record.inventory);
-    modal.setLotLabel(record2.lot);
-    modal.submit();
-    page.expectRowCount(0);
+  it('Search assignment by a bad lot', async () => {
+    await SearchModal.open();
+    await modal.setDepot(record.depot);
+    await modal.setInventory(record.inventory);
+    await modal.setLotLabel(record2.lot);
+    await modal.submit();
+    await page.expectRowCount(0);
   });
 
-  it('Search assignment by entity', () => {
-    SearchModal.open();
-    modal.setDepot(record.depot);
-    modal.setInventory(record.inventory);
-    modal.setLotLabel(record.lot);
-    modal.setEntity(record.entity);
-    modal.submit();
-    page.expectRowCount(1);
-    page.expectCellValueMatch(0, 4, record.entity);
+  it('Search assignment by entity', async () => {
+    await SearchModal.open();
+    await modal.setDepot(record.depot);
+    await modal.setInventory(record.inventory);
+    await modal.setLotLabel(record.lot);
+    await modal.setEntity(record.entity);
+    await modal.submit();
+    await page.expectRowCount(1);
+    await page.expectCellValueMatch(0, 4, record.entity);
   });
 
-  it('Search assignment by a bad entity', () => {
-    SearchModal.open();
-    modal.setDepot(record.depot);
-    modal.setInventory(record.inventory);
-    modal.setLotLabel(record.lot);
-    modal.setEntity(record2.entity);
-    modal.submit();
-    page.expectRowCount(0);
+  it('Search assignment by a bad entity', async () => {
+    await SearchModal.open();
+    await modal.setDepot(record.depot);
+    await modal.setInventory(record.inventory);
+    await modal.setLotLabel(record.lot);
+    await modal.setEntity(record2.entity);
+    await modal.submit();
+    await page.expectRowCount(0);
   });
 
-  it('Remove stock assignment', () => {
-    SearchModal.open();
-    modal.setDepot(record.depot);
-    modal.setInventory(record.inventory);
-    modal.setLotLabel(record.lot);
-    modal.setEntity(record.entity);
-    modal.submit();
-    page.removeAssignment();
-    notification.hasSuccess();
-    page.expectRowCount(0);
+  it('Remove stock assignment', async () => {
+    await SearchModal.open();
+    await modal.setDepot(record.depot);
+    await modal.setInventory(record.inventory);
+    await modal.setLotLabel(record.lot);
+    await modal.setEntity(record.entity);
+    await modal.submit();
+    await page.removeAssignment();
+    await notification.hasSuccess();
+    await page.expectRowCount(0);
   });
 }
 

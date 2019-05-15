@@ -1,33 +1,30 @@
-/* global element, by, browser */
-const chai    = require('chai');
-const expect  = chai.expect;
+/* global element, by */
 const path = require('path');
 
-const components  = require('../shared/components');
-const helpers     = require('../shared/helpers');
-helpers.configure(chai);
+const components = require('../shared/components');
+const helpers = require('../shared/helpers');
 
 const fixtures = path.resolve(__dirname, '../../fixtures/');
 
-describe('Patient Record', function () {
+describe('Patient Record', () => {
   const root = '#/patients/';
   const id = '274c51ae-efcc-4238-98c6-f402bfb39866';
 
   before(() => helpers.navigate(root.concat(id)));
 
-  it('uploads a patient picture', function () {
+  it('uploads a patient picture', async () => {
     const fileToUpload = 'patient.png';
     const absolutePath = path.resolve(fixtures, fileToUpload);
 
-    element.all(by.css('input[type=file]')).get(0).sendKeys(absolutePath);
-    components.notification.hasSuccess();
+    await element.all(by.css('input[type=file]')).get(0).sendKeys(absolutePath);
+    await components.notification.hasSuccess();
   });
 
-  it('unable to upload a file that is not a picture', function () {
+  it('unable to upload a file that is not a picture', async () => {
     const fileToUpload = 'sample.pdf';
     const absolutePath = path.resolve(fixtures, fileToUpload);
 
-    element.all(by.css('input[type=file]')).get(0).sendKeys(absolutePath);
-    components.notification.hasDanger();
+    await element.all(by.css('input[type=file]')).get(0).sendKeys(absolutePath);
+    await components.notification.hasDanger();
   });
 });

@@ -1,12 +1,8 @@
-const chai = require('chai');
+const ReportAccountPage = require('./account_report.page');
 const helpers = require('../../shared/helpers');
 
-helpers.configure(chai);
-
-const ReportAccountPage = require('./account_report.page');
-
 // @FIXME skip end to end tests until form validation and components are finalised
-describe.skip('Accounts report ::', () => {
+describe.skip('Accounts Report', () => {
   let Page;
   const key = 'account_report';
 
@@ -16,28 +12,28 @@ describe.skip('Accounts report ::', () => {
     renderer : 'PDF',
   };
 
-  before(() => {
-    helpers.navigate(`#!/reports/${key}`);
+  before(async () => {
+    await helpers.navigate(`#!/reports/${key}`);
     Page = new ReportAccountPage(key);
   });
 
-  it('preview a new account report', () => {
-    Page.showAccountReportPreview(dataset.account);
+  it('preview a new account report', async () => {
+    await Page.showAccountReportPreview(dataset.account);
   });
 
-  it('close the previewed report', () => {
-    Page.closeAccountReportPreview();
+  it('close the previewed report', async () => {
+    await Page.closeAccountReportPreview();
   });
 
-  it('save a previewed report', () => {
-    Page.saveAccountReport(dataset.account, dataset.report_name, dataset.renderer);
+  it('save a previewed report', async () => {
+    await Page.saveAccountReport(dataset.account, dataset.report_name, dataset.renderer);
   });
 
-  it('report has been saved into archive', () => {
-    Page.checkSavedAccountReport(dataset.report_name);
+  it('report has been saved into archive', async () => {
+    await Page.checkSavedAccountReport(dataset.report_name);
   });
 
-  it('print the previewed report', () => {
-    Page.printAccountReport(dataset.account);
+  it('print the previewed report', async () => {
+    await Page.printAccountReport(dataset.account);
   });
 });

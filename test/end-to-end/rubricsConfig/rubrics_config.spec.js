@@ -15,31 +15,31 @@ describe('Rubrics Configuration Management', () => {
     label : 'Configuration 2013 Updated',
   };
 
-  it('successfully creates a new rubric configuration', () => {
-    page.create(rubricConfig);
+  it('successfully creates a new rubric configuration', async () => {
+    await page.create(rubricConfig);
   });
 
-  it('successfully edits a rubric configuration', () => {
-    page.update(rubricConfig.label, updateRubricConfig);
+  it('successfully edits a rubric configuration', async () => {
+    await page.update(rubricConfig.label, updateRubricConfig);
   });
 
-  it('successfully set rubrics in rubric configuration', () => {
-    page.setRubricConfig(updateRubricConfig.label);
+  it('successfully set rubrics in rubric configuration', async () => {
+    await page.setRubricConfig(updateRubricConfig.label);
   });
 
-  it('successfully unset rubrics in rubric configuration', () => {
-    page.unsetRubricConfig(updateRubricConfig.label);
+  it('successfully unset rubrics in rubric configuration', async () => {
+    await page.unsetRubricConfig(updateRubricConfig.label);
   });
 
-  it('don\'t create when incorrect rubric', () => {
-    page.errorOnCreateRubricConfig();
+  it('don\'t create when incorrect rubric', async () => {
+    await page.errorOnCreateRubricConfig();
   });
 
-  it('successfully delete a rubric', () => {
-    page.remove(updateRubricConfig.label);
+  it('successfully delete a rubric', async () => {
+    await page.remove(updateRubricConfig.label);
   });
 
-  it('should have 1 rubric to end with', () => {
-    expect(page.count()).to.eventually.equal(1);
+  it('should have 1 rubric to end with', async () => {
+    expect(await page.count()).to.equal(1);
   });
 });

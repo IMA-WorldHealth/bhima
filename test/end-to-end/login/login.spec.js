@@ -1,103 +1,103 @@
 /* global by, element, browser */
 const chai = require('chai');
-const expect = chai.expect;
+
+const { expect } = chai;
 const helpers = require('../shared/helpers');
-helpers.configure(chai);
 
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 
-/**
- * This tests the login page
- */
 describe('Login Page', () => {
 
   // routes used in tests
   const settings = 'settings';
   const login = 'login';
 
-  before(() => {
+  before(async () => {
     // access the settings page
-    helpers.navigate(settings);
+    await helpers.navigate(settings);
 
     // click the logout button and close the growl notification
-    element(by.css('[data-logout-button]')).click();
+    await element(by.css('[data-logout-button]')).click();
   });
 
-  it('rejects an invalid username/password combo with (only) a growl notification', () => {
-    FU.input('LoginCtrl.credentials.username', 'undefineds');
-    FU.input('LoginCtrl.credentials.password', 'undefined1');
-    FU.buttons.submit();
+  it('rejects an invalid username/password combo with (only) a growl notification', async () => {
+    await FU.input('LoginCtrl.credentials.username', 'undefineds');
+    await FU.input('LoginCtrl.credentials.password', 'undefined1');
+    await FU.buttons.submit();
 
-    FU.exists(by.css('.help-block'), false);
-    components.notification.hasDanger();
+    await FU.exists(by.css('.help-block'), false);
+    await components.notification.hasDanger();
   });
 
-  it('rejects user missing a username with (only) a help block', () => {
-    FU.input('LoginCtrl.credentials.username', 'username');
-    element(by.model('LoginCtrl.credentials.password')).clear();
-    FU.buttons.submit();
+  it('rejects user missing a username with (only) a help block', async () => {
+    await FU.input('LoginCtrl.credentials.username', 'username');
+    await element(by.model('LoginCtrl.credentials.password')).clear();
+    await FU.buttons.submit();
 
-    FU.exists(by.css('.help-block'), true);
-    FU.exists(by.css('[data-bh-growl-notification]'), false);
-  });
-
-
-  it('rejects user missing a password with (only) a help block', () => {
-    FU.input('LoginCtrl.credentials.password', 'password');
-    element(by.model('LoginCtrl.credentials.username')).clear();
-    FU.buttons.submit();
-
-    FU.exists(by.css('.help-block'), true);
-    FU.exists(by.css('[data-bh-growl-notification]'), false);
+    await FU.exists(by.css('.help-block'), true);
+    await FU.exists(by.css('[data-bh-growl-notification]'), false);
   });
 
 
-  it('rejects a deactivated user to login with a growl notification', () => {
-    FU.input('LoginCtrl.credentials.username', 'admin');
-  FU.input('LoginCtrl.credentials.password', '1');
-  FU.buttons.submit();
+  it('rejects user missing a password with (only) a help block', async () => {
+    await FU.input('LoginCtrl.credentials.password', 'password');
+    await element(by.model('LoginCtrl.credentials.username')).clear();
+    await FU.buttons.submit();
 
-  FU.exists(by.css('.help-block'), false);
-  components.notification.hasDanger();
+    await FU.exists(by.css('.help-block'), true);
+    await FU.exists(by.css('[data-bh-growl-notification]'), false);
   });
 
 
-  it('has a default project value', () => {
-    const defaultProject = element(by.model('LoginCtrl.credentials.project'))
-        .$('option:checked').getText();
+  it('rejects a deactivated user to login with a growl notification', async () => {
+    await FU.input('LoginCtrl.credentials.username', 'admin');
+    await FU.input('LoginCtrl.credentials.password', '1');
+    await FU.buttons.submit();
+
+    await FU.exists(by.css('.help-block'), false);
+    await components.notification.hasDanger();
+  });
+
+
+  it('has a default project value', async () => {
+    const defaultProject = await element(by.model('LoginCtrl.credentials.project'))
+      .$('option:checked').getText();
+
+    // eslint-disable-next-line
     expect(defaultProject).to.exist;
+    // eslint-disable-next-line
     expect(defaultProject).to.not.be.empty;
   });
 
-  it('allows a valid user to log in to the application', () => {
-    FU.input('LoginCtrl.credentials.username', 'superuser');
-    FU.input('LoginCtrl.credentials.password', 'superuser');
-    FU.buttons.submit();
+  it('allows a valid user to log in to the application', async () => {
+    await FU.input('LoginCtrl.credentials.username', 'superuser');
+    await FU.input('LoginCtrl.credentials.password', 'superuser');
+    await FU.buttons.submit();
 
-    expect(helpers.getCurrentPath()).to.eventually.equal('#!/');
+    expect(await helpers.getCurrentPath()).to.equal('#!/');
   });
 
-  it('page refresh preserves the use session', () => {
-    helpers.navigate(settings);
-    browser.refresh();
-    expect(helpers.getCurrentPath()).to.eventually.equal(`#!/${settings}`);
+  it('page refresh preserves the use session', async () => {
+    await helpers.navigate(settings);
+    await browser.refresh();
+    expect(await helpers.getCurrentPath()).to.equal(`#!/${settings}`);
   });
 
-  it('prevents access to the login page after login', () => {
+  it('prevents access to the login page after login', async () => {
     // go to the setting page (for example)
-    helpers.navigate(settings);
+    await helpers.navigate(settings);
 
     // assert that we get to the settings page
-    expect(helpers.getCurrentPath()).to.eventually.equal(`#!/${settings}`);
+    expect(await helpers.getCurrentPath()).to.equal(`#!/${settings}`);
 
     // attempt to access the login page.
-    helpers.navigate(login);
+    await helpers.navigate(login);
 
     // assert that a growl notification was shown
-    components.notification.hasWarn();
+    await components.notification.hasWarn();
 
     // assert that we did not get to the login page
-    expect(helpers.getCurrentPath()).to.eventually.equal(`#!/${settings}`);
+    expect(await helpers.getCurrentPath()).to.equal(`#!/${settings}`);
   });
 });

@@ -1,19 +1,13 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-shadow */
 /* global by, element */
-
-const chai = require('chai');
-const helpers = require('./helpers');
-
-const { expect } = chai;
-
-helpers.configure(chai);
+const { expect } = require('chai');
 
 // These buttons depend on custom data tags to indicate actions.  This seems
 // cleaner than using a whole bunch of ids which may potentially collide.
 // However, this decision can be reviewed
 const buttons = {
-  create : function create() { return $('[data-method="create"]').click(); },
+  create : () => $('[data-method="create"]').click(),
   search : function search() { return $('[data-method="search"]').click(); },
   submit : function submit() { return $('[data-method="submit"]').click(); },
   cancel : function cancel() { return $('[data-method="cancel"]').click(); },
@@ -50,19 +44,19 @@ const feedback = {
 const validation = {
 
   // an error state is present
-  error : function error(model) {
+  error : async function error(model) {
     expect(
-      element(by.model(model)).getAttribute('class'),
+      await element(by.model(model)).getAttribute('class'),
       `Expected ${model} to be invalid, but could not find the ng-invalid class.`
-    ).to.eventually.contain('ng-invalid');
+    ).to.contain('ng-invalid');
   },
 
   // no error state present
-  ok : function success(model) {
+  ok : async function success(model) {
     expect(
-      element(by.model(model)).getAttribute('class'),
+      await element(by.model(model)).getAttribute('class'),
       `Expected ${model} to be valid, but could not find the ng-valid class.`
-    ).to.eventually.contain('ng-valid');
+    ).to.contain('ng-valid');
   },
 };
 
@@ -70,14 +64,16 @@ const validation = {
 module.exports = {
 
   // get an <input> element by its ng-model
-  input : function input(model, value, anchor) {
+  input : async function input(model, value, anchor) {
 
     // get the HTML <input> element
     const input = anchor
       ? anchor.element(by.model(model))
       : element(by.model(model));
 
-    return input.clear().sendKeys(value);
+    await input.clear().sendKeys(value);
+
+    return input;
   },
 
   /**
@@ -106,19 +102,19 @@ module.exports = {
   },
 
   // asserts whether an element exists or not
-  exists : function exists(locator, bool) {
+  exists : async function exists(locator, bool) {
     expect(
-      element(locator).isPresent(),
+      await element(locator).isPresent(),
       `Expected locator ${locator.toString()} to ${bool ? 'not ' : ' '}exist.`
-    ).to.eventually.equal(bool);
+    ).to.equal(bool);
   },
 
   // asserts whether an element is visible on the page or not.
-  visible : function visible(locator, bool) {
+  visible : async function visible(locator, bool) {
     expect(
-      element(locator).isDisplayed(),
+      await element(locator).isDisplayed(),
       `Expected locator ${locator.toString()} to ${bool ? 'not ' : ' '}be visible.`
-    ).to.eventually.equal(bool);
+    ).to.equal(bool);
   },
 
   /**
@@ -134,15 +130,15 @@ module.exports = {
    * @param {Element} anchor - a protractor element to search within
    * @returns {Element} - a protractor option element
    */
-  typeahead : function typeahead(model, label, anchor) {
+  typeahead : async function typeahead(model, label, anchor) {
     anchor = anchor || $('body');
 
     // type into the <input> element
-    this.input(model, label, anchor);
+    await this.input(model, label, anchor);
 
     // select the item of the dropdown menu matching the label
     const option = anchor.element(by.cssContainingText('.dropdown-menu > [role="option"]', label));
-    option.click();
+    await option.click();
   },
 
   /**
@@ -157,15 +153,15 @@ module.exports = {
    * @param {Element} anchor - a protractor element to search within
    * @returns {Element} - a protractor option element
    */
-  typeaheadAppended : function typeaheadAppended(model, label, anchor) {
+  typeaheadAppended : async function typeaheadAppended(model, label, anchor) {
     const externalAnchor = $('body > ul.dropdown-menu.ng-isolate-scope:not(.ng-hide)');
 
     // type into the <input> element the searchable value
-    this.input('$ctrl.account', label, anchor || $('body'));
+    await this.input('$ctrl.account', label, anchor || $('body'));
 
     // select the item of the dropdown menu matching the label
     const option = externalAnchor.element(by.cssContainingText('[role="option"]', label));
-    option.click();
+    await option.click();
   },
 
   /**
@@ -179,7 +175,7 @@ module.exports = {
    * @param {Element} anchor - a protractor element to search within
    * @returns {Element} - a protractor option element
    */
-  uiSelect : function uiSelect(model, label, anchor, isMultipleSelection) {
+  uiSelect : async function uiSelect(model, label, anchor, isMultipleSelection) {
     anchor = anchor || $('body');
 
     // get the HTML <div> element that will trigger the select input
@@ -188,17 +184,17 @@ module.exports = {
       : element(by.model(model));
 
     // trigger the <input> rendering
-    select.click();
+    await select.click();
 
     // type into the <input> element the searchable value
     // only for multiple selection
     if (isMultipleSelection) {
-      this.input('$select.search', label, select);
+      await this.input('$select.search', label, select);
     }
 
     // select the item of the dropdown menu matching the label
     const option = select.element(by.cssContainingText('.dropdown-menu [role="option"]', label));
-    option.click();
+    await option.click();
   },
 
   /**
@@ -213,19 +209,19 @@ module.exports = {
    * @param {Element} anchor - a protractor element to search within
    * @returns {Element} - a protractor option element
    */
-  uiSelectAppended : function uiSelectAppended(model, label, anchor) {
+  uiSelectAppended : async function uiSelectAppended(model, label, anchor) {
     const externalAnchor = $('body > div.ui-select-bootstrap.dropdown');
 
     // click on the element
     anchor = anchor || $('body');
-    anchor.element(by.model(model)).click();
+    await anchor.element(by.model(model)).click();
 
     // type into the <input> element the searchable value
-    this.input('$select.search', label, externalAnchor);
+    await this.input('$select.search', label, externalAnchor);
 
     // select the item of the dropdown menu matching the label
     const option = externalAnchor.element(by.cssContainingText('.dropdown-menu [role="option"]', label));
-    option.click();
+    await option.click();
   },
 
   /**
@@ -241,11 +237,11 @@ module.exports = {
    * @param {Element} anchor - a protractor element to search within
    * @returns {Element} - a protractor option element
    */
-  dropdown : function dropdown(selector, label, anchor) {
+  dropdown : async function dropdown(selector, label, anchor) {
     anchor = anchor || $('body');
 
     // open the dropdown menu
-    $(selector).click();
+    await $(selector).click();
 
     const option = anchor.element(by.cssContainingText('[uib-dropdown-menu] > li', label));
     return option.click();
@@ -261,11 +257,11 @@ module.exports = {
    * @param {Object} locator - a protractor web-driver locator
    * @param {String} text - the text to search for within the element.
    */
-  hasText : function hasText(locator, text) {
+  hasText : async function hasText(locator, text) {
     expect(
-      element(locator).getText(),
+      await element(locator).getText(),
       `Expected locator ${locator.toString()} to contain "${text}".`
-    ).to.eventually.equal(text);
+    ).to.equal(text);
   },
 
   // bind commonly used form buttons  These require specific data tags to be

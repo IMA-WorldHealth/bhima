@@ -13,6 +13,7 @@
     "padded-blocks" : "off",
     "array-bracket-spacing" : "warn",
     "prefer-arrow-callback" : "warn",
+    "class-methods-use-this" : "off",
     "indent" : ["error", 2],
     "comma-dangle" : ["error", "always-multiline"],
     "key-spacing" : ["warn", {

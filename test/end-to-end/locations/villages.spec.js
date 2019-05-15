@@ -15,55 +15,54 @@ describe('Villages Management', () => {
     name : 'New Village',
   };
 
-  it('creates a new village', () => {
-
+  it('creates a new village', async () => {
     // switch to the create form
-    FU.buttons.create();
+    await FU.buttons.create();
 
-    FU.select('VillageCtrl.village.country_uuid', village.country);
-    FU.select('VillageCtrl.village.province_uuid', village.province);
-    FU.select('VillageCtrl.village.sector_uuid', village.sector);
-    FU.input('VillageCtrl.village.name', village.name);
+    await FU.select('VillageCtrl.village.country_uuid', village.country);
+    await FU.select('VillageCtrl.village.province_uuid', village.province);
+    await FU.select('VillageCtrl.village.sector_uuid', village.sector);
+    await FU.input('VillageCtrl.village.name', village.name);
 
     // submit the page to the server
-    FU.buttons.submit();
+    await FU.buttons.submit();
 
     // expect a nice validation message
-    FU.exists(by.id('create_success'), true);
+    await FU.exists(by.id('create_success'), true);
   });
 
-  it('edits a village', () => {
+  it('edits a village', async () => {
 
     // click the edit button
-    $(`[data-village-name="${village.name}"]`).click();
+    await $(`[data-village-name="${village.name}"]`).click();
 
     // update a country
-    FU.select('VillageCtrl.village.country_uuid', village.country);
-    FU.select('VillageCtrl.village.province_uuid', village.province);
-    FU.select('VillageCtrl.village.sector_uuid', village.sector);
-    FU.input('VillageCtrl.village.name', 'Village Update');
+    await FU.select('VillageCtrl.village.country_uuid', village.country);
+    await FU.select('VillageCtrl.village.province_uuid', village.province);
+    await FU.select('VillageCtrl.village.sector_uuid', village.sector);
+    await FU.input('VillageCtrl.village.name', 'Village Update');
 
-    FU.buttons.submit();
+    await FU.buttons.submit();
 
     // make sure the success message appears
-    FU.exists(by.id('update_success'), true);
+    await FU.exists(by.id('update_success'), true);
   });
 
-  it('correctly blocks invalid form submission with relevant error classes', () => {
+  it('correctly blocks invalid form submission with relevant error classes', async () => {
 
     // switch to the create form
-    FU.buttons.create();
+    await FU.buttons.create();
 
     // verify form has not been submitted
-    expect(helpers.getCurrentPath()).to.eventually.equal(path);
+    expect(await helpers.getCurrentPath()).to.equal(path);
 
     // submit the page to the server
-    FU.buttons.submit();
+    await FU.buttons.submit();
 
     // the following fields should be required
-    FU.validation.error('VillageCtrl.village.country_uuid');
-    FU.validation.error('VillageCtrl.village.province_uuid');
-    FU.validation.error('VillageCtrl.village.sector_uuid');
-    FU.validation.error('VillageCtrl.village.name');
+    await FU.validation.error('VillageCtrl.village.country_uuid');
+    await FU.validation.error('VillageCtrl.village.province_uuid');
+    await FU.validation.error('VillageCtrl.village.sector_uuid');
+    await FU.validation.error('VillageCtrl.village.name');
   });
 });

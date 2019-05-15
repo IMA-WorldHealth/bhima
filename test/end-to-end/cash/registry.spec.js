@@ -16,74 +16,73 @@ function CashPaymentsRegistryTests() {
 
   before(() => helpers.navigate('!#/payments'));
 
-  beforeEach(() => {
-    SearchModal.open();
+  beforeEach(async () => {
+    await SearchModal.open();
     modal = new SearchModal('cash-payment-search');
     filters = new Filters();
   });
 
-  afterEach(() => {
-    filters.resetFilters();
+  afterEach(async () => {
+    await filters.resetFilters();
   });
 
-  it('finds only two payment for today', () => {
+  it('finds only two payment for today', async () => {
     const DEFAULT_PAYMENTS_FOR_TODAY = 2;
-    modal.switchToDefaultFilterTab();
-    modal.setPeriod('today');
-    modal.submit();
-    GU.expectRowCount('payment-registry', DEFAULT_PAYMENTS_FOR_TODAY);
+    await modal.switchToDefaultFilterTab();
+    await modal.setPeriod('today');
+    await modal.submit();
+    await GU.expectRowCount('payment-registry', DEFAULT_PAYMENTS_FOR_TODAY);
   });
 
-  it('finds one payments for this last year', () => {
+  it('finds one payments for this last year', async () => {
     const DEFAULT_PAYMENTS_FOR_TODAY = 2;
-    modal.switchToDefaultFilterTab();
-    modal.setPeriod('year');
-    modal.submit();
-    GU.expectRowCount('payment-registry', DEFAULT_PAYMENTS_FOR_TODAY);
+    await modal.switchToDefaultFilterTab();
+    await modal.setPeriod('year');
+    await modal.submit();
+    await GU.expectRowCount('payment-registry', DEFAULT_PAYMENTS_FOR_TODAY);
   });
 
 
-  it(`finds ${PAYMENT_INSIDE_REGISTRY} payments for all time`, () => {
-    modal.switchToDefaultFilterTab();
-    modal.setPeriod('allTime');
-    modal.submit();
-    GU.expectRowCount('payment-registry', PAYMENT_INSIDE_REGISTRY);
+  it(`finds ${PAYMENT_INSIDE_REGISTRY} payments for all time`, async () => {
+    await modal.switchToDefaultFilterTab();
+    await modal.setPeriod('allTime');
+    await modal.submit();
+    await GU.expectRowCount('payment-registry', PAYMENT_INSIDE_REGISTRY);
   });
 
-  it('finds a payment given a reference', () => {
-    modal.setReference('CP.TPA.1');
-    modal.submit();
-    GU.expectRowCount('payment-registry', 1);
+  it('finds a payment given a reference', async () => {
+    await modal.setReference('CP.TPA.1');
+    await modal.submit();
+    await GU.expectRowCount('payment-registry', 1);
   });
 
-  it('produces an empty grid for an invalid payment', () => {
-    modal.setReference('NOT_A_REFERENCE');
-    modal.submit();
-    GU.expectRowCount('payment-registry', 0);
+  it('produces an empty grid for an invalid payment', async () => {
+    await modal.setReference('NOT_A_REFERENCE');
+    await modal.submit();
+    await GU.expectRowCount('payment-registry', 0);
   });
 
-  it('finds two payments in the primary cashbox', () => {
-    modal.setReference('Caisse Principale');
-    modal.submit();
-    GU.expectRowCount('payment-registry', PAYMENT_PRIMARY_CASHBOX);
+  it('finds two payments in the primary cashbox', async () => {
+    await modal.setReference('Caisse Principale');
+    await modal.submit();
+    await GU.expectRowCount('payment-registry', PAYMENT_PRIMARY_CASHBOX);
   });
 
-  it('finds all payments made by the super user', () => {
-    modal.setUser('Super User');
-    modal.submit();
-    GU.expectRowCount('payment-registry', PAYMENT_INSIDE_REGISTRY);
+  it('finds all payments made by the super user', async () => {
+    await modal.setUser('Super User');
+    await modal.submit();
+    await GU.expectRowCount('payment-registry', PAYMENT_INSIDE_REGISTRY);
   });
 
-  it(`finds all payments for debtor group: ${DEBTOR_GROUP}`, () => {
-    components.debtorGroupSelect.set(DEBTOR_GROUP);
-    modal.submit();
-    GU.expectRowCount('payment-registry', PAYMENT_INSIDE_REGISTRY);
+  it(`finds all payments for debtor group: ${DEBTOR_GROUP}`, async () => {
+    await components.debtorGroupSelect.set(DEBTOR_GROUP);
+    await modal.submit();
+    await GU.expectRowCount('payment-registry', PAYMENT_INSIDE_REGISTRY);
   });
 
-  it('finds no payments for the disallowed user', () => {
-    modal.setUser('Regular User');
-    modal.submit();
-    GU.expectRowCount('payment-registry', 0);
+  it('finds no payments for the disallowed user', async () => {
+    await modal.setUser('Regular User');
+    await modal.submit();
+    await GU.expectRowCount('payment-registry', 0);
   });
 }
-

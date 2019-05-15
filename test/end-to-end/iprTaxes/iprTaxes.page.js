@@ -1,5 +1,5 @@
 /* global element, by */
-/* eslint class-methods-use-this:off */
+/* eslint  */
 
 const GridRow = require('../shared/GridRow');
 const FU = require('../shared/FormUtils');
@@ -17,44 +17,44 @@ class IprTaxPage {
       .count();
   }
 
-  create(iprTax) {
-    FU.buttons.create();
+  async create(iprTax) {
+    await FU.buttons.create();
 
-    FU.input('IprTaxModalCtrl.iprTax.label', iprTax.label);
-    FU.input('IprTaxModalCtrl.iprTax.description', iprTax.description);
-    components.currencySelect.set(iprTax.currency_id);
+    await FU.input('IprTaxModalCtrl.iprTax.label', iprTax.label);
+    await FU.input('IprTaxModalCtrl.iprTax.description', iprTax.description);
+    await components.currencySelect.set(iprTax.currency_id);
 
-    FU.modal.submit();
-    components.notification.hasSuccess();
+    await FU.modal.submit();
+    await components.notification.hasSuccess();
   }
 
-  errorOnCreateIprTax() {
-    FU.buttons.create();
-    FU.modal.submit();
-    FU.validation.error('IprTaxModalCtrl.iprTax.label');
-    FU.buttons.cancel();
+  async errorOnCreateIprTax() {
+    await FU.buttons.create();
+    await FU.modal.submit();
+    await FU.validation.error('IprTaxModalCtrl.iprTax.label');
+    await FU.buttons.cancel();
   }
 
-  update(label, updateIprTax) {
+  async update(label, updateIprTax) {
     const row = new GridRow(label);
-    row.dropdown().click();
-    row.edit().click();
+    await row.dropdown().click();
+    await row.edit().click();
 
-    FU.input('IprTaxModalCtrl.iprTax.label', updateIprTax.label);
-    FU.input('IprTaxModalCtrl.iprTax.description', updateIprTax.description);
-    components.currencySelect.set(updateIprTax.currency_id);
+    await FU.input('IprTaxModalCtrl.iprTax.label', updateIprTax.label);
+    await FU.input('IprTaxModalCtrl.iprTax.description', updateIprTax.description);
+    await components.currencySelect.set(updateIprTax.currency_id);
 
-    FU.modal.submit();
-    components.notification.hasSuccess();
+    await FU.modal.submit();
+    await components.notification.hasSuccess();
   }
 
-  remove(label) {
+  async remove(label) {
     const row = new GridRow(label);
-    row.dropdown().click();
-    row.remove().click();
+    await row.dropdown().click();
+    await row.remove().click();
 
-    components.modalAction.confirm();
-    components.notification.hasSuccess();
+    await components.modalAction.confirm();
+    await components.notification.hasSuccess();
   }
 }
 

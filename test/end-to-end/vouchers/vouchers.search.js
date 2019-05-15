@@ -1,12 +1,9 @@
-const chai = require('chai');
 const helpers = require('../shared/helpers');
 
 const GU = require('../shared/GridUtils');
 
 const SearchModal = require('../shared/search.page');
 const Filters = require('../shared/components/bhFilters');
-
-helpers.configure(chai);
 
 module.exports = VoucherRegistrySearch;
 
@@ -21,51 +18,51 @@ function VoucherRegistrySearch() {
   let modal;
   let filters;
 
-  beforeEach(() => {
-    SearchModal.open();
+  beforeEach(async () => {
+    await SearchModal.open();
     modal = new SearchModal('voucher-search');
     filters = new Filters();
   });
 
-  afterEach(() => {
-    filters.resetFilters();
+  afterEach(async () => {
+    await filters.resetFilters();
   });
 
-  function expectNumberOfGridRows(number) {
-    GU.expectRowCount(gridId, number, `Expected VoucherRegistry's ui-grid row count to be ${number}.`);
+  async function expectNumberOfGridRows(number) {
+    await GU.expectRowCount(gridId, number, `Expected VoucherRegistry's ui-grid row count to be ${number}.`);
   }
 
-  it('filters vouchers by clicking the month button', () => {
-    modal.switchToDefaultFilterTab();
+  it('filters vouchers by clicking the month button', async () => {
+    await modal.switchToDefaultFilterTab();
     // set the filters to month
-    modal.setPeriod('month');
-    modal.submit();
+    await modal.setPeriod('month');
+    await modal.submit();
 
-    expectNumberOfGridRows(NUM_VOUCHERS);
+    await expectNumberOfGridRows(NUM_VOUCHERS);
   });
 
-  it('filters by reference should return a single result', () => {
-    modal.setReference('VO.TPA.2');
-    modal.submit();
-    expectNumberOfGridRows(1);
+  it('filters by reference should return a single result', async () => {
+    await modal.setReference('VO.TPA.2');
+    await modal.submit();
+    await expectNumberOfGridRows(1);
   });
 
-  it(`filters by <select> should return ${NUM_USER_RECORDS} results`, () => {
-    modal.setUser('Super User');
-    modal.submit();
-    expectNumberOfGridRows(NUM_USER_RECORDS);
+  it(`filters by <select> should return ${NUM_USER_RECORDS} results`, async () => {
+    await modal.setUser('Super User');
+    await modal.submit();
+    await expectNumberOfGridRows(NUM_USER_RECORDS);
   });
 
-  it(`filters by <select> transaction type should return ${NUM_TRANSACTION_TYPE_RECORD} results`, () => {
-    modal.setTransactionType(transactionTypes);
-    modal.submit();
-    expectNumberOfGridRows(NUM_TRANSACTION_TYPE_RECORD);
+  it(`filters by <select> transaction type should return ${NUM_TRANSACTION_TYPE_RECORD} results`, async () => {
+    await modal.setTransactionType(transactionTypes);
+    await modal.submit();
+    await expectNumberOfGridRows(NUM_TRANSACTION_TYPE_RECORD);
   });
 
-  it(`filtering by description should return ${NUM_DESCRIPTION_RECORDS} results`, () => {
-    modal.setDescription('CORRECTION');
-    modal.submit();
+  it(`filtering by description should return ${NUM_DESCRIPTION_RECORDS} results`, async () => {
+    await modal.setDescription('CORRECTION');
+    await modal.submit();
 
-    expectNumberOfGridRows(NUM_DESCRIPTION_RECORDS);
+    await expectNumberOfGridRows(NUM_DESCRIPTION_RECORDS);
   });
 }

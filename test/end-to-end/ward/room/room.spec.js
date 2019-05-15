@@ -13,46 +13,45 @@ function RoomManagementTests() {
 
   const room = 'CH.A.001';
 
-  it('should add a new Room', () => {
-    page.openCreateModal();
-    page.setWard('Pavillon A');
-    page.setLabel(room);
-    page.setDescription('Chambre 001 du pavillon A');
-    page.submit();
-    components.notification.hasSuccess();
+  it('should add a new Room', async () => {
+    await page.openCreateModal();
+    await page.setWard('Pavillon A');
+    await page.setLabel(room);
+    await page.setDescription('Chambre 001 du pavillon A');
+    await page.submit();
+    await components.notification.hasSuccess();
   });
 
-  it('should add a new Room without description', () => {
-    page.openCreateModal();
-    page.setWard('Pavillon A');
-    page.setLabel('CH.A.002');
-    page.submit();
-    components.notification.hasSuccess();
+  it('should add a new Room without description', async () => {
+    await page.openCreateModal();
+    await page.setWard('Pavillon A');
+    await page.setLabel('CH.A.002');
+    await page.submit();
+    await components.notification.hasSuccess();
   });
 
-  it('should edit Room', () => {
-    page.editRoom(room);
-    page.setWard('Pavillon B');
-    page.setLabel(room.concat(' edited'));
-    page.setDescription('Chambre 001 moved to pavillon B');
-    page.submit();
-    components.notification.hasSuccess();
+  it('should edit Room', async () => {
+    await page.editRoom(room);
+    await page.setWard('Pavillon B');
+    await page.setLabel(room.concat(' edited'));
+    await page.setDescription('Chambre 001 moved to pavillon B');
+    await page.submit();
+    await components.notification.hasSuccess();
   });
 
-  it('should not add a new Room without ward', () => {
-    page.openCreateModal();
-    page.setLabel('CH.A.003');
-    page.submit();
-    page.wardValidationError();
-    page.cancel();
+  it('should not add a new Room without ward', async () => {
+    await page.openCreateModal();
+    await page.setLabel('CH.A.003');
+    await page.submit();
+    await page.wardValidationError();
+    await page.cancel();
   });
 
-  it('should delete the test Room', () => {
-    page.deleteRoom(room.concat(' edited'));
-    page.submit();
-    components.notification.hasSuccess();
+  it('should delete the test Room', async () => {
+    await page.deleteRoom(room.concat(' edited'));
+    await page.submit();
+    await components.notification.hasSuccess();
   });
-
 }
 
 describe('Room Management Tests', RoomManagementTests);

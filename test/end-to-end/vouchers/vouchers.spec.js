@@ -11,20 +11,20 @@ describe('Voucher Registry', () => {
 
   before(() => helpers.navigate('vouchers'));
 
-  it(`displays ${NUM_VOUCHERS} vouchers on the page`, () => {
-    GU.expectRowCount(gridId, NUM_VOUCHERS);
+  it(`displays ${NUM_VOUCHERS} vouchers on the page`, async () => {
+    await GU.expectRowCount(gridId, NUM_VOUCHERS);
   });
 
   describe('Search', VoucherRegistrySearch);
 
-  it('deletes a record from the voucher registry', () => {
+  it('deletes a record from the voucher registry', async () => {
     const row = new GridRow('VO.TPA.1');
-    row.dropdown().click();
-    row.remove().click();
+    await row.dropdown().click();
+    await row.remove().click();
 
     // accept the confirm modal
-    FU.modal.submit();
+    await FU.modal.submit();
 
-    components.notification.hasSuccess();
+    await components.notification.hasSuccess();
   });
 });

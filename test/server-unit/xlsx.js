@@ -1,7 +1,7 @@
-const xlsx = require('../../server/lib/renderers/xlsx');
 
 const { expect } = require('chai');
 const _ = require('lodash');
+const xlsx = require('../../server/lib/renderers/xlsx');
 
 describe('util.js', () => {
 

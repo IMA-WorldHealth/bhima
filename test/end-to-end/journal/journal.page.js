@@ -1,5 +1,5 @@
 /* global by, element */
-/* eslint class-methods-use-this:off */
+/* eslint  */
 
 const GU = require('../shared/GridUtils');
 
@@ -14,44 +14,44 @@ class JournalPage {
   }
 
   // select a transaction
-  selectTransaction(transId /* text */) {
-    this.grid
+  async selectTransaction(transId /* text */) {
+    const rows = await this.grid
       .element(by.css('.ui-grid-render-container-body'))
-      .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'))
-      .each((row, index) => {
-        row.$(`[data-row]`).getAttribute('data-row')
-          .then(attr => {
-            if (attr === transId) {
-              GU.selectRow(this.gridId, index);
-            }
-          });
-      });
+      .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'));
+
+    return Promise.all(rows
+      .map(async (row, index) => {
+        const attr = await row.$(`[data-row]`).getAttribute('data-row');
+        if (attr === transId) {
+          await GU.selectRow(this.gridId, index);
+        }
+      }));
   }
 
-  selectTransactions(transIds /* Array */) {
-    this.grid
+  async selectTransactions(transIds /* Array */) {
+    const rows = await this.grid
       .element(by.css('.ui-grid-render-container-body'))
-      .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'))
-      .each((row, index) => {
-        row.$(`[data-row]`).getAttribute('data-row')
-          .then(attr => {
-            if (transIds.includes(attr)) {
-              GU.selectRow(this.gridId, index);
-            }
-          });
-      });
+      .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'));
+
+    return Promise.all(rows
+      .map(async (row, index) => {
+        const attr = await row.$(`[data-row]`).getAttribute('data-row');
+        if (transIds.includes(attr)) {
+          await GU.selectRow(this.gridId, index);
+        }
+      }));
   }
 
-  openGridConfigurationModal() {
+  async openGridConfigurationModal() {
     // open the dropdown menu
-    $('[data-action="open-tools"]').click();
+    await $('[data-action="open-tools"]').click();
 
     // get the action and click it
-    $('[data-method="configure"]').click();
+    await $('[data-method="configure"]').click();
   }
 
-  openTrialBalanceModal() {
-    $('[data-method="trial-balance"]').click();
+  async openTrialBalanceModal() {
+    await $('[data-method="trial-balance"]').click();
   }
 
   expectHeaderColumns(array) {

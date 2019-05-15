@@ -5,33 +5,33 @@ function JournalConfigurationModal() {
   const defaultVisibleColumnCount = 9;
   const page = new JournalPage();
 
-  it(`displays ${defaultVisibleColumnCount} visible columns by default`, () => {
+  it(`displays ${defaultVisibleColumnCount} visible columns by default`, async () => {
     // tests expect page to be in transaction mode
-    $('[data-method="grouping"]').click();
+    await $('[data-method="grouping"]').click();
 
-    page.expectColumnCount(defaultVisibleColumnCount);
+    await page.expectColumnCount(defaultVisibleColumnCount);
   });
 
-  it('removes all but the debit and credit columns', () => {
+  it('removes all but the debit and credit columns', async () => {
     // remove grouping from the journal
-    $('[data-method="grouping"]').click();
+    await $('[data-method="grouping"]').click();
 
-    page.openGridConfigurationModal();
+    await page.openGridConfigurationModal();
     const modal = new ConfigModal();
-    modal.setColumnCheckboxes(['debit_equiv', 'credit_equiv']);
-    modal.submit();
+    await modal.setColumnCheckboxes(['debit_equiv', 'credit_equiv']);
+    await modal.submit();
 
-    page.expectHeaderColumns(['Débit', 'Crédit']);
+    await page.expectHeaderColumns(['Débit', 'Crédit']);
   });
 
-  it('resets the columns to the defaults', () => {
-    page.openGridConfigurationModal();
+  it('resets the columns to the defaults', async () => {
+    await page.openGridConfigurationModal();
 
     const modal = new ConfigModal();
-    modal.setDefaultColumnCheckboxes();
-    modal.submit();
+    await modal.setDefaultColumnCheckboxes();
+    await modal.submit();
 
-    page.expectColumnCount(defaultVisibleColumnCount);
+    await page.expectColumnCount(defaultVisibleColumnCount);
   });
 
   it('saves the column configuration in with uiGridSaveState');

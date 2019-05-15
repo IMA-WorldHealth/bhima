@@ -10,49 +10,49 @@ class DebtorsReportPage {
   }
 
   // preview a Debtors report
-  showDebtorsReportPreview(year, month, includeZero, currencyId) {
-    components.fiscalYearSelect.set(year);
-    components.periodSelection.set(month);
-    components.currencySelect.set(currencyId);
+  async showDebtorsReportPreview(year, month, includeZero, currencyId) {
+    await components.fiscalYearSelect.set(year);
+    await components.periodSelection.set(month);
+    await components.currencySelect.set(currencyId);
 
     if (includeZero) {
-      element(by.css('input[type="checkbox"]')).click();
+      await element(by.css('input[type="checkbox"]')).click();
     }
 
-    this.page.preview();
+    await this.page.preview();
   }
 
   // save a Debtors report
-  saveDebtorsReport(year, month, includeZero, reportName, reportFormat, currencyId) {
-    this.showDebtorsReportPreview(year, month, includeZero, currencyId);
+  async saveDebtorsReport(year, month, includeZero, reportName, reportFormat, currencyId) {
+    await this.showDebtorsReportPreview(year, month, includeZero, currencyId);
 
     // save report as PDF
-    this.page.saveAs();
-    FU.input('SaveCtrl.documentOptions.label', reportName);
-    FU.select('SaveCtrl.documentOptions.renderer', reportFormat);
-    FU.modal.submit();
+    await this.page.saveAs();
+    await FU.input('SaveCtrl.documentOptions.label', reportName);
+    await FU.select('SaveCtrl.documentOptions.renderer', reportFormat);
+    await FU.modal.submit();
 
     // successfully saved notification
-    components.notification.hasSuccess();
-    this.page.backToConfig();
+    await components.notification.hasSuccess();
+    await this.page.backToConfig();
   }
 
   // print a debtors report
-  printDebtorsReport(year, month, includeZero, currencyId) {
-    this.showDebtorsReportPreview(year, month, includeZero, currencyId);
-    this.page.printPreview();
+  async printDebtorsReport(year, month, includeZero, currencyId) {
+    await this.showDebtorsReportPreview(year, month, includeZero, currencyId);
+    await this.page.printPreview();
   }
 
   // check saved report
-  checkSavedDebtorsReport(reportName) {
-    this.page.gotoArchive();
-    this.page.lastReportMatching(reportName);
-    this.page.backToConfig();
+  async checkSavedDebtorsReport(reportName) {
+    await this.page.gotoArchive();
+    await this.page.lastReportMatching(reportName);
+    await this.page.backToConfig();
   }
 
   // close preview
-  closeDebtorsReportPreview() {
-    this.page.closePreview();
+  async closeDebtorsReportPreview() {
+    await this.page.closePreview();
   }
 }
 

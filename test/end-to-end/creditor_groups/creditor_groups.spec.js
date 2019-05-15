@@ -2,7 +2,6 @@
 const chai = require('chai');
 const helpers = require('../shared/helpers');
 
-helpers.configure(chai);
 const { expect } = chai;
 
 const components = require('../shared/components');
@@ -24,48 +23,48 @@ describe('Creditor Groups Management', () => {
     account      : '40111000', // 40111000 - SNEL SUPPLIER
   };
 
-  it(`has an initial list of ${INITIAL_GROUP} creditor groups`, () => {
-    expect(element.all(by.css('[data-group-entry]')).count()).to.eventually.equal(INITIAL_GROUP);
+  it(`has an initial list of ${INITIAL_GROUP} creditor groups`, async () => {
+    expect(await element.all(by.css('[data-group-entry]')).count()).to.equal(INITIAL_GROUP);
   });
 
-  it('creates a creditor group', () => {
-    FU.buttons.create();
+  it('creates a creditor group', async () => {
+    await FU.buttons.create();
 
-    FU.input('CreditorGroupCtrl.bundle.name', group.name);
-    components.accountSelect.set(group.account);
+    await FU.input('CreditorGroupCtrl.bundle.name', group.name);
+    await components.accountSelect.set(group.account);
 
-    FU.buttons.submit();
-    components.notification.hasSuccess();
-    expect(element.all(by.css('[data-group-entry]')).count()).to.eventually.equal(INITIAL_GROUP + 1);
+    await FU.buttons.submit();
+    await components.notification.hasSuccess();
+    expect(await element.all(by.css('[data-group-entry]')).count()).to.equal(INITIAL_GROUP + 1);
   });
 
-  it('updates a creditor group', () => {
-    element(by.css(`[data-update="${group.name}"]`)).click();
+  it('updates a creditor group', async () => {
+    await element(by.css(`[data-update="${group.name}"]`)).click();
 
-    FU.input('CreditorGroupCtrl.bundle.name', group.updated_name);
-    element(by.model('CreditorGroupCtrl.bundle.locked')).click();
+    await FU.input('CreditorGroupCtrl.bundle.name', group.updated_name);
+    await element(by.model('CreditorGroupCtrl.bundle.locked')).click();
 
-    FU.buttons.submit();
-    components.notification.hasSuccess();
+    await FU.buttons.submit();
+    await components.notification.hasSuccess();
   });
 
-  it('deletes a creditor group', () => {
-    element(by.css(`[data-update="${group.updated_name}"]`)).click();
+  it('deletes a creditor group', async () => {
+    await element(by.css(`[data-update="${group.updated_name}"]`)).click();
 
     // click the "delete" button
-    FU.buttons.delete();
+    await FU.buttons.delete();
 
-    FU.modal.submit();
-    components.notification.hasSuccess();
+    await FU.modal.submit();
+    await components.notification.hasSuccess();
   });
 
-  it('blocks deletion of a creditor group used in a transaction', () => {
-    element(by.css(`[data-update="${group.delete_name}"]`)).click();
+  it('blocks deletion of a creditor group used in a transaction', async () => {
+    await element(by.css(`[data-update="${group.delete_name}"]`)).click();
 
     // click the "delete" button
-    FU.buttons.delete();
+    await FU.buttons.delete();
 
-    FU.modal.submit();
-    components.notification.hasError();
+    await FU.modal.submit();
+    await components.notification.hasError();
   });
 });

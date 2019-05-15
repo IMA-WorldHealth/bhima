@@ -17,30 +17,30 @@ describe('Invoice Registry', () => {
 
   describe('Search', Search);
 
-  it('shows the proof of the invoice correctly', () => {
-    page.openReceipt('IV.TPA.2');
-    FU.exists(by.css('[data-modal="receipt"]'), true);
-    FU.modal.close();
+  it('shows the proof of the invoice correctly', async () => {
+    await page.openReceipt('IV.TPA.2');
+    await FU.exists(by.css('[data-modal="receipt"]'), true);
+    await FU.modal.close();
   });
 
-  it(`can reverse invoice ${toCreditNote} via a credit note`, () => {
-    page.reverse(toCreditNote);
-    FU.input('ModalCtrl.creditNote.description', 'Credit Note Error');
-    FU.modal.submit();
-    components.notification.hasSuccess();
+  it(`can reverse invoice ${toCreditNote} via a credit note`, async () => {
+    await page.reverse(toCreditNote);
+    await FU.input('ModalCtrl.creditNote.description', 'Credit Note Error');
+    await FU.modal.submit();
+    await components.notification.hasSuccess();
   });
 
-  it(`shows the receipt for the credit note on invoice ${toCreditNote}`, () => {
-    page.openCreditNoteReceipt(toCreditNote);
-    FU.modal.close();
+  it(`shows the receipt for the credit note on invoice ${toCreditNote}`, async () => {
+    await page.openCreditNoteReceipt(toCreditNote);
+    await FU.modal.close();
   });
 
-  it('deletes an invoice', () => {
-    page.remove('IV.TPA.3');
+  it('deletes an invoice', async () => {
+    await page.remove('IV.TPA.3');
 
     // accept the confirm modal
-    FU.modal.submit();
+    await FU.modal.submit();
 
-    components.notification.hasSuccess();
+    await components.notification.hasSuccess();
   });
 });
