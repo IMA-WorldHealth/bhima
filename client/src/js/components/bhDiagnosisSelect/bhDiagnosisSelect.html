@@ -1,0 +1,25 @@
+<div ng-form="DiagnosisForm" bh-diagnosis-select ng-model-options="{ updateOn: 'default' }">
+  <div
+    class="form-group"
+    ng-class="{ 'has-error' : DiagnosisForm.$submitted && DiagnosisForm.diagnosis.$invalid }">
+
+    <label class="control-label"><span translate>FORM.LABELS.DIAGNOSIS</span></label>
+
+    <p class="text-info"><i class="fa fa-info-circle"></i> <span translate>PATIENT_RECORDS.VISITS.SEARCH_INFO</span></p>
+    <input
+      type="text"
+      name="diagnosis"
+      class="form-control"
+      ng-model="$ctrl.diagnosis"
+      uib-typeahead="diagnosis as diagnosis.label for diagnosis in $ctrl.diagnoses | filter:$viewValue | limitTo:8"
+      typeahead-on-select="$ctrl.onSelect($item)"
+      autocomplete="off"
+      typeahead-min-length="3"
+      ng-required="$ctrl.REQUIRE_DIAGNOSES">
+    </label>
+
+    <div class="help-block" ng-messages="DiagnosisForm.diagnosis.$error" ng-show="DiagnosisForm.$submitted">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+</div>

@@ -50,8 +50,9 @@ describe('Patient Record', () => {
     const diagnosisLabel = 'Melioidose a';
     element(by.id('submit-visit')).click();
 
-    FU.typeahead('AdmitCtrl.visit.diagnosis', diagnosisLabel);
+    components.diagnosisSelect.set(diagnosisLabel);
     components.serviceSelect.set('Medecine Interne');
+
     FU.modal.submit();
 
     // check to see a new visit has been added
@@ -62,7 +63,7 @@ describe('Patient Record', () => {
     const diagnosisLabel = 'Melioidose a';
     element(by.id('submit-visit')).click();
 
-    FU.typeahead('AdmitCtrl.visit.diagnosis', diagnosisLabel);
+    components.diagnosisSelect.set(diagnosisLabel);
     FU.input('AdmitCtrl.visit.notes', 'Patient discharge has optional notes.');
 
     FU.modal.submit();
@@ -87,7 +88,6 @@ describe('Patient Record', () => {
     components.notification.hasSuccess();
   });
 
- 
   // upload patient documents
   it('upload a PDF document', () => {
     const title = '[e2e] New Document';
@@ -125,8 +125,6 @@ describe('Patient Record', () => {
     element(by.css('[data-document-action="list"]')).click();
     FU.exists(by.css('[data-view="list"]'), true);
   });
-
-
 
   it(' thumbnail should not be shown if the upload is not an image', () => {
     const title = '[e2e] New pdf As Document';

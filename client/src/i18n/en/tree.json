@@ -137,6 +137,7 @@
       "HOSPITALIZATION":"Hospitalizations",
       "HUMAN_RESOURCES":"Human Resources",
       "FINANCES":"Finances"
-    }
+    },
+    "VISITS_REPORT": "[Visits] Admission by Services"
   }
 }

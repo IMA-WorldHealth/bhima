@@ -56,11 +56,13 @@ function VisitsAdmissionController(ModalInstance, Patients, Visits, Notify,
     vm.visit.discharge_type_id = discharge;
   };
 
-  // TODO(@jniles) - load these asynchronously using a MySQL %LIKE% for perf
-  Patients.Visits.diagnoses()
-    .then(results => {
-      vm.diagnoses = results;
-    });
+  vm.onSelectDiagnosis = diagnosis => {
+    if (vm.isAdmission) {
+      vm.visit.start_diagnosis_id = diagnosis.id;
+    } else {
+      vm.visit.end_diagnosis_id = diagnosis.id;
+    }
+  };
 
   // assign current visit uuid to discharge values
   if (!vm.isAdmission && currentVisit) {

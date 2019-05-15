@@ -68,4 +68,5 @@ module.exports = {
   wardSelect : require('./bhWardSelect'),
   roomSelect : require('./bhRoomSelect'),
   fiscalYearPeriodSelect : require('./bhFiscalYearPeriodSelect'),
+  diagnosisSelect : require('./bhDiagnosisSelect'),
 };
