@@ -1,5 +1,4 @@
 /* global element, by, browser */
-/* eslint  */
 
 const EC = require('protractor').ExpectedConditions;
 const GridRow = require('../shared/GridRow');

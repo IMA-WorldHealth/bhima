@@ -1,22 +1,17 @@
 /* global element, by */
-/* eslint  */
 
 /**
  * This class is represents a Ipr Tax page in term of structure and
  * behaviour so it is a Ipr Tax page object
  */
 
-/* loading grid actions */
-const GU = require('../shared/GridUtils');
-const GA = require('../shared/GridAction');
+const GridRow = require('../shared/GridRow');
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 
 class IprTaxConfigPage {
   constructor() {
-    this.gridId = 'iprconfig-grid';
-    this.iprTaxGrid = element(by.id(this.gridId));
-    this.actionLinkColumn = 11;
+    this.iprTaxGrid = element(by.id('iprconfig-grid'));
   }
 
   /**
@@ -60,9 +55,9 @@ class IprTaxConfigPage {
   async editIprTaxConfig(rate, updateIprTaxConfig) {
     await components.iprScale.set(updateIprTaxConfig.scale);
 
-    const { rowIndex } = await GU.getGridIndexesMatchingText(this.gridId, rate);
-
-    await GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'edit', this.gridId);
+    const row = new GridRow(rate);
+    await row.dropdown().click();
+    await row.edit().click();
 
     await FU.input('IprTaxConfigModalCtrl.iprTax.rate', updateIprTaxConfig.rate);
     await components.currencyInput.set(updateIprTaxConfig.tranche_annuelle_debut, 'tranche_annuelle_debut');
@@ -75,8 +70,10 @@ class IprTaxConfigPage {
    * simulate a click on the delete link of a function
    */
   async deleteIprTaxConfig(label) {
-    const { rowIndex } = await GU.getGridIndexesMatchingText(this.gridId, label);
-    await GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'delete', this.gridId);
+    const row = new GridRow(label);
+    await row.dropdown().click();
+    await row.remove().click();
+
     await components.modalAction.confirm();
     await components.notification.hasSuccess();
   }

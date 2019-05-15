@@ -241,9 +241,6 @@ function CashTransfer() {
 
     // dismiss the modal
     await $('[data-action="close"]').click();
-
-    // make sure we have a success notification shown
-    await components.notification.hasSuccess();
   });
 }
 
