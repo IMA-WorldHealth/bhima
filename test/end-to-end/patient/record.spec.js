@@ -46,8 +46,9 @@ describe('Patient Record', () => {
     const diagnosisLabel = 'Melioidose a';
     await element(by.id('submit-visit')).click();
 
-    await FU.typeahead('AdmitCtrl.visit.diagnosis', diagnosisLabel);
+    await components.diagnosisSelect.set(diagnosisLabel);
     await components.serviceSelect.set('Medecine Interne');
+
     await FU.modal.submit();
 
     // check to see a new visit has been added
@@ -58,7 +59,7 @@ describe('Patient Record', () => {
     const diagnosisLabel = 'Melioidose a';
     await element(by.id('submit-visit')).click();
 
-    await FU.typeahead('AdmitCtrl.visit.diagnosis', diagnosisLabel);
+    await components.diagnosisSelect.set(diagnosisLabel);
     await FU.input('AdmitCtrl.visit.notes', 'Patient discharge has optional notes.');
 
     await FU.modal.submit();
@@ -120,7 +121,6 @@ describe('Patient Record', () => {
     await element(by.css('[data-document-action="list"]')).click();
     await FU.exists(by.css('[data-view="list"]'), true);
   });
-
 
   it(' thumbnail should not be shown if the upload is not an image', async () => {
     const title = '[e2e] New pdf As Document';

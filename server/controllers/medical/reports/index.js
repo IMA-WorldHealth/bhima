@@ -9,6 +9,7 @@
 const patient = require('./patient.receipt').build;
 const patientRegistration = require('./registrations');
 const patientVisits = require('./visits');
+const visitsReports = require('./visits.report');
 
 // expose to the express router
 module.exports = {
@@ -17,4 +18,5 @@ module.exports = {
   },
   patientRegistrations : patientRegistration,
   patientVisits,
+  visitsReports,
 };

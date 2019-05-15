@@ -69,7 +69,7 @@ class VisitPage {
 
     // select diagnosis
     if (diagnosis) {
-      await FU.typeahead('AdmitCtrl.visit.diagnosis', diagnosis);
+      await components.diagnosisSelect.set(diagnosis);
     }
 
     // set note

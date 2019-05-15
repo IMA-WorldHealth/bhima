@@ -153,29 +153,8 @@
     <bh-discharge-select on-change-callback="AdmitCtrl.onSelectDischarge(dischargeType)"></bh-discharge-select>
   </div>
 
-  <div
-    class="form-group"
-    ng-class="{ 'has-error' : VisitForm.$submitted && VisitForm.diagnosis.$invalid }">
-
-    <label class="control-label"><span translate>FORM.LABELS.DIAGNOSIS</span></label>
-
-    <p class="text-info"><i class="fa fa-info-circle"></i> <span translate>PATIENT_RECORDS.VISITS.SEARCH_INFO</span></p>
-    <input
-      type="text"
-      name="diagnosis"
-      class="form-control"
-      ng-model="AdmitCtrl.visit.diagnosis"
-      uib-typeahead="diagnosis as diagnosis.label for diagnosis in AdmitCtrl.diagnoses | filter:$viewValue | limitTo:8"
-      typeahead-on-select="AdmitCtrl.select()"
-      autocomplete="off"
-      typeahead-min-length="3"
-      ng-required="AdmitCtrl.REQUIRE_DIAGNOSES">
-    </label>
-
-    <div class="help-block" ng-messages="VisitForm.diagnosis.$error" ng-show="VisitForm.$submitted">
-      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-    </div>
-  </div>
+  <!-- diagnosis select -->
+  <bh-diagnosis-select on-select-callback="AdmitCtrl.onSelectDiagnosis(diagnosis)"></bh-diagnosis-select>
 
   <div
     class="form-group"
