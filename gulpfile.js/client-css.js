@@ -90,7 +90,7 @@ const compileCSS = isProduction
 function compileLess() {
   return src(LESS_PATH)
     .pipe(gulpLess(LESS_CONFIG))
-    .pipe(gulpif(isProduction, cssnano({ zindex : false })))
+    .pipe(gulpif(isProduction, postcss([cssnano({ zindex : false })])))
     .pipe(dest(`${CLIENT_FOLDER}/css`));
 }
 
