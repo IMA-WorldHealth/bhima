@@ -18,13 +18,15 @@
         <h3 style="margin: 0px;">
           <span class="text-uppercase">{{translate 'FORM.LABELS.INVOICE'}}</span> <br>
           <strong>{{reference}}</strong> <br>
-          <small>{{date date}}</small> <br>
-
-          {{#if metadata.enterprise.settings.enable_barcodes}}
-            <small>{{> barcode value=barcode}}</small><br>
-          {{/if}}
-          <br>
         </h3>
+        <div>
+          {{translate "REPORT.PRODUCED_ON"}} <time datetime="{{metadata.timestamp}}">{{date metadata.timestamp}}</time>
+          {{translate "REPORT.BY"}} {{metadata.user.username}}
+        </div>
+
+        {{#if metadata.enterprise.settings.enable_barcodes}}
+          <small>{{> barcode value=barcode}}</small><br>
+        {{/if}}
       </div>
     </div>
 
