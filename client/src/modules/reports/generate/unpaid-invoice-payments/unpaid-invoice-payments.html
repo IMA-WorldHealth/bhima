@@ -39,6 +39,15 @@
               <bh-clear on-clear="ReportConfigCtrl.onClear()"></bh-clear>
             </bh-debtor-group-select>
 
+            
+            <!-- service -->
+            <bh-service-select
+              service-id="ReportConfigCtrl.reportDetails.serviceId"
+              on-select-callback="ReportConfigCtrl.onSelectService(service)">
+              <bh-clear on-clear="ReportConfigCtrl.clear('serviceId')"></bh-clear>
+            </bh-service-select>
+
+
             <bh-loading-button loading-state="ConfigForm.$loading">
               <span translate>REPORT.UTIL.PREVIEW</span>
             </bh-loading-button>
