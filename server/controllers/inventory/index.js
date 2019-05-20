@@ -51,6 +51,7 @@ exports.deleteInventory = deleteInventory;
 // expose routes for import
 exports.importing = importing;
 
+exports.logs = inventoryLog;
 // ======================= inventory metadata =============================
 /**
  * POST /inventory/metadata
@@ -71,14 +72,20 @@ function createInventoryItems(req, res, next) {
  * Update an inventory data entry
  */
 function updateInventoryItems(req, res, next) {
-  core.updateItemsMetadata(req.body, req.params.uuid)
+  core.updateItemsMetadata(req.body, req.params.uuid, req.session)
     .then((metadata) => {
       res.status(200).json(metadata);
     })
     .catch((error) => {
       core.errorHandler(error, req, res, next);
-    })
-    .done();
+    });
+}
+
+
+function inventoryLog(req, res, next) {
+  core.inventoryLog(req.params.uuid).then(logs => {
+    res.status(200).json(logs);
+  }).catch(next);
 }
 
 

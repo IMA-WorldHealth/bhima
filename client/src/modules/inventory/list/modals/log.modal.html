@@ -1,0 +1,44 @@
+<div class="modal-header">
+  <ol class="headercrumb">
+    <li class="static" translate> FORM.LABELS.CHANGES</li>
+    <li class="title text-capitalize">
+
+      {{$ctrl.inventory.label}}
+    </li>
+  </ol>
+</div>
+<div class="modal-body" style="height: 400px; overflow-y: scroll">
+  <div class="row">
+    <div ng-repeat="log in $ctrl.logs" class="col-lg-12" style="border-bottom: 1px dashed #ddd">
+      <br/>
+      <div ng-if="!log.update" class="text-primary">
+        <span translate>{{log.value}}</span>
+        <span translate>{{log.date | date : "dd/MM/yyyy HH:mm:ss" }}</span>
+        <span translate>FORM.LABELS.BY</span>
+        <span translate>{{log.userName}}</span>
+      </div>
+
+      <div ng-if="log.update">
+          <b><span translate>{{log.col}}</span></b>
+          <span translate>FORM.LABELS.UPDATED</span>
+          <span translate>FORM.LABELS.FROM</span>
+          <span><b>{{log.value.from}}</b></span>
+          <span translate>FORM.LABELS.TO</span>
+          <span><b>{{log.value.to}}</b></span>
+          <br/>          
+        <div style="font-size:10px">
+          <span translate><i class="fa fa-certificate"></i></span>
+          <span>{{log.date | date : "dd/MM/yyyy HH:mm:ss" }}</span>
+          <span translate>FORM.LABELS.BY</span>          
+          <b><span>{{log.userName}}</span></b>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-default" data-method="close" ng-click="$ctrl.close()">
+    <span translate>FORM.BUTTONS.CLOSE</span>
+  </button>
+</div>
