@@ -52,21 +52,40 @@ exports.remove = remove;
 * @function createItemsMetadata
 * @return {Promise} Returns a database query promise
 */
-function createItemsMetadata(record, session) {
+async function createItemsMetadata(record, session) {
+  const recordCopy = _.clone(record);
   record.enterprise_id = session.enterprise.id;
   const recordUuid = record.uuid || uuid();
   record.uuid = db.bid(recordUuid);
   record.group_uuid = db.bid(record.group_uuid);
 
   const sql = 'INSERT INTO inventory SET ?;';
+  const inventoryLog = 'INSERT INTO inventory_log SET ?;';
+
+  const transaction = db.transaction();
+
+  transaction.addQuery(sql, [record]);
+
+  transaction.addQuery(inventoryLog, {
+    uuid : db.uuid(),
+    inventory_uuid : db.bid(recordUuid),
+    text : JSON.stringify(_.extend({}, { action : 'CREATION' }, recordCopy)),
+    user_id : session.user.id,
+  });
+
   /*
    * return a promise which can contains result or error which is caught
    * in the main controller (inventory.js)
-   */
-  return db.exec(sql, [record])
-    .then(() => recordUuid);
+  */
+  return transaction.execute().then(() => recordUuid);
 }
 
+async function loadData(recourd) {
+  const data = {};
+  data.inventoryType = await db.one(`select text from inventory_type where id =?`, recourd.type_id);
+  data.inventoryType = await db.one(`select text from inventory_type where id =?`, typeId);
+  return data;
+}
 /**
 * Update inventory metadata in the database
 *

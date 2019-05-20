@@ -63,8 +63,7 @@ function createInventoryItems(req, res, next) {
     })
     .catch((error) => {
       core.errorHandler(error, req, res, next);
-    })
-    .done();
+    });
 }
 
 /**
