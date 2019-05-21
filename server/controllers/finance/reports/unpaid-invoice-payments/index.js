@@ -51,7 +51,11 @@ async function getUnbalancedInvoices(options) {
     new Date(options.dateTo),
   ];
 
-  const wherePart = options.debtorGroupName ? `WHERE debtorGroupName = ${db.escape(options.debtorGroupName)}` : '';
+  const { debtorGroupName, serviceId } = options;
+  let wherePart = debtorGroupName ? `WHERE debtorGroupName = ${db.escape(debtorGroupName)}` : '';
+  if (serviceId) {
+    wherePart = (wherePart.length < 2) ? `WHERE serviceID=${serviceId}` : `${wherePart} AND serviceId=${serviceId}`;
+  }
 
   const rows = await db.transaction()
     .addQuery('CALL UnbalancedInvoicePaymentsTable(?, ?);', params)
@@ -101,7 +105,6 @@ async function getUnbalancedInvoices(options) {
     if (!row.debtorGroupName) {
       row.isGroupTotalRow = true;
     }
-
     // add pretty debtor names
     const debtor = debtorNameMap[row.debtorUuid];
     if (debtor) {
