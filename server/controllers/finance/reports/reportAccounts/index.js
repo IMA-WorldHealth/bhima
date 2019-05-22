@@ -19,7 +19,6 @@ const TEMPLATE = './server/controllers/finance/reports/reportAccounts/report.han
  *  1. A header with the opening balance line.  This opening balance line is
  *  converted on the date of the `dateFrom` range.
  *  2. All general ledger transactions that
- *
  */
 function document(req, res, next) {
   let report;
@@ -91,6 +90,7 @@ function document(req, res, next) {
           warnMultipleFiscalYears : true,
         });
       }
+
       return report.render(bundle);
     })
     .then((result) => {
