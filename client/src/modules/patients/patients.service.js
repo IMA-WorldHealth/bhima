@@ -41,6 +41,7 @@ function PatientService(
   service.subsidies = subsidies;
   service.openSearchModal = openSearchModal;
   service.searchByName = searchByName;
+  service.merge = merge;
 
   service.getFinancialActivity = getFinancialActivity;
 
@@ -50,6 +51,20 @@ function PatientService(
   service.balance = balance;
   service.download = download;
   service.openReturningPatientModal = openReturningPatientModal;
+
+  /**
+   * @method merge
+   *
+   * @description
+   * This method merge two patients into a one
+   *
+   * @param {object} params { selected: String, other: Array }
+   */
+  function merge(params) {
+    const path = `/patients/merge`;
+    return service.$http.post(path, params)
+      .then(service.util.unwrapHttpResponse);
+  }
 
   /**
    * @method balance

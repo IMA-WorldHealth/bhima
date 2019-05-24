@@ -27,6 +27,7 @@ angular.module('bhima.routes')
           filters : [],
         },
       })
+
       .state('patientGroups', {
         url         : '/patients/groups',
         controller  : 'PatientGroupController as PatientGroupCtrl',
@@ -47,5 +48,27 @@ angular.module('bhima.routes')
         params      : {
           filters : [],
         },
+      })
+
+      .state('patientRegistry.merge', {
+        url         : '/merge',
+        params      : {
+          patients : [],
+        },
+        onEnter : ['$uibModal', mergePatientsModal],
+        onExit : ['$uibModalStack', closeModal],
       });
   }]);
+
+function mergePatientsModal($modal) {
+  $modal.open({
+    keyboard : false,
+    backdrop : 'static',
+    templateUrl : 'modules/patients/registry/modals/mergePatients.modal.html',
+    controller : 'MergePatientsModalController as MergePatientsModalCtrl',
+  });
+}
+
+function closeModal(ModalStack) {
+  ModalStack.dismissAll();
+}

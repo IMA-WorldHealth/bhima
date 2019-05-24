@@ -232,6 +232,9 @@
             "VIEW_CLOSING_BALANCE": "View Closing Balance"
         },
         "LABELS" : {
+            "MERGE_PATIENTS":"Merge Patients",
+            "MERGE_PATIENTS_DESC":"Only selected patient information will be considered, other patients' transactions will be assigned to the selected patient",
+            "MERGE_PATIENTS_TO_ONE":"Merge patients into one patient",
             "ABBREVIATION": "Abbreviation",
             "ACCOUNT": "Account",
             "ACCOUNT_CONFIGURATION" : "Account Setup",
@@ -782,6 +785,7 @@
             "QUANTITY": "Enter a quantity"
         },
         "SELECT": {
+            "PATIENT_TO_CONSIDER":"Select the patient to consider",
             "ACCOUNT_REFERENCE" : "Select an Account Reference",
             "ACCOUNT_REFERENCE_TYPE" : "Select an Account Reference Type",
             "ENTITY":"Select an entity",
@@ -872,6 +876,7 @@
             "UNIQUE": "This field must be unique. This value is already taken."
         },
         "WARNINGS": {
+            "ONLY_TWO_PATIENTS":"Please select two patient registrations only",
             "ATTENTION_CONFIGURED": "Warning! Only employees waiting for configuration can be configured",
             "ATTENTION_PAYSLIPS": "Warning! There are no payslips records for employees waiting for configuration",
             "ATTENTION_WAITING_LIST": "Warning! Only configured employees can be placed in the payroll waiting list",
