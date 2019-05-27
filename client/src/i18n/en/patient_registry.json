@@ -12,6 +12,7 @@
     "YEAR_OLD":"year old",
     "YEARS_OLD":"years old",
     "TITLE":"Patient Registry",
-    "RECORD":"Record"
+    "RECORD":"Record",
+    "MERGE_SUCCESS":"Patiens fusionnés avec succès"
   }
 }

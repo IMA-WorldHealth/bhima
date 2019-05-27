@@ -12,6 +12,7 @@
     "RECORD":"Enregistrement",
     "YEAR_OLD":"an",
     "YEARS_OLD":"ans",
-    "TITLE":"Registre des Patients"
+    "TITLE":"Registre des Patients",
+    "MERGE_SUCCESS":"Patiens fusionnés avec succès"
   }
 }
