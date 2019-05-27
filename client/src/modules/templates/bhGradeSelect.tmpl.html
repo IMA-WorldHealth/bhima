@@ -9,6 +9,7 @@
     
     <ng-transclude></ng-transclude>
     <ui-select name="grade_uuid" 
+      ng-required ="$ctrl.required"
       ng-model="$ctrl.gradeUuid"
       on-select="$ctrl.onSelect($item, $model)">
       <ui-select-match placeholder="{{ 'FORM.SELECT.GRADE' | translate }}"><span>{{$select.selected.text}}</span></ui-select-match>

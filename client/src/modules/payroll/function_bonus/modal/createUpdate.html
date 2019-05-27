@@ -1,0 +1,48 @@
+<form name="staffingindiceFom" bh-submit="$ctrl.submit(staffingindiceFom)" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li>
+        <span translate>TREE.STAFFING_INDICES_MANAGEMENT</span>
+
+        <label class="label label-warning text-uppercase" translate>
+          {{$ctrl.action}}
+        </label>
+      </li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+    <div class="row">
+      
+      
+    <bh-fonction-select
+      fonction-id="$ctrl.item.fonction_id"
+      on-select-callback="$ctrl.onSelectFonction(fonction)">
+    </bh-fonction-select>
+
+
+      
+      <bh-input-text
+        key="value"
+        label="FORM.LABELS.VALUE"
+        text-value="$ctrl.item.value"
+        on-change="$ctrl.onInputTextChange(key, value)"
+        required="true">
+      </bh-input-text>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button
+      type="button"
+      data-method="cancel"
+      class="btn btn-default"
+      ng-click="$ctrl.close()"
+      translate>
+      FORM.BUTTONS.CANCEL
+    </button>
+
+    <bh-loading-button loading-state="staffingindiceFom.$loading">
+    </bh-loading-button>
+  </div>
+</form>

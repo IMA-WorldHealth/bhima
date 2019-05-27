@@ -1,0 +1,38 @@
+<div class="flex-header">
+  <div class="bhima-title">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.HUMANS_RESSOURCES</li>
+      <li class="title" translate>TREE.FUNCTION_BONUS_MANAGEMENT</li>
+    </ol>
+
+    <div class="toolbar">
+      <div class="toolbar-item">
+        <button class="btn btn-default" ng-click="functionBonusCtrl.createUpdateModal()" data-method="create">
+          <span class="fa fa-plus"></span>
+          <span translate class="text-capitalize">FORM.LABELS.ADD</span>
+        </button>
+      </div>
+      <bh-filter-toggle on-toggle="functionBonusCtrl.toggleInlineFilter()">
+      </bh-filter-toggle>
+    </div>
+  </div>
+</div>
+
+<!-- main content -->
+<div class="flex-content">
+  <div class="container-fluid">
+    <div
+      id="function-bonus-grid"
+      class="grid-full-height"
+      ui-grid="functionBonusCtrl.gridOptions"
+      ui-grid-auto-resize
+      ui-grid-resize-columns
+      ui-grid-move-columns>
+
+      <bh-grid-loading-indicator
+        loading-state="functionBonusCtrl.loading"
+        empty-state="functionBonusCtrl.gridOptions.data.length === 0">
+      </bh-grid-loading-indicator>
+    </div>
+  </div>
+</div>

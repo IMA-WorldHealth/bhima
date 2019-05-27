@@ -2259,7 +2259,6 @@ CREATE TABLE `break_even_reference` (
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
-
 DROP TABLE IF EXISTS `inventory_log`;
 
 CREATE TABLE `inventory_log` (
@@ -2273,6 +2272,28 @@ CREATE TABLE `inventory_log` (
   KEY `user_id` (`user_id`),
   FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`),
   FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+
+DROP TABLE IF EXISTS `staffing_indice`;
+CREATE TABLE `staffing_indice` (
+  `uuid` BINARY(16) NOT NULL,
+  `grade_uuid` BINARY(16) NOT NULL,
+  `value` DECIMAL(19,4) NOT NULL,
+  PRIMARY KEY (`uuid`),
+  UNIQUE KEY `staffing_indice_1` (`grade_uuid`),
+  FOREIGN KEY (`grade_uuid`) REFERENCES `grade` (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+
+DROP TABLE IF EXISTS `function_bonus`;
+CREATE TABLE `function_bonus` (
+  `uuid` BINARY(16) NOT NULL,
+  `fonction_id`   TINYINT(3) UNSIGNED DEFAULT NULL,
+  `value` DECIMAL(19,4) NOT NULL,
+  PRIMARY KEY (`uuid`),
+  UNIQUE KEY `function_bonus_1` (`fonction_id`),
+  FOREIGN KEY (`fonction_id`) REFERENCES `fonction` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 SET foreign_key_checks = 1;
