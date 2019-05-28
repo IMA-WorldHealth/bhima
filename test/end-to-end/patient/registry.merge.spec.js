@@ -3,7 +3,7 @@ const components = require('../shared/components');
 const MergePatientPage = require('./registry.merge.page');
 
 describe('Merge Patients', () => {
-  before(() => helpers.navigate('#/patients'));
+  beforeEach(() => helpers.navigate('#/patients'));
 
   const Page = new MergePatientPage();
 
@@ -11,9 +11,6 @@ describe('Merge Patients', () => {
     await Page.gridSelectRows(0, 1, 2);
     await Page.openMergeTool();
     await components.notification.hasWarn();
-
-    // unselect selected rows
-    await Page.gridSelectRows(0, 1, 2);
   });
 
   it('successfully merge two selected patients into one', async () => {
