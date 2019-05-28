@@ -15,6 +15,7 @@
 
     <ul class="list-group">
       <li
+        data-reference="{{ p.reference }}"
         style="cursor: pointer;"
         class="list-group-item" 
         ng-class="{'active' : MergePatientsModalCtrl.selected === p.uuid }"

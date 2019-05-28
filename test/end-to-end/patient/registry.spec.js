@@ -3,7 +3,7 @@ const PatientRegistrySearch = require('./registry.search');
 const PatientMerge = require('./registry.merge.spec');
 
 // patient registry tests
-describe.only('Patient Registry', () => {
+describe('Patient Registry', () => {
   before(() => helpers.navigate('#/patients'));
 
   // groups patient search modal queries

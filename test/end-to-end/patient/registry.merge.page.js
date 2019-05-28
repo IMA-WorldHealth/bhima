@@ -1,7 +1,7 @@
 /* global element, by */
 
-// const FU = require('../../shared/FormUtils');
-// const GU = require('../../shared/GridUtils');
+const GU = require('../shared/GridUtils');
+const FU = require('../shared/FormUtils');
 
 function PatientMergePage() {
   const page = this;
@@ -10,8 +10,22 @@ function PatientMergePage() {
   page.gridId = gridId;
 
   page.openMergeTool = async function openMergeTool() {
-    element(by.css('[data-action="open-tools"]')).click();
-    element(by.css('[data-action="merge-patient"]')).click();
+    await element(by.css('[data-action="open-tools"]')).click();
+    await element(by.css('[data-method="merge-patient"]')).click();
+  };
+
+  page.gridSelectRows = async function gridSelectRows(...lines) {
+    lines.forEach(async element => {
+      await GU.selectRow(gridId, element);
+    });
+  };
+
+  page.selectPatientToKeep = async function selectPatientToKeep(reference) {
+    await element(by.css(`[data-reference="${reference}"]`)).click();
+  };
+
+  page.merge = async function merge() {
+    await FU.buttons.submit();
   };
 }
 

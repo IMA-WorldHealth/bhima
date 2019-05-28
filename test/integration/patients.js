@@ -2,6 +2,8 @@
 
 const helpers = require('./helpers');
 
+const INITIAL_TEST_PATIENTS = 5;
+
 // TODO Should this import UUID library and track mock patient throughout?
 const mockPatientUuid = '85BF7A8516D94AE5B5C01FEC9748D2F9';
 const mockDebtorUuid = 'EC4241E43558493B9D78DBAA47E3CEFD';
@@ -81,7 +83,7 @@ describe('(/patients) Patients', () => {
     it('GET /patients with missing necessary parameters should succeed', () => {
       return agent.get('/patients/?')
         .then(res => {
-          helpers.api.listed(res, 5);
+          helpers.api.listed(res, INITIAL_TEST_PATIENTS + 1);
         })
         .catch(helpers.handler);
     });
@@ -188,7 +190,6 @@ describe('(/patients) Patients', () => {
   });
 
   it('GET /patients returns a list of patients', () => {
-    const INITIAL_TEST_PATIENTS = 4;
     return agent.get('/patients')
       .then((res) => {
         helpers.api.listed(res, INITIAL_TEST_PATIENTS);
@@ -302,10 +303,12 @@ function MergePatients() {
   });
 
   it('GET /patients returns a correct reduced list of patients', () => {
-    const INITIAL_TEST_PATIENTS_PLUS_ONE_ADDED = 5;
     return agent.get('/patients')
       .then((res) => {
-        helpers.api.listed(res, INITIAL_TEST_PATIENTS_PLUS_ONE_ADDED - 1);
+        // Initial test patient : 5, plus one added in this test suit
+        // we also add another new one with `mockDoublonRequest`
+        // the total is 7, after the merge we must remain with just 6
+        helpers.api.listed(res, 6);
       })
       .catch(helpers.handler);
   });
