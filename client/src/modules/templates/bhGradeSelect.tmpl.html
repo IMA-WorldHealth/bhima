@@ -4,7 +4,7 @@
     ng-class="{ 'has-error' : GradeForm.$$parent.$submitted && GradeForm.grade_uuid.$invalid }">
 
     <label class="control-label" translate>
-      FORM.LABELS.GRADE
+      {{$ctrl.label}}
     </label>
     
     <ng-transclude></ng-transclude>

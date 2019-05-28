@@ -22,6 +22,14 @@ function StaffingIndiceModalController(data, $state, StaffingIndice, Notify, Ins
     vm.indice.grade_uuid = grade.uuid;
   };
 
+  vm.onSelectFonction = function onSelectFonction(fonction) {
+    vm.indice.fonction_id = fonction.id;
+  };
+
+  vm.onSelectEmployee = (employee) => {
+    vm.indice.employee_uuid = employee.uuid;
+  };
+
   vm.onInputTextChange = (key, value) => {
     vm.indice[key] = value;
   };

@@ -39,24 +39,47 @@ function StaffingIndiceController($uibModal, StaffingIndice, Session, Modal, Not
       });
   }
 
-  const columns = [{
-    field : 'code',
-    displayName : 'FORM.LABELS.GRADE',
-    headerCellFilter : 'translate',
-  },
-  {
-    field : 'value',
-    displayName : 'FORM.LABELS.STAFFING_BASE_INDICES',
-    headerCellFilter : 'translate',
-  },
-  {
-    field : 'actions',
-    enableFiltering : false,
-    width : 100,
-    displayName : '',
-    headerCellFilter : 'translate',
-    cellTemplate : 'modules/payroll/staffing_index/templates/action.cell.html',
-  }];
+  const columns = [
+    {
+      field : 'created_at',
+      displayName : 'TABLE.COLUMNS.DATE',
+      headerCellFilter : 'translate',
+      cellFilter : 'date:"'.concat(bhConstants.dates.format, '"'),
+
+    },
+    {
+      field : 'display_name',
+      displayName : 'FORM.LABELS.EMPLOYEE_NAME',
+      headerCellFilter : 'translate',
+    },
+    {
+      field : 'text',
+      displayName : 'FORM.LABELS.LEVEL_OF_STUDY',
+      headerCellFilter : 'translate',
+    },
+    {
+      field : 'fonction_txt',
+      displayName : 'FORM.LABELS.RESPONSABILITY',
+      headerCellFilter : 'translate',
+    },
+    {
+      field : 'function_indice',
+      displayName : 'FORM.LABELS.ENROLLMENT_BONUS',
+      headerCellFilter : 'translate',
+    },
+    {
+      field : 'grade_indice',
+      displayName : 'FORM.LABELS.FUNCTION_BONUS',
+      headerCellFilter : 'translate',
+    },
+    {
+      field : 'actions',
+      enableFiltering : false,
+      width : 100,
+      displayName : '',
+      headerCellFilter : 'translate',
+      cellTemplate : 'modules/payroll/staffing_index/templates/action.cell.html',
+    }];
 
   // ng-click="
   vm.gridOptions = {

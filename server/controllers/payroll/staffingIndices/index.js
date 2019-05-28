@@ -11,17 +11,23 @@ exports.lookUp = lookUp;
 
 function lookUp(options = {}) {
   const sql = `
-    SELECT BUID(s.uuid) as uuid, s.value, BUID(g.uuid) as grade_uuid, 
-      g.code, g.text
+    SELECT BUID(s.uuid) as uuid, BUID(g.uuid) as grade_uuid, 
+      s.created_at, g.code as code, g.text,  s.fonction_id,  f.fonction_txt,
+      grade_indice, function_indice, p.display_name
     FROM staffing_indice s
+    JOIN fonction f ON f.id = s.fonction_id
     JOIN grade g ON g.uuid = s.grade_uuid
+    JOIN employee e ON e.uuid = s.employee_uuid 
+    JOIN patient p ON p.uuid = e.patient_uuid
   `;
-  db.convert(options, ['uuid', 'grade_uuid']);
+  db.convert(options, ['uuid', 'grade_uuid', 'employee_uuid']);
 
   const filters = new FilterParser(options, { tableAlias : 's' });
   filters.equals('uuid');
   filters.equals('grade_uuid');
-  filters.setOrder('ORDER BY g.text ASC');
+  filters.equals('fontion_id');
+  filters.equals('employee_uuid');
+  filters.setOrder('ORDER BY s.created_at, g.text, f.fonction_txt ASC');
 
   return db.exec(filters.applyQuery(sql), filters.parameters());
 }
@@ -38,7 +44,8 @@ function list(req, res, next) {
 
 function detail(req, res, next) {
   const sql = `
-    SELECT BUID(uuid) as uuid, value, BUID(grade_uuid) as grade_uuid 
+    SELECT BUID(uuid) as uuid, fonction_id, BUID(grade_uuid) as grade_uuid,
+     BUID(employee_uuid) as employee_uuid, grade_indice, function_indice, created_at
     FROM staffing_indice
     WHERE uuid=?`;
 
@@ -51,12 +58,11 @@ function detail(req, res, next) {
 // create a new staffing index
 function create(req, res, next) {
   const sql = `INSERT INTO staffing_indice SET ?`;
+  const data = req.body;
+  data.uuid = db.uuid();
+  db.convert(data, ['uuid', 'grade_uuid', 'employee_uuid']);
 
-  db.exec(sql, {
-    uuid : db.uuid(),
-    value : req.body.value,
-    grade_uuid : db.bid(req.body.grade_uuid),
-  })
+  db.exec(sql, data)
     .then(rows => {
       res.status(201).json(rows);
     })
@@ -66,10 +72,14 @@ function create(req, res, next) {
 
 // update a staffing index
 function update(req, res, next) {
-  db.convert(req.body, ['uuid', 'grade_uuid']);
 
   const staffingIndex = req.body;
+  db.convert(staffingIndex, ['uuid', 'grade_uuid', 'employee_uuid']);
+
   delete staffingIndex.uuid;
+  delete staffingIndex.created_at;
+
+  staffingIndex.updated_at = new Date();
 
   const sql = `UPDATE staffing_indice SET ? WHERE uuid = ?`;
 

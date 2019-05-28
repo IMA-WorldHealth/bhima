@@ -12,6 +12,11 @@
           <span translate class="text-capitalize">FORM.LABELS.ADD</span>
         </button>
       </div>
+      <div class="toolbar-item">
+        <button data-method="search" class="btn btn-default" ng-click="JournalCtrl.openSearchModal()">
+          <i class="fa fa-search"></i> <span class="visible-lg-inline" translate>FORM.BUTTONS.SEARCH</span>
+        </button>
+      </div>
       <bh-filter-toggle on-toggle="StaffingIndiceCtrl.toggleInlineFilter()">
       </bh-filter-toggle>
     </div>

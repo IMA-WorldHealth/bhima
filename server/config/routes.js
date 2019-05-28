@@ -50,7 +50,6 @@ const weekendConfig = require('../controllers/payroll/weekendConfig');
 const employeeConfig = require('../controllers/payroll/employeeConfig');
 const multiplePayroll = require('../controllers/payroll/multiplePayroll');
 const staffingIndices = require('../controllers/payroll/staffingIndices');
-const functionBonus = require('../controllers/payroll/functionBonus');
 // medical routes
 const patients = require('../controllers/medical/patients');
 const patientGroups = require('../controllers/medical/patientGroups');
@@ -645,14 +644,6 @@ exports.configure = function configure(app) {
   app.post('/functions', functions.create);
   app.put('/functions/:id', functions.update);
   app.delete('/functions/:id', functions.delete);
-
-  // functions api
-  app.get('/function_bonus', functionBonus.list);
-  app.get('/function_bonus/:uuid', functionBonus.detail);
-  app.post('/function_bonus', functionBonus.create);
-  app.put('/function_bonus/:uuid', functionBonus.update);
-  app.delete('/function_bonus/:uuid', functionBonus.delete);
-
 
   // rubrics payroll api
   app.get('/rubrics', rubrics.list);

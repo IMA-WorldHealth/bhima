@@ -2276,24 +2276,20 @@ CREATE TABLE `inventory_log` (
 
 
 DROP TABLE IF EXISTS `staffing_indice`;
+
 CREATE TABLE `staffing_indice` (
   `uuid` BINARY(16) NOT NULL,
+  `employee_uuid` BINARY(16) NOT NULL,
   `grade_uuid` BINARY(16) NOT NULL,
-  `value` DECIMAL(19,4) NOT NULL,
-  PRIMARY KEY (`uuid`),
-  UNIQUE KEY `staffing_indice_1` (`grade_uuid`),
-  FOREIGN KEY (`grade_uuid`) REFERENCES `grade` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
-
-
-DROP TABLE IF EXISTS `function_bonus`;
-CREATE TABLE `function_bonus` (
-  `uuid` BINARY(16) NOT NULL,
   `fonction_id`   TINYINT(3) UNSIGNED DEFAULT NULL,
-  `value` DECIMAL(19,4) NOT NULL,
+  `grade_indice` DECIMAL(19,4) NOT NULL,
+  `function_indice` DECIMAL(19,4) NOT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP NULL,
   PRIMARY KEY (`uuid`),
-  UNIQUE KEY `function_bonus_1` (`fonction_id`),
-  FOREIGN KEY (`fonction_id`) REFERENCES `fonction` (`id`)
+  FOREIGN KEY (`employee_uuid`) REFERENCES `employee` (`uuid`),
+  FOREIGN KEY (`fonction_id`) REFERENCES `fonction` (`id`),
+  FOREIGN KEY (`grade_uuid`) REFERENCES `grade` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 SET foreign_key_checks = 1;

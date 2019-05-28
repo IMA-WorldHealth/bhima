@@ -1,57 +1,94 @@
+/* global browser */
+const EC = require('protractor').ExpectedConditions;
+const FU = require('../shared/FormUtils');
 const helpers = require('../shared/helpers');
-const StaffingPage = require('./page');
 const components = require('../shared/components');
+const GridRow = require('../shared/GridRow');
 
-// the page object
-const page = new StaffingPage();
 
-function StaffingIndiceTests() {
+describe('Staffing indice Management Tests', () => {
 
-  // navigate to the page
-  before(() => helpers.navigate('#!/staffing_indices'));
+  const path = '#!/staffing_indices';
+  // navigate to the page before the test suite
+  before(() => helpers.navigate(path));
 
   const indice = {
-    uuid : '3ac4e83c65f245a183578b025003d793',
-    grade : 'grade 1',
-    value : 100,
+    grade : 'grade 3',
+    function_indice : 100,
+    grade_indice : 200,
+    function : 'Infirmier',
+    employee : 'Employee Test 1',
   };
 
   const indiceTest = {
-    uuid : '3ac4e83c65f245a183578b025003d621',
     grade : '1.1',
-    value : 50,
+    function_indice : 10,
+    grade_indice : 20,
+    function : 'Medecin Directeur',
+    employee : 'Test 2 Patient',
   };
 
-  it('should add a new Staffing indice', async () => {
-    await page.openCreateUpdateModal();
-    await page.setValue(indice.value);
-    await page.setGrade(indice.grade);
-    await page.submit();
+
+  it('creates a new Staffing indice', async () => {
+    await FU.buttons.create();
+    await components.employeeSelect.set(indice.employee);
+    await components.gradeSelect.set(indice.grade);
+    await components.fonctionSelect.set(indice.function);
+    await components.inpuText.set('grade_indice', indice.grade_indice);
+    await components.inpuText.set('function_indice', indice.function_indice);
+    // submit the page to the server
+    await FU.buttons.submit();
     await components.notification.hasSuccess();
   });
 
-  it('should add a edit Staffing indice', async () => {
-    await page.edit('G1');
-    await page.setValue(200);
-    await page.submit();
+  it('should a edit Staffing indice', async () => {
+    const menu = await openDropdownMenu(indice.function_indice);
+    await menu.edit().click();
+    await components.inpuText.set('function_indice', 200);
+    // submit the page to the server
+    await FU.buttons.submit();
     await components.notification.hasSuccess();
   });
 
-  it('should add a test Staffing indice', async () => {
-    await page.openCreateUpdateModal();
-    await page.setValue(indiceTest.value);
-    await page.setGrade(indiceTest.grade);
-    await page.submit();
+
+  it('creates a new Staffing indice', async () => {
+    await FU.buttons.create();
+    await components.employeeSelect.set(indiceTest.employee);
+    await components.gradeSelect.set(indiceTest.grade);
+    await components.fonctionSelect.set(indiceTest.function);
+    await components.inpuText.set('grade_indice', indiceTest.grade_indice);
+    await components.inpuText.set('function_indice', indiceTest.function_indice);
+    // submit the page to the server
+    await FU.buttons.submit();
     await components.notification.hasSuccess();
   });
 
-  it('should delete a Staffing indice', async () => {
-    await page.delete('A1');
-    await page.submit();
+  it('should delete the test country', async () => {
+    // click the edit button
+    const menu = await openDropdownMenu('A1');
+    await menu.remove().click();
+    await FU.buttons.submit();
     await components.notification.hasSuccess();
   });
 
-}
 
+  it('blocks invalid form submission with relevant error classes', async () => {
+    // switch to the create form
+    await FU.buttons.create();
+    // submit the page to the server
+    await FU.buttons.submit();
+    // the following fields should be required
+    await components.inpuText.validationError('function_indice');
+    await components.inpuText.validationError('grade_indice');
+    await FU.buttons.cancel();
 
-describe('Staffing indice Management Tests', StaffingIndiceTests);
+  });
+
+  async function openDropdownMenu(label) {
+    const row = new GridRow(label);
+    browser.wait(EC.presenceOf(row.dropdown()), 5000, 'menu action not clickable');
+    await row.dropdown().click();
+    return row;
+  }
+
+});

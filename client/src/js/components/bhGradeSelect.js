@@ -7,6 +7,7 @@ angular.module('bhima.components')
       gradeUuid        : '<',
       onSelectCallback : '&',
       required : '@?',
+      label : '@?',
     },
   });
 
@@ -20,7 +21,7 @@ GradeSelectController.$inject = [
  */
 function GradeSelectController(Grades, Notify) {
   const $ctrl = this;
-
+  $ctrl.label = $ctrl.label || 'FORM.LABELS.GRADE';
   $ctrl.$onInit = function onInit() {
     $ctrl.required = $ctrl.required || false;
     Grades.read()

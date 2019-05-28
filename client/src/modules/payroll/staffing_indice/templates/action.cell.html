@@ -1,6 +1,6 @@
 <div
   class="ui-grid-cell-contents text-action"
-  data-row="{{row.entity.code}}"
+  data-row="{{row.entity.function_indice}}"
   uib-dropdown dropdown-append-to-body>
 
   <a uib-dropdown-toggle href data-action="open-dropdown-menu">
@@ -8,7 +8,7 @@
     <span class="caret"></span>
   </a>
 
-  <ul data-row-menu="{{ row.entity.code }}" class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
+  <ul data-row-menu="{{row.entity.function_indice}}" class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
     <li>
       <a data-method="edit-record" ng-click="grid.appScope.createUpdateModal(row.entity)" href>
         <i class="fa fa-edit"></i> <span translate>FORM.BUTTONS.EDIT</span>

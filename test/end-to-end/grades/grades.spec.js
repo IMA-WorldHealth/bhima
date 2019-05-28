@@ -22,8 +22,8 @@ describe('Grades Management', () => {
   };
 
 
-  it('begins with 2 grades', async () => {
-    expect(await page.count()).to.equal(2);
+  it('begins with 3 grades', async () => {
+    expect(await page.count()).to.equal(3);
   });
 
   it('successfully creates a new grade', async () => {

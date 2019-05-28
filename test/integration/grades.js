@@ -18,7 +18,7 @@ describe('(/grades) API endpoint', () => {
   };
 
   const responseKeys = ['uuid', 'code', 'text', 'basic_salary'];
-  const numGrades = 2;
+  const numGrades = 3;
 
   it('GET /grades returns a list of grade ', () => {
     return agent.get('/grades')
