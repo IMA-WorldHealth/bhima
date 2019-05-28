@@ -34,7 +34,7 @@ describe('Grades Management', () => {
     await page.update(grade.code, updateGrade);
   });
 
-  it('doesn\'t create a record when grade name is incorrect', async () => {
+  it(`doesn't create a record when grade name is incorrect`, async () => {
     await page.errorOnCreateGrade();
   });
 
