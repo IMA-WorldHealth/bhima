@@ -43,7 +43,7 @@ function PatientRegistrySearch() {
   }
 
   it('grid should have 4 visible rows', async () => {
-    const DEFAULT_PATIENTS_FOR_TODAY = 5;
+    const DEFAULT_PATIENTS_FOR_TODAY = 4;
     await modal.switchToDefaultFilterTab();
     await modal.setPeriod('today');
     await modal.submit();
