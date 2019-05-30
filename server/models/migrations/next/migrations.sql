@@ -109,7 +109,7 @@ CREATE PROCEDURE UnbalancedInvoicePaymentsTable(
 
   DROP TEMPORARY TABLE IF EXISTS tmp_invoices_2;
   CREATE TEMPORARY TABLE tmp_invoices_2 AS SELECT * FROM tmp_invoices_1;
-  
+
   DROP TEMPORARY TABLE IF EXISTS tmp_records;
   -- This holds the invoices from the PJ/GL
   CREATE TEMPORARY TABLE tmp_records AS
@@ -186,5 +186,11 @@ CREATE PROCEDURE UnbalancedInvoicePaymentsTable(
     ORDER BY iv.date
   );
 END$$
+
+-- author: jniles
+-- date: 30/05/2019
+-- Fix primary key collisions at HEV.
+ALTER TABLE invoice_invoicing_fee DROP PRIMARY KEY;
+ALTER TABLE invoice_invoicing_fee ADD PRIMARY KEY (invoice_uuid, invoicing_fee_id);
 
 DELIMITER ;

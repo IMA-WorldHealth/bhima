@@ -1614,11 +1614,10 @@ CREATE TABLE `invoice` (
 
 DROP TABLE IF EXISTS invoice_invoicing_fee;
 CREATE TABLE invoice_invoicing_fee (
-  `invoice_uuid`               BINARY(16) NOT NULL,
-  `value`                      DECIMAL(10,4) NOT NULL,
+  `invoice_uuid`             BINARY(16) NOT NULL,
+  `value`                    DECIMAL(10,4) NOT NULL,
   `invoicing_fee_id`         SMALLINT UNSIGNED NOT NULL,
-  PRIMARY KEY (`invoice_uuid`, `value`),
-  UNIQUE KEY `invoice_invoicing_fee_1` (`invoice_uuid`, `invoicing_fee_id`),
+  PRIMARY KEY (`invoice_uuid`, `invoicing_fee_id`),
   KEY `invoice_uuid` (`invoice_uuid`),
   KEY `invoicing_fee_id` (`invoicing_fee_id`),
   FOREIGN KEY (`invoice_uuid`) REFERENCES `invoice` (`uuid`) ON DELETE CASCADE,
@@ -2332,7 +2331,7 @@ CREATE TABLE `hospitalization_indicator` (
   `total_beds` INT DEFAULT 0,
   `total_hospitalized_patient` INT DEFAULT 0,
   `total_external_patient` INT DEFAULT 0,
-  `total_death` INT DEFAULT 0,  
+  `total_death` INT DEFAULT 0,
   `indicator_uuid` BINARY(16) NOT NULL,
   PRIMARY KEY (`uuid`),
   FOREIGN KEY (`indicator_uuid`) REFERENCES `indicator` (`uuid`) ON UPDATE CASCADE
@@ -2374,19 +2373,19 @@ CREATE TABLE `finance_indicator` (
   `indicator_uuid` BINARY(16) NOT NULL,
   PRIMARY KEY (`uuid`),
   FOREIGN KEY (`indicator_uuid`) REFERENCES `indicator` (`uuid`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;  
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `break_even_reference`;
 CREATE TABLE `break_even_reference` (
-  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, 
-  `label` VARCHAR(100) NOT NULL, 
-  `is_cost` tinyint(1) DEFAULT 0, 
+  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `label` VARCHAR(100) NOT NULL,
+  `is_cost` tinyint(1) DEFAULT 0,
   `is_variable` tinyint(1) DEFAULT 0,
-  `is_turnover` tinyint(1) DEFAULT 0,   
-  `account_reference_id` MEDIUMINT(8) UNSIGNED NOT NULL, 
-  PRIMARY KEY (`id`), 
-  UNIQUE KEY `break_even_reference_1` (`label`), 
-  KEY `account_reference_id` (`account_reference_id`), 
+  `is_turnover` tinyint(1) DEFAULT 0,
+  `account_reference_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `break_even_reference_1` (`label`),
+  KEY `account_reference_id` (`account_reference_id`),
   FOREIGN KEY (`account_reference_id`) REFERENCES `account_reference` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
