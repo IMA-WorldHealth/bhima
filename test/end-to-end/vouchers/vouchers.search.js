@@ -1,5 +1,3 @@
-const helpers = require('../shared/helpers');
-
 const GU = require('../shared/GridUtils');
 
 const SearchModal = require('../shared/search.page');
