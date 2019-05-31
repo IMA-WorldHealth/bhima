@@ -31,10 +31,10 @@ INSERT INTO `profit_center` VALUES
   (1, 3, 'profit center 3', 'profit note 3');
 
 -- Services
-INSERT INTO `service`(id, uuid,enterprise_id, name, cost_center_id, profit_center_id) VALUES
-  (1, HUID('aff85bdc-d7c6-4047-afe7-1724f8cd369e'), 1, 'Test Service', 1, 1),
-  (2, HUID('b1816006-5558-45f9-93a0-c222b5efa6cb'), 1, 'Administration', 2, 2),
-  (3, HUID('e3988489-ef66-41df-88fa-8b8ed6aa03ac'), 1, 'Medecine Interne', 1, 2);
+INSERT INTO `service`(id, uuid, enterprise_id, project_id, name, cost_center_id, profit_center_id) VALUES
+  (1, HUID('aff85bdc-d7c6-4047-afe7-1724f8cd369e'), 1, 1, 'Test Service', 1, 1),
+  (2, HUID('b1816006-5558-45f9-93a0-c222b5efa6cb'), 1, 1, 'Administration', 2, 2),
+  (3, HUID('e3988489-ef66-41df-88fa-8b8ed6aa03ac'), 1, 1, 'Medecine Interne', 1, 2);
 
 -- Accounts
 INSERT INTO `account` (`id`, `type_id`, `enterprise_id`, `number`, `label`, `parent`, `locked`, `cc_id`, `pc_id`, `created`, `reference_id`) VALUES

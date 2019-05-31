@@ -1695,6 +1695,7 @@ CREATE TABLE `service` (
   `id` smallINT(5) UNSIGNED not null auto_increment,
   `uuid` BINARY(16) NULL,
   `enterprise_id` SMALLINT(5) UNSIGNED NOT NULL,
+  `project_id` SMALLINT(5) UNSIGNED NOT NULL,
   `name` VARCHAR(80) NOT NULL,
   `hidden` TINYINT(1) DEFAULT 0,
   `cost_center_id` SMALLINT(6) DEFAULT NULL,
