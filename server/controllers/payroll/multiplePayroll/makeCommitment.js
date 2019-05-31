@@ -5,12 +5,13 @@
  *
  *
  * @requires db
- * @requires EmployeeData
+ * @requires configurationData
+ * @requires transac
+ * @requires Exchange
  */
 
 const q = require('q');
 const db = require('../../../lib/db');
-const EmployeeData = require('../employees');
 const configurationData = require('./find');
 const transac = require('./commitment');
 const Exchange = require('../../finance/exchange');
