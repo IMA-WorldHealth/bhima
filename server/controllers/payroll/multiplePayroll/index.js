@@ -10,8 +10,6 @@
  * @requires db
  */
 
-const db = require('../../../lib/db');
-
 const find = require('./find');
 const getConfig = require('./getConfig');
 const manageConfig = require('./manageConfig');
