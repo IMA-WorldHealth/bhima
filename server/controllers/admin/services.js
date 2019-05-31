@@ -33,14 +33,31 @@ function list(req, res, next) {
     sql = `
       SELECT s.id, s.name, s.enterprise_id, s.cost_center_id, BUID(s.uuid) AS uuid,
         s.profit_center_id, s.hidden,  e.name AS enterprise_name, e.abbr, cc.id AS cc_id,
-        cc.text AS cost_center_name, pc.id AS pc_id, pc.text AS profit_center_name
+        cc.text AS cost_center_name, pc.id AS pc_id, pc.text AS profit_center_name,
+        p.name AS project_name
       FROM service AS s
       JOIN enterprise AS e ON s.enterprise_id = e.id
+      LEFT JOIN project AS p ON s.project_id = p.id
       LEFT JOIN cost_center AS cc ON s.cost_center_id = cc.id
       LEFT JOIN profit_center AS pc ON s.profit_center_id = pc.id`;
   }
 
   sql += ' ORDER BY s.name;';
+
+  db.exec(sql)
+    .then((rows) => {
+      res.status(200).json(rows);
+    })
+    .catch(next)
+    .done();
+}
+
+function countServiceByProject(req, res, next) {
+  const sql = `
+  SELECT p.name AS project_name, p.abbr AS project_abbr, COUNT(*) AS total
+  FROM service AS s
+  LEFT JOIN project AS p ON s.project_id = p.id 
+  GROUP BY p.id ORDER BY s.name;`;
 
   db.exec(sql)
     .then((rows) => {
@@ -174,3 +191,4 @@ exports.create = create;
 exports.update = update;
 exports.remove = remove;
 exports.detail = detail;
+exports.countServiceByProject = countServiceByProject;

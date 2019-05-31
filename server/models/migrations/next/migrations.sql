@@ -187,10 +187,16 @@ CREATE PROCEDURE UnbalancedInvoicePaymentsTable(
   );
 END$$
 
+DELIMITER ;
+
 -- author: jniles
 -- date: 30/05/2019
 -- Fix primary key collisions at HEV.
 ALTER TABLE invoice_invoicing_fee DROP PRIMARY KEY;
 ALTER TABLE invoice_invoicing_fee ADD PRIMARY KEY (invoice_uuid, invoicing_fee_id);
 
-DELIMITER ;
+/*
+ * @author: mbayopanda
+ * @date: 2019-05-31
+*/
+ALTER TABLE `service` ADD COLUMN project_id SMALLINT(5) UNSIGNED NOT NULL;
