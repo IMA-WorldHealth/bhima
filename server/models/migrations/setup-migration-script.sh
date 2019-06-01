@@ -2,7 +2,7 @@
 
 # usage: DATABASE="my_database_name" BHIMA_PATH="path/to/bhima/" ./setup-migration-script.sh
 
-# this script rebuild function and procedure 
+# this script rebuild function and procedure
 FILENAME="migration"
 
 # database name given as parameter, default is imck
@@ -26,7 +26,7 @@ SET collation_connection = 'utf8mb4_unicode_ci';
 " > $FILENAME-$DATABASE.sql
 
 echo "Dropping all triggers for database: $DATABASE."
-mysql -e "SELECT CONCAT('DROP TRIGGER ', trigger_name, ';') FROM information_schema.triggers WHERE trigger_schema = '$DATABASE';" \
+mysql -e "SELECT CONCAT('DROP TRIGGER IF EXISTS ', trigger_name, ';') FROM information_schema.triggers WHERE trigger_schema = '$DATABASE';" \
   | sed '1d' \
   >> $FILENAME-$DATABASE.sql
 
