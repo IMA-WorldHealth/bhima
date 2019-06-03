@@ -15,7 +15,7 @@ class ServicePage {
   constructor() {
     this.gridId = 'service-grid';
     this.serviceGrid = element(by.id(this.gridId));
-    this.actionLinkColumn = 1;
+    this.actionLinkColumn = 2;
   }
 
   /**
@@ -31,9 +31,10 @@ class ServicePage {
   /**
    * simulate the create service button click to show the dialog of creation
    */
-  async createService(name) {
+  async createService(name, projectName) {
     await FU.buttons.create();
     await FU.input('ServiceModalCtrl.service.name', name);
+    await components.projectSelect.set(projectName);
     await FU.buttons.submit();
     await components.notification.hasSuccess();
   }
@@ -51,9 +52,14 @@ class ServicePage {
   /**
    * simulate a click on the edit link of a service
    */
-  async editService(n, name) {
+  async editService(n, name, projectName) {
     await GA.clickOnMethod(n, this.actionLinkColumn, 'edit', this.gridId);
     await FU.input('ServiceModalCtrl.service.name', name);
+
+    if (projectName) {
+      await components.projectSelect.set(projectName);
+    }
+
     await element(by.css('[name="hidden"]')).click();
     await FU.buttons.submit();
     await components.notification.hasSuccess();

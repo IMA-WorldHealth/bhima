@@ -35,7 +35,7 @@
               <!-- indicator type selection  -->
               <div class="form-group" ng-class="{ 'has-error' : ConfigForm.$submitted && ConfigForm.type.$invalid }">
                 <label class="control-label">
-                  <i class="fa fa-briefcase"></i> <span translate> FORM.SELECT.INDICATOR_TYPE</span>
+                  <span translate> FORM.SELECT.INDICATOR_TYPE</span>
                 </label>
                 <bh-clear on-clear="ReportConfigCtrl.clear('type')"></bh-clear>
                 <select
@@ -45,7 +45,13 @@
                   ng-options="type.id as (type.label | translate) for type in ReportConfigCtrl.indicatorTypes">
                   <option value="" disabled>{{ "FORM.SELECT.INDICATOR_TYPE" | translate }}<option>
                 </select>
-              </div>                          
+              </div>
+              
+              <bh-service-select
+                service-id="ReportConfigCtrl.reportDetails.service_id"
+                on-select-callback="ReportConfigCtrl.onSelectService(service)">
+                <bh-clear on-clear="ReportConfigCtrl.clear('service_id')"></bh-clear>
+              </bh-service-select>
             </bh-hidden-field>
 
             <bh-loading-button loading-state="ConfigForm.$loading">

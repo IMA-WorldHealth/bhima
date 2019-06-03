@@ -8,29 +8,36 @@ ServiceModalController.$inject = [
 
 function ServiceModalController($state, Services, Depots, $translate,
   SessionService, ModalService, util, Notify) {
-  var vm = this;
-  var paramService = $state.params.service || {};
+  const vm = this;
+  const paramService = $state.params.service || {};
 
-  vm.service = { id : paramService.id, name : paramService.name, hidden : paramService.hidden };
+  vm.service = {
+    id : paramService.id,
+    name : paramService.name,
+    hidden : paramService.hidden,
+    project_id : paramService.project_id,
+  };
   vm.isCreating = !!($state.params.creating);
 
   // exposed methods
   vm.submit = submit;
   vm.closeModal = closeModal;
 
+  vm.onSelectProject = project => {
+    vm.service.project_id = project.id;
+  };
+
   // submit the data to the server from all two forms (update, create)
   function submit(serviceForm) {
-    var promise;
-
     if (serviceForm.$invalid || !serviceForm.$dirty) { return 0; }
 
-    promise = (vm.isCreating) ?
-      Services.create(vm.service) :
-      Services.update(vm.service.id, vm.service);
+    const promise = (vm.isCreating)
+      ? Services.create(vm.service)
+      : Services.update(vm.service.id, vm.service);
 
     return promise
-      .then(function () {
-        var translateKey = (vm.isCreating) ? 'SERVICE.CREATED' : 'SERVICE.UPDATED';
+      .then(() => {
+        const translateKey = (vm.isCreating) ? 'SERVICE.CREATED' : 'SERVICE.UPDATED';
         Notify.success(translateKey);
         $state.go('services', null, { reload : true });
       })

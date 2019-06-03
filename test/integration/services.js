@@ -9,6 +9,7 @@ describe('(/services) The Service API', () => {
     name : 'tested Service',
     cost_center_id : 2,
     profit_center_id : 1,
+    project_id : 1,
   };
 
   const serviceWithoutCostCenter = {
@@ -16,6 +17,7 @@ describe('(/services) The Service API', () => {
     enterprise_id : 1,
     cost_center_id : null,
     profit_center_id : null,
+    project_id : 1,
   };
 
   const wrongUpdateService = {
@@ -30,7 +32,8 @@ describe('(/services) The Service API', () => {
 
   const responseKeys = [
     'id', 'cost_center_id', 'profit_center_id',
-    'name', 'enterprise_id', 'hidden',
+    'name', 'enterprise_id', 'hidden', 'project_id',
+    'project_name',
   ];
 
   it('POST /services adds a services', () => {
