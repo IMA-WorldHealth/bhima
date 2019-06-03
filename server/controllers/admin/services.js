@@ -26,15 +26,18 @@ const NotFound = require('../../lib/errors/NotFound');
  */
 function list(req, res, next) {
   let sql = `
-    SELECT s.id, s.name, s.cost_center_id, s.profit_center_id, BUID(s.uuid) AS uuid, s.hidden
-    FROM service AS s`;
+    SELECT
+      s.id, s.name, s.cost_center_id, s.profit_center_id, BUID(s.uuid) AS uuid, s.hidden,
+      p.id AS project_id, p.name AS project_name
+    FROM service AS s
+    LEFT JOIN project AS p ON s.project_id = p.id`;
 
   if (req.query.full === '1') {
     sql = `
       SELECT s.id, s.name, s.enterprise_id, s.cost_center_id, BUID(s.uuid) AS uuid,
         s.profit_center_id, s.hidden,  e.name AS enterprise_name, e.abbr, cc.id AS cc_id,
         cc.text AS cost_center_name, pc.id AS pc_id, pc.text AS profit_center_name,
-        p.name AS project_name
+        p.id AS project_id, p.name AS project_name
       FROM service AS s
       JOIN enterprise AS e ON s.enterprise_id = e.id
       LEFT JOIN project AS p ON s.project_id = p.id
@@ -177,9 +180,11 @@ function detail(req, res, next) {
 function lookupService(id) {
   const sql = `
     SELECT
-      s.id, s.name, s.enterprise_id, s.cost_center_id, s.profit_center_id, s.hidden
+      s.id, s.name, s.enterprise_id, s.cost_center_id, s.profit_center_id, s.hidden,
+      p.id AS project_id, p.name AS project_name
     FROM
       service AS s
+    LEFT JOIN project p ON p.id = s.project_id
     WHERE
       s.id = ?;`;
 
