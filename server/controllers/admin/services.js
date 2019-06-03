@@ -192,3 +192,4 @@ exports.update = update;
 exports.remove = remove;
 exports.detail = detail;
 exports.countServiceByProject = countServiceByProject;
+exports.lookupService = lookupService;

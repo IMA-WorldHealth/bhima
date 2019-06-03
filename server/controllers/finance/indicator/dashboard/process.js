@@ -19,7 +19,26 @@ async function processIndicators(options) {
 
   try {
 
-    // hospitalization indicators
+    if (options.distinctProject) {
+      const projects = await collect.getProjects();
+      const hospitalizationByProject = {};
+      const hospitalizationByProjectDependencies = {};
+      indicators.hospitalizationByProject = {};
+
+      projects.forEach(async p => {
+        options.project_id = p.id;
+        hospitalizationByProject[p.abbr] = await collect.hospitalization(options);
+        hospitalizationByProjectDependencies[p.abbr] = mergeIndicatorsByPeriod(hospitalizationByProject[p.abbr]);
+
+        _.keys(hospitalizationByProjectDependencies[p.abbr]).forEach(period => {
+          const periodicDependencies = hospitalizationByProjectDependencies[p.abbr][period];
+          indicators.hospitalizationByProject[p.abbr] = getHospitalizationIndicators(
+            periodicDependencies, hospitalizationByProject[p.abbr].totalDaysOfPeriods.nb_days
+          );
+        });
+      });
+    }
+
     const hospitalizationCollection = await collect.hospitalization(options);
     const staffCollection = await collect.staff(options);
     const financeCollection = await collect.finances(options);
@@ -201,6 +220,22 @@ function getHospitalizationIndicators(dependencies, nbDays = 356, period) {
 
   // format the result for having indicators and dependencies
   const indicators = {
+    totalBeds : {
+      value : dependencies.total_beds,
+    },
+
+    totalDayRealized : {
+      value : dependencies.total_day_realized,
+    },
+
+    totalHospitalizedPatient : {
+      value : dependencies.total_hospitalized_patient,
+    },
+
+    totalDeath : {
+      value : dependencies.total_death,
+    },
+
     bedOccupationRate : {
       value : bedOccupationRate,
       dependencies : [
