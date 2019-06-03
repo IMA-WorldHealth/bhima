@@ -15,7 +15,7 @@ class ServicePage {
   constructor() {
     this.gridId = 'service-grid';
     this.serviceGrid = element(by.id(this.gridId));
-    this.actionLinkColumn = 1;
+    this.actionLinkColumn = 2;
   }
 
   /**
