@@ -15,7 +15,18 @@ function MergePatientsModalController(Patients, $state, Notify, Instance) {
     vm.selected = uuid;
   };
 
+  function init() {
+    const params = vm.patients.map(p => p.uuid);
+    Patients.countEmployees(params)
+      .then(data => {
+        vm.allAreEmployees = data.total_employees === params.length;
+      })
+      .catch(Notify.handleError);
+  }
+
   function submit() {
+    if (vm.allAreEmployees) { return null; }
+
     const params = {
       selected : vm.selected,
       other : vm.patients.filter(p => p.uuid !== vm.selected).map(p => p.uuid),
@@ -29,4 +40,6 @@ function MergePatientsModalController(Patients, $state, Notify, Instance) {
       })
       .catch(Notify.handleError);
   }
+
+  init();
 }

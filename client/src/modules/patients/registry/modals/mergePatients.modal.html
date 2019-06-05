@@ -8,30 +8,48 @@
   </div>
 
   <div class="modal-body">
-    <h4><strong translate>FORM.SELECT.PATIENT_TO_CONSIDER</strong></h4>
-    <p>
-      <i><span translate>FORM.LABELS.MERGE_PATIENTS_DESC</span></i>
-    </p>
+    <div ng-hide="MergePatientsModalCtrl.allAreEmployees">
+      <h4><strong translate>FORM.SELECT.PATIENT_TO_CONSIDER</strong></h4>
+        <p>
+          <i><span translate>FORM.LABELS.MERGE_PATIENTS_DESC</span></i>
+        </p>
+    
+        <ul class="list-group">
+          <li
+            data-reference="{{ p.reference }}"
+            style="cursor: pointer;"
+            class="list-group-item" 
+            ng-class="{'active' : MergePatientsModalCtrl.selected === p.uuid }"
+            ng-repeat="p in MergePatientsModalCtrl.patients"
+            ng-click="MergePatientsModalCtrl.selectPatient(p.uuid)">
+            <span ng-show="MergePatientsModalCtrl.selected === p.uuid" class="badge">
+              <i class="fa fa-check"></i>
+            </span>
+            <span>
+              <strong>{{ p.reference }}</strong> - <span>{{ p.display_name }}</span>, <i>{{ p.patientAge }}</i> <br>
+              <strong translate>FORM.LABELS.HOSPITAL_NO</strong> : {{ p.hospital_no }}<br>
+              <strong translate>FORM.LABELS.GROUP</strong> : {{ p.debtorGroupName }}<br>
+              <strong translate>FORM.LABELS.CREATED</strong> : {{ p.registration_date | date }}
+            </span>
+          </li>
+        </ul>
+    </div>
 
-    <ul class="list-group">
-      <li
-        data-reference="{{ p.reference }}"
-        style="cursor: pointer;"
-        class="list-group-item" 
-        ng-class="{'active' : MergePatientsModalCtrl.selected === p.uuid }"
-        ng-repeat="p in MergePatientsModalCtrl.patients"
-        ng-click="MergePatientsModalCtrl.selectPatient(p.uuid)">
-        <span ng-show="MergePatientsModalCtrl.selected === p.uuid" class="badge">
-          <i class="fa fa-check"></i>
-        </span>
-        <span>
-          <strong>{{ p.reference }}</strong> - <span>{{ p.display_name }}</span>, <i>{{ p.patientAge }}</i> <br>
-          <strong translate>FORM.LABELS.HOSPITAL_NO</strong> : {{ p.hospital_no }}<br>
-          <strong translate>FORM.LABELS.GROUP</strong> : {{ p.debtorGroupName }}<br>
-          <strong translate>FORM.LABELS.CREATED</strong> : {{ p.registration_date | date }}
-        </span>
-      </li>
-    </ul>
+    <div class="alert alert-warning" ng-show="MergePatientsModalCtrl.allAreEmployees">
+      <h4><strong translate>PATIENT_REGISTRY.CANNOT_MERGE_EMPLOYEES</strong></h4>
+      <p translate>PATIENT_REGISTRY.WARNING_EMPLOYEES_SELECTED</p>
+      <br>
+      <ul class="list-group">
+        <li class="list-group-item" ng-repeat="p in MergePatientsModalCtrl.patients">
+          <span>
+            <strong>{{ p.reference }}</strong> - <span>{{ p.display_name }}</span>, <i>{{ p.patientAge }}</i><br>
+            <strong translate>FORM.LABELS.HOSPITAL_NO</strong> : {{ p.hospital_no }}<br>
+            <strong translate>FORM.LABELS.GROUP</strong> : {{ p.debtorGroupName }}<br>
+            <strong translate>FORM.LABELS.CREATED</strong> : {{ p.registration_date | date }}
+          </span>
+        </li>
+      </ul>
+    </div>
   </div>
 
   <div class="modal-footer">
@@ -39,7 +57,7 @@
       <span translate>FORM.BUTTONS.CANCEL</span>
     </button>
 
-    <bh-loading-button loading-state="MergePatientsForm.$loading">
+    <bh-loading-button loading-state="MergePatientsForm.$loading" disabled="MergePatientsModalCtrl.allAreEmployees">
       <span translate>FORM.LABELS.MERGE_PATIENTS</span>
     </bh-loading-button>
   </div>

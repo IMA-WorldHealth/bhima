@@ -13,6 +13,8 @@
     "YEARS_OLD":"years old",
     "TITLE":"Patient Registry",
     "RECORD":"Record",
-    "MERGE_SUCCESS":"Patiens fusionnés avec succès"
+    "MERGE_SUCCESS":"Patients merged succesfully",
+    "WARNING_EMPLOYEES_SELECTED":"You have only selected patients who are employees of the company, you can not merge them",
+    "CANNOT_MERGE_EMPLOYEES":"Merge of employees not allowed"
   }
 }

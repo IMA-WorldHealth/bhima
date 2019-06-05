@@ -42,6 +42,7 @@ function PatientService(
   service.openSearchModal = openSearchModal;
   service.searchByName = searchByName;
   service.merge = merge;
+  service.countEmployees = countEmployees;
 
   service.getFinancialActivity = getFinancialActivity;
 
@@ -63,6 +64,20 @@ function PatientService(
   function merge(params) {
     const path = `/patients/merge`;
     return service.$http.post(path, params)
+      .then(service.util.unwrapHttpResponse);
+  }
+
+  /**
+   * @method countEmployees
+   *
+   * @description
+   * This method employees relates to patients
+   *
+   * @param {object} params { patients: Array }
+   */
+  function countEmployees(patients) {
+    const path = `/patients/merge/count_employees`;
+    return service.$http.get(path, { params : { patients } })
       .then(service.util.unwrapHttpResponse);
   }
 

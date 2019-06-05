@@ -14,6 +14,20 @@
 const db = require('../../../lib/db');
 
 exports.mergePatients = mergePatients;
+exports.countEmployees = countEmployees;
+
+function countEmployees(req, res, next) {
+  const query = `
+    SELECT COUNT(*) AS total_employees FROM employee WHERE patient_uuid IN (?);
+  `;
+  const patients = req.query.patients.map(uuid => db.bid(uuid));
+  db.exec(query, [patients])
+    .then(([data]) => {
+      res.status(200).json(data);
+    })
+    .catch(next)
+    .done();
+}
 
 function mergePatients(req, res, next) {
   const params = req.body;
