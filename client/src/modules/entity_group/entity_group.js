@@ -1,24 +1,24 @@
 angular.module('bhima.controllers')
-  .controller('EntityController', EntityController);
+  .controller('EntityGroupController', EntityGroupController);
 
-EntityController.$inject = [
-  'EntityService', 'ModalService', 'NotifyService', 'uiGridConstants',
-  '$state', '$translate',
+EntityGroupController.$inject = [
+  'EntityGroupService', 'ModalService', 'NotifyService', 'uiGridConstants',
+  '$state',
 ];
 
 /**
- * Entity Controller
+ * EntityGroup Controller
  *
- * This controller is responsible of handling entities
+ * This controller is responsible of handling entity group
  */
-function EntityController(
-  Entity, ModalService, Notify, uiGridConstants, $state, $translate
+function EntityGroupController(
+  EntityGroup, ModalService, Notify, uiGridConstants, $state
 ) {
   const vm = this;
 
   // bind methods
-  vm.deleteEntity = deleteEntity;
-  vm.editEntity = editEntity;
+  vm.deleteEntityGroup = deleteEntityGroup;
+  vm.editEntityGroup = editEntityGroup;
   vm.toggleFilter = toggleFilter;
 
   // global variables
@@ -30,40 +30,25 @@ function EntityController(
     appScopeProvider  : vm,
     enableColumnMenus : false,
     fastWatch         : true,
-    flatEntityAccess  : true,
+    flatEntityGroupAccess  : true,
     enableSorting     : true,
     onRegisterApi     : onRegisterApiFn,
     columnDefs : [
       {
-        field : 'display_name',
-        displayName : 'ENTITY.NAME',
+        field : 'label',
+        displayName : 'ENTITY.GROUP.GROUP',
         headerCellFilter : 'translate',
       },
       {
-        field : 'phone',
-        displayName : 'ENTITY.PHONE',
-        headerCellFilter : 'translate',
-      },
-      {
-        field : 'email',
-        displayName : 'ENTITY.EMAIL',
-        headerCellFilter : 'translate',
-      },
-      {
-        field : 'address',
-        displayName : 'ENTITY.ADDRESS',
-        headerCellFilter : 'translate',
-      },
-      {
-        field : 'translation_key',
-        displayName : 'ENTITY.TYPE.LABEL',
+        field : 'entities',
+        displayName : 'ENTITY.LABEL',
         headerCellFilter : 'translate',
       },
       {
         field : 'action',
         width : 80,
         displayName : '',
-        cellTemplate : '/modules/entities/templates/action.tmpl.html',
+        cellTemplate : '/modules/entity_group/templates/action.tmpl.html',
         enableSorting : false,
         enableFiltering : false,
       },
@@ -83,13 +68,9 @@ function EntityController(
   function loadEntities() {
     vm.loading = true;
 
-    Entity.read()
+    EntityGroup.read()
       .then(data => {
-        // format location
-        vm.gridOptions.data = data.map(entity => {
-          entity.translation_key = $translate.instant(entity.translation_key);
-          return entity;
-        });
+        vm.gridOptions.data = data;
       })
       .catch(Notify.handleError)
       .finally(() => {
@@ -98,12 +79,12 @@ function EntityController(
   }
 
   // switch to delete warning mode
-  function deleteEntity(entity) {
+  function deleteEntityGroup(uuid) {
     ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
       .then(bool => {
         if (!bool) { return; }
 
-        Entity.delete(entity.uuid)
+        EntityGroup.delete(uuid)
           .then(() => {
             Notify.success('FORM.INFO.DELETE_SUCCESS');
             loadEntities();
@@ -113,8 +94,8 @@ function EntityController(
   }
 
   // update an existing entity
-  function editEntity(entityObject) {
-    $state.go('entities.edit', { entity : entityObject });
+  function editEntityGroup(uuid) {
+    $state.go('entityGroup.edit', { uuid });
   }
 
   loadEntities();

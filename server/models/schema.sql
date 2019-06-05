@@ -1351,6 +1351,24 @@ CREATE TABLE `entity_type` (
   UNIQUE KEY `label` (`label`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
+DROP TABLE IF EXISTS `entity_group`;
+CREATE TABLE `entity_group` (
+  `uuid` BINARY(16) NOT NULL,
+  `label` VARCHAR(190) NOT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`uuid`),
+  UNIQUE KEY `label` (`label`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `entity_group_entity`;
+CREATE TABLE `entity_group_entity` (
+  `id` SMALLINT(5) NOT NULL AUTO_INCREMENT,
+  `entity_uuid` BINARY(16) NOT NULL,
+  `entity_group_uuid` BINARY(16) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
 DROP TABLE IF EXISTS `entity`;
 CREATE TABLE `entity` (
   `uuid`               BINARY(16) NOT NULL,

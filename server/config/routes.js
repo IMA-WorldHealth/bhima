@@ -823,6 +823,13 @@ exports.configure = function configure(app) {
   app.delete('/entities/types/:id', entities.types.remove);
   app.post('/entities/types', entities.types.create);
 
+  // entities groups API
+  app.get('/entities/groups', entities.groups.list);
+  app.get('/entities/groups/:uuid', entities.groups.details);
+  app.put('/entities/groups/:uuid', entities.groups.update);
+  app.delete('/entities/groups/:uuid', entities.groups.remove);
+  app.post('/entities/groups/', entities.groups.create);
+
   // entities API
   app.get('/entities', entities.list);
   app.get('/entities/:uuid', entities.details);

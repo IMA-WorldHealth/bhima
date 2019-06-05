@@ -250,3 +250,9 @@ DELIMITER ;
 
 -- update columns 
 call UpdatePeriodLabels();
+
+/*
+ * @date: 2019-06-04
+ * @description: move entity management into entity folder
+*/
+UPDATE unit SET parent = 240 WHERE id = 12;
