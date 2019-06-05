@@ -898,7 +898,7 @@ CREATE PROCEDURE UnbalancedInvoicePaymentsTable(
 
   DROP TEMPORARY TABLE IF EXISTS tmp_invoices_2;
   CREATE TEMPORARY TABLE tmp_invoices_2 AS SELECT * FROM tmp_invoices_1;
-  
+
   DROP TEMPORARY TABLE IF EXISTS tmp_records;
   -- This holds the invoices from the PJ/GL
   CREATE TEMPORARY TABLE tmp_records AS

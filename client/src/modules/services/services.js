@@ -1,12 +1,12 @@
 angular.module('bhima.controllers')
-.controller('ServicesController', ServicesController);
+  .controller('ServicesController', ServicesController);
 
 ServicesController.$inject = [
-  'ServiceService', 'ModalService', 'NotifyService', 'uiGridConstants', '$state',
+  'ServiceService', 'ModalService', 'NotifyService', 'uiGridConstants', '$state', '$timeout',
 ];
 
-function ServicesController(Services, ModalService, Notify, uiGridConstants, $state) {
-  var vm = this;
+function ServicesController(Services, ModalService, Notify, uiGridConstants, $state, $timeout) {
+  const vm = this;
 
   // bind methods
   vm.deleteService = deleteService;
@@ -27,8 +27,18 @@ function ServicesController(Services, ModalService, Notify, uiGridConstants, $st
     enableSorting     : true,
     onRegisterApi     : onRegisterApiFn,
     columnDefs : [
-      { field : 'name', displayName : 'FORM.LABELS.SERVICE', headerCellFilter : 'translate' },
-      { field : 'action',
+      {
+        field : 'name',
+        displayName : 'FORM.LABELS.SERVICE',
+        headerCellFilter : 'translate',
+      },
+      {
+        field : 'project_name',
+        displayName : 'FORM.LABELS.PROJECT',
+        headerCellFilter : 'translate',
+      },
+      {
+        field : 'action',
         width : 80,
         displayName : '',
         cellTemplate : '/modules/services/templates/action.tmpl.html',
@@ -52,28 +62,32 @@ function ServicesController(Services, ModalService, Notify, uiGridConstants, $st
     vm.loading = true;
 
     Services.read(null, { full : 1 })
-    .then(function (data) {
-      vm.gridOptions.data = data;
-    })
-    .catch(Notify.handleError)
-    .finally(function () {
-      vm.loading = false;
-    });
+      .then((data) => {
+        vm.gridOptions.data = data;
+
+        $timeout(() => {
+          countServiceByProject();
+        }, 0);
+      })
+      .catch(Notify.handleError)
+      .finally(() => {
+        vm.loading = false;
+      });
   }
 
   // switch to delete warning mode
   function deleteService(service) {
     ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
-    .then(function (bool) {
-      if (!bool) { return; }
+      .then((bool) => {
+        if (!bool) { return; }
 
-      Services.delete(service.id)
-      .then(function () {
-        Notify.success('SERVICE.DELETED');
-        loadServices();
-      })
-      .catch(Notify.handleError);
-    });
+        Services.delete(service.id)
+          .then(() => {
+            Notify.success('SERVICE.DELETED');
+            loadServices();
+          })
+          .catch(Notify.handleError);
+      });
   }
 
   // update an existing service
@@ -86,5 +100,28 @@ function ServicesController(Services, ModalService, Notify, uiGridConstants, $st
     $state.go('services.create');
   }
 
+  // count services by project
+  function countServiceByProject() {
+    Services.count()
+      .then(data => {
+        let gridFooterTemplate = `<div class="ui-grid-footer-info ui-grid-grid-footer">`;
+        let total = 0;
+
+        data.forEach(row => {
+          total += row.total;
+          gridFooterTemplate += `<span><b>${row.project_abbr}</b>: ${row.total}</span> / `;
+        });
+
+        gridFooterTemplate += `
+          <span><b>Total</b>: ${total}</span>
+          </div>
+        `;
+
+        vm.gridOptions.showGridFooter = true;
+        vm.gridOptions.gridFooterTemplate = gridFooterTemplate;
+        vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.OPTIONS);
+      })
+      .catch(Notify.handleError);
+  }
   loadServices();
 }

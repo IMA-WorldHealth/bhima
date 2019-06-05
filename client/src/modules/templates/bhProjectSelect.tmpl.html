@@ -1,7 +1,7 @@
-<div bh-project-select ng-model-options="{ updateOn: 'default' }">
+<div ng-form="ProjectForm" bh-project-select ng-model-options="{ updateOn: 'default' }">
   <div
     class="form-group"
-    ng-class="{ 'has-error' : ProjectForm.$$parent.$submitted && ProjectForm.project_id.$invalid }">
+    ng-class="{ 'has-error' : ProjectForm.$submitted && ProjectForm.project_id.$invalid }">
 
     <label class="control-label" translate>
       FORM.LABELS.PROJECT
@@ -9,14 +9,15 @@
     <ng-transclude></ng-transclude>
     <ui-select name="project_id" 
       ng-model="$ctrl.projectId"
-      on-select="$ctrl.onSelect($item, $model)">
+      on-select="$ctrl.onSelect($item, $model)"
+      ng-required="$ctrl.required">
       <ui-select-match placeholder="{{ 'FORM.SELECT.PROJECT' | translate }}"><span>{{$select.selected.name}}</span></ui-select-match>
       <ui-select-choices ui-select-focus-patch repeat="project.id as project in $ctrl.projects | filter: { 'name': $select.search }">
         <span ng-bind-html="project.name | highlight:$select.search"></span>
       </ui-select-choices>
     </ui-select>
 
-    <div class="help-block" ng-messages="ProjectForm.project_id.$error" ng-show="ProjectForm.$$parent.$submitted">
+    <div class="help-block" ng-messages="ProjectForm.project_id.$error" ng-show="ProjectForm.$submitted">
       <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
     </div>
   </div>

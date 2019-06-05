@@ -22,7 +22,8 @@ const DECIMAL_PRECISION = 2;
 
 function commitments(employees, rubrics, rubricsConfig, account, projectId, userId, exchangeRates, currencyId) {
   const accountPayroll = account[0].account_id;
-  const periodPayroll = moment(account[0].dateFrom).format('MM-YYYY');
+  const periodPayroll = moment(account[0].dateTo).format('MM-YYYY');
+  const datePeriodTo = moment(account[0].dateTo).format('YYYY-MM-DD');
   const labelPayroll = account[0].label;
   const commitmentUuid = util.uuid();
   const voucherCommitmentUuid = db.bid(commitmentUuid);
@@ -107,7 +108,7 @@ function commitments(employees, rubrics, rubricsConfig, account, projectId, user
 
   const voucherCommitment = {
     uuid : voucherCommitmentUuid,
-    date : new Date(),
+    date : datePeriodTo,
     project_id : projectId,
     currency_id : currencyId,
     user_id : userId,
@@ -142,7 +143,7 @@ function commitments(employees, rubrics, rubricsConfig, account, projectId, user
     // Social charge on remuneration
     voucherChargeRemuneration = {
       uuid : voucherChargeRemunerationUuid,
-      date : new Date(),
+      date : datePeriodTo,
       project_id : projectId,
       currency_id : currencyId,
       user_id : userId,
@@ -173,7 +174,7 @@ function commitments(employees, rubrics, rubricsConfig, account, projectId, user
   if (rubricsWithholdings.length) {
     voucherWithholding = {
       uuid : voucherWithholdingUuid,
-      date : new Date(),
+      date : datePeriodTo,
       project_id : projectId,
       currency_id : currencyId,
       user_id : userId,

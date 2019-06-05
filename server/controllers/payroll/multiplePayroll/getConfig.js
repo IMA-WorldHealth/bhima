@@ -3,6 +3,14 @@ const db = require('../../../lib/db');
 function getConfigurationData(payrollConfigurationId, params) {
   const transaction = db.transaction();
 
+  // @lomame
+  /*
+  * Before we had to prevent the edition of all the headings which were taxes,
+  * but it can be made that there are taxes which is not calculated expressed as a percentage,
+  * to allow the edition of this kind of tax, it would be enough to exclude the only
+  * tax which is expressed as a percentage neither and which
+  * is not nor éditable reason why we had excluded the IPR
+  */
   const sql = `
     SELECT config_rubric_item.id, config_rubric_item.config_rubric_id, config_rubric_item.rubric_payroll_id, 
     payroll_configuration.label AS PayrollConfig,
@@ -10,7 +18,7 @@ function getConfigurationData(payrollConfigurationId, params) {
     FROM config_rubric_item
     JOIN rubric_payroll ON rubric_payroll.id = config_rubric_item.rubric_payroll_id
     JOIN payroll_configuration ON payroll_configuration.config_rubric_id = config_rubric_item.config_rubric_id
-    WHERE payroll_configuration.id = ? AND rubric_payroll.is_percent = 0 AND rubric_payroll.is_tax = 0
+    WHERE payroll_configuration.id = ? AND rubric_payroll.is_percent = 0 AND rubric_payroll.is_ipr = 0
     AND rubric_payroll.is_seniority_bonus = 0 AND rubric_payroll.is_family_allowances = 0
     ORDER BY rubric_payroll.label ASC;
   `;

@@ -9,17 +9,20 @@ describe('Services', () => {
 
   const service = {
     name : 'Service E2E',
+    project : 'Test Project A',
   };
+
+  const alternativeProject = 'Test Project B';
 
   const NEW_RECORD_ROW = 2; // based on alphabetical sort and position
   const OLD_RECORD_ROW = 2; // after the deletion of the latest the index is 2
 
   it('successfully creates a new service', async () => {
-    await Page.createService(service.name);
+    await Page.createService(service.name, service.project);
   });
 
   it('successfully edits a service', async () => {
-    await Page.editService(NEW_RECORD_ROW, service.name.concat(' updated'));
+    await Page.editService(NEW_RECORD_ROW, service.name.concat(' updated'), alternativeProject);
   });
 
   it('correctly blocks invalid form submission with relevant error classes', async () => {

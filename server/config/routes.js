@@ -221,6 +221,7 @@ exports.configure = function configure(app) {
   // API for service routes
   app.post('/services', services.create);
   app.get('/services', services.list);
+  app.get('/services/count', services.countServiceByProject);
   app.get('/services/:id', services.detail);
   app.put('/services/:id', services.update);
   app.delete('/services/:id', services.remove);

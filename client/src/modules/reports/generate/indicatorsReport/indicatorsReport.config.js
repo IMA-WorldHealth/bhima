@@ -42,6 +42,10 @@ function IndicatorsReportController($sce, Notify, SavedReports, AppCache, report
       .catch(Notify.handleError);
   };
 
+  vm.onSelectService = service => {
+    vm.reportDetails.service_id = service.id;
+  };
+
   vm.clear = (key) => {
     delete vm.reportDetails[key];
   };

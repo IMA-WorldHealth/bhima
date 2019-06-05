@@ -13,6 +13,7 @@ const _ = require('lodash');
 const moment = require('moment');
 const process = require('./process');
 const ReportManager = require('../../../../lib/ReportManager');
+const service = require('../../../admin/services');
 
 const REPORT_TEMPLATE = './server/controllers/finance/indicator/dashboard/report.handlebars';
 
@@ -47,6 +48,8 @@ function report(req, res, next) {
     return;
   }
 
+  options.distinctProject = true;
+
   lookupIndicators(options)
     .then(result => {
       if (options.type) { // a specific indicator type is defined
@@ -65,6 +68,10 @@ function report(req, res, next) {
       data.dateFrom = options.dateFrom;
       data.dateTo = options.dateTo;
 
+      return options.service_id ? service.lookupService(options.service_id) : {};
+    })
+    .then(serviceObject => {
+      data.serviceName = serviceObject.name;
       return reportInstance.render(data);
     })
     .then(result => {
