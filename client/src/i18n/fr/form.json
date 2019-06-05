@@ -232,6 +232,9 @@
             "VIEW_CLOSING_BALANCE": "Aperçue de la balance de cloture"
         },
         "LABELS": {
+            "MERGE_PATIENTS":"Fusionner les patients",
+            "MERGE_PATIENTS_DESC":"Seules les informations du patient séléctionné seront considérées, les transactions des autres patients de la liste seront affectées au patient séléctionné",
+            "MERGE_PATIENTS_TO_ONE":"Fusionner les patients en un seul patient",
             "ABBREVIATION": "Abbreviation",
             "ACCOUNT": "Compte",
             "ACCOUNT_CONFIGURATION" : "Configuration du Compte",
@@ -782,6 +785,7 @@
             "QUANTITY": "Entrer le Quantité"
         },
         "SELECT": {
+            "PATIENT_TO_CONSIDER":"Sélectionner le patient à considérer",
             "ACCOUNT_REFERENCE" : "Sélectionner la référence des comptes",
             "ACCOUNT_REFERENCE_TYPE" : "Sélectionner le type de référence des comptes",
             "ENTITY":"Sélectionner une entité",
@@ -872,6 +876,7 @@
             "UNIQUE": "Ce champ doit être unique. Cette valeur a déjà été utilisée."
         },
         "WARNINGS": {
+            "ONLY_TWO_PATIENTS":"Veuillez selectionner deux enregistrement de patients seulement",
             "ATTENTION_CONFIGURED": "Attention, seul les employés en attentes de configuration peuvent être configuré",
             "ATTENTION_PAYSLIPS": "Attention, il n'existe pas les fiches de paies pour les employés en attente de configuration",
             "ATTENTION_SELECTED": "Attention, vous n'avez sélectionné aucun élément",

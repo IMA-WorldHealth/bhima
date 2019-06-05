@@ -40,12 +40,14 @@ const groups = require('./groups');
 const documents = require('./documents');
 const visits = require('./visits');
 const pictures = require('./pictures');
+const merge = require('./merge');
 
 // bind submodules
 exports.groups = groups;
 exports.documents = documents;
 exports.visits = visits;
 exports.pictures = pictures;
+exports.merge = merge;
 
 // create a new patient
 exports.create = create;
