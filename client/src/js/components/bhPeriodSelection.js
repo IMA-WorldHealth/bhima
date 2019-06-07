@@ -13,7 +13,7 @@ angular.module('bhima.components')
   });
 
 PeriodSelectionController.$inject = [
-  'FiscalService', 'moment',
+  'FiscalService', '$translate',
 ];
 
 /**
@@ -24,7 +24,7 @@ PeriodSelectionController.$inject = [
  * opening balance period is not displayed.  One a period is selected, it is
  * returned via the onSelectCallback().
  */
-function PeriodSelectionController(Fiscal, moment) {
+function PeriodSelectionController(Fiscal, $translate) {
   const $ctrl = this;
 
   $ctrl.$onInit = () => {
@@ -55,7 +55,7 @@ function PeriodSelectionController(Fiscal, moment) {
       .then(periods => {
         periods.forEach(period => {
           // add 2 days to make sure timezone is accounted for
-          period.hrLabel = moment(period.start_date).add(2, 'days').format('MMMM YYYY');
+          period.hrLabel = `${$translate.instant(period.translate_key)} ${period.year}`;
         });
 
         $ctrl.periods = periods.filter(p => p.number !== 0);
