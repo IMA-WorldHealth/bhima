@@ -212,6 +212,9 @@ CREATE TABLE `rubric_payroll` (
   `is_associated_employee` TINYINT(1) DEFAULT 0,
   `is_seniority_bonus` TINYINT(1) DEFAULT 0,
   `is_family_allowances` TINYINT(1) DEFAULT 0,
+  `is_monetary_value`  TINYINT(1) DEFAULT 1,
+  `is_sum_of_rubrics`  TINYINT(1) DEFAULT 0,
+  `position`  TINYINT(1) DEFAULT 0,
   `value` float DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `rubric_payroll_1` (`label`),
@@ -220,6 +223,16 @@ CREATE TABLE `rubric_payroll` (
   KEY `expense_account_id` (`expense_account_id`),
   FOREIGN KEY (`debtor_account_id`) REFERENCES `account` (`id`),
   FOREIGN KEY (`expense_account_id`) REFERENCES `account` (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `rubric_payroll_item`;
+CREATE TABLE `rubric_payroll_item` (
+  `uuid` BINARY(16) NOT NULL,
+  `rubric_payroll_id` INT(10) UNSIGNED NOT NULL,
+  `item_id` INT(10) UNSIGNED NOT NULL,
+  UNIQUE KEY `uniq_item`(`rubric_payroll_id`, `item_id`),
+  FOREIGN KEY (`rubric_payroll_id`) REFERENCES `rubric_payroll` (`id`),
+  FOREIGN KEY (`item_id`) REFERENCES `rubric_payroll` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `cash_box_account_currency`;
@@ -895,6 +908,25 @@ CREATE TABLE `paiement_status` (
   `text` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `paiement_status` (`id`, `text`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `stage_payment_indice`;
+CREATE TABLE `stage_payment_indice` (
+  `uuid` BINARY(16) NOT NULL,
+  `employee_uuid` BINARY(16) NOT NULL,
+  `payroll_configuration_id` INT(10) UNSIGNED NOT NULL,
+  `currency_id` TINYINT(3) UNSIGNED DEFAULT NULL,
+  `rubric_id` INT(10)  UNSIGNED NOT NULL,
+  `rubric_value`  DECIMAL(19,4) NOT NULL,
+  PRIMARY KEY (`uuid`),
+  UNIQUE KEY `paiement_1` (`employee_uuid`, `rubric_id`, `payroll_configuration_id`),
+  KEY `employee_uuid` (`employee_uuid`),
+  KEY `payroll_configuration_id` (`payroll_configuration_id`),
+  KEY `currency_id` (`currency_id`),
+  FOREIGN KEY (`employee_uuid`) REFERENCES `employee` (`uuid`),
+  FOREIGN KEY (`rubric_id`) REFERENCES `rubric_payroll` (`id`),
+  FOREIGN KEY (`payroll_configuration_id`) REFERENCES `payroll_configuration` (`id`),
+  FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
@@ -2284,6 +2316,7 @@ CREATE TABLE `staffing_indice` (
   `fonction_id`   TINYINT(3) UNSIGNED DEFAULT NULL,
   `grade_indice` DECIMAL(19,4) NOT NULL,
   `function_indice` DECIMAL(19,4) NOT NULL,
+  `date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP NULL,
   PRIMARY KEY (`uuid`),
@@ -2291,5 +2324,38 @@ CREATE TABLE `staffing_indice` (
   FOREIGN KEY (`fonction_id`) REFERENCES `fonction` (`id`),
   FOREIGN KEY (`grade_uuid`) REFERENCES `grade` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+
+DROP TABLE IF EXISTS `staffing_grade_indice`;
+CREATE TABLE `staffing_grade_indice` (
+  `uuid` BINARY(16) NOT NULL,
+  `value`  DECIMAL(19,4) NOT NULL,
+  `grade_uuid` BINARY(16) NOT NULL,
+  PRIMARY KEY (`uuid`),
+  UNIQUE KEY `grade_uuid_uniq`(`grade_uuid`),
+  FOREIGN KEY (`grade_uuid`) REFERENCES `grade` (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `staffing_function_indice`;
+CREATE TABLE `staffing_function_indice` (
+  `uuid` BINARY(16) NOT NULL,
+  `value`  DECIMAL(19,4) NOT NULL,
+  `fonction_id`   TINYINT(3) UNSIGNED NOT NULL,
+  PRIMARY KEY (`uuid`),
+  UNIQUE KEY `fonction_id_uniq`(`fonction_id`),
+  FOREIGN KEY (`fonction_id`) REFERENCES `fonction` (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `staffing_indice_parameters`;
+CREATE TABLE `staffing_indice_parameters` (
+  `uuid` BINARY(16) NOT NULL,
+  `pay_envelope`  DECIMAL(19,4) NOT NULL,
+  `working_days`   TINYINT(3) UNSIGNED NOT NULL,
+  `payroll_configuration_id` INT(10) UNSIGNED NOT NULL,
+  PRIMARY KEY (`uuid`),
+  UNIQUE KEY `payroll_config_id`(`payroll_configuration_id`),
+  FOREIGN KEY (`payroll_configuration_id`) REFERENCES `payroll_configuration` (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
 
 SET foreign_key_checks = 1;

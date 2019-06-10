@@ -8,14 +8,17 @@ exports.update = update;
 exports.remove = remove;
 exports.lookUp = lookUp;
 
+exports.functionIndices = require('./functionIndice');
+exports.gradeIndices = require('./gradeIndice');
+
 
 function lookUp(options = {}) {
   const sql = `
     SELECT BUID(s.uuid) as uuid, BUID(g.uuid) as grade_uuid, 
-      s.created_at, g.code as code, g.text,  s.fonction_id,  f.fonction_txt,
-      grade_indice, function_indice, p.display_name
+    s.created_at, p.display_name, g.code as code, g.text,  s.fonction_id,  f.fonction_txt,
+      grade_indice, function_indice
     FROM staffing_indice s
-    JOIN fonction f ON f.id = s.fonction_id
+    LEFT JOIN fonction f ON f.id = s.fonction_id
     JOIN grade g ON g.uuid = s.grade_uuid
     JOIN employee e ON e.uuid = s.employee_uuid 
     JOIN patient p ON p.uuid = e.patient_uuid
@@ -25,6 +28,10 @@ function lookUp(options = {}) {
   const filters = new FilterParser(options, { tableAlias : 's' });
   filters.equals('uuid');
   filters.equals('grade_uuid');
+  filters.period('period', 'created_at');
+  filters.dateFrom('custom_period_start', 'created_at');
+  filters.dateTo('custom_period_end', 'created_at');
+
   filters.equals('fontion_id');
   filters.equals('employee_uuid');
   filters.setOrder('ORDER BY s.created_at, g.text, f.fonction_txt ASC');

@@ -14,6 +14,10 @@
     "PAYROLL_RUBRICS_LIST" : "Liste des rubriques de paie",
     "EDIT_PAYROLL_RUBRIC" : "Mettre à jour les informations de rubrique de Paie",
     "EDIT_PAYROLL_RUBRIC_CONFIGURATION" : "Mettre à jour une configuration des rubriques",
-    "TITLE" : "Gestion des rubriques de paie"
+    "TITLE" : "Gestion des rubriques de paie",
+    "IS_MONETARY_VALUE": "Cette rubrique est une valeur monnetaire",
+    "IS_SUM_OF_RUBRICS": "Cette rubrique est une somme des autres rubriques",
+    "SUM_OF_RUBRICS": "Somme des autres rubriques",
+    "MONETARY_VALUE": "Valeur monnetaire"
   }
 }

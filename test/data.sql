@@ -642,8 +642,13 @@ INSERT INTO `supplier` (uuid, creditor_uuid, display_name, address_1, address_2,
 -- Grade
 INSERT INTO `grade` VALUES
   (HUID('71e9f21c-d9b1-11e5-8ab7-78eb2f2a46e0'), 'G1', 'grade 1', 500.0000),
-  (HUID(UUID()), 'test', 'grade 3', 650.0000),
+  (HUID('61e9f21c-d9b1-11e4-8ab6-78eb2f2a46e0'), 'test', 'grade 3', 650.0000),
   (HUID('9ee06e4a-7b59-48e6-812c-c0f8a00cf7d3'), 'A1', '1.1', 50.0000);
+
+INSERT INTO `staffing_grade_indice` (`uuid`, `value`, `grade_uuid`) VALUES
+ (HUID(UUID()), 125.0000, HUID('61e9f21c-d9b1-11e4-8ab6-78eb2f2a46e0')),
+(HUID(UUID()), 60.0000, HUID('71e9f21c-d9b1-11e5-8ab7-78eb2f2a46e0')),
+(HUID(UUID()), 10.0000, HUID('9ee06e4a-7b59-48e6-812c-c0f8a00cf7d3'));
 
 
 -- Offday

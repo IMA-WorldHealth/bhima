@@ -215,6 +215,10 @@ INSERT INTO `fonction` VALUES
   (1,'Infirmier'),
   (2,'Medecin Directeur');
 
+INSERT INTO `staffing_function_indice` (`uuid`, `value`, `fonction_id`) VALUES
+(HUID(uuid()), 60.0000, 1),
+(HUID(uuid()), 125.0000, 2);
+
 -- transaction type
 INSERT INTO `transaction_type` (`id`, `text`, `type`, `fixed`) VALUES
   (1, 'VOUCHERS.SIMPLE.GENERIC_INCOME', 'income', 1),

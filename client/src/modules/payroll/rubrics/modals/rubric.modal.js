@@ -6,29 +6,49 @@ RubricModalController.$inject = [
 ];
 
 function RubricModalController($state, Rubrics, ModalService, Notify, AppCache) {
-  var vm = this;
-  vm.rubric = {};
+  const vm = this;
+  vm.rubric = {
+    is_monetary_value : 1,
+    rubrics : [],
+  };
 
-  var cache = AppCache('RubricModal');
+  const cache = AppCache('RubricModal');
 
   if ($state.params.creating || $state.params.id) {
-    vm.stateParams = cache.stateParams = $state.params;
+    vm.stateParams = $state.params;
+    cache.stateParams = $state.params;
   } else {
     vm.stateParams = cache.stateParams;
   }
   vm.isCreating = vm.stateParams.creating;
 
-  vm.selectDebtorAccount = function selectDebtorAccount(account) {
+  vm.selectDebtorAccount = (account) => {
     vm.rubric.debtor_account_id = account.id;
   };
+  vm.onSelectRubrics = (rubrics) => {
+    vm.rubric.rubrics = rubrics;
+  };
+  vm.onSelectRemoveRubrics = (id) => {
+    vm.rubric.rubrics.forEach((val, index) => {
+      if (val === id) {
+        delete vm.rubric.rubrics[index];
+      }
+    });
+  };
 
-  vm.selectExpenseAccount = function selectExpenseAccount(account) {
+
+  vm.selectExpenseAccount = (account) => {
     vm.rubric.expense_account_id = account.id;
   };
 
-  vm.setMaxPercent = function setMaxPercent() {
-    vm.maxPercent = vm.rubric.is_percent ? true : false; 
-  }
+  vm.setMaxPercent = () => {
+    vm.maxPercent = vm.rubric.is_percent ? (!!vm.rubric.is_percent) : false;
+  };
+
+  vm.onInputTextChange = (key, value) => {
+    vm.rubric[key] = value;
+  };
+
 
   // exposed methods
   vm.submit = submit;
@@ -36,9 +56,8 @@ function RubricModalController($state, Rubrics, ModalService, Notify, AppCache) 
 
   if (!vm.isCreating) {
     Rubrics.read(vm.stateParams.id)
-      .then(function (rubric) {
+      .then((rubric) => {
         vm.rubric = rubric;
-
         vm.setting = true;
       })
       .catch(Notify.handleError);
@@ -46,28 +65,30 @@ function RubricModalController($state, Rubrics, ModalService, Notify, AppCache) 
 
   // submit the data to the server from all two forms (update, create)
   function submit(rubricForm) {
-    var promise;
 
-    if(!vm.rubric.is_discount){
+
+    if (!vm.rubric.is_discount) {
       vm.rubric.is_discount = 0;
       vm.rubric.is_tax = 0;
       vm.rubric.is_ipr = 0;
     }
 
-    if(vm.rubric.is_discount){
+    if (vm.rubric.is_discount) {
       vm.rubric.is_discount = 1;
       vm.rubric.is_social_care = 0;
     }
 
+    if (!vm.rubric.is_sum_of_rubrics) {
+      vm.rubric.rubrics = [];
+    }
+
     if (rubricForm.$invalid || rubricForm.$pristine) { return 0; }
 
-    promise = (vm.isCreating) ?
-      Rubrics.create(vm.rubric) :
-      Rubrics.update(vm.rubric.id, vm.rubric);
+    const promise = (vm.isCreating) ? Rubrics.create(vm.rubric) : Rubrics.update(vm.rubric.id, vm.rubric);
 
     return promise
-      .then(function () {
-        var translateKey = (vm.isCreating) ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
+      .then(() => {
+        const translateKey = (vm.isCreating) ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
         Notify.success(translateKey);
         $state.go('rubrics', null, { reload : true });
       })

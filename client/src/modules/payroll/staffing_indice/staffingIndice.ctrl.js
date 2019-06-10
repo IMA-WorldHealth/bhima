@@ -2,12 +2,55 @@ angular.module('bhima.controllers')
   .controller('StaffingIndiceController', StaffingIndiceController);
 
 StaffingIndiceController.$inject = [
-  '$uibModal', 'StaffingIndiceService', 'SessionService', 'ModalService',
+  '$state', '$uibModal', 'StaffingIndiceService', 'SessionService', 'ModalService',
   'NotifyService', 'bhConstants', 'uiGridConstants',
+  'LanguageService', '$httpParamSerializer', 'GridColumnService',
 ];
 
-function StaffingIndiceController($uibModal, StaffingIndice, Session, Modal, Notify, bhConstants, uiGridConstants) {
+function StaffingIndiceController($state, $uibModal, StaffingIndice,
+  Session, Modal, Notify, bhConstants, uiGridConstants, Languages, $httpParamSerializer, Columns) {
   const vm = this;
+
+  function init() {
+    // open search modal
+    const {
+      filters,
+    } = $state.params;
+    if (filters.length > 0) {
+      StaffingIndice.filters.replaceFilters(filters);
+      StaffingIndice.cacheFilters();
+      $state.params.filters = [];
+    } else {
+      StaffingIndice.loadCachedFilters();
+    }
+
+    vm.latestViewFilters = StaffingIndice.filters.formatView();
+    const params = StaffingIndice.filters.formatHTTP(true);
+    loadIndexes(params || {});
+  }
+
+  vm.openSearchModal = function openSearchModal() {
+    const filtersSnapshot = StaffingIndice.filters.formatHTTP();
+
+    StaffingIndice.openSearchModal(filtersSnapshot)
+      .then((changes) => {
+        if (!changes) return;
+
+        StaffingIndice.filters.replaceFilters(changes);
+        StaffingIndice.cacheFilters();
+        vm.latestViewFilters = StaffingIndice.filters.formatView();
+        loadIndexes(StaffingIndice.filters.formatHTTP(true));
+      })
+      .catch(angular.noop);
+  };
+
+  // remove a filter with from the filter object, save the filters and reload
+  vm.onRemoveFilter = (key) => {
+    StaffingIndice.removeFilter(key);
+    StaffingIndice.cacheFilters();
+    vm.latestViewFilters = StaffingIndice.filters.formatView();
+    return loadIndexes(StaffingIndice.filters.formatHTTP(true));
+  };
 
 
   vm.remove = function remove(uuid) {
@@ -27,9 +70,9 @@ function StaffingIndiceController($uibModal, StaffingIndice, Session, Modal, Not
       });
   };
 
-  function loadIndexes() {
+  function loadIndexes(params) {
     vm.loading = true;
-    StaffingIndice.read()
+    StaffingIndice.read(null, params)
       .then(indexes => {
         vm.gridOptions.data = indexes;
       })
@@ -63,14 +106,16 @@ function StaffingIndiceController($uibModal, StaffingIndice, Session, Modal, Not
       headerCellFilter : 'translate',
     },
     {
-      field : 'function_indice',
+      field : 'grade_indice',
       displayName : 'FORM.LABELS.ENROLLMENT_BONUS',
       headerCellFilter : 'translate',
+      cellClass : 'text-right',
     },
     {
-      field : 'grade_indice',
+      field : 'function_indice',
       displayName : 'FORM.LABELS.FUNCTION_BONUS',
       headerCellFilter : 'translate',
+      cellClass : 'text-right',
     },
     {
       field : 'actions',
@@ -95,18 +140,19 @@ function StaffingIndiceController($uibModal, StaffingIndice, Session, Modal, Not
     },
   };
 
+  const columnConfig = new Columns(vm.gridOptions, 'stafing-indices');
   /**
    * @function toggleInlineFilter
    *
    * @description
    * Switches the inline filter on and off.
    */
-  vm.toggleInlineFilter = function toggleInlineFilter() {
+  vm.toggleInlineFilter = () => {
     vm.gridOptions.enableFiltering = !vm.gridOptions.enableFiltering;
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   };
 
-  vm.createUpdateModal = function createUpdateRoleModal(index = {}) {
+  vm.createUpdateModal = (index = {}) => {
     $uibModal.open({
       templateUrl : 'modules/payroll/staffing_indice/modal/createUpdate.html',
       controller : 'StaffingIndiceModalController as $ctrl',
@@ -116,5 +162,49 @@ function StaffingIndiceController($uibModal, StaffingIndice, Session, Modal, Not
     });
   };
 
-  loadIndexes();
+
+  vm.openGradeIndiceModal = () => {
+    $uibModal.open({
+      templateUrl : 'modules/payroll/staffing_indice/modal/gradeIndiceModal.html',
+      controller : 'GradeIndiceModalController as $ctrl',
+    });
+  };
+
+  vm.openFunctionIndiceModal = () => {
+    $uibModal.open({
+      templateUrl : 'modules/payroll/staffing_indice/modal/funcitonIndiceModal.html',
+      controller : 'FunctionIndiceModalController as $ctrl',
+    });
+  };
+
+  vm.downloadExcel = () => {
+    const displayNames = columnConfig.getDisplayNames();
+    const filterOpts = StaffingIndice.filters.formatHTTP();
+    const defaultOpts = {
+      renderer : 'xlsx',
+      lang : Languages.key,
+      ignoredColumns : ['grade_uuid', 'code', 'fonction_id'],
+      renameKeys : true,
+      rowsDataKey : 'indices',
+      displayNames,
+    };
+    // combine options
+    const options = angular.merge(defaultOpts, filterOpts);
+    // return  serialized options
+    return $httpParamSerializer(options);
+  };
+
+  vm.downloadPdf = () => {
+    const filterOpts = StaffingIndice.filters.formatHTTP();
+    const defaultOpts = {
+      renderer : 'pdf',
+      lang : Languages.key,
+    };
+    // combine options
+    const options = angular.merge(defaultOpts, filterOpts);
+    // return  serialized options
+    return $httpParamSerializer(options);
+  };
+
+  init();
 }

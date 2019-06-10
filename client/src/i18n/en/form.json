@@ -546,6 +546,7 @@
             "ORDER": "Order",
             "ORDER_BY": "Order By",
             "PARENT_ACCOUNT": "Parent Account",
+            "PAY_ENVELOPE" : "Pay envelope",
             "PASSIVE": "Passive",
             "WARD":"Ward",
             "PASSWORD": "Password",

@@ -14,6 +14,10 @@
     "PAYROLL_RUBRICS_LIST"  : "Payroll Rubrics list",
     "EDIT_PAYROLL_RUBRIC"   : "Edit Payroll Rubric",
     "EDIT_PAYROLL_RUBRIC_CONFIGURATION"   : "Edit Payroll Rubric Configuration",
-    "TITLE"                 : "Payroll Rubric Management"
+    "TITLE"                 : "Payroll Rubric Management",
+    "IS_SUM_OF_RUBRICS": "This rubric is a sum of others",
+    "SUM_OF_RUBRICS": "Sum of others",
+    "IS_MONETARY_VALUE": "This rubric is a monetary value",
+    "MONETARY_VALUE": "Monetary value"
   }
 }

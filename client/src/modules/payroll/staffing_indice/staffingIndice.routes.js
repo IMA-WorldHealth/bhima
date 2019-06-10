@@ -5,5 +5,9 @@ angular.module('bhima.routes')
       url : '/staffing_indices',
       templateUrl : 'modules/payroll/staffing_indice/staffingIndice.html',
       controller : 'StaffingIndiceController as StaffingIndiceCtrl',
+      params : {
+        filters : [],
+        scrollTo : null,
+      },
     });
   }]);

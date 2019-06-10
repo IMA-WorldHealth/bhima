@@ -12,7 +12,7 @@
     </ol>
   </div>
 
-  <div class="modal-body">
+  <div class="modal-body" style="height: 400px; overflow-y: scroll">
     <div class="form-group" ng-class="{ 'has-error' : RubricForm.$submitted && RubricForm.label.$invalid }">
       <label class="control-label" translate>FORM.LABELS.DESIGNATION</label>
       <input name="label" ng-model="RubricModalCtrl.rubric.label" autocomplete="off" class="form-control" required>
@@ -36,7 +36,7 @@
       name="debtor_account_id"
       on-select-callback="RubricModalCtrl.selectDebtorAccount(account)"
       exclude-title-accounts="true"
-      required="true">
+      required="false">
     </bh-account-select>
 
     <bh-account-select
@@ -46,7 +46,7 @@
       name="expense_account_id"
       on-select-callback="RubricModalCtrl.selectExpenseAccount(account)"
       exclude-title-accounts="true"
-      required="true">
+      required="false">
     </bh-account-select>
 
     <div ng-if="RubricModalCtrl.rubric.is_percent" class="form-group" ng-class="{ 'has-error' : RubricForm.$submitted && RubricForm.value.$invalid }">
@@ -93,7 +93,47 @@
         </label>
       </div>
     </div>
+    <div class="form-group">
+        <label translate>PAYROLL_RUBRIC.IS_MONETARY_VALUE</label>
+        <div class="checkbox">
+          <label>
+            <input
+              type="checkbox"
+              name="is_monetary_value"
+              ng-true-value="1"
+              ng-false-value="0"
+              ng-model="RubricModalCtrl.rubric.is_monetary_value">
+            <span translate>PAYROLL_RUBRIC.MONETARY_VALUE</span>
+          </label>
+        </div>
+      </div>
+      <div class="form-group">
+          <label translate>PAYROLL_RUBRIC.IS_SUM_OF_RUBRICS</label>
+          <div class="checkbox">
+            <label>
+              <input
+                type="checkbox"
+                name="is_sum_of_rubrics"
+                ng-true-value="1"
+                ng-false-value="0"
+                ng-model="RubricModalCtrl.rubric.is_sum_of_rubrics">
+              <span translate>PAYROLL_RUBRIC.SUM_OF_RUBRICS</span>
+            </label>
+          </div>
+          <bh-rubric-select
+            id="rubrics"
+            ng-if="RubricModalCtrl.rubric.is_sum_of_rubrics"
+            rubrics = "RubricModalCtrl.rubric.rubrics"
+            on-select-callback="RubricModalCtrl.onSelectRubrics(rubrics)">
+        </bh-rubric-select>
 
+        <bh-input-text
+          key="position"
+          label="FORM.LABELS.POSITION"
+          text-value="RubricModalCtrl.rubric.position"
+          on-change="$ctrl.onInputTextChange(key, value)">
+        </bh-input-text>
+      </div>
     <div class="form-group">
       <label translate>FORM.INFO.IS_DISCOUNT</label>
       <div class="radio">

@@ -68,6 +68,10 @@ SOURCE server/models/procedures/account.sql
 SOURCE server/models/procedures/roles.sql
 
 /*
+  payroll procedures
+*/
+SOURCE server/models/procedures/payroll.sql
+/*
   analysis procedures
 */
 SOURCE server/models/procedures/analysis.sql
