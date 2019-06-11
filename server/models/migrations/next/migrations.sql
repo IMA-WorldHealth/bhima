@@ -200,3 +200,12 @@ ALTER TABLE invoice_invoicing_fee ADD PRIMARY KEY (invoice_uuid, invoicing_fee_i
  * @date: 2019-05-31
 */
 ALTER TABLE `service` ADD COLUMN project_id SMALLINT(5) UNSIGNED NOT NULL;
+
+/*
+ * @author: mbayopanda
+ * @date: 2019-06-11
+ * @description:
+ * fix depot path, the id is 20, but we just use name and key
+ * to be sure we update depot for all databases
+*/
+UPDATE unit SET path="/depots" WHERE `name`="Depot Management" AND `key`="DEPOT.TITLE";
