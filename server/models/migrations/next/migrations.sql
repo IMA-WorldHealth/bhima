@@ -256,3 +256,31 @@ call UpdatePeriodLabels();
  * @description: move entity management into entity folder
 */
 UPDATE unit SET parent = 240 WHERE id = 12;
+
+/*
+ * @author: mbayopanda
+ * @date: 2019-06-10
+ * @description: cron emailing tables
+ */
+DROP TABLE IF EXISTS `cron`;
+CREATE TABLE `cron` (
+  `id` SMALLINT(5) NOT NULL AUTO_INCREMENT,
+  `label` VARCHAR(150) NOT NULL,
+  `value` VARCHAR(20) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `cron_email_report`;
+CREATE TABLE `cron_email_report` (
+  `id` SMALLINT(5) NOT NULL AUTO_INCREMENT,
+  `entity_group_uuid` BINARY(16) NOT NULL,
+  `cron_id` SMALLINT(5) NOT NULL,
+  `report_id` SMALLINT(5) NOT NULL,
+  `report_url` VARCHAR(200) NOT NULL,
+  `params` TEXT NULL,
+  `label` VARCHAR(200) NOT NULL,
+  `last_send` DATETIME NULL,
+  `next_send` DATETIME NULL,
+  `is_last_send_succeed` TINYINT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;

@@ -335,3 +335,10 @@ INSERT INTO `indicator_type`(`id`, `text`,`translate_key`)VALUES
   (1, 'hospitalization', 'DASHBOARD.HOSPITALIZATION'),
   (2, 'staff', 'DASHBOARD.STAFF'),
   (3, 'fianance', 'DASHBOARD.FINANCE');
+
+-- cron
+INSERT INTO `cron` (`label`, `value`) VALUES 
+  ('CRON.DAILY', '0 1 * * *'),
+  ('CRON.WEEKLY', '0 1 * * 0'),
+  ('CRON.MONTHLY', '0 1 30 * *'),
+  ('CRON.YEARLY', '0 1 31 12 *');

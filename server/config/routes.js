@@ -38,6 +38,8 @@ const languages = require('../controllers/admin/languages');
 const locations = require('../controllers/admin/locations');
 const groups = require('../controllers/groups');
 const entities = require('../controllers/admin/entities');
+const cron = require('../controllers/admin/cron');
+const cronEmailReport = require('../controllers/admin/cronEmailReport');
 
 // payroll routes
 const payrollConfig = require('../controllers/payroll/configuration');
@@ -927,4 +929,18 @@ exports.configure = function configure(app) {
   // API dashboard
   app.get('/indicators/dashboards', dashboard.getIndicators);
   app.get('/reports/indicatorsReport', indicatorRerpor.report);
+
+  // API cron
+  app.get('/crons', cron.list);
+  app.get('/crons/:id', cron.details);
+  app.post('/crons', cron.create);
+  app.put('/crons/:id', cron.update);
+  app.delete('/crons/:id', cron.remove);
+
+  // API cron_email_report
+  app.get('/cron_email_reports', cronEmailReport.list);
+  app.get('/cron_email_reports/:id', cronEmailReport.details);
+  app.post('/cron_email_reports', cronEmailReport.create);
+  app.put('/cron_email_reports/:id', cronEmailReport.update);
+  app.delete('/cron_email_reports/:id', cronEmailReport.remove);
 };

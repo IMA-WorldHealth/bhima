@@ -1,0 +1,59 @@
+<section>
+  <!-- form -->
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <i class="fa fa-envelope-o"></i>
+      <span translate>CRON.AUTO_EMAIL_REPORT</span>
+    </div>
+    <div class="panel-body">
+      <form name="CronForm" bh-submit="$ctrl.submit(CronForm, $ctrl.reportForm)" novalidate>
+        <!-- label -->
+        <div class="form-group">
+          <label for="cronReportLabel" translate>FORM.LABELS.LABEL</label>
+          <input type="text" class="form-control" id="cronReportLabel" ng-model="$ctrl.cron.label">
+        </div>
+  
+        <!-- group -->
+        <div class="form-group">
+          <bh-entity-group-select
+            uuid="$ctrl.cron.entity_group_uuid"
+            on-select-callback="$ctrl.onSelectEntityGroup(entityGroup)"
+          ></bh-entity-group-select>
+        </div>
+  
+        <!-- frequency -->
+        <div class="form-group">
+          <bh-cron-select 
+            id="$ctrl.cron.cron_id"
+            on-select-callback="$ctrl.onSelectCron(cron)">
+          </bh-cron-select>
+        </div>
+  
+        <div class="text-right">
+          <button type="button" ng-click="$ctrl.submit(CronForm, $ctrl.reportForm)" class="btn btn-primary" translate>
+            CRON.SAVE
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- table -->
+  <div ng-if="$ctrl.list.length" class="panel panel-info">
+    <div class="panel-heading">
+      <i class="fa fa-clock-o"></i>
+      <span translate>CRON.SAVED_AUTO_REPORT</span>
+    </div>
+    <table class="table table-condensed">
+      <tbody>
+        <tr ng-repeat="item in $ctrl.list track by item.id">
+          <td>Report Label</td>
+          <td>Recipient <i>(Monthly)</i></td>
+          <td><span translate>CRON.LAST</span>: 10:34</td>
+          <td><span translate>CRON.NEXT</span>: 12:23</td>
+          <td><i class="fa fa-trash text-danger"></i></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>

@@ -1,0 +1,18 @@
+{
+  "CRON":{
+    "TITLE":"Cron",
+    "AUTO_EMAIL_REPORT":"Envoi automatique de rapport par email",
+    "FREQUENCY":"Fréquence",
+    "RECEIVERS":"Recepteurs",
+    "DAILY":"Chaque jour",
+    "WEEKLY":"Chaque semaine",
+    "MONTHLY":"Chaque mois",
+    "YEARLY":"Chaque année",
+    "SAVE":"Sauvegarder",
+    "SAVED_AUTO_REPORT":"Rapports sauvegardés pour le mailing",
+    "LAST":"Dernier",
+    "NEXT":"Prochain",
+    "PLEASE_FILL_REPORT_FORM":"Veuillez remplir correctement le formulaire du rapport",
+    "PLEASE_FILL_CRON_FORM":"Veuillez remplir correctement le formulaire des emails"
+  }
+}

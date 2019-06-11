@@ -1,0 +1,18 @@
+{
+  "CRON":{
+    "TITLE":"Cron",
+    "AUTO_EMAIL_REPORT":"Auto sending report by email",
+    "FREQUENCY":"Frequency",
+    "RECEIVERS":"Receivers",
+    "DAILY":"Daily",
+    "WEEKLY":"Weekly",
+    "MONTHLY":"Monthly",
+    "YEARLY":"Yearly",
+    "SAVE":"Save",
+    "SAVED_AUTO_REPORT":"Saved report for mailing",
+    "LAST":"Last",
+    "NEXT":"Next",
+    "PLEASE_FILL_REPORT_FORM":"Please fill correctly the report form",
+    "PLEASE_FILL_CRON_FORM":"Please fill correctly the email form"
+  }
+}
