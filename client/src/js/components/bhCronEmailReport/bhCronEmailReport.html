@@ -47,11 +47,11 @@
     <table class="table table-condensed">
       <tbody>
         <tr ng-repeat="item in $ctrl.list track by item.id">
-          <td>Report Label</td>
-          <td>Recipient <i>(Monthly)</i></td>
-          <td><span translate>CRON.LAST</span>: 10:34</td>
-          <td><span translate>CRON.NEXT</span>: 12:23</td>
-          <td><i class="fa fa-trash text-danger"></i></td>
+          <td><span class="text-action" ng-click="$ctrl.details(item.id)">{{ item.label}}</span></td>
+          <td><a ui-sref="entityGroup">{{ item.entity_group_label }}</a> <i>(<span translate>{{ item.cron_label }}</span>)</i></td>
+          <td><span ng-if="item.last_send"><span translate>CRON.LAST</span>: {{ item.last_send | date }}</span></td>
+          <td><span ng-if="item.next_send"><span translate>CRON.NEXT</span>: {{ item.next_send | date }}</span></td>
+          <td><a href ng-click="$ctrl.remove(item.id)"><i class="fa fa-trash text-danger"></i></a></td>
         </tr>
       </tbody>
     </table>

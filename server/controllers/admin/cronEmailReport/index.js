@@ -73,9 +73,11 @@ function create(req, res, next) {
   const query = `
     INSERT INTO cron_email_report SET ?;
   `;
-  const params = req.body;
-  console.log(params);
-  db.exec(query, [params])
+  const { cron, report } = req.body;
+  db.convert(cron, ['entity_group_uuid']);
+  cron.params = JSON.stringify(report);
+
+  db.exec(query, [cron])
     .then((result) => {
       res.status(201).json({ id : result.insertId });
     })

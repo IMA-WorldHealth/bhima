@@ -80,8 +80,11 @@
 
     <div class="col-md-6">
       <bh-cron-email-report
+        report-id="4"
+        report-url="/reports/finance/balance"
         report-form="ConfigForm"
-        report-details="ReportConfigCtrl.reportDetails">
+        report-details="ReportConfigCtrl.reportDetails"
+        on-select-report="ReportConfigCtrl.onSelectCronReport(report)">
       </bh-cron-email-report>
     </div>
   </div>
