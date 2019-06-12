@@ -31,15 +31,22 @@ function bhCronEmailReportController(CronEmailReports, Notify) {
     $ctrl.cron.cron_id = cron.id;
   };
 
+  $ctrl.onChangeDynamicDates = value => {
+    $ctrl.cron.has_dynamic_dates = value;
+  };
+
   $ctrl.$onInit = () => {
     $ctrl.cron = {
       report_id : $ctrl.reportId,
       report_url : $ctrl.reportUrl,
+      has_dynamic_dates : 0,
     };
+
+    load();
   };
 
   function load() {
-    CronEmailReports.read()
+    CronEmailReports.read(null, { report_id : $ctrl.reportId })
       .then(rows => {
         $ctrl.list = rows;
       })
@@ -75,13 +82,11 @@ function bhCronEmailReportController(CronEmailReports, Notify) {
 
     const params = {
       cron : $ctrl.cron,
-      report : $ctrl.reportDetails,
+      reportOptions : $ctrl.reportDetails,
     };
 
     CronEmailReports.create(params)
       .then(() => load())
       .catch(Notify.handleError);
   }
-
-  load();
 }

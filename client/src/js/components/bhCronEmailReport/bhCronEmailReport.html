@@ -28,6 +28,13 @@
             on-select-callback="$ctrl.onSelectCron(cron)">
           </bh-cron-select>
         </div>
+
+        <!-- dates behaviour -->
+        <bh-yes-no-radios
+          label="CRON.DYNAMIC_DATES"
+          value="$ctrl.cron.has_dynamic_dates"
+          on-change-callback="$ctrl.onChangeDynamicDates(value)">
+        </bh-yes-no-radios>
   
         <div class="text-right">
           <button type="button" ng-click="$ctrl.submit(CronForm, $ctrl.reportForm)" class="btn btn-primary" translate>
@@ -49,8 +56,9 @@
         <tr ng-repeat="item in $ctrl.list track by item.id">
           <td><span class="text-action" ng-click="$ctrl.details(item.id)">{{ item.label}}</span></td>
           <td><a ui-sref="entityGroup">{{ item.entity_group_label }}</a> <i>(<span translate>{{ item.cron_label }}</span>)</i></td>
-          <td><span ng-if="item.last_send"><span translate>CRON.LAST</span>: {{ item.last_send | date }}</span></td>
-          <td><span ng-if="item.next_send"><span translate>CRON.NEXT</span>: {{ item.next_send | date }}</span></td>
+          <td><span ng-if="item.last_send"><span translate>CRON.LAST</span>: {{ item.last_send | date:'dd MMMM yyyy, hh:mm' }}</span></td>
+          <td><span ng-if="item.next_send"><span translate>CRON.NEXT</span>: {{ item.next_send | date:'dd MMMM yyyy, hh:mm' }}</span></td>
+          <td><a href ng-click="$ctrl.send(item.id)"><i class="fa fa-send text-success"></i></a></td>
           <td><a href ng-click="$ctrl.remove(item.id)"><i class="fa fa-trash text-danger"></i></a></td>
         </tr>
       </tbody>

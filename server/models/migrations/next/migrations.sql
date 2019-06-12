@@ -281,6 +281,6 @@ CREATE TABLE `cron_email_report` (
   `label` VARCHAR(200) NOT NULL,
   `last_send` DATETIME NULL,
   `next_send` DATETIME NULL,
-  `is_last_send_succeed` TINYINT NULL,
+  `has_dynamic_dates` TINYINT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;

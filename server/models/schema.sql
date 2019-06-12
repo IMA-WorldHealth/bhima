@@ -1406,7 +1406,7 @@ CREATE TABLE `cron_email_report` (
   `label` VARCHAR(200) NOT NULL,
   `last_send` DATETIME NULL,
   `next_send` DATETIME NULL,
-  `is_last_send_succeed` TINYINT NULL,
+  `has_dynamic_dates` TINYINT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `label` (`label`),
   KEY `entity_group_uuid` (`entity_group_uuid`),

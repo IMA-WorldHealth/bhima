@@ -13,6 +13,9 @@
     "LAST":"Dernier",
     "NEXT":"Prochain",
     "PLEASE_FILL_REPORT_FORM":"Veuillez remplir correctement le formulaire du rapport",
-    "PLEASE_FILL_CRON_FORM":"Veuillez remplir correctement le formulaire des emails"
+    "PLEASE_FILL_CRON_FORM":"Veuillez remplir correctement le formulaire des emails",
+    "DATES_BEHAVIOR":"Comportement des dates",
+    "FIXED_DATES":"Dates fixes",
+    "DYNAMIC_DATES":"Dates dynamiques"
   }
 }

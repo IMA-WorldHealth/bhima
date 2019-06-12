@@ -2,14 +2,21 @@
  * HTTP END POINT
  * API controller for the table cron_email_report
  */
-const db = require('../../../lib/db');
+const axios = require('axios');
+const debug = require('debug')('app');
 
-function list(req, res, next) {
-  const query = `
+const db = require('../../../lib/db');
+const CronJob = require('../../../lib/cronjob');
+const Moment = require('../../../lib/moment');
+const FilterParser = require('../../../lib/filter');
+
+function find(options = {}) {
+  const filters = new FilterParser(options, { tableAlias : 'cer' });
+  const sql = `
     SELECT 
       cer.id, cer.entity_group_uuid, cer.cron_id, cer.report_id, 
       cer.report_url, cer.params, cer.label, cer.last_send,
-      cer.next_send, cer.is_last_send_succeed,
+      cer.next_send, cer.has_dynamic_dates,
       eg.label AS entity_group_label,
       c.label AS cron_label, c.value AS cron_value,
       r.report_key, r.title_key
@@ -18,18 +25,19 @@ function list(req, res, next) {
     JOIN cron c ON c.id = cer.cron_id
     JOIN report r ON r.id = cer.report_id
   `;
-  db.exec(query)
-    .then(rows => res.status(200).json(rows))
-    .catch(next)
-    .done();
+
+  filters.equals('id');
+  const query = filters.applyQuery(sql);
+  const parameters = filters.parameters();
+  return db.exec(query, parameters);
 }
 
-function details(req, res, next) {
+function lookup(id) {
   const query = `
     SELECT 
       cer.id, cer.entity_group_uuid, cer.cron_id, cer.report_id, 
       cer.report_url, cer.params, cer.label, cer.last_send,
-      cer.next_send, cer.is_last_send_succeed,
+      cer.next_send, cer.has_dynamic_dates,
       eg.label AS entity_group_label,
       c.label AS cron_label, c.value AS cron_value,
       r.report_key, r.title_key
@@ -39,7 +47,18 @@ function details(req, res, next) {
     JOIN report r ON r.id = cer.report_id
     WHERE cer.id = ?;
   `;
-  db.one(query, [req.params.id])
+  return db.one(query, [id]);
+}
+
+function list(req, res, next) {
+  find(req.query)
+    .then(rows => res.status(200).json(rows))
+    .catch(next)
+    .done();
+}
+
+function details(req, res, next) {
+  lookup(req.params.id)
     .then((data) => res.status(200).json(data))
     .catch(next)
     .done();
@@ -69,21 +88,130 @@ function remove(req, res, next) {
     .done();
 }
 
-function create(req, res, next) {
-  const query = `
-    INSERT INTO cron_email_report SET ?;
-  `;
-  const { cron, report } = req.body;
-  db.convert(cron, ['entity_group_uuid']);
-  cron.params = JSON.stringify(report);
+async function create(req, res, next) {
+  try {
+    const query = `
+      INSERT INTO cron_email_report SET ?;
+    `;
+    const { cron, reportOptions } = req.body;
+    const options = addDynamicDatesOptions(cron.cron_id, cron.has_dynamic_dates, reportOptions);
 
-  db.exec(query, [cron])
-    .then((result) => {
-      res.status(201).json({ id : result.insertId });
-    })
-    .catch(next)
-    .done();
+    db.convert(cron, ['entity_group_uuid']);
+    cron.params = JSON.stringify(options);
+
+    const result = await db.exec(query, [cron]);
+    const created = await lookup(result.insertId);
+    await createEmailReportJob(created, sendEmailReport.call(this, created));
+
+    res.status(201).json({ id : result.insertId });
+  } catch (error) {
+    next(error);
+  }
 }
+
+/**
+ * @function addJob
+ * @description add a cron job to run each time for the given pattern
+ * @param {string} frequency Cron job pattern * * * * *
+ * @param {function} cb the function to run
+ */
+function addJob(frequency, cb) {
+  const cj = new CronJob(frequency, cb);
+  cj.start();
+  return cj.job;
+}
+
+/**
+ * @method launchCronEmailReportJobs
+ * @description at the startup, read all cron email reports
+ * in the database and create jobs for them
+ */
+function launchCronEmailReportJobs() {
+  find()
+    .then(rows => {
+      if (!rows.length) { return null; }
+      const jobs = rows.map(row => createEmailReportJob(row, sendEmailReport.call(this, row)));
+      return Promise.all(jobs);
+    })
+    .then(() => debug('Reports scanned successfully'));
+}
+
+/**
+ * @function createEmailReportJob
+ * @param {object} record A row of cron email report
+ * @param {*} cb The function to run
+ */
+function createEmailReportJob(record, cb) {
+  const job = addJob(record.cron_value, cb);
+  return updateCronEmailReportJobDates(record.id, job);
+}
+
+/**
+ * @function createReportDocument
+ * @param {object} record A row of cron email report
+ * @param {object} options The report options
+ */
+function createReportDocument(record, options) {
+  console.log(record, options);
+}
+
+function sendEmailReport(params) {
+  console.log('>>> send report by mail <<< with params :', params);
+}
+
+function addDynamicDatesOptions(cronId, hasDynamicDates, options) {
+  // cron ids
+  const DAILY = 1;
+  const WEEKLY = 2;
+  const MONTHLY = 3;
+  const YEARLY = 4;
+
+  const period = new Moment(new Date());
+
+  if (hasDynamicDates) {
+    if (cronId === DAILY) {
+      options.dateFrom = period.day().dateFrom;
+      options.dateTo = period.day().dateTo;
+      options.custom_period_start = period.day().dateFrom;
+      options.custom_period_end = period.day().dateTo;
+    }
+
+    if (cronId === WEEKLY) {
+      options.dateFrom = period.week().dateFrom;
+      options.dateTo = period.week().dateTo;
+      options.custom_period_start = period.week().dateFrom;
+      options.custom_period_end = period.week().dateTo;
+    }
+
+    if (cronId === MONTHLY) {
+      options.dateFrom = period.month().dateFrom;
+      options.dateTo = period.month().dateTo;
+      options.custom_period_start = period.month().dateFrom;
+      options.custom_period_end = period.month().dateTo;
+    }
+
+    if (cronId === YEARLY) {
+      options.dateFrom = period.year().dateFrom;
+      options.dateTo = period.year().dateTo;
+      options.custom_period_start = period.year().dateFrom;
+      options.custom_period_end = period.year().dateTo;
+    }
+  }
+  return options;
+}
+
+function updateCronEmailReportJobDates(id, job) {
+  const sql = `
+    UPDATE cron_email_report SET ? WHERE id = ?;
+  `;
+  const params = {
+    last_send : job.lastDate() ? job.lastDate().toDate() : null,
+    next_send : job.nextDate() ? job.nextDate().toDate() : null,
+  };
+  return db.exec(sql, [params, id]);
+}
+
+launchCronEmailReportJobs();
 
 exports.list = list;
 exports.details = details;
