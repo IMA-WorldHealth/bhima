@@ -58,7 +58,6 @@
     "angular-ui-bootstrap": "^2.5.6",
     "angular-ui-grid": "^4.8.0",
     "angular-ui-router": "angular-ui/angular-ui-router-bower#1.0.0-rc.1",
-    "axios": "^0.19.0",
     "body-parser": "^1.18.3",
     "bootstrap": "^3.3.0",
     "chai-spies": "^1.0.0",

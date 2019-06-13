@@ -21,6 +21,7 @@ const TEMPLATE = './server/controllers/finance/reports/balance/report.handlebars
 
 // expose to the API
 exports.document = document;
+exports.reporting = reporting;
 
 // default report parameters
 const DEFAULT_PARAMS = {
@@ -31,6 +32,46 @@ const DEFAULT_PARAMS = {
 };
 
 const TITLE_ID = 6;
+
+/**
+ * @description this function helps to get html document of the report in server side
+ * so that we can use it with others modules on the server side
+ * @param {*} options the report options
+ * @param {*} session the session
+ */
+async function reporting(options, session) {
+  try {
+    const params = options;
+    const context = {};
+
+    _.defaults(params, DEFAULT_PARAMS);
+
+    context.useSeparateDebitsAndCredits = Number.parseInt(params.useSeparateDebitsAndCredits, 10);
+    context.shouldPruneEmptyRows = Number.parseInt(params.shouldPruneEmptyRows, 10);
+    context.shouldHideTitleAccounts = Number.parseInt(params.shouldHideTitleAccounts, 10);
+    context.includeClosingBalances = Number.parseInt(params.includeClosingBalances, 10);
+
+    const currencyId = session.enterprise.currency_id;
+
+    const period = await getPeriodFromParams(params.fiscal_id, params.period_id, context.includeClosingBalances);
+    _.merge(context, { period });
+
+    const { accounts, totals } = await getBalanceForFiscalYear(period, currencyId);
+    _.merge(context, { accounts, totals });
+
+    const tree = await computeBalanceTree(accounts, totals, context, context.shouldPruneEmptyRows);
+    _.merge(context, { accounts : tree.accounts, totals : tree.totals });
+
+    if (context.shouldHideTitleAccounts) {
+      context.accounts = accounts.filter(account => account.isTitleAccount === 0);
+    }
+
+    const report = new ReportManager(TEMPLATE, session, params);
+    return report.render(context);
+  } catch (error) {
+    throw error;
+  }
+}
 
 /**
  * @function document
@@ -44,44 +85,7 @@ const TITLE_ID = 6;
  * NOTE(@jniles): This file corresponds to the "Balance Report" on the client.
  */
 function document(req, res, next) {
-  const params = req.query;
-  const context = {};
-  let report;
-
-  _.defaults(params, DEFAULT_PARAMS);
-
-  context.useSeparateDebitsAndCredits = Number.parseInt(params.useSeparateDebitsAndCredits, 10);
-  context.shouldPruneEmptyRows = Number.parseInt(params.shouldPruneEmptyRows, 10);
-  context.shouldHideTitleAccounts = Number.parseInt(params.shouldHideTitleAccounts, 10);
-  context.includeClosingBalances = Number.parseInt(params.includeClosingBalances, 10);
-
-  try {
-    report = new ReportManager(TEMPLATE, req.session, params);
-  } catch (e) {
-    next(e);
-    return;
-  }
-
-  const currencyId = req.session.enterprise.currency_id;
-
-  getPeriodFromParams(params.fiscal_id, params.period_id, context.includeClosingBalances)
-    .then(period => {
-      _.merge(context, { period });
-      return getBalanceForFiscalYear(period, currencyId);
-    })
-    .then(({ accounts, totals }) => {
-      _.merge(context, { accounts, totals });
-      return computeBalanceTree(accounts, totals, context, context.shouldPruneEmptyRows);
-    })
-    .then(({ accounts, totals }) => {
-      _.merge(context, { accounts, totals });
-
-      if (context.shouldHideTitleAccounts) {
-        context.accounts = accounts.filter(account => account.isTitleAccount === 0);
-      }
-
-      return report.render(context);
-    })
+  reporting(req.query, req.session)
     .then(result => {
       res.set(result.headers).send(result.report);
     })

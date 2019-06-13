@@ -2,13 +2,16 @@
  * HTTP END POINT
  * API controller for the table cron_email_report
  */
-const axios = require('axios');
 const debug = require('debug')('app');
 
 const db = require('../../../lib/db');
 const CronJob = require('../../../lib/cronjob');
 const Moment = require('../../../lib/moment');
 const FilterParser = require('../../../lib/filter');
+
+const mailer = require('../../../lib/mailer');
+const auth = require('../../auth');
+const dbReports = require('../../report.handlers');
 
 function find(options = {}) {
   const filters = new FilterParser(options, { tableAlias : 'cer' });
@@ -101,7 +104,7 @@ async function create(req, res, next) {
 
     const result = await db.exec(query, [cron]);
     const created = await lookup(result.insertId);
-    await createEmailReportJob(created, sendEmailReport.call(this, created));
+    await createEmailReportJob(created, sendEmailReportDocument.call(this, created));
 
     res.status(201).json({ id : result.insertId });
   } catch (error) {
@@ -130,7 +133,7 @@ function launchCronEmailReportJobs() {
   find()
     .then(rows => {
       if (!rows.length) { return null; }
-      const jobs = rows.map(row => createEmailReportJob(row, sendEmailReport.call(this, row)));
+      const jobs = rows.map(row => createEmailReportJob(row, sendEmailReportDocument.call(this, row)));
       return Promise.all(jobs);
     })
     .then(() => debug('Reports scanned successfully'));
@@ -147,16 +150,73 @@ function createEmailReportJob(record, cb) {
 }
 
 /**
- * @function createReportDocument
+ * @function sendEmailReportDocument
  * @param {object} record A row of cron email report
  * @param {object} options The report options
  */
-function createReportDocument(record, options) {
-  console.log(record, options);
+async function sendEmailReportDocument(record) {
+  try {
+    const options = JSON.parse(record.params);
+    const fn = dbReports[record.report_key];
+    const contacts = await loadContacts(record.entity_group_uuid);
+    const session = await loadSession();
+    const document = await fn(options, session);
+    const filename = replaceSlash(document.headers.filename);
+
+    if (contacts.length) {
+      const attachments = [
+        { filename, stream : document.report },
+      ];
+      const content = `
+        Hi,
+
+        We have attached to this email the ${filename} file
+
+        Thank you,
+      `;
+      const mails = contacts.map(c => {
+        return mailer.email(c, record.label, content, {
+          attachments,
+        });
+      });
+
+      await Promise.all(mails);
+      debug(`(${record.label}) report sent by email to ${contacts.length} contacts`);
+    }
+  } catch (e) {
+    throw e;
+  }
 }
 
-function sendEmailReport(params) {
-  console.log('>>> send report by mail <<< with params :', params);
+function replaceSlash(name = '', value = '_') {
+  const regex = /\//gi;
+  return name.replace(regex, value);
+}
+
+function loadContacts(entityGroupUuid) {
+  const query = `
+    SELECT e.email FROM entity e
+    JOIN entity_group_entity ege ON ege.entity_uuid = e.uuid
+    JOIN entity_group eg ON eg.uuid = ege.entity_group_uuid
+    WHERE eg.uuid = ?; 
+  `;
+  return db.exec(query, [entityGroupUuid])
+    .then(contacts => contacts.map(c => c.email));
+}
+
+function loadSession() {
+  const query = `
+    SELECT
+      user.id, user.username, user.display_name, user.email, user.deactivated,
+      project.enterprise_id , project.id AS project_id
+    FROM user
+      JOIN project_permission
+      JOIN project ON user.id = project_permission.user_id
+      AND project.id = project_permission.project_id
+      LIMIT 1`;
+
+  return db.one(query)
+    .then(user => auth.loadSessionInformation(user));
 }
 
 function addDynamicDatesOptions(cronId, hasDynamicDates, options) {

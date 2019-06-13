@@ -25,6 +25,9 @@ exports.logout = logout;
 // POST /auth/reload
 exports.reload = reload;
 
+// expose session locally
+exports.loadSessionInformation = loadSessionInformation;
+
 
 function loginRoute(req, res, next) {
   const { username, password, project } = req.body;
