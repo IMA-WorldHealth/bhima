@@ -51,22 +51,24 @@ async function reporting(options, session) {
     context.shouldHideTitleAccounts = Number.parseInt(params.shouldHideTitleAccounts, 10);
     context.includeClosingBalances = Number.parseInt(params.includeClosingBalances, 10);
 
+    const report = new ReportManager(TEMPLATE, session, params);
     const currencyId = session.enterprise.currency_id;
 
     const period = await getPeriodFromParams(params.fiscal_id, params.period_id, context.includeClosingBalances);
     _.merge(context, { period });
 
-    const { accounts, totals } = await getBalanceForFiscalYear(period, currencyId);
-    _.merge(context, { accounts, totals });
+    const balance = await getBalanceForFiscalYear(period, currencyId);
+    context.accounts = balance.accounts;
+    context.totals = balance.totals;
 
-    const tree = await computeBalanceTree(accounts, totals, context, context.shouldPruneEmptyRows);
-    _.merge(context, { accounts : tree.accounts, totals : tree.totals });
+    const tree = await computeBalanceTree(balance.accounts, balance.totals, context, context.shouldPruneEmptyRows);
+    context.accounts = tree.accounts;
+    context.totals = tree.totals;
 
     if (context.shouldHideTitleAccounts) {
-      context.accounts = accounts.filter(account => account.isTitleAccount === 0);
+      context.accounts = context.accounts.filter(account => account.isTitleAccount === 0);
     }
 
-    const report = new ReportManager(TEMPLATE, session, params);
     return report.render(context);
   } catch (error) {
     throw error;
