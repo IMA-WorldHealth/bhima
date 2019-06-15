@@ -1,4 +1,4 @@
-> [Home](../index.md) / [Inventory Management](./index.md) / inventories
+&raquo; [Home](../index.md) / [Inventory Management](./index.md) / inventories
 
 # Inventories
 

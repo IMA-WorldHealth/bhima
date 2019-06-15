@@ -18,6 +18,24 @@ INSERT INTO `project` VALUES
   (2, 'Test Project B', 'TPB', 1, 2, 0),
   (3, 'Test Project C', 'TPC', 1, 2, 0);
 
+-- Cost center
+INSERT INTO `cost_center` VALUES
+  (1, 1, 'cost center 1', 'cost note', 1),
+  (1, 2, 'cost center 2', 'cost note 2', 0),
+  (1, 3, 'cost center 3', 'cost note 3', 1);
+
+-- Profit center
+INSERT INTO `profit_center` VALUES
+  (1, 1, 'profit center 1', 'profit note'),
+  (1, 2, 'profit center 2', 'profit note 2'),
+  (1, 3, 'profit center 3', 'profit note 3');
+
+-- Services
+INSERT INTO `service`(id, uuid, enterprise_id, project_id, name, cost_center_id, profit_center_id) VALUES
+  (1, HUID('aff85bdc-d7c6-4047-afe7-1724f8cd369e'), 1, 1, 'Test Service', 1, 1),
+  (2, HUID('b1816006-5558-45f9-93a0-c222b5efa6cb'), 1, 1, 'Administration', 2, 2),
+  (3, HUID('e3988489-ef66-41df-88fa-8b8ed6aa03ac'), 1, 1, 'Medecine Interne', 1, 2);
+
 -- Accounts
 INSERT INTO `account` (`id`, `type_id`, `enterprise_id`, `number`, `label`, `parent`, `locked`, `cc_id`, `pc_id`, `created`, `reference_id`) VALUES
   (1, 6, 1, 1, 'CLASSE 1: COMPTES DE RESSOURCES DURABLES', 0, 0, NULL, NULL, '2016-10-22 14:37:09', NULL),
@@ -598,18 +616,20 @@ INSERT INTO `patient_group` VALUES
 INSERT INTO `debtor` (uuid, group_uuid, text) VALUES
   (HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'), 'Patient/2/Patient'),
   (HUID('a11e6b7f-fbbb-432e-ac2a-5312a66dccf4'), HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'), 'Patient/1/Patient'),
-  (HUID('76976710-27eb-46dd-b3f5-cb5eb4abbc92'), HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'), 'Debiteur [Employee Test 1]');
+  (HUID('76976710-27eb-46dd-b3f5-cb5eb4abbc92'), HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'), 'Debiteur [Employee Test 1]'),
+  (HUID('dfbe4cd4-40fd-401f-bc7b-d4325119cb72'), HUID('4de0fe47-177f-4d30-b95f-cff8166400b4'), 'Bad Patient Doublon');
 
 -- Patients
 INSERT INTO `patient` VALUES
   (HUID('274c51ae-efcc-4238-98c6-f402bfb39866'), 1, 2, HUID('3be232f9-a4b9-4af6-984c-5d3f87d5c107'), 'Test 2 Patient', '1990-06-01 00:00:00', FALSE, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'M', NULL, NULL, NULL, NULL, NULL, NULL, HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), (NOW() - INTERVAL 1 HOUR), NULL, NULL, '110', '', 1, '2015-11-14 07:04:49', NULL, NULL),
   (HUID('81af634f-321a-40de-bc6f-ceb1167a9f65'), 1, 1, HUID('a11e6b7f-fbbb-432e-ac2a-5312a66dccf4'), 'Test 1 Patient', '1990-06-01 00:00:00', FALSE, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'F', NULL, NULL, NULL, NULL, NULL, NULL, HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), NOW(), NULL, NULL, '100', '', 2, '2015-11-14 07:04:49', NULL, NULL),
-  (HUID('d1d7f856-d414-4400-8b94-8ba9445a2bc0'), 1, 4, HUID('76976710-27eb-46dd-b3f5-cb5eb4abbc92'), 'Employee Test 1', '1960-06-30', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'F', NULL, NULL, NULL, NULL, NULL, NULL, HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), '2018-04-09 13:56:19', NULL, NULL, 'SOF-14', NULL, 1, '2018-04-09 13:56:19', NULL, NULL);
+  (HUID('d1d7f856-d414-4400-8b94-8ba9445a2bc0'), 1, 4, HUID('76976710-27eb-46dd-b3f5-cb5eb4abbc92'), 'Employee Test 1', '1960-06-30', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'F', NULL, NULL, NULL, NULL, NULL, NULL, HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), '2018-04-09 13:56:19', NULL, NULL, 'SOF-14', NULL, 1, '2018-04-09 13:56:19', NULL, NULL),
+  (HUID('0f2ddc0e-686b-47c0-ad80-989671aa9f1f'), 1, 5, HUID('dfbe4cd4-40fd-401f-bc7b-d4325119cb72'), 'Bad Patient Doublon', '2017-08-24 00:00:00', FALSE, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'M', NULL, NULL, NULL, NULL, NULL, NULL, HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), (NOW() - INTERVAL 1 HOUR), NULL, NULL, '1110', '', 1, '2015-11-14 07:04:49', NULL, NULL);
 
 -- Patient Visits
-INSERT INTO `patient_visit` (`uuid`, `patient_uuid`, `start_date`, `end_date`, `start_notes`, `end_notes`, `start_diagnosis_id`, `end_diagnosis_id`, `user_id`) VALUES
-  (HUID('5d3f87d5c107-a4b9-4af6-984c-3be232f9'), HUID('274c51ae-efcc-4238-98c6-f402bfb39866'), '2016-04-25 00:00:00', '2016-04-29 00:00:00', 'He was sick', 'He got better', NULL, NULL, 1),
-  (HUID('710fa8b4da22-847d-4c6a-9b20-112a9fb5'), HUID('81af634f-321a-40de-bc6f-ceb1167a9f65'), '2015-11-14 14:25:00', '2015-11-15 00:00:00', 'He was sick', 'He got better', NULL, NULL, 1);
+INSERT INTO `patient_visit` (`uuid`, `patient_uuid`, `start_date`, `end_date`, `start_notes`, `end_notes`, `start_diagnosis_id`, `end_diagnosis_id`, `user_id`, `last_service_id`) VALUES
+  (HUID('5d3f87d5c107-a4b9-4af6-984c-3be232f9'), HUID('274c51ae-efcc-4238-98c6-f402bfb39866'), '2016-04-25 00:00:00', '2016-04-29 00:00:00', 'He was sick', 'He got better', NULL, NULL, 1, 1),
+  (HUID('710fa8b4da22-847d-4c6a-9b20-112a9fb5'), HUID('81af634f-321a-40de-bc6f-ceb1167a9f65'), '2015-11-14 14:25:00', '2015-11-15 00:00:00', 'He was sick', 'He got better', NULL, NULL, 1, 1);
 
 INSERT INTO `patient_assignment` VALUES
   (HUID('49b90fec-e69c-11e5-8606-843a4bc830ac'),HUID('112a9fb5-847d-4c6a-9b20-710fa8b4da24'),HUID('81af634f-321a-40de-bc6f-ceb1167a9f65')),
@@ -649,22 +669,6 @@ INSERT INTO `reference` VALUES
   (1, 0, 'AB', 'Reference bilan 1', 1, 1, NULL),
   (3, 0, 'AC', 'Reference resultat 1', 1, NULL, 1),
   (4, 0, 'XX', 'Deletable reference 1', 1, NULL, NULL);
-
-INSERT INTO `cost_center` VALUES
-  (1, 1, 'cost center 1', 'cost note', 1),
-  (1, 2, 'cost center 2', 'cost note 2', 0),
-  (1, 3, 'cost center 3', 'cost note 3', 1);
-
-INSERT INTO `profit_center` VALUES
-  (1, 1, 'profit center 1', 'profit note'),
-  (1, 2, 'profit center 2', 'profit note 2'),
-  (1, 3, 'profit center 3', 'profit note 3');
-
--- Services
-INSERT INTO `service` VALUES
-  (1, HUID('aff85bdc-d7c6-4047-afe7-1724f8cd369e'), 1, 'Test Service', 1, 1),
-  (2, HUID('b1816006-5558-45f9-93a0-c222b5efa6cb'), 1, 'Administration', 2, 2),
-  (3, HUID('e3988489-ef66-41df-88fa-8b8ed6aa03ac'), 1, 'Medecine Interne', 1, 2);
 
 INSERT INTO `employee` (`uuid`, `code`, `date_embauche`, `grade_uuid`, `nb_spouse`, `nb_enfant`, `individual_salary`, `bank`, `bank_account`, `fonction_id`, `service_id`, `creditor_uuid`, `locked`, `patient_uuid`, `is_medical`) VALUES
   (HUID('75e09694-65f2-45a1-a8a2-8b025003d793'),'E1','2016-02-02 00:00:00',HUID('71e9f21c-d9b1-11e5-8ab7-78eb2f2a46e0'),1,3,500,'TMB', '1201-3456-5423-03',1,3,HUID('42d3756a-7770-4bb8-a899-7953cd859892'),NULL,HUID('274c51ae-efcc-4238-98c6-f402bfb39866'), 0),
@@ -849,7 +853,7 @@ INSERT INTO `rubric_payroll` (`id`, `label`, `abbr`, `is_employee`, `is_percent`
   (8, 'Frais scolarité', 'f_scol', 0, 0, 0, 0, 0, 1, 0, 179, 343, 0, 0, NULL),
   (9, 'Logement', 'logm', 0, 1, 0, 0, 1, 0, 0, 179, 350, 0, 0, 30),
   (10, 'Allocation Familiale', 'allc', 0, 0, 0, 0, 1, 1, 0, 179, 347, 0, 0, NULL),
-  (11, 'Office Nationale de l\'emploie', 'ONEM', 0, 1, 1, 1, 0, 0, 0, 320, 355, 0, 0, 0.2),
+  (11, 'Office Nationale de l\emploie', 'ONEM', 0, 1, 1, 1, 0, 0, 0, 320, 355, 0, 0, 0.2),
   (12, 'Acompte sur salaires', 'ac_sal', 1, 0, 1, 0, 0, 1, 0, 340, 179, 0, 1, NULL);
 
 -- Configuration of Rubrinc
@@ -969,12 +973,12 @@ INSERT INTO `fee_center` (`id`, `label`, `is_principal`) VALUES
   (6, 'Auxiliary 3', 0);
 
 -- REFERENCE FEE CENTER
-INSERT INTO `reference_fee_center` (`id`, `fee_center_id`, `account_reference_id`, `is_cost`) VALUES (1, 1, 1, 1);
-INSERT INTO `reference_fee_center` (`id`, `fee_center_id`, `account_reference_id`, `is_cost`) VALUES (2, 1, 2, 0);
-INSERT INTO `reference_fee_center` (`id`, `fee_center_id`, `account_reference_id`, `is_cost`) VALUES (11, 5, 7, 0);
-INSERT INTO `reference_fee_center` (`id`, `fee_center_id`, `account_reference_id`, `is_cost`) VALUES (15, 3, 3, 0);
-INSERT INTO `reference_fee_center` (`id`, `fee_center_id`, `account_reference_id`, `is_cost`) VALUES (21, 6, 4, 0);
-INSERT INTO `reference_fee_center` (`id`, `fee_center_id`, `account_reference_id`, `is_cost`) VALUES (22, 4, 9, 1);
+INSERT INTO `reference_fee_center` (`id`, `fee_center_id`, `account_reference_id`, `is_cost`, `is_variable`, `is_turnover`) VALUES (1, 1, 1, 1, 1, 0);
+INSERT INTO `reference_fee_center` (`id`, `fee_center_id`, `account_reference_id`, `is_cost`, `is_variable`, `is_turnover`) VALUES (2, 1, 2, 0, 0, 1);
+INSERT INTO `reference_fee_center` (`id`, `fee_center_id`, `account_reference_id`, `is_cost`, `is_variable`, `is_turnover`) VALUES (11, 5, 7, 0, 0, 1);
+INSERT INTO `reference_fee_center` (`id`, `fee_center_id`, `account_reference_id`, `is_cost`, `is_variable`, `is_turnover`) VALUES (15, 3, 3, 0, 0, 1);
+INSERT INTO `reference_fee_center` (`id`, `fee_center_id`, `account_reference_id`, `is_cost`, `is_variable`, `is_turnover`) VALUES (21, 6, 4, 0, 0, 1);
+INSERT INTO `reference_fee_center` (`id`, `fee_center_id`, `account_reference_id`, `is_cost`, `is_variable`, `is_turnover`) VALUES (22, 4, 9, 1, 0, 0);
 
 -- GENERAL LEDGER FOR DISTRIBUTION FEE CENTER TEST
 INSERT INTO `general_ledger` (`uuid`, `project_id`, `fiscal_year_id`, `period_id`, `trans_id`, `trans_id_reference_number`, `trans_date`, `record_uuid`, `description`, `account_id`, `debit`, `credit`, `debit_equiv`, `credit_equiv`, `currency_id`, `entity_uuid`, `reference_uuid`, `comment`, `transaction_type_id`, `user_id`, `cc_id`, `pc_id`, `created_at`, `updated_at`) VALUES (0xE70109CCE0DC11E89F4F507B9DD6DEA5, 1, 4, 201811, 'TPA37', 37, '2018-11-05 10:26:05', 0x79B0393553C54498A5ECA8CA6DFEA7AC, 'Facture de Test 2 Patient (PA.TPA.2) pour 2 items dans le service Medecine Interne. ', 175, 256.6200, 0.0000, 256.6200, 0.0000, 2, 0x3BE232F9A4B94AF6984C5D3F87D5C107, NULL, NULL, 11, 1, NULL, NULL, '2018-11-05 10:29:21', NULL);
@@ -1043,3 +1047,31 @@ INSERT INTO entity (uuid, display_name, gender, email, phone, address, entity_ty
   (HUID('00099B1D184A48DEB93D45FBD0AB3790'), 'Bruce Wayne', 'M', 'thebat@bhi.ma', '+243000000', 'Gotham City', 1),
   (HUID('037AC6C6B75A4E328E9DCDE5DA22BACE'), 'Wayne Enterprise', 'o', 'thebat@bhi.ma', '+243000000', 'Gotham City', 4);
 
+-- default room type
+INSERT INTO room_type VALUES
+  (1, 'Public Room'),
+  (2, 'Private Room'),
+  (3, 'Privilege Room');
+
+-- default wards for test
+SET @ward1 = HUID('f5a72649-26c9-4f5d-bffa-098207a7f24d');
+SET @ward2 = HUID('f4ce5f9f-edd3-4bd2-9b9c-43b116c02747');
+INSERT INTO ward VALUES
+  (@ward1, 'Pavillon A', 'Test pavillon A', 1),
+  (@ward2, 'Pavillon B', 'Test pavillon B', 2);
+
+-- default rooms for tests
+INSERT INTO room VALUES
+  (HUID('A6F9527BA7B44A2C9F4FDD7323BBCF72'), 'Room A in Ward A', 'Room A description', @ward1, 1),
+  (HUID('3BD2C0DB6A574B748AE774554BCBC35D'), 'Room B in Ward B', 'Room B description', @ward2, NULL);
+
+-- default bed
+INSERT INTO bed VALUES
+  (1, 'BED 001', HUID('A6F9527BA7B44A2C9F4FDD7323BBCF72'), 0, 1),
+  (2, 'BED 002', HUID('A6F9527BA7B44A2C9F4FDD7323BBCF72'), 0, 1),
+  (3, 'BED 003', HUID('A6F9527BA7B44A2C9F4FDD7323BBCF72'), 0, 1);
+
+-- Default Auxiliary Fee Center Distribution Key
+INSERT INTO `distribution_key` (`id`, `auxiliary_fee_center_id`, `principal_fee_center_id`, `rate`, `user_id`) VALUES (1, 4, 1, 60.00, 1);
+INSERT INTO `distribution_key` (`id`, `auxiliary_fee_center_id`, `principal_fee_center_id`, `rate`, `user_id`) VALUES (2, 4, 2, 20.00, 1);
+INSERT INTO `distribution_key` (`id`, `auxiliary_fee_center_id`, `principal_fee_center_id`, `rate`, `user_id`) VALUES (3, 4, 3, 20.00, 1);

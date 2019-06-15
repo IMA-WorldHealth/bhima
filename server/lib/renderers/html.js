@@ -17,7 +17,6 @@ const util = require('../util');
 const hbs = require('../template');
 const translateHelperFactory = require('../helpers/translate');
 
-
 const headers = {
   'Content-Type' : 'text/html',
 };
@@ -39,6 +38,7 @@ function renderHTML(data, template, options = {}) {
   util.loadModuleIfExists(languageDependency);
 
   moment.locale(options.lang);
+
 
   debug(`initializing ${options.lang} translation locale`);
   // make sure that we have the appropriate language set.  If options.lang is

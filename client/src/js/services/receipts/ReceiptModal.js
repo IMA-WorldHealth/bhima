@@ -3,6 +3,7 @@ angular.module('bhima.services')
 
 ReceiptModal.$inject = [
   '$uibModal', 'ReceiptService',
+  'PatientInvoiceService', 'CashService', 'VoucherService',
 ];
 
 /**
@@ -14,7 +15,7 @@ ReceiptModal.$inject = [
  *
  * @module services/receipts/ReceiptModal
  */
-function ReceiptModal(Modal, Receipts) {
+function ReceiptModal(Modal, Receipts, Invoice, Cash, Voucher) {
   const service = this;
 
   const modalConfiguration = {
@@ -62,6 +63,7 @@ function ReceiptModal(Modal, Receipts) {
       resolve : {
         receipt : function receiptProvider() { return { promise : invoiceRequest }; },
         options : function optionsProvider() { return options; },
+        document : function documentProvider() { return Invoice.read(uuid); },
       },
     };
 
@@ -97,6 +99,7 @@ function ReceiptModal(Modal, Receipts) {
       resolve : {
         receipt : function receiptProvider() { return { promise : patientRequest }; },
         options : function optionsProvider() { return options; },
+        document : function documentProvider() { return {}; },
       },
     };
 
@@ -125,6 +128,7 @@ function ReceiptModal(Modal, Receipts) {
       resolve : {
         receipt : function receiptProvider() { return { promise : purchaseRequest }; },
         options : function optionsProvider() { return options; },
+        document : function documentProvider() { return {}; },
       },
     };
 
@@ -153,6 +157,7 @@ function ReceiptModal(Modal, Receipts) {
       resolve : {
         receipt : function receiptProvider() { return { promise : cashRequest }; },
         options : function optionsProvider() { return options; },
+        document : function documentProvider() { return Cash.read(uuid); },
       },
       keyboard : false,
     };
@@ -186,6 +191,7 @@ function ReceiptModal(Modal, Receipts) {
       resolve : {
         receipt : function receiptProvider() { return { promise : voucherRequest }; },
         options : function optionsProvider() { return options; },
+        document : function documentProvider() { return Voucher.read(uuid); },
       },
     };
 
@@ -222,6 +228,7 @@ function ReceiptModal(Modal, Receipts) {
       resolve : {
         receipt : function receiptProvider() { return { promise : creditNoteRequest }; },
         options : function optionsProvider() { return options; },
+        document : function documentProvider() { return {}; },
       },
     };
 
@@ -250,6 +257,7 @@ function ReceiptModal(Modal, Receipts) {
       resolve : {
         receipt : function receiptProvider() { return { promise : payrollRequest }; },
         options : function optionsProvider() { return options; },
+        document : function documentProvider() { return {}; },
       },
     };
 
@@ -279,6 +287,7 @@ function ReceiptModal(Modal, Receipts) {
       resolve : {
         receipt : function receiptProvider() { return { promise : payrollRequest }; },
         options : function optionsProvider() { return options; },
+        document : function documentProvider() { return {}; },
       },
     };
 
@@ -454,6 +463,7 @@ function ReceiptModal(Modal, Receipts) {
       resolve :  {
         receipt : function receiptProvider() { return { promise }; },
         options : function optionsProvider() { return parameters; },
+        document : function documentProvider() { return {}; },
       },
     };
 

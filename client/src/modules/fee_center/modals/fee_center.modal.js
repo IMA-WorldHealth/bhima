@@ -25,15 +25,19 @@ function FeeCenterModalController($state, FeeCenter, ModalService, Notify, AppCa
   vm.auxiliaryFee = auxiliaryFee;
   vm.costCenter = costCenter;
   vm.onSelectAccountReference = onSelectAccountReference;
+  vm.onSelectProject = onSelectProject;
+
   vm.onServicesChange = onServicesChange;
+  vm.clear = clear;
+  vm.reset = reset;
 
   if (!vm.isCreating) {
     FeeCenter.read(vm.stateParams.id)
       .then((data) => {
-        vm.feeCenter = data.feeCenter[0];
-
+        [vm.feeCenter] = data.feeCenter;
         if (data.services) {
           vm.relatedServices = data.services.length ? 1 : 0;
+          vm.assignedProject = data.feeCenter[0].project_id ? 1 : 0;
           vm.services = data.services;
         }
 
@@ -46,6 +50,13 @@ function FeeCenterModalController($state, FeeCenter, ModalService, Notify, AppCa
   function processReference(references) {
     if (references) {
       references.forEach((reference) => {
+        const feeCenterReferenceBundle = {
+          account_reference_id : reference.account_reference_id,
+          is_cost : reference.is_cost,
+          is_variable : reference.is_variable,
+          is_turnover : reference.is_turnover,
+        };
+
         if (reference.is_cost) {
           if (vm.feeCenter.is_principal) {
             vm.hasCostCenter = 1;
@@ -54,11 +65,14 @@ function FeeCenterModalController($state, FeeCenter, ModalService, Notify, AppCa
             vm.auxiliaryCenter = 1;
           }
           vm.feeCenter.is_cost = reference.is_cost;
-          vm.feeCenter.reference_cost_id = reference.account_reference_id;
-          vm.costCenterReference = {
-            account_reference_id : reference.account_reference_id,
-            is_cost : reference.is_cost,
-          };
+
+          if (reference.is_variable) {
+            vm.feeCenter.reference_cost_variable_id = reference.account_reference_id;
+            vm.variableCostCenterReference = feeCenterReferenceBundle;
+          } else {
+            vm.feeCenter.reference_cost_fixed_id = reference.account_reference_id;
+            vm.fixCostCenterReference = feeCenterReferenceBundle;
+          }
         }
 
         if (!reference.is_cost) {
@@ -69,15 +83,28 @@ function FeeCenterModalController($state, FeeCenter, ModalService, Notify, AppCa
             vm.auxiliaryCenter = 1;
           }
 
-          vm.feeCenter.is_cost = reference.is_cost;
-          vm.feeCenter.reference_profit_id = reference.account_reference_id;
-          vm.profitCenterReference = {
-            account_reference_id : reference.account_reference_id,
-            is_cost : reference.is_cost,
-          };
+          if (reference.is_turnover) {
+            vm.feeCenter.reference_profit_turnover_id = reference.account_reference_id;
+            vm.turnoverProfitCenterReference = feeCenterReferenceBundle;
+          } else {
+            vm.feeCenter.reference_other_profit_id = reference.account_reference_id;
+            vm.otherProfitCenterReference = feeCenterReferenceBundle;
+          }
         }
       });
     }
+  }
+
+  function clear(value, index) {
+    vm[value] = null;
+    vm.feeCenter[index] = null;
+
+    delete vm[value];
+    delete vm.feeCenter[index];
+  }
+
+  function reset(value) {
+    vm.feeCenter[value] = null;
   }
 
   function auxiliaryFee(value) {
@@ -90,17 +117,22 @@ function FeeCenterModalController($state, FeeCenter, ModalService, Notify, AppCa
     }
   }
 
-  function onSelectAccountReference(accountReference, isCostCenter) {
-    if (isCostCenter) {
-      vm.costCenterReference = {
-        account_reference_id : accountReference.id,
-        is_cost : isCostCenter,
-      };
-    } else {
-      vm.profitCenterReference = {
-        account_reference_id : accountReference.id,
-        is_cost : isCostCenter,
-      };
+  function onSelectAccountReference(accountReference, isCostCenter, isVariable, isTurnOver) {
+    const config = {
+      account_reference_id : accountReference.id,
+      is_cost : isCostCenter,
+      is_variable : isVariable,
+      is_turnover : isTurnOver,
+    };
+
+    if (isCostCenter && isVariable) {
+      vm.variableCostCenterReference = config;
+    } else if (isCostCenter && !isVariable) {
+      vm.fixCostCenterReference = config;
+    } else if (!isCostCenter && isTurnOver) {
+      vm.turnoverProfitCenterReference = config;
+    } else if (!isCostCenter && !isTurnOver) {
+      vm.otherProfitCenterReference = config;
     }
   }
 
@@ -113,16 +145,32 @@ function FeeCenterModalController($state, FeeCenter, ModalService, Notify, AppCa
     vm.services = services;
   }
 
+  function onSelectProject(project) {
+    vm.feeCenter.project_id = project.id;
+  }
+
   // submit the data to the server from all two forms (update, create)
   function submit(feeCenterForm) {
     if (feeCenterForm.$invalid) { return 0; }
 
     if (vm.isCostCenter || vm.hasCostCenter) {
-      vm.referenceFeeCenter.push(vm.costCenterReference);
+      if (vm.variableCostCenterReference) {
+        vm.referenceFeeCenter.push(vm.variableCostCenterReference);
+      }
+
+      if (vm.fixCostCenterReference) {
+        vm.referenceFeeCenter.push(vm.fixCostCenterReference);
+      }
     }
 
     if (vm.isProfitCenter || vm.hasProfitCenter) {
-      vm.referenceFeeCenter.push(vm.profitCenterReference);
+      if (vm.turnoverProfitCenterReference) {
+        vm.referenceFeeCenter.push(vm.turnoverProfitCenterReference);
+      }
+
+      if (vm.otherProfitCenterReference) {
+        vm.referenceFeeCenter.push(vm.otherProfitCenterReference);
+      }
     }
 
     const data = {
@@ -130,6 +178,7 @@ function FeeCenterModalController($state, FeeCenter, ModalService, Notify, AppCa
       is_principal : vm.feeCenter.is_principal,
       reference_fee_center : vm.referenceFeeCenter,
       services : vm.services,
+      project_id : vm.feeCenter.project_id,
     };
 
     const promise = (vm.isCreating)

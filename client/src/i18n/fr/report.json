@@ -93,6 +93,7 @@
     "PERIOD_START": "Début",
     "PERIOD_STOP": "Fin",
     "PRODUCED_BY": "Produit par",
+    "BY" : "par",
     "PRODUCED_DATE": "Date de génération",
     "PRODUCED_ON": "Produit le",
     "SINCE": "Depuis",
@@ -115,6 +116,10 @@
     "REPORT_ACCOUNTS_MULTIPLE": {
       "TITLE": "Rapports de comptes multiple",
       "DESCRIPTION": "Ce rapport affiche toutes les transactions sur un groupe des comptes pour une période donnée"
+    },
+    "REPORT_INDICATORS": {
+      "TITLE": " Rapport des indicateurs",
+      "DESCRIPTION": "Ce rapport resume les indicateurs pour un hôpital"
     },
     "PROFIT_AND_LOSS_REPORT": {
       "TITLE": "Rapport des Comptes d'exploitation",
@@ -142,7 +147,9 @@
     },
     "CLIENTS" : {
       "TITLE" : "Rapport Annuel des Clients",
-      "DESCRIPTION" : "Ce rapport affiche tous les groupes de débiteurs, leurs soldes de compte au début de l'exercice, les soldes actuels et leurs soldes de clôture."
+      "DESCRIPTION" : "Ce rapport affiche tous les groupes de débiteurs, leurs soldes de compte au début de l'exercice, les soldes actuels et leurs soldes de clôture.",
+      "HIDE_LOCKED_CLIENTS" : "Masquer les clients verrouillés",
+      "HIDE_LOCKED_CLIENTS_HELP_TEXT" : "Si vous sélectionnez oui, tous les clients verrouillés seront filtrés dans le rapport. Par défaut, la valeur est non."
     },
     "UNPAID_INVOICE_PAYMENTS_REPORT": {
       "TITLE": "Rapport de Factures Non-Payées",

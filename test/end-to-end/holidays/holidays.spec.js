@@ -26,22 +26,22 @@ describe('Holidays Management', () => {
   };
 
   it('successfully creates a new holiday', () => {
-    page.create(holiday);
+    return page.create(holiday);
   });
 
   it('successfully edits a holiday', () => {
-    page.update(holiday.label, updateHoliday);
+    return page.update(holiday.label, updateHoliday);
   });
 
   it('prevent the definition of a nested vacation period', () => {
-    page.preventHoliday(nestedHoliday);
+    return page.preventHoliday(nestedHoliday);
   });
 
   it('don\'t create when incorrect Holiday', () => {
-    page.errorOnCreateHoliday();
+    return page.errorOnCreateHoliday();
   });
 
   it('successfully delete a holiday', () => {
-    page.remove(updateHoliday.label);
+    return page.remove(updateHoliday.label);
   });
 });

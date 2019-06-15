@@ -1,5 +1,3 @@
-/* global element, by */
-
 const FU = require('../../shared/FormUtils');
 const ReportPage = require('../page');
 const components = require('../../shared/components');
@@ -10,43 +8,42 @@ class PatientStandingReportPage {
   }
 
   // preview a PatientStanding report
-  showPatientReportPreview(patientName) {
-    components.findPatient.findByName(patientName);
-
-    this.page.preview();
+  async showPatientReportPreview(patientName) {
+    await components.findPatient.findByName(patientName);
+    await this.page.preview();
   }
 
   // save a PatientStanding report
-  savePatientStandingReport(dataSet) {
-    this.showPatientReportPreview(dataSet.patient_name);
+  async savePatientStandingReport(dataSet) {
+    await this.showPatientReportPreview(dataSet.patient_name);
 
     // save report as PDF
-    this.page.saveAs();
-    FU.input('SaveCtrl.documentOptions.label', dataSet.report_name);
-    FU.select('SaveCtrl.documentOptions.renderer', dataSet.renderer);
-    FU.modal.submit();
+    await this.page.saveAs();
+    await FU.input('SaveCtrl.documentOptions.label', dataSet.report_name);
+    await FU.select('SaveCtrl.documentOptions.renderer', dataSet.renderer);
+    await FU.modal.submit();
 
     // successfully saved notification
-    components.notification.hasSuccess();
-    this.page.backToConfig();
+    await components.notification.hasSuccess();
+    await this.page.backToConfig();
   }
 
   // print a Patient report
-  printPatientStandingReport(dataSet) {
-    this.showPatientReportPreview(dataSet.patient_name);
-    this.page.printPreview();
+  async printPatientStandingReport(dataSet) {
+    await this.showPatientReportPreview(dataSet.patient_name);
+    await this.page.printPreview();
   }
 
   // check saved report
-  checkSavedPatientStandingReport(reportName) {
-    this.page.gotoArchive();
-    this.page.lastReportMatching(reportName);
-    this.page.backToConfig();
+  async checkSavedPatientStandingReport(reportName) {
+    await this.page.gotoArchive();
+    await this.page.lastReportMatching(reportName);
+    await this.page.backToConfig();
   }
 
   // close preview
-  closePatientStandingReportPreview() {
-    this.page.closePreview();
+  async closePatientStandingReportPreview() {
+    await this.page.closePreview();
   }
 }
 

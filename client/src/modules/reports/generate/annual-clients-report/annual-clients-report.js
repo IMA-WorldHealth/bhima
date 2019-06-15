@@ -21,6 +21,7 @@ function AnnualClientsReportController($state, $sce, Notify, AppCache, SavedRepo
 
   vm.reportDetails = {
     currencyId : Session.enterprise.currency_id,
+    hideLockedClients : 0,
   };
 
   checkCachedConfiguration();
@@ -30,8 +31,12 @@ function AnnualClientsReportController($state, $sce, Notify, AppCache, SavedRepo
     vm.reportDetails.fiscalId = fiscal.id;
   };
 
-  vm.onSelectCurrency = currency => {
-    vm.reportDetails.currencyId = currency.id;
+  vm.onSelectCurrency = currencyId => {
+    vm.reportDetails.currencyId = currencyId;
+  };
+
+  vm.onHideLockedClientsToggle = hideLockedClients => {
+    vm.reportDetails.hideLockedClients = hideLockedClients;
   };
 
   vm.requestSaveAs = function requestSaveAs() {
@@ -69,7 +74,7 @@ function AnnualClientsReportController($state, $sce, Notify, AppCache, SavedRepo
 
   function checkCachedConfiguration() {
     if (cache.reportDetails) {
-      vm.reportDetails = angular.copy(cache.reportDetails);
+      angular.merge(vm.reportDetails, cache.reportDetails);
     }
   }
 }

@@ -1,6 +1,4 @@
-/* eslint class-methods-use-this:off */
 const FU = require('../shared/FormUtils');
-/* loading grid actions */
 const GridRow = require('../shared/GridRow');
 
 class PriceListPage {
@@ -15,23 +13,23 @@ class PriceListPage {
     return this.buttons.create();
   }
 
-  update(label) {
+  async update(label) {
     const row = new GridRow(label);
-    row.dropdown().click();
-    row.edit().click();
+    await row.dropdown().click();
+    await row.edit().click();
   }
 
-  remove(label) {
+  async remove(label) {
     const row = new GridRow(label);
-    row.dropdown().click();
-    row.remove().click();
+    await row.dropdown().click();
+    await row.remove().click();
   }
 
   // opens the items menu for configuration
-  configure(label) {
+  async configure(label) {
     const row = new GridRow(label);
-    row.dropdown().click();
-    row.method('edit-items').click();
+    await row.dropdown().click();
+    await row.method('edit-items').click();
   }
 }
 

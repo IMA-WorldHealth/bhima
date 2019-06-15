@@ -213,13 +213,11 @@ function document(req, res, next) {
           item.currentAmo = current.amortissement.balance;
           item.currentNet = current.net.balance;
           item.previousNet = previous ? previous.net.balance : 0;
-          //
+
           totals.currentNet += item.currentNet;
           totals.previousNet += item.previousNet;
-          setSign(item);
-          // previous.net.balance = item.previousNet;
-          // current.net.balance = item.currentNet;
 
+          setSign(item);
         }
 
         // process manually totals
@@ -296,7 +294,6 @@ function document(req, res, next) {
         return item;
       });
 
-      // console.log(assetTable);
       _.merge(context, { assetTable }, { totals });
 
       return report.render(context);
@@ -309,17 +306,13 @@ function document(req, res, next) {
 
 
 function setSign(item) {
-  // const varations = ['RB', 'RD', 'RF', 'XA', 'XB', 'XC', 'XD', 'XE', 'XF', 'XG', 'XH', 'XI'];
   if (item.sign === '+') {
-    item.currentNet = -1 * (item.currentNet, 0);
-    item.previousNet = -1 * (item.previousNet, 0);
+    item.currentNet = (item.currentNet || 0) * -1;
+    item.previousNet = (item.previousNet || 0) * -1;
   } else if (item.sign === '-') {
     item.currentNet = Math.abs(item.currentNet);
     item.previousNet = Math.abs(item.previousNet);
   }
-
-
-  return item;
 }
 
 function formatReferences(references) {
@@ -350,11 +343,11 @@ function getFiscalYearDetails(fiscalYearId) {
   const bundle = {};
   // get fiscal year details and the last period id of the fiscal year
   const query = `
-    SELECT 
+    SELECT
       p.id AS period_id, p.end_date,
-      fy.id, fy.label, fy.previous_fiscal_year_id 
-    FROM fiscal_year fy 
-    JOIN period p ON p.fiscal_year_id = fy.id 
+      fy.id, fy.label, fy.previous_fiscal_year_id
+    FROM fiscal_year fy
+    JOIN period p ON p.fiscal_year_id = fy.id
       AND p.number = (SELECT MAX(period.number) FROM period WHERE period.fiscal_year_id = ?)
     WHERE fy.id = ?;
   `;
@@ -382,16 +375,17 @@ function aggregateReferences(references, currentDb, previousDb, mapRef) {
     item.currentAmo += currentDb[ref] ? currentDb[ref].amortissement.balance : 0;
 
     const signElement = mapRef[ref];
+    const dataExists = (currentDb[ref] && previousDb[ref]);
     let curr = 0;
     let prev = 0;
 
-    if (signElement === '+') {
+    if (signElement === '+' && dataExists) {
       curr = -1 * (currentDb[ref].net.balance || 0);
       prev = -1 * (previousDb[ref].net.balance || 0);
-    } else if (signElement === '-') {
+    } else if (signElement === '-' && dataExists) {
       curr = Math.abs(currentDb[ref].net.balance || 0);
       prev = Math.abs(previousDb[ref].net.balance || 0);
-    } else if (signElement === '-/+') {
+    } else if (signElement === '-/+' && dataExists) {
       curr = currentDb[ref].net.balance || 0;
       prev = previousDb[ref].net.balance || 0;
     }

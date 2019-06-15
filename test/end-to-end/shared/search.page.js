@@ -41,11 +41,11 @@ class SearchModal {
   }
 
   switchToCustomFilterTab() {
-    this.element.$(CUSTOM_FILTER_TAB).click();
+    return this.element.$(CUSTOM_FILTER_TAB).click();
   }
 
   switchToDefaultFilterTab() {
-    this.element.$(DEFAULT_FILTER_TAB).click();
+    return this.element.$(DEFAULT_FILTER_TAB).click();
   }
 
   isOnDefaultFilterTab() {
@@ -63,35 +63,35 @@ class SearchModal {
   }
 
   setCashbox(cashbox) {
-    FU.uiSelect('$ctrl.searchQueries.cashbox_id', cashbox, this.element);
+    return FU.uiSelect('$ctrl.searchQueries.cashbox_id', cashbox, this.element);
   }
 
   setService(service) {
-    FU.select('$ctrl.searchQueries.service_id', service, this.element);
+    return FU.select('$ctrl.searchQueries.service_id', service, this.element);
   }
 
   setDebtorGroup(name) {
-    FU.uiSelect('$ctrl.searchQueries.debtor_group_uuid', name, this.element);
+    return FU.uiSelect('$ctrl.searchQueries.debtor_group_uuid', name, this.element);
   }
 
   setInventoryGroup(name) {
-    FU.uiSelect('$ctrl.searchQueries.group_uuid', name, this.element);
+    return FU.uiSelect('$ctrl.searchQueries.group_uuid', name, this.element);
   }
 
   setPatientGroup(name) {
-    FU.uiSelect('$ctrl.searchQueries.patient_group_uuid', name, this.element);
+    return FU.uiSelect('$ctrl.searchQueries.patient_group_uuid', name, this.element);
   }
 
   setReference(reference) {
-    FU.input('$ctrl.searchQueries.reference', reference, this.element);
+    return FU.input('$ctrl.searchQueries.reference', reference, this.element);
   }
 
   setDescription(description) {
-    FU.input('$ctrl.searchQueries.description', description, this.element);
+    return FU.input('$ctrl.searchQueries.description', description, this.element);
   }
 
   setEntryExit(value) {
-    FU.radio('$ctrl.searchQueries.is_exit', value);
+    return FU.radio('$ctrl.searchQueries.is_exit', value);
   }
 
   /*
@@ -102,76 +102,76 @@ class SearchModal {
    _not_ contained in the registry under test.
   */
   setPatientReference(reference) {
-    FU.input('$ctrl.searchQueries.patientReference', reference, this.element);
+    return FU.input('$ctrl.searchQueries.patientReference', reference, this.element);
   }
 
   setCashReference(reference) {
-    FU.input('$ctrl.searchQueries.cashReference', reference, this.element);
+    return FU.input('$ctrl.searchQueries.cashReference', reference, this.element);
   }
 
   setInvoiceReference(reference) {
-    FU.input('$ctrl.searchQueries.invoiceReference', reference, this.element);
+    return FU.input('$ctrl.searchQueries.invoiceReference', reference, this.element);
   }
 
   setLimit(limit) {
-    FU.input('$ctrl.defaultQueries.limit', limit, this.element);
+    return FU.input('$ctrl.defaultQueries.limit', limit, this.element);
   }
 
-  /* eslint class-methods-use-this: "off" */
+  /* eslint  */
   setUser(user) {
-    bhUserSelect.set(user);
+    return bhUserSelect.set(user);
   }
 
   setSupplier(supplier) {
-    bhSupplierSelect.set(supplier);
+    return bhSupplierSelect.set(supplier);
   }
 
   setDepot(depot) {
-    bhDepotSelect.set(depot);
+    return bhDepotSelect.set(depot);
   }
 
   setInventory(inventory) {
-    bhInventorySelect.set(inventory);
+    return bhInventorySelect.set(inventory);
   }
 
   setLotLabel(label) {
-    FU.input('$ctrl.searchQueries.label', label, this.element);
+    return FU.input('$ctrl.searchQueries.label', label, this.element);
   }
 
   setdateInterval(dateFrom, dateTo, id) {
-    bhDateInterval.range(dateFrom, dateTo, id);
+    return bhDateInterval.range(dateFrom, dateTo, id);
   }
 
   setTransactionType(transactionTypes) {
-    bhTransactionTypeSelect.set(transactionTypes);
+    return bhTransactionTypeSelect.set(transactionTypes);
   }
 
   setPeriod(period) {
-    bhPeriodSelect.select(period);
+    return bhPeriodSelect.select(period);
   }
 
   setCustomPeriod(start, end) {
-    bhPeriodSelect.custom(start, end);
+    return bhPeriodSelect.custom(start, end);
   }
 
   close() {
-    this.element.$('[data-method="submit"').click();
+    return this.element.$('[data-method="submit"').click();
   }
 
   setMovementReason(flux) {
-    bhFluxSelect.set(flux);
+    return bhFluxSelect.set(flux);
   }
 
   setEntity(entity) {
-    bhEntitySelect.set(entity);
+    return bhEntitySelect.set(entity);
   }
 
   setEntityType(type) {
-    bhEntityTypeSelect.set(type);
+    return bhEntityTypeSelect.set(type);
   }
 
   submit() {
-    FU.buttons.submit();
+    return FU.buttons.submit();
   }
 }
 

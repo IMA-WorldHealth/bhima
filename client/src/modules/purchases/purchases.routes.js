@@ -5,7 +5,7 @@ angular.module('bhima.routes')
       .state('purchasesCreate', {
         url         : '/purchases/create',
         controller  : 'PurchaseOrderController as PurchaseCtrl',
-        templateUrl : 'modules/purchases/create/create.html',
+        templateUrl : 'modules/purchases/create/createUpdate.html',
       })
 
     // purchases/list

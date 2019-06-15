@@ -6,10 +6,16 @@
     "ACCOUNT_REFERENCE_TYPE": "Account Reference Type",
     "ACCOUNT_STATEMENT" : "Account Statement",
     "ADMIN" : "Administration",
+    "ADMISSION_REGISTRY": "Admission Registry",
+    "VISITS_REGISTRY": "Visits Registry",
     "AGED_CREDITORS" : "Aged Creditor Report",
     "BALANCE" : "Balance",
     "BALANCE_SHEET" : "Balance Sheet",
     "BALANCE_REPORT" : "Balance of Accounts",
+    "BREAK_EVEN_REFERENCE":"Break-even references",
+    "BREAK_EVEN_REPORT": "Break-even Report",
+    "BREAK_EVEN_FEE_CENTER_REPORT" : "Break-even Report by Fee Center",
+    "BREAK_EVEN_PROJECT_REPORT" : "Break-even Report by Project",
     "INVOICING_FEES" : "Invoicing Fees",
     "CASH_REPORT" : "Cash Report",
     "CASHBOX_MANAGEMENT" : "Cashbox Management",
@@ -55,6 +61,8 @@
     "INVENTORY_UNIT" : "Dosage Form",
     "INVENTORY_VIEW" : "Stock",
     "INVOICE_REGISTRY" : "Invoice Registry",
+    "INDICATORS" : "Indicators",
+    "INDICATORS_REPORT" : "Indicators report",
     "IPR_MANAGEMENT" : "IPR Management",
     "IPR_TAX_CONFIGURATION" : "IPR Tax Configuration",
     "JOURNAL_VOUCHER" : "Journal Voucher",
@@ -81,6 +89,8 @@
     "PAYROLL_RUB_CONFIGURATION" : "Payroll Rubric Configuration",
     "PAYROLL_RUB_MANAGEMENT" : "Payroll Rubric Management",
     "PHARMACY" : "Pharmacy Management",
+    "WARD" : "Ward Management",
+    "WARD_CONFIGURATION" : "Settings",
     "POSTING_JOURNAL" : "Journal",
     "PRICE_LIST" : "Price List",
     "PROJECT" : "Projects",
@@ -120,6 +130,14 @@
     "OHADA_BALANCE_SHEET":"[OHADA] Balance Sheet",
     "OHADA_INCOME":"[OHADA] Income Report",
     "IMPORT_STOCK_FROM_FILE":"Stock Import",
-    "UPDATE_DISTRIBUTION": "Update Distribution of Fee Centers"
+    "UPDATE_DISTRIBUTION": "Update Distribution of Fee Centers",
+    "DASHBOARDS": {
+      "TITLE":"Dashboards",
+      "INDICATORS_FILES_REGISTRY":"Indicators Files",
+      "HOSPITALIZATION":"Hospitalizations",
+      "HUMAN_RESOURCES":"Human Resources",
+      "FINANCES":"Finances"
+    },
+    "VISITS_REPORT": "[Visits] Admission by Services"
   }
 }

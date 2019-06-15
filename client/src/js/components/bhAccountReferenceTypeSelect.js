@@ -10,20 +10,18 @@ angular.module('bhima.components')
     },
   });
 
-AccountReferenceTypeSelectController.$inject = ['AccountReferenceTypeService', '$translate'];
+AccountReferenceTypeSelectController.$inject = ['AccountReferenceTypeService'];
 
 /**
  * Account Reference Type selection component
  */
-function AccountReferenceTypeSelectController(AccountReferenceType, $translate) {
+function AccountReferenceTypeSelectController(AccountReferenceType) {
   const $ctrl = this;
 
   $ctrl.$onInit = function onInit() {
     AccountReferenceType.read()
       .then(accountReferenceTypes => {
-        accountReferenceTypes.forEach((item) => {
-          item.label = $translate.instant(item.label);
-        });
+        AccountReferenceType.translateLabel(accountReferenceTypes);
 
         $ctrl.accountReferenceTypes = accountReferenceTypes;
       });

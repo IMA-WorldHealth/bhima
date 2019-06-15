@@ -1,0 +1,29 @@
+<div ng-form="RoomForm" bh-room-select ng-model-options="{ updateOn: 'default' }">
+  <div
+    class="form-group"
+    ng-class="{ 'has-error' : RoomForm.$submitted && RoomForm.room_uuid.$invalid }">
+
+    <label class="control-label" translate>
+      {{ $ctrl.label }}
+    </label>
+    
+    <ng-transclude></ng-transclude>
+    <ui-select 
+      name="room_uuid" 
+      ng-model="$ctrl.uuid"
+      on-select="$ctrl.onSelect($item)"
+      ng-required="$ctrl.required"
+      ng-disabled="$ctrl.disabled">
+      <ui-select-match placeholder="{{ 'FORM.SELECT.ROOM' | translate }}">
+        <span>{{$select.selected.label}}</span>
+      </ui-select-match>
+      <ui-select-choices ui-select-focus-patch repeat="room.uuid as room in $ctrl.rooms | filter: { 'label': $select.search }">
+        <span ng-bind-html="room.label | highlight:$select.search"></span>
+      </ui-select-choices>
+    </ui-select>    
+
+    <div class="help-block" ng-messages="RoomForm.room_uuid.$error" ng-show="RoomForm.$submitted">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+</div>

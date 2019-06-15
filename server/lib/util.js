@@ -28,6 +28,7 @@ exports.dateFormatter = dateFormatter;
 exports.execp = execp;
 exports.format = require('util').format;
 
+exports.calcualteAge = calcualteAge;
 exports.renameKeys = renameKeys;
 
 exports.roundDecimal = roundDecimal;
@@ -216,24 +217,18 @@ function renameObjectKeys(obj, newKeys) {
  * @description convert a csv file to a json
  * @return {promise} return a promise
  */
-function formatCsvToJson(filePath) {
-  const defer = q.defer();
-  const rows = [];
+async function formatCsvToJson(filePath) {
+  const rows = await csvtojson()
+    .fromFile(path.resolve(filePath));
 
-  csvtojson()
-    .fromFile(path.resolve(filePath))
-    .on('json', (data) => {
-      rows.push(data);
-    })
-    .on('end', () => {
-      defer.resolve(rows);
-    })
-    .on('error', (error) => {
-      defer.reject(error);
-    });
-
-  return defer.promise;
+  return rows;
 }
+
+// calcualte age function
+function calcualteAge(dob) {
+  return moment().diff(dob, 'years');
+}
+
 
 /**
  * @function uuid

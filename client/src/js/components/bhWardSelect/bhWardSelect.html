@@ -1,0 +1,28 @@
+<div ng-form="WardForm" bh-ward-select ng-model-options="{ updateOn: 'default' }">
+  <div
+    class="form-group"
+    ng-class="{ 'has-error' : WardForm.$submitted && WardForm.ward_uuid.$invalid }">
+
+    <label class="control-label" translate>
+      {{ $ctrl.label }}
+    </label>
+    
+    <ng-transclude></ng-transclude>
+    <ui-select 
+      name="ward_uuid" 
+      ng-model="$ctrl.uuid"
+      on-select="$ctrl.onSelect($item)"
+      ng-required="$ctrl.required">
+      <ui-select-match placeholder="{{ 'FORM.SELECT.WARD' | translate }}">
+        <span>{{$select.selected.name}}</span>
+      </ui-select-match>
+      <ui-select-choices ui-select-focus-patch repeat="ward.uuid as ward in $ctrl.wards | filter: { 'name': $select.search }">
+        <span ng-bind-html="ward.name | highlight:$select.search"></span>
+      </ui-select-choices>
+    </ui-select>    
+
+    <div class="help-block" ng-messages="WardForm.ward_uuid.$error" ng-show="WardForm.$submitted">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+</div>

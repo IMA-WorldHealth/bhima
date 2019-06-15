@@ -22,24 +22,23 @@ describe('Grades Management', () => {
   };
 
 
-  it('begins with 2 grades', () => {
-    expect(page.count()).to.eventually.equal(2);
+  it('begins with 2 grades', async () => {
+    expect(await page.count()).to.equal(2);
   });
 
-  it('successfully creates a new grade', () => {
-    page.create(grade);
+  it('successfully creates a new grade', async () => {
+    await page.create(grade);
   });
 
-  it('successfully edits a grade', () => {
-    page.update(grade.code, updateGrade);
+  it('successfully edits a grade', async () => {
+    await page.update(grade.code, updateGrade);
   });
 
-  it('doesn\'t create a record when grade name is incorrect', () => {
-    page.errorOnCreateGrade();
+  it('doesn\'t create a record when grade name is incorrect', async () => {
+    await page.errorOnCreateGrade();
   });
 
-  it('successfully delete a grade', () => {
-    page.remove(updateGrade.code);
+  it('successfully delete a grade', async () => {
+    await page.remove(updateGrade.code);
   });
-
 });

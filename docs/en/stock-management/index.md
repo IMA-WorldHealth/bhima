@@ -1,4 +1,4 @@
-> [Home](../index.md) / Inventory Management
+&raquo; [Home](../index.md) / Inventory Management
 
 # Inventory and stock management
 

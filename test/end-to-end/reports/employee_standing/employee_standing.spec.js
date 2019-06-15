@@ -2,7 +2,7 @@ const helpers = require('../../shared/helpers');
 const EmployeeStandingPage = require('./employee_standing.page');
 
 describe('Employee Standing Report', () => {
-  let Page;
+  let page;
   const key = 'employeeStanding';
 
   const dataset = {
@@ -11,28 +11,28 @@ describe('Employee Standing Report', () => {
     renderer : 'PDF',
   };
 
-  before(() => {
-    helpers.navigate(`#!/reports/${key}`);
-    Page = new EmployeeStandingPage(key);
+  before(async () => {
+    await helpers.navigate(`#!/reports/${key}`);
+    page = new EmployeeStandingPage(key);
   });
 
-  it('preview a new Employee Standing Report', () => {
-    Page.showEmployeeReportPreview(dataset.employee_name);
+  it('preview a new Employee Standing Report', async () => {
+    await page.showEmployeeReportPreview(dataset.employee_name);
   });
 
-  it('close the previewed report', () => {
-    Page.closeEmployeeStandingReportPreview();
+  it('close the previewed report', async () => {
+    await page.closeEmployeeStandingReportPreview();
   });
 
-  it('save a previewed report', () => {
-    Page.saveEmployeeStandingReport(dataset);
+  it('save a previewed report', async () => {
+    await page.saveEmployeeStandingReport(dataset);
   });
 
-  it('report has been saved into archive', () => {
-    Page.checkSavedEmployeeStandingReport(dataset.report_name);
+  it('report has been saved into archive', async () => {
+    await page.checkSavedEmployeeStandingReport(dataset.report_name);
   });
 
-  it('print the previewed report', () => {
-    Page.printEmployeeStandingReport(dataset);
+  it('print the previewed report', async () => {
+    await page.printEmployeeStandingReport(dataset);
   });
 });

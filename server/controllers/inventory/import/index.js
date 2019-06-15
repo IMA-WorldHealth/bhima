@@ -69,8 +69,7 @@ function importInventories(req, res, next) {
       return transaction.execute();
     })
     .then(() => res.sendStatus(200))
-    .catch(next)
-    .done();
+    .catch(next);
 }
 
 /**

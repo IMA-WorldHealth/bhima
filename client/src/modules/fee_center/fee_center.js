@@ -39,6 +39,12 @@ function FeeCenterController(FeeCenters, ModalService, Notify, uiGridConstants) 
         visible : true,
       },
       {
+        field : 'projectName',
+        displayName : 'FORM.LABELS.PROJECT',
+        headerCellFilter : 'translate',
+        visible : true,
+      },
+      {
         field : 'serviceNames',
         displayName : 'FORM.LABELS.SERVICES',
         headerCellFilter : 'translate',

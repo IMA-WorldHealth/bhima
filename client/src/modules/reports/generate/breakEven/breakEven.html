@@ -1,0 +1,97 @@
+<bh-report-preview
+  ng-if="ReportConfigCtrl.previewGenerated"
+  source-document="ReportConfigCtrl.previewResult"
+  on-clear-callback="ReportConfigCtrl.clearPreview()"
+  on-save-callback="ReportConfigCtrl.requestSaveAs()">
+</bh-report-preview>
+
+<div ng-show="!ReportConfigCtrl.previewGenerated">
+  <div class="row">
+    <div class="col-md-12">
+      <h3 class="text-capitalize" translate>TREE.BREAK_EVEN_REPORT</h3>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top : 10px">
+    <div class="col-md-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <span translate>REPORT.UTIL.OPTIONS</span>
+        </div>
+
+        <div class="panel-body">
+          <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate>
+            <bh-fiscal-year-select
+              fiscal-id="ReportConfigCtrl.reportDetails.fiscal_id"
+              on-select-fiscal-callback="ReportConfigCtrl.onSelectFiscalYear(fiscalYear)">
+            </bh-fiscal-year-select>
+
+            <bh-period-selection
+              fiscal-year-id="ReportConfigCtrl.reportDetails.fiscal_id"
+              period-id="ReportConfigCtrl.reportDetails.period_id"
+              on-select-callback="ReportConfigCtrl.onSelectPeriod(period)">
+            </bh-period-selection>
+            <hr>
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" ng-model="ReportConfigCtrl.reportDetails.breakEvenProject" ng-true-value="1" ng-false-value="0">
+                <span translate>TABLE.COLUMNS.BREAK_EVEN.BREAK_EVEN_PROJECT</span>
+              </label>
+            </div>
+            
+            <div ng-if="ReportConfigCtrl.reportDetails.breakEvenProject" class="checkbox">
+              <hr>
+              <label style="margin-left: 2.5%;">
+                <input type="checkbox" ng-model="ReportConfigCtrl.reportDetails.includeManual" ng-true-value="1" ng-false-value="0">
+                <strong><em>
+                  <span translate>TABLE.COLUMNS.INCLUDE_MANUAL_DISTRIBUTIONS</span>
+                </em></strong>
+              </label>
+            </div>
+
+            <hr>
+            <!-- type -->
+            <div class="panel-body" ng-class="{'has-error' : ConfigForm.$submitted && ConfigForm.type.$invalid }">
+              <div class="radio">
+                <label class="radio-inline">
+                  <input
+                    type="radio"
+                    name="type"
+                    ng-value="1"
+                    ng-model="ReportConfigCtrl.reportDetails.type"
+                    id="use_patient_visit"
+                    required>
+                  <strong translate>
+                    FORM.INFO.USE_PATIENT_VISIT
+                  </strong>
+                </label>
+              </div>
+              <div class="radio">
+                <label class="radio-inline">
+                  <input
+                    type="radio"
+                    name="type"
+                    ng-value="0"
+                    ng-model="ReportConfigCtrl.reportDetails.type"
+                    id="use_dashboard"
+                    required>
+                  <strong translate>
+                    FORM.INFO.USE_INDICATOR_DASHBOARD
+                  </strong>
+                </label>
+                <div class="help-block" ng-messages="ConfigForm.type.$error" ng-show="ConfigForm.$submitted">
+                  <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+                </div>
+              </div>
+            </div>
+            <hr>
+
+            <bh-loading-button loading-state="ConfigForm.$loading">
+              <span translate>REPORT.UTIL.PREVIEW</span>
+            </bh-loading-button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

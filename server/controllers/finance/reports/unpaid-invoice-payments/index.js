@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const ReportManager = require('../../../../lib/ReportManager');
 const db = require('../../../../lib/db');
-
+const util = require('../../../../lib/util');
 // path to the template to render
 const TEMPLATE = './server/controllers/finance/reports/unpaid-invoice-payments/report.handlebars';
 
@@ -18,20 +18,30 @@ async function build(req, res, next) {
 
   const metadata = _.clone(req.session);
 
+  let report;
+  let results;
+
   try {
-    const report = new ReportManager(TEMPLATE, metadata, qs);
+    report = new ReportManager(TEMPLATE, metadata, qs);
+    results = await getUnbalancedInvoices(qs);
+  } catch (err) {
 
-    const { dataset, totals, services } = await getUnbalancedInvoices(qs);
+    // NOTE(@jniles) we throw for all errors except the 3COLLATIONS error and
+    // parse error.  These errors mean that we didn't pick up enough data in
+    // our query, so it is empty.  We'll show the client an empty table instead.
+    if (err.code !== 'ER_CANT_AGGREGATE_3COLLATIONS' && err.code !== 'ER_PARSE_ERROR') {
+      next(err);
+      return;
+    }
 
-    const data = _.extend({}, qs, {
-      dataset, totals, services,
-    });
-
-    const compiled = await report.render(data);
-    res.set(compiled.headers).send(compiled.report);
-  } catch (e) {
-    next(e);
+    // provide empty data for the report to render
+    results = { dataset : [], totals : {}, services : [] };
   }
+
+  const data = _.extend({}, qs, results);
+
+  const compiled = await report.render(data);
+  res.set(compiled.headers).send(compiled.report);
 }
 
 // invoice payements balance
@@ -41,7 +51,11 @@ async function getUnbalancedInvoices(options) {
     new Date(options.dateTo),
   ];
 
-  const wherePart = options.debtorGroupName ? `WHERE debtorGroupName = ${db.escape(options.debtorGroupName)}` : '';
+  const { debtorGroupName, serviceId } = options;
+  let wherePart = debtorGroupName ? `WHERE debtorGroupName = ${db.escape(debtorGroupName)}` : '';
+  if (serviceId) {
+    wherePart = (wherePart.length < 2) ? `WHERE serviceID=${serviceId}` : `${wherePart} AND serviceId=${serviceId}`;
+  }
 
   const rows = await db.transaction()
     .addQuery('CALL UnbalancedInvoicePaymentsTable(?, ?);', params)
@@ -68,8 +82,9 @@ async function getUnbalancedInvoices(options) {
 
   // make human readable names for the users
   const debtorNames = await db.exec(`
-    SELECT BUID(debtor.uuid) AS uuid, em.text as reference, debtor.text
+    SELECT BUID(debtor.uuid) AS uuid, em.text as reference, debtor.text, p.dob
     FROM debtor JOIN entity_map em ON debtor.uuid = em.uuid
+    LEFT JOIN patient p ON p.debtor_uuid = debtor.uuid
     WHERE debtor.uuid IN (?);
   `, [debtorUuids]);
 
@@ -90,12 +105,12 @@ async function getUnbalancedInvoices(options) {
     if (!row.debtorGroupName) {
       row.isGroupTotalRow = true;
     }
-
     // add pretty debtor names
     const debtor = debtorNameMap[row.debtorUuid];
     if (debtor) {
       row.debtorReference = debtor.reference;
       row.debtorText = debtor.text;
+      row.debtorAge = util.calcualteAge(debtor.dob);
     }
   });
 

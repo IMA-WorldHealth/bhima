@@ -332,6 +332,9 @@ function VoucherFormService(
         row.credit = conversionFn(row.credit || 0);
         row.debit = conversionFn(row.debit || 0);
       });
+
+      // set current currency the selected currency
+      this.details.currency_id = nextCurrencyId;
     }
 
     this.validate();

@@ -8,6 +8,6 @@ module.exports = {
     const locator = (id) ? by.id(id) : by.css(this.selector);
     const target = element(locator);
 
-    FU.select('$ctrl.value', source, target);
+    return FU.select('$ctrl.value', source, target);
   },
 };

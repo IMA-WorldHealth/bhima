@@ -20,43 +20,43 @@ function TrialBalanceTest() {
     filters = new Filters();
   });
 
-  afterEach(() => {
-    filters.resetFilters();
+  afterEach(async () => {
+    await filters.resetFilters();
   });
 
   const TXN_A = 'TPA38'; // CP.TPA.3 (Paiement caution par Test 2 Patient (PA.TPA.2).)
   const TXN_B = 'TPA6'; // CP.TPA.2 (This will be deleted in tests)
-  it(`posts mutiple transactions (${TXN_A}, ${TXN_B}) to the General Ledger`, () => {
-    SearchModal.open();
+  it(`posts mutiple transactions (${TXN_A}, ${TXN_B}) to the General Ledger`, async () => {
+    await SearchModal.open();
     const modal = new SearchModal();
-    modal.setTransactionType(['client']);
-    modal.submit();
+    await modal.setTransactionType(['client']);
+    await modal.submit();
 
-    page.selectTransaction(TXN_A);
-    page.selectTransaction(TXN_B);
+    await page.selectTransaction(TXN_A);
+    await page.selectTransaction(TXN_B);
 
-    page.openTrialBalanceModal();
+    await page.openTrialBalanceModal();
 
     // should have four lines
-    expect(TrialBalance.countOverviewRows()).to.eventually.equal(2);
+    expect(await TrialBalance.countOverviewRows()).to.equal(2);
 
-    TrialBalance.submit();
+    await TrialBalance.submit();
   });
 
   const POSTED_TXN = 'TPA38';
-  it(`blocks ${POSTED_TXN} as it is already posted`, () => {
+  it(`blocks ${POSTED_TXN} as it is already posted`, async () => {
 
     // make sure we have posted records in our view
-    SearchModal.open();
+    await SearchModal.open();
     const modal = new SearchModal();
-    modal.showPostedRecords(true);
-    modal.submit();
+    await modal.showPostedRecords(true);
+    await modal.submit();
 
     // select the posted transaction
-    page.selectTransaction(POSTED_TXN);
-    page.openTrialBalanceModal();
+    await page.selectTransaction(POSTED_TXN);
+    await page.openTrialBalanceModal();
 
-    notification.hasWarn();
+    await notification.hasWarn();
   });
 }
 

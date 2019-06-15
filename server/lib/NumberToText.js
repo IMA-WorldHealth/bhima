@@ -88,13 +88,12 @@ function convert(input, lang, currencyName) {
   const comp = f => y => x => f(y(x));
   const not = x => !x;
 
-  const chunk = n =>
-    xs => {
-      if (isEmpty(xs)) {
-        return [];
-      }
-      return [take(n)(xs), ...chunk(n)(drop(n)(xs))];
-    };
+  const chunk = n => xs => {
+    if (isEmpty(xs)) {
+      return [];
+    }
+    return [take(n)(xs), ...chunk(n)(drop(n)(xs))];
+  };
 
   const formatHundreds = (huns) => {
     const isZero = num(huns) === 0;
@@ -103,7 +102,7 @@ function convert(input, lang, currencyName) {
 
     if (isZero) {
       return '';
-    } else if (isFrench && isOne) {
+    } if (isFrench && isOne) {
       return ` ${_.get(dictionary, 'NUMBERS.HUNDRED')} `;
     }
 
@@ -114,7 +113,7 @@ function convert(input, lang, currencyName) {
     const isZero = num(ones) === 0;
     if (isZero) {
       return b[tens];
-    } else if (b[tens]) {
+    } if (b[tens]) {
       return `${b[tens]}-`;
     }
 
@@ -136,7 +135,7 @@ function convert(input, lang, currencyName) {
     const thousand = (group, i) => {
       if (group === '') {
         return group;
-      } else if ((group === a[1]) && (languageKey === 'fr') && (g[i] === g[1])) {
+      } if ((group === a[1]) && (languageKey === 'fr') && (g[i] === g[1])) {
         return ` ${g[i]}`;
       }
 
@@ -145,7 +144,7 @@ function convert(input, lang, currencyName) {
 
     if (typeof numbr === 'number') {
       return numToWords(String(number));
-    } else if (numbr === '0') {
+    } if (numbr === '0') {
       return _.get(dictionary, 'NUMBERS.ZERO');
     }
 
@@ -161,9 +160,9 @@ function convert(input, lang, currencyName) {
   const numberPart = _.split(numberString, '.');
   let numberText = numToWords(numberPart[0]);
 
-  numberText = numberPart[1] ?
-    `${numberText} ${_.get(dictionary, 'NUMBERS.POINT')}  ${numToWords(numberPart[1])}` :
-    numberText;
+  numberText = numberPart[1]
+    ? `${numberText} ${_.get(dictionary, 'NUMBERS.POINT')}  ${numToWords(numberPart[1])}`
+    : numberText;
 
   return `${numberText} ${currencyName}`;
 }

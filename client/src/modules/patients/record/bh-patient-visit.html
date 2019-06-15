@@ -1,27 +1,26 @@
 <div class="panel panel-default">
-
   <div class="panel-heading clearfix">
     <span translate>PATIENT_RECORDS.VISITS.TITLE</span> ({{$ctrl.visits.length}})
 
     <span class="pull-right">
       <bh-pdf-link
-        pdf-url="reports/medical/patients/{{ $ctrl.patientUuid }}/checkins"
+        pdf-url="reports/medical/patients/{{ $ctrl.patientUuid }}/visits"
         disable-cache="true">
       </bh-pdf-link>
     </span>
   </div>
 
   <div class="panel-body" style="height : 250px; overflow-y : auto;">
-
-    <div style="text-align : center">
-      <p class="text-info" ng-if="$ctrl.loaded && $ctrl.visits.length===0">
-      <i class="fa fa-info-circle"></i> <span translate>PATIENT_RECORDS.VISITS.ORIGINAL</span>
+    <div class="text-center">
+      <p class="text-info" ng-if="$ctrl.loaded && $ctrl.visits.length === 0">
+        <i class="fa fa-info-circle"></i> <span translate>PATIENT_RECORDS.VISITS.ORIGINAL</span>
       </p>
 
       <button id="submit-visit" class="btn btn-default" ng-click="$ctrl.admit()">
         <span translate>{{ $ctrl.visiting ? "PATIENT_RECORDS.VISITS.DISCHARGE" : "PATIENT_RECORDS.VISITS.ADMIT"}}</span>
       </button>
     </div>
+
     <br />
 
     <div ng-if="$ctrl.loaded && $ctrl.visits.length">
@@ -30,19 +29,43 @@
       </label>
       <table>
         <tbody>
-          <tr data-visit-line ng-repeat="visit in $ctrl.visits | limitTo : CheckInCtrl.limitVisitDisplay">
+          <tr data-visit-line ng-repeat="visit in $ctrl.visits | limitTo : $ctrl.limitVisitDisplay">
 
-          <td><i class="fa fa-sign-in"></i> {{visit.start_date | date}} -
-
-          <span ng-if="visit.end_date">
-            {{visit.end_date | date}}
-            ({{visit.totalDays}} <span translate>PATIENT_REGISTRY.DAYS</span>)
-          </span>
-          <span ng-if="!visit.end_date">(<b class="text-success"><span translate>PATIENT_RECORDS.VISITS.IN_PROGRESS</span></b>)</span>
-
-          </td>
+            <td>
+              <i class="fa fa-sign-in"></i> {{visit.start_date | date}} -
+              <span ng-if="visit.end_date">
+                {{visit.end_date | date}}
+                ({{visit.totalDays}} <span translate>PATIENT_REGISTRY.DAYS</span>)
+              </span>
+              <span ng-if="!visit.end_date">
+                (<b class="text-success"><span translate>PATIENT_RECORDS.VISITS.IN_PROGRESS</span></b>)
+              </span>
+              <span ng-if="visit.hospitalized" class="label label-primary" translate>
+                PATIENT_RECORDS.VISITS.HOSPITALISATION
+              </span>
+              <span ng-if="visit.service_name" class="label label-info" translate>
+                {{ visit.service_name }}
+              </span>
+              <span ng-if="visit.bed_label" class="label label-success" title="{{ visit.hrBedLocation }}">
+                <i class="fa fa-bed"></i> <span translate>{{ visit.bed_label }}</span> &nbsp;
+              </span>
+            </td>
+          </tr>
         </tbody>
       </table>
+
+      <!-- if the visits exceed the space, this will show all visits -->
+      <div class="text-center" ng-if="$ctrl.hasOverflowVisits" style="margin-top: 1em;">
+        <a href ng-click="$ctrl.toggleViewLimit()">
+          <span ng-hide="$ctrl.hasExpandedView" >
+            <i class="fa fa-arrow-circle-o-down"></i> <span translate>FORM.BUTTONS.SHOW_ALL_RECORDS</span>
+          </span>
+
+          <span ng-show="$ctrl.hasExpandedView">
+            <i class="fa fa-arrow-circle-o-up"></i> <span translate>FORM.BUTTONS.COLLAPSE_RECORDS</span>
+          </span>
+        </a>
+      </div>
     </div>
   </div>
 </div>

@@ -15,11 +15,11 @@ class TrialBalancePage {
   }
 
   submit() {
-    this.buttons.submit();
+    return this.buttons.submit();
   }
 
   cancel() {
-    this.buttons.cancel();
+    return this.buttons.cancel();
   }
 
   countOverviewRows() {

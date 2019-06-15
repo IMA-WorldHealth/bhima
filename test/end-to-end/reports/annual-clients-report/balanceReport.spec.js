@@ -1,9 +1,7 @@
-/* global browser */
-
 const helpers = require('../../shared/helpers');
 const AnnualClientsReportReportPage = require('./balance.page');
 
-describe('Annual Clients Report', () => {
+describe.skip('Annual Clients Report', () => {
   const key = 'annual-clients-report';
   let Page;
 
@@ -13,29 +11,28 @@ describe('Annual Clients Report', () => {
     renderer : 'PDF',
   };
 
-  before(() => {
-    helpers.navigate(`#!/reports/${key}`);
+  before(async () => {
+    await helpers.navigate(`#!/reports/${key}`);
     Page = new AnnualClientsReportReportPage(key);
-    browser.refresh();
   });
 
-  it('preview a new debtor client account balance report', () => {
-    Page.showAnnualClientsReportPreview(dataset.fiscalYear);
+  it('preview a new debtor client account balance report', async () => {
+    await Page.showAnnualClientsReportPreview(dataset.fiscalYear);
   });
 
-  it('close the previewed report', () => {
-    Page.closeAnnualClientsReportPreview();
+  it('close the previewed report', async () => {
+    await Page.closeAnnualClientsReportPreview();
   });
 
-  it('save a previewed report', () => {
-    Page.saveAnnualClientsReport(dataset.fiscalYear, dataset.report_name, dataset.renderer);
+  it('save a previewed report', async () => {
+    await Page.saveAnnualClientsReport(dataset.fiscalYear, dataset.report_name, dataset.renderer);
   });
 
-  it('report has been saved into archive', () => {
-    Page.checkSavedAnnualClientsReport(dataset.report_name);
+  it('report has been saved into archive', async () => {
+    await Page.checkSavedAnnualClientsReport(dataset.report_name);
   });
 
-  it('print the previewed report', () => {
-    Page.printAnnualClientsReport(dataset.fiscalYear);
+  it('print the previewed report', async () => {
+    await Page.printAnnualClientsReport(dataset.fiscalYear);
   });
 });

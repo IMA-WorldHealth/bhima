@@ -1,5 +1,5 @@
 /* global element, by */
-/* eslint class-methods-use-this: off */
+/* eslint  */
 
 const GridRow = require('../shared/GridRow');
 const FU = require('../shared/FormUtils');
@@ -24,30 +24,30 @@ class UserPage {
     return this.buttons.create();
   }
 
-  update(name) {
+  async update(name) {
     const row = new GridRow(name);
-    row.dropdown().click();
-    row.edit().click();
+    await row.dropdown().click();
+    await row.edit().click();
   }
 
 
-  updateDepot(name) {
+  async updateDepot(name) {
     const row = new GridRow(name);
-    row.dropdown().click();
-    row.menu.$('[data-method="depot"]').click();
+    await row.dropdown().click();
+    await row.menu.$('[data-method="depot"]').click();
   }
 
-  updateCashbox(name) {
+  async updateCashbox(name) {
     const row = new GridRow(name);
-    row.dropdown().click();
-    row.menu.$('[data-method="cashbox"]').click();
+    await row.dropdown().click();
+    await row.menu.$('[data-method="cashbox"]').click();
   }
 
-  toggleUser(name, on = true) {
+  async toggleUser(name, on = true) {
     const row = new GridRow(name);
-    row.dropdown().click();
+    await row.dropdown().click();
     const key = on ? 'activate' : 'deactivate';
-    row.menu.$(`[data-method="${key}"]`).click();
+    await row.menu.$(`[data-method="${key}"]`).click();
   }
 }
 

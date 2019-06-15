@@ -738,12 +738,13 @@ function getPeriods(req, res, next) {
 
 /**
  * return a query for retrieving account'balance by type_id and periods
+ * In general in accounting the balance is obtained by making debit - credit
  */
 function getAccountBalancesByTypeId(rate = 1) {
   return `
     SELECT ac.id, ac.number, ac.label, ac.parent, (IFNULL(s.amount, 0)*${rate}) AS amount, s.type_id
     FROM account as ac LEFT JOIN (
-    SELECT SUM(pt.credit - pt.debit) as amount, pt.account_id, act.id as type_id
+    SELECT SUM(pt.debit - pt.credit) as amount, pt.account_id, act.id as type_id
     FROM period_total as pt
     JOIN account as a ON a.id = pt.account_id
     JOIN account_type as act ON act.id = a.type_id

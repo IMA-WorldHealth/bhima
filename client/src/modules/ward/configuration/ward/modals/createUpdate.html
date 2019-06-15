@@ -1,0 +1,50 @@
+<form name="WardForm" bh-submit="ModalCtrl.submit(WardForm)" novalidate>
+  <div class="modal-header">
+  <ol class="headercrumb">
+    <li ng-if="ModalCtrl.isCreating" class="title">
+      <span translate>FORM.LABELS.WARD</span>
+      <label class="badge badge-success" translate>FORM.LABELS.CREATE</label>
+    </li>
+    <li ng-if="!ModalCtrl.isCreating" class="title">
+      <span translate>FORM.LABELS.WARD</span>
+      <label class="badge badge-warning" translate>FORM.LABELS.UPDATE</label>
+    </li>
+  </ol>
+</div>
+
+  <div class="modal-body">
+    <div class="form-group" ng-class="{ 'has-error' : WardForm.$submitted && WardForm.name.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.NAME</label>
+      <input name="name" ng-model="ModalCtrl.ward.name" autocomplete="off" class="form-control" required>
+      <div class="help-block" ng-messages="WardForm.text.$error" ng-show="WardForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <bh-service-select 
+      service-id="ModalCtrl.ward.service_id"
+      on-select-callback="ModalCtrl.onSelectService(service)">
+    </bh-service-select>
+
+    <div class="form-group" ng-class="{'has-error': ModalForm.$submitted && ModalForm.description.$invalid }">
+      <label class="control-label" translate>TABLE.COLUMNS.DESCRIPTION</label>
+      <textarea
+        ng-model="ModalCtrl.ward.description"
+        name="description"
+        class="form-control"
+        rows="3"
+      >
+      </textarea>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button data-method="cancel" type="reset" ng-click="ModalCtrl.close()" class="btn btn-default">
+      <span translate>FORM.BUTTONS.CANCEL</span>
+    </button>
+
+    <bh-loading-button loading-state="WardForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

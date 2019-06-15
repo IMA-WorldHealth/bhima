@@ -1,4 +1,4 @@
-/* global browser, element, by */
+/* global element, by */
 
 /**
  * Hooks for the location select component described in the file
@@ -14,11 +14,11 @@ module.exports = {
   selector : '[data-bh-location-select]',
 
   /** <select> element models to be used in selectors */
-  models:     {
-    country:  '$ctrl.country',
-    province: '$ctrl.province',
-    sector:   '$ctrl.sector',
-    village:  '$ctrl.village',
+  models :     {
+    country :  '$ctrl.country',
+    province : '$ctrl.province',
+    sector :   '$ctrl.sector',
+    village :  '$ctrl.village',
   },
 
   /**
@@ -41,39 +41,39 @@ module.exports = {
    * ];
    * components.locationSelect.set(locations)
    */
-  set : function set(array, id) {
+  set : async function set(array, id) {
 
     /** if an id was passed in, use it as a target */
-    var target = (id) ? element(by.id(id)) : element(by.css(this.selector));
+    const target = (id) ? element(by.id(id)) : element(by.css(this.selector));
 
     /** used to alias each <select>'s <option> elements later */
-    var opts;
+    let opts;
 
     /** <select> element selectors */
-    var models = this.models;
+    const { models } = this;
 
     /** return selector for an option element */
     function getValue(uuid) {
-      return by.css('option[value="?"]'.replace('?', uuid));
+      return by.css(`option[value="${uuid}"]`);
     }
 
     /** go through each select and click the associated uuid */
 
     /** country <select> */
     opts = target.element(by.model(models.country));
-    opts.element(getValue(array[0])).click();
+    await opts.element(getValue(array[0])).click();
 
     /** province <select> */
     opts = target.element(by.model(models.province));
-    opts.element(getValue(array[1])).click();
+    await opts.element(getValue(array[1])).click();
 
     /** sector <select> */
     opts = target.element(by.model(models.sector));
-    opts.element(getValue(array[2])).click();
+    await opts.element(getValue(array[2])).click();
 
     /** village <select> */
     opts = target.element(by.model(models.village));
-    opts.element(getValue(array[3])).click();
+    await opts.element(getValue(array[3])).click();
   },
 
   /**
@@ -92,26 +92,26 @@ module.exports = {
    * // here we are using the id 'origin-location-select'
    * components.locationSelect('origin-location-select');
    */
-  get : function get(id)  {
+  get : async function get(id) {
 
     /** if an id was passed in, use it as a target */
-    var target = (id) ? element(by.id(id)) : element(by.css(this.selector));
+    const target = (id) ? element(by.id(id)) : element(by.css(this.selector));
 
     /** alias the models */
-    var models = this.models;
+    const { models } = this;
 
     /** find each <select> by its model */
-    var country = target.element(by.model(models.country)).$('option:checked');
-    var province = target.element(by.model(models.province)).$('option:checked');
-    var sector = target.element(by.model(models.sector)).$('option:checked');
-    var village = target.element(by.model(models.village)).$('option:checked');
+    const country = target.element(by.model(models.country)).$('option:checked');
+    const province = target.element(by.model(models.province)).$('option:checked');
+    const sector = target.element(by.model(models.sector)).$('option:checked');
+    const village = target.element(by.model(models.village)).$('option:checked');
 
     /** return the selected values */
-    return [
+    return Promise.all([
       country.getAttribute('value'),
       province.getAttribute('value'),
       sector.getAttribute('value'),
-      village.getAttribute('value')
-    ];
-  }
+      village.getAttribute('value'),
+    ]);
+  },
 };

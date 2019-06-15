@@ -20,8 +20,8 @@ function auxilliary(params) {
 
   const sql1 = `
     SELECT fee_center.id, fee_center.label, fee_center.is_principal, reference_fee_center.account_reference_id, 
-    reference_fee_center.is_cost, account_reference_item.account_id, account.number, 
-    account_reference_item.is_exception, account.type_id
+    reference_fee_center.is_cost, reference_fee_center.is_variable, reference_fee_center.is_turnover,
+    account_reference_item.account_id, account.number, account_reference_item.is_exception, account.type_id
     FROM fee_center
     JOIN reference_fee_center ON reference_fee_center.fee_center_id = fee_center.id
     JOIN account_reference_item 
@@ -67,9 +67,9 @@ function auxilliary(params) {
       // Get the child of all accounts title definied in Account Reference Items
       accountsValids.forEach(item => {
         tabAccountsValids.push(`(SELECT ${item.id} AS id, '${item.label}' AS label,
-      ${item.is_principal} AS is_principal, ${item.is_cost} AS is_cost,
-      ${item.account_reference_id} AS account_reference_id, account.id AS account_id, account.number,
-      ${item.is_exception} AS is_exception, account.type_id
+      ${item.is_principal} AS is_principal, ${item.is_cost} AS is_cost, ${item.is_variable} AS is_variable,
+      ${item.is_turnover} AS is_turnover, ${item.account_reference_id} AS account_reference_id,
+      account.id AS account_id, account.number, ${item.is_exception} AS is_exception, account.type_id
       FROM account
       WHERE account.number LIKE '${item.number}%' AND account.type_id IN (4,5))`);
       });
@@ -113,6 +113,7 @@ function auxilliary(params) {
             }
             return (isValid === true);
           });
+
           return accountsReferences;
         });
     });

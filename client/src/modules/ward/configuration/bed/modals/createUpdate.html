@@ -1,0 +1,48 @@
+<form name="BedForm" bh-submit="ModalCtrl.submit(BedForm)" novalidate>
+    <div class="modal-header">
+    <ol class="headercrumb">
+      <li ng-if="ModalCtrl.isCreating" class="title">
+        <span translate>BED.TITLE</span>
+        <label class="badge badge-success" translate>FORM.LABELS.CREATE</label>
+      </li>
+      <li ng-if="!ModalCtrl.isCreating" class="title">
+        <span translate>BED.TITLE</span>
+        <label class="badge badge-warning" translate>FORM.LABELS.UPDATE</label>
+      </li>
+    </ol>
+  </div>
+  
+    <div class="modal-body">
+      <bh-ward-select
+        uuid="ModalCtrl.ward_uuid"
+        on-select-callback="ModalCtrl.onSelectWard(ward)"
+        required="true">
+      </bh-ward-select>
+
+      <bh-room-select
+        uuid="ModalCtrl.bed.room_uuid"
+        ward-uuid="ModalCtrl.ward_uuid"
+        on-select-callback="ModalCtrl.onSelectRoom(room)"
+        required="true">
+      </bh-room-select>
+  
+      <bh-input-text
+        key="label"
+        label="BED.TITLE"
+        text-value="ModalCtrl.bed.label"
+        on-change="ModalCtrl.onInputTextChange(key, value)"
+        required="true">
+      </bh-input-text>
+    </div>
+  
+    <div class="modal-footer">
+      <button data-method="cancel" type="reset" ng-click="ModalCtrl.close()" class="btn btn-default">
+        <span translate>FORM.BUTTONS.CANCEL</span>
+      </button>
+  
+      <bh-loading-button loading-state="BedForm.$loading">
+        <span translate>FORM.BUTTONS.SUBMIT</span>
+      </bh-loading-button>
+    </div>
+  </form>
+  

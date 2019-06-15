@@ -65,4 +65,8 @@ module.exports = {
   percentageInput : require('./bhPercentageInput'),
   accountReferenceTypeSelect : require('./bhAccountReferenceTypeSelect'),
   inpuText : require('./bhInputText'),
+  wardSelect : require('./bhWardSelect'),
+  roomSelect : require('./bhRoomSelect'),
+  fiscalYearPeriodSelect : require('./bhFiscalYearPeriodSelect'),
+  diagnosisSelect : require('./bhDiagnosisSelect'),
 };

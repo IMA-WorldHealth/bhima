@@ -1,10 +1,6 @@
 /* global element, by */
-const chai = require('chai');
 const path = require('path');
 const helpers = require('../shared/helpers');
-
-const { expect } = chai;
-helpers.configure(chai);
 
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
@@ -57,112 +53,112 @@ describe('Enterprises', () => {
    * The actual enterprise module doesn't need to create new one
    * so we need only to update enterprise informations
    */
-  it('set enterprise data', () => {
-    FU.input('EnterpriseCtrl.enterprise.name', enterprise.name);
-    FU.input('EnterpriseCtrl.enterprise.abbr', enterprise.abbr);
+  it('set enterprise data', async () => {
+    await FU.input('EnterpriseCtrl.enterprise.name', enterprise.name);
+    await FU.input('EnterpriseCtrl.enterprise.abbr', enterprise.abbr);
 
-    components.accountSelect.set(enterprise.gain_account_id, 'gain-account-id');
-    components.accountSelect.set(enterprise.loss_account_id, 'loss-account-id');
+    await components.accountSelect.set(enterprise.gain_account_id, 'gain-account-id');
+    await components.accountSelect.set(enterprise.loss_account_id, 'loss-account-id');
 
-    FU.input('EnterpriseCtrl.enterprise.po_box', enterprise.po_box);
-    FU.input('EnterpriseCtrl.enterprise.email', enterprise.email);
-    FU.input('EnterpriseCtrl.enterprise.phone', enterprise.phone);
+    await FU.input('EnterpriseCtrl.enterprise.po_box', enterprise.po_box);
+    await FU.input('EnterpriseCtrl.enterprise.email', enterprise.email);
+    await FU.input('EnterpriseCtrl.enterprise.phone', enterprise.phone);
 
     // select the locations specified
-    components.locationSelect.set(helpers.data.locations);
+    await components.locationSelect.set(helpers.data.locations);
 
     // submit the page to the server
-    FU.buttons.submit();
+    await FU.buttons.submit();
 
-    components.notification.hasSuccess();
+    await components.notification.hasSuccess();
   });
 
-  it('blocks invalid form submission with relevant error classes', () => {
-    FU.input('EnterpriseCtrl.enterprise.name', '');
-    FU.input('EnterpriseCtrl.enterprise.abbr', '');
+  it('blocks invalid form submission with relevant error classes', async () => {
+    await FU.input('EnterpriseCtrl.enterprise.name', '');
+    await FU.input('EnterpriseCtrl.enterprise.abbr', '');
 
     FU.buttons.submit();
 
     // verify form has not been submitted
-    // expect(helpers.getCurrentPath()).to.eventually.equal(path);
+    // expect(helpers.getCurrentPath()).to.equal(path);
 
     // The following fields should be required
-    FU.validation.error('EnterpriseCtrl.enterprise.name');
-    FU.validation.error('EnterpriseCtrl.enterprise.abbr');
+    await FU.validation.error('EnterpriseCtrl.enterprise.name');
+    await FU.validation.error('EnterpriseCtrl.enterprise.abbr');
 
     // The following fields is not required
-    FU.validation.ok('EnterpriseCtrl.enterprise.email');
-    FU.validation.ok('EnterpriseCtrl.enterprise.po_box');
+    await FU.validation.ok('EnterpriseCtrl.enterprise.email');
+    await FU.validation.ok('EnterpriseCtrl.enterprise.po_box');
     FU.validation.ok('EnterpriseCtrl.enterprise.phone');
   });
 
   /**
    * Set default enterprise data for others tests
    */
-  it('reset enterprise data to default', () => {
-    FU.input('EnterpriseCtrl.enterprise.name', defaultEnterprise.name);
-    FU.input('EnterpriseCtrl.enterprise.abbr', defaultEnterprise.abbr);
+  it('reset enterprise data to default', async () => {
+    await FU.input('EnterpriseCtrl.enterprise.name', defaultEnterprise.name);
+    await FU.input('EnterpriseCtrl.enterprise.abbr', defaultEnterprise.abbr);
 
-    components.accountSelect.set(defaultEnterprise.gain_account_id, 'gain-account-id');
-    components.accountSelect.set(defaultEnterprise.loss_account_id, 'loss-account-id');
+    await components.accountSelect.set(defaultEnterprise.gain_account_id, 'gain-account-id');
+    await components.accountSelect.set(defaultEnterprise.loss_account_id, 'loss-account-id');
 
-    FU.input('EnterpriseCtrl.enterprise.po_box', defaultEnterprise.po_box);
-    FU.input('EnterpriseCtrl.enterprise.email', defaultEnterprise.email);
-    FU.input('EnterpriseCtrl.enterprise.phone', defaultEnterprise.phone);
+    await FU.input('EnterpriseCtrl.enterprise.po_box', defaultEnterprise.po_box);
+    await FU.input('EnterpriseCtrl.enterprise.email', defaultEnterprise.email);
+    await FU.input('EnterpriseCtrl.enterprise.phone', defaultEnterprise.phone);
 
     // select the locations specified
-    components.locationSelect.set(helpers.data.locations);
+    await components.locationSelect.set(helpers.data.locations);
 
     // submit the page to the server
-    FU.buttons.submit();
+    await FU.buttons.submit();
 
-    components.notification.hasSuccess();
+    await components.notification.hasSuccess();
   });
 
   /**
    * Upload new logo for the enterprise
    */
-  it('upload a new enterprise logo', () => {
+  it('upload a new enterprise logo', async () => {
     const fileToUpload = 'logo.ico';
     const absolutePath = path.resolve(fixtures, fileToUpload);
 
-    element.all(by.css(`input[type=file]`)).get(0).sendKeys(absolutePath);
-    FU.buttons.submit();
-    components.notification.hasSuccess();
+    await element.all(by.css(`input[type=file]`)).get(0).sendKeys(absolutePath);
+    await FU.buttons.submit();
+    await components.notification.hasSuccess();
   });
 
-  it('add a new project for the enterprise', () => {
-    FU.buttons.create();
+  it('add a new project for the enterprise', async () => {
+    await FU.buttons.create();
 
-    FU.input('$ctrl.project.name', project.name);
-    FU.input('$ctrl.project.abbr', project.abbr);
+    await FU.input('$ctrl.project.name', project.name);
+    await FU.input('$ctrl.project.abbr', project.abbr);
 
-    FU.modal.submit();
+    await FU.modal.submit();
 
-    components.notification.hasSuccess();
+    await components.notification.hasSuccess();
   });
 
-  it('edit an existing project', () => {
+  it('edit an existing project', async () => {
     const btn = $(`[data-project="${abbr}"]`);
-    btn.$('a[data-method="update"]').click();
+    await btn.$('a[data-method="update"]').click();
 
-    FU.input('$ctrl.project.name', projectUpdate.name);
-    FU.input('$ctrl.project.abbr', projectUpdate.abbr);
+    await FU.input('$ctrl.project.name', projectUpdate.name);
+    await FU.input('$ctrl.project.abbr', projectUpdate.abbr);
 
-    FU.modal.submit();
+    await FU.modal.submit();
 
-    components.notification.hasSuccess();
+    await components.notification.hasSuccess();
   });
 
-  it('delete an existing project', () => {
+  it('delete an existing project', async () => {
     const btn = $(`[data-project="${abbr}"]`);
-    btn.$('a[data-method="delete"]').click();
+    await btn.$('a[data-method="delete"]').click();
 
-    FU.input('$ctrl.text', projectUpdate.name);
+    await FU.input('$ctrl.text', projectUpdate.name);
 
-    FU.modal.submit();
+    await FU.modal.submit();
 
-    components.notification.hasSuccess();
+    await components.notification.hasSuccess();
   });
 
   /**

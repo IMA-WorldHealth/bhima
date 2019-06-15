@@ -154,6 +154,7 @@ async function getBalanceForFiscalYear(period, currencyId) {
       WHERE pt.fiscal_year_id = ? AND p.fiscal_year_id = ?
       GROUP BY pt.account_id
     )s ON a.id = s.account_id
+    WHERE a.locked <> 1 OR a.hidden <> 1
     ORDER BY a.number;
   `;
 

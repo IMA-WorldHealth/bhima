@@ -106,6 +106,11 @@ const operating = require('../controllers/finance/reports/operating/index');
 const department = require('../controllers/admin/department');
 const tags = require('../controllers/admin/tags');
 
+const ward = require('../controllers/medical/ward/ward');
+const room = require('../controllers/medical/ward/room');
+const bed = require('../controllers/medical/ward/bed');
+const dischargeTypes = require('../controllers/medical/dischargeTypes');
+
 const feeCenter = require('../controllers/finance/feeCenter');
 
 const distributionConfiguration = require('../controllers/finance/distributionFeeCenter/configuration');
@@ -117,10 +122,18 @@ const distributionGetDistributionKey = require('../controllers/finance/distribut
 const setDistributionKey = require('../controllers/finance/distributionFeeCenter/setting');
 
 const accountReferenceType = require('../controllers/finance/accounts/accountReferenceType');
+const indicators = require('../controllers/finance/indicator');
+const breakEvenReference = require('../controllers/finance/breakEvenReference');
+
+// periods
+const period = require('../controllers/finance/period');
 
 // lots
 const lots = require('../controllers/stock/lots');
 
+// todo: the indicator folder must not be inside the finance folder
+const dashboard = require('../controllers/finance/indicator/dashboard');
+const indicatorRerpor = require('../controllers/finance/indicator/dashboard/report');
 // expose routes to the server.
 exports.configure = function configure(app) {
   debug('configuring routes.');
@@ -208,6 +221,7 @@ exports.configure = function configure(app) {
   // API for service routes
   app.post('/services', services.create);
   app.get('/services', services.list);
+  app.get('/services/count', services.countServiceByProject);
   app.get('/services/:id', services.detail);
   app.put('/services/:id', services.update);
   app.delete('/services/:id', services.remove);
@@ -257,6 +271,10 @@ exports.configure = function configure(app) {
   app.get('/fiscal/:id/closing_balance', fiscal.getClosingBalanceRoute);
 
   app.get('/fiscal/:id/periods', fiscal.getPeriods);
+
+  // periods API
+  app.get('/periods', period.list);
+  app.get('/periods/:id', period.details);
 
   /* load a user's tree */
   app.get('/tree', tree.generate);
@@ -357,7 +375,7 @@ exports.configure = function configure(app) {
   // reports API: Invoices (receipts)
   app.get('/reports/medical/patients', medicalReports.patientRegistrations);
   app.get('/reports/medical/patients/:uuid', medicalReports.receipts.patients);
-  app.get('/reports/medical/patients/:uuid/checkins', medicalReports.patientCheckins);
+  app.get('/reports/medical/patients/:uuid/visits', medicalReports.patientVisits);
 
   app.get('/reports/inventory/purchases/:uuid', inventoryReports.receipts.purchases);
   app.get('/reports/inventory/items', inventoryReports.reports.prices);
@@ -394,8 +412,12 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/account_reference', financeReports.accountReference.report);
   app.get('/reports/finance/fee_center', financeReports.feeCenter.report);
   app.get('/reports/finance/annual-clients-report', financeReports.annualClientsReport);
-
   app.get('/reports/finance/employeeStanding/', financeReports.employee);
+  app.get('/reports/finance/break_even', financeReports.breakEven.report);
+  app.get('/reports/finance/break_even_fee_center', financeReports.breakEvenFeeCenter.report);
+
+  // visits reports
+  app.get('/reports/visits', medicalReports.visitsReports.document);
 
   app.get('/reports/keys/:key', report.keys);
 
@@ -419,6 +441,11 @@ exports.configure = function configure(app) {
   app.get('/patients/search/name', patients.searchByName);
 
   app.get('/patients/visits', patients.visits.list);
+  app.get('/patients/visits/:uuid', patients.visits.detail);
+
+  // patients merge routes
+  app.get('/patients/merge/count_employees', patients.merge.countEmployees);
+  app.post('/patients/merge', patients.merge.mergePatients);
 
   // Patients API
   app.get('/patients', patients.read);
@@ -440,10 +467,12 @@ exports.configure = function configure(app) {
   app.post('/patients/:uuid/pictures', upload.middleware('pics', 'pictures'), patients.pictures.set);
 
   app.get('/patients/visits/:uuid', patients.visits.detail);
+  app.get('/patients/:uuid/visits/status', patients.visits.patientAdmissionStatus);
   app.get('/patients/:patientUuid/visits/:uuid', patients.visits.detail);
   app.get('/patients/:uuid/visits', patients.visits.listByPatient);
   app.post('/patients/:uuid/visits/admission', patients.visits.admission);
   app.post('/patients/:uuid/visits/discharge', patients.visits.discharge);
+  app.post('/patients/:uuid/visits/:patient_visit_uuid/transfer', patients.visits.transfer);
 
   // misc patients financial routes
   app.get('/patients/:uuid/finance/activity', patients.getFinancialStatus);
@@ -468,6 +497,7 @@ exports.configure = function configure(app) {
   // Debtor Groups API
   app.get('/debtor_groups', debtorGroups.list);
   app.get('/debtor_groups/:uuid', debtorGroups.detail);
+  app.get('/debtor_groups/history/:debtorUuid', debtorGroups.history);
   app.get('/debtor_groups/:uuid/invoices', debtorGroups.invoices);
   app.post('/debtor_groups', debtorGroups.create);
   app.put('/debtor_groups/:uuid', debtorGroups.update);
@@ -532,6 +562,7 @@ exports.configure = function configure(app) {
   app.put('/cash/:uuid', cash.update);
   app.get('/cash/checkin/:invoiceUuid', cash.checkInvoicePayment);
 
+
   // Enterprises api
   app.get('/enterprises', enterprises.list);
   app.get('/enterprises/:id', enterprises.detail);
@@ -581,6 +612,7 @@ exports.configure = function configure(app) {
   app.get('/suppliers/:uuid', suppliers.detail);
   app.post('/suppliers', suppliers.create);
   app.put('/suppliers/:uuid', suppliers.update);
+  app.delete('/suppliers/:uuid', suppliers.remove);
 
   // purchase
   app.post('/purchases', purchases.create);
@@ -821,6 +853,27 @@ exports.configure = function configure(app) {
   app.post('/distribution_fee_center/distributionKey', setDistributionKey.setting);
   app.post('/distribution_fee_center/resetKey', setDistributionKey.resetKey);
 
+  // ward management
+  app.get('/wards', ward.read);
+  app.get('/wards/:uuid', ward.detail);
+  app.post('/wards', ward.create);
+  app.put('/wards/:uuid', ward.update);
+  app.delete('/wards/:uuid', ward.delete);
+
+  // room management
+  app.get('/rooms', room.read);
+  app.get('/rooms/:uuid', room.detail);
+  app.post('/rooms', room.create);
+  app.put('/rooms/:uuid', room.update);
+  app.delete('/rooms/:uuid', room.delete);
+
+  // bed management
+  app.get('/beds', bed.read);
+  app.get('/beds/:id', bed.detail);
+  app.post('/beds', bed.create);
+  app.put('/beds/:id', bed.update);
+  app.delete('/beds/:id', bed.delete);
+
   // lots API
   app.get('/lots/:uuid', lots.details);
   app.put('/lots/:uuid', lots.update);
@@ -833,4 +886,37 @@ exports.configure = function configure(app) {
   app.put('/account_reference_type/:id', accountReferenceType.update);
   app.delete('/account_reference_type/:id', accountReferenceType.delete);
 
+  // API for discharge type
+  app.get('/discharge_types', dischargeTypes.list);
+
+  // API for indicators
+  app.get('/indicators', indicators.read);
+  app.get('/indicators/status', indicators.status.list);
+  app.get('/indicators/types', indicators.types.list);
+
+  app.get('/indicators/hospitalization/:uuid', indicators.hospitalization.detail);
+  app.post('/indicators/hospitalization', indicators.hospitalization.create);
+  app.put('/indicators/hospitalization/:uuid', indicators.hospitalization.update);
+  app.delete('/indicators/hospitalization/:uuid', indicators.hospitalization.delete);
+
+  app.get('/indicators/staff/:uuid', indicators.personel.detail);
+  app.post('/indicators/staff', indicators.personel.create);
+  app.put('/indicators/staff/:uuid', indicators.personel.update);
+  app.delete('/indicators/staff/:uuid', indicators.personel.delete);
+
+  app.get('/indicators/finances/:uuid', indicators.finances.detail);
+  app.post('/indicators/finances', indicators.finances.create);
+  app.put('/indicators/finances/:uuid', indicators.finances.update);
+  app.delete('/indicators/finances/:uuid', indicators.finances.delete);
+
+  // API for Break Even Reference routes crud
+  app.get('/break_even_reference', breakEvenReference.list);
+  app.get('/break_even_reference/:id', breakEvenReference.detail);
+  app.post('/break_even_reference', breakEvenReference.create);
+  app.put('/break_even_reference/:id', breakEvenReference.update);
+  app.delete('/break_even_reference/:id', breakEvenReference.delete);
+
+  // API dashboard
+  app.get('/indicators/dashboards', dashboard.getIndicators);
+  app.get('/reports/indicatorsReport', indicatorRerpor.report);
 };

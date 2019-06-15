@@ -27,9 +27,6 @@ set +a
 mysql -h $DB_HOST -u root -e "GRANT ALL PRIVILEGES ON *.* TO '$DB_USER'@'$DB_HOST' IDENTIFIED BY '$DB_PASS' WITH GRANT OPTION;"
 mysql -h $DB_HOST -u root -e "FLUSH PRIVILEGES;"
 
-# start xvfb will screen size of 1280x1024
-/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16
-
 # download and install wkhtmltopdf globally
 wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
 tar -xf wkhtmltox-0.12.4_linux-generic-amd64.tar.xz

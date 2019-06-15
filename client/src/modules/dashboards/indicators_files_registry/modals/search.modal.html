@@ -1,0 +1,101 @@
+<form
+  name="ModalForm"
+  ng-submit="$ctrl.submit(ModalForm)"
+  data-modal="admission-search"
+  novalidate>
+
+  <div class="modal-header search-modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.DASHBOARDS.TITLE</li>
+      <li class="title" translate>DASHBOARD.INDICATORS_FILES.SEARCH</li>
+    </ol>
+  </div>
+
+  <div class="modal-body search-modal">
+    <uib-tabset>
+      <uib-tab index="0" heading="{{ 'FORM.LABELS.SEARCH_QUERIES' | translate }}" data-custom-filter-tab>
+        <div class="tab-body">
+
+          <!-- fiscal year and period -->
+          <bh-fiscal-year-period-select
+            fiscal-id="$ctrl.searchQuery.fiscal_year_id"
+            period-id="$ctrl.searchQuery.period_id"
+            on-select-callback="$ctrl.onSelectPeriod(selected)">
+            <bh-clear on-clear="$ctrl.clear('fiscal_year_id', 'period_id')"></bh-clear>
+          </bh-fiscal-year-period-select>
+
+          <!-- service -->
+          <bh-service-select
+            service-id="$ctrl.searchQuery.service_id"
+            on-select-callback="$ctrl.onSelectService(service)">
+            <bh-clear on-clear="$ctrl.clear('service_id')"></bh-clear>
+          </bh-service-select>
+
+          <!-- type -->
+          <div class="form-group">
+            <label class="control-label" translate>DASHBOARD.INDICATORS_FILES.TYPE</label>
+            <bh-clear on-clear="$ctrl.clear('type_id')"></bh-clear>
+
+            <ui-select
+              name="type"
+              ng-model="$ctrl.searchQuery.type_id"
+              on-select="$ctrl.onSelectType($item, $model)">
+              <ui-select-match placeholder="{{ 'DASHBOARD.INDICATORS_FILES.TYPE' | translate }}">
+                <span>{{$select.selected.hrText}}</span>
+              </ui-select-match>
+              <ui-select-choices ui-select-focus-patch repeat="type.id as type in $ctrl.types | filter: { 'hrText': $select.search }">
+                <span ng-bind-html="type.hrText | highlight:$select.search"></span>
+              </ui-select-choices>
+            </ui-select>
+          </div>
+
+          <!-- status -->
+          <div class="form-group">
+            <label class="control-label" translate>DASHBOARD.INDICATORS_FILES.STATUS</label>
+            <bh-clear on-clear="$ctrl.clear('status_id')"></bh-clear>
+
+            <ui-select
+              name="type"
+              ng-model="$ctrl.searchQuery.status_id"
+              on-select="$ctrl.onSelectStatus($item, $model)">
+              <ui-select-match placeholder="{{ 'DASHBOARD.INDICATORS_FILES.STATUS' | translate }}">
+                <span>{{$select.selected.hrText}}</span>
+              </ui-select-match>
+              <ui-select-choices ui-select-focus-patch repeat="status.id as status in $ctrl.status | filter: { 'hrText': $select.search }">
+                <span ng-bind-html="status.hrText | highlight:$select.search"></span>
+              </ui-select-choices>
+            </ui-select>
+          </div>
+
+          <!-- users -->
+          <bh-user-select 
+            on-select-callback="$ctrl.onSelectUser(user)">
+            <bh-clear on-clear="$ctrl.clear('user_id')"></bh-clear>
+          </bh-user-select>
+        </div>
+      </uib-tab>
+
+      <uib-tab index="1" heading="{{ 'FORM.LABELS.DEFAULTS' | translate }}" data-default-filter-tab>
+        <div class="tab-body">
+          <div class="form-group" ng-class="{ 'has-error' : ModalForm.limit.$invalid }">
+            <label class="control-label" translate>FORM.LABELS.LIMIT</label>
+            <input name="limit" type="number" bh-integer bh-max-integer class="form-control" ng-model="$ctrl.defaultQueries.limit" ng-change="$ctrl.onSelectLimit($ctrl.defaultQueries.limit)">
+
+            <div class="help-block" ng-messages="ModalForm.limit.$error">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+        </div>
+      </uib-tab>
+    </uib-tabset>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" data-method="cancel" translate>
+      FORM.BUTTONS.CLOSE
+    </button>
+    <button type="submit" class="btn btn-primary" data-method="submit" translate>
+      FORM.BUTTONS.SUBMIT
+    </button>
+  </div>
+</form>

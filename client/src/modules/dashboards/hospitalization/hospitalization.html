@@ -1,0 +1,124 @@
+<style>
+  .no-space {
+    margin: 0;
+    padding: 0;
+  }
+  .summary {
+    border: 1px solid #A0A0A0;
+    padding : 10px;
+    margin-top: 15px;
+    display: block;
+    min-height: 300px;
+  }
+  .dashboard {
+    display: grid;
+    grid-auto-rows: minmax(125px, auto);
+    grid-gap: 15px;
+  }
+
+  /* Small devices (tablets, 768px and up) */
+  @media (min-width: 768px) {
+    .dashboard {
+      grid-template-columns: repeat(1, 1fr);
+    }
+  }
+
+  /* Medium devices (desktops, 992px and up) */
+  @media (min-width: 992px) {
+    .dashboard {
+      grid-template-columns: repeat(2, 1fr); 
+    }
+  }
+</style>
+
+<div class="flex-header">
+    <div class="bhima-title">
+      <ol class="headercrumb">
+        <li class="static" translate>TREE.DASHBOARDS.TITLE</li>
+        <li class="title" translate>TREE.DASHBOARDS.HOSPITALIZATION</li>
+      </ol>
+  
+      <div class="toolbar">
+        <div class="toolbar-item">
+          <bh-dashboard-filter
+            show-service-filter="true" 
+            date-from="$ctrl.selected.dateFrom"
+            date-to="$ctrl.selected.dateTo"
+            on-change="$ctrl.onChangeFilter(selected)">
+          </bh-dashboard-filter>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="flex-content">
+    <div class="container">
+      <h3 class="no-space" translate>DASHBOARD.INDICATORS_FILES.HOSPITALIZATIONS_INDICATORS</h3>
+      <small ng-show="$ctrl.selected.dateFrom && $ctrl.selected.dateTo">
+        {{ $ctrl.selected.dateFrom | date }} - {{ $ctrl.selected.dateTo | date }}
+      </small>
+      <small ng-show="$ctrl.selected.service.name"> | {{ $ctrl.selected.service.name }}</small>
+
+      <br><br>
+
+      <div class="dashboard">
+        <bh-indicator
+          key="bedOccupationRate"
+          label="DASHBOARD.BEDS_OCCUPATION_RATE"
+          description="DASHBOARD.BEDS_OCCUPATION_RATE_DESC"
+          calcul="DASHBOARD.BEDS_OCCUPATION_RATE_CALCUL"
+          norm="DASHBOARD.BEDS_OCCUPATION_RATE_NORM"
+          value="$ctrl.indicators.bedOccupationRate.value"
+          dependencies="$ctrl.indicators.bedOccupationRate.dependencies"
+          periodic-values="$ctrl.periodicIndicators.bedOccupationRate"
+          value-symbol="%"
+          min-value="60"
+          max-value="90">
+        </bh-indicator>
+
+        <bh-indicator
+          key="averageHospitalizationDays"
+          label="DASHBOARD.HOSP_DAYS"
+          description="DASHBOARD.HOSP_DAYS_DESC"
+          calcul="DASHBOARD.HOSP_DAYS_CALCUL"
+          norm="DASHBOARD.HOSP_DAYS_NORM"
+          value="$ctrl.indicators.averageHospitalizationDays.value"
+          dependencies="$ctrl.indicators.averageHospitalizationDays.dependencies"
+          periodic-values="$ctrl.periodicIndicators.averageHospitalizationDays"
+          value-symbol="FORM.LABELS.DAYS"
+          min-value="8"
+          max-value="10">
+        </bh-indicator>
+
+        <bh-indicator
+          key="dailyHospitalization"
+          label="DASHBOARD.HOSP_BY_DAY"
+          description="DASHBOARD.HOSP_BY_DAY_DESC"
+          calcul="DASHBOARD.HOSP_BY_DAY_CALCUL"
+          norm="DASHBOARD.HOSP_BY_DAY_NORM"
+          value="$ctrl.indicators.dailyHospitalization.value"
+          dependencies="$ctrl.indicators.dailyHospitalization.dependencies"
+          periodic-values="$ctrl.periodicIndicators.dailyHospitalization"
+          decimals="2"
+          value-symbol=""
+          min-value=""
+          max-value="">
+        </bh-indicator>
+
+        <bh-indicator
+          key="deathRate"
+          label="DASHBOARD.DEATH_RATE"
+          description="DASHBOARD.DEATH_RATE_DESC"
+          calcul="DASHBOARD.DEATH_RATE_CALCUL"
+          norm="DASHBOARD.DEATH_RATE_NORM"
+          value="$ctrl.indicators.deathRate.value"
+          decimals="2"
+          dependencies="$ctrl.indicators.deathRate.dependencies"
+          periodic-values="$ctrl.periodicIndicators.deathRate"
+          value-symbol="%"
+          max-value="4">
+        </bh-indicator>
+      </div>
+    </div>
+  </div>
+  

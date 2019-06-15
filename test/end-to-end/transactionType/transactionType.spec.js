@@ -5,7 +5,6 @@ const helpers = require('../shared/helpers');
 const components = require('../shared/components');
 
 describe('transaction types', () => {
-  // navigate to the page
   before(() => helpers.navigate('#!/transaction_type'));
 
   const newType = {
@@ -23,54 +22,54 @@ describe('transaction types', () => {
     type        : 'Autre',
   };
 
-  it('successfully creates a transaction type', () => {
-    FU.buttons.create();
-    FU.input('$ctrl.transactionType.text', newType.text);
-    FU.select('$ctrl.transactionType.type', newType.type);
-    FU.buttons.submit();
-    components.notification.hasSuccess();
+  it('successfully creates a transaction type', async () => {
+    await FU.buttons.create();
+    await FU.input('$ctrl.transactionType.text', newType.text);
+    await FU.select('$ctrl.transactionType.type', newType.type);
+    await FU.buttons.submit();
+    await components.notification.hasSuccess();
   });
 
-  it('successfully updates an existing transaction type', () => {
-    $(`[data-edit-type="${newType.text}"]`).click();
-    FU.input('$ctrl.transactionType.text', updateType.text);
-    FU.select('$ctrl.transactionType.type', updateType.type);
-    FU.buttons.submit();
-    components.notification.hasSuccess();
+  it('successfully updates an existing transaction type', async () => {
+    await $(`[data-edit-type="${newType.text}"]`).click();
+    await FU.input('$ctrl.transactionType.text', updateType.text);
+    await FU.select('$ctrl.transactionType.type', updateType.type);
+    await FU.buttons.submit();
+    await components.notification.hasSuccess();
   });
 
-  it('successfully creates a transaction type with a specific type', () => {
-    FU.buttons.create();
-    FU.input('$ctrl.transactionType.text', otherType.text);
-    FU.select('$ctrl.transactionType.type', updateType.type);
-    FU.buttons.submit();
-    components.notification.hasSuccess();
+  it('successfully creates a transaction type with a specific type', async () => {
+    await FU.buttons.create();
+    await FU.input('$ctrl.transactionType.text', otherType.text);
+    await FU.select('$ctrl.transactionType.type', updateType.type);
+    await FU.buttons.submit();
+    await components.notification.hasSuccess();
   });
 
-  it('dont creates a new transaction type for missing type', () => {
-    FU.buttons.create();
-    element(by.model('$ctrl.transactionType.type')).click();
-    FU.buttons.submit();
+  it('dont creates a new transaction type for missing type', async () => {
+    await FU.buttons.create();
+    await element(by.model('$ctrl.transactionType.type')).click();
+    await FU.buttons.submit();
 
     // check validations
-    FU.validation.error('$ctrl.transactionType.type');
+    await FU.validation.error('$ctrl.transactionType.type');
 
-    FU.modal.cancel();
+    await FU.modal.cancel();
 
-    components.notification.hasDanger();
+    await components.notification.hasDanger();
   });
 
 
-  it('Dont creates a new transaction type for missing required values', () => {
-    FU.buttons.create();
-    FU.buttons.submit();
+  it('Dont creates a new transaction type for missing required values', async () => {
+    await FU.buttons.create();
+    await FU.buttons.submit();
 
     // check validations
-    FU.validation.error('$ctrl.transactionType.text');
-    FU.validation.error('$ctrl.transactionType.type');
+    await FU.validation.error('$ctrl.transactionType.text');
+    await FU.validation.error('$ctrl.transactionType.type');
 
-    FU.modal.cancel();
+    await FU.modal.cancel();
 
-    components.notification.hasDanger();
+    await components.notification.hasDanger();
   });
 });

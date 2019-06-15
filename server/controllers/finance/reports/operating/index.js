@@ -40,8 +40,11 @@ function document(req, res, next) {
 
   let queries;
   let range;
+  let lastRateUsed;
+  let firstCurrency;
+  let secondCurrency;
   const enterpriseId = req.session.enterprise.id;
-
+  const enterpriseCurrencyId = req.session.enterprise.currency_id;
   const getQueryIncome = fiscal.getAccountBalancesByTypeId;
 
   const periods = {
@@ -53,6 +56,15 @@ function document(req, res, next) {
     range = dateRange;
     return Exchange.getExchangeRate(enterpriseId, params.currency_id, range.dateTo);
   }).then(exchangeRate => {
+    firstCurrency = enterpriseCurrencyId;
+    secondCurrency = params.currency_id;
+    lastRateUsed = exchangeRate.rate;
+
+    if (lastRateUsed && lastRateUsed < 1) {
+      lastRateUsed = (1 / lastRateUsed);
+      firstCurrency = params.currency_id;
+      secondCurrency = enterpriseCurrencyId;
+    }
 
     const rate = exchangeRate.rate || 1;
 
@@ -83,6 +95,15 @@ function document(req, res, next) {
     return q.all(queries);
   })
     .spread((expense, revenue, totalExpense, totalIncome) => {
+      // Income accounts usually have a negative balance,
+      // which is why to display these values you will need to multiply it by (-1)
+      revenue.forEach(item => {
+        item.amount *= (-1);
+      });
+
+      // The Total Income is also multiplied by -1 for not having to display a negative value
+      totalIncome.total *= (-1);
+
       const context = {
         expense : prepareTree(expense, 'type_id', EXPENSE_ACCOUNT_TYPE, 'amount'),
         revenue : prepareTree(revenue, 'type_id', INCOME_ACCOUNT_TYPE, 'amount'),
@@ -91,11 +112,13 @@ function document(req, res, next) {
         dateFrom : range.dateFrom,
         dateTo : range.dateTo,
         currencyId : params.currency_id,
+        firstCurrency,
+        secondCurrency,
+        rate : lastRateUsed,
       };
 
       formatData(context.expense, context.totalExpense, DECIMAL_PRECISION);
       formatData(context.revenue, context.totalIncome, DECIMAL_PRECISION);
-
       const diff = util.roundDecimal((context.totalIncome - context.totalExpense), DECIMAL_PRECISION);
       context.totalIncome = util.roundDecimal(context.totalIncome, DECIMAL_PRECISION);
       context.totalExpense = util.roundDecimal(context.totalExpense, DECIMAL_PRECISION);

@@ -26,7 +26,7 @@ INSERT INTO unit VALUES
   (16,  'Patient Invoice','TREE.PATIENT_INVOICE','Create an invoice for a patient',5,'/modules/patient_invoice/','/invoices/patient'),
   (18,  'Cash Window','TREE.CASH_WINDOW','Cash payments against past or future invoices',5,'/modules/cash/','/cash'),
   (19,  'Register Supplier','TREE.REGISTER_SUPPLIER','',1,'/modules/suppliers/','/suppliers'),
-  (20,  'Depot Management','TREE.DEPOTS','',0,'/modules/depots/','/DEPOT_FOLDER'),
+  (20,  'Depot Management','DEPOT.TITLE','', 160,'/modules/depots/','/depots'),
   (21,  'Price List','TREE.PRICE_LIST','Configure price lists!',1,'/modules/prices/','/prices'),
   (26,  'Location Manager','TREE.LOCATION','',1,'/modules/locations/locations.html','/locations'),
   (29,  'Patient Group','TREE.PATIENT_GRP','',1,'/modules/patients/groups/','/patients/groups'),
@@ -68,7 +68,7 @@ INSERT INTO unit VALUES
   (167, 'Stock Adjustment', 'STOCK.ADJUSTMENT', 'The stock adjustment module', 160, '/modules/stock/adjustment', '/stock/adjustment'),
   (168, 'Aged Creditors', 'TREE.AGED_CREDITORS', 'Aged Creditors', 144, '/modules/reports/aged_creditors', '/reports/aged_creditors'),
   (170, 'Account Statement', 'TREE.ACCOUNT_STATEMENT', 'Account Statement Module', 5, '/modules/account_statement/', '/account_statement'),
-  (180, 'Income Expenses', 'TREE.PROFIT_AND_LOSS', 'The Report of income and expenses', 144, '/modules/finance/income_expense', '/reports/income_expense'),
+  (180, 'Income Expenses', 'REPORT.PROFIT_AND_LOSS', 'The Report of income and expenses', 144, '/modules/finance/income_expense', '/reports/income_expense'),
   (181, 'Stock Report', 'TREE.STOCK_REPORT', 'The Report of inventories in stock', 144, '/modules/reports/inventory_report', '/reports/inventory_report'),
   (182, 'Stock File Report', 'TREE.STOCK_INVENTORY_REPORT', 'The Report of an inventory in stock', 144, '/modules/reports/inventory_file', '/reports/inventory_file'),
   (183, 'Grade Management','TREE.GRADES','', 57,'/modules/grades/','/grades'),
@@ -84,7 +84,6 @@ INSERT INTO unit VALUES
   (193, 'Weekend Configuration','TREE.WEEKEND_CONFIGURATION','Weekend Configuration', 57,'/modules/payroll/weekend_configuration','/payroll/weekend_configuration'),
   (194, 'Payroll Configuration','TREE.PAYROLL_CONFIGURATION','Payroll Configuration', 57,'/modules/payroll','/payroll'),
   (195, 'Role management','TREE.ROLE_MANAGEMENT','Roles Management', 1,'/modules/role/','/roles'),
-  (196, 'Depot Registry','TREE.DEPOTS_REGISTRY','',20,'/modules/depots/','/depots'),
   (197, 'Stock Exit Report','TREE.STOCK_EXIT_REPORT','Stock Exit Report', 144,'/modules/reports/generated/stock_exit','/reports/stock_exit'),
   (199, 'Annual Clients Report', 'REPORT.CLIENTS.TITLE', 'Annual Clients Report', 144, '/modules/reports/clients', '/reports/annual-clients-report'),
   (200, 'Multiple Payroll','TREE.MULTI_PAYROLL','Multiple Payroll', 57,'/modules/multiple_payroll','/multiple_payroll'),
@@ -98,12 +97,12 @@ INSERT INTO unit VALUES
   (208, 'Import Stock From File','TREE.IMPORT_STOCK_FROM_FILE','',160,'/modules/stock/import','/stock/import'),
   (209, 'Accounts Report Multiple','TREE.REPORTS_MULTIPLE_ACCOUNTS','',144,'/modules/reports/account_report_multiple','/reports/account_report_multiple'),
   (210, 'Unbalanced Invoice Payments','REPORT.UNPAID_INVOICE_PAYMENTS_REPORT.TITLE','',144,'/modules/reports/unpaid-invoice-payments','/reports/unpaid-invoice-payments'),
-  (211, 'Income Expenses by Month', 'TREE.PROFIT_AND_LOSS_BY_MONTH', 'The Report of income and expenses', 144, '/modules/finance/income_expense_by_month', '/reports/income_expense_by_month'),
+  (211, 'Income Expenses by Month', 'REPORT.PROFIT_AND_LOSS_BY_MONTH', 'The Report of income and expenses', 144, '/modules/finance/income_expense_by_month', '/reports/income_expense_by_month'),
   (212, 'Entity Management','ENTITY.MANAGEMENT','',1,'/modules/entities','/entities'),
   (213, 'Stock value Report','TREE.STOCK_VALUE','',144,'/modules/reports/stock_value','/reports/stock_value'),
   (214, '[OHADA] Compte de resultat','TREE.OHADA_RESULT_ACCOUNT','',144,'/modules/reports/ohada_profit_loss','/reports/ohada_profit_loss'),
   (215, 'Department management','TREE.DEPARTMENT_MANAGEMENT','Department Management', 1,'/modules/department/','/departments'),
-  (216, 'Income Expenses by Year', 'TREE.PROFIT_AND_LOSS_BY_YEAR', 'The Report of income and expenses', 144, '/modules/finance/income_expense_by_year', '/reports/income_expense_by_year'),
+  (216, 'Income Expenses by Year', 'REPORT.PROFIT_AND_LOSS_BY_YEAR', 'The Report of income and expenses', 144, '/modules/finance/income_expense_by_year', '/reports/income_expense_by_year'),
   (217, 'Tags','TREE.TAGS','', 1,'/modules/tags/tags','/tags'),
   (218, 'Fee Center Management','TREE.FEE_CENTER_MANAGEMENT','', 0,'/modules/fee_center','/fee_center'),
   (219, 'Fee Center Management','TREE.FEE_CENTER','', 218,'/modules/fee_center','/fee_center'),
@@ -111,8 +110,21 @@ INSERT INTO unit VALUES
   (221, 'Update Distributions','TREE.UPDATE_DISTRIBUTION','', 218,'/modules/distribution_center/update','/distribution_center/update'),
   (222, 'Fee Center Report', 'TREE.FEE_CENTER_REPORT', 'Fee Center Report', 144, '/modules/reports/feeCenter', '/reports/feeCenter'),
   (223, 'Distribution keys', 'TREE.DISTRIBUTION_KEYS', 'Distribution keys', 218, '/modules/distribution_center/distribution_key', '/distribution_center/distribution_key'),
-  (224, 'Stock Assignment','ASSIGN.STOCK_ASSIGN','', 160,'/modules/stock/assign','/stock/assign'),
-  (225, 'Account Reference Type','TREE.ACCOUNT_REFERENCE_TYPE','Account Reference Type', 1,'/modules/account_reference_type','/account_reference_type');
+  (225, 'Stock Assignment','ASSIGN.STOCK_ASSIGN','', 160,'/modules/stock/assign','/stock/assign'),
+  (226, 'Account Reference Type','TREE.ACCOUNT_REFERENCE_TYPE','Account Reference Type', 1,'/modules/account_reference_type','/account_reference_type'),
+  (227, 'Ward Module', 'TREE.WARD', 'Ward folder', 0, '/modules/ward/configuration', '/WARD_FOLDER'),
+  (228, 'Ward Configurations', 'TREE.WARD_CONFIGURATION', 'Ward configuration module', 227, '/modules/ward/configuration', '/ward/configuration'),
+  (229, 'Visits Registry', 'TREE.VISITS_REGISTRY', 'Visits registry', 12, '/modules/patient/visits', '/patients/visits'),
+  (230, 'Break Even Reference','TREE.BREAK_EVEN_REFERENCE','Break Even Reference', 1,'/modules/break_even_reference','/break_even_reference'),
+  (231, 'Break-even Report', 'TREE.BREAK_EVEN_REPORT', 'Break-even Report', 144, '/modules/reports/breakEven', '/reports/breakEven'),
+  (232, 'Break Even By Fee Center', 'TREE.BREAK_EVEN_FEE_CENTER_REPORT', 'Break-even By Fee Center Report', 144, '/modules/reports/breakEvenFeeCenter', '/reports/breakEvenFeeCenter'),
+  (233, 'Dashboards Folder', 'TREE.DASHBOARDS.TITLE', 'Tableaux de bord', 0, '/modules/patient/visits', '/DASHBOARDS_FOLDER'),
+  (234, 'Indicators Files Registry', 'TREE.DASHBOARDS.INDICATORS_FILES_REGISTRY', 'Registre des fiches des indicateurs', 233, '/modules/dashboards/indicators_files_registry/', '/dashboards/indicators_files_registry'),
+  (235, 'Hospitalization dashboard', 'TREE.DASHBOARDS.HOSPITALIZATION', 'Tableau de bord des hospitalisations', 233, '/modules/dashboards/hospitalization/', '/dashboards/hospitalization'),
+  (236, 'Human Resources dashboard', 'TREE.DASHBOARDS.HUMAN_RESOURCES', 'Tableau de bord du Personnel', 233, '/modules/dashboards/staff/', '/dashboards/staff'),
+  (237, 'Finances dashboard', 'TREE.DASHBOARDS.FINANCES', 'Tableau de bord des finances', 233, '/modules/dashboards/finances/', '/dashboards/finances'),
+  (238, 'Indicators report', 'TREE.INDICATORS_REPORT', 'Rapport sur les indicateurs', 144,'/modules/reports/indicatorsReport', '/reports/indicatorsReport'),
+  (239, 'Visits Report', 'TREE.VISITS_REPORT', 'Visits registry', 144, '/modules/reports/visit_report', '/reports/visit_report');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -158,7 +170,11 @@ INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
   (25, 'stock_value', 'TREE.STOCK_VALUE'),
   (26, 'ohada_profit_loss', 'TREE.OHADA_RESULT_ACCOUNT'),
   (27, 'income_expense_by_year', 'REPORT.PROFIT_AND_LOSS_BY_YEAR'),
-  (28, 'feeCenter', 'REPORT.FEE_CENTER.TITLE');
+  (28, 'feeCenter', 'REPORT.FEE_CENTER.TITLE'),
+  (29, 'breakEven', 'TREE.BREAK_EVEN_REPORT'),
+  (30, 'breakEvenFeeCenter', 'TREE.BREAK_EVEN_FEE_CENTER_REPORT'),
+  (31, 'indicatorsReport', 'TREE.INDICATORS_REPORT'),
+  (32, 'visit_report', 'PATIENT_RECORDS.REPORT.VISITS');
 
 -- Supported Languages
 INSERT INTO `language` VALUES
@@ -286,7 +302,32 @@ INSERT INTO `entity_type` (`label`, `translation_key`) VALUES
   ('enterprise', 'ENTITY.TYPE.ENTERPRISE');
 
 -- Default Account Reference Type
-INSERT INTO `account_reference_type` (`id`, `label`, `fixed`) VALUES 
+INSERT INTO `account_reference_type` (`id`, `label`, `fixed`) VALUES
 (1, 'FORM.LABELS.FEE_CENTER', 1),
 (2, 'FORM.LABELS.BALANCE_SHEET', 1),
-(3, 'FORM.LABELS.PROFIT_LOSS', 1);
+(3, 'FORM.LABELS.PROFIT_LOSS', 1),
+(4, 'FORM.LABELS.BREAK_EVEN', 1);
+
+-- Default Discharge types
+INSERT INTO `discharge_type` (`id`, `label`) VALUES
+  (1, 'PATIENT_RECORDS.DISCHARGE.REGULAR'),
+  (2, 'PATIENT_RECORDS.DISCHARGE.ON_PATIENT_WILL'),
+  (3, 'PATIENT_RECORDS.DISCHARGE.EMERGENCY'),
+  (4, 'PATIENT_RECORDS.DISCHARGE.SERVICE_CHANGE'),
+  (5, 'PATIENT_RECORDS.DISCHARGE.DEATH'),
+  (6, 'PATIENT_RECORDS.DISCHARGE.EVASION'),
+  (7, 'PATIENT_RECORDS.DISCHARGE.DISCHARGE_BUT_ON_BED'),
+  (8, 'PATIENT_RECORDS.DISCHARGE.STATUQUO_CLINIC'),
+  (9, 'PATIENT_RECORDS.DISCHARGE.TRANSFER');
+
+-- indicators status values
+INSERT INTO `indicator_status`(`id`, `text`,`translate_key`)VALUES
+  (1, 'incomplete', 'FORM.LABELS.INCOMPLETE'),
+  (2, 'complete', 'FORM.LABELS.COMPLETE'),
+  (3, 'validated', 'FORM.LABELS.VALIDATED');
+
+-- indicators types
+INSERT INTO `indicator_type`(`id`, `text`,`translate_key`)VALUES
+  (1, 'hospitalization', 'DASHBOARD.HOSPITALIZATION'),
+  (2, 'staff', 'DASHBOARD.STAFF'),
+  (3, 'fianance', 'DASHBOARD.FINANCE');

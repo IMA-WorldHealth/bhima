@@ -12,36 +12,36 @@ class InvoiceRegistryPage {
   }
 
   // asserts that the grid has a certain number of rows
-  expectNumberOfGridRows(number) {
-    GU.expectRowCount(
+  async expectNumberOfGridRows(number) {
+    await GU.expectRowCount(
       this.gridId,
       number,
       `Expected Invoice Registry's ui-grid row count to be ${number}.`
     );
   }
 
-  openReceipt(reference) {
+  async openReceipt(reference) {
     const row = new GridRow(reference);
-    row.dropdown().click();
-    row.receipt().click();
+    await row.dropdown().click();
+    await row.receipt().click();
   }
 
-  openCreditNoteReceipt(reference) {
+  async openCreditNoteReceipt(reference) {
     const row = new GridRow(reference);
-    row.dropdown().click();
-    row.openReverseReceipt().click();
+    await row.dropdown().click();
+    await row.openReverseReceipt().click();
   }
 
-  reverse(reference) {
+  async reverse(reference) {
     const row = new GridRow(reference);
-    row.dropdown().click();
-    row.reverse().click();
+    await row.dropdown().click();
+    await row.reverse().click();
   }
 
-  remove(reference) {
+  async remove(reference) {
     const row = new GridRow(reference);
-    row.dropdown().click();
-    row.remove().click();
+    await row.dropdown().click();
+    await row.remove().click();
   }
 }
 

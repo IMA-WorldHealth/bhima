@@ -40,12 +40,14 @@ const groups = require('./groups');
 const documents = require('./documents');
 const visits = require('./visits');
 const pictures = require('./pictures');
+const merge = require('./merge');
 
 // bind submodules
 exports.groups = groups;
 exports.documents = documents;
 exports.visits = visits;
 exports.pictures = pictures;
+exports.merge = merge;
 
 // create a new patient
 exports.create = create;
@@ -545,6 +547,7 @@ function invoicingFees(req, res, next) {
   const uid = db.bid(req.params.uuid);
 
   // @todo (OPTIMISATION) Two additional SELECTs to select group uuids can be written as JOINs.
+  // eslint-disable-next-line operator-linebreak
   const patientsServiceQuery =
 
     // get the final information needed to apply invoicing fees to an invoice
@@ -591,6 +594,7 @@ function invoicingFees(req, res, next) {
 function subsidies(req, res, next) {
   const uid = db.bid(req.params.uuid);
 
+  // eslint-disable-next-line operator-linebreak
   const patientsSubsidyQuery =
 
     // subsidy information required to apply subsidies to an invoice

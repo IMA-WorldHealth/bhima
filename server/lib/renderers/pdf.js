@@ -59,6 +59,22 @@ exports.reducedCardOptions = {
 };
 
 /**
+ * @function getNodeModulesPath
+ *
+ * @description
+ * This function returns the node_modules path, no matter where this file
+ * lies by using node's underlying require() algorithm.
+ *
+ * @return {string} the node_modules path
+ */
+function getNodeModulesPath() {
+  const isWin = process.platform === 'win32';
+  const barcodePath = require.resolve('jsbarcode');
+  const [nodeModulesDir] = barcodePath.split(isWin ? 'node_modules\\' : 'node_modules/');
+  return path.join(nodeModulesDir, 'node_modules');
+}
+
+/**
  * @function renderPDF
  *
  * @description
@@ -71,10 +87,11 @@ exports.reducedCardOptions = {
  * @returns {Promise}         Promise resolving in compiled PDF
  */
 function renderPDF(context, template, options = {}) {
+  debug('received render request for PDF file. Passing to HTML renderer.');
+
   // pdf requires absolute path to be passed to templates to be picked up by wkhtmltopdf on windows
   context.absolutePath = path.join(process.cwd(), 'client');
-
-  debug('received render request for PDF file. Passing to HTML renderer.');
+  context.nodeModulesPath = getNodeModulesPath();
 
   return html.render(context, template, options)
     .then((htmlStringResult) => {

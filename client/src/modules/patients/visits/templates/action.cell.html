@@ -1,0 +1,20 @@
+<div class="ui-grid-cell-contents" uib-dropdown dropdown-append-to-body uib-dropdown-toggle>
+  <a href>
+    <span data-method="action" translate>FORM.BUTTONS.ACTIONS</span>
+    <span class="caret"></span>
+  </a>
+
+  <ul data-action="{{ rowRenderIndex}}"  class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
+    <li class="dropdown-header">{{row.entity.display_name}}</li>
+    <li>
+      <a data-method="record" ui-sref="patientRecord({ patientUuid : row.entity.patient_uuid })" href>
+        <span class="fa fa-book"></span> <span translate>PATIENT_RECORDS.VISITS.PATIENT_INFO</span>
+      </a>
+    </li>
+    <li>
+      <a ng-if="row.entity.bed_label" data-method="transfer" ng-click="grid.appScope.openTransferModal(row.entity)" href>
+        <span class="fa fa-exchange"></span> <span translate>PATIENT_RECORDS.TRANSFER.TITLE</span>
+      </a>
+    </li>
+  </ul>
+</div>

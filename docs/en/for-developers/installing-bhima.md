@@ -79,11 +79,6 @@ To execute the build scripts, you can use either `yarn` or `npm`. We'll use `yar
 
 yarn install
 
-
-# bower is now installed in ./node_modules/.bin/bower
-#install client-side dependencies with bower
-./node_modules/.bin/bower install -f
-
 #If this command gives you an error (I.E. if you’re running Parallels), try running the following command:
 git config -global url."https://".insteadOf git://
 ```

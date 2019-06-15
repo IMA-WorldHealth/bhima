@@ -27,131 +27,130 @@ function PatientRegistrySearch() {
   const rows = grid.element(by.css('.ui-grid-render-container-body'))
     .all(by.repeater('(rowRenderIndex, row) in rowContainer.renderedRows track by $index'));
 
-  beforeEach(() => {
-    SearchModal.open();
+  beforeEach(async () => {
+    await SearchModal.open();
     modal = new SearchModal('patient-search');
     filters = new Filters();
   });
 
-  afterEach(() => {
-    filters.resetFilters();
+  afterEach(async () => {
+    await filters.resetFilters();
   });
 
-  function expectNumberOfGridRows(number) {
-    expect(rows.count(),
-      `Expected Patient Registry ui-grid's row count to be ${number}.`
-    ).to.eventually.equal(number);
+  async function expectNumberOfGridRows(number) {
+    expect(await rows.count(),
+      `Expected Patient Registry ui-grid's row count to be ${number}.`).to.equal(number);
   }
 
-  it('grid should have 4 visible rows', () => {
+  it('grid should have 4 visible rows', async () => {
     const DEFAULT_PATIENTS_FOR_TODAY = 4;
-    modal.switchToDefaultFilterTab();
-    modal.setPeriod('today');
-    modal.submit();
+    await modal.switchToDefaultFilterTab();
+    await modal.setPeriod('today');
+    await modal.submit();
 
-    expectNumberOfGridRows(DEFAULT_PATIENTS_FOR_TODAY);
+    await expectNumberOfGridRows(DEFAULT_PATIENTS_FOR_TODAY);
   });
 
 
   // demonstrates that filtering works
-  it(`should find one patient with name "${parameters.name}"`, () => {
+  it(`should find one patient with name "${parameters.name}"`, async () => {
     const NUM_MATCHING = 1;
-    FU.input('$ctrl.searchQueries.display_name', parameters.name);
-    FU.modal.submit();
+    await FU.input('$ctrl.searchQueries.display_name', parameters.name);
+    await FU.modal.submit();
 
-    expectNumberOfGridRows(NUM_MATCHING);
+    await expectNumberOfGridRows(NUM_MATCHING);
   });
 
-  it(`should find two patients with Debtor Group "NGO IMA World Health"`, () => {
+  it(`should find two patients with Debtor Group "NGO IMA World Health"`, async () => {
     const NUM_MATCHING = 2;
 
-    components.debtorGroupSelect.set('NGO IMA World Health');
-    FU.modal.submit();
+    await components.debtorGroupSelect.set('NGO IMA World Health');
+    await FU.modal.submit();
 
-    expectNumberOfGridRows(NUM_MATCHING);
+    await expectNumberOfGridRows(NUM_MATCHING);
   });
 
   // demonstrates additive filters
-  it(`should find two "male" patients with name "${parameters.name1}"`, () => {
+  it(`should find two "male" patients with name "${parameters.name1}"`, async () => {
     const NUM_MATCHING = 2;
-    FU.input('$ctrl.searchQueries.display_name', parameters.name1);
-    element(by.id('male')).click();
-    FU.modal.submit();
+    await FU.input('$ctrl.searchQueries.display_name', parameters.name1);
+    await element(by.id('male')).click();
+    await FU.modal.submit();
 
-    expectNumberOfGridRows(NUM_MATCHING);
+    await expectNumberOfGridRows(NUM_MATCHING);
   });
 
   // demonstrates that additive + time-delimited filtering works
-  it(`should find one patient with name "${parameters.name1}" registered in the last week`, () => {
+  it(`should find one patient with name "${parameters.name1}" registered in the last week`, async () => {
     const NUM_MATCHING = 0;
-    FU.input('$ctrl.searchQueries.display_name', parameters.name1);
-    modal.switchToDefaultFilterTab();
-    modal.setPeriod('lastWeek');
-    FU.modal.submit();
+    await FU.input('$ctrl.searchQueries.display_name', parameters.name1);
+    await modal.switchToDefaultFilterTab();
+    await modal.setPeriod('lastWeek');
+    await FU.modal.submit();
 
-    expectNumberOfGridRows(NUM_MATCHING);
+    await expectNumberOfGridRows(NUM_MATCHING);
   });
 
-  it(`should find two patient with patient group "${parameters.patientGroup}" registered in allTime`, () => {
+  it(`should find two patient with patient group "${parameters.patientGroup}" registered in allTime`, async () => {
     const NUM_MATCHING = 2;
-    components.patientGroupSelect.set(parameters.patientGroup);
-    modal.switchToDefaultFilterTab();
-    modal.setPeriod('allTime');
-    FU.modal.submit();
+    await components.patientGroupSelect.set(parameters.patientGroup);
+    await modal.switchToDefaultFilterTab();
+    await modal.setPeriod('allTime');
+    await FU.modal.submit();
 
-    expectNumberOfGridRows(NUM_MATCHING);
+    await expectNumberOfGridRows(NUM_MATCHING);
   });
 
-  it(`should find patients with origin location "${parameters.originVillageName}" `, () => {
+  it(`should find patients with origin location "${parameters.originVillageName}" `, async () => {
     const NUM_MATCHING = 5;
-    FU.input('$ctrl.searchQueries.originLocationLabel', parameters.originVillageName);
-    FU.modal.submit();
-    expectNumberOfGridRows(NUM_MATCHING);
+    await FU.input('$ctrl.searchQueries.originLocationLabel', parameters.originVillageName);
+    await FU.modal.submit();
+    await expectNumberOfGridRows(NUM_MATCHING);
   });
 
   // demonstrates that sex + time-delimited filtering works
-  it('should find one female patients registered in the last year.', () => {
+  it('should find one female patients registered in the last year.', async () => {
     const NUM_MATCHING = 1;
-    element(by.id('female')).click();
-    modal.switchToDefaultFilterTab();
-    modal.setPeriod('lastYear');
-    FU.modal.submit();
+    await element(by.id('female')).click();
+    await modal.switchToDefaultFilterTab();
+    await modal.setPeriod('lastYear');
+    await FU.modal.submit();
 
-    expectNumberOfGridRows(NUM_MATCHING);
+    await expectNumberOfGridRows(NUM_MATCHING);
   });
 
   // changes every single date input manually.
-  it('should not find any patients with complex limited dates.', () => {
+  it('should not find any patients with complex limited dates.', async () => {
     const NUM_MATCHING = 5;
-    components.dateInterval.range(parameters.dateBirthFrom2, parameters.dateBirthTo2, 'dob-date');
-    modal.switchToDefaultFilterTab();
-    modal.setPeriod('allTime');
-    FU.modal.submit();
+    await components.dateInterval.range(parameters.dateBirthFrom2, parameters.dateBirthTo2, 'dob-date');
+    await modal.switchToDefaultFilterTab();
+    await modal.setPeriod('allTime');
+    await FU.modal.submit();
 
-    expectNumberOfGridRows(NUM_MATCHING);
+    await expectNumberOfGridRows(NUM_MATCHING);
   });
 
   // clears filters to assert that the "error state" bug does not occur when the
   // cancel button is clicked
-  it('clearing filters restores default number of rows to the grid', () => {
+  it('clearing filters restores default number of rows to the grid', async () => {
     const NUM_MATCHING = 3;
-    element(by.id('male')).click();
-    modal.switchToDefaultFilterTab();
-    modal.setPeriod('allTime');
-    FU.modal.submit();
+    await element(by.id('male')).click();
+    await modal.switchToDefaultFilterTab();
+    await modal.setPeriod('allTime');
+    await FU.modal.submit();
 
-    expectNumberOfGridRows(NUM_MATCHING);
+    await expectNumberOfGridRows(NUM_MATCHING);
   });
 
-  it('should remember the cached filters', () => {
+  it('should remember the cached filters', async () => {
     const NUM_MATCHING = 0;
-    element(by.id('male')).click();
-    FU.input('$ctrl.searchQueries.display_name', 'Some Non-Existant Patient');
-    modal.switchToDefaultFilterTab();
-    modal.setPeriod('year');
-    FU.modal.submit();
+    await element(by.id('male')).click();
+    await FU.input('$ctrl.searchQueries.display_name', 'Some Non-Existant Patient');
+    await modal.switchToDefaultFilterTab();
+    await modal.setPeriod('year');
+    await FU.modal.submit();
 
-    expectNumberOfGridRows(NUM_MATCHING);
+    await expectNumberOfGridRows(NUM_MATCHING);
   });
 }
 

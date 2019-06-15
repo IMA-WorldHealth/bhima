@@ -25,6 +25,14 @@ function UnbalancedInvoicePaymentsConfigController($sce, Notify, SavedReports, A
     delete vm.reportDetails.debtorGroupUuid;
   };
 
+  vm.clear = (key) => {
+    delete vm.reportDetails[key];
+  };
+
+  vm.onSelectService = service => {
+    vm.reportDetails.serviceId = service.id;
+  };
+
   vm.clearPreview = function clearPreview() {
     vm.previewGenerated = false;
     vm.previewResult = null;

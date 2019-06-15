@@ -48,7 +48,7 @@ describe('(/debtors) The /debtors API', () => {
   it('GET /debtors should return a list of all debtors', () => {
     return agent.get('/debtors')
       .then((res) => {
-        helpers.api.listed(res, 3);
+        helpers.api.listed(res, 4);
       })
       .catch(helpers.handler);
   });

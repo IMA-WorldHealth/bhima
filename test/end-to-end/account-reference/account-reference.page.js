@@ -1,5 +1,5 @@
 /* global element, by */
-/* eslint class-methods-use-this:off */
+/* eslint  */
 
 /**
  * This class is represents an accountReference page in term of structure and
@@ -9,7 +9,6 @@
 const GridRow = require('../shared/GridRow');
 
 class AccountReferencePage {
-
   constructor() {
     this.grid = element(by.id('account-reference-grid'));
     this.createBtn = element(by.css('[data-method="create"]'));
@@ -26,16 +25,16 @@ class AccountReferencePage {
     return this.createBtn.click();
   }
 
-  update(reference) {
+  async update(reference) {
     const row = new GridRow(reference);
-    row.dropdown().click();
-    row.edit().click();
+    await row.dropdown().click();
+    await row.edit().click();
   }
 
-  remove(reference) {
+  async remove(reference) {
     const row = new GridRow(reference);
-    row.dropdown().click();
-    row.remove().click();
+    await row.dropdown().click();
+    await row.remove().click();
   }
 }
 

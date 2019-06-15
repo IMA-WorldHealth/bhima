@@ -4,8 +4,9 @@ angular.module('bhima.components')
     controller  : ServiceSelectController,
     transclude  : true,
     bindings    : {
-      serviceId        : '<',
+      serviceId        : '<?',
       onSelectCallback : '&',
+      required : '<?',
     },
   });
 
@@ -30,7 +31,7 @@ function ServiceSelectController(Services, Notify) {
   };
 
   // fires the onSelectCallback bound to the component boundary
-  $ctrl.onSelect = function ($item) {
+  $ctrl.onSelect = $item => {
     $ctrl.onSelectCallback({ service : $item });
   };
 }

@@ -5,6 +5,7 @@
   <header>
     <!-- headings  -->
     <div class="row">
+
       {{> enterpriseDetails }}
 
       <div class="col-xs-5 text-right">
@@ -19,12 +20,15 @@
             {{/with}}
           </span> <br>
           <strong>{{payment.reference}}</strong> <br>
-          <small>{{date payment.date}}</small> <br>
-          {{#if metadata.enterprise.settings.enable_barcodes}}
-            <small>{{> barcode value=details.barcode}}</small> <br>
-          {{/if}}
-          <br>
         </h3>
+        <div>
+          {{translate "REPORT.PRODUCED_ON"}} <time datetime="{{metadata.timestamp}}">{{date metadata.timestamp}}</time>
+          {{translate "REPORT.BY"}} {{metadata.user.username}}
+        </div>
+
+        {{#if metadata.enterprise.settings.enable_barcodes}}
+          <small>{{> barcode value=details.barcode}}</small> <br>
+        {{/if}}
       </div>
     </div>
 

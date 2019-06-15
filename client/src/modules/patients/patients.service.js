@@ -41,6 +41,8 @@ function PatientService(
   service.subsidies = subsidies;
   service.openSearchModal = openSearchModal;
   service.searchByName = searchByName;
+  service.merge = merge;
+  service.countEmployees = countEmployees;
 
   service.getFinancialActivity = getFinancialActivity;
 
@@ -49,6 +51,35 @@ function PatientService(
   service.Visits = Visits;
   service.balance = balance;
   service.download = download;
+  service.openReturningPatientModal = openReturningPatientModal;
+
+  /**
+   * @method merge
+   *
+   * @description
+   * This method merge two patients into a one
+   *
+   * @param {object} params { selected: String, other: Array }
+   */
+  function merge(params) {
+    const path = `/patients/merge`;
+    return service.$http.post(path, params)
+      .then(service.util.unwrapHttpResponse);
+  }
+
+  /**
+   * @method countEmployees
+   *
+   * @description
+   * This method employees relates to patients
+   *
+   * @param {object} params { patients: Array }
+   */
+  function countEmployees(patients) {
+    const path = `/patients/merge/count_employees`;
+    return service.$http.get(path, { params : { patients } })
+      .then(service.util.unwrapHttpResponse);
+  }
 
   /**
    * @method balance
@@ -230,8 +261,8 @@ function PatientService(
     const assignedKeys = Object.keys(patientFilters.formatHTTP());
 
     // assign default period filter
-    const periodDefined =
-      service.util.arrayIncludes(assignedKeys, ['period', 'custom_period_start', 'custom_period_end']);
+    const periodDefined = service.util
+      .arrayIncludes(assignedKeys, ['period', 'custom_period_start', 'custom_period_end']);
 
     if (!periodDefined) {
       patientFilters.assignFilters(Periods.defaultFilters());
@@ -299,6 +330,23 @@ function PatientService(
     const path = 'patients/:uuid/finance/activity';
     return service.$http.get(path.replace(':uuid', uuid))
       .then(service.util.unwrapHttpResponse);
+  }
+
+  /**
+   * @method openReturningPatientModal
+   *
+   * @description
+   * Opens a modal to search for a returning patient.
+   *
+   * @returns - promise resolving to the patient's record
+   */
+  function openReturningPatientModal() {
+    return $uibModal.open({
+      templateUrl : 'modules/patients/lookupReturningPatient.modal.html',
+      controller : 'ReturningPatientModalController as ModalCtrl',
+      keyboard : true,
+      animation : false,
+    }).result;
   }
 
   return service;

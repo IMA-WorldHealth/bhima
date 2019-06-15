@@ -1,0 +1,15 @@
+<div class="panel panel-default">
+  <div class="col-sm-12">
+    <p><u><span translate>DEBTOR_GROUP.CHANGE</span></u></p>
+    <ul class="list-unstyled">
+      <li ng-repeat="change in $ctrl.groupChanges">
+        <i class="fa fa-clock-o"></i>
+        <b>{{change.group_prev}} &#8594; {{change.group_next}}</b>
+        <br/>
+        <span translate>FORM.LABELS.DATE</span> : {{change.created_at | date : 'medium'}}, 
+        <span translate>FORM.LABELS.BY</span> {{change.user}}
+        <br/>
+      </li>
+    </ul>
+  </div>
+</div>

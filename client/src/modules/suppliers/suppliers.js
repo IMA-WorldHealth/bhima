@@ -2,101 +2,120 @@ angular.module('bhima.controllers')
   .controller('SupplierController', SupplierController);
 
 SupplierController.$inject = [
-  'SupplierService', 'CreditorGroupService', 'util', 'NotifyService'
+  'SupplierService', 'CreditorGroupService',
+  'NotifyService', '$uibModal', 'ModalService',
 ];
 
-function SupplierController(Suppliers, CreditorGroups, util, Notify) {
-  var vm = this;
+function SupplierController(Suppliers, CreditorGroups, Notify, $uibModal, Modal) {
+  const vm = this;
 
   vm.view = 'default';
   vm.state = {};
-
-  // bind methods
-  vm.create = create;
-  vm.submit = submit;
-  vm.update = update;
-  vm.cancel = cancel;
-
-  vm.maxLength = util.maxTextLength;
   vm.loading = false;
+
+
+  const columns = [{
+    field : 'display_name',
+    displayName : 'FORM.LABELS.NAME',
+    headerCellFilter : 'translate',
+  },
+
+  {
+    field : 'email',
+    displayName : 'FORM.LABELS.EMAIL',
+    headerCellFilter : 'translate',
+  },
+  {
+    field : 'phone',
+    displayName : 'FORM.LABELS.PHONE',
+    headerCellFilter : 'translate',
+  },
+  {
+    field : 'address_1',
+    displayName : 'FORM.LABELS.ADDRESS1',
+    headerCellFilter : 'translate',
+  },
+  {
+    field : 'address_2',
+    displayName : 'FORM.LABELS.ADDRESS2',
+    headerCellFilter : 'translate',
+  },
+
+  {
+    field : 'actions',
+    enableFiltering : false,
+    width : 100,
+    displayName : 'FORM.BUTTONS.ACTIONS',
+    headerCellFilter : 'translate',
+    cellTemplate : '/modules/suppliers/templates/action.cell.html',
+  }];
+
+  // ng-click="
+  vm.gridOptions = {
+    appScopeProvider : vm,
+    enableColumnMenus : false,
+    columnDefs : columns,
+    enableSorting : true,
+    fastWatch : true,
+    flatEntityAccess : true,
+    onRegisterApi : (gridApi) => {
+      vm.gridApi = gridApi;
+    },
+  };
+
 
   // fired on startup
   function startup() {
-
-    // load Creditors
-    CreditorGroups.read()
-      .then(function (groups) {
-        vm.groups = groups;
-      })
-      .catch(Notify.handleError);
-
     // load suppliers
     refreshSuppliers();
-  }
-
-  function cancel() {
-    vm.view = 'default';
-  }
-
-  function create() {
-    vm.view = 'create';
-    vm.supplier = {};
-  }
-
-  // switch to update mode
-  // data is an object that contains all the information of a Supplier
-  function update(data) {
-    vm.view = 'update';
-    vm.supplier = data;
   }
 
   function toggleLoadingIndicator() {
     vm.loading = !vm.loading;
   }
 
+
   // refresh the displayed Suppliers
   function refreshSuppliers() {
-
     // start up loading indicator
     toggleLoadingIndicator();
 
     return Suppliers.read(null, { detailed : 1 })
-      .then(function (suppliers) {
-        vm.suppliers = suppliers;
+      .then(suppliers => {
+        vm.gridOptions.data = suppliers;
       })
       .catch(Notify.handleError)
       .finally(toggleLoadingIndicator);
   }
 
-  // form submission
-  function submit(form) {
 
-     // stop submission if the form is invalid
-    if (form.$invalid) {
-      Notify.danger('FORM.ERRORS.HAS_ERRORS');
-      return;
-    }
+  vm.createUpdateModal = (selectedSupplier = {}) => {
+    $uibModal.open({
+      templateUrl : 'modules/suppliers/modal/createUpdate.html',
+      controller : 'SupplierCreateUpdateController as ModalCtrl',
+      size : 'lg',
+      resolve : { data : () => selectedSupplier },
+    }).result.then(response => {
+      if (response) refreshSuppliers();
+    });
+  };
 
-    var promise;
-    var creation = (vm.view === 'create');
+  vm.remove = function remove(uuid) {
+    const message = 'FORM.DIALOGS.DELETE_SUPPLIER';
+    Modal.confirm(message)
+      .then(confirmResponse => {
+        if (!confirmResponse) {
+          return;
+        }
 
-    var supplier = angular.copy(vm.supplier);
-
-    promise = (creation) ?
-      Suppliers.create(supplier) :
-      Suppliers.update(supplier.uuid, supplier);
-
-    promise
-      .then(function (response) {
-        return refreshSuppliers();
-      })
-      .then(function () {
-        var message = creation ? 'FORM.INFO.CREATE_SUCCESS' : 'FORM.INFO.UPDATE_SUCCESS';
-        Notify.success(message);
-        vm.view = 'default';
-      })
-      .catch(Notify.handleError);
-  }
+        Suppliers.delete(uuid)
+          .then(() => {
+            Notify.success('FORM.INFO.DELETE_SUCCESS');
+            refreshSuppliers();
+          })
+          .catch(Notify.handleError);
+      });
+  };
 
   startup();
 }

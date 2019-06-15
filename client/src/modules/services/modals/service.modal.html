@@ -22,6 +22,21 @@
       </div>
     </div>
 
+    <bh-project-select 
+      project-id="ServiceModalCtrl.service.project_id"
+      on-select-callback="ServiceModalCtrl.onSelectProject(project)"
+      required="true">
+    </bh-project-select>
+
+    <div class="form-group" ng-hide="ServiceModalCtrl.isCreating">
+      <div class="checkbox">
+        <label class="control-label">
+          <input name="hidden" type="checkbox" ng-model="ServiceModalCtrl.service.hidden" ng-true-value="1" ng-false-value="0">
+          <span translate>FORM.LABELS.HIDDEN</span>
+        </label>
+      </div>
+    </div>
+
   </div>
 
   <div class="modal-footer">

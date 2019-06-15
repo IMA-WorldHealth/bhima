@@ -6,14 +6,23 @@
 
 <label class="control-label" ng-class="{ 'col-md-3' : $ctrl.leftLabel}" translate> {{$ctrl.label}}</label> 
 
-<div ng-class="{ 'col-md-9' : $ctrl.leftLabel}">
+<i
+  ng-if="$ctrl.description"
+  class="fa fa-info-circle text-primary"
+  uib-tooltip="{{ $ctrl.description | translate }}"
+  tooltip-placement="right"
+  tooltip-trigger="'mouseenter'">
+</i>
+
+<div ng-class="{ 'col-md-9' : $ctrl.leftLabel, 'input-group': $ctrl.isCurrency }">
+  <span ng-if="$ctrl.isCurrency" class="input-group-addon text-uppercase">{{ $ctrl.currency.symbol }}</span>
   <input type="{{$ctrl.type}}"
     ng-class="{'required': $ctrl.required}",
     name ='inputTextElement'
     ng-model="$ctrl.textValue"
     title="{{ $ctrl.placeholder | translate}}"
     placeholder = "{{ $ctrl.placeholder | translate}}"
-    id="{{$ctrl.id}}"
+    id="{{ $ctrl.key }}"
     autocomplete="{{$ctrl.autocomplete}}"
     ng-change="$ctrl.valueChange()"
     input-text-field
@@ -23,7 +32,6 @@
   <div class="help-block"
     ng-messages="textValueForm.inputTextElement.$error"
     ng-show="textValueForm.$submitted && textValueForm.inputTextElement.$invalid">
-      
     <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
   </div>
 </div>

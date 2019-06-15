@@ -43,82 +43,82 @@ describe('Inventory List', () => {
     type  : 'Article',
   };
 
-  it('successfully creates a new inventory item (metadata)', () => {
-    FU.buttons.create();
-    FU.input('$ctrl.item.label', metadata.text);
-    FU.input('$ctrl.item.code', metadata.code);
-    element(by.model('$ctrl.item.consumable')).click();
-    FU.input('$ctrl.item.price', metadata.price);
-    FU.select('$ctrl.item.group_uuid', metadata.group);
-    FU.select('$ctrl.item.type_id', metadata.type);
-    FU.select('$ctrl.item.unit_id', metadata.unit);
-    FU.input('$ctrl.item.unit_weight', metadata.unit_weight);
-    FU.input('$ctrl.item.unit_volume', metadata.unit_volume);
-    FU.modal.submit();
-    components.notification.hasSuccess();
+  it('successfully creates a new inventory item (metadata)', async () => {
+    await FU.buttons.create();
+    await FU.input('$ctrl.item.label', metadata.text);
+    await FU.input('$ctrl.item.code', metadata.code);
+    await element(by.model('$ctrl.item.consumable')).click();
+    await FU.input('$ctrl.item.price', metadata.price);
+    await FU.select('$ctrl.item.group_uuid', metadata.group);
+    await FU.select('$ctrl.item.type_id', metadata.type);
+    await FU.select('$ctrl.item.unit_id', metadata.unit);
+    await FU.input('$ctrl.item.unit_weight', metadata.unit_weight);
+    await FU.input('$ctrl.item.unit_volume', metadata.unit_volume);
+    await FU.modal.submit();
+    await components.notification.hasSuccess();
   });
 
   const CODE_TO_UPDATE = '100001';
-  it('successfully updates an existing inventory item (metadata)', () => {
+  it('successfully updates an existing inventory item (metadata)', async () => {
     const row = $(`[data-row-item="${CODE_TO_UPDATE}"]`);
-    row.$('[data-method="action"]').click();
-    element(by.css(`[data-edit-metadata="${CODE_TO_UPDATE}"]`)).click();
+    await row.$('[data-method="action"]').click();
+    await element(by.css(`[data-edit-metadata="${CODE_TO_UPDATE}"]`)).click();
 
-    FU.input('$ctrl.item.label', metadataUpdate.text);
-    FU.input('$ctrl.item.code', metadataUpdate.code);
-    element(by.model('$ctrl.item.consumable')).click();
-    FU.input('$ctrl.item.price', metadataUpdate.price);
-    FU.select('$ctrl.item.group_uuid', metadataUpdate.group);
-    FU.select('$ctrl.item.type_id', metadataUpdate.type);
-    FU.select('$ctrl.item.unit_id', metadataUpdate.unit);
-    FU.input('$ctrl.item.unit_weight', metadataUpdate.unit_weight);
-    FU.input('$ctrl.item.unit_volume', metadataUpdate.unit_volume);
+    await FU.input('$ctrl.item.label', metadataUpdate.text);
+    await FU.input('$ctrl.item.code', metadataUpdate.code);
+    await element(by.model('$ctrl.item.consumable')).click();
+    await FU.input('$ctrl.item.price', metadataUpdate.price);
+    await FU.select('$ctrl.item.group_uuid', metadataUpdate.group);
+    await FU.select('$ctrl.item.type_id', metadataUpdate.type);
+    await FU.select('$ctrl.item.unit_id', metadataUpdate.unit);
+    await FU.input('$ctrl.item.unit_weight', metadataUpdate.unit_weight);
+    await FU.input('$ctrl.item.unit_volume', metadataUpdate.unit_volume);
 
-    FU.modal.submit();
-    components.notification.hasSuccess();
+    await FU.modal.submit();
+    await components.notification.hasSuccess();
   });
 
   // demonstrates that filtering works
-  it(`should find one Inventory with Label "${metadataSearch.label}"`, () => {
-    element(by.id('research')).click();
+  it(`should find one Inventory with Label "${metadataSearch.label}"`, async () => {
+    await element(by.id('research')).click();
 
-    FU.input('ModalCtrl.searchQueries.text', metadataSearch.label);
-    FU.modal.submit();
+    await FU.input('ModalCtrl.searchQueries.text', metadataSearch.label);
+    await FU.modal.submit();
 
-    GU.expectRowCount('inventoryListGrid', 2);
-    filters.resetFilters();
+    await GU.expectRowCount('inventoryListGrid', 2);
+    await filters.resetFilters();
   });
 
 
   // demonstrates that filtering works
-  it(`should find three Inventory with Group "${metadataSearch.group}" and Type "${metadataSearch.type}"`, () => {
-    element(by.id('research')).click();
+  it(`should find three Inventory with Group "${metadataSearch.group}" and Type "${metadataSearch.type}"`, async () => {
+    await element(by.id('research')).click();
 
-    components.inventoryGroupSelect.set(metadataSearch.group);
-    components.inventoryTypeSelect.set(metadataSearch.type);
-    FU.modal.submit();
+    await components.inventoryGroupSelect.set(metadataSearch.group);
+    await components.inventoryTypeSelect.set(metadataSearch.type);
+    await FU.modal.submit();
 
-    GU.expectRowCount('inventoryListGrid', 1);
-    filters.resetFilters();
+    await GU.expectRowCount('inventoryListGrid', 1);
+    await filters.resetFilters();
   });
 
 
-  it('dont creates a new inventory item (metadata) for invalid data', () => {
-    FU.buttons.create();
-    FU.input('$ctrl.item.label', metadata.text);
-    FU.input('$ctrl.item.unit_weight', metadata.unit_weight);
-    FU.input('$ctrl.item.unit_volume', metadata.unit_volume);
-    FU.modal.submit();
+  it('dont creates a new inventory item (metadata) for invalid data', async () => {
+    await FU.buttons.create();
+    await FU.input('$ctrl.item.label', metadata.text);
+    await FU.input('$ctrl.item.unit_weight', metadata.unit_weight);
+    await FU.input('$ctrl.item.unit_volume', metadata.unit_volume);
+    await FU.modal.submit();
 
     // check validations
-    FU.validation.ok('$ctrl.item.label');
-    FU.validation.ok('$ctrl.item.unit_weight');
-    FU.validation.ok('$ctrl.item.unit_volume');
-    FU.validation.error('$ctrl.item.code');
-    FU.validation.error('$ctrl.item.price');
-    FU.validation.error('$ctrl.item.group_uuid');
-    FU.validation.error('$ctrl.item.type_id');
-    FU.validation.error('$ctrl.item.unit_id');
-    FU.buttons.cancel();
+    await FU.validation.ok('$ctrl.item.label');
+    await FU.validation.ok('$ctrl.item.unit_weight');
+    await FU.validation.ok('$ctrl.item.unit_volume');
+    await FU.validation.error('$ctrl.item.code');
+    await FU.validation.error('$ctrl.item.price');
+    await FU.validation.error('$ctrl.item.group_uuid');
+    await FU.validation.error('$ctrl.item.type_id');
+    await FU.validation.error('$ctrl.item.unit_id');
+    await FU.buttons.cancel();
   });
 });

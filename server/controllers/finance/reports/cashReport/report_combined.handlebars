@@ -1,6 +1,5 @@
 {{> head title="TREE.CASH_REPORT" }}
 
-
 <div class="container">
   {{> header}}
 
@@ -10,57 +9,62 @@
         <strong>{{translate 'TREE.CASH_REPORT'}}</strong>
       </h3>
       <h5 class="text-center text-uppercase">
-        {{ this.cashName}} ({{ this.cashCurrency}})
+        {{ cashbox.label }} ({{ cashbox.symbol}})
       </h5>
       <h6 class="text-center text-uppercase">
-        {{date this.dateFrom }} - {{date this.dateTo }}
+        {{date dateFrom }} - {{date dateTo }}
       </h6>
 
-      {{#if this.isEmpty}}
-      <div class="text-center">
-        {{translate 'FORM.INFO.NO_RECORDS_DATABASE'}}
-      </div>
-      {{else}}
       <div class="text-right">
-        <strong>{{ translate 'FORM.LABELS.OPENING_BALANCE' }} : {{currency this.openingBalance metadata.enterprise.curency_id}}</strong>
+        <strong>{{ translate 'FORM.LABELS.OPENING_BALANCE' }} : {{debcred header.balance metadata.enterprise.currency_id}}</strong>
       </div>
+
       <table class="table table-condensed table-report">
-        <thead>          
+        <thead>
           <tr style="background-color:#ddd;">
-            <th style="width: 10%"> {{ translate 'TABLE.COLUMNS.TRANSACTION_ID' }} </th>
-            <th style="width: 10%"> {{ translate 'TABLE.COLUMNS.DATE' }} </th>
-            <th style="width: 10%"> {{ translate 'TABLE.COLUMNS.NUM_PIECE' }} </th>
-            <th style="width: 40%"> {{ translate 'TABLE.COLUMNS.DESCRIPTION'}} </th>
-            <th style="width: 10%"> {{ translate 'TABLE.COLUMNS.ENTRY' }} </th>
-            <th style="width: 10%"> {{ translate 'TABLE.COLUMNS.EXIT' }} </th>
-            <th style="width: 10%"> {{ translate 'TABLE.COLUMNS.BALANCE' }} </th>
+            <th>{{ translate 'TABLE.COLUMNS.DATE' }}</th>
+            <th>{{ translate 'TABLE.COLUMNS.TRANSACTION_ID' }}</th>
+            <th>{{ translate 'TABLE.COLUMNS.NUM_PIECE' }}</th>
+            <th style="width: 45%">{{ translate 'TABLE.COLUMNS.DESCRIPTION'}}</th>
+            <th>{{ translate 'TABLE.COLUMNS.ENTRY' }}</th>
+            <th>{{ translate 'TABLE.COLUMNS.EXIT' }}</th>
+            <th>{{ translate 'TABLE.COLUMNS.VALUE' }}</th>
+            <th>{{ translate 'TABLE.COLUMNS.BALANCE' }}</th>
           </tr>
         </thead>
         <tbody>
-          {{#each this.records}}
-          <tr>
-            <td class="text-left">{{ trans_id }}</td>
-            <td class="text-left">{{ date trans_date }}</td>
-            <td class="text-left">
-              {{#if cashReference}} {{ cashReference}} {{else}} {{voucherReference}} {{/if}}
-            </td>
-            <td class="text-left" style="white-space : nowrap;  text-overflow : ellipsis; overflow : hidden; max-width : 400px;">
-              {{ description }}
-            </td>
-            <td class="text-right">
-              {{ currency debit ../metadata.enterprise.currency_id}}
-            </td>
-            <td class="text-right">
-              {{ currency credit ../metadata.enterprise.currency_id}}
-            </td>
-            <td class="text-right">
-              {{ currency cbalance ../metadata.enterprise.currency_id}}
-            </td>
-          </tr>
+          {{#each transactions as |txn| }}
+            <tr {{#unless txn.posted}}style="font-style: italic !important;"{{/unless}}>
+              <td>{{ txn.trans_id }}</td>
+              <td>{{ date txn.trans_date }}</td>
+              <td>{{ txn.document_reference }}</td>
+              <td style="white-space : nowrap;  text-overflow : ellipsis; overflow : hidden; max-width : 400px;" title="{{ txn.description }}">
+                {{ txn.description }}
+              </td>
+              <td class="text-right">
+                {{currency txn.debit txn.currency_id}}
+              </td>
+              <td class="text-right">
+                {{currency txn.credit txn.currency_id}}
+              </td>
+              <td class="text-right">
+                {{debcred this.exchangedBalance ../metadata.enterprise.currency_id}}
+              </td>
+              <td class="text-right">
+                {{debcred txn.cumsum ../metadata.enterprise.currency_id}}
+              </td>
+            </tr>
+          {{else}}
+            {{>emptyTable columns=8}}
           {{/each}}
         </tbody>
+        <tfoot>
+          <tr>
+            <th colspan="7">{{ date footer.date }}</th>
+            <th class="text-right">{{ debcred footer.exchangedCumSum metadata.enterprise.currency_id}}</th>
+          </tr>
+        </tfoot>
       </table>
-      {{/if}}
     </div>
   </div>
 </div>

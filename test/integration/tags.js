@@ -1,4 +1,5 @@
-/* global expect, chai, agent */
+/* global expect, agent */
+/* eslint-disable no-unused-expressions */
 
 const helpers = require('./helpers');
 
@@ -98,5 +99,4 @@ describe('(/tags) The tags API endpoint', () => {
       })
       .catch(helpers.handler);
   });
-
 });

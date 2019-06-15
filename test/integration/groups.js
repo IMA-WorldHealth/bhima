@@ -1,9 +1,9 @@
-/* global expect, chai, agent */
+/* global expect, agent */
+/* eslint-disable no-unused-expressions */
 
 const helpers = require('./helpers');
 
 describe('(/groups) Group subscriptions API', () => {
-
 
   const invalidKey = 'notakey';
   const validKey = 'debtor_group_invoicing_fee';

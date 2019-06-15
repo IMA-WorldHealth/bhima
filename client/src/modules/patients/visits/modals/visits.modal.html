@@ -1,0 +1,188 @@
+<div class="modal-header">
+  <ol class="headercrumb">
+    <li class="static" translate>FORM.INFO.PATIENTS</li>
+    <li class="title" translate>{{ AdmitCtrl.isAdmission ? "PATIENT_RECORDS.VISITS.ADMISSION" : "PATIENT_RECORDS.VISITS.DISCHARGE"}}</li>
+  </ol>
+</div>
+
+<form name="VisitForm" bh-submit="AdmitCtrl.admit(VisitForm)" novalidate>
+
+<div class="modal-body">
+
+  <!-- patient -->
+  <div class="form-group" ng-if="!AdmitCtrl.hasPatient">
+    <bh-find-patient
+      patient-uuid="AdmitCtrl.patientUuid"
+      on-search-complete="AdmitCtrl.onSelectPatient(patient)"
+      required="true">
+    </bh-find-patient>
+    <span data-patient-already-admitted class="text-danger" ng-if="AdmitCtrl.alreadyAdmitted">
+      <i class="fa fa-warning"></i> <span translate>PATIENT_RECORDS.VISITS.ALREADY_ADMITTED</span>
+    </span>
+  </div>
+
+  <!-- service -->
+  <div ng-if="AdmitCtrl.isAdmission">
+    <bh-service-select on-select-callback="AdmitCtrl.onServiceSelect(service)" required="true"></bh-service-select>
+  </div>
+
+  <div ng-if="!AdmitCtrl.isAdmission && AdmitCtrl.currentVisit.start_diagnosis_label" class="form-group">
+    <label class="control-label"><span translate>PATIENT_RECORDS.VISITS.ADMISSION_DIAGNOSIS</span></label>
+    <p class="form-static">{{AdmitCtrl.currentVisit.start_diagnosis_label}}</p>
+  </div>
+
+  <!-- only show admission type on admission -->
+  <div
+    class="form-group"
+    ng-if="AdmitCtrl.isAdmission"
+    ng-class="{ 'has-error' : VisitForm.$submitted && VisitForm.type.$invalid }">
+
+    <div class="radio">
+      <p class="control-label" style="margin-bottom:5px;">
+        <strong translate>PATIENT_RECORDS.VISITS.ADMISSION_TYPE</strong>
+      </p>
+
+      <label>
+        <input type="radio" name="hospitalized" ng-value="0" ng-model="AdmitCtrl.visit.hospitalized">
+        <span translate>PATIENT_RECORDS.VISITS.AMBULATORY</span>
+      </label>
+    </div>
+    <div class="radio">
+      <label>
+        <input type="radio" name="hospitalized" ng-value="1" ng-model="AdmitCtrl.visit.hospitalized">
+        <span translate>PATIENT_RECORDS.VISITS.HOSPITALISATION</span>
+      </label>
+    </div>
+  </div>
+
+  <!-- complementary info -->
+  <div ng-if="AdmitCtrl.isAdmission">
+    <!-- case -->
+    <p class="control-label" style="margin-bottom:5px;">
+      <strong translate>PATIENT_RECORDS.VISITS.CASE</strong>
+    </p>
+    <div class="radio">
+      <label>
+        <input 
+          type="radio" 
+          name="is_new_case" 
+          id="yes" 
+          ng-value="1" 
+          ng-model="AdmitCtrl.visit.is_new_case"
+          ng-change="AdmitCtrl.onChangeCase()">
+        <span translate>PATIENT_RECORDS.VISITS.IS_NEW_CASE</span>
+      </label>
+    </div>
+    <div class="radio">
+      <label>
+        <input 
+          type="radio" 
+          name="is_new_case" 
+          id="no" 
+          ng-value="0" 
+          ng-model="AdmitCtrl.visit.is_new_case"
+          ng-change="AdmitCtrl.onChangeCase()">
+        <span translate>PATIENT_RECORDS.VISITS.IS_NOT_NEW_CASE</span>
+      </label>
+    </div>
+
+    <!-- refereed -->
+    <div class="checkbox">
+      <p class="control-label" style="margin-bottom:5px;">
+        <strong translate>PATIENT_RECORDS.VISITS.REFERED</strong>
+      </p>
+      <label>
+        <input 
+          type="checkbox" 
+          ng-true-value="1" 
+          ng-false-value="0" 
+          ng-model="AdmitCtrl.visit.is_refered"> <span translate>PATIENT_RECORDS.VISITS.IS_REFERED</span>
+      </label>
+    </div>
+
+    <!-- pregnant -->
+    <div ng-if="AdmitCtrl.isFemale">
+      <div class="checkbox">
+        <p class="control-label" style="margin-bottom:5px;">
+          <strong translate>PATIENT_RECORDS.VISITS.PREGNANT</strong>
+        </p>
+        <label>
+          <input 
+            type="checkbox" 
+            ng-true-value="1" 
+            ng-false-value="0" 
+            ng-model="AdmitCtrl.visit.is_pregnant"> <span translate>PATIENT_RECORDS.VISITS.IS_PREGNANT</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- in health zone -->
+    <p class="control-label" style="margin-bottom:5px;">
+      <strong translate>PATIENT_RECORDS.VISITS.HEALTH_ZONE</strong>
+    </p>
+    <div class="radio">
+      <label>
+        <input 
+          type="radio" 
+          name="inside_health_zone" 
+          id="yes" 
+          ng-value="1" 
+          ng-model="AdmitCtrl.visit.inside_health_zone"
+          ng-change="AdmitCtrl.onChangeHZ()" checked>
+        <span translate>PATIENT_RECORDS.VISITS.IS_IN_HEALTH_ZONE</span>
+      </label>
+    </div>
+    <div class="radio">
+      <label>
+        <input 
+          type="radio" 
+          name="inside_health_zone" 
+          id="no" 
+          ng-value="0" 
+          ng-model="AdmitCtrl.visit.inside_health_zone"
+          ng-change="AdmitCtrl.onChangeHZ()">
+        <span translate>PATIENT_RECORDS.VISITS.IS_NOT_IN_HEALTH_ZONE</span>
+      </label>
+    </div>
+  </div>
+
+  <br>
+
+  <!-- only on discharge -->
+  <div ng-if="!AdmitCtrl.isAdmission">
+    <bh-discharge-select on-change-callback="AdmitCtrl.onSelectDischarge(dischargeType)"></bh-discharge-select>
+  </div>
+
+  <!-- diagnosis select -->
+  <bh-diagnosis-select on-select-callback="AdmitCtrl.onSelectDiagnosis(diagnosis)"></bh-diagnosis-select>
+
+  <div
+    class="form-group"
+    ng-class="{ 'has-error' : VisitForm.$submitted && VisitForm.notes.$invalid }">
+    <label class="control-label"><span translate>FORM.LABELS.NOTES</span></label>
+    <textarea name="notes" ng-model="AdmitCtrl.visit.notes" class="form-control"></textarea>
+    <div class="help-block">
+      <p translate>PATIENT_RECORDS.VISITS.NOTES_INFO</p>
+    </div>
+
+    <div class="help-block" ng-messages="VisitForm.notes.$error" ng-show="VisitForm.$submitted">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+  
+  <!-- ward and bed -->
+  <div ng-if="AdmitCtrl.isAdmission && AdmitCtrl.visit.hospitalized">
+    <hr>
+    <bh-room-assign on-select-callback="AdmitCtrl.onBedRoomSelect(bed)"></bh-room-assign>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-default" ng-click="AdmitCtrl.cancel()" data-method="cancel">
+    <span translate>FORM.BUTTONS.CLOSE</span>
+  </button>
+
+  <bh-loading-button loading-state="VisitForm.$loading">
+  </bh-loading-button>
+</div>
+</form>

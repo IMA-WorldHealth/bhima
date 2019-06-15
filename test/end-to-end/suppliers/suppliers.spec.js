@@ -1,15 +1,15 @@
-/* global element, by, browser */
+/* global element, by */
 const chai = require('chai');
 const FU = require('../shared/FormUtils');
 const helpers = require('../shared/helpers');
 const components = require('../shared/components');
+const GridRow = require('../shared/GridRow');
 
-const expect = chai.expect;
-helpers.configure(chai);
-
+const { expect } = chai;
 
 describe('Suppliers', () => {
   const path = '#!/suppliers';
+
   before(() => helpers.navigate(path));
 
   const supplier = {
@@ -22,64 +22,74 @@ describe('Suppliers', () => {
     phone        : '025495950001',
   };
 
-  const supplierRank = 1;
+  it('creates a new supplier', async () => {
+    await FU.buttons.create();
+    await components.inpuText.set('display_name', supplier.display_name);
 
-  it('creates a new supplier', () => {
-    FU.buttons.create();
-
-    FU.input('SupplierCtrl.supplier.display_name', supplier.display_name);
-
-    element(by.model('SupplierCtrl.supplier.international')).click();
+    await element(by.model('ModalCtrl.supplier.international')).click();
 
     // select an Creditor
-    FU.select('SupplierCtrl.supplier.creditor_group_uuid', 'Regideso');
+    await FU.select('ModalCtrl.supplier.creditor_group_uuid', 'Regideso');
 
-    FU.input('SupplierCtrl.supplier.phone', supplier.phone);
-    FU.input('SupplierCtrl.supplier.email', supplier.email);
-    FU.input('SupplierCtrl.supplier.address_1', supplier.address_1);
-    FU.input('SupplierCtrl.supplier.address_2', supplier.address_2);
-    FU.input('SupplierCtrl.supplier.fax', supplier.fax);
-    FU.input('SupplierCtrl.supplier.note', supplier.note);
+    await components.inpuText.set('phone', supplier.phone);
+    await components.inpuText.set('email', supplier.email);
+    await components.inpuText.set('address_1', supplier.address_1);
+    await components.inpuText.set('address_2', supplier.address_2);
+    await components.inpuText.set('fax', supplier.fax);
+    await FU.input('ModalCtrl.supplier.note', supplier.note);
 
     // submit the page to the server
-    FU.buttons.submit();
-    components.notification.hasSuccess();
+    await FU.buttons.submit();
+    await components.notification.hasSuccess();
   });
 
-  it('edits an supplier', () => {
-    element(by.id(`supplier-upd-${supplierRank}`)).click();
+
+  it('edits a supplier', async () => {
+    await editSupplier(supplier.display_name);
 
     // modify the supplier display_name
-    FU.input('SupplierCtrl.supplier.display_name', 'Updated');
+    await components.inpuText.set('display_name', 'Updated');
 
     // modify the supplier note
-    FU.input('SupplierCtrl.supplier.note', ' IMCK Tshikaji update for the test E2E');
-    FU.input('SupplierCtrl.supplier.address_1', supplier.address_1);
+    await FU.input('ModalCtrl.supplier.note', ' IMCK Tshikaji update for the test E2E');
+    await components.inpuText.set('address_1', supplier.address_1);
 
-    FU.buttons.submit();
-    components.notification.hasSuccess();
+    await FU.buttons.submit();
+    await components.notification.hasSuccess();
   });
 
-  it('blocks invalid form submission with relevant error classes', () => {
-    FU.buttons.create();
+  it('blocks invalid form submission with relevant error classes', async () => {
+    await FU.buttons.create();
 
     // verify form has not been submitted
-    FU.buttons.submit();
-    expect(helpers.getCurrentPath()).to.eventually.equal(path);
+    await FU.buttons.submit();
+    expect(await helpers.getCurrentPath()).to.equal(path);
 
     // the following fields should be required
-    FU.validation.error('SupplierCtrl.supplier.display_name');
-    FU.validation.error('SupplierCtrl.supplier.creditor_group_uuid');
-    FU.validation.error('SupplierCtrl.supplier.address_1');
+    await components.inpuText.validationError('display_name');
+    await FU.validation.error('ModalCtrl.supplier.creditor_group_uuid');
+    await components.inpuText.validationError('address_1');
 
     // the following fields are not required
-    FU.validation.ok('SupplierCtrl.supplier.phone');
-    FU.validation.ok('SupplierCtrl.supplier.email');
-    FU.validation.ok('SupplierCtrl.supplier.address_2');
-    FU.validation.ok('SupplierCtrl.supplier.fax');
-    FU.validation.ok('SupplierCtrl.supplier.note');
+    await components.inpuText.validationError('phone');
+    await components.inpuText.validationError('email');
 
-    components.notification.hasDanger();
-
+    // optional
+    await components.inpuText.validationOk('address_2');
+    await components.inpuText.validationOk('fax');
+    await FU.validation.ok('ModalCtrl.supplier.note');
+    await FU.buttons.cancel();
+    await components.notification.hasDanger();
   });
+
+  async function openDropdownMenu(label) {
+    const row = new GridRow(label);
+    await row.dropdown().click();
+    return row;
+  }
+
+  async function editSupplier(name) {
+    const row = await openDropdownMenu(name);
+    await row.edit().click();
+  }
 });

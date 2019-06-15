@@ -8,42 +8,42 @@ class AnnualClientsReportPage {
   }
 
   // preview an income expense report
-  showAnnualClientsReportPreview(fiscalYear) {
-    components.fiscalYearSelect.set(fiscalYear);
+  async showAnnualClientsReportPreview(fiscalYear) {
+    await components.fiscalYearSelect.set(fiscalYear);
     this.page.preview();
   }
 
   // save an income expense report
-  saveAnnualClientsReport(fiscalYear, reportName, reportFormat) {
-    this.showAnnualClientsReportPreview(fiscalYear);
+  async saveAnnualClientsReport(fiscalYear, reportName, reportFormat) {
+    await this.showAnnualClientsReportPreview(fiscalYear);
 
     // save report as PDF
-    this.page.saveAs();
-    FU.input('SaveCtrl.documentOptions.label', reportName);
-    FU.select('SaveCtrl.documentOptions.renderer', reportFormat);
-    FU.modal.submit();
+    await this.page.saveAs();
+    await FU.input('SaveCtrl.documentOptions.label', reportName);
+    await FU.select('SaveCtrl.documentOptions.renderer', reportFormat);
+    await FU.modal.submit();
 
     // successfully saved notification
-    components.notification.hasSuccess();
-    this.page.backToConfig();
+    await components.notification.hasSuccess();
+    await this.page.backToConfig();
   }
 
   // print an income expense report
-  printAnnualClientsReport(fiscalYear) {
-    this.showAnnualClientsReportPreview(fiscalYear);
-    this.page.printPreview();
+  async printAnnualClientsReport(fiscalYear) {
+    await this.showAnnualClientsReportPreview(fiscalYear);
+    await this.page.printPreview();
   }
 
   // check saved report
-  checkSavedAnnualClientsReport(reportName) {
-    this.page.gotoArchive();
-    this.page.lastReportMatching(reportName);
-    this.page.backToConfig();
+  async checkSavedAnnualClientsReport(reportName) {
+    await this.page.gotoArchive();
+    await this.page.lastReportMatching(reportName);
+    await this.page.backToConfig();
   }
 
   // close preview
-  closeAnnualClientsReportPreview() {
-    this.page.closePreview();
+  async closeAnnualClientsReportPreview() {
+    await this.page.closePreview();
   }
 }
 

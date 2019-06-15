@@ -1,0 +1,65 @@
+<bh-report-preview
+  ng-if="ReportConfigCtrl.previewGenerated"
+  source-document="ReportConfigCtrl.previewResult"
+  on-clear-callback="ReportConfigCtrl.clearPreview()"
+  on-save-callback="ReportConfigCtrl.requestSaveAs()">
+</bh-report-preview>
+
+<div ng-show="!ReportConfigCtrl.previewGenerated">
+  <div class="row">
+    <div class="col-md-12">
+      <h3 class="text-capitalize" translate>REPORT.REPORT_INDICATORS.TITLE</h3>
+      <p class="text-info" translate>REPORT.REPORT_INDICATORS.DESCRIPTION</p>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top : 10px">
+    <div class="col-md-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <span translate>REPORT.UTIL.OPTIONS</span>
+        </div>
+
+        <div class="panel-body">
+          <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate>
+
+            <!-- Date interval  -->
+            <bh-date-interval
+              date-from="ReportConfigCtrl.reportDetails.dateFrom"
+              date-to="ReportConfigCtrl.reportDetails.dateTo"
+              required="true"
+              limit-min-fiscal>
+            </bh-date-interval>
+
+            <bh-hidden-field show-text='FORM.LABELS.OPTIONAL_INFO' hide-text ='FORM.BUTTONS.CLOSE'>
+              <!-- indicator type selection  -->
+              <div class="form-group" ng-class="{ 'has-error' : ConfigForm.$submitted && ConfigForm.type.$invalid }">
+                <label class="control-label">
+                  <span translate> FORM.SELECT.INDICATOR_TYPE</span>
+                </label>
+                <bh-clear on-clear="ReportConfigCtrl.clear('type')"></bh-clear>
+                <select
+                  class="form-control"
+                  name="type"
+                  ng-model="ReportConfigCtrl.reportDetails.type"
+                  ng-options="type.id as (type.label | translate) for type in ReportConfigCtrl.indicatorTypes">
+                  <option value="" disabled>{{ "FORM.SELECT.INDICATOR_TYPE" | translate }}<option>
+                </select>
+              </div>
+              
+              <bh-service-select
+                service-id="ReportConfigCtrl.reportDetails.service_id"
+                on-select-callback="ReportConfigCtrl.onSelectService(service)">
+                <bh-clear on-clear="ReportConfigCtrl.clear('service_id')"></bh-clear>
+              </bh-service-select>
+            </bh-hidden-field>
+
+            <bh-loading-button loading-state="ConfigForm.$loading">
+              <span translate>REPORT.UTIL.PREVIEW</span>
+            </bh-loading-button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

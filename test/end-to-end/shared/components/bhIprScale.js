@@ -1,17 +1,15 @@
-/* global browser, element, by */
-
-const FU = require('../FormUtils');
+/* global element, by */
 
 module.exports = {
   selector : '[bh-ipr-scale]',
-  set      : function set(scale) {
+  set      : async function set(scale) {
 
     // get the dropdown
-    var dropdown = element(by.css('[uib-dropdown-toggle]'));
-    dropdown.click();
+    const dropdown = element(by.css('[uib-dropdown-toggle]'));
+    await dropdown.click();
 
     // click the correct dropdown item
-    var option = element(by.linkText(scale));
-    option.click();
+    const option = element(by.linkText(scale));
+    await option.click();
   },
 };

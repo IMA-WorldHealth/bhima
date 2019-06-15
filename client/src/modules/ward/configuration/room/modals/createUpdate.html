@@ -1,0 +1,51 @@
+<form name="RoomForm" bh-submit="ModalCtrl.submit(RoomForm)" novalidate>
+  <div class="modal-header">
+  <ol class="headercrumb">
+    <li ng-if="ModalCtrl.isCreating" class="title">
+      <span translate>ROOM.TITLE</span>
+      <label class="badge badge-success" translate>FORM.LABELS.CREATE</label>
+    </li>
+    <li ng-if="!ModalCtrl.isCreating" class="title">
+      <span translate>FORM.LABELS.WARD</span>
+      <label class="badge badge-warning" translate>FORM.LABELS.UPDATE</label>
+    </li>
+  </ol>
+</div>
+
+  <div class="modal-body">
+    <bh-ward-select
+      uuid="ModalCtrl.room.ward_uuid"
+      on-select-callback="ModalCtrl.onSelectWard(ward)"
+      required="true">
+    </bh-ward-select>
+
+    <bh-input-text
+      key="label"
+      label="ROOM.TITLE"
+      text-value="ModalCtrl.room.label"
+      on-change="ModalCtrl.onInputTextChange(key, value)"
+      required="true">
+    </bh-input-text>
+
+    <div class="form-group" ng-class="{'has-error': ModalForm.$submitted && ModalForm.description.$invalid }">
+      <label class="control-label" translate>TABLE.COLUMNS.DESCRIPTION</label>
+      <textarea
+        ng-model="ModalCtrl.room.description"
+        name="description"
+        class="form-control"
+        rows="3"
+      >
+      </textarea>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button data-method="cancel" type="reset" ng-click="ModalCtrl.close()" class="btn btn-default">
+      <span translate>FORM.BUTTONS.CANCEL</span>
+    </button>
+
+    <bh-loading-button loading-state="RoomForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

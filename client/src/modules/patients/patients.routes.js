@@ -1,5 +1,5 @@
 angular.module('bhima.routes')
-  .config(['$stateProvider', function ($stateProvider) {
+  .config(['$stateProvider', $stateProvider => {
     $stateProvider
       .state('patientsRegister', {
         url         : '/patients/register',
@@ -27,6 +27,7 @@ angular.module('bhima.routes')
           filters : [],
         },
       })
+
       .state('patientGroups', {
         url         : '/patients/groups',
         controller  : 'PatientGroupController as PatientGroupCtrl',
@@ -34,19 +35,40 @@ angular.module('bhima.routes')
       })
 
       .state('patientRecord', {
-        abstract    : true,
         url         : '/patients/:patientUuid',
         params      : { patientUuid : null },
         templateUrl : 'modules/patients/record/patient-record.html',
         controller  : 'PatientRecordController as PatientRecordCtrl',
       })
-      .state('patientRecord.details', {
-        url   : '',
-        views : {
-          'checkin@patientRecord' : {
-            templateUrl : 'modules/patients/record/units/checkin.html',
-            controller  : 'CheckInController as CheckInCtrl',
-          },
+
+      .state('patientVisitRegistry', {
+        url         : '/patients/visits',
+        templateUrl : 'modules/patients/visits/registry.html',
+        controller  : 'AdmissionRegistryController as AdmissionRegistryCtrl',
+        params      : {
+          filters : [],
         },
+      })
+
+      .state('patientRegistry.merge', {
+        url         : '/merge',
+        params      : {
+          patients : [],
+        },
+        onEnter : ['$uibModal', mergePatientsModal],
+        onExit : ['$uibModalStack', closeModal],
       });
   }]);
+
+function mergePatientsModal($modal) {
+  $modal.open({
+    keyboard : false,
+    backdrop : 'static',
+    templateUrl : 'modules/patients/registry/modals/mergePatients.modal.html',
+    controller : 'MergePatientsModalController as MergePatientsModalCtrl',
+  });
+}
+
+function closeModal(ModalStack) {
+  ModalStack.dismissAll();
+}

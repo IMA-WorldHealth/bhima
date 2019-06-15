@@ -1,5 +1,5 @@
 /* global element, by */
-/* eslint class-methods-use-this:off */
+/* eslint  */
 
 /**
  * This class is represents an employee registration page
@@ -18,127 +18,122 @@ class RegistrationPage {
     this.actionLinkColumn = 8;
   }
 
-  editEmployeeName(label) {
-    GU.getGridIndexesMatchingText(this.gridId, label)
-      .then(indices => {
-        const { rowIndex } = indices;
-        GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'edit', this.gridId);
-      });
+  async editEmployeeName(label) {
+    const { rowIndex } = await GU.getGridIndexesMatchingText(this.gridId, label);
+    await GA.clickOnMethod(rowIndex, this.actionLinkColumn, 'edit', this.gridId);
   }
 
-
   createEmployee() {
-    FU.buttons.submit();
+    return FU.buttons.submit();
   }
 
   // set display name
   setDisplayName(displayName) {
-    FU.input('EmployeeCtrl.employee.display_name', displayName);
+    return FU.input('EmployeeCtrl.employee.display_name', displayName);
   }
 
   // set dob
   setDob(dob) {
-    FU.input('EmployeeCtrl.employee.dob', dob);
+    return FU.input('EmployeeCtrl.employee.dob', dob);
   }
 
   // set sex
   setSex(sex) {
     const id = (sex === 'M') ? 'male' : 'female';
-    $(`[id="${id}"]`).click();
+    return $(`[id="${id}"]`).click();
   }
 
 
   // set number of spouse
   setNumberChild(nbEnfant) {
-    FU.input('EmployeeCtrl.employee.nb_enfant', nbEnfant);
+    return FU.input('EmployeeCtrl.employee.nb_enfant', nbEnfant);
   }
 
   // set hiring date
   setHiringDate(hiringDate) {
-    FU.input('EmployeeCtrl.employee.date_embauche', hiringDate);
+    return FU.input('EmployeeCtrl.employee.date_embauche', hiringDate);
   }
 
   // set the employee code
   setCode(code) {
-    FU.input('EmployeeCtrl.employee.code', code);
+    return FU.input('EmployeeCtrl.employee.code', code);
   }
 
   // set service
   setService(service) {
-    FU.uiSelect('EmployeeCtrl.employee.service_id', service);
+    return FU.uiSelect('EmployeeCtrl.employee.service_id', service);
   }
 
   // set grade
   setGrade(grade) {
-    FU.uiSelect('EmployeeCtrl.employee.grade_uuid', grade);
+    return FU.uiSelect('EmployeeCtrl.employee.grade_uuid', grade);
   }
 
   // set fonction
   setFonction(fonction) {
-    FU.uiSelect('EmployeeCtrl.employee.fonction_id', fonction);
+    return FU.uiSelect('EmployeeCtrl.employee.fonction_id', fonction);
   }
 
   // set Medical Staff
   setIsMedical() {
-    element(by.model('EmployeeCtrl.employee.is_medical')).click();
+    return element(by.model('EmployeeCtrl.employee.is_medical')).click();
   }
 
   // set email
   setEmail(email) {
-    FU.input('EmployeeCtrl.employee.email', email);
+    return FU.input('EmployeeCtrl.employee.email', email);
   }
 
   // set address
   setAddress(address) {
-    FU.input('EmployeeCtrl.employee.adresse', address);
+    return FU.input('EmployeeCtrl.employee.adresse', address);
   }
 
   // set hospital Number
   setHospitalNumber(hn) {
-    FU.input('EmployeeCtrl.employee.hospital_no', hn);
+    return FU.input('EmployeeCtrl.employee.hospital_no', hn);
   }
 
   // set debtor group
   setDebtorGroup(dg) {
-    components.debtorGroupSelect.set(dg);
+    return components.debtorGroupSelect.set(dg);
   }
 
   // set creditor group
   setCreditorGroup(cg) {
-    FU.uiSelect('EmployeeCtrl.employee.creditor_group_uuid', cg);
+    return FU.uiSelect('EmployeeCtrl.employee.creditor_group_uuid', cg);
   }
 
   // Set Currency Input
   setCurrencyInput(id, value) {
-    components.currencyInput.set(value, id);
+    return components.currencyInput.set(value, id);
   }
 
   // set bank
   setBank(bank) {
-    FU.input('EmployeeCtrl.employee.bank', bank);
+    return FU.input('EmployeeCtrl.employee.bank', bank);
   }
 
   // set bank account
   setBankAccount(bankAccount) {
-    FU.input('EmployeeCtrl.employee.bank_account', bankAccount);
+    return FU.input('EmployeeCtrl.employee.bank_account', bankAccount);
   }
 
   // Set RubricPayroll defined value By Employee
   setRubricPayroll(rubrics) {
-    Object.keys(rubrics).forEach(key => {
-      const rubricPayroll = element(by.id(key));
-      rubricPayroll.sendKeys(rubrics[key]);
-    });
+    const keys = Object.keys(rubrics);
+    const promises = keys.map(key => element(by.id(key)).sendKeys(rubrics[key]));
+    return Promise.all(promises);
   }
 
   // set origin location
   setOriginLocation(locations) {
-    components.locationSelect.set(locations, 'origin-location-id');
+    return components.locationSelect.set(locations, 'origin-location-id');
   }
 
   // set current location
   setCurrentLocation(locations) {
-    components.locationSelect.set(locations, 'current-location-id');
+    return components.locationSelect.set(locations, 'current-location-id');
   }
 
   isEmployeeCreated(resp) {
@@ -146,28 +141,28 @@ class RegistrationPage {
   }
 
   expectNotificationSuccess() {
-    components.notification.hasSuccess();
+    return components.notification.hasSuccess();
   }
 
-  requiredFieldErrored() {
-    FU.validation.error('EmployeeCtrl.employee.display_name');
-    FU.validation.error('EmployeeCtrl.employee.code');
-    FU.validation.error('EmployeeCtrl.employee.grade_uuid');
-    FU.validation.error('EmployeeCtrl.employee.creditor_group_uuid');
-    FU.validation.error('$ctrl.debtorGroupUuid');
-    FU.validation.error('EmployeeCtrl.employee.dob');
-    FU.validation.error('EmployeeCtrl.employee.hospital_no');
+  async requiredFieldErrored() {
+    await FU.validation.error('EmployeeCtrl.employee.display_name');
+    await FU.validation.error('EmployeeCtrl.employee.code');
+    await FU.validation.error('EmployeeCtrl.employee.grade_uuid');
+    await FU.validation.error('EmployeeCtrl.employee.creditor_group_uuid');
+    await FU.validation.error('$ctrl.debtorGroupUuid');
+    await FU.validation.error('EmployeeCtrl.employee.dob');
+    await FU.validation.error('EmployeeCtrl.employee.hospital_no');
   }
 
-  notRequiredFieldOk() {
-    FU.validation.ok('EmployeeCtrl.employee.nb_enfant');
-    FU.validation.ok('EmployeeCtrl.employee.phone');
-    FU.validation.ok('EmployeeCtrl.employee.email');
-    FU.validation.ok('EmployeeCtrl.employee.bank');
-    FU.validation.ok('EmployeeCtrl.employee.bank_account');
-    FU.validation.ok('EmployeeCtrl.employee.service_id');
-    FU.validation.ok('EmployeeCtrl.employee.fonction_id');
-    FU.validation.ok('EmployeeCtrl.employee.adresse');
+  async notRequiredFieldOk() {
+    await FU.validation.ok('EmployeeCtrl.employee.nb_enfant');
+    await FU.validation.ok('EmployeeCtrl.employee.phone');
+    await FU.validation.ok('EmployeeCtrl.employee.email');
+    await FU.validation.ok('EmployeeCtrl.employee.bank');
+    await FU.validation.ok('EmployeeCtrl.employee.bank_account');
+    await FU.validation.ok('EmployeeCtrl.employee.service_id');
+    await FU.validation.ok('EmployeeCtrl.employee.fonction_id');
+    await FU.validation.ok('EmployeeCtrl.employee.adresse');
   }
 }
 

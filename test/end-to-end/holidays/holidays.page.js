@@ -1,4 +1,4 @@
-/* eslint class-methods-use-this:off */
+/* eslint  */
 
 /* loading grid actions */
 const GridRow = require('../shared/GridRow');
@@ -13,67 +13,60 @@ class HolidayPage {
   /**
    * simulate the create holiday button click to show the dialog of creation
    */
-  create(holiday) {
-    FU.buttons.create();
-    components.employeeSelect.set('Employee');
-
-    FU.input('HolidayModalCtrl.holiday.label', holiday.label);
-    FU.input('HolidayModalCtrl.holiday.percentage', holiday.percentage);
-
-    components.dateInterval.range(holiday.dateFrom, holiday.dateTo);
-
-    FU.modal.submit();
-    components.notification.hasSuccess();
+  async create(holiday) {
+    await FU.buttons.create();
+    await components.employeeSelect.set('Employee');
+    await FU.input('HolidayModalCtrl.holiday.label', holiday.label);
+    await FU.input('HolidayModalCtrl.holiday.percentage', holiday.percentage);
+    await components.dateInterval.range(holiday.dateFrom, holiday.dateTo);
+    await FU.modal.submit();
+    await components.notification.hasSuccess();
   }
 
   /**
    * Prevent the definition of a nested vacation period
    */
-  preventHoliday(holiday) {
-    FU.buttons.create();
-    components.employeeSelect.set('Employee');
-
-    FU.input('HolidayModalCtrl.holiday.label', holiday.label, this.modal);
-    FU.input('HolidayModalCtrl.holiday.percentage', holiday.percentage, this.modal);
-
-    components.dateInterval.range(holiday.dateFrom, holiday.dateTo);
-
-    FU.modal.submit();
-    FU.buttons.cancel();
-
-    components.notification.hasError();
+  async preventHoliday(holiday) {
+    await FU.buttons.create();
+    await components.employeeSelect.set('Employee');
+    await FU.input('HolidayModalCtrl.holiday.label', holiday.label, this.modal);
+    await FU.input('HolidayModalCtrl.holiday.percentage', holiday.percentage, this.modal);
+    await components.dateInterval.range(holiday.dateFrom, holiday.dateTo);
+    await FU.modal.submit();
+    await FU.buttons.cancel();
+    await components.notification.hasError();
   }
 
   /**
    * block creation without the function name
    */
-  errorOnCreateHoliday() {
-    FU.buttons.create();
-    FU.buttons.submit();
-    FU.validation.error('HolidayModalCtrl.holiday.label');
-    FU.buttons.cancel();
+  async errorOnCreateHoliday() {
+    await FU.buttons.create();
+    await FU.buttons.submit();
+    await FU.validation.error('HolidayModalCtrl.holiday.label');
+    await FU.buttons.cancel();
   }
 
   /**
    * simulate a click on the edit link of a function
    */
-  update(label, updateHoliday) {
+  async update(label, updateHoliday) {
     const row = new GridRow(label);
-    row.dropdown().click();
-    row.edit().click();
+    await row.dropdown().click();
+    await row.edit().click();
 
-    FU.input('HolidayModalCtrl.holiday.label', updateHoliday.label, this.modal);
+    await FU.input('HolidayModalCtrl.holiday.label', updateHoliday.label, this.modal);
 
-    FU.buttons.submit();
-    components.notification.hasSuccess();
+    await FU.buttons.submit();
+    await components.notification.hasSuccess();
   }
 
-  remove(label) {
+  async remove(label) {
     const row = new GridRow(label);
-    row.dropdown().click();
-    row.remove().click();
-    FU.modal.submit();
-    components.notification.hasSuccess();
+    await row.dropdown().click();
+    await row.remove().click();
+    await FU.modal.submit();
+    await components.notification.hasSuccess();
   }
 }
 

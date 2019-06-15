@@ -14,6 +14,7 @@ describe('(/fee_center) The /fee_center  API endpoint', () => {
     id : 10,
     label : 'Centre de Frais Test',
     is_principal : 1,
+    project_id : 1,
     reference_fee_center : [{
       account_reference_id : 6,
       is_cost : 1,
@@ -27,6 +28,7 @@ describe('(/fee_center) The /fee_center  API endpoint', () => {
   const feeCenterUpt1 = {
     label : 'Update Test',
     is_principal : 1,
+    project_id : 3,
     reference_fee_center : [{
       account_reference_id : 6,
       is_cost : 1,
@@ -89,7 +91,6 @@ describe('(/fee_center) The /fee_center  API endpoint', () => {
       })
       .catch(helpers.handler);
   });
-
 
   it('PUT /FEE_CENTER  should update Fee Center Type, Reference fee Center for an existing Fee Center ', () => {
     return agent.put('/fee_center/'.concat(feeCenterId))

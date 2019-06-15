@@ -11,24 +11,23 @@ function StockImportTests() {
   // navigate to the page
   beforeEach(() => helpers.navigate('#/stock/import'));
 
-  it('importing stock from a csv file', () => {
-    shared.setDepot(depot);
+  it('importing stock from a csv file', async () => {
+    await shared.setDepot(depot);
 
-    shared.uploadFile(STOCK_CSV_FILE);
+    await shared.uploadFile(STOCK_CSV_FILE);
 
-    FU.buttons.submit();
-    components.notification.hasSuccess();
+    await FU.buttons.submit();
+    await components.notification.hasSuccess();
   });
 
-  it('importing stock from a csv file which have inventory_code and inventory_cmm missing', () => {
-    shared.setDepot(depot);
+  it('importing stock from a csv file which have inventory_code and inventory_cmm missing', async () => {
+    await shared.setDepot(depot);
 
-    shared.uploadFile(STOCK_CSV_FILE_NO_CODE_NO_CMM);
+    await shared.uploadFile(STOCK_CSV_FILE_NO_CODE_NO_CMM);
 
-    FU.buttons.submit();
-    components.notification.hasSuccess();
+    await FU.buttons.submit();
+    await components.notification.hasSuccess();
   });
-
 }
 
 describe('Stock Import', StockImportTests);

@@ -1,4 +1,4 @@
-> [Home](../index.md) / [Inventory Management](./index.md) / stock movements
+&raquo; [Home](../index.md) / [Inventory Management](./index.md) / stock movements
 
 # Stocks movements
 

@@ -35,7 +35,7 @@
               <td>{{ row.debtorGroupName }}</td>
               <td>
                 {{#if row.debtorReference }}
-                  <strong>{{ row.debtorReference }}</strong> - {{row.debtorText}}
+                  <strong>{{ row.debtorReference }}</strong> - {{row.debtorText}}, {{translate 'FORM.LABELS.AGE'}} : {{row.debtorAge}}
                 {{/if}}
               </td>
               {{#each ../services as |service|}}
@@ -43,6 +43,8 @@
               {{/each}}
               <td class="text-right">{{ row.Total }}</td>
             </tr>
+          {{else}}
+            {{> emptyTable columns=3}}
           {{/each}}
           <tr>
             {{#each totals as |value key|}}

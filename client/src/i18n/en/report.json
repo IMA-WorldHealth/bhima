@@ -44,7 +44,9 @@
     "CHART_OF_ACCOUNTS": "Chart of Accounts",
     "CLIENTS": {
       "TITLE" : "Annual Clients Report",
-      "DESCRIPTION": "This report displays all the debtor groups, their account balances at the beginning of the fiscal year, the debits and credits to their accounts, and their ending balances."
+      "DESCRIPTION": "This report displays all the debtor groups, their account balances at the beginning of the fiscal year, the debits and credits to their accounts, and their ending balances.",
+      "HIDE_LOCKED_CLIENTS" : "Hide Locked Clients",
+      "HIDE_LOCKED_CLIENTS_HELP_TEXT" : "Selecting yes will filter out all locked clients from the report.  By default, the value is no."
     },
     "CLOSING_BALANCE": "Closing Balance",
     "CONFIGURATION": "Report Configuration",
@@ -97,6 +99,7 @@
     "PERIOD_START": "Start",
     "PERIOD_STOP": "Stop",
     "PRODUCED_BY": "Produced by",
+    "BY": "by",
     "PRODUCED_DATE": "Production Date",
     "PRODUCED_ON": "Produced on",
     "SINCE": "Since",
@@ -127,6 +130,10 @@
     "REPORT_ACCOUNTS_MULTIPLE": {
       "TITLE": "Multiple Accounts Report",
       "DESCRIPTION": "This report shows all transactions for a group of accounts given a set time period."
+    },
+    "REPORT_INDICATORS": {
+      "TITLE": "Indicators Report",
+      "DESCRIPTION": "This report summarizes the indicators for a hospital"
     },
     "PROFIT_AND_LOSS_REPORT": {
       "TITLE": "Income Expense Report",

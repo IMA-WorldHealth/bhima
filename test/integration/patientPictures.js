@@ -1,4 +1,4 @@
-/* global expect, chai, agent */
+/* global expect, agent */
 
 const fs = require('fs');
 const path = require('path');
@@ -7,11 +7,9 @@ const helpers = require('./helpers');
 const fixtures = path.resolve(__dirname, '../fixtures');
 
 describe('(patients/:uuid/pictures) Patient Pictures', () => {
-
-
   const patientUuid = '274c51ae-efcc-4238-98c6-f402bfb39866';
 
-  it('POST /patients/:uuid/pictures should Set Picture to a patient', () => {
+  it('POST /patients/:uuid/pictures should set the patient\'s picture', () => {
     return agent.post(`/patients/${patientUuid}/pictures`)
       .attach('pictures', fs.createReadStream(`${fixtures}/patient.png`))
       .then((res) => {

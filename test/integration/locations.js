@@ -1,4 +1,5 @@
 /* global expect, agent */
+/* eslint-disable no-unused-expressions */
 
 const _ = require('lodash');
 const helpers = require('./helpers');
@@ -114,7 +115,7 @@ describe('(/locations) Locations Interface', () => {
   });
 
 
-  it('GET /locations/detail/ Return a Global list of all locations with all information (Country, Province, District and Village) ', () => {
+  it('GET /locations/detail/ returns a list of all locations country, province, district and village', () => {
     return agent.get('/locations/detail/')
       .then((res) => {
         expect(res).to.have.status(200);

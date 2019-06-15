@@ -21,46 +21,46 @@ function PatientInvoicePage() {
   page.gridId = gridId;
 
   // sets a patient to the id passed in
-  page.patient = function patient(id) {
-    findPatient.findById(id);
+  page.patient = async function patient(id) {
+    await findPatient.findById(id);
   };
 
   // sets a default patient, service, date, and note
-  page.prepare = function prepare() {
+  page.prepare = async function prepare() {
     // set a patient with id TPA1
-    findPatient.findById('PA.TPA.1');
+    await findPatient.findById('PA.TPA.1');
 
     // set the date to the start of this day
-    dateEditor.set(new Date());
+    await dateEditor.set(new Date());
 
     // set a test description
-    FU.input(
+    await FU.input(
       'PatientInvoiceCtrl.Invoice.details.description',
       'This is a temporary description.  It can be pretty long.'
     );
 
     // select the first enabled service in the list
-    FU.select('PatientInvoiceCtrl.Invoice.details.service_id', 'Administration');
+    await FU.select('PatientInvoiceCtrl.Invoice.details.service_id', 'Administration');
   };
 
   // this exposes the ability to set the service at any time
   page.service = function service(name) {
-    FU.select('PatientInvoiceCtrl.Invoice.details.service_id', name);
+    return FU.select('PatientInvoiceCtrl.Invoice.details.service_id', name);
   };
 
   // try to click the submit button
   page.submit = function submit() {
-    btns.submit.click();
+    return btns.submit.click();
   };
 
   // click the "recover cache" button
   page.recover = function recover() {
-    btns.recover.click();
+    return btns.recover.click();
   };
 
   // adds n rows to the grid
-  page.addRows = function addRows(n) {
-    addItem.set(n);
+  page.addRows = async function addRows(n) {
+    await addItem.set(n);
   };
 
   // returns n rows
@@ -69,20 +69,20 @@ function PatientInvoicePage() {
   };
 
   // expect row count to be equal to a number
-  page.expectRowCount = function expectRowCount(n) {
-    GU.expectRowCount(gridId, n);
+  page.expectRowCount = async function expectRowCount(n) {
+    await GU.expectRowCount(gridId, n);
   };
 
   // add an inventory item to the grid
-  page.addInventoryItem = function addInvoiceItem(rowNumber, itemLabel) {
+  page.addInventoryItem = async function addInvoiceItem(rowNumber, itemLabel) {
     // first column of the nth row
-    const itemCell = GU.getCell(gridId, rowNumber, 1);
+    const itemCell = await GU.getCell(gridId, rowNumber, 1);
 
     // enter data into the typeahead input.  We cannot use FU.typeahead because it is appended to the body.
-    FU.input('row.entity.inventory_uuid', itemLabel, itemCell);
+    await FU.input('row.entity.inventory_uuid', itemLabel, itemCell);
 
     // the typeahead should be open - use an id to click the right item
-    element(by.id(`inv-code-${itemLabel}`)).click();
+    await element(by.id(`inv-code-${itemLabel}`)).click();
   };
 
   /**
@@ -93,10 +93,10 @@ function PatientInvoicePage() {
    * @param {Number} rowNumber - the grid's row number to adjust
    * @param {Number} price - the new transaction price to set
    */
-  page.adjustItemPrice = function adjustItemPrice(rowNumber, price) {
+  page.adjustItemPrice = async function adjustItemPrice(rowNumber, price) {
     // fourth column of the last nth row
-    const priceCell = GU.getCell(gridId, rowNumber, 4);
-    FU.input('row.entity.transaction_price', price, priceCell);
+    const priceCell = await GU.getCell(gridId, rowNumber, 4);
+    await FU.input('row.entity.transaction_price', price, priceCell);
   };
 
   /**
@@ -107,15 +107,15 @@ function PatientInvoicePage() {
    * @param {Number} rowNumber - the grid's row number to adjust
    * @param {Number} quantity - the number of items expected to have
    */
-  page.adjustItemQuantity = function adjustItemQuantity(rowNumber, quantity) {
+  page.adjustItemQuantity = async function adjustItemQuantity(rowNumber, quantity) {
     // third column column of the nth row
-    const quantityCell = GU.getCell(gridId, rowNumber, 3);
-    FU.input('row.entity.quantity', quantity, quantityCell);
+    const quantityCell = await GU.getCell(gridId, rowNumber, 3);
+    await FU.input('row.entity.quantity', quantity, quantityCell);
   };
 
   // click the reset modal button
   page.reset = function reset() {
-    $('[data-action="close"]').click();
+    return $('[data-action="close"]').click();
   };
 
   // bind the buttons for external use

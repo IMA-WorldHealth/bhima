@@ -12,13 +12,11 @@ services:
 language: node_js
 node_js:
   - lts/dubnium
-  - node
 
 before_script:
   - sudo /etc/init.d/mysql restart
-  - export DISPLAY=:99.0
   - yarn build
-  - yarn webdriver-manager update --gecko false
+  - yarn webdriver-manager update --versions.chrome="$(google-chrome --version | cut -d ' ' -f 3)" --gecko false
   - greenkeeper-lockfile-update
 
 script:

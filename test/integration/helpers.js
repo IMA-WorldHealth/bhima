@@ -1,4 +1,4 @@
-
+/* eslint-disable no-unused-expressions */
 
 // import plugins
 const uuid = require('uuid/v4');
@@ -191,7 +191,8 @@ api.deleted = function deleted(res) {
  */
 api.listed = function listed(res, len) {
   // make sure that the response has the correct HTTP headers
-  expect(res, `${res.req.method} ${res.req.path} returned ${res.res.statusCode} ${res.res.statusMesage}.`).to.have.status(200);
+  expect(res,
+    `${res.req.method} ${res.req.path} returned ${res.res.statusCode} ${res.res.statusMesage}.`).to.have.status(200);
   expect(res, `${res.req.method} ${res.req.path} did not return JSON.`).to.be.json;
 
   // assert that the length is the expected length.

@@ -1,12 +1,8 @@
-const chai = require('chai');
 const helpers = require('../../shared/helpers');
-
-helpers.configure(chai);
-
 const ReportIncomeExpensePage = require('./income_expense.page');
 
 describe.skip('Income Expense Report', () => {
-  let Page;
+  let page;
   const key = 'income_expense';
 
   const dataset = {
@@ -18,21 +14,23 @@ describe.skip('Income Expense Report', () => {
     renderer : 'PDF',
   };
 
-  before(() => {
-    helpers.navigate(`#!/reports/${key}`);
-    Page = new ReportIncomeExpensePage(key);
+  before(async () => {
+    await helpers.navigate(`#!/reports/${key}`);
+    page = new ReportIncomeExpensePage(key);
   });
 
-  it('preview a new income expense report', () => {
-    Page.showIncomeExpenseReportPreview(dataset.fiscal_id, dataset.periodFrom_id, dataset.periodTo_id, dataset.type);
+  it('preview a new income expense report', async () => {
+    await page.showIncomeExpenseReportPreview(
+      dataset.fiscal_id, dataset.periodFrom_id, dataset.periodTo_id, dataset.type
+    );
   });
 
-  it('close the previewed report', () => {
-    Page.closeIncomeExpenseReportPreview();
+  it('close the previewed report', async () => {
+    await page.closeIncomeExpenseReportPreview();
   });
 
-  it('save a previewed report', () => {
-    Page.saveIncomeExpenseReport(
+  it('save a previewed report', async () => {
+    await page.saveIncomeExpenseReport(
       dataset.fiscal_id,
       dataset.periodFrom_id,
       dataset.periodTo_id,
@@ -42,11 +40,11 @@ describe.skip('Income Expense Report', () => {
     );
   });
 
-  it('report has been saved into archive', () => {
-    Page.checkSavedIncomeExpenseReport(dataset.report_name);
+  it('report has been saved into archive', async () => {
+    await page.checkSavedIncomeExpenseReport(dataset.report_name);
   });
 
-  it('print the previewed report', () => {
-    Page.printIncomeExpenseReport(dataset.fiscal_id, dataset.periodFrom_id, dataset.periodTo_id, dataset.type);
+  it('print the previewed report', async () => {
+    await page.printIncomeExpenseReport(dataset.fiscal_id, dataset.periodFrom_id, dataset.periodTo_id, dataset.type);
   });
 });

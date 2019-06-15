@@ -171,8 +171,8 @@ function CashPaymentRegistryController(
   }
 
   // Function for Cancel Cash cancel all Invoice
-  function cancelCash(invoice) {
-    Cash.openCancelCashModal(invoice)
+  function cancelCash(cash) {
+    Cash.openCancelCashModal(cash)
       .then((success) => {
         if (!success) { return; }
         Notify.success('FORM.INFO.TRANSACTION_REVER_SUCCESS');

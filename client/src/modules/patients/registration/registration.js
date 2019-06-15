@@ -2,8 +2,8 @@ angular.module('bhima.controllers')
   .controller('PatientRegistrationController', PatientRegistrationController);
 
 PatientRegistrationController.$inject = [
-  'PatientService', 'SessionService', 'util',
-  'NotifyService', 'ReceiptModal', 'ScrollService', 'bhConstants',
+  'PatientService', 'SessionService', 'util', 'NotifyService', 'ReceiptModal',
+  'ScrollService', 'bhConstants',
 ];
 
 /**
@@ -29,6 +29,7 @@ function PatientRegistrationController(
   vm.dateIndicatorLabel = 'FORM.LABELS.ENTER_BIRTH_YEAR';
   vm.dateComponentLabel = 'FORM.LABELS.DOB';
 
+  vm.lookupReturningPatient = lookupReturningPatient;
 
   vm.maxLength = bhConstants.lengths.maxTextLength;
 
@@ -45,8 +46,7 @@ function PatientRegistrationController(
     minDate : bhConstants.dates.minDOB,
   };
 
-  const yearOptions = bhConstants.yearOptions;
-  const dayOptions = bhConstants.dayOptions;
+  const { yearOptions, dayOptions } = bhConstants;
 
   setupRegistration();
 
@@ -97,14 +97,26 @@ function PatientRegistrationController(
   function toggleFullDate() {
     vm.fullDateEnabled = !vm.fullDateEnabled;
     vm.dateIndicatorLabel = vm.fullDateEnabled ? 'FORM.LABELS.ENTER_BIRTH_YEAR' : 'FORM.LABELS.ENTER_BIRTH_DAY';
+    vm.dateIndicatorIcon = vm.fullDateEnabled ? 'fa fa-circle-o' : 'fa fa-circle';
     vm.dateComponentLabel = vm.fullDateEnabled ? 'FORM.LABELS.DOB' : 'FORM.LABELS.YOB';
     setDateComponent();
   }
 
   function calculateYOB(value) {
-    vm.medical.dob = (value && value.length === 4) ?
-      new Date(`${value}-${util.defaultBirthMonth}`) :
-      undefined;
+    vm.medical.dob = (value && value.length === 4)
+      ? new Date(`${value}-${util.defaultBirthMonth}`)
+      : undefined;
+  }
+
+  /**
+   * @function lookupReturningPatient
+   *
+   * @description
+   * Opens a modal to find a patient via their hospital number, BHIMA identifer,
+   * or name.  If the patient is found, they can be checked into the hospital.
+   */
+  function lookupReturningPatient() {
+    Patients.openReturningPatientModal();
   }
 
   vm.onInputTextChange = (key, value) => {

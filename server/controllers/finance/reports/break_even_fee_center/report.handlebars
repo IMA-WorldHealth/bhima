@@ -1,0 +1,327 @@
+<!doctype html>
+<html>
+  {{> head title="TREE.BREAK_EVEN_FEE_CENTER_REPORT"}}
+  <body>
+  <div class="container">
+    {{> header}}
+
+    <!-- body -->
+    <div class="row">
+      <div class="col-xs-12">
+        <!-- page title  -->
+        <h3 class="text-center text-uppercase">
+          <strong>{{translate 'TREE.BREAK_EVEN_FEE_CENTER_REPORT'}}</strong>
+        </h3>
+
+        <h4 class="text-center">
+          <strong class="text-capitalize">{{date period.fiscalYearStart "MMMM YYYY"}}</strong>
+           -
+          <strong class="text-capitalize">{{date period.end_date "MMMM YYYY"}}</strong>
+        </h4>
+        {{#each principalSelected}}
+          <table style="page-break-after: always; width: 80%; margin-right: auto; margin-left: auto" class="table table-striped table-condensed table-report table-bordered">
+            <thead>
+              <tr style="background-color:#dcdcdc"> 
+                <th colspan="3" class="text-uppercase">
+                  <h5>
+                    <strong>
+                      {{ label }}
+                    </strong>
+                  </h5>
+                </th> 
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="text-right" style="background-color:#efefef; width: 40%; font-size: 15px;">
+                <td colspan="2"> {{translate "TABLE.COLUMNS.NUMBER_CASES" }} </td>
+                <td> <strong> {{ numberOfCases }} </strong> </td>
+              </tr>
+              <tr>
+                <th style="width: 40%; font-size: 15px; text-align: center;" rowspan="3" scope="row">
+                  <strong>
+                    {{translate "TABLE.COLUMNS.CHARGES" }}
+                  </strong>                  
+                </th>
+                <td class="text-right" style="width: 40%; font-size: 15px">
+                  <i>
+                    {{translate "TABLE.COLUMNS.VARIABLE_CHARGES" }}
+                  </i>                  
+                </td>
+                <td class="text-right" style="width: 20%; font-size: 15px">
+                  {{debcred balanceVariableCost ../metadata.enterprise.currency_id}}
+                </td>
+              </tr>
+              <tr>
+                <td class="text-right" style="width: 40%; font-size: 15px">
+                  <i>
+                    {{translate "TABLE.COLUMNS.FIXED_CHARGES" }}
+                  </i>
+                </td>
+                <td class="text-right" style="width: 20%; font-size: 15px">
+                  {{debcred balanceFixedCost ../metadata.enterprise.currency_id}}
+                </td>
+              </tr>
+              <tr>
+                <td class="text-right" style="width: 40%; font-size: 15px">
+                  <strong><i>
+                    {{translate "TABLE.COLUMNS.TOTAL" }}
+                  </i></strong>
+                </td>
+                <td class="text-right" style="width: 20%; font-size: 15px">
+                  <strong>
+                    {{debcred totalCost ../metadata.enterprise.currency_id}}
+                  </strong>
+                </td>
+              </tr>
+              <tr>
+                <th style="width: 40%; font-size: 15px; text-align: center;" rowspan="3" scope="row">
+                  <strong>
+                    {{translate "TABLE.COLUMNS.PRODUCTS" }}
+                  </strong>                   
+                </th>
+                <td class="text-right" style="width: 40%; font-size: 15px">
+                  <i>
+                    {{translate "TABLE.COLUMNS.BREAK_EVEN.TURNOVER" }}
+                  </i>                  
+                </td>
+                <td class="text-right" style="width: 20%; font-size: 15px">
+                  {{debcred balanceTurnover ../metadata.enterprise.currency_id}}
+                </td>
+              </tr>
+              <tr>
+                <td class="text-right" style="width: 30%; font-size: 15px">
+                  {{translate "TABLE.COLUMNS.DIVERSE_PRODUCTS" }}
+                </td>
+                <td class="text-right" style="width: 20%; font-size: 15px">
+                  {{debcred balanceOtherRevenue ../metadata.enterprise.currency_id}}
+                </td>
+              </tr>
+              <tr>
+                <td class="text-right" style="width: 30%; font-size: 15px">
+                  <strong><i>
+                    {{translate "TABLE.COLUMNS.TOTAL" }}
+                  </i></strong>                  
+                </td>
+                <td class="text-right" style="width: 20%; font-size: 15px">
+                  <strong>
+                    {{debcred totalProduct ../metadata.enterprise.currency_id}}
+                  </strong>                  
+                </td>
+              </tr> 
+              <tr colspan="3">
+                <td style="background-color:#dcdcdc"></td>
+              </tr>
+              {{#if calculateBreakEven}}
+              <tr>
+                <th style="width: 40%; font-size: 15px; text-align: center;" rowspan="7" scope="row">
+                  <strong>
+                    {{translate "TABLE.COLUMNS.BREAK_EVEN.DIFFERENTIAL_INCOME_STATEMENT" }} <SUB> (1) </SUB>
+                  </strong>                  
+                </th>
+                <td class="text-right" style="width: 40%; font-size: 15px">
+                  <i>
+                    {{translate "TABLE.COLUMNS.BREAK_EVEN.MARGIN_VARIABLE_LOADS" }}
+                  </i>              
+                </td>
+                <td class="text-right" style="width: 20%; font-size: 15px">
+                  {{debcred marginVariableLoads metadata.enterprise.currency_id}}
+                </td>
+              </tr>
+              <tr>
+                <td class="text-right" style="width: 30%; font-size: 15px">
+                  <i>
+                    {{translate "TABLE.COLUMNS.RESULT" }}
+                  </i>                  
+                </td>
+                <td class="text-right" style="width: 20%; font-size: 15px">
+                  <strong>
+                    {{debcred resultsTurnOver metadata.enterprise.currency_id}}
+                  </strong>                  
+                </td>
+              </tr>
+              <tr>
+                <td class="text-right" style="width: 30%; font-size: 15px">
+                  <i>
+                    {{translate "TABLE.COLUMNS.BREAK_EVEN.MARGINS_VARIABLE_EXPENSES" }}
+                  </i>                  
+                </td>
+                <td class="text-right" style="width: 20%; font-size: 15px">
+                  <strong>
+                    {{debcred ratioMarginVariableLoads ../metadata.enterprise.currency_id}}
+                  </strong>                  
+                </td>
+              </tr>
+              <tr>
+                <td class="text-right" style="width: 30%; font-size: 15px">
+                  <strong><i>
+                    {{translate "TABLE.COLUMNS.BREAK_EVEN.BREAK_EVEN" }}
+                  </i></strong>                  
+                </td>
+                <td class="text-right" style="width: 20%; font-size: 15px">
+                  <strong>
+                    {{debcred breakEvenValue ../metadata.enterprise.currency_id}}
+                  </strong>
+                </td>
+              </tr>
+              <tr>
+                <td class="text-right" style="width: 30%; font-size: 15px">
+                  <strong><i>
+                    {{translate "TABLE.COLUMNS.BREAK_EVEN.BREAK_EVEN_POINT" }} 
+                  </i></strong>                  
+                </td>
+                <td class="text-right" style="width: 20%; font-size: 15px">
+                  <em>
+                    {{ breakEvenPoint }} {{translate "TABLE.COLUMNS.DAYS"}}
+                  </em>
+                </td>
+              </tr>
+              <tr>
+                <td class="text-right" style="width: 30%; font-size: 15px">
+                  <strong><i>
+                    {{translate "TABLE.COLUMNS.BREAK_EVEN.BREAK_EVEN_POINT" }}
+                  </i></strong>                  
+                </td>
+                <td class="text-right" style="width: 20%; font-size: 15px">
+                  <strong>
+                    {{ breakEventPointByCase }} {{translate "TABLE.COLUMNS.CASES"}}
+                  </strong>
+                </td>
+              </tr>
+              {{/if}}
+              <!-- BREAK_EVEN DIFFERENTIAL -->
+              {{#if calculateBreakEvenP}}
+              <tr colspan="3">
+                <td style="background-color:#dcdcdc"></td>
+              </tr>
+              <tr>
+                <th style="width: 40%; font-size: 15px; text-align: center;" rowspan="7" scope="row">
+                  <strong>
+                    {{translate "TABLE.COLUMNS.BREAK_EVEN.DIFFERENTIAL_INCOME_STATEMENT" }} <SUB> (2) </SUB>
+                  </strong>                  
+                </th>
+                <td class="text-right" style="width: 40%; font-size: 15px">
+                  <i>
+                    {{translate "TABLE.COLUMNS.BREAK_EVEN.MARGIN_VARIABLE_LOADS" }}
+                  </i>              
+                </td>
+                <td class="text-right" style="width: 20%; font-size: 15px">
+                  {{debcred marginVariableLoadsP ../metadata.enterprise.currency_id}}
+                </td>
+              </tr>
+              <tr>
+                <td class="text-right" style="width: 30%; font-size: 15px">
+                  <i>
+                    {{translate "TABLE.COLUMNS.RESULT" }}
+                  </i>                  
+                </td>
+                <td class="text-right" style="width: 20%; font-size: 15px">
+                  <strong>
+                    {{debcred resultsTurnOverP ../metadata.enterprise.currency_id}}
+                  </strong>                  
+                </td>
+              </tr>
+              <tr>
+                <td class="text-right" style="width: 30%; font-size: 15px">
+                  <i>
+                    {{translate "TABLE.COLUMNS.BREAK_EVEN.MARGINS_VARIABLE_EXPENSES" }}
+                  </i>                  
+                </td>
+                <td class="text-right" style="width: 20%; font-size: 15px">
+                  <strong>
+                    {{debcred ratioMarginVariableLoadsP ../metadata.enterprise.currency_id}}
+                  </strong>                  
+                </td>
+              </tr>
+              <tr>
+                <td class="text-right" style="width: 30%; font-size: 15px">
+                  <strong><i>
+                    {{translate "TABLE.COLUMNS.BREAK_EVEN.BREAK_EVEN" }}
+                  </i></strong>                  
+                </td>
+                <td class="text-right" style="width: 20%; font-size: 15px">
+                  <strong>
+                    {{debcred breakEvenValueP ../metadata.enterprise.currency_id}}
+                  </strong>
+                </td>
+              </tr>
+              <tr>
+                <td class="text-right" style="width: 30%; font-size: 15px">
+                  <strong><i>
+                    {{translate "TABLE.COLUMNS.BREAK_EVEN.BREAK_EVEN_POINT" }} 
+                  </i></strong>                  
+                </td>
+                <td class="text-right" style="width: 20%; font-size: 15px">
+                  <em>
+                    {{ breakEvenPointP }} {{translate "TABLE.COLUMNS.DAYS"}}
+                  </em>
+                </td>
+              </tr>
+              <tr>
+                <td class="text-right" style="width: 30%; font-size: 15px">
+                  <strong><i>
+                    {{translate "TABLE.COLUMNS.BREAK_EVEN.BREAK_EVEN_POINT" }}
+                  </i></strong>                  
+                </td>
+                <td class="text-right" style="width: 20%; font-size: 15px">
+                  <strong>
+                    {{ breakEvenPointCaseP }} {{translate "TABLE.COLUMNS.CASES"}}
+                  </strong>
+                </td>
+              </tr>
+              {{/if}}
+            </tbody>
+            <tfoot>
+              {{#if cantCalculateBreakEven}}
+              <tr style="width: 40%; font-size: 15px; text-align: center;" colspan="3" scope="row">
+                <td>
+                  <strong>
+                    {{translate "TABLE.COLUMNS.BREAK_EVEN.DIFFERENTIAL_INCOME_STATEMENT" }} <SUB> (1) </SUB>
+                  </strong>                     
+                </td>
+                <td colspan="2" style="width: 40%; font-size: 15px; text-align: center;" scope="row">
+                  <strong>
+                    {{translate "FORM.INFO.CAN_NOT_BREAKEVEN" }}
+                  </strong>
+                </td>
+              </tr>
+              {{/if}}
+
+              {{#if cantCalculateBreakEvenP}}
+              <tr style="width: 40%; font-size: 15px; text-align: center;" colspan="3" scope="row">
+                <td>
+                  <strong>
+                    {{translate "TABLE.COLUMNS.BREAK_EVEN.DIFFERENTIAL_INCOME_STATEMENT" }} <SUB> (2) </SUB>
+                  </strong>                     
+                </td>
+                <td colspan="2" style="width: 40%; font-size: 15px; text-align: center;" scope="row">
+                  <strong>
+                    {{translate "FORM.INFO.CAN_NOT_BREAKEVEN" }}
+                  </strong>
+                </td>
+              </tr>
+              {{/if}}              
+            </tfoot>
+          </table>
+          <br>
+          <br>
+          <br>
+        {{/each}}
+
+        <table style="width: 80%; margin-right: auto; margin-left: auto; font-size: 15px; border:none;">
+          <tr>
+            <td style="border:none;">
+              <hr>
+            </td>
+          <tr>
+          <tr>
+            <td style="border:none;"> {{translate "TABLE.COLUMNS.BREAK_EVEN.INCOME_STATEMENT_1" }} </td>
+          </tr>
+          <tr>
+            <td style="border:none;"> {{translate "TABLE.COLUMNS.BREAK_EVEN.INCOME_STATEMENT_2" }} </td>
+          </tr>        
+        </table>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,77 @@
+{{> head title="PATIENT_RECORDS.REPORT.VISITS"}}
+
+<style>
+  th.rotate {
+    height: 140px;
+    white-space: nowrap;
+    padding-bottom: 10px !important;
+  }
+  th.rotate > div {
+    -webkit-transform: rotate(-90deg);
+            transform: rotate(-90deg);
+    width: 30px;
+  }
+</style>
+
+<div class="container">
+  {{> enterpriseDetails }}
+
+  <div class="row">
+    <div class="col-xs-12">
+
+      <h3 class="text-center">{{translate 'PATIENT_RECORDS.REPORT.VISITS'}}</h3>
+      <h4 class="text-center">
+        <small>{{date params.dateFrom }}</small> - <small>{{date params.dateTo }}</small>
+      </h4>
+
+      <table class="table table-report">
+        <thead>
+          <tr class="text-capitalize">
+            <th class="text-center" style="width: 35%;">{{translate "FORM.LABELS.SERVICE"}}</th>
+            <th class="rotate"><div><span>{{translate "FORM.LABELS.TOTAL"}}</span></div></th>
+            <th class="rotate"><div><span>{{translate "PATIENT_RECORDS.REPORT.NEW_CASES"}}</span></div></th>
+            <th class="rotate"><div><span>{{translate "PATIENT_RECORDS.REPORT.OLD_CASES"}}</span></div></th>
+            <th class="rotate"><div><span>{{translate "PATIENT_RECORDS.REPORT.HOSPITALIZED"}}</span></div></th>
+            <th class="rotate"><div><span>{{translate "PATIENT_RECORDS.REPORT.AMBULATORY"}}</span></div></th>
+            <th class="rotate"><div><span>{{translate "PATIENT_RECORDS.REPORT.PREGNANT"}}</span></div></th>
+            <th class="rotate"><div><span>{{translate "PATIENT_RECORDS.REPORT.REFERRED"}}</span></div></th>
+            <th class="rotate"><div><span>{{translate "PATIENT_RECORDS.REPORT.INSIDE_HEALTH_ZONE"}}</span></div></th>
+            <th class="rotate"><div><span>{{translate "PATIENT_RECORDS.REPORT.OUTSIDE_HEALTH_ZONE"}}</span></div></th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each visits.data as |visit|}}
+            <tr>
+              <td>{{ visit.service_name }}</td>
+              <td>{{ visit.total }}</td>
+              <td>{{ visit.total_new_case }}</td>
+              <td>{{ visit.total_old_case }}</td>
+              <td>{{ visit.total_hospitalized }}</td>
+              <td>{{ visit.total_ambulatory }}</td>
+              <td>{{ visit.total_pregnant }}</td>
+              <td>{{ visit.total_referred }}</td>
+              <td>{{ visit.total_inside_health_zone }}</td>
+              <td>{{ visit.total_outside_health_zone }}</td>
+            </tr>
+          {{else}}
+            {{> emptyTable columns=10}}
+          {{/each}}
+        </tbody>
+        <tfoot>
+          <tr>
+            <th></th>
+            <td>{{ visits.total.total }}</td>
+            <td>{{ visits.total.total_new_case }}</td>
+            <td>{{ visits.total.total_old_case }}</td>
+            <td>{{ visits.total.total_hospitalized }}</td>
+            <td>{{ visits.total.total_ambulatory }}</td>
+            <td>{{ visits.total.total_pregnant }}</td>
+            <td>{{ visits.total.total_referred }}</td>
+            <td>{{ visits.total.total_inside_health_zone }}</td>
+            <td>{{ visits.total.total_outside_health_zone }}</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+</div>

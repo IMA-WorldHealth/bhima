@@ -52,10 +52,13 @@ function lookup(uuid) {
 
   const cashRecordSql = `
     SELECT BUID(cash.uuid) as uuid, cash.project_id, dm.text AS reference,
+      d.text as debtorName, em.text as debtorReference,
       cash.date, cash.created_at, BUID(cash.debtor_uuid) AS debtor_uuid, cash.currency_id, cash.amount,
-      cash.description, cash.cashbox_id, cash.is_caution, cash.user_id, cash.edited
+      cash.description, cash.cashbox_id, cash.is_caution, cash.user_id, cash.edited, cash.posted
     FROM cash JOIN project ON cash.project_id = project.id
       JOIN document_map dm ON cash.uuid = dm.uuid
+      JOIN debtor d ON d.uuid = cash.debtor_uuid
+      JOIN entity_map em On d.uuid = em.uuid
     WHERE cash.uuid = ?;
   `;
 
@@ -128,16 +131,17 @@ function find(options) {
   const filters = new FilterParser(options, { tableAlias : 'cash' });
 
   const sql = `
-    SELECT BUID(cash.uuid) as uuid, cash.project_id,
-      CONCAT_WS('.', '${CASH_KEY}', project.abbr, cash.reference) AS reference,
-      cash.date, cash.created_at,  BUID(cash.debtor_uuid) AS debtor_uuid, cash.currency_id, cash.amount,
-      cash.description, cash.cashbox_id, cash.is_caution, cash.user_id, cash.reversed,
-      d.text AS debtor_name, cb.label AS cashbox_label, u.display_name,
-      p.display_name AS patientName, cash.edited
+    SELECT BUID(cash.uuid) as uuid, cash.project_id, dm.text as reference,
+      cash.date, cash.created_at,  BUID(cash.debtor_uuid) AS debtor_uuid, cash.currency_id,
+      cash.amount, cash.description, cash.cashbox_id, cash.is_caution, cash.user_id,
+      cash.reversed, d.text AS debtor_name, cb.label AS cashbox_label, u.display_name,
+      p.display_name AS patientName, em.text AS patientReference, cash.edited
     FROM cash
+      JOIN document_map dm ON dm.uuid = cash.uuid
       JOIN project ON cash.project_id = project.id
       JOIN debtor d ON d.uuid = cash.debtor_uuid
       JOIN patient p on p.debtor_uuid = d.uuid
+      JOIN entity_map em ON em.uuid = p.uuid
       JOIN cash_box cb ON cb.id = cash.cashbox_id
       JOIN user u ON u.id = cash.user_id
   `;
@@ -159,12 +163,8 @@ function find(options) {
 
   filters.fullText('description');
 
-  // TODO - re-write these use document maps and entity maps
-  const referenceStatement = `CONCAT_WS('.', '${CASH_KEY}', project.abbr, cash.reference) = ?`;
-  filters.custom('reference', referenceStatement);
-
-  const patientReferenceStatement = `CONCAT_WS('.', '${identifiers.PATIENT.key}', project.abbr, p.reference) = ?`;
-  filters.custom('patientReference', patientReferenceStatement);
+  filters.equals('reference', 'text', 'dm');
+  filters.equals('patientReference', 'text', 'em');
 
   // @TODO Support ordering query (reference support for limit)?
   filters.setOrder('ORDER BY cash.date DESC');
@@ -210,7 +210,7 @@ function update(req, res, next) {
   // protected database fields that are unavailable for updates.
   const protect = [
     'is_caution', 'amount', 'user_id', 'cashbox_id',
-    'currency_id', 'date', 'project_id',
+    'currency_id', 'date', 'project_id', 'posted',
   ];
 
   // loop through update keys and ensure that we are only updating non-protected

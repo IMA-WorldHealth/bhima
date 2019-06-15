@@ -83,6 +83,11 @@
                   class="btn btn-warning btn-block"
                   ng-click="PatientEditCtrl.updateDebtorGroup()"><span translate>FORM.BUTTONS.GROUPS_DEBTOR_UPDATE</span></button>
               </div>
+
+              <bh-debtor-group-history
+                debtor-uuid="PatientEditCtrl.medical.debtor_uuid"
+                limit="5">
+              </bh-debtor-group-history>
             </form>
           </div>
         </div>

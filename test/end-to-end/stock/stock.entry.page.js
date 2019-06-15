@@ -1,4 +1,5 @@
 /* global by, protractor */
+/* eslint no-await-in-loop:off */
 
 const FU = require('../shared/FormUtils');
 const GU = require('../shared/GridUtils');
@@ -20,65 +21,65 @@ function StockEntryPage() {
    * @method setPurchase
    * @param {string} rowNumber - the purchase line on the modal
    */
-  page.setPurchase = function setPurchase(rowNumber) {
-    components.stockEntryExitType.set('purchase');
-    GU.selectRow('PurchaseGrid', rowNumber);
-    FU.modal.submit();
+  page.setPurchase = async function setPurchase(rowNumber) {
+    await components.stockEntryExitType.set('purchase');
+    await GU.selectRow('PurchaseGrid', rowNumber);
+    await FU.modal.submit();
   };
 
   /**
    * @method setTransfer
    * @param {string} rowNumber - movement line on the modal grid
    */
-  page.setTransfer = function setTransfer(rowNumber) {
-    components.stockEntryExitType.set('transfer_reception');
-    GU.selectRow('TransferGrid', rowNumber);
-    FU.modal.submit();
+  page.setTransfer = async function setTransfer(rowNumber) {
+    await components.stockEntryExitType.set('transfer_reception');
+    await GU.selectRow('TransferGrid', rowNumber);
+    await FU.modal.submit();
   };
 
   /**
    * @method setIntegration
    */
-  page.setIntegration = function setIntegration() {
-    components.stockEntryExitType.set('integration');
+  page.setIntegration = async function setIntegration() {
+    await components.stockEntryExitType.set('integration');
   };
 
   /**
    * @method setDescription
    * @param {string} descrition - the entry description
    */
-  page.setDescription = function setDescription(description) {
-    FU.input('StockCtrl.movement.description', description);
+  page.setDescription = async function setDescription(description) {
+    await FU.input('StockCtrl.movement.description', description);
   };
 
   /**
    * @method setDate
    * @param {string} date - the entry date
    */
-  page.setDate = function setDate(date) {
-    components.dateEditor.set(date);
+  page.setDate = async function setDate(date) {
+    await components.dateEditor.set(date);
   };
 
   /**
    * @method addRows
    */
-  page.addRows = function addRows(n) {
-    components.addItem.set(n);
+  page.addRows = async function addRows(n) {
+    await components.addItem.set(n);
   };
 
   /**
    * @method setItem
    */
-  page.setItem = function setInventory(rowNumber, code) {
+  page.setItem = async function setInventory(rowNumber, code) {
     // inventory code column
-    const itemCell = GU.getCell(gridId, rowNumber, 1);
+    const itemCell = await GU.getCell(gridId, rowNumber, 1);
 
     // enter data into the typeahead input.
-    FU.input('row.entity.inventory_uuid', code, itemCell);
+    await FU.input('row.entity.inventory_uuid', code, itemCell);
 
     const externalAnchor = $('body > ul.dropdown-menu.ng-isolate-scope:not(.ng-hide)');
     const option = externalAnchor.element(by.cssContainingText('[role="option"]', code));
-    option.click();
+    await option.click();
   };
 
   /**
@@ -91,92 +92,102 @@ function StockEntryPage() {
    *  { label: '...', quantity: '...', expiration_date: '...' }
    * ]
    */
-  page.setLots = function setLots(inventoryRowNumber, lotsArray, isTransferReception, inventoryQuantity, inventoryUnitCost) {
+  page.setLots = async function setLots(
+    inventoryRowNumber, lotsArray, isTransferReception, inventoryQuantity, inventoryUnitCost
+  ) {
     // lots column
-    this.openLotsModal(inventoryRowNumber);
+    await this.openLotsModal(inventoryRowNumber);
 
     let lotCell;
     let quantityCell;
     let expirationDateCell;
 
     if (inventoryQuantity) {
-      FU.input('$ctrl.stockLine.quantity', inventoryQuantity);
+      await FU.input('$ctrl.stockLine.quantity', inventoryQuantity);
     }
 
     if (inventoryUnitCost) {
-      FU.input('$ctrl.stockLine.unit_cost', inventoryUnitCost);
+      await FU.input('$ctrl.stockLine.unit_cost', inventoryUnitCost);
     }
 
-    lotsArray.forEach((lot, index) => {
-      lotCell = GU.getCell(lotGridId, index, 1);
-      quantityCell = GU.getCell(lotGridId, index, 2);
-      expirationDateCell = GU.getCell(lotGridId, index, 3);
+    let index = 0;
+    // eslint-disable-next-line
+    for (const lot of lotsArray) {
+      lotCell = await GU.getCell(lotGridId, index, 1);
+      quantityCell = await GU.getCell(lotGridId, index, 2);
+      expirationDateCell = await GU.getCell(lotGridId, index, 3);
 
       // enter lot label
       if (!isTransferReception) {
-        FU.input('row.entity.lot', lot.label, lotCell);
+        await FU.input('row.entity.lot', lot.label, lotCell);
       }
 
       // enter lot quantity
-      FU.input('row.entity.quantity', lot.quantity, quantityCell);
+      await FU.input('row.entity.quantity', lot.quantity, quantityCell);
 
       // enter lot expiration date
-      if (!isTransferReception) {
-        components.datePicker.set(lot.expiration_date, expirationDateCell);
+      if (lot.expiration_date) {
+        await components.datePicker.set(lot.expiration_date, expirationDateCell);
       }
 
       if (index < lotsArray.length - 1) {
         // Add another lot line
-        components.addItem.set(1, $('[uib-modal-transclude]'));
+        await components.addItem.set(1, $('[uib-modal-transclude]'));
       }
-    });
 
-    FU.modal.submit();
+      index += 1;
+    }
+
+    await FU.modal.submit();
   };
 
   /**
    * open lot modal
    */
-  page.openLotsModal = (inventoryRowNumber) => {
-    const launchLots = GU.getCell(gridId, inventoryRowNumber, 3);
-    launchLots.$('[data-lots]').click();
+  page.openLotsModal = async (inventoryRowNumber) => {
+    const launchLots = await GU.getCell(gridId, inventoryRowNumber, 3);
+    await launchLots.$('[data-lots]').click();
   };
 
   /**
    * enable fast lots insertion
    */
   page.enableFastLotsInsert = () => {
-    $('#enableFastInsert').click();
+    return $('#enableFastInsert').click();
   };
 
   /**
    * fast insert lots rows
    * @param {array} lots an array of strings
    */
-  page.fastLotsInsert = (lots = []) => {
-    lots.forEach((lot, index) => {
-      const lotCell = GU.getCell(lotGridId, index, 1);
-      const input = FU.input('row.entity.lot', lot, lotCell);
+  page.fastLotsInsert = async (lots = []) => {
+    let index = 0;
 
-      input.sendKeys(protractor.Key.TAB);
-    });
+    // eslint-disable-next-line
+    for (const lot of lots) {
+      const lotCell = await GU.getCell(lotGridId, index, 1);
+      const input = await FU.input('row.entity.lot', lot, lotCell);
+
+      await input.sendKeys(protractor.Key.TAB);
+      index += 1;
+    }
 
     // when we insert the last lot and leave with tab there will be
     // a supplementary row added
-    GU.expectRowCount(lotGridId, lots.length + 1);
+    await GU.expectRowCount(lotGridId, lots.length + 1);
   };
 
   /**
    * @method submit
    */
-  page.submit = function submit() {
-    FU.buttons.submit();
+  page.submit = async function submit() {
+    await FU.buttons.submit();
 
     // the receipt modal is displayed
-    FU.exists(by.id('receipt-confirm-created'), true);
+    await FU.exists(by.id('receipt-confirm-created'), true);
 
     // close the modal
-    $('[data-action="close"]').click();
+    await $('[data-action="close"]').click();
   };
 }
 
