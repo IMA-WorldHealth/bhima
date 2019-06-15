@@ -10,8 +10,8 @@ describe('Aged Creditors Report', () => {
     report_name : 'Aged Creditors Report Saved by E2E',
     renderer : 'PDF',
     year : '2015',
-    month : 'mai ',
-    month2 : 'juin',
+    month : 'Mai 2015',
+    month2 : 'Juin 2015',
   };
 
   before(async () => {
