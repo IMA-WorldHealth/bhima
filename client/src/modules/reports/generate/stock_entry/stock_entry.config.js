@@ -26,7 +26,7 @@ function StockEntryConfigController($sce, Notify, SavedReports, AppCache, report
   onEntryTypeChange();
 
   vm.onSelectDepot = depot => {
-    vm.depot = depot;
+    vm.reportDetails.depotUuid = depot.uuid;
   };
 
   vm.clear = key => {
@@ -47,20 +47,9 @@ function StockEntryConfigController($sce, Notify, SavedReports, AppCache, report
       return 0;
     }
 
-    const params = {
-      depotUuid : vm.depot.uuid,
-      dateFrom : vm.dateFrom,
-      dateTo : vm.dateTo,
-      includePurchaseEntry : vm.includePurchaseEntry,
-      includeIntegrationEntry : vm.includeIntegrationEntry,
-      includeDonationEntry : vm.includeDonationEntry,
-      includeTransferEntry : vm.includeTransferEntry,
-      showDetails : vm.showDetails,
-    };
-
     // update cached configuration
-    cache.reportDetails = angular.copy(params);
-    angular.extend(vm.reportDetails, params, { lang : Languages.key });
+    cache.reportDetails = angular.copy(vm.reportDetails);
+    angular.extend(vm.reportDetails, { lang : Languages.key });
 
     return SavedReports.requestPreview(reportUrl, reportData.id, angular.copy(vm.reportDetails))
       .then((result) => {

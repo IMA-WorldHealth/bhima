@@ -26,15 +26,15 @@
 
           <!-- select depot -->
           <bh-depot-select
-            depot-uuid="ReportConfigCtrl.depot.uuid"
+            depot-uuid="ReportConfigCtrl.reportDetails.depotUuid"
             on-select-callback="ReportConfigCtrl.onSelectDepot(depot)"
             required="true">
           </bh-depot-select>
 
           <!-- date interval -->
           <bh-date-interval
-            date-from="ReportConfigCtrl.dateFrom"
-            date-to="ReportConfigCtrl.dateTo"
+            date-from="ReportConfigCtrl.reportDetails.dateFrom"
+            date-to="ReportConfigCtrl.reportDetails.dateTo"
             limit-min-fiscal
             required="true">
           </bh-date-interval>
@@ -43,28 +43,28 @@
           <div ng-class="{'has-error': ConfigForm.$submitted && !ReportConfigCtrl.hasOneChecked}">
             <div class="checkbox">
               <label>
-                <input type="checkbox" ng-true-value="1" ng-false-value="0" ng-change="ReportConfigCtrl.onEntryTypeChange()" ng-model="ReportConfigCtrl.includePurchaseEntry">
+                <input type="checkbox" ng-true-value="1" ng-false-value="0" ng-change="ReportConfigCtrl.onEntryTypeChange()" ng-model="ReportConfigCtrl.reportDetails.includePurchaseEntry">
                 <span translate>REPORT.STOCK.INCLUDE_PURCHASE_ENTRY</span>
               </label>
             </div>
 
             <div class="checkbox">
               <label>
-                <input type="checkbox" ng-true-value="1" ng-false-value="0" ng-change="ReportConfigCtrl.onEntryTypeChange()" ng-model="ReportConfigCtrl.includeIntegrationEntry">
+                <input type="checkbox" ng-true-value="1" ng-false-value="0" ng-change="ReportConfigCtrl.onEntryTypeChange()" ng-model="ReportConfigCtrl.reportDetails.includeIntegrationEntry">
                 <span translate>REPORT.STOCK.INCLUDE_INTEGRATION_ENTRY</span>
               </label>
             </div>
 
             <div class="checkbox">
               <label>
-                <input type="checkbox" ng-true-value="1" ng-false-value="0" ng-change="ReportConfigCtrl.onEntryTypeChange()" ng-model="ReportConfigCtrl.includeDonationEntry">
+                <input type="checkbox" ng-true-value="1" ng-false-value="0" ng-change="ReportConfigCtrl.onEntryTypeChange()" ng-model="ReportConfigCtrl.reportDetails.includeDonationEntry">
                 <span translate>REPORT.STOCK.INCLUDE_DONATION_ENTRY</span>
               </label>
             </div>
 
             <div class="checkbox">
               <label>
-                <input type="checkbox" ng-true-value="1" ng-false-value="0" ng-change="ReportConfigCtrl.onEntryTypeChange()" ng-model="ReportConfigCtrl.includeTransferEntry">
+                <input type="checkbox" ng-true-value="1" ng-false-value="0" ng-change="ReportConfigCtrl.onEntryTypeChange()" ng-model="ReportConfigCtrl.reportDetails.includeTransferEntry">
                 <span translate>REPORT.STOCK.INCLUDE_TRANSFER_ENTRY</span>
               </label>
             </div>
@@ -75,7 +75,7 @@
 
           <div class="checkbox">
             <label>
-              <input type="checkbox" ng-true-value="1" ng-false-value="0" ng-model="ReportConfigCtrl.showDetails">
+              <input type="checkbox" ng-true-value="1" ng-false-value="0" ng-model="ReportConfigCtrl.reportDetails.showDetails">
               <span translate>REPORT.STOCK.SHOW_DETAILS</span>
             </label>
           </div>

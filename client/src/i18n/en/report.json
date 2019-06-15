@@ -179,7 +179,7 @@
       "INCLUDE_LOSS_EXIT": "Include stock loss",
       "SHOW_DETAILS": "Show Details",
       "ENTRY_REPORT": "Stock Entry Report",
-      "ENTRY_REPORT_DESCRIPTION": "this report displays the different stock entries that took place in depots",
+      "ENTRY_REPORT_DESCRIPTION": "This report displays the different stock entries that took place in depots",
       "INCLUDE_PURCHASE_ENTRY": "Include entries from purchases",
       "INCLUDE_INTEGRATION_ENTRY": "Include entries from integrations",
       "INCLUDE_DONATION_ENTRY": "Include entries from donation",
