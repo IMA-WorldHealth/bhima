@@ -1295,6 +1295,8 @@ CREATE TABLE `period` (
   `start_date`          DATE NULL,
   `end_date`            DATE NULL,
   `locked`              TINYINT(1) NOT NULL DEFAULT 0,
+  `translate_key` VARCHAR(40) NULL,
+  `year` VARCHAR(10) NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `period_1` (`start_date`, `end_date`),
   KEY `fiscal_year_id` (`fiscal_year_id`),

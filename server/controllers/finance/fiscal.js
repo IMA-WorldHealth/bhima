@@ -634,7 +634,8 @@ function closing(req, res, next) {
  */
 function getPeriodByFiscal(fiscalYearId) {
   const sql = `
-    SELECT period.number, period.id, period.start_date, period.end_date, period.locked
+    SELECT period.number, period.id, period.start_date,
+      period.end_date, period.translate_key, period.year, period.locked
     FROM period
     WHERE period.fiscal_year_id = ?
       AND period.start_date IS NOT NULL
