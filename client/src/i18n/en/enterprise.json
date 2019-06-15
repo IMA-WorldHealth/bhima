@@ -24,7 +24,9 @@
       "ENABLE_BARCODES_LABEL" : "Enables barcodes throughout the application",
       "ENABLE_BARCODES_HELP_TEXT" : "Enable to place barcodes on most printed records and enable options to scan barcodes for document inputs.",
       "ENABLE_AUTO_STOCK_ACCOUNTING_LABEL" : "Enables realtime stock accounting",
-      "ENABLE_AUTO_STOCK_ACCOUNTING_HELP_TEXT" : "Enabling this feature will write stock movement transactions into the posting journal in real time. It requires all inventory accounts to be correctly configured."
+      "ENABLE_AUTO_STOCK_ACCOUNTING_HELP_TEXT" : "Enabling this feature will write stock movement transactions into the posting journal in real time. It requires all inventory accounts to be correctly configured.",
+      "ENABLE_AUTO_EMAIL_REPORT_LABEL" : "Enable sending automatic reports by email",
+      "ENABLE_AUTO_EMAIL_REPORT_HELP_TEXT" : "Enabling this option gives access to the reporting configuration for automatic emails"
     }
   }
 }

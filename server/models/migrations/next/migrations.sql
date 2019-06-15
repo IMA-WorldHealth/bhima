@@ -284,3 +284,10 @@ CREATE TABLE `cron_email_report` (
   `has_dynamic_dates` TINYINT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+/*
+ * @author: mbayopanda
+ * @date: 2019-06-13
+ * @description: enable enterprise settings for auto email report
+ */
+ALTER TABLE `enterprise` ADD COLUMN `enable_auto_email_report` TINYINT(1) NOT NULL DEFAULT 0;

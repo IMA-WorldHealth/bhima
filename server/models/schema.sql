@@ -663,6 +663,7 @@ CREATE TABLE `enterprise_setting` (
   `enable_balance_on_invoice_receipt` TINYINT(1) NOT NULL DEFAULT 0,
   `enable_barcodes` TINYINT(1) NOT NULL DEFAULT 1,
   `enable_auto_stock_accounting` TINYINT(1) NOT NULL DEFAULT 0,
+  `enable_auto_email_report` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`enterprise_id`),
   FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
@@ -1408,7 +1409,7 @@ CREATE TABLE `cron_email_report` (
   `next_send` DATETIME NULL,
   `has_dynamic_dates` TINYINT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `label` (`label`),
+  UNIQUE KEY `label` (`label`, `report_id`),
   KEY `entity_group_uuid` (`entity_group_uuid`),
   FOREIGN KEY (`entity_group_uuid`) REFERENCES `entity_group` (`uuid`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;

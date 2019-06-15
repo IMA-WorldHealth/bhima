@@ -13,6 +13,8 @@ const mailer = require('../../../lib/mailer');
 const auth = require('../../auth');
 const dbReports = require('../../report.handlers');
 
+const MAIN_EMAIL_JOBS = [];
+
 function find(options = {}) {
   const filters = new FilterParser(options, { tableAlias : 'cer' });
   const sql = `
@@ -86,6 +88,16 @@ function remove(req, res, next) {
     DELETE FROM cron_email_report WHERE id = ?;
   `;
   db.exec(query, [req.params.id])
+    .then(() => {
+      const [jobToStop] = MAIN_EMAIL_JOBS.filter(item => {
+        return item.id === parseInt(req.params.id, 10);
+      });
+
+      if (jobToStop) {
+        jobToStop.job.stop();
+        debug(`The job for "${jobToStop.label}" is stopped`);
+      }
+    })
     .then(() => res.sendStatus(204))
     .catch(next)
     .done();
@@ -129,14 +141,22 @@ function addJob(frequency, cb) {
  * @description at the startup, read all cron email reports
  * in the database and create jobs for them
  */
-function launchCronEmailReportJobs() {
-  find()
-    .then(rows => {
-      if (!rows.length) { return null; }
-      const jobs = rows.map(row => createEmailReportJob(row, sendEmailReportDocument.call(this, row)));
-      return Promise.all(jobs);
-    })
-    .then(() => debug('Reports scanned successfully'));
+async function launchCronEmailReportJobs() {
+  try {
+    const session = await loadSession();
+    if (!session.enterprise.settings.enable_auto_email_report) { return; }
+
+    const records = await find();
+    if (!records.length) { return; }
+
+    const jobs = records.map(record => createEmailReportJob(record, sendEmailReportDocument.call(this, record)));
+    await Promise.all(jobs);
+
+    debug('Reports scanned successfully');
+  } catch (error) {
+    // NEED TO BE HANDLED FOR AVOIDING THE CRASH OF THE APPLICATION
+    throw error;
+  }
 }
 
 /**
@@ -146,6 +166,7 @@ function launchCronEmailReportJobs() {
  */
 function createEmailReportJob(record, cb) {
   const job = addJob(record.cron_value, cb);
+  MAIN_EMAIL_JOBS.push({ id : record.id, label : record.label, job });
   return updateCronEmailReportJobDates(record.id, job);
 }
 

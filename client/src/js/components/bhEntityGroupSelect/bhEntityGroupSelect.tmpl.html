@@ -1,7 +1,7 @@
 <div ng-form="EntityGroupForm" bh-entity-group-select ng-model-options="{ updateOn: 'default' }">
   <div
     class="form-group"
-    ng-class="{ 'has-error' : EntityGroupForm.$submitted && EntityGroupForm.entity_group_uuid.$invalid }">
+    ng-class="{ 'has-error' : EntityGroupForm.$submitted && EntityGroupForm.uuid.$invalid }">
 
     <label class="control-label" translate>
       {{ $ctrl.label }}
@@ -21,7 +21,7 @@
       </ui-select-choices>
     </ui-select>    
 
-    <div class="help-block" ng-messages="EntityGroupForm.entityGroup_uuid.$error" ng-show="EntityGroupForm.$submitted">
+    <div class="help-block" ng-messages="EntityGroupForm.uuid.$error" ng-show="EntityGroupForm.$submitted">
       <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
     </div>
   </div>

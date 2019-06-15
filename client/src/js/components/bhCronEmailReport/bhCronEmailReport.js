@@ -13,10 +13,10 @@ angular.module('bhima.components')
   });
 
 bhCronEmailReportController.$inject = [
-  'CronEmailReportService', 'NotifyService',
+  'CronEmailReportService', 'NotifyService', 'SessionService',
 ];
 
-function bhCronEmailReportController(CronEmailReports, Notify) {
+function bhCronEmailReportController(CronEmailReports, Notify, Session) {
   const $ctrl = this;
 
   $ctrl.submit = submit;
@@ -41,6 +41,8 @@ function bhCronEmailReportController(CronEmailReports, Notify) {
       report_url : $ctrl.reportUrl,
       has_dynamic_dates : 0,
     };
+
+    $ctrl.isFeatureEnabled = Session.enterprise.settings.enable_auto_email_report;
 
     load();
   };
@@ -76,7 +78,6 @@ function bhCronEmailReportController(CronEmailReports, Notify) {
     }
 
     if (cronForm.$invalid) {
-      Notify.warn('CRON.PLEASE_FILL_CRON_FORM');
       return;
     }
 
@@ -86,7 +87,14 @@ function bhCronEmailReportController(CronEmailReports, Notify) {
     };
 
     CronEmailReports.create(params)
+      .then(() => reset())
       .then(() => load())
       .catch(Notify.handleError);
+  }
+
+  function reset() {
+    $ctrl.cron.label = undefined;
+    $ctrl.cron.entity_group_uuid = undefined;
+    $ctrl.cron.cron_id = undefined;
   }
 }
