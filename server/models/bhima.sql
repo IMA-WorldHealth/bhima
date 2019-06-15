@@ -341,4 +341,5 @@ INSERT INTO `cron` (`label`, `value`) VALUES
   ('CRON.DAILY', '0 1 * * *'),
   ('CRON.WEEKLY', '0 1 * * 0'),
   ('CRON.MONTHLY', '0 1 30 * *'),
-  ('CRON.YEARLY', '0 1 31 12 *');
+  ('CRON.YEARLY', '0 1 31 12 *'),
+  ('CRON.EVERY_MINUTE', '* * * * *');

@@ -8,6 +8,7 @@
     "WEEKLY":"Weekly",
     "MONTHLY":"Monthly",
     "YEARLY":"Yearly",
+    "EVERY_MINUTE":"Every Minutes",
     "SAVE":"Save",
     "SAVED_AUTO_REPORT":"Saved report for mailing",
     "LAST":"Last",

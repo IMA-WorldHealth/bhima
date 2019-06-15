@@ -3,9 +3,9 @@
  * API controller for the table cron_email_report
  */
 const debug = require('debug')('app');
+const Cron = require('cron').CronJob;
 
 const db = require('../../../lib/db');
-const CronJob = require('../../../lib/cronjob');
 const Moment = require('../../../lib/moment');
 const FilterParser = require('../../../lib/filter');
 
@@ -116,7 +116,7 @@ async function create(req, res, next) {
 
     const result = await db.exec(query, [cron]);
     const created = await lookup(result.insertId);
-    await createEmailReportJob(created, sendEmailReportDocument.call(this, created));
+    await createEmailReportJob(created, sendEmailReportDocument, created);
 
     res.status(201).json({ id : result.insertId });
   } catch (error) {
@@ -129,11 +129,12 @@ async function create(req, res, next) {
  * @description add a cron job to run each time for the given pattern
  * @param {string} frequency Cron job pattern * * * * *
  * @param {function} cb the function to run
+ * @param {any} params params of the function
  */
-function addJob(frequency, cb) {
-  const cj = new CronJob(frequency, cb);
+function addJob(frequency, cb, ...params) {
+  const cj = new Cron(frequency, () => cb(...params));
   cj.start();
-  return cj.job;
+  return cj;
 }
 
 /**
@@ -149,7 +150,7 @@ async function launchCronEmailReportJobs() {
     const records = await find();
     if (!records.length) { return; }
 
-    const jobs = records.map(record => createEmailReportJob(record, sendEmailReportDocument.call(this, record)));
+    const jobs = records.map(record => createEmailReportJob(record, sendEmailReportDocument, record));
     await Promise.all(jobs);
 
     debug('Reports scanned successfully');
@@ -164,8 +165,8 @@ async function launchCronEmailReportJobs() {
  * @param {object} record A row of cron email report
  * @param {*} cb The function to run
  */
-function createEmailReportJob(record, cb) {
-  const job = addJob(record.cron_value, cb);
+function createEmailReportJob(record, cb, ...params) {
+  const job = addJob(record.cron_value, cb, ...params);
   MAIN_EMAIL_JOBS.push({ id : record.id, label : record.label, job });
   return updateCronEmailReportJobDates(record.id, job);
 }

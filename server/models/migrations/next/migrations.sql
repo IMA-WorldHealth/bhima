@@ -282,7 +282,10 @@ CREATE TABLE `cron_email_report` (
   `last_send` DATETIME NULL,
   `next_send` DATETIME NULL,
   `has_dynamic_dates` TINYINT NULL DEFAULT 0,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `label` (`label`, `report_id`),
+  KEY `entity_group_uuid` (`entity_group_uuid`),
+  FOREIGN KEY (`entity_group_uuid`) REFERENCES `entity_group` (`uuid`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 /*

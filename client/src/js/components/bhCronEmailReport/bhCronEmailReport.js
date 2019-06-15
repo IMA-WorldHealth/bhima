@@ -35,17 +35,17 @@ function bhCronEmailReportController(CronEmailReports, Notify, Session) {
     $ctrl.cron.has_dynamic_dates = value;
   };
 
-  $ctrl.$onInit = () => {
+  $ctrl.$onInit = init;
+
+  function init() {
     $ctrl.cron = {
       report_id : $ctrl.reportId,
       report_url : $ctrl.reportUrl,
       has_dynamic_dates : 0,
     };
-
     $ctrl.isFeatureEnabled = Session.enterprise.settings.enable_auto_email_report;
-
     load();
-  };
+  }
 
   function load() {
     CronEmailReports.read(null, { report_id : $ctrl.reportId })
@@ -87,14 +87,14 @@ function bhCronEmailReportController(CronEmailReports, Notify, Session) {
     };
 
     CronEmailReports.create(params)
-      .then(() => reset())
-      .then(() => load())
+      .then(() => reset(cronForm))
+      .then(() => init())
       .catch(Notify.handleError);
   }
 
-  function reset() {
-    $ctrl.cron.label = undefined;
-    $ctrl.cron.entity_group_uuid = undefined;
-    $ctrl.cron.cron_id = undefined;
+  function reset(form) {
+    form.CronForm.$setPristine();
+    form.EntityGroupForm.$setPristine();
+    form.textValueForm.$setPristine();
   }
 }
