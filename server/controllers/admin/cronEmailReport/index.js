@@ -105,10 +105,9 @@ function remove(req, res, next) {
 
 async function create(req, res, next) {
   try {
-    const query = `
-      INSERT INTO cron_email_report SET ?;
-    `;
+    const query = 'INSERT INTO cron_email_report SET ?;';
     const { cron, reportOptions } = req.body;
+    // FIXME: date cannot be dynamic here
     const options = addDynamicDatesOptions(cron.cron_id, cron.has_dynamic_dates, reportOptions);
 
     db.convert(cron, ['entity_group_uuid']);

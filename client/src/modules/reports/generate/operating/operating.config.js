@@ -30,8 +30,12 @@ function OperatingConfigController($sce, Notify, SavedReports, AppCache, reportD
     vm.reportDetails.periodTo = period.id;
   };
 
+  vm.onSelectCronReport = report => {
+    vm.reportDetails = angular.copy(report);
+  };
+
   vm.preview = function preview(form) {
-    if (form.$invalid) { return; }
+    if (form.$invalid) { return null; }
 
     // update cached configuration
     cache.reportDetails = angular.copy(vm.reportDetails);

@@ -16,26 +16,31 @@ const TEMPLATE = './server/controllers/finance/reports/operating/report.handleba
 
 exports.document = document;
 exports.formatData = formatData;
+exports.reporting = reporting;
 
 const EXPENSE_ACCOUNT_TYPE = 5;
 const INCOME_ACCOUNT_TYPE = 4;
 const DECIMAL_PRECISION = 2; // ex: 12.4567 => 12.46
 
-
-function document(req, res, next) {
-  const params = req.query;
+/**
+ * @description this function helps to get html document of the report in server side
+ * so that we can use it with others modules on the server side
+ * @param {*} options the report options
+ * @param {*} session the session
+ */
+function reporting(opts, session) {
+  const params = opts;
   let docReport;
-  const options = _.extend(req.query, {
+  const options = _.extend(opts, {
     filename : 'TREE.OPERATING_ACCOUNT',
     csvKey : 'rows',
-    user : req.session.user,
+    user : session.user,
   });
 
   try {
-    docReport = new ReportManager(TEMPLATE, req.session, options);
+    docReport = new ReportManager(TEMPLATE, session, options);
   } catch (e) {
-    next(e);
-    return;
+    throw e;
   }
 
   let queries;
@@ -43,8 +48,8 @@ function document(req, res, next) {
   let lastRateUsed;
   let firstCurrency;
   let secondCurrency;
-  const enterpriseId = req.session.enterprise.id;
-  const enterpriseCurrencyId = req.session.enterprise.currency_id;
+  const enterpriseId = session.enterprise.id;
+  const enterpriseCurrencyId = session.enterprise.currency_id;
   const getQueryIncome = fiscal.getAccountBalancesByTypeId;
 
   const periods = {
@@ -125,7 +130,11 @@ function document(req, res, next) {
       context.total = diff;
 
       return docReport.render(context);
-    })
+    });
+}
+
+function document(req, res, next) {
+  reporting(req.query, req.session)
     .then((result) => {
       res.set(result.headers).send(result.report);
     })

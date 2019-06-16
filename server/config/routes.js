@@ -103,8 +103,6 @@ const transactions = require('../controllers/finance/transactions');
 // looking up an entity by it reference
 const referenceLookup = require('../lib/referenceLookup');
 
-const operating = require('../controllers/finance/reports/operating/index');
-
 const department = require('../controllers/admin/department');
 const tags = require('../controllers/admin/tags');
 
@@ -397,7 +395,6 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/financialPatient/:uuid', financeReports.patient);
   app.get('/reports/finance/income_expense', financeReports.income_expense.document);
   app.get('/reports/finance/unpaid-invoice-payments', unpaidInvoicePayments.document);
-
   app.get('/reports/finance/income_expense_by_month', financeReports.income_expense_by_month.document);
   app.get('/reports/finance/income_expense_by_year', financeReports.income_expense_by_year.document);
   app.get('/reports/finance/cash_report', financeReports.cashReport.document);
@@ -417,6 +414,7 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/employeeStanding/', financeReports.employee);
   app.get('/reports/finance/break_even', financeReports.breakEven.report);
   app.get('/reports/finance/break_even_fee_center', financeReports.breakEvenFeeCenter.report);
+  app.get('/reports/finance/operating', financeReports.operating.document);
 
   // visits reports
   app.get('/reports/visits', medicalReports.visitsReports.document);
@@ -791,9 +789,6 @@ exports.configure = function configure(app) {
   app.post('/install', install.proceedInstall);
 
   app.get('/diagnoses', diagnoses.list);
-
-  app.get('/reports/finance/operating', operating.document);
-
   app.get('/roles', rolesCtrl.list);
   app.get('/roles/:uuid', rolesCtrl.detail);
 

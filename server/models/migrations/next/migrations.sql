@@ -2,7 +2,7 @@ delimiter $$
 
 -- this Procedure help to make quick analyse about unbalanced invoice
 -- it create a table name 'unbalancedInvoices' that can be used by the analyser
-DROP PROCEDURE IF EXISTS UnbalancedInvoicePaymentsTable$$
+DROP PROCEDURE IF EXISTS UnbalancedInvoicePayments$$
 CREATE PROCEDURE UnbalancedInvoicePayments(
   IN dateFrom DATE,
   IN dateTo DATE
@@ -210,6 +210,89 @@ ALTER TABLE `service` ADD COLUMN project_id SMALLINT(5) UNSIGNED NOT NULL;
 */
 UPDATE unit SET path="/depots" WHERE `name`="Depot Management" AND `key`="DEPOT.TITLE";
 
+/*
+ * @date: 2019-06-14
+ * description: entity and entity groups units 
+ */
+INSERT INTO `unit` VALUES 
+(240, 'Entity Folder', 'ENTITY.MANAGEMENT', 'Entity Folder', 0, '/modules/entities', '/ENTITY_FOLDER'),
+(241, 'Entity Group', 'ENTITY.GROUP.TITLE', 'Entity Group', 240, '/modules/entity_group', '/entity_group');
+
+/*
+ * @author: mbayopanda
+ * @date: 2019-06-04
+ * @description: move entity management into entity folder
+*/
+UPDATE unit SET parent = 240 WHERE id = 12;
+
+/*
+ * @author: mbayopanda
+ * @date: 2019-06-14
+ * @description: entity group
+*/
+DROP TABLE IF EXISTS `entity_group`;
+CREATE TABLE `entity_group` (
+  `uuid` BINARY(16) NOT NULL,
+  `label` VARCHAR(190) NOT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`uuid`),
+  UNIQUE KEY `label` (`label`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `entity_group_entity`;
+CREATE TABLE `entity_group_entity` (
+  `id` SMALLINT(5) NOT NULL AUTO_INCREMENT,
+  `entity_uuid` BINARY(16) NOT NULL,
+  `entity_group_uuid` BINARY(16) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+/*
+ * @author: mbayopanda
+ * @date: 2019-06-10
+ * @description: cron emailing tables
+ */
+DROP TABLE IF EXISTS `cron`;
+CREATE TABLE `cron` (
+  `id` SMALLINT(5) NOT NULL AUTO_INCREMENT,
+  `label` VARCHAR(150) NOT NULL,
+  `value` VARCHAR(20) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `cron_email_report`;
+CREATE TABLE `cron_email_report` (
+  `id` SMALLINT(5) NOT NULL AUTO_INCREMENT,
+  `entity_group_uuid` BINARY(16) NOT NULL,
+  `cron_id` SMALLINT(5) NOT NULL,
+  `report_id` SMALLINT(5) NOT NULL,
+  `report_url` VARCHAR(200) NOT NULL,
+  `params` TEXT NULL,
+  `label` VARCHAR(200) NOT NULL,
+  `last_send` DATETIME NULL,
+  `next_send` DATETIME NULL,
+  `has_dynamic_dates` TINYINT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `label` (`label`, `report_id`),
+  KEY `entity_group_uuid` (`entity_group_uuid`),
+  FOREIGN KEY (`entity_group_uuid`) REFERENCES `entity_group` (`uuid`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+-- cron
+INSERT INTO `cron` (`label`, `value`) VALUES 
+  ('CRON.DAILY', '0 1 * * *'),
+  ('CRON.WEEKLY', '0 1 * * 0'),
+  ('CRON.MONTHLY', '0 1 30 * *'),
+  ('CRON.YEARLY', '0 1 31 12 *'),
+  ('CRON.EVERY_MINUTE', '* * * * *');
+
+/*
+ * @author: mbayopanda
+ * @date: 2019-06-13
+ * @description: enable enterprise settings for auto email report
+ */
+ALTER TABLE `enterprise_setting` ADD COLUMN `enable_auto_email_report` TINYINT(1) NOT NULL DEFAULT 0;
 
 /*
  * @author: jeremielodi
