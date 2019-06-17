@@ -17,6 +17,8 @@
     "PLEASE_FILL_CRON_FORM":"Please fill correctly the email form",
     "DATES_BEHAVIOR":"Dates behaviors",
     "FIXED_DATES":"Fixed dates",
-    "DYNAMIC_DATES":"Dynamic dates"
+    "DYNAMIC_DATES":"Dynamic dates",
+    "EMAIL_SENT_SUCCESSFULLY":"Email sent successfully",
+    "SEND":"Send"
   }
 }

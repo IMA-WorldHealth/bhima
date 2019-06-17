@@ -22,6 +22,7 @@ function bhCronEmailReportController(CronEmailReports, Notify, Session) {
   $ctrl.submit = submit;
   $ctrl.remove = remove;
   $ctrl.details = details;
+  $ctrl.send = send;
 
   $ctrl.onSelectEntityGroup = entityGroup => {
     $ctrl.cron.entity_group_uuid = entityGroup.uuid;
@@ -44,11 +45,11 @@ function bhCronEmailReportController(CronEmailReports, Notify, Session) {
       has_dynamic_dates : 0,
     };
     $ctrl.isFeatureEnabled = Session.enterprise.settings.enable_auto_email_report;
-    load();
+    load($ctrl.reportId);
   }
 
-  function load() {
-    CronEmailReports.read(null, { report_id : $ctrl.reportId })
+  function load(id) {
+    CronEmailReports.read(null, { report_id : id })
       .then(rows => {
         $ctrl.list = rows;
       })
@@ -63,6 +64,19 @@ function bhCronEmailReportController(CronEmailReports, Notify, Session) {
         $ctrl.onSelectReport({ report });
       })
       .catch(Notify.handleError);
+  }
+
+  function send(id) {
+    $ctrl.sendingPending = true;
+    CronEmailReports.send(id)
+      .then(() => {
+        $ctrl.sendingPending = false;
+        Notify.success('CRON.EMAIL_SENT_SUCCESSFULLY');
+      })
+      .catch(Notify.handleError)
+      .finally(() => {
+        $ctrl.sendingPending = false;
+      });
   }
 
   function remove(id) {

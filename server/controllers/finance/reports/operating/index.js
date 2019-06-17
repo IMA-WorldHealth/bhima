@@ -57,7 +57,7 @@ function reporting(opts, session) {
     periodTo : params.periodTo,
   };
 
-  fiscal.getDateRangeFromPeriods(periods).then(dateRange => {
+  return fiscal.getDateRangeFromPeriods(periods).then(dateRange => {
     range = dateRange;
     return Exchange.getExchangeRate(enterpriseId, params.currency_id, range.dateTo);
   }).then(exchangeRate => {

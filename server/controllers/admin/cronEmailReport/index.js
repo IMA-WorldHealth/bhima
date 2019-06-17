@@ -13,7 +13,7 @@ const mailer = require('../../../lib/mailer');
 const auth = require('../../auth');
 const dbReports = require('../../report.handlers');
 
-const MAIN_EMAIL_JOBS = [];
+const CURRENT_JOBS = [];
 
 function find(options = {}) {
   const filters = new FilterParser(options, { tableAlias : 'cer' });
@@ -32,6 +32,7 @@ function find(options = {}) {
   `;
 
   filters.equals('id');
+  filters.equals('report_id');
   const query = filters.applyQuery(sql);
   const parameters = filters.parameters();
   return db.exec(query, parameters);
@@ -89,7 +90,7 @@ function remove(req, res, next) {
   `;
   db.exec(query, [req.params.id])
     .then(() => {
-      const [jobToStop] = MAIN_EMAIL_JOBS.filter(item => {
+      const [jobToStop] = CURRENT_JOBS.filter(item => {
         return item.id === parseInt(req.params.id, 10);
       });
 
@@ -107,11 +108,9 @@ async function create(req, res, next) {
   try {
     const query = 'INSERT INTO cron_email_report SET ?;';
     const { cron, reportOptions } = req.body;
-    // FIXME: date cannot be dynamic here
-    const options = addDynamicDatesOptions(cron.cron_id, cron.has_dynamic_dates, reportOptions);
 
     db.convert(cron, ['entity_group_uuid']);
-    cron.params = JSON.stringify(options);
+    cron.params = JSON.stringify(reportOptions);
 
     const result = await db.exec(query, [cron]);
     const created = await lookup(result.insertId);
@@ -121,6 +120,14 @@ async function create(req, res, next) {
   } catch (error) {
     next(error);
   }
+}
+
+function send(req, res, next) {
+  const { id } = req.params;
+  lookup(id)
+    .then(record => sendEmailReportDocument(record))
+    .then(() => res.sendStatus(201))
+    .catch(next);
 }
 
 /**
@@ -166,7 +173,7 @@ async function launchCronEmailReportJobs() {
  */
 function createEmailReportJob(record, cb, ...params) {
   const job = addJob(record.cron_value, cb, ...params);
-  MAIN_EMAIL_JOBS.push({ id : record.id, label : record.label, job });
+  CURRENT_JOBS.push({ id : record.id, label : record.label, job });
   return updateCronEmailReportJobDates(record.id, job);
 }
 
@@ -177,7 +184,9 @@ function createEmailReportJob(record, cb, ...params) {
  */
 async function sendEmailReportDocument(record) {
   try {
-    const options = JSON.parse(record.params);
+    const reportOptions = JSON.parse(record.params);
+    // dynamic dates in the report params if needed
+    const options = addDynamicDatesOptions(record.cron_id, record.has_dynamic_dates, reportOptions);
     const fn = dbReports[record.report_key];
     const contacts = await loadContacts(record.entity_group_uuid);
     const session = await loadSession();
@@ -299,3 +308,4 @@ exports.details = details;
 exports.update = update;
 exports.remove = remove;
 exports.create = create;
+exports.send = send;
