@@ -81,7 +81,7 @@ function bhCronEmailReportController(CronEmailReports, Notify, Session) {
 
   function remove(id) {
     CronEmailReports.delete(id)
-      .then(() => load())
+      .then(() => load($ctrl.reportId))
       .catch(Notify.handleError);
   }
 

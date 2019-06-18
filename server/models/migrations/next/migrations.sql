@@ -215,15 +215,9 @@ UPDATE unit SET path="/depots" WHERE `name`="Depot Management" AND `key`="DEPOT.
  * description: entity and entity groups units 
  */
 INSERT INTO `unit` VALUES 
-(240, 'Entity Folder', 'ENTITY.MANAGEMENT', 'Entity Folder', 0, '/modules/entities', '/ENTITY_FOLDER'),
-(241, 'Entity Group', 'ENTITY.GROUP.TITLE', 'Entity Group', 240, '/modules/entity_group', '/entity_group');
-
-/*
- * @author: mbayopanda
- * @date: 2019-06-04
- * @description: move entity management into entity folder
-*/
-UPDATE unit SET parent = 240 WHERE id = 12;
+  (240, 'Entity Folder', 'ENTITY.MANAGEMENT', 'Entity Folder', 0, '/modules/entities', '/ENTITY_FOLDER'),
+  (241, 'Entity Management','ENTITY.MANAGEMENT','',240,'/modules/entities','/entities'),
+  (242, 'Entity Group', 'ENTITY.GROUP.TITLE', 'Entity Group', 240, '/modules/entity_group', '/entity_group');
 
 /*
  * @author: mbayopanda

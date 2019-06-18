@@ -50,6 +50,23 @@ class BalanceReportPage {
   async closeBalanceReportPreview() {
     await this.page.closePreview();
   }
+
+  async fillReportOptions(year, month) {
+    await components.fiscalYearSelect.set(year);
+    await components.periodSelection.set(month);
+    await components.yesNoRadios.set('yes', 'useSeparateDebitsAndCredits');
+    await components.yesNoRadios.set('no', 'includeClosingBalances');
+    await components.yesNoRadios.set('yes', 'shouldPruneEmptyRows');
+    await components.yesNoRadios.set('yes', 'shouldHideTitleAccounts');
+  }
+
+  // save for the auto emailing
+  async saveCronEmailReport(title, entityGroupName, cronFrequencyName) {
+    await components.inpuText.set('label', title);
+    await components.entityGroupSelect.set(entityGroupName);
+    await components.cronSelect.set(cronFrequencyName);
+    await this.page.saveAutoMailing();
+  }
 }
 
 module.exports = BalanceReportPage;

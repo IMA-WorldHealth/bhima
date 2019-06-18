@@ -70,20 +70,6 @@ function details(req, res, next) {
     .done();
 }
 
-function update(req, res, next) {
-  const query = `
-    UPDATE cron_email_report SET ? WHERE id = ?;
-  `;
-  const params = req.body;
-  if (params.id) {
-    delete params.id;
-  }
-  db.exec(query, [params, req.params.id])
-    .then(() => res.sendStatus(204))
-    .catch(next)
-    .done();
-}
-
 function remove(req, res, next) {
   const query = `
     DELETE FROM cron_email_report WHERE id = ?;
@@ -174,7 +160,7 @@ async function launchCronEmailReportJobs() {
 function createEmailReportJob(record, cb, ...params) {
   const job = addJob(record.cron_value, cb, ...params);
   CURRENT_JOBS.push({ id : record.id, label : record.label, job });
-  return updateCronEmailReportJobDates(record.id, job);
+  return updateCronEmailReportNextSend(record.id, job);
 }
 
 /**
@@ -211,6 +197,7 @@ async function sendEmailReportDocument(record) {
       });
 
       await Promise.all(mails);
+      await updateCronEmailReportLastSend(record.id);
       debug(`(${record.label}) report sent by email to ${contacts.length} contacts`);
     }
   } catch (e) {
@@ -262,41 +249,42 @@ function addDynamicDatesOptions(cronId, hasDynamicDates, options) {
     if (cronId === DAILY) {
       options.dateFrom = period.day().dateFrom;
       options.dateTo = period.day().dateTo;
-      options.custom_period_start = period.day().dateFrom;
-      options.custom_period_end = period.day().dateTo;
     }
 
     if (cronId === WEEKLY) {
       options.dateFrom = period.week().dateFrom;
       options.dateTo = period.week().dateTo;
-      options.custom_period_start = period.week().dateFrom;
-      options.custom_period_end = period.week().dateTo;
     }
 
     if (cronId === MONTHLY) {
       options.dateFrom = period.month().dateFrom;
       options.dateTo = period.month().dateTo;
-      options.custom_period_start = period.month().dateFrom;
-      options.custom_period_end = period.month().dateTo;
     }
 
     if (cronId === YEARLY) {
       options.dateFrom = period.year().dateFrom;
       options.dateTo = period.year().dateTo;
-      options.custom_period_start = period.year().dateFrom;
-      options.custom_period_end = period.year().dateTo;
     }
   }
   return options;
 }
 
-function updateCronEmailReportJobDates(id, job) {
+function updateCronEmailReportNextSend(id, job) {
   const sql = `
     UPDATE cron_email_report SET ? WHERE id = ?;
   `;
   const params = {
-    last_send : job.lastDate() ? job.lastDate().toDate() : null,
     next_send : job.nextDate() ? job.nextDate().toDate() : null,
+  };
+  return db.exec(sql, [params, id]);
+}
+
+function updateCronEmailReportLastSend(id) {
+  const sql = `
+    UPDATE cron_email_report SET ? WHERE id = ?;
+  `;
+  const params = {
+    last_send : new Date(),
   };
   return db.exec(sql, [params, id]);
 }
@@ -305,7 +293,6 @@ launchCronEmailReportJobs();
 
 exports.list = list;
 exports.details = details;
-exports.update = update;
 exports.remove = remove;
 exports.create = create;
 exports.send = send;

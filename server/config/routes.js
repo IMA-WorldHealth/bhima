@@ -937,6 +937,5 @@ exports.configure = function configure(app) {
   app.get('/cron_email_reports/:id', cronEmailReport.details);
   app.post('/cron_email_reports', cronEmailReport.create);
   app.post('/cron_email_reports/:id', cronEmailReport.send);
-  app.put('/cron_email_reports/:id', cronEmailReport.update);
   app.delete('/cron_email_reports/:id', cronEmailReport.remove);
 };

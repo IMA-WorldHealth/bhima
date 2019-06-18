@@ -12,6 +12,12 @@ describe('Balance Report', () => {
     renderer : 'PDF',
   };
 
+  const cron = {
+    title : 'Balance report 2018',
+    group : 'Developers',
+    frequency : 'Chaque mois',
+  };
+
   before(async () => {
     await helpers.navigate(`#!/reports/${key}`);
     Page = new BalanceReportPage(key);
@@ -35,5 +41,10 @@ describe('Balance Report', () => {
 
   it('print the previewed report', async () => {
     await Page.printBalanceReport(dataset.year, dataset.month);
+  });
+
+  it('save report for cron task of emailing', async () => {
+    await Page.fillReportOptions(dataset.year, dataset.month);
+    await Page.saveCronEmailReport(cron.title, cron.group, cron.frequency);
   });
 });

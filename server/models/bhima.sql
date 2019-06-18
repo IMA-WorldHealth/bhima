@@ -98,7 +98,6 @@ INSERT INTO unit VALUES
   (209, 'Accounts Report Multiple','TREE.REPORTS_MULTIPLE_ACCOUNTS','',144,'/modules/reports/account_report_multiple','/reports/account_report_multiple'),
   (210, 'Unbalanced Invoice Payments','REPORT.UNPAID_INVOICE_PAYMENTS_REPORT.TITLE','',144,'/modules/reports/unpaid-invoice-payments','/reports/unpaid-invoice-payments'),
   (211, 'Income Expenses by Month', 'REPORT.PROFIT_AND_LOSS_BY_MONTH', 'The Report of income and expenses', 144, '/modules/finance/income_expense_by_month', '/reports/income_expense_by_month'),
-  (212, 'Entity Management','ENTITY.MANAGEMENT','',240,'/modules/entities','/entities'),
   (213, 'Stock value Report','TREE.STOCK_VALUE','',144,'/modules/reports/stock_value','/reports/stock_value'),
   (214, '[OHADA] Compte de resultat','TREE.OHADA_RESULT_ACCOUNT','',144,'/modules/reports/ohada_profit_loss','/reports/ohada_profit_loss'),
   (215, 'Department management','TREE.DEPARTMENT_MANAGEMENT','Department Management', 1,'/modules/department/','/departments'),
@@ -127,7 +126,8 @@ INSERT INTO unit VALUES
   (239, 'Visits Report', 'TREE.VISITS_REPORT', 'Visits registry', 144, '/modules/reports/visit_report', '/reports/visit_report'),
   (240, '[Stock] Stock Entry Report','TREE.STOCK_ENTRY_REPORT','Stock Entry Report', 144,'/modules/reports/generated/stock_entry','/reports/stock_entry'),
   (241, 'Entity Folder', 'ENTITY.MANAGEMENT', 'Entity Folder', 0, '/modules/entities', '/ENTITY_FOLDER'),
-  (242, 'Entity Group', 'ENTITY.GROUP.TITLE', 'Entity Group', 240, '/modules/entity_group', '/entity_group');
+  (242, 'Entity Management','ENTITY.MANAGEMENT','',240,'/modules/entities','/entities'),
+  (243, 'Entity Group', 'ENTITY.GROUP.TITLE', 'Entity Group', 240, '/modules/entity_group', '/entity_group');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES

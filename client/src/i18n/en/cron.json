@@ -11,14 +11,15 @@
     "EVERY_MINUTE":"Every Minutes",
     "SAVE":"Save",
     "SAVED_AUTO_REPORT":"Saved report for mailing",
-    "LAST":"Last",
-    "NEXT":"Next",
+    "LAST":"Last Send",
+    "NEXT":"Next Send",
     "PLEASE_FILL_REPORT_FORM":"Please fill correctly the report form",
     "PLEASE_FILL_CRON_FORM":"Please fill correctly the email form",
     "DATES_BEHAVIOR":"Dates behaviors",
     "FIXED_DATES":"Fixed dates",
     "DYNAMIC_DATES":"Dynamic dates",
     "EMAIL_SENT_SUCCESSFULLY":"Email sent successfully",
-    "SEND":"Send"
+    "SEND":"Send",
+    "DELETE":"Delete"
   }
 }

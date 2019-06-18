@@ -6,6 +6,7 @@ This procedure help to create fiscal year and fiscal year's periods
 periods include period `0` and period `13`
 */
 
+DROP PROCEDURE IF EXISTS CreateFiscalYear$$
 CREATE PROCEDURE CreateFiscalYear(
   IN p_enterprise_id SMALLINT(5),
   IN p_previous_fiscal_year_id MEDIUMINT(8),
@@ -30,6 +31,7 @@ BEGIN
   CALL CreatePeriods(fiscalYearId);
 END $$
 
+DROP PROCEDURE IF EXISTS GetPeriodRange$$
 CREATE PROCEDURE GetPeriodRange(
   IN fiscalYearStartDate DATE,
   IN periodNumberIndex SMALLINT(5),
@@ -43,6 +45,7 @@ CREATE PROCEDURE GetPeriodRange(
   SET periodEndDate = (SELECT LAST_DAY(innerDate));
 END $$
 
+DROP PROCEDURE IF EXISTS CreatePeriods$$
 CREATE PROCEDURE CreatePeriods(
   IN fiscalYearId MEDIUMINT(8)
 )
@@ -108,7 +111,7 @@ END $$
 
 
 DROP PROCEDURE IF EXISTS `UpdatePeriodLabels`$$
-CREATE   PROCEDURE `UpdatePeriodLabels`()
+CREATE PROCEDURE `UpdatePeriodLabels`()
 BEGIN
 DECLARE _id mediumint(8) unsigned;
 DECLARE _start_date DATE;
@@ -151,6 +154,7 @@ to get the final opening balance.
 
 TODO - check that there are no unposted records from previous years.
 */
+DROP PROCEDURE IF EXISTS CloseFiscalYear$$
 CREATE PROCEDURE CloseFiscalYear(
   IN fiscalYearId MEDIUMINT UNSIGNED,
   IN closingAccountId INT UNSIGNED

@@ -36,6 +36,12 @@ class ReportPage {
     await anchor.element(by.css('[data-method="save"]')).click();
   }
 
+  // save for auto mailing
+  async saveAutoMailing() {
+    const anchor = $(this.previewAnchor);
+    await anchor.element(by.css('[data-method="save-cron-report"]')).click();
+  }
+
   // config report
   async backToConfig() {
     await $(this.configAnchor).click();

@@ -1047,6 +1047,15 @@ INSERT INTO entity (uuid, display_name, gender, email, phone, address, entity_ty
   (HUID('00099B1D184A48DEB93D45FBD0AB3790'), 'Bruce Wayne', 'M', 'thebat@bhi.ma', '+243000000', 'Gotham City', 1),
   (HUID('037AC6C6B75A4E328E9DCDE5DA22BACE'), 'Wayne Enterprise', 'o', 'thebat@bhi.ma', '+243000000', 'Gotham City', 4);
 
+-- default entity groups
+INSERT INTO entity_group (uuid, label) VALUES
+  (HUID('00099B1D184A48DEB93D45FBD0AB3898'), 'Developers');
+
+-- entity group entity
+INSERT INTO entity_group_entity (entity_uuid, entity_group_uuid) VALUES
+  (HUID('00099B1D184A48DEB93D45FBD0AB3790'), HUID('00099B1D184A48DEB93D45FBD0AB3898')),
+  (HUID('037AC6C6B75A4E328E9DCDE5DA22BACE'), HUID('00099B1D184A48DEB93D45FBD0AB3898'));
+
 -- default room type
 INSERT INTO room_type VALUES
   (1, 'Public Room'),
