@@ -846,6 +846,34 @@ INSERT INTO `rubric_payroll` (`id`, `label`, `abbr`, `is_employee`, `is_percent`
   (11, 'Office Nationale de l\emploie', 'ONEM', 0, 1, 1, 1, 0, 0, 0, 320, 355, 0, 0, 0.2),
   (12, 'Acompte sur salaires', 'ac_sal', 1, 0, 1, 0, 0, 1, 0, 340, 179, 0, 1, NULL);
 
+INSERT INTO `rubric_payroll` (`label`, `abbr`, `is_employee`, `is_percent`, `is_discount`, `is_tax`, 
+`is_social_care`, `is_defined_employee`, `is_membership_fee`, `debtor_account_id`, `expense_account_id`,
+ `is_ipr`, `is_associated_employee`, `is_seniority_bonus`, `is_family_allowances`, `is_monetary_value`, 
+`position`, `value`, `is_indice`) VALUES
+('Indice de base', 'Indice de base', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 1, NULL, 1),
+('indice jour', 'indice jr', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 2, NULL, 1),
+('Indice réajusté', 'Indice reajuste', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 3, NULL, 1),
+('Responsabilité', 'Responsabilité', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 4, NULL, 1),
+('Electricité', 'Electricité', 0, 0, 0, 0, 0, 1, 0, NULL, NULL, 0, 0, 0, 0, 0, 5, NULL, 1),
+('Autres', 'Autres', 0, 0, 0, 0, 0, 1, 0, NULL, NULL, 0, 0, 0, 0, 0, 6, NULL, 1),
+('Total code', 'tot code', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 7, NULL, 1),
+('Jours prestés', 'Jrs prestes', 0, 0, 0, 0, 0, 1, 0, NULL, NULL, 0, 0, 0, 0, 0, 8, NULL, 1),
+('Jours supplémentaires', 'jrs suppl', 0, 0, 0, 0, 0, 1, 0, NULL, NULL, 0, 0, 0, 0, 0, 9, NULL, 1),
+('Total jours', 'tot jrs', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 10, NULL, 1),
+('Taux de paie', 'tx paie', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 11, NULL, 1),
+('Brute', 'brute', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 12, NULL, 1),
+('AVANCE', 'Avance', 0, 0, 1, 0, 0, 1, 0, NULL, NULL, 0, 0, 0, 0, 1, 13, NULL, 1),
+-- ('INSS', 'INSS', 0, 0, 1, 0, 0, 1, 0, NULL, NULL, 0, 0, 0, 0, 0, 14, NULL, 1),
+('TAR', 'TAR', 0, 0, 1, 0, 0, 1, 0, NULL, NULL, 0, 0, 0, 0, 1, 15, NULL, 1),
+-- ('IPR', 'IPR', 0, 0, 0, 0, 0, 1, 0, NULL, NULL, 0, 0, 0, 0, 0, 16, NULL, 1),
+('OFFRANDE', 'Offrande', 0, 0, 1, 0, 0, 1, 0, NULL, NULL, 0, 0, 0, 0, 1, 17, NULL, 1),
+('SYND 1', 'SYND 1', 0, 0, 1, 0, 0, 1, 0, NULL, NULL, 0, 0, 0, 0, 1, 18, NULL, 1),
+('SYND 2', 'SYND 2', 0, 0, 1, 0, 0, 1, 0, NULL, NULL, 0, 0, 0, 0, 1, 19, NULL, 1),
+('Autres retenues', 'Autres retenues', 0, 0, 1, 0, 0, 1, 0, NULL, NULL, 0, 0, 0, 0, 1, 20, NULL, 1),
+-- ('TOTAL', 'total', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 21, NULL, 1),
+-- ('NET', 'net', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 22, NULL, 1),
+('Nombre de jours', 'nbre jrs', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 23, NULL, 1);
+
 -- Configuration of Rubrinc
 INSERT INTO `config_rubric` (`id`, `label`) VALUES (1, 'Configuration des rubriques');
 

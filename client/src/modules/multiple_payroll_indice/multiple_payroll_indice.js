@@ -23,7 +23,7 @@ function MultiplePayrollIndiceController(
   $state, Modals, util, Receipts, uiGridConstants, Languages, $httpParamSerializer
 ) {
   const vm = this;
-  const cacheKey = 'multiple-payroll-grid';
+  const cacheKey = 'multiple-indice-payroll-grid';
 
   vm.gridOptions = {};
 

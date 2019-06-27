@@ -5,7 +5,7 @@ angular.module('bhima.routes')
       .state('multiple_payroll_indice', {
         url         : '/multiple_payroll_indice',
         controller  : 'MultiplePayrollIndiceController as MultiplePayrollCtrl',
-        templateUrl : 'modules/multiple_payroll_indice/multiple_payroll.html',
+        templateUrl : 'modules/multiple_payroll_indice/multiple_payroll_indice.html',
         params : {
           filters : [],
         },
@@ -17,12 +17,12 @@ angular.module('bhima.routes')
           config : { value : null },
           filters : [],
         },
-        onEnter : ['$uibModal', configurationMultiplePayroll],
+        onEnter : ['$uibModal', configurationMultipleIndicePayroll],
         onExit : ['$uibModalStack', closeModal],
       });
   }]);
 
-function configurationMultiplePayroll($modal) {
+function configurationMultipleIndicePayroll($modal) {
   $modal.open({
     keyboard : false,
     size : 'lg',

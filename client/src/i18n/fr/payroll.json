@@ -18,6 +18,8 @@
     "IS_MONETARY_VALUE": "Cette rubrique est une valeur monnetaire",
     "IS_SUM_OF_RUBRICS": "Cette rubrique est une somme des autres rubriques",
     "SUM_OF_RUBRICS": "Somme des autres rubriques",
-    "MONETARY_VALUE": "Valeur monnetaire"
+    "MONETARY_VALUE": "Valeur monnetaire",
+    "INDICE" : "Indice",
+    "IS_INDICE" : "Cette rubrique est un indice"
   }
 }

@@ -26,7 +26,6 @@ function ConfigIndicePaiementModalController(
   if ($state.params.creating || $state.params.uuid) {
     cache.stateParams = $state.params;
     vm.stateParams = cache.stateParams;
-
   } else {
     vm.stateParams = cache.stateParams;
   }
@@ -68,18 +67,19 @@ function ConfigIndicePaiementModalController(
   }
 
   function load(filters) {
-    // flush error and loading states
-    vm.hasError = false;
-
     MultiplePayroll.read(null, filters)
       .then((result) => {
         vm.employee = result.employees[0] || {};
+
         vm.employee.rubrics.forEach(r => {
           vm.selectedRubrics[r.rubric_id] = r.rubric_value;
         });
         vm.rubrics = result.rubrics;
         vm.rubrics.forEach(r => {
           rubricsMap[r.id] = r;
+          if (!vm.selectedRubrics[r.id]) {
+            vm.selectedRubrics[r.id] = r.value || 0;
+          }
         });
       })
       .catch(Notify.handleError);
@@ -92,6 +92,7 @@ function ConfigIndicePaiementModalController(
       return {
         id : k,
         value : object[k],
+        is_monetary : rubricsMap[k].is_monetary_value,
       };
     });
   }

@@ -42,15 +42,7 @@ function multipayIndiceExport(req, res, next) {
 
   return multipayIndice.lookUp(options).then(indices => {
     const { employees, rubrics } = indices;
-    // display_name
-    const headers = { display_name : '' };
-    const rows = [];
-    rubrics.forEach(r => {
-      headers[r.abbr] = '';
-    });
-    rows.push(headers);
-    rows.push(...setGridData(employees));
-
+    const rows = setGridData(employees, rubrics);
     return report.render({ rows });
   })
     .then((result) => {
@@ -59,13 +51,16 @@ function multipayIndiceExport(req, res, next) {
     .catch(next);
 }
 
-function setGridData(employees) {
+function setGridData(employees, rubrics) {
   const data = [];
-  employees.forEach(employee => {
-    const row = {
-      display_name : employee.display_name,
-    };
+  const headers = { display_name : '' };
+  rubrics.forEach(r => {
+    headers[r.abbr] = '';
+  });
 
+  employees.forEach(employee => {
+    const row = _.clone(headers);
+    row.display_name = employee.display_name;
     employee.rubrics.forEach(r => {
       row[r.rubric_abbr] = r.rubric_value;
     });

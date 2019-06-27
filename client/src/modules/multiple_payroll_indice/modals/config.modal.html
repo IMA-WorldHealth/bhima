@@ -11,34 +11,44 @@
   <div ng-if="ConfigPaiementModalCtrl.isEnterpriseCurrency" class="modal-body" style="max-height: 70vh; overflow:auto;">
     <!-- currency selection -->
     <bh-currency-select
-      currency-id="ConfigPaiementModalCtrl.currencyId"
+      currency-id="ConfigPaiementModalCtrl.payroll.currency_id"
       on-change="ConfigPaiementModalCtrl.setCurrency(currencyId)">
     </bh-currency-select>
 
-    <div 
-      ng-if="!rubConfigured.is_sum_of_rubrics&&rubConfigured.is_defined_employee"
-      ng-repeat="rubConfigured in ConfigPaiementModalCtrl.rubrics" class="form-group">
-      <bh-currency-input
-        data-payment-currency-input
-        ng-if="rubConfigured.is_monetary_value"
-        label="{{rubConfigured.label}}"
-        id="{{rubConfigured.id}}"
-        currency-id="ConfigPaiementModalCtrl.currencyId"
-        model="ConfigPaiementModalCtrl.selectedRubrics[rubConfigured.id]"
-        required = "true"
-        min = 0>
-      </bh-currency-input>
-      
-      <bh-input-text
-        ng-if="!rubConfigured.is_monetary_value"
-        key="{{rubConfigured.id}}"
-        label="{{rubConfigured.label}}"
-        text-value="ConfigPaiementModalCtrl.selectedRubrics[rubConfigured.id]"
-        required = "true"
-        on-change="$ctrl.onInputTextChange(key, value)">
-      </bh-input-text>
-
+    <div class="col-lg-12">
+      <div class="col-lg-6" style="margin-top: 16px">
+        <div 
+        ng-if="rubConfigured.is_defined_employee"
+        ng-repeat="rubConfigured in ConfigPaiementModalCtrl.rubrics" class="form-group">
+        
+        <bh-input-text
+          ng-if="!rubConfigured.is_monetary_value"
+          key="{{rubConfigured.id}}"
+          label="{{rubConfigured.label}}"
+          text-value="ConfigPaiementModalCtrl.selectedRubrics[rubConfigured.id]"
+          required = "true"
+          on-change="$ctrl.onInputTextChange(key, value)">
+        </bh-input-text>
+      </div>
+      </div>
+      <div class="col-lg-6">
+        <div 
+        ng-if="rubConfigured.is_defined_employee"
+        ng-repeat="rubConfigured in ConfigPaiementModalCtrl.rubrics" class="form-group">
+        <bh-currency-input
+          data-payment-currency-input
+          ng-if="rubConfigured.is_monetary_value"
+          label="{{rubConfigured.label}}"
+          id="{{rubConfigured.abbr}}"
+          currency-id="ConfigPaiementModalCtrl.payroll.currency_id"
+          required = "false"
+          model="ConfigPaiementModalCtrl.selectedRubrics[rubConfigured.id]"
+          min = 0>
+        </bh-currency-input>
+      </div>
+      </div>
     </div>
+    
   </div>
 
   <div ng-if="!ConfigPaiementModalCtrl.isEnterpriseCurrency" class="modal-body badge badge-warning" style="max-height: 70vh; overflow:auto;">

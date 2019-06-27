@@ -298,18 +298,9 @@ CREATE TABLE `staffing_function_indice` (
 
 
 ALTER TABLE  `rubric_payroll` ADD COLUMN `is_monetary_value`  TINYINT(1) DEFAULT 1;
-ALTER TABLE  `rubric_payroll` ADD COLUMN `is_sum_of_rubrics`  TINYINT(1) DEFAULT 0;
 ALTER TABLE  `rubric_payroll` ADD COLUMN `position`  TINYINT(1) DEFAULT 0;
+ALTER TABLE  `rubric_payroll` ADD COLUMN `is_indice` TINYINT(1) DEFAULT 0;
 
-DROP TABLE IF EXISTS `rubric_payroll_item`;
-CREATE TABLE `rubric_payroll_item` (
-  `uuid` BINARY(16) NOT NULL,
-  `rubric_payroll_id` INT(10) UNSIGNED NOT NULL,
-  `item_id` INT(10) UNSIGNED NOT NULL,
-  UNIQUE KEY `uniq_item`(`rubric_payroll_id`, `item_id`),
-  FOREIGN KEY (`rubric_payroll_id`) REFERENCES `rubric_payroll` (`id`),
-  FOREIGN KEY (`item_id`) REFERENCES `rubric_payroll` (`id`)
-) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `stage_payment_indice`;
 CREATE TABLE `stage_payment_indice` (
@@ -341,3 +332,14 @@ CREATE TABLE `staffing_indice_parameters` (
   FOREIGN KEY (`payroll_configuration_id`) REFERENCES `payroll_configuration` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
+
+DROP TABLE IF EXISTS `rubric_payroll_indice`;
+CREATE TABLE `rubric_payroll_indice` (
+  `uuid` BINARY(16) NOT NULL,
+  `label` VARCHAR(80) NOT NULL,
+  `abbr` varchar(20) DEFAULT NULL,
+  `position`  TINYINT(1) DEFAULT 0,
+  `is_defined_employee` TINYINT(1) DEFAULT 0,
+  `value` float DEFAULT NULL,
+  PRIMARY KEY (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;

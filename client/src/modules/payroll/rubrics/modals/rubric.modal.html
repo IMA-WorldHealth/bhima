@@ -106,27 +106,23 @@
             <span translate>PAYROLL_RUBRIC.MONETARY_VALUE</span>
           </label>
         </div>
+    </div>
+    <div class="form-group">
+      <label translate>PAYROLL_RUBRIC.INDICE</label>
+      <div class="checkbox">
+        <label>
+          <input
+            type="checkbox"
+            name="is_indice"
+            ng-true-value="1"
+            ng-false-value="0"
+            ng-model="RubricModalCtrl.rubric.is_indice">
+          <span translate>PAYROLL_RUBRIC.IS_INDICE</span>
+        </label>
       </div>
-      <div class="form-group">
-          <label translate>PAYROLL_RUBRIC.IS_SUM_OF_RUBRICS</label>
-          <div class="checkbox">
-            <label>
-              <input
-                type="checkbox"
-                name="is_sum_of_rubrics"
-                ng-true-value="1"
-                ng-false-value="0"
-                ng-model="RubricModalCtrl.rubric.is_sum_of_rubrics">
-              <span translate>PAYROLL_RUBRIC.SUM_OF_RUBRICS</span>
-            </label>
-          </div>
-          <bh-rubric-select
-            id="rubrics"
-            ng-if="RubricModalCtrl.rubric.is_sum_of_rubrics"
-            rubrics = "RubricModalCtrl.rubric.rubrics"
-            on-select-callback="RubricModalCtrl.onSelectRubrics(rubrics)">
-        </bh-rubric-select>
+  </div>
 
+      <div class="form-group">
         <bh-input-text
           key="position"
           label="FORM.LABELS.POSITION"

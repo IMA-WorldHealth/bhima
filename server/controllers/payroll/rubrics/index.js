@@ -3,8 +3,6 @@
 *
 * This controller exposes an API to the client for reading and writing Rubric
 */
-const q = require('q');
-const _ = require('lodash');
 const db = require('../../../lib/db');
 const NotFound = require('../../../lib/errors/NotFound');
 const FilterParser = require('../../../lib/filter');
@@ -14,22 +12,14 @@ function lookupRubric(id) {
   const sql = `
     SELECT r.id, r.label, r.abbr, r.is_employee, r.is_percent, r.is_defined_employee, r.is_discount, r.is_social_care,
     r.debtor_account_id, r.expense_account_id, r.is_ipr, r.value, r.is_tax, r.is_membership_fee,
-    r.is_associated_employee, r.is_seniority_bonus, r.position, r.is_monetary_value, is_sum_of_rubrics,  r.is_family_allowances
+    r.is_associated_employee, r.is_seniority_bonus, r.position, r.is_monetary_value,
+    r.is_family_allowances, r.is_indice
     FROM rubric_payroll AS r
     WHERE r.id = ? ORDER BY r.label ASC`;
 
   return db.one(sql, [id]);
 }
 
-async function lookupRubricItem(id) {
-  const sql = 'SELECT item_id FROM rubric_payroll_item WHERE rubric_payroll_id=?';
-  const items = await db.exec(sql, id);
-  const rubrics = [];
-  items.forEach(item => {
-    rubrics.push(item.item_id);
-  });
-  return rubrics;
-}
 // Lists the Payroll Rubrics
 function list(req, res, next) {
   const filters = new FilterParser(req.query, { tableAlias : 'r' });
@@ -40,14 +30,14 @@ function list(req, res, next) {
       r.debtor_account_id, a4.number AS four_number, a4.label AS four_label,
       r.expense_account_id, a6.number AS six_number, a6.label AS six_label, r.is_ipr, r.value, r.is_tax,
       r.is_membership_fee, r.is_associated_employee, r.is_seniority_bonus, r.is_family_allowances,
-      r.is_monetary_value, is_sum_of_rubrics, r.position
+      r.is_monetary_value, r.position, r.is_indice
     FROM rubric_payroll AS r
     LEFT JOIN account AS a4 ON a4.id = r.debtor_account_id
     LEFT JOIN account AS a6 ON a6.id = r.expense_account_id
   `;
 
   filters.equals('is_defined_employee');
-  filters.setOrder('ORDER BY r.label');
+  filters.setOrder('ORDER BY r.is_indice, r.label');
 
   const query = filters.applyQuery(sql);
   const parameters = filters.parameters();
@@ -67,14 +57,9 @@ function list(req, res, next) {
 */
 function detail(req, res, next) {
   const { id } = req.params;
-  let rubricDetail = {};
   lookupRubric(id)
     .then((record) => {
-      rubricDetail = record;
-      return lookupRubricItem(id);
-    }).then(rubrics => {
-      rubricDetail.rubrics = rubrics;
-      res.status(200).json(rubricDetail);
+      res.status(200).json(record);
     })
     .catch(next)
     .done();
@@ -82,25 +67,10 @@ function detail(req, res, next) {
 
 // POST /Rubric
 function create(req, res, next) {
-
   const sql = `INSERT INTO rubric_payroll SET ?`;
   const data = req.body;
-  const items = [].concat(_.clone(data.rubrics));
-  delete data.rubrics;
-  let insertedId = null;
-
   db.exec(sql, [data]).then(result => {
-    insertedId = result.insertId;
-    return q.all(items.map(itemId => {
-      const record = {
-        uuid : db.uuid(),
-        rubric_payroll_id : insertedId,
-        item_id : itemId,
-      };
-      return db.exec('INSERT INTO rubric_payroll_item SET ?', record);
-    }));
-  }).then(() => {
-    res.status(201).json({ id : insertedId });
+    res.status(201).json({ id : result.insertedId });
   }).catch(next);
 }
 
@@ -108,36 +78,12 @@ function create(req, res, next) {
 // PUT /Rubric /:id
 function update(req, res, next) {
   const sql = `UPDATE rubric_payroll SET ? WHERE id = ?;`;
-  const data = req.body;
-  const items = [].concat(_.clone(data.rubrics));
-  delete data.rubrics;
-
-  let rubricDetail = {};
   const rubricPayrollId = req.params.id;
   db.exec(sql, [req.body, rubricPayrollId]).then(() => {
-    const transaction = db.transaction();
-    transaction.addQuery('DELETE FROM rubric_payroll_item WHERE ?', {
-      rubric_payroll_id : rubricPayrollId,
-    });
-    items.forEach(itemId => {
-      const record = {
-        uuid : db.uuid(),
-        rubric_payroll_id : rubricPayrollId,
-        item_id : itemId,
-      };
-      transaction.addQuery('INSERT INTO rubric_payroll_item SET ?', record);
-    });
-    return transaction.execute();
-  }).then(() => {
     return lookupRubric(rubricPayrollId);
   }).then(record => {
-    rubricDetail = record;
-    return lookupRubricItem(rubricPayrollId);
+    res.status(200).json(record);
   })
-    .then(_rubrics => {
-      rubricDetail.rubrics = _rubrics;
-      res.status(200).json(rubricDetail);
-    })
     .catch(next);
 }
 

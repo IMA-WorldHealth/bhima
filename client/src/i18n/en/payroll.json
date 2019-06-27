@@ -18,6 +18,8 @@
     "IS_SUM_OF_RUBRICS": "This rubric is a sum of others",
     "SUM_OF_RUBRICS": "Sum of others",
     "IS_MONETARY_VALUE": "This rubric is a monetary value",
-    "MONETARY_VALUE": "Monetary value"
+    "MONETARY_VALUE": "Monetary value",
+    "INDICE" : "Indice",
+    "IS_INDICE" : "This rubric is an indice"
   }
 }

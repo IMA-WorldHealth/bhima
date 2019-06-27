@@ -78,10 +78,6 @@ function RubricModalController($state, Rubrics, ModalService, Notify, AppCache) 
       vm.rubric.is_social_care = 0;
     }
 
-    if (!vm.rubric.is_sum_of_rubrics) {
-      vm.rubric.rubrics = [];
-    }
-
     if (rubricForm.$invalid || rubricForm.$pristine) { return 0; }
 
     const promise = (vm.isCreating) ? Rubrics.create(vm.rubric) : Rubrics.update(vm.rubric.id, vm.rubric);

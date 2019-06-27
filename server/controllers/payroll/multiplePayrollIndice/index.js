@@ -13,22 +13,36 @@ exports.lookUp = lookUp;
 exports.parameters = require('./paramter.config');
 exports.reports = require('./report');
 
+
+// retrieve indice's value for employee(s)
 async function read(req, res, next) {
-  try {
-    res.status(200).json(await lookUp(req.query));
-  } catch (error) {
-    next(error);
-  }
+  lookUp(req.query).then(rows => {
+    res.status(200).json(rows);
+  }).catch(next);
 }
 
+// specfiying indice's value for an employee
 function create(req, res, next) {
-
   const currencyId = req.body.currency_id;
   const payrollConfigurationId = req.body.payroll_configuration_id;
   const employeeUuid = req.body.employee_uuid;
   const { rubrics } = req.body;
 
+  const monataryRubrics = rubrics.filter(r => {
+    return r.is_monetary === 1;
+  });
+
   const transaction = db.transaction();
+  transaction.addQuery(`DELETE FROM employee_advantage WHERE employee_uuid = ?`, [db.bid(employeeUuid)]);
+
+  monataryRubrics.forEach(r => {
+    transaction.addQuery('INSERT INTO employee_advantage SET ?', {
+      employee_uuid : db.bid(employeeUuid),
+      rubric_payroll_id : r.id,
+      value : r.value,
+    });
+  });
+
   rubrics.forEach(r => {
     transaction.addQuery(`
       DELETE FROM stage_payment_indice 
@@ -51,6 +65,7 @@ function create(req, res, next) {
 }
 
 
+// retrieve indice's value for employee(s)
 async function lookUp(options) {
 
   const payConfigId = options.payroll_configuration_id;
@@ -72,7 +87,7 @@ async function lookUp(options) {
     FROM stage_payment_indice sti
     JOIN employee emp ON emp.uuid = sti.employee_uuid
     JOIN rubric_payroll rb ON rb.id = sti.rubric_id
-    WHERE sti.payroll_configuration_id = ? 
+    WHERE rb.is_indice = 1 AND sti.payroll_configuration_id = ? 
     ${employeeUuid ? ` AND emp.uuid = ?` : ''}
   `;
 
@@ -81,7 +96,9 @@ async function lookUp(options) {
     FROM rubric_payroll rb
     JOIN config_rubric_item cti ON cti.rubric_payroll_id = rb.id
     JOIN config_rubric cr On cr.id = cti.config_rubric_id
-    WHERE cr.id IN ( SELECT config_rubric_id FROM payroll_configuration WHERE id = ?)
+    WHERE 
+      rb.is_indice = 1 AND 
+      cr.id IN ( SELECT config_rubric_id FROM payroll_configuration WHERE id = ?)
     
     ORDER BY rb.position
   `;

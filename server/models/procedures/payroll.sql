@@ -140,12 +140,12 @@ DROP FUNCTION IF EXISTS `getStagePaymentIndice`$$
 CREATE  FUNCTION `getStagePaymentIndice`(_employee_uuid BINARY(16), 
 _payroll_configuration_id INT, _rubric_abbr VARCHAR(50) ) RETURNS DECIMAL(19, 4) DETERMINISTIC
 BEGIN
-	return (SELECT IFNULL(rubric_value, 0)
+	return IFNULL((SELECT rubric_value
 		FROM stage_payment_indice sp
 		JOIN rubric_payroll r ON r.id = sp.rubric_id
 		WHERE sp.employee_uuid = _employee_uuid AND r.abbr = _rubric_abbr AND	
 			payroll_configuration_id = _payroll_configuration_id
-		LIMIT 1);
+		LIMIT 1), 0);
 END;
 
 
@@ -160,7 +160,7 @@ BEGIN
    DECLARE _stage_payment_uuid BINARY(16);
 
    SELECT id INTO _rubric_id FROM rubric_payroll WHERE abbr = _rubric_abbr;
- 
+ 	
    IF _rubric_id > 0 THEN 
 	SET _stage_payment_uuid = IFNULL((
 		SELECT sp.uuid 
@@ -179,6 +179,7 @@ BEGIN
     (HUID(uuid()), _employee_uuid, _payroll_configuration_id, _rubric_id, _value);
   END IF;
 END $$
+
 
 DROP PROCEDURE IF EXISTS `updateIndices`$$
 CREATE   PROCEDURE `updateIndices`( IN _payroll_configuration_id INT)
@@ -210,16 +211,18 @@ BEGIN
 			WHERE st.employee_uuid = _employee_uuid
 			ORDER BY st.created_at DESC
 			LIMIT 1;
+						
 			CALL addStagePaymentIndice( _employee_uuid,_payroll_configuration_id,'indice de base', IFNULL(_employee_grade_indice, 0));
 			
 			SET @responsabilite = IFNULL(_function_indice, 0);
 			CALL addStagePaymentIndice( _employee_uuid,_payroll_configuration_id,'responsabilité', @responsabilite);
-			
+									
 			-- tot jrs
-			SET @tot_jrs = getStagePaymentIndice(_employee_uuid, _payroll_configuration_id, 'jrs prestes') +
+			SET @tot_jrs = getStagePaymentIndice(_employee_uuid, _payroll_configuration_id, 'Jrs prestes') +
 				 getStagePaymentIndice(_employee_uuid, _payroll_configuration_id, 'jrs suppl');
 
-			CALL addStagePaymentIndice( _employee_uuid,_payroll_configuration_id,'tot jrs', @tot_jrs );
+			CALL addStagePaymentIndice( _employee_uuid,_payroll_configuration_id,'tot jrs', IFNULL(@tot_jrs, 0));
+			
 			-- 
 			SET @nbrJour = 0;
 			SET @envelopPaie = 0;
@@ -231,22 +234,30 @@ BEGIN
 			
 			-- base indice
 			SET _sumBaseIndice = sumBaseIndice(_payroll_configuration_id);
-			SELECT _sumBaseIndice;
-			SET @indiceBase = getStagePaymentIndice(_employee_uuid, _payroll_configuration_id, 'indice de base');
+
+			SET @indiceBase = getStagePaymentIndice(_employee_uuid, _payroll_configuration_id, 'Indice de base');
 		    -- A revoir le calcul
 			-- SET @indiceJour = maxBaseIndice(_payroll_configuration_id)/@nbrJour;
-			SET @indiceJour = @indiceBase/@nbrJour;
+			SET @indiceJour = IFNULL(@indiceBase/@nbrJour, 0);
+			
+			CALL addStagePaymentIndice( _employee_uuid, _payroll_configuration_id,'indice jr', @indiceJour);
+			CALL addStagePaymentIndice( _employee_uuid, _payroll_configuration_id,'nbre jrs', @nbrJour);
+		
 			-- SELECT _sumBaseIndice, maxBaseIndice(_payroll_configuration_id), @nbrJour;
 			-- indice reajust = @indiceJour*(tot jrs)
-			SET @indice_reajust = @indiceJour*@tot_jrs;
-			CALL addStagePaymentIndice( _employee_uuid,_payroll_configuration_id,'indice reajust', @indice_reajust);
-
-
-			-- tot indice
-			CALL addStagePaymentIndice( _employee_uuid,_payroll_configuration_id,'tot indice', 
-				@indice_reajust  + @responsabilite
+			SET @indice_reajust = IFNULL(@indiceJour*@tot_jrs, 0);
+		
+			CALL addStagePaymentIndice( _employee_uuid, _payroll_configuration_id,'Indice reajuste', @indice_reajust);
+			
+			-- tot code
+			SET @electricite = getStagePaymentIndice(_employee_uuid, _payroll_configuration_id, 'electricité');
+			SET @autres = getStagePaymentIndice(_employee_uuid, _payroll_configuration_id, 'autres');
+	
+			SELECT @indice_reajust, @responsabilite, @electricite, @autres;
+			CALL addStagePaymentIndice( _employee_uuid, _payroll_configuration_id, 'tot code', 
+				@indice_reajust  + @responsabilite + @electricite + @autres
 			);
-
+			
 			-- tx paie = @envelopPaie / (somme indice de base)
 			IF (_sumBaseIndice = 0) THEN
 				SET _sumBaseIndice = 1;
@@ -255,42 +266,16 @@ BEGIN
 			CALL addStagePaymentIndice( _employee_uuid,_payroll_configuration_id,'tx paie', 
 			@envelopPaie/_sumBaseIndice
 			);
-
 			-- sal de base
-			SET @sal_de_base = getStagePaymentIndice(_employee_uuid, _payroll_configuration_id, 'tot indice')*
+			SET @sal_de_base = getStagePaymentIndice(_employee_uuid, _payroll_configuration_id, 'tot code')*
 				getStagePaymentIndice(_employee_uuid, _payroll_configuration_id, 'tx paie');
 
-			CALL addStagePaymentIndice( _employee_uuid,_payroll_configuration_id,'sal de base', @sal_de_base);
+			CALL addStagePaymentIndice( _employee_uuid,_payroll_configuration_id,'brute', IFNULL(@sal_de_base, 0));
 
-			SET @TOT = getStagePaymentIndice(_employee_uuid, _payroll_configuration_id, 'Avance') +
-				getStagePaymentIndice(_employee_uuid, _payroll_configuration_id, 'Taxe');
-
-			CALL addStagePaymentIndice( _employee_uuid,_payroll_configuration_id,'TOT', @TOT );
-
-			
-			CALL addStagePaymentIndice( _employee_uuid,_payroll_configuration_id,'NET', (@sal_de_base - @TOT)
-			);
+      UPDATE employee SET individual_salary = getStagePaymentIndice(_employee_uuid, _payroll_configuration_id, 'brute')
+      WHERE uuid = _employee_uuid;
 		END LOOP;
 	CLOSE curs1;
 END$$
 
 DELIMITER ;
-
--- call UpdateStaffingIndices('2019-06-01' , '2019-06-30');
-/*
-INSERT INTO `rubric_payroll` (`id`, `label`, `abbr`, `is_employee`, `is_percent`, `is_discount`, `is_tax`, `is_social_care`, `is_defined_employee`, `is_membership_fee`, `debtor_account_id`, `expense_account_id`, `is_ipr`, `is_associated_employee`, `is_seniority_bonus`, `is_family_allowances`, `is_monetary_value`, `is_sum_of_rubrics`, `position`, `value`)
-
- VALUES (13, 'indice de base', 'indice de base', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 0, 1, NULL),
-  (14, 'tot indice', 'tot indice', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 1, 2, NULL),
-  (15, 'indice reajust', 'indice reajust', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 0, 3, NULL),
-  (16, 'Responsabilité', 'responsabilité', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 0, 4, NULL),
- (17, 'Jours prestés', 'jrs prestes', 0, 0, 0, 0, 0, 1, 0, NULL, NULL, 0, 0, 0, 0, 0, 0, 5, NULL),
- (18, 'Jours supplementaires', 'jrs suppl', 0, 0, 0, 0, 0, 1, 0, NULL, NULL, 0, 0, 0, 0, 0, 0, 6, NULL),
-(19, 'Total jours', 'tot jrs', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 1, 7, NULL),
-(20, 'Taux de paie', 'tx paie', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 1, 0, 8, NULL),
- (21, 'Salaire de base', 'sal de base', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 1, 0, 9, NULL),
-(22, 'Avance sur salaire', 'Avance', 0, 0, 1, 0, 0, 1, 0, NULL, NULL, 0, 0, 0, 0, 1, 0, 10, NULL),
-(23, 'TAXE', 'Taxe', 0, 0, 1, 0, 0, 1, 0, NULL, NULL, 0, 0, 0, 0, 1, 0, 11, NULL),
-(24, 'TOTAL', 'TOT', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 1, 0, 13, NULL),
-(25, 'NET A PAYER', 'NET', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 1, 0, 14, NULL),
-*/

@@ -213,8 +213,8 @@ CREATE TABLE `rubric_payroll` (
   `is_seniority_bonus` TINYINT(1) DEFAULT 0,
   `is_family_allowances` TINYINT(1) DEFAULT 0,
   `is_monetary_value`  TINYINT(1) DEFAULT 1,
-  `is_sum_of_rubrics`  TINYINT(1) DEFAULT 0,
   `position`  TINYINT(1) DEFAULT 0,
+  `is_indice` TINYINT(1) DEFAULT 0,
   `value` float DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `rubric_payroll_1` (`label`),
@@ -2355,6 +2355,17 @@ CREATE TABLE `staffing_indice_parameters` (
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `payroll_config_id`(`payroll_configuration_id`),
   FOREIGN KEY (`payroll_configuration_id`) REFERENCES `payroll_configuration` (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `rubric_payroll_indice`;
+CREATE TABLE `rubric_payroll_indice` (
+  `uuid` BINARY(16) NOT NULL,
+  `label` VARCHAR(80) NOT NULL,
+  `abbr` varchar(20) DEFAULT NULL,
+  `position`  TINYINT(1) DEFAULT 0,
+  `is_defined_employee` TINYINT(1) DEFAULT 0,
+  `value` float DEFAULT NULL,
+  PRIMARY KEY (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
