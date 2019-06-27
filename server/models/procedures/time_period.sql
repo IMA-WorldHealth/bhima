@@ -100,8 +100,38 @@ BEGIN
     END IF;
 
     SET periodNumber = periodNumber + 1;
+    
+    call UpdatePeriodLabels();
   END WHILE;
 END $$
+
+
+
+DROP PROCEDURE IF EXISTS `UpdatePeriodLabels`$$
+CREATE   PROCEDURE `UpdatePeriodLabels`()
+BEGIN
+DECLARE _id mediumint(8) unsigned;
+DECLARE _start_date DATE;
+
+DECLARE done BOOLEAN;
+DECLARE curs1 CURSOR FOR 
+   SELECT id, start_date FROM period;
+
+DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+OPEN curs1;
+    read_loop: LOOP
+    FETCH curs1 INTO _id, _start_date;
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+         UPDATE period SET 
+			  period.translate_key = CONCAT('TABLE.COLUMNS.DATE_MONTH.', UPPER(DATE_FORMAT(_start_date, "%M"))),
+			  period.year =  YEAR(_start_date)
+			WHERE period.id = _id;
+    END LOOP;
+CLOSE curs1;
+END$$
 
 /*
 CALL CloseFiscalYear();

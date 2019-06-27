@@ -200,3 +200,53 @@ ALTER TABLE invoice_invoicing_fee ADD PRIMARY KEY (invoice_uuid, invoicing_fee_i
  * @date: 2019-05-31
 */
 ALTER TABLE `service` ADD COLUMN project_id SMALLINT(5) UNSIGNED NOT NULL;
+
+/*
+ * @author: mbayopanda
+ * @date: 2019-06-11
+ * @description:
+ * fix depot path, the id is 20, but we just use name and key
+ * to be sure we update depot for all databases
+*/
+UPDATE unit SET path="/depots" WHERE `name`="Depot Management" AND `key`="DEPOT.TITLE";
+
+
+/*
+ * @author: jeremielodi
+ * @date: 2019-06-07
+*/
+ALTER TABLE `period` ADD COLUMN `translate_key` VARCHAR(40) NULL;
+ALTER TABLE `period` ADD COLUMN `year` VARCHAR(10) NULL;
+
+
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS `UpdatePeriodLabels`$$
+CREATE   PROCEDURE `UpdatePeriodLabels`()
+BEGIN
+DECLARE _id mediumint(8) unsigned;
+DECLARE _start_date, _end_date DATE;
+
+DECLARE done BOOLEAN;
+DECLARE curs1 CURSOR FOR 
+   SELECT id, start_date, end_date FROM period;
+
+DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+OPEN curs1;
+    read_loop: LOOP
+    FETCH curs1 INTO _id, _start_date, _end_date;
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+         UPDATE period SET 
+			  period.translate_key = CONCAT('TABLE.COLUMNS.DATE_MONTH.', UPPER(DATE_FORMAT(_start_date, "%M"))),
+			  period.year =  YEAR(_start_date)
+			WHERE period.id = _id;
+    END LOOP;
+CLOSE curs1;
+END$$
+DELIMITER ;
+
+-- update columns 
+call UpdatePeriodLabels();

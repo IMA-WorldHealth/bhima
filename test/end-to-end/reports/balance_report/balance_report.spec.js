@@ -6,7 +6,7 @@ describe('Balance Report', () => {
   const key = 'balance_report';
 
   const dataset = {
-    month : 'juin',
+    month : 'Juin 2018',
     year : '2018',
     reportName : 'Balance Report Saved by E2E',
     renderer : 'PDF',
