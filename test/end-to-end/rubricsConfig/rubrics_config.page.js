@@ -48,6 +48,8 @@ class RubricConfigPage {
     await row.dropdown().click();
     await row.method('configure').click();
 
+    await browser.wait(EC.elementToBeClickable(element(by.id('social'))), 1500);
+
     await element(by.id('social')).click();
     await element(by.id('tax')).click();
 
