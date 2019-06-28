@@ -1,5 +1,4 @@
 const db = require('../../../../../lib/db');
-const identifiers = require('../../../../../config/identifiers');
 
 const IS_EXIT = 0;
 const ENTRY_FROM_PURCHASE_ID = 1;
@@ -15,7 +14,7 @@ function fetch(depotUuid, dateFrom, dateTo, showDetails) {
     SUM(m.quantity) as quantity, m.date, m.description,
     u.display_name AS user_display_name, sup.display_name AS supplier_display_name,
     dm.text AS document_reference, d.text AS depot_name, 
-    CONCAT_WS('.', '${identifiers.PURCHASE_ORDER.key}', proj.abbr, p.reference) AS purchase_reference
+    dm2.text AS purchase_reference
   FROM stock_movement m
     JOIN lot l ON l.uuid = m.lot_uuid
     JOIN inventory i ON i.uuid = l.inventory_uuid
@@ -26,6 +25,7 @@ function fetch(depotUuid, dateFrom, dateTo, showDetails) {
     JOIN project proj ON proj.id = p.project_id
     JOIN user u ON u.id = m.user_id
     LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
+    LEFT JOIN document_map dm2 ON dm2.uuid = p.uuid
   WHERE m.is_exit = ${IS_EXIT} AND m.flux_id = ${ENTRY_FROM_PURCHASE_ID} AND d.uuid = ? 
     AND (DATE(m.date) BETWEEN DATE(?) AND DATE(?))
   GROUP BY i.uuid`;

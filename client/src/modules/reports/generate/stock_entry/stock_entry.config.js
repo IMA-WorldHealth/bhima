@@ -12,10 +12,9 @@ function StockEntryConfigController($sce, Notify, SavedReports, AppCache, report
   const reportUrl = 'reports/stock/entry';
 
   // default values
-  vm.includePurchaseEntry = 1;
-  vm.includeIntegrationEntry = 0;
-  vm.includeDonationEntry = 0;
-  vm.includeTransferEntry = 0;
+  vm.reportDetails = {
+    includePurchaseEntry : 1,
+  };
   vm.previewGenerated = false;
   vm.onEntryTypeChange = onEntryTypeChange;
 
@@ -79,8 +78,10 @@ function StockEntryConfigController($sce, Notify, SavedReports, AppCache, report
 
   function onEntryTypeChange() {
     // be sure at least one checkbox is checked
-    const sum = vm.includePurchaseEntry
-      + vm.includeIntegrationEntry + vm.includeDonationEntry + vm.includeTransferEntry;
+    const sum = vm.reportDetails.includePurchaseEntry
+      + vm.reportDetails.includeIntegrationEntry
+      + vm.reportDetails.includeDonationEntry
+      + vm.reportDetails.includeTransferEntry;
     vm.hasOneChecked = sum > 0;
   }
 }
