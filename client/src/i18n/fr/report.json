@@ -177,7 +177,13 @@
       "INCLUDE_SERVICE_EXIT" : "Inclure les distributions vers les services",
       "INCLUDE_DEPOT_EXIT" : "Inclure les distributions vers d'autres dépôts",
       "INCLUDE_LOSS_EXIT" : "Inclure les pertes de stocks",
-      "SHOW_DETAILS" : "Afficher les details"
+      "SHOW_DETAILS" : "Afficher les details",
+      "ENTRY_REPORT": "Rapports des entrées de stocks",
+      "ENTRY_REPORT_DESCRIPTION": "Ce rapport affiche les différentes entrées de stock qui ont eu lieu dans les dépots",
+      "INCLUDE_PURCHASE_ENTRY": "Inclure les entrées en provenance des achats",
+      "INCLUDE_INTEGRATION_ENTRY": "Inclure les entrées en provenance des intégrations",
+      "INCLUDE_DONATION_ENTRY": "Inclure les entrées en provenance des donations",
+      "INCLUDE_TRANSFER_ENTRY": "Inclure les entrées en provenance des transferts"
     },
     "UTIL":{
       "CANCEL_PREVIEW" : "Fermer l'Aperçu",

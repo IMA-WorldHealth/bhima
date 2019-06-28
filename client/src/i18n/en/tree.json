@@ -116,6 +116,7 @@
     "STOCK_REPORT" : "[Stock] Inventories",
     "STOCK_INVENTORY_REPORT" : "[Stock] Inventory Report",
     "STOCK_EXIT_REPORT" : "[Stock] Exit Report",
+    "STOCK_ENTRY_REPORT":"[Stock] Entries Report",
     "STOCK_LOTS" : "Stock Lots",
     "STOCK_VALUE" : "[Stock] Stock value Report",
     "STOCK_MOVEMENTS" : "Stock Movements",

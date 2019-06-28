@@ -1,0 +1,216 @@
+{{> head title="REPORT.STOCK.ENTRY_REPORT" }}
+
+<body>
+
+  <div class="container">
+  {{> header}}
+
+  <!-- body  -->
+  <div class="row">
+    <div class="col-xs-12">
+
+      <!-- page title  -->
+      <h2 class="text-center">
+        {{translate 'REPORT.STOCK.ENTRY_REPORT'}}
+      </h2>
+
+      <h1 class="text-center">
+        {{ depotName }}
+      </h1>
+
+      <h4 class="text-center">
+        {{date dateFrom}} - {{date dateTo}}
+      </h4>
+
+      <br/>
+
+      <!-- stock entry from purchase -->
+      {{#if includePurchaseEntry}}
+        <h3>{{translate 'STOCK.RECEIPT.ENTRY_PURCHASE'}}</h3>
+
+        <table class="table table-condensed table-report">
+          {{#each entryFromPurchase.data as | data |}}
+            <thead>
+              <tr>
+                <th colspan="4">{{ data.inventory_name }}</th>
+                <th class="text-right">{{ data.inventory_stock_entry_quantity }} <i>({{ data.inventory_unit }})</i></th>
+              </tr>
+            </thead>
+
+            {{#if ../showDetails}}
+              <tbody>
+                {{#each data.inventory_stock_entry_data as | item |}}
+                  <tr>
+                    <td style="border:none; width: 20%; padding-left: 30px;"><b>{{ document_reference }}</b></td>
+                    <td class="text-left" style="border:none; width: 40%;">({{ purchase_reference }}) {{ supplier_display_name }}</td>
+                    <td class="text-left" style="border:none; width: 15%">&nbsp;</td>
+                    <td style="border:none;">{{date date }}</td>
+                    <td class="text-right" style="border:none;">{{ quantity }} <i>({{ unit_text }})</i></td>
+                  </tr>
+                {{/each}}
+              </tbody>
+            {{/if}}
+
+          {{/each}}
+
+          <!-- no data -->
+          {{#if entryFromPurchase.isEmpty}}
+            <tr><th class="text-center">{{translate 'STOCK.NO_DATA'}}</th></tr>
+          {{/if}}
+        </table>
+      {{/if}}
+
+      <br/>
+
+      <!-- stock entry from integration -->
+      {{#if includeIntegrationEntry}}
+        <h3>{{translate 'STOCK.RECEIPT.ENTRY_INTEGRATION'}}</h3>
+
+        <table class="table table-condensed table-report">
+          {{#each entryFromIntegration.data as | data |}}
+            <thead>
+              <tr>
+                <th colspan="4">{{ data.inventory_name }}</th>
+                <th class="text-right">{{ data.inventory_stock_entry_quantity }} <i>({{ data.inventory_unit }})</i></th>
+              </tr>
+            </thead>
+
+            {{#if ../showDetails}}
+              <tbody>
+                {{#each data.inventory_stock_entry_data as | item |}}
+                  <tr>
+                    <td style="border:none; width: 20%; padding-left: 30px;"><b>{{ document_reference }}</b></td>
+                    <td class="text-left" style="border:none; width: 40%;">{{ description }}</td>
+                    <td class="text-left" style="border:none; width: 15%">&nbsp;</td>
+                    <td style="border:none;">{{date date }}</td>
+                    <td class="text-right" style="border:none;">{{ quantity }} <i>({{ unit_text }})</i></td>
+                  </tr>
+                {{/each}}
+              </tbody>
+            {{/if}}
+
+          {{/each}}
+
+          <!-- no data -->
+          {{#if entryFromIntegration.isEmpty}}
+            <tr><th class="text-center">{{translate 'STOCK.NO_DATA'}}</th></tr>
+          {{/if}}
+        </table>
+      {{/if}}
+
+      <br/>
+
+      <!-- stock entry from donation -->
+      {{#if includeDonationEntry}}
+        <h3>{{translate 'STOCK.RECEIPT.ENTRY_DONATION'}}</h3>
+
+        <table class="table table-condensed table-report">
+          {{#each entryFromDonation.data as | data |}}
+            <thead>
+              <tr>
+                <th colspan="4">{{ data.inventory_name }}</th>
+                <th class="text-right">{{ data.inventory_stock_entry_quantity }} <i>({{ data.inventory_unit }})</i></th>
+              </tr>
+            </thead>
+
+            {{#if ../showDetails}}
+              <tbody>
+                {{#each data.inventory_stock_entry_data as | item |}}
+                  <tr>
+                    <td style="border:none; width: 20%; padding-left: 30px;"><b>{{ document_reference }}</b></td>
+                    <td class="text-left" style="border:none; width: 40%;">{{ description }}</td>
+                    <td class="text-left" style="border:none; width: 15%">&nbsp;</td>
+                    <td style="border:none;">{{date date }}</td>
+                    <td class="text-right" style="border:none;">{{ quantity }} <i>({{ unit_text }})</i></td>
+                  </tr>
+                {{/each}}
+              </tbody>
+            {{/if}}
+
+          {{/each}}
+
+          <!-- no data -->
+          {{#if entryFromDonation.isEmpty}}
+            <tr><th class="text-center">{{translate 'STOCK.NO_DATA'}}</th></tr>
+          {{/if}}
+        </table>
+      {{/if}}
+
+      <!-- stock entry to other depot -->
+      {{#if includeTransferEntry}}
+        <h3>{{translate 'STOCK.RECEIPT.ENTRY_DEPOT'}}</h3>
+
+        <table class="table table-condensed table-report">
+          {{#each entryFromTransfer.data as | data |}}
+            <thead>
+              <tr>
+                <th colspan="4">{{ data.inventory_name }}</th>
+                <th class="text-right">{{ data.inventory_stock_entry_quantity }} <i>({{ data.inventory_unit }})</i></th>
+              </tr>
+            </thead>
+
+            {{#if ../showDetails}}
+              <tbody>
+                {{#each data.inventory_stock_entry_data as | item |}}
+                  <tr>
+                    <td style="border:none; width: 20%; padding-left: 30px;"><b>{{ document_reference }}</b></td>
+                    <td class="text-left" style="border:none;  width: 40%;">{{ depot_name }}</td>
+                    <td class="text-left" style="border:none; width: 15%">&nbsp;</td>
+                    <td style="border:none;">{{date date }}</td>
+                    <td class="text-right" style="border:none;">{{ quantity }} <i>({{ unit_text }})</i></td>
+                  </tr>
+                {{/each}}
+              </tbody>
+            {{/if}}
+
+          {{/each}}
+
+          <!-- no data -->
+          {{#if entryFromTransfer.isEmpty}}
+            <tr><th class="text-center">{{translate 'STOCK.NO_DATA'}}</th></tr>
+          {{/if}}
+        </table>
+      {{/if}}
+
+      <br/>
+
+      <!-- stock entry as loss -->
+      {{#if includeLossEntry}}
+        <h3>{{translate 'STOCK.RECEIPT.ENTRY_LOSS'}}</h3>
+
+        <table class="table table-condensed table-report">
+          {{#each entryToLoss.data as | data |}}
+            <thead>
+              <tr>
+                <th colspan="4">{{ data.inventory_name }}</th>
+                <th class="text-right">{{ data.inventory_stock_entry_quantity }} <i>({{ data.inventory_unit }})</i></th>
+              </tr>
+            </thead>
+
+            {{#if ../showDetails}}
+              <tbody>
+                {{#each data.inventory_stock_entry_data as | item |}}
+                  <tr>
+                    <td style="border:none; width: 20%; padding-left: 30px;"><b>{{ document_reference }}</b></td>
+                    <td class="text-left" style="border:none;  width: 40%;">{{ description }}</td>
+                    <td class="text-left" style="border:none; width: 15%">&nbsp;</td>
+                    <td style="border:none;">{{date date }}</td>
+                    <td class="text-right" style="border:none;">{{ quantity }} <i>({{ unit_text }})</i></td>
+                  </tr>
+                {{/each}}
+              </tbody>
+            {{/if}}
+
+          {{/each}}
+
+          <!-- no data -->
+          {{#if entryToLoss.isEmpty}}
+            <tr><th class="text-center">{{translate 'STOCK.NO_DATA'}}</th></tr>
+          {{/if}}
+        </table>
+      {{/if}}
+    </div>
+  </div>
+
+  </div>
+</body>
