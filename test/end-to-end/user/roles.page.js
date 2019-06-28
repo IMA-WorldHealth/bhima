@@ -1,4 +1,5 @@
-/* global by, element */
+/* global element, by, browser */
+const EC = require('protractor').ExpectedConditions;
 const FU = require('../shared/FormUtils');
 const GridRow = require('../shared/GridRow');
 
@@ -38,8 +39,10 @@ class RolesPage {
     await row.menu.$('[data-method="edit-permissions"]').click();
   }
 
-  checkAllPerimission() {
-    return this.checkAll.click();
+  async checkAllPerimission() {
+    const checkbox = this.checkAll;
+    await browser.wait(EC.elementToBeClickable(checkbox), 1500);
+    await checkbox.click();
   }
 
   async assignRole(name) {
