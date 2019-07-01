@@ -39,5 +39,5 @@ Cette gestion exige certains pré-requis :
 - **La présence des utilisateurs ayant les permissions requises sur les dépots** : BHIMA dispose d'une politique de permission sur les dépôts, c'est-à-dire que seul les utilisateurs autorisés peuvent avoir accès à un dépot donné
 
 <div class = "bs-callout bs-callout-info">
-Il faut noter que tout mouvement des stocks (entrées, sorties, ajustements) sont enregistrés dans le registre des mouvements des stocks. Ceci permet d'avoir l'historique des mouvements des stocks à tout moment.
+Pour la configuration automatique, seule les rubriques qui s’expriment en pourcentage, calculées automatiquement, ou bien ceux dont les valeurs sont définies par employés seront prises en compte. La configuration automatique ne concerne que les employés qui sont en attente de configuration.
 </div>
