@@ -46,13 +46,13 @@ function MultiplePayrollIndiceController(
     field : 'display_name',
     displayName : 'FORM.LABELS.EMPLOYEE_NAME',
     headerCellFilter : 'translate',
-    width : 200,
+    width : 100,
     aggregationType  : uiGridConstants.aggregationTypes.count,
     aggregationHideLabel : true,
   },
   {
     field : 'action',
-    width : 200,
+    width : 100,
     displayName : '',
     enableFiltering : false,
     enableSorting : false,
@@ -121,7 +121,7 @@ function MultiplePayrollIndiceController(
       footerCellFilter : 'number:2',
       cellFilter : 'number:2',
       aggregationType : uiGridConstants.aggregationTypes.sum,
-      width : 100,
+      // width : 100,
       aggregationHideLabel : true,
     };
 

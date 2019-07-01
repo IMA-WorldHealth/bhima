@@ -123,7 +123,7 @@ function StaffingIndiceController($state, $uibModal, StaffingIndice,
       width : 100,
       displayName : '',
       headerCellFilter : 'translate',
-      cellTemplate : 'modules/payroll/staffing_index/templates/action.cell.html',
+      cellTemplate : 'modules/payroll/staffing_indice/templates/action.cell.html?ks=ok',
     }];
 
   // ng-click="

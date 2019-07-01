@@ -37,6 +37,17 @@ describe('(/staffing_indices) The staffing indices API endpoint', () => {
     grade_indice : 20,
   };
 
+  const staffingGradeIndice = {
+    uuid : '71e9f21c-d9b1-11e5-8ab7-78eb2f2a46e0',
+    grade_uuid : '9ee06e4a-7b59-48e6-812c-c0f8a00cf7d3',
+    value : 80,
+  };
+
+  const staffingFunctionIndice = {
+    uuid : '9ee06e4a-7b59-48e6-812c-c0f8a00cf7d3',
+    fonction_id : 1,
+    value : 80,
+  };
 
   it('POST /staffing_indices add a new staffing indice', () => {
     return agent.post('/staffing_indices')
@@ -48,12 +59,12 @@ describe('(/staffing_indices) The staffing indices API endpoint', () => {
   });
 
 
-  it('GET /staffing_indices returns a list of indices with one indice', () => {
+  it('GET /staffing_indices returns a list of indices with five indice', () => {
     return agent.get('/staffing_indices')
       .then(res => {
         expect(res).to.have.status(200);
         expect(res.body).to.be.an('array');
-        expect(res.body).to.have.length(1);
+        expect(res.body).to.have.length(5);
       })
       .catch(helpers.handler);
   });
@@ -85,4 +96,63 @@ describe('(/staffing_indices) The staffing indices API endpoint', () => {
       })
       .catch(helpers.handler);
   });
+
+
+  // staffing_grade_indices
+  it('DELETE /staffing_grade_indices delete a test indice', () => {
+    return agent.delete(`/staffing_grade_indices/${staffingGradeIndice.uuid}`)
+      .then(res => {
+        expect(res).to.have.status(200);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('POST /staffing_grade_indices add a new staffing indice', () => {
+    return agent.post('/staffing_grade_indices')
+      .send(staffingGradeIndice)
+      .then(res => {
+        expect(res).to.have.status(201);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /staffing_grade_indices returns a list of staffing grade indices(3 records)', () => {
+    return agent.get('/staffing_grade_indices')
+      .then(res => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.be.an('array');
+        expect(res.body).to.have.length(3);
+      })
+      .catch(helpers.handler);
+  });
+
+
+  // staffing function indices
+  it('DELETE /staffing_function_indices delete a test indice', () => {
+    return agent.delete(`/staffing_function_indices/${staffingFunctionIndice.uuid}`)
+      .then(res => {
+        expect(res).to.have.status(200);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('POST /staffing_function_indices add a new staffing indice', () => {
+    return agent.post('/staffing_function_indices')
+      .send(staffingFunctionIndice)
+      .then(res => {
+        expect(res).to.have.status(201);
+      })
+      .catch(helpers.handler);
+  });
+
+  it('GET /staffing_function_indices returns a list of staffing function indices(2 records)', () => {
+    return agent.get('/staffing_function_indices')
+      .then(res => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.be.an('array');
+        expect(res.body).to.have.length(2);
+      })
+      .catch(helpers.handler);
+  });
+
 });

@@ -1,12 +1,9 @@
-/* global browser */
-const EC = require('protractor').ExpectedConditions;
 const FU = require('../shared/FormUtils');
 const helpers = require('../shared/helpers');
 const components = require('../shared/components');
-const GridRow = require('../shared/GridRow');
+const GA = require('../shared/GridAction');
 
-
-describe('Staffing indice Management Tests', () => {
+describe.only('Staffing indice Management Tests', () => {
 
   const path = '#!/staffing_indices';
   // navigate to the page before the test suite
@@ -28,7 +25,8 @@ describe('Staffing indice Management Tests', () => {
     employee : 'Test 2 Patient',
   };
 
-
+  const gridId = 'staffing-indice-grid';
+  const actionLinkCol = 6;
   it('creates a new Staffing indice', async () => {
     await FU.buttons.create();
     await components.employeeSelect.set(indice.employee);
@@ -41,15 +39,13 @@ describe('Staffing indice Management Tests', () => {
     await components.notification.hasSuccess();
   });
 
-  it('should a edit Staffing indice', async () => {
-    const menu = await openDropdownMenu(indice.function_indice);
-    await menu.edit().click();
+  it('should edit a Staffing indice', async () => {
+    await GA.clickOnMethod(2, actionLinkCol, 'edit-record', gridId);
     await components.inpuText.set('function_indice', 200);
     // submit the page to the server
     await FU.buttons.submit();
     await components.notification.hasSuccess();
   });
-
 
   it('creates a new Staffing indice', async () => {
     await FU.buttons.create();
@@ -63,14 +59,12 @@ describe('Staffing indice Management Tests', () => {
     await components.notification.hasSuccess();
   });
 
-  it('should delete the test country', async () => {
+  it('should delete the Staffing indice', async () => {
     // click the edit button
-    const menu = await openDropdownMenu('A1');
-    await menu.remove().click();
+    await GA.clickOnMethod(3, actionLinkCol, 'delete-record', gridId);
     await FU.buttons.submit();
     await components.notification.hasSuccess();
   });
-
 
   it('blocks invalid form submission with relevant error classes', async () => {
     // switch to the create form
@@ -81,14 +75,6 @@ describe('Staffing indice Management Tests', () => {
     await components.inpuText.validationError('function_indice');
     await components.inpuText.validationError('grade_indice');
     await FU.buttons.cancel();
-
   });
-
-  async function openDropdownMenu(label) {
-    const row = new GridRow(label);
-    browser.wait(EC.presenceOf(row.dropdown()), 5000, 'menu action not clickable');
-    await row.dropdown().click();
-    return row;
-  }
 
 });

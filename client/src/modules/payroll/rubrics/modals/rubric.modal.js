@@ -9,7 +9,6 @@ function RubricModalController($state, Rubrics, ModalService, Notify, AppCache) 
   const vm = this;
   vm.rubric = {
     is_monetary_value : 1,
-    rubrics : [],
   };
 
   const cache = AppCache('RubricModal');
@@ -24,16 +23,6 @@ function RubricModalController($state, Rubrics, ModalService, Notify, AppCache) 
 
   vm.selectDebtorAccount = (account) => {
     vm.rubric.debtor_account_id = account.id;
-  };
-  vm.onSelectRubrics = (rubrics) => {
-    vm.rubric.rubrics = rubrics;
-  };
-  vm.onSelectRemoveRubrics = (id) => {
-    vm.rubric.rubrics.forEach((val, index) => {
-      if (val === id) {
-        delete vm.rubric.rubrics[index];
-      }
-    });
   };
 
 

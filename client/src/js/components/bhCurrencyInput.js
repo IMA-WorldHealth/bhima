@@ -7,6 +7,7 @@ angular.module('bhima.components')
       model : '=', // two way binding
       label : '@?',
       disabled : '<?',
+      required : '<?',
       min   : '@?',
     },
   });
@@ -25,6 +26,7 @@ function CurrencyInputController(Currencies) {
   $ctrl.$onInit = () => {
     // translated label for the form input
     $ctrl.label = $ctrl.label || 'FORM.LABELS.AMOUNT';
+    $ctrl.required = angular.isDefined($ctrl.required) ? $ctrl.required : true;
   };
 
 

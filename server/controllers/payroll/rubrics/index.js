@@ -70,7 +70,7 @@ function create(req, res, next) {
   const sql = `INSERT INTO rubric_payroll SET ?`;
   const data = req.body;
   db.exec(sql, [data]).then(result => {
-    res.status(201).json({ id : result.insertedId });
+    res.status(201).json({ id : result.insertId });
   }).catch(next);
 }
 

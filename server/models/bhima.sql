@@ -137,7 +137,9 @@ INSERT INTO unit VALUES
   (250, 'Sytem usage statistic', 'REPORT.SYSTEM_USAGE_STAT.TITLE', 'Sytem usage statistic', 144, '/modules/reports/systemUsageStat', '/reports/systemUsageStat'),
   (251, 'Realized Profit Report', 'TREE.REALIZED_PROFIT_REPORT', 'Realized profit report', 144, '/modules/reports/realizedProfit', '/reports/realizedProfit'),
   (252, 'Staffing indexes management','TREE.STAFFING_INDICES_MANAGEMENT','Staffing indices management', 57,'/modules/payroll/staffing_indice','/staffing_indices'),
-  (253, 'Function bonus management','TREE.FUNCTION_BONUS_MANAGEMENT','Function bonus management', 57,'/modules/payroll/function_bonus','/function_bonus');
+  (253, 'Function bonus management','TREE.FUNCTION_BONUS_MANAGEMENT','Function bonus management', 57,'/modules/payroll/function_bonus','/function_bonus'),
+  (254, 'Realized Profit Report', 'TREE.REALIZED_PROFIT_REPORT', 'Realized profit report', 144, '/modules/reports/realizedProfit', '/reports/realizedProfit'),
+  (255, 'Multiple Payroll by indice','TREE.MULTI_PAYROLL_INDICE','Multiple Payroll (indice)', 57,'/modules/multiple_payroll_indice','/multiple_payroll_indice');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -216,7 +218,7 @@ INSERT INTO `fonction` VALUES
   (2,'Medecin Directeur');
 
 INSERT INTO `staffing_function_indice` (`uuid`, `value`, `fonction_id`) VALUES
-(HUID(uuid()), 60.0000, 1),
+(HUID('9ee06e4a-7b59-48e6-812c-c0f8a00cf7d3'), 60.0000, 1),
 (HUID(uuid()), 125.0000, 2);
 
 -- transaction type
