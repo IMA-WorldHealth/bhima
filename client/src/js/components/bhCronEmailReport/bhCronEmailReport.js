@@ -5,7 +5,6 @@ angular.module('bhima.components')
     transclude  : true,
     bindings    : {
       reportId       : '@',
-      reportUrl      : '@',
       reportForm     : '<',
       reportDetails  : '<',
       onSelectReport : '&',
@@ -44,7 +43,7 @@ function bhCronEmailReportController(CronEmailReports, Notify, Session) {
       report_url : $ctrl.reportUrl,
       has_dynamic_dates : 0,
     };
-    $ctrl.isFeatureEnabled = Session.enterprise.settings.enable_auto_email_report;
+    $ctrl.isEmailFeatureEnabled = Session.enterprise.settings.enable_auto_email_report;
     load($ctrl.reportId);
   }
 
@@ -85,8 +84,8 @@ function bhCronEmailReportController(CronEmailReports, Notify, Session) {
       .catch(Notify.handleError);
   }
 
-  function submit(cronForm, reportForm) {
-    if (reportForm.$invalid) {
+  function submit(cronForm) {
+    if ($ctrl.reportForm.$invalid) {
       Notify.warn('CRON.PLEASE_FILL_REPORT_FORM');
       return;
     }

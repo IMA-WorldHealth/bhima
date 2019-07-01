@@ -26,7 +26,7 @@
       "ENABLE_AUTO_STOCK_ACCOUNTING_LABEL" : "Enables realtime stock accounting",
       "ENABLE_AUTO_STOCK_ACCOUNTING_HELP_TEXT" : "Enabling this feature will write stock movement transactions into the posting journal in real time. It requires all inventory accounts to be correctly configured.",
       "ENABLE_AUTO_EMAIL_REPORT_LABEL" : "Enable sending automatic reports by email",
-      "ENABLE_AUTO_EMAIL_REPORT_HELP_TEXT" : "Enabling this option gives access to the reporting configuration for automatic emails"
+      "ENABLE_AUTO_EMAIL_REPORT_HELP_TEXT" : "Enabling this option allows users to configure schedules to automatically send reports to a list of email addresses."
     }
   }
 }

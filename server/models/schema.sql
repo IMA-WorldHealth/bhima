@@ -1402,7 +1402,6 @@ CREATE TABLE `cron_email_report` (
   `entity_group_uuid` BINARY(16) NOT NULL,
   `cron_id` SMALLINT(5) NOT NULL,
   `report_id` SMALLINT(5) NOT NULL,
-  `report_url` VARCHAR(200) NOT NULL,
   `params` TEXT NULL,
   `label` VARCHAR(200) NOT NULL,
   `last_send` DATETIME NULL,

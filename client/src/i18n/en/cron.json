@@ -8,18 +8,17 @@
     "WEEKLY":"Weekly",
     "MONTHLY":"Monthly",
     "YEARLY":"Yearly",
-    "EVERY_MINUTE":"Every Minutes",
+    "EACH_MINUTE":"Each Minute",
     "SAVE":"Save",
     "SAVED_AUTO_REPORT":"Saved report for mailing",
-    "LAST":"Last Send",
+    "LAST":"Last Sent",
     "NEXT":"Next Send",
-    "PLEASE_FILL_REPORT_FORM":"Please fill correctly the report form",
-    "PLEASE_FILL_CRON_FORM":"Please fill correctly the email form",
+    "PLEASE_FILL_REPORT_FORM":"Oops! It looks like there is an error in the report configuration form. Please fill it in correctly before saving the email configuration.",
+    "PLEASE_FILL_CRON_FORM":"The email form isn't filled out correctly. Please check the values and resubmit",
     "DATES_BEHAVIOR":"Dates behaviors",
     "FIXED_DATES":"Fixed dates",
     "DYNAMIC_DATES":"Dynamic dates",
     "EMAIL_SENT_SUCCESSFULLY":"Email sent successfully",
-    "SEND":"Send",
-    "DELETE":"Delete"
+    "SEND":"Send"
   }
 }

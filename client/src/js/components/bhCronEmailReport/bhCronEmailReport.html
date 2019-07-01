@@ -1,4 +1,4 @@
-<section ng-if="$ctrl.isFeatureEnabled">
+<section ng-if="$ctrl.isEmailFeatureEnabled">
   <!-- form -->
   <div class="panel panel-info">
     <div class="panel-heading">
@@ -6,12 +6,8 @@
       <span translate>CRON.AUTO_EMAIL_REPORT</span>
     </div>
     <div class="panel-body">
-      <form name="CronForm" bh-submit="$ctrl.submit(CronForm, $ctrl.reportForm)" novalidate>
+      <form name="CronForm" bh-submit="$ctrl.submit(CronForm)" novalidate>
         <!-- label -->
-        <!-- <div class="form-group">
-          <label for="cronReportLabel" translate>FORM.LABELS.LABEL</label>
-          <input type="text" class="form-control" id="cronReportLabel" ng-model="$ctrl.cron.label" required>
-        </div> -->
         <bh-input-text
           key="label"
           text-value="$ctrl.cron.label"
@@ -21,22 +17,18 @@
         </bh-input-text>
   
         <!-- group -->
-        <div class="form-group">
-          <bh-entity-group-select
-            uuid="$ctrl.cron.entity_group_uuid"
-            on-select-callback="$ctrl.onSelectEntityGroup(entityGroup)"
-            required="true">
-          </bh-entity-group-select>
-        </div>
+        <bh-entity-group-select
+          uuid="$ctrl.cron.entity_group_uuid"
+          on-select-callback="$ctrl.onSelectEntityGroup(entityGroup)"
+          required="true">
+        </bh-entity-group-select>
   
         <!-- frequency -->
-        <div class="form-group">
-          <bh-cron-select 
-            id="$ctrl.cron.cron_id"
-            on-select-callback="$ctrl.onSelectCron(cron)"
-            required="true">
-          </bh-cron-select>
-        </div>
+        <bh-cron-select 
+          id="$ctrl.cron.cron_id"
+          on-select-callback="$ctrl.onSelectCron(cron)"
+          required="true">
+        </bh-cron-select>
 
         <!-- dates behaviour -->
         <bh-yes-no-radios
@@ -75,7 +67,7 @@
           </td>
           <td>
             <a class="text-danger" href ng-click="$ctrl.remove(item.id)">
-              <i class="fa fa-trash"></i> <span translate>CRON.DELETE</span>
+              <i class="fa fa-trash"></i> <span translate>FORM.BUTTONS.DELETE</span>
             </a>
           </td>
         </tr>

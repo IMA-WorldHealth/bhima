@@ -42,20 +42,13 @@ function processAttachments(attachments = []) {
 
         // asynchronously load the file and add it as as an attachment
         return fs.readFile(attach.path)
-          .then(file =>
-            new mailgun.Attachment({
-              filename : attach.filename,
-              data : file,
-            }));
+          .then(file => new mailgun.Attachment({ filename : attach.filename, data : file }));
       }
 
       debug(`#processAttachments() attach stream ${attach.filename}`);
 
       // asynchronously load the file and add it as as an attachment
-      return new mailgun.Attachment({
-        filename : attach.filename,
-        data : attach.stream,
-      });
+      return new mailgun.Attachment({ filename : attach.filename, data : attach.stream });
 
     }));
 }

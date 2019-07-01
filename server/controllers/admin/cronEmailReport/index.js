@@ -6,7 +6,7 @@ const debug = require('debug')('app');
 const Cron = require('cron').CronJob;
 
 const db = require('../../../lib/db');
-const Moment = require('../../../lib/moment');
+const BhMoment = require('../../../lib/bhMoment');
 const FilterParser = require('../../../lib/filter');
 
 const mailer = require('../../../lib/mailer');
@@ -20,7 +20,7 @@ function find(options = {}) {
   const sql = `
     SELECT 
       cer.id, cer.entity_group_uuid, cer.cron_id, cer.report_id, 
-      cer.report_url, cer.params, cer.label, cer.last_send,
+      cer.params, cer.label, cer.last_send,
       cer.next_send, cer.has_dynamic_dates,
       eg.label AS entity_group_label,
       c.label AS cron_label, c.value AS cron_value,
@@ -42,7 +42,7 @@ function lookup(id) {
   const query = `
     SELECT 
       cer.id, cer.entity_group_uuid, cer.cron_id, cer.report_id, 
-      cer.report_url, cer.params, cer.label, cer.last_send,
+      cer.params, cer.label, cer.last_send,
       cer.next_send, cer.has_dynamic_dates,
       eg.label AS entity_group_label,
       c.label AS cron_label, c.value AS cron_value,
@@ -243,7 +243,7 @@ function addDynamicDatesOptions(cronId, hasDynamicDates, options) {
   const MONTHLY = 3;
   const YEARLY = 4;
 
-  const period = new Moment(new Date());
+  const period = new BhMoment(new Date());
 
   if (hasDynamicDates) {
     if (cronId === DAILY) {
