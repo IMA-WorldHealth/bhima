@@ -1398,7 +1398,7 @@ CREATE TABLE `cron` (
 
 DROP TABLE IF EXISTS `cron_email_report`;
 CREATE TABLE `cron_email_report` (
-  `id` SMALLINT(5) NOT NULL AUTO_INCREMENT,
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
   `entity_group_uuid` BINARY(16) NOT NULL,
   `cron_id` SMALLINT(5) NOT NULL,
   `report_id` SMALLINT(5) NOT NULL,
