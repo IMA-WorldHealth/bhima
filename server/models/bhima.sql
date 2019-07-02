@@ -126,8 +126,8 @@ INSERT INTO unit VALUES
   (239, 'Visits Report', 'TREE.VISITS_REPORT', 'Visits registry', 144, '/modules/reports/visit_report', '/reports/visit_report'),
   (240, '[Stock] Stock Entry Report','TREE.STOCK_ENTRY_REPORT','Stock Entry Report', 144,'/modules/reports/generated/stock_entry','/reports/stock_entry'),
   (241, 'Entity Folder', 'ENTITY.MANAGEMENT', 'Entity Folder', 0, '/modules/entities', '/ENTITY_FOLDER'),
-  (242, 'Entity Management','ENTITY.MANAGEMENT','',240,'/modules/entities','/entities'),
-  (243, 'Entity Group', 'ENTITY.GROUP.TITLE', 'Entity Group', 240, '/modules/entity_group', '/entity_group');
+  (242, 'Entity Management','ENTITY.MANAGEMENT','',241,'/modules/entities','/entities'),
+  (243, 'Entity Group', 'ENTITY.GROUP.TITLE', 'Entity Group', 241, '/modules/entity_group', '/entity_group');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
