@@ -1403,7 +1403,7 @@ CREATE TABLE `cron_email_report` (
   `cron_id` SMALLINT(5) NOT NULL,
   `report_id` SMALLINT(5) NOT NULL,
   `params` TEXT NULL,
-  `label` VARCHAR(190) NOT NULL,
+  `label` VARCHAR(100) NOT NULL,
   `last_send` DATETIME NULL,
   `next_send` DATETIME NULL,
   `has_dynamic_dates` TINYINT NULL DEFAULT 0,
