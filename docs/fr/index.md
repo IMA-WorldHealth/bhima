@@ -10,10 +10,11 @@ Ce manuel est divisé en chapitres:
 4. [Gestion des stocks](./stock-management/index.md)
 5. [Références des Comptes](./references-comptes)
 6. [Centre des frais](./centre-des-frais)
-7. [Payroll](./payroll)
-8. Rapports et statistiques
+7. [Ressources humaines](./payroll)
+8. [Seuil de rentabilité](./break-even) 
+9. Rapports et statistiques
 
-9. [Référence développeur](./for-developers/index.md)
+10. [Référence développeur](./for-developers/index.md)
 
 ## A propos
 

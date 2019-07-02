@@ -1,4 +1,4 @@
-> [Accueil](../index) / [Payroll](./index) / Configuration de la paie
+> [Accueil](../index) / [Ressources humaines](./index) / Configuration de la paie
 
 # Configuration de la paie
 

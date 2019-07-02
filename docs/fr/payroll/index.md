@@ -1,15 +1,15 @@
-> [Accueil](../index.md) / Payroll
+> [Accueil](../index.md) / Ressources humaines
 
-# Payroll
+# Ressources humaines
 
 <div style='text-align: justify;'>
-Le module Payroll de Bhima 2X est le fruit de la combinaison réussie entre les fonctions de Bhima 1X et de formidables améliorations.
+La Gestion des Ressources humaines de Bhima 2X est le fruit de la combinaison réussie entre les fonctions de Bhima 1X et de formidables améliorations.
 Avec Bhima 2X, tout fonctionne de manière fluide et rapide. 
-En toute confiance, le module Payroll de Bhima 2X aide les responsable des ressources humaines à mieux gérer les processus 
+En toute confiance, Bhima 2X aide les responsable des ressources humaines à mieux gérer les processus 
 de la gestion du calcul de la paie de manière complètement automatique, tout en vous garantissant une sécurité optimale et un système protégé plus que jamais.</div>
 
-<strong>Les fonctionnalités clés du module payroll.</strong>
-<div style='text-align: justify;'>Le module Payroll de Bhima 2X a été conçu pour plaire aux gestionnaires des ressources humaines. Voici un aperçu de quelques fonctionnalités clés</div>
+<strong>Les fonctionnalités clés du module Ressources humaines.</strong>
+<div style='text-align: justify;'>Le module Ressources humaines de Bhima 2X a été conçu pour plaire aux gestionnaires des ressources humaines. Voici un aperçu de quelques fonctionnalités clés</div>
 
 
 1. [Gestion des employés](./gestion_employes)

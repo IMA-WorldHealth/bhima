@@ -1,4 +1,4 @@
-> [Accueil](../index) / [Payroll](./index) / Gestion des grades
+> [Accueil](../index) / [Ressources humaines](./index) / Gestion des grades
 
 # Gestion des grades
 <div style='text-align: justify;'>

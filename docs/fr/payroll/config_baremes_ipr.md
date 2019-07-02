@@ -1,4 +1,4 @@
-> [Accueil](../index) / [Payroll](./index) / Configuration des barèmes IPR
+> [Accueil](../index) / [Ressources humaines](./index) / Configuration des barèmes IPR
 
 # Configuration des barèmes IPR
 

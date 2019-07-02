@@ -1,4 +1,4 @@
-> [Accueil](../index) / [Payroll](./index) / Gestion des rubriques de paie
+> [Accueil](../index) / [Ressources humaines](./index) / Gestion des rubriques de paie
 
 # Gestion des rubriques de paie
 

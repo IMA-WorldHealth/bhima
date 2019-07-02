@@ -1,4 +1,4 @@
-> [Accueil](../index) / [Payroll](./index) / Registre des employés
+> [Accueil](../index) / [Ressources humaines](./index) / Registre des employés
 
 # Registre des employés
 

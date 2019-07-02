@@ -1,4 +1,4 @@
-> [Accueil](../index) / [Payroll](./index) / Gestion de la taxe IPR
+> [Accueil](../index) / [Ressources humaines](./index) / Gestion de la taxe IPR
 
 # Gestion de la taxe IPR
 
