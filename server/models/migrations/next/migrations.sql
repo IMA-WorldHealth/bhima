@@ -327,3 +327,14 @@ DELIMITER ;
 
 -- update columns 
 call UpdatePeriodLabels();
+
+/*
+  @author: mbayopanda
+  @date: 2019-05-13
+  @description: stock entries report
+*/
+INSERT INTO unit VALUES 
+  (240, '[Stock] Stock Entry Report','TREE.STOCK_ENTRY_REPORT','Stock Entry Report', 144,'/modules/reports/generated/stock_entry','/reports/stock_entry');
+
+INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES 
+  (33, 'stock_entry', 'REPORT.STOCK.ENTRY_REPORT');
