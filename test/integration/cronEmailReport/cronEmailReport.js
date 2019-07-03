@@ -8,7 +8,6 @@ describe('(/cron_email_reports) The cron_email_reports API ', () => {
     cron :
     {
       report_id : '4',
-      report_url : '/reports/finance/balance',
       has_dynamic_dates : 1,
       label : 'Balance 2018',
       entity_group_uuid : '00099B1D184A48DEB93D45FBD0AB3898',
