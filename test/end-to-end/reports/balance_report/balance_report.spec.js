@@ -18,9 +18,14 @@ describe('Balance Report', () => {
     frequency : 'Chaque mois',
   };
 
-  before(async () => {
+  beforeEach(async () => {
     await helpers.navigate(`#!/reports/${key}`);
     Page = new BalanceReportPage(key);
+  });
+
+  it('save report for cron task of emailing', async () => {
+    await Page.fillReportOptions(dataset.year, dataset.month);
+    await Page.saveCronEmailReport(cron.title, cron.group, cron.frequency);
   });
 
   it('preview a new balance report', async () => {
@@ -41,10 +46,5 @@ describe('Balance Report', () => {
 
   it('print the previewed report', async () => {
     await Page.printBalanceReport(dataset.year, dataset.month);
-  });
-
-  it('save report for cron task of emailing', async () => {
-    await Page.fillReportOptions(dataset.year, dataset.month);
-    await Page.saveCronEmailReport(cron.title, cron.group, cron.frequency);
   });
 });
