@@ -34,16 +34,16 @@
           </tr>
           <tr>
             <td style="width: 40%;">{{translate "TABLE.COLUMNS.RUBRICS"}}</td>
-            <td style="width: 25%;" class="text-center">{{translate 'TABLE.COLUMNS.RATE'}} ( % )</td>
+            <td style="width: 5%;" class="text-center">{{translate 'TABLE.COLUMNS.RATE'}} ( % )</td>
             <td style="width: 5%;" class="text-center">{{translate 'TABLE.COLUMNS.DAYS'}} </td>       
-            <td style="width: 15%;" class="text-center">{{translate 'TABLE.COLUMNS.DAILY_RATE'}} </td>
-            <td style="width: 15%;" class="text-center"> {{translate "TABLE.COLUMNS.RESULT"}}</td>
+            <td style="width: 25%;" class="text-center">{{translate 'TABLE.COLUMNS.DAILY_RATE'}} </td>
+            <td style="width: 25%;" class="text-center"> {{translate "TABLE.COLUMNS.RESULT"}}</td>
           </tr>
         </thead>
         <tr>
           <td>  {{translate 'TABLE.COLUMNS.DAY_WORKED'}} </td>
           <td></td>
-          <td> {{ working_day }} </td>
+          <td class="text-right"> {{ working_day }} </td>
           <td class="text-right"> {{currency (multiply daily_salary ../payrollPeriod.exchangeRate) ../payrollPeriod.currency }} </td>
           <td class="text-right"> {{currency (multiply dailyWorkedValue ../payrollPeriod.exchangeRate) ../payrollPeriod.currency }} </td>
         </tr>
@@ -51,20 +51,20 @@
         {{#each holidaysPaid}}
           <tr>
             <td> {{ label }} </td>
-            <td> {{ holiday_percentage }} </td>
-            <td> {{ holiday_nbdays }} </td> 
-            <td class="text-right"> {{currency (multiply daily_salary ../payrollPeriod.exchangeRate) ../payrollPeriod.currency }} </td>
-            <td class="text-right"> {{currency (multiply value ../payrollPeriod.exchangeRate) ../payrollPeriod.currency }} </td>
+            <td class="text-right"> {{ holiday_percentage }} </td>
+            <td class="text-right"> {{ holiday_nbdays }} </td> 
+            <td class="text-right"> {{currency (multiply dailyRate ../../payrollPeriod.exchangeRate) ../../payrollPeriod.currency }} </td>
+            <td class="text-right"> {{currency (multiply value ../../payrollPeriod.exchangeRate) ../../payrollPeriod.currency }} </td>
           </tr>
         {{/each}}
 
         {{#each offDaysPaid}}
           <tr>
             <td> {{ label }} </td>
-            <td> {{ offday_percentage }} </td>
-            <td> 1 </td>
-            <td class="text-right"> {{currency (multiply value ../payrollPeriod.exchangeRate) ../payrollPeriod.currency }} </td>
-            <td class="text-right"> {{currency (multiply value ../payrollPeriod.exchangeRate) ../payrollPeriod.currency }} </td>
+            <td class="text-right"> {{ offday_percentage }} </td>
+            <td class="text-right"> 1 </td>
+            <td class="text-right"> {{currency (multiply value ../../payrollPeriod.exchangeRate) ../../payrollPeriod.currency }} </td>
+            <td class="text-right"> {{currency (multiply value ../../payrollPeriod.exchangeRate) ../../payrollPeriod.currency }} </td>
           </tr>
         {{/each}}
         <tr>
