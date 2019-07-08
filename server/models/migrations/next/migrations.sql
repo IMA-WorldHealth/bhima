@@ -2,7 +2,7 @@ delimiter $$
 
 -- this Procedure help to make quick analyse about unbalanced invoice
 -- it create a table name 'unbalancedInvoices' that can be used by the analyser
-DROP PROCEDURE IF EXISTS UnbalancedInvoicePaymentsTable$$
+DROP PROCEDURE IF EXISTS UnbalancedInvoicePayments$$
 CREATE PROCEDURE UnbalancedInvoicePayments(
   IN dateFrom DATE,
   IN dateTo DATE
@@ -228,7 +228,7 @@ DECLARE _id mediumint(8) unsigned;
 DECLARE _start_date, _end_date DATE;
 
 DECLARE done BOOLEAN;
-DECLARE curs1 CURSOR FOR 
+DECLARE curs1 CURSOR FOR
    SELECT id, start_date, end_date FROM period;
 
 DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
@@ -239,14 +239,14 @@ OPEN curs1;
         IF done THEN
             LEAVE read_loop;
         END IF;
-         UPDATE period SET 
-			  period.translate_key = CONCAT('TABLE.COLUMNS.DATE_MONTH.', UPPER(DATE_FORMAT(_start_date, "%M"))),
-			  period.year =  YEAR(_start_date)
-			WHERE period.id = _id;
+         UPDATE period SET
+        period.translate_key = CONCAT('TABLE.COLUMNS.DATE_MONTH.', UPPER(DATE_FORMAT(_start_date, "%M"))),
+        period.year =  YEAR(_start_date)
+      WHERE period.id = _id;
     END LOOP;
 CLOSE curs1;
 END$$
 DELIMITER ;
 
--- update columns 
+-- update columns
 call UpdatePeriodLabels();
