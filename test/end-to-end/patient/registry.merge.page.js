@@ -15,9 +15,11 @@ function PatientMergePage() {
   };
 
   page.gridSelectRows = async function gridSelectRows(...lines) {
-    lines.forEach(async element => {
+    // eslint-disable-next-line
+    for (const element of lines) {
+      // eslint-disable-next-line
       await GU.selectRow(gridId, element);
-    });
+    }
   };
 
   page.selectPatientToKeep = async function selectPatientToKeep(reference) {

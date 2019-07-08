@@ -111,7 +111,7 @@ describe('Complex Vouchers', () => {
     // click on the convention tool
     await FU.dropdown('[toolbar-dropdown]', detail.tool);
 
-    browser.wait(EC.presenceOf($('[name=ToolForm]')), 3000);
+    await browser.wait(EC.presenceOf($('[name=ToolForm]')), 3000);
 
     await components.cashboxSelect.set(detail.cashbox);
 
@@ -151,7 +151,7 @@ describe('Complex Vouchers', () => {
     // click on the Support Patient Tool
     await FU.dropdown('[toolbar-dropdown]', detail.tool);
 
-    browser.wait(EC.presenceOf($('[name=ToolForm]')), 3000);
+    await browser.wait(EC.presenceOf($('[name=ToolForm]')), 3000);
 
     // select account
     await components.accountSelect.set(detail.accountNumber);
@@ -190,7 +190,7 @@ describe('Complex Vouchers', () => {
     // click on the tool
     await FU.dropdown('[toolbar-dropdown]', detail.tool);
 
-    browser.wait(EC.presenceOf($('[name=ToolForm]')), 3000);
+    await browser.wait(EC.presenceOf($('[name=ToolForm]')), 3000);
 
     // select the cashbox (the first ie Fc)
     await FU.uiSelect('ToolCtrl.cashbox', detail.cashbox);
@@ -229,7 +229,7 @@ describe('Complex Vouchers', () => {
     // click on the convention tool
     await FU.dropdown('[toolbar-dropdown]', detail.tool);
 
-    browser.wait(EC.presenceOf($('[name=ToolForm]')), 3000);
+    await browser.wait(EC.presenceOf($('[name=ToolForm]')), 3000);
 
     // select the cashbox (the first ie Fc)
     await FU.uiSelect('ToolCtrl.cashbox', detail.cashbox);
@@ -267,7 +267,7 @@ describe('Complex Vouchers', () => {
     // click on the convention tool
     await FU.dropdown('[toolbar-dropdown]', detail.tool);
 
-    browser.wait(EC.presenceOf($('[name=ToolForm]')), 3000);
+    await browser.wait(EC.presenceOf($('[name=ToolForm]')), 3000);
 
     // select the cashbox (the first ie $)
     await FU.uiSelect('ToolCtrl.cashbox', detail.cashbox);
@@ -305,7 +305,7 @@ describe('Complex Vouchers', () => {
     // click on the Support Patient Tool
     await FU.dropdown('[toolbar-dropdown]', detail.tool);
 
-    browser.wait(EC.presenceOf($('[name=ToolForm]')), 3000);
+    await browser.wait(EC.presenceOf($('[name=ToolForm]')), 3000);
 
     // Select Cashbox
     await components.cashboxSelect.set(detail.cashbox);
