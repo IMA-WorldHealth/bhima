@@ -212,9 +212,9 @@ UPDATE unit SET path="/depots" WHERE `name`="Depot Management" AND `key`="DEPOT.
 
 /*
  * @date: 2019-06-14
- * description: entity and entity groups units 
+ * description: entity and entity groups units
  */
-INSERT INTO `unit` VALUES 
+INSERT INTO `unit` VALUES
   (240, 'Entity Folder', 'ENTITY.MANAGEMENT', 'Entity Folder', 0, '/modules/entities', '/ENTITY_FOLDER'),
   (241, 'Entity Management','ENTITY.MANAGEMENT','',240,'/modules/entities','/entities'),
   (242, 'Entity Group', 'ENTITY.GROUP.TITLE', 'Entity Group', 240, '/modules/entity_group', '/entity_group');
@@ -274,7 +274,7 @@ CREATE TABLE `cron_email_report` (
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 -- cron
-INSERT INTO `cron` (`label`, `value`) VALUES 
+INSERT INTO `cron` (`label`, `value`) VALUES
   ('CRON.DAILY', '0 1 * * *'),
   ('CRON.WEEKLY', '0 1 * * 0'),
   ('CRON.MONTHLY', '0 1 30 * *'),
@@ -305,7 +305,7 @@ DECLARE _id mediumint(8) unsigned;
 DECLARE _start_date, _end_date DATE;
 
 DECLARE done BOOLEAN;
-DECLARE curs1 CURSOR FOR 
+DECLARE curs1 CURSOR FOR
    SELECT id, start_date, end_date FROM period;
 
 DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
@@ -316,16 +316,16 @@ OPEN curs1;
         IF done THEN
             LEAVE read_loop;
         END IF;
-         UPDATE period SET 
-			  period.translate_key = CONCAT('TABLE.COLUMNS.DATE_MONTH.', UPPER(DATE_FORMAT(_start_date, "%M"))),
-			  period.year =  YEAR(_start_date)
-			WHERE period.id = _id;
+         UPDATE period SET
+        period.translate_key = CONCAT('TABLE.COLUMNS.DATE_MONTH.', UPPER(DATE_FORMAT(_start_date, "%M"))),
+        period.year =  YEAR(_start_date)
+      WHERE period.id = _id;
     END LOOP;
 CLOSE curs1;
 END$$
 DELIMITER ;
 
--- update columns 
+-- update columns
 call UpdatePeriodLabels();
 
 /*
@@ -333,8 +333,8 @@ call UpdatePeriodLabels();
   @date: 2019-05-13
   @description: stock entries report
 */
-INSERT INTO unit VALUES 
+INSERT INTO unit VALUES
   (240, '[Stock] Stock Entry Report','TREE.STOCK_ENTRY_REPORT','Stock Entry Report', 144,'/modules/reports/generated/stock_entry','/reports/stock_entry');
 
-INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES 
+INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
   (33, 'stock_entry', 'REPORT.STOCK.ENTRY_REPORT');

@@ -14,7 +14,6 @@ const Employee = require('../../payroll/employees');
 const Creditors = require('../../finance/creditors');
 const Debtors = require('../../finance/debtors');
 const db = require('../../../lib/db');
-const util = require('../../../lib/util');
 
 const TEMPLATE = './server/controllers/finance/reports/financial.employee.handlebars';
 
@@ -73,7 +72,12 @@ async function build(req, res, next) {
     });
 
     // employee balance
-    data.employeeBalance = util.roundDecimal(data.debtorAggregates.balance - data.creditorAggregates.balance, 2);
+    data.includeMedicalCare = parseInt(options.includeMedicalCare, 10) === 1;
+
+    // For the Employee Standing report, it must be mentioned if the employee has a credit or debit balance
+    data.balanceCreditorText = data.creditorAggregates.balance >= 0
+      ? 'FORM.LABELS.CREDIT_BALANCE' : 'FORM.LABELS.DEBIT_BALANCE';
+
     // let render
     const result = await report.render(data);
     return res.set(result.headers).send(result.report);

@@ -8,8 +8,13 @@ Ce manuel est divisé en chapitres:
 2. [Modules Finance](./finance/index.md)
 3. [Dossiers médicaux](./medical-records/index.md)
 4. [Gestion des stocks](./stock-management/index.md)
-5. Rapports et statistiques
-6. [Référence développeur](./for-developers/index.md)
+5. [Références des Comptes](./references-comptes)
+6. [Centre des frais](./centre-des-frais)
+7. [Ressources humaines](./payroll)
+8. [Seuil de rentabilité](./break-even) 
+9. Rapports et statistiques
+
+10. [Référence développeur](./for-developers/index.md)
 
 ## A propos
 

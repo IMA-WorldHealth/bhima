@@ -14,13 +14,22 @@
   <h5 class="text-uppercase"><b>{{translate "FORM.LABELS.REGISTRATION_NUMBER"}} : {{ employee.code }}</b></h5>
   <h4 class="text-uppercase" style="background-color: #efefef;">
     <b>
-      {{translate "FORM.LABELS.BALANCE"}}== {{debcred ./employeeBalance metadata.enterprise.currency_id}}
+      {{translate balanceCreditorText}} == {{debcred ./creditorAggregates.balance metadata.enterprise.currency_id}}
     </b>
   </h4>
+  {{#if includeMedicalCare }}
+    <h5 class="text-uppercase" style="background-color: #efefef;">
+      <em>
+        {{translate "TABLE.COLUMNS.TOTAL_MEDICAL_CARE_EMPLOYEE"}} == {{debcred ./debtorAggregates.balance metadata.enterprise.currency_id}}
+      </em>
+    </h5>
+  {{/if}}
   <hr/>
 
   <section>
-    <h4>{{translate 'CREDITOR_GROUP.CREDITOR.TRANSACTIONS'}}</h4>
+    {{#if includeMedicalCare }}
+      <h4>{{translate 'CREDITOR_GROUP.CREDITOR.TRANSACTIONS'}}</h4>
+    {{/if}}  
     <table class="table table-condensed table-bordered table-report">
       <thead>
         <tr class="text-capitalize text-center" style="background-color: #ddd;" >
@@ -69,8 +78,7 @@
         </tr>      
       </tfoot>
     </table>
- 
- 
+    {{#if includeMedicalCare }}
     <br/>
     <h4>{{translate 'DEBTOR_GROUP.DEBTOR.TRANSACTIONS'}}</h4>
     <table class="table table-condensed table-bordered table-report">
@@ -121,6 +129,7 @@
         </tr>      
       </tfoot>
     </table>
+    {{/if}}
   </section>
 
 </body>

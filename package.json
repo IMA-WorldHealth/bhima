@@ -16,7 +16,8 @@
     "build:clean": "./sh/build-init-database.sh",
     "watch": "./node_modules/.bin/gulp watch",
     "snyk-protect": "snyk protect",
-    "prepare": "npm run snyk-protect"
+    "prepare": "npm run snyk-protect",
+    "prepublish": "npm run snyk-protect"
   },
   "repository": {
     "type": "git",
@@ -93,7 +94,7 @@
     "ng-file-upload": "^12.2.13",
     "ngstorage": "^0.3.11",
     "q": "~1.5.1",
-    "snyk": "^1.161.0",
+    "snyk": "^1.189.0",
     "stream-to-promise": "^2.2.0",
     "tempy": "^0.3.0",
     "typeface-open-sans": "^0.0.54",
@@ -114,7 +115,7 @@
     "commitizen": "^3.0.5",
     "cssnano": "^4.1.10",
     "cz-conventional-changelog": "^2.1.0",
-    "del": "^4.0.0",
+    "del": "^5.0.0",
     "eslint": "^6.0.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.16.0",
