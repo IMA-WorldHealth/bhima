@@ -1,0 +1,45 @@
+<form name="EntityGroupForm" bh-submit="EntityGroupModalCtrl.submit(EntityGroupForm)" novalidate>
+  <div class="modal-header">
+  <ol class="headercrumb">
+    <li ng-if="EntityGroupModalCtrl.isCreating" class="title">
+      <span translate>ENTITY.GROUP.ADD</span>
+      <label class="badge badge-warning" translate>FORM.LABELS.CREATE</label>
+    </li>
+    <li ng-if="!EntityGroupModalCtrl.isCreating" class="title">
+      <span translate>ENTITY.GROUP.EDIT</span>
+      <label class="badge badge-warning" translate>FORM.LABELS.UPDATE</label>
+    </li>
+  </ol>
+</div>
+
+  <div class="modal-body">
+
+    <!-- display name -->
+    <div class="form-group" ng-class="{ 'has-error' : EntityGroupForm.$submitted && EntityGroupForm.label.$invalid }">
+      <label class="control-label" translate>ENTITY.NAME</label>
+      <input name="label" ng-model="EntityGroupModalCtrl.group.label" autocomplete="off" class="form-control" required>
+      <div class="help-block" ng-messages="EntityGroupForm.label.$error" ng-show="EntityGroupForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+      </div>
+    </div>
+
+    <!-- entity type -->
+    <bh-entity-select-multiple 
+      entity-uuids="EntityGroupModalCtrl.group.entities"
+      on-select-callback="EntityGroupModalCtrl.onSelectEntities(entities)"
+      required="true">
+      <bh-clear on-clear="ReportConfigCtrl.clear('entities')"></bh-clear>
+    </bh-entity-select-multiple>
+
+  </div>
+
+  <div class="modal-footer">
+    <button data-method="cancel" type="button" class="btn btn-default" ui-sref="entityGroup">
+      <span translate>FORM.BUTTONS.CANCEL</span>
+    </button>
+
+    <bh-loading-button loading-state="EntityGroupForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

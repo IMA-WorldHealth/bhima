@@ -34,3 +34,4 @@ exports.feeCenter = require('./fee_center');
 exports.annualClientsReport = require('./debtors/annual-clients-report').annualClientsReport;
 exports.breakEven = require('./break_even');
 exports.breakEvenFeeCenter = require('./break_even_fee_center');
+exports.operating = require('./operating');

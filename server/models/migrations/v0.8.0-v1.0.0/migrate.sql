@@ -796,6 +796,7 @@ BEGIN
   -- lock the fiscal year and associated periods
   UPDATE fiscal_year SET locked = 1 WHERE id = fiscalYearId;
   UPDATE period SET locked = 1 WHERE fiscal_year_id = fiscalYearId;
+END $$
 
 DELIMITER $$
 /*

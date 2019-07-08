@@ -41,6 +41,10 @@ function BalanceReportConfigController($sce, Notify, SavedReports, AppCache, rep
     vm.reportDetails.includeClosingBalances = bool;
   };
 
+  vm.onSelectCronReport = report => {
+    vm.reportDetails = angular.copy(report);
+  };
+
   vm.preview = function preview(form) {
     if (form.$invalid) {
       Notify.danger('FORM.ERRORS.RECORD_ERROR');

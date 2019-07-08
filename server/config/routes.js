@@ -38,6 +38,8 @@ const languages = require('../controllers/admin/languages');
 const locations = require('../controllers/admin/locations');
 const groups = require('../controllers/groups');
 const entities = require('../controllers/admin/entities');
+const cron = require('../controllers/admin/cron');
+const cronEmailReport = require('../controllers/admin/cronEmailReport');
 
 // payroll routes
 const payrollConfig = require('../controllers/payroll/configuration');
@@ -100,8 +102,6 @@ const transactions = require('../controllers/finance/transactions');
 
 // looking up an entity by it reference
 const referenceLookup = require('../lib/referenceLookup');
-
-const operating = require('../controllers/finance/reports/operating/index');
 
 const department = require('../controllers/admin/department');
 const tags = require('../controllers/admin/tags');
@@ -395,7 +395,6 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/financialPatient/:uuid', financeReports.patient);
   app.get('/reports/finance/income_expense', financeReports.income_expense.document);
   app.get('/reports/finance/unpaid-invoice-payments', unpaidInvoicePayments.document);
-
   app.get('/reports/finance/income_expense_by_month', financeReports.income_expense_by_month.document);
   app.get('/reports/finance/income_expense_by_year', financeReports.income_expense_by_year.document);
   app.get('/reports/finance/cash_report', financeReports.cashReport.document);
@@ -415,6 +414,7 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/employeeStanding/', financeReports.employee);
   app.get('/reports/finance/break_even', financeReports.breakEven.report);
   app.get('/reports/finance/break_even_fee_center', financeReports.breakEvenFeeCenter.report);
+  app.get('/reports/finance/operating', financeReports.operating.document);
 
   // visits reports
   app.get('/reports/visits', medicalReports.visitsReports.document);
@@ -789,9 +789,6 @@ exports.configure = function configure(app) {
   app.post('/install', install.proceedInstall);
 
   app.get('/diagnoses', diagnoses.list);
-
-  app.get('/reports/finance/operating', operating.document);
-
   app.get('/roles', rolesCtrl.list);
   app.get('/roles/:uuid', rolesCtrl.detail);
 
@@ -822,6 +819,13 @@ exports.configure = function configure(app) {
   app.put('/entities/types/:id', entities.types.update);
   app.delete('/entities/types/:id', entities.types.remove);
   app.post('/entities/types', entities.types.create);
+
+  // entities groups API
+  app.get('/entities/groups', entities.groups.list);
+  app.get('/entities/groups/:uuid', entities.groups.details);
+  app.put('/entities/groups/:uuid', entities.groups.update);
+  app.delete('/entities/groups/:uuid', entities.groups.remove);
+  app.post('/entities/groups/', entities.groups.create);
 
   // entities API
   app.get('/entities', entities.list);
@@ -920,4 +924,18 @@ exports.configure = function configure(app) {
   // API dashboard
   app.get('/indicators/dashboards', dashboard.getIndicators);
   app.get('/reports/indicatorsReport', indicatorRerpor.report);
+
+  // API cron
+  app.get('/crons', cron.list);
+  app.get('/crons/:id', cron.details);
+  app.post('/crons', cron.create);
+  app.put('/crons/:id', cron.update);
+  app.delete('/crons/:id', cron.remove);
+
+  // API cron_email_report
+  app.get('/cron_email_reports', cronEmailReport.list);
+  app.get('/cron_email_reports/:id', cronEmailReport.details);
+  app.post('/cron_email_reports', cronEmailReport.create);
+  app.post('/cron_email_reports/:id', cronEmailReport.send);
+  app.delete('/cron_email_reports/:id', cronEmailReport.remove);
 };

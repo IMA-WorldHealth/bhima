@@ -1,0 +1,77 @@
+<section data-element="cron-email-report" ng-if="$ctrl.isEmailFeatureEnabled">
+  <!-- form -->
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <i class="fa fa-envelope-o"></i>
+      <span translate>CRON.AUTO_EMAIL_REPORT</span>
+    </div>
+    <div class="panel-body">
+      <form name="CronForm" bh-submit="$ctrl.submit(CronForm)" novalidate>
+        <!-- label -->
+        <bh-input-text
+          key="label"
+          text-value="$ctrl.cron.label"
+          label="FORM.LABELS.LABEL"
+          autocomplete="off"
+          required="true">
+        </bh-input-text>
+  
+        <!-- group -->
+        <bh-entity-group-select
+          uuid="$ctrl.cron.entity_group_uuid"
+          on-select-callback="$ctrl.onSelectEntityGroup(entityGroup)"
+          required="true">
+        </bh-entity-group-select>
+  
+        <!-- frequency -->
+        <bh-cron-select 
+          id="$ctrl.cron.cron_id"
+          on-select-callback="$ctrl.onSelectCron(cron)"
+          required="true">
+        </bh-cron-select>
+
+        <!-- dates behaviour -->
+        <bh-yes-no-radios
+          label="CRON.DYNAMIC_DATES"
+          value="$ctrl.cron.has_dynamic_dates"
+          on-change-callback="$ctrl.onChangeDynamicDates(value)">
+        </bh-yes-no-radios>
+  
+        <div class="text-right">
+          <button data-method="save-cron-report" type="submit" class="btn btn-primary" translate>
+            CRON.SAVE
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- table -->
+  <div ng-if="$ctrl.list.length" class="panel panel-info">
+    <div class="panel-heading">
+      <i class="fa fa-clock-o"></i>
+      <span translate>CRON.SAVED_AUTO_REPORT</span>
+    </div>
+    <table class="table table-condensed">
+      <tbody>
+        <tr ng-repeat="item in $ctrl.list track by item.id">
+          <td><span class="text-action" ng-click="$ctrl.details(item.id)">{{ item.label}}</span></td>
+          <td><a ui-sref="entityGroup">{{ item.entity_group_label }}</a> <i>(<span translate>{{ item.cron_label }}</span>)</i></td>
+          <td><span ng-if="item.last_send"><span translate>CRON.LAST</span><br> {{ item.last_send | date:'dd MMMM yyyy, hh:mm' }}</span></td>
+          <td><span ng-if="item.next_send"><span translate>CRON.NEXT</span><br> {{ item.next_send | date:'dd MMMM yyyy, hh:mm' }}</span></td>
+          <td>
+            <a class="text-info" ng-if="!$ctrl.sendingPending" href ng-click="$ctrl.send(item.id)">
+              <i class="fa fa-send"></i> <span translate>CRON.SEND</span>
+            </a>
+            <i ng-if="$ctrl.sendingPending" class="fa fa-circle-o-notch fa-spin"></i>
+          </td>
+          <td>
+            <a class="text-danger" href ng-click="$ctrl.remove(item.id)">
+              <i class="fa fa-trash"></i> <span translate>FORM.BUTTONS.DELETE</span>
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>

@@ -68,7 +68,10 @@
           </bh-account-select>
 
           <div ng-if="$ctrl.accountBalance.account_id && $ctrl.accountBalance.balance !== 0" class="alert alert-danger">
-            <p><span translate>FISCAL.ACCOUNT_HAS_VALUE</span> : <strong>{{ $ctrl.accountBalance.balance | currency : $ctrl.currency_id }}</strong></p>
+            <p>
+              <span translate>FISCAL.ACCOUNT_HAS_VALUE</span> : <strong>{{ $ctrl.accountBalance.balance | currency : $ctrl.currency_id }}</strong> 
+              <i>({{ $ctrl.accountBalance.balance }})</i>
+            </p>
           </div>
         </div>
 

@@ -12,9 +12,20 @@ describe('Balance Report', () => {
     renderer : 'PDF',
   };
 
-  before(async () => {
+  const cron = {
+    title : 'Balance report 2018',
+    group : 'Developers',
+    frequency : 'Chaque mois',
+  };
+
+  beforeEach(async () => {
     await helpers.navigate(`#!/reports/${key}`);
     Page = new BalanceReportPage(key);
+  });
+
+  it('save report for cron task of emailing', async () => {
+    await Page.fillReportOptions(dataset.year, dataset.month);
+    await Page.saveCronEmailReport(cron.title, cron.group, cron.frequency);
   });
 
   it('preview a new balance report', async () => {

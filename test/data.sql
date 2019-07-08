@@ -9,8 +9,8 @@ SET NAMES 'utf8';
 INSERT INTO `enterprise` VALUES
   (1, 'Test Enterprise', 'TE', '243 81 504 0540', 'enterprise@test.org', HUID('1f162a10-9f67-4788-9eff-c1fea42fcc9b'), NULL, 2, 103, NULL, NULL);
 
-INSERT INTO `enterprise_setting` (enterprise_id, enable_price_lock, enable_password_validation, enable_delete_records) VALUES
-  (1, 0, 1, 1);
+INSERT INTO `enterprise_setting` (enterprise_id, enable_price_lock, enable_password_validation, enable_delete_records, enable_auto_email_report) VALUES
+  (1, 0, 1, 1, 1);
 
 -- Project
 INSERT INTO `project` VALUES
@@ -1046,6 +1046,15 @@ INSERT INTO `user_role`(uuid, user_id, role_uuid)
 INSERT INTO entity (uuid, display_name, gender, email, phone, address, entity_type_id) VALUES
   (HUID('00099B1D184A48DEB93D45FBD0AB3790'), 'Bruce Wayne', 'M', 'thebat@bhi.ma', '+243000000', 'Gotham City', 1),
   (HUID('037AC6C6B75A4E328E9DCDE5DA22BACE'), 'Wayne Enterprise', 'o', 'thebat@bhi.ma', '+243000000', 'Gotham City', 4);
+
+-- default entity groups
+INSERT INTO entity_group (uuid, label) VALUES
+  (HUID('00099B1D184A48DEB93D45FBD0AB3898'), 'Developers');
+
+-- entity group entity
+INSERT INTO entity_group_entity (entity_uuid, entity_group_uuid) VALUES
+  (HUID('00099B1D184A48DEB93D45FBD0AB3790'), HUID('00099B1D184A48DEB93D45FBD0AB3898')),
+  (HUID('037AC6C6B75A4E328E9DCDE5DA22BACE'), HUID('00099B1D184A48DEB93D45FBD0AB3898'));
 
 -- default room type
 INSERT INTO room_type VALUES

@@ -1,23 +1,30 @@
 {
   "ENTITY":{
-    "MANAGEMENT":"Gestion des entités",
-    "ADD_ENTITY":"Ajouter une entité",
-    "EDIT_ENTITY":"Modifier l'entité",
+    "MANAGEMENT":"Gestion des contacts",
+    "ADD_ENTITY":"Ajouter un contact",
+    "EDIT_ENTITY":"Modifier le contact",
     "NAME":"Nom",
     "SEX":"Sex",
     "PHONE":"Téléphone",
     "EMAIL":"Email",
     "ADDRESS":"Adresse",
-    "CREATED":"Création de l'entité réussie avec succès",
+    "CREATED":"Création du contact réussie avec succès",
     "SUCCESS":"Opération réussie avec succès",
     "UPDATED":"Mise à jour réussie avec succès",
     "LABEL":"Entité",
     "TYPE":{
-      "LABEL":"Type d'entité",
+      "LABEL":"Type de contact",
       "PERSON":"Personne",
       "ENTERPRISE":"Entreprise",
       "SERVICE":"Service",
       "OFFICE":"Bureau"
+    },
+    "GROUP":{
+      "TITLE":"Gestion des groupe de contacts",
+      "ADD":"Ajouter un groupe",
+      "EDIT":"Editer le groupe",
+      "DELETE":"Supprimer le groupe",
+      "GROUP":"Groupe des contacts"
     }
   }
 }

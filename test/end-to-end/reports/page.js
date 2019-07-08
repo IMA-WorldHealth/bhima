@@ -14,6 +14,7 @@ class ReportPage {
   constructor(key) {
     this.url = `/reports/${key}`;
     this.previewAnchor = '[data-id="report-preview"]';
+    this.cronEmailReportwAnchor = '[data-element="cron-email-report"]';
     this.configAnchor = '[data-method="report-config"]';
     this.archiveAnchor = '[data-method="archive"]';
   }
@@ -34,6 +35,12 @@ class ReportPage {
   async saveAs() {
     const anchor = $(this.previewAnchor);
     await anchor.element(by.css('[data-method="save"]')).click();
+  }
+
+  // save for auto mailing
+  async saveAutoMailing() {
+    const anchor = $(this.cronEmailReportwAnchor);
+    await anchor.element(by.css('[data-method="save-cron-report"]')).click();
   }
 
   // config report

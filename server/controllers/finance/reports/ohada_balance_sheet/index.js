@@ -36,26 +36,29 @@ const balanceSheetLiabilityTable = balanceSheetElement.balanceSheetLiabilityTabl
 
 // expose to the API
 exports.document = document;
+exports.reporting = reporting;
 exports.aggregateReferences = aggregateReferences;
+
 /**
- * @function document
- * @description process and render the balance report document
+ * @description this function helps to get html document of the report in server side
+ * so that we can use it with others modules on the server side
+ * @param {object} options the report options
+ * @param {object} session the session
  */
-function document(req, res, next) {
-  const params = req.query;
+function reporting(options, session) {
+  const params = options;
   const context = {};
   let report;
 
   _.defaults(params, DEFAULT_PARAMS);
 
   try {
-    report = new ReportManager(TEMPLATE, req.session, params);
+    report = new ReportManager(TEMPLATE, session, params);
   } catch (e) {
-    next(e);
-    return;
+    throw e;
   }
 
-  balanceSheetElement.getFiscalYearDetails(params.fiscal_id)
+  return balanceSheetElement.getFiscalYearDetails(params.fiscal_id)
     .then(fiscalYear => {
       _.merge(context, { fiscalYear });
       const currentPeriodReferences = AccountReference.computeAllAccountReference(fiscalYear.current.period_id);
@@ -254,7 +257,15 @@ function document(req, res, next) {
 
       _.merge(context, { assetTable, liabilityTable });
       return report.render(context);
-    })
+    });
+}
+
+/**
+ * @function document
+ * @description process and render the balance report document
+ */
+function document(req, res, next) {
+  reporting(req.query, req.session)
     .then(result => {
       res.set(result.header).send(result.report);
     })

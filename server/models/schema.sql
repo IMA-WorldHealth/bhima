@@ -663,6 +663,7 @@ CREATE TABLE `enterprise_setting` (
   `enable_balance_on_invoice_receipt` TINYINT(1) NOT NULL DEFAULT 0,
   `enable_barcodes` TINYINT(1) NOT NULL DEFAULT 1,
   `enable_auto_stock_accounting` TINYINT(1) NOT NULL DEFAULT 0,
+  `enable_auto_email_report` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`enterprise_id`),
   FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
@@ -1351,6 +1352,24 @@ CREATE TABLE `entity_type` (
   UNIQUE KEY `label` (`label`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
+DROP TABLE IF EXISTS `entity_group`;
+CREATE TABLE `entity_group` (
+  `uuid` BINARY(16) NOT NULL,
+  `label` VARCHAR(190) NOT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`uuid`),
+  UNIQUE KEY `label` (`label`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `entity_group_entity`;
+CREATE TABLE `entity_group_entity` (
+  `id` SMALLINT(5) NOT NULL AUTO_INCREMENT,
+  `entity_uuid` BINARY(16) NOT NULL,
+  `entity_group_uuid` BINARY(16) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
 DROP TABLE IF EXISTS `entity`;
 CREATE TABLE `entity` (
   `uuid`               BINARY(16) NOT NULL,
@@ -1367,6 +1386,31 @@ CREATE TABLE `entity` (
   UNIQUE KEY `entity_uuid` (`uuid`),
   UNIQUE KEY `display_name` (`display_name`),
   KEY `entity_type_id` (`entity_type_id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `cron`;
+CREATE TABLE `cron` (
+  `id` SMALLINT(5) NOT NULL AUTO_INCREMENT,
+  `label` VARCHAR(150) NOT NULL,
+  `value` VARCHAR(20) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `cron_email_report`;
+CREATE TABLE `cron_email_report` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `entity_group_uuid` BINARY(16) NOT NULL,
+  `cron_id` SMALLINT(5) NOT NULL,
+  `report_id` SMALLINT(5) NOT NULL,
+  `params` TEXT NULL,
+  `label` VARCHAR(100) NOT NULL,
+  `last_send` DATETIME NULL,
+  `next_send` DATETIME NULL,
+  `has_dynamic_dates` TINYINT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `label` (`label`, `report_id`),
+  KEY `entity_group_uuid` (`entity_group_uuid`),
+  FOREIGN KEY (`entity_group_uuid`) REFERENCES `entity_group` (`uuid`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `posting_journal`;

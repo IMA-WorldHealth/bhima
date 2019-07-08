@@ -21,6 +21,7 @@ function EntitySelectController(Entities, Notify) {
 
   $ctrl.$onInit = function onInit() {
     $ctrl.label = $ctrl.label || 'ENTITY.LABEL';
+    $ctrl.multiple = $ctrl.multiple || false;
 
     // load all depots
     Entities.read(null)

@@ -221,6 +221,7 @@ function EnterpriseController(Enterprises, util, Notify, Projects, Modal, Scroll
   vm.enableBalanceOnInvoiceReceipSetting = proxy('enable_balance_on_invoice_receipt');
   vm.enableBarcodesSetting = proxy('enable_barcodes');
   vm.enableAutoStockAccountingSetting = proxy('enable_auto_stock_accounting');
+  vm.enableAutoEmailReportSetting = proxy('enable_auto_email_report');
 
   startup();
 }

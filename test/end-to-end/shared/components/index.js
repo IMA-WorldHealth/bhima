@@ -69,4 +69,6 @@ module.exports = {
   roomSelect : require('./bhRoomSelect'),
   fiscalYearPeriodSelect : require('./bhFiscalYearPeriodSelect'),
   diagnosisSelect : require('./bhDiagnosisSelect'),
+  entityGroupSelect : require('./bhEntityGroupSelect'),
+  cronSelect : require('./bhCronSelect'),
 };

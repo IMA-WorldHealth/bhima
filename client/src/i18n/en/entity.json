@@ -1,8 +1,8 @@
 {
   "ENTITY":{
-    "MANAGEMENT":"Entity Management",
-    "ADD_ENTITY":"Add Entity",
-    "EDIT_ENTITY":"Edit Entity",
+    "MANAGEMENT":"Contact Management",
+    "ADD_ENTITY":"Add Contact",
+    "EDIT_ENTITY":"Edit Contact",
     "NAME":"Name",
     "SEX":"Sex",
     "PHONE":"Phone",
@@ -11,13 +11,20 @@
     "CREATED":"Successfully created",
     "SUCCESS":"Successfully Done",
     "UPDATED":"Successfully Updated",
-    "LABEL":"Entity",
+    "LABEL":"Contact",
     "TYPE":{
-      "LABEL":"Entity Type",
+      "LABEL":"Contact Type",
       "PERSON":"Person",
       "ENTERPRISE":"Enterprise",
       "SERVICE":"Service",
       "OFFICE":"Office"
+    },
+    "GROUP":{
+      "TITLE":"Contact Group Management",
+      "ADD":"Add Group",
+      "EDIT":"Edit Group",
+      "DELETE":"Delete Group",
+      "GROUP":"Entity Group"
     }
   }
 }

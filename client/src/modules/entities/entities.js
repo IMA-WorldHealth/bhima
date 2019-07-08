@@ -105,7 +105,7 @@ function EntityController(
 
         Entity.delete(entity.uuid)
           .then(() => {
-            Notify.success('DEPOT.DELETED');
+            Notify.success('FORM.INFO.DELETE_SUCCESS');
             loadEntities();
           })
           .catch(Notify.handleError);

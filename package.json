@@ -64,6 +64,7 @@
     "chai-spies": "^1.0.0",
     "chai-spies-next": "^0.9.3",
     "connect-redis": "^3.4.0",
+    "cron": "^1.7.1",
     "cropper": "^4.0.0",
     "cross-env": "^5.2.0",
     "csvtojson": "^2.0.8",
