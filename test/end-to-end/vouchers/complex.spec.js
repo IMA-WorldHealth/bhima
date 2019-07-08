@@ -1,6 +1,7 @@
-/* global by */
+/* global by, browser */
 /* eslint no-await-in-loop:off */
 
+const EC = require('protractor').ExpectedConditions;
 const helpers = require('../shared/helpers');
 const components = require('../shared/components');
 const ComplexVoucherPage = require('./complex.page');
@@ -96,62 +97,7 @@ describe('Complex Vouchers', () => {
     await $('[data-method="close"]').click();
   });
 
-  it.skip('forbid submit when there is no transfer type for financial account', async () => {
-    const page = new ComplexVoucherPage();
-
-    /*
-     * the voucher we will use in this page
-     * NOTE: the Caisse Aux is a financial account which involve that we
-     * specify the transfer type
-     */
-    const voucher = {
-      date        : new Date(),
-      description : 'Complex voucher test e2e',
-      rows        : [
-        {
-          account : 'CASH PAYMENT CLIENT', debit : 17, credit : 0, entity : { type : 'D', name : 'Test 2 Patient' },
-        },
-        {
-          account : 'Caisse Aux', debit : 0, credit : 17, reference : { type : 'voucher', index : 0 },
-        },
-      ],
-    };
-
-    // configure the date to today
-    await page.date(voucher.date);
-
-    // set the description
-    await page.description(voucher.description);
-
-    // set the currency to USD
-    await page.currency(2);
-
-    // loop through each row and assign the correct form values
-    let idx = 0;
-    // eslint-disable-next-line
-    for (const row of voucher.rows) {
-      const current = page.row(idx);
-      await current.account(row.account);
-      await current.debit(row.debit);
-      await current.credit(row.credit);
-      if (row.entity) {
-        await current.entity(row.entity.type, row.entity.name);
-      }
-      if (row.reference) {
-        await current.reference(row.reference.type, row.reference.index);
-      }
-
-      idx += 1;
-    }
-
-    // submit the page
-    await page.submit();
-
-    // expect a danger notification
-    await components.notification.hasDanger();
-  });
-
-  it('Convention import invoices and payment via the tool', async () => {
+  it('convention import invoices and payment via the tool', async () => {
     const page = new ComplexVoucherPage();
 
     const detail = {
@@ -164,6 +110,8 @@ describe('Complex Vouchers', () => {
 
     // click on the convention tool
     await FU.dropdown('[toolbar-dropdown]', detail.tool);
+
+    browser.wait(EC.presenceOf($('[name=ToolForm]')), 3000);
 
     await components.cashboxSelect.set(detail.cashbox);
 
@@ -203,6 +151,8 @@ describe('Complex Vouchers', () => {
     // click on the Support Patient Tool
     await FU.dropdown('[toolbar-dropdown]', detail.tool);
 
+    browser.wait(EC.presenceOf($('[name=ToolForm]')), 3000);
+
     // select account
     await components.accountSelect.set(detail.accountNumber);
 
@@ -237,8 +187,10 @@ describe('Complex Vouchers', () => {
       amount      : 3000,
     };
 
-    // click on the convention tool
+    // click on the tool
     await FU.dropdown('[toolbar-dropdown]', detail.tool);
+
+    browser.wait(EC.presenceOf($('[name=ToolForm]')), 3000);
 
     // select the cashbox (the first ie Fc)
     await FU.uiSelect('ToolCtrl.cashbox', detail.cashbox);
@@ -277,6 +229,8 @@ describe('Complex Vouchers', () => {
     // click on the convention tool
     await FU.dropdown('[toolbar-dropdown]', detail.tool);
 
+    browser.wait(EC.presenceOf($('[name=ToolForm]')), 3000);
+
     // select the cashbox (the first ie Fc)
     await FU.uiSelect('ToolCtrl.cashbox', detail.cashbox);
 
@@ -302,7 +256,7 @@ describe('Complex Vouchers', () => {
     await $('[data-method="close"]').click();
   });
 
-  it.skip('Cash Transfer via the tool', async () => {
+  it('Cash Transfer via the tool', async () => {
     const detail = {
       tool    : 'Transfert d\'argent',
       cashbox : 'Caisse Aux',
@@ -312,6 +266,8 @@ describe('Complex Vouchers', () => {
 
     // click on the convention tool
     await FU.dropdown('[toolbar-dropdown]', detail.tool);
+
+    browser.wait(EC.presenceOf($('[name=ToolForm]')), 3000);
 
     // select the cashbox (the first ie $)
     await FU.uiSelect('ToolCtrl.cashbox', detail.cashbox);
@@ -348,6 +304,8 @@ describe('Complex Vouchers', () => {
 
     // click on the Support Patient Tool
     await FU.dropdown('[toolbar-dropdown]', detail.tool);
+
+    browser.wait(EC.presenceOf($('[name=ToolForm]')), 3000);
 
     // Select Cashbox
     await components.cashboxSelect.set(detail.cashbox);

@@ -21,7 +21,6 @@ CashboxSelectController.$inject = [
 
 /**
  * Cashbox selection component
- *
  */
 function CashboxSelectController(Cashbox, Notify, Session) {
   const $ctrl = this;

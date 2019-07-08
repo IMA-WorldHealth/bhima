@@ -5,7 +5,7 @@ angular.module('bhima.components')
     transclude  : true,
     bindings    : {
       feeCenterId      : '<',
-      filter           : '<',
+      filter           : '<?',
       principal        : '<',
       onSelectCallback : '&',
       required         : '<?',

@@ -9,13 +9,15 @@ angular.module('bhima.components')
     controller : bhReportPreviewController,
   });
 
-function bhReportPreviewController() {
-  const ctrl = this;
+bhReportPreviewController.$inject = ['$window'];
+
+function bhReportPreviewController($window) {
+  const $ctrl = this;
 
   // bind methods
-  ctrl.onPrintCallback = function onPrintCallback() {
-    window.frames.report.focus();
-    window.frames.report.print();
+  $ctrl.onPrintCallback = function onPrintCallback() {
+    $window.frames.report.focus();
+    $window.frames.report.print();
   };
 
 }
