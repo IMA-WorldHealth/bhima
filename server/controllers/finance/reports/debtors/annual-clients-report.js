@@ -9,7 +9,7 @@ const Exchange = require('../../exchange');
 const TEMPLATE = './server/controllers/finance/reports/debtors/annual-clients-report.handlebars';
 
 exports.annualClientsReport = annualClientsReport;
-
+exports.reporting = reporting;
 /**
  * @method annualClientsReport
  *
@@ -65,6 +65,47 @@ function annualClientsReport(req, res, next) {
       res.set(result.headers).send(result.report);
     })
     .catch(next);
+}
+
+/**
+ * @description this function helps to get html(pdf) document of the report in server side
+ * so that we can use it with others modules on the server side
+ * @param {*} options the report options
+ * @param {*} session the session
+ */
+async function reporting(options, session) {
+  try {
+    const params = options;
+
+    const report = new ReportManager(TEMPLATE, session, params);
+
+    // fire the SQL for the report
+    const fiscalYearId = params.fiscalId;
+    const { currencyId, hideLockedClients } = params;
+
+    // convert to an integer
+    const shouldHideLockedClients = Number(hideLockedClients);
+
+    const data = {
+      isEnterpriseCurrency : parseInt(currencyId, 10) === session.enterprise.currency_id,
+    };
+
+    const [fiscalYear, exchange] = await Promise.all([
+      Fiscal.lookupFiscalYear(fiscalYearId),
+      Exchange.getExchangeRate(session.enterprise.id, currencyId, new Date()),
+    ]);
+    const rate = exchange.rate || 1;
+    _.extend(data, { fiscalYear, rate });
+
+    const [rows, footer] = await Promise.all([
+      getDebtorGroupMovements(fiscalYearId, currencyId, rate, shouldHideLockedClients),
+      getTotalsFooter(fiscalYearId, currencyId, rate, shouldHideLockedClients),
+    ]);
+    _.extend(data, { rows, footer });
+    return report.render(data);
+  } catch (error) {
+    throw error;
+  }
 }
 
 /**

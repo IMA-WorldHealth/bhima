@@ -20,6 +20,10 @@ function UnbalancedInvoicePaymentsConfigController($sce, Notify, SavedReports, A
     vm.reportDetails.debtorGroupUuid = debtorGroup.uuid;
   };
 
+  vm.onSelectCronReport = report => {
+    vm.reportDetails = angular.copy(report);
+  };
+
   vm.onClear = () => {
     delete vm.reportDetails.debtorGroupName;
     delete vm.reportDetails.debtorGroupUuid;

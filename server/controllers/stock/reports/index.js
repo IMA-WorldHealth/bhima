@@ -41,5 +41,6 @@ exports.stockEntryPurchaseReceipt = stockEntryPurchaseReceipt;
 exports.stockEntryIntegrationReceipt = stockEntryIntegrationReceipt;
 exports.stockEntryDonationReceipt = stockEntryDonationReceipt;
 exports.stockAdjustmentReceipt = stockAdjustmentReceipt;
-exports.stockValue = stockValue;
+exports.stockValue = stockValue.document;
+exports.stockValueReporting = stockValue.reporting;
 exports.stockAssignReceipt = stockAssignReceipt;

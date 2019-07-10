@@ -31,6 +31,10 @@ function AnnualClientsReportController($state, $sce, Notify, AppCache, SavedRepo
     vm.reportDetails.fiscalId = fiscal.id;
   };
 
+  vm.onSelectCronReport = report => {
+    vm.reportDetails = angular.copy(report);
+  };
+
   vm.onSelectCurrency = currencyId => {
     vm.reportDetails.currencyId = currencyId;
   };

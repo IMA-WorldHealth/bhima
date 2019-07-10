@@ -12,6 +12,7 @@ const DEFAULT_OPTIONS = {
 };
 
 exports.document = build;
+exports.reporting = reporting;
 
 async function build(req, res, next) {
   const qs = _.extend(req.query, DEFAULT_OPTIONS);
@@ -42,6 +43,24 @@ async function build(req, res, next) {
 
   const compiled = await report.render(data);
   res.set(compiled.headers).send(compiled.report);
+}
+
+
+async function reporting(options, session) {
+  const qs = _.extend(options, DEFAULT_OPTIONS);
+  let results;
+  const metadata = _.clone(session);
+  const report = new ReportManager(TEMPLATE, metadata, qs);
+  try {
+    results = await getUnbalancedInvoices(qs);
+  } catch (err) {
+    if (err.code !== 'ER_CANT_AGGREGATE_3COLLATIONS' && err.code !== 'ER_PARSE_ERROR') {
+      throw err;
+    }
+    results = { dataset : [], totals : {}, services : [] };
+  }
+  const data = _.extend({}, qs, results);
+  return report.render(data);
 }
 
 // invoice payements balance
