@@ -261,7 +261,6 @@ CREATE TABLE `cron_email_report` (
   `entity_group_uuid` BINARY(16) NOT NULL,
   `cron_id` SMALLINT(5) NOT NULL,
   `report_id` SMALLINT(5) NOT NULL,
-  `report_url` VARCHAR(200) NOT NULL,
   `params` TEXT NULL,
   `label` VARCHAR(200) NOT NULL,
   `last_send` DATETIME NULL,
@@ -278,8 +277,7 @@ INSERT INTO `cron` (`label`, `value`) VALUES
   ('CRON.DAILY', '0 1 * * *'),
   ('CRON.WEEKLY', '0 1 * * 0'),
   ('CRON.MONTHLY', '0 1 30 * *'),
-  ('CRON.YEARLY', '0 1 31 12 *'),
-  ('CRON.EVERY_MINUTE', '* * * * *');
+  ('CRON.YEARLY', '0 1 31 12 *');
 
 /*
  * @author: mbayopanda
