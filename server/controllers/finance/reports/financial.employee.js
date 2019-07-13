@@ -81,7 +81,7 @@ async function build(req, res, next) {
     // also be the employee's balance for the search period
     if(options.extractEmployee) {
       if (creditorOperations.transactions.length) {
-        data.lastCum = creditorOperations.transactions[creditorOperations.transactions.length-1];
+        data.lastCum = creditorOperations.transactions[creditorOperations.transactions.length - 1];
         data.extratCreditorText = data.lastCum.cumsum >= 0
           ? 'FORM.LABELS.CREDIT_BALANCE' : 'FORM.LABELS.DEBIT_BALANCE';
       } else {

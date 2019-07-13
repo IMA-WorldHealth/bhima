@@ -114,8 +114,10 @@ function getFinancialActivity(creditorUuid, dateFrom, dateTo) {
     const transDateFrom = moment(dateFrom).format('YYYY-MM-DD');
     const transDateTo = moment(dateTo).format('YYYY-MM-DD');
 
-    filterBydatePosting = ` AND (DATE(p.trans_date) >= DATE('${transDateFrom}') AND DATE(p.trans_date) <= DATE('${transDateTo}'))`;
-    filterBydateLegder = ` AND (DATE(g.trans_date) >= DATE('${transDateFrom}') AND DATE(g.trans_date) <= DATE('${transDateTo}'))`;
+    filterBydatePosting = ` AND (DATE(p.trans_date) >= DATE('${transDateFrom}')
+      AND DATE(p.trans_date) <= DATE('${transDateTo}'))`;
+    filterBydateLegder = ` AND (DATE(g.trans_date) >= DATE('${transDateFrom}') 
+      AND DATE(g.trans_date) <= DATE('${transDateTo}'))`;
   }
 
   const sql = `
