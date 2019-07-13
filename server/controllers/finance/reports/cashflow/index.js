@@ -210,6 +210,8 @@ function report(req, res, next) {
   const options = _.clone(req.query);
   const data = {};
 
+  data.detailledReport = parseInt(req.query.detailed, 10);
+
   // convert cashboxesIds parameters in array format ['', '', ...]
   // this parameter can be sent as a string or an array we force the conversion into an array
   const cashboxesIds = _.values(req.query.cashboxesIds);
@@ -299,6 +301,47 @@ function report(req, res, next) {
         GROUP BY transaction_type_id, account_id;
       `;
 
+      // To obtain the detailed cashflow report, the SQL query searches all the transactions
+      // concerned by the cash accounts in a sub-request, from the data coming
+      // from the sub-requests excluded the transaction lines of the accounts
+      // linked to the cash accounts.
+
+      const queryDetailed = `
+        SELECT
+          source.transaction_text, source.account_label, ${periodString},
+          source.transaction_type, source.transaction_type_id, source.account_id
+        FROM (
+          SELECT
+          a.number AS account_number, a.label AS account_label,
+          SUM(gl.credit_equiv - gl.debit_equiv) AS balance,
+          gl.transaction_type_id, tt.type AS transaction_type, tt.text AS transaction_text,
+          gl.account_id, gl.period_id
+          FROM general_ledger AS gl
+          JOIN account AS a ON a.id = gl.account_id
+          JOIN transaction_type AS tt ON tt.id = gl.transaction_type_id
+          WHERE gl.record_uuid IN (
+            SELECT record_uuid FROM general_ledger WHERE
+            account_id IN ? AND ((DATE(gl.trans_date) >= DATE(?)) AND (DATE(gl.trans_date) <= DATE(?)))
+          ) AND account_id NOT IN ? AND gl.transaction_type_id <> 10 AND gl.record_uuid NOT IN (
+            SELECT DISTINCT gl.record_uuid
+            FROM general_ledger AS gl
+            WHERE gl.record_uuid IN (
+              SELECT rev.uuid
+              FROM (
+                SELECT v.uuid FROM voucher v WHERE v.reversed = 1
+                AND DATE(v.date) >= DATE(?) AND DATE(v.date) <= DATE(?) UNION
+                SELECT c.uuid FROM cash c WHERE c.reversed = 1
+                AND DATE(c.date) >= DATE(?) AND DATE(c.date) <= DATE(?) UNION
+                SELECT i.uuid FROM invoice i WHERE i.reversed = 1
+                AND DATE(i.date) >= DATE(?) AND DATE(i.date) <= DATE(?)
+              ) AS rev
+            )
+          ) GROUP BY gl.transaction_type_id, gl.account_id, gl.period_id
+        ) AS source
+        GROUP BY transaction_type_id, account_id;
+      `;
+
+
       const params = [...periodParams,
         [data.cashAccountIds],
         data.dateFrom,
@@ -309,7 +352,23 @@ function report(req, res, next) {
         data.dateTo,
         data.dateFrom,
         data.dateTo];
-      return db.exec(query, params);
+
+      const paramsDetailed = [...periodParams,
+        [data.cashAccountIds],
+        data.dateFrom,
+        data.dateTo,
+        [data.cashAccountIds],
+        data.dateFrom,
+        data.dateTo,
+        data.dateFrom,
+        data.dateTo,
+        data.dateFrom,
+        data.dateTo];
+
+      const queryRun = data.detailledReport ? queryDetailed : query;
+      const paramsRun = data.detailledReport ? paramsDetailed : params;
+
+      return db.exec(queryRun, paramsRun);
     })
     .then(rows => {
       // split incomes from expenses
