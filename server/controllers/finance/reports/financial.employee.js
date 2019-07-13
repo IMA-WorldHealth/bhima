@@ -34,7 +34,7 @@ async function build(req, res, next) {
   let report;
   options.extractEmployee = parseInt(options.extractEmployee, 10);
 
-  if(!options.extractEmployee) {
+  if (!options.extractEmployee) {
     options.dateFrom = ``;
     options.dateTo = ``;
   }
@@ -79,7 +79,7 @@ async function build(req, res, next) {
     // provides the latest element of the table,
     // as the request is ordered by date, the last line item will
     // also be the employee's balance for the search period
-    if(options.extractEmployee) {
+    if (options.extractEmployee) {
       if (creditorOperations.transactions.length) {
         data.lastCum = creditorOperations.transactions[creditorOperations.transactions.length - 1];
         data.extratCreditorText = data.lastCum.cumsum >= 0
