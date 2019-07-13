@@ -103,6 +103,7 @@
             "EXCHANGE_RATE": "Exchange Rate",
             "EXPIRATION_DATE": "Expiration Date",
             "EXPIRE_IN":"Expire In",
+            "EXTRACT_EMPLOYEE_STANDINGS": "View extract of the employee's standings by date range",
             "FIXED_CHARGES": "Fixed costs",
             "NUM_PIECE": "Num Doc",
             "ENTRY": "Entry",

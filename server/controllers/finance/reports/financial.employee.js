@@ -31,8 +31,13 @@ const PDF_OPTIONS = {
  */
 async function build(req, res, next) {
   const options = req.query;
-
   let report;
+  options.extractEmployee = parseInt(options.extractEmployee, 10);
+
+  if(!options.extractEmployee) {
+    options.dateFrom = ``;
+    options.dateTo = ``;
+  }
 
   _.defaults(options, PDF_OPTIONS);
 
@@ -59,7 +64,7 @@ async function build(req, res, next) {
 
     // get debtor/creditor information
     const [creditorOperations, debtorOperations] = await Promise.all([
-      Creditors.getFinancialActivity(employee.creditor_uuid),
+      Creditors.getFinancialActivity(employee.creditor_uuid, options.dateFrom, options.dateTo),
       Debtors.getFinancialActivity(patient.debtor_uuid, true),
     ]);
 
@@ -71,8 +76,30 @@ async function build(req, res, next) {
       debtorAggregates : debtorOperations.aggregates,
     });
 
+    // provides the latest element of the table,
+    // as the request is ordered by date, the last line item will
+    // also be the employee's balance for the search period
+    if(options.extractEmployee) {
+      if (creditorOperations.transactions.length) {
+        data.lastCum = creditorOperations.transactions[creditorOperations.transactions.length-1];
+        data.extratCreditorText = data.lastCum.cumsum >= 0
+          ? 'FORM.LABELS.CREDIT_BALANCE' : 'FORM.LABELS.DEBIT_BALANCE';
+      } else {
+        data.lastCum = {
+          cumsum : 0,
+        };
+      }
+
+      data.dates = {
+        dateFrom : options.dateFrom,
+        dateTo : options.dateTo,
+      };
+    }
+
     // employee balance
     data.includeMedicalCare = parseInt(options.includeMedicalCare, 10) === 1;
+    data.extractEmployee = options.extractEmployee === 1;
+    data.employeeStandingReport = !data.extractEmployee;
 
     // For the Employee Standing report, it must be mentioned if the employee has a credit or debit balance
     data.balanceCreditorText = data.creditorAggregates.balance >= 0

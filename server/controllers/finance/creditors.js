@@ -13,6 +13,7 @@
  */
 
 const q = require('q');
+const moment = require('moment');
 const db = require('../../lib/db');
 const NotFound = require('../../lib/errors/NotFound');
 
@@ -104,8 +105,19 @@ function balance(creditorUuid) {
  * @description
  * returns all transactions and balances associated with the Creditor.
  */
-function getFinancialActivity(creditorUuid) {
+function getFinancialActivity(creditorUuid, dateFrom, dateTo) {
   const uid = db.bid(creditorUuid);
+  let filterBydatePosting = ``;
+  let filterBydateLegder = ``;
+
+  if (dateFrom && dateTo) {
+    const transDateFrom = moment(dateFrom).format('YYYY-MM-DD');
+    const transDateTo = moment(dateTo).format('YYYY-MM-DD');
+
+    filterBydatePosting = ` AND (DATE(p.trans_date) >= DATE('${transDateFrom}') AND DATE(p.trans_date) <= DATE('${transDateTo}'))`;
+    filterBydateLegder = ` AND (DATE(g.trans_date) >= DATE('${transDateFrom}') AND DATE(g.trans_date) <= DATE('${transDateTo}'))`;
+  }
+
   const sql = `
     SELECT trans_id, BUID(entity_uuid) AS entity_uuid, description,
       BUID(record_uuid) AS record_uuid, trans_date, debit, credit, document, balance,
@@ -116,7 +128,7 @@ function getFinancialActivity(creditorUuid) {
         SUM(p.credit_equiv) - SUM(p.debit_equiv) AS balance, 0 AS posted
       FROM posting_journal AS p
         LEFT JOIN document_map AS dm ON dm.uuid = p.record_uuid
-      WHERE p.entity_uuid = ?
+      WHERE p.entity_uuid = ? ${filterBydatePosting}
       GROUP BY p.record_uuid
 
       UNION ALL
@@ -126,7 +138,7 @@ function getFinancialActivity(creditorUuid) {
         SUM(g.credit_equiv) - SUM(g.debit_equiv) AS balance, 1 AS posted
       FROM general_ledger AS g
         LEFT JOIN document_map AS dm ON dm.uuid = g.record_uuid
-      WHERE g.entity_uuid = ?
+      WHERE g.entity_uuid = ? ${filterBydateLegder}
       GROUP BY g.record_uuid
     )c, (SELECT @cumsum := 0)z
     ORDER BY trans_date ASC, trans_id;
