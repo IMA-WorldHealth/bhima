@@ -97,7 +97,7 @@
     "snyk": "^1.189.0",
     "stream-to-promise": "^2.2.0",
     "tempy": "^0.3.0",
-    "typeface-open-sans": "^0.0.54",
+    "typeface-open-sans": "^0.0.75",
     "ui-select": "0.17.1",
     "use-strict": "^1.0.1",
     "uuid": "^3.3.2",
