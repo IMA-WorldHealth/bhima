@@ -54,7 +54,7 @@ function reporting(opts, session) {
     range = dateRange;
     const sqlParams = [
       params.fiscal_id,
-      params.period_id,   
+      params.period_id,
     ];
 
     let filterByAccount;
@@ -131,7 +131,7 @@ function selectAccountParent(account) {
     let accountFilter = ``;
     if (accountArray.length > 1) {
       for (let i = 0; i < accountArray.length; i++) {
-        accountFilter += `${accountArray[i]}`;      
+        accountFilter += `${accountArray[i]}`;
         const conditionOr = (i < (accountArray.length - 1)) ? `OR` : ``;
         sqlFilter += `ac.number = '${accountFilter}' ${conditionOr} `;
       }
