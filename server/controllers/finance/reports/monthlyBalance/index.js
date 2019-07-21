@@ -1,7 +1,6 @@
 
 const q = require('q');
 const _ = require('lodash');
-const Exchange = require('../../../finance/exchange');
 const db = require('../../../../lib/db');
 const util = require('../../../../lib/util');
 const Tree = require('../../../../lib/Tree');
@@ -53,14 +52,12 @@ function reporting(opts, session) {
 
   return fiscal.getDateRangeFromPeriods(periods).then(dateRange => {
     range = dateRange;
-
     const sqlParams = [
       params.fiscal_id,
       params.period_id,   
     ];
 
     let filterByAccount;
-
     if (accountNumber) {
       filterByAccount = selectAccountParent(accountNumber);
     } else {
@@ -132,19 +129,15 @@ function selectAccountParent(account) {
 
   if (accountArray.length) {
     let accountFilter = ``;
-    
-
     if (accountArray.length > 1) {
       for (let i = 0; i < accountArray.length; i++) {
         accountFilter += `${accountArray[i]}`;      
-        let conditionOr = (i < (accountArray.length - 1)) ? `OR` : ``;
+        const conditionOr = (i < (accountArray.length - 1)) ? `OR` : ``;
         sqlFilter += `ac.number = '${accountFilter}' ${conditionOr} `;
       }
-
       sqlFilter = `OR (${sqlFilter})`;
     }
-
-    sqlFilter = ` AND (ac.number LIKE '${account}%' ${sqlFilter})`;    
+    sqlFilter = ` AND (ac.number LIKE '${account}%' ${sqlFilter})`;
   }
 
   return sqlFilter;
@@ -152,20 +145,12 @@ function selectAccountParent(account) {
 
 // create the tree structure, filter by property and sum nodes' summableProp
 function prepareTree(data, amount, debit, credit) {
-  // if the after result is 0, that means no movements occurred
-  const isEmptyRow = (row) => (
-    row.before === 0
-    && row.during === 0
-    && row.after === 0
-  );
-
   const tree = new Tree(data);
 
   try {
     tree.walk(Tree.common.sumOnProperty(amount), false);
     tree.walk(Tree.common.sumOnProperty(debit), false);
     tree.walk(Tree.common.sumOnProperty(credit), false);
-    
     tree.walk(Tree.common.computeNodeDepth);
     return tree.toArray();
   } catch (error) {

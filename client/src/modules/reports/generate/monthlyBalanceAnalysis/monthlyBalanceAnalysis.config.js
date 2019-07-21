@@ -16,9 +16,9 @@ function MonthlyBalanceAnalysisController($sce, Notify, SavedReports, AppCache, 
   Accounts.read()
     .then(elements => {
       // bind the accounts to the controller
-      let accounts = Accounts.order(elements);
+      const accounts = Accounts.order(elements);
       vm.accounts = accounts;
-    });  
+    });
 
   vm.onSelectFiscalYear = (fiscalYear) => {
     vm.reportDetails.fiscal_id = fiscalYear.id;
@@ -33,13 +33,6 @@ function MonthlyBalanceAnalysisController($sce, Notify, SavedReports, AppCache, 
     vm.previewGenerated = false;
     vm.previewResult = null;
   };
-
-  vm.resetAnalysis = () => {
-    if (!vm.reportDetails.monthlyAnalysis) {
-      vm.reportDetails = {};
-      vm.reportDetails.fiscal_id = null;
-    }
-  }
 
   vm.preview = function preview(form) {
     if (form.$invalid) {
@@ -56,7 +49,7 @@ function MonthlyBalanceAnalysisController($sce, Notify, SavedReports, AppCache, 
     if (vm.reportDetails.allAccount) {
       vm.reportDetails.accountNumber = null;
       vm.reportDetails.accountLabel = null;
-      vm.reportDetails.accountId = null;     
+      vm.reportDetails.accountId = null;
     }
 
     // update cached configuration
