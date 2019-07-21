@@ -63,6 +63,10 @@
     "PROFIT_AND_LOSS_BY_YEAR": "Rapport des Produit et des Charges par Années",
     "INCOME_REPORT" : "Rapport des Recettes",
     "MONTHLY_BALANCE" : "Balance Mensuelle",
+    "MONTHLY_ACCOUNT_ANALYSIS": {
+      "DESCRIPTION": "Ce rapport permet de faire l'analyse mensuel des comptes",
+      "TITLE": "Analyse mensuel de la Balance"
+    },
     "OPEN_DEBTORS": {
       "TITLE" : "Débiteurs endettés",
       "TREE" : "Dettes des Débiteurs",
