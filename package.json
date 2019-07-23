@@ -114,7 +114,7 @@
     "chai-http": "^1.0.0",
     "commitizen": "^4.0.0",
     "cssnano": "^4.1.10",
-    "cz-conventional-changelog": "^2.1.0",
+    "cz-conventional-changelog": "^3.0.0",
     "del": "^5.0.0",
     "eslint": "^6.0.0",
     "eslint-config-airbnb-base": "^13.1.0",
