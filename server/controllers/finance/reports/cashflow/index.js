@@ -117,7 +117,7 @@ function reportByService(req, res, next) {
   db.one(cashboxDetailsSql, cashboxId)
     .then(cashbox => {
       data.cashbox = cashbox;
-      return db.exec(cashflowByServiceSql, [dateFrom, dateTo, cashboxId]);
+      return db.exec(cashflowByServiceSql, [dateFrom, dateTo, cashbox.id]);
     })
     .then((rows) => {
       data.rows = rows;
@@ -177,7 +177,7 @@ function reportByService(req, res, next) {
       data.matrix = matrix;
 
       // query the aggregates
-      return db.exec(serviceAggregationSql, [dateFrom, dateTo, cashboxId]);
+      return db.exec(serviceAggregationSql, [dateFrom, dateTo, data.cashbox.id]);
     })
     .then((aggregates) => {
       data.aggregates = aggregates;

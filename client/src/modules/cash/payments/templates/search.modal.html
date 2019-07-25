@@ -48,12 +48,12 @@
           </bh-debtor-group-select>
 
           <!-- filter out cautions -->
-          <div class="checkbox">
-            <label>
-              <input type="checkbox" name="is_caution" ng-true-value="1" ng-false-value="0" ng-model="$ctrl.searchQueries.is_caution">
-              <span translate>FORM.LABELS.CAUTION</span>
-            </label>
-          </div>
+          <bh-yes-no-radios
+            label="FORM.LABELS.CAUTION"
+            value="$ctrl.searchQueries.is_caution"
+            on-change-callback="$ctrl.onCautionChange(value)">
+            <bh-clear on-clear="$ctrl.clear('is_caution')"></bh-clear>
+          </bh-yes-no-radios>
 
           <!-- cashbox -->
           <bh-cashbox-select
