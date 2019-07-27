@@ -9,18 +9,18 @@
       <b> {{translate "REPORT.EMPLOYEE_STANDING.REPORT"}} </b>
     </span>  
   </h3>
-  <h4 class="text-uppercase"><b>{{translate "FORM.LABELS.EMPLOYEE_NAME"}} :  {{ employee.display_name }}</b></h4>
-  <h4 class="text-uppercase"><b>{{translate "FORM.LABELS.REFERENCE"}} : {{ employee.reference }}</b></h4>
-  <h5 class="text-uppercase"><b>{{translate "FORM.LABELS.REGISTRATION_NUMBER"}} : {{ employee.code }}</b></h5>
+  <h4> {{translate "FORM.LABELS.EMPLOYEE_NAME"}} : <b class="text-uppercase">{{ employee.display_name }}</b></h4>
+  <h4>{{translate "FORM.LABELS.REFERENCE"}} : <b class="text-uppercase"></b>{{ employee.reference }}</b></h4>
+  <h5>{{translate "FORM.LABELS.REGISTRATION_NUMBER"}} : <b class="text-uppercase"></b>{{ employee.code }}</b></h5>
   <h4 class="text-uppercase" style="background-color: #efefef;">
     <b>
-      {{translate balanceCreditorText}} == {{debcred ./creditorAggregates.balance metadata.enterprise.currency_id}}
+      {{translate balanceCreditorText}} = {{debcred ./creditorAggregates.balance metadata.enterprise.currency_id}}
     </b>
   </h4>
   {{#if includeMedicalCare }}
     <h5 class="text-uppercase" style="background-color: #efefef;">
       <em>
-        {{translate "TABLE.COLUMNS.TOTAL_MEDICAL_CARE_EMPLOYEE"}} == {{debcred ./debtorAggregates.balance metadata.enterprise.currency_id}}
+        {{translate "TABLE.COLUMNS.TOTAL_MEDICAL_CARE_EMPLOYEE"}} = {{debcred ./debtorAggregates.balance metadata.enterprise.currency_id}}
       </em>
     </h5>
   {{/if}}
@@ -43,6 +43,21 @@
         </tr>
       </thead>
       <tbody>
+        {{#if extractEmployee}}
+          <tr>
+            <td colspan="4" class="text-right"><b>{{translate "TABLE.COLUMNS.BALANCE_AT" }} {{date dates.dateFrom }} </b></td>
+            <td class="text-right">
+              {{debcred creditoropeningBalance.debit metadata.enterprise.currency_id}}
+            </td>
+            <td class="text-right">
+              {{debcred creditoropeningBalance.credit metadata.enterprise.currency_id}}
+            </td>
+            <td class="text-right">
+              <span> {{debcred creditoropeningBalance.balance metadata.enterprise.currency_id}} </span>
+            </td>
+          </tr>
+        {{/if}}
+
         {{#each creditorTransactions}}
           <tr>
             <td>{{date this.trans_date}}</td>
@@ -80,14 +95,12 @@
         {{/if}}
         {{#if extractEmployee}}
         <tr>
-          <td colspan="6" class="text-right"><b>{{translate "FORM.LABELS.EXTRANCT_EMPLOYEE_STANDINGS" }} ({{date dates.dateFrom }} - {{date dates.dateTo }}) </b></th>
+          <td colspan="6" class="text-right"><b>{{translate "FORM.LABELS.EXTRACT_EMPLOYEE_STANDING" }} ({{date dates.dateFrom }} - {{date dates.dateTo }}) </b></th>
           <th class="text-right">
-            <span><em>{{translate  extratCreditorText }}</em> : {{debcred lastCum.cumsum metadata.enterprise.currency_id}} </span>
+            <span><em>{{translate  extratCreditorText }}</em> : {{debcred lastTransaction.cumsum metadata.enterprise.currency_id}} </span>
           </th>
         </tr> 
         {{/if}}
-
-
       </tfoot>
     </table>
     {{#if includeMedicalCare }}

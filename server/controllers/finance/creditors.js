@@ -99,6 +99,33 @@ function balance(creditorUuid) {
   return db.exec(sql, [creditorUid, creditorUid]);
 }
 
+
+/**
+ * This function returns the Opening balance of a creditor account with the hospital
+ * until a date from
+ *
+ * @method openingBalanceCreditor
+ */
+function openingBalanceCreditor(creditorUuid, dateFrom) {
+  const creditorUid = db.bid(creditorUuid);
+
+  const sql = `
+    SELECT IFNULL(SUM(ledger.debit_equiv), 0) AS debit, IFNULL(SUM(ledger.credit_equiv), 0) AS credit,
+      IFNULL(SUM(ledger.credit_equiv - ledger.debit_equiv), 0) AS balance, MIN(trans_date) AS since,
+      MAX(trans_date) AS until
+    FROM (
+      SELECT debit_equiv, credit_equiv, entity_uuid, trans_date FROM posting_journal WHERE entity_uuid = ?
+      AND DATE(trans_date) < DATE(?)
+      UNION ALL
+      SELECT debit_equiv, credit_equiv, entity_uuid, trans_date FROM general_ledger WHERE entity_uuid = ?
+      AND DATE(trans_date) < DATE(?)
+    ) AS ledger
+    GROUP BY ledger.entity_uuid;
+  `;
+
+  return db.exec(sql, [creditorUid, dateFrom, creditorUid, dateFrom]);
+}
+
 /**
  * @function getFinancialActivity
  *
@@ -116,7 +143,7 @@ function getFinancialActivity(creditorUuid, dateFrom, dateTo) {
 
     filterBydatePosting = ` AND (DATE(p.trans_date) >= DATE('${transDateFrom}')
       AND DATE(p.trans_date) <= DATE('${transDateTo}'))`;
-    filterBydateLegder = ` AND (DATE(g.trans_date) >= DATE('${transDateFrom}') 
+    filterBydateLegder = ` AND (DATE(g.trans_date) >= DATE('${transDateFrom}')
       AND DATE(g.trans_date) <= DATE('${transDateTo}'))`;
   }
 
@@ -146,16 +173,17 @@ function getFinancialActivity(creditorUuid, dateFrom, dateTo) {
     ORDER BY trans_date ASC, trans_id;
   `;
 
-  return q.all([
-    db.exec(sql, [uid, uid]),
-    balance(creditorUuid),
-  ])
-    .spread((transactions, aggs) => {
+  const tabSql = (dateFrom && dateTo) ?
+    [db.exec(sql, [uid, uid]), balance(creditorUuid), openingBalanceCreditor(creditorUuid, dateFrom)] :
+    [db.exec(sql, [uid, uid]), balance(creditorUuid)];
+
+  return q.all(tabSql)
+    .spread((transactions, aggs, openingBalance) => {
       if (!aggs.length) {
-        aggs.push({ debit : 0, credit : 0, balance : 0 });
+        aggs.push({ debit: 0, credit: 0, balance: 0 });
       }
 
       const [aggregates] = aggs;
-      return { transactions, aggregates };
+      return { transactions, aggregates, openingBalance };
     });
 }
