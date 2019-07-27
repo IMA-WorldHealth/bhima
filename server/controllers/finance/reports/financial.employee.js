@@ -18,7 +18,7 @@ const db = require('../../../lib/db');
 const TEMPLATE = './server/controllers/finance/reports/financial.employee.handlebars';
 
 const PDF_OPTIONS = {
-  filename: 'FORM.LABELS.FINANCIAL_STATUS',
+  filename : 'FORM.LABELS.FINANCIAL_STATUS',
 };
 
 /**
@@ -70,15 +70,15 @@ async function build(req, res, next) {
 
     _.extend(data, {
       employee,
-      creditorTransactions: creditorOperations.transactions,
-      creditorAggregates: creditorOperations.aggregates,
-      debtorTransactions: debtorOperations.transactions,
-      debtorAggregates: debtorOperations.aggregates,
+      creditorTransactions : creditorOperations.transactions,
+      creditorAggregates : creditorOperations.aggregates,
+      debtorTransactions : debtorOperations.transactions,
+      debtorAggregates : debtorOperations.aggregates,
     });
 
     if (creditorOperations.openingBalance) {
       _.extend(data, {
-        creditoropeningBalance: creditorOperations.openingBalance[0],
+        creditoropeningBalance : creditorOperations.openingBalance[0],
       });
     }
 
@@ -88,13 +88,13 @@ async function build(req, res, next) {
     if (options.extractEmployee) {
 
       const lastTxn = _.last(creditorOperations.transactions);
-      data.lastTransaction = lastTxn || { cumsum: 0 };
+      data.lastTransaction = lastTxn || { cumsum : 0 };
       data.extratCreditorText = data.lastTransaction.cumsum >= 0
         ? 'FORM.LABELS.CREDIT_BALANCE' : 'FORM.LABELS.DEBIT_BALANCE';
 
       data.dates = {
-        dateFrom: options.dateFrom,
-        dateTo: options.dateTo,
+        dateFrom : options.dateFrom,
+        dateTo : options.dateTo,
       };
     }
 
