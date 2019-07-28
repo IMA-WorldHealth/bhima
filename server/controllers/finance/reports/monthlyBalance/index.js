@@ -31,7 +31,7 @@ function reporting(opts, session) {
 
   let docReport;
   const options = _.extend(opts, {
-    filename : 'FORM.LABELS.MONTHLT_ACCOUNT_ANALYSIS',
+    filename : 'FORM.LABELS.MONTHLY_ACCOUNT_ANALYSIS',
     csvKey : 'rows',
     user : session.user,
   });
@@ -61,7 +61,7 @@ function reporting(opts, session) {
     if (accountNumber) {
       filterByAccount = selectAccountParent(accountNumber);
     } else {
-      filterByAccount = ``;
+      filterByAccount = '';
     }
 
     const sql = `

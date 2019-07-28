@@ -128,7 +128,7 @@ INSERT INTO unit VALUES
   (241, 'Entity Folder', 'ENTITY.MANAGEMENT', 'Entity Folder', 0, '/modules/entities', '/ENTITY_FOLDER'),
   (242, 'Entity Management','ENTITY.MANAGEMENT','',241,'/modules/entities','/entities'),
   (243, 'Entity Group', 'ENTITY.GROUP.TITLE', 'Entity Group', 241, '/modules/entity_group', '/entity_group'),
-  (244, 'Monthly Balance analysis', 'TREE.MONTHLT_ACCOUNT_ANALYSIS', 'Monthly Balance analysis', 144, '/modules/reports/monthlyBalanceAnalysis', '/reports/monthlyBalanceAnalysis');
+  (244, 'Monthly Balance analysis', 'TREE.MONTHLY_ACCOUNT_ANALYSIS', 'Monthly Balance analysis', 144, '/modules/reports/monthlyBalanceAnalysis', '/reports/monthlyBalanceAnalysis');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES

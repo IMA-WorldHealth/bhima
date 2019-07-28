@@ -64,7 +64,7 @@
     "INCOME_REPORT" : "Rapport des Recettes",
     "MONTHLY_BALANCE" : "Balance Mensuelle",
     "MONTHLY_ACCOUNT_ANALYSIS": {
-      "DESCRIPTION": "Ce rapport permet de faire l'analyse mensuel des comptes",
+      "DESCRIPTION": "Ce rapport permet de faire l'analyse mensuel de la balance des comptes, cette analyse permet de visualiser le total des debits et des des crédits ainsi que le totals des soldes pour chaque comptes",
       "TITLE": "Analyse mensuel de la Balance"
     },
     "OPEN_DEBTORS": {

@@ -32,8 +32,8 @@
               period-id="ReportConfigCtrl.reportDetails.period_id"
               on-select-callback="ReportConfigCtrl.onSelectPeriod(period)">
             </bh-period-selection>            
-            <hr>
-            <div class="panel-body" ng-class="{'has-error' : ConfigForm.$submitted && ConfigForm.allAccount.$invalid }">
+
+            <div class="form-group" ng-class="{'has-error' : ConfigForm.$submitted && ConfigForm.allAccount.$invalid }">
               <div class="radio">
                 <label class="radio-inline">
                   <input
@@ -90,7 +90,6 @@
                 </div>
               </div>
             </div>
-            <hr>
 
             <bh-loading-button loading-state="ConfigForm.$loading">
               <span translate>REPORT.UTIL.PREVIEW</span>

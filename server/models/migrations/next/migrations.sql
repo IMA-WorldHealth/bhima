@@ -343,7 +343,7 @@ INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
   @description: This report allows for monthly analysis of accounts
 */
 INSERT INTO unit VALUES
-  (244, 'Monthly Balance analysis', 'TREE.MONTHLT_ACCOUNT_ANALYSIS', 'Monthly Balance analysis', 144, '/modules/reports/monthlyBalanceAnalysis', '/reports/monthlyBalanceAnalysis');
+  (244, 'Monthly Balance analysis', 'TREE.MONTHLY_ACCOUNT_ANALYSIS', 'Monthly Balance analysis', 144, '/modules/reports/monthlyBalanceAnalysis', '/reports/monthlyBalanceAnalysis');
 
 INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
   (34, 'monthlyBalanceAnalysis', 'REPORT.MONTHLY_ACCOUNT_ANALYSIS.TITLE');

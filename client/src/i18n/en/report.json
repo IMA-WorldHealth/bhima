@@ -70,7 +70,7 @@
     "INCOME_REPORT": "Income Report",
     "MONTHLY_BALANCE": "Monthly Balance",
     "MONTHLY_ACCOUNT_ANALYSIS": {
-      "DESCRIPTION": "This report allows for monthly analysis of accounts",
+      "DESCRIPTION": "This report is used to analyze the balance of accounts on a monthly basis. This analysis shows the total debits and credits as well as the total balances for each account.",
       "TITLE": "Monthly Balance analysis"
     },
     "OPEN_DEBTORS": {
