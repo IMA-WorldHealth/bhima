@@ -6,6 +6,7 @@ angular.module('bhima.components')
       name : '@',
       helpText : '@?',
       onChangeCallback : '&',
+      required : '<?',
     },
     transclude  : true,
     templateUrl : 'modules/templates/bhYesNoRadios.tmpl.html',
@@ -22,7 +23,13 @@ function YesNoRadioController() {
   const $ctrl = this;
 
   $ctrl.$onInit = () => {
-    $ctrl.value = $ctrl.value ? Number.parseInt($ctrl.value, 10) : undefined;
+    $ctrl.required = typeof ($ctrl.required) === 'undefined' ? true : $ctrl.required;
+
+    if ($ctrl.required) {
+      $ctrl.value = $ctrl.value ? Number.parseInt($ctrl.value, 10) : 0;
+    } else {
+      $ctrl.value = $ctrl.value ? Number.parseInt($ctrl.value, 10) : undefined;
+    }
   };
 
   $ctrl.onChange = (value) => {
