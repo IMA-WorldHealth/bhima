@@ -36,7 +36,7 @@ exports.byService = reportByService;
 function reportByService(req, res, next) {
   const dateFrom = new Date(req.query.dateFrom);
   const dateTo = new Date(req.query.dateTo);
-  const { cashboxId } = req.query;
+  const cashboxAccountId = req.query.cashboxId;
 
   let serviceReport;
 
@@ -61,7 +61,6 @@ function reportByService(req, res, next) {
   const data = {};
   data.dateFrom = dateFrom;
   data.dateTo = dateTo;
-  data.cashboxId = cashboxId;
 
   let emptyCashValues = false;
 
@@ -114,7 +113,7 @@ function reportByService(req, res, next) {
   `;
 
   // pick up the cashbox's details
-  db.one(cashboxDetailsSql, cashboxId)
+  db.one(cashboxDetailsSql, cashboxAccountId)
     .then(cashbox => {
       data.cashbox = cashbox;
       return db.exec(cashflowByServiceSql, [dateFrom, dateTo, cashbox.id]);
