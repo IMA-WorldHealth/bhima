@@ -206,8 +206,10 @@ function create(req, res, next) {
   Debtors.balance(invoice.debtor_uuid)
     .then(([pBalance]) => {
       // Arround pBalance.credit and pBalance.debit
-      pBalance.credit = util.roundDecimal(pBalance.credit, 2);
-      pBalance.debit = util.roundDecimal(pBalance.debit, 2);
+      if (pBalance.credit && pBalance.debit) {
+        pBalance.credit = util.roundDecimal(pBalance.credit, 2);
+        pBalance.debit = util.roundDecimal(pBalance.debit, 2);  
+      }
 
       const hasCreditorBalance = hasPrepaymentSupport && pBalance && (pBalance.credit > pBalance.debit);
       const preparedTransaction = createInvoice(invoice, hasCreditorBalance, prepaymentDescription);
