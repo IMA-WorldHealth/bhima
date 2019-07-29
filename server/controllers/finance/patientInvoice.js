@@ -208,7 +208,7 @@ function create(req, res, next) {
       // Arround pBalance.credit and pBalance.debit
       if (pBalance.credit && pBalance.debit) {
         pBalance.credit = util.roundDecimal(pBalance.credit, 2);
-        pBalance.debit = util.roundDecimal(pBalance.debit, 2);  
+        pBalance.debit = util.roundDecimal(pBalance.debit, 2);
       }
 
       const hasCreditorBalance = hasPrepaymentSupport && pBalance && (pBalance.credit > pBalance.debit);
