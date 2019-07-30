@@ -261,9 +261,15 @@ function balance(debtorUuid, excludeCautionLinks = false) {
 
   const excludeCautionLinkStatement = `AND transaction_type_id <> ${CAUTION_LINK_TYPE_ID}`;
 
+  /**
+   * resolution of the problem when calling the Debtors.balance function with
+   * rounding to two ranks after the decimal point of the total credit and
+   * debit values
+   *
+   */
   const sql = `
-    SELECT IFNULL(SUM(ledger.debit_equiv), 0) AS debit, IFNULL(SUM(ledger.credit_equiv), 0) AS credit,
-      IFNULL(SUM(ledger.debit_equiv - ledger.credit_equiv), 0) AS balance, MIN(trans_date) AS since,
+    SELECT ROUND(IFNULL(SUM(ledger.debit_equiv), 0), 2) AS debit, ROUND(IFNULL(SUM(ledger.credit_equiv), 0),2) AS credit,
+    ROUND(IFNULL(SUM(ledger.debit_equiv - ledger.credit_equiv), 0),2) AS balance, MIN(trans_date) AS since,
       MAX(trans_date) AS until
     FROM (
       SELECT debit_equiv, credit_equiv, entity_uuid, trans_date FROM posting_journal
