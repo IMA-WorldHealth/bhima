@@ -268,9 +268,10 @@ function balance(debtorUuid, excludeCautionLinks = false) {
    *
    */
   const sql = `
-    SELECT ROUND(IFNULL(SUM(ledger.debit_equiv), 0), 2) AS debit, ROUND(IFNULL(SUM(ledger.credit_equiv), 0),2) AS credit,
-    ROUND(IFNULL(SUM(ledger.debit_equiv - ledger.credit_equiv), 0),2) AS balance, MIN(trans_date) AS since,
-      MAX(trans_date) AS until
+    SELECT ROUND(IFNULL(SUM(ledger.debit_equiv), 0), 2) AS debit,
+    ROUND(IFNULL(SUM(ledger.credit_equiv), 0),2) AS credit,
+    ROUND(IFNULL(SUM(ledger.debit_equiv - ledger.credit_equiv), 0),2) AS balance,
+    MIN(trans_date) AS since, MAX(trans_date) AS until
     FROM (
       SELECT debit_equiv, credit_equiv, entity_uuid, trans_date FROM posting_journal
         WHERE entity_uuid = ? ${excludeCautionLinks ? excludeCautionLinkStatement : ''}
