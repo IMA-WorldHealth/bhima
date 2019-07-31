@@ -36,6 +36,13 @@
               required="true">
             </bh-multiple-cashbox-select>
 
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" ng-model="ReportConfigCtrl.reportDetails.detailed" ng-true-value="1" ng-false-value="0">
+                <span translate>FORM.INFO.DETAILED_REPORT</span>
+              </label>
+            </div>
+
             <bh-loading-button loading-state="ConfigForm.$loading">
               <span translate>REPORT.UTIL.PREVIEW</span>
             </bh-loading-button>
