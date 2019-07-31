@@ -31,7 +31,7 @@ function reporting(opts, session) {
 
   let docReport;
   const options = _.extend(opts, {
-    filename : 'FORM.LABELS.MONTHLY_ACCOUNT_ANALYSIS',
+    filename : 'FORM.LABELS.MONTHLY_BALANCE',
     csvKey : 'rows',
     user : session.user,
   });

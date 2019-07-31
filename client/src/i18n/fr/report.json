@@ -62,8 +62,7 @@
     "PROFIT_AND_LOSS_BY_MONTH": "Rapport des Produit et des Charges par Mois",
     "PROFIT_AND_LOSS_BY_YEAR": "Rapport des Produit et des Charges par Années",
     "INCOME_REPORT" : "Rapport des Recettes",
-    "MONTHLY_BALANCE" : "Balance Mensuelle",
-    "MONTHLY_ACCOUNT_ANALYSIS": {
+    "MONTHLY_BALANCE": {
       "DESCRIPTION": "Ce rapport permet de faire l'analyse mensuel de la balance des comptes, cette analyse permet de visualiser le total des debits et des des crédits ainsi que le totals des soldes pour chaque comptes",
       "TITLE": "Analyse mensuel de la Balance"
     },

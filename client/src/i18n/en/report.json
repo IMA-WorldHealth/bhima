@@ -68,10 +68,9 @@
     "PROFIT_AND_LOSS_BY_MONTH": "Profit and Loss Statement By Month",
     "PROFIT_AND_LOSS_BY_YEAR": "Profit and Loss Statement By Fiscal Year",
     "INCOME_REPORT": "Income Report",
-    "MONTHLY_BALANCE": "Monthly Balance",
-    "MONTHLY_ACCOUNT_ANALYSIS": {
+    "MONTHLY_BALANCE": {
       "DESCRIPTION": "This report is used to analyze the balance of accounts on a monthly basis. This analysis shows the total debits and credits as well as the total balances for each account.",
-      "TITLE": "Monthly Balance analysis"
+      "TITLE": "Monthly Balance"
     },
     "OPEN_DEBTORS": {
       "DESCRIPTION": "This report shows the debtors that have a standing debt with the institution, and gives some control over the sort order.  For advanced analysis, the report can add in the last invoice date and last payment date, as well as limit the scope of the search by a date.",

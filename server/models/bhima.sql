@@ -128,7 +128,7 @@ INSERT INTO unit VALUES
   (241, 'Entity Folder', 'ENTITY.MANAGEMENT', 'Entity Folder', 0, '/modules/entities', '/ENTITY_FOLDER'),
   (242, 'Entity Management','ENTITY.MANAGEMENT','',241,'/modules/entities','/entities'),
   (243, 'Entity Group', 'ENTITY.GROUP.TITLE', 'Entity Group', 241, '/modules/entity_group', '/entity_group'),
-  (244, 'Monthly Balance analysis', 'TREE.MONTHLY_ACCOUNT_ANALYSIS', 'Monthly Balance analysis', 144, '/modules/reports/monthlyBalanceAnalysis', '/reports/monthlyBalanceAnalysis');
+  (244, 'Monthly Balance', 'TREE.MONTHLY_BALANCE', 'Monthly Balance', 144, '/modules/reports/monthlyBalance', '/reports/monthlyBalance');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -180,7 +180,7 @@ INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
   (31, 'indicatorsReport', 'TREE.INDICATORS_REPORT'),
   (32, 'visit_report', 'PATIENT_RECORDS.REPORT.VISITS'),
   (33, 'stock_entry', 'REPORT.STOCK.ENTRY_REPORT'),
-  (34, 'monthlyBalanceAnalysis', 'REPORT.MONTHLY_ACCOUNT_ANALYSIS.TITLE');
+  (34, 'monthlyBalance', 'REPORT.MONTHLY_BALANCE.TITLE');
 
 -- Supported Languages
 INSERT INTO `language` VALUES
