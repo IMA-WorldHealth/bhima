@@ -81,6 +81,11 @@ function SearchCashPaymentModalController(Notify, Instance, filters, Store, Peri
     vm.searchQueries.cashbox_id = cashbox.id;
   };
 
+  // on caution change
+  vm.onCautionChange = value => {
+    vm.searchQueries.is_caution = value;
+  };
+
   vm.setCurrency = function setCurrency(currencyId) {
     vm.currencies.forEach(currency => {
       if (currency.id === currencyId) {

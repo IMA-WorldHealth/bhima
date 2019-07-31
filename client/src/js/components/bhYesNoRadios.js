@@ -7,6 +7,7 @@ angular.module('bhima.components')
       helpText : '@?',
       onChangeCallback : '&',
     },
+    transclude  : true,
     templateUrl : 'modules/templates/bhYesNoRadios.tmpl.html',
     controller : YesNoRadioController,
   });
