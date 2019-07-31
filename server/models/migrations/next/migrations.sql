@@ -336,3 +336,15 @@ INSERT INTO unit VALUES
 
 INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
   (33, 'stock_entry', 'REPORT.STOCK.ENTRY_REPORT');
+
+/*
+  @author:lomamech
+  @date: 2019-07-20
+  @description: This report allows for monthly analysis of accounts
+*/
+INSERT INTO unit VALUES
+  (244, 'Monthly Balance', 'TREE.MONTHLY_BALANCE', 'Monthly Balance', 144, '/modules/reports/monthlyBalance', '/reports/monthlyBalance');
+
+INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
+  (34, 'monthlyBalance', 'REPORT.MONTHLY_BALANCE.TITLE');
+

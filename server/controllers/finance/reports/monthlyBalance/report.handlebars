@@ -1,0 +1,58 @@
+{{> head title="{{translate 'REPORT.MONTHLY_BALANCE.TITLE' }}" }}
+
+<div class="container">
+  {{> header}}
+
+  <!-- body -->
+  <div class="row">
+    <div class="col-xs-12">
+      <!-- page title  -->
+      <h3 class="text-center text-bold text-uppercase">{{translate 'REPORT.MONTHLY_BALANCE.TITLE'}}</h3>
+      <h3 class="text-center text-uppercase">{{periodLabel}}</h3>
+      {{#if this.accountNumber}}
+        <h4 class="text-center">{{this.accountNumber}}: {{this.accountLabel}}</h4>
+      {{/if}}
+
+      <table class="table table-condensed table-report table-bordered">
+        <tbody>
+          <tr style="padding:0;margin:0;border:none;">
+            <td style="padding:0;margin:0;border:none;">
+              <table class="table table-condensed table-report table-bordered">
+                <thead>
+                  <th width="10%">{{translate 'FORM.LABELS.ACCOUNT_NUMBER'}}</th>
+                  <th width="30%">{{translate 'FORM.LABELS.LABEL'}}</th>
+                  <th width="20%">{{translate 'FORM.LABELS.DEBIT'}}</th>
+                  <th width="20%">{{translate 'FORM.LABELS.CREDIT'}}</th>
+                  <th width="20%">{{translate 'FORM.LABELS.AMOUNT'}}</th>
+                </thead>
+                <tbody>
+                  {{#each this.exploitation}}
+                    {{#if amount}}
+                      <tr>
+                        <td class="text-right">{{number}}</td>
+                        <td {{#if title}}class="text-bold"{{/if}}>
+                          {{label}}
+                        </td>
+                        <td class="text-right">{{debcred debit ../currencyId}}</td>
+                        <td class="text-right">{{debcred credit ../currencyId}}</td>
+                        <td class="text-right">{{debcred amount ../currencyId}}</td>
+                      </tr>
+                    {{/if}}
+                  {{/each}}
+                </tbody>
+                {{#if allAccount}}
+                  <tfoot>
+                    <th class="text-right" colspan="2" width="10%">{{translate 'FORM.LABELS.TOTAL'}}</th>
+                    <th class="text-right" width="20%">{{debcred totalExploitation.debit ./currencyId}}</th>
+                    <th class="text-right" width="20%">{{debcred this.totalExploitation.credit ./currencyId}}</th>
+                    <th class="text-right" width="20%"></th>
+                  </tfoot>
+                {{/if}}  
+              </table>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
