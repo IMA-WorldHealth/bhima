@@ -2,11 +2,13 @@ angular.module('bhima.controllers')
   .controller('stock_valueController', StockValueConfigController);
 
 StockValueConfigController.$inject = [
-  '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state',
+  '$sce', 'NotifyService', 'BaseReportService',
+  'AppCache', 'reportData', '$state',
   'LanguageService', 'moment',
 ];
 
-function StockValueConfigController($sce, Notify, SavedReports, AppCache, reportData, $state, Languages, moment) {
+function StockValueConfigController($sce, Notify, SavedReports,
+  AppCache, reportData, $state, Languages, moment) {
   const vm = this;
   const cache = new AppCache('configure_stock_value_report');
   const reportUrl = 'reports/stock/value';
@@ -24,8 +26,12 @@ function StockValueConfigController($sce, Notify, SavedReports, AppCache, report
 
   vm.onSelectDepot = function onSelectDepot(depot) {
     vm.depot = depot;
+    formatData();
   };
 
+  vm.onSelectCronReport = report => {
+    vm.reportDetails = angular.copy(report);
+  };
 
   vm.clear = function clear(key) {
     delete vm[key];
@@ -35,24 +41,20 @@ function StockValueConfigController($sce, Notify, SavedReports, AppCache, report
     vm.previewGenerated = false;
     vm.previewResult = null;
   };
+
   vm.onSelectCurrency = (currencyId) => {
     vm.reportDetails.currency_id = currencyId;
     vm.currency_id = currencyId;
+    formatData();
   };
 
-  vm.preview = function preview(form) {
-    if (form.$invalid) { return 0; }
-
+  function formatData() {
     const params = {
       depot_uuid : vm.depot.uuid,
       dateTo : vm.dateTo,
       currency_id : vm.currency_id,
     };
-
-    // update cached configuration
     cache.reportDetails = angular.copy(params);
-
-    // format date for the server
     params.dateTo = moment(params.dateTo).format('YYYY-MM-DD');
 
     const options = {
@@ -61,6 +63,13 @@ function StockValueConfigController($sce, Notify, SavedReports, AppCache, report
     };
 
     vm.reportDetails = options;
+    return vm.reportDetails;
+  }
+
+  vm.preview = function preview(form) {
+    if (form.$invalid) { return 0; }
+
+    vm.reportDetails = formatData();
 
     return SavedReports.requestPreview(reportUrl, reportData.id, angular.copy(vm.reportDetails))
       .then((result) => {
