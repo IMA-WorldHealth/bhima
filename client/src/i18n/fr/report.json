@@ -77,6 +77,10 @@
       "SHOW_UNVERIFIED_TRANSACTIONS" : "Inclure les transactions non vérifiées",
       "SHOW_UNVERIFIED_TRANSACTIONS_HELP" : "L'activation de cette option inclut les données du Journal (données non verifiées) et celles du Grand Livre (données vérifiées). Ce rapport doit être consideré comme une simple projection jusqu'à ce que les données du journal soient postées."
     },
+    "DEBTOR_SUMMARY" : {
+      "TITLE": "Rapport sommaire des débiteurs",
+      "DESCRIPTION": "Ce rapport détaille le montant à payer dans chaque groupe d'inventaire pour une facture pendant une période, pour un groupe debor spécifique"
+    },
     "OPENING_BALANCE": "Balance d'ouverture",
     "ORDER": {
       "LAST_TRANSACTION": "Date de la dernière transaction",
