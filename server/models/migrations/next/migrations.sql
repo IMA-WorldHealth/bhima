@@ -348,3 +348,15 @@ INSERT INTO unit VALUES
 INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
   (34, 'monthlyBalance', 'REPORT.MONTHLY_BALANCE.TITLE');
 
+/*
+  @author:jeremielodi
+  @date: 2019-08-04
+  @title : Debtors summary report,
+  @description: TThis report shows the amount to paid for each debtor of a given debtor group in each service during a period
+*/
+
+INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
+(35, 'debtorSummary', 'REPORT.DEBTOR_SUMMARY.TITLE');
+  
+INSERT INTO unit VALUES
+(245, 'Debtor summary report', 'REPORT.DEBTOR_SUMMARY.TITLE', 'Debtor summary report', 144, '/modules/reports/debtorSummary', '/reports/debtorSummary');

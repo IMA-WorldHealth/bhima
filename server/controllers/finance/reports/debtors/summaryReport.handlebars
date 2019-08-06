@@ -1,0 +1,67 @@
+{{> head title="REPORT.CLIENTS.TITLE"}}
+
+<body>
+  <main class="container">
+    {{> header }}
+
+    <h3 class="text-center text-capitalize">
+      <strong>{{translate "REPORT.DEBTOR_SUMMARY.TITLE"}}</strong>
+    </h3>
+
+    <h4 class="text-center text-capitalize">
+      {{ debtorGroup.name }}
+    </h4>
+     <h5 class="text-center">
+        <strong class="text-capitalize">{{date dateFrom "MMMM YYYY"}}</strong>
+           -
+        <strong class="text-capitalize">{{date dateTo "MMMM YYYY"}}</strong>
+    </h4>
+
+    <section>
+      <table style="font-size:11px !important" class="table table-condensed table-report  table-header-rotated table-bordered">
+        <thead>
+          <tr class="text-capitalize text-center" style="background: #ddd">
+            <th>{{translate "FORM.LABELS.NO"}}</th>
+            <th>{{translate "FORM.LABELS.DATE"}}</th>
+            <th>{{translate "TABLE.COLUMNS.REFERENCE"}}</th>
+            <th>{{translate "TABLE.COLUMNS.NAME"}}</th>
+            <th>{{translate "FORM.LABELS.SERVICE"}}</th>
+            {{#each ./inventoryGroups as | s |}}
+             <th class="rotate-45" >
+                 <div><span style="padding-left:2px;">{{ s.name }}</span></div></th>
+              
+            {{/each}} 
+             <th class="rotate-45"><div><span style="padding-left:2px;">{{translate "FORM.LABELS.TOTAL"}}</span></div></th>
+             
+          </tr>
+        </thead>
+        <tbody>
+         {{#each ./data as |invoice| }}
+            <tr>
+              <td>{{ add @index 1}}</td>
+              <td>{{ date invoice.date "DD/MM/YYYY"}}</td>
+              <td>{{ invoice.invRef}}</td>
+              <td>{{ invoice.debtorName}}</td>
+              <td>{{ invoice.serviceName}}</td>
+              
+            {{#each invoice.inventoryGroups as | amount |}}
+                <th class="text-right">{{amount}}</th>
+            {{/each}}
+             <th class="text-right">{{currency invoice.total ../metadata.enterprise.currency_id}}</th>
+            </tr>
+         
+          {{/each}}
+
+        </tbody>
+
+        <tfoot>
+             <td colspan="5" class="text-right">{{ translate 'FORM.LABELS.TOTAL'}}</td>
+             {{#each inventoryGroups as | s |}}
+                <td class="text-right">{{ currency s.total ../metadata.enterprise.currency_id}}</td>
+            {{/each}}
+            <td>{{currency gobalSum ../metadata.enterprise.currency_id}}</td>
+        </tfoot>
+      </table>
+    </section>
+  </main>
+</body>
