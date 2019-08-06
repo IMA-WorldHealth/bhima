@@ -25,5 +25,4 @@ describe('Merge Patients', () => {
     await Page.merge();
     await components.notification.hasSuccess();
   });
-
 });
