@@ -173,11 +173,10 @@ function getFinancialActivity(creditorUuid, dateFrom, dateTo) {
     ORDER BY trans_date ASC, trans_id;
   `;
 
-  const tabSql = (dateFrom && dateTo)
-    ? [db.exec(sql, [uid, uid]), balance(creditorUuid), openingBalanceCreditor(creditorUuid, dateFrom)]
-    : [db.exec(sql, [uid, uid]), balance(creditorUuid)];
+  const tabSQL = [ db.exec(sql, [uid, uid]), balance(creditorUuid) ];
+  if (dateFrom && dateTo) { tabSQL.push(openingBalanceCreditor(creditorUuid, dateFrom)); }
 
-  return q.all(tabSql)
+  return q.all(tabSQL)
     .spread((transactions, aggs, openingBalance) => {
       if (!aggs.length) {
         aggs.push({ debit : 0, credit : 0, balance : 0 });

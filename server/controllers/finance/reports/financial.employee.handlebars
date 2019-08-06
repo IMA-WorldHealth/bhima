@@ -47,13 +47,13 @@
           <tr>
             <td colspan="4" class="text-right"><b>{{translate "TABLE.COLUMNS.BALANCE_AT" }} {{date dates.dateFrom }} </b></td>
             <td class="text-right">
-              {{debcred creditoropeningBalance.debit metadata.enterprise.currency_id}}
+              {{debcred creditorOpeningBalance.debit metadata.enterprise.currency_id}}
             </td>
             <td class="text-right">
-              {{debcred creditoropeningBalance.credit metadata.enterprise.currency_id}}
+              {{debcred creditorOpeningBalance.credit metadata.enterprise.currency_id}}
             </td>
             <td class="text-right">
-              <span> {{debcred creditoropeningBalance.balance metadata.enterprise.currency_id}} </span>
+              <span> {{debcred creditorOpeningBalance.balance metadata.enterprise.currency_id}} </span>
             </td>
           </tr>
         {{/if}}

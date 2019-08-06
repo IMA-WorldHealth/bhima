@@ -78,7 +78,7 @@ async function build(req, res, next) {
 
     if (creditorOperations.openingBalance) {
       _.extend(data, {
-        creditoropeningBalance : creditorOperations.openingBalance[0],
+        creditorOpeningBalance : creditorOperations.openingBalance[0],
       });
     }
 
