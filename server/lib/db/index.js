@@ -21,7 +21,6 @@ const NotFound = require('../errors/NotFound');
  *
  * @requires q
  * @requires mysql
- * @requires winston
  * @requires Transaction
  */
 class DatabaseConnector {

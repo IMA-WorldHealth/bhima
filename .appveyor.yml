@@ -1,0 +1,28 @@
+image:
+  - Ubuntu1604
+  - Ubuntu1804
+
+stack: node 10, mysql, redis
+
+install:
+  - yarn
+  - bash ./sh/appveyor.sh
+  - sudo service mysql restart
+
+build: off
+
+services:
+  - mysql
+  - redis
+
+environment:
+  DB_PASS: Password12!
+  DB_HOST: localhost
+  DB_USER: root
+  DB_NAME: bhima_test
+
+test_script:
+  - yarn build
+  - yarn build:db
+  - mkdir -p test/artifacts
+  - yarn test:server-unit

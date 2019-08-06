@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
 ##
-## This script is for Travis CI to configure and install required software.
+## This script is for Appveyor CI to configure and install required software.
 ##
 
-## mysql is installed by default on travis, so we can set mysql server charset as utf8mb4
+## mysql is installed by default on appveyor, so we can set mysql server charset as utf8mb4
 echo -e "
 [client]
 default-character-set=utf8mb4
@@ -25,15 +25,13 @@ set -a
 source .env.development
 set +a
 
+ROOT_DB_PASS="Password12!"
+
 # setup usernames and permissions
-mysql -h $DB_HOST -u root -e "GRANT ALL PRIVILEGES ON *.* TO '$DB_USER'@'$DB_HOST' IDENTIFIED BY '$DB_PASS' WITH GRANT OPTION;"
-mysql -h $DB_HOST -u root -e "FLUSH PRIVILEGES;"
+mysql -h $DB_HOST -u root -p$ROOT_DB_PASS -e "GRANT ALL PRIVILEGES ON *.* TO '$DB_USER'@'$DB_HOST' IDENTIFIED BY '$DB_PASS' WITH GRANT OPTION;"
+mysql -h $DB_HOST -u root -p$ROOT_DB_PASS -e "FLUSH PRIVILEGES;"
 
 # download and install wkhtmltopdf globally
 wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
 tar -xf wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
 sudo mv ./wkhtmltox/bin/wkhtmltopdf  /usr/bin/wkhtmltopdf
-
-# install greenkeeper lockfile
-yarn global add greenkeeper-lockfile@1
-export GK_LOCK_YARN_OPTS="--ignore-engines"

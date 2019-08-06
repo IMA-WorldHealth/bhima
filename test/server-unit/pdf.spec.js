@@ -53,7 +53,7 @@ function PDFRenderUnitTest() {
     expect(isBuffer && hasValidVersion).to.be.equal(true);
   });
 
-  it('#pdf.render() renders an identical PDF given an HTML template', async () => {
+  it.skip('#pdf.render() renders an identical PDF given an HTML template', async () => {
     // load the HTML template into memory as a giant string
     const tmpl = await fs.readFile(htmlFile, 'utf8');
 
