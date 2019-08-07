@@ -29,7 +29,24 @@
             on-select-callback="ReportConfigCtrl.onSelectEmployee(employee)"
             required="true">
           </bh-employee-select>
-
+           
+          <hr>
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" ng-model="ReportConfigCtrl.reportDetails.extractEmployee" ng-true-value="1" ng-false-value="0">
+              <span translate>TABLE.COLUMNS.EXTRACT_EMPLOYEE_STANDING</span>
+            </label>
+          </div>
+          <div ng-if="ReportConfigCtrl.reportDetails.extractEmployee">
+            <!-- date interval -->
+            <bh-date-interval
+              date-from="ReportConfigCtrl.reportDetails.dateFrom"
+              date-to="ReportConfigCtrl.reportDetails.dateTo"
+              limit-min-fiscal
+              required="true">
+            </bh-date-interval>
+          </div>
+          <hr>
           <div class="checkbox">
             <label>
               <input type="checkbox" ng-model="ReportConfigCtrl.reportDetails.includeMedicalCare" ng-true-value="1" ng-false-value="0">

@@ -13,6 +13,7 @@
  */
 
 const q = require('q');
+const moment = require('moment');
 const db = require('../../lib/db');
 const NotFound = require('../../lib/errors/NotFound');
 
@@ -98,14 +99,54 @@ function balance(creditorUuid) {
   return db.exec(sql, [creditorUid, creditorUid]);
 }
 
+
+/**
+ * This function returns the Opening balance of a creditor account with the hospital
+ * until a date from
+ *
+ * @method openingBalanceCreditor
+ */
+function openingBalanceCreditor(creditorUuid, dateFrom) {
+  const creditorUid = db.bid(creditorUuid);
+
+  const sql = `
+    SELECT IFNULL(SUM(ledger.debit_equiv), 0) AS debit, IFNULL(SUM(ledger.credit_equiv), 0) AS credit,
+      IFNULL(SUM(ledger.credit_equiv - ledger.debit_equiv), 0) AS balance, MIN(trans_date) AS since,
+      MAX(trans_date) AS until
+    FROM (
+      SELECT debit_equiv, credit_equiv, entity_uuid, trans_date FROM posting_journal WHERE entity_uuid = ?
+      AND DATE(trans_date) < DATE(?)
+      UNION ALL
+      SELECT debit_equiv, credit_equiv, entity_uuid, trans_date FROM general_ledger WHERE entity_uuid = ?
+      AND DATE(trans_date) < DATE(?)
+    ) AS ledger
+    GROUP BY ledger.entity_uuid;
+  `;
+
+  return db.exec(sql, [creditorUid, dateFrom, creditorUid, dateFrom]);
+}
+
 /**
  * @function getFinancialActivity
  *
  * @description
  * returns all transactions and balances associated with the Creditor.
  */
-function getFinancialActivity(creditorUuid) {
+function getFinancialActivity(creditorUuid, dateFrom, dateTo) {
   const uid = db.bid(creditorUuid);
+  let filterBydatePosting = ``;
+  let filterBydateLegder = ``;
+
+  if (dateFrom && dateTo) {
+    const transDateFrom = moment(dateFrom).format('YYYY-MM-DD');
+    const transDateTo = moment(dateTo).format('YYYY-MM-DD');
+
+    filterBydatePosting = ` AND (DATE(p.trans_date) >= DATE('${transDateFrom}')
+      AND DATE(p.trans_date) <= DATE('${transDateTo}'))`;
+    filterBydateLegder = ` AND (DATE(g.trans_date) >= DATE('${transDateFrom}')
+      AND DATE(g.trans_date) <= DATE('${transDateTo}'))`;
+  }
+
   const sql = `
     SELECT trans_id, BUID(entity_uuid) AS entity_uuid, description,
       BUID(record_uuid) AS record_uuid, trans_date, debit, credit, document, balance,
@@ -116,7 +157,7 @@ function getFinancialActivity(creditorUuid) {
         SUM(p.credit_equiv) - SUM(p.debit_equiv) AS balance, 0 AS posted
       FROM posting_journal AS p
         LEFT JOIN document_map AS dm ON dm.uuid = p.record_uuid
-      WHERE p.entity_uuid = ?
+      WHERE p.entity_uuid = ? ${filterBydatePosting}
       GROUP BY p.record_uuid
 
       UNION ALL
@@ -126,22 +167,22 @@ function getFinancialActivity(creditorUuid) {
         SUM(g.credit_equiv) - SUM(g.debit_equiv) AS balance, 1 AS posted
       FROM general_ledger AS g
         LEFT JOIN document_map AS dm ON dm.uuid = g.record_uuid
-      WHERE g.entity_uuid = ?
+      WHERE g.entity_uuid = ? ${filterBydateLegder}
       GROUP BY g.record_uuid
     )c, (SELECT @cumsum := 0)z
     ORDER BY trans_date ASC, trans_id;
   `;
 
-  return q.all([
-    db.exec(sql, [uid, uid]),
-    balance(creditorUuid),
-  ])
-    .spread((transactions, aggs) => {
+  const tabSQL = [db.exec(sql, [uid, uid]), balance(creditorUuid)];
+  if (dateFrom && dateTo) { tabSQL.push(openingBalanceCreditor(creditorUuid, dateFrom)); }
+
+  return q.all(tabSQL)
+    .spread((transactions, aggs, openingBalance) => {
       if (!aggs.length) {
         aggs.push({ debit : 0, credit : 0, balance : 0 });
       }
 
       const [aggregates] = aggs;
-      return { transactions, aggregates };
+      return { transactions, aggregates, openingBalance };
     });
 }
