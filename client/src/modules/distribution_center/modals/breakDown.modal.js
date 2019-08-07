@@ -3,11 +3,11 @@ angular.module('bhima.controllers')
 
 BreakDownModalController.$inject = [
   '$state', 'NotifyService', 'DistributionCenterService', 'SessionService', 'data', '$uibModalInstance',
-  'FeeCenterService', '$translate',
+  'FeeCenterService', '$translate', 'util',
 ];
 
 function BreakDownModalController(
-  $state, Notify, DistributionCenter, Session, data, ModalInstance, FeeCenters, $translate,
+  $state, Notify, DistributionCenter, Session, data, ModalInstance, FeeCenters, $translate, util,
 ) {
   const vm = this;
   vm.transaction = data.transactions;
@@ -49,6 +49,9 @@ function BreakDownModalController(
     Object.keys(vm.percentage.values).forEach((key) => {
       sumDistributed += vm.percentage.values[key];
     });
+
+    // sumDistributed sum must always be 100 for 100%
+    sumDistributed = util.roundDecimal(sumDistributed, 0);
 
     vm.invalidBreakDown = sumDistributed !== 100;
     vm.diffPercentage = Math.abs((sumDistributed - 100));
