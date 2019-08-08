@@ -426,11 +426,28 @@ BEGIN
       IF mvtIsExit = 1 THEN
         SET stockQtt = stockQtt - mvtQtt;
         SET stockValue = stockQtt * stockUnitCost;
+        -- ignore negative stock value
+        IF stockValue < 0 THEN
+          SET stockValue = 0;
+        END IF;
       ELSE
-       -- stock entry movement, the stock quantity increases
-	    SET newQuantity = mvtQtt + stockQtt;
-        SET newValue = (mvtUnitCost * mvtQtt) + stockValue;
-        SET newCost = newValue / IF(newQuantity = 0, 1, newQuantity);
+        -- stock entry movement, the stock quantity increases
+	      SET newQuantity = mvtQtt + stockQtt;
+
+        -- ignore negative stock value
+        IF stockValue < 0 THEN
+          SET newValue = mvtUnitCost * mvtQtt;
+        ELSE 
+          SET newValue = (mvtUnitCost * mvtQtt) + stockValue;
+        END IF;
+
+        -- don't use cumulated quantity when stock quantity < 0
+        -- in this case use movement quantity only
+        IF stockQtt < 0 THEN
+          SET newCost = newValue / IF(mvtQtt = 0, 1, mvtQtt);
+        ELSE 
+          SET newCost = newValue / IF(newQuantity = 0, 1, newQuantity);
+        END IF;
 
         SET stockQtt = newQuantity;
         SET stockUnitCost = newCost;
