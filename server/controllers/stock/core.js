@@ -602,6 +602,9 @@ function getInventoryMovements(params) {
         if (line.is_exit) {
           stockQuantity -= line.quantity;
           stockValue = stockQuantity * stockUnitCost;
+          // fix negative value disorder
+          // ignoring negative stock value by setting them to zero for entry
+          stockValue = (stockValue < 0) ? 0 : stockValue;
 
           // exit
           movement.exit.quantity = line.quantity;
@@ -609,8 +612,14 @@ function getInventoryMovements(params) {
           movement.exit.value = line.quantity * line.unit_cost;
         } else {
           const newQuantity = line.quantity + stockQuantity;
-          const newValue = (line.unit_cost * line.quantity) + stockValue;
-          const newCost = newValue / newQuantity;
+          // fix negative value disorder
+          // ignoring negative stock value by setting them to movement value for exit
+          const newValue = (stockValue < 0)
+            ? (line.unit_cost * line.quantity)
+            : (line.unit_cost * line.quantity) + stockValue;
+          // don't use cumulated quantity when stock quantity < 0
+          // in this case use movement quantity only
+          const newCost = newValue / (stockQuantity < 0 ? line.quantity : newQuantity);
 
           stockQuantity = newQuantity;
           stockUnitCost = newCost;
