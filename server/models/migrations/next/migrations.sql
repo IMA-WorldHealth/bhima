@@ -215,9 +215,9 @@ UPDATE unit SET path="/depots" WHERE `name`="Depot Management" AND `key`="DEPOT.
  * description: entity and entity groups units
  */
 INSERT INTO `unit` VALUES
-  (240, 'Entity Folder', 'ENTITY.MANAGEMENT', 'Entity Folder', 0, '/modules/entities', '/ENTITY_FOLDER'),
-  (241, 'Entity Management','ENTITY.MANAGEMENT','',240,'/modules/entities','/entities'),
-  (242, 'Entity Group', 'ENTITY.GROUP.TITLE', 'Entity Group', 240, '/modules/entity_group', '/entity_group');
+  (241, 'Entity Folder', 'ENTITY.MANAGEMENT', 'Entity Folder', 0, '/modules/entities', '/ENTITY_FOLDER'),
+  (242, 'Entity Management','ENTITY.MANAGEMENT','',241,'/modules/entities','/entities'),
+  (243, 'Entity Group', 'ENTITY.GROUP.TITLE', 'Entity Group', 241, '/modules/entity_group', '/entity_group');
 
 /*
  * @author: mbayopanda
@@ -326,6 +326,7 @@ DELIMITER ;
 -- update columns
 call UpdatePeriodLabels();
 
+
 /*
   @author: mbayopanda
   @date: 2019-05-13
@@ -356,8 +357,8 @@ INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
 */
 
 INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
-(35, 'debtorSummary', 'REPORT.DEBTOR_SUMMARY.TITLE');
-  
+  (35, 'debtorSummary', 'REPORT.DEBTOR_SUMMARY.TITLE');
+
 INSERT INTO unit VALUES
 (245, 'Debtor summary report', 'REPORT.DEBTOR_SUMMARY.TITLE', 'Debtor summary report', 144, '/modules/reports/debtorSummary', '/reports/debtorSummary');
 
