@@ -15,10 +15,8 @@ function PatientMergePage() {
   };
 
   page.gridSelectRows = async function gridSelectRows(...lines) {
-    // eslint-disable-next-line
-    for (const element of lines) {
-      // eslint-disable-next-line
-      await GU.selectRow(gridId, element);
+    for (const line of lines) { // eslint-disable-line
+      await GU.selectRow(gridId, line); // eslint-disable-line
     }
   };
 

@@ -125,6 +125,7 @@ const accountReferenceType = require('../controllers/finance/accounts/accountRef
 const indicators = require('../controllers/finance/indicator');
 const breakEvenReference = require('../controllers/finance/breakEvenReference');
 
+const debotrSummaryReport = require('../controllers/finance/reports/debtors/summaryReport');
 // periods
 const period = require('../controllers/finance/period');
 
@@ -399,6 +400,7 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/income_expense_by_year', financeReports.income_expense_by_year.document);
   app.get('/reports/finance/cash_report', financeReports.cashReport.document);
   app.get('/reports/finance/balance', financeReports.balance.document);
+  app.get('/reports/finance/monthly_balance', financeReports.monthlyBalance.document);
   app.get('/reports/finance/account_report', financeReports.reportAccounts.document);
   app.get('/reports/finance/account_report_multiple', financeReports.reportAccountsMultiple.document);
   app.get('/reports/finance/journal', financeReports.journal.postingReport);
@@ -415,7 +417,7 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/break_even', financeReports.breakEven.report);
   app.get('/reports/finance/break_even_fee_center', financeReports.breakEvenFeeCenter.report);
   app.get('/reports/finance/operating', financeReports.operating.document);
-
+  app.get('/reports/finance/debtorSummary', debotrSummaryReport.summaryReport);
   // visits reports
   app.get('/reports/visits', medicalReports.visitsReports.document);
 

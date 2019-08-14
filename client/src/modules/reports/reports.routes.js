@@ -34,6 +34,8 @@ angular.module('bhima.routes')
       'breakEvenFeeCenter',
       'indicatorsReport',
       'visit_report',
+      'monthlyBalance',
+      'debtorSummary',
     ];
 
     $stateProvider

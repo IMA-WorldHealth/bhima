@@ -68,7 +68,10 @@
     "PROFIT_AND_LOSS_BY_MONTH": "Profit and Loss Statement By Month",
     "PROFIT_AND_LOSS_BY_YEAR": "Profit and Loss Statement By Fiscal Year",
     "INCOME_REPORT": "Income Report",
-    "MONTHLY_BALANCE": "Monthly Balance",
+    "MONTHLY_BALANCE": {
+      "DESCRIPTION": "This report is used to analyze the balance of accounts on a monthly basis. This analysis shows the total debits and credits as well as the total balances for each account.",
+      "TITLE": "Monthly Balance"
+    },
     "OPEN_DEBTORS": {
       "DESCRIPTION": "This report shows the debtors that have a standing debt with the institution, and gives some control over the sort order.  For advanced analysis, the report can add in the last invoice date and last payment date, as well as limit the scope of the search by a date.",
       "TITLE": "Debtors with Unpaid Debts",
@@ -79,6 +82,11 @@
       "SHOW_DETAILED_VIEW_HELP": "Enable to include the last date the debtor paid and the last date they were invoiced.  This is useful for understanding when they were at the institution.  However, it will make the query take slightly longer.",
       "SHOW_UNVERIFIED_TRANSACTIONS": "Include Unverified Transactions",
       "SHOW_UNVERIFIED_TRANSACTIONS_HELP": "Enable to include records from the Journal which have not been audited by the accountant as well as records from the General Ledger the accountant has verified.  This view must be treated as a projection until the accountant has approved the Journal transactions and moved them to the General Ledger."
+    },
+    
+    "DEBTOR_SUMMARY" : {
+      "TITLE": "Debtors summary report",
+      "DESCRIPTION": "This report details the amount to paid in every inventory group for an invoice during a period, for a specific debor group"
     },
     "OPENING_BALANCE": "Opening Balance",
     "ORDER": {

@@ -147,6 +147,7 @@
             "CLOSED": "Fermée",
             "CLOSE_FISCAL_YEAR": "Clôturer l'année fiscale",
             "CONFIGURED_SUCCESSFULLY": "Configuré avec succès",
+            "DETAILED_REPORT": "Rapport détaillé",
             "DISTRIBUTION_INVALID": "La répartition est invalide, la somme de valeurs réparties doit être égale au montant de la transaction",
             "DISTRIBUTION_PERCENT_INVALID": "La distribution est invalide, la somme des valeurs en pourcentage doit être égale à 100%",
             "DISTRIBUTION_SUCCESSFULLY": "Répartition avec succès",
@@ -232,6 +233,7 @@
             "VIEW_CLOSING_BALANCE": "Aperçue de la balance de cloture"
         },
         "LABELS": {
+            "EXTRACT_EMPLOYEE_STANDING": "Extrait de l'état financier de l'employé pour la période",
             "MERGE_PATIENTS":"Fusionner les patients",
             "MERGE_PATIENTS_DESC":"Seules les informations du patient séléctionné seront considérées, les transactions des autres patients de la liste seront affectées au patient séléctionné",
             "MERGE_PATIENTS_TO_ONE":"Fusionner les patients en un seul patient",
@@ -405,6 +407,7 @@
             "ERROR_404": "Erreur 404",
             "EXCHANGE_RATE": "Taux d'echange",
             "EXPENSE": "Charges",
+            "EXTRANCT_EMPLOYEE_STANDING": "Extrait de la situation financière de l'employée pour la période",
             "FATHER_NAME": "Nom du Père",
             "FAX": "Fax",
             "FEE_CENTER": "Centre de frais",

@@ -336,3 +336,174 @@ INSERT INTO unit VALUES
 
 INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
   (33, 'stock_entry', 'REPORT.STOCK.ENTRY_REPORT');
+
+/*
+  @author:lomamech
+  @date: 2019-07-20
+  @description: This report allows for monthly analysis of accounts
+*/
+INSERT INTO unit VALUES
+  (244, 'Monthly Balance', 'TREE.MONTHLY_BALANCE', 'Monthly Balance', 144, '/modules/reports/monthlyBalance', '/reports/monthlyBalance');
+
+INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
+  (34, 'monthlyBalance', 'REPORT.MONTHLY_BALANCE.TITLE');
+
+/*
+  @author:jeremielodi
+  @date: 2019-08-04
+  @title : Debtors summary report,
+  @description: TThis report shows the amount to paid for each debtor of a given debtor group in each service during a period
+*/
+
+INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
+(35, 'debtorSummary', 'REPORT.DEBTOR_SUMMARY.TITLE');
+  
+INSERT INTO unit VALUES
+(245, 'Debtor summary report', 'REPORT.DEBTOR_SUMMARY.TITLE', 'Debtor summary report', 144, '/modules/reports/debtorSummary', '/reports/debtorSummary');
+
+
+/*
+  @author: mbayopanda
+  @date: 2019-08-08
+  @description: handle negative value in stock value report
+*/
+DELIMITER $$
+DROP PROCEDURE IF EXISTS `stockValue`$$
+CREATE PROCEDURE `stockValue`(
+  IN depotUuid BINARY(16), 
+  IN dateTo DATE,
+  IN currencyId INT
+  )
+BEGIN
+  DECLARE done BOOLEAN;
+  DECLARE mvtIsExit tinyint(1);
+  DECLARE mvtQtt, stockQtt, newQuantity INT(11);
+  DECLARE mvtUnitCost, mvtValue, newValue, newCost, exchangeRate, stockUnitCost, stockValue DECIMAL(19, 4);
+
+  DECLARE _documentReference VARCHAR(100);
+  DECLARE _date DATETIME;
+  DECLARE _inventoryUuid BINARY(16);
+  DECLARE _iteration, _newStock, _enterpriseId INT;
+
+
+  DECLARE curs1 CURSOR FOR
+    SELECT i.uuid, m.is_exit, l.unit_cost, m.quantity, m.date, dm.text AS documentReference
+    FROM stock_movement m
+    JOIN lot l ON l.uuid = m.lot_uuid
+    JOIN inventory i ON i.uuid = l.inventory_uuid
+    JOIN inventory_unit iu ON iu.id = i.unit_id
+    JOIN depot d ON d.uuid = m.depot_uuid
+    LEFT JOIN document_map dm ON dm.uuid = m.document_uuid
+    WHERE m.depot_uuid = depotUuid AND DATE(m.date) <= dateTo
+    ORDER BY i.text, m.created_at ASC;
+
+  DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+  DROP TEMPORARY TABLE IF EXISTS stage_movement;
+  CREATE TEMPORARY TABLE stage_movement(
+    inventory_uuid BINARY(16),
+    isExit TINYINT(1),
+    qtt INT(11),
+    unit_cost DECIMAL(19, 4),
+    VALUE DECIMAL(19, 4),
+    DATE DATETIME,
+    reference VARCHAR(100),
+    stockQtt INT(11),
+    stockUnitCost DECIMAL(19, 4),
+    stockValue DECIMAL(19, 4),
+    iteration INT
+  );
+ 
+  SET _enterpriseId = (SELECT enterprise_id FROM depot WHERE uuid= depotUuid);
+  SET exchangeRate = IFNULL(GetExchangeRate(_enterpriseId,currencyId ,dateTo), 1);
+
+  OPEN curs1;
+    read_loop: LOOP
+
+    FETCH curs1 INTO _inventoryUuid, mvtIsExit, mvtUnitCost, mvtQtt, _date, _documentReference;
+      IF done THEN
+        LEAVE read_loop;
+      END IF;
+
+      SELECT COUNT(inventory_uuid) INTO _newStock FROM stage_movement WHERE inventory_uuid = _inventoryUuid;
+     
+      -- initialize stock qtt, value and unit cost for a new inventory
+      IF _newStock = 0 THEN
+        SET _iteration = 0;
+       
+        SET stockQtt= 0;
+        SET stockUnitCost = 0;
+        SET stockValue = 0;
+       
+        SET mvtValue = 0;
+        SET newQuantity = 0;
+        SET newValue = 0;
+        SET newCost = 0;
+      END IF;
+		
+	    SET mvtUnitCost = mvtUnitCost * (exchangeRate);
+
+      -- stock exit movement, the stock quantity decreases
+      IF mvtIsExit = 1 THEN
+        SET stockQtt = stockQtt - mvtQtt;
+        SET stockValue = stockQtt * stockUnitCost;
+        -- ignore negative stock value
+        IF stockValue < 0 THEN
+          SET stockValue = 0;
+        END IF;
+      ELSE
+        -- stock entry movement, the stock quantity increases
+	      SET newQuantity = mvtQtt + stockQtt;
+
+        -- ignore negative stock value
+        IF stockValue < 0 THEN
+          SET newValue = mvtUnitCost * mvtQtt;
+        ELSE 
+          SET newValue = (mvtUnitCost * mvtQtt) + stockValue;
+        END IF;
+
+        -- don't use cumulated quantity when stock quantity < 0
+        -- in this case use movement quantity only
+        IF stockQtt < 0 THEN
+          SET newCost = newValue / IF(mvtQtt = 0, 1, mvtQtt);
+        ELSE 
+          SET newCost = newValue / IF(newQuantity = 0, 1, newQuantity);
+        END IF;
+
+        SET stockQtt = newQuantity;
+        SET stockUnitCost = newCost;
+        SET stockValue = newValue;
+      END IF;
+
+      INSERT INTO stage_movement VALUES (
+        _inventoryUuid, mvtIsExit, mvtQtt, stockQtt, mvtQtt * mvtUnitCost, _date, _documentReference,  stockQtt, stockUnitCost, stockValue, _iteration
+      );
+      SET _iteration = _iteration + 1;
+    END LOOP;
+  CLOSE curs1;
+
+  DROP TEMPORARY TABLE IF EXISTS stage_movement_copy;
+  CREATE TEMPORARY TABLE stage_movement_copy AS SELECT * FROM stage_movement;
+
+  -- inventory stock
+  SELECT  BUID(sm.inventory_uuid) AS inventory_uuid, i.text as inventory_name,  sm.stockQtt, sm.stockUnitCost, sm.stockValue
+  FROM stage_movement sm
+  JOIN inventory i ON i.uuid = sm.inventory_uuid
+  INNER JOIN (
+    SELECT inventory_uuid, MAX(iteration) as max_iteration
+    FROM stage_movement_copy
+    GROUP BY inventory_uuid
+  )x ON x.inventory_uuid = sm.inventory_uuid AND x.max_iteration = sm.iteration 
+  ORDER BY i.text ASC;
+
+  -- total in stock
+  SELECT SUM(sm.stockValue) as total
+  FROM stage_movement as sm
+  INNER JOIN (
+    SELECT inventory_uuid, MAX(iteration) as max_iteration
+    FROM stage_movement_copy
+    GROUP BY inventory_uuid
+  )x ON x.inventory_uuid = sm.inventory_uuid AND x.max_iteration = sm.iteration;
+
+END $$
+DELIMITER ;

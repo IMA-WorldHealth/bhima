@@ -124,7 +124,7 @@ function StockAdjustmentController(
 
   // remove item
   function removeItem(item) {
-    vm.Stock.removeItem(item.index);
+    vm.Stock.removeItem(item.id);
     checkValidity();
   }
 

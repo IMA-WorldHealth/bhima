@@ -67,6 +67,7 @@
     "IPR_TAX_CONFIGURATION" : "IPR Tax Configuration",
     "JOURNAL_VOUCHER" : "Journal Voucher",
     "LOCATION" : "Location Management",
+    "MONTHLY_BALANCE": "Monthly Balance",
     "MULTI_PAYROLL" : "Multiple Payroll",
     "OHADA_BILAN":"[OHADA] Bilan",
     "OHADA_PROFIT_LOSS" : "[OHADA] Profit and Loss",

@@ -62,7 +62,10 @@
     "PROFIT_AND_LOSS_BY_MONTH": "Rapport des Produit et des Charges par Mois",
     "PROFIT_AND_LOSS_BY_YEAR": "Rapport des Produit et des Charges par Années",
     "INCOME_REPORT" : "Rapport des Recettes",
-    "MONTHLY_BALANCE" : "Balance Mensuelle",
+    "MONTHLY_BALANCE": {
+      "DESCRIPTION": "Ce rapport permet de faire l'analyse mensuel de la balance des comptes, cette analyse permet de visualiser le total des debits et des des crédits ainsi que le totals des soldes pour chaque comptes",
+      "TITLE": "Analyse mensuel de la Balance"
+    },
     "OPEN_DEBTORS": {
       "TITLE" : "Débiteurs endettés",
       "TREE" : "Dettes des Débiteurs",
@@ -73,6 +76,10 @@
       "SHOW_DETAILED_VIEW_HELP" : "L'activation de cette option comprendra la dernière date à laquelle le débiteur a payé et la dernière date où ils ont été facturés. Ceci est utile pour comprendre quand ils étaient à l'établissement. Cependant, cela rendra la requête plus lent.",
       "SHOW_UNVERIFIED_TRANSACTIONS" : "Inclure les transactions non vérifiées",
       "SHOW_UNVERIFIED_TRANSACTIONS_HELP" : "L'activation de cette option inclut les données du Journal (données non verifiées) et celles du Grand Livre (données vérifiées). Ce rapport doit être consideré comme une simple projection jusqu'à ce que les données du journal soient postées."
+    },
+    "DEBTOR_SUMMARY" : {
+      "TITLE": "Rapport sommaire des débiteurs",
+      "DESCRIPTION": "Ce rapport détaille le montant à payer dans chaque groupe d'inventaire pour une facture pendant une période, pour un groupe debor spécifique"
     },
     "OPENING_BALANCE": "Balance d'ouverture",
     "ORDER": {
