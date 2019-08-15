@@ -25,3 +25,4 @@ test_script:
   - yarn build
   - yarn build:db
   - yarn test:server-unit
+  - yarn test:client-unit
