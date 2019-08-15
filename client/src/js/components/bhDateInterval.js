@@ -39,6 +39,9 @@ bhDateInterval.$inject = ['moment', 'bhConstants', 'FiscalService', 'SessionServ
 function bhDateInterval(moment, bhConstants, Fiscal, Session) {
   const $ctrl = this;
 
+  // tzOffset gives the direction we need to go to get to UTC
+  const tzOffset = (-1 * new Date().getTimezoneOffset());
+
   // expose to the view
   $ctrl.search = search;
   $ctrl.clear = clear;
@@ -95,20 +98,27 @@ function bhDateInterval(moment, bhConstants, Fiscal, Session) {
     $ctrl.dateTo = new Date();
   }
 
+  function momentStartHelper(interval) {
+    return moment().startOf(interval).add(tzOffset, 'minutes').toDate();
+  }
+
+  function momentEndHelper(interval) {
+    return moment().endOf(interval).add(tzOffset, 'minutes').toDate();
+  }
+
   function week() {
-    // Fix me if is necessary the first day of week is Sunday or Monday
-    $ctrl.dateFrom = moment().startOf('week').toDate();
+    $ctrl.dateFrom = momentStartHelper('week');
     $ctrl.dateTo = new Date();
   }
 
   function month() {
-    $ctrl.dateFrom = moment().startOf('month').toDate();
-    $ctrl.dateTo = moment().endOf('month').toDate();
+    $ctrl.dateFrom = momentStartHelper('month');
+    $ctrl.dateTo = momentEndHelper('month');
   }
 
   function year() {
-    $ctrl.dateFrom = moment().startOf('year').toDate();
-    $ctrl.dateTo = moment().endOf('year').toDate();
+    $ctrl.dateFrom = momentStartHelper('year');
+    $ctrl.dateTo = momentEndHelper('year');
   }
 
   function custom() {
