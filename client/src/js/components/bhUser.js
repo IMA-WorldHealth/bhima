@@ -9,7 +9,7 @@ angular.module('bhima.components')
     },
   });
 
-bhUser.$inject = ['UserService'];
+bhUser.$inject = ['UserService', '$translate'];
 
 /**
  * @component bhUser
@@ -26,8 +26,9 @@ bhUser.$inject = ['UserService'];
  *
  * <bh-user id="5" fetch></bh-user>
  */
-function bhUser(Users) {
+function bhUser(Users, $translate) {
   const $ctrl = this;
+  $ctrl.userDeactivated = $translate.instant('CASHBOX.USERS.DEACTIVATED');
 
   function _loadUser(userId) {
     Users.read(userId)

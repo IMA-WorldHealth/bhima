@@ -1,7 +1,7 @@
 <span>
   <i
     ng-if="$ctrl.user.deactivated"
-    uib-popover="{ 'CASHBOX.USER.DEACTIVATED' | translate }"
+    uib-popover="{{ $ctrl.userDeactivated }}"
     popover-trigger="'mouseenter'"
     popover-append-to-body="true"
     class="fa fa-ban text-danger">
