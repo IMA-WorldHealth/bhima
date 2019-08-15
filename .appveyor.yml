@@ -5,9 +5,9 @@ image:
 stack: node 10, mysql, redis
 
 install:
-  - yarn
+  - bash ./sh/setup-ci-env.sh
   - bash ./sh/appveyor.sh
-  - sudo service mysql restart
+  - yarn
 
 build: off
 
@@ -24,5 +24,4 @@ environment:
 test_script:
   - yarn build
   - yarn build:db
-  - mkdir -p test/artifacts
   - yarn test:server-unit

@@ -16,24 +16,34 @@ function endfold {
   fi
 }
 
+SUITE=${SUITE:-"ALL"}
+
 # run karma (client unit) tests
-startfold "Running Client Unit Tests..." "test-client-unit";
-./node_modules/.bin/karma start --single-run --no-auto-watch --concurrency 1 karma.conf.js
-endfold "test-client-unit" ;
+if [ $SUITE = "client-unit" ] || [ $SUITE = "ALL" ] ; then
+  startfold "Running Client Unit Tests..." "test-client-unit";
+  ./node_modules/.bin/karma start --single-run --no-auto-watch --concurrency 1 karma.conf.js
+  endfold "test-client-unit" ;
+fi
 
 # run integration tests
-startfold "Running Integration Tests..." "test-integration";
-./sh/integration-tests.sh
-endfold "test-integration" ;
+if [ $SUITE = "integration" ] || [ $SUITE = "ALL" ] ; then
+  startfold "Running Integration Tests..." "test-integration";
+  ./sh/integration-tests.sh
+  endfold "test-integration" ;
+fi
 
-#run server-unit test
-# startfold "Running server Unit Tests ......" "server-unit"
-# ./node_modules/.bin/mocha --recursive --exit test/server-unit
-# endfold "server-unit" ;
+# run server-unit test
+if [ $SUITE = "server-unit" ] || [ $SUITE = "ALL" ] ; then
+  startfold "Running server Unit Tests ......" "server-unit"
+  ./node_modules/.bin/mocha --recursive --exit test/server-unit
+  endfold "server-unit" ;
+fi
 
 # run end to end tests
-startfold "Running Client End to End Tests..." "test-end-to-end";
-./sh/test-ends.sh
-endfold "test-end-to-end" ;
+if [ $SUITE = "end-to-end" ] || [ $SUITE = "ALL" ] ; then
+  startfold "Running Client End to End Tests..." "test-end-to-end";
+  ./sh/test-ends.sh
+  endfold "test-end-to-end" ;
+fi
 
 exit 0;
