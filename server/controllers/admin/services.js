@@ -13,7 +13,6 @@
  * @requires NotFound
  */
 
-
 const db = require('../../lib/db');
 const { uuid } = require('../../lib/util');
 const NotFound = require('../../lib/errors/NotFound');
@@ -27,22 +26,18 @@ const NotFound = require('../../lib/errors/NotFound');
 function list(req, res, next) {
   let sql = `
     SELECT
-      s.id, s.name, s.cost_center_id, s.profit_center_id, BUID(s.uuid) AS uuid, s.hidden,
+      s.id, s.name,  BUID(s.uuid) AS uuid, s.hidden,
       p.id AS project_id, p.name AS project_name
     FROM service AS s
     LEFT JOIN project AS p ON s.project_id = p.id`;
 
   if (req.query.full === '1') {
     sql = `
-      SELECT s.id, s.name, s.enterprise_id, s.cost_center_id, BUID(s.uuid) AS uuid,
-        s.profit_center_id, s.hidden,  e.name AS enterprise_name, e.abbr, cc.id AS cc_id,
-        cc.text AS cost_center_name, pc.id AS pc_id, pc.text AS profit_center_name,
-        p.id AS project_id, p.name AS project_name
+      SELECT s.id, s.name, s.enterprise_id, BUID(s.uuid) AS uuid, s.hidden,
+      e.name AS enterprise_name, e.abbr, p.id AS project_id, p.name AS project_name
       FROM service AS s
       JOIN enterprise AS e ON s.enterprise_id = e.id
-      LEFT JOIN project AS p ON s.project_id = p.id
-      LEFT JOIN cost_center AS cc ON s.cost_center_id = cc.id
-      LEFT JOIN profit_center AS pc ON s.profit_center_id = pc.id`;
+      LEFT JOIN project AS p ON s.project_id = p.id`;
   }
 
   sql += ' ORDER BY s.name;';
@@ -59,7 +54,7 @@ function countServiceByProject(req, res, next) {
   const sql = `
   SELECT p.name AS project_name, p.abbr AS project_abbr, COUNT(*) AS total
   FROM service AS s
-  LEFT JOIN project AS p ON s.project_id = p.id 
+  LEFT JOIN project AS p ON s.project_id = p.id
   GROUP BY p.id ORDER BY s.name;`;
 
   db.exec(sql)
@@ -108,8 +103,6 @@ function create(req, res, next) {
 * let services = require('admin/services');
 * services.update(req, res, next);
 */
-
-
 function update(req, res, next) {
   const queryData = req.body;
   const sql = `UPDATE service SET ? WHERE id = ?;`;
@@ -180,7 +173,7 @@ function detail(req, res, next) {
 function lookupService(id) {
   const sql = `
     SELECT
-      s.id, s.name, s.enterprise_id, s.cost_center_id, s.profit_center_id, s.hidden,
+      s.id, s.name, s.enterprise_id, s.hidden,
       p.id AS project_id, p.name AS project_name
     FROM
       service AS s

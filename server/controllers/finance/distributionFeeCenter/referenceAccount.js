@@ -19,12 +19,12 @@ function auxilliary(params) {
   const filters2 = new FilterParser(params, { tableAlias : 'fee_center' });
 
   const sql1 = `
-    SELECT fee_center.id, fee_center.label, fee_center.is_principal, reference_fee_center.account_reference_id, 
+    SELECT fee_center.id, fee_center.label, fee_center.is_principal, reference_fee_center.account_reference_id,
     reference_fee_center.is_cost, reference_fee_center.is_variable, reference_fee_center.is_turnover,
     account_reference_item.account_id, account.number, account_reference_item.is_exception, account.type_id
     FROM fee_center
     JOIN reference_fee_center ON reference_fee_center.fee_center_id = fee_center.id
-    JOIN account_reference_item 
+    JOIN account_reference_item
       ON account_reference_item.account_reference_id = reference_fee_center.account_reference_id
     JOIN account ON account.id = account_reference_item.account_id
   `;
@@ -39,11 +39,11 @@ function auxilliary(params) {
 
   const sql2 = `
     SELECT fee_center.id, fee_center.label, fee_center.is_principal, reference_fee_center.account_reference_id,
-    account_reference_item.account_id, account.number, 
+    account_reference_item.account_id, account.number,
     account_reference_item.is_exception, account.type_id
     FROM fee_center
     JOIN reference_fee_center ON reference_fee_center.fee_center_id = fee_center.id
-    JOIN account_reference_item 
+    JOIN account_reference_item
       ON account_reference_item.account_reference_id = reference_fee_center.account_reference_id
     JOIN account ON account.id = account_reference_item.account_id
     `;

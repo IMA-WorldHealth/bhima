@@ -17,19 +17,15 @@ CREATE TABLE `account` (
   `parent` INT(10) UNSIGNED NOT NULL,
   `locked` TINYINT(1) UNSIGNED DEFAULT 0,
   `hidden` TINYINT(1) UNSIGNED DEFAULT 0,
-  `cc_id` SMALLINT(6) DEFAULT NULL,
-  `pc_id` SMALLINT(6) DEFAULT NULL,
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `reference_id` TINYINT(3) UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `account_1` (`number`),
   KEY `type_id` (`type_id`),
   KEY `enterprise_id` (`enterprise_id`),
-  KEY `cc_id` (`cc_id`),
   KEY `reference_id` (`reference_id`),
   FOREIGN KEY (`type_id`) REFERENCES `account_type` (`id`),
   FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`),
-  FOREIGN KEY (`cc_id`) REFERENCES `cost_center` (`id`),
   FOREIGN KEY (`reference_id`) REFERENCES `reference` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
@@ -275,52 +271,6 @@ CREATE TABLE `config_week_days` (
   PRIMARY KEY (`id`),
   KEY `weekend_config_id` (`weekend_config_id`),
   FOREIGN KEY (`weekend_config_id`) REFERENCES `weekend_config` (`id`)
-) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
-
-DROP TABLE IF EXISTS `cost_center`;
-
-CREATE TABLE `cost_center` (
-  `project_id` smallINT(5) UNSIGNED NOT NULL,
-  `id` smallINT(6) NOT NULL AUTO_INCREMENT,
-  `text` varchar(100) NOT NULL,
-  `note` text,
-  `is_principal` TINYINT(1) DEFAULT 0,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `const_center_1` (`text`),
-  KEY `project_id` (`project_id`),
-  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`)
-) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
-
-DROP TABLE IF EXISTS `cost_center_assignation`;
-
-CREATE TABLE `cost_center_assignation` (
-  `project_id` smallINT(5) UNSIGNED NOT NULL,
-  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `auxi_cc_id` smallINT(6) NOT NULL,
-  `cost` float DEFAULT 0,
-  `date` date DEFAULT NULL,
-  `note` text,
-  PRIMARY KEY (`id`),
-  KEY `project_id` (`project_id`),
-  KEY `auxi_cc_id` (`auxi_cc_id`),
-  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
-  FOREIGN KEY (`auxi_cc_id`) REFERENCES `cost_center` (`id`)
-) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
-
-
-DROP TABLE IF EXISTS `cost_center_assignation_item`;
-
-CREATE TABLE `cost_center_assignation_item` (
-  `cost_center_assignation_id` INT(10) UNSIGNED NOT NULL,
-  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `pri_cc_id` smallINT(6) NOT NULL,
-  `init_cost` float DEFAULT 0,
-  `value_criteria` float DEFAULT '1',
-  PRIMARY KEY (`id`),
-  KEY `cost_center_assignation_id` (`cost_center_assignation_id`),
-  KEY `pri_cc_id` (`pri_cc_id`),
-  FOREIGN KEY (`cost_center_assignation_id`) REFERENCES `cost_center_assignation` (`id`) ON DELETE CASCADE,
-  FOREIGN KEY (`pri_cc_id`) REFERENCES `cost_center` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `country`;
@@ -684,7 +634,6 @@ CREATE TABLE `fonction` (
   UNIQUE KEY `fonction_1` (`fonction_txt`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
-
 DROP TABLE IF EXISTS `general_ledger`;
 CREATE TABLE `general_ledger` (
   `uuid`              BINARY(16) NOT NULL,
@@ -707,8 +656,6 @@ CREATE TABLE `general_ledger` (
   `comment`           TEXT,
   `transaction_type_id`         TINYINT(3) UNSIGNED NULL,
   `user_id`           SMALLINT(5) UNSIGNED NOT NULL,
-  `cc_id`             SMALLINT(6),
-  `pc_id`             SMALLINT(6),
   `created_at`        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`        TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`uuid`),
@@ -717,8 +664,6 @@ CREATE TABLE `general_ledger` (
   KEY `period_id` (`period_id`),
   KEY `currency_id` (`currency_id`),
   KEY `user_id` (`user_id`),
-  KEY `cc_id` (`cc_id`),
-  KEY `pc_id` (`pc_id`),
   INDEX `trans_date` (`trans_date`),
   INDEX `trans_id` (`trans_id`),
   INDEX `record_uuid` (`record_uuid`),
@@ -731,9 +676,7 @@ CREATE TABLE `general_ledger` (
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
-  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE,
-  FOREIGN KEY (`cc_id`) REFERENCES `cost_center` (`id`) ON UPDATE CASCADE,
-  FOREIGN KEY (`pc_id`) REFERENCES `profit_center` (`id`) ON UPDATE CASCADE
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
@@ -1353,8 +1296,6 @@ CREATE TABLE `posting_journal` (
   `comment`           TEXT,
   `transaction_type_id`         TINYINT(3) UNSIGNED NULL,
   `user_id`           SMALLINT(5) UNSIGNED NOT NULL,
-  `cc_id`             SMALLINT(6),
-  `pc_id`             SMALLINT(6),
   `created_at`        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at`        TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`uuid`),
@@ -1363,8 +1304,6 @@ CREATE TABLE `posting_journal` (
   KEY `period_id` (`period_id`),
   KEY `currency_id` (`currency_id`),
   KEY `user_id` (`user_id`),
-  KEY `cc_id` (`cc_id`),
-  KEY `pc_id` (`pc_id`),
   INDEX `trans_date` (`trans_date`),
   INDEX `trans_id` (`trans_id`),
   INDEX `record_uuid` (`record_uuid`),
@@ -1377,23 +1316,8 @@ CREATE TABLE `posting_journal` (
   FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON UPDATE CASCADE,
   FOREIGN KEY (`account_id`) REFERENCES `account` (`id`),
   FOREIGN KEY (`currency_id`) REFERENCES `currency` (`id`) ON UPDATE CASCADE,
-  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE,
-  FOREIGN KEY (`cc_id`) REFERENCES `cost_center` (`id`) ON UPDATE CASCADE,
-  FOREIGN KEY (`pc_id`) REFERENCES `profit_center` (`id`) ON UPDATE CASCADE
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
-
-DROP TABLE IF EXISTS `profit_center`;
-
-CREATE TABLE `profit_center` (
-  `project_id` smallINT(5) UNSIGNED NOT NULL,
-  `id` smallINT(6) NOT NULL AUTO_INCREMENT,
-  `text` varchar(100) NOT NULL,
-  `note` text,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `profit_center_1` (`text`),
-  KEY `project_id` (`project_id`),
-  FOREIGN KEY (`project_id`) REFERENCES `project` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB  DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `project`;
 
@@ -1661,18 +1585,11 @@ CREATE TABLE `service` (
   `project_id` SMALLINT(5) UNSIGNED NOT NULL,
   `name` VARCHAR(80) NOT NULL,
   `hidden` TINYINT(1) DEFAULT 0,
-  `cost_center_id` SMALLINT(6) DEFAULT NULL,
-  `profit_center_id` SMALLINT(6) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `service_0` (`uuid`),
   UNIQUE KEY `service_1` (`name`),
-  UNIQUE KEY `service_2` (`cost_center_id`, `profit_center_id`),
   KEY `enterprise_id` (`enterprise_id`),
-  KEY `cost_center_id` (`cost_center_id`),
-  KEY `profit_center_id` (`profit_center_id`),
-  FOREIGN KEY (`enterprise_id`) REFERENCES enterprise (`id`),
-  FOREIGN KEY (`cost_center_id`) REFERENCES `cost_center` (`id`) ON UPDATE CASCADE,
-  FOREIGN KEY (`profit_center_id`) REFERENCES `profit_center` (`id`) ON UPDATE CASCADE
+  FOREIGN KEY (`enterprise_id`) REFERENCES enterprise (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `ward`;

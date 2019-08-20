@@ -7,33 +7,11 @@ describe('(/services) The Service API', () => {
   const newService = {
     enterprise_id : 1,
     name : 'tested Service',
-    cost_center_id : 2,
-    profit_center_id : 1,
     project_id : 1,
-  };
-
-  const serviceWithoutCostCenter = {
-    name : 'without cost and profit center',
-    enterprise_id : 1,
-    cost_center_id : null,
-    profit_center_id : null,
-    project_id : 1,
-  };
-
-  const wrongUpdateService = {
-    cost_center_id : null,
-    profit_center_id : 'wrong value',
-  };
-
-  const undefinedProfitService = {
-    cost_center_id : null,
-    profit_center_id : undefined,
   };
 
   const responseKeys = [
-    'id', 'cost_center_id', 'profit_center_id',
-    'name', 'enterprise_id', 'hidden', 'project_id',
-    'project_name',
+    'id', 'name', 'enterprise_id', 'hidden', 'project_id', 'project_name',
   ];
 
   it('POST /services adds a services', () => {
@@ -51,25 +29,10 @@ describe('(/services) The Service API', () => {
       .catch(helpers.handler);
   });
 
-  it('POST /services adds a services with a null cost center', () => {
-    return agent.post('/services')
-      .send(serviceWithoutCostCenter)
-      .then((res) => {
-        helpers.api.created(res);
-        serviceWithoutCostCenter.id = res.body.id;
-        return agent.get(`/services/${serviceWithoutCostCenter.id}`);
-      })
-      .then((res) => {
-        expect(res).to.have.status(200);
-        expect(res.body).to.have.all.keys(responseKeys);
-      })
-      .catch(helpers.handler);
-  });
-
   it('GET /services returns a list of services', () => {
     return agent.get('/services')
       .then((res) => {
-        helpers.api.listed(res, 5);
+        helpers.api.listed(res, 4);
       })
       .catch(helpers.handler);
   });
@@ -95,26 +58,6 @@ describe('(/services) The Service API', () => {
         expect(res).to.be.json;
         expect(res.body.id).to.equal(newService.id);
         expect(res.body.name).to.equal(updateInfo.name);
-      })
-      .catch(helpers.handler);
-  });
-
-  it('PUT /services/:id refuses to update a service with a string as profit_center_id', () => {
-    return agent.put(`/services/${newService.id}`)
-      .send(wrongUpdateService)
-      .then((res) => {
-        helpers.api.errored(res, 400);
-      })
-      .catch(helpers.handler);
-  });
-
-  it('PUT /services/:id ignores an undefined profit center and update a service with defined properties', () => {
-    return agent.put(`/services/${newService.id}`)
-      .send(undefinedProfitService)
-      .then((res) => {
-        expect(res).to.have.status(200);
-        expect(res).to.be.json;
-        expect(res.body.id).to.equal(newService.id);
       })
       .catch(helpers.handler);
   });
