@@ -2,9 +2,8 @@ angular.module('bhima.services')
   .service('PatientService', PatientService);
 
 PatientService.$inject = [
-  'SessionService', '$uibModal', 'DocumentService', 'VisitService',
-  'FilterService', 'appcache', 'PeriodService', 'PrototypeApiService',
-  '$httpParamSerializer', 'LanguageService', 'bhConstants',
+  'SessionService', '$uibModal', 'DocumentService', 'VisitService', 'FilterService', 'appcache', 'PeriodService',
+  'PrototypeApiService', '$httpParamSerializer', 'LanguageService', 'bhConstants', 'HttpCacheService',
 ];
 
 /**
@@ -24,7 +23,7 @@ PatientService.$inject = [
  */
 function PatientService(
   Session, $uibModal, Documents, Visits, Filters, AppCache, Periods, Api,
-  $httpParamSerializer, Languages, bhConstants
+  $httpParamSerializer, Languages, bhConstants, HttpCache
 ) {
   const baseUrl = '/patients/';
   const service = new Api(baseUrl);
@@ -81,6 +80,14 @@ function PatientService(
       .then(service.util.unwrapHttpResponse);
   }
 
+  const callback = (uuid, options) => {
+    const path = `/patients/${uuid}/finance/balance`;
+    return service.$http.get(path, options)
+      .then(service.util.unwrapHttpResponse);
+  };
+
+  const balanceCache = HttpCache(callback);
+
   /**
    * @method balance
    *
@@ -89,10 +96,8 @@ function PatientService(
    *
    * @param {String} uuid The patient's UUID
    */
-  function balance(uuid) {
-    const path = `/patients/${uuid}/finance/balance`;
-    return service.$http.get(path)
-      .then(service.util.unwrapHttpResponse);
+  function balance(uuid, options, cacheBust = false) {
+    return balanceCache(uuid, options, cacheBust);
   }
 
   /**
