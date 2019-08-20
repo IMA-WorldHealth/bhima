@@ -1,6 +1,6 @@
 {
   "name": "bhima",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "A rural hospital information management system.",
   "main": "npm run build",
   "scripts": {
@@ -16,6 +16,7 @@
     "build:clean": "./sh/build-init-database.sh",
     "watch": "./node_modules/.bin/gulp watch",
     "snyk-protect": "snyk protect",
+    "release": "release-it",
     "prepublish": "npm run snyk-protect"
   },
   "repository": {
@@ -141,6 +142,7 @@
     "mochawesome": "^4.0.0",
     "nodemon": "^1.18.10",
     "protractor": "^5.4.2",
+    "release-it": "^12.3.5",
     "rewire": "^4.0.1",
     "snyk": "^1.210.0",
     "standard-version": "^7.0.0",
