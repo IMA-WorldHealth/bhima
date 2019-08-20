@@ -277,61 +277,6 @@ CREATE TABLE `config_week_days` (
   FOREIGN KEY (`weekend_config_id`) REFERENCES `weekend_config` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
-DROP TABLE IF EXISTS `consumption`;
-CREATE TABLE `consumption` (
-  `uuid`            BINARY(16) NOT NULL,
-  `depot_uuid`      BINARY(16) NOT NULL,
-  `date`            DATE DEFAULT NULL,
-  `document_id`     BINARY(16) NOT NULL,
-  `tracking_number` CHAR(50) NOT NULL,
-  `quantity`        INT(10) UNSIGNED DEFAULT NULL,
-  `unit_price`      FLOAT UNSIGNED DEFAULT NULL,
-  `canceled`        TINYINT(1) NOT NULL DEFAULT 0,
-  PRIMARY KEY (`uuid`),
-  UNIQUE KEY `consumption_1` (`document_id`),
-  UNIQUE KEY `consumption_2` (`document_id`, `tracking_number`),
-  KEY `depot_uuid` (`depot_uuid`),
-  FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (`document_id`) REFERENCES `invoice` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
-
-DROP TABLE IF EXISTS `consumption_loss`;
-
-CREATE TABLE `consumption_loss` (
-  `uuid` BINARY(16) NOT NULL,
-  `consumption_uuid` BINARY(16) NOT NULL,
-  PRIMARY KEY (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
-
-DROP TABLE IF EXISTS `consumption_patient`;
-
-CREATE TABLE `consumption_patient` (
-  `uuid`                BINARY(16) NOT NULL,
-  `consumption_uuid`    BINARY(16) NOT NULL,
-  `patient_uuid`        BINARY(16) NOT NULL,
-  PRIMARY KEY (`uuid`),
-  UNIQUE KEY `consumption_patient_1` (`consumption_uuid`, `patient_uuid`),
-  KEY `consumption_uuid` (`consumption_uuid`),
-  KEY `patient_uuid` (`patient_uuid`),
-  FOREIGN KEY (`consumption_uuid`) REFERENCES `consumption` (`uuid`),
-  FOREIGN KEY (`patient_uuid`) REFERENCES `patient` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
-
-DROP TABLE IF EXISTS `consumption_service`;
-
-CREATE TABLE `consumption_service` (
-  `uuid` BINARY(16) NOT NULL,
-  `consumption_uuid` BINARY(16) NOT NULL,
-  `service_id` SMALLINT(5) UNSIGNED NOT NULL,
-  PRIMARY KEY (`uuid`),
-  UNIQUE KEY `consumption_service_1` (`consumption_uuid`, `service_id`),
-  KEY `consumption_uuid` (`consumption_uuid`),
-  KEY `service_id` (`service_id`),
-  FOREIGN KEY (`consumption_uuid`) REFERENCES `consumption` (`uuid`),
-  FOREIGN KEY (`service_id`) REFERENCES `service` (`id`)
-) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
-
-
 DROP TABLE IF EXISTS `cost_center`;
 
 CREATE TABLE `cost_center` (
@@ -958,21 +903,6 @@ CREATE TABLE `inventory_unit` (
   UNIQUE KEY `inventory_unit_2` (`abbr`)
 ) ENGINE=InnoDB  DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
-
-DROP TABLE IF EXISTS `journal_log`;
-
-CREATE TABLE `journal_log` (
-  `uuid` BINARY(16) NOT NULL,
-  `transaction_id` text NOT NULL,
-  `justification` text,
-  `date` date NOT NULL,
-  `user_id` smallINT(5) UNSIGNED NOT NULL,
-  PRIMARY KEY (`uuid`),
-  KEY `user_id` (`user_id`),
-  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
-
-
 DROP TABLE IF EXISTS `language`;
 
 CREATE TABLE `language` (
@@ -985,19 +915,6 @@ CREATE TABLE `language` (
   UNIQUE KEY `language_2` (`key`),
   UNIQUE `locale_key` (`locale_key`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
-
-
-DROP TABLE IF EXISTS `mod_snis_zs`;
-
-CREATE TABLE `mod_snis_zs` (
-  `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `zone` varchar(100) NOT NULL,
-  `territoire` varchar(100) NOT NULL,
-  `province` varchar(100) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `mod_snis_zs_1` (`zone`)
-) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
-
 
 DROP TABLE IF EXISTS `offday`;
 CREATE TABLE `offday` (

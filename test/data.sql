@@ -776,11 +776,6 @@ CALL PostVoucher(@second_voucher);
 CALL PostVoucher(@third_voucher);
 CALL PostVoucher(@fourth_voucher);
 
--- zones des santes SNIS
-INSERT INTO `mod_snis_zs` VALUES
-  (1, 'Zone Sante A', 'Territoire A', 'Province A'),
-  (2, 'Zone Sante B', 'Territoire B', 'Province B');
-
 INSERT INTO `price_list` VALUES
   (HUID('75e09694-dd5c-11e5-a8a2-6c29955775b0'), 1, 'Test Price List', 'Price list for test purposes', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
