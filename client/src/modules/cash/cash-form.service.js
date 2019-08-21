@@ -207,8 +207,7 @@ function CashFormService(AppCache, Session, Patients, Exchange) {
 
     // bind the enterprise currency value
     this.totals.enterpriseCurrencyTotal = total;
-    this.totals.currentExchangeRate =
-      Exchange.getExchangeRate(this.details.currency_id, this.details.date);
+    this.totals.currentExchangeRate = Exchange.getExchangeRate(this.details.currency_id, this.details.date);
     this.totals.foreignCurrencyTotal = total * this.totals.currentExchangeRate;
   };
 

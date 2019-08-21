@@ -875,6 +875,11 @@ a[disabled] {
   text-decoration : line-through;
 }
 
+.reversed {
+  text-decoration : line-through;
+  background-color: #ffb3b3 !important;
+}
+
 .dropdown-menu {
   z-index : 9999;
 }

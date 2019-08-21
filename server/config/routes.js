@@ -328,20 +328,6 @@ exports.configure = function configure(app) {
   app.post('/depots', depots.create);
   app.delete('/depots/:uuid', depots.remove);
 
-  /* Depot distributions routes */
-  app.get('/depots/:depotId/distributions', depots.listDistributions);
-  app.get('/depots/:depotId/distributions/:uuid', depots.detailDistributions);
-
-  /**
-   * Depot inventories and lots routes
-   * get the lots of a particular inventory item in the depot
-   * @todo -- should this be renamed? /stock? /lots?
-   */
-  app.get('/depots/:depotId/inventory', depots.listAvailableLots);
-  app.get('/depots/:depotId/inventory/:uuid', depots.detailAvailableLots);
-  app.get('/depots/:depotId/expired', depots.listExpiredLots);
-  app.get('/depots/:depotId/expirations', depots.listStockExpirations);
-
   // general ledger controller
   // transitioning to a more traditional angular application architecture
   app.get('/ledgers/general', gl.route);

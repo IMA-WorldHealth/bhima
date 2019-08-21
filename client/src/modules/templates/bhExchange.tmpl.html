@@ -31,7 +31,13 @@
 
     <ul class="list-unstyled">
       <li data-exchange-rate-element ng-repeat="rate in $ctrl.rates | orderBy:'-date'">
-        <i class="fa fa-clock-o"></i> <b>{{ rate.rate }} {{ $ctrl.formatCurrency(rate.currency_id) }} </b>
+        <i class="fa fa-clock-o"></i>
+          <span ng-if="rate.rate < 0.1">
+            <b> <em> (1 / {{(1 / rate.rate) | number:0 }}) </em> {{ $ctrl.formatCurrency(rate.currency_id) }} </b>
+          </span>
+          <span ng-if="rate.rate >= 0.1">
+            <b>{{ rate.rate}} {{ $ctrl.formatCurrency(rate.currency_id) }} </b>
+          </span>
         <span translate>EXCHANGE.RATE_SET</span> <span am-time-ago="rate.date"></span>.
         <br />
         <span class="icon-spacer text-muted"><i>{{rate.date | date : 'medium'}}</i></span>

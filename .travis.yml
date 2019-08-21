@@ -3,6 +3,7 @@ dist: trusty
 
 before_install:
   - jdk_switcher use oraclejdk8
+  - ./sh/setup-ci-env.sh
   - ./sh/travis.sh
 
 services:
@@ -14,14 +15,14 @@ node_js:
   - lts/dubnium
 
 before_script:
-  - sudo /etc/init.d/mysql restart
   - yarn build
   - yarn webdriver-manager update --versions.chrome="$(google-chrome --version | cut -d ' ' -f 3)" --gecko false
   - greenkeeper-lockfile-update
 
 script:
-  - mkdir test/artifacts
-  - yarn test
+  - yarn test:integration
+  - yarn test:ends
+
 
 after_script: greenkeeper-lockfile-upload
 

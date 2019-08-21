@@ -27,7 +27,7 @@
         </div>
 
         {{#if metadata.enterprise.settings.enable_barcodes}}
-          <small>{{> barcode value=details.barcode}}</small> <br>
+          <small>{{> barcode value=payment.barcode}}</small> <br>
         {{/if}}
       </div>
     </div>
@@ -77,11 +77,11 @@
             <tr>
               <td>{{ translate "CASH.CREDIT_PATIENT_ACCOUNT"}}</td>
               <td class="text-right"> {{currency amount currency_id}} </td>
-            
+
             </tr>
           {{/if}}
         {{/with}}
-      
+
       {{#each payment.items as |item| }}
         <tr>
           <td>{{item.reference}}</td>

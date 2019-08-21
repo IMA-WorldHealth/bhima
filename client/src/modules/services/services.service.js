@@ -13,8 +13,8 @@ function ServiceService($http, util) {
   service.delete = del;
   service.count = count;
 
-  function create(_service_) {
-    return $http.post(baseUrl, _service_)
+  function create(data) {
+    return $http.post(baseUrl, data)
       .then(util.unwrapHttpResponse);
   }
 
@@ -30,15 +30,13 @@ function ServiceService($http, util) {
       .then(util.unwrapHttpResponse);
   }
 
-  function update(id, _service_) {
-    delete _service_.abbr;
-    delete _service_.enterprise_name;
-    delete _service_.cc_id;
-    delete _service_.pc_id;
-    delete _service_.cost_center_name;
-    delete _service_.profit_center_name;
+  function update(id, data) {
+    delete data.abbr;
+    delete data.enterprise_name;
+    delete data.cost_center_name;
+    delete data.profit_center_name;
 
-    return $http.put(baseUrl + id, _service_)
+    return $http.put(baseUrl + id, data)
       .then(util.unwrapHttpResponse);
   }
 

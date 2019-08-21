@@ -279,11 +279,10 @@ BEGIN
   INSERT INTO general_ledger (
     project_id, uuid, fiscal_year_id, period_id, trans_id, trans_id_reference_number, trans_date,
     record_uuid, description, account_id, debit, credit, debit_equiv,
-    credit_equiv, currency_id, entity_uuid, reference_uuid, comment, transaction_type_id, user_id,
-    cc_id, pc_id
+    credit_equiv, currency_id, entity_uuid, reference_uuid, comment, transaction_type_id, user_id
   ) SELECT project_id, uuid, fiscal_year_id, period_id, trans_id, trans_id_reference_number, trans_date, posting_journal.record_uuid,
     description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id,
-    entity_uuid, reference_uuid, comment, transaction_type_id, user_id, cc_id, pc_id
+    entity_uuid, reference_uuid, comment, transaction_type_id, user_id
   FROM posting_journal JOIN stage_trial_balance_transaction AS staged
     ON posting_journal.record_uuid = staged.record_uuid;
 
@@ -299,8 +298,6 @@ BEGIN
   GROUP BY fiscal_year_id, period_id, account_id
   ON DUPLICATE KEY UPDATE credit = credit + VALUES(credit), debit = debit + VALUES(debit);
 
-
-  
   -- remove from posting journal
   DELETE FROM posting_journal WHERE record_uuid IN (SELECT record_uuid FROM stage_trial_balance_transaction);
 
@@ -320,7 +317,6 @@ BEGIN
   IF isVoucher > 0 THEN
     UPDATE voucher SET posted = 1 WHERE uuid IN (SELECT record_uuid FROM stage_trial_balance_transaction);
   END IF;
-
 
 END $$
 
