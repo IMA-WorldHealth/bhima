@@ -16,8 +16,6 @@ describe('(/accounts) Accounts', () => {
     label : 'Account for integration test',
     parent : 0,
     locked : 0,
-    cc_id : null,
-    pc_id : null,
     reference_id : null,
   };
 
@@ -27,9 +25,8 @@ describe('(/accounts) Accounts', () => {
   const NUM_ACCOUNTS = 281;
 
   const responseKeys = [
-    'id', 'enterprise_id', 'locked', 'cc_id', 'pc_id', 'created',
-    'reference_id', 'number', 'label', 'parent', 'type_id', 'type', 'translation_key',
-    'cost_center_text', 'profit_center_text',
+    'id', 'enterprise_id', 'locked', 'created', 'reference_id',
+    'number', 'label', 'parent', 'type_id', 'type', 'translation_key',
   ];
 
   it('GET /accounts?detailed=1 returns the full list of account', () => {
