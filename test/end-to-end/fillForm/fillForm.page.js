@@ -22,7 +22,7 @@ class FillFormManagementPage {
    */
   async create(fillForm) {
     await element(by.id('form_3')).click();
-    await browser.findElement(by.css('[name="structure"]')).sendKeys(fillForm.structure);
+    await browser.findElement(by.css('[name="label"]')).sendKeys(fillForm.label);
     await browser.findElement(by.css('[name="longueur"]')).sendKeys(fillForm.longueur);
     await browser.findElement(by.css('[name="largeur"]')).sendKeys(fillForm.largeur);
     await browser.findElement(by.css('[name="nombre_agent"]')).sendKeys(fillForm.nombre_agent);
