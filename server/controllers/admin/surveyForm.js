@@ -1,3 +1,5 @@
+/* eslint-disable no-eval */
+/* eslint-disable no-unused-vars */
 /**
 * SURVEY FORM Controller
 *
@@ -91,7 +93,7 @@ function create(req, res, next) {
 
   db.exec(sql, [data])
     .then((row) => {
-      res.status(201).json({ id: row.insertId });
+      res.status(201).json({ id : row.insertId });
     })
     .catch(next)
     .done();
@@ -131,7 +133,9 @@ function remove(req, res, next) {
     .done();
 }
 
+
 function getCalculation(survey, data) {
+  // the params data is used in function eval
   let formula = survey.calculation;
 
   formula = formula.replace(/.{/g, 'data.');

@@ -52,7 +52,7 @@ function DataCollectorManagementController($state, DataCollectorManagement, Noti
         enableFiltering : 'true',
         headerCellFilter : 'translate',
         cellTemplate : '/modules/data_collector_management/templates/is_related_patient.cell.html',
-      },      
+      },
       {
         field : 'color',
         displayName : '',

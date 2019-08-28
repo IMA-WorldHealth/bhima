@@ -90,7 +90,8 @@ describe('(/survey_form) Survey Form', () => {
           'id', 'is_list', 'label', 'labelType', 'name', 'other_choice', 'required',
           'type', 'typeForm', 'typeLabel', 'version_number', 'calculation', 'choiceListLabel',
           'choice_list_id', 'color', 'constraint', 'data_collector_label', 'data_collector_management_id',
-          'default', 'description', 'filterLabel', 'filter_choice_list_id', 'hint', 'rank');
+          'default', 'description', 'filterLabel', 'filter_choice_list_id', 'hint', 'rank'
+        );
       })
       .catch(helpers.handler);
   });

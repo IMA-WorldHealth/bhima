@@ -157,7 +157,7 @@ function FillFormModalController($state, FillForm, Notify, AppCache,
         return FillForm.read(vm.stateParams.uuid);
       })
       .then(dataSurvey => {
-        vm.form = FillForm.formatData(vm.formItems, dataSurvey);        
+        vm.form = FillForm.formatData(vm.formItems, dataSurvey);
         vm.oldData = FillForm.formatData(vm.formItems, dataSurvey);
       })
       .catch(Notify.handleError);
