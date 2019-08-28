@@ -39,3 +39,70 @@ ALTER TABLE service DROP COLUMN profit_center_id;
 
 DROP TABLE IF EXISTS profit_center;
 DROP TABLE IF EXISTS cost_center;
+
+-- rewrite PostToGeneralLedger
+DELIMITER $$
+
+DROP PROCEDURE PostToGeneralLedger$$
+CREATE PROCEDURE PostToGeneralLedger()
+BEGIN
+
+  DECLARE isInvoice, isCash, isVoucher INT;
+
+  -- write into the posting journal
+  INSERT INTO general_ledger (
+    project_id, uuid, fiscal_year_id, period_id, trans_id, trans_id_reference_number, trans_date,
+    record_uuid, description, account_id, debit, credit, debit_equiv,
+    credit_equiv, currency_id, entity_uuid, reference_uuid, comment, transaction_type_id, user_id
+  ) SELECT project_id, uuid, fiscal_year_id, period_id, trans_id, trans_id_reference_number, trans_date, posting_journal.record_uuid,
+    description, account_id, debit, credit, debit_equiv, credit_equiv, currency_id,
+    entity_uuid, reference_uuid, comment, transaction_type_id, user_id
+  FROM posting_journal JOIN stage_trial_balance_transaction AS staged
+    ON posting_journal.record_uuid = staged.record_uuid;
+
+  -- write into period_total
+  INSERT INTO period_total (
+    account_id, credit, debit, fiscal_year_id, enterprise_id, period_id
+  )
+  SELECT account_id, SUM(credit_equiv) AS credit, SUM(debit_equiv) as debit,
+    fiscal_year_id, project.enterprise_id, period_id
+  FROM posting_journal JOIN stage_trial_balance_transaction JOIN project
+    ON posting_journal.record_uuid = stage_trial_balance_transaction.record_uuid
+    AND project_id = project.id
+  GROUP BY fiscal_year_id, period_id, account_id
+  ON DUPLICATE KEY UPDATE credit = credit + VALUES(credit), debit = debit + VALUES(debit);
+
+  -- remove from posting journal
+  DELETE FROM posting_journal WHERE record_uuid IN (SELECT record_uuid FROM stage_trial_balance_transaction);
+
+  -- Let specify that this invoice or the cash payment is posted
+  SELECT COUNT(uuid) INTO isInvoice  FROM invoice  WHERE invoice.uuid IN (SELECT record_uuid FROM stage_trial_balance_transaction);
+  SELECT COUNT(uuid) INTO isCash  FROM cash  WHERE cash.uuid IN (SELECT record_uuid FROM stage_trial_balance_transaction);
+  SELECT COUNT(uuid) INTO isVoucher  FROM voucher  WHERE voucher.uuid IN (SELECT record_uuid FROM stage_trial_balance_transaction);
+
+  IF isInvoice > 0 THEN
+    UPDATE invoice SET posted = 1 WHERE uuid IN (SELECT record_uuid FROM stage_trial_balance_transaction);
+  END IF;
+
+  IF isCash > 0 THEN
+    UPDATE cash SET posted = 1 WHERE uuid IN (SELECT record_uuid FROM stage_trial_balance_transaction);
+  END IF;
+
+  IF isVoucher > 0 THEN
+    UPDATE voucher SET posted = 1 WHERE uuid IN (SELECT record_uuid FROM stage_trial_balance_transaction);
+  END IF;
+
+END $$
+
+DELIMITER ;
+
+/*
+ @author: mbayopanda
+ @date: 2019-08-22
+ @description: issue #3856
+*/
+INSERT INTO `unit` VALUES 
+  (246, 'Client debts report', 'TREE.CLIENT_DEBTS_REPORT', 'Client debts report', 144, '/modules/reports/clientDebts', '/reports/clientDebts');
+
+INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES 
+  (36, 'clientDebts', 'REPORT.CLIENT_SUMMARY.TITLE');

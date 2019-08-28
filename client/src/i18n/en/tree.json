@@ -140,6 +140,7 @@
       "HUMAN_RESOURCES":"Human Resources",
       "FINANCES":"Finances"
     },
-    "VISITS_REPORT": "[Visits] Admission by Services"
+    "VISITS_REPORT": "[Visits] Admission by Services",
+    "CLIENT_DEBTS_REPORT": "[Clients] Debts Report"
   }
 }
