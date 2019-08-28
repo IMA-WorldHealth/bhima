@@ -87,7 +87,7 @@ function PatientMedicalSheetCtrl(DataCollectorManagement, Notify, uiGridConstant
       $ctrl.hasError = false;
       $ctrl.loading = true;
 
-      DataCollectorManagement.read(null, {is_related_patient : 1})
+      DataCollectorManagement.read(null, { is_related_patient : 1 })
         .then((dataCollectorManagement) => {
           $ctrl.gridOptions.data = dataCollectorManagement;
         })

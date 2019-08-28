@@ -156,7 +156,7 @@ function ColorService($translate) {
     { name : 'violet', value : '#EE82EE' },
     { name : 'wheat', value : '#F5DEB3' },
     { name : 'white', value : '#FFFFFF' },
-    { name : 'whitesmoke', value : '#F5F5F5' }
+    { name : 'whitesmoke', value : '#F5F5F5' },
   ];
 
   return service;
