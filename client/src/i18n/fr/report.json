@@ -224,7 +224,9 @@
       "INCLUDE_CLOSING_BALANCES_HELP" : "Cette option force la balance à afficher les soldes de l’année entière, y compris les soldes de clôture. Toute opération effectuée pour clôturer les comptes de produits et de charges sera reflétée dans la balance.",
       "INCLUDE_UNPOSTED_RECORDS" : "Inclure les valeurs non-postée",
       "INCLUDE_UNPOSTED_RECORDS_HELP" : "",
-      "REMOVE_UNUSED_ACCOUNT" : "Enlèver les comptes non utilisés"
+      "REMOVE_UNUSED_ACCOUNT" : "Enlèver les comptes non utilisés",
+      "SHOW_DEBTS_DETAILS":"Afficher les details des dettes",
+      "SHOW_DEBTS_DETAILS_HELP":"Cette option permet d'avoir les noms de chaque membre du groupe avec leur dettes"
     },
     "OHADA": {
       "BALANCE_SHEET" : "Bilan",
@@ -368,6 +370,13 @@
       "RECEIVER" : "Recepteur",
       "DEPOT_MANAGER" : "Gestionnaire du dépot",
       "SUPPLIER" : "Fournisseur"
+    },
+    "CLIENT_SUMMARY" : {
+      "TITLE":"Rapport des dettes des clients",
+      "DESCRIPTION":"Ce rapport montre les dettes des differents membres d'un groupe de debiteur",
+      "EMPLOYEES_DEBTS":"Dettes des employés",
+      "NOT_EMPLOYEES_DEBTS":"Dettes des non-employés",
+      "EMPLOYEES_SUPPORT":"Prise en charge des patients par les employés (A recouvrir)"
     }
   }
 }

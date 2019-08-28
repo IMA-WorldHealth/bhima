@@ -129,7 +129,8 @@ INSERT INTO unit VALUES
   (242, 'Entity Management','ENTITY.MANAGEMENT','',241,'/modules/entities','/entities'),
   (243, 'Entity Group', 'ENTITY.GROUP.TITLE', 'Entity Group', 241, '/modules/entity_group', '/entity_group'),
   (244, 'Monthly Balance', 'TREE.MONTHLY_BALANCE', 'Monthly Balance', 144, '/modules/reports/monthlyBalance', '/reports/monthlyBalance'),
-  (245, 'Debtor summary report', 'REPORT.DEBTOR_SUMMARY.TITLE', 'Debtor summary report', 144, '/modules/reports/debtorSummary', '/reports/debtorSummary');
+  (245, 'Debtor summary report', 'REPORT.DEBTOR_SUMMARY.TITLE', 'Debtor summary report', 144, '/modules/reports/debtorSummary', '/reports/debtorSummary'),
+  (246, 'Client debts report', 'TREE.CLIENT_DEBTS_REPORT', 'Client debts report', 144, '/modules/reports/clientDebts', '/reports/clientDebts');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -182,7 +183,8 @@ INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
   (32, 'visit_report', 'PATIENT_RECORDS.REPORT.VISITS'),
   (33, 'stock_entry', 'REPORT.STOCK.ENTRY_REPORT'),
   (34, 'monthlyBalance', 'REPORT.MONTHLY_BALANCE.TITLE'),
-  (35, 'debtorSummary', 'REPORT.DEBTOR_SUMMARY.TITLE');
+  (35, 'debtorSummary', 'REPORT.DEBTOR_SUMMARY.TITLE'),
+  (36, 'clientDebts', 'REPORT.CLIENT_SUMMARY.TITLE');
 
 -- Supported Languages
 INSERT INTO `language` VALUES
