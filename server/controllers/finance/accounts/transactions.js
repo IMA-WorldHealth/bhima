@@ -72,7 +72,7 @@ function getGeneralLedgerSQL(options) {
   `;
 
   filters.setGroup('GROUP BY record_uuid');
-  filters.setOrder('ORDER BY created_at ASC, trans_date ASC');
+  filters.setOrder('ORDER BY trans_date ASC, created_at ASC');
 
   const query = filters.applyQuery(sql);
   const parameters = [...subquery.parameters, ...filters.parameters()];
