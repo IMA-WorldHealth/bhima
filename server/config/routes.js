@@ -127,6 +127,7 @@ const breakEvenReference = require('../controllers/finance/breakEvenReference');
 
 const debtorSummaryReport = require('../controllers/finance/reports/debtors/summaryReport');
 const clientDebts = require('../controllers/finance/reports/client_debts');
+const clientSupport = require('../controllers/finance/reports/client_support');
 
 // periods
 const period = require('../controllers/finance/period');
@@ -407,6 +408,7 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/operating', financeReports.operating.document);
   app.get('/reports/finance/debtorSummary', debtorSummaryReport.summaryReport);
   app.get('/reports/finance/clientDebts', clientDebts.report);
+  app.get('/reports/finance/clientSupport', clientSupport.report);
 
   // visits reports
   app.get('/reports/visits', medicalReports.visitsReports.document);

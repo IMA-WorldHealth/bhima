@@ -37,6 +37,7 @@ angular.module('bhima.routes')
       'monthlyBalance',
       'debtorSummary',
       'clientDebts',
+      'clientSupport',
     ];
 
     $stateProvider

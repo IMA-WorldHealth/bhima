@@ -102,7 +102,9 @@ DELIMITER ;
  @description: issue #3856
 */
 INSERT INTO `unit` VALUES 
-  (246, 'Client debts report', 'TREE.CLIENT_DEBTS_REPORT', 'Client debts report', 144, '/modules/reports/clientDebts', '/reports/clientDebts');
+  (246, 'Client debts report', 'TREE.CLIENT_DEBTS_REPORT', 'Client debts report', 144, '/modules/reports/clientDebts', '/reports/clientDebts'),
+  (247, 'Client support report', 'TREE.CLIENT_SUPPORT_REPORT', 'Client support report', 144, '/modules/reports/clientSupport', '/reports/clientSupport');
 
 INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES 
-  (36, 'clientDebts', 'REPORT.CLIENT_SUMMARY.TITLE');
+  (36, 'clientDebts', 'REPORT.CLIENT_SUMMARY.TITLE'),
+  (37, 'clientSupport', 'REPORT.CLIENT_SUPPORT.TITLE');

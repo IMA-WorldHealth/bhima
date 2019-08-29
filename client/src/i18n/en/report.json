@@ -227,7 +227,13 @@
       "INCLUDE_UNPOSTED_RECORDS_HELP" : "This option will force the report to include unposted values in the dataset.  Unposted values should never be included in a final report as they have not been validated by an accountant.",
       "REMOVE_UNUSED_ACCOUNT": "Remove Unused Accounts",
       "SHOW_DEBTS_DETAILS":"Show Debts Details",
-      "SHOW_DEBTS_DETAILS_HELP":"This options allow to have name of each member of a debtor group with their debts"
+      "SHOW_DEBTS_DETAILS_HELP":"This options allow to have name of each member of a debtor group with their debts",
+      "SHOW_EMPLOYEE_SUPPORT":"Show employees supports",
+      "SHOW_EMPLOYEE_SUPPORT_HELP":"This option makes it possible to see the support provided by employees",
+      "SHOW_OTHER_SUPPORT":"Show organization support",
+      "SHOW_OTHER_SUPPORT_HELP":"This option allows you to see the support provided by organizations that are not employees",
+      "SHOW_DETAILS":"Show details",
+      "SHOW_DETAILS_HELP":"This option allows you to see more details"
     },
     "OHADA": {
       "BALANCE_SHEET" : "Balance Sheet",
@@ -378,6 +384,13 @@
       "EMPLOYEES_DEBTS":"Employees Debts",
       "NOT_EMPLOYEES_DEBTS":"Not Employees Debts",
       "EMPLOYEES_SUPPORT":"Employees Supports Patients (To Cover)"
+    },
+    "CLIENT_SUPPORT" : {
+      "TITLE":"Clients Support Report",
+      "DESCRIPTION":"This report shows supported patients and the supporter",
+      "EMPLOYEES_SUPPORT":"Employees Supports for patients",
+      "OTHERS_SUPPORT":"Others Supports for patients",
+      "PATIENTS":"Patient(s)"
     }
   }
 }
