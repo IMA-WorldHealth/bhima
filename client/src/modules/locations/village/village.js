@@ -3,146 +3,124 @@ angular.module('bhima.controllers')
 
 VillageController.$inject = [
   'LocationService', 'util', 'NotifyService',
+  'ModalService', '$uibModal', 'uiGridConstants', 'LocationService',
 ];
 
-function VillageController(locationService, util, Notify) {
+function VillageController(locationService, util, Notify,
+  Modal, $uibModal, uiGridConstants, Location) {
+
   const vm = this;
   vm.session = {};
-  vm.view = 'default';
   vm.state = {};
 
-  // bind methods
-  vm.create = create;
-  vm.submit = submit;
-  vm.update = update;
-  vm.cancel = cancel;
-
-  vm.loadProvinces = loadProvinces;
-  vm.loadSectors = loadSectors;
   vm.maxLength = util.maxTextLength;
 
   // fired on startup
   function startup() {
     // start up loading indicator
     vm.session.loading = true;
-
-    // load Villages
+    // load Provinces
     refreshVillages();
-  }
-
-  function cancel() {
-    vm.view = 'default';
-  }
-
-  function create() {
-    vm.view = 'create';
-    vm.village = {};
   }
 
   vm.messages = {
     country : locationService.messages.country,
-    province : locationService.messages.province,
-    sector : locationService.messages.sector,
   };
 
-  /** load countries on startup */
-  locationService.countries()
-    .then((countries) => {
-
-      // bind the countries to the view for <select>ion
-      vm.countries = countries;
-
-      // make sure that we are showing the proper message to the client
-      vm.messages.country = (countries.length > 0)
-        ? locationService.messages.country
-        : locationService.messages.empty;
-    });
-
-  /** loads provinces based on the selected country */
-  function loadProvinces() {
-
-    // make sure we do not make unnecessary HTTP requests
-    if (!vm.village.country_uuid) { return; }
-
-    locationService.provinces({ country : vm.village.country_uuid })
-      .then((provinces) => {
-
-        // bind the provinces to the view for <select>ion
-        vm.provinces = provinces;
-
-        // make sure that we show the correct message in the <select> option
-        vm.messages.province = (provinces.length > 0)
-          ? locationService.messages.province
-          : locationService.messages.empty;
-      });
-  }
-
-  /** loads sectors based on the selected province */
-  function loadSectors() {
-
-    // make sure we do not make unnecessary HTTP requests
-    if (!vm.village.province_uuid) { return; }
-
-    locationService.sectors({ province : vm.village.province_uuid })
-      .then((sectors) => {
-
-        // bind the sectors to the view for <select>ion
-        vm.sectors = sectors;
-
-        // make sure that we show the correct message in the <select> option
-        vm.messages.sector = (sectors.length > 0)
-          ? locationService.messages.sector
-          : locationService.messages.empty;
-      });
-  }
-
-  // switch to update mode
-  // data is an object that contains all the information of a village
-  function update(data) {
-    vm.view = 'update';
-    vm.village = data;
-    vm.village.name = data.village;
-    vm.village.uuid = data.villageUuid;
-    vm.village.sector_uuid = data.sectorUuid;
-    vm.village.province_uuid = data.provinceUuid;
-    vm.village.country_uuid = data.countryUuid;
-    vm.village.longitude = data.longitude;
-    vm.village.latitude = data.latitude;
-    loadProvinces();
-    loadSectors();
-  }
-
-
-  // refresh the displayed Villages
+  // refresh the displayed Provinces
   function refreshVillages() {
-    return locationService.locations().then((data) => {
-      vm.locations = data;
+    return locationService.villages({ detailed : 1 }).then((villages) => {
+      vm.gridOptions.data = villages;
       vm.session.loading = false;
     });
   }
 
-  // form submission
-  function submit(form) {
-    // stop submission if the form is invalid
-    if (form.$invalid) {
-      vm.state.errored = true;
-      return 0;
-    }
+  vm.createUpdateModal = (selectedProvince = {}) => {
+    return $uibModal.open({
+      templateUrl : 'modules/locations/village/modal/createUpdate.html',
+      controller : 'CreateUpdateVillageController as ModalCtrl',
+      resolve : { data : () => selectedProvince },
+    }).result.then(result => {
+      if (result) refreshVillages();
+    });
+  };
 
-    const creation = (vm.view === 'create');
-    const village = angular.copy(vm.village);
+  const columns = [{
+    field : 'country_name',
+    displayName : 'TABLE.COLUMNS.COUNTRY',
+    headerCellFilter : 'translate',
+  }, {
+    field : 'province_name',
+    displayName : 'TABLE.COLUMNS.PROVINCE',
+    headerCellFilter : 'translate',
+  },
+  {
+    field : 'sector_name',
+    displayName : 'TABLE.COLUMNS.SECTOR',
+    headerCellFilter : 'translate',
+  },
+  {
+    field : 'name',
+    displayName : 'TABLE.COLUMNS.VILLAGE',
+    headerCellFilter : 'translate',
+  },
+  {
+    field : 'longitude',
+    displayName : 'FORM.LABELS.LONGITUDE',
+    headerCellFilter : 'translate',
+  },
+  {
+    field : 'latitude',
+    displayName : 'FORM.LABELS.LATITUDE',
+    headerCellFilter : 'translate',
+  },
+  {
+    field : 'actions',
+    enableFiltering : false,
+    width : 100,
+    displayName : '',
+    headerCellFilter : 'translate',
+    cellTemplate : 'modules/locations/country/templates/action.cell.html',
+  }];
 
-    const promise = (creation)
-      ? locationService.create.village(village)
-      : locationService.update.village(village.uuid, village);
+  // ng-click="
+  vm.gridOptions = {
+    appScopeProvider : vm,
+    enableColumnMenus : false,
+    columnDefs : columns,
+    enableSorting : true,
+    fastWatch : true,
+    flatEntityAccess : true,
+    onRegisterApi : (gridApi) => {
+      vm.gridApi = gridApi;
+    },
+  };
 
-    return promise
-      .then(() => refreshVillages())
-      .then(() => {
-        vm.view = creation ? 'create_success' : 'update_success';
-      })
-      .catch(Notify.handleError);
-  }
+  vm.remove = function remove(uuid) {
+    const message = 'FORM.DIALOGS.CONFIRM_DELETE';
+    Modal.confirm(message)
+      .then(confirmResponse => {
+        if (!confirmResponse) {
+          return;
+        }
+        Location.delete.village(uuid)
+          .then(() => {
+            Notify.success('FORM.INFO.DELETE_SUCCESS');
+            refreshVillages();
+          })
+          .catch(Notify.handleError);
+      });
+  };
 
+  /**
+   * @function toggleInlineFilter
+   *
+   * @description
+   * Switches the inline filter on and off.
+   */
+  vm.toggleInlineFilter = function toggleInlineFilter() {
+    vm.gridOptions.enableFiltering = !vm.gridOptions.enableFiltering;
+    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+  };
   startup();
 }

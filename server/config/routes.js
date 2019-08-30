@@ -180,6 +180,11 @@ exports.configure = function configure(app) {
   app.put('/locations/provinces/:uuid', locations.update.province);
   app.put('/locations/countries/:uuid', locations.update.country);
 
+  app.delete('/locations/countries/:uuid', locations.delete.country);
+  app.delete('/locations/provinces/:uuid', locations.delete.province);
+  app.delete('/locations/sectors/:uuid', locations.delete.sector);
+  app.delete('/locations/villages/:uuid', locations.delete.village);
+
   app.post('/groups/:key/:id', groups.updateSubscriptions);
 
   // API for account type routes CRUD
