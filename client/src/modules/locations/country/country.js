@@ -74,7 +74,7 @@ function CountryController(locationService, util, Notify, $uibModal, Modal, uiGr
   };
 
   vm.remove = function remove(uuid) {
-    const message = 'FORM.DIALOGS.DELETE_ROLE';
+    const message = 'FORM.DIALOGS.CONFIRM_DELETE';
     Modal.confirm(message)
       .then(confirmResponse => {
         if (!confirmResponse) {
