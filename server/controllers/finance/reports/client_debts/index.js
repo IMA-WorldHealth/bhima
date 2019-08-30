@@ -85,18 +85,6 @@ async function report(req, res, next) {
     const parameters = [client.account_id, dateFrom, dateTo];
     const parameters2 = [client.uuid, dateFrom, dateTo];
 
-    // const patientsDebtsTotal = await db.one(patientsDebtsQuery, parameters);
-    // const patientsDebts = await db.exec(patientsDebtsQuery.concat(groupByEntity), parameters);
-
-    // const employeesDebtsTotal = await db.one(employeesDebtsQuery, parameters);
-    // const employeesDebts = await db.exec(employeesDebtsQuery.concat(groupByEntity), parameters);
-
-    // const notEmployeesDebtsTotal = await db.one(notEmployeesDebtsQuery, parameters);
-    // const notEmployeesDebts = await db.exec(notEmployeesDebtsQuery.concat(groupByEntity), parameters);
-
-    // const clientSupportDebtsTotal = await db.one(clientSupportDebtsQuery, parameters2);
-    // const clientSupportDebts = await db.exec(clientSupportDebtsQuery.concat(groupByEntity), parameters2);
-
     const [
       patientsDebtsTotal,
       patientsDebts,
@@ -106,7 +94,7 @@ async function report(req, res, next) {
       notEmployeesDebts,
       clientSupportDebtsTotal,
       clientSupportDebts,
-    ] = await Promise.all(
+    ] = await Promise.all([
       db.one(patientsDebtsQuery, parameters),
       db.exec(patientsDebtsQuery.concat(groupByEntity), parameters),
       db.one(employeesDebtsQuery, parameters),
@@ -114,8 +102,8 @@ async function report(req, res, next) {
       db.one(notEmployeesDebtsQuery, parameters),
       db.exec(notEmployeesDebtsQuery.concat(groupByEntity), parameters),
       db.one(clientSupportDebtsQuery, parameters2),
-      db.exec(clientSupportDebtsQuery.concat(groupByEntity), parameters2)
-    );
+      db.exec(clientSupportDebtsQuery.concat(groupByEntity), parameters2),
+    ]);
 
     const result = await rpt.render({
       patientsDebtsTotal,

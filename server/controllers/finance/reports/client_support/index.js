@@ -83,23 +83,17 @@ async function report(req, res, next) {
     const groupByDebtor = ' GROUP BY d.uuid ORDER BY p.display_name; ';
     const parameters = [dateFrom, dateTo];
 
-    // const employeeSupportTotal = await db.one(employeeSupportQuery, parameters);
-    // const employeeSupport = await db.exec(employeeSupportQuery.concat(groupByDebtor), parameters);
-
-    // const otherSupportTotal = await db.one(otherSupportQuery, parameters);
-    // const otherSupport = await db.exec(otherSupportQuery.concat(groupByDebtor), parameters);
-
     const [
       employeeSupportTotal,
       employeeSupport,
       otherSupportTotal,
       otherSupport,
-    ] = await Promise.all(
+    ] = await Promise.all([
       db.one(employeeSupportQuery, parameters),
       db.exec(employeeSupportQuery.concat(groupByDebtor), parameters),
       db.one(otherSupportQuery, parameters),
-      db.exec(otherSupportQuery.concat(groupByDebtor), parameters)
-    );
+      db.exec(otherSupportQuery.concat(groupByDebtor), parameters),
+    ]);
 
     const employeesCollection = generateTree(employeeSupport, 'employee_name')
       .map(e => {
@@ -144,5 +138,6 @@ function generateTree(array, groupBy) {
         number : value.length,
       };
     })
-    .sortBy('key', 'asc');
+    .sortBy(['key'], ['asc'])
+    .value();
 }
