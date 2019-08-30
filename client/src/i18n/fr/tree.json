@@ -140,6 +140,8 @@
       "HUMAN_RESOURCES":"Personnel",
       "FINANCES":"Finances"
     },
-    "VISITS_REPORT": "[Visits] Admissions par services"
+    "VISITS_REPORT": "[Visits] Admissions par services",
+    "CLIENT_DEBTS_REPORT": "[Clients] Rapport des dettes",
+    "CLIENT_SUPPORT_REPORT": "[Clients] Rapport des prises en charges"
   }
 }

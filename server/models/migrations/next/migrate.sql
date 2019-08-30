@@ -39,3 +39,16 @@ ALTER TABLE service DROP COLUMN profit_center_id;
 
 DROP TABLE IF EXISTS profit_center;
 DROP TABLE IF EXISTS cost_center;
+
+/*
+ @author: mbayopanda
+ @date: 2019-08-22
+ @description: issue #3856
+*/
+INSERT INTO `unit` VALUES 
+  (246, 'Client debts report', 'TREE.CLIENT_DEBTS_REPORT', 'Client debts report', 144, '/modules/reports/clientDebts', '/reports/clientDebts'),
+  (247, 'Client support report', 'TREE.CLIENT_SUPPORT_REPORT', 'Client support report', 144, '/modules/reports/clientSupport', '/reports/clientSupport');
+
+INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES 
+  (37, 'clientDebts', 'REPORT.CLIENT_SUMMARY.TITLE'),
+  (38, 'clientSupport', 'REPORT.CLIENT_SUPPORT.TITLE');
