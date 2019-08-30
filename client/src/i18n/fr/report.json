@@ -226,7 +226,7 @@
       "INCLUDE_UNPOSTED_RECORDS_HELP" : "",
       "REMOVE_UNUSED_ACCOUNT" : "Enlèver les comptes non utilisés",
       "SHOW_DEBTS_DETAILS":"Afficher les details des dettes",
-      "SHOW_DEBTS_DETAILS_HELP":"Cette option permet d'avoir les noms de chaque membre du groupe avec leur dettes",
+      "SHOW_DEBTS_DETAILS_HELP":"Cette option permet d'avoir les noms de chaque membre du groupe avec leur dette",
       "SHOW_EMPLOYEE_SUPPORT":"Afficher les prises en charge des employés",
       "SHOW_EMPLOYEE_SUPPORT_HELP":"Cette option permet de voir les prises en charge effectuées par les employés",
       "SHOW_OTHER_SUPPORT":"Afficher les prises en charge des organisations",

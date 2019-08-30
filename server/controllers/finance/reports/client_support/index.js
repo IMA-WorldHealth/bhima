@@ -50,7 +50,7 @@ async function report(req, res, next) {
       JOIN entity_map em ON em.uuid = p.uuid
       JOIN (
         SELECT
-          gl.trans_id, a.label, p.display_name, 
+          gl.record_uuid, a.label, p.display_name, 
           (gl.debit_equiv - gl.credit_equiv) AS balance, em.text AS reference
         FROM general_ledger gl 
         JOIN account a ON a.id = gl.account_id
@@ -59,8 +59,7 @@ async function report(req, res, next) {
         JOIN patient p ON p.uuid = e.patient_uuid
         JOIN entity_map em ON em.uuid = e.creditor_uuid
         WHERE (gl.trans_date BETWEEN ? AND ?) AND gl.transaction_type_id = ${SUPPORT_TRANSACTION_TYPE}
-      ) z ON z.trans_id = i.trans_id 
-      WHERE (i.trans_date BETWEEN ? AND ?) AND i.transaction_type_id = ${SUPPORT_TRANSACTION_TYPE} 
+      ) z ON z.record_uuid = i.record_uuid  
     `;
 
     const otherSupportQuery = `
@@ -73,24 +72,34 @@ async function report(req, res, next) {
       JOIN debtor_group dg ON dg.uuid = d.group_uuid
       JOIN patient p ON p.debtor_uuid = d.uuid
       JOIN (
-        SELECT gl.trans_id, a.label, (gl.debit_equiv - gl.credit_equiv) AS balance, gl.entity_uuid
+        SELECT gl.record_uuid, a.label, (gl.debit_equiv - gl.credit_equiv) AS balance, gl.entity_uuid
         FROM general_ledger gl 
         JOIN account a ON a.id = gl.account_id
         WHERE (gl.trans_date BETWEEN ? AND ?) 
           AND gl.transaction_type_id = ${SUPPORT_TRANSACTION_TYPE} AND gl.entity_uuid IS NULL
-      ) z ON z.trans_id = i.trans_id
-      WHERE (i.trans_date BETWEEN ? AND ?) 
-        AND i.transaction_type_id = ${SUPPORT_TRANSACTION_TYPE} 
+      ) z ON z.record_uuid = i.record_uuid 
     `;
 
     const groupByDebtor = ' GROUP BY d.uuid ORDER BY p.display_name; ';
-    const parameters = [dateFrom, dateTo, dateFrom, dateTo];
+    const parameters = [dateFrom, dateTo];
 
-    const employeeSupportTotal = await db.one(employeeSupportQuery, parameters);
-    const employeeSupport = await db.exec(employeeSupportQuery.concat(groupByDebtor), parameters);
+    // const employeeSupportTotal = await db.one(employeeSupportQuery, parameters);
+    // const employeeSupport = await db.exec(employeeSupportQuery.concat(groupByDebtor), parameters);
 
-    const otherSupportTotal = await db.one(otherSupportQuery, parameters);
-    const otherSupport = await db.exec(otherSupportQuery.concat(groupByDebtor), parameters);
+    // const otherSupportTotal = await db.one(otherSupportQuery, parameters);
+    // const otherSupport = await db.exec(otherSupportQuery.concat(groupByDebtor), parameters);
+
+    const [
+      employeeSupportTotal,
+      employeeSupport,
+      otherSupportTotal,
+      otherSupport,
+    ] = await Promise.all(
+      db.one(employeeSupportQuery, parameters),
+      db.exec(employeeSupportQuery.concat(groupByDebtor), parameters),
+      db.one(otherSupportQuery, parameters),
+      db.exec(otherSupportQuery.concat(groupByDebtor), parameters)
+    );
 
     const employeesCollection = generateTree(employeeSupport, 'employee_name')
       .map(e => {
@@ -125,16 +134,15 @@ async function report(req, res, next) {
 }
 
 function generateTree(array, groupBy) {
-  const collection = _(array)
+  return _(array)
     .groupBy(groupBy)
-    .reduce((prev, curr, key) => {
-      prev.push({
+    .map((value, key) => {
+      return {
         key,
-        data : curr,
-        total : _.sumBy(curr, 'balance'),
-        number : curr.length,
-      });
-      return prev;
-    }, []);
-  return _.sortBy(collection, ['key'], ['asc']);
+        data : value,
+        total : _.sumBy(value, 'balance'),
+        number : value.length,
+      };
+    })
+    .sortBy('key', 'asc');
 }

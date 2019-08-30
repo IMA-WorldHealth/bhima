@@ -34,6 +34,8 @@ async function report(req, res, next) {
 
     const rpt = new ReportManager(TEMPLATE, metadata, qs);
 
+    const SUPPORT_TRANSACTION_TYPE = 4;
+
     const patientsDebtsQuery = `
       SELECT em.text AS reference, p.display_name, dg.name, SUM(gl.debit_equiv - gl.credit_equiv) AS balance
       FROM general_ledger gl 
@@ -66,13 +68,11 @@ async function report(req, res, next) {
     const clientSupportDebtsQuery = `
       SELECT em.text as reference, p.display_name, SUM(gl.debit_equiv - gl.credit_equiv) AS balance
       FROM general_ledger gl 
-      JOIN account a ON a.id = gl.account_id
-      JOIN creditor c ON c.uuid = gl.entity_uuid
-      JOIN employee e ON e.creditor_uuid = c.uuid
+      JOIN employee e ON e.creditor_uuid = gl.entity_uuid
       JOIN patient p ON p.uuid = e.patient_uuid
       JOIN entity_map AS em ON em.uuid = e.creditor_uuid
       WHERE p.debtor_uuid IN (SELECT uuid AS uuid FROM debtor WHERE group_uuid = ?) 
-        AND (gl.trans_date BETWEEN ? AND ?) AND gl.transaction_type_id = 4 
+        AND (gl.trans_date BETWEEN ? AND ?) AND gl.transaction_type_id = ${SUPPORT_TRANSACTION_TYPE} 
     `;
 
     const clientQuery = `
@@ -85,17 +85,37 @@ async function report(req, res, next) {
     const parameters = [client.account_id, dateFrom, dateTo];
     const parameters2 = [client.uuid, dateFrom, dateTo];
 
-    const patientsDebtsTotal = await db.one(patientsDebtsQuery, parameters);
-    const patientsDebts = await db.exec(patientsDebtsQuery.concat(groupByEntity), parameters);
+    // const patientsDebtsTotal = await db.one(patientsDebtsQuery, parameters);
+    // const patientsDebts = await db.exec(patientsDebtsQuery.concat(groupByEntity), parameters);
 
-    const employeesDebtsTotal = await db.one(employeesDebtsQuery, parameters);
-    const employeesDebts = await db.exec(employeesDebtsQuery.concat(groupByEntity), parameters);
+    // const employeesDebtsTotal = await db.one(employeesDebtsQuery, parameters);
+    // const employeesDebts = await db.exec(employeesDebtsQuery.concat(groupByEntity), parameters);
 
-    const notEmployeesDebtsTotal = await db.one(notEmployeesDebtsQuery, parameters);
-    const notEmployeesDebts = await db.exec(notEmployeesDebtsQuery.concat(groupByEntity), parameters);
+    // const notEmployeesDebtsTotal = await db.one(notEmployeesDebtsQuery, parameters);
+    // const notEmployeesDebts = await db.exec(notEmployeesDebtsQuery.concat(groupByEntity), parameters);
 
-    const clientSupportDebtsTotal = await db.one(clientSupportDebtsQuery, parameters2);
-    const clientSupportDebts = await db.exec(clientSupportDebtsQuery.concat(groupByEntity), parameters2);
+    // const clientSupportDebtsTotal = await db.one(clientSupportDebtsQuery, parameters2);
+    // const clientSupportDebts = await db.exec(clientSupportDebtsQuery.concat(groupByEntity), parameters2);
+
+    const [
+      patientsDebtsTotal,
+      patientsDebts,
+      employeesDebtsTotal,
+      employeesDebts,
+      notEmployeesDebtsTotal,
+      notEmployeesDebts,
+      clientSupportDebtsTotal,
+      clientSupportDebts,
+    ] = await Promise.all(
+      db.one(patientsDebtsQuery, parameters),
+      db.exec(patientsDebtsQuery.concat(groupByEntity), parameters),
+      db.one(employeesDebtsQuery, parameters),
+      db.exec(employeesDebtsQuery.concat(groupByEntity), parameters),
+      db.one(notEmployeesDebtsQuery, parameters),
+      db.exec(notEmployeesDebtsQuery.concat(groupByEntity), parameters),
+      db.one(clientSupportDebtsQuery, parameters2),
+      db.exec(clientSupportDebtsQuery.concat(groupByEntity), parameters2)
+    );
 
     const result = await rpt.render({
       patientsDebtsTotal,
