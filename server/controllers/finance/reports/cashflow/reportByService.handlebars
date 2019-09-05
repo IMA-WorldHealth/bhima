@@ -29,14 +29,14 @@
           <tbody>
             {{#each matrix as | row |}}
               <tr>
-                {{#each row as |value |}}
+                {{#each row as |value|}}
                   {{! this is the balance calculation }}
                   {{#if @last}}
-                    <th class="text-right">{{currency value ../../currencyId}}</th>
+                    <th class="text-right">{{currency value ../../cashbox.currency_id}}</th>
 
                   {{! this is the rest of the matrix }}
                   {{else}}
-                    <td {{#unless @first}}class="text-right"{{/unless}}>
+                    <td {{#gt @index 2}}class="text-right"{{/gt}}>
                       {{#if @first}}
                         {{value}}
                       {{else}}
@@ -45,7 +45,7 @@
                         {{/equal}}
                         {{#gt @index 2}}
                           {{#if value}}
-                            {{currency value ../../currencyId}}
+                            {{currency value ../../cashbox.currency_id}}
                           {{/if}}
                         {{/gt}}
                       {{/if}}
@@ -61,8 +61,8 @@
           <tfoot>
             <tr class="text-capitalize text-center" style="background-color: #ddd;">
               <th colspan="2">{{translate "TABLE.COLUMNS.TOTAL" }}</th>
-              {{#each aggregates as | aggregate |}}
-                <th class="text-right">{{currency aggregate.totalCashIncome ../currencyId}}</th>
+              {{#each totals as |value| }}
+                <th class="text-right">{{currency value ../cashbox.currency_id}}</th>
               {{/each}}
             </tr>
           </tfoot>
