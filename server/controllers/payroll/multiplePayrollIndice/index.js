@@ -87,7 +87,7 @@ async function lookUp(options) {
     FROM stage_payment_indice sti
     JOIN employee emp ON emp.uuid = sti.employee_uuid
     JOIN rubric_payroll rb ON rb.id = sti.rubric_id
-    WHERE rb.is_indice = 1 AND sti.payroll_configuration_id = ? 
+    WHERE sti.payroll_configuration_id = ? 
     ${employeeUuid ? ` AND emp.uuid = ?` : ''}
   `;
 
@@ -96,8 +96,7 @@ async function lookUp(options) {
     FROM rubric_payroll rb
     JOIN config_rubric_item cti ON cti.rubric_payroll_id = rb.id
     JOIN config_rubric cr On cr.id = cti.config_rubric_id
-    WHERE 
-      rb.is_indice = 1 AND 
+    WHERE
       cr.id IN ( SELECT config_rubric_id FROM payroll_configuration WHERE id = ?)
     
     ORDER BY rb.position

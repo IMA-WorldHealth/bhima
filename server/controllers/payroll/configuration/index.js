@@ -130,6 +130,7 @@ function payrollReportElements(idPeriod, employees, employeesPaiementUuid) {
     JOIN employee ON employee.uuid = paiement.employee_uuid
     JOIN rubric_payroll ON rubric_payroll.id = rubric_paiement.rubric_payroll_id
     WHERE paiement.payroll_configuration_id = ? AND employee.reference IN (?)
+    AND  rubric_payroll.is_indice = 0
     ORDER BY rubric_payroll.label, rubric_payroll.is_social_care ASC, rubric_payroll.is_discount ASC
   `;
 

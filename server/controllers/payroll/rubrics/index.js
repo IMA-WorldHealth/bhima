@@ -37,6 +37,7 @@ function list(req, res, next) {
   `;
 
   filters.equals('is_defined_employee');
+  filters.equals('is_indice');
   filters.setOrder('ORDER BY r.is_indice, r.label');
 
   const query = filters.applyQuery(sql);
