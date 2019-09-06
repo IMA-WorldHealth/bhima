@@ -12,6 +12,7 @@ angular.module('bhima.components')
       required          : '<?',
       validationTrigger : '<?',
       restrictToUser    : '<?',
+      isAuxiliary       : '<?',
     },
   });
 
@@ -37,8 +38,13 @@ function CashboxSelectController(Cashbox, Notify, Session) {
       ? $ctrl.restrictToUser : true;
 
     const params = { detailed : 1 };
+
     if (restrictCashboxList) {
       params.user_id = Session.user.id;
+    }
+
+    if ($ctrl.isAuxiliary) {
+      params.is_auxiliary = 1;
     }
 
     // load all Cashbox

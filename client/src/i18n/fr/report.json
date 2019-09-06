@@ -13,6 +13,19 @@
       "TITLE" : "Balance Âgée des Conventionnés",
       "DESCRIPTION" : "Ce rapport affiche toutes les dettes des conventionnés, tout en spécifiant les dettes par période"
     },
+    "ANALYSIS_AUX_CASHBOXES": {
+      "TITLE": "Analyse des caisses auxiliaires",
+      "AUXILIARY_TRANSFERT": "Caisse auxiliaire vers compte de transfert",
+      "DESCRIPTION": "Ce rapport permet de faire la suivie mensuel des encaissements et décaissements des caisses auxilliaires",
+      "STATUS": {
+        "CORRECT": "Correcte",
+        "TRANSFERT_GREATER": "Le montant transferé est supérieur",
+        "TRANSFERT_LOWWER": "Le montant transferé est inférieure",
+        "TRANSFERT_PENDING": "Transfère en attente"
+      },
+      "TARGET": "Cible",
+      "TRANSFER_PRINCIPAL": "Compte de transfert vers caisse Principale"
+    },
     "BY_ASC": "Par ordre croissant",
     "BY_DESC": "Par ordre décroissant",
     "BALANCE": "Rapport de la Balance",

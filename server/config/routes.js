@@ -415,6 +415,8 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/clientDebts', clientDebts.report);
   app.get('/reports/finance/clientSupport', clientSupport.report);
 
+  app.get('/reports/finance/analysis_auxiliary_cashbox', financeReports.analysisAuxiliaryCashbox.report);
+
   // visits reports
   app.get('/reports/visits', medicalReports.visitsReports.document);
 

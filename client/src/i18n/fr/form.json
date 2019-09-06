@@ -634,6 +634,7 @@
             "SUBSIDIES": "Les subventions appliqués",
             "SUMMARY": "Résumé",
             "SUPPLIER": "Fournisseur",
+            "TARGET": "Cible",
             "TAKE_SNAPSHOT" : "Capturer",
             "TAKE_A_PICTURE" : "Prendre une Photo",
             "TAX": "Taxe",
@@ -666,6 +667,7 @@
             "TRANS_ID": "ID de la transaction",
             "TRANSACTION": "Transaction",
             "TRANSFER_ACCOUNT": "Compte de transfert",
+            "TRANSFER_CASHBOX": "Transfert à la caisse principale",
             "TRANSACTION_TYPE": "Type de transaction",
             "TRANSACTION_DATE": "Date de Transaction",
             "TRANSPORT": "Transport",
@@ -705,6 +707,15 @@
             "WEBCAM_NOT_STARTED": "La webcam n'a pas pu être démarrée. y'aviez-vous accès ?",
             "WEEK": "Semaine",
             "WEEKLY_REPORT": "Rapport par semaine",
+            "WEEK_D": {
+                "FRIDAY"    : "Ven",
+                "MONDAY"    : "Lun",
+                "SATURDAY"  : "Sam",
+                "SUNDAY"    : "Dim",
+                "THURSDAY"  : "Jeu",
+                "TUESDAY"   : "Mar",
+                "WEDNESDAY" : "Mer"
+              },
             "WEEK_DAYS": {
               "FRIDAY"    : "Vendredi",
               "MONDAY"    : "Lundi",

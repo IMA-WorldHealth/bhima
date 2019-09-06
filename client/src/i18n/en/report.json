@@ -13,6 +13,19 @@
       "TITLE": "Aged Debtors",
       "DESCRIPTION": "This report show all the debts of the clients, while specifying the debts per period"
     },
+    "ANALYSIS_AUX_CASHBOXES": {
+      "TITLE": "Analysis of auxiliary cashboxes",
+      "AUXILIARY_TRANSFERT": "Auxiliary Cashbox to transfer account",
+      "DESCRIPTION": "This report makes it possible to track the monthly payments and disbursements of the auxiliary cashboxes",
+      "STATUS": {
+        "CORRECT": "Correct",
+        "TRANSFERT_GREATER": "The amount transferred is greater",
+        "TRANSFERT_LOWWER": "The amount transferred is lower",
+        "TRANSFERT_PENDING": "Transfer pending"
+      },
+      "TARGET": "Target",
+      "TRANSFER_PRINCIPAL": "Transfer Account to Principal Cashbox"
+    },
     "BY_ASC": "By Ascending Order",
     "BY_DESC": "By Descending Order",
     "BALANCE": "Balance Report",

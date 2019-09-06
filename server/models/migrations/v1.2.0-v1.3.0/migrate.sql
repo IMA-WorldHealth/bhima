@@ -50,5 +50,14 @@ INSERT INTO `unit` VALUES
   (247, 'Client support report', 'TREE.CLIENT_SUPPORT_REPORT', 'Client support report', 144, '/modules/reports/clientSupport', '/reports/clientSupport');
 
 INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES 
-  (37, 'clientDebts', 'REPORT.CLIENT_SUMMARY.TITLE'),
-  (38, 'clientSupport', 'REPORT.CLIENT_SUPPORT.TITLE');
+  (36, 'clientDebts', 'REPORT.CLIENT_SUMMARY.TITLE'),
+  (37, 'clientSupport', 'REPORT.CLIENT_SUPPORT.TITLE');
+
+-- author: lomamech
+-- date: 2019-08-30
+-- Analysis of auxiliary cashboxes.
+INSERT INTO unit VALUES
+  (248, 'Analysis of cashboxes', 'REPORT.ANALYSIS_AUX_CASHBOXES.TITLE', 'Analysis of auxiliary cashboxes', 144, '/modules/reports/analysisAuxiliaryCash', '/reports/analysisAuxiliaryCash');
+
+INSERT INTO report (id, report_key, title_key) VALUES
+  (38, 'analysisAuxiliaryCash', 'REPORT.ANALYSIS_AUX_CASHBOXES.TITLE');
