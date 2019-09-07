@@ -102,6 +102,15 @@ async function reportByService(req, res, next) {
     const totals = rows.pop();
     delete totals.uuid;
 
+    // early exit if no information got returned from our query
+    if (!rows || !rows.length) {
+      const rendered = await serviceReport.render({
+        cashbox, dateTo, dateFrom,
+      });
+      res.set(rendered.headers).send(rendered.report);
+      return;
+    }
+
     // we need to supplement the pivot table with the following information -
     // patient's name, the patient's identifier
     const cashUuids = rows.map(row => row.uuid);
