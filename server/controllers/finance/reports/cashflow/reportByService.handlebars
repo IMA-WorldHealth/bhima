@@ -56,6 +56,14 @@
             {{else}}
               {{> emptyTable columns=3}}
             {{/each}}
+
+            {{! adds in a single line for gain/loss on exchange during the period if it exists }}
+            {{#if gainOrLossOnExchange}}
+              <tr class="text-capitalize text-center">
+                <th colspan="3">{{translate "REPORT.CASHFLOW_BY_SERVICE.GAIN_OR_LOSS_ON_EXCHANGE"}}</th>
+                <th class="text-right" colspan={{services.length}}>{{currency gainOrLossOnExchange cashbox.currency_id}}</th>
+              </tr>
+            {{/if}}
           </tbody>
 
           <tfoot>

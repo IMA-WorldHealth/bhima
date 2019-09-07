@@ -26,12 +26,14 @@ const TEMPLATE_BY_SERVICE = './server/controllers/finance/reports/cashflow/repor
 exports.report = report;
 exports.byService = reportByService;
 exports.reporting = reporting;
+
 /**
- * This function creates a cashflow report by service, reporting the realized income
- * for the hospital services.
+ * @function reportByService
  *
- * @todo - factor in cash reversals.
- * @todo - factor in posting journal balances
+ * @description
+ * Called "Journal de Ventilation" in French.  Creates a pivot table of cash receipts
+ * divided out by the services that received in the income.  Rows are payments, columns
+ * are hospital service departments.
  */
 async function reportByService(req, res, next) {
   const dateFrom = new Date(req.query.dateFrom);
@@ -49,7 +51,6 @@ async function reportByService(req, res, next) {
     footerRight : '[page] / [toPage]',
     footerFontSize : '7',
   });
-
 
   try {
     serviceReport = new ReportManager(TEMPLATE_BY_SERVICE, req.session, options);
@@ -105,7 +106,7 @@ async function reportByService(req, res, next) {
     // patient's name, the patient's identifier
     const cashUuids = rows.map(row => row.uuid);
     const payments = await db.exec(`
-      SELECT c.uuid, dm.text as reference, em.text as patientReference, d.text as patientName
+      SELECT c.uuid, c.amount, dm.text as reference, em.text as patientReference, d.text as patientName
       FROM cash c JOIN  document_map dm ON c.uuid = dm.uuid
         JOIN entity_map em ON c.debtor_uuid = em.uuid
         JOIN debtor d ON c.debtor_uuid = d.uuid
@@ -115,17 +116,28 @@ async function reportByService(req, res, next) {
     // map of uuid -> payment record
     const dictionary = _.groupBy(payments, 'uuid');
 
-    // loop through all records, merging in relevant information
+    // the sum of all cash_items does NOT have to be equal to the cash.amount,
+    // since we handle gain/loss on exchange by manipulating the cash.amount.
+    // In this case, the cash.amount represents the amount of money that came into
+    // the cashbox, but sum of the cash_items represents that amount of money
+    // attributed to each invoice (and therfore, service)
     let cumsum = 0;
+    let amount = 0;
 
     const services = Object.keys(totals || {});
 
+    // loop through all cash records, merging in relevant information to display on
+    // pivot table
     const matrix = rows.map(row => {
       // grab the payment from the eictionary
       const [payment] = dictionary[row.uuid];
 
-      // calculate the cumulative sum
+      // calculate the cumulative sum of allocated monies
       cumsum += row.Total;
+
+      // calculate the sum of total amount (which might be
+      // different from cumsum)
+      amount += payment.amount;
 
       // grab matrix values
       const values = services.map(key => row[key]);
@@ -133,10 +145,14 @@ async function reportByService(req, res, next) {
       return [payment.reference, patient, ...values, cumsum];
     });
 
-    Object.assign(totals, { cumsum });
+    // if the total amount received is not the same as total amount allocated
+    // to each service, we have had gain/loss on exchange. We will add a final line
+    // that represents the gain/loss on exchange to our table.
+    const gainOrLossOnExchange = (amount - cumsum);
+    Object.assign(totals, { cumsum : cumsum + gainOrLossOnExchange });
 
     const rendered = await serviceReport.render({
-      matrix, totals, cashbox, dateTo, dateFrom, services,
+      matrix, totals, cashbox, dateTo, dateFrom, services, gainOrLossOnExchange,
     });
 
     res.set(rendered.headers).send(rendered.report);

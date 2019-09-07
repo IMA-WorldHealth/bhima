@@ -27,7 +27,8 @@
     "CASH_EXPENSE" : "Dépenses",
     "CASHFLOW_BY_SERVICE": {
       "TITLE" : "Journal de Ventilation",
-      "DESCRIPTION" : "Ce rapport affiche les variations des comptes et des revenus du bilan sur la trésorerie."
+      "DESCRIPTION" : "Ce rapport affiche les variations des comptes et des revenus du bilan sur la trésorerie.",
+      "GAIN_OR_LOSS_ON_EXCHANGE" : "Gain ou Perte sur Échange"
     },
     "CASHFLOW" : {
       "TITLE" : "Rapports de flux de trésorerie physique",

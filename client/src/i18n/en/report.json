@@ -27,7 +27,8 @@
     "CASH_EXPENSE": "Expenses",
     "CASHFLOW_BY_SERVICE": {
       "TITLE": "Cash flow By Service",
-      "DESCRIPTION": "This report shows the changes in the accounts and revenues of the balance sheet on cash by Services"
+      "DESCRIPTION": "This report shows the changes in the accounts and revenues of the balance sheet on cash by Services",
+      "GAIN_OR_LOSS_ON_EXCHANGE" : "Gain or Loss on Exchange"
     },
     "CASHFLOW": {
       "TITLE": "Cash Flow Physical Report",
@@ -83,7 +84,7 @@
       "SHOW_UNVERIFIED_TRANSACTIONS": "Include Unverified Transactions",
       "SHOW_UNVERIFIED_TRANSACTIONS_HELP": "Enable to include records from the Journal which have not been audited by the accountant as well as records from the General Ledger the accountant has verified.  This view must be treated as a projection until the accountant has approved the Journal transactions and moved them to the General Ledger."
     },
-    
+
     "DEBTOR_SUMMARY" : {
       "TITLE": "Debtors summary report",
       "DESCRIPTION": "This report details the amount to paid in every inventory group for an invoice during a period, for a specific debor group"
