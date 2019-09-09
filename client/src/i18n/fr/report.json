@@ -404,6 +404,10 @@
       "EMPLOYEES_SUPPORT":"Prises en charge par les employés",
       "OTHERS_SUPPORT":"Autres prises en charge",
       "PATIENTS":"Patient(s)"
+    },
+    "REALIZED_PROFIT" : {
+      "TITLE":"Rapport des profits réalisés",
+      "DESCRIPTION":"Ce rapport montre les profits potentiels liés aux factures face aux entrées de caisse de ces factures"
     }
   }
 }

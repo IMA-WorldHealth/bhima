@@ -405,6 +405,10 @@
       "EMPLOYEES_SUPPORT":"Employees Supports for patients",
       "OTHERS_SUPPORT":"Others Supports for patients",
       "PATIENTS":"Patient(s)"
+    },
+    "REALIZED_PROFIT" : {
+      "TITLE":"Realized Profits Report",
+      "DESCRIPTION":"This report shows profits from invoices versus cash received"
     }
   }
 }

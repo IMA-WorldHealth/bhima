@@ -1,0 +1,99 @@
+{{> head title="REPORT.CLIENT_SUPPORT.TITLE"}}
+
+<body>
+
+<div class="container">
+  {{> header}}
+
+  <!-- body  -->
+  <div class="row">
+    <div class="col-xs-12">
+
+      <!-- page title  -->
+      <h3 class="text-center text-uppercase">
+        <strong>{{translate 'REPORT.CLIENT_SUPPORT.TITLE'}}</strong> <br>
+        <small>{{date dateFrom}} - {{date dateTo}}</small>
+      </h3>
+
+      {{!-- employee support --}}
+      <table class="table table-striped table-condensed table-report table-bordered">
+        {{#if showEmployeeSupport}}
+          <thead>
+            <tr>
+              <th colspan="2"><h4><b>{{translate 'REPORT.CLIENT_SUPPORT.EMPLOYEES_SUPPORT'}}</b></h4></th>
+              <th class="text-right"><h4>{{debcred employeeSupportTotal.balance metadata.enterprise.currency_id}}</h4></th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {{#each employeesCollection as | emp |}}
+              <tr>
+                <th><span class="text-capitalize">{{ emp.key }}</span></th>
+                <th>{{ emp.number }} <span class="text-lowercase">{{translate 'REPORT.CLIENT_SUPPORT.PATIENTS'}}</span></th>
+                <th class="text-right">{{debcred emp.total ../metadata.enterprise.currency_id}}</th>
+              </tr>
+              {{#if ../showDetails}}
+              {{#each emp.data as | group |}}
+                <tr>
+                  <td colspan="2" class="text-capitalize" style="padding-left: 3em;"><u>{{ group.key }}</u></td>
+                  <td class="text-right">{{debcred group.total ../../metadata.enterprise.currency_id}}</td>
+                </tr>
+                {{#each group.data as | pat |}}
+                  <tr>
+                    <td colspan="2" class="text-capitalize" style="padding-left: 6em;">{{ pat.display_name }}</td>
+                    <td class="text-right">{{debcred pat.balance ../../../metadata.enterprise.currency_id}}</td>
+                  </tr>
+                {{/each}}
+              {{/each}}
+              {{/if}} <!-- show details -->
+            {{/each}}
+            <tr><td colspan="3">&nbsp;</td></tr>
+          </tbody>
+
+        {{/if}} <!-- showEmployeeSupport -->  
+      </table>
+
+      <br>
+
+      {{!-- other support --}}
+      <table class="table table-striped table-condensed table-report table-bordered">
+        {{#if showOtherSupport}}
+          <thead>
+            <tr>
+              <th colspan="2"><h4><b>{{translate 'REPORT.CLIENT_SUPPORT.OTHERS_SUPPORT'}}</b></h4></th>
+              <th class="text-right"><h4>{{debcred otherSupportTotal.balance metadata.enterprise.currency_id}}</h4></th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {{#each othersCollection as | emp |}}
+              <tr>
+                <th class="text-capitalize">{{ emp.key }}</th>
+                <th>{{ emp.number }} <span class="text-lowercase">{{translate 'REPORT.CLIENT_SUPPORT.PATIENTS'}}</span></th>
+                <th class="text-right">{{debcred emp.total ../metadata.enterprise.currency_id}}</th>
+              </tr>
+              {{#if ../showDetails}}
+              {{#each emp.data as | group |}}
+                <tr>
+                  <td colspan="2" class="text-capitalize" style="padding-left: 3em;"><u>{{ group.key }}</u></td>
+                  <td class="text-right">{{debcred group.total ../../metadata.enterprise.currency_id}}</td>
+                </tr>
+                {{#each group.data as | pat |}}
+                  <tr>
+                    <td colspan="2" class="text-capitalize" style="padding-left: 6em;">{{ pat.display_name }}</td>
+                    <td class="text-right">{{debcred pat.balance ../../../metadata.enterprise.currency_id}}</td>
+                  </tr>
+                {{/each}}
+              {{/each}}
+              {{/if}} <!-- show details -->
+            {{/each}}
+            <tr><td colspan="3">&nbsp;</td></tr>
+          </tbody>
+        {{/if}} <!-- showEmployeeSupport -->
+      </table>
+
+    </div>
+  </div>
+
+</div>
+</body>
