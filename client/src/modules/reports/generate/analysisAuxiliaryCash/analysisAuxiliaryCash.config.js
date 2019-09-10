@@ -7,7 +7,7 @@ AnalysisAuxiliaryCashController.$inject = [
 
 function AnalysisAuxiliaryCashController($sce, Notify, SavedReports, AppCache, reportData, $state, Accounts) {
   const vm = this;
-  const cache = new AppCache('monthlyBalance');
+  const cache = new AppCache('analysisAuxiliaryCash');
   const reportUrl = 'reports/finance/analysis_auxiliary_cashbox';
 
   vm.previewGenerated = false;
