@@ -68,7 +68,7 @@ async function reportByService(req, res, next) {
   const whereQuery = `
     WHERE cash.is_caution = 0 AND cash.reversed = 0
       AND DATE(cash.date) >= DATE(?) AND DATE(cash.date) <= DATE(?)
-      AND cash.cashbox_id =  ?
+      AND cash.cashbox_id = ? AND cash.currency_id = ?
   `;
 
   const pivotQuery = `
@@ -98,7 +98,7 @@ async function reportByService(req, res, next) {
      * | NULL    |  35000.0000 |         9500.0000 |     5000.0000 |      20000.0000 | 69500.0000 |
      * +--------------+-------------+-------------------+---------------+-----------------+-------+
      */
-    const [rows] = await db.exec(pivotQuery, [dateFrom, dateTo, cashbox.id]);
+    const [rows] = await db.exec(pivotQuery, [dateFrom, dateTo, cashbox.id, cashbox.currency_id]);
     const totals = rows.pop();
     delete totals.uuid;
 
