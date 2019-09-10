@@ -468,6 +468,7 @@
             "IS_CHARGE": "Est ce une charge?",
             "IS_DEFINED_EMPLOYEE": "Est définie par employé ?",
             "IS_CONVENTION": "Convention",
+            "IS_EXCEPTION": "Est une exception",
             "IS_IPR" : "IPR",
             "IS_MEDICAL_STAFF":"Est ce un personnel médical ?",
             "IS_PASSIVE": "Est un passif",

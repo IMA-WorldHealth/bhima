@@ -34,6 +34,14 @@ describe('AccountReference Management Page', () => {
     accountsException : ['31110011'],
   };
 
+  const mockSearch = {
+    abbr : 'p_test_3',
+    description : 'Test 3',
+    account : '603',
+    reference_type_id : 'Compte de Résultat',
+    accountNull : '1013',
+  };
+
   const numReferences = 9;
 
   before(() => helpers.navigate(path));
@@ -92,6 +100,46 @@ describe('AccountReference Management Page', () => {
     await components.notification.hasSuccess();
   });
 
+  it('Search account references by Description', async () => {
+    await page.search();
+    const modal = new AccountReferenceCreateUpdatePage();
+    await modal.searchDescription(mockSearch.description);
+
+    await modal.submit();
+    expect(await page.count()).to.equal(2);
+    await modal.clearFilter();
+  });
+
+  it('Search account references by Account Number', async () => {
+    await page.search();
+    const modal = new AccountReferenceCreateUpdatePage();
+    await modal.searchAccount(mockSearch.account);
+
+    await modal.submit();
+    expect(await page.count()).to.equal(2);
+    await modal.clearFilter();
+  });
+
+  it('Search account references by Account Number', async () => {
+    await page.search();
+    const modal = new AccountReferenceCreateUpdatePage();
+    await modal.searchAccount(mockSearch.accountNull);
+
+    await modal.submit();
+    expect(await page.count()).to.equal(0);
+    await modal.clearFilter();
+  });
+
+  it('Search account references by Reference Account Type', async () => {
+    await page.search();
+    const modal = new AccountReferenceCreateUpdatePage();
+    await modal.searchReferenceType(mockSearch.reference_type_id);
+
+    await modal.submit();
+    expect(await page.count()).to.equal(1);
+    await modal.clearFilter();
+  });
+
   it('delete an accounts reference successfully', async () => {
     await page.remove(mockEdit.abbr);
     await components.notification.hasSuccess();
@@ -100,5 +148,15 @@ describe('AccountReference Management Page', () => {
 
   it(`should end with ${numReferences + 1} account references`, async () => {
     expect(await page.count()).to.equal(numReferences + 1);
+  });
+
+  it('Search account references by Reference', async () => {
+    await page.search();
+    const modal = new AccountReferenceCreateUpdatePage();
+    await modal.searchAbbr(mockSearch.abbr);
+
+    await modal.submit();
+    expect(await page.count()).to.equal(1);
+    await modal.clearFilter();
   });
 });
