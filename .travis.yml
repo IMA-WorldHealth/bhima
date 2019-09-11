@@ -16,7 +16,7 @@ node_js:
 
 before_script:
   - yarn build
-  - yarn webdriver-manager update --versions.chrome="$(google-chrome --version | cut -d ' ' -f 3)" --gecko false
+  - node_modules/protractor/bin/webdriver-manager update --versions.chrome="$(google-chrome --version | cut -d ' ' -f 3)" --gecko false
   - greenkeeper-lockfile-update
 
 script:
