@@ -40,3 +40,5 @@ exports.operating = require('./operating');
 exports.monthlyBalance = require('./monthlyBalance');
 exports.unpaidInvoices = require('../reports/unpaid-invoice-payments');
 exports.stockValue = require('../../stock/reports/stock/value');
+
+exports.analysisAuxiliaryCashbox = require('./analysis_auxiliary_cashbox');

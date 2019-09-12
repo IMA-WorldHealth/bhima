@@ -628,6 +628,7 @@
             "SUBSIDIES": "Subsidies Applied",
             "SUMMARY": "Summary",
             "SUPPLIER": "Supplier",
+            "TARGET": "Target",
             "TAX": "Tax",
             "TAXES": "Taxes",
             "TEL": "TEL",
@@ -665,6 +666,7 @@
             "TRANSACTION_DATE": "Transaction Date",
             "TRANSACTION_TYPE": "Transaction Type",
             "TRANSFER_ACCOUNT": "Transfer Account",
+            "TRANSFER_CASHBOX": "Transfer to the Principal Cashbox",
             "TAKE_SNAPSHOT": "Take snapshot",
             "TAKE_A_PICTURE": "Take a Picture",
             "TURNOVER": "Turnover",
@@ -703,6 +705,15 @@
             "WEBCAM_NOT_STARTED": "Webcam could not be started. Did you allow access to it?",
             "WEEK": "Week",
             "WEEKLY_REPORT": "Weekly Report",
+            "WEEK_D": {
+                "FRIDAY"    : "Fri",
+                "MONDAY"    : "Mon",
+                "SATURDAY"  : "Sat",
+                "SUNDAY"    : "Sun",
+                "THURSDAY"  : "Thur",
+                "TUESDAY"   : "Tue",
+                "WEDNESDAY" : "Wed"
+              },
             "WEEK_DAYS": {
               "FRIDAY"    : "Friday",
               "MONDAY"    : "Monday",

@@ -131,7 +131,8 @@ INSERT INTO unit VALUES
   (244, 'Monthly Balance', 'TREE.MONTHLY_BALANCE', 'Monthly Balance', 144, '/modules/reports/monthlyBalance', '/reports/monthlyBalance'),
   (245, 'Debtor summary report', 'REPORT.DEBTOR_SUMMARY.TITLE', 'Debtor summary report', 144, '/modules/reports/debtorSummary', '/reports/debtorSummary'),
   (246, 'Client debts report', 'TREE.CLIENT_DEBTS_REPORT', 'Client debts report', 144, '/modules/reports/clientDebts', '/reports/clientDebts'),
-  (247, 'Client support report', 'TREE.CLIENT_SUPPORT_REPORT', 'Client support report', 144, '/modules/reports/clientSupport', '/reports/clientSupport');
+  (247, 'Client support report', 'TREE.CLIENT_SUPPORT_REPORT', 'Client support report', 144, '/modules/reports/clientSupport', '/reports/clientSupport'),
+  (248, 'Analysis of cashboxes', 'REPORT.ANALYSIS_AUX_CASHBOXES.TITLE', 'Analysis of auxiliary cashboxes', 144, '/modules/reports/analysisAuxiliaryCash', '/reports/analysisAuxiliaryCash');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -186,7 +187,8 @@ INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
   (34, 'monthlyBalance', 'REPORT.MONTHLY_BALANCE.TITLE'),
   (35, 'debtorSummary', 'REPORT.DEBTOR_SUMMARY.TITLE'),
   (36, 'clientDebts', 'REPORT.CLIENT_SUMMARY.TITLE'),
-  (37, 'clientSupport', 'REPORT.CLIENT_SUPPORT.TITLE');
+  (37, 'clientSupport', 'REPORT.CLIENT_SUPPORT.TITLE'),
+  (38, 'analysisAuxiliaryCash', 'REPORT.ANALYSIS_AUX_CASHBOXES.TITLE');
 
 -- Supported Languages
 INSERT INTO `language` VALUES
