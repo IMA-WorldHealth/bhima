@@ -1,5 +1,8 @@
 sudo: required
 
+jdk:
+  - oraclejdk8
+
 before_install:
   - ./sh/setup-ci-env.sh
   - ./sh/travis.sh
