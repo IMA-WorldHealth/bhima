@@ -1,8 +1,9 @@
 sudo: required
-dist: trusty
+
+jdk:
+  - oraclejdk8
 
 before_install:
-  - jdk_switcher use oraclejdk8
   - ./sh/setup-ci-env.sh
   - ./sh/travis.sh
 
