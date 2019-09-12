@@ -1,8 +1,6 @@
 sudo: required
-dist: trusty
 
 before_install:
-  - jdk_switcher use oraclejdk8
   - ./sh/setup-ci-env.sh
   - ./sh/travis.sh
 
@@ -16,7 +14,7 @@ node_js:
 
 before_script:
   - yarn build
-  - node_modules/protractor/bin/webdriver-manager update --versions.chrome="$(google-chrome --version | cut -d ' ' -f 3)" --gecko false
+  - yarn webdriver-manager update --versions.chrome="$(google-chrome --version | cut -d ' ' -f 3)" --gecko false
   - greenkeeper-lockfile-update
 
 script:
