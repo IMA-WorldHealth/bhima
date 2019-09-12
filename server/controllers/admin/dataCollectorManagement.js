@@ -22,6 +22,7 @@ function lookupDataCollectorManagement(id) {
 // List
 function list(req, res, next) {
   const filters = new FilterParser(req.query);
+  let dataCollector;
 
   const sql = `SELECT id, label, description, version_number, color, is_related_patient
     FROM data_collector_management`;
@@ -38,7 +39,28 @@ function list(req, res, next) {
 
   db.exec(query, parameters)
     .then((rows) => {
-      res.status(200).json(rows);
+      dataCollector = rows;
+
+      const getSubmission = `
+        SELECT dcm.id, COUNT(dcm.id) AS number_submissions
+        FROM data_collector_management AS dcm
+        JOIN survey_data AS sd ON sd.data_collector_management_id = dcm.id
+        WHERE sd.is_deleted = 0
+        GROUP BY dcm.id`;
+
+      return db.exec(getSubmission);
+    })
+    .then((submission) => {
+      dataCollector.forEach(collector => {
+        collector.number_submissions = 0;
+        submission.forEach(sub => {
+          if (collector.id === sub.id) {
+            collector.number_submissions = sub.number_submissions;
+          }
+        });
+      });
+
+      res.status(200).json(dataCollector);
     })
     .catch(next)
     .done();

@@ -543,6 +543,7 @@
             "NO_FISCALYEAR_REGISTERED" : "There are no fiscal years registered so far! Click 'Create a Fiscal Year' to add your first fiscal year",
             "NO_PRICE_LIST" : "No Price List",
             "NUMBER": "Number",
+            "NUMBER_SUBMISSIONS": "Number of submissions",
             "OF": "Of",
             "OFF_DAYS": "Off Days",
             "OPENING_BALANCE": "Opening Balance",

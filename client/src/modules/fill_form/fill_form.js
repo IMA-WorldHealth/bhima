@@ -54,6 +54,13 @@ function FillFormController($state, DataCollectorManagement, Notify, uiGridConst
         cellTemplate : '/modules/data_collector_management/templates/is_related_patient.cell.html',
       },
       {
+        field : 'number_submissions',
+        displayName : 'FORM.LABELS.NUMBER_SUBMISSIONS',
+        width : 200,
+        enableFiltering : 'true',
+        headerCellFilter : 'translate',
+      },
+      {
         field : 'action',
         displayName : '',
         width : 200,

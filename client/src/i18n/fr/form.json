@@ -544,6 +544,7 @@
             "NO_FISCALYEAR_REGISTERED": "Il n'y a aucune année fiscale enregistré jusque là! Cliquez sur 'Créer L'année Fiscale' pour ajouter votre première année fiscale",
             "NO_PRICE_LIST" : "Aucune liste de prix",
             "NUMBER": "Nombre",
+            "NUMBER_SUBMISSIONS": "Nombre de soumissions",
             "NR": "N°",
             "OF": "De",
             "OFF_DAYS": "jours fériés",
