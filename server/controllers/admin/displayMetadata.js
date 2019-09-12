@@ -75,6 +75,9 @@ function lookupData(params) {
 
           surveyFormElement.forEach(element => {
             if (key === element.surveyName) {
+              // This is a hack to avoid apostrophes in the search parameter
+              findParameters[key] = findParameters[key].replace(`'`, `''`);
+
               if (element.type === '1') {
                 filterCondition += ` ${element.surveyName} = '${findParameters[key]}' ${andCondition}`;
               } else if (element.type === '2' || element.type === '7' || element.type === '9') {

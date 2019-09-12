@@ -25,7 +25,13 @@ function DisplayMetadataController($state, DisplayMetadata, DataCollectorManagem
   vm.changes = {};
   vm.onRemove = onRemove;
   vm.displayData = displayData;
-  vm.download = DisplayMetadata.download;
+  vm.patient = {};
+
+  vm.downloadPDF = function downloadPDF() {
+    vm.patient.uuid = vm.patient ? vm.patient.uuid : '';
+
+    return DisplayMetadata.download('pdf', vm.changes, vm.collectorId, vm.filterElements, vm.patient.uuid, vm.patient);
+  };
 
   const cache = new AppCache('display_metadata');
 

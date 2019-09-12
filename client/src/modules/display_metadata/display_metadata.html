@@ -15,13 +15,7 @@
               <ul uib-dropdown-menu role="menu" class="dropdown-menu-right">
                 <li role="menuitem">
                   <a target='_blank'
-                    ng-href="/data_kit/report/?{{ DisplayMetadataCtrl.download(
-                      'pdf', 
-                      DisplayMetadataCtrl.changes, 
-                      DisplayMetadataCtrl.collectorId,
-                      DisplayMetadataCtrl.filterElements,
-                      DisplayMetadataCtrl.patient.uuid,
-                      DisplayMetadataCtrl.patient) }}">
+                    ng-href="/data_kit/report/?{{ DisplayMetadataCtrl.downloadPDF() }}">
                     <span class="fa fa-file-pdf-o"></span> <span translate>DOWNLOADS.PDF</span>
                   </a>
                 </li>
