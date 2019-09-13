@@ -1,0 +1,75 @@
+<form
+  name="ModalForm"
+  ng-submit="$ctrl.submit(ModalForm)"
+  data-modal="patient-search"
+  novalidate>
+
+  <div class="modal-header search-modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.ACCOUNT_REFERENCE_MANAGEMENT</li>
+      <li class="title" translate>FORM.INFO.SEARCH</li>
+    </ol>
+  </div>
+
+  <div class="modal-body search-modal">
+    <div class="tab-body">
+      <!-- abbr -->
+      <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.abbr.$invalid }">
+        <label class="control-label" translate> FORM.LABELS.REFERENCE </label>
+        <bh-clear on-clear="$ctrl.clear('abbr')"></bh-clear>
+        <input type="text" class="form-control" name="abbr" ng-model="$ctrl.searchQueries.abbr">
+      </div>
+
+      <!-- description -->
+      <div class="form-group" ng-class="{ 'has-error' : ModalForm.$submitted && ModalForm.description.$invalid }">
+        <label class="control-label" translate> FORM.LABELS.DESCRIPTION </label>
+        <bh-clear on-clear="$ctrl.clear('description')"></bh-clear>
+        <input type="text" class="form-control" name="description" ng-model="$ctrl.searchQueries.description">
+      </div>
+
+      <div class="form-group"
+        ng-class="{'has-error' : ConfigForm.account.$invalid && ConfigForm.$submitted}">
+        <label class="control-label" translate>FORM.LABELS.ACCOUNT</label>
+        <bh-clear on-clear="$ctrl.clearAccount('account')"></bh-clear>
+        <ui-select
+          name="account"
+          ng-model="$ctrl.select.account">
+        <ui-select-match placeholder="{{ 'FORM.LABELS.ACCOUNT' | translate }}">
+        <span><strong>{{$select.selected.number}}</strong> {{$select.selected.label}}</span>
+        </ui-select-match>
+          <ui-select-choices ui-select-focus-patch repeat="account in $ctrl.accounts | filter:{ 'hrlabel' : $select.search}">
+            <span ng-bind-html="account.number | highlight:$select.search"></span>
+            <small ng-bind-html="account.label | highlight:$select.search"></small>
+          </ui-select-choices>
+        </ui-select>
+      </div>
+ 
+      <div class="form-group">
+        <div class="checkbox">
+          <label class="control-label">
+            <input name="is_amo_dep" type="checkbox" ng-model="$ctrl.searchQueries.is_exception" ng-true-value="1" ng-false-value="0">
+            <span translate>FORM.LABELS.IS_EXCEPTION</span>
+          </label>
+        </div>
+      </div>
+
+      <bh-account-reference-type-select
+        reference-type-id="$ctrl.searchQueries.reference_type_id"
+        id="reference_type_id"
+        name="reference_type_id"
+        on-select-callback="$ctrl.onSelectAccountReferenceType(accountReferenceType)">
+        <bh-clear on-clear="$ctrl.clear('reference_type_id')"></bh-clear>
+      </bh-account-reference-type-select>
+
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="$ctrl.cancel()" data-method="cancel" translate>
+      FORM.BUTTONS.CLOSE
+    </button>
+    <button type="submit" class="btn btn-primary" data-method="submit" translate>
+      FORM.BUTTONS.SUBMIT
+    </button>
+  </div>
+</form>

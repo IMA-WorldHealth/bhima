@@ -14,6 +14,8 @@ function AccountReferenceController($state, AccountReferences, Notify, uiGridCon
   vm.gridApi = {};
   vm.filterEnabled = false;
   vm.toggleFilter = toggleFilter;
+  vm.search = search;
+  vm.onRemoveFilter = onRemoveFilter;
 
   // options for the UI grid
   vm.gridOptions = {
@@ -81,6 +83,15 @@ function AccountReferenceController($state, AccountReferences, Notify, uiGridCon
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
+  // remove a filter with from the filter object, save the filters and reload
+  function onRemoveFilter(key) {
+    AccountReferences.removeFilter(key);
+    AccountReferences.cacheFilters();
+    vm.latestViewFilters = AccountReferences.filters.formatView();
+    return loadGrid(AccountReferences.filters.formatHTTP(true));
+  }
+
+
   // bind methods
   vm.edit = edit;
   vm.remove = remove;
@@ -98,17 +109,39 @@ function AccountReferenceController($state, AccountReferences, Notify, uiGridCon
       .catch(Notify.handleError);
   }
 
+  function search() {
+    const filtersSnapshot = AccountReferences.filters.formatHTTP();
+
+    AccountReferences.openSearchModal(filtersSnapshot)
+      .then((changes) => {
+        AccountReferences.filters.replaceFilters(changes);
+
+        AccountReferences.cacheFilters();
+        vm.latestViewFilters = AccountReferences.filters.formatView();
+
+        return loadGrid(AccountReferences.filters.formatHTTP(true));
+      });
+  }
+
   function handleError(error) {
     vm.hasError = true;
     Notify.handleError(error);
   }
 
   // load user grid
-  function loadGrid() {
+  function loadGrid(parameters) {
     toggleLoadingIndicator();
     vm.hasError = false;
 
-    AccountReferences.read()
+    if ($state.params.filters.length) {
+      AccountReferences.filters.replaceFiltersFromState($state.params.filters);
+      AccountReferences.cacheFilters();
+    }
+
+    vm.latestViewFilters = AccountReferences.filters.formatView();
+    const filterSearch = parameters || AccountReferences.filters.formatHTTP(true);
+
+    AccountReferences.read(null, filterSearch)
       .then((references) => {
         references.forEach((item) => {
           item.account_reference_type_label = $translate.instant(item.account_reference_type_label);

@@ -16,6 +16,8 @@
  */
 const util = require('../../../lib/util');
 const db = require('../../../lib/db');
+const FilterParser = require('../../../lib/filter');
+
 const compute = require('./references.compute');
 
 /**
@@ -44,6 +46,10 @@ function detail(req, res, next) {
  * GET /accounts/references
  */
 function list(req, res, next) {
+  const params = req.query;
+
+  const filters = new FilterParser(params, { tableAlias : 'ar' });
+
   const sql = `
     SELECT 
       ar.id, ar.abbr, ar.description, ar.parent, ar.is_amo_dep, arp.abbr as parent_abbr,
@@ -54,10 +60,21 @@ function list(req, res, next) {
     LEFT JOIN account_reference_item ari ON ari.account_reference_id = ar.id
     LEFT JOIN account a ON a.id = ari.account_id
     LEFT JOIN account_reference_type art ON art.id = ar.reference_type_id
-    GROUP BY ar.id;
   `;
 
-  db.exec(sql)
+  filters.fullText('description');
+  filters.equals('abbr');
+  filters.equals('reference_type_id');
+  filters.equals('is_exception', 'is_exception', 'ari');
+  filters.custom('number', `a.number LIKE '${params.number}%'`);
+
+  filters.setGroup('GROUP BY ar.id');
+
+  // applies filters and limits to defined sql, get parameters in correct order
+  const query = filters.applyQuery(sql);
+  const parameters = filters.parameters();
+
+  db.exec(query, parameters)
     .then((rows) => {
       res.status(200).json(rows);
     })

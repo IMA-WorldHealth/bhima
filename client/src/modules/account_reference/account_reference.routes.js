@@ -7,6 +7,9 @@ angular.module('bhima.routes')
         url : '/account_reference',
         controller : 'AccountReferenceController as AccountReferenceCtrl',
         templateUrl : 'modules/account_reference/account_reference.html',
+        params      : {
+          filters : [],
+        },
       })
 
       .state('account_reference.create', {
