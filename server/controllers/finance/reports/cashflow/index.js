@@ -26,14 +26,16 @@ const TEMPLATE_BY_SERVICE = './server/controllers/finance/reports/cashflow/repor
 exports.report = report;
 exports.byService = reportByService;
 exports.reporting = reporting;
+
 /**
- * This function creates a cashflow report by service, reporting the realized income
- * for the hospital services.
+ * @function reportByService
  *
- * @todo - factor in cash reversals.
- * @todo - factor in posting journal balances
+ * @description
+ * Called "Journal de Ventilation" in French.  Creates a pivot table of cash receipts
+ * divided out by the services that received in the income.  Rows are payments, columns
+ * are hospital service departments.
  */
-function reportByService(req, res, next) {
+async function reportByService(req, res, next) {
   const dateFrom = new Date(req.query.dateFrom);
   const dateTo = new Date(req.query.dateTo);
   const cashboxAccountId = req.query.cashboxId;
@@ -50,7 +52,6 @@ function reportByService(req, res, next) {
     footerFontSize : '7',
   });
 
-
   try {
     serviceReport = new ReportManager(TEMPLATE_BY_SERVICE, req.session, options);
   } catch (e) {
@@ -58,143 +59,115 @@ function reportByService(req, res, next) {
     return;
   }
 
-  const data = {};
-  data.dateFrom = dateFrom;
-  data.dateTo = dateTo;
-
-  let emptyCashValues = false;
-
-  // get the cash flow data
-  const cashflowByServiceSql = `
-    SELECT uuid, reference, date, cashAmount, invoiceAmount, currency_id, service_id,
-      display_name, name, (@cumsum := cashAmount + @cumsum) AS cumsum
-    FROM (
-      SELECT BUID(cash.uuid) AS uuid,
-        dm.text AS reference, cash.date, cash.amount AS cashAmount,
-        SUM(invoice.cost) AS invoiceAmount, cash.currency_id,
-        service.id AS service_id, patient.display_name, service.name
-      FROM cash JOIN cash_item ON cash.uuid = cash_item.cash_uuid
-        JOIN invoice ON cash_item.invoice_uuid = invoice.uuid
-        JOIN project ON cash.project_id = project.id
-        JOIN patient ON patient.debtor_uuid = cash.debtor_uuid
-        JOIN service ON invoice.service_id = service.id
-        JOIN document_map dm ON dm.uuid = cash.uuid
-      WHERE cash.is_caution = 0 AND cash.reversed = 0
-        AND DATE(cash.date) >= DATE(?) AND DATE(cash.date) <= DATE(?)
-        AND cash.cashbox_id =  ?
-      GROUP BY cash.uuid
-      ORDER BY cash.date, cash.reference
-    )c, (SELECT @cumsum := 0)z
-    ORDER BY date, reference;
-  `;
-
-  // get all service names in alphabetical order
-  const serviceSql = `
-    SELECT DISTINCT service.name FROM service WHERE service.id IN (?) ORDER BY name;
-  `;
-
-  // get the totals of the captured records
-  const serviceAggregationSql = `
-    SELECT service.name, SUM(cash.amount) AS totalCashIncome, SUM(invoice.cost) AS totalAcruelIncome
-    FROM cash JOIN cash_item ON cash.uuid = cash_item.cash_uuid
+  const tableQuery = `
+    cash JOIN cash_item ON cash.uuid = cash_item.cash_uuid
       JOIN invoice ON cash_item.invoice_uuid = invoice.uuid
-      JOIN service ON invoice.service_id = service.id
+      JOIN service ON service.id = invoice.service_id
+  `;
+
+  const whereQuery = `
     WHERE cash.is_caution = 0 AND cash.reversed = 0
       AND DATE(cash.date) >= DATE(?) AND DATE(cash.date) <= DATE(?)
-      AND cash.cashbox_id = ?
-    GROUP BY service.name
-    ORDER BY service.name;
+      AND cash.cashbox_id = ? AND cash.currency_id = ?
+  `;
+
+  const pivotQuery = `
+    CALL Pivot('${tableQuery}', 'cash.uuid', 'service.name', 'cash_item.amount', "${whereQuery}", '');
   `;
 
   const cashboxDetailsSql = `
-    SELECT cb.id, cb.label FROM cash_box cb JOIN cash_box_account_currency cba
+    SELECT cb.id, cb.label, cba.currency_id FROM cash_box cb JOIN cash_box_account_currency cba
       ON cb.id = cba.cash_box_id
     WHERE cba.id = ?;
   `;
 
-  // pick up the cashbox's details
-  db.one(cashboxDetailsSql, cashboxAccountId)
-    .then(cashbox => {
-      data.cashbox = cashbox;
-      return db.exec(cashflowByServiceSql, [dateFrom, dateTo, cashbox.id]);
-    })
-    .then((rows) => {
-      data.rows = rows;
+  try {
 
-      // return an empty array if no rows
-      if (!rows.length) {
-        emptyCashValues = true;
-        return [];
-      }
+    // pick up the cashbox's details
+    const cashbox = await db.one(cashboxDetailsSql, cashboxAccountId);
 
-      // get a list of unique service ids
-      const serviceIds = rows
-        .map(row => row.service_id)
-        .filter((id, index, array) => array.indexOf(id) === index);
+    /*
+     * This query returns a table like:
+     * +--------------+-------------+-------------------+---------------+-----------------+-------+
+     * | uuid    | Dentisterie | Pavillion Medical | Poly-Clinique | Salle D'Urgence | Total      |
+     * +--------------+-------------+-------------------+---------------+-----------------+-------+
+     * | binary  |  35000.0000 |            0.0000 |        0.0000 |          0.0000 | 35000.0000 |
+     * | binary  |      0.0000 |         9500.0000 |        0.0000 |          0.0000 |  9500.0000 |
+     * | binary  |      0.0000 |            0.0000 |        0.0000 |      20000.0000 | 20000.0000 |
+     * | binary  |      0.0000 |            0.0000 |     5000.0000 |          0.0000 |  5000.0000 |
+     * | NULL    |  35000.0000 |         9500.0000 |     5000.0000 |      20000.0000 | 69500.0000 |
+     * +--------------+-------------+-------------------+---------------+-----------------+-------+
+     */
+    const [rows] = await db.exec(pivotQuery, [dateFrom, dateTo, cashbox.id, cashbox.currency_id]);
+    const totals = rows.pop();
+    delete totals.uuid;
 
-      // execute the service SQL
-      return db.exec(serviceSql, [serviceIds]);
-    })
-    .then((services) => {
-      // if nothing matches the selection criteria, continue with nothing
-      if (emptyCashValues) {
-        return [];
-      }
-
-      const { rows } = data;
-      delete data.rows;
-
-      // Infer currencyId from first row.  Note that currencies are separated by
-      // accounts - therefore, we will always have a uniform currency_id throughout
-      // the record set.
-      data.currencyId = rows[0].currency_id;
-
-      // map services to their service names
-      data.services = services.map(service => service.name);
-
-      const xAxis = data.services.length;
-
-      // fill the matrix with nulls except the correct columns
-      const matrix = rows.map((row) => {
-        // fill line with each service + two lines for cash payment identifier and patient name
-        const line = _.fill(Array(xAxis + 3), null);
-
-        // each line has the cash payment reference and then the patient name
-        line[0] = row.reference;
-        line[1] = row.display_name;
-
-        // get the index of the service name and fill in the correct cell in the matrix
-        const idx = data.services.indexOf(row.name) + 2;
-        line[idx] = row.cashAmount;
-
-        // get the far right row as the total
-        line[xAxis + 2] = row.cumsum;
-        return line;
+    // early exit if no information got returned from our query
+    if (!rows || !rows.length) {
+      const rendered = await serviceReport.render({
+        cashbox, dateTo, dateFrom,
       });
+      res.set(rendered.headers).send(rendered.report);
+      return;
+    }
 
-      // bind to the view
-      data.matrix = matrix;
+    // we need to supplement the pivot table with the following information -
+    // patient's name, the patient's identifier
+    const cashUuids = rows.map(row => row.uuid);
+    const payments = await db.exec(`
+      SELECT c.uuid, c.amount, dm.text as reference, em.text as patientReference, d.text as patientName
+      FROM cash c JOIN  document_map dm ON c.uuid = dm.uuid
+        JOIN entity_map em ON c.debtor_uuid = em.uuid
+        JOIN debtor d ON c.debtor_uuid = d.uuid
+      WHERE c.uuid IN (?);
+    `, [cashUuids]);
 
-      // query the aggregates
-      return db.exec(serviceAggregationSql, [dateFrom, dateTo, data.cashbox.id]);
-    })
-    .then((aggregates) => {
-      data.aggregates = aggregates;
+    // map of uuid -> payment record
+    const dictionary = _.groupBy(payments, 'uuid');
 
-      // the total of everything is just the last running balance amount
-      if (data.matrix) {
-        const lastRow = data.matrix[data.matrix.length - 1];
-        const lastRowTotalIdx = lastRow.length - 1;
-        aggregates.push({ totalCashIncome : lastRow[lastRowTotalIdx] });
-      }
+    // the sum of all cash_items does NOT have to be equal to the cash.amount,
+    // since we handle gain/loss on exchange by manipulating the cash.amount.
+    // In this case, the cash.amount represents the amount of money that came into
+    // the cashbox, but sum of the cash_items represents that amount of money
+    // attributed to each invoice (and therfore, service)
+    let cumsum = 0;
+    let amount = 0;
 
-      return serviceReport.render(data);
-    })
-    .then((result) => {
-      res.set(result.headers).send(result.report);
-    })
-    .catch(next)
-    .done();
+    const services = Object.keys(totals || {});
+
+    // loop through all cash records, merging in relevant information to display on
+    // pivot table
+    const matrix = rows.map(row => {
+      // grab the payment from the eictionary
+      const [payment] = dictionary[row.uuid];
+
+      // calculate the cumulative sum of allocated monies
+      cumsum += row.Total;
+
+      // calculate the sum of total amount (which might be
+      // different from cumsum)
+      amount += payment.amount;
+
+      // grab matrix values
+      const values = services.map(key => row[key]);
+      const patient = `${payment.patientReference} - ${payment.patientName}`;
+      return [payment.reference, patient, ...values, cumsum];
+    });
+
+    // if the total amount received is not the same as total amount allocated
+    // to each service, we have had gain/loss on exchange. We will add a final line
+    // that represents the gain/loss on exchange to our table.
+    const gainOrLossOnExchange = (amount - cumsum);
+    Object.assign(totals, { cumsum : cumsum + gainOrLossOnExchange });
+
+    const rendered = await serviceReport.render({
+      matrix, totals, cashbox, dateTo, dateFrom, services, gainOrLossOnExchange,
+    });
+
+    res.set(rendered.headers).send(rendered.report);
+  } catch (e) {
+    next(e);
+  }
 }
 
 /**
@@ -272,10 +245,10 @@ function report(req, res, next) {
           source.transaction_text, source.account_label, ${periodString},
           source.transaction_type, source.transaction_type_id, source.account_id
         FROM (
-          SELECT 
+          SELECT
           a.number AS account_number, a.label AS account_label,
           SUM(gl.debit_equiv - gl.credit_equiv) AS balance,
-          gl.transaction_type_id, tt.type AS transaction_type, tt.text AS transaction_text, 
+          gl.transaction_type_id, tt.type AS transaction_type, tt.text AS transaction_text,
           gl.account_id, gl.period_id
           FROM general_ledger AS gl
           JOIN account AS a ON a.id = gl.account_id
@@ -295,7 +268,7 @@ function report(req, res, next) {
                 AND DATE(i.date) >= DATE(?) AND DATE(i.date) <= DATE(?)
               ) AS rev
             )
-          ) GROUP BY gl.transaction_type_id, gl.account_id, gl.period_id  
+          ) GROUP BY gl.transaction_type_id, gl.account_id, gl.period_id
         ) AS source
         GROUP BY transaction_type_id, account_id;
       `;
@@ -455,63 +428,62 @@ function totalPeriods(data, incomeTotal, expenseTotal, transferTotal) {
 }
 
 async function reporting(options, session) {
-  try {
-    const dateFrom = new Date(options.dateFrom);
-    const dateTo = new Date(options.dateTo);
-    const data = {};
+  const dateFrom = new Date(options.dateFrom);
+  const dateTo = new Date(options.dateTo);
+  const data = {};
 
-    // convert cashboxesIds parameters in array format ['', '', ...]
-    // this parameter can be sent as a string or an array we force the conversion into an array
-    const cashboxesIds = _.values(options.cashboxesIds);
+  // convert cashboxesIds parameters in array format ['', '', ...]
+  // this parameter can be sent as a string or an array we force the conversion into an array
+  const cashboxesIds = _.values(options.cashboxesIds);
 
-    _.extend(options, { orientation : 'landscape' });
+  _.extend(options, { orientation : 'landscape' });
 
-    // catch missing required parameters
-    if (!dateFrom || !dateTo || !cashboxesIds.length) {
-      throw new BadRequest(
-        'ERRORS.BAD_REQUEST',
-        'There are some missing information among dateFrom, dateTo or cashboxesId'
-      );
-    }
+  // catch missing required parameters
+  if (!dateFrom || !dateTo || !cashboxesIds.length) {
+    throw new BadRequest(
+      'ERRORS.BAD_REQUEST',
+      'There are some missing information among dateFrom, dateTo or cashboxesId'
+    );
+  }
 
-    const serviceReport = new ReportManager(TEMPLATE, session, options);
+  const serviceReport = new ReportManager(TEMPLATE, session, options);
 
-    data.dateFrom = dateFrom;
-    data.dateTo = dateTo;
+  data.dateFrom = dateFrom;
+  data.dateTo = dateTo;
 
-    data.cashboxes = await getCashboxesDetails(cashboxesIds);
-    data.cashAccountIds = data.cashboxes.map(cashbox => cashbox.account_id);
+  data.cashboxes = await getCashboxesDetails(cashboxesIds);
+  data.cashAccountIds = data.cashboxes.map(cashbox => cashbox.account_id);
 
-    data.cashLabels = _.chain(data.cashboxes)
-      .map(cashbox => `${cashbox.label}`).uniq().join(' | ')
-      .value();
+  data.cashLabels = _.chain(data.cashboxes)
+    .map(cashbox => `${cashbox.label}`).uniq().join(' | ')
+    .value();
 
-    data.cashLabelSymbol = _.chain(data.cashboxes)
-      .map(cashbox => cashbox.symbol).uniq().join(' + ');
+  data.cashLabelSymbol = _.chain(data.cashboxes)
+    .map(cashbox => cashbox.symbol).uniq().join(' + ');
 
-    data.cashLabelDetails = data.cashboxes.map(cashbox => `${cashbox.account_number} - ${cashbox.account_label}`);
+  data.cashLabelDetails = data.cashboxes.map(cashbox => `${cashbox.account_number} - ${cashbox.account_label}`);
 
-    // build periods columns from calculated period
-    const periods = await Fiscal.getPeriodsFromDateRange(data.dateFrom, data.dateTo);
-    data.periodDates = periods.map(p => p.start_date);
-    data.periods = periods.map(p => p.id);
-    data.colspan = data.periods.length + 1;
-    // build periods string for query
-    const periodParams = [];
-    const periodString = data.periods.length ? data.periods.map(periodId => {
-      periodParams.push(periodId, periodId);
-      return `SUM(IF(source.period_id = ?, source.balance, 0)) AS "?"`;
-    }).join(',') : '"NO_PERIOD" AS period';
+  // build periods columns from calculated period
+  const periods = await Fiscal.getPeriodsFromDateRange(data.dateFrom, data.dateTo);
+  data.periodDates = periods.map(p => p.start_date);
+  data.periods = periods.map(p => p.id);
+  data.colspan = data.periods.length + 1;
+  // build periods string for query
+  const periodParams = [];
+  const periodString = data.periods.length ? data.periods.map(periodId => {
+    periodParams.push(periodId, periodId);
+    return `SUM(IF(source.period_id = ?, source.balance, 0)) AS "?"`;
+  }).join(',') : '"NO_PERIOD" AS period';
 
-    const query = `
+  const query = `
         SELECT
           source.transaction_text, source.account_label, ${periodString},
           source.transaction_type, source.transaction_type_id, source.account_id
         FROM (
-          SELECT 
+          SELECT
           a.number AS account_number, a.label AS account_label,
           SUM(gl.debit_equiv - gl.credit_equiv) AS balance,
-          gl.transaction_type_id, tt.type AS transaction_type, tt.text AS transaction_text, 
+          gl.transaction_type_id, tt.type AS transaction_type, tt.text AS transaction_text,
           gl.account_id, gl.period_id
           FROM general_ledger AS gl
           JOIN account AS a ON a.id = gl.account_id
@@ -531,61 +503,58 @@ async function reporting(options, session) {
                 AND DATE(i.date) >= DATE(?) AND DATE(i.date) <= DATE(?)
               ) AS rev
             )
-          ) GROUP BY gl.transaction_type_id, gl.account_id, gl.period_id  
+          ) GROUP BY gl.transaction_type_id, gl.account_id, gl.period_id
         ) AS source
         GROUP BY transaction_type_id, account_id;
       `;
 
-    const params = [...periodParams,
-      [data.cashAccountIds],
-      data.dateFrom,
-      data.dateTo,
-      data.dateFrom,
-      data.dateTo,
-      data.dateFrom,
-      data.dateTo,
-      data.dateFrom,
-      data.dateTo];
-    const rows = await db.exec(query, params);
+  const params = [...periodParams,
+    [data.cashAccountIds],
+    data.dateFrom,
+    data.dateTo,
+    data.dateFrom,
+    data.dateTo,
+    data.dateFrom,
+    data.dateTo,
+    data.dateFrom,
+    data.dateTo];
+  const rows = await db.exec(query, params);
 
-    // split incomes from expenses
-    const incomes = _.chain(rows).filter({ transaction_type : 'income' }).groupBy('transaction_text').value();
-    const expenses = _.chain(rows).filter({ transaction_type : 'expense' }).groupBy('transaction_text').value();
-    const others = _.chain(rows).filter({ transaction_type : 'other' }).groupBy('transaction_text').value();
+  // split incomes from expenses
+  const incomes = _.chain(rows).filter({ transaction_type : 'income' }).groupBy('transaction_text').value();
+  const expenses = _.chain(rows).filter({ transaction_type : 'expense' }).groupBy('transaction_text').value();
+  const others = _.chain(rows).filter({ transaction_type : 'other' }).groupBy('transaction_text').value();
 
-    const incomeTextKeys = _.keys(incomes);
-    const expenseTextKeys = _.keys(expenses);
-    const otherTextKeys = _.keys(others);
+  const incomeTextKeys = _.keys(incomes);
+  const expenseTextKeys = _.keys(expenses);
+  const otherTextKeys = _.keys(others);
 
-    const incomeTotalByTextKeys = aggregateTotalByTextKeys(data, incomes);
-    const expenseTotalByTextKeys = aggregateTotalByTextKeys(data, expenses);
-    const otherTotalByTextKeys = aggregateTotalByTextKeys(data, others);
+  const incomeTotalByTextKeys = aggregateTotalByTextKeys(data, incomes);
+  const expenseTotalByTextKeys = aggregateTotalByTextKeys(data, expenses);
+  const otherTotalByTextKeys = aggregateTotalByTextKeys(data, others);
 
-    const incomeTotal = aggregateTotal(data, incomeTotalByTextKeys);
-    const expenseTotal = aggregateTotal(data, expenseTotalByTextKeys);
-    const otherTotal = aggregateTotal(data, otherTotalByTextKeys);
-    const totalPeriodColumn = totalPeriods(data, incomeTotal, expenseTotal, otherTotal);
+  const incomeTotal = aggregateTotal(data, incomeTotalByTextKeys);
+  const expenseTotal = aggregateTotal(data, expenseTotalByTextKeys);
+  const otherTotal = aggregateTotal(data, otherTotalByTextKeys);
+  const totalPeriodColumn = totalPeriods(data, incomeTotal, expenseTotal, otherTotal);
 
-    _.extend(data, {
-      incomes,
-      expenses,
-      others,
-      incomeTextKeys,
-      expenseTextKeys,
-      incomeTotalByTextKeys,
-      expenseTotalByTextKeys,
-      otherTotalByTextKeys,
-      incomeTotal,
-      expenseTotal,
-      otherTextKeys,
-      otherTotal,
-      totalPeriodColumn,
-    });
+  _.extend(data, {
+    incomes,
+    expenses,
+    others,
+    incomeTextKeys,
+    expenseTextKeys,
+    incomeTotalByTextKeys,
+    expenseTotalByTextKeys,
+    otherTotalByTextKeys,
+    incomeTotal,
+    expenseTotal,
+    otherTextKeys,
+    otherTotal,
+    totalPeriodColumn,
+  });
 
-    return serviceReport.render(data);
-  } catch (error) {
-    throw error;
-  }
+  return serviceReport.render(data);
 }
 
 /**
