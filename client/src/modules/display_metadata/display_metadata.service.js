@@ -59,7 +59,7 @@ function DisplayMetadataService(Api, Modal, moment, $translate, $httpParamSerial
   }
 
   function displayFilters(survey, search) {
-    let filters = [];
+    const filters = [];
     const surveyMap = new Map(survey.map(item => ([item.name, item])));
     const dateLabel = $translate.instant('FORM.LABELS.DATE');
 
