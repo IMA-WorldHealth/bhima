@@ -44,9 +44,9 @@ function DisplayMetadataController($state, DisplayMetadata, DataCollectorManagem
 
   if ($state.params.id && $state.params.patient) {
     // Prevent a non-patient form from being used to collect non-patient data
-    vm.patientData = true;
+    vm.hasPatientData = true;
   } else {
-    vm.patientData = false;
+    vm.hasPatientData = false;
 
     if (vm.collectorId) {
       loadGrid();
@@ -80,14 +80,14 @@ function DisplayMetadataController($state, DisplayMetadata, DataCollectorManagem
   vm.remove = remove;
 
   function edit(data) {
-    if (!$state.params.patient) {
-      $state.go('display_metadata.edit', { id : data.data_collector_management_id, uuid : data.uuid });
-    } else if ($state.params.patient) {
+    if (vm.hasPatientData) {
       $state.go('display_metadata.patientEdit', {
         id : data.data_collector_management_id,
         uuid : data.uuid,
         patient : $state.params.patient,
       });
+    } else {
+      $state.go('display_metadata.edit', { id : data.data_collector_management_id, uuid : data.uuid });
     }
   }
 
@@ -115,9 +115,10 @@ function DisplayMetadataController($state, DisplayMetadata, DataCollectorManagem
     if (cache.collector && !vm.collectorId && !$state.params.patient) {
       vm.collectorId = cache.collector.id;
     }
-    const changesLength = Object.keys(vm.changes).length;
 
-    if (cache.changes && !changesLength) {
+    const hasNoChanges = Object.keys(vm.changes).length === 0;
+
+    if (hasNoChanges) {
       vm.changes = cache.changes;
     }
 
@@ -126,6 +127,11 @@ function DisplayMetadataController($state, DisplayMetadata, DataCollectorManagem
     } else if (vm.collectorId && !$state.params.id) {
       vm.hasError = false;
       vm.loading = true;
+
+      vm.params = {
+        data_collector_management_id : vm.collectorId,
+        changes : vm.changes,
+      };
 
       SurveyForm.read(null, { data_collector_management_id : vm.collectorId })
         .then((survey) => {
@@ -137,14 +143,16 @@ function DisplayMetadataController($state, DisplayMetadata, DataCollectorManagem
             filterClient : vm.filterElements,
           };
 
-          vm.params = {
-            data_collector_management_id : vm.collectorId,
-            changes : vm.changes,
-          };
-
           return DisplayMetadata.read(null, vm.params);
         })
         .then((data) => {
+          data.columns.forEach(item => {
+            if (item.field === 'dateSurvey') {
+              item.aggregationType = uiGridConstants.aggregationTypes.count;
+              item.aggregationHideLabel = true;
+            }
+          });
+
           vm.gridOptions.columnDefs = data.columns;
           vm.gridOptions.data = data.surveyData;
 
@@ -171,6 +179,13 @@ function DisplayMetadataController($state, DisplayMetadata, DataCollectorManagem
 
       DisplayMetadata.read(null, vm.params)
         .then((data) => {
+          data.columns.forEach(item => {
+            if (item.field === 'dateSurvey') {
+              item.aggregationType = uiGridConstants.aggregationTypes.count;
+              item.aggregationHideLabel = true;
+            }
+          });
+
           vm.gridOptions.columnDefs = data.columns;
           vm.gridOptions.data = data.surveyData;
 
@@ -205,7 +220,7 @@ function DisplayMetadataController($state, DisplayMetadata, DataCollectorManagem
     vm.loading = false;
   }
 
-  // search Payroll Data
+  // search Metadata of survey
   function search() {
     DisplayMetadata.openSearchModal()
       .then((changes) => {

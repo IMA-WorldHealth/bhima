@@ -21,6 +21,7 @@ function DisplayMetadataSearchModalController(
   const vm = this;
   vm.onSelectSurveyForm = onSelectSurveyForm;
   vm.searchQueries = {};
+  vm.searchValues = {};
   vm.searchDateFrom = {};
   vm.searchDateTo = {};
   vm.multipleChoice = {};
@@ -36,6 +37,7 @@ function DisplayMetadataSearchModalController(
   }
 
   function onSelectList(list, value) {
+    vm.searchValues[value] = list.id;
     vm.searchQueries[value] = list.label;
   }
 

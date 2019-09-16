@@ -20,7 +20,6 @@
                 </a>
               </li>
 
-
               <!-- FIX ME TO DOWMLOAD AS CSV and EXCEL 
               <li role="menuitem">
                 <a>
@@ -37,7 +36,7 @@
             </ul>
           </div>
       </div>
-      <div ng-if="DisplayMetadataCtrl.patientData">
+      <div ng-if="DisplayMetadataCtrl.hasPatientData">
         <div class="toolbar-item">
           <button class="btn btn-default text-capitalize" id="create" ui-sref="display_metadata.patientfill({id : DisplayMetadataCtrl.collector.id, patient: DisplayMetadataCtrl.patient.uuid})" data-method="create">
             <span class="fa fa fa-file-text"></span> <span class="hidden-xs" translate>FORM.BUTTONS.FILL_FORM</span>
@@ -78,12 +77,12 @@
 <div class="flex-util" style="overflow: auto" ng-if="DisplayMetadataCtrl.collector">
   <span data="filter">
     <span class="label" style="text-shadow: {{ DisplayMetadataCtrl.collector.color }} 5px 3px 8px; font-size: 15px; color: black">
-      <span> {{ DisplayMetadataCtrl.collector.label }} </span>
+      {{ DisplayMetadataCtrl.collector.label }}
     </span>
   </span>
 
   <span ng-if="DisplayMetadataCtrl.filterElements" data="filter">
-    <span class="label" ng-class="{ 'label-primary' : true, 'label-emphasize' : true }">
+    <span class="label label-primary label-emphasize">
       <i class="fa fa-filter"></i>
       {{ DisplayMetadataCtrl.filterElements }}
       <a href ng-click="DisplayMetadataCtrl.onRemove()" class="filter-text-link">
@@ -92,9 +91,9 @@
     </span>
   </span>
 
-  <span ng-if="DisplayMetadataCtrl.patientData" data="filter">
+  <span ng-if="DisplayMetadataCtrl.hasPatientData" data="filter">
     <span class="label"  style="font-size: 15px; color: black; text-shadow: gray 4px 1px 10px;">
-      <span>:{{ DisplayMetadataCtrl.patient.display_name }} / {{ DisplayMetadataCtrl.patient.reference}} </span>
+      <span>:{{ DisplayMetadataCtrl.patient.display_name }}/{{ DisplayMetadataCtrl.patient.reference}}</span>
     </span>
   </span>
 </div>
@@ -104,7 +103,8 @@
     <div id="display-metadata-grid" 
       ui-grid="DisplayMetadataCtrl.gridOptions"
       class="grid-full-height-with-filters"
-      ui-grid-auto-resize 
+      ui-grid-auto-resize
+      ui-grid-move-columns
       ui-grid-resize-columns> 
       
       <bh-grid-loading-indicator 

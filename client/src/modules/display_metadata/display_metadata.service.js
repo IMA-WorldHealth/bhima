@@ -59,7 +59,7 @@ function DisplayMetadataService(Api, Modal, moment, $translate, $httpParamSerial
   }
 
   function displayFilters(survey, search) {
-    let filters = ``;
+    let filters = [];
     const surveyMap = new Map(survey.map(item => ([item.name, item])));
     const dateLabel = $translate.instant('FORM.LABELS.DATE');
 
@@ -68,14 +68,14 @@ function DisplayMetadataService(Api, Modal, moment, $translate, $httpParamSerial
       if (dateFromLength) {
         Object.keys(search.searchDateFrom).forEach((key) => {
           if (key === 'dateSurvey') {
-            filters += ` // ( ${dateLabel} [${moment(search.searchDateFrom[key]).format('DD MMM YYYY')}
-            - ${moment(search.searchDateTo[key]).format('DD MMM YYYY')}])`;
+            filters.push(`// ( ${dateLabel} [${moment(search.searchDateFrom[key]).format('DD MMM YYYY')}
+            - ${moment(search.searchDateTo[key]).format('DD MMM YYYY')}])`);
           }
 
           const item = surveyMap.get(key);
           if (item) {
-            filters += ` // ( ${item.label} [${moment(search.searchDateFrom[key]).format('DD MMM YYYY')}
-            - ${moment(search.searchDateTo[key]).format('DD MMM YYYY')}])`;
+            filters.push(` // ( ${item.label} [${moment(search.searchDateFrom[key]).format('DD MMM YYYY')}
+            - ${moment(search.searchDateTo[key]).format('DD MMM YYYY')}])`);
           }
         });
       }
@@ -85,7 +85,7 @@ function DisplayMetadataService(Api, Modal, moment, $translate, $httpParamSerial
       search.loggedChanges.forEach(element => {
         const item = surveyMap.get(element.key);
         if (item) {
-          filters += ` // ${item.label} : ${element.value} `;
+          filters.push(` // ${item.label} : ${element.value} `);
         }
       });
     }
@@ -101,13 +101,14 @@ function DisplayMetadataService(Api, Modal, moment, $translate, $httpParamSerial
               multiChoice += ` ${search.multipleChoice[key][i]}, `;
             }
 
-            filters += ` // ${item.label} : ( ${multiChoice} )`;
+            filters.push(` // ${item.label} : ( ${multiChoice} )`);
           }
         });
       }
     }
 
-    return filters;
+    const filtersElememts = filters.length ? filters.join(' ') : ``;
+    return filtersElememts;
   }
 
   return service;

@@ -70,7 +70,7 @@
           <div ng-if="formItem.typeForm === 'select_one'">
             <bh-choice-list-select
               id="{{ formItem.name }}"
-              list="$ctrl.searchQueries[formItem.name]"
+              list="$ctrl.searchValues[formItem.name]"
               name="{{ formItem.name }}"
               list-label="{{ formItem.label }}"
               list-hint="{{ formItem.hint }}"
