@@ -73,6 +73,7 @@
               list="$ctrl.searchQueries[formItem.name]"
               name="{{ formItem.name }}"
               list-label="{{ formItem.label }}"
+              list-hint="{{ formItem.hint }}"
               group-label="formItem.choice_list_id"              
               on-select-callback="$ctrl.onSelectList(list, formItem.name)">
             </bh-choice-list-select>
@@ -88,6 +89,7 @@
               name="{{ formItem.name }}"
               required="formItem.valueRequired"
               list-label="{{ formItem.label }}"
+              list-hint="{{ formItem.hint }}"
               group-label="formItem.choice_list_id"              
               on-change="$ctrl.onSelectMultiple(lists, formItem.name)">
             </bh-choice-list-multiple-select>

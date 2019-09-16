@@ -9,6 +9,7 @@ angular.module('bhima.components')
       disable          : '<?',
       required         : '<?',
       listLabel        : '@?',
+      listHint         : '@?',
       isTitle          : '<?',
       isGroup          : '<?',
       parentId         : '<',

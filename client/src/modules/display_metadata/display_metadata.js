@@ -26,11 +26,12 @@ function DisplayMetadataController($state, DisplayMetadata, DataCollectorManagem
   vm.onRemove = onRemove;
   vm.displayData = displayData;
   vm.patient = {};
+  vm.options = {};
 
   vm.downloadPDF = function downloadPDF() {
-    vm.patient.uuid = vm.patient ? vm.patient.uuid : '';
+    vm.options.renderer = 'pdf';
 
-    return DisplayMetadata.download('pdf', vm.changes, vm.collectorId, vm.filterElements, vm.patient.uuid, vm.patient);
+    return DisplayMetadata.download(vm.options);
   };
 
   const cache = new AppCache('display_metadata');
@@ -130,6 +131,12 @@ function DisplayMetadataController($state, DisplayMetadata, DataCollectorManagem
         .then((survey) => {
           vm.filterElements = DisplayMetadata.displayFilters(survey, vm.changes);
 
+          vm.options = {
+            changes : vm.changes,
+            data_collector_management_id : vm.collectorId,
+            filterClient : vm.filterElements,
+          };
+
           vm.params = {
             data_collector_management_id : vm.collectorId,
             changes : vm.changes,
@@ -179,6 +186,15 @@ function DisplayMetadataController($state, DisplayMetadata, DataCollectorManagem
         })
         .then((survey) => {
           vm.filterElements = DisplayMetadata.displayFilters(survey, vm.changes);
+
+          vm.options = {
+            changes : vm.changes,
+            data_collector_management_id : vm.collectorId,
+            filterClient : vm.filterElements,
+            patient_uuid : vm.patient.uuid,
+            patient : vm.patient,
+          };
+
         })
         .catch(handleError)
         .finally(toggleLoadingIndicator);

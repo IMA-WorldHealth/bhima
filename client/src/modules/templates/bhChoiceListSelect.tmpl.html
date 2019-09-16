@@ -14,7 +14,7 @@
       ng-model= "$ctrl.list"
       ng-required="$ctrl.required"
       on-select="$ctrl.onSelect($item, $model)">
-      <ui-select-match placeholder="{{ 'FORM.LABELS.CHOICE_LIST' | translate }}">
+      <ui-select-match placeholder="{{ $ctrl.listHint }}">
         <span> {{ $select.selected.label }}</span>
       </ui-select-match>
       <ui-select-choices

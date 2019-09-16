@@ -162,6 +162,7 @@ function reportMetadata(req, res, next) {
   let report;
 
   const options = {
+    orientation   : 'landscape',
     footerRight   : '[page] / [toPage]',
     lang          : req.query.lang,
     renderer      : req.query.renderer,

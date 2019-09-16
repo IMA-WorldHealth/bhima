@@ -52,7 +52,7 @@ function DisplayMetadataSearchModalController(
         return ChoicesList.read();
       })
       .then(choicesLists => {
-        vm.choicsLists = choicesLists;
+        vm.choicesLists = choicesLists;
       })
       .catch(Notify.handleError);
   }
@@ -79,6 +79,7 @@ function DisplayMetadataSearchModalController(
         changes.post({ key : _key, value : _value, displayValue : _displayValue });
       }
     });
+
 
     const multipleChoiceLength = Object.keys(vm.multipleChoice).length;
     if (multipleChoiceLength) {

@@ -8,6 +8,7 @@ angular.module('bhima.components')
       label : '@?',
       required : '<?',
       listLabel        : '@?',
+      listHint         : '@?',
       isTitle          : '<?',
       isGroup          : '<?',
       parentId         : '<',

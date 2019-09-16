@@ -157,7 +157,6 @@
 
         <!-- select_one -->
         <div ng-if="formItem.typeForm === 'select_one'">
-          <span style="color: #cecece"><em> {{ formItem.hint }} </em></span>
           <span ng-if="!formItem.filterLabel">
               <bh-choice-list-select
                 id="{{ formItem.name }}"
@@ -165,6 +164,7 @@
                 name="{{ formItem.name }}"
                 required="formItem.valueRequired"
                 list-label="{{ formItem.label }}"
+                list-hint="{{ formItem.hint }}"
                 group-label="formItem.choice_list_id"
                 on-select-callback="FillFormModalCtrl.onSelectList(list, formItem.name)">
               </bh-choice-list-select>
@@ -176,6 +176,7 @@
                 list="FillFormModalCtrl.form[formItem.name]"
                 required="formItem.valueRequired"
                 list-label="{{ formItem.label }}"
+                list-hint="{{ formItem.hint }}"
                 parent-id="FillFormModalCtrl.form[formItem.filterLabel]"
                 group-label="formItem.choice_list_id"
                 on-select-callback="FillFormModalCtrl.onSelectList(list, formItem.name)">
@@ -186,7 +187,6 @@
 
         <!-- select_multiple -->
         <div ng-if="formItem.typeForm === 'select_multiple'">
-          <span style="color: #cecece"><em> {{ formItem.hint }} </em></span>
           <bh-choice-list-multiple-select
             id="{{ formItem.name }}"
             lists="FillFormModalCtrl.form[formItem.name]"
@@ -194,6 +194,7 @@
             name="{{ formItem.name }}"
             required="formItem.valueRequired"
             list-label="{{ formItem.label }}"
+            list-hint="{{ formItem.hint }}"
             group-label="formItem.choice_list_id"              
             on-change="FillFormModalCtrl.onSelectMultiple(lists, formItem.name)">
           </bh-choice-list-multiple-select>

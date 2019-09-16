@@ -6,47 +6,49 @@
     </ol>
 
     <div class="toolbar">
-        <div class="toolbar-item">
-            <div uib-dropdown dropdown-append-to-body data-action="open-tools">
-              <a class="btn btn-default" uib-dropdown-toggle>
-                <span class="fa fa-bars"></span> <span class="hidden-xs" translate>FORM.LABELS.MENU</span> <span class="caret"></span>
-              </a>
-    
-              <ul uib-dropdown-menu role="menu" class="dropdown-menu-right">
-                <li role="menuitem">
-                  <a target='_blank'
-                    ng-href="/data_kit/report/?{{ DisplayMetadataCtrl.downloadPDF() }}">
-                    <span class="fa fa-file-pdf-o"></span> <span translate>DOWNLOADS.PDF</span>
-                  </a>
-                </li>
-                <li role="separator" class="divider"></li>    
-                <!-- FIX ME TO DOWMLOAD AS CSV and EXCEL 
-                <li role="menuitem">
-                  <a>
-                    <span class="fa fa-file-excel-o"></span> <span translate>DOWNLOADS.CSV</span>
-                  </a>
-                </li>
-    
-                <li role="menuitem">
-                  <a>
-                    <span class="fa fa-file-excel-o"></span> <span translate>DOWNLOADS.EXCEL</span>
-                  </a>
-                </li> -->
-    
-              </ul>
-            </div>
+      <div class="toolbar-item">
+          <div uib-dropdown dropdown-append-to-body data-action="open-tools">
+            <a class="btn btn-default" uib-dropdown-toggle>
+              <span class="fa fa-bars"></span> <span class="hidden-xs" translate>FORM.LABELS.MENU</span> <span class="caret"></span>
+            </a>
+  
+            <ul uib-dropdown-menu role="menu" class="dropdown-menu-right">
+              <li role="menuitem">
+                <a download="{{ 'TREE.DISPLAY_METADATA' | translate }}"
+                  ng-href="/data_kit/report/?{{ DisplayMetadataCtrl.downloadPDF() }}">
+                  <span class="fa fa-file-pdf-o"></span> <span translate>DOWNLOADS.PDF</span>
+                </a>
+              </li>
+
+
+              <!-- FIX ME TO DOWMLOAD AS CSV and EXCEL 
+              <li role="menuitem">
+                <a>
+                  <span class="fa fa-file-excel-o"></span> <span translate>DOWNLOADS.CSV</span>
+                </a>
+              </li>
+  
+              <li role="menuitem">
+                <a>
+                  <span class="fa fa-file-excel-o"></span> <span translate>DOWNLOADS.EXCEL</span>
+                </a>
+              </li> -->
+  
+            </ul>
           </div>
-
-      <div ng-if="DisplayMetadataCtrl.patientData" class="toolbar-item">
-        <button class="btn btn-default text-capitalize" id="create" ui-sref="display_metadata.patientfill({id : DisplayMetadataCtrl.collector.id, patient: DisplayMetadataCtrl.patient.uuid})" data-method="create">
-          <span class="fa fa fa-file-text"></span> <span class="hidden-xs" translate>FORM.BUTTONS.FILL_FORM</span>
-        </button>
       </div>
+      <div ng-if="DisplayMetadataCtrl.patientData">
+        <div class="toolbar-item">
+          <button class="btn btn-default text-capitalize" id="create" ui-sref="display_metadata.patientfill({id : DisplayMetadataCtrl.collector.id, patient: DisplayMetadataCtrl.patient.uuid})" data-method="create">
+            <span class="fa fa fa-file-text"></span> <span class="hidden-xs" translate>FORM.BUTTONS.FILL_FORM</span>
+          </button>
+        </div>
 
-      <div ng-if="DisplayMetadataCtrl.patientData" class="toolbar-item">
-        <button class="btn btn-default text-capitalize" id="create" ui-sref="patientRecord({ patientUuid : DisplayMetadataCtrl.patient.uuid })" data-method="create">
-          <span class="fa fa-medkit"></span> <span class="hidden-xs" translate>FORM.LABELS.MEDICAL_SHEETS</span>
-        </button>
+        <div class="toolbar-item">
+          <button class="btn btn-default text-capitalize" id="create" ui-sref="patientRecord({ patientUuid : DisplayMetadataCtrl.patient.uuid })" data-method="create">
+            <span class="fa fa-medkit"></span> <span class="hidden-xs" translate>FORM.LABELS.MEDICAL_SHEETS</span>
+          </button>
+        </div>
       </div>
 
       <div class="toolbar-item">

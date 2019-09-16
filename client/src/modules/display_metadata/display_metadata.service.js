@@ -18,16 +18,16 @@ function DisplayMetadataService(Api, Modal, moment, $translate, $httpParamSerial
   service.displayFilters = displayFilters;
   service.download = download;
 
-  function download(type, changes, id, filterClient, patientUuid, patient) {
+  function download(opts) {
     const options = {
-      renderer : type,
-      changes,
+      renderer : opts.renderer,
+      changes : opts.changes,
       lang : Languages.key,
-      patient_uuid : patientUuid || null,
+      patient_uuid : opts.patient_uuid,
       downloadMode : true,
-      data_collector_management_id : id,
-      filterClient,
-      patient,
+      data_collector_management_id : opts.data_collector_management_id,
+      filterClient : opts.filterClient,
+      patient : opts.patient,
     };
 
     // return  serialized options
@@ -35,7 +35,7 @@ function DisplayMetadataService(Api, Modal, moment, $translate, $httpParamSerial
   }
 
   function listSurveyformtype() {
-    const url = ''.concat('listSurveyformtype');
+    const url = 'listSurveyformtype';
     return Api.read.call(service, url);
   }
 
@@ -60,6 +60,7 @@ function DisplayMetadataService(Api, Modal, moment, $translate, $httpParamSerial
 
   function displayFilters(survey, search) {
     let filters = ``;
+    const surveyMap = new Map(survey.map(item => ([item.name, item])));
     const dateLabel = $translate.instant('FORM.LABELS.DATE');
 
     if (search.searchDateFrom) {
@@ -71,23 +72,21 @@ function DisplayMetadataService(Api, Modal, moment, $translate, $httpParamSerial
             - ${moment(search.searchDateTo[key]).format('DD MMM YYYY')}])`;
           }
 
-          survey.forEach(item => {
-            if (item.name === key) {
-              filters += ` // ( ${item.label} [${moment(search.searchDateFrom[key]).format('DD MMM YYYY')}
-                - ${moment(search.searchDateTo[key]).format('DD MMM YYYY')}])`;
-            }
-          });
+          const item = surveyMap.get(key);
+          if (item) {
+            filters += ` // ( ${item.label} [${moment(search.searchDateFrom[key]).format('DD MMM YYYY')}
+            - ${moment(search.searchDateTo[key]).format('DD MMM YYYY')}])`;
+          }
         });
       }
     }
 
     if (search.loggedChanges) {
       search.loggedChanges.forEach(element => {
-        survey.forEach(item => {
-          if (item.name === element.key) {
-            filters += ` // ${item.label} : ${element.value} `;
-          }
-        });
+        const item = surveyMap.get(element.key);
+        if (item) {
+          filters += ` // ${item.label} : ${element.value} `;
+        }
       });
     }
 
@@ -95,16 +94,15 @@ function DisplayMetadataService(Api, Modal, moment, $translate, $httpParamSerial
       const multipleChoiceLength = Object.keys(search.multipleChoice).length;
       if (multipleChoiceLength) {
         Object.keys(search.multipleChoice).forEach((key) => {
-          survey.forEach(item => {
-            if (item.name === key) {
-              let multiChoice = '';
-              for (let i = 0; i < search.multipleChoice[key].length; i++) {
-                multiChoice += ` ${search.multipleChoice[key][i]}, `;
-              }
-
-              filters += ` // ${item.label} : ( ${multiChoice} )`;
+          const item = surveyMap.get(key);
+          if (item) {
+            let multiChoice = '';
+            for (let i = 0; i < search.multipleChoice[key].length; i++) {
+              multiChoice += ` ${search.multipleChoice[key][i]}, `;
             }
-          });
+
+            filters += ` // ${item.label} : ( ${multiChoice} )`;
+          }
         });
       }
     }

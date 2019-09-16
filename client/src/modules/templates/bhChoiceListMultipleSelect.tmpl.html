@@ -15,7 +15,7 @@
       close-on-select="false"
       ng-required="$ctrl.required">
 
-      <ui-select-match placeholder="{{ 'FORM.SELECT.STATUS' | translate }}">
+      <ui-select-match placeholder="{{ $ctrl.listHint }}">
         <span>{{ $item.label }}</span>
       </ui-select-match>
 
