@@ -3,7 +3,7 @@
 const FU = require('../FormUtils');
 
 module.exports = {
-  selector : '[bh-choise-list-select]',
+  selector : '[bh-choice-list-select]',
   set      : async function set(list, id) {
     const locator = (id) ? by.id(id) : by.css(this.selector);
     const target = element(locator);

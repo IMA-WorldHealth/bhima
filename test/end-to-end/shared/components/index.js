@@ -71,5 +71,5 @@ module.exports = {
   diagnosisSelect : require('./bhDiagnosisSelect'),
   entityGroupSelect : require('./bhEntityGroupSelect'),
   cronSelect : require('./bhCronSelect'),
-  choiseListSelect : require('./bhChoiseListSelect'),
+  choiceListSelect : require('./bhChoiceListSelect'),
 };

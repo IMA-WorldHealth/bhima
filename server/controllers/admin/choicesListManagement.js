@@ -1,19 +1,19 @@
 /**
-* CHOISES LIST MANAGEMENT Controller
+* CHOICES LIST MANAGEMENT Controller
 *
-* This controller exposes an API to the client for reading and writing CHOISES LIST MANAGEMENT
+* This controller exposes an API to the client for reading and writing CHOICES LIST MANAGEMENT
 */
 
 const db = require('../../lib/db');
 const NotFound = require('../../lib/errors/NotFound');
 const FilterParser = require('../../lib/filter');
 
-// GET /choises_list_management
-function lookupChoisesListManagement(id) {
+// GET /choices_list_management
+function lookupchoicesListManagement(id) {
   const sql = `
     SELECT id, name, label, fixed, group_label, parent, is_title, is_group 
-    FROM choises_list_management
-    WHERE choises_list_management.id = ?`;
+    FROM choices_list_management
+    WHERE choices_list_management.id = ?`;
 
   return db.one(sql, [id]);
 }
@@ -23,7 +23,7 @@ function list(req, res, next) {
 
   const sql = `
     SELECT id, name, label, fixed, group_label, parent, is_title, is_group
-    FROM choises_list_management
+    FROM choices_list_management
   `;
 
   filters.equals('is_title');
@@ -44,14 +44,14 @@ function list(req, res, next) {
 }
 
 /**
-* GET /choises_list_management/:ID
+* GET /choices_list_management/:ID
 *
-* Returns the detail of a single choises_list_management
+* Returns the detail of a single choices_list_management
 */
 function detail(req, res, next) {
   const { id } = req.params;
 
-  lookupChoisesListManagement(id)
+  lookupchoicesListManagement(id)
     .then((record) => {
       res.status(200).json(record);
     })
@@ -60,9 +60,9 @@ function detail(req, res, next) {
 }
 
 
-// POST /choises_list_management
+// POST /choices_list_management
 function create(req, res, next) {
-  const sql = `INSERT INTO choises_list_management SET ?`;
+  const sql = `INSERT INTO choices_list_management SET ?`;
   const data = req.body;
   // Set 0 (root) like default parent
   data.parent = data.parent || 0;
@@ -76,13 +76,13 @@ function create(req, res, next) {
 }
 
 
-// PUT /choises_list_management /:id
+// PUT /choices_list_management /:id
 function update(req, res, next) {
-  const sql = `UPDATE choises_list_management SET ? WHERE id = ?;`;
+  const sql = `UPDATE choices_list_management SET ? WHERE id = ?;`;
 
   db.exec(sql, [req.body, req.params.id])
     .then(() => {
-      return lookupChoisesListManagement(req.params.id);
+      return lookupchoicesListManagement(req.params.id);
     })
     .then((record) => {
     // all updates completed successfull, return full object to client
@@ -92,9 +92,9 @@ function update(req, res, next) {
     .done();
 }
 
-// DELETE /choises_list_management/:id
+// DELETE /choices_list_management/:id
 function remove(req, res, next) {
-  const sql = `DELETE FROM choises_list_management WHERE id = ?;`;
+  const sql = `DELETE FROM choices_list_management WHERE id = ?;`;
 
   db.exec(sql, [req.params.id])
     .then((row) => {
@@ -109,17 +109,17 @@ function remove(req, res, next) {
     .done();
 }
 
-// get list of choisesListManagement
+// get list of choicesListManagement
 exports.list = list;
 
-// get details of a choisesListManagement
+// get details of a choicesListManagement
 exports.detail = detail;
 
-// create a new choisesListManagement
+// create a new choicesListManagement
 exports.create = create;
 
-// update choisesListManagement informations
+// update choicesListManagement informations
 exports.update = update;
 
-// Delete a choisesListManagement
+// Delete a choicesListManagement
 exports.delete = remove;

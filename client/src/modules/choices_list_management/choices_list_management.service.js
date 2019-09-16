@@ -1,17 +1,17 @@
 angular.module('bhima.services')
-  .service('ChoisesListManagementService', ChoisesListManagementService);
+  .service('ChoicesListManagementService', ChoicesListManagementService);
 
-ChoisesListManagementService.$inject = ['PrototypeApiService'];
+ChoicesListManagementService.$inject = ['PrototypeApiService'];
 
 /**
- * @class ChoisesListManagementService
+ * @class ChoicesListManagementService
  * @extends PrototypeApiService
  *
  * @description
- * Encapsulates common requests to the /choises_list_management/ URL.
+ * Encapsulates common requests to the /choices_list_management/ URL.
  */
-function ChoisesListManagementService(Api) {
-  const service = new Api('/choises_list_management/');
+function ChoicesListManagementService(Api) {
+  const service = new Api('/choices_list_management/');
 
   service.formatStore = formatStore;
 
@@ -24,18 +24,18 @@ function ChoisesListManagementService(Api) {
    * @method order
    *
    * @description
-   * Creates a proper choise list ordering by first creating an choise list tree and
+   * Creates a proper choice list ordering by first creating an choice list tree and
    * then flattening in place.
    *
-   * @param {Array} lists - a list of choises lists objects
-   * @returns {Array} - the properly ordered list of choises lists objects
+   * @param {Array} lists - a list of choices lists objects
+   * @returns {Array} - the properly ordered list of choices lists objects
    */
 
   function order(data) {
     // NOTE: we assume the root node is 0
     const ROOT_NODE = 0;
 
-    // build the choises list tree
+    // build the choices list tree
     const tree = getChildren(data, ROOT_NODE);
 
     // return a flattened tree (in order)
@@ -46,13 +46,13 @@ function ChoisesListManagementService(Api) {
    * @method getChildren
    *
    * @description
-   * This method builds a tree data structure of Choises lists and children of a
+   * This method builds a tree data structure of Choices lists and children of a
    * specified parentId.
    *
    * @returns {Array} - an array of children
    */
   function getChildren(data, parentId) {
-    // base case: There are no child Choises list
+    // base case: There are no child Choices list
     if (data.length === 0) { return null; }
 
     // returns all List where the parent is the
@@ -63,12 +63,12 @@ function ChoisesListManagementService(Api) {
     // and attach them as childen of their parent account
     children.forEach(handleChildren);
 
-    function handleParent(choiseList) {
-      return choiseList.parent === parentId;
+    function handleParent(choiceList) {
+      return choiceList.parent === parentId;
     }
 
-    function handleChildren(choiseList) {
-      choiseList.children = getChildren(data, choiseList.id);
+    function handleChildren(choiceList) {
+      choiceList.children = getChildren(data, choiceList.id);
     }
 
     return children;

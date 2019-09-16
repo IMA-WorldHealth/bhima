@@ -2,8 +2,8 @@
 /* eslint  */
 
 /**
- * This class is represents a Choise List Management page in term of structure and
- * behaviour so it is a Choise List Management page object
+ * This class is represents a Choice List Management page in term of structure and
+ * behaviour so it is a Choice List Management page object
  */
 
 /* loading grid actions */
@@ -11,9 +11,9 @@ const GridRow = require('../shared/GridRow');
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
 
-class ChoiseListManagementPage {
+class ChoiceListManagementPage {
   constructor() {
-    this.gridId = 'choises-list-management-grid';
+    this.gridId = 'choices-list-management-grid';
     this.rubricGrid = element(by.id(this.gridId));
     this.actionLinkColumn = 5;
   }
@@ -21,10 +21,10 @@ class ChoiseListManagementPage {
   /**
    * simulate the create PayrollConfig button click to show the dialog of creation
    */
-  async create(ChoiseListElement) {
+  async create(ChoiceListElement) {
     await FU.buttons.create();
-    await FU.input('ChoisesListManagementModalCtrl.choise.label', ChoiseListElement.label);
-    await FU.input('ChoisesListManagementModalCtrl.choise.name', ChoiseListElement.name);
+    await FU.input('ChoicesListManagementModalCtrl.choice.label', ChoiceListElement.label);
+    await FU.input('ChoicesListManagementModalCtrl.choice.name', ChoiceListElement.name);
     await element(by.id('is_title')).click();
     await element(by.id('is_group')).click();
 
@@ -39,7 +39,7 @@ class ChoiseListManagementPage {
   async errorOnCreate() {
     await FU.buttons.create();
     await FU.buttons.submit();
-    await FU.validation.error('ChoisesListManagementModalCtrl.choise.label');
+    await FU.validation.error('ChoicesListManagementModalCtrl.choice.label');
     await FU.buttons.cancel();
   }
 
@@ -51,8 +51,8 @@ class ChoiseListManagementPage {
     row.dropdown().click();
     row.edit().click();
 
-    await components.choiseListSelect.set(updateDataCollector.parent, 'parent');
-    await components.choiseListSelect.set(updateDataCollector.group_label, 'group_label');
+    await components.choiceListSelect.set(updateDataCollector.parent, 'parent');
+    await components.choiceListSelect.set(updateDataCollector.group_label, 'group_label');
 
     await element(by.id('is_title')).click();
     await element(by.id('is_group')).click();
@@ -74,4 +74,4 @@ class ChoiseListManagementPage {
   }
 }
 
-module.exports = ChoiseListManagementPage;
+module.exports = ChoiceListManagementPage;

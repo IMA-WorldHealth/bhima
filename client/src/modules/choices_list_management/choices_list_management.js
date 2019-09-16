@@ -1,16 +1,16 @@
 angular.module('bhima.controllers')
-  .controller('ChoisesListManagementController', ChoisesListManagementController);
+  .controller('ChoicesListManagementController', ChoicesListManagementController);
 
-ChoisesListManagementController.$inject = [
-  '$state', 'ChoisesListManagementService', 'NotifyService', 'uiGridConstants', 'ModalService',
+ChoicesListManagementController.$inject = [
+  '$state', 'ChoicesListManagementService', 'NotifyService', 'uiGridConstants', 'ModalService',
 ];
 
 /**
- * CHOISES LIST MANAGEMENT Controller
- * This module is responsible for handling the CRUD operation on CHOISES LIST MANAGEMENT
+ * CHOICES LIST MANAGEMENT Controller
+ * This module is responsible for handling the CRUD operation on CHOICES LIST MANAGEMENT
  */
 
-function ChoisesListManagementController($state, ChoisesListManagement, Notify, uiGridConstants, ModalService) {
+function ChoicesListManagementController($state, ChoicesListManagement, Notify, uiGridConstants, ModalService) {
   const vm = this;
   vm.gridApi = {};
   vm.filterEnabled = false;
@@ -31,27 +31,27 @@ function ChoisesListManagementController($state, ChoisesListManagement, Notify, 
         displayName : 'FORM.LABELS.VARIABLE_NAME',
         enableFiltering : 'true',
         headerCellFilter : 'translate',
-        cellTemplate : '/modules/choises_list_management/templates/gridName.tmpl.html',
+        cellTemplate : '/modules/choices_list_management/templates/gridName.tmpl.html',
       },
       {
         field : 'label',
         displayName : 'FORM.LABELS.DESIGNATION',
         enableFiltering : 'true',
         headerCellFilter : 'translate',
-        cellTemplate : '/modules/choises_list_management/templates/gridLabels.tmpl.html',
+        cellTemplate : '/modules/choices_list_management/templates/gridLabels.tmpl.html',
       },
       {
         field : 'is_title',
         displayName : 'FORM.LABELS.TITLE',
         enableFiltering : 'true',
         headerCellFilter : 'translate',
-        cellTemplate : '/modules/choises_list_management/templates/is_title.tmpl.html',
+        cellTemplate : '/modules/choices_list_management/templates/is_title.tmpl.html',
       },
       {
         field : 'action',
         displayName : '',
         enableFiltering : 'false',
-        cellTemplate : '/modules/choises_list_management/templates/action.cell.tmpl.html',
+        cellTemplate : '/modules/choices_list_management/templates/action.cell.tmpl.html',
       },
     ],
   };
@@ -71,14 +71,14 @@ function ChoisesListManagementController($state, ChoisesListManagement, Notify, 
   vm.edit = edit;
   vm.remove = remove;
 
-  function edit(choisesListManagement) {
-    $state.go('choises_list_management.edit', { id : choisesListManagement.id });
+  function edit(choicesListManagement) {
+    $state.go('choices_list_management.edit', { id : choicesListManagement.id });
   }
 
   function remove(id) {
     ModalService.confirm('FORM.DIALOGS.CONFIRM_DELETE')
       .then(() => {
-        ChoisesListManagement.delete(id)
+        ChoicesListManagement.delete(id)
           .then(() => {
             Notify.success('FORM.INFO.DELETE_SUCCESS');
             loadGrid();
@@ -96,9 +96,9 @@ function ChoisesListManagementController($state, ChoisesListManagement, Notify, 
     vm.hasError = false;
     vm.loading = true;
 
-    ChoisesListManagement.read()
+    ChoicesListManagement.read()
       .then((data) => {
-        const dataTree = ChoisesListManagement.formatStore(data);
+        const dataTree = ChoicesListManagement.formatStore(data);
         vm.gridOptions.data = dataTree;
       })
       .catch(handleError)

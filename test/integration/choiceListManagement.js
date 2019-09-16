@@ -1,7 +1,7 @@
 /* global expect, agent */
 const helpers = require('./helpers');
 
-describe('(/choises_list_management) Choise List Management', () => {
+describe('(/choices_list_management) Choice List Management', () => {
   const numListElement = 22;
 
   const newElementList = {
@@ -19,8 +19,8 @@ describe('(/choises_list_management) Choise List Management', () => {
     group_label : 15,
   };
 
-  it('POST /choises_list_management add Choise List Element', () => {
-    return agent.post('/choises_list_management')
+  it('POST /choises_list_management add Choice List Element', () => {
+    return agent.post('/choices_list_management')
       .send(newElementList)
       .then((res) => {
         helpers.api.created(res);
@@ -29,8 +29,8 @@ describe('(/choises_list_management) Choise List Management', () => {
       .catch(helpers.handler);
   });
 
-  it('GET /choises_list_management/:id returns one Choise List Management as detail', () => {
-    return agent.get(`/choises_list_management/${newElementList.id}`)
+  it('GET /choices_list_management/:id returns one Choice List Management as detail', () => {
+    return agent.get(`/choices_list_management/${newElementList.id}`)
       .then((res) => {
         expect(res).to.have.status(200);
 
@@ -41,8 +41,8 @@ describe('(/choises_list_management) Choise List Management', () => {
       .catch(helpers.handler);
   });
 
-  it('PUT /choises_list_management/:id updates the newly added Choise List Management', () => {
-    return agent.put(`/choises_list_management/${newElementList.id}`)
+  it('PUT /choices_list_management/:id updates the newly added Choice List Management', () => {
+    return agent.put(`/choices_list_management/${newElementList.id}`)
       .send(updateElementList)
       .then((res) => {
         expect(res).to.have.status(200);
@@ -52,8 +52,8 @@ describe('(/choises_list_management) Choise List Management', () => {
       .catch(helpers.handler);
   });
 
-  it('GET /choises_list_management returns all Choise List Management', () => {
-    return agent.get(`/choises_list_management/`)
+  it('GET /choices_list_management returns all Choice List Management', () => {
+    return agent.get(`/choices_list_management/`)
       .then((res) => {
         helpers.api.listed(res, numListElement);
         expect(res.body[0]).to.have.all.keys('id', 'name', 'label', 'fixed', 'parent',
@@ -62,11 +62,11 @@ describe('(/choises_list_management) Choise List Management', () => {
       .catch(helpers.handler);
   });
 
-  it('DELETE /choises_list_management/:id deletes a Choise List Management', () => {
-    return agent.delete(`/choises_list_management/${newElementList.id}`)
+  it('DELETE /choices_list_management/:id deletes a Choice List Management', () => {
+    return agent.delete(`/choices_list_management/${newElementList.id}`)
       .then((res) => {
         helpers.api.deleted(res);
-        return agent.get(`/choises_list_management/${newElementList.id}`);
+        return agent.get(`/choices_list_management/${newElementList.id}`);
       })
       .then((res) => {
         helpers.api.errored(res, 404);

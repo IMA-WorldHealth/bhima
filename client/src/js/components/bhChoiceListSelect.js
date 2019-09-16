@@ -1,7 +1,7 @@
 angular.module('bhima.components')
-  .component('bhChoiseListSelect', {
-    templateUrl : 'modules/templates/bhChoiseListSelect.tmpl.html',
-    controller  : ChoiseListController,
+  .component('bhChoiceListSelect', {
+    templateUrl : 'modules/templates/bhChoiceListSelect.tmpl.html',
+    controller  : ChoiceListController,
     transclude  : true,
     bindings    : {
       onSelectCallback : '&',
@@ -16,12 +16,12 @@ angular.module('bhima.components')
     },
   });
 
-ChoiseListController.$inject = ['ChoisesListManagementService', 'NotifyService'];
+ChoiceListController.$inject = ['ChoicesListManagementService', 'NotifyService'];
 
 /**
- * Choise List
+ * Choice List
  */
-function ChoiseListController(ChoisesList, Notify) {
+function ChoiceListController(ChoicesList, Notify) {
   const $ctrl = this;
 
   $ctrl.$onInit = function onInit() {
@@ -33,7 +33,7 @@ function ChoiseListController(ChoisesList, Notify) {
       group_label  : $ctrl.groupLabel || null,
     };
 
-    ChoisesList.read(null, query)
+    ChoicesList.read(null, query)
       .then(lists => {
         $ctrl.lists = lists;
       })
@@ -51,7 +51,7 @@ function ChoiseListController(ChoisesList, Notify) {
         group_label  : $ctrl.groupLabel || null,
       };
 
-      ChoisesList.read(null, query)
+      ChoicesList.read(null, query)
         .then(lists => {
           $ctrl.lists = lists;
         })
