@@ -11,7 +11,7 @@ DataCollectorManagementModalController.$inject = [
 
 function DataCollectorManagementModalController($state, DataCollectorManagement, Notify, AppCache, Color) {
   const vm = this;
-  const cache = AppCache('AccountReferenceModal');
+  const cache = AppCache('DataCollectorManagementModal');
 
   vm.dataCollector = {};
   vm.stateParams = {};
@@ -49,7 +49,7 @@ function DataCollectorManagementModalController($state, DataCollectorManagement,
   function submit(dataCollectorManagementForm) {
     vm.hasNoChange = dataCollectorManagementForm.$submitted && dataCollectorManagementForm.$pristine && !vm.isCreating;
     if (dataCollectorManagementForm.$invalid) { return null; }
-    if (!dataCollectorManagementForm.$dirty) { return null; }
+    if (dataCollectorManagementForm.$pristine) { return null; }
 
     const promise = (vm.isCreating)
       ? DataCollectorManagement.create(vm.dataCollector)
@@ -69,6 +69,6 @@ function DataCollectorManagementModalController($state, DataCollectorManagement,
   }
 
   function closeModal() {
-    $state.transitionTo('data_collector_management');
+    $state.go('data_collector_management');
   }
 }

@@ -11,7 +11,7 @@ BreakEvenReferenceModalController.$inject = [
 
 function BreakEvenReferenceModalController($state, BreakEvenReference, Notify, AppCache) {
   const vm = this;
-  const cache = AppCache('AccountReferenceModal');
+  const cache = AppCache('BreakEvenReferenceModal');
 
   vm.reference = {};
   vm.stateParams = {};
@@ -55,7 +55,7 @@ function BreakEvenReferenceModalController($state, BreakEvenReference, Notify, A
   // submit the data to the server from all two forms (update, create)
   function submit(breakEvenReferenceForm) {
     if (breakEvenReferenceForm.$invalid) { return null; }
-    if (!breakEvenReferenceForm.$dirty) { return null; }
+    if (breakEvenReferenceForm.$pristine) { return null; }
 
     if (!vm.reference.is_cost) {
       vm.reference.is_variable = null;

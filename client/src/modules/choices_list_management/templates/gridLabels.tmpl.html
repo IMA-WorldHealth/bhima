@@ -2,7 +2,7 @@
   <span ng-if="row.entity.is_title" style="text-transform: uppercase">
     {{ row.entity.label}}
   </span>
-  <span ng-if="!row.entity.is_title" style="font-weight:normal; font-style: italic; text-align: right">
+  <span ng-if="!row.entity.is_title" style="font-weight:normal; text-align: right">
     <i> {{ row.entity.label}} </i>
   </span>
   <a ng-if="!row.entity.fixed && row.entity.is_title" data-action="add-child" ng-if="row.entity.is_title"

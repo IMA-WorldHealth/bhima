@@ -51,7 +51,7 @@ function ChoicesListManagementModalController($state, ChoicesListManagement, Not
   function submit(choicesListManagementForm) {
     vm.hasNoChange = choicesListManagementForm.$submitted && choicesListManagementForm.$pristine && !vm.isCreating;
     if (choicesListManagementForm.$invalid) { return null; }
-    if (!choicesListManagementForm.$dirty) { return null; }
+    if (choicesListManagementForm.$pristine) { return null; }
 
     const promise = (vm.isCreating)
       ? ChoicesListManagement.create(vm.choice)
@@ -79,6 +79,6 @@ function ChoicesListManagementModalController($state, ChoicesListManagement, Not
   }
 
   function closeModal() {
-    $state.transitionTo('choices_list_management');
+    $state.go('choices_list_management');
   }
 }

@@ -29,7 +29,7 @@ function ServiceModalController($state, Services, Depots, $translate,
 
   // submit the data to the server from all two forms (update, create)
   function submit(serviceForm) {
-    if (serviceForm.$invalid || !serviceForm.$dirty) { return 0; }
+    if (serviceForm.$invalid || serviceForm.$pristine) { return 0; }
 
     const promise = (vm.isCreating)
       ? Services.create(vm.service)
@@ -45,6 +45,6 @@ function ServiceModalController($state, Services, Depots, $translate,
   }
 
   function closeModal() {
-    $state.transitionTo('services');
+    $state.go('services');
   }
 }

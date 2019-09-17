@@ -25,27 +25,23 @@
     <!-- description -->
     <div class="form-group" ng-class="{ 'has-error' : DataCollectorManagementForm.$submitted && DataCollectorManagementForm.description.$invalid }">
       <label class="control-label" translate>FORM.LABELS.DETAILS</label>
-      <div>
-        <textarea
-          ng-model="DataCollectorManagementModalCtrl.dataCollector.description"
-          name="description"
-          class="form-control"
-          rows="4">
-        </textarea>
-        <div class="help-block" ng-messages="DataCollectorManagementForm.description.$error" ng-show="DataCollectorManagementForm.$submitted">
-          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-        </div>
+      <textarea
+        ng-model="DataCollectorManagementModalCtrl.dataCollector.description"
+        name="description"
+        class="form-control"
+        rows="4">
+      </textarea>
+      <div class="help-block" ng-messages="DataCollectorManagementForm.description.$error" ng-show="DataCollectorManagementForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
       </div>
     </div>
 
     <!-- version_number -->
     <div class="form-group" ng-class="{ 'has-error' : DataCollectorManagementForm.$submitted && DataCollectorManagementForm.version_number.$invalid }">
       <label class="control-label" translate>FORM.LABELS.VERSION</label>
-      <div>
-        <input type="number" name="version_number" ng-model="DataCollectorManagementModalCtrl.dataCollector.version_number" autocomplete="off" ng-maxlength="90" class="form-control" required>
-        <div class="help-block" ng-messages="DataCollectorManagementForm.version_number.$error" ng-show="DataCollectorManagementForm.$submitted">
-          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-        </div>
+      <input type="number" name="version_number" ng-model="DataCollectorManagementModalCtrl.dataCollector.version_number" autocomplete="off" ng-maxlength="90" class="form-control" required>
+      <div class="help-block" ng-messages="DataCollectorManagementForm.version_number.$error" ng-show="DataCollectorManagementForm.$submitted">
+        <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
       </div>
     </div>
     <!-- color -->

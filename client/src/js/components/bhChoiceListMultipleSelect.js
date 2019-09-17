@@ -11,7 +11,7 @@ angular.module('bhima.components')
       listHint         : '@?',
       isTitle          : '<?',
       isGroup          : '<?',
-      parentId         : '<',
+      parentId         : '<?',
       groupLabel       : '<?',
     },
   });

@@ -11,7 +11,7 @@ SurveyFormModalController.$inject = [
 
 function SurveyFormModalController($state, SurveyForm, Notify, AppCache, DataCollectorManagement) {
   const vm = this;
-  const cache = AppCache('AccountReferenceModal');
+  const cache = AppCache('SurveyFormModal');
 
   vm.surveyForm = {};
   vm.stateParams = {};
@@ -79,7 +79,7 @@ function SurveyFormModalController($state, SurveyForm, Notify, AppCache, DataCol
   function submit(surveyForm) {
     vm.hasNoChange = surveyForm.$submitted && surveyForm.$pristine && !vm.isCreating;
     if (surveyForm.$invalid) { return null; }
-    if (!surveyForm.$dirty) { return null; }
+    if (surveyForm.$pristine) { return null; }
 
     if (parseInt(vm.surveyForm.type, 10) !== 9) {
       vm.surveyForm.calculation = null;
@@ -103,6 +103,6 @@ function SurveyFormModalController($state, SurveyForm, Notify, AppCache, DataCol
   }
 
   function closeModal() {
-    $state.transitionTo('survey_form');
+    $state.go('survey_form');
   }
 }

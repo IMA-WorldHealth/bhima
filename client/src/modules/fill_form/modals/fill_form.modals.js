@@ -168,7 +168,7 @@ function FillFormModalController($state, FillForm, Notify, AppCache,
   function submit(fillForm) {
     vm.hasNoChange = fillForm.$submitted && fillForm.$pristine && !vm.isCreating;
     if (fillForm.$invalid) { return null; }
-    if (!fillForm.$dirty) { return null; }
+    if (fillForm.$pristine) { return null; }
 
     vm.form.data_collector_management_id = vm.stateParams.id;
     if (vm.stateParams.patient) {
@@ -220,9 +220,9 @@ function FillFormModalController($state, FillForm, Notify, AppCache,
   }
 
   function closeModal() {
-    const transitionTo = vm.updateMode ? 'display_metadata' : 'fill_form';
+    const url = vm.updateMode ? 'display_metadata' : 'fill_form';
     if (!vm.stateParams.patient) {
-      $state.transitionTo(transitionTo);
+      $state.go(url);
     } else if (vm.stateParams.patient) {
       $state.go('display_metadata.patient', { id : vm.stateParams.id, patient : vm.stateParams.patient });
     }

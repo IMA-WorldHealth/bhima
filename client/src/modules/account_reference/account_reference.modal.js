@@ -63,7 +63,7 @@ function AccountReferenceModalController($state, Accounts, AccountReferences, No
     // Fixe me @lomamech : Give the possibility to validate the modification
     // of the 'Parent' or 'Account Reference Type Only' input area only
 
-    if (!accountReferenceForm.$dirty) { return null; }
+    if (accountReferenceForm.$pristine) { return null; }
 
     const promise = (vm.isCreating)
       ? AccountReferences.create(vm.accountReference)
@@ -83,6 +83,6 @@ function AccountReferenceModalController($state, Accounts, AccountReferences, No
   }
 
   function closeModal() {
-    $state.transitionTo('account_reference.list');
+    $state.go('account_reference.list');
   }
 }
