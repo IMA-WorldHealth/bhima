@@ -67,7 +67,7 @@
     "connect-redis": "^3.4.0",
     "cron": "^1.7.1",
     "cropper": "^4.0.0",
-    "cross-env": "^5.2.0",
+    "cross-env": "^6.0.0",
     "csvtojson": "^2.0.8",
     "debug": "^4.1.1",
     "dotenv": "^8.0.0",
