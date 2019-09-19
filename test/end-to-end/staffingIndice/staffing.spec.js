@@ -3,7 +3,7 @@ const helpers = require('../shared/helpers');
 const components = require('../shared/components');
 const GA = require('../shared/GridAction');
 
-describe.only('Staffing indice Management Tests', () => {
+describe('Staffing indice Management Tests', () => {
 
   const path = '#!/staffing_indices';
   // navigate to the page before the test suite

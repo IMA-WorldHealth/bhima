@@ -4,9 +4,8 @@ angular.module('bhima.controllers')
 // dependencies injection
 MultiplePayrollIndiceController.$inject = [
   'MultipleIndicesPayrollService', 'NotifyService',
-  'GridSortingService', 'GridColumnService', 'GridStateService', '$state',
-  'ModalService', 'util', 'ReceiptModal', 'uiGridConstants',
-  'LanguageService', '$httpParamSerializer',
+  'GridColumnService', 'GridStateService', '$state',
+  'util', 'uiGridConstants', 'LanguageService', '$httpParamSerializer',
 ];
 
 /**
@@ -18,9 +17,8 @@ MultiplePayrollIndiceController.$inject = [
  * reordering, and many more features.
  */
 function MultiplePayrollIndiceController(
-  MultiplePayroll, Notify,
-  Sorting, Columns, GridState,
-  $state, Modals, util, Receipts, uiGridConstants, Languages, $httpParamSerializer
+  MultiplePayroll, Notify, Columns, GridState,
+  $state, util, uiGridConstants, Languages, $httpParamSerializer
 ) {
   const vm = this;
   const cacheKey = 'multiple-indice-payroll-grid';

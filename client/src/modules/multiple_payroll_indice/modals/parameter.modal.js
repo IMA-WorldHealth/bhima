@@ -3,15 +3,17 @@ angular.module('bhima.controllers')
 
 MultiPayrollIndiceParamModalController.$inject = [
   'NotifyService', 'MultipleIndicesPayrollService', '$uibModalInstance',
+  'SessionService',
 ];
 
-function MultiPayrollIndiceParamModalController(Notify, MultiplePayroll, Instance) {
+function MultiPayrollIndiceParamModalController(Notify, MultiplePayroll, Instance, Session) {
   const vm = this;
   vm.close = Instance.close;
   vm.param = {};
   vm.onInputTextChange = (key, val) => {
     vm.param[key] = val;
   };
+  vm.currencyId = Session.enterprise.currency_id;
 
   vm.onSelectPayrollPeriod = (payrollConfig) => {
     vm.param.payroll_configuration_id = payrollConfig.id;

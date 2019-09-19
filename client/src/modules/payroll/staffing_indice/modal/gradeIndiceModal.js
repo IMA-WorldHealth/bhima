@@ -28,12 +28,11 @@ function GradeIndiceModalController($state, StaffingIndice, Notify, Instance, Mo
     {
       field : 'actions',
       enableFiltering : false,
-      width : 100,
+      width : 40,
       displayName : '',
       headerCellFilter : 'translate',
       cellTemplate : 'modules/payroll/staffing_indice/templates/gradeIndice.action.cell.html',
     }];
-
 
   vm.gridOptions = {
     appScopeProvider : vm,

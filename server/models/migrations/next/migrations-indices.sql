@@ -39,11 +39,6 @@ CREATE TABLE `staffing_function_indice` (
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
-ALTER TABLE  `rubric_payroll` ADD COLUMN `is_monetary_value`  TINYINT(1) DEFAULT 1;
-ALTER TABLE  `rubric_payroll` ADD COLUMN `position`  TINYINT(1) DEFAULT 0;
-ALTER TABLE  `rubric_payroll` ADD COLUMN `is_indice` TINYINT(1) DEFAULT 0;
-
-
 DROP TABLE IF EXISTS `stage_payment_indice`;
 CREATE TABLE `stage_payment_indice` (
   `uuid` BINARY(16) NOT NULL,
@@ -76,18 +71,9 @@ CREATE TABLE `staffing_indice_parameters` (
 
 
 
-
-
-
-
-
-
-
-
-
 insert into unit
-values(246, 'Staffing indexes management','TREE.STAFFING_INDICES_MANAGEMENT','Staffing indices management', 57,'/modules/payroll/staffing_indice','/staffing_indices'),
-(247, 'Multiple Payroll by indice','TREE.MULTI_PAYROLL_INDICE','Multiple Payroll (indice)', 57,'/modules/multiple_payroll_indice','/multiple_payroll_indice');
+values(249, 'Staffing indexes management','TREE.STAFFING_INDICES_MANAGEMENT','Staffing indices management', 57,'/modules/payroll/staffing_indice','/staffing_indices'),
+(250, 'Multiple Payroll by indice','TREE.MULTI_PAYROLL_INDICE','Multiple Payroll (indice)', 57,'/modules/multiple_payroll_indice','/multiple_payroll_indice');
 
   
 DROP TABLE IF EXISTS `staffing_indice`;
@@ -130,9 +116,11 @@ CREATE TABLE `staffing_function_indice` (
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
+ALTER TABLE  `rubric_payroll` ADD COLUMN `is_indice`  TINYINT(1) DEFAULT 1;
 ALTER TABLE  `rubric_payroll` ADD COLUMN `is_monetary_value`  TINYINT(1) DEFAULT 1;
 ALTER TABLE  `rubric_payroll` ADD COLUMN `position`  TINYINT(1) DEFAULT 0;
-ALTER TABLE  `rubric_payroll` ADD COLUMN `is_indice` TINYINT(1) DEFAULT 0;
+ALTER TABLE  `rubric_payroll` ADD COLUMN `indice_type`  VARCHAR(50) DEFAULT NULL;
+ALTER TABLE  `enterprise_setting` ADD COLUMN `enable_index_payment_system` TINYINT(1) NOT NULL DEFAULT 0;
 
 
 DROP TABLE IF EXISTS `stage_payment_indice`;
@@ -189,6 +177,8 @@ CREATE TABLE `config_rubric_item` (
 
 
 -- should execute payroll.sql
+
+
 
 DELIMITER $$
 
@@ -271,70 +261,33 @@ BEGIN
 	CLOSE curs1;
 END$$
 
-DROP FUNCTION IF EXISTS `maxBaseIndice`$$
-CREATE  FUNCTION `maxBaseIndice`(
-	_payroll_configuration_id INT
-) RETURNS DECIMAL(19, 4) DETERMINISTIC
-BEGIN
-	DECLARE _dateFrom, _dateTo DATE;
-	SELECT dateFrom, dateTo INTO _dateFrom, _dateTo
-	FROM payroll_configuration
-	WHERE id = _payroll_configuration_id;
 
-	RETURN (
-		SELECT IFNULL(MAX(st.grade_indice), 0)
-		FROM staffing_indice st WHERE  (st.date BETWEEN _dateFrom  AND _dateTo)
-	);
-
-END$$
-
-DROP FUNCTION IF EXISTS `sumBaseIndice`$$
-CREATE  FUNCTION `sumBaseIndice`(_payroll_configuration_id INT) RETURNS DECIMAL(19, 4) DETERMINISTIC
+-- sum of a column of indexes (index for each employee)
+DROP FUNCTION IF EXISTS `sumTotalIndex`$$
+CREATE FUNCTION `sumTotalIndex`(_payroll_configuration_id INT, _indice_type VARCHAR(50)) RETURNS DECIMAL(19, 4) DETERMINISTIC
 BEGIN
 
 	DECLARE _employee_uuid BINARY(16);
 	DECLARE _employee_grade_indice, totals DECIMAL(19, 4);
-	
-	DECLARE done BOOLEAN;
-	DECLARE curs1 CURSOR FOR 
-	SELECT cei.employee_uuid 
-	FROM payroll_configuration pc
-	JOIN config_employee ce ON ce.id = pc.config_employee_id
-	JOIN config_employee_item cei ON cei.config_employee_id = ce.id
-	WHERE pc.id = _payroll_configuration_id;
+  
+  SET totals  = (
+    SELECT SUM(rubric_value) as 'rubric_value'
+		FROM stage_payment_indice sp
+		JOIN rubric_payroll r ON r.id = sp.rubric_id
+		WHERE  r.indice_type = _indice_type AND	 payroll_configuration_id = _payroll_configuration_id
+  );
 
-	DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
-
-	SET totals = 0;
-	
-	OPEN curs1;
-		read_loop: LOOP
-		FETCH curs1 INTO _employee_uuid;
-			IF done THEN
-				LEAVE read_loop;
-			END IF;
-			SET _employee_grade_indice  = (
-				SELECT st.grade_indice
-				FROM staffing_indice st
-				WHERE st.employee_uuid = _employee_uuid
-				ORDER BY st.created_at DESC
-				LIMIT 1
-			);
-			SET totals = totals + IFNULL(_employee_grade_indice, 0);
-		
-		END LOOP;
-	CLOSE curs1;
-	RETURN totals;
+	RETURN IFNULL(totals, 1);
 END$$
 
 DROP FUNCTION IF EXISTS `getStagePaymentIndice`$$
 CREATE  FUNCTION `getStagePaymentIndice`(_employee_uuid BINARY(16), 
-_payroll_configuration_id INT, _rubric_abbr VARCHAR(50) ) RETURNS DECIMAL(19, 4) DETERMINISTIC
+_payroll_configuration_id INT, _indice_type VARCHAR(50) ) RETURNS DECIMAL(19, 4) DETERMINISTIC
 BEGIN
-	return IFNULL((SELECT rubric_value
+	return IFNULL((SELECT SUM(rubric_value) as 'rubric_value'
 		FROM stage_payment_indice sp
 		JOIN rubric_payroll r ON r.id = sp.rubric_id
-		WHERE sp.employee_uuid = _employee_uuid AND r.abbr = _rubric_abbr AND	
+		WHERE sp.employee_uuid = _employee_uuid AND r.indice_type = _indice_type AND	
 			payroll_configuration_id = _payroll_configuration_id
 		LIMIT 1), 0);
 END;
@@ -344,20 +297,20 @@ DROP PROCEDURE IF EXISTS `addStagePaymentIndice`$$
 CREATE   PROCEDURE `addStagePaymentIndice`( 
 	IN _employee_uuid BINARY(16),IN _payroll_configuration_id INT(10),
 
-	IN _rubric_abbr VARCHAR(50), IN _value DECIMAL(19, 10)
+	IN _indice_type VARCHAR(50), IN _value DECIMAL(19, 10)
 )
 BEGIN
    DECLARE _rubric_id INT;
    DECLARE _stage_payment_uuid BINARY(16);
 
-   SELECT id INTO _rubric_id FROM rubric_payroll WHERE abbr = _rubric_abbr;
+   SELECT id INTO _rubric_id FROM rubric_payroll WHERE indice_type = _indice_type;
  	
    IF _rubric_id > 0 THEN 
 	SET _stage_payment_uuid = IFNULL((
 		SELECT sp.uuid 
 		FROM stage_payment_indice sp
 		JOIN rubric_payroll r ON r.id = sp.rubric_id
-		WHERE sp.employee_uuid = _employee_uuid AND r.abbr = _rubric_abbr AND	
+		WHERE sp.employee_uuid = _employee_uuid AND r.indice_type = _indice_type AND	
 			payroll_configuration_id = _payroll_configuration_id
 		LIMIT 1), HUID('0')
 	);
@@ -377,7 +330,7 @@ CREATE   PROCEDURE `updateIndices`( IN _payroll_configuration_id INT)
 BEGIN
 
 	DECLARE _employee_uuid BINARY(16);
-	DECLARE _employee_grade_indice, _sumBaseIndice,  _function_indice DECIMAL(19, 4);
+	DECLARE _employee_grade_indice, _sumTotalCode,  _function_indice DECIMAL(19, 4);
 	
 	DECLARE done BOOLEAN;
 	DECLARE curs1 CURSOR FOR 
@@ -386,6 +339,14 @@ BEGIN
 	JOIN config_employee ce ON ce.id = pc.config_employee_id
 	JOIN config_employee_item cei ON cei.config_employee_id = ce.id
 	WHERE pc.id = _payroll_configuration_id;
+
+  DECLARE curs2 CURSOR FOR 
+	SELECT cei.employee_uuid 
+	FROM payroll_configuration pc
+	JOIN config_employee ce ON ce.id = pc.config_employee_id
+	JOIN config_employee_item cei ON cei.config_employee_id = ce.id
+	WHERE pc.id = _payroll_configuration_id;
+
 
 	DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 	
@@ -403,16 +364,16 @@ BEGIN
 			ORDER BY st.created_at DESC
 			LIMIT 1;
 						
-			CALL addStagePaymentIndice( _employee_uuid,_payroll_configuration_id,'indice de base', IFNULL(_employee_grade_indice, 0));
+			CALL addStagePaymentIndice( _employee_uuid,_payroll_configuration_id,'is_base_index', IFNULL(_employee_grade_indice, 0));
 			
 			SET @responsabilite = IFNULL(_function_indice, 0);
-			CALL addStagePaymentIndice( _employee_uuid,_payroll_configuration_id,'responsabilité', @responsabilite);
+			CALL addStagePaymentIndice( _employee_uuid,_payroll_configuration_id,'is_responsability', @responsabilite);
 									
 			-- tot jrs
-			SET @tot_jrs = getStagePaymentIndice(_employee_uuid, _payroll_configuration_id, 'Jrs prestes') +
-				 getStagePaymentIndice(_employee_uuid, _payroll_configuration_id, 'jrs suppl');
+			SET @tot_jrs = getStagePaymentIndice(_employee_uuid, _payroll_configuration_id, 'is_day_worked') +
+				 getStagePaymentIndice(_employee_uuid, _payroll_configuration_id, 'is_extra_day');
 
-			CALL addStagePaymentIndice( _employee_uuid,_payroll_configuration_id,'tot jrs', IFNULL(@tot_jrs, 0));
+			CALL addStagePaymentIndice( _employee_uuid,_payroll_configuration_id,'is_total_days', IFNULL(@tot_jrs, 0));
 			
 			-- 
 			SET @nbrJour = 0;
@@ -423,53 +384,55 @@ BEGIN
 			FROM staffing_indice_parameters
 			WHERE payroll_configuration_id = _payroll_configuration_id;
 			
-			-- base indice
-			SET _sumBaseIndice = sumBaseIndice(_payroll_configuration_id);
 
-			SET @indiceBase = getStagePaymentIndice(_employee_uuid, _payroll_configuration_id, 'Indice de base');
+			SET @indiceBase = getStagePaymentIndice(_employee_uuid, _payroll_configuration_id, 'is_base_index');
 		    -- A revoir le calcul
 			-- SET @indiceJour = maxBaseIndice(_payroll_configuration_id)/@nbrJour;
 			SET @indiceJour = IFNULL(@indiceBase/@nbrJour, 0);
 			
-			CALL addStagePaymentIndice( _employee_uuid, _payroll_configuration_id,'indice jr', @indiceJour);
-			CALL addStagePaymentIndice( _employee_uuid, _payroll_configuration_id,'nbre jrs', @nbrJour);
+			CALL addStagePaymentIndice( _employee_uuid, _payroll_configuration_id,'is_day_index', @indiceJour);
+			CALL addStagePaymentIndice( _employee_uuid, _payroll_configuration_id,'is_number_of_days', @nbrJour);
 		
-			-- SELECT _sumBaseIndice, maxBaseIndice(_payroll_configuration_id), @nbrJour;
 			-- indice reajust = @indiceJour*(tot jrs)
 			SET @indice_reajust = IFNULL(@indiceJour*@tot_jrs, 0);
 		
-			CALL addStagePaymentIndice( _employee_uuid, _payroll_configuration_id,'Indice reajuste', @indice_reajust);
+			CALL addStagePaymentIndice( _employee_uuid, _payroll_configuration_id,'is_reagistered_index', @indice_reajust);
 			
-			-- tot code
-			SET @electricite = getStagePaymentIndice(_employee_uuid, _payroll_configuration_id, 'electricité');
-			SET @autres = getStagePaymentIndice(_employee_uuid, _payroll_configuration_id, 'autres');
+			-- other profits
+			SET @otherProfits = getStagePaymentIndice(_employee_uuid, _payroll_configuration_id, 'is_other_profits');
 	
-			SELECT @indice_reajust, @responsabilite, @electricite, @autres;
-			CALL addStagePaymentIndice( _employee_uuid, _payroll_configuration_id, 'tot code', 
-				@indice_reajust  + @responsabilite + @electricite + @autres
+  
+			CALL addStagePaymentIndice( _employee_uuid, _payroll_configuration_id, 'is_total_code', 
+				@indice_reajust  + @responsabilite  + @otherProfits
 			);
 			
-			-- tx paie = @envelopPaie / (somme indice de base)
-			IF (_sumBaseIndice = 0) THEN
-				SET _sumBaseIndice = 1;
-			END IF;
-
-			CALL addStagePaymentIndice( _employee_uuid,_payroll_configuration_id,'tx paie', 
-			@envelopPaie/_sumBaseIndice
-			);
-			-- sal de base
-			SET @sal_de_base = getStagePaymentIndice(_employee_uuid, _payroll_configuration_id, 'tot code')*
-				getStagePaymentIndice(_employee_uuid, _payroll_configuration_id, 'tx paie');
-
-
-			CALL addStagePaymentIndice( _employee_uuid,_payroll_configuration_id,'brute', IFNULL(@sal_de_base, 0));
-
-			UPDATE employee SET individual_salary = getStagePaymentIndice(_employee_uuid, _payroll_configuration_id, 'brute')
-			WHERE uuid = _employee_uuid;
-
 		END LOOP;
 	CLOSE curs1;
+
+	-- pay_rate = @envelopPaie / (sum total code) // Masse de paie
+	SET _sumTotalCode = sumTotalIndex(_payroll_configuration_id, 'is_total_code');
+  SET done = FALSE;
+
+  OPEN curs2;
+		read_loop: LOOP
+		FETCH curs2 INTO _employee_uuid;
+			IF done THEN
+				LEAVE read_loop;
+			END IF;
+  
+			CALL addStagePaymentIndice( _employee_uuid,_payroll_configuration_id,'is_pay_rate', @envelopPaie/_sumTotalCode);
+			-- sal de base
+			SET @sal_de_base = getStagePaymentIndice(_employee_uuid, _payroll_configuration_id, 'is_total_code')*
+				getStagePaymentIndice(_employee_uuid, _payroll_configuration_id, 'is_pay_rate');
+
+			CALL addStagePaymentIndice( _employee_uuid,_payroll_configuration_id,'is_gross_salary', IFNULL(@sal_de_base, 0));
+
+			UPDATE employee SET individual_salary = getStagePaymentIndice(_employee_uuid, _payroll_configuration_id, 'is_gross_salary')
+			WHERE uuid = _employee_uuid;
+
+  		END LOOP;
+	CLOSE curs2;
+
 END$$
 
-DELIMITER ;
-
+DELIMITER;

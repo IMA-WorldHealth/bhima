@@ -2,16 +2,21 @@ angular.module('bhima.controllers')
   .controller('RubricModalController', RubricModalController);
 
 RubricModalController.$inject = [
-  '$state', 'RubricService', 'ModalService', 'NotifyService', 'appcache',
+  '$state', 'RubricService', 'NotifyService',
+  'appcache', 'SessionService',
 ];
 
-function RubricModalController($state, Rubrics, ModalService, Notify, AppCache) {
+function RubricModalController($state, Rubrics, Notify, AppCache, Session) {
   const vm = this;
-  vm.rubric = {
-    is_monetary_value : 1,
-  };
 
   const cache = AppCache('RubricModal');
+  vm.rubric = {
+    is_monetary_value : 1,
+    is_indice : 0,
+  };
+  vm.indexesMap = Rubrics.indexesMap;
+
+  vm.enableIndexPayment = Session.enterprise.settings.enable_index_payment_system;
 
   if ($state.params.creating || $state.params.id) {
     vm.stateParams = $state.params;
@@ -38,6 +43,14 @@ function RubricModalController($state, Rubrics, ModalService, Notify, AppCache) 
     vm.rubric[key] = value;
   };
 
+  vm.isMonetaryValueSetting = (value) => {
+    vm.rubric.is_monetary_value = value;
+  };
+
+  vm.isIndexSetting = (value) => {
+    vm.rubric.is_indice = value;
+  };
+
 
   // exposed methods
   vm.submit = submit;
@@ -55,7 +68,6 @@ function RubricModalController($state, Rubrics, ModalService, Notify, AppCache) 
   // submit the data to the server from all two forms (update, create)
   function submit(rubricForm) {
 
-
     if (!vm.rubric.is_discount) {
       vm.rubric.is_discount = 0;
       vm.rubric.is_tax = 0;
@@ -67,7 +79,10 @@ function RubricModalController($state, Rubrics, ModalService, Notify, AppCache) 
       vm.rubric.is_social_care = 0;
     }
 
-    if (rubricForm.$invalid || rubricForm.$pristine) { return 0; }
+    if (rubricForm.$invalid || rubricForm.$pristine) {
+      Notify.danger('FORM.ERRORS.HAS_ERRORS');
+      return false;
+    }
 
     const promise = (vm.isCreating) ? Rubrics.create(vm.rubric) : Rubrics.update(vm.rubric.id, vm.rubric);
 

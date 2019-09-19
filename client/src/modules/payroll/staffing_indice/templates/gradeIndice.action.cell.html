@@ -1,20 +1,7 @@
-<div
-  class="ui-grid-cell-contents text-action"
-  data-row="{{row.entity.grade_text}}"
-  uib-dropdown dropdown-append-to-body>
-
-  <a uib-dropdown-toggle href data-action="open-dropdown-menu">
-    <span data-method="action" translate>FORM.BUTTONS.ACTIONS</span>
-    <span class="caret"></span>
+<div class="ui-grid-cell-contents text-action" data-row="{{row.entity.grade_text}}">
+  <a data-method="delete-record" ng-click="grid.appScope.remove(row.entity.uuid)" href>
+    <span class="text-danger">
+      <i class="fa fa-trash"></i>
+    </span>
   </a>
-
-  <ul data-row-menu="{{row.entity.grade_text}}" class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
-    <li>
-      <a data-method="delete-record" ng-click="grid.appScope.remove(row.entity.uuid)" href>
-        <span class="text-danger">
-          <i class="fa fa-trash"></i> <span translate>FORM.BUTTONS.DELETE</span>
-        </span>
-      </a>
-    </li>
-  </ul>
 </div>

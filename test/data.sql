@@ -846,34 +846,6 @@ INSERT INTO `rubric_payroll` (`id`, `label`, `abbr`, `is_employee`, `is_percent`
   (11, 'Office Nationale de l\emploie', 'ONEM', 0, 1, 1, 1, 0, 0, 0, 320, 355, 0, 0, 0.2),
   (12, 'Acompte sur salaires', 'ac_sal', 1, 0, 1, 0, 0, 1, 0, 340, 179, 0, 1, NULL);
 
-INSERT INTO `rubric_payroll` (`id`, `label`, `abbr`, `is_employee`, `is_percent`, `is_discount`, `is_tax`, 
-`is_social_care`, `is_defined_employee`, `is_membership_fee`, `debtor_account_id`, `expense_account_id`,
- `is_ipr`, `is_associated_employee`, `is_seniority_bonus`, `is_family_allowances`, `is_monetary_value`, 
-`position`, `value`, `is_indice`) VALUES
-(13, 'Indice de base', 'Indice de base', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 1, NULL, 1),
-(14, 'indice jour', 'indice jr', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 2, NULL, 1),
-(15, 'Indice réajusté', 'Indice reajuste', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 3, NULL, 1),
-(16, 'Responsabilité', 'Responsabilité', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 4, NULL, 1),
-(17, 'Electricité', 'Electricité', 0, 0, 0, 0, 0, 1, 0, NULL, NULL, 0, 0, 0, 0, 0, 5, NULL, 1),
-(18, 'Autres', 'Autres', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 6, NULL, 1),
-(19, 'Total code', 'tot code', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 7, NULL, 1),
-(20, 'Jours prestés', 'Jrs prestes', 0, 0, 0, 0, 0, 1, 0, NULL, NULL, 0, 0, 0, 0, 0, 8, NULL, 1),
-(21, 'Jours supplémentaires', 'jrs suppl', 0, 0, 0, 0, 0, 1, 0, NULL, NULL, 0, 0, 0, 0, 0, 9, NULL, 1),
-(22, 'Total jours', 'tot jrs', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 10, NULL, 1),
-(23, 'Taux de paie', 'tx paie', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 11, NULL, 1),
-(24, 'Brute', 'brute', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 12, NULL, 1),
-(25, 'AVANCE', 'Avance', 1, 0, 1, 0, 0, 1, 0, NULL, NULL, 0, 0, 0, 0, 1, 13, NULL, 0),
--- ('INSS', 'INSS', 0, 0, 1, 0, 0, 1, 0, NULL, NULL, 0, 0, 0, 0, 0, 14, NULL, 1),
-(26, 'TAR', 'TAR', 1, 0, 1, 0, 0, 1, 0, NULL, NULL, 0, 0, 0, 0, 1, 15, NULL, 0),
--- ('IPR', 'IPR', 0, 0, 0, 0, 0, 1, 0, NULL, NULL, 0, 0, 0, 0, 0, 16, NULL, 1),
-(27, 'OFFRANDE', 'Offrande', 1, 0, 1, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 1, 17, NULL, 0),
-(28, 'SYND 1', 'SYND 1', 1, 0, 1, 0, 0, 1, 0, NULL, NULL, 0, 0, 0, 0, 1, 18, NULL, 0),
-(29, 'SYND 2', 'SYND 2', 1, 0, 1, 0, 0, 1, 0, NULL, NULL, 0, 0, 0, 0, 1, 19, NULL, 0),
-(30, 'Autres retenues', 'Autres retenues', 1, 0, 1, 0, 0, 1, 0, NULL, NULL, 0, 0, 0, 0, 1, 20, NULL, 1),
-(31, 'Nombre de jours', 'nbre jrs', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 23, NULL, 1),
-(32, 'TOTAL retenue', 'total_retenue', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 21, NULL, 1),
-(33, 'NET', 'net', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 22, NULL, 1);
-
 -- Configuration of Rubrinc
 INSERT INTO `config_rubric` (`id`, `label`)
  VALUES (1, 'Configuration des rubriques'), 
@@ -892,26 +864,7 @@ INSERT INTO `config_rubric_item` (`id`, `config_rubric_id`, `rubric_payroll_id`)
   (9, 1, 9),
   (10, 1, 10),
   (11, 1, 11),
-  (12, 1, 12),
-  (13, 2, 13),
-  (14, 2, 14),
-  (15, 2, 15),
-  (16, 2, 16),
-  (17, 2, 17),
-  (18, 2, 18),
-  (19, 2, 19),
-  (20, 2, 20),
-  (21, 2, 21),
-  (22, 2, 22),
-  (23, 2, 23),
-  (24, 2, 24),
-  (25, 2, 25),
-  (26, 2, 26),
-  (27, 2, 27),
-  (28, 2, 28),
-  (29, 2, 29),
-  (30, 2, 30),
-  (31, 2, 31);
+  (12, 1, 12);
 
 -- Configuration of weekend
 INSERT INTO `weekend_config` (`id`, `label`) VALUES

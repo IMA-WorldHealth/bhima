@@ -215,6 +215,7 @@ CREATE TABLE `rubric_payroll` (
   `is_monetary_value`  TINYINT(1) DEFAULT 1,
   `position`  TINYINT(1) DEFAULT 0,
   `is_indice` TINYINT(1) DEFAULT 0,
+  `indice_type` VARCHAR(50) DEFAULT NULL,
   `value` float DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `rubric_payroll_1` (`label`),
@@ -572,6 +573,7 @@ CREATE TABLE `enterprise_setting` (
   `enable_barcodes` TINYINT(1) NOT NULL DEFAULT 1,
   `enable_auto_stock_accounting` TINYINT(1) NOT NULL DEFAULT 0,
   `enable_auto_email_report` TINYINT(1) NOT NULL DEFAULT 0,
+  `enable_index_payment_system` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`enterprise_id`),
   FOREIGN KEY (`enterprise_id`) REFERENCES `enterprise` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;

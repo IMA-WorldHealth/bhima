@@ -28,7 +28,7 @@ function FunctionIndiceModalController($state, StaffingIndice, Notify, Instance,
     {
       field : 'actions',
       enableFiltering : false,
-      width : 100,
+      width : 40,
       displayName : '',
       headerCellFilter : 'translate',
       cellTemplate : 'modules/payroll/staffing_indice/templates/functionIndice.action.cell.html',

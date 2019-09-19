@@ -13,14 +13,13 @@
           payroll-configuration-id="$ctrl.searchQueries.payroll_configuration_id" name="PayrollPeriodForm"
           on-select-callback="$ctrl.onSelectPayrollPeriod(payrollConfig)" required="true">
         </bh-payroll-period-select>
-
-        <bh-input-text
-          key="pay_envelope"
-          label="FORM.LABELS.PAY_ENVELOPE"
-          text-value="$ctrl.param.pay_envelope"
-          required = "true"
-          on-change="$ctrl.onInputTextChange(key, value)">
-        </bh-input-text>
+        
+        <bh-currency-input
+          data-payroll-params-currency-input
+          label="FORM.LABELS.PAY_ENVELOPE" 
+          currency-id="$ctrl.currencyId"
+          model="$ctrl.param.pay_envelope">
+        </bh-currency-input>
               
         <bh-input-text
           key="working_days"

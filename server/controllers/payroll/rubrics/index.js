@@ -3,9 +3,11 @@
 *
 * This controller exposes an API to the client for reading and writing Rubric
 */
+const rubricsIndexes = require('./rubricsIndex');
 const db = require('../../../lib/db');
 const NotFound = require('../../../lib/errors/NotFound');
 const FilterParser = require('../../../lib/filter');
+const translate = require('../../../lib/helpers/translate');
 
 // GET /Rubric
 function lookupRubric(id) {
@@ -13,7 +15,7 @@ function lookupRubric(id) {
     SELECT r.id, r.label, r.abbr, r.is_employee, r.is_percent, r.is_defined_employee, r.is_discount, r.is_social_care,
     r.debtor_account_id, r.expense_account_id, r.is_ipr, r.value, r.is_tax, r.is_membership_fee,
     r.is_associated_employee, r.is_seniority_bonus, r.position, r.is_monetary_value,
-    r.is_family_allowances, r.is_indice
+    r.is_family_allowances, r.is_indice, r.indice_type
     FROM rubric_payroll AS r
     WHERE r.id = ? ORDER BY r.label ASC`;
 
@@ -76,6 +78,20 @@ function create(req, res, next) {
 }
 
 
+function importIndexes(req, res, next) {
+  const { lang } = req.body;
+  const transaction = db.transaction();
+  const trslt = translate(lang);
+  rubricsIndexes.forEach(rubric => {
+    rubric.label = trslt(rubric.label);
+    transaction.addQuery('INSERT INTO rubric_payroll SET ?', rubric);
+  });
+
+  transaction.execute().then(() => {
+    res.sendStatus(201);
+  }).catch(next);
+}
+
 // PUT /Rubric /:id
 function update(req, res, next) {
   const sql = `UPDATE rubric_payroll SET ? WHERE id = ?;`;
@@ -119,3 +135,6 @@ exports.update = update;
 
 // Delete a Rubric
 exports.delete = del;
+
+// import rubrics (indexes)
+exports.importIndexes = importIndexes;

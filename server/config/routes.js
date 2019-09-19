@@ -671,6 +671,7 @@ exports.configure = function configure(app) {
   app.get('/rubrics', rubrics.list);
   app.get('/rubrics/:id', rubrics.detail);
   app.post('/rubrics', rubrics.create);
+  app.post('/rubrics/import_indexes', rubrics.importIndexes);
   app.put('/rubrics/:id', rubrics.update);
   app.delete('/rubrics/:id', rubrics.delete);
 
