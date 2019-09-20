@@ -13,7 +13,8 @@
       name="form"
       ng-model="$ctrl.form"
       on-select="$ctrl.onSelect($item, $model)"
-      ng-required="$ctrl.required">
+      ng-required="$ctrl.required"
+      ng-disabled="$ctrl.disabled">
       <ui-select-match placeholder="{{ ::'FORM.LABELS.FORM' | translate }}">
         <span>{{$select.selected.label}}</span>
       </ui-select-match>

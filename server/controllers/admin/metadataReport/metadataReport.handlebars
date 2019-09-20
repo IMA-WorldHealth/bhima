@@ -57,12 +57,13 @@
               <td>{{ value }}</td>
             </tr>
           {{/each}}
+          {{#each filterClient}}
+            <tr>
+              <td>{{ _label }}</td>
+              <td>{{ displayValue }}</td>
+            </tr>
+          {{/each}}
         </tbody>
-      </table>
-      <table style="width:60%" class="table table-striped table-condensed table-report table-bordered table-responsive table-hover"></table>
-        <tr>
-          <td colspan="2"> {{ filterClient }} </td>
-        </tr>
       </table>
     </div>
   </div>

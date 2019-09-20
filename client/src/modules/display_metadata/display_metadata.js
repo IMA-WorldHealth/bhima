@@ -23,14 +23,20 @@ function DisplayMetadataController($state, DisplayMetadata, DataCollectorManagem
   vm.search = search;
   vm.collector = {};
   vm.changes = {};
-  vm.onRemove = onRemove;
   vm.displayData = displayData;
   vm.patient = {};
   vm.options = {};
+  vm.onRemoveFilter = onRemoveFilter;
+
+  vm.filterElements = {
+    defaultFilters : [],
+    customFilters : [],
+  };
+
+  vm.filterElements.defaultFilters = [];
 
   vm.downloadPDF = function downloadPDF() {
     vm.options.renderer = 'pdf';
-
     return DisplayMetadata.download(vm.options);
   };
 
@@ -103,6 +109,17 @@ function DisplayMetadataController($state, DisplayMetadata, DataCollectorManagem
       });
   }
 
+  // remove a filter with from the filter object, save the filters and reload
+  function onRemoveFilter(key) {
+
+    vm.changes = DisplayMetadata.removeFilters(key, vm.changes);
+    vm.filterElements.defaultFilters = [];
+    vm.filterElements.customFilters = [];
+
+    cache.changes = vm.changes;
+    loadGrid();
+  }
+
   function handleError(error) {
     vm.hasError = true;
     Notify.handleError(error);
@@ -135,16 +152,18 @@ function DisplayMetadataController($state, DisplayMetadata, DataCollectorManagem
 
       SurveyForm.read(null, { data_collector_management_id : vm.collectorId })
         .then((survey) => {
-          vm.filterElements = DisplayMetadata.displayFilters(survey, vm.changes);
+          vm.filterElements.customFilters = DisplayMetadata.displayFilters(survey, vm.changes);
 
           vm.options = {
             changes : vm.changes,
             data_collector_management_id : vm.collectorId,
-            filterClient : vm.filterElements,
+            filterClient : vm.filterElements.customFilters,
           };
-
-          return DisplayMetadata.read(null, vm.params);
         })
+        .catch(handleError)
+        .finally(toggleLoadingIndicator);
+
+      DisplayMetadata.read(null, vm.params)
         .then((data) => {
           data.columns.forEach(item => {
             if (item.field === 'dateSurvey') {
@@ -155,13 +174,27 @@ function DisplayMetadataController($state, DisplayMetadata, DataCollectorManagem
 
           vm.gridOptions.columnDefs = data.columns;
           vm.gridOptions.data = data.surveyData;
-
-          return DataCollectorManagement.read(vm.collectorId);
         })
+        .catch(handleError)
+        .finally(toggleLoadingIndicator);
+
+      DataCollectorManagement.read(vm.collectorId)
         .then((collector) => {
           cache.collector = collector;
           cache.changes = vm.changes;
           vm.collector = collector;
+
+          vm.filterElements.defaultFilters.push(
+            {
+              _key : 'form_name',
+              _label : 'FORM.LABELS.FORM',
+              _displayValue : vm.collector.label,
+              _isCacheable : true,
+              _isDefault : true,
+              displayValue : vm.collector.label,
+              comparitorLabel : ':',
+            }
+          );
         })
         .catch(handleError)
         .finally(toggleLoadingIndicator);
@@ -185,23 +218,40 @@ function DisplayMetadataController($state, DisplayMetadata, DataCollectorManagem
               item.aggregationHideLabel = true;
             }
           });
-
           vm.gridOptions.columnDefs = data.columns;
           vm.gridOptions.data = data.surveyData;
+        })
+        .catch(handleError)
+        .finally(toggleLoadingIndicator);
 
-          return Patients.read($state.params.patient);
-        })
-        .then((patient) => {
-          vm.patient = patient;
-          return DataCollectorManagement.read($state.params.id);
-        })
+      DataCollectorManagement.read($state.params.id)
         .then((collector) => {
           vm.collector = collector;
-          return SurveyForm.read(null, { data_collector_management_id : vm.collectorId });
+          vm.filterElements.defaultFilters.push(
+            {
+              _key : 'form_name',
+              _label : 'FORM.LABELS.FORM',
+              _displayValue : vm.collector.label,
+              _isCacheable : true,
+              _isDefault : true,
+              displayValue : vm.collector.label,
+              comparitorLabel : ':',
+            }
+          );
         })
-        .then((survey) => {
-          vm.filterElements = DisplayMetadata.displayFilters(survey, vm.changes);
+        .catch(handleError)
+        .finally(toggleLoadingIndicator);
 
+      Patients.read($state.params.patient)
+        .then((patient) => {
+          vm.patient = patient;
+        })
+        .catch(handleError)
+        .finally(toggleLoadingIndicator);
+
+      SurveyForm.read(null, { data_collector_management_id : vm.collectorId })
+        .then((survey) => {
+          vm.filterElements.customFilters = DisplayMetadata.displayFilters(survey, vm.changes);
           vm.options = {
             changes : vm.changes,
             data_collector_management_id : vm.collectorId,
@@ -209,11 +259,11 @@ function DisplayMetadataController($state, DisplayMetadata, DataCollectorManagem
             patient_uuid : vm.patient.uuid,
             patient : vm.patient,
           };
-
         })
         .catch(handleError)
         .finally(toggleLoadingIndicator);
     }
+
   }
 
   function toggleLoadingIndicator() {
@@ -222,19 +272,22 @@ function DisplayMetadataController($state, DisplayMetadata, DataCollectorManagem
 
   // search Metadata of survey
   function search() {
-    DisplayMetadata.openSearchModal()
+    // Prevent the changement of form when hasPatientData is true
+    const params = {
+      data_collector_management_id : vm.collectorId,
+      hasPatientData : vm.hasPatientData,
+    };
+
+    DisplayMetadata.openSearchModal(params)
       .then((changes) => {
-        vm.collectorId = changes.collectorId;
-        vm.changes = changes;
+        if (changes) {
+          vm.collectorId = changes.collectorId;
+          vm.changes = changes;
+        }
+
+        vm.filterElements.defaultFilters = [];
         loadGrid();
       });
-  }
-
-  // On Remove all filter;
-  function onRemove() {
-    vm.changes = {};
-    cache.changes = {};
-    loadGrid();
   }
 
   function displayData(dataUuid) {

@@ -7,6 +7,7 @@ angular.module('bhima.components')
       form : '<?',
       onSelectCallback : '&',
       required         : '<?',
+      disabled         : '<?',
       label            : '@?',
     },
   });
@@ -36,6 +37,15 @@ function SurveyFormSelectController(DataCollectorManagement, Notify) {
       })
       .catch(Notify.handleError);
   };
+
+  $ctrl.$onChanges = (changes) => {
+    if (changes.form.currentValue) {
+      $ctrl.form = parseInt(changes.form.currentValue, 10);
+    }
+  };
+
+  // fires the onSelectCallback bound to the component
+  $ctrl.handleChange = form => $ctrl.onChange({ form });
 
   // fires the onSelectCallback bound to the component boundary
   $ctrl.onSelect = surveyForm => {

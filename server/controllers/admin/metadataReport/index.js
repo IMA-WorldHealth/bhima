@@ -100,7 +100,6 @@ function metadataCard(req, res, next) {
 
 function reportMetadata(req, res, next) {
   const params = req.query;
-
   const filterQuery = [];
 
   if (!params.downloadMode) {
@@ -151,9 +150,17 @@ function reportMetadata(req, res, next) {
     }
   }
 
+  if (params.filterClient) {
+    params.filterClient.forEach((item, index) => {
+      params.filterClient[index] = JSON.parse(item);
+    });
+  }
+
+
   const data = {};
   data.filterQuery = filterQuery;
   data.filterClient = params.filterClient;
+
 
   if (typeof params.patient === 'string') {
     data.patient = JSON.parse(params.patient);

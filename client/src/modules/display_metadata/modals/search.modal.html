@@ -13,6 +13,7 @@
           id="form"
           form="$ctrl.searchQueries.data_collector_id"
           name="dataCollectorId"
+          disabled="$ctrl.disabled"
           on-select-callback="$ctrl.onSelectSurveyForm(surveyForm)"
           required="true">
         </bh-survey-form-select>
@@ -44,7 +45,7 @@
         </div>
 
         <div class="row">
-          <div ng-if="formItem.typeForm === 'number'" class="form-group">
+          <div ng-if="formItem.typeForm === 'number' || formItem.typeForm === 'calculation'" class="form-group">
             <label class="control-label"> {{ formItem.label }} </label>
             <div>
               <span>

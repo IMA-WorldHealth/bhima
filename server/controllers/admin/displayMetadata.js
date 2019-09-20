@@ -17,26 +17,28 @@ function lookupData(params) {
   let paramDateFrom = {};
   let paramDateTo = {};
   let paramsMultipleChoice = {};
-
-  if (params.changes.searchDateFrom) {
-    paramDateFrom = params.changes.searchDateFrom;
-  }
-
-  if (params.changes.searchDateTo) {
-    paramDateTo = params.changes.searchDateTo;
-  }
-
-  if (params.changes.multipleChoice) {
-    paramsMultipleChoice = params.changes.multipleChoice;
-  }
-
   const findParameters = {};
-  if (params.changes.loggedChanges) {
-    params.changes.loggedChanges.forEach(item => {
-      if (item.key !== 'data_collector_id') {
-        findParameters[item.key] = item.value;
-      }
-    });
+
+  if (params.changes) {
+    if (params.changes.searchDateFrom) {
+      paramDateFrom = params.changes.searchDateFrom;
+    }
+
+    if (params.changes.searchDateTo) {
+      paramDateTo = params.changes.searchDateTo;
+    }
+
+    if (params.changes.multipleChoice) {
+      paramsMultipleChoice = params.changes.multipleChoice;
+    }
+
+    if (params.changes.loggedChanges) {
+      params.changes.loggedChanges.forEach(item => {
+        if (item.key !== 'data_collector_id') {
+          findParameters[item.key] = item.value;
+        }
+      });
+    }
   }
 
   const filters1 = new FilterParser(params, { tableAlias : 's' });
@@ -75,14 +77,16 @@ function lookupData(params) {
 
           surveyFormElement.forEach(element => {
             if (key === element.surveyName) {
-              // if (findParameters[key]) {
-              //   // This is a hack to avoid apostrophes in the search parameter
-              //   findParameters[key] = findParameters[key].replace(`'`, `''`);
-              // }
-
-              if (element.type === '1') {
+              if (element.type === '1' || element.type === '9') {
                 filterCondition += ` ${element.surveyName} = '${findParameters[key]}' ${andCondition}`;
-              } else if (element.type === '2' || element.type === '7' || element.type === '9') {
+              } else if (
+                element.type === '2' || element.type === '7' || element.type === '10') {
+                const checkIfApostrophes = findParameters[key].indexOf('\'');
+                if (checkIfApostrophes !== (-1)) {
+                  // This is a hack to avoid apostrophes in the search parameter
+                  findParameters[key] = findParameters[key].replace(`'`, `''`);
+                }
+
                 filterCondition += ` ${element.surveyName} LIKE '%${findParameters[key]}%' ${andCondition}`;
               } else if (element.type === '3' || element.type === '4') {
                 filterCondition += ` ${element.surveyName} = '${findParameters[key]}' ${andCondition}`;

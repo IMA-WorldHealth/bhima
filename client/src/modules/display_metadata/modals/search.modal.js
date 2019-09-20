@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
   .controller('DisplayMetadataSearchModalController', DisplayMetadataSearchModalController);
 
 DisplayMetadataSearchModalController.$inject = [
-  '$uibModalInstance', 'Store', 'SurveyFormService', 'NotifyService', 'AppCache', 'ChoicesListManagementService',
+  '$uibModalInstance', 'Store', 'SurveyFormService', 'NotifyService', 'AppCache', 'ChoicesListManagementService', 'filters',
 ];
 
 /**
@@ -14,9 +14,8 @@ DisplayMetadataSearchModalController.$inject = [
  * preset by passing in a filters object using filtersProvider().
  */
 function DisplayMetadataSearchModalController(
-  ModalInstance, Store, SurveyForm, Notify, AppCache, ChoicesList
-  // ModalInstance, filters, Notify, Store, util,
-  // MultiplePayroll, Currencies, Payroll, $translate, Session
+  ModalInstance, Store, SurveyForm, Notify, AppCache, ChoicesList, filters
+
 ) {
   const vm = this;
   vm.onSelectSurveyForm = onSelectSurveyForm;
@@ -27,10 +26,17 @@ function DisplayMetadataSearchModalController(
   vm.multipleChoice = {};
   vm.onSelectList = onSelectList;
   vm.onSelectMultiple = onSelectMultiple;
+  vm.disabled = false;
 
-  const cache = new AppCache('display_metadata');
+  const cache = new AppCache('display_metadata_search');
 
-  if (Object.keys(cache).length) {
+  if (filters) {
+    if (filters.hasPatientData) {
+      vm.disabled = true;
+    }
+
+    onSelectSurveyForm({ id : filters.data_collector_management_id });
+  } else if (Object.keys(cache).length) {
     if (cache.collector.id) {
       onSelectSurveyForm(cache.collector);
     }
@@ -81,7 +87,6 @@ function DisplayMetadataSearchModalController(
         changes.post({ key : _key, value : _value, displayValue : _displayValue });
       }
     });
-
 
     const multipleChoiceLength = Object.keys(vm.multipleChoice).length;
     if (multipleChoiceLength) {

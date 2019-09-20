@@ -51,7 +51,7 @@
                 </div>
         
                 <div class="row">
-                  <div ng-if="formItem.typeForm === 'number'" class="form-group">
+                  <div ng-if="formItem.typeForm === 'number' || formItem.typeForm === 'calculation'" class="form-group">
                     <bh-clear on-clear="ReportConfigCtrl.onClear(formItem.name)"></bh-clear>
                     <label class="control-label"> {{ formItem.label }} </label>
                     <div>

@@ -75,27 +75,18 @@
 
 <!-- main content -->
 <div class="flex-util" style="overflow: auto" ng-if="DisplayMetadataCtrl.collector">
-  <span data="filter">
-    <span class="label" style="text-shadow: {{ DisplayMetadataCtrl.collector.color }} 5px 3px 8px; font-size: 15px; color: black">
-      {{ DisplayMetadataCtrl.collector.label }}
+  <div class="flex-util bh-filter-bar">
+    <span ng-if="DisplayMetadataCtrl.hasPatientData" data="filter">
+      <span class="label" style="font-size: 15px; color: black; text-shadow: gray 4px 1px 10px;">
+        <span> <i translate>FORM.LABELS.PATIENT_NAME </i> :{{ DisplayMetadataCtrl.patient.display_name }}/{{ DisplayMetadataCtrl.patient.reference}}</span>
+      </span>
     </span>
-  </span>
 
-  <span ng-if="DisplayMetadataCtrl.filterElements" data="filter">
-    <span class="label label-primary label-emphasize">
-      <i class="fa fa-filter"></i>
-      {{ DisplayMetadataCtrl.filterElements }}
-      <a href ng-click="DisplayMetadataCtrl.onRemove()" class="filter-text-link">
-        <i class="fa fa-close"></i>
-      </a>
-    </span>
-  </span>
-
-  <span ng-if="DisplayMetadataCtrl.hasPatientData" data="filter">
-    <span class="label"  style="font-size: 15px; color: black; text-shadow: gray 4px 1px 10px;">
-      <span>:{{ DisplayMetadataCtrl.patient.display_name }}/{{ DisplayMetadataCtrl.patient.reference}}</span>
-    </span>
-  </span>
+    <bh-filters
+      filters="DisplayMetadataCtrl.filterElements"
+      on-remove-filter="DisplayMetadataCtrl.onRemoveFilter(filter)">
+    </bh-filters>
+  </div>
 </div>
 
 <div class="flex-content" ng-if="DisplayMetadataCtrl.collector">
