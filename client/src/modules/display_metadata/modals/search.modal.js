@@ -2,7 +2,8 @@ angular.module('bhima.controllers')
   .controller('DisplayMetadataSearchModalController', DisplayMetadataSearchModalController);
 
 DisplayMetadataSearchModalController.$inject = [
-  '$uibModalInstance', 'Store', 'SurveyFormService', 'NotifyService', 'AppCache', 'ChoicesListManagementService', 'filters',
+  '$uibModalInstance', 'Store', 'SurveyFormService', 'NotifyService', 'AppCache',
+  'ChoicesListManagementService', 'filters',
 ];
 
 /**
