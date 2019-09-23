@@ -1,20 +1,19 @@
 const db = require('../../../lib/db');
 
 function getConfigurationData(payrollConfigurationId, params) {
-  const transaction = db.transaction();
 
-  // @lomame
   /*
-  * Before we had to prevent the edition of all the headings which were taxes,
-  * but it can be made that there are taxes which is not calculated expressed as a percentage,
-  * to allow the edition of this kind of tax, it would be enough to exclude the only
-  * tax which is expressed as a percentage neither and which
-  * is not nor éditable reason why we had excluded the IPR
-  */
+   * NOTE(@lomamech)
+   * Before we had to prevent the edition of all the headings which were taxes,
+   * but it can be made that there are taxes which is not calculated expressed as a percentage,
+   * to allow the edition of this kind of tax, it would be enough to exclude the only
+   * tax which is expressed as a percentage neither and which
+   * is not nor éditable reason why we had excluded the IPR
+   */
   const sql = `
-    SELECT config_rubric_item.id, config_rubric_item.config_rubric_id, config_rubric_item.rubric_payroll_id, 
+    SELECT config_rubric_item.id, config_rubric_item.config_rubric_id, config_rubric_item.rubric_payroll_id,
     payroll_configuration.label AS PayrollConfig,
-    rubric_payroll.* 
+    rubric_payroll.*
     FROM config_rubric_item
     JOIN rubric_payroll ON rubric_payroll.id = config_rubric_item.rubric_payroll_id
     JOIN payroll_configuration ON payroll_configuration.config_rubric_id = config_rubric_item.config_rubric_id
@@ -32,7 +31,7 @@ function getConfigurationData(payrollConfigurationId, params) {
   const getEmployeeHoliday = `
     SELECT holiday.id, holiday.label, holiday.dateFrom, holiday.dateTo, holiday.percentage,
      BUID(holiday.employee_uuid) AS employee_uuid
-    FROM holiday 
+    FROM holiday
     WHERE ((DATE(holiday.dateFrom) >= DATE(?) AND DATE(holiday.dateTo) <= DATE(?)) OR
     (DATE(holiday.dateFrom) >= DATE(?) AND DATE(holiday.dateFrom) <= DATE(?)) OR
     (DATE(holiday.dateTo) >= DATE(?) AND DATE(holiday.dateTo) <= DATE(?))) AND holiday.employee_uuid = ?
@@ -53,21 +52,20 @@ function getConfigurationData(payrollConfigurationId, params) {
     WHERE payroll_configuration.id =  ?
   `;
 
-  transaction
-    .addQuery(sql, [payrollConfigurationId])
-    .addQuery(getPeriodOffdays, [params.dateFrom, params.dateTo])
-    .addQuery(getEmployeeHoliday, [
+  return Promise.all([
+    db.exec(sql, [payrollConfigurationId]),
+    db.exec(getPeriodOffdays, [params.dateFrom, params.dateTo]),
+    db.exec(getEmployeeHoliday, [
       params.dateFrom,
       params.dateTo,
       params.dateFrom,
       params.dateTo,
       params.dateFrom,
       params.dateTo,
-      db.bid(params.employeeUuid)])
-    .addQuery(getWeekEndConfig, [payrollConfigurationId])
-    .addQuery(getIprConfig, [payrollConfigurationId]);
-
-  return transaction.execute();
+      db.bid(params.employeeUuid)]),
+    db.exec(getWeekEndConfig, [payrollConfigurationId]),
+    db.exec(getIprConfig, [payrollConfigurationId]),
+  ]);
 }
 
 exports.getConfigurationData = getConfigurationData;

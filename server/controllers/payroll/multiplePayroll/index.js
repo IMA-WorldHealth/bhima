@@ -20,7 +20,7 @@ const makeCommitment = require('./makeCommitment');
 
 /**
  * @method search
- * @description search Payroll Paiement
+ * @description search Payroll payments
  */
 function search(req, res, next) {
   find.find(req.query)
@@ -38,11 +38,9 @@ function configuration(req, res, next) {
   getConfig.getConfigurationData(payrollConfigurationId, params)
     .then((rows) => {
       const dataManaged = manageConfig.manageConfigurationData(rows, params);
-
       res.status(200).json(dataManaged);
     })
-    .catch(next)
-    .done();
+    .catch(next);
 }
 
 // search Payroll Paiement
