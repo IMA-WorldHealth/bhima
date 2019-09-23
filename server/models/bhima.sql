@@ -189,8 +189,8 @@ INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
   (35, 'debtorSummary', 'REPORT.DEBTOR_SUMMARY.TITLE'),
   (36, 'clientDebts', 'REPORT.CLIENT_SUMMARY.TITLE'),
   (37, 'clientSupport', 'REPORT.CLIENT_SUPPORT.TITLE'),
-  (38, 'analysisAuxiliaryCash', 'REPORT.ANALYSIS_AUX_CASHBOXES.TITLE');
-  (39, 'realizedProfit', 'REPORT.REALIZED_PROFIT.TITLE');
+  (38, 'analysisAuxiliaryCash', 'REPORT.ANALYSIS_AUX_CASHBOXES.TITLE'),
+  (39, 'realizedProfit', 'REPORT.REALIZED.TITLE');
 
 -- Supported Languages
 INSERT INTO `language` VALUES

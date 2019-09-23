@@ -1,8 +1,8 @@
-{{> head title="REPORT.CLIENT_SUPPORT.TITLE"}}
+{{> head title="REPORT.REALIZED_PROFIT.TITLE"}}
 
 <body>
 
-<div class="container">
+<div class="container-fluid">
   {{> header}}
 
   <!-- body  -->
@@ -11,87 +11,101 @@
 
       <!-- page title  -->
       <h3 class="text-center text-uppercase">
-        <strong>{{translate 'REPORT.CLIENT_SUPPORT.TITLE'}}</strong> <br>
+        <strong>{{translate 'REPORT.REALIZED_PROFIT.TITLE'}}</strong> <br>
         <small>{{date dateFrom}} - {{date dateTo}}</small>
       </h3>
 
-      {{!-- employee support --}}
       <table class="table table-striped table-condensed table-report table-bordered">
-        {{#if showEmployeeSupport}}
-          <thead>
-            <tr>
-              <th colspan="2"><h4><b>{{translate 'REPORT.CLIENT_SUPPORT.EMPLOYEES_SUPPORT'}}</b></h4></th>
-              <th class="text-right"><h4>{{debcred employeeSupportTotal.balance metadata.enterprise.currency_id}}</h4></th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {{#each employeesCollection as | emp |}}
-              <tr>
-                <th><span class="text-capitalize">{{ emp.key }}</span></th>
-                <th>{{ emp.number }} <span class="text-lowercase">{{translate 'REPORT.CLIENT_SUPPORT.PATIENTS'}}</span></th>
-                <th class="text-right">{{debcred emp.total ../metadata.enterprise.currency_id}}</th>
-              </tr>
-              {{#if ../showDetails}}
-              {{#each emp.data as | group |}}
-                <tr>
-                  <td colspan="2" class="text-capitalize" style="padding-left: 3em;"><u>{{ group.key }}</u></td>
-                  <td class="text-right">{{debcred group.total ../../metadata.enterprise.currency_id}}</td>
-                </tr>
-                {{#each group.data as | pat |}}
-                  <tr>
-                    <td colspan="2" class="text-capitalize" style="padding-left: 6em;">{{ pat.display_name }}</td>
-                    <td class="text-right">{{debcred pat.balance ../../../metadata.enterprise.currency_id}}</td>
-                  </tr>
-                {{/each}}
-              {{/each}}
-              {{/if}} <!-- show details -->
-            {{/each}}
-            <tr><td colspan="3">&nbsp;</td></tr>
-          </tbody>
-
-        {{/if}} <!-- showEmployeeSupport -->  
+        <tr>
+          <th>{{translate 'REPORT.REALIZED_PROFIT.INVOICED'}}</th>
+          <th>{{translate 'REPORT.REALIZED_PROFIT.PAID'}}</th>
+          <th>{{translate 'REPORT.REALIZED_PROFIT.REMAINING'}}</th>
+        </tr>
+        <tr>
+          <td>{{debcred totals.invoiced metadata.enterprise.currency_id}}</td>
+          <td>{{debcred totals.paid metadata.enterprise.currency_id}}</td>
+          <td>{{debcred totals.remaining metadata.enterprise.currency_id}}</td>
+        </tr>
       </table>
 
       <br>
 
-      {{!-- other support --}}
-      <table class="table table-striped table-condensed table-report table-bordered">
-        {{#if showOtherSupport}}
-          <thead>
+      {{!-- remaing cash --}}
+      {{#if showRemainDetails}}
+        <h3>{{translate 'REPORT.REALIZED_PROFIT.REMAINING'}}</h3>
+        <table class="table table-striped table-condensed table-report table-bordered">
+          {{#each remainingTable as | row |}}
             <tr>
-              <th colspan="2"><h4><b>{{translate 'REPORT.CLIENT_SUPPORT.OTHERS_SUPPORT'}}</b></h4></th>
-              <th class="text-right"><h4>{{debcred otherSupportTotal.balance metadata.enterprise.currency_id}}</h4></th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {{#each othersCollection as | emp |}}
-              <tr>
-                <th class="text-capitalize">{{ emp.key }}</th>
-                <th>{{ emp.number }} <span class="text-lowercase">{{translate 'REPORT.CLIENT_SUPPORT.PATIENTS'}}</span></th>
-                <th class="text-right">{{debcred emp.total ../metadata.enterprise.currency_id}}</th>
-              </tr>
-              {{#if ../showDetails}}
-              {{#each emp.data as | group |}}
-                <tr>
-                  <td colspan="2" class="text-capitalize" style="padding-left: 3em;"><u>{{ group.key }}</u></td>
-                  <td class="text-right">{{debcred group.total ../../metadata.enterprise.currency_id}}</td>
-                </tr>
-                {{#each group.data as | pat |}}
-                  <tr>
-                    <td colspan="2" class="text-capitalize" style="padding-left: 6em;">{{ pat.display_name }}</td>
-                    <td class="text-right">{{debcred pat.balance ../../../metadata.enterprise.currency_id}}</td>
-                  </tr>
-                {{/each}}
+              {{#each row.value as | cols index |}}
+                {{#equal row.type 'colHeader'}}
+                  <th class="rotate-45"><div><span style="padding-left:2px;">{{ cols }}</span></div></th>
+                {{else}}
+                  <td>
+                    {{#equal index 0}}
+                      {{cols}}
+                    {{else}}
+                      {{debcred cols ../../metadata.enterprise.currency_id}}
+                    {{/equal}}
+                  </td>
+                {{/equal}}
               {{/each}}
-              {{/if}} <!-- show details -->
-            {{/each}}
-            <tr><td colspan="3">&nbsp;</td></tr>
-          </tbody>
-        {{/if}} <!-- showEmployeeSupport -->
-      </table>
+            </tr>
+          {{/each}}
+        </table>
+      {{/if}}
 
+      <br>
+
+      {{!-- invoiced --}}
+      {{#if showInvoicedDetails}}
+        <h3>{{translate 'REPORT.REALIZED_PROFIT.INVOICED'}}</h3>
+        <table class="table table-striped table-condensed table-report table-bordered">
+          {{#each invoicedTable as | row |}}
+            <tr>
+              {{#each row.value as | cols index |}}
+                {{#equal row.type 'colHeader'}}
+                  <th class="rotate-45"><div><span style="padding-left:2px;">{{ cols }}</span></div></th>
+                {{else}}
+                  <td>
+                    {{#equal index 0}}
+                      {{cols}}
+                    {{else}}
+                      {{debcred cols ../../metadata.enterprise.currency_id}}
+                    {{/equal}}
+                  </td>
+                {{/equal}}
+              {{/each}}
+            </tr>
+          {{/each}}
+        </table>
+      {{/if}}
+
+      <br>
+
+      {{!-- paid --}}
+      {{#if showPaidDetails}}
+        <h3>{{translate 'REPORT.REALIZED_PROFIT.PAID'}}</h3>
+        <table class="table table-striped table-condensed table-report table-bordered">
+          {{#each paidTable as | row |}}
+            <tr>
+              {{#each row.value as | cols index |}}
+                {{#equal row.type 'colHeader'}}
+                  <th class="rotate-45"><div><span style="padding-left:2px;">{{ cols }}</span></div></th>
+                {{else}}
+                  <td>
+                    {{#equal index 0}}
+                      {{cols}}
+                    {{else}}
+                      {{debcred cols ../../metadata.enterprise.currency_id}}
+                    {{/equal}}
+                  </td>
+                {{/equal}}
+              {{/each}}
+            </tr>
+          {{/each}}
+        </table>
+      {{/if}}
+      
     </div>
   </div>
 

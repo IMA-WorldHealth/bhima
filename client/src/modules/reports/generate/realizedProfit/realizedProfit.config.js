@@ -19,20 +19,16 @@ function RealizedProfitController($sce, Notify, SavedReports, AppCache, reportDa
     vm.previewResult = null;
   };
 
-  vm.onSelectFiscal = value => {
-    vm.reportDetails.fiscalId = value.id;
+  vm.onChangeShowRemainDetails = value => {
+    vm.reportDetails.shouldShowRemainDetails = value;
   };
 
-  vm.onSelectPeriodFrom = value => {
-    vm.reportDetails.dateFrom = value;
+  vm.onChangeShowPaidDetails = value => {
+    vm.reportDetails.shouldShowPaidDetails = value;
   };
 
-  vm.onSelectPeriodTo = value => {
-    vm.reportDetails.dateTo = value;
-  };
-
-  vm.onChangeShowDetails = value => {
-    vm.reportDetails.shouldShowDetails = value;
+  vm.onChangeShowInvoicedDetails = value => {
+    vm.reportDetails.shouldShowInvoicedDetails = value;
   };
 
   vm.preview = function preview(form) {

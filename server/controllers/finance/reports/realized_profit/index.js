@@ -3,6 +3,7 @@
 */
 
 const _ = require('lodash');
+const QuickPivot = require('quick-pivot');
 
 const ReportManager = require('../../../../lib/ReportManager');
 const db = require('../../../../lib/db');
@@ -27,113 +28,148 @@ async function report(req, res, next) {
   try {
     const qs = _.extend(req.query, DEFAULT_OPTIONS);
     const { dateFrom, dateTo } = req.query;
-    const showDetails = parseInt(req.query.shouldShowDetails, 10);
+    const showRemainDetails = parseInt(req.query.shouldShowRemainDetails, 10);
+    const showPaidDetails = parseInt(req.query.shouldShowPaidDetails, 10);
+    const showInvoicedDetails = parseInt(req.query.shouldShowInvoicedDetails, 10);
     const metadata = _.clone(req.session);
 
     const rpt = new ReportManager(TEMPLATE, metadata, qs);
 
-    const SUPPORT_TRANSACTION_TYPE = 4;
+    const INVOICE_TRANSACTION_TYPE = 11;
+    const CAUTION_TRANSACTION_TYPE = 19;
+    const CONVENTION_TRANSACTION_TYPE = 3;
 
-    const employeeSupportQuery = `
-      SELECT 
-        em.text AS reference, a.label, dg.name, p.display_name, 
-        SUM(i.credit_equiv - i.debit_equiv) AS balance, 
-        CONCAT(z.display_name, ' (', z.reference, ')') AS employee_name,
-        z.balance AS employee_support, z.label AS employee_account
-      FROM general_ledger i 
-      JOIN account a ON a.id = i.account_id
-      JOIN debtor d ON d.uuid = i.entity_uuid
-      JOIN debtor_group dg ON dg.uuid = d.group_uuid
-      JOIN patient p ON p.debtor_uuid = d.uuid
-      JOIN entity_map em ON em.uuid = p.uuid
-      JOIN (
-        SELECT
-          gl.record_uuid, a.label, p.display_name, 
-          (gl.debit_equiv - gl.credit_equiv) AS balance, em.text AS reference
-        FROM general_ledger gl 
-        JOIN account a ON a.id = gl.account_id
-        JOIN creditor c ON c.uuid = gl.entity_uuid
-        JOIN employee e ON e.creditor_uuid = c.uuid
-        JOIN patient p ON p.uuid = e.patient_uuid
-        JOIN entity_map em ON em.uuid = e.creditor_uuid
-        WHERE (gl.trans_date BETWEEN ? AND ?) AND gl.transaction_type_id = ${SUPPORT_TRANSACTION_TYPE}
-      ) z ON z.record_uuid = i.record_uuid  
+    const standardPaymentQuery = `
+    (SELECT
+      SUM(gl.credit_equiv - gl.debit_equiv) AS paid, z.invoiced, dg.name debtorGroupName, s.name serviceName,
+      iv.uuid AS invoice_uuid, s.id AS service_id, dg.uuid AS debtor_group_uuid
+    FROM general_ledger gl 
+    JOIN cash c ON c.uuid = gl.record_uuid
+    JOIN invoice iv ON iv.uuid = gl.reference_uuid
+    JOIN service s ON s.id = iv.service_id
+    JOIN (
+      SELECT record_uuid, SUM(debit_equiv) AS invoiced FROM general_ledger
+      WHERE transaction_type_id = ${INVOICE_TRANSACTION_TYPE} AND (DATE(trans_date) >= ? AND DATE(trans_date) <= ?)
+      GROUP BY record_uuid
+    )z ON z.record_uuid = iv.uuid
+    JOIN debtor d ON d.uuid = gl.entity_uuid
+    JOIN debtor_group dg ON dg.uuid = d.group_uuid
+    WHERE iv.reversed = 0 
+    GROUP BY iv.uuid, iv.service_id, dg.uuid)
     `;
 
-    const otherSupportQuery = `
-      SELECT 
-        a.label, dg.name, p.display_name,
-        SUM(i.credit_equiv - i.debit_equiv) AS balance, z.label AS recipient_account
-      FROM general_ledger i 
-      JOIN account a ON a.id = i.account_id
-      JOIN debtor d ON d.uuid = i.entity_uuid
+    const cautionPaymentQuery = `
+    (SELECT
+      SUM(gl.debit_equiv) AS paid, z.invoiced, z.debtorGroupName, z.serviceName,
+      z.invoice_uuid, z.service_id, z.debtor_group_uuid
+    FROM general_ledger gl 
+    JOIN cash c ON c.uuid = gl.reference_uuid
+    JOIN (
+      SELECT
+        gl2.record_uuid, SUM(gl2.credit_equiv - gl2.debit_equiv) invoiced,
+        iv.uuid AS invoice_uuid, s.id AS service_id, s.name AS serviceName,
+        dg.uuid AS debtor_group_uuid, dg.name AS debtorGroupName 
+      FROM general_ledger gl2
+      JOIN invoice iv ON iv.uuid = gl2.reference_uuid
+      JOIN service s ON s.id = iv.service_id
+      JOIN debtor d ON d.uuid = gl2.entity_uuid
       JOIN debtor_group dg ON dg.uuid = d.group_uuid
-      JOIN patient p ON p.debtor_uuid = d.uuid
-      JOIN (
-        SELECT gl.record_uuid, a.label, (gl.debit_equiv - gl.credit_equiv) AS balance, gl.entity_uuid
-        FROM general_ledger gl 
-        JOIN account a ON a.id = gl.account_id
-        WHERE (gl.trans_date BETWEEN ? AND ?) 
-          AND gl.transaction_type_id = ${SUPPORT_TRANSACTION_TYPE} AND gl.entity_uuid IS NULL
-      ) z ON z.record_uuid = i.record_uuid 
+      WHERE transaction_type_id = ${CAUTION_TRANSACTION_TYPE} AND iv.reversed = 0 
+        AND (DATE(gl2.trans_date) >= ? AND DATE(gl2.trans_date) <= ?)
+      GROUP BY gl2.record_uuid
+    )z ON z.record_uuid = gl.record_uuid
+    WHERE gl.transaction_type_id = ${CAUTION_TRANSACTION_TYPE}
+    GROUP BY z.invoice_uuid, z.service_id, z.debtor_group_uuid)
     `;
 
-    const groupByDebtor = ' GROUP BY d.uuid ORDER BY p.display_name; ';
-    const parameters = [dateFrom, dateTo];
+    const conventionPaymentQuery = `
+    (SELECT
+      SUM(gl.debit_equiv) AS paid, z.invoiced, z.debtorGroupName, z.serviceName,
+      z.invoice_uuid, z.service_id, z.debtor_group_uuid
+    FROM general_ledger gl  
+    JOIN (
+      SELECT
+        gl2.record_uuid, SUM(gl2.credit_equiv - gl2.debit_equiv) invoiced,
+        iv.uuid AS invoice_uuid, s.id AS service_id, s.name AS serviceName,
+        dg.uuid AS debtor_group_uuid, dg.name AS debtorGroupName 
+      FROM general_ledger gl2
+      JOIN invoice iv ON iv.uuid = gl2.reference_uuid
+      JOIN service s ON s.id = iv.service_id
+      JOIN debtor d ON d.uuid = gl2.entity_uuid
+      JOIN debtor_group dg ON dg.uuid = d.group_uuid
+      WHERE transaction_type_id = ${CONVENTION_TRANSACTION_TYPE} AND iv.reversed = 0
+        AND (DATE(gl2.trans_date) >= ? AND DATE(gl2.trans_date) <= ?)
+      GROUP BY gl2.record_uuid
+    )z ON z.record_uuid = gl.record_uuid
+    WHERE gl.transaction_type_id = ${CONVENTION_TRANSACTION_TYPE}
+    GROUP BY z.invoice_uuid, z.service_id, z.debtor_group_uuid)
+    `;
 
-    const [
-      employeeSupportTotal,
-      employeeSupport,
-      otherSupportTotal,
-      otherSupport,
-    ] = await Promise.all([
-      db.one(employeeSupportQuery, parameters),
-      db.exec(employeeSupportQuery.concat(groupByDebtor), parameters),
-      db.one(otherSupportQuery, parameters),
-      db.exec(otherSupportQuery.concat(groupByDebtor), parameters),
+    const groupByServiceAndDebtorGroup = `
+      GROUP BY w.service_id, w.debtor_group_uuid ORDER BY w.serviceName, w.debtorGroupName ASC 
+    `;
+
+    const tableQuery = `
+      SELECT
+        SUM(w.paid) paid, SUM(w.invoiced) invoiced, SUM(w.invoiced - w.paid) remaining, 
+        (w.paid / w.invoiced) * 100 remaining_ration, w.debtorGroupName,
+        w.serviceName, w.service_id, w.debtor_group_uuid 
+      FROM (
+        ${standardPaymentQuery}
+        
+        UNION ALL 
+        
+        ${cautionPaymentQuery}
+        
+        UNION ALL 
+        
+        ${conventionPaymentQuery}
+      )w 
+    `;
+
+    const parameters = [
+      dateFrom, dateTo,
+      dateFrom, dateTo,
+      dateFrom, dateTo,
+    ];
+
+    const [dataArray, totals] = await Promise.all([
+      db.exec(tableQuery.concat(groupByServiceAndDebtorGroup), parameters),
+      db.one(tableQuery, parameters),
     ]);
 
-    const employeesCollection = generateTree(employeeSupport, 'employee_name')
-      .map(e => {
-        // organize tree by debtor group name
-        e.data = generateTree(e.data, 'name');
-        return e;
-      });
+    const rowsToPivot = ['debtorGroupName'];
+    const colsToPivot = ['serviceName'];
+    const aggregator = 'sum';
+    const nullTable = { data : {} };
 
-    const othersCollection = generateTree(otherSupport, 'recipient_account')
-      .map(e => {
-        // organize tree by debtor group name
-        e.data = generateTree(e.data, 'name');
-        return e;
-      });
+    const pivotRemaining = showRemainDetails
+      ? new QuickPivot(dataArray, rowsToPivot, colsToPivot, 'remaining', aggregator) : nullTable;
+
+    const pivotPaid = showPaidDetails
+      ? new QuickPivot(dataArray, rowsToPivot, colsToPivot, 'paid', aggregator) : nullTable;
+
+    const pivotInvoiced = showInvoicedDetails
+      ? new QuickPivot(dataArray, rowsToPivot, colsToPivot, 'invoiced', aggregator) : nullTable;
+
+    const remainingTable = pivotRemaining.data.table;
+    const paidTable = pivotPaid.data.table;
+    const invoicedTable = pivotInvoiced.data.table;
 
     const result = await rpt.render({
-      employeeSupportTotal,
-      employeesCollection,
-      otherSupportTotal,
-      othersCollection,
       dateFrom,
       dateTo,
-      showDetails,
+      totals,
+      remainingTable,
+      paidTable,
+      invoicedTable,
+      showRemainDetails,
+      showPaidDetails,
+      showInvoicedDetails,
     });
 
     res.set(result.headers).send(result.report);
   } catch (e) {
     next(e);
   }
-}
-
-function generateTree(array, groupBy) {
-  return _(array)
-    .groupBy(groupBy)
-    .map((value, key) => {
-      return {
-        key,
-        data : value,
-        total : _.sumBy(value, 'balance'),
-        number : value.length,
-      };
-    })
-    .sortBy(['key'], ['asc'])
-    .value();
 }
