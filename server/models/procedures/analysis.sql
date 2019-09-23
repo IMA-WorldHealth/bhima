@@ -69,25 +69,4 @@ BEGIN
   DEALLOCATE PREPARE _sql;
 END$$
 
-DROP PROCEDURE IF EXISTS QueryPivot$$
-CREATE PROCEDURE QueryPivot(
-  IN select_query TEXT,    -- select_query
-  IN base_cols TEXT,       -- column(s) on the left, separated by commas
-  IN pivot_col TEXT,       -- name of column to put across the top
-  IN tally_col TEXT,       -- name of column to SUM up
-  IN where_clause TEXT,    -- empty string or "WHERE ..."
-  IN order_by TEXT -- empty string or "ORDER BY ..."; usually the base_cols
-)
-DETERMINISTIC
-BEGIN
-  SET @tempFromQuery = CONCAT('CREATE TEMPORARY TABLE IF NOT EXISTS temporaryTableSourceForPivot AS (?);');
-  DROP TEMPORARY TABLE IF EXISTS temporaryTableSourceForPivot;
-
-  PREPARE stmt FROM @tempFromQuery;
-  EXECUTE stmt USING select_query;
-  DEALLOCATE PREPARE stmt;
-
-  CALL Pivot(temporaryTableSourceForPivot, base_cols, pivot_col, tally_col, where_clause, order_by);
-END$$
-
 DELIMITER ;

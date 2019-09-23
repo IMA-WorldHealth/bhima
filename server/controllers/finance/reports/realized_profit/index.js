@@ -3,7 +3,7 @@
 */
 
 const _ = require('lodash');
-const QuickPivot = require('quick-pivot');
+const moment = require('moment');
 
 const ReportManager = require('../../../../lib/ReportManager');
 const db = require('../../../../lib/db');
@@ -14,6 +14,7 @@ module.exports.report = report;
 const TEMPLATE = './server/controllers/finance/reports/realized_profit/report.handlebars';
 
 const DEFAULT_OPTIONS = {
+  orientation : 'landscape',
   footerRight : '[page] / [toPage]',
   footerFontSize : '7',
 };
@@ -106,7 +107,7 @@ async function report(req, res, next) {
     `;
 
     const groupByServiceAndDebtorGroup = `
-      GROUP BY w.service_id, w.debtor_group_uuid ORDER BY w.serviceName, w.debtorGroupName ASC 
+      GROUP BY w.service_id, w.debtor_group_uuid 
     `;
 
     const tableQuery = `
@@ -128,41 +129,43 @@ async function report(req, res, next) {
     `;
 
     const parameters = [
-      dateFrom, dateTo,
-      dateFrom, dateTo,
-      dateFrom, dateTo,
+      moment(dateFrom).format('YYYY-MM-DD'), moment(dateTo).format('YYYY-MM-DD'),
+      moment(dateFrom).format('YYYY-MM-DD'), moment(dateTo).format('YYYY-MM-DD'),
+      moment(dateFrom).format('YYYY-MM-DD'), moment(dateTo).format('YYYY-MM-DD'),
     ];
 
-    const [dataArray, totals] = await Promise.all([
-      db.exec(tableQuery.concat(groupByServiceAndDebtorGroup), parameters),
-      db.one(tableQuery, parameters),
-    ]);
+    const transaction = db.transaction();
+    const tempTable = 'pivotSourceTable';
+    const createTempTable = `
+      CREATE TEMPORARY TABLE ${tempTable} AS (${tableQuery.concat(groupByServiceAndDebtorGroup)});
+    `;
 
-    const rowsToPivot = ['debtorGroupName'];
-    const colsToPivot = ['serviceName'];
-    const aggregator = 'sum';
-    const nullTable = { data : {} };
+    transaction.addQuery(`DROP TEMPORARY TABLE IF EXISTS ${tempTable};`);
+    transaction.addQuery(createTempTable, parameters);
+    transaction.addQuery(`CALL Pivot('${tempTable}', 'debtorGroupName', 'serviceName', 'remaining', '', '')`);
+    transaction.addQuery(`CALL Pivot('${tempTable}', 'debtorGroupName', 'serviceName', 'paid', '', '')`);
+    transaction.addQuery(`CALL Pivot('${tempTable}', 'debtorGroupName', 'serviceName', 'invoiced', '', '')`);
+    transaction.addQuery(`${tableQuery}`, parameters);
 
-    const pivotRemaining = showRemainDetails
-      ? new QuickPivot(dataArray, rowsToPivot, colsToPivot, 'remaining', aggregator) : nullTable;
+    const rows = await transaction.execute();
+    const remainingTable = rows[2][0];
+    const remainingMatrix = matrix(remainingTable);
 
-    const pivotPaid = showPaidDetails
-      ? new QuickPivot(dataArray, rowsToPivot, colsToPivot, 'paid', aggregator) : nullTable;
+    const paidTable = rows[3][0];
+    const paidMatrix = matrix(paidTable);
 
-    const pivotInvoiced = showInvoicedDetails
-      ? new QuickPivot(dataArray, rowsToPivot, colsToPivot, 'invoiced', aggregator) : nullTable;
+    const invoicedTable = rows[4][0];
+    const invoicedMatrix = matrix(invoicedTable);
 
-    const remainingTable = pivotRemaining.data.table;
-    const paidTable = pivotPaid.data.table;
-    const invoicedTable = pivotInvoiced.data.table;
+    const [totals] = rows[5];
 
     const result = await rpt.render({
       dateFrom,
       dateTo,
       totals,
-      remainingTable,
-      paidTable,
-      invoicedTable,
+      remainingMatrix,
+      paidMatrix,
+      invoicedMatrix,
       showRemainDetails,
       showPaidDetails,
       showInvoicedDetails,
@@ -172,4 +175,13 @@ async function report(req, res, next) {
   } catch (e) {
     next(e);
   }
+}
+
+function matrix(dataset) {
+  const headers = Object.keys(dataset[dataset.length - 1] || {}).filter(col => col !== 'debtorGroupName');
+  const data = dataset.map(row => {
+    const values = headers.map(key => row[key]);
+    return [row.debtorGroupName, ...values];
+  });
+  return { headers, data };
 }
