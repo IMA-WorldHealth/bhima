@@ -23,8 +23,8 @@
         </tr>
         <tr>
           <td>{{debcred totals.invoiced metadata.enterprise.currency_id}}</td>
-          <td>{{debcred totals.paid metadata.enterprise.currency_id}}</td>
-          <td>{{debcred totals.remaining metadata.enterprise.currency_id}}</td>
+          <td>{{debcred totals.paid metadata.enterprise.currency_id}} ({{percentage totals.paidRatio}})</td>
+          <td>{{debcred totals.remaining metadata.enterprise.currency_id}} ({{percentage totals.remainingRatio}})</td>
         </tr>
       </table>
 

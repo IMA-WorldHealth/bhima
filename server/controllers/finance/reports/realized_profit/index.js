@@ -112,9 +112,8 @@ async function report(req, res, next) {
 
     const tableQuery = `
       SELECT
-        SUM(w.paid) paid, SUM(w.invoiced) invoiced, SUM(w.invoiced - w.paid) remaining, 
-        (w.paid / w.invoiced) * 100 remaining_ration, w.debtorGroupName,
-        w.serviceName, w.service_id, w.debtor_group_uuid 
+        SUM(w.paid) paid, SUM(w.invoiced) invoiced, SUM(w.invoiced - w.paid) remaining,
+        w.debtorGroupName, w.serviceName, w.service_id, w.debtor_group_uuid 
       FROM (
         ${standardPaymentQuery}
         
@@ -158,6 +157,8 @@ async function report(req, res, next) {
     const invoicedMatrix = matrix(invoicedTable);
 
     const [totals] = rows[5];
+    totals.paidRatio = totals.invoiced ? (totals.paid / totals.invoiced) : 0;
+    totals.remainingRatio = totals.invoiced ? (totals.remaining / totals.invoiced) : 0;
 
     const result = await rpt.render({
       dateFrom,
