@@ -21,7 +21,6 @@ const interceptors = require('./interceptors');
 const { Unauthorized } = require('../lib/errors');
 const uploads = require('../lib/uploader');
 
-const days = 1000 * 60 * 60 * 24;
 const publicRoutes = [
   '/auth/login',
   '/languages',
@@ -83,13 +82,7 @@ exports.configure = function configure(app) {
   // options: combined | common | dev | short | tiny
   app.use(morgan('short', { stream }));
 
-  // public static directories include the entire client and the uploads
-  // directory.
-  const params = {
-    maxAge : isProduction ? 7 * days : 0,
-  };
-
-  app.use(express.static('client/', params));
+  app.use(express.static('client/'));
   app.use(`/${uploads.directory}`, express.static(uploads.directory));
 
   // quick way to find out if a value is in an array
