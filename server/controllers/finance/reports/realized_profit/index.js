@@ -1,6 +1,6 @@
 /**
- * @overview ./finance/reports/client_debts/
-*/
+ * @overview ./finance/reports/realized_profit/
+ */
 
 const _ = require('lodash');
 const moment = require('moment');
