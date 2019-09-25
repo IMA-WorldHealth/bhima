@@ -39,4 +39,8 @@ describe('Rubrics Management', () => {
   it('successfully deletes a rubric', async () => {
     await page.remove(updateRubric.label);
   });
+
+  it('successfully import indexes rubrics', async () => {
+    await page.importIndexesRubric();
+  });
 });

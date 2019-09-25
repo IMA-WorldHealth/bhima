@@ -122,7 +122,7 @@ BEGIN
    DECLARE _rubric_id INT;
    DECLARE _stage_payment_uuid BINARY(16);
 
-   SELECT id INTO _rubric_id FROM rubric_payroll WHERE indice_type = _indice_type;
+   SELECT id INTO _rubric_id FROM rubric_payroll WHERE indice_type = _indice_type LIMIT 1;
  	
    IF _rubric_id > 0 THEN 
 	SET _stage_payment_uuid = IFNULL((

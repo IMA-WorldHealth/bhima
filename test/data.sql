@@ -846,6 +846,22 @@ INSERT INTO `rubric_payroll` (`id`, `label`, `abbr`, `is_employee`, `is_percent`
   (11, 'Office Nationale de l\emploie', 'ONEM', 0, 1, 1, 1, 0, 0, 0, 320, 355, 0, 0, 0.2),
   (12, 'Acompte sur salaires', 'ac_sal', 1, 0, 1, 0, 0, 1, 0, 340, 179, 0, 1, NULL);
 
+INSERT INTO `rubric_payroll` (`id`, `label`, `abbr`, `is_employee`, `is_percent`, `is_discount`, `is_tax`, `is_social_care`,
+ `is_defined_employee`, `is_membership_fee`, `debtor_account_id`, `expense_account_id`, `is_ipr`, `is_associated_employee`, 
+ `is_seniority_bonus`, `is_family_allowances`, `is_monetary_value`, `position`, `is_indice`, `indice_type`, `value`)
+
+VALUES (13, 'Jours_prestes', 'Jr_preste', 0, 0, 0, 0, 0, 1, 0, NULL, NULL, 0, 0, 0, 0, 0, 7, 1, 'is_day_worked', NULL),
+(14, 'Jours_supplementaires', 'jr_Suppl', 0, 0, 0, 0, 0, 1, 0, NULL, NULL, 0, 0, 0, 0, 0, 8, 1, 'is_extra_day', NULL),
+(15, 'BASE_INDEX', 'Indice-base', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 1, 1, 'is_base_index', NULL),
+(16, 'DAY_INDEX', 'Indice-jour', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 2, 1, 'is_day_index', NULL),
+(17, 'REAGISTERED_INDEX', 'Indice-reag', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 3, 1, 'is_reagistered_index', NULL),
+(18, 'Responsability_', 'Responsability_', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 4, 1, 'is_responsability', NULL),
+(19, 'Autres_profit', 'autr-profit', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 5, 1, 'is_other_profits', NULL),
+(20, 'Total_code', 'totCod', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 6, 1, 'is_total_code', NULL),
+(21, 'total_Jrs', 'total_days', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 9, 1, 'is_total_days', NULL),
+(22, 'taux_de_paie', 'TauxPaie', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 10, 1, 'is_pay_rate', NULL),
+(23, 'Salire_brute', 'Salaire brute', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 1, 11, 1, 'is_gross_salary', NULL),
+(24, 'Nombre_deJours', 'Nbr_jrs', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 12, 1, 'is_number_of_days', NULL);
 -- Configuration of Rubrinc
 INSERT INTO `config_rubric` (`id`, `label`)
  VALUES (1, 'Configuration des rubriques'), 
@@ -864,7 +880,18 @@ INSERT INTO `config_rubric_item` (`id`, `config_rubric_id`, `rubric_payroll_id`)
   (9, 1, 9),
   (10, 1, 10),
   (11, 1, 11),
-  (12, 1, 12);
+  (12, 1, 12),
+  (13, 2, 13),
+  (14, 2, 14),
+  (15, 2, 15),
+  (16, 2, 16),
+  (17, 2, 17),
+  (18, 2, 18),
+  (19, 2, 19),
+  (20, 2, 20),
+  (21, 2, 21),
+  (22, 2, 22),
+  (23, 2, 23);
 
 -- Configuration of weekend
 INSERT INTO `weekend_config` (`id`, `label`) VALUES
