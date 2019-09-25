@@ -412,8 +412,8 @@
       "PATIENTS":"Patient(s)"
     },
     "REALIZED_PROFIT" : {
-      "TITLE":"Rapport des profits réalisés",
-      "DESCRIPTION":"Ce rapport montre les profits potentiels liés aux factures face aux entrées de caisse de ces factures",
+      "TITLE":"Rapport des recouvrements sur les factures",
+      "DESCRIPTION":"Ce rapport montre les revenus tirés des factures avec les dettes restantes",
       "REMAINING" : "Reste",
       "INVOICED" : "Facturé",
       "PAID" : "Payé"
