@@ -248,8 +248,8 @@
       "SHOW_OTHER_SUPPORT_HELP":"This option allows you to see the support provided by organizations that are not employees",
       "SHOW_DETAILS":"Show details",
       "SHOW_DETAILS_HELP":"This option allows you to see more details",
-      "SHOW_REMAINING_DETAILS":"View details about remains (debts)",
-      "SHOW_REMAINING_DETAILS_HELP":"This option allows to see the details on the remains (debts)",
+      "SHOW_REMAINING_DETAILS":"View details about remaining debts",
+      "SHOW_REMAINING_DETAILS_HELP":"This option allows to see the details on remaining debts",
       "SHOW_PAID_DETAILS":"View payment details",
       "SHOW_PAID_DETAILS_HELP":"This option allows you to view payment details",
       "SHOW_INVOICED_DETAILS":"View invoice details",
@@ -416,8 +416,8 @@
       "TITLE":"Realized Profits Report",
       "DESCRIPTION":"This report shows profits from invoices versus cash received",
       "REMAINING" : "Remaining",
-      "INVOICED" : "Facturé",
-      "PAID" : "Payé"
+      "INVOICED" : "Invoiced",
+      "PAID" : "Paid"
     }
   }
 }

@@ -12,7 +12,11 @@ function RealizedProfitController($sce, Notify, SavedReports, AppCache, reportDa
   const reportUrl = 'reports/finance/realizedProfit';
 
   vm.previewGenerated = false;
-  vm.reportDetails = {};
+  vm.reportDetails = {
+    shouldShowRemainDetails : 1,
+    shouldShowInvoicedDetails : 1,
+    shouldShowPaidDetails : 1,
+  };
 
   vm.clearPreview = function clearPreview() {
     vm.previewGenerated = false;
