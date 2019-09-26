@@ -246,7 +246,13 @@
       "SHOW_OTHER_SUPPORT":"Afficher les prises en charge des organisations",
       "SHOW_OTHER_SUPPORT_HELP":"Cette option permet de voir les prises en charge effectuées par des organisations qui ne sont pas des employés",
       "SHOW_DETAILS":"Afficher les details",
-      "SHOW_DETAILS_HELP":"Cette option permet de voir les details"
+      "SHOW_DETAILS_HELP":"Cette option permet de voir les details",
+      "SHOW_REMAINING_DETAILS":"Afficher les details sur les restes (dettes)",
+      "SHOW_REMAINING_DETAILS_HELP":"Cette option permet de voir les details sur les restes (dettes)",
+      "SHOW_PAID_DETAILS":"Afficher les details sur les paiements",
+      "SHOW_PAID_DETAILS_HELP":"Cette option permet de voir les details sur les paiements",
+      "SHOW_INVOICED_DETAILS":"Afficher les details sur les factures",
+      "SHOW_INVOICED_DETAILS_HELP":"Cette option permet de voir les details sur les factures"
     },
     "OHADA": {
       "BALANCE_SHEET" : "Bilan",
@@ -404,6 +410,13 @@
       "EMPLOYEES_SUPPORT":"Prises en charge par les employés",
       "OTHERS_SUPPORT":"Autres prises en charge",
       "PATIENTS":"Patient(s)"
+    },
+    "REALIZED_PROFIT" : {
+      "TITLE":"Rapport des recouvrements sur les factures",
+      "DESCRIPTION":"Ce rapport montre les revenus tirés des factures avec les dettes restantes",
+      "REMAINING" : "Reste",
+      "INVOICED" : "Facturé",
+      "PAID" : "Payé"
     }
   }
 }

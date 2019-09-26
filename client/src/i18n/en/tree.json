@@ -142,6 +142,7 @@
     },
     "VISITS_REPORT": "[Visits] Admission by Services",
     "CLIENT_DEBTS_REPORT": "[Clients] Debts Report",
-    "CLIENT_SUPPORT_REPORT": "[Clients] Support Report"
+    "CLIENT_SUPPORT_REPORT": "[Clients] Support Report",
+    "REALIZED_PROFIT_REPORT": "[Invoicing] Collection on invoices"
   }
 }

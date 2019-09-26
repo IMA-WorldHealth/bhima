@@ -247,7 +247,13 @@
       "SHOW_OTHER_SUPPORT":"Show patient debts supported by organizations",
       "SHOW_OTHER_SUPPORT_HELP":"This option allows you to see the support provided by organizations that are not employees",
       "SHOW_DETAILS":"Show details",
-      "SHOW_DETAILS_HELP":"This option allows you to see more details"
+      "SHOW_DETAILS_HELP":"This option allows you to see more details",
+      "SHOW_REMAINING_DETAILS":"View details about remaining debts",
+      "SHOW_REMAINING_DETAILS_HELP":"This option allows to see the details on remaining debts",
+      "SHOW_PAID_DETAILS":"View payment details",
+      "SHOW_PAID_DETAILS_HELP":"This option allows you to view payment details",
+      "SHOW_INVOICED_DETAILS":"View invoice details",
+      "SHOW_INVOICED_DETAILS_HELP":"This option allows to see the details on the invoices"
     },
     "OHADA": {
       "BALANCE_SHEET" : "Balance Sheet",
@@ -405,6 +411,13 @@
       "EMPLOYEES_SUPPORT":"Employees Supports for patients",
       "OTHERS_SUPPORT":"Others Supports for patients",
       "PATIENTS":"Patient(s)"
+    },
+    "REALIZED_PROFIT" : {
+      "TITLE":"Collection on invoices report",
+      "DESCRIPTION":"This report shows incomes made from invoices with remaining debts",
+      "REMAINING" : "Remaining",
+      "INVOICED" : "Invoiced",
+      "PAID" : "Paid"
     }
   }
 }
