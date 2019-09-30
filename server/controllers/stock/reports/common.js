@@ -3,9 +3,13 @@ const BASE_PATH = './server/controllers/stock/reports';
 
 // receipts
 const STOCK_EXIT_PATIENT_TEMPLATE = `${BASE_PATH}/stock_exit_patient.receipt.handlebars`;
+const POS_STOCK_EXIT_PATIENT_TEMPLATE = `${BASE_PATH}/stock_exit_patient.receipt.pos.handlebars`;
 const STOCK_EXIT_SERVICE_TEMPLATE = `${BASE_PATH}/stock_exit_service.receipt.handlebars`;
+const POS_STOCK_EXIT_SERVICE_TEMPLATE = `${BASE_PATH}/stock_exit_service.receipt.pos.handlebars`;
 const STOCK_EXIT_DEPOT_TEMPLATE = `${BASE_PATH}/stock_exit_depot.receipt.handlebars`;
+const POS_STOCK_EXIT_DEPOT_TEMPLATE = `${BASE_PATH}/stock_exit_depot.receipt.pos.handlebars`;
 const STOCK_EXIT_LOSS_TEMPLATE = `${BASE_PATH}/stock_exit_loss.receipt.handlebars`;
+const POS_STOCK_EXIT_LOSS_TEMPLATE = `${BASE_PATH}/stock_exit_loss.receipt.pos.handlebars`;
 const STOCK_ASSIGN_TEMPLATE = `${BASE_PATH}/stock_assign.receipt.handlebars`;
 
 const STOCK_ENTRY_DEPOT_TEMPLATE = `${BASE_PATH}/stock_entry_depot.receipt.handlebars`;
@@ -35,6 +39,7 @@ const ReportManager = require('../../../lib/ReportManager');
 const PeriodService = require('../../../lib/period');
 const NotFound = require('../../../lib/errors/NotFound');
 const identifiers = require('../../../config/identifiers');
+const pdf = require('../../../lib/renderers/pdf');
 
 /*
 * This function help to format filter display name
@@ -174,6 +179,7 @@ exports._ = _;
 
 exports.db = db;
 exports.util = util;
+exports.pdf = pdf;
 
 exports.Stock = Stock;
 exports.ReportManager = ReportManager;
@@ -187,9 +193,13 @@ exports.getDepotMovement = getDepotMovement;
 exports.pdfOptions = pdfOptions;
 
 exports.STOCK_EXIT_PATIENT_TEMPLATE = STOCK_EXIT_PATIENT_TEMPLATE;
+exports.POS_STOCK_EXIT_PATIENT_TEMPLATE = POS_STOCK_EXIT_PATIENT_TEMPLATE;
 exports.STOCK_EXIT_SERVICE_TEMPLATE = STOCK_EXIT_SERVICE_TEMPLATE;
+exports.POS_STOCK_EXIT_SERVICE_TEMPLATE = POS_STOCK_EXIT_SERVICE_TEMPLATE;
 exports.STOCK_EXIT_DEPOT_TEMPLATE = STOCK_EXIT_DEPOT_TEMPLATE;
+exports.POS_STOCK_EXIT_DEPOT_TEMPLATE = POS_STOCK_EXIT_DEPOT_TEMPLATE;
 exports.STOCK_EXIT_LOSS_TEMPLATE = STOCK_EXIT_LOSS_TEMPLATE;
+exports.POS_STOCK_EXIT_LOSS_TEMPLATE = POS_STOCK_EXIT_LOSS_TEMPLATE;
 exports.STOCK_ASSIGN_TEMPLATE = STOCK_ASSIGN_TEMPLATE;
 
 exports.STOCK_ENTRY_DEPOT_TEMPLATE = STOCK_ENTRY_DEPOT_TEMPLATE;

@@ -1,0 +1,71 @@
+<head>
+  <meta charset="utf-8" />
+</head>
+<body>
+<p style="text-transform: uppercase; text-align:center; margin : 0px;"><b>{{enterprise.name}}</b></p>
+{{#if metadata.enterprise.logo}}
+  <div style="text-align: center; margin : 0px;">
+    <img src="{{absolutePath}}/{{slashed metadata.enterprise.logopath}}" width="40" height="40" alt="">
+  </div>
+{{/if}}
+<h2 style="text-align: center; margin : 0px">{{translate 'STOCK.RECEIPT.EXIT_PATIENT'}}</h2> 
+{{> underline}}
+<p style="margin-top: 0px">
+  <span class="text-capitalize">{{translate 'STOCK.DEPOT'}}</span> : <strong>{{details.depot_name}}</strong> <br>
+  <span class="text-capitalize">{{translate 'FORM.LABELS.REFERENCE'}}</span> : <strong>{{details.document_reference}}</strong> <br>
+  {{date details.date}} {{translate 'FORM.LABELS.BY'}} {{details.user_display_name}}
+</p>
+
+{{> underline}}
+<div>
+  <span class="text-capitalize">{{translate 'FORM.LABELS.CLIENT'}}</span> : <strong>{{details.patient_reference}}</strong> <br>
+  <span class="text-capitalize">{{translate 'FORM.LABELS.NAME'}}</span> : <span>{{details.patient_display_name}}</span> <br>
+  <span class="text-capitalize">{{translate 'FORM.LABELS.HOSPITAL_FILE_NR'}}</span> : <strong>{{details.hospital_no}}</strong>
+</div>
+{{> underline}}
+
+<!-- list of data  -->
+<table style="width: 100%;" class="table table-condensed table-bordered table-report">
+  <thead>
+    <tr>
+      <th style="text-align: left;">{{translate 'STOCK.INVENTORY'}}</th>
+      <th style="text-align: left;">{{translate 'STOCK.QUANTITY'}}</th>
+      <th style="text-align: left;">{{translate 'STOCK.UNIT_COST'}}</th>
+      <th style="text-align: left;">{{translate 'TABLE.COLUMNS.TOTAL'}}</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each rows}}
+      <tr>
+        <td>({{code}}) {{text}}, {{label}}</td>
+        <td class="text-right">{{quantity}}</td>
+        <td class="text-right">{{currency unit_cost ../enterprise.currency_id}}</td>
+        <td class="text-right">{{currency total ../enterprise.currency_id}}</td>
+      </tr>
+    {{else}}
+      {{> emptyTable columns=4}}
+    {{/each}}
+  </tbody>
+  <tfoot>
+    <tr style="font-weight: bold;">
+      <td colspan="3">{{rows.length}} {{translate 'STOCK.ITEMS'}}</td>
+      <td class="text-right">{{currency (sum rows 'total') enterprise.currency_id}}</td>
+    </tr>
+  </tfoot>
+</table>
+
+<br>
+
+<footer>
+  <div>
+    <h4 class="text-center">{{translate 'REPORT.FOOTER.DEPOT_MANAGER'}}</h4>
+    <hr>
+  </div>
+  
+  <div>
+    <h4 class="text-center">{{translate 'REPORT.FOOTER.RECEIVER'}}</h4>
+    <hr>
+  </div>
+</footer>
+
+</body>
