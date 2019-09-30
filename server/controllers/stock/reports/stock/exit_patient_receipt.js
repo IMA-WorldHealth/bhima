@@ -1,5 +1,6 @@
 const {
-  _, ReportManager, NotFound, Stock, db, identifiers, STOCK_EXIT_PATIENT_TEMPLATE,
+  _, ReportManager, NotFound, Stock, db, identifiers, pdf,
+  STOCK_EXIT_PATIENT_TEMPLATE, POS_STOCK_EXIT_PATIENT_TEMPLATE,
 } = require('../common');
 
 /**
@@ -17,9 +18,16 @@ function stockExitPatientReceipt(req, res, next) {
   const documentUuid = req.params.document_uuid;
   const optionReport = _.extend(req.query, { filename : 'STOCK.REPORTS.EXIT_PATIENT' });
 
+  let template = STOCK_EXIT_PATIENT_TEMPLATE;
+
+  if (Boolean(Number(optionReport.posReceipt))) {
+    template = POS_STOCK_EXIT_PATIENT_TEMPLATE;
+    _.extend(optionReport, pdf.posReceiptOptions);
+  }
+
   // set up the report with report manager
   try {
-    report = new ReportManager(STOCK_EXIT_PATIENT_TEMPLATE, req.session, optionReport);
+    report = new ReportManager(template, req.session, optionReport);
   } catch (e) {
     return next(e);
   }
