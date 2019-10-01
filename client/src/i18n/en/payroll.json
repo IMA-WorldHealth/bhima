@@ -24,6 +24,7 @@
     "INDEXES" : "Indexes",
     "INDICE" : "Index",
     "INDICE_TYPE" : "Index type",
+    "INDICE_TO_GRAPE" : "This rubric must be grapped",
     "SELECT_INDICE_TYPE" : "Select Index type",
     "IS_INDICE" : "This rubric is an index",
     "IS_DAY_INDEX" : "This rubric is a day index",

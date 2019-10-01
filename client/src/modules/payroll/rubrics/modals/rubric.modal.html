@@ -30,7 +30,6 @@
       </div>
     </div>
 
-
     <div class="form-group" ng-show="RubricModalCtrl.enableIndexPayment">
       <bh-yes-no-radios
         label="PAYROLL_RUBRIC.IS_INDICE"
@@ -38,11 +37,17 @@
         on-change-callback="RubricModalCtrl.isIndexSetting(value)">
       </bh-yes-no-radios>
     </div>
-    <div ng-show="RubricModalCtrl.rubric.is_indice">
+    <div ng-show= "RubricModalCtrl.rubric.is_indice">
       <bh-yes-no-radios
         label="PAYROLL_RUBRIC.IS_MONETARY_VALUE"
         value="RubricModalCtrl.rubric.is_monetary_value"
         on-change-callback="RubricModalCtrl.isMonetaryValueSetting(value)">
+      </bh-yes-no-radios>
+  
+      <bh-yes-no-radios
+        label="PAYROLL_RUBRIC.INDICE_TO_GRAPE"
+        value="RubricModalCtrl.rubric.indice_to_grap"
+        on-change-callback="RubricModalCtrl.indiceToGrapSetting(value)">
       </bh-yes-no-radios>
 
       <div class="form-group">
@@ -94,10 +99,11 @@
       </div>
     </div>
 
+  <div  ng-show= "(RubricModalCtrl.rubric.is_monetary_value || !RubricModalCtrl.rubric.is_indice)">
     <div class="form-group">
       <div class="checkbox">
         <label>
-          <input type="checkbox" name="is_defined_employee" ng-true-value="1" ng-false-value="0"
+        <input type="checkbox" name="is_defined_employee" ng-true-value="1" ng-false-value="0"
             ng-model="RubricModalCtrl.rubric.is_defined_employee">
           <span translate>FORM.LABELS.IS_DEFINED_EMPLOYEE</span>
         </label>
@@ -114,9 +120,6 @@
         </label>
       </div>
     </div>
-
-
-
 
     <div class="form-group">
       <label translate>FORM.INFO.IS_DISCOUNT</label>
@@ -251,6 +254,7 @@
         </div>
       </div>
     </div>
+  </div>
   </div>
   <div class="modal-footer">
     <button data-method="cancel" type="button" class="btn btn-default" ng-click="RubricModalCtrl.closeModal()">

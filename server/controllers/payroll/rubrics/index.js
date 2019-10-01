@@ -15,7 +15,7 @@ function lookupRubric(id) {
     SELECT r.id, r.label, r.abbr, r.is_employee, r.is_percent, r.is_defined_employee, r.is_discount, r.is_social_care,
     r.debtor_account_id, r.expense_account_id, r.is_ipr, r.value, r.is_tax, r.is_membership_fee,
     r.is_associated_employee, r.is_seniority_bonus, r.position, r.is_monetary_value,
-    r.is_family_allowances, r.is_indice, r.indice_type
+    r.is_family_allowances, r.is_indice, r.indice_type, r.indice_to_grap
     FROM rubric_payroll AS r
     WHERE r.id = ? ORDER BY r.label ASC`;
 
@@ -32,7 +32,7 @@ function list(req, res, next) {
       r.debtor_account_id, a4.number AS four_number, a4.label AS four_label,
       r.expense_account_id, a6.number AS six_number, a6.label AS six_label, r.is_ipr, r.value, r.is_tax,
       r.is_membership_fee, r.is_associated_employee, r.is_seniority_bonus, r.is_family_allowances,
-      r.is_monetary_value, r.position, r.is_indice
+      r.is_monetary_value, r.position, r.is_indice, r.indice_type, r.indice_to_grap
     FROM rubric_payroll AS r
     LEFT JOIN account AS a4 ON a4.id = r.debtor_account_id
     LEFT JOIN account AS a6 ON a6.id = r.expense_account_id

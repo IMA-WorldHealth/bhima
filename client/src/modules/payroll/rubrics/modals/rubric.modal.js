@@ -13,6 +13,7 @@ function RubricModalController($state, Rubrics, Notify, AppCache, Session) {
   vm.rubric = {
     is_monetary_value : 1,
     is_indice : 0,
+    indice_to_grap : 0,
   };
   vm.indexesMap = Rubrics.indexesMap;
 
@@ -30,6 +31,9 @@ function RubricModalController($state, Rubrics, Notify, AppCache, Session) {
     vm.rubric.debtor_account_id = account.id;
   };
 
+  vm.indiceToGrapSetting = (value) => {
+    vm.rubric.indice_to_grap = value;
+  };
 
   vm.selectExpenseAccount = (account) => {
     vm.rubric.expense_account_id = account.id;
