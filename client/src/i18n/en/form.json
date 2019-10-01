@@ -31,6 +31,7 @@
             "ENTER_FULL_DATE": "Enter Full Date",
             "ENTITY": "Entity",
             "EXPORT": "Export",
+            "EXPORT_AS_EXCEL" : "Export data as MS Excel",
             "FILTER": "Filter",
             "GROUP_BY_ACCOUNT": "Group by Account",
             "GROUP_BY_TRANSACTION": "Group By Transaction",

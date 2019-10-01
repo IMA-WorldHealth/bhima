@@ -18,12 +18,14 @@
 
         <!-- body  -->
         <section>
-          <div id="account-balance-grid" style="height : 600px;" ui-grid="FiscalOBCtrl.gridOptions">
-          </div>
+          <div id="account-balance-grid" style="height : 600px;" ui-grid="FiscalOBCtrl.gridOptions" ui-grid-exporter></div>
         </section>
 
         <!-- footer  -->
         <div ng-if="!FiscalOBCtrl.previousFiscalYearExist" class="panel-footer clearfix">
+          <a href id="export" ng-click="FiscalOBCtrl.export()">
+            <i class="fa fa-file-excel-o"></i> <span translate>FORM.BUTTONS.EXPORT_AS_EXCEL</span>
+          </a>
           <span ng-class="{'text-success': FiscalOBCtrl.balanced, 'text-danger': !FiscalOBCtrl.balanced}" ng-show="OpeningAccountForm.$submitted">
             <i class="fa" ng-class="{'fa-check': FiscalOBCtrl.balanced, 'fa-warning': !FiscalOBCtrl.balanced}"></i>
             <span data-status="balanced" ng-show="FiscalOBCtrl.balanced" translate>ACCOUNT.BALANCED</span>
@@ -37,13 +39,13 @@
           </span>
 
           <div class="pull-right">
-              <button type="submit" data-method="submit" ng-disabled="!FiscalOBCtrl.editBalanceEnabled && !FiscalOBCtrl.previousFiscalYearExist" class="btn btn-primary">
-                <span ng-hide="FiscalOBCtrl.previousFiscalYearExist" translate>FORM.BUTTONS.SUBMIT</span>
-                <span ng-show="FiscalOBCtrl.previousFiscalYearExist" translate>FORM.BUTTONS.IMPORT_PREVIOUS_CLOSING_BALANCE</span>
-              </button>
-
             <button type="button" data-method="back" class="btn btn-default" ui-sref="fiscal.list({ id : FiscalOBCtrl.fiscal.id })" translate>
               FORM.BUTTONS.BACK
+            </button>
+
+            <button type="submit" data-method="submit" ng-disabled="!FiscalOBCtrl.editBalanceEnabled && !FiscalOBCtrl.previousFiscalYearExist" class="btn btn-primary">
+              <span ng-hide="FiscalOBCtrl.previousFiscalYearExist" translate>FORM.BUTTONS.SUBMIT</span>
+              <span ng-show="FiscalOBCtrl.previousFiscalYearExist" translate>FORM.BUTTONS.IMPORT_PREVIOUS_CLOSING_BALANCE</span>
             </button>
           </div>
         </div>
