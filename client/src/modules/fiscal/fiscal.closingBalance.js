@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 FiscalClosingBalanceController.$inject = [
   '$state', 'AccountService', 'FiscalService', 'NotifyService', 'SessionService',
-  'uiGridConstants', 'bhConstants', 'TreeService',
+  'uiGridConstants', 'bhConstants', 'TreeService', 'GridExportService',
 ];
 
 /**
@@ -14,7 +14,7 @@ FiscalClosingBalanceController.$inject = [
  */
 function FiscalClosingBalanceController(
   $state, Accounts, Fiscal, Notify, Session, uiGridConstants, bhConstants,
-  Tree
+  Tree, GridExport
 ) {
 
   const vm = this;
@@ -25,7 +25,7 @@ function FiscalClosingBalanceController(
   vm.showAccountFilter = false;
   vm.toggleAccountFilter = toggleAccountFilter;
   // grid options
-  vm.indentTitleSpace = 20;
+  vm.indentTitleSpace = 15;
   vm.gridApi = {};
 
   const columns = [{
@@ -74,6 +74,9 @@ function FiscalClosingBalanceController(
     columnDefs : columns,
     onRegisterApi,
   };
+
+  const exporter = new GridExport(vm.gridOptions, 'all', 'visible');
+  vm.export = () => exporter.run();
 
   function customAggregationFn(columnDefs, column) {
     if (vm.AccountTree) {
