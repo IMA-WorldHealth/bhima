@@ -1,12 +1,11 @@
-/* global element, by */
-
 const helpers = require('../shared/helpers');
 const FU = require('../shared/FormUtils');
+const GridRow = require('../shared/GridRow');
 const components = require('../shared/components');
 
-describe('Patient Groups', () => {
+describe('Patient Groups', async () => {
   // navigate to the page before running test suite
-  before(() => helpers.navigate('#!/patients/groups'));
+  before(async () => helpers.navigate('#!/patients/groups'));
 
   // a new group to create
   const group = {
@@ -17,55 +16,70 @@ describe('Patient Groups', () => {
     `,
   };
 
-  // the uuid to delete.
-  const deleteUuid = 'group-112A9FB5847D4C6A9B20710FA8B4DA22';
+  const group2 = {
+    name : 'Employee PAX',
+    note : `
+      This is just for test.
+    `,
+  };
 
   it('creates a patient group', async () => {
     await FU.buttons.create();
-
-    // expect the create form to exist
-    await FU.exists(by.css('[data-create-form]'), true);
-
     // fill in the form details
-    await FU.input('PatientGroupCtrl.patientGroup.name', group.name);
-    await FU.select('PatientGroupCtrl.patientGroup.price_list_uuid', 'Test Price List');
-    await FU.input('PatientGroupCtrl.patientGroup.note', group.note);
+    await FU.input('ModalCtrl.patientGroup.name', group.name);
+    await FU.select('ModalCtrl.patientGroup.price_list_uuid', 'Test Price List');
+    await FU.input('ModalCtrl.patientGroup.note', group.note);
 
     // submit the form
     await FU.buttons.submit();
+    await components.notification.hasSuccess();
+  });
 
-    // expect the form element to.be removed.
-    await FU.exists(by.css('[data-create-form]'), false);
+  it('creates a second patient group', async () => {
+    await FU.buttons.create();
+    // fill in the form details
+    await FU.input('ModalCtrl.patientGroup.name', group2.name);
+    await FU.select('ModalCtrl.patientGroup.price_list_uuid', 'Test Price List');
+    await FU.input('ModalCtrl.patientGroup.note', group2.note);
+
+    // submit the form
+    await FU.buttons.submit();
+    await components.notification.hasSuccess();
   });
 
   it('updates a patient group', async () => {
-    const row = element(by.id(deleteUuid));
-    await row.click();
 
-    // expect the update form to exist
-    await FU.exists(by.css('[data-update-form]'), true);
-
+    await editGroup(group.name);
     // change the note
-    await FU.input('PatientGroupCtrl.patientGroup.note',
+    await FU.input('ModalCtrl.patientGroup.note',
       'I like writing end-to-end tests... They give me so much confidence in the application.');
 
     // submit the form
     await FU.buttons.submit();
-
-    // expect the form element to.be removed.
-    await FU.exists(by.css('[data-update-form]'), false);
+    await components.notification.hasSuccess();
   });
 
   it('deletes a patient group', async () => {
-    const row = element(by.id(deleteUuid));
-    await row.click();
-
-    await FU.buttons.delete();
-
+    await deleteGroup(group2.name);
     // reject the alert that appears
-    await components.modalAction.confirm();
-
-    // expect the row to.be cleared
-    await FU.exists(by.id(deleteUuid), false);
+    await FU.buttons.submit();
+    await components.notification.hasSuccess();
   });
+
+
+  async function editGroup(label) {
+    const row = await openDropdownMenu(label);
+    await row.menu.$('[data-method="edit-record"]').click();
+  }
+
+  async function deleteGroup(label) {
+    const row = await openDropdownMenu(label);
+    await row.menu.$('[data-method="delete-record"]').click();
+  }
+
+  async function openDropdownMenu(label) {
+    const row = new GridRow(label);
+    await row.dropdown().click();
+    return row;
+  }
 });

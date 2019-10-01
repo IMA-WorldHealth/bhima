@@ -23,12 +23,46 @@ function LocationController(locationService) {
     session.loading = true;
 
     // load location
-    locationService.locations().then(function (data) {
-      vm.locations = data;
+    locationService.locations().then((data) => {
+      vm.gridOptions.data = data;
       session.loading = false;
     }).catch(handler);
 
   }
+
+  const columns = [{
+    field : 'village',
+    displayName : 'TABLE.COLUMNS.VILLAGE',
+    headerCellFilter : 'translate',
+  },
+  {
+    field : 'sector',
+    displayName : 'TABLE.COLUMNS.SECTOR',
+    headerCellFilter : 'translate',
+  },
+  {
+    field : 'province',
+    displayName : 'TABLE.COLUMNS.PROVINCE',
+    headerCellFilter : 'translate',
+  },
+  {
+    field : 'country',
+    displayName : 'TABLE.COLUMNS.COUNTRY',
+    headerCellFilter : 'translate',
+  }];
+
+  // ng-click="
+  vm.gridOptions = {
+    appScopeProvider : vm,
+    enableColumnMenus : false,
+    columnDefs : columns,
+    enableSorting : true,
+    fastWatch : true,
+    flatEntityAccess : true,
+    onRegisterApi : (gridApi) => {
+      vm.gridApi = gridApi;
+    },
+  };
 
   startup();
 }

@@ -1,0 +1,68 @@
+<bh-report-preview
+  ng-if="ReportConfigCtrl.previewGenerated"
+  source-document="ReportConfigCtrl.previewResult"
+  on-clear-callback="ReportConfigCtrl.clearPreview()"
+  on-save-callback="ReportConfigCtrl.requestSaveAs()">
+</bh-report-preview>
+
+<div ng-show="!ReportConfigCtrl.previewGenerated">
+  <div class="row">
+    <div class="col-md-12">
+      <h3 class="text-capitalize" translate>REPORT.REALIZED_PROFIT.TITLE</h3>
+      <p class="text-info" translate>REPORT.REALIZED_PROFIT.DESCRIPTION</p>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top : 10px">
+    <div class="col-md-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <span translate>REPORT.UTIL.OPTIONS</span>
+        </div>
+        <div class="panel-body">
+          <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate>
+
+            <bh-date-interval
+              date-from="ReportConfigCtrl.reportDetails.dateFrom"
+              date-to="ReportConfigCtrl.reportDetails.dateTo"
+              required="true"
+              limit-min-fiscal>
+            </bh-date-interval>
+
+            <!-- show details -->
+            <bh-yes-no-radios
+              label="REPORT.OPTIONS.SHOW_REMAINING_DETAILS"
+              help-text="REPORT.OPTIONS.SHOW_REMAINING_DETAILS_HELP"
+              name="shouldShowRemainDetails"
+              id="shouldShowRemainDetails"
+              value="ReportConfigCtrl.reportDetails.shouldShowRemainDetails"
+              on-change-callback="ReportConfigCtrl.onChangeShowRemainDetails(value)">
+            </bh-yes-no-radios>
+
+            <bh-yes-no-radios
+              label="REPORT.OPTIONS.SHOW_PAID_DETAILS"
+              help-text="REPORT.OPTIONS.SHOW_PAID_DETAILS_HELP"
+              name="shouldShowPaidDetails"
+              id="shouldShowPaidDetails"
+              value="ReportConfigCtrl.reportDetails.shouldShowPaidDetails"
+              on-change-callback="ReportConfigCtrl.onChangeShowPaidDetails(value)">
+            </bh-yes-no-radios>
+
+            <bh-yes-no-radios
+              label="REPORT.OPTIONS.SHOW_INVOICED_DETAILS"
+              help-text="REPORT.OPTIONS.SHOW_INVOICED_DETAILS_HELP"
+              name="shouldShowInvoicedDetails"
+              id="shouldShowInvoicedDetails"
+              value="ReportConfigCtrl.reportDetails.shouldShowInvoicedDetails"
+              on-change-callback="ReportConfigCtrl.onChangeShowInvoicedDetails(value)">
+            </bh-yes-no-radios>
+
+            <bh-loading-button loading-state="ConfigForm.$loading">
+              <span translate>REPORT.UTIL.PREVIEW</span>
+            </bh-loading-button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

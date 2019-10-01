@@ -3,9 +3,10 @@ angular.module('bhima.controllers')
 
 // dependencies injection
 InventoryListController.$inject = [
-  'InventoryService', 'NotifyService', 'uiGridConstants', 'ModalService',
-  '$state', 'FilterService', 'appcache', 'GridColumnService', 'GridStateService',
-  'GridExportService', 'LanguageService', 'SessionService', '$rootScope',
+  'InventoryService', 'NotifyService', 'uiGridConstants',
+  'ModalService', '$state', 'FilterService', 'appcache',
+  'GridColumnService', 'GridStateService', 'GridExportService',
+  'LanguageService', 'SessionService', '$rootScope',
 ];
 
 /**
@@ -14,7 +15,7 @@ InventoryListController.$inject = [
  */
 function InventoryListController(
   Inventory, Notify, uiGridConstants, Modal, $state, Filters, AppCache, Columns, GridState,
-  GridExport, Languages, Session, $rootScope
+  GridExport, Languages, Session, $rootScope,
 ) {
 
   const vm = this;
@@ -23,6 +24,7 @@ function InventoryListController(
 
   // global variables
   vm.download = Inventory.download;
+  vm.inventoryLogModal = inventoryLogModal;
   vm.lang = Languages.key;
   vm.filterEnabled = false;
   vm.gridOptions = {};
@@ -262,4 +264,9 @@ function InventoryListController(
       })
       .catch(Notify.handleError);
   }
+
+  function inventoryLogModal(uuid) {
+    Modal.openinventoryLogModal({ uuid });
+  }
+
 }

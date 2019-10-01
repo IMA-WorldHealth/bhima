@@ -13,6 +13,19 @@
       "TITLE" : "Balance Âgée des Conventionnés",
       "DESCRIPTION" : "Ce rapport affiche toutes les dettes des conventionnés, tout en spécifiant les dettes par période"
     },
+    "ANALYSIS_AUX_CASHBOXES": {
+      "TITLE": "Analyse des caisses auxiliaires",
+      "AUXILIARY_TRANSFERT": "Caisse auxiliaire vers compte de transfert",
+      "DESCRIPTION": "Ce rapport permet de faire la suivie mensuel des encaissements et décaissements des caisses auxilliaires",
+      "STATUS": {
+        "CORRECT": "Correcte",
+        "TRANSFERT_GREATER": "Le montant transferé est supérieur",
+        "TRANSFERT_LOWWER": "Le montant transferé est inférieure",
+        "TRANSFERT_PENDING": "Transfère en attente"
+      },
+      "TARGET": "Cible",
+      "TRANSFER_PRINCIPAL": "Compte de transfert vers caisse Principale"
+    },
     "BY_ASC": "Par ordre croissant",
     "BY_DESC": "Par ordre décroissant",
     "BALANCE": "Rapport de la Balance",
@@ -27,7 +40,8 @@
     "CASH_EXPENSE" : "Dépenses",
     "CASHFLOW_BY_SERVICE": {
       "TITLE" : "Journal de Ventilation",
-      "DESCRIPTION" : "Ce rapport affiche les variations des comptes et des revenus du bilan sur la trésorerie."
+      "DESCRIPTION" : "Ce rapport affiche les variations des comptes et des revenus du bilan sur la trésorerie.",
+      "GAIN_OR_LOSS_ON_EXCHANGE" : "Gain ou Perte sur Échange"
     },
     "CASHFLOW" : {
       "TITLE" : "Rapports de flux de trésorerie physique",
@@ -224,7 +238,21 @@
       "INCLUDE_CLOSING_BALANCES_HELP" : "Cette option force la balance à afficher les soldes de l’année entière, y compris les soldes de clôture. Toute opération effectuée pour clôturer les comptes de produits et de charges sera reflétée dans la balance.",
       "INCLUDE_UNPOSTED_RECORDS" : "Inclure les valeurs non-postée",
       "INCLUDE_UNPOSTED_RECORDS_HELP" : "",
-      "REMOVE_UNUSED_ACCOUNT" : "Enlèver les comptes non utilisés"
+      "REMOVE_UNUSED_ACCOUNT" : "Enlèver les comptes non utilisés",
+      "SHOW_DEBTS_DETAILS":"Afficher les details des dettes",
+      "SHOW_DEBTS_DETAILS_HELP":"Cette option permet d'avoir les noms de chaque membre du groupe avec leur dette",
+      "SHOW_EMPLOYEE_SUPPORT":"Afficher les prises en charge des employés",
+      "SHOW_EMPLOYEE_SUPPORT_HELP":"Cette option permet de voir les prises en charge effectuées par les employés",
+      "SHOW_OTHER_SUPPORT":"Afficher les prises en charge des organisations",
+      "SHOW_OTHER_SUPPORT_HELP":"Cette option permet de voir les prises en charge effectuées par des organisations qui ne sont pas des employés",
+      "SHOW_DETAILS":"Afficher les details",
+      "SHOW_DETAILS_HELP":"Cette option permet de voir les details",
+      "SHOW_REMAINING_DETAILS":"Afficher les details sur les restes (dettes)",
+      "SHOW_REMAINING_DETAILS_HELP":"Cette option permet de voir les details sur les restes (dettes)",
+      "SHOW_PAID_DETAILS":"Afficher les details sur les paiements",
+      "SHOW_PAID_DETAILS_HELP":"Cette option permet de voir les details sur les paiements",
+      "SHOW_INVOICED_DETAILS":"Afficher les details sur les factures",
+      "SHOW_INVOICED_DETAILS_HELP":"Cette option permet de voir les details sur les factures"
     },
     "OHADA": {
       "BALANCE_SHEET" : "Bilan",
@@ -368,6 +396,27 @@
       "RECEIVER" : "Recepteur",
       "DEPOT_MANAGER" : "Gestionnaire du dépot",
       "SUPPLIER" : "Fournisseur"
+    },
+    "CLIENT_SUMMARY" : {
+      "TITLE":"Rapport des dettes des clients",
+      "DESCRIPTION":"Ce rapport montre les dettes des differents membres d'un groupe de debiteur",
+      "EMPLOYEES_DEBTS":"Dettes des employés",
+      "NOT_EMPLOYEES_DEBTS":"Dettes des non-employés",
+      "EMPLOYEES_SUPPORT":"Prise en charge des patients par les employés (A recouvrir)"
+    },
+    "CLIENT_SUPPORT" : {
+      "TITLE":"Rapport des prises en charge",
+      "DESCRIPTION":"Ce rapport affiche les informations sur les prises en charge des patients",
+      "EMPLOYEES_SUPPORT":"Prises en charge par les employés",
+      "OTHERS_SUPPORT":"Autres prises en charge",
+      "PATIENTS":"Patient(s)"
+    },
+    "REALIZED_PROFIT" : {
+      "TITLE":"Rapport des recouvrements sur les factures",
+      "DESCRIPTION":"Ce rapport montre les revenus tirés des factures avec les dettes restantes",
+      "REMAINING" : "Reste",
+      "INVOICED" : "Facturé",
+      "PAID" : "Payé"
     }
   }
 }

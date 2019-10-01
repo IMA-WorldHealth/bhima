@@ -748,6 +748,7 @@ CREATE TABLE `icd10` (
 
 DROP TABLE IF EXISTS `inventory`;
 
+
 CREATE TABLE `inventory` (
   `enterprise_id` SMALLINT(5) UNSIGNED NOT NULL,
   `uuid` BINARY(16) NOT NULL,
@@ -811,19 +812,6 @@ CREATE TABLE `inventory_group` (
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
-DROP TABLE IF EXISTS `inventory_log`;
-
-CREATE TABLE `inventory_log` (
-  `uuid` BINARY(16) NOT NULL,
-  `inventory_uuid` BINARY(16) NOT NULL,
-  `log_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `price` decimal(19,4) UNSIGNED DEFAULT NULL,
-  `code` varchar(30) DEFAULT NULL,
-  `text` text,
-  PRIMARY KEY (`uuid`),
-  KEY `inventory_uuid` (`inventory_uuid`),
-  FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
 DROP TABLE IF EXISTS `inventory_type`;
@@ -2268,6 +2256,23 @@ CREATE TABLE `break_even_reference` (
   UNIQUE KEY `break_even_reference_1` (`label`),
   KEY `account_reference_id` (`account_reference_id`),
   FOREIGN KEY (`account_reference_id`) REFERENCES `account_reference` (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+
+
+DROP TABLE IF EXISTS `inventory_log`;
+
+CREATE TABLE `inventory_log` (
+  `uuid` BINARY(16) NOT NULL,
+  `inventory_uuid` BINARY(16) NOT NULL,
+  `log_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `text` JSON,
+  `user_id` smallINT(5) UNSIGNED NOT NULL,
+  PRIMARY KEY (`uuid`),
+  KEY `inventory_uuid` (`inventory_uuid`),
+  KEY `user_id` (`user_id`),
+  FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`),
+  FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 SET foreign_key_checks = 1;

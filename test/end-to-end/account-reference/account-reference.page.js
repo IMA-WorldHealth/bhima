@@ -12,6 +12,7 @@ class AccountReferencePage {
   constructor() {
     this.grid = element(by.id('account-reference-grid'));
     this.createBtn = element(by.css('[data-method="create"]'));
+    this.searchBtn = element(by.css('[data-method="search"]'));
   }
 
   count() {
@@ -23,6 +24,10 @@ class AccountReferencePage {
 
   create() {
     return this.createBtn.click();
+  }
+
+  search() {
+    return this.searchBtn.click();
   }
 
   async update(reference) {

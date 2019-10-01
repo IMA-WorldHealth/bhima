@@ -13,6 +13,19 @@
       "TITLE": "Aged Debtors",
       "DESCRIPTION": "This report show all the debts of the clients, while specifying the debts per period"
     },
+    "ANALYSIS_AUX_CASHBOXES": {
+      "TITLE": "Analysis of auxiliary cashboxes",
+      "AUXILIARY_TRANSFERT": "Auxiliary Cashbox to transfer account",
+      "DESCRIPTION": "This report makes it possible to track the monthly payments and disbursements of the auxiliary cashboxes",
+      "STATUS": {
+        "CORRECT": "Correct",
+        "TRANSFERT_GREATER": "The amount transferred is greater",
+        "TRANSFERT_LOWWER": "The amount transferred is lower",
+        "TRANSFERT_PENDING": "Transfer pending"
+      },
+      "TARGET": "Target",
+      "TRANSFER_PRINCIPAL": "Transfer Account to Principal Cashbox"
+    },
     "BY_ASC": "By Ascending Order",
     "BY_DESC": "By Descending Order",
     "BALANCE": "Balance Report",
@@ -27,7 +40,8 @@
     "CASH_EXPENSE": "Expenses",
     "CASHFLOW_BY_SERVICE": {
       "TITLE": "Cash flow By Service",
-      "DESCRIPTION": "This report shows the changes in the accounts and revenues of the balance sheet on cash by Services"
+      "DESCRIPTION": "This report shows the changes in the accounts and revenues of the balance sheet on cash by Services",
+      "GAIN_OR_LOSS_ON_EXCHANGE" : "Gain or Loss on Exchange"
     },
     "CASHFLOW": {
       "TITLE": "Cash Flow Physical Report",
@@ -83,7 +97,7 @@
       "SHOW_UNVERIFIED_TRANSACTIONS": "Include Unverified Transactions",
       "SHOW_UNVERIFIED_TRANSACTIONS_HELP": "Enable to include records from the Journal which have not been audited by the accountant as well as records from the General Ledger the accountant has verified.  This view must be treated as a projection until the accountant has approved the Journal transactions and moved them to the General Ledger."
     },
-    
+
     "DEBTOR_SUMMARY" : {
       "TITLE": "Debtors summary report",
       "DESCRIPTION": "This report details the amount to paid in every inventory group for an invoice during a period, for a specific debor group"
@@ -225,7 +239,21 @@
       "INCLUDE_CLOSING_BALANCES_HELP" : "This option will force the balance sheet to show the entire year's balances, including the closing balances.  Any operations made to close income and expense accounts will be reflected in the balance sheet.",
       "INCLUDE_UNPOSTED_RECORDS" : "Include Unposted Values",
       "INCLUDE_UNPOSTED_RECORDS_HELP" : "This option will force the report to include unposted values in the dataset.  Unposted values should never be included in a final report as they have not been validated by an accountant.",
-      "REMOVE_UNUSED_ACCOUNT": "Remove Unused Accounts"
+      "REMOVE_UNUSED_ACCOUNT": "Remove Unused Accounts",
+      "SHOW_DEBTS_DETAILS":"Show Debt Details",
+      "SHOW_DEBTS_DETAILS_HELP":"This options allow to have name of each member of a debtor group with their debt",
+      "SHOW_EMPLOYEE_SUPPORT":"Show patient debts supported by employees",
+      "SHOW_EMPLOYEE_SUPPORT_HELP":"This option makes it possible to see the support provided by employees",
+      "SHOW_OTHER_SUPPORT":"Show patient debts supported by organizations",
+      "SHOW_OTHER_SUPPORT_HELP":"This option allows you to see the support provided by organizations that are not employees",
+      "SHOW_DETAILS":"Show details",
+      "SHOW_DETAILS_HELP":"This option allows you to see more details",
+      "SHOW_REMAINING_DETAILS":"View details about remaining debts",
+      "SHOW_REMAINING_DETAILS_HELP":"This option allows to see the details on remaining debts",
+      "SHOW_PAID_DETAILS":"View payment details",
+      "SHOW_PAID_DETAILS_HELP":"This option allows you to view payment details",
+      "SHOW_INVOICED_DETAILS":"View invoice details",
+      "SHOW_INVOICED_DETAILS_HELP":"This option allows to see the details on the invoices"
     },
     "OHADA": {
       "BALANCE_SHEET" : "Balance Sheet",
@@ -369,6 +397,27 @@
       "RECEIVER" : "Receiver",
       "DEPOT_MANAGER" : "Depot Manager",
       "SUPPLIER" : "Supplier"
+    },
+    "CLIENT_SUMMARY" : {
+      "TITLE":"Clients Debts Report",
+      "DESCRIPTION":"This report shows the debts of the various members of a debtor group",
+      "EMPLOYEES_DEBTS":"Employees Debts",
+      "NOT_EMPLOYEES_DEBTS":"Not Employees Debts",
+      "EMPLOYEES_SUPPORT":"Employees Supports Patients (To Cover)"
+    },
+    "CLIENT_SUPPORT" : {
+      "TITLE":"Clients Support Report",
+      "DESCRIPTION":"This report shows supported patients and the supporter",
+      "EMPLOYEES_SUPPORT":"Employees Supports for patients",
+      "OTHERS_SUPPORT":"Others Supports for patients",
+      "PATIENTS":"Patient(s)"
+    },
+    "REALIZED_PROFIT" : {
+      "TITLE":"Collection on invoices report",
+      "DESCRIPTION":"This report shows incomes made from invoices with remaining debts",
+      "REMAINING" : "Remaining",
+      "INVOICED" : "Invoiced",
+      "PAID" : "Paid"
     }
   }
 }

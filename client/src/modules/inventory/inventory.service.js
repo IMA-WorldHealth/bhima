@@ -35,6 +35,11 @@ function InventoryService(
   service.openImportInventoriesModal = openImportInventoriesModal;
   service.downloadInventoriesTemplate = downloadInventoriesTemplate;
 
+  service.inventoryLog = (uuid) => {
+    return service.$http.get(`/inventory/log/${uuid}`)
+      .then(service.util.unwrapHttpResponse);
+  };
+
   function downloadInventoriesTemplate() {
     $http.get(INVENTORY_IMPORT_URL.concat('template_file'))
       .then(response => {
@@ -164,5 +169,28 @@ function InventoryService(
   function remove(uuid) {
     return $http.delete('/inventory/metadata/'.concat(uuid));
   }
+  service.columnsMap = (key) => {
+    const cols = {
+      code : 'FORM.LABELS.CODE',
+      consumable : 'FORM.LABELS.CONSUMABLE',
+      default_quantity : 'FORM.LABELS.DEFAULT_QUANTITY',
+      group_uuid : 'FORM.LABELS.GROUP',
+      inventoryGroup : 'FORM.LABELS.GROUP',
+      label : 'FORM.LABELS.LABEL',
+      text : 'FORM.LABELS.LABEL',
+      note : 'FORM.INFO.NOTE',
+      price : 'FORM.LABELS.UNIT_PRICE',
+      sellable : 'INVENTORY.SELLABLE',
+      type_id : 'FORM.LABELS.TYPE',
+      inventoryType : 'FORM.LABELS.TYPE',
+      unit_id : 'FORM.LABELS.UNIT',
+      inventoryUnit : 'FORM.LABELS.UNIT',
+      unit_volume : 'FORM.LABELS.VOLUME',
+      unit_weight : 'FORM.LABELS.WEIGHT',
+    };
+
+    return cols[key] || key;
+  };
+
   return service;
 }

@@ -1,6 +1,6 @@
 {
   "name": "bhima",
-  "version": "1.2.0",
+  "version": "1.4.0",
   "description": "A rural hospital information management system.",
   "main": "npm run build",
   "scripts": {
@@ -14,6 +14,7 @@
     "build": "./node_modules/.bin/gulp build",
     "build:db": "./sh/build-database.sh",
     "build:clean": "./sh/build-init-database.sh",
+    "migrate": "./sh/setup-migration-script.sh",
     "watch": "./node_modules/.bin/gulp watch",
     "snyk-protect": "snyk protect",
     "release": "release-it",
@@ -66,7 +67,7 @@
     "connect-redis": "^3.4.0",
     "cron": "^1.7.1",
     "cropper": "^4.0.0",
-    "cross-env": "^5.2.0",
+    "cross-env": "^6.0.0",
     "csvtojson": "^2.0.8",
     "debug": "^4.1.1",
     "dotenv": "^8.0.0",
@@ -75,7 +76,7 @@
     "express-handlebars": "^3.0.0",
     "express-session": "^1.15.6",
     "font-awesome": "^4.7.0",
-    "helmet": "^3.16.0",
+    "helmet": "^3.21.1",
     "ioredis": "^4.5.1",
     "jquery": "^3.4.0",
     "jsbarcode": "^3.11.0",

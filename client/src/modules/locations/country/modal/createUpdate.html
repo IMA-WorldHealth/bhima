@@ -1,0 +1,33 @@
+<form name="countryForm" bh-submit="ModalCtrl.submit(countryForm)" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li>
+        <span translate>COUNTRY.TITLE</span>
+
+        <label class="label label-warning text-uppercase" translate>
+          {{ModalCtrl.action}}
+        </label>
+      </li>
+    </ol>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-xs-12">
+        <bh-input-text
+          key="name"
+          label="FORM.LABELS.COUNTRY"
+          text-value="ModalCtrl.country.name"
+          on-change="ModalCtrl.onInputTextChange(key, value)"
+          required="true">
+        </bh-input-text>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" data-method="cancel"  class="btn btn-default" ng-click="ModalCtrl.close()" translate>
+        FORM.BUTTONS.CANCEL
+      </button>
+
+      <bh-loading-button loading-state="countryForm.$loading">
+      </bh-loading-button>
+    </div>
+</form>

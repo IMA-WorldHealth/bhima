@@ -1,0 +1,35 @@
+<div
+  class="ui-grid-cell-contents text-action"
+  data-row="{{row.entity.name}}"
+  uib-dropdown dropdown-append-to-body>
+
+  <a uib-dropdown-toggle href data-action="open-dropdown-menu">
+    <span data-method="action" translate>FORM.BUTTONS.ACTIONS</span>
+    <span class="caret"></span>
+  </a>
+
+  <ul data-row-menu="{{ row.entity.name }}" class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
+    <li>
+      <a data-method="edit-record" ng-click="grid.appScope.createUpdateGroupModal(row.entity)" href>
+        <i class="fa fa-edit"></i> <span translate>FORM.BUTTONS.EDIT</span>
+      </a>
+    </li>
+    <li>
+      <a data-method="view-patient" ui-sref="patientRegistry({
+          filters : [
+            { key : 'patient_group_uuid', value : row.entity.uuid, displayValue: row.entity.name },
+            { key : 'period', value : 'allTime' }
+          ]})">
+        <span class="fa fa-list"></span> <span translate> FORM.LABELS.PATIENT_LIST </span>
+      </a>
+    </li>
+    <li class="divider"></li>
+    <li>
+      <a data-method="delete-record" ng-click="grid.appScope.remove(row.entity.uuid)" href>
+        <span class="text-danger">
+          <i class="fa fa-trash"></i> <span translate>FORM.BUTTONS.DELETE</span>
+        </span>
+      </a>
+    </li>
+  </ul>
+</div>

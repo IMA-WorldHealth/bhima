@@ -18,6 +18,15 @@
 
       <div class="toolbar-item">
         <button
+          ng-click="AccountReferenceCtrl.search()"
+          data-method="search"
+          class="btn btn-default">
+          <span class="fa fa-search"></span> <span class="hidden-xs" translate>FORM.BUTTONS.SEARCH</span>
+        </button>
+      </div>
+
+      <div class="toolbar-item">
+        <button
           type="button"
           ng-click="AccountReferenceCtrl.toggleFilter()"
           data-method="filter"
@@ -26,9 +35,15 @@
           <i class="fa fa-filter"></i>
         </button>
       </div>
-
     </div>
   </div>
+</div>
+
+<div class="flex-util" style="min-height : 35px; padding-top : 7px; max-height: initial">
+  <bh-filters
+    filters="AccountReferenceCtrl.latestViewFilters"
+    on-remove-filter="AccountReferenceCtrl.onRemoveFilter(filter)">
+  </bh-filters>
 </div>
 
 <div class="flex-content">

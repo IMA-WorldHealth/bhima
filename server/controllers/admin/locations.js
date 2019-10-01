@@ -31,11 +31,27 @@ exports.lookupVillage = lookupVillage;
  * @return {Array} an array of (uuid, name)
  */
 exports.villages = function villages(req, res, next) {
-  let sql = 'SELECT BUID(village.uuid) as uuid, village.name, village.longitude, village.latitude FROM village ';
+  let sql = '';
+  if (req.query.detailed === '1') {
+    sql = `
+      SELECT BUID(v.uuid) as uuid, v.name, v.longitude, v.latitude,
+        BUID(sector.uuid) AS sectorUuid, sector.name as sector_name,
+        province.name AS province_name, BUID(province.uuid) AS provinceUuid, 
+        country.name AS country_name,
+        BUID(country.uuid) AS countryUuid
+      FROM village v
+        JOIN sector
+        JOIN province JOIN country ON
+        v.sector_uuid = sector.uuid AND
+        sector.province_uuid = province.uuid AND
+        province.country_uuid = country.uuid `;
+  } else {
+    sql = 'SELECT BUID(v.uuid) as uuid, v.name, v.longitude, v.latitude FROM village v ';
+  }
 
   sql += (req.query.sector)
-    ? 'WHERE village.sector_uuid = ? ORDER BY village.name ASC;'
-    : 'ORDER BY village.name ASC;';
+    ? 'WHERE v.sector_uuid = ? ORDER BY v.name ASC;'
+    : 'ORDER BY v.name ASC;';
 
   if (req.query.sector) {
     req.query.sector = db.bid(req.query.sector);
@@ -498,4 +514,38 @@ exports.update.village = function updateVillage(req, res, next) {
     })
     .catch(next)
     .done();
+};
+
+exports.delete = {};
+
+exports.delete.country = (req, res, next) => {
+  const sql = 'DELETE FROM country WHERE uuid=?';
+  const _uuid = db.bid(req.params.uuid);
+  db.exec(sql, _uuid).then(() => {
+    res.sendStatus(204);
+  }).catch(next);
+};
+
+exports.delete.province = (req, res, next) => {
+  const sql = 'DELETE FROM province WHERE uuid=?';
+  const _uuid = db.bid(req.params.uuid);
+  db.exec(sql, _uuid).then(() => {
+    res.sendStatus(204);
+  }).catch(next);
+};
+
+exports.delete.sector = (req, res, next) => {
+  const sql = 'DELETE FROM sector WHERE uuid=?';
+  const _uuid = db.bid(req.params.uuid);
+  db.exec(sql, _uuid).then(() => {
+    res.sendStatus(204);
+  }).catch(next);
+};
+
+exports.delete.village = (req, res, next) => {
+  const sql = 'DELETE FROM village WHERE uuid=?';
+  const _uuid = db.bid(req.params.uuid);
+  db.exec(sql, _uuid).then(() => {
+    res.sendStatus(204);
+  }).catch(next);
 };

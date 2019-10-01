@@ -14,6 +14,13 @@
         <i class="fa fa-edit"></i> <span translate>FORM.BUTTONS.EDIT</span>
       </a>
     </li>
+    <li>
+      <a href
+        ng-click="grid.appScope.inventoryLogModal(row.entity.uuid)"
+        data-method="log">
+        <span translate>FORM.LABELS.CHANGES</span>
+      </a>
+    </li>
     <li class="divider"></li>
     <li>
       <a data-method="invoice" ui-sref="invoiceRegistry({ filters : [{ key : 'inventory_uuid', value : row.entity.uuid, displayValue: row.entity.label }]})" href>
