@@ -414,8 +414,9 @@ function setOpeningBalance(req, res, next) {
     .then((hasPrevious) => {
       if (hasPrevious) {
         const msg = `The fiscal year with id ${id} is not the first fiscal year`;
-        return next(new BadRequest(msg, 'ERRORS.NOT_BEGINING_FISCAL_YEAR'));
+        throw new BadRequest(msg, 'ERRORS.NOT_BEGINING_FISCAL_YEAR');
       }
+
       // set the opening balance if the fiscal year doesn't have previous fy
       return newOpeningBalance(fiscalYear, accounts);
     })
