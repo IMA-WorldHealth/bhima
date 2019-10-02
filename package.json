@@ -107,6 +107,7 @@
     "wkhtmltopdf": "^0.3.4"
   },
   "devDependencies": {
+    "@ima-worldhealth/rewire": "^4.1.0",
     "angular-mocks": "^1.7.8",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
@@ -144,7 +145,6 @@
     "nodemon": "^1.18.10",
     "protractor": "^5.4.2",
     "release-it": "^12.3.5",
-    "rewire": "^4.0.1",
     "snyk": "^1.210.0",
     "standard-version": "^7.0.0",
     "typescript": "^3.3.1"
