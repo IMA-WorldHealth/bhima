@@ -1,31 +1,36 @@
 <div class="row">
+  <div class="col-md-12 clearfix" style="margin-bottom: 0.5em;">
+    <div class="pull-left">
+      <a href id="export" class="btn btn-default" ng-click="FiscalOBCtrl.export()">
+        <i class="fa fa-file-excel-o"></i> <span translate>FORM.BUTTONS.EXPORT_AS_EXCEL</span>
+      </a>
+    </div>
+
+    <div class="pull-right">
+      <bh-filter-toggle on-toggle="FiscalOBCtrl.toggleAccountFilter()">
+      </bh-filter-toggle>
+    </div>
+  </div>
+</div>
+
+<div class="row">
   <div class="col-md-12">
     <form name="OpeningAccountForm" bh-submit="FiscalOBCtrl.submit(OpeningAccountForm)" novalidate>
       <div class="panel panel-primary">
 
         <!-- heading  -->
-        <div class="panel-heading" style="display: flex; justify-content: space-between;">
-          <span>
-            <span translate>FISCAL.OPENING_BALANCE</span>
-            <strong>{{ FiscalOBCtrl.fiscal.label }}</strong>
-          </span>
-
-          <span class="text-action" ng-click="FiscalOBCtrl.toggleAccountFilter()">
-            <i class="fa fa-filter"></i>
-            <span translate>FORM.BUTTONS.SEARCH</span>
-          </span>
+        <div class="panel-heading">
+          <span translate>FISCAL.OPENING_BALANCE</span>
+          <strong>{{ FiscalOBCtrl.fiscal.label }}</strong>
         </div>
 
         <!-- body  -->
         <section>
-          <div id="account-balance-grid" style="height : 600px;" ui-grid="FiscalOBCtrl.gridOptions" ui-grid-exporter></div>
+          <div id="account-balance-grid" style="height : 650px;" ui-grid="FiscalOBCtrl.gridOptions" ui-grid-exporter></div>
         </section>
 
         <!-- footer  -->
         <div ng-if="!FiscalOBCtrl.previousFiscalYearExist" class="panel-footer clearfix">
-          <a href id="export" ng-click="FiscalOBCtrl.export()">
-            <i class="fa fa-file-excel-o"></i> <span translate>FORM.BUTTONS.EXPORT_AS_EXCEL</span>
-          </a>
           <span ng-class="{'text-success': FiscalOBCtrl.balanced, 'text-danger': !FiscalOBCtrl.balanced}" ng-show="OpeningAccountForm.$submitted">
             <i class="fa" ng-class="{'fa-check': FiscalOBCtrl.balanced, 'fa-warning': !FiscalOBCtrl.balanced}"></i>
             <span data-status="balanced" ng-show="FiscalOBCtrl.balanced" translate>ACCOUNT.BALANCED</span>

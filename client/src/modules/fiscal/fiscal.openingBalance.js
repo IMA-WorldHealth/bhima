@@ -17,7 +17,8 @@ FiscalOpeningBalanceController.$inject = [
  *  2) If there is no previous fiscal year, it means that this is the first year
  *    ever created.  A user can manually define the opening balances.
  */
-function FiscalOpeningBalanceController($state, Fiscal, Notify, uiGridConstants, Session, bhConstants, Tree, GridExport) {
+function FiscalOpeningBalanceController($state, Fiscal, Notify, uiGridConstants,
+  Session, bhConstants, Tree, GridExport) {
   const vm = this;
   const fiscalYearId = $state.params.id;
 
