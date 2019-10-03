@@ -95,6 +95,7 @@ const journal = require('../controllers/finance/journal');
 const transactionType = require('../controllers/admin/transactionType');
 const generalLedger = require('../controllers/finance/generalLedger');
 const voucherTools = require('../controllers/finance/voucherTools');
+const systemUsage = require('../controllers/finance/reports/sytemUsage');
 
 const dashboardDebtors = require('../controllers/dashboard/debtorGroups');
 const stats = require('../controllers/dashboard/stats');
@@ -418,6 +419,8 @@ exports.configure = function configure(app) {
   app.get('/reports/finance/clientDebts', clientDebts.report);
   app.get('/reports/finance/clientSupport', clientSupport.report);
   app.get('/reports/finance/realizedProfit', realizedProfit.report);
+
+  app.get('/reports/finance/systemUsageStat', systemUsage.document);
 
   app.get('/reports/finance/analysis_auxiliary_cashbox', financeReports.analysisAuxiliaryCashbox.report);
 
