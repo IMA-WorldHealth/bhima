@@ -33,7 +33,7 @@ function postingJournalExport(req, res, next) {
     orientation              : 'landscape',
     csvKey                   : 'rows',
     suppressDefaultFiltering : true,
-    suppressDefaultFormating : false,
+    suppressDefaultFormatting : false,
     footerRight : '[page] / [toPage]',
     footerFontSize : '7',
   });

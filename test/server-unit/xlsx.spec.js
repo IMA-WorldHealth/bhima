@@ -1,14 +1,13 @@
-
 const { expect } = require('chai');
 const _ = require('lodash');
 const xlsx = require('../../server/lib/renderers/xlsx');
 
-describe('util.js', () => {
-
+describe('xlsx.js', () => {
   it('Should return a xlsx buffer', (done) => {
     const data = {
       rows : [{ Firstname : 'Alice', Lastname : 'Bob' }],
     };
+
     xlsx.render(data)
       .then(reportStream => {
         expect(_.isBuffer(reportStream)).to.be.equal(true);
@@ -53,7 +52,7 @@ describe('util.js', () => {
     expect(data.students).to.deep.equal(result);
   });
 
-  it('Should remove unuseful columns for the user such as uuid', () => {
+  it('Should remove unused columns for the user such as uuid', () => {
     const data = {
       students : [
         { uuid : '7a9480cc-b2cd-4975-a1dc-e8c167070481', name : 'Alice' },
@@ -68,6 +67,4 @@ describe('util.js', () => {
     const result = xlsx.find(data, options);
     expect(result).to.deep.equal(formatedData);
   });
-
-
 });

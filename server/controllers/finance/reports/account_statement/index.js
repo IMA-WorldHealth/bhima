@@ -27,7 +27,7 @@ function report(req, res, next) {
     orientation : 'landscape',
     csvKey : 'rows',
     suppressDefaultFiltering : true,
-    suppressDefaultFormating : false,
+    suppressDefaultFormatting : false,
   });
 
   let rm;

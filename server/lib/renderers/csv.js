@@ -47,7 +47,7 @@ exports.headers = headers;
  * @param {Object} options  The default options to be extended and passed to renderer
  * @returns {Promise}       Promise resolving in a rendered dataset (CSV)
  */
-function renderCSV(data, template, options) {
+function renderCSV(data, template, options = {}) {
   // this will be returned to the promise chain with the rendered csv results
   const dfd = q.defer();
 
@@ -58,7 +58,7 @@ function renderCSV(data, template, options) {
 
   debug(`processing a CSV of ${csvData.length} rows.`);
 
-  if (!options.suppressDefaultFormating) {
+  if (!options.suppressDefaultFormatting) {
     debug('applying default date formatting.');
     csvData = csvData.map(dateFormatter);
   }
