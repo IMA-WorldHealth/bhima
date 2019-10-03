@@ -104,7 +104,8 @@
     "uuid-parse": "^1.0.0",
     "webcam": "^3.2.1",
     "winston": "^3.2.1",
-    "wkhtmltopdf": "^0.3.4"
+    "wkhtmltopdf": "^0.3.4",
+    "snyk": "^1.230.4"
   },
   "devDependencies": {
     "angular-mocks": "^1.7.8",
@@ -145,7 +146,6 @@
     "protractor": "^5.4.2",
     "release-it": "^12.3.5",
     "rewire": "^4.0.1",
-    "snyk": "^1.210.0",
     "standard-version": "^7.0.0",
     "typescript": "^3.3.1"
   },
