@@ -86,6 +86,10 @@
       "DESCRIPTION": "This report is used to analyze the balance of accounts on a monthly basis. This analysis shows the total debits and credits as well as the total balances for each account.",
       "TITLE": "Monthly Balance"
     },
+    "SYSTEM_USAGE_STAT" : {
+      "TITLE" : "Sytem usage statistic",
+      "DESCRIPTION" : " This report  produce, for a given period, stats of, Total of patients recorded by hour of the day, Total of invoices made by hour of the day and total of cash payments made by hour of the day"
+    },
     "OPEN_DEBTORS": {
       "DESCRIPTION": "This report shows the debtors that have a standing debt with the institution, and gives some control over the sort order.  For advanced analysis, the report can add in the last invoice date and last payment date, as well as limit the scope of the search by a date.",
       "TITLE": "Debtors with Unpaid Debts",

@@ -133,7 +133,8 @@ INSERT INTO unit VALUES
   (246, 'Client debts report', 'TREE.CLIENT_DEBTS_REPORT', 'Client debts report', 144, '/modules/reports/clientDebts', '/reports/clientDebts'),
   (247, 'Client support report', 'TREE.CLIENT_SUPPORT_REPORT', 'Client support report', 144, '/modules/reports/clientSupport', '/reports/clientSupport'),
   (248, 'Analysis of cashboxes', 'REPORT.ANALYSIS_AUX_CASHBOXES.TITLE', 'Analysis of auxiliary cashboxes', 144, '/modules/reports/analysisAuxiliaryCash', '/reports/analysisAuxiliaryCash'),
-  (249, 'Realized Profit Report', 'TREE.REALIZED_PROFIT_REPORT', 'Realized profit report', 144, '/modules/reports/realizedProfit', '/reports/realizedProfit');
+  (249, 'Realized Profit Report', 'TREE.REALIZED_PROFIT_REPORT', 'Realized profit report', 144, '/modules/reports/realizedProfit', '/reports/realizedProfit'),
+  (250, 'Sytem usage statistic', 'REPORT.SYSTEM_USAGE_STAT.TITLE', 'Sytem usage statistic', 144, '/modules/reports/systemUsageStat', '/reports/systemUsageStat');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -190,7 +191,8 @@ INSERT INTO `report` (`report_key`, `title_key`) VALUES
   ('clientDebts', 'REPORT.CLIENT_SUMMARY.TITLE'),
   ('clientSupport', 'REPORT.CLIENT_SUPPORT.TITLE'),
   ('analysisAuxiliaryCash', 'REPORT.ANALYSIS_AUX_CASHBOXES.TITLE'),
-  ('realizedProfit', 'REPORT.REALIZED.TITLE');
+  ('realizedProfit', 'REPORT.REALIZED.TITLE'),
+  ('systemUsageStat', 'REPORT.SYSTEM_USAGE_STAT.TITLE');
 
 -- Supported Languages
 INSERT INTO `language` VALUES

@@ -40,6 +40,7 @@ angular.module('bhima.routes')
       'clientSupport',
       'analysisAuxiliaryCash',
       'realizedProfit',
+      'systemUsageStat',
     ];
 
     $stateProvider
