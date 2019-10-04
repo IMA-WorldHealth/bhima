@@ -31,6 +31,7 @@
             "ENTER_FULL_DATE": "Entrer la date complète",
             "ENTITY": "Entité",
             "EXPORT": "Exporter",
+            "EXPORT_AS_EXCEL" : "Exporter au format Excel",
             "FILTER": "Filtre",
             "GENERATE": "Générer",
             "GROUP_BY_ACCOUNT": "Grouper Par Compte",
