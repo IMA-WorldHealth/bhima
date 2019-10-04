@@ -4,7 +4,7 @@ angular.module('bhima.components')
     controller  : bhCronEmailReportController,
     transclude  : true,
     bindings    : {
-      reportId       : '@',
+      reportKey      : '@',
       reportForm     : '<',
       reportDetails  : '<',
       onSelectReport : '&',
@@ -13,9 +13,10 @@ angular.module('bhima.components')
 
 bhCronEmailReportController.$inject = [
   'CronEmailReportService', 'NotifyService', 'SessionService',
+  'BaseReportService',
 ];
 
-function bhCronEmailReportController(CronEmailReports, Notify, Session) {
+function bhCronEmailReportController(CronEmailReports, Notify, Session, BaseReport) {
   const $ctrl = this;
 
   $ctrl.submit = submit;
@@ -38,13 +39,19 @@ function bhCronEmailReportController(CronEmailReports, Notify, Session) {
   $ctrl.$onInit = init;
 
   function init() {
-    $ctrl.cron = {
-      report_id : $ctrl.reportId,
-      report_url : $ctrl.reportUrl,
-      has_dynamic_dates : 0,
-    };
-    $ctrl.isEmailFeatureEnabled = Session.enterprise.settings.enable_auto_email_report;
-    load($ctrl.reportId);
+    loadReportDetails($ctrl.reportKey)
+      .then(([report]) => {
+        $ctrl.cron = {
+          report_id : report.id,
+          has_dynamic_dates : 0,
+        };
+        $ctrl.isEmailFeatureEnabled = Session.enterprise.settings.enable_auto_email_report;
+        load(report.id);
+      });
+  }
+
+  function loadReportDetails(key) {
+    return BaseReport.requestKey(key);
   }
 
   function load(id) {
@@ -80,7 +87,7 @@ function bhCronEmailReportController(CronEmailReports, Notify, Session) {
 
   function remove(id) {
     CronEmailReports.delete(id)
-      .then(() => load($ctrl.reportId))
+      .then(() => load($ctrl.cron.report_id))
       .catch(Notify.handleError);
   }
 
