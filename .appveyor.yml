@@ -26,3 +26,4 @@ test_script:
   - yarn build:db
   - yarn test:server-unit
   - yarn test:client-unit
+  - yarn test:integration

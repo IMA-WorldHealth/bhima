@@ -21,9 +21,7 @@ before_script:
   - greenkeeper-lockfile-update
 
 script:
-  - yarn test:integration
   - yarn test:ends
-
 
 after_script: greenkeeper-lockfile-upload
 
