@@ -1,6 +1,6 @@
 /* eslint global-require: "off" */
 const { expect } = require('chai');
-const rewire = require('rewire');
+const rewire = require('@ima-worldhealth/rewire');
 const util = require('util');
 const path = require('path');
 const fs = require('mz/fs');
