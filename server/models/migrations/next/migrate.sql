@@ -11,5 +11,5 @@ INSERT INTO unit VALUES
 (250, 'Sytem usage statistic', 'REPORT.SYSTEM_USAGE_STAT.TITLE', 'Sytem usage statistic', 144, '/modules/reports/systemUsageStat', '/reports/systemUsageStat');
 
 
-INSERT INTO `report` (`id`, `report_key`, `title_key`) VALUES
+INSERT INTO `report` (`report_key`, `title_key`) VALUES
 ('systemUsageStat', 'REPORT.SYSTEM_USAGE_STAT.TITLE');
