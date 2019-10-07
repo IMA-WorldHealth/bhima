@@ -98,6 +98,7 @@ async function lookUp(options) {
     JOIN config_rubric cr On cr.id = cti.config_rubric_id
     WHERE
       cr.id IN ( SELECT config_rubric_id FROM payroll_configuration WHERE id = ?)
+      AND rb.is_indice = 1
     
     ORDER BY rb.position
   `;

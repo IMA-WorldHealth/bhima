@@ -41,7 +41,7 @@
     "IS_TOTAL_CODE" : "Cette rubrique est le Total de code",
     "IS_DAY_WORKED" : "Cette rubrique est le nombre des jours prestés",
     "DAY_WORKED" : "Jours prestés",
-    "IS_EXTRA_DAY" : "This rubric is extra days",
+    "IS_EXTRA_DAY" : "Cette rubrique est le nombre des jours supplémentaires",
     "EXTRA_DAY" : "Jours supplementaires",
     "IS_TOTAL_DAYS" : "Cette rubrique est le nombre total de jours",
     "TOTAL_DAYS" : "Nombre total de jours",

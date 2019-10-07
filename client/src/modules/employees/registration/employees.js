@@ -66,7 +66,7 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
       });
   }
 
-  Rubrics.read(null, { is_defined_employee : 1, is_indice : 0 })
+  Rubrics.read(null, { is_defined_employee : 1 })
     .then((rubrics) => {
       vm.rubrics = rubrics;
     })

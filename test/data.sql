@@ -848,20 +848,20 @@ INSERT INTO `rubric_payroll` (`id`, `label`, `abbr`, `is_employee`, `is_percent`
 
 INSERT INTO `rubric_payroll` (`id`, `label`, `abbr`, `is_employee`, `is_percent`, `is_discount`, `is_tax`, `is_social_care`,
  `is_defined_employee`, `is_membership_fee`, `debtor_account_id`, `expense_account_id`, `is_ipr`, `is_associated_employee`, 
- `is_seniority_bonus`, `is_family_allowances`, `is_monetary_value`, `position`, `is_indice`, `indice_type`, `value`)
+ `is_seniority_bonus`, `is_family_allowances`, `is_monetary_value`, `position`, `is_indice`, `indice_type`, `value`, `indice_to_grap`)
 
-VALUES (13, 'Jours_prestes', 'Jr_preste', 0, 0, 0, 0, 0, 1, 0, NULL, NULL, 0, 0, 0, 0, 0, 7, 1, 'is_day_worked', NULL),
-(14, 'Jours_supplementaires', 'jr_Suppl', 0, 0, 0, 0, 0, 1, 0, NULL, NULL, 0, 0, 0, 0, 0, 8, 1, 'is_extra_day', NULL),
-(15, 'BASE_INDEX', 'Indice-base', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 1, 1, 'is_base_index', NULL),
-(16, 'DAY_INDEX', 'Indice-jour', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 2, 1, 'is_day_index', NULL),
-(17, 'REAGISTERED_INDEX', 'Indice-reag', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 3, 1, 'is_reagistered_index', NULL),
-(18, 'Responsability_', 'Responsability_', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 4, 1, 'is_responsability', NULL),
-(19, 'Autres_profit', 'autr-profit', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 5, 1, 'is_other_profits', NULL),
-(20, 'Total_code', 'totCod', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 6, 1, 'is_total_code', NULL),
-(21, 'total_Jrs', 'total_days', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 9, 1, 'is_total_days', NULL),
-(22, 'taux_de_paie', 'TauxPaie', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 10, 1, 'is_pay_rate', NULL),
-(23, 'Salire_brute', 'Salaire brute', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 1, 11, 1, 'is_gross_salary', NULL),
-(24, 'Nombre_deJours', 'Nbr_jrs', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 12, 1, 'is_number_of_days', NULL);
+VALUES (13, 'Jours_prestes', 'Jr_preste', 0, 0, 0, 0, 0, 1, 0, NULL, NULL, 0, 0, 0, 0, 0, 7, 1, 'is_day_worked', NULL, 1),
+(14, 'Jours_supplementaires', 'jr_Suppl', 0, 0, 0, 0, 0, 1, 0, NULL, NULL, 0, 0, 0, 0, 0, 8, 1, 'is_extra_day', NULL, 1),
+(15, 'BASE_INDEX', 'Indice-base', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 1, 1, 'is_base_index', NULL, 0),
+(16, 'DAY_INDEX', 'Indice-jour', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 2, 1, 'is_day_index', NULL, 0),
+(17, 'REAGISTERED_INDEX', 'Indice-reag', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 3, 1, 'is_reagistered_index', NULL, 0),
+(18, 'Responsability_', 'Responsability_', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 4, 1, 'is_responsability', NULL, 0),
+(19, 'Autres_profit', 'autr-profit', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 5, 1, 'is_other_profits', NULL, 1),
+(20, 'Total_code', 'totCod', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 6, 1, 'is_total_code', NULL, 0),
+(21, 'total_Jrs', 'total_days', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 9, 1, 'is_total_days', NULL, 0),
+(22, 'taux_de_paie', 'TauxPaie', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 10, 1, 'is_pay_rate', NULL, 0),
+(23, 'Salire_brute', 'Salaire brute', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 11, 1, 'is_gross_salary', NULL, 0),
+(24, 'Nombre_deJours', 'Nbr_jrs', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 12, 1, 'is_number_of_days', NULL, 0);
 -- Configuration of Rubrinc
 INSERT INTO `config_rubric` (`id`, `label`)
  VALUES (1, 'Configuration des rubriques'), 

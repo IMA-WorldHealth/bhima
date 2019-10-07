@@ -19,7 +19,7 @@ function getConfigurationData(payrollConfigurationId, params) {
     JOIN payroll_configuration ON payroll_configuration.config_rubric_id = config_rubric_item.config_rubric_id
     WHERE payroll_configuration.id = ? AND rubric_payroll.is_percent = 0 AND rubric_payroll.is_ipr = 0
     AND rubric_payroll.is_seniority_bonus = 0 AND rubric_payroll.is_family_allowances = 0
-    AND rubric_payroll.is_indice = 0
+    AND rubric_payroll.is_monetary_value = 1
     ORDER BY rubric_payroll.label ASC;
   `;
 

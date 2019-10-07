@@ -37,7 +37,7 @@
         on-change-callback="RubricModalCtrl.isIndexSetting(value)">
       </bh-yes-no-radios>
     </div>
-    <div ng-show= "RubricModalCtrl.rubric.is_indice">
+    <div ng-show = "RubricModalCtrl.rubric.is_indice">
       <bh-yes-no-radios
         label="PAYROLL_RUBRIC.IS_MONETARY_VALUE"
         value="RubricModalCtrl.rubric.is_monetary_value"
@@ -50,14 +50,15 @@
         on-change-callback="RubricModalCtrl.indiceToGrapSetting(value)">
       </bh-yes-no-radios>
 
-      <div class="form-group">
+      <div class="form-group" ng-show="(RubricModalCtrl.rubric.is_indice && !RubricModalCtrl.rubric.is_monetary_value)">
         <label translate>PAYROLL_RUBRIC.INDICE_TYPE</label>
 
         <div class="form-group"
           ng-class="{ 'has-error' : RubricForm.$submitted && RubricForm.indice_type.$invalid }">
           <label class="control-label" translate>{{$ctrl.label}}</span></label>
           <select class="form-control" name="indice_type" ng-model="RubricModalCtrl.rubric.indice_type"
-            ng-options="rubric.id as (rubric.label | translate) for rubric in RubricModalCtrl.indexesMap" ng-required="RubricModalCtrl.rubric.is_indice">
+            ng-options="rubric.id as (rubric.label | translate) for rubric in RubricModalCtrl.indexesMap"
+            ng-required="(RubricModalCtrl.rubric.is_indice && !RubricModalCtrl.rubric.is_monetary_value)">
             <option value="" disabled translate>PAYROLL_RUBRIC.SELECT_INDICE_TYPE</option>'
           </select>
         </div>
@@ -71,12 +72,14 @@
     <div ng-show = "(RubricModalCtrl.rubric.is_monetary_value || !RubricModalCtrl.rubric.is_indice)">
       <bh-account-select id="debtor_account_id" account-id="RubricModalCtrl.rubric.debtor_account_id"
         label="FORM.LABELS.DEBTOR_ACCOUNT" name="debtor_account_id"
-        on-select-callback="RubricModalCtrl.selectDebtorAccount(account)" exclude-title-accounts="true" required="false">
+        on-select-callback="RubricModalCtrl.selectDebtorAccount(account)" exclude-title-accounts="true"
+        required="(RubricModalCtrl.rubric.is_monetary_value || !RubricModalCtrl.rubric.is_indice)">
       </bh-account-select>
 
       <bh-account-select id="expense_account_id" account-id="RubricModalCtrl.rubric.expense_account_id"
         label="FORM.LABELS.THIRD_EXPENSE_ACCOUNT" name="expense_account_id"
-        on-select-callback="RubricModalCtrl.selectExpenseAccount(account)" exclude-title-accounts="true" required="false">
+        on-select-callback="RubricModalCtrl.selectExpenseAccount(account)" exclude-title-accounts="true"
+        required="(RubricModalCtrl.rubric.is_monetary_value || !RubricModalCtrl.rubric.is_indice)">
       </bh-account-select>
     </div>
     <div ng-if="RubricModalCtrl.rubric.is_percent" class="form-group"
@@ -125,14 +128,24 @@
       <label translate>FORM.INFO.IS_DISCOUNT</label>
       <div class="radio">
         <label class="radio-inline">
-          <input type="radio" name="is_discount" ng-value="0" ng-model="RubricModalCtrl.rubric.is_discount"
-            id="addition">
+          <input
+            type="radio"
+            name="is_discount"
+            ng-value="0"
+            ng-model="RubricModalCtrl.rubric.is_discount"
+            id="addition"
+            >
           <span translate>FORM.LABELS.ADDITION</span>
         </label>
 
         <label class="radio-inline">
-          <input type="radio" name="is_discount" ng-value="1" ng-model="RubricModalCtrl.rubric.is_discount"
-            id="discount">
+          <input
+            type="radio"
+            name="is_discount"
+            ng-value="1"
+            ng-model="RubricModalCtrl.rubric.is_discount"
+            id="discount"
+            >
           <span translate>FORM.LABELS.DEDUCTION</span>
         </label>
       </div>
@@ -145,14 +158,24 @@
         <label translate>FORM.INFO.IS_MEMBERSHIP_FEE</label>
         <div class="radio">
           <label class="radio-inline">
-            <input type="radio" name="is_membership_fee" id="is_membership_fee_yes" ng-value="1"
-              ng-model="RubricModalCtrl.rubric.is_membership_fee">
+            <input
+              type="radio"
+              name="is_membership_fee"
+              id="is_membership_fee_yes"
+              ng-value="1"
+              ng-model="RubricModalCtrl.rubric.is_membership_fee"
+            >
             <span translate>FORM.LABELS.YES</span>
           </label>
 
           <label class="radio-inline">
-            <input type="radio" name="is_membership_fee" id="is_membership_fee_no" ng-value="0"
-              ng-model="RubricModalCtrl.rubric.is_membership_fee">
+            <input
+              type="radio"
+              name="is_membership_fee"
+              id="is_membership_fee_no"
+              ng-value="0"
+              ng-model="RubricModalCtrl.rubric.is_membership_fee"
+            >
             <span translate>FORM.LABELS.NO</span>
           </label>
         </div>
@@ -164,12 +187,24 @@
         <label translate>FORM.INFO.IS_TAX</label>
         <div class="radio">
           <label class="radio-inline">
-            <input type="radio" name="is_tax" id="is_tax_yes" ng-value="1" ng-model="RubricModalCtrl.rubric.is_tax">
+            <input
+              type="radio"
+              name="is_tax"
+              id="is_tax_yes"
+              ng-value="1"
+              ng-model="RubricModalCtrl.rubric.is_tax"
+            >
             <span translate>FORM.LABELS.YES</span>
           </label>
 
           <label class="radio-inline">
-            <input type="radio" name="is_tax" id="is_tax_no" ng-value="0" ng-model="RubricModalCtrl.rubric.is_tax">
+            <input
+              type="radio"
+              name="is_tax"
+              id="is_tax_no"
+              ng-value="0"
+              ng-model="RubricModalCtrl.rubric.is_tax"
+            >
             <span translate>FORM.LABELS.NO</span>
           </label>
         </div>
@@ -180,14 +215,24 @@
         <label>{{ RubricModalCtrl.rubric.label }}</label> : <label translate>FORM.INFO.IS_ASSOCIATED_EMPLOYEE</label>
         <div class="radio">
           <label class="radio-inline">
-            <input type="radio" name="is_associated_employee" id="is_associated_employee_yes" ng-value="1"
-              ng-model="RubricModalCtrl.rubric.is_associated_employee">
+            <input
+              type="radio"
+              name="is_associated_employee"
+              id="is_associated_employee_yes"
+              ng-value="1"
+              ng-model="RubricModalCtrl.rubric.is_associated_employee"
+            >
             <span translate>FORM.LABELS.YES</span>
           </label>
 
           <label class="radio-inline">
-            <input type="radio" name="is_associated_employee" id="is_associated_employee_no" ng-value="0"
-              ng-model="RubricModalCtrl.rubric.is_associated_employee">
+            <input
+              type="radio"
+              name="is_associated_employee"
+              id="is_associated_employee_no"
+              ng-value="0"
+              ng-model="RubricModalCtrl.rubric.is_associated_employee"
+            >
             <span translate>FORM.LABELS.NO</span>
           </label>
         </div>
@@ -197,7 +242,11 @@
       <div class="form-group" ng-if="RubricModalCtrl.rubric.is_tax === 1">
         <div class="checkbox">
           <label>
-            <input type="checkbox" name="is_ipr" ng-true-value="1" ng-false-value="0"
+            <input
+              type="checkbox"
+              name="is_ipr"
+              ng-true-value="1"
+              ng-false-value="0"
               ng-model="RubricModalCtrl.rubric.is_ipr">
             <span translate>FORM.LABELS.IS_IPR</span>
           </label>
@@ -208,52 +257,75 @@
         <label>{{ RubricModalCtrl.rubric.label }}</label> : <label translate>FORM.INFO.SUPPORT_COST</label>
         <div class="radio">
           <label class="radio-inline">
-            <input type="radio" name="is_employee" ng-value="1" id="is_employee_yes"
-              ng-model="RubricModalCtrl.rubric.is_employee">
+            <input
+              type="radio"
+              name="is_employee"
+              ng-value="1"
+              id="is_employee_yes"
+              ng-model="RubricModalCtrl.rubric.is_employee"
+            >
             <span translate>FORM.LABELS.STAFF_COST</span>
           </label>
 
           <label class="radio-inline">
-            <input type="radio" name="is_employee" ng-value="0" id="is_employee_no"
-              ng-model="RubricModalCtrl.rubric.is_employee">
+            <input
+              type="radio"
+              name="is_employee"
+              ng-value="0"
+              id="is_employee_no"
+              ng-model="RubricModalCtrl.rubric.is_employee"
+            >
             <span translate>FORM.LABELS.ENTERPRISE_COST</span>
           </label>
         </div>
       </div>
+    </div>
 
-      <div class="form-group" ng-if="RubricModalCtrl.rubric.is_discount === 0">
+    <div class="form-group" ng-if="RubricModalCtrl.rubric.is_discount === 0">
+      <div class="checkbox">
+        <label>
+          <input
+            type="checkbox"
+            name="is_seniority_bonus"
+            ng-true-value="1"
+            ng-false-value="0"
+            ng-model="RubricModalCtrl.rubric.is_seniority_bonus">
+          <span translate>FORM.LABELS.SENIORITY_BONUS</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="form-group" ng-if="RubricModalCtrl.rubric.is_discount === 0">
+      <div class="checkbox">
+        <label>
+          <input
+            type="checkbox"
+            name="is_family_allowances"
+            ng-true-value="1"
+            ng-false-value="0"
+            ng-model="RubricModalCtrl.rubric.is_family_allowances">
+          <span translate>FORM.LABELS.FAMILY_ALLOWANCES</span>
+        </label>
+      </div>
+    </div>
+
+    <div id="addition" ng-if="RubricModalCtrl.rubric.is_discount === 0">
+      <hr>
+      <div class="form-group">
         <div class="checkbox">
           <label>
-            <input type="checkbox" name="is_seniority_bonus" ng-true-value="1" ng-false-value="0"
-              ng-model="RubricModalCtrl.rubric.is_seniority_bonus">
-            <span translate>FORM.LABELS.SENIORITY_BONUS</span>
+            <input
+              type="checkbox"
+              name="is_social_care"
+              ng-true-value="1"
+              ng-false-value="0"
+              ng-model="RubricModalCtrl.rubric.is_social_care">
+            <span translate>FORM.LABELS.IS_SOCIAL_CARE</span>
           </label>
-        </div>
-      </div>
-
-      <div class="form-group" ng-if="RubricModalCtrl.rubric.is_discount === 0">
-        <div class="checkbox">
-          <label>
-            <input type="checkbox" name="is_family_allowances" ng-true-value="1" ng-false-value="0"
-              ng-model="RubricModalCtrl.rubric.is_family_allowances">
-            <span translate>FORM.LABELS.FAMILY_ALLOWANCES</span>
-          </label>
-        </div>
-      </div>
-
-      <div id="addition" ng-if="RubricModalCtrl.rubric.is_discount === 0">
-        <hr>
-        <div class="form-group">
-          <div class="checkbox">
-            <label>
-              <input type="checkbox" name="is_social_care" ng-true-value="1" ng-false-value="0"
-                ng-model="RubricModalCtrl.rubric.is_social_care">
-              <span translate>FORM.LABELS.IS_SOCIAL_CARE</span>
-            </label>
-          </div>
         </div>
       </div>
     </div>
+   
   </div>
   </div>
   <div class="modal-footer">

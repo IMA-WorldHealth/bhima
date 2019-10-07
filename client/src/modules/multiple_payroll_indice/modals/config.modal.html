@@ -18,8 +18,8 @@
     <div class="col-lg-12">
       <div class="col-lg-6" style="margin-top: 16px">
         <div 
-        ng-if="(rubConfigured.indice_to_grap || rubConfigured.is_defined_employee)"
-        ng-repeat="rubConfigured in ConfigPaiementModalCtrl.rubrics" class="form-group">
+        ng-show ="(rubConfigured.indice_to_grap && rubConfigured.is_indice)"
+        ng-repeat ="rubConfigured in ConfigPaiementModalCtrl.rubrics" class="form-group">
         
         <bh-input-text
           ng-if="!rubConfigured.is_monetary_value"
@@ -32,12 +32,11 @@
       </div>
       </div>
       <div class="col-lg-6">
-        <div 
-        ng-if="(rubConfigured.indice_to_grap || rubConfigured.is_defined_employee)"
+        <div
         ng-repeat="rubConfigured in ConfigPaiementModalCtrl.rubrics" class="form-group">
         <bh-currency-input
           data-payment-currency-input
-          ng-if="rubConfigured.is_monetary_value"
+          ng-if="rubConfigured.is_monetary_value && rubConfigured.is_indice "
           label="{{rubConfigured.label}}"
           id="{{rubConfigured.abbr}}"
           currency-id="ConfigPaiementModalCtrl.payroll.currency_id"

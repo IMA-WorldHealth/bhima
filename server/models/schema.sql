@@ -216,7 +216,7 @@ CREATE TABLE `rubric_payroll` (
   `position`  TINYINT(1) DEFAULT 0,
   `is_indice` TINYINT(1) DEFAULT 0,
   `indice_type` VARCHAR(50) DEFAULT NULL,
-  `indice_to_grap` VARCHAR(50) DEFAULT 0,
+  `indice_to_grap`TINYINT(1) DEFAULT 0,
   `value` float DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `rubric_payroll_1` (`label`),

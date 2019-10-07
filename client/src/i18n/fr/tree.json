@@ -53,6 +53,7 @@
     "HOSPITAL":"Hôpital",
     "HUMANS_RESSOURCES":"Ressources humaines",
     "INVENTORY":"Inventaires",
+    "INDEXES" : "Indices",
     "INVENTORY_CONFIGURATION":"Configurations",
     "INVENTORY_GROUP":"Groupe",
     "INVENTORY_LIST":"Liste",
