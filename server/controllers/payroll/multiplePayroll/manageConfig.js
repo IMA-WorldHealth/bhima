@@ -5,23 +5,55 @@
  * filter holidays that are not in the configuration of weekends, deconsidere holidays days which are holidays
  * but also in the configuration of weeks ends and calculates the number of working days in a pay period
  *
- *
+ * NOTE(@jniles) - the word "holidays" actually means "vacation days" for a given employee.  It is
+ * not a national/international holiday on the calendar.  The calendar holidays are called "offdays".
  */
+
+const moment = require('moment');
+
+const {
+  isDateOnWeekend,
+  getDates,
+} = require('./datelogic');
+
+
+function getValidHolidays(holidays, periodFrom, periodTo, weekEndDaysIndexArray, validOffDays) {
+  const validHolidays = [];
+
+  holidays.forEach(holiday => {
+    const from = new Date(holiday.dateFrom);
+    const to = new Date(holiday.dateTo);
+    let numberOfDays = 0;
+
+    for (let day = from; day <= to; day.setDate(day.getDate() + 1)) {
+      if (day >= periodFrom && day <= periodTo) {
+        const isWeekendDay = isDateOnWeekend(day, weekEndDaysIndexArray);
+        const isOnOffDay = validOffDays.some(offday => moment(offday.date).isSame(day, 'day'));
+        const invalidHoliday = (isWeekendDay || isOnOffDay);
+
+        if (!invalidHoliday) {
+          numberOfDays++;
+          validHolidays.push(holiday);
+        }
+      }
+    }
+
+    holiday.numberOfDays = numberOfDays;
+  });
+
+  return validHolidays;
+}
 
 function manageConfigurationData(rows, params) {
   const offDays = rows[1];
   const weekEndDays = rows[3];
   const periodFrom = new Date(params.dateFrom);
   const periodTo = new Date(params.dateTo);
-  const moment = require('moment');
 
-  const validHolidays = [];
+  // make an index array of the "indice" for easy lookups.
+  const weekEndDaysIndexArray = weekEndDays.map(wk => wk.indice);
 
-  const validOffDays = offDays.filter(offDay => {
-    const offdayIndice = new Date(offDay.date).getDay();
-    const isValidOffDay = weekEndDays.every(weekEndDay => offdayIndice !== weekEndDay.indice);
-    return isValidOffDay;
-  });
+  const validOffDays = offDays.filter(offDay => !isDateOnWeekend(offDay.date, weekEndDaysIndexArray));
 
   if (validOffDays.length) {
     rows.push(validOffDays);
@@ -31,38 +63,7 @@ function manageConfigurationData(rows, params) {
 
   const holidays = rows[2];
 
-  holidays.forEach(holiday => {
-    const from = new Date(holiday.dateFrom);
-    const to = new Date(holiday.dateTo);
-    let numberOfDays = 0;
-
-    for (let day = from; day <= to; day.setDate(day.getDate() + 1)) {
-      if (day >= periodFrom && day <= periodTo) {
-        let invalidHoliday = false;
-        const holidayIndice = new Date(day).getDay();
-
-        weekEndDays.forEach(days => {
-          if (holidayIndice === days.indice) {
-            invalidHoliday = true;
-          }
-        });
-
-        // Check if in a holiday period there is a offDay
-        validOffDays.forEach(off => {
-
-          if (moment(off.date).isSame(day, 'day')) {
-            invalidHoliday = true;
-          }
-        });
-
-        if (!invalidHoliday) {
-          numberOfDays++;
-          validHolidays.push(holiday);
-        }
-      }
-      holiday.numberOfDays = numberOfDays;
-    }
-  });
+  const validHolidays = getValidHolidays(holidays, periodFrom, periodTo, weekEndDaysIndexArray, validOffDays);
 
   if (validHolidays.length) {
     rows.push(validHolidays);
@@ -73,35 +74,14 @@ function manageConfigurationData(rows, params) {
   // Get Working Days
   let workingDay = 0;
 
-  // Returns an array of dates between the two dates
-  const getDates = function (startDate, endDate) {
-    const dates = [];
-
-
-    let currentDate = startDate;
-
-
-    const addDays = function (days) {
-      const date = new Date(this.valueOf());
-      date.setDate(date.getDate() + days);
-      return date;
-    };
-    while (currentDate <= endDate) {
-      dates.push(currentDate);
-      currentDate = addDays.call(currentDate, 1);
-    }
-    return dates;
-  };
-
-
   const range = getDates(periodFrom, periodTo);
-  range.forEach((day) => {
 
+
+  range.forEach((day) => {
     let invalidDate = false;
     const dayIndice = new Date(day).getDay();
 
     weekEndDays.forEach(days => {
-
       if (dayIndice === days.indice) {
         invalidDate = true;
       }
