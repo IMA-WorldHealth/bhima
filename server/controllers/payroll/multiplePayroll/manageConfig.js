@@ -13,7 +13,7 @@ const moment = require('moment');
 
 const {
   isDateOnWeekend,
-  getDates,
+  createDateRange,
 } = require('./datelogic');
 
 
@@ -46,7 +46,9 @@ function getValidHolidays(holidays, periodFrom, periodTo, weekEndDaysIndexArray,
 
 function manageConfigurationData(rows, params) {
   const offDays = rows[1];
+  const holidays = rows[2];
   const weekEndDays = rows[3];
+
   const periodFrom = new Date(params.dateFrom);
   const periodTo = new Date(params.dateTo);
 
@@ -61,8 +63,6 @@ function manageConfigurationData(rows, params) {
     rows.push([]);
   }
 
-  const holidays = rows[2];
-
   const validHolidays = getValidHolidays(holidays, periodFrom, periodTo, weekEndDaysIndexArray, validOffDays);
 
   if (validHolidays.length) {
@@ -74,8 +74,7 @@ function manageConfigurationData(rows, params) {
   // Get Working Days
   let workingDay = 0;
 
-  const range = getDates(periodFrom, periodTo);
-
+  const range = createDateRange(periodFrom, periodTo);
 
   range.forEach((day) => {
     let invalidDate = false;

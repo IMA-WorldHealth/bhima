@@ -9,14 +9,14 @@ function isDateOnWeekend(date, weekendDayIndex) {
 }
 
 /**
- * @function getDates
+ * @function createDateRange
  *
  * @description
  * Creates an array of dates, with each element being a date within
  * the start/end date period.  The start date is the first element
  * of the array.
  */
-const getDates = function (startDate, endDate) {
+function createDateRange(startDate, endDate) {
   const dates = [];
 
   let currentDate = startDate;
@@ -33,9 +33,9 @@ const getDates = function (startDate, endDate) {
   }
 
   return dates;
-};
+}
 
 module.exports = {
   isDateOnWeekend,
-  getDates,
+  createDateRange,
 };
