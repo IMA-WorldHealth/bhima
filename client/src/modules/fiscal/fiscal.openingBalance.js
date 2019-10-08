@@ -50,7 +50,8 @@ function FiscalOpeningBalanceController($state, Fiscal, Notify, uiGridConstants,
 
   const columns = [{
     field : 'number',
-    displayName : '',
+    displayName : 'ACCOUNT.LABEL',
+    headerCellFilter : 'translate',
     cellClass : computeBoldClass,
     width : 100,
   }, {
@@ -100,7 +101,20 @@ function FiscalOpeningBalanceController($state, Fiscal, Notify, uiGridConstants,
   };
 
   const exporter = new GridExport(vm.gridOptions, 'all', 'visible');
-  vm.export = () => exporter.run();
+
+  function exportRowsFormatter(rows) {
+    return rows
+      .filter(account => !account.isTitleAccount)
+      .map(account => {
+        const row = [account.number, account.label, account.debit, account.credit];
+        return row.map(value => ({ value }));
+      });
+  }
+
+  vm.export = () => {
+    const fname = `${vm.fiscal.label}`;
+    return exporter.exportToCsv(fname, exporter.defaultColumnFormatter, exportRowsFormatter);
+  };
 
   startup();
 

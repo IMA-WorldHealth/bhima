@@ -158,7 +158,7 @@ function StockExitController(
    * @description export the content of the grid to csv.
    */
   vm.exportGrid = () => {
-    exportation.exportToCsv('Stock_Exit_', formatExportColumns, formatExportRows);
+    exportation.exportToCsv('Stock_Exit_', exportation.defaultColumnFormatter, formatExportRows);
   };
 
   // reset the form after submission or on clear
@@ -170,20 +170,6 @@ function StockExitController(
     _form.$setUntouched();
     vm.stockForm.store.clear();
     vm.resetEntryExitTypes = true;
-  }
-
-  /**
-   * @function formatExportColumns
-   *
-   * @description this function will be apply to grid columns as filter for getting new columns
-   *
-   * @param {array} columns - refer to the grid columns array
-   * @return {array} - return an array of column object in this format : { displayName : ... }
-   */
-  function formatExportColumns(columns) {
-    return (columns || [])
-      .filter(col => col.displayName && col.displayName.length)
-      .map(col => ({ displayName : $translate.instant(col.displayName), width : col.width }));
   }
 
   /**

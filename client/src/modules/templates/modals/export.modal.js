@@ -8,13 +8,13 @@ ExportGridModalController.$inject = [
 
 function ExportGridModalController(Instance, uiGridConstants, $filter,
   moment, bhConstants, Data) {
-  var vm = this;
+  const vm = this;
 
-  var gridOptions = Data.options || {};
-  var gridApi = Data.api || {};
-  var filename = Data.filename || `Export ${moment().format('YYYY-MM-DD')}`;
-  var ROWS = Data.rows || 'visible';
-  var COLS = Data.cols || 'visible';
+  const gridOptions = Data.options || {};
+  const gridApi = Data.api || {};
+  let filename = Data.filename || `Export ${moment().format('YYYY-MM-DD')}`;
+  const ROWS = Data.rows || 'visible';
+  const COLS = Data.cols || 'visible';
 
   // bind with view
   vm.exportColType = COLS;
@@ -28,7 +28,7 @@ function ExportGridModalController(Instance, uiGridConstants, $filter,
    * Export to csv
    */
   function exportGrid() {
-    var myElement = angular.element(document.querySelectorAll('.ui-grid-exporter-csv-link'));
+    const myElement = angular.element(document.querySelectorAll('.ui-grid-exporter-csv-link'));
     filename = vm.filename || filename;
     gridOptions.exporterCsvFilename = filename.concat('.csv');
     gridOptions.exporterHeaderFilter = exporterHeaderFilter;
