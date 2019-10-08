@@ -1,4 +1,7 @@
-const { expect } = require('chai');
+const chai = require('chai');
+chai.use(require('chai-datetime'));
+
+const { expect } = chai;
 const logic = require('../../../server/controllers/payroll/multiplePayroll/datelogic');
 
 describe('payroll/multiplePayroll/datelogic.js', () => {
@@ -27,6 +30,14 @@ describe('payroll/multiplePayroll/datelogic.js', () => {
     const start = new Date(2019, 1, 1);
     const end = new Date(2019, 1, 1 + numDays);
     const range = logic.createDateRange(start, end);
-    expect(range[0]).to.equal(start);
+    expect(range[0]).to.equalDate(start);
+  });
+
+  it('#createDateRange() the last array element is the end date', () => {
+    const numDays = 2;
+    const start = new Date(2019, 1, 1);
+    const end = new Date(2019, 1, 1 + numDays);
+    const range = logic.createDateRange(start, end);
+    expect(range[range.length - 1]).to.equalDate(end);
   });
 });
