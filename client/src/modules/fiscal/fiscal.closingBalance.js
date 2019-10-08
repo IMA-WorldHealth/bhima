@@ -30,8 +30,9 @@ function FiscalClosingBalanceController(
 
   const columns = [{
     field : 'number',
-    displayName : '',
+    displayName : 'ACCOUNT.LABEL',
     cellClass : 'text-right',
+    headerCellFilter : 'translate',
     width : 100,
   }, {
     field : 'label',
@@ -76,7 +77,21 @@ function FiscalClosingBalanceController(
   };
 
   const exporter = new GridExport(vm.gridOptions, 'all', 'visible');
-  vm.export = () => exporter.run();
+
+  function exportRowsFormatter(rows) {
+    return rows
+      .filter(account => !account.isTitleAccount)
+      .map(account => {
+        const row = [account.number, account.label, account.debit, account.credit];
+        return row.map(value => ({ value }));
+      });
+  }
+
+  vm.export = () => {
+    const fname = `${vm.fiscal.label}`;
+    return exporter.exportToCsv(fname, exporter.defaultColumnFormatter, exportRowsFormatter);
+  };
+
 
   function customAggregationFn(columnDefs, column) {
     if (vm.AccountTree) {
