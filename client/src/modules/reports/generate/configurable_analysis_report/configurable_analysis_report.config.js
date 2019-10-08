@@ -10,7 +10,10 @@ function ConfigurableAnalysisReportController($sce, Notify, SavedReports, AppCac
   const cache = new AppCache('configurable_analysis_report');
   const reportUrl = 'reports/finance/configurable_analysis_report';
 
-  vm.reportDetails = {};
+  vm.reportDetails = {
+    includeUnpostedValues : 0,
+  };
+
   vm.previewGenerated = false;
 
   checkCachedConfiguration();
@@ -35,6 +38,10 @@ function ConfigurableAnalysisReportController($sce, Notify, SavedReports, AppCac
 
   vm.onSelectCashboxes = (cashboxesIds) => {
     vm.reportDetails.cashboxesIds = cashboxesIds;
+  };
+
+  vm.onChangeUnpostedValues = (bool) => {
+    vm.reportDetails.includeUnpostedValues = bool;
   };
 
   vm.preview = function preview(form) {

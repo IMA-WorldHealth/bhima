@@ -39,6 +39,8 @@ function report(req, res, next) {
     fiscal_year_id : params.fiscalYearId,
   };
 
+  params.includeUnpostedValues = parseInt(params.includeUnpostedValues, 10);
+
   // convert cashboxesIds parameters in array format ['', '', ...]
   // this parameter can be sent as a string or an array we force the conversion into an array
   const cashboxesIds = _.values(req.query.cashboxesIds);
@@ -163,13 +165,42 @@ function report(req, res, next) {
         data.period.start_date,
         data.period.start_date,
         data.period.start_date,
-        data.period.start_date,
-        data.period.end_date,
-        accountReferences,
-        data.period.start_date,
-        data.period.start_date,
-        data.period.start_date,
       ];
+
+      const unionPostingJournal = `
+        UNION
+        SELECT ps.account_id, ps.debit_equiv AS debit, ps.credit_equiv AS credit, ps.record_uuid, ps.trans_date
+        FROM posting_journal AS ps
+        WHERE DATE(ps.trans_date) >= DATE(?) AND DATE(ps.trans_date) <= DATE(?)
+        AND ps.account_id iN (?)
+        AND ps.transaction_type_id <> 10
+        AND ps.record_uuid NOT IN (
+            SELECT rev.uuid
+            FROM (
+                SELECT v.uuid FROM voucher v WHERE v.reversed = 1
+                AND DATE(v.date) >= DATE(?)
+              UNION
+                SELECT c.uuid FROM cash c WHERE c.reversed = 1
+                AND DATE(c.date) >= DATE(?)
+              UNION
+                SELECT i.uuid FROM invoice i WHERE i.reversed = 1
+                AND DATE(i.date) >= DATE(?)
+            ) AS rev
+          )
+      `;
+
+      const sqlIncludUnpostedValues = params.includeUnpostedValues ? unionPostingJournal : '';
+
+      if (params.includeUnpostedValues) {
+        paramFilter.push(
+          data.period.start_date,
+          data.period.end_date,
+          accountReferences,
+          data.period.start_date,
+          data.period.start_date,
+          data.period.start_date
+        );
+      }
 
       const paramFilterOpening = [
         data.period.start_date,
@@ -211,25 +242,7 @@ function report(req, res, next) {
                   AND DATE(i.date) >= DATE(?)
               ) AS rev
             )
-          UNION
-          SELECT ps.account_id, ps.debit_equiv AS debit, ps.credit_equiv AS credit, ps.record_uuid, ps.trans_date
-          FROM posting_journal AS ps
-          WHERE DATE(ps.trans_date) >= DATE(?) AND DATE(ps.trans_date) <= DATE(?)
-          AND ps.account_id iN (?)
-          AND ps.transaction_type_id <> 10
-          AND ps.record_uuid NOT IN (
-              SELECT rev.uuid
-              FROM (
-                  SELECT v.uuid FROM voucher v WHERE v.reversed = 1
-                  AND DATE(v.date) >= DATE(?)
-                UNION
-                  SELECT c.uuid FROM cash c WHERE c.reversed = 1
-                  AND DATE(c.date) >= DATE(?)
-                UNION
-                  SELECT i.uuid FROM invoice i WHERE i.reversed = 1
-                  AND DATE(i.date) >= DATE(?)
-              ) AS rev
-            )
+          ${sqlIncludUnpostedValues}
         ) AS cl
         JOIN account AS a ON a.id = cl.account_id
           GROUP BY cl.account_id
