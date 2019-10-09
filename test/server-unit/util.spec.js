@@ -65,6 +65,15 @@ describe('util.js', () => {
     expect(result).to.deep.equal([]);
   });
 
+  it('should calculate an age from a date', () => {
+    const now = new Date();
+
+    const fourYearsAgo = now.getFullYear() - 4;
+    const old = new Date(fourYearsAgo, now.getMonth(), now.getDate());
+
+    expect(util.calculateAge(old)).to.equal(4);
+  });
+
   it('#formatCsvToJson should return a json from a csv file', () => {
     /**
      * The structure of the sample csv file (ohada-accounts.csv)

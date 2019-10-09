@@ -129,7 +129,7 @@ async function getUnbalancedInvoices(options) {
     if (debtor) {
       row.debtorReference = debtor.reference;
       row.debtorText = debtor.text;
-      row.debtorAge = util.calcualteAge(debtor.dob);
+      row.debtorAge = util.calculateAge(debtor.dob);
     }
   });
 

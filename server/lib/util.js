@@ -28,7 +28,7 @@ exports.dateFormatter = dateFormatter;
 exports.execp = execp;
 exports.format = require('util').format;
 
-exports.calcualteAge = calcualteAge;
+exports.calculateAge = calculateAge;
 exports.renameKeys = renameKeys;
 
 exports.roundDecimal = roundDecimal;
@@ -214,8 +214,13 @@ function renameObjectKeys(obj, newKeys) {
 
 /**
  * @function formatCsvToJson
- * @description convert a csv file to a json
- * @return {promise} return a promise
+ *
+ * @description
+ * Converts a csv file to a json
+ *
+ * @param {String} filePath - the path to the CSV file on distk
+ *
+ * @return {Promise} return a promise
  */
 async function formatCsvToJson(filePath) {
   const rows = await csvtojson()
@@ -224,8 +229,8 @@ async function formatCsvToJson(filePath) {
   return rows;
 }
 
-// calcualte age function
-function calcualteAge(dob) {
+// calculate an age from a year
+function calculateAge(dob) {
   return moment().diff(dob, 'years');
 }
 
