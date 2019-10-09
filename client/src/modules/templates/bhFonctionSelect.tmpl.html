@@ -4,7 +4,7 @@
     ng-class="{ 'has-error' : FonctionForm.$$parent.$submitted && FonctionForm.fonction_id.$invalid }">
 
     <label class="control-label" translate>
-      FORM.LABELS.PROFESSION
+      {{$ctrl.label}}
     </label>
     
     <ng-transclude></ng-transclude>

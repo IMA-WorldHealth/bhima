@@ -642,7 +642,14 @@ INSERT INTO `supplier` (uuid, creditor_uuid, display_name, address_1, address_2,
 -- Grade
 INSERT INTO `grade` VALUES
   (HUID('71e9f21c-d9b1-11e5-8ab7-78eb2f2a46e0'), 'G1', 'grade 1', 500.0000),
+  (HUID('61e9f21c-d9b1-11e4-8ab6-78eb2f2a46e0'), 'test', 'grade 3', 650.0000),
   (HUID('9ee06e4a-7b59-48e6-812c-c0f8a00cf7d3'), 'A1', '1.1', 50.0000);
+
+INSERT INTO `staffing_grade_indice` (`uuid`, `value`, `grade_uuid`) VALUES
+ (HUID(UUID()), 125.0000, HUID('61e9f21c-d9b1-11e4-8ab6-78eb2f2a46e0')),
+(HUID(UUID()), 60.0000, HUID('71e9f21c-d9b1-11e5-8ab7-78eb2f2a46e0')),
+(HUID('71e9f21c-d9b1-11e5-8ab7-78eb2f2a46e0'), 10.0000, HUID('9ee06e4a-7b59-48e6-812c-c0f8a00cf7d3'));
+
 
 -- Offday
 INSERT INTO `offday` VALUES
@@ -839,8 +846,26 @@ INSERT INTO `rubric_payroll` (`id`, `label`, `abbr`, `is_employee`, `is_percent`
   (11, 'Office Nationale de l\emploie', 'ONEM', 0, 1, 1, 1, 0, 0, 0, 320, 355, 0, 0, 0.2),
   (12, 'Acompte sur salaires', 'ac_sal', 1, 0, 1, 0, 0, 1, 0, 340, 179, 0, 1, NULL);
 
+INSERT INTO `rubric_payroll` (`id`, `label`, `abbr`, `is_employee`, `is_percent`, `is_discount`, `is_tax`, `is_social_care`,
+ `is_defined_employee`, `is_membership_fee`, `debtor_account_id`, `expense_account_id`, `is_ipr`, `is_associated_employee`, 
+ `is_seniority_bonus`, `is_family_allowances`, `is_monetary_value`, `position`, `is_indice`, `indice_type`, `value`, `indice_to_grap`)
+
+VALUES (13, 'Jours_prestes', 'Jr_preste', 0, 0, 0, 0, 0, 1, 0, NULL, NULL, 0, 0, 0, 0, 0, 7, 1, 'is_day_worked', NULL, 1),
+(14, 'Jours_supplementaires', 'jr_Suppl', 0, 0, 0, 0, 0, 1, 0, NULL, NULL, 0, 0, 0, 0, 0, 8, 1, 'is_extra_day', NULL, 1),
+(15, 'BASE_INDEX', 'Indice-base', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 1, 1, 'is_base_index', NULL, 0),
+(16, 'DAY_INDEX', 'Indice-jour', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 2, 1, 'is_day_index', NULL, 0),
+(17, 'REAGISTERED_INDEX', 'Indice-reag', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 3, 1, 'is_reagistered_index', NULL, 0),
+(18, 'Responsability_', 'Responsability_', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 4, 1, 'is_responsability', NULL, 0),
+(19, 'Autres_profit', 'autr-profit', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 5, 1, 'is_other_profits', NULL, 1),
+(20, 'Total_code', 'totCod', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 6, 1, 'is_total_code', NULL, 0),
+(21, 'total_Jrs', 'total_days', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 9, 1, 'is_total_days', NULL, 0),
+(22, 'taux_de_paie', 'TauxPaie', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 10, 1, 'is_pay_rate', NULL, 0),
+(23, 'Salire_brute', 'Salaire brute', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 11, 1, 'is_gross_salary', NULL, 0),
+(24, 'Nombre_deJours', 'Nbr_jrs', 0, 0, 0, 0, 0, 0, 0, NULL, NULL, 0, 0, 0, 0, 0, 12, 1, 'is_number_of_days', NULL, 0);
 -- Configuration of Rubrinc
-INSERT INTO `config_rubric` (`id`, `label`) VALUES (1, 'Configuration des rubriques');
+INSERT INTO `config_rubric` (`id`, `label`)
+ VALUES (1, 'Configuration des rubriques'), 
+ (2, 'Configuration des rubriques (indices)');
 
 -- Configuration of Rubric Items
 INSERT INTO `config_rubric_item` (`id`, `config_rubric_id`, `rubric_payroll_id`) VALUES
@@ -855,7 +880,18 @@ INSERT INTO `config_rubric_item` (`id`, `config_rubric_id`, `rubric_payroll_id`)
   (9, 1, 9),
   (10, 1, 10),
   (11, 1, 11),
-  (12, 1, 12);
+  (12, 1, 12),
+  (13, 2, 13),
+  (14, 2, 14),
+  (15, 2, 15),
+  (16, 2, 16),
+  (17, 2, 17),
+  (18, 2, 18),
+  (19, 2, 19),
+  (20, 2, 20),
+  (21, 2, 21),
+  (22, 2, 22),
+  (23, 2, 23);
 
 -- Configuration of weekend
 INSERT INTO `weekend_config` (`id`, `label`) VALUES
@@ -896,8 +932,12 @@ INSERT INTO `config_employee_item` (`id`, `config_employee_id`, `employee_uuid`)
   (2, 1, 0x75E69409562FA2A845A13D7938B02500);
 
 -- Payroll Configuration Period
-INSERT INTO `payroll_configuration` (`id`, `label`, `dateFrom`, `dateTo`, `config_rubric_id`, `config_accounting_id`, `config_weekend_id`, `config_employee_id`, `config_ipr_id`) VALUES
-(1, 'Février 2018', '2018-02-01', '2018-02-28', 1, 1, 1, 1, 1);
+INSERT INTO `payroll_configuration` (`id`, `label`, `dateFrom`, `dateTo`,
+ `config_rubric_id`, `config_accounting_id`, `config_weekend_id`, `config_employee_id`, `config_ipr_id`) VALUES
+(1, 'Février 2018', '2018-02-01', '2018-02-28', 1, 1, 1, 1, 1),
+(2, 'Juin 2019', '2019-06-01', '2019-06-30', 2, 1, 1, 1, 1);
+
+CALL UpdateStaffingIndices('2019-06-01', '2019-06-30');
 
 SET @paymentUuid = HUID('2a3f17b0ae3242bb9333a760825fd257');
 SET @employeeUuid = HUID('75e0969465f245a1a8a28b025003d793');

@@ -63,6 +63,14 @@ class RubricPage {
     await FU.modal.submit();
     await notification.hasSuccess();
   }
+
+  async importIndexesRubric() {
+    await element(by.css('[data-action="open-tools"]')).click();
+    await element(by.css('[data-method="import-indexes-rubrics"]')).click();
+    await FU.modal.submit();
+    await notification.hasSuccess();
+  }
+
 }
 
 module.exports = RubricPage;

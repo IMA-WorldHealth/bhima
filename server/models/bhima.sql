@@ -134,7 +134,10 @@ INSERT INTO unit VALUES
   (247, 'Client support report', 'TREE.CLIENT_SUPPORT_REPORT', 'Client support report', 144, '/modules/reports/clientSupport', '/reports/clientSupport'),
   (248, 'Analysis of cashboxes', 'REPORT.ANALYSIS_AUX_CASHBOXES.TITLE', 'Analysis of auxiliary cashboxes', 144, '/modules/reports/analysisAuxiliaryCash', '/reports/analysisAuxiliaryCash'),
   (249, 'Realized Profit Report', 'TREE.REALIZED_PROFIT_REPORT', 'Realized profit report', 144, '/modules/reports/realizedProfit', '/reports/realizedProfit'),
-  (250, 'Sytem usage statistic', 'REPORT.SYSTEM_USAGE_STAT.TITLE', 'Sytem usage statistic', 144, '/modules/reports/systemUsageStat', '/reports/systemUsageStat');
+  (250, 'Sytem usage statistic', 'REPORT.SYSTEM_USAGE_STAT.TITLE', 'Sytem usage statistic', 144, '/modules/reports/systemUsageStat', '/reports/systemUsageStat'),
+  (251, 'indexes', 'TREE.INDEXES','The payrall-index', 57,'/modules/finance/','/PAYROLL_INDEX_FOLDER'),
+  (252, 'Staffing indexes management','TREE.STAFFING_INDICES_MANAGEMENT','Staffing indices management',251 ,'/modules/payroll/staffing_indice','/staffing_indices'),
+  (253, 'Multiple Payroll by indice','TREE.MULTI_PAYROLL_INDICE','Multiple Payroll (indice)', 251,'/modules/multiple_payroll_indice','/multiple_payroll_indice');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -211,6 +214,10 @@ INSERT INTO `inventory_unit` VALUES (1,'Act', 'Act'),(2,'Pal', 'Pallet'),(3,'Pil
 INSERT INTO `fonction` VALUES
   (1,'Infirmier'),
   (2,'Medecin Directeur');
+
+INSERT INTO `staffing_function_indice` (`uuid`, `value`, `fonction_id`) VALUES
+(HUID('9ee06e4a-7b59-48e6-812c-c0f8a00cf7d3'), 60.0000, 1),
+(HUID(uuid()), 125.0000, 2);
 
 -- transaction type
 INSERT INTO `transaction_type` (`id`, `text`, `type`, `fixed`) VALUES

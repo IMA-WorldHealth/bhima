@@ -6,6 +6,7 @@ angular.module('bhima.components')
     bindings    : {
       fonctionId        : '<',
       onSelectCallback : '&',
+      label : '@?',
     },
   });
 
@@ -19,18 +20,18 @@ FonctionSelectController.$inject = [
  */
 function FonctionSelectController(functions, Notify) {
   const $ctrl = this;
-
+  $ctrl.label = $ctrl.label || 'FORM.LABELS.PROFESSION';
   $ctrl.$onInit = function onInit() {
 
     functions.read()
-      .then((functions) => {
-        $ctrl.functions = functions;
+      .then(fct => {
+        $ctrl.functions = fct;
       })
       .catch(Notify.handleError);
   };
 
   // fires the onSelectCallback bound to the component boundary
-  $ctrl.onSelect = function ($item, $model) {
+  $ctrl.onSelect = ($item) => {
     $ctrl.onSelectCallback({ fonction : $item });
   };
 }

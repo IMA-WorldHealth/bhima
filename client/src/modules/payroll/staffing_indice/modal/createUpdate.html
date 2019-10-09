@@ -1,0 +1,68 @@
+<form name="staffingindiceFom" bh-submit="$ctrl.submit(staffingindiceFom)" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li>
+        <span translate>TREE.STAFFING_INDICES_MANAGEMENT</span>
+
+        <label class="label label-warning text-uppercase" translate>
+          {{$ctrl.action}}
+        </label>
+      </li>
+    </ol>
+  </div>
+
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-lg-12">
+        <bh-employee-select
+          employee-uuid="$ctrl.indice.employee_uuid"
+          on-select-callback="$ctrl.onSelectEmployee(employee)"
+          required="true">
+        </bh-employee-select>
+
+        <bh-grade-select
+          label = "FORM.LABELS.LEVEL_OF_STUDY"
+          required = "true"
+          grade-uuid="$ctrl.indice.grade_uuid"
+          on-select-callback="$ctrl.onSelectGrade(grade)">
+        </bh-grade-select>
+
+        <bh-fonction-select
+          label = "FORM.LABELS.RESPONSABILITY"
+          fonction-id="$ctrl.indice.fonction_id"
+          on-select-callback="$ctrl.onSelectFonction(fonction)">
+        </bh-fonction-select>
+
+        <bh-input-text
+          key="grade_indice"
+          label="FORM.LABELS.ENROLLMENT_BONUS"
+          text-value="$ctrl.indice.grade_indice"
+          on-change="$ctrl.onInputTextChange(key, value)"
+          required="true">
+        </bh-input-text>
+
+        <bh-input-text
+          key="function_indice"
+          label="FORM.LABELS.FUNCTION_BONUS"
+          text-value="$ctrl.indice.function_indice"
+          on-change="$ctrl.onInputTextChange(key, value)"
+          required="true">
+        </bh-input-text>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button
+      type="button"
+      data-method="cancel"
+      class="btn btn-default"
+      ng-click="$ctrl.close()"
+      translate>
+      FORM.BUTTONS.CANCEL
+    </button>
+
+    <bh-loading-button loading-state="staffingindiceFom.$loading">
+    </bh-loading-button>
+  </div>
+</form>

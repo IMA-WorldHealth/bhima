@@ -49,7 +49,9 @@ const accountConfig = require('../controllers/payroll/accounts');
 const weekendConfig = require('../controllers/payroll/weekendConfig');
 const employeeConfig = require('../controllers/payroll/employeeConfig');
 const multiplePayroll = require('../controllers/payroll/multiplePayroll');
-
+const multiplePayrollIndice = require('../controllers/payroll/multiplePayrollIndice');
+const staffingIndices = require('../controllers/payroll/staffingIndices');
+const staffingIndicesReport = require('../controllers/payroll/staffingIndices/report');
 // medical routes
 const patients = require('../controllers/medical/patients');
 const patientGroups = require('../controllers/medical/patientGroups');
@@ -371,6 +373,26 @@ exports.configure = function configure(app) {
   app.put('/payroll_config/:id', payrollConfig.update);
   app.delete('/payroll_config/:id', payrollConfig.delete);
 
+  app.post('/staffing_indices', staffingIndices.create);
+  app.get('/staffing_indices', staffingIndices.list);
+  app.get('/staffing_indices/:uuid', staffingIndices.detail);
+  app.get('/staffing_indices/export/report', staffingIndicesReport.document);
+  app.delete('/staffing_indices/:uuid', staffingIndices.remove);
+  app.put('/staffing_indices/:uuid', staffingIndices.update);
+
+  app.get('/staffing_function_indices/', staffingIndices.functionIndices.list);
+  app.get('/staffing_function_indices/:uuid', staffingIndices.functionIndices.detail);
+  app.post('/staffing_function_indices', staffingIndices.functionIndices.create);
+  app.put('/staffing_function_indices/:uuid', staffingIndices.functionIndices.update);
+  app.delete('/staffing_function_indices/:uuid', staffingIndices.functionIndices.delete);
+
+  app.get('/staffing_grade_indices/', staffingIndices.gradeIndices.list);
+  app.get('/staffing_grade_indices/:uuid', staffingIndices.gradeIndices.detail);
+  app.post('/staffing_grade_indices', staffingIndices.gradeIndices.create);
+  app.put('/staffing_grade_indices/:uuid', staffingIndices.gradeIndices.update);
+  app.delete('/staffing_grade_indices/:uuid', staffingIndices.gradeIndices.delete);
+
+
   // reports API: Invoices (receipts)
   app.get('/reports/medical/patients', medicalReports.patientRegistrations);
   app.get('/reports/medical/patients/:uuid', medicalReports.receipts.patients);
@@ -602,6 +624,12 @@ exports.configure = function configure(app) {
   app.post('/multiple_payroll/:id/multiConfiguration', multiplePayroll.setMultiConfiguration.config);
   app.post('/multiple_payroll/:id/commitment', multiplePayroll.makeCommitment.config);
 
+  app.get('/multiple_payroll_indice/', multiplePayrollIndice.read);
+  app.post('/multiple_payroll_indice/', multiplePayrollIndice.create);
+
+  app.get('/multiple_payroll_indice/parameters/:payroll_config_id', multiplePayrollIndice.parameters.detail);
+  app.post('/multiple_payroll_indice/parameters/', multiplePayrollIndice.parameters.create);
+  app.get('/multiple_payroll_indice/reports/', multiplePayrollIndice.reports.document);
   // discounts
   app.get('/discounts', discounts.list);
   app.get('/discounts/:id', discounts.detail);
@@ -643,6 +671,7 @@ exports.configure = function configure(app) {
   app.get('/rubrics', rubrics.list);
   app.get('/rubrics/:id', rubrics.detail);
   app.post('/rubrics', rubrics.create);
+  app.post('/rubrics/import_indexes', rubrics.importIndexes);
   app.put('/rubrics/:id', rubrics.update);
   app.delete('/rubrics/:id', rubrics.delete);
 

@@ -22,8 +22,8 @@ describe('Grades Management', () => {
   };
 
 
-  it('begins with 2 grades', async () => {
-    expect(await page.count()).to.equal(2);
+  it('begins with 3 grades', async () => {
+    expect(await page.count()).to.equal(3);
   });
 
   it('successfully creates a new grade', async () => {
@@ -34,7 +34,7 @@ describe('Grades Management', () => {
     await page.update(grade.code, updateGrade);
   });
 
-  it('doesn\'t create a record when grade name is incorrect', async () => {
+  it(`doesn't create a record when grade name is incorrect`, async () => {
     await page.errorOnCreateGrade();
   });
 

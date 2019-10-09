@@ -8,11 +8,11 @@ EmployeeController.$inject = [
   'bhConstants', 'ReceiptModal', 'SessionService', 'RubricService', 'PatientService',
 ];
 
-function EmployeeController(Employees, Services, Grades, Functions, CreditorGroups, util, Notify, 
+function EmployeeController(Employees, Services, Grades, Functions, CreditorGroups, util, Notify,
   $state, bhConstants, Receipts, Session, Rubrics, Patients) {
   const vm = this;
   const referenceUuid = $state.params.uuid;
-  const saveAsEmployee = $state.params.saveAsEmployee;
+  const { saveAsEmployee } = $state.params;
 
   vm.enterprise = Session.enterprise;
   vm.isUpdating = $state.params.uuid;
@@ -27,7 +27,7 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
         vm.employee.payroll = {};
 
         /**
-        /* Finds the amounts of all Rubrics (advantage) defined by employees, 
+        /* Finds the amounts of all Rubrics (advantage) defined by employees,
         /* these rubrics are those whose value Is defined by employee? is true
         */
         return Employees.advantage(referenceUuid);
@@ -39,7 +39,7 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
       })
       .catch((error) => {
 
-      // handle error and update view to show no results - this could be improved
+        // handle error and update view to show no results - this could be improved
         Notify.handleError(error);
         vm.unknownId = true;
       });
@@ -81,6 +81,7 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
     // Assign name
     employee.name = employee.display_name;
     employee.displayGender = employee.sex;
+    // eslint-disable-next-line no-undef
     employee.displayAge = moment().diff(employee.dob, 'years');
   }
 
@@ -93,8 +94,8 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
     minDate : bhConstants.dates.minDOB,
   };
 
-  const yearOptions = bhConstants.yearOptions;
-  const dayOptions = bhConstants.dayOptions;
+  // const yearOptions = bhConstants.yearOptions;
+  const { dayOptions } = bhConstants;
 
   setupRegistration();
 
@@ -160,9 +161,9 @@ function EmployeeController(Employees, Services, Grades, Functions, CreditorGrou
     let promise;
 
     if (!vm.employee.is_patient) {
-      promise = (!referenceUuid) ?
-        Employees.create(vm.employee) :
-        Employees.update(referenceUuid, vm.employee);
+      promise = (!referenceUuid)
+        ? Employees.create(vm.employee)
+        : Employees.update(referenceUuid, vm.employee);
     } else {
       promise = Employees.patientToEmployee(vm.employee);
     }

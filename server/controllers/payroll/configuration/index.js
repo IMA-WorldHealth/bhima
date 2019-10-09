@@ -52,10 +52,13 @@ function detail(req, res, next) {
 function create(req, res, next) {
   const sql = `INSERT INTO payroll_configuration SET ?`;
   const data = req.body;
-
+  let insertedId = null;
   db.exec(sql, [data])
     .then((row) => {
-      res.status(201).json({ id : row.insertId });
+      insertedId = row.insertId;
+      return db.exec(`CALL UpdateStaffingIndices(?, ?)`, [data.dateFrom, data.dateTo]);
+    }).then(() => {
+      res.status(201).json({ id : insertedId });
     })
     .catch(next)
     .done();
@@ -127,6 +130,7 @@ function payrollReportElements(idPeriod, employees, employeesPaiementUuid) {
     JOIN employee ON employee.uuid = paiement.employee_uuid
     JOIN rubric_payroll ON rubric_payroll.id = rubric_paiement.rubric_payroll_id
     WHERE paiement.payroll_configuration_id = ? AND employee.reference IN (?)
+    AND rubric_payroll.is_monetary_value = 1
     ORDER BY rubric_payroll.label, rubric_payroll.is_social_care ASC, rubric_payroll.is_discount ASC
   `;
 
