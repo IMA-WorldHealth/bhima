@@ -4,7 +4,7 @@ angular.module('bhima.services')
 ExportService.$inject = ['$httpParamSerializer', 'LanguageService'];
 
 function ExportService($httpParamSerializer, Languages) {
-  var service = this;
+  const service = this;
 
   // expose the service
   service.download = download;
@@ -17,10 +17,10 @@ function ExportService($httpParamSerializer, Languages) {
    * @param {string} linkIdentifier
    */
   function download(uri, params, name, linkIdentifier) {
-    var options = angular.merge(params, { lang: Languages.key });
+    const options = angular.merge(params, { lang : Languages.key });
 
-    var link = document.getElementById(linkIdentifier || 'export');
-    var queryString = $httpParamSerializer(options);
+    const link = document.getElementById(linkIdentifier || 'export');
+    const queryString = $httpParamSerializer(options);
     link.download = name;
     link.href = uri.concat('?', queryString);
   }
