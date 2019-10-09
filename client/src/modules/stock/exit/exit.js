@@ -6,7 +6,7 @@ StockExitController.$inject = [
   'DepotService', 'NotifyService', 'SessionService', 'util',
   'bhConstants', 'ReceiptModal', 'StockFormService', 'StockService',
   'StockModalService', 'uiGridConstants', '$translate', 'appcache',
-  'moment', 'GridExportService', 'Store', 'bhConstants', '$timeout',
+  'moment', 'GridExportService', 'Store',
 ];
 
 /**
@@ -16,8 +16,9 @@ StockExitController.$inject = [
  * This controller is responsible to handle stock exit module.
  */
 function StockExitController(
-  Depots, Notify, Session, util, bhConstants, ReceiptModal, StockForm, Stock,
-  StockModal, uiGridConstants, $translate, AppCache, moment, GridExportService, Store, Constants, $timeout
+  Depots, Notify, Session, util, bhConstants, ReceiptModal,
+  StockForm, Stock, StockModal, uiGridConstants, $translate,
+  AppCache, moment, GridExportService, Store
 ) {
   const vm = this;
   const cache = new AppCache('StockCache');
@@ -27,7 +28,7 @@ function StockExitController(
   vm.gridApi = {};
   vm.selectedLots = [];
   vm.reset = reset;
-  vm.ROW_ERROR_FLAG = Constants.grid;
+  vm.ROW_ERROR_FLAG = bhConstants.grid;
 
   vm.onDateChange = date => {
     vm.movement.date = date;
@@ -314,21 +315,6 @@ function StockExitController(
       .map(item => item.lot.uuid);
   }
 
-  // detect the presence of duplicated lots
-  function hasDuplicatedLots() {
-    refreshSelectedLotsList();
-
-    let doubleIndex;
-    const doublonDetected = vm.selectedLots.some((lot, idx) => {
-      const hasDoubles = vm.selectedLots.lastIndexOf(lot) !== idx;
-      if (hasDoubles) { doubleIndex = idx; }
-      return hasDoubles;
-    });
-
-    vm.doublonDetectedLine = doubleIndex;
-    return doublonDetected;
-  }
-
   // check validity
   function checkValidity() {
     const lotsExists = vm.stockForm.store.data.every(item => {
@@ -443,9 +429,7 @@ function StockExitController(
       return Notify.danger('ERRORS.ER_NO_STOCK_DESTINATION');
     }
 
-    if (hasDuplicatedLots()) {
-      // notify on the concerned row
-      errorLineHighlight(vm.doublonDetectedLine);
+    if (vm.stockForm.catchDuplicatedLots(vm.stockForm.store)) {
       return Notify.danger('ERRORS.ER_DUPLICATED_LOT', 20000);
     }
 
@@ -454,17 +438,6 @@ function StockExitController(
       .then(toggleLoadingIndicator)
       .catch(Notify.handleError)
       .finally(() => reinit(form));
-  }
-
-  function errorLineHighlight(rowIdx) {
-    // set and unset error flag for allowing to highlight again the row
-    // when the user click again on the submit button
-    const row = vm.stockForm.store.data[rowIdx];
-
-    row[vm.ROW_ERROR_FLAG] = true;
-    $timeout(() => {
-      row[vm.ROW_ERROR_FLAG] = false;
-    }, 1000);
   }
 
   function toggleLoadingIndicator() {
