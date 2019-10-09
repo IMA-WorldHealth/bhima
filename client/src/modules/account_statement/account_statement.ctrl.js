@@ -250,7 +250,8 @@ function AccountStatementController(
 
         vm.loading = false;
         load(AccountStatement.filters.formatHTTP(true));
-      });
+      })
+      .catch(angular.noop);
   };
 
   // remove a filter with from the filter object, save the filters and reload
