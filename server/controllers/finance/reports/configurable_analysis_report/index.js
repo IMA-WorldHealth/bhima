@@ -2,6 +2,7 @@ const q = require('q');
 const _ = require('lodash');
 const db = require('../../../../lib/db');
 const ReportManager = require('../../../../lib/ReportManager');
+const NotFound = require('../../../../lib/errors/NotFound');
 
 const TEMPLATE = './server/controllers/finance/reports/configurable_analysis_report/report.handlebars';
 const cashboxes = require('../../../finance/cashboxes');
@@ -136,6 +137,12 @@ function report(req, res, next) {
       data.config = config;
       data.dataConfig = dataConfig;
 
+      const checkConfiguration = (data.type.length && data.config.length && data.dataConfig.length);
+
+      if (!checkConfiguration) {
+        throw new NotFound(`The necessary configurations are missing`);
+      }
+
       const dbPromises = [];
       const accountsNumber = dataConfig.map(row => row.number);
 
@@ -158,7 +165,21 @@ function report(req, res, next) {
         });
       });
 
-      const paramFilter = [
+      const paramsGeneralLedger = [
+        data.period.start_date,
+        data.period.end_date,
+        data.period.start_date,
+        data.period.start_date,
+        data.period.start_date,
+      ];
+
+      const paramsCombinedLedger = [
+        data.period.start_date,
+        data.period.end_date,
+        accountReferences,
+        data.period.start_date,
+        data.period.start_date,
+        data.period.start_date,
         data.period.start_date,
         data.period.end_date,
         accountReferences,
@@ -166,41 +187,6 @@ function report(req, res, next) {
         data.period.start_date,
         data.period.start_date,
       ];
-
-      const unionPostingJournal = `
-        UNION
-        SELECT ps.account_id, ps.debit_equiv AS debit, ps.credit_equiv AS credit, ps.record_uuid, ps.trans_date
-        FROM posting_journal AS ps
-        WHERE DATE(ps.trans_date) >= DATE(?) AND DATE(ps.trans_date) <= DATE(?)
-        AND ps.account_id iN (?)
-        AND ps.transaction_type_id <> 10
-        AND ps.record_uuid NOT IN (
-            SELECT rev.uuid
-            FROM (
-                SELECT v.uuid FROM voucher v WHERE v.reversed = 1
-                AND DATE(v.date) >= DATE(?)
-              UNION
-                SELECT c.uuid FROM cash c WHERE c.reversed = 1
-                AND DATE(c.date) >= DATE(?)
-              UNION
-                SELECT i.uuid FROM invoice i WHERE i.reversed = 1
-                AND DATE(i.date) >= DATE(?)
-            ) AS rev
-          )
-      `;
-
-      const sqlIncludUnpostedValues = params.includeUnpostedValues ? unionPostingJournal : '';
-
-      if (params.includeUnpostedValues) {
-        paramFilter.push(
-          data.period.start_date,
-          data.period.end_date,
-          accountReferences,
-          data.period.start_date,
-          data.period.start_date,
-          data.period.start_date
-        );
-      }
 
       const paramFilterOpening = [
         data.period.start_date,
@@ -219,7 +205,33 @@ function report(req, res, next) {
         GROUP BY a.number;
       `;
 
-      const sqlBalanceAccounts = `
+      const sqlGeneralLedger = `
+        SELECT a.number, a.label, gl.account_id, SUM(gl.debit_equiv) AS debit, SUM(gl.credit_equiv) AS credit,
+        SUM(gl.debit_equiv - gl.credit_equiv) AS balance,
+        gl.record_uuid, gl.trans_date
+        FROM general_ledger AS gl
+        JOIN account AS a ON a.id = gl.account_id
+        WHERE DATE(gl.trans_date) >= DATE(?) AND DATE(gl.trans_date) <= DATE(?)
+        AND gl.transaction_type_id <> 10
+        AND gl.record_uuid NOT IN (
+          SELECT rev.uuid
+          FROM (
+              SELECT v.uuid FROM voucher v WHERE v.reversed = 1
+              AND DATE(v.date) >= DATE(?)
+            UNION
+              SELECT c.uuid FROM cash c WHERE c.reversed = 1
+              AND DATE(c.date) >= DATE(?)
+            UNION
+              SELECT i.uuid FROM invoice i WHERE i.reversed = 1
+              AND DATE(i.date) >= DATE(?)
+          ) AS rev
+        )
+        GROUP BY gl.account_id
+        ORDER BY a.number ASC, a.label
+      `;
+
+
+      const sqlCombinedLedger = `
         SELECT a.number, a.label, cl.account_id, SUM(cl.debit) AS debit, SUM(cl.credit) AS credit,
         SUM(cl.debit - cl.credit) AS balance, cl.record_uuid, cl.trans_date
         FROM
@@ -242,12 +254,33 @@ function report(req, res, next) {
                   AND DATE(i.date) >= DATE(?)
               ) AS rev
             )
-          ${sqlIncludUnpostedValues}
+            UNION
+            SELECT ps.account_id, ps.debit_equiv AS debit, ps.credit_equiv AS credit, ps.record_uuid, ps.trans_date
+            FROM posting_journal AS ps
+            WHERE DATE(ps.trans_date) >= DATE(?) AND DATE(ps.trans_date) <= DATE(?)
+            AND ps.account_id iN (?)
+            AND ps.transaction_type_id <> 10
+            AND ps.record_uuid NOT IN (
+                SELECT rev.uuid
+                FROM (
+                    SELECT v.uuid FROM voucher v WHERE v.reversed = 1
+                    AND DATE(v.date) >= DATE(?)
+                  UNION
+                    SELECT c.uuid FROM cash c WHERE c.reversed = 1
+                    AND DATE(c.date) >= DATE(?)
+                  UNION
+                    SELECT i.uuid FROM invoice i WHERE i.reversed = 1
+                    AND DATE(i.date) >= DATE(?)
+                ) AS rev
+              )
         ) AS cl
         JOIN account AS a ON a.id = cl.account_id
           GROUP BY cl.account_id
           ORDER BY a.number ASC, a.label
       `;
+
+      const sqlBalanceAccounts = params.includeUnpostedValues ? sqlCombinedLedger : sqlGeneralLedger;
+      const paramFilter = params.includeUnpostedValues ? paramsCombinedLedger : paramsGeneralLedger;
 
       const gettingBalanceAccount = [
         db.exec(sqlBalanceAccounts, paramFilter),
@@ -256,6 +289,7 @@ function report(req, res, next) {
       return q.all(gettingBalanceAccount);
     })
     .spread((balance, openingBalance) => {
+
       data.config.forEach(config => {
         config.displayLabel = config.is_creditor ? 'FORM.LABELS.CREDIT_BALANCE' : 'FORM.LABELS.DEBIT_BALANCE';
 

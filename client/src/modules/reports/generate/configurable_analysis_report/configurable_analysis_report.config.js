@@ -2,17 +2,29 @@ angular.module('bhima.controllers')
   .controller('configurable_analysis_reportController', ConfigurableAnalysisReportController);
 
 ConfigurableAnalysisReportController.$inject = [
-  '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state',
+  '$sce', 'NotifyService', 'BaseReportService', 'AppCache', 'reportData', '$state', 'ConfigurationAnalysisToolsService',
 ];
 
-function ConfigurableAnalysisReportController($sce, Notify, SavedReports, AppCache, reportData, $state) {
+function ConfigurableAnalysisReportController($sce, Notify, SavedReports, AppCache,
+  reportData, $state, ConfigurationAnalysisTools) {
   const vm = this;
   const cache = new AppCache('configurable_analysis_report');
   const reportUrl = 'reports/finance/configurable_analysis_report';
 
+  ConfigurationAnalysisTools.read()
+    .then((configurationAnalysisTools) => {
+      vm.configurationsAreMissing = (configurationAnalysisTools.length === 0);
+    })
+    .catch(handleError);
+
   vm.reportDetails = {
     includeUnpostedValues : 0,
   };
+
+  function handleError(error) {
+    vm.hasError = true;
+    Notify.handleError(error);
+  }
 
   vm.previewGenerated = false;
 

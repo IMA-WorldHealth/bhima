@@ -57,9 +57,18 @@
               help-text="REPORT.OPTIONS.INCLUDE_UNPOSTED_RECORDS_HELP">
             </bh-yes-no-radios>
 
-            <bh-loading-button loading-state="ConfigForm.$loading">
-              <span translate>REPORT.UTIL.PREVIEW</span>
-            </bh-loading-button>
+            <div ng-if="!ReportConfigCtrl.configurationsAreMissing">
+              <bh-loading-button loading-state="ConfigForm.$loading">
+                <span translate>REPORT.UTIL.PREVIEW</span>
+              </bh-loading-button>
+            </div>
+
+            <div ng-if="ReportConfigCtrl.configurationsAreMissing">
+              <span class="label label-warning text-capitalize">
+                <i class="fa fa-exclamation-triangle"></i>
+                <span style="font-size: 14px" translate> FORM.INFO.THE_NECESSARY_CONFIG_MISSING </span>
+              </span>
+            </div>
           </form>
         </div>
       </div>
