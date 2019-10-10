@@ -127,19 +127,18 @@ function StockFormService(StockItem, Store, AppCache, Session, $timeout, bhConst
   };
 
   /**
-   * @method catchDuplicatedLots
+   * @method hasDuplicatedLots
    *
    * @description
    * this method catch duplicated row and emit notification on the row
    */
-  StockForm.prototype.catchDuplicatedLots = function catchDuplicatedLots(_store) {
+  StockForm.prototype.hasDuplicatedLots = function hasDuplicatedLots() {
     const ROW_ERROR_FLAG = bhConstants.grid;
-    let selectedLots;
     let doublonDetectedLine;
 
-    if (hasDuplicatedLots(_store)) {
+    if (findDuplicatedLots(this.store)) {
       // notify on the concerned row
-      errorLineHighlight(doublonDetectedLine, _store);
+      errorLineHighlight(doublonDetectedLine, this.store);
       return true;
     }
 
@@ -155,16 +154,16 @@ function StockFormService(StockItem, Store, AppCache, Session, $timeout, bhConst
 
     // update the list of selected lots
     function refreshSelectedLotsList(store) {
-      selectedLots = store.data
+      return store.data
         .filter(item => item.lot && item.lot.uuid)
         .map(item => item.lot.uuid);
     }
 
     // detect the presence of duplicated lots
-    function hasDuplicatedLots(store) {
-      refreshSelectedLotsList(store);
-
+    function findDuplicatedLots(store) {
       let doubleIndex;
+      const selectedLots = refreshSelectedLotsList(store);
+
       const doublonDetected = selectedLots.some((lot, idx) => {
         const hasDoubles = selectedLots.lastIndexOf(lot) !== idx;
         if (hasDoubles) { doubleIndex = idx; }

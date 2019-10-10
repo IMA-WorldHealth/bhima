@@ -201,7 +201,7 @@ function StockAdjustmentController(
 
     if (!vm.validForSubmit || !vm.adjustmentOption) { return 0; }
 
-    if (vm.Stock.catchDuplicatedLots(vm.Stock.store)) {
+    if (vm.Stock.hasDuplicatedLots()) {
       return Notify.danger('ERRORS.ER_DUPLICATED_LOT', 20000);
     }
 

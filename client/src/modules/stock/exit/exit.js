@@ -429,7 +429,7 @@ function StockExitController(
       return Notify.danger('ERRORS.ER_NO_STOCK_DESTINATION');
     }
 
-    if (vm.stockForm.catchDuplicatedLots(vm.stockForm.store)) {
+    if (vm.stockForm.hasDuplicatedLots()) {
       return Notify.danger('ERRORS.ER_DUPLICATED_LOT', 20000);
     }
 
