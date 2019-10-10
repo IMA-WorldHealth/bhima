@@ -3,6 +3,7 @@ angular.module('bhima.services')
 
 StockFormService.$inject = [
   'StockItemService', 'Store', 'AppCache', 'SessionService', '$timeout',
+  'bhConstants',
 ];
 
 /**
@@ -13,7 +14,7 @@ StockFormService.$inject = [
  *
  * @todo - implement the cache feature
  */
-function StockFormService(StockItem, Store, AppCache, Session, $timeout) {
+function StockFormService(StockItem, Store, AppCache, Session, $timeout, bhConstants) {
   /**
    * @constructor
    */
@@ -123,6 +124,57 @@ function StockFormService(StockItem, Store, AppCache, Session, $timeout) {
    */
   StockForm.prototype.hasCacheAvailable = function hasCacheAvailable() {
     return Object.keys(this.cache).length > 0;
+  };
+
+  /**
+   * @method hasDuplicatedLots
+   *
+   * @description
+   * this method catch duplicated row and emit notification on the row
+   */
+  StockForm.prototype.hasDuplicatedLots = function hasDuplicatedLots() {
+    const { ROW_ERROR_FLAG } = bhConstants.grid;
+    let doublonDetectedLine;
+
+    if (findDuplicatedLots(this.store)) {
+      // notify on the concerned row
+      errorLineHighlight(doublonDetectedLine, this.store);
+      return true;
+    }
+
+    function errorLineHighlight(rowIdx, store) {
+      // set and unset error flag for allowing to highlight again the row
+      // when the user click again on the submit button
+      const row = store.data[rowIdx];
+      row[ROW_ERROR_FLAG] = true;
+      $timeout(() => {
+        row[ROW_ERROR_FLAG] = false;
+      }, 1000);
+    }
+
+    // update the list of selected lots
+    function refreshSelectedLotsList(store) {
+      return store.data
+        .filter(item => item.lot && item.lot.uuid)
+        .map(item => item.lot.uuid);
+    }
+
+    // detect the presence of duplicated lots
+    function findDuplicatedLots(store) {
+      let doubleIndex;
+      const selectedLots = refreshSelectedLotsList(store);
+
+      const doublonDetected = selectedLots.some((lot, idx) => {
+        const hasDoubles = selectedLots.lastIndexOf(lot) !== idx;
+        if (hasDoubles) { doubleIndex = idx; }
+        return hasDoubles;
+      });
+
+      doublonDetectedLine = doubleIndex;
+      return doublonDetected;
+    }
+
+    return false;
   };
 
   return StockForm;

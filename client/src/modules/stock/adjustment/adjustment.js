@@ -3,9 +3,9 @@ angular.module('bhima.controllers')
 
 // dependencies injections
 StockAdjustmentController.$inject = [
-  'DepotService', 'InventoryService', 'NotifyService', 'SessionService', 'util',
+  'DepotService', 'NotifyService', 'SessionService', 'util',
   'bhConstants', 'ReceiptModal', 'StockFormService', 'StockService',
-  'StockModalService', 'uiGridConstants', 'appcache',
+  'uiGridConstants', 'appcache',
 ];
 
 /**
@@ -15,8 +15,8 @@ StockAdjustmentController.$inject = [
  * This module exists to make sure that stock can be adjusted up and down as needed.
  */
 function StockAdjustmentController(
-  Depots, Inventory, Notify, Session, util, bhConstants, ReceiptModal, StockForm,
-  Stock, StockModal, uiGridConstants, AppCache
+  Depots, Notify, Session, util, bhConstants, ReceiptModal, StockForm,
+  Stock, uiGridConstants, AppCache
 ) {
   const vm = this;
 
@@ -26,6 +26,7 @@ function StockAdjustmentController(
   // global variables
   vm.Stock = new StockForm('StockAdjustment');
   vm.movement = {};
+  vm.ROW_ERROR_FLAG = bhConstants.grid.ROW_ERROR_FLAG;
 
   vm.onDateChange = date => {
     vm.movement.date = date;
@@ -114,6 +115,7 @@ function StockAdjustmentController(
     data : vm.Stock.store.data,
     fastWatch : true,
     flatEntityAccess : true,
+    rowTemplate : 'modules/templates/grid/error.row.html',
   };
 
   // add items
@@ -198,6 +200,10 @@ function StockAdjustmentController(
     checkValidity();
 
     if (!vm.validForSubmit || !vm.adjustmentOption) { return 0; }
+
+    if (vm.Stock.hasDuplicatedLots()) {
+      return Notify.danger('ERRORS.ER_DUPLICATED_LOT', 20000);
+    }
 
     if (vm.adjustmentOption === 'increase') {
       isExit = 0;

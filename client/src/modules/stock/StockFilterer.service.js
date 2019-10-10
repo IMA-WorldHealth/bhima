@@ -3,13 +3,13 @@ angular.module('bhima.services')
 
 StockFiltererService.$inject = [
   'FilterService', 'appcache', 'PeriodService',
-  '$httpParamSerializer', 'LanguageService', 'bhConstants', 'util',
+  '$httpParamSerializer', 'LanguageService', 'bhConstants',
 ];
 
 /**
  * @class StockFilterer
  */
-function StockFiltererService(Filters, AppCache, Periods, $httpParamSerializer, Languages, bhConstants, Util) {
+function StockFiltererService(Filters, AppCache, Periods, $httpParamSerializer, Languages, bhConstants) {
   const customFiltersList = [
     { key : 'depot_uuid', label : 'STOCK.DEPOT' },
     { key : 'inventory_uuid', label : 'STOCK.INVENTORY' },
