@@ -28,7 +28,7 @@ function StockExitController(
   vm.gridApi = {};
   vm.selectedLots = [];
   vm.reset = reset;
-  vm.ROW_ERROR_FLAG = bhConstants.grid;
+  vm.ROW_ERROR_FLAG = bhConstants.grid.ROW_ERROR_FLAG;
 
   vm.onDateChange = date => {
     vm.movement.date = date;

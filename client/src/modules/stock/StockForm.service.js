@@ -133,7 +133,7 @@ function StockFormService(StockItem, Store, AppCache, Session, $timeout, bhConst
    * this method catch duplicated row and emit notification on the row
    */
   StockForm.prototype.hasDuplicatedLots = function hasDuplicatedLots() {
-    const ROW_ERROR_FLAG = bhConstants.grid;
+    const { ROW_ERROR_FLAG } = bhConstants.grid;
     let doublonDetectedLine;
 
     if (findDuplicatedLots(this.store)) {

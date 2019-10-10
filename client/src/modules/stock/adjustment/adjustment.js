@@ -26,7 +26,7 @@ function StockAdjustmentController(
   // global variables
   vm.Stock = new StockForm('StockAdjustment');
   vm.movement = {};
-  vm.ROW_ERROR_FLAG = bhConstants.grid;
+  vm.ROW_ERROR_FLAG = bhConstants.grid.ROW_ERROR_FLAG;
 
   vm.onDateChange = date => {
     vm.movement.date = date;
