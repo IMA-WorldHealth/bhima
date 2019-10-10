@@ -1,6 +1,8 @@
 /* global browser, element, by */
 const protractor = require('protractor');
 
+const EC = protractor.ExpectedConditions;
+
 const helpers = require('../shared/helpers');
 const FU = require('../shared/FormUtils');
 const GU = require('../shared/GridUtils');
@@ -28,7 +30,7 @@ describe('Edit Posting Journal', () => {
     await doubleClick(accountNumberCell);
     await FU.typeahead('accountInputValue', '1100');
 
-    await FU.buttons.submit();
+    await FU.modal.submit();
     await components.notification.hasSuccess();
   });
 
@@ -48,39 +50,29 @@ describe('Edit Posting Journal', () => {
     await input.sendKeys(ctrlA, value, protractor.Key.ENTER);
   }
 
-  it('edits a transaction change value of debit and credit', async () => {
+  it('edits a transaction to change the value of debit and credit', async () => {
     await GU.selectRow(gridId, 0);
     await FU.buttons.edit();
 
+    await browser.wait(EC.visibilityOf(element(by.id(editingGridId)), 2000));
+
     // change the first row (index 0), debit and credit inputs (index 2 and 3)
-    await editInput(0, 2, 100);
+    await editInput(0, 2, 99);
     await editInput(0, 3, 0);
 
     await editInput(1, 2, 0);
-    await editInput(1, 3, 100);
+    await editInput(1, 3, 99);
 
-    await FU.buttons.submit();
-
+    await FU.modal.submit();
     await FU.exists(by.id('validation-errored-alert'), false);
     await components.notification.hasSuccess();
   });
 
-  // Test for validation
-  it('prevents a single line transaction', async () => {
+  it('prevents an unbalanced transaction', async () => {
     await GU.selectRow(gridId, 0);
     await FU.buttons.edit();
 
-    await GU.selectRow(editingGridId, 0);
-    await FU.buttons.delete();
-    await FU.buttons.submit();
-
-    await FU.exists(by.id('validation-errored-alert'), true);
-
-    await FU.buttons.cancel();
-  });
-
-  it('prevents an unbalanced transaction', async () => {
-    await FU.buttons.edit();
+    await browser.wait(EC.visibilityOf(element(by.id(editingGridId)), 2000));
 
     await editInput(0, 2, 100);
     await editInput(0, 3, 0);
@@ -88,12 +80,28 @@ describe('Edit Posting Journal', () => {
     await editInput(1, 2, 0);
     await editInput(1, 3, 50);
 
-    await FU.buttons.submit();
+    await FU.modal.submit();
 
     await FU.exists(by.id('validation-errored-alert'), true);
 
-    await FU.buttons.cancel();
+    await FU.modal.cancel();
   });
+
+  // Test for validation
+  it('prevents a single line transaction', async () => {
+    await FU.buttons.edit();
+
+    await browser.wait(EC.visibilityOf(element(by.id(editingGridId)), 2000));
+
+    await GU.selectRow(editingGridId, 0);
+    await FU.buttons.delete();
+    await FU.modal.submit();
+
+    await FU.exists(by.id('validation-errored-alert'), true);
+
+    await FU.modal.cancel();
+  });
+
 
   it('preventing transaction who have debit and credit null', async () => {
     await FU.buttons.edit();
@@ -104,13 +112,15 @@ describe('Edit Posting Journal', () => {
     await editInput(1, 2, 0);
     await editInput(1, 3, 0);
 
-    await FU.buttons.submit();
+    await FU.modal.submit();
     await FU.exists(by.id('validation-errored-alert'), true);
-    await FU.buttons.cancel();
+    await FU.modal.cancel();
   });
 
   it('preventing transaction who was debited and credited in a same line', async () => {
     await FU.buttons.edit();
+
+    await browser.wait(EC.visibilityOf(element(by.id(editingGridId)), 2000));
 
     await editInput(0, 2, 10);
     await editInput(0, 3, 10);
@@ -118,8 +128,8 @@ describe('Edit Posting Journal', () => {
     await editInput(1, 2, 10);
     await editInput(1, 3, 0);
 
-    await FU.buttons.submit();
+    await FU.modal.submit();
     await FU.exists(by.id('validation-errored-alert'), true);
-    await FU.buttons.cancel();
+    await FU.modal.cancel();
   });
 });

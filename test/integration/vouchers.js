@@ -27,6 +27,7 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
     project_id  : 1,
     currency_id : helpers.data.USD,
     amount      : 10,
+    type_id : 1,
     description : 'Voucher Transaction to BCDC',
     user_id     : 1,
     items       : [{
@@ -62,6 +63,7 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
     project_id  : 1,
     currency_id : helpers.data.USD,
     amount      : 23,
+    type_id : 2,
     description : 'Multiple Voucher Transaction',
     user_id     : 1,
   };
@@ -89,6 +91,7 @@ describe('(/vouchers) The vouchers HTTP endpoint', () => {
     project_id  : 1,
     currency_id : helpers.data.FC,
     amount      : 10,
+    type_id : 1,
     description : 'Voucher Transaction',
     user_id     : 1,
     items       : [{

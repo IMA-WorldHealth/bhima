@@ -1,6 +1,6 @@
 const helpers = require('../shared/helpers');
 const PatientRegistrySearch = require('./registry.search');
-const PatientMerge = require('./registry.merge.spec');
+const PatientMerge = require('./registry.merge');
 
 // patient registry tests
 describe('Patient Registry', () => {

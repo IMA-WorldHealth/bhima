@@ -10,8 +10,8 @@
  * @requires vouchers
  * @requires transactions
  */
-const db = require('../../../lib/db');
 const debug = require('debug')('voucherTools');
+const db = require('../../../lib/db');
 
 const journal = require('../journal');
 const vouchers = require('../vouchers');
@@ -68,7 +68,7 @@ function correct(req, res, next) {
 // correction
 // Array of rows that should make up the voucher items, these rows can differ from the original
 // transaction amounts
-function correctTransaction(transactionDetails, correction, userId) {
+async function correctTransaction(transactionDetails, correction, userId) {
   const actions = {};
   const transactionUuid = transactionDetails.record_uuid;
 
@@ -81,52 +81,43 @@ function correctTransaction(transactionDetails, correction, userId) {
   // of one huge custom transaction for two reasons:
   // 1. all of the code for creating vouchers and reversing transactions exist, recreating this would be repeating code
   // 2. large transactions are expensive for the database to perform and can lead to performance issues
-  return journal.reverseTransaction(
-    db.bid(transactionUuid),
-    userId,
-    transactionDetails.description
-  )
-    .then((reversalResult) => {
-      // @TODO(sfount) currently all routes that make corrections use system transaction type 10, this is labbeled
-      //               as 'CREDIT_NOTE', this isn't strictly true for all corrections and should be updated
-      const REVERSAL_TYPE_ID = 10;
+  try {
+    const reversalResult = await journal.reverseTransaction(
+      db.bid(transactionUuid),
+      userId,
+      transactionDetails.description
+    );
 
-      // reversal has been correctly executed; this returns the voucherUuid for this document
-      actions.reversal = { uuid : reversalResult.uuid };
+    // reversal has been correctly executed; this returns the voucherUuid for this document
+    actions.reversal = { uuid : reversalResult.uuid };
 
-      const formatVoucherDetails = {
-        items : correction,
-        type_id : REVERSAL_TYPE_ID,
-        user_id : userId,
-        date : transactionDetails.trans_date,
-        currency_id : transactionDetails.currency_id,
-        description : transactionDetails.correctionDescription,
+    const formatVoucherDetails = {
+      items : correction,
+      type_id : transactionDetails.transaction_type_id,
+      user_id : userId,
+      date : transactionDetails.trans_date,
+      currency_id : transactionDetails.currency_id,
+      description : transactionDetails.correctionDescription,
 
-        // @FIXME(sfount) currently voucher amounts are calculated on the client under
-        //                modules/vouchers/vouchers.service.js - this just performs a reduce
-        //                voucher logic should be refactored to calculate amount in MySQL or on the server
-        //                `createVoucher` end point
-        amount : correction.reduce((sum, row) => sum + row.debit, 0),
-      };
+      // @FIXME(sfount) currently voucher amounts are calculated on the client under
+      //                modules/vouchers/vouchers.service.js - this just performs a reduce
+      //                voucher logic should be refactored to calculate amount in MySQL or on the server
+      //                `createVoucher` end point
+      amount : correction.reduce((sum, row) => sum + row.debit, 0),
+    };
 
-      return vouchers.createVoucher(formatVoucherDetails, userId, transactionDetails.project_id);
-    })
-    .then((correctionResult) => {
-      // new voucher for correction has been correctly executed
-      actions.correction = { uuid : correctionResult.uuid };
 
-      // all transactions successful, package results with all generate ids
-      return actions;
-    })
-    .catch((error) => {
-      // internal error handling, undo all potential changes
-      return correctionErrorHandler(actions)
-        .then(() => {
-          // database has been cleaned up
-          // propagate error back up to HTTP method to return with `next`
-          throw error;
-        });
-    });
+    const correctionResult = await vouchers.createVoucher(formatVoucherDetails, userId, transactionDetails.project_id);
+
+    // new voucher for correction has been correctly executed
+    actions.correction = { uuid : correctionResult.uuid };
+
+    // all transactions successful, package results with all generate ids
+    return actions;
+  } catch (e) {
+    await correctionErrorHandler(actions);
+    throw e;
+  }
 }
 
 // custom internal error handler to allow multiple transactions across seperate

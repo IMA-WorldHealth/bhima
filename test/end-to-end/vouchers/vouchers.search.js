@@ -8,8 +8,8 @@ module.exports = VoucherRegistrySearch;
 function VoucherRegistrySearch() {
   const gridId = 'voucher-grid';
   const NUM_VOUCHERS = 13;
-  const NUM_USER_RECORDS = 13;
-  const NUM_DESCRIPTION_RECORDS = 2;
+  const NUM_USER_RECORDS = 12;
+  const NUM_DESCRIPTION_RECORDS = 1;
   const NUM_TRANSACTION_TYPE_RECORD = 1;
   const transactionTypes = ['Autres Depenses'];
 
@@ -36,7 +36,7 @@ function VoucherRegistrySearch() {
     await modal.setPeriod('month');
     await modal.submit();
 
-    await expectNumberOfGridRows(NUM_VOUCHERS);
+    await expectNumberOfGridRows(NUM_VOUCHERS - 1);
   });
 
   it('filters by reference should return a single result', async () => {
