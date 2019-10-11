@@ -12,7 +12,6 @@ function DepartementController(Department, Modal, ModalService, Notify, uiGridCo
   const { enterprise } = Session;
   // global variables
   vm.gridApi = {};
-  vm.filterEnabled = false;
   vm.toggleFilter = toggleFilter;
   vm.createDepartement = createDepartement;
   vm.deleteDepartment = deleteDepartment;
@@ -47,8 +46,7 @@ function DepartementController(Department, Modal, ModalService, Notify, uiGridCo
   }
 
   function toggleFilter() {
-    vm.filterEnabled = !vm.filterEnabled;
-    vm.gridOptions.enableFiltering = vm.filterEnabled;
+    vm.gridOptions.enableFiltering = !vm.gridOptions.enableFiltering;
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
@@ -80,7 +78,6 @@ function DepartementController(Department, Modal, ModalService, Notify, uiGridCo
       }
     });
   }
-
 
   // switch to delete warning mode
   function deleteDepartment(uuid) {

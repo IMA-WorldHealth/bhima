@@ -12,16 +12,7 @@
         </button>
       </div>
 
-      <div class="toolbar-item">
-        <button
-          type="button"
-          ng-click="DepotCtrl.toggleFilter()"
-          data-method="filter"
-          class="btn btn-default"
-          ng-class="{ 'btn-info' : DepotCtrl.filterEnabled }">
-          <i class="fa fa-filter"></i>
-        </button>
-      </div>
+      <bh-filter-toggle on-toggle="DepotCtrl.toggleFilter()"></bh-filter-toggle>
     </div>
   </div>
 </div>

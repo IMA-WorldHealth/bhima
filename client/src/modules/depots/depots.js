@@ -22,7 +22,6 @@ function DepotManagementController(Depots, ModalService, Notify, uiGridConstants
 
   // global variables
   vm.gridApi = {};
-  vm.filterEnabled = false;
 
   // options for the UI grid
   vm.gridOptions = {
@@ -70,8 +69,7 @@ function DepotManagementController(Depots, ModalService, Notify, uiGridConstants
   }
 
   function toggleFilter() {
-    vm.filterEnabled = !vm.filterEnabled;
-    vm.gridOptions.enableFiltering = vm.filterEnabled;
+    vm.gridOptions.enableFiltering = !vm.gridOptions.enableFiltering;
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
@@ -82,8 +80,8 @@ function DepotManagementController(Depots, ModalService, Notify, uiGridConstants
       .then(data => {
         // format location
         vm.gridOptions.data = data.map(item => {
-          item.location = item.location_uuid ?
-            ''.concat(`${item.village_name} / ${item.sector_name} / ${item.province_name} `)
+          item.location = item.location_uuid
+            ? ''.concat(`${item.village_name} / ${item.sector_name} / ${item.province_name} `)
               .concat(`(${item.country_name})`) : '';
           return item;
         });

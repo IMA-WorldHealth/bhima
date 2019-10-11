@@ -56,15 +56,9 @@
         </div>
       </div>
 
+      <bh-filter-toggle on-toggle="GeneralLedgerCtrl.toggleFilter()"></bh-filter-toggle>
+
       <div class="toolbar-item">
-        <button
-          type="button"
-          ng-click="GeneralLedgerCtrl.toggleFilter()"
-          data-method="filter"
-          class="btn btn-default"
-          ng-class="{ 'btn-info' : GeneralLedgerCtrl.filterEnabled }">
-          <i class="fa fa-filter"></i>
-        </button>
         <button
           type="button"
           ng-click="GeneralLedgerCtrl.toggleHideTitleAccount()"

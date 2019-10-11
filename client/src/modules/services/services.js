@@ -16,7 +16,6 @@ function ServicesController(Services, ModalService, Notify, uiGridConstants, $st
 
   // global variables
   vm.gridApi = {};
-  vm.filterEnabled = false;
 
   // options for the UI grid
   vm.gridOptions = {
@@ -53,8 +52,7 @@ function ServicesController(Services, ModalService, Notify, uiGridConstants, $st
   }
 
   function toggleFilter() {
-    vm.filterEnabled = !vm.filterEnabled;
-    vm.gridOptions.enableFiltering = vm.filterEnabled;
+    vm.gridOptions.enableFiltering = !vm.gridOptions.enableFiltering;
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
