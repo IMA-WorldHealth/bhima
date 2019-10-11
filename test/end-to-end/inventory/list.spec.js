@@ -80,7 +80,7 @@ describe('Inventory List', () => {
 
   // demonstrates that filtering works
   it(`should find one Inventory with Label "${metadataSearch.label}"`, async () => {
-    await element(by.id('research')).click();
+    await FU.buttons.search();
 
     await FU.input('ModalCtrl.searchQueries.text', metadataSearch.label);
     await FU.modal.submit();
@@ -92,7 +92,7 @@ describe('Inventory List', () => {
 
   // demonstrates that filtering works
   it(`should find three Inventory with Group "${metadataSearch.group}" and Type "${metadataSearch.type}"`, async () => {
-    await element(by.id('research')).click();
+    await FU.buttons.search();
 
     await components.inventoryGroupSelect.set(metadataSearch.group);
     await components.inventoryTypeSelect.set(metadataSearch.type);
