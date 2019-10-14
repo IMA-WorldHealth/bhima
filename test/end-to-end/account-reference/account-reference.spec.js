@@ -116,7 +116,7 @@ describe('AccountReference Management Page', () => {
     await modal.searchAccount(mockSearch.account);
 
     await modal.submit();
-    expect(await page.count()).to.equal(2);
+    expect(await page.count()).to.equal(3);
     await modal.clearFilter();
   });
 
