@@ -1,6 +1,6 @@
 const { expect } = require('chai');
 const helpers = require('../shared/helpers');
-const configurationAnalysisTools = require('./configurationAnalysisTools.page');
+const ConfigurationAnalysisTools = require('./configurationAnalysisTools.page');
 
 describe('Configuration Analysis Tools', () => {
   before(() => helpers.navigate('#!/configuration_analysis_tools'));
