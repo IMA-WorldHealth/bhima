@@ -75,17 +75,10 @@
         </div>
       </div>
 
-      <div class="toolbar-item">
-        <button
-          ng-click="MultiplePayrollCtrl.search()"
-          data-method="search"
-          class="btn btn-default">
-          <span class="fa fa-search"></span> <span class="hidden-xs" translate>FORM.BUTTONS.SEARCH</span>
-        </button>
-      </div>
+      <bh-search-button on-click="MultiplePayrollCtrl.search()"></bh-search-button>
 
       <bh-filter-toggle on-toggle="MultiplePayrollCtrl.toggleInlineFilter()">
-      </bh-filter-toggle>      
+      </bh-filter-toggle>
     </div>
   </div>
 </div>

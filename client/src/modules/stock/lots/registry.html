@@ -59,14 +59,7 @@
         </div>
       </div>
 
-      <div class="toolbar-item">
-        <button
-          ng-click="StockLotsCtrl.search()"
-          data-method="search"
-          class="btn btn-default">
-          <span class="fa fa-search"></span> <span class="hidden-xs" translate>FORM.BUTTONS.SEARCH</span>
-        </button>
-      </div>
+      <bh-search-button on-click="StockLotsCtrl.search()"></bh-search-button>
 
       <div class="toolbar-item">
         <div class="btn-group" uib-dropdown>
@@ -77,9 +70,7 @@
             <span>
               <i class="fa fa-object-group"></i>
               <span ng-hide="StockLotsCtrl.selectedGroup.label" translate>STOCK.GROUPING</span>
-              <span
-                ng-show="StockLotsCtrl.selectedGroup.label"
-                translate>
+              <span ng-show="StockLotsCtrl.selectedGroup.label" translate>
                 {{ StockLotsCtrl.selectedGroup.label }}
               </span>
             </span>

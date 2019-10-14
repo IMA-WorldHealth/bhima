@@ -53,14 +53,7 @@
         </div>
       </div>
 
-      <div class="toolbar-item">
-        <button
-          ng-click="StockCtrl.search()"
-          data-method="search"
-          class="btn btn-default">
-          <span class="fa fa-search"></span> <span class="hidden-xs" translate>FORM.BUTTONS.SEARCH</span>
-        </button>
-      </div>
+      <bh-search-button on-click="StockCtrl.search()"></bh-search-button>
 
       <div class="toolbar-item">
         <div class="btn-group" uib-dropdown>
@@ -92,8 +85,7 @@
       </div>
 
       <div class="toolbar-item">
-        <a 
-          ui-sref="stockAssign.create"
+        <a ui-sref="stockAssign.create"
           data-method="create-record"
           class="btn btn-success">
           <span class="fa fa-plus"></span> <span class="hidden-xs" translate>ASSIGN.NEW_ASSIGN</span>
@@ -101,7 +93,7 @@
       </div>
 
       <!-- inline filter -->
-      <bh-filter-toggle 
+      <bh-filter-toggle
         on-toggle="StockCtrl.toggleInlineFilter()">
       </bh-filter-toggle>
     </div>

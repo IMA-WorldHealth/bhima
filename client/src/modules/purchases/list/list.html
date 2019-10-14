@@ -48,14 +48,7 @@
         </div>
       </div>
 
-      <div class="toolbar-item">
-        <button
-          ng-click="PurchaseListCtrl.search()"
-          data-method="search"
-          class="btn btn-default">
-          <span class="fa fa-search"></span> <span class="hidden-xs" translate>FORM.BUTTONS.SEARCH</span>
-        </button>
-      </div>
+      <bh-search-button on-click="PurchaseListCtrl.search()"></bh-search-button>
     </div>
   </div>
 </div>

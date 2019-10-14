@@ -67,11 +67,8 @@
           </button>
         </div>
 
-        <div class="toolbar-item">
-          <button data-method="search" class="btn btn-default" ng-click="JournalCtrl.openSearchModal()">
-            <i class="fa fa-search"></i> <span class="visible-lg-inline" translate>FORM.BUTTONS.SEARCH</span>
-          </button>
-        </div>
+        <bh-search-button on-click="JournalCtrl.openSearchModal()"></bh-search-button>
+
         <div class="toolbar-item">
           <button
             ng-class="{ 'btn-success' : JournalCtrl.selection.selected.groups.length === 1 }"
