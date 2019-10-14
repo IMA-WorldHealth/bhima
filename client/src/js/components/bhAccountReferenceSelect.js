@@ -32,7 +32,7 @@ function AccountReferenceSelectController(AccountReferences, Notify) {
     }
 
     $ctrl.accountLoading = true;
-    AccountReferences.read(null, {reference_type_id : $ctrl.referenceType})
+    AccountReferences.read(null, { reference_type_id : $ctrl.referenceType })
       .then(accountReferences => {
         $ctrl.accountReferences = accountReferences;
       })

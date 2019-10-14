@@ -100,7 +100,7 @@ function ConfigurationAnalysisToolsController($state, ConfigurationAnalysisTools
     vm.hasError = false;
 
     ConfigurationAnalysisTools.read()
-      .then((configurationAnalysisTools) => {        
+      .then((configurationAnalysisTools) => {
         configurationAnalysisTools.forEach((item) => {
           if (item.is_creditor) {
             item.labelCreditor = $translate.instant('FORM.LABELS.CREDIT_BALANCE');

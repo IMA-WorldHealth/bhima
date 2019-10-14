@@ -5,7 +5,7 @@ const configurationAnalysisTools = require('./configurationAnalysisTools.page');
 describe('Configuration Analysis Tools', () => {
   before(() => helpers.navigate('#!/configuration_analysis_tools'));
 
-  const page = new configurationAnalysisTools();
+  const page = new ConfigurationAnalysisTools();
 
   const newConfiguration = {
     label : 'Subvention d\'exploitation',
