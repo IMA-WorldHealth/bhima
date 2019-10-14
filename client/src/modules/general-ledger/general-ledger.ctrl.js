@@ -44,7 +44,6 @@ function GeneralLedgerController(
     'balance12',
   ];
 
-  vm.filterEnabled = false;
   vm.openColumnConfiguration = openColumnConfiguration;
   vm.onSelectFiscalYear = onSelectFiscalYear;
   vm.Constants = bhConstants;
@@ -149,8 +148,7 @@ function GeneralLedgerController(
   }
 
   function toggleFilter() {
-    vm.filterEnabled = !vm.filterEnabled;
-    vm.gridOptions.enableFiltering = vm.filterEnabled;
+    vm.gridOptions.enableFiltering = !vm.gridOptions.enableFiltering;
     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
   }
 
