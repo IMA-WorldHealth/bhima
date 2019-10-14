@@ -42,7 +42,7 @@ describe('AccountReference Management Page', () => {
     accountNull : '1013',
   };
 
-  const numReferences = 9;
+  const numReferences = 13;
 
   before(() => helpers.navigate(path));
 
