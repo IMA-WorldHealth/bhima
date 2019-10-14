@@ -16,8 +16,8 @@ describe('Account Reference Type', () => {
     label : 'Update Account Reference Type',
   };
 
-  it('begins with 4 Account Reference Type', async () => {
-    expect(await page.count()).to.equal(4);
+  it('begins with 5 Account Reference Type', async () => {
+    expect(await page.count()).to.equal(5);
   });
 
   it('successfully creates a new Account Reference Type', async () => {
