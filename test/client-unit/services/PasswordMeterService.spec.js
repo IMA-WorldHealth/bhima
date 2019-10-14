@@ -14,7 +14,7 @@ describe('PasswordMeterService', () => {
 
   const WEAK_PASSWORD = 'hello';
   const MEDIUM_PASSWORD = 'L0b1Ec0simba';
-  const STRONG_PASSWORD = 'N@pM@ch3N@L1my3B0ndy3@!';
+  const STRONG_PASSWORD = 'N@pM@ch3N#L1my3B0ndy3@!';
 
   beforeEach(inject((_PasswordMeterService_, _SessionService_, _MockDataService_) => {
     PasswordMeterService = _PasswordMeterService_;
@@ -23,7 +23,6 @@ describe('PasswordMeterService', () => {
     const user = _MockDataService_.user();
     const project = _MockDataService_.project();
     const enterprise = _MockDataService_.enterprise();
-
     Session.create(user, enterprise, project);
 
     // make sure password validation is on
@@ -75,9 +74,10 @@ describe('PasswordMeterService', () => {
     expect(validate).to.equal(true);
   });
 
-  it('#validate() should return true if the session is not set', () => {
+  it('#validate() should return true even if the enterprise session is not set', () => {
+    // this is useful while setting up the password at the installation process
     delete Session.enterprise;
-    const validate = PasswordMeterService.validate();
+    const validate = PasswordMeterService.validate(STRONG_PASSWORD);
     expect(validate).to.equal(true);
   });
 
