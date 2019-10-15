@@ -126,30 +126,39 @@ function StockFormService(StockItem, Store, AppCache, Session, $timeout, bhConst
     return Object.keys(this.cache).length > 0;
   };
 
+
+  /**
+   * @function errorLineHighlight
+   *
+   * @description
+   * Sets the grid's error flag on the row to render a red highlight
+   * on the row.
+   *
+   */
+  function errorLineHighlight(rowIdx, store) {
+    const { ROW_ERROR_FLAG } = bhConstants.grid;
+    // set and unset error flag for allowing to highlight again the row
+    // when the user click again on the submit button
+    const row = store.data[rowIdx];
+    row[ROW_ERROR_FLAG] = true;
+    $timeout(() => {
+      row[ROW_ERROR_FLAG] = false;
+    }, 1000);
+  }
+
   /**
    * @method hasDuplicatedLots
    *
    * @description
-   * this method catch duplicated row and emit notification on the row
+   * This method catch duplicated row and emit notification on the row
    */
   StockForm.prototype.hasDuplicatedLots = function hasDuplicatedLots() {
-    const { ROW_ERROR_FLAG } = bhConstants.grid;
     let doublonDetectedLine;
 
     if (findDuplicatedLots(this.store)) {
       // notify on the concerned row
       errorLineHighlight(doublonDetectedLine, this.store);
       return true;
-    }
-
-    function errorLineHighlight(rowIdx, store) {
-      // set and unset error flag for allowing to highlight again the row
-      // when the user click again on the submit button
-      const row = store.data[rowIdx];
-      row[ROW_ERROR_FLAG] = true;
-      $timeout(() => {
-        row[ROW_ERROR_FLAG] = false;
-      }, 1000);
     }
 
     // update the list of selected lots
