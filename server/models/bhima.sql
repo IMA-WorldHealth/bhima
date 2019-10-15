@@ -206,7 +206,6 @@ INSERT INTO `report` (`report_key`, `title_key`) VALUES
   ('systemUsageStat', 'REPORT.SYSTEM_USAGE_STAT.TITLE'),
   ('dataKit', 'TREE.DATA_KIT_REPORT');
 
-
 -- Supported Languages
 INSERT INTO `language` VALUES
   (1,'Francais','fr', 'fr-be'),
