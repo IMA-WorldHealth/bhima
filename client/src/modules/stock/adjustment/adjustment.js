@@ -103,7 +103,12 @@ function StockAdjustmentController(
       cellTemplate : 'modules/stock/exit/templates/expiration.tmpl.html',
     },
 
-    { field : 'actions', width : 25, cellTemplate : 'modules/stock/exit/templates/actions.tmpl.html' },
+    {
+      field : 'actions',
+      displayName : '...',
+      width : 25,
+      cellTemplate : 'modules/stock/exit/templates/actions.tmpl.html',
+    },
   ];
 
   // grid options
@@ -150,10 +155,10 @@ function StockAdjustmentController(
       .catch(Notify.handleError);
   }
 
-  function setupStock(depot) {
+  function setupStock() {
     vm.Stock.setup();
     vm.Stock.store.clear();
-    loadInventories(depot);
+    loadInventories(vm.depot);
     checkValidity();
   }
 
@@ -164,13 +169,12 @@ function StockAdjustmentController(
     };
 
     // make sure that the depot is loaded if it doesn't exist at startup.
-    if (cache.depotUuid) {
-      // load depot from the cached uuid
-      loadDepot(cache.depotUuid).then(setupStock);
-    } else {
-      // show the changeDepot modal
-      changeDepot().then(setupStock);
-    }
+    const presetup = cache.depotUuid
+      ? loadDepot(cache.depotUuid)
+      : changeDepot();
+
+    return presetup
+      .then(setupStock);
   }
 
   // ============================ Inventories ==========================
@@ -188,6 +192,7 @@ function StockAdjustmentController(
     const lotsExists = vm.Stock.store.data.every((item) => {
       return item.quantity > 0 && item.lot.uuid;
     });
+
     vm.validForSubmit = (lotsExists && vm.Stock.store.data.length);
   }
 
@@ -249,7 +254,6 @@ function StockAdjustmentController(
       .then((depot) => {
         vm.depot = depot;
         cache.depotUuid = depot.uuid;
-        return depot;
       });
   }
 
@@ -257,7 +261,6 @@ function StockAdjustmentController(
     return Depots.read(uuid, { only_user : true })
       .then(depot => {
         vm.depot = depot;
-        return depot;
       })
       .catch(Notify.handleError);
   }
