@@ -1989,12 +1989,15 @@ CREATE TABLE `integration` (
 CREATE TABLE `stock_consumption` (
   `inventory_uuid`  BINARY(16) NOT NULL,
   `depot_uuid`      BINARY(16) NOT NULL,
-  `period_id`       MEDIUMINT(8) NOT NULL,
+  `period_id`       MEDIUMINT(8) UNSIGNED NOT NULL,
   `quantity`        INT(11) DEFAULT 0,
   PRIMARY KEY (`inventory_uuid`, `depot_uuid`, `period_id`),
   KEY `inventory_uuid` (`inventory_uuid`),
   KEY `depot_uuid` (`depot_uuid`),
-  KEY `period_id` (`period_id`)
+  KEY `period_id` (`period_id`),
+  FOREIGN KEY (`inventory_uuid`) REFERENCES `inventory` (`uuid`),
+  FOREIGN KEY (`depot_uuid`) REFERENCES `depot` (`uuid`),
+  FOREIGN KEY (`period_id`) REFERENCES `period` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
 
@@ -2295,7 +2298,6 @@ CREATE TABLE `break_even_reference` (
 
 
 DROP TABLE IF EXISTS `inventory_log`;
-
 CREATE TABLE `inventory_log` (
   `uuid` BINARY(16) NOT NULL,
   `inventory_uuid` BINARY(16) NOT NULL,
@@ -2311,7 +2313,6 @@ CREATE TABLE `inventory_log` (
 
 
 DROP TABLE IF EXISTS `staffing_indice`;
-
 CREATE TABLE `staffing_indice` (
   `uuid` BINARY(16) NOT NULL,
   `employee_uuid` BINARY(16) NOT NULL,
@@ -2327,7 +2328,6 @@ CREATE TABLE `staffing_indice` (
   FOREIGN KEY (`fonction_id`) REFERENCES `fonction` (`id`),
   FOREIGN KEY (`grade_uuid`) REFERENCES `grade` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
-
 
 DROP TABLE IF EXISTS `staffing_grade_indice`;
 CREATE TABLE `staffing_grade_indice` (
