@@ -3,9 +3,9 @@ angular.module('bhima.controllers')
 
 // dependencies injections
 StockExitController.$inject = [
-  'DepotService', 'NotifyService', 'SessionService', 'util',
+  'NotifyService', 'SessionService', 'util',
   'bhConstants', 'ReceiptModal', 'StockFormService', 'StockService',
-  'StockModalService', 'uiGridConstants', '$translate', 'appcache',
+  'StockModalService', 'uiGridConstants', '$translate',
   'moment', 'GridExportService', 'Store',
 ];
 
@@ -16,12 +16,11 @@ StockExitController.$inject = [
  * This controller is responsible to handle stock exit module.
  */
 function StockExitController(
-  Depots, Notify, Session, util, bhConstants, ReceiptModal,
+  Notify, Session, util, bhConstants, ReceiptModal,
   StockForm, Stock, StockModal, uiGridConstants, $translate,
-  AppCache, moment, GridExportService, Store
+  moment, GridExportService, Store
 ) {
   const vm = this;
-  const cache = new AppCache('StockCache');
 
   vm.stockForm = new StockForm('StockExit');
   vm.movement = {};
@@ -262,19 +261,6 @@ function StockExitController(
       date : new Date(),
       entity : {},
     };
-
-    // make sure that the depot is loaded if it doesn't exist at startup.
-    if (cache.depotUuid) {
-      Depots.read(cache.depotUuid, { only_user : true })
-        .then(handleCachedDepot)
-        .catch(Notify.handleError);
-    }
-
-    function handleCachedDepot(depot) {
-      vm.depot = depot;
-      loadInventories(vm.depot);
-      checkValidity();
-    }
   }
 
   function loadInventories(depot) {

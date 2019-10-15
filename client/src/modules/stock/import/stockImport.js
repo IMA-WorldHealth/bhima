@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 // dependencies injections
 StockImportController.$inject = [
-  'DepotService', 'NotifyService', 'StockService', 'appcache', 'Upload', '$state',
+  'NotifyService', 'StockService', 'Upload', '$state',
 ];
 
 /**
@@ -13,11 +13,9 @@ StockImportController.$inject = [
  * This module helps to import stock from a file
  */
 function StockImportController(
-  Depots, Notify, Stock, AppCache, Upload, $state
+  Notify, Stock, Upload, $state
 ) {
   const vm = this;
-
-  const cache = new AppCache('StockCache');
 
   vm.depot = {};
   vm.downloadTemplate = Stock.downloadTemplate;
@@ -64,23 +62,4 @@ function StockImportController(
       Notify.handleError(err);
     }
   }
-
-  function startup() {
-    // make sure that the depot is loaded if it doesn't exist at startup.
-    if (cache.depotUuid) {
-      // load depot from the cached uuid
-      loadDepot(cache.depotUuid);
-    }
-  }
-
-  function loadDepot(uuid) {
-    return Depots.read(uuid, { only_user : true })
-      .then(depot => {
-        vm.depot = depot;
-        return depot;
-      })
-      .catch(Notify.handleError);
-  }
-
-  startup();
 }

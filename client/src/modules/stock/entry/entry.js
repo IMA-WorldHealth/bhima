@@ -3,9 +3,9 @@ angular.module('bhima.controllers')
 
 // dependencies injections
 StockEntryController.$inject = [
-  'DepotService', 'InventoryService', 'NotifyService', 'SessionService', 'util',
+  'InventoryService', 'NotifyService', 'SessionService', 'util',
   'bhConstants', 'ReceiptModal', 'PurchaseOrderService', 'StockFormService',
-  'StockService', 'StockModalService', 'uiGridConstants', 'Store', 'appcache',
+  'StockService', 'StockModalService', 'uiGridConstants', 'Store',
   'uuid', '$translate',
 ];
 
@@ -16,15 +16,14 @@ StockEntryController.$inject = [
  * This controller is responsible to handle stock entry module.
  */
 function StockEntryController(
-  Depots, Inventory, Notify, Session, util, bhConstants, ReceiptModal, Purchase,
-  StockForm, Stock, StockModal, uiGridConstants, Store, AppCache, Uuid, $translate
+  Inventory, Notify, Session, util, bhConstants, ReceiptModal, Purchase,
+  StockForm, Stock, StockModal, uiGridConstants, Store, Uuid, $translate
 ) {
   // variables
   let inventoryStore;
 
   // constants
   const vm = this;
-  const cache = new AppCache('StockCache');
   const mapEntry = initEntryMap();
 
   // view models variables and methods
@@ -102,7 +101,7 @@ function StockEntryController(
   // on change depot
   vm.onChangeDepot = depot => {
     vm.depot = depot;
-    setupStock();
+    loadInventories();
   };
 
   /**
@@ -215,16 +214,6 @@ function StockEntryController(
 
     // loading all purchasable inventories
     loadInventories();
-
-    // make sure that the depot is loaded if it doesn't exist at startup.
-    if (cache.depotUuid) {
-      Depots.read(cache.depotUuid, { only_user : true })
-        .then((depot) => {
-          vm.depot = depot;
-          setupStock();
-        })
-        .catch(Notify.handleError);
-    }
   }
 
   /**
@@ -232,6 +221,8 @@ function StockEntryController(
    * @description load inventories
    */
   function loadInventories() {
+    setupStock();
+
     Inventory.read()
       .then((inventories) => {
         vm.inventories = inventories;

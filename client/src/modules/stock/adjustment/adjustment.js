@@ -3,9 +3,9 @@ angular.module('bhima.controllers')
 
 // dependencies injections
 StockAdjustmentController.$inject = [
-  'DepotService', 'NotifyService', 'SessionService', 'util',
+  'NotifyService', 'SessionService', 'util',
   'bhConstants', 'ReceiptModal', 'StockFormService', 'StockService',
-  'uiGridConstants', 'appcache',
+  'uiGridConstants',
 ];
 
 /**
@@ -15,13 +15,10 @@ StockAdjustmentController.$inject = [
  * This module exists to make sure that stock can be adjusted up and down as needed.
  */
 function StockAdjustmentController(
-  Depots, Notify, Session, util, bhConstants, ReceiptModal, StockForm,
-  Stock, uiGridConstants, AppCache
+  Notify, Session, util, bhConstants, ReceiptModal, StockForm,
+  Stock, uiGridConstants
 ) {
   const vm = this;
-
-  // TODO - merge all stock caches together so that the same depot is shared across all stock modules
-  const cache = new AppCache('StockCache');
 
   // global variables
   vm.Stock = new StockForm('StockAdjustment');
@@ -34,7 +31,7 @@ function StockAdjustmentController(
 
   vm.onChangeDepot = depot => {
     vm.depot = depot;
-    setupStock();
+    loadInventories(vm.depot);
   };
 
   // bind constants
@@ -162,8 +159,6 @@ function StockAdjustmentController(
   function setupStock() {
     vm.Stock.setup();
     vm.Stock.store.clear();
-    loadInventories(vm.depot);
-    checkValidity();
   }
 
   function startup() {
@@ -171,20 +166,16 @@ function StockAdjustmentController(
       date : new Date(),
       entity : {},
     };
-
-    // make sure that the depot is loaded if it doesn't exist at startup.
-    if (cache.depotUuid) {
-      // load depot from the cached uuid
-      loadDepot(cache.depotUuid).then(setupStock);
-    }
   }
 
   // ============================ Inventories ==========================
   function loadInventories(depot) {
-    const depotUuid = depot && depot.uuid ? depot.uuid : cache.depotUuid;
-    Stock.inventories.read(null, { depot_uuid : depotUuid })
+    setupStock();
+
+    Stock.inventories.read(null, { depot_uuid : depot.uuid })
       .then((inventories) => {
         vm.selectableInventories = angular.copy(inventories);
+        checkValidity();
       })
       .catch(Notify.handleError);
   }
@@ -244,14 +235,6 @@ function StockAdjustmentController(
       .then(document => {
         vm.Stock.store.clear();
         ReceiptModal.stockAdjustmentReceipt(document.uuid, fluxId);
-      })
-      .catch(Notify.handleError);
-  }
-
-  function loadDepot(uuid) {
-    return Depots.read(uuid, { only_user : true })
-      .then(depot => {
-        vm.depot = depot;
       })
       .catch(Notify.handleError);
   }

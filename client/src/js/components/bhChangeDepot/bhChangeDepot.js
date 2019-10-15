@@ -9,18 +9,27 @@ angular.module('bhima.components')
     },
   });
 
-ChangeDepotController.$inject = ['DepotService', 'appcache'];
+ChangeDepotController.$inject = ['DepotService', 'appcache', 'NotifyService'];
 
-function ChangeDepotController(Depots, AppCache) {
+function ChangeDepotController(Depots, AppCache, Notify) {
   const $ctrl = this;
   const cache = new AppCache('StockCache');
 
   $ctrl.$onInit = () => {
-    if (cache.depotUuid) { return; }
-    changeDepot();
+    return cache.depotUuid
+      ? loadDepot(cache.depotUuid)
+      : changeDepot();
   };
 
   $ctrl.changeDepot = changeDepot;
+
+  function loadDepot(uuid) {
+    Depots.read(uuid, { only_user : true })
+      .then(depot => {
+        $ctrl.onSelect({ depot });
+      })
+      .catch(Notify.handleError);
+  }
 
   function changeDepot() {
     // if requirement is true the modal cannot be canceled
