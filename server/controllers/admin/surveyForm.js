@@ -7,11 +7,12 @@
 const db = require('../../lib/db');
 const NotFound = require('../../lib/errors/NotFound');
 const FilterParser = require('../../lib/filter');
+const util = require('../../lib/util');
 
 // GET /survey_form
 function lookupSurveyForm(id) {
   const sql = `
-    SELECT s.id, s.data_collector_management_id, s.type, s.name, s.label, s.hint, s.required, s.constraint,
+    SELECT s.id, s.rank, s.data_collector_management_id, s.type, s.name, s.label, s.hint, s.required, s.constraint,
     s.default, s.calculation, s.choice_list_id, s.filter_choice_list_id, s.other_choice
     FROM survey_form AS s
     WHERE s.id = ?`;
@@ -23,7 +24,7 @@ function getSurveyFormElement(params) {
   const filters = new FilterParser(params, { tableAlias : 's' });
 
   const sql = `
-    SELECT s.id, s.data_collector_management_id, s.type, s.name, s.label,
+    SELECT s.id, s.rank, s.data_collector_management_id, s.type, s.name, s.label,
     s.hint, s.filter_choice_list_id, s.required, s.constraint, s.default,
     s.calculation, s.choice_list_id, s.other_choice, d.label AS data_collector_label,
     d.color, d.description, d.version_number, sft.label AS typeLabel,
@@ -37,6 +38,7 @@ function getSurveyFormElement(params) {
 
   filters.equals('data_collector_management_id');
   filters.equals('is_list', 'is_list', 'sft');
+  filters.setOrder('ORDER BY s.rank ASC');
 
   const query = filters.applyQuery(sql);
   const parameters = filters.parameters();
@@ -89,7 +91,7 @@ function create(req, res, next) {
 
   db.exec(sql, [data])
     .then((row) => {
-      res.status(201).json({ id : row.insertId });
+      res.status(201).json({ id: row.insertId });
     })
     .catch(next)
     .done();
@@ -105,7 +107,7 @@ function update(req, res, next) {
       return lookupSurveyForm(req.params.id);
     })
     .then((record) => {
-    // all updates completed successfull, return full object to client
+      // all updates completed successfull, return full object to client
       res.status(200).json(record);
     })
     .catch(next)
@@ -118,7 +120,7 @@ function remove(req, res, next) {
 
   db.exec(sql, [req.params.id])
     .then((row) => {
-    // if nothing happened, let the client know via a 404 error
+      // if nothing happened, let the client know via a 404 error
       if (row.affectedRows === 0) {
         throw new NotFound(`Could not find a function with id ${req.params.id}`);
       }
@@ -127,6 +129,16 @@ function remove(req, res, next) {
     })
     .catch(next)
     .done();
+}
+
+function getCalculation(survey, data) {
+  let formula = survey.calculation;
+
+  formula = formula.replace(/.{/g, 'data.');
+  formula = formula.replace(/}/g, '');
+  const calculation = util.roundDecimal(eval(formula), 2);
+
+  return calculation || 0;
 }
 
 // get list of surveyForm element
@@ -149,3 +161,6 @@ exports.listSurveyformtype = listSurveyformtype;
 
 // get survey form element
 exports.getSurveyFormElement = getSurveyFormElement;
+
+// Get Calculation
+exports.getCalculation = getCalculation;

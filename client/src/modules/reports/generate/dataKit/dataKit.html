@@ -1,0 +1,116 @@
+<bh-report-preview
+  ng-if="ReportConfigCtrl.previewGenerated"
+  source-document="ReportConfigCtrl.previewResult"
+  on-clear-callback="ReportConfigCtrl.clearPreview()"
+  on-save-callback="ReportConfigCtrl.requestSaveAs()">
+</bh-report-preview>
+
+<div ng-show="!ReportConfigCtrl.previewGenerated">
+  <div class="row">
+    <div class="col-md-12">
+      <h3 class="text-capitalize" translate>TREE.DATA_KIT_REPORT</h3>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top : 10px">
+    <div class="col-md-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <span translate>REPORT.UTIL.OPTIONS</span>
+        </div>
+
+        <div class="panel-body">
+          <form name="ConfigForm" bh-submit="ReportConfigCtrl.preview(ConfigForm)" novalidate>
+            <bh-survey-form-select
+              id="form"
+              form="ReportConfigCtrl.reportDetails.data_collector_id"
+              name="dataCollectorId"
+              on-select-callback="ReportConfigCtrl.onSelectSurveyForm(surveyForm)"
+              required="true">
+            </bh-survey-form-select>
+
+            <bh-date-interval
+              label="FORM.LABELS.DATE"
+              date-from="ReportConfigCtrl.reportDetails.searchDateFrom.dateSurvey"
+              date-to="ReportConfigCtrl.reportDetails.searchDateTo.dateSurvey">
+            </bh-date-interval>
+            <hr>          
+
+            <div ng-if="ReportConfigCtrl.reportDetails.data_collector_id">
+              <div ng-repeat="formItem in ReportConfigCtrl.formItems">
+                <div class="row">
+                  <div ng-if="formItem.typeForm === 'text' || formItem.typeForm === 'text_area' || formItem.typeForm === 'time'" class="form-group">
+                      <bh-clear on-clear="ReportConfigCtrl.onClear(formItem.name)"></bh-clear>
+                    <label class="control-label"> {{ formItem.label }} </label>
+                    <div>
+                      <span>
+                        <input name="{{ formItem.name }}" ng-model="ReportConfigCtrl.reportDetails.loggedChanges[formItem.name]" autocomplete="off" ng-maxlength="90" class="form-control">
+                      </span>
+                    </div>
+                  </div>
+                </div>
+        
+                <div class="row">
+                  <div ng-if="formItem.typeForm === 'number'" class="form-group">
+                    <bh-clear on-clear="ReportConfigCtrl.onClear(formItem.name)"></bh-clear>
+                    <label class="control-label"> {{ formItem.label }} </label>
+                    <div>
+                      <span>
+                        <input name="{{ formItem.name }}" type="number" ng-model="ReportConfigCtrl.reportDetails.loggedChanges[formItem.name]" autocomplete="off" ng-maxlength="90" class="form-control">
+                      </span>
+                    </div>
+                  </div>
+                </div>
+        
+                <!-- Date -->
+                <div class="row">
+                  <div ng-if="formItem.typeForm === 'date'">
+                    <bh-date-interval
+                      label="{{ formItem.label }}"
+                      date-from="ReportConfigCtrl.reportDetails.searchDateFrom[formItem.name]"
+                      date-to="ReportConfigCtrl.reportDetails.searchDateTo[formItem.name]">
+                    </bh-date-interval>
+                  </div>
+                </div>  
+        
+                <!-- select_one -->
+                <div class="row">
+                  <div ng-if="formItem.typeForm === 'select_one'">
+                    <bh-choice-list-select
+                      id="{{ formItem.name }}"
+                      list="ReportConfigCtrl.reportDetails[formItem.name]"
+                      name="{{ formItem.name }}"
+                      list-label="{{ formItem.label }}"
+                      group-label="formItem.choice_list_id"              
+                      on-select-callback="ReportConfigCtrl.onSelectList(list, formItem.name)">
+                      <bh-clear on-clear="ReportConfigCtrl.onClear(formItem.name)"></bh-clear>
+                    </bh-choice-list-select>
+                  </div>
+                </div>
+                <!-- select_multiple -->
+                <div class="row">
+                  <div ng-if="formItem.typeForm === 'select_multiple'">
+                    <bh-choice-list-multiple-select
+                      id="{{ formItem.name }}"
+                      lists="ReportConfigCtrl.reportDetails.multipleChoice[formItem.name]"
+                      multiple-choice="multiple"
+                      name="{{ formItem.name }}"
+                      required="formItem.valueRequired"
+                      list-label="{{ formItem.label }}"
+                      group-label="formItem.choice_list_id"              
+                      on-change="ReportConfigCtrl.onSelectMultiple(lists, formItem.name)">
+                    </bh-choice-list-multiple-select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <bh-loading-button loading-state="ConfigForm.$loading">
+              <span translate>REPORT.UTIL.PREVIEW</span>
+            </bh-loading-button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

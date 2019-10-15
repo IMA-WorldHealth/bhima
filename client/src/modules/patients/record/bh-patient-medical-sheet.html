@@ -1,0 +1,21 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <span class="fa fa-folder-open"></span>
+    <span translate>FORM.LABELS.MEDICAL_SHEETS</span>
+  </div>
+  <!-- main content -->
+  <div class="container-fluid">
+    <div id="data-collector-Management-grid"
+      ui-grid="$ctrl.gridOptions"
+      class="grid-full-height"
+      ui-grid-auto-resize
+      style="height: 10%"
+      ui-grid-resize-columns>
+      <bh-grid-loading-indicator
+        loading-state="$ctrl.loading"
+        empty-state="$ctrl.gridOptions.data.length === 0"
+        error-state="$ctrl.hasError">
+      </bh-grid-loading-indicator>
+    </div>
+  </div>
+</div>

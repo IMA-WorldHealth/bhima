@@ -75,4 +75,5 @@ module.exports = {
   dataCollector : require('./bhDataCollector'),
   surveyFormTypeSelect : require('./bhSurveyFormTypeSelect'),
   surveyListSelect : require('./bhSurveyListSelect'),
+  surveyFormSelect : require('./bhSurveyFormSelect'),
 };

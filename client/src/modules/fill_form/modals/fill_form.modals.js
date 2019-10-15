@@ -1,0 +1,230 @@
+angular.module('bhima.controllers')
+  .controller('FillFormModalController', FillFormModalController);
+
+FillFormModalController.$inject = [
+  '$state', 'FillFormService', 'NotifyService', 'appcache', 'SurveyFormService',
+  'DataCollectorManagementService', 'Upload', 'PatientService',
+];
+
+/**
+ * FILL FORM Modal Controller
+ */
+
+function FillFormModalController($state, FillForm, Notify, AppCache,
+  SurveyForm, DataCollectorManagement, Upload, Patients) {
+  const vm = this;
+  const cache = AppCache('FillFormModalController');
+
+  vm.stateParams = {};
+  // exposed methods
+  vm.submit = submit;
+  vm.closeModal = closeModal;
+  vm.clear = clear;
+  vm.form = {};
+  vm.dataCollector = {};
+  vm.onSelectList = onSelectList;
+  vm.onDateChange = onDateChange;
+  vm.onTimeChange = onTimeChange;
+  vm.onSelectMultiple = onSelectMultiple;
+  vm.setThumbnail = setThumbnail;
+  vm.picture = {};
+  vm.updateMode = false;
+  vm.containtValue = {};
+
+  if ($state.params.creating || $state.params.id) {
+    cache.stateParams = $state.params;
+    vm.stateParams = cache.stateParams;
+  } else {
+    vm.stateParams = cache.stateParams;
+  }
+
+  function onSelectList(list, value) {
+    vm.form[value] = list.id;
+    vm.containtValue[value] = list.label;
+  }
+
+  function onSelectMultiple(lists, value) {
+    vm.form[value] = lists;
+  }
+
+  function onDateChange(date, value) {
+    vm.form[value] = new Date(date);
+  }
+
+  function onTimeChange(time) {
+    const timeForm = new Date(vm.form[time]);
+    vm.form[time] = timeForm.getHours();
+  }
+
+  function uploadImage(file, uuid, key) {
+    file.upload = Upload.upload({
+      url : `/fill_form/${uuid}/${key}/image`,
+      data : { image : file },
+    });
+
+    return file.upload
+      .then(() => {
+      })
+      .catch((error) => {
+        Notify.handleError(error);
+      });
+  }
+
+  function restoreImage(file, old, uuid, key) {
+    const dataImage = {
+      file,
+      old,
+      uuid,
+      key,
+    };
+
+    return FillForm.restoreImage(dataImage);
+  }
+
+  /** set thumbnail for the selected image */
+  function setThumbnail(file, formName) {
+    if (!file) {
+      vm.documentError = true;
+      return;
+    }
+    const isImage = file.type.includes('image/');
+    vm.picture[formName] = file;
+    vm.hasThumbnail = (vm.picture[formName] && isImage);
+  }
+
+  if (vm.stateParams.patient) {
+    Patients.read($state.params.patient)
+      .then((patient) => {
+        vm.patient = patient;
+      })
+      .catch(Notify.handleError);
+  }
+
+  if (vm.stateParams.id && !vm.stateParams.uuid) {
+    SurveyForm.read(null, { data_collector_management_id : vm.stateParams.id })
+      .then(data => {
+        data.forEach(item => {
+          item.valueRequired = item.required ? 'required' : '';
+
+          if (item.default) {
+            vm.form[item.name] = (item.type === '1')
+              ? parseInt(item.default, 10) : item.default;
+          }
+
+          if (item.calculation) {
+            vm.form[item.name] = item.calculation;
+          }
+
+          if (item.constraint) {
+            item.constraintCheck = FillForm.formatConstraint(item.constraint);
+          }
+
+        });
+        vm.formItems = data;
+
+        return DataCollectorManagement.read(vm.stateParams.id);
+      })
+      .then(dataCollector => {
+        vm.dataCollector = dataCollector;
+      })
+      .catch(Notify.handleError);
+  } else if (vm.stateParams.id && vm.stateParams.uuid) {
+    vm.updateMode = true;
+    SurveyForm.read(null, { data_collector_management_id : vm.stateParams.id })
+      .then(data => {
+        data.forEach(item => {
+          item.valueRequired = item.required ? 'required' : '';
+          if (item.default) {
+            vm.form[item.name] = (item.type === '1')
+              ? parseInt(item.default, 10) : item.default;
+          }
+
+          if (item.calculation) {
+            vm.form[item.name] = item.calculation;
+          }
+
+          if (item.constraint) {
+            item.constraintCheck = FillForm.formatConstraint(item.constraint);
+          }
+
+        });
+        vm.formItems = data;
+
+        return DataCollectorManagement.read(vm.stateParams.id);
+      })
+      .then(dataCollector => {
+        vm.dataCollector = dataCollector;
+        return FillForm.read(vm.stateParams.uuid);
+      })
+      .then(dataSurvey => {
+        vm.form = FillForm.formatData(vm.formItems, dataSurvey);        
+        vm.oldData = FillForm.formatData(vm.formItems, dataSurvey);
+      })
+      .catch(Notify.handleError);
+
+  }
+
+  // submit the data to the server from all two forms (update, create)
+  function submit(fillForm) {
+    vm.hasNoChange = fillForm.$submitted && fillForm.$pristine && !vm.isCreating;
+    if (fillForm.$invalid) { return null; }
+    if (!fillForm.$dirty) { return null; }
+
+    vm.form.data_collector_management_id = vm.stateParams.id;
+    if (vm.stateParams.patient) {
+      vm.form.patient_uuid = vm.stateParams.patient;
+    }
+
+    const dataUpdate = {
+      old : vm.oldData,
+      new : vm.form,
+    };
+
+    const promise = (vm.updateMode)
+      ? FillForm.update(vm.stateParams.uuid, dataUpdate) : FillForm.create(vm.form);
+
+    return promise
+      .then((res) => {
+        Object.keys(vm.form).forEach((key) => {
+          vm.formItems.forEach(item => {
+            if ((key === item.name) && (item.typeForm === 'image')) {
+              if (!vm.updateMode) {
+                uploadImage(vm.form[key], res.uuid, item.id);
+              } else if (vm.updateMode) {
+                if (vm.form[key] === vm.oldData[key]) {
+                  restoreImage(vm.form[key], vm.oldData[key], res.uuid, item.id);
+                } else {
+                  uploadImage(vm.form[key], res.uuid, item.id);
+                }
+              }
+            }
+          });
+        });
+        const translateKey = (vm.updateMode) ? 'FORM.INFO.UPDATE_SUCCESS' : 'FORM.INFO.CREATE_SUCCESS';
+        Notify.success(translateKey);
+
+        if (!vm.stateParams.patient && !vm.updateMode) {
+          $state.go('fill_form', null, { reload : true });
+        } else if (!vm.stateParams.patient && vm.updateMode) {
+          $state.go('display_metadata', { id : vm.stateParams.id }, { reload : true });
+        } else if (vm.stateParams.patient) {
+          $state.go('display_metadata.patient',
+            { id : vm.stateParams.id, patient : vm.stateParams.patient }, { reload : true });
+        }
+      })
+      .catch(Notify.handleError);
+  }
+
+  function clear(value) {
+    delete vm.form[value];
+  }
+
+  function closeModal() {
+    const transitionTo = vm.updateMode ? 'display_metadata' : 'fill_form';
+    if (!vm.stateParams.patient) {
+      $state.transitionTo(transitionTo);
+    } else if (vm.stateParams.patient) {
+      $state.go('display_metadata.patient', { id : vm.stateParams.id, patient : vm.stateParams.patient });
+    }
+  }
+}

@@ -1,7 +1,7 @@
-<div ng-form="SurveyFormForm" bh-survey-form-select ng-model-options="{ updateOn: 'default' }">
+<div ng-form="SurveyFormSelect" bh-survey-form-select ng-model-options="{ updateOn: 'default' }">
   <div
     class="form-group"
-    ng-class="{ 'has-error' : SurveyFormForm.$submitted && SurveyFormForm.form.$invalid }">
+    ng-class="{ 'has-error' : SurveyFormSelect.$submitted && SurveyFormSelect.form.$invalid }">
 
     <label class="control-label" translate>
       {{ ::$ctrl.label }}
@@ -24,7 +24,7 @@
       </ui-select-choices>
     </ui-select>
 
-    <div class="help-block" ng-messages="SurveyFormForm.form.$error" ng-show="SurveyFormForm.$submitted &&  SurveyFormForm.form.$invalid">
+    <div class="help-block" ng-messages="SurveyFormSelect.form.$error" ng-show="SurveyFormSelect.$submitted &&  SurveyFormSelect.form.$invalid">
       <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
     </div>
   </div>

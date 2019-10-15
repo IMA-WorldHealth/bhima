@@ -27,6 +27,12 @@ function SurveyFormController($state, SurveyForm, Notify, uiGridConstants, Modal
     onRegisterApi     : onRegisterApiFn,
     columnDefs : [
       {
+        field : 'rank',
+        width : 75,
+        displayName : 'FORM.LABELS.RANK',
+        headerCellFilter : 'translate',
+      },
+      {
         field : 'typeChoice',
         displayName : 'FORM.LABELS.TYPE',
         enableFiltering : 'true',
@@ -135,25 +141,29 @@ function SurveyFormController($state, SurveyForm, Notify, uiGridConstants, Modal
 
   // load user grid
   function loadGrid() {
-    toggleLoadingIndicator();
-    vm.hasError = false;
-    vm.loading = true;
-    const otherChoice = $translate.instant('FORM.LABELS.OTHER');
+    if (vm.collectorId) {
+      toggleLoadingIndicator();
+      vm.hasError = false;
+      vm.loading = true;
+      const otherChoice = $translate.instant('FORM.LABELS.OTHER');
 
-    SurveyForm.read(null, { data_collector_management_id : vm.collectorId })
-      .then((surveyForm) => {
-        surveyForm.forEach(item => {
-          item.typeLabel = $translate.instant(item.typeLabel);
-          item.choiceListLabel = $translate.instant(item.choiceListLabel);
-          item.other_choice = item.other_choice ? `( ${otherChoice} )` : '';
-          item.typeChoice = item.choiceListLabel ? `${item.typeLabel} / ${item.choiceListLabel} ${item.other_choice}`
-            : item.typeLabel;
-        });
+      SurveyForm.read(null, { data_collector_management_id : vm.collectorId })
+        .then((surveyForm) => {
+          surveyForm.forEach(item => {
+            item.typeLabel = $translate.instant(item.typeLabel);
+            item.choiceListLabel = $translate.instant(item.choiceListLabel);
+            item.other_choice = item.other_choice ? `( ${otherChoice} )` : '';
+            item.typeChoice = item.choiceListLabel ? `${item.typeLabel} / ${item.choiceListLabel} ${item.other_choice}`
+              : item.typeLabel;
+          });
 
-        vm.gridOptions.data = surveyForm;
-      })
-      .catch(handleError)
-      .finally(toggleLoadingIndicator);
+          vm.gridOptions.data = surveyForm;
+        })
+        .catch(handleError)
+        .finally(toggleLoadingIndicator);
+    } else {
+      vm.gridOptions.data = null;
+    }
   }
 
   function toggleLoadingIndicator() {

@@ -133,16 +133,23 @@ INSERT INTO unit VALUES
   (246, 'Client debts report', 'TREE.CLIENT_DEBTS_REPORT', 'Client debts report', 144, '/modules/reports/clientDebts', '/reports/clientDebts'),
   (247, 'Client support report', 'TREE.CLIENT_SUPPORT_REPORT', 'Client support report', 144, '/modules/reports/clientSupport', '/reports/clientSupport'),
   (248, 'Analysis of cashboxes', 'REPORT.ANALYSIS_AUX_CASHBOXES.TITLE', 'Analysis of auxiliary cashboxes', 144, '/modules/reports/analysisAuxiliaryCash', '/reports/analysisAuxiliaryCash'),
-<<<<<<< f8e1631cbe2732b5c563dc66426c38e20c035ebe
   (249, 'Realized Profit Report', 'TREE.REALIZED_PROFIT_REPORT', 'Realized profit report', 144, '/modules/reports/realizedProfit', '/reports/realizedProfit'),
   (250, 'Sytem usage statistic', 'REPORT.SYSTEM_USAGE_STAT.TITLE', 'Sytem usage statistic', 144, '/modules/reports/systemUsageStat', '/reports/systemUsageStat'),
   (251, 'indexes', 'TREE.INDEXES','The payrall-index', 57,'/modules/finance/','/PAYROLL_INDEX_FOLDER'),
   (252, 'Staffing indexes management','TREE.STAFFING_INDICES_MANAGEMENT','Staffing indices management',251 ,'/modules/payroll/staffing_indice','/staffing_indices'),
-  (253, 'Multiple Payroll by indice','TREE.MULTI_PAYROLL_INDICE','Multiple Payroll (indice)', 251,'/modules/multiple_payroll_indice','/multiple_payroll_indice');
-=======
-  (249, 'Data Kit', 'TREE.DATA_KIT', 'Data Kit', 0, '/modules/data_kit', '/data_kit'),
-  (250, 'Data Collector Management', 'TREE.DATA_COLLECTOR_MANAGEMENT', '', 246, '/modules/data_collector_management', '/data_collector_management');
->>>>>>> Resolve conflict s1
+  (253, 'Multiple Payroll by indice','TREE.MULTI_PAYROLL_INDICE','Multiple Payroll (indice)', 251,'/modules/multiple_payroll_indice','/multiple_payroll_indice'),
+  (254, 'Data Kit', 'TREE.DATA_KIT', 'Data Kit', 0, '/modules/data_kit', '/data_kit'),
+  (255, 'Data Collector Management', 'TREE.DATA_COLLECTOR_MANAGEMENT', '', 246, '/modules/data_collector_management', '/data_collector_management'),
+  (256, 'Data Collector Management', 'TREE.DATA_COLLECTOR_MANAGEMENT', '', 249, '/modules/data_collector_management', '/data_collector_management'),
+  (257, 'Data Kit', 'TREE.DATA_KIT', 'Data Kit', 0, '/modules/data_kit', '/data_kit'),
+  (258, 'Data Collector Management', 'TREE.DATA_COLLECTOR_MANAGEMENT', '', 246, '/modules/data_collector_management', '/data_collector_management'),
+  (259, 'Choices list management', 'TREE.CHOICES_LIST_MANAGEMENT', '', 246, '/modules/choices_list_management', '/choices_list_management'),
+  (260, 'Survey Form', 'TREE.SURVEY_FORM', '', 246, '/modules/survey_form', '/survey_form');
+  (261, 'Data Collection', 'TREE.DATA_COLLECTION', '', 0, '/modules/data_collection', '/data_collection'),
+  (262, 'Fill Form', 'TREE.FILL_FORM', '', 250, '/modules/fill_form', '/fill_form'),
+  (263, 'Display Metadata', 'TREE.DISPLAY_METADATA', '', 250, '/modules/display_metadata', '/display_metadata'),
+  (264, 'Data Kit Report', 'TREE.DATA_KIT_REPORT', 'Data Kit Report', 144, '/modules/reports/dataKit', '/reports/dataKit');  
+
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -200,7 +207,8 @@ INSERT INTO `report` (`report_key`, `title_key`) VALUES
   ('clientSupport', 'REPORT.CLIENT_SUPPORT.TITLE'),
   ('analysisAuxiliaryCash', 'REPORT.ANALYSIS_AUX_CASHBOXES.TITLE'),
   ('realizedProfit', 'REPORT.REALIZED.TITLE'),
-  ('systemUsageStat', 'REPORT.SYSTEM_USAGE_STAT.TITLE');
+  ('systemUsageStat', 'REPORT.SYSTEM_USAGE_STAT.TITLE'),
+  ('dataKit', 'TREE.DATA_KIT_REPORT');
 
 -- Supported Languages
 INSERT INTO `language` VALUES
@@ -369,58 +377,3 @@ INSERT INTO `cron` (`label`, `value`) VALUES
   ('CRON.MONTHLY', '0 1 30 * *'),
   ('CRON.YEARLY', '0 1 31 12 *'),
   ('CRON.EACH_MINUTE', '* * * * *');
-
--- data_collector_management
-INSERT INTO `data_collector_management` (`label`, `description`, `version_number`, `color`, `is_related_patient`) VALUES 
-  ('Fiche Kardex', 'Fiche de consommation Medicament', '1.0', '#E0FFFF', 1);
-
--- choices_list_management
-INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (1, 'genre', 'Genre', 0, 0, 0, 1, 1);
-INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (2, 'm', 'Masculin', 0, 1, 1, 0, 0);
-INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (3, 'f', 'Féminin', 0, 1, 1, 0, 0);
-INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (4, 'pays', 'Pays', 0, 0, 0, 1, 1);
-INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (5, 'province', 'Province', 0, 4, 0, 1, 1);
-INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (6, 'districte', 'Districte', 0, 5, 0, 1, 1);
-INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (7, 'ville', 'Ville', 0, 6, 0, 1, 1);
-INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (8, 'commune', 'Commune', 0, 7, 0, 1, 1);
-INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (9, 'quartier', 'Quartier', 0, 8, 0, 1, 1);
-INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (10, 'rdc', 'RD Congo', 0, 0, 4, 0, 1);
-INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (11, 'kin', 'Kinshasa', 0, 10, 4, 0, 1);
-INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (12, 'mont_amba', 'Mont Amba', 0, 11, 6, 0, 1);
-INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (13, 'lemba', 'Lemba', 0, 12, 8, 0, 1);
-INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (14, 'salongo', 'Salongo', 0, 13, 9, 0, 1);
-INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (15, 'avenue', 'Avenue', 0, 9, 0, 1, 1);
-INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (16, 'bypass', 'By Pass', 0, 14, 15, 0, 0);
-INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (17, 'kalala', 'Kalala', 0, 14, 0, 0, 0);
-INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (18, 'funa', 'Funa', 0, 11, 6, 0, 1);
-INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (19, 'kv', 'Kasa vubu', 0, 18, 8, 0, 1);
-INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (20, 'mtg', 'Matonge', 0, 19, 9, 0, 1);
-INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (21, 'masimanimba', 'Masimanimba', 0, 20, 15, 0, 0);
-INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (22, 'medicament', 'Médicament', 0, 0, 0, 1, 1);
-INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (23, 'ciprofloxacineCifin', 'ciprofloxacine (cifin ) 500 mg tab', 0, 22, 22, 0, 0);
-INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (24, 'artesunate60mgInjFl', 'Artesunate 60mg inj. fl', 0, 22, 22, 0, 0);
-INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (25, 'vitamineA50000iu', 'Vitamine A 50.000 iu', 0, 22, 22, 0, 0);
-INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (26, 'paracetamol500mg', 'Paracetamol500 mg', 0, 22, 22, 0, 0);
-INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (27, 'pentazocinetromadol30mg/ml', 'Pentazocine, Tromadol30mg/ml', 0, 22, 22, 0, 0);
-
--- Survey Form Type
-INSERT INTO `survey_form_type` (`label`, `type`, `is_list`) VALUES
-  ('FORM.LABELS.NUMBER', 'number', 0),
-  ('FORM.LABELS.TEXT', 'text', 0),
-  ('FORM.LABELS.SELECT_ONE', 'select_one', 1),
-  ('FORM.LABELS.SELECT_MULTIPLE', 'select_multiple', 1),
-  ('FORM.LABELS.NOTE', 'note', 0),
-  ('FORM.LABELS.DATE', 'date', 0),
-  ('FORM.LABELS.TIME', 'time', 0),
-  ('FORM.LABELS.IMAGE', 'image', 0),
-  ('FORM.LABELS.CALCULATION', 'calculation', 0);
-
--- survey_form
-INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`) VALUES (1, 1, '3', 22, NULL, 0, 'medicament', 'Médicament', 'Sélectionner le médicament', 1, NULL, NULL, NULL);
-INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`) VALUES (2, 1, '1', NULL, NULL, 0, 'poids', 'Poids', NULL, 1, NULL, NULL, NULL);
-INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`) VALUES (3, 1, '2', NULL, NULL, 0, 'dosekilos', 'Dose par kilogramme', NULL, 1, NULL, NULL, NULL);
-INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`) VALUES (4, 1, '1', NULL, NULL, 0, 'nombreFois', 'Nombre de fois', NULL, 1, NULL, NULL, NULL);
-INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`) VALUES (5, 1, '2', NULL, NULL, 0, 'voie', 'Voie', NULL, 1, NULL, NULL, NULL);
-INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`) VALUES (6, 1, '6', NULL, NULL, 0, 'date', 'Date', NULL, 1, NULL, NULL, NULL);
-INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`) VALUES (7, 1, '7', NULL, NULL, 0, 'temps', 'Temps', NULL, 1, NULL, NULL, NULL);
-

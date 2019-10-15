@@ -32,6 +32,24 @@
       required="true">
     </bh-survey-form-type-select>
 
+    <!-- calculation -->
+    <div class="form-group" ng-if="(SurveyFormModalCtrl.surveyForm.type === 9 || SurveyFormModalCtrl.surveyForm.calculation)"
+      ng-class="{ 'has-error' : SurveyFormForm.$submitted && SurveyFormForm.calculation.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.CALCULATION</label>
+      <div>
+        <textarea
+          ng-model="SurveyFormModalCtrl.surveyForm.calculation"
+          name="calculation"
+          class="form-control"
+          required
+          rows="4">
+        </textarea>
+        <div class="help-block" ng-messages="SurveyFormForm.calculation.$error" ng-show="SurveyFormForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+    </div>
+
     <div ng-if="SurveyFormModalCtrl.selectList" style="background-color:#ededed; padding-left: 10%; padding-right: 3%">
       <bh-choice-list-select
         id="list"
@@ -68,6 +86,16 @@
           </span>
         </label>
       </div> -->
+    </div>
+    <!-- rank -->
+    <div class="form-group" ng-class="{ 'has-error' : SurveyFormForm.$submitted && SurveyFormForm.rank.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.RANK</label>
+      <div>
+        <input name="rank" ng-model="SurveyFormModalCtrl.surveyForm.rank" type="number" class="form-control">
+        <div class="help-block" ng-messages="SurveyFormForm.rank.$error" ng-show="SurveyFormForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
     </div>
 
     <!-- name -->
@@ -119,19 +147,9 @@
       </label>
     </div>
 
-    <!-- constraint -->
-    <!-- 
-      TO DO
-      <div class="form-group" ng-class="{ 'has-error' : SurveyFormForm.$submitted && SurveyFormForm.constraint.$invalid }">
-      <label class="control-label" translate>FORM.LABELS.CONSTRAINT</label>
-      <div>
-        <input name="constraint" ng-model="SurveyFormModalCtrl.surveyForm.constraint" autocomplete="off" ng-maxlength="90" class="form-control">
-      </div>
-    </div> -->
+    <hr>
     <!-- default -->
-    <!-- 
-      TO DO
-      <div class="form-group" ng-class="{ 'has-error' : SurveyFormForm.$submitted && SurveyFormForm.default.$invalid }">
+    <div class="form-group" ng-class="{ 'has-error' : SurveyFormForm.$submitted && SurveyFormForm.default.$invalid }">
       <label class="control-label" translate>FORM.LABELS.DEFAULT</label>
       <div>
         <input name="default" ng-model="SurveyFormModalCtrl.surveyForm.default" autocomplete="off" ng-maxlength="90" class="form-control">
@@ -139,8 +157,23 @@
           <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
         </div>
       </div>
-    </div> -->
-    <!-- calculation -->
+    </div>
+
+    <!-- constraint -->
+    <div class="form-group" ng-class="{ 'has-error' : SurveyFormForm.$submitted && SurveyFormForm.constraint.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.CONSTRAINT</label>
+      <div>
+        <textarea
+          ng-model="SurveyFormModalCtrl.surveyForm.constraint"
+          name="constraint"
+          class="form-control"
+          rows="4">
+        </textarea>
+      </div>
+    </div>
+
+
+
     <!-- TO DO 
       <div class="form-group" ng-class="{ 'has-error' : SurveyFormForm.$submitted && SurveyFormForm.$invalid }">
       <label class="control-label" translate>FORM.LABELS.CALCULATION</label>

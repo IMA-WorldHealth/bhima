@@ -147,6 +147,9 @@ const indicatorRerpor = require('../controllers/finance/indicator/dashboard/repo
 const dataCollectorManagement = require('../controllers/admin/dataCollectorManagement');
 const choicesListManagement = require('../controllers/admin/choicesListManagement');
 const surveyForm = require('../controllers/admin/surveyForm');
+const fillFormsData = require('../controllers/admin/fillFormsData');
+const displayMetadata = require('../controllers/admin/displayMetadata');
+const displayMetadataReport = require('../controllers/admin/metadataReport');
 
 // expose routes to the server.
 exports.configure = function configure(app) {
@@ -1006,4 +1009,16 @@ exports.configure = function configure(app) {
   app.put('/survey_form/:id', surveyForm.update);
   app.delete('/survey_form/:id', surveyForm.delete);
 
+  // API for Fill in the forms of the data
+  app.get('/fill_form/:uuid', fillFormsData.detail);
+  app.post('/fill_form', fillFormsData.create);
+  app.post('/fill_form/restoreImage', fillFormsData.restoreImage);
+  app.post('/fill_form/:uuid/:key/image', upload.middleware('pics', 'image'), fillFormsData.uploadImage);
+  app.put('/fill_form/:uuid', fillFormsData.update);
+
+  // API for DISPLAY METADATA routes crud
+  app.get('/display_metadata', displayMetadata.list);
+  app.get('/display_metadata/card', displayMetadataReport.metadataCard);
+  app.get('/data_kit/report', displayMetadataReport.reportMetadata);
+  app.delete('/display_metadata/:uuid', displayMetadata.delete);
 };

@@ -2,7 +2,7 @@
 const helpers = require('./helpers');
 
 describe('(/survey_form) Survey Form', () => {
-  const numListElement = 9;
+  const numListElement = 17;
 
   const formElement = {
     data_collector_management_id : 1,
@@ -10,6 +10,7 @@ describe('(/survey_form) Survey Form', () => {
     label : 'Image du patient',
     name : 'imagePatient',
     required : 1,
+    rank : 8,
   };
 
   const formElement1 = {
@@ -18,6 +19,7 @@ describe('(/survey_form) Survey Form', () => {
     choice_list_id : 22,
     name : 'medConsommes',
     label : 'Médicaments consommés',
+    rank : 8,
   };
 
   const updateFormElement = {
@@ -33,6 +35,7 @@ describe('(/survey_form) Survey Form', () => {
     choice_list_id : 22,
     filter_choice_list_id : null,
     other_choice : 0,
+    rank : 8,
   };
 
   it('POST /survey_form add Form Element', () => {
@@ -62,7 +65,7 @@ describe('(/survey_form) Survey Form', () => {
 
         expect(res).to.be.a('object');
         expect(res.body).to.have.all.keys('id', 'data_collector_management_id', 'type', 'choice_list_id',
-          'filter_choice_list_id', 'other_choice', 'name', 'label', 'hint',
+          'filter_choice_list_id', 'other_choice', 'name', 'label', 'hint', 'rank',
           'required', 'constraint', 'default', 'calculation');
       })
       .catch(helpers.handler);
@@ -87,7 +90,7 @@ describe('(/survey_form) Survey Form', () => {
           'id', 'is_list', 'label', 'labelType', 'name', 'other_choice', 'required',
           'type', 'typeForm', 'typeLabel', 'version_number', 'calculation', 'choiceListLabel',
           'choice_list_id', 'color', 'constraint', 'data_collector_label', 'data_collector_management_id',
-          'default', 'description', 'filterLabel', 'filter_choice_list_id', 'hint');
+          'default', 'description', 'filterLabel', 'filter_choice_list_id', 'hint', 'rank');
       })
       .catch(helpers.handler);
   });

@@ -81,6 +81,10 @@ function SurveyFormModalController($state, SurveyForm, Notify, AppCache, DataCol
     if (surveyForm.$invalid) { return null; }
     if (!surveyForm.$dirty) { return null; }
 
+    if (parseInt(vm.surveyForm.type, 10) !== 9) {
+      vm.surveyForm.calculation = null;
+    }
+
     const promise = (vm.isCreating)
       ? SurveyForm.create(vm.surveyForm)
       : SurveyForm.update(vm.surveyForm.id, vm.surveyForm);

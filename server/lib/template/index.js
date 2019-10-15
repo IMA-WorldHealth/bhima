@@ -45,6 +45,8 @@ const hbs = exphbs.create({
     equal         : logic.equal,
     gt            : logic.gt,
     lt            : logic.lt,
+    inequal       : logic.inequal,
+    fileExist     : logic.fileExist,
     absolute      : math.absolute,
     getIncomeExpenseTitle : presentation.getTitle,
     isIncomeViewable : presentation.isIncomeViewable,

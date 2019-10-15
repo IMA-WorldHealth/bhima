@@ -50,6 +50,7 @@ function ReceiptService($http, util, Language, AppCache, Session) {
   service.setReceiptCurrency = setReceiptCurrency;
   service.setReceiptRenderer = setReceiptRenderer;
   service.payrollReport = payrollReport;
+  service.displayData = displayData;
 
   /**
    * @method fetch
@@ -154,6 +155,16 @@ function ReceiptService($http, util, Language, AppCache, Session) {
     options.lang = Language.key;
 
     const route = '/reports/payroll/payslip';
+    return fetch(route, options);
+  }
+
+  // print metadata of survey
+  function displayData(request, options) {
+    options.uuid = request.dataUuid;
+    options.patient = request.patient;
+    // set the session language
+    options.lang = Language.key;
+    const route = '/display_metadata/card';
     return fetch(route, options);
   }
 

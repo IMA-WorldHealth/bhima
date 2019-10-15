@@ -2,7 +2,7 @@
 const helpers = require('./helpers');
 
 describe('(/data_collector_management) Data Collector Management', () => {
-  const numDataCollector = 2;
+  const numDataCollector = 3;
 
   const newDataCollector = {
     label : 'Consultations externes',
