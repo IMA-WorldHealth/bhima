@@ -56,7 +56,7 @@ describe('(/data_collector_management) Data Collector Management', () => {
       .then((res) => {
         helpers.api.listed(res, numDataCollector);
         expect(res.body[0]).to.have.all.keys('id', 'label', 'description',
-          'version_number', 'color', 'is_related_patient');
+          'version_number', 'color', 'is_related_patient', 'number_submissions');
       })
       .catch(helpers.handler);
   });
