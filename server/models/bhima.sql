@@ -133,11 +133,16 @@ INSERT INTO unit VALUES
   (246, 'Client debts report', 'TREE.CLIENT_DEBTS_REPORT', 'Client debts report', 144, '/modules/reports/clientDebts', '/reports/clientDebts'),
   (247, 'Client support report', 'TREE.CLIENT_SUPPORT_REPORT', 'Client support report', 144, '/modules/reports/clientSupport', '/reports/clientSupport'),
   (248, 'Analysis of cashboxes', 'REPORT.ANALYSIS_AUX_CASHBOXES.TITLE', 'Analysis of auxiliary cashboxes', 144, '/modules/reports/analysisAuxiliaryCash', '/reports/analysisAuxiliaryCash'),
+<<<<<<< f8e1631cbe2732b5c563dc66426c38e20c035ebe
   (249, 'Realized Profit Report', 'TREE.REALIZED_PROFIT_REPORT', 'Realized profit report', 144, '/modules/reports/realizedProfit', '/reports/realizedProfit'),
   (250, 'Sytem usage statistic', 'REPORT.SYSTEM_USAGE_STAT.TITLE', 'Sytem usage statistic', 144, '/modules/reports/systemUsageStat', '/reports/systemUsageStat'),
   (251, 'indexes', 'TREE.INDEXES','The payrall-index', 57,'/modules/finance/','/PAYROLL_INDEX_FOLDER'),
   (252, 'Staffing indexes management','TREE.STAFFING_INDICES_MANAGEMENT','Staffing indices management',251 ,'/modules/payroll/staffing_indice','/staffing_indices'),
   (253, 'Multiple Payroll by indice','TREE.MULTI_PAYROLL_INDICE','Multiple Payroll (indice)', 251,'/modules/multiple_payroll_indice','/multiple_payroll_indice');
+=======
+  (249, 'Data Kit', 'TREE.DATA_KIT', 'Data Kit', 0, '/modules/data_kit', '/data_kit'),
+  (250, 'Data Collector Management', 'TREE.DATA_COLLECTOR_MANAGEMENT', '', 246, '/modules/data_collector_management', '/data_collector_management');
+>>>>>>> Resolve conflict s1
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -358,8 +363,13 @@ INSERT INTO `indicator_type`(`id`, `text`,`translate_key`)VALUES
   (3, 'fianance', 'DASHBOARD.FINANCE');
 
 -- cron
-INSERT INTO `cron` (`label`, `value`) VALUES 
+INSERT INTO `cron` (`label`, `value`) VALUES
   ('CRON.DAILY', '0 1 * * *'),
   ('CRON.WEEKLY', '0 1 * * 0'),
   ('CRON.MONTHLY', '0 1 30 * *'),
-  ('CRON.YEARLY', '0 1 31 12 *');
+  ('CRON.YEARLY', '0 1 31 12 *'),
+  ('CRON.EACH_MINUTE', '* * * * *');
+
+-- data_collector_management
+INSERT INTO `data_collector_management` (`label`, `description`, `version_number`, `color`, `is_related_patient`) VALUES 
+  ('Fiche Kardex', 'Fiche de consommation Medicament', '1.0', '#E0FFFF', 1);

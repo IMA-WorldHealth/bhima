@@ -142,6 +142,10 @@ const lots = require('../controllers/stock/lots');
 // todo: the indicator folder must not be inside the finance folder
 const dashboard = require('../controllers/finance/indicator/dashboard');
 const indicatorRerpor = require('../controllers/finance/indicator/dashboard/report');
+
+// Data Kit
+const dataCollectorManagement = require('../controllers/admin/dataCollectorManagement');
+
 // expose routes to the server.
 exports.configure = function configure(app) {
   debug('configuring routes.');
@@ -977,4 +981,12 @@ exports.configure = function configure(app) {
   app.post('/cron_email_reports', cronEmailReport.create);
   app.post('/cron_email_reports/:id', cronEmailReport.send);
   app.delete('/cron_email_reports/:id', cronEmailReport.remove);
+
+  // API for Data Collector Management routes crud
+  app.get('/data_collector_management', dataCollectorManagement.list);
+  app.get('/data_collector_management/:id', dataCollectorManagement.detail);
+  app.post('/data_collector_management', dataCollectorManagement.create);
+  app.put('/data_collector_management/:id', dataCollectorManagement.update);
+  app.delete('/data_collector_management/:id', dataCollectorManagement.delete);  
+
 };

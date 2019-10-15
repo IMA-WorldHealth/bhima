@@ -28,6 +28,8 @@
     "CREDIT_NOTE" : "Credit Note",
     "CREDITOR_GROUP" : "Creditor Group Management",
     "CURRENCY" : "Currency",
+    "DATA_COLLECTOR_MANAGEMENT": "Data Collector Management",
+    "DATA_KIT": "Data collection kit",
     "DEPARTMENT_MANAGEMENT" : "Department Management",
     "DEBTOR_GROUP" : "Debtor Group Management",
     "DEPOTS" : "Depots",

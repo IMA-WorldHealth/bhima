@@ -28,6 +28,8 @@
     "CREDIT_NOTE":"Note de Crédit",
     "CREDITOR_GROUP":"Gestion des Groupes Créditeurs",
     "CURRENCY":"Monnaie",
+    "DATA_COLLECTOR_MANAGEMENT": "Gestion des collecteurs de données",
+    "DATA_KIT": "Kit de collecte de données",
     "DEPARTMENT_MANAGEMENT" : "Gestion des Departements",
     "DEBTOR_GROUP":"Gestion des Groupes Débiteurs",
     "DEPOTS":"Dépôts",
