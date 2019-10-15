@@ -20,13 +20,16 @@ function StockImportController(
   const cache = new AppCache('StockCache');
 
   vm.depot = {};
-  vm.changeDepot = changeDepot;
   vm.downloadTemplate = Stock.downloadTemplate;
 
   const filters = [
     { key : 'period', value : 'today' },
     { key : 'limit', value : 10000 },
   ];
+
+  vm.onChangeDepot = depot => {
+    vm.depot = depot;
+  };
 
   vm.submit = () => {
     // send data only when a file is selected
@@ -67,22 +70,7 @@ function StockImportController(
     if (cache.depotUuid) {
       // load depot from the cached uuid
       loadDepot(cache.depotUuid);
-    } else {
-      // show the changeDepot modal
-      changeDepot();
     }
-  }
-
-  function changeDepot() {
-    // if requirement is true the modal cannot be canceled
-    const requirement = !cache.depotUuid;
-
-    return Depots.openSelectionModal(vm.depot, requirement)
-      .then(depot => {
-        vm.depot = depot;
-        cache.depotUuid = depot.uuid;
-        return depot;
-      });
   }
 
   function loadDepot(uuid) {
