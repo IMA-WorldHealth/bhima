@@ -72,4 +72,7 @@ module.exports = {
   entityGroupSelect : require('./bhEntityGroupSelect'),
   cronSelect : require('./bhCronSelect'),
   choiceListSelect : require('./bhChoiceListSelect'),
+  dataCollector : require('./bhDataCollector'),
+  surveyFormTypeSelect : require('./bhSurveyFormTypeSelect'),
+  surveyListSelect : require('./bhSurveyListSelect'),
 };

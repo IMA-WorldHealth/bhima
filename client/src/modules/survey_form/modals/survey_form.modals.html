@@ -1,0 +1,173 @@
+<form name="SurveyFormForm" bh-submit="SurveyFormModalCtrl.submit(SurveyFormForm)" novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.ADMIN</li>
+
+      <li ng-if="SurveyFormModalCtrl.isCreating" class="title">
+        <span translate>TREE.SURVEY_FORM</span>
+        <label class="badge badge-warning" translate>FORM.LABELS.CREATE</label>
+      </li>
+      <li ng-if="!SurveyFormModalCtrl.isCreating" class="title">
+        <span translate>TREE.SURVEY_FORM</span>
+        <label class="badge badge-warning" translate>FORM.LABELS.UPDATE</label>
+      </li>
+    </ol>
+  </div>
+
+  <div style="background-color: {{ SurveyFormModalCtrl.dataCollector.color }}; border-radius : 25px ; text-align: center; text-decoration-color: #ffffff; text-shadow: rgb(255, 255, 255) 5px 3px 8px;">
+    <h1><strong>
+      <span translate>
+        {{ SurveyFormModalCtrl.dataCollector.label }}
+      </span>
+    </strong></h1>  
+  </div>
+
+  <div class="modal-body" style="overflow-y: scroll; max-height:600px; ">
+    <!-- Type -->
+    <bh-survey-form-type-select
+      id="type_element"
+      type-element="SurveyFormModalCtrl.surveyForm.type"
+      name="type_element"
+      on-select-callback="SurveyFormModalCtrl.selectType(surveyType)"
+      required="true">
+    </bh-survey-form-type-select>
+
+    <div ng-if="SurveyFormModalCtrl.selectList" style="background-color:#ededed; padding-left: 10%; padding-right: 3%">
+      <bh-choice-list-select
+        id="list"
+        list="SurveyFormModalCtrl.surveyForm.choice_list_id"
+        name="list"
+        list-label="FORM.SELECT.SELECT_CHOICE_LIST"
+        is-title="1"
+        on-select-callback="SurveyFormModalCtrl.onSelectList(list)">
+      </bh-choice-list-select>
+
+      <bh-survey-list-select
+        id="filter_choice_list_id"
+        survey="SurveyFormModalCtrl.surveyForm.filter_choice_list_id"
+        name="filter_choice_list_id"
+        is-list="1"
+        survey-label="FORM.SELECT.SELECT_FILTER"
+        collector-id="SurveyFormModalCtrl.surveyForm.data_collector_management_id"
+        on-select-callback="SurveyFormModalCtrl.onSelectSurvey(survey)">
+      </bh-survey-list-select>
+
+      <!-- TO DO 
+        <div class="checkbox">
+        <label>
+          <input
+            type="checkbox"
+            id="other_choice"
+            ng-true-value="1"
+            ng-false-value="0"
+            ng-model="SurveyFormModalCtrl.surveyForm.other_choice">
+          <span translate>
+            <strong>
+              FORM.LABELS.ALLOW_OPTION_OTHER_CHOICE
+            </strong>
+          </span>
+        </label>
+      </div> -->
+    </div>
+
+    <!-- name -->
+    <div class="form-group" ng-class="{ 'has-error' : SurveyFormForm.$submitted && SurveyFormForm.name.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.VARIABLE_NAME</label>
+      <div>
+        <input name="name" ng-model="SurveyFormModalCtrl.surveyForm.name" autocomplete="off" ng-maxlength="90" class="form-control" required>
+        <div class="help-block" ng-messages="SurveyFormForm.name.$error" ng-show="SurveyFormForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+    </div>
+    <!-- label -->
+    <div class="form-group" ng-class="{ 'has-error' : SurveyFormForm.$submitted && SurveyFormForm.label.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.DESIGNATION</label>
+      <div>
+        <input name="label" ng-model="SurveyFormModalCtrl.surveyForm.label" autocomplete="off" ng-maxlength="90" class="form-control">
+        <div class="help-block" ng-messages="SurveyFormForm.label.$error" ng-show="SurveyFormForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+    </div>
+    <!-- hint -->
+    <div class="form-group">
+      <label class="control-label" translate>FORM.LABELS.HINT</label>
+      <div>
+        <textarea
+          ng-model="SurveyFormModalCtrl.surveyForm.hint"
+          name="hint"
+          class="form-control"
+          rows="4">
+        </textarea>
+      </div>
+    </div>
+    <!-- required -->
+    <div class="checkbox">
+      <label>
+        <input
+          type="checkbox"
+          id="is_required"
+          ng-true-value="1"
+          ng-false-value="0"
+          ng-model="SurveyFormModalCtrl.surveyForm.required">
+        <span translate>
+          <strong>
+            FORM.LABELS.REQUIRED
+          </strong>
+        </span>
+      </label>
+    </div>
+
+    <!-- constraint -->
+    <!-- 
+      TO DO
+      <div class="form-group" ng-class="{ 'has-error' : SurveyFormForm.$submitted && SurveyFormForm.constraint.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.CONSTRAINT</label>
+      <div>
+        <input name="constraint" ng-model="SurveyFormModalCtrl.surveyForm.constraint" autocomplete="off" ng-maxlength="90" class="form-control">
+      </div>
+    </div> -->
+    <!-- default -->
+    <!-- 
+      TO DO
+      <div class="form-group" ng-class="{ 'has-error' : SurveyFormForm.$submitted && SurveyFormForm.default.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.DEFAULT</label>
+      <div>
+        <input name="default" ng-model="SurveyFormModalCtrl.surveyForm.default" autocomplete="off" ng-maxlength="90" class="form-control">
+        <div class="help-block" ng-messages="SurveyFormForm.default.$error" ng-show="SurveyFormForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+    </div> -->
+    <!-- calculation -->
+    <!-- TO DO 
+      <div class="form-group" ng-class="{ 'has-error' : SurveyFormForm.$submitted && SurveyFormForm.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.CALCULATION</label>
+      <div>
+        <input name="calculation" ng-model="SurveyFormModalCtrl.surveyForm.calculation" autocomplete="off" ng-maxlength="90" class="form-control">
+        <div class="help-block" ng-messages="SurveyFormForm.calculation.$error" ng-show="SurveyFormForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+    </div> -->
+  </div>
+
+  <div class="modal-footer">
+    <p id="survey-form-same" ng-if="SurveyFormModalCtrl.hasNoChange" class="text-warning">
+      <i class="fa fa-warning"></i> <span translate>FORM.INFO.NO_CHANGE</span>
+    </p>
+
+    <p ng-if="SurveyFormForm.$submitted && SurveyFormForm.$invalid" class="text-danger">
+      <i class="fa fa-exclamation-triangle"></i> <span translate>FORM.ERRORS.GENERIC</span>
+    </p>
+
+    <button data-method="cancel" type="button" class="btn btn-default" ng-click="SurveyFormModalCtrl.closeModal()" translate>
+      FORM.BUTTONS.CANCEL
+    </button>
+
+    <bh-loading-button loading-state="SurveyFormForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

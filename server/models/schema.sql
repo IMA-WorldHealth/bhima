@@ -2384,4 +2384,34 @@ CREATE TABLE `choices_list_management` (
   UNIQUE KEY `choices_list_management_1` (`label`, `name`, `parent`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
+DROP TABLE IF EXISTS `survey_form`;
+CREATE TABLE `survey_form` (
+  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `data_collector_management_id` MEDIUMINT(8) UNSIGNED NOT NULL,
+  `type` VARCHAR(100) NOT NULL,
+  `choice_list_id` MEDIUMINT(8) UNSIGNED NULL,
+  `filter_choice_list_id` MEDIUMINT(8) UNSIGNED NULL,
+  `other_choice` tinyint(1) DEFAULT 0,
+  `name` VARCHAR(100) NOT NULL,
+  `label` VARCHAR(100) NOT NULL,
+  `hint` TEXT,
+  `required` tinyint(1) DEFAULT 0,
+  `constraint` VARCHAR(100) NULL,
+  `default` VARCHAR(100) NULL,
+  `calculation` VARCHAR(100) NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `survey_form_1` (`data_collector_management_id`, `name`, `label`),
+  KEY `data_collector_management_id` (`data_collector_management_id`),
+  FOREIGN KEY (`data_collector_management_id`) REFERENCES `data_collector_management` (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `survey_form_type`;
+CREATE TABLE `survey_form_type` (
+  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `label` VARCHAR(100) NOT NULL,
+  `type` VARCHAR(100) NOT NULL,
+  `is_list` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
 SET foreign_key_checks = 1;

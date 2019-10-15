@@ -2,7 +2,7 @@
 const helpers = require('./helpers');
 
 describe('(/choices_list_management) Choice List Management', () => {
-  const numListElement = 22;
+  const numListElement = 28;
 
   const newElementList = {
     name : 'oshwe',

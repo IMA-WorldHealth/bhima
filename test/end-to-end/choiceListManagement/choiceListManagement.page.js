@@ -19,7 +19,7 @@ class ChoiceListManagementPage {
   }
 
   /**
-   * simulate the create PayrollConfig button click to show the dialog of creation
+   * simulate the create Choice list button click to show the dialog of creation
    */
   async create(ChoiceListElement) {
     await FU.buttons.create();

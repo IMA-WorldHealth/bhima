@@ -396,4 +396,31 @@ INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`,
 INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (19, 'kv', 'Kasa vubu', 0, 18, 8, 0, 1);
 INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (20, 'mtg', 'Matonge', 0, 19, 9, 0, 1);
 INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (21, 'masimanimba', 'Masimanimba', 0, 20, 15, 0, 0);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (22, 'medicament', 'Médicament', 0, 0, 0, 1, 1);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (23, 'ciprofloxacineCifin', 'ciprofloxacine (cifin ) 500 mg tab', 0, 22, 22, 0, 0);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (24, 'artesunate60mgInjFl', 'Artesunate 60mg inj. fl', 0, 22, 22, 0, 0);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (25, 'vitamineA50000iu', 'Vitamine A 50.000 iu', 0, 22, 22, 0, 0);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (26, 'paracetamol500mg', 'Paracetamol500 mg', 0, 22, 22, 0, 0);
+INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (27, 'pentazocinetromadol30mg/ml', 'Pentazocine, Tromadol30mg/ml', 0, 22, 22, 0, 0);
+
+-- Survey Form Type
+INSERT INTO `survey_form_type` (`label`, `type`, `is_list`) VALUES
+  ('FORM.LABELS.NUMBER', 'number', 0),
+  ('FORM.LABELS.TEXT', 'text', 0),
+  ('FORM.LABELS.SELECT_ONE', 'select_one', 1),
+  ('FORM.LABELS.SELECT_MULTIPLE', 'select_multiple', 1),
+  ('FORM.LABELS.NOTE', 'note', 0),
+  ('FORM.LABELS.DATE', 'date', 0),
+  ('FORM.LABELS.TIME', 'time', 0),
+  ('FORM.LABELS.IMAGE', 'image', 0),
+  ('FORM.LABELS.CALCULATION', 'calculation', 0);
+
+-- survey_form
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`) VALUES (1, 1, '3', 22, NULL, 0, 'medicament', 'Médicament', 'Sélectionner le médicament', 1, NULL, NULL, NULL);
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`) VALUES (2, 1, '1', NULL, NULL, 0, 'poids', 'Poids', NULL, 1, NULL, NULL, NULL);
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`) VALUES (3, 1, '2', NULL, NULL, 0, 'dosekilos', 'Dose par kilogramme', NULL, 1, NULL, NULL, NULL);
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`) VALUES (4, 1, '1', NULL, NULL, 0, 'nombreFois', 'Nombre de fois', NULL, 1, NULL, NULL, NULL);
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`) VALUES (5, 1, '2', NULL, NULL, 0, 'voie', 'Voie', NULL, 1, NULL, NULL, NULL);
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`) VALUES (6, 1, '6', NULL, NULL, 0, 'date', 'Date', NULL, 1, NULL, NULL, NULL);
+INSERT INTO `survey_form` (`id`, `data_collector_management_id`, `type`, `choice_list_id`, `filter_choice_list_id`, `other_choice`, `name`, `label`, `hint`, `required`, `constraint`, `default`, `calculation`) VALUES (7, 1, '7', NULL, NULL, 0, 'temps', 'Temps', NULL, 1, NULL, NULL, NULL);
 

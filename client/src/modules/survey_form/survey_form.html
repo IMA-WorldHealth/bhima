@@ -1,0 +1,52 @@
+<div class="flex-header">
+    <div class="bhima-title">
+      <ol class="headercrumb">
+        <li class="static" translate> TREE.ADMIN </li>
+        <li class="title" translate> TREE.SURVEY_FORM </li>
+      </ol>
+  
+      <div class="toolbar">
+        <div class="toolbar-item">
+          <button class="btn btn-default text-capitalize" id="create" ui-sref="survey_form.create({ collectorId : SurveyFormCtrl.collectorId })" data-method="create">
+            <span class="fa fa-plus"></span> <span translate>FORM.BUTTONS.ADD</span>
+          </button>
+        </div>
+  
+        <div class="toolbar-item">
+          <button
+            type="button"
+            ng-click="SurveyFormCtrl.toggleFilter()"
+            data-method="filter"
+            class="btn btn-default"
+            ng-class="{ 'btn-info' : SurveyFormCtrl.filterEnabled }">
+            <i class="fa fa-filter"></i>
+          </button>
+        </div>
+  
+        <div class="toolbar-item">
+          <bh-data-collector
+            on-update="SurveyFormCtrl.dataCollectorSelect(dataCollectorId)">
+          </bh-data-collector>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- main content -->
+  <div class="flex-content">
+    <div class="container-fluid"> 
+      <div id="survey-form-grid" 
+        ui-grid="SurveyFormCtrl.gridOptions" 
+        class="grid-full-height" 
+        ui-grid-auto-resize 
+        ui-grid-resize-columns> 
+        
+        <bh-grid-loading-indicator 
+          loading-state="SurveyFormCtrl.loading"
+          empty-state="SurveyFormCtrl.gridOptions.data.length === 0" 
+          error-state="SurveyFormCtrl.hasError"> 
+        </bh-grid-loading-indicator> 
+      </div> 
+    </div> 
+  </div>
+  

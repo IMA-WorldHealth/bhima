@@ -146,6 +146,7 @@ const indicatorRerpor = require('../controllers/finance/indicator/dashboard/repo
 // Data Kit
 const dataCollectorManagement = require('../controllers/admin/dataCollectorManagement');
 const choicesListManagement = require('../controllers/admin/choicesListManagement');
+const surveyForm = require('../controllers/admin/surveyForm');
 
 // expose routes to the server.
 exports.configure = function configure(app) {
@@ -997,5 +998,12 @@ exports.configure = function configure(app) {
   app.put('/choices_list_management/:id', choicesListManagement.update);
   app.delete('/choices_list_management/:id', choicesListManagement.delete);
 
+  // API for SURVEY FORM routes crud
+  app.get('/survey_form', surveyForm.list);
+  app.get('/survey_form/listSurveyformtype', surveyForm.listSurveyformtype);
+  app.get('/survey_form/:id', surveyForm.detail);
+  app.post('/survey_form', surveyForm.create);
+  app.put('/survey_form/:id', surveyForm.update);
+  app.delete('/survey_form/:id', surveyForm.delete);
 
 };
