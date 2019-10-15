@@ -32,6 +32,10 @@ function StockAdjustmentController(
     vm.movement.date = date;
   };
 
+  vm.onChangeDepot = depot => {
+    vm.depot = depot;
+  };
+
   // bind constants
   vm.enterprise = Session.enterprise;
   vm.maxLength = util.maxLength;
@@ -43,7 +47,6 @@ function StockAdjustmentController(
   vm.configureItem = configureItem;
   vm.checkValidity = checkValidity;
   vm.submit = submit;
-  vm.changeDepot = changeDepot;
   vm.handleAdjustmentOption = handleAdjustmentOption;
 
   // grid columns
@@ -169,12 +172,10 @@ function StockAdjustmentController(
     };
 
     // make sure that the depot is loaded if it doesn't exist at startup.
-    const presetup = cache.depotUuid
-      ? loadDepot(cache.depotUuid)
-      : changeDepot();
-
-    return presetup
-      .then(setupStock);
+    if (cache.depotUuid) {
+      // load depot from the cached uuid
+      loadDepot(cache.depotUuid).then(setupStock);
+    }
   }
 
   // ============================ Inventories ==========================
@@ -244,17 +245,6 @@ function StockAdjustmentController(
         ReceiptModal.stockAdjustmentReceipt(document.uuid, fluxId);
       })
       .catch(Notify.handleError);
-  }
-
-  function changeDepot() {
-    // if requirement is true the modal cannot be canceled
-    const requirement = !cache.depotUuid;
-
-    return Depots.openSelectionModal(vm.depot, requirement)
-      .then((depot) => {
-        vm.depot = depot;
-        cache.depotUuid = depot.uuid;
-      });
   }
 
   function loadDepot(uuid) {

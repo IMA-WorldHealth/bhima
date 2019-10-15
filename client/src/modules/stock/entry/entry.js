@@ -42,7 +42,6 @@ function StockEntryController(
   vm.buildStockLine = buildStockLine;
   vm.setLots = setLots;
   vm.submit = submit;
-  vm.changeDepot = changeDepot;
   vm.reset = reset;
   vm.onDateChange = onDateChange;
   vm.gridOptions = {
@@ -98,6 +97,11 @@ function StockEntryController(
     data : vm.stockForm.store.data,
     fastWatch : true,
     flatEntityAccess : true,
+  };
+
+  // on change depot
+  vm.onChangeDepot = depot => {
+    vm.depot = depot;
   };
 
   /**
@@ -219,8 +223,6 @@ function StockEntryController(
           setupStock();
         })
         .catch(Notify.handleError);
-    } else {
-      changeDepot().then(setupStock);
     }
   }
 
@@ -464,8 +466,7 @@ function StockEntryController(
     vm.$loading = true;
     mapEntry.form = form;
     return mapEntry[vm.movement.entry_type].submit()
-      .then(toggleLoadingIndicator)
-      .finally(() => vm.reset(form));
+      .then(toggleLoadingIndicator);
   }
 
   /**
@@ -586,20 +587,6 @@ function StockEntryController(
         ReceiptModal.stockEntryDepotReceipt(document.uuid, true);
       })
       .catch(Notify.handleError);
-  }
-
-  /**
-   * @method changeDepot
-   * @description pop up a modal for selecting a depot
-   */
-  function changeDepot() {
-    // if there is not cached depot, the modal will require to select a depot
-    const requirement = !cache.depotUuid;
-    return Depots.openSelectionModal(vm.depot, requirement)
-      .then((depot) => {
-        vm.depot = depot;
-        cache.depotUuid = vm.depot.uuid;
-      });
   }
 
   /**

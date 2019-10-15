@@ -37,6 +37,11 @@ function StockExitController(
     }
   };
 
+  vm.onChangeDepot = depot => {
+    vm.depot = depot;
+    loadInventories(vm.depot);
+  };
+
   // bind methods
   vm.maxLength = util.maxLength;
   vm.enterprise = Session.enterprise;
@@ -48,7 +53,6 @@ function StockExitController(
   vm.configureItem = configureItem;
   vm.selectExitType = selectExitType;
   vm.submit = submit;
-  vm.changeDepot = changeDepot;
   vm.checkValidity = checkValidity;
   vm.onLotSelect = onLotSelect;
 
@@ -264,20 +268,10 @@ function StockExitController(
       Depots.read(cache.depotUuid, { only_user : true })
         .then(handleCachedDepot)
         .catch(Notify.handleError);
-    } else {
-      changeDepot()
-        .then(setupStock)
-        .then(handleNotCachedDepot);
     }
 
     function handleCachedDepot(depot) {
       vm.depot = depot;
-      setupStock();
-      loadInventories(vm.depot);
-      checkValidity();
-    }
-
-    function handleNotCachedDepot() {
       loadInventories(vm.depot);
       checkValidity();
     }
@@ -558,18 +552,6 @@ function StockExitController(
         ReceiptModal.stockExitLossReceipt(document.uuid, bhConstants.flux.TO_LOSS);
       })
       .catch(Notify.handleError);
-  }
-
-  function changeDepot() {
-    // if requirement is true the modal cannot be canceled
-    const requirement = !cache.depotUuid;
-
-    return Depots.openSelectionModal(vm.depot, requirement)
-      .then(depot => {
-        vm.depot = depot;
-        cache.depotUuid = vm.depot.uuid;
-        loadInventories(vm.depot);
-      });
   }
 
   startup();
