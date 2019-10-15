@@ -102,6 +102,7 @@ function StockEntryController(
   // on change depot
   vm.onChangeDepot = depot => {
     vm.depot = depot;
+    setupStock();
   };
 
   /**

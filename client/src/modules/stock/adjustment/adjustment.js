@@ -34,6 +34,7 @@ function StockAdjustmentController(
 
   vm.onChangeDepot = depot => {
     vm.depot = depot;
+    setupStock();
   };
 
   // bind constants
