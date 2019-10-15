@@ -1,7 +1,7 @@
 const helpers = require('../shared/helpers');
 const DataCollectorManagement = require('./dataCollectorManagement.page');
 
-describe.only('Data Collector Management', () => {
+describe('Data Collector Management', () => {
   // navigate to the page
   before(() => helpers.navigate('#!/data_collector_management'));
 
@@ -33,7 +33,7 @@ describe.only('Data Collector Management', () => {
     await Page.errorOnCreate();
   });
 
-  it('successfully delete a Configuration Payroll Period', async () => {
+  it('successfully delete a Data Collector Management', async () => {
     await Page.delete(updateDataCollector.label);
   });
 });

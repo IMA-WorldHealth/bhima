@@ -1,0 +1,103 @@
+<form name="ChoisesListManagementForm" bh-submit="ChoisesListManagementModalCtrl.submit(ChoisesListManagementForm)"
+  novalidate>
+  <div class="modal-header">
+    <ol class="headercrumb">
+      <li class="static" translate>TREE.ADMIN</li>
+
+      <li ng-if="ChoisesListManagementModalCtrl.isCreating" class="title">
+        <span translate>TREE.CHOISES_LIST_MANAGEMENT</span>
+        <label class="badge badge-warning" translate>FORM.LABELS.CREATE</label>
+      </li>
+      <li ng-if="!ChoisesListManagementModalCtrl.isCreating" class="title">
+        <span translate>TREE.CHOISES_LIST_MANAGEMENT</span>
+        <label class="badge badge-warning" translate>FORM.LABELS.UPDATE</label>
+      </li>
+    </ol>
+  </div>
+
+  <div class="modal-body" style="overflow-y: scroll; max-height:600px; ">
+    <!-- name -->
+    <div class="form-group"
+      ng-class="{ 'has-error' : ChoisesListManagementForm.$submitted && ChoisesListManagementForm.description.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.VARIABLE_NAME</label>
+      <div>
+        <input name="name" ng-model="ChoisesListManagementModalCtrl.choise.name" autocomplete="off" ng-maxlength="90"
+          class="form-control" required>
+        <div class="help-block" ng-messages="ChoisesListManagementForm.name.$error"
+          ng-show="ChoisesListManagementForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+    </div>
+    <!-- label -->
+    <div class="form-group"
+      ng-class="{ 'has-error' : ChoisesListManagementForm.$submitted && ChoisesListManagementForm.description.$invalid }">
+      <label class="control-label" translate>FORM.LABELS.DESIGNATION</label>
+      <div>
+        <input name="label" ng-model="ChoisesListManagementModalCtrl.choise.label" autocomplete="off" ng-maxlength="90"
+          class="form-control" required>
+        <div class="help-block" ng-messages="ChoisesListManagementForm.label.$error"
+          ng-show="ChoisesListManagementForm.$submitted">
+          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+      </div>
+    </div>
+
+    <bh-choise-list-select id="parent" list="ChoisesListManagementModalCtrl.choise.parent" name="parent" is-title="1"
+      list-label="FORM.SELECT.SELECT_PARENT" on-select-callback="ChoisesListManagementModalCtrl.onSelectParent(list)">
+      <bh-clear on-clear="ChoisesListManagementModalCtrl.clear('parent')"></bh-clear>
+    </bh-choise-list-select>
+
+    <bh-choise-list-select id="group_label" list="ChoisesListManagementModalCtrl.choise.group_label" name="group_label"
+      is-group="1" list-label="FORM.SELECT.SELECT_GROUP"
+      on-select-callback="ChoisesListManagementModalCtrl.onSelectGroup(list)">
+      <bh-clear on-clear="ChoisesListManagementModalCtrl.clear('group_label')"></bh-clear>
+    </bh-choise-list-select>
+
+    <!-- is_title -->
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" id="is_title" ng-true-value="1" ng-false-value="0"
+          ng-model="ChoisesListManagementModalCtrl.choise.is_title">
+        <span translate>
+          <strong>
+            FORM.INFO.IS_TITLE
+          </strong>
+        </span>
+      </label>
+    </div>
+
+    <!-- is_group -->
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" id="is_group" ng-true-value="1" ng-false-value="0"
+          ng-model="ChoisesListManagementModalCtrl.choise.is_group">
+        <span translate>
+          <strong>
+            FORM.INFO.IS_GROUP
+          </strong>
+        </span>
+      </label>
+    </div>
+
+  </div>
+
+  <div class="modal-footer">
+    <p id="choises-list-management-same" ng-if="ChoisesListManagementModalCtrl.hasNoChange" class="text-warning">
+      <i class="fa fa-warning"></i> <span translate>FORM.INFO.NO_CHANGE</span>
+    </p>
+
+    <p ng-if="ChoisesListManagementForm.$submitted && ChoisesListManagementForm.$invalid" class="text-danger">
+      <i class="fa fa-exclamation-triangle"></i> <span translate>FORM.ERRORS.GENERIC</span>
+    </p>
+
+    <button data-method="cancel" type="button" class="btn btn-default"
+      ng-click="ChoisesListManagementModalCtrl.closeModal()" translate>
+      FORM.BUTTONS.CANCEL
+    </button>
+
+    <bh-loading-button loading-state="ChoisesListManagementForm.$loading">
+      <span translate>FORM.BUTTONS.SUBMIT</span>
+    </bh-loading-button>
+  </div>
+</form>

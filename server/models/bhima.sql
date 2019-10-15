@@ -373,3 +373,27 @@ INSERT INTO `cron` (`label`, `value`) VALUES
 -- data_collector_management
 INSERT INTO `data_collector_management` (`label`, `description`, `version_number`, `color`, `is_related_patient`) VALUES 
   ('Fiche Kardex', 'Fiche de consommation Medicament', '1.0', '#E0FFFF', 1);
+
+-- choises_list_management
+INSERT INTO `choises_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (1, 'genre', 'Genre', 0, 0, 0, 1, 1);
+INSERT INTO `choises_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (2, 'm', 'Masculin', 0, 1, 1, 0, 0);
+INSERT INTO `choises_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (3, 'f', 'Féminin', 0, 1, 1, 0, 0);
+INSERT INTO `choises_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (4, 'pays', 'Pays', 0, 0, 0, 1, 1);
+INSERT INTO `choises_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (5, 'province', 'Province', 0, 4, 0, 1, 1);
+INSERT INTO `choises_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (6, 'districte', 'Districte', 0, 5, 0, 1, 1);
+INSERT INTO `choises_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (7, 'ville', 'Ville', 0, 6, 0, 1, 1);
+INSERT INTO `choises_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (8, 'commune', 'Commune', 0, 7, 0, 1, 1);
+INSERT INTO `choises_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (9, 'quartier', 'Quartier', 0, 8, 0, 1, 1);
+INSERT INTO `choises_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (10, 'rdc', 'RD Congo', 0, 0, 4, 0, 1);
+INSERT INTO `choises_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (11, 'kin', 'Kinshasa', 0, 10, 4, 0, 1);
+INSERT INTO `choises_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (12, 'mont_amba', 'Mont Amba', 0, 11, 6, 0, 1);
+INSERT INTO `choises_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (13, 'lemba', 'Lemba', 0, 12, 8, 0, 1);
+INSERT INTO `choises_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (14, 'salongo', 'Salongo', 0, 13, 9, 0, 1);
+INSERT INTO `choises_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (15, 'avenue', 'Avenue', 0, 9, 0, 1, 1);
+INSERT INTO `choises_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (16, 'bypass', 'By Pass', 0, 14, 15, 0, 0);
+INSERT INTO `choises_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (17, 'kalala', 'Kalala', 0, 14, 0, 0, 0);
+INSERT INTO `choises_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (18, 'funa', 'Funa', 0, 11, 6, 0, 1);
+INSERT INTO `choises_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (19, 'kv', 'Kasa vubu', 0, 18, 8, 0, 1);
+INSERT INTO `choises_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (20, 'mtg', 'Matonge', 0, 19, 9, 0, 1);
+INSERT INTO `choises_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (21, 'masimanimba', 'Masimanimba', 0, 20, 15, 0, 0);
+

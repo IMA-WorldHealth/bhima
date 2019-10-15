@@ -2,13 +2,11 @@
 /* eslint  */
 
 /**
- * This class is represents a payroll configuration page in term of structure and
- * behaviour so it is a payroll configuration page object
+ * This class is represents a Data Collector page in term of structure and
+ * behaviour so it is a Data Collector Management page object
  */
 
 /* loading grid actions */
-const GA = require('../shared/GridAction');
-const GU = require('../shared/GridUtils');
 const GridRow = require('../shared/GridRow');
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
@@ -21,7 +19,7 @@ class DataCollectorManagementPage {
   }
 
   /**
-   * simulate the create PayrollConfig button click to show the dialog of creation
+   * simulate the create Data Collector button click to show the dialog of creation
    */
   async create(dataCollectorManagement) {
     await FU.buttons.create();

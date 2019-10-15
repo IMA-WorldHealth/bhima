@@ -145,6 +145,7 @@ const indicatorRerpor = require('../controllers/finance/indicator/dashboard/repo
 
 // Data Kit
 const dataCollectorManagement = require('../controllers/admin/dataCollectorManagement');
+const choisesListManagement = require('../controllers/admin/choisesListManagement');
 
 // expose routes to the server.
 exports.configure = function configure(app) {
@@ -987,6 +988,14 @@ exports.configure = function configure(app) {
   app.get('/data_collector_management/:id', dataCollectorManagement.detail);
   app.post('/data_collector_management', dataCollectorManagement.create);
   app.put('/data_collector_management/:id', dataCollectorManagement.update);
-  app.delete('/data_collector_management/:id', dataCollectorManagement.delete);  
+  app.delete('/data_collector_management/:id', dataCollectorManagement.delete);
+
+  // API for CHOISES LIST MANAGEMENT routes crud
+  app.get('/choises_list_management', choisesListManagement.list);
+  app.get('/choises_list_management/:id', choisesListManagement.detail);
+  app.post('/choises_list_management', choisesListManagement.create);
+  app.put('/choises_list_management/:id', choisesListManagement.update);
+  app.delete('/choises_list_management/:id', choisesListManagement.delete);
+
 
 };

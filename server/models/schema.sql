@@ -2370,4 +2370,18 @@ CREATE TABLE `data_collector_management` (
   UNIQUE KEY `data_collector_management_1` (`label`, `version_number`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
 
+DROP TABLE IF EXISTS `choises_list_management`;
+CREATE TABLE `choises_list_management` (
+  `id` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, 
+  `name` VARCHAR(100) NOT NULL, 
+  `label` VARCHAR(100) NOT NULL, 
+  `fixed` tinyint(1) DEFAULT 0, 
+  `parent` MEDIUMINT(8) UNSIGNED DEFAULT 0,
+  `group_label` MEDIUMINT(8) UNSIGNED DEFAULT 0, 
+  `is_group` tinyint(1) NOT NULL DEFAULT 0,
+  `is_title` tinyint(1) NOT NULL DEFAULT 0, 
+  PRIMARY KEY (`id`), 
+  UNIQUE KEY `choises_list_management_1` (`label`, `name`, `parent`)
+) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
+
 SET foreign_key_checks = 1;
