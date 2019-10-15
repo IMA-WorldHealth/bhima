@@ -133,34 +133,19 @@ INSERT INTO unit VALUES
   (246, 'Client debts report', 'TREE.CLIENT_DEBTS_REPORT', 'Client debts report', 144, '/modules/reports/clientDebts', '/reports/clientDebts'),
   (247, 'Client support report', 'TREE.CLIENT_SUPPORT_REPORT', 'Client support report', 144, '/modules/reports/clientSupport', '/reports/clientSupport'),
   (248, 'Analysis of cashboxes', 'REPORT.ANALYSIS_AUX_CASHBOXES.TITLE', 'Analysis of auxiliary cashboxes', 144, '/modules/reports/analysisAuxiliaryCash', '/reports/analysisAuxiliaryCash'),
-<<<<<<< a097681f7d119f324581cd5b09f9dce5e3f5e5ab
   (249, 'Realized Profit Report', 'TREE.REALIZED_PROFIT_REPORT', 'Realized profit report', 144, '/modules/reports/realizedProfit', '/reports/realizedProfit'),
   (250, 'Sytem usage statistic', 'REPORT.SYSTEM_USAGE_STAT.TITLE', 'Sytem usage statistic', 144, '/modules/reports/systemUsageStat', '/reports/systemUsageStat'),
   (251, 'indexes', 'TREE.INDEXES','The payrall-index', 57,'/modules/finance/','/PAYROLL_INDEX_FOLDER'),
   (252, 'Staffing indexes management','TREE.STAFFING_INDICES_MANAGEMENT','Staffing indices management',251 ,'/modules/payroll/staffing_indice','/staffing_indices'),
-  (253, 'Multiple Payroll by indice','TREE.MULTI_PAYROLL_INDICE','Multiple Payroll (indice)', 251,'/modules/multiple_payroll_indice','/multiple_payroll_indice'),
-  (254, 'Data Kit', 'TREE.DATA_KIT', 'Data Kit', 0, '/modules/data_kit', '/data_kit'),
-  (255, 'Data Collector Management', 'TREE.DATA_COLLECTOR_MANAGEMENT', '', 246, '/modules/data_collector_management', '/data_collector_management'),
-  (256, 'Data Collector Management', 'TREE.DATA_COLLECTOR_MANAGEMENT', '', 249, '/modules/data_collector_management', '/data_collector_management'),
-  (257, 'Data Kit', 'TREE.DATA_KIT', 'Data Kit', 0, '/modules/data_kit', '/data_kit'),
-  (258, 'Data Collector Management', 'TREE.DATA_COLLECTOR_MANAGEMENT', '', 246, '/modules/data_collector_management', '/data_collector_management'),
-  (259, 'Choices list management', 'TREE.CHOICES_LIST_MANAGEMENT', '', 246, '/modules/choices_list_management', '/choices_list_management'),
-  (260, 'Survey Form', 'TREE.SURVEY_FORM', '', 246, '/modules/survey_form', '/survey_form');
-  (261, 'Data Collection', 'TREE.DATA_COLLECTION', '', 0, '/modules/data_collection', '/data_collection'),
-  (262, 'Fill Form', 'TREE.FILL_FORM', '', 250, '/modules/fill_form', '/fill_form'),
-  (263, 'Display Metadata', 'TREE.DISPLAY_METADATA', '', 250, '/modules/display_metadata', '/display_metadata'),
-  (264, 'Data Kit Report', 'TREE.DATA_KIT_REPORT', 'Data Kit Report', 144, '/modules/reports/dataKit', '/reports/dataKit');  
-=======
-  (249, 'Data Collection', 'TREE.DATA_COLLECTION', '', 0, '/modules/data_collection', '/data_collection'),
-  (250, 'Fill Form', 'TREE.FILL_FORM', '', 249, '/modules/fill_form', '/fill_form'),
-  (251, 'Display Metadata', 'TREE.DISPLAY_METADATA', '', 249, '/modules/display_metadata', '/display_metadata'),
-  (251, 'Data Kit', 'TREE.DATA_KIT', 'Data Kit', 249, '/modules/data_kit', '/data_kit'),
-  (252, 'Data Collector Management', 'TREE.DATA_COLLECTOR_MANAGEMENT', '', 251, '/modules/data_collector_management', '/data_collector_management'),
-  (253, 'Choices list management', 'TREE.CHOICES_LIST_MANAGEMENT', '', 251, '/modules/choices_list_management', '/choices_list_management'),
-  (254, 'Survey Form', 'TREE.SURVEY_FORM', '', 251, '/modules/survey_form', '/survey_form'),  
-  (255, 'Data Kit Report', 'TREE.DATA_KIT_REPORT', 'Data Kit Report', 144, '/modules/reports/dataKit', '/reports/dataKit');
->>>>>>> Resolve conflict s5
-
+  (253, 'Multiple Payroll by indice','TREE.MULTI_PAYROLL_INDICE','Multiple Payroll (indice)', 251,'/modules/multiple_payroll_indice','/multiple_payroll_indice'), 
+  (254, 'Data Collection', 'TREE.DATA_COLLECTION', '', 0, '/modules/data_collection', '/data_collection'),
+  (255, 'Fill Form', 'TREE.FILL_FORM', '', 254, '/modules/fill_form', '/fill_form'),
+  (256, 'Display Metadata', 'TREE.DISPLAY_METADATA', '', 254, '/modules/display_metadata', '/display_metadata'),
+  (257, 'Data Kit', 'TREE.DATA_KIT', 'Data Kit', 254, '/modules/data_kit', '/data_kit'),
+  (258, 'Data Collector Management', 'TREE.FORMS_MANAGEMENT', '', 257, '/modules/data_collector_management', '/data_collector_management'),
+  (259, 'Choices list management', 'TREE.CHOICES_LIST_MANAGEMENT', '', 257, '/modules/choices_list_management', '/choices_list_management'),
+  (260, 'Survey Form', 'TREE.FORMS_CONFIGURATION', '', 257, '/modules/survey_form', '/survey_form'),  
+  (261, 'Data Kit Report', 'TREE.DATA_KIT_REPORT', 'Data Kit Report', 144, '/modules/reports/dataKit', '/reports/dataKit');
 
 -- Reserved system account type
 INSERT INTO `account_category` VALUES
@@ -220,6 +205,7 @@ INSERT INTO `report` (`report_key`, `title_key`) VALUES
   ('realizedProfit', 'REPORT.REALIZED.TITLE'),
   ('systemUsageStat', 'REPORT.SYSTEM_USAGE_STAT.TITLE'),
   ('dataKit', 'TREE.DATA_KIT_REPORT');
+
 
 -- Supported Languages
 INSERT INTO `language` VALUES
@@ -388,9 +374,6 @@ INSERT INTO `cron` (`label`, `value`) VALUES
   ('CRON.MONTHLY', '0 1 30 * *'),
   ('CRON.YEARLY', '0 1 31 12 *'),
   ('CRON.EACH_MINUTE', '* * * * *');
-<<<<<<< a097681f7d119f324581cd5b09f9dce5e3f5e5ab
-=======
-
 
 -- Survey Form Type
 INSERT INTO `survey_form_type` (`label`, `type`, `is_list`) VALUES
@@ -404,4 +387,3 @@ INSERT INTO `survey_form_type` (`label`, `type`, `is_list`) VALUES
   ('FORM.LABELS.IMAGE', 'image', 0),
   ('FORM.LABELS.CALCULATION', 'calculation', 0),
   ('FORM.LABELS.TEXT_AREA', 'text_area', 0);
->>>>>>> Resolve conflict s5
