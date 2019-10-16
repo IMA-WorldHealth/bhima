@@ -15,7 +15,11 @@
 
     <div class="toolbar">
       <div class="toolbar-item">
-        <bh-change-depot current-depot="StockCtrl.depot" on-select="StockCtrl.onChangeDepot(depot)" ></bh-change-depot>
+        <bh-dropdown-menu>
+          <bh-dropdown-menu-item>
+            <bh-change-depot on-select="StockCtrl.onChangeDepot(depot)"></bh-change-depot>
+          </bh-dropdown-menu-item>
+        </bh-dropdown-menu>
       </div>
     </div>
   </div>

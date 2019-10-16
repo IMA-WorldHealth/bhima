@@ -414,10 +414,9 @@ function StockExitController(
     }
 
     vm.$loading = true;
-    return mapExit[vm.movement.exit_type].submit()
+    return mapExit[vm.movement.exit_type].submit(form)
       .then(toggleLoadingIndicator)
-      .catch(Notify.handleError)
-      .finally(() => reinit(form));
+      .catch(Notify.handleError);
   }
 
   function toggleLoadingIndicator() {
@@ -441,7 +440,7 @@ function StockExitController(
   }
 
   // submit patient
-  function submitPatient() {
+  function submitPatient(form) {
     const invoiceUuid = vm.movement.entity.instance.invoice && vm.movement.entity.instance.invoice
       ? vm.movement.entity.instance.invoice.details.uuid : null;
 
@@ -462,14 +461,14 @@ function StockExitController(
 
     return Stock.movements.create(movement)
       .then(document => {
-        vm.stockForm.store.clear();
         ReceiptModal.stockExitPatientReceipt(document.uuid, bhConstants.flux.TO_PATIENT);
+        reinit(form);
       })
       .catch(Notify.handleError);
   }
 
   // submit service
-  function submitService() {
+  function submitService(form) {
     const movement = {
       depot_uuid : vm.depot.uuid,
       entity_uuid : vm.movement.entity.uuid,
@@ -486,14 +485,14 @@ function StockExitController(
 
     return Stock.movements.create(movement)
       .then(document => {
-        vm.stockForm.store.clear();
         ReceiptModal.stockExitServiceReceipt(document.uuid, bhConstants.flux.TO_SERVICE);
+        reinit(form);
       })
       .catch(Notify.handleError);
   }
 
   // submit depot
-  function submitDepot() {
+  function submitDepot(form) {
     const movement = {
       from_depot : vm.depot.uuid,
       from_depot_is_warehouse : vm.depot.is_warehouse,
@@ -510,14 +509,14 @@ function StockExitController(
 
     return Stock.movements.create(movement)
       .then(document => {
-        vm.stockForm.store.clear();
         ReceiptModal.stockExitDepotReceipt(document.uuid, bhConstants.flux.TO_OTHER_DEPOT);
+        reinit(form);
       })
       .catch(Notify.handleError);
   }
 
   // submit loss
-  function submitLoss() {
+  function submitLoss(form) {
     const movement = {
       depot_uuid : vm.depot.uuid,
       entity_uuid : vm.movement.entity.uuid,
@@ -534,8 +533,8 @@ function StockExitController(
 
     return Stock.movements.create(movement)
       .then(document => {
-        vm.stockForm.store.clear();
         ReceiptModal.stockExitLossReceipt(document.uuid, bhConstants.flux.TO_LOSS);
+        reinit(form);
       })
       .catch(Notify.handleError);
   }
