@@ -37,7 +37,7 @@ function bhChangeDepotController(Depots, AppCache, Notify) {
             $ctrl.currentDepot = depot;
             $ctrl.onSelect({ depot });
           })
-          .catch(Notify.handleError);
+          .catch(handleError);
       }
 
       function changeDepot() {
@@ -50,6 +50,12 @@ function bhChangeDepotController(Depots, AppCache, Notify) {
             $ctrl.currentDepot = depot;
             $ctrl.onSelect({ depot });
           });
+      }
+
+      function handleError(err) {
+        return err.status === 404
+          ? changeDepot()
+          : Notify.handleError(err);
       }
     },
   };
