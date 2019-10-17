@@ -20,7 +20,7 @@ function PriceListService(Api) {
   service.details = details;
   service.deleteItem = deleteItem;
   service.download = download;
-
+  service.downloadTemplate = downloadTemplate;
   /**
    * @method create
    *
@@ -77,6 +77,14 @@ function PriceListService(Api) {
     const url = service.url.concat('download/list');
     return service.$http.get(url, params)
       .then(service.util.unwrapHttpResponse);
+  }
+
+  function downloadTemplate() {
+    const url = service.url.concat('download/template');
+    return service.$http.get(url)
+      .then(response => {
+        return service.util.download(response, 'Iventory item Template', 'csv');
+      });
   }
   return service;
 }

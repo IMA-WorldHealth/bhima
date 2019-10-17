@@ -31,6 +31,12 @@ class PriceListPage {
     await row.dropdown().click();
     await row.method('edit-items').click();
   }
+
+  async importItems(label) {
+    const row = new GridRow(label);
+    await row.dropdown().click();
+    await row.method('import-items').click();
+  }
 }
 
 module.exports = PriceListPage;

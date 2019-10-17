@@ -12,8 +12,12 @@
  * PUT    /prices/:uuid
  * DELETE /prices/:uuid
  */
+const path = require('path');
 const db = require('../../lib/db');
 const { uuid } = require('../../lib/util');
+
+const BadRequest = require('../../lib/errors/BadRequest');
+const util = require('../../lib/util');
 
 exports.lookup = lookup;
 /**
@@ -228,6 +232,64 @@ exports.createItem = function createItem(req, res, next) {
   }).catch(next)
     .done();
 };
+
+
+/**
+ * @method downloadTemplate
+ *
+ * @description send to the client the template file for price list item import
+*/
+exports.downloadTemplate = (req, res, next) => {
+  try {
+    const file = path.join(__dirname, '../../resources/templates/import-inventory-item-template.csv');
+    res.download(file);
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+exports.importItem = async (req, res, next) => {
+  try {
+    if (!req.files || req.files.length === 0) {
+      const errorDescription = 'Expected at least one file upload but did not receive any files.';
+      throw new BadRequest(errorDescription, 'ERRORS.MISSING_UPLOAD_FILES');
+    }
+
+    const filePath = req.files[0].path;
+
+    const data = await util.formatCsvToJson(filePath);
+    removeEmptyLines(data);
+    if (!hasValidDataFormat(data)) {
+      throw new BadRequest('The given file has a bad data format for stock', 'ERRORS.BAD_DATA_FORMAT');
+    }
+    const priceListUuid = db.bid(req.body.pricelist_uuid);
+    const sql = 'CALL importPriceListItem(?,?,?,?);';
+    const transaction = db.transaction();
+    data.forEach(item => {
+
+      transaction.addQuery(sql, [priceListUuid, item.code, item.price, item.is_percentage]);
+    });
+    await transaction.execute();
+    res.sendStatus(200);
+  } catch (ex) {
+    next(ex);
+  }
+
+};
+
+function removeEmptyLines(data) {
+  data.forEach((r, index) => {
+    if (!(r.code && r.price)) delete data[index];
+  });
+}
+
+function hasValidDataFormat(data) {
+  const invalids = data.filter(r => {
+    return (r.code && r.price);
+  });
+  return (invalids.length === data.length);
+}
 
 exports.deleteItem = function deleteItem(req, res, next) {
   const priceListDeleteItemSql = `DELETE FROM price_list_item  WHERE uuid = ?`;

@@ -18,6 +18,7 @@ function PriceListController(
   vm.download = download;
   vm.openColumnConfigModal = openColumnConfigModal;
   vm.toggleInlineFilter = toggleInlineFilter;
+  vm.ImportList = ImportList;
   // set price list items
   vm.addItem = addItem;
   // delete a price list
@@ -161,6 +162,22 @@ function PriceListController(
     return $uibModal.open({
       templateUrl : 'modules/prices/modal/createItems.html',
       controller : 'PriceListItemsModalController as ModalCtrl',
+      keyboard : false,
+      backdrop : 'static',
+      size : 'md',
+      resolve : {
+        data : function dataProvider() {
+          return pricelist || {};
+        },
+      },
+    });
+  }
+
+  // Add pricelist Item in a  modal
+  function ImportList(pricelist) {
+    return $uibModal.open({
+      templateUrl : 'modules/prices/modal/import.html',
+      controller : 'ImportPriceListModalController as ModalCtrl',
       keyboard : false,
       backdrop : 'static',
       size : 'md',
