@@ -19,8 +19,8 @@ function FillFormService(Api) {
 
   function formatData(form, data) {
     const dataSurveyForm = {};
-    // Ici l'on verifie les occurences des donnees existantes
-    // S'il sont multiples afin de les affecter dans des tableaux
+    // Here we check the occurrence of existing data
+    // If they are multiple in order to assign them in tables
     form.forEach(f => {
       data.forEach(d => {
         if ((f.id === d.survey_form_id) && (f.type === '4')) {
@@ -31,21 +31,13 @@ function FillFormService(Api) {
 
     form.forEach(f => {
       data.forEach(d => {
-        // Pour les identifiants des listes des choix,
-        // il est primordiale de le transormer en Integer
+        // For the identifiers of the lists of choices, it is essential to transform it into Integer
         if ((f.id === d.survey_form_id) && (f.type === '4')) {
           // Multiple choice list management
           dataSurveyForm[f.name].push(parseInt(d.value, 10));
         } else if ((f.id === d.survey_form_id) && (f.type !== '4') && (f.type !== '7')) {
-          // Single choice list management
-          d.value = (f.type === '1') ? parseFloat(d.value) : d.value;
-          d.value = (f.type === '3') ? parseInt(d.value, 10) : d.value;
-
-          // format date
-          d.value = (f.type === '6') ? new Date(d.value) : d.value;
-          dataSurveyForm[f.name] = d.value;
+          dataSurveyForm[f.name] = parseDataValue(d.value, f.type);
         } else if ((f.id === d.survey_form_id) && (f.type === '7')) {
-
           // format time
           const newDate = new Date();
           const timeSplit = d.value.split(':');
@@ -60,6 +52,19 @@ function FillFormService(Api) {
   function restoreImage(data) {
     return service.$http.post(`/fill_form/restoreImage`, { data })
       .then(service.util.unwrapHttpResponse);
+  }
+
+  function parseDataValue(value, type) {
+    switch (type) {
+    case '1':
+      return parseFloat(value);
+    case '3':
+      return parseInt(value, 10);
+    case '6':
+      return new Date(value);
+    default:
+      return value;
+    }
   }
 
   /*

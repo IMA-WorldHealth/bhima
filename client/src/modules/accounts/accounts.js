@@ -4,6 +4,7 @@ angular.module('bhima.controllers')
 AccountsController.$inject = [
   '$rootScope', '$timeout', 'AccountGridService', 'NotifyService', 'bhConstants',
   'LanguageService', 'uiGridConstants', 'ModalService', 'AccountService', '$state',
+  'FormatTreeDataService',
 ];
 
 /**
@@ -18,7 +19,7 @@ AccountsController.$inject = [
  */
 function AccountsController(
   $rootScope, $timeout, AccountGrid, Notify, Constants, Language,
-  uiGridConstants, Modal, Accounts
+  uiGridConstants, Modal, Accounts, FormatTreeData
 ) {
   const vm = this;
   const columns = gridColumns();

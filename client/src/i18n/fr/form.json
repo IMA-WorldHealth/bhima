@@ -902,6 +902,7 @@
             "SUPPLIER": "Selectionner Fournisseur",
             "TRANSACTION_TYPE": "Sélectionner le Type de la Transaction",
             "TYPE": "Sélectionner un Type",
+            "SELECT_TYPE_DATA": "Sélectionner le type de données",
             "USER": "Selectionner Utilisateur",
             "VILLAGE": "Sélectionner Village/Commune",
             "WARD":"Sélectionner un pavillon",

@@ -18,213 +18,175 @@
     <h4><strong ng-if="FillFormModalCtrl.patient.display_name"> {{ FillFormModalCtrl.patient.display_name }} / {{ FillFormModalCtrl.patient.reference}} ({{ FillFormModalCtrl.patient.sex }}) </strong></h4>
   </div>
 
-  <div class="modal-body" popover-append-to-body="true" style="overflow-y: scroll; min-height:300px; max-height:600px; ">    
+  <div class="modal-body" style="overflow-y: scroll; min-height:300px; max-height:600px; ">
     <div ng-repeat="formItem in FillFormModalCtrl.formItems">
 
       <div ng-if="!formItem.constraint || $eval(formItem.constraintCheck)">
-        <!-- Type text -->
-        <div ng-if="formItem.typeForm === 'text'" class="form-group" ng-class="{ 'has-error' : FillFormForm.$submitted && FillFormForm.{{ formItem.name }}.$invalid }">
-          <label class="control-label"> {{ formItem.label }} </label>
-          <span style="color: #cecece"><em> {{ formItem.hint }} </em></span>
-          <div>
-            <span ng-if="formItem.required">
-              <input name="{{ formItem.name }}" ng-model="FillFormModalCtrl.form[formItem.name]" autocomplete="off" ng-maxlength="90" class="form-control" required>
-            </span>
-            <span ng-if="!formItem.required">
-              <input name="{{ formItem.name }}" ng-model="FillFormModalCtrl.form[formItem.name]" autocomplete="off" ng-maxlength="90" class="form-control">
-            </span>
-            
-            <div class="help-block" ng-messages="FillFormForm.name.$error" ng-show="FillFormForm.$submitted">
-              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- number-->
-        <div ng-if="formItem.typeForm === 'number'" class="form-group" ng-class="{ 'has-error' : FillFormForm.$submitted && FillFormForm.{{ formItem.name }}.$invalid }">
-          <label class="control-label"> {{ formItem.label }} </label>
-          <span style="color: #cecece"><em> {{ formItem.hint }} </em></span>
-          <div>
-            <span ng-if="formItem.required">
-              <input name="{{ formItem.name }}" type="number" ng-model="FillFormModalCtrl.form[formItem.name]" autocomplete="off" ng-maxlength="90" class="form-control" required>
-            </span>
-            <span ng-if="!formItem.required">
-              <input name="{{ formItem.name }}" type="number" ng-model="FillFormModalCtrl.form[formItem.name]" autocomplete="off" ng-maxlength="90" class="form-control">
-            </span>
-            <div class="help-block" ng-messages="FillFormForm.name.$error" ng-show="FillFormForm.$submitted">
-              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Date -->
-        <div ng-if="formItem.typeForm === 'date'">
-          <span style="color: #cecece"><em> {{ formItem.hint }} </em></span>
-          <bh-date-editor
-            date-value="FillFormModalCtrl.form[formItem.name]"
-            label="{{ formItem.label }}"
-            allow-future-date="true"
-            required="formItem.valueRequired"
-            on-change="FillFormModalCtrl.onDateChange(date, formItem.name)">
-          </bh-date-editor>
-        </div>
-
-        <!-- Calculation -->
-        <div ng-if="formItem.typeForm === 'calculation'">
-          <span style="background-color: {{ FillFormModalCtrl.dataCollector.color }}; color: black"><em> <strong>{{ formItem.label }}</strong> : {{ formItem.calculation }}
-          <h5 ng-if="FillFormModalCtrl.updateMode">:{{ FillFormModalCtrl.form[formItem.name] }} </h5> </em></span> 
-        </div>
-
-        <!-- TextArea -->
-        <div ng-if="formItem.typeForm === 'text_area'">
-          <label class="control-label">{{ formItem.label }} </label>
-          <span style="color: #cecece"><em> {{ formItem.hint }} </em></span>
-          <div ng-if="formItem.required">
-            <textarea
-              ng-model="FillFormModalCtrl.form[formItem.name]"
-              name="{{ formItem.name }}"
-              class="form-control"
-              required
-              rows="4">
-            </textarea>
-          </div>
-
-          <div ng-if="!formItem.required">
-            <textarea
-              ng-model="FillFormModalCtrl.form[formItem.name]"
-              name="{{ formItem.name }}"
-              class="form-control"
-              rows="4">
-            </textarea>
-          </div>
-
-          <div class="help-block" ng-messages="FillFormForm.name.$error" ng-show="FillFormForm.$submitted">
-            <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-          </div>
-          
-        </div>
-
-        <!-- Note -->
-        <div ng-if="formItem.typeForm === 'note'">
-          <div style="
-            border-radius : 15px ;
-            text-decoration-color: #ffffff;
-            text-shadow: white 5px 3px 8px;
-            text-align: center;
-            background-image: linear-gradient({{ FillFormModalCtrl.dataCollector.color }}, white, white);
-            border-bottom-color: #efefef;
-            border-right-color: gray;
-            border-left-color: {{ FillFormModalCtrl.dataCollector.color }};
-            border-top-color: {{ FillFormModalCtrl.dataCollector.color }};
-            border-style: solid;">
-            <h5><strong>
-              <span translate>
-                {{ formItem.label }}
-              </span>
-            </strong></h5>
-          </div>
-        </div>
-        <!-- Note -->
-
-        <!-- Date Time -->
-        <div ng-if="formItem.typeForm === 'time'">
-          <div class="uib-increment minutes" ng-class="{ 'has-error' : FillFormForm.$submitted && FillFormForm.{{ formItem.name }}.$invalid }">
+        <div ng-switch="formItem.typeForm">
+          <!-- Type text -->
+          <div ng-switch-when="text" class="form-group" ng-class="{ 'has-error' : FillFormForm.$submitted && FillFormForm[formItem.name].$invalid }">
             <label class="control-label"> {{ formItem.label }} </label>
             <span style="color: #cecece"><em> {{ formItem.hint }} </em></span>
-            <span ng-if="formItem.required">
-              <div 
-                uib-timepicker
-                ng-model="FillFormModalCtrl.form[formItem.name]"
-                name="{{ formItem.name }}"
-                hour-step="1"
-                minute-step="1"
-                required="required"
-                on-change="FillFormModalCtrl.onTimeChange(formItem.name)"
-                show-meridian="ismeridian"></div>
-            </span>
-            <span ng-if="!formItem.required">
-              <div
-                uib-timepicker
-                ng-model="FillFormModalCtrl.form[formItem.name]"
-                name="{{ formItem.name }}"
-                hour-step="1"
-                minute-step="1"
-                on-change="FillFormModalCtrl.onTimeChange(formItem.name)"
-                show-meridian="ismeridian"></div>
-            </span>
+              <input name="{{ formItem.name }}" ng-model="FillFormModalCtrl.form[formItem.name]" autocomplete="off" ng-maxlength="90" class="form-control" ng-required="formItem.required">
+              <div class="help-block" ng-messages="FillFormForm[formItem.name].$error" ng-show="FillFormForm.$submitted">
+                <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+              </div>
           </div>
-        </div>
 
-        <!-- select_one -->
-        <div ng-if="formItem.typeForm === 'select_one'">
-          <span ng-if="!formItem.filterLabel">
-              <bh-choice-list-select
-                id="{{ formItem.name }}"
-                list="FillFormModalCtrl.form[formItem.name]"
-                name="{{ formItem.name }}"
-                required="formItem.valueRequired"
-                list-label="{{ formItem.label }}"
-                list-hint="{{ formItem.hint }}"
-                group-label="formItem.choice_list_id"
-                on-select-callback="FillFormModalCtrl.onSelectList(list, formItem.name)">
-              </bh-choice-list-select>
-            </span>
-            <span ng-if="formItem.filterLabel && FillFormModalCtrl.form[formItem.filterLabel]">
-              <bh-choice-list-select
-                id="{{ formItem.name }}"
-                name="{{ formItem.name }}"
-                list="FillFormModalCtrl.form[formItem.name]"
-                required="formItem.valueRequired"
-                list-label="{{ formItem.label }}"
-                list-hint="{{ formItem.hint }}"
-                parent-id="FillFormModalCtrl.form[formItem.filterLabel]"
-                group-label="formItem.choice_list_id"
-                on-select-callback="FillFormModalCtrl.onSelectList(list, formItem.name)">
-                <bh-clear on-clear="FillFormModalCtrl.clear(formItem.name)"></bh-clear>
-              </bh-choice-list-select>
-            </span>
-        </div>
-
-        <!-- select_multiple -->
-        <div ng-if="formItem.typeForm === 'select_multiple'">
-          <bh-choice-list-multiple-select
-            id="{{ formItem.name }}"
-            lists="FillFormModalCtrl.form[formItem.name]"
-            multiple-choice="multiple"
-            name="{{ formItem.name }}"
-            required="formItem.valueRequired"
-            list-label="{{ formItem.label }}"
-            list-hint="{{ formItem.hint }}"
-            group-label="formItem.choice_list_id"              
-            on-change="FillFormModalCtrl.onSelectMultiple(lists, formItem.name)">
-          </bh-choice-list-multiple-select>
-        </div>
-
-        <!-- image -->
-        <div ng-if="formItem.typeForm === 'image'" class="form-group" ng-class="{ 'has-error' : FillFormForm.$submitted && FillFormForm.{{ formItem.name }}.$invalid }">
+          <!-- number-->
+          <div ng-switch-when="number" class="form-group" ng-class="{ 'has-error' : FillFormForm.$submitted && FillFormForm[formItem.name].$invalid }">
+            <label class="control-label"> {{ formItem.label }} </label>
             <span style="color: #cecece"><em> {{ formItem.hint }} </em></span>
-          <div class="enterprise-logo-editing">
-            <div class="logo" ng-if="FillFormModalCtrl.form[formItem.name]">
-              <span ng-if="!FillFormModalCtrl.hasThumbnail">
-                <img ng-src="{{ FillFormModalCtrl.form[formItem.name] }}" style="width: 100px !important; height: 100px !important;" onError="this.src='assets/empty.png';" >
-              </span>
-              <span ng-if="FillFormModalCtrl.hasThumbnail">
-                <img ngf-thumbnail="FillFormModalCtrl.picture[formItem.name]" style="width: 100px !important; height: 100px !important;">
-              </span>
+            <input name="{{ formItem.name }}" type="number" ng-model="FillFormModalCtrl.form[formItem.name]" autocomplete="off" ng-maxlength="90" class="form-control" ng-required="formItem.required">
+            <div class="help-block" ng-messages="FillFormForm[formItem.name].$error" ng-show="FillFormForm.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
             </div>
           </div>
 
-          <label data-method="upload-logo" class="btn btn-default">
-            <i class="fa fa-edit"></i> {{ formItem.label }}
-            <input
-              type="file"
-              accept="image/*"
+          <!-- Date -->
+          <div ng-switch-when="date">
+            <span style="color: #cecece"><em> {{ formItem.hint }} </em></span>
+            <bh-date-editor
+              date-value="FillFormModalCtrl.form[formItem.name]"
+              label="{{ formItem.label }}"
+              allow-future-date="true"
               required="formItem.valueRequired"
+              on-change="FillFormModalCtrl.onDateChange(date, formItem.name)">
+            </bh-date-editor>
+          </div>
+        
+          <!-- Calculation -->
+          <div ng-switch-when="calculation">
+            <span style="background-color: {{ FillFormModalCtrl.dataCollector.color }}; color: black"><em> <strong>{{ formItem.label }}</strong> : {{ formItem.calculation }}
+            <h5 ng-if="FillFormModalCtrl.updateMode">:{{ FillFormModalCtrl.form[formItem.name] }} </h5> </em></span> 
+          </div>
+
+          <!-- TextArea -->
+          <div ng-switch-when="text_area">
+            <label class="control-label">{{ formItem.label }} </label>
+            <span style="color: #cecece"><em> {{ formItem.hint }} </em></span>
+            <textarea
               ng-model="FillFormModalCtrl.form[formItem.name]"
-              ngf-max-size="10MB"
-              ngf-select="FillFormModalCtrl.setThumbnail($file, formItem.name)"
-              style="display: none;">
-          </label>
+              name="{{ formItem.name }}"
+              class="form-control"
+              ng-required="formItem.required"
+              rows="4">
+            </textarea>
+            <div class="help-block" ng-messages="FillFormForm.name.$error" ng-show="FillFormForm.$submitted">
+              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+            </div>
+          </div>
+
+          <!-- Note -->
+          <div ng-switch-when="note">
+            <div style="
+              border-radius : 15px ;
+              text-decoration-color: #ffffff;
+              text-shadow: white 5px 3px 8px;
+              text-align: center;
+              background-image: linear-gradient({{ FillFormModalCtrl.dataCollector.color }}, white, white);
+              border-bottom-color: #efefef;
+              border-right-color: gray;
+              border-left-color: {{ FillFormModalCtrl.dataCollector.color }};
+              border-top-color: {{ FillFormModalCtrl.dataCollector.color }};
+              border-style: solid;">
+              <h5><strong>
+                <span translate>
+                  {{ formItem.label }}
+                </span>
+              </strong></h5>
+            </div>
+          </div>
+
+          <!-- Date Time -->
+          <div ng-switch-when="time">
+            <div class="uib-increment minutes" ng-class="{ 'has-error' : FillFormForm.$submitted && FillFormForm[formItem.name].$invalid }">
+              <label class="control-label"> {{ formItem.label }} </label>
+              <span style="color: #cecece"><em> {{ formItem.hint }} </em></span>
+                <div 
+                  uib-timepicker
+                  ng-model="FillFormModalCtrl.form[formItem.name]"
+                  name="{{ formItem.name }}"
+                  hour-step="1"
+                  minute-step="1"
+                  ng-required="formItem.required"
+                  on-change="FillFormModalCtrl.onTimeChange(formItem.name)"
+                  show-meridian="ismeridian">
+                </div>
+            </div>
+          </div>
+
+          <!-- select_one -->
+          <div ng-switch-when="select_one">
+            <span ng-if="!formItem.filterLabel">
+                <bh-choice-list-select
+                  id="{{ formItem.name }}"
+                  list="FillFormModalCtrl.form[formItem.name]"
+                  name="{{ formItem.name }}"
+                  required="formItem.valueRequired"
+                  list-label="{{ formItem.label }}"
+                  list-hint="{{ formItem.hint }}"
+                  group-label="formItem.choice_list_id"
+                  on-select-callback="FillFormModalCtrl.onSelectList(list, formItem.name)">
+                </bh-choice-list-select>
+              </span>
+              <span ng-if="formItem.filterLabel && FillFormModalCtrl.form[formItem.filterLabel]">
+                <bh-choice-list-select
+                  id="{{ formItem.name }}"
+                  name="{{ formItem.name }}"
+                  list="FillFormModalCtrl.form[formItem.name]"
+                  required="formItem.valueRequired"
+                  list-label="{{ formItem.label }}"
+                  list-hint="{{ formItem.hint }}"
+                  parent-id="FillFormModalCtrl.form[formItem.filterLabel]"
+                  group-label="formItem.choice_list_id"
+                  on-select-callback="FillFormModalCtrl.onSelectList(list, formItem.name)">
+                  <bh-clear on-clear="FillFormModalCtrl.clear(formItem.name)"></bh-clear>
+                </bh-choice-list-select>
+              </span>
+          </div>
+
+          <!-- select_multiple -->
+          <div ng-switch-when="select_multiple">
+            <bh-choice-list-multiple-select
+              id="{{ formItem.name }}"
+              lists="FillFormModalCtrl.form[formItem.name]"
+              multiple-choice="multiple"
+              name="{{ formItem.name }}"
+              required="formItem.valueRequired"
+              list-label="{{ formItem.label }}"
+              list-hint="{{ formItem.hint }}"
+              group-label="formItem.choice_list_id"              
+              on-change="FillFormModalCtrl.onSelectMultiple(lists, formItem.name)">
+            </bh-choice-list-multiple-select>
+          </div>
+
+          <!-- image -->
+          <div ng-switch-when="image" class="form-group" ng-class="{ 'has-error' : FillFormForm.$submitted && FillFormForm[formItem.name].$invalid }">
+              <span style="color: #cecece"><em> {{ formItem.hint }} </em></span>
+            <div class="enterprise-logo-editing">
+              <div class="logo" ng-if="FillFormModalCtrl.form[formItem.name]">
+                <span ng-if="!FillFormModalCtrl.hasThumbnail">
+                  <img ng-src="{{ FillFormModalCtrl.form[formItem.name] }}" style="width: 100px !important; height: 100px !important;" onError="this.src='assets/empty.png';" >
+                </span>
+                <span ng-if="FillFormModalCtrl.hasThumbnail">
+                  <img ngf-thumbnail="FillFormModalCtrl.picture[formItem.name]" style="width: 100px !important; height: 100px !important;">
+                </span>
+              </div>
+            </div>
+
+            <label data-method="upload-logo" class="btn btn-default">
+              <i class="fa fa-edit"></i> {{ formItem.label }}
+              <input
+                type="file"
+                accept="image/*"
+                required="formItem.valueRequired"
+                ng-model="FillFormModalCtrl.form[formItem.name]"
+                ngf-max-size="10MB"
+                ngf-select="FillFormModalCtrl.setThumbnail($file, formItem.name)"
+                style="display: none;">
+            </label>
+          </div>
         </div>
       </div>  
     </div>

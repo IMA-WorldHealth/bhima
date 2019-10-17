@@ -64,25 +64,16 @@ function DataKitConfigController($sce, Notify, SavedReports, AppCache, reportDat
     if (form.$invalid) { return; }
     cache.reportDetails = angular.copy(vm.reportDetails);
 
-    if (vm.reportDetails.multipleChoice) {
-      const multipleChoiceLength = Object.keys(vm.reportDetails.multipleChoice).length;
-
-      if (multipleChoiceLength) {
-        Object.keys(vm.reportDetails.multipleChoice).forEach((key) => {
-          if (vm.reportDetails.multipleChoice[key].length) {
-            for (let i = 0; i < vm.reportDetails.multipleChoice[key].length; i++) {
-              vm.choicesLists.forEach(list => {
-                if (list.id === vm.reportDetails.multipleChoice[key][i]) {
-                  vm.reportDetails.multipleChoice[key][i] = list.label;
-                }
-              });
-            }
-          } else {
-            delete vm.reportDetails.multipleChoice[key];
+    angular.forEach(vm.reportDetails.multipleChoice, (values, key) => {
+      // values is an array.
+      values.forEach((value, index) => {
+        vm.choicesLists.forEach(list => {
+          if (list.id === value) {
+            vm.reportDetails.multipleChoice[key][index] = list.label;
           }
         });
-      }
-    }
+      });
+    });
 
     SavedReports.requestPreview(reportUrl, reportData.id, angular.copy(vm.reportDetails))
       .then((result) => {
@@ -95,6 +86,17 @@ function DataKitConfigController($sce, Notify, SavedReports, AppCache, reportDat
   vm.clearPreview = function clearPreview() {
     vm.previewGenerated = false;
     vm.previewResult = null;
+
+    angular.forEach(vm.reportDetails.multipleChoice, (values, key) => {
+      // values is an array.
+      values.forEach((value, index) => {
+        vm.choicesLists.forEach(list => {
+          if (list.label === value) {
+            vm.reportDetails.multipleChoice[key][index] = list.id;
+          }
+        });
+      });
+    });
   };
 
   vm.requestSaveAs = function requestSaveAs() {

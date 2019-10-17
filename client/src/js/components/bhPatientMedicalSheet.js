@@ -21,7 +21,7 @@ PatientMedicalSheetCtrl.$inject = [
 function PatientMedicalSheetCtrl(DataCollectorManagement, Notify, uiGridConstants, $state) {
   const $ctrl = this;
 
-  this.$onInit = () => {
+  $ctrl.$onInit = function $onInit() {
     $ctrl.gridApi = {};
     $ctrl.filterEnabled = false;
     $ctrl.toggleFilter = toggleFilter;
@@ -83,7 +83,6 @@ function PatientMedicalSheetCtrl(DataCollectorManagement, Notify, uiGridConstant
 
     // load user grid
     function loadGrid() {
-      toggleLoadingIndicator();
       $ctrl.hasError = false;
       $ctrl.loading = true;
 

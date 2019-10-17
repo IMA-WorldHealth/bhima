@@ -176,16 +176,16 @@ INSERT INTO `report` (`report_key`, `title_key`) VALUES
   ('dataKit', 'TREE.DATA_KIT_REPORT');
 
 -- Survey Form Type
-INSERT INTO `survey_form_type` (`label`, `type`, `is_list`) VALUES
-  ('FORM.LABELS.NUMBER', 'number', 0),
-  ('FORM.LABELS.TEXT', 'text', 0),
-  ('FORM.LABELS.SELECT_ONE', 'select_one', 1),
-  ('FORM.LABELS.SELECT_MULTIPLE', 'select_multiple', 1),
-  ('FORM.LABELS.NOTE', 'note', 0),
-  ('FORM.LABELS.DATE', 'date', 0),
-  ('FORM.LABELS.TIME', 'time', 0),
-  ('FORM.LABELS.IMAGE', 'image', 0),
-  ('FORM.LABELS.CALCULATION', 'calculation', 0),
-  ('FORM.LABELS.TEXT_AREA', 'text_area', 0);
+INSERT INTO `survey_form_type` (`id`, `label`, `type`, `is_list`) VALUES
+  (1, 'FORM.LABELS.NUMBER', 'number', 0),
+  (2, 'FORM.LABELS.TEXT', 'text', 0),
+  (3, 'FORM.LABELS.SELECT_ONE', 'select_one', 1),
+  (4, 'FORM.LABELS.SELECT_MULTIPLE', 'select_multiple', 1),
+  (5, 'FORM.LABELS.NOTE', 'note', 0),
+  (6, 'FORM.LABELS.DATE', 'date', 0),
+  (7, 'FORM.LABELS.TIME', 'time', 0),
+  (8, 'FORM.LABELS.IMAGE', 'image', 0),
+  (9, 'FORM.LABELS.CALCULATION', 'calculation', 0),
+  (10, 'FORM.LABELS.TEXT_AREA', 'text_area', 0);
 
 -- BHIMA DATA COLLECTOR

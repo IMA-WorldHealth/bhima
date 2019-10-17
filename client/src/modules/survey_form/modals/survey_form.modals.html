@@ -60,15 +60,18 @@
         on-select-callback="SurveyFormModalCtrl.onSelectList(list)">
       </bh-choice-list-select>
 
-      <bh-survey-list-select
-        id="filter_choice_list_id"
-        survey="SurveyFormModalCtrl.surveyForm.filter_choice_list_id"
-        name="filter_choice_list_id"
-        is-list="1"
-        survey-label="FORM.SELECT.SELECT_FILTER"
-        collector-id="SurveyFormModalCtrl.surveyForm.data_collector_management_id"
-        on-select-callback="SurveyFormModalCtrl.onSelectSurvey(survey)">
-      </bh-survey-list-select>
+      <div ng-if="SurveyFormModalCtrl.selectOne">
+        <bh-survey-list-select
+          id="filter_choice_list_id"
+          survey="SurveyFormModalCtrl.surveyForm.filter_choice_list_id"
+          name="filter_choice_list_id"
+          is-list="1"
+          survey-label="FORM.SELECT.SELECT_FILTER"
+          collector-id="SurveyFormModalCtrl.surveyForm.data_collector_management_id"
+          on-select-callback="SurveyFormModalCtrl.onSelectSurvey(survey)">
+          <bh-clear on-clear="SurveyFormModalCtrl.clear('filter_choice_list_id')"></bh-clear>
+        </bh-survey-list-select>
+      </div>
 
       <!-- TO DO 
         <div class="checkbox">
@@ -171,19 +174,6 @@
         </textarea>
       </div>
     </div>
-
-
-
-    <!-- TO DO 
-      <div class="form-group" ng-class="{ 'has-error' : SurveyFormForm.$submitted && SurveyFormForm.$invalid }">
-      <label class="control-label" translate>FORM.LABELS.CALCULATION</label>
-      <div>
-        <input name="calculation" ng-model="SurveyFormModalCtrl.surveyForm.calculation" autocomplete="off" ng-maxlength="90" class="form-control">
-        <div class="help-block" ng-messages="SurveyFormForm.calculation.$error" ng-show="SurveyFormForm.$submitted">
-          <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-        </div>
-      </div>
-    </div> -->
   </div>
 
   <div class="modal-footer">

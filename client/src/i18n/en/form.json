@@ -901,6 +901,7 @@
             "SUPPLIER": "Supplier",
             "TRANSACTION_TYPE": "Select a Transaction Type",
             "TYPE": "Select a Type",
+            "SELECT_TYPE_DATA": "Select the type of data",
             "USER": "Select User",
             "VILLAGE": "Select a Village/Township",
             "WARD":"Select a Ward",
