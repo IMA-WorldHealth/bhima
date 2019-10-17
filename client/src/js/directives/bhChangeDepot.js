@@ -53,9 +53,10 @@ function bhChangeDepotController(Depots, AppCache, Notify) {
       }
 
       function handleError(err) {
-        return err.status === 404
-          ? changeDepot()
-          : Notify.handleError(err);
+        if (err.status !== 404) { return Notify.handleError(err); }
+
+        delete cache.depotUuid;
+        return changeDepot();
       }
     },
   };
