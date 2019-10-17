@@ -54,11 +54,11 @@
               on-change="FillFormModalCtrl.onDateChange(date, formItem.name)">
             </bh-date-editor>
           </div>
-        
+
           <!-- Calculation -->
           <div ng-switch-when="calculation">
             <span style="background-color: {{ FillFormModalCtrl.dataCollector.color }}; color: black"><em> <strong>{{ formItem.label }}</strong> : {{ formItem.calculation }}
-            <h5 ng-if="FillFormModalCtrl.updateMode">:{{ FillFormModalCtrl.form[formItem.name] }} </h5> </em></span> 
+            <h5 ng-if="FillFormModalCtrl.updateMode">:{{ FillFormModalCtrl.form[formItem.name] }} </h5> </em></span>
           </div>
 
           <!-- TextArea -->
@@ -103,7 +103,7 @@
             <div class="uib-increment minutes" ng-class="{ 'has-error' : FillFormForm.$submitted && FillFormForm[formItem.name].$invalid }">
               <label class="control-label"> {{ formItem.label }} </label>
               <span style="color: #cecece"><em> {{ formItem.hint }} </em></span>
-                <div 
+                <div
                   uib-timepicker
                   ng-model="FillFormModalCtrl.form[formItem.name]"
                   name="{{ formItem.name }}"
@@ -156,7 +156,7 @@
               required="formItem.valueRequired"
               list-label="{{ formItem.label }}"
               list-hint="{{ formItem.hint }}"
-              group-label="formItem.choice_list_id"              
+              group-label="formItem.choice_list_id"
               on-change="FillFormModalCtrl.onSelectMultiple(lists, formItem.name)">
             </bh-choice-list-multiple-select>
           </div>

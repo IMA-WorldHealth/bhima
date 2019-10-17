@@ -25,9 +25,6 @@ function SurveyFormModalController($state, SurveyForm, Notify, AppCache, DataCol
   vm.onSelectSurvey = onSelectSurvey;
 
   function selectType(type) {
-    console.log('PLUSSSSSsssssss');
-    console.log(type);
-
     vm.surveyForm.type = type.id;
     vm.selectList = (type.is_list) ? 1 : 0;
     vm.selectOne = ((type.id === 3) && type.is_list) ? 1 : 0;
