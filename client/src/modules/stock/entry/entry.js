@@ -3,9 +3,9 @@ angular.module('bhima.controllers')
 
 // dependencies injections
 StockEntryController.$inject = [
-  'DepotService', 'InventoryService', 'NotifyService', 'SessionService', 'util',
+  'InventoryService', 'NotifyService', 'SessionService', 'util',
   'bhConstants', 'ReceiptModal', 'PurchaseOrderService', 'StockFormService',
-  'StockService', 'StockModalService', 'uiGridConstants', 'Store', 'appcache',
+  'StockService', 'StockModalService', 'uiGridConstants', 'Store',
   'uuid', '$translate',
 ];
 
@@ -16,15 +16,14 @@ StockEntryController.$inject = [
  * This controller is responsible to handle stock entry module.
  */
 function StockEntryController(
-  Depots, Inventory, Notify, Session, util, bhConstants, ReceiptModal, Purchase,
-  StockForm, Stock, StockModal, uiGridConstants, Store, AppCache, Uuid, $translate
+  Inventory, Notify, Session, util, bhConstants, ReceiptModal, Purchase,
+  StockForm, Stock, StockModal, uiGridConstants, Store, Uuid, $translate
 ) {
   // variables
   let inventoryStore;
 
   // constants
   const vm = this;
-  const cache = new AppCache('StockCache');
   const mapEntry = initEntryMap();
 
   // view models variables and methods
@@ -42,7 +41,6 @@ function StockEntryController(
   vm.buildStockLine = buildStockLine;
   vm.setLots = setLots;
   vm.submit = submit;
-  vm.changeDepot = changeDepot;
   vm.reset = reset;
   vm.onDateChange = onDateChange;
   vm.gridOptions = {
@@ -98,6 +96,12 @@ function StockEntryController(
     data : vm.stockForm.store.data,
     fastWatch : true,
     flatEntityAccess : true,
+  };
+
+  // on change depot
+  vm.onChangeDepot = depot => {
+    vm.depot = depot;
+    loadInventories();
   };
 
   /**
@@ -210,18 +214,6 @@ function StockEntryController(
 
     // loading all purchasable inventories
     loadInventories();
-
-    // make sure that the depot is loaded if it doesn't exist at startup.
-    if (cache.depotUuid) {
-      Depots.read(cache.depotUuid, { only_user : true })
-        .then((depot) => {
-          vm.depot = depot;
-          setupStock();
-        })
-        .catch(Notify.handleError);
-    } else {
-      changeDepot().then(setupStock);
-    }
   }
 
   /**
@@ -229,6 +221,8 @@ function StockEntryController(
    * @description load inventories
    */
   function loadInventories() {
+    setupStock();
+
     Inventory.read()
       .then((inventories) => {
         vm.inventories = inventories;
@@ -464,8 +458,7 @@ function StockEntryController(
     vm.$loading = true;
     mapEntry.form = form;
     return mapEntry[vm.movement.entry_type].submit()
-      .then(toggleLoadingIndicator)
-      .finally(() => vm.reset(form));
+      .then(toggleLoadingIndicator);
   }
 
   /**
@@ -586,20 +579,6 @@ function StockEntryController(
         ReceiptModal.stockEntryDepotReceipt(document.uuid, true);
       })
       .catch(Notify.handleError);
-  }
-
-  /**
-   * @method changeDepot
-   * @description pop up a modal for selecting a depot
-   */
-  function changeDepot() {
-    // if there is not cached depot, the modal will require to select a depot
-    const requirement = !cache.depotUuid;
-    return Depots.openSelectionModal(vm.depot, requirement)
-      .then((depot) => {
-        vm.depot = depot;
-        cache.depotUuid = vm.depot.uuid;
-      });
   }
 
   /**

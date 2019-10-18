@@ -30,7 +30,6 @@ function DepotService(Api, Modal) {
       templateUrl : 'modules/stock/depot-selection.modal.html',
       resolve : {
         depot : function injectDepot() { return depot; },
-
       },
       backdrop : 'static',
       keyboard : false,
