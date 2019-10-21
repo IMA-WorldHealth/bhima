@@ -13,11 +13,14 @@
  * DELETE /prices/:uuid
  */
 const path = require('path');
+const _ = require('lodash');
 const db = require('../../lib/db');
 const { uuid } = require('../../lib/util');
 
 const BadRequest = require('../../lib/errors/BadRequest');
 const util = require('../../lib/util');
+const csv = require('../../lib/renderers/csv');
+const ReportManager = require('../../lib/ReportManager');
 
 exports.lookup = lookup;
 /**
@@ -248,6 +251,33 @@ exports.downloadTemplate = (req, res, next) => {
   }
 };
 
+exports.downloadFilledTemplate = async (req, res, next) => {
+  try {
+    const pdfOptions = {
+      csvKey : 'rows',
+      suppressDefaultFormatting : true,
+      suppressDefaultFiltering : true,
+    };
+
+    const optionReport = _.extend(req.query, pdfOptions, {
+      filename : 'TREE.STOCK_VALUE',
+    });
+
+    const report = new ReportManager('', req.session, optionReport);
+    const sql = 'SELECT code, text FROM inventory';
+    const rows = await db.exec(sql);
+    const data = rows.map(row => {
+      row.price = '';
+      row.is_percentage = '';
+      return row;
+    });
+    const result = await report.render({ rows : data }, null, { csvKey : 'rows' });
+    res.set(csv.headers).send(result.report);
+  } catch (ex) {
+    next(ex);
+  }
+
+};
 
 exports.importItem = async (req, res, next) => {
   try {
@@ -258,8 +288,8 @@ exports.importItem = async (req, res, next) => {
 
     const filePath = req.files[0].path;
 
-    const data = await util.formatCsvToJson(filePath);
-    removeEmptyLines(data);
+    let data = await util.formatCsvToJson(filePath);
+    data = removeEmptyLines(data);
     if (!hasValidDataFormat(data)) {
       throw new BadRequest('The given file has a bad data format for stock', 'ERRORS.BAD_DATA_FORMAT');
     }
@@ -279,16 +309,11 @@ exports.importItem = async (req, res, next) => {
 };
 
 function removeEmptyLines(data) {
-  data.forEach((r, index) => {
-    if (!(r.code && r.price)) delete data[index];
-  });
+  return data.filter(row => (row.code && row.price));
 }
 
 function hasValidDataFormat(data) {
-  const invalids = data.filter(r => {
-    return (r.code && r.price);
-  });
-  return (invalids.length === data.length);
+  return data.every(row => (row.code && row.price > 0));
 }
 
 exports.deleteItem = function deleteItem(req, res, next) {

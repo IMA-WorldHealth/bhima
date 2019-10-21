@@ -1,7 +1,7 @@
 angular.module('bhima.services')
   .service('PriceListService', PriceListService);
 
-PriceListService.$inject = ['PrototypeApiService'];
+PriceListService.$inject = ['PrototypeApiService', '$translate'];
 
 /**
  * @class PriceListService
@@ -10,7 +10,7 @@ PriceListService.$inject = ['PrototypeApiService'];
  * @description
  * Encapsulates common requests to the /prices/ URL.
  */
-function PriceListService(Api) {
+function PriceListService(Api, $translate) {
   const baseUrl = '/prices/';
   const service = new Api(baseUrl);
 
@@ -83,7 +83,7 @@ function PriceListService(Api) {
     const url = service.url.concat('download/template');
     return service.$http.get(url)
       .then(response => {
-        return service.util.download(response, 'Iventory item Template', 'csv');
+        return service.util.download(response, $translate.instant('PRICE_LIST.ITEM_TEMPLATE'), 'csv');
       });
   }
   return service;

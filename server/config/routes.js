@@ -579,6 +579,7 @@ exports.configure = function configure(app) {
   app.get('/prices/:uuid', priceList.details);
   app.get('/prices/download/list', priceListPreport.downloadRegistry);
   app.get('/prices/download/template', priceList.downloadTemplate);
+  app.get('/prices/download/filled_template', priceList.downloadFilledTemplate);
   app.get('/prices/report/:uuid', financeReports.priceList);
   app.post('/prices', priceList.create);
   app.post('/prices/item', priceList.createItem);
