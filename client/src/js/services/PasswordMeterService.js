@@ -28,8 +28,9 @@ function PasswordMeterService(Session) {
    * @returns {Boolean} valid - true/false depending on if the password is valid
    */
   function validate(viewValue) {
+
     // escape the validation if we don't need to validate passwords
-    if (!Session.enterprise || !Session.enterprise.settings.enable_password_validation) {
+    if (Session.enterprise && !Session.enterprise.settings.enable_password_validation) {
       return true;
     }
 
@@ -43,6 +44,7 @@ function PasswordMeterService(Session) {
 
     // Weak password
     return false;
+
   }
 
   /**
