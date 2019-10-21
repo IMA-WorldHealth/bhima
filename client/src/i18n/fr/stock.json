@@ -195,5 +195,17 @@
     "CONFIRM_REMOVE_MSG" : "Voulez-vous vraiment désassigner ce stock ?",
     "NEW_ASSIGN" : "Nouvelle assignation",
     "RECEIVER" : "Bénéficiaire"
+  },
+  "REQUISITION" : {
+    "TITLE" : "Réquisition de stock",
+    "STOCK_REQUISITION" : "Réquisition",
+    "EDIT_REQUISITION" : "Editer",
+    "REMOVE_REQUISITION" : "Supprimer",
+    "CREATE_SUCCESS" : "Nouvelle réquisition de stock réussie",
+    "UPDATE_SUCCESS" : "Mise à jour de la réquisition de stock réussie",
+    "REMOVE_SUCCESS" : "Suppression de la réquisition de stock réussie",
+    "CONFIRM_REMOVE_MSG" : "Voulez-vous vraiment supprimer cette réquisition ?",
+    "NEW_REQUISITION" : "Nouvelle réquisition",
+    "RECEIVER" : "Bénéficiaire"
   }
 }

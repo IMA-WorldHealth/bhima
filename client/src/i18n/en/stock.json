@@ -194,5 +194,17 @@
     "CONFIRM_REMOVE_MSG" : "Do you really want to remove this stock assignment ?",
     "NEW_ASSIGN" : "New Assignment",
     "RECEIVER" : "Receiver"
+  },
+  "REQUISITION": {
+    "TITLE": "Stock requisition",
+    "STOCK_REQUISITION": "Requisition",
+    "EDIT_REQUISITION": "Edit",
+    "REMOVE_REQUISITION": "Delete",
+    "CREATE_SUCCESS": "Successful requisition creation",
+    "UPDATE_SUCCESS": "Successful requisition update",
+    "REMOVE_SUCCESS": "Successful requisition deletion",
+    "CONFIRM_REMOVE_MSG": "Are you sure you want to delete this requisition ?",
+    "NEW_REQUISITION": "New requisition",
+    "RECEIVER": "Beneficiary"
   }
 }

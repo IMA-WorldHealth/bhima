@@ -782,7 +782,14 @@
             "PERMISSION_ASSIGNED_SUCCESS":"Permissions successfully assigned",
             "EDIT_ROLE":"Assign role(s)",
             "ROLES_FOR":"Role(s) for",
-            "ROLES" : "Roles"
+            "ROLES" : "Roles",
+            "STATUS_TYPE":{
+                "IN_PROGRESS":"In Progress",
+                "COMPLETED":"Completed",
+                "PARTIALLY":"Partially",
+                "DRAFT":"Draft",
+                "CANCELLED":"Cancelled"
+            }
         },
         "LEGENDS": {
             "CREATION": "Creation",

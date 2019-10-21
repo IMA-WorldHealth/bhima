@@ -783,6 +783,17 @@ exports.configure = function configure(app) {
   app.put('/stock/assign/:uuid/remove', stock.assign.removeAssign);
   app.delete('/stock/assign/:uuid/delete', stock.assign.deleteAssign);
 
+  // API routes for /stock/requisition end point
+  app.get('/stock/requisition', stock.requisition.list);
+  app.get('/stock/requisition/:uuid', stock.requisition.details);
+  app.post('/stock/requisition', stock.requisition.create);
+  app.put('/stock/requisition/:uuid', stock.requisition.update);
+  app.delete('/stock/requisition/:uuid', stock.requisition.deleteRequisition);
+
+  // API routes for /stock/requestor_type end point
+  app.get('/stock/requestor_type', stock.requestorType.list);
+  app.get('/stock/requestor_type/:id', stock.requestorType.details);
+
   // stock import from a file
   app.get('/stock/import/template', stock.importing.downloadTemplate);
   app.post('/stock/import', upload.middleware('csv', 'file'), upload.hasFilesToUpload, stock.importing.importStock);
