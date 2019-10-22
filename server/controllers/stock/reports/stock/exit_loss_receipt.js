@@ -1,7 +1,10 @@
 const {
-  _, ReportManager, Stock, NotFound, db, pdf,
+  _, ReportManager, Stock, NotFound, db, pdf, identifiers,
   STOCK_EXIT_LOSS_TEMPLATE, POS_STOCK_EXIT_LOSS_TEMPLATE,
 } = require('../common');
+
+
+const barcode = require('../../../../lib/barcode');
 
 /**
  * @method stockExitLossReceipt
@@ -53,7 +56,7 @@ function stockExitLossReceipt(req, res, next) {
         throw new NotFound('document not found');
       }
       const line = rows[0];
-
+      const exitKey = identifiers.STOCK_EXIT.key;
       data.enterprise = req.session.enterprise;
 
       data.details = {
@@ -63,6 +66,7 @@ function stockExitLossReceipt(req, res, next) {
         date               : line.date,
         document_uuid      : line.document_uuid,
         document_reference : line.document_reference,
+        barcode : barcode.generate(exitKey, line.document_uuid),
       };
 
       data.rows = rows;
