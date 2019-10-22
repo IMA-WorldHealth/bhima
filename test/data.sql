@@ -1109,8 +1109,8 @@ INSERT INTO `distribution_key` (`id`, `auxiliary_fee_center_id`, `principal_fee_
 INSERT INTO `distribution_key` (`id`, `auxiliary_fee_center_id`, `principal_fee_center_id`, `rate`, `user_id`) VALUES (3, 4, 3, 20.00, 1);
 
 -- data_collector_management
-INSERT INTO `data_collector_management` (`id`, `label`, `description`, `version_number`, `color`, `is_related_patient`) VALUES (1, 'Fiche Kardex', 'Fiche de consommation Medicament', 1, '#E0FFFF', 1);
-INSERT INTO `data_collector_management` (`id`, `label`, `description`, `version_number`, `color`, `is_related_patient`) VALUES (3, 'Formulaire Special', NULL, 1, '#EE82EE', 0);
+INSERT INTO `data_collector_management` (`id`, `label`, `description`, `version_number`, `color`, `is_related_patient`, `include_patient_data`) VALUES (1, 'Fiche Kardex', 'Fiche de consommation Medicament', 1, '#E0FFFF', 1, 1);
+INSERT INTO `data_collector_management` (`id`, `label`, `description`, `version_number`, `color`, `is_related_patient`, `include_patient_data`) VALUES (3, 'Formulaire Special', NULL, 1, '#EE82EE', 0, 0);
 
 -- choices_list_management
 INSERT INTO `choices_list_management` (`id`, `name`, `label`, `fixed`, `parent`, `group_label`, `is_group`, `is_title`) VALUES (1, 'genre', 'Genre', 0, 0, 0, 1, 1);

@@ -24,7 +24,7 @@ angular.module('bhima.routes')
       })
 
       .state('display_metadata.patientEdit', {
-        url : '/:id/:uuid/:patient/edit',
+        url : '/:id/:uuid/:patient/:include/edit',
         params : {
           fill_form : { value : null },
           creating : { value : true },

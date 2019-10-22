@@ -33,6 +33,8 @@ function DataKitConfigController($sce, Notify, SavedReports, AppCache, reportDat
     vm.reportDetails.loggedChanges = {};
 
     vm.reportDetails.data_collector_id = collector.id;
+    vm.reportDetails.includePatientData = collector.include_patient_data;
+
     delete cache.reportDetails;
 
     SurveyForm.read(null, { data_collector_management_id : collector.id })

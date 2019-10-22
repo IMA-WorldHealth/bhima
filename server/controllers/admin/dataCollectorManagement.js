@@ -11,7 +11,8 @@ const FilterParser = require('../../lib/filter');
 // GET /data_collector_management
 function lookupDataCollectorManagement(id) {
   const sql = `
-    SELECT id, label, description, version_number, color, is_related_patient FROM data_collector_management
+    SELECT id, label, description, version_number, color, is_related_patient, include_patient_data
+    FROM data_collector_management
     WHERE data_collector_management.id = ?
   `;
 
@@ -24,15 +25,17 @@ function list(req, res, next) {
   const filters = new FilterParser(req.query);
   let dataCollector;
 
-  const sql = `SELECT id, label, description, version_number, color, is_related_patient
-    FROM data_collector_management`;
+  const sql = `
+    SELECT id, label, description, version_number, color, is_related_patient, include_patient_data
+    FROM data_collector_management
+  `;
 
   filters.equals('label');
   filters.equals('description');
   filters.equals('version_number');
   filters.equals('is_related_patient');
-  filters.setOrder('ORDER BY label ASC');
-  filters.setOrder('ORDER BY version_number');
+  filters.equals('include_patient_data');
+  filters.setOrder('ORDER BY label, version_number');
 
   const query = filters.applyQuery(sql);
   const parameters = filters.parameters();

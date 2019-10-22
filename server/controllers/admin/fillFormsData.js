@@ -13,6 +13,7 @@ const { uuid } = require('../../lib/util');
 // POST /fill_from
 function create(req, res, next) {
   const data = req.body;
+
   let medicalSheet;
   const patientUuid = req.body.patient_uuid || null;
   if (req.body.patient_uuid) {
@@ -171,12 +172,22 @@ function lookupFillForm(surveyUuid) {
 
 // PUT /fill_form /:uuid
 function update(req, res, next) {
+  let medicalSheet;
+
   const dataCollectorManagementId = {
     data_collector_management_id : req.body.new.data_collector_management_id,
   };
 
+  if (req.body.new.patient_uuid) {
+    medicalSheet = {
+      survey_data_uuid : db.bid(req.params.uuid),
+      patient_uuid : db.bid(req.body.new.patient_uuid),
+    };
+  }
+
   const newData = req.body.new;
   const oldData = req.body.old;
+
   const surveyUuid = req.params.uuid;
 
   surveyForm.getSurveyFormElement(dataCollectorManagementId)
@@ -274,6 +285,13 @@ function update(req, res, next) {
 
       const sqlSurveyDataLog = `INSERT INTO survey_data_log
         (uuid, log_uuid, survey_form_id, survey_form_label, survey_data_uuid, user_id, status, value) VALUES ?`;
+
+      const saveLinkSurveyPatient = `INSERT INTO medical_sheet SET ?`;
+
+      if (req.body.new.patient_uuid) {
+        transaction
+          .addQuery(saveLinkSurveyPatient, [medicalSheet]);
+      }
 
       transaction
         .addQuery(deleteSurveyDataItem, [db.bid(surveyUuid)])

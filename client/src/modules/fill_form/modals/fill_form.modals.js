@@ -16,6 +16,7 @@ function FillFormModalController($state, FillForm, Notify, AppCache,
   const cache = AppCache('FillFormModalController');
 
   vm.stateParams = {};
+
   // exposed methods
   vm.submit = submit;
   vm.closeModal = closeModal;
@@ -27,15 +28,23 @@ function FillFormModalController($state, FillForm, Notify, AppCache,
   vm.onTimeChange = onTimeChange;
   vm.onSelectMultiple = onSelectMultiple;
   vm.setThumbnail = setThumbnail;
+  vm.setPatient = setPatient;
   vm.picture = {};
   vm.updateMode = false;
+  vm.selectPatient = false;
   vm.containtValue = {};
+  vm.include_patient_data = 0;
+  let include = 0;
 
   if ($state.params.creating || $state.params.id) {
     cache.stateParams = $state.params;
     vm.stateParams = cache.stateParams;
   } else {
     vm.stateParams = cache.stateParams;
+  }
+
+  if (vm.stateParams.include) {
+    include = parseInt(vm.stateParams.include, 0);
   }
 
   function onSelectList(list, value) {
@@ -54,6 +63,11 @@ function FillFormModalController($state, FillForm, Notify, AppCache,
   function onTimeChange(time) {
     const timeForm = new Date(vm.form[time]);
     vm.form[time] = timeForm.getHours();
+  }
+
+  // set patient
+  function setPatient(patient) {
+    vm.form.patient_uuid = patient.uuid;
   }
 
   function uploadImage(file, uuid, key) {
@@ -105,7 +119,6 @@ function FillFormModalController($state, FillForm, Notify, AppCache,
       .then(data => {
         data.forEach(item => {
           item.valueRequired = item.required ? 'required' : '';
-
           if (item.default) {
             vm.form[item.name] = (item.type === '1')
               ? parseInt(item.default, 10) : item.default;
@@ -125,6 +138,10 @@ function FillFormModalController($state, FillForm, Notify, AppCache,
         return DataCollectorManagement.read(vm.stateParams.id);
       })
       .then(dataCollector => {
+        if (!vm.stateParams.patient) {
+          vm.include_patient_data = dataCollector.include_patient_data;
+        }
+
         vm.dataCollector = dataCollector;
       })
       .catch(Notify.handleError);
@@ -154,6 +171,12 @@ function FillFormModalController($state, FillForm, Notify, AppCache,
       })
       .then(dataCollector => {
         vm.dataCollector = dataCollector;
+        vm.include_patient_data = dataCollector.include_patient_data;
+
+        if (vm.include_patient_data && !vm.stateParams.patient) {
+          vm.selectPatient = true;
+        }
+
         return FillForm.read(vm.stateParams.uuid);
       })
       .then(dataSurvey => {
@@ -171,7 +194,7 @@ function FillFormModalController($state, FillForm, Notify, AppCache,
     if (fillForm.$pristine) { return null; }
 
     vm.form.data_collector_management_id = vm.stateParams.id;
-    if (vm.stateParams.patient) {
+    if (vm.stateParams.patient && !vm.updateMode) {
       vm.form.patient_uuid = vm.stateParams.patient;
     }
 
@@ -207,7 +230,15 @@ function FillFormModalController($state, FillForm, Notify, AppCache,
           $state.go('fill_form', null, { reload : true });
         } else if (!vm.stateParams.patient && vm.updateMode) {
           $state.go('display_metadata', { id : vm.stateParams.id }, { reload : true });
-        } else if (vm.stateParams.patient) {
+        } else if (vm.stateParams.patient && !vm.updateMode) {
+          console.log('PATIENT MODE INSERT');
+
+
+          $state.go('display_metadata.patient',
+            { id : vm.stateParams.id, patient : vm.stateParams.patient }, { reload : true });
+        } else if (vm.stateParams.patient && vm.updateMode && !include) {
+          $state.go('display_metadata', { id : vm.stateParams.id }, { reload : true });
+        } else if (vm.stateParams.patient && vm.updateMode && include) {
           $state.go('display_metadata.patient',
             { id : vm.stateParams.id, patient : vm.stateParams.patient }, { reload : true });
         }

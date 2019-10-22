@@ -101,10 +101,16 @@ function metadataCard(req, res, next) {
 function reportMetadata(req, res, next) {
   const params = req.query;
   const filterQuery = [];
+  const includePatientData = parseInt(params.includePatientData, 10);
 
   if (!params.downloadMode) {
     params.changes = {};
     params.changes.loggedChanges = [];
+
+    // Include Patient DATA
+    if (includePatientData) {
+      params.changes.includePatientData = includePatientData;
+    }
 
     const queryLength = Object.keys(req.query).length;
     if (queryLength) {
@@ -150,17 +156,18 @@ function reportMetadata(req, res, next) {
     }
   }
 
-  if (params.filterClient) {
+  const data = {};
+  data.filterQuery = filterQuery;
+
+  if (typeof params.filterClient === 'string') {
+    const filterClient = JSON.parse(params.filterClient);
+    data.filterClient = [filterClient];
+  } else if (typeof params.filterClient === 'object') {
     params.filterClient.forEach((item, index) => {
       params.filterClient[index] = JSON.parse(item);
     });
+    data.filterClient = params.filterClient;
   }
-
-
-  const data = {};
-  data.filterQuery = filterQuery;
-  data.filterClient = params.filterClient;
-
 
   if (typeof params.patient === 'string') {
     data.patient = JSON.parse(params.patient);

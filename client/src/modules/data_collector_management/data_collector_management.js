@@ -54,6 +54,14 @@ function DataCollectorManagementController($state, DataCollectorManagement, Noti
         cellTemplate : '/modules/data_collector_management/templates/is_related_patient.cell.html',
       },
       {
+        field : 'include_patient_data',
+        displayName : 'FORM.INFO.INCLUDE_PATIENT_DATA',
+        width : 300,
+        enableFiltering : 'true',
+        headerCellFilter : 'translate',
+        cellTemplate : '/modules/data_collector_management/templates/include_patient_data.cell.html',
+      },
+      {
         field : 'color',
         displayName : '',
         width : 100,

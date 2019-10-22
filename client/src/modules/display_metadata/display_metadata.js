@@ -86,11 +86,14 @@ function DisplayMetadataController($state, DisplayMetadata, DataCollectorManagem
   vm.remove = remove;
 
   function edit(data) {
-    if (vm.hasPatientData) {
+    if (vm.hasPatientData || data.patient_uuid) {
+      const includeMedicalSheet = vm.hasPatientData ? 1 : 0;
+
       $state.go('display_metadata.patientEdit', {
         id : data.data_collector_management_id,
         uuid : data.uuid,
-        patient : $state.params.patient,
+        patient : $state.params.patient || data.patient_uuid,
+        include : includeMedicalSheet,
       });
     } else {
       $state.go('display_metadata.edit', { id : data.data_collector_management_id, uuid : data.uuid });
@@ -147,13 +150,13 @@ function DisplayMetadataController($state, DisplayMetadata, DataCollectorManagem
 
       vm.params = {
         data_collector_management_id : vm.collectorId,
+        includePatientData : vm.includePatientData,
         changes : vm.changes,
       };
 
       SurveyForm.read(null, { data_collector_management_id : vm.collectorId })
         .then((survey) => {
           vm.filterElements.customFilters = DisplayMetadata.displayFilters(survey, vm.changes);
-
           vm.options = {
             changes : vm.changes,
             data_collector_management_id : vm.collectorId,
@@ -279,9 +282,10 @@ function DisplayMetadataController($state, DisplayMetadata, DataCollectorManagem
     };
 
     DisplayMetadata.openSearchModal(params)
-      .then((changes) => {
+      .then(changes => {
         if (changes) {
           vm.collectorId = changes.collectorId;
+          vm.includePatientData = changes.includePatientData;
           vm.changes = changes;
         }
 

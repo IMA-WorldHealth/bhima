@@ -18,6 +18,13 @@ function lookupData(params) {
   let paramDateTo = {};
   let paramsMultipleChoice = {};
   const findParameters = {};
+  let includePatientData = 0;
+
+  if (params.changes) {
+    if (params.changes.includePatientData) {
+      includePatientData = parseInt(params.changes.includePatientData, 10);
+    }
+  }
 
   if (params.changes) {
     if (params.changes.searchDateFrom) {
@@ -149,22 +156,27 @@ function lookupData(params) {
       });
 
       const sqlSurveyData = `
-        SELECT uuid, transpose.dateSurvey, transpose.data_collector_management_id ${sqlColumn}
+        SELECT uuid, patient_name, transpose.user_id, transpose.user_name, BUID(patient_uuid) AS patient_uuid,
+        transpose.dateSurvey, transpose.data_collector_management_id ${sqlColumn}
         FROM (
-          SELECT BUID(sd.uuid) AS uuid, sd.date AS dateSurvey, sd.data_collector_management_id, sd.user_id, 
+          SELECT BUID(sd.uuid) AS uuid, p.display_name AS patient_name, sd.date AS dateSurvey,
+          sd.data_collector_management_id, sd.user_id, u.display_name AS user_name,
           BUID(sdi.uuid) AS survey_data_item_uuid, sdi.value,
           GROUP_CONCAT(IF (clm.label IS NULL, sdi.value, clm.label) SEPARATOR ', ') AS datavalue,
           sf.id AS survey_form_id, sf.name AS columnName, sf.label AS columnLabel, ms.patient_uuid
           FROM survey_data AS sd
           JOIN survey_data_item AS sdi ON sdi.survey_data_uuid = sd.uuid
           JOIN survey_form AS sf ON sf.id = sdi.survey_form_id
+          JOIN user AS u ON u.id = sd.user_id
           LEFT JOIN choices_list_management clm ON (clm.id = sdi.value AND (sf.type = 3 OR sf.type = 4))
           LEFT JOIN medical_sheet AS ms ON ms.survey_data_uuid = sd.uuid
+          LEFT JOIN patient AS p ON p.uuid = ms.patient_uuid
           WHERE sd.is_deleted <> 1 AND sd.data_collector_management_id = ${params.data_collector_management_id} 
           ${filterPatient}
           GROUP BY sd.uuid, sf.id
         ) AS transpose
         GROUP BY transpose.uuid ${havingCondition} ${filterCondition}
+        ORDER BY dateSurvey ASC
       `;
 
       return db.exec(sqlSurveyData);
@@ -180,6 +192,16 @@ function lookupData(params) {
         statusReport : 1,
         cellTemplate : 'modules/display_metadata/templates/date.cell.html',
       });
+
+      if (includePatientData) {
+        columns.push({
+          field : 'patient_name',
+          displayName : 'TABLE.COLUMNS.PATIENT_NAME',
+          headerCellFilter : 'translate',
+          cellTemplate : '/modules/display_metadata/templates/patient.cell.html',
+          statusReport : 1,
+        });
+      }
 
       surveyFormElement.forEach(element => {
         if (element.type === '8') {
@@ -211,14 +233,22 @@ function lookupData(params) {
         }
       });
 
-      columns.push({
-        field : 'action',
-        displayName : '',
-        width : 100,
-        enableFiltering : 'false',
-        statusReport : 0,
-        cellTemplate : '/modules/display_metadata/templates/action.cell.html',
-      });
+      columns.push(
+        {
+          field : 'user_name',
+          displayName : 'TABLE.COLUMNS.REGISTERED_BY',
+          headerCellFilter : 'translate',
+          cellTemplate : '/modules/display_metadata/templates/user.cell.html',
+          statusReport : 1,
+        }, {
+          field : 'action',
+          displayName : '',
+          width : 100,
+          enableFiltering : 'false',
+          statusReport : 0,
+          cellTemplate : '/modules/display_metadata/templates/action.cell.html',
+        }
+      );
 
       const dataSurvey = {
         columns,

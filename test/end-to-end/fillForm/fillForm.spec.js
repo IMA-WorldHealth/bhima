@@ -18,6 +18,7 @@ describe('Fill Form Management', () => {
   };
 
   const newSurveyData2 = {
+    patientName : 'Employee Test 1',
     choice_list_id : 'Paracetamol500 mg',
     poids : 45,
     dosekilos : '2',

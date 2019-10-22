@@ -54,6 +54,7 @@ function DisplayMetadataSearchModalController(
 
   function onSelectSurveyForm(collector) {
     vm.searchQueries.data_collector_id = collector.id;
+    vm.include_patient_data = collector.include_patient_data;
 
     SurveyForm.read(null, { data_collector_management_id : collector.id })
       .then(surveyElements => {
@@ -105,6 +106,7 @@ function DisplayMetadataSearchModalController(
     const allChanges = {
       loggedChanges : changes.getAll(),
       collectorId : vm.searchQueries.data_collector_id,
+      includePatientData : vm.include_patient_data,
       searchDateFrom : vm.searchDateFrom,
       searchDateTo : vm.searchDateTo,
       multipleChoice : vm.multipleChoice,

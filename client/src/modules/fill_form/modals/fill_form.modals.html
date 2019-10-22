@@ -19,6 +19,15 @@
   </div>
 
   <div class="modal-body" style="overflow-y: scroll; min-height:300px; max-height:600px; ">
+    <div ng-if="(FillFormModalCtrl.include_patient_data && !FillFormModalCtrl.updateMode) || FillFormModalCtrl.selectPatient">
+      <!--select the Patient -->
+      <bh-find-patient
+        suppress-reset="true"
+        on-search-complete="FillFormModalCtrl.setPatient(patient)"
+        required="true">
+      </bh-find-patient>
+    </div>
+
     <div ng-repeat="formItem in FillFormModalCtrl.formItems">
 
       <div ng-if="!formItem.constraint || $eval(formItem.constraintCheck)">

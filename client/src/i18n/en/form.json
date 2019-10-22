@@ -177,6 +177,7 @@
             "GROUPS_DEBTOR": "Assign a new debtor group from the options below. Press 'confirm' to permanently update the patient's debtor group",
             "GROUPS_PATIENT": "Assign the patient to patient groups from the options below. Press 'confirm' to permanently update the patient's subscribed groups.",
             "IMPORT_SUCCESS": "Successfully Imported",
+            "INCLUDE_PATIENT_DATA": "include patient data",
             "INVOICES": "Invoices",
             "IS_ASSOCIATED_EMPLOYEE" : "will be associated with the employee ID",
             "IS_DISCOUNT": "Is it a deduction or an addition?",

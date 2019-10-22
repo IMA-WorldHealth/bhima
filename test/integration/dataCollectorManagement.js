@@ -10,12 +10,14 @@ describe('(/data_collector_management) Data Collector Management', () => {
     version_number : '1',
     color : '#ADD8E6',
     is_related_patient : '1',
+    include_patient_data : '1',
   };
 
   const updateAccountReferenceType = {
     label : 'Consultations aux urgences',
     version_number : '1',
     is_related_patient : '0',
+    include_patient_data : '0',
   };
 
   it('POST /data_collector_management add Data Collector Management', () => {
@@ -35,7 +37,7 @@ describe('(/data_collector_management) Data Collector Management', () => {
 
         expect(res).to.be.a('object');
         expect(res.body).to.have.all.keys('id', 'label', 'description',
-          'version_number', 'color', 'is_related_patient');
+          'version_number', 'color', 'is_related_patient', 'include_patient_data');
       })
       .catch(helpers.handler);
   });
@@ -56,7 +58,7 @@ describe('(/data_collector_management) Data Collector Management', () => {
       .then((res) => {
         helpers.api.listed(res, numDataCollector);
         expect(res.body[0]).to.have.all.keys('id', 'label', 'description',
-          'version_number', 'color', 'is_related_patient', 'number_submissions');
+          'version_number', 'color', 'is_related_patient', 'include_patient_data', 'number_submissions');
       })
       .catch(helpers.handler);
   });

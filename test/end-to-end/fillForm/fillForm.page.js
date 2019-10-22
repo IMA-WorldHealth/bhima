@@ -35,7 +35,7 @@ class FillFormManagementPage {
 
   async createComplexe(fillForm) {
     await element(by.id('form_1')).click();
-
+    await components.findPatient.findByName(fillForm.patientName);
     await components.choiceListSelect.set(fillForm.choice_list_id, 'label');
     await browser.findElement(by.css('[name="poids"]')).sendKeys(fillForm.poids);
     await browser.findElement(by.css('[name="dosekilos"]')).sendKeys(fillForm.dosekilos);

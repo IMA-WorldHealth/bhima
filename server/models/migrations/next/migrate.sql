@@ -59,6 +59,7 @@ CREATE TABLE `data_collector_management` (
   `version_number` INT(11) UNSIGNED NOT NULL,
   `color` VARCHAR(8) NULL, 
   `is_related_patient` TINYINT(1) NOT NULL DEFAULT 0,
+  `include_patient_data` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`), 
   UNIQUE KEY `data_collector_management_1` (`label`, `version_number`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET = utf8mb4 DEFAULT COLLATE = utf8mb4_unicode_ci;
