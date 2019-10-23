@@ -2,7 +2,7 @@ image:
   - Ubuntu1604
   - Ubuntu1804
 
-stack: node 10, mysql, redis
+stack: node 12, mysql, redis
 
 install:
   - bash ./sh/setup-ci-env.sh
