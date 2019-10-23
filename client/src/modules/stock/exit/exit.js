@@ -98,12 +98,6 @@ function StockExitController(
         headerCellFilter : 'translate',
         cellTemplate : 'modules/stock/exit/templates/lot.tmpl.html',
       }, {
-        field : 'unit_price',
-        width : 150,
-        displayName : 'TABLE.COLUMNS.UNIT_PRICE',
-        headerCellFilter : 'translate',
-        cellTemplate : 'modules/stock/exit/templates/price.tmpl.html',
-      }, {
         field : 'quantity',
         width : 150,
         displayName : 'TABLE.COLUMNS.QUANTITY',
@@ -122,12 +116,6 @@ function StockExitController(
         displayName : 'TABLE.COLUMNS.AVAILABLE',
         headerCellFilter : 'translate',
         cellTemplate : 'modules/stock/exit/templates/available.tmpl.html',
-      }, {
-        field : 'amount',
-        width : 150,
-        displayName : 'TABLE.COLUMNS.AMOUNT',
-        headerCellFilter : 'translate',
-        cellTemplate : 'modules/stock/exit/templates/amount.tmpl.html',
       }, {
         field : 'expiration_date',
         width : 150,

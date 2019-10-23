@@ -106,7 +106,7 @@ function StockExitPage() {
     const lotCell = await GU.getCell(gridId, rowNumber, 3);
 
     // inventory quantity column
-    const quantityCell = await GU.getCell(gridId, rowNumber, 5);
+    const quantityCell = await GU.getCell(gridId, rowNumber, 4);
 
     // enter data into the typeahead input.
     await FU.input('row.entity.inventory', code, itemCell);
