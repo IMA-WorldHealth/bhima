@@ -4,9 +4,9 @@
     <span class="caret"></span>
   </a>
 
-  <ul data-action="{{ rowRenderIndex}}"  class="dropdown-menu-right" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
+  <ul data-action="{{ rowRenderIndex}}"  class="dropdown-menu" bh-dropdown-menu-auto-dropup uib-dropdown-menu>
     <li>
-      <a href><span>{{ row.entity.label }}</span></a>
+      <a href><span>{{ row.entity.reference }}</span></a>
     </li>
     <li>
       <a data-method="receipt" href ng-click="grid.appScope.showReceipt(row.entity.uuid)">
@@ -14,8 +14,8 @@
       </a>
     </li>
     <li>
-      <a data-method="remove-record" href ng-click="grid.appScope.removeAssign(row.entity.uuid)">
-        <span class="text-danger"><i class="fa fa-trash"></i> <span translate>ASSIGN.REMOVE_ASSIGN</span></span>
+      <a data-method="remove-record" href ng-click="grid.appScope.removeRequisition(row.entity.uuid)">
+        <span class="text-danger"><i class="fa fa-trash"></i> <span translate>FORM.BUTTONS.DELETE</span></span>
       </a>
     </li>
   </ul>

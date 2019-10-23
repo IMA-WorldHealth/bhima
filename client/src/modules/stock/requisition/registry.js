@@ -18,17 +18,23 @@ function StockRequisitionController(
 ) {
   const vm = this;
   const cacheKey = 'stock-requisition-grid';
-  const stockRequisitionFilters = Stock.filter.stockRequisition;
-
-  // grouping box
-  vm.groupingBox = [
-    { label : 'STOCK.DEPOT', value : 'depot_text' },
-    { label : 'STOCK.INVENTORY', value : 'text' },
-    { label : 'ENTITY.LABEL', value : 'display_name' },
-  ];
+  const stockRequisitionFilters = Stock.filter.requisition;
 
   // grid columns
   const columns = [
+    {
+      field : 'requestor_uuid',
+      displayName : 'REQUISITION.RECEIVER',
+      headerCellFilter : 'translate',
+      cellTemplate : 'modules/stock/requisition/templates/requestor.cell.html',
+    },
+
+    {
+      field : 'reference',
+      displayName : 'FORM.LABELS.REFERENCE',
+      headerCellFilter : 'translate',
+    },
+
     {
       field : 'depot_text',
       displayName : 'STOCK.DEPOT',
@@ -36,40 +42,23 @@ function StockRequisitionController(
     },
 
     {
-      field : 'code',
-      displayName : 'STOCK.CODE',
-      headerCellFilter : 'translate',
-    },
-
-    {
-      field : 'text',
-      displayName : 'STOCK.INVENTORY',
-      headerCellFilter : 'translate',
-    },
-
-    {
-      field : 'label',
-      displayName : 'STOCK.LOT',
-      headerCellFilter : 'translate',
-    },
-
-    {
-      field : 'display_name',
-      displayName : 'ENTITY.LABEL',
-      headerCellFilter : 'translate',
-    },
-
-    {
-      field : 'quantity',
-      displayName : 'STOCK.QUANTITY',
-      headerCellFilter : 'translate',
-    },
-
-    {
-      field : 'created_at',
+      field : 'date',
       displayName : 'FORM.LABELS.DATE',
       headerCellFilter : 'translate',
       cellFilter : 'date',
+    },
+
+    {
+      field : 'user_display_name',
+      displayName : 'FORM.LABELS.USER',
+      headerCellFilter : 'translate',
+    },
+
+    {
+      field : 'status_key',
+      displayName : 'FORM.LABELS.STATUS',
+      headerCellFilter : 'translate',
+      cellTemplate : 'modules/stock/requisition/templates/status.cell.html',
     },
 
     {
@@ -106,7 +95,6 @@ function StockRequisitionController(
   const state = new GridState(vm.gridOptions, cacheKey);
 
   // expose to the view model
-  vm.grouping = new Grouping(vm.gridOptions, true, 'depot_text', false, true);
   vm.getQueryString = Stock.getQueryString;
   vm.clearGridState = clearGridState;
   vm.search = search;
@@ -123,23 +111,6 @@ function StockRequisitionController(
   // count data rows
   vm.countGridRows = () => {
     return vm.gridOptions.data.length;
-  };
-
-  // select group
-  vm.selectGroup = (group) => {
-    if (!group) { return; }
-    vm.selectedGroup = group;
-  };
-
-  // toggle group
-  vm.toggleGroup = (column) => {
-    if (vm.grouped) {
-      vm.grouping.removeGrouping(column);
-      vm.grouped = false;
-    } else {
-      vm.grouping.changeGrouping(column);
-      vm.grouped = true;
-    }
   };
 
   // initialize module
@@ -170,7 +141,7 @@ function StockRequisitionController(
    *
    * @description
    * Toggles the grid's loading indicator to eliminate the flash when rendering
-   * lots movements and allow a better UX for slow loads.
+   * requisitions movements and allow a better UX for slow loads.
    */
   function toggleLoadingIndicator() {
     vm.loading = !vm.loading;
@@ -189,7 +160,7 @@ function StockRequisitionController(
       .then(ans => {
         if (!ans) { return; }
 
-        Stock.stockRequisition.remove(uuid)
+        Stock.stockRequisition.delete(uuid)
           .then(() => {
             load(stockRequisitionFilters.formatHTTP(true));
             Notify.success('REQUISITION.REMOVE_SUCCESS');
@@ -203,7 +174,7 @@ function StockRequisitionController(
     return Receipts.stockRequisitionReceipt(uuid);
   }
 
-  // load stock lots in the grid
+  // load stock requisitions in the grid
   function load(filters) {
     vm.hasError = false;
     toggleLoadingIndicator();
@@ -212,8 +183,8 @@ function StockRequisitionController(
     filters.includeEmptyLot = 0;
 
     Stock.stockRequisition.read(null, filters)
-      .then((lots) => {
-        vm.gridOptions.data = lots;
+      .then((requisitions) => {
+        vm.gridOptions.data = requisitions;
       })
       .catch(errorHandler)
       .finally(toggleLoadingIndicator);
@@ -240,7 +211,7 @@ function StockRequisitionController(
   }
 
   // This function opens a modal through column service to let the user toggle
-  // the visibility of the lots registry's columns.
+  // the visibility of the requisitions registry's columns.
   function openColumnConfigModal() {
     // column configuration has direct access to the grid API to alter the current
     // state of the columns - this will be saved if the user saves the grid configuration

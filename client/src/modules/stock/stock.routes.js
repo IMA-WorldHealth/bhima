@@ -102,8 +102,13 @@ function onEnterFactory(stateType, state) {
   const isCreateState = stateType === 'create';
 
   return function onEnter($state, StockModal) {
-    const instance = StockModal.openActionStockAssign();
-    instance
+    const mapAction = {
+      stockAssgin : StockModal.openActionStockAssign,
+      stockRequisition : StockModal.openActionStockRequisition,
+    };
+
+    const instance = mapAction[state];
+    instance()
       .then((_uuid) => {
         const params = { uuid : _uuid };
 

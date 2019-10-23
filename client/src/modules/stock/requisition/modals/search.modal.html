@@ -6,7 +6,7 @@
 
   <div class="modal-header">
     <ol class="headercrumb">
-      <li class="static" translate>ASSIGN.TITLE</li>
+      <li class="static" translate>REQUISITION.TITLE</li>
       <li class="title" translate>FORM.LABELS.SEARCH</li>
     </ol>
   </div>
@@ -15,6 +15,7 @@
     <uib-tabset>
       <uib-tab index="0" heading="{{ 'FORM.LABELS.SEARCH_QUERIES' | translate}}" data-custom-filter-tab>
         <div class="tab-body">
+          
           <!-- depot -->
           <bh-depot-select
             depot-uuid="$ctrl.searchQueries.depot_uuid"
@@ -22,32 +23,6 @@
             on-select-callback="$ctrl.onSelectDepot(depot)">
             <bh-clear on-clear="$ctrl.clear('depot_uuid')"></bh-clear>
           </bh-depot-select>
-
-          <!-- Inventaire -->
-          <bh-inventory-select
-            inventory-uuid="$ctrl.searchQueries.inventory_uuid"
-            on-select-callback="$ctrl.onSelectInventory(inventory)"
-            required="false">
-            <bh-clear on-clear="$ctrl.clear('inventory_uuid')"></bh-clear>
-          </bh-inventory-select>
-
-          <!-- lot number  -->
-          <div class="form-group">
-            <label class="control-label" translate>STOCK.LOT</label>
-            <bh-clear on-clear="$ctrl.clear('label')"></bh-clear>
-            <input type="text" class="form-control" name="label" ng-model="$ctrl.searchQueries.label">
-            <div class="help-block" ng-messages="ModalForm.label.$error" ng-show="ModalForm.$submitted">
-              <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
-            </div>
-          </div>
-
-          <!-- entity -->
-          <bh-entity-select 
-            entity-uuid="$ctrl.searchQueries.entity_uuid"
-            on-select-callback="$ctrl.onSelectEntity(entity)"
-            required="true">
-            <bh-clear on-clear="$ctrl.clear('entity')"></bh-clear>
-          </bh-entity-select>
           
         </div>
       </uib-tab>

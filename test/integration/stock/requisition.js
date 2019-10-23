@@ -9,7 +9,7 @@ describe('(/stock/requisition) The Stock Assign HTTP API', () => {
   const keys = [
     'uuid', 'requestor_uuid', 'requestor_type_id', 'description', 'date',
     'user_id', 'user_display_name', 'depot_uuid', 'depot_text', 'service_requestor',
-    'depot_requestor', 'reference', 'items',
+    'depot_requestor', 'reference', 'items', 'status_key', 'title_key',
   ];
 
   // create new stock requisition on "Depot Principal" from a service

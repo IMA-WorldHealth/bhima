@@ -15,12 +15,12 @@ function SearchStockRequisitionModalController(data, util, Store, Instance, Peri
   vm.defaultQueries = {};
 
   const searchQueryOptions = [
-    'depot_uuid', 'inventory_uuid', 'label', 'date_from', 'date_to',
+    'depot_uuid', 'date_from', 'date_to',
   ];
 
   // displayValues will be an id:displayValue pair
   const displayValues = {};
-  const lastDisplayValues = Stock.filter.stockAssign.getDisplayValueMap();
+  const lastDisplayValues = Stock.filter.stockRequisition.getDisplayValueMap();
 
   // keep track of the initial search queries to make sure we properly restore
   // default display values
@@ -39,18 +39,6 @@ function SearchStockRequisitionModalController(data, util, Store, Instance, Peri
   vm.onSelectDepot = function onSelectDepot(depot) {
     vm.searchQueries.depot_uuid = depot.uuid;
     displayValues.depot_uuid = depot.text;
-  };
-
-  // custom filter inventory_uuid - requisition the value to the params object
-  vm.onSelectInventory = function onSelectInventory(inventory) {
-    vm.searchQueries.inventory_uuid = inventory.uuid;
-    displayValues.inventory_uuid = inventory.label;
-  };
-
-  // custom filter entity_uuid - requisition the value to the params object
-  vm.onSelectEntity = entity => {
-    vm.searchQueries.entity_uuid = entity.uuid;
-    displayValues.entity_uuid = entity.display_name;
   };
 
   // requisition already defined custom filters to searchQueries object
