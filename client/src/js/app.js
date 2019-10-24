@@ -184,7 +184,7 @@ function startupConfig(
 
 // set the proper key prifix
 function localStorageConfig($localStorageProvider) {
-  const PREFIX = 'bhima-';
+  const PREFIX = `bh-${window.location.hostname}-`;
   $localStorageProvider.setKeyPrefix(PREFIX);
 }
 
