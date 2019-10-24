@@ -1,7 +1,9 @@
 const {
-  _, ReportManager, Stock, db, NotFound, pdf,
+  _, ReportManager, Stock, db, NotFound, pdf, identifiers,
   STOCK_EXIT_SERVICE_TEMPLATE, POS_STOCK_EXIT_SERVICE_TEMPLATE,
 } = require('../common');
+
+const barcode = require('../../../../lib/barcode');
 
 /**
  * @method stockExitServiceReceipt
@@ -54,7 +56,7 @@ function stockExitServiceReceipt(req, res, next) {
         throw new NotFound('document not found');
       }
       const line = rows[0];
-
+      const exitKey = identifiers.STOCK_EXIT.key;
       data.enterprise = req.session.enterprise;
 
       data.details = {
@@ -65,9 +67,11 @@ function stockExitServiceReceipt(req, res, next) {
         date                 : line.date,
         document_uuid        : line.document_uuid,
         document_reference   : line.document_reference,
+        barcode : barcode.generate(exitKey, line.document_uuid),
       };
 
       data.rows = rows;
+
       return report.render(data);
     })
     .then((result) => {

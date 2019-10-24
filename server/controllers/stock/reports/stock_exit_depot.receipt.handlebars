@@ -20,15 +20,16 @@
             {{translate 'STOCK.RECEIPT.EXIT_DEPOT'}}
           </span> <br>
           <strong>{{exit.details.depot_name}}</strong> <br>
-          <strong>{{exit.details.document_reference}}</strong> <br>
-          <small>{{date exit.details.date}}</small> <br>
+          <div class="row">
+            <small>{{> barcode value= exit.details.barcode}}</small>
+          </div>
           <br>
         </h3>
       </div>
     </div>
 
     <!-- client and user details  -->
-    <div class="row" style="border: 1px solid #ccc; padding: 5px; margin-bottom: 15px;">
+    <div class="row" style="border: 1px solid #ccc; padding: 5px;  margin-top: 20px; margin-bottom: 15px;">
       <div class="col-xs-6">
         <h4>{{translate 'STOCK.FROM'}}</h4>
         <span class="text-capitalize">{{translate 'STOCK.DEPOT'}}</span>: <strong>{{exit.details.depot_name}}</strong> <br>
@@ -111,5 +112,5 @@
       </div>
     </div>
   </footer>
-
+<script>JsBarcode('.barcode').init();</script>
 </div>

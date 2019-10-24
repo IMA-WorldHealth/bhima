@@ -1,7 +1,9 @@
 const {
-  _, ReportManager, getDepotMovement, pdf,
+  _, ReportManager, getDepotMovement, pdf, identifiers,
   STOCK_EXIT_DEPOT_TEMPLATE, POS_STOCK_EXIT_DEPOT_TEMPLATE,
 } = require('../common');
+
+const barcode = require('../../../../lib/barcode');
 
 /**
  * @method stockExitDepotReceipt
@@ -32,7 +34,11 @@ function stockExitDepotReceipt(req, res, next) {
   }
 
   return getDepotMovement(documentUuid, req.session.enterprise, true)
-    .then(data => report.render(data))
+    .then(data => {
+      const exitKey = identifiers.STOCK_EXIT.key;
+      data.exit.details.barcode = barcode.generate(exitKey, data.exit.details.document_uuid);
+      return report.render(data);
+    })
     .then(result => res.set(result.headers).send(result.report))
     .catch(next)
     .done();

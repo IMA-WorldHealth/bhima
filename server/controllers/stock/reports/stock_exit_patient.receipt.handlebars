@@ -20,15 +20,15 @@
             {{translate 'STOCK.RECEIPT.EXIT_PATIENT'}}
           </span> <br>
           <strong>{{details.patient_reference}} - {{details.patient_display_name}}</strong> <br>
-          <span>{{details.document_reference}}</span> <br>
-          <small>{{date details.date}}</small> <br>
-          <br>
+          <div class="row">
+            <small>{{> barcode value=details.barcode}}</small>
+          </div>
         </h3>
       </div>
     </div>
 
     <!-- client and user details  -->
-    <div class="row" style="border: 1px solid #ccc; padding: 5px; margin-bottom: 15px;">
+    <div class="row" style="border: 1px solid #ccc; padding: 5px; margin-top: 20px; margin-bottom: 15px;">
       <div class="col-xs-6">
         <span class="text-capitalize">{{translate 'FORM.LABELS.CLIENT'}}</span>: <strong>{{details.patient_reference}}</strong> <br>
         <span class="text-capitalize">{{translate 'FORM.LABELS.NAME'}}</span>: {{details.patient_display_name}} <br>
@@ -94,5 +94,5 @@
       </div>
     </div>
   </footer>
-
+<script>JsBarcode('.barcode').init();</script>
 </div>

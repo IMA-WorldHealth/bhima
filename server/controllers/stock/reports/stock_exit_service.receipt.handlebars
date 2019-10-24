@@ -5,6 +5,7 @@
 
   <header>
     <!-- headings  -->
+
     <div class="row">
       <div class="col-xs-6">
         <h3 style="margin: 0px;">{{enterprise.name}}</h3>
@@ -14,23 +15,25 @@
           <span class="text-capitalize">{{translate 'FORM.LABELS.EMAIL'}}</span>: {{enterprise.email}}
         </p>
       </div>
+      
       <div class="col-xs-6 text-right">
         <h3 style="margin: 0px;">
           <span class="text-uppercase">
             {{translate 'STOCK.RECEIPT.EXIT_SERVICE'}}
           </span> <br>
           <strong>{{details.service_display_name}}</strong> <br>
-          <span>{{details.document_reference}}</span> <br>
-          <small>{{date details.date}}</small> <br>
-          <br>
+          <div class="row">
+            <small>{{> barcode value=details.barcode}}</small>
+          </div>
         </h3>
       </div>
     </div>
 
     <!-- client and user details  -->
-    <div class="row" style="border: 1px solid #ccc; padding: 5px; margin-bottom: 15px;">
+    <div class="row" style="border: 1px solid #ccc; padding: 5px; margin-top: 20px; margin-bottom: 15px;">
       <div class="col-xs-6">
-        <span class="text-capitalize">{{translate 'FORM.LABELS.SERVICE'}}</span>: <strong>{{details.service_display_name}}</strong> <br>
+        <span class="text-capitalize">{{translate 'FORM.LABELS.SERVICE'}}</span>: 
+        <strong>{{details.service_display_name}}</strong> <br>
       </div>
       <div class="col-xs-6">
         <span class="text-capitalize">{{translate 'STOCK.DEPOT'}}</span>: <strong>{{details.depot_name}}</strong> <br>
@@ -104,5 +107,5 @@
       </div>
     </div>
   </footer>
-
+  <script>JsBarcode('.barcode').init();</script>
 </div>
