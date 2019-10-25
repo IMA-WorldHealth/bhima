@@ -7,7 +7,6 @@
  */
 
 /* loading grid actions */
-const { expect } = require('chai');
 const GridRow = require('../shared/GridRow');
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');

@@ -22,7 +22,7 @@ describe('Survey Form Management', () => {
     name1 : 'Name with space',
     name2 : 'Namewith,and;',
     name3 : 'Namewith@',
-    name4 : 'Namewith\'and\"',
+    name4 : 'Namewith\'and "',
     name5 : 'Namewith()',
     hint : 'Veuillez renseigner le nom de l\' image',
   };

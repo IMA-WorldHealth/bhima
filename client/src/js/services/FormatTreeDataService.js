@@ -7,7 +7,7 @@ FormatTreeDataService.$inject = [];
  * @class FormatTreeDataService
  *
  */
-function FormatTreeDataService(Api) {
+function FormatTreeDataService() {
   const service = this;
 
   service.formatStore = formatStore;

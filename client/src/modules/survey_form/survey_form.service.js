@@ -25,7 +25,7 @@ function SurveyFormService(Api) {
     const startString = /^[a-zA-Z]/;
 
     // Regular expression to check if a variable does not have special characters
-    const haventSpecial = /^[\w \-]+$/;
+    const haventSpecial = /^[\w -]+$/;
 
     // Regular expression to check if Matches a blank (this includes space, tab, line break, or page break).
     const haveSpaceTabulation = /[\s]/;
