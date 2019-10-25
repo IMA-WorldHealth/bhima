@@ -46,7 +46,7 @@ describe('SurveyFormService', () => {
 
   it('Failed to create a form element whose name parameter with Quotation mark and apostrophe', () => {
     // This is the value to get
-    const variableName = 'Namewith\'and\"';
+    const variableName = 'Namewith\'and "';
     const formatedConstaint = SurveyFormService.validVariable(variableName);
 
     expect(formatedConstaint).to.equal(false);
