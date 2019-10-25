@@ -1,6 +1,6 @@
 &raquo; [Home](../index.md) / Inventory Management
 
-# Inventory and stock management
+# Inventory and Stock Management
 
 Inventory and stock management modules enable you to make stock movements as well as to track all these movements.
 
