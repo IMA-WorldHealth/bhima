@@ -922,6 +922,7 @@
             "DATE_REQUIRED": "Cette date est nécessaire.",
             "EMAIL": "Email mal saisie",
             "EXCEPTION": "Il y avait un problème de validation avec ce champ. S'il vous plaît vérifier votre connexion Internet.",
+            "FORMAT_NAME_VARIABLE": "un nom de variable doit commencer par une lettre (majuscule ou minuscule) et ne peut contenir que des lettres, des chiffres et les caractères _ ou -, les espaces et les caractères spéciaux ne sont pas autorisés!",
             "INTEGER": "Cette valeur doit être un nombre entier (Entier).",
             "INVALID_DATE": "Date invalide",
             "MAX": "Cette valeur est trop grande! Choisissez une valeur inférieure.",

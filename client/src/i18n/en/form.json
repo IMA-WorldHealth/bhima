@@ -921,6 +921,7 @@
             "DATE_REQUIRED": "This date is required.",
             "EMAIL": "Email mistyped",
             "EXCEPTION": "There was a problem validating this field. Please check your internet connection.",
+            "FORMAT_NAME_VARIABLE": "a variable name must start with a letter (uppercase or lowercase) and can only contain letters, numbers, and _ or - characters, spaces and special characters are not allowed!",
             "INTEGER": "This value must be a whole number (integer).",
             "INVALID_DATE": "Invalid date",
             "MAX": "This value is too large!  Choose a lower value.",

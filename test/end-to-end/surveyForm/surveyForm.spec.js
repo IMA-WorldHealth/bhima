@@ -15,6 +15,18 @@ describe('Survey Form Management', () => {
     hint : 'Veuillez renseigner le nom de l\' image',
   };
 
+  const checkValidationName = {
+    dataCollector : 'Fiche Kardex',
+    type : 'Image',
+    label : 'Validation Variable Name',
+    name1 : 'Name with space',
+    name2 : 'Namewith,and;',
+    name3 : 'Namewith@',
+    name4 : 'Namewith\'and\"',
+    name5 : 'Namewith()',
+    hint : 'Veuillez renseigner le nom de l\' image',
+  };
+
   //  Sélection Multiple
 
   const updateSurveyFormElement = {
@@ -35,6 +47,26 @@ describe('Survey Form Management', () => {
 
   it('successfully creates a new Survey Form Element', async () => {
     await Page.create(newSurveyFormElement);
+  });
+
+  it('Failed to create a form element whose name parameter with space', async () => {
+    await Page.checkValidate(checkValidationName, checkValidationName.name1);
+  });
+
+  it('Failed to create a form element whose name parameter with virgul', async () => {
+    await Page.checkValidate(checkValidationName, checkValidationName.name2);
+  });
+
+  it('Failed to create a form element whose name parameter with @ ', async () => {
+    await Page.checkValidate(checkValidationName, checkValidationName.name3);
+  });
+
+  it('Failed to create a form element whose name parameter with Quotation mark and apostrophe ', async () => {
+    await Page.checkValidate(checkValidationName, checkValidationName.name4);
+  });
+
+  it('Failed to create a form element whose name parameter with parenthesis ', async () => {
+    await Page.checkValidate(checkValidationName, checkValidationName.name5);
   });
 
   it('successfully edits a Survey Form Element', async () => {

@@ -23,6 +23,8 @@ function SurveyFormModalController($state, SurveyForm, Notify, AppCache, DataCol
   vm.selectType = selectType;
   vm.onSelectList = onSelectList;
   vm.onSelectSurvey = onSelectSurvey;
+  vm.checkVariableName = checkVariableName;
+  vm.check = true;
 
   function selectType(type) {
     vm.surveyForm.type = type.id;
@@ -36,6 +38,12 @@ function SurveyFormModalController($state, SurveyForm, Notify, AppCache, DataCol
 
   function onSelectSurvey(survey) {
     vm.surveyForm.filter_choice_list_id = survey.id;
+  }
+
+  function checkVariableName() {
+    if (vm.surveyForm.name) {
+      vm.check = SurveyForm.validVariable(vm.surveyForm.name);
+    }
   }
 
   if ($state.params.collectorId) {
@@ -61,6 +69,8 @@ function SurveyFormModalController($state, SurveyForm, Notify, AppCache, DataCol
       .then(data => {
         vm.selectList = data.choice_list_id;
         vm.surveyForm = data;
+
+        vm.check = SurveyForm.validVariable(vm.surveyForm.name);
       })
       .catch(Notify.handleError);
   }
@@ -75,12 +85,15 @@ function SurveyFormModalController($state, SurveyForm, Notify, AppCache, DataCol
   // submit the data to the server from all two forms (update, create)
   function submit(surveyForm) {
     vm.hasNoChange = surveyForm.$submitted && surveyForm.$pristine && !vm.isCreating;
-    if (surveyForm.$invalid) { return null; }
+
+    if (surveyForm.$invalid || !vm.check) { return null; }
     if (surveyForm.$pristine) { return null; }
 
     if (parseInt(vm.surveyForm.type, 10) !== 9) {
       vm.surveyForm.calculation = null;
     }
+
+    vm.surveyForm.name = vm.surveyForm.name.trim();
 
     const promise = (vm.isCreating)
       ? SurveyForm.create(vm.surveyForm)

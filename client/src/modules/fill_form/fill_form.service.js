@@ -75,16 +75,25 @@ function FillFormService(Api) {
   */
 
   function formatConstraint(constraint) {
+    let constaintFormated;
+
     // valueA format the constaint for input type text and number
-    let valueA = constraint.replace(/.{/g, 'FillFormModalCtrl.form.');
+    let valueA = constraint.replace(/.{/g, `FillFormModalCtrl.form.`);
     valueA = valueA.replace(/}/g, '');
 
     // valueB format the contraint for input type select one
-    let valueB = constraint.replace(/.{/g, 'FillFormModalCtrl.containtValue.');
+    let valueB = constraint.replace(/.{/g, `FillFormModalCtrl.containtValue.`);
     valueB = valueB.replace(/}/g, '');
 
-    return `(${valueA}) || (${valueB})` || null;
+    const checkValidConstraint = /.{/;
 
+    if (checkValidConstraint.test(constraint)) {
+      constaintFormated = `(${valueA}) || (${valueB})`;
+    } else {
+      constaintFormated = null;
+    }
+
+    return constaintFormated;
   }
 
   return service;

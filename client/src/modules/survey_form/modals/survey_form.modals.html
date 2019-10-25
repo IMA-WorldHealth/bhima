@@ -102,12 +102,15 @@
     </div>
 
     <!-- name -->
-    <div class="form-group" ng-class="{ 'has-error' : SurveyFormForm.$submitted && SurveyFormForm.name.$invalid }">
+    <div class="form-group" ng-class="{ 'has-error' : (SurveyFormForm.$submitted && SurveyFormForm.name.$invalid) || !SurveyFormModalCtrl.check }">
       <label class="control-label" translate>FORM.LABELS.VARIABLE_NAME</label>
       <div>
-        <input name="name" ng-model="SurveyFormModalCtrl.surveyForm.name" autocomplete="off" ng-maxlength="90" class="form-control" required>
+        <input name="name" ng-model="SurveyFormModalCtrl.surveyForm.name" ng-keyup="SurveyFormModalCtrl.checkVariableName()" autocomplete="off" ng-maxlength="90" class="form-control" required>
         <div class="help-block" ng-messages="SurveyFormForm.name.$error" ng-show="SurveyFormForm.$submitted">
           <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+        </div>
+        <div ng-if="!SurveyFormModalCtrl.check" id="error_format" class="help-block">
+          <p translate>FORM.VALIDATION.FORMAT_NAME_VARIABLE </p>
         </div>
       </div>
     </div>

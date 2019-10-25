@@ -7,6 +7,7 @@
  */
 
 /* loading grid actions */
+const { expect } = require('chai');
 const GridRow = require('../shared/GridRow');
 const FU = require('../shared/FormUtils');
 const components = require('../shared/components');
@@ -34,8 +35,25 @@ class SurveyFormManagementPage {
   }
 
   /**
+   * Verify the validation of the parameter name for several scenarios
+   */
+  async checkValidate(SurveyForm, surveyFormName) {
+    await components.dataCollector.set(SurveyForm.dataCollector);
+    await FU.buttons.create();
+    await components.surveyFormTypeSelect.set(SurveyForm.type);
+    await FU.input('SurveyFormModalCtrl.surveyForm.name', surveyFormName);
+    await FU.input('SurveyFormModalCtrl.surveyForm.label', SurveyForm.label);
+    await FU.input('SurveyFormModalCtrl.surveyForm.hint', SurveyForm.hint);
+    await element(by.id('is_required')).click();
+    await FU.buttons.submit();
+    await FU.exists(by.id('error_format'), true);
+    await FU.modal.cancel();
+  }
+
+  /**
    * simulate the create Survey Form button click to show the dialog of creation
    */
+
   async createDeletable(SurveyForm) {
     await FU.buttons.create();
     await components.surveyFormTypeSelect.set(SurveyForm.type);

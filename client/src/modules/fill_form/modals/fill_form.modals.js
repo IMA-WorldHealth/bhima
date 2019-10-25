@@ -231,9 +231,6 @@ function FillFormModalController($state, FillForm, Notify, AppCache,
         } else if (!vm.stateParams.patient && vm.updateMode) {
           $state.go('display_metadata', { id : vm.stateParams.id }, { reload : true });
         } else if (vm.stateParams.patient && !vm.updateMode) {
-          console.log('PATIENT MODE INSERT');
-
-
           $state.go('display_metadata.patient',
             { id : vm.stateParams.id, patient : vm.stateParams.patient }, { reload : true });
         } else if (vm.stateParams.patient && vm.updateMode && !include) {
