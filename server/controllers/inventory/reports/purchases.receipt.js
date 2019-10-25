@@ -24,26 +24,19 @@ const template = './server/controllers/inventory/reports/purchases.receipt.handl
  *
  * GET /reports/inventory/purchases/:uuid
  */
-function build(req, res, next) {
+async function build(req, res, next) {
   const options = req.query;
 
-  let report;
-
   try {
-    report = new ReportManager(template, req.session, options);
+    const report = new ReportManager(template, req.session, options);
+
+    // format the receipt and ship it off to the client
+    const purchase = await Purchases.lookup(req.params.uuid);
+    const result = await report.render({ purchase });
+    res.set(result.headers).send(result.report);
   } catch (e) {
     next(e);
-    return;
   }
-
-  // format the receipt and ship it off to the client
-  Purchases.lookup(req.params.uuid)
-    .then(purchase => report.render({ purchase }))
-    .then(result => {
-      res.set(result.headers).send(result.report);
-    })
-    .catch(next)
-    .done();
 }
 
 module.exports = build;
