@@ -81,9 +81,11 @@ function getStockRequisition(params) {
   filters.equals('depot_uuid', 'depot_uuid', 'sr');
   filters.equals('requestor_uuid', 'requestor_uuid', 'sr');
   filters.equals('user_id', 'user_id', 'sr');
+  filters.equals('reference', 'text', 'dm');
   filters.period('date', 'date', 'sr');
-  filters.dateFrom('custom_period_start', 'created_at', 'sr');
-  filters.dateTo('custom_period_end', 'created_at', 'sr');
+  filters.period('period', 'date', 'sr');
+  filters.dateFrom('custom_period_start', 'date', 'sr');
+  filters.dateTo('custom_period_end', 'date', 'sr');
 
   const query = filters.applyQuery(SELECT_QUERY);
   const queryParameters = filters.parameters();
@@ -180,3 +182,5 @@ exports.deleteRequisition = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.getDetails = getDetails;

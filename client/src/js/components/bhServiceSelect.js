@@ -6,6 +6,7 @@ angular.module('bhima.components')
     bindings    : {
       serviceId        : '<?',
       onSelectCallback : '&',
+      label    : '<?',
       required : '<?',
     },
   });
@@ -22,7 +23,7 @@ function ServiceSelectController(Services, Notify) {
   const $ctrl = this;
 
   $ctrl.$onInit = function onInit() {
-
+    $ctrl.label = $ctrl.label || 'FORM.LABELS.SERVICE';
     Services.read()
       .then((services) => {
         $ctrl.services = services;

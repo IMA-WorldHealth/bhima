@@ -1,0 +1,48 @@
+<div ng-form="ServiceOrDepotForm" bh-ward-select ng-model-options="{ updateOn: 'default' }">
+  <div class="form-group"
+    ng-class="{ 'has-error' : ServiceOrDepotForm.$submitted && ServiceOrDepotForm.requestor_uuid.$invalid }">
+
+    <label class="control-label" translate>
+      {{ $ctrl.label }}
+    </label>
+
+    <br>
+
+    <label
+      ng-repeat="requestor in $ctrl.requestors"
+      class="radio-inline"
+      title="{{requestor.title | translate}}">
+      <input
+        name="requestor"
+        type="radio"
+        ng-model="$ctrl.requestorType"
+        ng-value="requestor.key"
+        data-requestor-option="{{ requestor.key }}"
+        ng-required="$ctrl.required">
+      <span translate>{{ requestor.title }}</span>
+    </label>
+
+    <div class="help-block" ng-messages="ServiceOrDepotForm.requestor_uuid.$error" ng-show="ServiceOrDepotForm.$submitted">
+      <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
+    </div>
+  </div>
+
+  <!-- service  -->
+  <div ng-if="$ctrl.requestorType === 'service'">
+    <bh-service-select
+      label="REQUISITION.SERVICE_REQUESTOR"
+      on-select-callback="$ctrl.onSelectRequestor(service)"
+      required="true">
+    </bh-service-select>
+  </div>
+
+  <!-- depot  -->
+  <div ng-if="$ctrl.requestorType === 'depot'">
+    <bh-depot-select
+      label="REQUISITION.DEPOT_REQUESTOR"
+      on-select-callback="$ctrl.onSelectRequestor(depot)"
+      required="true">
+    </bh-depot-select>
+  </div>
+</div>
+  

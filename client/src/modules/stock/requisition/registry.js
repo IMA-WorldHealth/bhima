@@ -3,7 +3,7 @@ angular.module('bhima.controllers')
 
 StockRequisitionController.$inject = [
   'StockService', 'NotifyService', 'ModalService', 'ReceiptModal',
-  'uiGridConstants', 'StockModalService', 'LanguageService', 'GridGroupingService',
+  'uiGridConstants', 'StockModalService', 'LanguageService',
   'GridStateService', 'GridColumnService', '$state', '$httpParamSerializer',
 ];
 
@@ -13,7 +13,7 @@ StockRequisitionController.$inject = [
  */
 function StockRequisitionController(
   Stock, Notify, Modal, Receipts,
-  uiGridConstants, StockModal, Languages, Grouping,
+  uiGridConstants, StockModal, Languages,
   GridState, Columns, $state, $httpParamSerializer,
 ) {
   const vm = this;

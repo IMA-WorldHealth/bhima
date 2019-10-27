@@ -39,9 +39,9 @@ function ActionRequisitionModalController(AppCache, $state, Depots, Notify, Moda
     vm.availableLots = vm.globalAvailableLots.filter(item => item.inventory_uuid === inventory.inventory_uuid);
   }
 
-  vm.onSelectEntity = onSelectEntity;
-  function onSelectEntity(entity) {
-    vm.model.entity_uuid = entity.uuid;
+  vm.onSelectRequestor = onSelectRequestor;
+  function onSelectRequestor(requestor) {
+    vm.model.requestor_uuid = requestor.uuid;
   }
 
   vm.cancel = Modal.close;

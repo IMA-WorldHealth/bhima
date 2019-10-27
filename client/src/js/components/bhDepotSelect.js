@@ -6,6 +6,7 @@ angular.module('bhima.components')
     bindings    : {
       depotUuid        : '<',
       onSelectCallback : '&',
+      label            : '<?',
       required         : '<?',
     },
   });
@@ -19,6 +20,7 @@ function DepotSelectController(Depots, Notify) {
   const $ctrl = this;
 
   $ctrl.$onInit = () => {
+    $ctrl.label = $ctrl.label || 'FORM.LABELS.DEPOT';
     // load all depots
     Depots.read()
       .then(depots => {

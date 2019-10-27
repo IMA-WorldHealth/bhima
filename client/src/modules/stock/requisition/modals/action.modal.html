@@ -12,6 +12,14 @@
   </div>
 
   <div class="modal-body">
+    <!-- service or depot -->
+    <bh-service-or-depot
+      label="REQUISITION.RECEIVER"
+      on-select-callback="$ctrl.onSelectRequestor(requestor)">
+    </bh-service-or-depot>
+
+    <hr>
+
     <!-- depot -->
     <bh-depot-select
       depot-uuid="$ctrl.model.depot_uuid"

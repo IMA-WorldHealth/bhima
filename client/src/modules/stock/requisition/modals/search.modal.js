@@ -20,7 +20,7 @@ function SearchStockRequisitionModalController(data, util, Store, Instance, Peri
 
   // displayValues will be an id:displayValue pair
   const displayValues = {};
-  const lastDisplayValues = Stock.filter.stockRequisition.getDisplayValueMap();
+  const lastDisplayValues = Stock.filter.requisition.getDisplayValueMap();
 
   // keep track of the initial search queries to make sure we properly restore
   // default display values
