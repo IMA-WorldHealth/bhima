@@ -9,7 +9,7 @@ describe('Patient IndicatorsFiles', () => {
   const Page = new IndicatorsFilesPage();
 
   const fiscalYearLabel = 'Fiscal Year 2019';
-  const periodLabel = 'janvier 2019';
+  const periodLabel = 'Jan';
   const service = 'Medecine Interne';
   const hospitalizationIndicators = {
     total_day_realized : 10,
@@ -60,11 +60,13 @@ describe('Patient IndicatorsFiles', () => {
   it('search indicators files by period', async () => {
     const options = {
       fiscalYear : 'Fiscal Year 2019',
-      period : 'janvier 2019',
+      period : 'Jan',
     };
+
     await Page.search(options);
     await Page.expectNumberOfGridRows(3);
-    options.period = 'février 2019';
+    options.period = 'F';
+
     await Page.search(options);
     await Page.expectNumberOfGridRows(0);
   });
