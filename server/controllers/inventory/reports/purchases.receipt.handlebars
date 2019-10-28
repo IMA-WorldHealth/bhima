@@ -10,7 +10,7 @@
       <div class="col-xs-12">
         <h2 class="text-center">
           <span class="text-uppercase">
-            {{translate "PURCHASES.RECEIPT.TITLE" }} N&deg; 
+            {{translate "PURCHASES.RECEIPT.TITLE" }} N&deg;
             {{purchase.reference}}
           </span>
         </h2>
@@ -41,15 +41,15 @@
         <tr>
           <td>{{this.text}}</td>
           <td class="text-right">{{this.quantity}}</td>
-          <td class="text-right">{{currency this.unit_price}}</td>
-          <td class="text-right">{{currency this.total}}</td>
+          <td class="text-right">{{currency this.unit_price ../metadata.enterprise.currency_id}}</td>
+          <td class="text-right">{{currency this.total ../metadata.enterprise.currency_id}}</td>
         </tr>
       {{/each}}
     </tbody>
     <tfoot>
       <tr>
         <td class="text-left" colspan="3">{{translate "FORM.LABELS.TOTAL"}}</td>
-        <td class="text-right" >{{currency purchase.cost}}</td>
+        <td class="text-right" >{{currency purchase.cost metadata.enterprise.currency_id}}</td>
       </tr>
     </tfoot>
   </table>
