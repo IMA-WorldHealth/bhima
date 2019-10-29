@@ -6,7 +6,7 @@ angular.module('bhima.components')
     bindings    : {
       depotUuid        : '<',
       onSelectCallback : '&',
-      label            : '<?',
+      label            : '@?',
       required         : '<?',
     },
   });

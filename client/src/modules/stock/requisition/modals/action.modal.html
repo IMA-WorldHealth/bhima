@@ -18,7 +18,24 @@
       on-select-callback="$ctrl.onSelectRequestor(requestor)">
     </bh-service-or-depot>
 
-    <hr>
+    <!-- inventories -->
+    <div class="form-group">
+      <label translate>FORM.LABELS.ARTICLES</label>
+
+      <bh-add-item callback="$ctrl.form.addItem()" disable="true"></bh-add-item>
+
+      <div
+        id="stock-requisition-grid-articles"
+        ui-grid="$ctrl.gridOptions"
+        ui-grid-resize-columns
+        ui-grid-auto-resize>
+        <bh-grid-loading-indicator
+          loading-state="$ctrl.loading"
+          empty-state="$ctrl.gridOptions.data.length === 0"
+          error-state="$ctrl.hasError">
+        </bh-grid-loading-indicator>
+      </div>
+    </div>
 
     <!-- depot -->
     <bh-depot-select

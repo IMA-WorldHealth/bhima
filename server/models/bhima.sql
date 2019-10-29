@@ -396,7 +396,7 @@ INSERT INTO `status` VALUES
   (4, 'draft', 'FORM.LABELS.STATUS_TYPE.DRAFT'),
   (5, 'cancelled', 'FORM.LABELS.STATUS_TYPE.CANCELLED');
 
--- requisitor type
-INSERT INTO `stock_requestor_type` VALUES 
-  (1, 'service', 'FORM.LABELS.SERVICE'),
-  (2, 'depot', 'FORM.LABELS.DEPOT');
+-- type of requestors
+INSERT INTO `stock_requestor_type` (`type_key`, `title_key`) VALUES 
+  ('service', 'FORM.LABELS.SERVICE'),
+  ('depot', 'FORM.LABELS.DEPOT');

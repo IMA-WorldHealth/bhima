@@ -241,6 +241,7 @@
             "VIEW_CLOSING_BALANCE": "View Closing Balance"
         },
         "LABELS" : {
+            "ARTICLES":"Articles",
             "MERGE_PATIENTS":"Merge Patients",
             "MERGE_PATIENTS_DESC":"Only selected patient information will be considered, other patients' transactions will be assigned to the selected patient",
             "MERGE_PATIENTS_TO_ONE":"Merge patients into one patient",

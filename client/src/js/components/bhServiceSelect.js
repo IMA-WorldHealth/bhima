@@ -6,7 +6,7 @@ angular.module('bhima.components')
     bindings    : {
       serviceId        : '<?',
       onSelectCallback : '&',
-      label    : '<?',
+      label    : '@?',
       required : '<?',
     },
   });

@@ -241,6 +241,7 @@
             "VIEW_CLOSING_BALANCE": "Aperçue de la balance de cloture"
         },
         "LABELS": {
+            "ARTICLES":"Articles",
             "EXTRACT_EMPLOYEE_STANDING": "Extrait de l'état financier de l'employé pour la période",
             "MERGE_PATIENTS":"Fusionner les patients",
             "MERGE_PATIENTS_DESC":"Seules les informations du patient séléctionné seront considérées, les transactions des autres patients de la liste seront affectées au patient séléctionné",

@@ -12,6 +12,32 @@ function ActionRequisitionModalController(AppCache, $state, Depots, Notify, Moda
   const vm = this;
   const cache = AppCache('stock-requisition-grid');
 
+  const columns = [
+    {
+      field : 'inventory_uuid',
+      displayName : 'FORM.LABELS.INVENTORY',
+      headerCellFilter : 'translate',
+      cellTemplate : 'modules/stock/requisition/templates/inventory.cell.html',
+    },
+
+    {
+      field : 'quantity',
+      displayName : 'FORM.LABELS.QUANTITY',
+      headerCellFilter : 'translate',
+      cellTemplate : 'modules/stock/requisition/templates/quantity.cell.html',
+    },
+  ];
+
+  vm.gridOptions = {
+    appScopeProvider : vm,
+    enableColumnMenus : false,
+    columnDefs : columns,
+    enableSorting : true,
+    showColumnFooter : true,
+    fastWatch : true,
+    flatEntityAccess : true,
+  };
+
   // global variables
   vm.model = { quantity : 1 };
   vm.availableInventories = [];
