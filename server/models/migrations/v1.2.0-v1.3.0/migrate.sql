@@ -185,9 +185,9 @@ CREATE TABLE `medical_sheet` (
 
 INSERT INTO `unit` VALUES
   (246, 'Data Kit', 'TREE.DATA_KIT', 'Data Kit', 0, '/modules/data_kit', '/data_kit'),
-  (247, 'Data Collector Management', 'TREE.DATA_COLLECTOR_MANAGEMENT', '', 246, '/modules/data_collector_management', '/data_collector_management'),
+  (247, 'Data Collector Management', 'TREE.FORMS_MANAGEMENT', '', 246, '/modules/data_collector_management', '/data_collector_management'),
   (248, 'Choices list management', 'TREE.CHOICES_LIST_MANAGEMENT', '', 246, '/modules/choices_list_management', '/choices_list_management'),
-  (249, 'Survey Form', 'TREE.SURVEY_FORM', '', 246, '/modules/survey_form', '/survey_form'),
+  (249, 'Survey Form', 'TREE.FORMS_CONFIGURATION', '', 246, '/modules/survey_form', '/survey_form'),
   (250, 'Data Collection', 'TREE.DATA_COLLECTION', '', 0, '/modules/data_collection', '/data_collection'),
   (251, 'Fill Form', 'TREE.FILL_FORM', '', 250, '/modules/fill_form', '/fill_form'),
   (252, 'Display Metadata', 'TREE.DISPLAY_METADATA', '', 250, '/modules/display_metadata', '/display_metadata'),
