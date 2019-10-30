@@ -168,13 +168,6 @@ function PurchaseOrderService(
    * @param {*} stock - it is the data of the inventories having reached their point of order
    */
   function formatOptimalPurchase(inventories, stock) {
-    console.log('IVVVVVVVVvvvvvvv');
-    console.log(inventories);
-
-    console.log('STOOOOOOOooooooo');
-    console.log(stock);
-
-
     inventories.forEach(inventory => {
       inventory.unit_price = 0;
       inventory._initialised = true;
