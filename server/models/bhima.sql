@@ -133,6 +133,7 @@ INSERT INTO unit VALUES
   (246, 'Client debts report', 'TREE.CLIENT_DEBTS_REPORT', 'Client debts report', 144, '/modules/reports/clientDebts', '/reports/clientDebts'),
   (247, 'Client support report', 'TREE.CLIENT_SUPPORT_REPORT', 'Client support report', 144, '/modules/reports/clientSupport', '/reports/clientSupport'),
   (248, 'Analysis of cashboxes', 'REPORT.ANALYSIS_AUX_CASHBOXES.TITLE', 'Analysis of auxiliary cashboxes', 144, '/modules/reports/analysisAuxiliaryCash', '/reports/analysisAuxiliaryCash'),
+<<<<<<< a097681f7d119f324581cd5b09f9dce5e3f5e5ab
   (249, 'Realized Profit Report', 'TREE.REALIZED_PROFIT_REPORT', 'Realized profit report', 144, '/modules/reports/realizedProfit', '/reports/realizedProfit'),
   (250, 'Sytem usage statistic', 'REPORT.SYSTEM_USAGE_STAT.TITLE', 'Sytem usage statistic', 144, '/modules/reports/systemUsageStat', '/reports/systemUsageStat'),
   (251, 'indexes', 'TREE.INDEXES','The payrall-index', 57,'/modules/finance/','/PAYROLL_INDEX_FOLDER'),
@@ -149,6 +150,16 @@ INSERT INTO unit VALUES
   (262, 'Fill Form', 'TREE.FILL_FORM', '', 250, '/modules/fill_form', '/fill_form'),
   (263, 'Display Metadata', 'TREE.DISPLAY_METADATA', '', 250, '/modules/display_metadata', '/display_metadata'),
   (264, 'Data Kit Report', 'TREE.DATA_KIT_REPORT', 'Data Kit Report', 144, '/modules/reports/dataKit', '/reports/dataKit');  
+=======
+  (249, 'Data Collection', 'TREE.DATA_COLLECTION', '', 0, '/modules/data_collection', '/data_collection'),
+  (250, 'Fill Form', 'TREE.FILL_FORM', '', 249, '/modules/fill_form', '/fill_form'),
+  (251, 'Display Metadata', 'TREE.DISPLAY_METADATA', '', 249, '/modules/display_metadata', '/display_metadata'),
+  (251, 'Data Kit', 'TREE.DATA_KIT', 'Data Kit', 249, '/modules/data_kit', '/data_kit'),
+  (252, 'Data Collector Management', 'TREE.DATA_COLLECTOR_MANAGEMENT', '', 251, '/modules/data_collector_management', '/data_collector_management'),
+  (253, 'Choices list management', 'TREE.CHOICES_LIST_MANAGEMENT', '', 251, '/modules/choices_list_management', '/choices_list_management'),
+  (254, 'Survey Form', 'TREE.SURVEY_FORM', '', 251, '/modules/survey_form', '/survey_form'),  
+  (255, 'Data Kit Report', 'TREE.DATA_KIT_REPORT', 'Data Kit Report', 144, '/modules/reports/dataKit', '/reports/dataKit');
+>>>>>>> Resolve conflict s5
 
 
 -- Reserved system account type
@@ -377,3 +388,20 @@ INSERT INTO `cron` (`label`, `value`) VALUES
   ('CRON.MONTHLY', '0 1 30 * *'),
   ('CRON.YEARLY', '0 1 31 12 *'),
   ('CRON.EACH_MINUTE', '* * * * *');
+<<<<<<< a097681f7d119f324581cd5b09f9dce5e3f5e5ab
+=======
+
+
+-- Survey Form Type
+INSERT INTO `survey_form_type` (`label`, `type`, `is_list`) VALUES
+  ('FORM.LABELS.NUMBER', 'number', 0),
+  ('FORM.LABELS.TEXT', 'text', 0),
+  ('FORM.LABELS.SELECT_ONE', 'select_one', 1),
+  ('FORM.LABELS.SELECT_MULTIPLE', 'select_multiple', 1),
+  ('FORM.LABELS.NOTE', 'note', 0),
+  ('FORM.LABELS.DATE', 'date', 0),
+  ('FORM.LABELS.TIME', 'time', 0),
+  ('FORM.LABELS.IMAGE', 'image', 0),
+  ('FORM.LABELS.CALCULATION', 'calculation', 0),
+  ('FORM.LABELS.TEXT_AREA', 'text_area', 0);
+>>>>>>> Resolve conflict s5
