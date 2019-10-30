@@ -635,7 +635,7 @@ async function reverseTransaction(recordUuid, userId, reverseDescription) {
   // wrap call in transaction to reverse anything that needs to be reversed if
   // an error happens
   await db.transaction()
-    .addQuery('CALL ReverseTransaction(?, ?, ?, ?);', params)
+    .addQuery('CALL ReverseTransaction(?, ?, ?, ?, TRUE);', params)
     .execute();
 
   return { uuid : voucherUuid };

@@ -109,7 +109,8 @@ CREATE PROCEDURE ReverseTransaction(
   IN uuid BINARY(16),
   IN user_id INT,
   IN description TEXT,
-  IN voucher_uuid BINARY(16)
+  IN voucher_uuid BINARY(16),
+  IN preserveDate BOOLEAN /* use the original transaction date */
 )
 BEGIN
   -- NOTE: someone should check that the record_uuid is not used as a reference_uuid somewhere
@@ -118,6 +119,7 @@ BEGIN
   DECLARE isCashPayment BOOLEAN;
   DECLARE isVoucher BOOLEAN;
   DECLARE reversalType INT;
+  DECLARE oldDate TIMESTAMP;
 
   SET reversalType = 10;
 
@@ -129,11 +131,23 @@ BEGIN
     SET isCashPayment = (SELECT IFNULL((SELECT 1 FROM cash WHERE cash.uuid = uuid), 0));
   END IF;
 
+  -- set old date
+  IF preserveDate THEN
+    IF isInvoice THEN
+      SET oldDate = (SELECT date FROM invoice WHERE invoice.uuid = uuid);
+    ELSEIF isVoucher THEN
+      SET oldDate = (SELECT date FROM voucher WHERE voucher.uuid = uuid);
+    ELSE
+      SET oldDate = (SELECT date FROM cash WHERE cash.uuid = uuid);
+    END IF;
+  ELSE
+    set oldDate = (SELECT NOW());
+  END IF;
+
   -- @fixme - why do we have `amount` in the voucher table?
-  -- @todo - make only one type of reversal (not cash, credit, or voucher)
 
   INSERT INTO voucher (uuid, date, project_id, currency_id, amount, description, user_id, type_id, reference_uuid)
-    SELECT voucher_uuid, NOW(), zz.project_id, enterprise.currency_id, 0, CONCAT_WS(' ', '(CORRECTION)', description), user_id, reversalType, uuid
+    SELECT voucher_uuid, oldDate, zz.project_id, enterprise.currency_id, 0, CONCAT_WS(' ', '(CORRECTION)', description), user_id, reversalType, uuid
     FROM (
       SELECT pj.project_id, pj.description FROM posting_journal AS pj WHERE pj.record_uuid = uuid
       UNION ALL

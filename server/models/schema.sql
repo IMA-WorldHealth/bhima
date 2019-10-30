@@ -1840,7 +1840,7 @@ CREATE TABLE IF NOT EXISTS `voucher` (
   `description`     TEXT DEFAULT NULL,
   `user_id`         SMALLINT(5) UNSIGNED NOT NULL,
   `created_at`      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `type_id`         SMALLINT(3) UNSIGNED NULL,
+  `type_id`         SMALLINT(3) UNSIGNED NOT NULL,
   `reference_uuid`  BINARY(16),
   `edited`          TINYINT NOT NULL DEFAULT 0,
   `reversed`        TINYINT NOT NULL DEFAULT 0,

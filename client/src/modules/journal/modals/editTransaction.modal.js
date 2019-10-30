@@ -14,7 +14,6 @@ JournalEditTransactionController.$inject = [
  * This controller handles all the code for editing transactions, as well as
  * viewing and correcting posted ones.
  *
- *
  * TODO(@jniles) - break this out into services that power the form to be tested.
  */
 function JournalEditTransactionController(
@@ -219,6 +218,9 @@ function JournalEditTransactionController(
   }
 
   function updateGridColumnEditable(canEdit) {
+    // readOnly flag is set only when we can't edit the transaction.
+    vm.readOnly = !canEdit;
+
     // notify the grid of options change - the grid should no longer be editable
     vm.gridOptions.columnDefs.forEach((column) => {
       column.allowCellFocus = canEdit;

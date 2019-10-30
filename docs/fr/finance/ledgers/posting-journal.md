@@ -11,7 +11,7 @@ Comme décrit dans [Comptabilité en partie double](../overview.md#double-entry-
 * **ID**: utilisé uniquement à des fins internes. Cette chaîne de 36 caractères identifie de manière unique la ligne dans la transaction. En réalité, il est uniquement destiné à être utilisé pour signaler des problèmes au support BHIMA.
 * **Période\[partagé\]**: une version lisible par l'homme de la période.
 * **Projet\[partagé\]**: le projet associé à l'enregistrement.
-* **ID de transaction\[partagé\]**: ** **identifiant lisible par l'homme associé à la transaction. Il est composé de la manière suivante: `${project abbreviation}${increment}`. Par exemple, la première transaction d'un projet abrégé en "TST" sera "TST1". Cela permet de différencier les transactions entre les projets.
+* **ID de transaction\[partagé\]**: identifiant lisible par l'homme associé à la transaction. Il est composé de la manière suivante: `${project abbreviation}${increment}`. Par exemple, la première transaction d'un projet abrégé en "TST" sera "TST1". Cela permet de différencier les transactions entre les projets.
 * **Date de transaction\[partagé\]**: date à laquelle la transaction a été créée.
 * **Record\[shared\]**: Identifiant de l'enregistrement qui a créé cette transaction. Ces identifiants sont composés comme suit: `${record type}.${project abbreviation}.${increment}`. Le "type d'enregistrement" est `VO` pour les pièces justificatives,` CP` pour les paiements en espèces et `IV` pour les factures. Un exemple d'enregistrement est `CP.TST.1`, qui lit" le premier paiement en espèces du projet TST ".
 * **Description**: description textuelle de la transaction. Les descriptions sont créées manuellement\(par exemple, une description de pièce justificative \) ou sont générées par l’application.
@@ -90,12 +90,14 @@ Les transactions sont enregistrées dans le grand livre en procédant comme suit
 4. Une fois la balance de vérification vierge générée, le comptable soumet la balance de contrôle en enregistrant les transactions dans le grand livre.
 5. Si le journal est dans sa configuration par défaut, les transactions seront filtrées de la vue, indiquant qu'elles ont été enregistrées dans le GL.
 
+Dans les deux états, les transactions peuvent être modifiées en [modifiant une transaction](./editing-transactions.md).
+
 ## Types de transaction
 
 Chaque transaction dans le système a un type de transaction. Les types de transaction facilitent les analyses ultérieures en étiquetant chaque transaction avec une balise descriptive. Ceux-ci sont généralement regroupés dans les types suivants:
 
-* **Le revenu**
-* **Frais**
-* **Douane**
+* **Produits**
+* **Charges**
+* **Personnalisé**
 
 Une transaction ne peut avoir qu'un seul type de transaction. Vous pouvez ajouter vos propres types de transaction via le module Type de transaction.
