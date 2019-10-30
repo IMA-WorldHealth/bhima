@@ -13,7 +13,7 @@ services:
 
 language: node_js
 node_js:
-  - lts/dubnium
+  - lts/erbium
 
 before_script:
   - yarn build

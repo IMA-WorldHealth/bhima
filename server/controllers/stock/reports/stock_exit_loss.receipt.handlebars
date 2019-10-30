@@ -19,15 +19,15 @@
           <span class="text-uppercase">
             {{translate 'STOCK.RECEIPT.EXIT_LOSS'}}
           </span> <br>
-          <span>{{details.document_reference}}</span> <br>
-          <small>{{date details.date}}</small> <br>
-          <br>
+          <div class="row">
+            <small>{{> barcode value=details.barcode}}</small>
+          </div>
         </h3>
       </div>
     </div>
 
     <!-- client and user details  -->
-    <div class="row" style="border: 1px solid #ccc; padding: 5px; margin-bottom: 15px;">
+    <div class="row" style="border: 1px solid #ccc; padding: 5px; margin-top: 20px; margin-bottom: 15px;">
       <div class="col-xs-6">
         <h4>{{translate 'STOCK.MOTIF'}}</h4>
         <span class="text-capitalize">{{translate 'STOCK.LOSS'}}</span><br>
@@ -94,5 +94,5 @@
       </div>
     </div>
   </footer>
-
+<script>JsBarcode('.barcode').init();</script>
 </div>
