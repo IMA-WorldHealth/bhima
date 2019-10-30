@@ -1,6 +1,8 @@
 /* global by, element */
-
+const path = require('path');
 const FU = require('../shared/FormUtils');
+
+const fixtures = path.resolve(__dirname, '../../fixtures/');
 
 class PriceListItemsModalPage {
   constructor() {
@@ -18,6 +20,11 @@ class PriceListItemsModalPage {
 
   setValue(value) {
     return FU.input('ModalCtrl.data.value', value, this.modal);
+  }
+
+  uploadFile(fileToUpload) {
+    const absolutePath = path.resolve(fixtures, fileToUpload);
+    return element(by.id('import-input')).sendKeys(absolutePath);
   }
 
   // TODO(@jniles) - migrate this to bhYesNo

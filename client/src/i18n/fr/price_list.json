@@ -1,14 +1,27 @@
-{"PRICE_LIST":{"ADD_ITEMS":"Ajouter un Item",
-"ADD_PRICE_LIST":"Ajouter une Liste",
-"HELP_TXT_1":"Choisir une action à gauche pour editer la liste de prix",
-"HELP_TXT_2":"Éditer les metadonnées de la Liste",
-"HELP_TXT_3":"Effacer la Liste",
-"ITEMS":"Items",
-"NEW_PRICE_LIST":"Nouvelle Liste des Prix",
-"NO_RECORDS":"Pas d'enregistrement",
-"NONE":"Appliquer aucune liste de prix",
-"PRICE_LIST_ITEMS":"Eléments de la liste des prix",
-"TITLE":"Liste des Prix",
-"UNABLE_TO_DELETE":"La liste de prix ne peut être supprimer - car elle peut être courament assignée à un groupe de patient / Groupes Débiteurs",
-"UPDATE":"Mettre à jour une liste de prix",
-"ERRORS":{"HAS_NEGATIVE_PRICE":"Vous ne pouvez pas assigner une valeur negatif."}}}
+{
+  "PRICE_LIST": {
+    "ADD_ITEMS": "Ajouter un Item",
+    "ADD_PRICE_LIST": "Ajouter une Liste",
+    "HELP_TXT_1": "Choisir une action à gauche pour editer la liste de prix",
+    "HELP_TXT_2": "Éditer les metadonnées de la Liste",
+    "HELP_TXT_3": "Effacer la Liste",
+    "ITEMS": "Items",
+    "NEW_PRICE_LIST": "Nouvelle Liste des Prix",
+    "NO_RECORDS": "Pas d'enregistrement",
+    "NONE": "Appliquer aucune liste de prix",
+    "PRICE_LIST_ITEMS": "Eléments de la liste des prix",
+    "TITLE": "Liste des Prix",
+    "UNABLE_TO_DELETE": "La liste de prix ne peut être supprimer - car elle peut être courament assignée à un groupe de patient / Groupes Débiteurs",
+    "UPDATE": "Mettre à jour une liste de prix",
+    "ERRORS": {
+      "HAS_NEGATIVE_PRICE": "Vous ne pouvez pas assigner une valeur negatif."
+    },
+    "ITEM_TEMPLATE": "Modèle de fichier des inventaires",
+    "IMPORT": {
+      "PRICE_LIST_ITEMS_DESCRIPTION": "Vous êtes sur le point d'importer les prix des inventaires pour cette liste des prix à partir d'un fichier CSV",
+      "PRICE_LIST_ITEMS": "Cliquez ici pour télécharger le fichier modèle pour l'importation des prix",
+      "PRICE_LIST_ITEMS_WITH_INVENTORY": "Cliquez ici pour télécharger le fichier modèle pour l'importation des prix avec des inventaires"
+    
+    }
+  }
+}
