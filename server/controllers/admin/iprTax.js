@@ -41,7 +41,7 @@ function list(req, res, next) {
 * Returns the detail of a single IprTax
 */
 function detail(req, res, next) {
-  const id = req.params.id;
+  const { id } = req.params;
 
   lookupIprTax(id)
     .then((record) => {
@@ -102,8 +102,10 @@ function del(req, res, next) {
 // GET /IprTaxConfig
 function lookupIprTaxConfig(id) {
   const sql = `
-    SELECT tc.id, tc.rate, tc.tranche_annuelle_debut, tc.tranche_annuelle_fin, tc.tranche_mensuelle_debut, tc.tranche_mensuelle_fin,
-      tc.ecart_annuel, tc.ecart_mensuel, tc.impot_annuel, tc.impot_mensuel, tc.cumul_annuel, tc.cumul_mensuel, tc.taxe_ipr_id, t.currency_id, c.symbol
+    SELECT tc.id, tc.rate, tc.tranche_annuelle_debut, tc.tranche_annuelle_fin,
+      tc.tranche_mensuelle_debut, tc.tranche_mensuelle_fin, tc.ecart_annuel,
+      tc.ecart_mensuel, tc.impot_annuel, tc.impot_mensuel, tc.cumul_annuel,
+      tc.cumul_mensuel, tc.taxe_ipr_id, t.currency_id, c.symbol
     FROM taxe_ipr_configuration AS tc
     JOIN taxe_ipr AS t ON t.id = tc.taxe_ipr_id
     JOIN currency AS c ON c.id = t.currency_id
@@ -117,8 +119,10 @@ function listConfig(req, res, next) {
   const filters = new FilterParser(req.query);
 
   const sql = `
-    SELECT tc.id, tc.rate, tc.tranche_annuelle_debut, tc.tranche_annuelle_fin, tc.tranche_mensuelle_debut, tc.tranche_mensuelle_fin,
-      tc.ecart_annuel, tc.ecart_mensuel, tc.impot_annuel, tc.impot_mensuel, tc.cumul_annuel, tc.cumul_mensuel, tc.taxe_ipr_id, t.currency_id
+    SELECT tc.id, tc.rate, tc.tranche_annuelle_debut, tc.tranche_annuelle_fin,
+    tc.tranche_mensuelle_debut, tc.tranche_mensuelle_fin, tc.ecart_annuel,
+    tc.ecart_mensuel, tc.impot_annuel, tc.impot_mensuel, tc.cumul_annuel,
+    tc.cumul_mensuel, tc.taxe_ipr_id, t.currency_id
     FROM taxe_ipr_configuration AS tc
     JOIN taxe_ipr AS t ON t.id = tc.taxe_ipr_id`;
 
@@ -141,7 +145,7 @@ function listConfig(req, res, next) {
 * Returns the detail of a single IprTax
 */
 function detailConfig(req, res, next) {
-  const id = req.params.id;
+  const { id } = req.params;
 
   lookupIprTaxConfig(id)
     .then((record) => {

@@ -12,7 +12,7 @@ const BadRequest = require('../../lib/errors/BadRequest');
 function lookupHoliday(id) {
   const sql = `
     SELECT h.id, h.label, BUID(h.employee_uuid) AS employee_uuid, h.dateFrom, h.dateTo, h.percentage
-    FROM holiday AS h  
+    FROM holiday AS h
     WHERE h.id = ?`;
 
   return db.one(sql, [id]);
@@ -25,7 +25,7 @@ function lookupHoliday(id) {
 */
 function checkHoliday(param) {
   const sql = `
-    SELECT id, BUID(employee_uuid) AS employee_uuid, label, dateTo, percentage, dateFrom 
+    SELECT id, BUID(employee_uuid) AS employee_uuid, label, dateTo, percentage, dateFrom
     FROM holiday WHERE employee_uuid = ?
     AND ((dateFrom >= DATE(?)) OR (dateTo >= DATE(?)) OR (dateFrom >= DATE(?))
     OR (dateTo >= DATE(?)))
@@ -33,7 +33,17 @@ function checkHoliday(param) {
     OR (dateTo <= DATE(?)))
   `;
 
-  return db.exec(sql, [db.bid(param.employee_uuid), param.dateFrom, param.dateFrom, param.dateTo, param.dateTo, param.dateFrom, param.dateFrom, param.dateTo, param.dateTo]);
+  return db.exec(sql, [
+    db.bid(param.employee_uuid),
+    param.dateFrom,
+    param.dateFrom,
+    param.dateTo,
+    param.dateTo,
+    param.dateFrom,
+    param.dateFrom,
+    param.dateTo,
+    param.dateTo,
+  ]);
 }
 
 
@@ -60,7 +70,7 @@ function list(req, res, next) {
 * Returns the detail of a single Holiday
 */
 function detail(req, res, next) {
-  const id = req.params.id;
+  const { id } = req.params;
 
   lookupHoliday(id)
     .then((record) => {

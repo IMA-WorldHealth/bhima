@@ -40,8 +40,7 @@ function invoiceStat(req, res, next) {
   `;
 
   // query invoices balances from the combined posting journal and GL
-  const sqlBalance =
-    `SELECT (debit - credit) as balance, project_id, cost
+  const sqlBalance = `SELECT (debit - credit) as balance, project_id, cost
      FROM (
       (
         SELECT SUM(debit_equiv) as debit, SUM(credit_equiv) as credit, invoice.project_id, invoice.cost
@@ -124,16 +123,14 @@ function patientStats(req, res, next) {
   const bundle = {};
 
   // date handler
-  const date = params.date ?
-    moment(params.date).format('YYYY-MM-DD').toString() :
-    moment().format('YYYY-MM-DD').toString();
+  const date = params.date
+    ? moment(params.date).format('YYYY-MM-DD').toString()
+    : moment().format('YYYY-MM-DD').toString();
 
-  const sqlPatient =
-    `SELECT COUNT(uuid) AS total FROM patient
+  const sqlPatient = `SELECT COUNT(uuid) AS total FROM patient
      WHERE MONTH(registration_date) = MONTH(?) AND YEAR(registration_date) = YEAR(?);`;
 
-  const sqlVisit =
-    `SELECT COUNT(v.uuid) AS total_visit
+  const sqlVisit = `SELECT COUNT(v.uuid) AS total_visit
      FROM patient_visit v JOIN patient p ON p.uuid = v.patient_uuid
      WHERE MONTH(v.start_date) = MONTH(?) AND YEAR(v.start_date) = YEAR(?);`;
 

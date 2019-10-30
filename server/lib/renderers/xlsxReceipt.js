@@ -198,4 +198,3 @@ function render(data) {
 
   return wb.writeToBuffer();
 }
-

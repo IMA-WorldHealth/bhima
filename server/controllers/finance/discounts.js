@@ -19,8 +19,7 @@ const db = require('../../lib/db');
  * @returns {Promise} record
  */
 function lookupDiscount(id) {
-  const sql =
-    `SELECT d.id, d.label, d.description, BUID(d.inventory_uuid) as inventory_uuid,
+  const sql = `SELECT d.id, d.label, d.description, BUID(d.inventory_uuid) as inventory_uuid,
       d.account_id, d.value, a.number, i.text as inventoryLabel
     FROM discount AS d JOIN inventory AS i ON d.inventory_uuid = i.uuid
     JOIN account AS a ON d.account_id = a.id
@@ -60,8 +59,7 @@ exports.detail = function detail(req, res, next) {
  * Returns HTTP status code 200 with an array containing zero or more records.
  */
 exports.list = function list(req, res, next) {
-  const sql =
-    'SELECT d.id, d.label, d.value FROM discount AS d;';
+  const sql = 'SELECT d.id, d.label, d.value FROM discount AS d;';
 
   db.exec(sql)
     .then((rows) => {
@@ -86,8 +84,7 @@ exports.create = function create(req, res, next) {
     return;
   }
 
-  const sql =
-    'INSERT INTO discount SET ?;';
+  const sql = 'INSERT INTO discount SET ?;';
 
   // attempt to insert the record
   db.exec(sql, [data])
@@ -123,8 +120,7 @@ exports.update = function update(req, res, next) {
     return;
   }
 
-  const sql =
-    'UPDATE discount SET ? WHERE id = ?;';
+  const sql = 'UPDATE discount SET ? WHERE id = ?;';
 
   // ensure the record exists by looking it up first
   lookupDiscount(id)
@@ -146,8 +142,7 @@ exports.update = function update(req, res, next) {
  */
 exports.delete = function del(req, res, next) {
   const { id } = req.params;
-  const sql =
-    'DELETE FROM discount WHERE id = ?;';
+  const sql = 'DELETE FROM discount WHERE id = ?;';
 
   // make sure the record actually exists
   // TODO(@jniles): migrate to db.one()
