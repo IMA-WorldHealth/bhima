@@ -83,16 +83,16 @@ CREATE PROCEDURE importPriceListItem (
 )
 BEGIN
   DECLARE _inventory_uuid BINARY(16);
-  DECLARE isIventory tinyint(5);
+  DECLARE isInventory tinyint(5);
    DECLARE inventoryLabel VARCHAR(100);
-  
-  SELECT uuid, text,  count(uuid) 
-  INTO _inventory_uuid, inventoryLabel, isIventory
+
+  SELECT uuid, text,  count(uuid)
+  INTO _inventory_uuid, inventoryLabel, isInventory
   FROM inventory
   WHERE code = _inventory_code;
 
-  IF isIventory = 1 THEN
-    DELETE FROM price_list_item 
+  IF isInventory = 1 THEN
+    DELETE FROM price_list_item
       WHERE price_list_uuid = _price_list_uuid AND inventory_uuid = _inventory_uuid;
     INSERT INTO price_list_item(uuid, inventory_uuid, price_list_uuid, label, value, is_percentage)
     VALUES(HUID(uuid()), _inventory_uuid, _price_list_uuid, inventoryLabel, _value, _is_percentage);
