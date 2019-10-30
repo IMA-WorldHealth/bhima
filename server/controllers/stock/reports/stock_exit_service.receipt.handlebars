@@ -2,7 +2,6 @@
 
 <!-- body  -->
 <div class="container" style="font-size: 0.9em;">
-
   <header>
     <!-- headings  -->
     <div class="row">
@@ -57,8 +56,6 @@
         <th>{{translate 'STOCK.LOT'}}</th>
         <th>{{translate 'STOCK.EXPIRATION'}}</th>
         <th>{{translate 'STOCK.QUANTITY'}}</th>
-        <th>{{translate 'STOCK.UNIT_COST'}}</th>
-        <th>{{translate 'TABLE.COLUMNS.TOTAL'}}</th>
       </tr>
     </thead>
     <tbody>
@@ -69,22 +66,19 @@
           <td>{{label}}</td>
           <td>{{date expiration_date}}</td>
           <td class="text-right">{{quantity}}</td>
-          <td class="text-right">{{currency unit_cost ../enterprise.currency_id}}</td>
-          <td class="text-right">{{currency total ../enterprise.currency_id}}</td>
         </tr>
       {{else}}
-        {{> emptyTable columns=9}}
+        {{> emptyTable columns=5}}
       {{/each}}
     </tbody>
     <tfoot>
       <tr style="font-weight: bold;">
-        <td colspan="6">{{rows.length}} {{translate 'STOCK.ITEMS'}}</td>
-        <td class="text-right">{{currency (sum rows 'total') enterprise.currency_id}}</td>
+        <td colspan="5">{{rows.length}} {{translate 'STOCK.ITEMS'}}</td>
       </tr>
     </tfoot>
   </table>
 
-  <br>
+  <br />
 
   <footer>
     <div class="row">
@@ -104,5 +98,4 @@
       </div>
     </div>
   </footer>
-
 </div>
