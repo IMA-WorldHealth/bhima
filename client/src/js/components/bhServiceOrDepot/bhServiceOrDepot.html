@@ -1,6 +1,6 @@
 <div ng-form="ServiceOrDepotForm" bh-ward-select ng-model-options="{ updateOn: 'default' }">
   <div class="form-group"
-    ng-class="{ 'has-error' : ServiceOrDepotForm.$submitted && ServiceOrDepotForm.requestor_uuid.$invalid }">
+    ng-class="{ 'has-error' : ServiceOrDepotForm.$submitted && !$ctrl.requestor_uuid }">
 
     <label class="control-label" translate>
       {{ $ctrl.label }}
@@ -11,15 +11,15 @@
     <label
       ng-repeat="requestor in $ctrl.requestors"
       class="radio-inline"
-      title="{{requestor.title | translate}}">
+      title="{{requestor.title_key | translate}}">
       <input
         name="requestor"
         type="radio"
         ng-model="$ctrl.requestorType"
-        ng-value="requestor.key"
-        data-requestor-option="{{ requestor.key }}"
+        ng-value="requestor"
+        data-requestor-option="{{ requestor.type_key }}"
         ng-required="$ctrl.required">
-      <span translate>{{ requestor.title }}</span>
+      <span translate>{{ requestor.title_key }}</span>
     </label>
 
     <div class="help-block" ng-messages="ServiceOrDepotForm.requestor_uuid.$error" ng-show="ServiceOrDepotForm.$submitted">
@@ -28,7 +28,7 @@
   </div>
 
   <!-- service  -->
-  <div ng-if="$ctrl.requestorType === 'service'">
+  <div ng-if="$ctrl.requestorType.type_key === 'service'">
     <bh-service-select
       label="REQUISITION.SERVICE_REQUESTOR"
       on-select-callback="$ctrl.onSelectRequestor(service)"
@@ -37,7 +37,7 @@
   </div>
 
   <!-- depot  -->
-  <div ng-if="$ctrl.requestorType === 'depot'">
+  <div ng-if="$ctrl.requestorType.type_key === 'depot'">
     <bh-depot-select
       label="REQUISITION.DEPOT_REQUESTOR"
       on-select-callback="$ctrl.onSelectRequestor(depot)"

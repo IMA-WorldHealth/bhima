@@ -3,14 +3,16 @@ angular.module('bhima.controllers')
 
 // dependencies injections
 ActionRequisitionModalController.$inject = [
-  'appcache', '$state',
+  'appcache', '$state', 'Store', 'InventoryService',
   'DepotService', 'NotifyService', '$uibModalInstance',
-  'StockService', 'util', 'ReceiptModal',
+  'StockService', 'ReceiptModal',
 ];
 
-function ActionRequisitionModalController(AppCache, $state, Depots, Notify, Modal, Stock, Util, Receipts) {
+function ActionRequisitionModalController(
+  AppCache, $state, Store, Inventories, Depots, Notify, Modal, Stock, Receipts
+) {
   const vm = this;
-  const cache = AppCache('stock-requisition-grid');
+  const store = new Store({ data : [] });
 
   const columns = [
     {
@@ -18,6 +20,13 @@ function ActionRequisitionModalController(AppCache, $state, Depots, Notify, Moda
       displayName : 'FORM.LABELS.INVENTORY',
       headerCellFilter : 'translate',
       cellTemplate : 'modules/stock/requisition/templates/inventory.cell.html',
+    },
+
+    {
+      field : 'description',
+      displayName : 'TABLE.COLUMNS.DESCRIPTION',
+      headerCellFilter : 'translate',
+      cellTemplate : 'modules/stock/requisition/templates/description.cell.html',
     },
 
     {
@@ -33,65 +42,53 @@ function ActionRequisitionModalController(AppCache, $state, Depots, Notify, Moda
     enableColumnMenus : false,
     columnDefs : columns,
     enableSorting : true,
-    showColumnFooter : true,
     fastWatch : true,
     flatEntityAccess : true,
   };
 
-  // global variables
-  vm.model = { quantity : 1 };
-  vm.availableInventories = [];
-  vm.availableLots = [];
-  vm.stateParams = {};
-
-  cache.stateParams = $state.params;
-  vm.stateParams = cache.stateParams;
-
-  if ($state.params.uuid || $state.params.creating) {
-    cache.stateParams = $state.params;
-    vm.stateParams = cache.stateParams;
-  } else {
-    vm.stateParams = cache.stateParams;
-  }
+  // global methods
+  vm.model = {};
+  vm.addItem = addItem;
+  vm.configureItem = configureItem;
 
   vm.onSelectDepot = onSelectDepot;
   function onSelectDepot(depot) {
     vm.model.depot_uuid = depot.uuid;
-    loadAvailableInventories(depot.uuid);
-  }
-
-  vm.onSelectInventory = onSelectInventory;
-  function onSelectInventory(inventory) {
-    vm.availableLots = vm.globalAvailableLots.filter(item => item.inventory_uuid === inventory.inventory_uuid);
   }
 
   vm.onSelectRequestor = onSelectRequestor;
   function onSelectRequestor(requestor) {
+    vm.model.requestor_type_id = requestor.requestor_type_id;
     vm.model.requestor_uuid = requestor.uuid;
   }
 
   vm.cancel = Modal.close;
 
   vm.submit = form => {
-    if (form.$invalid) { return; }
+    if (form.$invalid) { return null; }
 
-    const record = Util.filterFormElements(form, true);
+    const items = store.data.map(getItem);
 
-    // if no changes were made, simply dismiss the modal
-    if (Util.isEmptyObject(record)) {
-      Modal.close();
-      return;
-    }
+    angular.extend(vm.model, { items });
 
-    Stock.stockAssign.create(vm.model)
+    return Stock.stockRequisition.create(vm.model)
       .then(res => {
-        Receipts.stockAssignReceipt(res.uuid, true);
+        Receipts.stockRequisitionReceipt(res.uuid, true);
         Modal.close(true);
       })
       .catch(Notify.handleError);
   };
 
+  function getItem(row) {
+    return {
+      inventory_uuid : row.inventory_uuid,
+      quantity : row.quantity,
+    };
+  }
+
   function startup() {
+    loadInventories();
+
     Depots.read(null)
       .then(rows => {
         vm.depots = rows;
@@ -100,33 +97,38 @@ function ActionRequisitionModalController(AppCache, $state, Depots, Notify, Moda
   }
 
   /**
-   * Load inventories and lots of the given depot which are not requisitioned
-   * for being used in a new requisitionment
-   *
-   * @param {string} depotUuid
+   * loadInventories
    */
-  function loadAvailableInventories(depotUuid) {
-    if (!depotUuid) { return; }
-
-    // load available inventories of the given depot
-    Stock.lots.read(null, { depot_uuid : depotUuid, is_requisitioned : 0, includeEmptyLot : 0 })
+  function loadInventories() {
+    Inventories.read()
       .then(rows => {
-        computeAvailableInventories(rows);
+        vm.selectableInventories = rows;
       })
       .catch(Notify.handleError);
   }
 
   /**
-   * Since data contains inventories and lots that we need, we do not want to
-   * perform others queries to the server, so we extract inventories and lots
-   * from the data given
-   * @param {array} data
+   * add requisition item
    */
-  function computeAvailableInventories(data) {
-    vm.globalAvailableLots = data;
-    vm.groupedInventories = Util.groupBy(data, 'inventory_uuid');
-    const uniqueInventoriesUuids = Util.uniquelize(data.map(item => item.inventory_uuid));
-    vm.availableInventories = uniqueInventoriesUuids.map(inventoryUuid => vm.groupedInventories[inventoryUuid][0]);
+  function addItem(n) {
+    let i = n;
+
+    while (i--) {
+      const row = { id : store.data.length };
+      store.post(row);
+    }
+
+    // update the grid
+    vm.gridOptions.data = store.data;
+  }
+
+  /**
+   * configure requisition item
+   */
+  function configureItem(item) {
+    item._initialised = true;
+    item.inventory_uuid = item.inventory.uuid;
+    item.quantity = 0;
   }
 
   startup();

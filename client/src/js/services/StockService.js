@@ -33,6 +33,9 @@ function StockService(Api, StockFilterer) {
   // API for stock requisition
   const stockRequisition = new Api('/stock/requisition/');
 
+  // API for stock requisition
+  const stockRequestorType = new Api('/stock/requestor_type/');
+
   // Overide the stock assign api
   stockAssign.remove = uuid => {
     return stockAssign.$http.put(`/stock/assign/${uuid}/remove`)
@@ -130,6 +133,7 @@ function StockService(Api, StockFilterer) {
     stocks,
     stockAssign,
     stockRequisition,
+    stockRequestorType,
     lots,
     movements,
     inventories,

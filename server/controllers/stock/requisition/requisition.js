@@ -86,6 +86,7 @@ function getStockRequisition(params) {
   filters.period('period', 'date', 'sr');
   filters.dateFrom('custom_period_start', 'date', 'sr');
   filters.dateTo('custom_period_end', 'date', 'sr');
+  filters.setOrder('ORDER BY sr.date DESC');
 
   const query = filters.applyQuery(SELECT_QUERY);
   const queryParameters = filters.parameters();

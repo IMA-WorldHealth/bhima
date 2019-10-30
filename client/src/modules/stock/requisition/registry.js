@@ -45,7 +45,7 @@ function StockRequisitionController(
       field : 'date',
       displayName : 'FORM.LABELS.DATE',
       headerCellFilter : 'translate',
-      cellFilter : 'date',
+      cellFilter : 'date: \'dd MMM yyyy - HH:mm:ss\'',
     },
 
     {
@@ -178,9 +178,6 @@ function StockRequisitionController(
   function load(filters) {
     vm.hasError = false;
     toggleLoadingIndicator();
-
-    // no negative or empty lot
-    filters.includeEmptyLot = 0;
 
     Stock.stockRequisition.read(null, filters)
       .then((requisitions) => {

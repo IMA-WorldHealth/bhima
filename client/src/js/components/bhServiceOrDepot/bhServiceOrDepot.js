@@ -12,21 +12,24 @@ angular.module('bhima.components')
   });
 
 bhServiceOrDepotController.$inject = [
-  'ServiceService', 'DepotService', 'NotifyService',
+  'ServiceService', 'DepotService', 'StockService', 'NotifyService',
 ];
 
 /**
  * service or depot selection component
  */
-function bhServiceOrDepotController(Services, Depots, Notify) {
+function bhServiceOrDepotController(Services, Depots, Stock, Notify) {
   const $ctrl = this;
 
   $ctrl.$onInit = function onInit() {
     $ctrl.label = $ctrl.label || 'REQUISITION.SERVICE_OR_DEPOT';
-    $ctrl.requestors = [
-      { key : 'service', title : 'FORM.LABELS.SERVICE' },
-      { key : 'depot', title : 'FORM.LABELS.DEPOT' },
-    ];
+
+    // requestor type
+    Stock.stockRequestorType.read()
+      .then(rows => {
+        $ctrl.requestors = rows;
+      })
+      .catch(Notify.handleError);
 
     // load all depots
     Depots.read(null)
@@ -44,6 +47,7 @@ function bhServiceOrDepotController(Services, Depots, Notify) {
   };
 
   $ctrl.onSelectRequestor = requestor => {
+    requestor.requestor_type_id = $ctrl.requestorType.id;
     $ctrl.onSelectCallback({ requestor });
   };
 }
