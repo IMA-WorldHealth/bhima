@@ -831,6 +831,14 @@ INSERT INTO `stock_movement` (`uuid`, `lot_uuid`, `document_uuid`, `depot_uuid`,
   (HUID('f9aa33f1-65e2-4e37-89cb-843d27b2c586'), HUID('064ab1d9-5246-4402-ae8a-958fcdb07b35'), HUID('682e11c0-93a7-49f8-b79b-a4bc8e3e6f47'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), '', 1, '2017-02-02', 100, 1.2000, 0, 1),
   (HUID('e8502c3e-7483-11e7-a8de-507b9dd6de91'), HUID('064ab1d9-5246-4402-ae8a-958fcdb07b35'), HUID('0cc6c435-7484-11e7-a8de-507b9dd6de91'), HUID('f9caeb16-1684-43c5-a6c4-47dbac1df296'), HUID('d4bb1452-e4fa-4742-a281-814140246877'), 8, '2017-02-02', 75, 1.2000, 1, 1);
 
+-- This segment was added to simulate the distribution of drugs to patients as well as the loss of stock
+INSERT INTO `stock_movement` (`uuid`, `document_uuid`, `depot_uuid`, `lot_uuid`, `entity_uuid`, `description`, `flux_id`, `date`, `quantity`, `unit_cost`, `is_exit`, `user_id`, `reference`, `invoice_uuid`, `created_at`) VALUES 
+  (0xB8E73617428B49FDB256DE9C0DFAB743, 0xECE15AAFA73B4A3C880B828CBEB11FE2, 0xF9CAEB16168443C5A6C447DBAC1DF296, 0x6F80748B1D944247804ED4BE99E827D2, NULL, 'Perte de stock', 11, '2019-10-28 13:01:15', 180, 0.8000, 1, 1, 7, NULL, '2019-10-28 13:02:07'),
+  (0xAD36BEC6350A4E1E8961782468FDAADB, 0xA4F26E8C74F84CD29A908CFDB9352A72, 0xF9CAEB16168443C5A6C447DBAC1DF296, 0xAE735E998FAF417BAA639B404FCA99AC, 0xB1816006555845F993A0C222B5EFA6CB, 'Distribution vers un service', 10, '2019-10-28 13:03:03', 80, 1.2000, 1, 1, 8, NULL, '2019-10-28 13:03:35');
+
+INSERT INTO `stock_consumption` (`inventory_uuid`, `depot_uuid`, `period_id`, `quantity`) VALUES
+  (0x43F3DECBFCE9426E940ABC2150E62186, 0xF9CAEB16168443C5A6C447DBAC1DF296, 201910, 80);
+
 -- Rubric Payroll
 INSERT INTO `rubric_payroll` (`id`, `label`, `abbr`, `is_employee`, `is_percent`, `is_discount`, `is_tax`, `is_social_care`, `is_defined_employee`, `is_membership_fee`, `debtor_account_id`, `expense_account_id`, `is_ipr`, `is_associated_employee`, `value`) VALUES
   (1, 'INSS Code part Patronale', 'INSS2', 0, 1, 1, 0, 0, 0, 1, 306, 353, 0, 0, 5),

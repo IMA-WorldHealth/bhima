@@ -35,6 +35,7 @@ function PurchaseOrderService(
   service.stockStatus = stockStatus;
   service.stockBalance = stockBalance;
   service.purchaseState = purchaseState;
+  service.formatOptimalPurchase = formatOptimalPurchase;
 
   purchaseFilters.registerDefaultFilters(bhConstants.defaultFilters);
 
@@ -155,6 +156,45 @@ function PurchaseOrderService(
 
     // return  serialized options
     return $httpParamSerializer(options);
+  }
+
+  /**
+   * @method formatOptimalPurchase
+   *
+   * This Service analyzes for all existing repositories, Inventories that have reached a point of order,
+   * then calculates the overall quantity ordered for each Inventory
+   *
+   * @param {*} inventories - This is the list of all inventories
+   * @param {*} stock - it is the data of the inventories having reached their point of order
+   */
+  function formatOptimalPurchase(inventories, stock) {
+    console.log('IVVVVVVVVvvvvvvv');
+    console.log(inventories);
+
+    console.log('STOOOOOOOooooooo');
+    console.log(stock);
+
+
+    inventories.forEach(inventory => {
+      inventory.unit_price = 0;
+      inventory._initialised = true;
+      inventory._hasValidAccounts = inventory.cogs_account;
+      inventory._invalid = true;
+      inventory._valid = false;
+      inventory.quantity = 0;
+
+
+      stock.forEach(item => {
+        if (item.inventory_uuid === inventory.uuid) {
+          inventory.quantity += item.S_Q;
+        }
+      });
+    });
+
+    const optimized = inventories.filter(inventory => inventory.quantity > 0);
+    const optimizedSorted = optimized.sort((a, b) => Number(b.quantity) - Number(a.quantity));
+
+    return optimizedSorted;
   }
 
   return service;

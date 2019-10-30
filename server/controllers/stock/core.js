@@ -470,7 +470,7 @@ function getInventoryQuantityAndConsumption(params) {
       d.text AS depot_text, l.unit_cost, l.expiration_date,
       ROUND(DATEDIFF(l.expiration_date, CURRENT_DATE()) / 30.5) AS lifetime,
       BUID(l.inventory_uuid) AS inventory_uuid, BUID(l.origin_uuid) AS origin_uuid,
-      l.entry_date, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
+      l.entry_date, BUID(i.uuid) AS inventory_uuid, i.code, i.text, BUID(m.depot_uuid) AS depot_uuid,
       i.avg_consumption, i.purchase_interval, i.delay,
       iu.text AS unit_type,
       BUID(ig.uuid) AS group_uuid, ig.name AS group_name,
