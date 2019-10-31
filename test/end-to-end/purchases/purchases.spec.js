@@ -156,26 +156,4 @@ describe('Purchase Orders', () => {
     await components.notification.hasDanger();
   });
 
-
-  it('Block selection if no products require a purchase order', async () => {
-    const page = new PurchaseOrderPage();
-    await page.btns.clear.click();
-
-    // prepare the page with default supplier, description, etc
-    await components.supplierSelect.set('SNEL');
-    await FU.input('PurchaseCtrl.order.details.note', 'Optimal Purchase');
-    await components.dateEditor.set(new Date('2016-03-01'));
-
-    // set the 'on-purchase' delivery method parameter
-    await $('#on-purchase').click();
-
-    // click on buttom Optimal Purchase
-    await page.optimalPurchase();
-
-    // there should be a danger notification
-    await components.notification.hasWarn();
-
-    // FIX ME : At this point in the E2E testing process, there is no product that requires a purchase order
-    // because they E2E purchase order test precedes the outbound order
-  });
 });
