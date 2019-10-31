@@ -11,16 +11,13 @@ const helpers = require('./helpers');
 describe('(/payroll/weekend_configuration) The /payroll/weekend_configuration  API endpoint', () => {
   const weekEndConfig = {
     label : 'Configuration Week end 2013',
-    daysChecked : [ 0, 5, 6 ],
+    daysChecked : [0, 5, 6],
   };
 
   const weekEndConfigUpdate = {
     label : 'Configuration Week end 2013 Updated',
     daysChecked : [],
   };
-
-  const configWeekEnd = { configuration : [0, 5, 6] };
-  const configWeekEndEmpty = { configuration : [] };
 
   const NUM_CONFIG_WEEKEND = 3;
 
@@ -29,9 +26,6 @@ describe('(/payroll/weekend_configuration) The /payroll/weekend_configuration  A
     return agent.post('/weekend_config')
       .send(weekEndConfig)
       .then((res) => {
-        console.log('RES BODY NEW');
-        console.log(res.body);
-
         weekEndConfig.id = res.body.id;
         helpers.api.created(res);
       })

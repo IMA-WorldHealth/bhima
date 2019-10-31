@@ -1,7 +1,7 @@
 const helpers = require('../shared/helpers');
 const WeekendConfigPage = require('./weekend_config.page');
 
-describe.only('Weekend Configuration Management', () => {
+describe('Weekend Configuration Management', () => {
   // navigate to the page
   before(() => helpers.navigate('#!/payroll/weekend_configuration'));
 

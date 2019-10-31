@@ -57,10 +57,9 @@ function create(req, res, next) {
 
   delete data.daysChecked;
 
-
   db.exec(sql, [data])
     .then((row) => {
-      insertId = row.insertId;
+      (insertId = row.insertId);
       const dataconfigured = configuration.map((id) => {
         return [id, row.insertId];
       });
