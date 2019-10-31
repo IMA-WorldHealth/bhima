@@ -52,10 +52,23 @@ function detail(req, res, next) {
 function create(req, res, next) {
   const sql = `INSERT INTO weekend_config SET ?`;
   const data = req.body;
+  const configuration = data.daysChecked;
+  let insertId;
+
+  delete data.daysChecked;
+
 
   db.exec(sql, [data])
     .then((row) => {
-      res.status(201).json({ id : row.insertId });
+      insertId = row.insertId;
+      const dataconfigured = configuration.map((id) => {
+        return [id, row.insertId];
+      });
+
+      return db.exec('INSERT INTO config_week_days (indice, weekend_config_id) VALUES ?', [dataconfigured]);
+    })
+    .then(() => {
+      res.status(201).json({ id : insertId });
     })
     .catch(next)
     .done();
@@ -64,9 +77,28 @@ function create(req, res, next) {
 
 // PUT /WEEKEND_CONFIG /:ID
 function update(req, res, next) {
+  const transaction = db.transaction();
+
   const sql = `UPDATE weekend_config SET ? WHERE id = ?;`;
 
-  db.exec(sql, [req.body, req.params.id])
+  const data = req.body;
+  const dataconfigured = data.daysChecked.map((id) => {
+    return [id, req.params.id];
+  });
+
+  delete data.daysChecked;
+
+  transaction
+    .addQuery('UPDATE weekend_config SET ? WHERE id = ?;', [data, req.params.id])
+    .addQuery('DELETE FROM config_week_days WHERE weekend_config_id = ?;', [req.params.id]);
+
+  // if an array of configuration has been sent, add them to an INSERT query
+  if (dataconfigured.length) {
+    transaction
+      .addQuery('INSERT INTO config_week_days (indice, weekend_config_id) VALUES ?', [dataconfigured]);
+  }
+
+  transaction.execute()
     .then(() => {
       return lookupWeekendConfig(req.params.id);
     })
@@ -76,6 +108,7 @@ function update(req, res, next) {
     })
     .catch(next)
     .done();
+
 }
 
 // DELETE /WEEKEND_CONFIG /:ID
@@ -90,37 +123,6 @@ function del(req, res, next) {
       }
 
       res.status(204).json();
-    })
-    .catch(next)
-    .done();
-}
-
-
-/**
- * POST /weekend_config/:id/setting
- *
- * Creates and updates a Week days' Configurations.  This works by completely deleting
- * the week days' configuration and then replacing them with the new week days' set.
- */
-function createConfig(req, res, next) {
-  const data = req.body.configuration.map((id) => {
-    return [id, req.params.id];
-  });
-
-  const transaction = db.transaction();
-
-  transaction
-    .addQuery('DELETE FROM config_week_days WHERE weekend_config_id = ?;', [req.params.id]);
-
-  // if an array of configuration has been sent, add them to an INSERT query
-  if (req.body.configuration.length) {
-    transaction
-      .addQuery('INSERT INTO config_week_days (indice, weekend_config_id) VALUES ?', [data]);
-  }
-
-  transaction.execute()
-    .then(() => {
-      res.sendStatus(201);
     })
     .catch(next)
     .done();
@@ -159,9 +161,6 @@ exports.update = update;
 
 // Delete a Weekend configuration
 exports.delete = del;
-
-// Create or Update New Configuration of Payroll Week Days
-exports.createConfig = createConfig;
 
 // Get list of Week Days configured by Configuration
 exports.listConfig = listConfig;

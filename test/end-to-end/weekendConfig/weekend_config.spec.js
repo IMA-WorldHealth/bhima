@@ -1,7 +1,7 @@
 const helpers = require('../shared/helpers');
 const WeekendConfigPage = require('./weekend_config.page');
 
-describe('Weekend Configuration Management', () => {
+describe.only('Weekend Configuration Management', () => {
   // navigate to the page
   before(() => helpers.navigate('#!/payroll/weekend_configuration'));
 
@@ -16,14 +16,6 @@ describe('Weekend Configuration Management', () => {
 
   it('successfully edits a weekend configuration', async () => {
     await page.update(newWeekendConfigLabel, updateWeekendConfigLabel);
-  });
-
-  it('successfully set week days in weekend configuration', async () => {
-    await page.setWeekendConfig(updateWeekendConfigLabel);
-  });
-
-  it('successfully inset week days in weekend configuration', async () => {
-    await page.unsetWeekendConfig(updateWeekendConfigLabel);
   });
 
   it('don\'t create an incorrect weekend', async () => {

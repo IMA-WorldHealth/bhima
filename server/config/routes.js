@@ -735,7 +735,6 @@ exports.configure = function configure(app) {
   app.post('/weekend_config', weekendConfig.create);
   app.put('/weekend_config/:id', weekendConfig.update);
   app.get('/weekend_config/:id/days', weekendConfig.listConfig);
-  app.post('/weekend_config/:id/days', weekendConfig.createConfig);
   app.delete('/weekend_config/:id', weekendConfig.delete);
 
   // Employee payroll Configuration api

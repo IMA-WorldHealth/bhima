@@ -20,6 +20,18 @@
         <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
       </div>
     </div>
+
+    <div class="help-block" translate>
+      FORM.SELECT.WEEKEND_DAYS
+    </div>
+    <div ng-repeat="days in WeekendModalCtrl.weekDays" class="form-group">
+      <div style="margin:0" class="checkbox">
+        <label style="padding-left: 12%">
+          <input type="checkbox" name="days" ng-model="days.checked">
+          <span translate>{{ days.label }}</span>
+        </label>
+      </div>
+    </div>
   </div>
 
   <div class="modal-footer">
