@@ -2,13 +2,7 @@
 
 Avant d'entrer dans les détails de chaque module financier, il est important de garder à l'esprit le flux de données global dans BHIMA.
 
-```mermaid
-graphe LR;
-    CP [Paiements en espèces] -> J [Journal]
-    IV [Factures Patient] -> J
-    VO [Journal Vouchers] -> J
-    J - Balance de vérification -> G [Grand livre]
-```
+![Financial Overview](../../images/finance/Financial Overview - Receipts through Reports.svg)
 
 Le diagramme ci-dessus montre le flux de saisie des données dans le système, couvrant les trois enregistrements de base de BHIMA: **Paiements en espèce**, **Factures patient** et **Pièces de journal**.
 
@@ -42,13 +36,6 @@ La seule exception à cette règle est la suppression. Si une transaction ou un 
 <p style="text-align:justify">
 Une fois qu'une transaction est créée dans le journal via un coupon, une facture ou un paiement en espèces, la transaction est examinée par un comptable et enregistrée vérifiée via le processus de balance de vérification, après quoi elle apparaît dans le grand livre et dans les rapports ultérieurs.
 </p>
-
-```mermaid
-graphe TD;
-    J [Journal] -> R [Rapports financiers]
-    J [Journal] -> AS [Relevé de compte]
-    J [Journal] -> GL [Grand livre]
-```
 
 ## Comptabilité en partie double
 

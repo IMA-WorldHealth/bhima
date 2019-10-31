@@ -2,19 +2,13 @@
 
 Before delving into the details of each financial module, it is important to keep the overall flow of data in BHIMA in mind.
 
-```mermaid
-graph LR;
-    CP[Cash Payments ] --> J[Journal]
-    IV[Patient Invoices ] --> J
-    VO[Journal Vouchers  ] --> J
-    J -- Trial Balance -->G[General Ledger ]
-```
+![Financial Overview](../../images/finance/Financial Overview - Receipts through Reports.svg)
 
 The above diagram shows the flow of data entry into the system, covering the three basic records in BHIMA: **Cash Payments**, **Patient Invoices**, and **Journal Vouchers**.  Each record is backed by a transaction written to the [Journal](./ledgers/journal-module.md).  Through a validation process called the [Trial Balance](./ledger/trial-balance.md), transactions in the Journal are posted to the [General Ledger](./ledgers/general-ledger.md) after which the transaction is unalterable.
 
 All financial activities recorded with BHIMA are represented by two entities:
 
-1. The original Record contains all details and meta data about the activity, this could be a Cash Payment, Patient Invoice or Journal Vocher.
+1. The original Record contains all details and meta data about the activity, this could be a Cash Payment, Patient Invoice or Journal Voucher.
 2. The actual financial transaction that is written to the Journal and directly links the original Record as the source \(reason for existing\) for this financial transaction.
 
 While the transaction can be modified in the Journal, the original document cannot be modified and preserves a record of the original values as entered into the application.  The only exception to this is deletion.  If a transaction or record is deleted, both the record and data in the Journal are expunged.  Only unposted transactions may be deleted.
@@ -26,16 +20,9 @@ To correct mistakes, transactions in BHIMA can either be deleted or reversed thr
 
 Once a transaction is created in the Journal via a Voucher, Invoice, or Cash Payment, the transaction is reviewed by an accountant and posted \(verified through the Trial Balance process\), after which it will appear in the General Ledger and subsequent reports.
 
-```mermaid
-graph TD;
-    J[Journal] --> R[Financial Reports]
-    J[Journal] --> AS[Account Statement]
-    J[Journal] --> GL[General Ledger]
-```
-
 ## Double Entry Bookkeeping
 
-At its heart, BHIMA is a double entry accounting software.  In double entry accounting, transactions are composed of two or more lines, each corresponding to a single account.  The value moved in or out of the accounts are recorded as either _debits_ or _credits_.  Debits and credits are opposites, but their behavior isn't always intuitive or well defined.  In general, one can consider debits as positive numbers and credits as negative number.  [This source](https://debitoor.com/dictionary/debit)provides the following definitions \(the first one is wrong online and is corrected below\):
+At its heart, BHIMA is a double entry accounting software.  In double entry accounting, transactions are composed of two or more lines, each corresponding to a single account.  The value moved in or out of the accounts are recorded as either _debits_ or _credits_.  Debits and credits are opposites, but their behavior isn't always intuitive or well defined.  In general, one can consider debits as positive numbers and credits as negative number.  [This source](https://debitoor.com/dictionary/debit) provides the following definitions \(the first one is wrong online and is corrected below\):
 
 1. To debit a debtor account implies an increase in the debtor's debt.  In contrast, to credit a debtor account implies a reduction in their debt to the enterprise.
 2. To debit an asset account implies that the assets increase.  By contrast, to credit an asset account reduces the assets.
