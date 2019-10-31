@@ -21,6 +21,10 @@
         </ui-select-choices>
       </ui-select>
     </div>
+    
+    <bh-has-requisition-voucher
+      on-select-callback="$ctrl.getRequisition(requisition)">
+    </bh-has-requisition-voucher>
   </div>
 
   <div class="modal-footer">

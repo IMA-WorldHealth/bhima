@@ -379,6 +379,33 @@ function StockExitController(
     vm.reference = uniformEntity.reference;
     vm.displayName = uniformEntity.displayName;
     vm.selectedEntityUuid = uniformEntity.uuid;
+    vm.requisition = entity.requisition || {};
+    loadRequisitions(entity);
+  }
+
+  function loadRequisitions(entity) {
+    if (entity.requisition && entity.requisition.items && entity.requisition.items.length) {
+      setupStock();
+
+      entity.requisition.items.forEach((item) => {
+        const inventory = vm.mapSelectableInventories.get(item.inventory_uuid);
+
+        if (inventory) {
+          const row = vm.stockForm.addItems(1);
+
+          row.inventory = inventory;
+          row.inventory_uuid = item.inventory_uuid;
+          row.quantity = item.quantity;
+          row.lot = {};
+
+          configureItem(row);
+        } else {
+          vm.inventoryNotAvailable.push(item.text);
+        }
+      });
+
+      vm.checkValidity();
+    }
   }
 
   function resetSelectedEntity() {
@@ -473,6 +500,11 @@ function StockExitController(
 
     return Stock.movements.create(movement)
       .then(document => {
+        // update requisition status if needed
+        if (vm.requisition) {
+          const COMPLETED_STATUS = 2;
+          Stock.requisition.update(vm.requisition.uuid, { status_id : COMPLETED_STATUS });
+        }
         ReceiptModal.stockExitServiceReceipt(document.uuid, bhConstants.flux.TO_SERVICE);
         reinit(form);
       })

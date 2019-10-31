@@ -208,6 +208,9 @@
     "RECEIVER": "Beneficiary",
     "SERVICE_OR_DEPOT" : "Service or Depot ?",
     "SERVICE_REQUESTOR" : "Service Requestor",
-    "DEPOT_REQUESTOR" : "Depot Requestor"
+    "DEPOT_REQUESTOR" : "Depot Requestor",
+    "DOES_REQUISITION_EXIST": "Do you have a requisition slip ?",
+    "DOES_REQUISITION_EXIST_HELP":"Click on this option if you want to make an out of stock from a requisition slip",
+    "VOUCHER_NOT_FOUND":"The requisition slip was not found"
   }
 }

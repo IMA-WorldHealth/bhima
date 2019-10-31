@@ -3,9 +3,10 @@ angular.module('bhima.controllers')
 
 StockFindServiceModalController.$inject = [
   '$uibModalInstance', 'ServiceService', 'NotifyService', 'data',
+  'StockService',
 ];
 
-function StockFindServiceModalController(Instance, Service, Notify, Data) {
+function StockFindServiceModalController(Instance, Service, Notify, Data, Stock) {
   const vm = this;
 
   // bind methods
@@ -32,10 +33,33 @@ function StockFindServiceModalController(Instance, Service, Notify, Data) {
     delete vm[element];
   }
 
+  vm.onChangeReference = reference => {
+    vm.reference = reference;
+  };
+
   // submit
   function submit(form) {
-    if (form.$invalid) { return; }
-    Instance.close(vm.selected);
+    if (vm.reference) {
+      return Stock.stockRequisition.read(null, { reference : vm.reference })
+        .then(([requisition]) => {
+          if (!requisition || !requisition.uuid) { throw new Error('Requisition Not Found'); }
+          return Stock.stockRequisition.read(requisition.uuid);
+        })
+        .then(requisition => {
+          vm.requisition = requisition;
+          return Service.read(null, { uuid : vm.requisition.requestor_uuid });
+        })
+        .then(([service]) => {
+          if (!service || !service.id) { return; }
+          vm.selected = service;
+          vm.selected.requisition = vm.requisition;
+          Instance.close(vm.selected);
+        })
+        .catch(Notify.handleError);
+    }
+
+    if (form.$invalid && !vm.requisition.uuid) { return null; }
+    return Instance.close(vm.selected);
   }
 
   // cancel

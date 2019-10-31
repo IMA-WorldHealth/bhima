@@ -1,0 +1,22 @@
+<form name="HasRequisitionForm" class="form-group">
+  <bh-yes-no-radios
+    label="REQUISITION.DOES_REQUISITION_EXIST"
+    value="$ctrl.requisitionVoucherExist"
+    help-text="REQUISITION.DOES_REQUISITION_EXIST_HELP"
+    on-change-callback="$ctrl.onChangeVoucherExist(value)">
+  </bh-yes-no-radios>
+
+  <!-- reference -->
+  <div class="form-group" ng-if="$ctrl.requisitionVoucherExist">
+    <label class="control-label" translate>FORM.LABELS.REFERENCE</label>
+    <input
+      name="reference"
+      class="form-control"
+      ng-model="$ctrl.reference"
+      ng-change="$ctrl.onChangeReference()">
+
+    <div class="help-block" ng-show="$ctrl.notFound">
+      <p translate>REQUISITION.VOUCHER_NOT_FOUND</p>
+    </div>
+  </div>
+</form>

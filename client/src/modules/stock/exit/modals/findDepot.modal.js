@@ -39,6 +39,10 @@ function StockFindDepotModalController(Instance, Depot, Notify, Data) {
     })
     .catch(Notify.handleError);
 
+  vm.getRequisition = requisition => {
+    console.log(requisition);
+  };
+
   // submit
   function submit() {
     Instance.close(vm.selected);

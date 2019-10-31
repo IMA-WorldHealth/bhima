@@ -209,6 +209,9 @@
     "RECEIVER" : "Bénéficiaire",
     "SERVICE_OR_DEPOT" : "Service ou Dépot ?",
     "SERVICE_REQUESTOR" : "Service bénéficiaire",
-    "DEPOT_REQUESTOR" : "Dépôt bénéficiaire"
+    "DEPOT_REQUESTOR" : "Dépôt bénéficiaire",
+    "DOES_REQUISITION_EXIST": "Es-ce que vous avez un bon de requisition ?",
+    "DOES_REQUISITION_EXIST_HELP": "Cliquez sur cette option si vous voulez effectuer une sortie de stock à partir d'un bon de requisition",
+    "VOUCHER_NOT_FOUND":"Le bon de requisition n'a pas été trouvé"
   }
 }

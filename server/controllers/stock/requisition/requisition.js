@@ -122,7 +122,7 @@ exports.create = async (req, res, next) => {
 
     requisition.uuid = identifier;
     requisition.user_id = req.session.user.id;
-    requisition.date = new Date(requisition.date);
+    requisition.date = new Date();
 
     transaction.addQuery('INSERT INTO stock_requisition SET ?;', binarize(requisition));
 
