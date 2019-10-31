@@ -59,7 +59,7 @@ function create(req, res, next) {
 
   db.exec(sql, [data])
     .then((row) => {
-      (insertId = row.insertId);
+      ({ insertId } = row);
       const dataconfigured = configuration.map((id) => {
         return [id, row.insertId];
       });
