@@ -789,7 +789,8 @@
                 "COMPLETED":"Completed",
                 "PARTIALLY":"Partially",
                 "DRAFT":"Draft",
-                "CANCELLED":"Cancelled"
+                "CANCELLED":"Cancelled",
+                "DONE":"Done"
             }
         },
         "LEGENDS": {

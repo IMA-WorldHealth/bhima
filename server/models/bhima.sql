@@ -391,10 +391,11 @@ INSERT INTO `survey_form_type` (`id`, `label`, `type`, `is_list`) VALUES
 -- application process status
 INSERT INTO `status` VALUES 
   (1, 'in_progress', 'FORM.LABELS.STATUS_TYPE.IN_PROGRESS'),
-  (2, 'completed', 'FORM.LABELS.STATUS_TYPE.COMPLETED'),
+  (2, 'done', 'FORM.LABELS.STATUS_TYPE.DONE'),
   (3, 'partially', 'FORM.LABELS.STATUS_TYPE.PARTIALLY'),
   (4, 'draft', 'FORM.LABELS.STATUS_TYPE.DRAFT'),
-  (5, 'cancelled', 'FORM.LABELS.STATUS_TYPE.CANCELLED');
+  (5, 'cancelled', 'FORM.LABELS.STATUS_TYPE.CANCELLED'),
+  (6, 'completed', 'FORM.LABELS.STATUS_TYPE.COMPLETED');
 
 -- type of requestors
 INSERT INTO `stock_requestor_type` (`type_key`, `title_key`) VALUES 

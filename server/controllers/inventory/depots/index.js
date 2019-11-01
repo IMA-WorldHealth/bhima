@@ -137,8 +137,8 @@ function list(req, res, next) {
     'd.uuid IN (SELECT depot_permission.depot_uuid FROM depot_permission WHERE depot_permission.user_id = ?)'
   );
 
+  filters.equals('uuid', 'uuid', 'd');
   filters.equals('enterprise_id', 'enterprise_id', 'd');
-
   filters.setOrder('ORDER BY d.text');
 
   const query = filters.applyQuery(sql);

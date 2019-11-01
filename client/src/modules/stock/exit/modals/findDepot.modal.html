@@ -23,7 +23,9 @@
     </div>
     
     <bh-has-requisition-voucher
-      on-select-callback="$ctrl.getRequisition(requisition)">
+      message="$ctrl.requisitionMessage"
+      reference="$ctrl.reference"
+      on-change="$ctrl.onChangeReference(reference)">
     </bh-has-requisition-voucher>
   </div>
 

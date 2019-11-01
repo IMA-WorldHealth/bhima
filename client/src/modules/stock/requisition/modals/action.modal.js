@@ -69,10 +69,13 @@ function ActionRequisitionModalController(
 
     const items = store.data.map(getItem);
 
+    if (!items.length) { return null; }
+
     angular.extend(vm.model, { items });
 
     return Stock.stockRequisition.create(vm.model)
       .then(res => {
+        vm.lockSubmission = true;
         Receipts.stockRequisitionReceipt(res.uuid, true);
         Modal.close(true);
       })

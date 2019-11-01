@@ -790,7 +790,8 @@
                 "COMPLETED":"Terminé",
                 "PARTIALLY":"Partiellement",
                 "DRAFT":"Brouillon",
-                "CANCELLED":"Annulé"
+                "CANCELLED":"Annulé",
+                "DONE":"Traité"
             }
         },
         "LEGENDS": {

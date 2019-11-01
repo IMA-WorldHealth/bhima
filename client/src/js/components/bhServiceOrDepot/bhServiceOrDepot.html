@@ -1,6 +1,6 @@
 <div ng-form="ServiceOrDepotForm" bh-ward-select ng-model-options="{ updateOn: 'default' }">
   <div class="form-group"
-    ng-class="{ 'has-error' : ServiceOrDepotForm.$submitted && !$ctrl.requestor_uuid }">
+    ng-class="{ 'has-error' : ServiceOrDepotForm.$submitted && !$ctrl.requestorUuid }">
 
     <label class="control-label" translate>
       {{ $ctrl.label }}
@@ -22,7 +22,7 @@
       <span translate>{{ requestor.title_key }}</span>
     </label>
 
-    <div class="help-block" ng-messages="ServiceOrDepotForm.requestor_uuid.$error" ng-show="ServiceOrDepotForm.$submitted">
+    <div class="help-block" ng-messages="ServiceOrDepotForm.requestor.$error" ng-show="ServiceOrDepotForm.$submitted">
       <div ng-messages-include="modules/templates/messages.tmpl.html"></div>
     </div>
   </div>

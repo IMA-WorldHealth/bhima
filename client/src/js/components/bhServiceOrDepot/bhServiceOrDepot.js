@@ -47,6 +47,7 @@ function bhServiceOrDepotController(Services, Depots, Stock, Notify) {
   };
 
   $ctrl.onSelectRequestor = requestor => {
+    $ctrl.requestorUuid = requestor.uuid;
     requestor.requestor_type_id = $ctrl.requestorType.id;
     $ctrl.onSelectCallback({ requestor });
   };
