@@ -384,6 +384,8 @@ function StockExitController(
   }
 
   function loadRequisitions(entity) {
+    vm.inventoryNotAvailable = [];
+
     if (entity.requisition && entity.requisition.items && entity.requisition.items.length) {
       setupStock();
 
@@ -503,7 +505,7 @@ function StockExitController(
         // update requisition status if needed
         if (vm.requisition) {
           const COMPLETED_STATUS = 2;
-          Stock.requisition.update(vm.requisition.uuid, { status_id : COMPLETED_STATUS });
+          Stock.stockRequisition.update(vm.requisition.uuid, { status_id : COMPLETED_STATUS });
         }
         ReceiptModal.stockExitServiceReceipt(document.uuid, bhConstants.flux.TO_SERVICE);
         reinit(form);

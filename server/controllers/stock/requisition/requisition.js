@@ -78,6 +78,7 @@ function getStockRequisition(params) {
   filters.equals('depot_requestor', 'text', 'dd');
   filters.equals('uuid', 'uuid', 'sr');
   filters.equals('type_id', 'requestor_type_id', 'sr');
+  filters.equals('status_id', 'status_id', 'sr');
   filters.equals('depot_uuid', 'depot_uuid', 'sr');
   filters.equals('requestor_uuid', 'requestor_uuid', 'sr');
   filters.equals('user_id', 'user_id', 'sr');
@@ -149,7 +150,7 @@ exports.update = async (req, res, next) => {
       delete requisition.uuid;
     }
 
-    requisition.date = new Date(requisition.date);
+    requisition.date = requisition.date ? new Date(requisition.date) : new Date();
     transaction.addQuery('UPDATE stock_requisition SET ? WHERE uuid = ?;', [binarize(requisition), uuid]);
 
     if (requisitionItems && requisitionItems.length) {

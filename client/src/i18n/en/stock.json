@@ -211,6 +211,9 @@
     "DEPOT_REQUESTOR" : "Depot Requestor",
     "DOES_REQUISITION_EXIST": "Do you have a requisition slip ?",
     "DOES_REQUISITION_EXIST_HELP":"Click on this option if you want to make an out of stock from a requisition slip",
-    "VOUCHER_NOT_FOUND":"The requisition slip was not found"
+    "VOUCHER_NOT_FOUND":"The requisition slip was not found",
+    "ALREADY_USED":"The requisition slip has been already used",
+    "NOT_FOR_SERVICE":"The requisition slip is not for services",
+    "NOT_FOR_DEPOT":"The requisition slip is not for depots"
   }
 }

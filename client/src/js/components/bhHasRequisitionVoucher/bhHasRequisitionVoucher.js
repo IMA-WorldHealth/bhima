@@ -3,7 +3,7 @@ angular.module('bhima.components')
     templateUrl : 'js/components/bhHasRequisitionVoucher/bhHasRequisitionVoucher.html',
     controller  : bhHasRequisitionVoucherController,
     bindings    : {
-      notFound  : '<',
+      message   : '<',
       reference : '<',
       onChange  : '&',
     },

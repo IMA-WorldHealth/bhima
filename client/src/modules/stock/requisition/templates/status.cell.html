@@ -1,8 +1,6 @@
 <div class="ui-grid-cell-contents">
-  <div ng-if="row.entity.status_key === 'in_progress'">
-    <span 
-      class="label label-default" 
-      ng-class="{'label-success' : row.entity.status_key === 'completed'}" 
-      translate>{{ row.entity.title_key }}</span>
-  </div>
+  <span 
+    class="label label-default" 
+    ng-class="{'label-success' : row.entity.status_key === 'completed'}" 
+    translate>{{ row.entity.title_key }}</span>
 </div>

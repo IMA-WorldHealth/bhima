@@ -212,6 +212,9 @@
     "DEPOT_REQUESTOR" : "Dépôt bénéficiaire",
     "DOES_REQUISITION_EXIST": "Es-ce que vous avez un bon de requisition ?",
     "DOES_REQUISITION_EXIST_HELP": "Cliquez sur cette option si vous voulez effectuer une sortie de stock à partir d'un bon de requisition",
-    "VOUCHER_NOT_FOUND":"Le bon de requisition n'a pas été trouvé"
+    "VOUCHER_NOT_FOUND":"Le bon de requisition n'a pas été trouvé",
+    "ALREADY_USED":"Le bon de requisition a déjà été utilisé",
+    "NOT_FOR_SERVICE":"Le bon de requisition ne concerne pas les services",
+    "NOT_FOR_DEPOT":"Le bon de requisition ne concerne pas les depots"
   }
 }
