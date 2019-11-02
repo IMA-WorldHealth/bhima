@@ -8,7 +8,7 @@
     <img src="{{absolutePath}}/{{slashed metadata.enterprise.logopath}}" width="40" height="40" alt="">
   </div>
 {{/if}}
-<h2 style="text-align: center; margin : 0px">{{translate 'STOCK.RECEIPT.EXIT_LOSS'}}</h2> 
+<h2 style="text-align: center; margin : 0px">{{translate 'STOCK.RECEIPT.EXIT_LOSS'}}</h2>
 {{> underline}}
 <p style="margin-top: 0px">
   <span class="text-capitalize">{{translate 'STOCK.DEPOT'}}</span> : <strong>{{details.depot_name}}</strong> <br>
@@ -29,8 +29,6 @@
     <tr>
       <th style="text-align: left;">{{translate 'STOCK.INVENTORY'}}</th>
       <th style="text-align: left;">{{translate 'STOCK.QUANTITY'}}</th>
-      <th style="text-align: left;">{{translate 'STOCK.UNIT_COST'}}</th>
-      <th style="text-align: left;">{{translate 'TABLE.COLUMNS.TOTAL'}}</th>
     </tr>
   </thead>
   <tbody>
@@ -38,17 +36,14 @@
       <tr>
         <td>({{code}}) {{text}}, {{label}}</td>
         <td class="text-right">{{quantity}}</td>
-        <td class="text-right">{{currency unit_cost ../enterprise.currency_id}}</td>
-        <td class="text-right">{{currency total ../enterprise.currency_id}}</td>
       </tr>
     {{else}}
-      {{> emptyTable columns=4}}
+      {{> emptyTable columns=2}}
     {{/each}}
   </tbody>
   <tfoot>
     <tr style="font-weight: bold;">
-      <td colspan="3">{{rows.length}} {{translate 'STOCK.ITEMS'}}</td>
-      <td class="text-right">{{currency (sum rows 'total') enterprise.currency_id}}</td>
+      <td colspan="2">{{rows.length}} {{translate 'STOCK.ITEMS'}}</td>
     </tr>
   </tfoot>
 </table>
@@ -60,7 +55,7 @@
     <h4 class="text-center">{{translate 'REPORT.FOOTER.APPROVED_BY'}}</h4>
     <hr>
   </div>
-  
+
   <div>
     <h4 class="text-center">{{translate 'REPORT.FOOTER.DEPOT_MANAGER'}}</h4>
     <hr>

@@ -2,7 +2,6 @@
 
 <!-- body  -->
 <div class="container" style="font-size: 0.9em;">
-
   <header>
     <!-- headings  -->
 
@@ -15,7 +14,7 @@
           <span class="text-capitalize">{{translate 'FORM.LABELS.EMAIL'}}</span>: {{enterprise.email}}
         </p>
       </div>
-      
+
       <div class="col-xs-6 text-right">
         <h3 style="margin: 0px;">
           <span class="text-uppercase">
@@ -32,7 +31,7 @@
     <!-- client and user details  -->
     <div class="row" style="border: 1px solid #ccc; padding: 5px; margin-top: 20px; margin-bottom: 15px;">
       <div class="col-xs-6">
-        <span class="text-capitalize">{{translate 'FORM.LABELS.SERVICE'}}</span>: 
+        <span class="text-capitalize">{{translate 'FORM.LABELS.SERVICE'}}</span>:
         <strong>{{details.service_display_name}}</strong> <br>
       </div>
       <div class="col-xs-6">
@@ -60,8 +59,6 @@
         <th>{{translate 'STOCK.LOT'}}</th>
         <th>{{translate 'STOCK.EXPIRATION'}}</th>
         <th>{{translate 'STOCK.QUANTITY'}}</th>
-        <th>{{translate 'STOCK.UNIT_COST'}}</th>
-        <th>{{translate 'TABLE.COLUMNS.TOTAL'}}</th>
       </tr>
     </thead>
     <tbody>
@@ -72,22 +69,19 @@
           <td>{{label}}</td>
           <td>{{date expiration_date}}</td>
           <td class="text-right">{{quantity}}</td>
-          <td class="text-right">{{currency unit_cost ../enterprise.currency_id}}</td>
-          <td class="text-right">{{currency total ../enterprise.currency_id}}</td>
         </tr>
       {{else}}
-        {{> emptyTable columns=9}}
+        {{> emptyTable columns=5}}
       {{/each}}
     </tbody>
     <tfoot>
       <tr style="font-weight: bold;">
-        <td colspan="6">{{rows.length}} {{translate 'STOCK.ITEMS'}}</td>
-        <td class="text-right">{{currency (sum rows 'total') enterprise.currency_id}}</td>
+        <td colspan="5">{{rows.length}} {{translate 'STOCK.ITEMS'}}</td>
       </tr>
     </tfoot>
   </table>
 
-  <br>
+  <br />
 
   <footer>
     <div class="row">
@@ -107,5 +101,6 @@
       </div>
     </div>
   </footer>
-  <script>JsBarcode('.barcode').init();</script>
 </div>
+
+<script>JsBarcode('.barcode').init();</script>
