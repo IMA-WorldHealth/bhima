@@ -82,7 +82,21 @@ exports.configure = function configure(app) {
   // options: combined | common | dev | short | tiny
   app.use(morgan('short', { stream }));
 
-  app.use(express.static('client/'));
+  /**
+   * @function overrideIndexCacheHeaders
+   *
+   * @description
+   * Prevents the browser from caching index.html so that we don't have to tell our clients
+   * to clear their cache every system upgrade. All other pages can be cached as normal.
+   */
+  function overrideIndexCacheHeaders(res, path) {
+    const isIndexPage = path.includes('client/index.html');
+    if (isIndexPage) {
+      res.setHeader('Cache-Control', 'no-cache');
+    }
+  }
+
+  app.use(express.static('client/', { setHeaders : overrideIndexCacheHeaders }));
   app.use(`/${uploads.directory}`, express.static(uploads.directory));
 
   // quick way to find out if a value is in an array
