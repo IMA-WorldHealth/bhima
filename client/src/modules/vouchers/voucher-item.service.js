@@ -77,8 +77,8 @@ function VoucherItemService(uuid, Constants, util) {
 
     // checks that the decimal precision is able to be stored in the database correctly
     const hasValidPrecision = (
-      debitPrecision <= MIN_PRECISION_VALUE &&
-      creditPrecision <= MIN_PRECISION_VALUE
+      debitPrecision <= MIN_PRECISION_VALUE
+      && creditPrecision <= MIN_PRECISION_VALUE
     );
 
     // check that only one column - debit or credit is filled out
@@ -90,10 +90,10 @@ function VoucherItemService(uuid, Constants, util) {
     // set the initialized property
     this._initialised = initialized;
 
-    this._valid = initialized &&
-      hasValidPrecision &&
-      hasSingleNumericValue &&
-      hasPositiveValues;
+    this._valid = initialized
+      && hasValidPrecision
+      && hasSingleNumericValue
+      && hasPositiveValues;
 
     this._invalid = !this._valid;
 
@@ -106,7 +106,7 @@ function VoucherItemService(uuid, Constants, util) {
       } else if (!hasSingleNumericValue) {
         this._error = 'VOUCHERS.COMPLEX.ERROR_AMOUNT';
       } else if (!hasPositiveValues) {
-        this._error = 'VOUCHERS.COMPLEX.ERRORS_NEGATIVE_VALUES';
+        this._error = 'VOUCHERS.COMPLEX.ERRORS_NEGATIVE_NUMBERS';
       }
 
     // if not invalid, remove the error message
@@ -150,7 +150,7 @@ function VoucherItemService(uuid, Constants, util) {
 
     if (angular.isDefined(item.document_uuid)) {
       this.document_uuid = item.document_uuid;
-    }    
+    }
   };
 
   return VoucherItem;
