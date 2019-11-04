@@ -43,35 +43,6 @@ class WeekendConfigPage {
     await notification.hasSuccess();
   }
 
-  async setWeekendConfig(label) {
-    const row = new GridRow(label);
-    await row.dropdown().click();
-    await row.method('configure').click();
-
-    // set days
-    const days = $$('[name="days"]');
-    await days.get(0).click();
-    await days.get(1).click();
-    await days.get(6).click();
-    await FU.modal.submit();
-    await notification.hasSuccess();
-  }
-
-  async unsetWeekendConfig(label) {
-    const row = new GridRow(label);
-    await row.dropdown().click();
-    await row.method('configure').click();
-
-    // set days
-    const days = $$('[name="days"]');
-    await days.get(0).click();
-    await days.get(1).click();
-    await days.get(6).click();
-
-    await FU.modal.submit();
-    await notification.hasSuccess();
-  }
-
   async remove(label) {
     const row = new GridRow(label);
     await row.dropdown().click();

@@ -49,30 +49,17 @@ function detail(req, res, next) {
 }
 
 // POST /WEEKEND_CONFIG
-function create(req, res, next) {
+async function create(req, res) {
   const sql = `INSERT INTO weekend_config SET ?`;
   const data = req.body;
   const configuration = data.daysChecked;
-  let insertId;
-
   delete data.daysChecked;
 
-  db.exec(sql, [data])
-    .then((row) => {
-      ({ insertId } = row);
-      const dataconfigured = configuration.map((id) => {
-        return [id, row.insertId];
-      });
-
-      return db.exec('INSERT INTO config_week_days (indice, weekend_config_id) VALUES ?', [dataconfigured]);
-    })
-    .then(() => {
-      res.status(201).json({ id : insertId });
-    })
-    .catch(next)
-    .done();
+  const { insertId } = await db.exec(sql, [data]);
+  const dataConfigured = configuration.map(id => ([id, insertId]));
+  await db.exec('INSERT INTO config_week_days (indice, weekend_config_id) VALUES ?', [dataConfigured]);
+  res.status(201).json({ id : insertId });
 }
-
 
 // PUT /WEEKEND_CONFIG /:ID
 function update(req, res, next) {
